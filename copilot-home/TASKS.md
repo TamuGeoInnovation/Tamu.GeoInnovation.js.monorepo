@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 58.** Written only by the directors on the work computer: `work (security)` (the security and
+> **Next free batch number: 59.** Written only by the directors on the work computer: `work (security)` (the security and
 > dependency chat) and, from 26 October, `work (gisday)` (the GIS Day chat; the maintainer wants this machine given work first, to
 > use its Copilot credits before they expire). The two share one number sequence: read and bump this line when you queue. A batch's
 > heading says which director wrote it, and its questions go to that director. You write `copilot-home/STATUS.md` and
@@ -80,6 +80,142 @@ a recommendation. Push `work-mailbox` with a message starting `copilot-home: bat
 >
 > **Your next batch will be waiting here as usual.** Nothing is wrong with you as a listener beyond this
 > stall, and the maintainer has the command to restart your runner.
+
+## Batch 58 (aggiemap: #2634 - Megan's republished permit and event services: what each server actually serves, and what the map can take; 5 November 2026, 7:05 AM Central, from `home (aggiemap)`)
+
+**Start now. Expected: 2 to 3 hours.** Read-only first; a branch only for what step 5 clears.
+
+[#2634](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2634) (Task, Medium) is
+Megan's report that she has worked through most of
+[#1523](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1523) - the list of layer
+names and orders AggieMap overrides because the service's own were wrong for the map. She has split the permit
+layers, renamed layers, split graduation's closures out, shrunk two icons, and moved four event maps to hosted
+views. She ends with: *"Once they're good to go let me know and we'll publish the updates to TS Prod"*.
+
+**So the deliverable is an answer to her, per map, backed by what the servers actually serve** - plus whatever
+code is safe to change today. The maintainer wants it on AggieMap dev for testing.
+
+### Read this before you plan: the maps you are looking at do not read the development server
+
+Every one of these services is named through `tsgisHost` in
+`libs/aggiemap/ngx/common/src/lib/connections.ts`, and `getDefaultGisHosts()` **hard-pins `tsgisHost` to
+`arc.ts.tamu.edu`** - Transportation's production host - with the comment `TEMP: force tsgisHost to production
+host until dev host is available`. `gisHost` flips between dev and production; `tsgisHost` does not.
+
+**So an AggieMap development build reads Transportation *production* for all nine of these maps, and cannot
+see Megan's republishing at all.** Do not assume "it is on dev" means "the map sees it". Say so plainly in
+your report; it is the fact the whole issue turns on.
+
+### What the director already measured (7:00 AM Central, 5 November; do not redo it, do extend it)
+
+Each service's layer list, read from `.../FeatureServer?f=json` on both hosts. **Dev** is
+`gis.dev.tamu.edu` (the host Megan gave, the same one the athletics views use, #2143); **TS prod** is
+`arc.ts.tamu.edu`.
+
+| Service | TS prod layers | Dev layers | Reading |
+| --- | --- | --- | --- |
+| `Hosted/GraduationParking_view` | 0 Accessible Parking, 1 Traffic Flow, **2 Road Closures**, **3 Event Parking** | identical | **Already on production.** Her item 3 is done on both |
+| `Hosted/AggielandSaturday_view` | 0 Bus Stops, 1 Bus Routes, 2 Points of Interest @ Aggieland Saturday, 3 Aggieland Saturday Parking | identical | Already on production |
+| `Hosted/Aggie_Family_Parade_view` | **0 `POIs`**, 1 Parade Route | **0 `Points of Interest`**, 1 Parade Route | Dev only. The rename has not reached production |
+| `Hosted/Big_Event_view` | **0 `Big Event Traffic`**, 1 Road Closures, 2 Parking Lots | **0 `Traffic Flow`**, 1 Road Closures, 2 Parking Lots | Dev only |
+| Muster | `Hosted/Muster_view`: 0 Traffic Flow, 1 Accessible Parking, 2 Muster Parking | `Hosted/MusterParking_view`: the same three names | **Different service name.** `musterUrl` names `Muster_view`, which production serves and the app already reads |
+
+Not yet read, and yours to read: `TS_Events/BusinessParking`, `ContractorParking`,
+`FreshmanSelectableParking`, `NightWeekendParking`, `TimedParking` (all `MapServer` on `tsgisHost`).
+
+### 1. The graduation fault, first, because it may be live on production
+
+`libs/ts/events/ngx/src/lib/definitions/graduation-fall.definitions.ts` points **two entries at layer 2**:
+
+- `GRADUATION_EVENT_PARKING_LOTS`, titled `Event Parking`, at `${eventUrl}/2`
+- `GRADUATION_ROAD_CLOSURES`, titled `Road Closures`, at `${eventUrl}/2`, filtered `Type = 'Closure'`
+
+The service's layer 2 **is** `Road Closures`; `Event Parking` is layer 3, on both servers. So the map's
+*Event Parking* layer appears to be drawing from the closures layer, on production, today.
+
+**Prove it before you believe it**, and prove it by querying rather than by reading the REST page: ask layer 2
+and layer 3 for their feature counts and for the `Type` values each holds, on both hosts. Three outcomes, and
+your report says which:
+
+- Layer 2 holds only closures - then *Event Parking* draws closures and this is a **live production bug**:
+  file it (Bug, screenshots, suggest High), point the entry at `/3`, and keep its title until the service's
+  own name is confirmed. The `Type = 'Closure'` filter on the closures entry then has nothing to exclude; say
+  whether it is now redundant rather than deleting it silently.
+- Layer 2 still holds both types - then the filter is doing real work, and the question is only whether
+  *Event Parking* should move to 3. Recommend, do not decide.
+- Something else - report it.
+
+`graduation-spring` and `graduation-summer` read the same service. **Check all three**; fix all three or none.
+
+### 2. Run the tools we already have, and extend one rather than writing a script
+
+`tools/layer-titles/compare.mjs` exists for exactly this moment - its README ends *"Re-run it as
+Transportation renames layers: each one that matches becomes one more title to delete."*
+`tools/layer-order/compare.mjs` does the same for order. Run both.
+
+**They read production hosts only**: `compare.mjs` lifts the host constants out of `connections.ts` and
+substitutes them, so there is no way to ask it about the development server. **Add a host option to both**
+(`--host dev`, substituting `gis.dev.tamu.edu` for `tsgisHost`, or whatever reads most naturally beside the
+existing flags), document it in each README, and run each tool twice. **Do not write a one-off comparison
+script**: the reuse rule in CLAUDE.md is the maintainer's standing rule, and this is the second time someone
+has needed this exact answer (#2209 was the first).
+
+### 3. The permit splits: business, contractor, freshman
+
+Megan's item 1. Today each of these splits **one** service layer into two map entries with a
+`definitionExpression`, and only AggieMap's own titles tell them apart -
+`business-parking.definitions.ts` is the clearest example, and both of its lot entries also carry an
+**overridden renderer** because the service's renderer keys on `GIS.TS.ParkingLots.LotType`, which the service
+did not publish (#1981, with the reason in a comment above the definitions).
+
+For each of the three: list what each server now serves, layer by layer, with the fields each definition's
+expression and popup read. Then answer three things in your report:
+
+1. Are the split layers on **production** yet, or dev only?
+2. Does the split service publish `LotType`? If it does, the #1981 renderer override can go - which is a
+   visible change, so screenshots.
+3. Can the entries point at their own layer and drop the `definitionExpression` and the title override?
+
+### 4. The rest of her list
+
+- **Item 2, night and weekend renamed** - `night-weekend.definitions.ts` titles its one layer
+  `Night Privileges 5:00pm - 6:00am`. If the service now says that, the override goes.
+- **Items 4 and 5, timed parking and Muster republished with smaller icons** - these are *symbology*, so read
+  `docs/map-layers.md` first. Look for a symbol override in those two definitions; if there is none, the new
+  icons already draw and the check is a screenshot. Compare the rendered size on both hosts.
+- **Muster's dev service has a different name** (`MusterParking_view` against production's `Muster_view`).
+  The app reads production's and works. Say in your report whether anything should change, and note for Megan
+  that AggieMap does not read the dev copy.
+- **Items 7 to 9, the four event maps now hosted views** - `aggieland-saturday` matches on both hosts;
+  `aggie-family-parade` and `big-event` differ, as the table says. For each, say whether the title override
+  can go **today** (both hosts agree) or **after she publishes to TS Prod** (dev only).
+
+### 5. What may change in code, and what may not
+
+**The rule, and it is the maintainer's decision from #2209, not a preference:** a definition is one file
+serving both environments, so **nothing may be changed to match a schema or a name that only the development
+server serves.** That is how eight athletics maps came to list a layer that draws nothing. If dev and TS prod
+disagree, the row waits for her publish, and your report says so.
+
+So a branch may carry: the graduation fix if step 1 confirms it; any title or order override whose service
+name now agrees **on both hosts**; the host option from step 2; and nothing else. **If that set is empty but
+the host option, say so** - a report that changes no definitions is the right answer here if that is what the
+servers say.
+
+If you do push a branch: from `origin/development`, to `fork` only, every bug with a test that fails first,
+`bash scripts/check-in-volume.sh <branch> ts-events-ngx,aggiemap-ngx-common,aggiemap-angular` plus any project
+you touch, and a release-notes file in `docs/releases/unreleased/` for anything visible, with before/after
+screenshots.
+
+### 6. The report
+
+`copilot-home/reports/2026-11-05-58.md`. Structure it so the director can paste the substance to Megan: **one
+row per item of her list, with the verdict** - done on both, dev only, or needs something from her - and the
+evidence under it. Then anything you need decided under **Questions for the director (aggiemap)**.
+
+Already with the maintainer, so do not file it again: whether these maps should read `gis.dev.tamu.edu` on a
+development build the way the athletics maps do, so her work can be tested at all before it reaches
+production. **Report what that would take and what it would risk; do not build it.**
 
 ## Batch 57 (aggiemap: #2604 - the smoke suite's four ways of asking which GIS host it is on; a branch; 30 October 2026, from `work (aggiemap)`)
 
