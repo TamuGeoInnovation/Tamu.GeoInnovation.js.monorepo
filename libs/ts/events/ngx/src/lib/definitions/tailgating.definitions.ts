@@ -1,6 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { SearchSource, containsSearch } from '@tamu-gisc/ui-kits/ngx/search';
-import { getDefaultGisHosts, commonLayerProps } from '@tamu-gisc/aggiemap/ngx/common';
+import { Connections, commonLayerProps } from '@tamu-gisc/aggiemap/ngx/common';
 
 import {
   AggiemapCustomMapConfiguration,
@@ -65,9 +65,7 @@ const tentPopupData: LayerSource['popupData'] = {
  * which stays stable when Transportation Services edits a project. Add a number here to show
  * another project.
  */
-const CONSTRUCTION_URL = `https://${
-  getDefaultGisHosts().tsgisHost
-}/arcgis/rest/services/Hosted/TSConstruction_Hosted/FeatureServer/0`;
+const CONSTRUCTION_URL = Connections.constructionUrl;
 
 const TAILGATING_CONSTRUCTION_PROJECTS = [
   '02-3420', // Aplin Center, north of the West Campus Garage

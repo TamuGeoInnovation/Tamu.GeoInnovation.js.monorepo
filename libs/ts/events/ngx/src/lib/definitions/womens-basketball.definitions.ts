@@ -25,7 +25,7 @@ export enum WOMENS_BASKETBALL_LAYERS {
  * map's only sources and the hourly visitor parking kiosks and Safety First crosswalks go with the old
  * ones.
  */
-// The hosted view is reached through the ordinary connection, which `athleticsHost` resolves to the
+// The hosted view is reached through the ordinary connection, which `tsgisHost` resolves to the
 // development host; Accessible Parking Spaces is 0 and the event lots are 1 on both.
 const parkingUrl = Connections.womensBasketballUrl;
 

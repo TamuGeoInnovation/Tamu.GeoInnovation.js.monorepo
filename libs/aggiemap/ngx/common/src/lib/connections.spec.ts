@@ -117,7 +117,9 @@ describe("Transportation's services on a development build (#2653)", () => {
   );
 
   it('reads the development server for every one, except those listed with why', () => {
-    expect(transportation.filter((key) => onProductionHost(development[key]) && !READ_FROM_PRODUCTION_ON_DEVELOPMENT[key])).toEqual([]);
+    expect(
+      transportation.filter((key) => onProductionHost(development[key]) && !READ_FROM_PRODUCTION_ON_DEVELOPMENT[key])
+    ).toEqual([]);
   });
 
   it('lists only services a development build still reads from production', () => {
@@ -127,11 +129,17 @@ describe("Transportation's services on a development build (#2653)", () => {
   });
 
   it("reads production's TS_Events services from the development server's TS folder", () => {
-    expect(production.businessParkingUrl).toBe('https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/BusinessParking/MapServer');
-    expect(development.businessParkingUrl).toBe('https://gis.dev.tamu.edu/arcgis/rest/services/TS/BusinessParking/MapServer');
+    expect(production.businessParkingUrl).toBe(
+      'https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/BusinessParking/MapServer'
+    );
+    expect(development.businessParkingUrl).toBe(
+      'https://gis.dev.tamu.edu/arcgis/rest/services/TS/BusinessParking/MapServer'
+    );
   });
 
   it("reads Muster from the development server's MusterParking_view, a different name with the same layers and fields", () => {
-    expect(development.musterUrl).toBe('https://gis.dev.tamu.edu/arcgis/rest/services/Hosted/MusterParking_view/FeatureServer');
+    expect(development.musterUrl).toBe(
+      'https://gis.dev.tamu.edu/arcgis/rest/services/Hosted/MusterParking_view/FeatureServer'
+    );
   });
 });

@@ -12,7 +12,7 @@ export const Connections = {
   basemapUrl: TAMU_CAMPUS_BASEMAP_URL,
   inforUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/MapInfo_20190529/MapServer',
   accessibleUrl: 'https://fc-gis.tamu.edu/arcgis/rest/services/FCOR/ADA_120717/MapServer/0',
-  constructionUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/TSConstruction_Hosted/FeatureServer/0`,
+  constructionUrl: AggiemapConnections.constructionUrl,
   departmentUrl: 'https://fc-gis.tamu.edu/arcgis/rest/services/FCOR/DepartmentSearch/MapServer/1',
   tsMainUrl: `https://${tsgisHost}/arcgis/rest/services/TS/TS_Main/MapServer`,
   bikeRacksUrl: `https://${tsgisHost}/arcgis/rest/services/TS/TS_Bicycles/MapServer/3`

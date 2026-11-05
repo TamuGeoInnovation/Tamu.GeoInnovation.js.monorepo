@@ -47,10 +47,10 @@ export function isDevelopmentHostRequest(url: string): boolean {
  * Whether the environment under test is itself a development one, in which case requests to
  * development hosts are expected and nothing is asserted.
  *
- * One-directional on purpose. Development legitimately requests production services - `tsgisHost` is
- * forced to the production host for every environment, and the campus maps are hard-coded to
- * `gis.tamu.edu` in both - so "development must use only development hosts" is not true and must not
- * be asserted.
+ * One-directional on purpose. Development legitimately requests production services - the
+ * transportation services the development server cannot serve yet, which `connections.spec.ts` lists
+ * (#2653), and the campus maps, hard-coded to `gis.tamu.edu` in both - so "development must use only
+ * development hosts" is not true and must not be asserted.
  */
 export function environmentIsDevelopment(baseUrl: string): boolean {
   try {
