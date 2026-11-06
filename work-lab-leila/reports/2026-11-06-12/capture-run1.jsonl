@@ -1,0 +1,7 @@
+{"load":1,"queries":36,"failed":[{"layer":"9","msg":"Error performing query operation","geometry":"{\"xmin\":-10725032.312749837,\"ymin\":3581533.397332268,\"xmax\":-10724420.816523556,\"ymax\":3582144.8935585488}"}],"drawn":true,"tiles":[{"layer":"9","wkid":102100,"screen":[646,855,1158,1367],"inView":3,"onServer":8,"layerId":"surface-lots-layer"}],"shot":"fail-01"}
+{"load":2,"queries":36,"failed":[],"drawn":true,"shot":"clean"}
+{"load":3,"queries":36,"failed":[],"drawn":true}
+{"load":4,"queries":36,"failed":[],"drawn":true}
+{"load":5,"queries":36,"failed":[],"drawn":true}
+{"load":6,"queries":36,"failed":[{"layer":"2","msg":"Error performing query operation","geometry":"{\"xmin\":-10725032.312749837,\"ymin\":3581533.397332268,\"xmax\":-10724420.816523556,\"ymax\":3582144.8935585488}"}],"drawn":true,"tiles":[{"layer":"2","wkid":102100,"screen":[646,855,1158,1367],"inView":0,"onServer":1,"layerId":"1a1b1ee1f28-layer-1"}],"shot":"fail-06"}
+{"load":7,"queries":36,"failed":[{"layer":"1","msg":"Error performing query operation","geometry":"{\"xmin\":-10724420.816523556,\"ymin\":3582144.8935585488,\"xmax\":-10723809.320297275,\"ymax\":3582756.3897848316}"}],"drawn":true,"tiles":[{"layer":"1","wkid":102100,"screen":[1158,343,1670,855],"inView":12,"onServer":35,"layerId":"buildings-layer"}],"shot":"fail-07"}

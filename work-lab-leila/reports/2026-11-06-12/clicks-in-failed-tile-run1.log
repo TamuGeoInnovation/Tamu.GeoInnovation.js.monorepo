@@ -1,0 +1,17 @@
+load 1: no buildings query failed
+load 2: no buildings query failed
+load 3: no buildings query failed
+load 4: no buildings query failed
+load 5: no buildings query failed
+load 6: {"load":6,"viewKept":8,"serverHas":22,"clicks":[{"building":"Clements Residence Hall (0548)","kept":true,"hits":[],"popup":"none"},{"building":"Hullabaloo Residence Hall (1416)","kept":false,"hits":[],"popup":"none"},{"building":"Fowler Residence Hall (0427)","kept":false,"hits":[],"popup":"none"}]}
+load 7: {"load":7,"viewKept":10,"serverHas":31,"clicks":[{"building":"Horticulture/Forest Science Building (1506)","kept":true,"hits":[],"popup":"none"},{"building":"Agriculture and Life Sciences Building (1535)","kept":false,"hits":[],"popup":"none"},{"building":"White Creek Community Center (1593)","kept":false,"hits":[],"popup":"none"}]}
+load 8: no buildings query failed
+load 9: no buildings query failed
+load 10: no buildings query failed
+load 11: no buildings query failed
+load 12: no buildings query failed
+load 13: no buildings query failed
+load 14: no buildings query failed
+load 15: no buildings query failed
+load 16: {"load":16,"viewKept":9,"serverHas":67,"clicks":[{"building":"Office of the State Chemist Building (1810)","kept":true,"hits":[],"popup":"none"},{"building":"Purchasing & Stores (0957)","kept":false,"hits":[],"popup":"none"},{"building":"Laboratory Animal Care Building (0972)","kept":false,"hits":[],"popup":"none"}]}
+load 17: {"load":17,"viewKept":10,"serverHas":31,"clicks":[{"building":"Horticulture/Forest Science Building (1506)","kept":true,"hits":[],"popup":"none"},{"building":"Agriculture and Life Sciences Building (1535)","kept":false,"hits":[],"popup":"none"},{"building":"White Creek Community Center (1593)","kept":false,"hits":[],"popup":"none"}]}

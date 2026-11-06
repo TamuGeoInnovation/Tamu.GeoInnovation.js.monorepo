@@ -1,0 +1,19 @@
+load 1: no buildings query failed
+load 2: no buildings query failed
+load 3: no buildings query failed
+load 4: no buildings query failed
+load 5: no buildings query failed
+load 6: {"load":6,"viewKept":9,"serverHas":67,"clicks":[{"building":"Fred Dollar Food Services Commissary (0971)","kept":"outside the failed tile","hits":["buildings-layer"],"popup":"right"},{"building":"Office of the State Chemist Building (1810)","kept":true,"hits":[],"popup":"none"},{"building":"Purchasing & Stores (0957)","kept":false,"hits":[],"popup":"none"},{"building":"Laboratory Animal Care Building (0972)","kept":false,"hits":[],"popup":"none"},{"building":"TVMDL Building (1809)","kept":"outside the failed tile","hits":["buildings-layer"],"popup":"right"}]}
+load 7: no buildings query failed
+load 8: no buildings query failed
+load 9: {"load":9,"viewKept":10,"serverHas":31,"clicks":[{"building":"Wehner Building (1510)","kept":"outside the failed tile","hits":["buildings-layer"],"popup":"right"},{"building":"Horticulture/Forest Science Building (1506)","kept":true,"hits":[],"popup":"none"},{"building":"Agriculture and Life Sciences Building (1535)","kept":false,"hits":[],"popup":"none"},{"building":"White Creek Community Center (1593)","kept":false,"hits":[],"popup":"none"},{"building":"Physical Education Activity Program Building (1540)","kept":"outside the failed tile","hits":["buildings-layer"],"popup":"right"}]}
+load 10: no buildings query failed
+load 11: no buildings query failed
+load 12: no buildings query failed
+load 13: no buildings query failed
+load 14: no buildings query failed
+load 15: no buildings query failed
+load 16: no buildings query failed
+load 17: no buildings query failed
+load 18: {"load":18,"viewKept":3,"serverHas":8,"clicks":[{"building":"Kyle Field (0367)","kept":"outside the failed tile","hits":[],"popup":"none"},{"building":"Adam C. Sinn '00 Academic & Wellness Center (1631)","kept":true,"hits":[],"popup":"none"},{"building":"Hagler Center (3100)","kept":false,"hits":[],"popup":"none"},{"building":"Williams Alumni Center (0375)","kept":false,"hits":[],"popup":"none"},{"building":"Coolidge Football Indoor Performance Center (1630)","kept":"outside the failed tile","hits":["buildings-layer"],"popup":"right"}]}
+load 19: {"load":19,"viewKept":9,"serverHas":67,"clicks":[{"building":"Fred Dollar Food Services Commissary (0971)","kept":"outside the failed tile","hits":["buildings-layer"],"popup":"right"},{"building":"Office of the State Chemist Building (1810)","kept":true,"hits":[],"popup":"none"},{"building":"Purchasing & Stores (0957)","kept":false,"hits":[],"popup":"none"},{"building":"Laboratory Animal Care Building (0972)","kept":false,"hits":[],"popup":"none"},{"building":"TVMDL Building (1809)","kept":"outside the failed tile","hits":["buildings-layer"],"popup":"right"}]}
