@@ -5987,3 +5987,38 @@ be shown to work.
 
 Say **"branch ready: feat/1975-tailgating-kiosk"** with its head, and report #1969 separately. Name the
 production bundle for anything you ran against production.
+
+## Batch 10 (6 November 2026, 8:36 AM Central, from `work (aggiemap)`) — two investigations from this morning's quick tier
+
+The quick tier ran against dev on the 6 November build (`7e15ae45a`): **814 passed, 9 failed, 2 flaky, 52 skipped, 56 minutes.** Three failures were 4-H Roundup, already fixed in [PR 2699](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2699). These two issues are the other six.
+
+**Both want an answer, not a fix.** Two of the three faults in the first issue may turn out to be data or test faults rather than application bugs, and deciding which is the work. A fix without a reproduction cannot be shown to work.
+
+**Run against dev**, from a worktree at `7e15ae45a` or later. `development` moves today, so say in your report which commit you used and which bundle dev was serving (`main-*.js` from the page source) — the build changes under you and a result tied to no build is not a result.
+
+### Task 1 — [#2701](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2701): three unexplained failures (High)
+
+Read the issue; it has the exact errors. In the order I would take them:
+
+1. **The football tailgating kiosk draws three layers that belong to the main map.** `kiosk.spec.ts:156`. **Start here — it is the one most likely to be a regression from this week.** First establish *which three layers*, because that should name the change: [#2645](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2645) (tailgate tent directions) and [#2653](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2653) (which made `tailgating.definitions.ts` read `Connections.constructionUrl` instead of building the URL itself) both touched those files this week. If it is #2653, it is mine and I want to know today.
+2. **The AVP parking popup does not open** from `?feature=AVP-parking-lots:26135`, and so offers no phone directions. Two tests, one symptom. The first question is whether feature `26135` still exists in that layer — query the service directly before touching anything. A feature that was deleted is a data change and the test's fixture needs updating; a popup that stopped opening for shared links is a bug. Do not guess which.
+3. **Clicking Harrington shows Evans Library's popup** (`popup.spec.ts:188`, `@heavy`). The previous building's popup stayed open instead of being replaced. This may be a timing fault in the test — it clicks one building then another — but it failed three times, and "the popup shows the wrong building" is serious enough not to be written off as flaky without looking. **Your machine is the right one for this**: run it many times and report the rate, as you did for #1969.
+
+### Task 2 — [#2702](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2702): how far the basemap 500s go (High)
+
+`TAMU_Basemap_20261008` on `gis.tamu.edu` answers **500** to a count query on layer 7, and the construction map's Buildings layer cannot be counted either. **This is production, now, with no release involved** — it is the GIS team's service to fix, and our job is to hand them something precise instead of "we saw an error".
+
+Establish, and put the numbers in the report:
+
+- **Which layers** of that service fail a count, and which succeed. Walk every layer; the service lists them.
+- **Whether a failing layer still returns its features.** This is the question that matters: the check's own words are "so they may be drawing short". Ask a failing layer for its features and compare what comes back with what it claims to hold. **A layer that draws most of its buildings looks correct**, and that is the failure shape that has cost this project most ([#1166](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1166), [#2631](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2631)): the request succeeds and the answer is wrong.
+- **Whether it is intermittent.** Repeat a failing count over several minutes and report the rate. One run with three retries is not enough to say "always".
+- Layer 1 is Buildings — the building search and popups are built on it — and layer 9 is Surface Lots. Say explicitly whether either is affected.
+
+No code change is expected for this one. If it turns out layers are returning short, say so loudly and stop; that becomes an urgent conversation rather than a report.
+
+### The report
+
+`work-lab-leila/reports/2026-11-06-10.md`, and say **"report ready: <file>"**. Lead with the kiosk's three layer names and whether the basemap returns short — those two facts are what I am waiting on. Questions for me go under **Questions for the director (aggiemap)**, with options and a recommendation; do not take them to the maintainer yourself.
+
+Nothing in this batch opens a pull request or pushes a tag.
