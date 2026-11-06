@@ -1,5 +1,8 @@
-import { ExecutionContext, INestApplication } from '@nestjs/common';
+import { ExecutionContext, INestApplication, RequestMethod } from '@nestjs/common';
+import { GUARDS_METADATA, METHOD_METADATA } from '@nestjs/common/constants';
+import { Reflector } from '@nestjs/core';
 import { Test } from '@nestjs/testing';
+import { getMetadataArgsStorage } from 'typeorm';
 
 import { JwtGuard } from '@tamu-gisc/common/nest/auth';
 
@@ -12,7 +15,7 @@ import { SpeakerController } from '../speaker/speaker.controller';
 import { SpeakerProvider } from '../speaker/speaker.provider';
 import { SponsorController } from '../sponsor/sponsor.controller';
 import { SponsorProvider } from '../sponsor/sponsor.provider';
-import { PrivateFieldsInterceptor, withoutPrivateFields } from './private-fields.interceptor';
+import { PRIVATE_FIELDS, PrivateFieldsInterceptor, withoutPrivateFields } from './private-fields.interceptor';
 
 const PRIVATE_KEYS = ['contactFirstName', 'contactLastName', 'contactEmail', 'sponsorshipAmount', 'email', 'accountGuid'];
 
@@ -121,7 +124,8 @@ describe('PrivateFieldsInterceptor', () => {
     await app.close();
   });
 
-  const get = async (path: string) => (await fetch(`${url}${path}`)).json();
+  const fetchFrom = (path: string) => fetch(`${url}${path}`);
+  const get = async (path: string) => (await fetchFrom(path)).json();
 
   const PUBLIC_ROUTES = [
     '/sponsors',
@@ -197,6 +201,24 @@ describe('PrivateFieldsInterceptor', () => {
       expect(s).toMatchObject({ email: 'sam@example.com', accountGuid: 'auth0|speaker-1' });
     });
   });
+
+  describe('caching', () => {
+    it("tells caches that the answer depends on the caller's token", async () => {
+      user = undefined;
+      const response = await fetchFrom('/sponsors');
+
+      expect(response.headers.get('vary')).toMatch(/Authorization/i);
+      expect(response.headers.get('cache-control')).not.toMatch(/no-store/);
+    });
+
+    it("forbids storing an admin's answer, which keeps the private fields", async () => {
+      user = { sub: 'admin-1', permissions: ['update:sponsors'] };
+      const response = await fetchFrom('/sponsors');
+
+      expect(response.headers.get('cache-control')).toBe('private, no-store');
+      expect(response.headers.get('vary')).toMatch(/Authorization/i);
+    });
+  });
 });
 
 describe('withoutPrivateFields', () => {
@@ -224,5 +246,82 @@ describe('withoutPrivateFields', () => {
 
     expect(s.email).toBeUndefined();
     expect(s.organization.contactEmail).toBeUndefined();
+  });
+});
+
+/**
+ * The read routes the admin pages use must let an admin's token through, and must not turn away anyone else. A
+ * browser keeps an expired token, and the public pages send it with every request.
+ */
+describe('the read routes of sponsors, organizations and speakers', () => {
+  const controllers = [SponsorController, OrganizationController, SpeakerController];
+  const reads = controllers.flatMap((controller) =>
+    Object.getOwnPropertyNames(controller.prototype)
+      .map((name) => ({ controller, name, handler: controller.prototype[name] }))
+      .filter(({ handler }) => typeof handler === 'function' && Reflect.getMetadata(METHOD_METADATA, handler) === RequestMethod.GET)
+  );
+
+  it('are all found', () => {
+    expect(reads.length).toBe(18);
+  });
+
+  it.each(reads.map((r) => [`${r.controller.name}.${r.name}`, r]))('%s reads the token without requiring one', (_, r) => {
+    expect(Reflect.getMetadata(GUARDS_METADATA, r.handler)).toContain(JwtGuard);
+    expect(Reflect.getMetadata('AllowAny', r.handler)).toBe('true');
+  });
+
+  it('answers a request with an expired or bad token as a signed-out one, with no 401', () => {
+    const guard = new JwtGuard(new Reflector());
+    const handler = SponsorController.prototype.getEntities;
+    const context = { getHandler: () => handler } as unknown as ExecutionContext;
+
+    for (const info of [new Error('jwt expired'), new Error('invalid signature'), new Error('No auth token')]) {
+      expect(() => guard.handleRequest(null, false, info, context)).not.toThrow();
+      expect(guard.handleRequest(null, false, info, context)).toBeFalsy();
+    }
+  });
+});
+
+/**
+ * Every column of these three tables is named here as public or private. A column added later fails this test until
+ * someone decides which it is, so a new personal field cannot go out unnoticed. Private ones go in PRIVATE_FIELDS.
+ */
+describe('every column of sponsors, organizations and speakers is decided', () => {
+  const PUBLIC: Record<string, Array<string>> = {
+    Sponsor: ['guid', 'created', 'updated', 'name', 'website', 'description', 'sponsorshipLevel', 'active', 'logoSize'],
+    Organization: ['guid', 'created', 'updated', 'name', 'acronym', 'website', 'text'],
+    Speaker: [
+      'guid',
+      'created',
+      'updated',
+      'firstName',
+      'lastName',
+      'isActive',
+      'isOrganizer',
+      'graduationYear',
+      'degree',
+      'program',
+      'affiliation',
+      'description',
+      'socialMedia'
+    ]
+  };
+
+  const columnsOf = (type: object) => {
+    const chain: Array<object> = [];
+    for (let t = type; t && t !== Function.prototype; t = Object.getPrototypeOf(t)) {
+      chain.push(t);
+    }
+
+    return getMetadataArgsStorage()
+      .columns.filter((c) => chain.includes(c.target as object))
+      .map((c) => c.propertyName)
+      .sort();
+  };
+
+  it.each(PRIVATE_FIELDS.map((rule) => [rule.type.name, rule]))('%s', (name, rule) => {
+    const decided = [...PUBLIC[name as string], ...rule.fields].sort();
+
+    expect(columnsOf(rule.type)).toEqual(decided);
   });
 });

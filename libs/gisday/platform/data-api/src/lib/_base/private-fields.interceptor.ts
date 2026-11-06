@@ -9,7 +9,7 @@ import { Organization, Speaker, Sponsor } from '../entities/all.entity';
  * else, signed in or not, gets the record without them: a sponsor's or organization's contact person, what a sponsor
  * paid, and a speaker's email and account. The public pages show none of them; only the admin pages do.
  */
-const PRIVATE_FIELDS: Array<{ type: new () => object; fields: Array<string>; permission: string }> = [
+export const PRIVATE_FIELDS: Array<{ type: new () => object; fields: Array<string>; permission: string }> = [
   { type: Sponsor, fields: ['contactFirstName', 'contactLastName', 'contactEmail', 'sponsorshipAmount'], permission: 'update:sponsors' },
   { type: Organization, fields: ['contactFirstName', 'contactLastName', 'contactEmail'], permission: 'update:organizations' },
   { type: Speaker, fields: ['email', 'accountGuid'], permission: 'update:speakers' }
@@ -21,6 +21,9 @@ const PRIVATE_FIELDS: Array<{ type: new () => object; fields: Array<string>; per
  */
 const CONTACT_FIELDS = ['contactFirstName', 'contactLastName', 'contactEmail'];
 const CONTACT_PERMISSIONS = ['update:sponsors', 'update:organizations'];
+
+/** Any permission that keeps some private field. */
+const UNLOCKING_PERMISSIONS = PRIVATE_FIELDS.map((rule) => rule.permission);
 
 /**
  * Removes the private fields from every response of the GIS Day API, at any depth, so a speaker's email does not
@@ -38,7 +41,17 @@ export class PrivateFieldsInterceptor implements NestInterceptor {
       return next.handle();
     }
 
-    const permissions: Array<string> = context.switchToHttp().getRequest()?.user?.permissions ?? [];
+    const http = context.switchToHttp();
+    const permissions: Array<string> = http.getRequest()?.user?.permissions ?? [];
+    const response = http.getResponse();
+
+    // The same address answers differently with and without a token, so no cache may hand one caller's answer to
+    // another; and an answer that kept private fields must not be stored at all.
+    // `vary` adds to whatever Vary is already set (CORS sets Origin) rather than replacing it.
+    response?.vary?.('Authorization');
+    if (UNLOCKING_PERMISSIONS.some((p) => permissions.includes(p))) {
+      response?.setHeader?.('Cache-Control', 'private, no-store');
+    }
 
     return next.handle().pipe(map((body) => withoutPrivateFields(body, permissions)));
   }
