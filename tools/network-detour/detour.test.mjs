@@ -64,6 +64,36 @@ test('the same pair answered twice fails loudly', () => {
   assert.throws(() => joinRoutes(pairs, solved(['p0', 50], ['p0', 60])), /twice/);
 });
 
+test('a batch in which no pair can be routed is every pair missing, not a failed run', () => {
+  // With ignoreInvalidLocations=true the service skips pairs it cannot route, unless it can route none
+  // of them: then it answers with an error listing each one. Seen on 6 November 2026, when a whole batch
+  // started at a building the network does not reach.
+  const pairs = [
+    { key: '1089-1430', from: 1089, to: 1430 },
+    { key: '1089-1431', from: 1089, to: 1431 }
+  ];
+  const response = {
+    error: {
+      code: 400,
+      message: 'Unable to complete operation.',
+      details: [
+        'No route for "1089-1430" from location "1089" to location "1430".  No route for "1089-1431" from location "1089" to location "1431".  No solution found.'
+      ]
+    }
+  };
+
+  assert.deepEqual(joinRoutes(pairs, response), { routed: new Map(), missing: ['1089-1430', '1089-1431'] });
+});
+
+test('any other error from the service stops the run', () => {
+  const pairs = [{ key: 'p0', from: 1, to: 2 }];
+
+  assert.throws(
+    () => joinRoutes(pairs, { error: { code: 500, message: 'Service unavailable', details: [] } }),
+    /Service unavailable/
+  );
+});
+
 test('a batch whose counts do not add up fails, naming the pair nobody accounted for', () => {
   const pairs = [
     { key: 'p0', from: 1, to: 2 },

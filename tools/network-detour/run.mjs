@@ -200,8 +200,6 @@ function solve(pairs, byId, mode, ignoreInvalidLocations) {
 async function runBatch(pairs, byId, mode) {
   const fast = await solve(pairs, byId, mode, true);
 
-  if (fast.error) throw new Error(`/solve failed for a batch of ${pairs.length}: ${JSON.stringify(fast.error)}`);
-
   const { routed, missing } = joinRoutes(pairs, fast);
   const explained = new Map();
 

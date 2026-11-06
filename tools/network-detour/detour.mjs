@@ -49,9 +49,21 @@ export const pairOf = (a, b) => ({ key: `${a.id}-${b.id}`, from: a.id, to: b.id,
  * A pair the service cannot route is left out of the answer with no error, so the routes that come
  * back are a subset in no promised order. Zipping them against the input mis-pairs every route after
  * the first gap. Anything that cannot be joined with certainty throws: a nameless route, a name that was
- * not sent, or a pair answered twice.
+ * not sent, or a pair answered twice. So does an error from the service, unless it is the one that
+ * means no pair in the batch could be routed.
  */
 export function joinRoutes(pairs, response) {
+  if (response.error) {
+    // With ignoreInvalidLocations=true the service skips what it cannot route, unless it can route none
+    // of the batch: then it answers with an error that lists each pair. That is every pair missing, to be
+    // asked again one at a time. Any other error is a failure.
+    const said = noRouteReason(response);
+
+    if (!/^No route for /.test(said)) throw new Error(`/solve failed for a batch of ${pairs.length}: ${said}`);
+
+    return { routed: new Map(), missing: pairs.map((p) => p.key) };
+  }
+
   const sent = new Set(pairs.map((p) => p.key));
   const routed = new Map();
 
