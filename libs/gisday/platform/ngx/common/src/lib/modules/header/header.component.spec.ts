@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject } from 'rxjs';
+import { of, Subject } from 'rxjs';
 
 import { gisdaySite, GisdaySite } from '@tamu-gisc/gisday/common';
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
@@ -52,7 +52,7 @@ describe('HeaderComponent login', () => {
 
     answer.next(true);
 
-    expect(login).toHaveBeenCalledWith({ appState: { target: '/sessions' } });
+    expect(login).toHaveBeenCalledWith({ appState: { target: '/sessions' }, authorizationParams: { prompt: 'login' } });
   });
 
   it('does not sign in when the note is cancelled or closed', () => {
@@ -76,38 +76,56 @@ describe('HeaderComponent login', () => {
 });
 
 /**
- * #2672. Logout on UCGIS's site also ends the Tradewing session, so the next Login/Signup asks for a password again.
- * txgisday.org's does not: there it would sign people out of Google itself.
+ * #2672. Logout cannot end UCGIS's Tradewing session, so on UCGIS's site every sign-in asks Tradewing for the password
+ * (`prompt=login`). txgisday.org and Texas A&M's site sign in as before, and no site logs out of its provider.
  */
-describe('HeaderComponent logout', () => {
-  function logoutOn(site: GisdaySite) {
+describe('HeaderComponent sign-in and logout on a site that signs in elsewhere', () => {
+  function headerOn(site: GisdaySite) {
+    const login = jest.fn();
     const logout = jest.fn();
 
     // Called for more than one site in a test, so each call starts from a fresh test module.
     TestBed.resetTestingModule();
-    TestBed.configureTestingModule({
+    const header = TestBed.configureTestingModule({
       providers: [
         { provide: GISDAY_SITE, useValue: site },
-        { provide: AuthService, useValue: { logout } },
-        { provide: ModalService, useValue: {} },
+        { provide: AuthService, useValue: { login, logout } },
+        { provide: ModalService, useValue: { open: () => of(true) } },
         { provide: SeasonService, useValue: {} },
         { provide: PlaceService, useValue: {} },
-        { provide: Router, useValue: {} },
+        { provide: Router, useValue: { url: '/sessions' } },
         { provide: ActivatedRoute, useValue: {} }
       ]
-    })
-      .runInInjectionContext(() => new HeaderComponent())
-      .logout();
+    }).runInInjectionContext(() => new HeaderComponent());
 
-    return logout.mock.calls[0][0].logoutParams;
+    return { header, login, logout };
   }
 
-  it("signs UCGIS's visitors out of Tradewing as well", () => {
-    expect(logoutOn(gisdaySite('ucgis'))).toEqual({ returnTo: window.location.origin, federated: true });
+  it('asks Tradewing for the password on every UCGIS sign-in', () => {
+    const { header, login } = headerOn(gisdaySite('ucgis'));
+
+    header.login();
+
+    expect(login).toHaveBeenCalledWith({ appState: { target: '/sessions' }, authorizationParams: { prompt: 'login' } });
   });
 
-  it('leaves txgisday.org and Texas A&M visitors signed in to their own provider', () => {
-    expect(logoutOn(gisdaySite('txgisday'))).toEqual({ returnTo: window.location.origin });
-    expect(logoutOn(gisdaySite('tamu'))).toEqual({ returnTo: window.location.origin });
+  it("signs in as before on txgisday.org and Texas A&M's site", () => {
+    for (const key of ['txgisday', 'tamu']) {
+      const { header, login } = headerOn(gisdaySite(key));
+
+      header.login();
+
+      expect(login).toHaveBeenCalledWith({ appState: { target: '/sessions' } });
+    }
+  });
+
+  it('logs out of the site only, on every site', () => {
+    for (const key of ['ucgis', 'txgisday', 'tamu']) {
+      const { header, logout } = headerOn(gisdaySite(key));
+
+      header.logout();
+
+      expect(logout).toHaveBeenCalledWith({ logoutParams: { returnTo: window.location.origin } });
+    }
   });
 });
