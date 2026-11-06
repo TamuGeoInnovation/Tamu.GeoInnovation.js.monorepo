@@ -74,3 +74,40 @@ describe('HeaderComponent login', () => {
     expect(login).toHaveBeenCalledWith({ appState: { target: '/sessions' } });
   });
 });
+
+/**
+ * #2672. Logout on UCGIS's site also ends the Tradewing session, so the next Login/Signup asks for a password again.
+ * txgisday.org's does not: there it would sign people out of Google itself.
+ */
+describe('HeaderComponent logout', () => {
+  function logoutOn(site: GisdaySite) {
+    const logout = jest.fn();
+
+    // Called for more than one site in a test, so each call starts from a fresh test module.
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: GISDAY_SITE, useValue: site },
+        { provide: AuthService, useValue: { logout } },
+        { provide: ModalService, useValue: {} },
+        { provide: SeasonService, useValue: {} },
+        { provide: PlaceService, useValue: {} },
+        { provide: Router, useValue: {} },
+        { provide: ActivatedRoute, useValue: {} }
+      ]
+    })
+      .runInInjectionContext(() => new HeaderComponent())
+      .logout();
+
+    return logout.mock.calls[0][0].logoutParams;
+  }
+
+  it("signs UCGIS's visitors out of Tradewing as well", () => {
+    expect(logoutOn(gisdaySite('ucgis'))).toEqual({ returnTo: window.location.origin, federated: true });
+  });
+
+  it('leaves txgisday.org and Texas A&M visitors signed in to their own provider', () => {
+    expect(logoutOn(gisdaySite('txgisday'))).toEqual({ returnTo: window.location.origin });
+    expect(logoutOn(gisdaySite('tamu'))).toEqual({ returnTo: window.location.origin });
+  });
+});
