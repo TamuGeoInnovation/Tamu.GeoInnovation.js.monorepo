@@ -14,6 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
+- **Batch 30** (aggiemap, #2655: network routes against straight-line distance), started 6 Nov about 5:55 AM Central. Reading #2655 and the two tools it follows.
 - **Batch 29** (aggiemap, #2653: `tsgisHost` obeys the environment flag), started 6:30 AM Central, 5 November. Reading #2653, then a branch from `origin/development`, red test first.
   - 7:05 AM: both hosts re-measured for every service (agrees with #2653 except: Muster is on dev as `MusterParking_view`, fields identical, so it moves; 12 hosted views plus TS_Main stay, not 16). Red test committed on `fix/2653-tsgis-dev-host`: 30 services named. Writing the fix.
   - 8:25 AM: fix committed (`d91d832e3`); full affected check exit 0 (10 projects); `services.spec` on dev from the branch: 178 passed, now probing `gis.dev.tamu.edu/.../TS/...`. Dev server stalled at the Vite optimizer (#1955 symptom) during the before captures; restarted it.
