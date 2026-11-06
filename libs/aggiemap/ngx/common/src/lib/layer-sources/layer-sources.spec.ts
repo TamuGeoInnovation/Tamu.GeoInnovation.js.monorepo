@@ -43,6 +43,13 @@ describe('LayerSources', () => {
         url: 'poi-url',
         popupComponent: 'poi-popup'
       },
+      NATURE_RX: {
+        id: 'nature-rx',
+        layerId: 'nature-rx',
+        name: 'Nature Rx',
+        url: 'nature-rx-url',
+        popupComponent: 'nature-rx-popup'
+      },
       BONFIRE: {
         id: 'bonfire',
         layerId: 'bonfire',
@@ -167,14 +174,14 @@ describe('LayerSources', () => {
   it('should return all layer sources when no options are provided', () => {
     const result = LayerSources(connections, definitions);
 
-    expect(result.length).toBe(16);
+    expect(result.length).toBe(17);
   });
 
   it('should exclude specified layers', () => {
     options.exclude = ['BUILDINGS', 'CONSTRUCTION'];
     const result = LayerSources(connections, definitions, options);
 
-    expect(result.length).toBe(14);
+    expect(result.length).toBe(15);
     expect(result.find((layer) => layer.id === 'buildings')).toBeUndefined();
     expect(result.find((layer) => layer.id === 'construction')).toBeUndefined();
   });
@@ -183,7 +190,7 @@ describe('LayerSources', () => {
     options.exclude = [];
     const result = LayerSources(connections, definitions, options);
 
-    expect(result.length).toBe(16);
+    expect(result.length).toBe(17);
   });
 
   it('should retain only non-definition-backed top-level layers when all definitions are excluded', () => {

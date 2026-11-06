@@ -67,7 +67,14 @@ export const WomensBasketball_Configuration: EventConfiguration = {
   ],
   scheduleUrl: 'https://12thman.com/sports/womens-basketball/schedule',
   zoom: 16,
-  mapCenter: [-96.34467, 30.60585]
+  mapCenter: [-96.34467, 30.60585],
+  // Off because Megan, who looks after this map's service and asked for the men's refresh (#2558), asked on 30 October
+  // 2026 that the Women's Basketball map not refresh (#2581). Her reason was not passed on with the request: ask her
+  // before switching it on. The layers are listed so that switching it on is the whole change.
+  gameDayRefresh: {
+    enabled: false,
+    layers: [WOMENS_BASKETBALL_LAYERS.ACCESSIBLE_PARKING, WOMENS_BASKETBALL_LAYERS.PARKING_LOTS]
+  }
 };
 
 export const WomensBasketball_Options: SpecialEventOptions = [];

@@ -33,6 +33,11 @@ function createConnections(gisHost: string): IComposedConnections {
     // `basemapUrl` is, and development reads production's rooms. Restore `${gisHost}` once #1963
     // publishes it on the development server.
     lactationRoomsUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/Lactation_Spaces_view/FeatureServer/0',
+    // Nature Rx spaces, a hosted service from Facilities Analytics & Mapping (#2630). The development
+    // GIS server has it but answers "Token Required", so a `${gisHost}` URL would draw nothing on
+    // development; it is named on gis.tamu.edu outright, as `lactationRoomsUrl` is, and development reads
+    // production's spaces. Restore `${gisHost}` if it is ever published unsecured on development.
+    natureRxUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/NatureRx_view/FeatureServer/0',
     // The services named on `PRODUCTION_TS_HOST` below are read from production on every environment, because the development
     // server cannot serve them yet: it has only the older MapServer each hosted view replaced, without `objectid`
     // (which the search sources and share links are built on) and the view's other fields, or, for the four retired
@@ -210,6 +215,7 @@ export interface IComposedConnections {
   inforUrl: string;
   accessibleUrl: string;
   lactationRoomsUrl: string;
+  natureRxUrl: string;
   constructionUrl: string;
   departmentUrl: string;
   tsMainUrl: string;

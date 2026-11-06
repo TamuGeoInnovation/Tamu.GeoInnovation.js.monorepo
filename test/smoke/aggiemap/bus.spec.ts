@@ -6,6 +6,7 @@ import { expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
 import { readGraphicTypes } from './framing';
 import { BUS_NOTICE, BUS_PANEL, BUS_ROUTE, MANIFEST_PATH, MapManifest } from './global-setup';
+import { smokeBaseUrl } from './gis-hosts';
 
 /**
  * Every bus route draws its stops, and choosing a route shows them (#1174).
@@ -28,7 +29,7 @@ import { BUS_NOTICE, BUS_PANEL, BUS_ROUTE, MANIFEST_PATH, MapManifest } from './
  * shows a notice instead, and these tests skip. They start checking there as soon as routes appear.
  */
 
-const BASE_URL = process.env.AGGIEMAP_SMOKE_BASE_URL ?? 'https://aggiemap.tamu.edu';
+const BASE_URL = smokeBaseUrl();
 const PROBE_GLOBAL = '__tamuGiscMapProbe';
 const BUS_LAYER = 'bus-route-layer';
 
@@ -42,8 +43,7 @@ function allowedFailures(): Record<string, string> {
   const environments: Record<string, EnvironmentSettings> = JSON.parse(
     fs.readFileSync(path.join(__dirname, 'environments.json'), 'utf8')
   );
-  const normalised = BASE_URL.replace(/\/$/, '');
-  const match = Object.values(environments).find((env) => env.baseUrl.replace(/\/$/, '') === normalised);
+  const match = Object.values(environments).find((env) => env.baseUrl.replace(/\/$/, '') === BASE_URL);
 
   return match?.allowedBusRouteFailures ?? {};
 }

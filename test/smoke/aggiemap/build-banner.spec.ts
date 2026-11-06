@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 import { expect, test } from './fixtures';
+import { smokeBaseUrl } from './gis-hosts';
 
 /**
  * The build banner names the build a page is running (#1306).
@@ -22,7 +23,7 @@ import { expect, test } from './fixtures';
 const PLACEHOLDER = /___[A-Z_]+___/;
 
 /** The environment under test, as every other helper here resolves it. */
-const BASE_URL = (process.env.AGGIEMAP_SMOKE_BASE_URL ?? 'https://aggiemap.tamu.edu').replace(/\/$/, '');
+const BASE_URL = smokeBaseUrl();
 
 function allowance(): string | undefined {
   const environments = JSON.parse(fs.readFileSync(path.join(__dirname, 'environments.json'), 'utf8')) as Record<

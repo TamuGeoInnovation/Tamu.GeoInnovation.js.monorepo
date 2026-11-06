@@ -5,6 +5,7 @@ import * as path from 'path';
 import { expect, HEAVY, test } from './fixtures';
 import { blockAnalytics } from './analytics';
 import { waitForSettledFraming } from './framing';
+import { smokeBaseUrl } from './gis-hosts';
 
 /**
  * Clicking a feature on a map opens its popup, and the popup shows that feature's data (#1117).
@@ -63,15 +64,14 @@ const POPUP_CASES: PopupCase[] = [
   }
 ];
 
-const BASE_URL = process.env.AGGIEMAP_SMOKE_BASE_URL ?? 'https://aggiemap.tamu.edu';
+const BASE_URL = smokeBaseUrl();
 
 /** Maps whose popup is known to be broken here, by map path, each tied to an issue. From environments.json. */
 function allowedFailures(): Record<string, string> {
   const environments: Record<string, { baseUrl: string; allowedPopupFailures?: Record<string, string> }> = JSON.parse(
     fs.readFileSync(path.join(__dirname, 'environments.json'), 'utf8')
   );
-  const normalised = BASE_URL.replace(/\/$/, '');
-  const match = Object.values(environments).find((env) => env.baseUrl.replace(/\/$/, '') === normalised);
+  const match = Object.values(environments).find((env) => env.baseUrl.replace(/\/$/, '') === BASE_URL);
 
   return match?.allowedPopupFailures ?? {};
 }

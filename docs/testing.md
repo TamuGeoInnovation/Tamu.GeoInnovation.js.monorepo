@@ -74,11 +74,16 @@ with the number of maps and services.
 
 ### What it checks
 
-The counts are a snapshot: **657 tests, measured on dev on 20 October 2026** in the run that cleared
-the [21 October release](releases/2026-10-21.md): 613 passed and 44 skipped, none failed or flaky, in 17.4
-minutes, with the release tier. Production lists fewer maps than dev, so it runs fewer (421
+The counts are a snapshot: **1,018 tests, measured on 30 October 2026** in the release tier that cleared
+the [30 October release](releases/2026-10-30.md): 911 passed, 5 failed, 32 flaky and 70 skipped, 12:45 to
+2:38 PM US Central, 113 minutes. **Every failure was accounted for and none came from the build** - two are
+the week's known dev-only failures (the 3D globe's timeout and the `bldg=0468` popup) and three, with most
+of the flakes, are `gis.tamu.edu` refusing about one count query in ten, which fails the same way on
+production. The tier covers both environments, so this is not a dev-only figure as earlier snapshots were. Production lists fewer maps than dev, so it runs fewer (421
 on 8 October); the bus routes run as one test each on dev (#1473), and production does not show bus routes.
-The per-row counts below were last counted on 12 October and have grown since.
+The per-row counts below were last counted on 12 October and have grown a great deal since; they are not
+refreshed here, because this run measured the suite as a whole rather than spec by spec, and a Total
+guessed at is worse than one openly out of date.
 
 | Type of check | Spec files | Tests | What it catches | Prompted by |
 | --- | --- | ---: | --- | --- |
@@ -140,6 +145,7 @@ The suite started on 27 September 2026 and grew with nearly every bug found sinc
 | 11 October | 461 | A map that draws ArcGIS's default symbol fails ([#1578](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1578)). **Measured: 461** on dev, twice: 447 passed and 14 skipped in 27 min 2 s on that day's first build, then 446 passed, 1 flaky and 14 skipped in 29 min 9 s on the build that shipped |
 | 20 October | 576 | **Measured: 576** on dev with the release tier, on the build cleared for the [19 October release](releases/2026-10-19.md): 546 passed, 1 flaky and 29 skipped in 36.8 minutes |
 | 20 October, night | 657 | Every map's layers listed, drawn and keyed (`map-layers.spec.ts`, [#1986](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1986)), the Football Tailgating kiosk, Aerial Imagery by GET and the legend's numeric fields. **Measured: 657** on dev with the release tier, 11:35 to 11:53 PM Central, on the build cleared for the [21 October release](releases/2026-10-21.md): 613 passed and 44 skipped in 17.4 minutes |
+| 30 October | 1,018 | Routing on the new development network ([#659](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/659)), the eleven builder-gated maps' layers ([#2519](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2519)), the blank-map check, service self-consistency and portal renderers, and the basemap round trip. **Measured: 1,018** with the release tier across both environments, 12:45 to 2:38 PM Central, on the build cleared for the [30 October release](releases/2026-10-30.md): 911 passed, 5 failed, 32 flaky and 70 skipped in 113 minutes. The 5 failures are two known dev-only ones and three from `gis.tamu.edu` refusing count queries under load, which fails identically on production |
 
 Numbers marked ~ are estimates: today's count for each spec, added up by the date the spec first
 appeared. Bold numbers are real runs. The early estimates are approximate, because the per-map checks
