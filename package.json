@@ -154,7 +154,7 @@
       "@azure/msal-node": "7.1.0"
     },
     "@angular/build": {
-      "vite": "8.3.4"
+      "vite": "$vite"
     },
     "@jimp/plugin-resize": {
       "zod": "4.6.6"
