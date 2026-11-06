@@ -30,6 +30,7 @@ The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47
   - 6:19 AM: full run (resumed after two fixes): 69400/303031 pairs, 41.0 a second, about 95 min left
   - 6:34 AM: full run (resumed after two fixes): 103700/303031 pairs, 39.9 a second, about 83 min left
   - 6:49 AM: full run (resumed after two fixes): 139600/303031 pairs, 39.3 a second, about 69 min left
+  - 7:04 AM: full run (resumed after two fixes): 173000/303031 pairs, 39.1 a second, about 55 min left
 
 ## Finished
 - **Batch 28** (aggiemap; report `home/reports/2026-10-30-28.md`): #2593 branch ready: `fix/2530-graduation-republish` at `5c309f666`. Event Parking reads `/3` (filter kept: production's `/3` repeats the two closures), Road Closures `/2`, dev reads the new hosted view; Fall and Spring share one definition. Inverted filter check, `1=0` and date windows exempt by form, Move-In listed against #2612. Red on both environments, green locally; check exit 0. Two questions.
