@@ -144,7 +144,12 @@ export class HeaderComponent implements OnInit {
     this.as.login({
       appState: {
         target: this.rt.url
-      }
+      },
+      // A site that signs in with another organization's accounts asks that provider for the password every time.
+      // Logging out cannot end UCGIS's Tradewing session: Auth0 does not pass the sign-out on, and Tradewing will not
+      // send a visitor back after one. So without this, Login/Signup after Logout signed the visitor straight back
+      // in, on a shared computer as the previous person (#2672). Auth0 passes `prompt=login` on to Tradewing.
+      ...(this.site.signInWith ? { authorizationParams: { prompt: 'login' as const } } : {})
     });
   }
 
@@ -153,11 +158,7 @@ export class HeaderComponent implements OnInit {
 
     this.as.logout({
       logoutParams: {
-        returnTo: url,
-        // A site that signs in with another organization's accounts ends that session too, at its provider. Auth0's
-        // logout alone left UCGIS visitors signed in to Tradewing, so the next Login/Signup signed them straight back
-        // in without a password (#2672). Not on the other sites: there it would sign people out of Google itself.
-        ...(this.site.signInWith ? { federated: true } : {})
+        returnTo: url
       }
     });
   }
