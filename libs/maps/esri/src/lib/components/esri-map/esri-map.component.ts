@@ -7,6 +7,7 @@ import {
   OnDestroy,
   OnInit,
   afterNextRender,
+  computed,
   inject,
   input,
   output,
@@ -65,6 +66,13 @@ export class EsriMapComponent implements OnInit, OnDestroy, MapHost {
   protected readonly showing = signal<'2d' | '3d'>('2d');
 
   private readonly flat = viewChild<ElementRef<HTMLArcgisMapElement>>('flat');
+
+  /**
+   * The 2D map element while it is the one showing, for a map component placed outside it, such as a locate button
+   * stacked with a page's own buttons (#2642): Esri's components take it as their `referenceElement`. Undefined while
+   * the 3D scene shows, so such a button can step aside as one in the map's slots does.
+   */
+  public readonly flatMapElement = computed(() => (this.showing() === '2d' ? this.flat()?.nativeElement : undefined));
   private readonly globe = viewChild<ElementRef<HTMLArcgisSceneElement>>('globe');
 
   /** The scene once it has been asked for; see `sceneView`. */
