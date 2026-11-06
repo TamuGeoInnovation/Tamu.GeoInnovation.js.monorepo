@@ -10,8 +10,16 @@ import { Organization, Speaker, Sponsor } from '../entities/all.entity';
  * paid, and a speaker's email and account. The public pages show none of them; only the admin pages do.
  */
 export const PRIVATE_FIELDS: Array<{ type: new () => object; fields: Array<string>; permission: string }> = [
-  { type: Sponsor, fields: ['contactFirstName', 'contactLastName', 'contactEmail', 'sponsorshipAmount'], permission: 'update:sponsors' },
-  { type: Organization, fields: ['contactFirstName', 'contactLastName', 'contactEmail'], permission: 'update:organizations' },
+  {
+    type: Sponsor,
+    fields: ['contactFirstName', 'contactLastName', 'contactEmail', 'sponsorshipAmount'],
+    permission: 'update:sponsors'
+  },
+  {
+    type: Organization,
+    fields: ['contactFirstName', 'contactLastName', 'contactEmail'],
+    permission: 'update:organizations'
+  },
   { type: Speaker, fields: ['email', 'accountGuid'], permission: 'update:speakers' }
 ];
 

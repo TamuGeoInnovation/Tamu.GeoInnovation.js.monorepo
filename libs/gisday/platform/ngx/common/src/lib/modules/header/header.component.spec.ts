@@ -119,13 +119,54 @@ describe('HeaderComponent sign-in and logout on a site that signs in elsewhere',
     }
   });
 
-  it('logs out of the site only, on every site', () => {
+  it('logs out of the site only, on every site', async () => {
     for (const key of ['ucgis', 'txgisday', 'tamu']) {
       const { header, logout } = headerOn(gisdaySite(key));
 
-      header.logout();
+      await header.logout();
 
       expect(logout).toHaveBeenCalledWith({ logoutParams: { returnTo: window.location.origin } });
     }
+  });
+});
+
+/**
+ * Logout deletes the service worker's cached API answers first, so the next person on the browser is not handed an
+ * admin's answers, which carry contact details (decided 6 November 2026).
+ */
+describe('HeaderComponent logout and the cached API answers', () => {
+  const original = (globalThis as { caches?: CacheStorage }).caches;
+
+  afterEach(() => {
+    (globalThis as { caches?: CacheStorage }).caches = original;
+  });
+
+  it('deletes them before signing out', async () => {
+    const order: Array<string> = [];
+    (globalThis as { caches?: CacheStorage }).caches = {
+      keys: () => Promise.resolve(['ngsw:/:1:data:api:cache']),
+      delete: (name: string) => {
+        order.push('deleted ' + name);
+        return Promise.resolve(true);
+      }
+    } as unknown as CacheStorage;
+    const logout = jest.fn(() => order.push('signed out'));
+
+    TestBed.resetTestingModule();
+    const header = TestBed.configureTestingModule({
+      providers: [
+        { provide: GISDAY_SITE, useValue: gisdaySite('txgisday') },
+        { provide: AuthService, useValue: { logout } },
+        { provide: ModalService, useValue: {} },
+        { provide: SeasonService, useValue: {} },
+        { provide: PlaceService, useValue: {} },
+        { provide: Router, useValue: {} },
+        { provide: ActivatedRoute, useValue: {} }
+      ]
+    }).runInInjectionContext(() => new HeaderComponent());
+
+    await header.logout();
+
+    expect(order).toEqual(['deleted ngsw:/:1:data:api:cache', 'signed out']);
   });
 });

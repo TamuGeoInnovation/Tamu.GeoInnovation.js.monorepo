@@ -65,7 +65,9 @@ function answering(make: () => unknown) {
     {},
     {
       get: (_, name) =>
-        typeof name !== 'string' || name === 'then' || /^(on|before)[A-Z]/.test(name) ? undefined : () => Promise.resolve([make()])
+        typeof name !== 'string' || name === 'then' || /^(on|before)[A-Z]/.test(name)
+          ? undefined
+          : () => Promise.resolve([make()])
     }
   );
 }
@@ -186,7 +188,12 @@ describe('PrivateFieldsInterceptor', () => {
     it('gets the sponsors with their contacts and amounts', async () => {
       const [s] = await get('/sponsors');
 
-      expect(s).toMatchObject({ contactFirstName: 'Pat', contactLastName: 'Doe', contactEmail: 'pat@example.com', sponsorshipAmount: '5000' });
+      expect(s).toMatchObject({
+        contactFirstName: 'Pat',
+        contactLastName: 'Doe',
+        contactEmail: 'pat@example.com',
+        sponsorshipAmount: '5000'
+      });
     });
 
     it('gets the organizations with their contacts', async () => {
@@ -208,7 +215,8 @@ describe('PrivateFieldsInterceptor', () => {
       const response = await fetchFrom('/sponsors');
 
       expect(response.headers.get('vary')).toMatch(/Authorization/i);
-      expect(response.headers.get('cache-control')).not.toMatch(/no-store/);
+      // A signed-out answer holds nothing private, so it may be cached as before: no Cache-Control is added.
+      expect(response.headers.get('cache-control') ?? '').not.toMatch(/no-store/);
     });
 
     it("forbids storing an admin's answer, which keeps the private fields", async () => {
@@ -258,7 +266,9 @@ describe('the read routes of sponsors, organizations and speakers', () => {
   const reads = controllers.flatMap((controller) =>
     Object.getOwnPropertyNames(controller.prototype)
       .map((name) => ({ controller, name, handler: controller.prototype[name] }))
-      .filter(({ handler }) => typeof handler === 'function' && Reflect.getMetadata(METHOD_METADATA, handler) === RequestMethod.GET)
+      .filter(
+        ({ handler }) => typeof handler === 'function' && Reflect.getMetadata(METHOD_METADATA, handler) === RequestMethod.GET
+      )
   );
 
   it('are all found', () => {
