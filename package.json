@@ -179,6 +179,7 @@
     },
     "multer": "$multer",
     "nx": {
+      "minimatch": "10.2.5",
       "undici": "7.30.1"
     }
   },
