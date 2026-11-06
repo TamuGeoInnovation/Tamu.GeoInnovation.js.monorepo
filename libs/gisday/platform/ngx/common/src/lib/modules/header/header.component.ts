@@ -21,6 +21,7 @@ import { NgClass, AsyncPipe } from '@angular/common';
 import { HasRolesPipe } from '@tamu-gisc/common/ngx/auth';
 import { SeasonLinkPipe } from '../../pipes/season-link/season-link.pipe';
 import { GISDAY_SITE, SiteHasPipe } from '../../site/site';
+import { clearApiCache } from '../../utils/clear-api-cache';
 import { LockupComponent } from '@tamu-gisc/ui-kits/ngx/branding';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { AlertModalComponent, AlertModalData } from '@tamu-gisc/ui-kits/ngx/layout/modal/alert-modal';
@@ -153,8 +154,11 @@ export class HeaderComponent implements OnInit {
     });
   }
 
-  public logout() {
+  public async logout() {
     const url = window.location.origin;
+
+    // Before leaving, so the next person on this browser cannot be handed this session's API answers.
+    await clearApiCache();
 
     this.as.logout({
       logoutParams: {

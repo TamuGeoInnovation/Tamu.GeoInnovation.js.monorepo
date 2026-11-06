@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFile, UseGua
 import { FileInterceptor } from '@nestjs/platform-express';
 import { DeepPartial } from 'typeorm';
 
-import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
+import { AllowAny, JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 import { DEFAULT_UPLOAD_LIMITS } from '@tamu-gisc/common/nest/services';
 
 import { Speaker } from '../entities/all.entity';
@@ -12,46 +12,66 @@ import { SpeakerProvider } from './speaker.provider';
 export class SpeakerController {
   constructor(private readonly provider: SpeakerProvider) {}
 
+  // Read by the public pages and the admin pages alike. The token, when there is one, says whether the caller may
+  // see the private fields, which PrivateFieldsInterceptor removes otherwise (contact details, a speaker's email).
+  @UseGuards(JwtGuard)
+  @AllowAny()
   @Get('season/active')
   public async getActiveEntities() {
     return this.provider.getSpeakersForActiveSeason();
   }
 
+  @UseGuards(JwtGuard)
+  @AllowAny()
   @Get('season/:guid')
   public async getSpeakersForSeason(@Param('guid') seasonGuid) {
     return this.provider.getSpeakersForSeason(seasonGuid);
   }
 
+  @UseGuards(JwtGuard)
+  @AllowAny()
   @Get('organizers/season/active')
   public async getActiveOrganizers() {
     return this.provider.getOrganizersForActiveSeason();
   }
 
+  @UseGuards(JwtGuard)
+  @AllowAny()
   @Get('organizers/season/:guid')
   public async getOrganizersForSeason(@Param('guid') seasonGuid: string) {
     return this.provider.getOrganizersForSeason(seasonGuid);
   }
 
+  @UseGuards(JwtGuard)
+  @AllowAny()
   @Get('organizers')
   public async getOrganizingEntities() {
     return this.provider.getAllTimeOrganizers();
   }
 
+  @UseGuards(JwtGuard)
+  @AllowAny()
   @Get('participating')
   public async getParticipatingSpeakersForActiveSeason() {
     return this.provider.getSpeakersForActiveSeasonInEvents(true);
   }
 
+  @UseGuards(JwtGuard)
+  @AllowAny()
   @Get('participating/season/:guid')
   public async getParticipatingSpeakersForSeason(@Param('guid') seasonGuid: string) {
     return this.provider.getSpeakersForSeasonInEvents(seasonGuid, true);
   }
 
+  @UseGuards(JwtGuard)
+  @AllowAny()
   @Get(':guid')
   public async getEntity(@Param('guid') guid) {
     return this.provider.getPresenter(guid);
   }
 
+  @UseGuards(JwtGuard)
+  @AllowAny()
   @Get()
   public async getEntities() {
     return this.provider.getPresenters();
