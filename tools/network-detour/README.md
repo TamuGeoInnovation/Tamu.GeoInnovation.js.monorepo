@@ -51,26 +51,48 @@ to one timeout would never be run a second time.
 Each run writes `runs/<id>/run.json`: the bands, the islands, the unreachable pairs, the impossible
 results, the buildings most often in a detour and the detours worst first, with the network, the mode and
 the threshold that produced them. Rows name buildings by `OBJECTID`, with each name given once under
-`names`, one row to a line. That file is the record: commit it with the work it measures, so two runs
-can be compared. A resumed run says how many pairs it found already measured (`resumedFrom`), because
+`names`, one row to a line. A resumed run says how many pairs it found already measured (`resumedFrom`), because
 its `elapsedSeconds` covers only the rest. `progress.jsonl` holds every pair and stays out of git.
+
+## The committed baseline
+
+**One full run file is committed per network publish, not one per run.** It is the baseline that the
+next publish is compared against with `--compare`:
+
+| File                                  | What it is                                                                            |
+| ------------------------------------- | ------------------------------------------------------------------------------------- |
+| `runs/2026-11-06-full-Walk/run.json`  | The baseline: every walking pair, against the network as published on 6 November 2026 |
+| `runs/2026-11-06-quick-Walk/run.json` | The quick set's result on the same network, 3 KB                                      |
+
+When a new network is published:
+
+1. Run `full` against it, with `--compare` pointing at the committed baseline, and report what is new and
+   what is gone.
+2. Commit the new run's folder and delete the old baseline's in the same commit, so the repository holds
+   one full run file at a time. Git history keeps the old one, and `--compare` can be pointed at it there.
+3. Update the table above.
+
+Other runs, to chase a report or to try a threshold, stay uncommitted. The baseline is about 3 MB (2.9 MB
+on 6 November 2026). That cost is deliberate and bounded: one file at a time, replaced only when the
+network is republished. A compare needs every pair's verdict, so a trimmed file would not do.
 
 ## Reading a run
 
 - **Impossible** results come first and are never good news. A route cannot be shorter than the straight
-  line. If one is, the measurement or the coordinates are wrong. Pairs only a few dozen metres apart can
-  show this when both buildings snap to the same stretch of path, so read the distances before
-  concluding anything.
+  line. If one is, the measurement or the coordinates are wrong. The count is split in two, because the
+  halves mean different things, and **the long lines are listed first**. On lines of 250 m or more
+  (`SNAPPING_METRES`), a building's coordinates are likely far from where it meets the network. On shorter
+  lines it is most likely both buildings snapping to the same stretch of path. Within each half, the route
+  that falls furthest short comes first: a 1.3 km line 20 m short is snapping too. The full run of
+  6 November 2026 had 1,067: 314 long (307 inside the main network) and 753 short, 50 of those at 0 m by
+  network. Read 1,067 as two numbers, not one.
 - **Buildings most often in a detour** come before the detours themselves. A building that is fenced,
   gated or reached by one long road shows up in hundreds of detours, and the detour list is then the same
   building over and over.
 - **Detours** are routes longer than `threshold × straight + slack`. The allowance loosens for short
   lines on purpose. 50 m of detour is a ratio of 1.25 on a 200 m line and 1.025 on a 2 km one, so a flat
   ratio would fill the report with neighbours separated by a road and bury the real faults. Each detour is
-  listed with its **excess metres** beside its ratio, worst excess first. On 5 November 2026 the issue's
-  sample of the walking network put its worst pair at 2.59 on a 201 m line and none below 1.0. The full
-  run of 6 November found 1,067 below 1.0: 753 of them on lines under 250 m, the snapping described
-  above, and 314 longer, which are worth a look.
+  listed with its **excess metres** beside its ratio, worst excess first.
 - **Islands**: buildings that reach only each other, or nothing at all. Every pair that routes joins its
   two buildings into one piece of network, and every piece but the largest is an island. That is a
   disconnected building or a cut-off stretch of network, a different fault from a pair that cannot be
@@ -99,6 +121,17 @@ The service fails in ways that look like success, so the tool checks its own boo
 
 `node --test tools/network-detour/*.test.mjs` covers this logic on fixture responses, and
 `tools-tests.yml` runs it on every pull request.
+
+## The service's four failure modes
+
+Each was met for real, and each one can look like success:
+
+| What the service does                                                                                                                                                                                                | What the tool does                                                                                                                 |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| **Leaves an unroutable pair out of the answer**, with no error, when asked with `ignoreInvalidLocations=true`. A positional join then gives every later route to the wrong pair                                      | Joins by `RouteName` and reconciles the counts on every batch                                                                      |
+| **Explains a dropped pair only when asked about it alone** with `ignoreInvalidLocations=false`: `No route for "1146-1143" from location "1146" to location "1143". No solution found.`                               | Asks every dropped pair again on its own and keeps the server's words                                                              |
+| **Answers 400 when no pair in a batch can be routed**, instead of an empty answer, with a reason per pair. Found on 6 November 2026, when a whole batch started at a building on an island; #2655 did not predict it | Treats an error that names pairs from the batch as every pair missing. An error that names none (an outage, a token) stops the run |
+| **Gives that reason in two forms**: `No route for ...` when the building snaps to the network and no path joins it, and `Location "1811" in "Stops" is unlocated` when it never snaps at all                         | Accepts either, and reports them apart, since they are different faults                                                            |
 
 ## Growing the quick set
 

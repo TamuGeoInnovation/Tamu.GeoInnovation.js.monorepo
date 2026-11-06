@@ -17,6 +17,7 @@ import * as path from 'path';
 
 import {
   DEFAULT_THRESHOLD,
+  SNAPPING_METRES,
   bandOf,
   classify,
   joinRoutes,
@@ -465,8 +466,12 @@ function report(run) {
   }
 
   if (run.impossible.length) {
+    const long = run.impossible.filter((r) => r.straight >= SNAPPING_METRES).length;
+
     console.log(
-      `\nIMPOSSIBLE: ${run.impossible.length} routes shorter than the straight line. The measurement or the coordinates are wrong:`
+      `\nIMPOSSIBLE: ${run.impossible.length} routes shorter than the straight line, which a path cannot be. Lines of ${SNAPPING_METRES} m or more first, then the rest, each the most metres short first:\n` +
+        `  ${long} on lines of ${SNAPPING_METRES} m or more: a building's coordinates are likely far from where it meets the network.\n` +
+        `  ${run.impossible.length - long} on shorter lines: most likely both buildings snapping to the same stretch of path.`
     );
     for (const r of run.impossible.slice(0, 30))
       console.log(`  ${label(r.from)} to ${label(r.to)}: ${r.straight} m straight, ${r.network} m by network (${r.ratio})`);

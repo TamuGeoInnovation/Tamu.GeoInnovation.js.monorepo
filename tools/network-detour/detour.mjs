@@ -148,6 +148,13 @@ export const BANDS = [
 export const bandOf = (metres) => BANDS.find(([, below]) => metres < below)[0];
 
 /**
+ * Below this straight-line distance an impossible result is most likely snapping: both buildings join the
+ * network on the same stretch of path. At or above it, it more likely means a building's coordinates are
+ * far from where the building meets the network.
+ */
+export const SNAPPING_METRES = 250;
+
+/**
  * Turns per-pair results into the report: impossible results first, then detours worst first by excess
  * metres, then what cannot be reached.
  *
@@ -224,7 +231,13 @@ export function summarize(results, buildings, threshold = DEFAULT_THRESHOLD) {
       detours: b.detours,
       ...spread(b.ratios)
     })),
-    impossible: impossible.sort((a, b) => a.ratio - b.ratio),
+    // Lines of SNAPPING_METRES or more first, since snapping cannot explain them, then the short ones. Within
+    // each, the most metres short first: a 1.3 km line 20 m short is snapping too, and 0.97 must not lead.
+    impossible: impossible.sort(
+      (a, b) =>
+        (b.straight >= SNAPPING_METRES) - (a.straight >= SNAPPING_METRES) ||
+        b.straight - b.network - (a.straight - a.network)
+    ),
     outliers: outliers.sort((a, b) => b.excess - a.excess),
     detourBuildings: [...detoursOf].sort((a, b) => b[1] - a[1]).map(([id, detours]) => ({ ...byId.get(id), detours })),
     islands: islands.map((p) => p.map((b) => ({ ...b, unreachable: failed.get(b.id) }))),

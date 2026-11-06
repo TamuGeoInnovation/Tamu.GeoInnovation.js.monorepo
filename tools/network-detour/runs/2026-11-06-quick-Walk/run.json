@@ -4,7 +4,7 @@
   "tier": "quick",
   "mode": "Walk",
   "threshold": {"threshold":1.8,"slackMetres":250},
-  "started": "2026-11-06T14:09:21.678Z",
+  "started": "2026-11-06T14:37:14.277Z",
   "elapsedSeconds": 9,
   "resumedFrom": 0,
   "buildings": 779,
@@ -33,12 +33,12 @@
     {"from":1834,"to":1206,"straight":12741,"reason":"No route for \"1834-1206\" from location \"1834\" to location \"1206\".  No solution found."}
   ],
   "impossible": [
-    {"from":1380,"to":1495,"straight":72,"network":0,"excess":-72,"ratio":0},
     {"from":1853,"to":1913,"straight":639,"network":11,"excess":-627,"ratio":0.018},
     {"from":1852,"to":1913,"straight":626,"network":11,"excess":-615,"ratio":0.018},
     {"from":1853,"to":1930,"straight":825,"network":219,"excess":-606,"ratio":0.265},
-    {"from":1805,"to":1800,"straight":38,"network":20,"excess":-19,"ratio":0.513},
     {"from":1835,"to":1852,"straight":1103,"network":650,"excess":-453,"ratio":0.589},
+    {"from":1380,"to":1495,"straight":72,"network":0,"excess":-72,"ratio":0},
+    {"from":1805,"to":1800,"straight":38,"network":20,"excess":-19,"ratio":0.513},
     {"from":2022,"to":2023,"straight":80,"network":63,"excess":-17,"ratio":0.786},
     {"from":1802,"to":1803,"straight":48,"network":43,"excess":-5,"ratio":0.889}
   ],

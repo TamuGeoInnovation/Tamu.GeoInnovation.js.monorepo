@@ -296,6 +296,27 @@ test('outliers come worst first, by excess metres, with the ratio beside them', 
   assert.equal(outliers[0].ratio.toFixed(2), '3.64');
 });
 
+test('impossible results on long lines come first, most metres short first, so the ones snapping cannot explain lead', () => {
+  // The full run of 6 November 2026 had 1,067: 753 on lines under 250 m, where both buildings snap to the
+  // same stretch of path, and 314 longer ones that point at a building's coordinates. Sorted by ratio,
+  // the short ones (0 m by network, ratio 0) came first and buried the long ones. Sorted by length alone,
+  // pairs 20 m short over 1.3 km came first, which is snapping again.
+  const buildings = [building(1, 0, 0), building(2, 0, 0.0004), building(3, 0, 0.003), building(4, 0, 0.006)];
+  const results = [
+    { from: 1, to: 2, straight: 44, network: 0 },
+    { from: 1, to: 3, straight: 333, network: 200 },
+    { from: 1, to: 4, straight: 667, network: 650 }
+  ];
+
+  const { impossible } = summarize(results, buildings);
+
+  // 3 is 133 m short, 4 only 17 m; 2 is on a line under 250 m, so it comes last however short it is.
+  assert.deepEqual(
+    impossible.map((r) => r.to.id),
+    [3, 4, 2]
+  );
+});
+
 test('an impossible ratio is reported on its own, above everything else', () => {
   const buildings = [building(1, 0, 0), building(2, 0, 0.01)];
   const summary = summarize([{ from: 1, to: 2, straight: 1100, network: 900 }], buildings);
