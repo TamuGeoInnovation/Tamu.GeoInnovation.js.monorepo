@@ -1,11 +1,16 @@
 ---
 issue: 2630
-title: Nature Rx spaces are on the map, with photographs and what each space has
+title: Nature Rx spaces are on the map on dev, with photographs and what each space has
 testOnDev: |
   | Nature Rx ([#2630](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2630)) | [The main map on dev](https://dev.aggiemap.tamu.edu/map/d), then Layers, then **Nature Rx** | The layer turns on and draws 36 green-space markers. Click **Aggie Park**: a photograph carousel at the top that scrolls through three images, the campus location, a description, and a list of what the space has (seating, shade, tables and so on - only what it has, not what it lacks). The copy-link field returns to the same space. Search **Aggie Park**, and also a key word such as **Water**, **Study** or **Quick Access**: Nature Rx results appear for both. (Searching an amenity such as *hammocks* finds nothing - the key words and the amenity fields are separate lists in the service, [#2632](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2632).) Four spaces - Vet, ILSB, White Creek and Wehner - have photographs that the image server does not hold ([#2631](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2631)), so their carousels are short or empty; that is the data, not the map |
 ---
 
-### Nature Rx spaces are on the map
+### Nature Rx spaces are on the map on dev
+
+**On dev only, for now.** Seen on the map, the layer is not ready for the public, so a production build
+leaves it out altogether - no entry under Layers, nothing in search, and a shared `?naturerx=` link does
+nothing ([#2673](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2673)). It stays
+on dev, where the remaining work can be looked at. Everything below describes dev.
 
 Texas A&M's **Nature Rx** green spaces - the places on campus set aside for being outdoors - are a layer on
 the main map. Turn it on under Layers.
