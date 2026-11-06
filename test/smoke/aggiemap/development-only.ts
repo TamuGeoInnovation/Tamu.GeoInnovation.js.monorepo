@@ -1,6 +1,7 @@
 import { Page } from '@playwright/test';
 import * as fs from 'fs';
 import * as path from 'path';
+import { smokeBaseUrl } from './gis-hosts';
 
 /**
  * Sections of the app that are not ready for production (#1090).
@@ -116,7 +117,7 @@ export const DEVELOPMENT_ONLY_SERVICES: Record<
 
 /** Whether the environment under test renders the development variant. */
 export function developmentSectionsVisible(): boolean {
-  const baseUrl = (process.env.AGGIEMAP_SMOKE_BASE_URL ?? 'https://aggiemap.tamu.edu').replace(/\/$/, '');
+  const baseUrl = smokeBaseUrl();
   const environments: Record<string, { baseUrl: string; developmentSectionsVisible?: boolean }> = JSON.parse(
     fs.readFileSync(path.join(__dirname, 'environments.json'), 'utf8')
   );
