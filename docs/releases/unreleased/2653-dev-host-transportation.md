@@ -15,6 +15,8 @@ their parking on production in October
 
 Dev now reads the development GIS server for every one of those services it can serve with the same layers and fields:
 the permit parking maps, Aggieland Saturday, Big Event, 4-H Roundup, the family parade, Muster and the athletics maps
-([#2653](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2653)). Seventeen still read
-production's on dev, each named with its reason: twelve whose development copy lacks the fields the maps use, the main
+([#2653](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2653)). Eighteen still read
+production's on dev, each named with its reason: twelve whose development copy lacks the fields the maps use, 4-H
+Roundup, whose development view answers "Token Required" so a development build cannot read it at all
+([#2695](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2695)), the main
 parking service, and four retired 150th-anniversary events. Production reads exactly what it read before.

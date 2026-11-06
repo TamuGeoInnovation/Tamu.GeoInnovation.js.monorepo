@@ -111,6 +111,8 @@ const READ_FROM_PRODUCTION_ON_DEVELOPMENT: Partial<Record<keyof IComposedConnect
   ringDayUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
   summerCommencementUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
   tCampUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
+  fourHRoundupUrl:
+    'the development server has the hosted view but answers 499 "Token Required", so a development build cannot read it (#2695)',
   kickoff150thUrl: RETIRED,
   kickoffAtKyleUrl: RETIRED,
   liveAtTheStationUrl: RETIRED,
@@ -148,6 +150,17 @@ describe("Transportation's services on a development build (#2653)", () => {
     );
     expect(development.businessParkingUrl).toBe(
       'https://gis.dev.tamu.edu/arcgis/rest/services/TS/BusinessParking/MapServer'
+    );
+  });
+
+  /**
+   * 4-H Roundup is the one #2653 got wrong (#2695). Its view is on the development server with the same
+   * layers and fields, so the audit moved it - and it answers 499 "Token Required", which a browser with
+   * no token cannot read. Existing is not the test; being readable without a token is.
+   */
+  it('reads 4-H Roundup from production, because the development view requires a token', () => {
+    expect(development.fourHRoundupUrl).toBe(
+      'https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/4H_Roundup_view/FeatureServer'
     );
   });
 
