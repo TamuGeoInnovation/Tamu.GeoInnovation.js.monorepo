@@ -53,7 +53,7 @@
 > home is building on it right now and would be building on sand.
 
 
-> **Next free batch number: 189.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 192.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -180,6 +180,65 @@ Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STAT
 > than delete anything.
 >
 > Then take the next batch as usual. Nothing else about today's work is affected.
+
+## Batch 189 (security: #2696 - follow-redirects 1.16.2, a High in the APIs; a branch; 6 November 2026, about 8:20 AM Central, from `work (security)`)
+
+**Start now. About 40 minutes. The maintainer chose this as a security fix (High), so it doesn't wait the 7 days.**
+From Git Bash, a worktree from the latest `origin/development`, a branch pushed to `fork` with a `.pr-body.md` draft (started from
+`.github/pull_request_template.md`) as its last commit. No pull request: the director opens it. Lock rules (CLAUDE.md): sync with
+`npm install --package-lock-only --ignore-scripts` in `node:24.22.1`, check `git diff --stat` against `--ignore-all-space`, and
+prove the lock with a clean `npm ci` through the check.
+
+1. Branch `chore/2696-follow-redirects`. `npm update follow-redirects --package-lock-only --ignore-scripts`. The lock may move only
+   `follow-redirects` (1.16.1 to 1.16.2); list every entry that moves.
+2. `npm audit --package-lock-only`: no High left (the moderates and lows from #2697 and #2698 remain).
+3. `bash scripts/check-in-volume.sh chore/2696-follow-redirects`: exit 0.
+4. Report `work-lab-leila/reports/2026-11-06-189.md`, then push `work-lab-leila: batch 189 done - ...`. Then go on to 190.
+
+## Batch 190 (security: #2697 - glob 14.0.2 and minimatch 11.0.1 over every copy; a branch; 6 November 2026, about 8:20 AM Central, from `work (security)`)
+
+**After 189. About 1.5 hours.** The maintainer chose overrides to the fixed majors (6 November, Priority Medium). Every copy of `glob` (10.5.0,
+13.0.6) and `minimatch` (9.0.9, 10.2.5, 10.2.6) is dev-only: jest, ESLint, Nx, `test-exclude`. The root `minimatch` 3.1.5 is outside the
+advisory's range; leave it.
+From Git Bash, a worktree from the latest `origin/development`, a branch pushed to `fork` with a `.pr-body.md` draft (started from
+`.github/pull_request_template.md`) as its last commit. No pull request: the director opens it. Lock rules (CLAUDE.md): sync with
+`npm install --package-lock-only --ignore-scripts` in `node:24.22.1`, check `git diff --stat` against `--ignore-all-space`, and
+prove the lock with a clean `npm ci` through the check.
+
+1. Branch `chore/2697-glob-minimatch`. Add `overrides` that move each affected copy: `"glob": "14.0.2"` and `"minimatch": "11.0.1"` by
+   parent, or a top-level entry if that's cleaner. Keep `minimatch` 3.x wherever something asks for `^3`. Write a comment in the PR body
+   on each choice.
+2. **The API check:** for each package that calls them (`npm ls glob minimatch`), read what it calls (`glob()`, `globSync`,
+   `new Minimatch`, `minimatch()`, options) and confirm that 14 and 11 still export it the same way. Each major's changelog says what was
+   removed. List the callers and the verdict for each.
+3. `npm audit --package-lock-only`: no moderate left.
+4. `bash scripts/check-in-volume.sh chore/2697-glob-minimatch all` (every project, jest and ESLint included): exit 0. If anything fails,
+   the task and why.
+5. Report `work-lab-leila/reports/2026-11-06-190.md`, then push `work-lab-leila: batch 190 done - ...`. Then go on to 191.
+
+## Batch 191 (security: #2698 - deepmerge: our own helper, and a pinned patched copy for the tools; a branch; 6 November 2026, about 8:20 AM Central, from `work (security)`)
+
+**After 190. About 1.5 hours.** The maintainer decided on 6 November; #2698 has the whole plan, and home's report
+`home/reports/2026-10-30-23.md` the evidence.
+From Git Bash, a worktree from the latest `origin/development`, a branch pushed to `fork` with a `.pr-body.md` draft (started from
+`.github/pull_request_template.md`) as its last commit. No pull request: the director opens it. Lock rules (CLAUDE.md): sync with
+`npm install --package-lock-only --ignore-scripts` in `node:24.22.1`, check `git diff --stat` against `--ignore-all-space`, and
+prove the lock with a clean `npm ci` through the check.
+
+1. Branch `chore/2698-deepmerge`. In `libs/common/utils/object` (`@tamu-gisc/common/utils/object`), add `deepMerge(target, source)`. It
+   returns a new object, never changes its inputs, recurses only into plain objects, lets arrays and everything else replace, copies class
+   references as they are, and skips the keys `__proto__`, `constructor` and `prototype`. Export it from the library's index.
+2. Tests first, proven against `deepmerge` 4.3.1's behaviour on our three real inputs (football's `{ native: { visible, listMode } }`,
+   `{ visible: false }`, `{ popupComponent: SomeClass }`): the same output. Plus a `JSON.parse('{"__proto__":{"x":1}}')` source, which must
+   leave `({}).x` and the result's prototype untouched.
+3. Replace the three calls (`layer-sources.service.ts:91`, `event.service.ts:138` and `:325`), then remove `deepmerge` from `package.json`.
+4. Add `"overrides": { "deepmerge": "npm:@oss-cve-patches/deepmerge@4.3.2" }`. **The lock entry's integrity must be exactly**
+   `sha512-+bwDJSwj3aBdqYf5FetlCvGMrh4LAemnTwmTdN8QaNj4R4+EYuQostFyu2fr2wTACTqCOkYSg7Kju8xrUwxyRg==` (the tarball the director read).
+   Stop and report if it isn't.
+5. `npm audit --package-lock-only`: **0 vulnerabilities** (with 189 and 190 merged; on its own, the counts without `deepmerge`).
+6. `bash scripts/check-in-volume.sh chore/2698-deepmerge all`: exit 0. jest (which calls `deepmerge.all`) and a webpack build
+   (`gisday-nest`) must both run on the patched copy.
+7. Report `work-lab-leila/reports/2026-11-06-191.md`, then push `work-lab-leila: batch 191 done - ...`.
 
 ## Batch 188 (aggiemap: the release tier from #2604's branch - the one proof it is missing; 30 October 2026, about 6:45 PM Central, from `work (aggiemap)`)
 
