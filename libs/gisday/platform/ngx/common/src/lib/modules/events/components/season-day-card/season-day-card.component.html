@@ -1,5 +1,7 @@
 <div [id]="'day' + (this.index() + 1)" class="card">
-  <h2>{{seasonDay().date | date : 'MMMM dd'}}</h2>
+  <!-- In Central time, as the page's times are: a day arrives as midnight Central, which is the evening before for a
+  visitor further west (#2708). -0600 is CST, which GIS Day always falls in, in November. -->
+  <h2>{{seasonDay().date | date : 'EEEE, MMMM d' : '-0600'}}</h2>
 
   @if ((events$ | async)?.length > 0) { @if ((filteredEvents$ | async)?.length > 0) { @for (event of filteredEvents$ | async; track event) {
   <div>
