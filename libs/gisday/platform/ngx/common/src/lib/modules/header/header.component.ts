@@ -153,7 +153,11 @@ export class HeaderComponent implements OnInit {
 
     this.as.logout({
       logoutParams: {
-        returnTo: url
+        returnTo: url,
+        // A site that signs in with another organization's accounts ends that session too, at its provider. Auth0's
+        // logout alone left UCGIS visitors signed in to Tradewing, so the next Login/Signup signed them straight back
+        // in without a password (#2672). Not on the other sites: there it would sign people out of Google itself.
+        ...(this.site.signInWith ? { federated: true } : {})
       }
     });
   }
