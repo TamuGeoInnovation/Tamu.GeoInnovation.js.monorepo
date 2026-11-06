@@ -22,6 +22,7 @@ import { HasRolesPipe } from '@tamu-gisc/common/ngx/auth';
 import { SeasonLinkPipe } from '../../pipes/season-link/season-link.pipe';
 import { GISDAY_SITE, SiteHasPipe } from '../../site/site';
 import { LockupComponent } from '@tamu-gisc/ui-kits/ngx/branding';
+import { AlertModalComponent, AlertModalData, ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 
 @Component({
   selector: 'tamu-gisc-app-header',
@@ -52,6 +53,7 @@ export class HeaderComponent implements OnInit {
   private readonly ps = inject(PlaceService);
   private readonly rt = inject(Router);
   private readonly at = inject(ActivatedRoute);
+  private readonly ms = inject(ModalService);
 
   public loggedIn$: Observable<boolean>;
   public userRoles$: Observable<Array<string>>;
@@ -111,6 +113,33 @@ export class HeaderComponent implements OnInit {
   }
 
   public login() {
+    const note = this.site.signInNote;
+
+    if (!note) {
+      this.signIn();
+      return;
+    }
+
+    // Another organization's sign-in page comes next, and it does not say whose account it wants (#2662).
+    this.ms
+      .open<boolean>(AlertModalComponent, {
+        data: {
+          title: note.title,
+          message: note.message,
+          image: this.site.logo,
+          imageAlt: this.site.name,
+          primaryText: 'Continue',
+          secondaryText: 'Cancel'
+        } satisfies AlertModalData
+      })
+      .subscribe((go) => {
+        if (go) {
+          this.signIn();
+        }
+      });
+  }
+
+  private signIn() {
     this.as.login({
       appState: {
         target: this.rt.url

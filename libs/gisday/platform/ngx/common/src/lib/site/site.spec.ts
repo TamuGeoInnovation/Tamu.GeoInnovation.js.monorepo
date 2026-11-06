@@ -214,3 +214,18 @@ describe('signInWith', () => {
   });
 });
 
+/**
+ * #2662. UCGIS's Tradewing page says only "Log in with Tradewing", so the UCGIS site says first whose account it
+ * wants. The other sites sign in on their own Auth0 page and need no note.
+ */
+describe('signInNote', () => {
+  it('tells UCGIS visitors to use their UCGIS account', () => {
+    expect(gisdaySite('ucgis').signInNote?.title).toContain('UCGIS account');
+    expect(gisdaySite(undefined, 'gisday.ucgis.org').signInNote?.message).toContain('Log in with Tradewing');
+  });
+
+  it("gives txgisday.org and Texas A&M's site none", () => {
+    expect(gisdaySite('txgisday').signInNote).toBeUndefined();
+    expect(gisdaySite(undefined, 'gisday.tamu.edu').signInNote).toBeUndefined();
+  });
+});

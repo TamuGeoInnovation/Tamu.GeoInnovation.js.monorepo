@@ -1,5 +1,8 @@
 <div class="alert-modal">
   <div class="alert-modal__header">
+    @if (image) {
+    <img class="alert-modal__image" [src]="image" [alt]="imageAlt" />
+    }
     <h2 class="alert-modal__title">{{ title }}</h2>
   </div>
 
