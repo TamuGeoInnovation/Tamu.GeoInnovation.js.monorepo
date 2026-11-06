@@ -55,11 +55,13 @@ export const pairOf = (a, b) => ({ key: `${a.id}-${b.id}`, from: a.id, to: b.id,
 export function joinRoutes(pairs, response) {
   if (response.error) {
     // With ignoreInvalidLocations=true the service skips what it cannot route, unless it can route none
-    // of the batch: then it answers with an error that lists each pair. That is every pair missing, to be
-    // asked again one at a time. Any other error is a failure.
+    // of the batch: then it answers with an error giving a reason per pair ("No route for", "is
+    // unlocated"). That is every pair missing, to be asked again one at a time. An error that names no
+    // pair from the batch - an outage, a token, a bad parameter - is a failure.
     const said = noRouteReason(response);
 
-    if (!/^No route for /.test(said)) throw new Error(`/solve failed for a batch of ${pairs.length}: ${said}`);
+    if (!pairs.some((p) => said.includes(`"${p.key}"`)))
+      throw new Error(`/solve failed for a batch of ${pairs.length}: ${said}`);
 
     return { routed: new Map(), missing: pairs.map((p) => p.key) };
   }

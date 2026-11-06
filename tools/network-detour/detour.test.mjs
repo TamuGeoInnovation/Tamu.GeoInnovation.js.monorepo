@@ -85,6 +85,24 @@ test('a batch in which no pair can be routed is every pair missing, not a failed
   assert.deepEqual(joinRoutes(pairs, response), { routed: new Map(), missing: ['1089-1430', '1089-1431'] });
 });
 
+test('a batch whose only reasons are unlocated stops is every pair missing too', () => {
+  const pairs = [
+    { key: '1089-1811', from: 1089, to: 1811 },
+    { key: '1089-1689', from: 1089, to: 1689 }
+  ];
+  const response = {
+    error: {
+      code: 400,
+      message: 'Unable to complete operation.',
+      details: [
+        'Location "1811" in "Stops" is unlocated.  Need at least 2 valid stops for route "1089-1811".  No route for "1089-1689" from location "1089" to location "1689".'
+      ]
+    }
+  };
+
+  assert.deepEqual(joinRoutes(pairs, response).missing, ['1089-1811', '1089-1689']);
+});
+
 test('any other error from the service stops the run', () => {
   const pairs = [{ key: 'p0', from: 1, to: 2 }];
 
