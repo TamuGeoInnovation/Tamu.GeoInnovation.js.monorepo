@@ -26,7 +26,7 @@
           <div class="events-list">
             @for (event of person.events; track event) {
             <div class="event-item">
-              <div class="event-time">{{$safeNavigationMigration(event?.day?.date) | parseDateTimeStrings : event.startTime | date:'MMM d, y, h:mm a'}} - {{ $safeNavigationMigration(event?.day?.date)| parseDateTimeStrings : event.endTime | date:'h:mm a'}}</div>
+              <div class="event-time">{{$safeNavigationMigration(event?.day?.date) | parseDateTimeStrings : event.startTime | date:'MMM d, y, h:mm a' : '-0600'}} - {{ $safeNavigationMigration(event?.day?.date)| parseDateTimeStrings : event.endTime | date:'h:mm a' : '-0600'}}</div>
               <div class="event-name"><a [routerLink]="['/sessions', 'details', event.guid]">{{ event.name }}</a></div>
             </div>
             }
