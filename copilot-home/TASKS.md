@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 60.** Written only by the directors on the work computer: `work (security)` (the security and
+> **Next free batch number: 61.** Written only by the directors on the work computer: `work (security)` (the security and
 > dependency chat) and, from 26 October, `work (gisday)` (the GIS Day chat; the maintainer wants this machine given work first, to
 > use its Copilot credits before they expire). The two share one number sequence: read and bump this line when you queue. A batch's
 > heading says which director wrote it, and its questions go to that director. You write `copilot-home/STATUS.md` and
@@ -80,6 +80,35 @@ a recommendation. Push `work-mailbox` with a message starting `copilot-home: bat
 >
 > **Your next batch will be waiting here as usual.** Nothing is wrong with you as a listener beyond this
 > stall, and the maintainer has the command to restart your runner.
+
+## Batch 60 (security: check four Dependabot pull requests - 2665, 2664, 2622, 2624; read only; 6 November 2026, about 6:00 AM Central, from `work (security)`)
+
+**Start now. About 1.5 hours.** CLAUDE.md, "How a Dependabot pull request is handled", step 2: each one gets checked by a listener
+before it merges. None is a major. Never push to a Dependabot branch. Fetch each one's code with
+`git fetch origin pull/<n>/head:refs/tmp/pr<n>`, and check out a local branch `dep-<n>` from it for `check-in-volume.sh`.
+
+| PR | Issue | What |
+| --- | --- | --- |
+| 2665 | #2684 | angular group: Angular 22.2.3 to 22.2.4 (build, cli, cdk, material to 22.2.5) |
+| 2664 | #2685 | nx group: Nx 24.0.0 to 24.0.2 |
+| 2622 | #2687 | arcgis group: `@esri/calcite-components` 5.1.2 to 5.2.0 |
+| 2624 | #2686 | actions group: `docker/login-action` 4.6.0 to 4.7.0 |
+
+For each npm one (2665, 2664, 2622), one at a time:
+1. **The lock diff** against `origin/development`: list every `node_modules/...` entry that moves. Only the named packages and their own
+   dependencies may change. Anything else is a finding.
+2. `npm audit --package-lock-only`: the counts, against `development`'s 13 low (all `deepmerge`). New findings are a finding.
+3. Any new or changed `preinstall`/`install`/`postinstall` script: `node tools/security-findings/install-scripts.mjs` must pass.
+4. `bash scripts/check-in-volume.sh dep-<n> all` (every project, clean `npm ci`): the exit code. If it fails, the failing task and
+   why, and whether `development` fails the same way.
+
+For 2624: check that the new pin (the SHA in each `uses: docker/login-action@<sha> # v4.7.0`) is the commit the `v4.7.0` tag points to
+(`git ls-remote https://github.com/docker/login-action refs/tags/v4.7.0`), and that 4.7.0 is at least 7 days old.
+
+**Skip 2666 for now:** it can't install until PR fix/2688 (the vite override) merges. The director gives it to you then.
+
+Report `copilot-home/reports/2026-11-06-60.md` with one section per PR, then push `copilot-home: batch 60 done - ...`. No comments on
+GitHub; the director posts the results on each PR.
 
 ## Batch 59 (aggiemap: #2653 - MOVED to the home machine, batch 29)
 
