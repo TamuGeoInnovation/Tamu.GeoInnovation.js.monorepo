@@ -139,6 +139,44 @@ test.describe(`the trip planner ${AVAILABLE ? 'is offered' : 'is not offered'} a
 });
 
 /**
+ * On a phone, "Directions To Here" opens the trip planner (#2641).
+ *
+ * A phone shows a popup in the secondary `outlet-2`, and the button looked for `trip` inside that outlet, so a tap
+ * closed the popup and stayed on the map, with `NG04002: Cannot match any routes` in the console: on every map, while
+ * the same button worked on a desktop. Checked with a building on the main map and a lot on an event map.
+ */
+const PHONE_TRIP_CASES = [
+  { name: 'a building', path: '/map?bldg=0468', trip: /\/map\/m\/trip/ },
+  {
+    name: 'an event map feature',
+    path: '/parking/avp-parking/map?feature=AVP-parking-lots:26135',
+    trip: /\/parking\/avp-parking\/map\/m\/trip/
+  }
+];
+
+if (AVAILABLE) {
+  test.describe('on a phone, "Directions To Here" opens the trip planner', () => {
+    test.use({ viewport: { width: 375, height: 812 }, isMobile: true, hasTouch: true });
+
+    for (const { name, path, trip } of PHONE_TRIP_CASES) {
+      test(`${name} (${path})`, async ({ page }) => {
+        test.setTimeout(180_000);
+        await openMap(page, path);
+
+        const button = page.locator('tamu-gisc-feature-mobile-popup').getByText('Directions To Here', { exact: true });
+
+        await expect(button, `${path} did not offer "Directions To Here" on a phone`).toBeVisible({ timeout: 30_000 });
+        await button.click();
+
+        await expect(page, `"Directions To Here" on ${path} did not open the trip planner on a phone`).toHaveURL(trip, {
+          timeout: 30_000
+        });
+      });
+    }
+  });
+}
+
+/**
  * The development routing network solves what the trip planner offers on it (#659).
  *
  * The planner reads the network's travel modes from the network and finds each of its own by name, so a list that
