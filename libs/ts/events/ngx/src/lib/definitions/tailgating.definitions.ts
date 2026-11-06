@@ -56,6 +56,11 @@ const tentLayerProps: Partial<typeof commonLayerProps> = { ...commonLayerProps }
 delete tentLayerProps.minScale;
 delete tentLayerProps.maxScale;
 
+/**
+ * A tent's popup offers "Directions To Here" (#2639), which, like every directions button, is shown only
+ * where development-only features are on (#1003). The walking network has only paths, so a trip ends on the
+ * nearest one and the trip planner draws the last stretch across the lawn to the tent.
+ */
 const tentPopupData: LayerSource['popupData'] = {
   name: 'Tent {attributes.tent_id}',
   description: 'attributes.lawn'
@@ -136,7 +141,7 @@ export const TailgatingColdLayerSources: LayerSource[] = [
     id: TAILGATING_LAYERS.SIMPSON_TENTS,
     title: 'Simpson Drill Field Tents',
     url: `${TAILGATE_ZONES_URL}/${TAILGATE_ZONES_LAYER_INDEX.SIMPSON_TENTS}`,
-    popupComponent: EventPopups.MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     popupData: tentPopupData,
     listMode: 'show',
     visible: true,
@@ -149,7 +154,7 @@ export const TailgatingColdLayerSources: LayerSource[] = [
     id: TAILGATING_LAYERS.TENTS,
     title: 'Aggie Park Tents',
     url: `${TAILGATE_ZONES_URL}/${TAILGATE_ZONES_LAYER_INDEX.TENTS}`,
-    popupComponent: EventPopups.MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     popupData: tentPopupData,
     listMode: 'show',
     visible: true,
