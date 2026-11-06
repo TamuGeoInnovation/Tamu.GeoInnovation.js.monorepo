@@ -34,6 +34,7 @@ The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47
   - 7:19 AM: full run (resumed after two fixes): 209400/303031 pairs, 39.0 a second, about 40 min left
   - 7:34 AM: full run (resumed after two fixes): 244700/303031 pairs, 39.2 a second, about 25 min left
   - 7:50 AM: full run (resumed after two fixes): 274600/303031 pairs, 38.1 a second, about 12 min left
+  - 8:12 AM: full run finished at 8:04 AM: 290,714 of 303,031 pairs routed. It showed the network is 12 pieces: 763 buildings, then 11 islands (one of 5 at RELLIS, the 2 Nuclear Science Center buildings, 9 alone); no failed pair inside the main piece. Two reporting faults it exposed are fixed with tests red first (islands; 7 pairs at one point scrambled a band's median), run files committed, 31 pairs added to quick (`a6b76d4e9`, pushed). Check running; report next.
 
 ## Finished
 - **Batch 28** (aggiemap; report `home/reports/2026-10-30-28.md`): #2593 branch ready: `fix/2530-graduation-republish` at `5c309f666`. Event Parking reads `/3` (filter kept: production's `/3` repeats the two closures), Road Closures `/2`, dev reads the new hosted view; Fall and Spring share one definition. Inverted filter check, `1=0` and date windows exempt by form, Move-In listed against #2612. Red on both environments, green locally; check exit 0. Two questions.
