@@ -41,6 +41,12 @@ describe('SearchSources', () => {
       name: 'Points of Interest',
       url: 'https://example.com/poi'
     },
+    NATURE_RX: {
+      id: 'nature-rx',
+      layerId: 'nature-rx-layer',
+      name: 'Nature Rx',
+      url: 'https://example.com/nature-rx'
+    },
     BUILDINGS: {
       id: 'buildings',
       layerId: 'buildings-layer',
@@ -117,7 +123,7 @@ describe('SearchSources', () => {
 
   it('should return all search sources when no options are provided', () => {
     const result = SearchSources(connections, definitions);
-    expect(result.length).toBe(15); // Ensure the number of search sources matches
+    expect(result.length).toBe(17); // Ensure the number of search sources matches
   });
 
   it('should exclude specified search sources', () => {
@@ -125,7 +131,7 @@ describe('SearchSources', () => {
       exclude: ['BUILDING', 'BIKE_RACKS']
     };
     const result = SearchSources(connections, definitions, options);
-    expect(result.length).toBe(13); // Ensure the number of search sources matches after exclusion
+    expect(result.length).toBe(15); // Ensure the number of search sources matches after exclusion
     expect(result.find((source) => source.source === 'building')).toBeUndefined();
     expect(result.find((source) => source.source === 'bike-racks')).toBeUndefined();
   });
@@ -135,7 +141,7 @@ describe('SearchSources', () => {
       exclude: []
     };
     const result = SearchSources(connections, definitions, options);
-    expect(result.length).toBe(15); // Ensure the number of search sources matches
+    expect(result.length).toBe(17); // Ensure the number of search sources matches
   });
 
   it('should return an empty array if all search sources are excluded', () => {
@@ -154,6 +160,8 @@ describe('SearchSources', () => {
         'PARKING_LOT',
         'POINTS_OF_INTEREST_EXACT',
         'POINTS_OF_INTEREST',
+        'NATURE_RX_EXACT',
+        'NATURE_RX',
         'BIKE_RACKS',
         'BUS_STOPS_EXACT'
       ]

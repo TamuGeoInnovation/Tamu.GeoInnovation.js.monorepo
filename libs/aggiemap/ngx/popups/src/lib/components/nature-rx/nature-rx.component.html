@@ -1,0 +1,27 @@
+@if (medias.length > 0) {
+<tamu-gisc-photo-carousel [photos]="medias"></tamu-gisc-photo-carousel>
+}
+
+<div class="popup-section"></div>
+
+<div class="popup-section">
+  @if (data?.attributes?.location) {
+  <p class="trailer-1">{{ data.attributes.location }}</p>
+  }
+
+  <div [innerHTML]="$safeNavigationMigration(data?.attributes?.description) | markdownParse" class="trailer-2"></div>
+
+  @if (amenities.length > 0) {
+  <ul class="trailer-2">
+    @for (amenity of amenities; track amenity) {
+    <li>{{ amenity }}</li>
+    }
+  </ul>
+  }
+
+  <tamu-gisc-copy-field [text]="shareUrl"></tamu-gisc-copy-field>
+
+  @if (directionsAvailable | async) {
+  <div class="button" (tamuGiscActivate)="startDirections()">Directions To Here</div>
+  }
+</div>

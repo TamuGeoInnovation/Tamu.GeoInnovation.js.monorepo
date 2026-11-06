@@ -9,6 +9,8 @@ import { ActivateDirective } from '@tamu-gisc/ui-kits/ngx/interactions/keyboard'
 
 import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
 
+import { carouselImageUrls } from '../../carousel-images';
+
 @Component({
   selector: 'tamu-gisc-poi-popup-component',
   templateUrl: './poi.component.html',
@@ -22,9 +24,7 @@ export class PoiPopupComponent extends BaseDirectionsComponent implements OnInit
   public ngOnInit(): void {
     super.ngOnInit();
 
-    this.medias = this.data.attributes.images.split(',').map((imgName) => {
-      return `https://aggiemap.tamu.edu/images/cb/${imgName}`;
-    });
+    this.medias = carouselImageUrls(this.data?.attributes?.images);
   }
 
   protected override _getShareUrlFragment(): string | null {
