@@ -81,6 +81,13 @@ export interface GisdaySite {
   signInWith?: string;
 
   /**
+   * What Login/Signup says before it leaves for `signInWith`'s page, with the site's logo, when that page is another
+   * organization's and does not say whose account it wants. UCGIS's Tradewing page says only "Log in with Tradewing"
+   * (#2662). A site with none goes straight to sign-in.
+   */
+  signInNote?: { title: string; message: string };
+
+  /**
    * The addresses that show this site whatever the deployment's key, such as `gisday.tamu.edu`. A site
    * with none is reached only by its key.
    */
@@ -153,7 +160,13 @@ export const GISDAY_SITES = {
     hosts: ['gisday.ucgis.org'],
     // UCGIS's members sign in with their UCGIS Tradewing accounts, and only those; organizers too, with the admin role
     // given to their Tradewing account in Auth0 (decided 5 November 2026, #2575).
-    signInWith: 'tradewing'
+    signInWith: 'tradewing',
+    // UCGIS's Tradewing page shows no UCGIS logo and does not say it wants a UCGIS account (#2662).
+    signInNote: {
+      title: 'Sign in with your UCGIS account',
+      message:
+        'UCGIS GIS Day uses your UCGIS member account. The next page is the UCGIS sign-in, titled "Log in with Tradewing": use the email and password you use on ucgis.org.'
+    }
   }
 } satisfies Record<string, GisdaySite>;
 
