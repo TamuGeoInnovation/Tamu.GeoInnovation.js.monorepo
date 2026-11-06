@@ -413,7 +413,9 @@ anyone.
 
 - **Look first, and say where you looked.** Components: `libs/ui-kits/ngx/**`. Services, pipes and
   helpers: `libs/common/**`. Map features: `libs/maps/feature/**`. Styles: `libs/sass/` and the app's
-  global `styles.scss`. Smoke-suite helpers: the shared modules in `test/smoke/aggiemap/`. There is a
+  global `styles.scss`. Smoke-suite helpers: the shared modules in `test/smoke/aggiemap/`. **Behaviour
+  shared by more than one event map: `libs/ts/events/ngx/src/lib/definitions/common.definitions.ts`,
+  or the event's own `EventConfiguration` where it is a property of the event.** There is a
   shared copy-field component, a shared `.button` with variants, spacing utilities and a flexbox
   mixin set. Purpose-built CSS is unwanted.
 - **Extend what exists rather than copy it.** If a shared piece nearly fits, add the input, option
@@ -425,6 +427,17 @@ anyone.
 - **Follow the patterns already in the repository**: how definitions declare things (for example,
   the per-choice `mapView` used by the event maps), how modules are wired, how tests are written.
   A new way of doing something the repository already does needs a reason in the pull request.
+- **A behaviour copied between definition files is a one-off too.** This rule reads as being about
+  shared libraries, and a definition file is not a library - which is how **game-day refresh came to
+  be written three times**: `lotsNative()` in football's definitions, a separate `gameDayNative()` in
+  men's basketball, and `athleticsDevelopmentSource`, the shared helper, unable to express a refresh
+  at all. Nobody broke this rule knowingly. Each copy read as reasonable; only the set was wrong, and
+  it surfaced only when a fourth map was asked for the same thing. #2581 made it one switch on
+  `EventConfiguration`; #2591 is the sweep for whatever else reads like this.
+- **The tell: two pieces of code that would both need changing to fix one bug.** That is the fault,
+  and it is worth looking for directly - more than any filename or folder pattern. If you are about
+  to write a small helper at the top of a definition file, search the other definition files for one
+  doing the same job under a different name.
 
 **A layer's symbology, title and order come from its service.** Overriding any of them in a
 definition is a deliberate act that needs a reason written beside it:
