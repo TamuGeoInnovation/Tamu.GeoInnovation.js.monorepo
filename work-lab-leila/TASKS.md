@@ -53,7 +53,7 @@
 > home is building on it right now and would be building on sand.
 
 
-> **Next free batch number: 192.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 193.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -215,6 +215,20 @@ prove the lock with a clean `npm ci` through the check.
 4. `bash scripts/check-in-volume.sh chore/2697-glob-minimatch all` (every project, jest and ESLint included): exit 0. If anything fails,
    the task and why.
 5. Report `work-lab-leila/reports/2026-11-06-190.md`, then push `work-lab-leila: batch 190 done - ...`. Then go on to 191.
+
+## Batch 192 (security: #2697 - finish the glob/minimatch branch on the maintainer's answers; a branch; 6 November 2026, about 9:00 AM Central, from `work (security)`)
+
+**After your current batch, then go on to 191.** Your batch 190 questions, **decided by the maintainer (6 November): 1A and 2A.**
+- **1A:** Nx's own `minimatch` stays on 10.2.5 until an Nx release moves to 11. Keep `"nx": { "minimatch": "10.2.5" }`, and say in the PR
+  body that the 11 moderates left are Nx's copy, re-checked at each Nx update. The director writes it on #2697.
+- **2A:** take **`glob` 14.0.3** (28 October), the newest at least 7 days old. **It asks for `minimatch ^11.0.2`**, so 11.0.1 no
+  longer satisfies it. Move the `minimatch` override to **11.0.3** (28 October, the newest at least 7 days old; 11.0.4 is from
+  2 November). Check that `@isaacs/nonrecursive-glob-match` still resolves to a version at least 7 days old, and that `makeRe` is
+  still absent in 11.0.3 (so the Nx exception still holds).
+
+On `chore/2697-glob-minimatch`: merge the latest `origin/development` in, change the two versions, re-lock, re-run the API check's
+calls, run `npm audit --package-lock-only` (moderate 11 expected), and run `bash scripts/check-in-volume.sh chore/2697-glob-minimatch all`.
+Update `.pr-body.md`. Report `work-lab-leila/reports/2026-11-06-192.md`, then push `work-lab-leila: batch 192 done - ...`.
 
 ## Batch 191 (security: #2698 - deepmerge: our own helper, and a pinned patched copy for the tools; a branch; 6 November 2026, about 8:20 AM Central, from `work (security)`)
 
