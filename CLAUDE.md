@@ -269,6 +269,25 @@ print `Waiting for aggiemap-angular:serve in another nx process` and never conti
 documented for the GIS Day dev server and missing from this one, which is the command most likely to be copied
 (#2009).
 
+**That same hang has a second cause, and it is the cheaper one to check first: a stale Vite optimizer cache
+in the volume.** `node_modules/.vite` holds the optimizer's metadata and `node_modules/.vite-temp` is the
+directory it renames into place while writing a new one, so a leftover `.vite-temp` means an optimizer run
+was killed mid-write - which is exactly what `docker rm -f aggiemap-dev` does. The next start then stops at
+`[optimizer] bundling dependencies...` with `UV_THREADPOOL_SIZE=64` already set, which reads as the thread-pool
+problem above and is not. **One volume serves every checkout, so one dev server killed in one worktree breaks
+the next start in all of them.** Clear it and start again, unchanged:
+
+```bash
+MSYS_NO_PATHCONV=1 docker run --rm -v tamu-js-dev-nm:/nm node:24.22.1 sh -c "rm -rf /nm/.vite /nm/.vite-temp"
+```
+
+On 3 November the documented command then worked exactly as written, `--poll=2000` included. On 30 October a
+second machine met the same hang and dropped `--poll` instead, which starts the server and leaves the stale
+cache in the volume for whoever mounts it next. **`docker stop` is not a way out of this**: Nx's serve does
+not exit inside the default ten-second grace, so stop kills it too - measured on 5 November, `docker stop
+aggiemap-dev` on a container up 42 hours exited `137`. Clear the cache whenever the container did not shut
+itself down, which in practice is every time. See #2650.
+
 One volume serves whichever checkout is mounted, so it must match that checkout's lock. Check before
 trusting it: `node_modules/@angular/core/package.json` must show the version the checkout uses. On 4
 October an install two upgrades behind made Nx fail with a misleading error. The dev server recompiles
