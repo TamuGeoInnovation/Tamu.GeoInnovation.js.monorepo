@@ -6036,3 +6036,78 @@ No code change is expected for this one. If it turns out layers are returning sh
 `work-lab-leila/reports/2026-11-06-10.md`, and say **"report ready: <file>"**. Lead with the kiosk's three layer names and whether the basemap returns short — those two facts are what I am waiting on. Questions for me go under **Questions for the director (aggiemap)**, with options and a recommendation; do not take them to the maintainer yourself.
 
 Nothing in this batch opens a pull request or pushes a tag.
+
+## Batch 11 (6 November 2026, from `work (aggiemap)`) — #2707: put a number on "clicking things on the map is glitchy" (High)
+
+**Report 10 was excellent.** The Harrington measurement in particular changed what I filed: I had written in #2707 that it was
+the same fault, and your 20-of-20 on both environments proved it deterministic, so I corrected the issue before anyone worked
+from it. Three of your four questions are with the maintainer now; this batch does not depend on any of them.
+
+The maintainer reports that **clicking things on the map is glitchy** — [#2707](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2707).
+Popups that open on one load and not the next; and in the routing panel, clicks that set no start or end point. He first hit
+it with the Nature Rx layer turned on, but his own correction is that the layer is not the subject: the clicking is.
+
+**Read #2707 first.** It records what I measured on dev this morning and what I could not reproduce.
+
+**This batch is a measurement, not a fix.** Nothing here opens a pull request. What I need is the shape of the failure, because
+a check written to a guess passes for the wrong reason, and a fix with no reproduction cannot be shown to work.
+
+### Click by map coordinates, not screen fractions
+
+Your Harrington finding is the method for this whole batch: **a fixed screen fraction only means what you think while the
+framing holds.** Convert the building's own coordinates with `view.toScreen` and click there, and re-read them per load rather
+than once. If a click lands outside the view, record that load as unusable rather than as a failure.
+
+### 1. The popup rate, against time since load (dev and production)
+
+Fresh load of `/map/d` each time. Pick two targets by coordinate — one building and one parking garage, both on the opening
+view — and for each load click **one** of them and record whether its popup opened with that feature's own name.
+
+Vary **when** the click happens: immediately after `load`, then at fixed delays (say 1, 2, 4, 8, 16 seconds), and then after
+`waitForSettledFraming`. Enough loads per bucket to mean something — 20 if the time allows, and say how many you ran.
+
+Report, per environment and per bucket: **opened with the right feature / opened with the wrong one / no popup at all.**
+"Wrong feature" and "nothing" are different faults and must not be added together.
+
+### 2. The routing click, same shape
+
+Fresh load of `/map/d/trip`, click a building by coordinate at the same delays, and record whether a stop was set — the probe's
+`trip-points-layer` count, as `map-coordinates.spec.ts` does it.
+
+**The question that matters here:** when the buildings layer is not ready yet, does the stop fall back to bare latitude and
+longitude, as it is meant to, or does nothing get set at all? Those are a degradation and a bug respectively. Read the box's
+value, not only the graphic count.
+
+### 3. With Nature Rx turned on (dev only)
+
+Repeat 1 and 2 with the Nature Rx layer visible — it is development-only since #2673, so production will not have it. Turning it
+on through the map's own API is fine and I have checked it matches the Layers panel.
+
+**Two things specifically**, because they are what the maintainer saw:
+- a click **immediately after turning the layer on**, while the view is taking it up;
+- a click on a **Nature Rx marker** in the routing panel. On my run that set a stop named by bare coordinates, never by the
+  space's name. Confirm or contradict that, and say whether you think it is the intended result.
+
+### 4. When does a click first work
+
+For a handful of loads on each environment, record three moments and the gap between them: when the page's own load event
+fires, when the probe first reports **`ready: true`**, and when a click first produces the right popup.
+
+I measured the probe reporting **`ready: false` on a map that had visibly finished drawing**, which is the opposite way round
+from [#2487](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2487). If that holds, say so plainly —
+a readiness signal that is wrong is worse than none, and the suite waits on it.
+
+### The report
+
+`work-lab-leila/reports/2026-11-06-11.md`, and say **"report ready: <file>"**. Lead with the three numbers: the popup failure
+rate on each environment, whether the routing click degrades or fails, and whether `ready` tells the truth. Name the build dev
+was serving, as you did in report 10. Questions for me under **Questions for the director (aggiemap)**, with a recommendation.
+
+## Batch 12 (queued, do after 11) — the missing tile, photographed
+
+Your own recommendation (a) on #2702, strengthened. You showed 5 of 10 production loads lose a basemap query and nothing retries
+it, from the requests alone. **Catch one on screen:** load production's main map until a buildings or lots query fails, and
+capture the map at that moment next to a load where none failed, so the GIS team is handed a picture rather than a rate.
+
+If it turns out the tile draws anyway — from cache, or because the failed query was for something already drawn — that is just
+as useful an answer, and it changes what #2702 claims. Say so.
