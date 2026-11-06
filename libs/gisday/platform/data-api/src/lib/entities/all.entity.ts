@@ -373,6 +373,14 @@ export class Event extends GuidIdentity {
   @Column({ nullable: true, length: 64, select: false })
   public checkInCode?: string;
 
+  /**
+   * Whether attendees may check in at any time, not only from the session's start until 15 minutes
+   * after its end (#2635). Every other rule still applies: the zone, the QR code. A check-in outside the
+   * session's time is marked `outsideSessionTime`.
+   */
+  @Column({ nullable: false, default: false })
+  public checkInAnyTime: boolean;
+
   @Column({ nullable: true })
   public mode: string;
 
@@ -647,6 +655,11 @@ export class Tag extends GuidIdentity {
   public season: Season;
 }
 
+/**
+ * The sizes a sponsor's logo can be drawn at on the Sponsors page, smallest first (#2638).
+ */
+export type SponsorLogoSize = 'small' | 'regular' | 'large' | 'extra-large';
+
 @Entity({
   name: 'sponsors'
 })
@@ -681,6 +694,13 @@ export class Sponsor extends GuidIdentity {
    */
   @Column({ nullable: false, default: true })
   public active: boolean;
+
+  /**
+   * How large the sponsor's logo is drawn on the public Sponsors page, so a logo with small detail
+   * can be shown bigger than its neighbours. Existing sponsors are `regular`, the size before (#2638).
+   */
+  @Column({ nullable: false, default: 'regular' })
+  public logoSize: SponsorLogoSize;
 
   @ManyToOne(() => Season, (season) => season.sponsors)
   public season: Season;
@@ -724,6 +744,13 @@ export class CheckIn extends GuidIdentity {
 
   @Column({ nullable: false })
   public accountGuid: string;
+
+  /**
+   * Made outside the session's time, which a session open at any time allows (#2635). Decided when the
+   * check-in is made, so moving the session later does not change it. Organizers' check-ins are never marked.
+   */
+  @Column({ nullable: false, default: false })
+  public outsideSessionTime: boolean;
 }
 
 @Entity({

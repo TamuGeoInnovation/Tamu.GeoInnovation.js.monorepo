@@ -81,7 +81,7 @@ export const VolleyballParkingColdLayerSources: LayerSource[] = [
  *
  * **Derived from the production sources rather than written out again**, so the two cannot drift: the
  * popups, definition expressions and draw order are the same objects, and only the layer index moves.
- * `eventUrl` already resolves to the development host, because `athleticsHost` in `connections.ts` does.
+ * `eventUrl` already resolves to the development host, because `tsgisHost` in `connections.ts` does.
  *
  * The view's own indexes: Accessible Parking Spaces is 0 here and 1 on production, the lots 1 here and 2.
  */

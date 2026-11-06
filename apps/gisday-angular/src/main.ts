@@ -72,7 +72,9 @@ bootstrapApplication(AppComponent, {
         clientId: environment.auth0.client_id,
         authorizationParams: {
           audience: environment.auth0.audience,
-          redirect_uri: environment.auth0.redirect_uri
+          redirect_uri: environment.auth0.redirect_uri,
+          // UCGIS's Sign in goes straight to Tradewing rather than to Auth0's page of choices (#2575).
+          ...(site.signInWith ? { connection: site.signInWith } : {})
         },
         httpInterceptor: {
           allowedList: [

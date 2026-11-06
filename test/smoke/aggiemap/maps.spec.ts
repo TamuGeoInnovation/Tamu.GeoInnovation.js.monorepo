@@ -6,7 +6,7 @@ import { blockAnalytics } from './analytics';
 import { loadBuilderTargets } from './builder-destinations';
 import { directionsAvailable, directionsEntryPoints } from './directions';
 import { describePaint, waitForPaint } from './paint';
-import { environmentIsDevelopment, isDevelopmentHostRequest } from './gis-hosts';
+import { isDevelopmentUrl } from './gis-hosts';
 
 /**
  * Behaviours 1 and 2 of #1034, for every map the target environment lists.
@@ -157,7 +157,7 @@ for (const { mapPath, loadPath, title, borrowedFrom } of cases) {
 
     page.on('pageerror', (error) => pageErrors.push(error.message));
     page.on('request', (request) => {
-      if (isDevelopmentHostRequest(request.url())) {
+      if (isDevelopmentUrl(request.url())) {
         developmentHostRequests.push(request.url());
       }
     });
@@ -362,7 +362,7 @@ for (const { mapPath, loadPath, title, borrowedFrom } of cases) {
     //
     // One-directional: development legitimately reaches production services, so nothing is asserted
     // there. `gis-hosts.ts` carries the rule and its own tests.
-    if (!environmentIsDevelopment(manifest.baseUrl)) {
+    if (!isDevelopmentUrl(manifest.baseUrl)) {
       expect(
         [...new Set(developmentHostRequests)],
         `${mapPath} requested a development host from ${manifest.baseUrl}`

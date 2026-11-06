@@ -58,6 +58,12 @@ export const CHECK_IN_CODE_PARAM = 'checkin';
 export const CHECK_IN_CODE_MESSAGE = "Check in to this session by scanning the QR code on the presenter's slides.";
 
 /**
+ * What admins see beside a check-in made outside its session's time, which a session open at any time
+ * allows (#2635).
+ */
+export const OUTSIDE_SESSION_TIME_LABEL = 'Outside Session Time Check-In';
+
+/**
  * Minutes after a session's end that check-in stays open, for attendees who check in late.
  */
 export const CHECK_IN_GRACE_MINUTES = 15;

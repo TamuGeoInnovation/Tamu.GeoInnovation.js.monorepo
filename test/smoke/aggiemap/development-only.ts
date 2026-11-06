@@ -1,6 +1,7 @@
 import { Page } from '@playwright/test';
 import * as fs from 'fs';
 import * as path from 'path';
+import { smokeBaseUrl } from './gis-hosts';
 
 /**
  * Sections of the app that are not ready for production (#1090).
@@ -106,6 +107,16 @@ export const DEVELOPMENT_ONLY_SERVICES: Record<
   RoutingProPublish: {
     reason: '#659: the development-only routing network',
     pages: ['/map/d/trip']
+  },
+  // Nature Rx, which is on the map but not finished (#2673). Unlike everything else here, the service is
+  // production's own and public - what is not ready is the feature, so a production build leaves the layer
+  // and its two search sources out of the bundle altogether (`development-only-sources.ts`) rather than
+  // hiding them. It lists no pages because the layer is off until a visitor turns it on, so nothing requests
+  // it unprompted; the check that production never requests it still applies, and the layer's own unit spec
+  // covers both sides of the gate.
+  'Hosted/NatureRx_view/FeatureServer': {
+    reason: '#2673: Nature Rx is on the map but not ready for production',
+    pages: []
   }
   // TS/WomensBasketballParking/MapServer was listed here for #2001, required of /events/womens-basketball on
   // dev. #2143 (#2176) moved that map's development version to the hosted athletics view, reached through the
@@ -116,7 +127,7 @@ export const DEVELOPMENT_ONLY_SERVICES: Record<
 
 /** Whether the environment under test renders the development variant. */
 export function developmentSectionsVisible(): boolean {
-  const baseUrl = (process.env.AGGIEMAP_SMOKE_BASE_URL ?? 'https://aggiemap.tamu.edu').replace(/\/$/, '');
+  const baseUrl = smokeBaseUrl();
   const environments: Record<string, { baseUrl: string; developmentSectionsVisible?: boolean }> = JSON.parse(
     fs.readFileSync(path.join(__dirname, 'environments.json'), 'utf8')
   );

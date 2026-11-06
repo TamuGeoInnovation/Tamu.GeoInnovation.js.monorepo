@@ -38,6 +38,13 @@ export class CheckinService extends BaseService<CheckIn> {
   }
 
   /**
+   * A session's check-ins, newest first, each marked when made outside its time, for admins (#2635).
+   */
+  public getCheckinsForEvent(eventGuid: string) {
+    return this.http1.get<Array<Partial<CheckIn>>>(`${this.resource}/event/${eventGuid}`);
+  }
+
+  /**
    * The code in a hybrid or virtual session's check-in QR code, for an organizer (#2560).
    */
   public getCheckInCode(eventGuid: string) {

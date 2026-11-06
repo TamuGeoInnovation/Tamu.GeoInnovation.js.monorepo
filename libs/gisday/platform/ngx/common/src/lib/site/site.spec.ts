@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router, UrlTree } from '@angular/router';
 
-import { GisdaySite, gisdaySite, siteSessionPlaces } from '@tamu-gisc/gisday/common';
+import { GISDAY_SITES, GisdaySite, gisdaySite, siteHead, siteSessionPlaces, withSiteHead } from '@tamu-gisc/gisday/common';
 
 import { GISDAY_SITE, SiteHasPipe, siteFeatureGuard } from './site';
 
@@ -43,7 +43,7 @@ describe('gisdaySite', () => {
     }
   });
 
-  it("goes by the key at any other address, so a local copy can show any site", () => {
+  it('goes by the key at any other address, so a local copy can show any site', () => {
     expect(gisdaySite('txgisday', 'txgisday.org').name).toBe('TxGIS Day');
     expect(gisdaySite('tamu', 'localhost').name).toBe('Texas A&M GIS Day');
     expect(gisdaySite('ucgis', 'gisday.ucgis.org').name).toBe('UCGIS GIS Day');
@@ -77,7 +77,9 @@ describe('siteSessionPlaces', () => {
   });
 
   it('matches the name ignoring case and surrounding spaces', () => {
-    expect(siteSessionPlaces(gisdaySite('tamu'), [{ guid: 'p', name: '  texas a&m university gis day(s) ' }])).toEqual(['p']);
+    expect(siteSessionPlaces(gisdaySite('tamu'), [{ guid: 'p', name: '  texas a&m university gis day(s) ' }])).toEqual([
+      'p'
+    ]);
   });
 
   it('is every place, as null, on txgisday.org and UCGIS', () => {
@@ -95,7 +97,17 @@ describe('SiteHasPipe', () => {
     setUp();
     const pipe = TestBed.runInInjectionContext(() => new SiteHasPipe());
 
-    for (const feature of ['competitions', 'faq', 'sponsors', 'classes', 'checkIns', 'pastYears', 'tamu', 'tamuLinks', 'homeLinks'] as const) {
+    for (const feature of [
+      'competitions',
+      'faq',
+      'sponsors',
+      'classes',
+      'checkIns',
+      'pastYears',
+      'tamu',
+      'tamuLinks',
+      'homeLinks'
+    ] as const) {
       expect(pipe.transform(feature)).toBe(true);
     }
   });
@@ -120,5 +132,100 @@ describe('siteFeatureGuard', () => {
     const result = TestBed.runInInjectionContext(() => siteFeatureGuard('faq')(null, null)) as UrlTree;
 
     expect(TestBed.inject(Router).serializeUrl(result)).toBe('/');
+  });
+});
+
+/**
+ * #2649. Link previews never run the app, so each site's page carries its own name, description and image. Every site
+ * once served txgisday.org's, so a UCGIS post about gisday.ucgis.org showed "TxGIS Day".
+ */
+describe('siteHead', () => {
+  const page = [
+    '<head>',
+    '    <!-- site head -->',
+    '    <title>TxGIS Day</title>',
+    '    <!-- /site head -->',
+    '    <base href="/" />',
+    '</head>'
+  ].join('\n');
+
+  it("gives the UCGIS site UCGIS's name, description, address and image", () => {
+    const head = siteHead(GISDAY_SITES.ucgis);
+
+    expect(head).toContain('<title>UCGIS GIS Day</title>');
+    expect(head).toContain('<meta property="og:title" content="UCGIS GIS Day" />');
+    expect(head).toContain('<meta property="og:site_name" content="UCGIS GIS Day" />');
+    expect(head).toContain('<meta property="og:url" content="https://gisday.ucgis.org/" />');
+    expect(head).toContain(
+      '<meta property="og:image" content="https://gisday.ucgis.org/assets/images/sites/ucgis/preview.png" />'
+    );
+    expect(head).toContain(`<meta property="og:description" content="${GISDAY_SITES.ucgis.description}" />`);
+    expect(head).not.toContain('TxGIS');
+  });
+
+  it('escapes what would break an attribute', () => {
+    expect(siteHead(GISDAY_SITES.tamu)).toContain('<title>Texas A&amp;M GIS Day</title>');
+    expect(siteHead({ ...GISDAY_SITES.ucgis, description: 'A "quoted" <word>' })).toContain(
+      'content="A &quot;quoted&quot; &lt;word&gt;"'
+    );
+  });
+
+  it('replaces only what is between the markers, and keeps the markers', () => {
+    const result = withSiteHead(page, GISDAY_SITES.ucgis);
+
+    expect(result).not.toContain('<title>TxGIS Day</title>');
+    expect(result).toContain('<title>UCGIS GIS Day</title>');
+    expect(result).toContain('<!-- site head -->');
+    expect(result).toContain('<!-- /site head -->');
+    expect(result).toContain('<base href="/" />');
+    expect(withSiteHead(result, GISDAY_SITES.txgisday)).toBe(withSiteHead(page, GISDAY_SITES.txgisday));
+  });
+
+  it('refuses a page without the markers rather than leaving it as it was', () => {
+    expect(() => withSiteHead('<head><title>TxGIS Day</title></head>', GISDAY_SITES.ucgis)).toThrow(/site head/);
+  });
+
+  it('gives every site an address, a description and a preview image', () => {
+    for (const site of Object.values(GISDAY_SITES) as Array<GisdaySite>) {
+      expect(site.address).toMatch(/^https:\/\/[^/]+$/);
+      expect(site.description.length).toBeGreaterThan(20);
+      expect(site.preview).toMatch(/^assets\/images\/sites\/[a-z]+\/preview\.png$/);
+    }
+  });
+
+  it('is the UCGIS site at its own address', () => {
+    expect(gisdaySite(undefined, 'gisday.ucgis.org').name).toBe('UCGIS GIS Day');
+  });
+});
+
+/**
+ * #2575. UCGIS's members, and its organizers, sign in only with their UCGIS Tradewing accounts, so its Sign in goes
+ * straight to that Auth0 connection. txgisday.org and gisday.tamu.edu keep Auth0's page of choices.
+ */
+describe('signInWith', () => {
+  it('sends the UCGIS site straight to the Tradewing connection', () => {
+    expect(gisdaySite('ucgis').signInWith).toBe('tradewing');
+    expect(gisdaySite(undefined, 'gisday.ucgis.org').signInWith).toBe('tradewing');
+  });
+
+  it("leaves txgisday.org and Texas A&M's site on Auth0's page of choices", () => {
+    expect(gisdaySite('txgisday').signInWith).toBeUndefined();
+    expect(gisdaySite(undefined, 'gisday.tamu.edu').signInWith).toBeUndefined();
+  });
+});
+
+/**
+ * #2662. UCGIS's Tradewing page says only "Log in with Tradewing", so the UCGIS site says first whose account it
+ * wants. The other sites sign in on their own Auth0 page and need no note.
+ */
+describe('signInNote', () => {
+  it('tells UCGIS visitors to use their UCGIS account', () => {
+    expect(gisdaySite('ucgis').signInNote?.title).toContain('UCGIS account');
+    expect(gisdaySite(undefined, 'gisday.ucgis.org').signInNote?.message).toContain('Log in with Tradewing');
+  });
+
+  it("gives txgisday.org and Texas A&M's site none", () => {
+    expect(gisdaySite('txgisday').signInNote).toBeUndefined();
+    expect(gisdaySite(undefined, 'gisday.tamu.edu').signInNote).toBeUndefined();
   });
 });

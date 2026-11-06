@@ -157,3 +157,36 @@ test.describe('the responsive route guards', () => {
     await expect(page, '769px should be treated as desktop').toHaveURL(/\/map\/d/, { timeout: 30_000 });
   });
 });
+
+/**
+ * On a phone, an event map's locate button heads the stack of map buttons, above Legend and Layers (#2642).
+ *
+ * In the map's bottom-right slot it sat on its own at the very bottom of the screen, over the tents and zones on the
+ * Football Tailgating map, and a tap that missed it opened a feature's popup, which is hard to close on a phone. Read
+ * from where the buttons are drawn: locate must be above Legend, in the same column, and must still be Esri's locate.
+ */
+test.describe('on a phone, an event map', () => {
+  test.use({ viewport: { width: MOBILE_WIDTH, height: MOBILE_HEIGHT }, isMobile: true, hasTouch: true });
+
+  test('stacks the locate button above Legend and Layers (/events/tailgating/map)', async ({ page }) => {
+    test.setTimeout(180_000);
+    await blockAnalytics(page);
+    await page.goto('/events/tailgating/map', { waitUntil: 'domcontentloaded' });
+
+    const locate = page.locator('arcgis-track');
+    const legend = page.locator('[routerLink="./m/sidebar/legend"]');
+
+    await expect(legend, 'the phone map shows no Legend button').toBeVisible({ timeout: 90_000 });
+    await expect(locate, 'the phone map should have exactly one locate button').toHaveCount(1, { timeout: 30_000 });
+    await expect(locate, 'the phone map shows no locate button').toBeVisible();
+
+    const [l, g] = [await locate.boundingBox(), await legend.boundingBox()];
+
+    if (!l || !g) {
+      throw new Error('the locate or Legend button has no box on the page');
+    }
+
+    expect(l.y + l.height, 'the locate button should be above the Legend button').toBeLessThanOrEqual(g.y);
+    expect(Math.abs(l.x + l.width / 2 - (g.x + g.width / 2)), 'the locate button should be in the column of Legend').toBeLessThanOrEqual(4);
+  });
+});

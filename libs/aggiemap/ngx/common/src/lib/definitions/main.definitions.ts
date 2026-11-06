@@ -10,6 +10,7 @@ export enum MAIN_MAP_LAYERS {
   BUILDINGS = 'buildings-layer',
   CONSTRUCTION = 'construction_zone-layer',
   POINTS_OF_INTEREST = 'poi-layer',
+  NATURE_RX = 'nature-rx-layer',
   BONFIRE = 'bonfire-layer',
   LACTATION_ROOMS = 'lactation-rooms-layer',
   SURFACE_LOTS = 'surface-lots-layer',
@@ -42,6 +43,7 @@ export interface IComposedIDefinitions {
   BUILDINGS: IDefinition;
   CONSTRUCTION: IDefinition;
   POINTS_OF_INTEREST: IDefinition;
+  NATURE_RX: IDefinition;
   BONFIRE: IDefinition;
   LACTATION_ROOMS: IDefinition;
   SURFACE_LOTS: IDefinition;
@@ -92,6 +94,13 @@ export function MainMapDefinitions(connections: IComposedConnections): IComposed
       name: 'Points of Interest',
       url: `${connections.poiUrl}/0`,
       popupComponent: Popups.PoiPopupComponent
+    },
+    NATURE_RX: {
+      id: 'nature-rx',
+      layerId: MAIN_MAP_LAYERS.NATURE_RX,
+      name: 'Nature Rx',
+      url: connections.natureRxUrl,
+      popupComponent: Popups.NatureRxPopupComponent
     },
     BONFIRE: {
       id: 'bonfire',
@@ -263,6 +272,20 @@ export function MainMapLayerSources(
       title: definitions.POINTS_OF_INTEREST.name,
       url: definitions.POINTS_OF_INTEREST.url,
       popupComponent: definitions.POINTS_OF_INTEREST.popupComponent,
+      listMode: 'show',
+      visible: false,
+      native: {
+        ...commonLayerProps
+      }
+    },
+    // Nature Rx (#2630). Off by default and listed, as Points of Interest is: a visitor turns it on
+    // from Layers. Its symbology, title and order are the service's own (docs/map-layers.md).
+    {
+      type: 'feature',
+      id: definitions.NATURE_RX.layerId,
+      title: definitions.NATURE_RX.name,
+      url: definitions.NATURE_RX.url,
+      popupComponent: definitions.NATURE_RX.popupComponent,
       listMode: 'show',
       visible: false,
       native: {

@@ -16,7 +16,12 @@ describe('CheckInController', () => {
   let app: INestApplication;
   let url: string;
   let permissions: Array<string>;
-  const provider = { insertUserCheckin: jest.fn(), insertAttendeeCheckin: jest.fn(), getCheckInCode: jest.fn() };
+  const provider = {
+    insertUserCheckin: jest.fn(),
+    insertAttendeeCheckin: jest.fn(),
+    getCheckInCode: jest.fn(),
+    getCheckinsForEvent: jest.fn()
+  };
 
   const post = (path: string, body: object) =>
     fetch(`${url}/check-ins${path}`, {
@@ -30,6 +35,9 @@ describe('CheckInController', () => {
     provider.insertUserCheckin.mockReset().mockResolvedValue({ guid: 'checkin-1' });
     provider.insertAttendeeCheckin.mockReset().mockResolvedValue({ guid: 'checkin-1' });
     provider.getCheckInCode.mockReset().mockResolvedValue({ code: 'code-1' });
+    provider.getCheckinsForEvent
+      .mockReset()
+      .mockResolvedValue([{ guid: 'checkin-1', accountGuid: 'attendee-1', outsideSessionTime: true }]);
 
     const module = await Test.createTestingModule({
       controllers: [CheckInController],
@@ -74,6 +82,23 @@ describe('CheckInController', () => {
       await post('', { eventGuid: 'event-1', code: 'code-1' });
 
       expect(provider.insertUserCheckin).toHaveBeenCalledWith('event-1', 'admin-1', expect.anything(), 'code-1');
+    });
+  });
+
+  describe('GET /check-ins/event/:eventGuid (#2635)', () => {
+    it("gives an admin with read:checkins the session's check-ins, with the mark", async () => {
+      permissions = ['read:checkins'];
+
+      const response = await fetch(`${url}/check-ins/event/event-1`);
+
+      expect(response.status).toBe(200);
+      expect(await response.json()).toEqual([{ guid: 'checkin-1', accountGuid: 'attendee-1', outsideSessionTime: true }]);
+      expect(provider.getCheckinsForEvent).toHaveBeenCalledWith('event-1');
+    });
+
+    it('refuses an attendee, who would see who else checked in', async () => {
+      expect((await fetch(`${url}/check-ins/event/event-1`)).status).toBe(403);
+      expect(provider.getCheckinsForEvent).not.toHaveBeenCalled();
     });
   });
 

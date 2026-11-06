@@ -269,6 +269,25 @@ print `Waiting for aggiemap-angular:serve in another nx process` and never conti
 documented for the GIS Day dev server and missing from this one, which is the command most likely to be copied
 (#2009).
 
+**That same hang has a second cause, and it is the cheaper one to check first: a stale Vite optimizer cache
+in the volume.** `node_modules/.vite` holds the optimizer's metadata and `node_modules/.vite-temp` is the
+directory it renames into place while writing a new one, so a leftover `.vite-temp` means an optimizer run
+was killed mid-write - which is exactly what `docker rm -f aggiemap-dev` does. The next start then stops at
+`[optimizer] bundling dependencies...` with `UV_THREADPOOL_SIZE=64` already set, which reads as the thread-pool
+problem above and is not. **One volume serves every checkout, so one dev server killed in one worktree breaks
+the next start in all of them.** Clear it and start again, unchanged:
+
+```bash
+MSYS_NO_PATHCONV=1 docker run --rm -v tamu-js-dev-nm:/nm node:24.22.1 sh -c "rm -rf /nm/.vite /nm/.vite-temp"
+```
+
+On 3 November the documented command then worked exactly as written, `--poll=2000` included. On 30 October a
+second machine met the same hang and dropped `--poll` instead, which starts the server and leaves the stale
+cache in the volume for whoever mounts it next. **`docker stop` is not a way out of this**: Nx's serve does
+not exit inside the default ten-second grace, so stop kills it too - measured on 5 November, `docker stop
+aggiemap-dev` on a container up 42 hours exited `137`. Clear the cache whenever the container did not shut
+itself down, which in practice is every time. See #2650.
+
 One volume serves whichever checkout is mounted, so it must match that checkout's lock. Check before
 trusting it: `node_modules/@angular/core/package.json` must show the version the checkout uses. On 4
 October an install two upgrades behind made Nx fail with a misleading error. The dev server recompiles
@@ -413,7 +432,9 @@ anyone.
 
 - **Look first, and say where you looked.** Components: `libs/ui-kits/ngx/**`. Services, pipes and
   helpers: `libs/common/**`. Map features: `libs/maps/feature/**`. Styles: `libs/sass/` and the app's
-  global `styles.scss`. Smoke-suite helpers: the shared modules in `test/smoke/aggiemap/`. There is a
+  global `styles.scss`. Smoke-suite helpers: the shared modules in `test/smoke/aggiemap/`. **Behaviour
+  shared by more than one event map: `libs/ts/events/ngx/src/lib/definitions/common.definitions.ts`,
+  or the event's own `EventConfiguration` where it is a property of the event.** There is a
   shared copy-field component, a shared `.button` with variants, spacing utilities and a flexbox
   mixin set. Purpose-built CSS is unwanted.
 - **Extend what exists rather than copy it.** If a shared piece nearly fits, add the input, option
@@ -425,6 +446,17 @@ anyone.
 - **Follow the patterns already in the repository**: how definitions declare things (for example,
   the per-choice `mapView` used by the event maps), how modules are wired, how tests are written.
   A new way of doing something the repository already does needs a reason in the pull request.
+- **A behaviour copied between definition files is a one-off too.** This rule reads as being about
+  shared libraries, and a definition file is not a library - which is how **game-day refresh came to
+  be written three times**: `lotsNative()` in football's definitions, a separate `gameDayNative()` in
+  men's basketball, and `athleticsDevelopmentSource`, the shared helper, unable to express a refresh
+  at all. Nobody broke this rule knowingly. Each copy read as reasonable; only the set was wrong, and
+  it surfaced only when a fourth map was asked for the same thing. #2581 made it one switch on
+  `EventConfiguration`; #2591 is the sweep for whatever else reads like this.
+- **The tell: two pieces of code that would both need changing to fix one bug.** That is the fault,
+  and it is worth looking for directly - more than any filename or folder pattern. If you are about
+  to write a small helper at the top of a definition file, search the other definition files for one
+  doing the same job under a different name.
 
 **A layer's symbology, title and order come from its service.** Overriding any of them in a
 definition is a deliberate act that needs a reason written beside it:

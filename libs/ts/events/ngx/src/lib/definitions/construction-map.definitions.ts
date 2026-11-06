@@ -29,12 +29,12 @@ export enum CONSTRUCTION_MAP_LAYERS {
  *   service. The legacy FCOR/Construction_2018/MapServer popup workaround is no longer
  *   needed since this service's sublayer 0 already exposes a description field.
  */
-import { getDefaultGisHost, getDefaultGisHosts } from '@tamu-gisc/aggiemap/ngx/common';
+import { Connections, getDefaultGisHost } from '@tamu-gisc/aggiemap/ngx/common';
 import { EventPopups } from '../modules/popups/popups';
 const gisHost = getDefaultGisHost();
-const tsgisHost = getDefaultGisHosts().tsgisHost;
 
-const eventUrl = `https://${tsgisHost}/arcgis/rest/services/Hosted/TSConstruction_Hosted/FeatureServer`;
+// Read from production on every environment until the hosted view is published on the development server (#2653).
+const eventUrl = Connections.constructionUrl.replace(/\/0$/, '');
 
 /**
  * 'cumulative' lets the popup service resolve each entry sequentially, writing each resolved

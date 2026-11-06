@@ -22,6 +22,8 @@ import { HasRolesPipe } from '@tamu-gisc/common/ngx/auth';
 import { SeasonLinkPipe } from '../../pipes/season-link/season-link.pipe';
 import { GISDAY_SITE, SiteHasPipe } from '../../site/site';
 import { LockupComponent } from '@tamu-gisc/ui-kits/ngx/branding';
+import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
+import { AlertModalComponent, AlertModalData } from '@tamu-gisc/ui-kits/ngx/layout/modal/alert-modal';
 
 @Component({
   selector: 'tamu-gisc-app-header',
@@ -52,6 +54,7 @@ export class HeaderComponent implements OnInit {
   private readonly ps = inject(PlaceService);
   private readonly rt = inject(Router);
   private readonly at = inject(ActivatedRoute);
+  private readonly ms = inject(ModalService);
 
   public loggedIn$: Observable<boolean>;
   public userRoles$: Observable<Array<string>>;
@@ -111,6 +114,33 @@ export class HeaderComponent implements OnInit {
   }
 
   public login() {
+    const note = this.site.signInNote;
+
+    if (!note) {
+      this.signIn();
+      return;
+    }
+
+    // Another organization's sign-in page comes next, and it does not say whose account it wants (#2662).
+    this.ms
+      .open<boolean>(AlertModalComponent, {
+        data: {
+          title: note.title,
+          message: note.message,
+          image: this.site.logo,
+          imageAlt: this.site.name,
+          primaryText: 'Continue',
+          secondaryText: 'Cancel'
+        } satisfies AlertModalData
+      })
+      .subscribe((go) => {
+        if (go) {
+          this.signIn();
+        }
+      });
+  }
+
+  private signIn() {
     this.as.login({
       appState: {
         target: this.rt.url
@@ -123,7 +153,11 @@ export class HeaderComponent implements OnInit {
 
     this.as.logout({
       logoutParams: {
-        returnTo: url
+        returnTo: url,
+        // A site that signs in with another organization's accounts ends that session too, at its provider. Auth0's
+        // logout alone left UCGIS visitors signed in to Tradewing, so the next Login/Signup signed them straight back
+        // in without a password (#2672). Not on the other sites: there it would sign people out of Google itself.
+        ...(this.site.signInWith ? { federated: true } : {})
       }
     });
   }
