@@ -169,6 +169,14 @@
       "uuid": "11.1.1"
     },
     "form-data": "$form-data",
+    "fork-ts-checker-webpack-plugin": {
+      "minimatch": "3.1.5"
+    },
+    "glob": "14.0.2",
+    "minimatch": {
+      ".": "11.0.1",
+      "@isaacs/nonrecursive-glob-match": "1.0.3"
+    },
     "multer": "$multer",
     "nx": {
       "undici": "7.30.1"
