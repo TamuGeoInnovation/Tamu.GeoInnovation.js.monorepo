@@ -7,6 +7,7 @@ import {
   catchError,
   filter,
   finalize,
+  forkJoin,
   interval,
   map,
   mapTo,
@@ -20,7 +21,8 @@ import {
   takeUntil
 } from 'rxjs';
 
-import { Event, EventAttendanceDto, GisDayAppMetadata, Speaker } from '@tamu-gisc/gisday/platform/data-api';
+import { CheckIn, Event, EventAttendanceDto, GisDayAppMetadata, Speaker } from '@tamu-gisc/gisday/platform/data-api';
+import { Auth0UserProfile } from '@tamu-gisc/common/nest/auth';
 import {
   CheckinService,
   EventService,
@@ -46,7 +48,8 @@ import {
   CHECK_IN_CODE_PARAM,
   CHECK_IN_ZONE_EVENT_MODE,
   checkInWindow,
-  checksInByCode
+  checksInByCode,
+  OUTSIDE_SESSION_TIME_LABEL
 } from '@tamu-gisc/gisday/common';
 import { SiteHasPipe } from '@tamu-gisc/gisday/platform/ngx/common';
 import { QrCodeComponent } from '@tamu-gisc/ui-kits/ngx/qr-code';
@@ -106,6 +109,13 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   );
   public eventLive$: Observable<boolean>;
   public eventElapsed$: Observable<boolean>;
+
+  /**
+   * The session's check-ins for admins (#2635), or why they could not be loaded.
+   */
+  public sessionCheckIns$: Observable<{ rows: Array<SessionCheckInRow>; failure?: string }>;
+
+  public readonly outsideSessionTimeLabel = OUTSIDE_SESSION_TIME_LABEL;
   public isPastSeason$: Observable<boolean>;
 
   public attendanceForm: UntypedFormGroup;
@@ -254,14 +264,16 @@ export class EventDetailComponent implements OnInit, OnDestroy {
 
     // Check-in is open from the session's start until 15 minutes after its end: the same rule the API
     // applies (#1795), from libs/gisday/common. A time that cannot be read (#1772) means the session is
-    // never live, rather than an error.
+    // never live, rather than an error. A session open at any time (#2635) is always live and never over,
+    // as the API accepts it at any time.
     const parsedDates = this.event$.pipe(
       map((event) => {
         const window = checkInWindow(event?.day?.date, event?.startTime, event?.endTime);
 
         return {
           start: window?.opens ?? null,
-          end: window?.closes ?? null
+          end: window?.closes ?? null,
+          anyTime: event?.checkInAnyTime === true
         };
       }),
       shareReplay()
@@ -273,7 +285,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
           startWith(0),
           map(() => {
             const now = new Date();
-            return startEndTimes.end !== null && now > startEndTimes.end;
+            return !startEndTimes.anyTime && startEndTimes.end !== null && now > startEndTimes.end;
           })
         );
       })
@@ -286,14 +298,42 @@ export class EventDetailComponent implements OnInit, OnDestroy {
           map(() => {
             const now = new Date();
             return (
-              startEndTimes.start !== null &&
-              startEndTimes.end !== null &&
-              now >= startEndTimes.start &&
-              now <= startEndTimes.end
+              startEndTimes.anyTime ||
+              (startEndTimes.start !== null &&
+                startEndTimes.end !== null &&
+                now >= startEndTimes.start &&
+                now <= startEndTimes.end)
             );
           })
         );
       })
+    );
+
+    // Admins see the session's check-ins, each marked when made outside its time (#2635). Names come from
+    // the site's users; without them (an account with no `read:users`, or Auth0 not reachable) the
+    // account id stands in. Reloaded with the page's own check-in.
+    this.sessionCheckIns$ = this.isModerator$.pipe(
+      filter((isModerator) => isModerator),
+      switchMap(() => this._refresh$.pipe(startWith(true))),
+      switchMap(() => this.event$.pipe(take(1))),
+      switchMap((event) =>
+        forkJoin([
+          this.checkinService.getCheckinsForEvent(event.guid),
+          this.us.getUsers().pipe(catchError(() => of([])))
+        ]).pipe(
+          map(([checkIns, users]) => ({ rows: sessionCheckInRows(checkIns, users) })),
+          catchError((err) =>
+            of({
+              rows: [],
+              failure:
+                err instanceof HttpErrorResponse && err.status === 403
+                  ? "Your account cannot see this session's check-ins. It needs the read:checkins permission."
+                  : "This session's check-ins could not be loaded."
+            })
+          )
+        )
+      ),
+      shareReplay()
     );
   }
 
@@ -491,6 +531,48 @@ export class EventDetailComponent implements OnInit, OnDestroy {
     });
   }
 }
+
+/**
+ * One check-in in the admins' list on a session's page (#2635).
+ */
+export interface SessionCheckInRow {
+  /** The attendee's name, else their email, else their account id. */
+  who: string;
+  email?: string;
+  /** When, in Central time with its zone, such as `Nov 3, 2:15 PM CST`. */
+  at: string;
+  outsideSessionTime: boolean;
+}
+
+/**
+ * The admins' list of a session's check-ins, naming each attendee from the site's users where possible.
+ */
+export function sessionCheckInRows(
+  checkIns: Array<Partial<CheckIn>>,
+  users: Array<Partial<Auth0UserProfile>>
+): Array<SessionCheckInRow> {
+  const byId = new Map((users ?? []).filter((u) => u?.user_info?.id).map((u) => [u.user_info.id, u.user_info]));
+
+  return (checkIns ?? []).map((c) => {
+    const user = byId.get(c.accountGuid);
+
+    return {
+      who: user?.name || user?.email || c.accountGuid,
+      email: user?.name && user?.email ? user.email : undefined,
+      at: c.created ? CENTRAL_TIME.format(new Date(c.created)) : '',
+      outsideSessionTime: c.outsideSessionTime === true
+    };
+  });
+}
+
+const CENTRAL_TIME = new Intl.DateTimeFormat('en-US', {
+  timeZone: 'America/Chicago',
+  month: 'short',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: '2-digit',
+  timeZoneName: 'short'
+});
 
 /**
  * What to tell an attendee whose check-in did not work: the API's reason, such as being outside the

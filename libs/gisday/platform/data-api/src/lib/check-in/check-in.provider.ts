@@ -12,7 +12,8 @@ import {
   CHECK_IN_ZONE_EVENT_MODE,
   checkInWindow,
   checkInZoneMessage,
-  checksInByCode
+  checksInByCode,
+  isCheckInOpen
 } from '@tamu-gisc/gisday/common';
 
 import { CheckIn, Event } from '../entities/all.entity';
@@ -52,6 +53,9 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
    *
    * A hybrid or virtual event needs no position but its QR code's `code` (#2560), the one
    * `getCheckInCode` gives organizers to show on a slide.
+   *
+   * A session open at any time (`checkInAnyTime`, #2635) accepts a check-in outside its time too, held to
+   * every other rule, and marks it `outsideSessionTime` for admins.
    */
   public insertUserCheckin(
     eventGuid: string,
@@ -61,9 +65,13 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
   ) {
     return this.insert(eventGuid, accountGuid, async (event) => {
       // Only while the session page shows the button, the same rule (#1795), so nobody checks in early
-      // or late by calling the API directly. Checked before the location or the code, so an early
-      // attendee is told when rather than how.
-      assertCheckInOpen(event);
+      // or late by calling the API directly; unless the session is open at any time. Checked before the
+      // location or the code, so an early attendee is told when rather than how.
+      const outsideSessionTime = !isCheckInOpen(event);
+
+      if (outsideSessionTime && !event.checkInAnyTime) {
+        assertCheckInOpen(event);
+      }
 
       if (checksInByCode(event.mode)) {
         // Not selected with the event, so it is asked for on its own.
@@ -76,22 +84,33 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
           throw new ForbiddenException(CHECK_IN_CODE_MESSAGE);
         }
 
-        return;
+        return { outsideSessionTime };
       }
 
       const zone = event.location?.checkInZone;
 
-      if (event.mode !== CHECK_IN_ZONE_EVENT_MODE || !isLatLonPolygon(zone)) {
-        return;
+      if (event.mode === CHECK_IN_ZONE_EVENT_MODE && isLatLonPolygon(zone)) {
+        if (!isLatLon(position)) {
+          throw new ForbiddenException('Checking in to this event needs your location.');
+        }
+
+        if (!isWithinPolygon(position, zone, reach(position.accuracy))) {
+          throw new ForbiddenException(checkInZoneMessage(event.location.building));
+        }
       }
 
-      if (!isLatLon(position)) {
-        throw new ForbiddenException('Checking in to this event needs your location.');
-      }
+      return { outsideSessionTime };
+    });
+  }
 
-      if (!isWithinPolygon(position, zone, reach(position.accuracy))) {
-        throw new ForbiddenException(checkInZoneMessage(event.location.building));
-      }
+  /**
+   * A session's check-ins, newest first, for admins on its page (#2635): who, when, and whether it was
+   * made outside the session's time.
+   */
+  public getCheckinsForEvent(eventGuid: string) {
+    return this.checkInRepo.find({
+      where: { event: { guid: eventGuid } },
+      order: { created: 'DESC' }
     });
   }
 
@@ -136,7 +155,14 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
     return { code: saved.checkInCode };
   }
 
-  private async insert(eventGuid: string, accountGuid: string, admit?: (event: Event) => void | Promise<void>) {
+  /**
+   * @param admit Refuses the check-in by throwing, or returns anything to record with it.
+   */
+  private async insert(
+    eventGuid: string,
+    accountGuid: string,
+    admit?: (event: Event) => Partial<CheckIn> | void | Promise<Partial<CheckIn> | void>
+  ) {
     const existing = await this.checkInRepo.findOne({
       where: {
         event: { guid: eventGuid },
@@ -159,9 +185,10 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
       throw new UnprocessableEntityException(null, 'Event could not be found');
     }
 
-    await admit?.(event);
+    const recorded = await admit?.(event);
 
     const checkin = this.checkInRepo.create({
+      ...(recorded || {}),
       event: event,
       accountGuid: accountGuid
     });
