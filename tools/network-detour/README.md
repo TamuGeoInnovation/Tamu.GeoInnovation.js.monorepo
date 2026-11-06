@@ -26,12 +26,12 @@ MSYS_NO_PATHCONV=1 docker run --rm -v "C:/TAMU/<checkout>:/repo" -w /repo node:2
 
 Use the smallest tier that answers the question, as with [the smoke suite](../../test/smoke/aggiemap/README.md#the-three-tiers).
 
-| Tier                          | What it asks                                                                                                                                                     | How long                      | When                                                                                     |
-| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- | ---------------------------------------------------------------------------------------- |
-| `quick`                       | The pairs in [`quick-pairs.json`](quick-pairs.json): a stratified spread across distance bands, every pair a run has flagged, and pairs a person would ask about | Under a minute                | After any network republish, and in a pull request that touches routing                  |
-| `full`                        | Every building with coordinates to every other: 779 buildings, 303,031 pairs on foot                                                                             | About 90 minutes at 8 workers | To find faults nobody has a reason to look for, and to compare one publish with the next |
-| `one <building> [<building>]` | One building against every other, or one pair. A building is named by OBJECTID or abbreviation                                                                   | Seconds                       | To chase one report                                                                      |
-| `sample`                      | Prints a fresh seeded, stratified sample in the shape of `quick-pairs.json`                                                                                      | Seconds                       | Only when rebuilding the quick set                                                       |
+| Tier                          | What it asks                                                                                                                                                     | How long                    | When                                                                                     |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------- | ---------------------------------------------------------------------------------------- |
+| `quick`                       | The pairs in [`quick-pairs.json`](quick-pairs.json): a stratified spread across distance bands, every pair a run has flagged, and pairs a person would ask about | Under a minute              | After any network republish, and in a pull request that touches routing                  |
+| `full`                        | Every building with coordinates to every other: 779 buildings, 303,031 pairs on foot                                                                             | About 2¼ hours at 8 workers | To find faults nobody has a reason to look for, and to compare one publish with the next |
+| `one <building> [<building>]` | One building against every other, or one pair. A building is named by OBJECTID or abbreviation                                                                   | Seconds                     | To chase one report                                                                      |
+| `sample`                      | Prints a fresh seeded, stratified sample in the shape of `quick-pairs.json`                                                                                      | Seconds                     | Only when rebuilding the quick set                                                       |
 
 `full` is resumable. Each batch is appended to `runs/<id>/progress.jsonl` as soon as it finishes, and a
 run started again with the same `--id` skips what is already there. A four-hour run that loses everything
@@ -44,14 +44,16 @@ to one timeout would never be run a second time.
 | `--compare <run.json>` | After the run, lists the detours and unreachable pairs that are new or gone since that earlier run                                                                                                                                                                                                             |
 | `--threshold`          | The ratio part of the detour allowance (default `1.8`)                                                                                                                                                                                                                                                         |
 | `--slack`              | The fixed part of the detour allowance, in metres (default `250`)                                                                                                                                                                                                                                              |
-| `--workers`            | Batches in flight at once (default `4`). `8` takes the full tier from about 4 hours to about 1.5                                                                                                                                                                                                               |
+| `--workers`            | Batches in flight at once (default `4`). `8` ran the full tier at about 38 pairs a second, 2¼ hours, on 6 November 2026                                                                                                                                                                                        |
 | `--batch`              | Pairs per request (default `100`)                                                                                                                                                                                                                                                                              |
 | `--id`                 | The run's folder under `runs/`. Defaults to `<date>-<tier>-<mode>`. Reuse it to resume                                                                                                                                                                                                                         |
 
-Each run writes `runs/<id>/run.json`: the bands, the impossible results, the detours worst first, the
-isolated buildings and the unreachable pairs, with the network, the mode and the threshold that produced
-them. That file is the record: commit it with the work it measures, so two runs can be compared.
-`progress.jsonl` holds every pair and stays out of git.
+Each run writes `runs/<id>/run.json`: the bands, the islands, the unreachable pairs, the impossible
+results, the buildings most often in a detour and the detours worst first, with the network, the mode and
+the threshold that produced them. Rows name buildings by `OBJECTID`, with each name given once under
+`names`, one row to a line. That file is the record: commit it with the work it measures, so two runs
+can be compared. A resumed run says how many pairs it found already measured (`resumedFrom`), because
+its `elapsedSeconds` covers only the rest. `progress.jsonl` holds every pair and stays out of git.
 
 ## Reading a run
 
@@ -59,14 +61,22 @@ them. That file is the record: commit it with the work it measures, so two runs 
   line. If one is, the measurement or the coordinates are wrong. Pairs only a few dozen metres apart can
   show this when both buildings snap to the same stretch of path, so read the distances before
   concluding anything.
+- **Buildings most often in a detour** come before the detours themselves. A building that is fenced,
+  gated or reached by one long road shows up in hundreds of detours, and the detour list is then the same
+  building over and over.
 - **Detours** are routes longer than `threshold × straight + slack`. The allowance loosens for short
   lines on purpose. 50 m of detour is a ratio of 1.25 on a 200 m line and 1.025 on a 2 km one, so a flat
   ratio would fill the report with neighbours separated by a road and bury the real faults. Each detour is
-  listed with its **excess metres** beside its ratio, worst excess first. Measured on 5 November 2026, a
-  sound walking network put its worst pair at 2.59 on a 201 m line and none below 1.0.
-- **Buildings that reach nothing**: every pair the building was in failed, and there were at least two.
-  That is a disconnected building or an island in the network, a different fault from a pair that cannot
-  be joined. This list is the one to send to the GIS team.
+  listed with its **excess metres** beside its ratio, worst excess first. On 5 November 2026 the issue's
+  sample of the walking network put its worst pair at 2.59 on a 201 m line and none below 1.0. The full
+  run of 6 November found 1,067 below 1.0: 753 of them on lines under 250 m, the snapping described
+  above, and 314 longer, which are worth a look.
+- **Islands**: buildings that reach only each other, or nothing at all. Every pair that routes joins its
+  two buildings into one piece of network, and every piece but the largest is an island. That is a
+  disconnected building or a cut-off stretch of network, a different fault from a pair that cannot be
+  joined, so an island's failed pairs are not listed one by one. It takes two failed pairs to put a
+  building on an island, so a `one` run of a single pair never does. This list is the one to send to the
+  GIS team. The full run of 6 November 2026 found 11: one of five buildings, one of two, and nine alone.
 - **Other pairs with no route** are listed with the server's own words, for example
   `No route for "1146-1143" from location "1146" to location "1143".  No solution found.`
 

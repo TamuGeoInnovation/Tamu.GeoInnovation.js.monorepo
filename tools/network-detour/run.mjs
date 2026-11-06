@@ -389,6 +389,13 @@ await Promise.all(Array.from({ length: Math.min(workers, batches.length) }, work
 const results = pairs.map((p) => done.get(p.key));
 const summary = summarize(results, all, threshold);
 const elapsed = Math.round((Date.now() - started) / 1000);
+// Rows name buildings by OBJECTID, with each building's name given once in `names`: a full run flags
+// tens of thousands of pairs, and repeating two names on every row made its run file 13 MB.
+const names = {};
+const id = (b) => {
+  names[b.id] = { abbrev: b.abbrev, name: b.name };
+  return b.id;
+};
 const run = {
   developmentOnly: 'The routing network is published on the development GIS server only; production has no routing service.',
   network,
@@ -397,31 +404,44 @@ const run = {
   threshold,
   started: started.toISOString(),
   elapsedSeconds: elapsed,
+  // A resumed run's time covers only the pairs it measured itself.
+  resumedFrom: pairs.length - todo.length,
   buildings: all.length,
-  ...summary,
-  isolated: summary.isolated.map(describe).map((b, i) => ({ ...b, unreachable: summary.isolated[i].unreachable })),
-  impossible: summary.impossible.map(row),
-  outliers: summary.outliers.map(row),
+  pairs: summary.pairs,
+  routed: summary.routed,
+  bands: summary.bands,
+  islands: summary.islands.map((island) => island.map((b) => ({ id: id(b), unreachable: b.unreachable }))),
   unreachablePairs: summary.unreachablePairs.map((u) => ({
-    from: describe(u.from),
-    to: describe(u.to),
+    from: id(u.from),
+    to: id(u.to),
     straight: Math.round(u.straight),
     reason: u.reason
-  }))
+  })),
+  impossible: summary.impossible.map(row),
+  detourBuildings: summary.detourBuildings.map((b) => ({ id: id(b), detours: b.detours })),
+  outliers: summary.outliers.map(row),
+  names
 };
 
 function row(r) {
   return {
-    from: describe(r.from),
-    to: describe(r.to),
+    from: id(r.from),
+    to: id(r.to),
     straight: Math.round(r.straight),
     network: Math.round(r.network),
     excess: Math.round(r.excess),
-    ratio: Number(r.ratio.toFixed(3))
+    ratio: r.ratio === null ? null : Number(r.ratio.toFixed(3))
   };
 }
 
-fs.writeFileSync(path.join(outDir, 'run.json'), JSON.stringify(run, null, 2) + '\n');
+// One row to a line, so the file diffs and reads row by row without being five times the size.
+const lines = Object.entries(run).map(([key, value]) =>
+  Array.isArray(value) && value.length
+    ? `  ${JSON.stringify(key)}: [\n${value.map((v) => `    ${JSON.stringify(v)}`).join(',\n')}\n  ]`
+    : `  ${JSON.stringify(key)}: ${JSON.stringify(value)}`
+);
+
+fs.writeFileSync(path.join(outDir, 'run.json'), `{\n${lines.join(',\n')}\n}\n`);
 report(run);
 
 if (flags.compare) compare(JSON.parse(fs.readFileSync(flags.compare, 'utf8')), run);
@@ -429,7 +449,12 @@ if (flags.compare) compare(JSON.parse(fs.readFileSync(flags.compare, 'utf8')), r
 // ---- output ----------------------------------------------------------------------------------------
 
 function report(run) {
-  const label = (b) => (b.abbrev ? `${b.abbrev} (${b.id})` : `${b.name ?? 'unnamed'} (${b.id})`);
+  const label = (id) => {
+    const b = run.names[id];
+
+    return b.abbrev ? `${b.abbrev} (${id})` : `${b.name ?? 'unnamed'} (${id})`;
+  };
+  const named = (id) => (run.names[id].abbrev ? `${label(id)} ${run.names[id].name ?? ''}` : label(id));
 
   console.log(`\nDEVELOPMENT ONLY. ${run.routed} of ${run.pairs} pairs routed, ${run.elapsedSeconds} s.`);
   console.log('\nBand        Pairs  Routed  Detours  Median  Worst');
@@ -455,8 +480,11 @@ function report(run) {
       `  +${r.excess} m, ${r.ratio}x: ${label(r.from)} to ${label(r.to)}, ${r.straight} m straight, ${r.network} m by network`
     );
 
-  console.log(`\nBuildings that reach nothing: ${run.isolated.length}`);
-  for (const b of run.isolated) console.log(`  ${label(b)} ${b.name ?? ''}`);
+  console.log(`\nBuildings most often in a detour:`);
+  for (const b of run.detourBuildings.slice(0, 15)) console.log(`  ${b.detours} ${named(b.id)}`);
+
+  console.log(`\nIslands, buildings that reach only each other or nothing at all: ${run.islands.length}`);
+  for (const island of run.islands) console.log(`  ${island.map((b) => named(b.id)).join('; ')}`);
 
   console.log(`\nOther pairs with no route: ${run.unreachablePairs.length}`);
   for (const u of run.unreachablePairs.slice(0, 30)) console.log(`  ${label(u.from)} to ${label(u.to)}: ${u.reason}`);
@@ -468,10 +496,13 @@ function fmt(n) {
 
 /** What changed between two runs of the same pairs: the question a network republish raises. */
 function compare(before, after) {
-  const keyOf = (r) => `${r.from.id}-${r.to.id}`;
+  const keyOf = (r) => `${r.from}-${r.to}`;
   const sets = (run) => ({
     outliers: new Set(run.outliers.map(keyOf)),
-    unreachable: new Set([...run.unreachablePairs.map(keyOf), ...run.isolated.map((b) => `isolated ${b.id}`)])
+    unreachable: new Set([
+      ...run.unreachablePairs.map(keyOf),
+      ...run.islands.map((island) => `island ${island.map((b) => b.id).join('+')}`)
+    ])
   });
   const [b, a] = [sets(before), sets(after)];
 

@@ -1456,6 +1456,409 @@
         "name": "Rudder Tower"
       },
       "why": "stratified sample, 250-500 m"
+    },
+    {
+      "from": {
+        "id": 1835,
+        "abbrev": null,
+        "name": "TTI Sediment & Erosion Control Lab"
+      },
+      "to": {
+        "id": 1852,
+        "abbrev": null,
+        "name": "TEEX - LAW Driving Track Pavilion"
+      },
+      "why": "island of 5 in the full run of 6 November 2026 (#2655): these reach each other and nothing else"
+    },
+    {
+      "from": {
+        "id": 1930,
+        "abbrev": null,
+        "name": "TEES DRTF Instrument Enclosure-RELLIS"
+      },
+      "to": {
+        "id": 1206,
+        "abbrev": "MSC",
+        "name": "Memorial Student Center"
+      },
+      "why": "island in the full run of 6 November 2026 (#2655): no route to the rest of campus"
+    },
+    {
+      "from": {
+        "id": 1380,
+        "abbrev": null,
+        "name": "Nuclear Science Center"
+      },
+      "to": {
+        "id": 1495,
+        "abbrev": null,
+        "name": "Nuclear Science Center Laboratory"
+      },
+      "why": "island of 2 in the full run of 6 November 2026 (#2655): these reach each other and nothing else"
+    },
+    {
+      "from": {
+        "id": 1495,
+        "abbrev": null,
+        "name": "Nuclear Science Center Laboratory"
+      },
+      "to": {
+        "id": 1206,
+        "abbrev": "MSC",
+        "name": "Memorial Student Center"
+      },
+      "why": "island in the full run of 6 November 2026 (#2655): no route to the rest of campus"
+    },
+    {
+      "from": {
+        "id": 1089,
+        "abbrev": null,
+        "name": "Equine Nutrition and Reproduction"
+      },
+      "to": {
+        "id": 1206,
+        "abbrev": "MSC",
+        "name": "Memorial Student Center"
+      },
+      "why": "island in the full run of 6 November 2026 (#2655): no route to the rest of campus"
+    },
+    {
+      "from": {
+        "id": 1102,
+        "abbrev": null,
+        "name": "Central Utility Plant Electrical Building"
+      },
+      "to": {
+        "id": 1206,
+        "abbrev": "MSC",
+        "name": "Memorial Student Center"
+      },
+      "why": "island in the full run of 6 November 2026 (#2655): no route to the rest of campus"
+    },
+    {
+      "from": {
+        "id": 1143,
+        "abbrev": "DPDC",
+        "name": "Davis Football Player Development Center"
+      },
+      "to": {
+        "id": 1206,
+        "abbrev": "MSC",
+        "name": "Memorial Student Center"
+      },
+      "why": "island in the full run of 6 November 2026 (#2655): no route to the rest of campus"
+    },
+    {
+      "from": {
+        "id": 1226,
+        "abbrev": "YMCA",
+        "name": "YMCA Building"
+      },
+      "to": {
+        "id": 1206,
+        "abbrev": "MSC",
+        "name": "Memorial Student Center"
+      },
+      "why": "island in the full run of 6 November 2026 (#2655): no route to the rest of campus"
+    },
+    {
+      "from": {
+        "id": 1655,
+        "abbrev": "EBCS",
+        "name": "E.B. Cushing Stadium"
+      },
+      "to": {
+        "id": 1206,
+        "abbrev": "MSC",
+        "name": "Memorial Student Center"
+      },
+      "why": "island in the full run of 6 November 2026 (#2655): no route to the rest of campus"
+    },
+    {
+      "from": {
+        "id": 1811,
+        "abbrev": null,
+        "name": "Veterinary Support Building"
+      },
+      "to": {
+        "id": 1206,
+        "abbrev": "MSC",
+        "name": "Memorial Student Center"
+      },
+      "why": "island in the full run of 6 November 2026 (#2655): no route to the rest of campus"
+    },
+    {
+      "from": {
+        "id": 1833,
+        "abbrev": "RNCH",
+        "name": "Architecture - Fabrication and Design Lab"
+      },
+      "to": {
+        "id": 1206,
+        "abbrev": "MSC",
+        "name": "Memorial Student Center"
+      },
+      "why": "island in the full run of 6 November 2026 (#2655): no route to the rest of campus"
+    },
+    {
+      "from": {
+        "id": 1834,
+        "abbrev": null,
+        "name": "Architecture - Fabrication & Design Expansion"
+      },
+      "to": {
+        "id": 1206,
+        "abbrev": "MSC",
+        "name": "Memorial Student Center"
+      },
+      "why": "island in the full run of 6 November 2026 (#2655): no route to the rest of campus"
+    },
+    {
+      "from": {
+        "id": 1471,
+        "abbrev": null,
+        "name": "Easterwood Airport ARFF Station"
+      },
+      "to": {
+        "id": 1760,
+        "abbrev": "AMSB",
+        "name": "Texas A&M System Agency Office Building"
+      },
+      "why": "worst detour of a building in 642 detours in the full run of 6 November 2026 (#2655) (+13136 m, 2.053x)"
+    },
+    {
+      "from": {
+        "id": 1469,
+        "abbrev": null,
+        "name": "TAC Realty Hangar"
+      },
+      "to": {
+        "id": 1789,
+        "abbrev": null,
+        "name": "Beef Research Unit-Burleson County"
+      },
+      "why": "worst detour of a building in 629 detours in the full run of 6 November 2026 (#2655) (+13389 m, 2.574x)"
+    },
+    {
+      "from": {
+        "id": 1401,
+        "abbrev": null,
+        "name": "Environmental Health and Safety Storage #2"
+      },
+      "to": {
+        "id": 1789,
+        "abbrev": null,
+        "name": "Beef Research Unit-Burleson County"
+      },
+      "why": "worst detour of a building in 503 detours in the full run of 6 November 2026 (#2655) (+13480 m, 2.616x)"
+    },
+    {
+      "from": {
+        "id": 1760,
+        "abbrev": "AMSB",
+        "name": "Texas A&M System Agency Office Building"
+      },
+      "to": {
+        "id": 1803,
+        "abbrev": "TPDB",
+        "name": "WWTP Disinfection Building"
+      },
+      "why": "worst detour of a building in 489 detours in the full run of 6 November 2026 (#2655) (+13318 m, 2.08x)"
+    },
+    {
+      "from": {
+        "id": 1760,
+        "abbrev": "AMSB",
+        "name": "Texas A&M System Agency Office Building"
+      },
+      "to": {
+        "id": 1802,
+        "abbrev": "TPSP",
+        "name": "WWTP Secondary Pump Building"
+      },
+      "why": "worst detour of a building in 486 detours in the full run of 6 November 2026 (#2655) (+13314 m, 2.083x)"
+    },
+    {
+      "from": {
+        "id": 1760,
+        "abbrev": "AMSB",
+        "name": "Texas A&M System Agency Office Building"
+      },
+      "to": {
+        "id": 1800,
+        "abbrev": "WWTP",
+        "name": "Wastewater Treatment Plant"
+      },
+      "why": "worst detour of a building in 485 detours in the full run of 6 November 2026 (#2655) (+13562 m, 2.115x)"
+    },
+    {
+      "from": {
+        "id": 1760,
+        "abbrev": "AMSB",
+        "name": "Texas A&M System Agency Office Building"
+      },
+      "to": {
+        "id": 1806,
+        "abbrev": null,
+        "name": "WWTP Electrical Building"
+      },
+      "why": "worst detour of a building in 482 detours in the full run of 6 November 2026 (#2655) (+13418 m, 2.1x)"
+    },
+    {
+      "from": {
+        "id": 1760,
+        "abbrev": "AMSB",
+        "name": "Texas A&M System Agency Office Building"
+      },
+      "to": {
+        "id": 1805,
+        "abbrev": "TPES",
+        "name": "WWTP Equipment Storage Building"
+      },
+      "why": "worst detour of a building in 481 detours in the full run of 6 November 2026 (#2655) (+13555 m, 2.112x)"
+    },
+    {
+      "from": {
+        "id": 1760,
+        "abbrev": "AMSB",
+        "name": "Texas A&M System Agency Office Building"
+      },
+      "to": {
+        "id": 1801,
+        "abbrev": "TPPP",
+        "name": "WWTP Primary Pump Building"
+      },
+      "why": "worst detour of a building in 478 detours in the full run of 6 November 2026 (#2655) (+13394 m, 2.096x)"
+    },
+    {
+      "from": {
+        "id": 1760,
+        "abbrev": "AMSB",
+        "name": "Texas A&M System Agency Office Building"
+      },
+      "to": {
+        "id": 1804,
+        "abbrev": "TPBB",
+        "name": "WWTP Digester Boiler Building"
+      },
+      "why": "worst detour of a building in 478 detours in the full run of 6 November 2026 (#2655) (+13471 m, 2.107x)"
+    },
+    {
+      "from": {
+        "id": 1408,
+        "abbrev": "NEBB",
+        "name": "Nuclear Engineering Education Building"
+      },
+      "to": {
+        "id": 1789,
+        "abbrev": null,
+        "name": "Beef Research Unit-Burleson County"
+      },
+      "why": "worst detour of a building in 461 detours in the full run of 6 November 2026 (#2655) (+13736 m, 2.678x)"
+    },
+    {
+      "from": {
+        "id": 1496,
+        "abbrev": "ENRTA",
+        "name": "Ecology & Natural Resources Teaching Area"
+      },
+      "to": {
+        "id": 1789,
+        "abbrev": null,
+        "name": "Beef Research Unit-Burleson County"
+      },
+      "why": "worst detour of a building in 453 detours in the full run of 6 November 2026 (#2655) (+14102 m, 2.759x)"
+    },
+    {
+      "from": {
+        "id": 1497,
+        "abbrev": "ENRTA",
+        "name": "Ecology & Natural Resources Teaching Building"
+      },
+      "to": {
+        "id": 1789,
+        "abbrev": null,
+        "name": "Beef Research Unit-Burleson County"
+      },
+      "why": "worst detour of a building in 449 detours in the full run of 6 November 2026 (#2655) (+14116 m, 2.763x)"
+    },
+    {
+      "from": {
+        "id": 1468,
+        "abbrev": null,
+        "name": "McKenzie Terminal Building"
+      },
+      "to": {
+        "id": 1471,
+        "abbrev": null,
+        "name": "Easterwood Airport ARFF Station"
+      },
+      "why": "worst detour of a building in 369 detours in the full run of 6 November 2026 (#2655) (+7643 m, 11.815x)"
+    },
+    {
+      "from": {
+        "id": 1470,
+        "abbrev": null,
+        "name": "Hot Rapid Refuel Shop"
+      },
+      "to": {
+        "id": 1471,
+        "abbrev": null,
+        "name": "Easterwood Airport ARFF Station"
+      },
+      "why": "worst detour of a building in 350 detours in the full run of 6 November 2026 (#2655) (+7385 m, 9.974x)"
+    },
+    {
+      "from": {
+        "id": 1760,
+        "abbrev": "AMSB",
+        "name": "Texas A&M System Agency Office Building"
+      },
+      "to": {
+        "id": 1789,
+        "abbrev": null,
+        "name": "Beef Research Unit-Burleson County"
+      },
+      "why": "largest excess in the full run of 6 November 2026 (#2655) (+17453 m, 2.041x)"
+    },
+    {
+      "from": {
+        "id": 1853,
+        "abbrev": null,
+        "name": "TEEX - LAW Driving Track Restroom"
+      },
+      "to": {
+        "id": 1913,
+        "abbrev": null,
+        "name": "TEEX - LAW UXO Demo Range Pavilion"
+      },
+      "why": "impossible in the full run of 6 November 2026 (#2655): 639 m straight, 11 m by network"
+    },
+    {
+      "from": {
+        "id": 1852,
+        "abbrev": null,
+        "name": "TEEX - LAW Driving Track Pavilion"
+      },
+      "to": {
+        "id": 1913,
+        "abbrev": null,
+        "name": "TEEX - LAW UXO Demo Range Pavilion"
+      },
+      "why": "impossible in the full run of 6 November 2026 (#2655): 626 m straight, 11 m by network"
+    },
+    {
+      "from": {
+        "id": 1853,
+        "abbrev": null,
+        "name": "TEEX - LAW Driving Track Restroom"
+      },
+      "to": {
+        "id": 1930,
+        "abbrev": null,
+        "name": "TEES DRTF Instrument Enclosure-RELLIS"
+      },
+      "why": "impossible in the full run of 6 November 2026 (#2655): 825 m straight, 219 m by network"
     }
   ]
 }

@@ -122,12 +122,16 @@ export const DEFAULT_THRESHOLD = { threshold: 1.8, slackMetres: 250 };
  * What a route says about the network: `ok`, `detour`, or `impossible` when the route is shorter than
  * the straight line, which a path cannot be. An impossible result means the measurement or the
  * coordinates are wrong, and it is never a good result.
+ *
+ * Two buildings recorded at the same point have no ratio (`null`): 0/0 is not a number, and one NaN
+ * in a band's ratios is enough to scramble its sort and so its median. Their route is still judged by
+ * the slack.
  */
 export function classify(straight, network, { threshold, slackMetres } = DEFAULT_THRESHOLD) {
-  const ratio = network / straight;
+  const ratio = straight > 0 ? network / straight : null;
   const excess = network - straight;
 
-  if (ratio < 1) return { verdict: 'impossible', ratio, excess };
+  if (ratio !== null && ratio < 1) return { verdict: 'impossible', ratio, excess };
 
   return { verdict: network > straight * threshold + slackMetres ? 'detour' : 'ok', ratio, excess };
 }
@@ -145,15 +149,28 @@ export const bandOf = (metres) => BANDS.find(([, below]) => metres < below)[0];
 
 /**
  * Turns per-pair results into the report: impossible results first, then detours worst first by excess
- * metres, then what cannot be reached. A building none of whose pairs route is **isolated**, a different
- * fault from a pair of connected buildings that cannot be joined, so the two are reported apart. It takes
- * two failed pairs and no routed one to call a building isolated.
+ * metres, then what cannot be reached.
+ *
+ * Buildings the routed pairs join are one piece of network. Every piece but the largest is an **island**:
+ * its buildings reach each other, if there are several, and nothing else. That is a different fault from
+ * a pair of connected buildings that cannot be joined, so the two are reported apart, and an island's
+ * failed pairs are not listed one by one. It takes two failed pairs to put a building on an island: a
+ * building tested against one other, as in a `one` run, has said nothing yet about what else it reaches.
  *
  * Each result is `{ from, to, straight, network }` or `{ from, to, straight, unreachable: reason }`.
  */
 export function summarize(results, buildings, threshold = DEFAULT_THRESHOLD) {
   const byId = new Map(buildings.map((b) => [b.id, b]));
-  const pairs = new Map(buildings.map((b) => [b.id, { routed: 0, unreachable: 0 }]));
+  const failed = new Map(buildings.map((b) => [b.id, 0]));
+  const detoursOf = new Map();
+  const piece = new Map(buildings.map((b) => [b.id, b.id]));
+  const root = (id) => {
+    while (piece.get(id) !== id) {
+      piece.set(id, piece.get(piece.get(id)));
+      id = piece.get(id);
+    }
+    return id;
+  };
   const bands = new Map(BANDS.map(([name]) => [name, { pairs: 0, routed: 0, detours: 0, ratios: [] }]));
   const impossible = [];
   const outliers = [];
@@ -166,16 +183,16 @@ export function summarize(results, buildings, threshold = DEFAULT_THRESHOLD) {
 
     if (r.unreachable !== undefined) {
       unreachable.push(r);
-      for (const id of [r.from, r.to]) pairs.get(id).unreachable++;
+      for (const id of [r.from, r.to]) failed.set(id, failed.get(id) + 1);
       continue;
     }
 
-    for (const id of [r.from, r.to]) pairs.get(id).routed++;
+    piece.set(root(r.from), root(r.to));
     band.routed++;
 
     const c = classify(r.straight, r.network, threshold);
 
-    band.ratios.push(c.ratio);
+    if (c.ratio !== null) band.ratios.push(c.ratio);
 
     const row = { from: byId.get(r.from), to: byId.get(r.to), straight: r.straight, network: r.network, ...c };
 
@@ -183,13 +200,19 @@ export function summarize(results, buildings, threshold = DEFAULT_THRESHOLD) {
     if (c.verdict === 'detour') {
       band.detours++;
       outliers.push(row);
+      for (const id of [r.from, r.to]) detoursOf.set(id, (detoursOf.get(id) ?? 0) + 1);
     }
   }
 
-  // Two failures at least: a building tested against one other, as in a `one` run, has said nothing yet
-  // about whether it reaches anything else.
-  const isolated = buildings.filter((b) => pairs.get(b.id).routed === 0 && pairs.get(b.id).unreachable >= 2);
-  const isolatedIds = new Set(isolated.map((b) => b.id));
+  const pieces = new Map();
+
+  for (const b of buildings) pieces.set(root(b.id), [...(pieces.get(root(b.id)) ?? []), b]);
+
+  const largest = Math.max(...[...pieces.values()].map((p) => p.length));
+  const islands = [...pieces.values()]
+    .filter((p) => p.length < largest && p.every((b) => failed.get(b.id) >= 2))
+    .sort((a, b) => b.length - a.length);
+  const islanders = new Set(islands.flat().map((b) => b.id));
 
   return {
     pairs: results.length,
@@ -203,9 +226,10 @@ export function summarize(results, buildings, threshold = DEFAULT_THRESHOLD) {
     })),
     impossible: impossible.sort((a, b) => a.ratio - b.ratio),
     outliers: outliers.sort((a, b) => b.excess - a.excess),
-    isolated: isolated.map((b) => ({ ...b, unreachable: pairs.get(b.id).unreachable })),
+    detourBuildings: [...detoursOf].sort((a, b) => b[1] - a[1]).map(([id, detours]) => ({ ...byId.get(id), detours })),
+    islands: islands.map((p) => p.map((b) => ({ ...b, unreachable: failed.get(b.id) }))),
     unreachablePairs: unreachable
-      .filter((r) => !isolatedIds.has(r.from) && !isolatedIds.has(r.to))
+      .filter((r) => !islanders.has(r.from) && !islanders.has(r.to))
       .map((r) => ({ from: byId.get(r.from), to: byId.get(r.to), straight: r.straight, reason: r.unreachable }))
   };
 }

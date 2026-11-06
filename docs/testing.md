@@ -206,7 +206,7 @@ buildings, compares each with the straight line between them, and reports the ro
 long and the buildings that cannot be reached at all
 ([#2655](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2655)). A quick
 set of committed pairs takes under a minute; the full set, every building to every other, takes about
-an hour and a half. The network is published on the development server only, and the trip planner is
+two and a quarter hours. The network is published on the development server only, and the trip planner is
 not offered on production, so this checks development alone. It is run by hand after a network is
 republished, not on a schedule.
 

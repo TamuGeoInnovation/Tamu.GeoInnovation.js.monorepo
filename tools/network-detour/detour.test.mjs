@@ -210,8 +210,8 @@ test('a building that reaches nothing is told apart from a pair that cannot be j
   const summary = summarize(results, buildings);
 
   assert.deepEqual(
-    summary.isolated.map((b) => b.id),
-    [4]
+    summary.islands.map((island) => island.map((b) => b.id)),
+    [[4]]
   );
   assert.deepEqual(
     summary.unreachablePairs.map((p) => [p.from.id, p.to.id]),
@@ -228,8 +228,52 @@ test('a building tested against one other is not called isolated on the strength
 
   const summary = summarize(results, buildings);
 
-  assert.deepEqual(summary.isolated, []);
+  assert.deepEqual(summary.islands, []);
   assert.equal(summary.unreachablePairs.length, 1);
+});
+
+test('buildings that reach each other and nothing else are one island, not a pile of unreachable pairs', () => {
+  // Seen on 6 November 2026: two Nuclear Science Center buildings routed to each other and to nothing
+  // else, so neither "reached nothing", and their 1,536 failed pairs were listed one at a time.
+  const buildings = [1, 2, 3, 4, 5, 6].map((id) => building(id, 0, id * 0.003));
+  const routed = [
+    { from: 1, to: 2, straight: 333, network: 400 },
+    { from: 2, to: 3, straight: 333, network: 380 },
+    { from: 3, to: 4, straight: 333, network: 390 },
+    { from: 5, to: 6, straight: 333, network: 350 }
+  ];
+  const cut = [1, 2, 3, 4].flatMap((from) =>
+    [5, 6].map((to) => ({ from, to, straight: 500, unreachable: 'No solution found.' }))
+  );
+
+  const summary = summarize([...routed, ...cut], buildings);
+
+  assert.deepEqual(
+    summary.islands.map((i) => i.map((b) => b.id)),
+    [[5, 6]]
+  );
+  assert.equal(summary.unreachablePairs.length, 0);
+});
+
+test('two buildings recorded at the same point have no ratio, and do not scramble their band', () => {
+  // 0 m by network over 0 m straight is NaN, and one NaN in a sort leaves the median meaningless: on
+  // 6 November 2026 seven such pairs put the 0-250 m band's median at 9.58.
+  assert.equal(classify(0, 0).ratio, null);
+  assert.equal(classify(0, 0).verdict, 'ok');
+  assert.equal(classify(0, 400).verdict, 'detour');
+
+  const buildings = [building(1, 0, 0), building(2, 0, 0), building(3, 0, 0.001), building(4, 0, 0.0012)];
+  const results = [
+    { from: 1, to: 2, straight: 0, network: 0 },
+    { from: 1, to: 3, straight: 111, network: 120 },
+    { from: 1, to: 4, straight: 133, network: 150 },
+    { from: 3, to: 4, straight: 22, network: 30 }
+  ];
+
+  const band = summarize(results, buildings).bands.find((b) => b.band === '0-250 m');
+
+  assert.equal(band.median.toFixed(2), '1.13');
+  assert.equal(band.worst.toFixed(2), '1.36');
 });
 
 test('outliers come worst first, by excess metres, with the ratio beside them', () => {
