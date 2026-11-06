@@ -27,6 +27,7 @@ The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47
   - 6 Nov 5:33 AM: before set retaken (3 of 4 maps; Big Event never reaches ready on unfixed development). Dev server now on the fix commit `d91d832e3` (40-minute first compile, no stall); after capture running.
   - 6 Nov 5:50 AM: third stall (after set, fix commit): every map timed out on page.goto. Stopped as the director asked. Before images for 3 maps pushed to the branch (`1e7278818`); report amended. Batch 29 done from home.
   - 6:04 AM: the full run stopped twice at 33,000 pairs on a fourth hazard: a batch none of whose pairs can be routed comes back as a 400 listing a reason per pair ("No route for", "is unlocated"), not as an empty answer. Fixed in `joinRoutes` with tests (`3053a9a4f`, `e07aa50c0`, pushed); the run resumed from its progress file at 33,200.
+  - 6:19 AM: full run (resumed after two fixes): 69400/303031 pairs, 41.0 a second, about 95 min left
 
 ## Finished
 - **Batch 28** (aggiemap; report `home/reports/2026-10-30-28.md`): #2593 branch ready: `fix/2530-graduation-republish` at `5c309f666`. Event Parking reads `/3` (filter kept: production's `/3` repeats the two closures), Road Closures `/2`, dev reads the new hosted view; Fall and Spring share one definition. Inverted filter check, `1=0` and date windows exempt by form, Move-In listed against #2612. Red on both environments, green locally; check exit 0. Two questions.
