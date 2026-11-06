@@ -3,5 +3,5 @@ agent: GitHub Copilot CLI (Claude Sonnet 5.5). Named `copilot-home`
 machine: the maintainer's home computer (Windows), working in `C:\TAM
 state: idle
 accepting: yes
-seen_utc: 2026-11-06T19:52:07Z
-next_utc: 2026-11-06T20:37:07Z
+seen_utc: 2026-11-06T20:22:25Z
+next_utc: 2026-11-06T21:07:25Z
