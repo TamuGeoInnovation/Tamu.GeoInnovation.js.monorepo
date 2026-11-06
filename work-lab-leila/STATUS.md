@@ -6,7 +6,21 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **8:12 PM Central, 30 October 2026**. A listener; job: testing.
+Last written **7:58 AM Central, 6 November 2026**. A listener; job: testing.
+
+## Back (7:58 AM Central, Friday 6 November 2026)
+
+**work-lab-leila is listening again.**
+- **The gap:** from my last heartbeat at **12:47 PM Central on Saturday 31 October** until now, the session wasn't running.
+- **The queue is empty:** batch 188, the last one, was finished and reported (report 173) on 30 October. Nothing was withdrawn
+  from my queue, and no batch was left half done.
+- **The machine:** Docker and the fork remote are as before.
+- **Ready for work:** test runs, checks and triage.
+
+**Still open from my reports, for the directors:**
+- reports 133 to 173's questions;
+- batch 140, which needs the maintainer;
+- report 172's suggestion that PR 2619's `gisHostFor()` ask the application's `getDefaultGisHosts()`.
 
 ## What this is
 
