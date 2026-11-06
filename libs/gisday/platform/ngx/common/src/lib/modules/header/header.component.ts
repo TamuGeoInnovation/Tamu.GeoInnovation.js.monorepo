@@ -22,7 +22,8 @@ import { HasRolesPipe } from '@tamu-gisc/common/ngx/auth';
 import { SeasonLinkPipe } from '../../pipes/season-link/season-link.pipe';
 import { GISDAY_SITE, SiteHasPipe } from '../../site/site';
 import { LockupComponent } from '@tamu-gisc/ui-kits/ngx/branding';
-import { AlertModalComponent, AlertModalData, ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
+import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
+import { AlertModalComponent, AlertModalData } from '@tamu-gisc/ui-kits/ngx/layout/modal/alert-modal';
 
 @Component({
   selector: 'tamu-gisc-app-header',

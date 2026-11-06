@@ -5,7 +5,8 @@ import { Subject } from 'rxjs';
 import { gisdaySite, GisdaySite } from '@tamu-gisc/gisday/common';
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
 import { PlaceService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { AlertModalComponent, ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
+import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
+import { AlertModalComponent } from '@tamu-gisc/ui-kits/ngx/layout/modal/alert-modal';
 
 import { GISDAY_SITE } from '../../site/site';
 import { HeaderComponent } from './header.component';
