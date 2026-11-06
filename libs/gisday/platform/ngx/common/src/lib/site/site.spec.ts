@@ -197,3 +197,20 @@ describe('siteHead', () => {
     expect(gisdaySite(undefined, 'gisday.ucgis.org').name).toBe('UCGIS GIS Day');
   });
 });
+
+/**
+ * #2575. UCGIS's members, and its organizers, sign in only with their UCGIS Tradewing accounts, so its Sign in goes
+ * straight to that Auth0 connection. txgisday.org and gisday.tamu.edu keep Auth0's page of choices.
+ */
+describe('signInWith', () => {
+  it('sends the UCGIS site straight to the Tradewing connection', () => {
+    expect(gisdaySite('ucgis').signInWith).toBe('tradewing');
+    expect(gisdaySite(undefined, 'gisday.ucgis.org').signInWith).toBe('tradewing');
+  });
+
+  it("leaves txgisday.org and Texas A&M's site on Auth0's page of choices", () => {
+    expect(gisdaySite('txgisday').signInWith).toBeUndefined();
+    expect(gisdaySite(undefined, 'gisday.tamu.edu').signInWith).toBeUndefined();
+  });
+});
+
