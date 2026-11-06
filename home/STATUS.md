@@ -21,6 +21,7 @@ The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47
   - 6 Nov ~4:45 AM: full affected check on `20241ac80` exit 0 (10 projects). Report `home/reports/2026-11-05-29.md` pushed; PR 2667 open (director). Captures running (Vite cache cleared, four maps); images will be pushed to the branch.
   - 6 Nov ~5:15 AM: before captures taken on unfixed development (Business, Visitor, Aggieland Saturday all read `arc.ts.tamu.edu`; Big Event timed out, retrying). Retaking with the event-passed dialog dismissed, then the dev server moves to the fix commit for the after set.
   - 6 Nov 5:33 AM: before set retaken (3 of 4 maps; Big Event never reaches ready on unfixed development). Dev server now on the fix commit `d91d832e3` (40-minute first compile, no stall); after capture running.
+  - 6 Nov 5:50 AM: third stall (after set, fix commit): every map timed out on page.goto. Stopped as the director asked. Before images for 3 maps pushed to the branch (`1e7278818`); report amended. Batch 29 done from home.
 
 ## Finished
 - **Batch 28** (aggiemap; report `home/reports/2026-10-30-28.md`): #2593 branch ready: `fix/2530-graduation-republish` at `5c309f666`. Event Parking reads `/3` (filter kept: production's `/3` repeats the two closures), Road Closures `/2`, dev reads the new hosted view; Fall and Spring share one definition. Inverted filter check, `1=0` and date windows exempt by form, Move-In listed against #2612. Red on both environments, green locally; check exit 0. Two questions.
