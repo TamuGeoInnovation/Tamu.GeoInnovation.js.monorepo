@@ -15,7 +15,17 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { DEFAULT_THRESHOLD, bandOf, classify, joinRoutes, noRouteReason, pairOf, pairsOf, reconcile, summarize } from './detour.mjs';
+import {
+  DEFAULT_THRESHOLD,
+  bandOf,
+  classify,
+  joinRoutes,
+  noRouteReason,
+  pairOf,
+  pairsOf,
+  reconcile,
+  summarize
+} from './detour.mjs';
 
 const HERE = path.dirname(new URL(import.meta.url).pathname);
 const REPO = path.resolve(HERE, '..', '..');
@@ -29,12 +39,15 @@ const positional = [];
 const flags = {};
 
 for (let i = 0; i < rest.length; i++) {
-  if (rest[i].startsWith('--')) flags[rest[i].slice(2)] = rest[i + 1]?.startsWith('--') || rest[i + 1] === undefined ? true : rest[++i];
+  if (rest[i].startsWith('--'))
+    flags[rest[i].slice(2)] = rest[i + 1]?.startsWith('--') || rest[i + 1] === undefined ? true : rest[++i];
   else positional.push(rest[i]);
 }
 
 if (!['quick', 'full', 'one', 'sample'].includes(tier)) {
-  console.error('Usage: run.mjs <quick|full|one|sample> [--mode Walk] [--network <url>] [--threshold 1.8] [--slack 250] [--workers 4] [--batch 100] [--compare <run.json>]');
+  console.error(
+    'Usage: run.mjs <quick|full|one|sample> [--mode Walk] [--network <url>] [--threshold 1.8] [--slack 250] [--workers 4] [--batch 100] [--compare <run.json>]'
+  );
   process.exit(2);
 }
 
@@ -42,7 +55,10 @@ const mode = flags.mode ?? 'Walk';
 if (!MODES.includes(mode)) fail(`--mode must be one of ${MODES.join(', ')}; got ${mode}`);
 
 const network = flags.network ?? defaultNetwork();
-const threshold = { threshold: Number(flags.threshold ?? DEFAULT_THRESHOLD.threshold), slackMetres: Number(flags.slack ?? DEFAULT_THRESHOLD.slackMetres) };
+const threshold = {
+  threshold: Number(flags.threshold ?? DEFAULT_THRESHOLD.threshold),
+  slackMetres: Number(flags.slack ?? DEFAULT_THRESHOLD.slackMetres)
+};
 const workers = Number(flags.workers ?? 4);
 const batchSize = Number(flags.batch ?? 100);
 
@@ -105,14 +121,27 @@ async function buildings() {
   const where = "IsBldg='Y' AND Longitude IS NOT NULL AND Latitude IS NOT NULL";
   const all = [];
 
-  for (let offset = 0; ; ) {
-    const params = new URLSearchParams({ where, outFields: 'OBJECTID,Abbrev,BldgName,Longitude,Latitude', orderByFields: 'OBJECTID', resultOffset: String(offset), returnGeometry: 'false', f: 'json' });
+  for (let offset = 0; ;) {
+    const params = new URLSearchParams({
+      where,
+      outFields: 'OBJECTID,Abbrev,BldgName,Longitude,Latitude',
+      orderByFields: 'OBJECTID',
+      resultOffset: String(offset),
+      returnGeometry: 'false',
+      f: 'json'
+    });
     const page = await request(`${layer}/query?${params}`);
 
     if (page.error) fail(`${layer}: ${JSON.stringify(page.error)}`);
 
     for (const { attributes: a } of page.features) {
-      all.push({ id: a.OBJECTID, abbrev: a.Abbrev?.trim() || null, name: a.BldgName?.trim() || null, lon: a.Longitude, lat: a.Latitude });
+      all.push({
+        id: a.OBJECTID,
+        abbrev: a.Abbrev?.trim() || null,
+        name: a.BldgName?.trim() || null,
+        lon: a.Longitude,
+        lat: a.Latitude
+      });
     }
 
     offset += page.features.length;
@@ -132,7 +161,9 @@ async function travelMode() {
   const found = description.supportedTravelModes?.find((m) => m.name === mode);
 
   if (!found) {
-    fail(`${network} does not publish the ${mode} travel mode; it publishes ${(description.supportedTravelModes ?? []).map((m) => m.name).join(', ') || 'none'}`);
+    fail(
+      `${network} does not publish the ${mode} travel mode; it publishes ${(description.supportedTravelModes ?? []).map((m) => m.name).join(', ') || 'none'}`
+    );
   }
 
   return found;
@@ -196,7 +227,8 @@ async function runBatch(pairs, byId, mode) {
 
 /** Looks a building up by OBJECTID or by abbreviation. */
 function find(all, wanted) {
-  const found = all.find((b) => String(b.id) === wanted) ?? all.find((b) => b.abbrev?.toUpperCase() === wanted.toUpperCase());
+  const found =
+    all.find((b) => String(b.id) === wanted) ?? all.find((b) => b.abbrev?.toUpperCase() === wanted.toUpperCase());
 
   if (!found) fail(`No building with OBJECTID or abbreviation ${wanted}`);
 
@@ -221,13 +253,21 @@ function quickPairs(all) {
       [p.from, a],
       [p.to, b]
     ]) {
-      if (!got || (got.abbrev ?? null) !== (want.abbrev ?? null) || got.name !== want.name) stale.push(`${want.id} (${want.abbrev ?? want.name}) is now ${got ? got.abbrev ?? got.name : 'missing'}`);
+      if (!got || (got.abbrev ?? null) !== (want.abbrev ?? null) || got.name !== want.name)
+        stale.push(`${want.id} (${want.abbrev ?? want.name}) is now ${got ? (got.abbrev ?? got.name) : 'missing'}`);
     }
 
     if (a && b) chosen.push(pairOf(a, b));
   }
 
-  if (stale.length) fail(`quick-pairs.json no longer matches the basemap; re-key these by name before trusting a run:\n  ${stale.join('\n  ')}`);
+  const keys = chosen.map((p) => [p.from, p.to].sort((x, y) => x - y).join('-'));
+  const twice = keys.filter((k, i) => keys.indexOf(k) !== i);
+
+  if (twice.length) fail(`quick-pairs.json lists ${twice.join(', ')} more than once`);
+  if (stale.length)
+    fail(
+      `quick-pairs.json no longer matches the basemap; re-key these by name before trusting a run:\n  ${stale.join('\n  ')}`
+    );
 
   return chosen;
 }
@@ -239,7 +279,7 @@ function quickPairs(all) {
  */
 function sample(all, perBand = 20, seed = 2655) {
   let state = seed;
-  const random = () => ((state = (state * 1103515245 + 12345) % 2 ** 31) / 2 ** 31);
+  const random = () => (state = (state * 1103515245 + 12345) % 2 ** 31) / 2 ** 31;
   const named = all.filter((b) => b.abbrev);
   const wanted = new Map();
 
@@ -253,7 +293,9 @@ function sample(all, perBand = 20, seed = 2655) {
     const band = bandOf(pair.straight);
     const list = wanted.get(band) ?? [];
 
-    if (list.length < perBand && !list.some((p) => p.key === pair.key)) wanted.set(band, [...list, pair]);
+    const same = (p) => (p.from === pair.from && p.to === pair.to) || (p.from === pair.to && p.to === pair.from);
+
+    if (list.length < perBand && !list.some(same)) wanted.set(band, [...list, pair]);
   }
 
   return [...wanted.values()].flat();
@@ -267,7 +309,11 @@ const byId = new Map(all.map((b) => [b.id, b]));
 const describe = (b) => ({ id: b.id, abbrev: b.abbrev, name: b.name });
 
 if (tier === 'sample') {
-  const pairs = sample(all).map((p) => ({ from: describe(byId.get(p.from)), to: describe(byId.get(p.to)), why: `stratified sample, ${bandOf(p.straight)}` }));
+  const pairs = sample(all).map((p) => ({
+    from: describe(byId.get(p.from)),
+    to: describe(byId.get(p.to)),
+    why: `stratified sample, ${bandOf(p.straight)}`
+  }));
 
   console.log(JSON.stringify({ pairs }, null, 2));
   process.exit(0);
@@ -291,7 +337,9 @@ const progressFile = path.join(outDir, 'progress.jsonl');
 fs.mkdirSync(outDir, { recursive: true });
 
 console.log(`DEVELOPMENT ONLY: ${network}. Production has no routing service, so this run tests nothing on production.`);
-console.log(`${tier}, ${mode}: ${pairs.length} pairs among ${all.length} buildings, ${workers} workers, batches of ${batchSize}. Run: ${path.relative(REPO, outDir)}`);
+console.log(
+  `${tier}, ${mode}: ${pairs.length} pairs among ${all.length} buildings, ${workers} workers, batches of ${batchSize}. Run: ${path.relative(REPO, outDir)}`
+);
 
 /** What an interrupted run already finished, so `full` picks up where it stopped. */
 const done = new Map();
@@ -356,11 +404,23 @@ const run = {
   isolated: summary.isolated.map(describe).map((b, i) => ({ ...b, unreachable: summary.isolated[i].unreachable })),
   impossible: summary.impossible.map(row),
   outliers: summary.outliers.map(row),
-  unreachablePairs: summary.unreachablePairs.map((u) => ({ from: describe(u.from), to: describe(u.to), straight: Math.round(u.straight), reason: u.reason }))
+  unreachablePairs: summary.unreachablePairs.map((u) => ({
+    from: describe(u.from),
+    to: describe(u.to),
+    straight: Math.round(u.straight),
+    reason: u.reason
+  }))
 };
 
 function row(r) {
-  return { from: describe(r.from), to: describe(r.to), straight: Math.round(r.straight), network: Math.round(r.network), excess: Math.round(r.excess), ratio: Number(r.ratio.toFixed(3)) };
+  return {
+    from: describe(r.from),
+    to: describe(r.to),
+    straight: Math.round(r.straight),
+    network: Math.round(r.network),
+    excess: Math.round(r.excess),
+    ratio: Number(r.ratio.toFixed(3))
+  };
 }
 
 fs.writeFileSync(path.join(outDir, 'run.json'), JSON.stringify(run, null, 2) + '\n');
@@ -376,16 +436,26 @@ function report(run) {
   console.log(`\nDEVELOPMENT ONLY. ${run.routed} of ${run.pairs} pairs routed, ${run.elapsedSeconds} s.`);
   console.log('\nBand        Pairs  Routed  Detours  Median  Worst');
   for (const b of run.bands) {
-    console.log(`${b.band.padEnd(11)} ${String(b.pairs).padStart(5)}  ${String(b.routed).padStart(6)}  ${String(b.detours).padStart(7)}  ${fmt(b.median)}  ${fmt(b.worst)}`);
+    console.log(
+      `${b.band.padEnd(11)} ${String(b.pairs).padStart(5)}  ${String(b.routed).padStart(6)}  ${String(b.detours).padStart(7)}  ${fmt(b.median)}  ${fmt(b.worst)}`
+    );
   }
 
   if (run.impossible.length) {
-    console.log(`\nIMPOSSIBLE: ${run.impossible.length} routes shorter than the straight line. The measurement or the coordinates are wrong:`);
-    for (const r of run.impossible.slice(0, 30)) console.log(`  ${label(r.from)} to ${label(r.to)}: ${r.straight} m straight, ${r.network} m by network (${r.ratio})`);
+    console.log(
+      `\nIMPOSSIBLE: ${run.impossible.length} routes shorter than the straight line. The measurement or the coordinates are wrong:`
+    );
+    for (const r of run.impossible.slice(0, 30))
+      console.log(`  ${label(r.from)} to ${label(r.to)}: ${r.straight} m straight, ${r.network} m by network (${r.ratio})`);
   }
 
-  console.log(`\nDetours (over ${run.threshold.threshold} times the straight line plus ${run.threshold.slackMetres} m): ${run.outliers.length}`);
-  for (const r of run.outliers.slice(0, 30)) console.log(`  +${r.excess} m, ${r.ratio}x: ${label(r.from)} to ${label(r.to)}, ${r.straight} m straight, ${r.network} m by network`);
+  console.log(
+    `\nDetours (over ${run.threshold.threshold} times the straight line plus ${run.threshold.slackMetres} m): ${run.outliers.length}`
+  );
+  for (const r of run.outliers.slice(0, 30))
+    console.log(
+      `  +${r.excess} m, ${r.ratio}x: ${label(r.from)} to ${label(r.to)}, ${r.straight} m straight, ${r.network} m by network`
+    );
 
   console.log(`\nBuildings that reach nothing: ${run.isolated.length}`);
   for (const b of run.isolated) console.log(`  ${label(b)} ${b.name ?? ''}`);
@@ -412,6 +482,8 @@ function compare(before, after) {
     const added = [...a[kind]].filter((k) => !b[kind].has(k));
     const gone = [...b[kind]].filter((k) => !a[kind].has(k));
 
-    console.log(`  ${kind}: ${added.length} new, ${gone.length} gone${added.length ? ` - new: ${added.slice(0, 20).join(', ')}` : ''}`);
+    console.log(
+      `  ${kind}: ${added.length} new, ${gone.length} gone${added.length ? ` - new: ${added.slice(0, 20).join(', ')}` : ''}`
+    );
   }
 }

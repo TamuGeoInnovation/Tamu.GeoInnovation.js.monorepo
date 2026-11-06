@@ -36,10 +36,13 @@ test('a route is joined to its pair by name, not by where it comes in the answer
   // give p1 the length of p2.
   const { routed, missing } = joinRoutes(pairs, solved(['p0', 120], ['p2', 340]));
 
-  assert.deepEqual([...routed], [
-    ['p0', 120],
-    ['p2', 340]
-  ]);
+  assert.deepEqual(
+    [...routed],
+    [
+      ['p0', 120],
+      ['p2', 340]
+    ]
+  );
   assert.deepEqual(missing, ['p1']);
 });
 
@@ -141,7 +144,12 @@ test('walking pairs are unordered and driving pairs are ordered, since one-way s
 });
 
 test('a building that reaches nothing is told apart from a pair that cannot be joined', () => {
-  const buildings = [building(1, 0, 0, 'AAA'), building(2, 0, 0.003, 'BBB'), building(3, 0, 0.006, 'CCC'), building(4, 0, 0.009)];
+  const buildings = [
+    building(1, 0, 0, 'AAA'),
+    building(2, 0, 0.003, 'BBB'),
+    building(3, 0, 0.006, 'CCC'),
+    building(4, 0, 0.009)
+  ];
   const results = [
     { from: 1, to: 2, straight: 333, network: 400 },
     { from: 1, to: 3, straight: 667, network: 800 },
@@ -161,6 +169,19 @@ test('a building that reaches nothing is told apart from a pair that cannot be j
     summary.unreachablePairs.map((p) => [p.from.id, p.to.id]),
     [[2, 3]]
   );
+});
+
+test('a building tested against one other is not called isolated on the strength of one pair', () => {
+  const buildings = [building(1, 0, 0), building(2, 0, 0.01), building(3, 0, 0.02)];
+  const results = [
+    { from: 1, to: 2, straight: 1100, network: 1300 },
+    { from: 1, to: 3, straight: 2200, unreachable: 'No solution found.' }
+  ];
+
+  const summary = summarize(results, buildings);
+
+  assert.deepEqual(summary.isolated, []);
+  assert.equal(summary.unreachablePairs.length, 1);
 });
 
 test('outliers come worst first, by excess metres, with the ratio beside them', () => {

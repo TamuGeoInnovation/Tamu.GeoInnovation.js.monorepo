@@ -1,0 +1,184 @@
+{
+  "developmentOnly": "The routing network is published on the development GIS server only; production has no routing service.",
+  "network": "https://gis-dev.it.tamu.edu/arcgis/rest/services/RoutingProPublish/Map/NAServer/Route",
+  "tier": "quick",
+  "mode": "Walk",
+  "threshold": {
+    "threshold": 1.8,
+    "slackMetres": 250
+  },
+  "started": "2026-11-06T11:54:02.141Z",
+  "elapsedSeconds": 35,
+  "buildings": 779,
+  "pairs": 112,
+  "routed": 102,
+  "bands": [
+    {
+      "band": "0-250 m",
+      "pairs": 23,
+      "routed": 22,
+      "detours": 0,
+      "median": 1.505993602758566,
+      "worst": 2.5896211278992975
+    },
+    {
+      "band": "250-500 m",
+      "pairs": 22,
+      "routed": 20,
+      "detours": 1,
+      "median": 1.4029273434896663,
+      "worst": 3.3328546369356746
+    },
+    {
+      "band": "500 m-1 km",
+      "pairs": 21,
+      "routed": 18,
+      "detours": 0,
+      "median": 1.3730689527272597,
+      "worst": 1.9235850731373199
+    },
+    {
+      "band": "1-2 km",
+      "pairs": 21,
+      "routed": 21,
+      "detours": 0,
+      "median": 1.2812584514056964,
+      "worst": 1.5776957561134866
+    },
+    {
+      "band": "2 km +",
+      "pairs": 25,
+      "routed": 21,
+      "detours": 2,
+      "median": 1.3491178949204237,
+      "worst": 3.5438374417474017
+    }
+  ],
+  "impossible": [
+    {
+      "from": {
+        "id": 1805,
+        "abbrev": "TPES",
+        "name": "WWTP Equipment Storage Building"
+      },
+      "to": {
+        "id": 1800,
+        "abbrev": "WWTP",
+        "name": "Wastewater Treatment Plant"
+      },
+      "straight": 38,
+      "network": 20,
+      "excess": -19,
+      "ratio": 0.513
+    },
+    {
+      "from": {
+        "id": 2022,
+        "abbrev": "CC09",
+        "name": "Cavalry Court #09"
+      },
+      "to": {
+        "id": 2023,
+        "abbrev": "GH01",
+        "name": "The George Hotel #01"
+      },
+      "straight": 80,
+      "network": 63,
+      "excess": -17,
+      "ratio": 0.786
+    },
+    {
+      "from": {
+        "id": 1802,
+        "abbrev": "TPSP",
+        "name": "WWTP Secondary Pump Building"
+      },
+      "to": {
+        "id": 1803,
+        "abbrev": "TPDB",
+        "name": "WWTP Disinfection Building"
+      },
+      "straight": 48,
+      "network": 43,
+      "excess": -5,
+      "ratio": 0.889
+    }
+  ],
+  "outliers": [
+    {
+      "from": {
+        "id": 1044,
+        "abbrev": "ARTF",
+        "name": "Aquaculture Research Teaching Facility"
+      },
+      "to": {
+        "id": 1915,
+        "abbrev": null,
+        "name": "RELLIS Multiuse Facility 8610"
+      },
+      "straight": 10687,
+      "network": 23353,
+      "excess": 12666,
+      "ratio": 2.185
+    },
+    {
+      "from": {
+        "id": 1802,
+        "abbrev": "TPSP",
+        "name": "WWTP Secondary Pump Building"
+      },
+      "to": {
+        "id": 1425,
+        "abbrev": "POSC",
+        "name": "Poultry Sci Handling & Judging"
+      },
+      "straight": 3146,
+      "network": 11147,
+      "excess": 8002,
+      "ratio": 3.544
+    },
+    {
+      "from": {
+        "id": 1715,
+        "abbrev": "VICI",
+        "name": "Veterinary Medicine Building 3 - VICI"
+      },
+      "to": {
+        "id": 1242,
+        "abbrev": "VTH",
+        "name": "Veterinary Teaching Hospital"
+      },
+      "straight": 385,
+      "network": 1282,
+      "excess": 897,
+      "ratio": 3.333
+    }
+  ],
+  "isolated": [
+    {
+      "id": 1143,
+      "abbrev": "DPDC",
+      "name": "Davis Football Player Development Center",
+      "unreachable": 3
+    },
+    {
+      "id": 1145,
+      "abbrev": "BFC",
+      "name": "Bright-Slocum Center Texas A&M Football",
+      "unreachable": 2
+    },
+    {
+      "id": 1226,
+      "abbrev": "YMCA",
+      "name": "YMCA Building",
+      "unreachable": 3
+    },
+    {
+      "id": 1655,
+      "abbrev": "EBCS",
+      "name": "E.B. Cushing Stadium",
+      "unreachable": 2
+    }
+  ],
+  "unreachablePairs": []
+}

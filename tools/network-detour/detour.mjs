@@ -58,7 +58,10 @@ export function joinRoutes(pairs, response) {
   for (const feature of response.routes?.features ?? []) {
     const { Name: name, Total_Length: length } = feature.attributes ?? {};
 
-    if (!name) throw new Error(`A route came back with no name, so it cannot be joined to a pair: ${JSON.stringify(feature.attributes)}`);
+    if (!name)
+      throw new Error(
+        `A route came back with no name, so it cannot be joined to a pair: ${JSON.stringify(feature.attributes)}`
+      );
     if (!sent.has(name)) throw new Error(`A route came back for ${name}, which was not sent in this batch`);
     if (routed.has(name)) throw new Error(`${name} was answered twice`);
     if (typeof length !== 'number') throw new Error(`The route for ${name} has no Total_Length`);
@@ -129,7 +132,8 @@ export const bandOf = (metres) => BANDS.find(([, below]) => metres < below)[0];
 /**
  * Turns per-pair results into the report: impossible results first, then detours worst first by excess
  * metres, then what cannot be reached. A building none of whose pairs route is **isolated**, a different
- * fault from a pair of connected buildings that cannot be joined, so the two are reported apart.
+ * fault from a pair of connected buildings that cannot be joined, so the two are reported apart. It takes
+ * two failed pairs and no routed one to call a building isolated.
  *
  * Each result is `{ from, to, straight, network }` or `{ from, to, straight, unreachable: reason }`.
  */
@@ -168,13 +172,21 @@ export function summarize(results, buildings, threshold = DEFAULT_THRESHOLD) {
     }
   }
 
-  const isolated = buildings.filter((b) => pairs.get(b.id).routed === 0 && pairs.get(b.id).unreachable > 0);
+  // Two failures at least: a building tested against one other, as in a `one` run, has said nothing yet
+  // about whether it reaches anything else.
+  const isolated = buildings.filter((b) => pairs.get(b.id).routed === 0 && pairs.get(b.id).unreachable >= 2);
   const isolatedIds = new Set(isolated.map((b) => b.id));
 
   return {
     pairs: results.length,
     routed: results.length - unreachable.length,
-    bands: [...bands].map(([name, b]) => ({ band: name, pairs: b.pairs, routed: b.routed, detours: b.detours, ...spread(b.ratios) })),
+    bands: [...bands].map(([name, b]) => ({
+      band: name,
+      pairs: b.pairs,
+      routed: b.routed,
+      detours: b.detours,
+      ...spread(b.ratios)
+    })),
     impossible: impossible.sort((a, b) => a.ratio - b.ratio),
     outliers: outliers.sort((a, b) => b.excess - a.excess),
     isolated: isolated.map((b) => ({ ...b, unreachable: pairs.get(b.id).unreachable })),
