@@ -8,6 +8,11 @@ import { Organization, Speaker, Sponsor } from '../entities/all.entity';
  * The fields of a record that only the people who manage it may read, and the permission that lets them. Everyone
  * else, signed in or not, gets the record without them: a sponsor's or organization's contact person, what a sponsor
  * paid, and a speaker's email and account. The public pages show none of them; only the admin pages do.
+ *
+ * These are found by type (`instanceof`), so a route must answer with the entities themselves. A plain copy of a
+ * speaker (a spread, a raw query, JSON.parse) would keep its email and account. `email` and `accountGuid` are not
+ * removed by name as the contact fields are, because check-ins and class attendance use those names too and their
+ * admin pages need them. A route that copies speakers must turn them back into entities (`manager.create`) first.
  */
 export const PRIVATE_FIELDS: Array<{ type: new () => object; fields: Array<string>; permission: string }> = [
   {
@@ -67,7 +72,9 @@ export class PrivateFieldsInterceptor implements NestInterceptor {
 
 /**
  * `value` without the private fields `permissions` does not unlock. Objects are changed in place: they are this
- * response's own, read from the database for it.
+ * response's own, read from the database for it. That is safe only while nothing caches entities or responses: a
+ * cached object stripped for one public request would then reach admins without the fields. Whoever adds caching
+ * must clone what this receives first.
  */
 export function withoutPrivateFields<T>(value: T, permissions: Array<string> = []): T {
   const seen = new WeakSet<object>();
