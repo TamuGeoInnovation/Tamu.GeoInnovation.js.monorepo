@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BullModule } from '@nestjs/bull';
 
@@ -28,7 +29,8 @@ import {
   EventLocationModule,
   PlaceModule,
   AssetsModule,
-  ContactModule
+  ContactModule,
+  PrivateFieldsInterceptor
 } from '@tamu-gisc/gisday/platform/data-api';
 import { AuthorizationModule } from '@tamu-gisc/common/nest/auth';
 
@@ -106,6 +108,10 @@ const onlyWith = <T>(feature: GisdayFeature, modules: Array<T>): Array<T> => (si
     })
   ],
   controllers: [],
-  providers: [AppService]
+  providers: [
+    AppService,
+    // Removes contact details and speakers' emails from every response unless the caller may manage them.
+    { provide: APP_INTERCEPTOR, useClass: PrivateFieldsInterceptor }
+  ]
 })
 export class AppModule {}

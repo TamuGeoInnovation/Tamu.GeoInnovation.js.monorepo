@@ -21,6 +21,7 @@ import { NgClass, AsyncPipe } from '@angular/common';
 import { HasRolesPipe } from '@tamu-gisc/common/ngx/auth';
 import { SeasonLinkPipe } from '../../pipes/season-link/season-link.pipe';
 import { GISDAY_SITE, SiteHasPipe } from '../../site/site';
+import { clearApiCache } from '../../utils/clear-api-cache';
 import { LockupComponent } from '@tamu-gisc/ui-kits/ngx/branding';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { AlertModalComponent, AlertModalData } from '@tamu-gisc/ui-kits/ngx/layout/modal/alert-modal';
@@ -144,20 +145,24 @@ export class HeaderComponent implements OnInit {
     this.as.login({
       appState: {
         target: this.rt.url
-      }
+      },
+      // A site that signs in with another organization's accounts asks that provider for the password every time.
+      // Logging out cannot end UCGIS's Tradewing session: Auth0 does not pass the sign-out on, and Tradewing will not
+      // send a visitor back after one. So without this, Login/Signup after Logout signed the visitor straight back
+      // in, on a shared computer as the previous person (#2672). Auth0 passes `prompt=login` on to Tradewing.
+      ...(this.site.signInWith ? { authorizationParams: { prompt: 'login' as const } } : {})
     });
   }
 
-  public logout() {
+  public async logout() {
     const url = window.location.origin;
+
+    // Before leaving, so the next person on this browser cannot be handed this session's API answers.
+    await clearApiCache();
 
     this.as.logout({
       logoutParams: {
-        returnTo: url,
-        // A site that signs in with another organization's accounts ends that session too, at its provider. Auth0's
-        // logout alone left UCGIS visitors signed in to Tradewing, so the next Login/Signup signed them straight back
-        // in without a password (#2672). Not on the other sites: there it would sign people out of Google itself.
-        ...(this.site.signInWith ? { federated: true } : {})
+        returnTo: url
       }
     });
   }

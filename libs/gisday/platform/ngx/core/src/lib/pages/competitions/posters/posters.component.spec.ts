@@ -30,4 +30,13 @@ describe('PostersComponent', () => {
     expect(rendered).not.toContain('November 9th');
     expect(rendered).not.toContain('November 11th');
   });
+
+  // #2676. The Center for Teaching Excellence no longer provides the prizes; the amounts stay.
+  it('no longer credits the prizes to the Center for Teaching Excellence', () => {
+    const rendered = text();
+
+    expect(rendered).not.toContain('Center for Teaching Excellence');
+    expect(rendered).not.toContain('Montague-CTE');
+    expect(rendered).toContain('$250');
+  });
 });

@@ -36,7 +36,9 @@ const POPUP_CASES: PopupCase[] = [
   { name: 'parking lot', path: '/map?lot=100b', shows: /Lot 100b/i },
   { name: 'point of interest', path: '/map?poi=1', shows: /Bonfire Memorial/ },
   { name: 'bus stop', path: '/map?busstop=4719', shows: /Blinn/ },
-  { name: 'event map feature', path: '/parking/avp-parking/map?feature=AVP-parking-lots:26135', shows: /Lot 043/ }
+  { name: 'event map feature', path: '/parking/avp-parking/map?feature=AVP-parking-lots:26135', shows: /Lot 043/ },
+  // A tent, so a visitor can walk to it on game day (#2639).
+  { name: 'tailgate tent', path: '/events/tailgating/map?tent=O62', shows: /Tent O62/ }
 ];
 
 const AVAILABLE = directionsAvailable();
@@ -151,7 +153,8 @@ const PHONE_TRIP_CASES = [
     name: 'an event map feature',
     path: '/parking/avp-parking/map?feature=AVP-parking-lots:26135',
     trip: /\/parking\/avp-parking\/map\/m\/trip/
-  }
+  },
+  { name: 'a tailgate tent', path: '/events/tailgating/map?tent=O62', trip: /\/events\/tailgating\/map\/m\/trip/ }
 ];
 
 if (AVAILABLE) {

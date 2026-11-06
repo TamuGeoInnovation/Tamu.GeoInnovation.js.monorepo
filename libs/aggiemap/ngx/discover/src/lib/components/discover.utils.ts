@@ -120,13 +120,6 @@ export function buildMapColumnGroups(
   }));
 }
 
-/**
- * Index the second ordered-list column should start at so numbering continues across columns.
- */
-export function getSecondColumnStart(columns: InternalDiscoverApplication[][]): number {
-  return columns[0].length + 1;
-}
-
 export function sortApplicationsByName<T extends DiscoverApplication>(apps: T[]): T[] {
   return [...apps].sort((a, b) => a.name.localeCompare(b.name));
 }
