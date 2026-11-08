@@ -21,18 +21,26 @@ addr() { command -v gh >/dev/null 2>&1 && gh api "repos/$private/contents/listen
 # when the participant last pushed real work (its STATUS.md or a report), and flags it when that is over 60 minutes old while it
 # says it is running a batch (DIRECTOR.md, "When a listener stops": some push at least every 60 minutes).
 worked() { git log -1 --format=%ct origin/work-mailbox -- "$1/STATUS.md" "$1/reports" 2>/dev/null; }
-printf '| %s | %s | %s | %s | %s | %s | %s | %s |\n' Participant Agent State 'Takes work?' 'Last seen (Central)' 'Last real push' Health 'Where (private)'
-printf '| --- | --- | --- | --- | --- | --- | --- | --- |\n'
+# What is waiting for it (tools/queued.sh): "idle" beside a queued batch, or "blocked", is a machine wasting its time, and the
+# director who next runs this fixes that before anything else (DIRECTOR.md, "No machine idle beside work", 8 November 2026).
+waiting() { bash tools/queued.sh "$1" | paste -sd ',' - | sed 's/,/, /g'; }
+printf '| %s | %s | %s | %s | %s | %s | %s | %s | %s |\n' Participant Agent State 'Takes work?' 'Last seen (Central)' 'Last real push' 'Waiting for it' Health 'Where (private)'
+printf '| --- | --- | --- | --- | --- | --- | --- | --- | --- |\n'
 for d in $(git ls-tree -d --name-only origin/work-mailbox); do
   git cat-file -e "origin/work-mailbox:$d/TASKS.md" 2>/dev/null || continue
   hb=$(git show "origin/work-mailbox:$d/HEARTBEAT.md" 2>/dev/null | tr -d '\r')
   w=$(worked "$d"); wl=""; [ -n "$w" ] && wl="$(( (now - w) / 60 )) min ago"
-  if [ -z "$hb" ]; then printf '| %s | | | | | %s | never checked in | %s |\n' "$d" "$wl" "$(addr "$d")"; continue; fi
+  q=$(waiting "$d")
+  if [ -z "$hb" ]; then printf '| %s | | | | | %s | %s | never checked in | %s |\n' "$d" "$wl" "$q" "$(addr "$d")"; continue; fi
   f() { printf '%s\n' "$hb" | sed -n "s/^$1: //p" | head -1; }
   seen=$(f seen_utc); due=$(f next_utc)
   late=$(( now - $(date -u -d "$due" +%s) ))
   if [ $late -le 0 ]; then health=up; elif [ $late -le 7200 ]; then health="late $((late / 60)) min: check it is signed in"; else health="gone: check it is signed in"; fi
   acc=$(f accepting); [ "$health" = up ] || acc=no
-  case "$(f state)" in running*) [ -n "$w" ] && [ $(( now - w )) -gt 3600 ] && health="$health, but no work pushed for $(( (now - w) / 60 )) min: stuck?" ;; esac
-  printf '| %s | %s | %s | %s | %s | %s | %s | %s |\n' "$d" "$(f agent)" "$(f state)" "$acc" "$(central "$seen")" "$wl" "$health" "$(addr "$d")"
+  case "$(f state)" in
+    running*) [ -n "$w" ] && [ $(( now - w )) -gt 3600 ] && health="$health, but no work pushed for $(( (now - w) / 60 )) min: stuck?" ;;
+    idle*) [ -n "$q" ] && health="$health, but IDLE WITH WORK WAITING: wake it" ;;
+    blocked*) health="BLOCKED: $(f state | sed 's/^blocked: *//')" ;;
+  esac
+  printf '| %s | %s | %s | %s | %s | %s | %s | %s | %s |\n' "$d" "$(f agent)" "$(f state)" "$acc" "$(central "$seen")" "$wl" "$q" "$health" "$(addr "$d")"
 done
