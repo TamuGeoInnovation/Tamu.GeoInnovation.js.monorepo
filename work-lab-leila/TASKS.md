@@ -6175,3 +6175,70 @@ One pull request per item, each with its issue linked, built from the template, 
 and 3 are test-only, so they take the `no-visible-change` label.
 
 `work-lab-leila/reports/2026-11-08-13.md`, and say **"report ready: <file>"**.
+
+## Batch 14 (8 November 2026, from `work (aggiemap)`) — the Nature Rx popup: two visible faults (Medium)
+
+Two changes to the same popup, decided by the maintainer on 8 November. **One pull request, because they
+are the same popup and the same visitor**, and shipping them separately means two reviews and two release
+notes for one screenshot.
+
+Open `https://dev.aggiemap.tamu.edu/map/d?naturerx=15` to see both at once — West Campus Spaces, which has
+five features and one photograph. The search source's parameter is `naturerx`; `?feature=nature-rx-exact:15`
+does **not** work, which cost me ten minutes, so take the form above.
+
+### 1. [#2717](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2717) — the features are a bare bullet list
+
+The popup renders a space's features as `<ul><li>`, and **it is the only popup in the repository that uses
+a `<ul>`**. Every other one — buildings, lots, garages, restrooms, lactation rooms, accessible entrances,
+dining, points of interest, bonfire — uses `feature-style-1` and `feature-style-2` from
+`libs/sass/components/_popup.scss`, and that file has no `li` or `list-style` rule at all. So the list is
+falling back to the browser's own bullet and indent, which is why it reads as a form dropped into the panel.
+
+**Decided: a labelled line in `feature-style-2`**, exactly as `lactation.component.html` already shows the
+same kind of content:
+
+```
+Features: Seating, Shade, Open play area, Walking or jogging path, Bike racks
+```
+
+label in `<strong>`. **No new CSS** — that is the point of the decision. Two alternatives were rejected:
+styling the list in `_popup.scss` keeps a pattern only this popup uses, and a shared tag or chip component
+would be built from nothing (there is no chip, tag, pill or badge anywhere in `libs/ui-kits/ngx/**` or
+`libs/sass/` — I checked all of both).
+
+**Keep the existing ordering rule**: `NATURE_RX_AMENITIES` order, and only the features a space has (#2630).
+That decision stands; only the presentation changes.
+
+Add a test over the **rendered output**, not only over `amenitiesOf` — the current test would pass whatever
+the template did.
+
+### 2. [#2716](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2716) — the carousel downloads every photograph at once
+
+`PhotoCarouselComponent` renders every photo as `<img [src]="photo">` with no `loading` attribute
+(`libs/ui-kits/ngx/layout/src/lib/components/photo-carousel/photo-carousel.component.html`), so opening a
+popup fetches all of a space's photographs immediately even though one slide shows at a time. ILCB Green
+Space is **6.5 MB across four photographs**; the median space is 2.6 MB.
+
+**Make the slides past the first load lazily**, behind the component's existing interface so no caller
+changes. It is shared with the Points of Interest and Bonfire popups, so this improves all three.
+
+**Only our half is in scope.** The files themselves are camera originals — 73 of 76 over 400 KB, median
+3,008 px wide — and that is with Facilities Analytics & Mapping, as is the fact that **ten listed
+photographs are not on the server at all** (they answer 200 with an HTML page, so the carousel shows a
+broken image and nothing logs an error). Do not try to fix those here; #2716 records them.
+
+**Say in the report what lazy loading alone is worth**, measured: the first photograph of ILCB Green Space
+is still 1.8 MB, so this does not rescue the popup on its own, and the report should not imply it does.
+
+### Screenshots and notes
+
+Both are visible to every visitor who opens a Nature Rx space, so the pull request carries **before and
+after**, committed to `docs/screenshots/<slug>/` as they are taken, and a release-notes entry in
+`docs/releases/unreleased/` with its *What to test on dev* row. The before state is still live on dev, so
+capture it before you change anything.
+
+For the carousel, a useful "after" is the network panel's total for the popup, not only a picture.
+
+### The report
+
+`work-lab-leila/reports/2026-11-08-14.md`, and say **"report ready: <file>"**. Take this after batch 13.
