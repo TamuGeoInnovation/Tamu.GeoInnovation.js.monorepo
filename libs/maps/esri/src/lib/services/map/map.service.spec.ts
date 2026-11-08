@@ -336,3 +336,148 @@ describe('EsriMapService selecting a linked feature as the map loads', () => {
     expect(selectFeaturesFromUrl).not.toHaveBeenCalled();
   });
 });
+
+/**
+ * A click on a map that is still drawing opens the popup of what is under it (#2707).
+ *
+ * The click handler was `view.hitTest` and nothing else. Until the buildings layer view holds the graphics
+ * under the point, which on a fresh load is several seconds after the page looks ready, the hit test is
+ * empty and the click was thrown away: 0 of 20 clicks opened a popup on dev once the framing had settled.
+ */
+describe('EsriMapService clicking a map that is still drawing', () => {
+  const building = { attributes: { BldgName: 'Interdisciplinary Life Sciences Building' } };
+  const lot = { attributes: { LotName: '100g' } };
+  const point = { type: 'point', x: 1, y: 2 };
+
+  /** A feature layer with a popup, whose layer view is drawing or not. */
+  const popupLayer = (id: string, features: object[], drawing: boolean) => {
+    const layer = {
+      id,
+      visible: true,
+      geometryType: 'polygon',
+      popupComponent: {},
+      queryFeatures: vi.fn(() => Promise.resolve({ features: features.map((feature) => ({ ...feature })) }))
+    };
+
+    return { layer, layerView: { layer, suspended: false, updating: drawing } };
+  };
+
+  const collection = <T>(items: T[]) => ({ toArray: () => [...items] });
+
+  let service: EsriMapService;
+  let router: { url: string };
+  let click: (event: object) => void;
+  let hitTestResults: object[];
+  let emitted: __esri.Graphic[][];
+
+  const useLayers = (entries: Array<ReturnType<typeof popupLayer>>) => {
+    service['_modules'].view = {
+      on: (_: string, handler: (event: object) => void) => {
+        click = handler;
+
+        return { remove: () => undefined };
+      },
+      hitTest: () => Promise.resolve({ results: hitTestResults }),
+      resolution: 0.6,
+      map: { allLayers: collection(entries.map((entry) => entry.layer)) },
+      allLayerViews: collection(entries.map((entry) => entry.layerView))
+    } as unknown as __esri.MapView;
+
+    service['registerViewClickEventHandler']();
+  };
+
+  /** Lets every pending promise settle. */
+  const settle = () => new Promise((resolve) => setTimeout(resolve));
+
+  beforeEach(() => {
+    router = { url: '/map/d' };
+    hitTestResults = [];
+
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: EsriModuleProviderService, useValue: {} },
+        { provide: Router, useValue: router },
+        { provide: ActivatedRoute, useValue: {} },
+        { provide: SearchService, useValue: {} },
+        { provide: EnvironmentService, useValue: { value: () => [] } },
+        { provide: LayerSourcesService, useValue: {} },
+        { provide: HttpClient, useValue: {} },
+        EsriMapService
+      ]
+    });
+
+    service = TestBed.inject(EsriMapService);
+    emitted = [];
+    service.hitTest.subscribe((snapshot) => emitted.push(snapshot.graphics));
+  });
+
+  afterEach(() => TestBed.resetTestingModule());
+
+  const lastEmitted = () => emitted[emitted.length - 1].map((graphic) => graphic.attributes);
+
+  it('opens the popup for the building under the click while its layer is still drawing', async () => {
+    const buildings = popupLayer('buildings-layer', [building], true);
+    useLayers([buildings]);
+
+    click({ mapPoint: point });
+    await settle();
+
+    expect(lastEmitted()).toEqual([building.attributes]);
+    expect(buildings.layer.queryFeatures).toHaveBeenCalledWith(expect.objectContaining({ geometry: point }));
+  });
+
+  it('puts the top-most layer first, as a hit test does', async () => {
+    useLayers([popupLayer('parking-lots', [lot], true), popupLayer('buildings-layer', [building], true)]);
+
+    click({ mapPoint: point });
+    await settle();
+
+    expect(lastEmitted()).toEqual([building.attributes, lot.attributes]);
+  });
+
+  it('asks nothing when every popup layer has drawn, so a click on bare ground stays cheap', async () => {
+    const buildings = popupLayer('buildings-layer', [building], false);
+    useLayers([buildings]);
+
+    click({ mapPoint: point });
+    await settle();
+
+    expect(buildings.layer.queryFeatures).not.toHaveBeenCalled();
+    expect(lastEmitted()).toEqual([]);
+  });
+
+  it('asks nothing when the hit test found a feature with a popup', async () => {
+    const buildings = popupLayer('buildings-layer', [building], true);
+    useLayers([buildings]);
+    hitTestResults = [{ type: 'graphic', graphic: { attributes: lot.attributes, layer: { popupComponent: {} } } }];
+
+    click({ mapPoint: point });
+    await settle();
+
+    expect(buildings.layer.queryFeatures).not.toHaveBeenCalled();
+    expect(lastEmitted()).toEqual([lot.attributes]);
+  });
+
+  it('still opens nothing on the trip planner, where a click sets a stop', async () => {
+    const buildings = popupLayer('buildings-layer', [building], true);
+    router.url = '/map/d/trip';
+    useLayers([buildings]);
+
+    click({ mapPoint: point });
+    await settle();
+
+    expect(buildings.layer.queryFeatures).not.toHaveBeenCalled();
+    expect(lastEmitted()).toEqual([]);
+  });
+
+  it('keeps the other layers when one query fails', async () => {
+    const lots = popupLayer('parking-lots', [lot], true);
+    lots.layer.queryFeatures.mockReturnValue(Promise.reject(new Error('Unable to complete operation.')));
+    useLayers([lots, popupLayer('buildings-layer', [building], true)]);
+
+    click({ mapPoint: point });
+    await settle();
+
+    expect(lastEmitted()).toEqual([building.attributes]);
+  });
+});
