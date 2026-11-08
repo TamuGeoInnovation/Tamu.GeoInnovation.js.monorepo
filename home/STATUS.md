@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch 34** (aggiemap): #2731, the layer-title checks (probe service name, override list, smoke check). Started 4:27 PM Central, 8 November. Progress 5:39 PM: baseline done (0 wrong, 0 drifted; 95 overrides equal their service's name). Pre-push check running, then the PR.
+- Nothing. Idle and listening (5:43 PM Central, 8 November).
 
 ## Finished
+- **Batch 34** (aggiemap; report `home/reports/2026-11-08-34.md`): #2731 is PR 2745. Probe `serviceName` and `basemap`, the 202-entry override list and its unit spec, and the maps.spec title check; red then green; check exit 0. Baseline: 0 wrong, 0 drifted, 95 overrides equal to their service's name. Three questions.
 - **Batch 33** (aggiemap; report `home/reports/2026-11-08-33.md`): development merged into PR 2727 at `3436ba468`, three conflicts resolved keeping both maps (and a misplaced comment fixed), 288/288 without snapshot rewrite, check exit 0, MERGEABLE. No questions.
 - **Batch 32** (aggiemap; report `home/reports/2026-11-08-32.md`): #2712 is PR 2725 (the `developmentOnly` map gate plus the Micromobility draft); #2713 is PR 2727 (NCAA Volleyball, stacked on 2725). Both checks exit 0; specs red then green; both maps captured on dev and as production (0 service requests). Two questions.
 - **Batch 31** (aggiemap; report `home/reports/2026-11-08-31.md`): #2707, PR 2718 open (ready), `fix/2707-click-fallback-query` at `ac67fb85a`. An empty hit test queries the popup layers still drawing at the point; bare ground on a drawn map asks nothing; trip route unchanged. Unit red 3 of 6 then 16 of 16; new smoke check red 3 of 3 on dev, green locally; check exit 0. One question.
