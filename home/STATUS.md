@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle and listening (2:49 PM Central, 8 November).
+- **Batch 33** (aggiemap): merge development into #2713's branch (PR 2727), resolve, re-verify. Started 3:39 PM Central, 8 November.
 
 ## Finished
 - **Batch 32** (aggiemap; report `home/reports/2026-11-08-32.md`): #2712 is PR 2725 (the `developmentOnly` map gate plus the Micromobility draft); #2713 is PR 2727 (NCAA Volleyball, stacked on 2725). Both checks exit 0; specs red then green; both maps captured on dev and as production (0 service requests). Two questions.
