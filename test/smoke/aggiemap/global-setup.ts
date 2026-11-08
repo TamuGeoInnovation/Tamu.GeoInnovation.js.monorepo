@@ -5,7 +5,9 @@ import * as path from 'path';
 import { blockAnalytics } from './analytics';
 import { retiredMaps } from './retired';
 import { describeQuickSet, quickSetFor } from './scope';
-import { smokeBaseUrl } from './gis-hosts';
+import { gisHostFor, smokeBaseUrl } from './gis-hosts';
+// connections.ts loads without the Angular dependency graph (see services.spec.ts).
+import { Connections } from '../../../libs/aggiemap/ngx/common/src/lib/connections';
 
 /**
  * Discovers every map the target environment lists, and writes it to a manifest the spec reads at
@@ -53,6 +55,12 @@ export interface MapManifest {
    * per route (#1473). Empty where bus routes are not offered; `null` if the panel could not be read.
    */
   busRoutes: string[] | null;
+  /**
+   * A bus stop to open by `?busstop=`, by its id in this environment's bus service: Blinn, the 15th stop of route 47.
+   * Found here rather than written into the specs, because each environment's service numbers its stops differently
+   * (#2636). `null` if the service did not answer with exactly one such stop.
+   */
+  busStop: number | null;
 }
 
 /** The main map's bus panel, and what it renders: a route per bus, or a notice where none are offered. */
@@ -137,12 +145,14 @@ export default async function globalSetup(): Promise<void> {
     const skipped = [...maps].filter(isRetired);
 
     const busRoutes = await discoverBusRoutes(page, baseUrl);
+    const busStop = await discoverBusStop(page, baseUrl);
 
     const manifest: MapManifest = {
       baseUrl,
       discoveredAt: new Date().toISOString(),
       maps: [...maps].filter((href) => !isRetired(href)).sort(),
-      busRoutes
+      busRoutes,
+      busStop
     };
 
     fs.writeFileSync(MANIFEST_PATH, `${JSON.stringify(manifest, null, 2)}\n`);
@@ -150,10 +160,32 @@ export default async function globalSetup(): Promise<void> {
     console.log(
       `[smoke] discovered ${manifest.maps.length} maps on ${baseUrl}` +
         (skipped.length > 0 ? `; skipped ${skipped.length} retired: ${skipped.join(', ')}` : '') +
-        (busRoutes === null ? '; could not read the bus panel' : `; ${busRoutes.length} bus routes`)
+        (busRoutes === null ? '; could not read the bus panel' : `; ${busRoutes.length} bus routes`) +
+        (busStop === null ? '; could not find the bus stop to link to' : `; bus stop ${busStop}`)
     );
   } finally {
     await browser.close();
+  }
+}
+
+/**
+ * Blinn's id, the 15th stop of route 47, in the bus service this environment reads. Asked of the service by what the
+ * stop is, because its id is not the same on every environment: development's view numbers its stops from 1 and
+ * production's from 4214, and a republished view numbers them again (#2636). Not required, as the bus panel is not.
+ */
+async function discoverBusStop(page: Page, baseUrl: string): Promise<number | null> {
+  const where = "stopname = 'Blinn' AND route = '47' AND stopnum = 15";
+  const url = `${Connections(gisHostFor(baseUrl)).busRoutesUrl}/0/query?f=json&outFields=objectid&returnGeometry=false&where=${encodeURIComponent(where)}`;
+
+  try {
+    const answer = await (await page.request.get(url)).json();
+    const ids: unknown[] = (answer.features ?? []).map(
+      (feature: { attributes?: { objectid?: unknown } }) => feature.attributes?.objectid
+    );
+
+    return ids.length === 1 && typeof ids[0] === 'number' ? ids[0] : null;
+  } catch {
+    return null;
   }
 }
 

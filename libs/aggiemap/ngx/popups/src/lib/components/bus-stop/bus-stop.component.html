@@ -1,9 +1,9 @@
 <!-- Bus stop -->
 @if (data.attributes.type !== 'route') {
 <div class="popup-section">
-  <div class="feature-style-1" tabindex="0">{{ data.attributes.StopName || 'Bus Stop' }}</div>
-  <div class="feature-style-2" tabindex="0"><strong>Served by route(s)</strong>: {{ data.attributes.Route }}</div>
-  @if (data.attributes.StopType === 'Time') {
+  <div class="feature-style-1" tabindex="0">{{ data.attributes.stopname || 'Bus Stop' }}</div>
+  <div class="feature-style-2" tabindex="0"><strong>Served by route(s)</strong>: {{ data.attributes.route }}</div>
+  @if (data.attributes.stoptype === 'Time') {
   <div class="feature-style-2" tabindex="0"><strong>Timed Stop</strong></div>
   }
 </div>
@@ -12,7 +12,7 @@
   <tamu-gisc-copy-field [text]="shareUrl"></tamu-gisc-copy-field>
   <!-- Development-only while routing is unpublished, like every other directions entry point (#1003). -->
   @if (directionsAvailable | async) {
-  <div class="button" (tamuGiscActivate)="startDirections('Bus stop ' + (data.attributes.StopName || ''))">Directions To Here</div>
+  <div class="button" (tamuGiscActivate)="startDirections('Bus stop ' + (data.attributes.stopname || ''))">Directions To Here</div>
   }
   <!--
     The shared `.button` rather than plain text: with the directions button gone this is the

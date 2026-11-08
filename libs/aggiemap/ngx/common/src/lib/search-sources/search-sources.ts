@@ -318,8 +318,8 @@ export function SearchSources(
       displayTemplate: '{attributes.Type}',
       searchActive: false
     },
-    // Deep-link-only source (searchActive: false) so a shared `?busstop=<OBJECTID>` URL re-opens a
-    // bus stop with its popup, like other point features. Keyed on OBJECTID because StopName/StopNum
+    // Deep-link-only source (searchActive: false) so a shared `?busstop=<objectid>` URL re-opens a
+    // bus stop with its popup, like other point features. Keyed on objectid because stopname/stopnum
     // are not unique across routes. Backs the copy-link in BusStopPopupComponent.
     BUS_STOPS_EXACT: {
       source: 'bus-stops-exact',
@@ -328,16 +328,17 @@ export function SearchSources(
       queryParams: {
         ...searchQueryParams,
         where: {
-          keys: ['OBJECTID'],
+          keys: ['objectid'],
           operators: ['=']
         }
       },
       featuresLocation: 'features',
-      displayTemplate: '{attributes.StopName}',
+      displayTemplate: '{attributes.stopname}',
       popupComponent: Popups.BusStopPopupComponent,
       searchActive: false,
       urlQueryParam: 'busstop',
-      // OBJECTID is an integer field on a strict MapServer layer; the value must be unquoted.
+      // objectid is an integer field; the value must be unquoted. The ids are each environment's own (#2636), so a
+      // link opens its stop only on the environment it was copied on, and one from the old `TS/Bus_Routes` on none.
       urlQueryParamNumeric: true
     }
   };

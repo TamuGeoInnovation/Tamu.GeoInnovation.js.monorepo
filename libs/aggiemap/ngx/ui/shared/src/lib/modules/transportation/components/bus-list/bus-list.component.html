@@ -1,10 +1,10 @@
 <!--
-The routes are rendered only where bus data is actually available. See `busRoutesAvailable` on the
-component: production reads bus data from the development GIS server until `TS/Bus_Routes` is
-published, so until then it keeps the notice it was already showing.
+The routes are rendered only where bus routes are offered. See `busRoutesAvailable` on the
+component: bus routes are development-only until the maintainer moves them to production (#1229), so
+production keeps the notice it was already showing.
 
 Because the routes pipeline is cold, leaving this branch unrendered also means no request is made
-to that server.
+for bus data.
 -->
 @if (busRoutesAvailable | async) { @if ((routes | async) === null) {
 <div class="flex flex-column justify-center align-center leader-2 trailer-2">

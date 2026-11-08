@@ -38,7 +38,6 @@ const MIN_MAPS = Number(process.env.AGGIEMAP_SMOKE_MIN_MAPS ?? 55);
  * The two environments legitimately differ, and so does a local run, so a single strict expectation
  * cannot fit all three:
  *
- * - **Production**: `TS/Bus_Routes` is not published, so the bus layers fail there and not on dev.
  * - **Development**: the development GIS server does not host every service production does.
  * - **A local run**: `Dining Locations` is fetched from `api.aggiemap.tamu.edu`, whose CORS
  *   allowlist names specific origins. `127.0.0.1:4200` is on it; the address a container reaches the
