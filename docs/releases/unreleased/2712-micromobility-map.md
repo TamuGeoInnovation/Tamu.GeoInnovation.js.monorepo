@@ -17,3 +17,10 @@ fails if production ever requests its service.
 A map can now be kept off production as a whole by naming the issue that holds it there
 (`developmentOnly`). Before this, `visible: false` kept a map off production's lists but left its link
 working.
+
+There is no before image: the map did not exist. The capture on the right is the same link as production
+sees it, which opens the main map.
+
+| On dev | The same link as production sees it |
+| --- | --- |
+| ![The Micromobility map: the corridor in orange, allowed sidewalks in yellow, and the facilities in green, with the service's legend](../screenshots/2712-micromobility-map/after-local-dev-map.png) | ![The main map, because the link does not open the Micromobility map on production](../screenshots/2712-micromobility-map/after-local-as-production-main-map.png) |
