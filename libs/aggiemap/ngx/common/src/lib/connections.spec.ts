@@ -113,6 +113,7 @@ const READ_FROM_PRODUCTION_ON_DEVELOPMENT: Partial<Record<keyof IComposedConnect
   tCampUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
   fourHRoundupUrl:
     'the development server has the hosted view but answers 499 "Token Required", so a development build cannot read it (#2695)',
+  micromobilityUrl: 'the development server answers 499 "Token Required" (#2712)',
   kickoff150thUrl: RETIRED,
   kickoffAtKyleUrl: RETIRED,
   liveAtTheStationUrl: RETIRED,

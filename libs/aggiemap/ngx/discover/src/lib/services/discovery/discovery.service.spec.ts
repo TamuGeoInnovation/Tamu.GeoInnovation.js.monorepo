@@ -64,6 +64,13 @@ describe('DiscoveryService', () => {
     expect(aggielandSaturday?.visible).toBe(true);
   });
 
+  it('keeps a development-only map off the public lists (#2712)', () => {
+    const micromobility = service.getInternalDiscoverApplications().find((app) => app.id === 'micromobility');
+
+    expect(micromobility?.visible).toBe(false);
+    expect(service.getVisibleInternalDiscoverApplications().map((app) => app.id)).not.toContain('micromobility');
+  });
+
   describe('retired maps', () => {
     // Events that are over are marked `status: 'retired'` (#1098). Their definitions stay so old
     // links still resolve. `visible: false` only hid them from production, so dev kept offering them

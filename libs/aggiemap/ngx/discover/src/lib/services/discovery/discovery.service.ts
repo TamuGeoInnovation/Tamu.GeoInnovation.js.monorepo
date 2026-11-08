@@ -45,7 +45,8 @@ export class DiscoveryService {
       ],
       parkingCategory: event.discover?.parkingCategory,
       columnKey: event.discover?.columnKey ?? event.discover?.parkingCategory,
-      visible: event.discover?.visible ?? true,
+      // A development-only map is listed where development-only features are on, as `visible: false` is (#2712).
+      visible: !event.developmentOnly && (event.discover?.visible ?? true),
       showInQuickLinks: event.discover?.showInQuickLinks,
       quickLinkOrder: event.discover?.quickLinkOrder,
       status: event.discover?.status,
