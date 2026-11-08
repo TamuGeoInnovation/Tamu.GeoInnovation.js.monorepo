@@ -132,6 +132,10 @@ function createConnections(gisHost: string): IComposedConnections {
     // of the view existing on dev with matching fields, which is the wrong question - what matters is whether
     // a browser with no token can read it.
     fourHRoundupUrl: `https://${PRODUCTION_TS_HOST}/arcgis/rest/services/Hosted/4H_Roundup_view/FeatureServer`,
+    // Published on the development GIS server only (#2713), so named there outright, as `busRoutesUrl` is, and read
+    // from that server on every environment, localhost included. The map is development-only until Texas A&M is
+    // announced as a host; moving it means naming the production service here.
+    ncaaVolleyballUrl: 'https://gis.dev.tamu.edu/arcgis/rest/services/Hosted/NCAA_Volleyball_view/FeatureServer',
     // Read from production on every environment, as `fourHRoundupUrl` is: the development server answers 499 "Token
     // Required" (#2712). The map is development-only until the maintainer moves it, so production never reads it.
     micromobilityUrl: `https://${PRODUCTION_TS_HOST}/arcgis/rest/services/Hosted/Micromobility_Map_WFL1_view/FeatureServer`,
@@ -288,6 +292,7 @@ export interface IComposedConnections {
   womensBasketballUrl: string;
   fourHRoundupUrl: string;
   micromobilityUrl: string;
+  ncaaVolleyballUrl: string;
   gisDayUrl: string;
   argentinaVsHondurasUrl: string;
   fishCampUrl: string;

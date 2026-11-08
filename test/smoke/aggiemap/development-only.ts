@@ -124,6 +124,13 @@ export const DEVELOPMENT_ONLY_SERVICES: Record<
   'Hosted/Micromobility_Map_WFL1_view/FeatureServer': {
     reason: '#2712: the Micromobility draft map',
     pages: ['/parking/micromobility']
+  },
+  // The NCAA Volleyball 1st & 2nd Round map (#2713), published on the development GIS server only and kept off
+  // production by `developmentOnly` until Texas A&M is announced as a host on 29 November. Named on that server
+  // outright, so localhost requests it too and `developmentGisServer` does not apply.
+  'Hosted/NCAA_Volleyball_view/FeatureServer': {
+    reason: '#2713: the NCAA Volleyball map, until Texas A&M is announced as a host',
+    pages: ['/parking/ncaa-volleyball']
   }
   // TS/WomensBasketballParking/MapServer was listed here for #2001, required of /events/womens-basketball on
   // dev. #2143 (#2176) moved that map's development version to the hosted athletics view, reached through the
