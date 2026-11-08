@@ -72,8 +72,14 @@ function Run-Agent {
   } finally { Pop-Location }
   $nothingLeft = Select-String -Path $log -Pattern 'NOTHING LEFT' -Quiet
   Log "$Agent exited $code; nothing left: $nothingLeft"
-  return $nothingLeft
+  $script:lastLog = $log
+  return [pscustomobject]@{ NothingLeft = [bool]$nothingLeft; Code = $code; Log = $log }
 }
+
+# The state the idle heartbeat reports. "blocked: ..." once the agent itself keeps failing, so tools/roster.sh shows BLOCKED
+# instead of "idle, takes work": from 30 October to 6 November Copilot exited 1 within seconds of every start, and this
+# runner, which counted only its own exceptions, reported "idle" the whole time (8 November 2026).
+$idleState = 'idle'
 
 Log "agent-runner for $Name ($Agent) in $Repo; polling every $PollSeconds s"
 $last = if (Test-Path $state) { (Get-Content $state -Raw).Trim() } else { '' }
@@ -92,17 +98,33 @@ while ($true) {
       }
       Log "new commit for ${Name}: $now"
       Heartbeat 'running (agent-runner)' 120
+      $agentFailures = 0
+      $result = $null
       for ($i = 1; $i -le $MaxRunsPerChange; $i++) {
-        if (Run-Agent) { break }
+        $result = Run-Agent
+        if ($result.Code -ne 0) {
+          # An agent that exits non-zero did not do the work, whatever its log says: count it, and stop retrying after three.
+          $agentFailures++
+          Log "$Agent failed (exit $($result.Code)), failure $agentFailures of 3"
+          if ($agentFailures -ge 3) { break }
+          continue
+        }
+        if ($result.NothingLeft) { break }
         Log "batches may be left; run $i of $MaxRunsPerChange done"
       }
       $last = $now
       Set-Content -Path $state -Value $last
       $failures = 0
-      Heartbeat 'idle' ($HeartbeatMinutes + 15)
+      if ($agentFailures -ge 3 -or ($result -and $result.Code -ne 0)) {
+        $idleState = "blocked: $Agent exits $($result.Code) at start; see the log $(Split-Path -Leaf $result.Log)"
+        Log "BLOCKED: $idleState"
+      } else {
+        $idleState = 'idle'
+      }
+      Heartbeat $idleState ($HeartbeatMinutes + 15)
       $lastBeat = Get-Date
     } elseif (((Get-Date) - $lastBeat).TotalMinutes -ge $HeartbeatMinutes) {
-      Heartbeat 'idle' ($HeartbeatMinutes + 15)
+      Heartbeat $idleState ($HeartbeatMinutes + 15)
       $lastBeat = Get-Date
     }
   } catch { $failures++; Log "error (failure $failures): $_" }

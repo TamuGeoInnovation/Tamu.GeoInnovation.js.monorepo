@@ -274,6 +274,21 @@ is the single answer to "who is doing what where", and a handover is a one-line 
 - **Batch headings name project, issue and director**, always: `## Batch N (<project>: #<issue> - <what>; <date, time> Central, from `<director>`)`.
   `tools/board.sh` reads them, with the listeners' own commit subjects, into one board of who is doing what.
 
+## No machine idle beside work (8 November 2026, the maintainer's 1A-4A)
+
+Four ways machines sat idle, or work was done twice, in one week, and the rule for each:
+
+| What happened | The rule now |
+| --- | --- |
+| A batch written while a listener was busy waited, because the watcher woke only on the next new commit | **`tools/listen.sh` exits at start, and whenever the list changes, if `tools/queued.sh <name>` lists anything.** A listener does every batch it names before going idle again |
+| The lab was offline six days (31 October to 6 November) and Copilot failed every run for days, and nobody noticed | **Whichever director the maintainer next asks anything runs `bash tools/roster.sh` first** and deals with what it flags, before other work: `gone`, `stuck?`, **`IDLE WITH WORK WAITING`** (wake it: a one-line note in its `TASKS.md`), **`BLOCKED`** (tell the maintainer what the state says) |
+| Copilot showed "idle, takes work" while it exited 1 at every start | **`tools/agent-runner.ps1` counts a non-zero exit as a failure.** After three, the heartbeat says `blocked: <agent> exits <code> at start; see the log <file>`, and the roster shows BLOCKED |
+| Two finished batches were redone on other machines, and a director then waited two days on reports it had missed | **Before moving, re-queuing or chasing a batch, read `bash tools/queued.sh <name>` (or `tools/board.sh`), never the log by eye.** Moving a batch means marking it `WITHDRAWN, moved to <name> batch <n>` in the old file first, in the same commit as the new one |
+
+`tools/queued.sh <name> [days]` lists that listener's batches from the last 7 days that it hasn't reported done: `queued` if nothing
+has named it, `unfinished` if it started. A batch heading needs its date ("8 November 2026") to be counted, as the batch-heading rule
+already asks.
+
 ## Checking in: who is up and can take work (25 October 2026)
 
 The maintainer asked that every machine, and every agent on it, check in regularly, so anyone can see at a glance
