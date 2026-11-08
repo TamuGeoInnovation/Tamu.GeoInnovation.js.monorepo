@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch 33** (aggiemap): merge development into #2713's branch (PR 2727), resolve, re-verify. Started 3:39 PM Central, 8 November.
+- Nothing. Idle and listening (3:44 PM Central, 8 November).
 
 ## Finished
+- **Batch 33** (aggiemap; report `home/reports/2026-11-08-33.md`): development merged into PR 2727 at `3436ba468`, three conflicts resolved keeping both maps (and a misplaced comment fixed), 288/288 without snapshot rewrite, check exit 0, MERGEABLE. No questions.
 - **Batch 32** (aggiemap; report `home/reports/2026-11-08-32.md`): #2712 is PR 2725 (the `developmentOnly` map gate plus the Micromobility draft); #2713 is PR 2727 (NCAA Volleyball, stacked on 2725). Both checks exit 0; specs red then green; both maps captured on dev and as production (0 service requests). Two questions.
 - **Batch 31** (aggiemap; report `home/reports/2026-11-08-31.md`): #2707, PR 2718 open (ready), `fix/2707-click-fallback-query` at `ac67fb85a`. An empty hit test queries the popup layers still drawing at the point; bare ground on a drawn map asks nothing; trip route unchanged. Unit red 3 of 6 then 16 of 16; new smoke check red 3 of 3 on dev, green locally; check exit 0. One question.
 - **Batch 30** (aggiemap; report `home/reports/2026-11-05-30.md`): #2655 branch ready: `feat/2655-network-detour` at `2ac8a6038` (the director's decisions 3 and 4: impossible results long lines first with the split explained; README baseline and the four failure modes), check exit 0. `tools/network-detour/` with quick, full, one and sample. Full run (303,031 Walk pairs, 290,714 routed) 5:53 to 8:04 AM Central, resumed twice: the network is 763 buildings plus 11 islands, with no failed pair inside the main piece; 31,344 detours, concentrated at the airport, the treatment plant and the vet cluster; 1,067 impossible, 307 of them on lines of 250 m or more. Four questions.
