@@ -1,0 +1,1214 @@
+[
+  {
+    "map": "main",
+    "layer": "accessible-entrances-layer",
+    "title": "Accessible Building Entrances",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "main",
+    "layer": "aggieprint-locations-layer",
+    "title": "AggiePrint Locations",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "main",
+    "layer": "bike-dismount-zones-layer",
+    "title": "Dismount Zones",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "main",
+    "layer": "bike-fix-stations-layer",
+    "title": "Bike Fix Stations",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "main",
+    "layer": "bike-lanes-layer",
+    "title": "Campus Bike Lanes",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "main",
+    "layer": "bike-racks-map-layer",
+    "title": "Bike Racks",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "main",
+    "layer": "bonfire-layer",
+    "title": "Bonfire Memorial",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "main",
+    "layer": "buildings-layer",
+    "title": "Buildings",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "main",
+    "layer": "city-bike-lanes-routes-layer",
+    "title": "City Bike Lanes and Routes",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "main",
+    "layer": "construction_zone-layer",
+    "title": "Construction Zones",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "main",
+    "layer": "emergency-phones-layer",
+    "title": "Emergency Phones",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "main",
+    "layer": "ev-charge-stations-layer",
+    "title": "EV Charge Stations (Main + RELLIS)",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "main",
+    "layer": "lactation-rooms-layer",
+    "title": "Lactation Rooms",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "main",
+    "layer": "nature-rx-layer",
+    "title": "Nature Rx",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "main",
+    "layer": "poi-layer",
+    "title": "Points of Interest",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "main",
+    "layer": "rns-spaces-layer",
+    "title": "RNS Spaces",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "main",
+    "layer": "single-occupancy-restroom-locations-layer",
+    "title": "Single Occupancy Restroom Locations",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "main",
+    "layer": "surface-lots-layer",
+    "title": "Surface Lots",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "main",
+    "layer": "three-d-buildings-scene-layer",
+    "title": "3D Buildings",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "main",
+    "layer": "visitor-parking-layer",
+    "title": "Visitor Parking",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "4h-roundup-2026",
+    "layer": "four-h-roundup-locations",
+    "title": "4-H Roundup Locations",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "4h-roundup-2026",
+    "layer": "four-h-roundup-parking",
+    "title": "4-H Roundup Parking",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "aggie-family-parade",
+    "layer": "aggie-family-parade-pois",
+    "title": "Points of Interest",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "aggieland-saturday",
+    "layer": "aggieland-saturday-special-pois",
+    "title": "Special Points of Interest",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "april-ring-day",
+    "layer": "ring-day-areas",
+    "title": "Ring Day Areas",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "april-ring-day",
+    "layer": "ring-day-pois",
+    "title": "Ring Day Points of Interest",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "april-ring-day",
+    "layer": "ring-day-routes",
+    "title": "Ring Day Routes",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "argentina-vs-honduras-2026",
+    "layer": "argentina-vs-honduras-campus-shuttle-stops",
+    "title": "Campus Shuttle Stops",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "argentina-vs-honduras-2026",
+    "layer": "argentina-vs-honduras-event-parking",
+    "title": "Event Parking",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "argentina-vs-honduras-2026",
+    "layer": "argentina-vs-honduras-parking-and-rideshare",
+    "title": "Parking & Rideshare",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "argentina-vs-honduras-2026",
+    "layer": "argentina-vs-honduras-shuttle-routes",
+    "title": "Shuttle Routes",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "beef-cattle-vendor",
+    "layer": "beef-cattle-alert",
+    "title": "Alert",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "beef-cattle-vendor",
+    "layer": "beef-cattle-no-parking-zones",
+    "title": "No Parking Zones",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "beef-cattle-vendor",
+    "layer": "beef-cattle-routes",
+    "title": "Routes",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "beef-cattle-vendor",
+    "layer": "beef-cattle-zones",
+    "title": "Zones",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "big-event",
+    "layer": "big-event-traffic",
+    "title": "Traffic Flow",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "break-summer",
+    "layer": "break-summer-parking-lots-draw",
+    "title": "Break-Summer Parking Lots",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "business-parking",
+    "layer": "Only UB+ Permit Authorized",
+    "title": "Only UB+ Permit Authorized",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "business-parking",
+    "layer": "UB Permit and UB+ Permit Authorized",
+    "title": "UB Permit and UB+ Permit Authorized",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "business-parking",
+    "layer": "University Business Spaces 2 Hour Time Limit",
+    "title": "University Business Spaces 2 Hour Time Limit",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "construction-map",
+    "layer": "construction-map-popup",
+    "title": "Construction Area",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "construction-map",
+    "layer": "current-construction-area",
+    "title": "Current Construction Area",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "construction-map",
+    "layer": "planned-construction-area",
+    "title": "Planned Construction Area",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "construction-map",
+    "layer": "planned-construction-map-popup",
+    "title": "Planned Construction Area Popup",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "contractor-parking",
+    "layer": "Contractor Permit and Contractor+ Permit Authorized",
+    "title": "Contractor Permit and Contractor+ Permit Authorized",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "contractor-parking",
+    "layer": "Only Contractor+ Permit Authorized",
+    "title": "Only Contractor+ Permit Authorized",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "dc-bush-school",
+    "layer": "dc-bush-school-basemap-layer",
+    "title": "DC / Bush School Basemap",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "dc-bush-school",
+    "layer": "dc-bush-school-property-layer",
+    "title": "Property",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "dining",
+    "layer": "buildings-layer",
+    "title": "Buildings",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "ev-chargers",
+    "layer": "ev-chargers",
+    "title": "EV Charge Stations (Main + RELLIS)",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "fire-school",
+    "layer": "fire-school-parking-lots",
+    "title": "Parking Lots",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "fire-school",
+    "layer": "fire-school-preferred-route",
+    "title": "Preferred Route",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "fire-school",
+    "layer": "fire-school-road-closures",
+    "title": "Road Closures",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "fish-camp",
+    "layer": "fish-camp-arrival-parking-info",
+    "title": "Parking Information",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "fish-camp",
+    "layer": "fish-camp-arrival-parking-lots",
+    "title": "Parking Lots",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "fish-camp",
+    "layer": "fish-camp-arrival-routes",
+    "title": "Routes",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "fish-camp",
+    "layer": "fish-camp-departure-parking-info",
+    "title": "Parking Information",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "fish-camp",
+    "layer": "fish-camp-departure-parking-lots",
+    "title": "Parking Lots",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "fish-camp",
+    "layer": "fish-camp-departure-routes",
+    "title": "Routes",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "football-tailgating",
+    "layer": "buildings-layer",
+    "title": "Buildings",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "football-tailgating",
+    "layer": "tailgating-aggie-park",
+    "title": "Aggie Park Tailgating",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "football-tailgating",
+    "layer": "tailgating-construction",
+    "title": "Construction",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "football-tailgating",
+    "layer": "tailgating-simpson-tents",
+    "title": "Simpson Drill Field Tents",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "football-tailgating",
+    "layer": "tailgating-tents",
+    "title": "Aggie Park Tents",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "football-tailgating",
+    "layer": "tailgating-west-campus",
+    "title": "West Campus Tailgating",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "football-tailgating",
+    "layer": "tailgating-zone-numbers",
+    "title": "Zone Numbers",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "fort-worth-law",
+    "layer": "fort-worth-law-basemap-layer",
+    "title": "Fort Worth Law School Basemap",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "fort-worth-law",
+    "layer": "fort-worth-law-construction-layer",
+    "title": "Construction",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "fort-worth-law",
+    "layer": "fort-worth-law-property-layer",
+    "title": "Property",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "galveston",
+    "layer": "galveston-basemap-layer",
+    "title": "Galveston Basemap",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "galveston",
+    "layer": "galveston-buildings-layer",
+    "title": "Buildings",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "gameday-parking",
+    "layer": "football-12th-man-entry-routes",
+    "title": "Entry Routes",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "gameday-parking",
+    "layer": "football-12th-man-exit-routes",
+    "title": "Exit Routes",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "gameday-parking",
+    "layer": "football-12th-man-gameday-parking",
+    "title": "Gameday Parking",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "gameday-parking",
+    "layer": "football-12th-man-parking-lots",
+    "title": "Football Parking Lots",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "gameday-parking",
+    "layer": "football-12th-man-street-grass-areas",
+    "title": "Street Grass Areas (Click for details)",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "gameday-parking",
+    "layer": "football-bike-dismount-zones",
+    "title": "Bike Dismount Zones",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "gameday-parking",
+    "layer": "football-bike-veo-geofence",
+    "title": "Bike Veo Geofence",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "gameday-parking",
+    "layer": "football-micromobility-entry-routes",
+    "title": "Entry Routes",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "gameday-parking",
+    "layer": "football-micromobility-exit-routes",
+    "title": "Exit Routes",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "gameday-parking",
+    "layer": "football-micromobility-parking",
+    "title": "Micromobility Parking Area",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "gameday-parking",
+    "layer": "football-parkmobile-entry-routes",
+    "title": "Entry Routes",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "gameday-parking",
+    "layer": "football-parkmobile-exit-routes",
+    "title": "Exit Routes",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "gameday-parking",
+    "layer": "football-parkmobile-gameday-parking",
+    "title": "Gameday Parking",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "gameday-parking",
+    "layer": "football-parkmobile-parking-lots",
+    "title": "Football Parking Lots",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "gameday-parking",
+    "layer": "football-parkmobile-street-grass-areas",
+    "title": "Street Grass Areas (Click for details)",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "gameday-parking",
+    "layer": "football-pay-avp-exit-routes",
+    "title": "Exit Routes",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "gameday-parking",
+    "layer": "football-pay-avp-gameday-parking",
+    "title": "Gameday Parking",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "gameday-parking",
+    "layer": "football-pay-avp-parking-lots",
+    "title": "Football Parking Lots",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "gameday-parking",
+    "layer": "football-pay-avp-street-grass-areas",
+    "title": "Street Grass Areas (Click for details)",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "gameday-parking",
+    "layer": "football-pedestrian-exit-routes",
+    "title": "Exit Routes",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "gameday-parking",
+    "layer": "football-presale-entry-routes",
+    "title": "Entry Routes",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "gameday-parking",
+    "layer": "football-presale-exit-routes",
+    "title": "Exit Routes",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "gameday-parking",
+    "layer": "football-presale-gameday-parking",
+    "title": "Gameday Parking",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "gameday-parking",
+    "layer": "football-presale-parking-lots",
+    "title": "Football Parking Lots",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "gameday-parking",
+    "layer": "football-presale-street-grass-areas",
+    "title": "Street Grass Areas (Click for details)",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "gameday-parking",
+    "layer": "football-rideshare-locations",
+    "title": "Rideshare Locations",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "gameday-parking",
+    "layer": "football-rv-gameday-parking",
+    "title": "Gameday Parking",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "gameday-parking",
+    "layer": "football-rv-parking-lots",
+    "title": "Football Parking Lots",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "gameday-parking",
+    "layer": "football-rv-rns-spaces",
+    "title": "RNS Spaces",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "gameday-parking",
+    "layer": "football-rv-street-grass-areas",
+    "title": "Street Grass Areas (Click for details)",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "gameday-parking",
+    "layer": "football-rv-stripes",
+    "title": "Stripes",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "gameday-parking",
+    "layer": "football-shuttle-routes",
+    "title": "Shuttle Routes",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "gameday-parking",
+    "layer": "football-shuttle-stops",
+    "title": "Campus Shuttle Stops",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "games-of-texas",
+    "layer": "games-of-texas-parking",
+    "title": "Parking",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "games-of-texas",
+    "layer": "games-of-texas-points-of-interest",
+    "title": "Points of Interest",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "games-of-texas",
+    "layer": "games-of-texas-road-closures",
+    "title": "Road Closures",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "games-of-texas",
+    "layer": "games-of-texas-routes",
+    "title": "Routes",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "gis-day",
+    "layer": "gis-day-csg",
+    "title": "Gene Stallings Parking Garage",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "gis-day",
+    "layer": "gis-day-garages",
+    "title": "GIS Day Parking Garages",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "gis-day",
+    "layer": "gis-day-msc-rudder",
+    "title": "MSC & Rudder Buildings",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "graduation-fall",
+    "layer": "graduation-accessible-parking",
+    "title": "Accessible Parking",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "graduation-fall",
+    "layer": "graduation-event-parking-lots",
+    "title": "Event Parking",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "graduation-fall",
+    "layer": "graduation-road-closed",
+    "title": "Road Closures",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "graduation-fall",
+    "layer": "graduation-traffic-flow",
+    "title": "Traffic Flow",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "graduation-spring",
+    "layer": "graduation-accessible-parking",
+    "title": "Accessible Parking",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "graduation-spring",
+    "layer": "graduation-event-parking-lots",
+    "title": "Event Parking",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "graduation-spring",
+    "layer": "graduation-road-closed",
+    "title": "Road Closures",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "graduation-spring",
+    "layer": "graduation-traffic-flow",
+    "title": "Traffic Flow",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "graduation-summer",
+    "layer": "summer-commencement-parking-lots",
+    "title": "Parking Lots",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "graduation-summer",
+    "layer": "summer-commencement-traffic-flow",
+    "title": "Recommended Route",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "houston-space-institute",
+    "layer": "houston-space-institute-basemap-layer",
+    "title": "Houston Space Institute Basemap",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "houston-space-institute",
+    "layer": "houston-space-institute-construction-layer",
+    "title": "Construction",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "houston-space-institute",
+    "layer": "houston-space-institute-property-layer",
+    "title": "Property",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "hs-graduation-2026",
+    "layer": "hs-graduation-accessible-bus-parking",
+    "title": "Accessible/Bus Parking",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "hs-graduation-2026",
+    "layer": "hs-graduation-arrival-parking",
+    "title": "High School Graduation Parking",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "hs-graduation-2026",
+    "layer": "hs-graduation-arrival-routes",
+    "title": "Arrival Recommended Routes",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "hs-graduation-2026",
+    "layer": "hs-graduation-departure-parking",
+    "title": "Parking/Closures",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "hs-graduation-2026",
+    "layer": "hs-graduation-departure-routes",
+    "title": "Departure Recommended Routes",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "hs-graduation-2026",
+    "layer": "hs-graduation-traffic-advisories",
+    "title": "Departure Traffic Advisories",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "hsc-college-of-dentistry",
+    "layer": "hsc-college-of-dentistry-basemap-layer",
+    "title": "HSC College of Dentistry Basemap",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "hsc-college-of-dentistry",
+    "layer": "hsc-college-of-dentistry-property-layer",
+    "title": "Property",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "hsc-corpus-christi",
+    "layer": "hsc-corpus-christi-basemap-layer",
+    "title": "HSC Corpus Christi Basemap",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "hsc-corpus-christi",
+    "layer": "hsc-corpus-christi-property-layer",
+    "title": "Property",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "hsc-kingsville",
+    "layer": "hsc-kingsville-basemap-layer",
+    "title": "HSC Kingsville Basemap",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "hsc-kingsville",
+    "layer": "hsc-kingsville-property-layer",
+    "title": "Property",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "hsc-round-rock",
+    "layer": "hsc-round-rock-basemap-layer",
+    "title": "HSC Round Rock Basemap",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "hsc-round-rock",
+    "layer": "hsc-round-rock-property-layer",
+    "title": "Property",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "kickoff-at-kyle",
+    "layer": "kickoff-at-kyle-parking",
+    "title": "Kickoff at Kyle Parking",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "live-at-the-station",
+    "layer": "live-at-the-station-parking",
+    "title": "Live at the Station Parking",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "mays-city-center",
+    "layer": "mays-city-center-basemap-layer",
+    "title": "Mays City Center Basemap",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "mays-city-center",
+    "layer": "mays-city-center-property-layer",
+    "title": "Property",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "mcallen",
+    "layer": "mcallen-basemap-layer",
+    "title": "McAllen Basemap",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "mcallen",
+    "layer": "mcallen-buildings-layer",
+    "title": "Buildings",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "move-in",
+    "layer": "Residence Hall",
+    "title": "Residence Hall",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "move-in",
+    "layer": "move-in-lots-accessible",
+    "title": "Accessible Parking",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "move-in",
+    "layer": "move-in-lots-available",
+    "title": "Available Lots",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "move-in",
+    "layer": "move-in-lots-closures",
+    "title": "Lot Closures",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "move-in",
+    "layer": "move-in-poi-bike",
+    "title": "Bike Registration",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "move-in",
+    "layer": "move-in-poi-dining",
+    "title": "Dining",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "move-in",
+    "layer": "move-in-poi-info",
+    "title": "Information",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "move-in",
+    "layer": "move-in-poi-keys",
+    "title": "Check-In / Key Pickup",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "move-in",
+    "layer": "move-in-poi-no-parking",
+    "title": "No Roadside Parking",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "move-in",
+    "layer": "move-in-poi-recycle",
+    "title": "Cardboard Recycling",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "move-in",
+    "layer": "move-in-streets-closures",
+    "title": "No Roadside Parking",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "move-in",
+    "layer": "move-in-streets-dropoff",
+    "title": "Drop-Off Zones",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "muster",
+    "layer": "muster-accessible-parking",
+    "title": "Accessible Parking",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "muster",
+    "layer": "muster-parking",
+    "title": "Muster Parking",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "muster",
+    "layer": "muster-traffic-flow",
+    "title": "Muster Traffic Flow",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "november-ring-day",
+    "layer": "ring-day-areas",
+    "title": "Ring Day Areas",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "november-ring-day",
+    "layer": "ring-day-pois",
+    "title": "Ring Day Points of Interest",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "november-ring-day",
+    "layer": "ring-day-routes",
+    "title": "Ring Day Routes",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "nsc-parking",
+    "layer": "nsc-parking-lots-draw",
+    "title": "NSC Parking Lots",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "permit-select-freshman",
+    "layer": "Freshman Student Selectable",
+    "title": "Freshman Student Selectable",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "permit-select-freshman",
+    "layer": "Resident Student Priority",
+    "title": "Resident Student Priority",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "phys-eng-fest",
+    "layer": "phys-eng-festival-general-parking-pedestrian-path",
+    "title": "Pedestrian Path - General Parking",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "ring-day",
+    "layer": "ring-day-areas",
+    "title": "Ring Day Areas",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "ring-day",
+    "layer": "ring-day-pois",
+    "title": "Ring Day Points of Interest",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "ring-day",
+    "layer": "ring-day-routes",
+    "title": "Ring Day Routes",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "savannah-bananas-parking",
+    "layer": "savannah-bananas-accessible-prepaid-parking",
+    "title": "Accessible/Prepaid/AVP Parking",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "savannah-bananas-parking",
+    "layer": "savannah-bananas-event-parking",
+    "title": "Event Lots",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "savannah-bananas-parking",
+    "layer": "savannah-bananas-shuttle-routes",
+    "title": "Shuttle Routes",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "savannah-bananas-parking",
+    "layer": "savannah-bananas-shuttle-stops",
+    "title": "Campus Shuttle Stops",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "sec-grounds-conference",
+    "layer": "sec-grounds-day1-pois",
+    "title": "Day 1 Points of Interest",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "sec-grounds-conference",
+    "layer": "sec-grounds-day1-routes",
+    "title": "Day 1 Routes",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "sec-grounds-conference",
+    "layer": "sec-grounds-day2-pois",
+    "title": "Day 2 Points of Interest",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "sec-grounds-conference",
+    "layer": "sec-grounds-day2-routes",
+    "title": "Day 2 Routes",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "sec-grounds-conference",
+    "layer": "sec-grounds-day3-pois",
+    "title": "Day 3 Points of Interest",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "sec-grounds-conference",
+    "layer": "sec-grounds-day3-routes",
+    "title": "Day 3 Routes",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "soccer-parking",
+    "layer": "soccer-parking-accessible-parking",
+    "title": "Accessible Parking Spaces",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "softball-regionals-2025",
+    "layer": "softball-locations",
+    "title": "Softball Locations",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "softball-regionals-2025",
+    "layer": "softball-routes",
+    "title": "Softball Routes",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "sustainable-transportation",
+    "layer": "sustainable-transportation-bike-dismount-zones",
+    "title": "Dismount Zones",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "sustainable-transportation",
+    "layer": "sustainable-transportation-bike-fix-stations",
+    "title": "Bike Fix Stations",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "sustainable-transportation",
+    "layer": "sustainable-transportation-bike-lanes",
+    "title": "Campus Bike Lanes",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "sustainable-transportation",
+    "layer": "sustainable-transportation-bike-racks",
+    "title": "Bike Racks",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "sustainable-transportation",
+    "layer": "sustainable-transportation-city-bike-lanes-routes",
+    "title": "City Bike Lanes and Routes",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "sustainable-transportation",
+    "layer": "sustainable-transportation-ev-chargers",
+    "title": "EV Charge Stations (Main + RELLIS)",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "t-camp",
+    "layer": "t-camp-campus-locations",
+    "title": "Campus Locations",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "t-camp",
+    "layer": "t-camp-closures",
+    "title": "Closures",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "t-camp",
+    "layer": "t-camp-entry-route",
+    "title": "Entry Route",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "t-camp",
+    "layer": "t-camp-parking",
+    "title": "Parking",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "tailgating",
+    "layer": "tailgating-aggie-park",
+    "title": "Aggie Park Tailgating",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "tailgating",
+    "layer": "tailgating-construction",
+    "title": "Construction",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "tailgating",
+    "layer": "tailgating-simpson-tents",
+    "title": "Simpson Drill Field Tents",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "tailgating",
+    "layer": "tailgating-tents",
+    "title": "Aggie Park Tents",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "tailgating",
+    "layer": "tailgating-west-campus",
+    "title": "West Campus Tailgating",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "tailgating",
+    "layer": "tailgating-zone-numbers",
+    "title": "Zone Numbers",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "troubadour-festival-2025",
+    "layer": "troubadour-parking",
+    "title": "Troubadour Festival Parking",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "ts-main-parking",
+    "layer": "Construction",
+    "title": "Construction",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "vendor-parking",
+    "layer": "vendor-parking-lots",
+    "title": "Vendor Permit and Vendor+ Permit Authorized",
+    "reason": "unreviewed (#1523)"
+  },
+  {
+    "map": "vendor-parking",
+    "layer": "vendor-parking-vendor-plus-only-lots",
+    "title": "Only Vendor+ Permit Authorized",
+    "reason": "unreviewed (#1523)"
+  }
+]

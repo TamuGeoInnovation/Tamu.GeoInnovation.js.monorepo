@@ -85,6 +85,17 @@ export interface MapLayerProbe {
    * `default` is what Dining and AggiePrint were for two days on production (#1576).
    */
   symbology: 'own' | 'portal' | 'service' | 'default' | null;
+
+  /**
+   * The layer's name as its service publishes it (`sourceJSON.name`), read once the layer has loaded; `null` for a
+   * layer that has not loaded or has no service to name it (GeoJSON, graphics, groups) (#2731).
+   *
+   * `title` is what the map shows, and comparing it with this is how a check tells a layer named by its service from
+   * one whose definition overrides the name. Read it with `loaded`: a layer that never loaded has no name from its
+   * service, and if its definition gives no title, ArcGIS shows one made from the service's address instead - "Muster
+   * view" for `Muster_view`. That reads exactly like a naming fault and is a load failure.
+   */
+  serviceName: string | null;
 }
 
 export interface MapProbeSnapshot {
@@ -387,7 +398,8 @@ async function probeLayer(layer: esri.Layer): Promise<MapLayerProbe> {
     graphicTypes: countGraphicTypes(layer),
     spatialReference: readSpatialReference(layer),
     drawable: isDrawable(layer),
-    symbology: readSymbology(layer)
+    symbology: readSymbology(layer),
+    serviceName: readServiceName(layer)
   };
 
   // A layer that failed to load cannot be queried, and asking would replace a useful load error
@@ -412,6 +424,13 @@ function readRenderers(): Record<string, unknown> {
   }
 
   return out;
+}
+
+/** See `MapLayerProbe.serviceName`. */
+function readServiceName(layer: esri.Layer): string | null {
+  const name = layer.loaded ? (layer as unknown as { sourceJSON?: { name?: unknown } }).sourceJSON?.name : undefined;
+
+  return typeof name === 'string' ? name : null;
 }
 
 /** See `MapLayerProbe.symbology`. Read after the layer has loaded, so `sourceJSON` is there. */

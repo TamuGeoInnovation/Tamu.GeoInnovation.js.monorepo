@@ -7,6 +7,7 @@ import { loadBuilderTargets } from './builder-destinations';
 import { directionsAvailable, directionsEntryPoints } from './directions';
 import { describePaint, waitForPaint } from './paint';
 import { isDevelopmentUrl } from './gis-hosts';
+import { describeTitles, judgeTitles } from './layer-titles';
 
 /**
  * Behaviours 1 and 2 of #1034, for every map the target environment lists.
@@ -81,6 +82,9 @@ interface ProbeLayer {
 
   /** Absent on builds older than this field; see the symbology check below. */
   symbology?: 'own' | 'portal' | 'service' | 'default' | null;
+
+  /** Absent on builds older than this field; see the title check below. */
+  serviceName?: string | null;
 }
 
 interface ProbeSnapshot {
@@ -295,6 +299,34 @@ for (const { mapPath, loadPath, title, borrowedFrom } of cases) {
       `${mapPath} has layers drawing ArcGIS's default symbol: give each a renderer in its definition, ` +
         `with the reason beside it (docs/map-layers.md)`
     ).toEqual([]);
+
+    // Each layer shows the name its service publishes, or a title declared on purpose in
+    // layer-title-overrides.json (#2731). A layer that did not load is reported as that and its name is not judged:
+    // an untitled layer that never loaded shows a name ArcGIS makes from its service's address, which reads exactly
+    // like a naming fault, and on 8 November 2026 a correct change was reverted on that misreading (#2728). Load
+    // failures are the next check's business.
+    //
+    // Soft, so a naming fault does not hide whether the map loads and draws. Skipped on a build older than the
+    // probe's `serviceName`, which cannot answer.
+    if (snapshot.layers.some((l) => l.serviceName !== undefined)) {
+      const titles = judgeTitles(mapPath, snapshot.layers);
+
+      test.info().annotations.push({ type: 'layer titles', description: describeTitles(titles) });
+
+      expect
+        .soft(
+          titles
+            .filter((l) => l.verdict === 'wrong' || l.verdict === 'declared, not shown')
+            .map((l) =>
+              l.verdict === 'wrong'
+                ? `${l.id} shows "${l.title}"; its service names it "${l.serviceName}"`
+                : `${l.id} shows "${l.title}"; layer-title-overrides.json declares "${l.declared}"`
+            ),
+          `${mapPath} has layers whose title is neither their service's name nor a declared override ` +
+            `(test/smoke/aggiemap/layer-title-overrides.json, docs/map-layers.md)`
+        )
+        .toEqual([]);
+    }
 
     const failed = snapshot.layers.filter((l) => l.error !== null);
     const tolerated = failed.filter(

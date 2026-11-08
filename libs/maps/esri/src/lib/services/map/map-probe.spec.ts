@@ -176,6 +176,60 @@ describe('map probe', () => {
     });
 
     /**
+     * The name a layer's service publishes, beside the title the map shows (#2731).
+     *
+     * A layer change was reverted on 8 November 2026 because layers read "Muster view" and "SoccerParking view" -
+     * names made from their services' addresses - and were taken to be named wrongly. They had never loaded. So the
+     * name is reported only for a loaded layer: a layer that did not load has none, which is how a check tells the
+     * two apart.
+     */
+    it("reports a loaded layer's name from its service, and null where there is none (#2731)", async () => {
+      registerMapProbe(
+        {
+          map: {
+            allLayers: {
+              toArray: () => [
+                {
+                  id: 'soccer-parking-lots',
+                  title: 'Soccer Event Parking Lots',
+                  type: 'feature',
+                  visible: true,
+                  loaded: true,
+                  sourceJSON: { name: 'Soccer Event Parking Lots' },
+                  queryFeatureCount: () => Promise.resolve(9)
+                },
+                {
+                  id: 'muster-parking',
+                  title: 'Muster view',
+                  type: 'feature',
+                  visible: true,
+                  loaded: false,
+                  loadError: { message: 'Failed to fetch' },
+                  sourceJSON: { name: 'stale' }
+                },
+                { id: 'bus-route-layer', title: 'Bus Routes', type: 'graphics', visible: true, loaded: true }
+              ]
+            }
+          },
+          view: { ready: true }
+        } as unknown as Parameters<typeof registerMapProbe>[0],
+        owner
+      );
+
+      const probe = (
+        window as unknown as Record<string, { snapshot: () => Promise<{ layers: { id: string; serviceName: string | null }[] }> }>
+      )[MAP_PROBE_GLOBAL];
+      const layers = (await probe.snapshot()).layers;
+      const of = (id: string) => layers.find((layer) => layer.id === id)?.serviceName;
+
+      expect(of('soccer-parking-lots')).toBe('Soccer Event Parking Lots');
+      // Never loaded, so whatever it holds is not the service's answer.
+      expect(of('muster-parking')).toBeNull();
+      // Nothing behind it to name it.
+      expect(of('bus-route-layer')).toBeNull();
+    });
+
+    /**
      * A basemap that loads cleanly and draws nothing (#1240, #1241).
      *
      * Esri never reprojects a tiled or vector tiled layer, so one whose spatial reference differs
