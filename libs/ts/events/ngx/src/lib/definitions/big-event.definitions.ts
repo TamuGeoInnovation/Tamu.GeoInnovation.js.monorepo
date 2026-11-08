@@ -56,7 +56,6 @@ export const BigEventColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: BigEventDefinitions.TRAFFIC.id,
-    title: BigEventDefinitions.TRAFFIC.name,
     url: BigEventDefinitions.TRAFFIC.url,
     popupComponent: EventPopups.MarkdownPopupComponent,
     // popupData: {
