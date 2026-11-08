@@ -96,6 +96,13 @@ export interface MapLayerProbe {
    * view" for `Muster_view`. That reads exactly like a naming fault and is a load failure.
    */
   serviceName: string | null;
+
+  /**
+   * Whether the layer belongs to the basemap rather than to the map (#2731). A basemap's layers are declared with the
+   * basemap, not in a map's definition, and are given ids at runtime, so checks keyed on a map's layer ids leave them
+   * out.
+   */
+  basemap: boolean;
 }
 
 export interface MapProbeSnapshot {
@@ -399,7 +406,8 @@ async function probeLayer(layer: esri.Layer): Promise<MapLayerProbe> {
     spatialReference: readSpatialReference(layer),
     drawable: isDrawable(layer),
     symbology: readSymbology(layer),
-    serviceName: readServiceName(layer)
+    serviceName: readServiceName(layer),
+    basemap: isBasemapLayer(layer)
   };
 
   // A layer that failed to load cannot be queried, and asking would replace a useful load error
@@ -424,6 +432,13 @@ function readRenderers(): Record<string, unknown> {
   }
 
   return out;
+}
+
+/** See `MapLayerProbe.basemap`. */
+function isBasemapLayer(layer: esri.Layer): boolean {
+  const basemap = current?.map?.basemap;
+
+  return basemap ? [...basemap.baseLayers.toArray(), ...basemap.referenceLayers.toArray()].includes(layer) : false;
 }
 
 /** See `MapLayerProbe.serviceName`. */

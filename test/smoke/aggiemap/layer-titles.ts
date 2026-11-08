@@ -31,6 +31,7 @@ export interface TitledLayer {
   loaded: boolean;
   error: string | null;
   serviceName?: string | null;
+  basemap?: boolean;
 }
 
 export type TitleVerdict =
@@ -47,7 +48,9 @@ export type TitleVerdict =
   /** The layer did not load, so its name cannot be judged. */
   | 'did not load'
   /** Nothing behind the layer to name it: graphics, GeoJSON, a group. */
-  | 'no service';
+  | 'no service'
+  /** Part of the basemap, declared with it rather than in a map's definition, so not judged here. */
+  | 'basemap';
 
 export interface JudgedTitle {
   id: string;
@@ -80,6 +83,10 @@ export function judgeTitles(mapPath: string, layers: TitledLayer[]): JudgedTitle
     const serviceName = layer.serviceName ?? null;
     const override = overrideFor(map, layer.id);
     const judged = { id: layer.id, title: layer.title, serviceName, declared: override?.title };
+
+    if (layer.basemap) {
+      return { ...judged, verdict: 'basemap' };
+    }
 
     if (!layer.loaded || layer.error !== null) {
       return { ...judged, verdict: 'did not load' };

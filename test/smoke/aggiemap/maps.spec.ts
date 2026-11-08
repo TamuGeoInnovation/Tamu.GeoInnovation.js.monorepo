@@ -85,6 +85,7 @@ interface ProbeLayer {
 
   /** Absent on builds older than this field; see the title check below. */
   serviceName?: string | null;
+  basemap?: boolean;
 }
 
 interface ProbeSnapshot {

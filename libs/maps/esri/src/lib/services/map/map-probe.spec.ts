@@ -184,6 +184,17 @@ describe('map probe', () => {
      * two apart.
      */
     it("reports a loaded layer's name from its service, and null where there is none (#2731)", async () => {
+      // A basemap's own layer, declared with the basemap and given an id at runtime.
+      const basemapOverlay = {
+        id: '1a1bd590b9f-layer-1',
+        title: 'Buildings under construction',
+        type: 'feature',
+        visible: true,
+        loaded: true,
+        sourceJSON: { name: 'University Building' },
+        queryFeatureCount: () => Promise.resolve(8)
+      };
+
       registerMapProbe(
         {
           map: {
@@ -207,9 +218,11 @@ describe('map probe', () => {
                   loadError: { message: 'Failed to fetch' },
                   sourceJSON: { name: 'stale' }
                 },
-                { id: 'bus-route-layer', title: 'Bus Routes', type: 'graphics', visible: true, loaded: true }
+                { id: 'bus-route-layer', title: 'Bus Routes', type: 'graphics', visible: true, loaded: true },
+                basemapOverlay
               ]
-            }
+            },
+            basemap: { baseLayers: { toArray: () => [basemapOverlay] }, referenceLayers: { toArray: () => [] } }
           },
           view: { ready: true }
         } as unknown as Parameters<typeof registerMapProbe>[0],
@@ -217,7 +230,10 @@ describe('map probe', () => {
       );
 
       const probe = (
-        window as unknown as Record<string, { snapshot: () => Promise<{ layers: { id: string; serviceName: string | null }[] }> }>
+        window as unknown as Record<
+          string,
+          { snapshot: () => Promise<{ layers: { id: string; serviceName: string | null; basemap: boolean }[] }> }
+        >
       )[MAP_PROBE_GLOBAL];
       const layers = (await probe.snapshot()).layers;
       const of = (id: string) => layers.find((layer) => layer.id === id)?.serviceName;
@@ -227,6 +243,8 @@ describe('map probe', () => {
       expect(of('muster-parking')).toBeNull();
       // Nothing behind it to name it.
       expect(of('bus-route-layer')).toBeNull();
+
+      expect(layers.filter((layer) => layer.basemap).map((layer) => layer.id)).toEqual(['1a1bd590b9f-layer-1']);
     });
 
     /**
