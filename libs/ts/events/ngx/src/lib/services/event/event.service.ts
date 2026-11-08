@@ -1,8 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { delay } from 'rxjs';
 
-import deepmerge from 'deepmerge';
-
 import {
   EsriMapService,
   EsriModuleProviderService,
@@ -13,7 +11,7 @@ import {
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { LayerSource } from '@tamu-gisc/common/types';
 import { escapeSqlString } from '@tamu-gisc/common/utils/database';
-import { getPropertyValue } from '@tamu-gisc/common/utils/object';
+import { deepMerge, getPropertyValue } from '@tamu-gisc/common/utils/object';
 import { hasTemplateExpression, TemplateRenderer } from '@tamu-gisc/common/utils/string';
 import { SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
 
@@ -135,7 +133,7 @@ export class EventService {
                         // If propOverrides are provided, assign them to the source layer.
                         // This enables the ability to, for example, show/hide layers based on accommodation selections.
                         if (correspondingOption && correspondingOption.propOverrides) {
-                          source = deepmerge(source, correspondingOption.propOverrides) as LayerSource;
+                          source = deepMerge(source, correspondingOption.propOverrides) as LayerSource;
                         }
 
                         if (correspondingOption && correspondingOption.expression) {
@@ -322,7 +320,7 @@ export class EventService {
           }
 
           if (conversion.propOverrides) {
-            Object.assign(child, deepmerge(child, conversion.propOverrides));
+            Object.assign(child, deepMerge(child, conversion.propOverrides));
           }
 
           if (conversion.expression) {
