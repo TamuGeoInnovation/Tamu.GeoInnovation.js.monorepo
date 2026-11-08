@@ -2,7 +2,12 @@
   @for (photo of photos(); track photo) {
   <swiper-slide>
     <a [href]="photo" target="_blank" (click)="open($event, $index)">
+      <!-- No address, and so no download, until the slide is reached (#2716); see `reached`. -->
+      @if (reached().has($index)) {
       <img [src]="photo" alt="Photo {{ $index + 1 }} of {{ photos().length }}, opens full size" />
+      } @else {
+      <img alt="Photo {{ $index + 1 }} of {{ photos().length }}, opens full size" />
+      }
     </a>
   </swiper-slide>
   }

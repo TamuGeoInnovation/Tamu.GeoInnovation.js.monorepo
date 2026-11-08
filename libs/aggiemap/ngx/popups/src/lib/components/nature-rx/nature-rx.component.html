@@ -11,12 +11,9 @@
 
   <div [innerHTML]="$safeNavigationMigration(data?.attributes?.description) | markdownParse" class="trailer-2"></div>
 
+  <!-- One labelled line, as every other popup shows a field (#2717): it was the only popup with a list. -->
   @if (amenities.length > 0) {
-  <ul class="trailer-2">
-    @for (amenity of amenities; track amenity) {
-    <li>{{ amenity }}</li>
-    }
-  </ul>
+  <div class="feature-style-2 trailer-2" tabindex="0"><strong>Features</strong>: {{ amenities.join(', ') }}</div>
   }
 
   <tamu-gisc-copy-field [text]="shareUrl"></tamu-gisc-copy-field>
