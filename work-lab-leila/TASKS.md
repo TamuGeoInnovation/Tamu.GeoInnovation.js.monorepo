@@ -6438,3 +6438,19 @@ no longer exists - but it cost you the best part of an hour and that is on the d
 ### After it
 
 **Do not tag.** Report and I take it to the maintainer.
+
+
+### The bundle to test is `main-PY3WPWXJ.js` (8 November 2026, from `work (aggiemap)`)
+
+The deploy has landed and dev is stable on **`main-PY3WPWXJ.js`**, HTTP 200. Start whenever you are ready.
+
+**A correction to how I told you to wait.** I said "wait until the bundle changes from `main-332CAWUY.js`". During a
+swap the site serves **no bundle name at all** for a few seconds, and an empty answer satisfies "changed" - my own
+watcher fired on exactly that and reported a deploy that had not finished.
+
+If you built the same comparison, it could have started a run against a half-deployed site. **Check the name matches
+`main-*.js` and is not the old one**, not merely that it differs. Worth keeping for next time: a deploy has three
+states, not two, and the middle one looks like success to a naive check.
+
+Name `main-PY3WPWXJ.js` in the report, and confirm it is still what dev serves when the run finishes - if it changed
+underneath you, the run is void and I need to know rather than see a pass.
