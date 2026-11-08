@@ -2825,3 +2825,68 @@ service's name.** Both of yours load on dev today. If either service ever goes m
 
 `home/reports/2026-11-08-33.md`, and say **"report ready: <file>"**. Say what each conflict was and how you resolved
 it - that is the part worth reading on this one.
+
+## Batch 34 (8 November 2026, from `work (aggiemap)`) — #2731: check a layer's title against the name its service publishes (High)
+
+Batch 33 was right and I verified it rather than taking it on trust: both maps are registered in
+`all.definitions.ts`, `development-only.ts` and `declared-layers.generated.json`. [PR 2727](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2727)
+is merged and on dev.
+
+**Read [#2731](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2731) in full before
+starting.** This batch exists because I got a layer-naming change badly wrong today, twice, and nothing in the suite
+could contradict me either time.
+
+### What happened, because it is the specification
+
+[PR 2720](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2720) removed fourteen `title`
+overrides so layers would take their names from their services. I then measured a **local** build, saw every layer
+reading its service's name - "Muster view", "SoccerParking view" - and had the whole thing reverted as broken.
+
+It was not broken. Those layers had **never loaded**: `loaded: false`, `Failed to fetch`, because a build served from
+`127.0.0.1` cannot reach Transportation's services. An untitled layer that fails to load shows its *service's* name,
+because `sourceJSON.name` is never read. The mechanism works perfectly when the layer loads - Soccer's parking layer
+on dev has been untitled for months and reads "Soccer Event Parking Lots".
+
+So the check has to answer two different questions and never confuse them:
+
+- is this layer's **title** what its service publishes?
+- did this layer **load at all**?
+
+### What to build
+
+**1. The probe exposes the layer's own service name.** `sourceJSON.name`, read after the layer loads, as `symbology`
+already is. Nothing else here is possible without it - and its absence is why every argument about these names today
+was made by reading a document or querying a service by hand.
+
+**2. A declared list of deliberate overrides, with a reason each** - map, layer id, title, why. `docs/map-layers.md`
+already requires the reason; making it data lets it be checked. **A unit test asserts every `title` in the definitions
+appears in that list**, so a new override cannot be added silently.
+
+**3. A smoke check**, for every layer of every map, against a deployed environment:
+- the layer **loaded**, and is not in the override list → its title **equals** its service's layer name;
+- it is in the override list → its title equals the **declared** one, so a drifted override is caught too;
+- it did **not** load → report *that*, as a load failure, and judge nothing about its name.
+
+That third branch is the whole point. A check that cannot tell "wrong name" from "never loaded" will mislead the next
+person exactly as it misled me.
+
+### What you will find, and must not treat as a bug
+
+**Twelve layers fail on dev's main map today** - Construction Zones, Visitor Parking, RNS Spaces, the bike services,
+Emergency Phones and others. They are the dev GIS server's missing services, long known. **None shows a fallback name,
+only because every one of them still carries a title.** Your check should report them as load failures and move on.
+
+Do not try to fix them and do not add them to the override list.
+
+### Scope
+
+**Only the probe and the suite.** No definition changes - removing the overrides again is #2719 and comes after this,
+on the evidence this produces.
+
+### The report and the pull request
+
+One pull request, `Closes #2731`, body from the template, `no-visible-change`. Say in the report **what the check
+reports today against dev** - which layers match, which are declared overrides, which could not be judged. That first
+run is the baseline #1523 gets worked through.
+
+`home/reports/2026-11-08-34.md`, and say **"report ready: <file>"**.
