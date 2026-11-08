@@ -45,7 +45,7 @@ export const UCGIS_MEMBER_INSTITUTIONS: ReadonlyArray<MemberInstitution> = [
   { name: 'Texas A&M University-Corpus Christi' },
   { name: 'Texas State University', alsoKnownAs: ['Texas State University, San Marcos'] },
   { name: 'University of California, Santa Barbara', alsoKnownAs: ['University of California at Santa Barbara', 'UC Santa Barbara'] },
-  { name: 'University of Colorado Boulder', alsoKnownAs: ['University of Colorado, Boulder', 'University of Colorado'] },
+  { name: 'University of Colorado Boulder', alsoKnownAs: ['University of Colorado'] },
   { name: 'University of Connecticut' },
   { name: 'University of Illinois Urbana-Champaign', alsoKnownAs: ['University of Illinois at Urbana-Champaign'] },
   { name: 'University of Iowa' },
