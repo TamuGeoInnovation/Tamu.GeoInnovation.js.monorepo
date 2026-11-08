@@ -45,8 +45,8 @@ describe('Connections', () => {
     );
   });
 
-  // RoutingProPublish is published on the development GIS server only (#659). It is pinned there, as the bus routes
-  // are, so that localhost reaches it too; the trip planner reads it only where development-only features are on.
+  // RoutingProPublish is published on the development GIS server only (#659). It is pinned there
+  // so that localhost reaches it too; the trip planner reads it only where development-only features are on.
   it('names the development routing network on the development GIS server, from any host', () => {
     const expected = 'https://gis-dev.it.tamu.edu/arcgis/rest/services/RoutingProPublish';
 
@@ -113,6 +113,7 @@ const READ_FROM_PRODUCTION_ON_DEVELOPMENT: Partial<Record<keyof IComposedConnect
   tCampUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
   fourHRoundupUrl:
     'the development server has the hosted view but answers 499 "Token Required", so a development build cannot read it (#2695)',
+  micromobilityUrl: 'the development server answers 499 "Token Required" (#2712)',
   kickoff150thUrl: RETIRED,
   kickoffAtKyleUrl: RETIRED,
   liveAtTheStationUrl: RETIRED,
@@ -167,6 +168,19 @@ describe("Transportation's services on a development build (#2653)", () => {
   it("reads Muster from the development server's MusterParking_view, a different name with the same layers and fields", () => {
     expect(development.musterUrl).toBe(
       'https://gis.dev.tamu.edu/arcgis/rest/services/Hosted/MusterParking_view/FeatureServer'
+    );
+  });
+
+  /**
+   * The bus map read `TS/Bus_Routes` from the development server on every environment, production included, because
+   * it was public nowhere else (#2636). Its hosted view is public on both hosts, so each reads its own.
+   */
+  it("reads the bus routes from each environment's own hosted view", () => {
+    expect(production.busRoutesUrl).toBe(
+      'https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Bus_Routes_view/FeatureServer'
+    );
+    expect(development.busRoutesUrl).toBe(
+      'https://gis.dev.tamu.edu/arcgis/rest/services/Hosted/Bus_Routes_view/FeatureServer'
     );
   });
 });

@@ -7,6 +7,7 @@ import { Connections } from '../../../libs/aggiemap/ngx/common/src/lib/connectio
 import { expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
 import { gisHostFor, smokeBaseUrl } from './gis-hosts';
+import { MANIFEST_PATH, MapManifest } from './global-setup';
 
 /**
  * Every search source the main map defines is exercised, each by the route a visitor uses to reach it
@@ -73,6 +74,12 @@ const connections = Connections(GIS_HOST);
  * One row per source in `libs/aggiemap/ngx/common/src/lib/search-sources/search-sources.ts`, keyed by
  * its `source` id. Terms were chosen against the production services on 30 September.
  */
+/**
+ * Blinn, the bus stop opened by `?busstop=`, by its id in this environment's bus service, which global setup asks the
+ * service for: the ids are not the same on every environment (#2636). `not-found` makes the test fail saying so.
+ */
+const BUS_STOP = (JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf8')) as MapManifest).busStop ?? 'not-found';
+
 const SOURCE_CASES: Record<string, SourceCase> = {
   building: {
     kind: 'typed',
@@ -107,7 +114,7 @@ const SOURCE_CASES: Record<string, SourceCase> = {
   'building-exact': { kind: 'deep-link', query: '?bldg=0468', popupShows: /Sterling C\. Evans Library/ },
   'building-exact-abbr': { kind: 'deep-link', query: '?BldgAbbrv=WCBA', popupShows: /Wehner Building/ },
   'points-of-interest-exact': { kind: 'deep-link', query: '?poi=1', popupShows: /Bonfire Memorial/ },
-  'bus-stops-exact': { kind: 'deep-link', query: '?busstop=4719', popupShows: /Blinn/ },
+  'bus-stops-exact': { kind: 'deep-link', query: `?busstop=${BUS_STOP}`, popupShows: /Blinn/ },
   // BuildingDepartmentListComponent searches this source, but no template uses that component.
   'university-departments-exact': {
     kind: 'not-on-main-map',

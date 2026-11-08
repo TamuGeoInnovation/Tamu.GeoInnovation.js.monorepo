@@ -1,8 +1,10 @@
 import { Page } from '@playwright/test';
+import * as fs from 'fs';
 
 import { expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
 import { directionsAvailable, directionsEntryPoints } from './directions';
+import { MANIFEST_PATH, MapManifest } from './global-setup';
 import { Connections } from '../../../libs/aggiemap/ngx/common/src/lib/connections';
 import {
   NETWORK_TRAVEL_MODE_NAMES,
@@ -31,11 +33,17 @@ interface PopupCase {
   shows: RegExp;
 }
 
+/**
+ * Blinn, the bus stop opened by `?busstop=`, by its id in this environment's bus service, which global setup asks the
+ * service for: the ids are not the same on every environment (#2636). `not-found` makes the test fail saying so.
+ */
+const BUS_STOP = (JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf8')) as MapManifest).busStop ?? 'not-found';
+
 const POPUP_CASES: PopupCase[] = [
   { name: 'building', path: '/map?bldg=0468', shows: /Sterling C\. Evans Library/ },
   { name: 'parking lot', path: '/map?lot=100b', shows: /Lot 100b/i },
   { name: 'point of interest', path: '/map?poi=1', shows: /Bonfire Memorial/ },
-  { name: 'bus stop', path: '/map?busstop=4719', shows: /Blinn/ },
+  { name: 'bus stop', path: `/map?busstop=${BUS_STOP}`, shows: /Blinn/ },
   { name: 'event map feature', path: '/parking/avp-parking/map?feature=AVP-parking-lots:26135', shows: /Lot 043/ },
   // A tent, so a visitor can walk to it on game day (#2639).
   { name: 'tailgate tent', path: '/events/tailgating/map?tent=O62', shows: /Tent O62/ }

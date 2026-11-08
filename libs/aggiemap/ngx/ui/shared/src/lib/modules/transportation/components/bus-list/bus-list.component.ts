@@ -27,17 +27,15 @@ export class BusListComponent implements OnInit, OnDestroy {
   /**
    * Whether to show the routes at all.
    *
-   * `TS/Bus_Routes` is not publicly readable on the production GIS server, so AggieMap reads bus data
-   * from the development server. That is fine on dev and wrong on production, where it would leave a
-   * live feature depending on a development server: if that server restarts or is taken down, bus
-   * routes vanish from the live site with nothing to explain why.
-   *
-   * Until the service is published, production keeps the notice it was already showing, and this is
-   * a no-op for anyone using the site. Remove this and the template's `ngIf` once the service is
-   * public - see #1036's sibling discussion and the release notes.
+   * Bus routes are development-only (#1229). They were read from `TS/Bus_Routes`, which was public on
+   * the development server only, so production could not have them without depending on that server.
+   * Each environment now reads its own Transportation hosted view, public on both (#2636), so that
+   * reason is gone; whether bus routes go to production is the maintainer's decision, and until it is
+   * made production keeps the notice it was already showing. Remove this and the template's condition
+   * when they do.
    *
    * The routes pipeline below is cold, so leaving it unsubscribed means production makes no request
-   * to the development server at all. Hiding only the markup would not have achieved that.
+   * for bus data at all. Hiding only the markup would not have achieved that.
    */
   public busRoutesAvailable: Observable<boolean>;
 

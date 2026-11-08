@@ -19,6 +19,7 @@ import { OutdoorTrackParkingTs } from './outdoor-track-parking.definitions';
 import { CrossCountryParkingTs } from './cross-country-parking.definitions';
 import { SoccerParkingTs } from './soccer-parking.definitions';
 import { VolleyballParkingTs } from './volleyball-parking.definitions';
+import { NcaaVolleyballTs } from './ncaa-volleyball.definitions';
 import { TroubadourTs } from './troubadour-festival.definitions';
 import { KickoffAtKyleTs } from './kickoff-at-kyle.definitions';
 import { LiveAtTheStationTs } from './live-at-the-station.definitions';
@@ -56,6 +57,7 @@ import { NscParkingTs } from './nsc-parking.definitions';
 import { BreakSummerParkingTs } from './break-summer.definitions';
 import { SustainableTransportationTs } from './sustainable-transportation.definitions';
 import { EvChargersTs } from './ev-chargers.definitions';
+import { MicromobilityTs } from './micromobility.definitions';
 import { TsMainParkingTs } from './main-parking.definitions';
 import { SecGroundsConferenceTs } from './sec-grounds-conference.definitions';
 import { DiningKioskTs } from './dining.definitions';
@@ -104,6 +106,7 @@ export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   CrossCountryParkingTs,
   SoccerParkingTs,
   VolleyballParkingTs,
+  NcaaVolleyballTs,
   TroubadourTs,
   FootballParkingEvent,
   TailgatingTs,
@@ -140,6 +143,7 @@ export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   BreakSummerParkingTs,
   SustainableTransportationTs,
   EvChargersTs,
+  MicromobilityTs,
   TsMainParkingTs,
   SecGroundsConferenceTs,
   ArgentinaVsHondurasTs,

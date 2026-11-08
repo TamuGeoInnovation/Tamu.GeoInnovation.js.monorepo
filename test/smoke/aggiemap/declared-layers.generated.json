@@ -316,6 +316,14 @@
       "mens-basketball-parking-lots"
     ]
   },
+  "micromobility": {
+    "layerList": true,
+    "layers": [
+      "micromobility-corridor",
+      "micromobility-allowed-sidewalks",
+      "micromobility-facilities"
+    ]
+  },
   "motorcycle-parking": {
     "layerList": true,
     "layers": [
@@ -359,6 +367,13 @@
       "muster-traffic-flow",
       "muster-accessible-parking",
       "muster-parking"
+    ]
+  },
+  "ncaa-volleyball": {
+    "layerList": true,
+    "layers": [
+      "ncaa-volleyball-accessible-parking",
+      "ncaa-volleyball-parking-lots"
     ]
   },
   "night-weekend": {

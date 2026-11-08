@@ -620,6 +620,20 @@ export interface IMapConfigurationBase {
   developmentSources?: Array<LayerSource>;
 
   /**
+   * The issue keeping this whole map off production, when it is not ready for the public (#2712).
+   *
+   * Where development-only features are off (`TestingService.isTesting`), the map is not listed anywhere
+   * and its links go to the main map, so production never requests its services. Those services are
+   * listed in `DEVELOPMENT_ONLY_SERVICES` (test/smoke/aggiemap), so the smoke suite fails if production
+   * ever requests one. The maintainer decides when a map moves to production; then this is removed and the
+   * services come out of that list together (#1229).
+   *
+   * Unlike `discover.visible: false`, which only keeps a map off production's lists and leaves its link
+   * working, this keeps the map itself off.
+   */
+  developmentOnly?: string;
+
+  /**
    * If the map should be discoverable in the Discover application, this property should be set to an object that conforms to the DiscoverMetadata interface.
    */
   discover?: DiscoverMetadata | null;

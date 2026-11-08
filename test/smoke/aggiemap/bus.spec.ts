@@ -11,8 +11,8 @@ import { smokeBaseUrl } from './gis-hosts';
 /**
  * Every bus route draws its stops, and choosing a route shows them (#1174).
  *
- * The bus panel lists a route's stops from the route's own `Stop1`..`Stop31` fields, but the map draws
- * them from the Bus Stops layer, finding the stops whose `Route` field names the route. When the two
+ * The bus panel lists a route's stops from the route's own `stop1`, `stop2`, ... fields, but the map draws
+ * them from the Bus Stops layer, finding the stops whose `route` field names the route. When the two
  * disagree, a route is drawn with its stops listed in the panel and none on the map: five routes did
  * exactly that on dev (NW0104, NW0305, NW4041, 15R, 47/48), because no stop in the layer was tagged
  * with them.
@@ -25,7 +25,7 @@ import { smokeBaseUrl } from './gis-hosts';
  * Drawn graphics are read through the map probe's `graphicTypes` for the bus routes layer: the line is
  * tagged `route` and each stop `waypoints`.
  *
- * Where bus routes are not offered (production, until `TS/Bus_Routes` is published there) the panel
+ * Where bus routes are not offered (production, until the maintainer moves them there; #1229) the panel
  * shows a notice instead, and these tests skip. They start checking there as soon as routes appear.
  */
 
