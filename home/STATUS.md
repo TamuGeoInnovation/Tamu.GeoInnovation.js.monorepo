@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch 32** (aggiemap): #2712 Micromobility draft map, then #2713 NCAA Volleyball map. Started 2:12 PM Central, 8 November. 2:19 PM: #2712 written (the `developmentOnly` map gate, the map, specs, release note); reinstalling the dev volume to prove the specs red, then green. #2713 drafted on top of it.
+- **Batch 32** (aggiemap): #2712 Micromobility draft map, then #2713 NCAA Volleyball map. Started 2:12 PM Central, 8 November. 2:47 PM: #2712 is PR 2725 (check exit 0, specs red then green, both maps captured). #2713 committed on top of it; its check is running.
 
 ## Finished
 - **Batch 31** (aggiemap; report `home/reports/2026-11-08-31.md`): #2707, PR 2718 open (ready), `fix/2707-click-fallback-query` at `ac67fb85a`. An empty hit test queries the popup layers still drawing at the point; bare ground on a drawn map asks nothing; trip route unchanged. Unit red 3 of 6 then 16 of 16; new smoke check red 3 of 3 on dev, green locally; check exit 0. One question.
