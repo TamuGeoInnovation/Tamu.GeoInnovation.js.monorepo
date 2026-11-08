@@ -14,9 +14,10 @@ swallows it and clicking a feature appears to do nothing (#1244). -->
     }
 
     <!--
-    Development-only until `TS/Bus_Routes` is published (#1090). Without this gate the tab shipped to
-    production, where `busRoutesAvailable` correctly refuses to render any routes - so the tab opened
-    a panel apologising for being unavailable.
+    Development-only (#1090, #1229). The bus routes service is public on production now (#2636), but moving
+    bus routes there is the maintainer's decision. Without this gate the tab shipped to production, where
+    `busRoutesAvailable` correctly refuses to render any routes - so the tab opened a panel apologising
+    for being unavailable.
     -->
     @if ((isDev | async) === true) {
     <tamu-gisc-sidebar-tab [title]="'Bus Routes'" [description]="'Toggle bus controls (list and timetable)'" [material_icon]="'directions_bus'" [route]="'bus'" (click)="reportSidebarContent('Bus Routes')"></tamu-gisc-sidebar-tab>

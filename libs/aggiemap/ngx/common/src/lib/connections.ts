@@ -57,7 +57,7 @@ function createConnections(gisHost: string): IComposedConnections {
     routingBaseUrl: `https://${gisHost}/arcgis/rest/services/Routing`,
     // The routing network Transportation published for #659. It is on the development GIS server only, outside the
     // `Routing` folder and not under a dated name, so the trip planner's discovery of `routingBaseUrl` would not find
-    // it. Pinned, like `busRoutesUrl`, so localhost reaches it too; the trip planner reads it only where
+    // it. Pinned so localhost reaches it too; the trip planner reads it only where
     // development-only features are on, and the smoke suite fails if production ever requests it.
     developmentRoutingBaseUrl: 'https://gis-dev.it.tamu.edu/arcgis/rest/services/RoutingProPublish',
     poiUrl: 'https://services1.arcgis.com/oxXAea6csqnDZ6WT/arcgis/rest/services/Points_of_Interest_view/FeatureServer',
@@ -138,12 +138,12 @@ function createConnections(gisHost: string): IComposedConnections {
     gisDayUrl:
       'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/MSC_and_Rudder_Building_Polygon_Layer/FeatureServer',
     argentinaVsHondurasUrl: `https://${gisHost}/arcgis/rest/services/TS/Argentina_vs_Honduras26/MapServer`,
-    // NOTE: TS/Bus_Routes is only published publicly on the dev GIS host - the prod host answers
-    // 499 "Token Required". It is pinned here (rather than host-derived) so bus-stop deep-links also
-    // resolve on localhost, whose host-derived value is the prod host. This mirrors the pin in
-    // BusService, which keeps its own copy of the URL because it lives in a low-level lib that cannot
-    // import connections. TODO: un-pin both to `${gisHost}` once TS/Bus_Routes is public on prod.
-    busRoutesUrl: `https://gis-dev.it.tamu.edu/arcgis/rest/services/TS/Bus_Routes/MapServer`,
+    // AggieSpirit bus stops (layer 0) and routes (layer 1), Transportation's hosted view, public on both its hosts and
+    // read like its other services (#2636). It replaced `TS/Bus_Routes`, which was public on the development server
+    // only. The view's field names are lower case, and its stop ids are new and differ between the hosts. The
+    // application provides this to `BusService` as `BUS_ROUTES_URL`, because that service lives in a library that
+    // cannot import this one.
+    busRoutesUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Bus_Routes_view/FeatureServer`,
     fishCampUrl: `${tsEvents}/Fish_Camp/MapServer`,
     tCampUrl: `https://${PRODUCTION_TS_HOST}/arcgis/rest/services/Hosted/T_Camp_view/FeatureServer`,
     fireSchoolUrl: `https://${PRODUCTION_TS_HOST}/arcgis/rest/services/Hosted/Municipal_Fire__School_Vendor_Show_view/FeatureServer`,

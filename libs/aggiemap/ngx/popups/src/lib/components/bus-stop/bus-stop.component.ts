@@ -12,7 +12,7 @@ import { ActivateDirective } from '@tamu-gisc/ui-kits/ngx/interactions/keyboard'
 /**
  * Popup for the AggieSpirit bus map. Rendered when a user clicks a graphic drawn by `BusService` on the
  * `bus-route-layer` - either a bus stop (`type !== 'route'`) or the route line (`type === 'route'`) -
- * or when a shared `?busstop=<OBJECTID>` deep-link resolves a stop feature.
+ * or when a shared `?busstop=<objectid>` deep-link resolves a stop feature.
  *
  * Extends `BaseDirectionsComponent` for the shared "Directions To Here" + copy-link behavior.
  */
@@ -27,7 +27,7 @@ export class BusStopPopupComponent extends BaseDirectionsComponent implements On
 
   /**
    * Transportation Services bus schedules - the AggieSpirit per-stop schedule page requires a stopCode
-   * and directionName that the TS/Bus_Routes source does not provide, so this links to the general page.
+   * and directionName that the bus routes service does not provide, so this links to the general page.
    */
   public readonly transportUrl = 'https://transport.tamu.edu/busroutes/?utm_source=aggiemap';
 
@@ -46,12 +46,12 @@ export class BusStopPopupComponent extends BaseDirectionsComponent implements On
 
   /**
    * Deep-link fragment for the copy-link, composed from the `bus-stops-exact` search source's
-   * configured `urlQueryParam` (`?busstop=<OBJECTID>`) and prefixed with the bus map path so the
-   * shared link opens on the bus map. Returns null when there is no stop OBJECTID (e.g. the route
+   * configured `urlQueryParam` (`?busstop=<objectid>`) and prefixed with the bus map path so the
+   * shared link opens on the bus map. Returns null when there is no stop objectid (e.g. the route
    * line), which leaves the share URL as the site origin.
    */
   protected override _getShareUrlFragment(): string | null {
-    const objectId = this.data?.attributes?.OBJECTID;
+    const objectId = this.data?.attributes?.objectid;
 
     if (objectId == null) {
       return null;
@@ -77,7 +77,7 @@ export class BusStopPopupComponent extends BaseDirectionsComponent implements On
       return;
     }
 
-    const firstRoute = (attributes.Route ?? '').toString().split(',')[0].trim();
+    const firstRoute = (attributes.route ?? '').toString().split(',')[0].trim();
 
     if (!firstRoute) {
       return;

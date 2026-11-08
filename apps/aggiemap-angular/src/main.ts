@@ -8,7 +8,7 @@ import { ACTING_AS_PRODUCTION } from '@tamu-gisc/dev-tools/application-testing';
 import { actingAsProduction } from '@tamu-gisc/aggiemap/ngx/common';
 import { notificationStorage, AGGIEMAP_NOTIFICATION_STORE_KEY } from '@tamu-gisc/common/ngx/ui/notification';
 import { EVENT_NOTIFICATION_DEFINITIONS, aggiemapRoutes } from '@tamu-gisc/aggiemap/ngx/core';
-import { BUS_STOP_POPUP_COMPONENT } from '@tamu-gisc/maps/feature/trip-planner';
+import { BUS_ROUTES_URL, BUS_STOP_POPUP_COMPONENT } from '@tamu-gisc/maps/feature/trip-planner';
 import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
 import { provideHttpClient, withXhr, withInterceptorsFromDi } from '@angular/common/http';
 import { Angulartics2Module } from 'angulartics2';
@@ -59,6 +59,9 @@ bootstrapApplication(AppComponent, {
     // Supplies the bus map's stop/route popup at the application root (BusService lives in a low-level
     // lib and cannot import the popup component directly - see BUS_STOP_POPUP_COMPONENT).
     { provide: BUS_STOP_POPUP_COMPONENT, useValue: Popups.BusStopPopupComponent },
+    // And the bus stops and routes service, from the same connections as the bus stop search source, which BusService
+    // cannot import either (#2636).
+    { provide: BUS_ROUTES_URL, useValue: environment.Connections.busRoutesUrl },
     provideHttpClient(withXhr(), withInterceptorsFromDi())
   ]
 }).catch((err) => console.error(err));
