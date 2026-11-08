@@ -36,6 +36,7 @@ export const AggieFamilyParadeLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: AggieFamilyParadeDefinitions.POIS.id,
+    title: AggieFamilyParadeDefinitions.POIS.name,
     url: AggieFamilyParadeDefinitions.POIS.url,
     popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {

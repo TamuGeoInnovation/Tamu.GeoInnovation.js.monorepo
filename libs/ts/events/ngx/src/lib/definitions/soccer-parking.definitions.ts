@@ -37,6 +37,7 @@ export const SoccerParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: SoccerParkingDefinitions.ACCESSIBLE_PARKING.id,
+    title: SoccerParkingDefinitions.ACCESSIBLE_PARKING.name,
     url: SoccerParkingDefinitions.ACCESSIBLE_PARKING.url,
     popupComponent: EventPopups.MarkdownPopupComponent,
     visible: true,
@@ -88,6 +89,7 @@ export const SoccerParkingColdLayerSources: LayerSource[] = [
 export const SoccerParking_DevelopmentLayerSources: LayerSource[] = [
   athleticsDevelopmentSource({
     id: SoccerParkingDefinitions.ACCESSIBLE_PARKING.id,
+    title: SoccerParkingDefinitions.ACCESSIBLE_PARKING.name,
     url: `${eventUrl}/0`
   }),
   athleticsDevelopmentSource({
