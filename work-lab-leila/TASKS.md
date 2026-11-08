@@ -6115,3 +6115,63 @@ capture the map at that moment next to a load where none failed, so the GIS team
 
 If it turns out the tile draws anyway — from cache, or because the failed query was for something already drawn — that is just
 as useful an answer, and it changes what #2702 claims. Say so.
+
+## Batch 13 (8 November 2026, from `work (aggiemap)`) — #2701's three test faults, now decided (High)
+
+**Reports 11 and 12 were the best work on this board.** Report 11's measurement corrected #2707 on two counts, one of
+them mine: I had recorded `ready: false` on a drawn map and you showed it never reproduces, and I had written that the
+routing click was the other half of the fault when it is 110 of 110 sound. Both corrections are on the issue, quoting
+your numbers. Report 12's 0-pixel comparison is what turned #2702 from "layers may be drawing short" into the real
+finding, which is the dead click square.
+
+**Decided by the maintainer, 8 November.** All three are yours, all three are test changes, and each gets a pull
+request. Take them in this order; they are independent, so a hold-up on one must not stop the others.
+
+### 1. The tailgating kiosk fixture — derive the list, don't keep a copy
+
+**Decided: restrooms stay on the kiosk.** It is the same game day and the same crowd, so #2661 was right.
+
+Fix the test instead, and fix it the way you recommended: **`kiosk.spec.ts` should read the expected layer ids from the
+kiosk's own definition** rather than keeping `TAILGATING_KIOSK_LAYER_IDS` as a hand-maintained copy. The next tailgating
+layer must not be able to do this again.
+
+Also **reword the failure message**. "The kiosk also loads the main map's layers" is wrong twice over — the layer was
+not the main map's, and the "+3" was the diff printer counting its own brackets. Say "layers its definition does not
+list", and print the names.
+
+### 2. `?feature=` links should name a stable attribute, not an object id
+
+**Decided: by attribute.** Your finding is the reason — `?feature=AVP-parking-lots:26135` points at Lot 043 on
+production and at nothing on dev, because the two servers numbered the same lots independently (26135 against 34694).
+
+So **make `?feature=` able to open a feature by a stable attribute** — `FAC_CODE` 043 rather than an object id — and
+move the suite's fixture onto it. Object ids must keep working, since links already shared carry them.
+
+**Check first whether `?feature=` can already take an attribute** before building anything: the share links and the
+search sources have grown several ways of naming a feature, and this may be a matter of using one that exists. Say in
+the pull request what you found either way.
+
+**This is a visitor-facing fix, not only a test fix** — a link copied from one environment and opened on the other
+silently selects nothing today. It needs before and after screenshots and a release-notes entry.
+
+### 3. Harrington: click the polygon, not a screen fraction
+
+**The framing question is answered, and it is the data.** I checked all three services on 8 November: the sub-building
+records `0468.1` Evans, `0468.2` Cushing, `0468.3` Evans Annex and `0468.4` Student Computing Center are present in
+**the service we already read** (`TAMU_Basemap_20261008/MapServer/1`), not only in the newer ones. The application did
+not change. So there is nothing to investigate and no second batch — just fix the test.
+
+**Click Harrington's own polygon by map coordinates**, through `view.toScreen`, re-read per load, exactly as you did for
+report 11. A fixed screen fraction only means what you think while the framing holds, which is the lesson this failure
+taught.
+
+While you are there: the test clicks one building then another to prove a popup is replaced rather than left up
+(#1672). Keep that property — it is the point of the test — but anchor both clicks to their polygons.
+
+### The report and the pull requests
+
+One pull request per item, each with its issue linked, built from the template, checked with
+`scripts/check-in-volume.sh <branch> <the projects it edits>`. Item 2 carries screenshots and a release note; items 1
+and 3 are test-only, so they take the `no-visible-change` label.
+
+`work-lab-leila/reports/2026-11-08-13.md`, and say **"report ready: <file>"**.

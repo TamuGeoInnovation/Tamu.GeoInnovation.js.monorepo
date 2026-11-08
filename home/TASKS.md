@@ -2645,3 +2645,65 @@ rush the first.
 checks it, captures the images and opens the PR.
 
 **If anything here is already done or half-done from this morning, say so and don't redo it.**
+
+## Batch 31 (8 November 2026, from `work (aggiemap)`) — #2707: a click into a map that is still drawing is thrown away (High)
+
+**Read [#2707](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2707) and its measurement
+comment first.** The lab put 320 loads per path behind this; the numbers there are the specification for your fix, and
+its "how it was measured" section is worth copying rather than reinventing.
+
+**The fault, in one line:** `MapService`'s click handler is `view.hitTest(e)` and nothing else
+(`libs/maps/esri/src/lib/services/map/map.service.ts`, around line 222) — no fallback, no retry. Until the buildings
+layer view holds the graphics under the point, the hit test comes back empty and **the click is discarded silently**.
+
+**What that costs a visitor:** on dev, **0 of 20** clicks opened a popup once the framing had settled, about six
+seconds in, which is when the page looks completely ready. Production was 1 of 20. It is only reliable at sixteen
+seconds. The click is dropped, not slowed — a click that missed never produced a popup in the twenty seconds allowed.
+This is on production today.
+
+### The fix the maintainer chose
+
+**When the hit test comes back empty, fall back to querying the layers at that point.**
+
+That is deliberately the path that already works: `TripPlannerService` queries `buildings-layer` directly with
+`featuresIntersectingPoint` rather than going through the hit test, and it set a stop **110 of 110 times**, including
+on clicks made while the map was still drawing. The routing click is not affected by this fault at all, and the reason
+is exactly this difference.
+
+Two options were rejected, and it is worth knowing why so the fix does not drift into them: holding the click until the
+layer view settles was rejected because it makes every early click feel laggy, and changing the probe's `ready` was
+rejected as a fix because it changes nothing for a visitor.
+
+**Points to settle while building it, and say what you chose:**
+- **Which layers to query.** Querying every layer on every missed click is a lot of requests. The popup only ever opens
+  for a layer that has a `popupComponent`, so that is the natural set.
+- **Ordering.** A real hit test returns graphics top-most first, and `orderHitsForPopup` then moves the selection
+  highlight behind. A fallback has to produce an order the popup service can use the same way.
+- **A click that genuinely hits nothing** — bare ground — must stay cheap and must not open anything.
+- **The hit test is skipped entirely on the trip planner route.** Do not change that.
+
+### Prove it red first
+
+The regression test is the point of this one, and #2707 records that the suite's existing waits are **not enough**: a
+check that waits for `ready`, or for `ready` plus settled framing, still lands inside the dead window — that is the
+0-of-20 row. So a test written the way the suite writes them today would pass against a map nobody can click.
+
+**Write the check so that it fails on the unfixed code**, by clicking in that window deliberately, and say in the pull
+request what the unfixed code did when you ran it.
+
+### Not in this batch
+
+The basemap's intermittent 500s produce the same symptom by a different route and last the whole visit
+([#2702](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2702)). Whether this fallback also
+rescues that case is worth a sentence in your report, but do not build for it.
+
+A click on a Nature Rx marker in the routing panel names the stop by bare coordinates rather than by the space's name.
+The maintainer has decided that should be fixed; it is a separate change and not yours this batch.
+
+### The report and the pull request
+
+One pull request, from a fork branch, issue linked, body from the template, with before and after evidence — a visible
+fault needs them, and here the "before" is a click that does nothing, so the measurement stands in for a screenshot.
+`scripts/check-in-volume.sh <branch> maps-esri,aggiemap-angular` at least; say what you ran.
+
+`home/reports/2026-11-08-31.md`, and say **"report ready: <file>"**.
