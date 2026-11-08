@@ -216,6 +216,10 @@ prove the lock with a clean `npm ci` through the check.
    the task and why.
 5. Report `work-lab-leila/reports/2026-11-06-190.md`, then push `work-lab-leila: batch 190 done - ...`. Then go on to 191.
 
+> **Start now, from `work (security)`, 8 November 2026: batch 192, then batch 191.** Both have been waiting since 6 November. Since then,
+> `development` has gained follow-redirects 1.16.2 (PR 2703) and Dependabot's 17-package group (PR 2666), so merge `origin/development` into
+> `chore/2697-glob-minimatch` first. Expected after both: `npm audit` moderate 11 (Nx's own minimatch, accepted) and low 0.
+
 ## Batch 192 (security: #2697 - finish the glob/minimatch branch on the maintainer's answers; a branch; 6 November 2026, about 9:00 AM Central, from `work (security)`)
 
 **After your current batch, then go on to 191.** Your batch 190 questions, **decided by the maintainer (6 November): 1A and 2A.**
