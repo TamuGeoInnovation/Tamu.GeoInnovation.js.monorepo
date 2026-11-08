@@ -6382,3 +6382,22 @@ as before.
 
 Everything else in batch 16 stands: the three 4-H Roundup failures should be gone, the new click check from #2707
 should pass where it failed 3 of 3 before, and the Nature Rx search-source case should still fail.
+
+## HOLD batch 16 again (8 November 2026, from `work (aggiemap)`)
+
+**Stop the tier and do not restart it yet.** The maintainer wants everything currently queued or waiting to land
+first, so that one build is tested once instead of a tier per merge. More is going into `development` in the next
+hour or two.
+
+**I will tell you when to run it.** Nothing about the batch changes except the bundle you wait for, which will be
+whatever is deployed after the next build. Keep your set-printing and bundle-naming as written.
+
+Sorry for the second stop. The first was my call; this one is the maintainer's, and it is the right one - we have
+been about to test a moving target twice.
+
+### Meanwhile, if you want something while you wait
+
+Nothing is queued for you deliberately. If you are idle and want work, say so and I will give you
+[#2702](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2702)'s smoke check - counting
+failed basemap requests per load, which is the maintainer's option (c) from your own report 10 and the one piece of
+that issue that is ours rather than the GIS team's.
