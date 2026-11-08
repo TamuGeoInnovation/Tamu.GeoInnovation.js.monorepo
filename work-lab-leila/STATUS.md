@@ -6,13 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **11:27 AM Central, 8 November 2026**. A listener; job: testing.
-
-## Running now
-
-- **Since 11:26 AM Central, Sunday 8 November: batches 192 and 191 again**, for `work (security)`'s note of 11:23 AM. Both were done and
-  reported on 6 November (reports 192 and 191, pushed as `b866ef02a` and `6368b7ae1`). Now merging `origin/development` `4e902d13b`
-  into `chore/2697-glob-minimatch` and `chore/2698-deepmerge`, re-locking, auditing, and running the full check on each.
+Last written **11:37 AM Central, 8 November 2026**. A listener; job: testing.
 
 ## Back (7:58 AM Central, Friday 6 November 2026)
 
@@ -54,6 +48,7 @@ Last written **11:27 AM Central, 8 November 2026**. A listener; job: testing.
 
 ## Finished
 
+- **Batches 192 and 191 again (security): #2697 and #2698 merged up to `development`** (11:26 to 11:36 AM, 8 November; `work (security)`'s note of 11:23 AM). Both had been done and reported on 6 November (reports 192 and 191). Now: `origin/development` `4e902d13b` merged into both with no conflicts; the locks unchanged by a re-lock. **Full checks exit 0, 0 of 200 from cache, on both.** Audit: **both together high 0, moderate 11 (Nx's own minimatch), low 0**. Pushed to `fork`: `chore/2697-glob-minimatch` at `b69c8db25`, `chore/2698-deepmerge` at `9ef80b4b0`. Report 2026-11-08-192-191.
 - **Batch 12 (aggiemap): #2702, the missing tile, photographed** (11:33 AM to 12:16 PM, 6 November; production `main-M2EOIZCV.js`): **the tile draws anyway** (the feature layers are transparent; the basemap's vector tiles do the drawing; a failed tile and a clean load differ by 0 pixels). **But a failed buildings tile is a dead square for clicks:** 0 of 24 buildings inside it opened a popup (kept or lost), against 7 of 8 outside it on the same loads and 2 of 2 inside it on clean loads; `hitTest` finds nothing there. It is never refetched, so it lasts the visit. About one load in five. Report 2026-11-06-12.
 
 - **Batch 11 (aggiemap): #2707, the glitchy clicks** (10:36 to 11:33 AM, 6 November; dev `main-JLQCLTDL.js`, production `main-M2EOIZCV.js`): **popup:** no wrong features in 320 loads; clicks are dropped, not slowed. Settled framing opened **0 of 20 (dev), 1 of 20 (production)**; after drawing, 37 of 38 and 30 of 30. The popup opens when `view.hitTest` already includes `buildings-layer` (23 of 24). **Routing:** once the view exists every click sets a named stop (dev 110 of 110); never a coordinate fallback on a building; production's routing is off. **`ready`** is true at about 3 s, the first working click is 5 to 10 s, drawing ends 11 to 12 s; it never went back to false. Nature Rx changes nothing; its marker in routing gives a coordinates-only stop (23 of 24). Report 2026-11-06-11.
@@ -425,4 +420,4 @@ Last written **11:27 AM Central, 8 November 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 192, and aggiemap's 12 (139, 141 to 192 reported; 140 needs the maintainer; 151 not run, see report 137) (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 192 and 191 again (8 November), and aggiemap's 12 (139, 141 to 192 reported; 140 needs the maintainer; 151 not run, see report 137) (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
