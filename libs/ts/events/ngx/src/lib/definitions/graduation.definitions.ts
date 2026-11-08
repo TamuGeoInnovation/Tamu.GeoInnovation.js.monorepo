@@ -50,6 +50,7 @@ export const GraduationColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: GRADUATION_LAYERS.GRADUATION_ACCESSIBLE_PARKING,
+    title: 'Accessible Parking',
     url: `${eventUrl}/0`,
     popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     popupData: {
@@ -65,6 +66,7 @@ export const GraduationColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: GRADUATION_LAYERS.GRADUATION_TRAFFIC_FLOW,
+    title: 'Traffic Flow',
     url: `${eventUrl}/1`,
     popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
@@ -80,6 +82,7 @@ export const GraduationColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: GRADUATION_LAYERS.GRADUATION_EVENT_PARKING_LOTS,
+    title: 'Event Parking',
     url: `${eventUrl}/3`,
     popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     popupData: {
@@ -100,6 +103,7 @@ export const GraduationColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: GRADUATION_LAYERS.GRADUATION_ROAD_CLOSURES,
+    title: 'Road Closures',
     url: `${eventUrl}/2`,
     popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {

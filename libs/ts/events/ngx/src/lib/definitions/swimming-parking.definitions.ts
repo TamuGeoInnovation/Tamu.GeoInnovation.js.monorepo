@@ -38,6 +38,7 @@ export const SwimmingParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: SwimmingParkingDefinitions.ACCESSIBLE_PARKING.id,
+    title: SwimmingParkingDefinitions.ACCESSIBLE_PARKING.name,
     url: SwimmingParkingDefinitions.ACCESSIBLE_PARKING.url,
     popupComponent: EventPopups.MarkdownPopupComponent,
     visible: true,

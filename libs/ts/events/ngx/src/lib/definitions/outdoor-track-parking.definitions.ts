@@ -38,6 +38,7 @@ export const OutdoorTrackParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: OutdoorTrackParkingDefinitions.ACCESSIBLE_PARKING.id,
+    title: OutdoorTrackParkingDefinitions.ACCESSIBLE_PARKING.name,
     url: OutdoorTrackParkingDefinitions.ACCESSIBLE_PARKING.url,
     popupComponent: EventPopups.MarkdownPopupComponent,
     visible: true,
