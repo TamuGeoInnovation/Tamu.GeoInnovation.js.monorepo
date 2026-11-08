@@ -6,11 +6,12 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **11:44 AM Central, 8 November 2026**. A listener; job: testing.
+Last written **11:56 AM Central, 8 November 2026**. A listener; job: testing.
 
 ## Running now
 
 - **Since 11:43 AM Central, Sunday 8 November: batch 13 (aggiemap, #2701)**: three branches, in order: the kiosk spec reads its layer ids from the definition; `?feature=` by a stable attribute; the Harrington test clicks polygons by map coordinates.
+- **11:56 AM:** item 1 done: `test/2701-kiosk-layers` pushed to `fork` at `dd0073696` (check exit 0; kiosk spec 7 of 7 on dev and production). Now item 2, `?feature=` by attribute.
 
 ## Back (7:58 AM Central, Friday 6 November 2026)
 
