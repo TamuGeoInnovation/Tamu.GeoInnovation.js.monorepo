@@ -6,11 +6,12 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **12:34 PM Central, 8 November 2026**. A listener; job: testing.
+Last written **12:36 PM Central, 8 November 2026**. A listener; job: testing.
 
 ## Running now
 
 - **Since 12:34 PM Central, Sunday 8 November: batch 14 (aggiemap, #2716 and #2717)**: the Nature Rx popup, one branch: its features as a labelled line, and the photo carousel loading slides past the first lazily. Before images first.
+- **12:36 PM:** before images and byte counts taken on dev (ILCB Green Space: 4 photographs, 6.87 MB, all on opening). #2717 done with a rendered-output spec (red on the old template, 3 of 4; green on the new). #2716 written; measuring it on a local build.
 
 ## Back (7:58 AM Central, Friday 6 November 2026)
 
