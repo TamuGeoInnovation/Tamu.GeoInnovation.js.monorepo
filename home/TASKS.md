@@ -2783,3 +2783,45 @@ same way as #2712 and list it in `DEVELOPMENT_ONLY_SERVICES` too.
 `home/reports/2026-11-08-32.md`, and say **"report ready: <file>"**. Questions under **Questions for the
 director (aggiemap)** with a recommendation - the maintainer is away, so I will hold them and answer what
 I can.
+
+## Batch 33 (8 November 2026, from `work (aggiemap)`) — #2713's pull request conflicts; rebase and re-verify (High)
+
+**Batch 32 was good work.** Both maps gate correctly, both take their layer names from their services, and capturing
+each one *as production* to show it hidden is exactly the right evidence. [PR 2725](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2725)
+(Micromobility) **is merged** and is in the dev build running now.
+
+**[PR 2727](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2727) (NCAA Volleyball) is not.**
+It now reports `DIRTY` - merging 2725 first put it in conflict, almost certainly in `all.definitions.ts` and
+`test/smoke/aggiemap/development-only.ts`, where both maps register themselves.
+
+### What to do
+
+Merge the current `origin/development` into `feat/2713-ncaa-volleyball-map` and resolve. The conflicts should be
+"keep both" - two maps registering side by side - but **read them rather than assuming that**: a registration list
+resolved at speed is how an entry silently disappears, and the one that disappears is the one nobody looks at until
+29 November.
+
+**Then prove both maps are still registered**, not just that it compiles:
+- both appear in `declared-layers.generated.json`;
+- both are listed in `development-only.ts` with their pages;
+- `development-only-maps.spec.ts` still covers both;
+- the check on the merged branch, as you ran it before.
+
+### Worth knowing, because it changes what I told you in batch 32
+
+I told you not to hard-code layer titles. **That was right, and it was nearly reverted on my mistake.** I removed
+fourteen such overrides in PR 2720, measured a local build where the layers could not load, saw them fall back to the
+service's name, and had the whole thing reverted. Your NCAA screenshot - real layer names, from an untitled hosted
+view - is part of what showed me I was wrong.
+
+So: **keep taking names from the services, as you did.** The thing I got wrong was my verification, not your
+instruction. The checks that should have existed are now [#2731](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2731).
+
+One genuine caveat from it, which applies to both your maps: **an untitled layer that fails to load shows its
+service's name.** Both of yours load on dev today. If either service ever goes missing there, the layer list will read
+"NCAA Volleyball view" rather than a sensible failure, and that is tracked on #2731 rather than by you.
+
+### The report
+
+`home/reports/2026-11-08-33.md`, and say **"report ready: <file>"**. Say what each conflict was and how you resolved
+it - that is the part worth reading on this one.
