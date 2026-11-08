@@ -14,6 +14,7 @@ Testing happens in layers, each answering a different question.
 | [Pull request checks](#every-pull-request) | On every proposed change, before it merges | Is this change sound: does it compile, pass its tests, stay within size limits, and come with an issue and screenshots? |
 | [The smoke suite](#the-smoke-suite-checking-the-live-sites) | Every morning against dev and production, and before every release | Does every map on a deployed site actually load, draw and work? |
 | [The builder inventory](#the-builder-inventory) | By hand, when a map's choices change | Where does every combination of choices on the maps without a direct address lead? |
+| [The routing network check](#the-routing-network-check) | By hand, after a routing network is republished | Does every building on campus still have a sensible route to every other? |
 | [People](#people-the-team-tests-on-dev) | Before every production release | Does each change do what it was meant to? |
 
 The middle row matters most for a mapping site. AggieMap's maps draw from GIS services hosted
@@ -195,6 +196,19 @@ builder and records where each lands, which layers it shows, and the shareable l
 directly. Those links give the smoke suite something to load, and because the inventory records every
 choice offered at each step, a renamed or removed choice shows up as a change rather than vanishing
 silently. It is run by hand when a builder's choices change, not on a schedule.
+
+## The routing network check
+
+The trip planner draws whatever route the routing network gives it, so a network with a missing
+connection or a disconnected building draws a wrong route and nothing says so. The
+[network detour check](../tools/network-detour/README.md) asks the network for routes between pairs of
+buildings, compares each with the straight line between them, and reports the routes that are far too
+long and the buildings that cannot be reached at all
+([#2655](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2655)). A quick
+set of committed pairs takes under a minute; the full set, every building to every other, takes about
+two and a quarter hours. The network is published on the development server only, and the trip planner is
+not offered on production, so this checks development alone. It is run by hand after a network is
+republished, not on a schedule.
 
 ## People: the team tests on dev
 

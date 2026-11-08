@@ -52,7 +52,7 @@ describe('HeaderComponent login', () => {
 
     answer.next(true);
 
-    expect(login).toHaveBeenCalledWith({ appState: { target: '/sessions' }, authorizationParams: { prompt: 'login' } });
+    expect(login).toHaveBeenCalledWith({ appState: { target: '/sessions' } });
   });
 
   it('does not sign in when the note is cancelled or closed', () => {
@@ -76,8 +76,8 @@ describe('HeaderComponent login', () => {
 });
 
 /**
- * #2672. Logout cannot end UCGIS's Tradewing session, so on UCGIS's site every sign-in asks Tradewing for the password
- * (`prompt=login`). txgisday.org and Texas A&M's site sign in as before, and no site logs out of its provider.
+ * #2700. No site asks its provider for the password with `prompt=login`. On UCGIS's site it made Tradewing sign the
+ * visitor in to ucgis.org and never send them back to GIS Day. No site logs out of its provider either (#2672).
  */
 describe('HeaderComponent sign-in and logout on a site that signs in elsewhere', () => {
   function headerOn(site: GisdaySite) {
@@ -101,16 +101,8 @@ describe('HeaderComponent sign-in and logout on a site that signs in elsewhere',
     return { header, login, logout };
   }
 
-  it('asks Tradewing for the password on every UCGIS sign-in', () => {
-    const { header, login } = headerOn(gisdaySite('ucgis'));
-
-    header.login();
-
-    expect(login).toHaveBeenCalledWith({ appState: { target: '/sessions' }, authorizationParams: { prompt: 'login' } });
-  });
-
-  it("signs in as before on txgisday.org and Texas A&M's site", () => {
-    for (const key of ['txgisday', 'tamu']) {
+  it('signs in on every site without prompt=login, which leaves UCGIS visitors at Tradewing', () => {
+    for (const key of ['ucgis', 'txgisday', 'tamu']) {
       const { header, login } = headerOn(gisdaySite(key));
 
       header.login();
