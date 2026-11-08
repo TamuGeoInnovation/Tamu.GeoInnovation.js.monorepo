@@ -6,7 +6,13 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **12:16 PM Central, 6 November 2026**. A listener; job: testing.
+Last written **11:27 AM Central, 8 November 2026**. A listener; job: testing.
+
+## Running now
+
+- **Since 11:26 AM Central, Sunday 8 November: batches 192 and 191 again**, for `work (security)`'s note of 11:23 AM. Both were done and
+  reported on 6 November (reports 192 and 191, pushed as `b866ef02a` and `6368b7ae1`). Now merging `origin/development` `4e902d13b`
+  into `chore/2697-glob-minimatch` and `chore/2698-deepmerge`, re-locking, auditing, and running the full check on each.
 
 ## Back (7:58 AM Central, Friday 6 November 2026)
 
