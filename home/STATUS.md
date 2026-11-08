@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch 31** (aggiemap, #2707: a click into a map still drawing is thrown away), started 11:43 AM Central, 8 November. Reading the issue and its measurement.
+- **Batch 31** (aggiemap, #2707: a click into a map still drawing is thrown away), started 11:43 AM Central, 8 November. 12:20 PM: fix committed (`fix/2707-click-fallback-query` at `8aa4ffd7c`, not pushed): an empty hit test queries the popup layers still drawing at the point. Unit tests red 3 of 6 on the unfixed handler, then 16 of 16. Writing the smoke check that clicks in the dead window.
 
 ## Finished
 - **Batch 30** (aggiemap; report `home/reports/2026-11-05-30.md`): #2655 branch ready: `feat/2655-network-detour` at `2ac8a6038` (the director's decisions 3 and 4: impossible results long lines first with the split explained; README baseline and the four failure modes), check exit 0. `tools/network-detour/` with quick, full, one and sample. Full run (303,031 Walk pairs, 290,714 routed) 5:53 to 8:04 AM Central, resumed twice: the network is 763 buildings plus 11 islands, with no failed pair inside the main piece; 31,344 detours, concentrated at the airport, the treatment plant and the vet cluster; 1,067 impossible, 307 of them on lines of 250 m or more. Four questions.
