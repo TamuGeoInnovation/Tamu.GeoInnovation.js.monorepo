@@ -316,6 +316,14 @@
       "mens-basketball-parking-lots"
     ]
   },
+  "micromobility": {
+    "layerList": true,
+    "layers": [
+      "micromobility-corridor",
+      "micromobility-allowed-sidewalks",
+      "micromobility-facilities"
+    ]
+  },
   "motorcycle-parking": {
     "layerList": true,
     "layers": [
