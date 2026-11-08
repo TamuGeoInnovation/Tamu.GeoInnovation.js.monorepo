@@ -1,4 +1,4 @@
-import { institutionKey, institutionsToAdd, UCGIS_MEMBER_INSTITUTIONS } from './ucgis-members';
+import { institutionKey, institutionsToAdd, planMembers, UCGIS_MEMBER_INSTITUTIONS } from './ucgis-members';
 
 /**
  * #2721. The script adds every UCGIS member a GIS Day database does not have, and nothing it already has under another
@@ -67,5 +67,18 @@ describe('UCGIS member institutions', () => {
     const first = institutionsToAdd(['Rutgers University']).map((m) => m.name);
 
     expect(institutionsToAdd(['Rutgers University', ...first])).toEqual([]);
+  });
+
+  it('plans what it would add and under what spelling the rest are already there (#2730)', () => {
+    const plan = planMembers(['Clemson', 'Yale University', '  ', null]);
+
+    // In the list's order: Yale is a Full member, Clemson a Basic one.
+    expect(plan.keep).toEqual([
+      { name: 'Yale University', as: 'Yale University' },
+      { name: 'Clemson University', as: 'Clemson' }
+    ]);
+    expect(plan.add).not.toContain('Clemson University');
+    expect(plan.add).not.toContain('Yale University');
+    expect(plan.add.length + plan.keep.length).toBe(UCGIS_MEMBER_INSTITUTIONS.length);
   });
 });

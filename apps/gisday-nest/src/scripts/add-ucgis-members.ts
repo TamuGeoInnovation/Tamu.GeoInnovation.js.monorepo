@@ -13,16 +13,32 @@
  *   nx run gisday-nest:add-ucgis-members --apply
  *
  * Institutions it adds can be renamed or removed afterwards in the site's admin pages like any other.
+ *
+ * On production it is not run this way: the script in the operations repository's GIS Day `data/` folder signs in as the
+ * maintainer's admin account and asks this one only for the plan (#2730), with no database:
+ *
+ *   node -r ts-node/register -r tsconfig-paths/register apps/gisday-nest/src/scripts/add-ucgis-members.ts --plan=<file>
+ *
+ * where <file> is a JSON array of the season's institution names. It prints one line, `PLAN ` and the plan as JSON.
  */
+import { readFileSync } from 'fs';
+
 import { IsNull } from 'typeorm';
 
-import { institutionKey, institutionsToAdd, Season, University, UCGIS_MEMBER_INSTITUTIONS } from '@tamu-gisc/gisday/platform/data-api';
-
-import dataSource from '../database/data-source';
+import { planMembers, Season, University, UCGIS_MEMBER_INSTITUTIONS } from '@tamu-gisc/gisday/platform/data-api';
 
 const apply = process.argv.includes('--apply');
+const planFile = process.argv.find((a) => a.startsWith('--plan='))?.slice('--plan='.length);
 
 async function main() {
+  if (planFile) {
+    const names: Array<string> = JSON.parse(readFileSync(planFile, 'utf8'));
+    console.log(`PLAN ${JSON.stringify(planMembers(names))}`);
+    return;
+  }
+
+  // Loaded only here, so the plan needs no database settings.
+  const dataSource = (await import('../database/data-source')).default;
   await dataSource.initialize();
 
   try {
@@ -35,19 +51,15 @@ async function main() {
     const season = seasons[0];
     const existing = await dataSource.getRepository(University).find({ where: { season: { guid: season.guid } } });
     const unattached = await dataSource.getRepository(University).count({ where: { season: IsNull() } });
-    const adding = institutionsToAdd(existing.map((u) => u.name));
+    const plan = planMembers(existing.map((u) => u.name));
 
     console.log(`Database ${process.env.TYPEORM_DATABASE}, season ${season.year} (${season.guid}).`);
     console.log(`${existing.length} institutions in the season; ${unattached} with no season, which the site does not list.`);
-    console.log(`${UCGIS_MEMBER_INSTITUTIONS.length} UCGIS members; ${UCGIS_MEMBER_INSTITUTIONS.length - adding.length} already there:`);
+    console.log(`${UCGIS_MEMBER_INSTITUTIONS.length} UCGIS members; ${plan.keep.length} already there:`);
+    plan.keep.forEach((k) => console.log(`  keep  ${k.name}${k.as !== k.name ? `  (as "${k.as}")` : ''}`));
 
-    for (const m of UCGIS_MEMBER_INSTITUTIONS.filter((m) => !adding.includes(m))) {
-      const as = existing.find((u) => [m.name, ...(m.alsoKnownAs ?? [])].some((n) => institutionKey(n) === institutionKey(u.name ?? '')));
-      console.log(`  keep  ${m.name}${as && as.name !== m.name ? `  (as "${as.name}")` : ''}`);
-    }
-
-    console.log(`${adding.length} to add:`);
-    adding.forEach((m) => console.log(`  ADD   ${m.name}`));
+    console.log(`${plan.add.length} to add:`);
+    plan.add.forEach((name) => console.log(`  ADD   ${name}`));
 
     if (!apply) {
       console.log('Dry run: nothing written. Run again with --apply to add them.');
@@ -55,13 +67,13 @@ async function main() {
     }
 
     await dataSource.transaction(async (manager) => {
-      for (const m of adding) {
-        await manager.save(manager.create(University, { name: m.name, season }));
+      for (const name of plan.add) {
+        await manager.save(manager.create(University, { name, season }));
       }
     });
 
     const after = await dataSource.getRepository(University).count({ where: { season: { guid: season.guid } } });
-    console.log(`Added ${adding.length}. The season now has ${after} institutions.`);
+    console.log(`Added ${plan.add.length}. The season now has ${after} institutions.`);
   } finally {
     await dataSource.destroy();
   }

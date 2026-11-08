@@ -43,6 +43,21 @@ both would try at once.
 
 A fix to records, not to the schema, takes the same route as a reviewed SQL script.
 
+## Changing production data
+
+Production's schema and data are changed by PowerShell scripts kept in the private operations repository
+(`kubernetes-config`), in its GIS Day folder, not from this repository. Its README says how, in "Run the
+migration" and "Change production data". The scripts that change records, such as setting every event to
+accept RSVPs or adding the UCGIS member institutions, are in its `data/` folder. They share one helper,
+`_gisday-db.ps1`, which reads the database's server and name from the `gisday-nest` settings in the
+cluster, signs in as the maintainer's prod admin account, runs both sites by default, and rolls back
+unless given `-Apply`.
+
+**A new change to production data is a new script in that folder, built on that helper**, not a new way
+of connecting. When the rules for what to change belong in this repository, as the UCGIS member list
+does (`UCGIS_MEMBER_INSTITUTIONS`), the script asks this repository's code for the plan rather than
+keeping a second copy of the rules: `add-ucgis-members.ts --plan=<file>` (#2730).
+
 ## Running against dev or production
 
 The targets read the connection from the environment, so the same command serves any database. Put
