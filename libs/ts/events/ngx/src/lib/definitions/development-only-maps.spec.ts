@@ -19,8 +19,10 @@ describe('development-only maps', () => {
   /** A source's service, as the smoke list names one: `Hosted/<name>/FeatureServer`. */
   const serviceOf = (url: string) => url.match(/[^/]+\/[^/]+\/(Feature|Map)Server/)?.[0];
 
-  it('include the Micromobility draft (#2712)', () => {
-    expect(developmentOnly.map((definition) => definition.configuration?.id)).toContain('micromobility');
+  it('include the Micromobility draft (#2712) and the NCAA Volleyball map (#2713)', () => {
+    expect(developmentOnly.map((definition) => definition.configuration?.id)).toEqual(
+      expect.arrayContaining(['micromobility', 'ncaa-volleyball'])
+    );
   });
 
   it('have every service listed in DEVELOPMENT_ONLY_SERVICES', () => {

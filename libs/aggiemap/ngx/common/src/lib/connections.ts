@@ -134,6 +134,10 @@ function createConnections(gisHost: string): IComposedConnections {
     fourHRoundupUrl: `https://${PRODUCTION_TS_HOST}/arcgis/rest/services/Hosted/4H_Roundup_view/FeatureServer`,
     // Read from production on every environment, as `fourHRoundupUrl` is: the development server answers 499 "Token
     // Required" (#2712). The map is development-only until the maintainer moves it, so production never reads it.
+    // Published on the development GIS server only (#2713), so named there outright, as `busRoutesUrl` is, and read
+    // from that server on every environment, localhost included. The map is development-only until Texas A&M is
+    // announced as a host; moving it means naming the production service here.
+    ncaaVolleyballUrl: 'https://gis.dev.tamu.edu/arcgis/rest/services/Hosted/NCAA_Volleyball_view/FeatureServer',
     micromobilityUrl: `https://${PRODUCTION_TS_HOST}/arcgis/rest/services/Hosted/Micromobility_Map_WFL1_view/FeatureServer`,
     gisDayUrl:
       'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/MSC_and_Rudder_Building_Polygon_Layer/FeatureServer',
@@ -288,6 +292,7 @@ export interface IComposedConnections {
   womensBasketballUrl: string;
   fourHRoundupUrl: string;
   micromobilityUrl: string;
+  ncaaVolleyballUrl: string;
   gisDayUrl: string;
   argentinaVsHondurasUrl: string;
   fishCampUrl: string;
