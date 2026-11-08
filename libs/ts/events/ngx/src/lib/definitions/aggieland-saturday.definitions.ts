@@ -90,6 +90,9 @@ export const AggielandSaturdayEventColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: AggielandSaturdayEventDefinitions.EVENT_SPECIAL_POIS.id,
+    // Kept deliberately: the service names this layer `Points of Interest @ Aggieland Saturday`, which
+    // repeats the map's own name in its layer list. Asked of the service's owner on #2634; if she prefers
+    // the service's name this goes and the layer follows the service (#1523).
     title: AggielandSaturdayEventDefinitions.EVENT_SPECIAL_POIS.name,
     url: AggielandSaturdayEventDefinitions.EVENT_SPECIAL_POIS.url,
     popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,

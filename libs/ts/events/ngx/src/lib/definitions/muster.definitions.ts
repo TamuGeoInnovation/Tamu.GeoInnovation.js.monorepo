@@ -44,6 +44,9 @@ export const MusterEventColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: MusterEventDefinitions.TRAFFIC_FLOW.id,
+    // Kept deliberately: the service names this layer `Traffic Flow`, and the map says `Muster Traffic
+    // Flow` so it reads on its own in a list beside the other Muster layers. Asked of the service's owner
+    // on #2634; if she prefers the service's name this goes and the layer follows the service (#1523).
     title: MusterEventDefinitions.TRAFFIC_FLOW.name,
     url: MusterEventDefinitions.TRAFFIC_FLOW.url,
     popupComponent: EventPopups.MarkdownPopupComponent,
@@ -59,7 +62,6 @@ export const MusterEventColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: MusterEventDefinitions.ACCESSIBLE_PARKING.id,
-    title: MusterEventDefinitions.ACCESSIBLE_PARKING.name,
     url: MusterEventDefinitions.ACCESSIBLE_PARKING.url,
     popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
@@ -75,7 +77,6 @@ export const MusterEventColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: MusterEventDefinitions.PARKING.id,
-    title: MusterEventDefinitions.PARKING.name,
     url: MusterEventDefinitions.PARKING.url,
     popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
