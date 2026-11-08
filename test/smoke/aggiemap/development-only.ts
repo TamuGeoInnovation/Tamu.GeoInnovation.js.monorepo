@@ -117,6 +117,13 @@ export const DEVELOPMENT_ONLY_SERVICES: Record<
   'Hosted/NatureRx_view/FeatureServer': {
     reason: '#2673: Nature Rx is on the map but not ready for production',
     pages: []
+  },
+  // Transportation's draft Micromobility map (#2712). The service is production's own and public; what is not ready
+  // is the map, which `developmentOnly` keeps off production as a whole: it is listed nowhere there and its link
+  // opens the main map. So production must never request this, and development requests it from the map's link.
+  'Hosted/Micromobility_Map_WFL1_view/FeatureServer': {
+    reason: '#2712: the Micromobility draft map',
+    pages: ['/parking/micromobility']
   }
   // TS/WomensBasketballParking/MapServer was listed here for #2001, required of /events/womens-basketball on
   // dev. #2143 (#2176) moved that map's development version to the hosted athletics view, reached through the

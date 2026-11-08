@@ -20,6 +20,7 @@ import { EsriModuleProviderService } from '../module-provider/module-provider.se
 import { LayerSourcesService } from '../layer-sources/layer-sources.service';
 import { registerMapProbe } from './map-probe';
 import { orderHitsForPopup, SELECTION_LAYER_ID } from './hit-order';
+import { queryPopupLayersAtClick } from './click-query';
 import { keepSelectionLayerOnTop } from './selection-layer';
 import { PopupComponentReference } from '../../popup-reference';
 import {
@@ -64,6 +65,9 @@ export class EsriMapService {
   private _host: MapHost;
 
   private _viewClickHandle: IHandle;
+
+  /** Counts the view's clicks, so an answer that arrives after a later click's is dropped rather than shown. */
+  private _clicks = 0;
 
   /** Whether the map loads the main map's layer set. See `withoutMainLayers`. */
   private _mainLayers = true;
@@ -222,7 +226,10 @@ export class EsriMapService {
   private registerViewClickEventHandler() {
     // Set up a hit test wrapper that can be subscribed to anywhere in the application.
     this._viewClickHandle = this._modules.view.on('click', (e) => {
-      this._modules.view.hitTest(e).then((res: esri.HitTestResult) => {
+      const view = this._modules.view;
+      const click = ++this._clicks;
+
+      view.hitTest(e).then(async (res: esri.HitTestResult) => {
         // Clear the hit test object regardless of router state
         this.clearHitTest();
 
@@ -231,11 +238,17 @@ export class EsriMapService {
         // on map to set route which will overlay on top of trip planner controls
         if (!this.router.url.includes('trip')) {
           // A hit can also be a media or route hit, which carries no graphic (ArcGIS 4.27, #1322).
-          this._hitTest.next({
-            graphics: orderHitsForPopup(
-              res.results.filter((r): r is esri.GraphicHit => r.type === 'graphic').map((r) => r.graphic)
-            )
-          });
+          const hits = res.results.filter((r): r is esri.GraphicHit => r.type === 'graphic').map((r) => r.graphic);
+
+          // Nothing with a popup under the click may only mean its layer has not drawn there yet, so the layers
+          // are asked directly; a click on a map still drawing was otherwise thrown away (#2707).
+          const found = hits.some((graphic) => (graphic.layer as { popupComponent?: unknown })?.popupComponent)
+            ? hits
+            : [...(await queryPopupLayersAtClick(view, e.mapPoint)), ...hits];
+
+          if (click === this._clicks) {
+            this._hitTest.next({ graphics: orderHitsForPopup(found) });
+          }
         }
       });
     });
