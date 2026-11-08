@@ -90,7 +90,27 @@ export function checkInWindow(
   startTime: string | undefined | null,
   endTime: string | undefined | null
 ): { opens: Date; closes: Date } | null {
-  if (!day || !startTime || !endTime) {
+  const opens = sessionTime(day, startTime);
+  const closes = sessionTime(day, endTime);
+
+  if (!opens || !closes) {
+    return null;
+  }
+
+  closes.setMinutes(closes.getMinutes() + CHECK_IN_GRACE_MINUTES);
+
+  return { opens, closes };
+}
+
+/**
+ * The instant a session starts or ends: its stored time (`16:00:00 GMT-0600 (Central Standard Time)`) on its day's
+ * calendar date in Central time. The same wherever the visitor is: a day arrives as midnight Central, which further
+ * west is still the day before (#2710). The offset, when present, is honoured; without one the time is Central time.
+ *
+ * @returns `null` when the day or the time is missing or cannot be read (#1772).
+ */
+export function sessionTime(day: Date | string | undefined | null, time: string | undefined | null): Date | null {
+  if (!day || !time) {
     return null;
   }
 
@@ -100,17 +120,7 @@ export function checkInWindow(
     return null;
   }
 
-  const calendarDay = centralParts(date);
-  const opens = atTime(calendarDay, startTime);
-  const closes = atTime(calendarDay, endTime);
-
-  if (!opens || !closes) {
-    return null;
-  }
-
-  closes.setMinutes(closes.getMinutes() + CHECK_IN_GRACE_MINUTES);
-
-  return { opens, closes };
+  return atTime(centralParts(date), time);
 }
 
 /**
