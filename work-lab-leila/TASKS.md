@@ -6299,3 +6299,58 @@ screenshots and a release-notes entry with a *What to test on dev* row.
 `scripts/check-in-volume.sh <branch> aggiemap-ngx-common,aggiemap-angular` at least; say what you ran.
 
 `work-lab-leila/reports/2026-11-08-15.md`, and say **"report ready: <file>"**.
+
+## Batch 16 (8 November 2026, from `work (aggiemap)`) — the quick tier on the new dev build (High)
+
+**Batch 15 was the best investigation on this board today.** The four traps you found - the view answering old field
+names with HTTP 200 and an error in the body, route 47's `stop32`, the per-environment stop ids, the two retired
+routes - are each something a URL-only change would have shipped silently. [PR 2733](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2733)
+is open from your branch with `development` merged in and the check re-run across all seven projects: exit 0. Your
+three questions went to the maintainer and he took all three recommendations, including filing the stable-stop-id
+request to Transportation as [#2732](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2732).
+
+### Wait for the build before you start
+
+A release is going out to dev now. **Dev was serving `main-JLQCLTDL.js` before it.** Do not start until dev serves
+something else - check the page source - and **say in your report which bundle you tested**. A tier run against the
+old build tells us nothing and costs forty minutes.
+
+### The run
+
+```
+test/smoke/aggiemap/run-local.sh development quick
+```
+
+It prints its set, and the files it could not map to a test, before the first test starts. **Put that set in the
+report**, as you have before.
+
+### What this run is for
+
+It clears the build for its `dev-*` tag. Three things specifically:
+
+1. **The three 4-H Roundup failures should be gone.** They were the regression that blocked the tag
+   ([#2695](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2695), merged as PR 2699): the
+   service check, `loads and serves its layers`, and `lists, draws and keys every layer it shows`.
+2. **A new check should pass that could not before:** `popup.spec.ts`, "/map/d: clicking a building while its layer is
+   still drawing opens its popup", from [#2707](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2707).
+   **It failed 3 of 3 on dev before the fix.** This is the one that proves the fix reached the deployed build rather
+   than only the branch, so call it out either way.
+3. **`search-sources`' Nature Rx case should still fail.** It has since #2630 and nothing in this build addresses it.
+   An unexpected *pass* is as interesting as a failure.
+
+### Expected failures that are not this build's fault
+
+- **The basemap 500s** ([#2702](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2702)) - the
+  GIS team's service, intermittent at about 1.5%, on production too.
+- **Anything you recognise from report 10's list** that is still open.
+
+Say which failures are known and which are new. A tier report that does not separate those is a list nobody can act
+on.
+
+### After it
+
+**Do not tag.** Report, and I will take it to the maintainer. If it is clean I will ask him to tag and I will write
+the notes.
+
+`work-lab-leila/reports/2026-11-08-16.md`, and say **"report ready: <file>"**. Lead with: the bundle, pass/fail
+counts, whether the three 4-H failures are gone, and whether the new click check passed.
