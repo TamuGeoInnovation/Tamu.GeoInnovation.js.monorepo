@@ -127,7 +127,11 @@ function createConnections(gisHost: string): IComposedConnections {
     visitorParkingUrl: `${tsEvents}/VisitorParking/MapServer`,
     volleyballParkingUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/VolleyballParking_view/FeatureServer`,
     womensBasketballUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/WomensBasketballParking_view/FeatureServer`,
-    fourHRoundupUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/4H_Roundup_view/FeatureServer`,
+    // Read from production on every environment: the development server has this view but answers 499
+    // "Token Required", so a development build cannot read it at all (#2695). #2653 moved it on the strength
+    // of the view existing on dev with matching fields, which is the wrong question - what matters is whether
+    // a browser with no token can read it.
+    fourHRoundupUrl: `https://${PRODUCTION_TS_HOST}/arcgis/rest/services/Hosted/4H_Roundup_view/FeatureServer`,
     gisDayUrl:
       'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/MSC_and_Rudder_Building_Polygon_Layer/FeatureServer',
     argentinaVsHondurasUrl: `https://${gisHost}/arcgis/rest/services/TS/Argentina_vs_Honduras26/MapServer`,
