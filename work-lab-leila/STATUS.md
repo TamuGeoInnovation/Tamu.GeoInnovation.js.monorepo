@@ -6,7 +6,8 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **11:37 AM Central, 8 November 2026**. A listener; job: testing.
+Last written **11:44 AM Central, 8 November 2026**. A listener; job: testing.
+## Running now- **Since 11:44 AM Central, Sunday 8 November: batch 13 (aggiemap, #2701)**: three branches, in order: the kiosk spec reads its layer ids from the definition; `?feature=` by a stable attribute; the Harrington test clicks polygons by map coordinates.
 
 ## Back (7:58 AM Central, Friday 6 November 2026)
 
