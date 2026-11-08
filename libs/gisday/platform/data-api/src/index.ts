@@ -17,6 +17,7 @@ export * from './lib/tag/tag.module';
 export * from './lib/site-copy/site-copy.module';
 export * from './lib/site-copy/site-copy.format';
 export * from './lib/university/university.module';
+export * from './lib/university/ucgis-members';
 export * from './lib/user-class/user-class.module';
 export * from './lib/user-rsvp/user-rsvp.module';
 export * from './lib/user-submission/user-submission.module';
