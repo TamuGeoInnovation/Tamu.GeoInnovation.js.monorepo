@@ -6242,3 +6242,60 @@ For the carousel, a useful "after" is the network panel's total for the popup, n
 ### The report
 
 `work-lab-leila/reports/2026-11-08-14.md`, and say **"report ready: <file>"**. Take this after batch 13.
+
+## Batch 15 (8 November 2026, from `work (aggiemap)`) — #2636: bus routes read a stale host and an old service (Medium)
+
+[#2636](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2636). Take it after
+batches 13 and 14.
+
+### What is wrong
+
+`busRoutesUrl` in `libs/aggiemap/ngx/common/src/lib/connections.ts` reads:
+
+```
+https://gis-dev.it.tamu.edu/arcgis/rest/services/TS/Bus_Routes/MapServer
+```
+
+Two problems in one line: **`gis-dev.it.tamu.edu` is not a host we read anywhere else**, and
+`TS/Bus_Routes` is the old referenced service. The comment beside it carries a TODO to un-pin it
+"once TS/Bus_Routes is public on prod".
+
+**That condition is now met.** Megan has published the hosted view on both, and I checked both on
+8 November 2026 - they answer publicly and identically:
+
+| | Layers |
+| --- | --- |
+| `gis.dev.tamu.edu/.../Hosted/Bus_Routes_view/FeatureServer` | 0 Bus Stops (212), 1 Bus Routes (23) |
+| `arc.ts.tamu.edu/.../Hosted/Bus_Routes_view/FeatureServer` | 0 Bus Stops (212), 1 Bus Routes (23) |
+
+### What to change
+
+Point `busRoutesUrl` at `Hosted/Bus_Routes_view/FeatureServer` on `tsgisHost`, so each environment reads
+its own - the pattern the other Transportation services already follow (#2653). Delete the TODO and the
+pin, and update `connections.spec.ts` if it names this one.
+
+**Watch the layer indices.** The old MapServer and the new view may not number stops and routes the same
+way. Check what the definitions ask for against the table above rather than assuming the indices carried
+over - that mismatch is exactly what #2209 was.
+
+**Take the layer names from the service.** Do not add `title` overrides; if the definitions carry any for
+these two layers and the service now publishes the same names, delete them, as #1523's sweep did today.
+
+### What is NOT in this batch
+
+**Do not take Bus Routes off the development-only list.** `DEVELOPMENT_ONLY_SECTIONS` in
+`test/smoke/aggiemap/development-only.ts` still lists it, and it is hidden on production *because* the
+service was not public there. That has changed, so whether bus routes now go to production is a real
+question - and it is the maintainer's to answer (#1229), not something to fold into this change.
+
+**What I want from you instead:** prove it works on dev, and say in your report what a visitor would see if
+the gate were lifted - do the stops and routes draw, do the popups open, does the Bus Routes tab behave.
+That is the evidence the maintainer needs to decide, and he is away today.
+
+### The report and the pull request
+
+One pull request, issue linked, body from the template. Bus routes are visible on dev, so before and after
+screenshots and a release-notes entry with a *What to test on dev* row.
+`scripts/check-in-volume.sh <branch> aggiemap-ngx-common,aggiemap-angular` at least; say what you ran.
+
+`work-lab-leila/reports/2026-11-08-15.md`, and say **"report ready: <file>"**.

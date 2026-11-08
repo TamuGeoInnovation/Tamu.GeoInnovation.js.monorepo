@@ -2707,3 +2707,79 @@ fault needs them, and here the "before" is a click that does nothing, so the mea
 `scripts/check-in-volume.sh <branch> maps-esri,aggiemap-angular` at least; say what you ran.
 
 `home/reports/2026-11-08-31.md`, and say **"report ready: <file>"**.
+
+## Batch 32 (8 November 2026, from `work (aggiemap)`) — two new event maps from Transportation (#2712 Urgent, #2713 High)
+
+Both are new maps Megan has published services for. Take them in order; **#2712 is the only Urgent on the
+board.** One pull request each.
+
+I have already checked both services — they are up, public and carrying data, so nothing here is blocked.
+
+### A rule that applies to both, and is the point of today's other work
+
+**Do not hard-code layer titles.** A layer's name belongs to whoever publishes the service
+(`docs/map-layers.md`). A `title` on a layer source replaces it and means a rename upstream never reaches
+the map. [PR for #1523](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1523)
+has just deleted fourteen such overrides; do not add new ones. The same goes for symbology and layer order:
+take what the service publishes unless there is a specific reason, and write the reason beside it if so.
+
+The layer names below are what the services publish today. If one reads badly, that is a request to Megan
+to rename it, not a string to correct in the definition.
+
+### 1. [#2712](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2712) — Micromobility draft map (Urgent)
+
+`https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Micromobility_Map_WFL1_view/FeatureServer`
+
+| Layer | Name | Features |
+| --- | --- | --- |
+| 0 | Micromobility Corridor | 12 |
+| 1 | Allowed Sidewalks | 28 |
+| 2 | Micromobility Facilities | 255 |
+
+**Megan wants it on dev only for now**, refined and moved to production next week.
+
+**The gating is the part to get right, and it is easy to get wrong here.** The service is on
+Transportation's **production** host, so the map will work perfectly on production the moment it ships —
+which is exactly why it must be gated deliberately rather than left to chance. Nothing without a production
+service is visible on production unless explicitly allowed, and the maintainer decides when it moves
+(#1229). So:
+
+- gate it with `TestingService` / `isTesting`, as the bus routes and the vector basemap are;
+- add it to `DEVELOPMENT_ONLY_SERVICES` in `test/smoke/aggiemap/development-only.ts`, with the pages that
+  request it, so the smoke suite **fails** if production ever asks for it.
+
+That last line is what makes the gate real rather than a promise.
+
+### 2. [#2713](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2713) — NCAA Volleyball map (High)
+
+`https://gis.dev.tamu.edu/arcgis/rest/services/Hosted/NCAA_Volleyball_view/FeatureServer`
+
+| Layer | Name | Features |
+| --- | --- | --- |
+| 0 | Accessible Parking Spaces | 1 |
+| 1 | NCAA Volleyball Event Parking Lots | 8 |
+
+**The map's name is `NCAA Volleyball 1st & 2nd Round`.** Games are 4 and 5 December; whether A&M hosts is
+announced on **29 November**, so this must be ready to go to production at a few days' notice.
+
+**This is a new map, not an edit of the existing volleyball one.** `volleyball-parking.definitions.ts`
+reads a different service filtered by `event = 'Volleyball'`. Reuse its *patterns* - and
+`common.definitions.ts` where it fits - but do not change it.
+
+This service is on the **development** host only, so a production build has nothing to read. Gate it the
+same way as #2712 and list it in `DEVELOPMENT_ONLY_SERVICES` too.
+
+### Both maps
+
+- A Discover entry, so the map can be found, with keywords.
+- Event dates where the configuration takes them (volleyball: 4 and 5 December 2026).
+- Before and after screenshots - here "before" is that the map does not exist, so a capture of the new map
+  on dev is what the pull request carries - and a release-notes entry in `docs/releases/unreleased/` with
+  its *What to test on dev* row.
+- `scripts/check-in-volume.sh <branch> ts-events-ngx,aggiemap-angular` at least.
+
+### The report
+
+`home/reports/2026-11-08-32.md`, and say **"report ready: <file>"**. Questions under **Questions for the
+director (aggiemap)** with a recommendation - the maintainer is away, so I will hold them and answer what
+I can.
