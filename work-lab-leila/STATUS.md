@@ -6,12 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **12:36 PM Central, 8 November 2026**. A listener; job: testing.
-
-## Running now
-
-- **Since 12:34 PM Central, Sunday 8 November: batch 14 (aggiemap, #2716 and #2717)**: the Nature Rx popup, one branch: its features as a labelled line, and the photo carousel loading slides past the first lazily. Before images first.
-- **12:36 PM:** before images and byte counts taken on dev (ILCB Green Space: 4 photographs, 6.87 MB, all on opening). #2717 done with a rendered-output spec (red on the old template, 3 of 4; green on the new). #2716 written; measuring it on a local build.
+Last written **1:07 PM Central, 8 November 2026**. A listener; job: testing.
 
 ## Back (7:58 AM Central, Friday 6 November 2026)
 
@@ -53,6 +48,7 @@ Last written **12:36 PM Central, 8 November 2026**. A listener; job: testing.
 
 ## Finished
 
+- **Batch 14 (aggiemap): the Nature Rx popup, #2716 and #2717** (12:34 to 1:06 PM, 8 November). Branch `fix/2716-2717-nature-rx-popup` on `fork` at `00eba04c0`, check exit 0 (and `ues-operations-angular`). Features as one labelled `feature-style-2` line, no new CSS, spec red 3 of 4 on the old template. Carousel: `loading="lazy"` saved nothing, so a slide gets its `src` when reached; ILCB Green Space on opening **6.87 MB to 1.86 MB**; the first photo is the floor until the files are resized. Screenshots and release note. Report 2026-11-08-14.
 - **Batch 13 (aggiemap): #2701's three test faults, as decided** (11:43 AM to 12:31 PM, 8 November). Three branches on `fork`, each with a `.pr-body.md`, check exit 0: **`test/2701-kiosk-layers`** (`dd0073696`: the kiosk ids live in an import-free `kiosk-layer-ids.ts` the spec reads; production's missing restrooms are `allowedMissingKioskLayers`, tied to #2701; 7 of 7 on both); **`fix/2701-feature-by-attribute`** (`eb8c8ccc7`: `?lot=043` already worked; the Copy button now writes it, through a reusable `parkingLotLinkSource`; new check red on dev and production, green locally; screenshots and release note); **`test/2701-harrington-click`** (`5d2e4e97d`: the link opens at zoom 19 with neither building in view, so the test frames them and clicks their polygons; 5 of 5). Report 2026-11-08-13.
 - **Batches 192 and 191 again (security): #2697 and #2698 merged up to `development`** (11:26 to 11:36 AM, 8 November; `work (security)`'s note of 11:23 AM). Both had been done and reported on 6 November (reports 192 and 191). Now: `origin/development` `4e902d13b` merged into both with no conflicts; the locks unchanged by a re-lock. **Full checks exit 0, 0 of 200 from cache, on both.** Audit: **both together high 0, moderate 11 (Nx's own minimatch), low 0**. Pushed to `fork`: `chore/2697-glob-minimatch` at `b69c8db25`, `chore/2698-deepmerge` at `9ef80b4b0`. Report 2026-11-08-192-191.
 - **Batch 12 (aggiemap): #2702, the missing tile, photographed** (11:33 AM to 12:16 PM, 6 November; production `main-M2EOIZCV.js`): **the tile draws anyway** (the feature layers are transparent; the basemap's vector tiles do the drawing; a failed tile and a clean load differ by 0 pixels). **But a failed buildings tile is a dead square for clicks:** 0 of 24 buildings inside it opened a popup (kept or lost), against 7 of 8 outside it on the same loads and 2 of 2 inside it on clean loads; `hitTest` finds nothing there. It is never refetched, so it lasts the visit. About one load in five. Report 2026-11-06-12.
@@ -426,4 +422,4 @@ Last written **12:36 PM Central, 8 November 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 192 and 191 again (8 November), and aggiemap's 13 (139, 141 to 192 reported; 140 needs the maintainer; 151 not run, see report 137) (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 192 and 191 again (8 November), and aggiemap's 14 (139, 141 to 192 reported; 140 needs the maintainer; 151 not run, see report 137) (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
