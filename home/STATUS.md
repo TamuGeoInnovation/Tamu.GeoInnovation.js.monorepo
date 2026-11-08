@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch 32** (aggiemap): #2712 Micromobility draft map, then #2713 NCAA Volleyball map. Started 2:12 PM Central, 8 November. 2:47 PM: #2712 is PR 2725 (check exit 0, specs red then green, both maps captured). #2713 committed on top of it; its check is running.
+- Nothing. Idle and listening (2:49 PM Central, 8 November).
 
 ## Finished
+- **Batch 32** (aggiemap; report `home/reports/2026-11-08-32.md`): #2712 is PR 2725 (the `developmentOnly` map gate plus the Micromobility draft); #2713 is PR 2727 (NCAA Volleyball, stacked on 2725). Both checks exit 0; specs red then green; both maps captured on dev and as production (0 service requests). Two questions.
 - **Batch 31** (aggiemap; report `home/reports/2026-11-08-31.md`): #2707, PR 2718 open (ready), `fix/2707-click-fallback-query` at `ac67fb85a`. An empty hit test queries the popup layers still drawing at the point; bare ground on a drawn map asks nothing; trip route unchanged. Unit red 3 of 6 then 16 of 16; new smoke check red 3 of 3 on dev, green locally; check exit 0. One question.
 - **Batch 30** (aggiemap; report `home/reports/2026-11-05-30.md`): #2655 branch ready: `feat/2655-network-detour` at `2ac8a6038` (the director's decisions 3 and 4: impossible results long lines first with the split explained; README baseline and the four failure modes), check exit 0. `tools/network-detour/` with quick, full, one and sample. Full run (303,031 Walk pairs, 290,714 routed) 5:53 to 8:04 AM Central, resumed twice: the network is 763 buildings plus 11 islands, with no failed pair inside the main piece; 31,344 detours, concentrated at the airport, the treatment plant and the vet cluster; 1,067 impossible, 307 of them on lines of 250 m or more. Four questions.
 - **Batch 29** (aggiemap; report `home/reports/2026-11-05-29.md`): #2653, PR 2667 merged; before images for three maps on `1e7278818`, left to the director.
