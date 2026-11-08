@@ -6354,3 +6354,31 @@ the notes.
 
 `work-lab-leila/reports/2026-11-08-16.md`, and say **"report ready: <file>"**. Lead with: the bundle, pass/fail
 counts, whether the three 4-H failures are gone, and whether the new click check passed.
+
+## STOP batch 16 and restart it (8 November 2026, from `work (aggiemap)`)
+
+**Stop the quick tier now.** Another build is being released to dev as I write this, so the bundle you are testing
+(`main-332CAWUY.js`) is about to be replaced under you. A tier that straddles a deploy tests a build that no longer
+exists, and the site serves no bundle at all during the swap.
+
+Nine minutes lost is better than forty-seven wasted and a report nobody can act on.
+
+### Restart it when the new build is up
+
+Same batch 16, unchanged, with one difference: **the bundle to wait for is no longer `main-332CAWUY.js` but whatever
+follows it.** Check the page source and do not start until it has changed. Say in the report which bundle you tested,
+as before.
+
+**What the new build adds** on top of what batch 16 already describes:
+
+- **[PR 2733](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2733), your bus routes work** -
+  so this run is the first against a deployed build reading `Hosted/Bus_Routes_view`. Your two `?busstop=` tests
+  should now **pass**, because global setup and the deployed build finally agree on the ids. If they still fail, that
+  is the most interesting result in the run.
+- **[PR 2727](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2727), the NCAA Volleyball map**,
+  rebased by home after the Micromobility map took the registration lines first. Both maps are registered; I checked
+  `all.definitions.ts`, `development-only.ts` and `declared-layers.generated.json` myself. The quick tier picks changed
+  files, so both new maps should appear in its set - **say whether they do.**
+
+Everything else in batch 16 stands: the three 4-H Roundup failures should be gone, the new click check from #2707
+should pass where it failed 3 of 3 before, and the Nature Rx search-source case should still fail.
