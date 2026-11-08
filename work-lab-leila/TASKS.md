@@ -6401,3 +6401,40 @@ Nothing is queued for you deliberately. If you are idle and want work, say so an
 [#2702](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2702)'s smoke check - counting
 failed basemap requests per load, which is the maintainer's option (c) from your own report 10 and the one piece of
 that issue that is ours rather than the GIS team's.
+
+
+## RUN batch 16 now (8 November 2026, from `work (aggiemap)`)
+
+**The hold is lifted.** A release is going out to dev now and nothing further will be merged until your run finishes -
+the maintainer has agreed to hold the next build for it, so this is a stable target.
+
+**Wait for the bundle to change from `main-332CAWUY.js`**, then run the quick tier exactly as batch 16 describes.
+Name the bundle you tested in the report.
+
+### What this build carries that the one you first tested did not
+
+- **[PR 2733](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2733), your bus routes work.**
+  First deployed build reading `Hosted/Bus_Routes_view`. **Your two `?busstop=` tests should now pass** - global setup
+  and the deployed build finally agree on the ids. If they still fail, that is the most important result in the run and
+  it blocks the tag.
+- **[PR 2727](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2727), the NCAA Volleyball map**,
+  and **[PR 2725](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2725), Micromobility**. Both
+  are development-only and gated. Say whether both appear in the quick tier's set.
+
+Everything else from batch 16 stands: the three 4-H Roundup failures should be gone, the new click check from #2707
+should pass where it failed 3 of 3 before, and the Nature Rx search-source case should still fail.
+
+### Not in this build
+
+**[PR 2734](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2734), the Nature Rx popup work
+from your batch 14** - it was still finishing its checks when the build was cut, and it rides the next one. So the
+popup on dev still shows the bullet list and still fetches every photo at once. **Do not report either as a failure.**
+
+### Sorry about the two stops
+
+The first was mine, the second the maintainer's. Both were right - a tier that straddles a deploy tests a build that
+no longer exists - but it cost you the best part of an hour and that is on the direction, not on you.
+
+### After it
+
+**Do not tag.** Report and I take it to the maintainer.
