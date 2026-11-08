@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch 34** (aggiemap): #2731, the layer-title checks (probe service name, override list, smoke check). Started 4:27 PM Central, 8 November. Progress 4:40 PM: probe `serviceName`, the override list (202, all unreviewed), its unit spec and the maps.spec check written; both unit tests proven red then green. Running the baseline: maps.spec against this branch built and served as a dev host.
+- **Batch 34** (aggiemap): #2731, the layer-title checks (probe service name, override list, smoke check). Started 4:27 PM Central, 8 November. Progress 5:39 PM: baseline done (0 wrong, 0 drifted; 95 overrides equal their service's name). Pre-push check running, then the PR.
 
 ## Finished
 - **Batch 33** (aggiemap; report `home/reports/2026-11-08-33.md`): development merged into PR 2727 at `3436ba468`, three conflicts resolved keeping both maps (and a misplaced comment fixed), 288/288 without snapshot rewrite, check exit 0, MERGEABLE. No questions.
