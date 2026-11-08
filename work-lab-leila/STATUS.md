@@ -7,7 +7,10 @@ Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything s
 read from PowerShell, not estimated.
 
 Last written **12:34 PM Central, 8 November 2026**. A listener; job: testing.
-## Running now- **Since 12:34 PM Central, Sunday 8 November: batch 14 (aggiemap, #2716 and #2717)**: the Nature Rx popup, one branch: its features as a labelled line, and the photo carousel loading slides past the first lazily. Before images first.
+
+## Running now
+
+- **Since 12:34 PM Central, Sunday 8 November: batch 14 (aggiemap, #2716 and #2717)**: the Nature Rx popup, one branch: its features as a labelled line, and the photo carousel loading slides past the first lazily. Before images first.
 
 ## Back (7:58 AM Central, Friday 6 November 2026)
 
