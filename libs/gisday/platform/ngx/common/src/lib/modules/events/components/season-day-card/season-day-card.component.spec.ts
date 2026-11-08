@@ -62,6 +62,29 @@ describe('SeasonDayCardComponent', () => {
     expect(names()).toEqual(['Texas A&M keynote']);
   });
 
+  /**
+   * #2708. Each day is headed with its weekday, and in Central time whatever the visitor's own: the API sends a day as
+   * midnight Central, which in Pacific time is still the evening before.
+   */
+  it('heads the day with its weekday, month and day, in Central time', () => {
+    TestBed.configureTestingModule({
+      providers: [provideRouter([]), { provide: SeasonDayService, useValue: { getDayEvents: () => of([]) } }]
+    });
+
+    const heading = (date: string) => {
+      const fixture = TestBed.createComponent(SeasonDayCardComponent);
+      fixture.componentRef.setInput('seasonDay', { guid: 'day', date: date as unknown as Date });
+      fixture.detectChanges();
+
+      return (fixture.nativeElement as HTMLElement).querySelector('h2').textContent.trim();
+    };
+
+    expect(heading('2026-11-19T06:00:00.000Z')).toBe('Thursday, November 19');
+    expect(heading('2026-11-09T06:00:00.000Z')).toBe('Monday, November 9');
+    // The last moment of the Central day, already the next day in UTC.
+    expect(heading('2026-11-20T05:59:00.000Z')).toBe('Thursday, November 19');
+  });
+
   it('lists every place when the site lists them all', () => {
     const events = [
       { guid: 'a', name: 'Texas A&M keynote', tags: [], organizations: ['tamu-place'] },

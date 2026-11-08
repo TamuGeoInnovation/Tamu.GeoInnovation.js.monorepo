@@ -143,14 +143,12 @@ export class HeaderComponent implements OnInit {
 
   private signIn() {
     this.as.login({
+      // No `prompt=login`, on any site. On UCGIS's, Auth0 passes it on to Tradewing, which then signs the visitor in to
+      // ucgis.org and never sends them back to GIS Day (#2700). So a Tradewing session left after Logout still signs
+      // the next Login/Signup straight in (#2672); only Tradewing can end it.
       appState: {
         target: this.rt.url
-      },
-      // A site that signs in with another organization's accounts asks that provider for the password every time.
-      // Logging out cannot end UCGIS's Tradewing session: Auth0 does not pass the sign-out on, and Tradewing will not
-      // send a visitor back after one. So without this, Login/Signup after Logout signed the visitor straight back
-      // in, on a shared computer as the previous person (#2672). Auth0 passes `prompt=login` on to Tradewing.
-      ...(this.site.signInWith ? { authorizationParams: { prompt: 'login' as const } } : {})
+      }
     });
   }
 
