@@ -123,3 +123,33 @@ export function institutionsToAdd(
 
   return members.filter((m) => ![m.name, ...(m.alsoKnownAs ?? [])].some((n) => existing.has(institutionKey(n))));
 }
+
+export interface MemberPlan {
+  /** Members to add, in the list's order. */
+  add: Array<string>;
+  /** Members already there, with the spelling they are there under. */
+  keep: Array<{ name: string; as: string }>;
+}
+
+/**
+ * What adding the members to a season with `existingNames` would do: which to add, and which are already there and under
+ * what spelling. The production script in the operations repository asks for this (#2730), so the list and its matching
+ * rules exist only here.
+ */
+export function planMembers(
+  existingNames: ReadonlyArray<string | null | undefined>,
+  members: ReadonlyArray<MemberInstitution> = UCGIS_MEMBER_INSTITUTIONS
+): MemberPlan {
+  const names = existingNames.filter((n): n is string => !!n);
+  const adding = institutionsToAdd(names, members);
+
+  return {
+    add: adding.map((m) => m.name),
+    keep: members
+      .filter((m) => !adding.includes(m))
+      .map((m) => ({
+        name: m.name,
+        as: names.find((n) => [m.name, ...(m.alsoKnownAs ?? [])].some((k) => institutionKey(k) === institutionKey(n))) ?? m.name
+      }))
+  };
+}
