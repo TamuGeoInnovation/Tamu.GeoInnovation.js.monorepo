@@ -6454,3 +6454,61 @@ states, not two, and the middle one looks like success to a naive check.
 
 Name `main-PY3WPWXJ.js` in the report, and confirm it is still what dev serves when the run finishes - if it changed
 underneath you, the run is void and I need to know rather than see a pass.
+
+## Batch 17 (8 November 2026, from `work (aggiemap)`) — the lot-links host, then #2702's check (High)
+
+**Report 16 was exactly what a tier report should be.** Naming the bundle at both ends, separating known failures from
+new ones, and running down the five lot-links failures to the line of code that causes them is what made the build
+tagnable without further work. You also caught that your watcher already handled the empty bundle name correctly - my
+warning was unnecessary and I had not checked before sending it.
+
+The maintainer took your recommendations on all three questions. Two of them are this batch.
+
+### 1. The lot-links host (his answer: your option (a))
+
+`lot-links.spec.ts` builds its expected object ids from the default `Connections`, which resolves to **production's**
+hosts in the test process, then asserts them against whichever environment is under test. On dev that is five
+failures with a correct application underneath.
+
+**Make it read `Connections(gisHostFor(BASE_URL))`**, as `search-sources.spec.ts` already does.
+
+For the `?feature=` case: take its id from the same place, or `test.skip` where the hosts differ - a `?feature=` link
+does not carry across environments since #2667, which your report 10 established. **Say which you chose.**
+
+**Not a known-failure entry.** The maintainer was explicit: as a known failure it would mask a genuine lot-link
+regression on dev.
+
+Its own pull request, `Closes #2701` if that issue covers it or a new issue if not - check before assuming, #2701
+covers three other things and may be better left alone.
+
+### 2. #2702's check, which you asked for
+
+Count the failed basemap requests per load and fail when they exceed a threshold.
+
+**What you already measured** (reports 10 and 12): the service answers `500 Error performing query operation` to about
+1.5% of requests; a main-map load sends 36 of them; **5 of 10 loads lost one**; and a load that loses a buildings tile
+leaves a square where **0 of 24 clicks** opened a popup, for the rest of the visit.
+
+So the check is watching a real, current, production-visible fault - not a hypothetical.
+
+**Two things to decide and write down:**
+
+- **The threshold.** Zero would fail most runs on a 1.5% rate. Something like "no load loses more than one request",
+  or a rate across several loads, is likelier to be useful. Pick one, say why, and make it easy to change.
+- **Where it lives.** It is a property of a page load rather than of a map, so it may not fit the existing per-map
+  specs. Look before adding a new file.
+
+**It must not become noise.** A check that fails most nights teaches people to ignore the suite, which is worse than
+not having it. If you cannot find a threshold that is both meaningful and quiet, say so and we will take it back to
+the maintainer rather than ship a flapping test.
+
+### Context you may want
+
+The build you tested is clear and **will not be tagged** - the maintainer chose to tag the next one instead, which
+will carry PR 2734 (your Nature Rx popup work) and PR 2735.
+
+`#2702` itself stays open for the GIS team; this is only our half.
+
+### The report
+
+`work-lab-leila/reports/2026-11-08-17.md`, and say **"report ready: <file>"**.
