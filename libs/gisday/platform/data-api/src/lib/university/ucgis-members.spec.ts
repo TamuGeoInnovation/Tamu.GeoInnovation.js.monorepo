@@ -72,9 +72,10 @@ describe('UCGIS member institutions', () => {
   it('plans what it would add and under what spelling the rest are already there (#2730)', () => {
     const plan = planMembers(['Clemson', 'Yale University', '  ', null]);
 
+    // In the list's order: Yale is a Full member, Clemson a Basic one.
     expect(plan.keep).toEqual([
-      { name: 'Clemson University', as: 'Clemson' },
-      { name: 'Yale University', as: 'Yale University' }
+      { name: 'Yale University', as: 'Yale University' },
+      { name: 'Clemson University', as: 'Clemson' }
     ]);
     expect(plan.add).not.toContain('Clemson University');
     expect(plan.add).not.toContain('Yale University');
