@@ -6866,3 +6866,52 @@ The five pre-existing failures, so you do not chase them: `/events/graduation-fa
 > the one-function version is a decision someone takes deliberately rather than a loose end.
 >
 > If you have already started (a), stop and keep the notes for that issue.
+
+## Batch 24 (9 November 2026, from `work (aggiemap)`) — the production basemap is failing more requests than it was (High)
+
+**Batch 23 was very good.** The red proof, the 69-against-2 route comparison, and especially the cross-check built out
+of `declared-layers.generated.json` — using the application's own recorded answer without importing it — is a better
+check than the one I asked for. [PR 2783](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2783)
+is open on it and green on GitHub.
+
+**You also reported your own mistake before I found it.** You built (a) before reading my correction, rebuilt as (b),
+and said so, with what you'd change. That is the behaviour that makes a report worth reading.
+
+### The work: your own two findings, which nobody has chased
+
+Your batch 23 report has two results about the **production** basemap that are not about the release and have been
+sitting since:
+
+- `service-metadata.spec`: `basemapUrl` layer 59 (Brazos River) answered **500** to a count query, then **200 five
+  times of five** a few minutes later.
+- `basemap-requests.spec` failed **twice**: 15 of 360 (**4.17%**), then 17 of 360 (**4.72%**) twenty minutes later,
+  against `MAX_FAILED_RATE` of **0.04**.
+  [#2702](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2702)'s comment records about
+  **1.5%** measured in November.
+
+**Two consecutive runs over the threshold, against a 1.5% baseline, is not luck.** Every environment reads this
+service, so if it is degrading, every map is drawing short and nothing else will tell us.
+
+**1. Establish the rate properly.** Several runs across the morning, with the count of requests each time, so a rate has
+an interval around it rather than being one number. Say what the rate is now and how confident you are. If it has gone
+back to 1.5%, that is a real and welcome result — say so and stop.
+
+**2. Find out what is failing, not just how often.** Which layers, which kinds of request, which status codes. A
+uniform 4% across everything and a 4% concentrated in two layers are different faults with different owners.
+
+**3. Say whether the threshold is still right.** `MAX_FAILED_RATE` is 0.04 and the measured baseline was 1.5%. A
+threshold two and a half times the baseline lets a near-tripling pass unnoticed, which is close to what happened. Make
+a recommendation; do not change it unasked.
+
+**4. Report on #2702** rather than opening something new, unless what you find is plainly a different fault — in which
+case file it and say why.
+
+### Do not touch
+
+- `#2707` and the buildings hit test: **home** has it, and it is the one the release waits on. If you find yourself
+  looking at `buildings-layer`, stop and report instead.
+- `test/smoke/aggiemap/definitions.ts` and `scope.spec.ts`: PR 2783 is open on them.
+
+### The report
+
+`work-lab-leila/reports/2026-11-09-24.md`, and say **"report ready: <file>"**.
