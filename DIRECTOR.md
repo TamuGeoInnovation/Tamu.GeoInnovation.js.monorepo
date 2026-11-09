@@ -93,12 +93,13 @@ machines are two participants, never one: they have separate task files, so the 
 both, and each one's status says which machine is busy. Non-Claude agents read `CLAUDE.md` as their project
 instructions too.
 
-**A machine says what it cannot do, and the director believes it.** On 9 November 2026 `work-lab-leila`
-reported that it had no `gh` CLI and no GitHub login, rather than quietly skipping a batch step that asked it to
-comment on an issue - it drafted the comment for the director to post instead. **The maintainer gave it `gh` the same
-morning, so it posts its own findings now.** The rule is the point, not the detail: a listener that cannot do
-something says so, and the director fixes the batch rather than the listener working around it. Opening pull requests
-is still the director's, for every machine. Read the **What this is** section of a listener's `STATUS.md` before writing its
+**A machine says what it cannot do - and checks its own record before saying it.** On 9 November 2026 this file
+still said `work-lab-leila` had no `gh` CLI. Asked to comment on an issue, it repeated that row and drafted the comment
+for the director to post instead. **It had had `gh` on PATH and signed in since 23 October**, as its own `STATUS.md`
+said; the maintainer added the `project` scope on 9 November. Two things follow. A listener that believes it cannot do
+something says so rather than skipping the step quietly, which it did and which was right. And **the first place to
+check is its own `STATUS.md`, not this file** - a stale row here outlived the fact by two and a half weeks, and the
+director repeated it too. Opening pull requests is still the director's, for every machine. Read the **What this is** section of a listener's `STATUS.md` before writing its
 first batch, and do not assume a new machine is like `home`.
 
 A machine's job does not change when the director does: a batch for a development machine is development work, a
