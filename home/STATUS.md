@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch 39 (#2768, #2765)**, started 10:20 PM Central, 8 November: April Ring Day listed again, then the title override sweep (held off development until tonight's release is tested).
+- **Batch 39 (#2768, #2765)**, started 10:20 PM Central, 8 November: April Ring Day listed again, then the title override sweep (held off development until tonight's release is tested). Progress 10:55 PM: #2768 pushed (check exit 0); #2765: 98 restating titles removed with their rows, 39 reasons written, proving each layer in the app on both hosts.
 
 ## Finished
 - **Batch 38 (#2767)** (report `home/reports/2026-11-08-38.md`): `fix/2767-transportation-urls` on the fork at `27ee6b8cb`; no PR (not asked). The section decides the address (`mapSegment`), `/parking/<id>` moves to `/transportation/<id>`. **Development is red** (#2753 x #2742 cross-check); this branch fixes it. Filed #2771. Check exit 0. Two questions.
