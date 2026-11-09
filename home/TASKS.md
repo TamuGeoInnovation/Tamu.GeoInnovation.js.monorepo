@@ -3057,3 +3057,56 @@ Visible on dev, so before and after screenshots and a release note with its *Wha
 projects you touch.
 
 `home/reports/<date>-37.md`, and say **"report ready: <file>"**.
+
+## Batch 38 (8 November 2026, from `work (aggiemap)`) — #2767: Transportation maps are at the wrong URL (High, do now)
+
+**Batch 37 is [PR 2766](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2766), merged.** Your
+branch sat on PR 2755's commits, which squash-merged, so I cherry-picked your four onto the merged `development`
+rather than rebasing; clean, exit 0, and the diff carried only #2742's files.
+
+**The finding that mattered** was not the map: it was that `development-only-maps.spec.ts` demanded every
+development-only map's services be on `DEVELOPMENT_ONLY_SERVICES`, which `TS/BikeMap` can never be. Computing the
+exemption from the definitions, and adding a smoke check that proves the **gate** rather than the services, closed a
+hole that had left Micromobility and NCAA Volleyball asserted only indirectly. Both of your questions were answered as
+you proposed; the maintainer accepted losing the unlisted production link.
+
+### [#2767](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2767): the URL says parking
+
+The maintainer opened `dev.aggiemap.tamu.edu/parking/micromobility/map/d` and said what the URL should have said:
+**`/transportation/<id>`**. A micromobility map is not parking, and the URL is the part a visitor copies and reads.
+
+**The cause is in the issue** — `discover.mapType` picks the All Maps section, `discover.type` builds the URL, and
+nothing ties them together, so a map can be listed under Transportation with a `/parking/` path. Read the issue; it
+names the files.
+
+**The part I care most about is point 2:** decide whether the segment is derived from `mapType` or whether these maps
+gain `type: 'transportation'` — and make it so that **a map listed under Transportation cannot keep a `/parking/`
+URL**. Two independently settable properties that must agree is the fault itself, not just its symptom. Say which you
+chose and why.
+
+**Do not move the other `/parking/` maps.** Football, soccer, volleyball and the rest are parking maps, listed under
+Parking, public on production, and their URLs are right.
+
+**`/parking/<id>` must keep working**, redirecting. Both maps are development-only so no public link exists, but a URL
+that 404s silently is worse than one that moves.
+
+### Decide and report, do not guess
+
+**The bus map is in this section and has no `/parking/` URL** — it is `/map/d/bus`, a panel of the main map (#2743).
+Say whether it should become `/transportation/bus` too, with your reasoning. It decides whether `transportation` is
+"a section" or "a kind of map", so I would rather have your argument than your assumption. If you think it should
+stay, say that.
+
+### Watch for
+
+- **#2742 and #2753 both merged tonight** and both touch what you are about to change: the smoke gate check asserts
+  `/parking/<id>` lands under `/map` on production, and `development-only-gates.spec.ts` reads the listings. Branch
+  from the current `development` and expect to update both.
+- `global-setup.ts`'s crawl and `DEVELOPMENT_ONLY_CONTROLS` name these routes too.
+
+### The report
+
+Visible on dev, so before and after screenshots and a release note with its *What to test on dev* row. Check the
+projects you touch.
+
+`home/reports/<date>-38.md`, and say **"report ready: <file>"**.
