@@ -12,10 +12,18 @@ import { smokeBaseUrl } from './gis-hosts';
  * that opened a panel apologising for being unavailable.
  *
  * Listed by the title the sidebar tab renders, because that is what a visitor sees and what a template
- * change is most likely to get wrong. When a section goes to production, take it out of this list; the
- * checks then require it to be present everywhere instead.
+ * change is most likely to get wrong. When a section goes to production, move it from this list to
+ * `SECTIONS_ON_EVERY_ENVIRONMENT`, whose check requires it to be present everywhere instead. Taking it out of
+ * this list alone only stops checking it.
  */
-export const DEVELOPMENT_ONLY_SECTIONS = ['Directions', 'Bus Routes', 'Experiments'];
+export const DEVELOPMENT_ONLY_SECTIONS = ['Directions', 'Experiments'];
+
+/**
+ * Sections that were development-only and now are on every environment, production included, so a gate put back
+ * by mistake fails here rather than hiding the section quietly. Bus Routes since the maintainer's decision of
+ * 9 November 2026 (#2789).
+ */
+export const SECTIONS_ON_EVERY_ENVIRONMENT = ['Bus Routes'];
 
 /**
  * Tiles in the All Maps page's "Visit Maps" row that are not ready for production (#912).

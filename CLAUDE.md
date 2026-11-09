@@ -420,11 +420,13 @@ itself when a later run passes. Say so when reporting a failure, so nobody opens
 ## Before changing code
 
 **Nothing without a production service is visible on production unless explicitly allowed.** A
-layer, basemap or service published only on dev is gated with `TestingService` (`isTesting`), as bus
-routes and the vector tile basemap are. Add it to `DEVELOPMENT_ONLY_SERVICES` in
+layer, basemap or service published only on dev is gated with `TestingService` (`isTesting`), as the basemap
+gallery's dated campus basemaps are (`aggiemapGalleryBasemaps`). Add it to `DEVELOPMENT_ONLY_SERVICES` in
 `test/smoke/aggiemap/development-only.ts`, with the pages that request it, so the smoke suite fails
 if production ever requests it.
-The maintainer decides when it moves to production. See #1229.
+The maintainer decides when it moves to production. See #1229. When a section moves, it goes from
+`DEVELOPMENT_ONLY_SECTIONS` to `SECTIONS_ON_EVERY_ENVIRONMENT` in the same file, as bus routes did on 9 November 2026
+(#2789): taking it out of the first list alone only stops checking it.
 
 **Which gate: a thing that reads a service is left out of the build; structure is gated at run time** (#2753).
 Layer sources and search sources go in `DEVELOPMENT_ONLY_LAYER_SOURCES`, and a map in `developmentOnly`, so a

@@ -10,6 +10,7 @@ import {
   DEVELOPMENT_ONLY_ALL_MAPS_TILES,
   DEVELOPMENT_ONLY_SECTIONS,
   DEVELOPMENT_ONLY_SERVICES,
+  SECTIONS_ON_EVERY_ENVIRONMENT,
   developmentSectionsVisible,
   sidebarTabs
 } from './development-only';
@@ -61,6 +62,22 @@ test.describe(`development-only sections ${VISIBLE ? 'are offered here' : 'stay 
           ? `the ${section} tab should be offered here`
           : `the ${section} tab is offered on an environment that should not have it`
       ).toBe(VISIBLE ? 1 : 0);
+    });
+  }
+});
+
+/** Sections that left development for every environment are offered on every environment (#2789). */
+test.describe('sections on every environment are offered here', () => {
+  for (const section of SECTIONS_ON_EVERY_ENVIRONMENT) {
+    test(`the ${section} tab is offered`, async ({ page }) => {
+      await blockAnalytics(page);
+      await page.goto('/map');
+
+      await expect
+        .poll(async () => probeReady(page), { message: 'the main map never finished loading', timeout: 90_000, intervals: [1_000] })
+        .toBe(true);
+
+      expect(await sidebarTabs(page, section), `the ${section} tab is not offered here`).toBe(1);
     });
   }
 });
