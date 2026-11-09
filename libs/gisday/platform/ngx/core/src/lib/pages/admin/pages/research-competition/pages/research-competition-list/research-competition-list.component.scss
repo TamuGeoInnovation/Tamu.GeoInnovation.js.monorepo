@@ -10,6 +10,13 @@
     cursor: pointer;
   }
 
+  // Eight columns beside the admin menu: half the shared table's side padding, so short values stay whole.
+  ::ng-deep .datatable-header .datatable-header-cell,
+  ::ng-deep .datatable-body .datatable-body-cell {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
   // A long title or email wraps rather than being cut off.
   ::ng-deep .datatable-body-cell-label {
     white-space: normal;

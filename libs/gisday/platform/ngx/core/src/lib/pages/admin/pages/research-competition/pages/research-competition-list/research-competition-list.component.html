@@ -27,7 +27,7 @@
       <!-- ngx-datatable, as the VGI review list uses it: a click on a heading sorts by it (#2808). -->
       <div class="datatable-container">
         <ngx-datatable class="material" [rows]="view.rows" [columnMode]="'force'" [headerHeight]="50" [rowHeight]="'auto'" [footerHeight]="0" [scrollbarV]="false" [reorderable]="false" [sorts]="[{ prop: 'created', dir: 'desc' }]" (activate)="onActivate($event)">
-          <ngx-datatable-column prop="select" name="" [width]="50" [maxWidth]="50" [sortable]="false" [resizeable]="false">
+          <ngx-datatable-column prop="select" name="" [width]="45" [maxWidth]="45" [sortable]="false" [resizeable]="false">
             <ng-template ngx-datatable-header-template>
               <tamu-gisc-checkbox label="" (changed)="toggleAllRows(view.rows)" [checked]="(selectedRows$ | async)?.length === view.rows.length"></tamu-gisc-checkbox>
             </ng-template>
@@ -36,14 +36,14 @@
             </ng-template>
           </ngx-datatable-column>
 
-          <ngx-datatable-column name="Name" prop="title" [width]="260"></ngx-datatable-column>
+          <ngx-datatable-column name="Name" prop="title" [width]="220"></ngx-datatable-column>
 
-          <ngx-datatable-column name="Submitted" prop="created" [width]="120" [minWidth]="120">
+          <ngx-datatable-column name="Submitted" prop="created" [width]="115">
             <ng-template let-row="row" ngx-datatable-cell-template>{{row.created | date: 'MMM d, h:mm a'}}</ng-template>
           </ngx-datatable-column>
 
           <!-- Sorted by last name. -->
-          <ngx-datatable-column name="Submitted by" prop="submitter.lastName" [width]="240">
+          <ngx-datatable-column name="Submitted by" prop="submitter.lastName" [width]="210">
             <ng-template let-row="row" ngx-datatable-cell-template>
               @if (row.submitter; as person) {
               <div class="bold">{{person.firstName}} {{person.lastName}}</div>
@@ -56,19 +56,19 @@
             </ng-template>
           </ngx-datatable-column>
 
-          <ngx-datatable-column name="Type" prop="submissionType" [width]="110" [minWidth]="110">
+          <ngx-datatable-column name="Type" prop="submissionType" [width]="90">
             <ng-template let-row="row" ngx-datatable-cell-template>{{row.submissionType | titlecase}}</ng-template>
           </ngx-datatable-column>
 
-          <ngx-datatable-column name="Format" prop="format" [width]="120" [minWidth]="120">
+          <ngx-datatable-column name="Format" prop="format" [width]="115">
             <ng-template let-row="row" ngx-datatable-cell-template>{{row.format | titlecase}}</ng-template>
           </ngx-datatable-column>
 
-          <ngx-datatable-column name="Classification" prop="classificationType" [width]="150" [minWidth]="150">
+          <ngx-datatable-column name="Classification" prop="classificationType" [width]="140">
             <ng-template let-row="row" ngx-datatable-cell-template>{{row.classificationType | titlecase}}</ng-template>
           </ngx-datatable-column>
 
-          <ngx-datatable-column name="Status" prop="reviewStatus" [width]="130" [minWidth]="130">
+          <ngx-datatable-column name="Status" prop="reviewStatus" [width]="125">
             <ng-template let-row="row" ngx-datatable-cell-template>
               <span class="bold" [ngClass]="{'clr-md-amber-800': row.reviewStatus === SubmissionReviewStatus.InReview, 'clr-md-green-600': row.reviewStatus === SubmissionReviewStatus.Accepted, 'clr-md-red-500': row.reviewStatus === SubmissionReviewStatus.Rejected}">{{row.reviewStatus}}</span>
             </ng-template>
