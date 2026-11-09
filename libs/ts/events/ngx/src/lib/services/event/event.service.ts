@@ -750,11 +750,13 @@ export class EventService {
       // A service that joins several tables names its fields by table - `GIS.TS.ParkingLots.LotName`,
       // not `LotName` - so a candidate matches a field's last dot-separated part, and the query below
       // names the layer's own field. Compared whole, no field matched and a `?lot=` link opened nothing
-      // on fourteen parking maps (#1952).
+      // on fourteen parking maps (#1952). And whatever its case: the application's lot and building sources
+      // name the campus features service's fields, which are lower case (`lotname`), where an event map's
+      // own layers name theirs `LotName`, and the link skipped the map's own lot (#2722).
       const matches = candidateFields
         .map((candidate, priority) => ({
           priority,
-          fields: layerFields.filter((name) => name.split('.').pop() === candidate)
+          fields: layerFields.filter((name) => name.split('.').pop()?.toLowerCase() === candidate.toLowerCase())
         }))
         .filter((match) => match.fields.length > 0);
 

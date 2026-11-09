@@ -1,5 +1,5 @@
 import { BaseMapProperties, CONSTRUCTION_HATCH_RENDERER } from '@tamu-gisc/maps/esri';
-import { TAMU_CAMPUS_BASEMAP_URL } from '@tamu-gisc/common/datasets/geographic';
+import { TAMU_CAMPUS_BASEMAP_URL, TAMU_CAMPUS_STRUCTURES_URL } from '@tamu-gisc/common/datasets/geographic';
 
 /**
  * The picture of a campus basemap in the basemap panel, shipped with the application (#1730).
@@ -84,11 +84,12 @@ export const AggiemapVectorBasemap: BaseMapProperties = {
     // (`CONSTRUCTION_HATCH_RENDERER`, #2532). The Construction Zones layer's default Building Projects class is red, so
     // where a building under construction sits inside one, a red diagonal cross draws over this grid. Part of this
     // basemap, so it shows only where the vector basemap does. The service and the tiles agreed on all eight buildings
-    // on 27 October.
+    // on 27 October. Read from the tiles' own feature service since #2722: the same eight buildings as the old campus
+    // basemap's University Building layer, compared by type, number and name on 9 November 2026.
     {
       type: 'FeatureLayer',
-      url: `${TAMU_CAMPUS_BASEMAP_URL}/2`,
-      definitionExpression: "Type = 'CONSTRUCTION'",
+      url: TAMU_CAMPUS_STRUCTURES_URL,
+      definitionExpression: "type = 'CONSTRUCTION'",
       title: 'Buildings under construction',
       listMode: 'hide',
       popupEnabled: false,

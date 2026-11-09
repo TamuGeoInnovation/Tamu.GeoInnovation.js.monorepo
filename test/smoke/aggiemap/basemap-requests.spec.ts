@@ -1,19 +1,20 @@
 import { Page } from '@playwright/test';
 
-// connections.ts loads without the Angular dependency graph (see services.spec.ts).
-import { Connections } from '../../../libs/aggiemap/ngx/common/src/lib/connections';
+import { TAMU_CAMPUS_FEATURES_URL } from '../../../libs/common/datasets/geographic/src/lib/campus/campus-basemap';
 import { expect, HEAVY, test } from './fixtures';
 import { APP_ROOT } from './global-setup';
 import { blockAnalytics } from './analytics';
 import { smokeBaseUrl } from './gis-hosts';
 
 /**
- * The campus basemap answers the main map's feature queries (#2702).
+ * The campus features service answers the main map's feature queries (#2702, #2722).
  *
- * The basemap's buildings, lots and other features are a MapServer the map queries tile by tile, about 36 queries a load.
- * The service fails some of them at random - about 1.5% when measured on 6 and 8 November 2026, on every environment,
- * since they all read the same service - and the map does not ask again. A load that loses a buildings tile shows a
- * square of campus where no building can be clicked for the rest of the visit.
+ * The main map's buildings and surface lots are a feature service the map queries tile by tile: the one the vector
+ * basemap is published from (`TAMU_CAMPUS_FEATURES_URL`). Until November 2026 they came from the campus basemap
+ * MapServer, which failed some of them at random - about 1.5% of a load's queries when measured on 6 and 8 November
+ * 2026, about one buildings query in twenty - and the map does not ask again. A load that loses a buildings tile shows a
+ * square of campus where no building can be clicked for the rest of the visit (#2707). That is why they moved, and this
+ * watches that the service they moved to does not start doing the same.
  *
  * Nothing else in the suite sees this. The failures come back as **HTTP 200** with the error in the body
  * (`{"error":{"code":500,"message":"Error performing query operation"}}`), so the server-error check in `maps.spec.ts`,
@@ -32,7 +33,7 @@ import { smokeBaseUrl } from './gis-hosts';
 const LOADS = Number(process.env.AGGIEMAP_SMOKE_BASEMAP_LOADS ?? 10);
 const MAX_FAILED_RATE = Number(process.env.AGGIEMAP_SMOKE_BASEMAP_MAX_FAILED_RATE ?? 0.04);
 
-/** Fewer than this many queries a load means the map no longer queries the basemap as it did, so the rate means nothing. */
+/** Fewer than this many queries a load means the map no longer queries the service as it did, so the rate means nothing. */
 const MIN_QUERIES_PER_LOAD = 10;
 
 /** The window each load is made in, which decides how many queries it sends (see below). */
@@ -45,14 +46,14 @@ interface Load {
   failed: number;
 }
 
-/** Loads the main map once, and counts its feature queries to the campus basemap and those answered with an error. */
+/** Loads the main map once, and counts its feature queries to the campus features service and those answered with an error. */
 async function loadAndCount(page: Page): Promise<Load> {
   const answers: Array<Promise<boolean>> = [];
 
   page.on('response', (response) => {
     const url = response.url();
 
-    if (url.startsWith(`${Connections.basemapUrl}/`) && /\/query\?/.test(url)) {
+    if (url.startsWith(`${TAMU_CAMPUS_FEATURES_URL}/`) && /\/query\?/.test(url)) {
       answers.push(
         response
           .text()
@@ -79,7 +80,7 @@ async function loadAndCount(page: Page): Promise<Load> {
   return { queries: answers.length, failed };
 }
 
-test.describe('the campus basemap answers the main map', () => {
+test.describe('the campus features service answers the main map', () => {
   test.describe.configure({ retries: 0 });
 
   test(
@@ -118,12 +119,12 @@ test.describe('the campus basemap answers the main map', () => {
 
       expect(
         loads.filter((load) => load.queries < MIN_QUERIES_PER_LOAD).map((load) => load.queries),
-        `loads of /map/d that sent fewer than ${MIN_QUERIES_PER_LOAD} queries to ${Connections.basemapUrl}, so the ` +
+        `loads of /map/d that sent fewer than ${MIN_QUERIES_PER_LOAD} queries to ${TAMU_CAMPUS_FEATURES_URL}, so the ` +
           `map no longer reads its features from it as this check assumes`
       ).toEqual([]);
       expect(
         rate,
-        `${failed} of ${queries} queries to the campus basemap failed across ${LOADS} loads, above the ` +
+        `${failed} of ${queries} queries to the campus features service failed across ${LOADS} loads, above the ` +
           `${(MAX_FAILED_RATE * 100).toFixed(1)}% this check allows (#2702). Measured at about 1.5% in November 2026; ` +
           `this much more means the service has got worse, not that this run was unlucky`
       ).toBeLessThanOrEqual(MAX_FAILED_RATE);
