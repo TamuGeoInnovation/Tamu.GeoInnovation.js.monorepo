@@ -40,4 +40,64 @@ describe('Event maps on production', () => {
 
     expect(malformed).toEqual([]);
   });
+
+  it('leaves no map stranded on a past season (#2754)', () => {
+    // Fall Commencement sat on December 2025 for eleven months. Nothing caught it: the dates are
+    // configuration rather than a service, so the map went on loading and drawing; the builder's
+    // labels carry no year; and 17 December really was a Wednesday in 2025, so it read as correct.
+    //
+    // "Has a date in the future" is the wrong rule - it names 29 maps in November, nearly all of them
+    // annual events waiting for next year's dates, which is normal. A check that fails every night
+    // teaches people to ignore it. Two shapes are real:
+    //
+    //   approaching  the anniversary of its last date is within 60 days, so the map is about to be
+    //                needed and still carries last year's. Fall Commencement, 40 days out.
+    //   abandoned    more than 13 months have passed, so a whole cycle went by without anyone
+    //                rolling it forward or marking it retired. Troubadour Festival, 18 months.
+    //
+    // An event genuinely over is marked `status: 'retired'`, which keeps its definition so an old
+    // link still explains itself (`test/smoke/aggiemap/retired.ts`).
+    const DAY = 24 * 60 * 60 * 1000;
+    const now = Date.now();
+
+    const stranded = EventDefinitions.flatMap((definition) => {
+      const configuration = definition.configuration;
+
+      // `status: 'retired'` is on the `discover` entry, a sibling of `configuration` - not on the
+      // configuration itself. Reading the wrong one makes every retired map look abandoned.
+      if (!configuration || definition.discover?.status === 'retired') {
+        return [];
+      }
+
+      const dates = configuration.eventDates
+        .filter((date): date is string => typeof date === 'string')
+        .map((date) => Date.parse(`${date}T12:00:00Z`))
+        .filter((time) => !Number.isNaN(time));
+
+      if (dates.length === 0) {
+        return [];
+      }
+
+      const last = Math.max(...dates);
+      const sinceLast = now - last;
+
+      if (sinceLast < 0) {
+        return []; // Still to come.
+      }
+
+      if (sinceLast > 396 * DAY) {
+        return [`${configuration.id}: abandoned, last date ${new Date(last).toISOString().slice(0, 10)}`];
+      }
+
+      const anniversary = last + 365 * DAY;
+
+      if (anniversary - now < 60 * DAY) {
+        return [`${configuration.id}: due again ${new Date(anniversary).toISOString().slice(0, 10)}, still on ${new Date(last).toISOString().slice(0, 10)}`];
+      }
+
+      return [];
+    });
+
+    expect(stranded, 'these maps are due again soon, or a year has passed, and neither is reflected').toEqual([]);
+  });
 });
