@@ -144,6 +144,26 @@ After turning it on, the listener's first reply shows the model it is running; a
 desktop app did not pick the settings up, which is the first thing to check on a new machine (the TAMU instructions are
 written for the terminal CLI). Spend for the day shows in TAMUS AI Chat's own usage page.
 
+## Visible change comes first, always (9 November 2026, the maintainer)
+
+**"Prioritize the visible change work, always."** When a director orders a queue, anything a visitor can see goes
+ahead of anything they cannot — ahead of tests, checks, documentation, cleanup and tooling, and ahead of a higher
+Priority field on an invisible issue.
+
+The reason is what a release is for. A release carries visible change; everything else can follow in the next one at
+no cost to anybody outside the team. A test that lands a day later costs nothing a visitor notices; a fix that misses
+the release waits weeks.
+
+**It outranks the Priority field when the two disagree.** An Urgent test and a High visible fix means the visible fix
+goes first, and the director says so in the batch rather than quietly reordering.
+
+**It does not mean shipping a visible change without its check.** A change's own red-first proof, its release-notes
+entry and its screenshots are part of that change, not separate work to be deferred. What is deferred is standing
+checks, sweeps and records that are not about the change in hand.
+
+**Do not interrupt a run to reorder.** Let what is measuring finish — a half-finished measurement is wasted and
+usually has to start again — then take the visible work next.
+
 ## The director
 - Is the only session that asks the maintainer anything, and the only one that takes instructions from him.
 - Writes each listener's `<folder>/TASKS.md`, with each batch and a **Decided** list of his answers.
