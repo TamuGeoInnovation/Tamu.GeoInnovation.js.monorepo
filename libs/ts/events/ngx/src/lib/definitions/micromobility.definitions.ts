@@ -73,6 +73,10 @@ export const MicromobilityTs: AggiemapCustomMapConfiguration = {
     description: 'Where scooters and bikes can ride on Main Campus.',
     source: 'internal',
     type: 'parking',
+    // Transportation, not parking: this map is about getting around campus, not leaving a car
+    // somewhere (#2738). `parkingCategory` with no `mapType` left it listed nowhere at all, so
+    // neither a visitor nor the smoke suite's crawl could reach it.
+    mapType: 'transportation',
     parkingCategory: 'general',
     keywords: [
       'micromobility',
