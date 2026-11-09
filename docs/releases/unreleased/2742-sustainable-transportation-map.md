@@ -8,7 +8,7 @@ testOnDev: |
 ### AggieMap: a Sustainable Transportation map in the Transportation section, on dev
 
 The Sustainable Transportation map, with its six bike and EV charging layers on, is now listed in the Transportation
-section of All Maps, beside Micromobility. The map had existed since 2024. But it was listed in no section, so only
+section of All Maps, beside Micromobility. The map has existed since May. But it was listed in no section, so only
 someone with its link could reach it, and on dev its layers drew nothing.
 
 It is on dev only for now. The bike layers are being reworked, and whether they stay is decided early in the week of
