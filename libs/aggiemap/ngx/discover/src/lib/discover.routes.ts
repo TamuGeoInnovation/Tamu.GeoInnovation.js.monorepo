@@ -29,6 +29,15 @@ export const discoverRoutes: Routes = [
     }
   },
   {
+    path: 'transportation',
+    component: EventMapsComponent,
+    data: {
+      mapType: 'transportation',
+      title: 'Transportation',
+      intro: 'Browse maps for getting around campus: micromobility, bus routes and sustainable transportation.'
+    }
+  },
+  {
     path: 'athletics-events',
     component: EventMapsComponent,
     data: {
