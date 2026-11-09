@@ -66,6 +66,11 @@ const FEATURES: { paths: RegExp; specs: string[] }[] = [
     specs: ['services.spec.ts', 'basemap-zoom.spec.ts', 'campus-basemap.spec.ts', 'basemap-gallery.spec.ts', 'blank-map.spec.ts']
   },
   {
+    // The campus basemap's address, whose query failure rate is watched (#2702).
+    paths: /^libs\/common\/datasets\/geographic\/src\/lib\/campus\/campus-basemap\.ts$/,
+    specs: ['basemap-requests.spec.ts', 'services.spec.ts']
+  },
+  {
     // Where the vector tile basemap is made and its sprite override applied (#2487).
     paths: /^libs\/maps\/esri\/src\/lib\/services\/map\/(basemap-layers|vector-tile-sprites|map\.service)\.ts$/,
     specs: ['blank-map.spec.ts', 'basemap-zoom.spec.ts']
