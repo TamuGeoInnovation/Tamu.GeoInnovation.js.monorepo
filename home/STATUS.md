@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch 39 (#2768, #2765)**, started 10:20 PM Central, 8 November: April Ring Day listed again, then the title override sweep (held off development until tonight's release is tested). Progress 10:55 PM: #2768 pushed (check exit 0); #2765: 98 restating titles removed with their rows, 39 reasons written, proving each layer in the app on both hosts.
+- Nothing. Idle and listening (11:17 PM Central, 8 November).
 
 ## Finished
+- **Batch 39 (#2768, #2765)** (report `home/reports/2026-11-08-39.md`): `fix/2768-april-ring-day` at `72f741180` and `fix/2765-title-override-sweep` at `0e125b731` on the fork, no PRs (#2765 held for the release test). 98 restating titles removed, proven in the app on both hosts; 39 reasons; 63 left unreviewed. Checks exit 0. Three questions.
 - **Batch 38 (#2767)** (report `home/reports/2026-11-08-38.md`): `fix/2767-transportation-urls` on the fork at `27ee6b8cb`; no PR (not asked). The section decides the address (`mapSegment`), `/parking/<id>` moves to `/transportation/<id>`. **Development is red** (#2753 x #2742 cross-check); this branch fixes it. Filed #2771. Check exit 0. Two questions.
 - **Batch 37 (#2742)** (report `home/reports/2026-11-08-37.md`): `feat/2742-sustainable-transportation-map` on the fork at `74ced2076`, from PR 2755's branch with development merged; no PR (not asked). The existing map listed under Transportation and made development-only; a new smoke check proves every development-only map's link. Red then green; check exit 0. Two questions.
 - **Batch 36 (#2756)** (report `home/reports/2026-11-08-36.md`): folded into PR 2755. TS_Main pinned only at layer 6 (`tsParkingLotsUrl`); construction stays pinned because dev's MapServer returns no geometry. Red then green; check exit 0. Two questions.
