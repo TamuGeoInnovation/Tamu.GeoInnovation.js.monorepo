@@ -75,7 +75,7 @@ export const DEVELOPMENT_ONLY_CONTROLS: Array<{
     // main map's on production too, so it can never be on `DEVELOPMENT_ONLY_SERVICES`. The map's own gate is proven
     // by the route check below; this proves the link is not offered (#2742, #2769).
     name: 'the Sustainable Transportation map in the Transportation section',
-    selector: 'a.map-entry[href="/parking/sustainable-transportation"]',
+    selector: 'a.map-entry[href="/transportation/sustainable-transportation"]',
     page: '/all-maps/transportation',
     reason: '#2742: development-only while the bike layers are reworked'
   }
@@ -153,7 +153,7 @@ export const DEVELOPMENT_ONLY_SERVICES: Record<
   // development requests it from `/map` unprompted and production, which must not, is checked there.
   'Hosted/Micromobility_Map_WFL1_view/FeatureServer': {
     reason: '#2712, #2739: the Micromobility draft map, and its layers on the main map',
-    pages: ['/parking/micromobility', '/map']
+    pages: ['/transportation/micromobility', '/map']
   },
   // The NCAA Volleyball 1st & 2nd Round map (#2713), published on the development GIS server only and kept off
   // production by `developmentOnly` until Texas A&M is announced as a host on 29 November. Named on that server

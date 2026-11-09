@@ -37,7 +37,7 @@ import { Connections } from '../../../libs/aggiemap/ngx/common/src/lib/connectio
  * A map's route. `/map/d/<panel>` is the main map opened on one of its panels and listed as a map of its own, such as
  * the bus map, `/map/d/bus` (#2743).
  */
-const MAP_ROUTE = /^\/((events|parking|operations|campus|kiosk)\/|map\/d\/[a-z-]+$)/;
+const MAP_ROUTE = /^\/((events|parking|transportation|operations|campus|kiosk)\/|map\/d\/[a-z-]+$)/;
 
 /**
  * Whether a listed map is the main map opened on one of its panels, such as the bus map, `/map/d/bus` (#2743). Its layers
@@ -139,7 +139,7 @@ export default async function globalSetup(): Promise<void> {
       // `maps.spec.ts` catches the case where too many come back empty.
       await gotoAndWaitForLinks(
         detailPage,
-        'a[href^="/events/"], a[href^="/parking/"], a[href^="/operations/"], a[href^="/campus/"], a[href^="/kiosk/"], a[href^="/map/d/"]',
+        'a[href^="/events/"], a[href^="/parking/"], a[href^="/transportation/"], a[href^="/operations/"], a[href^="/campus/"], a[href^="/kiosk/"], a[href^="/map/d/"]',
         false
       );
 
