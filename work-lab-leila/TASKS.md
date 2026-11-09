@@ -6727,3 +6727,52 @@ This is small; it can share #2764's pull request or go in its own. Say which you
 ### The report
 
 `work-lab-leila/reports/<date>-21.md`, and say **"report ready: <file>"**.
+
+## Batch 22 (8 November 2026, from `work (aggiemap)`) — #2771, and a decision to put in the code (Medium)
+
+**Batch 21 is [PR 2772](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2772), open and
+ready.** Two things from it worth naming.
+
+**You caught my mistake and said so.** I dated your batch "9 November"; it was 8 November Central, and I had read a
+UTC clock — the exact trap `CLAUDE.md` documents. You noticed, corrected your own comment, and told me. That is worth
+more than the batch.
+
+**I changed one clause of your comment**, and you should know why. It said development "left them out for a while
+after #2530's republish". Nobody measured that: the only evidence is the previous comment, which may have been wrong
+when written. In a change about a comment asserting something untrue, the replacement must not do the same, so it now
+says the earlier claim's truth is unrecorded. Your measurement itself — identical object ids, geometry to five
+decimals, the `type`/`Type` case — was exactly right and is all in the pull request.
+
+### 1. [#2771](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2771): a check that cannot fail (Medium, the maintainer's call)
+
+Home found it: `legend.spec.ts` line 270 has **two literal backspace characters where `\b` belongs**, so its
+`not.toHaveClass(/visible/)` can never fail. It is already on `development`, and it is the only file in the suite
+carrying a control character.
+
+**Fix the escape, then find out what it was hiding.** A vacuous assertion is not the interesting part — what the
+legend has been doing unchecked is. Run it corrected against dev and production and say what you find. If it passes
+everywhere, say that too; "the check was empty and the behaviour was fine" is a real result.
+
+**Worth a glance while you are there:** whether anything else in the suite carries a control character, and whether a
+check could catch that class generally. Say what you think rather than building it unasked.
+
+### 2. Record a decision in the code: the bus map keeps `/map/d/bus`
+
+[#2767](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2767) moved the Transportation
+maps to `/transportation/<id>` ([PR 2773](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2773)).
+**The bus map stays at `/map/d/bus`**, decided by the maintainer on 8 November 2026, on home's argument and mine:
+
+> `transportation` is a section, not a kind of map. The bus map is a panel of the main map — its layers and sidebar,
+> with the bus tab open, like `/map/d/trip` for directions. Its address says where it is, which is true. The two
+> event maps were wrong because `/parking/` claimed a kind they are not; `/map/d/bus` claims nothing false.
+
+**Put that where the next person will stand when they ask "why isn't the bus map under /transportation/?"** —
+`mapSegment`'s docblock in `ts-events-ngx`, or the bus entry in `MainMapDiscoverApplications`, whichever you judge
+better. Say which and why.
+
+It is one comment. It matters because this is the third time tonight a decision existed only in a conversation, and
+twice the code later contradicted it.
+
+### The report
+
+`work-lab-leila/reports/<date>-22.md`, and say **"report ready: <file>"**.
