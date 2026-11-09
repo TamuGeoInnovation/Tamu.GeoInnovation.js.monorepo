@@ -122,13 +122,13 @@ const SOURCE_CASES: Record<string, SourceCase> = {
   },
   'all-parking': {
     kind: 'service',
-    url: `${connections.tsMainUrl}/6`,
+    url: connections.tsParkingLotsUrl,
     usedBy: 'Directions, drive mode',
     layerName: /^Parking Lots$/
   },
   'visitor-parking': {
     kind: 'service',
-    url: `${connections.tsMainUrl}/6`,
+    url: connections.tsParkingLotsUrl,
     usedBy: 'Directions, drive mode',
     layerName: /^Parking Lots$/
   },

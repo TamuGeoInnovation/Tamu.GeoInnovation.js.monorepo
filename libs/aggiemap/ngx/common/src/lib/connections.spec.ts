@@ -1,4 +1,12 @@
-import { Connections, IComposedConnections, readsDevelopmentGisServer } from './connections';
+import type { LayerSource } from '@tamu-gisc/common/types';
+
+import {
+  Connections,
+  IComposedConnections,
+  markReadFromProduction,
+  READ_FROM_PRODUCTION_ON_DEVELOPMENT,
+  readsDevelopmentGisServer
+} from './connections';
 
 /**
  * Where the Men's Basketball map reads its layers from (#1749, then #2143).
@@ -87,39 +95,6 @@ describe('readsDevelopmentGisServer', () => {
   });
 });
 
-const NO_HOSTED_VIEW_ON_DEVELOPMENT =
-  "the development server has only the older MapServer the hosted view replaced, which lacks objectid (the search sources and share links are built on it) and the view's other fields";
-const RETIRED = 'a retired 150th-anniversary event, with no counterpart on the development server';
-
-/**
- * Transportation's services that a development build still reads from production, each with why (#2653). This is the
- * list to take to Transportation: publish the hosted view on the development server and the map becomes testable
- * there. Measured 5 November 2026 against both hosts, by layer id, layer name and field list.
- */
-const READ_FROM_PRODUCTION_ON_DEVELOPMENT: Partial<Record<keyof IComposedConnections, string>> = {
-  tsMainUrl:
-    'layer 6 on the development server lacks the GIS.TS.SPC_PNT_CNT.* space counts, which the parking search and drive directions read',
-  accessibleParkingUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
-  beefCattleUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
-  constructionUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
-  familyWeekendUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
-  fireSchoolUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
-  gamesOfTexasUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
-  maroonWhiteGameUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
-  moveInParkingUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
-  ms150Url: NO_HOSTED_VIEW_ON_DEVELOPMENT,
-  ringDayUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
-  summerCommencementUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
-  tCampUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
-  fourHRoundupUrl:
-    'the development server has the hosted view but answers 499 "Token Required", so a development build cannot read it (#2695)',
-  micromobilityUrl: 'the development server answers 499 "Token Required" (#2712)',
-  kickoff150thUrl: RETIRED,
-  kickoffAtKyleUrl: RETIRED,
-  liveAtTheStationUrl: RETIRED,
-  spiritOf150WeekUrl: RETIRED
-};
-
 /**
  * A development build reads Transportation's development services (#2653). The failure this guards against is not a
  * wrong address but a right one nobody revisited: the transportation host was pinned to production while the
@@ -139,10 +114,10 @@ describe("Transportation's services on a development build (#2653)", () => {
     ).toEqual([]);
   });
 
-  it('lists only services a development build still reads from production', () => {
+  it('reads every listed service from production on a development build', () => {
     const listed = Object.keys(READ_FROM_PRODUCTION_ON_DEVELOPMENT) as Array<keyof IComposedConnections>;
 
-    expect(listed.filter((key) => !onProductionHost(development[key]))).toEqual([]);
+    expect(listed.filter((key) => development[key] !== production[key])).toEqual([]);
   });
 
   it("reads production's TS_Events services from the development server's TS folder", () => {
@@ -182,5 +157,74 @@ describe("Transportation's services on a development build (#2653)", () => {
     expect(development.busRoutesUrl).toBe(
       'https://gis.dev.tamu.edu/arcgis/rest/services/Hosted/Bus_Routes_view/FeatureServer'
     );
+  });
+});
+
+/**
+ * The bike map on a development build (#2744). `TS/BikeMap` is on the development server, but it answers 499 "Token
+ * Required", which the ArcGIS client reports as "Service not found" - so six layers on dev's main map drew nothing, and
+ * the smoke suite allowed it for a year as #1005.
+ */
+describe('the bike map on a development build (#2744)', () => {
+  const development = Connections('gis-dev.it.tamu.edu');
+
+  it('reads the bike map and bike racks from production', () => {
+    expect(development.bikeMapUrl).toBe('https://gis.it.tamu.edu/arcgis/rest/services/TS/BikeMap/MapServer');
+    expect(development.bikeRacksUrl).toBe('https://gis.it.tamu.edu/arcgis/rest/services/TS/BikeMap/MapServer/1');
+  });
+});
+
+/** The Layers list's marker for a layer read from production, which comes from the list the pin does (#2744). */
+describe('markReadFromProduction (#2744)', () => {
+  const development = Connections('gis-dev.it.tamu.edu');
+  const sources = [
+    { type: 'feature', id: 'campus-bike-lanes', url: `${development.bikeMapUrl}/3` },
+    { type: 'feature', id: 'departments', url: development.departmentUrl },
+    { type: 'group', id: 'bikes', sources: [{ type: 'feature', id: 'bike-racks', url: development.bikeRacksUrl }] }
+  ] as LayerSource[];
+  const marked = (list: LayerSource[]) =>
+    list.flatMap((source): string[] => [
+      ...(source.readFromProduction ? [source.id] : []),
+      ...marked((source as { sources?: LayerSource[] }).sources ?? [])
+    ]);
+
+  it("marks every layer of a listed service with the list's reason, and a group holding one", () => {
+    const result = markReadFromProduction(sources, 'gis-dev.it.tamu.edu');
+
+    expect(marked(result)).toEqual(['campus-bike-lanes', 'bikes', 'bike-racks']);
+    expect(result[2].readFromProduction).toBe(READ_FROM_PRODUCTION_ON_DEVELOPMENT.bikeRacksUrl);
+    expect(result[0].readFromProduction).toBe(READ_FROM_PRODUCTION_ON_DEVELOPMENT.bikeMapUrl);
+  });
+
+  it('marks nothing on production, where nothing is read from production for want of a development service', () => {
+    expect(markReadFromProduction(sources, 'gis.it.tamu.edu')).toBe(sources);
+  });
+});
+
+/**
+ * Pins are as narrow as their reasons (#2756). TS_Main was pinned whole because one of its eight layers lacks the space
+ * counts, which took Visitor Parking and six other layers that match production field for field out of development
+ * testing. Nobody noticed until the Layers list marked them.
+ */
+describe('pins as narrow as their reasons (#2756)', () => {
+  const production = Connections('gis.it.tamu.edu');
+  const development = Connections('gis-dev.it.tamu.edu');
+
+  it("reads TS_Main from the development server, and only its Parking Lots layer from production", () => {
+    expect(development.tsMainUrl).toBe('https://gis.dev.tamu.edu/arcgis/rest/services/TS/TS_Main/MapServer');
+    expect(development.tsParkingLotsUrl).toBe(production.tsParkingLotsUrl);
+    expect(production.tsParkingLotsUrl).toBe('https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/TS_Main/MapServer/6');
+  });
+
+  it('marks Parking Lots and not the rest of TS_Main', () => {
+    const marked = markReadFromProduction(
+      [
+        { id: 'visitor-kiosks', url: `${development.tsMainUrl}/4` },
+        { id: 'parking-lots', url: development.tsParkingLotsUrl }
+      ],
+      'gis-dev.it.tamu.edu'
+    );
+
+    expect(marked.filter((source) => source.readFromProduction).map((source) => source.id)).toEqual(['parking-lots']);
   });
 });
