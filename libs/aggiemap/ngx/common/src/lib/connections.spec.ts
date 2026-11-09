@@ -179,7 +179,7 @@ describe('markReadFromProduction (#2744)', () => {
   const development = Connections('gis-dev.it.tamu.edu');
   const sources = [
     { type: 'feature', id: 'campus-bike-lanes', url: `${development.bikeMapUrl}/3` },
-    { type: 'feature', id: 'emergency-phones', url: `${development.inforUrl}/4` },
+    { type: 'feature', id: 'departments', url: development.departmentUrl },
     { type: 'group', id: 'bikes', sources: [{ type: 'feature', id: 'bike-racks', url: development.bikeRacksUrl }] }
   ] as LayerSource[];
   const marked = (list: LayerSource[]) =>
