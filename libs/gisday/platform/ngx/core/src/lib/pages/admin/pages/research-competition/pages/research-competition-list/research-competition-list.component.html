@@ -36,7 +36,7 @@
             </ng-template>
           </ngx-datatable-column>
 
-          <ngx-datatable-column name="Name" prop="title" [width]="220"></ngx-datatable-column>
+          <ngx-datatable-column name="Name" prop="title" [width]="205"></ngx-datatable-column>
 
           <ngx-datatable-column name="Submitted" prop="created" [width]="115">
             <ng-template let-row="row" ngx-datatable-cell-template>{{row.created | date: 'MMM d, h:mm a'}}</ng-template>
@@ -56,7 +56,7 @@
             </ng-template>
           </ngx-datatable-column>
 
-          <ngx-datatable-column name="Type" prop="submissionType" [width]="90">
+          <ngx-datatable-column name="Type" prop="submissionType" [width]="80">
             <ng-template let-row="row" ngx-datatable-cell-template>{{row.submissionType | titlecase}}</ng-template>
           </ngx-datatable-column>
 
@@ -64,7 +64,7 @@
             <ng-template let-row="row" ngx-datatable-cell-template>{{row.format | titlecase}}</ng-template>
           </ngx-datatable-column>
 
-          <ngx-datatable-column name="Classification" prop="classificationType" [width]="140">
+          <ngx-datatable-column name="Classification" prop="classificationType" [width]="165">
             <ng-template let-row="row" ngx-datatable-cell-template>{{row.classificationType | titlecase}}</ng-template>
           </ngx-datatable-column>
 
