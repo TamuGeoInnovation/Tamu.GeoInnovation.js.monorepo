@@ -6776,3 +6776,72 @@ twice the code later contradicted it.
 ### The report
 
 `work-lab-leila/reports/<date>-22.md`, and say **"report ready: <file>"**.
+
+## Batch 23 (9 November 2026, from `work (aggiemap)`) — #2775: the suite builds Transportation addresses the old way (High)
+
+**The dev release is held on this one task.** The maintainer's decision, 5:35 AM Central: the `dev-*` tag waits until
+#2775 is fixed and the two moved maps are actually covered. Nothing else in this batch.
+
+### What happened
+
+Tonight's quick tier ran to clear the build that moved the Transportation maps, and **did not cover the two maps it
+moved**. 880 passed, 8 failed; five of the eight were already failing in last night's nightly, so the build is probably
+fine. But the two maps at the centre of it got their whole-file specs and **no route-scoped runs at all** in
+`maps.spec.ts`, `framing.spec.ts`, `map-layers.spec.ts`, `parking-spaces.spec.ts` or `event-dates.spec.ts`.
+
+### Why
+
+[PR 2773](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2773) gave the application one
+answer to "what segment is this map at" — `mapSegment(discover)` in `libs/ts/events/ngx/src/lib/guards/map-address/map-address.guard.ts`:
+the **section** (`mapType`/`mapTypes` containing `transportation`) wins, and only then the `type`.
+
+`test/smoke/aggiemap/definitions.ts` still has the old rule, twice over: `parseDefinition` reads only
+`type: '...'` out of the discover block, and `SECTION_BY_TYPE` is a second copy of the `event → events`,
+`satellite-campus → campus` mapping. So it builds `/parking/micromobility` and
+`/parking/sustainable-transportation`, which no longer exist.
+
+**The crawl is unaffected** — it discovers maps by reading the site's own links, and found 83. The damage is in
+`test/smoke/aggiemap/scope.ts`, which builds the quick tier's route filter from `definedMaps()`. A route that matches
+nothing silently narrows the run instead of failing it.
+
+### The work
+
+**1. Prove it red first.** A test that fails on today's code because the two maps' addresses come back wrong. It is
+cheap here: `definedMaps()` is pure, reads the files off disk, and needs no browser.
+
+**2. Then fix it — and decide how.** This is the repository's reuse rule, and the honest reading is that
+`mapSegment`'s rule now exists in two places, which is the exact fault #2767 was about, one level out.
+
+- **a. Move `mapSegment` into a module with no Angular import and have the suite call it ← my recommendation.** One
+  function, one rule, and the drift cannot happen again. The blocker to check first: `map-address.guard.ts` imports
+  `@angular/core` and `@angular/router` at the top, so the Playwright run cannot import that file today. If the
+  function moves to its own dependency-free file that the guard re-exports, both sides can use it. **Check whether the
+  suite's tsconfig can reach `libs/` at all** before committing to this — if it cannot, say so and take (b).
+- b. Teach `parseDefinition` to read `mapType`/`mapTypes` by regex as well, and collapse `SECTION_BY_TYPE` into the
+  same shape `mapSegment` uses. Honest, smaller, and leaves two copies — so if you take it, add a check that fails
+  when they disagree.
+
+**Say which you took and why.** If (a) turns out to be possible, it is worth more than the bug.
+
+**3. Prove the coverage came back.** After the fix, the quick tier's chosen routes must include
+`/transportation/micromobility` and `/transportation/sustainable-transportation`. The run prints its set before the
+first test — paste that line. Then run `one` on dev for the two maps and report what the route-scoped specs say about
+them, because nothing has ever run them at their new addresses.
+
+**4. While you are there, a question, not a task:** does anything typecheck or lint `test/smoke/aggiemap/`? If the
+answer is no, that is why a stale mapping survived four files' worth of updates in #2767, and it is worth a sentence in
+your report. Do not build it.
+
+### The branch
+
+`fix/2775-smoke-map-addresses` from `origin/development` (`566a39d78`), pushed to the fork, with a `.pr-body.md`
+draft as the last commit. No pull request, no tags — I open the PR.
+
+### For your report
+
+The five pre-existing failures, so you do not chase them: `/events/graduation-fall` layers never finishing (3 specs),
+`nature-rx` and `nature-rx-exact` having no case in `search-sources.spec.ts`'s `SOURCE_CASES`, and
+`/map/d?bldg=0468`'s second popup. Two more are being checked against production separately and are not yours:
+`/parking/avp-parking`'s popup and the football tailgating kiosk drawing `tailgating-restrooms`.
+
+`work-lab-leila/reports/2026-11-09-23.md`, and say **"report ready: <file>"**.
