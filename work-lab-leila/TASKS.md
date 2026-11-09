@@ -7126,3 +7126,53 @@ check's exit code.
 ### The report
 
 `work-lab-leila/reports/<date>-28.md`, **"report ready"**, branch to the fork, `.pr-body.md` last, no pull request.
+
+## Batch 29 (9 November 2026, from `work (aggiemap)`) — #2778: the standing click grid, across every map (Urgent)
+
+**Take this when #2791 and #2792 are pushed.** The maintainer set #2778 Urgent this morning and it has been overtaken
+by events all day; it is now the only Urgent thing unassigned.
+
+### What exists already, and must not be duplicated
+
+`test/smoke/aggiemap/building-clicks.spec.ts` shipped in [PR 2786](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2786) and was extended in
+[PR 2795](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2795). It already does the hard parts, on **three** maps (`/map/d`,
+`/parking/avp-parking/map/d`, `/events/nsc-parking`):
+
+- takes buildings from the layer's own geometry and converts each centroid with `view.toScreen`, so a click is the
+  middle of a named building wherever the framing puts it — **not** a fraction of the viewport;
+- asserts the visible popup names **the building just clicked**;
+- asserts `view.hitTest` finds the layer, which is the assertion that caught a dead layer being answered by
+  `queryPopupLayersAtClick`'s fallback;
+- fails the run if **any** buildings query failed, which nothing had ever checked because they return HTTP 200 with the
+  error in the body.
+
+**Extend it. Do not write a second click spec.** The repository's standing rule is reuse before building, and two click
+specs is exactly the shape of fault that gave us two copies of the map-address rule (#2775).
+
+### What #2778 asks for beyond that
+
+**The maintainer's requirement, in his words:** *"Map clicking to select features on the map needs to work on all maps,
+not just the main map."* So the grid has to cover the maps a visitor actually uses, not three chosen by hand.
+
+1. **Decide which maps, and say why.** The crawl discovers 83. Clicking buildings on all of them every run is probably
+   too slow — say what it costs, then propose the set: all of them at a slower tier, a sample per section, or every map
+   that declares a buildings layer. **Measure before choosing.**
+2. **Not only buildings.** The fault the maintainer reported was buildings, but the requirement is features. Parking
+   lots are clickable on the event maps; say whether the same method works for a lot layer and whether it belongs in
+   this spec or beside it.
+3. **A rate, not a pass.** #2778 asks for "21 of 24 points opened the expected popup", and a threshold that fails rather
+   than a single miss ending the run. The three-map version is all-or-nothing; across 83 that will be too brittle.
+4. **The framing has to be pinned or read, not assumed.** `popup.spec.ts`'s `?bldg=0468` sequence is red today because
+   it clicks a viewport fraction and lands in Evans Library — the exact fault this spec exists to avoid.
+
+### Watch for
+
+- **A check that skips is worse than one that fails.** You found that in `bus.spec.ts`; home hit it in #2788. If a map
+  has no buildings in view, the spec must say so and not quietly pass.
+- **Do not sample the rows a filter removes.** Two machines lost two hours to that this morning (#2794): `queryFeatures`
+  with no `where` returns `objectid` order, and on the buildings layer the low ids are the 981 unnumbered rows that
+  `number IS NOT NULL` exists to drop. Take named buildings deliberately.
+
+### The report
+
+`work-lab-leila/reports/<date>-29.md`, **"report ready"**, branch to the fork, `.pr-body.md` last, no pull request.
