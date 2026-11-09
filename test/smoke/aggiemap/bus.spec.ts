@@ -25,8 +25,9 @@ import { smokeBaseUrl } from './gis-hosts';
  * Drawn graphics are read through the map probe's `graphicTypes` for the bus routes layer: the line is
  * tagged `route` and each stop `waypoints`.
  *
- * Where bus routes are not offered (production, until the maintainer moves them there; #1229) the panel
- * shows a notice instead, and these tests skip. They start checking there as soon as routes appear.
+ * Bus routes are offered on every environment since #2789. They were development-only until then (#1229), and these
+ * tests skipped where the panel showed its "unavailable" notice instead; that notice now fails them, so a gate put
+ * back cannot pass unseen.
  */
 
 const BASE_URL = smokeBaseUrl();
@@ -100,7 +101,9 @@ async function openBusPanel(page: Page): Promise<Locator> {
   const notice = page.locator(BUS_NOTICE);
 
   await expect(routes.first().or(notice)).toBeVisible({ timeout: 60_000 });
-  test.skip(await notice.isVisible(), 'bus routes are not offered on this environment yet');
+  // Offered on every environment since #2789, so the panel's "unavailable" notice is a regression, not a reason to
+  // skip: skipping is how a gate put back would go unnoticed.
+  expect(await notice.isVisible(), 'the bus panel says bus routes are unavailable here (#2789)').toBe(false);
 
   return routes;
 }
