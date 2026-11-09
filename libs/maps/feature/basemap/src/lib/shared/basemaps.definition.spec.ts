@@ -54,7 +54,7 @@ describe('campus basemap', () => {
     expect(urlsOf(resolve(true)).some((url) => url.includes(VECTOR_SERVICE))).toBe(true);
   });
 
-  it('offers production the vector basemap and the raster one, and development every published version (#1582, #2515)', () => {
+  it('offers production the vector basemap alone, and development every published version (#1582, #2515)', () => {
     const gallery = (definitions as unknown as Record<string, unknown>)['aggiemapGalleryBasemaps'] as
       ((isTesting: boolean) => Array<Basemap & { id: string; title: string }>) | undefined;
     const resolve = (definitions as unknown as Record<string, (isTesting: boolean) => Basemap>)['aggiemapBasemap'];
@@ -62,16 +62,15 @@ describe('campus basemap', () => {
     expect(gallery).toBeInstanceOf(Function);
     if (!gallery) return;
 
-    // Production: the vector basemap first, which the map opens on, and the raster one it showed until #2515, so a
-    // visitor who finds the new one harder to read has a way back, and a problem with it can be worked around without a
-    // release. Nothing dated or development-only.
+    // Production: the vector basemap, which the map opens on, and nothing else. The raster one it showed until #2515
+    // was offered as a way back until the maintainer abandoned its service on 9 November 2026: nothing on production is
+    // to read it. Nothing dated or development-only either.
     const production = gallery(false);
 
     expect(production[0]).toEqual(resolve(false));
-    expect(production.map((basemap) => basemap.title)).toEqual(['Aggieland', 'Aggieland raster']);
+    expect(production.map((basemap) => basemap.title)).toEqual(['Aggieland']);
     expect(urlsOf(production[0]).some((url) => url.includes(VECTOR_SERVICE))).toBe(true);
-    expect(urlsOf(production[1])).toEqual(urlsOf(definitions.AggiemapRasterBasemap as unknown as Basemap));
-    expect(new Set(production.map((basemap) => basemap.id)).size).toBe(production.length);
+    expect(production.flatMap(urlsOf)).not.toContain(urlsOf(definitions.AggiemapRasterBasemap as unknown as Basemap)[0]);
 
     const dev = gallery(true);
 
@@ -88,13 +87,13 @@ describe('campus basemap', () => {
     // The gallery marks the active basemap, and restores a saved one, by id.
     expect(new Set(dev.map((basemap) => basemap.id)).size).toBe(dev.length);
 
-    // The raster basemap production shows is among them, so it can be seen drawn before a release. It
-    // is found by title rather than by position, so adding a version above it cannot quietly point
-    // this at something else (#2436 added the October vector cache at index 1).
-    const productionRaster = dev.find((basemap) => basemap.title === 'Aggieland raster, October 2026');
+    // The current raster basemap stays on development, for comparing versions. It is found by title rather than by
+    // position, so adding a version above it cannot quietly point this at something else (#2436 added the October
+    // vector cache at index 1).
+    const currentRaster = dev.find((basemap) => basemap.title === 'Aggieland raster, October 2026');
 
-    expect(productionRaster).toBeDefined();
-    expect(urlsOf(productionRaster as Basemap)).toEqual(urlsOf(production[1]));
+    expect(currentRaster).toBeDefined();
+    expect(urlsOf(currentRaster as Basemap)).toEqual(urlsOf(definitions.AggiemapRasterBasemap as unknown as Basemap));
 
     // Both vector caches are offered, so the new one can be compared with the one it replaces.
     expect(urlsOf(dev[0]).some((url) => url.includes('Hosted/VTBase3/VectorTileServer'))).toBe(true);
@@ -135,9 +134,20 @@ describe('campus basemap', () => {
     expect(raster(true).title).toBe('Aggieland raster, October 2026');
     expect(gallery(true)).toContainEqual(raster(true));
 
-    // On production it is the gallery's raster entry, so the panel marks it there too (#2515).
-    expect(gallery(false)).toContainEqual(raster(false));
+    // On production it is not offered, so the panel marks nothing while it shows. It is still the raster basemap.
+    expect(gallery(false)).not.toContainEqual(raster(false));
     expect(urlsOf(raster(false))).toEqual(urlsOf(exported['AggiemapRasterBasemap'] as Basemap));
+  });
+
+  it('turns a raster choice saved on production before it left the gallery into the vector basemap', () => {
+    const exported = definitions as unknown as Record<string, unknown>;
+    const forSavedId = exported['basemapForSavedId'] as (id: string, isTesting: boolean) => Basemap | string;
+    const raster = exported['aggiemapRasterBasemap'] as (isTesting: boolean) => Basemap & { id: string };
+    const resolve = exported['aggiemapBasemap'] as (isTesting: boolean) => Basemap;
+
+    // A visitor who chose Aggieland raster on production has `aggie_basemap_raster` saved. It must open the map on the
+    // campus basemap production offers, not on the abandoned service, and not on a bare id ArcGIS cannot draw.
+    expect(forSavedId(raster(false).id, false)).toEqual(resolve(false));
   });
   it('turns a saved Aerial Imagery choice back into the Nearmap basemap, on every environment (#1692)', () => {
     const exported = definitions as unknown as Record<string, unknown>;
