@@ -14,6 +14,11 @@ export const MainMapDiscoverApplications: InternalDiscoverApplication[] = [
     description: 'Every AggieSpirit route and its stops, on the campus map.',
     source: 'internal',
     type: 'main-map',
+    // Not `/transportation/bus`, though it is listed under Transportation, where #2767 moved the Transportation maps.
+    // Transportation is a section of All Maps, not a kind of map: this is a panel of the main map, its layers and sidebar
+    // with the bus tab open, as `/map/d/trip` is for directions, and its address says so truthfully. The maps #2767 moved
+    // were wrong because `/parking/` claimed a kind they are not; `/map/d/bus` claims nothing false. Decided by the
+    // maintainer, 8 November 2026.
     route: ['/map', 'd', 'bus'],
     mapTypes: ['transportation'],
     // Development-only, as the Bus Routes panel is (`DEVELOPMENT_ONLY_SECTIONS`). Its service is public on production
