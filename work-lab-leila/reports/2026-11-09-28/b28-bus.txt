@@ -1,0 +1,26 @@
+development (gis.dev.tamu.edu): layers ["0 Bus Stops","1 Bus Routes"], 23 routes, 212 stops
+production (arc.ts.tamu.edu): layers ["0 Bus Stops","1 Bus Routes"], 23 routes, 212 stops
+route | name | campus | dev listed/tagged | prod listed/tagged | prod verdict
+01 | Bonfire | On | 16/21 | 16/21 | 5 more tagged
+03 | Yell Practice | On | 14/21 | 14/21 | 7 more tagged
+04 | Gig 'Em | On | 11/39 | 11/39 | 28 more tagged
+05 | Bush School | On | 16/20 | 16/20 | 4 more tagged
+06 | 12th Man | On | 12/12 | 12/12 | ok
+07 | Airport | On | 11/11 | 11/11 | ok
+08 | Howdy | On | 9/9 | 9/9 | ok
+12 | Reveille | Off | 25/25 | 25/25 | ok
+15 | Old Army | Off | 19/19 | 19/19 | ok
+15R | Old Army - Friday | Off | 17/0 | 17/0 | NO STOPS TAGGED
+22 | Excel | Off | 18/18 | 18/18 | ok
+26 | Rudder | Off | 23/23 | 23/23 | ok
+27 | Ring Dance | Off | 23/23 | 23/23 | ok
+31 | Elephant Walk | Off | 8/8 | 8/8 | ok
+34 | Fish Camp | Off | 10/10 | 10/10 | ok
+35 | Hullabaloo | Off | 14/14 | 14/14 | ok
+36 | Matthew Gaines | Off | 14/14 | 14/14 | ok
+40 | Century Tree | Off | 16/22 | 16/22 | 6 more tagged
+41 | Good Bull | Off | 18/25 | 18/25 | 7 more tagged
+47 | RELLIS | Off | 31/30 | 32/30 | 2 fewer tagged
+NW0104 | Gig 'Em Night/Wknd | On | 20/0 | 20/0 | NO STOPS TAGGED
+NW0305 | Bush Night | On | 12/0 | 12/0 | NO STOPS TAGGED
+NW4041 | NW4041 | Off | 20/0 | 20/0 | NO STOPS TAGGED
