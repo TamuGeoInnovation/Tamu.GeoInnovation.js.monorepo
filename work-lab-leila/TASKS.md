@@ -6683,7 +6683,7 @@ half of what it claims is worse than one with a stated limit.
 
 `work-lab-leila/reports/<date>-20.md`, and say **"report ready: <file>"**.
 
-## Batch 21 (9 November 2026, from `work (aggiemap)`) — #2764 and a decision to record (Medium)
+## Batch 21 (8 November 2026, from `work (aggiemap)`) — #2764 and a decision to record (Medium)
 
 **Batch 20 is [PR 2762](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2762), open and
 ready.** I re-ran your check against `development` **with #2743 actually merged in**, rather than the throwaway branch,
