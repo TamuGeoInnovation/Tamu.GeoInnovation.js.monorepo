@@ -3413,3 +3413,61 @@ it.
 >
 > **The spec still comes with it**, as agreed: correctness gates, per-click time only recorded, and a gating assertion
 > that no buildings query failed - the HTTP 200 failures are the thing nothing has ever checked.
+
+## Batch 41 (9 November 2026, from `work (aggiemap)`) — the rest of the feature layers off `TAMU_Basemap_20261008` (High, do now)
+
+**Batch 40 is open as [PR 2786](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2786).** The
+body is yours almost unchanged; both image links verified 200 before it went up. The red being *observed* rather than
+forced, and every miss landing inside a failed query's envelope, is what makes it an argument rather than a claim.
+
+### Your questions, answered
+
+1. **#2785 recovery: A, your recommendation** — retry an error-body query in a request interceptor, with the lab's
+   `hasAllFeaturesInView` fallback as the second line. A lost tile is features missing from the *map*, not only from
+   the hit test, and only a retry fixes both. **Not yours and not now**: the lab is building the fallback, and the
+   retry goes on #2785 as a comment for whoever takes it.
+2. **`popup.spec.ts`'s `?bldg=0468` sequence: A**, rewrite it to take its buildings from the layer's geometry. **Not
+   now** — it is red for a reason we understand and it is not this fault.
+3. **The campus click overlays: A**, the fill back with its reason and the false comment corrected, its own pull
+   request. **Not now.** It is a real visual regression on ten campuses and it is queued, not forgotten.
+4. **The rest of the service: A, and it is this batch.**
+
+### The work
+
+**The maintainer has said twice that nothing is to point at `TAMU_Basemap_20261008/MapServer`.** Batch 40 moved the
+buildings. This batch moves the remaining feature layers.
+
+| Old | Used by | New |
+| --- | --- | --- |
+| `/9` Surface Parking | `main.definitions.ts`, `search-sources.ts` | `VTBase3/FeatureServer/6` Surface Parking |
+| `/12` Wall Area | `ues-operations-angular` definitions | `VTBase3/FeatureServer/9` Wall Area |
+| `/0` Garage Parking (10 rows) | `search-sources.ts`, `ues-operations` | **unknown — establish it** |
+| `/2` University Building (1802 rows) | `basemaps.definition.ts` | probably `VTBase3/FeatureServer/0` — **establish the filter** |
+
+**Ask the service for each, as batch 40 did.** The two unknowns are the work:
+
+- **The 10 garages.** `VTBase3/FeatureServer/7` "Private Parking Lot" has 14 rows and is not obviously it. They may sit
+  inside Campus Structures. **If there is no equivalent, say so and stop at that layer** — a missing garage layer is a
+  data question for the GIS team, not something to approximate.
+- **University Building, 1802 rows, against Campus Structures' 1,984.** Batch 40 found `number IS NOT NULL` gives 1,003,
+  matching old `/1`. Find what gives 1,802, or say plainly that nothing does.
+
+**For each layer moved, as in batch 40:** the field case at every reader, the row count compared old against new and
+the reason written into the definition, and the symbology checked rather than assumed — the new service publishes
+opaque fills where the old one published invisible ones, and a layer that is drawn by the basemap needs the same
+near-invisible treatment `buildingsClickLayerNative` now documents.
+
+**Measure the new layers' failure rate** the way batch 40 did. The old service's Surface Parking failed 1.7%; if its
+replacement is clean, say so with numbers, because that is the argument for the move.
+
+### Not in this batch
+
+**The raster basemap and the GIS Day MapLibre tiles.** Those are the vector basemap switch, and they change what
+production *draws*. Your #1229 finding — VTBase3's VectorTileServer on production in wkid 102100, 23 levels, and the
+"State Plane, development only" record describing the old `Hosted/VTBase` — has gone to the maintainer as the one
+decision that is genuinely his. **Do not start it.**
+
+### The report
+
+`home/reports/<date>-41.md`, and say **"report ready: <file>"**. Branch to the fork, `.pr-body.md` last, no pull
+request.
