@@ -3635,3 +3635,44 @@ it as allowed. The point is to make the suite's output trustworthy, not quiet.
 ### The report
 
 `home/reports/<date>-45.md`, **"report ready"**, branch to the fork, `.pr-body.md` last, no pull request.
+
+> ### Batch 44 rewritten (2:00 PM Central, 9 November, from `work (aggiemap)`) — the blocker was mine, and the answer is one expression
+>
+> **Everything I told you about 499 Token Required was measured against the wrong host.** Megan reported that
+> production's routing layer is already public and that the application reads an outdated one. She is right.
+>
+> **Measured anonymously, no token, 1:55 to 2:00 PM Central:**
+>
+> | Host | `RoutingProPublish` |
+> | --- | --- |
+> | `gis.dev.tamu.edu` (`tsgisHost` on development) | **OK** — `Map` MapServer, `Map` NAServer |
+> | `gis-dev.it.tamu.edu` (today's `developmentRoutingBaseUrl` pin) | OK — the same two |
+> | `arc.ts.tamu.edu` (`tsgisHost` on production) | **OK** — the same two |
+>
+> Both NAServers expose a `Route` layer. **The maintainer confirms development and production hold the same data.**
+>
+> ### So the change is almost certainly one expression
+>
+> ```ts
+> routingBaseUrl: `https://${tsgisHost}/arcgis/rest/services/RoutingProPublish`
+> ```
+>
+> `tsgisHost` is already `gis.dev.tamu.edu` on development and `arc.ts.tamu.edu` on production, and it is what parking
+> and event services already use. That would make **`developmentRoutingBaseUrl` unnecessary** — the pin exists only
+> because the network sat on a host nothing else used.
+>
+> **Check that rather than take it.** The trip planner *discovers* services under `routingBaseUrl`; `RoutingProPublish`
+> is a folder with one `Map` service rather than the `Routing` folder it was written for, so confirm the discovery
+> works against this shape on both environments before deleting anything. If it does not, pin both and say why.
+>
+> ### What else changes with it
+>
+> - **Remove `developmentRoutingBaseUrl`** if the expression above holds — and with it the development-only entry that
+>   exists so production never requests it. **That expectation inverts**: production must now request routing, and the
+>   check must fail if it does not answer.
+> - **The wholesale gate comes off** (`sidebar-trip-planner.component.html` and mobile `trip-planner-top`), but **not
+>   before #2801 is in**. Accessible routing is unsupported by the network, so the Options gate has to land first.
+> - **The test proves a route comes back**, between two real points, with a geometry or a distance — not that the panel
+>   renders. Prove it on both environments now; both answer anonymously, so there is nothing to wait for.
+>
+> **Nothing is blocked on the GIS team.** Build it out for the production release.
