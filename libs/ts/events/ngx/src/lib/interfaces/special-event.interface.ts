@@ -656,7 +656,17 @@ export type AggiemapCustomMapConfiguration = ISpecialEventRoot | IGeneralMapRoot
  * Events", parking columns, quick links) - they are only ever surfaced in the dedicated,
  * development-only "Kiosk Maps" section. See `DiscoveryService.getKioskDiscoverApplications`.
  */
-export type DiscoverMapType = 'parking' | 'campus' | 'athletics' | 'operations' | 'satellite-campus' | 'kiosk' | '150';
+export type DiscoverMapType =
+  | 'parking'
+  | 'campus'
+  | 'athletics'
+  | 'operations'
+  | 'satellite-campus'
+  | 'kiosk'
+  | '150'
+  // Getting around campus rather than leaving a car somewhere: micromobility, buses and sustainable
+  // transportation (#2737).
+  | 'transportation';
 
 /**
  * Metadata used to represent a map in the Discover application.
