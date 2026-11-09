@@ -185,13 +185,22 @@ describe('campus basemap', () => {
   });
 
   it('is never named outside its definition, so every map resolves it by environment', () => {
+    // Two exceptions, each named. `campus-basemap.ts` declares the service's address once, as the campus services are
+    // declared there. And the GIS Day competition maps (`libs/maps/mapbox`) draw with MapLibre, which cannot take an
+    // ArcGIS basemap definition, so they take the address itself. Anywhere else, the constant names the service as
+    // surely as its address does.
+    const DECLARED = path.normalize('libs/common/datasets/geographic/src/lib/campus/campus-basemap.ts');
+    const MAPLIBRE = path.normalize('libs/maps/mapbox/');
+
     const offenders = sources()
-      .filter((file) => path.normalize(file) !== DEFINITION)
+      .filter((file) => path.normalize(file) !== DEFINITION && path.normalize(file) !== DECLARED)
       .filter((file) => {
         const text = fs.readFileSync(path.join(REPO_ROOT, file), 'utf8');
 
         return (
-          text.includes(VECTOR_SERVICE) || /\b(AggiemapBasemap|AggiemapVectorBasemap|AggiemapRasterBasemap\w*)\b/.test(text)
+          (!path.normalize(file).startsWith(MAPLIBRE) &&
+            (text.includes(VECTOR_SERVICE) || /\bTAMU_CAMPUS_VECTOR_BASEMAP_URL\b/.test(text))) ||
+          /\b(AggiemapBasemap|AggiemapVectorBasemap|AggiemapRasterBasemap\w*)\b/.test(text)
         );
       });
 
