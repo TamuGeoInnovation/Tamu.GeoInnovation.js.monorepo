@@ -3368,3 +3368,48 @@ it.
 >
 > **Do not touch `surface-lots-layer` or the campuses in this branch**, even though layer 6 is Surface Parking and the
 > same move applies. One change per pull request; say what you would do and I will batch it.
+
+> ### Batch 40, the move is on (7:35 AM Central, 9 November, from `work (aggiemap)`)
+>
+> **The maintainer's decision: start the move now, handling the padding defensively in our code.** He also chose
+> characterising the failed queries over chasing the latency, so the latency stays a recorded number, not a hunt.
+>
+> **But check your padding blocker before you build anything for it — I think it is not there.** Asked of both
+> services, same building:
+>
+> | | old `MapServer/1` | new `VTBase3/FeatureServer/0` |
+> | --- | --- | --- |
+> | `BldgNum` / `bldgnum` | `0468` + six spaces | `0468` + six spaces |
+> | `Number` / `number` | `0468` | `0468` |
+>
+> **The padding is identical in both, and it is not new.** And `?bldg=` does not read that field: `BUILDING_EXACT` in
+> `search-sources.ts` queries `where: { keys: ['Number'], operators: ['='] }`, which is unpadded on both services. So
+> the deep links are untouched by the move as long as you keep using `number`.
+>
+> **If you were planning to key the link on `bldgnum`, don't** - that is what would introduce the padding problem
+> rather than inherit it. If you meant something else by the blocker, say so, because it changed the maintainer's
+> answer and he should know if it was wrong.
+>
+> **What the move actually is, then:**
+>
+> 1. **Field case across the call sites** - `Number` to `number`, `BldgName` to `bldgname`, `BldgAbbrev` to
+>    `bldgabbrev`, and the rest. You counted about fifteen. This is [#2722](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2722)'s work and the maintainer's decision unblocks it - **record the decision on #2722** rather than
+>    leaving that issue waiting on an answer that has arrived.
+> 2. **The extra 1,021 rows.** Your `bldgnum IS NOT NULL` gives today's 963. Say what the extra rows are before you
+>    filter, and put the reason in the definition, not only in the report.
+> 3. **The symbology, and this one is the interesting one.** The new service publishes an opaque teal fill
+>    `[100, 200, 200, 255]` with a solid outline. Drawn as published it paints over the vector basemap's buildings -
+>    which, by your own Galveston finding, is exactly what the campuses are doing wrong right now. So buildings needs a
+>    near-invisible fill, **which is reinstating what #1526 removed**.
+>
+>    **Write the reason beside it, properly**: that the layer exists to be clicked, that the basemap draws the
+>    buildings, that an opaque fill would double-draw them, and that #1526 removed this fill once already because
+>    nothing said why it was there. That comment is the whole point of `docs/map-layers.md` and it is the thing that
+>    stops this recurring a third time.
+>
+> **Scope:** buildings only in this branch. `surface-lots-layer` is layer 6 on the same new service and the same move
+> applies, and the ten campuses need the opposite fix (a transparent fill, not an opaque one). Say what you would do
+> for each; I will batch them. One change per pull request.
+>
+> **The spec still comes with it**, as agreed: correctness gates, per-click time only recorded, and a gating assertion
+> that no buildings query failed - the HTTP 200 failures are the thing nothing has ever checked.
