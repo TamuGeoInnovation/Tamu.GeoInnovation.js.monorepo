@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle and listening (3:08 PM Central, 9 November). Batch 45 next.
+- **Batch 45 revised (#2778)**, started 3:10 PM Central, 9 November: taking over the lab's click grid; reading its handover first.
 
 ## Finished
 - **Batch 44 (#2804)** (report `home/reports/2026-11-09-44.md`): branch ready, `feat/2804-routing-on-production` on the fork at `e92dad5fb`, no PR. Network on `tsgisHost` (arc.ts.tamu.edu answers anonymously and routes); all #1003 gates off; network picker dev-only. Production build as production: directions 14/14, development-only 24/24, route via arc.ts. Full affected check exit 0 (14 projects). No questions.
