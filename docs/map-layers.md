@@ -157,6 +157,24 @@ drift apart in silence. The Men's Basketball layers were renamed in the service 
 calling them by their old names until somebody noticed the map was wrong ([#1431][1431]). Overriding
 the name is what made that possible.
 
+### How it is checked
+
+**Every title is declared in [`test/smoke/aggiemap/layer-title-overrides.json`][2731], with its reason**: the map
+(`main` for the layers every map loads), the layer id, the title and why. A unit test
+(`layer-title-overrides.spec.ts`) fails a `title` set in a definition with no matching entry, and an entry left behind
+after its title is gone. Groups, graphics and GeoJSON layers have no service to name them and are not listed.
+
+**The smoke suite then checks each map as it is served** (`maps.spec.ts`): every loaded layer shows either its
+service's name or its declared title. Each layer's verdict is in the test's annotations, including declared titles
+that are the service's name anyway and could come off.
+
+**A layer that did not load is never judged by its name.** Untitled and unloaded, it shows a name ArcGIS makes from
+the service's address, such as "Muster view", which reads like a naming fault and is a load failure. A correct change
+was reverted on that misreading on 8 November 2026 ([#2728][2728]).
+
+The entries made when the list was created are marked `unreviewed (#1523)`: they had no reason recorded as data.
+Replace that with the reason when one is reviewed, or delete the entry and the title together.
+
 ---
 
 ## Layer list order
@@ -251,6 +269,8 @@ rediscover the reason - or, more likely, leave it alone because they cannot tell
 [1802]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1802
 [2059]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2059
 [2209]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2209
+[2728]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2728
+[2731]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2731
 [2061]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2061
 [2532]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2532
 [2552]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2552
