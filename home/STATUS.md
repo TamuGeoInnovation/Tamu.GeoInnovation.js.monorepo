@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch 35 (#2744)**, started 7:04 PM Central, 8 November: pin the bike services to production, a check that finds the next one, and a "development only" marker. Progress 7:47 PM: red on unfixed code (4 services), green with the fix (99 passed); nine layers draw on a development build, each marked; final pre-push check running, then the PR.
+- Nothing. Idle and listening (7:52 PM Central, 8 November).
 
 ## Finished
+- **Batch 35 (#2744)** (report `home/reports/2026-11-08-35.md`): PR 2755, nine layers dead on dev now read production and are marked; the new check was red on unfixed code (4 services) and green with the fix; check exit 0. Three questions for the director.
 - **Batch 34** (aggiemap; report `home/reports/2026-11-08-34.md`): #2731 is PR 2745. Probe `serviceName` and `basemap`, the 202-entry override list and its unit spec, and the maps.spec title check; red then green; check exit 0. Baseline: 0 wrong, 0 drifted, 95 overrides equal to their service's name. Three questions.
 - **Batch 33** (aggiemap; report `home/reports/2026-11-08-33.md`): development merged into PR 2727 at `3436ba468`, three conflicts resolved keeping both maps (and a misplaced comment fixed), 288/288 without snapshot rewrite, check exit 0, MERGEABLE. No questions.
 - **Batch 32** (aggiemap; report `home/reports/2026-11-08-32.md`): #2712 is PR 2725 (the `developmentOnly` map gate plus the Micromobility draft); #2713 is PR 2727 (NCAA Volleyball, stacked on 2725). Both checks exit 0; specs red then green; both maps captured on dev and as production (0 service requests). Two questions.
