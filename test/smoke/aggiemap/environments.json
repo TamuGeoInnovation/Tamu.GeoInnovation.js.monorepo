@@ -11,10 +11,7 @@
     "healthLabel": "dev-health",
     "directionsAvailable": true,
     "developmentSectionsVisible": true,
-    "allowedLayerFailures": [
-      "Emergency Phones",
-      "Single Occupancy Restroom Locations"
-    ],
+    "allowedLayerFailures": [],
     "allowedMapLayerFailures": {
       "/parking/cross-country-parking": {
         "Cross Country Event Parking Lots": "#2209: the development athletics view has no 'trackxc' field, which the layer's definition expression filters on"

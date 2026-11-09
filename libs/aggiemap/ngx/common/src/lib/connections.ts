@@ -42,6 +42,7 @@ export const READ_FROM_PRODUCTION_ON_DEVELOPMENT: Partial<Record<keyof IComposed
   tCampUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
   fourHRoundupUrl: `${TOKEN_REQUIRED} (#2695)`,
   micromobilityUrl: `${TOKEN_REQUIRED} (#2712)`,
+  inforUrl: 'the development server has FCOR/MapInfo_20190529 with no layers, so every layer of it answers 404 (#2744)',
   accessibleUrl: 'the development server has FCOR/ADA_120717 with no layers, so layer 0 answers 404 "Layer not found" (#2744)',
   bikeMapUrl: `${TOKEN_REQUIRED} (#2744)`,
   bikeRacksUrl: `${TOKEN_REQUIRED} (#2744)`,

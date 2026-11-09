@@ -106,6 +106,17 @@ async function problemWith(request: import('@playwright/test').APIRequestContext
   return response.ok() ? null : `HTTP ${response.status()}`;
 }
 
+/** The layer ids a service root lists, or null where the URL is not a service root or did not answer with layers. */
+async function layerIdsOf(request: import('@playwright/test').APIRequestContext, url: string): Promise<number[] | null> {
+  if (!/\/(MapServer|FeatureServer)$/.test(url)) {
+    return null;
+  }
+
+  const root = await (await request.get(`${url}?f=json`, { timeout: 30_000, failOnStatusCode: false })).json().catch(() => null);
+
+  return Array.isArray(root?.layers) ? (root.layers as Array<{ id: number }>).map((layer) => layer.id) : null;
+}
+
 test.describe(`GIS services (${GIS_HOST})`, () => {
   test('connections.ts yields services to check', () => {
     // Guards against an import or filter change silently reducing this to zero tests.
@@ -133,6 +144,19 @@ test.describe(`GIS services (${GIS_HOST})`, () => {
           `${name}: a development build cannot read ${url} ("${problem}"), and production serves ${productionUrl}. ` +
             'Read it from production on development: add it to READ_FROM_PRODUCTION_ON_DEVELOPMENT in connections.ts, with why.'
         ).not.toBeNull();
+      }
+
+      // The same fault one level down: a service development has, without the layers production's has. MapInfo
+      // answered on development with no layers at all, so Emergency Phones and the restrooms drew nothing (#2744).
+      if (GIS_HOST !== PRODUCTION_GIS_HOST && !problem && typeof productionUrl === 'string' && productionUrl !== url) {
+        const [own, theirs] = await Promise.all([layerIdsOf(request, url), layerIdsOf(request, productionUrl)]);
+        const missing = own && theirs ? theirs.filter((id) => !own.includes(id)) : [];
+
+        expect(
+          missing,
+          `${name}: ${url} lacks layers ${missing.join(', ')}, which production serves at ${productionUrl}. ` +
+            'Read it from production on development: add it to READ_FROM_PRODUCTION_ON_DEVELOPMENT in connections.ts, with why.'
+        ).toEqual([]);
       }
 
       const known = ALLOWED[name];
