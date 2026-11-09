@@ -1,27 +1,24 @@
+// The table fits the admin content column rather than scrolling sideways (#2806): the submitter's name, email and
+// department share one cell (#2799), and long titles wrap.
 table {
-  table-layout: fixed;
-
-  .selection-col {
-    width: 2.5rem;
+  .title {
+    min-width: 10rem;
   }
 
-  .title-col {
-    width: 22%;
-  }
-
-  .submitted-col {
-    width: 8rem;
-  }
-
-  .email-col {
-    width: 14%;
-  }
-
-  .title,
-  .clip {
-    white-space: nowrap;
+  // A title runs to three lines at most; the whole of it is on hover.
+  .clamp {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
     overflow: hidden;
-    text-overflow: ellipsis;
+  }
+
+  .date {
+    min-width: 6rem;
+  }
+
+  .submitter {
+    min-width: 12rem;
   }
 
   .unknown {
