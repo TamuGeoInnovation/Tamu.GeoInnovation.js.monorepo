@@ -7025,3 +7025,59 @@ This is user-visible (a click that did nothing now opens a popup), so: before an
 ### The report
 
 `work-lab-leila/reports/<date>-26.md`, and say **"report ready: <file>"**.
+
+## Batch 27 (9 November 2026, from `work (aggiemap)`) — the last two things reading the old campus basemap (High)
+
+**Batch 26 is open as [PR 2787](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2787)**, green,
+and the maintainer merged [PR 2786](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2786)
+before it. Two things in your batch 26 were better than what I asked for: **scoping the property to 2D with a measured
+reason** (a scene's `hasAllFeaturesInView` also goes false for level-of-detail thinning, so honouring it there would
+make every click query every layer), and **forcing a real failure deterministically** rather than waiting for one.
+Reporting the two discarded runs, and why they were wrong, is what made the final pair trustworthy.
+
+**Both of your corrections are taken.** `DIRECTOR.md`'s row about this machine having no `gh` is wrong and I am fixing
+it. And a lost tile costing clicks rather than pixels is an important correction to carry — I had repeated the
+"features missing from the drawing" argument myself.
+
+### The work: the maintainer's decisions, 9 November
+
+He has decided the old campus basemap service is abandoned and nothing is to read it. Two consumers are left that are
+not feature layers. **Home has the feature layers; these two are yours.**
+
+**1. The raster basemap leaves production's gallery, and stays on development.**
+
+`aggiemapGalleryBasemaps(isTesting)` in `libs/maps/feature/basemap/src/lib/shared/basemaps.definition.ts` returns
+`[aggiemapBasemap(), aggiemapRasterBasemap(isTesting)]` when not testing. **Production returns the vector basemap
+alone**; development keeps its five dated entries for comparison, which is what that list is for.
+
+- Check what else reaches the raster entry: `basemap-gallery.service.ts:323` and `ts/events` `map.component.ts:223`
+  both call `aggiemapRasterBasemap`. **A map that opens on it, or a saved basemap id that resolves to it, must not break
+  on production** — work out what each caller does when it is no longer in the gallery, and say so.
+- `basemapForSavedId` and the gallery's id matching are the places a saved choice could dangle.
+
+**2. GIS Day's MapLibre maps move to the vector tiles.**
+
+`libs/maps/mapbox/src/lib/services/mapbox-map.service.ts` builds a raster source from
+`${TAMU_CAMPUS_BASEMAP_URL}/tile/{z}/{y}/{x}`. The reason recorded for not using vector there — State Plane, which
+MapLibre cannot draw — describes the **old** `Hosted/VTBase`. **VTBase3 is Web Mercator** (`wkid 102100`, 23 levels) and
+publishes a Mapbox GL **style version 8, 115 layers, with sprite and glyphs**, at
+`Hosted/VTBase3/VectorTileServer/resources/styles/root.json`.
+
+- **Prefer giving MapLibre that style URL** over hand-building a source; it is what the format is for. The sprite and
+  glyph paths in it are relative, so check they resolve from wherever you point MapLibre.
+- **Correct the stale comment in `campus-basemap.ts`** that says the vector version is not on production and is in
+  State Plane. It is wrong now and it is what stopped this being done sooner.
+
+### Both are visible, so
+
+Before and after captures of the GIS Day competition maps and of production's basemap gallery, release-notes entries
+with their *What to test on dev* rows, and `scripts/check-in-volume.sh` with its exit code. `tools/visual-baselines`
+exists for exactly this if it helps.
+
+**One change per pull request**: these are two branches, not one, unless you find they cannot be separated — say so if
+that happens.
+
+### The report
+
+`work-lab-leila/reports/<date>-27.md`, and say **"report ready: <file>"**. Branches to the fork, `.pr-body.md` last, no
+pull requests.
