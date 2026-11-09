@@ -19,35 +19,37 @@ export function SearchSources(
     BUILDING: {
       source: 'building',
       name: 'Building',
-      url: `${connections.basemapUrl}/1`,
+      url: connections.buildingsUrl,
       queryParams: {
-        ...containsSearch(['Number', 'BldgAbbrev', 'BldgName']),
+        ...containsSearch(['number', 'bldgabbrev', 'bldgname']),
         scoringWhere: {
-          keys: ['BldgName', 'BldgAbbrev'],
+          keys: ['bldgname', 'bldgabbrev'],
           operators: ['LIKE', 'LIKE'],
           wildcards: ['startsWith', 'startsWith'],
           transformations: ['UPPER', 'UPPER']
         }
       },
-      scoringKeys: ['attributes.BldgAbbrev', 'attributes.Number', 'attributes.BldgName'],
+      scoringKeys: ['attributes.bldgabbrev', 'attributes.number', 'attributes.bldgname'],
       featuresLocation: 'features',
-      displayTemplate: '{attributes.BldgName} ({attributes.Number})',
+      displayTemplate: '{attributes.bldgname} ({attributes.number})',
       popupComponent: Popups.BuildingPopupComponent,
       searchActive: true
     },
     BUILDING_EXACT: {
       source: 'building-exact',
       name: 'Building',
-      url: `${connections.basemapUrl}/1`,
+      url: connections.buildingsUrl,
       queryParams: {
         ...searchQueryParams,
+        // `number`, not `bldgnum`: `number` is stored without padding, `bldgnum` padded to ten characters, so an exact
+        // match on `bldgnum = '0468'` finds nothing (measured 9 November 2026, #2707).
         where: {
-          keys: ['Number'],
+          keys: ['number'],
           operators: ['=']
         }
       },
       featuresLocation: 'features',
-      displayTemplate: '{attributes.BldgName} ({attributes.Number})',
+      displayTemplate: '{attributes.bldgname} ({attributes.number})',
       popupComponent: Popups.BuildingPopupComponent,
       searchActive: false,
       urlQueryParam: 'bldg',
@@ -56,21 +58,21 @@ export function SearchSources(
     // Resolves a building from its abbreviation (e.g. `?BldgAbbrv=WCBA`) rather than its number.
     // Kept separate from BUILDING_EXACT because the registrar's links select by `BldgAbbr`, which
     // requires its own where clause; folding it into BUILDING_EXACT's aliases would (incorrectly)
-    // query the abbreviation against the `Number` field and return no results.
+    // query the abbreviation against the `number` field and return no results.
     BUILDING_EXACT_ABBR: {
       source: 'building-exact-abbr',
       name: 'Building',
-      url: `${connections.basemapUrl}/1`,
+      url: connections.buildingsUrl,
       queryParams: {
         ...searchQueryParams,
         where: {
-          keys: ['BldgAbbrev'],
+          keys: ['bldgabbrev'],
           operators: ['='],
           transformations: ['UPPER']
         }
       },
       featuresLocation: 'features',
-      displayTemplate: '{attributes.BldgName} ({attributes.Number})',
+      displayTemplate: '{attributes.bldgname} ({attributes.number})',
       popupComponent: Popups.BuildingPopupComponent,
       searchActive: false,
       urlQueryParam: 'BldgAbbrv',

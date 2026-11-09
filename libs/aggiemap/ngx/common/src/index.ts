@@ -11,7 +11,7 @@ export * from './lib/development-only-sources';
 // export * from './lib/definitions';
 
 // // Layer definitions
-export { commonLayerProps } from './lib/layer-sources/layer-sources';
+export { buildingsClickLayerNative, commonLayerProps } from './lib/layer-sources/layer-sources';
 
 // // Static legend items
 // export * from './lib/legend-sources';

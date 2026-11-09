@@ -92,7 +92,7 @@ the sidebar UI (search, tabs, settings), so this alone restores feature-click de
 
 <!-- Keyboard viewfinder/feature list. Hidden until the map is moved with the keyboard, so loaded once the page is idle (#1454). -->
 @if (!isMobile() && !hideSidebar) { @defer {
-<tamu-gisc-map-viewfinder [layer]="'buildings-layer'" [template]="'{attributes.BldgName}'"></tamu-gisc-map-viewfinder>
+<tamu-gisc-map-viewfinder [layer]="'buildings-layer'" [template]="'{attributes.bldgname}'"></tamu-gisc-map-viewfinder>
 } }
 
 <!-- Application Loader -->

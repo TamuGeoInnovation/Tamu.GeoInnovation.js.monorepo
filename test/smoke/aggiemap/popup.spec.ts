@@ -190,7 +190,7 @@ test.describe('popup', () => {
     test.setTimeout(120_000);
 
     const mapPath = '/map/d';
-    const buildingsQuery = `${Connections.basemapUrl}/1/query`;
+    const buildingsQuery = `${Connections.buildingsUrl}/query`;
     const held: Array<() => Promise<void>> = [];
     let clicked = false;
 
