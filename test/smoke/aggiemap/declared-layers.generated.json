@@ -319,9 +319,9 @@
   "micromobility": {
     "layerList": true,
     "layers": [
-      "micromobility-corridor",
-      "micromobility-allowed-sidewalks",
-      "micromobility-facilities"
+      "micromobility-slow-zones",
+      "micromobility-shared-paths",
+      "micromobility-dedicated-paths"
     ],
     "developmentOnly": true,
     "address": "/transportation/micromobility"

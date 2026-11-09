@@ -51,7 +51,6 @@ export const READ_FROM_PRODUCTION_ON_DEVELOPMENT: Partial<Record<keyof IComposed
   summerCommencementUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
   tCampUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
   fourHRoundupUrl: `${TOKEN_REQUIRED} (#2695)`,
-  micromobilityUrl: `${TOKEN_REQUIRED} (#2712)`,
   inforUrl: 'the development server has FCOR/MapInfo_20190529 with no layers, so every layer of it answers 404 (#2744)',
   accessibleUrl: 'the development server has FCOR/ADA_120717 with no layers, so layer 0 answers 404 "Layer not found" (#2744)',
   bikeMapUrl: `${TOKEN_REQUIRED} (#2744)`,
@@ -212,8 +211,13 @@ function servicesOn(gisHost: string): IComposedConnections {
     // from that server on every environment, localhost included. The map is development-only until Texas A&M is
     // announced as a host; moving it means naming the production service here.
     ncaaVolleyballUrl: 'https://gis.dev.tamu.edu/arcgis/rest/services/Hosted/NCAA_Volleyball_view/FeatureServer',
-    // The map is development-only until the maintainer moves it, so production never reads it (#2712).
-    micromobilityUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Micromobility_Map_WFL1_view/FeatureServer`,
+    // Transportation's approved paths (#2812), which replaced its draft `Micromobility_Map_WFL1_view`. Published on
+    // the development GIS server only, so named there outright, as `ncaaVolleyballUrl` is, and read from that server
+    // on every environment. The draft was read from production even on development, whose copy answered 499 Token
+    // Required (#2712); this one is public there. The map is development-only until the maintainer moves it, so
+    // production never reads it, and moving it means naming the production service here.
+    micromobilityUrl:
+      'https://gis.dev.tamu.edu/arcgis/rest/services/Hosted/Approved_Micromobility_Paths_view/FeatureServer',
     gisDayUrl:
       'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/MSC_and_Rudder_Building_Polygon_Layer/FeatureServer',
     argentinaVsHondurasUrl: `https://${gisHost}/arcgis/rest/services/TS/Argentina_vs_Honduras26/MapServer`,
