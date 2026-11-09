@@ -36,14 +36,14 @@
             </ng-template>
           </ngx-datatable-column>
 
-          <ngx-datatable-column name="Name" prop="title" [width]="190"></ngx-datatable-column>
+          <ngx-datatable-column name="Name" prop="title" [width]="160"></ngx-datatable-column>
 
-          <ngx-datatable-column name="Submitted" prop="created" [width]="105">
+          <ngx-datatable-column name="Submitted" prop="created" [width]="100">
             <ng-template let-row="row" ngx-datatable-cell-template>{{row.created | date: 'MMM d, h:mm a'}}</ng-template>
           </ngx-datatable-column>
 
           <!-- Sorted by last name. -->
-          <ngx-datatable-column name="Submitted by" prop="submitter.lastName" [width]="190">
+          <ngx-datatable-column name="Submitted by" prop="submitter.lastName" [width]="170">
             <ng-template let-row="row" ngx-datatable-cell-template>
               @if (row.submitter; as person) {
               <div class="bold">{{person.firstName}} {{person.lastName}}</div>
@@ -55,9 +55,9 @@
           </ngx-datatable-column>
 
           <!-- The submitter's field of study, or department for anyone but a student (#2799). -->
-          <ngx-datatable-column name="Department / major" prop="submitter.department" [width]="150"></ngx-datatable-column>
+          <ngx-datatable-column name="Department / major" prop="submitter.department" [width]="160"></ngx-datatable-column>
 
-          <ngx-datatable-column name="Type" prop="submissionType" [width]="80">
+          <ngx-datatable-column name="Type" prop="submissionType" [width]="125">
             <ng-template let-row="row" ngx-datatable-cell-template>{{row.submissionType | titlecase}}</ng-template>
           </ngx-datatable-column>
 
@@ -69,7 +69,7 @@
             <ng-template let-row="row" ngx-datatable-cell-template>{{row.classificationType | titlecase}}</ng-template>
           </ngx-datatable-column>
 
-          <ngx-datatable-column name="Status" prop="reviewStatus" [width]="125">
+          <ngx-datatable-column name="Status" prop="reviewStatus" [width]="110">
             <ng-template let-row="row" ngx-datatable-cell-template>
               <span class="bold" [ngClass]="{'clr-md-amber-800': row.reviewStatus === SubmissionReviewStatus.InReview, 'clr-md-green-600': row.reviewStatus === SubmissionReviewStatus.Accepted, 'clr-md-red-500': row.reviewStatus === SubmissionReviewStatus.Rejected}">{{row.reviewStatus}}</span>
             </ng-template>
