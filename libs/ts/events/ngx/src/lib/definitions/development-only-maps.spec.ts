@@ -1,10 +1,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { factory } from '@tamu-gisc/aggiemap/ngx/common';
-import { LayerSource } from '@tamu-gisc/common/types';
-
 import { EventDefinitions } from './all.definitions';
+import { servicesOf, servicesReadOnProduction } from './production-services';
 
 const REPO_ROOT = path.join(__dirname, '..', '..', '..', '..', '..', '..', '..');
 
@@ -23,23 +21,9 @@ describe('development-only maps', () => {
   const smokeList = fs.readFileSync(path.join(REPO_ROOT, 'test', 'smoke', 'aggiemap', 'development-only.ts'), 'utf8');
   const developmentOnly = EventDefinitions.filter((definition) => definition.developmentOnly);
 
-  /** A source's service, as the smoke list names one: `Hosted/<name>/FeatureServer`. */
-  const serviceOf = (url: string) => url.match(/[^/]+\/[^/]+\/(Feature|Map)Server/)?.[0];
-
-  /** Every service a source reads, groups' children included. */
-  const servicesOf = (sources: LayerSource[]): string[] =>
-    sources.flatMap((source) => [
-      ...('url' in source && serviceOf(String(source.url)) ? [serviceOf(String(source.url)) as string] : []),
-      ...servicesOf((source as { sources?: LayerSource[] }).sources ?? [])
-    ]);
-
-  /** The services production reads for maps that are on it: the main map, and every map not development-only. */
-  const onProduction = new Set([
-    ...servicesOf(factory({ environment: 'prod' }).LayerSources),
-    ...EventDefinitions.filter((definition) => !definition.developmentOnly).flatMap((definition) =>
-      servicesOf(definition.sources ?? [])
-    )
-  ]);
+  // Shared with the #2753 cross-check, which carried this rule without the exemption and turned the trunk red
+  // when both were on `development` (#2769).
+  const onProduction = servicesReadOnProduction();
 
   it('include the Micromobility draft (#2712), the NCAA Volleyball map (#2713) and Sustainable Transportation (#2742)', () => {
     expect(developmentOnly.map((definition) => definition.configuration?.id)).toEqual(

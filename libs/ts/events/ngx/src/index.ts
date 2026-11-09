@@ -4,6 +4,7 @@ export * from './lib/modules/popups/popups';
 export * from './lib/interfaces/special-event.interface';
 
 export * from './lib/definitions/all.definitions';
+export * from './lib/definitions/production-services';
 
 export * from './lib/definitions/graduation-spring.definitions';
 export * from './lib/definitions/aggieland-saturday.definitions';

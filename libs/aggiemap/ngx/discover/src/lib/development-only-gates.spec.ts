@@ -1,6 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { DEVELOPMENT_ONLY_LAYER_SOURCES, factory } from '@tamu-gisc/aggiemap/ngx/common';
-import { EventDefinitions } from '@tamu-gisc/ts/events/ngx';
+import { EventDefinitions, servicesReadOnProduction } from '@tamu-gisc/ts/events/ngx';
 
 // The smoke suite's own lists, read where they are kept rather than copied: comparing them with the code is this test's
 // whole purpose, and a copy would drift as the comments this replaces did. The suite is not an Nx project and its lists
@@ -34,8 +34,14 @@ import { DiscoveryService } from './services/discovery/discovery.service';
 interface BuildSide {
   /** Layers a production build leaves out, by definition key, with the addresses they read. */
   excludedLayers: Array<{ name: string; urls: string[] }>;
-  /** Maps whose route is development-only (`developmentOnly`), with the addresses their layers read. */
-  developmentOnlyMaps: Array<{ route: string; urls: string[] }>;
+  /**
+   * Maps whose route is development-only (`developmentOnly`), with the addresses their layers read.
+   *
+   * `sharedWithProduction` marks one whose services production reads for another map, so they can never be on
+   * `DEVELOPMENT_ONLY_SERVICES` - Sustainable Transportation's TS/BikeMap is the main map's too (#2742). Such a map
+   * is proven by the smoke check that its own route lands under `/map` on production, not by that list (#2769).
+   */
+  developmentOnlyMaps: Array<{ route: string; urls: string[]; sharedWithProduction?: boolean }>;
   /** Maps listed on development and not on production (`visible: false`), by route. */
   hiddenListings: string[];
 }
@@ -67,6 +73,10 @@ function disagreements(build: BuildSide, suite: SuiteSide): string[] {
   }
 
   for (const map of build.developmentOnlyMaps) {
+    if (map.sharedWithProduction) {
+      continue;
+    }
+
     if (!servicesIn(map.urls).some(([, service]) => service.pages.includes(map.route))) {
       problems.push(
         `${map.route} is development-only, but no DEVELOPMENT_ONLY_SERVICES entry for its layers lists it in pages`
@@ -131,6 +141,7 @@ const urlsOf = (sources: Array<LayerSource & { sources?: Array<LayerSource> }> |
 function buildSide(): BuildSide {
   const { Definitions, LayerSources } = factory({ environment: 'dev' });
   const listings = new DiscoveryService().getInternalDiscoverApplications();
+  const onProduction = servicesReadOnProduction();
 
   return {
     excludedLayers: DEVELOPMENT_ONLY_LAYER_SOURCES.map(({ definition }) => {
@@ -144,9 +155,13 @@ function buildSide(): BuildSide {
     developmentOnlyMaps: EventDefinitions.filter((event) => event.developmentOnly && event.configuration).map((event) => {
       const listing = listings.find((app) => app.configuration?.id === event.configuration.id);
 
+      const urls = urlsOf(event.sources);
+      const services = urls.map((url) => url.match(/[^/]+\/[^/]+\/(Feature|Map)Server/)?.[0]).filter(Boolean);
+
       return {
         route: listing ? getApplicationRoute(listing).join('/') : `/${event.configuration.id}`,
-        urls: urlsOf(event.sources)
+        urls,
+        sharedWithProduction: services.length > 0 && services.every((service) => onProduction.has(service as string))
       };
     }),
     hiddenListings: listings.filter((app) => app.visible === false).map((app) => getApplicationRoute(app).join('/'))
@@ -212,6 +227,18 @@ describe('the cross-check', () => {
         { ...empty, services: { 'Hosted/Micromobility_view': { pages: [] } } }
       )
     ).toEqual([]);
+  });
+
+  it('accepts a development-only map whose services production reads for another map, as Sustainable Transportation is', () => {
+    // TS/BikeMap is the main map's on production, so it can never be on DEVELOPMENT_ONLY_SERVICES and this map can
+    // never satisfy the rule above. Its gate is proven by the smoke check on its route instead (#2742, #2769).
+    const map = {
+      route: '/parking/sustainable-transportation',
+      urls: ['https://example.edu/TS/BikeMap/MapServer/0'],
+      sharedWithProduction: true
+    };
+
+    expect(disagreements({ ...none, developmentOnlyMaps: [map] }, empty)).toEqual([]);
   });
 
   it('fails a development-only map whose route the suite does not load', () => {
