@@ -1,3 +1,6 @@
+import * as fs from 'fs';
+import * as path from 'path';
+
 import { Page } from '@playwright/test';
 
 import { expect, test } from './fixtures';
@@ -151,6 +154,36 @@ test.describe(`development-only services ${VISIBLE ? 'are used here' : 'are neve
           expect(hits(), `${service} (${reason}) has no production service, but was requested here`).toEqual([]);
         }
       }
+    });
+  }
+});
+
+/**
+ * A development-only map's link opens the main map on production, and the map itself elsewhere (#2742).
+ *
+ * The check above proves a development-only map by its services, which production must never request. That cannot
+ * prove a map whose service production reads for another map - Sustainable Transportation's TS/BikeMap is the main
+ * map's too - so this proves the gate itself, for every map `developmentOnly` marks, from the definitions' own
+ * answer in `declared-layers.generated.json`.
+ */
+test.describe(`development-only maps ${VISIBLE ? 'open' : 'open the main map instead'}`, () => {
+  const declared: Record<string, { developmentOnly?: true }> = JSON.parse(
+    fs.readFileSync(path.join(__dirname, 'declared-layers.generated.json'), 'utf8')
+  );
+  const maps = Object.keys(declared).filter((id) => declared[id].developmentOnly);
+
+  test('there are some to check', () => {
+    expect(maps.length, 'declared-layers.generated.json marks no map development-only').toBeGreaterThan(0);
+  });
+
+  for (const id of maps) {
+    test(`/parking/${id} ${VISIBLE ? 'opens the map' : 'opens /map'}`, async ({ page }) => {
+      await blockAnalytics(page);
+      await page.goto(`/parking/${id}`);
+
+      await expect
+        .poll(() => new URL(page.url()).pathname, { timeout: 30_000 })
+        .toMatch(VISIBLE ? new RegExp(`^/parking/${id}(/|$)`) : /^\/map\/?$/);
     });
   }
 });

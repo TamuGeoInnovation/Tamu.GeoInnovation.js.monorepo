@@ -25,6 +25,9 @@ import { AggiemapCustomMapConfiguration } from '../interfaces/special-event.inte
  *
  * A map with a version published only on the development GIS server (`developmentSources`, #2001) also
  * lists that version's layers, as `developmentLayers`: what it shows where that server is read.
+ *
+ * A development-only map (`developmentOnly`, #2712) says so, as `developmentOnly: true`, so the smoke suite can check
+ * its link opens the main map on production and the map itself elsewhere (#2742).
  */
 interface DeclaredMap {
   /** Whether the map has a Layers list at all. */
@@ -33,13 +36,19 @@ interface DeclaredMap {
   layers: string[];
   /** The same, where the development GIS server is read, for a map with a development version. */
   developmentLayers?: string[];
+  /** The map is kept off production by `developmentOnly`. */
+  developmentOnly?: true;
 }
 
 function declared(definition: AggiemapCustomMapConfiguration): DeclaredMap {
   const layers = listed(definition, definition.sources ?? []);
   const development = definition.developmentSources;
 
-  return development ? { ...layers, developmentLayers: listed(definition, development).layers } : layers;
+  return {
+    ...layers,
+    ...(development ? { developmentLayers: listed(definition, development).layers } : {}),
+    ...(definition.developmentOnly ? { developmentOnly: true as const } : {})
+  };
 }
 
 function listed(definition: AggiemapCustomMapConfiguration, sources: LayerSource[]): DeclaredMap {
