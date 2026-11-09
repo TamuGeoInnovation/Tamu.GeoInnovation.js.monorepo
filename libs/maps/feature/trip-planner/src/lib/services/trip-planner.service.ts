@@ -56,7 +56,8 @@ import {
   TripPointOriginTransformationsParams,
   TripPointOriginParams,
   TripPointGeometry,
-  TripPointAttributes
+  TripPointAttributes,
+  attributeOf
 } from '../core/trip-planner-core';
 
 import { BusService, TimetableRow } from '../services/transportation/bus/bus.service';
@@ -2575,7 +2576,7 @@ export class TripPlannerService implements OnDestroy {
 
     return new Promise((resolve) => {
       try {
-        const buildingNumber = (stop.attributes as TripPointAttributesWithBldgNumber).Bldg_Number;
+        const buildingNumber = attributeOf(stop.attributes, 'Bldg_Number');
         return this.mapService.findLayerOrCreateFromSource(source).then((layer: esri.FeatureLayer): Promise<TripPoint> => {
           return layer
             .queryFeatures({
@@ -2989,10 +2990,6 @@ export type TimeModeOption = 'now' | 'leave' | 'arrive';
 
 interface EsriError extends Error {
   details?: esri.EsriErrorDetails;
-}
-
-interface TripPointAttributesWithBldgNumber extends TripPointAttributes {
-  Bldg_Number: string;
 }
 
 interface CollectionConstructor {

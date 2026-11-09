@@ -19,13 +19,14 @@ export class BuildingPopupComponent extends BaseDirectionsComponent implements O
   }
 
   protected override _getShareUrlFragment(): string | null {
-    return this._buildShareUrlFragment('building-exact', this.data.attributes.Number);
+    // A building's fields are lower case: it comes from `buildingsUrl` (#2707).
+    return this._buildShareUrlFragment('building-exact', this.data.attributes.number);
   }
 
   public startDirections() {
     super.startDirections(
-      `${this.data.attributes.Number}|${
-        this.data.attributes.BldgAbbr ? this.data.attributes.BldgAbbr : this.data.attributes.Abbrev
+      `${this.data.attributes.number}|${
+        this.data.attributes.bldgabbrev ? this.data.attributes.bldgabbrev : this.data.attributes.abbrev
       }`
     );
   }

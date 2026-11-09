@@ -26,4 +26,20 @@ describe('main map layer symbology', () => {
     expect(aggieprint).toBeDefined();
     expect(renderer(aggieprint as LayerSource)?.uniqueValueInfos?.length).toBe(2);
   });
+
+  // The buildings are a click target over the basemap's own, and their service publishes an opaque teal fill (#2707).
+  // #1526 removed this layer's near-invisible fill once already, because nothing said why it was there.
+  it('draws the Buildings layer from the buildings service, nearly invisible but still drawn, with numbered rows only', () => {
+    const buildings = sources.find((s) => s.id === 'buildings-layer') as LayerSource & { url: string };
+    const native = buildings.native as {
+      definitionExpression?: string;
+      renderer?: { symbol?: { color?: number[]; outline?: { style?: string } } };
+    };
+
+    expect(buildings.url).toBe('https://gis.tamu.edu/arcgis/rest/services/Hosted/VTBase3/FeatureServer/0');
+    expect(native.definitionExpression).toBe('number IS NOT NULL');
+    expect(native.renderer?.symbol?.color?.[3]).toBeGreaterThan(0);
+    expect(native.renderer?.symbol?.color?.[3]).toBeLessThanOrEqual(0.01);
+    expect(native.renderer?.symbol?.outline?.style).toBe('none');
+  });
 });

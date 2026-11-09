@@ -2,7 +2,12 @@ import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
 import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/ui-kits/ngx/search';
 import { LayerSource } from '@tamu-gisc/common/types';
 import { TAMU_CAMPUS_BASEMAP_URL } from '@tamu-gisc/common/datasets/geographic';
-import { Connections as AggiemapConnections, getDefaultGisHost, getDefaultGisHosts } from '@tamu-gisc/aggiemap/ngx/common';
+import {
+  Connections as AggiemapConnections,
+  buildingsClickLayerNative,
+  getDefaultGisHost,
+  getDefaultGisHosts
+} from '@tamu-gisc/aggiemap/ngx/common';
 const gisHost = getDefaultGisHost();
 const tsgisHost = getDefaultGisHosts().tsgisHost;
 
@@ -10,6 +15,7 @@ import esri = __esri;
 
 export const Connections = {
   basemapUrl: TAMU_CAMPUS_BASEMAP_URL,
+  buildingsUrl: AggiemapConnections.buildingsUrl,
   inforUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/MapInfo_20190529/MapServer',
   accessibleUrl: 'https://fc-gis.tamu.edu/arcgis/rest/services/FCOR/ADA_120717/MapServer/0',
   constructionUrl: AggiemapConnections.constructionUrl,
@@ -23,7 +29,7 @@ export const Definitions = {
     id: 'buildings',
     layerId: 'buildings-layer',
     name: 'Buildings',
-    url: `${Connections.basemapUrl}/1`
+    url: Connections.buildingsUrl
   },
   DOMESTIC_COLD_WATER: {
     id: 'domestic-cold-water',
@@ -165,21 +171,8 @@ export const LayerSources: LayerSource[] = [
         popupComponent: Popups.BuildingPopupComponent,
         listMode: 'hide',
         visible: true,
-        native: {
-          ...commonLayerProps,
-          legendEnabled: false,
-          renderer: {
-            type: 'simple',
-            symbol: {
-              type: 'simple-fill',
-              style: 'solid',
-              color: [0, 0, 0, 0.01],
-              outline: {
-                width: '0'
-              }
-            }
-          }
-        }
+        // Drawn and filtered as AggieMap's Buildings layer is; `buildingsClickLayerNative` says why (#2707).
+        native: buildingsClickLayerNative
       },
       {
         type: 'feature',
@@ -587,41 +580,41 @@ export const SearchSources: SearchSource[] = [
   {
     source: 'building',
     name: 'Building',
-    url: `${Connections.basemapUrl}/1`,
+    url: Connections.buildingsUrl,
     queryParams: {
       ...commonQueryParams,
       where: {
-        keys: ['Number', 'BldgAbbrev', 'BldgName'],
+        keys: ['number', 'bldgabbrev', 'bldgname'],
         operators: ['LIKE', 'LIKE', 'LIKE'],
         wildcards: ['includes', 'includes', 'includes'],
         transformations: ['UPPER', 'UPPER', 'UPPER']
       },
       scoringWhere: {
-        keys: ['BldgName'],
+        keys: ['bldgname'],
         operators: ['LIKE'],
         wildcards: ['startsWith'],
         transformations: ['UPPER']
       }
     },
-    scoringKeys: ['attributes.BldgAbbrev', 'attributes.Number', 'attributes.BldgName'],
+    scoringKeys: ['attributes.bldgabbrev', 'attributes.number', 'attributes.bldgname'],
     featuresLocation: 'features',
-    displayTemplate: '{attributes.BldgName} ({attributes.Number})',
+    displayTemplate: '{attributes.bldgname} ({attributes.number})',
     popupComponent: Popups.BuildingPopupComponent,
     searchActive: true
   },
   {
     source: 'building-exact',
     name: 'Building',
-    url: `${Connections.basemapUrl}/1`,
+    url: Connections.buildingsUrl,
     queryParams: {
       ...commonQueryParams,
       where: {
-        keys: ['Number'],
+        keys: ['number'],
         operators: ['=']
       }
     },
     featuresLocation: 'features',
-    displayTemplate: '{attributes.BldgName} ({attributes.Number})',
+    displayTemplate: '{attributes.bldgname} ({attributes.number})',
     popupComponent: Popups.BuildingPopupComponent,
     searchActive: false
   },

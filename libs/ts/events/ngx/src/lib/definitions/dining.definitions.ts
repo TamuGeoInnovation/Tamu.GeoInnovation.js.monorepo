@@ -1,5 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
-import { Connections, commonLayerProps } from '@tamu-gisc/aggiemap/ngx/common';
+import { Connections, buildingsClickLayerNative, commonLayerProps } from '@tamu-gisc/aggiemap/ngx/common';
 import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
 
 import {
@@ -34,14 +34,12 @@ export const KioskBuildingsLayerSource: LayerSource = {
   type: 'feature',
   id: DINING_KIOSK_LAYERS.BUILDINGS,
   title: 'Buildings',
-  url: `${Connections.basemapUrl}/1`,
+  url: Connections.buildingsUrl,
   popupComponent: Popups.BuildingPopupComponent,
   listMode: 'hide',
   visible: true,
-  native: {
-    ...commonLayerProps,
-    legendEnabled: false
-  }
+  // Drawn and filtered as the main map's Buildings layer is; `buildingsClickLayerNative` says why (#2707).
+  native: buildingsClickLayerNative
 };
 
 export const DiningKioskLayerSources: LayerSource[] = [

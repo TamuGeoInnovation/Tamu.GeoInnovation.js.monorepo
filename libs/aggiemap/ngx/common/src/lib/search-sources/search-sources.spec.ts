@@ -17,6 +17,7 @@ describe('SearchSources', () => {
   // the partial fixture assignable without enumerating every unrelated connection.
   const connections = {
     basemapUrl: 'https://example.com/basemap',
+    buildingsUrl: 'https://example.com/buildings/FeatureServer/0',
     departmentUrl: 'https://example.com/department',
     bikeRacksUrl: 'https://example.com/bike-racks',
     accessibleUrl: 'https://example.com/accessible',
@@ -199,11 +200,12 @@ describe('SearchSources', () => {
     const bldgExact = result.find((source) => source.source === 'building-exact');
     const bldgExactAbbr = result.find((source) => source.source === 'building-exact-abbr');
 
-    // `?bldg=1510` style links query the building Number field.
+    // `?bldg=1510` style links query the building's unpadded `number` field, on the buildings service (#2707).
     expect(bldgExact?.urlQueryParam).toBe('bldg');
     expect(bldgExact?.urlQueryParamAliases).toEqual(['Bldg']);
+    expect(bldgExact?.url).toBe(connections.buildingsUrl);
     expect(bldgExact?.queryParams?.where).toEqual({
-      keys: ['Number'],
+      keys: ['number'],
       operators: ['=']
     });
 
@@ -211,7 +213,7 @@ describe('SearchSources', () => {
     expect(bldgExactAbbr?.urlQueryParam).toBe('BldgAbbrv');
     expect(bldgExactAbbr?.urlQueryParamAliases).toEqual(['bldgabbrv', 'BldgAbbr', 'bldgabbr']);
     expect(bldgExactAbbr?.queryParams?.where).toEqual({
-      keys: ['BldgAbbrev'],
+      keys: ['bldgabbrev'],
       operators: ['='],
       transformations: ['UPPER']
     });

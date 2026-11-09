@@ -1,12 +1,12 @@
 <div class="popup-section">
-  <div class="feature-style-1" tabindex="0">{{ data.attributes.BldgName }}</div>
-  @if (data.attributes.Number) {
-  <div class="feature-style-2" tabindex="0">Building {{ data.attributes.Number }}</div>
+  <div class="feature-style-1" tabindex="0">{{ data.attributes.bldgname }}</div>
+  @if (data.attributes.number) {
+  <div class="feature-style-2" tabindex="0">Building {{ data.attributes.number }}</div>
   }
   <div class="feature-style-2" tabindex="0">
-    @if ((data.attributes.Address | trim | titlecase).length > 0) {
-    <span>{{data.attributes.Address | trim | titlecase}}, </span>
-    }<span>{{data.attributes.City | trim | titlecase}}</span>, TX <span>{{data.attributes.Zip | trim}}</span>
+    @if ((data.attributes.address | trim | titlecase).length > 0) {
+    <span>{{data.attributes.address | trim | titlecase}}, </span>
+    }<span>{{data.attributes.city | trim | titlecase}}</span>, TX <span>{{data.attributes.zip | trim}}</span>
   </div>
 </div>
 
@@ -16,12 +16,12 @@
 
   <!-- Directions To Button -->
   @if (directionsAvailable | async) {
-  <div class="button" [attr.building-number]="data.attributes.Number" (tamuGiscActivate)="startDirections()">Directions To Here</div>
+  <div class="button" [attr.building-number]="data.attributes.number" (tamuGiscActivate)="startDirections()">Directions To Here</div>
   }
 </div>
 
 <div class="popup-section">
   <div class="image" tabindex="0" aria-label="Image of feature">
-    <img alt="" src="https://aggiemap.tamu.edu/images/compressed_test/{{ data.attributes.Number }}.jpg" />
+    <img alt="" src="https://aggiemap.tamu.edu/images/compressed_test/{{ data.attributes.number }}.jpg" />
   </div>
 </div>

@@ -77,7 +77,12 @@ const FEATURES: { paths: RegExp; specs: string[] }[] = [
   },
   {
     paths: /^libs\/(maps\/feature\/popup|aggiemap\/ngx\/popups|ts\/events\/ngx\/src\/lib\/modules\/popups)\//,
-    specs: ['popup.spec.ts', 'directions.spec.ts', 'search-sources.spec.ts']
+    specs: ['popup.spec.ts', 'building-clicks.spec.ts', 'directions.spec.ts', 'search-sources.spec.ts']
+  },
+  {
+    // Where the buildings come from, and how the Buildings layer is drawn and filtered (#2707).
+    paths: /^libs\/(common\/datasets\/geographic\/src\/lib\/campus\/campus-basemap|aggiemap\/ngx\/common\/src\/lib\/definitions\/main\.definitions)\.ts$/,
+    specs: ['building-clicks.spec.ts', 'popup.spec.ts']
   },
   { paths: /^libs\/maps\/feature\/trip-planner\//, specs: ['directions.spec.ts', 'map-coordinates.spec.ts'] },
   {
