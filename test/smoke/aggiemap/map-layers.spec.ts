@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 import { expect, HEAVY, test } from './fixtures';
-import { MANIFEST_PATH, MapManifest } from './global-setup';
+import { isMainMapPanel, MANIFEST_PATH, MapManifest } from './global-setup';
 import { blockAnalytics } from './analytics';
 import { loadBuilderTargets } from './builder-destinations';
 import { isDevelopmentUrl } from './gis-hosts';
@@ -183,8 +183,13 @@ const HEAVY_MAPS = new Set(['/parking/maintenance-parking', '/parking/service-lo
 
 const builderTargets = loadBuilderTargets(manifest);
 
-/** One case per map, or per recorded destination for a map behind a builder; `loadPath` is what is opened. */
-const cases = manifest.maps.flatMap((mapPath): { mapPath: string; loadPath: string; title: string; borrowedFrom?: string }[] => {
+/**
+ * One case per map, or per recorded destination for a map behind a builder; `loadPath` is what is opened.
+ *
+ * Not the main map's panels, such as the bus map (#2743): their layers are the main map's, checked here at `/map`, and
+ * the panel shows its own content in place of the Layers list this test reads.
+ */
+const cases = manifest.maps.filter((mapPath) => !isMainMapPanel(mapPath)).flatMap((mapPath): { mapPath: string; loadPath: string; title: string; borrowedFrom?: string }[] => {
   const targets = builderTargets.get(mapPath) ?? [];
 
   return targets.length === 0

@@ -8,6 +8,7 @@ import {
   InternalDiscoverApplication
 } from '../../interfaces/discover-application.interface';
 import { ExternalDiscoverApplications } from '../../definitions/external-discover-applications';
+import { MainMapDiscoverApplications } from '../../definitions/main-map-discover-applications';
 
 /**
  * Id of the featured "Campus Main Parking" map. It is surfaced as a dedicated button across the
@@ -27,7 +28,7 @@ export class DiscoveryService {
    * list is the one exception, because it is where the team keeps every event, working or not.
    */
   public getInternalDiscoverApplications(options: { includeRetired?: boolean } = {}): InternalDiscoverApplication[] {
-    return EventDefinitions.filter(
+    const definitions: InternalDiscoverApplication[] = EventDefinitions.filter(
       (event): event is typeof event & { configuration: NonNullable<typeof event.configuration> } =>
         event.configuration !== null &&
         event.discover?.type !== 'kiosk' &&
@@ -60,6 +61,9 @@ export class DiscoveryService {
       keywords: event.discover?.keywords || [],
       labels: event.discover?.labels || []
     }));
+
+    // Then the main map's own panels that are listed as maps, such as the bus map (#2743).
+    return [...definitions, ...MainMapDiscoverApplications];
   }
 
   /**
