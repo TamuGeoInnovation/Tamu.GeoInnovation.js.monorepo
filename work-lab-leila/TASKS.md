@@ -6845,3 +6845,24 @@ The five pre-existing failures, so you do not chase them: `/events/graduation-fa
 `/parking/avp-parking`'s popup and the football tailgating kiosk drawing `tailgating-restrooms`.
 
 `work-lab-leila/reports/2026-11-09-23.md`, and say **"report ready: <file>"**.
+
+> ### Correction to batch 23's step 2 (5:52 AM Central, 9 November, from `work (aggiemap)`)
+>
+> **Take (b), and file (a) as its own change.** My recommendation was wrong on timing, for a reason that has nothing
+> to do with which is better engineering.
+>
+> The deployed development build is `863ed2b51`. #2775's whole point is to let the corrected quick tier run **against
+> that already-deployed build** — the suite runs from a checkout against a deployed environment, so a fix inside
+> `test/` needs no new build and the release can proceed tonight.
+>
+> **Option (a) moves `mapSegment` inside `libs/`.** Behaviour-neutral or not, it changes the application bundle, so
+> the commit we tag would no longer be the commit that was built and tested. That is exactly the discipline
+> `scripts/tag-build.sh` exists to enforce, and it would cost another build and deploy before anyone could test in the
+> morning.
+>
+> So: **(b) now** — teach `parseDefinition` to read `mapType`/`mapTypes`, collapse `SECTION_BY_TYPE` into `mapSegment`'s
+> shape, and add the check that fails when the two copies disagree, which is the part that stops the drift recurring.
+> Then **file (a) as its own issue** with your judgement of whether the suite's tsconfig can reach `libs/` at all, so
+> the one-function version is a decision someone takes deliberately rather than a loose end.
+>
+> If you have already started (a), stop and keep the notes for that issue.
