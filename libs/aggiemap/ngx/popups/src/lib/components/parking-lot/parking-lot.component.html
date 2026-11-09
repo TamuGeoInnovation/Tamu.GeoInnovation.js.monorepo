@@ -8,7 +8,5 @@ basemap as `LotName`, until the garages have a counterpart (#2722). -->
 <div class="popup-section">
   <tamu-gisc-copy-field [text]="shareUrl"></tamu-gisc-copy-field>
 
-  @if (directionsAvailable | async) {
   <div class="button" (tamuGiscActivate)="startDirections()">Directions To Here</div>
-  }
 </div>

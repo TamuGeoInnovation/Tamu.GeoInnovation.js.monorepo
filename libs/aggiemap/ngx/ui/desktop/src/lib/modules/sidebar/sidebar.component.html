@@ -8,10 +8,8 @@ swallows it and clicking a feature appears to do nothing (#1244). -->
   <div class="tabs left">
     <tamu-gisc-sidebar-tab [title]="'Features'" [description]="'Toggle Features (Search, Layers, Legend)'" [material_icon]="'menu'" [route]="''" (click)="reportSidebarContent('Features')"></tamu-gisc-sidebar-tab>
 
-    <!-- Development-only while routing is unpublished (#1003). -->
-    @if ((isDev | async) === true) {
+    <!-- On every environment since the routing network was published on production (#2804); development-only until then (#1003). -->
     <tamu-gisc-sidebar-tab [title]="'Directions'" [description]="'Toggle directions controls (routing and way-finding)'" [material_icon]="'directions'" [route]="'trip'" (click)="reportSidebarContent('Directions')"></tamu-gisc-sidebar-tab>
-    }
 
     <!--
     On every environment since #2789 (the maintainer, 9 November 2026). It was development-only until then (#1090,

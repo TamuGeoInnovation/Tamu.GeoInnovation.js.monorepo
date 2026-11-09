@@ -134,11 +134,12 @@ function servicesOn(gisHost: string): IComposedConnections {
     bikeRacksUrl: `https://${gisHost}/arcgis/rest/services/TS/BikeMap/MapServer/1`,
     bikeMapUrl: `https://${gisHost}/arcgis/rest/services/TS/BikeMap/MapServer`,
     routingBaseUrl: `https://${gisHost}/arcgis/rest/services/Routing`,
-    // The routing network Transportation published for #659. It is on the development GIS server only, outside the
+    // The routing network Transportation published for #659, on Transportation's own host for the environment, as its
+    // parking and event services are: `arc.ts.tamu.edu` on production (since #2804), `gis.dev.tamu.edu` on development.
+    // Both answer anonymously; production's general GIS server (`gisHost`) serves it only with a token. It is outside the
     // `Routing` folder and not under a dated name, so the trip planner's discovery of `routingBaseUrl` would not find
-    // it. Pinned so localhost reaches it too; the trip planner reads it only where
-    // development-only features are on, and the smoke suite fails if production ever requests it.
-    developmentRoutingBaseUrl: 'https://gis-dev.it.tamu.edu/arcgis/rest/services/RoutingProPublish',
+    // it; the planner connects to it directly.
+    routingNetworkUrl: `https://${tsgisHost}/arcgis/rest/services/RoutingProPublish`,
     poiUrl: 'https://services1.arcgis.com/oxXAea6csqnDZ6WT/arcgis/rest/services/Points_of_Interest_view/FeatureServer',
     diningLocationsUrl: `https://api.aggiemap.tamu.edu/dining/locations/geojson`,
     aggiePrintUrl: 'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/TAMUPrinters/FeatureServer',
@@ -359,7 +360,7 @@ export interface IComposedConnections {
   bikeRacksUrl: string;
   bikeMapUrl: string;
   routingBaseUrl: string;
-  developmentRoutingBaseUrl: string;
+  routingNetworkUrl: string;
   poiUrl: string;
   diningLocationsUrl: string;
   aggiePrintUrl: string;

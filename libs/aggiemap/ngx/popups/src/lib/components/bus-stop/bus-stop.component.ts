@@ -6,7 +6,6 @@ import { BusService } from '@tamu-gisc/maps/feature/trip-planner';
 
 import { BaseDirectionsComponent } from '../base-directions/base-directions.component';
 import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
-import { AsyncPipe } from '@angular/common';
 import { ActivateDirective } from '@tamu-gisc/ui-kits/ngx/interactions/keyboard';
 
 /**
@@ -20,7 +19,7 @@ import { ActivateDirective } from '@tamu-gisc/ui-kits/ngx/interactions/keyboard'
   selector: 'tamu-gisc-bus-stop-popup-component',
   templateUrl: './bus-stop.component.html',
   styleUrls: ['../base/base.popup.component.scss'],
-  imports: [CopyComponent, AsyncPipe, ActivateDirective]
+  imports: [CopyComponent, ActivateDirective]
 })
 export class BusStopPopupComponent extends BaseDirectionsComponent implements OnInit {
   private busService = inject(BusService);

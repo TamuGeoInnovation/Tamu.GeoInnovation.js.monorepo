@@ -53,13 +53,15 @@ describe('Connections', () => {
     );
   });
 
-  // RoutingProPublish is published on the development GIS server only (#659). It is pinned there
-  // so that localhost reaches it too; the trip planner reads it only where development-only features are on.
-  it('names the development routing network on the development GIS server, from any host', () => {
-    const expected = 'https://gis-dev.it.tamu.edu/arcgis/rest/services/RoutingProPublish';
-
-    expect(Connections.developmentRoutingBaseUrl).toBe(expected);
-    expect(Connections('gis.it.tamu.edu').developmentRoutingBaseUrl).toBe(expected);
+  // RoutingProPublish, the network published for #659, on Transportation's host for the environment (#2804). Production's
+  // general GIS server serves it only with a token (499), so it must not be read from there.
+  it("names the routing network on Transportation's host for the environment", () => {
+    expect(Connections('gis-dev.it.tamu.edu').routingNetworkUrl).toBe(
+      'https://gis.dev.tamu.edu/arcgis/rest/services/RoutingProPublish'
+    );
+    expect(Connections('gis.it.tamu.edu').routingNetworkUrl).toBe(
+      'https://arc.ts.tamu.edu/arcgis/rest/services/RoutingProPublish'
+    );
   });
 
   it('still names production its own, empty, Routing folder', () => {

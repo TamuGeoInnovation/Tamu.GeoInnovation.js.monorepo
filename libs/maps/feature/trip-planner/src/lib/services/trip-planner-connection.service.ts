@@ -4,7 +4,6 @@ import { Observable, BehaviorSubject } from 'rxjs';
 
 import { getRandomNumber } from '@tamu-gisc/common/utils/number';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 
 import { TripPlannerNetworkTravelMode } from './trip-planner-travel-modes';
 
@@ -12,13 +11,12 @@ import { TripPlannerNetworkTravelMode } from './trip-planner-travel-modes';
  * The network Transportation published for #659. Its name is `RoutingProPublish/Map`, which is neither under the
  * `Routing` folder nor a dated name, so discovery below would find it and discard it.
  */
-const DEVELOPMENT_NETWORK_NAME = 'RoutingProPublish/Map';
+const NETWORK_NAME = 'RoutingProPublish/Map';
 
 @Injectable({ providedIn: 'root' })
 export class TripPlannerConnectionService {
   private http = inject(HttpClient);
   private readonly env = inject(EnvironmentService);
-  private readonly testing = inject(TestingService);
 
   private _allNetworks: BehaviorSubject<TripPlannerConnection[]>;
   private _abNetworks: BehaviorSubject<TripPlannerConnection[]>;
@@ -79,12 +77,12 @@ export class TripPlannerConnectionService {
     this.currentNetwork = this._currentNetwork.asObservable();
     this.override = this._override.asObservable();
 
-    // Where development-only features are on, use the network published for #659 and discover nothing: it has no dated
-    // name for discovery to find. Production, and a development host asked to behave as production, discover as before.
-    if (this.testing.isTesting && connections?.developmentRoutingBaseUrl) {
+    // Where the application names its network (`routingNetworkUrl`, #2804), use it and discover nothing: it has no dated
+    // name for discovery to find. Only an application that names none discovers.
+    if (connections?.routingNetworkUrl) {
       const network = new TripPlannerConnection({
-        baseServiceUrl: connections.developmentRoutingBaseUrl,
-        name: DEVELOPMENT_NETWORK_NAME,
+        baseServiceUrl: connections.routingNetworkUrl,
+        name: NETWORK_NAME,
         type: 'NAServer'
       });
 

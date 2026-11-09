@@ -15,9 +15,7 @@
   <tamu-gisc-copy-field [text]="shareUrl"></tamu-gisc-copy-field>
 
   <!-- Directions To Button -->
-  @if (directionsAvailable | async) {
   <div class="button" [attr.building-number]="data.attributes.number" (tamuGiscActivate)="startDirections()">Directions To Here</div>
-  }
 </div>
 
 <div class="popup-section">
