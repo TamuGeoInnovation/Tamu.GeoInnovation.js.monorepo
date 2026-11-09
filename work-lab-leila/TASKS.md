@@ -7222,3 +7222,58 @@ sidebars.** If you find yourself in `sidebar-trip-planner.component.html` or the
 ### The report
 
 `work-lab-leila/reports/<date>-30.md`, **"report ready"**, branch to the fork, `.pr-body.md` last, no pull request.
+
+## Batch 31 (9 November 2026, from `work (aggiemap)`) — #2812: the micromobility map's new service (Urgent, before #2758)
+
+**Take this as soon as the #2778 run finishes.** It goes ahead of batch 30 (#2758): both are visible, this one is Urgent
+and the maintainer wants it in the production release.
+
+### The ask
+
+[#2812](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2812), from Transportation: point the micromobility map at their new service.
+
+```
+https://gis.dev.tamu.edu/arcgis/rest/services/Hosted/Approved_Micromobility_Paths_view/FeatureServer
+```
+
+### What I measured first, so you do not repeat it
+
+| | |
+| --- | --- |
+| the new service, anonymously | **404 Service not found** |
+| the current `Hosted/Micromobility_Map_WFL1_view` on **dev** | **499 Token Required** |
+| the same on **production** | **OK, 3 layers** |
+| the dev `Hosted` folder listing | 21 services anonymously, so the listing is not blocked |
+
+**The maintainer's instruction is to assume it will be public and start.** So build it; you cannot prove it yet, and
+that limit must be stated rather than papered over.
+
+### Why the current code looks the way it does
+
+`micromobilityUrl` is in `READ_FROM_PRODUCTION_ON_DEVELOPMENT` with the reason *"the development server has this
+service but answers 499 Token Required, so a development build cannot read it"* (#2712). **The map reads production's
+copy on both environments.** Pointing it at a development service reverses that deliberately — so the entry has to
+change with it, and the reason has to say why.
+
+Micromobility is also in `DEVELOPMENT_ONLY_LAYER_SOURCES`, so a production build excludes it. A development-only
+source for a development-only map is coherent; say so in the change rather than leaving it to be inferred.
+
+### What to build
+
+1. **The connection**, and whether it is still read from production or now from development. Say which and why.
+2. **The three layers.** Today's definition builds `CORRIDOR`, `ALLOWED_SIDEWALKS` and `FACILITIES` from indices, with
+   every popup reading `attributes.name` and `attributes.notes`. **The new service may not have the same indices,
+   layers or fields** — the issue calls it "simplified", which usually means fewer. When it answers, check it rather
+   than assume; if the shape differs, this is not a URL change.
+3. **The smoke entries** — `DEVELOPMENT_ONLY_SERVICES` names the service by path, so a new name must move with it, or
+   the check watches a service nothing requests.
+
+### Say plainly what you could not do
+
+**Do not claim a green you did not get.** If the service is still 404 when you finish, the report and the pull request
+body say: built, unverified, and here is the exact command to run when it is public. That is an honest deliverable and
+the maintainer can decide whether to merge it on that basis.
+
+### The report
+
+`work-lab-leila/reports/<date>-31.md`, **"report ready"**, branch to the fork, `.pr-body.md` last, no pull request.
