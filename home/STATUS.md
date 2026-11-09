@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle and listening (9:18 PM Central, 8 November).
+- **Batch 38 (#2767)**, started 9:41 PM Central, 8 November: Transportation maps at /transportation/<id>, /parking/<id> redirecting.
 
 ## Finished
 - **Batch 37 (#2742)** (report `home/reports/2026-11-08-37.md`): `feat/2742-sustainable-transportation-map` on the fork at `74ced2076`, from PR 2755's branch with development merged; no PR (not asked). The existing map listed under Transportation and made development-only; a new smoke check proves every development-only map's link. Red then green; check exit 0. Two questions.
