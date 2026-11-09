@@ -13,6 +13,11 @@
         <colgroup>
           <col class="selection-col" />
           <col class="title-col" />
+          <col class="submitted-col" />
+          <col />
+          <col />
+          <col class="email-col" />
+          <col />
           <col />
           <col />
           <col />
@@ -22,6 +27,11 @@
           <tr>
             <th><tamu-gisc-checkbox label="" (changed)="toggleAllRows(entities)" [checked]="(selectedRows$ | async)?.length === entities.length "></tamu-gisc-checkbox></th>
             <th>Name</th>
+            <th>Submitted</th>
+            <th>First</th>
+            <th>Last</th>
+            <th>Email</th>
+            <th>Department</th>
             <th>Type</th>
             <th>Format</th>
             <th>Classification</th>
@@ -33,6 +43,15 @@
           <tr class="selectable" [routerLink]="['review', entity.guid]">
             <td (click)="$event.stopPropagation()"><tamu-gisc-checkbox label="" (changed)="toggleRow($safeNavigationMigration(entity?.guid))" [checked]="(selectedRows$ | async) | exists: $safeNavigationMigration(entity?.guid)"></tamu-gisc-checkbox></td>
             <td class="title" [title]="entity.title">{{entity.title}}</td>
+            <td>{{entity.created | date: 'MMM d, h:mm a'}}</td>
+            @if (submitter(entity); as person) {
+            <td class="clip" [title]="person.firstName ?? ''">{{person.firstName}}</td>
+            <td class="clip" [title]="person.lastName ?? ''">{{person.lastName}}</td>
+            <td class="clip" [title]="person.email ?? ''">{{person.email}}</td>
+            <td class="clip" [title]="person.department ?? ''">{{person.department}}</td>
+            } @else {
+            <td colspan="4" class="unknown">Account not found</td>
+            }
             <td>{{entity.submissionType | titlecase}}</td>
             <td>{{entity.format | titlecase}}</td>
             <td>{{entity.classificationType | titlecase}}</td>

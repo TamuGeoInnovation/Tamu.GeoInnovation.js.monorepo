@@ -1,14 +1,14 @@
 import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { Submission } from '@tamu-gisc/gisday/platform/data-api';
+import { Submission, SubmissionSubmitter, SubmissionWithSubmitter } from '@tamu-gisc/gisday/platform/data-api';
 import { UserSubmissionsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { SUBMISSION_REVIEW_STATUS } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
-import { NgClass, AsyncPipe, TitleCasePipe } from '@angular/common';
+import { NgClass, AsyncPipe, DatePipe, TitleCasePipe } from '@angular/common';
 import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
 import { SubmissionReviewStatusPipe } from '@tamu-gisc/gisday/platform/ngx/common';
 
@@ -22,6 +22,7 @@ import { SubmissionReviewStatusPipe } from '@tamu-gisc/gisday/platform/ngx/commo
     RouterLink,
     NgClass,
     AsyncPipe,
+    DatePipe,
     TitleCasePipe,
     ExistsPipe,
     SubmissionReviewStatusPipe
@@ -31,4 +32,9 @@ export class ResearchCompetitionListComponent extends BaseAdminListComponent<Sub
   protected readonly entityService = inject(UserSubmissionsService);
 
   public SubmissionReviewStatus = SUBMISSION_REVIEW_STATUS;
+
+  /** Who submitted it, which the API adds to each submission in this list (#2799). */
+  public submitter(entity: Partial<Submission>): SubmissionSubmitter | null {
+    return (entity as Partial<SubmissionWithSubmitter>).submitter ?? null;
+  }
 }
