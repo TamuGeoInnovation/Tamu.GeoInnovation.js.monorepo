@@ -7,6 +7,11 @@ import { nextEventDate, parseEventDate } from '@tamu-gisc/common/utils/date';
  * under its own type segment.
  */
 export function getApplicationRoute(app: InternalDiscoverApplication): string[] {
+  // A panel of the main map, such as the bus map (#2743): the route is the entry's own.
+  if (app.route) {
+    return app.route;
+  }
+
   const routeSegment = app.type === 'event' ? 'events' : app.type === 'satellite-campus' ? 'campus' : app.type;
 
   // Kiosk maps have no builder/options flow, so their working route always includes the trailing
@@ -180,7 +185,7 @@ export function filterUpcomingEvents(apps: InternalDiscoverApplication[]): Inter
   const todayMs = today.getTime();
 
   return apps.filter((app) => {
-    const dates = app.configuration.eventDates;
+    const dates = app.configuration?.eventDates;
     if (!dates || dates.length === 0) return true;
     return dates.some((date) => parseEventDate(date) >= todayMs);
   });

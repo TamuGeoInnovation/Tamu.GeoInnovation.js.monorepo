@@ -60,6 +60,15 @@ export const DEVELOPMENT_ONLY_CONTROLS: Array<{
     selector: '.basemap-title:text-is("Aggieland raster, October 2026")',
     page: '/map/d/settings',
     reason: '#1582: production offers one campus basemap; the dated versions are for comparing on dev'
+  },
+  {
+    // A listing rather than a control on the map, but asked the same question the same way: the bus map is the main
+    // map's bus panel listed as a map (#2743), gated by `visible: false` with no service of its own for
+    // `DEVELOPMENT_ONLY_SERVICES` to see, and `DEVELOPMENT_ONLY_SECTIONS` covers only the sidebar tab.
+    name: 'the bus map in the Transportation section',
+    selector: 'a.map-entry[href="/map/d/bus"]',
+    page: '/all-maps/transportation',
+    reason: '#2743, #1229: bus routes are development-only until the maintainer moves them to production'
   }
 ];
 
