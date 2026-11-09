@@ -17,6 +17,10 @@
   </div>
 
   <div>
+    <!-- Development only (#2801): Options offers only accessible routing, which the routing network does not support
+    yet. Offer it everywhere again once the network routes accessible trips; its page is gated in map.routes.ts too. -->
+    @if ((isDev | async) === true) {
     <p class="action bold" [routerLink]="['./options']">Options</p>
+    }
   </div>
 </div>
