@@ -95,7 +95,7 @@ export const GraduationColdLayerSources: LayerSource[] = [
       outFields: ['*'],
       // The Event Parking layer (3) also holds the two road closures that layer 2 draws - Olsen Blvd and Reed Arena Loop,
       // with the same object ids and shapes - on both hosts: 15 features, 2 of them `type = 'Closure'`, measured on
-      // 9 November 2026 (#2764). Without this filter every graduation map would draw them as parking as well. Development
+      // 8 November 2026 (#2764). Without this filter every graduation map would draw them as parking as well. Development
       // left them out for a while after #2530's republish, and this comment once said to remove the filter when
       // production did the same; development has them again, so the two hosts agreeing is no reason to remove it.
       // Remove it only when the service stops storing them twice: when
