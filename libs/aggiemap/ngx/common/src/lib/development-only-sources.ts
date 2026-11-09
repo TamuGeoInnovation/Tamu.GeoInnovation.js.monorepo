@@ -28,6 +28,11 @@ export const DEVELOPMENT_ONLY_LAYER_SOURCES: Array<{
     definition: 'NATURE_RX',
     searchSources: ['NATURE_RX', 'NATURE_RX_EXACT'],
     reason: '#2673: Nature Rx is on the map but not ready for production'
+  },
+  {
+    definition: 'MICROMOBILITY',
+    searchSources: [],
+    reason: '#2739: Micromobility, development-only on the main map as its own map is (#2712)'
   }
 ];
 

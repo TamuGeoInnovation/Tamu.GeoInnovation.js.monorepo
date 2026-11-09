@@ -28,7 +28,8 @@ export enum MAIN_MAP_LAYERS {
   CAMPUS_BIKE_LANES = 'bike-lanes-layer',
   BIKE_FIX_STATIONS = 'bike-fix-stations-layer',
   BIKE_RACKS_MAP = 'bike-racks-map-layer',
-  EV_CHARGE_STATIONS = 'ev-charge-stations-layer'
+  EV_CHARGE_STATIONS = 'ev-charge-stations-layer',
+  MICROMOBILITY = 'micromobility-group-layer'
 }
 
 export interface IDefinition {
@@ -62,6 +63,7 @@ export interface IComposedIDefinitions {
   BIKE_FIX_STATIONS: IDefinition;
   BIKE_RACKS_MAP: IDefinition;
   EV_CHARGE_STATIONS: IDefinition;
+  MICROMOBILITY: IDefinition;
 }
 
 export const commonLayerProps = {
@@ -223,6 +225,16 @@ export function MainMapDefinitions(connections: IComposedConnections): IComposed
       layerId: MAIN_MAP_LAYERS.EV_CHARGE_STATIONS,
       name: 'EV Charge Stations (Main + RELLIS)',
       url: `${connections.bikeMapUrl}/0`,
+      popupComponent: Popups.MarkdownPopupComponent
+    },
+    // Transportation's micromobility service (#2739), the one its own map draws (#2712). One definition for the group,
+    // whose layerId is the group's id, so the main map lists it as one entry and a production build can leave the whole
+    // group out (`development-only-sources.ts`).
+    MICROMOBILITY: {
+      id: 'micromobility',
+      layerId: MAIN_MAP_LAYERS.MICROMOBILITY,
+      name: 'Micromobility',
+      url: connections.micromobilityUrl,
       popupComponent: Popups.MarkdownPopupComponent
     }
   };
@@ -530,6 +542,43 @@ export function MainMapLayerSources(
           }
         }
       ],
+      native: {
+        listMode: 'hide-children'
+      }
+    },
+    // Micromobility (#2739): where scooters and bikes can ride, from the service its own map draws. One group, off until
+    // a visitor turns it on, because its three layers are one subject and the list is already long - as Sustainable
+    // Transportation groups the bike layers. The group is ours, so it is titled here; its layers are named and drawn by
+    // the service (docs/map-layers.md). Development-only until #2712's map is (`development-only-sources.ts`).
+    {
+      type: 'group',
+      id: definitions.MICROMOBILITY.layerId,
+      title: definitions.MICROMOBILITY.name,
+      listMode: 'show',
+      visible: false,
+      sources: [
+        ['micromobility-corridor-layer', 0],
+        ['micromobility-allowed-sidewalks-layer', 1],
+        ['micromobility-facilities-layer', 2]
+      ].map(
+        ([id, index]): LayerSource => ({
+          type: 'feature',
+          id: id as string,
+          url: `${definitions.MICROMOBILITY.url}/${index}`,
+          listMode: 'show',
+          visible: true,
+          popupComponent: definitions.MICROMOBILITY.popupComponent,
+          // Every feature is a line with a `name` (e.g. "Restricted Sharrow") and a `notes` that says what kind it is
+          // (e.g. "Roadway", "Slow Zone"), so one popup fits all three, as on the Micromobility map.
+          popupData: {
+            name: '{attributes.name}',
+            description: '<strong>Type</strong>: {attributes.notes}'
+          },
+          native: {
+            ...commonLayerProps
+          }
+        })
+      ),
       native: {
         listMode: 'hide-children'
       }
