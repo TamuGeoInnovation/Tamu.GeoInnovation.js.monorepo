@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle and listening (8:34 PM Central, 8 November).
+- **Batch 37 (#2742)**, started 8:52 PM Central, 8 November: a development-only Sustainable Transportation map in the Transportation section, branched from fix/2744-bike-services-on-dev.
 
 ## Finished
 - **Batch 36 (#2756)** (report `home/reports/2026-11-08-36.md`): folded into PR 2755. TS_Main pinned only at layer 6 (`tsParkingLotsUrl`); construction stays pinned because dev's MapServer returns no geometry. Red then green; check exit 0. Two questions.
