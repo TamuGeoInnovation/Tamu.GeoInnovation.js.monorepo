@@ -6962,3 +6962,66 @@ point.
 
 `work-lab-leila/reports/<date>-25.md`, and say **"report ready: <file>"**. Put a recommendation in it; #2785 has no
 priority yet because the maintainer is away, and your answer is what he will decide on.
+
+## Batch 26 (9 November 2026, from `work (aggiemap)`) — #2785: build the fix you found (High)
+
+**Batch 25 is the best piece of research this repository has had in a while.** You went to the SDK's own source,
+found a documented public property that answers the question exactly, and proved it against three independent signals
+on ten loads. The maintainer set #2785 to **High** on the strength of it and asked for you to build it.
+
+**Your batch 24 and 25 findings are on GitHub, attributed to this machine and its reports** —
+[#2702](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2702#issuecomment-6742455431) and
+[#2785](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2785#issuecomment-6742461825). The
+login question goes to the maintainer; you were right not to work around it.
+
+### What to build
+
+In `libs/maps/esri/src/lib/services/map/click-query.ts`, `queryPopupLayersAtClick` currently asks only layers whose
+layer view is still drawing:
+
+```ts
+return layerView ? !layerView.suspended && layerView.updating : layer.visible;
+```
+
+Add your condition: **also ask a layer whose view is not suspended and reports `!hasAllFeaturesInView`.**
+
+**The property the original fix was careful to keep must survive:** a click on bare ground on a **fully drawn and
+complete** map sends no request and opens nothing. Prove that still holds; it is the thing that stops every click
+becoming a server round trip.
+
+### Red first, and it has to be a real red
+
+`click-query.spec.ts` exists from PR 2718. Add the case: a layer view that is **settled** (`updating: false`) and
+**incomplete** (`hasAllFeaturesInView: false`) is asked. On today's code it is not asked, so the test fails; with the
+change it passes. Say the counts both ways.
+
+**Then prove it where it matters.** A unit test with a stubbed layer view proves the condition, not the fault. If you
+can force a failed tile on development — the buildings layer drops about 4% of its tile queries, and home forced one
+under Reed Arena — then show a click in that region opening the right popup with the change and nothing without it.
+**If you cannot force one, say so plainly** rather than implying you did; the unit test plus your batch 25 evidence is
+an honest case on its own.
+
+### Watch for
+
+- **Cost.** `hasAllFeaturesInView` stays false for the whole visit on an affected layer, so every subsequent click in
+  that map asks that layer. That is the point, but say what it costs: how many queries a click makes on a map with one
+  incomplete layer, and whether it is worth bounding.
+- **Which layers.** The same filter still applies - only layers with a `popupComponent` that can be queried.
+- **3D.** `click-query.ts` takes a `MapView | SceneView`. Say whether the property exists and behaves the same on a
+  scene view, or scope the condition to 2D and write why.
+
+### Branch and boundaries
+
+`fix/2785-incomplete-layer-click` from `origin/development` at **`5402925f8`**, pushed to the fork, `.pr-body.md` as the
+last commit. **No pull request** — I open it.
+
+**Do not touch** `libs/aggiemap/ngx/common/src/lib/definitions/main.definitions.ts`, `connections.ts`, or
+`test/smoke/aggiemap/`: home is in them for #2707 and its branch lands first. If you need something in those files,
+stop and tell me.
+
+This is user-visible (a click that did nothing now opens a popup), so: before and after, a release-notes entry with its
+*What to test on dev* row, and `scripts/check-in-volume.sh` with its exit code in your report.
+
+### The report
+
+`work-lab-leila/reports/<date>-26.md`, and say **"report ready: <file>"**.
