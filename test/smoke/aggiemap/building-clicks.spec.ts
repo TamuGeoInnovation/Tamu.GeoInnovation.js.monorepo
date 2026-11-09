@@ -190,6 +190,7 @@ async function targets(page: Page): Promise<Target[]> {
         popupComponent?: unknown;
         popupData?: Record<string, unknown>;
         queryFeatures?(query: object): Promise<{ features: Feature[] }>;
+        createQuery?(): Record<string, unknown>;
       };
       type View = {
         extent: object;
@@ -262,7 +263,11 @@ async function targets(page: Page): Promise<Target[]> {
         // The services fail some queries at random (#2702), this one included, so each is asked up to three times.
         for (let attempt = 1; attempt <= 3; attempt++) {
           try {
+            // From the layer's own `createQuery()`, which carries its `definitionExpression`: a plain query object does
+            // not (#1954), and would offer features the map does not draw, whose clicks miss by design. Sampling the
+            // rows a filter removes and then measuring the filter cost a morning on 9 November 2026 (#2794).
             const query = {
+              ...(layer.createQuery?.() ?? {}),
               geometry: view.extent,
               outSpatialReference: view.spatialReference,
               returnGeometry: true,
