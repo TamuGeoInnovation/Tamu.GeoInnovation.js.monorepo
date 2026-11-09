@@ -3515,3 +3515,44 @@ code.
 ### The report
 
 `home/reports/<date>-42.md`, **"report ready"**, branch to the fork, `.pr-body.md` last, no pull request.
+
+## Batch 43 (9 November 2026, from `work (aggiemap)`) — #2801: hide the trip planner's Options on production (High, do now)
+
+**Batch 42 is open as [PR 2798](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2798) and the maintainer has merged it, along with 2790 and 2795.** The red you built for it —
+development served as production, failing rather than skipping, `Expected 0 Received 1` — is exactly the shape I asked
+for after the lab's `bus.spec.ts` finding, and it is why I could open it without checking the gate myself.
+
+### The work
+
+The maintainer's words, 12:21 PM Central:
+
+> We need to disable the option to select ADA routing since it is not currently supported in the network. I recommend
+> that we simply hide the options panel (both the leave now and options link) on the production release as the immediate
+> solution. Both should remain available on dev, but not be visible on prod.
+
+**Half of it is already true.** In
+`libs/maps/feature/trip-planner/src/lib/components/trip-planner-mode-picker/containers/base/base.component.html`, the
+time picker is already behind `@if ((isDev | async) === true)`, fed by `TestingService`'s `isTesting`. **The Options
+link beside it is not**, and it opens a panel whose only control is *Accessible Friendly Directions*.
+
+1. **Gate the Options link the same way.**
+2. **Check the container does not leave an empty bar** on production with both children gone. Look at it; do not assume.
+3. **Gate the route, not only the link.** `./options` is a router link, so hiding the link leaves the page reachable by
+   address — the same fault #2788 was filed for one level up. You now have `DevelopmentOnlyMapGuard` reading
+   `developmentOnly` from route data; say whether it fits here or whether this needs something else.
+4. **Record it in `DEVELOPMENT_ONLY_CONTROLS`** in `test/smoke/aggiemap/development-only.ts`, with the address that
+   brings it up — it is a control, not a sidebar tab. **The check must fail on today's code, not skip**, as yours did
+   for #2788.
+
+### The reason goes in the code
+
+This hides a control; it does not fix the network. Put the reason beside the gate with the issue number — that
+accessible routing is not supported by the routing network — so whoever can turn it back on knows what has to be true
+first. A gate with no reason beside it is how PR 1526 removed a fill that existed for a reason, which cost us most of
+this morning.
+
+### The report
+
+`home/reports/<date>-43.md`, **"report ready"**, branch to the fork, `.pr-body.md` last, no pull request. Visible
+change, so before and after on production and dev, a release-notes entry with its *What to test on dev* row, and the
+check's exit code.
