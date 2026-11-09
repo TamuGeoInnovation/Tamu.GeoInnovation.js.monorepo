@@ -60,6 +60,17 @@ const ALLOWED = allowedFailures();
 const RETIRED = retiredConnections();
 
 const connections = Connections(GIS_HOST) as unknown as Record<string, unknown>;
+
+/** The same services as production reads them, to tell a service development cannot read from one nobody serves (#2744). */
+const PRODUCTION_GIS_HOST = 'gis.it.tamu.edu';
+const production = Connections(PRODUCTION_GIS_HOST) as unknown as Record<string, unknown>;
+
+/**
+ * The answers that mean a browser with no token cannot read a service: 499 "Token Required" and 404 "Service not
+ * found", which ArcGIS also gives a service that exists but is not shared. Neither says whether the service exists - a
+ * nonsense path answers 499 too (#2653) - but each proves a development build cannot draw it.
+ */
+const UNREADABLE = /^(499|404)/;
 const services = Object.entries(connections).filter(
   (entry): entry is [string, string] => typeof entry[1] === 'string' && /^https?:\/\//.test(entry[1])
 );
@@ -108,6 +119,22 @@ test.describe(`GIS services (${GIS_HOST})`, () => {
       test.skip(retiredIn !== undefined, `used only by retired maps: ${retiredIn?.join(', ')}`);
 
       const problem = await problemWith(request, url);
+
+      // A service development cannot read while production serves it is not a known failure but a missing pin: the
+      // layer draws nothing on the only environment it can be tested on. #1005 allowed the bike services for a year
+      // like that. So no allow-list entry covers it (#2744).
+      const productionUrl = production[name];
+
+      if (GIS_HOST !== PRODUCTION_GIS_HOST && problem && UNREADABLE.test(problem) && typeof productionUrl === 'string' && productionUrl !== url) {
+        const productionProblem = await problemWith(request, productionUrl);
+
+        expect(
+          productionProblem,
+          `${name}: a development build cannot read ${url} ("${problem}"), and production serves ${productionUrl}. ` +
+            'Read it from production on development: add it to READ_FROM_PRODUCTION_ON_DEVELOPMENT in connections.ts, with why.'
+        ).not.toBeNull();
+      }
+
       const known = ALLOWED[name];
 
       if (known) {

@@ -21,7 +21,7 @@
   </span>
   }
 
-  <p role="switch" tabindex="0" [attr.aria-checked]="s.visible" (click)="toggleLayer()" (keydown.enter)="toggleLayer()" (keydown.space)="toggleLayer(); $event.preventDefault()">{{ s.title }}@if (item.layer?.['listNote']) { - {{ item.layer['listNote'] }} }</p>
+  <p role="switch" tabindex="0" [attr.aria-checked]="s.visible" (click)="toggleLayer()" (keydown.enter)="toggleLayer()" (keydown.space)="toggleLayer(); $event.preventDefault()">{{ s.title }}@if (item.layer?.['listNote']) { - {{ item.layer['listNote'] }} }@if (item.layer?.['readFromProduction']) { <span class="read-from-production" [title]="'Read from production: ' + item.layer['readFromProduction']">production data</span> }</p>
 
   @if (item.layer['description']) {
   <tamu-gisc-tooltip width="20rem" height="25rem" [positioningStrategy]="'fixed'">

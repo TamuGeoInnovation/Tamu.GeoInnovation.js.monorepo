@@ -1,11 +1,72 @@
 import { TAMU_CAMPUS_BASEMAP_URL } from '@tamu-gisc/common/datasets/geographic';
+import type { LayerSource } from '@tamu-gisc/common/types';
 
 import { actingAsProduction } from './acting-as-production';
 
 /** Transportation's own host, where production reads its services (#2653). */
 const PRODUCTION_TS_HOST = 'arc.ts.tamu.edu';
 
+/** The production GIS server, which a development build reads the services below from. */
+const PRODUCTION_GIS_HOST = 'gis.it.tamu.edu';
+
+const NO_HOSTED_VIEW_ON_DEVELOPMENT =
+  "the development server has only the older MapServer the hosted view replaced, which lacks objectid (the search sources and share links are built on it) and the view's other fields";
+const RETIRED = 'a retired 150th-anniversary event, with no counterpart on the development server';
+const TOKEN_REQUIRED = 'the development server has this service but answers 499 "Token Required", so a development build cannot read it';
+
+/**
+ * The services a development build reads from production, because the development server cannot serve them to a
+ * browser, each with why. It is the one list behind both the pin and the Layers list's marker (#2744): `Connections`
+ * reads each from production on a development host, and `markReadFromProduction` marks every layer drawn from one, so
+ * a layer cannot be pinned without being marked or marked without being pinned.
+ *
+ * Transportation's are the list to take to Transportation (#2653): publish the hosted view on the development server,
+ * unsecured, and the map becomes testable there. Measured 5 November 2026 against both hosts, by layer id, layer name
+ * and field list. Being on the development server is not enough: 4-H Roundup's view was, and answered 499 (#2695).
+ * `services.spec.ts` in the smoke suite fails on a service a development build cannot read while production serves it.
+ */
+export const READ_FROM_PRODUCTION_ON_DEVELOPMENT: Partial<Record<keyof IComposedConnections, string>> = {
+  tsMainUrl:
+    'layer 6 on the development server lacks the GIS.TS.SPC_PNT_CNT.* space counts, which the parking search and drive directions read',
+  accessibleParkingUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
+  beefCattleUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
+  constructionUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
+  familyWeekendUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
+  fireSchoolUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
+  gamesOfTexasUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
+  maroonWhiteGameUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
+  moveInParkingUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
+  ms150Url: NO_HOSTED_VIEW_ON_DEVELOPMENT,
+  ringDayUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
+  summerCommencementUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
+  tCampUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
+  fourHRoundupUrl: `${TOKEN_REQUIRED} (#2695)`,
+  micromobilityUrl: `${TOKEN_REQUIRED} (#2712)`,
+  bikeMapUrl: `${TOKEN_REQUIRED} (#2744)`,
+  bikeRacksUrl: `${TOKEN_REQUIRED} (#2744)`,
+  // Named on gis.tamu.edu outright below, so these read production everywhere already; listed so the Layers list marks them.
+  lactationRoomsUrl: 'the development server does not have this service (#1963)',
+  natureRxUrl: `${TOKEN_REQUIRED} (#2630)`,
+  kickoff150thUrl: RETIRED,
+  kickoffAtKyleUrl: RETIRED,
+  liveAtTheStationUrl: RETIRED,
+  spiritOf150WeekUrl: RETIRED
+};
+
 function createConnections(gisHost: string): IComposedConnections {
+  const own = servicesOn(gisHost);
+
+  if (!gisHost.includes('dev')) {
+    return own;
+  }
+
+  const production = servicesOn(PRODUCTION_GIS_HOST);
+  const keys = Object.keys(READ_FROM_PRODUCTION_ON_DEVELOPMENT) as Array<keyof IComposedConnections>;
+
+  return { ...own, ...Object.fromEntries(keys.map((key) => [key, production[key]])) };
+}
+
+function servicesOn(gisHost: string): IComposedConnections {
   // Transportation's services (#2653). Production serves them from Transportation's own host, most of them in its
   // `TS_Events` folder. Development serves them from the development GIS server, which has no `TS_Events` folder but a
   // `TS` folder whose services have the same names, layers and fields - measured on 5 November 2026 for every service
@@ -38,16 +99,11 @@ function createConnections(gisHost: string): IComposedConnections {
     // development; it is named on gis.tamu.edu outright, as `lactationRoomsUrl` is, and development reads
     // production's spaces. Restore `${gisHost}` if it is ever published unsecured on development.
     natureRxUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/NatureRx_view/FeatureServer/0',
-    // The services named on `PRODUCTION_TS_HOST` below are read from production on every environment, because the development
-    // server cannot serve them yet: it has only the older MapServer each hosted view replaced, without `objectid`
-    // (which the search sources and share links are built on) and the view's other fields, or, for the four retired
-    // 150th-anniversary events, nothing. `connections.spec.ts` lists each with why, and fails on one pinned without
-    // a reason (#2653). Publishing the hosted view on the development server is what lets one move.
-    constructionUrl: `https://${PRODUCTION_TS_HOST}/arcgis/rest/services/Hosted/TSConstruction_Hosted/FeatureServer/0`,
+    // A development build reads the services in `READ_FROM_PRODUCTION_ON_DEVELOPMENT` from production, whatever they
+    // are written as here; the list says why for each (#2653, #2744).
+    constructionUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/TSConstruction_Hosted/FeatureServer/0`,
     departmentUrl: `https://${gisHost}/arcgis/rest/services/FCOR/DepartmentSearch/MapServer/1`,
-    // Read from production on every environment: layer 6 on the development server lacks the `GIS.TS.SPC_PNT_CNT.*`
-    // space counts that the parking search and drive directions read (#2653).
-    tsMainUrl: `https://${PRODUCTION_TS_HOST}/arcgis/rest/services/TS_Events/TS_Main/MapServer`,
+    tsMainUrl: `${tsEvents}/TS_Main/MapServer`,
     // Night-privilege lots, used by drive directions. Moved from the `TS` folder to `TS_Events` (#1162).
     nightParkingUrl: `${tsEvents}/AVPVisBSUBVenNWRetNSCMed/MapServer/6`,
     // TS/TS_Bicycles no longer exists on the production GIS server, and on dev its layer 3 is bike lanes.
@@ -63,9 +119,9 @@ function createConnections(gisHost: string): IComposedConnections {
     poiUrl: 'https://services1.arcgis.com/oxXAea6csqnDZ6WT/arcgis/rest/services/Points_of_Interest_view/FeatureServer',
     diningLocationsUrl: `https://api.aggiemap.tamu.edu/dining/locations/geojson`,
     aggiePrintUrl: 'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/TAMUPrinters/FeatureServer',
-    maroonWhiteGameUrl: `https://${PRODUCTION_TS_HOST}/arcgis/rest/services/Hosted/Maroon_White_Game_view/FeatureServer`,
-    accessibleParkingUrl: `https://${PRODUCTION_TS_HOST}/arcgis/rest/services/Hosted/AccessibleParking_view/FeatureServer`,
-    kickoff150thUrl: `https://${PRODUCTION_TS_HOST}/arcgis/rest/services/Hosted/150th_Kickoff/FeatureServer`,
+    maroonWhiteGameUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Maroon_White_Game_view/FeatureServer`,
+    accessibleParkingUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/AccessibleParking_view/FeatureServer`,
+    kickoff150thUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/150th_Kickoff/FeatureServer`,
     aggieFamilyParadeUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Aggie_Family_Parade_view/FeatureServer`,
     aggielandSaturdayUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/AggielandSaturday_view/FeatureServer`,
     avpParkingUrl: `${tsEvents}/AnyValidPermitParking/MapServer`,
@@ -75,14 +131,14 @@ function createConnections(gisHost: string): IComposedConnections {
     businessParkingUrl: `${tsEvents}/BusinessParking/MapServer`,
     contractorParkingUrl: `${tsEvents}/ContractorParking/MapServer`,
     crossCountryParkingUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/CrossCountryParking_view/FeatureServer`,
-    familyWeekendUrl: `https://${PRODUCTION_TS_HOST}/arcgis/rest/services/Hosted/Family_Weekend_view/FeatureServer`,
+    familyWeekendUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Family_Weekend_view/FeatureServer`,
     freshmanParkingUrl: `${tsEvents}/FreshmanSelectableParking/MapServer`,
     graduationParkingUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/GraduationParking_view/FeatureServer`,
     hsGraduationUrl: `${tsEvents}/HS_Graduation/MapServer`,
     indoorTrackParkingUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/IndoorTrackParking_view/FeatureServer`,
     loadingZonesUrl: `${tsEvents}/Loading_Zones/MapServer`,
-    kickoffAtKyleUrl: `https://${PRODUCTION_TS_HOST}/arcgis/rest/services/Hosted/Kickoff_at_Kyle/FeatureServer`,
-    liveAtTheStationUrl: `https://${PRODUCTION_TS_HOST}/arcgis/rest/services/Hosted/Live_at_the_Station/FeatureServer`,
+    kickoffAtKyleUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Kickoff_at_Kyle/FeatureServer`,
+    liveAtTheStationUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Live_at_the_Station/FeatureServer`,
     maintenanceParkingUrl: `${tsEvents}/MaintenanceParking/MapServer`,
     mediaParkingUrl: `${tsEvents}/MediaParking/MapServer`,
     // Moved to the production GIS server for the editor map (#1749); not on the transportation host, so named outright.
@@ -99,9 +155,9 @@ function createConnections(gisHost: string): IComposedConnections {
       : 'https://gis.tamu.edu/arcgis/rest/services/Hosted/MBskt_view/FeatureServer',
     motorcycleParkingUrl: `${tsEvents}/MotorcycleParking/MapServer`,
     motoristAssistanceUrl: `${tsEvents}/MotoristAssistance/MapServer`,
-    moveInParkingUrl: `https://${PRODUCTION_TS_HOST}/arcgis/rest/services/Hosted/FallMoveInParking_view/FeatureServer`,
+    moveInParkingUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/FallMoveInParking_view/FeatureServer`,
     moveOutParkingUrl: `${tsEvents}/MoveOutParking/MapServer`,
-    ms150Url: `https://${PRODUCTION_TS_HOST}/arcgis/rest/services/Hosted/MS150_view/FeatureServer`,
+    ms150Url: `https://${tsgisHost}/arcgis/rest/services/Hosted/MS150_view/FeatureServer`,
     // Development publishes Muster under another name, with the same layers and fields (#2653).
     musterUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/${development ? 'MusterParking_view' : 'Muster_view'}/FeatureServer`,
     nightWeekendParkingUrl: `${tsEvents}/NightWeekendParking/MapServer`,
@@ -109,16 +165,16 @@ function createConnections(gisHost: string): IComposedConnections {
     outdoorTrackParkingUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/OutdoorTrackParking_view/FeatureServer`,
     physicsFestUrl: `${tsEvents}/Physics_Fest/MapServer`,
     retireeParkingUrl: `${tsEvents}/RetireeParking/MapServer`,
-    ringDayUrl: `https://${PRODUCTION_TS_HOST}/arcgis/rest/services/Hosted/Ring_Day_view/FeatureServer`,
+    ringDayUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Ring_Day_view/FeatureServer`,
     savannahBananasUrl: `https://${gisHost}/arcgis/rest/services/TS/SavannahBananas/MapServer`,
     secGroundsConferenceUrl: `${tsEvents}/SEC_Grounds_Conference/MapServer`,
     soccerParkingUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/SoccerParking_view/FeatureServer`,
     softballParkingUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/SoftballParking_view/FeatureServer`,
     softballRegionalsUrl: `https://${gisHost}/arcgis/rest/services/TS/Softball_Regionals/MapServer`,
-    spiritOf150WeekUrl: `https://${PRODUCTION_TS_HOST}/arcgis/rest/services/Hosted/Spirit_of_150_Week/FeatureServer`,
+    spiritOf150WeekUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Spirit_of_150_Week/FeatureServer`,
     staffParkingUrl: `${tsEvents}/StaffSelectableParking/MapServer`,
     studentParkingUrl: `${tsEvents}/StudentSelectableParking/MapServer`,
-    summerCommencementUrl: `https://${PRODUCTION_TS_HOST}/arcgis/rest/services/Hosted/Summer_Commencement_view/FeatureServer`,
+    summerCommencementUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Summer_Commencement_view/FeatureServer`,
     swimmingParkingUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/SwimmingParking_view/FeatureServer`,
     tennisParkingUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/TennisParking_view/FeatureServer`,
     timedParkingUrl: `${tsEvents}/TimedParking/MapServer`,
@@ -127,18 +183,13 @@ function createConnections(gisHost: string): IComposedConnections {
     visitorParkingUrl: `${tsEvents}/VisitorParking/MapServer`,
     volleyballParkingUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/VolleyballParking_view/FeatureServer`,
     womensBasketballUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/WomensBasketballParking_view/FeatureServer`,
-    // Read from production on every environment: the development server has this view but answers 499
-    // "Token Required", so a development build cannot read it at all (#2695). #2653 moved it on the strength
-    // of the view existing on dev with matching fields, which is the wrong question - what matters is whether
-    // a browser with no token can read it.
-    fourHRoundupUrl: `https://${PRODUCTION_TS_HOST}/arcgis/rest/services/Hosted/4H_Roundup_view/FeatureServer`,
+    fourHRoundupUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/4H_Roundup_view/FeatureServer`,
     // Published on the development GIS server only (#2713), so named there outright, as `busRoutesUrl` is, and read
     // from that server on every environment, localhost included. The map is development-only until Texas A&M is
     // announced as a host; moving it means naming the production service here.
     ncaaVolleyballUrl: 'https://gis.dev.tamu.edu/arcgis/rest/services/Hosted/NCAA_Volleyball_view/FeatureServer',
-    // Read from production on every environment, as `fourHRoundupUrl` is: the development server answers 499 "Token
-    // Required" (#2712). The map is development-only until the maintainer moves it, so production never reads it.
-    micromobilityUrl: `https://${PRODUCTION_TS_HOST}/arcgis/rest/services/Hosted/Micromobility_Map_WFL1_view/FeatureServer`,
+    // The map is development-only until the maintainer moves it, so production never reads it (#2712).
+    micromobilityUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Micromobility_Map_WFL1_view/FeatureServer`,
     gisDayUrl:
       'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/MSC_and_Rudder_Building_Polygon_Layer/FeatureServer',
     argentinaVsHondurasUrl: `https://${gisHost}/arcgis/rest/services/TS/Argentina_vs_Honduras26/MapServer`,
@@ -149,10 +200,10 @@ function createConnections(gisHost: string): IComposedConnections {
     // cannot import this one.
     busRoutesUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Bus_Routes_view/FeatureServer`,
     fishCampUrl: `${tsEvents}/Fish_Camp/MapServer`,
-    tCampUrl: `https://${PRODUCTION_TS_HOST}/arcgis/rest/services/Hosted/T_Camp_view/FeatureServer`,
-    fireSchoolUrl: `https://${PRODUCTION_TS_HOST}/arcgis/rest/services/Hosted/Municipal_Fire__School_Vendor_Show_view/FeatureServer`,
-    beefCattleUrl: `https://${PRODUCTION_TS_HOST}/arcgis/rest/services/Hosted/Beef_Cattle_Vendor_Load_In_view/FeatureServer`,
-    gamesOfTexasUrl: `https://${PRODUCTION_TS_HOST}/arcgis/rest/services/Hosted/Games_of_Texas_view/FeatureServer`,
+    tCampUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/T_Camp_view/FeatureServer`,
+    fireSchoolUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Municipal_Fire__School_Vendor_Show_view/FeatureServer`,
+    beefCattleUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Beef_Cattle_Vendor_Load_In_view/FeatureServer`,
+    gamesOfTexasUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Games_of_Texas_view/FeatureServer`,
     // Satellite-campus basemaps. These are fixed `gis.tamu.edu` hosted services (not tied to
     // gisHost/tsgisHost), each with a companion FeatureServer of the same name used for search.
     galvestonBasemapUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/GalBase2/VectorTileServer',
@@ -206,12 +257,43 @@ export function readsDevelopmentGisServer(
  * - tsgisHost: 'gis.dev.tamu.edu' / 'arc.ts.tamu.edu'
  */
 export function getDefaultGisHosts() {
-  const gisHost = readsDevelopmentGisServer() ? 'gis-dev.it.tamu.edu' : 'gis.it.tamu.edu';
+  const gisHost = readsDevelopmentGisServer() ? 'gis-dev.it.tamu.edu' : PRODUCTION_GIS_HOST;
   // Transportation's services on the development server are under `TS`, not production's `TS_Events`; `Connections`
   // applies that and names the services development cannot serve yet (#2653).
   const tsgisHost = readsDevelopmentGisServer() ? 'gis.dev.tamu.edu' : PRODUCTION_TS_HOST;
 
   return { gisHost, tsgisHost } as { gisHost: string; tsgisHost: string };
+}
+
+/**
+ * The sources a development build reads from production, each given the reason as `readFromProduction`, which the
+ * Layers list shows as a marker (#2744). Read from `READ_FROM_PRODUCTION_ON_DEVELOPMENT`, the list `Connections` pins
+ * by, so the marker and the pin cannot disagree. A source counts when its URL is a listed service or one of its layers;
+ * a group's children are marked in place. Where `gisHost` is production's, nothing is read from production for want of
+ * a development service, and the sources come back as they are - so the marker never appears on production.
+ */
+export function markReadFromProduction(sources: LayerSource[], gisHost = getDefaultGisHost()): LayerSource[] {
+  if (!gisHost.includes('dev')) {
+    return sources;
+  }
+
+  const production = servicesOn(PRODUCTION_GIS_HOST);
+  const pinned = (Object.entries(READ_FROM_PRODUCTION_ON_DEVELOPMENT) as Array<[keyof IComposedConnections, string]>).map(
+    ([key, reason]) => ({ url: production[key], reason })
+  );
+  const reasonFor = (url: unknown) =>
+    typeof url === 'string' ? pinned.find((pin) => url === pin.url || url.startsWith(`${pin.url}/`))?.reason : undefined;
+
+  return sources.map((source) => {
+    const children = (source as { sources?: LayerSource[] }).sources;
+    const reason = reasonFor((source as { url?: unknown }).url);
+
+    return {
+      ...source,
+      ...(children ? { sources: markReadFromProduction(children, gisHost) } : {}),
+      ...(reason ? { readFromProduction: reason } : {})
+    } as LayerSource;
+  });
 }
 
 export type IConnectionsFactory = ((gisHost: string) => IComposedConnections) & IComposedConnections;
