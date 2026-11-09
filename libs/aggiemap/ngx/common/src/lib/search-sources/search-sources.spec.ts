@@ -18,6 +18,7 @@ describe('SearchSources', () => {
   const connections = {
     basemapUrl: 'https://example.com/basemap',
     buildingsUrl: 'https://example.com/buildings/FeatureServer/0',
+    surfaceLotsUrl: 'https://example.com/buildings/FeatureServer/6',
     departmentUrl: 'https://example.com/department',
     bikeRacksUrl: 'https://example.com/bike-racks',
     accessibleUrl: 'https://example.com/accessible',
@@ -226,10 +227,12 @@ describe('SearchSources', () => {
     expect(parkingLot?.urlQueryParam).toBe('lot');
     expect(parkingLot?.urlQueryParamAliases).toEqual(['Lot']);
 
-    // `?lot=077` (zero-padded, as TS parking map links are) has to match on FAC_CODE; `?lot=77`
-    // matches on Name. Dropping either key makes one of the two link styles unresolvable.
+    // `?lot=077` (zero-padded, as TS parking map links are) has to match on fac_code; `?lot=77`
+    // matches on name. Dropping either key makes one of the two link styles unresolvable. The lots come from the
+    // surface lots service, whose field names are lower case (#2722).
+    expect(parkingLot?.url).toBe(connections.surfaceLotsUrl);
     expect(parkingLot?.queryParams?.where).toEqual({
-      keys: ['LotName', 'Name', 'FAC_CODE'],
+      keys: ['lotname', 'name', 'fac_code'],
       operators: ['LIKE', 'LIKE', 'LIKE'],
       wildcards: ['includes', 'includes', 'includes'],
       transformations: ['UPPER', 'UPPER', 'UPPER']
@@ -238,7 +241,7 @@ describe('SearchSources', () => {
     // Multiple polygons share a lot's name and facility code. Without an explicit ordering the
     // service answers in OBJECTID order and `features[0]` lands on whichever loading, restricted,
     // or visitor sub-area was digitized first - the Lot 77 and Lot 97 deep link defect.
-    expect(parkingLot?.queryParams?.orderByFields).toBe('AggieMap DESC, CIT_CODE ASC');
-    expect(parkingLot?.scoringKeys).toEqual(['attributes.Name', 'attributes.FAC_CODE', 'attributes.LotName']);
+    expect(parkingLot?.queryParams?.orderByFields).toBe('aggiemap DESC, cit_code ASC');
+    expect(parkingLot?.scoringKeys).toEqual(['attributes.name', 'attributes.fac_code', 'attributes.lotname']);
   });
 });

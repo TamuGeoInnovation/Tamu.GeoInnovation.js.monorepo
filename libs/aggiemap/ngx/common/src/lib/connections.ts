@@ -1,4 +1,8 @@
-import { TAMU_CAMPUS_BASEMAP_URL, TAMU_CAMPUS_STRUCTURES_URL } from '@tamu-gisc/common/datasets/geographic';
+import {
+  TAMU_CAMPUS_BASEMAP_URL,
+  TAMU_CAMPUS_STRUCTURES_URL,
+  TAMU_CAMPUS_SURFACE_LOTS_URL
+} from '@tamu-gisc/common/datasets/geographic';
 
 import { actingAsProduction } from './acting-as-production';
 
@@ -55,10 +59,10 @@ export const READ_FROM_PRODUCTION_ON_DEVELOPMENT: Partial<Record<keyof IComposed
   // Named on gis.tamu.edu outright below, so these read production everywhere already; listed so the Layers list marks them.
   lactationRoomsUrl: 'the development server does not have this service (#1963)',
   natureRxUrl: `${TOKEN_REQUIRED} (#2630)`,
-  // Not `basemapUrl` or `buildingsUrl`, deliberately, though both read production on every environment too. Their
-  // layers - Surface Lots and Buildings on the main map - are the campus basemap's own data, which reads production
-  // everywhere by design, so a marker on the busiest layers on the map would be noise rather than information. Decided
-  // by the maintainer, 8 November 2026; `connections.spec.ts` fails if either is added.
+  // Not `basemapUrl`, `buildingsUrl` or `surfaceLotsUrl`, deliberately, though all three read production on every
+  // environment too. Their layers - Buildings and Surface Lots on the main map - are the campus basemap's own data, which
+  // reads production everywhere by design, so a marker on the busiest layers on the map would be noise rather than
+  // information. Decided by the maintainer, 8 November 2026; `connections.spec.ts` fails if any is added.
   kickoff150thUrl: RETIRED,
   kickoffAtKyleUrl: RETIRED,
   liveAtTheStationUrl: RETIRED,
@@ -101,6 +105,8 @@ function servicesOn(gisHost: string): IComposedConnections {
     // The buildings: the Buildings layer and the building search sources (#2707). Named on gis.tamu.edu outright, as
     // `basemapUrl` is; `campus-basemap.ts` says what it is and why it replaced layer 1 of `basemapUrl`.
     buildingsUrl: TAMU_CAMPUS_STRUCTURES_URL,
+    // The surface parking lots: the Surface Lots layer and the lot search (#2722). As `buildingsUrl`.
+    surfaceLotsUrl: TAMU_CAMPUS_SURFACE_LOTS_URL,
     inforUrl: `https://${gisHost}/arcgis/rest/services/FCOR/MapInfo_20190529/MapServer`,
     accessibleUrl: `https://${gisHost}/arcgis/rest/services/FCOR/ADA_120717/MapServer/0`,
     // Lactation rooms, a hosted service from Facilities Analytics & Mapping that replaced layer 2 of
@@ -336,6 +342,7 @@ export const Connections: IConnectionsFactory = Object.assign(
 export interface IComposedConnections {
   basemapUrl: string;
   buildingsUrl: string;
+  surfaceLotsUrl: string;
   inforUrl: string;
   accessibleUrl: string;
   lactationRoomsUrl: string;
