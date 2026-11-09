@@ -6682,3 +6682,48 @@ half of what it claims is worse than one with a stated limit.
 ### The report
 
 `work-lab-leila/reports/<date>-20.md`, and say **"report ready: <file>"**.
+
+## Batch 21 (9 November 2026, from `work (aggiemap)`) — #2764 and a decision to record (Medium)
+
+**Batch 20 is [PR 2762](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2762), open and
+ready.** I re-ran your check against `development` **with #2743 actually merged in**, rather than the throwaway branch,
+because the bus map landed while your branch was in review and touches the same `development-only.ts`: exit 0 on the
+merge. Your `merge-tree` instinct was right, and now it is proven on the real thing.
+
+**The five findings were all real**, and the three `runTimeGate` declarations are the part I expect to matter most
+later — "gated somewhere in a template" was previously knowledge that lived in nobody's head.
+
+Both of your questions were answered as you proposed: the route-fitting fault is filed as
+[#2763](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2763) (Bug, Low, the maintainer's
+call), and the "MAIN-MAP" chip stays.
+
+### 1. [#2764](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2764): a comment that would break production if believed
+
+`graduation.definitions.ts` says development's Event Parking layer holds no road closures and tells the reader to
+delete the `Type <> 'Closure'` filter once production matches. **Development's view now holds them too** — I measured
+both hosts: 15 features, 2 closures, on each. So the filter is needed on both, and deleting it would draw Olsen Blvd
+and Reed Arena Loop as parking on every graduation map.
+
+**Measure it yourself before writing the correction** — do not take my numbers. The issue says what I asked and how;
+if you get a different answer, that is the more interesting result and I want it.
+
+The correction's exit condition should be something a reader can check **against the service**, not against the other
+environment, because the two environments now agree and the duplication is still there.
+
+### 2. Record a decision that currently lives only in a chat
+
+The maintainer decided (8 November 2026) that **the campus basemap's own data layers — Buildings, Surface Lots — are
+deliberately not marked "production data" on development**, although they are read from production like the nine
+layers [PR 2755](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2755) labelled. The reason:
+they arrive with the basemap, which reads production on every environment by design, so a label on the busiest layer
+on the map would be noise rather than information.
+
+**Put that beside `READ_FROM_PRODUCTION_ON_DEVELOPMENT` in `connections.ts`**, where the next person deciding whether
+to add `basemapUrl` to the list will actually be standing. A decision recorded only in a conversation is the thing
+this repository keeps learning it cannot rely on — #2112, #2536 and tonight's #2764 are all the same shape.
+
+This is small; it can share #2764's pull request or go in its own. Say which you chose.
+
+### The report
+
+`work-lab-leila/reports/<date>-21.md`, and say **"report ready: <file>"**.
