@@ -48,6 +48,7 @@ Last written **1:07 PM Central, 8 November 2026**. A listener; job: testing.
 
 ## Finished
 
+- **Batch 17 (aggiemap): the lot-links host, then #2702's check** (5:10 to 6:04 PM, 8 November). `test/lot-links-host` at `c52339b88`: `lot-links.spec.ts` reads the environment's own host, and `?feature=` takes its id from the same place (no skip); 5 of 5 on dev and production, check exit 0. `test/2702-basemap-requests` at `fd5c547c6`: a new `basemap-requests.spec.ts`, ten loads at 1280 x 950, fails above 4% (about 1 run in 2,300 at today's 1.5%) and logs the rate each run; the failures are HTTP 200, which is why nothing saw them. Passes on both environments, fails with a 0 ceiling, check exit 0. Both need an issue filed. Report 2026-11-08-17.
 - **Batch 16 (aggiemap): the quick tier on the new dev build** (3:44 to 4:58 PM, 8 November). Tested **`main-PY3WPWXJ.js`** (unchanged from start to end), suite at `0d01f5278`: **849 passed, 10 failed, 1 flaky** (#2702). The 4-H failures are gone, the #2707 click check passes, both `?busstop=` tests pass (Blinn = 2), Nature Rx still fails. Failures: 5 known (#2701 x4, Nature Rx) and 5 `lot-links` from the test reading production's ids (`Connections` default), not the build. Micromobility is in the set but isn't on All Maps, so the crawl never loads it. An earlier run on `main-332CAWUY.js` (finished before the STOP) agrees. Report 2026-11-08-16.
 - **Batch 15 (aggiemap): bus routes from the hosted view, #2636** (2:13 to 2:45 PM, 8 November). Branch `fix/2636-bus-routes-hosted-view` on `fork` at `b4d655c65`, check exit 0 (7 projects, `ues-operations-angular` included). The view's fields are lower case, route 47 has `stop32` on production only, and its stop ids differ between the hosts, so `BusService` (URL now from a `BUS_ROUTES_URL` token), the `?busstop=` source, the stop popup and two smoke tests changed too. Each environment reads only its own host; bus smoke 24 of 24 on each view. The gate is untouched; the report has what production would show. Report 2026-11-08-15.
 
@@ -425,4 +426,4 @@ Last written **1:07 PM Central, 8 November 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 192 and 191 again (8 November), and aggiemap's 16 (139, 141 to 192 reported; 140 needs the maintainer; 151 not run, see report 137) (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 192 and 191 again (8 November), and aggiemap's 17 (139, 141 to 192 reported; 140 needs the maintainer; 151 not run, see report 137) (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
