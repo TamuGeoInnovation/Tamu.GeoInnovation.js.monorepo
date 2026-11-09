@@ -18,6 +18,7 @@ export * from './lib/utils/speakers';
 
 // Enums
 export * from './lib/enums/submission-review-status.enum';
+export * from './lib/enums/submission-options';
 export * from './lib/enums/place-visibility-options.enum';
 
 // Roles

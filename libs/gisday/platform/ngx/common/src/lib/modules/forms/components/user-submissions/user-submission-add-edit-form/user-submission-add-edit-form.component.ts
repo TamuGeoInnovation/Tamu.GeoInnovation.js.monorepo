@@ -12,6 +12,8 @@ import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
 
+import { SUBMISSION_CLASSIFICATION_OPTIONS, SUBMISSION_FORMAT_OPTIONS, SUBMISSION_TYPE_OPTIONS } from '../../../../../enums/submission-options';
+
 @Component({
   selector: 'tamu-gisc-user-submission-add-edit-form',
   templateUrl: './user-submission-add-edit-form.component.html',
@@ -44,46 +46,12 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
    */
   public readonly participants = signal<Array<AbstractControl>>([]);
 
-  public presentationStudentTypeOptions = [
-    {
-      type: 'undergraduate',
-      label: 'Undergraduate'
-    },
-    {
-      type: 'graduate',
-      label: 'Graduate'
-    }
-  ];
+  // Shared with the admin list's filters (#2807).
+  public presentationStudentTypeOptions = [...SUBMISSION_CLASSIFICATION_OPTIONS];
 
-  public presentationFormatOptions = [
-    {
-      format: 'individual',
-      label: 'Individual'
-    },
-    {
-      format: 'group',
-      label: 'Group'
-    }
-  ];
+  public presentationFormatOptions = [...SUBMISSION_FORMAT_OPTIONS];
 
-  public submissionTypeOptions = [
-    {
-      type: 'presentation',
-      label: 'Presentation'
-    },
-    {
-      type: 'paper',
-      label: 'Paper'
-    },
-    {
-      type: 'poster',
-      label: 'Poster'
-    },
-    {
-      type: 'cartography',
-      label: 'Cartography'
-    }
-  ];
+  public submissionTypeOptions = [...SUBMISSION_TYPE_OPTIONS];
 
   public entity$: Observable<Partial<Submission>>;
   public submissionTypes$: Observable<Array<Partial<SubmissionType>>>;
