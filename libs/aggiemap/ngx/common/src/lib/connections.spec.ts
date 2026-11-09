@@ -200,3 +200,31 @@ describe('markReadFromProduction (#2744)', () => {
     expect(markReadFromProduction(sources, 'gis.it.tamu.edu')).toBe(sources);
   });
 });
+
+/**
+ * Pins are as narrow as their reasons (#2756). TS_Main was pinned whole because one of its eight layers lacks the space
+ * counts, which took Visitor Parking and six other layers that match production field for field out of development
+ * testing. Nobody noticed until the Layers list marked them.
+ */
+describe('pins as narrow as their reasons (#2756)', () => {
+  const production = Connections('gis.it.tamu.edu');
+  const development = Connections('gis-dev.it.tamu.edu');
+
+  it("reads TS_Main from the development server, and only its Parking Lots layer from production", () => {
+    expect(development.tsMainUrl).toBe('https://gis.dev.tamu.edu/arcgis/rest/services/TS/TS_Main/MapServer');
+    expect(development.tsParkingLotsUrl).toBe(production.tsParkingLotsUrl);
+    expect(production.tsParkingLotsUrl).toBe('https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/TS_Main/MapServer/6');
+  });
+
+  it('marks Parking Lots and not the rest of TS_Main', () => {
+    const marked = markReadFromProduction(
+      [
+        { id: 'visitor-kiosks', url: `${development.tsMainUrl}/4` },
+        { id: 'parking-lots', url: development.tsParkingLotsUrl }
+      ],
+      'gis-dev.it.tamu.edu'
+    );
+
+    expect(marked.filter((source) => source.readFromProduction).map((source) => source.id)).toEqual(['parking-lots']);
+  });
+});

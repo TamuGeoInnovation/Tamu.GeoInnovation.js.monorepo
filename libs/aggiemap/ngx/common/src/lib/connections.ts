@@ -25,11 +25,18 @@ const TOKEN_REQUIRED = 'the development server has this service but answers 499 
  * `services.spec.ts` in the smoke suite fails on a service a development build cannot read while production serves it.
  */
 export const READ_FROM_PRODUCTION_ON_DEVELOPMENT: Partial<Record<keyof IComposedConnections, string>> = {
-  tsMainUrl:
-    'layer 6 on the development server lacks the GIS.TS.SPC_PNT_CNT.* space counts, which the parking search and drive directions read',
+  // Layer 6 alone, not all of TS_Main: the development server's other seven layers match production's field for field,
+  // and layer 6's space counts are there too, but joined as GIS.TS.SpacePnt_Count.* where the code reads
+  // GIS.TS.SPC_PNT_CNT.*. Measured 8 November 2026 (#2756).
+  tsParkingLotsUrl:
+    'layer 6 on the development server has the space counts as GIS.TS.SpacePnt_Count.*, not the GIS.TS.SPC_PNT_CNT.* the parking search and drive directions read',
   accessibleParkingUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
   beefCattleUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
-  constructionUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
+  // The development server has the hosted view's predecessor, TS/TSConstruction, with the same layers and fields
+  // (PascalCase, which the popups already read either way), but its queries return no geometry - the same fault that
+  // retired production's copy - so a map reading it would draw nothing. Measured 8 November 2026 (#2756).
+  constructionUrl:
+    'the development server has no hosted view, and its TS/TSConstruction MapServer answers queries without geometry, so nothing would draw',
   familyWeekendUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
   fireSchoolUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
   gamesOfTexasUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
@@ -105,6 +112,9 @@ function servicesOn(gisHost: string): IComposedConnections {
     constructionUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/TSConstruction_Hosted/FeatureServer/0`,
     departmentUrl: `https://${gisHost}/arcgis/rest/services/FCOR/DepartmentSearch/MapServer/1`,
     tsMainUrl: `${tsEvents}/TS_Main/MapServer`,
+    // Parking Lots, the one layer of TS_Main that carries the space counts. Its own connection so that it can be read
+    // from production without the rest of TS_Main (#2756).
+    tsParkingLotsUrl: `${tsEvents}/TS_Main/MapServer/6`,
     // Night-privilege lots, used by drive directions. Moved from the `TS` folder to `TS_Events` (#1162).
     nightParkingUrl: `${tsEvents}/AVPVisBSUBVenNWRetNSCMed/MapServer/6`,
     // TS/TS_Bicycles no longer exists on the production GIS server, and on dev its layer 3 is bike lanes.
@@ -325,6 +335,7 @@ export interface IComposedConnections {
   constructionUrl: string;
   departmentUrl: string;
   tsMainUrl: string;
+  tsParkingLotsUrl: string;
   nightParkingUrl: string;
   bikeRacksUrl: string;
   bikeMapUrl: string;

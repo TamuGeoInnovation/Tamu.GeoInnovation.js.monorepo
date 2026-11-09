@@ -58,7 +58,7 @@ export const TsMainParkingDefinitions = {
     id: TS_MAIN_PARKING_LAYERS.PARKING_LOTS,
     layerId: TS_MAIN_PARKING_LAYERS.PARKING_LOTS,
     name: 'Parking Lots',
-    url: `${eventUrl}/6`
+    url: Connections.tsParkingLotsUrl
   },
   RNS_SPACES: {
     id: TS_MAIN_PARKING_LAYERS.RNS_SPACES,
