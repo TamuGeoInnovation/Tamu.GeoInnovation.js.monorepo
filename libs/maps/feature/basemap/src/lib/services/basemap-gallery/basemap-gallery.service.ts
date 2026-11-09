@@ -308,10 +308,11 @@ export class BasemapGalleryService {
   }
 
   /**
-   * The basemap a scene shows in place of one it cannot draw: the raster campus basemap, which every
-   * environment has in Web Mercator. Taken from the list the panel is built from, under its own id,
-   * so the panel marks it as the basemap on screen, which it is: the first campus basemap offered
-   * here that is not vector tiles, or the raster one where none is.
+   * The basemap a scene shows in place of one it cannot draw: the raster campus basemap, in Web
+   * Mercator. Taken from the list the panel is built from, under its own id, so the panel marks it as
+   * the basemap on screen, which it is: the first campus basemap offered here that is not vector
+   * tiles, or the raster one where none is. Production offers no raster basemap, but never needs a
+   * stand-in either: everything its gallery offers is in Web Mercator, which a scene draws.
    */
   private async standIn(): Promise<esri.Basemap> {
     const [Basemap, TileLayer] = (await this.mp.require(['Basemap', 'TileLayer'])) as [
