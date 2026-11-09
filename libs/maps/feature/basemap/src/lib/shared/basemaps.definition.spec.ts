@@ -238,9 +238,10 @@ describe('the vector basemap draws its buildings under construction itself (#245
     expect(symbolLayers.slice(1).map((layer) => layer['type'])).toEqual(['CIMHatchFill', 'CIMHatchFill']);
   });
 
+  // The tiles' own feature service since #2722, where the field names are lower case.
   it('draws the buildings under construction from the buildings service, with a CIM hatch', () => {
-    expect(construction?.['url']).toMatch(/\/FCOR\/TAMU_Basemap_\d+\/MapServer\/2$/);
-    expect(construction?.['definitionExpression']).toBe("Type = 'CONSTRUCTION'");
+    expect(construction?.['url']).toMatch(/\/Hosted\/VTBase3\/FeatureServer\/0$/);
+    expect(construction?.['definitionExpression']).toBe("type = 'CONSTRUCTION'");
     expect(JSON.stringify(construction?.['renderer'])).toContain('CIMHatchFill');
   });
 

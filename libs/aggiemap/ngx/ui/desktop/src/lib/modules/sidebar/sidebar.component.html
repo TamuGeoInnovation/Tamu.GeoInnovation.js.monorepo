@@ -14,14 +14,11 @@ swallows it and clicking a feature appears to do nothing (#1244). -->
     }
 
     <!--
-    Development-only (#1090, #1229). The bus routes service is public on production now (#2636), but moving
-    bus routes there is the maintainer's decision. Without this gate the tab shipped to production, where
-    `busRoutesAvailable` correctly refuses to render any routes - so the tab opened a panel apologising
-    for being unavailable.
+    On every environment since #2789 (the maintainer, 9 November 2026). It was development-only until then (#1090,
+    #1229); the smoke suite's `SECTIONS_ON_EVERY_ENVIRONMENT` now fails if it is gated again.
     -->
-    @if ((isDev | async) === true) {
     <tamu-gisc-sidebar-tab [title]="'Bus Routes'" [description]="'Toggle bus controls (list and timetable)'" [material_icon]="'directions_bus'" [route]="'bus'" (click)="reportSidebarContent('Bus Routes')"></tamu-gisc-sidebar-tab>
-    } @if ((isDev | async) === true) {
+    @if ((isDev | async) === true) {
     <tamu-gisc-sidebar-tab [title]="'Experiments'" [description]="'Aggiemap Experiments'" [material_icon]="'science'" [route]="'experiments'" (click)="reportSidebarContent('Experiments')"></tamu-gisc-sidebar-tab>
     }
 

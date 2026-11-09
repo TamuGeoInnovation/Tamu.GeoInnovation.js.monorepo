@@ -6,13 +6,26 @@ table {
   }
 
   .title-col {
-    width: 30%;
+    width: 22%;
   }
 
-  .title {
+  .submitted-col {
+    width: 8rem;
+  }
+
+  .email-col {
+    width: 14%;
+  }
+
+  .title,
+  .clip {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .unknown {
+    font-style: italic;
   }
 
   .status {

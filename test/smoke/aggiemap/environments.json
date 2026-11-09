@@ -84,6 +84,14 @@
     "allowedPopupFailures": {
       "/events/nsc-parking": "#2520: the service returns its lots without geometry, so a click never reaches this layer",
       "/events/break-summer": "#2520: the service returns its lots without geometry, so a click never reaches this layer"
+    },
+    "allowedBusRouteFailures": {
+      "NW0104": "#1174: no stop in production's Bus Stops layer is tagged with this route (lists 20, draws 0, measured 9 November 2026)",
+      "NW0305": "#1174: no stop in production's Bus Stops layer is tagged with this route (lists 12, draws 0, measured 9 November 2026)",
+      "NW4041": "#1174: no stop in production's Bus Stops layer is tagged with this route (lists 20, draws 0, measured 9 November 2026)",
+      "15R": "#1174: no stop in production's Bus Stops layer is tagged with this route (lists 17, draws 0, measured 9 November 2026)",
+      "40": "#1174: production's Bus Stops layer tags one more stop than the route lists (lists 16, draws 17, measured 9 November 2026)",
+      "47": "#1174: production's Bus Stops layer tags two fewer stops than the route lists (lists 32, draws 30, measured 9 November 2026)"
     }
   },
   "local": {

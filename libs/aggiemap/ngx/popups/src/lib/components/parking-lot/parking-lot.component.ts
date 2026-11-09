@@ -13,7 +13,8 @@ import { ActivateDirective } from '@tamu-gisc/ui-kits/ngx/interactions/keyboard'
 })
 export class ParkingLotPopupComponent extends BaseDirectionsComponent {
   private get lotIdentifier(): string | number | null {
-    const identifiers = [this.data?.attributes?.LotName, this.data?.attributes?.Name];
+    // A lot's fields are lower case: it comes from `surfaceLotsUrl` (#2722).
+    const identifiers = [this.data?.attributes?.lotname, this.data?.attributes?.name];
 
     const identifier = identifiers.find((value) => {
       if (typeof value === 'string') {
@@ -33,6 +34,6 @@ export class ParkingLotPopupComponent extends BaseDirectionsComponent {
   }
 
   public startDirections() {
-    super.startDirections(`Lot ${this.lotIdentifier ?? this.data.attributes.OBJECTID}`);
+    super.startDirections(`Lot ${this.lotIdentifier ?? this.data.attributes.objectid}`);
   }
 }

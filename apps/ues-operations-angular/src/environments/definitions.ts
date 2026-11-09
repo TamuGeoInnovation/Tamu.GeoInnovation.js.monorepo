@@ -16,6 +16,7 @@ import esri = __esri;
 export const Connections = {
   basemapUrl: TAMU_CAMPUS_BASEMAP_URL,
   buildingsUrl: AggiemapConnections.buildingsUrl,
+  surfaceLotsUrl: AggiemapConnections.surfaceLotsUrl,
   inforUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/MapInfo_20190529/MapServer',
   accessibleUrl: 'https://fc-gis.tamu.edu/arcgis/rest/services/FCOR/ADA_120717/MapServer/0',
   constructionUrl: AggiemapConnections.constructionUrl,
@@ -759,18 +760,20 @@ export const SearchSources: SearchSource[] = [
   {
     source: 'parking-lot',
     name: 'Parking Lot',
-    url: `${Connections.basemapUrl}/12`,
+    // The surface lots, as AggieMap's lot search reads them (#2722). This read `basemapUrl/12`, which on the October 2026
+    // campus basemap is Wall Area: no `LotName`, so every search answered 400 "Failed to execute query".
+    url: Connections.surfaceLotsUrl,
     queryParams: {
       ...commonQueryParams,
       where: {
-        keys: ['LotName'],
+        keys: ['lotname'],
         operators: ['LIKE'],
         wildcards: ['includes'],
         transformations: ['UPPER']
       }
     },
     featuresLocation: 'features',
-    displayTemplate: '{attributes.LotName}',
+    displayTemplate: '{attributes.lotname}',
     popupComponent: Popups.ParkingLotPopupComponent,
     searchActive: true
   },

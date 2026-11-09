@@ -12,10 +12,18 @@ import { smokeBaseUrl } from './gis-hosts';
  * that opened a panel apologising for being unavailable.
  *
  * Listed by the title the sidebar tab renders, because that is what a visitor sees and what a template
- * change is most likely to get wrong. When a section goes to production, take it out of this list; the
- * checks then require it to be present everywhere instead.
+ * change is most likely to get wrong. When a section goes to production, move it from this list to
+ * `SECTIONS_ON_EVERY_ENVIRONMENT`, whose check requires it to be present everywhere instead. Taking it out of
+ * this list alone only stops checking it.
  */
-export const DEVELOPMENT_ONLY_SECTIONS = ['Directions', 'Bus Routes', 'Experiments'];
+export const DEVELOPMENT_ONLY_SECTIONS = ['Directions', 'Experiments'];
+
+/**
+ * Sections that were development-only and now are on every environment, production included, so a gate put back
+ * by mistake fails here rather than hiding the section quietly. Bus Routes since the maintainer's decision of
+ * 9 November 2026 (#2789).
+ */
+export const SECTIONS_ON_EVERY_ENVIRONMENT = ['Bus Routes'];
 
 /**
  * Tiles in the All Maps page's "Visit Maps" row that are not ready for production (#912).
@@ -28,7 +36,17 @@ export const DEVELOPMENT_ONLY_SECTIONS = ['Directions', 'Bus Routes', 'Experimen
  * Listed by the label the tile renders. When a tile goes to production, take it out of this list; the
  * check then requires it to be present everywhere instead.
  */
-export const DEVELOPMENT_ONLY_ALL_MAPS_TILES = ['Code Maroon'];
+export const DEVELOPMENT_ONLY_ALL_MAPS_TILES = ['Code Maroon', 'Transportation'];
+
+/**
+ * All Maps pages that are not ready for production, which must not open there (#2788).
+ *
+ * A tile gated with `isDev` hides the link, but the page still answers its address, so each page here is gated on its
+ * route too (`developmentOnly` in the route's `data`, read by `DevelopmentOnlyMapGuard`) and opened by address: on
+ * production it must land back on All Maps. The Transportation section lists only development-only maps, so on
+ * production it was a reachable, empty category.
+ */
+export const DEVELOPMENT_ONLY_ALL_MAPS_PAGES = ['/all-maps/transportation'];
 
 /**
  * Controls drawn on the map itself that are not ready for production, each with the issue keeping it

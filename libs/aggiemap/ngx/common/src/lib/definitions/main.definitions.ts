@@ -157,7 +157,7 @@ export function MainMapDefinitions(connections: IComposedConnections): IComposed
       id: 'surface-lots',
       layerId: MAIN_MAP_LAYERS.SURFACE_LOTS,
       name: 'Surface Lots',
-      url: `${connections.basemapUrl}/9`,
+      url: connections.surfaceLotsUrl,
       popupComponent: Popups.ParkingLotPopupComponent
     },
     VISITOR_PARKING: {

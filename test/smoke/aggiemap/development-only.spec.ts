@@ -8,8 +8,10 @@ import { blockAnalytics } from './analytics';
 import {
   DEVELOPMENT_ONLY_CONTROLS,
   DEVELOPMENT_ONLY_ALL_MAPS_TILES,
+  DEVELOPMENT_ONLY_ALL_MAPS_PAGES,
   DEVELOPMENT_ONLY_SECTIONS,
   DEVELOPMENT_ONLY_SERVICES,
+  SECTIONS_ON_EVERY_ENVIRONMENT,
   developmentSectionsVisible,
   sidebarTabs
 } from './development-only';
@@ -65,6 +67,22 @@ test.describe(`development-only sections ${VISIBLE ? 'are offered here' : 'stay 
   }
 });
 
+/** Sections that left development for every environment are offered on every environment (#2789). */
+test.describe('sections on every environment are offered here', () => {
+  for (const section of SECTIONS_ON_EVERY_ENVIRONMENT) {
+    test(`the ${section} tab is offered`, async ({ page }) => {
+      await blockAnalytics(page);
+      await page.goto('/map');
+
+      await expect
+        .poll(async () => probeReady(page), { message: 'the main map never finished loading', timeout: 90_000, intervals: [1_000] })
+        .toBe(true);
+
+      expect(await sidebarTabs(page, section), `the ${section} tab is not offered here`).toBe(1);
+    });
+  }
+});
+
 /**
  * Development-only tiles in the All Maps "Visit Maps" row stay off production (#912).
  *
@@ -92,6 +110,20 @@ test.describe(`development-only All Maps tiles ${VISIBLE ? 'are offered here' : 
         ).toBe(VISIBLE ? 1 : 0);
       });
     }
+  }
+});
+
+/** A development-only All Maps page opens here, and goes back to All Maps on production (#2788). */
+test.describe(`development-only All Maps pages ${VISIBLE ? 'open here' : 'go back to All Maps on this environment'}`, () => {
+  for (const address of DEVELOPMENT_ONLY_ALL_MAPS_PAGES) {
+    test(`${address} ${VISIBLE ? 'opens' : 'opens /all-maps'}`, async ({ page }) => {
+      await blockAnalytics(page);
+      await page.goto(address);
+
+      await expect
+        .poll(() => new URL(page.url()).pathname, { timeout: 30_000 })
+        .toBe(VISIBLE ? address : '/all-maps');
+    });
   }
 });
 

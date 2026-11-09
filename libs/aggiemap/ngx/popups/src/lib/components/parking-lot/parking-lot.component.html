@@ -1,5 +1,7 @@
+<!-- Shared with the garage popup: lots come from the campus features service as `lotname`, garages from the old campus
+basemap as `LotName`, until the garages have a counterpart (#2722). -->
 <div class="popup-section">
-  <div class="feature-style-1" tabindex="0">{{ data.attributes.LotName }}</div>
+  <div class="feature-style-1" tabindex="0">{{ data.attributes.lotname ?? data.attributes.LotName }}</div>
   <div class="feature-style-2" tabindex="0">College Station, TX 77843</div>
 </div>
 
