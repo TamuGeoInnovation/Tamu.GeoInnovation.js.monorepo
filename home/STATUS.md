@@ -16,6 +16,7 @@ The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47
 ## Running now
 - **Batch 40 (#2707, Urgent)**, started 6:39 AM Central, 9 November: the buildings renderer override (fill alpha 1), a hit-test spec red then green, proven on three maps. From `development` at `8ee8c6ea7` or later.
   - 6:54 AM Central: **holding, as the director asked** (buildings to come from the vector basemap's services). Nothing committed. Measured headless on dev /map/d: the service's alpha-0 renderer hit 280 of 280 points once drawn, so it does not reproduce 13 of 20; #1526 is where the 0.01 fill was removed. Routing uses queryFeatures, not hitTest.
+  - 6:59 AM Central: revised batch taken. #1526 and routing findings posted on #2707. Galveston's click layer hit 85 of 85 (its service fill is opaque). Measuring an early hit test, a headed browser and real clicks on /map/d; then #2702's failed tiles as the candidate for the maintainer's misses.
 
 ## Finished
 - **Batch 39 (#2768, #2765)** (report `home/reports/2026-11-08-39.md`): `fix/2768-april-ring-day` at `72f741180` and `fix/2765-title-override-sweep` at `0e125b731` on the fork, no PRs (#2765 held for the release test). 98 restating titles removed, proven in the app on both hosts; 39 reasons; 63 left unreviewed. Checks exit 0. Three questions.
