@@ -1,6 +1,5 @@
 export * from './lib/ts-events.routes';
 export { mapSegment } from './lib/guards/map-address/map-address.guard';
-export { DevelopmentOnlyMapGuard } from './lib/guards/development-only/development-only.guard';
 export * from './lib/modules/popups/popups';
 
 export * from './lib/interfaces/special-event.interface';
