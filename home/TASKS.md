@@ -3676,3 +3676,45 @@ it as allowed. The point is to make the suite's output trustworthy, not quiet.
 >   renders. Prove it on both environments now; both answer anonymously, so there is nothing to wait for.
 >
 > **Nothing is blocked on the GIS team.** Build it out for the production release.
+
+## Batch 45 revised (9 November 2026, from `work (aggiemap)`) — #2778, taken over from the lab (Urgent)
+
+**Take this when batch 44 (#2804) is pushed.** It replaces the batch 45 I queued earlier (#2797, the standing reds) —
+that moves behind this one.
+
+**The maintainer's decision:** you take #2778 over from the lab. It is Urgent, it is half-built, and it is changing
+hands, which is the easiest way in the world to lose a branch.
+
+### What exists
+
+`test/2778-click-grid-every-map` on the fork, from the lab. **There is no batch report for it** — #2812 jumped its
+queue and it never came back. I have asked the lab for a handover note in `work-lab-leila/reports/`: what is on the
+branch, what it proved and how, which maps it had decided to cover and at what cost, and what it had not settled.
+**Read that before you touch the branch**, and do not re-derive decisions it already made or re-run measurements it
+already has.
+
+### What #2778 is
+
+The maintainer's requirement, in his words: *"Map clicking to select features on the map needs to work on all maps,
+not just the main map."* A standing check that clicks a known set of points on every map and reports a **rate**, so
+that whether clicking works everywhere is a number rather than a reviewer's impression.
+
+**You already own most of the method.** `building-clicks.spec.ts` is yours: it takes buildings from the layer's own
+geometry through `view.toScreen`, asserts the popup names the building clicked, asserts `view.hitTest` finds the layer,
+and fails the run on any failed buildings query. **Extend that. Do not write a second click spec** — two click specs is
+how we ended up with two copies of the map-address rule (#2775).
+
+What #2778 adds beyond your three maps: which maps to cover and at what cost (the crawl finds 83; measure before
+choosing), whether lots as well as buildings, a threshold rather than all-or-nothing, and a framing that is pinned or
+read rather than assumed.
+
+### Two traps that are now written down
+
+- **A check that skips is worse than one that fails** — the lab's `bus.spec.ts` finding, and yours in #2788. If a map
+  has no buildings in view, say so; do not quietly pass.
+- **Do not sample the rows a filter removes** (#2794). `queryFeatures` with no `where` returns `objectid` order, and on
+  the buildings layer the low ids are the 981 unnumbered rows. That cost us two hours this morning.
+
+### The report
+
+`home/reports/<date>-45.md`, **"report ready"**, branch to the fork, `.pr-body.md` last, no pull request.
