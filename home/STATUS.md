@@ -15,6 +15,7 @@ The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47
 
 ## Running now
 - **Batch 41 (aggiemap)**, started 8:44 AM Central, 9 November: surface parking, wall areas, garages and University Building off `TAMU_Basemap_20261008`; stacked on PR 2786's branch, since both change the same connections and search sources.
+  - 8:50 AM Central: services answered. Surface parking /9 -> /6 (340 vs 341, Lot 8712 missing), construction /2 -> /0 type=CONSTRUCTION (same 8), UES lot search fixed (it read Wall Area). Garages: no counterpart (8 of 10 are buildings, 2 absent) - stopped there. Old /9 failed 3 of 200, new /6 0 of 200. Building to prove in the app.
 
 ## Finished
 - **Batch 40 (#2707)** (report `home/reports/2026-11-09-40.md`): branch ready, `fix/2707-buildings-hit-test` on the fork at `4c7488114`, no PR (the director opens it). Cause: failed tile queries on the old buildings layer (#2702) leave unclickable regions; buildings, search, kiosk and UES moved to VTBase3/FeatureServer/0 behind `buildingsUrl`, `number IS NOT NULL` (1,003 = old), near-invisible fill with its reason. New `building-clicks.spec.ts` red on dev AVP 3 of 4 runs (misses all inside failed tiles), green 15 of 15 after the move, 0 of 145 queries failed. Check exit 0 after merging development. Four questions.
