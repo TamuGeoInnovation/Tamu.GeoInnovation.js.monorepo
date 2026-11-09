@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch 45 revised (#2778)**, started 3:10 PM Central, 9 November: taking over the lab's click grid; reading its handover first.
+- Nothing. Idle and listening (3:19 PM Central, 9 November).
 
 ## Finished
+- **Batch 45 revised (#2778)** (report `home/reports/2026-11-09-45.md`): branch ready, `test/2778-click-grid-home` on the fork at `6ff9eb7e4` (the lab's commit replayed onto development, plus mine: each layer asked from its own `createQuery()`), no PR, no force-push. Release set on dev 7/7. Check exit 0 (smoke only). The lab's four questions stand.
 - **Batch 44 (#2804)** (report `home/reports/2026-11-09-44.md`): branch ready, `feat/2804-routing-on-production` on the fork at `e92dad5fb`, no PR. Network on `tsgisHost` (arc.ts.tamu.edu answers anonymously and routes); all #1003 gates off; network picker dev-only. Production build as production: directions 14/14, development-only 24/24, route via arc.ts. Full affected check exit 0 (14 projects). No questions.
 - **Batch 43 (#2801)** (report `home/reports/2026-11-09-43.md`): branch ready, `fix/2801-hide-trip-options` on the fork at `eceeb5b23`, no PR. Options link `isDev`; its page gated by the new `developmentOnlyRoute` guard (replacing #2798's route-data change to the map guard, which failed lint); two dead Transportation-section controls fixed. Page red on today's code; link red by unit test (the smoke check cannot be red while the planner is hidden). Check exit 0. No questions.
 - **Batch 42 (#2788)** (report `home/reports/2026-11-09-42.md`): branch ready, `fix/2788-gate-transportation` on the fork at `0f3b48de8`, no PR. Tile `isDev`, page gated by `DevelopmentOnlyMapGuard` via route data, smoke tile and page checks red on today's code as production and green both ways; gates spec compares tiles and pages. Check exit 0. No questions.
