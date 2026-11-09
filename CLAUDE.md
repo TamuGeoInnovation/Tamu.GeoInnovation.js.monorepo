@@ -426,6 +426,15 @@ routes and the vector tile basemap are. Add it to `DEVELOPMENT_ONLY_SERVICES` in
 if production ever requests it.
 The maintainer decides when it moves to production. See #1229.
 
+**Which gate: a thing that reads a service is left out of the build; structure is gated at run time** (#2753).
+Layer sources and search sources go in `DEVELOPMENT_ONLY_LAYER_SOURCES`, and a map in `developmentOnly`, so a
+production build does not contain them. Routes, tabs, tiles, listings and controls are gated with `TestingService`
+(`visible: false` on a listing, `DevelopmentOnlyMapGuard` on a route), so `?as=production` keeps working.
+`development-only-gates.spec.ts` in `aggiemap-ngx-discover` fails when that and the smoke suite's lists disagree: a
+thing kept off production that no list checks, a service the suite watches that nothing gates, or a map hidden from
+production's listings with neither a check nor a reason in `LISTINGS_HIDDEN_FROM_PRODUCTION`. A gate inside a template
+cannot be listed, so a service gated that way says where in `runTimeGate`, and only the smoke run proves it.
+
 **Reuse before building; build to be reused.** No one-offs: not components, not services, not
 utilities, not styles, not test helpers. This is the maintainer's standing rule for every change, by
 anyone.

@@ -89,17 +89,24 @@ export const DEVELOPMENT_ONLY_CONTROLS: Array<{
  * draws wherever it reads that server (`readsDevelopmentGisServer()` in connections.ts): a dev host,
  * but not localhost, which reads production's. It is required only where that server is read, and
  * forbidden everywhere else (#2001).
+ *
+ * `runTimeGate` names where the code hides a service gated at run time (`TestingService`), for those that no build-time
+ * gate covers. A unit test (`development-only-gates.spec.ts` in `aggiemap-ngx-discover`) requires every entry to be
+ * matched by a build-time gate - a layer in `DEVELOPMENT_ONLY_LAYER_SOURCES` or a map with `developmentOnly` - or to
+ * say where its run-time gate is, and not both (#2753). It can read that a run-time gate is declared, not that the code
+ * still has it: this smoke check is what proves that.
  */
 export const DEVELOPMENT_ONLY_SERVICES: Record<
   string,
-  { reason: string; pages: string[]; developmentGisServer?: true }
+  { reason: string; pages: string[]; developmentGisServer?: true; runTimeGate?: string }
 > = {
   // The September cache, still offered in the development gallery so it can be compared with the October one
   // (#2436), which became production's default with #2515 and is no longer listed here. No page requests it until a visitor picks it, so it lists no pages: the check that
   // production never requests it still applies, and the dev side is covered by the gallery's own spec.
   'Hosted/VTBase/VectorTileServer': {
     reason: '#1229, #2436: the previous vector tile campus basemap, kept for comparison',
-    pages: []
+    pages: [],
+    runTimeGate: 'aggiemapGalleryBasemaps(isTesting) in libs/maps/feature/basemap/src/lib/shared/basemaps.definition.ts'
   },
   // The Code Maroon emergency feed, proxied through this origin. Production must never request it:
   // the proof of concept is not something to show the public, and an emergency alert drawn by an
@@ -107,7 +114,8 @@ export const DEVELOPMENT_ONLY_SERVICES: Record<
   // page requests it.
   '/code-maroon/feed.xml': {
     reason: '#1289: the Code Maroon proof of concept',
-    pages: ['/map', '/parking/visitor-parking', '/events/tailgating']
+    pages: ['/map', '/parking/visitor-parking', '/events/tailgating'],
+    runTimeGate: 'isTesting in CodeMaroonAlertComponent (libs/aggiemap/ngx/core)'
   },
   // The routing network Transportation published for #659. The trip planner connects to it, on the development GIS
   // server, only where development-only features are on. Production's Routing folder is empty, so it must never
@@ -115,7 +123,8 @@ export const DEVELOPMENT_ONLY_SERVICES: Record<
   // planner asks the network which travel modes it supports as soon as it exists, which is the request seen here.
   RoutingProPublish: {
     reason: '#659: the development-only routing network',
-    pages: ['/map/d/trip']
+    pages: ['/map/d/trip'],
+    runTimeGate: 'isTesting in TripPlannerConnectionService (libs/maps/feature/trip-planner)'
   },
   // Nature Rx, which is on the map but not finished (#2673). Unlike everything else here, the service is
   // production's own and public - what is not ready is the feature, so a production build leaves the layer
@@ -149,6 +158,20 @@ export const DEVELOPMENT_ONLY_SERVICES: Record<
   // ordinary womensBasketballUrl, so no page requests the MapServer any more and the entry could only fail
   // (#2350). The development-only gate it matched went with it: nothing in the code reads
   // womensBasketballParkingUrl now.
+};
+
+/**
+ * Maps hidden from production's listings for a reason of their own, not because they are unfinished (#2753).
+ *
+ * `visible: false` on a map's Discover entry lists it where development-only features are on and nowhere else, which is
+ * also how a development-only map is listed. A unit test (`development-only-gates.spec.ts`) requires every map hidden that
+ * way to be checked by this suite - its route in a `DEVELOPMENT_ONLY_SERVICES` entry's `pages`, or a
+ * `DEVELOPMENT_ONLY_CONTROLS` link to it - or to be here, with why. So a hidden map is never hidden by accident, and one
+ * listed here and no longer hidden fails too.
+ */
+export const LISTINGS_HIDDEN_FROM_PRODUCTION: Record<string, string> = {
+  '/events/april-ring-day': 'hidden by #899 (All Maps overhaul, 5 August 2026) with no reason recorded; ask before listing it',
+  '/events/move-out': '#1691, #1704: hidden while its three dated periods are reviewed, so the page offers one entry per move-out'
 };
 
 /** Whether the environment under test renders the development variant. */
