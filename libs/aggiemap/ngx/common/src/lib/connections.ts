@@ -1,5 +1,4 @@
 import { TAMU_CAMPUS_BASEMAP_URL } from '@tamu-gisc/common/datasets/geographic';
-import type { LayerSource } from '@tamu-gisc/common/types';
 
 import { actingAsProduction } from './acting-as-production';
 
@@ -275,7 +274,7 @@ export function getDefaultGisHosts() {
  * hides its six bike layers. Where `gisHost` is production's, nothing is read from production for want of
  * a development service, and the sources come back as they are - so the marker never appears on production.
  */
-export function markReadFromProduction(sources: LayerSource[], gisHost = getDefaultGisHost()): LayerSource[] {
+export function markReadFromProduction<T extends MarkableSource>(sources: T[], gisHost = getDefaultGisHost()): T[] {
   if (!gisHost.includes('dev')) {
     return sources;
   }
@@ -288,17 +287,26 @@ export function markReadFromProduction(sources: LayerSource[], gisHost = getDefa
     typeof url === 'string' ? pinned.find((pin) => url === pin.url || url.startsWith(`${pin.url}/`))?.reason : undefined;
 
   return sources.map((source) => {
-    const children = (source as { sources?: LayerSource[] }).sources;
-    const marked = children ? markReadFromProduction(children, gisHost) : undefined;
-    const reasons = [reasonFor((source as { url?: unknown }).url), ...(marked ?? []).map((child) => child.readFromProduction)];
+    const marked = source.sources ? markReadFromProduction(source.sources, gisHost) : undefined;
+    const reasons = [reasonFor(source.url), ...(marked ?? []).map((child) => child.readFromProduction)];
     const reason = [...new Set(reasons.filter((r): r is string => r !== undefined))].join('; ');
 
     return {
       ...source,
       ...(marked ? { sources: marked } : {}),
       ...(reason ? { readFromProduction: reason } : {})
-    } as LayerSource;
+    };
   });
+}
+
+/**
+ * The parts of a layer source `markReadFromProduction` reads and writes. Named here rather than imported as
+ * `LayerSource`, so that the smoke suite, which imports this file, does not need the types library (#2744).
+ */
+interface MarkableSource {
+  url?: unknown;
+  sources?: MarkableSource[];
+  readFromProduction?: string;
 }
 
 export type IConnectionsFactory = ((gisHost: string) => IComposedConnections) & IComposedConnections;
