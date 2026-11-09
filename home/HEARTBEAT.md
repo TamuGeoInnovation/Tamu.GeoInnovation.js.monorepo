@@ -1,7 +1,7 @@
 name: home
 agent: Claude Code (Listener chat), the only listener on this machi
 machine: home
-state: idle
-accepting: yes
-seen_utc: 2026-11-09T04:06:45Z
-next_utc: 2026-11-09T04:51:45Z
+state: running batch 39
+accepting: no
+seen_utc: 2026-11-09T04:20:26Z
+next_utc: 2026-11-09T04:35:26Z
