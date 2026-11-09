@@ -3110,3 +3110,61 @@ Visible on dev, so before and after screenshots and a release note with its *Wha
 projects you touch.
 
 `home/reports/<date>-38.md`, and say **"report ready: <file>"**.
+
+## Batch 39 (8 November 2026, from `work (aggiemap)`) — #2768 then #2765: stop hard-coding what the services already say (Medium)
+
+**Batch 38 is [PR 2773](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2773), open.** Your
+design call was right and the maintainer took it: the **section** decides the address, not a new `type`. Your reason
+is the one that settles it — a new `type` leaves two properties that must agree, which is the bug, and deriving the
+address makes disagreement impossible by construction rather than caught by a test. `MapAddressGuard` keeping the
+rest of the address was the detail I would have missed.
+
+**Two things you should know about the merge.** You found the red trunk independently and fixed it; so did I, about
+twenty minutes earlier, in [PR 2770](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2770),
+which had already merged. **Yours was the better fix and I kept it**: `checkedMaps` asserts the suite opens the map's
+address, where mine waived the requirement for a map with shared services. An exemption says "do not ask for proof";
+yours says "here is the proof". I removed mine rather than leave one rule with two implementations.
+
+That duplication was my fault, not yours — you had no way to know 2770 existed. I will tell you when I am working in
+your area.
+
+**The bus map stays at `/map/d/bus`**, on your argument. The lab is recording that decision in the code.
+
+### 1. [#2768](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2768): April Ring Day, listed again (do this first, it is small)
+
+`visible: false` with no reason recorded, while October and November Ring Day carry no such flag. The maintainer has
+confirmed it should be listed. Remove the flag and its `LISTINGS_HIDDEN_FROM_PRODUCTION` entry, then **look at the
+page** — it is a spring map, so check where it lands and that the column reads sensibly beside its two siblings.
+
+### 2. [#2765](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2765): the override sweep
+
+This is the maintainer's standing goal made systematic: **no front-end change should be needed when the GIS team
+renames a layer, reorders layers or changes symbology, unless there is a specific reason.** The registry
+([#2745](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2745)) has **202 entries**, almost
+all marked `unreviewed (#1523)`.
+
+**Ask every service, then remove every override that merely restates it.** Eight graduation entries are known to
+repeat their service word for word; #2634 removed two others by hand the same way.
+
+**Three things that decide whether this goes well:**
+
+- **Ask the service; never reason from the definition file.** [PR 2720](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2720)
+  was reverted because I judged removed overrides broken on a build where the layers had never loaded — a missing
+  title and a service-supplied title look identical on screen. Query both GIS hosts. Where you capture, assert
+  something that only exists when the layer actually resolved, as a legend entry does.
+- **Where a title goes, its registry row goes with it**, in the same change.
+- **For the rest, the outcome is a reason, not a removal.** `docs/map-layers.md` says an override needs a reason
+  written beside it; replacing `unreviewed (#1523)` with a real one is worth as much as a deletion.
+
+**Scope it and say where you stopped.** 202 is a lot. If it is better as "every event map" or "every service that
+answered", do that and report the rest rather than rushing the tail. A partial sweep with a clear boundary is more
+useful than a complete one I cannot trust.
+
+**Hold it off `development` until the maintainer has tested tonight's release** — have the branch ready and say so;
+I will open the pull request when he is done.
+
+### The report
+
+Both are visible, so before and after screenshots and release notes with their *What to test on dev* rows.
+
+`home/reports/<date>-39.md`, and say **"report ready: <file>"**.
