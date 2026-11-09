@@ -69,6 +69,15 @@ export const DEVELOPMENT_ONLY_CONTROLS: Array<{
     selector: 'a.map-entry[href="/map/d/bus"]',
     page: '/all-maps/transportation',
     reason: '#2743, #1229: bus routes are development-only until the maintainer moves them to production'
+  },
+  {
+    // Its listing is hidden because the map is development-only, and its service cannot say so: TS/BikeMap is the
+    // main map's on production too, so it can never be on `DEVELOPMENT_ONLY_SERVICES`. The map's own gate is proven
+    // by the route check below; this proves the link is not offered (#2742, #2769).
+    name: 'the Sustainable Transportation map in the Transportation section',
+    selector: 'a.map-entry[href="/parking/sustainable-transportation"]',
+    page: '/all-maps/transportation',
+    reason: '#2742: development-only while the bike layers are reworked'
   }
 ];
 
