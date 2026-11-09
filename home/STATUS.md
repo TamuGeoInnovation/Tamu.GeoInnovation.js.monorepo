@@ -15,6 +15,7 @@ The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47
 
 ## Running now
 - **Batch 42 (#2788)**, started 11:18 AM Central, 9 November: gate the Transportation section (tile and route), red first on production.
+  - 11:41 AM Central: red proven on today's code served as production (tile offered; page opens, empty). Tile isDev, page gated by DevelopmentOnlyMapGuard (route data), gates spec now compares tiles and pages. Unit green; rebuilding to prove both ways.
 
 ## Finished
 - **Batch 41 (#2722)** (report `home/reports/2026-11-09-41.md`): branch ready, `fix/2722-lots-off-old-basemap` on the fork at `26b244c94`, no PR. Surface lots, construction and move-in moved to VTBase3; garages stay (no counterpart); UES lot search fixed; the event map link matcher ignores case (#1969 would have returned); the click spec now asserts the hit test. The layer-0 "regression" was our sampling, retracted. Check exit 0. Four questions.
