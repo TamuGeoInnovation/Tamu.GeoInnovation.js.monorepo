@@ -195,6 +195,8 @@ export function SearchSources(
     PARKING_GARAGE: {
       source: 'parking-garage',
       name: 'Parking Garage',
+      // Still the old campus basemap: its garage layer has no counterpart in the feature service the rest moved to, so
+      // this waits on the GIS team (`campus-basemap.ts` says what is missing; #2722).
       url: `${connections.basemapUrl}/0`,
       queryParams: {
         ...containsSearch(['LotName', 'Name'])
@@ -218,24 +220,24 @@ export function SearchSources(
     // have been digitized first wins. `?lot=077` landed on the Lot 77 loading zone and `?lot=097`
     // on the Lot 97 visitor section for exactly this reason.
     //
-    // `AggieMap DESC` drops the sub-areas flagged as not shown on this map below the ones that are,
-    // and `CIT_CODE ASC` then prefers the lot itself over its sub-areas - together resolving a bare
+    // `aggiemap DESC` drops the sub-areas flagged as not shown on this map below the ones that are,
+    // and `cit_code ASC` then prefers the lot itself over its sub-areas - together resolving a bare
     // lot number to the same polygon the TS parking map's `?cit=<lot>00` link points at.
     PARKING_LOT: {
       source: 'parking-lot',
       name: 'Parking Lot',
-      url: `${connections.basemapUrl}/9`,
+      url: connections.surfaceLotsUrl,
       queryParams: {
-        // `FAC_CODE` is matched alongside the display names so the zero-padded facility number
-        // used by TS links (`?lot=077`) resolves as readily as the unpadded `Name` (`?lot=77`).
-        ...containsSearch(['LotName', 'Name', 'FAC_CODE']),
-        orderByFields: 'AggieMap DESC, CIT_CODE ASC',
+        // `fac_code` is matched alongside the display names so the zero-padded facility number
+        // used by TS links (`?lot=077`) resolves as readily as the unpadded `name` (`?lot=77`).
+        ...containsSearch(['lotname', 'name', 'fac_code']),
+        orderByFields: 'aggiemap DESC, cit_code ASC',
       },
       // Ranks an exact identifier match above the partial ones the `includes` wildcards let through,
       // so `?lot=100` cannot settle on `Lot 1001` when `Lot 100` exists.
-      scoringKeys: ['attributes.Name', 'attributes.FAC_CODE', 'attributes.LotName'],
+      scoringKeys: ['attributes.name', 'attributes.fac_code', 'attributes.lotname'],
       featuresLocation: 'features',
-      displayTemplate: '{attributes.LotName}',
+      displayTemplate: '{attributes.lotname}',
       popupComponent: Popups.ParkingLotPopupComponent,
       searchActive: true,
       urlQueryParam: 'lot',

@@ -4,6 +4,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { Repository } from 'typeorm';
 
+import { ManagementService } from '@tamu-gisc/common/nest/auth';
+
 import { ContactService } from '../contact/contact.service';
 import { Submission, SubmissionType } from '../entities/all.entity';
 import { SeasonService } from '../season/season.service';
@@ -14,6 +16,7 @@ describe('UserSubmissionProvider', () => {
   let submissionRepo: Repository<Submission>;
   let seasonService: SeasonService;
   let contactService: ContactService;
+  let management: ManagementService;
 
   const OWNER = 'acct-owner';
   const REVIEWER_PERMS = ['update:competitions'];
@@ -49,7 +52,8 @@ describe('UserSubmissionProvider', () => {
         },
         { provide: getRepositoryToken(SubmissionType), useValue: { find: jest.fn() } },
         { provide: SeasonService, useValue: { findOne: jest.fn(), findOneActive: jest.fn() } },
-        { provide: ContactService, useValue: { sendMessage: jest.fn().mockResolvedValue({}) } }
+        { provide: ContactService, useValue: { sendMessage: jest.fn().mockResolvedValue({}) } },
+        { provide: ManagementService, useValue: { getUserMetadata: jest.fn() } }
       ]
     }).compile();
 
@@ -57,6 +61,7 @@ describe('UserSubmissionProvider', () => {
     submissionRepo = module.get(getRepositoryToken(Submission));
     seasonService = module.get(SeasonService);
     contactService = module.get(ContactService);
+    management = module.get(ManagementService);
   });
 
   afterEach(() => {
@@ -374,6 +379,73 @@ describe('UserSubmissionProvider', () => {
       await provider.getSubmissionsForSeason('season-1');
 
       expect(submissionRepo.find).toHaveBeenCalledWith({ where: { season } });
+    });
+
+    describe('who submitted each (#2799)', () => {
+      const profile = (id: string, over: Record<string, unknown> = {}) => ({
+        user_info: { id, name: `${id}@tamu.edu`, given_name: 'Ana', family_name: 'Ruiz', email: `${id}@tamu.edu` },
+        user_metadata: { education: { fieldOfStudy: 'Geography' }, occupation: { department: 'Planning' } },
+        app_metadata: { gisday: { attendeeType: 'student' } },
+        ...over
+      });
+
+      beforeEach(() => {
+        jest.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-1' } as never);
+      });
+
+      it("gives each submission its submitter's name, email and department", async () => {
+        jest.spyOn(submissionRepo, 'find').mockResolvedValue([submission({ accountGuid: 'student' })]);
+        jest.spyOn(management, 'getUserMetadata').mockResolvedValue(profile('student') as never);
+
+        const [entry] = await provider.getSubmissionsForSeason('season-1');
+
+        expect(entry.title).toBe('A paper');
+        expect(entry.submitter).toEqual({ firstName: 'Ana', lastName: 'Ruiz', email: 'student@tamu.edu', department: 'Geography' });
+      });
+
+      it('takes the department, not the field of study, for anyone but a student', async () => {
+        jest.spyOn(submissionRepo, 'find').mockResolvedValue([submission({ accountGuid: 'faculty' })]);
+        jest
+          .spyOn(management, 'getUserMetadata')
+          .mockResolvedValue(profile('faculty', { app_metadata: { gisday: { attendeeType: 'academia' } } }) as never);
+
+        const [entry] = await provider.getSubmissionsForSeason('season-1');
+
+        expect(entry.submitter.department).toBe('Planning');
+      });
+
+      it('shows the display name when the account has no given or family name', async () => {
+        jest.spyOn(submissionRepo, 'find').mockResolvedValue([submission({ accountGuid: 'social' })]);
+        const unnamed = profile('social');
+        unnamed.user_info = { ...unnamed.user_info, given_name: null, family_name: null };
+        jest.spyOn(management, 'getUserMetadata').mockResolvedValue(unnamed as never);
+
+        const [entry] = await provider.getSubmissionsForSeason('season-1');
+
+        expect(entry.submitter).toMatchObject({ firstName: 'social@tamu.edu', lastName: null });
+      });
+
+      it('reads each account once, however many it submitted', async () => {
+        jest
+          .spyOn(submissionRepo, 'find')
+          .mockResolvedValue([submission({ guid: 'a', accountGuid: 'student' }), submission({ guid: 'b', accountGuid: 'student' })]);
+        jest.spyOn(management, 'getUserMetadata').mockResolvedValue(profile('student') as never);
+
+        const entries = await provider.getSubmissionsForSeason('season-1');
+
+        expect(management.getUserMetadata).toHaveBeenCalledTimes(1);
+        expect(entries.map((e) => e.submitter?.email)).toEqual(['student@tamu.edu', 'student@tamu.edu']);
+      });
+
+      it('still lists a submission whose account cannot be read', async () => {
+        jest.spyOn(submissionRepo, 'find').mockResolvedValue([submission({ accountGuid: 'gone' })]);
+        jest.spyOn(management, 'getUserMetadata').mockRejectedValue(new Error('user not found'));
+
+        const entries = await provider.getSubmissionsForSeason('season-1');
+
+        expect(entries).toHaveLength(1);
+        expect(entries[0].submitter).toBeNull();
+      });
     });
   });
 

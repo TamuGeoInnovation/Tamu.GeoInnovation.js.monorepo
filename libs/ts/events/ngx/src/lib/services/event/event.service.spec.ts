@@ -226,23 +226,23 @@ describe('EventService: selecting a feature from a link', () => {
   /** The map service's own lookup of a link, against the application's search sources (#1969). */
   let selectFeaturesFromUrl = vi.fn();
 
-  /** An event map's settings, with the `lot` source as the application configures it: `?lot=` matched on `LotName`. */
-  const linkSettings = () =>
+  /** An event map's settings, with the `lot` source as the application configures it: `?lot=` matched on `keys`. */
+  const linkSettings = (keys = ['LotName']) =>
     ({
       eventConfiguration: () => undefined,
       eventOptions: () => [],
       settings: () => ({}),
       getVisibleOptions: () => [],
       eventLayerReferences: () => ({}),
-      configuredSearchSources: () => [{ urlQueryParam: 'lot', queryParams: { where: { keys: ['LotName'] } } }]
+      configuredSearchSources: () => [{ urlQueryParam: 'lot', queryParams: { where: { keys } } }]
     }) as unknown as EventSettingsService;
 
   /** Opens `search` on a map holding `layer`, and returns the object ids of the features selected. */
-  async function selectedBy(search: string, layer: FeatureLayer): Promise<number[]> {
+  async function selectedBy(search: string, layer: FeatureLayer, keys?: string[]): Promise<number[]> {
     const selectFeatures = vi.fn();
     selectFeaturesFromUrl = vi.fn();
 
-    const settings = linkSettings();
+    const settings = linkSettings(keys);
 
     TestBed.resetTestingModule().configureTestingModule({
       providers: [
@@ -316,6 +316,12 @@ describe('EventService: selecting a feature from a link', () => {
       expect(await selectedBy('?lot=100j', layer)).toEqual([]);
       expect(selectFeaturesFromUrl).toHaveBeenCalledTimes(1);
     });
+  });
+
+  // The application's lot source names the main map's lot fields, which are lower case since #2722; an event map's own
+  // layers name theirs `LotName`. Field names are matched whatever their case, or the link skips the map's own lot.
+  it("selects the map's own lot when the link's source names the field in another case", async () => {
+    expect(await selectedBy('?lot=100j', filteredLayer([[32270, '100j', 'M/C']]), ['lotname', 'name', 'fac_code'])).toEqual([32270]);
   });
 
   it("selects nothing for a ?lot= link whose only match is outside the map's filter", async () => {
@@ -461,7 +467,8 @@ describe('EventService, a lot link on a map whose fields are named by table', ()
   const AVP_100J = { layer: AVP_PARKING_LAYERS.AVP_PARKING_LOTS, objectId: 26338 };
 
   it('finds the lot source the links are read from', () => {
-    expect(PARKING_LOT_SOURCE.map((source) => source.queryParams?.where?.keys)).toEqual([['LotName', 'Name', 'FAC_CODE']]);
+    // The campus features service's names, in lower case (#2722); the AVP map's own layer names them `LotName`.
+    expect(PARKING_LOT_SOURCE.map((source) => source.queryParams?.where?.keys)).toEqual([['lotname', 'name', 'fac_code']]);
   });
 
   it.each(['?lot=100j', '?lot=100J', '?Lot=100j', '?lot=Lot%20100j'])(

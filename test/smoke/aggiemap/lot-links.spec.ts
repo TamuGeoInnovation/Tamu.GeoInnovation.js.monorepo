@@ -42,8 +42,6 @@ const SELECTION_LAYER_ID = 'selection-layer';
 /** How long the main map's lot search is held back to show #1969. */
 const LATE_SERVICE_MS = 6_000;
 
-/** The main map's parking lots in the campus basemap service, which its `lot` search source asks (`search-sources.ts`). */
-const MAIN_MAP_LOTS_LAYER = 9;
 
 interface LotLink {
   /** Which map, and which group of the issue's audit it stands for. */
@@ -188,11 +186,12 @@ test.describe('lot links on the parking maps', () => {
     }) => {
       test.setTimeout(150_000);
       const objectIds = await expectedObjectIds(request, link);
-      const mainMapLots = `${connections.basemapUrl}/${MAIN_MAP_LOTS_LAYER}/query`;
+      // The main map's parking lots, which its `lot` search source asks (`search-sources.ts`).
+      const mainMapLots = `${connections.surfaceLotsUrl}/query`;
 
       await page.route(
         // The search for the link's lot, not the queries that draw the campus lots. The search source asks
-        // `.../MapServer/9//query`, so repeated slashes are folded before comparing.
+        // `.../FeatureServer/6//query`, so repeated slashes are folded before comparing.
         (url) =>
           url.href.replace(/([^:])\/{2,}/g, '$1/').startsWith(mainMapLots) && /100J/i.test(decodeURIComponent(url.search)),
         async (route) => {

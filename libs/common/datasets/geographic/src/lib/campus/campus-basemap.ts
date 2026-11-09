@@ -10,9 +10,25 @@
 export const TAMU_CAMPUS_BASEMAP_URL = 'https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_Basemap_20261008/MapServer';
 
 /**
- * The main campus's buildings, as data: layer 0, "Campus Structures", of the feature service the vector tile basemap
- * (`Hosted/VTBase3`) is published from (#2707, #2722). Public on the production GIS server, with no key or token; the
- * vector tiles themselves are development-only (#1229), but this service is not.
+ * The main campus's features, as data: the feature service the vector tile basemap (`Hosted/VTBase3`) is published from
+ * (#2707, #2722). Public on the production GIS server, with no key or token; the vector tiles themselves are gated as
+ * development-only (#1229), but this service is not. It replaces every feature layer of `TAMU_CAMPUS_BASEMAP_URL` that
+ * has a counterpart here, with the same rows and fields, the field names in lower case:
+ *
+ * | old `TAMU_CAMPUS_BASEMAP_URL` layer | here |
+ * | --- | --- |
+ * | 1 Structure Data | 0 Campus Structures, `number IS NOT NULL` (1,003 rows on both) |
+ * | 2 University Building, `Type = 'CONSTRUCTION'` | 0 Campus Structures, `type = 'CONSTRUCTION'` (the same 8) |
+ * | 9 Surface Parking | 6 Surface Parking (340 rows against 341: only Lot 8712 is missing here) |
+ *
+ * Layer 0 of the old service, Garage Parking, has no counterpart: 8 of its 10 garages are buildings in Campus
+ * Structures, with building fields rather than lot ones, and Residents Garage and Park West Garage are not here at all.
+ * So the garage search still reads the old service, until the GIS team says where the garages are meant to be (#2722).
+ */
+export const TAMU_CAMPUS_FEATURES_URL = 'https://gis.tamu.edu/arcgis/rest/services/Hosted/VTBase3/FeatureServer';
+
+/**
+ * The main campus's buildings: layer 0, "Campus Structures", of `TAMU_CAMPUS_FEATURES_URL` (#2707).
  *
  * It replaced layer 1, "Structure Data", of `TAMU_CAMPUS_BASEMAP_URL`, which the maintainer retired as a source on
  * 9 November 2026. That layer failed about one query in twenty at random (14 of 300, 4.7%, against 0 of 300 for this one, measured
@@ -22,4 +38,7 @@ export const TAMU_CAMPUS_BASEMAP_URL = 'https://gis.tamu.edu/arcgis/rest/service
  * The same buildings and the same fields, with every field name in lower case (`bldgname`, `number`, `bldgabbrev`,
  * `address`), so every reader of a building's attributes reads them in lower case.
  */
-export const TAMU_CAMPUS_STRUCTURES_URL = 'https://gis.tamu.edu/arcgis/rest/services/Hosted/VTBase3/FeatureServer/0';
+export const TAMU_CAMPUS_STRUCTURES_URL = `${TAMU_CAMPUS_FEATURES_URL}/0`;
+
+/** The main campus's surface parking lots: layer 6, "Surface Parking", of `TAMU_CAMPUS_FEATURES_URL` (#2722). */
+export const TAMU_CAMPUS_SURFACE_LOTS_URL = `${TAMU_CAMPUS_FEATURES_URL}/6`;

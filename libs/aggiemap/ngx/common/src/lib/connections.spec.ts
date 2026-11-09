@@ -202,15 +202,17 @@ describe('markReadFromProduction (#2744)', () => {
 
   // The maintainer's decision, 8 November 2026: the campus basemap's own layers read production on every environment by
   // design, as the basemap does, so marking them would put a marker on the busiest layers on the map and say nothing.
-  // Recorded beside the list in connections.ts; this is what fails if `basemapUrl` or `buildingsUrl` is added to it.
+  // Recorded beside the list in connections.ts; this is what fails if `basemapUrl`, `buildingsUrl` or `surfaceLotsUrl` is
+  // added to it.
   it("leaves the campus basemap's Buildings and Surface Lots unmarked, though they read production", () => {
     const basemapLayers = [
       { type: 'feature', id: 'buildings', url: development.buildingsUrl },
-      { type: 'feature', id: 'surface-lots', url: `${development.basemapUrl}/9` }
+      { type: 'feature', id: 'surface-lots', url: development.surfaceLotsUrl }
     ] as LayerSource[];
 
     expect(READ_FROM_PRODUCTION_ON_DEVELOPMENT.basemapUrl).toBeUndefined();
     expect(READ_FROM_PRODUCTION_ON_DEVELOPMENT.buildingsUrl).toBeUndefined();
+    expect(READ_FROM_PRODUCTION_ON_DEVELOPMENT.surfaceLotsUrl).toBeUndefined();
     expect(marked(markReadFromProduction(basemapLayers, 'gis-dev.it.tamu.edu'))).toEqual([]);
   });
 });

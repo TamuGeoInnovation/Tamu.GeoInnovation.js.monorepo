@@ -167,6 +167,56 @@ async function targets(page: Page, count: number): Promise<Target[]> {
   );
 }
 
+/**
+ * The buildings the layer itself does not answer for, asked with `view.hitTest` at each building's point once its
+ * layer view has finished drawing.
+ *
+ * A click is also answered by the fallback that asks a layer still drawing (`click-query.ts`, #2707, #2785), so a
+ * popup naming the building does not show the layer can be hit. On 9 November 2026 a layer that drew nothing, its
+ * features held with no attributes, passed every click this check made, because each click landed while the fallback
+ * still answered. This asks the layer directly, so a layer that draws nothing to hit fails here whatever answers
+ * clicks.
+ */
+async function notHitTested(page: Page, buildings: Target[]): Promise<string[]> {
+  return await page.evaluate(
+    async ({ layerId, buildings }) => {
+      type Hit = { graphic?: { layer?: unknown } };
+      type View = {
+        map: { findLayerById(id: string): unknown };
+        whenLayerView(layer: unknown): Promise<{ updating: boolean }>;
+        hitTest(point: { x: number; y: number }, options: object): Promise<{ results: Hit[] }>;
+      };
+
+      const element = document.querySelector('arcgis-map') as unknown as HTMLElement & { view: View };
+      const view = element.view;
+      const layer = view.map.findLayerById(layerId);
+      const layerView = await view.whenLayerView(layer);
+      const rect = element.getBoundingClientRect();
+      const start = Date.now();
+
+      while (layerView.updating && Date.now() - start < 60_000) {
+        await new Promise((resolve) => setTimeout(resolve, 250));
+      }
+
+      const missed: string[] = [];
+
+      for (const building of buildings) {
+        const { results } = await view.hitTest(
+          { x: building.x - rect.left, y: building.y - rect.top },
+          { include: [layer] }
+        );
+
+        if (!results.some((result) => result.graphic?.layer === layer)) {
+          missed.push(building.name);
+        }
+      }
+
+      return missed;
+    },
+    { layerId: BUILDINGS_LAYER, buildings }
+  );
+}
+
 test.describe('clicking a building', () => {
   for (const mapPath of MAPS) {
     test(`${mapPath}: each building clicked opens its own popup`, HEAVY, async ({ page }) => {
@@ -198,6 +248,8 @@ test.describe('clicking a building', () => {
       const buildings = await targets(page, CLICKS);
 
       expect(buildings.length, `${mapPath} has no ${BUILDINGS_LAYER} buildings in view to click`).toBe(CLICKS);
+
+      const unhit = await notHitTested(page, buildings);
 
       // Only a popup on screen: one a click closed stays in the page, hidden, still naming the last building.
       const popup = page.locator('tamu-gisc-feature-popup .popup:visible');
@@ -233,7 +285,8 @@ test.describe('clicking a building', () => {
 
       const measured =
         results.map((result) => `${result.building.name}: ${result.ms === null ? 'missed' : `${result.ms} ms`}`).join('; ') +
-        `; buildings queries failed: ${failedQueries.length} of ${queries}`;
+        `; buildings queries failed: ${failedQueries.length} of ${queries}` +
+        `; hit test found the layer at ${buildings.length - unhit.length} of ${buildings.length}`;
 
       // Annotated for the HTML report, and logged because a local run's list reporter shows no annotations.
       test.info().annotations.push({ type: 'building clicks (#2707)', description: measured });
@@ -252,19 +305,30 @@ test.describe('clicking a building', () => {
             `${inFailedTile(result.building) ? '; inside a buildings tile whose query failed' : ''})`
         );
 
-      expect(
-        missed,
-        `buildings on ${mapPath} whose click did not open their own popup within ${POPUP_TIMEOUT / 1000} s. ` +
-          (failedQueries.length > 0
-            ? `${failedQueries.length} buildings queries failed during this run (#2702), which leaves buildings that ` +
-              `cannot be clicked: ${failedQueries.map((query) => query.answer).join(' | ')}`
-            : 'No buildings query failed during this run, so the buildings were all loaded')
-      ).toEqual([]);
+      expect
+        .soft(
+          missed,
+          `buildings on ${mapPath} whose click did not open their own popup within ${POPUP_TIMEOUT / 1000} s. ` +
+            (failedQueries.length > 0
+              ? `${failedQueries.length} buildings queries failed during this run (#2702), which leaves buildings that ` +
+                `cannot be clicked: ${failedQueries.map((query) => query.answer).join(' | ')}`
+              : 'No buildings query failed during this run, so the buildings were all loaded')
+        )
+        .toEqual([]);
+
+      expect
+        .soft(
+          failedQueries.map((query) => query.answer),
+          `buildings queries on ${mapPath} that failed, answered with the error in the body (#2702). Each leaves a part of ` +
+            'the map where no building can be clicked for the rest of the visit, whether or not a click here landed in it'
+        )
+        .toEqual([]);
 
       expect(
-        failedQueries.map((query) => query.answer),
-        `buildings queries on ${mapPath} that failed, answered with the error in the body (#2702). Each leaves a part of ` +
-          'the map where no building can be clicked for the rest of the visit, whether or not a click here landed in it'
+        unhit,
+        `buildings on ${mapPath} that ${BUILDINGS_LAYER} does not answer a hit test for, once it has drawn. Clicks on them ` +
+          'can still open a popup through the fallback for a layer still drawing, which is how a layer that drew nothing ' +
+          'passed this check on 9 November 2026 (#2707)'
       ).toEqual([]);
     });
   }
