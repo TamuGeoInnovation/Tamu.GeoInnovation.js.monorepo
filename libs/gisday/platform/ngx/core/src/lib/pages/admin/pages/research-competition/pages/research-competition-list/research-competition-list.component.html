@@ -26,7 +26,7 @@
           @for (entity of entities; track entity) {
           <tr class="selectable" [routerLink]="['review', entity.guid]">
             <td (click)="$event.stopPropagation()"><tamu-gisc-checkbox label="" (changed)="toggleRow($safeNavigationMigration(entity?.guid))" [checked]="(selectedRows$ | async) | exists: $safeNavigationMigration(entity?.guid)"></tamu-gisc-checkbox></td>
-            <td class="title" [title]="entity.title">{{entity.title}}</td>
+            <td class="title" [title]="entity.title"><div class="clamp">{{entity.title}}</div></td>
             <td class="date">{{entity.created | date: 'MMM d, h:mm a'}}</td>
             @if (submitter(entity); as person) {
             <td class="submitter">

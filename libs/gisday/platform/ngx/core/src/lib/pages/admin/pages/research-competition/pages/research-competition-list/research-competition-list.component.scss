@@ -5,8 +5,20 @@ table {
     min-width: 10rem;
   }
 
+  // A title runs to three lines at most; the whole of it is on hover.
+  .clamp {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
   .date {
     min-width: 6rem;
+  }
+
+  .submitter {
+    min-width: 12rem;
   }
 
   .unknown {
