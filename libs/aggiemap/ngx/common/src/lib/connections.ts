@@ -55,6 +55,10 @@ export const READ_FROM_PRODUCTION_ON_DEVELOPMENT: Partial<Record<keyof IComposed
   // Named on gis.tamu.edu outright below, so these read production everywhere already; listed so the Layers list marks them.
   lactationRoomsUrl: 'the development server does not have this service (#1963)',
   natureRxUrl: `${TOKEN_REQUIRED} (#2630)`,
+  // Not `basemapUrl`, deliberately, though it reads production on every environment too. Its layers - Buildings and
+  // Surface Lots on the main map - arrive with the campus basemap, which reads production everywhere by design, so a
+  // marker on the busiest layers on the map would be noise rather than information. Decided by the maintainer,
+  // 8 November 2026; `connections.spec.ts` fails if it is added.
   kickoff150thUrl: RETIRED,
   kickoffAtKyleUrl: RETIRED,
   liveAtTheStationUrl: RETIRED,
