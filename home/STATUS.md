@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle and listening (12:01 PM Central, 9 November).
+- **Batch 43 (#2801)**, started 12:26 PM Central, 9 November: hide the trip planner's Options link and route on production, red first.
 
 ## Finished
 - **Batch 42 (#2788)** (report `home/reports/2026-11-09-42.md`): branch ready, `fix/2788-gate-transportation` on the fork at `0f3b48de8`, no PR. Tile `isDev`, page gated by `DevelopmentOnlyMapGuard` via route data, smoke tile and page checks red on today's code as production and green both ways; gates spec compares tiles and pages. Check exit 0. No questions.
