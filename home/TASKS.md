@@ -3556,3 +3556,54 @@ this morning.
 `home/reports/<date>-43.md`, **"report ready"**, branch to the fork, `.pr-body.md` last, no pull request. Visible
 change, so before and after on production and dev, a release-notes entry with its *What to test on dev* row, and the
 check's exit code.
+
+## Batch 44 (9 November 2026, from `work (aggiemap)`) — #2804: have routing on production ready before the service is public (High)
+
+**Take this when batch 43 is pushed.** The maintainer: *"They are making it public now. Do all that you can without it
+being public for now to get ready for when they click the button."*
+
+### Where it stands
+
+`RoutingProPublish` **is** published on the production GIS host and answers **499 Token Required** at the folder, the
+MapServer, the NAServer and `NAServer/Route`, measured at about 1:10 PM Central. The `Routing` folder production's
+`routingBaseUrl` points at still has **0 services**. The GIS team is making it public now.
+
+**So everything except the final verification can be built and proven today.** Build it; do not merge it.
+
+### What to prepare
+
+1. **How production reaches the network.** `routingBaseUrl` is `https://<gis host>/arcgis/rest/services/Routing` and the
+   planner discovers services under it. The network is **outside** that folder, which is exactly why development needed
+   `developmentRoutingBaseUrl` pinned. Decide: production's connection pinned the same way, or discovery changed, or
+   the GIS team asked to move it into `Routing`. **Say which and why**; this is the decision in the change.
+2. **The wholesale gate comes off.** `sidebar-trip-planner.component.html` and mobile `trip-planner-top.component.html`
+   wrap the planner in `@if (dev | async)` with the maintenance message. Removing it is the change, but **it must not
+   merge before the service is public** - production would show a planner that cannot route.
+3. **#2801 must be in first.** Accessible routing is unsupported by the network, so the Options gate has to be in place
+   before the planner appears on production. **These two must not cross.** Your batch 43 branch is the one that does it.
+4. **The smoke expectation inverts.** `developmentRoutingBaseUrl` is in the development-only lists so production never
+   requests routing. That becomes the opposite: production must request it, and the check must fail if it does not
+   answer.
+
+### The test, and this is the part that matters
+
+**Not that the panel renders. That a route comes back.** The failure mode is a service answering 499, or nothing, while
+the interface looks perfectly healthy - which is what production would have done all along if the gate had been removed
+blindly.
+
+So: a check that asks for a route between two real points and asserts a path is returned, with a distance or a geometry
+rather than a 200. **Prove it on development now**, where the network works, so it is a known-good check before it is
+ever pointed at production. Then it is ready to run the moment the service is public.
+
+Say in your report what it would take to run it against production, so that when the button is clicked the sequence is
+a command rather than a design.
+
+### Do not
+
+- Merge anything that unhides the planner.
+- Assume the service will be public in the form you expect - when it opens, the first thing to establish is whether it
+  answers anonymously at the URL the application will actually use.
+
+### The report
+
+`home/reports/<date>-44.md`, **"report ready"**, branch to the fork, `.pr-body.md` last, no pull request.
