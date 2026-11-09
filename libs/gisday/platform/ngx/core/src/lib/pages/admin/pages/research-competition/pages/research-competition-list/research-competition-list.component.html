@@ -9,7 +9,7 @@
 
     <div class="form-section-body">
       <!-- Filters (#2807): the submission form's own choices, with All. -->
-      <div class="form-collection row">
+      <div class="form-collection row flex align-start">
         <div class="form-collection column">
           <p class="bold">Classification</p>
           <tamu-gisc-radio-group [formControl]="classification" [options]="classificationOptions" displayPath="label" valuePath="type"></tamu-gisc-radio-group>
@@ -36,7 +36,7 @@
             </ng-template>
           </ngx-datatable-column>
 
-          <ngx-datatable-column name="Name" prop="title" [width]="320"></ngx-datatable-column>
+          <ngx-datatable-column name="Name" prop="title" [width]="280"></ngx-datatable-column>
 
           <ngx-datatable-column name="Submitted" prop="created" [width]="130">
             <ng-template let-row="row" ngx-datatable-cell-template>{{row.created | date: 'MMM d, h:mm a'}}</ng-template>
@@ -60,11 +60,11 @@
             <ng-template let-row="row" ngx-datatable-cell-template>{{row.submissionType | titlecase}}</ng-template>
           </ngx-datatable-column>
 
-          <ngx-datatable-column name="Format" prop="format" [width]="100">
+          <ngx-datatable-column name="Format" prop="format" [width]="120">
             <ng-template let-row="row" ngx-datatable-cell-template>{{row.format | titlecase}}</ng-template>
           </ngx-datatable-column>
 
-          <ngx-datatable-column name="Classification" prop="classificationType" [width]="130">
+          <ngx-datatable-column name="Classification" prop="classificationType" [width]="150">
             <ng-template let-row="row" ngx-datatable-cell-template>{{row.classificationType | titlecase}}</ng-template>
           </ngx-datatable-column>
 
