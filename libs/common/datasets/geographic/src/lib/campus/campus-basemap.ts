@@ -19,6 +19,7 @@ export const TAMU_CAMPUS_BASEMAP_URL = 'https://gis.tamu.edu/arcgis/rest/service
  */
 export const TAMU_CAMPUS_VECTOR_BASEMAP_URL = 'https://gis.tamu.edu/arcgis/rest/services/Hosted/VTBase3/VectorTileServer';
 
+/**
  * The main campus's features, as data: the feature service the vector tile basemap (`Hosted/VTBase3`) is published from
  * (#2707, #2722). Public on the production GIS server, with no key or token; the vector tiles themselves are gated as
  * development-only (#1229), but this service is not. It replaces every feature layer of `TAMU_CAMPUS_BASEMAP_URL` that
