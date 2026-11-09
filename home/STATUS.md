@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle and listening (8:42 AM Central, 9 November).
+- **Batch 41 (aggiemap)**, started 8:44 AM Central, 9 November: surface parking, wall areas, garages and University Building off `TAMU_Basemap_20261008`; stacked on PR 2786's branch, since both change the same connections and search sources.
 
 ## Finished
 - **Batch 40 (#2707)** (report `home/reports/2026-11-09-40.md`): branch ready, `fix/2707-buildings-hit-test` on the fork at `4c7488114`, no PR (the director opens it). Cause: failed tile queries on the old buildings layer (#2702) leave unclickable regions; buildings, search, kiosk and UES moved to VTBase3/FeatureServer/0 behind `buildingsUrl`, `number IS NOT NULL` (1,003 = old), near-invisible fill with its reason. New `building-clicks.spec.ts` red on dev AVP 3 of 4 runs (misses all inside failed tiles), green 15 of 15 after the move, 0 of 145 queries failed. Check exit 0 after merging development. Four questions.
