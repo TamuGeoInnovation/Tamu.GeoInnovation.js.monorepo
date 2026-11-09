@@ -15,14 +15,17 @@ import { EventPopups } from '../modules/popups/popups';
  * layer. The order below is the service's, top first: layer 0 draws on top.
  */
 export enum MICROMOBILITY_LAYERS {
-  CORRIDOR = 'micromobility-corridor',
-  ALLOWED_SIDEWALKS = 'micromobility-allowed-sidewalks',
-  FACILITIES = 'micromobility-facilities'
+  SLOW_ZONES = 'micromobility-slow-zones',
+  SHARED_PATHS = 'micromobility-shared-paths',
+  DEDICATED_PATHS = 'micromobility-dedicated-paths'
 }
 
 const serviceUrl = Connections.micromobilityUrl;
 
-/** Every layer is a line with a `name` (e.g. "Sharrow") and a `notes` (e.g. "Roadway"), so one popup fits all three. */
+/**
+ * Every layer is a line with a `name` (e.g. "Shared Paths") and a `notes` (e.g. "Shared Path"; empty on Dedicated
+ * Micromobility Paths), so one popup fits all three. The layers are Transportation's approved paths (#2812).
+ */
 const source = (id: MICROMOBILITY_LAYERS, index: number): LayerSource =>
   ({
     type: 'feature',
@@ -41,9 +44,9 @@ const source = (id: MICROMOBILITY_LAYERS, index: number): LayerSource =>
   }) as LayerSource;
 
 export const MicromobilityLayerSources: LayerSource[] = [
-  source(MICROMOBILITY_LAYERS.CORRIDOR, 0),
-  source(MICROMOBILITY_LAYERS.ALLOWED_SIDEWALKS, 1),
-  source(MICROMOBILITY_LAYERS.FACILITIES, 2)
+  source(MICROMOBILITY_LAYERS.SLOW_ZONES, 0),
+  source(MICROMOBILITY_LAYERS.SHARED_PATHS, 1),
+  source(MICROMOBILITY_LAYERS.DEDICATED_PATHS, 2)
 ];
 
 export const MicromobilityConfiguration: EventConfiguration = {
@@ -51,7 +54,8 @@ export const MicromobilityConfiguration: EventConfiguration = {
   name: 'Micromobility',
   applicationName: 'Micromobility Map',
   shortApplicationName: 'Micromobility',
-  introductionText: 'Where scooters and bikes can ride on Main Campus: the micromobility corridor, shared sidewalks and roadways.',
+  introductionText:
+    'Where scooters and bikes can ride on Main Campus: slow zones, shared paths and dedicated micromobility paths.',
   eventDates: [],
   // The centre of the three layers' combined extent (WGS84), about 3 km across.
   mapCenter: [-96.34377, 30.61419],
@@ -84,7 +88,7 @@ export const MicromobilityTs: AggiemapCustomMapConfiguration = {
       'e-scooter',
       'bike',
       'bicycle',
-      'corridor',
+      'dedicated path',
       'slow zone',
       'sidewalk',
       'shared path',

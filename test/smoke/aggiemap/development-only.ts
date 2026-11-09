@@ -160,14 +160,15 @@ export const DEVELOPMENT_ONLY_SERVICES: Record<
     reason: '#2673: Nature Rx is on the map but not ready for production',
     pages: []
   },
-  // Transportation's draft Micromobility map (#2712). The service is production's own and public; what is not ready
-  // is the map, which `developmentOnly` keeps off production as a whole: it is listed nowhere there and its link
-  // opens the main map. So production must never request this, and development requests it from the map's link.
+  // Transportation's Micromobility map (#2712), on its approved paths service (#2812), which is published on the
+  // development GIS server only and named there outright, so localhost requests it too. What is not ready is the map,
+  // which `developmentOnly` keeps off production as a whole: it is listed nowhere there and its link opens the main
+  // map. So production must never request this, and development requests it from the map's link.
   // The main map has it too, as a group off until a visitor turns it on (#2739), which a production build leaves out
   // (`development-only-sources.ts`). Off or not, the main map asks for its three layers' descriptions as it loads, so
   // development requests it from `/map` unprompted and production, which must not, is checked there.
-  'Hosted/Micromobility_Map_WFL1_view/FeatureServer': {
-    reason: '#2712, #2739: the Micromobility draft map, and its layers on the main map',
+  'Hosted/Approved_Micromobility_Paths_view/FeatureServer': {
+    reason: '#2712, #2739, #2812: the Micromobility map, and its layers on the main map',
     pages: ['/transportation/micromobility', '/map']
   },
   // The NCAA Volleyball 1st & 2nd Round map (#2713), published on the development GIS server only and kept off

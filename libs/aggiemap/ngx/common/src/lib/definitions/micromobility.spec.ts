@@ -3,7 +3,8 @@ import { LayerSource } from '@tamu-gisc/common/types';
 import { DEVELOPMENT_ONLY_LAYER_SOURCES } from '../development-only-sources';
 import { factory } from '../utils/definitionFactory';
 
-const MICROMOBILITY = 'https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Micromobility_Map_WFL1_view/FeatureServer';
+// Transportation's approved paths (#2812), published on the development GIS server, which every environment reads.
+const MICROMOBILITY = 'https://gis.dev.tamu.edu/arcgis/rest/services/Hosted/Approved_Micromobility_Paths_view/FeatureServer';
 
 /** The main map's Micromobility group in a build, if the build has it. */
 function micromobility(build: ReturnType<typeof factory>): (LayerSource & { sources?: Array<LayerSource> }) | undefined {
@@ -26,16 +27,22 @@ describe('Micromobility on the main map (#2739)', () => {
     expect(group.visible).toBe(false);
   });
 
-  // The service is on Transportation's production host, so every environment reads the same one.
+  // The service is on the development GIS server only, named there outright, so every environment reads the same one.
   it("holds the service's three layers, in its order, each drawn when the group is turned on", () => {
     const layers = micromobility(factory({ environment: 'dev' })).sources;
 
     expect(layers.map((layer) => layer.url)).toEqual([0, 1, 2].map((index) => `${MICROMOBILITY}/${index}`));
+    expect(layers.map((layer) => layer.id)).toEqual([
+      'micromobility-slow-zones-layer',
+      'micromobility-shared-paths-layer',
+      'micromobility-dedicated-paths-layer'
+    ]);
     expect(layers.every((layer) => layer.visible === true)).toBe(true);
   });
 
-  // docs/map-layers.md: a layer's name and symbology are its service's. Corridor, Allowed Sidewalks and Facilities are
-  // named well there, so nothing here overrides them, and no layer-title-overrides.json entry is needed.
+  // docs/map-layers.md: a layer's name and symbology are its service's. Slow Zones, Shared Paths and Dedicated
+  // Micromobility Paths are named well there, so nothing here overrides them, and no layer-title-overrides.json entry is
+  // needed.
   it('takes the names and symbols of its layers from the service', () => {
     const layers = micromobility(factory({ environment: 'dev' })).sources as Array<
       LayerSource & { native?: { renderer?: unknown } }

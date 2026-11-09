@@ -591,9 +591,9 @@ export function MainMapLayerSources(
       listMode: 'show',
       visible: false,
       sources: [
-        ['micromobility-corridor-layer', 0],
-        ['micromobility-allowed-sidewalks-layer', 1],
-        ['micromobility-facilities-layer', 2]
+        ['micromobility-slow-zones-layer', 0],
+        ['micromobility-shared-paths-layer', 1],
+        ['micromobility-dedicated-paths-layer', 2]
       ].map(
         ([id, index]): LayerSource => ({
           type: 'feature',
@@ -602,8 +602,9 @@ export function MainMapLayerSources(
           listMode: 'show',
           visible: true,
           popupComponent: definitions.MICROMOBILITY.popupComponent,
-          // Every feature is a line with a `name` (e.g. "Restricted Sharrow") and a `notes` that says what kind it is
-          // (e.g. "Roadway", "Slow Zone"), so one popup fits all three, as on the Micromobility map.
+          // Every feature is a line with a `name` (e.g. "Shared Paths") and a `notes` that says what kind it is
+          // (e.g. "Shared Path"; empty on Dedicated Micromobility Paths), so one popup fits all three, as on the
+          // Micromobility map.
           popupData: {
             name: '{attributes.name}',
             description: '<strong>Type</strong>: {attributes.notes}'
