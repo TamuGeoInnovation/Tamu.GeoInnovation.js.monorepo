@@ -42,6 +42,7 @@ export const READ_FROM_PRODUCTION_ON_DEVELOPMENT: Partial<Record<keyof IComposed
   tCampUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
   fourHRoundupUrl: `${TOKEN_REQUIRED} (#2695)`,
   micromobilityUrl: `${TOKEN_REQUIRED} (#2712)`,
+  accessibleUrl: 'the development server has FCOR/ADA_120717 with no layers, so layer 0 answers 404 "Layer not found" (#2744)',
   bikeMapUrl: `${TOKEN_REQUIRED} (#2744)`,
   bikeRacksUrl: `${TOKEN_REQUIRED} (#2744)`,
   // Named on gis.tamu.edu outright below, so these read production everywhere already; listed so the Layers list marks them.
@@ -268,8 +269,9 @@ export function getDefaultGisHosts() {
 /**
  * The sources a development build reads from production, each given the reason as `readFromProduction`, which the
  * Layers list shows as a marker (#2744). Read from `READ_FROM_PRODUCTION_ON_DEVELOPMENT`, the list `Connections` pins
- * by, so the marker and the pin cannot disagree. A source counts when its URL is a listed service or one of its layers;
- * a group's children are marked in place. Where `gisHost` is production's, nothing is read from production for want of
+ * by, so the marker and the pin cannot disagree. A source counts when its URL is a listed service or one of its layers.
+ * A group counts when any of its children does, because a list may show the group alone: Sustainable Transportation
+ * hides its six bike layers. Where `gisHost` is production's, nothing is read from production for want of
  * a development service, and the sources come back as they are - so the marker never appears on production.
  */
 export function markReadFromProduction(sources: LayerSource[], gisHost = getDefaultGisHost()): LayerSource[] {
@@ -286,11 +288,13 @@ export function markReadFromProduction(sources: LayerSource[], gisHost = getDefa
 
   return sources.map((source) => {
     const children = (source as { sources?: LayerSource[] }).sources;
-    const reason = reasonFor((source as { url?: unknown }).url);
+    const marked = children ? markReadFromProduction(children, gisHost) : undefined;
+    const reasons = [reasonFor((source as { url?: unknown }).url), ...(marked ?? []).map((child) => child.readFromProduction)];
+    const reason = [...new Set(reasons.filter((r): r is string => r !== undefined))].join('; ');
 
     return {
       ...source,
-      ...(children ? { sources: markReadFromProduction(children, gisHost) } : {}),
+      ...(marked ? { sources: marked } : {}),
       ...(reason ? { readFromProduction: reason } : {})
     } as LayerSource;
   });

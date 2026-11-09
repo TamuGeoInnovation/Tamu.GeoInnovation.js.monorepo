@@ -70,7 +70,7 @@ const production = Connections(PRODUCTION_GIS_HOST) as unknown as Record<string,
  * found", which ArcGIS also gives a service that exists but is not shared. Neither says whether the service exists - a
  * nonsense path answers 499 too (#2653) - but each proves a development build cannot draw it.
  */
-const UNREADABLE = /^(499|404)/;
+const UNREADABLE = /^(499|404)\b/;
 const services = Object.entries(connections).filter(
   (entry): entry is [string, string] => typeof entry[1] === 'string' && /^https?:\/\//.test(entry[1])
 );

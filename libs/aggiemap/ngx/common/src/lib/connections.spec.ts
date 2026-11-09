@@ -188,10 +188,11 @@ describe('markReadFromProduction (#2744)', () => {
       ...marked((source as { sources?: LayerSource[] }).sources ?? [])
     ]);
 
-  it("marks every layer of a listed service, a group's children included, with the list's reason", () => {
+  it("marks every layer of a listed service with the list's reason, and a group holding one", () => {
     const result = markReadFromProduction(sources, 'gis-dev.it.tamu.edu');
 
-    expect(marked(result)).toEqual(['campus-bike-lanes', 'bike-racks']);
+    expect(marked(result)).toEqual(['campus-bike-lanes', 'bikes', 'bike-racks']);
+    expect(result[2].readFromProduction).toBe(READ_FROM_PRODUCTION_ON_DEVELOPMENT.bikeRacksUrl);
     expect(result[0].readFromProduction).toBe(READ_FROM_PRODUCTION_ON_DEVELOPMENT.bikeMapUrl);
   });
 
