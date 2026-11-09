@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle and listening (11:17 PM Central, 8 November).
+- **Batch 40 (#2707, Urgent)**, started 6:39 AM Central, 9 November: the buildings renderer override (fill alpha 1), a hit-test spec red then green, proven on three maps. From `development` at `8ee8c6ea7` or later.
 
 ## Finished
 - **Batch 39 (#2768, #2765)** (report `home/reports/2026-11-08-39.md`): `fix/2768-april-ring-day` at `72f741180` and `fix/2765-title-override-sweep` at `0e125b731` on the fork, no PRs (#2765 held for the release test). 98 restating titles removed, proven in the app on both hosts; 39 reasons; 63 left unreviewed. Checks exit 0. Three questions.
