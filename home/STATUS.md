@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch 36 (#2756)**, started 8:20 PM Central, 8 November: make the TS_Main and construction pins as narrow as their evidence, folded into PR 2755.
+- Nothing. Idle and listening (8:34 PM Central, 8 November).
 
 ## Finished
+- **Batch 36 (#2756)** (report `home/reports/2026-11-08-36.md`): folded into PR 2755. TS_Main pinned only at layer 6 (`tsParkingLotsUrl`); construction stays pinned because dev's MapServer returns no geometry. Red then green; check exit 0. Two questions.
 - **Batch 35 (#2744)** (report `home/reports/2026-11-08-35.md`): PR 2755, nine layers dead on dev now read production and are marked; the new check was red on unfixed code (4 services) and green with the fix; check exit 0. Three questions for the director.
 - **Batch 34** (aggiemap; report `home/reports/2026-11-08-34.md`): #2731 is PR 2745. Probe `serviceName` and `basemap`, the 202-entry override list and its unit spec, and the maps.spec title check; red then green; check exit 0. Baseline: 0 wrong, 0 drifted, 95 overrides equal to their service's name. Three questions.
 - **Batch 33** (aggiemap; report `home/reports/2026-11-08-33.md`): development merged into PR 2727 at `3436ba468`, three conflicts resolved keeping both maps (and a misplaced comment fixed), 288/288 without snapshot rewrite, check exit 0, MERGEABLE. No questions.
