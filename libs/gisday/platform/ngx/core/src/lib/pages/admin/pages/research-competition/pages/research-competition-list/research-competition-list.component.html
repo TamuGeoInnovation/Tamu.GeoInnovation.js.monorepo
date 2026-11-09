@@ -8,19 +8,19 @@
     </div>
 
     <div class="form-section-body">
-      <!-- Filters (#2807): the submission form's own choices, with All. -->
+      @if (view$ | async; as view) {
+      <!-- Filters (#2807): All and the submission form's choices that this season has (#2817). -->
       <div class="form-collection row flex align-start">
         <div class="form-collection column">
           <p class="bold">Classification</p>
-          <tamu-gisc-radio-group [formControl]="classification" [options]="classificationOptions" displayPath="label" valuePath="type"></tamu-gisc-radio-group>
+          <tamu-gisc-radio-group [formControl]="classification" [options]="view.classificationOptions" displayPath="label" valuePath="type"></tamu-gisc-radio-group>
         </div>
         <div class="form-collection column">
           <p class="bold">Type</p>
-          <tamu-gisc-radio-group [formControl]="type" [options]="typeOptions" displayPath="label" valuePath="type"></tamu-gisc-radio-group>
+          <tamu-gisc-radio-group [formControl]="type" [options]="view.typeOptions" displayPath="label" valuePath="type"></tamu-gisc-radio-group>
         </div>
       </div>
 
-      @if (view$ | async; as view) {
       <p>Showing <strong>{{view.rows.length}}</strong> of {{view.total}} submissions.</p>
 
       @if (view.rows.length > 0) {
@@ -36,27 +36,28 @@
             </ng-template>
           </ngx-datatable-column>
 
-          <ngx-datatable-column name="Name" prop="title" [width]="205"></ngx-datatable-column>
+          <ngx-datatable-column name="Name" prop="title" [width]="160"></ngx-datatable-column>
 
-          <ngx-datatable-column name="Submitted" prop="created" [width]="115">
+          <ngx-datatable-column name="Submitted" prop="created" [width]="100">
             <ng-template let-row="row" ngx-datatable-cell-template>{{row.created | date: 'MMM d, h:mm a'}}</ng-template>
           </ngx-datatable-column>
 
           <!-- Sorted by last name. -->
-          <ngx-datatable-column name="Submitted by" prop="submitter.lastName" [width]="210">
+          <ngx-datatable-column name="Submitted by" prop="submitter.lastName" [width]="170">
             <ng-template let-row="row" ngx-datatable-cell-template>
               @if (row.submitter; as person) {
               <div class="bold">{{person.firstName}} {{person.lastName}}</div>
               <div>{{person.email}}</div>
-              @if (person.department) {
-              <div class="clr-md-grey-600">{{person.department}}</div>
-              } } @else {
+              } @else {
               <em>Account not found</em>
               }
             </ng-template>
           </ngx-datatable-column>
 
-          <ngx-datatable-column name="Type" prop="submissionType" [width]="80">
+          <!-- The submitter's field of study, or department for anyone but a student (#2799). -->
+          <ngx-datatable-column name="Department / major" prop="submitter.department" [width]="160"></ngx-datatable-column>
+
+          <ngx-datatable-column name="Type" prop="submissionType" [width]="125">
             <ng-template let-row="row" ngx-datatable-cell-template>{{row.submissionType | titlecase}}</ng-template>
           </ngx-datatable-column>
 
@@ -68,7 +69,7 @@
             <ng-template let-row="row" ngx-datatable-cell-template>{{row.classificationType | titlecase}}</ng-template>
           </ngx-datatable-column>
 
-          <ngx-datatable-column name="Status" prop="reviewStatus" [width]="125">
+          <ngx-datatable-column name="Status" prop="reviewStatus" [width]="110">
             <ng-template let-row="row" ngx-datatable-cell-template>
               <span class="bold" [ngClass]="{'clr-md-amber-800': row.reviewStatus === SubmissionReviewStatus.InReview, 'clr-md-green-600': row.reviewStatus === SubmissionReviewStatus.Accepted, 'clr-md-red-500': row.reviewStatus === SubmissionReviewStatus.Rejected}">{{row.reviewStatus}}</span>
             </ng-template>
