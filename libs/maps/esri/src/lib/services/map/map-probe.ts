@@ -85,6 +85,24 @@ export interface MapLayerProbe {
    * `default` is what Dining and AggiePrint were for two days on production (#1576).
    */
   symbology: 'own' | 'portal' | 'service' | 'default' | null;
+
+  /**
+   * The layer's name as its service publishes it (`sourceJSON.name`), read once the layer has loaded; `null` for a
+   * layer that has not loaded or has no service to name it (GeoJSON, graphics, groups) (#2731).
+   *
+   * `title` is what the map shows, and comparing it with this is how a check tells a layer named by its service from
+   * one whose definition overrides the name. Read it with `loaded`: a layer that never loaded has no name from its
+   * service, and if its definition gives no title, ArcGIS shows one made from the service's address instead - "Muster
+   * view" for `Muster_view`. That reads exactly like a naming fault and is a load failure.
+   */
+  serviceName: string | null;
+
+  /**
+   * Whether the layer belongs to the basemap rather than to the map (#2731). A basemap's layers are declared with the
+   * basemap, not in a map's definition, and are given ids at runtime, so checks keyed on a map's layer ids leave them
+   * out.
+   */
+  basemap: boolean;
 }
 
 export interface MapProbeSnapshot {
@@ -387,7 +405,9 @@ async function probeLayer(layer: esri.Layer): Promise<MapLayerProbe> {
     graphicTypes: countGraphicTypes(layer),
     spatialReference: readSpatialReference(layer),
     drawable: isDrawable(layer),
-    symbology: readSymbology(layer)
+    symbology: readSymbology(layer),
+    serviceName: readServiceName(layer),
+    basemap: isBasemapLayer(layer)
   };
 
   // A layer that failed to load cannot be queried, and asking would replace a useful load error
@@ -412,6 +432,20 @@ function readRenderers(): Record<string, unknown> {
   }
 
   return out;
+}
+
+/** See `MapLayerProbe.basemap`. */
+function isBasemapLayer(layer: esri.Layer): boolean {
+  const basemap = current?.map?.basemap;
+
+  return basemap ? [...basemap.baseLayers.toArray(), ...basemap.referenceLayers.toArray()].includes(layer) : false;
+}
+
+/** See `MapLayerProbe.serviceName`. */
+function readServiceName(layer: esri.Layer): string | null {
+  const name = layer.loaded ? (layer as unknown as { sourceJSON?: { name?: unknown } }).sourceJSON?.name : undefined;
+
+  return typeof name === 'string' ? name : null;
 }
 
 /** See `MapLayerProbe.symbology`. Read after the layer has loaded, so `sourceJSON` is there. */
