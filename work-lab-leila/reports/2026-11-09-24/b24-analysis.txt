@@ -1,0 +1,45 @@
+ALL queries                         100 / 2880    3.47%  [2.86% - 4.21%]
+
+== by run
+r1-prod                              13 / 360     3.61%  [2.12% - 6.08%]
+r2-dev                               13 / 360     3.61%  [2.12% - 6.08%]
+r3-prod                              14 / 360     3.89%  [2.33% - 6.42%]
+r4-dev                               12 / 360     3.33%  [1.92% - 5.74%]
+r5-prod                              16 / 360     4.44%  [2.75% - 7.10%]
+r6-dev                                8 / 360     2.22%  [1.13% - 4.32%]
+r7-prod                               9 / 360     2.50%  [1.32% - 4.68%]
+r8-dev                               15 / 360     4.17%  [2.54% - 6.76%]
+
+== by site
+dev                                  48 / 1440    3.33%  [2.52% - 4.39%]
+prod                                 52 / 1440    3.61%  [2.76% - 4.70%]
+
+== by layer
+layer 1                              41 / 960     4.27%  [3.16% - 5.74%]
+layer 2                              46 / 960     4.79%  [3.61% - 6.33%]
+layer 9                              13 / 960     1.35%  [0.79% - 2.30%]
+
+== by kind
+features f=pbf quantized            100 / 2880    3.47%  [2.86% - 4.21%]
+
+== errors
+  34 layer 2: 200 / 400 Invalid or missing input parameters.
+  27 layer 1: 200 / 400 Invalid or missing input parameters.
+  14 layer 1: 200 / 500 Error performing query operation
+  13 layer 9: 200 / 500 Error performing query operation
+  12 layer 2: 200 / 500 Error performing query operation
+
+== per load (failed/queries), by run
+r1-prod    2026-11-09T12:50:18.363Z 0/36 3/36 0/36 3/36 0/36 1/36 2/36 1/36 2/36 1/36
+r2-dev     2026-11-09T13:00:19.643Z 2/36 2/36 1/36 2/36 0/36 1/36 1/36 2/36 1/36 1/36
+r3-prod    2026-11-09T13:10:18.919Z 1/36 1/36 2/36 1/36 1/36 1/36 2/36 2/36 2/36 1/36
+r4-dev     2026-11-09T13:20:19.351Z 1/36 0/36 1/36 2/36 3/36 1/36 1/36 0/36 0/36 3/36
+r5-prod    2026-11-09T13:30:19.075Z 2/36 2/36 1/36 2/36 2/36 1/36 3/36 0/36 1/36 2/36
+r6-dev     2026-11-09T13:40:19.552Z 0/36 2/36 0/36 3/36 1/36 1/36 1/36 0/36 0/36 0/36
+r7-prod    2026-11-09T13:50:19.106Z 0/36 0/36 1/36 2/36 0/36 2/36 1/36 2/36 1/36 0/36
+r8-dev     2026-11-09T14:00:19.561Z 1/36 1/36 2/36 3/36 2/36 1/36 0/36 0/36 2/36 3/36
+
+== re-asked failed queries: 100 queries, 300 tries, 290 ok; queries ok on the first re-ask: 99
+
+== time to answer: ok median 304 ms, p90 394 ms; failed median 312 ms, p90 492 ms
+== non-query requests: 240, failed 0

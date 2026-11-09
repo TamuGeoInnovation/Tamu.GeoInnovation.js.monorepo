@@ -1,0 +1,2 @@
+serial   15/360 failed (4.17%) {"layer 1: 400 Invalid or missing input parameters.":7,"layer 1: 500 Error performing query operation":2,"layer 9: 500 Error performing query operation":1,"layer 2: 500 Error performing query operation":1,"layer 2: 400 Invalid or missing input parameters.":4}
+parallel 11/360 failed (3.06%) {"layer 2: 400 Invalid or missing input parameters.":4,"layer 2: 500 Error performing query operation":2,"layer 9: 500 Error performing query operation":3,"layer 1: 500 Error performing query operation":2}
