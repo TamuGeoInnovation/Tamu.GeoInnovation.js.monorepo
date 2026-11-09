@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch 35 (#2744)**, started 7:04 PM Central, 8 November: pin the bike services to production, a check that finds the next one, and a "development only" marker. Progress 7:27 PM: code done, first check exit 0; before capture taken; red and green smoke runs and the after capture running.
+- **Batch 35 (#2744)**, started 7:04 PM Central, 8 November: pin the bike services to production, a check that finds the next one, and a "development only" marker. Progress 7:31 PM: the new check, run red on unfixed code, found two more dead on dev (Accessible Building Entrances, and MapInfo: Emergency Phones and restrooms); pinning those too, re-running red and green.
 
 ## Finished
 - **Batch 34** (aggiemap; report `home/reports/2026-11-08-34.md`): #2731 is PR 2745. Probe `serviceName` and `basemap`, the 202-entry override list and its unit spec, and the maps.spec title check; red then green; check exit 0. Baseline: 0 wrong, 0 drifted, 95 overrides equal to their service's name. Three questions.
