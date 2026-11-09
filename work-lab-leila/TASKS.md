@@ -6512,3 +6512,67 @@ will carry PR 2734 (your Nature Rx popup work) and PR 2735.
 ### The report
 
 `work-lab-leila/reports/2026-11-08-17.md`, and say **"report ready: <file>"**.
+
+## Batch 18 (8 November 2026, from `work (aggiemap)`) — #2739: micromobility on the main campus map (High)
+
+Batch 17's two branches are both pull requests now: [PR 2749](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2749)
+is **merged**, and the basemap-requests one is being reopened on current `development` for a reason that is my fault,
+not yours - see the note at the end.
+
+**Your HTTP 200 finding is the most useful thing anyone produced today.** A failed basemap query answers 200 with the
+error in the body, and `maps.spec.ts` collects server errors by status, so it has been watching for a code that never
+arrives. That is the **third** 200-means-failure case found today: the bus routes view answering old field names with
+200 and `Field name 'RouteNum' does not exist`, a missing Nature Rx photo answering 200 with an HTML page, and yours.
+Three separate checks in this repository assume a 200 is a success. That pattern is now written into #2748.
+
+### This batch
+
+[#2739](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2739): add the micromobility layers
+to the **main campus map**, development-only. Read the issue; the service is:
+
+`https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Micromobility_Map_WFL1_view/FeatureServer`
+
+| Layer | Name | Features |
+| --- | --- | --- |
+| 0 | Micromobility Corridor | 12 |
+| 1 | Allowed Sidewalks | 28 |
+| 2 | Micromobility Facilities | 255 |
+
+**As the main map's optional layers are:** listed in Layers, **off by default**, symbology and titles from the service
+(`docs/map-layers.md`). Points of Interest and Nature Rx are the pattern.
+
+**Three layers or one group?** 295 features across three layers on a list that is already long, all the same subject.
+`sustainable-transportation-group-layer` already groups related layers under one entry. Say which you chose and why.
+
+**The gating is the part to get right.** The service is on Transportation's **production** host, so these layers would
+work on production the moment they shipped - which is exactly why the gate must be deliberate. `TestingService` /
+`isTesting`, and add the main map's pages to its `DEVELOPMENT_ONLY_SERVICES` entry in
+`test/smoke/aggiemap/development-only.ts`, so the suite **fails** if production ever requests it (#1229).
+
+### Do not deduplicate the bike layers
+
+The main map already carries Campus Bike Lanes, City Bike Lanes and Routes, Bike Racks, Bike Fix Stations and Dismount
+Zones, and Micromobility Corridor and Allowed Sidewalks may overlap them.
+
+**The maintainer's decision, 8 November: both sets stay on the main map on dev**, and the keep-or-remove decision comes
+at the start of the week. **Say what you find about the overlap** - that is useful input to that decision - but change
+nothing about the bike layers.
+
+Note that those six bike layers are **dead on dev** right now (499 Token Required, [#2744](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2744),
+home is fixing it). So when you look at the main map on dev you will see them listed and not drawing. That is known and
+not yours.
+
+### My mistake, so you can avoid inheriting it
+
+I opened PRs 2749 and 2750 straight from your branch heads, including the `.pr-body.md` commit. The protocol is to take
+the code commits onto a fresh branch and leave that one behind. As a result `.pr-body.md` was merged into
+`development`, and it then conflicted with your other branch's copy - which is why 2750 could not merge.
+
+Nothing for you to change; keep putting the body in `.pr-body.md` as you do. I will strip it properly.
+
+### The report and the pull request
+
+Visible on dev, so before and after screenshots and a release-notes entry with its *What to test on dev* row.
+`scripts/check-in-volume.sh <branch> aggiemap-ngx-common,ts-events-ngx,aggiemap-angular` at least.
+
+`work-lab-leila/reports/2026-11-08-18.md`, and say **"report ready: <file>"**.
