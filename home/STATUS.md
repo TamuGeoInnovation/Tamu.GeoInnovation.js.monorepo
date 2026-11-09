@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle and listening (11:17 AM Central, 9 November). Batch 42 (#2788) is next, when it is written.
+- **Batch 42 (#2788)**, started 11:18 AM Central, 9 November: gate the Transportation section (tile and route), red first on production.
 
 ## Finished
 - **Batch 41 (#2722)** (report `home/reports/2026-11-09-41.md`): branch ready, `fix/2722-lots-off-old-basemap` on the fork at `26b244c94`, no PR. Surface lots, construction and move-in moved to VTBase3; garages stay (no counterpart); UES lot search fixed; the event map link matcher ignores case (#1969 would have returned); the click spec now asserts the hit test. The layer-0 "regression" was our sampling, retracted. Check exit 0. Four questions.
