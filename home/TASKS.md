@@ -3168,3 +3168,101 @@ I will open the pull request when he is done.
 Both are visible, so before and after screenshots and release notes with their *What to test on dev* rows.
 
 `home/reports/<date>-39.md`, and say **"report ready: <file>"**.
+
+## Batch 40 (9 November 2026, from `work (aggiemap)`) — #2707: the buildings layer cannot be hit-tested (Urgent, do now)
+
+**The release is held on this.** Nothing else in this batch. The maintainer reported it from dev this morning with two
+screen recordings, and the cause is found and measured — what is left is the fix, the proof, and a check that stops it
+coming back.
+
+### The fault, already established (do not re-derive it)
+
+`buildings-layer` reads `TAMU_Basemap_20261008/MapServer/1` ("Structure Data") and takes the service's symbology, as
+[`docs/map-layers.md`](../docs/map-layers.md) says it should. The service returns:
+
+```json
+{ "type": "simple", "symbol": { "type": "esriSFS", "style": "esriSFSSolid",
+  "color": [252, 189, 204, 0],
+  "outline": { "type": "esriSLS", "style": "esriSLSNull", "color": [110,110,110,255], "width": 0 } } }
+```
+
+**Fill alpha 0, null outline, width 0 — the layer draws nothing.** Every building footprint on screen is the basemap's;
+the feature layer is an invisible click target over it. A fully transparent symbol is not reliably hit-testable, because
+`view.hitTest` reports what was rasterised and nothing was.
+
+Measured on dev build `863ed2b51`, `view.hitTest` at each building's centroid and at a point a quarter of the way in
+from a vertex, asking whether `buildings-layer` is among the results:
+
+| Building | centroid | inside the shape |
+| --- | --- | --- |
+| Davis Football Player Development | no | no |
+| Bright-Slocum Center | no | no |
+| Kyle Field | no | yes |
+| Student Recreation Center | no | yes |
+| Events Pavilion in Aggie Park | no | no |
+| Hagler Center | yes | no |
+| West Campus Parking Garage, Coolidge, Adam C. Sinn, Billy Pickard | yes | yes |
+
+**Ruled out, with measurements — do not spend time on these:** projection (view, layer and vector basemap are all
+`wkid 102100` / `latestWkid 3857`), labels (`labelClasses: 0`, service `labelingInfo: none`; the labels on screen are the
+basemap's), scale (`minScale 36000`, measured at 1:2257 and 1:9028), and this release (the service is the same
+everywhere, and production behaves the same).
+
+Full write-up, with the recordings' numbers:
+[#2707](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2707#issuecomment-6740241755).
+
+### 1. Red first, and this one needs a running build
+
+The fix is in the application, so prove it against **your own dev server**, not a deployed environment:
+`test/smoke/aggiemap/run-local.sh local`, with `aggiemap-dev` running from your worktree.
+
+**The red proof is a hit-test measurement, not a popup one.** Ask the map's own `view.hitTest` at the centres of
+buildings taken from `buildings-layer` itself — query the layer for the features in the current extent, take each
+`geometry.centroid`, convert with `view.toScreen`, and record whether `buildings-layer` is among the hit results.
+Record the same buildings before and after, in the same extent, so the two runs are comparable.
+
+**Not a fraction of the viewport.** `popup.spec.ts` clicks `box.width * 0.117`, which is how
+[#2701](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2701) item 3 came to click Evans
+while asking for Harrington. A point taken from the feature's own geometry is the building wherever the framing puts it.
+
+### 2. The fix
+
+Override the renderer where `buildings-layer` is declared —
+`libs/aggiemap/ngx/common/src/lib/definitions/main.definitions.ts`, the `native` block — with a fill alpha of **1**
+instead of 0. Invisible to the eye, rasterised, hit-testable.
+
+**Write the reason beside it**, as `docs/map-layers.md` requires: what the service returns, why the override exists,
+and that it can be removed when the service publishes a hit-testable symbol. An override with no comment is
+indistinguishable from an oversight — that is how 95 of them accumulated.
+
+**Say whether alpha 1 is enough**, or whether the null outline has to be replaced too. Measure rather than assume; if
+alpha alone fixes it, leave the outline as the service has it.
+
+### 3. It has to work on every map, because that is the complaint
+
+The maintainer's words: *"Map clicking to select features on the map needs to work on all maps, not just the main
+map."* `buildings-layer` is declared once and used everywhere, so one override should cover all of them — **prove it**:
+measure on the main map and on at least two others, one of them an event or parking map
+(`/parking/avp-parking/map/d` is the map in his recordings).
+
+### 4. The check that stops it coming back
+
+[#2778](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2778) is the standing click grid, and
+this measurement is the method it wants. **Add the spec in this pull request**: click building centres taken from the
+layer, at human speed, and assert the popup names **the building just clicked**. It must fail on the unfixed code.
+
+If it is better as its own pull request, say so rather than doing it — but the fix must not merge with nothing watching
+it.
+
+### Also
+
+- Screenshots before and after, and a release-notes entry with its *What to test on dev* row: this is visible.
+- **Do not open the pull request**; push the branch and say "branch ready".
+- The service is the real fault. Draft the row for
+  [#1745](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1745) asking the GIS team to
+  republish layer 1 with a hit-testable symbol, and put it in your report rather than filing it — the maintainer
+  decides what goes to them.
+
+### The report
+
+`home/reports/2026-11-09-40.md`, and say **"report ready: <file>"**.
