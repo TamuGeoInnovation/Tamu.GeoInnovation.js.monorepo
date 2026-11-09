@@ -1,6 +1,8 @@
+import * as fs from 'fs';
+import * as path from 'path';
 import { expect, test } from '@playwright/test';
 
-import { definedMaps } from './definitions';
+import { definedMaps, parseDefinition } from './definitions';
 import { CORE_ROUTES, CORE_SPECS, describeQuickSet, quickSetFor, routeGrep } from './scope';
 
 /**
@@ -209,7 +211,53 @@ test('every real definition that declares a map yields a route', () => {
 
   for (const map of maps) {
     expect(map.route, `${map.file} produced no usable route`).toMatch(
-      /^\/(events|parking|operations|campus|kiosk)\/[a-z0-9-]+$/
+      /^\/(events|parking|operations|campus|kiosk|transportation)\/[a-z0-9-]+$/
     );
   }
+});
+
+test.describe("a map's address is the application's (#2775)", () => {
+  // The section decides before the type (#2767): a map listed under Transportation is at `/transportation/<id>`,
+  // whatever its `type`. The suite once kept its own copy of the rule, which still said `/parking/` for both of these,
+  // and the quick tier silently ran nothing at their real addresses.
+  test('puts the real Transportation maps under /transportation', () => {
+    const routes = definedMaps().map((map) => map.route);
+
+    expect(routes).toContain('/transportation/micromobility');
+    expect(routes).toContain('/transportation/sustainable-transportation');
+    expect(routes).not.toContain('/parking/micromobility');
+    expect(routes).not.toContain('/parking/sustainable-transportation');
+  });
+
+  test("agrees with the application's mapSegment wherever the application has recorded an address", () => {
+    // The suite keeps a copy of `mapSegment`, because it cannot import Angular. The application's own answer is in
+    // `declared-layers.generated.json`, which `declared-layers.spec.ts` writes with the real `mapSegment` and fails
+    // until it is rewritten. So the copy cannot drift from the rule without this failing, for every map recorded there.
+    const declared: Record<string, { address?: string }> = JSON.parse(
+      fs.readFileSync(path.join(__dirname, 'declared-layers.generated.json'), 'utf8')
+    );
+    const recorded = Object.entries(declared).filter(([, map]) => map.address !== undefined);
+    const routes = new Map(definedMaps().map((map) => [map.id, map.route]));
+
+    expect(recorded.length, 'declared-layers.generated.json records no address to compare').toBeGreaterThan(0);
+
+    for (const [id, map] of recorded) {
+      expect(routes.get(id), `the suite's address for ${id}`).toBe(map.address);
+    }
+  });
+
+  test('reads the section from mapType or mapTypes, not only the type', () => {
+    const route = (discover: string) =>
+      parseDefinition(
+        'x.definitions.ts',
+        `export const X: EventConfiguration = {\n  id: 'x',\n  name: 'X',\n  discover: { ${discover} }\n};`
+      )?.route;
+
+    expect(route(`type: 'parking', mapType: 'transportation'`)).toBe('/transportation/x');
+    expect(route(`type: 'parking', mapTypes: ['campus', 'transportation']`)).toBe('/transportation/x');
+    expect(route(`type: 'parking', mapType: 'parking'`)).toBe('/parking/x');
+    expect(route(`type: 'satellite-campus', mapTypes: ['campus']`)).toBe('/campus/x');
+    expect(route(`type: 'event', mapType: 'athletics'`)).toBe('/events/x');
+    expect(route(`mapType: 'athletics'`)).toBe('/events/x');
+  });
 });
