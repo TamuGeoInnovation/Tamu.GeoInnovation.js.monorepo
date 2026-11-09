@@ -166,6 +166,12 @@ describe('LayerSources', () => {
         layerId: 'ev-charge-stations',
         name: 'EV Charge Stations',
         url: 'ev-charge-stations-url'
+      },
+      MICROMOBILITY: {
+        id: 'micromobility',
+        layerId: 'micromobility',
+        name: 'Micromobility',
+        url: 'micromobility-url'
       }
     };
     options = { exclude: [] };
@@ -174,14 +180,14 @@ describe('LayerSources', () => {
   it('should return all layer sources when no options are provided', () => {
     const result = LayerSources(connections, definitions);
 
-    expect(result.length).toBe(17);
+    expect(result.length).toBe(18);
   });
 
   it('should exclude specified layers', () => {
     options.exclude = ['BUILDINGS', 'CONSTRUCTION'];
     const result = LayerSources(connections, definitions, options);
 
-    expect(result.length).toBe(15);
+    expect(result.length).toBe(16);
     expect(result.find((layer) => layer.id === 'buildings')).toBeUndefined();
     expect(result.find((layer) => layer.id === 'construction')).toBeUndefined();
   });
@@ -190,7 +196,7 @@ describe('LayerSources', () => {
     options.exclude = [];
     const result = LayerSources(connections, definitions, options);
 
-    expect(result.length).toBe(17);
+    expect(result.length).toBe(18);
   });
 
   it('should retain only non-definition-backed top-level layers when all definitions are excluded', () => {
