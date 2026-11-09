@@ -3266,3 +3266,31 @@ it.
 ### The report
 
 `home/reports/2026-11-09-40.md`, and say **"report ready: <file>"**.
+
+> ### Added to batch 40 (7:05 AM Central, 9 November, from `work (aggiemap)`) — two things, after the maintainer asked how the fix should work
+>
+> **1. Measure the renderer options against each other before committing to one.** My "alpha 1" recommendation is the
+> usual Esri behaviour, not something measured here, and today's results are *partially* successful at alpha 0 — the
+> rasterisation is marginal rather than absent. If alpha 1 is equally marginal the fix is a coin flip. So run the same
+> buildings, in the same extent, three times:
+>
+> | | |
+> | --- | --- |
+> | alpha 0 | today's behaviour, the red proof |
+> | alpha 1, outline left as the service has it | the proposed fix |
+> | alpha 1 plus a hairline outline (width 0.5, alpha 1) | the fallback if alpha alone is marginal |
+>
+> **Report all three rates**, and take the smallest change that is reliable. If none of them is, say so plainly — that
+> result sends the fix to querying the layer by the clicked point instead of hit-testing it, which is a different and
+> larger change, and finding that out early is worth more than a fix that half works.
+>
+> **The contrast that says the shape is right:** the same basemap's layer 9, *Surface Parking*, is published with an
+> opaque fill (`alpha 255`) and a 0.4 px outline, and clicks on parking lots work. Layer 1, *Structure Data*, is the one
+> published invisible and the one that does not answer. One difference, matching behaviour.
+>
+> **2. The routing half of #2707 may have a different cause — check, do not assume.**
+> `libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts:378` finds `buildings-layer` and queries it
+> with `queryFeatures`, not `view.hitTest`. A query does not care what the layer draws, so **this fix may not touch the
+> routing-stop symptom at all.** Say which path routing actually uses and whether your fix changes it. If it does not,
+> that is a finding worth reporting, not a gap to quietly leave: #2707 has carried both symptoms as "believed to be one
+> fault" since 6 November, and that belief is now testable.
