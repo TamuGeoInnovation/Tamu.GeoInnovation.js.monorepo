@@ -74,6 +74,24 @@ maintainer anything - questions go in your report, with options and a recommenda
 pushing; a session that cannot push cannot be given work, and silently failing to push looks exactly like
 having nothing to say.
 
+## `work-lab-leila` is unreliable from 9 November 2026 (the maintainer, about 3:00 PM Central)
+
+**Somebody is sitting at that machine and its processes may be killed without warning.** The maintainer's words:
+"It will be unreliable."
+
+So until he says otherwise:
+
+- **Do not give it a batch**, and do not count it when deciding whether work is covered.
+- **Do not give it anything whose loss would cost something** - above all a long measurement, or the only copy of a
+  decision. Its #2778 branch was half-built and unreported when this happened, which is exactly the exposure.
+- **Test runs move to the work machine**, which is where [`CLAUDE.md`](../blob/development/CLAUDE.md) says they belong
+  anyway: the home machine develops, the work machine runs the tests.
+- **A branch it pushed is still good.** It is the session that is unreliable, not its work.
+
+**The general rule this is an instance of:** when a machine becomes unreliable, the first thing to rescue is whatever
+exists only in that session - a handover, an unreported branch, a measurement nobody else has. Code already pushed is
+safe; what one session knows and has not written down is not.
+
 ## The machines
 
 Each machine has a folder at the top of this branch, named after it, holding its `TASKS.md` (written only by the
