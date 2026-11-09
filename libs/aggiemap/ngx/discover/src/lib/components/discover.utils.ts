@@ -1,10 +1,10 @@
 import { DiscoverApplication, InternalDiscoverApplication } from '../interfaces/discover-application.interface';
 import { nextEventDate, parseEventDate } from '@tamu-gisc/common/utils/date';
+import { mapSegment } from '@tamu-gisc/ts/events/ngx';
 
 /**
- * Builds the router commands used to navigate to a map application. Events live under `/events`,
- * satellite-campus maps live under `/campus`, everything else (parking, operations) is routed
- * under its own type segment.
+ * Builds the router commands used to navigate to a map application. The first segment is `mapSegment`'s, which the
+ * map's own route redirects to as well, so a link and the address it ends at cannot disagree (#2767).
  */
 export function getApplicationRoute(app: InternalDiscoverApplication): string[] {
   // A panel of the main map, such as the bus map (#2743): the route is the entry's own.
@@ -12,7 +12,7 @@ export function getApplicationRoute(app: InternalDiscoverApplication): string[] 
     return app.route;
   }
 
-  const routeSegment = app.type === 'event' ? 'events' : app.type === 'satellite-campus' ? 'campus' : app.type;
+  const routeSegment = mapSegment(app);
 
   // Kiosk maps have no builder/options flow, so their working route always includes the trailing
   // `map` segment (e.g. `/kiosk/dining/map`) rather than `/kiosk/dining`.

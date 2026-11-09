@@ -7,6 +7,7 @@ import { EventEntryGuard } from './guards/event-entry/event-entry.guard';
 import { RouteParamsGuard } from './guards/route-params/route-params.guard';
 import { ENDED_PATH, RetiredEventGuard } from './guards/retired-event/retired-event.guard';
 import { DevelopmentOnlyMapGuard } from './guards/development-only/development-only.guard';
+import { MapAddressGuard } from './guards/map-address/map-address.guard';
 import { EndedComponent } from './modules/ended/ended.component';
 import { EventSettingsQuery } from './services/settings/event-settings-query';
 import { EventSettingsService } from './services/settings/event-settings.service';
@@ -16,8 +17,9 @@ export const tsEventsRoutes: Routes = [
     path: ':eventId',
     // Popups ask for the settings as `EventSettingsQuery` (#1403); the route supplies the service under that name.
     providers: [{ provide: EventSettingsQuery, useExisting: EventSettingsService }],
-    // A development-only map does not open on production (#2712), so it is checked before anything loads.
-    canActivate: [DevelopmentOnlyMapGuard, RouteParamsGuard, EventEntryGuard],
+    // A development-only map does not open on production (#2712), so it is checked before anything loads; then a
+    // Transportation map reached at another segment moves to its own (#2767).
+    canActivate: [DevelopmentOnlyMapGuard, MapAddressGuard, RouteParamsGuard, EventEntryGuard],
     // A retired event opens its ended page, never its map or builder (#1098).
     canActivateChild: [RetiredEventGuard],
     children: [

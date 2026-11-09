@@ -1,5 +1,6 @@
 import { InternalDiscoverApplication } from '../interfaces/discover-application.interface';
-import { buildApplicationColumns, buildNamedApplicationColumns } from './discover.utils';
+import { buildApplicationColumns, buildNamedApplicationColumns, getApplicationRoute } from './discover.utils';
+import { DiscoveryService } from '../services/discovery/discovery.service';
 
 describe('discover utils', () => {
   it('balances columns when no named columns are configured', () => {
@@ -46,3 +47,18 @@ function createApps(ids: string[]): InternalDiscoverApplication[] {
     visible: true
   }));
 }
+
+/** A link in All Maps goes where the map's own route would send it, so a listing and its address agree (#2767). */
+describe('getApplicationRoute', () => {
+  const listings = new DiscoveryService().getInternalDiscoverApplications();
+  const routeOf = (id: string) => getApplicationRoute(listings.find((app) => app.id === id) as InternalDiscoverApplication);
+
+  it('links a map listed under Transportation at /transportation', () => {
+    expect(routeOf('micromobility')).toEqual(['/transportation', 'micromobility']);
+    expect(routeOf('sustainable-transportation')).toEqual(['/transportation', 'sustainable-transportation']);
+  });
+
+  it('leaves a parking map at /parking', () => {
+    expect(routeOf('visitor-parking')).toEqual(['/parking', 'visitor-parking']);
+  });
+});

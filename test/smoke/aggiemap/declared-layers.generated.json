@@ -323,7 +323,8 @@
       "micromobility-allowed-sidewalks",
       "micromobility-facilities"
     ],
-    "developmentOnly": true
+    "developmentOnly": true,
+    "address": "/transportation/micromobility"
   },
   "motorcycle-parking": {
     "layerList": true,
@@ -376,7 +377,8 @@
       "ncaa-volleyball-accessible-parking",
       "ncaa-volleyball-parking-lots"
     ],
-    "developmentOnly": true
+    "developmentOnly": true,
+    "address": "/parking/ncaa-volleyball"
   },
   "night-weekend": {
     "layerList": true,
@@ -525,7 +527,8 @@
       "sustainable-transportation-city-bike-lanes-routes",
       "sustainable-transportation-bike-dismount-zones"
     ],
-    "developmentOnly": true
+    "developmentOnly": true,
+    "address": "/transportation/sustainable-transportation"
   },
   "swimming-parking": {
     "layerList": true,
