@@ -3294,3 +3294,77 @@ it.
 > routing-stop symptom at all.** Say which path routing actually uses and whether your fix changes it. If it does not,
 > that is a finding worth reporting, not a gap to quietly leave: #2707 has carried both symptoms as "believed to be one
 > fault" since 6 November, and that belief is now testable.
+
+> ### Batch 40 revised (7:15 AM Central, 9 November, from `work (aggiemap)`) — the source changes, and your measurement changes the diagnosis
+>
+> **Your hold was right and your measurement is better than mine.** 280 of 280 at alpha 0, once the layer view had
+> finished updating, against my 13 of 20. I never waited for `layerView.updating === false` — my probe reported
+> `updating: true` throughout and I measured anyway. **So "the transparent symbol is not hit-testable" is not
+> established**, and the alpha-1 result I sent you is suspect for the same reason. Treat both as withdrawn.
+>
+> That leaves a real contradiction, and it is now the interesting part: **headless, settled, alpha 0 works; the
+> maintainer's own Chrome does not.** Candidates, in the order I would test them: the layer view never settling on his
+> map, a headed-versus-headless rasterisation difference, or clicks arriving while the view is still updating. Your
+> PR 2718 click-query note is the fourth.
+>
+> ### What the maintainer has decided
+>
+> > "buildings-layer needs to come from the vector source. We are not going to use the old map service any more. Make
+> > everything work from the vector tile layer and the services that it is based on."
+>
+> ### What I have established about that source, so you do not repeat it
+>
+> **`https://gis.tamu.edu/arcgis/rest/services/Hosted/VTBase3/FeatureServer`** is the vector basemap's companion
+> feature service — the one you already spotted the campuses using. It answers on the **production** GIS server with no
+> token, which matters: the vector *tiles* are development-only ([#1229](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1229)),
+> but this FeatureServer is not, so buildings can move to it without waiting on that.
+>
+> **Layer 0, "Campus Structures"** — against today's `TAMU_Basemap_20261008/MapServer/1` ("Structure Data"):
+>
+> | | old (MapServer/1) | new (VTBase3/FeatureServer/0) |
+> | --- | --- | --- |
+> | features | 1003 | **1984** |
+> | fields | `BldgName`, `Number`, `BldgAbbrev`, `Address`, `BldgNum` … | the same set, **lower case**: `bldgname`, `number`, `bldgabbrev`, `address`, `bldgnum`, plus `isbldg`, `creationdate`, `editdate` |
+> | fill | `[252,189,204,0]` — invisible | **`[100,200,200,255]` — opaque teal**, solid outline |
+> | minScale | 36000 | 36000 |
+> | spatial reference | 102100 | 102100 |
+>
+> **Three things follow, and each is a decision you should take and justify rather than guess at:**
+>
+> 1. **The field case.** Everything that reads a building reads `BldgName` and friends — the popup, the three search
+>    sources, the directory page. This is the same fault
+>    [#2722](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2722) has to solve for the
+>    basemap, so look there first and share an answer if there is one.
+> 2. **1984 against 1003.** Nearly double. `isbldg` exists on the new layer, so some of the extra may not be buildings.
+>    **Find out what the extra 981 are** before deciding whether the layer needs a definition expression. Do not filter
+>    blind, and do not assume the old count was right either.
+> 3. **The symbology is opaque teal.** Drawn as published it would paint teal over the basemap. An override is needed,
+>    and this is where your #1526 finding lands.
+>
+> ### Your #1526 finding is the most important thing either of us has found today
+>
+> `1da11a41b` removed `color: [0, 0, 0, 0.01]` from `buildings-layer`, from `campusClickOverlayNative` (all ten
+> satellite campuses) and from the dining kiosk's buildings layer, under "draw every layer the way its service
+> publishes it". **That 1% fill was not decoration — it was there so the layer could be clicked**, and nothing recorded
+> that, so removing it looked like tidying. `campus-overlay.definitions.ts` still claims a 1% fill in its comment,
+> which is now false.
+>
+> **Put that on [#2707](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2707) as its own
+> comment before anything else**, with the commit and the three call sites. Whatever the final fix is, "a click target
+> needs a fill, and the reason must be written beside it" is the lesson, and it is exactly what
+> `docs/map-layers.md` exists to prevent. It also means **the ten satellite campuses may have the same fault right
+> now** — check one and say.
+>
+> ### The work, in order
+>
+> 1. **Settle the contradiction first**, because it decides whether the move even fixes anything. If alpha 0 is
+>    hit-testable once settled, the fault is timing or the headed browser, and changing source alone will not fix it.
+> 2. **Then the move**: `buildings-layer` to `VTBase3/FeatureServer/0`, with the field case, the count and the
+>    symbology each decided and written down.
+> 3. **Then the check**: still the red-first spec that clicks building centres by name and asserts the popup names that
+>    building. It must fail on today's code.
+> 4. **Routing is out of scope** — your `featuresIntersectingPoint` finding settles that it never used `hitTest`. Put
+>    that on #2707 too; it has carried both symptoms as one fault since 6 November.
+>
+> **Do not touch `surface-lots-layer` or the campuses in this branch**, even though layer 6 is Surface Parking and the
+> same move applies. One change per pull request; say what you would do and I will batch it.
