@@ -8,48 +8,78 @@
     </div>
 
     <div class="form-section-body">
-      @if (entitiesForActiveSeasonOrForSeasonGuid$ | async; as entities) { @if (entities?.length > 0) {
-      <table class="floating-table">
-        <thead>
-          <tr>
-            <th><tamu-gisc-checkbox label="" (changed)="toggleAllRows(entities)" [checked]="(selectedRows$ | async)?.length === entities.length "></tamu-gisc-checkbox></th>
-            <th>Name</th>
-            <th>Submitted</th>
-            <th>Submitted by</th>
-            <th>Type</th>
-            <th>Format</th>
-            <th>Classification</th>
-            <th class="status">Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (entity of entities; track entity) {
-          <tr class="selectable" [routerLink]="['review', entity.guid]">
-            <td (click)="$event.stopPropagation()"><tamu-gisc-checkbox label="" (changed)="toggleRow($safeNavigationMigration(entity?.guid))" [checked]="(selectedRows$ | async) | exists: $safeNavigationMigration(entity?.guid)"></tamu-gisc-checkbox></td>
-            <td class="title" [title]="entity.title"><div class="clamp">{{entity.title}}</div></td>
-            <td class="date">{{entity.created | date: 'MMM d, h:mm a'}}</td>
-            @if (submitter(entity); as person) {
-            <td class="submitter">
+      <!-- Filters (#2807): the submission form's own choices, with All. -->
+      <div class="form-collection row">
+        <div class="form-collection column">
+          <p class="bold">Classification</p>
+          <tamu-gisc-radio-group [formControl]="classification" [options]="classificationOptions" displayPath="label" valuePath="type"></tamu-gisc-radio-group>
+        </div>
+        <div class="form-collection column">
+          <p class="bold">Type</p>
+          <tamu-gisc-radio-group [formControl]="type" [options]="typeOptions" displayPath="label" valuePath="type"></tamu-gisc-radio-group>
+        </div>
+      </div>
+
+      @if (view$ | async; as view) {
+      <p>Showing <strong>{{view.rows.length}}</strong> of {{view.total}} submissions.</p>
+
+      @if (view.rows.length > 0) {
+      <!-- ngx-datatable, as the VGI review list uses it: a click on a heading sorts by it (#2808). -->
+      <div class="datatable-container">
+        <ngx-datatable class="material" [rows]="view.rows" [columnMode]="'force'" [headerHeight]="50" [rowHeight]="'auto'" [footerHeight]="0" [scrollbarV]="false" [reorderable]="false" [sorts]="[{ prop: 'created', dir: 'desc' }]" (activate)="onActivate($event)">
+          <ngx-datatable-column prop="select" name="" [width]="50" [maxWidth]="50" [sortable]="false" [resizeable]="false">
+            <ng-template ngx-datatable-header-template>
+              <tamu-gisc-checkbox label="" (changed)="toggleAllRows(view.rows)" [checked]="(selectedRows$ | async)?.length === view.rows.length"></tamu-gisc-checkbox>
+            </ng-template>
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <tamu-gisc-checkbox label="" (changed)="toggleRow(row.guid)" [checked]="(selectedRows$ | async) | exists: row.guid"></tamu-gisc-checkbox>
+            </ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column name="Name" prop="title" [width]="320"></ngx-datatable-column>
+
+          <ngx-datatable-column name="Submitted" prop="created" [width]="130">
+            <ng-template let-row="row" ngx-datatable-cell-template>{{row.created | date: 'MMM d, h:mm a'}}</ng-template>
+          </ngx-datatable-column>
+
+          <!-- Sorted by last name. -->
+          <ngx-datatable-column name="Submitted by" prop="submitter.lastName" [width]="260">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              @if (row.submitter; as person) {
               <div class="bold">{{person.firstName}} {{person.lastName}}</div>
               <div>{{person.email}}</div>
               @if (person.department) {
               <div class="clr-md-grey-600">{{person.department}}</div>
+              } } @else {
+              <em>Account not found</em>
               }
-            </td>
-            } @else {
-            <td class="unknown">Account not found</td>
-            }
-            <td>{{entity.submissionType | titlecase}}</td>
-            <td>{{entity.format | titlecase}}</td>
-            <td>{{entity.classificationType | titlecase}}</td>
-            <td class="status" [ngClass]="{'clr-md-amber-800': (entity | submissionReviewStatus) === SubmissionReviewStatus.InReview, 'clr-md-green-600': (entity | submissionReviewStatus) === SubmissionReviewStatus.Accepted, 'clr-md-red-500': (entity | submissionReviewStatus) === SubmissionReviewStatus.Rejected}">{{entity | submissionReviewStatus}}</td>
-          </tr>
-          }
-        </tbody>
-      </table>
+            </ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column name="Type" prop="submissionType" [width]="110">
+            <ng-template let-row="row" ngx-datatable-cell-template>{{row.submissionType | titlecase}}</ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column name="Format" prop="format" [width]="100">
+            <ng-template let-row="row" ngx-datatable-cell-template>{{row.format | titlecase}}</ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column name="Classification" prop="classificationType" [width]="130">
+            <ng-template let-row="row" ngx-datatable-cell-template>{{row.classificationType | titlecase}}</ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column name="Status" prop="reviewStatus" [width]="130">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <span class="bold" [ngClass]="{'clr-md-amber-800': row.reviewStatus === SubmissionReviewStatus.InReview, 'clr-md-green-600': row.reviewStatus === SubmissionReviewStatus.Accepted, 'clr-md-red-500': row.reviewStatus === SubmissionReviewStatus.Rejected}">{{row.reviewStatus}}</span>
+            </ng-template>
+          </ngx-datatable-column>
+        </ngx-datatable>
+      </div>
+      } @else if (view.total > 0) {
+      <p>No submissions match these filters.</p>
       } @else {
       <p>There are no student competition submissions for the selected season.</p>
-      } @if ((selectedRows$ | async)?.length > 0) {
+      } } @if ((selectedRows$ | async)?.length > 0) {
       <div class="selected-action-container info-block context">
         <div>
           <p><strong>{{(selectedRows$ | async).length}} selected</strong></p>
@@ -58,7 +88,7 @@
           <p class="selected-action caution" (click)="promptDeleteModal('Submission')" tabindex="0" role="button" (keydown.enter)="promptDeleteModal('Submission')" (keydown.space)="promptDeleteModal('Submission'); $event.preventDefault()">Delete <span class="material-icons action">delete_forever</span></p>
         </div>
       </div>
-      } }
+      }
     </div>
   </div>
 </div>

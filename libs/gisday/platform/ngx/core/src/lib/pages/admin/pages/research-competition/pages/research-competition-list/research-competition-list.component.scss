@@ -1,31 +1,18 @@
-// The table fits the admin content column rather than scrolling sideways (#2806): the submitter's name, email and
-// department share one cell (#2799), and long titles wrap.
-table {
-  .title {
-    min-width: 10rem;
+@import 'libs/gisday/sass/variables';
+@import 'libs/sass/components/datatable';
+
+// The table as the VGI review list draws it (#2808), each row as tall as its stacked submitter and title need.
+.datatable-container {
+  --datatable-height: auto;
+
+  // A row opens the submission.
+  ::ng-deep .datatable-body .datatable-row-wrapper {
+    cursor: pointer;
   }
 
-  // A title runs to three lines at most; the whole of it is on hover.
-  .clamp {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  .date {
-    min-width: 6rem;
-  }
-
-  .submitter {
-    min-width: 12rem;
-  }
-
-  .unknown {
-    font-style: italic;
-  }
-
-  .status {
-    font-weight: 600;
+  // A long title or email wraps rather than being cut off.
+  ::ng-deep .datatable-body-cell-label {
+    white-space: normal;
+    overflow-wrap: break-word;
   }
 }
