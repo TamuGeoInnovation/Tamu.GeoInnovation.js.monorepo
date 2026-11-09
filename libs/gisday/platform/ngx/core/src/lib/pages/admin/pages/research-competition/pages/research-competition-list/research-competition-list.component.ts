@@ -23,6 +23,28 @@ export type SubmissionRow = Partial<SubmissionWithSubmitter> & { reviewStatus: S
 
 const ALL = { type: '', label: 'All' };
 
+/** All, then those of `options` that at least one submission has in `field` (#2817). */
+export function withData(
+  options: ReadonlyArray<{ type: string; label: string }>,
+  submissions: Array<Partial<Submission>>,
+  field: 'classificationType' | 'submissionType'
+): Array<{ type: string; label: string }> {
+  const present = new Set(submissions.map((s) => s[field]));
+
+  return [ALL, ...options.filter((o) => present.has(o.type))];
+}
+
+/** The chosen value if it is still offered; otherwise All, set back on the control without another round. */
+function keepIfOffered(control: FormControl<string>, chosen: string, offered: Array<{ type: string }>): string {
+  if (chosen && !offered.some((o) => o.type === chosen)) {
+    control.setValue('', { emitEvent: false });
+
+    return '';
+  }
+
+  return chosen;
+}
+
 @Component({
   selector: 'tamu-gisc-research-competition-list',
   templateUrl: './research-competition-list.component.html',
@@ -47,15 +69,19 @@ export class ResearchCompetitionListComponent extends BaseAdminListComponent<Sub
 
   public SubmissionReviewStatus = SUBMISSION_REVIEW_STATUS;
 
-  /** The submission form's own choices (#2807), with All in front. */
-  public readonly classificationOptions = [ALL, ...SUBMISSION_CLASSIFICATION_OPTIONS];
-  public readonly typeOptions = [ALL, ...SUBMISSION_TYPE_OPTIONS];
-
   public readonly classification = new FormControl('', { nonNullable: true });
   public readonly type = new FormControl('', { nonNullable: true });
 
-  /** The season's submissions that match the filters, and how many the season has in all. */
-  public view$: Observable<{ rows: Array<SubmissionRow>; total: number }>;
+  /**
+   * The season's submissions that match the filters, how many the season has in all, and the filters' choices: All
+   * and those of the submission form's own choices (#2807) that the season's submissions have (#2817).
+   */
+  public view$: Observable<{
+    rows: Array<SubmissionRow>;
+    total: number;
+    classificationOptions: Array<{ type: string; label: string }>;
+    typeOptions: Array<{ type: string; label: string }>;
+  }>;
 
   private readonly reviewStatus = new SubmissionReviewStatusPipe();
 
@@ -67,14 +93,21 @@ export class ResearchCompetitionListComponent extends BaseAdminListComponent<Sub
       this.classification.valueChanges.pipe(startWith(this.classification.value)),
       this.type.valueChanges.pipe(startWith(this.type.value))
     ]).pipe(
-      map(([entities, classification, type]) => {
+      map(([entities, chosenClassification, chosenType]) => {
         const all = entities ?? [];
+        const classificationOptions = withData(SUBMISSION_CLASSIFICATION_OPTIONS, all, 'classificationType');
+        const typeOptions = withData(SUBMISSION_TYPE_OPTIONS, all, 'submissionType');
+
+        // A choice the season does not have (after changing season) is not offered, so it goes back to All.
+        const classification = keepIfOffered(this.classification, chosenClassification, classificationOptions);
+        const type = keepIfOffered(this.type, chosenType, typeOptions);
+
         const rows = all
           .filter((e) => !classification || e.classificationType === classification)
           .filter((e) => !type || e.submissionType === type)
           .map((e) => ({ ...(e as Partial<SubmissionWithSubmitter>), reviewStatus: this.reviewStatus.transform(e) }));
 
-        return { rows, total: all.length };
+        return { rows, total: all.length, classificationOptions, typeOptions };
       }),
       shareReplay(1)
     );
