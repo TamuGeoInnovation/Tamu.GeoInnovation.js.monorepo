@@ -28,7 +28,17 @@ export const DEVELOPMENT_ONLY_SECTIONS = ['Directions', 'Bus Routes', 'Experimen
  * Listed by the label the tile renders. When a tile goes to production, take it out of this list; the
  * check then requires it to be present everywhere instead.
  */
-export const DEVELOPMENT_ONLY_ALL_MAPS_TILES = ['Code Maroon'];
+export const DEVELOPMENT_ONLY_ALL_MAPS_TILES = ['Code Maroon', 'Transportation'];
+
+/**
+ * All Maps pages that are not ready for production, which must not open there (#2788).
+ *
+ * A tile gated with `isDev` hides the link, but the page still answers its address, so each page here is gated on its
+ * route too (`developmentOnly` in the route's `data`, read by `DevelopmentOnlyMapGuard`) and opened by address: on
+ * production it must land back on All Maps. The Transportation section lists only development-only maps, so on
+ * production it was a reachable, empty category.
+ */
+export const DEVELOPMENT_ONLY_ALL_MAPS_PAGES = ['/all-maps/transportation'];
 
 /**
  * Controls drawn on the map itself that are not ready for production, each with the issue keeping it
