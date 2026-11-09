@@ -136,7 +136,7 @@ export function MainMapDefinitions(connections: IComposedConnections): IComposed
       id: 'transportation-parking',
       layerId: MAIN_MAP_LAYERS.TRANSPORTATION_PARKING,
       name: 'Transportation Parking',
-      url: `${connections.tsMainUrl}/6`,
+      url: connections.tsParkingLotsUrl,
       popupComponent: Popups.ParkingKioskPopupComponent
     },
     RNS_SPACES: {

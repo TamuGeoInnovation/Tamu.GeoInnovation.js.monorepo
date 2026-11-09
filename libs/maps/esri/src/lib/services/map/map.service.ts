@@ -341,6 +341,20 @@ export class EsriMapService {
   }
 
   public async generateLayer(source: LayerSource | AutocastableLayer): Promise<esri.Layer | Array<esri.Layer>> {
+    const layer = await this.createLayer(source);
+
+    // `readFromProduction` is not an esri property, so the constructors drop it; set it on the layer afterwards for the
+    // layer list to read, as `listHeading` is (#2744).
+    const readFromProduction = (source as LayerSource).readFromProduction;
+
+    if (readFromProduction && !Array.isArray(layer)) {
+      layer['readFromProduction'] = readFromProduction;
+    }
+
+    return layer;
+  }
+
+  private async createLayer(source: LayerSource | AutocastableLayer): Promise<esri.Layer | Array<esri.Layer>> {
     // Object with merged root level properties, native properties, and persistent properties.
     let props;
 

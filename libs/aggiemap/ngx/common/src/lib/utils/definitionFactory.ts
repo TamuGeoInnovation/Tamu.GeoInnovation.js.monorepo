@@ -2,7 +2,7 @@ import { LayerSource } from '@tamu-gisc/common/types';
 import { SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
 
 import { actingAsProduction } from '../acting-as-production';
-import { Connections, IComposedConnections } from '../connections';
+import { Connections, IComposedConnections, markReadFromProduction } from '../connections';
 import { Definitions, IComposedIDefinitions } from '../definitions';
 import { developmentOnlyDefinitions, developmentOnlySearchSources } from '../development-only-sources';
 import { LayerSources, ThreeDLayers } from '../layer-sources/layer-sources';
@@ -23,9 +23,13 @@ export function factory(options?: IFactoryOptions): Definitions {
   // hidden in it (#2673). `development-only-sources.ts` holds the list and the reason for each. The local
   // serve asks for them with `includeDevelopmentOnly`, because that is where the work is done.
   const excludeDevelopmentOnly = !development && !options?.includeDevelopmentOnly;
-  const l = LayerSources(c, d, {
-    exclude: [...(options?.layerSources?.exclude ?? []), ...(excludeDevelopmentOnly ? developmentOnlyDefinitions() : [])]
-  });
+  // Each layer a development build reads from production is marked for the Layers list (#2744).
+  const l = markReadFromProduction(
+    LayerSources(c, d, {
+      exclude: [...(options?.layerSources?.exclude ?? []), ...(excludeDevelopmentOnly ? developmentOnlyDefinitions() : [])]
+    }),
+    gisHost
+  );
   const s = SearchSources(c, d, {
     exclude: [
       ...(options?.searchSources?.exclude ?? []),

@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Params } from '@angular/router';
 import { Observable, of } from 'rxjs';
 
-import { readsDevelopmentGisServer } from '@tamu-gisc/aggiemap/ngx/common';
+import { markReadFromProduction, readsDevelopmentGisServer } from '@tamu-gisc/aggiemap/ngx/common';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 import { LayerSource } from '@tamu-gisc/common/types';
@@ -156,7 +156,10 @@ export class EventSettingsService implements EventSettingsQuery {
     const config = this.getEventDefinitionById(this._settingsSecondaryKey);
 
     if (config && config.sources !== null) {
-      const sources = this.gameDayRefreshed(this.developmentSources(config) ?? config.sources, config);
+      // Each layer a development build reads from production is marked for the Layers list (#2744).
+      const sources = markReadFromProduction(
+        this.gameDayRefreshed(this.developmentSources(config) ?? config.sources, config)
+      );
 
       if (asObservable) {
         return of(sources);
