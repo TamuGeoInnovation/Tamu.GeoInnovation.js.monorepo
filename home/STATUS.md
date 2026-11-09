@@ -16,6 +16,7 @@ The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47
 ## Running now
 - **Batch 44 (#2804)**, started 1:41 PM Central, 9 November: routing on production prepared but not merged; a route-comes-back check proven on dev. Stacked on fix/2801-hide-trip-options.
   - 2:15 PM Central: built. One `routingNetworkUrl` per environment (no discovery, no GIS-team move); planner, Directions tabs and Directions To Here ungated; smoke lists inverted. App-level route check: green on dev (1.53 mi), red when the network answers 499; production's network check says "answered 499 Token Required" today. Running the suites both ways.
+  - 2:38 PM Central: committed and replayed onto development 9babe0fda; running the full affected check (shared libraries). Network picker gated to development (red-first). Push and report after the check.
 
 ## Finished
 - **Batch 43 (#2801)** (report `home/reports/2026-11-09-43.md`): branch ready, `fix/2801-hide-trip-options` on the fork at `eceeb5b23`, no PR. Options link `isDev`; its page gated by the new `developmentOnlyRoute` guard (replacing #2798's route-data change to the map guard, which failed lint); two dead Transportation-section controls fixed. Page red on today's code; link red by unit test (the smoke check cannot be red while the planner is hidden). Check exit 0. No questions.
