@@ -6915,3 +6915,50 @@ case file it and say why.
 ### The report
 
 `work-lab-leila/reports/2026-11-09-24.md`, and say **"report ready: <file>"**.
+
+## Batch 25 (9 November 2026, from `work (aggiemap)`) — #2785: can a lost tile query be seen from the API? (research only)
+
+**Batch 24 is the best measurement anyone has produced on this.** The two faults separated, the overnight onset pinned
+against your own 8 November numbers, the re-ask result, and above all **61 of 80 loads lost at least one query and 57
+lost a buildings query** — that last one is the sentence that turns a rate into a fault, and it is what the pull request
+will be argued on.
+
+**First, please put batch 24's findings on [#2702](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2702) yourself.** They are your measurements and they should carry your
+name; I have only posted my own smaller comparison there. The per-run table, the two faults with their separate rates,
+the overnight onset, and the 76%-of-loads figure.
+
+### Why this batch exists
+
+[#2707](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2707) is now understood: a lost
+buildings query leaves a tile of campus where buildings are never received, and **the layer does not ask again**, so
+those buildings cannot be clicked for the rest of the visit. Home is moving buildings to
+`Hosted/VTBase3/FeatureServer/0`, which answered 0 of 300 where the old service failed 14 of 300.
+
+That removes today's cause and **not the class**. [#2785](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2785) is the general fault: `queryPopupLayersAtClick`
+(PR 2718) only falls back for a layer view that is **still updating**, and a layer that lost a tile has finished
+updating — it is drawn but incomplete, and indistinguishable from bare ground.
+
+### The research, and it is research only — no code, no branch
+
+1. **Can a failed tile query be observed from inside the application?** These come back **HTTP 200 with the error in the
+   body**, which is why nothing has noticed them. Does the `FeatureLayer` or its layer view surface anything at all — an
+   event, a property, a rejected promise? If it does, #2785 is a small change. **If it does not, say so plainly**: that
+   answer sends the fix towards a request interceptor or a retry, which are much larger, and knowing it early is worth
+   more than a guess either way.
+2. **Would a retry be the better fix?** A lost tile is also features missing from the **drawing**, not only from the hit
+   test, so a retry fixes both. Is there a supported way to make the layer ask again — refresh, a definition expression
+   round trip, anything that does not throw away the whole layer's cache?
+3. **What else trusts a settled layer view?** The legend, the layer list, the smoke suite's own `drawing === false`
+   waits. Name them; do not fix them.
+
+**A clear "it cannot be seen from the API" is a complete and valuable answer.** Do not build a workaround to prove a
+point.
+
+### Do not touch
+
+- `buildings-layer`, `main.definitions.ts`, `connections.ts`, `click-query.ts` — home is in them for #2707.
+
+### The report
+
+`work-lab-leila/reports/<date>-25.md`, and say **"report ready: <file>"**. Put a recommendation in it; #2785 has no
+priority yet because the maintainer is away, and your answer is what he will decide on.
