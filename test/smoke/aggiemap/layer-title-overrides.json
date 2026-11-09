@@ -138,12 +138,6 @@
     "reason": "unreviewed (#1523)"
   },
   {
-    "map": "aggieland-saturday",
-    "layer": "aggieland-saturday-special-pois",
-    "title": "Special Points of Interest",
-    "reason": "unreviewed (#1523)"
-  },
-  {
     "map": "april-ring-day",
     "layer": "ring-day-areas",
     "title": "Ring Day Areas",
@@ -945,12 +939,6 @@
     "map": "muster",
     "layer": "muster-parking",
     "title": "Muster Parking",
-    "reason": "unreviewed (#1523)"
-  },
-  {
-    "map": "muster",
-    "layer": "muster-traffic-flow",
-    "title": "Muster Traffic Flow",
     "reason": "unreviewed (#1523)"
   },
   {

@@ -90,7 +90,6 @@ export const AggielandSaturdayEventColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: AggielandSaturdayEventDefinitions.EVENT_SPECIAL_POIS.id,
-    title: AggielandSaturdayEventDefinitions.EVENT_SPECIAL_POIS.name,
     url: AggielandSaturdayEventDefinitions.EVENT_SPECIAL_POIS.url,
     popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     popupData: {
