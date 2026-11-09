@@ -1,0 +1,12 @@
+{"load":1,"reached":true,"lost":[],"requestsDuringRefresh":{},"errorsDuringRefresh":[]}
+{"load":2,"reached":true,"esriConfig":false,"lost":[1],"refreshed":1,"featuresBefore":101,"minDuring":0,"after":{"ms":15174,"features":114,"dataUpdating":false,"all":true},"refreshMs":15174,"requestsDuringRefresh":{"1":12},"errorsDuringRefresh":[]}
+{"load":3,"reached":true,"esriConfig":false,"lost":[2],"refreshed":2,"featuresBefore":3,"minDuring":0,"after":{"ms":14844,"features":3,"dataUpdating":false,"all":false},"refreshMs":14844,"requestsDuringRefresh":{"2":12},"errorsDuringRefresh":["2"]}
+{"load":4,"reached":true,"lost":[],"requestsDuringRefresh":{},"errorsDuringRefresh":[]}
+{"load":5,"reached":true,"esriConfig":false,"lost":[9],"refreshed":9,"featuresBefore":57,"minDuring":0,"after":{"ms":15571,"features":61,"dataUpdating":false,"all":true},"refreshMs":15571,"requestsDuringRefresh":{"9":12},"errorsDuringRefresh":[]}
+{"load":6,"reached":true,"esriConfig":false,"lost":[2],"refreshed":2,"featuresBefore":3,"minDuring":0,"after":{"ms":14802,"features":3,"dataUpdating":false,"all":true},"refreshMs":14802,"requestsDuringRefresh":{"2":12},"errorsDuringRefresh":[]}
+{"load":7,"reached":true,"esriConfig":false,"lost":[1],"refreshed":1,"featuresBefore":101,"minDuring":0,"after":{"ms":14955,"features":110,"dataUpdating":false,"all":false},"refreshMs":14955,"requestsDuringRefresh":{"1":12},"errorsDuringRefresh":["1"]}
+{"load":8,"reached":true,"lost":[],"requestsDuringRefresh":{},"errorsDuringRefresh":[]}
+{"load":9,"reached":true,"lost":[],"requestsDuringRefresh":{},"errorsDuringRefresh":[]}
+{"load":10,"reached":true,"esriConfig":false,"lost":[1],"refreshed":1,"featuresBefore":81,"minDuring":0,"after":{"ms":15163,"features":114,"dataUpdating":false,"all":true},"refreshMs":15163,"requestsDuringRefresh":{"1":12},"errorsDuringRefresh":[]}
+{"load":11,"reached":true,"esriConfig":false,"lost":[2,1],"refreshed":2,"featuresBefore":3,"minDuring":0,"after":{"ms":14471,"features":3,"dataUpdating":false,"all":false},"refreshMs":14471,"requestsDuringRefresh":{"2":12},"errorsDuringRefresh":["2"]}
+{"load":12,"reached":true,"lost":[],"requestsDuringRefresh":{},"errorsDuringRefresh":[]}
