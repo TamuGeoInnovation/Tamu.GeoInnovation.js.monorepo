@@ -3471,3 +3471,47 @@ decision that is genuinely his. **Do not start it.**
 
 `home/reports/<date>-41.md`, and say **"report ready: <file>"**. Branch to the fork, `.pr-body.md` last, no pull
 request.
+
+## Batch 42 (9 November 2026, from `work (aggiemap)`) — #2788: gate the Transportation section (High)
+
+**Take this when batch 41 is pushed.** It is small and it is in machinery you built.
+
+**The maintainer's decision, 9 November:** the Transportation section of All Maps is development-only until he says
+otherwise. It is not gated today, so a production build ships it.
+
+### What is ungated
+
+- **The tile.** `VisitMapsNavComponent` marks a development-only tile with `isDev: true` and the template renders it
+  only when `isTesting`. The **Transportation** tile (`/all-maps/transportation`, [#2737](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2737)) has no `isDev`. `Code Maroon` is the
+  only tile that carries one.
+- **The route.** `/all-maps/transportation` in `discover.routes.ts` has no `DevelopmentOnlyMapGuard`, so the page
+  answers on production even with the tile hidden.
+- **The suite.** `DEVELOPMENT_ONLY_ALL_MAPS_TILES` is `['Code Maroon']`.
+
+### Worth knowing before you write it
+
+**On production the section would list nothing.** Both its maps are already `developmentOnly` — Micromobility
+(#2712) and Sustainable Transportation (#2742). So today's fault is a reachable, empty category, which is worse than
+the maps being visible. Say in the pull request that this is what was shipping, because it is the argument for the
+change.
+
+### The work
+
+Gate the tile and the route together, at **run time**, as `CLAUDE.md` says structure is gated: `isDev: true` on the
+tile, `DevelopmentOnlyMapGuard` on the route. Add `Transportation` to `DEVELOPMENT_ONLY_ALL_MAPS_TILES`, and make sure
+`development-only-gates.spec.ts` — your own check from #2753 — agrees rather than newly disagreeing.
+
+**Red first**, and the honest red here is the smoke check: on today's code the tile is present on production. Say how
+you proved it.
+
+**One thing to decide and write down:** whether the guard belongs on the route alone or whether `mapSegment`'s
+`/transportation/<id>` addresses need the same treatment. The two maps already carry their own gates, so I believe the
+section route is enough — **check that a production build cannot reach either map by its direct address**, and say so
+either way.
+
+Visible change, so before and after, a release-notes entry with its *What to test on dev* row, and the check's exit
+code.
+
+### The report
+
+`home/reports/<date>-42.md`, **"report ready"**, branch to the fork, `.pr-body.md` last, no pull request.

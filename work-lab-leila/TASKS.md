@@ -7081,3 +7081,48 @@ that happens.
 
 `work-lab-leila/reports/<date>-27.md`, and say **"report ready: <file>"**. Branches to the fork, `.pr-body.md` last, no
 pull requests.
+
+## Batch 28 (9 November 2026, from `work (aggiemap)`) — #2789: bus routes on production (High)
+
+**Take this when batch 27 is pushed.** It is given to you rather than home because the first half is service
+interrogation, which batches 24 and 25 showed you do better than anyone here.
+
+**The maintainer's decision, 9 November:** bus routes are available on development **and production**. They are
+development-only today.
+
+### What keeps them off production
+
+- `bus-list.component.ts:45` sets `this.busRoutesAvailable = this.testing.get('isTesting')`.
+- `'Bus Routes'` is in `DEVELOPMENT_ONLY_SECTIONS` in `test/smoke/aggiemap/development-only.ts`, and the suite asserts
+  it is absent on production.
+- `CLAUDE.md` names bus routes as one of its two examples of a thing gated with `TestingService` **because it has no
+  production service**.
+
+### Do the service question first, and do not skip to the gate
+
+The gate exists because of the data, not the interface. **A one-line removal that ships an empty or broken list on
+production is the failure mode here.**
+
+1. **Ask both hosts for everything the bus routes read** — the routes, the stops, whatever the list and the layers
+   query. Say which layers answer where, with counts.
+2. **[#1174](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1174) is open against the bus data.** Several routes have no stop tagged with them and are carried in
+   `allowedBusRouteFailures` in `environments.json` for development. **Production must not silently inherit
+   development's known failures.** Say what each affected route would do on production, and recommend: shown with no
+   stops, hidden, or this waits.
+3. Only then the gate, the `DEVELOPMENT_ONLY_SECTIONS` entry, and production's own `allowedBusRouteFailures`.
+
+**If production cannot serve them, that is the answer**, and it goes in the report and on the issue. Do not build
+around it.
+
+### Not this batch
+
+The bus **map** at `/map/d/bus` is a separate entry gated `visible: false` ([#2743](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2743)), and the Transportation
+section it is listed under is development-only ([#2788](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2788), home has it). **This is the bus routes themselves** —
+the sidebar list and its layers.
+
+Visible change if it ships, so before and after, a release-notes entry with its *What to test on dev* row, and the
+check's exit code.
+
+### The report
+
+`work-lab-leila/reports/<date>-28.md`, **"report ready"**, branch to the fork, `.pr-body.md` last, no pull request.
