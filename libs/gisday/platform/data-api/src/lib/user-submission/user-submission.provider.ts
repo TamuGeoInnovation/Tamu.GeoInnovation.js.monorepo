@@ -2,13 +2,14 @@ import { HttpException, Injectable, InternalServerErrorException, Logger, NotFou
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { isOwnerOrPermitted } from '@tamu-gisc/common/nest/auth';
+import { isOwnerOrPermitted, ManagementService } from '@tamu-gisc/common/nest/auth';
 
 import { SubmissionType, Submission, Season, PRESENTATION_SUBMISSION_TYPE } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
 import { SeasonService } from '../season/season.service';
 import { ContactService } from '../contact/contact.service';
 import { PosterDto } from './dto/poster.dto';
+import { SubmissionSubmitter, SubmissionWithSubmitter, submitterOf } from './dto/submission-submitter.dto';
 
 @Injectable()
 export class UserSubmissionProvider extends BaseProvider<Submission> {
@@ -16,15 +17,16 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     @InjectRepository(Submission) public userSubmissionRepo: Repository<Submission>,
     @InjectRepository(SubmissionType) public submissionTypeRepo: Repository<SubmissionType>,
     private readonly seasonService: SeasonService,
-    private readonly contactService: ContactService
+    private readonly contactService: ContactService,
+    private readonly ms: ManagementService
   ) {
     super(userSubmissionRepo);
   }
 
   /**
-   * Retrieves all presentations for the active season.
+   * Every submission of a season, each with who submitted it (#2799), for the admin list.
    */
-  public async getSubmissionsForSeason(seasonGuid: string) {
+  public async getSubmissionsForSeason(seasonGuid: string): Promise<Array<SubmissionWithSubmitter>> {
     const existingSeason = await this.seasonService.findOne({
       where: {
         guid: seasonGuid
@@ -36,11 +38,13 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     }
 
     try {
-      return this.userSubmissionRepo.find({
+      const submissions = await this.userSubmissionRepo.find({
         where: {
           season: { guid: existingSeason.guid }
         }
       });
+
+      return await this.withSubmitters(submissions);
     } catch (err) {
       // An HttpException carries a deliberate status. Re-wrapping it below turned intended
       // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
@@ -50,6 +54,25 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
 
       throw new InternalServerErrorException('Could not retrieve user submissions.');
     }
+  }
+
+  /**
+   * Adds each submission's submitter from their Auth0 profile. One account at a time, as the class roster reads them,
+   * and once per account however many it submitted. An account that cannot be read (deleted, or Auth0 management is
+   * not configured, as locally) leaves `submitter` null rather than failing the list.
+   */
+  private async withSubmitters(submissions: Array<Submission>): Promise<Array<SubmissionWithSubmitter>> {
+    const submitters = new Map<string, SubmissionSubmitter | null>();
+
+    for (const accountGuid of new Set(submissions.map((s) => s.accountGuid).filter(Boolean))) {
+      try {
+        submitters.set(accountGuid, submitterOf(await this.ms.getUserMetadata(accountGuid, undefined, true)));
+      } catch {
+        submitters.set(accountGuid, null);
+      }
+    }
+
+    return submissions.map((s) => Object.assign(s, { submitter: submitters.get(s.accountGuid) ?? null }));
   }
 
   public async getSubmissionsForActiveSeason() {
