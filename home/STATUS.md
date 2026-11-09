@@ -14,10 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch 42 (#2788)**, started 11:18 AM Central, 9 November: gate the Transportation section (tile and route), red first on production.
-  - 11:41 AM Central: red proven on today's code served as production (tile offered; page opens, empty). Tile isDev, page gated by DevelopmentOnlyMapGuard (route data), gates spec now compares tiles and pages. Unit green; rebuilding to prove both ways.
+- Nothing. Idle and listening (12:01 PM Central, 9 November).
 
 ## Finished
+- **Batch 42 (#2788)** (report `home/reports/2026-11-09-42.md`): branch ready, `fix/2788-gate-transportation` on the fork at `0f3b48de8`, no PR. Tile `isDev`, page gated by `DevelopmentOnlyMapGuard` via route data, smoke tile and page checks red on today's code as production and green both ways; gates spec compares tiles and pages. Check exit 0. No questions.
 - **Batch 41 (#2722)** (report `home/reports/2026-11-09-41.md`): branch ready, `fix/2722-lots-off-old-basemap` on the fork at `26b244c94`, no PR. Surface lots, construction and move-in moved to VTBase3; garages stay (no counterpart); UES lot search fixed; the event map link matcher ignores case (#1969 would have returned); the click spec now asserts the hit test. The layer-0 "regression" was our sampling, retracted. Check exit 0. Four questions.
 - **Batch 40 (#2707)** (report `home/reports/2026-11-09-40.md`): branch ready, `fix/2707-buildings-hit-test` on the fork at `4c7488114`, no PR (the director opens it). Cause: failed tile queries on the old buildings layer (#2702) leave unclickable regions; buildings, search, kiosk and UES moved to VTBase3/FeatureServer/0 behind `buildingsUrl`, `number IS NOT NULL` (1,003 = old), near-invisible fill with its reason. New `building-clicks.spec.ts` red on dev AVP 3 of 4 runs (misses all inside failed tiles), green 15 of 15 after the move, 0 of 145 queries failed. Check exit 0 after merging development. Four questions.
 - **Batch 39 (#2768, #2765)** (report `home/reports/2026-11-08-39.md`): `fix/2768-april-ring-day` at `72f741180` and `fix/2765-title-override-sweep` at `0e125b731` on the fork, no PRs (#2765 held for the release test). 98 restating titles removed, proven in the app on both hosts; 39 reasons; 63 left unreviewed. Checks exit 0. Three questions.
