@@ -2952,3 +2952,69 @@ request or follow - **say which you chose.** `scripts/check-in-volume.sh <branch
 at least.
 
 `home/reports/2026-11-08-35.md`, and say **"report ready: <file>"**.
+
+## Batch 36 (8 November 2026, from `work (aggiemap)`) — #2756: two pins are coarser than their evidence (High)
+
+**Batch 35 was excellent and is on hold, not rejected.** [PR 2755](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2755)
+found three dead services where I had specified one, emptied dev's `allowedLayerFailures`, and collapsed two ways of
+pinning into one. That last part answered a question the maintainer had asked an hour earlier about a different
+mechanism, without being told.
+
+**Why it is held.** The maintainer looked at your after-screenshot and said: "almost all of the layers on the main map
+are prod only - this is crazy. I was pretty sure we had a dev construction layer."
+
+He was right. The markers are accurate about what the code does; **two of the pins are wrong about what is possible.**
+
+### What I measured, 8 November
+
+**Construction** - `constructionUrl` is pinned to `Hosted/TSConstruction_Hosted`, which is 499 on dev. But dev **has**
+construction:
+
+| | layer 0 | fields |
+| --- | --- | --- |
+| dev `TS/TSConstruction/0` | Current Construction A... | 11: `OBJECTID, Name, Number, StartDate, EndDate, Owner, Description, Notes, Link` |
+| prod `Hosted/TSConstruction_Hosted/0` | Current Construction A... | 13, lower case |
+
+**Visitor Parking** - `tsMainUrl` is pinned because **layer 6** lacks `SPC_PNT_CNT`. That is true. But the Visitor
+Parking layer is **layer 4**:
+
+| `TS_Main` | layer 4 Visitor Kiosks | layer 6 Parking Lots |
+| --- | --- | --- |
+| dev | **5 fields, identical** | 57, `SPC_PNT_CNT` absent |
+| prod | 5 fields | 58, present |
+
+Same eight layers, same names, both hosts. One layer's missing field pins eight layers' worth of consumers.
+
+### The work
+
+**1. Can `tsMainUrl` be pinned per layer?** So layer 6's consumers read production and the rest read their own
+environment. A second connection for the space-count layer may be simpler than per-layer pinning - **say which you
+chose and why.**
+
+**2. Which two fields does the hosted construction view add**, does any map read them, and if not can dev read
+`TS/TSConstruction` with the field names mapped? The case difference is the same problem
+[#2722](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2722) must solve for the basemap,
+so it may share an answer. **If the hosted view's extra fields are genuinely needed, that is a fine outcome** - write
+the reason into the pin so the next person does not re-ask.
+
+**3. Fold the result into PR 2755** rather than a second pull request. It is held for this, and two changes to the
+same list in sequence is how a list gets half-updated.
+
+### The general point, which is worth more than the two fixes
+
+**A pin is invisible until something draws it.** These two have been in place since #2653 and nobody questioned them.
+The first time they appeared on screen, the maintainer spotted one immediately.
+
+So your marker is working - and what it reveals is that **pinning is per service while at least one reason is per
+layer**. A coarse pin quietly removes a whole service from development testing. If per-layer pinning turns out to be
+the right shape generally, say so; that is a bigger change than this batch and worth its own issue.
+
+### Also done, so you do not redo it
+
+I corrected [#1745](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1745), the GIS team
+list: its row said `TS/BikeMap` is "not published at all" when it is published behind a token, and I added a row for
+the sixteen Transportation hosted views dev lacks.
+
+### The report
+
+`home/reports/2026-11-08-36.md`, and say **"report ready: <file>"**.

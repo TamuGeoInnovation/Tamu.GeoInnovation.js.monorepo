@@ -6576,3 +6576,59 @@ Visible on dev, so before and after screenshots and a release-notes entry with i
 `scripts/check-in-volume.sh <branch> aggiemap-ngx-common,ts-events-ngx,aggiemap-angular` at least.
 
 `work-lab-leila/reports/2026-11-08-18.md`, and say **"report ready: <file>"**.
+
+## Batch 19 (8 November 2026, from `work (aggiemap)`) — #2743: a bus map in the Transportation section (High)
+
+Batch 18 is [PR 2757](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2757), open and ready.
+Your `DEVELOPMENT_ONLY_LAYER_SOURCES` choice over the `TestingService` I specified was right and I have said so on the
+pull request: a production build leaves the group out altogether rather than shipping it hidden.
+
+**The Transportation page is live on dev** ([PR 2752](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2752)),
+with the Micromobility map in it. The maintainer has seen it working. Two maps are missing from it, and this batch is
+the first.
+
+### [#2743](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2743): the bus map
+
+**The main map with the bus side panel open**, listed in the Transportation section.
+
+**Build it as a route, not a definition file.** Read the issue - this is the part worth getting right.
+
+`/map/d/trip` is already the main map with the directions panel open: same layers, same basemap, one panel preselected.
+The Features panel is `/map/d`. **The panels are routes already.** So a bus map is `/map/d/bus` plus a Discover entry,
+and nothing else.
+
+A definition would restate the main map's entire layer set and then drift from it - a second copy of the main map,
+fixed in one place only. `EventConfiguration`'s `sidebarTabs` is `'features' | 'directions' | 'settings'` with **no
+`'bus'`**, so that route means extending the union *and* maintaining a duplicate map.
+
+**Three things to confirm before building, and say what you found:**
+
+- that a Discover entry can point at an arbitrary route such as `/map/d/bus` - `getApplicationRoute` resolves internal
+  apps today, so check what it accepts;
+- that the route actually opens the bus panel, and that leaving it behaves sensibly;
+- whether the panel needs different framing - bus routes cover more than the campus core.
+
+**If any of that makes the route approach ugly, say so and we will reconsider** rather than force it. The
+recommendation is mine, not the maintainer's, and I would rather be told it is wrong than have it built badly.
+
+### Development-only, and not your call to change
+
+`DEVELOPMENT_ONLY_SECTIONS` lists `'Bus Routes'` because the service was not public on production. **That changed** -
+[#2636](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2636), your own work, put both
+environments on `Hosted/Bus_Routes_view` and production serves it publicly with the same 212 stops and 23 routes.
+
+So the gate **can** come off - but that is the maintainer's decision (#1229). **Build it development-only** and he
+will decide when it goes to production.
+
+### Per #2753, which gating to use
+
+The repository has two mechanisms and the rule is now written down: **build-time exclusion for anything that reads a
+service, `TestingService` for structure.** A route and a Discover entry are structure, so `TestingService` - the same
+as the Code Maroon tile. Do not reach for `DEVELOPMENT_ONLY_LAYER_SOURCES` here; this map adds no layer sources.
+
+### The report and the pull request
+
+Visible on dev, so before and after screenshots and a release note with its *What to test on dev* row. Check the
+projects you touch.
+
+`work-lab-leila/reports/2026-11-08-19.md`, and say **"report ready: <file>"**.
