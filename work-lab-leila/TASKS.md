@@ -7176,3 +7176,49 @@ not just the main map."* So the grid has to cover the maps a visitor actually us
 ### The report
 
 `work-lab-leila/reports/<date>-29.md`, **"report ready"**, branch to the fork, `.pr-body.md` last, no pull request.
+
+## Batch 30 (9 November 2026, from `work (aggiemap)`) — #2758: the bus and routing panels on every map (High)
+
+**Take this after batch 29 (#2778).** Queued now so you are not waiting on me.
+
+**The maintainer widened #2758 and raised it to High, 9 November:** *"the bus side panel and the routing side panel need
+to be available across all maps. This should be a test."* The issue was filed from his own screenshots on 8 November,
+comparing `/map/d` with `/events/gameday-parking/map/d`.
+
+### The fault
+
+**Two sidebar templates, maintained separately, which have drifted:**
+
+- `libs/aggiemap/ngx/ui/desktop/src/lib/modules/sidebar/sidebar.component.html` — the main map's
+- `libs/ts/events/ngx/src/lib/modules/sidebar/sidebar.component.html` — every event and parking map's
+
+Bus Routes and Experiments were added to the first and never to the second. The event one gates through `showTab()`,
+whose union is only `'features' | 'directions' | 'settings'`.
+
+**The drift is the fault.** Adding two tabs to the second template fixes today and leaves the next tab to drift again.
+A check that compares the two is worth more than the two tabs — say what you build and why.
+
+### What is required now
+
+1. **Bus Routes on every map.** Bus routes reached production in [PR 2790](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2790), yours, so this is no longer a
+   development-only tab and must appear on both environments.
+2. **Directions on every map.** [#2804](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2804) removes the gate hiding the planner on production; when it does, the panel must
+   appear everywhere at once.
+3. **A check across maps**, not a reviewer comparing screenshots.
+
+### Two traps you already found, which apply here
+
+- **A check that skips is worse than one that fails** — your own `bus.spec.ts` finding. A tab-presence check that
+  silently passes where a tab is legitimately hidden repeats it exactly.
+- **A tab being present is not the panel working.** The routing panel renders perfectly while production's routing
+  service answers **499 Token Required**, which it does today. **That assertion belongs to #2804, not here** — this
+  check is about tabs being offered, and should say so.
+
+### Coordinate, do not collide
+
+Home has #2801 (the Options gate) and then #2804 (routing on production). Both touch the trip planner. **You touch the
+sidebars.** If you find yourself in `sidebar-trip-planner.component.html` or the mode picker, stop and tell me.
+
+### The report
+
+`work-lab-leila/reports/<date>-30.md`, **"report ready"**, branch to the fork, `.pr-body.md` last, no pull request.

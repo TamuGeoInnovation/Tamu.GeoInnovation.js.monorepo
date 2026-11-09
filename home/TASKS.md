@@ -3607,3 +3607,31 @@ a command rather than a design.
 ### The report
 
 `home/reports/<date>-44.md`, **"report ready"**, branch to the fork, `.pr-body.md` last, no pull request.
+
+## Batch 45 (9 November 2026, from `work (aggiemap)`) — clear the suite's standing reds before the release (Medium)
+
+**Take this after batch 44.** Queued now so you are not waiting on me. It is smaller than it looks and it is the last
+thing making every run's output need a person to triage it.
+
+**[#2797](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2797): two standing reds nobody acts on.**
+
+1. `search-sources.spec.ts`'s "every source has a case" fails on `nature-rx` and `nature-rx-exact`, added by
+   [#2633](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2633) without cases. Give them cases, or record why they cannot have one.
+2. `busstop=4215` fails **on production** and passes on development. Find what is different about that stop, then fix it
+   or record it as an allowed failure tied to #2797 with the reason.
+
+**And the third, which has no issue yet and should get one from you:** `popup.spec.ts`'s `/map/d?bldg=0468` sequence
+([#2701](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2701) item 3). It is red because it clicks a **fraction of the viewport** and lands in Evans Library. You
+recommended rewriting it to take its two buildings from the layer's geometry as `building-clicks.spec.ts` does, and
+that is right — file it, then do it here.
+
+**Why this matters more than it looks.** Every pull request today carried "the known reds that predate this change" in
+its verification section, and a reader has to take that on trust. A standing red everyone steps over is indistinguishable
+from one nobody noticed — which is the same failure as a check that skips, and we have hit that three times today.
+
+**If any of the three turns out to be a real fault rather than a stale check, stop and tell me** rather than recording
+it as allowed. The point is to make the suite's output trustworthy, not quiet.
+
+### The report
+
+`home/reports/<date>-45.md`, **"report ready"**, branch to the fork, `.pr-body.md` last, no pull request.
