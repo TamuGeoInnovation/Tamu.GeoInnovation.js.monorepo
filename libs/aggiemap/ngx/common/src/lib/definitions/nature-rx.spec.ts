@@ -85,10 +85,9 @@ describe('Nature Rx is development-only (#2673)', () => {
   });
 
   // The gate is a list, so the thing most likely to go wrong is the list losing an entry rather than the
-  // mechanism breaking. Nothing else is development-only today, so a second entry appearing here should be a
-  // deliberate act with its own issue.
-  it('is the only layer held back, and says which issue holds it', () => {
-    expect(DEVELOPMENT_ONLY_LAYER_SOURCES.map((source) => source.definition)).toEqual(['NATURE_RX']);
+  // mechanism breaking. Every entry is a deliberate act with its own issue: Micromobility joined it for #2739.
+  it('is held back with the issue that holds it, and only Micromobility besides', () => {
+    expect(DEVELOPMENT_ONLY_LAYER_SOURCES.map((source) => source.definition)).toEqual(['NATURE_RX', 'MICROMOBILITY']);
     expect(DEVELOPMENT_ONLY_LAYER_SOURCES[0].reason).toContain('#2673');
     expect(developmentOnlySearchSources()).toEqual(['NATURE_RX', 'NATURE_RX_EXACT']);
   });
