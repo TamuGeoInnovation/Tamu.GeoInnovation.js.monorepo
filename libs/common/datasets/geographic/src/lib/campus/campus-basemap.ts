@@ -1,13 +1,23 @@
 /**
- * Texas A&M's main campus basemap: a cached map service in Web Mercator tiles (256-pixel PNG, levels 0 to 23), public
- * on the production GIS server, with no key or token.
+ * Texas A&M's main campus basemap as raster tiles: a cached map service in Web Mercator tiles (256-pixel PNG, levels 0
+ * to 23), public on the production GIS server, with no key or token.
  *
- * AggieMap draws it on production (its basemap gallery and its connections), and the GIS Day competition maps
- * (`libs/maps/mapbox`, on MapLibre) draw its tiles (#1218). It is written here once so that a republished campus
- * basemap is one change for all of them. The vector tile version (`Hosted/VTBase`) is not a substitute: it is not
- * published on production (#1229) and is in Texas State Plane, which MapLibre cannot draw.
+ * **Abandoned**: the maintainer decided on 9 November 2026 that nothing is to read it. The campus basemap is
+ * `TAMU_CAMPUS_VECTOR_BASEMAP_URL` below. What still names this one is being moved off it; it is written here once so
+ * that moving each one is a change in one place.
  */
 export const TAMU_CAMPUS_BASEMAP_URL = 'https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_Basemap_20261008/MapServer';
+
+/**
+ * Texas A&M's main campus basemap as vector tiles, `Hosted/VTBase3`: Web Mercator (`wkid` 102100, 23 levels), public
+ * on the production GIS server with no key or token, and AggieMap's default on every environment since #2515.
+ *
+ * It publishes a MapLibre style (version 8, 115 layers, with a sprite and glyphs) at `resources/styles/root.json`,
+ * which the GIS Day competition maps draw (`libs/maps/mapbox`). This used to be ruled out for them because the vector
+ * version of the day, `Hosted/VTBase`, was in Texas State Plane, which MapLibre cannot draw, and was not on production
+ * (#1229). Neither is true of VTBase3.
+ */
+export const TAMU_CAMPUS_VECTOR_BASEMAP_URL = 'https://gis.tamu.edu/arcgis/rest/services/Hosted/VTBase3/VectorTileServer';
 
 /**
  * The main campus's features, as data: the feature service the vector tile basemap (`Hosted/VTBase3`) is published from
