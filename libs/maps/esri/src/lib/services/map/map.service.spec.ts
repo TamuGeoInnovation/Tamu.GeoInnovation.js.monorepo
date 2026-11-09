@@ -349,8 +349,11 @@ describe('EsriMapService clicking a map that is still drawing', () => {
   const lot = { attributes: { LotName: '100g' } };
   const point = { type: 'point', x: 1, y: 2 };
 
-  /** A feature layer with a popup, whose layer view is drawing or not. */
-  const popupLayer = (id: string, features: object[], drawing: boolean) => {
+  /**
+   * A feature layer with a popup, whose layer view is drawing or not, and holds every feature in view or not: a layer
+   * view that lost a tile query has `hasAllFeaturesInView` false for good once it has drawn (#2785).
+   */
+  const popupLayer = (id: string, features: object[], drawing: boolean, complete = true) => {
     const layer = {
       id,
       visible: true,
@@ -359,7 +362,7 @@ describe('EsriMapService clicking a map that is still drawing', () => {
       queryFeatures: vi.fn(() => Promise.resolve({ features: features.map((feature) => ({ ...feature })) }))
     };
 
-    return { layer, layerView: { layer, suspended: false, updating: drawing } };
+    return { layer, layerView: { layer, suspended: false, updating: drawing, hasAllFeaturesInView: complete } };
   };
 
   const collection = <T>(items: T[]) => ({ toArray: () => [...items] });
@@ -370,8 +373,9 @@ describe('EsriMapService clicking a map that is still drawing', () => {
   let hitTestResults: object[];
   let emitted: __esri.Graphic[][];
 
-  const useLayers = (entries: Array<ReturnType<typeof popupLayer>>) => {
+  const useLayers = (entries: Array<ReturnType<typeof popupLayer>>, type: '2d' | '3d' = '2d') => {
     service['_modules'].view = {
+      type,
       on: (_: string, handler: (event: object) => void) => {
         click = handler;
 
@@ -444,6 +448,41 @@ describe('EsriMapService clicking a map that is still drawing', () => {
 
     expect(buildings.layer.queryFeatures).not.toHaveBeenCalled();
     expect(lastEmitted()).toEqual([]);
+  });
+
+  it('opens the popup for a building on a tile its layer never received, after the layer has drawn (#2785)', async () => {
+    // The service answered one of the layer's tile queries with an error, so the layer view drew without those
+    // buildings and has stopped updating: the hit test is empty, and the click used to ask nothing.
+    const buildings = popupLayer('buildings-layer', [building], false, false);
+    useLayers([buildings]);
+
+    click({ mapPoint: point });
+    await settle();
+
+    expect(buildings.layer.queryFeatures).toHaveBeenCalledWith(expect.objectContaining({ geometry: point }));
+    expect(lastEmitted()).toEqual([building.attributes]);
+  });
+
+  it('asks only the layer that is missing features, not every layer that has drawn (#2785)', async () => {
+    const lots = popupLayer('parking-lots', [lot], false);
+    const buildings = popupLayer('buildings-layer', [building], false, false);
+    useLayers([lots, buildings]);
+
+    click({ mapPoint: point });
+    await settle();
+
+    expect(buildings.layer.queryFeatures).toHaveBeenCalledTimes(1);
+    expect(lots.layer.queryFeatures).not.toHaveBeenCalled();
+  });
+
+  it('does not read a scene as missing features, where the property also means it has thinned them (#2785)', async () => {
+    const buildings = popupLayer('buildings-layer', [building], false, false);
+    useLayers([buildings], '3d');
+
+    click({ mapPoint: point });
+    await settle();
+
+    expect(buildings.layer.queryFeatures).not.toHaveBeenCalled();
   });
 
   it('asks nothing when the hit test found a feature with a popup', async () => {
