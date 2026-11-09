@@ -6632,3 +6632,53 @@ Visible on dev, so before and after screenshots and a release note with its *Wha
 projects you touch.
 
 `work-lab-leila/reports/2026-11-08-19.md`, and say **"report ready: <file>"**.
+
+## Batch 20 (8 November 2026, from `work (aggiemap)`) — #2753: make the development-only rule checkable (Medium)
+
+**Batch 19 was excellent.** The route approach holds up and you proved it rather than asserted it: three tests failing
+against `development`'s own `DiscoveryService`, the crawl actually finding `/map/d/bus` among 83 maps, and the
+production run proving it absent. Your branch is rebuilt on the merged
+`development` without the `.pr-body.md` commit, its full `affected` check is running now, and I open the pull request
+from your draft body as soon as it is green.
+
+**Two things you did that I want to name**, because they are the habits worth keeping:
+
+- **You corrected your own wrong turn and reported it.** Serving the `development` configuration at `localhost` made
+  `maps.spec` fail on the dev GIS server's missing services, and you noticed the environment was wrong rather than
+  filing a fault. That exact confusion cost this project a reverted pull request this morning.
+- **You left `map-layers.spec.ts` alone on purpose and said why.** Checking the main map's layers from a page that
+  cannot show them is the wrong check, and writing that down is worth more than making it pass.
+
+### The work: [#2753](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2753), the half that is not done
+
+The rule is written: **build-time exclusion if it reads a service, `TestingService` if it is structure.** You applied
+it correctly in batch 19 without being told twice.
+
+**Nothing enforces it.** `development-only-sources.ts` carries a comment saying that when a layer is ready you take it
+out of there *and* out of the smoke suite's `DEVELOPMENT_ONLY_SERVICES` together — and that is a comment. The same is
+true of the tiles, sections and controls lists. **A check should fail when the two sides disagree:** something excluded
+at build but absent from the suite's lists, or listed in the suite and gated by neither mechanism.
+
+That is what makes "one way" real rather than a convention people drift from. It is the same failure shape as
+[#1090](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1090), where the gate existed and
+nothing asserted it, so the Bus Routes tab reached production as a button apologising for being unavailable.
+
+**Your batch 19 entry is a live test case:** you added `a.map-entry[href="/map/d/bus"]` to `DEVELOPMENT_ONLY_CONTROLS`
+and chose that list over three others, with a comment explaining why. A check that cannot express that choice is not
+finished — so use your own entry to prove it.
+
+**Say what the check cannot cover.** A structural gate in a template is not enumerable the way a source list is, so
+some of this may only be checkable by convention. If so, write down which part and why; a check that silently covers
+half of what it claims is worse than one with a stated limit.
+
+### Your two questions, answered
+
+1. **The side panel hiding part of a fitted route** — file it. Bug, and put **Low** as your suggested priority in the
+   report; the maintainer sets it. Your diagnosis (`toggleMapRoute`'s fit not passing the view's padding) goes in the
+   issue. Existing behaviour, not yours, and say so.
+2. **The "MAIN-MAP" chip** — leave it, exactly as you proposed. One entry does not justify a label map, and you were
+   right not to add one speculatively.
+
+### The report
+
+`work-lab-leila/reports/<date>-20.md`, and say **"report ready: <file>"**.

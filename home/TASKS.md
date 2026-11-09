@@ -3018,3 +3018,42 @@ the sixteen Transportation hosted views dev lacks.
 ### The report
 
 `home/reports/2026-11-08-36.md`, and say **"report ready: <file>"**.
+
+## Batch 37 (8 November 2026, from `work (aggiemap)`) — #2742: a Sustainable Transportation map in the Transportation section (High)
+
+**Batch 36 was the right answer and it is in.** A second connection for layer 6 rather than per-layer pinning is the
+smaller change, and your reasoning for why — every other entry in the list is about a whole service — is the part that
+makes it reviewable later. Finding that dev *does* have the space counts, under `GIS.TS.SpacePnt_Count.*`, turned a
+"missing dataset" into a one-line ask of Transportation. That is the second time this evening a pin turned out to be
+coarser than its evidence.
+
+### [#2742](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2742): the map
+
+The Transportation section lists Micromobility (live on dev) and, from the lab's batch 19, Bus Routes. **This is the
+third: Sustainable Transportation.**
+
+**It depends on your own batch 35/36 work.** The Sustainable Transportation service has no dev counterpart, so
+[PR 2755](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2755) is what makes it readable on
+dev at all, and what marks it as production data there. **Branch from `fix/2744-bike-services-on-dev`**, not from
+`development`, and say so in the report; I will rebase onto `development` once 2755 merges.
+
+**Follow the Micromobility map's shape** (`micromobility.definitions.ts`, `mapType: 'transportation'`). That is the
+pattern the section already uses, and a third map is the point at which a copied-between-definitions helper would
+start to look reasonable — so if you find yourself writing one, that is the #2591 tell, and say so instead.
+
+**Development-only**, per [#2753](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2753):
+it reads a service, so **build-time exclusion**, not `TestingService`.
+
+### Decided, so you do not re-ask
+
+Both of your batch 36 questions go to the maintainer with **A** as my recommendation — add each to
+[#1745](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1745) as an ask of Transportation
+(rename the dev join to `SPC_PNT_CNT`; publish the hosted construction view on dev or repair the MapServer). Do not
+work around either in code. I will confirm after he answers.
+
+### The report
+
+Visible on dev, so before and after screenshots and a release note with its *What to test on dev* row. Check the
+projects you touch.
+
+`home/reports/<date>-37.md`, and say **"report ready: <file>"**.
