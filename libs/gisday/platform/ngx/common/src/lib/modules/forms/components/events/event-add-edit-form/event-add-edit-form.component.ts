@@ -180,7 +180,8 @@ export class EventAddEditFormComponent implements OnInit {
       mode: [null],
       eventType: [null],
       presentationType: [null],
-      isAcceptingRsvps: [false],
+      // Ticked, as the database column's default is, so a new event accepts RSVPs unless the organizer unticks it (#2706).
+      isAcceptingRsvps: [true],
       isBringYourOwnDevice: [false],
       checkInAnyTime: [false],
       requirements: [null],
