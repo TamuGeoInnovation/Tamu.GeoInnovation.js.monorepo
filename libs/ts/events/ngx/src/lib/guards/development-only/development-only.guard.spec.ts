@@ -47,6 +47,6 @@ describe('DevelopmentOnlyMapGuard', () => {
   });
 
   it('opens every other map on production', () => {
-    expect(guardOn(false).guard.canActivate(linkTo('sustainable-transportation'))).toBe(true);
+    expect(guardOn(false).guard.canActivate(linkTo('visitor-parking'))).toBe(true);
   });
 });

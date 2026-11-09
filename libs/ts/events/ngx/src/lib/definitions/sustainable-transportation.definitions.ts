@@ -183,12 +183,19 @@ export const SustainableTransportationTs: AggiemapCustomMapConfiguration = {
   sources: SustainableTransportationColdLayerSources,
   references: SUSTAINABLE_TRANSPORTATION_LAYERS,
   type: 'general-map',
+  // The bike layers are being reworked, and whether they stay is decided early in the week of 9 November 2026; until
+  // then this map is not on production at all. On a development build its six layers read production's TS/BikeMap,
+  // which the development GIS server serves only with a token (#2744).
+  developmentOnly: '#2742: the bike layers are being reworked; whether they stay is still to be decided',
   discover: {
     id: SustainableTransportationConfiguration.id,
     name: SustainableTransportationConfiguration.name,
     description: 'Bike amenities and EV charging locations for Main Campus and the RELLIS Campus.',
     source: 'internal',
     type: 'parking',
+    // In the Transportation section, beside Micromobility (#2742). With `parkingCategory` and no `mapType` it was
+    // listed nowhere, as Micromobility was before #2738, and reachable only by its link.
+    mapType: 'transportation',
     parkingCategory: 'general',
     keywords: [
       'sustainable transportation',
