@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle and listening (7:52 PM Central, 8 November).
+- **Batch 36 (#2756)**, started 8:20 PM Central, 8 November: make the TS_Main and construction pins as narrow as their evidence, folded into PR 2755.
 
 ## Finished
 - **Batch 35 (#2744)** (report `home/reports/2026-11-08-35.md`): PR 2755, nine layers dead on dev now read production and are marked; the new check was red on unfixed code (4 services) and green with the fix; check exit 0. Three questions for the director.
