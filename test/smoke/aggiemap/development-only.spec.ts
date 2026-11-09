@@ -181,9 +181,10 @@ test.describe(`development-only maps ${VISIBLE ? 'open' : 'open the main map ins
       await blockAnalytics(page);
       await page.goto(`/parking/${id}`);
 
+      // The main map opens its default sidebar page, so the redirect lands on `/map/d`.
       await expect
         .poll(() => new URL(page.url()).pathname, { timeout: 30_000 })
-        .toMatch(VISIBLE ? new RegExp(`^/parking/${id}(/|$)`) : /^\/map\/?$/);
+        .toMatch(VISIBLE ? new RegExp(`^/parking/${id}(/|$)`) : /^\/map(\/|$)/);
     });
   }
 });
