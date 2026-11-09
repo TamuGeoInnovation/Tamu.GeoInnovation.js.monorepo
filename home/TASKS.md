@@ -2890,3 +2890,65 @@ reports today against dev** - which layers match, which are declared overrides, 
 run is the baseline #1523 gets worked through.
 
 `home/reports/2026-11-08-34.md`, and say **"report ready: <file>"**.
+
+## Batch 35 (8 November 2026, from `work (aggiemap)`) — #2744: six layers dead on dev from one URL (High)
+
+**Batch 34 is merged** ([PR 2745](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2745)). The
+layer-title checks are in `development`, and they are what makes
+[#2719](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2719) safe to retry later - the work
+I got wrong this morning and had reverted. Thank you for building the instrument rather than the opinion.
+
+### The fault
+
+[#2744](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2744). `bikeMapUrl` and
+`bikeRacksUrl` in `connections.ts` read `${gisHost}`, and the development server answers **499 Token Required**:
+
+| Host | `TS/BikeMap/MapServer` |
+| --- | --- |
+| `gis.tamu.edu` | **OK** - 6 layers |
+| `gis.dev.tamu.edu` | **499 Token Required** |
+
+**The service exists on dev. It is not public there.** The ArcGIS client reports that as "Service not found", which
+reads like a missing service and is why this has been misread. It is exactly
+[#2695](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2695), where 4-H Roundup's
+development view answered 499 and a development build could not draw it.
+
+Six layers on dev's main map are dead from this one URL: Dismount Zones, City Bike Lanes and Routes, Campus Bike Lanes,
+Bike Fix Stations, Bike Racks, EV Charge Stations.
+
+### Three parts, in this order
+
+**1. Pin both to production, with reasons.** `connections.spec.ts` already has
+`READ_FROM_PRODUCTION_ON_DEVELOPMENT` - a list with a reason each and a test asserting every entry really does read
+production. Add these two as 4-H Roundup was added.
+
+**2. A check that finds the next one.** This matters more than the fix. Nothing today notices a service that *should*
+be pinned and is not; #2695 was found by a smoke run after a map stopped drawing, this one by the maintainer's eye.
+
+Ask every `${gisHost}` service in `connections.ts`, against the development host, whether a development build could
+read it - and fail, naming the service, when one answers 499 or 404 while production serves it.
+
+**The trap, from #2653:** a 499 proves nothing about whether a service *exists* - a nonsense path returns the same
+code. The half that matters here is the other one: **a 499 proves a development build cannot use it.**
+
+**3. Flag it on the page.** Where a layer reads production because dev cannot serve it, the dev site should say so -
+a small marker beside the layer's name in the Layers list, **development only**. The maintainer's request.
+
+- it must not appear on production;
+- it must come from the **same list** as the pin, so a layer cannot be pinned without being flagged or flagged without
+  being pinned;
+- it should be a property of the layer source, **not a hard-coded list in a component**, or it becomes another thing
+  to keep in step by hand.
+
+### Why this one first
+
+[#2742](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2742), a Sustainable Transportation
+map, is blocked on it: that map would list six layers and draw none of them on the only environment it is visible on.
+
+### The report and the pull request
+
+Part 1 is visible on dev (six layers that draw), so screenshots and a release note. Parts 2 and 3 can share the pull
+request or follow - **say which you chose.** `scripts/check-in-volume.sh <branch> aggiemap-ngx-common,aggiemap-angular`
+at least.
+
+`home/reports/2026-11-08-35.md`, and say **"report ready: <file>"**.
