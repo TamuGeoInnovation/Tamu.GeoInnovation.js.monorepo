@@ -8,7 +8,7 @@ import { blockAnalytics } from './analytics';
 import {
   DEVELOPMENT_ONLY_CONTROLS,
   DEVELOPMENT_ONLY_ALL_MAPS_TILES,
-  DEVELOPMENT_ONLY_ALL_MAPS_PAGES,
+  DEVELOPMENT_ONLY_PAGES,
   DEVELOPMENT_ONLY_SECTIONS,
   DEVELOPMENT_ONLY_SERVICES,
   SECTIONS_ON_EVERY_ENVIRONMENT,
@@ -113,16 +113,16 @@ test.describe(`development-only All Maps tiles ${VISIBLE ? 'are offered here' : 
   }
 });
 
-/** A development-only All Maps page opens here, and goes back to All Maps on production (#2788). */
-test.describe(`development-only All Maps pages ${VISIBLE ? 'open here' : 'go back to All Maps on this environment'}`, () => {
-  for (const address of DEVELOPMENT_ONLY_ALL_MAPS_PAGES) {
-    test(`${address} ${VISIBLE ? 'opens' : 'opens /all-maps'}`, async ({ page }) => {
+/** A development-only page opens here, and goes to the page above it on production (#2788, #2801). */
+test.describe(`development-only pages ${VISIBLE ? 'open here' : 'go to the page above them on this environment'}`, () => {
+  for (const [address, above] of Object.entries(DEVELOPMENT_ONLY_PAGES)) {
+    test(`${address} ${VISIBLE ? 'opens' : `opens ${above}`}`, async ({ page }) => {
       await blockAnalytics(page);
       await page.goto(address);
 
       await expect
         .poll(() => new URL(page.url()).pathname, { timeout: 30_000 })
-        .toBe(VISIBLE ? address : '/all-maps');
+        .toBe(VISIBLE ? address : above);
     });
   }
 });

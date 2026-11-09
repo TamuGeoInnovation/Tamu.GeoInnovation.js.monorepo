@@ -49,29 +49,4 @@ describe('DevelopmentOnlyMapGuard', () => {
   it('opens every other map on production', () => {
     expect(guardOn(false).guard.canActivate(linkTo('visitor-parking'))).toBe(true);
   });
-
-  /**
-   * A page that is not a map is development-only by its route's `data` (#2788): the Transportation section of All Maps
-   * lists only development-only maps, so on production it was a reachable, empty category. It goes back to the page
-   * above it, not to the main map.
-   */
-  describe('a development-only page', () => {
-    const page = {
-      params: {},
-      data: { developmentOnly: 'its maps are all development-only (#2788)' },
-      pathFromRoot: [{ url: [] }, { url: [{ path: 'all-maps' }] }, { url: [{ path: 'transportation' }] }]
-    } as unknown as ActivatedRouteSnapshot;
-
-    it('goes back to the page above it on production', () => {
-      const { guard, router } = guardOn(false);
-
-      const result = guard.canActivate(page);
-
-      expect(result instanceof UrlTree && router.serializeUrl(result)).toBe('/all-maps');
-    });
-
-    it('opens where development-only features are on', () => {
-      expect(guardOn(true).guard.canActivate(page)).toBe(true);
-    });
-  });
 });

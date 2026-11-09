@@ -10,7 +10,7 @@ import { EventDefinitions } from '@tamu-gisc/ts/events/ngx';
 // are TypeScript with their reasons beside them, so the import is relative (#2753).
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import {
-  DEVELOPMENT_ONLY_ALL_MAPS_PAGES,
+  DEVELOPMENT_ONLY_PAGES,
   DEVELOPMENT_ONLY_ALL_MAPS_TILES,
   DEVELOPMENT_ONLY_CONTROLS,
   DEVELOPMENT_ONLY_SERVICES,
@@ -72,7 +72,10 @@ interface SuiteSide {
   checkedMaps: string[];
   /** The All Maps tiles the smoke suite requires absent on production (`DEVELOPMENT_ONLY_ALL_MAPS_TILES`). */
   tiles: string[];
-  /** The All Maps pages the smoke suite requires to go back to All Maps on production (`DEVELOPMENT_ONLY_ALL_MAPS_PAGES`). */
+  /**
+   * The All Maps pages the smoke suite requires to go back to All Maps on production (`DEVELOPMENT_ONLY_PAGES`). Its
+   * pages on the map itself (the trip planner's Options) are routed in another library, so they are not compared here.
+   */
   pages: string[];
 }
 
@@ -156,7 +159,7 @@ function disagreements(build: BuildSide, suite: SuiteSide): string[] {
   // All Maps tiles and pages, both ways (#2788).
   for (const [gated, checked, gate, list] of [
     [build.developmentOnlyTiles, suite.tiles, 'isDev', 'DEVELOPMENT_ONLY_ALL_MAPS_TILES'],
-    [build.developmentOnlyPages, suite.pages, 'developmentOnly in its route data', 'DEVELOPMENT_ONLY_ALL_MAPS_PAGES']
+    [build.developmentOnlyPages, suite.pages, 'developmentOnly in its route data', 'DEVELOPMENT_ONLY_PAGES']
   ] as const) {
     for (const name of gated.filter((name) => !checked.includes(name))) {
       problems.push(`${name} is development-only (${gate}), but ${list} does not name it, so nothing proves it off production`);
@@ -212,7 +215,7 @@ const SUITE: SuiteSide = {
   hiddenForOtherReasons: LISTINGS_HIDDEN_FROM_PRODUCTION,
   checkedMaps: Object.values(DECLARED).flatMap((map) => (map.address ? [map.address] : [])),
   tiles: DEVELOPMENT_ONLY_ALL_MAPS_TILES,
-  pages: DEVELOPMENT_ONLY_ALL_MAPS_PAGES
+  pages: Object.keys(DEVELOPMENT_ONLY_PAGES).filter((address) => address.startsWith('/all-maps/'))
 };
 
 describe('development-only gates and the smoke suite agree (#2753)', () => {
@@ -252,7 +255,7 @@ describe('the cross-check', () => {
       'Transportation is development-only (isDev), but DEVELOPMENT_ONLY_ALL_MAPS_TILES does not name it, so nothing proves it off production'
     ]);
     expect(disagreements(none, { ...empty, pages: ['/all-maps/transportation'] })).toEqual([
-      'DEVELOPMENT_ONLY_ALL_MAPS_PAGES names /all-maps/transportation, which is not development-only (developmentOnly in its route data): gate it, or take it out'
+      'DEVELOPMENT_ONLY_PAGES names /all-maps/transportation, which is not development-only (developmentOnly in its route data): gate it, or take it out'
     ]);
   });
   const busControl = { name: 'the bus map in the Transportation section', selector: 'a.map-entry[href="/map/d/bus"]' };

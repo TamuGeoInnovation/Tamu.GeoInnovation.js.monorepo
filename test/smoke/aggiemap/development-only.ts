@@ -39,14 +39,19 @@ export const SECTIONS_ON_EVERY_ENVIRONMENT = ['Bus Routes'];
 export const DEVELOPMENT_ONLY_ALL_MAPS_TILES = ['Code Maroon', 'Transportation'];
 
 /**
- * All Maps pages that are not ready for production, which must not open there (#2788).
+ * Pages that are not ready for production, which must not open there, each with where production lands instead
+ * (#2788, #2801).
  *
- * A tile gated with `isDev` hides the link, but the page still answers its address, so each page here is gated on its
- * route too (`developmentOnly` in the route's `data`, read by `DevelopmentOnlyMapGuard`) and opened by address: on
- * production it must land back on All Maps. The Transportation section lists only development-only maps, so on
- * production it was a reachable, empty category.
+ * Hiding a link leaves its page answering its address, so each page here is gated on its route too (`developmentOnly`
+ * in the route's `data`, with the `developmentOnlyRoute` guard, which sends it one segment up its address) and opened by address.
+ *
+ * - The Transportation section lists only development-only maps, so on production it was a reachable, empty category.
+ * - The trip planner's Options offers only accessible routing, which the routing network does not support yet.
  */
-export const DEVELOPMENT_ONLY_ALL_MAPS_PAGES = ['/all-maps/transportation'];
+export const DEVELOPMENT_ONLY_PAGES: Record<string, string> = {
+  '/all-maps/transportation': '/all-maps',
+  '/map/d/trip/options': '/map/d/trip'
+};
 
 /**
  * Controls drawn on the map itself that are not ready for production, each with the issue keeping it
@@ -80,22 +85,14 @@ export const DEVELOPMENT_ONLY_CONTROLS: Array<{
     reason: '#1582: production offers one campus basemap; the dated versions are for comparing on dev'
   },
   {
-    // A listing rather than a control on the map, but asked the same question the same way: the bus map is the main
-    // map's bus panel listed as a map (#2743), gated by `visible: false` with no service of its own for
-    // `DEVELOPMENT_ONLY_SERVICES` to see, and `DEVELOPMENT_ONLY_SECTIONS` covers only the sidebar tab.
-    name: 'the bus map in the Transportation section',
-    selector: 'a.map-entry[href="/map/d/bus"]',
-    page: '/all-maps/transportation',
-    reason: '#2743, #1229: bus routes are development-only until the maintainer moves them to production'
-  },
-  {
-    // Its listing is hidden because the map is development-only, and its service cannot say so: TS/BikeMap is the
-    // main map's on production too, so it can never be on `DEVELOPMENT_ONLY_SERVICES`. The map's own gate is proven
-    // by the route check below; this proves the link is not offered (#2742, #2769).
-    name: 'the Sustainable Transportation map in the Transportation section',
-    selector: 'a.map-entry[href="/transportation/sustainable-transportation"]',
-    page: '/all-maps/transportation',
-    reason: '#2742: development-only while the bike layers are reworked'
+    // **Not a real check while the trip planner itself is development-only.** On production today `/map/d/trip` shows a
+    // maintenance notice in place of the whole planner, so this passes whether or not the link is gated; it passed on
+    // the ungated code. It becomes a real check when directions go to production. Until then the link's gate is proven
+    // by `trip-planner-mode-picker`'s unit test, and its page's by `DEVELOPMENT_ONLY_PAGES`, which did fail ungated.
+    name: "the trip planner's Options link",
+    selector: '.options-container .action:text-is("Options")',
+    page: '/map/d/trip',
+    reason: '#2801: Options offers only accessible routing, which the routing network does not support yet'
   }
 ];
 
@@ -198,7 +195,12 @@ export const DEVELOPMENT_ONLY_SERVICES: Record<
  */
 export const LISTINGS_HIDDEN_FROM_PRODUCTION: Record<string, string> = {
   '/events/april-ring-day': 'hidden by #899 (All Maps overhaul, 5 August 2026) with no reason recorded; ask before listing it',
-  '/events/move-out': '#1691, #1704: hidden while its three dated periods are reviewed, so the page offers one entry per move-out'
+  '/events/move-out': '#1691, #1704: hidden while its three dated periods are reviewed, so the page offers one entry per move-out',
+  // It was checked by a control on the Transportation section's page, which production cannot open since #2788, so
+  // that check could only time out. Sustainable Transportation's listing went the same way and needs no entry: its map
+  // is `developmentOnly`, and the development-only map check opens its address (#2801).
+  '/map/d/bus':
+    '#2743, #1229: bus routes are development-only, and its only listing is in the Transportation section, itself development-only (#2788)'
 };
 
 /** Whether the environment under test renders the development variant. */
