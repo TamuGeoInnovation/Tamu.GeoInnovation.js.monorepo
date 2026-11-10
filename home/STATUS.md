@@ -15,6 +15,7 @@ The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47
 
 ## Running now
 - **Batch 46 (#2821, #2776)**: started 12:48 AM Central, 10 November.
+  - 1:02 AM: all four red on dev on unmodified code, for the reasons filed; both fixes written, green runs on dev in progress.
 
 ## Finished
 - **Batch 45 revised (#2778)** (report `home/reports/2026-11-09-45.md`): branch ready, `test/2778-click-grid-home` on the fork at `6ff9eb7e4` (the lab's commit replayed onto development, plus mine: each layer asked from its own `createQuery()`), no PR, no force-push. Release set on dev 7/7. Check exit 0 (smoke only). The lab's four questions stand.
