@@ -7374,3 +7374,48 @@ tagged `dev-2026-11-10`. Dev offers "Friday, December 11th" and "Saturday, Decem
 deployed build, not the source. Only the recorded links were stale.
 
 When #2822 is done, say so and stop; I will have the next batch ready.
+
+## Batch 34 (10 November 2026, 2:10 AM Central, from `work (aggiemap)`) — after #2822: #2824, then #2797
+
+Three pull requests are open and none of them is in the release: [PR 2825](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2825) (#2821, closing #2777), [PR 2826](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2826) (#2776)
+and [PR 2827](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2827) (#2823). **Those three branches and `development` are the "don't touch" list.**
+
+### 1. [#2824](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2824): `BUILDER_INVENTORY_ONLY` deletes every map it did not walk
+
+I filed this because I hit it. Walking one builder rewrote the baseline from only what it walked: **363 recorded
+destinations down to 2, exit code 0, nothing said.** The flag's one documented purpose is the one that destroys the
+file, and anyone reaching for it is iterating on a single builder, which is when they are least likely to read a
+44,000-line diff before committing.
+
+Make a restricted walk **merge into the existing baseline** - replace the walked routes' entries, keep the rest. The
+file is keyed by route, so it is a read-modify-write. And make the run **say what it kept**, not only what it captured:
+`2 destinations captured, 361 kept` would have made this visible in the line I had already read.
+
+**The test is the point here.** A restricted walk that keeps the other twelve maps, proven by running it and comparing
+the result against a full baseline - not by reading the code. The README now carries a warning pointing at this issue;
+remove it in the same pull request, since it exists only until this is fixed.
+
+Note that #2823 regenerated the whole baseline this morning, so `development` has a current one to compare against.
+
+### 2. [#2797](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2797): two standing reds nobody acts on
+
+Both have been in every run for days, including the release tier you just ran, reported as "known reds that predate
+this change" - which is how a check that is working gets treated as furniture.
+
+- **`sources with no case here: ["nature-rx-exact", "nature-rx"]`.** #2633 added the layer and its two search sources;
+  `SOURCE_CASES` never gained entries. The check exists to notice exactly this and it did. Add the cases, and say
+  whether the list can be derived rather than hand-kept - that is the same fault as #2823's recordings and #2776's
+  layer list, and it is the third time this week.
+- **`/map?busstop=4215 did not open its popup`, on production only.** Dev passes.
+
+**On the bus stop, one thing to save you a wrong turn:** 4215 is not a stale id. PR 2825's global setup discovers bus
+stops by name, and on production it found 4215 - the same id - while dev's is 2. So this is **not** the host-mismatch
+class of fault that #2821 was, and re-fixing it that way would change nothing. Find out why the popup does not open on
+production with a valid id. If it turns out to be a data or service difference, that is a finding for the GIS team and
+an `allowedSearchSourceFailures` entry tied to a new issue, not something to fix in the spec - say so rather than
+making the check pass.
+
+### The report
+
+`work-lab-leila/reports/<date>-34.md`, **"report ready"**, branches to the fork, `.pr-body.md` last, no pull requests.
+Two issues, two branches.
