@@ -7419,3 +7419,29 @@ making the check pass.
 
 `work-lab-leila/reports/<date>-34.md`, **"report ready"**, branches to the fork, `.pr-body.md` last, no pull requests.
 Two issues, two branches.
+
+---
+
+## Decided - 10 November 2026
+
+The maintainer answered these; nobody needs to ask again. Each is also in the repository, in
+`docs/releases/unreleased.md`, so a session that never reads this file still finds them.
+
+- **The 30 October release was never promoted. Production runs `36b962a04`, from 22 October.** There is no
+  `prod-2026-10-30` tag and none is missing: `scripts/tag-build.sh` worked as designed. So the 215 pull requests
+  the [30 October notes](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/blob/development/docs/releases/2026-10-30.md)
+  list **have not reached anybody**, and the next promotion carries nineteen days of work rather than one
+  release. When you reason about what production contains, it is 22 October's build - not dev's, and not 30
+  October's.
+- **`3254b114e` is on dev and tagged `dev-2026-11-10`**, cleared by the release tier (999 passed, 15 failed, 70
+  skipped; none of the 15 in the build). The promotion itself is the maintainer's, and this machine never
+  touches production.
+- **Priorities set:** [#2824](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2824)
+  **High**, [#2828](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2828) **Medium**,
+  [#2821](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2821) Medium,
+  [#2822](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2822) High,
+  [#2823](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2823) Medium.
+- **Four pull requests are open and waiting on the maintainer**: 2825 (#2821, #2777), 2826 (#2776), 2827
+  (#2823), 2829 (#2828). **Do not build on their branches**, and do not open or convert pull requests yourself.
+  **PR 2827 must merge after the production promotion**, because it commits recorded builder links naming
+  December 2026 that the smoke suite reads for both environments.
