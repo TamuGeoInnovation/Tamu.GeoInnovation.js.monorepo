@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle and listening (1:32 AM Central, 10 November).
+- **Batch 47 (#2758)**: started 2:02 AM Central, 10 November.
 
 ## Finished
 - **Batch 46 (#2821, #2776)** (report `home/reports/2026-11-10-46.md`): two branches ready, no PRs. `fix/2821-fixtures-from-environment` at `0ba5e11b8` (AVP lot found by name in global setup like the bus stop; parking-spaces asks the environment's host; closes #2777 too). `fix/2776-kiosk-layers-from-definition` at `c46f2c061` (kiosk list derived from the tailgating and main maps). Red then green on dev, green on production; checks exit 0. Production's directions popup cases are red until the release is deployed (#2804 merged). No questions.
