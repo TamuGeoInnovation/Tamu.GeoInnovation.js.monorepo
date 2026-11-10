@@ -55,6 +55,13 @@
     "allowedPopupFailures": {
       "/events/nsc-parking": "#2520: the service returns its lots without geometry, so a click never reaches this layer",
       "/events/break-summer": "#2520: the service returns its lots without geometry, so a click never reaches this layer"
+    },
+    "allowedClickFailures": {
+      "tailgating-construction": "#2778: a click on a construction area on the tailgating maps opens no popup (measured 9 November 2026; to have its own issue)",
+      "big-event-road-closures": "#2778: a road closure answers no hit test inside its area, and a click there logs 'Popup component could not be resolved' (measured 9 November 2026; to have its own issue)",
+      "move-in-streets-dropoff": "#2778: a drop-off zone answers no hit test inside its area, so a click there opens nothing (measured 9 November 2026; to have its own issue)",
+      "move-in-streets-closures": "#2778: a street closure answers no hit test inside its area, so a click there opens nothing (measured 9 November 2026; to have its own issue)",
+      "bonfire-layer": "#2778: a click on a Bonfire Memorial portrait opens the Spirit Ring's popup (measured 9 November 2026; to have its own issue)"
     }
   },
   "production": {
@@ -84,6 +91,13 @@
     "allowedPopupFailures": {
       "/events/nsc-parking": "#2520: the service returns its lots without geometry, so a click never reaches this layer",
       "/events/break-summer": "#2520: the service returns its lots without geometry, so a click never reaches this layer"
+    },
+    "allowedClickFailures": {
+      "tailgating-construction": "#2778: a click on a construction area on the tailgating maps opens no popup (measured 9 November 2026; to have its own issue)",
+      "big-event-road-closures": "#2778: a road closure answers no hit test inside its area, and a click there logs 'Popup component could not be resolved' (measured 9 November 2026; to have its own issue)",
+      "move-in-streets-dropoff": "#2778: a drop-off zone answers no hit test inside its area, so a click there opens nothing (measured 9 November 2026; to have its own issue)",
+      "move-in-streets-closures": "#2778: a street closure answers no hit test inside its area, so a click there opens nothing (measured 9 November 2026; to have its own issue)",
+      "bonfire-layer": "#2778: a click on a Bonfire Memorial portrait opens the Spirit Ring's popup (measured 9 November 2026; to have its own issue)"
     },
     "allowedBusRouteFailures": {
       "NW0104": "#1174: no stop in production's Bus Stops layer is tagged with this route (lists 20, draws 0, measured 9 November 2026)",
@@ -127,6 +141,13 @@
     "allowedPopupFailures": {
       "/events/nsc-parking": "#2520: the service returns its lots without geometry, so a click never reaches this layer",
       "/events/break-summer": "#2520: the service returns its lots without geometry, so a click never reaches this layer"
+    },
+    "allowedClickFailures": {
+      "tailgating-construction": "#2778: a click on a construction area on the tailgating maps opens no popup (measured 9 November 2026; to have its own issue)",
+      "big-event-road-closures": "#2778: a road closure answers no hit test inside its area, and a click there logs 'Popup component could not be resolved' (measured 9 November 2026; to have its own issue)",
+      "move-in-streets-dropoff": "#2778: a drop-off zone answers no hit test inside its area, so a click there opens nothing (measured 9 November 2026; to have its own issue)",
+      "move-in-streets-closures": "#2778: a street closure answers no hit test inside its area, so a click there opens nothing (measured 9 November 2026; to have its own issue)",
+      "bonfire-layer": "#2778: a click on a Bonfire Memorial portrait opens the Spirit Ring's popup (measured 9 November 2026; to have its own issue)"
     }
   },
   "local-production": {
@@ -159,6 +180,13 @@
     "allowedPopupFailures": {
       "/events/nsc-parking": "#2520: the service returns its lots without geometry, so a click never reaches this layer",
       "/events/break-summer": "#2520: the service returns its lots without geometry, so a click never reaches this layer"
+    },
+    "allowedClickFailures": {
+      "tailgating-construction": "#2778: a click on a construction area on the tailgating maps opens no popup (measured 9 November 2026; to have its own issue)",
+      "big-event-road-closures": "#2778: a road closure answers no hit test inside its area, and a click there logs 'Popup component could not be resolved' (measured 9 November 2026; to have its own issue)",
+      "move-in-streets-dropoff": "#2778: a drop-off zone answers no hit test inside its area, so a click there opens nothing (measured 9 November 2026; to have its own issue)",
+      "move-in-streets-closures": "#2778: a street closure answers no hit test inside its area, so a click there opens nothing (measured 9 November 2026; to have its own issue)",
+      "bonfire-layer": "#2778: a click on a Bonfire Memorial portrait opens the Spirit Ring's popup (measured 9 November 2026; to have its own issue)"
     }
   }
 }

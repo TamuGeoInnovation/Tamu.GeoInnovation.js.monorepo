@@ -1,4 +1,9 @@
+import * as fs from 'fs';
+import * as path from 'path';
+
 import { Page } from '@playwright/test';
+
+import type { MapManifest } from './global-setup';
 
 /**
  * Where a map opens: its zoom and `[longitude, latitude]` center, read from a loaded page.
@@ -12,6 +17,44 @@ export interface Framing {
 }
 
 const PROBE_GLOBAL = '__tamuGiscMapProbe';
+
+const INVENTORY_PATH = path.join(
+  __dirname,
+  '..',
+  '..',
+  '..',
+  'tools',
+  'builder-inventory',
+  'builder-inventory.generated.json'
+);
+
+interface BuilderInventory {
+  maps: { route: string; destinations: { shareTarget: string }[] }[];
+}
+
+/**
+ * The routes that open the maps an environment serves: every map the manifest lists, plus every builder destination
+ * recorded in `tools/builder-inventory`, by its direct link. A map behind a builder is reached through its
+ * destinations, not its own route, which only redirects into the builder. A destination whose map this environment does
+ * not list is left out. With `onePerMap`, a map behind a builder is reached through its first destination only: about
+ * 50 routes instead of about 410, since the rest are the same map opened with different builder choices (#1426).
+ *
+ * Shared by `framing.spec.ts`, which frames every route, and `building-clicks.spec.ts`, which clicks one per map.
+ */
+export function servedRoutes(manifest: MapManifest, { onePerMap }: { onePerMap: boolean }): string[] {
+  // Read regardless of the environment the inventory was captured on: its destinations are root-relative links, and
+  // the manifest decides which of them this environment serves.
+  const inventory: BuilderInventory = fs.existsSync(INVENTORY_PATH)
+    ? JSON.parse(fs.readFileSync(INVENTORY_PATH, 'utf8'))
+    : { maps: [] };
+  const listed = new Set(manifest.maps);
+  const builderMaps = new Set(inventory.maps.map((map) => map.route));
+  const destinations = inventory.maps
+    .filter((map) => listed.has(map.route))
+    .flatMap((map) => map.destinations.slice(0, onePerMap ? 1 : undefined).map((destination) => destination.shareTarget));
+
+  return [...new Set([...manifest.maps.filter((route) => !builderMaps.has(route)), ...destinations])].sort();
+}
 
 /** How often the probe and the framing are read while waiting (#1426). */
 const POLL_MS = 250;
