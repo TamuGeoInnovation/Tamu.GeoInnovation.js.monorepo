@@ -65,7 +65,7 @@ import { execFileSync } from 'child_process';
 
 import { commitFields, releaseCommit, releaseLine } from './release-commit.mjs';
 import { centralNow } from './central.mjs';
-import { slugFor } from './slug.mjs';
+import { matchesOnly, slugFor } from './slug.mjs';
 
 const arg = (name, fallback) => {
   const i = process.argv.indexOf('--' + name);
@@ -98,6 +98,11 @@ const outRoot = arg('out', process.env.AGGIEMAP_BASELINES || path.join(REPO, '..
 const releaseArg = arg('release', '');
 const force = flag('force');
 const routesOnly = flag('routes-only');
+/**
+ * A retake of a few pages (#2841), kept under `<kind>-recheck/` so it is never taken for a release: the
+ * clean-up keeps such sets apart, and the poller neither compares them nor compares a release with them.
+ */
+const recheck = flag('recheck');
 /** Comma-separated substrings; only routes containing one are captured. For asking a narrow question. */
 const only = (arg('only', '') || '').split(',').map((part) => part.trim()).filter(Boolean);
 const concurrency = Number(arg('concurrency', '3'));
@@ -242,7 +247,7 @@ async function gisdayRoutesToCapture(page) {
 
   const all = [...routes].sort();
 
-  return only.length > 0 ? all.filter((route) => only.some((part) => route.includes(part))) : all;
+  return only.length > 0 ? all.filter((route) => matchesOnly(route, only)) : all;
 }
 
 /** The test admin's sign-in, read from the file and never printed. */
@@ -343,7 +348,7 @@ async function signedInRoutesToCapture(page) {
 
   const all = [...new Set(routes)].sort();
 
-  return only.length > 0 ? all.filter((route) => only.some((part) => route.includes(part))) : all;
+  return only.length > 0 ? all.filter((route) => matchesOnly(route, only)) : all;
 }
 
 async function routesToCapture(page) {
@@ -394,7 +399,7 @@ async function routesToCapture(page) {
 
   const all = [...routes].sort();
 
-  return only.length > 0 ? all.filter((route) => only.some((part) => route.includes(part))) : all;
+  return only.length > 0 ? all.filter((route) => matchesOnly(route, only)) : all;
 }
 
 /**
@@ -521,7 +526,7 @@ async function settle(page) {
   await probePage.close();
 
   const release = resolveRelease(build);
-  const setName = (gisday ? 'gisday-' : '') + (actingAs ? envName + '-as-' + actingAs : envName) + (signedInFile ? '-signed-in' : '');
+  const setName = (gisday ? 'gisday-' : '') + (actingAs ? envName + '-as-' + actingAs : envName) + (signedInFile ? '-signed-in' : '') + (recheck ? '-recheck' : '');
   const outDir = path.join(outRoot, setName, release);
   const manifestPath = path.join(outDir, 'manifest.json');
 
