@@ -1,30 +1,21 @@
-<!-- This component is an application-specific implementation of the generic sidebar component.
-
-We are injecting application-specific sidebar tabs and content -->
+<!-- The side panel of every map that has one: the main map and every event and parking map (#2758). Its tabs are
+declared in `sidebar-tabs.ts`, and a map changes them only through `SIDEBAR_OPTIONS`. -->
 
 <!-- `tamuGiscRevealSidebarOnPopup`: the feature popup renders inside this panel, so a closed panel
 swallows it and clicking a feature appears to do nothing (#1244). -->
 <tamu-gisc-sidebar [position]="'right'" tamuGiscRevealSidebarOnPopup>
   <div class="tabs left">
-    <tamu-gisc-sidebar-tab [title]="'Features'" [description]="'Toggle Features (Search, Layers, Legend)'" [material_icon]="'menu'" [route]="''" (click)="reportSidebarContent('Features')"></tamu-gisc-sidebar-tab>
-
-    <!-- On every environment since the routing network was published on production (#2804); development-only until then (#1003). -->
-    <tamu-gisc-sidebar-tab [title]="'Directions'" [description]="'Toggle directions controls (routing and way-finding)'" [material_icon]="'directions'" [route]="'trip'" (click)="reportSidebarContent('Directions')"></tamu-gisc-sidebar-tab>
-
-    <!--
-    On every environment since #2789 (the maintainer, 9 November 2026). It was development-only until then (#1090,
-    #1229); the smoke suite's `SECTIONS_ON_EVERY_ENVIRONMENT` now fails if it is gated again.
-    -->
-    <tamu-gisc-sidebar-tab [title]="'Bus Routes'" [description]="'Toggle bus controls (list and timetable)'" [material_icon]="'directions_bus'" [route]="'bus'" (click)="reportSidebarContent('Bus Routes')"></tamu-gisc-sidebar-tab>
-    @if ((isDev | async) === true) {
-    <tamu-gisc-sidebar-tab [title]="'Experiments'" [description]="'Aggiemap Experiments'" [material_icon]="'science'" [route]="'experiments'" (click)="reportSidebarContent('Experiments')"></tamu-gisc-sidebar-tab>
+    @for (tab of tabs | async; track tab.id) {
+    <tamu-gisc-sidebar-tab [title]="tab.title" [description]="tab.description" [material_icon]="tab.icon" [route]="tab.route" (click)="reportSidebarContent(tab.title)"></tamu-gisc-sidebar-tab>
     }
-
-    <tamu-gisc-sidebar-tab [title]="'Settings'" [description]="'Settings'" [material_icon]="'settings'" [route]="'settings'" (click)="reportSidebarContent('Settings')"></tamu-gisc-sidebar-tab>
   </div>
 
   <div class="content">
+    @if (options?.brandingIconUrl) {
+    <img class="campus-branding-icon" [src]="options?.brandingIconUrl" [alt]="options?.brandingIconAlt ?? ''" />
+    } @else {
     <tamu-gisc-tamu-block></tamu-gisc-tamu-block>
+    }
     <router-outlet></router-outlet>
     <tamu-gisc-feature-popup></tamu-gisc-feature-popup>
   </div>

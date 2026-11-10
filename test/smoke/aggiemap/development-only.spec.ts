@@ -38,11 +38,18 @@ async function probeReady(page: Page): Promise<boolean> {
   );
 }
 
+/**
+ * The maps whose side panel is checked: the main map, and an event map, which once had a side panel of its own that
+ * never gained Bus Routes or Experiments (#2758). They share one now; checking both is what keeps it so.
+ */
+const SIDE_PANEL_MAPS = ['/map', '/events/tailgating/map'];
+
 test.describe(`development-only sections ${VISIBLE ? 'are offered here' : 'stay off this environment'}`, () => {
+  for (const map of SIDE_PANEL_MAPS) {
   for (const section of DEVELOPMENT_ONLY_SECTIONS) {
-    test(`the ${section} tab ${VISIBLE ? 'is offered' : 'is not offered'}`, async ({ page }) => {
+    test(`${map}: the ${section} tab ${VISIBLE ? 'is offered' : 'is not offered'}`, async ({ page }) => {
       await blockAnalytics(page);
-      await page.goto('/map');
+      await page.goto(map);
 
       await expect
         .poll(
@@ -51,7 +58,7 @@ test.describe(`development-only sections ${VISIBLE ? 'are offered here' : 'stay 
               (name) => (window as unknown as Record<string, { ready?: boolean }>)[name]?.ready === true,
               PROBE_GLOBAL
             ),
-          { message: 'the main map never finished loading', timeout: 90_000, intervals: [1_000] }
+          { message: `${map} never finished loading`, timeout: 90_000, intervals: [1_000] }
         )
         .toBe(true);
 
@@ -60,26 +67,29 @@ test.describe(`development-only sections ${VISIBLE ? 'are offered here' : 'stay 
       expect(
         count,
         VISIBLE
-          ? `the ${section} tab should be offered here`
-          : `the ${section} tab is offered on an environment that should not have it`
+          ? `the ${section} tab should be offered on ${map} here`
+          : `the ${section} tab is offered on ${map}, on an environment that should not have it`
       ).toBe(VISIBLE ? 1 : 0);
     });
+  }
   }
 });
 
 /** Sections that left development for every environment are offered on every environment (#2789). */
 test.describe('sections on every environment are offered here', () => {
+  for (const map of SIDE_PANEL_MAPS) {
   for (const section of SECTIONS_ON_EVERY_ENVIRONMENT) {
-    test(`the ${section} tab is offered`, async ({ page }) => {
+    test(`${map}: the ${section} tab is offered`, async ({ page }) => {
       await blockAnalytics(page);
-      await page.goto('/map');
+      await page.goto(map);
 
       await expect
-        .poll(async () => probeReady(page), { message: 'the main map never finished loading', timeout: 90_000, intervals: [1_000] })
+        .poll(async () => probeReady(page), { message: `${map} never finished loading`, timeout: 90_000, intervals: [1_000] })
         .toBe(true);
 
-      expect(await sidebarTabs(page, section), `the ${section} tab is not offered here`).toBe(1);
+      expect(await sidebarTabs(page, section), `the ${section} tab is not offered on ${map} here`).toBe(1);
     });
+  }
   }
 });
 
