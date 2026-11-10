@@ -3718,3 +3718,39 @@ read rather than assumed.
 ### The report
 
 `home/reports/<date>-45.md`, **"report ready"**, branch to the fork, `.pr-body.md` last, no pull request.
+
+## Batch 46 (10 November 2026, from `work (aggiemap)`) — #2821 and #2776: the suite's own faults
+
+**None of this goes in the release** — the maintainer has said these fixes come after it. The release-tier run on
+development is done: 999 passed, 15 failed, and every failure traced. Everything new in the build passed, routing
+included.
+
+### 1. [#2821](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2821): specs resolve fixtures through production's host
+
+Four of the fifteen failures. Since [#2667](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2667) a development build reads Transportation's **development** services, but several specs
+resolve their fixtures through `Connections`, which under Node returns **production's** host. So the spec looks a
+feature up on one server while the application draws it from another.
+
+**In every one of the four, the application was right.** `?lot=100j` selected space 15548, which dev's service says is
+`100j`, `M/C`; the spec asked production, where 15548 does not exist.
+
+**The design question is the work**, and the issue states it: resolve the environment's own host, or stop naming object
+ids and pick a feature by querying the environment first — which is what your own `building-clicks.spec.ts` does, and
+why it does not have this problem. **I think the second is right**, because an object id is a fact about one server and
+nothing stops it drifting again. Say which you took and why.
+
+[#2777](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2777) is the AVP instance filed on its own; closing it with this is fine if your fix covers it — say so.
+
+### 2. [#2776](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2776): the tailgating kiosk check calls a real layer a main-map leak
+
+`kiosk.spec.ts`'s hand-kept `TAILGATING_KIOSK_LAYER_IDS` never gained `tailgating-restrooms`, added by #2661. The
+kiosk draws the tailgating map's layers by design — its unit spec requires exactly that — so the failure message names
+a fault that is not happening.
+
+**It will start failing on production the moment that layer ships**, so it is not a development-only annoyance.
+
+Worth considering rather than just adding the id: the list is a second copy of what the definition already declares.
+
+### The report
+
+`home/reports/<date>-46.md`, **"report ready"**, branch to the fork, `.pr-body.md` last, no pull request. Two branches.

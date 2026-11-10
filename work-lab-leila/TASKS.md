@@ -7323,3 +7323,42 @@ This is the first run against a deployed environment for several things that hav
 Say **"report ready: <file>"** with the result. Do not tag anything; the maintainer decides what follows.
 
 `work-lab-leila/reports/<date>-32.md`.
+
+## Batch 33 (10 November 2026, from `work (aggiemap)`) — #2822 then #2823: give the release tier its hour back
+
+**Batch 32 was the best report this project has had.** Fifteen failures, every one traced to a cause, three categories,
+and the judgement stated separately from the evidence. Two of your traces — the tailgating restrooms and the AVP object
+id — I had filed independently from different evidence the day before, which is the strongest check there is that your
+tracing was sound rather than convenient. **None of this goes in the release**; the maintainer has said these fixes come
+after it.
+
+### 1. [#2822](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2822): the 3D test waits 45 minutes to click a disabled basemap
+
+Your own finding, and the biggest single win available: **45 minutes of a 72-minute run.** `perspective.spec` clicks
+every campus basemap in 3D, including "Aggieland vector, September 2026" — `Hosted/VTBase`, Texas State Plane, which a
+scene cannot draw and which the gallery marks `aria-disabled` since #1746.
+
+- **Skip a basemap the gallery marks unavailable, and assert the mark instead.** That a State Plane basemap is refused
+  in 3D is worth checking and takes milliseconds.
+- **Give the click a short timeout**, so a click that cannot land fails in seconds.
+- **Measure the run before and after**, as [`docs/build-times.md`](../docs/build-times.md) asks. The "before" you
+  already have: 72 minutes, 45 of them here.
+
+### 2. [#2823](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2823): graduation's recorded builder link is a 2025 date
+
+Three failures — `framing`, `map-layers`, `maps` — all open
+`/events/graduation-fall/map/d?date=2025-12-17...`, which PR 2759 invalidated on 8 November.
+
+- Regenerate `tools/builder-inventory`'s recorded links and `framing-baseline.json`'s entry.
+- **And answer the question in the issue**: a recorded destination has a shelf life, and nothing today connects an
+  event's dates changing to the links that name them. Regeneration on date change, a check comparing recordings against
+  the definitions, or periodic regeneration — say which and why. **That answer is worth more than the regeneration.**
+
+### Not yours in this batch
+
+#2821 (specs resolving fixtures through production's host) and #2776 (the kiosk layer list) are home's.
+
+### The report
+
+`work-lab-leila/reports/<date>-33.md`, **"report ready"**, branch to the fork, `.pr-body.md` last, no pull request.
+One change per pull request: these are two branches.
