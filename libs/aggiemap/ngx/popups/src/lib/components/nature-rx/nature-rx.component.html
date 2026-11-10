@@ -18,7 +18,5 @@
 
   <tamu-gisc-copy-field [text]="shareUrl"></tamu-gisc-copy-field>
 
-  @if (directionsAvailable | async) {
   <div class="button" (tamuGiscActivate)="startDirections()">Directions To Here</div>
-  }
 </div>

@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 
 import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 import { PhotoCarouselComponent } from '@tamu-gisc/ui-kits/ngx/layout';
-import { AsyncPipe } from '@angular/common';
 import { ActivateDirective } from '@tamu-gisc/ui-kits/ngx/interactions/keyboard';
 import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
 
@@ -63,7 +62,7 @@ export function amenitiesOf(attributes: Record<string, unknown> | undefined): Ar
   selector: 'tamu-gisc-nature-rx-popup-component',
   templateUrl: './nature-rx.component.html',
   styleUrls: ['../base/base.popup.component.scss'],
-  imports: [CopyComponent, PhotoCarouselComponent, AsyncPipe, MarkdownParsePipe, ActivateDirective]
+  imports: [CopyComponent, PhotoCarouselComponent, MarkdownParsePipe, ActivateDirective]
 })
 export class NatureRxPopupComponent extends BaseDirectionsComponent implements OnInit {
   public medias: Array<string> = [];

@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import { APIRequestContext, Page } from '@playwright/test';
 import * as fs from 'fs';
 
 import { expect, test } from './fixtures';
@@ -6,6 +6,7 @@ import { blockAnalytics } from './analytics';
 import { directionsAvailable, directionsEntryPoints } from './directions';
 import { MANIFEST_PATH, MapManifest } from './global-setup';
 import { Connections } from '../../../libs/aggiemap/ngx/common/src/lib/connections';
+import { gisHostFor, smokeBaseUrl } from './gis-hosts';
 import {
   NETWORK_TRAVEL_MODE_NAMES,
   offeredTravelMode
@@ -103,49 +104,29 @@ test.describe(`directions ${AVAILABLE ? 'offered' : 'hidden'} while routing is $
 });
 
 /**
- * The trip planner itself is offered at its address only where directions are.
+ * The trip planner is offered at its address, and no maintenance message is left (#2804).
  *
- * Its markup was commented out in March 2026 (#683) for a "routing services are undergoing maintenance"
- * message on every host. It is back on development hosts, so its components can be tested, and the
- * message stays everywhere else. The tab is hidden on production (the checks above), but the address
- * still opens the panel, and a shared link is how a visitor would reach it. Checked both ways, and on a
- * development host also with `?as=production` (#1722), which must hide it as production does.
+ * From March 2026 it showed "routing services are undergoing maintenance" in its place, everywhere but development
+ * hosts (#683, #1003). With the routing network published on production it is offered on every environment; a gate
+ * put back would bring the message back, which this fails on.
  */
-test.describe(`the trip planner ${AVAILABLE ? 'is offered' : 'is not offered'} at its address`, () => {
+test.describe('the trip planner is offered at its address', () => {
   const PLANNER = 'tamu-gisc-sidebar-trip-planner';
   const STOPS = `${PLANNER} tamu-gisc-search input`;
-  const MAINTENANCE = `${PLANNER} .maintenance-message`;
 
-  async function expectHidden(page: Page, address: string): Promise<void> {
-    await openMap(page, address);
+  test('/map/d/trip shows the from and to boxes', async ({ page }) => {
+    await openMap(page, '/map/d/trip');
 
-    await expect(page.locator(MAINTENANCE), `${address} does not say routing is unavailable`).toBeVisible();
-    await expect(page.locator(STOPS), `${address} offers the trip planner's from and to boxes`).toHaveCount(0);
-  }
-
-  if (AVAILABLE) {
-    test('/map/d/trip shows the from and to boxes', async ({ page }) => {
-      await openMap(page, '/map/d/trip');
-
-      // A trip has at least two points, so the planner starts with two empty boxes.
-      await expect(page.locator(STOPS), '/map/d/trip did not show the from and to boxes').toHaveCount(2, {
-        timeout: 30_000
-      });
-      // No stop is chosen yet, so both are empty, not the word "undefined".
-      for (const box of await page.locator(STOPS).all()) {
-        await expect(box, 'a from or to box is not empty before a stop is chosen').toHaveValue('');
-      }
-      await expect(page.locator(MAINTENANCE), '/map/d/trip still shows the maintenance message').toHaveCount(0);
+    // A trip has at least two points, so the planner starts with two empty boxes.
+    await expect(page.locator(STOPS), '/map/d/trip did not show the from and to boxes').toHaveCount(2, {
+      timeout: 30_000
     });
-
-    test('/map/d/trip?as=production shows the maintenance message instead', async ({ page }) => {
-      await expectHidden(page, '/map/d/trip?as=production');
-    });
-  } else {
-    test('/map/d/trip shows the maintenance message instead of the from and to boxes', async ({ page }) => {
-      await expectHidden(page, '/map/d/trip');
-    });
-  }
+    // No stop is chosen yet, so both are empty, not the word "undefined".
+    for (const box of await page.locator(STOPS).all()) {
+      await expect(box, 'a from or to box is not empty before a stop is chosen').toHaveValue('');
+    }
+    await expect(page.locator(`${PLANNER} .maintenance-message`), '/map/d/trip still shows the maintenance message').toHaveCount(0);
+  });
 });
 
 /**
@@ -197,15 +178,78 @@ if (AVAILABLE) {
  */
 const OFFERED_ON_DEVELOPMENT_NETWORK = [1, 2, 3, 5, 7, 8];
 
+/**
+ * A route comes back, through the application, from the network the application uses (#2804).
+ *
+ * Not that the trip planner renders: that a route is solved. A planner whose network answers 499 Token Required, or
+ * nothing, looks perfectly healthy until someone asks it for directions, and that is what production would have shown
+ * had its gate come off before the network was public. So this opens the planner with two stops in its address, waits
+ * for the route summary, and requires both a solve answered with a route and a distance on the page.
+ *
+ * Two points on roads along University Drive, as below: Drive and Bus find no route between points only walking
+ * reaches, and Walking is what the planner chooses first. Latitude first, as the planner reads `?stops=`.
+ */
+const ROUTE_STOPS = '30.6150,-96.3500@30.6150,-96.3300';
+
+/** The network this environment's application connects to, on its own GIS server (`routingNetworkUrl`, #2804). */
+const NETWORK = Connections(gisHostFor(smokeBaseUrl())).routingNetworkUrl;
+
 if (AVAILABLE) {
-  test.describe('the development routing network', () => {
-    const route = `${Connections('gis-dev.it.tamu.edu').developmentRoutingBaseUrl}/Map/NAServer/Route`;
+  test('the trip planner returns a route between two campus points (#2804)', async ({ page }) => {
+    test.setTimeout(150_000);
+
+    const solves: Array<{ url: string; status: number; routes: number; error?: string }> = [];
+
+    page.on('response', async (response) => {
+      if (!/\/NAServer\/Route\/solve/.test(response.url())) return;
+
+      const body = (await response.json().catch(() => ({}))) as { error?: { message?: string }; routes?: { features?: unknown[] } };
+
+      solves.push({
+        url: response.url().split('?')[0],
+        status: response.status(),
+        routes: body.routes?.features?.length ?? 0,
+        error: body.error?.message
+      });
+    });
+
+    await blockAnalytics(page);
+    await page.goto(`/map/d/trip?stops=${ROUTE_STOPS}`);
+
+    const miles = page.locator('.directions-overview-item', { hasText: 'Miles' }).locator('.quantity');
+
+    await expect(miles, `no route summary appeared; solves: ${JSON.stringify(solves)}`).toBeVisible({ timeout: 120_000 });
+    expect(Number(await miles.textContent()), 'the route summary shows no distance').toBeGreaterThan(0);
+    expect(
+      solves.filter((solve) => solve.routes > 0 && solve.url.startsWith(NETWORK)),
+      `no solve request to ${NETWORK} came back with a route: ${JSON.stringify(solves)}`
+    ).not.toEqual([]);
+
+    test.info().annotations.push({ type: 'route (#2804)', description: JSON.stringify(solves) });
+    console.log(`[smoke] route (#2804): ${await miles.textContent()} miles; ${JSON.stringify(solves)}`);
+  });
+
+  test.describe("this environment's routing network", () => {
+    const route = `${NETWORK}/Map/NAServer/Route`;
+
+    /**
+     * The travel modes the network lists, asked anonymously, as the application asks. The network's own error comes
+     * first when it has one - `499 Token Required` while it is not public - so a failure says why, not only that.
+     */
+    async function travelModes(request: APIRequestContext): Promise<Array<{ name: string }>> {
+      const body = (await (await request.get(`${route}?f=json`, { timeout: 30_000 })).json()) as {
+        error?: { code?: number; message?: string };
+        supportedTravelModes?: Array<{ name: string }>;
+      };
+
+      expect(body.error, `${route} answered ${body.error?.code} ${body.error?.message}`).toBeUndefined();
+      expect(body.supportedTravelModes?.length, `${route} lists no travel modes`).toBeGreaterThan(0);
+
+      return body.supportedTravelModes ?? [];
+    }
 
     test('lists the travel modes the planner offers, and only those', async ({ request }) => {
-      const response = await request.get(`${route}?f=json`, { timeout: 30_000 });
-      const { supportedTravelModes } = (await response.json()) as { supportedTravelModes: Array<{ name: string }> };
-
-      expect(supportedTravelModes?.length, `${route} lists no travel modes`).toBeGreaterThan(0);
+      const supportedTravelModes = await travelModes(request);
 
       const offered = Object.keys(NETWORK_TRAVEL_MODE_NAMES)
         .map(Number)
@@ -218,9 +262,7 @@ if (AVAILABLE) {
     });
 
     test('solves a route between two campus points in every mode it lists', async ({ request }) => {
-      const modes = ((await (await request.get(`${route}?f=json`, { timeout: 30_000 })).json()) as {
-        supportedTravelModes: Array<{ name: string }>;
-      }).supportedTravelModes;
+      const modes = await travelModes(request);
 
       for (const mode of modes) {
         const answer = await request.get(`${route}/solve`, {

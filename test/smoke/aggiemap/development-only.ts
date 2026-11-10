@@ -16,14 +16,14 @@ import { smokeBaseUrl } from './gis-hosts';
  * `SECTIONS_ON_EVERY_ENVIRONMENT`, whose check requires it to be present everywhere instead. Taking it out of
  * this list alone only stops checking it.
  */
-export const DEVELOPMENT_ONLY_SECTIONS = ['Directions', 'Experiments'];
+export const DEVELOPMENT_ONLY_SECTIONS = ['Experiments'];
 
 /**
  * Sections that were development-only and now are on every environment, production included, so a gate put back
  * by mistake fails here rather than hiding the section quietly. Bus Routes since the maintainer's decision of
- * 9 November 2026 (#2789).
+ * 9 November 2026 (#2789); Directions since the routing network was published on production (#2804).
  */
-export const SECTIONS_ON_EVERY_ENVIRONMENT = ['Bus Routes'];
+export const SECTIONS_ON_EVERY_ENVIRONMENT = ['Bus Routes', 'Directions'];
 
 /**
  * Tiles in the All Maps page's "Visit Maps" row that are not ready for production (#912).
@@ -85,10 +85,8 @@ export const DEVELOPMENT_ONLY_CONTROLS: Array<{
     reason: '#1582: production offers one campus basemap; the dated versions are for comparing on dev'
   },
   {
-    // **Not a real check while the trip planner itself is development-only.** On production today `/map/d/trip` shows a
-    // maintenance notice in place of the whole planner, so this passes whether or not the link is gated; it passed on
-    // the ungated code. It becomes a real check when directions go to production. Until then the link's gate is proven
-    // by `trip-planner-mode-picker`'s unit test, and its page's by `DEVELOPMENT_ONLY_PAGES`, which did fail ungated.
+    // A real check since the trip planner is on production (#2804): until then the planner was hidden there, and this
+    // passed whether or not the link was gated (#2801). The mode picker's unit test proves the link's gate as well.
     name: "the trip planner's Options link",
     selector: '.options-container .action:text-is("Options")',
     page: '/map/d/trip',
@@ -140,15 +138,6 @@ export const DEVELOPMENT_ONLY_SERVICES: Record<
     reason: '#1289: the Code Maroon proof of concept',
     pages: ['/map', '/parking/visitor-parking', '/events/tailgating'],
     runTimeGate: 'isTesting in CodeMaroonAlertComponent (libs/aggiemap/ngx/core)'
-  },
-  // The routing network Transportation published for #659. The trip planner connects to it, on the development GIS
-  // server, only where development-only features are on. Production's Routing folder is empty, so it must never
-  // request this: a trip planner pointed at it there would have directions that nobody has agreed to publish. The
-  // planner asks the network which travel modes it supports as soon as it exists, which is the request seen here.
-  RoutingProPublish: {
-    reason: '#659: the development-only routing network',
-    pages: ['/map/d/trip'],
-    runTimeGate: 'isTesting in TripPlannerConnectionService (libs/maps/feature/trip-planner)'
   },
   // Nature Rx, which is on the map but not finished (#2673). Unlike everything else here, the service is
   // production's own and public - what is not ready is the feature, so a production build leaves the layer

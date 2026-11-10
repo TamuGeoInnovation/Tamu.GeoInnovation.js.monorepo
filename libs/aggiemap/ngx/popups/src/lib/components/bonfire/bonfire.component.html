@@ -14,7 +14,5 @@
 <div class="popup-section">
   <div [innerHTML]="$safeNavigationMigration(data?.attributes?.Description)  | markdownParse" class="trailer-2"></div>
 
-  @if (directionsAvailable | async) {
   <div class="button" (tamuGiscActivate)="startDirections()">Directions To Here</div>
-  }
 </div>

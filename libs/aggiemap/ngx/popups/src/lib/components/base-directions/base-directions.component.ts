@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { Router, ActivatedRoute, PRIMARY_OUTLET } from '@angular/router';
-import { Observable, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { Angulartics2 } from 'angulartics2';
@@ -8,10 +8,9 @@ import { Angulartics2 } from 'angulartics2';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { TripPlannerService, TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 import { SearchService } from '@tamu-gisc/ui-kits/ngx/search';
-import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 
 import { BasePopupComponent } from '../base/base.popup.component';
-import { AsyncPipe, KeyValuePipe } from '@angular/common';
+import { KeyValuePipe } from '@angular/common';
 import { ActivateDirective } from '@tamu-gisc/ui-kits/ngx/interactions/keyboard';
 
 import esri = __esri;
@@ -20,7 +19,7 @@ import esri = __esri;
   selector: 'tamu-gisc-base-directions',
   templateUrl: './base-directions.component.html',
   styleUrls: ['./base-directions.component.scss'],
-  imports: [AsyncPipe, KeyValuePipe, ActivateDirective]
+  imports: [KeyValuePipe, ActivateDirective]
 })
 export class BaseDirectionsComponent extends BasePopupComponent implements OnInit, OnDestroy {
   private router = inject(Router);
@@ -43,13 +42,6 @@ export class BaseDirectionsComponent extends BasePopupComponent implements OnIni
    * Composed URL passed into the copy component
    */
   public shareUrl: string;
-
-  /**
-   * Whether "Directions To Here" is offered. Routing is not working (the Routing service is unpublished),
-   * so directions are development-only, like other features not ready for production: shown on dev and
-   * localhost, hidden on production (#1003). When routing returns, make this true everywhere.
-   */
-  public directionsAvailable: Observable<boolean> = inject(TestingService).get('isTesting');
 
   private _searchService = inject(SearchService);
 
