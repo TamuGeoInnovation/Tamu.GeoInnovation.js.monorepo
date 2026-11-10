@@ -23,6 +23,8 @@ import { PNG } from 'pngjs';
 import { centralNow } from './central.mjs';
 import { comparePixels } from './diff.mjs';
 import { escape, page } from './page.mjs';
+import { PICK_BAR, PICK_CSS, pickBox, pickScript } from './pick.mjs';
+import { slugFor } from './slug.mjs';
 
 const [beforeRoot, afterRoot, diffRoot, outFile] = process.argv.slice(2);
 
@@ -107,6 +109,19 @@ const unsettledIn = (root) => {
 const unsettledBefore = unsettledIn(beforeRoot);
 const unsettledAfter = unsettledIn(afterRoot);
 
+/** A set's manifest, or nothing. */
+const manifestOf = (root) => {
+  try {
+    return JSON.parse(fs.readFileSync(path.join(root, 'manifest.json'), 'utf8'));
+  } catch {
+    return {};
+  }
+};
+const beforeManifest = manifestOf(beforeRoot);
+const afterManifest = manifestOf(afterRoot);
+// A shot's file name back to the route it shows, for the list a reader shares (#2841).
+const routeOf = new Map([...(beforeManifest.routes || []), ...(afterManifest.routes || [])].map((route) => [slugFor(route), route]));
+
 const before = shots(beforeRoot);
 const after = shots(afterRoot);
 const outDir = path.dirname(outFile);
@@ -145,9 +160,25 @@ const setName = (root) => path.basename(path.dirname(path.resolve(root))) + '/' 
 const beforeName = setName(beforeRoot);
 const afterName = setName(afterRoot);
 
+/** The checkbox for a row: its route, viewport, how much moved, and links to its three pictures. */
+const pickOf = (r) => {
+  const [viewport, file] = r.key.split('/');
+  const slug = file.replace(/\.png$/, '');
+
+  return pickBox({
+    key: r.key,
+    slug,
+    route: routeOf.get(slug) || slug,
+    viewport,
+    ratio: pct(r),
+    links: [['before', r.before], ['after', r.after], ...(r.diff ? [['what changed', r.diff]] : [])]
+  });
+};
+
 const card = (r) => `
-  <section class="row${r.ratio > NOISE ? '' : ' same'}" data-changed="${r.ratio > NOISE}">
+  <section class="row${r.ratio > NOISE ? '' : ' same'}" data-changed="${r.ratio > NOISE}" data-pick-item>
     <header>
+      ${pickOf(r)}
       <h2>${escape(r.key)}</h2>
       ${r.unfinished.length ? `<span class="chip chip-label" title="${escape(r.unfinished.join('; '))}">unfinished ${escape(r.unfinished.map((u) => u.split(':')[0]).join(' and '))}</span>` : ''}
       <span class="chip ${r.ratio > NOISE ? 'chip-external' : 'chip-label'}">${pct(r)}</span>
@@ -168,6 +199,8 @@ const card = (r) => `
 const css = `
   .row { border:1px solid #e3e0dd; border-radius:10px; margin-bottom:18px; background:#fafafa; }
   .row header { display:flex; align-items:center; gap:12px; padding:10px 14px; border-bottom:1px solid #e3e0dd; }
+  .row .pick { margin-right:4px; }
+  body.picked-only .row.picked { display:block !important; }
   .row h2 { margin:0; font-size:14px; font-weight:600; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
   .row .chip { margin-left:auto; }
   .pair { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; padding:12px; }
@@ -181,6 +214,13 @@ const css = `
   @media (max-width:900px) { .pair { grid-template-columns:1fr; } body.hide-diff .pair { grid-template-columns:1fr; } }
 `;
 
+// Two sets of one release from different bundles, as a retake made after a new deploy is (#2841): what moved
+// may be the build, not the capture.
+const buildNote =
+  beforeManifest.build && afterManifest.build && beforeManifest.build !== afterManifest.build
+    ? ` <strong>The two sets were served different bundles</strong> (${escape(beforeManifest.build)} and ${escape(afterManifest.build)}), so a change may be the build.`
+    : '';
+
 // The home page (index.mjs) is one folder up from compare/<name>/ and two from a set.
 const home = rel(path.join(path.dirname(path.resolve(beforeRoot)), '..', 'index.html'));
 
@@ -189,12 +229,13 @@ const html = page({
   crumbs: `<a href="${home}">Visual baselines</a> / Comparisons`,
   heading: `${escape(beforeName)} &rarr; ${escape(afterName)}`,
   meta: `<strong>${changed}</strong> of ${rows.length} pages changed beyond rendering noise (${(NOISE * 100).toFixed(1)}%),
-    most changed first. The question is whether the right-hand side looks <em>worse</em>; only a person can answer it.`,
+    most changed first. The question is whether the right-hand side looks <em>worse</em>; only a person can answer it.
+    Tick "pick" on any page that looks wrong for a list to share and the commands to photograph it again.${buildNote}`,
   controls: `<label><input type="checkbox" id="onlyChanged" checked> Only pages that changed</label>
     <label><input type="checkbox" id="showDiff" checked> Show what changed</label>
     <span class="meta">Click any image to open it full size.</span>`,
-  body: rows.map(card).join('\n'),
-  css,
+  body: rows.map(card).join('\n') + PICK_BAR,
+  css: css + PICK_CSS,
   bodyClass: 'only-changed',
   script: `
   const body = document.body;
@@ -204,7 +245,15 @@ const html = page({
   document.getElementById('showDiff').addEventListener('change', (e) => {
     body.classList.toggle('hide-diff', !e.target.checked);
   });
-`
+` +
+    pickScript({
+      pageId: 'compare/' + path.basename(outDir),
+      kind: path.basename(path.dirname(path.resolve(afterRoot))),
+      release: path.basename(path.resolve(afterRoot)),
+      environment: afterManifest.environment || 'development',
+      as: afterManifest.actingAs || null,
+      app: afterManifest.app || 'aggiemap'
+    })
 });
 
 fs.mkdirSync(outDir, { recursive: true });
