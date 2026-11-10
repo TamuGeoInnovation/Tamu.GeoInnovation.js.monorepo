@@ -7277,3 +7277,49 @@ the maintainer can decide whether to merge it on that basis.
 ### The report
 
 `work-lab-leila/reports/<date>-31.md`, **"report ready"**, branch to the fork, `.pr-body.md` last, no pull request.
+
+## Batch 32 (10 November 2026, from `work (aggiemap)`) — the release tier on development, to clear this build for production (Urgent)
+
+**You are back in the rotation at the maintainer's word**, after being out while somebody was at your machine. Welcome
+back. Nothing of yours was lost: #2791, #2792 and #2812 all merged, and your #2778 handover reached home, which built
+on it rather than starting again.
+
+### The run
+
+The dev release is out. **`main-YHEYN3RL.js`**, built from `development` at **`3254b114e`**.
+
+```
+test/smoke/aggiemap/run-local.sh development release
+```
+
+Every map once, about thirty minutes. **This is the run that clears the build for production**, so report per
+environment what failed and why — not a count.
+
+### What is new in this build, and what a green actually has to mean
+
+This is the first run against a deployed environment for several things that have only ever been proven locally:
+
+1. **Routing is on production's terms now** ([#2804](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2804)). `routingNetworkUrl` is `https://${tsgisHost}/arcgis/rest/services/RoutingProPublish`
+   — `gis.dev.tamu.edu` on development, `arc.ts.tamu.edu` on production. The trip planner's gate is gone, along with
+   "Directions To Here" in ten popup templates.
+2. **The development-only expectations inverted.** Directions moved from `DEVELOPMENT_ONLY_SECTIONS` to
+   `SECTIONS_ON_EVERY_ENVIRONMENT`, and `RoutingProPublish` left `DEVELOPMENT_ONLY_SERVICES`. **A failure here is
+   meaningful**: it means the suite and the application disagree about what production may do.
+3. **The click grid runs on seven maps** ([#2778](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2778), home finished your branch). It passed 7 of 7 on dev before the
+   deploy.
+4. **Buildings, lots, construction and move-in halls** all read `Hosted/VTBase3/FeatureServer` now, not the old
+   campus basemap service.
+
+### Known, so you do not chase them
+
+- `search-sources`: `nature-rx` and `nature-rx-exact` have no case ([#2797](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2797)).
+- `/map?busstop=4215` fails on production and passes on development (#2797).
+- `popup.spec.ts`'s `/map/d?bldg=0468` sequence, which clicks a viewport fraction and lands in Evans ([#2701](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2701) item 3).
+
+**Anything else is new and worth stopping on.**
+
+### Then
+
+Say **"report ready: <file>"** with the result. Do not tag anything; the maintainer decides what follows.
+
+`work-lab-leila/reports/<date>-32.md`.
