@@ -3,10 +3,15 @@
 Since `3254b114e`, the **10 November 2026** release.
 
 **The latest release notes are [10 November 2026](2026-11-10.md)**, cleared on dev from `3254b114e` and tagged
-`dev-2026-11-10`. It carried **90 pull requests** - and, because
+`dev-2026-11-10`. It carried **63 AggieMap pull requests** - and, because
 [30 October](2026-10-30.md) was never promoted, promoting it also puts that release's **215 pull requests** in
 front of visitors for the first time. Production ran `36b962a04` from 22 October until then. The release before
 30 October is [21 October 2026](2026-10-21.md), from `61161ce1b`.
+
+**This file is AggieMap's.** GIS Day is released on its own path and its changes collect in
+[GIS Day, unreleased](gisday-unreleased.md), not here - 27 of the same commit range's pull requests were GIS
+Day's. They used to go in this file with AggieMap's, which is how the 10 November notes came to describe GIS
+Day work as part of an AggieMap release. See [Releasing GIS Day](README.md#releasing-gis-day).
 
 This file collects what merges from here until the next release. **A pull request with a user-visible
 result adds its own file to [`unreleased/`](unreleased/README.md), in that pull request**, with its
@@ -18,7 +23,8 @@ the files are collated here at release ([#2037](https://github.com/TamuGeoInnova
 
 ## Summary
 
-Nothing yet. The 10 November entries moved into [10 November 2026](2026-11-10.md).
+Nothing yet. The 10 November entries moved into [10 November 2026](2026-11-10.md), and the period's GIS
+Day entries into [GIS Day, unreleased](gisday-unreleased.md).
 
 ## What to test on dev
 

@@ -9,6 +9,17 @@ docs/releases/unreleased/1991-vendor-parking-lots.md
 At release, `node scripts/collate-release-notes.mjs` gathers them into the dated notes and the
 directory empties.
 
+## AggieMap and GIS Day are released separately, and so are their notes
+
+The script collates **everything here into `unreleased.md`**, which is AggieMap's. GIS Day ships on its own
+path ([Releasing GIS Day](../README.md#releasing-gis-day)), and its entries belong in
+[`gisday-unreleased.md`](../gisday-unreleased.md) instead.
+
+**So a GIS Day entry has to be moved by hand after collating, until the script can route it**
+([#2835](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2835)). If you skip that,
+the GIS Day entries land in an AggieMap release's dated notes and read as though that release shipped them -
+which is exactly what the 10 November notes did until somebody read the finished document.
+
 ## Why one file each
 
 Entries used to be added to the top of `docs/releases/unreleased.md`, and the *What to test on dev*
