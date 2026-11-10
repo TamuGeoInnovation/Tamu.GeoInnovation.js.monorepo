@@ -14,10 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch 46 (#2821, #2776)**: started 12:48 AM Central, 10 November.
-  - 1:02 AM: all four red on dev on unmodified code, for the reasons filed; both fixes written, green runs on dev in progress.
+- Nothing. Idle and listening (1:32 AM Central, 10 November).
 
 ## Finished
+- **Batch 46 (#2821, #2776)** (report `home/reports/2026-11-10-46.md`): two branches ready, no PRs. `fix/2821-fixtures-from-environment` at `0ba5e11b8` (AVP lot found by name in global setup like the bus stop; parking-spaces asks the environment's host; closes #2777 too). `fix/2776-kiosk-layers-from-definition` at `c46f2c061` (kiosk list derived from the tailgating and main maps). Red then green on dev, green on production; checks exit 0. Production's directions popup cases are red until the release is deployed (#2804 merged). No questions.
 - **Batch 45 revised (#2778)** (report `home/reports/2026-11-09-45.md`): branch ready, `test/2778-click-grid-home` on the fork at `6ff9eb7e4` (the lab's commit replayed onto development, plus mine: each layer asked from its own `createQuery()`), no PR, no force-push. Release set on dev 7/7. Check exit 0 (smoke only). The lab's four questions stand.
 - **Batch 44 (#2804)** (report `home/reports/2026-11-09-44.md`): branch ready, `feat/2804-routing-on-production` on the fork at `e92dad5fb`, no PR. Network on `tsgisHost` (arc.ts.tamu.edu answers anonymously and routes); all #1003 gates off; network picker dev-only. Production build as production: directions 14/14, development-only 24/24, route via arc.ts. Full affected check exit 0 (14 projects). No questions.
 - **Batch 43 (#2801)** (report `home/reports/2026-11-09-43.md`): branch ready, `fix/2801-hide-trip-options` on the fork at `eceeb5b23`, no PR. Options link `isDev`; its page gated by the new `developmentOnlyRoute` guard (replacing #2798's route-data change to the map guard, which failed lint); two dead Transportation-section controls fixed. Page red on today's code; link red by unit test (the smoke check cannot be red while the planner is hidden). Check exit 0. No questions.
