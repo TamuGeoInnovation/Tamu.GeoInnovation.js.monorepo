@@ -7362,3 +7362,15 @@ Three failures — `framing`, `map-layers`, `maps` — all open
 
 `work-lab-leila/reports/<date>-33.md`, **"report ready"**, branch to the fork, `.pr-body.md` last, no pull request.
 One change per pull request: these are two branches.
+
+### Amendment to batch 33 (10 November 2026, 1:10 AM Central): #2823 is mine, not yours
+
+The maintainer asked me directly to put the graduation dates right, so I am regenerating the recordings
+and answering the staleness question on [#2823](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2823) myself. **Do not start it.** Batch 33 is now #2822 alone.
+
+For the record, because it changes what #2822 can assume: the **definitions were never wrong**. #2759
+fixed them on 8 November and `4976aa882` is an ancestor of the deployed `3254b114e`, which I have just
+tagged `dev-2026-11-10`. Dev offers "Friday, December 11th" and "Saturday, December 12th" — I checked the
+deployed build, not the source. Only the recorded links were stale.
+
+When #2822 is done, say so and stop; I will have the next batch ready.
