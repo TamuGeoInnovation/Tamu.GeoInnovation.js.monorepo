@@ -1,10 +1,12 @@
 # Unreleased
 
-Since `21e69426e`, which production was promoted from on 30 October.
+Since `21e69426e`, which was cleared on dev as the 30 October release and **never promoted**.
 
 **The latest release notes are [30 October 2026](2026-10-30.md)**, cleared on dev from `21e69426e` and
-tagged `dev-2026-10-30`; `prod-2026-10-30` records what reached production. It carried **215 pull
-requests**. The release before it is [21 October 2026](2026-10-21.md), from `61161ce1b`.
+tagged `dev-2026-10-30`. **That release did not reach production.** The newest `prod-*` tag is
+`prod-2026-10-22`, so production still runs `36b962a04` and the **215 pull requests** those notes list have
+not reached anybody (confirmed by the maintainer, 10 November 2026). The release before it is
+[21 October 2026](2026-10-21.md), from `61161ce1b`.
 
 This file collects what merges from here until the next release. **A pull request with a user-visible
 result adds its own file to [`unreleased/`](unreleased/README.md), in that pull request**, with its
@@ -56,15 +58,20 @@ by the release tier on the lab machine: **999 passed, 15 failed, 70 skipped**, a
 build passed: routing on production's host, the directions suite, the development-only gates 24 of 24, the click
 grid 7 of 7, and the VTBase3 layers clean.
 
-**Which commit production runs is not recorded past 22 October.** The newest `prod-*` tag is
-**`prod-2026-10-22`**, and [the 30 October notes](2026-10-30.md) say production had been running `36b962a04`
-since then and that `prod-2026-10-30` would record the promotion. **There is no such tag.** So either the 30
-October release was never promoted, or it was promoted and never tagged - and the repository cannot tell which,
-which is the exact question [`scripts/tag-build.sh`](../../scripts/tag-build.sh) exists to answer
-([#1145](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1145)). **Ask the maintainer
-before assuming either.** If 30 October did ship, tag it late with `--force` and a reason, which is what makes a
-forced tag distinguishable from one that passed its check
-([#2098](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2098)).
+**Production is on `36b962a04`, from 22 October, and the 30 October release never shipped.** The newest
+`prod-*` tag is **`prod-2026-10-22`**, and the maintainer confirmed on 10 November that 30 October's
+`21e69426e` was cleared and tagged `dev-2026-10-30` but was never promoted. So no tag is missing and nothing
+needs tagging late: an absent `prod-2026-10-30` is
+[`scripts/tag-build.sh`](../../scripts/tag-build.sh) working as designed
+([#1145](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1145)), and [the 30 October
+notes](2026-10-30.md) are right to describe what a release contains without asserting it is deployed
+([#1094](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1094),
+[#1132](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1132)).
+
+**So the next promotion carries nineteen days of work rather than one release.** `3254b114e` contains 30
+October's 215 pull requests as well as everything merged since, and nothing a visitor sees has changed since 22
+October. Read [the 30 October notes](2026-10-30.md) beside this section before promoting: what they list has
+still not reached anybody.
 
 **The click fault is fixed and proven on dev**, and it was the urgent thing for two days. A buildings tile query
 that fails returns HTTP 200 with the error in the body, so those features never arrive and the layer never
