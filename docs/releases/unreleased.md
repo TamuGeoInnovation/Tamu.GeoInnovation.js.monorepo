@@ -1,10 +1,12 @@
 # Unreleased
 
-Since `21e69426e`, which production was promoted from on 30 October.
+Since `21e69426e`, which was cleared on dev as the 30 October release and **never promoted**.
 
 **The latest release notes are [30 October 2026](2026-10-30.md)**, cleared on dev from `21e69426e` and
-tagged `dev-2026-10-30`; `prod-2026-10-30` records what reached production. It carried **215 pull
-requests**. The release before it is [21 October 2026](2026-10-21.md), from `61161ce1b`.
+tagged `dev-2026-10-30`. **That release did not reach production.** The newest `prod-*` tag is
+`prod-2026-10-22`, so production still runs `36b962a04` and the **215 pull requests** those notes list have
+not reached anybody (confirmed by the maintainer, 10 November 2026). The release before it is
+[21 October 2026](2026-10-21.md), from `61161ce1b`.
 
 This file collects what merges from here until the next release. **A pull request with a user-visible
 result adds its own file to [`unreleased/`](unreleased/README.md), in that pull request**, with its
@@ -33,6 +35,116 @@ dated notes as what was tested, and this table empties.
 | --- | --- | --- |
 
 ---
+
+## Work in flight - 10 November
+
+Nothing in this section has merged into a release yet. It exists because
+[`CLAUDE_SETUP.md`](../../CLAUDE_SETUP.md) sends a session on another machine here first, and it is meant to be
+read rather than reconstructed. The 30 October section below it is kept as a record and is **out of date**; read
+this one.
+
+### AggieMap on 10 November, 2:00 AM Central: what another machine most needs to know
+
+**Dev is cleared and waiting on a production deploy.** `3254b114e` is tagged **`dev-2026-11-10`** and was cleared
+by the release tier on the lab machine: **999 passed, 15 failed, 70 skipped**, about 1.2 hours. Every one of the
+15 was traced, and **none of them is in the build** - they are faults in the suite itself, now filed as
+[#2776](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2776),
+[#2777](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2777),
+[#2784](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2784),
+[#2797](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2797),
+[#2821](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2821),
+[#2822](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2822) and
+[#2823](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2823). Everything new in the
+build passed: routing on production's host, the directions suite, the development-only gates 24 of 24, the click
+grid 7 of 7, and the VTBase3 layers clean.
+
+**Production is on `36b962a04`, from 22 October, and the 30 October release never shipped.** The newest
+`prod-*` tag is **`prod-2026-10-22`**, and the maintainer confirmed on 10 November that 30 October's
+`21e69426e` was cleared and tagged `dev-2026-10-30` but was never promoted. So no tag is missing and nothing
+needs tagging late: an absent `prod-2026-10-30` is
+[`scripts/tag-build.sh`](../../scripts/tag-build.sh) working as designed
+([#1145](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1145)), and [the 30 October
+notes](2026-10-30.md) are right to describe what a release contains without asserting it is deployed
+([#1094](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1094),
+[#1132](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1132)).
+
+**So the next promotion carries nineteen days of work rather than one release.** `3254b114e` contains 30
+October's 215 pull requests as well as everything merged since, and nothing a visitor sees has changed since 22
+October. Read [the 30 October notes](2026-10-30.md) beside this section before promoting: what they list has
+still not reached anybody.
+
+**The click fault is fixed and proven on dev**, and it was the urgent thing for two days. A buildings tile query
+that fails returns HTTP 200 with the error in the body, so those features never arrive and the layer never
+re-asks: every building in that tile stays unclickable for the whole visit. 76% of main-map loads lost at least
+one query. Fixed by moving the source off the abandoned MapServer basemap onto `Hosted/VTBase3`
+([#2786](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2786)) and by falling back
+when `hasAllFeaturesInView` is `false`
+([#2787](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2787)). On dev afterwards:
+`hit test found the layer at 8 of 8` on three maps, `buildings queries failed: 0 of 37`. The old service measured
+4.7% query failures; the new one 0 of 300 attribute queries and 0 of 200 spatial. **The old MapServer basemap is
+abandoned - nothing should point at it.**
+
+### Expected red right now, so nobody opens a duplicate
+
+**`directions.spec`'s popup cases fail on production**, including the nightly run. PR 2819
+([#2804](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2804)) has merged, so the
+suite now expects directions there, and production has not been deployed since. It clears when the release is
+promoted. A failing scheduled run opens a health issue per environment and closes itself when a later run passes,
+so one may appear before the deploy.
+
+### Open pull requests, and one ordering constraint
+
+| | |
+| --- | --- |
+| [PR 2825](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2825) | [#2821](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2821), closing [#2777](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2777) with it - specs take their fixtures from the environment under test |
+| [PR 2826](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2826) | [#2776](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2776) - the tailgating kiosk check reads its layers from the application |
+| [PR 2827](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2827) | [#2823](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2823) - recorded builder destinations match the choices their builders offer |
+
+**PR 2827 must merge after the production promotion, not before.** It regenerates `tools/builder-inventory`'s
+recorded links, and graduation's now name December 2026. The smoke suite reads those recordings for **both**
+environments, so once they are committed the production run opens the builder on `graduation-fall` until
+production carries [#2759](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2759)'s
+date fix. The other two are safe in any order.
+
+None of the three is part of this release; all are post-release by the maintainer's instruction.
+
+### Two traps found on 10 November
+
+**`BUILDER_INVENTORY_ONLY` deletes every map it did not walk**
+([#2824](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2824)). Walking one builder
+rewrote the baseline from only what it walked: 363 recorded destinations down to 2, exit code 0, no warning. The
+flag's one documented purpose is the one that destroys the file. The tool's README says so until it is fixed.
+
+**Vitest truncates a long failure diff to a couple of lines.** A check written for #2823 reported 2 findings and
+`expected [ ...(328) ]`; 326 of the 328 were false positives from the check itself, and nothing in the output
+said so. If an assertion compares lists, dump the list rather than trusting what is printed.
+
+### What each machine is working on
+
+| Machine | Work |
+| --- | --- |
+| Director (work machine) | the release, the pull requests above, and the batches |
+| `home` listener | [#2758](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2758) - the side panel offers different tabs on the main map and the event maps, which is two sidebar templates maintained separately |
+| `work-lab-leila` listener | [#2822](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2822) - the 3D basemap test waits 45 of the release tier's 72 minutes to click a basemap the gallery disables; then [#2824](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2824) and [#2797](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2797) |
+
+### What needs the GIS team rather than us
+
+- [#2796](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2796) - the garages layer.
+- [#2794](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2794) - 981 unnumbered rows
+  in the buildings layer, which is what `number IS NOT NULL` exists to remove. **Not a fault**: two of us
+  measured the rows the filter removes and read it as data loss before measuring the filter.
+
+### Deferred with a reason, not forgotten
+
+[#2758](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2758) (next release, in flight
+on home), [#2816](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2816) (empty popup
+label, Low, the maintainer's call),
+[#2793](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2793) (a Node certificate
+question, Medium), [#2784](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2784),
+[#2802](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2802), and the four Dependabot
+pull requests [#2779](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2779) to
+[#2782](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2782), all explicitly after the
+release.
 
 ## Work in flight - 30 October
 
