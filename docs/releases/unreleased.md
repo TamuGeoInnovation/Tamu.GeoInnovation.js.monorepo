@@ -1,12 +1,12 @@
 # Unreleased
 
-Since `21e69426e`, which was cleared on dev as the 30 October release and **never promoted**.
+Since `3254b114e`, the **10 November 2026** release.
 
-**The latest release notes are [30 October 2026](2026-10-30.md)**, cleared on dev from `21e69426e` and
-tagged `dev-2026-10-30`. **That release did not reach production.** The newest `prod-*` tag is
-`prod-2026-10-22`, so production still runs `36b962a04` and the **215 pull requests** those notes list have
-not reached anybody (confirmed by the maintainer, 10 November 2026). The release before it is
-[21 October 2026](2026-10-21.md), from `61161ce1b`.
+**The latest release notes are [10 November 2026](2026-11-10.md)**, cleared on dev from `3254b114e` and tagged
+`dev-2026-11-10`. It carried **90 pull requests** - and, because
+[30 October](2026-10-30.md) was never promoted, promoting it also puts that release's **215 pull requests** in
+front of visitors for the first time. Production ran `36b962a04` from 22 October until then. The release before
+30 October is [21 October 2026](2026-10-21.md), from `61161ce1b`.
 
 This file collects what merges from here until the next release. **A pull request with a user-visible
 result adds its own file to [`unreleased/`](unreleased/README.md), in that pull request**, with its
@@ -18,9 +18,7 @@ the files are collated here at release ([#2037](https://github.com/TamuGeoInnova
 
 ## Summary
 
-Nothing has merged since the 30 October release.
-
----
+Nothing yet. The 10 November entries moved into [10 November 2026](2026-11-10.md).
 
 ## What to test on dev
 
@@ -29,10 +27,7 @@ Nothing has merged since the 30 October release.
 production. A pull request with a visible result adds its own row; at release, the rows move into the
 dated notes as what was tested, and this table empties.
 
-**Nothing waiting:** the 30 October rows moved into the [30 October notes](2026-10-30.md).
-
-| Change | Open this on dev | Look for |
-| --- | --- | --- |
+**Nothing waiting:** the 10 November rows moved into the [10 November notes](2026-11-10.md).
 
 ---
 
@@ -45,7 +40,7 @@ this one.
 
 ### AggieMap on 10 November, 2:00 AM Central: what another machine most needs to know
 
-**Dev is cleared and waiting on a production deploy.** `3254b114e` is tagged **`dev-2026-11-10`** and was cleared
+**Dev is cleared, the notes are cut, and the promotion is the only step left.** `3254b114e` is tagged **`dev-2026-11-10`** and was cleared
 by the release tier on the lab machine: **999 passed, 15 failed, 70 skipped**, about 1.2 hours. Every one of the
 15 was traced, and **none of them is in the build** - they are faults in the suite itself, now filed as
 [#2776](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2776),
@@ -92,21 +87,34 @@ suite now expects directions there, and production has not been deployed since. 
 promoted. A failing scheduled run opens a health issue per environment and closes itself when a later run passes,
 so one may appear before the deploy.
 
-### Open pull requests, and one ordering constraint
+### Open pull requests, and the order they have to merge in
 
-| | |
-| --- | --- |
-| [PR 2825](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2825) | [#2821](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2821), closing [#2777](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2777) with it - specs take their fixtures from the environment under test |
-| [PR 2826](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2826) | [#2776](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2776) - the tailgating kiosk check reads its layers from the application |
-| [PR 2827](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2827) | [#2823](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2823) - recorded builder destinations match the choices their builders offer |
+| | | |
+| --- | --- | --- |
+| [PR 2825](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2825) | [#2821](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2821), closing [#2777](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2777) with it | Specs take their fixtures from the environment under test |
+| [PR 2826](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2826) | [#2776](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2776) | The tailgating kiosk check reads its layers from the application |
+| [PR 2827](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2827) | [#2823](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2823) | Recorded builder destinations match the choices their builders offer |
+| [PR 2829](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2829) | [#2828](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2828) | This section, and the header that said production had taken a release it never took |
+| [PR 2830](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2830) | [#2822](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2822) | The 3D test stops waiting 45 minutes on a click that cannot land: **the release tier goes from 1.2 hours to 27 minutes** |
+| [PR 2831](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2831) | [#2824](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2824) | A restricted builder walk keeps every other map's recordings instead of deleting them |
+| [PR 2832](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2832) | [#2797](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2797) | Nature Rx's two search sources get their cases, development only |
 
-**PR 2827 must merge after the production promotion, not before.** It regenerates `tools/builder-inventory`'s
-recorded links, and graduation's now name December 2026. The smoke suite reads those recordings for **both**
-environments, so once they are committed the production run opens the builder on `graduation-fall` until
-production carries [#2759](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2759)'s
-date fix. The other two are safe in any order.
+**None of these is in the 10 November release**; all are post-release by the maintainer's instruction. Three of
+them constrain each other, and none of the three is visible from the diffs:
 
-None of the three is part of this release; all are post-release by the maintainer's instruction.
+1. **PR 2827 merges after the production promotion, not before.** It regenerates
+   `tools/builder-inventory`'s recorded links, and graduation's now name December 2026. The smoke suite reads
+   those recordings for **both** environments, so once they are committed the production run opens the builder on
+   `graduation-fall` until production carries
+   [#2759](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2759)'s date fix.
+2. **PR 2827 and PR 2831 conflict on one line** of `tools/builder-inventory/README.md`. Whichever merges second
+   keeps **2831's** row: 2827 adds a warning about `BUILDER_INVENTORY_ONLY` that exists only until 2831 fixes the
+   flag.
+3. **The release-notes pull request builds on PR 2829**, because both edit `docs/releases/unreleased.md`. 2829
+   merges first, or the notes take its changes with them.
+
+**PR 2832 closes [#2797](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2797) on
+merge.** If the issue should stay open until the production release run confirms the fix, merge it after that run.
 
 ### Two traps found on 10 November
 
