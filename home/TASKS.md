@@ -3829,3 +3829,21 @@ The maintainer answered these; nobody needs to ask again. Each is also in the re
   (#2823), 2829 (#2828). **Do not build on their branches**, and do not open or convert pull requests yourself.
   **PR 2827 must merge after the production promotion**, because it commits recorded builder links naming
   December 2026 that the smoke suite reads for both environments.
+
+## Decided - 10 November 2026, 11:55 AM Central
+
+- **The release notes are merged and the team has them.** [PR 2837](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2837)
+  merged at 11:46 AM Central, so
+  [docs/releases/2026-11-10.md](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/blob/development/docs/releases/2026-11-10.md)
+  on `development` is AggieMap's alone and leads with the vector basemap, bus and routing. The maintainer has
+  sent that link to the team **to confirm the release should go out**, so the promotion is waiting on the team,
+  not on a check. GIS Day's 23 entries are in
+  [gisday-unreleased.md](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/blob/development/docs/releases/gisday-unreleased.md).
+- **Priorities set:** [#2836](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2836)
+  **High** (the notes correction, now merged),
+  [#2835](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2835) **Medium** (batch 35).
+- **An earlier shared link pointed at the pre-split notes.** PR 2834 merged before the split existed, so the
+  commit it pinned shows GIS Day mixed in. If you ever hand anyone a release-notes link, pin it to a commit you
+  have checked, or use `development` once the notes have merged.
+- **PR 2834 was already merged when its corrections were written**, which is why they came as a second pull
+  request. Check `state` before trying to push to a pull request you believe is open.

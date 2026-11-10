@@ -7422,6 +7422,125 @@ Two issues, two branches.
 
 ---
 
+## Batch 35 (10 November 2026, 11:55 AM Central, from `work (aggiemap)`) — #2835: the collate script must route entries by application
+
+**The release is not promoted yet.** `3254b114e` is tagged `dev-2026-11-10`, the notes are merged, and the
+maintainer has sent them to the team to confirm the release should go out. Until he says so, nothing here touches
+production and nothing assumes it has shipped.
+
+**Don't touch:** `development` and the branches of the six open pull requests - 2825, 2826, 2827, 2830, 2831,
+2832. 2831 and 2832 are your own last batch's work and are waiting on the maintainer.
+
+### [#2835](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2835): `collate-release-notes.mjs` writes every entry into AggieMap's notes
+
+**This one was found in the finished document, by the maintainer, after it was shared.** The 10 November notes
+were collated with **23 GIS Day entries among 32 AggieMap ones**, so an AggieMap release read as though promoting
+it shipped GIS Day work. It does not: GIS Day is built by GitHub Actions rather than Azure DevOps, its production
+pins a `sha-` tag, it has no dev site, and the AggieMap smoke suite does not cover it.
+
+[PR 2837](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2837) split that release's
+notes **by hand** and added a warning to both READMEs saying it has to be done by hand. Your job is to make the
+hand step disappear.
+
+- An entry declares its application in its front matter, probably `app: gisday`, **defaulting to AggieMap when
+  absent** so all 55 existing entry shapes keep working untouched.
+- `--write` collates each entry into that application's file: `unreleased.md` for AggieMap,
+  `gisday-unreleased.md` for GIS Day. Both files now exist on `development`; read how PR 2837 laid the second one
+  out before changing the writer.
+- `--check` fails an entry whose declared application has no notes file.
+
+**The warning is the part that matters more than the routing.** `--check` should warn when an entry *looks* like
+GIS Day but is not declared as one - its issue is on a `gisday-*` project, or its links point at
+`txgisday.org`, `gisday.tamu.edu` or `gisday.ucgis.org`. Routing only helps an author who remembers the field;
+the warning catches the author who does not, which is every author so far. If you can only get one of the two
+working, get this one.
+
+Then take the manual-step warnings out of `docs/releases/README.md` and
+`docs/releases/unreleased/README.md`, since they exist only until this lands, and document the field where an
+entry author will read it.
+
+### The test, and it is the point
+
+**There is no test for this script at all**, which is how a release got out with the wrong contents. The
+repository's convention for a script like this is a shell test beside it - `scripts/tag-build.test.sh`,
+`scripts/check-in-volume.test.sh`, `scripts/run-times.test.sh`. Add `scripts/collate-release-notes.test.sh`
+in the same style, and **prove it red first**: a GIS Day entry written without `app:` must fail the new
+`--check` warning on the unfixed script before your change, and pass after.
+
+Cover at least: an undeclared GIS Day-looking entry (the warning), a declared one (routed to the GIS Day file),
+an undeclared ordinary entry (routed to AggieMap, unchanged), and a declared application with no file (fails).
+
+### Out of scope, but say what you think
+
+`--check` is run by hand - CLAUDE.md says "Run it before a release" and nothing in CI runs it. So the check that
+would have caught this still only runs when somebody remembers. **Do not wire it into `lint.yml` in this
+batch**: `scripts/check-in-volume.sh` refuses to start when it cannot run a `lint.yml` step the way CI does, so
+that change has to be made in both places together and is its own issue. Say in your report whether you think it
+is worth one, and I will file it.
+
+### The report
+
+`work-lab-leila/reports/<date>-35.md`, **"report ready"**, branch to the fork, `.pr-body.md` last, no pull
+request. One issue, one branch. Priority on #2835 is **Medium**.
+
+---
+
+## Batch 36 (10 November 2026, 11:55 AM Central, from `work (aggiemap)`) — the release tier on production, once the promotion lands (Urgent when it starts)
+
+**Queued ahead, and conditional. Do not start it yet.** This batch becomes live the moment
+**`prod-2026-11-10`** exists on `origin`:
+
+```bash
+git fetch origin --tags && git tag -l prod-2026-11-10
+```
+
+Nothing to do while that prints nothing - carry on with batch 35. Check it when you finish 35, and check it
+again before you report. The promotion is the maintainer's; **this machine never deploys, promotes or
+approves anything**, and running the suite against production is reading it.
+
+### Why this run matters more than a normal one
+
+Production has run `36b962a04` since **22 October**. The 30 October release was cleared, tagged
+`dev-2026-10-30` and **never promoted**, so this promotion carries nineteen days of work and about 305 pull
+requests, not one release. Read both
+[2026-10-30.md](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/blob/development/docs/releases/2026-10-30.md)
+and
+[2026-11-10.md](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/blob/development/docs/releases/2026-11-10.md)
+before you report on anything, because what the first one lists has still reached nobody.
+
+### The run
+
+```bash
+test/smoke/aggiemap/run-local.sh production release
+```
+
+From a worktree at the tag, not at `development`: `development` has moved past the release and is about to move
+further. Report per failure what failed and why, never a bare pass/fail count, with elapsed time and the
+projected finish while it runs.
+
+### Three things that are expected to change state, so read them before calling anything a fault
+
+1. **`directions.spec`'s popup cases have been failing on production** and should now pass. PR 2819 (#2804)
+   turned routing on and the suite started expecting it there before production carried it. If they still fail
+   after the promotion, that is a real finding and the most important one in the run.
+2. **The click grid and the buildings popup** are the fix this release exists for (#2786, #2787). On dev
+   afterwards: `hit test found the layer at 8 of 8` on three maps, `buildings queries failed: 0 of 37`. Anything
+   short of that on production is a release fault - say so plainly and loudly.
+3. **The 15 reds from the development release tier are suite faults, not build faults**, filed as #2776, #2777,
+   #2784, #2797, #2821, #2822 and #2823. Several have fixes in open pull requests that are **not** in this
+   build, so expect them again. Name each by its issue rather than re-diagnosing it.
+
+**A manual run does not open or close a health issue** - only a GitHub run does, one per environment, closing
+itself when a later run passes. Say that in your report so nobody files a duplicate.
+
+### The report
+
+`work-lab-leila/reports/<date>-36.md`, **"report ready"**. No branches unless you find something to fix, and
+no pull requests. If the run clears production, say so in one sentence at the top; the maintainer is waiting on
+exactly that sentence.
+
+---
+
 ## Decided - 10 November 2026
 
 The maintainer answered these; nobody needs to ask again. Each is also in the repository, in
@@ -7445,3 +7564,21 @@ The maintainer answered these; nobody needs to ask again. Each is also in the re
   (#2823), 2829 (#2828). **Do not build on their branches**, and do not open or convert pull requests yourself.
   **PR 2827 must merge after the production promotion**, because it commits recorded builder links naming
   December 2026 that the smoke suite reads for both environments.
+
+## Decided - 10 November 2026, 11:55 AM Central
+
+- **The release notes are merged and the team has them.** [PR 2837](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2837)
+  merged at 11:46 AM Central, so
+  [docs/releases/2026-11-10.md](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/blob/development/docs/releases/2026-11-10.md)
+  on `development` is AggieMap's alone and leads with the vector basemap, bus and routing. The maintainer has
+  sent that link to the team **to confirm the release should go out**, so the promotion is waiting on the team,
+  not on a check. GIS Day's 23 entries are in
+  [gisday-unreleased.md](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/blob/development/docs/releases/gisday-unreleased.md).
+- **Priorities set:** [#2836](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2836)
+  **High** (the notes correction, now merged),
+  [#2835](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2835) **Medium** (batch 35).
+- **An earlier shared link pointed at the pre-split notes.** PR 2834 merged before the split existed, so the
+  commit it pinned shows GIS Day mixed in. If you ever hand anyone a release-notes link, pin it to a commit you
+  have checked, or use `development` once the notes have merged.
+- **PR 2834 was already merged when its corrections were written**, which is why they came as a second pull
+  request. Check `state` before trying to push to a pull request you believe is open.
