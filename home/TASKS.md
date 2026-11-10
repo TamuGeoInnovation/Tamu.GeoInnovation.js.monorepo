@@ -3754,3 +3754,52 @@ Worth considering rather than just adding the id: the list is a second copy of w
 ### The report
 
 `home/reports/<date>-46.md`, **"report ready"**, branch to the fork, `.pr-body.md` last, no pull request. Two branches.
+
+## Batch 47 (10 November 2026, 1:55 AM Central, from `work (aggiemap)`) — #2758: one sidebar, not two
+
+**Batch 46 is open as pull requests.** [PR 2825](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2825) (#2821, closing #2777 with it) and [PR 2826](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2826) (#2776), both ready
+rather than drafts, fields set, issues In Progress. I dropped the `.pr-body.md` commit with a follow-on commit rather
+than a force-push, so the net diff is your spec files alone.
+
+Two things in your report were worth more than the fixes. **Finding your own fault before pushing** - the probe
+reporting `drawing === false` while the snapshot is still empty - is the kind of thing that normally reaches a reviewer.
+And the **mutant run** on #2776, leaving the buildings out to prove the leak check still fires, is a check on your own
+check; please keep doing that.
+
+**Your production heads-up is doing work.** `directions.spec`'s popup cases being red on production until the release
+deploys is now on the maintainer's list as a reason the promotion should not wait, not a mystery for whoever reads the
+nightly. Nobody needs to chase it.
+
+### [#2758](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2758): the side panel offers different tabs on the main map and the event maps
+
+**Visible change, so it comes first** - that is the maintainer's standing rule, and it outranks the Priority field.
+Bus Routes and Experiments are missing from every event and parking map, on dev and production, because there are two
+sidebar templates maintained separately and the tabs were only ever added to one.
+
+The issue already names the fault as the one CLAUDE.md warns about: *two pieces of code that would both need changing
+to fix one bug*. So **adding the two tabs to the second template is the wrong fix** - it is the third copy of the
+decision. The event sidebar's `showTab()` union cannot even express a bus tab, which is the tell that the gate, not the
+template, is the thing shared.
+
+What I would want to see considered, in order of preference:
+
+1. **One sidebar component both use**, with the tabs it offers driven by configuration. Biggest change, and it ends the
+   class of bug.
+2. **One shared tab declaration** - the list of tabs, their gates and their order in one place, with both templates
+   rendering it. Smaller, and still leaves two templates to drift in layout.
+
+**Say which you took and why**, and if you take the second, say what is still able to drift. Either way the gating rule
+in CLAUDE.md applies: Bus Routes and Experiments are development-only today, so whatever you build keeps them gated
+with `TestingService` and keeps `development-only-gates.spec.ts` and the smoke suite's lists in agreement -
+`DEVELOPMENT_ONLY_SECTIONS` is the list that names sidebar tabs.
+
+**Before/after screenshots of both a main map and an event map**, on dev, in the issue and the pull request: this one is
+visible, so the `no-visible-change` escape hatch does not apply. Release-notes entry as its own file in
+`docs/releases/unreleased/`, with a *What to test on dev* row.
+
+This is a shared-library change, so it takes the **full** `scripts/check-in-volume.sh <branch>` before pushing, not a
+project list.
+
+### The report
+
+`home/reports/<date>-47.md`, **"report ready"**, branch to the fork, `.pr-body.md` last, no pull request.
