@@ -18,8 +18,9 @@ opens it.
 This is the shared search component, so it is every search box in the application.
 ([#2844](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2844))
 
-| Before |
-| --- |
-| ![The drop down still open over the destination box](../screenshots/2844-dropdown-stays-open/before-production-dropdown-covers-destination.jpg) |
+| Before | After |
+| --- | --- |
+| ![The drop down still open over the destination box](../screenshots/2844-dropdown-stays-open/before-production-dropdown-covers-destination.jpg) | ![Both ends chosen, the panel unobstructed](../screenshots/2844-dropdown-stays-open/after-local-build-panel-not-covered.jpg) |
 
-An "after" capture needs a dev server built from the branch; it is added to the pull request before merging.
+The after is a build carrying the fix: both ends of a trip chosen from the search box, with the panel, the mode
+times and the route all visible and nothing covering them.
