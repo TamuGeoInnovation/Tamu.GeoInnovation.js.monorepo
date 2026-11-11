@@ -7542,6 +7542,65 @@ exactly that sentence.
 
 ---
 
+## Batch 37 (11 November 2026, 10:05 AM Central, from `work (aggiemap)`) — the smoke check that would have caught the routing faults (Urgent)
+
+**Routing is broken on production and three issues are open on it.** The maintainer found all three by hand this
+morning, the day after directions reached production, and **`directions.spec.ts` passed against production while
+every one of them was live** - including in your batch 36 run. That is the hole this batch closes.
+
+**Do not touch the trip planner service or the search component.** I am fixing those on
+`fix/2843-route-destination` and `fix/2844-dropdown-stays-open`. **You own
+`test/smoke/aggiemap/directions.spec.ts` only.** If you need a change anywhere else, say so in the report instead
+of making it.
+
+### What is wrong, so you know what the check has to ask
+
+1. **[#2843](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2843) (Urgent): a trip
+   whose two ends both came from the search drop down returns no route at all**, in every mode. One end set by a
+   map click and it solves. Cause is known: `TripPlannerService.setStops` runs `getNearestDoors` only when
+   **every** stop is normalized, which is true only when both ends came from search. It then moves each building
+   to its nearest door, and for the Eller Oceanography & Meteorology Building to the Memorial Student Center the
+   nearest MSC door is FID 111, which locates onto a disconnected piece of the routing network
+   ([#2845](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2845), the GIS team's).
+2. **[#2846](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2846) (Urgent): a route
+   that solves is not drawn on the map.** Eller to Halbouty Geosciences solved - 5 minutes, 0.26 miles, the whole
+   turn-by-turn list - and **the map stayed empty**. Both ends from the drop down again.
+3. **[#2844](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2844): the drop down does
+   not close** when a result is chosen, so it covers the other endpoint's box and the route.
+   [PR 2847](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2847) fixes it and is open.
+
+### What to add
+
+**A trip with both ends chosen from the search drop down**, which is the only path that runs the door
+transformation and the only one none of the existing cases takes. On `/map/d/trip`:
+
+- Type into the first box, choose a building from the list; the same for the second box.
+- **Assert the route summary appears** - minutes and miles in `.directions-overview` - and that
+  `#direction-feedback p.error` ("No reasonable route was found!") is absent. That is #2843.
+- **Assert a route graphic is actually on the map.** That is #2846, and it is the part that matters most: a check
+  that reads the panel passes today while the map is empty, which is exactly how this reached a visitor. Use the
+  map probe (`window.__tamuGiscMapProbe`) and look for the trip planner's route graphics layer having at least
+  one polyline. If the probe does not expose enough to see that, **say so in the report and propose what it
+  should expose** - do not weaken the assertion to something the panel can satisfy.
+- **Two pairs**, not one: Eller to the MSC (fails today, #2843) and Eller to Halbouty Geosciences (solves today
+  but does not draw, #2846). Different faults, so both are needed.
+
+**Prove it red first**, against production as it stands, and put the exact failure text in the report. Then leave
+it red: the fixes are not merged yet, so a passing check would mean you have asked the wrong question.
+
+Where a case is red for a known reason, tie it to its issue the way the suite already does for known failures -
+do not delete it and do not mark it skipped.
+
+Remember `docs/testing.md` wants your spec's row if you add a file, and **leave its numbers alone**, the Total
+included.
+
+### The report
+
+`work-lab-leila/reports/<date>-37.md`, **"report ready"**, branch to the fork, `.pr-body.md` last, no pull
+request. One branch. Priority Urgent.
+
+---
+
 ## Decided - 10 November 2026
 
 The maintainer answered these; nobody needs to ask again. Each is also in the repository, in
