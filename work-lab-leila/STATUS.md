@@ -462,4 +462,4 @@ Nothing running. Listening.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 192 and 191 again (8 November), aggiemap's 31, 30 and 29 (9 November), and aggiemap's 32, 33, 34, 35 and 36 (10 November) (139, 141 to 192 reported; 140 needs the maintainer; 151 not run, see report 137) (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 192 and 191 again (8 November), aggiemap's 31, 30 and 29 (9 November), and aggiemap's 32, 33, 34 and 35 (10 November) and 36 (11 November) (139, 141 to 192 reported; 140 needs the maintainer; 151 not run, see report 137) (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
