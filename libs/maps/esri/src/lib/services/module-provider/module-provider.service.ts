@@ -101,6 +101,8 @@ const dictionary = {
   SimpleMarkerSymbol: () => import('@arcgis/core/symbols/SimpleMarkerSymbol.js'),
   // The geometry operators replace `geometryEngine`, deprecated in 4.32.
   unionOperator: () => import('@arcgis/core/geometry/operators/unionOperator.js'),
+  // Simplifies a geometry to within a distance, as the shaded walk's barrier needs before a route solve can take it.
+  generalizeOperator: () => import('@arcgis/core/geometry/operators/generalizeOperator.js'),
   // Replaces `Accessor.watch`, deprecated in 4.32.
   reactiveUtils: () => import('@arcgis/core/core/reactiveUtils.js'),
   PictureMarkerSymbol: () => import('@arcgis/core/symbols/PictureMarkerSymbol.js'),

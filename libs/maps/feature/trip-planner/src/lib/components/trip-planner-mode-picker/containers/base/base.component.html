@@ -1,5 +1,5 @@
 <div class="travel-modes">
-  <tamu-gisc-trip-planner-mode-toggle [activeModes]="[1, 2]" [iconName]="'directions_walk'" [name]="'Walking'" [label]="'Routing Mode: Walking'"></tamu-gisc-trip-planner-mode-toggle>
+  <tamu-gisc-trip-planner-mode-toggle [activeModes]="[1, 2, 9, 10]" [iconName]="'directions_walk'" [name]="'Walking'" [label]="'Routing Mode: Walking'"></tamu-gisc-trip-planner-mode-toggle>
 
   <tamu-gisc-trip-planner-mode-toggle [activeModes]="[7]" [iconName]="'directions_bike'" [name]="'Biking'" [label]="'Routing Mode: Biking'"></tamu-gisc-trip-planner-mode-toggle>
 
@@ -15,6 +15,11 @@
     <tamu-gisc-trip-planner-time-picker></tamu-gisc-trip-planner-time-picker>
     }
   </div>
+
+  <!-- Shade-aware walking prototype, development only: prefer shade for the sun at the trip's time. -->
+  @if ((isDev | async) === true && (isWalking | async) === true) {
+  <tamu-gisc-checkbox class="shade-option" [checked]="(shade | async) === true" (changed)="setShade($event)" [label]="'Prefer shade'" [ariaLabel]="'Prefer shaded paths for the sun at the trip time'"></tamu-gisc-checkbox>
+  }
 
   <div>
     <!-- Development only (#2801): Options offers only accessible routing, which the routing network does not support

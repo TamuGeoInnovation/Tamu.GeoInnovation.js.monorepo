@@ -52,3 +52,19 @@ export const TAMU_CAMPUS_STRUCTURES_URL = `${TAMU_CAMPUS_FEATURES_URL}/0`;
 
 /** The main campus's surface parking lots: layer 6, "Surface Parking", of `TAMU_CAMPUS_FEATURES_URL` (#2722). */
 export const TAMU_CAMPUS_SURFACE_LOTS_URL = `${TAMU_CAMPUS_FEATURES_URL}/6`;
+
+/**
+ * The main campus's trees: layer 1, "Trees", of `TAMU_CAMPUS_FEATURES_URL`. 16,219 points; `canopy_spread` (feet across
+ * the crown) is filled for 15,900 and `height` (feet) for 8,944; 282 carry a `date_removed` (10 November 2026). Read by
+ * the shade-aware walking prototype for the shade trees cast.
+ */
+export const TAMU_CAMPUS_TREES_URL = `${TAMU_CAMPUS_FEATURES_URL}/1`;
+
+/**
+ * The 2019 SketchUp campus models as a feature layer: the footprints and roof and ground elevations behind the
+ * `SketchupCampus_2082019` scene layer the 3D map draws. 731 models, every one with `z_Roofmedian` and `z_Groundmedian`
+ * (metres, stored as text); 362 of today's 860 campus buildings share a building number with one (10 November 2026).
+ * Not updated since February 2019, so a building built since has no model.
+ */
+export const TAMU_CAMPUS_BUILDING_MODELS_URL =
+  'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/SketchupCampus_2082019/FeatureServer/0';
