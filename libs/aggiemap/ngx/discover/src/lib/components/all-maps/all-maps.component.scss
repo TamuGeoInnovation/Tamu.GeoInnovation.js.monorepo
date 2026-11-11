@@ -59,7 +59,7 @@
 }
 
 :host ::ng-deep tamu-gisc-quick-links .related-links-superheader {
-  color: #500000;
+  color: var(--theme-accent, #500000);
   font-style: normal;
   text-transform: none;
   letter-spacing: 0;
@@ -159,7 +159,7 @@
   // The shared pictured-entry rule's gap would add to the label's own margin.
   gap: 0;
   text-decoration: none;
-  color: #500000;
+  color: var(--theme-accent, #500000);
   margin: -0.25rem 0 0.75rem;
 }
 

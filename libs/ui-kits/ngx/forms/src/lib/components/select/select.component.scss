@@ -21,7 +21,7 @@ select {
 
 label {
   position: absolute;
-  color: #757575;
+  color: var(--theme-text-subtle, #757575);
   left: 1rem;
   top: 0.4rem;
   pointer-events: none;

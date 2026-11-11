@@ -8,8 +8,8 @@
     cursor: pointer;
     padding-top: 1rem;
     padding-bottom: 0.9rem;
-    border-top: 1px solid #e0e0e0;
-    border-bottom: 1px solid #e0e0e0;
+    border-top: 1px solid var(--theme-border, #e0e0e0);
+    border-bottom: 1px solid var(--theme-border, #e0e0e0);
     margin-bottom: 1rem;
   }
 }
@@ -25,7 +25,7 @@ p {
 .material-icons {
   font-size: 1.1rem;
   margin-bottom: 0.5rem;
-  color: #212121;
+  color: var(--theme-text-strong, #212121);
 }
 
 .directions-action-item {
@@ -36,11 +36,11 @@ p {
   position: relative;
   padding: 0 1rem;
   overflow: hidden;
-  color: #757575;
+  color: var(--theme-text-subtle, #757575);
 
   &:hover {
     p {
-      color: #212121;
+      color: var(--theme-text-strong, #212121);
     }
   }
 }
@@ -49,5 +49,5 @@ p {
   display: block;
   height: 2.5rem;
   width: 1px;
-  background: #e0e0e0;
+  background: var(--theme-surface-sunken, #e0e0e0);
 }

@@ -1,6 +1,6 @@
 :host {
   position: absolute;
-  background: #ffffff;
+  background: var(--theme-surface, #ffffff);
   top: calc(100% - 5.25rem);
   border-top-right-radius: 0.5rem;
   border-top-left-radius: 0.5rem;

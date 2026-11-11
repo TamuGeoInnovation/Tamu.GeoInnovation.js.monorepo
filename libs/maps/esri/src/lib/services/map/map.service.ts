@@ -34,6 +34,7 @@ import {
   serviceClassRenderer
 } from './portal-symbology';
 import { applyStyleLayerChanges, BaseLayerConstructors, makeBaseLayer, StyleLayerChanges } from './basemap-layers';
+import { pageTheme, selectionSymbolForTheme } from '../../page-theme';
 
 import esri = __esri;
 
@@ -439,18 +440,16 @@ export class EsriMapService {
         return layer;
       });
     } else if (source.type === 'vector-tile') {
-      return this.moduleProvider
-        .require(['VectorTileLayer'])
-        .then(([VectorTileLayer]: [typeof esri.VectorTileLayer]) => {
-          // Delete the type property as it cannot be set on layer creation, and take out the style layers to
-          // hide, which are ours rather than Esri's (#2459).
-          delete props.type;
-          const { hiddenStyleLayers, ...rest } = props as StyleLayerChanges & Record<string, unknown>;
+      return this.moduleProvider.require(['VectorTileLayer']).then(([VectorTileLayer]: [typeof esri.VectorTileLayer]) => {
+        // Delete the type property as it cannot be set on layer creation, and take out the style layers to
+        // hide, which are ours rather than Esri's (#2459).
+        delete props.type;
+        const { hiddenStyleLayers, ...rest } = props as StyleLayerChanges & Record<string, unknown>;
 
-          const layer = new VectorTileLayer(rest as esri.VectorTileLayerProperties);
-          applyStyleLayerChanges(layer, { hiddenStyleLayers });
-          return layer;
-        });
+        const layer = new VectorTileLayer(rest as esri.VectorTileLayerProperties);
+        applyStyleLayerChanges(layer, { hiddenStyleLayers });
+        return layer;
+      });
     } else if (source.type === 'csv') {
       return this.moduleProvider.require(['CSVLayer']).then(([CSVLayer]: [typeof esri.CSVLayer]) => {
         // Delete the type property as it cannot be set on layer creation.
@@ -693,7 +692,7 @@ export class EsriMapService {
         // A class named by the definition draws every feature, because the renderer's values are stale.
         const serviceClass = (source as LayerSource).symbolFromServiceClass;
         const renderer = serviceClass
-          ? serviceClassRenderer(portal ?? layer.renderer?.toJSON(), serviceClass) ?? portal
+          ? (serviceClassRenderer(portal ?? layer.renderer?.toJSON(), serviceClass) ?? portal)
           : portal;
 
         if (!renderer) {
@@ -1141,7 +1140,11 @@ export class EsriMapService {
     // Add the symbol and polygon type to each feature
     const features = graphics.map((ft) => {
       const feature = ft;
-      feature.symbol = this.environment.value('SelectionSymbols')[ft.geometry.type];
+      // Drawn for the page's light or dark theme as it is now (page-theme.ts).
+      feature.symbol = selectionSymbolForTheme(
+        this.environment.value('SelectionSymbols')[ft.geometry.type],
+        pageTheme(document)
+      );
 
       return feature;
     });

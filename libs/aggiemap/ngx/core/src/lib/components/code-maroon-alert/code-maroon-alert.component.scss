@@ -126,9 +126,9 @@
 
     // Primary: solid white. "What to do" is the action that matters when this is on screen.
     &.maroon {
-      background: #ffffff;
+      background: var(--theme-surface, #ffffff);
       border-color: #ffffff;
-      color: #500000;
+      color: var(--theme-accent, #500000);
 
       &:hover,
       &:focus-visible {

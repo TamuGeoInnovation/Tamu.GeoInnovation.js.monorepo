@@ -1,10 +1,10 @@
 @import 'libs/sass/mixins';
 
 :host > div:first-child {
-  border-top-color: #eeeeee;
-  border-bottom-color: #eeeeee;
+  border-top-color: var(--theme-border, #eeeeee);
+  border-bottom-color: var(--theme-border, #eeeeee);
 }
 
 .divider {
-  background: #eeeeee;
+  background: var(--theme-surface-sunken, #eeeeee);
 }

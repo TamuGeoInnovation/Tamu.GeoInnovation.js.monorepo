@@ -8,6 +8,7 @@ import { LastMapService } from '@tamu-gisc/aggiemap/ngx/common';
 import { campusOnNavigation, EventNotificationsService } from '@tamu-gisc/aggiemap/ngx/core';
 import { NotificationGroupedComponent } from '@tamu-gisc/common/ngx/ui/notification';
 import { ActingAsProductionComponent, CodeMaroonAlertComponent } from '@tamu-gisc/aggiemap/ngx/core';
+import { ThemeService } from '@tamu-gisc/common/ngx/ui/theme';
 
 @Component({
   selector: 'tamu-gisc-aggiemap-app-root',
@@ -22,6 +23,8 @@ export class AppComponent implements OnInit, OnDestroy {
   private readonly lastMap = inject(LastMapService);
   private readonly eventNotifications = inject(EventNotificationsService);
   private readonly router = inject(Router);
+  // Injected here, in the shell, so the page is light or dark before any route draws (dark mode).
+  private readonly theme = inject(ThemeService);
 
   private _notifications: Subscription | undefined;
 

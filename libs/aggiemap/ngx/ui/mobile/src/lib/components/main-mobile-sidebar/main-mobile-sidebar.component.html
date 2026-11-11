@@ -1,9 +1,11 @@
 <tamu-gisc-tamu-block></tamu-gisc-tamu-block>
 
 <div class="list-container">
-  @for (item of menu; track item) { @if (item.type === 'separator') {
+  @for (item of menu; track item) { @if (item.type === 'theme') {
+  <tamu-gisc-theme-picker></tamu-gisc-theme-picker>
+  } @if (item.type === 'separator') {
   <div class="separator" aria-hidden="true"></div>
-  } @if (item.type !== 'separator') {
+  } @if (item.type !== 'separator' && item.type !== 'theme') {
   <div class="list-item">
     @if (item.path !== '') {
     <a [routerLink]="item.path" (click)="reportNavigation(item.name)">

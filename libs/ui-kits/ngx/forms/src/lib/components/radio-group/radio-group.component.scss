@@ -8,10 +8,10 @@
 
   .material-icons {
     vertical-align: middle;
-    color: #616161;
+    color: var(--theme-text-muted, #616161);
 
     &.active {
-      color: #0079c1;
+      color: var(--theme-link, #0079c1);
     }
   }
 
@@ -34,6 +34,6 @@
 
   &.disabled {
     cursor: not-allowed;
-    color: #757575;
+    color: var(--theme-text-subtle, #757575);
   }
 }

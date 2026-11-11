@@ -1,6 +1,6 @@
 .draggable {
   position: absolute;
-  background: #ffffff;
+  background: var(--theme-surface, #ffffff);
   top: calc(100% - 10rem);
   min-height: 10rem;
   border-top-right-radius: 0.5rem;

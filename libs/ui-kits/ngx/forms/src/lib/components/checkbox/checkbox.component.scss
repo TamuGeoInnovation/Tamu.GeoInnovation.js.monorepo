@@ -14,10 +14,10 @@
 }
 
 .material-icons {
-  color: #616161;
+  color: var(--theme-text-muted, #616161);
 
   &.active {
-    color: #0079c1;
+    color: var(--theme-link, #0079c1);
   }
 }
 
@@ -28,7 +28,7 @@
   line-height: 1.5;
   padding-right: 0.25rem;
   box-sizing: border-box;
-  color: #424242;
+  color: var(--theme-text, #424242);
 }
 
 input[type='checkbox'] {
@@ -68,7 +68,7 @@ input[type='checkbox'] {
       cursor: not-allowed;
     }
 
-    color: #757575;
+    color: var(--theme-text-subtle, #757575);
 
     .material-icons {
       color: inherit;

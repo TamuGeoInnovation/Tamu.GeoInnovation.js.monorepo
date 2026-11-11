@@ -1,0 +1,9 @@
+@if (theme.enabled) {
+<section class="theme-picker" aria-labelledby="theme-picker-heading">
+  <p id="theme-picker-heading" class="theme-picker-heading">Appearance</p>
+  <tamu-gisc-radio-group aria-labelledby="theme-picker-heading" [options]="options" displayPath="label" valuePath="value" [value]="theme.preference()" (valueChange)="choose($event)"></tamu-gisc-radio-group>
+  @if (status(); as status) {
+  <p class="theme-picker-status" aria-live="polite">{{ status }}</p>
+  }
+</section>
+}

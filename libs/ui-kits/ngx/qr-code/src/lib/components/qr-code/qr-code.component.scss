@@ -28,7 +28,7 @@
   align-items: center;
   gap: 1.5rem;
   padding: 2rem;
-  background: #ffffff;
+  background: var(--theme-surface, #ffffff);
 
   .qr-code {
     flex: none;
@@ -43,7 +43,7 @@
     position: static;
     margin: 0;
     padding: 0;
-    color: #000000;
+    color: var(--theme-text-strong, #000000);
     font-size: clamp(1.25rem, 3vmin, 2.5rem);
     text-align: center;
   }

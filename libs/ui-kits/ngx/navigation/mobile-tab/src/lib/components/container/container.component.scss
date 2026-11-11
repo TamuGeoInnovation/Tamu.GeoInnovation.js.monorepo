@@ -12,7 +12,7 @@
   // Push up navigation on iPhones without hardware buttons (safe area)
   margin-bottom: calc(env(safe-area-inset-bottom) / 2);
 
-  background: #ffffff;
+  background: var(--theme-surface, #ffffff);
   border-top-left-radius: 1.5rem;
   border-top-right-radius: 1.5rem;
   box-shadow: 0 -3px 10px rgba(37, 65, 90, 0.05);

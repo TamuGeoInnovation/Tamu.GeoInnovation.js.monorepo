@@ -22,7 +22,7 @@
   justify-content: flex-start;
   gap: 0.4rem;
   text-decoration: none;
-  color: #500000;
+  color: var(--theme-accent, #500000);
   width: 6rem;
 
   &:hover .visit-maps-icon,
@@ -37,7 +37,7 @@
   justify-content: center;
   width: 3.25rem;
   height: 3.25rem;
-  color: #500000;
+  color: var(--theme-accent, #500000);
 
   svg {
     width: 100%;

@@ -1,0 +1,20 @@
+:host {
+  display: block;
+}
+
+.theme-picker {
+  // Where it sits sets the padding: the phone menu lines it up with the menu items.
+  padding: var(--theme-picker-padding, 0.75rem 1rem);
+}
+
+.theme-picker-heading {
+  margin: 0 0 0.25rem;
+  font-weight: 600;
+  color: var(--theme-text);
+}
+
+.theme-picker-status {
+  margin: 0.25rem 0 0;
+  font-size: 0.875rem;
+  color: var(--theme-text-muted);
+}

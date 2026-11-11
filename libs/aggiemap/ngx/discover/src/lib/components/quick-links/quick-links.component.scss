@@ -42,7 +42,7 @@
   display: inline-flex;
   align-items: baseline;
   gap: 0.5rem;
-  color: #500000;
+  color: var(--theme-accent, #500000);
   font-weight: 700;
   font-size: 1rem;
   text-decoration: none;

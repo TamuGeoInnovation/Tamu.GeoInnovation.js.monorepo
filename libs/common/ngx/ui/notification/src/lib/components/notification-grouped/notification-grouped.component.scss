@@ -4,7 +4,7 @@
   position: fixed;
   bottom: 0;
   z-index: 999;
-  background: #ffffff;
+  background: var(--theme-surface, #ffffff);
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.15);
   border-radius: 5px;
   overflow: hidden;
@@ -50,7 +50,7 @@
     cursor: pointer;
 
     &:hover {
-      background: #e0e0e0;
+      background: var(--theme-surface-sunken, #e0e0e0);
     }
   }
 
@@ -79,7 +79,7 @@
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: #500000;
+    color: var(--theme-accent, #500000);
     margin-bottom: 0.15rem;
   }
 
@@ -110,7 +110,7 @@
   .grouped-description {
     font-size: 0.85rem;
     max-width: 30rem;
-    color: #616161;
+    color: var(--theme-text-muted, #616161);
   }
 
   .grouped-ack {
@@ -126,7 +126,7 @@
       transition: all 0.2s ease;
 
       &:hover {
-        color: #500000;
+        color: var(--theme-accent, #500000);
         border-bottom-color: #500000;
       }
 
@@ -162,7 +162,7 @@
     @include m.justify-content(center);
     gap: 0.5rem;
     padding: 0.35rem 0;
-    border-top: 1px solid #e0e0e0;
+    border-top: 1px solid var(--theme-border, #e0e0e0);
   }
 
   // Matches the table paginator's control, which is the existing pattern for stepping through a set:
@@ -179,7 +179,7 @@
     border: none;
     border-radius: 50%;
     background: transparent;
-    color: #500000;
+    color: var(--theme-accent, #500000);
     cursor: pointer;
 
     &:hover {
@@ -200,7 +200,7 @@
     min-width: 4rem;
     text-align: center;
     font-size: 0.8rem;
-    color: #666;
+    color: var(--theme-text-muted, #666);
     // Fixed width so the panel does not shift as the number changes.
     font-variant-numeric: tabular-nums;
   }

@@ -3,9 +3,8 @@
 //  ==========================================================================
 //   Map Styles
 //  ==========================================================================
-// Esri's widget stylesheet, from the same CDN path as the SDK's other assets. Its version moves with
-// `@arcgis/core`'s; see esri-runtime.ts (#1844).
-@import 'https://js.arcgis.com/5.1.27/@arcgis/core/assets/esri/themes/light/main.css';
+// Esri's widget stylesheet is loaded by EsriMapComponent as a <link>, light or dark to match the page
+// (page-theme.ts). Its version moves with `@arcgis/core`'s; see esri-runtime.ts (#1844).
 
 :host {
   & > arcgis-map,

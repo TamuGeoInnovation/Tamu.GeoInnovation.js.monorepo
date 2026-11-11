@@ -9,7 +9,7 @@
 
 .layer-item {
   cursor: pointer;
-  color: #6e6e6e;
+  color: var(--theme-text-muted, #6e6e6e);
   font-size: 0.875rem;
   @include flexbox();
   @include flex-direction(row);
@@ -39,10 +39,10 @@
   }
 
   &.outside-extent {
-    color: #bdbdbd;
+    color: var(--theme-text-disabled, #bdbdbd);
 
     .layer-visibility-dot {
-      border-color: #bdbdbd;
+      border-color: var(--theme-border-strong, #bdbdbd);
     }
 
     &.visible {

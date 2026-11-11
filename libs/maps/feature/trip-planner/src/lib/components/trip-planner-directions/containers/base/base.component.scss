@@ -41,14 +41,14 @@
     .unit {
       font-size: 0.8rem;
       margin-top: 0.75rem;
-      color: #757575;
+      color: var(--theme-text-subtle, #757575);
     }
   }
 
   .divider {
     height: 3rem;
     width: 1px;
-    background: #e0e0e0;
+    background: var(--theme-surface-sunken, #e0e0e0);
   }
 }
 

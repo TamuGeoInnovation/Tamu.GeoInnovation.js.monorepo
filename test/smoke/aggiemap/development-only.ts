@@ -91,6 +91,14 @@ export const DEVELOPMENT_ONLY_CONTROLS: Array<{
     selector: '.options-container .action:text-is("Options")',
     page: '/map/d/trip',
     reason: '#2801: Options offers only accessible routing, which the routing network does not support yet'
+  },
+  {
+    // ThemePickerComponent renders nothing where ThemeService.enabled is false (TestingService), and the page then
+    // stays light whatever a visitor stored. The phone menu shows the same component, so one page proves the gate.
+    name: 'the Appearance choice (dark mode)',
+    selector: 'tamu-gisc-theme-picker .theme-picker',
+    page: '/map/d/settings',
+    reason: 'dark mode prototype, until the maintainer approves it for production (no issue filed yet)'
   }
 ];
 
@@ -184,8 +192,10 @@ export const DEVELOPMENT_ONLY_SERVICES: Record<
  * listed here and no longer hidden fails too.
  */
 export const LISTINGS_HIDDEN_FROM_PRODUCTION: Record<string, string> = {
-  '/events/april-ring-day': 'hidden by #899 (All Maps overhaul, 5 August 2026) with no reason recorded; ask before listing it',
-  '/events/move-out': '#1691, #1704: hidden while its three dated periods are reviewed, so the page offers one entry per move-out',
+  '/events/april-ring-day':
+    'hidden by #899 (All Maps overhaul, 5 August 2026) with no reason recorded; ask before listing it',
+  '/events/move-out':
+    '#1691, #1704: hidden while its three dated periods are reviewed, so the page offers one entry per move-out',
   // It was checked by a control on the Transportation section's page, which production cannot open since #2788, so
   // that check could only time out. Sustainable Transportation's listing went the same way and needs no entry: its map
   // is `developmentOnly`, and the development-only map check opens its address (#2801).

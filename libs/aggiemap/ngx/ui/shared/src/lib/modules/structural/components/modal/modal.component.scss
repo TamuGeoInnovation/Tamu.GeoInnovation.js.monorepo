@@ -2,7 +2,7 @@
 
 :host > div:first-child {
   position: fixed;
-  background: #ffffff;
+  background: var(--theme-surface, #ffffff);
   z-index: 11;
   font-size: 0.9rem;
   box-sizing: border-box;
@@ -13,7 +13,7 @@
   font-size: 1.25rem;
   position: absolute;
   top: 0.25rem;
-  color: #757575;
+  color: var(--theme-text-subtle, #757575);
   padding: 1rem 1.25rem;
   cursor: pointer;
   @include transition(color 0.3s);

@@ -16,11 +16,11 @@
  * from `https://js.arcgis.com/<version>/@arcgis/core/assets`. That is `esriConfig.assetsPath`'s own default
  * for an `@arcgis/core` build, so nothing sets it. Since 5.0 the default names the exact release
  * (`5.0.19`), where 4.x named the minor (`4.34`), so this constant does too (#1859). Serving them
- * ourselves would mean copying the 57 MB `assets` folder into every app that draws a map. The stylesheet is imported by `EsriMapComponent` from
- * the same path, so its version has to move with the package's.
+ * ourselves would mean copying the 57 MB `assets` folder into every app that draws a map. The widget stylesheet's URL is built from
+ * this constant (`esriThemeStylesheet`, page-theme.ts), light or dark, so it moves with it.
  *
- * Moving to a newer release: change `@arcgis/core` in `package.json`, this constant, and the stylesheet's
- * URL in `esri-map.component.scss`, together. #1845 went from 4.27 to 4.34 that way, one minor release per
+ * Moving to a newer release: change `@arcgis/core` in `package.json` and this constant,
+ * together. #1845 went from 4.27 to 4.34 that way, one minor release per
  * commit, each with the breaking changes it needed written in its commit message; read Esri's release notes
  * for every release skipped, since its typings change between minors (4.30 to 4.32 rewrote them).
  */

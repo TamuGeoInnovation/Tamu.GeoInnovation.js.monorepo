@@ -19,7 +19,7 @@
 
   .progress-bar {
     margin-top: 2rem;
-    background: #ffffff;
+    background: var(--theme-surface, #ffffff);
     height: 0.3rem;
     width: 100%;
     border-radius: 99rem;

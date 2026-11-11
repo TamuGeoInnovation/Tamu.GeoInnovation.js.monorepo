@@ -10,7 +10,7 @@ $border-radius: 1.5rem;
 
   position: absolute;
   z-index: 101;
-  background: white;
+  background: var(--theme-surface, white);
   height: 100%;
   box-sizing: border-box;
   @include no-select;
@@ -108,10 +108,10 @@ $border-radius: 1.5rem;
 .toggle {
   position: absolute;
   top: 50%;
-  background: #ffffff;
+  background: var(--theme-surface, #ffffff);
   padding: 1.5rem;
   border-radius: 99rem;
-  border: 1pt solid #e0e0e0;
+  border: 1pt solid var(--theme-border, #e0e0e0);
   top: 50%;
   cursor: pointer;
 

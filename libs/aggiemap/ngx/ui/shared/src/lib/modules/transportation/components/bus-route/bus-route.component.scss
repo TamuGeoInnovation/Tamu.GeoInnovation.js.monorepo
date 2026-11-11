@@ -63,7 +63,7 @@ $border-radius: 5px;
   }
 
   .route-name {
-    background: #fafafa;
+    background: var(--theme-surface-alt, #fafafa);
     position: relative;
     width: inherit;
     border-top-right-radius: $border-radius;

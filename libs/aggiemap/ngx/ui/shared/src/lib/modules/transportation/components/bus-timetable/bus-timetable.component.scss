@@ -21,7 +21,7 @@
   li {
     padding: 0.2rem 0;
     font-size: 0.85rem;
-    border-bottom: 1px solid #eeeeee;
+    border-bottom: 1px solid var(--theme-border, #eeeeee);
 
     &:last-child {
       border-bottom: none;

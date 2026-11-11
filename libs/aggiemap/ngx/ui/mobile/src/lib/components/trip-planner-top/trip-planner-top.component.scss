@@ -9,7 +9,7 @@
   padding: 1rem 0.5rem;
   padding-bottom: 0.25rem;
   padding-top: 0.5rem;
-  background: #ffffff;
+  background: var(--theme-surface, #ffffff);
   box-sizing: border-box;
   border-bottom-right-radius: 0.5rem;
   border-bottom-left-radius: 0.5rem;
@@ -54,7 +54,7 @@
 }
 
 .action {
-  color: #757575;
+  color: var(--theme-text-subtle, #757575);
 
   .material-icons {
     font-size: 1.25rem;
@@ -67,7 +67,7 @@ input {
   margin-bottom: 0.5rem;
   border-radius: 1rem;
   background: none;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--theme-border, #e0e0e0);
   width: 100%;
 }
 
@@ -75,5 +75,5 @@ input {
   padding: 0.5rem;
   margin: 0;
   font-size: 0.875rem;
-  color: #424242;
+  color: var(--theme-text, #424242);
 }

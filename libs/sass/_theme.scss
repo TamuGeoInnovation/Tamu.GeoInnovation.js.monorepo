@@ -1,0 +1,84 @@
+//  ==========================================================================
+//   Theme: light and dark
+//  ==========================================================================
+//
+// The colours a page is drawn in, as custom properties, so one attribute on <html> changes all of them:
+// `data-theme="dark"`, set by ThemeService (libs/common/ngx/ui/theme). Components read them as
+// `var(--theme-surface, #ffffff)`: the fallback is the light value they always had, so an app that never imports this
+// file looks exactly as before.
+//
+// Every text colour here meets WCAG AA on the surfaces it is used on; the ratios are measured, not judged by eye, and
+// written beside each dark value (against --theme-surface unless it says otherwise).
+//
+// Maroon: as a fill behind white text it stays #500000 in both themes (15.7:1 with white). As text or an icon on a dark
+// surface #500000 is 1.1:1 and unreadable, so --theme-accent lightens to a rose that keeps the hue.
+
+:root {
+  --theme-surface: #ffffff;
+  --theme-surface-raised: #ffffff;
+  --theme-surface-alt: #fafafa;
+  --theme-surface-sunken: #eeeeee;
+  --theme-border: #e0e0e0;
+  --theme-border-strong: #bdbdbd;
+
+  --theme-text: #323232;
+  --theme-text-strong: #212121;
+  --theme-text-muted: #616161;
+  --theme-text-subtle: #757575;
+  --theme-text-disabled: #9e9e9e;
+
+  --theme-accent: #500000;
+  --theme-accent-fill: #500000;
+  --theme-on-accent: #ffffff;
+  --theme-link: #0079c1;
+  --theme-input: rgba(241, 243, 244, 1);
+
+  --theme-shadow: rgba(0, 0, 0, 0.2);
+  --theme-scrim: rgba(0, 0, 0, 0.4);
+}
+
+// A cool slate, the same family as the campus basemap's night ground (#1a2029, campus-night-style.ts), so the panels
+// and the map read as one surface at night, as Google's and Apple's night maps do. Not a neutral grey: beside the
+// blue-grey map it looked brown.
+:root[data-theme='dark'] {
+  --theme-surface: #1d232c;
+  --theme-surface-raised: #252c36;
+  --theme-surface-alt: #21272f;
+  --theme-surface-sunken: #2b323d;
+  --theme-border: #353d49;
+  --theme-border-strong: #4d5664;
+
+  --theme-text: #e4e8ee; // 12.8:1, 10.5:1 on --theme-surface-sunken
+  --theme-text-strong: #f4f6f9; // 14.6:1
+  --theme-text-muted: #aeb7c3; // 7.8:1, 6.4:1 on --theme-surface-sunken
+  --theme-text-subtle: #939daa; // 5.8:1, 4.7:1 on --theme-surface-sunken
+  --theme-text-disabled: #7f8995; // 4.5:1 - disabled text needs no ratio, but it is kept readable
+
+  // Maroon as text: a dusty, quiet rose that keeps the hue. A brighter pink read as a different brand.
+  --theme-accent: #e3b5ba; // 8.7:1, 7.1:1 on --theme-surface-sunken
+  --theme-accent-fill: #500000; // white on it: 15.7:1
+  --theme-on-accent: #ffffff;
+  --theme-link: #8cc8ff; // 8.9:1, 7.3:1 on --theme-surface-sunken
+  --theme-input: #252c36;
+
+  --theme-shadow: rgba(0, 0, 0, 0.55);
+  --theme-scrim: rgba(5, 8, 12, 0.6);
+}
+
+// Form controls on a dark page. `color-scheme: dark` (set by ThemeService) gives native controls Chromium's own flat
+// grey, which matched nothing here; these take the theme's input colours. Dark only, so a light page keeps the
+// browser's controls exactly as before. A component that styles its own control still wins, being more specific.
+:root[data-theme='dark'] {
+  select,
+  textarea,
+  input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='color']) {
+    background-color: var(--theme-input);
+    color: var(--theme-text);
+    border-color: var(--theme-border);
+  }
+
+  ::placeholder {
+    color: var(--theme-text-subtle);
+    opacity: 1;
+  }
+}

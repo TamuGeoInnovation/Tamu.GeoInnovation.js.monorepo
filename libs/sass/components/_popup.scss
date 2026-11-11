@@ -10,7 +10,7 @@
   right: 0;
   height: 100%;
   width: 22.5rem;
-  background: #ffffff;
+  background: var(--theme-surface, #ffffff);
   overflow: hidden;
   overflow-y: scroll;
   padding: 2rem 1rem;
@@ -22,7 +22,7 @@
 .popup-section {
   margin-bottom: 1rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid var(--theme-border, #e0e0e0);
   white-space: pre;
   text-wrap: wrap;
 }
@@ -33,7 +33,7 @@
 
 .feature-style-1,
 .feature-style-2 {
-  color: #424242;
+  color: var(--theme-text, #424242);
   padding-bottom: 0.25rem;
 }
 
@@ -57,7 +57,7 @@
   position: absolute;
   right: 0.75rem;
   top: 0.5rem;
-  color: #9e9e9e;
+  color: var(--theme-text-disabled, #9e9e9e);
   cursor: pointer;
   @include transition(color 0.3s);
 
