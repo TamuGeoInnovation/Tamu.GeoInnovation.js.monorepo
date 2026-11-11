@@ -7487,16 +7487,17 @@ request. One issue, one branch. Priority on #2835 is **Medium**.
 
 ## Batch 36 (10 November 2026, 11:55 AM Central, from `work (aggiemap)`) — the release tier on production, once the promotion lands (Urgent when it starts)
 
-**Queued ahead, and conditional. Do not start it yet.** This batch becomes live the moment
-**`prod-2026-11-10`** exists on `origin`:
+**LIVE as of 9:05 AM Central, 11 November. Start it when batch 35 is reported, or now if 35 is not started.**
+The promotion happened and the tag is **`prod-2026-11-11`** - not `prod-2026-11-10`, which this batch
+originally told you to wait for and which does not exist. It is on `3254b114e`, the exact commit
+`dev-2026-11-10` cleared, so what is on production is what the release tier passed.
 
 ```bash
-git fetch origin --tags && git tag -l prod-2026-11-10
+git fetch origin --tags && git tag -l prod-2026-11-11
 ```
 
-Nothing to do while that prints nothing - carry on with batch 35. Check it when you finish 35, and check it
-again before you report. The promotion is the maintainer's; **this machine never deploys, promotes or
-approves anything**, and running the suite against production is reading it.
+The promotion was the maintainer's; **this machine never deploys, promotes or approves anything**, and running
+the suite against production is reading it.
 
 ### Why this run matters more than a normal one
 
