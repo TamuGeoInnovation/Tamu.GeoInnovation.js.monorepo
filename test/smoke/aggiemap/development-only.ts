@@ -98,7 +98,7 @@ export const DEVELOPMENT_ONLY_CONTROLS: Array<{
     name: 'the Appearance choice (dark mode)',
     selector: 'tamu-gisc-theme-picker .theme-picker',
     page: '/map/d/settings',
-    reason: 'dark mode prototype, until the maintainer approves it for production (no issue filed yet)'
+    reason: '#2865: dark mode, until the maintainer approves it for production'
   }
 ];
 
