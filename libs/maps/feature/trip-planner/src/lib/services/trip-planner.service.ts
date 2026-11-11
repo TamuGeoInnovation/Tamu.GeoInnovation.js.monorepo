@@ -39,7 +39,7 @@ import { findNearestIndex, isCoordinatePair, getGeolocation } from '@tamu-gisc/c
 import { centroidFromPolygonGeometry } from '@tamu-gisc/common/utils/geometry/esri';
 import { pairwiseOverlap } from '@tamu-gisc/common/utils/collection';
 
-import { DoorPoint, firstRoutableDoor, rankDoorsByDistance } from './trip-planner-door-choice';
+import { DoorPoint, firstRoutableDoor, rankDoorsByDistance, refineStops } from './trip-planner-door-choice';
 import { timeStringForDate } from '@tamu-gisc/common/utils/date';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -868,7 +868,12 @@ export class TripPlannerService implements OnDestroy {
       const allNormalized = nStops.every((s) => s.normalized);
 
       if (allNormalized) {
-        this.getNearestDoors(nStops).then(() => {
+        // The door lookup refines where the trip starts and ends; it must never decide whether it happens at all.
+        // It used to: nothing caught a rejection, so the stops were never set and nothing was drawn, silently
+        // (#2851).
+        refineStops(this.getNearestDoors(nStops), (error) => {
+          console.warn('Nearest door lookup failed; using the stops as they are: ', (error as Error)?.message ?? error);
+        }).then(() => {
           // Set the service state value, which notifies all subscribers.
           this.stops = nStops;
 
