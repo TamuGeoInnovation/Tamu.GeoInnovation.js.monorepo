@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, input } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, filter, map, switchMap, take } from 'rxjs';
 
@@ -42,7 +42,8 @@ export class EventLocationAddEditFormComponent implements OnInit {
       room: [null],
       capacity: [null],
       link: [null],
-      place: [null],
+      // Required: a venue with no hosting organization saves, but its sessions never appear on the Sessions page (#443).
+      place: [null, Validators.required],
       streetAddressOverride: [null],
       // The check-in zone's corners as typed, one `latitude, longitude` per line (#1766). Sent as
       // `checkInZone`.
@@ -167,6 +168,18 @@ export class EventLocationAddEditFormComponent implements OnInit {
    */
   private _valueWithCheckInZone(): Partial<EventLocation> | undefined {
     const { checkInZoneText, ...value } = this.form.getRawValue();
+
+    if (this.form.controls.place.invalid) {
+      this.form.controls.place.markAsTouched();
+      this.ns.toast({
+        id: 'event-location-place-error',
+        title: 'Hosting Organization',
+        message: "Select the venue's hosting organization. Sessions at a venue without one are left off the Sessions page."
+      });
+
+      return undefined;
+    }
+
     const corners = parseLatLonLines(checkInZoneText);
 
     // The API refuses the same zones; this says why before sending.

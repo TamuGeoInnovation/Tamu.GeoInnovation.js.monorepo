@@ -35,11 +35,11 @@ describe('EventLocationAddEditFormComponent', () => {
       fixture.detectChanges();
 
       const save = (checkInZoneText: string) => {
-        fixture.componentInstance.form.patchValue({ building: 'TAMU Rudder Plaza', checkInZoneText });
+        fixture.componentInstance.form.patchValue({ building: 'TAMU Rudder Plaza', place: 'place', checkInZoneText });
         fixture.componentInstance.handleSubmission();
       };
 
-      return { save, createEntity, toast };
+      return { save, createEntity, toast, fixture };
     }
 
     it('saves corners typed in order around the zone', () => {
@@ -79,6 +79,26 @@ describe('EventLocationAddEditFormComponent', () => {
 
       expect(createEntity).not.toHaveBeenCalled();
       expect(toast).toHaveBeenCalledWith(expect.objectContaining({ id: 'event-location-check-in-zone-error' }));
+    });
+
+    // #443: venues were saved with no hosting organization, and every session held at them was then missing from
+    // the public Sessions page.
+    it('refuses to save a venue with no hosting organization, and says why', () => {
+      const { fixture, createEntity, toast } = create();
+
+      fixture.componentInstance.form.patchValue({ building: 'TAMU Rudder Plaza', place: null, checkInZoneText: '' });
+      fixture.componentInstance.handleSubmission();
+
+      expect(createEntity).not.toHaveBeenCalled();
+      expect(toast).toHaveBeenCalledWith(expect.objectContaining({ id: 'event-location-place-error' }));
+    });
+
+    it('asks for the hosting organization first, before the venue name', () => {
+      const { fixture } = create();
+      const page = fixture.nativeElement as HTMLElement;
+      const first = page.querySelector('[formcontrolname]');
+
+      expect(first.getAttribute('formcontrolname')).toBe('place');
     });
   });
 });
