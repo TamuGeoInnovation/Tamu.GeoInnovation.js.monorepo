@@ -1,9 +1,10 @@
-import { compareByLastName, matchesSearch } from './people-view.component';
+import { compareByLastName, matchesSearch, presenterCount } from './people-view.component';
 
-const person = (firstName: string, lastName: string, organization?: string) => ({
+const person = (firstName: string, lastName: string, organization?: string, university?: [string, string]) => ({
   firstName,
   lastName,
-  organization: organization ? ({ name: organization } as never) : undefined
+  organization: organization ? ({ name: organization } as never) : undefined,
+  university: university ? ({ name: university[0], acronym: university[1] } as never) : undefined
 });
 
 describe('Presenters', () => {
@@ -31,6 +32,28 @@ describe('Presenters', () => {
     it('shows everyone for an empty search, and no one for text nobody has', () => {
       expect(matchesSearch(alanna, '')).toBe(true);
       expect(matchesSearch(alanna, 'esri')).toBe(false);
+    });
+
+    /** #2869: the presenter's university, by its full name or its abbreviation. */
+    it.each([['texas a&m university'], ['Texas A&M'], ['TAMU'], ['tamu ']])('finds a presenter by university, "%s"', (text) => {
+      expect(matchesSearch(person('Ana', 'Ruiz', 'City of Austin', ['Texas A&M University', 'TAMU']), text)).toBe(true);
+    });
+
+    it('finds no one by university when the presenter has none', () => {
+      expect(matchesSearch(person('Ana', 'Ruiz', 'City of Austin'), 'tamu')).toBe(false);
+    });
+  });
+
+  /** #2870: how many presenters the list holds, under it, with or without a search. */
+  describe('count', () => {
+    it('gives the total with no search', () => {
+      expect(presenterCount(78, 78, '')).toBe('78 presenters');
+      expect(presenterCount(1, 1, ' ')).toBe('1 presenter');
+    });
+
+    it('gives how many of the total a search shows', () => {
+      expect(presenterCount(5, 78, 'tamu')).toBe('Showing 5 of 78 presenters');
+      expect(presenterCount(0, 78, 'zzz')).toBe('Showing 0 of 78 presenters');
     });
   });
 });

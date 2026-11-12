@@ -34,6 +34,11 @@ export function matchesSearch(speaker: Partial<Speaker>, search: string): boolea
   );
 }
 
+/** What the page says about how many presenters are listed. Not written yet (#2870). */
+export function presenterCount(shown: number, total: number, search: string): string {
+  return '';
+}
+
 @Component({
   selector: 'tamu-gisc-people-view',
   templateUrl: './people-view.component.html',
