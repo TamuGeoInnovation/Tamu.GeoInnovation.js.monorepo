@@ -91,9 +91,9 @@
     <div class="form-section-body">
       <div class="form-collection column">
         @if ((speakers$ | async)?.length > 0) { @if (speakers$ | async; as speakers) {
-        <tamu-gisc-select-list placeholder="Search speakers..." [options]="speakers" [rowTemplate]="speakerListRowTemplate">
+        <tamu-gisc-select-list placeholder="Search speakers..." [options]="speakers" [rowTemplate]="speakerListRowTemplate" (selected)="patchSpeaker($event)">
           <ng-template #speakerListRowTemplate let-speaker>
-            <tamu-gisc-presenter-card [speaker]="speaker" [linkable]="false" tabindex="0" role="button" (click)="patchSpeaker(speaker)" (keydown.enter)="patchSpeaker(speaker)" (keydown.space)="patchSpeaker(speaker); $event.preventDefault()"></tamu-gisc-presenter-card>
+            <tamu-gisc-presenter-card [speaker]="speaker" [linkable]="false"></tamu-gisc-presenter-card>
           </ng-template>
         </tamu-gisc-select-list>
         <div class="flex flex-row wrap">
