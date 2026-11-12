@@ -8,8 +8,9 @@ import type { RsvpDashboard, RsvpDashboardPerson } from '@tamu-gisc/gisday/platf
 import { RsvpService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { LINE_CHART_DRAWER, LineChartOptions } from '@tamu-gisc/ui-kits/ngx/charts';
 
-import { groupPeople, RsvpDashboardComponent, rsvpCsv, rsvpSeries, rsvpTotals } from './rsvp-dashboard.component';
+import { groupPeople, rsvpBands, RsvpDashboardComponent, rsvpCsv, rsvpDaily, rsvpSeries, rsvpTotals } from './rsvp-dashboard.component';
 
 const counts = (c: Partial<RsvpDashboard['events'][0]['counts']>) => ({
   undergraduate: 0,
@@ -92,8 +93,27 @@ describe('rsvpSeries()', () => {
   });
 });
 
+describe('rsvpDaily()', () => {
+  it("counts every event's new RSVPs each day", () => {
+    expect(rsvpDaily(dashboard).points.map((p) => p.y)).toEqual([2, 1, 1]);
+  });
+});
+
+describe('rsvpBands()', () => {
+  it("shades the days the season's events run, in Central time", () => {
+    expect(rsvpBands(dashboard)).toEqual([{ from: new Date('2026-11-18T00:00:00Z'), to: new Date('2026-11-19T00:00:00Z'), label: 'GIS Day week' }]);
+  });
+
+  it('shades nothing when no event has a day', () => {
+    expect(rsvpBands({ ...dashboard, events: dashboard.events.map((e) => ({ ...e, starts: null })) })).toEqual([]);
+  });
+});
+
 describe('RsvpDashboardComponent', () => {
   let rsvps: { getDashboardForSeason: jest.Mock; getDashboardForEvent: jest.Mock };
+  // amCharts draws on a canvas, which the test's DOM does not have: the chart's drawer is a stand-in that keeps what it is given.
+  let drawn: Array<LineChartOptions>;
+  const lastChart = () => drawn[drawn.length - 1];
 
   function open() {
     TestBed.configureTestingModule({
@@ -103,7 +123,8 @@ describe('RsvpDashboardComponent', () => {
         { provide: RsvpService, useValue: rsvps },
         { provide: SeasonService, useValue: { seasons$: of([{ guid: 's-1', year: 2026 }]), activeSeason$: of({ guid: 's-1', year: 2026 }) } },
         { provide: ModalService, useValue: {} },
-        { provide: NotificationService, useValue: {} }
+        { provide: NotificationService, useValue: {} },
+        { provide: LINE_CHART_DRAWER, useValue: (_host: HTMLElement, options: LineChartOptions) => (drawn.push(options), Promise.resolve(() => undefined)) }
       ]
     });
 
@@ -119,6 +140,7 @@ describe('RsvpDashboardComponent', () => {
     );
 
   beforeEach(() => {
+    drawn = [];
     rsvps = {
       getDashboardForSeason: jest.fn(() => of(dashboard)),
       getDashboardForEvent: jest.fn(() => of(people))
@@ -156,14 +178,18 @@ describe('RsvpDashboardComponent', () => {
     ]);
   });
 
-  it('draws the running total of RSVPs over time', () => {
-    const root = open().nativeElement as HTMLElement;
+  it("charts the running total, each day's new RSVPs beneath it, and the GIS Day week", async () => {
+    const fixture = open();
+    await fixture.whenStable();
 
-    expect(root.querySelector('tamu-gisc-line-chart svg')).not.toBeNull();
-    expect(root.querySelectorAll('tamu-gisc-line-chart path')).toHaveLength(1);
+    expect(lastChart().series.map((s) => [s.label, s.points.map((p) => p.y)])).toEqual([['All events', [2, 3, 4]]]);
+    expect(lastChart().steps).toBe(true);
+    expect(lastChart().unit).toBe('RSVPs');
+    expect(lastChart().bars.points.map((p) => p.y)).toEqual([2, 1, 1]);
+    expect(lastChart().bands.map((b) => b.label)).toEqual(['GIS Day week']);
   });
 
-  it("opens an event to list its people under their types, adds its line to the chart, and closes again", () => {
+  it("opens an event to list its people under their types, adds its line to the chart, and closes again", async () => {
     const fixture = open();
     const root = fixture.nativeElement as HTMLElement;
     const first = root.querySelector('tr.rsvp-event') as HTMLElement;
@@ -178,13 +204,15 @@ describe('RsvpDashboardComponent', () => {
       'Faculty & academia (1)'
     ]);
     expect(root.querySelector('.rsvp-people').textContent).toContain('ana@example.edu');
-    expect(root.querySelectorAll('tamu-gisc-line-chart path')).toHaveLength(2);
+    await fixture.whenStable();
+    expect(lastChart().series.map((s) => s.label)).toEqual(['All events', 'Workshop']);
 
     first.click();
     fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(root.querySelector('.rsvp-people')).toBeNull();
-    expect(root.querySelectorAll('tamu-gisc-line-chart path')).toHaveLength(1);
+    expect(lastChart().series.map((s) => s.label)).toEqual(['All events']);
   });
 
   it('says so while the people are being read, and if they cannot be', () => {
