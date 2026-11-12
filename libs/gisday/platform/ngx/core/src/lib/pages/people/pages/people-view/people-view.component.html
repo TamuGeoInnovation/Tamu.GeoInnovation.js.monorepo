@@ -1,9 +1,9 @@
 @if (view$ | async; as view) { @if (view.total > 0) {
-<!-- Search by first name, last name or organization (#2859). -->
+<!-- Search by first name, last name, organization (#2859) or university (#2869). -->
 <div class="container12 flex flex-column align-center search trailer-2">
-  <tamu-gisc-textbox type="text" placeholder="Search by name or organization" [formControl]="search"></tamu-gisc-textbox>
-  @if (search.value) {
-  <p>Showing {{view.shown.length}} of {{view.total}} presenters.</p>
+  <tamu-gisc-textbox type="text" placeholder="Search by name, organization or university" [formControl]="search"></tamu-gisc-textbox>
+  @if (search.value.trim()) {
+  <p>{{view.count}}</p>
   }
 </div>
 
@@ -12,6 +12,10 @@
   @for (person of view.shown; track person.guid) {
   <tamu-gisc-speaker-card [speaker]="person"></tamu-gisc-speaker-card>
   }
+</div>
+<!-- How many are listed, under the list too, with or without a search (#2870). -->
+<div class="container12 flex flex-column align-center leader-1">
+  <p class="presenter-count">{{view.count}}</p>
 </div>
 } @else {
 <p>No presenters match "{{search.value}}".</p>
