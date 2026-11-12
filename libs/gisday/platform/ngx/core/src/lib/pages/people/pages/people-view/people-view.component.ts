@@ -21,7 +21,10 @@ function folded(text: string): string {
   return (text ?? '').normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
 }
 
-/** Whether the presenter's first name, last name, full name or organization contains the search text (#2859). */
+/**
+ * Whether the presenter's first name, last name, full name, organization (#2859) or university, by its name or its
+ * abbreviation (#2869), contains the search text.
+ */
 export function matchesSearch(speaker: Partial<Speaker>, search: string): boolean {
   const wanted = folded(search).trim();
 
@@ -29,14 +32,21 @@ export function matchesSearch(speaker: Partial<Speaker>, search: string): boolea
     return true;
   }
 
-  return [`${speaker.firstName ?? ''} ${speaker.lastName ?? ''}`, speaker.organization?.name ?? ''].some((field) =>
-    folded(field).includes(wanted)
-  );
+  return [
+    `${speaker.firstName ?? ''} ${speaker.lastName ?? ''}`,
+    speaker.organization?.name,
+    speaker.university?.name,
+    speaker.university?.acronym
+  ].some((field) => folded(field).includes(wanted));
 }
 
-/** What the page says about how many presenters are listed. Not written yet (#2870). */
+/** How many presenters the list holds, said under it: all of them, or how many of them a search shows (#2870). */
 export function presenterCount(shown: number, total: number, search: string): string {
-  return '';
+  if (search.trim()) {
+    return `Showing ${shown} of ${total} presenters`;
+  }
+
+  return `${total} ${total === 1 ? 'presenter' : 'presenters'}`;
 }
 
 @Component({
@@ -56,8 +66,8 @@ export class PeopleViewComponent implements OnInit {
   /** The season's presenters, by last name. */
   public people$: Observable<Array<Partial<Speaker>>>;
 
-  /** Those that match the search, and how many there are in all. */
-  public view$: Observable<{ shown: Array<Partial<Speaker>>; total: number }>;
+  /** Those that match the search, how many there are in all, and what the page says about that. */
+  public view$: Observable<{ shown: Array<Partial<Speaker>>; total: number; count: string }>;
 
   public ngOnInit() {
     // A past year lists that year's presenters; the current year keeps its own lookup (#1758).
@@ -74,7 +84,11 @@ export class PeopleViewComponent implements OnInit {
     );
 
     this.view$ = combineLatest([this.people$, this.search.valueChanges.pipe(startWith(this.search.value))]).pipe(
-      map(([people, search]) => ({ shown: people.filter((p) => matchesSearch(p, search)), total: people.length }))
+      map(([people, search]) => {
+        const shown = people.filter((p) => matchesSearch(p, search));
+
+        return { shown, total: people.length, count: presenterCount(shown.length, people.length, search) };
+      })
     );
   }
 }
