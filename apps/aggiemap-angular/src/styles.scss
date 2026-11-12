@@ -1147,7 +1147,7 @@ a.button.maroon:visited {
 }
 
 .info-block {
-  background: #fffde7;
+  background: var(--theme-note, #fffde7);
   padding: 1rem 1.5rem;
   width: 100%;
   box-sizing: border-box;

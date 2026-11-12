@@ -53,11 +53,14 @@ p {
 }
 
 .result-category {
-  background: #f2f2f2;
+  // A band that sets each group of results apart: light grey by day; at night a step above the results, its name in
+  // the theme's accent (--theme-band and --theme-band-text, libs/sass/_theme.scss, are set only on a dark page).
+  background: var(--theme-band, #f2f2f2);
 
   .category-name {
     padding: 3px 12px;
     font-weight: bold;
+    color: var(--theme-band-text, currentColor);
   }
 }
 
@@ -70,7 +73,7 @@ p {
 
   &:hover,
   &:focus {
-    background: #eeeee7;
+    background: var(--theme-hover, #eeeee7);
   }
 }
 

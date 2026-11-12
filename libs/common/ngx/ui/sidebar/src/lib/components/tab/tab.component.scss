@@ -13,7 +13,7 @@
     color: var(--theme-text-muted, #6e6e6e); // Set inactive color
 
     &:hover {
-      background: #f2f2f2;
+      background: var(--theme-hover, #f2f2f2);
     }
 
     &:hover,

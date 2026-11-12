@@ -28,7 +28,7 @@
   &:hover,
   &:focus {
     outline: none;
-    background: #f4f4f4;
+    background: var(--theme-hover, #f4f4f4);
     border-color: var(--theme-border, #e0e0e0);
   }
 }

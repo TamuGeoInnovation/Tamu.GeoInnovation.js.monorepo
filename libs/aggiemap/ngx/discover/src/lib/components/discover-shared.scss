@@ -167,8 +167,8 @@
 
 .event-card,
 .application-card {
-  background: #f4f4f4;
-  border: 1px solid #d1d1d1;
+  background: var(--theme-card, #f4f4f4);
+  border: 1px solid var(--theme-border, #d1d1d1);
   border-radius: 12px;
   padding: 1rem 1.5rem;
   cursor: pointer;
@@ -235,7 +235,7 @@
   padding: 2rem;
   color: var(--theme-text-muted, #666);
   font-style: italic;
-  background: #f8f8f8;
+  background: var(--theme-card, #f8f8f8);
   border-radius: 8px;
 }
 
@@ -398,8 +398,8 @@
   aspect-ratio: 2 / 1;
   object-fit: cover;
   border-radius: 8px;
-  border: 1px solid #d1d1d1;
-  background: #f4f4f4;
+  border: 1px solid var(--theme-border, #d1d1d1);
+  background: var(--theme-card, #f4f4f4);
 }
 
 /**

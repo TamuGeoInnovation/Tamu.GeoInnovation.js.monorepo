@@ -71,7 +71,7 @@
   .grouped-item--high {
     border-left: 4px solid #500000;
     padding-left: calc(1.25rem - 4px);
-    background: #fbf7f7;
+    background: var(--theme-card, #fbf7f7);
   }
 
   .grouped-priority {
@@ -183,7 +183,7 @@
     cursor: pointer;
 
     &:hover {
-      background: #f2eceb;
+      background: var(--theme-hover, #f2eceb);
     }
 
     &:focus-visible {
