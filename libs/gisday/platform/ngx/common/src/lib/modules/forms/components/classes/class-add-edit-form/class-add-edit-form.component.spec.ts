@@ -7,7 +7,7 @@ import { Class } from '@tamu-gisc/gisday/platform/data-api';
 import { ClassService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
-import { ClassAddEditFormComponent } from './class-add-edit-form.component';
+import { ClassAddEditFormComponent, sectionsFrom } from './class-add-edit-form.component';
 
 /**
  * #2872. The same class is often added once per section, so Create Class takes a list of sections and adds one class
@@ -81,5 +81,18 @@ describe('ClassAddEditFormComponent, creating', () => {
     expect(toast).toHaveBeenCalledWith(expect.objectContaining({ message: expect.stringMatching(/502.*Class already exists/) }));
     expect(fixture.componentInstance.form.get('section').value).toBe('502');
     expect(navigate).not.toHaveBeenCalled();
+  });
+});
+
+describe('sectionsFrom', () => {
+  it.each([
+    ['501', ['501']],
+    ['501, 502,503', ['501', '502', '503']],
+    ['501; 502  503\n504', ['501', '502', '503', '504']],
+    [' 501, 501 ', ['501']],
+    ['', []],
+    [null, []]
+  ])('reads "%s" as %j', (text, sections) => {
+    expect(sectionsFrom(text)).toEqual(sections);
   });
 });

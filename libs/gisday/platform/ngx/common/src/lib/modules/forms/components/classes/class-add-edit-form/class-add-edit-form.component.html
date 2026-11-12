@@ -12,8 +12,13 @@
       <div class="form-collection row pad-top">
         <tamu-gisc-textbox formControlName="code" placeholder="Course Code" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
         <tamu-gisc-textbox formControlName="number" placeholder="Course Number" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-        <tamu-gisc-textbox formControlName="section" placeholder="Course Section" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+        <tamu-gisc-textbox formControlName="section" [placeholder]="type() === 'create' ? 'Course Section(s)' : 'Course Section'" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
       </div>
+
+      @if (type() === 'create') {
+      <!-- One class per section (#2872). -->
+      <p>One section, or several separated by commas, for example <em>501, 502, 503</em>. Each section is added as its own class, with the same code, number, name and professor.</p>
+      }
 
       <div class="form-collection column pad-top">
         <tamu-gisc-textbox formControlName="title" placeholder="Class Name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>

@@ -1,13 +1,21 @@
 import { Component, OnInit, inject, input } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, filter, map, shareReplay, switchMap, take } from 'rxjs';
+import { Observable, catchError, concatMap, filter, from, map, of, shareReplay, switchMap, take, toArray } from 'rxjs';
 
 import { Class, Season, UserClass } from '@tamu-gisc/gisday/platform/data-api';
 import { ClassService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+
+/**
+ * The sections typed into Create Class's section field: one, or several separated by commas, semicolons or spaces,
+ * each once and in the order typed (#2872).
+ */
+export function sectionsFrom(text: string): Array<string> {
+  return [...new Set((text ?? '').split(/[\s,;]+/).filter((section) => section !== ''))];
+}
 
 @Component({
   selector: 'tamu-gisc-class-add-edit-form',
@@ -116,10 +124,59 @@ export class ClassAddEditFormComponent implements OnInit {
     });
   }
 
+  /**
+   * Adds the class, once for each section listed (#2872), one at a time. Sections that could not be added are named
+   * and left in the form, with the page kept open, so they can be corrected and created again.
+   */
   private _createEntity() {
     const rawValue = this.form.getRawValue();
+    const sections = sectionsFrom(rawValue.section);
 
-    this.cs.createEntity(rawValue).subscribe({
+    if (sections.length <= 1) {
+      this._createOne({ ...rawValue, section: sections[0] ?? rawValue.section });
+      return;
+    }
+
+    from(sections)
+      .pipe(
+        concatMap((section) =>
+          this.cs.createEntity({ ...rawValue, section }).pipe(
+            map(() => ({ section, error: undefined as string })),
+            catchError((err) => of({ section, error: `${err?.error?.message ?? err.status}` }))
+          )
+        ),
+        toArray()
+      )
+      .subscribe((results) => {
+        const created = results.filter((r) => r.error === undefined).map((r) => r.section);
+        const failed = results.filter((r) => r.error !== undefined);
+        const course = `${rawValue.code ?? ''} ${rawValue.number ?? ''}`.trim();
+
+        if (failed.length === 0) {
+          this.ns.toast({
+            id: 'class-create-success',
+            title: 'Create class',
+            message: `${created.length} sections of ${course} were successfully created: ${created.join(', ')}.`
+          });
+
+          this._navigateBack();
+          return;
+        }
+
+        this.form.patchValue({ section: failed.map((r) => r.section).join(', ') });
+
+        this.ns.toast({
+          id: 'class-create-failed',
+          title: 'Create class',
+          message:
+            (created.length > 0 ? `Created sections ${created.join(', ')}. ` : '') +
+            `Not created: ${failed.map((r) => `${r.section} (${r.error})`).join(', ')}. They are left in the form.`
+        });
+      });
+  }
+
+  private _createOne(value: Partial<Class>) {
+    this.cs.createEntity(value).subscribe({
       next: () => {
         this.ns.toast({
           id: 'class-create-success',
