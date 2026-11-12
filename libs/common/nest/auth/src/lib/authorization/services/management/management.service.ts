@@ -15,6 +15,8 @@ export const MANAGEMENT_CONFIG = 'MANAGEMENT_CONFIG';
 /** The Management API's default page size, and the most pages getUsers reads (#2320). */
 const USERS_PER_PAGE = 50;
 const USERS_MAX_PAGES = 100;
+/** How many ids getUsersByIds asks for in one search: well inside the query's length limit, and one page of answers. */
+const USERS_BY_ID_AT_ONCE = 50;
 
 // auth0 4 and later no longer export these names. The user is the Management API's own type. The metadata stays as
 // auth0 3 typed it, any value under any key: 7 types it Record<string, unknown>, which would make every reader of a
@@ -169,6 +171,33 @@ export class ManagementService {
     }
 
     return users.map((u) => this._composeMetadata(u, filters));
+  }
+
+  /**
+   * The users with these ids, by id, found by searching for USERS_BY_ID_AT_ONCE ids a request rather than reading
+   * each one: a season's RSVPs come from a thousand accounts, and a request each was minutes and the Management API's
+   * rate limit (#2878). An id that matches no user is left out. The search index trails a change by a few seconds, so a
+   * user who signed up a moment ago may be missing too.
+   */
+  public async getUsersByIds(
+    userIds: Array<string>,
+    filters?: Auth0UserProfileFilters
+  ): Promise<Map<string, Auth0UserProfile>> {
+    const client = this.client;
+    const ids = [...new Set(userIds.filter(Boolean))];
+    const found = new Map<string, Auth0UserProfile>();
+
+    for (let i = 0; i < ids.length; i += USERS_BY_ID_AT_ONCE) {
+      const chunk = ids.slice(i, i + USERS_BY_ID_AT_ONCE);
+      const q = `user_id:(${chunk.map((id) => `"${id.replace(/["\\]/g, '\\$&')}"`).join(' OR ')})`;
+      const page = await client.users.list({ q, search_engine: 'v3', per_page: USERS_BY_ID_AT_ONCE });
+
+      for (const user of page.data) {
+        found.set(user.user_id, this._composeMetadata(user, filters));
+      }
+    }
+
+    return found;
   }
 
   /**

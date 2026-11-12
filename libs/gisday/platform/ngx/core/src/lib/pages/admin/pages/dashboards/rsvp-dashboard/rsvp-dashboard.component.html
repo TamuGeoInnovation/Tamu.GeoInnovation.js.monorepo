@@ -1,0 +1,115 @@
+<div class="form">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">RSVPs</div>
+      <div class="form-section-actions">
+        <tamu-gisc-select class="post-1" placeholder="Season" [floatLabel]="false" [data]="seasons$ | async" displayTemplate="year" valueTemplate="guid" [value]="(selectedSeason$ | async)?.guid" (changed)="setSeason($event)"></tamu-gisc-select>
+      </div>
+    </div>
+
+    <div class="form-section-body">
+      @if (failed()) {
+      <p class="error">The RSVPs could not be read. Try again in a moment.</p>
+      } @else if (dashboard(); as view) {
+      <p class="rsvp-summary">
+        <strong>{{ totals().total }}</strong> {{ totals().total === 1 ? 'RSVP' : 'RSVPs' }} for {{ view.events.length }} {{ view.events.length === 1 ? 'event' : 'events' }}.
+        @if (view.unreadAccounts > 0) {
+        {{ view.unreadAccounts }} {{ view.unreadAccounts === 1 ? 'account' : 'accounts' }} could not be read and {{ view.unreadAccounts === 1 ? 'is' : 'are' }} counted as Not given.
+        }
+      </p>
+
+      <h3 class="rsvp-heading">RSVPs over time</h3>
+      <p class="rsvp-note">The running total at the end of each day, in Central time. {{ expandedEvent() ? 'The second line is the event opened below.' : 'Open an event below to add its own line.' }}</p>
+      <tamu-gisc-line-chart [series]="series()" [steps]="true" label="RSVPs over time, as a running total by day"></tamu-gisc-line-chart>
+
+      <h3 class="rsvp-heading">By event</h3>
+      @if (view.events.length > 0) {
+      <div class="rsvp-table-scroll">
+        <table class="rsvp-table">
+          <thead>
+            <tr>
+              <th>Event</th>
+              <th class="count">Total</th>
+              @for (t of types; track t.type) {
+              <th class="count">{{ t.label }}</th>
+              }
+            </tr>
+          </thead>
+          <tbody>
+            @for (event of view.events; track event.guid) {
+            <tr class="rsvp-event" [class.open]="expanded() === event.guid" (click)="toggle(event)" tabindex="0" role="button" [attr.aria-expanded]="expanded() === event.guid" (keydown.enter)="toggle(event)" (keydown.space)="toggle(event); $event.preventDefault()">
+              <td>
+                <span class="material-icons rsvp-chevron">{{ expanded() === event.guid ? 'expand_less' : 'expand_more' }}</span>
+                <span class="bold">{{ event.name }}</span>
+                <div class="rsvp-when">{{ event.starts | date: 'EEE MMM d, h:mm a' : '-0600' }}{{ event.location ? ' · ' + event.location : '' }}</div>
+              </td>
+              <td class="count bold">{{ event.total }}</td>
+              @for (t of types; track t.type) {
+              <td class="count">{{ event.counts[t.type] }}</td>
+              }
+            </tr>
+
+            @if (expanded() === event.guid) {
+            <tr class="rsvp-people">
+              <td [attr.colspan]="types.length + 2">
+                @if (peopleFailed()) {
+                <p class="error">The people for this event could not be read.</p>
+                } @else if (people() === null) {
+                <p>Reading who RSVP'd...</p>
+                } @else if (people().length === 0) {
+                <p>Nobody has RSVP'd for this event yet.</p>
+                } @else {
+                <div class="rsvp-people-actions">
+                  <a (click)="download(event)" tabindex="0" role="button" (keydown.enter)="download(event)" (keydown.space)="download(event); $event.preventDefault()">Export as CSV <span class="material-icons action">file_download</span></a>
+                </div>
+
+                @for (group of groups(); track group.type) {
+                <h4>{{ group.label }} ({{ group.people.length }})</h4>
+                <table class="rsvp-person-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>{{ isStudent(group.type) ? 'Classification' : 'Position' }}</th>
+                      <th>{{ isStudent(group.type) ? 'Field of study' : 'Department' }}</th>
+                      <th>{{ isStudent(group.type) ? 'University' : 'Employer' }}</th>
+                      <th>RSVP'd</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (person of group.people; track $index) {
+                    <tr>
+                      <td>{{ person.firstName || person.lastName ? (person.firstName ?? '') + ' ' + (person.lastName ?? '') : 'Account not found' }}</td>
+                      <td>{{ person.email }}</td>
+                      <td>{{ isStudent(group.type) ? person.classification : person.position }}</td>
+                      <td>{{ person.department }}</td>
+                      <td>{{ person.organization }}</td>
+                      <td>{{ person.created | date: 'MMM d, h:mm a' }}</td>
+                    </tr>
+                    }
+                  </tbody>
+                </table>
+                } }
+              </td>
+            </tr>
+            } }
+          </tbody>
+          <tfoot>
+            <tr>
+              <td class="bold">All events</td>
+              <td class="count bold">{{ totals().total }}</td>
+              @for (t of types; track t.type) {
+              <td class="count bold">{{ totals().counts[t.type] }}</td>
+              }
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      } @else {
+      <p>The selected season has no events.</p>
+      } } @else {
+      <p>Reading the RSVPs...</p>
+      }
+    </div>
+  </div>
+</div>

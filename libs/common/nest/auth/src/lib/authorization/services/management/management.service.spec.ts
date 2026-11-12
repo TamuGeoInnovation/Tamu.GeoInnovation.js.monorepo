@@ -28,6 +28,10 @@ describe('ManagementService', () => {
       await expect(service.getUsers()).rejects.toBeInstanceOf(ServiceUnavailableException);
     });
 
+    it('answers 503 for users by id', async () => {
+      await expect(service.getUsersByIds(['auth0|1'])).rejects.toBeInstanceOf(ServiceUnavailableException);
+    });
+
     it('answers 503 for an update', async () => {
       await expect(
         service.updateUserMetadata('auth0|1', undefined, { app_metadata: '*', user_metadata: '*' })

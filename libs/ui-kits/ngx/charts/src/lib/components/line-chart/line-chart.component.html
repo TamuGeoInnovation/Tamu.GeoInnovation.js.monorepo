@@ -1,0 +1,36 @@
+@if (isEmpty()) {
+<p class="line-chart-empty">Nothing to chart yet.</p>
+} @else {
+<svg class="line-chart" [attr.viewBox]="'0 0 ' + width + ' ' + height" role="img" [attr.aria-label]="label()" preserveAspectRatio="xMidYMid meet">
+  <g class="line-chart-grid">
+    @for (tick of yTicks(); track tick) {
+    <line [attr.x1]="margin.left" [attr.x2]="width - margin.right" [attr.y1]="yOf(tick)" [attr.y2]="yOf(tick)"></line>
+    <text class="line-chart-tick" [attr.x]="margin.left - 6" [attr.y]="yOf(tick)" text-anchor="end" dominant-baseline="middle">{{ tick }}</text>
+    }
+  </g>
+
+  <g>
+    @for (tick of xTicks(); track tick.x) {
+    <text class="line-chart-tick" [attr.x]="tick.x" [attr.y]="height - 8" text-anchor="middle">{{ tick.text }}</text>
+    }
+  </g>
+
+  @for (line of lines(); track line.label) {
+  <g class="line-chart-series">
+    <path [attr.d]="line.path" [attr.stroke]="line.color" fill="none" stroke-width="2" stroke-linejoin="round"></path>
+    @for (point of line.points; track $index) {
+    <circle [attr.cx]="point.x" [attr.cy]="point.y" r="3.5" [attr.fill]="line.color">
+      <title>{{ point.title }}</title>
+    </circle>
+    }
+  </g>
+  }
+</svg>
+
+@if (lines().length > 1) {
+<ul class="line-chart-legend">
+  @for (line of lines(); track line.label) {
+  <li><span class="line-chart-swatch" [style.background]="line.color"></span>{{ line.label }}</li>
+  }
+</ul>
+} }

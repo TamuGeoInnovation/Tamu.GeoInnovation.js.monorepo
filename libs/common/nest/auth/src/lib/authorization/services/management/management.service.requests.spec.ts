@@ -87,7 +87,11 @@ describe('ManagementService, against a stand-in for the Management API', () => {
       // As the API answers: sorted by name when asked, a page of `per_page` (50 by default) at `page`, and with
       // include_totals the page in an envelope with where it starts and how many there are; without it, a bare array.
       if (url.pathname === '/api/v2/users' && request.method === 'GET') {
-        const all = Object.values(users).sort((a, b) =>
+        // A search by id, as getUsersByIds sends it: user_id:("a" OR "b").
+        const ids = [...(url.searchParams.get('q') ?? '').matchAll(/"([^"]*)"/g)].map((m) => m[1]);
+        const all = Object.values(users)
+          .filter((u) => !url.searchParams.get('q') || ids.includes(String(u['user_id'])))
+          .sort((a, b) =>
           url.searchParams.get('sort') === 'name:1' ? String(a['name']).localeCompare(String(b['name'])) : 0
         );
         const perPage = Number(url.searchParams.get('per_page') ?? 50);
@@ -152,6 +156,34 @@ describe('ManagementService, against a stand-in for the Management API', () => {
       await expect(
         new ManagementService(credentials).getUserMetadata('auth0|missing', undefined, true)
       ).rejects.toBeInstanceOf(InternalServerErrorException);
+    });
+  });
+
+  describe('getUsersByIds (#2878)', () => {
+    it('finds the users by searching for their ids, not one request each, and leaves out an id with no user', async () => {
+      const found = await new ManagementService(credentials).getUsersByIds(['auth0|1', 'google-oauth2|2', 'auth0|missing']);
+
+      expect(apiRequests()).toHaveLength(1);
+      expect(apiRequests()[0].query).toMatchObject({
+        q: 'user_id:("auth0|1" OR "google-oauth2|2" OR "auth0|missing")',
+        search_engine: 'v3',
+        per_page: '50'
+      });
+      expect([...found.keys()].sort()).toEqual(['auth0|1', 'google-oauth2|2']);
+      expect(found.get('auth0|1')?.user_info?.email).toBe('ada@example.edu');
+    });
+
+    it('asks for 50 ids a request, and each id once', async () => {
+      const ids = Array.from({ length: 120 }, (_, i) => `auth0|u${i}`);
+
+      await new ManagementService(credentials).getUsersByIds([...ids, ...ids]);
+
+      expect(apiRequests().map((r) => r.query['q'].split(' OR ').length)).toEqual([50, 50, 20]);
+    });
+
+    it('asks for nothing when given no ids', async () => {
+      await expect(new ManagementService(credentials).getUsersByIds([])).resolves.toEqual(new Map());
+      expect(apiRequests()).toHaveLength(0);
     });
   });
 

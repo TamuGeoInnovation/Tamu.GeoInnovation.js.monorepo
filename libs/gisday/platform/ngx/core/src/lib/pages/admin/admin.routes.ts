@@ -46,6 +46,11 @@ export const adminRoutes: Routes = [
         ]
       },
       {
+        // Dashboards (#2878): read-only views of the season, starting with RSVPs.
+        path: 'dashboards',
+        loadChildren: () => import('./pages/dashboards/dashboards.routes').then((m) => m.dashboardsRoutes)
+      },
+      {
         path: 'events',
         loadChildren: () => import('./pages/event/admin-event.routes').then((m) => m.adminEventRoutes)
       },
