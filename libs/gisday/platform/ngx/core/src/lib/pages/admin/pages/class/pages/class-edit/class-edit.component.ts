@@ -7,6 +7,7 @@ import * as Papa from 'papaparse';
 
 import { ClassService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { downloadFile } from '@tamu-gisc/common/utils/ui';
 import { ClassAddEditFormComponent } from '@tamu-gisc/gisday/platform/ngx/common';
 import { AsyncPipe, DatePipe } from '@angular/common';
 
@@ -45,20 +46,11 @@ export class ClassEditComponent implements OnInit {
         next: ([csv, cl]) => {
           const unparsed = Papa.unparse(csv || 'No data', { header: true });
 
-          const blob = new Blob([unparsed], { type: 'text/csv' });
-          const url = window.URL.createObjectURL(blob);
-
-          const a = document.createElement('a');
           const fileName = `${cl.code}-${cl.number}${cl?.section ? '-' + cl?.section : ''}-${cl.professorName
             .toLowerCase()
             .split(' ')
             .join('_')}_gisday_attendance.csv`;
-          a.setAttribute('hidden', '');
-          a.setAttribute('href', url);
-          a.setAttribute('download', fileName);
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
+          downloadFile(unparsed, fileName, 'text/csv');
 
           this.isExporting$.next(false);
 
