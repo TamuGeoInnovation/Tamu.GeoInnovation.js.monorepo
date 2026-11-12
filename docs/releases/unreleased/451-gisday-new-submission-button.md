@@ -2,7 +2,7 @@
 issue: 451
 title: GIS Day's competition submissions start from a button
 testOnDev: |
-  | A new competition submission starts from a button ([#451](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/451)) | GIS Day dev site, signed in: Account > Submissions | A maroon **New submission** button under "Submit your work for TX GIS Day's yearly student competitions"; it opens the submission form. The small text link in the section's top right is gone |
+  | A new competition submission starts from a button ([#451](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/451)) | GIS Day dev site, signed in: Account > Submissions | A **New submission** button under "Submit your work for TX GIS Day's yearly student competitions"; it opens the submission form. The small text link in the section's top right is gone |
 ---
 
 ### GIS Day's competition submissions start from a button
