@@ -1,4 +1,4 @@
-import type { LineChartOptions } from '../../data/chart-data';
+import { everyDay, LineChartOptions } from '../../data/chart-data';
 
 /**
  * Draws the chart into `host` with amCharts 5 and resolves to what disposes of it. amCharts is imported here, and this
@@ -39,15 +39,24 @@ export async function drawLineChart(host: HTMLElement, options: LineChartOptions
   // The lines' panel above, the columns' short panel below.
   chart.leftAxesContainer.set('layout', root.verticalLayout);
 
+  // The axis spans the data and every band, so a band still to come, such as next week's event, is shown.
+  const times = [
+    ...options.series.flatMap((s) => s.points.map((p) => p.x.getTime())),
+    ...(options.bars?.points.map((p) => p.x.getTime()) ?? []),
+    ...options.bands.flatMap((b) => [b.from.getTime(), b.to.getTime()])
+  ];
   const xAxis = chart.xAxes.push(
     am5xy.DateAxis.new(root, {
+      min: Math.min(...times),
+      max: Math.max(...times),
+      strictMinMax: true,
       baseInterval: { timeUnit: 'day', count: 1 },
       gridIntervals: [
         { timeUnit: 'day', count: 1 },
         { timeUnit: 'week', count: 1 },
         { timeUnit: 'month', count: 1 }
       ],
-      renderer: am5xy.AxisRendererX.new(root, { minGridDistance: 70 }),
+      renderer: am5xy.AxisRendererX.new(root, { minGridDistance: 55 }),
       tooltip: am5.Tooltip.new(root, {}),
       tooltipDateFormat: 'EEE, MMM d'
     })
@@ -73,7 +82,8 @@ export async function drawLineChart(host: HTMLElement, options: LineChartOptions
     const range = xAxis.createAxisRange(xAxis.makeDataItem({ value: band.from.getTime(), endValue: band.to.getTime() }));
     range.get('axisFill')?.setAll({ visible: true, fill: am5.color('#500000'), fillOpacity: 0.07 });
     range.get('grid')?.set('forceHidden', true);
-    range.get('label')?.setAll({ text: band.label, inside: true, location: 0.5, centerY: am5.p100, dy: -6, fill: text, fillOpacity: 0.7 });
+    // Right-aligned to the band's end, which is often the chart's right edge: an event still to come.
+    range.get('label')?.setAll({ text: band.label, inside: true, location: 1, centerX: am5.p100, centerY: am5.p100, dx: -4, dy: -6, fill: text, fillOpacity: 0.75 });
   }
 
   const lines = options.series.map((s) => {
@@ -91,7 +101,8 @@ export async function drawLineChart(host: HTMLElement, options: LineChartOptions
     const line = chart.series.push(options.steps ? am5xy.StepLineSeries.new(root, settings) : am5xy.LineSeries.new(root, settings));
     line.strokes.template.set('strokeWidth', 2);
     line.fills.template.setAll({ visible: true, fillOpacity: 0.08 });
-    line.data.setAll(s.points.map((p) => ({ x: p.x.getTime(), y: p.y })));
+    // Every day has a value, so hovering a day nobody RSVP'd still reads the total.
+    line.data.setAll((options.steps ? everyDay(s.points, 'hold') : s.points).map((p) => ({ x: p.x.getTime(), y: p.y })));
 
     return line;
   });
@@ -103,12 +114,9 @@ export async function drawLineChart(host: HTMLElement, options: LineChartOptions
         min: 0,
         maxPrecision: 0,
         height: am5.percent(28),
-        marginTop: 16,
+        marginTop: 28,
         renderer: am5xy.AxisRendererY.new(root, { minGridDistance: 24 })
       })
-    );
-    barAxis.children.unshift(
-      am5.Label.new(root, { text: bars.label, rotation: -90, y: am5.p50, centerX: am5.p50, fill: text, fillOpacity: 0.7 })
     );
 
     const color = am5.color(bars.color);
@@ -121,17 +129,18 @@ export async function drawLineChart(host: HTMLElement, options: LineChartOptions
         valueYField: 'y',
         fill: color,
         stroke: color,
-        tooltip: am5.Tooltip.new(root, { labelText: '+{valueY} that day' })
+        tooltip: am5.Tooltip.new(root, { labelText: `${bars.label}: [bold]+{valueY}[/]` })
       })
     );
     columns.columns.template.setAll({ width: am5.percent(70), fillOpacity: 0.35, strokeOpacity: 0, cornerRadiusTL: 2, cornerRadiusTR: 2 });
-    columns.data.setAll(bars.points.map((p) => ({ x: p.x.getTime(), y: p.y })));
+    columns.data.setAll(everyDay(bars.points, 'zero').map((p) => ({ x: p.x.getTime(), y: p.y })));
   }
 
   // Drag across the chart to zoom into a period; the zoom-out button or a double-click shows it all again.
   const cursor = chart.set('cursor', am5xy.XYCursor.new(root, { behavior: 'zoomX', xAxis }));
   cursor.lineY.set('visible', false);
   chart.plotContainer.events.on('dblclick', () => chart.zoomOut());
+  chart.zoomOutButton.get('background')?.setAll({ fill: am5.color(options.series[0]?.color ?? '#500000') });
 
   if (lines.length > 1) {
     const legend = chart.children.push(am5.Legend.new(root, { centerX: am5.p50, x: am5.p50, marginTop: 8 }));

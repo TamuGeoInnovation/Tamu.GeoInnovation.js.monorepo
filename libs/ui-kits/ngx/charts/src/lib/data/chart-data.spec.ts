@@ -1,4 +1,4 @@
-import { bandOfDays, countsByDay, dayIn, runningTotalByDay, withColors } from './chart-data';
+import { bandOfDays, countsByDay, dayIn, everyDay, runningTotalByDay, withColors } from './chart-data';
 
 const times = [
   '2026-11-03T15:00:00Z',
@@ -27,6 +27,30 @@ describe('runningTotalByDay()', () => {
 
   it('gives nothing for no times', () => {
     expect(runningTotalByDay([])).toEqual([]);
+  });
+});
+
+describe('everyDay()', () => {
+  const points = [
+    { x: new Date('2026-11-01T00:00:00Z'), y: 2 },
+    { x: new Date('2026-11-04T00:00:00Z'), y: 5 }
+  ];
+
+  it('holds the last value on days with no point, for a running total', () => {
+    expect(everyDay(points, 'hold').map((p) => [p.x.toISOString().slice(0, 10), p.y])).toEqual([
+      ['2026-11-01', 2],
+      ['2026-11-02', 2],
+      ['2026-11-03', 2],
+      ['2026-11-04', 5]
+    ]);
+  });
+
+  it("counts zero on days with no point, for a day's count", () => {
+    expect(everyDay(points, 'zero').map((p) => p.y)).toEqual([2, 0, 0, 5]);
+  });
+
+  it('gives nothing for no points', () => {
+    expect(everyDay([], 'hold')).toEqual([]);
   });
 });
 

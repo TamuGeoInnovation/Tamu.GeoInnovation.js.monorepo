@@ -67,6 +67,31 @@ export function runningTotalByDay(times: Array<Date | string>, timeZone = 'Ameri
   return countsByDay(times, timeZone).map((p) => ({ x: p.x, y: (total += p.y) }));
 }
 
+/**
+ * `points`, one per calendar day (each at midnight UTC) from the first to the last, so a chart has a value to show on
+ * every day: a day with no point holds the day before's value (`'hold'`, for a running total) or is zero (`'zero'`, for
+ * a day's count).
+ */
+export function everyDay(points: Array<ChartPoint>, fill: 'hold' | 'zero'): Array<ChartPoint> {
+  if (points.length === 0) {
+    return [];
+  }
+
+  const DAY = 24 * 60 * 60 * 1000;
+  const sorted = [...points].sort((a, b) => a.x.getTime() - b.x.getTime());
+  const byDay = new Map(sorted.map((p) => [p.x.getTime(), p.y]));
+  const out: Array<ChartPoint> = [];
+  let last = 0;
+
+  for (let t = sorted[0].x.getTime(); t <= sorted[sorted.length - 1].x.getTime(); t += DAY) {
+    const y = byDay.get(t) ?? (fill === 'hold' ? last : 0);
+    out.push({ x: new Date(t), y });
+    last = y;
+  }
+
+  return out;
+}
+
 /** The calendar days `times` cover in `timeZone`, from the first's midnight to the end of the last, as a band. */
 export function bandOfDays(times: Array<Date | string>, label: string, timeZone = 'America/Chicago'): ChartBand | null {
   const days = times.map((t) => dayIn(new Date(t), timeZone)).sort();

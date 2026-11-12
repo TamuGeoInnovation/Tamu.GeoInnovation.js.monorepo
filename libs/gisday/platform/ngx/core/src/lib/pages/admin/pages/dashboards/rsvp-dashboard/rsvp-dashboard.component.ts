@@ -92,7 +92,7 @@ export function rsvpSeries(dashboard: RsvpDashboard, expanded: RsvpDashboardEven
 
 /** The columns under the chart: how many RSVPs every event gained each day (#2886). */
 export function rsvpDaily(dashboard: RsvpDashboard): ChartSeries {
-  return { label: 'New per day', points: countsByDay(dashboard.made.map((m) => m.created)) };
+  return { label: 'New that day', points: countsByDay(dashboard.made.map((m) => m.created)) };
 }
 
 /** The days the season's events run, shaded on the chart, so sign-ups before the week and during it can be told apart. */
