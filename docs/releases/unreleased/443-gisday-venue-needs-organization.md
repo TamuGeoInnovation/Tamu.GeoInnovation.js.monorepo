@@ -15,4 +15,4 @@ time they are edited.
 
 | Before | After |
 | --- | --- |
-| ![The Create Venue form, with the hosting organization optional and halfway down](../screenshots/443-gisday-venue-needs-organization/before.png) | ![The Create Venue form, with the hosting organization first and required](../screenshots/443-gisday-venue-needs-organization/after.png) |
+| ![The Create Venue form, with the hosting organization optional and halfway down](../screenshots/443-gisday-venue-needs-organization/before.jpg) | ![The Create Venue form, with the hosting organization first and required](../screenshots/443-gisday-venue-needs-organization/after.jpg) |
