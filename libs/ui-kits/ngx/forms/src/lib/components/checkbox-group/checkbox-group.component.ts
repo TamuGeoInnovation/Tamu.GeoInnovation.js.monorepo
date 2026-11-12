@@ -1,8 +1,8 @@
-import { Component, OnInit, forwardRef, input, model, contentChildren } from '@angular/core';
+import { Component, OnInit, forwardRef, input, model, contentChildren, effect, untracked } from '@angular/core';
 import { outputToObservable, takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { merge } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 
 import { CheckboxComponent } from '../checkbox/checkbox.component';
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
@@ -72,12 +72,30 @@ export class CheckboxGroupComponent implements OnInit, ControlValueAccessor {
   }
 
   constructor() {
-    // Each time the projected checkboxes change, including the first time they resolve, reflect the
-    // group value on them and listen for changes on the new set. This handles both immediately-available
-    // checkbox components and those generated with a loop.
+    // Tick each checkbox whose reference value is in the group value, and untick the rest, whenever the
+    // value, the set of checkboxes or any checkbox's `data` changes. Reading `data()` here is the point:
+    // the content query lists checkboxes made by a loop before their `[data]` is bound, so ticking them
+    // once, then, ticked nothing, and an event opened in the admin showed its saved tags unticked (#2887).
+    effect(() => {
+      const value = this._value();
+
+      this.checkboxes().forEach((checkbox) => {
+        const propValue = getPropertyValue<string>(checkbox.data(), this.referenceId());
+
+        // Use == to handle cases where the value is a coerced string or number
+        // 3 == '3' -> true
+        const isIncluded = propValue !== undefined && value.some((v) => v == propValue);
+
+        // Bypasses the forms API and the checkbox's own `changed` event, which would toggle the group
+        // value straight back.
+        untracked(() => checkbox._setValueNoEmit(isIncluded));
+      });
+    });
+
+    // Each time the projected checkboxes change, including the first time they resolve, listen for
+    // changes on the new set.
     toObservable(this.checkboxes)
       .pipe(
-        tap(() => this.setChildrenValue()),
         switchMap((checkboxes) => {
           return merge(
             ...checkboxes.map((checkbox) => {
@@ -116,30 +134,6 @@ export class CheckboxGroupComponent implements OnInit, ControlValueAccessor {
   }
 
   /**
-   * Set the checked state of children checkbox components to reflect the group value.
-   */
-  private setChildrenValue() {
-    if (this.checkboxes().length > 0) {
-      this.checkboxes().forEach((checkbox) => {
-        const propValue = getPropertyValue<string>(checkbox.data(), this.referenceId());
-
-        // Use == to handle cases where the value is a coerced string or number
-        // 3 == '3' -> true
-        const isIncluded = this.value.some((v) => v == propValue);
-
-        if (isIncluded) {
-          setTimeout(() => {
-            // Update child checked status, bypassing forms api and self event emission because
-            // to prevent a subsequent self-value change which would loop back to the checkbox
-            // value change and set to the inverse.
-            checkbox._setValueNoEmit(true);
-          }, 0);
-        }
-      });
-    }
-  }
-
-  /**
    * Values will always be a singular string or number or an array of strings or numbers.
    *
    * When a singular value is provided, it will be converted to an array of one.
@@ -162,8 +156,6 @@ export class CheckboxGroupComponent implements OnInit, ControlValueAccessor {
     } else {
       this.value = [...value];
     }
-
-    this.setChildrenValue();
   }
 
   public registerOnChange(fn) {
