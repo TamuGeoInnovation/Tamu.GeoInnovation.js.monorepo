@@ -63,6 +63,8 @@ Last written **2:33 PM Central, 13 November 2026**. A listener; job: testing.
 - `main-*.js` itself has 0 hits on both; the route is in a lazy chunk. Nothing is on `development` after `68d7b974c`, so the build is that commit.
 - `aux_car-bus` is not in either crawl as a string; the tile is checked by eye instead.
 
+**Progress, 2:40 PM:** 191 passed, 2 failed, both **not an incident**: `directions.spec`'s event-map popup case, desktop and phone (`/parking/avp-parking/map?feature=AVP-parking-lots:26135`), red 3 of 3 each. **The same failure as dev's on 10 November (report 32):** 26135 is production's object id for Lot 043, and dev's AVP service has no feature 26135. It is not in `allowedServiceFailures`. In Chrome "acting as production" (which reads production's service) the same link opens Lot 043 with "Directions To Here" at once.
+
 **The three hand checks pass on BOTH environments (2:40 PM, in Chrome):**
 1. `/all-maps/parking-transportation`: h1 **Parking & Transportation**, then **Buses & Transportation** above **Parking** (dev and production).
 2. `/all-maps/parking` lands on `/all-maps/parking-transportation` with the page rendered; `/all-maps/parking?as=production#parking` lands on `/all-maps/parking-transportation?as=production#parking`, query and anchor kept (dev and production).
