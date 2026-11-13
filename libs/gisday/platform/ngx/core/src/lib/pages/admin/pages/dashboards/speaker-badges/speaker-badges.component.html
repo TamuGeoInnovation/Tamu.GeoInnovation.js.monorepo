@@ -61,11 +61,14 @@
           <ngx-datatable-column name="Printed" prop="printedAt" [flexGrow]="1.4">
             <ng-template let-row="row" ngx-datatable-cell-template>
               @if (row.printedAt) {
-              <div>{{ row.printedAt | date: 'MMM d, h:mm a' }}</div>
+              <!-- A status, then the action that undoes it: "Not printed" here read as the status (#2912). -->
+              <div>
+                Printed {{ row.printedAt | date: 'MMM d, h:mm a' }}
+                <a class="badges-undo" title="Mark as not printed" (click)="markNotPrinted(row)" tabindex="0" role="button" (keydown.enter)="markNotPrinted(row)" (keydown.space)="markNotPrinted(row); $event.preventDefault()">Undo</a>
+              </div>
               @if (row.changedSincePrinted) {
               <div class="badges-changed bold clr-md-amber-800">Changed since printed</div>
               }
-              <a class="badges-undo" (click)="markNotPrinted(row)" tabindex="0" role="button" (keydown.enter)="markNotPrinted(row)" (keydown.space)="markNotPrinted(row); $event.preventDefault()">Not printed</a>
               }
             </ng-template>
           </ngx-datatable-column>

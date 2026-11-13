@@ -11,6 +11,12 @@
     white-space: normal;
     overflow-wrap: anywhere;
   }
+
+  // ngx-datatable gives every body cell overflow-y: auto, so a cell a pixel taller than its row grew its own
+  // scroll bar (#2912). Rows are as tall as their content here, so a cell never needs to scroll.
+  ::ng-deep .datatable-body-cell {
+    overflow: visible;
+  }
 }
 
 .badges-search {
@@ -76,5 +82,6 @@
 }
 
 .badges-undo {
+  margin-left: 0.5rem;
   font-size: 0.9rem;
 }
