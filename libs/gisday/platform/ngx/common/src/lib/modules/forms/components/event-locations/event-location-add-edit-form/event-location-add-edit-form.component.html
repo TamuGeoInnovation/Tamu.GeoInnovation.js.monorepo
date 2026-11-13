@@ -10,6 +10,12 @@
 
     <div class="form-section-body">
       <div class="form-collection column pad-top">
+        <p class="trailer-1">Indicate the hosting organization (required). Address is inherited from the selected organization, and sessions at a venue without one are left off the Sessions page.</p>
+
+        <tamu-gisc-select formControlName="place" [data]="places$ | async" [valueTemplate]="'guid'" [displayTemplate]="'name'" [placeholder]="'Select hosting organization'"> </tamu-gisc-select>
+      </div>
+
+      <div class="form-collection column">
         <tamu-gisc-textbox formControlName="building" placeholder="Venue Name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
       </div>
 
@@ -23,12 +29,6 @@
 
       <div class="form-collection column">
         <tamu-gisc-textbox formControlName="link" placeholder="URL (Aggiemap, Google Maps, etc.)" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-      </div>
-
-      <div class="form-collection column">
-        <p class="trailer-1">Indicate the hosting organization. Address is inherited from the selected organization.</p>
-
-        <tamu-gisc-select formControlName="place" [data]="places$ | async" [valueTemplate]="'guid'" [displayTemplate]="'name'" [placeholder]="'Select hosting organization'"> </tamu-gisc-select>
       </div>
 
       <div class="form-collection column">
