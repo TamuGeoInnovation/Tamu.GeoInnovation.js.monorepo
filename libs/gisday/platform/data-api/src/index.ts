@@ -1,5 +1,6 @@
 // Entities
 export * from './lib/entities/all.entity';
+export * from './lib/entities/updated-time.subscriber';
 export * from './lib/_base/private-fields.interceptor';
 
 // Modules

@@ -15,9 +15,7 @@ import {
   FindOptionsRelations
 } from 'typeorm';
 
-
 // TODO:
-
 
 /**
  * A flat object of primitive values, as a GeoJSON feature's `properties`. Lives here, beside its only users (this file and
@@ -115,10 +113,13 @@ export class OldCompetitionEntity extends BaseEntity {
 
 @Entity()
 export class TimeStampEntity extends BaseEntity {
-  @UpdateDateColumn({ type: 'datetimeoffset' })
+  // Both default to SYSDATETIMEOFFSET(), which carries the database server's real offset. getdate() was its local time with no
+  // offset, stored as UTC, so on production every time read 5 or 6 hours early (#2584). An update's `updated` is set by
+  // UpdatedTimeSubscriber.
+  @UpdateDateColumn({ type: 'datetimeoffset', default: () => 'SYSDATETIMEOFFSET()' })
   public updated: Date;
 
-  @CreateDateColumn({ type: 'datetimeoffset' })
+  @CreateDateColumn({ type: 'datetimeoffset', default: () => 'SYSDATETIMEOFFSET()' })
   public created: Date;
 }
 
