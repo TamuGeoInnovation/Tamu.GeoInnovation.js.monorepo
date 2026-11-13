@@ -205,6 +205,22 @@ describe('SpeakerBadgesComponent', () => {
     expect(service.markBadgesPrinted).not.toHaveBeenCalled();
   });
 
+  it('says a printed badge is printed, with its date, and offers Undo rather than reading "Not printed" (#2912)', async () => {
+    const fixture = await open(printed);
+    const root = fixture.nativeElement as HTMLElement;
+
+    fixture.componentInstance.show.setValue('printed');
+    await settle(fixture);
+    const cells = Array.from(root.querySelectorAll('datatable-body-row')).map((r) => r.querySelectorAll('.datatable-body-cell')[5]);
+
+    expect(cells.map((c) => c.textContent.replace(/\s+/g, ' ').trim())).toEqual([
+      expect.stringMatching(/^Printed Nov 13, \d{1,2}:00 [AP]M Undo ?Changed since printed$/),
+      expect.stringMatching(/^Printed Nov 13, \d{1,2}:00 [AP]M Undo$/)
+    ]);
+    expect(cells.every((c) => !c.textContent.includes('Not printed'))).toBe(true);
+    expect((cells[0].querySelector('.badges-undo') as HTMLElement).title).toBe('Mark as not printed');
+  });
+
   it('marks one badge not printed again, and says so when marking fails', async () => {
     const fixture = await open(printed);
     const root = fixture.nativeElement as HTMLElement;
