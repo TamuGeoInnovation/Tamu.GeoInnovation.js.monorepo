@@ -4,7 +4,14 @@
   <div class="container12 presenter-search trailer-2">
     <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -- Not a control: it hears Escape and focus leaving from the box and the links inside it. -->
     <div class="presenter-search-box" (keydown.escape)="close()" (focusin)="panelOpen.set(true)" (input)="panelOpen.set(true)" (focusout)="leaving($event)">
-      <tamu-gisc-textbox type="text" placeholder="Find another presenter by name, organization or university" [formControl]="search"></tamu-gisc-textbox>
+      <tamu-gisc-textbox type="text" placeholder="Find another presenter by name, organization or university" [formControl]="search">
+        <!-- A way to dismiss a search, including one a link arrived with (#2923), in the textbox's own action slot. -->
+        @if (search.value) {
+        <span class="textbox-actions">
+          <span class="material-icons action search-clear" title="Clear the search" aria-label="Clear the search" tabindex="0" role="button" (click)="search.setValue('')" (keydown.enter)="search.setValue('')" (keydown.space)="search.setValue(''); $event.preventDefault()">close</span>
+        </span>
+        }
+      </tamu-gisc-textbox>
       <!-- The matches stay read while the panel is closed, so it opens on what is typed (#2923). -->
       @if (matches$ | async; as matches) { @if (panelOpen()) {
       <div class="search-results-container" role="listbox" aria-label="Other presenters">

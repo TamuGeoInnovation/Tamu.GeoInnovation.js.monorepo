@@ -1,25 +1,20 @@
-// The search box, centred above the cards, as wide as a few of them (#2859), with its copy button beside it (#2921).
-.search-row {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
-  width: 100%;
-}
+@import 'libs/sass/mixins';
 
+// The search box, centred above the cards, as wide as a few of them (#2859).
 .search tamu-gisc-textbox {
   width: 100%;
   max-width: 32rem;
 }
 
-.search-copy {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  white-space: nowrap;
+// The Copy in the box is the shared copy field's Copy (#2923).
+@import 'libs/sass/components/copy-button';
 
-  .material-icons {
-    font-size: 1.1rem;
-  }
+.search-actions {
+  @include flexbox();
+  @include align-items(center);
+  white-space: nowrap;
+}
+
+.search-clear {
+  cursor: pointer;
 }

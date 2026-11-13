@@ -1,16 +1,18 @@
 @if (view$ | async; as view) { @if (view.total > 0) {
 <!-- Search by first name, last name, organization (#2859) or university (#2869). -->
 <div class="container12 flex flex-column align-center search trailer-2">
-  <div class="search-row">
-    <tamu-gisc-textbox type="text" placeholder="Search by name, organization or university" [formControl]="search"></tamu-gisc-textbox>
-    <!-- A link to this list already searched, to send a company a page of its people (#2921). -->
-    @if (search.value.trim()) {
-    <button type="button" class="button snug secondary search-copy" clipboard-copy [text]="link()" (copying)="copied$ = $event" [attr.aria-label]="'Copy a link to these ' + view.shown.length + ' presenters'">
-      <span class="material-icons" aria-hidden="true">{{ (copied$ | async) ? 'check' : 'link' }}</span>
-      {{ (copied$ | async) ? 'Copied' : 'Copy link' }}
-    </button>
+  <tamu-gisc-textbox type="text" placeholder="Search by name, organization or university" [formControl]="search">
+    <!-- Copy and clear inside the box, in its own action slot, as AggieMap's copy field holds its Copy (#2923).
+         Copy gives a link to this list already searched, to send a company a page of its people (#2921). -->
+    @if (search.value) {
+    <span class="textbox-actions search-actions">
+      @if (search.value.trim()) {
+      <span class="copy-button" clipboard-copy [text]="link()" (copying)="copied$ = $event" [class.copying]="copied$ | async" copy-label="Copied!" tabindex="0" role="button" [attr.aria-label]="'Copy a link to these ' + view.shown.length + ' presenters'" (keydown.enter)="$any($event.target).click()" (keydown.space)="$any($event.target).click(); $event.preventDefault()">Copy link</span>
+      }
+      <span class="material-icons action search-clear" title="Clear the search" aria-label="Clear the search" tabindex="0" role="button" (click)="search.setValue('')" (keydown.enter)="search.setValue('')" (keydown.space)="search.setValue(''); $event.preventDefault()">close</span>
+    </span>
     }
-  </div>
+  </tamu-gisc-textbox>
   @if (search.value.trim()) {
   <p>{{view.count}}</p>
   }

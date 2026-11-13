@@ -140,6 +140,17 @@ describe('PeopleDetailsComponent search (#2919)', () => {
     expect(root.querySelector('.search-results-container')).toBeNull();
   });
 
+  it('clears the search from the x in the box', async () => {
+    const fixture = await open();
+    const root = await type(fixture, 'texas');
+
+    (root.querySelector('tamu-gisc-textbox .search-clear') as HTMLElement).click();
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.search.value).toBe('');
+    expect(root.querySelector('.search-clear')).toBeNull();
+  });
+
   it('closes and clears when a presenter is chosen', async () => {
     const fixture = await open();
     const root = await type(fixture, 'texas');
