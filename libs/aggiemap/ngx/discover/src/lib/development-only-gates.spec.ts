@@ -232,7 +232,11 @@ describe('development-only gates and the smoke suite agree (#2753)', () => {
     expect(build.excludedLayers.map((layer) => layer.name)).toEqual(['NATURE_RX']);
     expect(build.developmentOnlyMaps.map((map) => map.route)).toEqual(['/parking/ncaa-volleyball']);
     expect(build.developmentOnlyTiles).toEqual(['Code Maroon']);
-    expect(build.developmentOnlyPages).toEqual(['/map/d/trip/options']);
+    // Empty on both sides since #2895, and honestly so: the suite's list counts `/all-maps/` pages only, and the
+    // Transportation listing page was the one All Maps page with a `developmentOnly` route. So this pair agrees
+    // about nothing, and the three assertions above are what keep the cross-check from being vacuous. Gate another
+    // All Maps page and both sides fill again.
+    expect(build.developmentOnlyPages).toEqual([]);
   });
 });
 
