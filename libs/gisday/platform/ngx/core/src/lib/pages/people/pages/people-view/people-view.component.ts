@@ -5,7 +5,7 @@ import { Observable, combineLatest, shareReplay, map, of, startWith, switchMap }
 
 import { SeasonService, SpeakerService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { Speaker } from '@tamu-gisc/gisday/platform/data-api';
-import { SpeakerCardComponent } from '@tamu-gisc/gisday/platform/ngx/common';
+import { matchesText, SpeakerCardComponent } from '@tamu-gisc/gisday/platform/ngx/common';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
 
@@ -16,28 +16,15 @@ export function compareByLastName(a: Partial<Speaker>, b: Partial<Speaker>): num
   return byName.compare(a.lastName ?? '', b.lastName ?? '') || byName.compare(a.firstName ?? '', b.firstName ?? '');
 }
 
-/** Lower case, accents dropped, so "jose" finds "José". */
-function folded(text: string): string {
-  return (text ?? '').normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
-}
-
 /**
  * Whether the presenter's first name, last name, full name, organization (#2859) or university, by its name or its
  * abbreviation (#2869), contains the search text.
  */
 export function matchesSearch(speaker: Partial<Speaker>, search: string): boolean {
-  const wanted = folded(search).trim();
-
-  if (!wanted) {
-    return true;
-  }
-
-  return [
-    `${speaker.firstName ?? ''} ${speaker.lastName ?? ''}`,
-    speaker.organization?.name,
-    speaker.university?.name,
-    speaker.university?.acronym
-  ].some((field) => folded(field).includes(wanted));
+  return matchesText(
+    [`${speaker.firstName ?? ''} ${speaker.lastName ?? ''}`, speaker.organization?.name, speaker.university?.name, speaker.university?.acronym],
+    search
+  );
 }
 
 /** How many presenters the list holds, said under it: all of them, or how many of them a search shows (#2870). */

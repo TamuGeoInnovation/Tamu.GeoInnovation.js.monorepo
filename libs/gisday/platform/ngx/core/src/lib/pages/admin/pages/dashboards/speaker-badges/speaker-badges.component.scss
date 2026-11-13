@@ -1,0 +1,32 @@
+@import 'libs/sass/components/datatable';
+
+// The table as the admin's other sortable tables draw it (the research competition list, #2808).
+.datatable-container {
+  --datatable-height: auto;
+
+  // Five columns beside the admin menu: on a narrow screen the table scrolls in its own box, not the page.
+  overflow-x: auto;
+
+  ::ng-deep .datatable-body-cell-label {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+}
+
+.badges-search {
+  display: block;
+  max-width: 32rem;
+  margin-bottom: 0.75rem;
+}
+
+.badges-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+
+  p {
+    margin: 0;
+  }
+}
