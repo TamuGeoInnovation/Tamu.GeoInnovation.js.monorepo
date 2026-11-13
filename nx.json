@@ -190,6 +190,7 @@
         "libs/common/ngx/settings/**/*",
         "libs/common/ngx/ui/notification/**/*",
         "libs/common/ngx/ui/sidebar/**/*",
+        "libs/common/ngx/ui/theme/**/*",
         "libs/common/node/fs/**/*",
         "libs/common/node/images/**/*",
         "libs/common/types/**/*",

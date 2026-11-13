@@ -28,12 +28,9 @@ export const DEVELOPMENT_ONLY_LAYER_SOURCES: Array<{
     definition: 'NATURE_RX',
     searchSources: ['NATURE_RX', 'NATURE_RX_EXACT'],
     reason: '#2673: Nature Rx is on the map but not ready for production'
-  },
-  {
-    definition: 'MICROMOBILITY',
-    searchSources: [],
-    reason: '#2739: Micromobility, development-only on the main map as its own map is (#2712)'
   }
+  // Micromobility was the second entry here from #2739 until #2895, when its map went to production and its group
+  // came off the main map altogether.
 ];
 
 /** The definition keys a production build excludes from its layer sources. */

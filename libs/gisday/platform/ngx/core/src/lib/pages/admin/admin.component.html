@@ -10,6 +10,19 @@
     <!-- Left out of the page, not hidden: the grid styles for this column would override [hidden]. -->
     @if (!isMobile() || menuOpen()) {
     <ul class="column3 sidebar">
+      <!-- First: the page opened most, and read-only (#2878). -->
+      <li>
+        <a [routerLink]="['./dashboards']" queryParamsHandling="merge" routerLinkActive="active"><span class="material-icons">dashboard</span> Dashboards</a>
+        <ul class="sidebar_sublevel">
+          <li>
+            <a [routerLink]="['./dashboards/rsvps']" queryParamsHandling="merge" routerLinkActive="active">RSVPs</a>
+          </li>
+          <li>
+            <a [routerLink]="['./dashboards/speaker-badges']" queryParamsHandling="merge" routerLinkActive="active">Speaker badges</a>
+          </li>
+        </ul>
+      </li>
+
       <li>
         <a [routerLink]="['./broadcasts']" queryParamsHandling="merge" routerLinkActive="active"><span class="material-icons">podcasts</span>Broadcasts</a>
       </li>

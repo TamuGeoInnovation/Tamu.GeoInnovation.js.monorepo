@@ -1,6 +1,7 @@
 @if (imageExists$ | async) {
 <!-- Every caller shows the name beside the avatar, so the photo adds nothing for a screen reader. -->
-<img class="image" presenter="presenter" [src]="avatarImageUrl$ | async" alt="" />
+<!-- Loaded as it nears the screen, so a page of presenters does not wait for every photo (#2861). -->
+<img class="image" presenter="presenter" [src]="avatarImageUrl$ | async" alt="" loading="lazy" decoding="async" />
 } @else {
 <div class="image default">
   @if (fallbackStyle() === 'initials') {

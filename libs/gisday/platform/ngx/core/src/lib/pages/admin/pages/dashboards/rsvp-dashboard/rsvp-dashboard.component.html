@@ -1,0 +1,43 @@
+<div class="form">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">RSVPs</div>
+      <div class="form-section-actions">
+        <tamu-gisc-select class="post-1" placeholder="Season" [floatLabel]="false" [data]="seasons$ | async" displayTemplate="year" valueTemplate="guid" [value]="(selectedSeason$ | async)?.guid" (changed)="setSeason($event)"></tamu-gisc-select>
+      </div>
+    </div>
+
+    <div class="form-section-body">
+      @if (failed()) {
+      <p class="error">The RSVPs could not be read. Try again in a moment.</p>
+      } @else if (dashboard(); as view) {
+      <p class="rsvp-summary">
+        <strong>{{ totals().total }}</strong> {{ totals().total === 1 ? 'RSVP' : 'RSVPs' }} for {{ view.events.length }} {{ view.events.length === 1 ? 'event' : 'events' }}.
+        @if (view.unreadAccounts > 0) {
+        {{ view.unreadAccounts }} {{ view.unreadAccounts === 1 ? 'account' : 'accounts' }} could not be read and {{ view.unreadAccounts === 1 ? 'is' : 'are' }} counted as Not given.
+        }
+      </p>
+
+      <h3 class="rsvp-heading">RSVPs over time</h3>
+      <p class="rsvp-note">
+        The running total at the end of each day, in Central time, with each day's new RSVPs beneath and the GIS Day week shaded. Hover for a day's numbers; drag across the chart to zoom in, and double-click to see it all again.
+        {{ expandedEvent() ? 'The second line is the event opened below.' : 'Open an event below to add its own line.' }}
+      </p>
+      <tamu-gisc-line-chart [series]="series()" [bars]="daily()" [bands]="bands()" [steps]="true" unit="RSVPs" label="RSVPs over time, as a running total by day, with each day's new RSVPs"></tamu-gisc-line-chart>
+
+      <h3 class="rsvp-heading">By event</h3>
+      @if (view.events.length > 0) {
+      <p class="rsvp-note">Click a heading to sort by it, and again to reverse it. Click an event to see who RSVP'd.</p>
+      <tamu-gisc-dashboard-table [rows]="rows()" [columns]="columns" nameLabel="Event" totalLabel="All events" (toggled)="toggle($event)">
+        <ng-template tamuGiscDashboardRowDetail>
+          <tamu-gisc-dashboard-people [people]="people()" [failed]="peopleFailed()" [fileName]="fileName()" dateLabel="RSVP'd" emptyText="Nobody has RSVP'd for this event yet."></tamu-gisc-dashboard-people>
+        </ng-template>
+      </tamu-gisc-dashboard-table>
+      } @else {
+      <p>The selected season has no events.</p>
+      } } @else {
+      <p>Reading the RSVPs...</p>
+      }
+    </div>
+  </div>
+</div>

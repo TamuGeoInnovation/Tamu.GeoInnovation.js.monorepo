@@ -223,15 +223,20 @@ describe('development-only gates and the smoke suite agree (#2753)', () => {
     expect(disagreements(buildSide(), SUITE)).toEqual([]);
   });
 
+  // #2895 sent Micromobility and Sustainable Transportation to production and took the Transportation tile and its
+  // listing page with them, so each of these lists is shorter by one or two. Each must still be non-empty, which is
+  // the whole point of this test: an agreement between two empty lists agrees about nothing.
   it('reads both kinds of build-time gate, so the agreement above is not empty', () => {
     const build = buildSide();
 
-    expect(build.excludedLayers.map((layer) => layer.name)).toEqual(expect.arrayContaining(['NATURE_RX', 'MICROMOBILITY']));
-    expect(build.developmentOnlyMaps.map((map) => map.route)).toEqual(
-      expect.arrayContaining(['/transportation/micromobility', '/parking/ncaa-volleyball', '/transportation/sustainable-transportation'])
-    );
-    expect(build.developmentOnlyTiles).toEqual(expect.arrayContaining(['Code Maroon', 'Transportation']));
-    expect(build.developmentOnlyPages).toEqual(['/all-maps/transportation']);
+    expect(build.excludedLayers.map((layer) => layer.name)).toEqual(['NATURE_RX']);
+    expect(build.developmentOnlyMaps.map((map) => map.route)).toEqual(['/parking/ncaa-volleyball']);
+    expect(build.developmentOnlyTiles).toEqual(['Code Maroon']);
+    // Empty on both sides since #2895, and honestly so: the suite's list counts `/all-maps/` pages only, and the
+    // Transportation listing page was the one All Maps page with a `developmentOnly` route. So this pair agrees
+    // about nothing, and the three assertions above are what keep the cross-check from being vacuous. Gate another
+    // All Maps page and both sides fill again.
+    expect(build.developmentOnlyPages).toEqual([]);
   });
 });
 

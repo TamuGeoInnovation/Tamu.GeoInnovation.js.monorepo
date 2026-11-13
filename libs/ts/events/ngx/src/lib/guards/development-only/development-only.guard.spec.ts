@@ -34,16 +34,18 @@ describe('DevelopmentOnlyMapGuard', () => {
 
   const linkTo = (eventId: string) => ({ params: { eventId } }) as unknown as ActivatedRouteSnapshot;
 
+  // Micromobility was the example here until #2895 sent it to production. The NCAA Volleyball map is the
+  // development-only one now, until Texas A&M is announced as a host.
   it('sends a link to a development-only map to the main map on production', () => {
     const { guard, router } = guardOn(false);
 
-    const result = guard.canActivate(linkTo('micromobility'));
+    const result = guard.canActivate(linkTo('ncaa-volleyball'));
 
     expect(result instanceof UrlTree && router.serializeUrl(result)).toBe('/map');
   });
 
   it('opens a development-only map where development-only features are on', () => {
-    expect(guardOn(true).guard.canActivate(linkTo('micromobility'))).toBe(true);
+    expect(guardOn(true).guard.canActivate(linkTo('ncaa-volleyball'))).toBe(true);
   });
 
   it('opens every other map on production', () => {

@@ -36,7 +36,7 @@ export const SECTIONS_ON_EVERY_ENVIRONMENT = ['Bus Routes', 'Directions'];
  * Listed by the label the tile renders. When a tile goes to production, take it out of this list; the
  * check then requires it to be present everywhere instead.
  */
-export const DEVELOPMENT_ONLY_ALL_MAPS_TILES = ['Code Maroon', 'Transportation'];
+export const DEVELOPMENT_ONLY_ALL_MAPS_TILES = ['Code Maroon'];
 
 /**
  * Pages that are not ready for production, which must not open there, each with where production lands instead
@@ -45,11 +45,9 @@ export const DEVELOPMENT_ONLY_ALL_MAPS_TILES = ['Code Maroon', 'Transportation']
  * Hiding a link leaves its page answering its address, so each page here is gated on its route too (`developmentOnly`
  * in the route's `data`, with the `developmentOnlyRoute` guard, which sends it one segment up its address) and opened by address.
  *
- * - The Transportation section lists only development-only maps, so on production it was a reachable, empty category.
  * - The trip planner's Options offers only accessible routing, which the routing network does not support yet.
  */
 export const DEVELOPMENT_ONLY_PAGES: Record<string, string> = {
-  '/all-maps/transportation': '/all-maps',
   '/map/d/trip/options': '/map/d/trip'
 };
 
@@ -157,17 +155,6 @@ export const DEVELOPMENT_ONLY_SERVICES: Record<
     reason: '#2673: Nature Rx is on the map but not ready for production',
     pages: []
   },
-  // Transportation's Micromobility map (#2712), on its approved paths service (#2812), which is published on the
-  // development GIS server only and named there outright, so localhost requests it too. What is not ready is the map,
-  // which `developmentOnly` keeps off production as a whole: it is listed nowhere there and its link opens the main
-  // map. So production must never request this, and development requests it from the map's link.
-  // The main map has it too, as a group off until a visitor turns it on (#2739), which a production build leaves out
-  // (`development-only-sources.ts`). Off or not, the main map asks for its three layers' descriptions as it loads, so
-  // development requests it from `/map` unprompted and production, which must not, is checked there.
-  'Hosted/Approved_Micromobility_Paths_view/FeatureServer': {
-    reason: '#2712, #2739, #2812: the Micromobility map, and its layers on the main map',
-    pages: ['/transportation/micromobility', '/map']
-  },
   // The NCAA Volleyball 1st & 2nd Round map (#2713), published on the development GIS server only and kept off
   // production by `developmentOnly` until Texas A&M is announced as a host on 29 November. Named on that server
   // outright, so localhost requests it too and `developmentGisServer` does not apply.
@@ -192,15 +179,8 @@ export const DEVELOPMENT_ONLY_SERVICES: Record<
  * listed here and no longer hidden fails too.
  */
 export const LISTINGS_HIDDEN_FROM_PRODUCTION: Record<string, string> = {
-  '/events/april-ring-day':
-    'hidden by #899 (All Maps overhaul, 5 August 2026) with no reason recorded; ask before listing it',
-  '/events/move-out':
-    '#1691, #1704: hidden while its three dated periods are reviewed, so the page offers one entry per move-out',
-  // It was checked by a control on the Transportation section's page, which production cannot open since #2788, so
-  // that check could only time out. Sustainable Transportation's listing went the same way and needs no entry: its map
-  // is `developmentOnly`, and the development-only map check opens its address (#2801).
-  '/map/d/bus':
-    '#2743, #1229: bus routes are development-only, and its only listing is in the Transportation section, itself development-only (#2788)'
+  '/events/april-ring-day': 'hidden by #899 (All Maps overhaul, 5 August 2026) with no reason recorded; ask before listing it',
+  '/events/move-out': '#1691, #1704: hidden while its three dated periods are reviewed, so the page offers one entry per move-out'
 };
 
 /** Whether the environment under test renders the development variant. */

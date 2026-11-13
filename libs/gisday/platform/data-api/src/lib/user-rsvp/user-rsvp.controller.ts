@@ -1,12 +1,24 @@
-import { Body, Controller, Delete, Get, NotImplementedException, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  NotImplementedException,
+  Param,
+  Patch,
+  Post,
+  Req,
+  UseGuards
+} from '@nestjs/common';
 
 import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 
 import { UserRsvpProvider } from './user-rsvp.provider';
+import { RsvpDashboardProvider } from './rsvp-dashboard.provider';
 
 @Controller('rsvps')
 export class UserRsvpController {
-  constructor(private readonly provider: UserRsvpProvider) {}
+  constructor(private readonly provider: UserRsvpProvider, private readonly dashboard: RsvpDashboardProvider) {}
 
   @UseGuards(JwtGuard)
   @Get('/user/event/:guid')
@@ -18,6 +30,22 @@ export class UserRsvpController {
   @Get('/user/')
   public async getUserRsvps(@Req() req) {
     return this.provider.getUserRsvps(req.user.sub);
+  }
+
+  /** The admin RSVP dashboard (#2878): each of a season's events, counted by person type. Counts only, no names. */
+  @Permissions(['read:rsvps'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Get('dashboard/season/:guid')
+  public async getDashboardForSeason(@Param('guid') guid: string) {
+    return this.dashboard.getSeason(guid);
+  }
+
+  /** The people who RSVP'd for one event, for the dashboard's expanded row and its CSV (#2878). */
+  @Permissions(['read:rsvps'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Get('dashboard/event/:guid')
+  public async getDashboardForEvent(@Param('guid') guid: string) {
+    return this.dashboard.getEvent(guid);
   }
 
   @Permissions(['read:rsvps'])
