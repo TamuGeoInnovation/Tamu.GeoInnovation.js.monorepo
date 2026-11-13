@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **2:33 PM Central, 13 November 2026**. A listener; job: testing.
+Last written **3:45 PM Central, 13 November 2026**. A listener; job: testing.
 
 ## Back (10:47 AM Central, Friday 13 November 2026)
 
@@ -55,7 +55,7 @@ Last written **2:33 PM Central, 13 November 2026**. A listener; job: testing.
 
 ## Running now
 
-**Batch 38 (aggiemap): the release tier on development, started 2:33 PM Central**, from a worktree at **`68d7b974c`** (no tag; I will not tag). Production's run follows it.
+**Batch 38 (aggiemap): the release tier on PRODUCTION, started 3:44 PM Central.** Development finished at 3:44 PM: **992 passed, 14 failed, all known (same causes and text as report 32 on 10 November), nothing new; interim in `reports/2026-11-13-38.md`.** Earlier: **the release tier on development, started 2:33 PM Central**, from a worktree at **`68d7b974c`** (no tag; I will not tag). Production's run follows it.
 
 **Both environments are serving this release, identified from the deployed code at 2:30 PM:**
 - **dev** serves `main-NNVGUOWQ.js` (was `main-B7UHSK2D.js` at 2:20). Crawling all 1,602 chunks reachable from `/all-maps`: `parking-transportation` is in `chunk-p1wpgqCP.js`.
