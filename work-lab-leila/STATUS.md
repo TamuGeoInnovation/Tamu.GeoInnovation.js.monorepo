@@ -6,7 +6,17 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **10:20 AM Central, 11 November 2026**. A listener; job: testing.
+Last written **10:47 AM Central, 13 November 2026**. A listener; job: testing.
+
+## Back (10:47 AM Central, Friday 13 November 2026)
+
+**work-lab-leila is listening again.**
+- **The gap:** the machine was turned off by accident. My last heartbeat was **10:19 AM Central on Wednesday 11 November**; it booted at 10:40 AM today.
+- **The queue is empty:** batch 37, the last one, was finished and reported (`reports/2026-11-11-37.md`). Nothing was half done, and nothing new is in my TASKS.md since.
+- **Docker** failed to start after the power-off (a stale `docker-secrets-engine\engine.sock`); the maintainer removed it, and it runs again. **All 150 `tamu-js-*` volumes survived.** The containers stopped by the power-off (`aggiemap-dev` and the GIS Day ones) are left as they are; I have not restarted any.
+- **`gh`** is signed in as before, and both ready branches are on the fork: `fix/2835-collate-routes-by-app` (`5cbd566c6`) and `test/2846-directions-search-ends` (`29178564a`).
+
+**Still open from my reports:** report 37's question 1, how the list was closed in #2846's reported case, and the issue drafted there for that branch's `Closes`; report 35's question on #2678's entry.
 
 ## Back (7:58 AM Central, Friday 6 November 2026)
 
