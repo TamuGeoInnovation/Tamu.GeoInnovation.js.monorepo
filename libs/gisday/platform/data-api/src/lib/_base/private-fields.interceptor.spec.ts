@@ -17,7 +17,17 @@ import { SponsorController } from '../sponsor/sponsor.controller';
 import { SponsorProvider } from '../sponsor/sponsor.provider';
 import { PRIVATE_FIELDS, PrivateFieldsInterceptor, withoutPrivateFields } from './private-fields.interceptor';
 
-const PRIVATE_KEYS = ['contactFirstName', 'contactLastName', 'contactEmail', 'sponsorshipAmount', 'email', 'accountGuid'];
+const PRIVATE_KEYS = [
+  'contactFirstName',
+  'contactLastName',
+  'contactEmail',
+  'sponsorshipAmount',
+  'email',
+  'accountGuid',
+  // Whether a badge is printed is for the admins who print them (#2908).
+  'badgePrintedAt',
+  'badgePrintedText'
+];
 
 function organization() {
   return Object.assign(new Organization(), {
@@ -36,6 +46,8 @@ function speaker() {
     lastName: 'Lee',
     email: 'sam@example.com',
     accountGuid: 'auth0|speaker-1',
+    badgePrintedAt: new Date('2026-11-13T17:00:00Z'),
+    badgePrintedText: "Sam|Lee|An organization|",
     organization: organization()
   });
 }
@@ -202,10 +214,10 @@ describe('PrivateFieldsInterceptor', () => {
       expect(o).toMatchObject({ contactFirstName: 'Pat', contactLastName: 'Doe', contactEmail: 'pat@example.com' });
     });
 
-    it('gets the speakers with their emails and accounts', async () => {
+    it('gets the speakers with their emails, accounts and printed badges', async () => {
       const [s] = await get('/speakers');
 
-      expect(s).toMatchObject({ email: 'sam@example.com', accountGuid: 'auth0|speaker-1' });
+      expect(s).toMatchObject({ email: 'sam@example.com', accountGuid: 'auth0|speaker-1', badgePrintedText: 'Sam|Lee|An organization|' });
     });
   });
 

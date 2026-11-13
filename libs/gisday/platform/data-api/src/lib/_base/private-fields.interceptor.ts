@@ -25,7 +25,8 @@ export const PRIVATE_FIELDS: Array<{ type: new () => object; fields: Array<strin
     fields: ['contactFirstName', 'contactLastName', 'contactEmail'],
     permission: 'update:organizations'
   },
-  { type: Speaker, fields: ['email', 'accountGuid'], permission: 'update:speakers' }
+  // Whether a speaker's badge is printed is for the admins who print them (#2908).
+  { type: Speaker, fields: ['email', 'accountGuid', 'badgePrintedAt', 'badgePrintedText'], permission: 'update:speakers' }
 ];
 
 /**

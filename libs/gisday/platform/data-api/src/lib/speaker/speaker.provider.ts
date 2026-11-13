@@ -302,6 +302,41 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
     }
   }
 
+  /**
+   * Marks these speakers' badges printed, now, each with what its badge said, so the badges page can tell when one
+   * has changed since (#2908). Answers how many were marked; a guid that is no speaker is left out.
+   */
+  public async markBadgesPrinted(badges: Array<{ guid: string; text: string }>): Promise<{ marked: number }> {
+    const wanted = (badges ?? []).filter((b) => typeof b?.guid === 'string' && b.guid && typeof b.text === 'string');
+
+    if (wanted.length === 0) {
+      throw new BadRequestException('No badges to mark printed.');
+    }
+
+    const now = new Date();
+    let marked = 0;
+
+    for (const badge of wanted) {
+      const result = await this.speakerRepo.update({ guid: badge.guid }, { badgePrintedAt: now, badgePrintedText: badge.text.slice(0, 1000) });
+      marked += result.affected ?? 0;
+    }
+
+    return { marked };
+  }
+
+  /** Clears these speakers' printed mark, so their badges show as not printed again (#2908). */
+  public async clearBadgesPrinted(guids: Array<string>): Promise<{ cleared: number }> {
+    const wanted = (guids ?? []).filter((g) => typeof g === 'string' && g);
+
+    if (wanted.length === 0) {
+      throw new BadRequestException('No badges to mark not printed.');
+    }
+
+    const result = await this.speakerRepo.update({ guid: In(wanted) }, { badgePrintedAt: null, badgePrintedText: null });
+
+    return { cleared: result.affected ?? 0 };
+  }
+
   public async copySpeakersIntoSeason(seasonGuid: string, existingEntityGuids: Array<string>) {
     const season = await this.seasonService.findOne({
       where: {
@@ -328,6 +363,9 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
       delete entity.guid;
       delete entity.created;
       delete entity.updated;
+      // A badge printed for one season is not printed for the next (#2908).
+      entity.badgePrintedAt = null;
+      entity.badgePrintedText = null;
 
       if (entity.images?.length > 0) {
         entity.images = entity.images.map((image) => {

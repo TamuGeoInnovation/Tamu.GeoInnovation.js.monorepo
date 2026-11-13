@@ -27,6 +27,7 @@ describe('SpeakerProvider', () => {
     findOne: jest.fn(),
     create: jest.fn(),
     save: jest.fn(),
+    update: jest.fn(),
     manager: { transaction: jest.fn() }
   });
 
@@ -379,6 +380,46 @@ describe('SpeakerProvider', () => {
     });
   });
 
+  describe('badges printed (#2908)', () => {
+    it('marks each badge printed at one time, with what it said, and says how many', async () => {
+      jest.spyOn(speakerRepo, 'update').mockResolvedValue({ affected: 1 } as never);
+
+      await expect(
+        provider.markBadgesPrinted([
+          { guid: 's-1', text: "Ana|Lee|Esri|'11" },
+          { guid: 's-2', text: 'Pat|Kim|TWDB|' }
+        ])
+      ).resolves.toEqual({ marked: 2 });
+
+      const calls = (speakerRepo.update as jest.Mock).mock.calls;
+      expect(calls.map((c) => [c[0], c[1].badgePrintedText])).toEqual([
+        [{ guid: 's-1' }, "Ana|Lee|Esri|'11"],
+        [{ guid: 's-2' }, 'Pat|Kim|TWDB|']
+      ]);
+      expect(calls[0][1].badgePrintedAt).toBeInstanceOf(Date);
+      expect(calls[0][1].badgePrintedAt).toBe(calls[1][1].badgePrintedAt);
+    });
+
+    it('counts only the speakers it found', async () => {
+      jest.spyOn(speakerRepo, 'update').mockResolvedValueOnce({ affected: 1 } as never).mockResolvedValueOnce({ affected: 0 } as never);
+
+      await expect(provider.markBadgesPrinted([{ guid: 's-1', text: 'a' }, { guid: 'gone', text: 'b' }])).resolves.toEqual({ marked: 1 });
+    });
+
+    it('refuses an empty or malformed list rather than marking nothing silently', async () => {
+      await expect(provider.markBadgesPrinted([])).rejects.toThrow(BadRequestException);
+      await expect(provider.markBadgesPrinted([{ guid: '', text: 'a' }] as never)).rejects.toThrow(BadRequestException);
+      await expect(provider.clearBadgesPrinted([])).rejects.toThrow(BadRequestException);
+    });
+
+    it('clears the mark and what the badge said', async () => {
+      jest.spyOn(speakerRepo, 'update').mockResolvedValue({ affected: 2 } as never);
+
+      await expect(provider.clearBadgesPrinted(['s-1', 's-2'])).resolves.toEqual({ cleared: 2 });
+      expect((speakerRepo.update as jest.Mock).mock.calls[0][1]).toEqual({ badgePrintedAt: null, badgePrintedText: null });
+    });
+  });
+
   describe('.copySpeakersIntoSeason()', () => {
     it('rejects a season that does not exist', async () => {
       jest.spyOn(seasonService, 'findOne').mockResolvedValue(null);
@@ -403,6 +444,8 @@ describe('SpeakerProvider', () => {
         created: new Date(),
         updated: new Date(),
         firstName: 'A',
+        badgePrintedAt: new Date(),
+        badgePrintedText: 'A||Esri|',
         images: [{ guid: 'i-1', created: new Date(), updated: new Date() }]
       } as unknown as Speaker;
 
@@ -417,6 +460,9 @@ describe('SpeakerProvider', () => {
       const passed = (speakerRepo.create as jest.Mock).mock.calls[0][0];
       expect(passed.guid).toBeUndefined();
       expect(passed.season).toEqual({ guid: 'season-2' });
+      // Last season's printed badge is not this season's (#2908).
+      expect(passed.badgePrintedAt).toBeNull();
+      expect(passed.badgePrintedText).toBeNull();
       // The image is a separate row; carrying its guid would move it off the original speaker.
       expect(passed.images[0].guid).toBeUndefined();
       expect(passed.firstName).toBe('A');
