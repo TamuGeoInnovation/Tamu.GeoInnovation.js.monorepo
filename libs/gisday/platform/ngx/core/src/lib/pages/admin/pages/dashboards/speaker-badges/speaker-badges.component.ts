@@ -131,7 +131,7 @@ export class SpeakerBadgesComponent extends BaseAdminListComponent<Speaker> impl
 
   public readonly columns = BADGE_COLUMNS;
   public readonly showOptions = BADGE_SHOW_OPTIONS;
-  public readonly search = new FormControl('', { nonNullable: true });
+  // `search` is the admin list pages' own (#2914); this page filters by it itself, with matchesBadge.
   public readonly show = new FormControl<BadgeShow>('not-printed', { nonNullable: true });
   public view$: Observable<{ all: number; notPrinted: number; changed: number; shown: Array<SpeakerBadge> }>;
 

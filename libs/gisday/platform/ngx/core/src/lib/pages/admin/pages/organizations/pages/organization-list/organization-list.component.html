@@ -14,7 +14,7 @@
         <p class="trailer-1">Affiliations are institutions which a speaker is a member of and represents during an event (e.g. company, university).</p>
       </div>
 
-      <tamu-gisc-admin-search [control]="search" placeholder="Search by name" [counts]="searchCounts$ | async"></tamu-gisc-admin-search>
+      <tamu-gisc-admin-search [control]="search" placeholder="Search by name" one="organization" many="organizations" [counts]="searchCounts$ | async"></tamu-gisc-admin-search>
 
       @if (entitiesForActiveSeasonOrForSeasonGuid$ | async; as entities) { @if (entities?.length > 0) {
       <table class="floating-table">

@@ -10,6 +10,8 @@ describe('AdminSearchComponent', () => {
     const fixture = TestBed.createComponent(AdminSearchComponent);
     fixture.componentRef.setInput('control', new FormControl(value, { nonNullable: true }));
     fixture.componentRef.setInput('placeholder', 'Search by name');
+    fixture.componentRef.setInput('one', 'class');
+    fixture.componentRef.setInput('many', 'classes');
     fixture.componentRef.setInput('counts', { shown: 2, total: 9 });
     fixture.detectChanges();
 
@@ -17,10 +19,10 @@ describe('AdminSearchComponent', () => {
   }
 
   it('says how many it shows of how many while searching', () => {
-    expect(open('tex').querySelector('.admin-search-count').textContent.replace(/\s+/g, ' ').trim()).toBe('Showing 2 of 9.');
+    expect(open('tex').querySelector('.admin-search-count').textContent.replace(/\s+/g, ' ').trim()).toBe('Showing 2 of 9 classes.');
   });
 
-  it('says nothing about counts with no search', () => {
-    expect(open('').querySelector('.admin-search-count')).toBeNull();
+  it('says how many the list holds with no search', () => {
+    expect(open('').querySelector('.admin-search-count').textContent.replace(/\s+/g, ' ').trim()).toBe('9 classes.');
   });
 });

@@ -32,7 +32,7 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
   private readonly router = inject(Router);
   private readonly modalService = inject(ModalService);
   private readonly notificationService = inject(NotificationService);
-  private readonly destroyRef = inject(DestroyRef);
+  private readonly listDestroyRef = inject(DestroyRef);
 
   public seasons$ = this.seasonService.seasons$;
   public activeSeason$ = this.seasonService.activeSeason$;
@@ -116,7 +116,7 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
     this.searchCounts$ = searched$.pipe(map(({ all, shown }) => ({ shown: shown?.length ?? 0, total: all?.length ?? 0 })));
 
     // A row the search hides cannot stay selected, or an action on "the selected rows" would act on rows not shown.
-    this.search.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this._selectRow$.next(null));
+    this.search.valueChanges.pipe(takeUntilDestroyed(this.listDestroyRef)).subscribe(() => this._selectRow$.next(null));
 
     this.selectedRows$ = this._selectRow$.pipe(
       scan((acc, guidOrList) => {

@@ -14,7 +14,7 @@
         <p class="trailer-1">Organizations are geographic areas or groups that host a GIS Day event. An organization has multiple physical <a routerLink="">venues</a> where sessions are hosted.</p>
       </div>
 
-      <tamu-gisc-admin-search [control]="search" placeholder="Search by name, city, state or ZIP" [counts]="searchCounts$ | async"></tamu-gisc-admin-search>
+      <tamu-gisc-admin-search [control]="search" placeholder="Search by name, city, state or ZIP" one="affiliation" many="affiliations" [counts]="searchCounts$ | async"></tamu-gisc-admin-search>
 
       @if (entitiesForActiveSeasonOrForSeasonGuid$ | async; as entities) { @if (entities.length > 0) {
       <table class="floating-table">

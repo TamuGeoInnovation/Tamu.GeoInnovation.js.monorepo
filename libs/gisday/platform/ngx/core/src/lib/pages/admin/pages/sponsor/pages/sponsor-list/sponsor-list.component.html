@@ -10,7 +10,7 @@
     </div>
 
     <div class="form-section-body">
-      <tamu-gisc-admin-search [control]="search" placeholder="Search by name or level" [counts]="searchCounts$ | async"></tamu-gisc-admin-search>
+      <tamu-gisc-admin-search [control]="search" placeholder="Search by name or level" one="sponsor" many="sponsors" [counts]="searchCounts$ | async"></tamu-gisc-admin-search>
 
       @if (entitiesForActiveSeasonOrForSeasonGuid$ | async; as entities) { @if (entities?.length > 0) {
       <table class="floating-table">

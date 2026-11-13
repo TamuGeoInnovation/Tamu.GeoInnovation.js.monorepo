@@ -14,7 +14,7 @@
         <p class="trailer-1">Participating professors can request their classes added, where students can register and and receive credit for attending events.</p>
       </div>
 
-      <tamu-gisc-admin-search [control]="search" placeholder="Search by code, section, name or professor" [counts]="searchCounts$ | async"></tamu-gisc-admin-search>
+      <tamu-gisc-admin-search [control]="search" placeholder="Search by code, section, name or professor" one="class" many="classes" [counts]="searchCounts$ | async"></tamu-gisc-admin-search>
 
       @if (entitiesForActiveSeasonOrForSeasonGuid$ | async; as entities) { @if (entities?.length > 0) {
       <table class="floating-table">

@@ -13,7 +13,7 @@
         <p>Venues are physical areas located within or in the surrounding area of an event hosted by a {{ site.name }} <a [routerLink]="['/admin/places']" routerLinkActive="router-link-active">organization</a>. Examples include campus buildings, arenas, auditoriums, restaurants, and bars.</p>
       </div>
 
-      <tamu-gisc-admin-search [control]="search" placeholder="Search by building, room or affiliation" [counts]="searchCounts$ | async"></tamu-gisc-admin-search>
+      <tamu-gisc-admin-search [control]="search" placeholder="Search by building, room or affiliation" one="venue" many="venues" [counts]="searchCounts$ | async"></tamu-gisc-admin-search>
 
       @if (entitiesForActiveSeasonOrForSeasonGuid$ | async; as entities) { @if (entities?.length > 0) {
       <table class="floating-table">
