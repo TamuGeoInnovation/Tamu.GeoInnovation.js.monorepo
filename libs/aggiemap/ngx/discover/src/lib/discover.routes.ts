@@ -1,7 +1,5 @@
 import { Routes } from '@angular/router';
 
-import { developmentOnlyRoute } from '@tamu-gisc/dev-tools/application-testing';
-
 import { AllMapsComponent } from './components/all-maps/all-maps.component';
 import { ParkingMapsComponent } from './components/parking-maps/parking-maps.component';
 import { EventMapsComponent } from './components/event-maps/event-maps.component';
@@ -28,19 +26,6 @@ export const discoverRoutes: Routes = [
         { id: 'spring', heading: 'Spring' },
         { id: 'summer', heading: 'Summer' }
       ]
-    }
-  },
-  {
-    path: 'transportation',
-    component: EventMapsComponent,
-    // Development-only, as its tile is, until the maintainer says otherwise (#2788). Every map it lists is
-    // development-only, so on production it would be a reachable, empty category.
-    canActivate: [developmentOnlyRoute],
-    data: {
-      developmentOnly: 'every map it lists is development-only (#2788)',
-      mapType: 'transportation',
-      title: 'Transportation',
-      intro: 'Browse maps for getting around campus: micromobility, bus routes and sustainable transportation.'
     }
   },
   {

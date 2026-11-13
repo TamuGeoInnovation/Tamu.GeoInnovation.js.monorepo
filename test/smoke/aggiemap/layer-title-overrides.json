@@ -13,30 +13,6 @@
   },
   {
     "map": "main",
-    "layer": "bike-dismount-zones-layer",
-    "title": "Dismount Zones",
-    "reason": "unreviewed (#1523)"
-  },
-  {
-    "map": "main",
-    "layer": "bike-fix-stations-layer",
-    "title": "Bike Fix Stations",
-    "reason": "unreviewed (#1523)"
-  },
-  {
-    "map": "main",
-    "layer": "bike-lanes-layer",
-    "title": "Campus Bike Lanes",
-    "reason": "unreviewed (#1523)"
-  },
-  {
-    "map": "main",
-    "layer": "bike-racks-map-layer",
-    "title": "Bike Racks",
-    "reason": "unreviewed (#1523)"
-  },
-  {
-    "map": "main",
     "layer": "bonfire-layer",
     "title": "Bonfire Memorial",
     "reason": "unreviewed (#1523)"
@@ -49,12 +25,6 @@
   },
   {
     "map": "main",
-    "layer": "city-bike-lanes-routes-layer",
-    "title": "City Bike Lanes and Routes",
-    "reason": "unreviewed (#1523)"
-  },
-  {
-    "map": "main",
     "layer": "construction_zone-layer",
     "title": "Construction Zones",
     "reason": "unreviewed (#1523)"
@@ -63,12 +33,6 @@
     "map": "main",
     "layer": "emergency-phones-layer",
     "title": "Emergency Phones",
-    "reason": "unreviewed (#1523)"
-  },
-  {
-    "map": "main",
-    "layer": "ev-charge-stations-layer",
-    "title": "EV Charge Stations (Main + RELLIS)",
     "reason": "unreviewed (#1523)"
   },
   {
