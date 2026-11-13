@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   CUSTOM_ELEMENTS_SCHEMA,
+  DOCUMENT,
   ElementRef,
   Injector,
   OnDestroy,
@@ -17,6 +18,8 @@ import {
 import { take } from 'rxjs/operators';
 
 import { EsriMapService, MapConfig, MapHost, MapServiceInstance } from '../../services/map/map.service';
+import { followPageTheme, followPageThemeOnBasemap } from '../../page-theme';
+import { EsriModuleProviderService } from '../../services/module-provider/module-provider.service';
 
 import esri = __esri;
 
@@ -48,6 +51,15 @@ import esri = __esri;
 export class EsriMapComponent implements OnInit, OnDestroy, MapHost {
   private readonly mapService = inject(EsriMapService);
   private readonly injector = inject(Injector);
+  private readonly document = inject(DOCUMENT);
+  private readonly mp = inject(EsriModuleProviderService);
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+
+  /** Stops following the page's light or dark theme (see page-theme.ts). */
+  private readonly unfollow: Array<() => void> = [];
+
+  /** Puts Calcite's mode on a map element drawn since the page's theme was last applied. */
+  private refreshTheme: (() => void) | undefined;
 
   public readonly config = input<MapConfig>(undefined);
 
@@ -89,10 +101,21 @@ export class EsriMapComponent implements OnInit, OnDestroy, MapHost {
       this.loaded.emit(store);
     });
 
+    // Esri's widget stylesheet, light or dark as the page is. It was imported light-only by this component's
+    // stylesheet; a <link> can be swapped while the page is open.
+    const theme = followPageTheme(this.document, () => [
+      this.host.nativeElement,
+      this.flat()?.nativeElement,
+      this.globe()?.nativeElement
+    ]);
+    this.refreshTheme = theme.refresh;
+    this.unfollow.push(theme.stop);
+
     this.open(config);
   }
 
   public ngOnDestroy() {
+    this.unfollow.forEach((stop) => stop());
     this.mapService.destroy();
   }
 
@@ -117,7 +140,12 @@ export class EsriMapComponent implements OnInit, OnDestroy, MapHost {
       import('@arcgis/map-components/components/arcgis-compass')
     ]);
 
-    await this.draw(() => this.scene.set(true), () => this.globe(), properties);
+    await this.draw(
+      () => this.scene.set(true),
+      () => this.globe(),
+      properties
+    );
+    this.refreshTheme?.();
 
     return this.globe().nativeElement.view;
   }
@@ -130,9 +158,18 @@ export class EsriMapComponent implements OnInit, OnDestroy, MapHost {
       import('@arcgis/map-components/components/arcgis-track')
     ]);
 
-    await this.draw(() => this.map.set(map), () => this.flat(), config.view.properties);
+    await this.draw(
+      () => this.map.set(map),
+      () => this.flat(),
+      config.view.properties
+    );
 
+    this.refreshTheme?.();
     this.mapService.useView(this.flat().nativeElement.view, this);
+
+    // The campus basemap darkened at night, whichever basemap is showing (page-theme.ts).
+    const [reactiveUtils] = (await this.mp.require(['reactiveUtils'])) as [esri.reactiveUtils];
+    this.unfollow.push(followPageThemeOnBasemap(this.document, map, reactiveUtils));
   }
 
   /**
@@ -153,7 +190,9 @@ export class EsriMapComponent implements OnInit, OnDestroy, MapHost {
 
           (el.view as esri.MapView | esri.SceneView).set(
             Object.fromEntries(
-              Object.entries(properties).filter(([key, value]) => value !== undefined && !IGNORED_VIEW_PROPERTIES.includes(key))
+              Object.entries(properties).filter(
+                ([key, value]) => value !== undefined && !IGNORED_VIEW_PROPERTIES.includes(key)
+              )
             )
           );
 

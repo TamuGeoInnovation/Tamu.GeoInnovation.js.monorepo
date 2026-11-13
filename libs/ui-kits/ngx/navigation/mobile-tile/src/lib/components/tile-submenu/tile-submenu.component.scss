@@ -74,7 +74,7 @@
 
       // Add border bottom to all submenu list items except the last
       &:not(:last-child) {
-        border-bottom: 1pt solid #eeeeee;
+        border-bottom: 1pt solid var(--theme-border, #eeeeee);
       }
     }
   }

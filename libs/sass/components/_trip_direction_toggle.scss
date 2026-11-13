@@ -18,14 +18,14 @@
 
   &:hover {
     .material-icons {
-      color: #212121;
+      color: var(--theme-text-strong, #212121);
     }
   }
 
   // Active colors
   // Assumes a false error state
   &.active {
-    color: #0079c1;
+    color: var(--theme-link, #0079c1);
     border: 1px solid #0079c1;
 
     .material-icons {
@@ -46,7 +46,7 @@
   &.disabled,
   &.error {
     opacity: 0.75;
-    color: #757575;
+    color: var(--theme-text-subtle, #757575);
   }
 
   // Disabled colors
@@ -77,7 +77,7 @@
 
 %material-icons {
   font-size: 1.1rem;
-  color: #6e6e6e;
+  color: var(--theme-text-muted, #6e6e6e);
   @include transition(color 0.25s);
 }
 

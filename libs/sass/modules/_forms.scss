@@ -106,7 +106,7 @@ form,
     // Two things can exist in a form section toolbar: title and custom actions
     .form-section-toolbar {
       display: inherit;
-      border-bottom: 1pt solid #eeeeee;
+      border-bottom: 1pt solid var(--theme-border, #eeeeee);
       margin-bottom: 1.75rem;
       font-weight: 600;
 

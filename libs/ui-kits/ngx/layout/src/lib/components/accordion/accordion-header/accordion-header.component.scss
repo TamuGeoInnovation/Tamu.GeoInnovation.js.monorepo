@@ -7,7 +7,7 @@
   @include align-items(center);
 
   padding: 1rem 0.75rem;
-  background: #f5f5f5;
+  background: var(--theme-surface-alt, #f5f5f5);
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
@@ -15,5 +15,5 @@
 
 .material-icons {
   font-size: 1rem;
-  color: #616161;
+  color: var(--theme-text-muted, #616161);
 }

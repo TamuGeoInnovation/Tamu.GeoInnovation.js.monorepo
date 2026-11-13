@@ -29,7 +29,7 @@
 }
 
 .modal--container {
-  background-color: #fafafa;
+  background-color: var(--theme-surface-alt, #fafafa);
   @include flexbox();
   @include flex-direction(column);
   position: absolute;
@@ -56,7 +56,7 @@
       @include flexbox();
       @include justify-content(center);
       cursor: pointer;
-      color: #9e9e9e;
+      color: var(--theme-text-disabled, #9e9e9e);
       transition: color 0.3s;
 
       .material-icons {
@@ -64,7 +64,7 @@
       }
 
       &:hover {
-        color: #323232;
+        color: var(--theme-text, #323232);
       }
     }
   }

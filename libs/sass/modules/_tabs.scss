@@ -19,7 +19,7 @@ tamu-gisc-tabs {
     &::before {
       content: '';
       position: absolute;
-      background: #e0e0e0;
+      background: var(--theme-surface-sunken, #e0e0e0);
       z-index: 0;
     }
 
@@ -37,7 +37,7 @@ tamu-gisc-tabs {
 
       &.active {
         font-weight: 500;
-        color: #212121;
+        color: var(--theme-text-strong, #212121);
         z-index: 1;
       }
     }

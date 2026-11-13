@@ -16,6 +16,14 @@
   --calcite-font-family: 'Open Sans', sans-serif;
 }
 
+// On a dark page maroon is too dark to see as a focus ring or an active state, so Calcite's brand takes the theme's
+// accent, the lightened maroon (libs/sass/_theme.scss), with darker shades of it for hover and press.
+:host-context(:root[data-theme='dark']) ::ng-deep :is(arcgis-map, arcgis-scene) > * {
+  --calcite-color-brand: #e3b5ba;
+  --calcite-color-brand-hover: #d39fa5;
+  --calcite-color-brand-press: #c48a91;
+}
+
 .map-ui {
   position: fixed;
   z-index: 10;

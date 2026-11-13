@@ -89,6 +89,14 @@ export const DEVELOPMENT_ONLY_CONTROLS: Array<{
     selector: '.options-container .action:text-is("Options")',
     page: '/map/d/trip',
     reason: '#2801: Options offers only accessible routing, which the routing network does not support yet'
+  },
+  {
+    // ThemePickerComponent renders nothing where ThemeService.enabled is false (TestingService), and the page then
+    // stays light whatever a visitor stored. The phone menu shows the same component, so one page proves the gate.
+    name: 'the Appearance choice (dark mode)',
+    selector: 'tamu-gisc-theme-picker .theme-picker',
+    page: '/map/d/settings',
+    reason: '#2865: dark mode, until the maintainer approves it for production'
   }
 ];
 

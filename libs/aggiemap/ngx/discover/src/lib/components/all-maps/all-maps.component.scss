@@ -18,7 +18,7 @@
   max-width: 26rem;
 
   ::ng-deep tamu-gisc-textbox {
-    background: #f4f4f4;
+    background: var(--theme-card, #f4f4f4);
     border-color: #c9c9c9;
   }
 }
@@ -31,8 +31,8 @@
 }
 
 .event-card {
-  background: #f4f4f4;
-  border: 1px solid #d1d1d1;
+  background: var(--theme-card, #f4f4f4);
+  border: 1px solid var(--theme-border, #d1d1d1);
   border-radius: 12px;
   box-shadow: none;
   padding: 1.25rem 1.5rem;
@@ -59,7 +59,7 @@
 }
 
 :host ::ng-deep tamu-gisc-quick-links .related-links-superheader {
-  color: #500000;
+  color: var(--theme-accent, #500000);
   font-style: normal;
   text-transform: none;
   letter-spacing: 0;
@@ -159,7 +159,7 @@
   // The shared pictured-entry rule's gap would add to the label's own margin.
   gap: 0;
   text-decoration: none;
-  color: #500000;
+  color: var(--theme-accent, #500000);
   margin: -0.25rem 0 0.75rem;
 }
 

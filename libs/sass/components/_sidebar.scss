@@ -13,12 +13,12 @@
 
   padding-bottom: 0.4rem;
   margin-bottom: 0.7rem;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid var(--theme-border, #e0e0e0);
 
   p {
     font-size: 0.9rem;
     font-weight: 600;
-    color: #323232;
+    color: var(--theme-text, #323232);
     padding-bottom: 0;
   }
 

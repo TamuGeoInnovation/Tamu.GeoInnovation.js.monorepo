@@ -1,6 +1,9 @@
 // The ArcGIS runtime version this workspace runs (#1219, #1844).
 export * from './lib/esri-runtime';
 
+// Esri's widgets, Calcite and the campus basemap light or dark to match the page (dark mode).
+export * from './lib/page-theme';
+
 export * from './lib/popup-reference';
 export * from './lib/highlights';
 export * from './lib/geographic';

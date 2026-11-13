@@ -27,8 +27,8 @@
 
 // The offer, on a development host: quiet, the white of the map's own buttons.
 .acting-as-production--offer {
-  background: #ffffff;
-  color: #500000;
+  background: var(--theme-surface, #ffffff);
+  color: var(--theme-accent, #500000);
   text-decoration: none;
   cursor: pointer;
 }

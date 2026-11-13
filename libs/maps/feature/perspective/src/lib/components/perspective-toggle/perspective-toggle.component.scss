@@ -10,6 +10,6 @@
   @include transition(color 0.3s);
 
   &.active {
-    color: $main-blue;
+    color: var(--theme-link, $main-blue);
   }
 }

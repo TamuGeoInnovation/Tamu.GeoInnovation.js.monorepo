@@ -2,7 +2,7 @@
   position: absolute;
   height: 100vh;
   width: 75%;
-  background: #fafafa;
+  background: var(--theme-surface-alt, #fafafa);
   top: 0;
   left: 0;
   z-index: 11;

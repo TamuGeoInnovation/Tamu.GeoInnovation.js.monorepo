@@ -11,7 +11,7 @@
     width: 100%;
     box-sizing: border-box;
     border: 1px solid transparent;
-    background: rgba(241, 243, 244, 1);
+    background: var(--theme-input, rgba(241, 243, 244, 1));
     border-radius: 1rem;
     box-shadow: 0 3px 3px 0px rgba(0, 0, 0, 0);
     outline: none;
@@ -36,7 +36,7 @@ p {
 
 ::placeholder,
 .action-icons {
-  color: #9e9e9e;
+  color: var(--theme-text-disabled, #9e9e9e);
 }
 
 p {
@@ -53,24 +53,27 @@ p {
 }
 
 .result-category {
-  background: #f2f2f2;
+  // A band that sets each group of results apart: light grey by day; at night a step above the results, its name in
+  // the theme's accent (--theme-band and --theme-band-text, libs/sass/_theme.scss, are set only on a dark page).
+  background: var(--theme-band, #f2f2f2);
 
   .category-name {
     padding: 3px 12px;
     font-weight: bold;
+    color: var(--theme-band-text, currentColor);
   }
 }
 
 .result-item,
 .my-location {
-  background: #ffffff;
+  background: var(--theme-surface, #ffffff);
   cursor: pointer;
-  border-left: 1px solid #e0e0e0;
-  border-right: 1px solid #e0e0e0;
+  border-left: 1px solid var(--theme-border, #e0e0e0);
+  border-right: 1px solid var(--theme-border, #e0e0e0);
 
   &:hover,
   &:focus {
-    background: #eeeee7;
+    background: var(--theme-hover, #eeeee7);
   }
 }
 
@@ -123,7 +126,7 @@ p {
   margin: 0.1em;
   border: 0.1em solid #fff;
   border-radius: 50%;
-  border-color: #9e9e9e transparent transparent transparent;
+  border-color: var(--theme-border-strong, #9e9e9e) transparent transparent transparent;
   @include animation(lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite);
 }
 

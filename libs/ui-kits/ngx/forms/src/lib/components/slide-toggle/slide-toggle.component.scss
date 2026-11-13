@@ -11,9 +11,9 @@
 }
 
 .toggle-track {
-  background-color: #f1f3f4;
+  background-color: var(--theme-input, #f1f3f4);
   border: 1.5pt solid;
-  border-color: #eeeeee;
+  border-color: var(--theme-border, #eeeeee);
   z-index: 0;
   position: relative;
   @include mixins.flexbox();
@@ -21,7 +21,7 @@
   @include mixins.transition(border-color 0.2s);
 
   &:hover {
-    border-color: #e0e0e0;
+    border-color: var(--theme-border, #e0e0e0);
   }
 }
 
@@ -46,7 +46,7 @@
   cursor: pointer;
 
   .toggle-label {
-    color: #424242;
+    color: var(--theme-text, #424242);
     opacity: 0.7;
     margin-bottom: 0;
     padding-bottom: 0;

@@ -9,8 +9,8 @@
 .autocomplete-results {
   position: absolute;
   z-index: 30;
-  background: white;
-  border: 1px solid #ddd;
+  background: var(--theme-surface, white);
+  border: 1px solid var(--theme-border, #ddd);
   width: 100%;
   max-height: 240px;
   overflow: auto;
@@ -28,7 +28,7 @@
   &:hover,
   &:focus {
     outline: none;
-    background: #f4f4f4;
-    border-color: #e0e0e0;
+    background: var(--theme-hover, #f4f4f4);
+    border-color: var(--theme-border, #e0e0e0);
   }
 }

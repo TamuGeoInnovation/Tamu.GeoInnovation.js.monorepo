@@ -6,7 +6,7 @@
   @include flex-direction(row);
   @include justify-content(space-between);
   @include align-items(center);
-  background-color: $form-grey;
+  background-color: var(--theme-input, $form-grey);
   margin-bottom: 0.65rem;
   padding-left: 1rem;
   padding-right: 0.5rem;
@@ -23,7 +23,7 @@
 }
 
 .copy-text {
-  color: #616161;
+  color: var(--theme-text-muted, #616161);
   max-width: 80%;
   white-space: nowrap;
   overflow: hidden;

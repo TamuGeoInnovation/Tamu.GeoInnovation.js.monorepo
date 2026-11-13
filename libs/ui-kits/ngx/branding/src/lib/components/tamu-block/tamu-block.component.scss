@@ -27,3 +27,18 @@ img {
   margin-bottom: 0.25rem;
   box-sizing: border-box;
 }
+
+// One of the two lockups shows, by the page's theme. A page that never sets one is light.
+.on-dark {
+  display: none;
+}
+
+:host-context(:root[data-theme='dark']) {
+  .on-light {
+    display: none;
+  }
+
+  .on-dark {
+    display: block;
+  }
+}

@@ -3,10 +3,11 @@ import { Component, inject } from '@angular/core';
 import { Angulartics2 } from 'angulartics2';
 import { TamuBlockBrandingComponent } from '@tamu-gisc/ui-kits/ngx/branding';
 import { RouterLink } from '@angular/router';
+import { ThemePickerComponent } from '@tamu-gisc/common/ngx/ui/theme';
 
 interface MenuItem {
   name: string;
-  type: 'link-internal' | 'link-external' | 'router-path' | 'outlet' | 'separator';
+  type: 'link-internal' | 'link-external' | 'router-path' | 'outlet' | 'separator' | 'theme';
   path: string;
   url?: string;
 }
@@ -15,7 +16,7 @@ interface MenuItem {
   selector: 'tamu-gisc-main-mobile-sidebar',
   templateUrl: './main-mobile-sidebar.component.html',
   styleUrls: ['./main-mobile-sidebar.component.scss'],
-  imports: [TamuBlockBrandingComponent, RouterLink]
+  imports: [TamuBlockBrandingComponent, RouterLink, ThemePickerComponent]
 })
 export class MainMobileSidebarComponent {
   private analytics = inject(Angulartics2);
@@ -41,6 +42,8 @@ export class MainMobileSidebarComponent {
       type: 'router-path',
       path: '/map/m/bus'
     },
+    // Light, dark or by the sun. Here rather than a page of its own: one tap from the map, beside the basemap.
+    { name: 'Appearance', type: 'theme', path: '' },
     { name: '', type: 'separator', path: '' },
     {
       name: 'All Maps',

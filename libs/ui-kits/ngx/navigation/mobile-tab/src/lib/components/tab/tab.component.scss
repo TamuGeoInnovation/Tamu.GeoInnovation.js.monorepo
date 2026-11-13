@@ -6,7 +6,7 @@
   @include align-items(center);
   @include flex(1);
   padding: 0.5rem;
-  color: #bdbdbd;
+  color: var(--theme-text-disabled, #bdbdbd);
 }
 
 .tab-icon {

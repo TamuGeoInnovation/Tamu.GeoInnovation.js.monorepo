@@ -55,6 +55,9 @@
 
 @import 'libs/sass/colors';
 
+// Light and dark colours as custom properties, keyed on <html data-theme> (ThemeService).
+@import 'libs/sass/theme';
+
 //  ==========================================================================
 //   DEFAULTS
 //  ==========================================================================
@@ -89,7 +92,7 @@ body p {
   &.large {
     font-size: 1.2rem;
     font-weight: 400;
-    color: #616161;
+    color: var(--theme-text-muted, #616161);
   }
 }
 
@@ -118,7 +121,7 @@ a {
 }
 
 a {
-  color: #500000;
+  color: var(--theme-accent, #500000);
   text-decoration: underline;
   font-size: inherit;
   font-weight: 500;
@@ -129,19 +132,19 @@ a {
 }
 
 a:link {
-  color: #500000;
+  color: var(--theme-accent, #500000);
   text-decoration: underline;
 }
 
 a:visited {
-  color: #500000;
+  color: var(--theme-accent, #500000);
   text-decoration: underline;
 }
 
 a:hover,
 a:active,
 a:focus {
-  color: #500000;
+  color: var(--theme-accent, #500000);
 }
 
 a:visited {
@@ -203,13 +206,13 @@ h6 {
 
   &.short-border {
     display: inline-block;
-    border-bottom: 1px solid #eeeeee;
+    border-bottom: 1px solid var(--theme-border, #eeeeee);
     padding-bottom: 0.5rem;
   }
 
   &.long-border {
     display: block;
-    border-bottom: 1px solid #eeeeee;
+    border-bottom: 1px solid var(--theme-border, #eeeeee);
     padding-bottom: 0.5rem;
   }
 }
@@ -237,7 +240,7 @@ app-root {
 
 .accessible-viewfinder-features {
   position: fixed;
-  background: #f5f5f5;
+  background: var(--theme-surface-alt, #f5f5f5);
   width: 40rem;
   height: 8.5rem;
   overflow: hidden;
@@ -276,7 +279,7 @@ app-root {
       .wrapper {
         width: 1.5rem;
         height: 1.5rem;
-        border: 1px solid #bdbdbd;
+        border: 1px solid var(--theme-border-strong, #bdbdbd);
         border-radius: 5px;
         @include flexbox();
         @include flex-direction(row);
@@ -298,7 +301,7 @@ app-root {
   font-weight: 500;
 
   & > p {
-    color: #9e9e9e;
+    color: var(--theme-text-disabled, #9e9e9e);
 
     a {
       color: inherit;
@@ -316,7 +319,7 @@ app-root {
       display: inline-block;
       position: relative;
       margin: 0 0.5rem;
-      color: #9e9e9e;
+      color: var(--theme-text-disabled, #9e9e9e);
     }
   }
 }
@@ -340,7 +343,7 @@ app-root {
 
   & > .profile > .title {
     font-size: 0.85rem;
-    color: #757575;
+    color: var(--theme-text-subtle, #757575);
     max-width: 15rem;
   }
 }
@@ -355,9 +358,9 @@ input[type='text'],
 input[type='email'],
 textarea {
   font-family: $open-sans-fStack;
-  background-color: $form-grey;
+  background-color: var(--theme-input, $form-grey);
   border: 1px solid transparent;
-  color: #323232;
+  color: var(--theme-text, #323232);
   outline: none;
   box-sizing: border-box;
   font-size: 0.9rem;
@@ -392,7 +395,7 @@ input[type='email'] {
 
     &:focus {
       & + label {
-        color: black;
+        color: var(--theme-text-strong, black);
       }
     }
 
@@ -416,7 +419,7 @@ input[type='email'] {
 
   label {
     font-weight: 500;
-    color: #616161;
+    color: var(--theme-text-muted, #616161);
     font-size: 0.9rem;
     margin-left: 0.5rem;
   }
@@ -439,7 +442,7 @@ input[type='email'] {
 
 .link,
 .action {
-  color: #0079c1;
+  color: var(--theme-link, #0079c1);
   cursor: pointer;
   padding-bottom: 0;
 }
@@ -448,8 +451,8 @@ input[type='email'] {
   height: 1rem;
   width: 1rem;
   z-index: 1;
-  color: #6e6e6e;
-  background-color: #ffffff;
+  color: var(--theme-text-muted, #6e6e6e);
+  background-color: var(--theme-surface, #ffffff);
   padding: 0.5rem;
   border-radius: 99rem;
   cursor: pointer;
@@ -478,7 +481,7 @@ input[type='email'] {
   position: absolute;
   left: 0;
   bottom: 0;
-  background: #ffffff;
+  background: var(--theme-surface, #ffffff);
   border-radius: 5px;
   padding: 0.5rem 1rem;
   margin-bottom: 3rem;
@@ -487,11 +490,11 @@ input[type='email'] {
 
   a {
     text-decoration: none;
-    color: #616161;
+    color: var(--theme-text-muted, #616161);
 
     &:hover,
     &:focus {
-      color: #212121;
+      color: var(--theme-text-strong, #212121);
     }
   }
 
@@ -568,7 +571,7 @@ input[type='email'] {
 
   .progress-bar {
     margin-top: 2rem;
-    background: #ffffff;
+    background: var(--theme-surface, #ffffff);
     height: 0.3rem;
     width: 100%;
     border-radius: 99rem;
@@ -649,7 +652,7 @@ body.mapping {
 
 .component-name {
   font-weight: 600;
-  border-bottom: #e0e0e0 1px solid;
+  border-bottom: var(--theme-border, #e0e0e0) 1px solid;
   padding-bottom: 0.5rem;
 }
 
@@ -892,7 +895,7 @@ a.button.maroon:visited {
   @include justify-content(center);
   @include align-items(center);
   position: fixed;
-  background: #ffffff;
+  background: var(--theme-surface, #ffffff);
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.15); // opacity: 0;
   padding: 1.5rem 1.5rem;
   box-sizing: border-box;
@@ -905,7 +908,7 @@ a.button.maroon:visited {
   .description {
     font-size: 0.9rem;
     max-width: 30rem;
-    color: #616161;
+    color: var(--theme-text-muted, #616161);
   }
 
   .image {
@@ -927,7 +930,7 @@ a.button.maroon:visited {
     cursor: pointer;
 
     &:hover {
-      background: #e0e0e0;
+      background: var(--theme-surface-sunken, #e0e0e0);
     }
   }
 
@@ -985,7 +988,7 @@ a.button.maroon:visited {
 //  ==========================================================================
 
 .copy-button {
-  color: $main-blue;
+  color: var(--theme-link, $main-blue);
   padding: 0.8rem 0.75rem;
   font-weight: 600;
   width: initial;
@@ -1041,7 +1044,7 @@ a.button.maroon:visited {
     text-transform: none;
     letter-spacing: initial;
     font-weight: 600;
-    color: #424242;
+    color: var(--theme-text, #424242);
   }
 
   h2 {
@@ -1075,7 +1078,7 @@ a.button.maroon:visited {
     padding: 0.1rem 0.5rem;
     line-height: 1;
     border-radius: 5px;
-    background: #eeeeee;
+    background: var(--theme-surface-sunken, #eeeeee);
     color: #ef5350;
   }
 
@@ -1108,7 +1111,7 @@ a.button.maroon:visited {
       text-decoration: none;
       font-size: 0.8rem;
       text-align: center;
-      color: #616161;
+      color: var(--theme-text-muted, #616161);
       font-weight: 400;
       max-width: 47%;
       margin: 0 1.5rem;
@@ -1125,7 +1128,7 @@ a.button.maroon:visited {
     figcaption {
       font-size: 0.8rem;
       text-align: center;
-      color: #616161;
+      color: var(--theme-text-muted, #616161);
     }
 
     img {
@@ -1144,7 +1147,7 @@ a.button.maroon:visited {
 }
 
 .info-block {
-  background: #fffde7;
+  background: var(--theme-note, #fffde7);
   padding: 1rem 1.5rem;
   width: 100%;
   box-sizing: border-box;

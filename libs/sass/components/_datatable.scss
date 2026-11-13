@@ -47,7 +47,7 @@
           box-shadow: inset 0 -1px 0 var(--border-color);
 
           &:hover {
-            background-color: #f8f9fa;
+            background-color: var(--theme-surface-alt, #f8f9fa);
           }
         }
 
@@ -73,7 +73,7 @@
         }
 
         .page-count {
-          color: #424242;
+          color: var(--theme-text, #424242);
         }
 
         .pager {
@@ -94,11 +94,11 @@
           }
 
           .pages {
-            color: #9e9e9e;
+            color: var(--theme-text-disabled, #9e9e9e);
             padding: 0 0.25rem;
 
             .page-button.active {
-              color: #424242;
+              color: var(--theme-text, #424242);
               font-weight: bold;
             }
           }

@@ -23,7 +23,7 @@
 
 :host > div {
   position: relative;
-  background: #ffffff;
+  background: var(--theme-surface, #ffffff);
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.15);
   padding: 0.95rem 1.25rem 1.25rem 1.25rem;
   box-sizing: border-box;
@@ -60,7 +60,7 @@
 .description {
   font-size: 0.85rem;
   max-width: 30rem;
-  color: #616161;
+  color: var(--theme-text-muted, #616161);
 }
 
 .acknowledgment-actions {
@@ -76,7 +76,7 @@
     transition: all 0.2s ease;
 
     &:hover {
-      color: #500000;
+      color: var(--theme-accent, #500000);
       border-bottom-color: #500000;
     }
 
@@ -106,7 +106,7 @@
   cursor: pointer;
 
   &:hover {
-    background: #e0e0e0;
+    background: var(--theme-surface-sunken, #e0e0e0);
   }
 }
 

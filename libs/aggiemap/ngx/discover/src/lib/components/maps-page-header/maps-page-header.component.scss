@@ -19,7 +19,7 @@
 // Directory pages (Parking / Campus / Athletics): strong condensed maroon Oswald, but controlled -
 // smaller and lighter than a hero banner so it doesn't overpower the body copy beneath it.
 .maps-page-title {
-  color: #500000;
+  color: var(--theme-accent, #500000);
   font-weight: 600;
   font-size: 2.2rem;
   line-height: 1.1;
@@ -28,7 +28,7 @@
 }
 
 .maps-page-intro {
-  color: #333;
+  color: var(--theme-text, #333);
   max-width: 78ch;
   margin: 0;
 }
@@ -45,7 +45,6 @@
     flex-direction: column;
     gap: 1rem;
   }
-
 }
 
 // The full trail is a lot of chrome on a phone for something whose only tapped part is the way

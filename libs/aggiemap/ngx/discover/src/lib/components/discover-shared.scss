@@ -19,7 +19,7 @@
 .visit-maps-section,
 .maps-list-section {
   h2 {
-    color: #500000;
+    color: var(--theme-accent, #500000);
     margin-bottom: 0.5rem;
     font-size: 1.5rem;
     font-weight: 600;
@@ -35,7 +35,7 @@
 }
 
 .section-description {
-  color: #666;
+  color: var(--theme-text-muted, #666);
   font-style: italic;
 }
 
@@ -78,7 +78,7 @@
   // destination on desktop and a relative "go back" on a phone, and those want different targets.
   & > p.breadcrumb-back {
     display: block;
-    color: #500000;
+    color: var(--theme-accent, #500000);
 
     // The global breadcrumb styles put a '>' after every crumb but the last. This one is now the
     // last one visible, and the separator would dangle.
@@ -167,8 +167,8 @@
 
 .event-card,
 .application-card {
-  background: #f4f4f4;
-  border: 1px solid #d1d1d1;
+  background: var(--theme-card, #f4f4f4);
+  border: 1px solid var(--theme-border, #d1d1d1);
   border-radius: 12px;
   padding: 1rem 1.5rem;
   cursor: pointer;
@@ -202,7 +202,7 @@
 .event-title,
 .application-title {
   margin: 0;
-  color: #333;
+  color: var(--theme-text, #333);
   font-size: 1.1rem;
   font-weight: 600;
 }
@@ -223,19 +223,19 @@
 
 .event-dates {
   font-size: 0.875rem;
-  color: #666;
+  color: var(--theme-text-muted, #666);
 
   strong {
-    color: #333;
+    color: var(--theme-text, #333);
   }
 }
 
 .empty-state {
   text-align: center;
   padding: 2rem;
-  color: #666;
+  color: var(--theme-text-muted, #666);
   font-style: italic;
-  background: #f8f8f8;
+  background: var(--theme-card, #f8f8f8);
   border-radius: 8px;
 }
 
@@ -258,7 +258,7 @@
 }
 
 .map-link {
-  color: #500000;
+  color: var(--theme-accent, #500000);
   text-decoration: none;
   font-weight: 600;
 
@@ -286,7 +286,7 @@
   gap: 0.5rem;
   padding: 0.15rem 0;
   text-decoration: none;
-  color: #000;
+  color: var(--theme-text-strong, #000);
   font-weight: 800;
   font-size: 1.1rem;
   line-height: 1.25;
@@ -294,7 +294,7 @@
 
   &:hover,
   &:focus {
-    color: #500000;
+    color: var(--theme-accent, #500000);
   }
 }
 
@@ -332,10 +332,10 @@
 
 .application-description {
   font-size: 0.875rem;
-  color: #666;
+  color: var(--theme-text-muted, #666);
 
   strong {
-    color: #333;
+    color: var(--theme-text, #333);
   }
 }
 
@@ -364,8 +364,8 @@
 }
 
 .chip-label {
-  background-color: #e0e0e0;
-  color: black;
+  background-color: var(--theme-surface-sunken, #e0e0e0);
+  color: var(--theme-text-strong, black);
 }
 
 @media (max-width: 768px) {
@@ -398,8 +398,8 @@
   aspect-ratio: 2 / 1;
   object-fit: cover;
   border-radius: 8px;
-  border: 1px solid #d1d1d1;
-  background: #f4f4f4;
+  border: 1px solid var(--theme-border, #d1d1d1);
+  background: var(--theme-card, #f4f4f4);
 }
 
 /**

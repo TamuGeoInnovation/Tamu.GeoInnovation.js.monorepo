@@ -5,7 +5,7 @@
   @include flexbox();
   @include flex-direction(row);
   @include justify-content(space-between);
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid var(--theme-border, #e0e0e0);
   padding-top: 2rem;
   padding-bottom: 2rem;
 
@@ -15,7 +15,7 @@
 
   .changelog-event-date {
     @include flex(2);
-    color: #757575;
+    color: var(--theme-text-subtle, #757575);
   }
 
   .changelog-event-body {
@@ -44,7 +44,7 @@
       padding: 0.25rem 0.5rem;
       margin-left: 0.25rem;
       margin-right: 0.25rem;
-      background-color: #e0e0e0;
+      background-color: var(--theme-surface-sunken, #e0e0e0);
       border-radius: 5px;
 
       &:first-child {
@@ -63,7 +63,7 @@
       text-transform: none;
       letter-spacing: initial;
       font-weight: 600;
-      color: #424242;
+      color: var(--theme-text, #424242);
     }
 
     h2 {
@@ -97,7 +97,7 @@
       padding: 0.1rem 0.5rem;
       line-height: 1;
       border-radius: 5px;
-      background: #eeeeee;
+      background: var(--theme-surface-sunken, #eeeeee);
       color: #ef5350;
     }
 
@@ -130,7 +130,7 @@
       text-decoration: none;
       font-size: 0.8rem;
       text-align: center;
-      color: #616161;
+      color: var(--theme-text-muted, #616161);
       font-weight: 400;
       max-width: 47%;
       margin: 0 1.5rem;
@@ -147,7 +147,7 @@
     figcaption {
       font-size: 0.8rem;
       text-align: center;
-      color: #616161;
+      color: var(--theme-text-muted, #616161);
     }
 
     img {

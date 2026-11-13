@@ -24,7 +24,7 @@
 input {
   padding: 0.75rem 1rem;
   border-radius: 1rem;
-  background: #ffffff !important;
+  background: var(--theme-surface, #ffffff) !important;
   border: none;
 
   &:focus {
@@ -55,15 +55,15 @@ input {
   }
 
   & > div {
-    background: #ffffff;
+    background: var(--theme-surface, #ffffff);
     border-radius: 1rem;
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--theme-border, #e0e0e0);
   }
 }
 
 .result-item {
   background: initial;
-  border-bottom: 1px solid #f5f5f5;
+  border-bottom: 1px solid var(--theme-border, #f5f5f5);
 }
 
 .material-icons {
@@ -83,8 +83,8 @@ input {
 
   & > div {
     border-radius: 1rem;
-    border: 1px solid #e0e0e0;
-    background: #ffffff;
+    border: 1px solid var(--theme-border, #e0e0e0);
+    background: var(--theme-surface, #ffffff);
     @include flexbox();
     @include flex-direction(row);
     @include align-items(center);
@@ -95,7 +95,7 @@ input {
     top: initial;
     @include transform(none);
     margin-left: 0.75rem;
-    color: #616161;
+    color: var(--theme-text-muted, #616161);
     font-size: 1rem;
   }
 

@@ -23,7 +23,7 @@ table.floating-table {
         font-weight: inherit;
         position: sticky;
         top: 0;
-        background: #fafafa;
+        background: var(--theme-surface-alt, #fafafa);
         border-bottom: 2pt solid darken($color: $lightened-inactive-color, $amount: 10%);
       }
     }
@@ -78,7 +78,7 @@ table.floating-table {
       text-align: center;
     }
 
-    background: #ffffff;
+    background: var(--theme-surface, #ffffff);
     border: 1pt solid $lightened-inactive-color;
     border-radius: 5pt;
     padding: 0.5rem;

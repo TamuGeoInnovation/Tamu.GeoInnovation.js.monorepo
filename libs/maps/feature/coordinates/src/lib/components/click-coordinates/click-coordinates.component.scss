@@ -3,7 +3,7 @@
 .point-coords {
   @include flexbox();
   @include flex-direction(column);
-  background: #ffffff;
+  background: var(--theme-surface, #ffffff);
   pointer-events: auto;
   cursor: pointer;
   position: relative;
@@ -40,8 +40,8 @@
     font-size: 0.7rem;
     margin: 0;
     padding: 0.2rem 0.5rem;
-    color: #000000;
-    background: #ffffff;
+    color: var(--theme-text-strong, #000000);
+    background: var(--theme-surface, #ffffff);
 
     &:first-child {
       padding-bottom: 0;
