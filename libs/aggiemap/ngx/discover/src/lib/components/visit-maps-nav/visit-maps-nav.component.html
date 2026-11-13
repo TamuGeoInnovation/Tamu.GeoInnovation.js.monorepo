@@ -12,6 +12,18 @@ featured Main Campus Parking button, which is not a tile.
       <svg [attr.viewBox]="tile.icon.viewBox" fill="currentColor" aria-hidden="true">
         <path [attr.d]="tile.icon.d" />
       </svg>
+      } @else if (tile.icon.kind === 'stroke') {
+      <svg
+        [attr.viewBox]="tile.icon.viewBox"
+        fill="none"
+        stroke="currentColor"
+        [attr.stroke-width]="tile.icon.width || 1.6"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path [attr.d]="tile.icon.d" />
+      </svg>
       } @else {
       <img [src]="tile.icon.src" alt="" aria-hidden="true" />
       }

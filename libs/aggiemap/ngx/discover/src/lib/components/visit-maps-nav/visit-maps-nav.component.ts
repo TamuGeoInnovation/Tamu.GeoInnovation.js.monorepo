@@ -30,7 +30,10 @@ export interface VisitMapsTile {
    * `test/smoke/aggiemap/development-only.ts` requires the tile to be absent on production.
    */
   isDev?: true;
-  icon: { kind: 'path'; viewBox: string; d: string } | { kind: 'image'; src: string };
+  icon:
+    | { kind: 'path'; viewBox: string; d: string }
+    | { kind: 'stroke'; viewBox: string; d: string; width?: number }
+    | { kind: 'image'; src: string };
 }
 
 /**
@@ -48,11 +51,13 @@ export const VISIT_MAPS_TILES: VisitMapsTile[] = [
     // One tile for both kinds of map since #2895: the page below it lists the transportation maps
     // above the parking ones. A bus behind a car, after the maintainer's artwork, drawn as a path
     // rather than used as the supplied PNG so it takes `currentColor` like every tile but the
-    // 150th wordmark - which matters now that the row has a dark mode (#2865). The reference image
-    // is in `docs/screenshots/2895-parking-transportation/`.
+    // 150th wordmark - which matters now that the row has a dark mode (#2865). Stroked rather than filled: the row
+    // is line art, and a filled glyph can only draw an outline by punching holes with opposite winding, which is not
+    // something to author by hand for a shape this fiddly. The first attempt was a filled silhouette and read as two
+    // blobs at tile size. The reference image is in `docs/screenshots/2895-parking-transportation/`.
     label: 'Parking & Transportation',
     route: '/all-maps/parking',
-    icon: { kind: 'path', viewBox: '0 0 24 24', d: 'M6.2 2.6h5.2a3.6 3.6 0 0 1 3.6 3.6v1.3H2.6V6.2a3.6 3.6 0 0 1 3.6-3.6z M2.6 9.1h8v1.9a3 3 0 0 0-1.2 2.4v4.9H5.6a3 3 0 0 1-3-3z M6.9 14.3a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5z M13.9 9.6a2.1 2.1 0 0 1 2-1.5h4.6a2.1 2.1 0 0 1 2 1.5l1 3.4H12.9z M12.2 14.2h11v3.6H12.2z M15.1 15.1a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5z M21.3 15.1a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5z' }
+    icon: { kind: 'stroke', viewBox: '0 0 24 24', d: 'M3.4 3.6h5.4a2 2 0 0 1 2 2v7.1a1 1 0 0 1-1 1H2.4a1 1 0 0 1-1-1V5.6a2 2 0 0 1 2-2Z M1.4 7.6h9.4 M3 15.5a1.1 1.1 0 1 0 2.2 0 1.1 1.1 0 1 0-2.2 0 M7.2 15.5a1.1 1.1 0 1 0 2.2 0 1.1 1.1 0 1 0-2.2 0 M12.6 17.4v-3l1.3-3a1.6 1.6 0 0 1 1.5-1h4.7a1.6 1.6 0 0 1 1.5 1l1.3 3v3 M13.9 14.4h8.3 M14.2 17.6a1.1 1.1 0 1 0 2.2 0 1.1 1.1 0 1 0-2.2 0 M19.7 17.6a1.1 1.1 0 1 0 2.2 0 1.1 1.1 0 1 0-2.2 0' }
   },
   {
     label: 'Athletics Events',
