@@ -67,7 +67,7 @@ describe('SpeakerBadgesComponent', () => {
       imports: [SpeakerBadgesComponent],
       providers: [
         provideRouter([]),
-        { provide: SpeakerService, useValue: { getEntitiesForSeason: () => of(speakers), getEntitiesForActiveSeason: () => of(speakers) } },
+        { provide: SpeakerService, useValue: { getParticipatingPresentersForSeason: jest.fn(() => of(speakers)) } },
         { provide: SeasonService, useValue: { seasons$: of([{ guid: 's-1', year: 2026 }]), activeSeason$: of({ guid: 's-1', year: 2026 }) } },
         { provide: ModalService, useValue: {} },
         { provide: NotificationService, useValue: {} }
@@ -90,8 +90,11 @@ describe('SpeakerBadgesComponent', () => {
     Array.from(root.querySelectorAll('datatable-body-row')).map((r) => r.querySelectorAll('.datatable-body-cell')[1].textContent.trim());
   const csvLastNames = (csv: string) => Papa.parse<Record<string, string>>(csv, { header: true }).data.map((r) => r['Last name']);
 
-  it("lists the season's speakers under the five headings, with how many there are", async () => {
-    const root = (await open()).nativeElement as HTMLElement;
+  it("lists the season's presenters, as the Presenters page reads them, under the five headings, with how many", async () => {
+    const fixture = await open();
+    const root = fixture.nativeElement as HTMLElement;
+
+    expect(TestBed.inject(SpeakerService).getParticipatingPresentersForSeason).toHaveBeenCalledWith('s-1');
 
     expect(Array.from(root.querySelectorAll('.datatable-header-cell-label')).map((h) => h.textContent.trim())).toEqual([
       'First name',

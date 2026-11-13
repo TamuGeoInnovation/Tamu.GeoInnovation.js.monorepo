@@ -2,7 +2,7 @@ import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AsyncPipe } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { combineLatest, map, Observable, shareReplay, startWith } from 'rxjs';
+import { combineLatest, map, Observable, of, shareReplay, startWith, switchMap } from 'rxjs';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 import * as Papa from 'papaparse';
@@ -87,7 +87,8 @@ export function badgesCsv(badges: Array<SpeakerBadge>): string {
 /**
  * The Speaker badges dashboard (#2899): every speaker of the season with what their name badge prints, in a table that
  * a search narrows, any heading sorts, and Export as CSV downloads as shown, for the badge-printing software. The
- * speakers are the ones the admin speaker list shows, read the same way.
+ * speakers are the season's presenters as the Presenters page lists them: those in its sessions. The admin speaker
+ * list's read gives every speaker record of the season, sessions or not (773 against 90 in the local copy of 2026).
  */
 @Component({
   selector: 'tamu-gisc-speaker-badges',
@@ -111,7 +112,8 @@ export class SpeakerBadgesComponent extends BaseAdminListComponent<Speaker> impl
   public override ngOnInit(): void {
     super.ngOnInit();
 
-    const badges$ = this.entitiesForActiveSeasonOrForSeasonGuid$.pipe(
+    const badges$ = this.selectedSeason$.pipe(
+      switchMap((season) => (season?.guid ? this.entityService.getParticipatingPresentersForSeason(season.guid) : of([]))),
       map((speakers) => badgesOf(speakers ?? [])),
       shareReplay(1)
     );
