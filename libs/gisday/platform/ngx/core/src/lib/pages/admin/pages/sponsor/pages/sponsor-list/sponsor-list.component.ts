@@ -6,6 +6,7 @@ import { Sponsor } from '@tamu-gisc/gisday/platform/data-api';
 import { SponsorService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
+import { AdminSearchComponent } from '../../../base-admin-list/admin-search.component';
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
@@ -15,9 +16,12 @@ import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
   selector: 'tamu-gisc-sponsor-list',
   templateUrl: './sponsor-list.component.html',
   styleUrls: ['./sponsor-list.component.scss'],
-  imports: [SelectComponent, RouterLink, CheckboxComponent, AsyncPipe, ExistsPipe]
+  imports: [SelectComponent, RouterLink, CheckboxComponent, AsyncPipe, ExistsPipe, AdminSearchComponent]
 })
 export class SponsorListComponent extends BaseAdminListComponent<Sponsor> {
+  /** The search (#2914) looks in the columns this page shows. */
+  protected override readonly searchFields = (c: Partial<Sponsor>) => [c.name, c.sponsorshipLevel];
+
   protected readonly entityService = inject(SponsorService);
   private readonly ns = inject(NotificationService);
 

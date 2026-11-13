@@ -5,10 +5,9 @@
     </div>
 
     <div class="form-section-body">
+      <tamu-gisc-admin-search [control]="search" placeholder="Search by name, email or connection id" one="user" many="users" [counts]="searchCounts$ | async"></tamu-gisc-admin-search>
+
       @if ((users$ | async) !== null) { @if ((users$ | async)?.length > 0) {
-      <div>
-        <p>Displaying <strong>{{(users$ | async).length}}</strong> users.</p>
-      </div>
       <table class="floating-table">
         <thead>
           <tr>
@@ -27,6 +26,8 @@
           }
         </tbody>
       </table>
+      } @else if (search.value.trim()) {
+      <p>No users match "{{ search.value }}".</p>
       } @else {
       <p>There are no users yet.</p>
       } } @else {

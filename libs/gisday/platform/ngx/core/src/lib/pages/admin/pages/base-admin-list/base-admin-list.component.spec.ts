@@ -55,3 +55,76 @@ describe('BaseAdminListComponent on a site with no season', () => {
     ]);
   });
 });
+
+type Named = GuidIdentity & { name: string; city?: string };
+
+@Component({ template: '', standalone: false })
+class SearchedListComponent extends BaseAdminListComponent<Named> {
+  protected readonly entityService = {
+    getEntities: () => of([]),
+    getEntitiesForActiveSeason: () => of([]),
+    getEntitiesForSeason: () =>
+      of([
+        { guid: 'a', name: 'Texas A&M University', city: 'College Station' },
+        { guid: 'b', name: 'Universidad de Bogotá', city: 'Bogotá' },
+        { guid: 'c', name: 'Esri', city: 'Redlands' }
+      ])
+  } as unknown as BaseService<Named>;
+
+  protected override readonly searchFields = (e: Partial<Named>) => [e.name, e.city];
+}
+
+/** #2914: a page that names the columns it shows gets a search over them. */
+describe('BaseAdminListComponent search', () => {
+  function open<C extends BaseAdminListComponent<Named>>(type: new (...args: Array<never>) => C) {
+    TestBed.configureTestingModule({
+      declarations: [type],
+      providers: [
+        { provide: SeasonService, useValue: { seasons$: of([]), activeSeason$: of({ guid: 'season-2026' }) } },
+        { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
+        { provide: Router, useValue: {} },
+        { provide: ModalService, useValue: {} },
+        { provide: NotificationService, useValue: {} }
+      ]
+    });
+
+    const component = TestBed.createComponent(type).componentInstance;
+    component.ngOnInit();
+
+    return component;
+  }
+
+  const guids = async (c: BaseAdminListComponent<Named>) => (await firstValueFrom(c.entitiesForActiveSeasonOrForSeasonGuid$)).map((e) => e.guid);
+
+  it('lists every row with no search, and only the rows whose shown columns match, ignoring case and accents', async () => {
+    const page = open(SearchedListComponent);
+
+    expect(await guids(page)).toEqual(['a', 'b', 'c']);
+
+    page.search.setValue('bogota');
+    expect(await guids(page)).toEqual(['b']);
+
+    page.search.setValue('COLLEGE');
+    expect(await guids(page)).toEqual(['a']);
+    await expect(firstValueFrom(page.searchCounts$)).resolves.toEqual({ shown: 1, total: 3 });
+  });
+
+  it('clears the selection when the search changes, so no hidden row stays selected', async () => {
+    const page = open(SearchedListComponent);
+    const selected: Array<Array<string>> = [];
+    page.selectedRows$.subscribe((rows) => selected.push(rows));
+
+    page.toggleRow('c');
+    page.search.setValue('texas');
+
+    expect(selected[selected.length - 2]).toEqual(['c']);
+    expect(selected[selected.length - 1]).toEqual([]);
+  });
+
+  it('leaves a page that names no columns unsearched', async () => {
+    const page = open(ThingListComponent as unknown as new () => BaseAdminListComponent<Named>);
+
+    page.search.setValue('anything');
+    expect(await guids(page)).toEqual(['for-season-2026']);
+  });
+});
