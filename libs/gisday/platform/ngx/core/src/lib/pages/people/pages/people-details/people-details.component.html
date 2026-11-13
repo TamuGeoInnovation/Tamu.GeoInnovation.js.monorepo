@@ -1,4 +1,25 @@
 <section>
+  <!-- The Presenters page's search, to get to another presenter from here (#2919). -->
+  <div class="container12 presenter-search leader-1">
+    <tamu-gisc-textbox type="text" placeholder="Find another presenter by name, organization or university" [formControl]="search"></tamu-gisc-textbox>
+    @if (matches$ | async; as matches) { @if (matches.total > 0) {
+    <ul class="presenter-search-matches">
+      @for (match of matches.shown; track match.guid) {
+      <li>
+        <a [routerLink]="['/presenters/details', match.guid]" (click)="opened()">{{ match.firstName }} {{ match.lastName }}</a>
+        @if (match.organization?.name || match.university?.name) {
+        <span class="presenter-search-where"> | {{ match.organization?.name || match.university?.name }}</span>
+        }
+      </li>
+      }
+    </ul>
+    @if (matches.total > matches.shown.length) {
+    <p><a [routerLink]="['/presenters']" [queryParams]="{ search: search.value }">See all matches on the Presenters page</a></p>
+    } } @else {
+    <p>No other presenters match "{{ search.value }}".</p>
+    } }
+  </div>
+
   <div class="container12 presenter-details-item leader-1">
     @if (($speaker | async); as person) {
     <div>
