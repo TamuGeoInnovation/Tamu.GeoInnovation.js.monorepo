@@ -27,87 +27,12 @@
 
       <h3 class="rsvp-heading">By event</h3>
       @if (view.events.length > 0) {
-      <div class="rsvp-table-scroll">
-        <table class="rsvp-table">
-          <thead>
-            <tr>
-              <th>Event</th>
-              <th class="count">Total</th>
-              @for (t of types; track t.type) {
-              <th class="count">{{ t.label }}</th>
-              }
-            </tr>
-          </thead>
-          <tbody>
-            @for (event of view.events; track event.guid) {
-            <tr class="rsvp-event" [class.open]="expanded() === event.guid" (click)="toggle(event)" tabindex="0" role="button" [attr.aria-expanded]="expanded() === event.guid" (keydown.enter)="toggle(event)" (keydown.space)="toggle(event); $event.preventDefault()">
-              <td>
-                <span class="material-icons rsvp-chevron">{{ expanded() === event.guid ? 'expand_less' : 'expand_more' }}</span>
-                <span class="bold">{{ event.name }}</span>
-                <div class="rsvp-when">{{ event.starts | date: 'EEE MMM d, h:mm a' : '-0600' }}{{ event.location ? ' · ' + event.location : '' }}</div>
-              </td>
-              <td class="count bold">{{ event.total }}</td>
-              @for (t of types; track t.type) {
-              <td class="count">{{ event.counts[t.type] }}</td>
-              }
-            </tr>
-
-            @if (expanded() === event.guid) {
-            <tr class="rsvp-people">
-              <td [attr.colspan]="types.length + 2">
-                @if (peopleFailed()) {
-                <p class="error">The people for this event could not be read.</p>
-                } @else if (people() === null) {
-                <p>Reading who RSVP'd...</p>
-                } @else if (people().length === 0) {
-                <p>Nobody has RSVP'd for this event yet.</p>
-                } @else {
-                <div class="rsvp-people-actions">
-                  <a (click)="download(event)" tabindex="0" role="button" (keydown.enter)="download(event)" (keydown.space)="download(event); $event.preventDefault()">Export as CSV <span class="material-icons action">file_download</span></a>
-                </div>
-
-                @for (group of groups(); track group.type) {
-                <h4>{{ group.label }} ({{ group.people.length }})</h4>
-                <table class="rsvp-person-table">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Email</th>
-                      <th>{{ isStudent(group.type) ? 'Classification' : 'Position' }}</th>
-                      <th>{{ isStudent(group.type) ? 'Field of study' : 'Department' }}</th>
-                      <th>{{ isStudent(group.type) ? 'University' : 'Employer' }}</th>
-                      <th>RSVP'd</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    @for (person of group.people; track $index) {
-                    <tr>
-                      <td>{{ person.firstName || person.lastName ? (person.firstName ?? '') + ' ' + (person.lastName ?? '') : 'Account not found' }}</td>
-                      <td>{{ person.email }}</td>
-                      <td>{{ isStudent(group.type) ? person.classification : person.position }}</td>
-                      <td>{{ person.department }}</td>
-                      <td>{{ person.organization }}</td>
-                      <td>{{ person.created | date: 'MMM d, h:mm a' }}</td>
-                    </tr>
-                    }
-                  </tbody>
-                </table>
-                } }
-              </td>
-            </tr>
-            } }
-          </tbody>
-          <tfoot>
-            <tr>
-              <td class="bold">All events</td>
-              <td class="count bold">{{ totals().total }}</td>
-              @for (t of types; track t.type) {
-              <td class="count bold">{{ totals().counts[t.type] }}</td>
-              }
-            </tr>
-          </tfoot>
-        </table>
-      </div>
+      <p class="rsvp-note">Click a heading to sort by it, and again to reverse it. Click an event to see who RSVP'd.</p>
+      <tamu-gisc-dashboard-table [rows]="rows()" [columns]="columns" nameLabel="Event" totalLabel="All events" (toggled)="toggle($event)">
+        <ng-template tamuGiscDashboardRowDetail>
+          <tamu-gisc-dashboard-people [people]="people()" [failed]="peopleFailed()" [fileName]="fileName()" dateLabel="RSVP'd" emptyText="Nobody has RSVP'd for this event yet."></tamu-gisc-dashboard-people>
+        </ng-template>
+      </tamu-gisc-dashboard-table>
       } @else {
       <p>The selected season has no events.</p>
       } } @else {

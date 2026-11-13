@@ -2,15 +2,13 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { of, Subject, throwError } from 'rxjs';
 
-import * as Papa from 'papaparse';
-
 import type { RsvpDashboard, RsvpDashboardPerson } from '@tamu-gisc/gisday/platform/data-api';
 import { RsvpService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { LINE_CHART_DRAWER, LineChartOptions } from '@tamu-gisc/ui-kits/ngx/charts';
 
-import { groupPeople, rsvpBands, RsvpDashboardComponent, rsvpCsv, rsvpDaily, rsvpSeries, rsvpTotals } from './rsvp-dashboard.component';
+import { rsvpBands, RsvpDashboardComponent, rsvpDaily, rsvpFileName, rsvpRows, rsvpSeries, rsvpTotals } from './rsvp-dashboard.component';
 
 const counts = (c: Partial<RsvpDashboard['events'][0]['counts']>) => ({
   undergraduate: 0,
@@ -61,25 +59,22 @@ describe('rsvpTotals()', () => {
   });
 });
 
-describe('groupPeople()', () => {
-  it('puts people under their type in the dashboard order, by last name, and leaves out empty types', () => {
-    expect(groupPeople(people).map((g) => [g.label, g.people.map((p) => p.lastName)])).toEqual([
-      ['Undergraduate', ['Lee', 'Young']],
-      ['Faculty & academia', ['Kim']]
-    ]);
+describe('rsvpRows()', () => {
+  it("gives the table each event, its venue under its name and its start in its own column", () => {
+    expect(rsvpRows(dashboard.events)[0]).toEqual({
+      key: 'e-1',
+      name: 'Workshop',
+      note: 'ILCB 111',
+      when: '2026-11-18T15:00:00.000Z',
+      total: 3,
+      counts: counts({ undergraduate: 2, academia: 1 })
+    });
   });
 });
 
-describe('rsvpCsv()', () => {
-  it('writes one row per person, grouped and named as the page shows them', () => {
-    const rows = Papa.parse<Record<string, string>>(rsvpCsv(people), { header: true }).data;
-
-    expect(rows.map((r) => [r['Last name'], r['Person type'], r['Classification'], r['Position']])).toEqual([
-      ['Lee', 'Undergraduate', 'Junior', ''],
-      ['Young', 'Undergraduate', 'Senior', ''],
-      ['Kim', 'Faculty & academia', '', 'Professor']
-    ]);
-    expect(rows[2]['University / employer']).toBe('Texas A&M University');
+describe('rsvpFileName()', () => {
+  it("names an event's CSV by its name and day, in Central time", () => {
+    expect(rsvpFileName(dashboard.events[0])).toBe('gisday-rsvps-workshop-2026-11-18');
   });
 });
 
@@ -134,10 +129,19 @@ describe('RsvpDashboardComponent', () => {
     return fixture;
   }
 
+  // The shared table (#2891), drawn by ngx-datatable.
   const rows = (root: HTMLElement) =>
-    Array.from(root.querySelectorAll('.rsvp-table > tbody > tr.rsvp-event')).map((tr) =>
-      Array.from(tr.querySelectorAll('td')).map((td) => td.textContent.trim())
+    Array.from(root.querySelectorAll('datatable-row-wrapper datatable-body-row')).map((tr) =>
+      Array.from(tr.querySelectorAll('.datatable-body-cell')).map((td) => td.textContent.trim())
     );
+  const cellOf = (root: HTMLElement, name: string) =>
+    Array.from(root.querySelectorAll('datatable-row-wrapper .datatable-body-cell')).find((c) => c.textContent.includes(name)) as HTMLElement;
+
+  async function settle(fixture: ReturnType<typeof open>) {
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+  }
 
   beforeEach(() => {
     drawn = [];
@@ -147,13 +151,16 @@ describe('RsvpDashboardComponent', () => {
     };
   });
 
-  it("reads the active season's dashboard and shows each event's counts, by type, with a total row", () => {
-    const root = open().nativeElement as HTMLElement;
+  it("reads the active season's dashboard and shows each event's counts, by type, with a total row", async () => {
+    const fixture = open();
+    await settle(fixture);
+    const root = fixture.nativeElement as HTMLElement;
 
     expect(rsvps.getDashboardForSeason).toHaveBeenCalledWith('s-1');
     expect(root.querySelector('.rsvp-summary').textContent).toContain('4 RSVPs for 2 events');
-    expect(Array.from(root.querySelectorAll('.rsvp-table > thead th')).map((th) => th.textContent.trim())).toEqual([
+    expect(Array.from(root.querySelectorAll('.datatable-header-cell-label')).map((th) => th.textContent.trim())).toEqual([
       'Event',
+      'When',
       'Total',
       'Undergraduate',
       'Graduate',
@@ -162,12 +169,13 @@ describe('RsvpDashboardComponent', () => {
       'Industry',
       'Not given'
     ]);
-    expect(rows(root).map((r) => r.slice(1))).toEqual([
+    expect(rows(root).map((r) => r.slice(2))).toEqual([
       ['3', '2', '0', '0', '1', '0', '0'],
       ['1', '0', '0', '0', '0', '1', '0']
     ]);
-    expect(Array.from(root.querySelectorAll('.rsvp-table tfoot td')).map((td) => td.textContent.trim())).toEqual([
+    expect(Array.from(root.querySelectorAll('datatable-summary-row .datatable-body-cell')).map((td) => td.textContent.trim())).toEqual([
       'All events',
+      '',
       '4',
       '2',
       '0',
@@ -191,43 +199,42 @@ describe('RsvpDashboardComponent', () => {
 
   it("opens an event to list its people under their types, adds its line to the chart, and closes again", async () => {
     const fixture = open();
+    await settle(fixture);
     const root = fixture.nativeElement as HTMLElement;
-    const first = root.querySelector('tr.rsvp-event') as HTMLElement;
 
-    first.click();
-    fixture.detectChanges();
+    cellOf(root, 'Workshop').click();
+    await settle(fixture);
 
     expect(rsvps.getDashboardForEvent).toHaveBeenCalledWith('e-1');
-    expect(first.getAttribute('aria-expanded')).toBe('true');
-    expect(Array.from(root.querySelectorAll('.rsvp-people h4')).map((h) => h.textContent.trim())).toEqual([
+    expect(root.querySelector('.dashboard-table-name[aria-expanded="true"]').textContent).toContain('Workshop');
+    expect(Array.from(root.querySelectorAll('tamu-gisc-dashboard-people h4')).map((h) => h.textContent.trim())).toEqual([
       'Undergraduate (2)',
       'Faculty & academia (1)'
     ]);
-    expect(root.querySelector('.rsvp-people').textContent).toContain('ana@example.edu');
-    await fixture.whenStable();
+    expect(root.querySelector('tamu-gisc-dashboard-people').textContent).toContain('ana@example.edu');
     expect(lastChart().series.map((s) => s.label)).toEqual(['All events', 'Workshop']);
 
-    first.click();
-    fixture.detectChanges();
-    await fixture.whenStable();
+    cellOf(root, 'Workshop').click();
+    await settle(fixture);
 
-    expect(root.querySelector('.rsvp-people')).toBeNull();
+    expect(root.querySelector('tamu-gisc-dashboard-people')).toBeNull();
     expect(lastChart().series.map((s) => s.label)).toEqual(['All events']);
   });
 
-  it('says so while the people are being read, and if they cannot be', () => {
+  it('says so while the people are being read, and if they cannot be', async () => {
     const pending = new Subject<Array<RsvpDashboardPerson>>();
     rsvps.getDashboardForEvent = jest.fn(() => pending);
     const fixture = open();
+    await settle(fixture);
     const root = fixture.nativeElement as HTMLElement;
 
-    (root.querySelector('tr.rsvp-event') as HTMLElement).click();
-    fixture.detectChanges();
-    expect(root.querySelector('.rsvp-people').textContent).toContain("Reading who RSVP'd");
+    cellOf(root, 'Workshop').click();
+    await settle(fixture);
+    expect(root.querySelector('tamu-gisc-dashboard-people').textContent).toContain('Reading the people');
 
     pending.error(new Error('403'));
-    fixture.detectChanges();
-    expect(root.querySelector('.rsvp-people').textContent).toContain('could not be read');
+    await settle(fixture);
+    expect(root.querySelector('tamu-gisc-dashboard-people').textContent).toContain('could not be read');
   });
 
   it('says the RSVPs could not be read rather than showing an empty dashboard', () => {
@@ -235,6 +242,6 @@ describe('RsvpDashboardComponent', () => {
     const root = open().nativeElement as HTMLElement;
 
     expect(root.textContent).toContain('The RSVPs could not be read');
-    expect(root.querySelector('.rsvp-table')).toBeNull();
+    expect(root.querySelector('tamu-gisc-dashboard-table')).toBeNull();
   });
 });

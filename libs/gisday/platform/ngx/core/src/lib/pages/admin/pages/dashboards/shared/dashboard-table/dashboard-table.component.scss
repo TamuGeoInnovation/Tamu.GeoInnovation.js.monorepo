@@ -1,0 +1,60 @@
+@import 'libs/gisday/sass/variables';
+@import 'libs/sass/components/datatable';
+
+// The shared table as the research competition list draws it (#2808), each row as tall as its content.
+.dashboard-table {
+  --datatable-height: auto;
+
+  // Many columns beside the admin menu: on a narrow screen the table scrolls in its own box, not the page.
+  overflow-x: auto;
+
+  ::ng-deep .datatable-body .datatable-row-wrapper {
+    cursor: pointer;
+  }
+
+  ::ng-deep .datatable-header .datatable-header-cell,
+  ::ng-deep .datatable-body .datatable-body-cell {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  ::ng-deep .datatable-body-cell-label,
+  ::ng-deep .datatable-header-cell-label {
+    white-space: normal;
+    overflow-wrap: break-word;
+  }
+
+  ::ng-deep .dashboard-table-count {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  // The total row: bold, set off from the rows above it.
+  ::ng-deep .datatable-summary-row .datatable-body-row {
+    font-weight: bold;
+    border-top: 2px solid $lightened-inactive-color;
+    cursor: default;
+  }
+
+  // An opened row's detail, indented under its name.
+  ::ng-deep .datatable-row-detail {
+    background: rgba(0, 0, 0, 0.02);
+    cursor: default;
+  }
+}
+
+.dashboard-table-name {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.dashboard-table-note {
+  margin-left: 1.75rem;
+  font-size: 0.9rem;
+  opacity: 0.75;
+}
+
+.dashboard-table-detail {
+  padding: 0.5rem 1rem 1rem 2.25rem;
+}
