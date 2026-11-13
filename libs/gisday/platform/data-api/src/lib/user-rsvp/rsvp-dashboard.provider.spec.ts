@@ -6,6 +6,7 @@ import type { Auth0UserProfile, ManagementService } from '@tamu-gisc/common/nest
 import { Event, Organization, University, UserRsvp } from '../entities/all.entity';
 import { queryCheckingDataSource, queryCheckingRepository } from '../_base/query-checking-data-source';
 import { RsvpDashboardProvider } from './rsvp-dashboard.provider';
+import { DashboardProfilesService } from '../dashboards/dashboard-profiles.service';
 
 const profiles: Record<string, Auth0UserProfile> = {
   'auth0|ug': {
@@ -56,9 +57,7 @@ describe('RsvpDashboardProvider (#2878)', () => {
     provider = new RsvpDashboardProvider(
       rsvpRepo,
       eventRepo,
-      queryCheckingRepository(dataSource, University),
-      organizationRepo,
-      ms
+      new DashboardProfilesService(queryCheckingRepository(dataSource, University), organizationRepo, ms)
     );
   });
 

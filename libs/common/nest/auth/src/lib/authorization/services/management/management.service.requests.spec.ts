@@ -87,13 +87,34 @@ describe('ManagementService, against a stand-in for the Management API', () => {
       // As the API answers: sorted by name when asked, a page of `per_page` (50 by default) at `page`, and with
       // include_totals the page in an envelope with where it starts and how many there are; without it, a bare array.
       if (url.pathname === '/api/v2/users' && request.method === 'GET') {
+        const q = url.searchParams.get('q') ?? '';
+        // A search by when the account was made, as getUsersCreatedBetween sends it:
+        // created_at:[from TO to}, perhaps AND _exists_:app_metadata.gisday.
+        const range = /^created_at:\[(\S+) TO (\S+)\}/.exec(q);
         // A search by id, as getUsersByIds sends it: user_id:("a" OR "b").
-        const ids = [...(url.searchParams.get('q') ?? '').matchAll(/"([^"]*)"/g)].map((m) => m[1]);
+        const ids = [...q.matchAll(/"([^"]*)"/g)].map((m) => m[1]);
         const all = Object.values(users)
-          .filter((u) => !url.searchParams.get('q') || ids.includes(String(u['user_id'])))
+          .filter((u) => {
+            if (!q) {
+              return true;
+            }
+
+            if (range) {
+              const made = String(u['created_at']);
+              const gisday = !q.includes('_exists_:app_metadata.gisday') || Boolean((u['app_metadata'] as Record<string, unknown>)?.['gisday']);
+
+              return made >= range[1] && made < range[2] && gisday;
+            }
+
+            return ids.includes(String(u['user_id']));
+          })
           .sort((a, b) =>
-          url.searchParams.get('sort') === 'name:1' ? String(a['name']).localeCompare(String(b['name'])) : 0
-        );
+            url.searchParams.get('sort') === 'name:1'
+              ? String(a['name']).localeCompare(String(b['name']))
+              : url.searchParams.get('sort') === 'created_at:1'
+                ? String(a['created_at']).localeCompare(String(b['created_at']))
+                : 0
+          );
         const perPage = Number(url.searchParams.get('per_page') ?? 50);
         const start = Number(url.searchParams.get('page') ?? 0) * perPage;
         const page = all.slice(start, start + perPage);
@@ -305,6 +326,64 @@ describe('ManagementService, against a stand-in for the Management API', () => {
         ['google-oauth2|2', 'google-oauth2', true]
       ]);
       expect(profiles[0].app_metadata).toEqual({ gisday: { checkins: 3 } });
+    });
+  });
+
+  describe('getUsersCreatedBetween and countUsersCreatedBetween (#2892)', () => {
+    const from = new Date('2025-11-21T06:00:00.000Z');
+    const to = new Date('2026-11-21T06:00:00.000Z');
+
+    beforeEach(() => {
+      users = {};
+
+      // Ten accounts a month apart from December 2025, all with a GIS Day profile but the third; one before the window.
+      for (let i = 0; i < 10; i++) {
+        const created = new Date(Date.UTC(2025, 11 + i, 15)).toISOString();
+
+        users[`auth0|${i}`] = {
+          user_id: `auth0|${i}`,
+          name: `Person ${i}`,
+          created_at: created,
+          app_metadata: i === 2 ? {} : { gisday: { attendeeType: 'student' } }
+        };
+      }
+
+      users['auth0|old'] = { user_id: 'auth0|old', name: 'Old', created_at: '2024-01-01T00:00:00.000Z', app_metadata: { gisday: {} } };
+    });
+
+    const searches = () => apiRequests().map((r) => r.query['q']);
+
+    it('asks for the accounts made in the window, with ISO times and an end it does not include', async () => {
+      await new ManagementService(credentials).getUsersCreatedBetween(from, to, '_exists_:app_metadata.gisday');
+
+      expect(searches()[0]).toBe('created_at:[2025-11-21T06:00:00.000Z TO 2026-11-21T06:00:00.000Z} AND _exists_:app_metadata.gisday');
+    });
+
+    it('returns each account with a GIS Day profile in the window, oldest first, with when it was made', async () => {
+      const found = await new ManagementService(credentials).getUsersCreatedBetween(from, to, '_exists_:app_metadata.gisday', {
+        app_metadata: 'gisday',
+        user_metadata: []
+      });
+
+      expect(found.map((f) => f.profile.user_info.id)).toEqual(['auth0|0', 'auth0|1', 'auth0|3', 'auth0|4', 'auth0|5', 'auth0|6', 'auth0|7', 'auth0|8', 'auth0|9']);
+      expect(found[0].created).toBe('2025-12-15T00:00:00.000Z');
+      expect(found[0].profile.app_metadata).toEqual({ gisday: { attendeeType: 'student' } });
+    });
+
+    it('splits a window that matches too many into halves, and halves again, so every account is read', async () => {
+      const found = await new ManagementService(credentials).getUsersCreatedBetween(from, to, undefined, undefined, 3);
+
+      expect(found).toHaveLength(10);
+      expect(new Set(found.map((f) => f.profile.user_info.id)).size).toBe(10);
+      expect(searches().length).toBeGreaterThan(2);
+    });
+
+    it('counts the accounts made in the window, profile or not, from the totals alone', async () => {
+      const service = new ManagementService(credentials);
+
+      expect(await service.countUsersCreatedBetween(from, to)).toBe(10);
+      expect(apiRequests().every((r) => r.query['per_page'] === '1')).toBe(true);
+      expect(await service.countUsersCreatedBetween(from, to, undefined, 3)).toBe(10);
     });
   });
 });
