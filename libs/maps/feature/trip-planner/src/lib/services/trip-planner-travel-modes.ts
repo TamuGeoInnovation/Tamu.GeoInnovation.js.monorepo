@@ -28,7 +28,11 @@ export const NETWORK_TRAVEL_MODE_NAMES: Record<number, string> = {
   5: 'Bus',
   6: 'Bus_ADA',
   7: 'Bike',
-  8: 'Drive'
+  8: 'Drive',
+  // Shaded walking and shaded accessible walking (shade-aware walking prototype): the network's own walk modes,
+  // solved with the shadows as a scaled-cost polygon barrier.
+  9: 'Walk',
+  10: 'Walk_ADA'
 };
 
 const normalized = (name: string) => `${name}`.trim().toLowerCase();

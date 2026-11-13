@@ -1,5 +1,5 @@
 <div class="travel-modes">
-  <tamu-gisc-trip-planner-mode-toggle [activeModes]="[1, 2]" [iconName]="'directions_walk'" [name]="'Walking'" [label]="'Routing Mode: Walking'"></tamu-gisc-trip-planner-mode-toggle>
+  <tamu-gisc-trip-planner-mode-toggle [activeModes]="[1, 2, 9, 10]" [iconName]="'directions_walk'" [name]="'Walking'" [label]="'Routing Mode: Walking'"></tamu-gisc-trip-planner-mode-toggle>
 
   <tamu-gisc-trip-planner-mode-toggle [activeModes]="[7]" [iconName]="'directions_bike'" [name]="'Biking'" [label]="'Routing Mode: Biking'"></tamu-gisc-trip-planner-mode-toggle>
 
@@ -20,6 +20,13 @@
   } @else {
   <div class="filled" id="direction-accessible-mode" title="ADA Accessible Requirement" alt="Option: ADA Accessible Requirement" type="domElement" [ngClass]="{ active: (accessible | async) === true }" tabindex="0">
     <i class="material-icons">accessible</i>
+  </div>
+  }
+
+  <!-- Shade-aware walking prototype, development only: prefer shade for the sun at the trip's time. -->
+  @if ((isDev | async) === true && (isWalking | async) === true) {
+  <div class="filled" id="direction-shade-mode" title="Prefer shade" type="domElement" [ngClass]="{ active: (shade | async) === true }" role="button" aria-label="Prefer shade" [attr.aria-pressed]="(shade | async) === true" (click)="toggleShade()" (keydown.enter)="toggleShade()" (keydown.space)="toggleShade(); $event.preventDefault()" tabindex="0">
+    <i class="material-icons">park</i>
   </div>
   }
 </div>

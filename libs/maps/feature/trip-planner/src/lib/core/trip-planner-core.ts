@@ -31,6 +31,9 @@ export class TripResult {
   public modeSwitches: TripResultProperties['modeSwitches'];
   public timeMode: TripResultProperties['timeMode'];
   public requestedTime: TripResultProperties['requestedTime'];
+  public shade: TripResultProperties['shade'];
+  public shadePolygon: TripResultProperties['shadePolygon'];
+  public indoorPolygon: TripResultProperties['indoorPolygon'];
 
   constructor(props: TripResultProperties) {
     this.isError = props.isError || false;
@@ -48,6 +51,9 @@ export class TripResult {
     this.modeSwitches = props.modeSwitches || undefined;
     this.timeMode = props.timeMode || undefined;
     this.requestedTime = props.requestedTime || undefined;
+    this.shade = props.shade || undefined;
+    this.shadePolygon = props.shadePolygon || undefined;
+    this.indoorPolygon = props.indoorPolygon || undefined;
   }
 
   public stopsToArray(): number[][] {

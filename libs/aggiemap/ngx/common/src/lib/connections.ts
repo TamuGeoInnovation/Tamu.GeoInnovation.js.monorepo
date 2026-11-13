@@ -1,6 +1,8 @@
 import {
   TAMU_CAMPUS_BASEMAP_URL,
   TAMU_CAMPUS_STRUCTURES_URL,
+  TAMU_CAMPUS_TREES_URL,
+  TAMU_CAMPUS_BUILDING_MODELS_URL,
   TAMU_CAMPUS_SURFACE_LOTS_URL
 } from '@tamu-gisc/common/datasets/geographic';
 
@@ -106,6 +108,9 @@ function servicesOn(gisHost: string): IComposedConnections {
     buildingsUrl: TAMU_CAMPUS_STRUCTURES_URL,
     // The surface parking lots: the Surface Lots layer and the lot search (#2722). As `buildingsUrl`.
     surfaceLotsUrl: TAMU_CAMPUS_SURFACE_LOTS_URL,
+    // Trees and the 2019 building models, for the shade-aware walking prototype. As `buildingsUrl`.
+    campusTreesUrl: TAMU_CAMPUS_TREES_URL,
+    buildingModelsUrl: TAMU_CAMPUS_BUILDING_MODELS_URL,
     inforUrl: `https://${gisHost}/arcgis/rest/services/FCOR/MapInfo_20190529/MapServer`,
     accessibleUrl: `https://${gisHost}/arcgis/rest/services/FCOR/ADA_120717/MapServer/0`,
     // Lactation rooms, a hosted service from Facilities Analytics & Mapping that replaced layer 2 of
@@ -348,6 +353,8 @@ export interface IComposedConnections {
   basemapUrl: string;
   buildingsUrl: string;
   surfaceLotsUrl: string;
+  campusTreesUrl: string;
+  buildingModelsUrl: string;
   inforUrl: string;
   accessibleUrl: string;
   lactationRoomsUrl: string;

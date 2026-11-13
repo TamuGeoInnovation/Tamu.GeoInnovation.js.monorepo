@@ -55,6 +55,11 @@
   }
 }
 
+.shade-option {
+  display: block;
+  padding: 0.25rem 0.5rem 0;
+}
+
 .options-container {
   @include flexbox();
   @include flex-direction(row);

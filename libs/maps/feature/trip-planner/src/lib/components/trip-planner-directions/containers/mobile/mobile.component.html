@@ -16,6 +16,11 @@
   </div>
   }
 
+  <!-- Shade-aware walking prototype: how much of a shaded walk is in shade. -->
+  @if (result()?.shade && !result()?.isProcessing && !result()?.isError) {
+  <tamu-gisc-trip-planner-shade-summary [summary]="result()?.shade"></tamu-gisc-trip-planner-shade-summary>
+  }
+
   <tamu-gisc-trip-planner-directions-actions-mobile></tamu-gisc-trip-planner-directions-actions-mobile>
 
   <!-- Directions List -->

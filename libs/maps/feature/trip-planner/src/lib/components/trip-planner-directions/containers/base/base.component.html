@@ -12,6 +12,11 @@
       <div class="unit">Miles</div>
     </div>
   </div>
+  }
+
+  <!-- Shade-aware walking prototype: how much of a shaded walk is in shade. -->
+  @if (result()?.shade && !result()?.isProcessing && !result()?.isError) {
+  <tamu-gisc-trip-planner-shade-summary [summary]="result()?.shade"></tamu-gisc-trip-planner-shade-summary>
   } @if (result() && result()?.isFulfilled) {
   <tamu-gisc-trip-planner-directions-actions></tamu-gisc-trip-planner-directions-actions>
   }
