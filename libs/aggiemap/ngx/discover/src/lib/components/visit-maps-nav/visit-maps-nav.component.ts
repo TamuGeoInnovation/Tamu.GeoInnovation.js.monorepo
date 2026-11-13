@@ -45,20 +45,14 @@ export const VISIT_MAPS_TILES: VisitMapsTile[] = [
     icon: { kind: 'image', src: '/assets/images/logo/150th-wordmark-stacked-maroon.svg' }
   },
   {
-    label: 'Parking',
+    // One tile for both kinds of map since #2895: the page below it lists the transportation maps
+    // above the parking ones. A bus behind a car, after the maintainer's artwork, drawn as a path
+    // rather than used as the supplied PNG so it takes `currentColor` like every tile but the
+    // 150th wordmark - which matters now that the row has a dark mode (#2865). The reference image
+    // is in `docs/screenshots/2895-parking-transportation/`.
+    label: 'Parking & Transportation',
     route: '/all-maps/parking',
-    icon: { kind: 'path', viewBox: '0 0 64 64', d: 'M32 3c15.99 0 29 13.01 29 29S47.99 61 32 61 3 47.99 3 32 16.01 3 32 3m0-3C14.33 0 0 14.33 0 32s14.33 32 32 32 32-14.33 32-32S49.67 0 32 0Zm-3.79 51.4h-6.55c-.85 0-1.54-.69-1.54-1.54V15.91c0-.85.69-1.54 1.54-1.54h13.79c4.16 0 7.34 1.08 9.55 3.24 2.21 2.16 3.32 5.21 3.32 9.14s-1.11 6.97-3.32 9.14c-2.21 2.16-5.39 3.71-9.55 3.71h-5.7v10.28c0 .85-.69 1.54-1.54 1.54Zm1.54-20.04h3.19c3.54 0 5.3-1.68 5.3-4.39s-1.77-4.38-5.3-4.38h-3.19v8.77Z' }
-  },
-  {
-    // Two pins joined by a dotted route, after Transportation Services' own "Bike Lanes and Racks"
-    // icon on m.tamu.edu, so AggieMap and their pages read as one service (#2737). Drawn here rather
-    // than traced from their 440x440 PNG: every other tile is an inline path, and a raster would not
-    // take `currentColor` or stay crisp. If a closer match is wanted, replace this `d`.
-    label: 'Transportation',
-    route: '/all-maps/transportation',
-    // Development-only until the maintainer says otherwise: every map it lists is (#2788). Its page is gated too.
-    isDev: true,
-    icon: { kind: 'path', viewBox: '0 0 64 64', d: 'M20 4c-5.52 0-10 4.48-10 10 0 7.5 10 18 10 18s10-10.5 10-18c0-5.52-4.48-10-10-10Zm0 13.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7ZM46 30c-5.52 0-10 4.48-10 10 0 7.5 10 18 10 18s10-10.5 10-18c0-5.52-4.48-10-10-10Zm0 13.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7ZM35.1 25.25a1.5 1.5 0 0 1 1.5 1.5c0 2.4-.1 4.57-1.12 6.6-1 2-2.74 3.72-4.97 5.57a1.5 1.5 0 1 1-1.91-2.31c2.2-1.83 3.5-3.2 4.2-4.6.68-1.37.8-2.84.8-5.26a1.5 1.5 0 0 1 1.5-1.5ZM23.5 37.3a2.2 2.2 0 1 1 0 4.4 2.2 2.2 0 0 1 0-4.4ZM18 41.3a2.2 2.2 0 1 1 0 4.4 2.2 2.2 0 0 1 0-4.4ZM13.5 46.8a2.2 2.2 0 1 1 0 4.4 2.2 2.2 0 0 1 0-4.4Z' }
+    icon: { kind: 'path', viewBox: '0 0 24 24', d: 'M6.2 2.6h5.2a3.6 3.6 0 0 1 3.6 3.6v1.3H2.6V6.2a3.6 3.6 0 0 1 3.6-3.6z M2.6 9.1h8v1.9a3 3 0 0 0-1.2 2.4v4.9H5.6a3 3 0 0 1-3-3z M6.9 14.3a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5z M13.9 9.6a2.1 2.1 0 0 1 2-1.5h4.6a2.1 2.1 0 0 1 2 1.5l1 3.4H12.9z M12.2 14.2h11v3.6H12.2z M15.1 15.1a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5z M21.3 15.1a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5z' }
   },
   {
     label: 'Athletics Events',

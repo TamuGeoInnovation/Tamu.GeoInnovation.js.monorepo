@@ -213,12 +213,10 @@ function servicesOn(gisHost: string): IComposedConnections {
     // announced as a host; moving it means naming the production service here.
     ncaaVolleyballUrl: 'https://gis.dev.tamu.edu/arcgis/rest/services/Hosted/NCAA_Volleyball_view/FeatureServer',
     // Transportation's approved paths (#2812), which replaced its draft `Micromobility_Map_WFL1_view`. Published on
-    // the development GIS server only, so named there outright, as `ncaaVolleyballUrl` is, and read from that server
-    // on every environment. The draft was read from production even on development, whose copy answered 499 Token
-    // Required (#2712); this one is public there. The map is development-only until the maintainer moves it, so
-    // production never reads it, and moving it means naming the production service here.
-    micromobilityUrl:
-      'https://gis.dev.tamu.edu/arcgis/rest/services/Hosted/Approved_Micromobility_Paths_view/FeatureServer',
+    // each environment's own Transportation host since #2895, so it is built from `tsgisHost` as the other TS hosted
+    // services are: `arc.ts.tamu.edu` on production, `gis.dev.tamu.edu` on development. Both were queried before the
+    // move and serve the same three layers with the same fields and simple renderers.
+    micromobilityUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Approved_Micromobility_Paths_view/FeatureServer`,
     gisDayUrl:
       'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/MSC_and_Rudder_Building_Polygon_Layer/FeatureServer',
     argentinaVsHondurasUrl: `https://${gisHost}/arcgis/rest/services/TS/Argentina_vs_Honduras26/MapServer`,
