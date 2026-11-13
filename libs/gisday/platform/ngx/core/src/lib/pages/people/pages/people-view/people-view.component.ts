@@ -1,40 +1,18 @@
 import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, combineLatest, shareReplay, map, of, startWith, switchMap } from 'rxjs';
+import { Observable, combineLatest, map, startWith } from 'rxjs';
 
 import { SeasonService, SpeakerService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { Speaker } from '@tamu-gisc/gisday/platform/data-api';
-import { matchesText, SpeakerCardComponent } from '@tamu-gisc/gisday/platform/ngx/common';
+import { SpeakerCardComponent } from '@tamu-gisc/gisday/platform/ngx/common';
+
+import { matchesSearch, presenterCount, presentersForRoute } from '../../presenters';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
 
-const byName = new Intl.Collator('en', { sensitivity: 'base' });
-
-/** Last name, then first name, without regard to case or accents (#2860). */
-export function compareByLastName(a: Partial<Speaker>, b: Partial<Speaker>): number {
-  return byName.compare(a.lastName ?? '', b.lastName ?? '') || byName.compare(a.firstName ?? '', b.firstName ?? '');
-}
-
-/**
- * Whether the presenter's first name, last name, full name, organization (#2859) or university, by its name or its
- * abbreviation (#2869), contains the search text.
- */
-export function matchesSearch(speaker: Partial<Speaker>, search: string): boolean {
-  return matchesText(
-    [`${speaker.firstName ?? ''} ${speaker.lastName ?? ''}`, speaker.organization?.name, speaker.university?.name, speaker.university?.acronym],
-    search
-  );
-}
-
-/** How many presenters the list holds, said under it: all of them, or how many of them a search shows (#2870). */
-export function presenterCount(shown: number, total: number, search: string): string {
-  if (search.trim()) {
-    return `Showing ${shown} of ${total} presenters`;
-  }
-
-  return `${total} ${total === 1 ? 'presenter' : 'presenters'}`;
-}
+// The ordering, matching and count are shared with each presenter's page (#2919); exported from here as before.
+export { compareByLastName, matchesSearch, presenterCount } from '../../presenters';
 
 @Component({
   selector: 'tamu-gisc-people-view',
@@ -57,18 +35,14 @@ export class PeopleViewComponent implements OnInit {
   public view$: Observable<{ shown: Array<Partial<Speaker>>; total: number; count: string }>;
 
   public ngOnInit() {
-    // A past year lists that year's presenters; the current year keeps its own lookup (#1758).
-    this.people$ = this.seasonService.seasonForRoute(this.route.snapshot).pipe(
-      switchMap(({ season, isPast }) => {
-        if (!isPast) {
-          return this.speakerService.getParticipatingPresenters();
-        }
+    this.people$ = presentersForRoute(this.route.snapshot, this.seasonService, this.speakerService);
 
-        return season ? this.speakerService.getParticipatingPresentersForSeason(season.guid) : of([]);
-      }),
-      map((speakers) => [...speakers].sort(compareByLastName)),
-      shareReplay(1)
-    );
+    // A search carried here from a presenter's page (#2919).
+    const carried = this.route.snapshot.queryParamMap?.get('search');
+
+    if (carried) {
+      this.search.setValue(carried);
+    }
 
     this.view$ = combineLatest([this.people$, this.search.valueChanges.pipe(startWith(this.search.value))]).pipe(
       map(([people, search]) => {
