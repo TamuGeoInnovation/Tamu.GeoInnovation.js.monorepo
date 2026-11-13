@@ -1,0 +1,38 @@
+@if (failed()) {
+<p class="error">The people could not be read.</p>
+} @else if (people() === null) {
+<p>Reading the people...</p>
+} @else if (people().length === 0) {
+<p>{{ emptyText() }}</p>
+} @else {
+<div class="dashboard-people-actions">
+  <a (click)="download()" tabindex="0" role="button" (keydown.enter)="download()" (keydown.space)="download(); $event.preventDefault()">Export as CSV <span class="material-icons action">file_download</span></a>
+</div>
+
+@for (group of groups(); track group.type) {
+<h4>{{ group.label }} ({{ group.people.length }})</h4>
+<table class="dashboard-person-table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th>{{ isStudent(group.type) ? 'Classification' : 'Position' }}</th>
+      <th>{{ isStudent(group.type) ? 'Field of study' : 'Department' }}</th>
+      <th>{{ isStudent(group.type) ? 'University' : 'Employer' }}</th>
+      <th>{{ dateLabel() }}</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (person of group.people; track $index) {
+    <tr>
+      <td>{{ person.firstName || person.lastName ? (person.firstName ?? '') + ' ' + (person.lastName ?? '') : 'Account not found' }}</td>
+      <td>{{ person.email }}</td>
+      <td>{{ isStudent(group.type) ? person.classification : person.position }}</td>
+      <td>{{ person.department }}</td>
+      <td>{{ person.organization }}</td>
+      <td>{{ person.created | date: 'MMM d, h:mm a' }}</td>
+    </tr>
+    }
+  </tbody>
+</table>
+} }

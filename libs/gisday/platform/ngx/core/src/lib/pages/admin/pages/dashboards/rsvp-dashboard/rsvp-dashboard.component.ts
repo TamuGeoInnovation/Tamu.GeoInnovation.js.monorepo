@@ -1,11 +1,9 @@
 import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AsyncPipe, DatePipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { catchError, filter, of, switchMap, tap } from 'rxjs';
 
-import * as Papa from 'papaparse';
-
-import { RSVP_PERSON_TYPES, RsvpPersonType, RsvpPersonTypeCounts } from '@tamu-gisc/gisday/common';
+import { RSVP_PERSON_TYPES, RsvpPersonTypeCounts } from '@tamu-gisc/gisday/common';
 import type {
   RsvpDashboard,
   RsvpDashboardEvent,
@@ -15,9 +13,11 @@ import type {
 import { RsvpService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { bandOfDays, ChartBand, ChartSeries, countsByDay, dayIn, LineChartComponent, runningTotalByDay } from '@tamu-gisc/ui-kits/ngx/charts';
-import { downloadFile, fileNamePart } from '@tamu-gisc/common/utils/ui';
+import { fileNamePart } from '@tamu-gisc/common/utils/ui';
 
 import { BaseAdminListComponent } from '../../base-admin-list/base-admin-list.component';
+import { DashboardPeopleComponent, PERSON_TYPE_COLUMNS } from '../shared/dashboard-people/dashboard-people.component';
+import { DashboardRowDetailDirective, DashboardTableComponent, DashboardTableRow } from '../shared/dashboard-table/dashboard-table.component';
 
 /** Every type's count summed over `events`, and the total, for the table's last row. */
 export function rsvpTotals(events: Array<RsvpDashboardEvent>): { total: number; counts: RsvpPersonTypeCounts } {
@@ -32,48 +32,18 @@ export function rsvpTotals(events: Array<RsvpDashboardEvent>): { total: number; 
   return { total: events.reduce((sum, e) => sum + e.total, 0), counts };
 }
 
-/** The people under their type's heading, in the dashboard's order of types, each group by last name. */
-export function groupPeople(
-  people: Array<RsvpDashboardPerson>
-): Array<{ type: RsvpPersonType; label: string; people: Array<RsvpDashboardPerson> }> {
-  const name = (p: RsvpDashboardPerson) => `${p.lastName ?? ''} ${p.firstName ?? ''} ${p.email ?? ''}`.trim().toLowerCase();
-
-  return RSVP_PERSON_TYPES.map(({ type, label }) => ({
-    type,
-    label,
-    people: people.filter((p) => p.type === type).sort((a, b) => name(a).localeCompare(name(b)))
-  })).filter((group) => group.people.length > 0);
+/** The table's rows: each event, its venue under its name, its start in its own column, and its counts by type. */
+export function rsvpRows(events: Array<RsvpDashboardEvent>): Array<DashboardTableRow> {
+  return events.map((e) => ({ key: e.guid, name: e.name ?? 'Untitled event', note: e.location, when: e.starts, total: e.total, counts: e.counts }));
 }
 
-/** One event's people as a CSV, one row each, grouped as the page shows them. */
-export function rsvpCsv(people: Array<RsvpDashboardPerson>): string {
-  const rows = groupPeople(people).flatMap((group) =>
-    group.people.map((p) => ({
-      'Last name': p.lastName ?? '',
-      'First name': p.firstName ?? '',
-      Email: p.email ?? '',
-      'Person type': group.label,
-      Classification: p.classification ?? '',
-      Position: p.position ?? '',
-      'Department / field of study': p.department ?? '',
-      'University / employer': p.organization ?? '',
-      "RSVP'd": p.created
-    }))
-  );
+/** An event's CSV file name: its name and day, as gisday-rsvps-<name>-<day>. */
+export function rsvpFileName(event: RsvpDashboardEvent): string {
+  const name = [fileNamePart(event.name ?? 'event'), event.starts ? dayIn(new Date(event.starts), 'America/Chicago') : null]
+    .filter(Boolean)
+    .join('-');
 
-  return Papa.unparse(rows, {
-    columns: [
-      'Last name',
-      'First name',
-      'Email',
-      'Person type',
-      'Classification',
-      'Position',
-      'Department / field of study',
-      'University / employer',
-      "RSVP'd"
-    ]
-  });
+  return `gisday-rsvps-${name}`;
 }
 
 /** The chart's lines: every event's RSVPs as a running total by day, and the expanded event's own, if one is. */
@@ -110,13 +80,13 @@ export function rsvpBands(dashboard: RsvpDashboard): Array<ChartBand> {
   selector: 'tamu-gisc-rsvp-dashboard',
   templateUrl: './rsvp-dashboard.component.html',
   styleUrls: ['./rsvp-dashboard.component.scss'],
-  imports: [SelectComponent, LineChartComponent, AsyncPipe, DatePipe]
+  imports: [SelectComponent, LineChartComponent, DashboardTableComponent, DashboardRowDetailDirective, DashboardPeopleComponent, AsyncPipe]
 })
 export class RsvpDashboardComponent extends BaseAdminListComponent<UserRsvp> implements OnInit {
   protected readonly entityService = inject(RsvpService);
   private readonly destroyRef = inject(DestroyRef);
 
-  public readonly types = RSVP_PERSON_TYPES;
+  public readonly columns = PERSON_TYPE_COLUMNS;
 
   /** The season's dashboard, null while it loads, and `failed` if it could not be read. */
   public readonly dashboard = signal<RsvpDashboard | null>(null);
@@ -129,7 +99,7 @@ export class RsvpDashboardComponent extends BaseAdminListComponent<UserRsvp> imp
 
   public readonly totals = computed(() => rsvpTotals(this.dashboard()?.events ?? []));
   public readonly expandedEvent = computed(() => this.dashboard()?.events.find((e) => e.guid === this.expanded()) ?? null);
-  public readonly groups = computed(() => groupPeople(this.people() ?? []));
+  public readonly rows = computed(() => rsvpRows(this.dashboard()?.events ?? []));
   public readonly series = computed(() => {
     const dashboard = this.dashboard();
 
@@ -171,9 +141,11 @@ export class RsvpDashboardComponent extends BaseAdminListComponent<UserRsvp> imp
       .subscribe((dashboard) => this.dashboard.set(dashboard));
   }
 
-  /** Opens an event's people, or closes them if they are open. */
-  public toggle(event: RsvpDashboardEvent) {
-    if (this.expanded() === event.guid) {
+  /** Reads the people of the event the table opened, or forgets them when it closes. */
+  public toggle(key: string | null) {
+    const event = this.dashboard()?.events.find((e) => e.guid === key);
+
+    if (!event) {
       this.collapse();
 
       return;
@@ -197,28 +169,15 @@ export class RsvpDashboardComponent extends BaseAdminListComponent<UserRsvp> imp
     });
   }
 
-  /** A student's group shows classification, field of study and university; anyone else's, position, department and employer. */
-  public isStudent(type: RsvpPersonType): boolean {
-    return type === 'undergraduate' || type === 'graduate' || type === 'student';
-  }
-
   public collapse() {
     this.expanded.set(null);
     this.people.set(null);
     this.peopleFailed.set(false);
   }
 
-  public download(event: RsvpDashboardEvent) {
-    const people = this.people();
+  public fileName(): string {
+    const event = this.expandedEvent();
 
-    if (!people) {
-      return;
-    }
-
-    const name = [fileNamePart(event.name ?? 'event'), event.starts ? dayIn(new Date(event.starts), 'America/Chicago') : null]
-      .filter(Boolean)
-      .join('-');
-
-    downloadFile(rsvpCsv(people), `gisday-rsvps-${name}.csv`, 'text/csv');
+    return event ? rsvpFileName(event) : 'gisday-rsvps';
   }
 }
