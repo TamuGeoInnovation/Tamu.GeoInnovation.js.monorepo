@@ -1,12 +1,17 @@
 # Unreleased
 
-Since `3254b114e`, the **10 November 2026** release.
+Since `68d7b974c`, the **13 November 2026** release.
 
-**The latest release notes are [10 November 2026](2026-11-10.md)**, cleared on dev from `3254b114e` and tagged
-`dev-2026-11-10`. It carried **63 AggieMap pull requests** - and, because
-[30 October](2026-10-30.md) was never promoted, promoting it also puts that release's **215 pull requests** in
-front of visitors for the first time. Production ran `36b962a04` from 22 October until then. The release before
-30 October is [21 October 2026](2026-10-21.md), from `61161ce1b`.
+**The latest release notes are [13 November 2026](2026-11-13.md)**, built from `68d7b974c` and on production. It
+was promoted at the marketing team's request **before the release tier ran**, and it carries no tag until the
+suite reports - that file records both, and is updated with the run's result.
+
+Before it: [11 November 2026 (second release)](2026-11-11-2.md) from `94348414a`, whose notes were written on the
+13th after the fact, because the release shipped without them and its entries were still sitting in `unreleased/`.
+Then [10 November 2026](2026-11-10.md) from `3254b114e`, promoted as `prod-2026-11-11`, which also put
+[30 October](2026-10-30.md)'s **215 pull requests** in front of visitors for the first time; production ran
+`36b962a04` from 22 October until then. The release before 30 October is
+[21 October 2026](2026-10-21.md), from `61161ce1b`.
 
 **This file is AggieMap's.** GIS Day is released on its own path and its changes collect in
 [GIS Day, unreleased](gisday-unreleased.md), not here - 27 of the same commit range's pull requests were GIS
@@ -23,7 +28,8 @@ the files are collated here at release ([#2037](https://github.com/TamuGeoInnova
 
 ## Summary
 
-Nothing yet. The 10 November entries moved into [10 November 2026](2026-11-10.md), and the period's GIS
+Nothing yet. The two AggieMap entries moved into [13 November 2026](2026-11-13.md), the two already on
+production since 11 November into [11 November 2026 (second release)](2026-11-11-2.md), and the period's 14 GIS
 Day entries into [GIS Day, unreleased](gisday-unreleased.md).
 
 ## What to test on dev
@@ -33,7 +39,7 @@ Day entries into [GIS Day, unreleased](gisday-unreleased.md).
 production. A pull request with a visible result adds its own row; at release, the rows move into the
 dated notes as what was tested, and this table empties.
 
-**Nothing waiting:** the 10 November rows moved into the [10 November notes](2026-11-10.md).
+**Nothing waiting:** the rows moved into the [13 November notes](2026-11-13.md) and the [11 November notes](2026-11-11-2.md).
 
 ---
 
