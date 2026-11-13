@@ -70,12 +70,12 @@ describe('AdminComponent', () => {
     expect(menu(root)).toBeNull();
   });
 
-  it('opens the menu with Dashboards, and the RSVP and User accounts dashboards under it (#2878, #2892)', () => {
+  it('opens the menu with Dashboards, and the RSVP, User accounts and Speaker badges dashboards under it (#2878, #2892, #2899)', () => {
     const root = open(false).nativeElement as HTMLElement;
     const first = menu(root)?.querySelector(':scope > li');
 
     expect(first?.querySelector(':scope > a')?.textContent?.trim()).toBe('dashboard Dashboards');
     expect(first?.querySelector(':scope > a')?.getAttribute('href')).toContain('/dashboards');
-    expect(Array.from(first?.querySelectorAll('.sidebar_sublevel a') ?? []).map((a) => a.textContent?.trim())).toEqual(['RSVPs', 'User accounts']);
+    expect(Array.from(first?.querySelectorAll('.sidebar_sublevel a') ?? []).map((a) => a.textContent?.trim())).toEqual(['RSVPs', 'User accounts', 'Speaker badges']);
   });
 });

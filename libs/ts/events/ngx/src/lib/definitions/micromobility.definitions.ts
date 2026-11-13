@@ -70,7 +70,6 @@ export const MicromobilityTs: AggiemapCustomMapConfiguration = {
   sources: MicromobilityLayerSources,
   references: MICROMOBILITY_LAYERS,
   type: 'general-map',
-  developmentOnly: '#2712: a draft Transportation is refining before it goes to production',
   discover: {
     id: MicromobilityConfiguration.id,
     name: MicromobilityConfiguration.name,

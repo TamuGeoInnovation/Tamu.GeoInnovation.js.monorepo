@@ -1,0 +1,46 @@
+<div class="form">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">Speaker badges</div>
+      <div class="form-section-actions">
+        <tamu-gisc-select class="post-1" placeholder="Season" [floatLabel]="false" [data]="seasons$ | async" displayTemplate="year" valueTemplate="guid" [value]="(selectedSeason$ | async)?.guid" (changed)="setSeason($event)"></tamu-gisc-select>
+      </div>
+    </div>
+
+    <div class="form-section-body">
+      @if (view$ | async; as view) {
+      <!-- Searches every column but the former student year (#2899), as the Presenters page searches (#2859). -->
+      <tamu-gisc-textbox class="badges-search" type="text" placeholder="Search by name, company or organization, or email" [formControl]="search"></tamu-gisc-textbox>
+
+      <div class="badges-summary">
+        <p>
+          @if (search.value.trim()) {
+          Showing <strong>{{ view.shown.length }}</strong> of {{ view.all }} speakers.
+          } @else {
+          <strong>{{ view.all }}</strong> {{ view.all === 1 ? 'speaker' : 'speakers' }}.
+          }
+          Click a heading to sort by it, and again to reverse it. The CSV holds what the table shows, in its order.
+        </p>
+        @if (view.shown.length > 0) {
+        <a (click)="download()" tabindex="0" role="button" (keydown.enter)="download()" (keydown.space)="download(); $event.preventDefault()">Export as CSV <span class="material-icons action">file_download</span></a>
+        }
+      </div>
+
+      @if (view.shown.length > 0) {
+      <div class="datatable-container">
+        <ngx-datatable class="material" [rows]="view.shown" [columnMode]="'flex'" [headerHeight]="'auto'" [rowHeight]="'auto'" [footerHeight]="0" [scrollbarV]="false" [reorderable]="false" (sortsChange)="onSort($event)">
+          @for (column of columns; track column.prop) {
+          <ngx-datatable-column [name]="column.name" [prop]="column.prop" [flexGrow]="column.prop === 'email' || column.prop === 'organization' ? 2 : 1"></ngx-datatable-column>
+          }
+        </ngx-datatable>
+      </div>
+      } @else if (view.all > 0) {
+      <p>No speakers match "{{ search.value }}".</p>
+      } @else {
+      <p>The selected season has no speakers.</p>
+      } } @else {
+      <p>Reading the speakers...</p>
+      }
+    </div>
+  </div>
+</div>

@@ -15,6 +15,7 @@ export * from './lib/utils/sponsor-logo-size';
 export * from './lib/utils/events-by-day';
 export * from './lib/utils/event-form-problems';
 export * from './lib/utils/speakers';
+export * from './lib/utils/search-text';
 
 // Enums
 export * from './lib/enums/submission-review-status.enum';

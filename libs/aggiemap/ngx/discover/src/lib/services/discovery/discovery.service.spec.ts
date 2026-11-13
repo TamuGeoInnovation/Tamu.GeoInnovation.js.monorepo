@@ -64,11 +64,22 @@ describe('DiscoveryService', () => {
     expect(aggielandSaturday?.visible).toBe(true);
   });
 
-  it('keeps a development-only map off the public lists (#2712)', () => {
-    const micromobility = service.getInternalDiscoverApplications().find((app) => app.id === 'micromobility');
+  // Micromobility was the example here until #2895 sent it to production; the NCAA Volleyball map is the
+  // development-only one now. The pair of assertions is what matters: `visible` false, and absent from the
+  // list the public pages render.
+  it('keeps a development-only map off the public lists (#2713)', () => {
+    const volleyball = service.getInternalDiscoverApplications().find((app) => app.id === 'ncaa-volleyball');
 
-    expect(micromobility?.visible).toBe(false);
-    expect(service.getVisibleInternalDiscoverApplications().map((app) => app.id)).not.toContain('micromobility');
+    expect(volleyball?.visible).toBe(false);
+    expect(service.getVisibleInternalDiscoverApplications().map((app) => app.id)).not.toContain('ncaa-volleyball');
+  });
+
+  // #2895: both went to production together, so neither may be hidden any more.
+  it('lists Micromobility and Sustainable Transportation on every environment (#2895)', () => {
+    const visible = service.getVisibleInternalDiscoverApplications().map((app) => app.id);
+
+    expect(visible).toContain('micromobility');
+    expect(visible).toContain('sustainable-transportation');
   });
 
   describe('retired maps', () => {
