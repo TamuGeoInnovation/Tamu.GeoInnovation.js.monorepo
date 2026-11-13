@@ -1,11 +1,10 @@
 import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AsyncPipe, DatePipe } from '@angular/common';
-import { User } from '@auth0/auth0-angular';
 import { catchError, filter, of, switchMap, tap } from 'rxjs';
 
-import type { AccountDashboard, RsvpDashboardPerson } from '@tamu-gisc/gisday/platform/data-api';
-import { UserService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import type { AccountDashboard, RsvpDashboardPerson, Season } from '@tamu-gisc/gisday/platform/data-api';
+import { SeasonService, UserService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ChartSeries, countsByDay, LineChartComponent, runningTotalByDay } from '@tamu-gisc/ui-kits/ngx/charts';
 import { fileNamePart } from '@tamu-gisc/common/utils/ui';
@@ -42,8 +41,10 @@ export function accountFileName(year: number | null | undefined, rowName: string
   styleUrls: ['./account-dashboard.component.scss'],
   imports: [SelectComponent, LineChartComponent, DashboardTableComponent, DashboardRowDetailDirective, DashboardPeopleComponent, AsyncPipe, DatePipe]
 })
-export class AccountDashboardComponent extends BaseAdminListComponent<User> implements OnInit {
-  protected readonly entityService = inject(UserService);
+export class AccountDashboardComponent extends BaseAdminListComponent<Season> implements OnInit {
+  // Accounts are not a GIS Day entity: the base class is here for its season selector, which is all this page lists by.
+  protected readonly entityService = inject(SeasonService);
+  private readonly users = inject(UserService);
   private readonly destroyRef = inject(DestroyRef);
 
   public readonly columns = PERSON_TYPE_COLUMNS;
@@ -93,7 +94,7 @@ export class AccountDashboardComponent extends BaseAdminListComponent<User> impl
           this.collapse();
         }),
         switchMap((season) =>
-          this.entityService.getDashboardForSeason(season.guid).pipe(
+          this.users.getDashboardForSeason(season.guid).pipe(
             catchError(() => {
               this.failed.set(true);
 
@@ -120,7 +121,7 @@ export class AccountDashboardComponent extends BaseAdminListComponent<User> impl
     this.people.set(null);
     this.peopleFailed.set(false);
 
-    this.entityService.getDashboardRow(season.guid, key).subscribe({
+    this.users.getDashboardRow(season.guid, key).subscribe({
       next: (people) => {
         if (this.expanded() === key) {
           this.people.set(people);

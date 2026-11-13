@@ -39,10 +39,13 @@ export async function drawLineChart(host: HTMLElement, options: LineChartOptions
   // The lines' panel above, the columns' short panel below.
   chart.leftAxesContainer.set('layout', root.verticalLayout);
 
-  // The axis spans the data and every band, so a band still to come, such as next week's event, is shown.
+  // The axis spans the data and every band, so a band still to come, such as next week's event, is shown. A point
+  // stands for its whole day, so the data's span ends at the end of its last day, or that day falls off the edge.
+  const DAY = 24 * 60 * 60 * 1000;
+  const pointTimes = [...options.series.flatMap((s) => s.points), ...(options.bars?.points ?? [])].map((p) => p.x.getTime());
   const times = [
-    ...options.series.flatMap((s) => s.points.map((p) => p.x.getTime())),
-    ...(options.bars?.points.map((p) => p.x.getTime()) ?? []),
+    ...pointTimes,
+    ...(pointTimes.length ? [Math.max(...pointTimes) + DAY] : []),
     ...options.bands.flatMap((b) => [b.from.getTime(), b.to.getTime()])
   ];
   const xAxis = chart.xAxes.push(
@@ -132,7 +135,8 @@ export async function drawLineChart(host: HTMLElement, options: LineChartOptions
         tooltip: am5.Tooltip.new(root, { labelText: `${bars.label}: [bold]+{valueY}[/]` })
       })
     );
-    columns.columns.template.setAll({ width: am5.percent(70), fillOpacity: 0.35, strokeOpacity: 0, cornerRadiusTL: 2, cornerRadiusTR: 2 });
+    // At most 18 px wide: with only a few days to chart, a column would otherwise be as wide as its share of the chart.
+    columns.columns.template.setAll({ width: am5.percent(70), maxWidth: 18, fillOpacity: 0.35, strokeOpacity: 0, cornerRadiusTL: 2, cornerRadiusTR: 2 });
     columns.data.setAll(everyDay(bars.points, 'zero').map((p) => ({ x: p.x.getTime(), y: p.y })));
   }
 
