@@ -14,7 +14,7 @@ import type {
 } from '@tamu-gisc/gisday/platform/data-api';
 import { RsvpService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
-import { ChartSeries, dayIn, LineChartComponent, runningTotalByDay } from '@tamu-gisc/ui-kits/ngx/charts';
+import { bandOfDays, ChartBand, ChartSeries, countsByDay, dayIn, LineChartComponent, runningTotalByDay } from '@tamu-gisc/ui-kits/ngx/charts';
 import { downloadFile, fileNamePart } from '@tamu-gisc/common/utils/ui';
 
 import { BaseAdminListComponent } from '../../base-admin-list/base-admin-list.component';
@@ -90,6 +90,18 @@ export function rsvpSeries(dashboard: RsvpDashboard, expanded: RsvpDashboardEven
   return series;
 }
 
+/** The columns under the chart: how many RSVPs every event gained each day (#2886). */
+export function rsvpDaily(dashboard: RsvpDashboard): ChartSeries {
+  return { label: 'New that day', points: countsByDay(dashboard.made.map((m) => m.created)) };
+}
+
+/** The days the season's events run, shaded on the chart, so sign-ups before the week and during it can be told apart. */
+export function rsvpBands(dashboard: RsvpDashboard): Array<ChartBand> {
+  const band = bandOfDays(dashboard.events.map((e) => e.starts).filter((s): s is string => Boolean(s)), 'GIS Day week');
+
+  return band ? [band] : [];
+}
+
 /**
  * The RSVP dashboard (#2878): how many people have RSVP'd for each of the season's events, by person type, how that
  * has grown over time, and, for one event at a time, who they are, with a CSV of them.
@@ -122,6 +134,16 @@ export class RsvpDashboardComponent extends BaseAdminListComponent<UserRsvp> imp
     const dashboard = this.dashboard();
 
     return dashboard ? rsvpSeries(dashboard, this.expandedEvent()) : [];
+  });
+  public readonly daily = computed(() => {
+    const dashboard = this.dashboard();
+
+    return dashboard ? rsvpDaily(dashboard) : null;
+  });
+  public readonly bands = computed(() => {
+    const dashboard = this.dashboard();
+
+    return dashboard ? rsvpBands(dashboard) : [];
   });
 
   public override ngOnInit(): void {

@@ -3,40 +3,7 @@
 }
 
 .line-chart {
-  display: block;
   width: 100%;
-  height: auto;
-  overflow: visible;
-}
-
-.line-chart-grid line {
-  stroke: currentColor;
-  stroke-opacity: 0.15;
-}
-
-.line-chart-tick {
-  fill: currentColor;
-  fill-opacity: 0.7;
-  font-size: 0.75rem;
-  font-variant-numeric: tabular-nums;
-}
-
-.line-chart-legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem 1.25rem;
-  margin: 0.5rem 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.line-chart-swatch {
-  display: inline-block;
-  width: 0.75rem;
-  height: 0.75rem;
-  margin-right: 0.4rem;
-  border-radius: 2px;
-  vertical-align: middle;
 }
 
 .line-chart-empty {

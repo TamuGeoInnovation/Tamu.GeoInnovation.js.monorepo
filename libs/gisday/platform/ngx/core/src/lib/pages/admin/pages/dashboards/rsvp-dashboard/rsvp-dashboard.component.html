@@ -19,8 +19,11 @@
       </p>
 
       <h3 class="rsvp-heading">RSVPs over time</h3>
-      <p class="rsvp-note">The running total at the end of each day, in Central time. {{ expandedEvent() ? 'The second line is the event opened below.' : 'Open an event below to add its own line.' }}</p>
-      <tamu-gisc-line-chart [series]="series()" [steps]="true" label="RSVPs over time, as a running total by day"></tamu-gisc-line-chart>
+      <p class="rsvp-note">
+        The running total at the end of each day, in Central time, with each day's new RSVPs beneath and the GIS Day week shaded. Hover for a day's numbers; drag across the chart to zoom in, and double-click to see it all again.
+        {{ expandedEvent() ? 'The second line is the event opened below.' : 'Open an event below to add its own line.' }}
+      </p>
+      <tamu-gisc-line-chart [series]="series()" [bars]="daily()" [bands]="bands()" [steps]="true" unit="RSVPs" label="RSVPs over time, as a running total by day, with each day's new RSVPs"></tamu-gisc-line-chart>
 
       <h3 class="rsvp-heading">By event</h3>
       @if (view.events.length > 0) {
