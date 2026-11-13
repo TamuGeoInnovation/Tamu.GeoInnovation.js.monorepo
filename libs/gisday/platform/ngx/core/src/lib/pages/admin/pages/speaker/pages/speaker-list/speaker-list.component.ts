@@ -5,6 +5,7 @@ import { Speaker } from '@tamu-gisc/gisday/platform/data-api';
 import { SpeakerService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
+import { AdminSearchComponent } from '../../../base-admin-list/admin-search.component';
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe, DatePipe } from '@angular/common';
@@ -14,8 +15,11 @@ import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
   selector: 'tamu-gisc-speaker-list',
   templateUrl: './speaker-list.component.html',
   styleUrls: ['./speaker-list.component.scss'],
-  imports: [SelectComponent, RouterLink, CheckboxComponent, AsyncPipe, DatePipe, ExistsPipe]
+  imports: [SelectComponent, RouterLink, CheckboxComponent, AsyncPipe, DatePipe, ExistsPipe, AdminSearchComponent]
 })
 export class SpeakerListComponent extends BaseAdminListComponent<Speaker> {
+  /** The search (#2914) looks in the columns this page shows. */
+  protected override readonly searchFields = (c: Partial<Speaker>) => [`${c.firstName ?? ''} ${c.lastName ?? ''}`, c.email, c.organization?.name];
+
   protected readonly entityService = inject(SpeakerService);
 }

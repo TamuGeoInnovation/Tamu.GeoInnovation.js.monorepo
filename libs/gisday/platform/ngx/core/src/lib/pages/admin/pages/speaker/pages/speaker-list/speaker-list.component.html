@@ -10,6 +10,8 @@
     </div>
 
     <div class="form-section-body">
+      <tamu-gisc-admin-search [control]="search" placeholder="Search by name, email or organization" [counts]="searchCounts$ | async"></tamu-gisc-admin-search>
+
       @if (entitiesForActiveSeasonOrForSeasonGuid$ | async; as entities) { @if (entities?.length > 0) {
       <table class="floating-table">
         <thead>
@@ -35,6 +37,8 @@
           }
         </tbody>
       </table>
+      } @else if (search.value.trim()) {
+      <p>No speakers match "{{ search.value }}".</p>
       } @else {
       <p>There are no speakers for the selected season.</p>
       } @if ((selectedRows$ | async)?.length > 0) {

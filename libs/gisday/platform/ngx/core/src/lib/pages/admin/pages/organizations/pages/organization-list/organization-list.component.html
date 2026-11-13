@@ -14,6 +14,8 @@
         <p class="trailer-1">Affiliations are institutions which a speaker is a member of and represents during an event (e.g. company, university).</p>
       </div>
 
+      <tamu-gisc-admin-search [control]="search" placeholder="Search by name" [counts]="searchCounts$ | async"></tamu-gisc-admin-search>
+
       @if (entitiesForActiveSeasonOrForSeasonGuid$ | async; as entities) { @if (entities?.length > 0) {
       <table class="floating-table">
         <thead>
@@ -35,8 +37,10 @@
           }
         </tbody>
       </table>
+      } @else if (search.value.trim()) {
+      <p>No organizations match "{{ search.value }}".</p>
       } @else {
-      <p>There are no affiliations for the selected season.</p>
+      <p>There are no organizations for the selected season.</p>
       } @if ((selectedRows$ | async)?.length > 0) {
       <div class="selected-action-container info-block context">
         <div>

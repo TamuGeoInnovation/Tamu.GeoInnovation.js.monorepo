@@ -1,7 +1,9 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { merge, Observable, of, Subject } from 'rxjs';
+import { combineLatest, merge, Observable, of, Subject } from 'rxjs';
 import { map, scan, shareReplay, startWith, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 
 import { GuidIdentity, Season } from '@tamu-gisc/gisday/platform/data-api';
@@ -12,7 +14,8 @@ import {
   CopyEntityModalResponse,
   EntityCopyModalComponent,
   EntityDeleteModalComponent,
-  EntityDeleteModalResponse
+  EntityDeleteModalResponse,
+  matchesText
 } from '@tamu-gisc/gisday/platform/ngx/common';
 
 @Component({
@@ -29,6 +32,7 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
   private readonly router = inject(Router);
   private readonly modalService = inject(ModalService);
   private readonly notificationService = inject(NotificationService);
+  private readonly destroyRef = inject(DestroyRef);
 
   public seasons$ = this.seasonService.seasons$;
   public activeSeason$ = this.seasonService.activeSeason$;
@@ -41,6 +45,16 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
   public selectedRows$: Observable<Array<string>>;
 
   private _selectRow$: Subject<string | Array<string>> = new Subject();
+
+  /**
+   * The page's search (#2914). A page that wants one names the text of each row to search, the columns it displays,
+   * and puts <tamu-gisc-admin-search> above its list; the list it reads, entitiesForActiveSeasonOrForSeasonGuid$, is
+   * then only the rows that match. A page that names none lists every row, as before.
+   */
+  public readonly search = new FormControl('', { nonNullable: true });
+  protected readonly searchFields: ((entity: Partial<T>) => Array<string | null | undefined>) | null = null;
+  /** How many rows the search shows, of how many, for the search box. */
+  public searchCounts$: Observable<{ shown: number; total: number }>;
 
   public ngOnInit(): void {
     this.selectedSeason$ = merge(
@@ -82,12 +96,27 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
 
     // A conditional, not iif: iif builds both branches at once, so with no season (a new site) it read
     // season.guid on null and the list was blank (#2076).
-    this.entitiesForActiveSeasonOrForSeasonGuid$ = this.selectedSeason$.pipe(
+    const seasonEntities$ = this.selectedSeason$.pipe(
       switchMap((season) =>
         season ? this.entityService.getEntitiesForSeason(season.guid) : this.entityService.getEntitiesForActiveSeason()
       ),
       shareReplay()
     );
+    const searched$ = combineLatest([seasonEntities$, this.search.valueChanges.pipe(startWith(this.search.value))]).pipe(
+      map(([all, search]) => {
+        const fields = this.searchFields;
+        const shown = fields && all ? all.filter((entity) => matchesText(fields(entity), search)) : all;
+
+        return { all, shown };
+      }),
+      shareReplay(1)
+    );
+
+    this.entitiesForActiveSeasonOrForSeasonGuid$ = searched$.pipe(map(({ shown }) => shown));
+    this.searchCounts$ = searched$.pipe(map(({ all, shown }) => ({ shown: shown?.length ?? 0, total: all?.length ?? 0 })));
+
+    // A row the search hides cannot stay selected, or an action on "the selected rows" would act on rows not shown.
+    this.search.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this._selectRow$.next(null));
 
     this.selectedRows$ = this._selectRow$.pipe(
       scan((acc, guidOrList) => {
