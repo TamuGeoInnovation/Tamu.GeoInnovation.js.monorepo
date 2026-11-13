@@ -15,9 +15,7 @@ import {
   FindOptionsRelations
 } from 'typeorm';
 
-
 // TODO:
-
 
 /**
  * A flat object of primitive values, as a GeoJSON feature's `properties`. Lives here, beside its only users (this file and
@@ -627,6 +625,17 @@ export class Speaker extends GuidIdentity {
 
   @Column({ nullable: true })
   public accountGuid: string;
+
+  /** When an admin marked this speaker's name badge printed, or null if it is not (#2908). */
+  @Column({ type: 'datetimeoffset', nullable: true })
+  public badgePrintedAt: Date | null;
+
+  /**
+   * What the printed badge said, as exported (name, organization, class year), so the badges page can say when the
+   * speaker has changed since: comparing times would not do, because marking the badge also updates the record.
+   */
+  @Column({ type: 'nvarchar', length: 1000, nullable: true })
+  public badgePrintedText: string | null;
 
   @ManyToMany(() => Event, (event) => event.speakers, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   public events: Event[];

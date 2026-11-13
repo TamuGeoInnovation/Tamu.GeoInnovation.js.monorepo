@@ -35,6 +35,16 @@ export class SpeakerService extends BaseService<Speaker> {
     return this.http1.get<Array<Partial<Speaker>>>(`${this.resource}/participating/season/${seasonGuid}`);
   }
 
+  /** Marks these speakers' badges printed, each with what its badge said (#2908). */
+  public markBadgesPrinted(badges: Array<{ guid: string; text: string }>) {
+    return this.http1.post<{ marked: number }>(`${this.resource}/badges/printed`, { badges });
+  }
+
+  /** Clears these speakers' printed mark (#2908). */
+  public clearBadgesPrinted(guids: Array<string>) {
+    return this.http1.post<{ cleared: number }>(`${this.resource}/badges/not-printed`, { guids });
+  }
+
   public getActivePresenters() {
     return this.http1.get<Array<Partial<Speaker>>>(`${this.resource}/season/active`);
   }

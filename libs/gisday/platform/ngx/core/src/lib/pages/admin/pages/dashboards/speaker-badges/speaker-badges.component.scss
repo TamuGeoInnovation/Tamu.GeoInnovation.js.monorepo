@@ -30,3 +30,51 @@
     margin: 0;
   }
 }
+
+.badges-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.5rem 2rem;
+
+  .badges-search {
+    flex: 1 1 18rem;
+    margin-bottom: 0;
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+.badges-counts {
+  margin-bottom: 0.25rem;
+}
+
+.badges-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+}
+
+.badges-confirm {
+  margin: 0.75rem 0;
+
+  p {
+    margin-top: 0;
+  }
+}
+
+.badges-confirm-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.badges-changed {
+  font-size: 0.9rem;
+}
+
+.badges-undo {
+  font-size: 0.9rem;
+}
