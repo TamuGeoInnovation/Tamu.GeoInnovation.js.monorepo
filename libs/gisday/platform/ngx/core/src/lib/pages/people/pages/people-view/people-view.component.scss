@@ -1,5 +1,25 @@
-// The search box, centred above the cards, as wide as a few of them (#2859).
+// The search box, centred above the cards, as wide as a few of them (#2859), with its copy button beside it (#2921).
+.search-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
 .search tamu-gisc-textbox {
   width: 100%;
   max-width: 32rem;
+}
+
+.search-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  white-space: nowrap;
+
+  .material-icons {
+    font-size: 1.1rem;
+  }
 }

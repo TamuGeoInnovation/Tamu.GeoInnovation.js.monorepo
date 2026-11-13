@@ -1,7 +1,16 @@
 @if (view$ | async; as view) { @if (view.total > 0) {
 <!-- Search by first name, last name, organization (#2859) or university (#2869). -->
 <div class="container12 flex flex-column align-center search trailer-2">
-  <tamu-gisc-textbox type="text" placeholder="Search by name, organization or university" [formControl]="search"></tamu-gisc-textbox>
+  <div class="search-row">
+    <tamu-gisc-textbox type="text" placeholder="Search by name, organization or university" [formControl]="search"></tamu-gisc-textbox>
+    <!-- A link to this list already searched, to send a company a page of its people (#2921). -->
+    @if (search.value.trim()) {
+    <button type="button" class="button snug secondary search-copy" clipboard-copy [text]="link()" (copying)="copied$ = $event" [attr.aria-label]="'Copy a link to these ' + view.shown.length + ' presenters'">
+      <span class="material-icons" aria-hidden="true">{{ (copied$ | async) ? 'check' : 'link' }}</span>
+      {{ (copied$ | async) ? 'Copied' : 'Copy link' }}
+    </button>
+    }
+  </div>
   @if (search.value.trim()) {
   <p>{{view.count}}</p>
   }
