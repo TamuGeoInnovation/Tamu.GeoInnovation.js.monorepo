@@ -30,10 +30,7 @@ export interface VisitMapsTile {
    * `test/smoke/aggiemap/development-only.ts` requires the tile to be absent on production.
    */
   isDev?: true;
-  icon:
-    | { kind: 'path'; viewBox: string; d: string }
-    | { kind: 'stroke'; viewBox: string; d: string; width?: number }
-    | { kind: 'image'; src: string };
+  icon: { kind: 'path'; viewBox: string; d: string } | { kind: 'image'; src: string };
 }
 
 /**
@@ -48,16 +45,16 @@ export const VISIT_MAPS_TILES: VisitMapsTile[] = [
     icon: { kind: 'image', src: '/assets/images/logo/150th-wordmark-stacked-maroon.svg' }
   },
   {
-    // One tile for both kinds of map since #2895: the page below it lists the transportation maps
-    // above the parking ones. A bus behind a car, after the maintainer's artwork, drawn as a path
-    // rather than used as the supplied PNG so it takes `currentColor` like every tile but the
-    // 150th wordmark - which matters now that the row has a dark mode (#2865). Stroked rather than filled: the row
-    // is line art, and a filled glyph can only draw an outline by punching holes with opposite winding, which is not
-    // something to author by hand for a shape this fiddly. The first attempt was a filled silhouette and read as two
-    // blobs at tile size. The reference image is in `docs/screenshots/2895-parking-transportation/`.
+    // One tile for both kinds of map since #2895: the page below it lists the transportation maps above the
+    // parking ones. The glyph is the maintainer's bus-and-car artwork, traced from the PNG he supplied rather
+    // than hand-drawn, so it is his design and not an approximation of it; the reference image is committed in
+    // `docs/screenshots/2895-parking-transportation/`. It is a filled path, so it takes `currentColor` like the
+    // rest of the row and follows the hover and the dark mode (#2865). Deliberately a placeholder: the artwork
+    // is thick-stroked and reads heavily at 52 px, and Transportation are expected to supply a drawn-for-size
+    // version, tracked in #2897.
     label: 'Parking & Transportation',
     route: '/all-maps/parking',
-    icon: { kind: 'stroke', viewBox: '0 0 24 24', d: 'M3.4 3.6h5.4a2 2 0 0 1 2 2v7.1a1 1 0 0 1-1 1H2.4a1 1 0 0 1-1-1V5.6a2 2 0 0 1 2-2Z M1.4 7.6h9.4 M3 15.5a1.1 1.1 0 1 0 2.2 0 1.1 1.1 0 1 0-2.2 0 M7.2 15.5a1.1 1.1 0 1 0 2.2 0 1.1 1.1 0 1 0-2.2 0 M12.6 17.4v-3l1.3-3a1.6 1.6 0 0 1 1.5-1h4.7a1.6 1.6 0 0 1 1.5 1l1.3 3v3 M13.9 14.4h8.3 M14.2 17.6a1.1 1.1 0 1 0 2.2 0 1.1 1.1 0 1 0-2.2 0 M19.7 17.6a1.1 1.1 0 1 0 2.2 0 1.1 1.1 0 1 0-2.2 0' }
+    icon: { kind: 'path', viewBox: '0 0 64 64', d: 'M8.92 8.7C7.54 8.96 6.19 9.66 5.16 10.68C4.37 11.46 3.34 13.19 3.34 13.7C3.34 13.87 6.37 13.91 21.16 13.91C38.96 13.91 38.96 13.91 38.85 13.54C38.08 11.08 35.62 9.04 32.96 8.64C31.31 8.41 10.27 8.46 8.92 8.7Z M3.02 23.01L3.02 28.44L12.42 28.44L21.83 28.44L21.51 29.67C20.82 32.43 22.1 32.11 11.94 32.11L3 32.11L3.05 38.95C3.1 45.8 3.1 45.8 3.57 46.58C3.91 47.12 4.31 47.51 4.85 47.79C5.65 48.24 5.65 48.24 10.65 48.24L15.63 48.24L15.63 50.03C15.63 51.02 15.7 51.93 15.76 52.04C15.87 52.19 16.51 52.23 18.44 52.2L20.98 52.15L21.08 47.68C21.12 45.13 21.24 42.99 21.33 42.7C21.88 41.1 23.01 39.62 24.46 38.58C24.88 38.28 25.01 37.88 26.24 32.96C27.9 26.41 28.31 25.52 30.48 24.13C32.1 23.09 32.67 23.01 38.07 23.01C42.33 23.01 42.92 22.98 43 22.75C43.05 22.61 43.1 21.4 43.1 20.04L43.1 17.58L23.06 17.58L3.02 17.58L3.02 23.01Z M11.42 38.64C13.14 39.43 13.46 41.85 12.01 43.19C10.36 44.73 7.49 43.43 7.49 41.15C7.49 39.09 9.53 37.78 11.42 38.64Z M32.96 26.99C32.13 27.35 31.19 28.42 30.98 29.19C30.12 32.46 28.95 37.38 29.01 37.46C29.13 37.57 56.59 37.57 56.7 37.45C56.82 37.35 54.71 28.95 54.47 28.5C54.18 27.98 53.27 27.19 52.65 26.94C51.67 26.52 33.87 26.57 32.96 26.99Z M26.89 41.52C25.92 41.95 25.12 42.94 24.89 43.94C24.78 44.54 24.73 46.55 24.77 50.16L24.81 55.51L42.91 55.55L61 55.59L60.95 49.73C60.9 43.21 60.9 43.23 59.75 42.14C58.73 41.17 59.56 41.21 42.83 41.21C28.37 41.21 27.5 41.23 26.89 41.52Z M33.6 46.1C35.27 47.2 34.97 50.11 33.09 50.89C30.58 51.95 28.25 49.18 29.68 46.85C30.44 45.62 32.3 45.25 33.6 46.1Z M55.03 45.96C56.54 46.68 56.96 48.82 55.83 50.11C53.53 52.73 49.53 49.71 51.47 46.8C52.17 45.75 53.78 45.35 55.03 45.96Z' }
   },
   {
     label: 'Athletics Events',
