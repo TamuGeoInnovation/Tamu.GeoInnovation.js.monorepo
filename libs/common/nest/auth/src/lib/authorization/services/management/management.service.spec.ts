@@ -32,6 +32,14 @@ describe('ManagementService', () => {
       await expect(service.getUsersByIds(['auth0|1'])).rejects.toBeInstanceOf(ServiceUnavailableException);
     });
 
+    it('answers 503 for the users made in a window, and for their count (#2892)', async () => {
+      const from = new Date('2025-11-21T06:00:00Z');
+      const to = new Date('2026-11-21T06:00:00Z');
+
+      await expect(service.getUsersCreatedBetween(from, to)).rejects.toBeInstanceOf(ServiceUnavailableException);
+      await expect(service.countUsersCreatedBetween(from, to)).rejects.toBeInstanceOf(ServiceUnavailableException);
+    });
+
     it('answers 503 for an update', async () => {
       await expect(
         service.updateUserMetadata('auth0|1', undefined, { app_metadata: '*', user_metadata: '*' })

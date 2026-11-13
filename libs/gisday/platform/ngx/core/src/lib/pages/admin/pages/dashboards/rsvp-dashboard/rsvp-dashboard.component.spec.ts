@@ -157,7 +157,7 @@ describe('RsvpDashboardComponent', () => {
     const root = fixture.nativeElement as HTMLElement;
 
     expect(rsvps.getDashboardForSeason).toHaveBeenCalledWith('s-1');
-    expect(root.querySelector('.rsvp-summary').textContent).toContain('4 RSVPs for 2 events');
+    expect(root.querySelector('.dashboard-summary').textContent).toContain('4 RSVPs for 2 events');
     expect(Array.from(root.querySelectorAll('.datatable-header-cell-label')).map((th) => th.textContent.trim())).toEqual([
       'Event',
       'When',

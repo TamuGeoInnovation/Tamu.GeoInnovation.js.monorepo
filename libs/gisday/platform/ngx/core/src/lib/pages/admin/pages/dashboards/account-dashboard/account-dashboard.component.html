@@ -1,0 +1,44 @@
+<div class="form">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">User accounts</div>
+      <div class="form-section-actions">
+        <tamu-gisc-select class="post-1" placeholder="Season" [floatLabel]="false" [data]="seasons$ | async" displayTemplate="year" valueTemplate="guid" [value]="(selectedSeason$ | async)?.guid" (changed)="setSeason($event)"></tamu-gisc-select>
+      </div>
+    </div>
+
+    <div class="form-section-body">
+      @if (failed()) {
+      <p class="error">The accounts could not be read. Try again in a moment.</p>
+      } @else if (dashboard(); as view) {
+      <p class="dashboard-summary">
+        <strong>{{ view.accounts }}</strong> {{ view.accounts === 1 ? 'account' : 'accounts' }} with a GIS Day profile, made
+        @if (view.window.from) {
+        from {{ view.window.from | date: 'MMM d, y' : '-0600' }}
+        } @else {
+        before
+        }
+        to the end of this GIS Day ({{ lastDay() | date: 'MMM d, y' : '-0600' }}).
+        The sign-in service made {{ view.allAccounts }} {{ view.allAccounts === 1 ? 'account' : 'accounts' }} in that time, with or without a profile; it is shared with other sites, so the difference is at most the GIS Day sign-ups that never finished one.
+      </p>
+
+      <h3 class="dashboard-heading">Accounts over time</h3>
+      <p class="dashboard-note">The running total at the end of each day, in Central time, with each day's new accounts beneath. Hover for a day's numbers; drag across the chart to zoom in, and double-click to see it all again.</p>
+      <tamu-gisc-line-chart [series]="chart().series" [bars]="chart().daily" [steps]="true" unit="accounts" label="Accounts with a GIS Day profile over time, as a running total by day, with each day's new accounts"></tamu-gisc-line-chart>
+
+      <h3 class="dashboard-heading">By university or employer</h3>
+      @if (view.rows.length > 0) {
+      <p class="dashboard-note">Click a heading to sort by it, and again to reverse it. Click a university or employer to see its people.</p>
+      <tamu-gisc-dashboard-table [rows]="rows()" [columns]="columns" nameLabel="University or employer" totalLabel="All accounts" (toggled)="toggle($event)">
+        <ng-template tamuGiscDashboardRowDetail>
+          <tamu-gisc-dashboard-people [people]="people()" [failed]="peopleFailed()" [fileName]="fileName()" dateLabel="Account made"></tamu-gisc-dashboard-people>
+        </ng-template>
+      </tamu-gisc-dashboard-table>
+      } @else {
+      <p>No accounts with a GIS Day profile were made in that time.</p>
+      } } @else {
+      <p>Reading the accounts... A season with many accounts can take a few seconds.</p>
+      }
+    </div>
+  </div>
+</div>
