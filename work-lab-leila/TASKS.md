@@ -1,5 +1,85 @@
 # work-lab-leila: current tasks
 
+## Batch 38 (aggiemap: clear the 13 November release on dev AND production - it is going to production before the suite has run; 13 November 2026, 2:21 PM Central, from `work (aggiemap)`)
+
+**Start now. This is the only thing in your queue and it is the only thing clearing a release that is already
+going out.**
+
+### What has happened, so you are not guessing
+
+[PR 2911](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2911) merged at about 1:30 PM
+Central as **`68d7b974c9c0f3041a13be0c7874db2dffc34100`** on `development`. It closed
+[#2910](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2910) and
+[#2897](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2897): the All Maps parking
+section moved to `/all-maps/parking-transportation` with `/all-maps/parking` kept as a redirect, and its tile now
+draws Aggie UX's `aux_car-bus`.
+
+**The marketing team asked for production immediately, and the maintainer is deploying it now.** So the usual order -
+deploy dev, run the release tier, tag dev only if it passed, then promote - is not what happened. **The suite is
+running after the promotion rather than before it, and your run is the only thing that will say whether the build that
+is now on production is sound.** Treat a failure as an incident, not as a test result: say so in your first push, do
+not wait for the rest of the run.
+
+**`68d7b974c` carries no tag, and must not be given one by you.** Do not run `scripts/tag-build.sh` at all, for
+either environment. The maintainer and I will tag once your results are in; a `dev-*` tag means the suite passed, so
+it cannot be written before you have said whether it did.
+
+### What to run
+
+Both environments, **development first**, in this order. `release` tier - every map once, about thirty minutes each.
+
+```bash
+cd /c/TAMU/<a worktree at 68d7b974c>
+test/smoke/aggiemap/run-local.sh development release
+test/smoke/aggiemap/run-local.sh production release
+```
+
+**Not `-x`.** A full picture of a build already on production is worth more than stopping at the first failure.
+
+### Identify the build before each run, and say what you found
+
+A suite run against the previous build proves nothing and reads exactly like a pass, so check first, per
+environment, and **put the chunk name in your report**:
+
+```bash
+docker run --rm curlimages/curl:latest -s https://dev.aggiemap.tamu.edu/all-maps | grep -oE 'src="main-[^"]+\.js"'
+```
+
+Then fetch that chunk and grep it for `parking-transportation`. **Non-zero means the environment has this release;
+zero means it does not, and you are about to test the old build.** As of 2:20 PM Central dev was still serving
+`main-B7UHSK2D.js` with zero hits - the dev deploy had not landed. Production will be later still.
+
+If an environment has not got the build when you reach it, **wait and re-check rather than running**, and say in
+`STATUS.md` that you are waiting and on what.
+
+### Also check the three things the suite does not cover
+
+Nothing in `test/smoke/aggiemap` visits the All Maps category pages - `git grep all-maps test/` returns nothing - so
+**the two changes that went out in this release have no smoke coverage at all.** By hand, on **each** environment,
+and report the result per environment:
+
+1. `/all-maps/parking-transportation` serves the section, titled **Parking & Transportation**, with **Buses &
+   Transportation** above **Parking**.
+2. `/all-maps/parking` lands on the new address with the page rendered, and
+   `/all-maps/parking?as=production#parking` keeps both the query string and the anchor. (The hosting already
+   returned 200 for the new path on dev before this build, so a failure here is the Angular route, not the server.)
+3. The **Parking & Transportation** tile draws a bus behind a car at the same line weight as the Athletics Events,
+   Campus Events and Operations tiles - not a heavy filled shape, which is the placeholder it replaced.
+
+On production, (1) and (3) are the first time any of this has been seen there.
+
+### What I want back
+
+`work-lab-leila/reports/2026-11-13-38.md`, and **push an interim the moment the development run finishes** rather
+than holding both: the production deploy is in flight and a dev failure changes what the maintainer does next.
+
+Per environment: the chunk name you identified, pass or fail with the count, **what failed and why** rather than a
+tally, and the three hand checks. Name any failure that is in `allowedServiceFailures` for that environment
+separately from a real one.
+
+A manual run does not open or close a health issue - only a GitHub run does - so say that in the report if something
+fails, so nobody files a duplicate.
+
 > # Read this too (12:45 AM Central, 28 October, from `work (aggiemap)`)
 >
 > **Your 12:38 AM block cannot answer the question yet, and it is worth stopping to see why before you
