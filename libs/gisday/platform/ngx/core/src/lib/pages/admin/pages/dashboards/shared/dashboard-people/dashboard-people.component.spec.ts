@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import * as Papa from 'papaparse';
 
-import { DashboardPeopleComponent, DashboardPerson, groupPeople, peopleCsv } from './dashboard-people.component';
+import { DashboardPeopleComponent, DashboardPerson, groupPeople, peopleCsv, PERSON_TYPE_COLUMNS } from './dashboard-people.component';
 
 const person = (p: Partial<DashboardPerson>): DashboardPerson => ({
   firstName: null,
@@ -47,6 +47,14 @@ describe('peopleCsv()', () => {
     ]);
     expect(rows[2]['University / employer']).toBe('Texas A&M University');
     expect(rows[0]["RSVP'd"]).toBe('2026-11-01T15:00:00.000Z');
+  });
+});
+
+describe('PERSON_TYPE_COLUMNS', () => {
+  it('heads a column per type, in order, with a soft hyphen in Undergraduate only', () => {
+    expect(PERSON_TYPE_COLUMNS.map((c) => c.key)).toEqual(['undergraduate', 'graduate', 'student', 'academia', 'industry', 'not-given']);
+    expect(PERSON_TYPE_COLUMNS[0].label).toBe('Under\u00adgraduate');
+    expect(PERSON_TYPE_COLUMNS.slice(1).every((c) => !c.label.includes('\u00ad'))).toBe(true);
   });
 });
 

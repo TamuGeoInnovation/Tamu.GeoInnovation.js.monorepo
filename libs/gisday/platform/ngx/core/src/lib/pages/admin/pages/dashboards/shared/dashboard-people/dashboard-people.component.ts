@@ -7,6 +7,8 @@ import { RSVP_PERSON_TYPES, RsvpPersonType } from '@tamu-gisc/gisday/common';
 import type { RsvpDashboardPerson } from '@tamu-gisc/gisday/platform/data-api';
 import { downloadFile } from '@tamu-gisc/common/utils/ui';
 
+import type { DashboardTableColumn } from '../dashboard-table/dashboard-table.component';
+
 /** A person as every dashboard lists them: their profile, and when they did what the dashboard counts. */
 export type DashboardPerson = RsvpDashboardPerson;
 
@@ -56,6 +58,16 @@ export function peopleCsv(people: Array<DashboardPerson>, dateLabel: string): st
 
   return Papa.unparse(rows, { columns });
 }
+
+/**
+ * A column per person type, for a dashboard's table. "Undergraduate" carries a soft hyphen, shown only if the word must
+ * break: Chrome does not hyphenate a word that starts with a capital, so in a narrow column it was cut to "Undergradu".
+ * The types' own labels have none, because they also go into CSV files.
+ */
+export const PERSON_TYPE_COLUMNS: Array<DashboardTableColumn> = RSVP_PERSON_TYPES.map(({ type, label }) => ({
+  key: type,
+  label: label.replace('Undergraduate', 'Under\u00adgraduate')
+}));
 
 /** A student's group shows classification, field of study and university; anyone else's, position, department and employer. */
 export function isStudent(type: RsvpPersonType): boolean {

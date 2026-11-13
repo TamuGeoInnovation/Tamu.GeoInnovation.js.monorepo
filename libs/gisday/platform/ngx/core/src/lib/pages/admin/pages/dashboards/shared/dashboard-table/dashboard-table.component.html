@@ -1,5 +1,5 @@
 <div class="datatable-container dashboard-table">
-  <ngx-datatable class="material" [rows]="tableRows()" [columnMode]="'force'" [headerHeight]="50" [rowHeight]="'auto'" [footerHeight]="0" [scrollbarV]="false" [reorderable]="false" [summaryRow]="true" summaryPosition="bottom" [summaryHeight]="'auto'" [sorts]="sorts()" (sortsChange)="onSortsChange($event)" (activate)="onActivate($event)">
+  <ngx-datatable class="material" [rows]="tableRows()" [columnMode]="'flex'" [headerHeight]="'auto'" [rowHeight]="'auto'" [footerHeight]="0" [scrollbarV]="false" [reorderable]="false" [summaryRow]="true" summaryPosition="bottom" [summaryHeight]="'auto'" [sorts]="sorts()" (sortsChange)="onSortsChange($event)" (activate)="onActivate($event)">
     <ngx-datatable-row-detail [rowHeight]="'auto'">
       <ng-template let-row="row" ngx-datatable-row-detail-template>
         <div class="dashboard-table-detail">
@@ -10,7 +10,7 @@
       </ng-template>
     </ngx-datatable-row-detail>
 
-    <ngx-datatable-column [name]="nameLabel()" prop="name" [width]="280" [minWidth]="200" [comparator]="compareNames" [summaryFunc]="totalName">
+    <ngx-datatable-column [name]="nameLabel()" prop="name" [flexGrow]="3.6" [minWidth]="200" [comparator]="compareNames" [summaryFunc]="totalName">
       <ng-template let-row="row" ngx-datatable-cell-template>
         <div class="dashboard-table-name" [attr.aria-expanded]="isOpen(row)">
           <span class="material-icons dashboard-table-chevron" aria-hidden="true">{{ isOpen(row) ? 'expand_less' : 'expand_more' }}</span>
@@ -23,15 +23,15 @@
     </ngx-datatable-column>
 
     @if (hasWhen()) {
-    <ngx-datatable-column name="When" prop="when" [width]="170" [comparator]="compareTimes" [summaryFunc]="blank">
+    <ngx-datatable-column name="When" prop="when" [flexGrow]="1.4" [minWidth]="110" [comparator]="compareTimes" [summaryFunc]="blank">
       <ng-template let-row="row" ngx-datatable-cell-template>{{ row.when | date: whenFormat() : '-0600' }}</ng-template>
     </ngx-datatable-column>
     }
 
-    <ngx-datatable-column name="Total" prop="total" [width]="80" cellClass="dashboard-table-count bold" headerClass="dashboard-table-count" [summaryFunc]="sum"></ngx-datatable-column>
+    <ngx-datatable-column name="Total" prop="total" [flexGrow]="0.7" [minWidth]="56" cellClass="dashboard-table-count bold" headerClass="dashboard-table-count" [summaryFunc]="sum"></ngx-datatable-column>
 
     @for (column of columns(); track column.key) {
-    <ngx-datatable-column [name]="column.label" [prop]="countProp(column.key)" [width]="100" cellClass="dashboard-table-count" headerClass="dashboard-table-count" [summaryFunc]="sum"></ngx-datatable-column>
+    <ngx-datatable-column [name]="column.label" [prop]="countProp(column.key)" [flexGrow]="1.15" [minWidth]="88" cellClass="dashboard-table-count" headerClass="dashboard-table-count" [summaryFunc]="sum"></ngx-datatable-column>
     }
   </ngx-datatable>
 </div>

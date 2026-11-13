@@ -16,7 +16,7 @@ import { bandOfDays, ChartBand, ChartSeries, countsByDay, dayIn, LineChartCompon
 import { fileNamePart } from '@tamu-gisc/common/utils/ui';
 
 import { BaseAdminListComponent } from '../../base-admin-list/base-admin-list.component';
-import { DashboardPeopleComponent } from '../shared/dashboard-people/dashboard-people.component';
+import { DashboardPeopleComponent, PERSON_TYPE_COLUMNS } from '../shared/dashboard-people/dashboard-people.component';
 import { DashboardRowDetailDirective, DashboardTableComponent, DashboardTableRow } from '../shared/dashboard-table/dashboard-table.component';
 
 /** Every type's count summed over `events`, and the total, for the table's last row. */
@@ -86,7 +86,7 @@ export class RsvpDashboardComponent extends BaseAdminListComponent<UserRsvp> imp
   protected readonly entityService = inject(RsvpService);
   private readonly destroyRef = inject(DestroyRef);
 
-  public readonly columns = RSVP_PERSON_TYPES.map(({ type, label }) => ({ key: type, label }));
+  public readonly columns = PERSON_TYPE_COLUMNS;
 
   /** The season's dashboard, null while it loads, and `failed` if it could not be read. */
   public readonly dashboard = signal<RsvpDashboard | null>(null);

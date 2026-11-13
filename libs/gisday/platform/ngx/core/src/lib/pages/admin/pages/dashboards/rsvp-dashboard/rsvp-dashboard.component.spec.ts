@@ -162,7 +162,8 @@ describe('RsvpDashboardComponent', () => {
       'Event',
       'When',
       'Total',
-      'Undergraduate',
+      // With its soft hyphen, which shows only where the word breaks.
+      'Under\u00adgraduate',
       'Graduate',
       'Student, classification not given',
       'Faculty & academia',

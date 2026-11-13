@@ -18,10 +18,19 @@
     padding-right: 0.5rem;
   }
 
-  ::ng-deep .datatable-body-cell-label,
-  ::ng-deep .datatable-header-cell-label {
+  // Columns share the width in proportion (the event's name the most), so a long name wraps once, not word by word.
+  ::ng-deep .datatable-body-cell-label {
     white-space: normal;
     overflow-wrap: break-word;
+  }
+
+  // A heading wraps between words, and a word too long for its column breaks where a dictionary would, with a
+  // hyphen ("Under-graduate"), rather than at whatever letter the column ends on.
+  ::ng-deep .datatable-header-cell-label {
+    white-space: normal;
+    overflow-wrap: normal;
+    word-break: normal;
+    hyphens: auto;
   }
 
   ::ng-deep .dashboard-table-count {
@@ -45,7 +54,7 @@
 
 .dashboard-table-name {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.25rem;
 }
 
