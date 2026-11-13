@@ -14,7 +14,7 @@
       }
     </ul>
     @if (matches.total > matches.shown.length) {
-    <p><a [routerLink]="['/presenters']" [queryParams]="{ search: search.value }">See all {{ matches.total }} on the Presenters page</a></p>
+    <p><a [routerLink]="['/presenters']" [queryParams]="{ search: search.value }">See all matches on the Presenters page</a></p>
     } } @else {
     <p>No other presenters match "{{ search.value }}".</p>
     } }

@@ -86,9 +86,10 @@ describe('PeopleDetailsComponent search (#2919)', () => {
     const many = Array.from({ length: 12 }, (_, i) => presenter(`m-${i}`, 'Sam', `Smith ${i}`));
     const root = await type(await open(many), 'smith');
     const all = Array.from(root.querySelectorAll('.presenter-search a')).find((a) => a.textContent.includes('See all'));
+    // No number: the list counts the presenter this page is for too, so it would say one more.
 
     expect(root.querySelectorAll('.presenter-search-matches li')).toHaveLength(MATCHES_SHOWN);
-    expect(all.textContent.trim()).toBe('See all 12 on the Presenters page');
+    expect(all.textContent.trim()).toBe('See all matches on the Presenters page');
     expect(all.getAttribute('href')).toBe('/presenters?search=smith');
   });
 
