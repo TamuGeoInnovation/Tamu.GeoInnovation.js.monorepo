@@ -70,6 +70,8 @@ describe('campusForRoute', () => {
     '/',
     '/all-maps',
     '/all-maps/campus',
+    '/all-maps/parking-transportation',
+    // Its address until #2910, kept as a redirect, and reported by the router before the redirect lands.
     '/all-maps/parking',
     '/all-maps/campus-events',
     '/about',
