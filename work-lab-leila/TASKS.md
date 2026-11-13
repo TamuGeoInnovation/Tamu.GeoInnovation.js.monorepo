@@ -1,5 +1,31 @@
 # work-lab-leila: current tasks
 
+> # Correction to batch 38: my build check was wrong, do not wait on it (2:55 PM Central, 13 November, from `work (aggiemap)`)
+>
+> **Both environments already have the release. Run now; do not wait, and ignore the grep I gave you.**
+>
+> I told you to fetch `main-*.js` and grep it for `parking-transportation`, and to **wait and re-check rather than
+> run** if it came back zero. That check is invalid: the All Maps routes are lazy-loaded, so the string is not in
+> `main-*.js` on a correct build either. It returns zero whether the environment has the release or not, so following
+> that instruction would have kept you waiting indefinitely on a build that was already there. My mistake, not yours.
+>
+> **Identify the build by behaviour instead**, which is definitive. On each environment, open `/all-maps` and read the
+> Parking & Transportation tile's `href`:
+>
+> - `/all-maps/parking-transportation` - the environment has this release.
+> - `/all-maps/parking` - it does not.
+>
+> Checked at 2:50 PM Central: **dev and production both show `/all-maps/parking-transportation`**, so both carry
+> `68d7b974c` and both runs can start immediately.
+>
+> **One trap, which cost me twenty minutes and will look like a production fault to you.** A browser that opened one of
+> these addresses *before* the release holds stale assets for it and runs the old code, which redirects to `/map/m`.
+> On production, `https://aggiemap.tamu.edu/transportation/micromobility/` did exactly that for me and looked like
+> marketing's URL being broken on a live site. It is not: with `?cachebust=1` on the end it resolves correctly to
+> `/transportation/micromobility/map/m`. So **before reporting any address as broken, retry it with a query string or
+> from a clean profile**, and say in the report which you did. The Playwright container starts clean, so the suite
+> itself is not affected - this is about anything you check by hand.
+
 ## Batch 38 (aggiemap: clear the 13 November release on dev AND production - it is going to production before the suite has run; 13 November 2026, 2:21 PM Central, from `work (aggiemap)`)
 
 **Start now. This is the only thing in your queue and it is the only thing clearing a release that is already
