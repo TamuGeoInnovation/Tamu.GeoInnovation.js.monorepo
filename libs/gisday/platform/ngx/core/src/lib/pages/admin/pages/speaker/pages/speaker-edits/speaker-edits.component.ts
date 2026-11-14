@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, DestroyRef, OnDestroy, OnInit, inje
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
+import { Observable } from 'rxjs';
 
 import { PendingSpeakerEdit, SpeakerEditFields, SpeakerEditsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -53,7 +54,7 @@ export class SpeakerEditsComponent implements OnInit, OnDestroy {
   public decide(edit: PendingSpeakerEdit, decision: 'approve' | 'reject'): void {
     this.busy.set(edit.guid);
 
-    const request = decision === 'approve' ? this.edits.approve(edit.guid) : this.edits.reject(edit.guid);
+    const request: Observable<unknown> = decision === 'approve' ? this.edits.approve(edit.guid) : this.edits.reject(edit.guid);
 
     request.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
