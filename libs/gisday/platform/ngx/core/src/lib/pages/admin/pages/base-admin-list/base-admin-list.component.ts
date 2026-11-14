@@ -67,6 +67,14 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
     return { search: this.search };
   }
 
+  /**
+   * Whether the list shows an entity at all, before the search: every one, unless a page narrows it (#2986). Read again
+   * whenever one of the page's filters changes.
+   */
+  protected keepEntity(entity: Partial<T>): boolean {
+    return !!entity;
+  }
+
   private keepFiltersInHistory() {
     const filters = this.listFilters();
     const kept = (this.listLocation.getState() as { adminList?: Record<string, unknown> } | null)?.adminList ?? {};
@@ -141,10 +149,12 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
       ),
       shareReplay()
     );
-    const searched$ = combineLatest([seasonEntities$, this.search.valueChanges.pipe(startWith(this.search.value))]).pipe(
-      map(([all, search]) => {
+    const filters = Object.values(this.listFilters()).map((control) => control.valueChanges.pipe(startWith(control.value)));
+    const searched$ = combineLatest([seasonEntities$, ...filters]).pipe(
+      map(([listed]) => {
+        const all = listed ? (listed as Array<Partial<T>>).filter((entity) => this.keepEntity(entity)) : listed;
         const fields = this.searchFields;
-        const shown = fields && all ? all.filter((entity) => matchesText(fields(entity), search)) : all;
+        const shown = fields && all ? all.filter((entity) => matchesText(fields(entity), this.search.value)) : all;
 
         return { all, shown };
       }),
