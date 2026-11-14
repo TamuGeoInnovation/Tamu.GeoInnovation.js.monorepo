@@ -27,7 +27,7 @@ describe('ResearchCompetitionReviewComponent, Submit Review', () => {
       review: jest.fn(() => of({ reviewed: ['Flood maps'], failed: [] })),
       updateEntity: jest.fn(() => of({}))
     };
-    const modals = { open: jest.fn(() => of(sent)) };
+    const modals = { open: jest.fn(() => of(sent)), isOpen: of(false) };
     const toasts = { toast: jest.fn() };
 
     TestBed.configureTestingModule({
