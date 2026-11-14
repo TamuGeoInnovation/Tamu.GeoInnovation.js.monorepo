@@ -11,6 +11,8 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 /** The fields a speaker can propose, in the order the review shows them. */
 const FIELDS: Array<{ key: keyof SpeakerEditFields; label: string }> = [
+  { key: 'university', label: 'University' },
+  { key: 'graduationYear', label: 'Graduation year' },
   { key: 'affiliation', label: 'Affiliation' },
   { key: 'socialMedia', label: 'Link' },
   { key: 'description', label: 'Bio' }
@@ -48,13 +50,21 @@ export class SpeakerEditsComponent implements OnInit, OnDestroy {
 
   /** Whether a field changed, so the review can mark it. */
   public changed(edit: PendingSpeakerEdit, key: keyof SpeakerEditFields): boolean {
-    return (edit.proposed[key] ?? '') !== (edit.current[key] ?? '');
+    return this.text(edit.proposed, key) !== this.text(edit.current, key);
+  }
+
+  /** A field as the review shows it: a university by its name (#2953). */
+  public text(fields: SpeakerEditFields, key: keyof SpeakerEditFields): string {
+    const value = fields[key];
+
+    return key === 'university' ? ((value as SpeakerEditFields['university'])?.name ?? '') : ((value as string) ?? '');
   }
 
   public decide(edit: PendingSpeakerEdit, decision: 'approve' | 'reject'): void {
     this.busy.set(edit.guid);
 
-    const request: Observable<unknown> = decision === 'approve' ? this.edits.approve(edit.guid) : this.edits.reject(edit.guid);
+    const request: Observable<unknown> =
+      decision === 'approve' ? this.edits.approve(edit.guid) : this.edits.reject(edit.guid);
 
     request.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {

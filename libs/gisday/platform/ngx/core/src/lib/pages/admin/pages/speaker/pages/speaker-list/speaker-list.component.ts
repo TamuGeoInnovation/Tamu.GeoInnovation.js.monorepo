@@ -41,7 +41,7 @@ export class SpeakerListComponent extends BaseAdminListComponent<Speaker> {
       .subscribe({
         next: (result) => this.toasts.toast(sendEditLinksToast(result)),
         error: () =>
-          this.toasts.toast({ id: 'speaker-edit-links', title: 'Edit links not sent', message: 'Please try again.' })
+          this.toasts.toast({ id: 'speaker-edit-links', title: 'Profile emails not sent', message: 'Please try again.' })
       });
   }
 }
