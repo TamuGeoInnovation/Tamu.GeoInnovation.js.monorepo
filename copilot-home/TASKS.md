@@ -28,6 +28,8 @@ a recommendation. Push `work-mailbox` with a message starting `copilot-home: bat
 
 ## Batch 61 (gisday: #2937, image uploads refuse SVG; 14 November 2026, from `home (gisday)`) (Medium, start now)
 
+**WITHDRAWN (about 1:10 PM Central, 14 November): this machine's agent-runner was failing, so #2937 went back to the lab (its batch 49), at the maintainer's word. Skip it.**
+
 The maintainer moved this from the lab to you today, to spread the queue. **Questions go to `home (gisday)`**, in your report.
 
 [#2937](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2937): image uploads accept SVG,

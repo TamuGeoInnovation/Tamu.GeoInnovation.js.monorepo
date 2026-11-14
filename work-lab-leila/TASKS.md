@@ -88,6 +88,14 @@ page. Branch `feat/2942-admin-escape-back`.
 
 ---
 
+## Batch 49 (gisday: #2937, image uploads refuse SVG; from `work (gisday)`) (Medium) - **after batch 48, last**
+
+Back from `copilot-home`, whose runner is failing. Do it as batch 45 described (that text stands; ignore its WITHDRAWN
+note): share `SpeakerProvider._refuseUnsafeImage` with every other image upload, red test first. Branch
+`fix/2937-image-uploads`.
+
+---
+
 ## Batch 48 (gisday: #2956, the speaker's own page shows the photo full size with the class banner; from `home (gisday)`) (Medium) - **after batch 45, last in the queue**
 
 [#2956](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2956): read its body. Reuse the
