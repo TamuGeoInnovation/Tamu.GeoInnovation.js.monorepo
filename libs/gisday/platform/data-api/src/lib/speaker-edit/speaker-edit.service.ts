@@ -8,6 +8,8 @@ import { In, MoreThan, Repository } from 'typeorm';
 
 import { gisdaySite } from '@tamu-gisc/gisday/common';
 
+import { senderAs } from '../_base/site-of-request';
+
 import { Speaker, SpeakerEdit, SpeakerEditLink, University } from '../entities/all.entity';
 import { SpeakerProvider } from '../speaker/speaker.provider';
 import { ContactService } from '../contact/contact.service';
@@ -353,15 +355,8 @@ This link is yours alone and works until ${until}. The ${siteName} team reviews 
 If you did not expect this email, you can ignore it.`;
 }
 
-/**
- * The configured sender's address under the site's own name, so an email sent from Texas A&M's site comes from "Texas A&M
- * GIS Day" (#2951). `MAILROOM_FROM` is one setting for every site, as "Name <address>" or a bare address.
- */
-export function senderAs(siteName: string, configured: string | undefined): string | undefined {
-  const address = configured?.match(/<([^>]+)>/)?.[1] ?? configured?.trim();
-
-  return address ? `"${siteName.replace(/"/g, '')}" <${address}>` : configured;
-}
+// Where it lived first; kept so its importers need not change.
+export { senderAs };
 
 export function hashOf(token: string): string {
   return createHash('sha256').update(token).digest('hex');
