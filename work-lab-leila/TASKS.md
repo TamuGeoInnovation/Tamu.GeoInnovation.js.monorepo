@@ -88,6 +88,15 @@ page. Branch `feat/2942-admin-escape-back`.
 
 ---
 
+## Batch 48 (gisday: #2956, the speaker's own page shows the photo full size with the class banner; from `home (gisday)`) (Medium) - **after batch 45, last in the queue**
+
+[#2956](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2956): read its body. Reuse the
+admin speaker form's own components (`tamu-gisc-image-preview`, `tamu-gisc-speaker-class-banner`), and make the banner
+follow the University and Graduation year chosen on the page. The page is
+`libs/gisday/platform/ngx/core/src/lib/pages/people/pages/people-edit/`. Branch `feat/2956-speaker-edit-photo`.
+
+---
+
 ## Batch 47 (gisday: #2945, the site notices a new deploy; from `home (gisday)`) (High) - **run it next, after batch 44, before 45**
 
 [#2945](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2945): read the issue and the
