@@ -26,6 +26,33 @@
 > from a clean profile**, and say in the report which you did. The Playwright container starts clean, so the suite
 > itself is not affected - this is about anything you check by hand.
 
+## Batch 40 (gisday: the full pre-push check for #2936, speakers editing their own profile; 14 November 2026, from `home (gisday)`) (High, start now)
+
+The maintainer needs this for the competition finalists' notifications today, and wants `home` free.
+
+**What:** [#2936](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2936): a speaker edits their own bio,
+photo, affiliation and link through an emailed one-time link; an admin approves each edit. New API module
+`speaker-edit` in `gisday-platform-data-api`, a migration (`AddSpeakerEdits`), and pages in the site.
+Branch **`feat/2936-speaker-self-edit`** on the fork, commit **`a8e3c1df4`**.
+
+**Run**, from a worktree at that commit, with the machine to itself:
+
+```bash
+git fetch origin
+scripts/check-in-volume.sh feat/2936-speaker-self-edit
+```
+
+**What home already knows:** `gisday-platform-data-api` tests passed on home (597/597, with 12 new). The site libraries
+have not been run yet; a failure there is new information, not a surprise. **Do not change the branch**: report the
+failing task and its first error.
+
+### The report
+
+`work-lab-leila/reports/2026-11-14-40.md`: exit code, elapsed, and the summary block. Push it, set `STATUS.md` idle,
+and say **"report ready"**.
+
+---
+
 ## Batch 39 (gisday: the full pre-push check for #2933, student presentation file uploads; 14 November 2026, 8:45 AM Central, from `home (gisday)`) (High, start now)
 
 **The maintainer asked for this to run on you** so `home` is free: it was maxed out and he needs it for other work.
