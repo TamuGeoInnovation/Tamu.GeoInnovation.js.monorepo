@@ -27,6 +27,11 @@ import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
 
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
 import { SubmissionDeadlinesComponent } from '../../components/submission-deadlines/submission-deadlines.component';
+import {
+  ReviewEmailModalComponent,
+  ReviewEmailModalData,
+  ReviewEmailModalResult
+} from '../../components/review-email-modal/review-email-modal.component';
 
 /** A submission as the table shows it: with its review status worked out, so the table can sort by it (#2808). */
 export type SubmissionRow = Partial<SubmissionWithSubmitter> & { reviewStatus: SUBMISSION_REVIEW_STATUS };
@@ -224,17 +229,20 @@ export class ResearchCompetitionListComponent extends BaseAdminListComponent<Sub
   public reviewSelected(acceptance: boolean) {
     this.selectedSubmissions()
       .pipe(
-        switchMap((rows) =>
-          this.modals.open<boolean>(AlertModalComponent, { data: reviewConfirmation(rows, acceptance) }).pipe(
-            filter(Boolean),
-            switchMap(() =>
-              this.entityService.review(
-                rows.map((row) => row.guid),
-                acceptance
-              )
-            )
-          )
-        )
+        switchMap((rows) => {
+          const guids = rows.map((row) => row.guid);
+          // The email is shown, and can be edited, before anything is decided or sent (#2981).
+          const data: ReviewEmailModalData = {
+            acceptance,
+            note: reviewConfirmation(rows, acceptance).message,
+            preview: this.entityService.previewReview(guids, acceptance)
+          };
+
+          return this.modals.open<ReviewEmailModalResult>(ReviewEmailModalComponent, { data }).pipe(
+            filter((templates): templates is Record<string, string> => !!templates),
+            switchMap((templates) => this.entityService.review(guids, acceptance, undefined, templates))
+          );
+        })
       )
       .subscribe({
         next: (result) => {

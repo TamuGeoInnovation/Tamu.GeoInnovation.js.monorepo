@@ -7,6 +7,18 @@ import { SubmissionFileDto } from '@tamu-gisc/gisday/common';
 
 import { BaseService } from '../_base/base.service';
 
+/** The email a review would send, before it is sent (#2981): one group per kind of email in the selection. */
+export interface ReviewEmailPreview {
+  groups: Array<{
+    kind: string;
+    label: string;
+    count: number;
+    subject: string;
+    template: string;
+    example: { title: string; to: string; cc: string; values: Record<string, string> };
+  }>;
+}
+
 /** What approving or rejecting several submissions did, from the API (#2958). */
 export interface ReviewSubmissionsResult {
   /** The titles of those reviewed. */
@@ -61,8 +73,27 @@ export class UserSubmissionsService extends BaseService<Submission> {
    * Approves or rejects the submissions at once, as Submit Review does one: each is recorded and its submitter emailed
    * (#2958). One request for the whole selection.
    */
-  public review(submissionGuids: Array<string>, acceptance: boolean, message?: string) {
+  public review(
+    submissionGuids: Array<string>,
+    acceptance: boolean,
+    message?: string,
+    /** The email text the reviewer saw and approved, by kind (#2981). */
+    templates?: Record<string, string>
+  ) {
     return this.http1.post<ReviewSubmissionsResult>(`${this.resource}/review`, {
+      submissions: submissionGuids,
+      acceptance,
+      ...(message?.trim() ? { message: message.trim() } : {}),
+      ...(templates ? { templates } : {})
+    });
+  }
+
+  /**
+   * The email approving or rejecting the submissions would send, to read and edit before anything is sent (#2981).
+   * Nothing is recorded or sent.
+   */
+  public previewReview(submissionGuids: Array<string>, acceptance: boolean, message?: string) {
+    return this.http1.post<ReviewEmailPreview>(`${this.resource}/review/preview`, {
       submissions: submissionGuids,
       acceptance,
       ...(message?.trim() ? { message: message.trim() } : {})

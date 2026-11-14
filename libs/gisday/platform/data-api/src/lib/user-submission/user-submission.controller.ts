@@ -59,10 +59,34 @@ export class UserSubmissionController {
   @Permissions(['update:competitions'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Post('review')
-  public reviewMany(@Body() body: { submissions: Array<string>; acceptance: boolean; message?: string }, @Request() req) {
+  public reviewMany(
+    @Body()
+    body: { submissions: Array<string>; acceptance: boolean; message?: string; templates?: Record<string, string> },
+    @Request() req
+  ) {
     return this.provider.reviewUserSubmissions(
       body?.submissions,
       req.user.sub,
+      // `templates`: the email text the reviewer saw and approved, by kind (#2981).
+      { acceptance: body?.acceptance, message: body?.message, templates: body?.templates },
+      req.user.permissions,
+      siteHost(req.headers)
+    );
+  }
+
+  /**
+   * The email approving or rejecting the named submissions would send, for the reviewer to read and edit first (#2981).
+   * Nothing is recorded or sent. Body: `{ submissions: [guid], acceptance, message? }`.
+   */
+  @Permissions(['update:competitions'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Post('review/preview')
+  public previewReview(
+    @Body() body: { submissions: Array<string>; acceptance: boolean; message?: string },
+    @Request() req
+  ) {
+    return this.provider.previewReview(
+      body?.submissions,
       { acceptance: body?.acceptance, message: body?.message },
       req.user.permissions,
       siteHost(req.headers)
