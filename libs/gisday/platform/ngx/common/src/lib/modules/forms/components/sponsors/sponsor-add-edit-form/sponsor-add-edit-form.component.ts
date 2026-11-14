@@ -108,10 +108,16 @@ export class SponsorAddEditFormComponent implements OnInit {
           ...entity,
           season: entity?.season?.guid
         });
+
+        // Opening the page is not a change (#2942), though each control echoes the value it is given.
+        this.form.markAsPristine();
       });
     } else {
       this.activeSeasons$.pipe(take(1)).subscribe((season) => {
         this.form.patchValue({ season: season.guid });
+
+        // Opening the page is not a change (#2942), though each control echoes the value it is given.
+        this.form.markAsPristine();
       });
     }
   }

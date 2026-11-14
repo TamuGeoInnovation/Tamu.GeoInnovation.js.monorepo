@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
+import { Location } from '@angular/common';
+import { provideLocationMocks } from '@angular/common/testing';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
-import { firstValueFrom, of } from 'rxjs';
+import { EMPTY, firstValueFrom, of } from 'rxjs';
 
 import { BaseService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
@@ -33,7 +35,7 @@ describe('BaseAdminListComponent on a site with no season', () => {
       providers: [
         { provide: SeasonService, useValue: { seasons$: of([]), activeSeason$: of(active) } },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
-        { provide: Router, useValue: {} },
+        { provide: Router, useValue: { events: EMPTY } },
         { provide: ModalService, useValue: {} },
         { provide: NotificationService, useValue: {} }
       ]
@@ -82,7 +84,7 @@ describe('BaseAdminListComponent search', () => {
       providers: [
         { provide: SeasonService, useValue: { seasons$: of([]), activeSeason$: of({ guid: 'season-2026' }) } },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
-        { provide: Router, useValue: {} },
+        { provide: Router, useValue: { events: EMPTY } },
         { provide: ModalService, useValue: {} },
         { provide: NotificationService, useValue: {} }
       ]
@@ -126,5 +128,56 @@ describe('BaseAdminListComponent search', () => {
 
     page.search.setValue('anything');
     expect(await guids(page)).toEqual(['for-season-2026']);
+  });
+});
+
+/**
+ * #2942. Escape on a details page goes back to the list it was opened from, as the browser's Back button does. The
+ * season is in that list's address; its search is kept in the list's own history entry, so coming back to the entry
+ * shows the list as it was left, while opening the list afresh starts with no search.
+ */
+describe('BaseAdminListComponent search, on the way back from a details page', () => {
+  function open(state: unknown) {
+    TestBed.configureTestingModule({
+      declarations: [SearchedListComponent],
+      providers: [
+        provideLocationMocks(),
+        { provide: SeasonService, useValue: { seasons$: of([]), activeSeason$: of({ guid: 'season-2026' }) } },
+        { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
+        { provide: Router, useValue: { events: EMPTY } },
+        { provide: ModalService, useValue: {} },
+        { provide: NotificationService, useValue: {} }
+      ]
+    });
+
+    const location = TestBed.inject(Location);
+    location.replaceState('/admin/things?season=season-2025', '', state);
+
+    const component = TestBed.createComponent(SearchedListComponent).componentInstance;
+    component.ngOnInit();
+
+    return { component, location };
+  }
+
+  it('keeps its search in the history entry it is on', () => {
+    const { component, location } = open({ navigationId: 3 });
+
+    component.search.setValue('bogota');
+
+    expect(location.getState()).toEqual({ navigationId: 3, adminList: { search: 'bogota' } });
+    expect(location.path()).toBe('/admin/things?season=season-2025');
+  });
+
+  it('shows the search it had when the browser comes back to that entry', async () => {
+    const { component } = open({ navigationId: 3, adminList: { search: 'bogota' } });
+
+    expect(component.search.value).toBe('bogota');
+    expect((await firstValueFrom(component.entitiesForActiveSeasonOrForSeasonGuid$)).map((e) => e.guid)).toEqual(['b']);
+  });
+
+  it('starts with no search when opened afresh', () => {
+    const { component } = open({ navigationId: 3 });
+
+    expect(component.search.value).toBe('');
   });
 });

@@ -22,6 +22,7 @@ import { AsyncPipe } from '@angular/common';
 
 import { SubmissionFilesComponent } from '../../../../submission-files/submission-files.component';
 import { deadlineNotice } from '../../../../../utils/submission-deadline-notice';
+import { GISDAY_SITE } from '../../../../../site/site';
 import {
   SUBMISSION_CLASSIFICATION_OPTIONS,
   SUBMISSION_FORMAT_OPTIONS,
@@ -51,6 +52,8 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
   private readonly userSubmissionService = inject(UserSubmissionsService);
   private readonly seasonService = inject(SeasonService);
   private readonly ns = inject(NotificationService);
+  /** The site's own name for the text (#2968): Texas A&M GIS Day on Texas A&M's site, not TxGIS Day. */
+  public readonly site = inject(GISDAY_SITE);
 
   public readonly type = input<'create' | 'edit'>(undefined);
 
@@ -230,8 +233,7 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
         this.ns.toast({
           id: 'submission-create-success',
           title: 'Student Competition Submission Successful',
-          message:
-            'Thank you for your submission! The TxGIS Day team will review your submission - you can check the status on your dashboard.'
+          message: `Thank you for your submission! The ${this.site.name} team will review your submission - you can check the status on your dashboard.`
         });
 
         this.rt.navigate(['/account/submissions']);

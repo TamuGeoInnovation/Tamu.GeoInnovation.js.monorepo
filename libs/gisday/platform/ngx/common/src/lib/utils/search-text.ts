@@ -12,3 +12,15 @@ export function matchesText(fields: Array<string | null | undefined>, search: st
 
   return !wanted || fields.some((field) => foldedText(field).includes(wanted));
 }
+
+/**
+ * The text a session is found by: its name, building and room, as the admin Events list searches them (#2914), and on
+ * the public Sessions list (#2944) its presenters' names, which the API sends there.
+ */
+export function sessionSearchFields(session: {
+  name?: string | null;
+  location?: { building?: string | null; room?: string | null } | null;
+  presenters?: Array<string> | null;
+}): Array<string | null | undefined> {
+  return [session.name, session.location?.building, session.location?.room, ...(session.presenters ?? [])];
+}

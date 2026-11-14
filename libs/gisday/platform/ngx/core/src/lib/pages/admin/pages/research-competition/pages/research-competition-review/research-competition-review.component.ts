@@ -12,6 +12,8 @@ import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe, TitleCasePipe } from '@angular/common';
 
+import { BaseAdminDetailsPageComponent } from '../../../base-admin-details-page/base-admin-details-page.component';
+
 @Component({
   selector: 'tamu-gisc-research-competition-review',
   templateUrl: './research-competition-review.component.html',
@@ -27,7 +29,7 @@ import { AsyncPipe, TitleCasePipe } from '@angular/common';
     SubmissionFilesComponent
   ]
 })
-export class ResearchCompetitionReviewComponent implements OnInit {
+export class ResearchCompetitionReviewComponent extends BaseAdminDetailsPageComponent implements OnInit {
   private readonly fb = inject(UntypedFormBuilder);
   private readonly rt = inject(Router);
   private readonly at = inject(ActivatedRoute);
@@ -49,6 +51,10 @@ export class ResearchCompetitionReviewComponent implements OnInit {
     }
   ];
 
+  protected override detailsForm() {
+    return this.form;
+  }
+
   public ngOnInit(): void {
     this.form = this.fb.group({
       guid: [''],
@@ -66,6 +72,9 @@ export class ResearchCompetitionReviewComponent implements OnInit {
       const acceptance = entity.acceptance.toString();
 
       this.form.patchValue({ guid: entity.guid, acceptance, message: entity.message });
+
+      // Opening the page is not a change (#2942), though each control echoes the value it is given.
+      this.form.markAsPristine();
     });
   }
 

@@ -10,7 +10,7 @@ import { AdminSearchComponent } from '../../../base-admin-list/admin-search.comp
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe, DatePipe } from '@angular/common';
-import { EventDayGroup, ParseDateTimeStringsPipe, groupEventsByDay } from '@tamu-gisc/gisday/platform/ngx/common';
+import { EventDayGroup, ParseDateTimeStringsPipe, groupEventsByDay, sessionSearchFields } from '@tamu-gisc/gisday/platform/ngx/common';
 import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
@@ -21,8 +21,8 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
   imports: [SelectComponent, RouterLink, CheckboxComponent, AsyncPipe, DatePipe, ParseDateTimeStringsPipe, ExistsPipe, AdminSearchComponent]
 })
 export class EventListComponent extends BaseAdminListComponent<Event> implements OnInit {
-  /** The search (#2914) looks in the columns this page shows. */
-  protected override readonly searchFields = (c: Partial<Event>) => [c.name, c.location?.building, c.location?.room];
+  /** The search (#2914) looks in the columns this page shows, as the public Sessions list does (#2944). */
+  protected override readonly searchFields = (c: Partial<Event>) => sessionSearchFields(c);
 
   protected readonly entityService = inject(EventService);
   private readonly notifications = inject(NotificationService);
