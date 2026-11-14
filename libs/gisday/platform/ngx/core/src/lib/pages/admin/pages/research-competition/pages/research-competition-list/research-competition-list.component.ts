@@ -13,7 +13,7 @@ import {
   SUBMISSION_TYPE_OPTIONS,
   SubmissionReviewStatusPipe
 } from '@tamu-gisc/gisday/platform/ngx/common';
-import { ButtonComponent, CheckboxComponent, RadioGroupComponent, SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { CheckboxComponent, RadioGroupComponent, SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { downloadFile } from '@tamu-gisc/common/utils/ui';
 import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
 
@@ -51,7 +51,6 @@ function keepIfOffered(control: FormControl<string>, chosen: string, offered: Ar
   templateUrl: './research-competition-list.component.html',
   styleUrls: ['./research-competition-list.component.scss'],
   imports: [
-    ButtonComponent,
     SelectComponent,
     CheckboxComponent,
     RadioGroupComponent,
