@@ -756,6 +756,61 @@ export class Asset extends GuidIdentity {
   public submission?: Relation<Submission>;
 }
 
+/**
+ * A personal link that lets one speaker propose changes to their own presenter profile without an account (#2936). Only
+ * a hash of its token is kept, so a copy of the database holds no working links. It works until `expires`, as often as
+ * the speaker likes; each use replaces their pending edit.
+ */
+@Entity({ name: 'speaker_edit_links' })
+export class SpeakerEditLink extends GuidIdentity {
+  @ManyToOne(() => Speaker, { nullable: false, onDelete: 'CASCADE' })
+  public speaker: Relation<Speaker>;
+
+  /** SHA-256 of the token, hex. */
+  @Column({ length: 64 })
+  public tokenHash: string;
+
+  @Column({ type: 'datetimeoffset' })
+  public expires: Date;
+
+  /** The address the link was emailed to. */
+  @Column({ nullable: true })
+  public sentTo: string;
+}
+
+/**
+ * Changes a speaker proposed to their own profile (#2936), waiting for an admin. Nothing here reaches the public site
+ * until it is approved. A speaker has at most one pending edit; sending another replaces it.
+ */
+@Entity({ name: 'speaker_edits' })
+export class SpeakerEdit extends GuidIdentity {
+  @ManyToOne(() => Speaker, { nullable: false, onDelete: 'CASCADE' })
+  public speaker: Relation<Speaker>;
+
+  @Column({ nullable: true, length: 'MAX' })
+  public description: string | null;
+
+  @Column({ nullable: true })
+  public affiliation: string | null;
+
+  @Column({ nullable: true })
+  public socialMedia: string | null;
+
+  /** A proposed photo, under APP_DATA, until it is approved or rejected. */
+  @Column({ nullable: true })
+  public photoPath: string | null;
+
+  @Column({ default: 'pending' })
+  public status: 'pending' | 'approved' | 'rejected' | string;
+
+  @Column({ type: 'datetimeoffset', nullable: true })
+  public reviewedAt: Date | null;
+
+  /** The admin's account id. */
+  @Column({ nullable: true })
+  public reviewedBy: string | null;
+}
+
 @Entity({
   name: 'checkins'
 })
@@ -1156,6 +1211,8 @@ export const GISDAY_ENTITIES = [
   RsvpType,
   Speaker,
   SpeakerRole,
+  SpeakerEditLink,
+  SpeakerEdit,
   SubmissionType,
   Sponsor,
   Tag,

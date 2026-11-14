@@ -1,0 +1,33 @@
+@use 'libs/gisday/sass/variables' as vars;
+
+.photo-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+}
+
+// Round, as a presenter card draws it.
+.photo {
+  width: 7rem;
+  height: 7rem;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.bio-preview {
+  padding: 1rem;
+  border: 1px solid vars.$accent-grey;
+  border-radius: 7pt;
+}
+
+.problem {
+  color: vars.$aggie-accent-red;
+}
+
+// The shared picker wearing the site's .button, as on a submission's Presentation files (#2938).
+tamu-gisc-file.button {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+}
