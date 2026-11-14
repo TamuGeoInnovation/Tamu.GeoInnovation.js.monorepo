@@ -12,7 +12,7 @@ import { Repository } from 'typeorm';
 
 import { isOwnerOrPermitted } from '@tamu-gisc/common/nest/auth';
 import { GisdaySite, gisdaySite } from '@tamu-gisc/gisday/common';
-import { closedAt, closedMessage, isDeadlineCompetition } from '@tamu-gisc/gisday/common';
+import { closedAt, closedMessage, closesAt, inCentralTime, isDeadlineCompetition } from '@tamu-gisc/gisday/common';
 
 import { SubmissionType, Submission, Season, PRESENTATION_SUBMISSION_TYPE } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
@@ -390,7 +390,9 @@ export function reviewSubject(submission: Pick<Submission, 'acceptance'>, site: 
  * check their session - all on the site the reviewer is on. A rejection keeps its wording, with the site's own name.
  */
 export function reviewEmail(
-  submission: Pick<Submission, 'title' | 'message' | 'acceptance' | 'submissionType' | 'participants'>,
+  submission: Pick<Submission, 'title' | 'message' | 'acceptance' | 'submissionType' | 'participants'> & {
+    season?: Partial<Season> | null;
+  },
   site: Pick<GisdaySite, 'name' | 'address'>
 ): string {
   const firstName = (submission.participants?.[0]?.name ?? '').trim().split(/\s+/)[0];
@@ -410,17 +412,43 @@ Best regards,
 The ${site.name} Team`;
   }
 
-  const poster = submission.submissionType === 'poster';
-  const kind = poster ? 'poster' : 'presentation';
-  const file = poster ? 'your poster' : 'your slides';
+  // The files deadline of the submission's own competition (#2934), when the season has one.
+  const filesClose = closesAt(submission.season, submission.submissionType, 'files');
+  const by = filesClose ? ` by ${inCentralTime(filesClose)}` : '';
 
-  return `${greeting}
+  // A poster finalist's instructions differ: print and bring it, set up early, be there to win (#2980).
+  if (submission.submissionType === 'poster') {
+    return `${greeting}
 
-Congratulations! Your ${kind} submission, "${submission.title}", has been accepted for ${site.name}.
+Congratulations! Your poster, "${submission.title}", has been accepted as a finalist in the ${site.name} poster competition.
 
 What to do next:
 
-1. Attach ${file}. Sign in at ${site.address}/account/submissions, open your submission, and attach ${poster ? 'it' : 'them'} under Presentation files: PowerPoint or PDF, up to 100 MB each.
+1. Upload your final poster${by}. Sign in at ${site.address}/account/submissions, open your submission, and attach it under Presentation files: PDF or PowerPoint, up to 100 MB.
+
+2. Print your poster, 36 x 48 inches or smaller, and bring it with you.
+
+3. Set up early. Please have your poster up as early in the day as you can: the judges walk the poster area all day, and the earlier it is up, the more of them see it. See ${site.address}/sessions for the poster session's place and times.
+
+4. Be there to win. You, or at least one member of your team, must be at your poster during the competition to be eligible for an award.
+
+5. Complete your presenter profile. A separate email will bring you a personal link to add your bio, photo, university and class year to the program.
+
+6. Join us at the Awards and Networking session, where the winners are announced.${notes}
+
+Questions? Reply to this email.
+
+Best regards,
+The ${site.name} Team`;
+  }
+
+  return `${greeting}
+
+Congratulations! Your presentation submission, "${submission.title}", has been accepted for ${site.name}.
+
+What to do next:
+
+1. Attach your slides${by}. Sign in at ${site.address}/account/submissions, open your submission, and attach them under Presentation files: PowerPoint or PDF, up to 100 MB each.
 
 2. Complete your presenter profile. A separate email will bring you a personal link to add your bio, photo, university and class year to the program.
 
