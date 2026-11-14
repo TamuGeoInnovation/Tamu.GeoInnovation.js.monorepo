@@ -1,9 +1,20 @@
-import { Component, OnChanges, OnInit, SimpleChanges, ChangeDetectionStrategy, inject, input, output } from '@angular/core';
-import { BehaviorSubject, Observable, ReplaySubject, combineLatest, map, shareReplay, withLatestFrom } from 'rxjs';
+import {
+  Component,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  ChangeDetectionStrategy,
+  computed,
+  inject,
+  input,
+  output
+} from '@angular/core';
+import { BehaviorSubject, Observable, ReplaySubject, combineLatest, map, shareReplay, tap } from 'rxjs';
 
 import { SeasonDay, SimplifiedEvent } from '@tamu-gisc/gisday/platform/data-api';
 import { SeasonDayService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { EventRowComponent } from '../event-row/event-row.component';
+import { matchesText, sessionSearchFields } from '../../../../utils/search-text';
 import { AsyncPipe, DatePipe } from '@angular/common';
 
 @Component({
@@ -36,6 +47,15 @@ export class SeasonDayCardComponent implements OnInit, OnChanges {
    */
   public readonly onlyFrom = input<Array<string> | null>(null);
 
+  /**
+   * The Sessions page's search (#2944): only the sessions whose name, building, room or presenter contains it are
+   * listed, alongside the tags and organizations; while it finds none of the day's, the day is left out.
+   */
+  public readonly search = input<string>('');
+
+  /** Whether a search is in use, so a day it finds nothing in is left out rather than shown empty. */
+  public readonly searching = computed(() => (this.search() ?? '').trim().length > 0);
+
   public readonly rsvps = input<Array<string>>([]);
 
   /**
@@ -46,6 +66,9 @@ export class SeasonDayCardComponent implements OnInit, OnChanges {
   public readonly register = output<string>();
 
   public readonly unregister = output<string>();
+
+  /** How many of the day's sessions the filters and search leave, each time that changes, so the page can tell when none do. */
+  public readonly matches = output<number>();
 
   public events$: Observable<Array<SimplifiedEvent>>;
   public filteredEvents$: Observable<Array<SimplifiedEvent>>;
@@ -66,16 +89,32 @@ export class SeasonDayCardComponent implements OnInit, OnChanges {
    */
   private _onlyFrom: BehaviorSubject<Array<string> | null> = new BehaviorSubject<Array<string> | null>(null);
 
+  /**
+   * Observable that gets pushed the input `search` on changes.
+   */
+  private _search: BehaviorSubject<string> = new BehaviorSubject<string>('');
+
   private _activeRsvpsForDay: ReplaySubject<Array<string>> = new ReplaySubject<Array<string>>();
 
   public ngOnInit(): void {
     this.events$ = this.sd.getDayEvents(this.seasonDay().guid).pipe(shareReplay());
 
-    this.filteredEvents$ = combineLatest([this._activeTagFilters, this._activeOrgFilters, this._onlyFrom]).pipe(
-      withLatestFrom(this.events$),
-      map(([[tags, orgs, onlyFrom], events]) => {
+    // The events are combined rather than taken withLatestFrom: the template now reads this list before the events have
+    // arrived, to know whether to leave the day out (#2944), and withLatestFrom would drop the filters it saw then.
+    this.filteredEvents$ = combineLatest([
+      this._activeTagFilters,
+      this._activeOrgFilters,
+      this._onlyFrom,
+      this._search,
+      this.events$
+    ]).pipe(
+      map(([tags, orgs, onlyFrom, search, events]) => {
         return events.filter((simplifiedEvent) => {
           if (onlyFrom !== null && !simplifiedEvent.organizations?.some((place) => onlyFrom.includes(place))) {
+            return false;
+          }
+
+          if (!matchesText(sessionSearchFields(simplifiedEvent), search)) {
             return false;
           }
 
@@ -90,6 +129,7 @@ export class SeasonDayCardComponent implements OnInit, OnChanges {
           return hasOrgs;
         });
       }),
+      tap((shown) => this.matches.emit(shown.length)),
       shareReplay()
     );
 
@@ -124,6 +164,10 @@ export class SeasonDayCardComponent implements OnInit, OnChanges {
 
     if (changes.onlyFrom) {
       this._onlyFrom.next(changes.onlyFrom.currentValue ?? null);
+    }
+
+    if (changes.search) {
+      this._search.next(changes.search.currentValue ?? '');
     }
 
     if (changes.rsvps && changes.rsvps.currentValue !== null) {

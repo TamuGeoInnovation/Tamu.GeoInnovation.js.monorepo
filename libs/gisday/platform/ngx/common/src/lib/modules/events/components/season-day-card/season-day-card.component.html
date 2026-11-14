@@ -1,9 +1,13 @@
+@let shown = filteredEvents$ | async;
+
+<!-- While the page's search is in use, a day it finds none of is left out altogether (#2944). -->
+@if (!searching() || shown?.length > 0) {
 <div [id]="'day' + (this.index() + 1)" class="card">
   <!-- In Central time, as the page's times are: a day arrives as midnight Central, which is the evening before for a
   visitor further west (#2708). -0600 is CST, which GIS Day always falls in, in November. -->
   <h2>{{seasonDay().date | date : 'EEEE, MMMM d' : '-0600'}}</h2>
 
-  @if ((events$ | async)?.length > 0) { @if ((filteredEvents$ | async)?.length > 0) { @for (event of filteredEvents$ | async; track event) {
+  @if ((events$ | async)?.length > 0) { @if (shown?.length > 0) { @for (event of shown; track event) {
   <div>
     <tamu-gisc-event-row [event]="event" [day]="seasonDay()" (rowToggle)="handoff(event, $event)" [rsvps]="rsvpsForDay$ | async" [canRegister]="canRegister()"></tamu-gisc-event-row>
   </div>
@@ -17,3 +21,4 @@
   </div>
   }
 </div>
+}
