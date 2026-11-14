@@ -428,7 +428,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
         continue;
       }
 
-      const [to, ...cc] = (submission.participants ?? []).map((p) => p.email);
+      const { to, cc } = await this._recipientsOf(submission);
 
       groups.set(kind, {
         kind,
@@ -438,7 +438,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
         template: reviewEmailTemplate(kind),
         example: {
           title: submission.title ?? '',
-          to: to ?? '',
+          to,
           cc: cc.join(', '),
           values: reviewEmailValues(
             { ...submission, message: review.message ?? submission.message },
@@ -524,15 +524,14 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
       const updated = await this.userSubmissionRepo.update(submissionGuid, submission);
       const sendReviewEmail = shouldEmail
         ? async () => {
-            const participantEmails = existingSubmission.participants.map((p) => p.email);
-            const primaryParticipant = participantEmails.splice(0, 1);
+            const { to, cc } = await this._recipientsOf(existingSubmission);
             const site = gisdaySite(process.env.GISDAY_SITE, host);
 
             // Send email to user
             return this.contactService.sendMessage(
               {
-                to: primaryParticipant[0],
-                cc: participantEmails.join(','),
+                to,
+                cc: cc.join(','),
                 subject: reviewSubject(existingSubmission, site),
                 from: senderAs(site.name, process.env.MAILROOM_FROM),
                 text: reviewEmail(
@@ -606,6 +605,34 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     }
 
     return this.events.find({ where: { season: { guid: season.guid } }, relations: { day: true, location: true } });
+  }
+
+  /**
+   * Who a review email goes to (#2990): the submitter's own account address, from Auth0, and the other people on the
+   * submission copied, each once. The typed first address is used only when the account has none. Typed, the
+   * submitter's address had been a test address or one no directory knew, and the email went there.
+   */
+  private async _recipientsOf(submission: Pick<Submission, 'accountGuid' | 'participants'>): Promise<{ to: string; cc: Array<string> }> {
+    const typed = (submission.participants ?? []).map((p) => `${p?.email ?? ''}`.trim()).filter(Boolean);
+    let account = '';
+
+    try {
+      const profiles = submission.accountGuid ? await this.profiles.profilesOf([submission.accountGuid]) : null;
+
+      account = `${profiles?.get(submission.accountGuid)?.email ?? ''}`.trim();
+    } catch (err) {
+      // The email still goes, to what was typed, if Auth0 cannot be read.
+      Logger.warn(`Could not read the submitter's account for a review email: ${err.message}`, 'UserSubmissionProvider');
+    }
+
+    // The first row is the submitter: with their account's address known, what they typed for themselves is not copied.
+    const to = account || typed[0] || '';
+    const others = account ? (submission.participants ?? []).slice(1).map((p) => `${p?.email ?? ''}`.trim()) : typed.slice(1);
+    const cc = [...new Map(others.filter(Boolean).map((email) => [email.toLowerCase(), email])).values()].filter(
+      (email) => email.toLowerCase() !== to.toLowerCase()
+    );
+
+    return { to, cc };
   }
 
   /**

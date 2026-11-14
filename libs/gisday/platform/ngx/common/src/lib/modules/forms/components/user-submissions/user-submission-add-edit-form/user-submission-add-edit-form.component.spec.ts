@@ -5,6 +5,7 @@ import { of } from 'rxjs';
 import { GISDAY_SITES } from '@tamu-gisc/gisday/common';
 import { SeasonService, SubmissionTypeService, UserSubmissionsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { AuthService } from '@tamu-gisc/common/ngx/auth';
 
 import { GISDAY_SITE } from '../../../../../site/site';
 import { UserSubmissionAddEditFormComponent } from './user-submission-add-edit-form.component';
@@ -36,7 +37,11 @@ describe('UserSubmissionAddEditFormComponent, on Texas A&M site', () => {
         { provide: UserSubmissionsService, useValue: { getEntity: () => of(entity), getFiles: () => of([]), createEntity } },
         { provide: SubmissionTypeService, useValue: { getEntities: () => of([]) } },
         { provide: SeasonService, useValue: { getActiveSeason: () => of({ guid: 'season' }) } },
-        { provide: NotificationService, useValue: { toast } }
+        { provide: NotificationService, useValue: { toast } },
+        {
+          provide: AuthService,
+          useValue: { user$: of({ given_name: 'Ana', family_name: 'Ruiz', name: 'ana@tamu.edu', email: 'Ana@tamu.edu' }) }
+        }
       ]
     });
 
@@ -63,4 +68,18 @@ describe('UserSubmissionAddEditFormComponent, on Texas A&M site', () => {
       expect.objectContaining({ message: expect.stringContaining('The Texas A&M GIS Day team will review') })
     );
   });
+
+  // #2990: the submitter is the signed-in account, so their name and email come from it and cannot be typed.
+  it("fills the submitter's name and email from their account, and does not let them be typed", () => {
+    const fixture = render('create');
+    const submitter = fixture.componentInstance.form.get('participants.0');
+
+    expect(submitter.get('name').value).toBe('Ana Ruiz');
+    expect(submitter.get('email').value).toBe('ana@tamu.edu');
+    expect(submitter.get('name').disabled).toBe(true);
+    expect(submitter.get('email').disabled).toBe(true);
+    // Their student ID is still theirs to give.
+    expect(submitter.get('studentId').enabled).toBe(true);
+  });
+
 });

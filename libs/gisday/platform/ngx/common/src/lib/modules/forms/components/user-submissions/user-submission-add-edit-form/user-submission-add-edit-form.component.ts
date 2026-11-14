@@ -13,6 +13,7 @@ import { filter, map, Observable, shareReplay, startWith, Subject, switchMap, ta
 import { Submission, SubmissionType } from '@tamu-gisc/gisday/platform/data-api';
 import { SeasonService, SubmissionTypeService, UserSubmissionsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { AuthService } from '@tamu-gisc/common/ngx/auth';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RadioGroupComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { SlideToggleComponent } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -47,6 +48,7 @@ import {
 export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
   private readonly fb = inject(UntypedFormBuilder);
   private readonly at = inject(ActivatedRoute);
+  private readonly auth = inject(AuthService);
   private readonly rt = inject(Router);
   private readonly submissionTypeService = inject(SubmissionTypeService);
   private readonly userSubmissionService = inject(UserSubmissionsService);
@@ -176,6 +178,7 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
         });
 
       this.addParticipant();
+      this._submitterFromAccount();
     }
   }
 
@@ -283,6 +286,26 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
       name: [fields.name],
       email: [fields.email],
       studentId: [fields.studentId]
+    });
+  }
+
+  /**
+   * The submitter is the signed-in account: their name and email come from it and cannot be typed (#2990). Typed, they
+   * disagreed with the account (an address no directory knew; a test address), and the review email went to the typed
+   * one. Only their student ID is asked for. Any other member of a group is still typed.
+   */
+  private _submitterFromAccount() {
+    this.auth.user$.pipe(take(1)).subscribe((user) => {
+      const submitter = this._getParticipantsControl().at(0);
+      const name = [user?.given_name, user?.family_name].filter((part) => `${part ?? ''}`.trim()).join(' ') || user?.name || '';
+
+      if (!submitter || !user?.email) {
+        return;
+      }
+
+      submitter.patchValue({ name: name.trim(), email: `${user.email}`.trim().toLowerCase() });
+      submitter.get('name').disable();
+      submitter.get('email').disable();
     });
   }
 
