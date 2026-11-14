@@ -88,6 +88,18 @@ page. Branch `feat/2942-admin-escape-back`.
 
 ---
 
+## Batch 47 (gisday: #2945, the site notices a new deploy; from `home (gisday)`) (High) - **run it next, after batch 44, before 45**
+
+[#2945](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2945): read the issue and the
+maintainer's comment (raised to High and widened, 14 November). In short: a tab opened before a deploy keeps running the
+old build. It goes blank on a missing chunk, or, worse, quietly shows an old page. The site notices a newer deployed
+version and reloads, or offers to reload when the page has unsaved changes. The chunk-load error reloads once, with no
+loop. Check first whether the Angular service worker (`ngsw-config.json`) is actually registered in `gisday-angular`, and
+say which way you went and why. A test for each behaviour you can test; say plainly what you could only check by hand
+(two builds served one after the other). Branch `fix/2945-new-version-reload`.
+
+---
+
 ## Batch 45 (gisday: #2937, image uploads accept SVG; from `home (gisday)`) (Medium)
 
 [#2937](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2937). **Speaker photos already
