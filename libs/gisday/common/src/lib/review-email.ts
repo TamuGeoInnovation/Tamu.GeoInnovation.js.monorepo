@@ -85,17 +85,25 @@ Best regards,
 The {site} Team`;
   }
 
+  // A presentation finalist's instructions: the deadline, the session, the time limit and how to fit it (#2983). The
+  // minutes are the reviewer's to set in the text before it is sent (#2981).
   return `Howdy {first name},
 
-Congratulations! Your presentation submission, "{title}", has been accepted for {site}.
+Congratulations! Your presentation, "{title}", has been accepted as a finalist in the {site} research presentation competition.
 
 What to do next:
 
-1. Attach your slides by {upload deadline}. Sign in at {site address}/account/submissions, open your submission, and attach them under Presentation files: PowerPoint or PDF, up to 100 MB each.
+1. Submit your final presentation by {upload deadline}. Sign in at {site address}/account/submissions, open your submission, and attach it under Presentation files: PowerPoint or PDF, up to 100 MB.
 
-2. Complete your presenter profile. A separate email will bring you a personal link to add your bio, photo, university and class year to the program.
+2. Be there at your session's time. See {site address}/sessions for your session's place and time.
 
-3. Check your session. See {site address}/sessions for when you present.
+3. Keep to your time. You have 15 minutes in all: about 12 minutes to present and 3 for questions. You will be cut off when your time is up.
+
+4. Plan on one slide per minute. About 12 slides fits your time.
+
+5. Complete your presenter profile. A separate email will bring you a personal link to add your bio, photo, university and class year to the program.
+
+6. Join us at the Awards and Networking session, where the winners are announced.
 
 {notes}
 

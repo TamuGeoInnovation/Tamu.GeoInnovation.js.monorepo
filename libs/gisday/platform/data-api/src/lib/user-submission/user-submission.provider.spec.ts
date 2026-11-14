@@ -374,15 +374,33 @@ describe('UserSubmissionProvider', () => {
         tamu
       );
 
-      expect(email).toContain('1. Attach your slides by Mon, Nov 16, 2026, 12:00 PM Central.');
+      expect(email).toContain('1. Submit your final presentation by Mon, Nov 16, 2026, 12:00 PM Central.');
       expect(email).not.toContain('judges');
+    });
+
+    describe('the presentation finalist email (#2983)', () => {
+      const tamu = { name: 'Texas A&M GIS Day', address: 'https://gisday.tamu.edu' };
+      const email = () => reviewEmail({ title: 'T', acceptance: true, submissionType: 'presentation' } as Submission, tamu);
+
+      it('asks them to be there at their session time', () => {
+        expect(email()).toContain("2. Be there at your session's time. See https://gisday.tamu.edu/sessions");
+      });
+
+      it('gives the minutes, presentation plus questions, and says they will be cut off', () => {
+        expect(email()).toContain('15 minutes in all: about 12 minutes to present and 3 for questions');
+        expect(email()).toContain('You will be cut off when your time is up.');
+      });
+
+      it('gives the one-slide-per-minute rule', () => {
+        expect(email()).toContain('Plan on one slide per minute.');
+      });
     });
 
     it("tells a presenter to attach their slides, and keeps a rejection's wording under the site's name", () => {
       const tamu = { name: 'Texas A&M GIS Day', address: 'https://gisday.tamu.edu' };
 
       expect(reviewEmail({ title: 'T', acceptance: true, submissionType: 'presentation' } as Submission, tamu)).toContain(
-        '1. Attach your slides.'
+        '1. Submit your final presentation by the deadline shown on your submission.'
       );
 
       const rejected = reviewEmail({ title: 'T', acceptance: false } as Submission, tamu);
@@ -477,7 +495,9 @@ describe('UserSubmissionProvider', () => {
 
       expect(second.to).toBe('cy@tamu.edu');
       expect(second.subject).toBe('Your Texas A&M GIS Day submission has been accepted');
-      expect(second.text).toContain('has been accepted for Texas A&M GIS Day');
+      expect(second.text).toContain(
+        'has been accepted as a finalist in the Texas A&M GIS Day research presentation competition'
+      );
     });
 
     it('records and emails a rejection with the rejection wording', async () => {
