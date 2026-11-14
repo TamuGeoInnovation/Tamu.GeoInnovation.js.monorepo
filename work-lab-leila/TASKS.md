@@ -26,6 +26,40 @@
 > from a clean profile**, and say in the report which you did. The Playwright container starts clean, so the suite
 > itself is not affected - this is about anything you check by hand.
 
+## Batch 39 (gisday: the full pre-push check for #2933, student presentation file uploads; 14 November 2026, 8:45 AM Central, from `home (gisday)`) (High, start now)
+
+**The maintainer asked for this to run on you** so `home` is free: it was maxed out and he needs it for other work.
+He is waiting on this to send instructions to the GIS Day competition finalists, so **start it before anything else**,
+and push `STATUS.md` the moment it starts and ends.
+
+**What:** [#2933](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2933): students attach
+PowerPoint and PDF files to their poster or presentation submission; admins download them one by one or as a zip.
+Branch **`feat/2933-submission-files`** on the fork (`danielgoldbergtamu`), commit **`2cbabff54`**. Code only; no
+pull request yet.
+
+**Run, from a worktree at that commit** (`git fetch fork feat/2933-submission-files`), with the machine to itself:
+
+```bash
+git fetch origin
+scripts/check-in-volume.sh feat/2933-submission-files
+```
+
+The default memory and parallelism are right for you (16g, 8). **Read its exit code, not the summary.**
+
+**What home already knows**, so you can tell a new failure from an old one: the same check on home at the commit
+before (`d1eadefe6`) passed every task except `gisday-platform-data-api:test`, where one existing test pinned the
+season query without the new `relations: { files: true }`. `2cbabff54` fixes that test; on home its spec file alone
+passes, 585 of 585. So **exit 0 is expected**. Anything else is new: say which task, and paste the first error.
+
+**Do not change the branch.** If something fails, report it; home fixes it.
+
+### The report
+
+`work-lab-leila/reports/2026-11-14-39.md`: the exit code, the elapsed time, and the summary block (`Successfully ran`
+or `Failed tasks`). Push it, set `STATUS.md` idle, and say **"report ready"**. No branch, no pull request.
+
+---
+
 ## Batch 38 (aggiemap: clear the 13 November release on dev AND production - it is going to production before the suite has run; 13 November 2026, 2:21 PM Central, from `work (aggiemap)`)
 
 **Start now. This is the only thing in your queue and it is the only thing clearing a release that is already
