@@ -3,8 +3,15 @@ import { ActivatedRoute, provideRouter } from '@angular/router';
 import { of, Subject } from 'rxjs';
 
 import { SUBMISSION_CLASSIFICATION_OPTIONS, SUBMISSION_TYPE_OPTIONS } from '@tamu-gisc/gisday/platform/ngx/common';
-import { SeasonService, UserSubmissionsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import {
+  SeasonService,
+  SpeakerEditsService,
+  UserSubmissionsService,
+  reviewSubmissionsToast,
+  sendEditLinksToast
+} from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
+import { AlertModalComponent } from '@tamu-gisc/ui-kits/ngx/layout/modal/alert-modal';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { ResearchCompetitionListComponent, withData } from './research-competition-list.component';
@@ -82,5 +89,152 @@ describe('ResearchCompetitionListComponent while loading', () => {
 
     expect(page.querySelector('.loader')).toBeNull();
     expect(page.textContent).toContain('Showing 1 of 1 submissions.');
+  });
+});
+
+/**
+ * #2958: Approve, Reject and Send profile email for the selected submissions, beside Delete. Each is confirmed in the
+ * page, saying how many will be emailed, makes one request for the whole selection, and puts the result in a toast.
+ */
+describe('ResearchCompetitionListComponent actions on the selected submissions', () => {
+  const rows = [
+    {
+      guid: 's1',
+      title: 'Flood maps',
+      submissionType: 'poster',
+      classificationType: 'graduate',
+      participants: [
+        { name: 'Ana Ruiz', email: 'ana@tamu.edu' },
+        { name: 'Ben Lee', email: 'ben@tamu.edu' }
+      ]
+    },
+    {
+      guid: 's2',
+      title: 'Campus trees',
+      submissionType: 'presentation',
+      classificationType: 'graduate',
+      reviewed: true,
+      acceptance: true,
+      participants: [
+        { name: 'Cy Diaz', email: 'cy@tamu.edu' },
+        { name: 'Ana Ruiz', email: 'ANA@tamu.edu' }
+      ]
+    },
+    { guid: 's3', title: 'Not chosen', submissionType: 'poster', classificationType: 'graduate', participants: [] }
+  ];
+
+  function open(confirmed: boolean) {
+    const service = {
+      getEntitiesForActiveSeason: () => of(rows),
+      getEntitiesForSeason: () => of(rows),
+      getEntities: () => of(rows),
+      review: jest.fn(() => of({ reviewed: ['Flood maps', 'Campus trees'], failed: [] }))
+    };
+    const speakerEdits = {
+      sendForSubmissions: jest.fn(() =>
+        of({ sent: ['Ana Ruiz', 'Cy Diaz'], skipped: [], unmatched: [{ name: 'Ben Lee', submission: 'Flood maps' }] })
+      )
+    };
+    const modals = { open: jest.fn(() => of(confirmed)) };
+    const toasts = { toast: jest.fn() };
+
+    TestBed.configureTestingModule({
+      imports: [ResearchCompetitionListComponent],
+      providers: [
+        provideRouter([]),
+        { provide: UserSubmissionsService, useValue: service },
+        { provide: SpeakerEditsService, useValue: speakerEdits },
+        { provide: SeasonService, useValue: { seasons$: of([]), activeSeason$: of(null) } },
+        { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
+        { provide: ModalService, useValue: modals },
+        { provide: NotificationService, useValue: toasts }
+      ]
+    });
+
+    const fixture = TestBed.createComponent(ResearchCompetitionListComponent);
+    fixture.detectChanges();
+    fixture.componentInstance.toggleRow('s1');
+    fixture.componentInstance.toggleRow('s2');
+    fixture.detectChanges();
+
+    const page = fixture.nativeElement as HTMLElement;
+    const click = (label: string) => {
+      const action = Array.from(page.querySelectorAll<HTMLElement>('.selected-action')).find((a) =>
+        a.textContent.includes(label)
+      );
+
+      expect(action).toBeDefined();
+      action.click();
+      fixture.detectChanges();
+    };
+
+    return { service, speakerEdits, modals, toasts, click };
+  }
+
+  it('offers Approve, Reject and Send profile email beside Delete', () => {
+    const { click } = open(false);
+
+    for (const label of ['Approve', 'Reject', 'Send profile email', 'Delete']) {
+      click(label);
+    }
+  });
+
+  it('asks before approving, saying how many will be emailed, then approves the selection in one request', () => {
+    const { service, modals, toasts, click } = open(true);
+
+    click('Approve');
+
+    expect(modals.open).toHaveBeenCalledWith(
+      AlertModalComponent,
+      expect.objectContaining({
+        data: expect.objectContaining({
+          message: expect.stringContaining('Approve 2 submissions and email their submitters?'),
+          primaryText: 'Approve and email',
+          secondaryText: 'Cancel'
+        })
+      })
+    );
+    // One of them was already reviewed; its submitter will hear again.
+    expect(modals.open.mock.calls[0][1].data.message).toContain('1 of them has already been reviewed');
+    expect(service.review).toHaveBeenCalledTimes(1);
+    expect(service.review).toHaveBeenCalledWith(['s1', 's2'], true);
+    expect(toasts.toast).toHaveBeenCalledWith(
+      reviewSubmissionsToast({ reviewed: ['Flood maps', 'Campus trees'], failed: [] }, true)
+    );
+  });
+
+  it('asks before rejecting, then rejects the selection', () => {
+    const { service, modals, click } = open(true);
+
+    click('Reject');
+
+    expect(modals.open.mock.calls[0][1].data.message).toContain('Reject 2 submissions and email their submitters?');
+    expect(service.review).toHaveBeenCalledWith(['s1', 's2'], false);
+  });
+
+  it('asks before sending profile emails, counting the people once each, and lists anyone with no speaker record', () => {
+    const { speakerEdits, modals, toasts, click } = open(true);
+
+    click('Send profile email');
+
+    expect(modals.open.mock.calls[0][1].data.message).toContain(
+      'Send profile emails to the 3 people of 2 submissions?'
+    );
+    expect(speakerEdits.sendForSubmissions).toHaveBeenCalledWith(['s1', 's2']);
+    expect(toasts.toast).toHaveBeenCalledWith(
+      sendEditLinksToast({ sent: ['Ana Ruiz', 'Cy Diaz'], skipped: [], unmatched: [{ name: 'Ben Lee', submission: 'Flood maps' }] })
+    );
+  });
+
+  it('sends nothing when the admin cancels', () => {
+    const { service, speakerEdits, toasts, click } = open(false);
+
+    click('Approve');
+    click('Reject');
+    click('Send profile email');
+
+    expect(service.review).not.toHaveBeenCalled();
+    expect(speakerEdits.sendForSubmissions).not.toHaveBeenCalled();
+    expect(toasts.toast).not.toHaveBeenCalled();
   });
 });

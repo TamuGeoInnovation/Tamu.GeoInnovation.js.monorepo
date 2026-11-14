@@ -329,3 +329,92 @@ describe('senderAs (#2951)', () => {
     expect(senderAs('TxGIS Day', undefined)).toBeUndefined();
   });
 });
+
+/**
+ * #2958: "Send profile email" on Research Competitions. Each selected submission's people are matched to their season's
+ * speaker records by email, ignoring case and spaces, and each speaker found gets their own link as the Speakers list
+ * sends it. Anyone with no speaker record is returned by name, so the admin can add them, rather than silently skipped.
+ */
+describe('SpeakerEditService.sendLinksForSubmissions (#2958)', () => {
+  const S2026 = 'season-2026';
+  const speakers = [
+    { guid: 'sp-ana', firstName: 'Ana', lastName: 'Ruiz', email: ' Ana.Ruiz@TAMU.edu ', season: { guid: S2026 } },
+    { guid: 'sp-cy', firstName: 'Cy', lastName: 'Diaz', email: 'cy@tamu.edu', season: { guid: S2026 } },
+    // Last year's record is not this year's speaker.
+    { guid: 'sp-ben-2025', firstName: 'Ben', lastName: 'Lee', email: 'ben@tamu.edu', season: { guid: 'season-2025' } }
+  ];
+  const submissions = [
+    {
+      guid: 'sub-1',
+      title: 'Flood maps',
+      season: { guid: S2026 },
+      participants: [
+        { name: 'Ana Ruiz', email: 'ana.ruiz@tamu.edu' },
+        { name: 'Ben Lee', email: 'BEN@tamu.edu' }
+      ]
+    },
+    {
+      guid: 'sub-2',
+      title: 'Campus trees',
+      season: { guid: S2026 },
+      participants: [
+        { name: 'Cy Diaz', email: 'CY@tamu.edu' },
+        { name: 'Ana Ruiz', email: 'ana.ruiz@tamu.edu' },
+        { name: 'Dee Fox', email: '' }
+      ]
+    },
+    // A participant with no name is named by their address.
+    { guid: 'sub-3', title: 'Soil moisture', season: { guid: S2026 }, participants: [{ name: ' ', email: 'ben@tamu.edu' }] }
+  ];
+
+  let sent: Array<{ to: string; text: string }>;
+  let service: SpeakerEditService;
+  const values = (condition) => condition?._value ?? [condition];
+
+  beforeEach(() => {
+    sent = [];
+    service = new SpeakerEditService(
+      { create: (x) => x, save: jest.fn(async (x) => x) } as never,
+      {} as never,
+      {
+        find: jest.fn(async ({ where }) =>
+          speakers.filter((s) =>
+            where.guid ? values(where.guid).includes(s.guid) : values(where.season.guid).includes(s.season.guid)
+          )
+        )
+      } as never,
+      {} as never,
+      {} as never,
+      { sendMessage: jest.fn(async (m) => sent.push(m)) } as never,
+      { findOneActive: async () => ({ guid: S2026 }) } as never,
+      { find: jest.fn(async ({ where }) => submissions.filter((s) => values(where.guid).includes(s.guid))) } as never
+    );
+  });
+
+  it("emails each matched speaker once, ignoring case, and names everyone with no speaker record", async () => {
+    const result = await service.sendLinksForSubmissions(['sub-1', 'sub-2'], 'gisday.tamu.edu');
+
+    expect(result).toEqual({
+      sent: ['Ana Ruiz', 'Cy Diaz'],
+      skipped: [],
+      unmatched: [
+        { name: 'Ben Lee', submission: 'Flood maps' },
+        { name: 'Dee Fox', submission: 'Campus trees' }
+      ]
+    });
+    expect(sent.map((m) => m.to)).toEqual(['Ana.Ruiz@TAMU.edu', 'cy@tamu.edu']);
+    expect(sent[0].text).toContain('https://gisday.tamu.edu/presenters/edit/');
+  });
+
+  it('sends nothing, and still names them, when no one has a speaker record', async () => {
+    const result = await service.sendLinksForSubmissions(['sub-3']);
+
+    expect(result).toEqual({ sent: [], skipped: [], unmatched: [{ name: 'ben@tamu.edu', submission: 'Soil moisture' }] });
+    expect(sent).toEqual([]);
+  });
+
+  it('refuses an empty list', async () => {
+    await expect(service.sendLinksForSubmissions([])).rejects.toThrow(BadRequestException);
+    expect(sent).toEqual([]);
+  });
+});
