@@ -80,7 +80,10 @@
       <p>No submissions match these filters.</p>
       } @else {
       <p>There are no student competition submissions for the selected season.</p>
-      } } @if ((selectedRows$ | async)?.length > 0) {
+      } } @else {
+      <!-- The site's loader while the season's submissions load, rather than a blank page (#2924). -->
+      <div class="loader"></div>
+      } @if ((selectedRows$ | async)?.length > 0) {
       <div class="selected-action-container info-block context">
         <div>
           <p><strong>{{(selectedRows$ | async).length}} selected</strong></p>
