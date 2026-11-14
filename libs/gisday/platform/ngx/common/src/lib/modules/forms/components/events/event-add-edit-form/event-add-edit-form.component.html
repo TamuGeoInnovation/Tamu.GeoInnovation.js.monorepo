@@ -86,6 +86,12 @@
   <div class="form-section">
     <div class="form-section-toolbar">
       <div class="form-section-title">Speakers</div>
+      @if (type() === 'edit' && (eventSpeakers$ | async)?.length > 0) {
+      <!-- Everyone on this event gets their own link to edit their profile (#2936). -->
+      <div class="form-section-actions">
+        <a tabindex="0" role="button" (click)="emailSpeakersEditLinks()" (keydown.enter)="emailSpeakersEditLinks()">Send profile emails to these speakers <span class="material-icons action">forward_to_inbox</span></a>
+      </div>
+      }
     </div>
 
     <div class="form-section-body">
