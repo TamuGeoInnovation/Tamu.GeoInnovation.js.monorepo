@@ -45,20 +45,30 @@ export interface PendingSpeakerEdit {
 export interface SendEditLinksResult {
   sent: Array<string>;
   skipped: Array<{ name: string; reason: string }>;
+  /**
+   * Sent for competition submissions (#2958): each participant matched to no speaker record of the season, with their
+   * submission's title, so the admin can add them.
+   */
+  unmatched?: Array<{ name: string; submission: string }>;
 }
 
 /**
- * The toast an admin sees after sending edit links, from the Speakers list or an event's page alike: who got one, and
- * who did not and why (no email on their record, or a mail failure).
+ * The toast an admin sees after sending edit links, from the Speakers list, an event's page or Research Competitions
+ * alike: who got one, and who did not and why (no email on their record, a mail failure, or no speaker record).
  */
 export function sendEditLinksToast(result: SendEditLinksResult): { id: string; title: string; message: string } {
   const sent = result.sent.length === 1 ? `Sent to ${result.sent[0]}.` : `Sent to ${result.sent.length} speakers.`;
   const skipped = result.skipped.map((s) => `${s.name}: ${s.reason}`).join('; ');
+  const unmatched = (result.unmatched ?? []).map((u) => `${u.name} (${u.submission})`).join('; ');
 
   return {
     id: 'speaker-edit-links',
-    title: result.skipped.length ? 'Some profile emails were not sent' : 'Profile emails sent',
-    message: [result.sent.length ? sent : 'None were sent.', skipped ? `Not sent - ${skipped}.` : '']
+    title: skipped || unmatched ? 'Some profile emails were not sent' : 'Profile emails sent',
+    message: [
+      result.sent.length ? sent : 'None were sent.',
+      skipped ? `Not sent - ${skipped}.` : '',
+      unmatched ? `No speaker record - ${unmatched}.` : ''
+    ]
       .filter(Boolean)
       .join(' ')
   };
@@ -77,6 +87,13 @@ export class SpeakerEditsService {
   public send(speakerGuids: Array<string>) {
     return this.http.post<SendEditLinksResult>(`${this.resource}/send`, {
       speakers: speakerGuids
+    });
+  }
+
+  /** Emails the people of each competition submission who have a speaker record their own link (#2958). */
+  public sendForSubmissions(submissionGuids: Array<string>) {
+    return this.http.post<SendEditLinksResult>(`${this.resource}/send-for-submissions`, {
+      submissions: submissionGuids
     });
   }
 

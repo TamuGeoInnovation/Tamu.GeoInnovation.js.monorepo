@@ -1,4 +1,4 @@
-import { ForbiddenException, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 
@@ -405,6 +405,141 @@ describe('UserSubmissionProvider', () => {
       await expect(
         provider.updateUserSubmission('sub-1', 'acct-reviewer', { acceptance: true } as Partial<Submission>, REVIEWER_PERMS)
       ).resolves.toEqual(expect.objectContaining({ affected: 1 }));
+    });
+  });
+
+  /**
+   * #2958: an admin approves or rejects the selected submissions at once. Each is reviewed exactly as Submit Review
+   * reviews one - the decision recorded, the submitter emailed from the reviewer's site - and the result says which were
+   * done and which failed, by title.
+   */
+  describe('.reviewUserSubmissions()', () => {
+    const A = '0f8c9a52-1b2c-4d3e-8f4a-5b6c7d8e9f01';
+    const B = '1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d';
+    const MISSING = '9e8d7c6b-5a4f-4e3d-8c2b-1a0f9e8d7c6b';
+    const rows: Record<string, Submission> = {
+      [A]: submission({
+        guid: A,
+        title: 'Flood maps',
+        submissionType: 'poster',
+        participants: [
+          { name: 'Ana Ruiz', email: 'ana@tamu.edu' },
+          { name: 'Ben Lee', email: 'ben@tamu.edu' }
+        ]
+      }),
+      [B]: submission({
+        guid: B,
+        title: 'Campus trees',
+        submissionType: 'presentation',
+        participants: [{ name: 'Cy Diaz', email: 'cy@tamu.edu' }]
+      })
+    };
+    const decide = (over: Record<string, unknown>) => ({ acceptance: true, message: 'Booth 4.', ...over });
+    const sends = () => (contactService.sendMessage as jest.Mock).mock.calls;
+
+    beforeEach(() => {
+      jest
+        .spyOn(submissionRepo, 'findOne')
+        .mockImplementation((async ({ where }: { where: { guid: string } }) =>
+          rows[where.guid] ? { ...rows[where.guid], participants: [...rows[where.guid].participants] } : null) as never);
+    });
+
+    it("reviews and emails each one exactly as a single review does, from the reviewer's site", async () => {
+      await provider.updateUserSubmission(
+        A,
+        'acct-reviewer',
+        decide({}) as Partial<Submission>,
+        REVIEWER_PERMS,
+        'gisday.tamu.edu'
+      );
+      const single = { written: written(), email: sends()[0] };
+
+      (submissionRepo.update as jest.Mock).mockClear();
+      (contactService.sendMessage as jest.Mock).mockClear();
+
+      const result = await provider.reviewUserSubmissions(
+        [A, B],
+        'acct-reviewer',
+        { acceptance: true, message: 'Booth 4.' },
+        REVIEWER_PERMS,
+        'gisday.tamu.edu'
+      );
+
+      expect(result).toEqual({ reviewed: ['Flood maps', 'Campus trees'], failed: [] });
+      expect((submissionRepo.update as jest.Mock).mock.calls.map((c) => c[0])).toEqual([A, B]);
+      expect(written()).toEqual(single.written);
+      expect(sends()[0]).toEqual(single.email);
+
+      const [second] = sends()[1];
+
+      expect(second.to).toBe('cy@tamu.edu');
+      expect(second.subject).toBe('Your Texas A&M GIS Day submission has been accepted');
+      expect(second.text).toContain('has been accepted for Texas A&M GIS Day');
+    });
+
+    it('records and emails a rejection with the rejection wording', async () => {
+      const result = await provider.reviewUserSubmissions(
+        [B],
+        'acct-reviewer',
+        { acceptance: false },
+        REVIEWER_PERMS,
+        'gisday.tamu.edu'
+      );
+
+      expect(result.reviewed).toEqual(['Campus trees']);
+      expect(written()).toEqual(expect.objectContaining({ acceptance: false, reviewed: true }));
+
+      const [email] = sends()[0];
+
+      expect(email.subject).toBe('Your Texas A&M GIS Day submission');
+      expect(email.text).toContain('has not been accepted for the Texas A&M GIS Day competition');
+    });
+
+    it('refuses anyone without update:competitions, even for their own submissions, and writes nothing', async () => {
+      await expect(provider.reviewUserSubmissions([A], OWNER, { acceptance: true }, [])).rejects.toThrow(ForbiddenException);
+      expect(submissionRepo.update).not.toHaveBeenCalled();
+      expect(contactService.sendMessage).not.toHaveBeenCalled();
+    });
+
+    it('refuses an empty list, a missing decision, or an id that is not a submission id', async () => {
+      await expect(provider.reviewUserSubmissions([], 'r', { acceptance: true }, REVIEWER_PERMS)).rejects.toThrow(
+        BadRequestException
+      );
+      await expect(provider.reviewUserSubmissions([A], 'r', {} as never, REVIEWER_PERMS)).rejects.toThrow(
+        BadRequestException
+      );
+      await expect(provider.reviewUserSubmissions(['1; drop'], 'r', { acceptance: true }, REVIEWER_PERMS)).rejects.toThrow(
+        BadRequestException
+      );
+      expect(submissionRepo.update).not.toHaveBeenCalled();
+    });
+
+    it('carries on past one that fails, and names it', async () => {
+      const result = await provider.reviewUserSubmissions(
+        [MISSING, A],
+        'acct-reviewer',
+        { acceptance: true },
+        REVIEWER_PERMS
+      );
+
+      expect(result).toEqual({ reviewed: ['Flood maps'], failed: [{ title: MISSING, reason: 'it no longer exists' }] });
+    });
+
+    it('counts one whose email failed as reviewed, and lists it as not emailed', async () => {
+      (contactService.sendMessage as jest.Mock).mockRejectedValueOnce(new Error('mailroom unreachable'));
+
+      const result = await provider.reviewUserSubmissions([A, B], 'acct-reviewer', { acceptance: true }, REVIEWER_PERMS);
+
+      expect(result).toEqual({
+        reviewed: ['Flood maps', 'Campus trees'],
+        failed: [{ title: 'Flood maps', reason: 'reviewed, but the email could not be sent' }]
+      });
+    });
+
+    it('reviews a submission named twice once', async () => {
+      await provider.reviewUserSubmissions([A, A], 'acct-reviewer', { acceptance: true }, REVIEWER_PERMS);
+
+      expect(submissionRepo.update).toHaveBeenCalledTimes(1);
     });
   });
 

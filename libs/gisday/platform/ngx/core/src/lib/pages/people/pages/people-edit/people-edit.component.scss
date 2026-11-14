@@ -1,18 +1,16 @@
 @use 'libs/gisday/sass/variables' as vars;
+@use 'libs/gisday/sass/class-banner' as banner;
 
 .photo-row {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: flex-end;
   gap: 1rem;
 }
 
-// Round, as a presenter card draws it.
-.photo {
-  width: 7rem;
-  height: 7rem;
-  object-fit: cover;
-  border-radius: 50%;
+// The box the admin speaker form draws, at the size of a presenter's card (#2956).
+.speaker-photo {
+  @include banner.class-banner-photo();
 }
 
 .bio-preview {

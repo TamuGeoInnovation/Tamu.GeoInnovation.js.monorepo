@@ -1,13 +1,19 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AsyncPipe, DatePipe } from '@angular/common';
+import { combineLatest, map, shareReplay, startWith } from 'rxjs';
 
 import { SpeakerEditPage, SpeakerEditsService, UniversityService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { ButtonComponent, FileComponent, SelectComponent, TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
+import {
+  classBannerSpeaker,
+  ImagePreviewComponent,
+  SpeakerClassBannerComponent
+} from '@tamu-gisc/gisday/platform/ngx/common';
 
 /**
  * A speaker editing their own presenter profile through the link emailed to them (#2936), with no account. Without a
@@ -27,7 +33,9 @@ import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
     FileComponent,
     SelectComponent,
     TextboxComponent,
-    MarkdownParsePipe
+    MarkdownParsePipe,
+    ImagePreviewComponent,
+    SpeakerClassBannerComponent
   ]
 })
 export class PeopleEditComponent implements OnInit {
@@ -36,7 +44,7 @@ export class PeopleEditComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
 
   /** The season's universities, for a speaker to choose theirs from, as the admin speaker form does (#2953). */
-  public readonly universities$ = inject(UniversityService).getEntitiesForActiveSeason();
+  public readonly universities$ = inject(UniversityService).getEntitiesForActiveSeason().pipe(shareReplay(1));
 
   public readonly token = signal<string | null>(null);
   /** The profile behind the link, or 'invalid' when the link does not work. */
@@ -63,6 +71,24 @@ export class PeopleEditComponent implements OnInit {
     graduationYear: new FormControl('', { nonNullable: true }),
     university: new FormControl('', { nonNullable: true })
   });
+
+  /** What the photo box shows: the photo just chosen, else the current one, else nothing (the person icon). */
+  public readonly photoSrc = computed(() => {
+    const photo = this.profile()?.photo;
+
+    return this.photoPreview() ?? (photo ? this.photoUrl(photo) : null);
+  });
+
+  /**
+   * The speaker as the banner on their photo sees it: the University and Graduation year chosen on this page, as they
+   * change, so they see the result before sending it (#2956). The admin speaker form draws its banner the same way.
+   */
+  public readonly bannerSpeaker = toSignal(
+    combineLatest([
+      this.form.valueChanges.pipe(startWith(this.form.getRawValue())),
+      this.universities$.pipe(startWith([]))
+    ]).pipe(map(([value, universities]) => classBannerSpeaker(value.university, value.graduationYear, universities)))
+  );
 
   public readonly requestForm = new FormGroup({ email: new FormControl('', { nonNullable: true }) });
 

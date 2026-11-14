@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ForbiddenException,
   HttpException,
   Injectable,
@@ -23,6 +24,15 @@ import { PosterDto } from './dto/poster.dto';
 import { SubmissionWithSubmitter, submitterOf } from './dto/submission-submitter.dto';
 import { DashboardProfilesService } from '../dashboards/dashboard-profiles.service';
 import { AssetsService } from '../assets/assets.service';
+
+/** A submission's id, as the database makes them. */
+const GUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/** What approving or rejecting several submissions did (#2958): the titles reviewed, and each that failed, with why. */
+export interface ReviewManyResult {
+  reviewed: Array<string>;
+  failed: Array<{ title: string; reason: string }>;
+}
 
 @Injectable()
 export class UserSubmissionProvider extends BaseProvider<Submission> {
@@ -221,6 +231,101 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     /** The site the reviewer is on, which the review email names and links to (#2957). */
     host?: string
   ) {
+    const { updated, sendReviewEmail } = await this._update(
+      submissionGuid,
+      userGuid,
+      submission,
+      requestorPermissions,
+      host
+    );
+
+    // The decision stands whether or not the email goes: a reviewer's decision must not be lost to the mail server.
+    sendReviewEmail?.().catch((err) => {
+      Logger.error(`Error sending email to user: ${err.message}`, 'UserSubmissionProvider');
+    });
+
+    return updated;
+  }
+
+  /**
+   * Approves or rejects each of the named submissions, as `updateUserSubmission` reviews one from Submit Review (#2958):
+   * the decision recorded and the submitter emailed from the reviewer's site, one after another. A submission that
+   * cannot be reviewed does not stop the rest; the result names it, by title, with why, as it does one that was reviewed
+   * but whose email could not be sent.
+   */
+  public async reviewUserSubmissions(
+    submissionGuids: Array<string>,
+    userGuid: string,
+    review: { acceptance: boolean; message?: string },
+    requestorPermissions: Array<string> = [],
+    host?: string
+  ): Promise<ReviewManyResult> {
+    // The single review lets an owner through to edit their own; a review of many is a reviewer's alone.
+    if (!requestorPermissions.includes('update:competitions')) {
+      throw new ForbiddenException();
+    }
+
+    if (!Array.isArray(submissionGuids) || submissionGuids.length === 0) {
+      throw new BadRequestException('No submissions were named.');
+    }
+
+    if (submissionGuids.some((guid) => typeof guid !== 'string' || !GUID.test(guid))) {
+      throw new BadRequestException('Name each submission by its id.');
+    }
+
+    if (typeof review?.acceptance !== 'boolean') {
+      throw new BadRequestException('Say whether the submissions are accepted.');
+    }
+
+    const result: ReviewManyResult = { reviewed: [], failed: [] };
+
+    for (const guid of [...new Set(submissionGuids)]) {
+      let reviewed: Awaited<ReturnType<UserSubmissionProvider['_update']>>;
+
+      try {
+        // A new body each time: the review writes into the object it is given.
+        reviewed = await this._update(
+          guid,
+          userGuid,
+          { acceptance: review.acceptance, message: review.message } as Partial<Submission>,
+          requestorPermissions,
+          host
+        );
+      } catch (err) {
+        Logger.error(`Could not review submission ${guid}: ${err.message}`, 'UserSubmissionProvider');
+        result.failed.push({
+          title: guid,
+          reason: err instanceof NotFoundException ? 'it no longer exists' : 'the decision could not be saved'
+        });
+        continue;
+      }
+
+      const title = reviewed.submission.title || guid;
+
+      result.reviewed.push(title);
+
+      try {
+        await reviewed.sendReviewEmail?.();
+      } catch (err) {
+        Logger.error(`Error sending email to user: ${err.message}`, 'UserSubmissionProvider');
+        result.failed.push({ title, reason: 'reviewed, but the email could not be sent' });
+      }
+    }
+
+    return result;
+  }
+
+  /**
+   * Writes a submission's changes, and says how to send its review email when the change was a review. The single review
+   * sends it without waiting; a review of many waits, to report any that did not go.
+   */
+  private async _update(
+    submissionGuid: string,
+    userGuid: string,
+    submission: Partial<Submission>,
+    requestorPermissions: Array<string>,
+    host?: string
+  ) {
     const existingSubmission = await this.userSubmissionRepo.findOne({
       where: {
         guid: submissionGuid
@@ -275,30 +380,29 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     }
 
     try {
-      return this.userSubmissionRepo.update(submissionGuid, submission).then((updated) => {
-        if (shouldEmail) {
-          const participantEmails = existingSubmission.participants.map((p) => p.email);
-          const primaryParticipant = participantEmails.splice(0, 1);
-          // Send email to user
-          this.contactService
-            .sendMessage(
+      const updated = await this.userSubmissionRepo.update(submissionGuid, submission);
+      const sendReviewEmail = shouldEmail
+        ? async () => {
+            const participantEmails = existingSubmission.participants.map((p) => p.email);
+            const primaryParticipant = participantEmails.splice(0, 1);
+            const site = gisdaySite(process.env.GISDAY_SITE, host);
+
+            // Send email to user
+            return this.contactService.sendMessage(
               {
                 to: primaryParticipant[0],
                 cc: participantEmails.join(','),
-                subject: reviewSubject(existingSubmission, gisdaySite(process.env.GISDAY_SITE, host)),
-                from: senderAs(gisdaySite(process.env.GISDAY_SITE, host).name, process.env.MAILROOM_FROM),
-                text: reviewEmail(existingSubmission, gisdaySite(process.env.GISDAY_SITE, host)),
+                subject: reviewSubject(existingSubmission, site),
+                from: senderAs(site.name, process.env.MAILROOM_FROM),
+                text: reviewEmail(existingSubmission, site),
                 replyTo: process.env.MAILROOM_TO
               },
               true
-            )
-            .catch((err) => {
-              Logger.error(`Error sending email to user: ${err.message}`, 'UserSubmissionProvider');
-            });
-        }
+            );
+          }
+        : null;
 
-        return updated;
-      });
+      return { updated, submission: existingSubmission, sendReviewEmail };
     } catch (err) {
       // An HttpException carries a deliberate status. Re-wrapping it below turned intended
       // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
