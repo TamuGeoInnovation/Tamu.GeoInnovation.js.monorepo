@@ -9,7 +9,7 @@ import { Submission, SubmissionType } from '../entities/all.entity';
 import { DashboardProfilesService } from '../dashboards/dashboard-profiles.service';
 import { AssetsService } from '../assets/assets.service';
 import { SeasonService } from '../season/season.service';
-import { UserSubmissionProvider } from './user-submission.provider';
+import { UserSubmissionProvider, reviewEmail, reviewSubject } from './user-submission.provider';
 
 describe('UserSubmissionProvider', () => {
   let provider: UserSubmissionProvider;
@@ -275,6 +275,57 @@ describe('UserSubmissionProvider', () => {
         expect.objectContaining({ to: 'owner@tamu.edu', cc: 'coauthor@tamu.edu' }),
         true
       );
+    });
+
+    // #2957. The finalist email named TxGIS Day on every site and asked for a link rather than the attached files.
+    it("sends a finalist on Texas A&M's site the next steps under that site's name and address", async () => {
+      const previousFrom = process.env.MAILROOM_FROM;
+      process.env.MAILROOM_FROM = 'TxGIS Day <gisday@example.edu>';
+      jest
+        .spyOn(submissionRepo, 'findOne')
+        .mockResolvedValue(
+          submission({
+            title: 'Mapping Floods',
+            submissionType: 'poster',
+            participants: [{ name: 'Ana Ruiz', email: 'ana@tamu.edu' }]
+          })
+        );
+
+      await provider.updateUserSubmission(
+        'sub-1',
+        'acct-reviewer',
+        { acceptance: true, message: 'Booth 4.' } as Partial<Submission>,
+        REVIEWER_PERMS,
+        'gisday.tamu.edu'
+      );
+
+      process.env.MAILROOM_FROM = previousFrom;
+      const [email] = (contactService.sendMessage as jest.Mock).mock.calls[0];
+
+      expect(email.from).toBe('"Texas A&M GIS Day" <gisday@example.edu>');
+      expect(email.subject).toBe('Your Texas A&M GIS Day submission has been accepted');
+      expect(email.text).toContain('Howdy Ana,');
+      expect(email.text).toContain('Your poster submission, "Mapping Floods", has been accepted for Texas A&M GIS Day.');
+      expect(email.text).toContain('1. Attach your poster. Sign in at https://gisday.tamu.edu/account/submissions');
+      expect(email.text).toContain('under Presentation files');
+      expect(email.text).toContain('2. Complete your presenter profile.');
+      expect(email.text).toContain('https://gisday.tamu.edu/sessions');
+      expect(email.text).toContain('Additional notes: Booth 4.');
+      expect(email.text).not.toMatch(/TxGIS|txgisday|provide a link/);
+    });
+
+    it("tells a presenter to attach their slides, and keeps a rejection's wording under the site's name", () => {
+      const tamu = { name: 'Texas A&M GIS Day', address: 'https://gisday.tamu.edu' };
+
+      expect(reviewEmail({ title: 'T', acceptance: true, submissionType: 'presentation' } as Submission, tamu)).toContain(
+        '1. Attach your slides.'
+      );
+
+      const rejected = reviewEmail({ title: 'T', acceptance: false } as Submission, tamu);
+
+      expect(rejected).toContain('has not been accepted for the Texas A&M GIS Day competition');
+      expect(rejected).toContain('The Texas A&M GIS Day Team');
+      expect(reviewSubject({ acceptance: false } as Submission, tamu)).toBe('Your Texas A&M GIS Day submission');
     });
 
     it('does not email when the owner merely edits their own content', async () => {

@@ -21,6 +21,7 @@ import { JwtGuard, PermissionsGuard, Permissions } from '@tamu-gisc/common/nest/
 
 import { Submission } from '../entities/all.entity';
 import { UserSubmissionProvider } from './user-submission.provider';
+import { siteHost } from '../_base/site-of-request';
 import { SubmissionFilesService } from './submission-files.service';
 import { SUBMISSION_FILE_UPLOAD } from './submission-file-upload';
 
@@ -112,7 +113,7 @@ export class UserSubmissionController {
   @Patch(':guid')
   public async updateEntity(@Request() req, @Param('guid') guid, @Body() submission: Partial<Submission>) {
     if (req.user) {
-      return this.provider.updateUserSubmission(guid, req.user.sub, submission, req.user.permissions);
+      return this.provider.updateUserSubmission(guid, req.user.sub, submission, req.user.permissions, siteHost(req.headers));
     } else {
       throw new UnauthorizedException();
     }

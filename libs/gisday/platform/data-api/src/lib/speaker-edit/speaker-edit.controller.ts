@@ -19,27 +19,10 @@ import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/
 import { DEFAULT_UPLOAD_LIMITS } from '@tamu-gisc/common/nest/services';
 
 import { SpeakerEditFields, SpeakerEditService } from './speaker-edit.service';
+import { siteHost } from '../_base/site-of-request';
 
-/**
- * The site the admin or speaker is on, by host name. Every site calls the API at txgisday.org's address, so the API's own
- * host says nothing about which site a page is on; the browser's Origin does (#2951). Then a proxy's forwarded host, then
- * the request's own. `gisdaySite()` turns it into a site, and any host it does not know into the deployment's own site.
- */
-export function siteHost(headers: Record<string, string | Array<string> | undefined> = {}): string | undefined {
-  const first = (value: string | Array<string> | undefined) =>
-    (Array.isArray(value) ? value[0] : value)?.split(',')[0].trim();
-  const origin = first(headers['origin']);
-
-  if (origin) {
-    try {
-      return new URL(origin).hostname;
-    } catch {
-      // Not an address; fall through to the hosts.
-    }
-  }
-
-  return (first(headers['x-forwarded-host']) ?? first(headers['host']))?.replace(/:\d+$/, '') || undefined;
-}
+// Where it lived first; kept so its importers need not change.
+export { siteHost };
 
 /**
  * Speakers editing their own profile through an emailed link (#2936). The link routes take no sign-in: the token in the
