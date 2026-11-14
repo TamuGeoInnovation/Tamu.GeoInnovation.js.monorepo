@@ -25,10 +25,12 @@ export function reviewSubmissionsToast(
 ): { id: string; title: string; message: string } {
   const done = acceptance ? 'Approved' : 'Rejected';
   const count = result.reviewed.length;
+  // Only claimed when every one reviewed was emailed; otherwise the problems say which were not.
+  const allEmailed = !result.failed.some((f) => result.reviewed.includes(f.title));
   const reviewed =
     count === 1
-      ? `${done} "${result.reviewed[0]}" and emailed its submitter.`
-      : `${done} ${count} submissions and emailed their submitters.`;
+      ? `${done} "${result.reviewed[0]}"${allEmailed ? ' and emailed its submitter' : ''}.`
+      : `${done} ${count} submissions${allEmailed ? ' and emailed their submitters' : ''}.`;
   const failed = result.failed.map((f) => `${f.title}: ${f.reason}`).join('; ');
 
   return {

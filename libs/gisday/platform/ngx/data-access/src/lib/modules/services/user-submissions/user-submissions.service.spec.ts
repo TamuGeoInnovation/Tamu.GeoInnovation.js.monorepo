@@ -70,7 +70,7 @@ describe('reviewSubmissionsToast', () => {
 
     expect(toast.title).toBe('Some submissions were not approved or emailed');
     expect(toast.message).toBe(
-      'Approved 2 submissions and emailed their submitters. Problems - Flood maps: reviewed, but the email could not be sent; Trees: it no longer exists.'
+      'Approved 2 submissions. Problems - Flood maps: reviewed, but the email could not be sent; Trees: it no longer exists.'
     );
   });
 });
