@@ -88,6 +88,26 @@ page. Branch `feat/2942-admin-escape-back`.
 
 ---
 
+## Batch 50 (gisday: #2958, bulk approve, reject and send profile email on Research Competitions; from `work (gisday)`) (URGENT) - **run it NEXT, as soon as batch 44 is done, before 47**
+
+The maintainer needs this today to process the competition submissions.
+[#2958](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2958): its body has the three
+actions and the notes. Build on what exists:
+- **Approve / Reject:** the API's `UserSubmissionProvider.updateUserSubmission` already reviews one submission and emails
+  it. Add one endpoint for a list (`update:competitions`) that reviews each the same way, passing the reviewer's site
+  (`siteHost(req.headers)` from `libs/gisday/platform/data-api/src/lib/_base/site-of-request.ts`; that file lands with
+  #2957, branch `fix/2957-acceptance-email` on the fork. **Branch from it**, not from `development`, so the email is the
+  new one).
+- **Send profile email:** `SpeakerEditService.sendLinks` (speaker guids) already emails speakers. Match each selected
+  submission's participants to the active season's speakers by email (case-insensitive) and send to those; return the
+  participants with no speaker record by name.
+- **The page:** `research-competition-list` already has the selected-rows bar with Delete; add the three actions beside it,
+  each confirmed **in the page** with how many will be emailed. The result goes in the existing toast, using
+  `sendEditLinksToast` for the profile emails.
+- Tests red first; check-in-volume bug-fix form; screenshots; release note. Branch `feat/2958-bulk-review`.
+
+---
+
 ## Batch 49 (gisday: #2937, image uploads refuse SVG; from `work (gisday)`) (Medium) - **after batch 48, last**
 
 Back from `copilot-home`, whose runner is failing. Do it as batch 45 described (that text stands; ignore its WITHDRAWN
