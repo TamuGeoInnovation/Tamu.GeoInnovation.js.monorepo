@@ -4,7 +4,8 @@ import { join } from 'path';
 
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 
-import { SpeakerEditService, cleanFields, hashOf, linkEmail } from './speaker-edit.service';
+import { SpeakerEditService, cleanFields, hashOf, linkEmail, senderAs } from './speaker-edit.service';
+import { siteHost } from './speaker-edit.controller';
 
 /**
  * Speakers editing their own profile (#2936). What must hold: a link reaches one speaker and nothing else, only by its
@@ -123,6 +124,24 @@ describe('SpeakerEditService', () => {
       skipped: [{ name: 'Ben Lee', reason: 'no email address on their record' }]
     });
     expect(sent[0].to).toBe('ana@example.edu');
+    expect(sent[0].text).toContain('https://gisday.tamu.edu/presenters/edit/');
+  });
+
+  // #2951. The first live link, sent from Texas A&M's site, came as TxGIS Day with a txgisday.org link.
+  it("sends from Texas A&M's site as Texas A&M GIS Day, in the sender, subject, text and link", async () => {
+    const previousFrom = process.env.MAILROOM_FROM;
+    process.env.MAILROOM_FROM = 'TxGIS Day <gisday@example.edu>';
+
+    await service.sendLinks(['speaker-ana'], 'gisday.tamu.edu');
+
+    process.env.MAILROOM_FROM = previousFrom;
+    expect(sent[0]).toEqual(
+      expect.objectContaining({
+        from: '"Texas A&M GIS Day" <gisday@example.edu>',
+        subject: 'Update your Texas A&M GIS Day presenter profile'
+      })
+    );
+    expect(sent[0].text).toContain('on Texas A&M GIS Day');
     expect(sent[0].text).toContain('https://gisday.tamu.edu/presenters/edit/');
   });
 
@@ -259,5 +278,25 @@ describe('linkEmail', () => {
     expect(text).toContain('https://txgisday.org/presenters/edit/abc');
     expect(text).toContain('Saturday, November 21');
     expect(text).toContain('reviews each change before it appears');
+  });
+});
+
+describe('siteHost (#2951)', () => {
+  it("is the page's own site from Origin, though the API is called at txgisday.org's address", () => {
+    expect(siteHost({ origin: 'https://gisday.tamu.edu', host: 'txgisday.org' })).toBe('gisday.tamu.edu');
+  });
+
+  it('falls back to the forwarded host, then the host, without a port', () => {
+    expect(siteHost({ 'x-forwarded-host': 'gisday.ucgis.org', host: 'gisday-nest:8080' })).toBe('gisday.ucgis.org');
+    expect(siteHost({ host: 'txgisday.org:443' })).toBe('txgisday.org');
+    expect(siteHost({})).toBeUndefined();
+  });
+});
+
+describe('senderAs (#2951)', () => {
+  it("keeps the configured address under the site's name, whether configured with a name or bare", () => {
+    expect(senderAs('Texas A&M GIS Day', 'TxGIS Day <gisday@example.edu>')).toBe('"Texas A&M GIS Day" <gisday@example.edu>');
+    expect(senderAs('UCGIS GIS Day', 'gisday@example.edu')).toBe('"UCGIS GIS Day" <gisday@example.edu>');
+    expect(senderAs('TxGIS Day', undefined)).toBeUndefined();
   });
 });

@@ -296,7 +296,7 @@ export class SpeakerEditService {
     await this.contact.sendMessage(
       {
         to: speaker.email.trim(),
-        from: process.env.MAILROOM_FROM,
+        from: senderAs(site.name, process.env.MAILROOM_FROM),
         replyTo: process.env.MAILROOM_TO,
         subject: `Update your ${site.name} presenter profile`,
         text: linkEmail(speaker, site.name, url, expires)
@@ -324,6 +324,16 @@ ${url}
 This link is yours alone and works until ${until}. The ${siteName} team reviews each change before it appears on the site.
 
 If you did not expect this email, you can ignore it.`;
+}
+
+/**
+ * The configured sender's address under the site's own name, so an email sent from Texas A&M's site comes from "Texas A&M
+ * GIS Day" (#2951). `MAILROOM_FROM` is one setting for every site, as "Name <address>" or a bare address.
+ */
+export function senderAs(siteName: string, configured: string | undefined): string | undefined {
+  const address = configured?.match(/<([^>]+)>/)?.[1] ?? configured?.trim();
+
+  return address ? `"${siteName.replace(/"/g, '')}" <${address}>` : configured;
 }
 
 export function hashOf(token: string): string {

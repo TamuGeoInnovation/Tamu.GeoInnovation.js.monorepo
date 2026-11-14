@@ -20,12 +20,25 @@ import { DEFAULT_UPLOAD_LIMITS } from '@tamu-gisc/common/nest/services';
 
 import { SpeakerEditFields, SpeakerEditService } from './speaker-edit.service';
 
-/** The address the request came to, so a link sent from gisday.tamu.edu points at gisday.tamu.edu. */
-function hostOf(req): string | undefined {
-  const forwarded = req?.headers?.['x-forwarded-host'];
-  const host = (Array.isArray(forwarded) ? forwarded[0] : forwarded) ?? req?.headers?.host;
+/**
+ * The site the admin or speaker is on, by host name. Every site calls the API at txgisday.org's address, so the API's own
+ * host says nothing about which site a page is on; the browser's Origin does (#2951). Then a proxy's forwarded host, then
+ * the request's own. `gisdaySite()` turns it into a site, and any host it does not know into the deployment's own site.
+ */
+export function siteHost(headers: Record<string, string | Array<string> | undefined> = {}): string | undefined {
+  const first = (value: string | Array<string> | undefined) =>
+    (Array.isArray(value) ? value[0] : value)?.split(',')[0].trim();
+  const origin = first(headers['origin']);
 
-  return typeof host === 'string' ? host.split(',')[0].trim().replace(/:\d+$/, '') : undefined;
+  if (origin) {
+    try {
+      return new URL(origin).hostname;
+    } catch {
+      // Not an address; fall through to the hosts.
+    }
+  }
+
+  return (first(headers['x-forwarded-host']) ?? first(headers['host']))?.replace(/:\d+$/, '') || undefined;
 }
 
 /**
@@ -42,14 +55,14 @@ export class SpeakerEditController {
   @UseGuards(JwtGuard, PermissionsGuard)
   @Post('send')
   public send(@Body('speakers') speakers: Array<string>, @Request() req) {
-    return this.service.sendLinks(speakers, hostOf(req));
+    return this.service.sendLinks(speakers, siteHost(req?.headers));
   }
 
   /** A speaker asking for their own link. The same answer whoever asks. */
   @Post('request')
   @HttpCode(202)
   public async request(@Body('email') email: string, @Request() req) {
-    await this.service.requestLink(email, hostOf(req));
+    await this.service.requestLink(email, siteHost(req?.headers));
 
     return { message: "If that address is a speaker's, a link to edit their profile is on its way." };
   }
