@@ -31,7 +31,11 @@
             @if (edit.photo) {
             <tr class="changed">
               <td>Photo</td>
-              <td>-</td>
+              <td>
+                @if (edit.currentPhoto) {
+                <img class="photo" [src]="'assets/uploads/' + edit.currentPhoto" alt="The photo now" />
+                } @else { None }
+              </td>
               <td>
                 @if (photos()[edit.guid]; as url) {
                 <img class="photo" [src]="url" alt="The proposed photo" />

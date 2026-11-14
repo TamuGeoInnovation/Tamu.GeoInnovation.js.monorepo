@@ -193,7 +193,7 @@ export class SpeakerEditService {
   public async pending() {
     const edits = await this.edits.find({
       where: { status: 'pending' },
-      relations: { speaker: true },
+      relations: { speaker: { images: true } },
       order: { created: 'ASC' }
     });
 
@@ -207,7 +207,8 @@ export class SpeakerEditService {
         socialMedia: e.speaker.socialMedia
       },
       proposed: { description: e.description, affiliation: e.affiliation, socialMedia: e.socialMedia },
-      photo: Boolean(e.photoPath)
+      photo: Boolean(e.photoPath),
+      currentPhoto: e.speaker.images?.[0]?.path ?? null
     }));
   }
 

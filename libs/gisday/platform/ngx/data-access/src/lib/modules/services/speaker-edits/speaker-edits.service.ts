@@ -29,6 +29,8 @@ export interface PendingSpeakerEdit {
   current: SpeakerEditFields;
   proposed: SpeakerEditFields;
   photo: boolean;
+  /** The speaker's photo now, under the site's uploads, or null. */
+  currentPhoto: string | null;
 }
 
 /** What sending edit links did, from the API. */
