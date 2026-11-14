@@ -317,7 +317,10 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
     let marked = 0;
 
     for (const badge of wanted) {
-      const result = await this.speakerRepo.update({ guid: badge.guid }, { badgePrintedAt: now, badgePrintedText: badge.text.slice(0, 1000) });
+      const result = await this.speakerRepo.update(
+        { guid: badge.guid },
+        { badgePrintedAt: now, badgePrintedText: badge.text.slice(0, 1000) }
+      );
       marked += result.affected ?? 0;
     }
 
@@ -570,6 +573,42 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
     return this.assetService.saveAsset(this._resourcePath, file, 'speaker-image', {
       prefix: `${guid}-`
     });
+  }
+
+  /**
+   * Applies changes a speaker proposed through their edit link, once an admin approves them (#2936): only the bio,
+   * affiliation and social links, and the photo if one came. Unlike `updateWithInfo`, nothing else is read from the
+   * input, so the speaker's other fields (active, organizer) stay as they are.
+   */
+  public async applySelfEdit(
+    guid: string,
+    fields: { description?: string | null; affiliation?: string | null; socialMedia?: string | null },
+    photo?: { buffer: Buffer; originalname: string; mimetype?: string; size?: number }
+  ) {
+    const existing = await this.speakerRepo.findOne({
+      where: { guid },
+      relations: EntityRelationsLUT.getRelation('speaker')
+    });
+
+    if (!existing) {
+      throw new NotFoundException('Speaker not found.');
+    }
+
+    const image = photo ? await this._saveImage(photo, guid) : undefined;
+    const changes: Partial<Speaker> = {};
+
+    for (const key of ['description', 'affiliation', 'socialMedia'] as const) {
+      if (fields[key] !== undefined && fields[key] !== null) {
+        changes[key] = fields[key];
+      }
+    }
+
+    return this.speakerRepo.save({ ...existing, ...changes, ...(image ? { images: [image] } : {}) });
+  }
+
+  /** Refuses an unsafe photo, as an upload here would be: the same check, for a photo a speaker proposes (#2936). */
+  public refuseUnsafePhoto(file: { buffer: Buffer }) {
+    this._refuseUnsafeImage(file);
   }
 
   /**

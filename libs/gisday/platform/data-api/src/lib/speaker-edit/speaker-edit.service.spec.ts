@@ -1,0 +1,263 @@
+import { existsSync, mkdtempSync, rmSync } from 'fs';
+import { tmpdir } from 'os';
+import { join } from 'path';
+
+import { BadRequestException, NotFoundException } from '@nestjs/common';
+
+import { SpeakerEditService, cleanFields, hashOf, linkEmail } from './speaker-edit.service';
+
+/**
+ * Speakers editing their own profile (#2936). What must hold: a link reaches one speaker and nothing else, only by its
+ * token; it stops working; a speaker can change only the bio, affiliation, link and photo; nothing changes until an admin
+ * approves; and the request form answers the same for anyone.
+ */
+describe('SpeakerEditService', () => {
+  const ana = {
+    guid: 'speaker-ana',
+    firstName: 'Ana',
+    lastName: 'Ruiz',
+    email: 'ana@example.edu',
+    description: 'Old bio',
+    affiliation: 'TAMU',
+    socialMedia: null,
+    images: []
+  };
+  const ben = { guid: 'speaker-ben', firstName: 'Ben', lastName: 'Lee', email: '', description: 'Ben bio' };
+
+  let appData: string;
+  let previousAppData: string | undefined;
+  let links: Array<{ speaker: { guid: string }; tokenHash: string; expires: Date; created: Date }>;
+  let edits: Array<Record<string, unknown>>;
+  let sent: Array<{ to: string; text: string; subject: string }>;
+  let applied: Array<{ guid: string; fields: object; photo?: object }>;
+  let service: SpeakerEditService;
+
+  const linkRepo = {
+    create: (x) => x,
+    save: jest.fn(async (x) => {
+      links.push({ ...x, created: new Date() });
+      return x;
+    }),
+    findOne: jest.fn(async ({ where }) => {
+      const l = links.find((x) => x.tokenHash === where.tokenHash);
+      return l ? { ...l, speaker: { ...l.speaker } } : null;
+    }),
+    count: jest.fn(
+      async ({ where }) =>
+        links.filter((l) => l.speaker.guid === where.speaker.guid && l.created > where.created._value).length
+    )
+  };
+  const editRepo = {
+    create: (x) => ({ ...x }),
+    save: jest.fn(async (x) => {
+      edits.push({ ...x, created: new Date() });
+      return x;
+    }),
+    find: jest.fn(async ({ where }) =>
+      edits.filter((e) => (e.speaker as { guid: string }).guid === where.speaker?.guid && e.status === where.status)
+    ),
+    findOne: jest.fn(
+      async ({ where }) =>
+        edits.find(
+          (e) =>
+            (where.guid ? e.guid === where.guid : (e.speaker as { guid: string }).guid === where.speaker.guid) &&
+            (!where.status || e.status === where.status)
+        ) ?? null
+    ),
+    delete: jest.fn(async (guids: Array<string>) => {
+      edits = edits.filter((e) => !guids.includes(e.guid as string));
+    }),
+    update: jest.fn(async (guid, changes) =>
+      Object.assign(
+        edits.find((e) => e.guid === guid),
+        changes
+      )
+    )
+  };
+  const speakerRepo = {
+    find: jest.fn(async ({ where }) =>
+      where.guid ? [ana, ben].filter((s) => where.guid._value.includes(s.guid)) : [ana, ben]
+    ),
+    findOne: jest.fn(async ({ where }) => [ana, ben].find((s) => s.guid === where.guid))
+  };
+
+  /** The token from the link in the last email sent. */
+  const tokenSent = () => /\/presenters\/edit\/([A-Za-z0-9_-]{43})/.exec(sent[sent.length - 1].text)[1];
+
+  beforeEach(() => {
+    previousAppData = process.env.APP_DATA;
+    appData = mkdtempSync(join(tmpdir(), 'speaker-edits-'));
+    process.env.APP_DATA = appData;
+    links = [];
+    edits = [];
+    sent = [];
+    applied = [];
+
+    service = new SpeakerEditService(
+      linkRepo as never,
+      editRepo as never,
+      speakerRepo as never,
+      {
+        refuseUnsafePhoto: (file: { buffer: Buffer }) => {
+          if (file.buffer.toString().startsWith('<svg'))
+            throw new BadRequestException('The photo must be a PNG, JPEG, GIF or WebP image.');
+        },
+        applySelfEdit: async (guid: string, fields: object, photo?: object) => applied.push({ guid, fields, photo })
+      } as never,
+      { sendMessage: jest.fn(async (m) => sent.push(m)) } as never,
+      { findOneActive: async () => ({ guid: 'season' }) } as never
+    );
+  });
+
+  afterEach(() => {
+    rmSync(appData, { recursive: true, force: true });
+    process.env.APP_DATA = previousAppData;
+    jest.clearAllMocks();
+  });
+
+  it("emails each speaker their own link on the site's address, and skips one with no email", async () => {
+    const result = await service.sendLinks(['speaker-ana', 'speaker-ben'], 'gisday.tamu.edu');
+
+    expect(result).toEqual({
+      sent: ['Ana Ruiz'],
+      skipped: [{ name: 'Ben Lee', reason: 'no email address on their record' }]
+    });
+    expect(sent[0].to).toBe('ana@example.edu');
+    expect(sent[0].text).toContain('https://gisday.tamu.edu/presenters/edit/');
+  });
+
+  it('keeps only a hash of the token, never the token', async () => {
+    await service.sendLinks(['speaker-ana']);
+
+    expect(links[0].tokenHash).toBe(hashOf(tokenSent()));
+    expect(JSON.stringify(links)).not.toContain(tokenSent());
+  });
+
+  it('opens the speaker the link belongs to, and refuses a wrong or expired token alike', async () => {
+    await service.sendLinks(['speaker-ana']);
+    const token = tokenSent();
+
+    expect((await service.forLink(token)).firstName).toBe('Ana');
+    await expect(service.forLink('x'.repeat(43))).rejects.toThrow(NotFoundException);
+    await expect(service.forLink('not-a-token')).rejects.toThrow(NotFoundException);
+
+    links[0].expires = new Date(Date.now() - 1000);
+    await expect(service.forLink(token)).rejects.toThrow(/expired or is not valid/);
+  });
+
+  it('records a proposal for that speaker only, keeping the allowed fields and dropping the rest, and changes nothing yet', async () => {
+    await service.sendLinks(['speaker-ana']);
+
+    await service.propose(tokenSent(), {
+      description: '  New bio  ',
+      affiliation: 'Esri',
+      ...({
+        firstName: 'Mallory',
+        email: 'attacker@example.com',
+        isOrganizer: true,
+        speaker: { guid: 'speaker-ben' }
+      } as object)
+    });
+
+    expect(edits).toHaveLength(1);
+    expect(edits[0]).toEqual(expect.objectContaining({ description: 'New bio', affiliation: 'Esri', status: 'pending' }));
+    expect((edits[0].speaker as { guid: string }).guid).toBe('speaker-ana');
+    expect(edits[0]).not.toHaveProperty('firstName');
+    expect(edits[0]).not.toHaveProperty('email');
+    expect(applied).toHaveLength(0);
+  });
+
+  it('refuses an SVG photo, and keeps an accepted one out of public view until approved', async () => {
+    await service.sendLinks(['speaker-ana']);
+
+    await expect(
+      service.propose(tokenSent(), {}, { buffer: Buffer.from('<svg onload="alert(1)">') } as never)
+    ).rejects.toThrow(/PNG, JPEG, GIF or WebP/);
+
+    await service.propose(tokenSent(), { description: 'Bio' }, { buffer: Buffer.from('jpeg bytes') } as never);
+    const photoPath = edits[0].photoPath as string;
+
+    expect(photoPath).toMatch(/^speaker-edits\//);
+    expect(existsSync(join(appData, photoPath))).toBe(true);
+  });
+
+  it('replaces an earlier pending proposal rather than piling them up', async () => {
+    await service.sendLinks(['speaker-ana']);
+    await service.propose(tokenSent(), { description: 'First' });
+    await service.propose(tokenSent(), { description: 'Second' });
+
+    expect(edits.filter((e) => e.status === 'pending').map((e) => e.description)).toEqual(['Second']);
+  });
+
+  it('applies the proposal when an admin approves it, with the photo, and then removes the held photo', async () => {
+    await service.sendLinks(['speaker-ana']);
+    await service.propose(tokenSent(), { description: 'Approved bio' }, { buffer: Buffer.from('jpeg bytes') } as never);
+    const edit = edits[0];
+    edit.speaker = ana;
+    const photoPath = edit.photoPath as string;
+
+    await service.approve(edit.guid as string, 'auth0|admin');
+
+    expect(applied).toEqual([
+      expect.objectContaining({
+        guid: 'speaker-ana',
+        fields: expect.objectContaining({ description: 'Approved bio' }),
+        photo: expect.objectContaining({ buffer: Buffer.from('jpeg bytes'), originalname: 'photo.jpg' })
+      })
+    ]);
+    expect(edit).toEqual(expect.objectContaining({ status: 'approved', reviewedBy: 'auth0|admin', photoPath: null }));
+    expect(existsSync(join(appData, photoPath))).toBe(false);
+  });
+
+  it('changes nothing on the speaker when an admin rejects', async () => {
+    await service.sendLinks(['speaker-ana']);
+    await service.propose(tokenSent(), { description: 'Something offensive' });
+    edits[0].speaker = ana;
+
+    await service.reject(edits[0].guid as string, 'auth0|admin');
+
+    expect(applied).toHaveLength(0);
+    expect(edits[0].status).toBe('rejected');
+  });
+
+  it("answers a request for a link the same way for anyone, sending only to a speaker's own address, at most once in ten minutes", async () => {
+    await service.requestLink('stranger@example.com');
+    await service.requestLink('not an email');
+    expect(sent).toHaveLength(0);
+
+    await service.requestLink('ANA@example.edu ');
+    await service.requestLink('ana@example.edu');
+    expect(sent.map((m) => m.to)).toEqual(['ana@example.edu']);
+  });
+});
+
+describe('cleanFields', () => {
+  it('takes one web link, never javascript: or two at once', () => {
+    expect(cleanFields({ socialMedia: 'https://linkedin.com/in/ana' })).toEqual({
+      socialMedia: 'https://linkedin.com/in/ana'
+    });
+    expect(() => cleanFields({ socialMedia: 'javascript:alert(1)' })).toThrow(/http/);
+    expect(() => cleanFields({ socialMedia: 'https://a.com https://b.com' })).toThrow(/one web address/);
+  });
+
+  it('refuses a bio longer than the limit, and anything that is not text', () => {
+    expect(() => cleanFields({ description: 'x'.repeat(4001) })).toThrow(/most is 4000/);
+    expect(() => cleanFields({ description: { $gt: '' } as never })).toThrow(/must be text/);
+  });
+});
+
+describe('linkEmail', () => {
+  it('names the speaker, the site, the link and the day it stops working, in Central time', () => {
+    const text = linkEmail(
+      { firstName: 'Ana' },
+      'TxGIS Day',
+      'https://txgisday.org/presenters/edit/abc',
+      new Date('2026-11-21T15:00:00Z')
+    );
+
+    expect(text).toContain('Howdy Ana,');
+    expect(text).toContain('https://txgisday.org/presenters/edit/abc');
+    expect(text).toContain('Saturday, November 21');
+    expect(text).toContain('reviews each change before it appears');
+  });
+});

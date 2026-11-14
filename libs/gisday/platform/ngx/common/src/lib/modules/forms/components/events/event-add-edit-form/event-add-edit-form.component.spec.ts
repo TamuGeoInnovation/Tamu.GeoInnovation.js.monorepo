@@ -7,6 +7,7 @@ import {
   EventService,
   LocationService,
   SeasonService,
+  SpeakerEditsService,
   SpeakerService,
   TagService
 } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -31,7 +32,8 @@ describe('EventAddEditFormComponent', () => {
         { provide: LocationService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
         { provide: BroadcastService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
         { provide: EventService, useValue: { getEntity: () => of(event) } },
-        { provide: NotificationService, useValue: { toast: jest.fn() } }
+        { provide: NotificationService, useValue: { toast: jest.fn() } },
+        { provide: SpeakerEditsService, useValue: {} }
       ]
     });
     // The form's own setup is what is under test, not its template.

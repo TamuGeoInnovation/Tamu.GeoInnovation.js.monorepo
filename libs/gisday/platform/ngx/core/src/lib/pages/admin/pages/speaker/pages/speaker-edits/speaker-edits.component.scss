@@ -1,0 +1,43 @@
+@use 'libs/gisday/sass/variables' as vars;
+
+.edit {
+  margin-bottom: 1.5rem;
+}
+
+.edit-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 1rem;
+}
+
+.sent {
+  color: vars.$aggie-support-grey;
+}
+
+table {
+  width: 100%;
+  margin: 0.5rem 0 1rem;
+
+  td {
+    vertical-align: top;
+    overflow-wrap: anywhere;
+  }
+
+  td:first-child {
+    font-weight: 600;
+    white-space: nowrap;
+  }
+}
+
+// What the speaker changed, so the reviewer reads those first.
+tr.changed td:last-child {
+  background: lighten(vars.$aggie-accent-yellow, 40%);
+}
+
+.photo {
+  width: 7rem;
+  height: 7rem;
+  object-fit: cover;
+  border-radius: 50%;
+}

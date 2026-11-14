@@ -26,6 +26,8 @@ import {
   LocationService,
   SeasonService,
   SpeakerService,
+  SpeakerEditsService,
+  sendEditLinksToast,
   TagService,
   BroadcastService
 } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -74,6 +76,7 @@ export class EventAddEditFormComponent implements OnInit {
   private readonly eventBroadcastService = inject(BroadcastService);
   private readonly eventService = inject(EventService);
   private readonly ns = inject(NotificationService);
+  private readonly speakerEdits = inject(SpeakerEditsService);
 
   /**
    * What stops the event being saved, shown above the buttons after a save is tried (#1773).
@@ -302,6 +305,23 @@ export class EventAddEditFormComponent implements OnInit {
         });
       });
     }
+  }
+
+  /**
+   * Emails each of the event's saved speakers their own link to edit their profile (#2936): for the competition finalists'
+   * session, everyone on it at once. Speakers added on this page but not yet saved are included; the link is for their
+   * profile, not the event.
+   */
+  public emailSpeakersEditLinks() {
+    this.eventSpeakers$
+      .pipe(
+        take(1),
+        switchMap((speakers) => this.speakerEdits.send(speakers.map((s) => s.guid)))
+      )
+      .subscribe({
+        next: (result) => this.ns.toast(sendEditLinksToast(result)),
+        error: () => this.ns.toast({ id: 'speaker-edit-links', title: 'Edit links not sent', message: 'Please try again.' })
+      });
   }
 
   public patchSpeaker(speaker: Partial<Speaker>, operation?: 'add' | 'remove') {
