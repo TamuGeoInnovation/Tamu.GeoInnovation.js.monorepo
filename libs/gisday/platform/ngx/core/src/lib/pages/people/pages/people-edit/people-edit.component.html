@@ -51,10 +51,24 @@
             <p>You sent changes on {{ p.pending.sent | date: 'MMMM d, h:mm a' : '-0600' }} that are waiting for review. They are filled in below; sending again replaces them.</p>
           </div>
           }
+          <div class="form-collection column">
+            <tamu-gisc-select formControlName="university" [data]="universities$ | async" displayTemplate="name" valueTemplate="guid" [searchable]="true" placeholder="University"></tamu-gisc-select>
+          </div>
 
+          <div class="form-collection column">
+            <tamu-gisc-textbox formControlName="graduationYear" placeholder="Graduation year, for example 2018" type="text" [floatLabel]="true"></tamu-gisc-textbox>
+          </div>
+
+          <!-- A speaker with an organization shows it on the site instead of an affiliation, so it is shown here as it is, for the team to change (#2953). -->
+          @if (p.organization) {
+          <div class="form-collection column">
+            <p class="form-input-description">Organization: <strong>{{ p.organization }}</strong>. To change it, contact the GIS Day team.</p>
+          </div>
+          } @else {
           <div class="form-collection column">
             <tamu-gisc-textbox formControlName="affiliation" placeholder="Affiliation (company, agency or university)" type="text" [floatLabel]="true"></tamu-gisc-textbox>
           </div>
+          }
 
           <div class="form-collection column">
             <tamu-gisc-textbox formControlName="socialMedia" placeholder="Link (LinkedIn or a web page), starting with https://" type="text" [floatLabel]="true"></tamu-gisc-textbox>

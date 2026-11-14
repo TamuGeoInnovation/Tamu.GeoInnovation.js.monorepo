@@ -582,7 +582,13 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
    */
   public async applySelfEdit(
     guid: string,
-    fields: { description?: string | null; affiliation?: string | null; socialMedia?: string | null },
+    fields: {
+      description?: string | null;
+      affiliation?: string | null;
+      socialMedia?: string | null;
+      graduationYear?: string | null;
+      university?: { guid: string } | null;
+    },
     photo?: { buffer: Buffer; originalname: string; mimetype?: string; size?: number }
   ) {
     const existing = await this.speakerRepo.findOne({
@@ -597,10 +603,15 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
     const image = photo ? await this._saveImage(photo, guid) : undefined;
     const changes: Partial<Speaker> = {};
 
-    for (const key of ['description', 'affiliation', 'socialMedia'] as const) {
+    for (const key of ['description', 'affiliation', 'socialMedia', 'graduationYear'] as const) {
       if (fields[key] !== undefined && fields[key] !== null) {
         changes[key] = fields[key];
       }
+    }
+
+    // A university is a choice from the season's list, by guid (#2953).
+    if (fields.university?.guid) {
+      changes.university = { guid: fields.university.guid } as Speaker['university'];
     }
 
     return this.speakerRepo.save({ ...existing, ...changes, ...(image ? { images: [image] } : {}) });

@@ -12,6 +12,8 @@ import { siteHost } from './speaker-edit.controller';
  * token; it stops working; a speaker can change only the bio, affiliation, link and photo; nothing changes until an admin
  * approves; and the request form answers the same for anyone.
  */
+const TAMU = '0b6a8f2e-1c3d-4e5f-8a9b-0c1d2e3f4a5b';
+
 describe('SpeakerEditService', () => {
   const ana = {
     guid: 'speaker-ana',
@@ -98,6 +100,9 @@ describe('SpeakerEditService', () => {
       linkRepo as never,
       editRepo as never,
       speakerRepo as never,
+      {
+        findOne: jest.fn(async ({ where }) => (where.guid === TAMU ? { guid: TAMU, name: 'Texas A&M University' } : null))
+      } as never,
       {
         refuseUnsafePhoto: (file: { buffer: Buffer }) => {
           if (file.buffer.toString().startsWith('<svg'))
@@ -198,6 +203,30 @@ describe('SpeakerEditService', () => {
 
     expect(photoPath).toMatch(/^speaker-edits\//);
     expect(existsSync(join(appData, photoPath))).toBe(true);
+  });
+
+  // #2953. University and class year, which a presenter card shows, go through review like the rest.
+  it('takes a university from the list and a class year, and refuses a university not in it', async () => {
+    await service.sendLinks(['speaker-ana']);
+
+    await expect(service.propose(tokenSent(), { university: '11111111-2222-4333-8444-555555555555' })).rejects.toThrow(
+      /not in the list/
+    );
+    await expect(service.propose(tokenSent(), { university: 'Texas A&M' })).rejects.toThrow(/from the list/);
+
+    await service.propose(tokenSent(), { graduationYear: ' 2018 ', university: TAMU });
+
+    expect(edits[0]).toEqual(expect.objectContaining({ graduationYear: '2018', university: { guid: TAMU } }));
+  });
+
+  it('applies the university and class year on approval', async () => {
+    await service.sendLinks(['speaker-ana']);
+    await service.propose(tokenSent(), { graduationYear: '2018', university: TAMU });
+    edits[0].speaker = ana;
+
+    await service.approve(edits[0].guid as string, 'auth0|admin');
+
+    expect(applied[0].fields).toEqual(expect.objectContaining({ graduationYear: '2018', university: { guid: TAMU } }));
   });
 
   it('replaces an earlier pending proposal rather than piling them up', async () => {
