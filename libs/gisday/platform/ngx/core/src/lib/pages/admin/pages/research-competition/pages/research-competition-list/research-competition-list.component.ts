@@ -86,6 +86,11 @@ export class ResearchCompetitionListComponent extends BaseAdminListComponent<Sub
 
   private readonly reviewStatus = new SubmissionReviewStatusPipe();
 
+  /** Its two filters are kept with the search, so the list comes back from a review as it was left (#2942). */
+  protected override listFilters() {
+    return { ...super.listFilters(), classification: this.classification, type: this.type };
+  }
+
   public override ngOnInit(): void {
     super.ngOnInit();
 

@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
-import { of } from 'rxjs';
+import { ActivatedRoute, provideRouter } from '@angular/router';
+import { of, Subject } from 'rxjs';
 
 import { LocationService, PlaceService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
@@ -79,6 +79,42 @@ describe('EventLocationAddEditFormComponent', () => {
 
       expect(createEntity).not.toHaveBeenCalled();
       expect(toast).toHaveBeenCalledWith(expect.objectContaining({ id: 'event-location-check-in-zone-error' }));
+    });
+  });
+
+  /**
+   * #2942. Escape on an admin details page asks before leaving only when the form has changes. A venue opened and left
+   * as it was has none, although its controls write back the values the page gives them.
+   */
+  describe('as it opens', () => {
+    it('holds no changes once the venue it shows has arrived', () => {
+      const venue = new Subject<object>();
+
+      TestBed.configureTestingModule({
+        providers: [
+          provideRouter([]),
+          { provide: ActivatedRoute, useValue: { params: of({ guid: 'venue' }) } },
+          { provide: LocationService, useValue: { getEntity: () => venue } },
+          {
+            provide: PlaceService,
+            useValue: { getEntitiesForActiveSeason: () => of([{ guid: 'place', name: 'Texas A&M University' }]) }
+          },
+          { provide: SeasonService, useValue: { activeSeason$: of({ guid: 'season' }) } },
+          { provide: NotificationService, useValue: { toast: jest.fn() } }
+        ]
+      });
+
+      const fixture = TestBed.createComponent(EventLocationAddEditFormComponent);
+      fixture.componentRef.setInput('type', 'edit');
+      fixture.detectChanges();
+
+      // After the page has drawn, as an answer from the API arrives.
+      venue.next({ guid: 'venue', building: 'Rudder Tower', room: '301', place: { guid: 'place' } });
+      venue.complete();
+      fixture.detectChanges();
+
+      expect(fixture.componentInstance.form.getRawValue().place).toBe('place');
+      expect(fixture.componentInstance.form.dirty).toBe(false);
     });
   });
 });

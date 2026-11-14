@@ -281,6 +281,9 @@ export class EventAddEditFormComponent implements OnInit {
         // Remove the season form control since we are editing an existing event
         // Will otherwise move to the active season
         this.form.removeControl('season');
+
+        // Opening the page is not a change (#2942), though each control echoes the value it is given.
+        this.form.markAsPristine();
       });
 
       this.selectedEventDateStart$ = this.entity$.pipe(take(1), this._timeStringFromEvent$('startTime'), shareReplay());
@@ -303,6 +306,9 @@ export class EventAddEditFormComponent implements OnInit {
         this.form.patchValue({
           season: season.guid
         });
+
+        // Opening the page is not a change (#2942), though each control echoes the value it is given.
+        this.form.markAsPristine();
       });
     }
   }
@@ -345,12 +351,16 @@ export class EventAddEditFormComponent implements OnInit {
     this.form.patchValue({
       speakers: updatedSpeakers
     });
+
+    // Changed by a click rather than typed, and still a change not yet saved (#2942).
+    this.form.markAsDirty();
   }
 
   public setEventDate(day: Partial<SeasonDay>) {
     this.form.patchValue({
       day: day.guid
     });
+    this.form.markAsDirty();
   }
 
   public setEventTime(time: DateTimePickerChange<Date>, which: 'start' | 'end') {
@@ -374,6 +384,8 @@ export class EventAddEditFormComponent implements OnInit {
         endTime: timeString
       });
     }
+
+    this.form.markAsDirty();
   }
 
   public handleSubmission() {
