@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **8:29 AM Central, 14 November 2026**. A listener; job: testing.
+Last written **8:30 AM Central, 14 November 2026**. A listener; job: testing.
 
 ## Back (8:29 AM Central, Saturday 14 November 2026)
 
@@ -449,6 +449,7 @@ Nothing running. Listening.
    gateway, so an allowlist, or skipping permissions, is the only way to run unattended on that key.
 
 ## Told directly
+- **8:30 AM Central, 14 November: "start the gisday containers".** Done, after the reboot: `gisday-db` and `gisday-redis`, then `gisday-api`, then `gisday-dev`, with `docker start` (nothing recreated, no settings changed). The API logs "Nest application successfully started"; `/api/seasons` and `/api/season-days` answer 200, and the site on 4201 answers 200. `aggiemap-dev` is still stopped.
 
 - 23 October 2026, 9:28 AM Central: the TAMU AI allowance is used up. Back on the desktop app (Opus, the maintainer's
   account).
