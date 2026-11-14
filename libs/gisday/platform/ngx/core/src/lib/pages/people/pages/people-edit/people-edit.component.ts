@@ -3,10 +3,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { DatePipe } from '@angular/common';
+import { AsyncPipe, DatePipe } from '@angular/common';
 
-import { SpeakerEditPage, SpeakerEditsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { ButtonComponent, FileComponent, TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { SpeakerEditPage, SpeakerEditsService, UniversityService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { ButtonComponent, FileComponent, SelectComponent, TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
 
 /**
@@ -18,12 +18,25 @@ import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
   templateUrl: './people-edit.component.html',
   styleUrls: ['./people-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, RouterLink, DatePipe, ButtonComponent, FileComponent, TextboxComponent, MarkdownParsePipe]
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    AsyncPipe,
+    DatePipe,
+    ButtonComponent,
+    FileComponent,
+    SelectComponent,
+    TextboxComponent,
+    MarkdownParsePipe
+  ]
 })
 export class PeopleEditComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly edits = inject(SpeakerEditsService);
   private readonly destroyRef = inject(DestroyRef);
+
+  /** The season's universities, for a speaker to choose theirs from, as the admin speaker form does (#2953). */
+  public readonly universities$ = inject(UniversityService).getEntitiesForActiveSeason();
 
   public readonly token = signal<string | null>(null);
   /** The profile behind the link, or 'invalid' when the link does not work. */
@@ -46,7 +59,9 @@ export class PeopleEditComponent implements OnInit {
   public readonly form = new FormGroup({
     description: new FormControl('', { nonNullable: true }),
     affiliation: new FormControl('', { nonNullable: true }),
-    socialMedia: new FormControl('', { nonNullable: true })
+    socialMedia: new FormControl('', { nonNullable: true }),
+    graduationYear: new FormControl('', { nonNullable: true }),
+    university: new FormControl('', { nonNullable: true })
   });
 
   public readonly requestForm = new FormGroup({ email: new FormControl('', { nonNullable: true }) });
@@ -145,7 +160,9 @@ export class PeopleEditComponent implements OnInit {
           this.form.setValue({
             description: start.description ?? '',
             affiliation: start.affiliation ?? '',
-            socialMedia: start.socialMedia ?? ''
+            socialMedia: start.socialMedia ?? '',
+            graduationYear: start.graduationYear ?? '',
+            university: start.university?.guid ?? ''
           });
           this.page.set(page);
         },

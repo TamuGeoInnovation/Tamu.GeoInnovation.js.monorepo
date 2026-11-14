@@ -30,4 +30,11 @@ tamu-gisc-file.button {
   display: inline-flex;
   align-items: center;
   margin: 0;
+  // .button grows to fill its row; beside the photo it is its own size.
+  flex: 0 0 auto;
+}
+
+.profile-edit {
+  flex: 1 1 100%;
+  min-width: 0;
 }

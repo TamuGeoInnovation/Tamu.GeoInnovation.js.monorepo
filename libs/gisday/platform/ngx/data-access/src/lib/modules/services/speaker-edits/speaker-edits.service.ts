@@ -8,13 +8,21 @@ export interface SpeakerEditFields {
   description?: string | null;
   affiliation?: string | null;
   socialMedia?: string | null;
+  graduationYear?: string | null;
+  /** As the API shows it; a proposal sends the guid alone (#2953). */
+  university?: { guid: string; name: string | null } | null;
 }
+
+/** What a speaker sends: the university by guid. */
+export type SpeakerEditProposal = Omit<SpeakerEditFields, 'university'> & { university?: string | null };
 
 /** What a speaker's edit link opens: their profile as it is, and anything they already proposed. */
 export interface SpeakerEditPage {
   firstName: string;
   lastName: string;
   current: SpeakerEditFields;
+  /** The organization the public page shows instead of the affiliation, when the speaker has one. */
+  organization: string | null;
   photo: string | null;
   pending: (SpeakerEditFields & { photo: boolean; sent: string }) | null;
   expires: string;
@@ -49,7 +57,7 @@ export function sendEditLinksToast(result: SendEditLinksResult): { id: string; t
 
   return {
     id: 'speaker-edit-links',
-    title: result.skipped.length ? 'Some edit links were not sent' : 'Edit links sent',
+    title: result.skipped.length ? 'Some profile emails were not sent' : 'Profile emails sent',
     message: [result.sent.length ? sent : 'None were sent.', skipped ? `Not sent - ${skipped}.` : '']
       .filter(Boolean)
       .join(' ')
@@ -81,7 +89,7 @@ export class SpeakerEditsService {
     return this.http.get<SpeakerEditPage>(`${this.resource}/link/${encodeURIComponent(token)}`);
   }
 
-  public propose(token: string, fields: SpeakerEditFields, photo?: File | null) {
+  public propose(token: string, fields: SpeakerEditProposal, photo?: File | null) {
     const body = new FormData();
 
     for (const [key, value] of Object.entries(fields)) {
