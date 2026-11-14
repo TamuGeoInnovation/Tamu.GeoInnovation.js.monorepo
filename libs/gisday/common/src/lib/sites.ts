@@ -206,6 +206,37 @@ export function siteSessionPlaces(site: GisdaySite, places: Array<{ guid?: strin
 }
 
 /**
+ * Whether a site lists a session, by its location's place (#2986): every session on a site that lists every
+ * organization's; on gisday.tamu.edu, Texas A&M's, and any with no place yet, so an admin can still find and place it.
+ */
+export function siteListsSession(site: GisdaySite, session: { location?: { place?: { guid?: string; name?: string } | null } | null }): boolean {
+  const place = session?.location?.place;
+
+  if (!site.sessionsFrom || !place?.guid) {
+    return true;
+  }
+
+  return (siteSessionPlaces(site, [place]) ?? []).includes(place.guid);
+}
+
+/**
+ * The places a site shows in one spot (#2986): those marked for it (`header`, `footer`, `org-page`,
+ * `sessions-filter`), and on a site that lists only some organizations' sessions, only those. gisday.tamu.edu shares
+ * txgisday.org's database, so without the second test it showed every organization, Texas State's among them.
+ */
+export function placesShownOn<T extends { guid?: string; name?: string; visibilitySettings?: Array<string> }>(
+  site: GisdaySite,
+  places: Array<T> | null | undefined,
+  spot: string
+): Array<T> {
+  const only = siteSessionPlaces(site, places ?? []);
+
+  return (places ?? []).filter(
+    (place) => !!place?.visibilitySettings?.includes(spot) && (only === null || only.includes(place.guid as string))
+  );
+}
+
+/**
  * The tags at the top of a site's page that link previews and search engines read (#2649). They never run the app,
  * so the page each site serves has to carry its own name, description and image from the start; the app only changes
  * them once it runs in a browser.
