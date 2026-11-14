@@ -39,6 +39,7 @@ import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { SelectListComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { PresenterCardComponent } from '../../../../people/components/presenter-card/presenter-card.component';
 import { eventFormProblems } from '../../../../../utils/event-form-problems';
+import { sortSpeakersByName } from '../../../../../utils/speakers';
 import { CheckboxGroupComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
@@ -234,9 +235,8 @@ export class EventAddEditFormComponent implements OnInit {
     const formSpeakerChanges = (this.eventSpeakers$ = this.form.get('speakers').valueChanges.pipe(
       withLatestFrom(this.speakers$),
       map(([speakerGuids, speakers]) => {
-        return speakerGuids.map((guid) => {
-          return speakers.find((speaker) => speaker.guid === guid);
-        });
+        // By last name, as they are added and removed (#2940).
+        return sortSpeakersByName(speakerGuids.map((guid) => speakers.find((speaker) => speaker.guid === guid)));
       })
     ));
 
@@ -257,9 +257,8 @@ export class EventAddEditFormComponent implements OnInit {
       this.eventSpeakers$ = merge(
         formSpeakerChanges,
         this.entity$.pipe(
-          map((event) => {
-            return event.speakers;
-          })
+          // By last name, as the API returns them in the order they were added (#2940).
+          map((event) => sortSpeakersByName(event.speakers))
         )
       ).pipe(shareReplay(1));
 
