@@ -11,9 +11,9 @@ import {
   sendEditLinksToast
 } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
-import { AlertModalComponent } from '@tamu-gisc/ui-kits/ngx/layout/modal/alert-modal';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
+import { ReviewEmailModalComponent } from '../../components/review-email-modal/review-email-modal.component';
 import { ResearchCompetitionListComponent, withData } from './research-competition-list.component';
 
 /** #2817: a filter offers All and only the choices the season's submissions have. */
@@ -123,8 +123,13 @@ describe('ResearchCompetitionListComponent actions on the selected submissions',
     { guid: 's3', title: 'Not chosen', submissionType: 'poster', classificationType: 'graduate', participants: [] }
   ];
 
+  // The email text the reviewer approved in the window, by kind (#2981).
+  const templates = { poster: 'Howdy {first name}, edited poster text', presentation: 'Edited presentation text' };
+  const preview = { groups: [] };
+
   function open(confirmed: boolean) {
     const service = {
+      previewReview: jest.fn(() => of(preview)),
       getEntitiesForActiveSeason: () => of(rows),
       getEntitiesForSeason: () => of(rows),
       getEntities: () => of(rows),
@@ -135,7 +140,12 @@ describe('ResearchCompetitionListComponent actions on the selected submissions',
         of({ sent: ['Ana Ruiz', 'Cy Diaz'], skipped: [], unmatched: [{ name: 'Ben Lee', submission: 'Flood maps' }] })
       )
     };
-    const modals = { open: jest.fn(() => of(confirmed)) };
+    // The email window closes with the approved texts, or nothing; the profile email's question with yes or no.
+    const modals = {
+      open: jest.fn((component: unknown) =>
+        component === ReviewEmailModalComponent ? of(confirmed ? templates : null) : of(confirmed)
+      )
+    };
     const toasts = { toast: jest.fn() };
 
     TestBed.configureTestingModule({
@@ -179,37 +189,33 @@ describe('ResearchCompetitionListComponent actions on the selected submissions',
     }
   });
 
-  it('asks before approving, saying how many will be emailed, then approves the selection in one request', () => {
+  it('shows the email first, editable, then approves the selection in one request with the text approved (#2981)', () => {
     const { service, modals, toasts, click } = open(true);
 
     click('Approve');
 
     expect(modals.open).toHaveBeenCalledWith(
-      AlertModalComponent,
-      expect.objectContaining({
-        data: expect.objectContaining({
-          message: expect.stringContaining('Approve 2 submissions and email their submitters?'),
-          primaryText: 'Approve and email',
-          secondaryText: 'Cancel'
-        })
-      })
+      ReviewEmailModalComponent,
+      expect.objectContaining({ data: expect.objectContaining({ acceptance: true }) })
     );
-    // One of them was already reviewed; its submitter will hear again.
-    expect(modals.open.mock.calls[0][1].data.message).toContain('1 of them has already been reviewed');
+    // The window loads the email the selection would get, for these submissions and this decision.
+    expect(service.previewReview).toHaveBeenCalledWith(['s1', 's2'], true);
+    // One of them was already reviewed; its submitter will hear again, and the window says so.
+    expect(modals.open.mock.calls[0][1].data.note).toContain('1 of them has already been reviewed');
     expect(service.review).toHaveBeenCalledTimes(1);
-    expect(service.review).toHaveBeenCalledWith(['s1', 's2'], true);
+    expect(service.review).toHaveBeenCalledWith(['s1', 's2'], true, undefined, templates);
     expect(toasts.toast).toHaveBeenCalledWith(
       reviewSubmissionsToast({ reviewed: ['Flood maps', 'Campus trees'], failed: [] }, true)
     );
   });
 
-  it('asks before rejecting, then rejects the selection', () => {
-    const { service, modals, click } = open(true);
+  it('shows the rejection email first, then rejects the selection with the text approved', () => {
+    const { service, click } = open(true);
 
     click('Reject');
 
-    expect(modals.open.mock.calls[0][1].data.message).toContain('Reject 2 submissions and email their submitters?');
-    expect(service.review).toHaveBeenCalledWith(['s1', 's2'], false);
+    expect(service.previewReview).toHaveBeenCalledWith(['s1', 's2'], false);
+    expect(service.review).toHaveBeenCalledWith(['s1', 's2'], false, undefined, templates);
   });
 
   it('asks before sending profile emails, counting the people once each, and lists anyone with no speaker record', () => {

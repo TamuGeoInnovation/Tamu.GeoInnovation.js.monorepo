@@ -1,8 +1,7 @@
 <div class="review-email">
   <h2 class="review-email__title">{{ verb }}: the email that will be sent</h2>
 
-  @if (preview(); as preview) {
-  @if (note) {
+  @if (preview(); as preview) { @if (note) {
   <p>{{ note }}</p>
   }
   <p>Nothing is sent until you choose Send. Each person gets their own copy, with these filled in: {{ placeholders }}.</p>

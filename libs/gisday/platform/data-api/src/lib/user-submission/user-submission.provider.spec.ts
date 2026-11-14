@@ -3,6 +3,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { Repository } from 'typeorm';
+import { fillReviewEmail } from '@tamu-gisc/gisday/common';
 
 import { ContactService } from '../contact/contact.service';
 import { Submission, SubmissionType } from '../entities/all.entity';
@@ -306,7 +307,9 @@ describe('UserSubmissionProvider', () => {
       expect(email.text).toContain(
         'Your poster, "Mapping Floods", has been accepted as a finalist in the Texas A&M GIS Day poster competition.'
       );
-      expect(email.text).toContain('1. Upload your final poster by the deadline shown on your submission. Sign in at https://gisday.tamu.edu/account/submissions');
+      expect(email.text).toContain(
+        '1. Upload your final poster by the deadline shown on your submission. Sign in at https://gisday.tamu.edu/account/submissions'
+      );
       expect(email.text).toContain('under Presentation files');
       expect(email.text).toContain('5. Complete your presenter profile.');
       expect(email.text).toContain('https://gisday.tamu.edu/sessions');
@@ -540,6 +543,77 @@ describe('UserSubmissionProvider', () => {
       await provider.reviewUserSubmissions([A, A], 'acct-reviewer', { acceptance: true }, REVIEWER_PERMS);
 
       expect(submissionRepo.update).toHaveBeenCalledTimes(1);
+    });
+
+    describe('the email the reviewer sees and edits first (#2981)', () => {
+      it('previews one group per kind of email, records nothing and sends nothing', async () => {
+        const preview = await provider.previewReview([A, B], { acceptance: true }, REVIEWER_PERMS, 'gisday.tamu.edu');
+
+        expect(preview.groups.map((g) => [g.kind, g.label, g.count])).toEqual([
+          ['poster', 'Accepted posters', 1],
+          ['presentation', 'Accepted presentations', 1]
+        ]);
+        expect(preview.groups[0].subject).toBe('Your Texas A&M GIS Day submission has been accepted');
+        expect(preview.groups[0].template).toContain('Howdy {first name},');
+        expect(preview.groups[0].example).toEqual(
+          expect.objectContaining({ title: 'Flood maps', to: 'ana@tamu.edu', cc: 'ben@tamu.edu' })
+        );
+        expect(submissionRepo.update).not.toHaveBeenCalled();
+        expect(contactService.sendMessage).not.toHaveBeenCalled();
+      });
+
+      it('previews exactly the email that is then sent when the text is left as it is', async () => {
+        const preview = await provider.previewReview([A], { acceptance: true }, REVIEWER_PERMS, 'gisday.tamu.edu');
+        const [group] = preview.groups;
+
+        await provider.reviewUserSubmissions(
+          [A],
+          'acct-reviewer',
+          { acceptance: true, templates: { poster: group.template } },
+          REVIEWER_PERMS,
+          'gisday.tamu.edu'
+        );
+
+        expect(sends()[0][0].text).toBe(fillReviewEmail(group.template, group.example.values));
+      });
+
+      it("sends the text as edited, filled in for each submission's own people and title", async () => {
+        await provider.reviewUserSubmissions(
+          [A, B],
+          'acct-reviewer',
+          {
+            acceptance: true,
+            templates: { poster: 'Howdy {first name}: "{title}" is in. Edited.', presentation: 'Talk: {title}' }
+          },
+          REVIEWER_PERMS,
+          'gisday.tamu.edu'
+        );
+
+        expect(sends().map(([email]) => email.text)).toEqual([
+          'Howdy Ana: "Flood maps" is in. Edited.',
+          'Talk: Campus trees'
+        ]);
+      });
+
+      it('previews a rejection as one group, whatever the kinds', async () => {
+        const preview = await provider.previewReview([A, B], { acceptance: false }, REVIEWER_PERMS, 'gisday.tamu.edu');
+
+        expect(preview.groups.map((g) => [g.kind, g.count])).toEqual([['rejection', 2]]);
+      });
+
+      it('refuses a preview to anyone without update:competitions', async () => {
+        await expect(provider.previewReview([A], { acceptance: true }, [])).rejects.toThrow(ForbiddenException);
+      });
+
+      it('refuses email text that is empty or not text, and records nothing', async () => {
+        for (const templates of [{ poster: '   ' }, { poster: 42 }, 'text']) {
+          await expect(
+            provider.reviewUserSubmissions([A], 'r', { acceptance: true, templates } as never, REVIEWER_PERMS)
+          ).rejects.toThrow(BadRequestException);
+        }
+
+        expect(submissionRepo.update).not.toHaveBeenCalled();
+      });
     });
   });
 
