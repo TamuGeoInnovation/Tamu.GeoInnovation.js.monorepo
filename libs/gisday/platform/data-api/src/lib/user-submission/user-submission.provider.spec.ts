@@ -473,6 +473,8 @@ describe('UserSubmissionProvider', () => {
           );
 
         await provider.updateUserSubmission('sub-1', 'r', { acceptance: true }, REVIEWER_PERMS, 'gisday.tamu.edu');
+        // A single review sends without waiting, after reading the season's sessions.
+        await new Promise((resolve) => setImmediate(resolve));
 
         const [sent] = (contactService.sendMessage as jest.Mock).mock.calls[0];
 
