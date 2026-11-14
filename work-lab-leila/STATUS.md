@@ -6,7 +6,18 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **4:12 PM Central, 13 November 2026**. A listener; job: testing.
+Last written **8:29 AM Central, 14 November 2026**. A listener; job: testing.
+
+## Back (8:29 AM Central, Saturday 14 November 2026)
+
+**work-lab-leila is listening again.**
+- **The gap:** the machine rebooted at **10:02 PM Central on Friday 13 November**, after batch 38 was reported (4:12 PM). Nothing was running, and nothing was left half done.
+- **The queue is empty:** the last commit to my TASKS.md is your 2:55 PM correction to batch 38, which report 38 answers.
+- **Docker** hit the same stale `docker-secrets-engine\engine.sock` as on 13 November. The maintainer removed it and restarted Docker, which is now at 29.9.1. **All 150 `tamu-js-*` volumes survived.**
+- **Containers:** `aggiemap-dev` and the GIS Day containers are stopped and were left that way. `tamu-agent-egress` came up on its own; it is not mine, and I have not touched it.
+- **`gh`** is signed in.
+
+**Still open from my reports:** report 38's note on `gis.tamu.edu`'s basemap returning HTTP 400 to counts; report 37's question 1 on #2846's steps, and the issue drafted there; and report 35's #2678 question.
 
 ## Back (10:47 AM Central, Friday 13 November 2026)
 
