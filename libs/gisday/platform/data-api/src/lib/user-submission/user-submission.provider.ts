@@ -2,14 +2,15 @@ import { HttpException, Injectable, InternalServerErrorException, Logger, NotFou
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { isOwnerOrPermitted, ManagementService } from '@tamu-gisc/common/nest/auth';
+import { isOwnerOrPermitted } from '@tamu-gisc/common/nest/auth';
 
 import { SubmissionType, Submission, Season, PRESENTATION_SUBMISSION_TYPE } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
 import { SeasonService } from '../season/season.service';
 import { ContactService } from '../contact/contact.service';
 import { PosterDto } from './dto/poster.dto';
-import { SubmissionSubmitter, SubmissionWithSubmitter, submitterOf } from './dto/submission-submitter.dto';
+import { SubmissionWithSubmitter, submitterOf } from './dto/submission-submitter.dto';
+import { DashboardProfilesService } from '../dashboards/dashboard-profiles.service';
 
 @Injectable()
 export class UserSubmissionProvider extends BaseProvider<Submission> {
@@ -18,7 +19,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     @InjectRepository(SubmissionType) public submissionTypeRepo: Repository<SubmissionType>,
     private readonly seasonService: SeasonService,
     private readonly contactService: ContactService,
-    private readonly ms: ManagementService
+    private readonly profiles: DashboardProfilesService
   ) {
     super(userSubmissionRepo);
   }
@@ -57,22 +58,19 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
   }
 
   /**
-   * Adds each submission's submitter from their Auth0 profile. One account at a time, as the class roster reads them,
-   * and once per account however many it submitted. An account that cannot be read (deleted, or Auth0 management is
-   * not configured, as locally) leaves `submitter` null rather than failing the list.
+   * Adds each submission's submitter from their Auth0 profile, read for every account at once and kept for a few
+   * minutes, as the dashboards read them (#2925): a request per account, in turn, was most of the page's load time. An
+   * account that cannot be read (deleted, or Auth0 management is not configured, as locally) leaves `submitter` null
+   * rather than failing the list.
    */
   private async withSubmitters(submissions: Array<Submission>): Promise<Array<SubmissionWithSubmitter>> {
-    const submitters = new Map<string, SubmissionSubmitter | null>();
+    const profiles = await this.profiles.profilesOf([...new Set(submissions.map((s) => s.accountGuid).filter(Boolean))]);
 
-    for (const accountGuid of new Set(submissions.map((s) => s.accountGuid).filter(Boolean))) {
-      try {
-        submitters.set(accountGuid, submitterOf(await this.ms.getUserMetadata(accountGuid, undefined, true)));
-      } catch {
-        submitters.set(accountGuid, null);
-      }
-    }
+    return submissions.map((s) => {
+      const profile = profiles.get(s.accountGuid);
 
-    return submissions.map((s) => Object.assign(s, { submitter: submitters.get(s.accountGuid) ?? null }));
+      return Object.assign(s, { submitter: profile ? submitterOf(profile) : null });
+    });
   }
 
   public async getSubmissionsForActiveSeason() {
