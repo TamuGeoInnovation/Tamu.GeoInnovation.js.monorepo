@@ -97,9 +97,9 @@ What to do next:
 
 2. Be there at your session's time. See {site address}/sessions for your session's place and time.
 
-3. Keep to your time. You have 15 minutes in all: about 12 minutes to present and 3 for questions. You will be cut off when your time is up.
+3. Keep to your time. You have 5 minutes in all, questions included: about 4 minutes to present and 1 for questions. You will be cut off when your time is up.
 
-4. Plan on one slide per minute. About 12 slides fits your time.
+4. Plan on one slide per minute. About 4 slides fits your time.
 
 5. Complete your presenter profile. A separate email will bring you a personal link to add your bio, photo, university and class year to the program.
 

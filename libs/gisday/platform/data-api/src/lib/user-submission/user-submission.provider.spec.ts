@@ -387,7 +387,7 @@ describe('UserSubmissionProvider', () => {
       });
 
       it('gives the minutes, presentation plus questions, and says they will be cut off', () => {
-        expect(email()).toContain('15 minutes in all: about 12 minutes to present and 3 for questions');
+        expect(email()).toContain('5 minutes in all, questions included: about 4 minutes to present and 1 for questions');
         expect(email()).toContain('You will be cut off when your time is up.');
       });
 
