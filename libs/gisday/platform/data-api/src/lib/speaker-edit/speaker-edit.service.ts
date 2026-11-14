@@ -225,9 +225,9 @@ export class SpeakerEditService {
 
   public async approve(editGuid: string, adminGuid: string) {
     const edit = await this.pendingEdit(editGuid);
-    const photo = edit.photoPath
-      ? { buffer: await readFile(join(appData(), edit.photoPath)), originalname: `${edit.speaker.guid}-photo.jpg` }
-      : undefined;
+    const buffer = edit.photoPath ? await readFile(join(appData(), edit.photoPath)) : null;
+    // The speaker provider prefixes the speaker's guid; the name here only carries the type, which the photo's own bytes say.
+    const photo = buffer ? { buffer, originalname: isPng(buffer) ? 'photo.png' : 'photo.jpg' } : undefined;
 
     await this.speakerProvider.applySelfEdit(
       edit.speaker.guid,
@@ -368,6 +368,11 @@ function fullName(s: Pick<Speaker, 'firstName' | 'lastName'>): string {
 
 function looksLikeEmail(value: unknown): value is string {
   return typeof value === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+}
+
+/** A PNG starts with these eight bytes; anything else accepted is stored as a JPEG. */
+function isPng(buffer: Buffer): boolean {
+  return buffer.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]));
 }
 
 function appData(): string {

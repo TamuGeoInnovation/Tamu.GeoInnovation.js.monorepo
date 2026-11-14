@@ -202,7 +202,7 @@ describe('SpeakerEditService', () => {
       expect.objectContaining({
         guid: 'speaker-ana',
         fields: expect.objectContaining({ description: 'Approved bio' }),
-        photo: expect.objectContaining({ buffer: Buffer.from('jpeg bytes') })
+        photo: expect.objectContaining({ buffer: Buffer.from('jpeg bytes'), originalname: 'photo.jpg' })
       })
     ]);
     expect(edit).toEqual(expect.objectContaining({ status: 'approved', reviewedBy: 'auth0|admin', photoPath: null }));
