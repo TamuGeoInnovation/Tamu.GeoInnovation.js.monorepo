@@ -8,7 +8,9 @@ import { In, MoreThan, Repository } from 'typeorm';
 
 import { gisdaySite } from '@tamu-gisc/gisday/common';
 
-import { Speaker, SpeakerEdit, SpeakerEditLink } from '../entities/all.entity';
+import { senderAs } from '../_base/site-of-request';
+
+import { Speaker, SpeakerEdit, SpeakerEditLink, University } from '../entities/all.entity';
 import { SpeakerProvider } from '../speaker/speaker.provider';
 import { ContactService } from '../contact/contact.service';
 import { SeasonService } from '../season/season.service';
@@ -17,7 +19,12 @@ import { SeasonService } from '../season/season.service';
 export const SPEAKER_EDIT_LINK_DAYS = 7;
 
 /** The most a speaker may send in one field. A bio is a few paragraphs; this stops a page of junk. */
-export const SPEAKER_EDIT_LIMITS = Object.freeze({ description: 4000, affiliation: 200, socialMedia: 255 });
+export const SPEAKER_EDIT_LIMITS = Object.freeze({
+  description: 4000,
+  affiliation: 200,
+  socialMedia: 255,
+  graduationYear: 50
+});
 
 /** A speaker asking for their own link gets at most one in this many minutes, so the form cannot be used to flood an inbox. */
 const REQUEST_COOLDOWN_MINUTES = 10;
@@ -26,6 +33,9 @@ export interface SpeakerEditFields {
   description?: string;
   affiliation?: string;
   socialMedia?: string;
+  graduationYear?: string;
+  /** A university's guid, from the season's list (#2953). */
+  university?: string;
 }
 
 export interface SendResult {
@@ -48,6 +58,7 @@ export class SpeakerEditService {
     @InjectRepository(SpeakerEditLink) private readonly links: Repository<SpeakerEditLink>,
     @InjectRepository(SpeakerEdit) private readonly edits: Repository<SpeakerEdit>,
     @InjectRepository(Speaker) private readonly speakers: Repository<Speaker>,
+    @InjectRepository(University) private readonly universities: Repository<University>,
     private readonly speakerProvider: SpeakerProvider,
     private readonly contact: ContactService,
     private readonly seasons: SeasonService
@@ -120,19 +131,24 @@ export class SpeakerEditService {
   /** What the edit page shows: the speaker's profile as it is, and what they have already proposed. */
   public async forLink(token: string) {
     const link = await this.linkFor(token);
-    const speaker = await this.speakers.findOne({ where: { guid: link.speaker.guid }, relations: { images: true } });
-    const pending = await this.edits.findOne({ where: { speaker: { guid: speaker.guid }, status: 'pending' } });
+    const speaker = await this.speakers.findOne({
+      where: { guid: link.speaker.guid },
+      relations: { images: true, university: true, organization: true }
+    });
+    const pending = await this.edits.findOne({
+      where: { speaker: { guid: speaker.guid }, status: 'pending' },
+      relations: { university: true }
+    });
 
     return {
       firstName: speaker.firstName,
       lastName: speaker.lastName,
-      current: { description: speaker.description, affiliation: speaker.affiliation, socialMedia: speaker.socialMedia },
+      current: profileOf(speaker),
+      organization: speaker.organization?.name ?? null,
       photo: speaker.images?.[0]?.path ?? null,
       pending: pending
         ? {
-            description: pending.description,
-            affiliation: pending.affiliation,
-            socialMedia: pending.socialMedia,
+            ...profileOf(pending),
             photo: Boolean(pending.photoPath),
             sent: pending.created
           }
@@ -152,9 +168,17 @@ export class SpeakerEditService {
     }
 
     const previous = await this.edits.find({ where: { speaker: { guid: link.speaker.guid }, status: 'pending' } });
+    const { university, ...text } = clean;
+    const chosen = university ? await this.universities.findOne({ where: { guid: university } }) : null;
+
+    if (university && !chosen) {
+      throw new BadRequestException('That university is not in the list.');
+    }
+
     const edit = this.edits.create({
       speaker: { guid: link.speaker.guid } as Speaker,
-      ...clean,
+      ...text,
+      university: chosen ? ({ guid: chosen.guid } as University) : null,
       status: 'pending',
       photoPath: null
     });
@@ -193,7 +217,7 @@ export class SpeakerEditService {
   public async pending() {
     const edits = await this.edits.find({
       where: { status: 'pending' },
-      relations: { speaker: { images: true } },
+      relations: { speaker: { images: true, university: true }, university: true },
       order: { created: 'ASC' }
     });
 
@@ -201,12 +225,8 @@ export class SpeakerEditService {
       guid: e.guid,
       sent: e.created,
       speaker: { guid: e.speaker.guid, firstName: e.speaker.firstName, lastName: e.speaker.lastName },
-      current: {
-        description: e.speaker.description,
-        affiliation: e.speaker.affiliation,
-        socialMedia: e.speaker.socialMedia
-      },
-      proposed: { description: e.description, affiliation: e.affiliation, socialMedia: e.socialMedia },
+      current: profileOf(e.speaker),
+      proposed: profileOf(e),
       photo: Boolean(e.photoPath),
       currentPhoto: e.speaker.images?.[0]?.path ?? null
     }));
@@ -231,7 +251,13 @@ export class SpeakerEditService {
 
     await this.speakerProvider.applySelfEdit(
       edit.speaker.guid,
-      { description: edit.description, affiliation: edit.affiliation, socialMedia: edit.socialMedia },
+      {
+        description: edit.description,
+        affiliation: edit.affiliation,
+        socialMedia: edit.socialMedia,
+        graduationYear: edit.graduationYear,
+        university: edit.university ?? null
+      },
       photo
     );
 
@@ -255,7 +281,10 @@ export class SpeakerEditService {
   }
 
   private async pendingEdit(guid: string): Promise<SpeakerEdit> {
-    const edit = await this.edits.findOne({ where: { guid, status: 'pending' }, relations: { speaker: true } });
+    const edit = await this.edits.findOne({
+      where: { guid, status: 'pending' },
+      relations: { speaker: true, university: true }
+    });
 
     if (!edit) {
       throw new NotFoundException('That edit is not waiting for review.');
@@ -296,7 +325,7 @@ export class SpeakerEditService {
     await this.contact.sendMessage(
       {
         to: speaker.email.trim(),
-        from: process.env.MAILROOM_FROM,
+        from: senderAs(site.name, process.env.MAILROOM_FROM),
         replyTo: process.env.MAILROOM_TO,
         subject: `Update your ${site.name} presenter profile`,
         text: linkEmail(speaker, site.name, url, expires)
@@ -317,7 +346,7 @@ export function linkEmail(speaker: Pick<Speaker, 'firstName'>, siteName: string,
 
   return `Howdy${speaker.firstName ? ` ${speaker.firstName.trim()}` : ''},
 
-You can update your presenter profile on ${siteName} - your bio, photo, affiliation and link - here:
+You can update your presenter profile on ${siteName} - your bio, photo, university, class year, affiliation and link - here:
 
 ${url}
 
@@ -325,6 +354,9 @@ This link is yours alone and works until ${until}. The ${siteName} team reviews 
 
 If you did not expect this email, you can ignore it.`;
 }
+
+// Where it lived first; kept so its importers need not change.
+export { senderAs };
 
 export function hashOf(token: string): string {
   return createHash('sha256').update(token).digest('hex');
@@ -334,7 +366,7 @@ export function hashOf(token: string): string {
 export function cleanFields(fields: SpeakerEditFields = {}): SpeakerEditFields {
   const clean: SpeakerEditFields = {};
 
-  for (const key of ['description', 'affiliation', 'socialMedia'] as const) {
+  for (const key of ['description', 'affiliation', 'socialMedia', 'graduationYear'] as const) {
     const value = fields?.[key];
 
     if (value === undefined || value === null) {
@@ -354,12 +386,36 @@ export function cleanFields(fields: SpeakerEditFields = {}): SpeakerEditFields {
     clean[key] = trimmed;
   }
 
+  // A university is one of the season's, by guid; the service checks it exists (#2953).
+  if (fields?.university !== undefined && fields.university !== null && fields.university !== '') {
+    if (typeof fields.university !== 'string' || !/^[0-9a-f-]{36}$/i.test(fields.university)) {
+      throw new BadRequestException('Choose a university from the list.');
+    }
+
+    clean.university = fields.university;
+  }
+
   // One link, as the admin form's "Social Media Link" holds, and only a web address: never javascript: or the like.
   if (clean.socialMedia && !/^https?:\/\/[^\s<>"']+$/i.test(clean.socialMedia)) {
     throw new BadRequestException('The link must be one web address starting with http:// or https://.');
   }
 
   return clean;
+}
+
+/** The fields a speaker can change, as the edit page and the review show them, from a speaker or a proposed edit. */
+function profileOf(
+  p: Pick<Speaker, 'description' | 'affiliation' | 'socialMedia' | 'graduationYear'> & {
+    university?: { guid: string; name?: string } | null;
+  }
+) {
+  return {
+    description: p.description ?? null,
+    affiliation: p.affiliation ?? null,
+    socialMedia: p.socialMedia ?? null,
+    graduationYear: p.graduationYear ?? null,
+    university: p.university ? { guid: p.university.guid, name: p.university.name ?? null } : null
+  };
 }
 
 function fullName(s: Pick<Speaker, 'firstName' | 'lastName'>): string {

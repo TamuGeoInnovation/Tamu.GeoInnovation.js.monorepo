@@ -51,8 +51,8 @@
               <td><div class="markdown-content" [innerHTML]="edit.current.description | markdownParse"></div></td>
               <td><div class="markdown-content" [innerHTML]="edit.proposed.description | markdownParse"></div></td>
               } @else {
-              <td>{{ edit.current[field.key] }}</td>
-              <td>{{ edit.proposed[field.key] }}</td>
+              <td>{{ text(edit.current, field.key) }}</td>
+              <td>{{ text(edit.proposed, field.key) }}</td>
               }
             </tr>
             }

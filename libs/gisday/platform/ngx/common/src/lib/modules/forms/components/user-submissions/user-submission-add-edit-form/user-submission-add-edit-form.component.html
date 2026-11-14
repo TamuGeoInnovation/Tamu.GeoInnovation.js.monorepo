@@ -14,6 +14,15 @@
         <tamu-gisc-radio-group formControlName="submissionType" [options]="submissionTypeOptions" displayPath="label" valuePath="type"></tamu-gisc-radio-group>
       </div>
 
+      <!-- When the chosen competition closes, or that it has (#2934). The API refuses a submission or edit after it. -->
+      @if (submissionsNotice(); as notice) { @if (notice.closed) {
+      <div class="info-block warning" role="status">
+        <p>{{ notice.text }} {{ type() === 'create' ? 'New submissions are no longer accepted.' : 'This submission can no longer be changed.' }}</p>
+      </div>
+      } @else {
+      <p class="form-input-description">{{ notice.text }}</p>
+      } }
+
       <div class="form-collection column">
         <p class="form-input-description">Select student classification.</p>
         <tamu-gisc-slide-toggle formControlName="classificationType" [options]="presentationStudentTypeOptions" [displayPath]="'label'" [valuePath]="'type'"></tamu-gisc-slide-toggle>
@@ -70,7 +79,13 @@
     <div class="form-section-body">
       <div class="info-block notice">
         <p class="form-input-description">Attach the file you will present from, so the TxGIS Day team has it on the day: your slides for a presentation, or your poster as a PDF.</p>
-        <tamu-gisc-submission-files [submissionGuid]="submission.guid" [editable]="true"></tamu-gisc-submission-files>
+        <!-- Files close at their own, later deadline (#2934). -->
+        @if (filesNotice(); as notice) { @if (notice.closed) {
+        <p class="form-input-description"><strong>{{ notice.text }}</strong></p>
+        } @else {
+        <p class="form-input-description">{{ notice.text }}</p>
+        } }
+        <tamu-gisc-submission-files [submissionGuid]="submission.guid" [editable]="!filesNotice()?.closed"></tamu-gisc-submission-files>
       </div>
     </div>
   </div>
@@ -80,12 +95,13 @@
       <div class="form-collection row">
         @if (type() === 'edit') {
         <tamu-gisc-button type="button" look="danger" value="Withdraw Submission" (click)="deleteEntity()"></tamu-gisc-button>
-        }
+        } @if (!submissionsNotice()?.closed) {
         <tamu-gisc-button type="submit" [value]="type() === 'create' ? 'Submit' : 'Update'"></tamu-gisc-button>
+        }
       </div>
     </div>
   </div>
-  } } @else {
+  } } @else { @if (!submissionsNotice()?.closed) {
   <div class="form-section">
     <div class="form-section-body">
       <div class="form-collection row">
@@ -93,5 +109,5 @@
       </div>
     </div>
   </div>
-  }
+  } }
 </form>

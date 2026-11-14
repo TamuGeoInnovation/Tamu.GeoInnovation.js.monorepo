@@ -146,6 +146,22 @@ export class Season extends GuidIdentity {
   @Column({ default: false })
   public active: boolean;
 
+  /**
+   * When the poster and presentation competitions stop taking new submissions and edits, and when, later, the files
+   * attached to them close (#2934). Empty leaves that side open. `@tamu-gisc/gisday/common`'s `closedAt` reads them.
+   */
+  @Column({ type: 'datetimeoffset', nullable: true })
+  public posterSubmissionsCloseAt?: Date | null;
+
+  @Column({ type: 'datetimeoffset', nullable: true })
+  public posterFilesCloseAt?: Date | null;
+
+  @Column({ type: 'datetimeoffset', nullable: true })
+  public presentationSubmissionsCloseAt?: Date | null;
+
+  @Column({ type: 'datetimeoffset', nullable: true })
+  public presentationFilesCloseAt?: Date | null;
+
   // Season has multiple days
   @OneToMany(() => SeasonDay, (seasonDay) => seasonDay.season, { cascade: true, onDelete: 'CASCADE' })
   public days: SeasonDay[];
@@ -795,6 +811,14 @@ export class SpeakerEdit extends GuidIdentity {
 
   @Column({ nullable: true })
   public socialMedia: string | null;
+
+  /** The class year a presenter card shows after the name, as the admin form takes it: "2018", or "2014, 2016" (#2953). */
+  @Column({ nullable: true, length: 50 })
+  public graduationYear: string | null;
+
+  /** The university, chosen from the season's list (#2953). Kept if the university is deleted, without it. */
+  @ManyToOne(() => University, { nullable: true, onDelete: 'SET NULL' })
+  public university?: Relation<University> | null;
 
   /** A proposed photo, under APP_DATA, until it is approved or rejected. */
   @Column({ nullable: true })

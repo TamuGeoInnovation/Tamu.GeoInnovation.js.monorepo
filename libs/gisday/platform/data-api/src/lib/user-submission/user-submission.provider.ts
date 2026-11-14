@@ -1,4 +1,5 @@
 import {
+  ForbiddenException,
   HttpException,
   Injectable,
   InternalServerErrorException,
@@ -10,9 +11,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { isOwnerOrPermitted } from '@tamu-gisc/common/nest/auth';
+import { GisdaySite, gisdaySite } from '@tamu-gisc/gisday/common';
+import { closedAt, closedMessage, isDeadlineCompetition } from '@tamu-gisc/gisday/common';
 
 import { SubmissionType, Submission, Season, PRESENTATION_SUBMISSION_TYPE } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
+import { senderAs } from '../_base/site-of-request';
 import { SeasonService } from '../season/season.service';
 import { ContactService } from '../contact/contact.service';
 import { PosterDto } from './dto/poster.dto';
@@ -168,7 +172,9 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     const presentation = await this.userSubmissionRepo.findOne({
       where: {
         guid: submissionGuid
-      }
+      },
+      // Its season says when its competition closes, which the page shows (#2934).
+      relations: { season: true }
     });
 
     if (!presentation) {
@@ -189,6 +195,9 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
       throw new InternalServerErrorException('Missing required parameters.');
     }
 
+    // The deadline is that of the season it will be saved to: the one the body names, or the active one (#2934).
+    refuseIfClosed(await this._seasonFor(submission.season), submission.submissionType);
+
     const userSubmission = this.userSubmissionRepo.create({ ...submission, accountGuid });
 
     try {
@@ -208,12 +217,15 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     submissionGuid: string,
     userGuid: string,
     submission: Partial<Submission>,
-    requestorPermissions: Array<string> = []
+    requestorPermissions: Array<string> = [],
+    /** The site the reviewer is on, which the review email names and links to (#2957). */
+    host?: string
   ) {
     const existingSubmission = await this.userSubmissionRepo.findOne({
       where: {
         guid: submissionGuid
-      }
+      },
+      relations: { season: true }
     });
 
     if (!existingSubmission) {
@@ -224,6 +236,16 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
 
     if (!isOwnerOrPermitted(requestor, existingSubmission.accountGuid, 'update:competitions')) {
       throw new UnauthorizedException();
+    }
+
+    // An entrant's edits close with their competition (#2934), as does an edit that would move the submission into one
+    // that has closed. Reviewers are not held to it: they review once submissions have closed.
+    if (requestorPermissions.indexOf('update:competitions') === -1) {
+      refuseIfClosed(existingSubmission.season, existingSubmission.submissionType);
+      refuseIfClosed(existingSubmission.season, submission.submissionType);
+
+      // Nor may an entrant move it to another season, whose deadline would then be the one that counts.
+      delete submission.season;
     }
 
     // The row is written from `submission` -- the caller's request body -- so anything that must
@@ -263,9 +285,9 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
               {
                 to: primaryParticipant[0],
                 cc: participantEmails.join(','),
-                subject: 'GIS Day Presentation Submission Review Result',
-                from: process.env.MAILROOM_FROM,
-                text: this._generateResponseEmail(existingSubmission),
+                subject: reviewSubject(existingSubmission, gisdaySite(process.env.GISDAY_SITE, host)),
+                from: senderAs(gisdaySite(process.env.GISDAY_SITE, host).name, process.env.MAILROOM_FROM),
+                text: reviewEmail(existingSubmission, gisdaySite(process.env.GISDAY_SITE, host)),
                 replyTo: process.env.MAILROOM_TO
               },
               true
@@ -324,26 +346,88 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     }
   }
 
-  private _generateResponseEmail(existingSubmission: Submission) {
-    const { title, message, acceptance } = existingSubmission;
+  /**
+   * The season a new submission is saved to: the one the body names, by its guid or as an object with one, or the
+   * active one when it names none.
+   */
+  private async _seasonFor(named: Partial<Season> | string | undefined): Promise<Partial<Season> | null> {
+    const guid = typeof named === 'string' ? named : named?.guid;
 
-    return `
-Howdy!
+    if (guid) {
+      return this.seasonService.findOne({ where: { guid } });
+    }
 
-Thank you for your recent research presentation submission, titled "${title}."
+    // A site with no active season has no deadline to hold it to.
+    try {
+      return await this.seasonService.findOneActive();
+    } catch (err) {
+      if (err instanceof NotFoundException) {
+        return null;
+      }
 
-${
-  acceptance
-    ? `We are pleased to inform you that your submission has been **approved** for inclusion in the TxGIS Day event. Please make sure you have reviewed the event schedule (https://txgisday.org/competitions/presentation) and are prepared to present at your designated time. If you have not done so yet, please ensure that you provide a link to your presentation materials in the submission portal. We look forward to seeing you at the event!`
-    : `We regret to inform you that your submission has not been accepted for the TxGIS Day competition event. We appreciate the time and effort you put into your work, and encourage you to consider future opportunities to engage with the GIS community.`
+      throw err;
+    }
+  }
 }
 
-${message ? `Additional notes: ${message}` : ''}
+/** Refuses a request to a competition whose submissions have closed (#2934). Paper and cartography do not close. */
+function refuseIfClosed(season: Partial<Season> | null | undefined, submissionType: unknown): void {
+  const at = closedAt(season, submissionType, 'submissions');
 
-If you have any questions or concerns, please feel free to reach out to the TxGIS Day team at your convenience. We are here to assist you.
+  if (at && isDeadlineCompetition(submissionType)) {
+    throw new ForbiddenException(closedMessage(submissionType, 'submissions', at));
+  }
+}
+
+/** The review email's subject, naming the site and the decision (#2957). */
+export function reviewSubject(submission: Pick<Submission, 'acceptance'>, site: Pick<GisdaySite, 'name'>): string {
+  return submission.acceptance ? `Your ${site.name} submission has been accepted` : `Your ${site.name} submission`;
+}
+
+/**
+ * The email a submitter gets when their submission is reviewed (#2957): on acceptance, what to do next, in three steps -
+ * attach the file they will present from (#2933), complete their presenter profile from the separate email (#2936), and
+ * check their session - all on the site the reviewer is on. A rejection keeps its wording, with the site's own name.
+ */
+export function reviewEmail(
+  submission: Pick<Submission, 'title' | 'message' | 'acceptance' | 'submissionType' | 'participants'>,
+  site: Pick<GisdaySite, 'name' | 'address'>
+): string {
+  const firstName = (submission.participants?.[0]?.name ?? '').trim().split(/\s+/)[0];
+  const greeting = firstName ? `Howdy ${firstName},` : 'Howdy!';
+  const notes = submission.message?.trim() ? `\n\nAdditional notes: ${submission.message.trim()}` : '';
+
+  if (!submission.acceptance) {
+    return `${greeting}
+
+Thank you for your recent submission, titled "${submission.title}."
+
+We regret to inform you that your submission has not been accepted for the ${site.name} competition. We appreciate the time and effort you put into your work, and encourage you to consider future opportunities to engage with the GIS community.${notes}
+
+If you have any questions, reply to this email.
 
 Best regards,
-The TxGIS Day Team
-      `;
+The ${site.name} Team`;
   }
+
+  const poster = submission.submissionType === 'poster';
+  const kind = poster ? 'poster' : 'presentation';
+  const file = poster ? 'your poster' : 'your slides';
+
+  return `${greeting}
+
+Congratulations! Your ${kind} submission, "${submission.title}", has been accepted for ${site.name}.
+
+What to do next:
+
+1. Attach ${file}. Sign in at ${site.address}/account/submissions, open your submission, and attach ${poster ? 'it' : 'them'} under Presentation files: PowerPoint or PDF, up to 100 MB each.
+
+2. Complete your presenter profile. A separate email will bring you a personal link to add your bio, photo, university and class year to the program.
+
+3. Check your session. See ${site.address}/sessions for when you present.${notes}
+
+Questions? Reply to this email.
+
+Best regards,
+The ${site.name} Team`;
 }

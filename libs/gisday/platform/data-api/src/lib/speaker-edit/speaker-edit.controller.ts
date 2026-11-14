@@ -19,14 +19,10 @@ import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/
 import { DEFAULT_UPLOAD_LIMITS } from '@tamu-gisc/common/nest/services';
 
 import { SpeakerEditFields, SpeakerEditService } from './speaker-edit.service';
+import { siteHost } from '../_base/site-of-request';
 
-/** The address the request came to, so a link sent from gisday.tamu.edu points at gisday.tamu.edu. */
-function hostOf(req): string | undefined {
-  const forwarded = req?.headers?.['x-forwarded-host'];
-  const host = (Array.isArray(forwarded) ? forwarded[0] : forwarded) ?? req?.headers?.host;
-
-  return typeof host === 'string' ? host.split(',')[0].trim().replace(/:\d+$/, '') : undefined;
-}
+// Where it lived first; kept so its importers need not change.
+export { siteHost };
 
 /**
  * Speakers editing their own profile through an emailed link (#2936). The link routes take no sign-in: the token in the
@@ -42,14 +38,14 @@ export class SpeakerEditController {
   @UseGuards(JwtGuard, PermissionsGuard)
   @Post('send')
   public send(@Body('speakers') speakers: Array<string>, @Request() req) {
-    return this.service.sendLinks(speakers, hostOf(req));
+    return this.service.sendLinks(speakers, siteHost(req?.headers));
   }
 
   /** A speaker asking for their own link. The same answer whoever asks. */
   @Post('request')
   @HttpCode(202)
   public async request(@Body('email') email: string, @Request() req) {
-    await this.service.requestLink(email, hostOf(req));
+    await this.service.requestLink(email, siteHost(req?.headers));
 
     return { message: "If that address is a speaker's, a link to edit their profile is on its way." };
   }
