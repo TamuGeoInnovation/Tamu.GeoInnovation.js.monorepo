@@ -35,6 +35,7 @@ describe('SeasonService', () => {
             findOne: jest.fn(),
             create: jest.fn(),
             save: jest.fn(),
+            update: jest.fn().mockResolvedValue({ affected: 1 }),
             remove: jest.fn(),
             manager: { transaction: jest.fn(), find: jest.fn() }
           }
@@ -347,6 +348,54 @@ describe('SeasonService', () => {
       expect(findOne).toHaveBeenLastCalledWith(
         expect.objectContaining({ where: { guid: 'by-options' } })
       );
+    });
+  });
+
+  /** #2934: when the poster and presentation competitions close, set by an admin. */
+  describe('.setSubmissionDeadlines()', () => {
+    const closes = '2026-11-01T17:00:00.000Z';
+    const filesClose = '2026-11-05T17:00:00.000Z';
+
+    beforeEach(() => {
+      jest.spyOn(seasonRepo, 'findOne').mockResolvedValue(seasonWithDays([]));
+    });
+
+    it('saves all four moments, each a date or empty for open', async () => {
+      await service.setSubmissionDeadlines('season-1', {
+        posterSubmissionsCloseAt: closes,
+        posterFilesCloseAt: filesClose,
+        presentationSubmissionsCloseAt: ''
+      });
+
+      expect(seasonRepo.update).toHaveBeenCalledWith('season-1', {
+        posterSubmissionsCloseAt: new Date(closes),
+        posterFilesCloseAt: new Date(filesClose),
+        presentationSubmissionsCloseAt: null,
+        presentationFilesCloseAt: null
+      });
+    });
+
+    it('refuses a moment that is not a date', async () => {
+      await expect(service.setSubmissionDeadlines('season-1', { posterSubmissionsCloseAt: 'next Friday' })).rejects.toThrow(
+        BadRequestException
+      );
+      expect(seasonRepo.update).not.toHaveBeenCalled();
+    });
+
+    it('refuses files that would close before their submissions, or while they stay open', async () => {
+      await expect(
+        service.setSubmissionDeadlines('season-1', { posterSubmissionsCloseAt: filesClose, posterFilesCloseAt: closes })
+      ).rejects.toThrow('File uploads for the poster competition cannot close before its submissions do.');
+      await expect(service.setSubmissionDeadlines('season-1', { presentationFilesCloseAt: closes })).rejects.toThrow(
+        BadRequestException
+      );
+      expect(seasonRepo.update).not.toHaveBeenCalled();
+    });
+
+    it('answers not found for a season that does not exist', async () => {
+      jest.spyOn(seasonRepo, 'findOne').mockResolvedValue(null);
+
+      await expect(service.setSubmissionDeadlines('missing', {})).rejects.toThrow(NotFoundException);
     });
   });
 });

@@ -175,6 +175,82 @@ describe('SubmissionFilesService', () => {
     });
   });
 
+  /**
+   * #2934: a competition's files close at their own deadline, set on the season, later than its submissions. A student's
+   * upload or removal after it is refused; the admins may still add and remove, and anyone may still read.
+   */
+  describe('after the files deadline (#2934)', () => {
+    const past = '2026-11-01T17:00:00.000Z';
+    const future = '2099-11-01T17:00:00.000Z';
+
+    function closing(over: Record<string, unknown>) {
+      (submission as unknown as { season: unknown }).season = {
+        guid: 'season-guid',
+        presentationSubmissionsCloseAt: past,
+        ...over
+      };
+    }
+
+    it('refuses a student’s upload once the files have closed, and removes what was uploaded', async () => {
+      closing({ presentationFilesCloseAt: past });
+      const file = await upload('deck.pdf');
+
+      await expect(service.add(submission.guid, student, file)).rejects.toThrow(ForbiddenException);
+      await expect(service.add(submission.guid, student, await upload('deck.pdf'))).rejects.toThrow(
+        /File uploads for the presentation competition closed on Sun, Nov 1, 2026, 11:00 AM Central/
+      );
+      expect(saved).toHaveLength(0);
+      expect(existsSync(file.path)).toBe(false);
+    });
+
+    it('refuses a student’s removal once the files have closed', async () => {
+      await service.add(submission.guid, student, await upload('deck.pdf'));
+      closing({ presentationFilesCloseAt: past });
+
+      await expect(service.remove(submission.guid, saved[0].guid, student)).rejects.toThrow(ForbiddenException);
+      expect(assetRepo.delete).not.toHaveBeenCalled();
+    });
+
+    it('still takes files after submissions have closed, until the files do', async () => {
+      closing({ presentationFilesCloseAt: future });
+
+      await service.add(submission.guid, student, await upload('deck.pdf'));
+
+      expect(saved).toHaveLength(1);
+    });
+
+    it('stays open when no files deadline is set', async () => {
+      closing({});
+
+      await service.add(submission.guid, student, await upload('deck.pdf'));
+
+      expect(saved).toHaveLength(1);
+    });
+
+    it('holds each competition to its own deadline', async () => {
+      closing({ posterFilesCloseAt: past, presentationFilesCloseAt: future });
+
+      await service.add(submission.guid, student, await upload('deck.pdf'));
+
+      expect(saved).toHaveLength(1);
+    });
+
+    it('lets an admin who may update the competitions add and remove after it', async () => {
+      closing({ presentationFilesCloseAt: past });
+
+      await service.add(submission.guid, admin, await upload('deck.pdf'));
+      await service.remove(submission.guid, saved[0].guid, admin);
+
+      expect(assetRepo.delete).toHaveBeenCalledWith(saved[0].guid);
+    });
+
+    it('still lets the student list their files', async () => {
+      closing({ presentationFilesCloseAt: past });
+
+      await expect(service.list(submission.guid, student)).resolves.toEqual([]);
+    });
+  });
+
   describe('zipForSeason', () => {
     it("puts every file in a folder per submission, keeping two files' same name apart", async () => {
       await service.add(submission.guid, student, await upload('deck.pdf', 10));

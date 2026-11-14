@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ParseIntPipe, ParseUUIDPipe } from '@nestjs/common';
 
 import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
+import { SubmissionDeadlines } from '@tamu-gisc/gisday/common';
 
 import { SeasonService } from './season.service';
 import { Season } from '../entities/all.entity';
@@ -34,6 +35,15 @@ export class SeasonController {
   @Post()
   public create() {
     return this.seasonService.clonePreviousSeason();
+  }
+
+  // When the poster and presentation competitions close (#2934), set from the competitions' admin page, so by those who
+  // run the competitions rather than those who may change the season.
+  @Permissions(['update:competitions'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Patch(':guid/submission-deadlines')
+  public setSubmissionDeadlines(@Param('guid', ParseUUIDPipe) guid: string, @Body() deadlines: SubmissionDeadlines) {
+    return this.seasonService.setSubmissionDeadlines(guid, deadlines);
   }
 
   @Permissions(['update:seasons'])

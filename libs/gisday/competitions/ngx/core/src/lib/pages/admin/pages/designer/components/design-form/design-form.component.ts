@@ -12,6 +12,7 @@ import { Observable, of } from 'rxjs';
 import { catchError, map, pluck, shareReplay, switchMap } from 'rxjs/operators';
 
 import { CompetitionSeason } from '@tamu-gisc/gisday/competitions/data-api';
+import { asDate, inCentralTime } from '@tamu-gisc/gisday/common';
 import { FormService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -145,28 +146,9 @@ export class DesignFormComponent implements OnInit {
 
   /**
    * A moment of the scoring window as GIS Day's own clock reads it, so an admin sees the Central time saved
-   * whatever their computer is set to (#2474). "No limit" when it is empty.
+   * whatever their computer is set to (#2474). "No limit" when it is empty. Shared with the submission deadlines (#2934).
    */
-  public inCentralTime(value: Date | string | null | undefined): string {
-    const date = asDate(value);
-
-    if (!date) {
-      return 'No limit';
-    }
-
-    const text = new Intl.DateTimeFormat('en-US', {
-      timeZone: 'America/Chicago',
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit'
-    }).format(date);
-
-    // Newer ICU puts a narrow no-break space before AM and PM.
-    return `${text.replace(/\u202f/g, ' ')} Central`;
-  }
+  public readonly inCentralTime = inCentralTime;
 
   /** Empties one side of the scoring window: no limit on that side. */
   public clearScoringMoment(control: 'scoringOpensAt' | 'scoringClosesAt'): void {
@@ -220,17 +202,4 @@ interface IEsriRestLayerSchema {
 
 export interface Field extends esri.Field {
   domain: esri.CodedValueDomain;
-}
-
-/**
- * A moment as a date, from a date or the text the API sends, or `null` for none or an unreadable one.
- */
-function asDate(value: unknown): Date | null {
-  if (value === null || value === undefined || value === '') {
-    return null;
-  }
-
-  const date = value instanceof Date ? value : new Date(value as string);
-
-  return isNaN(date.getTime()) ? null : date;
 }
