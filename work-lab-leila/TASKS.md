@@ -27,16 +27,16 @@
 > itself is not affected - this is about anything you check by hand.
 
 **How every batch below is done** (CLAUDE.md, in short; the director opens the pull requests):
-- A branch from the latest \`origin/development\`, pushed to the fork, with a \`.pr-body.md\` draft as the last commit,
-  started from \`.github/pull_request_template.md\` with every section filled in.
-- **Reuse before building**: look in \`libs/ui-kits/ngx/**\`, \`libs/gisday/platform/ngx/common/**\` (its \`utils/\`),
-  \`libs/gisday/common\` and the global \`styles.scss\` first, and say in the report where you looked.
+- A branch from the latest `origin/development`, pushed to the fork, with a `.pr-body.md` draft as the last commit,
+  started from `.github/pull_request_template.md` with every section filled in.
+- **Reuse before building**: look in `libs/ui-kits/ngx/**`, `libs/gisday/platform/ngx/common/**` (its `utils/`),
+  `libs/gisday/common` and the global `styles.scss` first, and say in the report where you looked.
 - A test for the behaviour, **proven red on the unfixed code** first, then green. Lint and test the projects you touch.
-- Anything visible: before and after screenshots, taken on your local GIS Day stack (\`scripts/gisday-local.sh\`), saved
-  to \`docs/screenshots/<slug>/\` as soon as taken, and a release-notes file \`docs/releases/unreleased/<issue>-<slug>.md\`
-  with its *What to test on dev* row (\`node scripts/collate-release-notes.mjs --check\` passes).
-- Then \`scripts/check-in-volume.sh <branch> <each project you edited>,gisday-angular\` (the bug-fix form; CI runs the full one).
-- A report per batch, \`work-lab-leila/reports/2026-11-14-<n>.md\`, saying **"branch ready: <name>"** with the check's exit
+- Anything visible: before and after screenshots, taken on your local GIS Day stack (`scripts/gisday-local.sh`), saved
+  to `docs/screenshots/<slug>/` as soon as taken, and a release-notes file `docs/releases/unreleased/<issue>-<slug>.md`
+  with its *What to test on dev* row (`node scripts/collate-release-notes.mjs --check` passes).
+- Then `scripts/check-in-volume.sh <branch> <each project you edited>,gisday-angular` (the bug-fix form; CI runs the full one).
+- A report per batch, `work-lab-leila/reports/2026-11-14-<n>.md`, saying **"branch ready: <name>"** with the check's exit
   code. Questions for the maintainer go in the report, with options and a recommendation; do not ask him.
 
 ## Batch 41 (gisday: re-run #2936's check at the fixed commit; 14 November 2026, from `home (gisday)`) (High, first)
@@ -2872,7 +2872,7 @@ and nothing against production.
 while waiting for dev to serve the new build, or between the two smoke tiers), **but only when no Azure Pipelines job is running on this machine**:
 re-installing restarts each agent and would cancel a job in progress. **The release build, 5733, is running on the lab now: wait for it to finish.**
 How to tell: `docker ps` shows no agent job container busy (a job's container runs a `Linux-Build` job; the supervisor's log under
-`%LOCALAPPDATA%\tamu-build-agent\logs\` says the agent is listening). **Expected: 15 minutes.**
+`%LOCALAPPDATA%\tamu-build-agent\logs` says the agent is listening). **Expected: 15 minutes.**
 1. **Why** (#2343): build 5733 warned *No git mirror at /mirror/monorepo.git on this agent* on every lab job. The scheduled tasks run copies of the scripts
    made at install, from before #2255 added the mirror (`tools/build-agent/README.md`: "run it again after pulling a change to them").
 2. In the checkout the agents were installed from: `git pull` `development`. Then, for each agent installed here (`lab-1`, `lab-2`, `lab-3`, and `lab-4` if it
@@ -3912,7 +3912,7 @@ On branch `ci/2212-agent-service` from your batch 67 branch (`ci/2212-agent-egre
    Azure refuses (401) stops the loop with one line telling the maintainer to run `save-agent-token.ps1` again, instead of retrying forever.
 2. **`install-agent-task.ps1 -AgentName <machine>-1`**: registers a scheduled task **at the maintainer's logon**, hidden (no window), that
    waits for `docker info` to succeed (Docker Desktop starting), then runs `run-agent.ps1 -TokenFile ...`; restart on failure; a log under
-   `$env:LOCALAPPDATA\tamu-build-agent\logs\` (no token in it). `-Uninstall` removes the task and stops the agent cleanly (deregisters).
+   `$env:LOCALAPPDATA\tamu-build-agent\logs` (no token in it). `-Uninstall` removes the task and stops the agent cleanly (deregisters).
    Running it must not need an elevated prompt if Task Scheduler allows a per-user logon task; say if it does.
 3. **Linux: `linux/tamu-build-agent.service`** (systemd) plus `linux/install.sh`: the same supervisor loop for a Linux host (bash or the
    PowerShell script under `pwsh`, your choice, say why), token read from `/etc/tamu-build-agent/token` (root:root 0600) and handed to the
