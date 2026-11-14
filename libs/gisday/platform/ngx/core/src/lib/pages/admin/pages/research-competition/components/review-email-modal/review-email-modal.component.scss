@@ -1,9 +1,11 @@
-// Laid out as the shared alert modal is (ui-kits alert-modal), wider for the text of an email.
+// Laid out as the shared alert modal is (ui-kits alert-modal), wider and left-aligned for the text of an email (#2988).
+// The modal's body already scrolls, so this does not scroll on its own: two scroll bars side by side read as broken.
 .review-email {
-  max-width: 48rem;
-  max-height: 85vh;
-  overflow-y: auto;
-  padding: 1rem;
+  width: min(56rem, 85vw);
+  max-width: 100%;
+  text-align: left;
+  padding: 0 0.5rem;
+  box-sizing: border-box;
 }
 
 .review-email__title {
@@ -12,6 +14,16 @@
 
 .review-email__group {
   margin-bottom: 1.5rem;
+
+  h3,
+  h4 {
+    text-align: left;
+  }
+}
+
+// The shared textbox sizes to its content unless told otherwise: the email's text is edited across the window's width.
+tamu-gisc-textbox {
+  width: 100%;
 }
 
 .review-email__meta {
