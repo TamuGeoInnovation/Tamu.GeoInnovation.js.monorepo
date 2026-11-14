@@ -508,7 +508,7 @@ export class SeasonService extends BaseProvider<Season> {
   }
 
   /**
-   * Sets when the season's poster and presentation competitions close (#2934): all four moments, each a date or empty
+   * Sets when the season's competitions close (#2934, #2962): every moment, each a date or empty
    * for open, as the admin page sends them. Refuses a moment that is not a date, and files that would close before
    * their competition's submissions.
    */

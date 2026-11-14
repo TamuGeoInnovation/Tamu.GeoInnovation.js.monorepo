@@ -826,6 +826,55 @@ describe('UserSubmissionProvider', () => {
         expect(submissionRepo.update).toHaveBeenCalled();
       });
     });
+
+    /** #2962: paper and cartography close the same way, each at its own deadline. */
+    describe.each(['paper', 'cartography'])('a %s submission (#2962)', (type) => {
+      const field = `${type}SubmissionsCloseAt`;
+
+      it('is refused once its competition has closed', async () => {
+        seasonWith({ [field]: past });
+
+        await expect(
+          provider.insertUserSubmission(OWNER, { submissionType: type, season: SEASON.guid } as never)
+        ).rejects.toThrow(`Submissions to the ${type} competition closed on Sun, Nov 1, 2026, 11:00 AM Central.`);
+        expect(submissionRepo.save).not.toHaveBeenCalled();
+      });
+
+      it('is taken before its deadline', async () => {
+        seasonWith({ [field]: future });
+
+        await provider.insertUserSubmission(OWNER, { submissionType: type, season: SEASON.guid } as never);
+
+        expect(submissionRepo.save).toHaveBeenCalled();
+      });
+
+      it("is not held to another competition's deadline", async () => {
+        seasonWith({ posterSubmissionsCloseAt: past, presentationSubmissionsCloseAt: past });
+
+        await provider.insertUserSubmission(OWNER, { submissionType: type, season: SEASON.guid } as never);
+
+        expect(submissionRepo.save).toHaveBeenCalled();
+      });
+
+      it('refuses an edit from the entrant once it has closed, and takes one from a reviewer', async () => {
+        jest
+          .spyOn(submissionRepo, 'findOne')
+          .mockResolvedValue(submission({ submissionType: type, season: seasonWith({ [field]: past }) }));
+
+        await expect(provider.updateUserSubmission('sub-1', OWNER, { title: 'Revised' })).rejects.toThrow(
+          ForbiddenException
+        );
+        expect(submissionRepo.update).not.toHaveBeenCalled();
+
+        await provider.updateUserSubmission(
+          'sub-1',
+          'acct-reviewer',
+          { acceptance: true } as Partial<Submission>,
+          REVIEWER_PERMS
+        );
+        expect(submissionRepo.update).toHaveBeenCalled();
+      });
+    });
   });
 
   describe('.getSubmissionsForSeason()', () => {

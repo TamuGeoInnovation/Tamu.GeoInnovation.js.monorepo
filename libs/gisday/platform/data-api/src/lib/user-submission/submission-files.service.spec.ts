@@ -249,6 +249,30 @@ describe('SubmissionFilesService', () => {
 
       await expect(service.list(submission.guid, student)).resolves.toEqual([]);
     });
+
+    /** #2962: paper and cartography files close the same way, each at its own deadline. */
+    describe.each(['paper', 'cartography'])('for a %s submission (#2962)', (type) => {
+      beforeEach(() => {
+        (submission as unknown as { submissionType: string }).submissionType = type;
+      });
+
+      it('refuses a student’s upload once its files have closed', async () => {
+        closing({ [`${type}FilesCloseAt`]: past });
+
+        await expect(service.add(submission.guid, student, await upload('map.pdf'))).rejects.toThrow(
+          `File uploads for the ${type} competition closed on Sun, Nov 1, 2026, 11:00 AM Central.`
+        );
+        expect(saved).toHaveLength(0);
+      });
+
+      it("is not held to another competition's files deadline", async () => {
+        closing({ posterFilesCloseAt: past, presentationFilesCloseAt: past, [`${type}FilesCloseAt`]: future });
+
+        await service.add(submission.guid, student, await upload('map.pdf'));
+
+        expect(saved).toHaveLength(1);
+      });
+    });
   });
 
   describe('zipForSeason', () => {
