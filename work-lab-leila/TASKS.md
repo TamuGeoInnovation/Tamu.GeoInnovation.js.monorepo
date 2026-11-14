@@ -26,6 +26,63 @@
 > from a clean profile**, and say in the report which you did. The Playwright container starts clean, so the suite
 > itself is not affected - this is about anything you check by hand.
 
+**How every batch below is done** (CLAUDE.md, in short; the director opens the pull requests):
+- A branch from the latest \`origin/development\`, pushed to the fork, with a \`.pr-body.md\` draft as the last commit,
+  started from \`.github/pull_request_template.md\` with every section filled in.
+- **Reuse before building**: look in \`libs/ui-kits/ngx/**\`, \`libs/gisday/platform/ngx/common/**\` (its \`utils/\`),
+  \`libs/gisday/common\` and the global \`styles.scss\` first, and say in the report where you looked.
+- A test for the behaviour, **proven red on the unfixed code** first, then green. Lint and test the projects you touch.
+- Anything visible: before and after screenshots, taken on your local GIS Day stack (\`scripts/gisday-local.sh\`), saved
+  to \`docs/screenshots/<slug>/\` as soon as taken, and a release-notes file \`docs/releases/unreleased/<issue>-<slug>.md\`
+  with its *What to test on dev* row (\`node scripts/collate-release-notes.mjs --check\` passes).
+- Then \`scripts/check-in-volume.sh <branch> <each project you edited>,gisday-angular\` (the bug-fix form; CI runs the full one).
+- A report per batch, \`work-lab-leila/reports/2026-11-14-<n>.md\`, saying **"branch ready: <name>"** with the check's exit
+  code. Questions for the maintainer go in the report, with options and a recommendation; do not ask him.
+
+## Batch 41 (gisday: re-run #2936's check at the fixed commit; 14 November 2026, from `home (gisday)`) (High, first)
+
+Your batch 40 found exactly the build error home had just fixed. Re-run the same check at **`65891ddea`** on
+`feat/2936-speaker-self-edit` (fork). Exit 0 is expected; anything else is new. Report as batch 40.
+
+---
+
+## Batch 42 (gisday: #2934, closing dates for poster and presentation submissions; from `home (gisday)`) (High)
+
+[#2934](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2934). **Decided by the maintainer,
+14 November:** one closing time **per competition** (poster, presentation), set by an admin; at it, **new submissions and
+edits close**; **file uploads (#2933) have their own, later deadline**, and an empty deadline means open. Enforced by the
+API, not only hidden in the page; times entered and shown in US Central. Follow the existing scoring window
+(`scoringOpensAt`/`scoringClosesAt`, #2474, in `libs/gisday/competitions/data-api`) for how a window is stored, validated
+and tested. A schema change needs a migration (`docs/gisday-migrations.md`): generate it, run, revert, run on your local
+database, and say so. Branch `feat/2934-submission-deadlines`.
+
+---
+
+## Batch 43 (gisday: #2944, a search box on the public Sessions page; from `home (gisday)`) (Medium)
+
+[#2944](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2944): its body says what is wanted
+and what to reuse (`utils/search-text.ts`, as the admin Events list and the presenter search use it). Branch
+`feat/2944-sessions-search`.
+
+---
+
+## Batch 44 (gisday: #2942, Escape on an admin details page goes back to its list; from `home (gisday)`) (Medium)
+
+[#2942](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2942). **Decided:** with unsaved
+changes, Escape asks "Leave without saving?" **in the page** (the site cannot use `confirm()`); an Escape an open dropdown,
+search list, date picker or modal used is left to it. One shared piece for every admin details page, not a handler per
+page. Branch `feat/2942-admin-escape-back`.
+
+---
+
+## Batch 45 (gisday: #2937, image uploads accept SVG; from `home (gisday)`) (Medium)
+
+[#2937](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2937). **Speaker photos already
+refuse SVG** (`SpeakerProvider._refuseUnsafeImage`, #2352): check sponsors, organizations and places, and make them use
+the same check rather than a copy. List any SVG already stored on your local copy. Branch `fix/2937-image-uploads`.
+
+---
+
 ## Batch 40 (gisday: the full pre-push check for #2936, speakers editing their own profile; 14 November 2026, from `home (gisday)`) (High, start now)
 
 The maintainer needs this for the competition finalists' notifications today, and wants `home` free.
