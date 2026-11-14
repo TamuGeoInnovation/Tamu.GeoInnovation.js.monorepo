@@ -1,4 +1,4 @@
-import { Speaker } from '@tamu-gisc/gisday/platform/data-api';
+import { Speaker, University } from '@tamu-gisc/gisday/platform/data-api';
 
 /**
  * A graduation year written as a class year: `'2014'` is `'14`, `'22'` is `'22`, and a record holding
@@ -11,6 +11,22 @@ export function shortClassYear(graduationYear: string | null | undefined): strin
     .filter((year) => /^(\d{2}|\d{4})$/.test(year));
 
   return years.map((year) => `'${year.slice(-2)}`).join(', ');
+}
+
+/**
+ * The speaker as the class banner on their photograph sees it, from a form that is being filled in: the university
+ * chosen (by guid, looked up in the season's list for its acronym and colour) and the graduation year typed. The admin
+ * speaker form and a speaker's own edit page both draw their banner from this, so it shows what the public pages will
+ * once the form is saved (#2956).
+ */
+export function classBannerSpeaker(
+  universityGuid: string | null | undefined,
+  graduationYear: string | null | undefined,
+  universities: Array<Partial<University>> | null | undefined
+): Partial<Speaker> {
+  const university = universityGuid ? (universities ?? []).find((u) => u.guid === universityGuid) : undefined;
+
+  return { university: university ?? null, graduationYear: graduationYear ?? '' } as Partial<Speaker>;
 }
 
 /**
