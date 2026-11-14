@@ -11,9 +11,10 @@ import { Organization, University } from '../entities/all.entity';
 export const PROFILE_KEPT_MS = 5 * 60 * 1000;
 
 /**
- * What every admin dashboard reads about people (#2878, #2892): accounts' Auth0 profiles, read many at a time and kept
- * for a few minutes, and the names of the universities and organizations a profile names by id. Moved here from the
- * RSVP dashboard so each dashboard reads profiles the same way. Each module that provides it keeps its own profiles.
+ * What every admin dashboard reads about people (#2878, #2892), and the competition submissions list too (#2925):
+ * accounts' Auth0 profiles, read many at a time and kept for a few minutes, and the names of the universities and
+ * organizations a profile names by id. Moved here from the RSVP dashboard so each page reads profiles the same way.
+ * Each module that provides it keeps its own profiles.
  */
 @Injectable()
 export class DashboardProfilesService {

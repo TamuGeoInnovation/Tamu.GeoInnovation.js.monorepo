@@ -4,10 +4,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { Repository } from 'typeorm';
 
-import { ManagementService } from '@tamu-gisc/common/nest/auth';
 
 import { ContactService } from '../contact/contact.service';
 import { Submission, SubmissionType } from '../entities/all.entity';
+import { DashboardProfilesService } from '../dashboards/dashboard-profiles.service';
 import { SeasonService } from '../season/season.service';
 import { UserSubmissionProvider } from './user-submission.provider';
 
@@ -16,7 +16,7 @@ describe('UserSubmissionProvider', () => {
   let submissionRepo: Repository<Submission>;
   let seasonService: SeasonService;
   let contactService: ContactService;
-  let management: ManagementService;
+  let profiles: DashboardProfilesService;
 
   const OWNER = 'acct-owner';
   const REVIEWER_PERMS = ['update:competitions'];
@@ -53,7 +53,7 @@ describe('UserSubmissionProvider', () => {
         { provide: getRepositoryToken(SubmissionType), useValue: { find: jest.fn() } },
         { provide: SeasonService, useValue: { findOne: jest.fn(), findOneActive: jest.fn() } },
         { provide: ContactService, useValue: { sendMessage: jest.fn().mockResolvedValue({}) } },
-        { provide: ManagementService, useValue: { getUserMetadata: jest.fn() } }
+        { provide: DashboardProfilesService, useValue: { profilesOf: jest.fn().mockResolvedValue(new Map()) } }
       ]
     }).compile();
 
@@ -61,7 +61,7 @@ describe('UserSubmissionProvider', () => {
     submissionRepo = module.get(getRepositoryToken(Submission));
     seasonService = module.get(SeasonService);
     contactService = module.get(ContactService);
-    management = module.get(ManagementService);
+    profiles = module.get(DashboardProfilesService);
   });
 
   afterEach(() => {
@@ -395,7 +395,7 @@ describe('UserSubmissionProvider', () => {
 
       it("gives each submission its submitter's name, email and department", async () => {
         jest.spyOn(submissionRepo, 'find').mockResolvedValue([submission({ accountGuid: 'student' })]);
-        jest.spyOn(management, 'getUserMetadata').mockResolvedValue(profile('student') as never);
+        jest.spyOn(profiles, 'profilesOf').mockResolvedValue(new Map([['student', profile('student') as never]]));
 
         const [entry] = await provider.getSubmissionsForSeason('season-1');
 
@@ -406,8 +406,8 @@ describe('UserSubmissionProvider', () => {
       it('takes the department, not the field of study, for anyone but a student', async () => {
         jest.spyOn(submissionRepo, 'find').mockResolvedValue([submission({ accountGuid: 'faculty' })]);
         jest
-          .spyOn(management, 'getUserMetadata')
-          .mockResolvedValue(profile('faculty', { app_metadata: { gisday: { attendeeType: 'academia' } } }) as never);
+          .spyOn(profiles, 'profilesOf')
+          .mockResolvedValue(new Map([['faculty', profile('faculty', { app_metadata: { gisday: { attendeeType: 'academia' } } }) as never]]));
 
         const [entry] = await provider.getSubmissionsForSeason('season-1');
 
@@ -418,28 +418,38 @@ describe('UserSubmissionProvider', () => {
         jest.spyOn(submissionRepo, 'find').mockResolvedValue([submission({ accountGuid: 'social' })]);
         const unnamed = profile('social');
         unnamed.user_info = { ...unnamed.user_info, given_name: null, family_name: null };
-        jest.spyOn(management, 'getUserMetadata').mockResolvedValue(unnamed as never);
+        jest.spyOn(profiles, 'profilesOf').mockResolvedValue(new Map([['social', unnamed as never]]));
 
         const [entry] = await provider.getSubmissionsForSeason('season-1');
 
         expect(entry.submitter).toMatchObject({ firstName: 'social@tamu.edu', lastName: null });
       });
 
-      it('reads each account once, however many it submitted', async () => {
+      it('reads every submitter in one batch, each account once, not a request per account (#2925)', async () => {
         jest
           .spyOn(submissionRepo, 'find')
-          .mockResolvedValue([submission({ guid: 'a', accountGuid: 'student' }), submission({ guid: 'b', accountGuid: 'student' })]);
-        jest.spyOn(management, 'getUserMetadata').mockResolvedValue(profile('student') as never);
+          .mockResolvedValue([
+            submission({ guid: 'a', accountGuid: 'student' }),
+            submission({ guid: 'b', accountGuid: 'student' }),
+            submission({ guid: 'c', accountGuid: 'faculty' })
+          ]);
+        jest.spyOn(profiles, 'profilesOf').mockResolvedValue(
+          new Map([
+            ['student', profile('student') as never],
+            ['faculty', profile('faculty') as never]
+          ])
+        );
 
         const entries = await provider.getSubmissionsForSeason('season-1');
 
-        expect(management.getUserMetadata).toHaveBeenCalledTimes(1);
-        expect(entries.map((e) => e.submitter?.email)).toEqual(['student@tamu.edu', 'student@tamu.edu']);
+        expect(profiles.profilesOf).toHaveBeenCalledTimes(1);
+        expect(profiles.profilesOf).toHaveBeenCalledWith(['student', 'faculty']);
+        expect(entries.map((e) => e.submitter?.email)).toEqual(['student@tamu.edu', 'student@tamu.edu', 'faculty@tamu.edu']);
       });
 
       it('still lists a submission whose account cannot be read', async () => {
         jest.spyOn(submissionRepo, 'find').mockResolvedValue([submission({ accountGuid: 'gone' })]);
-        jest.spyOn(management, 'getUserMetadata').mockRejectedValue(new Error('user not found'));
+        jest.spyOn(profiles, 'profilesOf').mockResolvedValue(new Map([['gone', null]]));
 
         const entries = await provider.getSubmissionsForSeason('season-1');
 
