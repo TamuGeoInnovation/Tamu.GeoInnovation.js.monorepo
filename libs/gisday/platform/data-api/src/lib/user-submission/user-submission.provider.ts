@@ -354,13 +354,15 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     }
 
     // A site with no active season has no deadline to hold it to.
-    return this.seasonService.findOneActive().catch((err) => {
+    try {
+      return await this.seasonService.findOneActive();
+    } catch (err) {
       if (err instanceof NotFoundException) {
         return null;
       }
 
       throw err;
-    });
+    }
   }
 
   private _generateResponseEmail(existingSubmission: Submission) {

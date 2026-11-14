@@ -412,6 +412,14 @@ describe('UserSubmissionProvider', () => {
         expect(submissionRepo.save).toHaveBeenCalled();
       });
 
+      it('is taken on a site with no active season', async () => {
+        jest.spyOn(seasonService, 'findOneActive').mockRejectedValue(new NotFoundException('No active season found.'));
+
+        await provider.insertUserSubmission(OWNER, { submissionType: 'poster' } as never);
+
+        expect(submissionRepo.save).toHaveBeenCalled();
+      });
+
       it('goes by the active season when the body names none', async () => {
         seasonWith({ presentationSubmissionsCloseAt: past });
 
