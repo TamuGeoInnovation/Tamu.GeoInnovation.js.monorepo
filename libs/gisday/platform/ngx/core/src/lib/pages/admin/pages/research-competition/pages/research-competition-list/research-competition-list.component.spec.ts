@@ -33,10 +33,9 @@ describe('withData', () => {
   });
 
   it('offers only the classifications the season has', () => {
-    expect(withData(SUBMISSION_CLASSIFICATION_OPTIONS, season.slice(0, 2), 'classificationType').map((o) => o.label)).toEqual([
-      'All',
-      'Graduate'
-    ]);
+    expect(
+      withData(SUBMISSION_CLASSIFICATION_OPTIONS, season.slice(0, 2), 'classificationType').map((o) => o.label)
+    ).toEqual(['All', 'Graduate']);
   });
 
   it('offers only All for a season with no submissions', () => {
@@ -62,6 +61,7 @@ describe('ResearchCompetitionListComponent while loading', () => {
       providers: [
         provideRouter([]),
         { provide: UserSubmissionsService, useValue: service },
+        { provide: SpeakerEditsService, useValue: {} },
         { provide: SeasonService, useValue: { seasons$: of([]), activeSeason$: of(null) } },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
         { provide: ModalService, useValue: {} },
@@ -217,12 +217,14 @@ describe('ResearchCompetitionListComponent actions on the selected submissions',
 
     click('Send profile email');
 
-    expect(modals.open.mock.calls[0][1].data.message).toContain(
-      'Send profile emails to the 3 people of 2 submissions?'
-    );
+    expect(modals.open.mock.calls[0][1].data.message).toContain('Send profile emails to the 3 people of 2 submissions?');
     expect(speakerEdits.sendForSubmissions).toHaveBeenCalledWith(['s1', 's2']);
     expect(toasts.toast).toHaveBeenCalledWith(
-      sendEditLinksToast({ sent: ['Ana Ruiz', 'Cy Diaz'], skipped: [], unmatched: [{ name: 'Ben Lee', submission: 'Flood maps' }] })
+      sendEditLinksToast({
+        sent: ['Ana Ruiz', 'Cy Diaz'],
+        skipped: [],
+        unmatched: [{ name: 'Ben Lee', submission: 'Flood maps' }]
+      })
     );
   });
 

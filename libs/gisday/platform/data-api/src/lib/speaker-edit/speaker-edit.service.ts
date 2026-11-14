@@ -10,7 +10,7 @@ import { gisdaySite } from '@tamu-gisc/gisday/common';
 
 import { senderAs } from '../_base/site-of-request';
 
-import { Speaker, SpeakerEdit, SpeakerEditLink, University } from '../entities/all.entity';
+import { Speaker, SpeakerEdit, SpeakerEditLink, Submission, University } from '../entities/all.entity';
 import { SpeakerProvider } from '../speaker/speaker.provider';
 import { ContactService } from '../contact/contact.service';
 import { SeasonService } from '../season/season.service';
@@ -43,6 +43,14 @@ export interface SendResult {
   skipped: Array<{ name: string; reason: string }>;
 }
 
+/** Sending links for competition submissions' people (#2958): also who has no speaker record, with their submission. */
+export interface SendForSubmissionsResult extends SendResult {
+  unmatched: Array<{ name: string; submission: string }>;
+}
+
+/** A submission's id, as the database makes them. */
+const GUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 /**
  * Speakers editing their own presenter profile (#2936), without an account.
  *
@@ -61,8 +69,55 @@ export class SpeakerEditService {
     @InjectRepository(University) private readonly universities: Repository<University>,
     private readonly speakerProvider: SpeakerProvider,
     private readonly contact: ContactService,
-    private readonly seasons: SeasonService
+    private readonly seasons: SeasonService,
+    @InjectRepository(Submission) private readonly submissions: Repository<Submission>
   ) {}
+
+  /**
+   * Emails each person of the named competition submissions their own link (#2958), from Research Competitions. A
+   * participant is matched to a speaker record of their submission's season by email, ignoring case and surrounding
+   * spaces, and each speaker found is sent one link, as `sendLinks` sends them. Anyone with no speaker record is
+   * returned by name, with their submission's title, so the admin can add them.
+   */
+  public async sendLinksForSubmissions(submissionGuids: Array<string>, host?: string): Promise<SendForSubmissionsResult> {
+    if (!Array.isArray(submissionGuids) || submissionGuids.length === 0) {
+      throw new BadRequestException('No submissions were named.');
+    }
+
+    if (submissionGuids.some((guid) => typeof guid !== 'string' || !GUID.test(guid))) {
+      throw new BadRequestException('Name each submission by its id.');
+    }
+
+    const submissions = await this.submissions.find({ where: { guid: In(submissionGuids) }, relations: { season: true } });
+    const seasons = [...new Set(submissions.map((s) => s.season?.guid).filter(Boolean))];
+    const speakers = seasons.length
+      ? await this.speakers.find({ where: { season: { guid: In(seasons) } }, relations: { season: true } })
+      : [];
+    const matched = new Set<string>();
+    const unmatched: SendForSubmissionsResult['unmatched'] = [];
+
+    for (const submission of submissions) {
+      for (const participant of submission.participants ?? []) {
+        const email = emailKey(participant?.email);
+        const speaker = email
+          ? speakers.find((s) => s.season?.guid === submission.season?.guid && emailKey(s.email) === email)
+          : undefined;
+
+        if (speaker) {
+          matched.add(speaker.guid);
+        } else {
+          unmatched.push({
+            name: participant?.name?.trim() || participant?.email?.trim() || 'A participant with no name',
+            submission: submission.title
+          });
+        }
+      }
+    }
+
+    const sent = matched.size ? await this.sendLinks([...matched], host) : { sent: [], skipped: [] };
+
+    return { ...sent, unmatched };
+  }
 
   /** Emails each named speaker their own link (an admin's action). `host` is the address the admin is on. */
   public async sendLinks(speakerGuids: Array<string>, host?: string): Promise<SendResult> {
@@ -437,4 +492,9 @@ function appData(): string {
 
 async function removeFile(path: string) {
   await unlink(join(appData(), path)).catch(() => undefined);
+}
+
+/** An email address as two records are matched by it: trimmed and lower case, or null for none. */
+function emailKey(value: unknown): string | null {
+  return typeof value === 'string' && value.trim() ? value.trim().toLowerCase() : null;
 }

@@ -111,7 +111,8 @@ describe('SpeakerEditService', () => {
         applySelfEdit: async (guid: string, fields: object, photo?: object) => applied.push({ guid, fields, photo })
       } as never,
       { sendMessage: jest.fn(async (m) => sent.push(m)) } as never,
-      { findOneActive: async () => ({ guid: 'season' }) } as never
+      { findOneActive: async () => ({ guid: 'season' }) } as never,
+      {} as never
     );
   });
 
@@ -337,6 +338,9 @@ describe('senderAs (#2951)', () => {
  */
 describe('SpeakerEditService.sendLinksForSubmissions (#2958)', () => {
   const S2026 = 'season-2026';
+  const S1 = '5a1d3c2e-0b4f-4c6a-9e8d-7f6a5b4c3d21';
+  const S2 = '6b2e4d3f-1c5a-4d7b-8f9e-8a7b6c5d4e32';
+  const S3 = '7c3f5e4a-2d6b-4e8c-9a0f-9b8c7d6e5f43';
   const speakers = [
     { guid: 'sp-ana', firstName: 'Ana', lastName: 'Ruiz', email: ' Ana.Ruiz@TAMU.edu ', season: { guid: S2026 } },
     { guid: 'sp-cy', firstName: 'Cy', lastName: 'Diaz', email: 'cy@tamu.edu', season: { guid: S2026 } },
@@ -345,7 +349,7 @@ describe('SpeakerEditService.sendLinksForSubmissions (#2958)', () => {
   ];
   const submissions = [
     {
-      guid: 'sub-1',
+      guid: S1,
       title: 'Flood maps',
       season: { guid: S2026 },
       participants: [
@@ -354,7 +358,7 @@ describe('SpeakerEditService.sendLinksForSubmissions (#2958)', () => {
       ]
     },
     {
-      guid: 'sub-2',
+      guid: S2,
       title: 'Campus trees',
       season: { guid: S2026 },
       participants: [
@@ -364,7 +368,7 @@ describe('SpeakerEditService.sendLinksForSubmissions (#2958)', () => {
       ]
     },
     // A participant with no name is named by their address.
-    { guid: 'sub-3', title: 'Soil moisture', season: { guid: S2026 }, participants: [{ name: ' ', email: 'ben@tamu.edu' }] }
+    { guid: S3, title: 'Soil moisture', season: { guid: S2026 }, participants: [{ name: ' ', email: 'ben@tamu.edu' }] }
   ];
 
   let sent: Array<{ to: string; text: string }>;
@@ -391,8 +395,8 @@ describe('SpeakerEditService.sendLinksForSubmissions (#2958)', () => {
     );
   });
 
-  it("emails each matched speaker once, ignoring case, and names everyone with no speaker record", async () => {
-    const result = await service.sendLinksForSubmissions(['sub-1', 'sub-2'], 'gisday.tamu.edu');
+  it('emails each matched speaker once, ignoring case, and names everyone with no speaker record', async () => {
+    const result = await service.sendLinksForSubmissions([S1, S2], 'gisday.tamu.edu');
 
     expect(result).toEqual({
       sent: ['Ana Ruiz', 'Cy Diaz'],
@@ -407,7 +411,7 @@ describe('SpeakerEditService.sendLinksForSubmissions (#2958)', () => {
   });
 
   it('sends nothing, and still names them, when no one has a speaker record', async () => {
-    const result = await service.sendLinksForSubmissions(['sub-3']);
+    const result = await service.sendLinksForSubmissions([S3]);
 
     expect(result).toEqual({ sent: [], skipped: [], unmatched: [{ name: 'ben@tamu.edu', submission: 'Soil moisture' }] });
     expect(sent).toEqual([]);

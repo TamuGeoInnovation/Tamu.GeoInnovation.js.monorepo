@@ -281,15 +281,13 @@ describe('UserSubmissionProvider', () => {
     it("sends a finalist on Texas A&M's site the next steps under that site's name and address", async () => {
       const previousFrom = process.env.MAILROOM_FROM;
       process.env.MAILROOM_FROM = 'TxGIS Day <gisday@example.edu>';
-      jest
-        .spyOn(submissionRepo, 'findOne')
-        .mockResolvedValue(
-          submission({
-            title: 'Mapping Floods',
-            submissionType: 'poster',
-            participants: [{ name: 'Ana Ruiz', email: 'ana@tamu.edu' }]
-          })
-        );
+      jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(
+        submission({
+          title: 'Mapping Floods',
+          submissionType: 'poster',
+          participants: [{ name: 'Ana Ruiz', email: 'ana@tamu.edu' }]
+        })
+      );
 
       await provider.updateUserSubmission(
         'sub-1',
@@ -384,7 +382,13 @@ describe('UserSubmissionProvider', () => {
     });
 
     it("reviews and emails each one exactly as a single review does, from the reviewer's site", async () => {
-      await provider.updateUserSubmission(A, 'acct-reviewer', decide({}) as Partial<Submission>, REVIEWER_PERMS, 'gisday.tamu.edu');
+      await provider.updateUserSubmission(
+        A,
+        'acct-reviewer',
+        decide({}) as Partial<Submission>,
+        REVIEWER_PERMS,
+        'gisday.tamu.edu'
+      );
       const single = { written: written(), email: sends()[0] };
 
       (submissionRepo.update as jest.Mock).mockClear();
@@ -411,7 +415,13 @@ describe('UserSubmissionProvider', () => {
     });
 
     it('records and emails a rejection with the rejection wording', async () => {
-      const result = await provider.reviewUserSubmissions([B], 'acct-reviewer', { acceptance: false }, REVIEWER_PERMS, 'gisday.tamu.edu');
+      const result = await provider.reviewUserSubmissions(
+        [B],
+        'acct-reviewer',
+        { acceptance: false },
+        REVIEWER_PERMS,
+        'gisday.tamu.edu'
+      );
 
       expect(result.reviewed).toEqual(['Campus trees']);
       expect(written()).toEqual(expect.objectContaining({ acceptance: false, reviewed: true }));
@@ -432,7 +442,9 @@ describe('UserSubmissionProvider', () => {
       await expect(provider.reviewUserSubmissions([], 'r', { acceptance: true }, REVIEWER_PERMS)).rejects.toThrow(
         BadRequestException
       );
-      await expect(provider.reviewUserSubmissions([A], 'r', {} as never, REVIEWER_PERMS)).rejects.toThrow(BadRequestException);
+      await expect(provider.reviewUserSubmissions([A], 'r', {} as never, REVIEWER_PERMS)).rejects.toThrow(
+        BadRequestException
+      );
       await expect(provider.reviewUserSubmissions(['1; drop'], 'r', { acceptance: true }, REVIEWER_PERMS)).rejects.toThrow(
         BadRequestException
       );
@@ -440,7 +452,12 @@ describe('UserSubmissionProvider', () => {
     });
 
     it('carries on past one that fails, and names it', async () => {
-      const result = await provider.reviewUserSubmissions([MISSING, A], 'acct-reviewer', { acceptance: true }, REVIEWER_PERMS);
+      const result = await provider.reviewUserSubmissions(
+        [MISSING, A],
+        'acct-reviewer',
+        { acceptance: true },
+        REVIEWER_PERMS
+      );
 
       expect(result).toEqual({ reviewed: ['Flood maps'], failed: [{ title: MISSING, reason: 'it no longer exists' }] });
     });

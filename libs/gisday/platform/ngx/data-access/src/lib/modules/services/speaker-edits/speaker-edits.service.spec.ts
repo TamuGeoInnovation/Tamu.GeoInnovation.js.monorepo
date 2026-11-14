@@ -14,7 +14,11 @@ describe('SpeakerEditsService.sendForSubmissions()', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting(), { provide: EnvironmentService, useValue: { value: () => 'api' } }]
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: EnvironmentService, useValue: { value: () => 'api' } }
+      ]
     });
 
     service = TestBed.inject(SpeakerEditsService);
