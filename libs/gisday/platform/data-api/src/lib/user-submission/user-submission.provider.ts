@@ -349,7 +349,18 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
   private async _seasonFor(named: Partial<Season> | string | undefined): Promise<Partial<Season> | null> {
     const guid = typeof named === 'string' ? named : named?.guid;
 
-    return guid ? this.seasonService.findOne({ where: { guid } }) : this.seasonService.findOneActive();
+    if (guid) {
+      return this.seasonService.findOne({ where: { guid } });
+    }
+
+    // A site with no active season has no deadline to hold it to.
+    return this.seasonService.findOneActive().catch((err) => {
+      if (err instanceof NotFoundException) {
+        return null;
+      }
+
+      throw err;
+    });
   }
 
   private _generateResponseEmail(existingSubmission: Submission) {
