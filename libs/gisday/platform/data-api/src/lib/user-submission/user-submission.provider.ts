@@ -12,7 +12,17 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { isOwnerOrPermitted } from '@tamu-gisc/common/nest/auth';
-import { GisdaySite, gisdaySite } from '@tamu-gisc/gisday/common';
+import {
+  GisdaySite,
+  ReviewEmailKind,
+  fillReviewEmail,
+  gisdaySite,
+  reviewEmailKind,
+  reviewEmailKindLabel,
+  reviewEmailSubject,
+  reviewEmailTemplate,
+  reviewEmailValues
+} from '@tamu-gisc/gisday/common';
 import { closedAt, closedMessage, isDeadlineCompetition } from '@tamu-gisc/gisday/common';
 
 import { SubmissionType, Submission, Season, PRESENTATION_SUBMISSION_TYPE } from '../entities/all.entity';
@@ -32,6 +42,53 @@ const GUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 export interface ReviewManyResult {
   reviewed: Array<string>;
   failed: Array<{ title: string; reason: string }>;
+}
+
+/**
+ * The email a review would send, before it is sent (#2981): one group per kind of email in the selection, each with the
+ * text it starts from and an example filled in for its first submission.
+ */
+export interface ReviewEmailPreview {
+  groups: Array<{
+    kind: ReviewEmailKind;
+    label: string;
+    count: number;
+    subject: string;
+    template: string;
+    example: { title: string; to: string; cc: string; values: Record<string, string> };
+  }>;
+}
+
+/** The longest email text a reviewer may send (#2981). */
+const MAX_TEMPLATE = 20000;
+
+/** The edited texts a review was given, by kind, after checking each is text of a sensible size (#2981). */
+function checkedTemplates(templates: unknown): Partial<Record<ReviewEmailKind, string>> | undefined {
+  if (templates === undefined || templates === null) {
+    return undefined;
+  }
+
+  if (typeof templates !== 'object' || Array.isArray(templates)) {
+    throw new BadRequestException('The email texts must be given by kind.');
+  }
+
+  const checked: Partial<Record<ReviewEmailKind, string>> = {};
+
+  for (const kind of ['poster', 'presentation', 'rejection'] as Array<ReviewEmailKind>) {
+    const text = (templates as Record<string, unknown>)[kind];
+
+    if (text === undefined) {
+      continue;
+    }
+
+    if (typeof text !== 'string' || !text.trim() || text.length > MAX_TEMPLATE) {
+      throw new BadRequestException(`The ${kind} email must be text, up to ${MAX_TEMPLATE} characters.`);
+    }
+
+    checked[kind] = text;
+  }
+
+  return checked;
 }
 
 @Injectable()
@@ -256,7 +313,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
   public async reviewUserSubmissions(
     submissionGuids: Array<string>,
     userGuid: string,
-    review: { acceptance: boolean; message?: string },
+    review: { acceptance: boolean; message?: string; templates?: Partial<Record<ReviewEmailKind, string>> },
     requestorPermissions: Array<string> = [],
     host?: string
   ): Promise<ReviewManyResult> {
@@ -277,6 +334,8 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
       throw new BadRequestException('Say whether the submissions are accepted.');
     }
 
+    // The text the reviewer saw and approved (#2981); a kind not given keeps its own.
+    const templates = checkedTemplates(review.templates);
     const result: ReviewManyResult = { reviewed: [], failed: [] };
 
     for (const guid of [...new Set(submissionGuids)]) {
@@ -289,7 +348,8 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
           userGuid,
           { acceptance: review.acceptance, message: review.message } as Partial<Submission>,
           requestorPermissions,
-          host
+          host,
+          templates
         );
       } catch (err) {
         Logger.error(`Could not review submission ${guid}: ${err.message}`, 'UserSubmissionProvider');
@@ -316,6 +376,73 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
   }
 
   /**
+   * The email approving or rejecting the named submissions would send, for the reviewer to read and edit first (#2981).
+   * Nothing is recorded or sent. Each kind of email in the selection is one group, in the order poster, presentation,
+   * rejection, with the text it starts from and an example filled in for its first submission, as `reviewEmail` sends it.
+   */
+  public async previewReview(
+    submissionGuids: Array<string>,
+    review: { acceptance: boolean; message?: string },
+    requestorPermissions: Array<string> = [],
+    host?: string
+  ): Promise<ReviewEmailPreview> {
+    if (!requestorPermissions.includes('update:competitions')) {
+      throw new ForbiddenException();
+    }
+
+    if (!Array.isArray(submissionGuids) || submissionGuids.length === 0) {
+      throw new BadRequestException('No submissions were named.');
+    }
+
+    if (submissionGuids.some((guid) => typeof guid !== 'string' || !GUID.test(guid))) {
+      throw new BadRequestException('Name each submission by its id.');
+    }
+
+    if (typeof review?.acceptance !== 'boolean') {
+      throw new BadRequestException('Say whether the submissions are accepted.');
+    }
+
+    const site = gisdaySite(process.env.GISDAY_SITE, host);
+    const groups = new Map<ReviewEmailKind, ReviewEmailPreview['groups'][number]>();
+
+    for (const guid of [...new Set(submissionGuids)]) {
+      const submission = await this.userSubmissionRepo.findOne({ where: { guid }, relations: { season: true } });
+
+      if (!submission) {
+        continue;
+      }
+
+      const kind = reviewEmailKind(review.acceptance, submission.submissionType);
+      const group = groups.get(kind);
+
+      if (group) {
+        group.count++;
+        continue;
+      }
+
+      const [to, ...cc] = (submission.participants ?? []).map((p) => p.email);
+
+      groups.set(kind, {
+        kind,
+        label: reviewEmailKindLabel(kind),
+        count: 1,
+        subject: reviewEmailSubject(review.acceptance, site.name),
+        template: reviewEmailTemplate(kind),
+        example: {
+          title: submission.title ?? '',
+          to: to ?? '',
+          cc: cc.join(', '),
+          values: reviewEmailValues({ ...submission, message: review.message ?? submission.message }, site)
+        }
+      });
+    }
+
+    const order: Array<ReviewEmailKind> = ['poster', 'presentation', 'rejection'];
+
+    return { groups: order.filter((kind) => groups.has(kind)).map((kind) => groups.get(kind)) };
+  }
+
+  /**
    * Writes a submission's changes, and says how to send its review email when the change was a review. The single review
    * sends it without waiting; a review of many waits, to report any that did not go.
    */
@@ -324,7 +451,9 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     userGuid: string,
     submission: Partial<Submission>,
     requestorPermissions: Array<string>,
-    host?: string
+    host?: string,
+    /** The texts the reviewer approved, by kind (#2981). */
+    templates?: Partial<Record<ReviewEmailKind, string>>
   ) {
     const existingSubmission = await this.userSubmissionRepo.findOne({
       where: {
@@ -394,7 +523,11 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
                 cc: participantEmails.join(','),
                 subject: reviewSubject(existingSubmission, site),
                 from: senderAs(site.name, process.env.MAILROOM_FROM),
-                text: reviewEmail(existingSubmission, site),
+                text: reviewEmail(
+                  existingSubmission,
+                  site,
+                  templates?.[reviewEmailKind(existingSubmission.acceptance, existingSubmission.submissionType)]
+                ),
                 replyTo: process.env.MAILROOM_TO
               },
               true
@@ -485,53 +618,22 @@ function refuseIfClosed(season: Partial<Season> | null | undefined, submissionTy
 
 /** The review email's subject, naming the site and the decision (#2957). */
 export function reviewSubject(submission: Pick<Submission, 'acceptance'>, site: Pick<GisdaySite, 'name'>): string {
-  return submission.acceptance ? `Your ${site.name} submission has been accepted` : `Your ${site.name} submission`;
+  return reviewEmailSubject(submission.acceptance, site.name);
 }
 
 /**
- * The email a submitter gets when their submission is reviewed (#2957): on acceptance, what to do next, in three steps -
- * attach the file they will present from (#2933), complete their presenter profile from the separate email (#2936), and
- * check their session - all on the site the reviewer is on. A rejection keeps its wording, with the site's own name.
+ * The email a submitter gets when their submission is reviewed (#2957): a poster finalist's (#2980), a presenter's or a
+ * rejection, on the site the reviewer is on. `template` is the text the reviewer approved (#2981); without it, the kind's
+ * own. Its placeholders are filled in for this submission.
  */
 export function reviewEmail(
-  submission: Pick<Submission, 'title' | 'message' | 'acceptance' | 'submissionType' | 'participants'>,
-  site: Pick<GisdaySite, 'name' | 'address'>
+  submission: Pick<Submission, 'title' | 'message' | 'acceptance' | 'submissionType' | 'participants'> & {
+    season?: Partial<Season> | null;
+  },
+  site: Pick<GisdaySite, 'name' | 'address'>,
+  template?: string
 ): string {
-  const firstName = (submission.participants?.[0]?.name ?? '').trim().split(/\s+/)[0];
-  const greeting = firstName ? `Howdy ${firstName},` : 'Howdy!';
-  const notes = submission.message?.trim() ? `\n\nAdditional notes: ${submission.message.trim()}` : '';
+  const text = template ?? reviewEmailTemplate(reviewEmailKind(submission.acceptance, submission.submissionType));
 
-  if (!submission.acceptance) {
-    return `${greeting}
-
-Thank you for your recent submission, titled "${submission.title}."
-
-We regret to inform you that your submission has not been accepted for the ${site.name} competition. We appreciate the time and effort you put into your work, and encourage you to consider future opportunities to engage with the GIS community.${notes}
-
-If you have any questions, reply to this email.
-
-Best regards,
-The ${site.name} Team`;
-  }
-
-  const poster = submission.submissionType === 'poster';
-  const kind = poster ? 'poster' : 'presentation';
-  const file = poster ? 'your poster' : 'your slides';
-
-  return `${greeting}
-
-Congratulations! Your ${kind} submission, "${submission.title}", has been accepted for ${site.name}.
-
-What to do next:
-
-1. Attach ${file}. Sign in at ${site.address}/account/submissions, open your submission, and attach ${poster ? 'it' : 'them'} under Presentation files: PowerPoint or PDF, up to 100 MB each.
-
-2. Complete your presenter profile. A separate email will bring you a personal link to add your bio, photo, university and class year to the program.
-
-3. Check your session. See ${site.address}/sessions for when you present.${notes}
-
-Questions? Reply to this email.
-
-Best regards,
-The ${site.name} Team`;
+  return fillReviewEmail(text, reviewEmailValues(submission, site));
 }

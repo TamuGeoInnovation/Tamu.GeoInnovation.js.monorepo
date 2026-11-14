@@ -1,11 +1,12 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { map, Observable, shareReplay, switchMap } from 'rxjs';
+import { filter, map, Observable, shareReplay, switchMap } from 'rxjs';
 
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { Submission } from '@tamu-gisc/gisday/platform/data-api';
-import { SeasonService, UserSubmissionsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { SeasonService, UserSubmissionsService, reviewSubmissionsToast } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { SubmissionFilesComponent } from '@tamu-gisc/gisday/platform/ngx/common';
 import { SlideToggleComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -13,6 +14,11 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe, TitleCasePipe } from '@angular/common';
 
 import { BaseAdminDetailsPageComponent } from '../../../base-admin-details-page/base-admin-details-page.component';
+import {
+  ReviewEmailModalComponent,
+  ReviewEmailModalData,
+  ReviewEmailModalResult
+} from '../../components/review-email-modal/review-email-modal.component';
 
 @Component({
   selector: 'tamu-gisc-research-competition-review',
@@ -36,6 +42,7 @@ export class ResearchCompetitionReviewComponent extends BaseAdminDetailsPageComp
   private readonly submissionService = inject(UserSubmissionsService);
   private readonly ns = inject(NotificationService);
   private readonly ss = inject(SeasonService);
+  private readonly modals = inject(ModalService);
 
   public entity$: Observable<Partial<Submission>>;
   public form: UntypedFormGroup;
@@ -99,30 +106,45 @@ export class ResearchCompetitionReviewComponent extends BaseAdminDetailsPageComp
     });
   }
 
+  /**
+   * Submit Review: shows the email the decision will send, editable, and records the decision and sends it only on
+   * Send (#2981). Cancel leaves the submission as it was.
+   */
   public updateSubmission() {
     const rawValue = this.form.getRawValue();
 
-    // `accepted` has been coerced into a string. We need to convert it back to a boolean.
-    rawValue.acceptance = rawValue.acceptance === 'true';
+    // `acceptance` has been coerced into a string. We need to convert it back to a boolean.
+    const acceptance = rawValue.acceptance === 'true';
+    const guids = [rawValue.guid];
+    const data: ReviewEmailModalData = {
+      acceptance,
+      preview: this.submissionService.previewReview(guids, acceptance, rawValue.message)
+    };
 
-    this.submissionService.updateEntity(rawValue.guid, rawValue).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'update-submission-success',
-          title: 'Update Submission',
-          message: 'Submission review submitted successfully.'
-        });
+    this.modals
+      .open<ReviewEmailModalResult>(ReviewEmailModalComponent, { data })
+      .pipe(
+        filter((templates): templates is Record<string, string> => !!templates),
+        switchMap((templates) => this.submissionService.review(guids, acceptance, rawValue.message, templates))
+      )
+      .subscribe({
+        next: (result) => {
+          this.ns.toast(reviewSubmissionsToast(result, acceptance));
 
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'update-submission-error',
-          title: 'Update Submission',
-          message: `Error inserting submission review: ${err.status}`
-        });
-      }
-    });
+          if (result.reviewed.length) {
+            // The decision is saved: leaving is not leaving unsaved changes (#2942).
+            this.form.markAsPristine();
+            this._navigateBack();
+          }
+        },
+        error: (err) => {
+          this.ns.toast({
+            id: 'update-submission-error',
+            title: 'Update Submission',
+            message: `Error inserting submission review: ${err.status}`
+          });
+        }
+      });
   }
 
   private _navigateBack() {

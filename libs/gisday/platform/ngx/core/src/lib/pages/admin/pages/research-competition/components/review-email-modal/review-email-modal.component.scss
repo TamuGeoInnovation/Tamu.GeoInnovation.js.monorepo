@@ -1,0 +1,32 @@
+// Laid out as the shared alert modal is (ui-kits alert-modal), wider for the text of an email.
+.review-email {
+  max-width: 48rem;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+.review-email__title {
+  margin: 0 0 0.5rem;
+}
+
+.review-email__group {
+  margin-bottom: 1.5rem;
+}
+
+.review-email__meta {
+  margin: 0.25rem 0;
+}
+
+.review-email__preview {
+  white-space: pre-wrap;
+  font-family: inherit;
+  border-left: 3px solid currentColor;
+  padding-left: 0.75rem;
+}
+
+.review-email__footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
