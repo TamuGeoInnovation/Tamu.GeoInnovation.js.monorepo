@@ -351,14 +351,14 @@ describe('UserSubmissionProvider', () => {
       await expect(provider.getSubmissionsForSeason('missing')).resolves.toEqual([]);
     });
 
-    it('scopes to the season', async () => {
+    it("scopes to the season, with each submission's files for the list to count (#2933)", async () => {
       const season = { guid: 'season-1' };
       jest.spyOn(seasonService, 'findOne').mockResolvedValue(season as never);
       jest.spyOn(submissionRepo, 'find').mockResolvedValue([submission()]);
 
       await provider.getSubmissionsForSeason('season-1');
 
-      expect(submissionRepo.find).toHaveBeenCalledWith({ where: { season } });
+      expect(submissionRepo.find).toHaveBeenCalledWith({ where: { season }, relations: { files: true } });
     });
 
     describe('who submitted each (#2799)', () => {
