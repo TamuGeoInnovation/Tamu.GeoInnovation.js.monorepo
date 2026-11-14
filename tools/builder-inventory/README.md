@@ -68,7 +68,7 @@ Sharing the network namespace satisfies both without touching the API's allowlis
 | Variable | Default | Purpose |
 | --- | --- | --- |
 | `AGGIEMAP_SMOKE_BASE_URL` | `https://aggiemap.tamu.edu` | environment to walk |
-| `BUILDER_INVENTORY_ONLY` | - | comma-separated routes, for iterating on one builder |
+| `BUILDER_INVENTORY_ONLY` | - | comma-separated routes, for iterating on one builder. Their recordings are replaced and every other map's are kept, and the run says how many it kept (#2824). It refuses an output captured against another environment |
 | `BUILDER_INVENTORY_CONCURRENCY` | `4` | concurrent walks; each holds a browser context and an Esri map |
 | `BUILDER_INVENTORY_MAX` | `600` | per-map safety cap on destinations |
 

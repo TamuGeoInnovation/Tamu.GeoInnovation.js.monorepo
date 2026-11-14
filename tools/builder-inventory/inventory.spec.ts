@@ -41,7 +41,10 @@ import * as crypto from 'crypto';
 
 const BASE_URL = (process.env.AGGIEMAP_SMOKE_BASE_URL ?? 'https://aggiemap.tamu.edu').replace(/\/$/, '');
 
-/** Restrict to specific routes while iterating, e.g. `/events/graduation-fall,/parking/move-in`. */
+/**
+ * Restrict to specific routes while iterating, e.g. `/events/graduation-fall,/parking/move-in`. The walked routes'
+ * recordings are replaced and every other map's are kept (#2824).
+ */
 const ONLY = (process.env.BUILDER_INVENTORY_ONLY ?? '')
   .split(',')
   .map((entry) => entry.trim())
@@ -111,8 +114,20 @@ interface MapInventory {
 
 const inventory: MapInventory[] = [];
 
+/**
+ * The recordings a restricted walk keeps: every map already in the output, read before the walk starts (#2824).
+ *
+ * `BUILDER_INVENTORY_ONLY` used to write the output from only what it walked, so walking one builder deleted every
+ * other map's recordings: 363 destinations down to 2, exit 0, nothing said. A walked route now replaces its own
+ * entry and nothing else, and one not walked yet keeps its old entry, so a run that stops partway still leaves a
+ * whole file. Empty for a full walk, which records every builder and drops those that are gone.
+ */
+let recorded: MapInventory[] = [];
+
 test('capture builder destinations', async () => {
   test.setTimeout(6 * 60 * 60 * 1000);
+
+  recorded = recordedToKeep();
 
   const browser = await chromium.launch();
 
@@ -143,7 +158,15 @@ test('capture builder destinations', async () => {
 
   const captured = inventory.reduce((total, m) => total + m.destinations.filter((d) => d.shareUrl).length, 0);
 
-  console.log(`[inventory] ${inventory.length} builders, ${captured} destination URLs captured`);
+  const walked = new Set(inventory.map((m) => m.route));
+  const kept = recorded.filter((m) => !walked.has(m.route));
+  const keptDestinations = kept.reduce((total, m) => total + m.destinations.length, 0);
+
+  // What was kept is said beside what was captured, so a restricted walk that dropped recordings would show it here.
+  console.log(
+    `[inventory] ${inventory.length} builders, ${captured} destination URLs captured` +
+      (ONLY.length > 0 ? `; ${kept.length} other builders' ${keptDestinations} destinations kept` : '')
+  );
 
   // Capturing nothing means the walk is broken, not that there is nothing to capture.
   expect(captured, 'no destination share URLs were captured').toBeGreaterThan(0);
@@ -151,14 +174,39 @@ test('capture builder destinations', async () => {
 
 /** Writes both artifacts. Called after every map so progress is visible during a long run. */
 function persist(): void {
+  const walked = new Set(inventory.map((m) => m.route));
+  const maps = [...recorded.filter((m) => !walked.has(m.route)), ...inventory].sort((a, b) =>
+    a.route.localeCompare(b.route)
+  );
   const payload = {
     baseUrl: BASE_URL,
     capturedAt: new Date().toISOString(),
-    maps: inventory
+    maps
   };
 
   fs.writeFileSync(JSON_PATH, `${JSON.stringify(payload, null, 2)}\n`);
-  fs.writeFileSync(MARKDOWN_PATH, renderMarkdown(inventory));
+  fs.writeFileSync(MARKDOWN_PATH, renderMarkdown(maps));
+}
+
+/**
+ * The output's current recordings, for a restricted walk to keep (#2824). Refuses when they were captured against
+ * another environment: one file would then hold two environments' links under one `baseUrl`.
+ */
+function recordedToKeep(): MapInventory[] {
+  if (ONLY.length === 0 || !fs.existsSync(JSON_PATH)) {
+    return [];
+  }
+
+  const output: { baseUrl: string; maps: MapInventory[] } = JSON.parse(fs.readFileSync(JSON_PATH, 'utf8'));
+
+  if (output.baseUrl !== BASE_URL) {
+    throw new Error(
+      `${JSON_PATH} was captured against ${output.baseUrl}, not ${BASE_URL}. A restricted walk keeps the other ` +
+        `builders' recordings, and would mix two environments in one file: walk them all, or walk ${output.baseUrl}.`
+    );
+  }
+
+  return output.maps;
 }
 
 /**
