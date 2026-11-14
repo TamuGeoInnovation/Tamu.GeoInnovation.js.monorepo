@@ -1,5 +1,6 @@
 // Entities
 export * from './lib/entities/all.entity';
+export * from './lib/entities/timestamps';
 export * from './lib/_base/private-fields.interceptor';
 
 // Modules

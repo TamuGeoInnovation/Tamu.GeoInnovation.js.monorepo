@@ -14,7 +14,7 @@ import {
 } from 'typeorm';
 
 
-import { Season } from '@tamu-gisc/gisday/platform/data-api';
+import { Season, TIMESTAMP_COLUMN } from '@tamu-gisc/gisday/platform/data-api';
 
 import { COMPETITION_VALIDATION_STATUS } from '@tamu-gisc/gisday/common';
 
@@ -23,10 +23,11 @@ export class GISDayCompetitionBaseEntity extends BaseEntity {
   @PrimaryColumn()
   public guid: string;
 
-  @UpdateDateColumn({ type: 'datetimeoffset' })
+  // The server's clock with its offset, not getdate() (#2926): see TIMESTAMP_COLUMN.
+  @UpdateDateColumn(TIMESTAMP_COLUMN)
   public updated: Date;
 
-  @CreateDateColumn({ type: 'datetimeoffset' })
+  @CreateDateColumn(TIMESTAMP_COLUMN)
   public created: Date;
 
   @BeforeUpdate()

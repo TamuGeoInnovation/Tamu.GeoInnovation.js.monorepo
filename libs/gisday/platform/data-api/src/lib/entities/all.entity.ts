@@ -15,6 +15,8 @@ import {
   FindOptionsRelations
 } from 'typeorm';
 
+import { TIMESTAMP_COLUMN } from './timestamps';
+
 // TODO:
 
 /**
@@ -113,10 +115,11 @@ export class OldCompetitionEntity extends BaseEntity {
 
 @Entity()
 export class TimeStampEntity extends BaseEntity {
-  @UpdateDateColumn({ type: 'datetimeoffset' })
+  // The server's clock with its offset, not getdate() (#2926): see TIMESTAMP_COLUMN.
+  @UpdateDateColumn(TIMESTAMP_COLUMN)
   public updated: Date;
 
-  @CreateDateColumn({ type: 'datetimeoffset' })
+  @CreateDateColumn(TIMESTAMP_COLUMN)
   public created: Date;
 }
 
