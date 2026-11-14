@@ -1,31 +1,52 @@
-<div class="form-section-toolbar">
-  <div class="form-section-name">Submission deadlines{{ season()?.year ? ' for ' + season().year : '' }}</div>
-</div>
-<div class="form-section-body">
-  <p class="form-input-description">At a competition's deadline, new submissions and edits close; its files close at their own, later deadline. Empty leaves it open. Reviewers can still review and attach files after either.</p>
+<!-- A panel on the shared accordion (#2969): the toolbar opens and closes it, and shows the summary while it is closed. -->
+<ng-template giscAccordion [(expanded)]="expanded" let-accordion>
+  <div class="form-section-toolbar deadlines-toolbar" [giscAccordionHeader]="accordion">
+    <button type="button" class="form-section-name deadlines-toggle" [attr.aria-expanded]="accordion.expanded()" aria-controls="submission-deadlines-body">
+      <span class="material-icons" aria-hidden="true">{{ accordion.expanded() ? 'expand_less' : 'expand_more' }}</span>
+      Submission deadlines{{ season()?.year ? ' for ' + season().year : '' }}
+    </button>
+    @if (!accordion.expanded()) {
+    <span class="deadlines-summary">{{ summary() }}</span>
+    }
+  </div>
 
-  <form [formGroup]="form" (ngSubmit)="save()">
-    @for (competition of competitions; track competition.key) {
-    <p><strong>{{ competition.label }}</strong></p>
-    <div class="form-collection row">
-      @for (k of kinds; track k.kind) { @let field = deadlineField(competition.key, k.kind);
-      <div class="form-collection column">
-        <p>{{ k.label }}</p>
-        <div class="flex flex-row align-center">
-          <tamu-gisc-date-time-picker [formControlName]="field" [maxView]="'year'" [minView]="'minute'" [startView]="'day'"></tamu-gisc-date-time-picker>
-          <tamu-gisc-button type="button" fit="snug" look="secondary" value="Clear" (click)="clear(field)"></tamu-gisc-button>
-        </div>
-        <p class="form-input-description">{{ inCentralTime(form.controls[field].value, 'Open') }}</p>
+  <div class="form-section-body" id="submission-deadlines-body" *giscAccordionContent="accordion.expanded()">
+    <p class="form-input-description">At a competition's deadline, new submissions and edits close; its files close at their own, later deadline. Empty leaves it open. Reviewers can still review and attach files after either.</p>
+
+    <form [formGroup]="form" (ngSubmit)="save()">
+      <table class="deadlines-table">
+        <thead>
+          <tr>
+            <td></td>
+            @for (k of kinds; track k.kind) {
+            <th scope="col">{{ k.label }}</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (competition of competitions; track competition.key) {
+          <tr>
+            <th scope="row">{{ competition.label }}</th>
+            @for (k of kinds; track k.kind) { @let field = deadlineField(competition.key, k.kind);
+            <td>
+              <div class="flex flex-row align-center">
+                <tamu-gisc-date-time-picker [formControlName]="field" [maxView]="'year'" [minView]="'minute'" [startView]="'day'"></tamu-gisc-date-time-picker>
+                <span class="deadline-central pre-1">{{ inCentralTime(form.controls[field].value, 'Open') }}</span>
+                <tamu-gisc-button class="pre-1" type="button" fit="snug" size="small" look="secondary" value="Clear" (click)="clear(field)"></tamu-gisc-button>
+              </div>
+            </td>
+            }
+          </tr>
+          }
+        </tbody>
+      </table>
+
+      <div class="flex flex-row align-center justify-end leader-1">
+        @if (result(); as result) {
+        <p role="status" class="post-1" [class.clr-md-red-500]="!result.saved" [class.clr-md-green-600]="result.saved">{{ result.text }}</p>
+        }
+        <tamu-gisc-button type="submit" fit="snug" value="Save deadlines" [disabled]="saving() || !season()?.guid"></tamu-gisc-button>
       </div>
-      }
-    </div>
-    }
-
-    <div class="form-collection row">
-      <tamu-gisc-button type="submit" value="Save deadlines" [disabled]="saving() || !season()?.guid"></tamu-gisc-button>
-    </div>
-    @if (result(); as result) {
-    <p role="status" [class.clr-md-red-500]="!result.saved" [class.clr-md-green-600]="result.saved">{{ result.text }}</p>
-    }
-  </form>
-</div>
+    </form>
+  </div>
+</ng-template>

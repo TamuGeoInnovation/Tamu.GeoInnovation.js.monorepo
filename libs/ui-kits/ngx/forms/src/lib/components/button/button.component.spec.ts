@@ -68,4 +68,11 @@ describe('ButtonComponent styles', () => {
     expect(secondary['color']).toBe(action);
     expect(rule(css, ':host.secondary:hover')['border-color']).toBe(hover);
   });
+
+  // #2969: a small button for a lesser action beside a field, and the regular one left as it was.
+  it('makes a small button smaller than the regular one, and leaves the regular one as it was', () => {
+    expect(rule(css, ':host.small input')).toEqual({ padding: '0.35rem 0.75rem', 'font-size': '0.8rem' });
+    // The rule for `input` on its own, after the host's rules; `rule()` would find `:host.small input` first.
+    expect(css).toMatch(/\} input \{[^}]*padding: 0\.9rem 1rem;/);
+  });
 });

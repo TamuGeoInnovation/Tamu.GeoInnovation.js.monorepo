@@ -80,6 +80,12 @@ $accentColor: #424242;
     background: $actionActive;
   }
 
+  // A lesser action beside a field (#2969). The inner input carries the padding, so it is what gets smaller.
+  &.small input {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
   &.disabled {
     color: $accentColor;
     background: $inactiveColor;
