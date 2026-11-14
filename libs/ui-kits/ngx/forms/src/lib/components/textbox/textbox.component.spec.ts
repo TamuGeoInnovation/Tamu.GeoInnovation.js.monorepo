@@ -92,13 +92,16 @@ describe('TextboxComponent clear option (#2963)', () => {
     expect(button.tabIndex).toBe(0);
   });
 
-  it('clears the text, telling the form as typing does, and puts focus back in the box', () => {
+  it('clears the text, telling the form as typing does, and puts focus back in the box', async () => {
     const fixture = open(true);
     const changes: Array<string> = [];
     fixture.componentInstance.search.valueChanges.subscribe((v) => changes.push(v));
 
     type(fixture, 'texas');
     clearButton(fixture).click();
+    fixture.detectChanges();
+    // ngModel writes the input element a microtask later, as it does for any value the form sets.
+    await fixture.whenStable();
     fixture.detectChanges();
 
     const input = root(fixture).querySelector('tamu-gisc-textbox input') as HTMLInputElement;
