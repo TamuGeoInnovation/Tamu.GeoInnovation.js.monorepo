@@ -41,6 +41,11 @@ button.inline-link {
   text-align: left;
 }
 
+.files-limits {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
 .file-detail,
 .files-empty {
   color: vars.$aggie-support-grey;
@@ -49,6 +54,14 @@ button.inline-link {
 .danger,
 .files-problem {
   color: vars.$aggie-accent-red;
+}
+
+// The global .button on the shared picker's host: inline, its paperclip beside its label, and no side margin, so it
+// lines up with the list above it.
+tamu-gisc-file.button {
+  display: inline-flex;
+  align-items: center;
+  margin: 0.5rem 0 0;
 }
 
 progress {

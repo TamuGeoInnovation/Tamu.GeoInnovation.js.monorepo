@@ -59,7 +59,22 @@
     </div>
   </div>
 
-  @if (entity$ | async; as submission) { @if (submission.reviewed === false) {
+  <!-- The slides or poster themselves (#2933), in a box so a finalist looking for where to upload sees it at once, and
+  above the form's buttons, which close the page (#2938). Not a form control, so a reviewed submission, whose form is
+  locked, still takes files: finalists send theirs after being accepted. -->
+  @if (type() === 'edit') { @if (entity$ | async; as submission) {
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-title">Presentation files</div>
+    </div>
+    <div class="form-section-body">
+      <div class="info-block notice">
+        <p class="form-input-description">Attach the file you will present from, so the TxGIS Day team has it on the day: your slides for a presentation, or your poster as a PDF.</p>
+        <tamu-gisc-submission-files [submissionGuid]="submission.guid" [editable]="true"></tamu-gisc-submission-files>
+      </div>
+    </div>
+  </div>
+  } } @if (entity$ | async; as submission) { @if (submission.reviewed === false) {
   <div class="form-section">
     <div class="form-section-body">
       <div class="form-collection row">
@@ -80,18 +95,3 @@
   </div>
   }
 </form>
-
-<!-- The slides or poster themselves (#2933). Outside the form, so a reviewed submission, whose form is locked, still takes them: finalists send their files after being accepted. -->
-@if (type() === 'edit') { @if (entity$ | async; as submission) {
-<div class="form">
-  <div class="form-section">
-    <div class="form-section-toolbar">
-      <div class="form-section-title">Presentation files</div>
-    </div>
-    <div class="form-section-body">
-      <p class="form-input-description">The file you will present from, so the TxGIS Day team has it on the day: your slides for a presentation, or your poster as a PDF.</p>
-      <tamu-gisc-submission-files [submissionGuid]="submission.guid" [editable]="true"></tamu-gisc-submission-files>
-    </div>
-  </div>
-</div>
-} }

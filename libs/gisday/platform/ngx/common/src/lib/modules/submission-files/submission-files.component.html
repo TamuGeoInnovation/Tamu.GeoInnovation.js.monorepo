@@ -1,4 +1,7 @@
-@if (files(); as files) { @if (files.length === 0 && !uploading()) {
+@if (editable()) {
+<!-- Always shown, not only as the picker's placeholder, which goes while a file uploads and once the limit is reached (#2938). -->
+<p class="files-limits">PowerPoint (.ppt, .pptx) or PDF · up to {{ limit }} each · up to {{ rules.maxFiles }} files</p>
+} @if (files(); as files) { @if (files.length === 0 && !uploading()) {
 <p class="files-empty">No files attached yet.</p>
 } @else {
 <ul class="files">
@@ -19,7 +22,8 @@
   }
 </ul>
 } @if (editable() && !uploading() && files.length < rules.maxFiles) {
-<tamu-gisc-file [accept]="rules.accept" (fileSelected)="upload($event)"> Attach a file: PowerPoint or PDF, up to {{ limit }}, {{ rules.maxFiles }} per submission. </tamu-gisc-file>
+<!-- The shared picker, wearing the site's .button, so it reads as something to press rather than a line of text (#2938). -->
+<tamu-gisc-file class="button snug" [accept]="rules.accept" (fileSelected)="upload($event)">Attach a file</tamu-gisc-file>
 } @if (problem(); as problem) {
 <p class="files-problem" role="alert">{{ problem }}</p>
 } } @else {

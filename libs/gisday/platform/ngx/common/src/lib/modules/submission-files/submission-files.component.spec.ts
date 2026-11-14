@@ -74,6 +74,12 @@ describe('SubmissionFilesComponent', () => {
     expect(element.querySelector('[role=alert]').textContent).toContain('up to 3 files');
   });
 
+  it('says the limits to a student in words of its own, and not to an admin reviewing (#2938)', () => {
+    expect(render(true).element.querySelector('.files-limits').textContent).toContain('up to 100 MB each · up to 3 files');
+    TestBed.resetTestingModule();
+    expect(render(false).element.querySelector('.files-limits')).toBeNull();
+  });
+
   it('hides the picker once the submission has three files', () => {
     const three = [1, 2, 3].map((n) => ({ ...deck, guid: `f${n}`, name: `deck ${n}.pdf` }));
     const { element } = render(true, three);
