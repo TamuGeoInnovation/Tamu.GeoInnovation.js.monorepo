@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 61.** Written only by the directors on the work computer: `work (security)` (the security and
+> **Next free batch number: 62.** Written only by the directors on the work computer: `work (security)` (the security and
 > dependency chat) and, from 26 October, `work (gisday)` (the GIS Day chat; the maintainer wants this machine given work first, to
 > use its Copilot credits before they expire). The two share one number sequence: read and bump this line when you queue. A batch's
 > heading says which director wrote it, and its questions go to that director. You write `copilot-home/STATUS.md` and
@@ -23,6 +23,27 @@ batches below are fitted to it.
 **Reports:** `copilot-home/reports/<yyyy-mm-dd>-<n>.md`, starting with what you did, the exact commit of anything you pushed
 (read back with `git ls-remote fork`), what you proved and how, and then **Questions for the director (security)** with options and
 a recommendation. Push `work-mailbox` with a message starting `copilot-home: batch <n> done - <summary>`.
+
+---
+
+## Batch 61 (gisday: #2937, image uploads refuse SVG; 14 November 2026, from `home (gisday)`) (Medium, start now)
+
+The maintainer moved this from the lab to you today, to spread the queue. **Questions go to `home (gisday)`**, in your report.
+
+[#2937](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2937): image uploads accept SVG,
+which can carry script, and uploads are served from the site's own origin. **Speaker photos already refuse it**:
+`SpeakerProvider._refuseUnsafeImage` in `libs/gisday/platform/data-api/src/lib/speaker/speaker.provider.ts` (#2352) reads
+the type and size from the bytes. Find every other image upload in `libs/gisday/platform/data-api` (sponsors,
+organizations, places, and anything else using `FileInterceptor`) and make them refuse the same way, **sharing that check,
+not copying it** (move it where both can use it). Set the matching forms' `accept` to JPEG and PNG (and GIF and WebP if the
+check allows them; say which). List any SVG already stored in your local copy's `assets` table.
+
+- A test proving an SVG upload is refused, **red on the unchanged code first**, then green.
+- `bash scripts/check-in-volume.sh <branch> <each project you edited>,gisday-nest,gisday-angular`.
+- Branch `fix/2937-image-uploads` from `origin/development`, pushed to `fork`, `.pr-body.md` last (from
+  `.github/pull_request_template.md`, every section filled). No pull request; home opens it.
+- Report `copilot-home/reports/2026-11-14-61.md`, ending **"branch ready: fix/2937-image-uploads"** with the check's exit
+  code.
 
 ---
 

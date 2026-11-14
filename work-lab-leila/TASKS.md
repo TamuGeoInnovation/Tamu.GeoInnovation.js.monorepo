@@ -111,6 +111,8 @@ say which way you went and why. A test for each behaviour you can test; say plai
 
 ## Batch 45 (gisday: #2937, image uploads accept SVG; from `home (gisday)`) (Medium)
 
+**WITHDRAWN (14 November 2026, about 1:15 PM Central): moved to `copilot-home` as its batch 61, at the maintainer's word. Skip it.**
+
 [#2937](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2937). **Speaker photos already
 refuse SVG** (`SpeakerProvider._refuseUnsafeImage`, #2352): check sponsors, organizations and places, and make them use
 the same check rather than a copy. List any SVG already stored on your local copy. Branch `fix/2937-image-uploads`.
