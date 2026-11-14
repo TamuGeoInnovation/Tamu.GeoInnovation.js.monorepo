@@ -370,7 +370,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
   }
 }
 
-/** Refuses a request to a competition whose submissions have closed (#2934). Paper and cartography do not close. */
+/** Refuses a request to a competition whose submissions have closed (#2934, #2962). */
 function refuseIfClosed(season: Partial<Season> | null | undefined, submissionType: unknown): void {
   const at = closedAt(season, submissionType, 'submissions');
 
