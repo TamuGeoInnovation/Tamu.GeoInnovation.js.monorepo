@@ -8,7 +8,7 @@
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 
-import { GISDAY_ENTITIES } from '@tamu-gisc/gisday/platform/data-api';
+import { GISDAY_ENTITIES, GISDAY_SUBSCRIBERS } from '@tamu-gisc/gisday/platform/data-api';
 import { GISDAY_COMPETITIONS_ENTITIES } from '@tamu-gisc/gisday/competitions/data-api';
 
 export default new DataSource({
@@ -20,6 +20,7 @@ export default new DataSource({
   database: process.env.TYPEORM_DATABASE,
   options: { enableArithAbort: true, trustServerCertificate: true },
   entities: [...GISDAY_ENTITIES, ...GISDAY_COMPETITIONS_ENTITIES],
+  subscribers: GISDAY_SUBSCRIBERS,
   migrations: [__dirname + '/migrations/*.{ts,js}'],
   migrationsTableName: 'typeorm_migrations',
   synchronize: false,
