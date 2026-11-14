@@ -61,4 +61,18 @@ describe('SelectListComponent', () => {
     expect(fixture.componentInstance.chosen).toEqual({ guid: 'b', name: 'Ben Ode' });
     expect(list.form.controls.search.value).toBe('');
   });
+
+  // #2942: Escape in the open list closes it, as it does a drop-down, and is claimed, so the admin page around it
+  // does not also take it as "go back to the list".
+  it('closes its list on Escape, by moving focus out of it, and claims the Escape', () => {
+    const search = host.querySelector('input');
+    search.focus();
+
+    const escape = new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true });
+    search.dispatchEvent(escape);
+    fixture.detectChanges();
+
+    expect(host.contains(document.activeElement)).toBe(false);
+    expect(escape.defaultPrevented).toBe(true);
+  });
 });

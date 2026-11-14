@@ -11,6 +11,7 @@ import { gisdaySite } from '@tamu-gisc/gisday/common';
 import { senderAs } from '../_base/site-of-request';
 
 import { Speaker, SpeakerEdit, SpeakerEditLink, University } from '../entities/all.entity';
+import { refuseUnsafeImage } from '../assets/image-upload';
 import { SpeakerProvider } from '../speaker/speaker.provider';
 import { ContactService } from '../contact/contact.service';
 import { SeasonService } from '../season/season.service';
@@ -163,8 +164,9 @@ export class SpeakerEditService {
     const link = await this.linkFor(token);
     const clean = cleanFields(fields);
 
-    if (photo?.buffer) {
-      this.speakerProvider.refuseUnsafePhoto(photo);
+    // The same check as an admin's upload, before anything is kept: a JPEG or PNG by its content (#2937).
+    if (photo) {
+      refuseUnsafeImage(photo, 'The photo');
     }
 
     const previous = await this.edits.find({ where: { speaker: { guid: link.speaker.guid }, status: 'pending' } });
@@ -246,8 +248,8 @@ export class SpeakerEditService {
   public async approve(editGuid: string, adminGuid: string) {
     const edit = await this.pendingEdit(editGuid);
     const buffer = edit.photoPath ? await readFile(join(appData(), edit.photoPath)) : null;
-    // The speaker provider prefixes the speaker's guid; the name here only carries the type, which the photo's own bytes say.
-    const photo = buffer ? { buffer, originalname: isPng(buffer) ? 'photo.png' : 'photo.jpg' } : undefined;
+    // The speaker provider prefixes the speaker's guid, and its upload check names the file for its content (#2937).
+    const photo = buffer ? { buffer, originalname: 'photo' } : undefined;
 
     await this.speakerProvider.applySelfEdit(
       edit.speaker.guid,
@@ -424,11 +426,6 @@ function fullName(s: Pick<Speaker, 'firstName' | 'lastName'>): string {
 
 function looksLikeEmail(value: unknown): value is string {
   return typeof value === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
-}
-
-/** A PNG starts with these eight bytes; anything else accepted is stored as a JPEG. */
-function isPng(buffer: Buffer): boolean {
-  return buffer.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]));
 }
 
 function appData(): string {

@@ -12,6 +12,7 @@ import { DeleteResult, In, Repository } from 'typeorm';
 import { Organization, Event, Asset, Speaker } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
 import { AssetsService } from '../assets/assets.service';
+import { refuseUnsafeImage } from '../assets/image-upload';
 import { SeasonService } from '../season/season.service';
 
 @Injectable()
@@ -114,6 +115,9 @@ export class OrganizationService extends BaseProvider<Organization> {
   }
 
   public async createOrganization(organization: Partial<Organization>, file?: Express.Multer.File) {
+    // Checked before anything is saved, so a refused logo leaves nothing behind (#2937).
+    file = file ? refuseUnsafeImage(file, 'The logo') : file;
+
     const orgEnt = this.orgRepo.create({
       ...organization
     });
@@ -203,6 +207,9 @@ export class OrganizationService extends BaseProvider<Organization> {
   }
 
   public async updateOrganization(guid: string, incoming: Partial<Organization>, file?: Express.Multer.File) {
+    // Checked before anything is saved, so a refused logo leaves nothing behind (#2937).
+    file = file ? refuseUnsafeImage(file, 'The logo') : file;
+
     delete incoming.guid;
 
     const existing = await this.orgRepo.findOne({
