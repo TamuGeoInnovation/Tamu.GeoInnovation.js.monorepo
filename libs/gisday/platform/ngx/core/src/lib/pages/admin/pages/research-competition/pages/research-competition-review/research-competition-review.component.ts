@@ -6,6 +6,7 @@ import { map, Observable, shareReplay, switchMap } from 'rxjs';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { Submission } from '@tamu-gisc/gisday/platform/data-api';
 import { SeasonService, UserSubmissionsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { SubmissionFilesComponent } from '@tamu-gisc/gisday/platform/ngx/common';
 import { SlideToggleComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -22,7 +23,8 @@ import { AsyncPipe, TitleCasePipe } from '@angular/common';
     TextboxComponent,
     ButtonComponent,
     AsyncPipe,
-    TitleCasePipe
+    TitleCasePipe,
+    SubmissionFilesComponent
   ]
 })
 export class ResearchCompetitionReviewComponent implements OnInit {

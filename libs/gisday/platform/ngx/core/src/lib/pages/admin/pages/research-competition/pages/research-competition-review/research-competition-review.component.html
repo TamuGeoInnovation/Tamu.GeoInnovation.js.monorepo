@@ -30,6 +30,9 @@
           <li>{{participant.name}} @if (participant?.email) { ({{participant.email}}) } @if (participant?.studentId) { ({{participant.studentId}}) }</li>
           }
         </ul>
+        <h5>Files</h5>
+        <!-- The slides or poster the student attached (#2933): a click downloads one. -->
+        <tamu-gisc-submission-files [submissionGuid]="entity.guid"></tamu-gisc-submission-files>
       </div>
     </div>
     } @else {

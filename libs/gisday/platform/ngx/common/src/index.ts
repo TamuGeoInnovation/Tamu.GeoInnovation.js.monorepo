@@ -48,3 +48,4 @@ export * from './lib/modules/forms/components/user-submissions/user-submission-a
 
 // The site this deployment is (#1835)
 export * from './lib/site/site';
+export * from './lib/modules/submission-files/submission-files.component';

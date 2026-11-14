@@ -1,5 +1,12 @@
 import { Component, OnDestroy, OnInit, inject, input, signal } from '@angular/core';
-import { AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  AbstractControl,
+  UntypedFormArray,
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  FormsModule,
+  ReactiveFormsModule
+} from '@angular/forms';
 import { filter, map, Observable, shareReplay, startWith, Subject, switchMap, take, tap } from 'rxjs';
 
 import { Submission, SubmissionType } from '@tamu-gisc/gisday/platform/data-api';
@@ -12,7 +19,12 @@ import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
 
-import { SUBMISSION_CLASSIFICATION_OPTIONS, SUBMISSION_FORMAT_OPTIONS, SUBMISSION_TYPE_OPTIONS } from '../../../../../enums/submission-options';
+import { SubmissionFilesComponent } from '../../../../submission-files/submission-files.component';
+import {
+  SUBMISSION_CLASSIFICATION_OPTIONS,
+  SUBMISSION_FORMAT_OPTIONS,
+  SUBMISSION_TYPE_OPTIONS
+} from '../../../../../enums/submission-options';
 
 @Component({
   selector: 'tamu-gisc-user-submission-add-edit-form',
@@ -25,7 +37,8 @@ import { SUBMISSION_CLASSIFICATION_OPTIONS, SUBMISSION_FORMAT_OPTIONS, SUBMISSIO
     SlideToggleComponent,
     TextboxComponent,
     ButtonComponent,
-    AsyncPipe
+    AsyncPipe,
+    SubmissionFilesComponent
   ]
 })
 export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {

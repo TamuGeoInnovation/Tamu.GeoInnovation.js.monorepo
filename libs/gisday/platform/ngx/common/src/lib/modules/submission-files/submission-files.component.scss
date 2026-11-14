@@ -1,0 +1,56 @@
+@use 'libs/gisday/sass/variables' as vars;
+@import 'libs/sass/mixins';
+
+:host {
+  display: block;
+}
+
+.files {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.5rem;
+}
+
+// One line per file: its name (a download), its size and when it came, and Remove.
+.file {
+  @include flexbox();
+  @include flex-wrap(wrap);
+  @include align-items(baseline);
+  gap: 0.25rem 0.75rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid vars.$accent-grey;
+}
+
+// The global .inline-link, on a button: the reset only takes away what a button adds.
+button.inline-link {
+  background: none;
+  border: none;
+  font: inherit;
+  cursor: pointer;
+  padding: 0;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: progress;
+  }
+}
+
+.file-name {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+  text-align: left;
+}
+
+.file-detail,
+.files-empty {
+  color: vars.$aggie-support-grey;
+}
+
+.danger,
+.files-problem {
+  color: vars.$aggie-accent-red;
+}
+
+progress {
+  flex: 1 1 8rem;
+}

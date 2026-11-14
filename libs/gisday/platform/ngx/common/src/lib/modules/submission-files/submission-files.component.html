@@ -1,0 +1,27 @@
+@if (files(); as files) { @if (files.length === 0 && !uploading()) {
+<p class="files-empty">No files attached yet.</p>
+} @else {
+<ul class="files">
+  @for (file of files; track file.guid) {
+  <li class="file">
+    <button type="button" class="inline-link file-name" [disabled]="busy() === file.guid" (click)="download(file)">{{ file.name }}</button>
+    <span class="file-detail">{{ size(file.size) }} · {{ file.uploaded | date: 'MMM d, h:mm a' }}</span>
+    @if (editable()) {
+    <button type="button" class="inline-link danger" [disabled]="busy() === file.guid" (click)="remove(file)">Remove</button>
+    }
+  </li>
+  } @if (uploading(); as upload) {
+  <li class="file">
+    <span class="file-name">{{ upload.name }}</span>
+    <progress max="100" [value]="upload.percent"></progress>
+    <span class="file-detail">{{ upload.percent }}%</span>
+  </li>
+  }
+</ul>
+} @if (editable() && !uploading() && files.length < rules.maxFiles) {
+<tamu-gisc-file [accept]="rules.accept" (fileSelected)="upload($event)"> Attach a file: PowerPoint or PDF, up to {{ limit }}, {{ rules.maxFiles }} per submission. </tamu-gisc-file>
+} @if (problem(); as problem) {
+<p class="files-problem" role="alert">{{ problem }}</p>
+} } @else {
+<div class="loader"></div>
+}

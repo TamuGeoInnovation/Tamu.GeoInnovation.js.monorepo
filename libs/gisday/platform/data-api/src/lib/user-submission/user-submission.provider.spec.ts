@@ -4,10 +4,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { Repository } from 'typeorm';
 
-
 import { ContactService } from '../contact/contact.service';
 import { Submission, SubmissionType } from '../entities/all.entity';
 import { DashboardProfilesService } from '../dashboards/dashboard-profiles.service';
+import { AssetsService } from '../assets/assets.service';
 import { SeasonService } from '../season/season.service';
 import { UserSubmissionProvider } from './user-submission.provider';
 
@@ -53,7 +53,8 @@ describe('UserSubmissionProvider', () => {
         { provide: getRepositoryToken(SubmissionType), useValue: { find: jest.fn() } },
         { provide: SeasonService, useValue: { findOne: jest.fn(), findOneActive: jest.fn() } },
         { provide: ContactService, useValue: { sendMessage: jest.fn().mockResolvedValue({}) } },
-        { provide: DashboardProfilesService, useValue: { profilesOf: jest.fn().mockResolvedValue(new Map()) } }
+        { provide: DashboardProfilesService, useValue: { profilesOf: jest.fn().mockResolvedValue(new Map()) } },
+        { provide: AssetsService, useValue: { deleteAssetFiles: jest.fn().mockResolvedValue(undefined) } }
       ]
     }).compile();
 
@@ -160,25 +161,21 @@ describe('UserSubmissionProvider', () => {
     it('refuses someone else', async () => {
       jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission());
 
-      await expect(provider.getUserPresentation('sub-1', 'acct-other')).rejects.toThrow(
-        UnauthorizedException
-      );
+      await expect(provider.getUserPresentation('sub-1', 'acct-other')).rejects.toThrow(UnauthorizedException);
     });
 
     it('allows a reviewer holding read:competitions', async () => {
       jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission());
 
-      await expect(
-        provider.getUserPresentation('sub-1', 'acct-reviewer', ['read:competitions'])
-      ).resolves.toEqual(expect.objectContaining({ guid: 'sub-1' }));
+      await expect(provider.getUserPresentation('sub-1', 'acct-reviewer', ['read:competitions'])).resolves.toEqual(
+        expect.objectContaining({ guid: 'sub-1' })
+      );
     });
 
     it('throws NotFound before any ownership check when the submission is missing', async () => {
       jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(null);
 
-      await expect(provider.getUserPresentation('missing', 'acct-other')).rejects.toThrow(
-        NotFoundException
-      );
+      await expect(provider.getUserPresentation('missing', 'acct-other')).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -186,17 +183,15 @@ describe('UserSubmissionProvider', () => {
     it('refuses someone who neither owns it nor reviews', async () => {
       jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission());
 
-      await expect(
-        provider.updateUserSubmission('sub-1', 'acct-other', { title: 'Hijacked' })
-      ).rejects.toThrow(UnauthorizedException);
+      await expect(provider.updateUserSubmission('sub-1', 'acct-other', { title: 'Hijacked' })).rejects.toThrow(
+        UnauthorizedException
+      );
     });
 
     it('throws NotFound when the submission does not exist', async () => {
       jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(null);
 
-      await expect(provider.updateUserSubmission('missing', OWNER, {})).rejects.toThrow(
-        NotFoundException
-      );
+      await expect(provider.updateUserSubmission('missing', OWNER, {})).rejects.toThrow(NotFoundException);
     });
 
     it('lets the owner edit their own content', async () => {
@@ -266,9 +261,7 @@ describe('UserSubmissionProvider', () => {
     it('emails the entrant when a reviewer records a decision', async () => {
       jest
         .spyOn(submissionRepo, 'findOne')
-        .mockResolvedValue(
-          submission({ participants: [{ email: 'owner@tamu.edu' }, { email: 'coauthor@tamu.edu' }] })
-        );
+        .mockResolvedValue(submission({ participants: [{ email: 'owner@tamu.edu' }, { email: 'coauthor@tamu.edu' }] }));
 
       await provider.updateUserSubmission(
         'sub-1',
@@ -294,18 +287,11 @@ describe('UserSubmissionProvider', () => {
 
     it('still records the decision when the notification email fails', async () => {
       jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission());
-      jest
-        .spyOn(contactService, 'sendMessage')
-        .mockRejectedValue(new Error('mailroom unreachable'));
+      jest.spyOn(contactService, 'sendMessage').mockRejectedValue(new Error('mailroom unreachable'));
 
       // A reviewer's decision must not be lost because the mail server was down.
       await expect(
-        provider.updateUserSubmission(
-          'sub-1',
-          'acct-reviewer',
-          { acceptance: true } as Partial<Submission>,
-          REVIEWER_PERMS
-        )
+        provider.updateUserSubmission('sub-1', 'acct-reviewer', { acceptance: true } as Partial<Submission>, REVIEWER_PERMS)
       ).resolves.toEqual(expect.objectContaining({ affected: 1 }));
     });
   });
@@ -321,26 +307,22 @@ describe('UserSubmissionProvider', () => {
       jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission());
       const del = jest.spyOn(submissionRepo, 'delete');
 
-      await expect(provider.deleteUserSubmission('sub-1', 'acct-other')).rejects.toThrow(
-        UnauthorizedException
-      );
+      await expect(provider.deleteUserSubmission('sub-1', 'acct-other')).rejects.toThrow(UnauthorizedException);
       expect(del).not.toHaveBeenCalled();
     });
 
     it('allows a reviewer holding delete:competitions', async () => {
       jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission());
 
-      await expect(
-        provider.deleteUserSubmission('sub-1', 'acct-reviewer', ['delete:competitions'])
-      ).resolves.toEqual({ affected: 1 });
+      await expect(provider.deleteUserSubmission('sub-1', 'acct-reviewer', ['delete:competitions'])).resolves.toEqual({
+        affected: 1
+      });
     });
 
     it('throws NotFound when the submission does not exist', async () => {
       jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(null);
 
-      await expect(provider.deleteUserSubmission('missing', OWNER)).rejects.toThrow(
-        NotFoundException
-      );
+      await expect(provider.deleteUserSubmission('missing', OWNER)).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -353,9 +335,7 @@ describe('UserSubmissionProvider', () => {
 
       // The account comes from the JWT, not the body, which is what makes the ownership checks
       // elsewhere meaningful.
-      expect(submissionRepo.create).toHaveBeenCalledWith(
-        expect.objectContaining({ accountGuid: OWNER, title: 'A paper' })
-      );
+      expect(submissionRepo.create).toHaveBeenCalledWith(expect.objectContaining({ accountGuid: OWNER, title: 'A paper' }));
     });
 
     it('rejects a missing account or body', async () => {
@@ -400,14 +380,21 @@ describe('UserSubmissionProvider', () => {
         const [entry] = await provider.getSubmissionsForSeason('season-1');
 
         expect(entry.title).toBe('A paper');
-        expect(entry.submitter).toEqual({ firstName: 'Ana', lastName: 'Ruiz', email: 'student@tamu.edu', department: 'Geography' });
+        expect(entry.submitter).toEqual({
+          firstName: 'Ana',
+          lastName: 'Ruiz',
+          email: 'student@tamu.edu',
+          department: 'Geography'
+        });
       });
 
       it('takes the department, not the field of study, for anyone but a student', async () => {
         jest.spyOn(submissionRepo, 'find').mockResolvedValue([submission({ accountGuid: 'faculty' })]);
         jest
           .spyOn(profiles, 'profilesOf')
-          .mockResolvedValue(new Map([['faculty', profile('faculty', { app_metadata: { gisday: { attendeeType: 'academia' } } }) as never]]));
+          .mockResolvedValue(
+            new Map([['faculty', profile('faculty', { app_metadata: { gisday: { attendeeType: 'academia' } } }) as never]])
+          );
 
         const [entry] = await provider.getSubmissionsForSeason('season-1');
 

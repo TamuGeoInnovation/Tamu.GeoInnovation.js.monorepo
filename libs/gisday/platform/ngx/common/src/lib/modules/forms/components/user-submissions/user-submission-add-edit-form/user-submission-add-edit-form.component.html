@@ -52,7 +52,7 @@
       }
 
       <div class="form-collection column">
-        <p class="form-input-description">Upload your submission materials to a cloud storage provider of your choice (Google Drive, OneDrive, etc.) and provide the public URL below. To make the session seamless, please ensure that the link permissions are correctly setup so that it is accessible to anyone. Your materials will be downloaded on a computer on the day of the event.</p>
+        <p class="form-input-description">Optional: a link to your materials in a cloud storage provider of your choice (Google Drive, OneDrive, etc.). If you give one, make sure anyone with the link can open it. Once you have submitted, you can also attach your files to the submission itself, under Presentation files.</p>
 
         <tamu-gisc-textbox formControlName="link" placeholder="URL" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
       </div>
@@ -80,3 +80,16 @@
   </div>
   }
 </form>
+
+<!-- The slides or poster themselves (#2933). Outside the form, so a reviewed submission, whose form is locked, still takes them: finalists send their files after being accepted. -->
+@if (type() === 'edit') { @if (entity$ | async; as submission) {
+<div class="form-section">
+  <div class="form-section-toolbar">
+    <div class="form-section-title">Presentation files</div>
+  </div>
+  <div class="form-section-body">
+    <p class="form-input-description">The file you will present from, so the TxGIS Day team has it on the day: your slides for a presentation, or your poster as a PDF.</p>
+    <tamu-gisc-submission-files [submissionGuid]="submission.guid" [editable]="true"></tamu-gisc-submission-files>
+  </div>
+</div>
+} }

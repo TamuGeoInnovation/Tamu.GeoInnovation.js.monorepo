@@ -12,7 +12,8 @@ import {
   ManyToMany,
   JoinTable,
   OneToMany,
-  FindOptionsRelations
+  FindOptionsRelations,
+  Relation
 } from 'typeorm';
 
 import { TIMESTAMP_COLUMN } from './timestamps';
@@ -745,6 +746,14 @@ export class Asset extends GuidIdentity {
 
   @ManyToOne(() => Sponsor, (s) => s.logos, { nullable: true })
   public sponsor?: Sponsor;
+
+  /**
+   * A file a student attached to their submission (#2933): `name` is the name it was uploaded with, `path` where it is
+   * kept under APP_DATA. Deleted with its submission.
+   */
+  // Relation<>: Submission is declared further down this file, and a plain type would be read before it exists.
+  @ManyToOne(() => Submission, (s) => s.files, { nullable: true, onDelete: 'CASCADE' })
+  public submission?: Relation<Submission>;
 }
 
 @Entity({
@@ -923,6 +932,10 @@ export class Submission extends GuidIdentity {
 
   @ManyToOne(() => Season, (season) => season.submissions, { nullable: true })
   public season: Season;
+
+  /** The slides or poster the student attached (#2933). Not loaded unless asked for. */
+  @OneToMany(() => Asset, (asset) => asset.submission)
+  public files?: Asset[];
 }
 
 @Entity({

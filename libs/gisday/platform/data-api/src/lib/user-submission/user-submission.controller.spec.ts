@@ -3,6 +3,7 @@ import { Test } from '@nestjs/testing';
 
 import { UserSubmissionController } from './user-submission.controller';
 import { UserSubmissionProvider } from './user-submission.provider';
+import { SubmissionFilesService } from './submission-files.service';
 
 describe('UserSubmissionController posters', () => {
   let app: INestApplication;
@@ -14,7 +15,10 @@ describe('UserSubmissionController posters', () => {
   beforeAll(async () => {
     const module = await Test.createTestingModule({
       controllers: [UserSubmissionController],
-      providers: [{ provide: UserSubmissionProvider, useValue: { getPosters } }]
+      providers: [
+        { provide: UserSubmissionProvider, useValue: { getPosters } },
+        { provide: SubmissionFilesService, useValue: {} }
+      ]
     }).compile();
 
     app = module.createNestApplication({ logger: false });

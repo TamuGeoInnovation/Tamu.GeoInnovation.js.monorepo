@@ -3,6 +3,8 @@
     <div class="form-section-toolbar">
       <div class="form-section-name">Student Competition Submissions</div>
       <div class="form-section-actions">
+        <!-- Every attached file, a folder per submission (#2933). -->
+        <tamu-gisc-button class="post-1" fit="snug" [value]="zipping() ? 'Preparing zip…' : 'Download all files'" [disabled]="zipping()" (go)="downloadAllFiles()"></tamu-gisc-button>
         <tamu-gisc-select class="post-1" placeholder="Season" [floatLabel]="false" [data]="seasons$ | async" displayTemplate="year" valueTemplate="guid" [value]="$safeNavigationMigration((selectedSeason$ | async)?.guid)" (changed)="setSeason($event)"></tamu-gisc-select>
       </div>
     </div>
@@ -20,6 +22,10 @@
           <tamu-gisc-radio-group [formControl]="type" [options]="view.typeOptions" displayPath="label" valuePath="type"></tamu-gisc-radio-group>
         </div>
       </div>
+
+      @if (zipProblem(); as problem) {
+      <p class="clr-md-red-500" role="alert">{{problem}}</p>
+      }
 
       <p>Showing <strong>{{view.rows.length}}</strong> of {{view.total}} submissions.</p>
 
@@ -67,6 +73,11 @@
 
           <ngx-datatable-column name="Classification" prop="classificationType" [width]="165">
             <ng-template let-row="row" ngx-datatable-cell-template>{{row.classificationType | titlecase}}</ng-template>
+          </ngx-datatable-column>
+
+          <!-- How many files the student attached (#2933); the review page lists and downloads them. -->
+          <ngx-datatable-column name="Files" prop="files.length" [width]="70">
+            <ng-template let-row="row" ngx-datatable-cell-template>{{row.files?.length || ''}}</ng-template>
           </ngx-datatable-column>
 
           <ngx-datatable-column name="Status" prop="reviewStatus" [width]="110">

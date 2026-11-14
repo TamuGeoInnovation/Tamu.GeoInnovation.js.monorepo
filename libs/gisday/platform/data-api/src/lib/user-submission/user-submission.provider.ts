@@ -1,4 +1,11 @@
-import { HttpException, Injectable, InternalServerErrorException, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  HttpException,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  NotFoundException,
+  UnauthorizedException
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -11,6 +18,7 @@ import { ContactService } from '../contact/contact.service';
 import { PosterDto } from './dto/poster.dto';
 import { SubmissionWithSubmitter, submitterOf } from './dto/submission-submitter.dto';
 import { DashboardProfilesService } from '../dashboards/dashboard-profiles.service';
+import { AssetsService } from '../assets/assets.service';
 
 @Injectable()
 export class UserSubmissionProvider extends BaseProvider<Submission> {
@@ -19,7 +27,8 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     @InjectRepository(SubmissionType) public submissionTypeRepo: Repository<SubmissionType>,
     private readonly seasonService: SeasonService,
     private readonly contactService: ContactService,
-    private readonly profiles: DashboardProfilesService
+    private readonly profiles: DashboardProfilesService,
+    private readonly assets: AssetsService
   ) {
     super(userSubmissionRepo);
   }
@@ -42,7 +51,9 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
       const submissions = await this.userSubmissionRepo.find({
         where: {
           season: { guid: existingSeason.guid }
-        }
+        },
+        // The list shows how many files each has (#2933).
+        relations: { files: true }
       });
 
       return await this.withSubmitters(submissions);
@@ -281,7 +292,8 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     const submission = await this.userSubmissionRepo.findOne({
       where: {
         guid: submissionGuid
-      }
+      },
+      relations: { files: true }
     });
 
     if (!submission) {
@@ -295,7 +307,12 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     }
 
     try {
-      return this.userSubmissionRepo.delete(submissionGuid);
+      // Its file rows go with it (ON DELETE CASCADE); the files themselves are removed once that has committed (#2933).
+      const deleted = await this.userSubmissionRepo.delete(submissionGuid);
+
+      await this.assets.deleteAssetFiles(submission.files ?? []);
+
+      return deleted;
     } catch (err) {
       // An HttpException carries a deliberate status. Re-wrapping it below turned intended
       // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
