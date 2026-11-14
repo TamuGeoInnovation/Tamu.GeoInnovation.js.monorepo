@@ -19,11 +19,11 @@ describe('EventListComponent', () => {
     { guid: 'e-off', name: 'TBD Industry Presentation', active: false }
   ];
 
-  function open() {
+  function open(list: Array<object> = events) {
     const service = {
-      getEntities: () => of(events),
-      getEntitiesForActiveSeason: () => of(events),
-      getEntitiesForSeason: () => of(events),
+      getEntities: () => of(list),
+      getEntitiesForActiveSeason: () => of(list),
+      getEntitiesForSeason: () => of(list),
       setActive: jest.fn((guids: Array<string>) => of({ updated: guids.length }))
     };
 
@@ -46,6 +46,13 @@ describe('EventListComponent', () => {
   }
 
   const activeBoxes = (page: HTMLElement) => [...page.querySelectorAll('td.event-active tamu-gisc-checkbox')];
+
+  // #2943. Each day is headed as the public Sessions page heads it, with its day of the week, in Central time.
+  it('heads each day with its day of the week, as the Sessions page does', () => {
+    const { page } = open([{ guid: 'e-1', name: 'Workshop', active: true, day: { guid: 'd-1', date: '2026-11-16T06:00:00.000Z' } }]);
+
+    expect(page.querySelector('.card h2').textContent.trim()).toBe('Monday, November 16');
+  });
 
   it('shows whether each event is on the public schedule', () => {
     const { page } = open();

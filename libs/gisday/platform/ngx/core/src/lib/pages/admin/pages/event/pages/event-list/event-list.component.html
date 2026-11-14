@@ -16,7 +16,7 @@
            rows of one day do not run into the next (#1775). -->
       @for (group of days; track group.key) {
       <div class="card">
-      <h2>@if (group.date) {{{ group.date | date: 'MMMM dd' }}} @else {No day set}</h2>
+      <h2>@if (group.date) {{{ group.date | date: 'EEEE, MMMM d' : '-0600' }}} @else {No day set}</h2>
       <table class="floating-table">
         <thead>
           <tr>
