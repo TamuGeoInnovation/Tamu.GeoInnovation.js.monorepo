@@ -1,7 +1,5 @@
 import { DataSource } from 'typeorm';
 
-import { GISDAY_COMPETITIONS_ENTITIES } from '@tamu-gisc/gisday/competitions/data-api';
-
 import { Submission } from './all.entity';
 import { queryCheckingDataSource, recordWrites } from '../_base/query-checking-data-source';
 
@@ -10,13 +8,13 @@ import { queryCheckingDataSource, recordWrites } from '../_base/query-checking-d
  * local wall-clock time with no offset, so a datetimeoffset column stored 5:00 PM Central as 5:00 PM UTC. Inserts took
  * the column default; updates wrote `updated = CURRENT_TIMESTAMP`, the same thing again. `save()` updates through the same
  * query builder, after the same event, so `repository.update` stands for both. Both are checked here as
- * typeorm builds them, with every GIS Day entity, the competitions' included.
+ * typeorm builds them, with every GIS Day entity. The competitions' entities have the same check in their own library.
  */
 describe('created and updated, as typeorm writes them (#2926)', () => {
   let dataSource: DataSource;
 
   beforeAll(async () => {
-    dataSource = await queryCheckingDataSource(GISDAY_COMPETITIONS_ENTITIES);
+    dataSource = await queryCheckingDataSource();
   });
 
   it("defaults every table's created and updated to the server's clock with its offset, never getdate()", () => {
@@ -27,7 +25,7 @@ describe('created and updated, as typeorm writes them (#2926)', () => {
       );
 
     // Every table has both, as the base entities give them.
-    expect(columns.length).toBeGreaterThan(60);
+    expect(columns.length).toBeGreaterThan(50);
 
     const wrong = columns
       .map(({ table, column }) => ({
