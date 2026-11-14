@@ -58,6 +58,19 @@ database, and say so. Branch `feat/2934-submission-deadlines`.
 
 ---
 
+## Batch 46 (gisday: #2946, one set of button styles for a GIS Day site; from `home (gisday)`) (Medium) - **run it after batch 42, before 43**
+
+[#2946](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2946): read its body and the
+maintainer's decided comment, which has the three sources of button styles and the four steps. In short: the shared
+`tamu-gisc-button` (`libs/ui-kits/ngx/forms`) reads the site's `--gisday-action` tokens, with its current colours as
+fallbacks so other applications are unchanged; the button colours inside GIS Day components go; Texas A&M's site is maroon
+everywhere. This one is **not** the bug-fix check form: `tamu-gisc-button` is shared by other applications, so run the
+**full** `scripts/check-in-volume.sh <branch>`, and take before and after screenshots of txgisday.org **and** Texas A&M's
+site (`scripts/gisday-local.sh web --static --site tamu`), and of one other application that uses the button, to show it
+unchanged. Branch `fix/2946-one-button-style`.
+
+---
+
 ## Batch 43 (gisday: #2944, a search box on the public Sessions page; from `home (gisday)`) (Medium)
 
 [#2944](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2944): its body says what is wanted
