@@ -57,7 +57,9 @@ describe('PeopleDetailsComponent search (#2919)', () => {
     return fixture;
   }
 
+  // Typing into the box: it takes focus, which opens the panel, and the search changes.
   async function type(fixture: Awaited<ReturnType<typeof open>>, text: string) {
+    (fixture.nativeElement as HTMLElement).querySelector('.presenter-search-box').dispatchEvent(new FocusEvent('focusin', { bubbles: true }));
     fixture.componentInstance.search.setValue(text);
     fixture.detectChanges();
     await fixture.whenStable();
@@ -70,16 +72,16 @@ describe('PeopleDetailsComponent search (#2919)', () => {
     const root = (await open()).nativeElement as HTMLElement;
 
     expect(root.querySelector('.presenter-search tamu-gisc-textbox')).not.toBeNull();
-    expect(root.querySelector('.presenter-search-matches')).toBeNull();
+    expect(root.querySelector('.search-results-container')).toBeNull();
   });
 
   it("lists the matching presenters under it, each opening that presenter's page", async () => {
     const root = await type(await open(), 'texas');
-    const links = Array.from(root.querySelectorAll('.presenter-search-matches a'));
+    const links = Array.from(root.querySelectorAll('.search-results-container .result-item a'));
 
-    expect(links.map((a) => a.textContent.trim())).toEqual(['Pat Kim']);
+    expect(links.map((a) => a.textContent.replace(/\s+/g, ' ').trim())).toEqual(['Pat Kim | Texas Water Development Board']);
     expect(links[0].getAttribute('href')).toBe('/presenters/details/p-3');
-    expect(root.querySelector('.presenter-search-matches').textContent).toContain('Texas Water Development Board');
+    expect(root.querySelector('.search-results-container .category-name').textContent.trim()).toBe('1 other presenter');
   });
 
   it('links to the Presenters page, already searched, when more match than it lists', async () => {
@@ -88,7 +90,8 @@ describe('PeopleDetailsComponent search (#2919)', () => {
     const all = Array.from(root.querySelectorAll('.presenter-search a')).find((a) => a.textContent.includes('See all'));
     // No number: the list counts the presenter this page is for too, so it would say one more.
 
-    expect(root.querySelectorAll('.presenter-search-matches li')).toHaveLength(MATCHES_SHOWN);
+    // The ten, and the See all link, each in the panel's own item.
+    expect(root.querySelectorAll('.search-results-container .result-item')).toHaveLength(MATCHES_SHOWN + 1);
     expect(all.textContent.trim()).toBe('See all matches on the Presenters page');
     expect(all.getAttribute('href')).toBe('/presenters?search=smith');
   });
@@ -97,5 +100,65 @@ describe('PeopleDetailsComponent search (#2919)', () => {
     const root = await type(await open(), 'nobody');
 
     expect(root.querySelector('.presenter-search').textContent).toContain('No other presenters match "nobody"');
+  });
+
+  it('opens over the page, in the shared search results panel, and leaves the presenter where it was (#2923)', async () => {
+    const root = await type(await open(), 'texas');
+
+    expect(root.querySelector('.presenter-search-box .search-results-container')).not.toBeNull();
+    // The panel is inside the box's own container, so the presenter below does not move.
+    expect(root.querySelector('.presenter-details-item .search-results-container')).toBeNull();
+  });
+
+  it('closes on Escape, keeping what was typed, and opens again on typing', async () => {
+    const fixture = await open();
+    const root = await type(fixture, 'texas');
+    const box = root.querySelector('.presenter-search-box');
+
+    box.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    fixture.detectChanges();
+    expect(root.querySelector('.search-results-container')).toBeNull();
+    expect(fixture.componentInstance.search.value).toBe('texas');
+
+    box.dispatchEvent(new Event('input', { bubbles: true }));
+    fixture.detectChanges();
+    expect(root.querySelector('.search-results-container')).not.toBeNull();
+  });
+
+  it('closes when focus leaves the box for the rest of the page, but not for a match in the panel', async () => {
+    const fixture = await open();
+    const root = await type(fixture, 'texas');
+    const box = root.querySelector('.presenter-search-box');
+    const match = root.querySelector('.search-results-container .result-item a');
+
+    box.dispatchEvent(new FocusEvent('focusout', { bubbles: true, relatedTarget: match }));
+    fixture.detectChanges();
+    expect(root.querySelector('.search-results-container')).not.toBeNull();
+
+    box.dispatchEvent(new FocusEvent('focusout', { bubbles: true, relatedTarget: document.body }));
+    fixture.detectChanges();
+    expect(root.querySelector('.search-results-container')).toBeNull();
+  });
+
+  it('clears the search from the x in the box', async () => {
+    const fixture = await open();
+    const root = await type(fixture, 'texas');
+
+    (root.querySelector('tamu-gisc-textbox .search-clear') as HTMLElement).click();
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.search.value).toBe('');
+    expect(root.querySelector('.search-clear')).toBeNull();
+  });
+
+  it('closes and clears when a presenter is chosen', async () => {
+    const fixture = await open();
+    const root = await type(fixture, 'texas');
+
+    (root.querySelector('.search-results-container .result-item a') as HTMLElement).click();
+    fixture.detectChanges();
+
+    expect(root.querySelector('.search-results-container')).toBeNull();
+    expect(fixture.componentInstance.search.value).toBe('');
   });
 });

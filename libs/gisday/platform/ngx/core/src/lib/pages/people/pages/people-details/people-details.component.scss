@@ -56,29 +56,19 @@
   }
 }
 
-// The search box, as wide as on the Presenters page (#2859), with the matches listed under it (#2919).
+// The search box, as wide as on the Presenters page (#2859), its matches in the shared search results panel over
+// the page (#2923), placed against the box.
+@import 'libs/sass/components/search-results';
+
 .presenter-search {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  tamu-gisc-textbox {
-    width: 100%;
-    max-width: 32rem;
-  }
+  justify-content: center;
 }
 
-.presenter-search-matches {
+.presenter-search-box {
+  position: relative;
   width: 100%;
   max-width: 32rem;
-  margin: 0.5rem 0 0;
-  padding: 0;
-  list-style: none;
-
-  li {
-    padding: 0.35rem 0;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-  }
 }
 
 .presenter-search-where {

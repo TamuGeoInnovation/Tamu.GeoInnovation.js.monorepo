@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 
@@ -57,6 +57,8 @@ export class PeopleDetailsComponent implements OnInit {
   /** The Presenters page's search, here to get from one presenter to another (#2919). */
   public readonly search = new FormControl('', { nonNullable: true });
   public matches$: Observable<{ shown: Array<Partial<Speaker>>; total: number } | null>;
+  /** Whether the matches panel is open: while the search has focus, until a presenter is chosen or Escape (#2923). */
+  public readonly panelOpen = signal(false);
 
   public speakerGuid: string;
   public $speaker: Observable<Partial<Speaker>>;
@@ -76,8 +78,23 @@ export class PeopleDetailsComponent implements OnInit {
     ]).pipe(map(([people, search, current]) => otherMatches(people, search, current)));
   }
 
+  /** Closes the matches panel, leaving what was typed. */
+  public close() {
+    this.panelOpen.set(false);
+  }
+
+  /** Closes the panel when focus leaves the box and its matches, as a click elsewhere on the page does. */
+  public leaving(event: FocusEvent) {
+    const container = event.currentTarget as HTMLElement;
+
+    if (!container.contains(event.relatedTarget as Node | null)) {
+      this.close();
+    }
+  }
+
   /** Opening another presenter clears the search, so their page opens on them rather than on the matches. */
   public opened() {
+    this.close();
     this.search.setValue('');
   }
 }

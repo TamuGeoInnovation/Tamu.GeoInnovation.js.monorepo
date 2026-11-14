@@ -1,0 +1,39 @@
+// A search box's results panel, over the page under the box rather than in its flow: the shared search component's
+// (ui-kits/ngx/search), and any other search that lists its matches the same way, such as a presenter's page (#2923).
+// The panel is placed against the nearest positioned ancestor, which the box and the panel share.
+.search-results-container {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  z-index: 1;
+}
+
+.result-category {
+  background: #f2f2f2;
+
+  .category-name {
+    padding: 3px 12px;
+    font-weight: bold;
+  }
+}
+
+.result-item,
+.my-location {
+  background: #ffffff;
+  cursor: pointer;
+  border-left: 1px solid #e0e0e0;
+  border-right: 1px solid #e0e0e0;
+
+  &:hover,
+  &:focus {
+    background: #eeeee7;
+  }
+}
+
+// An item that is a link, rather than the search component's <p>, padded as its <p> is.
+.result-item > a {
+  display: block;
+  padding: 10px 12px;
+}
