@@ -52,6 +52,23 @@ export class UserSubmissionController {
     return this.files.zipForSeason(seasonGuid, req.user);
   }
 
+  /**
+   * Approves or rejects the named submissions at once, for Research Competitions' selected rows (#2958): each is reviewed
+   * and emailed as Submit Review does one, from the reviewer's site. Body: `{ submissions: [guid], acceptance, message? }`.
+   */
+  @Permissions(['update:competitions'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Post('review')
+  public reviewMany(@Body() body: { submissions: Array<string>; acceptance: boolean; message?: string }, @Request() req) {
+    return this.provider.reviewUserSubmissions(
+      body?.submissions,
+      req.user.sub,
+      { acceptance: body?.acceptance, message: body?.message },
+      req.user.permissions,
+      siteHost(req.headers)
+    );
+  }
+
   // A submission's attached files (#2933): its owner, or anyone who may read the competitions.
   @UseGuards(JwtGuard)
   @Get(':guid/files')

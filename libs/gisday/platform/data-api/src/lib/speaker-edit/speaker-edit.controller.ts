@@ -41,6 +41,17 @@ export class SpeakerEditController {
     return this.service.sendLinks(speakers, siteHost(req?.headers));
   }
 
+  /**
+   * Emails the people of each named competition submission their own link (#2958), from Research Competitions. It reads
+   * the submissions' participants and emails speakers, so it takes both permissions.
+   */
+  @Permissions(['update:speakers', 'read:competitions'], 'all')
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Post('send-for-submissions')
+  public sendForSubmissions(@Body('submissions') submissions: Array<string>, @Request() req) {
+    return this.service.sendLinksForSubmissions(submissions, siteHost(req?.headers));
+  }
+
   /** A speaker asking for their own link. The same answer whoever asks. */
   @Post('request')
   @HttpCode(202)
