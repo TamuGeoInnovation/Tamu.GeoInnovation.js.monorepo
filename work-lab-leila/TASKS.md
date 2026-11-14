@@ -88,6 +88,14 @@ page. Branch `feat/2942-admin-escape-back`.
 
 ---
 
+## Batch 53 (gisday: #2969, the deadlines panel compact and collapsible; from `work (gisday)`) (Low) - **after batch 52, last**
+
+[#2969](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2969): your #2934 section on Research
+Competitions, made compact and collapsible; the issue has the layout. Look for an existing collapsible panel in
+`libs/ui-kits/ngx/**` first. Branch `fix/2969-deadlines-panel`.
+
+---
+
 ## Batch 51 (gisday: #2962, closing dates for paper and cartography too; from `work (gisday)`) (Low) - **after batch 49, last**
 
 [#2962](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2962). Your #2934 work, now merged
