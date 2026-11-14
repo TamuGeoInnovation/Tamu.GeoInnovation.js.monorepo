@@ -560,6 +560,28 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     }
   }
 
+  /**
+   * Deletes each of the named submissions, with their files, as `deleteUserSubmission` deletes one (#2992). Only a
+   * reviewer may delete several; every id must be a submission's.
+   */
+  public async deleteUserSubmissions(submissionGuids: Array<string>, accountGuid: string, requestorPermissions: Array<string> = []) {
+    if (!requestorPermissions.includes('delete:competitions')) {
+      throw new ForbiddenException();
+    }
+
+    const guids = [...new Set((submissionGuids ?? []).map((guid) => `${guid}`.trim()).filter(Boolean))];
+
+    if (guids.length === 0 || guids.some((guid) => !GUID.test(guid))) {
+      throw new BadRequestException('Name each submission by its id.');
+    }
+
+    for (const guid of guids) {
+      await this.deleteUserSubmission(guid, accountGuid, requestorPermissions);
+    }
+
+    return { deleted: guids.length };
+  }
+
   public async deleteUserSubmission(submissionGuid: string, accountGuid: string, requestorPermissions: Array<string> = []) {
     const submission = await this.userSubmissionRepo.findOne({
       where: {

@@ -291,14 +291,24 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
           if (result?.delete) {
             const normalizedEntityName = this._pluralizeEntityName(singularEntityName, result.identities, pluralEntityName);
 
-            this.entityService.deleteEntities(result?.identities).subscribe(() => {
-              this.notificationService.toast({
-                message: `${result.identities.length} ${normalizedEntityName.toLowerCase()} deleted`,
-                id: 'entity-delete-success',
-                title: `${normalizedEntityName} Deleted`
-              });
+            this.entityService.deleteEntities(result?.identities).subscribe({
+              next: () => {
+                this.notificationService.toast({
+                  message: `${result.identities.length} ${normalizedEntityName.toLowerCase()} deleted`,
+                  id: 'entity-delete-success',
+                  title: `${normalizedEntityName} Deleted`
+                });
 
-              this.$signal.next(null);
+                this.$signal.next(null);
+              },
+              // A refused delete said nothing, so the rows simply stayed (#2992).
+              error: (err) => {
+                this.notificationService.toast({
+                  message: `Nothing was deleted: ${err?.error?.message ?? err?.statusText ?? 'the server refused'}.`,
+                  id: 'entity-delete-failed',
+                  title: `${normalizedEntityName} Not Deleted`
+                });
+              }
             });
           } else {
             console.log('Delete canceled');
