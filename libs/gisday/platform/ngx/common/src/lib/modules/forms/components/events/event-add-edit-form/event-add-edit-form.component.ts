@@ -320,7 +320,8 @@ export class EventAddEditFormComponent implements OnInit {
       )
       .subscribe({
         next: (result) => this.ns.toast(sendEditLinksToast(result)),
-        error: () => this.ns.toast({ id: 'speaker-edit-links', title: 'Edit links not sent', message: 'Please try again.' })
+        error: () =>
+          this.ns.toast({ id: 'speaker-edit-links', title: 'Profile emails not sent', message: 'Please try again.' })
       });
   }
 

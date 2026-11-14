@@ -796,6 +796,14 @@ export class SpeakerEdit extends GuidIdentity {
   @Column({ nullable: true })
   public socialMedia: string | null;
 
+  /** The class year a presenter card shows after the name, as the admin form takes it: "2018", or "2014, 2016" (#2953). */
+  @Column({ nullable: true, length: 50 })
+  public graduationYear: string | null;
+
+  /** The university, chosen from the season's list (#2953). Kept if the university is deleted, without it. */
+  @ManyToOne(() => University, { nullable: true, onDelete: 'SET NULL' })
+  public university?: Relation<University> | null;
+
   /** A proposed photo, under APP_DATA, until it is approved or rejected. */
   @Column({ nullable: true })
   public photoPath: string | null;
