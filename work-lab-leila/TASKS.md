@@ -88,6 +88,23 @@ page. Branch `feat/2942-admin-escape-back`.
 
 ---
 
+## Batch 51 (gisday: #2962, closing dates for paper and cartography too; from `work (gisday)`) (Low) - **after batch 49, last**
+
+[#2962](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2962). Your #2934 work, now merged
+(PR 2955), extended to paper and cartography; read the issue on making the rules one table over the competition types.
+Write its production script beside `migrate-prod-2934.ps1` in kubernetes-config (`6. GIS Day/migrations/`), on its own
+branch there, pushed to origin; home opens that PR too. Branch `feat/2962-more-deadlines`.
+
+---
+
+## Batch 52 (gisday: #2963, a clear option on the shared textbox; from `work (gisday)`) (Low) - **after batch 51, last**
+
+[#2963](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2963). `tamu-gisc-textbox` is shared by
+other applications: an option that is off unless asked for leaves them unchanged; run the **full** check. Your #2944
+branch (PR 2960) is where Sessions' box is. Branch `feat/2963-textbox-clear`.
+
+---
+
 ## Batch 50 (gisday: #2958, bulk approve, reject and send profile email on Research Competitions; from `work (gisday)`) (URGENT) - **run it NEXT, as soon as batch 44 is done, before 47**
 
 The maintainer needs this today to process the competition submissions.
