@@ -281,13 +281,15 @@ describe('UserSubmissionProvider', () => {
     it("sends a finalist on Texas A&M's site the next steps under that site's name and address", async () => {
       const previousFrom = process.env.MAILROOM_FROM;
       process.env.MAILROOM_FROM = 'TxGIS Day <gisday@example.edu>';
-      jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(
-        submission({
-          title: 'Mapping Floods',
-          submissionType: 'poster',
-          participants: [{ name: 'Ana Ruiz', email: 'ana@tamu.edu' }]
-        })
-      );
+      jest
+        .spyOn(submissionRepo, 'findOne')
+        .mockResolvedValue(
+          submission({
+            title: 'Mapping Floods',
+            submissionType: 'poster',
+            participants: [{ name: 'Ana Ruiz', email: 'ana@tamu.edu' }]
+          })
+        );
 
       await provider.updateUserSubmission(
         'sub-1',

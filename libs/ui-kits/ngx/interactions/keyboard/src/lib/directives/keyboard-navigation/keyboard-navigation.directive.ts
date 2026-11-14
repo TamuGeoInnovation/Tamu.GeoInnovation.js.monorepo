@@ -17,6 +17,7 @@ export class KeyboardNavigationDirective implements AfterViewInit {
   private activeIndex = -1;
   private externalControl: HTMLElement | null = null;
   private externalKeydownHandler: ((e: KeyboardEvent) => void) | null = null;
+  private closing = false;
 
   public ngAfterViewInit() {
     this.refreshOptions();
@@ -112,6 +113,9 @@ export class KeyboardNavigationDirective implements AfterViewInit {
         this.selectActive();
         break;
       case 'Escape':
+        // Claimed, so a page that gives Escape a meaning of its own (an admin details page going back to its list,
+        // #2942) knows the list used it.
+        event.preventDefault();
         this.closeList();
         break;
       default:
@@ -187,6 +191,7 @@ export class KeyboardNavigationDirective implements AfterViewInit {
         // Do nothing - let input handle it
         break;
       case 'Escape':
+        event.preventDefault();
         this.closeList();
         break;
       default:
@@ -235,9 +240,22 @@ export class KeyboardNavigationDirective implements AfterViewInit {
   }
 
   private closeList() {
+    // The Escape dispatched below reaches this directive's own keydown listener, which would close the list again,
+    // and again, until the stack ran out (#2942).
+    if (this.closing) {
+      return;
+    }
+
     // Blur focused element and attempt to close any open lists by dispatching Escape keyboard event
     const host = this.host.nativeElement;
-    host.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    this.closing = true;
+
+    try {
+      host.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    } finally {
+      this.closing = false;
+    }
+
     // revert active state
     if (this.activeIndex >= 0 && this.options[this.activeIndex]) {
       this.options[this.activeIndex].setAttribute(this.activeAttr(), 'false');

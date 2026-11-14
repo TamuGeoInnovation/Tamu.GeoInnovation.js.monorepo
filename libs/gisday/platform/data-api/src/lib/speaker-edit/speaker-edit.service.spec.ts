@@ -2,7 +2,9 @@ import { existsSync, mkdtempSync, rmSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
 
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
+
+import { declaredJpeg } from '@tamu-gisc/common/node/images';
 
 import { SpeakerEditService, cleanFields, hashOf, linkEmail, senderAs } from './speaker-edit.service';
 import { siteHost } from './speaker-edit.controller';
@@ -104,10 +106,6 @@ describe('SpeakerEditService', () => {
         findOne: jest.fn(async ({ where }) => (where.guid === TAMU ? { guid: TAMU, name: 'Texas A&M University' } : null))
       } as never,
       {
-        refuseUnsafePhoto: (file: { buffer: Buffer }) => {
-          if (file.buffer.toString().startsWith('<svg'))
-            throw new BadRequestException('The photo must be a PNG, JPEG, GIF or WebP image.');
-        },
         applySelfEdit: async (guid: string, fields: object, photo?: object) => applied.push({ guid, fields, photo })
       } as never,
       { sendMessage: jest.fn(async (m) => sent.push(m)) } as never,
@@ -196,14 +194,27 @@ describe('SpeakerEditService', () => {
     await service.sendLinks(['speaker-ana']);
 
     await expect(
-      service.propose(tokenSent(), {}, { buffer: Buffer.from('<svg onload="alert(1)">') } as never)
-    ).rejects.toThrow(/PNG, JPEG, GIF or WebP/);
+      service.propose(tokenSent(), {}, { originalname: 'face.svg', buffer: Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"/>') } as never)
+    ).rejects.toThrow(/JPEG or PNG/);
 
-    await service.propose(tokenSent(), { description: 'Bio' }, { buffer: Buffer.from('jpeg bytes') } as never);
+    await service.propose(tokenSent(), { description: 'Bio' }, { originalname: 'face.jpg', buffer: declaredJpeg(10, 10) } as never);
     const photoPath = edits[0].photoPath as string;
 
     expect(photoPath).toMatch(/^speaker-edits\//);
     expect(existsSync(join(appData, photoPath))).toBe(true);
+  });
+
+  // #2937. A speaker's own photo takes the same check as an admin's upload: a JPEG or PNG by its content, nothing else.
+  it.each([
+    ['an SVG renamed to .png', Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"/>')],
+    ['a GIF', Buffer.concat([Buffer.from('GIF89a', 'latin1'), Buffer.from([1, 0, 1, 0, 0, 0, 0, 0, 0, 0])])]
+  ])('refuses %s as a proposed photo, and keeps nothing', async (_name, buffer) => {
+    await service.sendLinks(['speaker-ana']);
+
+    await expect(
+      service.propose(tokenSent(), { description: 'Bio' }, { originalname: 'face.png', buffer } as never)
+    ).rejects.toThrow(/JPEG or PNG/);
+    expect(edits).toHaveLength(0);
   });
 
   // #2953. University and class year, which a presenter card shows, go through review like the rest.
@@ -240,7 +251,7 @@ describe('SpeakerEditService', () => {
 
   it('applies the proposal when an admin approves it, with the photo, and then removes the held photo', async () => {
     await service.sendLinks(['speaker-ana']);
-    await service.propose(tokenSent(), { description: 'Approved bio' }, { buffer: Buffer.from('jpeg bytes') } as never);
+    await service.propose(tokenSent(), { description: 'Approved bio' }, { originalname: 'face.jpg', buffer: declaredJpeg(10, 10) } as never);
     const edit = edits[0];
     edit.speaker = ana;
     const photoPath = edit.photoPath as string;
@@ -251,7 +262,7 @@ describe('SpeakerEditService', () => {
       expect.objectContaining({
         guid: 'speaker-ana',
         fields: expect.objectContaining({ description: 'Approved bio' }),
-        photo: expect.objectContaining({ buffer: Buffer.from('jpeg bytes'), originalname: 'photo.jpg' })
+        photo: expect.objectContaining({ buffer: declaredJpeg(10, 10), originalname: 'photo' })
       })
     ]);
     expect(edit).toEqual(expect.objectContaining({ status: 'approved', reviewedBy: 'auth0|admin', photoPath: null }));

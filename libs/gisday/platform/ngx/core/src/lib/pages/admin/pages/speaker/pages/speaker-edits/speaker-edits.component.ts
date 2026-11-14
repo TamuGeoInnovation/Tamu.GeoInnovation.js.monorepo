@@ -9,6 +9,8 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
+import { BaseAdminDetailsPageComponent } from '../../../base-admin-details-page/base-admin-details-page.component';
+
 /** The fields a speaker can propose, in the order the review shows them. */
 const FIELDS: Array<{ key: keyof SpeakerEditFields; label: string }> = [
   { key: 'university', label: 'University' },
@@ -29,7 +31,7 @@ const FIELDS: Array<{ key: keyof SpeakerEditFields; label: string }> = [
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, DatePipe, ButtonComponent, MarkdownParsePipe]
 })
-export class SpeakerEditsComponent implements OnInit, OnDestroy {
+export class SpeakerEditsComponent extends BaseAdminDetailsPageComponent implements OnInit, OnDestroy {
   private readonly edits = inject(SpeakerEditsService);
   private readonly ns = inject(NotificationService);
   private readonly destroyRef = inject(DestroyRef);

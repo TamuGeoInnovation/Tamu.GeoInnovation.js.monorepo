@@ -8,6 +8,7 @@ import {
   TemplateRef,
   ChangeDetectionStrategy,
   ElementRef,
+  HostListener,
   inject,
   input,
   output
@@ -98,6 +99,26 @@ export class SelectListComponent<T extends Record<string, unknown>> implements O
   public choose(item: T): void {
     this.selected.emit(item);
     this.form.controls.search.setValue('');
+
+    const focused = document.activeElement as HTMLElement;
+
+    if (this.host.nativeElement.contains(focused)) {
+      focused.blur();
+    }
+  }
+
+  /**
+   * Escape in the open list closes it, as it does a drop-down: the list shows while focus is inside it, so focus moves
+   * out. The Escape is claimed, so a page that gives Escape a meaning of its own (an admin details page going back to
+   * its list, #2942) leaves it alone.
+   */
+  @HostListener('keydown.escape', ['$event'])
+  public closeOnEscape(event: KeyboardEvent): void {
+    if (this.rowTemplate() === undefined || event.defaultPrevented) {
+      return;
+    }
+
+    event.preventDefault();
 
     const focused = document.activeElement as HTMLElement;
 

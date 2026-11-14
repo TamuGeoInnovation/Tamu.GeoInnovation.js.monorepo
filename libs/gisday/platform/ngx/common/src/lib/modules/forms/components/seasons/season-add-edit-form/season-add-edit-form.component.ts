@@ -89,6 +89,8 @@ export class SeasonAddEditFormComponent implements OnInit {
     this.days.set([...arrayGroup.controls]);
 
     this.form.markAllAsTouched();
+    // A change not yet saved (#2942); the days the season is opened with are set back to unchanged once added.
+    this.form.markAsDirty();
   }
 
   /**
@@ -101,6 +103,7 @@ export class SeasonAddEditFormComponent implements OnInit {
     this.days.set([...arrayGroup.controls]);
 
     this.form.markAllAsTouched();
+    this.form.markAsDirty();
   }
 
   /**
@@ -112,6 +115,7 @@ export class SeasonAddEditFormComponent implements OnInit {
     control.patchValue(day);
 
     this.form.markAllAsTouched();
+    this.form.markAsDirty();
   }
 
   public updateEntity() {

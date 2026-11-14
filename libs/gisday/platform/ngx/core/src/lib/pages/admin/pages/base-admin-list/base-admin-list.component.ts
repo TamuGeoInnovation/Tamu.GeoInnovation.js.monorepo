@@ -1,10 +1,11 @@
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Location } from '@angular/common';
 import { FormControl } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs';
-import { map, scan, shareReplay, startWith, switchMap, tap, withLatestFrom } from 'rxjs/operators';
+import { filter, map, scan, shareReplay, startWith, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 
 import { GuidIdentity, Season } from '@tamu-gisc/gisday/platform/data-api';
 import { BaseService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -33,6 +34,7 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
   private readonly modalService = inject(ModalService);
   private readonly notificationService = inject(NotificationService);
   private readonly listDestroyRef = inject(DestroyRef);
+  private readonly listLocation = inject(Location);
 
   public seasons$ = this.seasonService.seasons$;
   public activeSeason$ = this.seasonService.activeSeason$;
@@ -56,7 +58,44 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
   /** How many rows the search shows, of how many, for the search box. */
   public searchCounts$: Observable<{ shown: number; total: number }>;
 
+  /**
+   * The page's filters, by name: its search, and any filter of its own a page adds (#2942). They are kept in the
+   * list's own history entry, so going back to the list from a details page (Escape there, or the browser's Back)
+   * shows it as it was left, while opening the list afresh starts with none. The season is in the address already.
+   */
+  protected listFilters(): Record<string, FormControl<string>> {
+    return { search: this.search };
+  }
+
+  private keepFiltersInHistory() {
+    const filters = this.listFilters();
+    const kept = (this.listLocation.getState() as { adminList?: Record<string, unknown> } | null)?.adminList ?? {};
+
+    for (const [name, control] of Object.entries(filters)) {
+      if (typeof kept[name] === 'string') {
+        control.setValue(kept[name] as string);
+      }
+    }
+
+    // On every change, and on every new entry the list makes for itself (choosing a season), once its address is in
+    // place: the filters stay as they are across a change of season, so the new entry must carry them too.
+    merge(
+      ...Object.values(filters).map((control) => control.valueChanges),
+      this.router.events.pipe(filter((event) => event instanceof NavigationEnd))
+    )
+      .pipe(takeUntilDestroyed(this.listDestroyRef))
+      .subscribe(() => {
+        const values = Object.fromEntries(Object.entries(filters).map(([name, control]) => [name, control.value]));
+        const state = (this.listLocation.getState() as Record<string, unknown> | null) ?? {};
+
+        // The same address, with the router's own state kept beside the filters.
+        this.listLocation.replaceState(this.listLocation.path(), '', { ...state, adminList: values });
+      });
+  }
+
   public ngOnInit(): void {
+    this.keepFiltersInHistory();
+
     this.selectedSeason$ = merge(
       this.$signal.pipe(map(() => this.activatedRoute.snapshot.queryParams)),
       this.activatedRoute.queryParams

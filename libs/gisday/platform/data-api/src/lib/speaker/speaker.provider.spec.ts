@@ -307,7 +307,7 @@ describe('SpeakerProvider', () => {
       jest.spyOn(speakerRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
       jest.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'i-2' } as never);
 
-      await provider.updateWithInfo('s-1', {}, { originalname: 'face.png' });
+      await provider.updateWithInfo('s-1', {}, { originalname: 'face.png', buffer: declaredPng(10, 10) });
 
       expect(assetService.saveAsset).toHaveBeenCalledWith(
         'images/speakers',
@@ -377,6 +377,41 @@ describe('SpeakerProvider', () => {
       await provider.updateWithInfo('s-1', { guid: 's-hijack' } as never);
 
       expect((speakerRepo.save as jest.Mock).mock.calls[0][0].guid).toBe('s-1');
+    });
+
+    /**
+     * #2937. Speaker photos already refused an SVG (#2352); they now take a JPEG or PNG only, as the logos do, with the same
+     * check, and the stored name follows the content.
+     */
+    describe('photo uploads (#2937)', () => {
+      const svg = Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"/>');
+      // A GIF's header: its signature, then a 1 x 1 logical screen.
+      const gif = Buffer.concat([Buffer.from('GIF89a', 'latin1'), Buffer.from([1, 0, 1, 0, 0, 0, 0, 0, 0, 0])]);
+      const upload = (originalname: string, buffer: Buffer) => ({ originalname, mimetype: 'image/png', buffer, size: buffer.length });
+
+      it.each([
+        ['an SVG renamed to .png', upload('face.png', svg)],
+        ['a GIF', upload('face.gif', gif)]
+      ])('refuses %s with 400, on update and on create', async (_name, file) => {
+        jest.spyOn(speakerRepo, 'findOne').mockResolvedValue(existing());
+        const save = jest.fn();
+        jest.spyOn(speakerRepo, 'create').mockReturnValue({ save } as never);
+
+        await expect(provider.updateWithInfo('s-1', {}, file)).rejects.toThrow(BadRequestException);
+        await expect(provider.insertWithInfo({ firstName: 'A' }, file)).rejects.toThrow(BadRequestException);
+        expect(save).not.toHaveBeenCalled();
+        expect(assetService.saveAsset).not.toHaveBeenCalled();
+      });
+
+      it('stores a PNG named .svg under a .png name', async () => {
+        jest.spyOn(speakerRepo, 'findOne').mockResolvedValue(existing());
+        jest.spyOn(speakerRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
+        jest.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'i-2' } as never);
+
+        await provider.updateWithInfo('s-1', {}, upload('face.svg', declaredPng(10, 10)));
+
+        expect((assetService.saveAsset as jest.Mock).mock.calls[0][1].originalname).toBe('face.png');
+      });
     });
   });
 
