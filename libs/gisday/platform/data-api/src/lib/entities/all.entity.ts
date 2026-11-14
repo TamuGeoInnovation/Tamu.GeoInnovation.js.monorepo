@@ -146,6 +146,22 @@ export class Season extends GuidIdentity {
   @Column({ default: false })
   public active: boolean;
 
+  /**
+   * When the poster and presentation competitions stop taking new submissions and edits, and when, later, the files
+   * attached to them close (#2934). Empty leaves that side open. `@tamu-gisc/gisday/common`'s `closedAt` reads them.
+   */
+  @Column({ type: 'datetimeoffset', nullable: true })
+  public posterSubmissionsCloseAt?: Date | null;
+
+  @Column({ type: 'datetimeoffset', nullable: true })
+  public posterFilesCloseAt?: Date | null;
+
+  @Column({ type: 'datetimeoffset', nullable: true })
+  public presentationSubmissionsCloseAt?: Date | null;
+
+  @Column({ type: 'datetimeoffset', nullable: true })
+  public presentationFilesCloseAt?: Date | null;
+
   // Season has multiple days
   @OneToMany(() => SeasonDay, (seasonDay) => seasonDay.season, { cascade: true, onDelete: 'CASCADE' })
   public days: SeasonDay[];

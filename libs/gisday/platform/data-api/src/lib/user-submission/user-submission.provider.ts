@@ -1,4 +1,5 @@
 import {
+  ForbiddenException,
   HttpException,
   Injectable,
   InternalServerErrorException,
@@ -10,6 +11,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { isOwnerOrPermitted } from '@tamu-gisc/common/nest/auth';
+import { closedAt, closedMessage, isDeadlineCompetition } from '@tamu-gisc/gisday/common';
 
 import { SubmissionType, Submission, Season, PRESENTATION_SUBMISSION_TYPE } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
@@ -168,7 +170,9 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     const presentation = await this.userSubmissionRepo.findOne({
       where: {
         guid: submissionGuid
-      }
+      },
+      // Its season says when its competition closes, which the page shows (#2934).
+      relations: { season: true }
     });
 
     if (!presentation) {
@@ -188,6 +192,9 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     if (!submission || !accountGuid) {
       throw new InternalServerErrorException('Missing required parameters.');
     }
+
+    // The deadline is that of the season it will be saved to: the one the body names, or the active one (#2934).
+    refuseIfClosed(await this._seasonFor(submission.season), submission.submissionType);
 
     const userSubmission = this.userSubmissionRepo.create({ ...submission, accountGuid });
 
@@ -213,7 +220,8 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     const existingSubmission = await this.userSubmissionRepo.findOne({
       where: {
         guid: submissionGuid
-      }
+      },
+      relations: { season: true }
     });
 
     if (!existingSubmission) {
@@ -224,6 +232,16 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
 
     if (!isOwnerOrPermitted(requestor, existingSubmission.accountGuid, 'update:competitions')) {
       throw new UnauthorizedException();
+    }
+
+    // An entrant's edits close with their competition (#2934), as does an edit that would move the submission into one
+    // that has closed. Reviewers are not held to it: they review once submissions have closed.
+    if (requestorPermissions.indexOf('update:competitions') === -1) {
+      refuseIfClosed(existingSubmission.season, existingSubmission.submissionType);
+      refuseIfClosed(existingSubmission.season, submission.submissionType);
+
+      // Nor may an entrant move it to another season, whose deadline would then be the one that counts.
+      delete submission.season;
     }
 
     // The row is written from `submission` -- the caller's request body -- so anything that must
@@ -324,6 +342,16 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     }
   }
 
+  /**
+   * The season a new submission is saved to: the one the body names, by its guid or as an object with one, or the
+   * active one when it names none.
+   */
+  private async _seasonFor(named: Partial<Season> | string | undefined): Promise<Partial<Season> | null> {
+    const guid = typeof named === 'string' ? named : named?.guid;
+
+    return guid ? this.seasonService.findOne({ where: { guid } }) : this.seasonService.findOneActive();
+  }
+
   private _generateResponseEmail(existingSubmission: Submission) {
     const { title, message, acceptance } = existingSubmission;
 
@@ -345,5 +373,14 @@ If you have any questions or concerns, please feel free to reach out to the TxGI
 Best regards,
 The TxGIS Day Team
       `;
+  }
+}
+
+/** Refuses a request to a competition whose submissions have closed (#2934). Paper and cartography do not close. */
+function refuseIfClosed(season: Partial<Season> | null | undefined, submissionType: unknown): void {
+  const at = closedAt(season, submissionType, 'submissions');
+
+  if (at && isDeadlineCompetition(submissionType)) {
+    throw new ForbiddenException(closedMessage(submissionType, 'submissions', at));
   }
 }

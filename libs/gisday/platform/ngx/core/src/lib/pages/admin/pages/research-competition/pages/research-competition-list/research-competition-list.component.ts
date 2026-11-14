@@ -18,6 +18,7 @@ import { downloadFile } from '@tamu-gisc/common/utils/ui';
 import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
 
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
+import { SubmissionDeadlinesComponent } from '../../components/submission-deadlines/submission-deadlines.component';
 
 /** A submission as the table shows it: with its review status worked out, so the table can sort by it (#2808). */
 export type SubmissionRow = Partial<SubmissionWithSubmitter> & { reviewStatus: SUBMISSION_REVIEW_STATUS };
@@ -60,7 +61,8 @@ function keepIfOffered(control: FormControl<string>, chosen: string, offered: Ar
     AsyncPipe,
     DatePipe,
     TitleCasePipe,
-    ExistsPipe
+    ExistsPipe,
+    SubmissionDeadlinesComponent
   ]
 })
 export class ResearchCompetitionListComponent extends BaseAdminListComponent<Submission> implements OnInit {

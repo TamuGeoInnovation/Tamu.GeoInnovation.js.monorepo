@@ -16,7 +16,14 @@ import { Repository } from 'typeorm';
 import JSZip from 'jszip';
 
 import { OwnershipUser, isOwnerOrPermitted } from '@tamu-gisc/common/nest/auth';
-import { SubmissionFileDto, extensionOf, submissionFileProblem } from '@tamu-gisc/gisday/common';
+import {
+  SubmissionFileDto,
+  closedAt,
+  closedMessage,
+  extensionOf,
+  isDeadlineCompetition,
+  submissionFileProblem
+} from '@tamu-gisc/gisday/common';
 
 import { Asset, Submission } from '../entities/all.entity';
 import { AssetsService } from '../assets/assets.service';
@@ -61,6 +68,9 @@ export class SubmissionFilesService {
       }
 
       const submission = await this.submissionFor(submissionGuid, user, 'update:competitions');
+
+      refuseIfFilesClosed(submission, user);
+
       const problem = submissionFileProblem(upload.originalname, upload.size, submission.files?.length ?? 0);
 
       if (problem) {
@@ -89,6 +99,9 @@ export class SubmissionFilesService {
 
   public async remove(submissionGuid: string, fileGuid: string, user: OwnershipUser): Promise<void> {
     const submission = await this.submissionFor(submissionGuid, user, 'update:competitions');
+
+    refuseIfFilesClosed(submission, user);
+
     const file = this.fileOf(submission, fileGuid);
 
     await this.assets.delete(file.guid);
@@ -180,7 +193,7 @@ export class SubmissionFilesService {
    * reported as not found, so a guid cannot be used to learn whether a submission exists.
    */
   private async submissionFor(guid: string, user: OwnershipUser, permission: string): Promise<Submission> {
-    const submission = await this.submissions.findOne({ where: { guid }, relations: { files: true } });
+    const submission = await this.submissions.findOne({ where: { guid }, relations: { files: true, season: true } });
 
     if (!submission || !isOwnerOrPermitted(user, submission.accountGuid, permission)) {
       throw new NotFoundException('Submission not found.');
@@ -205,6 +218,22 @@ export class SubmissionFilesService {
       .catch(() => null);
 
     return { guid: file.guid, name: file.name, size, uploaded: file.created };
+  }
+}
+
+/**
+ * Refuses a student's upload or removal once their competition's files have closed (#2934). The admins, who may update
+ * the competitions, are not held to it.
+ */
+function refuseIfFilesClosed(submission: Submission, user: OwnershipUser): void {
+  if (isOwnerOrPermitted(user, '', 'update:competitions')) {
+    return;
+  }
+
+  const at = closedAt(submission.season, submission.submissionType, 'files');
+
+  if (at && isDeadlineCompetition(submission.submissionType)) {
+    throw new ForbiddenException(closedMessage(submission.submissionType, 'files', at));
   }
 }
 

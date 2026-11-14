@@ -1,4 +1,4 @@
-import { NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 
@@ -341,6 +341,141 @@ describe('UserSubmissionProvider', () => {
     it('rejects a missing account or body', async () => {
       await expect(provider.insertUserSubmission(OWNER, null)).rejects.toThrow();
       await expect(provider.insertUserSubmission(null, { title: 'x' })).rejects.toThrow();
+    });
+  });
+
+  /**
+   * #2934: an admin sets when each competition, poster and presentation, stops taking submissions. At that moment new
+   * submissions and edits close, refused by the API whatever the page shows. Reviewers are not held to it.
+   */
+  describe('the submission deadline (#2934)', () => {
+    const past = '2026-11-01T17:00:00.000Z';
+    const future = '2099-11-01T17:00:00.000Z';
+    const SEASON = { guid: 'season-2026', year: 2026 };
+
+    function seasonWith(deadlines: Record<string, unknown>) {
+      const season = { ...SEASON, ...deadlines };
+
+      jest.spyOn(seasonService, 'findOne').mockResolvedValue(season as never);
+      jest.spyOn(seasonService, 'findOneActive').mockResolvedValue(season as never);
+
+      return season;
+    }
+
+    beforeEach(() => {
+      jest.spyOn(submissionRepo, 'create').mockImplementation((s) => s as never);
+      jest.spyOn(submissionRepo, 'save').mockImplementation((s) => Promise.resolve(s as never));
+    });
+
+    describe('a new submission', () => {
+      it('is refused once its competition has closed', async () => {
+        seasonWith({ posterSubmissionsCloseAt: past });
+
+        await expect(
+          provider.insertUserSubmission(OWNER, {
+            title: 'Flood maps',
+            submissionType: 'poster',
+            season: SEASON.guid
+          } as never)
+        ).rejects.toThrow(ForbiddenException);
+        await expect(
+          provider.insertUserSubmission(OWNER, {
+            title: 'Flood maps',
+            submissionType: 'poster',
+            season: SEASON.guid
+          } as never)
+        ).rejects.toThrow('Submissions to the poster competition closed on Sun, Nov 1, 2026, 11:00 AM Central.');
+        expect(submissionRepo.save).not.toHaveBeenCalled();
+      });
+
+      it('is taken before the deadline', async () => {
+        seasonWith({ posterSubmissionsCloseAt: future });
+
+        await provider.insertUserSubmission(OWNER, { submissionType: 'poster', season: SEASON.guid } as never);
+
+        expect(submissionRepo.save).toHaveBeenCalled();
+      });
+
+      it('is taken when no deadline is set', async () => {
+        seasonWith({});
+
+        await provider.insertUserSubmission(OWNER, { submissionType: 'poster', season: SEASON.guid } as never);
+
+        expect(submissionRepo.save).toHaveBeenCalled();
+      });
+
+      it('holds each competition to its own deadline', async () => {
+        seasonWith({ posterSubmissionsCloseAt: past, presentationSubmissionsCloseAt: future });
+
+        await provider.insertUserSubmission(OWNER, { submissionType: 'presentation', season: SEASON.guid } as never);
+
+        expect(submissionRepo.save).toHaveBeenCalled();
+      });
+
+      it('goes by the active season when the body names none', async () => {
+        seasonWith({ presentationSubmissionsCloseAt: past });
+
+        await expect(provider.insertUserSubmission(OWNER, { submissionType: 'presentation' } as never)).rejects.toThrow(
+          ForbiddenException
+        );
+      });
+    });
+
+    describe('an edit', () => {
+      it('is refused to the entrant once their competition has closed', async () => {
+        jest
+          .spyOn(submissionRepo, 'findOne')
+          .mockResolvedValue(
+            submission({ submissionType: 'poster', season: seasonWith({ posterSubmissionsCloseAt: past }) })
+          );
+
+        await expect(provider.updateUserSubmission('sub-1', OWNER, { title: 'Revised' })).rejects.toThrow(
+          ForbiddenException
+        );
+        expect(submissionRepo.update).not.toHaveBeenCalled();
+      });
+
+      it('is refused when it would move the submission into a competition that has closed', async () => {
+        jest
+          .spyOn(submissionRepo, 'findOne')
+          .mockResolvedValue(
+            submission({ submissionType: 'presentation', season: seasonWith({ posterSubmissionsCloseAt: past }) })
+          );
+
+        await expect(
+          provider.updateUserSubmission('sub-1', OWNER, { submissionType: 'poster' } as Partial<Submission>)
+        ).rejects.toThrow(ForbiddenException);
+        expect(submissionRepo.update).not.toHaveBeenCalled();
+      });
+
+      it('is taken from the entrant before the deadline', async () => {
+        jest
+          .spyOn(submissionRepo, 'findOne')
+          .mockResolvedValue(
+            submission({ submissionType: 'poster', season: seasonWith({ posterSubmissionsCloseAt: future }) })
+          );
+
+        await provider.updateUserSubmission('sub-1', OWNER, { title: 'Revised' });
+
+        expect(written()).toEqual(expect.objectContaining({ title: 'Revised' }));
+      });
+
+      it('is taken from a reviewer after it, so submissions can be reviewed once closed', async () => {
+        jest
+          .spyOn(submissionRepo, 'findOne')
+          .mockResolvedValue(
+            submission({ submissionType: 'poster', season: seasonWith({ posterSubmissionsCloseAt: past }) })
+          );
+
+        await provider.updateUserSubmission(
+          'sub-1',
+          'acct-reviewer',
+          { acceptance: true } as Partial<Submission>,
+          REVIEWER_PERMS
+        );
+
+        expect(submissionRepo.update).toHaveBeenCalled();
+      });
     });
   });
 

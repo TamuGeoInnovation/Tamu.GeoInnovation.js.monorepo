@@ -28,6 +28,8 @@ import {
   Tag,
   University
 } from '../entities/all.entity';
+import { SUBMISSION_DEADLINE_FIELDS, SubmissionDeadlines, asDate, deadlinesProblem } from '@tamu-gisc/gisday/common';
+
 import { ActiveSeasonDto } from './dto/active-season.dto';
 
 @Injectable()
@@ -503,6 +505,31 @@ export class SeasonService extends BaseProvider<Season> {
 
       return existingCurrent.save();
     }
+  }
+
+  /**
+   * Sets when the season's poster and presentation competitions close (#2934): all four moments, each a date or empty
+   * for open, as the admin page sends them. Refuses a moment that is not a date, and files that would close before
+   * their competition's submissions.
+   */
+  public async setSubmissionDeadlines(guid: string, deadlines: SubmissionDeadlines): Promise<SubmissionDeadlines> {
+    const problem = deadlinesProblem(deadlines ?? {});
+
+    if (problem) {
+      throw new BadRequestException(problem);
+    }
+
+    const season = await this.seasonRepo.findOne({ where: { guid } });
+
+    if (!season) {
+      throw new NotFoundException('Season not found.');
+    }
+
+    const values = Object.fromEntries(SUBMISSION_DEADLINE_FIELDS.map((field) => [field, asDate(deadlines[field])]));
+
+    await this.seasonRepo.update(guid, values);
+
+    return values;
   }
 
   public override async deleteEntity(guidOrOptions?: LookupOneOptions<Season>) {

@@ -1,4 +1,5 @@
-import { Component, OnDestroy, OnInit, inject, input, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, computed, effect, inject, input, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
   UntypedFormArray,
@@ -20,6 +21,7 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
 
 import { SubmissionFilesComponent } from '../../../../submission-files/submission-files.component';
+import { deadlineNotice } from '../../../../../utils/submission-deadline-notice';
 import {
   SUBMISSION_CLASSIFICATION_OPTIONS,
   SUBMISSION_FORMAT_OPTIONS,
@@ -72,6 +74,24 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
 
   private _$destroy: Subject<boolean> = new Subject();
 
+  /** The season the submission is (or will be) in: its own when editing, the active one when creating (#2934). */
+  private readonly season = signal<Partial<Submission['season']> | null>(null);
+
+  /** The competition the submission was saved to, whose deadlines hold its edits and files. */
+  private readonly savedType = signal<string | null>(null);
+
+  /** The competition chosen in the form. */
+  private readonly chosenType: () => string;
+
+  /**
+   * When the chosen competition stops taking submissions, or that it has (#2934). The API refuses a submission or edit
+   * after it; the page says so first, and offers no Submit or Update.
+   */
+  public readonly submissionsNotice = computed(() => deadlineNotice(this.season(), this.chosenType(), 'submissions'));
+
+  /** When the saved submission's files close, or that they have: later than the submission itself. */
+  public readonly filesNotice = computed(() => deadlineNotice(this.season(), this.savedType(), 'files'));
+
   constructor() {
     this.form = this.fb.group({
       title: [''],
@@ -82,6 +102,17 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
       format: ['individual'],
       classificationType: ['undergraduate'],
       season: ['']
+    });
+
+    this.chosenType = toSignal(this.form.get('submissionType').valueChanges, {
+      initialValue: this.form.get('submissionType').value
+    });
+
+    // A saved submission whose competition has closed can no longer be edited, as a reviewed one cannot.
+    effect(() => {
+      if (deadlineNotice(this.season(), this.savedType(), 'submissions')?.closed) {
+        this.form.disable();
+      }
     });
   }
 
@@ -128,12 +159,16 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
 
         // If the entity has a season, remove the season control from the form
         this.form.removeControl('season');
+
+        this.season.set(entity.season ?? null);
+        this.savedType.set(entity.submissionType ?? null);
       });
     } else {
       this.seasonService
         .getActiveSeason()
         .pipe(take(1))
         .subscribe((season) => {
+          this.season.set(season);
           this.form.get('season').setValue(season.guid);
         });
 
@@ -201,11 +236,11 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
 
         this.rt.navigate(['/account/submissions']);
       },
-      error: () => {
+      error: (err) => {
         this.ns.toast({
           id: 'submission-create-error',
           title: 'Submission Error',
-          message: 'There was an error creating the submission. Please try again later.'
+          message: closedReason(err) ?? 'There was an error creating the submission. Please try again later.'
         });
       }
     });
@@ -231,11 +266,11 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
 
           this.rt.navigate(['/account/submissions']);
         },
-        error: () => {
+        error: (err) => {
           this.ns.toast({
             id: 'submission-update-error',
             title: 'Update Error',
-            message: 'There was an error updating the submission. Please try again later.'
+            message: closedReason(err) ?? 'There was an error updating the submission. Please try again later.'
           });
         }
       });
@@ -262,4 +297,9 @@ interface ICompetitionParticipant {
   name: string;
   email: string;
   studentId: string;
+}
+
+/** The API's own words when it refused because the competition has closed (#2934), which say when; null otherwise. */
+function closedReason(err: { status?: number; error?: { message?: unknown } }): string | null {
+  return err?.status === 403 && typeof err.error?.message === 'string' ? err.error.message : null;
 }
