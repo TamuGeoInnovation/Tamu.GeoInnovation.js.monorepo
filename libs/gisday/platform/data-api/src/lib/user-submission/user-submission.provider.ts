@@ -21,11 +21,18 @@ import {
   reviewEmailKindLabel,
   reviewEmailSubject,
   reviewEmailTemplate,
-  reviewEmailValues
+  reviewEmailValues,
+  ReviewEmailSession
 } from '@tamu-gisc/gisday/common';
 import { closedAt, closedMessage, isDeadlineCompetition } from '@tamu-gisc/gisday/common';
 
-import { SubmissionType, Submission, Season, PRESENTATION_SUBMISSION_TYPE } from '../entities/all.entity';
+import {
+  Event as GisdayEvent,
+  SubmissionType,
+  Submission,
+  Season,
+  PRESENTATION_SUBMISSION_TYPE
+} from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
 import { senderAs } from '../_base/site-of-request';
 import { SeasonService } from '../season/season.service';
@@ -96,6 +103,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
   constructor(
     @InjectRepository(Submission) public userSubmissionRepo: Repository<Submission>,
     @InjectRepository(SubmissionType) public submissionTypeRepo: Repository<SubmissionType>,
+    @InjectRepository(GisdayEvent) private readonly events: Repository<GisdayEvent>,
     private readonly seasonService: SeasonService,
     private readonly contactService: ContactService,
     private readonly profiles: DashboardProfilesService,
@@ -432,7 +440,11 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
           title: submission.title ?? '',
           to: to ?? '',
           cc: cc.join(', '),
-          values: reviewEmailValues({ ...submission, message: review.message ?? submission.message }, site)
+          values: reviewEmailValues(
+            { ...submission, message: review.message ?? submission.message },
+            site,
+            await this._sessionsOf(submission.season)
+          )
         }
       });
     }
@@ -526,7 +538,8 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
                 text: reviewEmail(
                   existingSubmission,
                   site,
-                  templates?.[reviewEmailKind(existingSubmission.acceptance, existingSubmission.submissionType)]
+                  templates?.[reviewEmailKind(existingSubmission.acceptance, existingSubmission.submissionType)],
+                  await this._sessionsOf(existingSubmission.season)
                 ),
                 replyTo: process.env.MAILROOM_TO
               },
@@ -584,6 +597,18 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
   }
 
   /**
+   * The sessions of a submission's season, with their day and place, for the email's links to the finalist's own session
+   * and the awards session (#2985). None when it has no season.
+   */
+  private async _sessionsOf(season: Partial<Season> | null | undefined): Promise<Array<GisdayEvent>> {
+    if (!season?.guid) {
+      return [];
+    }
+
+    return this.events.find({ where: { season: { guid: season.guid } }, relations: { day: true, location: true } });
+  }
+
+  /**
    * The season a new submission is saved to: the one the body names, by its guid or as an object with one, or the
    * active one when it names none.
    */
@@ -629,11 +654,14 @@ export function reviewSubject(submission: Pick<Submission, 'acceptance'>, site: 
 export function reviewEmail(
   submission: Pick<Submission, 'title' | 'message' | 'acceptance' | 'submissionType' | 'participants'> & {
     season?: Partial<Season> | null;
+    classificationType?: string | null;
   },
   site: Pick<GisdaySite, 'name' | 'address'>,
-  template?: string
+  template?: string,
+  /** The season's sessions, for the finalist's own and the awards session (#2985). */
+  sessions?: Array<ReviewEmailSession>
 ): string {
   const text = template ?? reviewEmailTemplate(reviewEmailKind(submission.acceptance, submission.submissionType));
 
-  return fillReviewEmail(text, reviewEmailValues(submission, site));
+  return fillReviewEmail(text, reviewEmailValues(submission, site, sessions));
 }

@@ -32,9 +32,11 @@ describe('GalleryComponent', () => {
   };
 
   it("asks for the active season's posters first and lists them with their authors", () => {
-    const getPosters = jest.fn().mockReturnValue(
-      of([{ title: 'Flood maps', authors: ['A. Aggie', 'B. Bevo'], link: 'https://example.com/flood.pdf', year: 2026 }])
-    );
+    const getPosters = jest
+      .fn()
+      .mockReturnValue(
+        of([{ title: 'Flood maps', authors: ['A. Aggie', 'B. Bevo'], link: 'https://example.com/flood.pdf', year: 2026 }])
+      );
     const { page } = render(getPosters);
 
     expect(getPosters).toHaveBeenCalledWith(undefined);

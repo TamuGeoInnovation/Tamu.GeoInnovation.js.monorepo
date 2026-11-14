@@ -16,6 +16,8 @@ export const REVIEW_EMAIL_PLACEHOLDERS = Object.freeze([
   '{upload deadline}',
   '{site}',
   '{site address}',
+  '{your session}',
+  '{awards session}',
   '{notes}'
 ] as const);
 
@@ -69,13 +71,13 @@ What to do next:
 
 2. Print your poster, 36 x 48 inches or smaller, and bring it with you.
 
-3. Set up early. Please have your poster up as early in the day as you can: the judges walk the poster area all day, and the earlier it is up, the more of them see it. See {site address}/sessions for the poster session's place and times.
+3. Set up early. Please have your poster up as early in the day as you can: the judges walk the poster area all day, and the earlier it is up, the more of them see it. Your session: {your session}
 
 4. Be there to win. You, or at least one member of your team, must be at your poster during the competition to be eligible for an award.
 
 5. Complete your presenter profile. A separate email will bring you a personal link to add your bio, photo, university and class year to the program.
 
-6. Join us at the Awards and Networking session, where the winners are announced.
+6. Winners are announced at {awards session}.
 
 {notes}
 
@@ -95,7 +97,7 @@ What to do next:
 
 1. Submit your final presentation by {upload deadline}. Sign in at {site address}/account/submissions, open your submission, and attach it under Presentation files: PowerPoint or PDF, up to 100 MB.
 
-2. Be there at your session's time. See {site address}/sessions for your session's place and time.
+2. Be there at your session's time. Your session: {your session}
 
 3. Keep to your time. You have 5 minutes in all, questions included: about 4 minutes to present and 1 for questions. You will be cut off when your time is up.
 
@@ -103,7 +105,7 @@ What to do next:
 
 5. Complete your presenter profile. A separate email will bring you a personal link to add your bio, photo, university and class year to the program.
 
-6. Join us at the Awards and Networking session, where the winners are announced.
+6. Winners are announced at {awards session}.
 
 {notes}
 
@@ -118,14 +120,95 @@ export interface ReviewEmailSubmission {
   title?: string | null;
   message?: string | null;
   submissionType?: string | null;
+  classificationType?: string | null;
   participants?: Array<{ name?: string | null }> | null;
   season?: Partial<SubmissionDeadlines> | null;
+}
+
+/**
+ * A session as the email names it (#2985): an event of the season, with its day, its times as the event stores them
+ * ("14:00:00 ..."), and where.
+ */
+export interface ReviewEmailSession {
+  guid: string;
+  name?: string | null;
+  startTime?: string | null;
+  endTime?: string | null;
+  day?: { date?: Date | string | null } | null;
+  location?: { building?: string | null; room?: string | null } | null;
+}
+
+/** "2:00 PM" from an event's stored time, "14:00:00 ...". */
+function clockTime(stored: string | null | undefined): string {
+  const match = /^(\d{1,2}):(\d{2})/.exec(stored ?? '');
+
+  if (!match) {
+    return '';
+  }
+
+  const hours = Number(match[1]);
+
+  return `${hours % 12 || 12}:${match[2]} ${hours < 12 ? 'AM' : 'PM'}`;
+}
+
+/** "AWARDS: Winner Announcements, Thu, Nov 19, 1:00 to 1:15 PM, MSC Ballroom 2300 A&B: <link to the session>". */
+export function sessionLine(session: ReviewEmailSession, address: string): string {
+  const date = session.day?.date ? new Date(session.day.date) : null;
+  const day =
+    date && !isNaN(date.getTime())
+      ? new Intl.DateTimeFormat('en-US', {
+          timeZone: 'America/Chicago',
+          weekday: 'short',
+          month: 'short',
+          day: 'numeric'
+        }).format(date)
+      : '';
+  const [start, end] = [clockTime(session.startTime), clockTime(session.endTime)];
+  const when = start && end ? `${start.replace(/ (AM|PM)$/, end.endsWith(start.slice(-2)) ? '' : ' $1')} to ${end}` : start;
+  const where = [session.location?.building, session.location?.room].filter((part) => part?.trim()).join(' ');
+  const parts = [(session.name ?? '').trim(), day, when, where].filter(Boolean).join(', ');
+
+  return `${parts}: ${address}/sessions/details/${session.guid}`;
+}
+
+/**
+ * The finalist's own competition session among the season's (#2985), by the names the program gives them: a
+ * `COMPETITION:` session naming posters, or for a presentation the one naming its level (undergraduate or graduate).
+ */
+export function competitionSession<T extends ReviewEmailSession>(
+  sessions: Array<T> | null | undefined,
+  submissionType: unknown,
+  classificationType: unknown
+): T | null {
+  const competitions = (sessions ?? []).filter((s) => /^\s*competition\s*:/i.test(s.name ?? ''));
+  const named = (word: RegExp) => competitions.find((s) => word.test(s.name ?? '')) ?? null;
+
+  if (submissionType === 'poster') {
+    return named(/poster/i);
+  }
+
+  if (submissionType !== 'presentation') {
+    return null;
+  }
+
+  return classificationType === 'undergraduate'
+    ? named(/undergraduate/i)
+    : (competitions.find((s) => /graduate/i.test(s.name ?? '') && !/undergraduate/i.test(s.name ?? '')) ?? null);
+}
+
+/** The season's awards session for the poster and presentation competitions (#2985): an `AWARDS:` session naming either. */
+export function awardsSession<T extends ReviewEmailSession>(sessions: Array<T> | null | undefined): T | null {
+  return (
+    (sessions ?? []).find((s) => /^\s*awards\s*:/i.test(s.name ?? '') && /poster|presentation/i.test(s.name ?? '')) ?? null
+  );
 }
 
 /** Each placeholder's value for one submission, on one site. */
 export function reviewEmailValues(
   submission: ReviewEmailSubmission,
-  site: { name: string; address: string }
+  site: { name: string; address: string },
+  /** The season's sessions, for the finalist's own and the awards session (#2985). */
+  sessions?: Array<ReviewEmailSession> | null
 ): ReviewEmailValues {
   const firstName = (submission.participants?.[0]?.name ?? '').trim().split(/\s+/)[0];
   const deadline = closesAt(submission.season as SubmissionDeadlines, submission.submissionType, 'files');
@@ -136,6 +219,13 @@ export function reviewEmailValues(
     '{upload deadline}': deadline ? inCentralTime(deadline) : 'the deadline shown on your submission',
     '{site}': site.name,
     '{site address}': site.address,
+    '{your session}': ((own) => (own ? sessionLine(own, site.address) : `see ${site.address}/sessions`))(
+      competitionSession(sessions, submission.submissionType, submission.classificationType)
+    ),
+    '{awards session}': ((awards) =>
+      awards ? sessionLine(awards, site.address) : `the awards session; see ${site.address}/sessions`)(
+      awardsSession(sessions)
+    ),
     '{notes}': submission.message?.trim() ? `Additional notes: ${submission.message.trim()}` : ''
   };
 }

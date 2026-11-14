@@ -81,10 +81,7 @@ export class UserSubmissionController {
   @Permissions(['update:competitions'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Post('review/preview')
-  public previewReview(
-    @Body() body: { submissions: Array<string>; acceptance: boolean; message?: string },
-    @Request() req
-  ) {
+  public previewReview(@Body() body: { submissions: Array<string>; acceptance: boolean; message?: string }, @Request() req) {
     return this.provider.previewReview(
       body?.submissions,
       { acceptance: body?.acceptance, message: body?.message },

@@ -6,7 +6,7 @@ import { Repository } from 'typeorm';
 import { fillReviewEmail } from '@tamu-gisc/gisday/common';
 
 import { ContactService } from '../contact/contact.service';
-import { Submission, SubmissionType } from '../entities/all.entity';
+import { Event, Submission, SubmissionType } from '../entities/all.entity';
 import { DashboardProfilesService } from '../dashboards/dashboard-profiles.service';
 import { AssetsService } from '../assets/assets.service';
 import { SeasonService } from '../season/season.service';
@@ -20,6 +20,50 @@ describe('UserSubmissionProvider', () => {
   let profiles: DashboardProfilesService;
 
   const OWNER = 'acct-owner';
+
+  /** The season's sessions as the program has them on 14 November 2026 (#2985). */
+  const SESSIONS = [
+    {
+      guid: '7b433068-8171-4f42-8159-07332624c084',
+      name: 'COMPETITION: Student Poster Competition',
+      startTime: '16:15:00',
+      endTime: '17:15:00',
+      day: { date: new Date('2026-11-17T06:00:00Z') },
+      location: { building: 'TAMU Memorial Student Center Bethancourt Ballroom', room: '2300 C' }
+    },
+    {
+      guid: '62eeed6b-d8b4-4c60-9fa0-c4d4c70380d6',
+      name: 'COMPETITION: Undergraduate Research Competition',
+      startTime: '14:00:00',
+      endTime: '14:40:00',
+      day: { date: new Date('2026-11-17T06:00:00Z') },
+      location: { building: 'TAMU Memorial Student Center Bethancourt Ballroom', room: '2300 C' }
+    },
+    {
+      guid: '816c4a80-f28d-431b-95ad-e6dddca0245d',
+      name: 'COMPETITION: Graduate Student Research',
+      startTime: '14:40:00',
+      endTime: '16:00:00',
+      day: { date: new Date('2026-11-17T06:00:00Z') },
+      location: { building: 'TAMU Memorial Student Center Bethancourt Ballroom', room: '2300 C' }
+    },
+    {
+      guid: '9c73d7f1-3eeb-4294-97a8-5f0a3aea07c2',
+      name: 'AWARDS: Student Presentation & Poster Competition Winner Announcements',
+      startTime: '13:00:00',
+      endTime: '13:15:00',
+      day: { date: new Date('2026-11-19T06:00:00Z') },
+      location: { building: 'TAMU Memorial Student Center Bethancourt Ballroom', room: '2300 A&B' }
+    },
+    {
+      guid: 'a1def55f-e79e-4d69-b1b6-9520e6157a81',
+      name: 'AWARDS: Student VGI Competition Winner Announcements',
+      startTime: '13:00:00',
+      endTime: '13:30:00',
+      day: { date: new Date('2026-11-20T06:00:00Z') },
+      location: { building: 'TAMU East Quad - Between OMB & Langford', room: null }
+    }
+  ];
   const REVIEWER_PERMS = ['update:competitions'];
 
   const submission = (over: Record<string, unknown> = {}) =>
@@ -52,6 +96,7 @@ describe('UserSubmissionProvider', () => {
           }
         },
         { provide: getRepositoryToken(SubmissionType), useValue: { find: jest.fn() } },
+        { provide: getRepositoryToken(Event), useValue: { find: jest.fn().mockResolvedValue(SESSIONS) } },
         { provide: SeasonService, useValue: { findOne: jest.fn(), findOneActive: jest.fn() } },
         { provide: ContactService, useValue: { sendMessage: jest.fn().mockResolvedValue({}) } },
         { provide: DashboardProfilesService, useValue: { profilesOf: jest.fn().mockResolvedValue(new Map()) } },
@@ -351,8 +396,8 @@ describe('UserSubmissionProvider', () => {
         expect(poster()).toContain('at least one member of your team, must be at your poster during the competition');
       });
 
-      it('invites them to the Awards and Networking session, and keeps the profile and the session', () => {
-        expect(poster()).toContain('Awards and Networking');
+      it('names where winners are announced, and keeps the profile and the session', () => {
+        expect(poster()).toContain('Winners are announced at');
         expect(poster()).toContain('Complete your presenter profile.');
         expect(poster()).toContain('https://gisday.tamu.edu/sessions');
       });
@@ -378,12 +423,72 @@ describe('UserSubmissionProvider', () => {
       expect(email).not.toContain('judges');
     });
 
+    describe("links to the finalist's own session and the awards session (#2985)", () => {
+      const tamu = { name: 'Texas A&M GIS Day', address: 'https://gisday.tamu.edu' };
+      const email = (more: Record<string, unknown>) =>
+        reviewEmail({ title: 'T', acceptance: true, ...more } as unknown as Submission, tamu, undefined, SESSIONS);
+
+      it('gives a poster finalist the poster session, with day, time, place and link', () => {
+        expect(email({ submissionType: 'poster' })).toContain(
+          'Your session: COMPETITION: Student Poster Competition, Tue, Nov 17, 4:15 to 5:15 PM, TAMU Memorial Student Center Bethancourt Ballroom 2300 C: https://gisday.tamu.edu/sessions/details/7b433068-8171-4f42-8159-07332624c084'
+        );
+      });
+
+      it("gives a presenter their own level's session", () => {
+        expect(email({ submissionType: 'presentation', classificationType: 'undergraduate' })).toContain(
+          'COMPETITION: Undergraduate Research Competition, Tue, Nov 17, 2:00 to 2:40 PM'
+        );
+        expect(email({ submissionType: 'presentation', classificationType: 'graduate' })).toContain(
+          'COMPETITION: Graduate Student Research, Tue, Nov 17, 2:40 to 4:00 PM'
+        );
+      });
+
+      it('gives both the poster and presentation awards session, not the VGI one', () => {
+        for (const submissionType of ['poster', 'presentation']) {
+          const text = email({ submissionType, classificationType: 'graduate' });
+
+          expect(text).toContain(
+            'Winners are announced at AWARDS: Student Presentation & Poster Competition Winner Announcements, Thu, Nov 19, 1:00 to 1:15 PM, TAMU Memorial Student Center Bethancourt Ballroom 2300 A&B: https://gisday.tamu.edu/sessions/details/9c73d7f1-3eeb-4294-97a8-5f0a3aea07c2.'
+          );
+          expect(text).not.toContain('VGI');
+        }
+      });
+
+      it('points to the sessions page when the season has no such sessions', () => {
+        const text = reviewEmail({ title: 'T', acceptance: true, submissionType: 'poster' } as Submission, tamu);
+
+        expect(text).toContain('Your session: see https://gisday.tamu.edu/sessions');
+        expect(text).toContain('Winners are announced at the awards session; see https://gisday.tamu.edu/sessions.');
+      });
+
+      it('sends the links in the email itself, from the season of the submission', async () => {
+        jest
+          .spyOn(submissionRepo, 'findOne')
+          .mockResolvedValue(
+            submission({
+              submissionType: 'poster',
+              season: { guid: 'season-2026' },
+              participants: [{ email: 'a@tamu.edu' }]
+            })
+          );
+
+        await provider.updateUserSubmission('sub-1', 'r', { acceptance: true }, REVIEWER_PERMS, 'gisday.tamu.edu');
+        // A single review sends without waiting, after reading the season's sessions.
+        await new Promise((resolve) => setImmediate(resolve));
+
+        const [sent] = (contactService.sendMessage as jest.Mock).mock.calls[0];
+
+        expect(sent.text).toContain('sessions/details/7b433068-8171-4f42-8159-07332624c084');
+        expect(sent.text).toContain('sessions/details/9c73d7f1-3eeb-4294-97a8-5f0a3aea07c2');
+      });
+    });
+
     describe('the presentation finalist email (#2983)', () => {
       const tamu = { name: 'Texas A&M GIS Day', address: 'https://gisday.tamu.edu' };
       const email = () => reviewEmail({ title: 'T', acceptance: true, submissionType: 'presentation' } as Submission, tamu);
 
       it('asks them to be there at their session time', () => {
-        expect(email()).toContain("2. Be there at your session's time. See https://gisday.tamu.edu/sessions");
+        expect(email()).toContain("2. Be there at your session's time. Your session: see https://gisday.tamu.edu/sessions");
       });
 
       it('gives the minutes, presentation plus questions, and says they will be cut off', () => {

@@ -1,6 +1,10 @@
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 
 import { MonumentsComponent } from './monuments.component';
+
+// The winners line links to the awards session's page (#2985).
+beforeEach(() => TestBed.configureTestingModule({ providers: [provideRouter([])] }));
 
 /**
  * #2460. The 2026 VGI competition runs Saturday, November 14 through Friday, November 20; submissions count
