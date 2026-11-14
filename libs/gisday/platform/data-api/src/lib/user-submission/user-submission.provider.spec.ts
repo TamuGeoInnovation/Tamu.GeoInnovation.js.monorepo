@@ -281,15 +281,13 @@ describe('UserSubmissionProvider', () => {
     it("sends a finalist on Texas A&M's site the next steps under that site's name and address", async () => {
       const previousFrom = process.env.MAILROOM_FROM;
       process.env.MAILROOM_FROM = 'TxGIS Day <gisday@example.edu>';
-      jest
-        .spyOn(submissionRepo, 'findOne')
-        .mockResolvedValue(
-          submission({
-            title: 'Mapping Floods',
-            submissionType: 'poster',
-            participants: [{ name: 'Ana Ruiz', email: 'ana@tamu.edu' }]
-          })
-        );
+      jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(
+        submission({
+          title: 'Mapping Floods',
+          submissionType: 'poster',
+          participants: [{ name: 'Ana Ruiz', email: 'ana@tamu.edu' }]
+        })
+      );
 
       await provider.updateUserSubmission(
         'sub-1',
@@ -305,13 +303,76 @@ describe('UserSubmissionProvider', () => {
       expect(email.from).toBe('"Texas A&M GIS Day" <gisday@example.edu>');
       expect(email.subject).toBe('Your Texas A&M GIS Day submission has been accepted');
       expect(email.text).toContain('Howdy Ana,');
-      expect(email.text).toContain('Your poster submission, "Mapping Floods", has been accepted for Texas A&M GIS Day.');
-      expect(email.text).toContain('1. Attach your poster. Sign in at https://gisday.tamu.edu/account/submissions');
+      expect(email.text).toContain(
+        'Your poster, "Mapping Floods", has been accepted as a finalist in the Texas A&M GIS Day poster competition.'
+      );
+      expect(email.text).toContain('1. Upload your final poster by the deadline shown on your submission. Sign in at https://gisday.tamu.edu/account/submissions');
       expect(email.text).toContain('under Presentation files');
-      expect(email.text).toContain('2. Complete your presenter profile.');
+      expect(email.text).toContain('5. Complete your presenter profile.');
       expect(email.text).toContain('https://gisday.tamu.edu/sessions');
       expect(email.text).toContain('Additional notes: Booth 4.');
       expect(email.text).not.toMatch(/TxGIS|txgisday|provide a link/);
+    });
+
+    describe('the poster finalist email (#2980)', () => {
+      const tamu = { name: 'Texas A&M GIS Day', address: 'https://gisday.tamu.edu' };
+      const season = { posterFilesCloseAt: new Date('2026-11-16T18:00:00Z') };
+      const poster = (more: Record<string, unknown> = {}) =>
+        reviewEmail(
+          {
+            title: 'Mapping Floods',
+            acceptance: true,
+            submissionType: 'poster',
+            participants: [{ name: 'Ana Ruiz', email: 'ana@tamu.edu' }],
+            season,
+            ...more
+          } as unknown as Submission,
+          tamu
+        );
+
+      it('asks for the final poster by the poster files deadline, in Central time', () => {
+        expect(poster()).toContain('1. Upload your final poster by Mon, Nov 16, 2026, 12:00 PM Central.');
+      });
+
+      it('says to print it at 36 x 48 inches or smaller and bring it', () => {
+        expect(poster()).toContain('36 x 48 inches or smaller');
+        expect(poster()).toContain('bring it with you');
+      });
+
+      it('asks them to set up as early in the day as they can, as judges walk the posters all day', () => {
+        expect(poster()).toContain('as early in the day as you can');
+        expect(poster()).toContain('judges');
+      });
+
+      it('says one member of the team must be at the poster to win', () => {
+        expect(poster()).toContain('at least one member of your team, must be at your poster during the competition');
+      });
+
+      it('invites them to the Awards and Networking session, and keeps the profile and the session', () => {
+        expect(poster()).toContain('Awards and Networking');
+        expect(poster()).toContain('Complete your presenter profile.');
+        expect(poster()).toContain('https://gisday.tamu.edu/sessions');
+      });
+
+      it('points to the submission page for the deadline when the season has none', () => {
+        expect(poster({ season: {} })).toContain('1. Upload your final poster by the deadline shown on your submission.');
+      });
+    });
+
+    it('gives a presenter the presentation files deadline', () => {
+      const tamu = { name: 'Texas A&M GIS Day', address: 'https://gisday.tamu.edu' };
+      const email = reviewEmail(
+        {
+          title: 'T',
+          acceptance: true,
+          submissionType: 'presentation',
+          season: { presentationFilesCloseAt: new Date('2026-11-16T18:00:00Z') }
+        } as unknown as Submission,
+        tamu
+      );
+
+      expect(email).toContain('1. Attach your slides by Mon, Nov 16, 2026, 12:00 PM Central.');
+      expect(email).not.toContain('judges');
     });
 
     it("tells a presenter to attach their slides, and keeps a rejection's wording under the site's name", () => {
