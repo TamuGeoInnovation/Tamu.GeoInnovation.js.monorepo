@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, viewChild } from '@angular/core';
 import { UserClass } from '@tamu-gisc/gisday/platform/data-api';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable, forkJoin, of, switchMap, tap } from 'rxjs';
@@ -11,19 +11,26 @@ import { downloadFile } from '@tamu-gisc/common/utils/ui';
 import { ClassAddEditFormComponent } from '@tamu-gisc/gisday/platform/ngx/common';
 import { AsyncPipe, DatePipe } from '@angular/common';
 
+import { BaseAdminDetailsPageComponent } from '../../../base-admin-details-page/base-admin-details-page.component';
+
 @Component({
   selector: 'tamu-gisc-class-edit',
   templateUrl: './class-edit.component.html',
   styleUrls: ['./class-edit.component.scss'],
   imports: [ClassAddEditFormComponent, AsyncPipe, DatePipe]
 })
-export class ClassEditComponent implements OnInit {
+export class ClassEditComponent extends BaseAdminDetailsPageComponent implements OnInit {
   private readonly at = inject(ActivatedRoute);
   private readonly cs = inject(ClassService);
   private readonly ns = inject(NotificationService);
+  private readonly editor = viewChild(ClassAddEditFormComponent);
 
   public students$: Observable<Array<Partial<UserClass>>>;
   public isExporting$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+
+  protected override detailsForm() {
+    return this.editor()?.form;
+  }
 
   public ngOnInit(): void {
     this.students$ = this.cs.getClassStudents(this.at.snapshot.params.guid);

@@ -1,5 +1,7 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, viewChild } from '@angular/core';
 import { OrganizationAddEditFormComponent } from '@tamu-gisc/gisday/platform/ngx/common';
+
+import { BaseAdminDetailsPageComponent } from '../../../base-admin-details-page/base-admin-details-page.component';
 
 @Component({
   selector: 'tamu-gisc-organization-edit',
@@ -8,4 +10,10 @@ import { OrganizationAddEditFormComponent } from '@tamu-gisc/gisday/platform/ngx
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [OrganizationAddEditFormComponent]
 })
-export class OrganizationEditComponent {}
+export class OrganizationEditComponent extends BaseAdminDetailsPageComponent {
+  private readonly editor = viewChild(OrganizationAddEditFormComponent);
+
+  protected override detailsForm() {
+    return this.editor()?.form;
+  }
+}

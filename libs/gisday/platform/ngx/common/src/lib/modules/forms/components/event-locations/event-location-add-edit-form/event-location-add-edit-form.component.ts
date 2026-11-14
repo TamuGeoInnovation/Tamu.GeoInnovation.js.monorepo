@@ -68,12 +68,18 @@ export class EventLocationAddEditFormComponent implements OnInit {
 
         // If the entity has a season, remove the season control from the form
         this.form.removeControl('season');
+
+        // Opening the page is not a change (#2942), though each control echoes the value it is given.
+        this.form.markAsPristine();
       });
     } else {
       this.ss.activeSeason$.pipe(take(1)).subscribe((season) => {
         this.form.patchValue({
           season: season.guid
         });
+
+        // Opening the page is not a change (#2942), though each control echoes the value it is given.
+        this.form.markAsPristine();
       });
     }
   }
