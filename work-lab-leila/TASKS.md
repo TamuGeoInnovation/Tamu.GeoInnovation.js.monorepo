@@ -46,7 +46,7 @@
 
 ## Batch 71 (gisday: screenshots for the finalists' profile email, #3043/#3045/#3046/#3044; 15 November 2026, from `work (gisday)`) (**Urgent**) - **as soon as `feat/profile-email-finalists` appears on the fork, before anything else**
 
-Home is building it now. The maintainer is holding the finalists' profile emails until it ships. Watch the fork
+**It is on the fork now (the director built it, 15 November, about 12:15 PM): pause what you are doing and take these first.** It covers #3043, #3045 and #3046; Markdown (#3044) comes in a second PR, so skip the Markdown capture. The maintainer is holding the finalists' profile emails until it ships. Watch the fork
 (`git ls-remote fork feat/profile-email-finalists`); when it appears, on your signed-in local stack with your own test
 submissions (a group one whose co-authors are typed into one email box, one co-author by NetID, and one person with no
 speaker record), Research Competitions › Send profile email, **never Send**: before (`development`) and after (the
