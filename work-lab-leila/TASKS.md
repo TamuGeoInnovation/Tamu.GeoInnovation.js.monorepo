@@ -39,6 +39,19 @@
 - A report per batch, `work-lab-leila/reports/2026-11-14-<n>.md`, saying **"branch ready: <name>"** with the check's exit
   code. Questions for the maintainer go in the report, with options and a recommendation; do not ask him.
 
+## Batch 58 (gisday: #2969, the deadlines panel fits at 1280 px; 14 November 2026, 9:20 PM Central, from `work (gisday)`) (Low) - **first, now**
+
+Report 57, question 1: **(a)**, the director's call so PR 2999 can go green; the maintainer may still change it. Make the
+expanded panel fit at 1280 px and 1024 px: put the short Central-time text under each picker, not beside it. Add the
+"after" captures at both widths. Commit to `fix/2969-deadlines-panel` on the fork (pull it first) and push; that updates PR
+2999. Bug-fix check. Report the image section for the PR body.
+
+Also opened tonight: **#2965 as PR 3004**, and **#2966 as PR 3005**, both with the latest `development` merged in. Report
+55 question 2 and report 56 questions 1 and 2 go with your recommendations: (a) each. Report 54's two filing questions and
+report 56 question 3 are with the maintainer.
+
+---
+
 ## Decided - 14 November 2026, 8:30 PM Central (gisday, the maintainer)
 
 - **Report 52, #2963:** (1) the button says "Clear the search"; (3) the tab order stays as it is on screen. Opened as PR 2996, with the latest `development` merged in.
