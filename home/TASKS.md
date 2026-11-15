@@ -16,6 +16,17 @@ are in `libs/gisday/platform/data-api/src/lib/check-in/`.
   check-ins on the local site); a release note. Push to the fork and report "branch ready". Branch
   `feat/3006-check-in-dashboard`.
 
+## Batch 53 (gisday: #3017, the final reminder skips submissions that weren't accepted; 15 November 2026, from `work (gisday)`) (Medium) - **do this now**
+
+**Decided (the maintainer):** your batch 52 question is **A**. Send final reminder also skips selected submissions that
+aren't accepted (rejected or not yet reviewed), in the preview and in the send, and counts them in the "skipped" note,
+saying why each group was skipped. Tests red first; the bug-fix check on the projects it edits.
+
+**Push to `feat/3017-final-reminder-pr`** (PR 3020's branch), fast-forward, no force. The lab will push its screenshots
+to the same branch afterwards (its batch 62), so fetch it before you push. Report "branch ready".
+
+**Also decided:** #3013 is Medium, and #2948 (PR 3016) merges without waiting for it.
+
 ## Batch 52 (gisday: #3017, a "final file" column and a Send final reminder email on Research Competitions; 15 November 2026, from `work (gisday)`) (Medium) - **do this now**
 
 [#3017](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3017). The issue has the request and a draft email.
