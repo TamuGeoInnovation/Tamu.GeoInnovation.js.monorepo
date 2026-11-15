@@ -8350,3 +8350,9 @@ sign in through it if a consent screen appears). Undo every check-in and setting
 > **Batch 84, change at 4:25 PM Central:** I am merging `development` into `fix/3081-checkin-page` and pushing it with the
 > release note, so CI can start. Before you push your images, `git fetch fork` and rebase your one image commit onto
 > `fork/fix/3081-checkin-page`, then push normally (no force). The code under test is unchanged.
+
+## Report 84, answered (15 November 2026, about 4:50 PM Central)
+
+**Decided (the director):** 1(a), run `AddBroadcastPlace` on your local database and leave it, as batch 66 did. Questions 2
+and 3 and the layout gap are with the maintainer; no code change on `fix/3081-checkin-page` unless a batch says so. No new
+batch yet: stay listening.
