@@ -7,6 +7,26 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { EventLocationAddEditFormComponent } from './event-location-add-edit-form.component';
 
+// The zone's map is Esri's, which jsdom cannot draw. It is stood in for by a component with the same selector,
+// inputs and output, so what is asked here is what the form gives the map and what it does with the map's answer.
+jest.mock('@tamu-gisc/maps/esri', () => {
+  const { Component, input, output } = jest.requireActual('@angular/core');
+
+  @Component({ selector: 'tamu-gisc-polygon-editor', template: '' })
+  class PolygonEditorComponent {
+    public readonly corners = input([]);
+    public readonly center = input(undefined);
+    public readonly cornersChange = output();
+  }
+
+  return { PolygonEditorComponent };
+});
+
+interface ZoneMap {
+  corners(): Array<{ latitude: number; longitude: number }>;
+  cornersChange: { emit(corners: Array<{ latitude: number; longitude: number }>): void };
+}
+
 describe('EventLocationAddEditFormComponent', () => {
   // A venue's check-in zone, typed one corner per line (#1766). A zone that cannot be used must not
   // be saved: it would refuse every check-in at the venue, or let in people who are not there.
@@ -135,6 +155,103 @@ describe('EventLocationAddEditFormComponent', () => {
 
       expect(fixture.componentInstance.form.getRawValue().place).toBe('place');
       expect(fixture.componentInstance.form.dirty).toBe(false);
+    });
+  });
+
+  /**
+   * #3078. The zone is drawn and seen on a map beside the typed corners. Both edit the same value: the corners as
+   * typed, one `latitude, longitude` per line, which is what is saved.
+   */
+  describe('the check-in zone map', () => {
+    const rudderPlaza = [
+      { latitude: 30.612, longitude: -96.342 },
+      { latitude: 30.613, longitude: -96.342 },
+      { latitude: 30.613, longitude: -96.341 },
+      { latitude: 30.612, longitude: -96.341 }
+    ];
+
+    const typed = ['30.612, -96.342', '30.613, -96.342', '30.613, -96.341', '30.612, -96.341'].join('\n');
+
+    async function open(venue: object) {
+      TestBed.configureTestingModule({
+        providers: [
+          provideRouter([]),
+          { provide: ActivatedRoute, useValue: { params: of({ guid: 'venue' }) } },
+          { provide: LocationService, useValue: { getEntity: () => of(venue) } },
+          { provide: PlaceService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+          { provide: SeasonService, useValue: { activeSeason$: of({ guid: 'season' }) } },
+          { provide: NotificationService, useValue: { toast: jest.fn() } }
+        ]
+      });
+
+      const fixture = TestBed.createComponent(EventLocationAddEditFormComponent);
+      fixture.componentRef.setInput('type', 'edit');
+      fixture.detectChanges();
+      await fixture.whenStable();
+      fixture.detectChanges();
+
+      const zoneMap = (): ZoneMap => {
+        const element = (fixture.nativeElement as HTMLElement).querySelector('tamu-gisc-polygon-editor');
+
+        if (!element) {
+          throw new Error('The form has no zone map.');
+        }
+
+        return fixture.debugElement.query((d) => d.nativeElement === element).componentInstance;
+      };
+
+      const text = () => fixture.componentInstance.form.getRawValue().checkInZoneText;
+
+      return { fixture, zoneMap, text };
+    }
+
+    it("shows a venue's corners on the map as the form opens", async () => {
+      const { zoneMap } = await open({ guid: 'venue', place: { guid: 'place' }, checkInZone: rudderPlaza });
+
+      expect(zoneMap().corners()).toEqual(rudderPlaza);
+    });
+
+    it('shows corners typed into the box on the map', async () => {
+      const { fixture, zoneMap } = await open({ guid: 'venue', place: { guid: 'place' }, checkInZone: null });
+
+      expect(zoneMap().corners()).toEqual([]);
+
+      fixture.componentInstance.form.controls.checkInZoneText.setValue(typed);
+      fixture.detectChanges();
+
+      expect(zoneMap().corners()).toEqual(rudderPlaza);
+    });
+
+    it('keeps the last readable zone on the map while a line is half typed', async () => {
+      const { fixture, zoneMap } = await open({ guid: 'venue', place: { guid: 'place' }, checkInZone: rudderPlaza });
+
+      fixture.componentInstance.form.controls.checkInZoneText.setValue(`${typed}\n30.61`);
+      fixture.detectChanges();
+
+      expect(zoneMap().corners()).toEqual(rudderPlaza);
+    });
+
+    it('writes corners drawn or moved on the map into the box, one per line, as typed corners are', async () => {
+      const { fixture, zoneMap, text } = await open({ guid: 'venue', place: { guid: 'place' }, checkInZone: null });
+
+      zoneMap().cornersChange.emit(rudderPlaza);
+      fixture.detectChanges();
+
+      expect(text()).toBe(typed);
+      // So Escape asks before leaving a zone drawn and not saved (#2942).
+      expect(fixture.componentInstance.form.dirty).toBe(true);
+    });
+
+    it('empties the box when the zone is cleared on the map', async () => {
+      const { fixture, zoneMap, text } = await open({ guid: 'venue', place: { guid: 'place' }, checkInZone: rudderPlaza });
+
+      expect(text()).toBe(typed);
+
+      zoneMap().cornersChange.emit([]);
+      fixture.detectChanges();
+
+      expect(text()).toBe('');
+      expect(zoneMap().corners()).toEqual([]);
     });
   });
 });
