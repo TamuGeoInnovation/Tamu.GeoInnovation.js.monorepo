@@ -16,6 +16,19 @@ are in `libs/gisday/platform/data-api/src/lib/check-in/`.
   check-ins on the local site); a release note. Push to the fork and report "branch ready". Branch
   `feat/3006-check-in-dashboard`.
 
+## Batch 54 (gisday: #3023, review and edit the speaker profile email before it is sent; 15 November 2026, from `work (gisday)`) (**Urgent**) - **do this now**
+
+[#3023](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3023). The maintainer is waiting on
+it to send the finalists' profile emails. The issue lists the three places it's sent from and what's wanted.
+- **Reuse what you built for #3017:** `review-email-modal` (with its optional verb), and the provider's shared
+  `_preview`/`_sendEmail` pattern, adapted to `speaker-edit.service.ts`'s send. Don't build a second email path. Today's
+  subject and text become the default template. Each recipient's edit link is filled in on the server; the preview shows
+  a placeholder, never a real link; refuse a template without {edit link}.
+- All three callers (Speakers list, Research Competitions, the event form) open the same window.
+- Tests red first; **the full check** (`CHECK_MEMORY=24g CHECK_PARALLEL=3`); a release note. Branch
+  `feat/3023-profile-email-preview` from the latest `development`. The lab takes the screenshots after. Push to the fork
+  and report "branch ready".
+
 ## Batch 53 (gisday: #3017, the final reminder skips submissions that weren't accepted; 15 November 2026, from `work (gisday)`) (Medium) - **do this now**
 
 **Decided (the maintainer):** your batch 52 question is **A**. Send final reminder also skips selected submissions that
