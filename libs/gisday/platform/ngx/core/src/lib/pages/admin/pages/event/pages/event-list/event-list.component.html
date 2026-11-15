@@ -49,8 +49,13 @@
         </tbody>
       </table>
       </div>
-      } } @else if (search.value.trim()) {
-      <p>No events match "{{ search.value }}".</p>
+      } } @else if ((emptyBecause$ | async) === 'hidden') {
+      <!-- The season has sessions; the search or a filter hides them all (#3049). -->
+      <p>
+        No sessions match the search or filters. @if (filtersInUse$ | async) {
+        <button type="button" class="button secondary clear-filters" (click)="clearFilters()">Clear the search and filters</button>
+        }
+      </p>
       } @else {
       <p>There are no events for the selected season.</p>
       } @if ((selectedRows$ | async)?.length > 0) {

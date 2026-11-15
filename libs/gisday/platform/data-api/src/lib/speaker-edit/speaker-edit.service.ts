@@ -11,6 +11,7 @@ import {
   PROFILE_EMAIL_KIND,
   fillProfileEmail,
   gisdaySite,
+  participantEmails,
   profileEmailProblem,
   profileEmailSubject,
   profileEmailTemplate,
@@ -72,6 +73,8 @@ export interface ProfileEmailPreview {
     template: string;
     example: { title: string; to: string; cc: string; values: Record<string, string> };
   }>;
+  /** The people on the named submissions with no speaker record, who will not be emailed (#3046). */
+  notEmailed?: Array<{ name: string; submission: string }>;
 }
 
 /** Sending links for competition submissions' people (#2958): also who has no speaker record, with their submission. */
@@ -126,9 +129,11 @@ export class SpeakerEditService {
 
   /** The profile email the people of the named submissions would get, for the admin to read and edit first (#3023). */
   public async previewLinksForSubmissions(submissionGuids: Array<string>, host?: string): Promise<ProfileEmailPreview> {
-    const { matched } = await this.speakersOfSubmissions(submissionGuids);
+    const { matched, unmatched } = await this.speakersOfSubmissions(submissionGuids);
+    const preview = matched.length ? await this.previewLinks(matched, host) : { groups: [] };
 
-    return matched.length ? this.previewLinks(matched, host) : { groups: [] };
+    // Who will get nothing, known before sending (#3046), so a missing presenter can be added first.
+    return { ...preview, notEmailed: unmatched };
   }
 
   /**
@@ -196,18 +201,25 @@ export class SpeakerEditService {
 
     for (const submission of submissions) {
       for (const participant of submission.participants ?? []) {
-        const email = emailKey(participant?.email);
-        const speaker = email
-          ? speakers.find((s) => s.season?.guid === submission.season?.guid && emailKey(s.email) === email)
-          : undefined;
+        // Each address in the box, as the finalists' speaker records were made from them (#3043): co-authors typed into
+        // one box, and NetIDs.
+        const emails = participantEmails(participant?.email);
+        const named = participant?.name?.trim() || participant?.email?.trim() || 'A participant with no name';
 
-        if (speaker) {
-          matched.add(speaker.guid);
-        } else {
-          unmatched.push({
-            name: participant?.name?.trim() || participant?.email?.trim() || 'A participant with no name',
-            submission: submission.title
-          });
+        if (emails.length === 0) {
+          unmatched.push({ name: named, submission: submission.title });
+          continue;
+        }
+
+        for (const email of emails) {
+          const speaker = speakers.find((s) => s.season?.guid === submission.season?.guid && emailKey(s.email) === email);
+
+          if (speaker) {
+            matched.add(speaker.guid);
+          } else {
+            // An entry with several addresses is named with the one not found, so the admin knows which (#3043).
+            unmatched.push({ name: emails.length === 1 ? named : `${named} (${email})`, submission: submission.title });
+          }
         }
       }
     }

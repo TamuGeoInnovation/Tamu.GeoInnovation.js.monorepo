@@ -13,6 +13,7 @@ import { Auth0UserProfile, ManagementService } from '@tamu-gisc/common/nest/auth
 
 import { Class, CheckIn } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
+import { naturalOrder } from '../_base/natural-order';
 import { SeasonService } from '../season/season.service';
 
 @Injectable()
@@ -213,8 +214,6 @@ export class ClassProvider extends BaseProvider<Class> {
   }
 }
 
-const byText = new Intl.Collator('en', { numeric: true, sensitivity: 'base' });
-
 /** Code (subject, then course number), then section, then professor; numbers as numbers, and an empty value last. */
 export function compareClasses(a: Partial<Class>, b: Partial<Class>): number {
   for (const key of ['code', 'number', 'section', 'professorName'] as const) {
@@ -230,7 +229,7 @@ export function compareClasses(a: Partial<Class>, b: Partial<Class>): number {
         return -1;
       }
 
-      const order = byText.compare(left, right);
+      const order = naturalOrder.compare(left, right);
 
       if (order !== 0) {
         return order;

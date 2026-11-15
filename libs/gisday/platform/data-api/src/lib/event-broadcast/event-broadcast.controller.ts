@@ -9,11 +9,19 @@ import { EventBroadcastService } from './event-broadcast.service';
 export class EventBroadcastController {
   constructor(private readonly ebs: EventBroadcastService) {}
 
+  /**
+   * The broadcast reads are for admins only (#3054): they answered anyone with every Zoom's presenter link and join
+   * details, which the site shows only to signed-in visitors, on a session's page. Only admin pages read them.
+   */
+  @Permissions(['update:event-broadcasts'])
+  @UseGuards(JwtGuard, PermissionsGuard)
   @Get('season/active')
   public async getEventsForActiveSeason() {
     return this.ebs.getBroadcastsForActiveSeason();
   }
 
+  @Permissions(['update:event-broadcasts'])
+  @UseGuards(JwtGuard, PermissionsGuard)
   @Get('season/:guid')
   public async getBroadcastsForSeason(@Param('guid') seasonGuid) {
     return this.ebs.getBroadcastsForSeason(seasonGuid);
@@ -30,6 +38,8 @@ export class EventBroadcastController {
     return this.ebs.getSessions(guid);
   }
 
+  @Permissions(['update:event-broadcasts'])
+  @UseGuards(JwtGuard, PermissionsGuard)
   @Get(':guid')
   public async getEntity(@Param('guid') guid) {
     return this.ebs.findOne({
@@ -39,6 +49,8 @@ export class EventBroadcastController {
     });
   }
 
+  @Permissions(['update:event-broadcasts'])
+  @UseGuards(JwtGuard, PermissionsGuard)
   @Get()
   public async getEntities() {
     return this.ebs.getEntities();
