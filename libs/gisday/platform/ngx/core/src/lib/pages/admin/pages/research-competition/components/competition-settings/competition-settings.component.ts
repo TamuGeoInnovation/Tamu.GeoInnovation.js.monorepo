@@ -155,8 +155,9 @@ export class CompetitionSettingsComponent {
 
   constructor() {
     // Another season chosen: the form shows what it holds, collapsed to its summary if it holds any deadline and open
-    // to set them if it holds none. This one read again after a save: the same, unless something typed was not saved,
-    // which stays in the form to correct and save again (#3037).
+    // to set them if it holds none. This one read again after a save: the form shows what it now holds, unless
+    // something typed was not saved, which stays in the form to correct and save again; either way the panel stays
+    // open, so what became of the save can be read (#3037).
     effect(() => {
       const season = this.season();
       const another = (season?.guid ?? null) !== this.shownGuid;
@@ -175,9 +176,9 @@ export class CompetitionSettingsComponent {
       ) as Record<DeadlineCompetition, boolean>;
 
       this.form.reset({ competitions, deadlines });
-      this.expanded.set(Object.values(deadlines).every((deadline) => deadline === null));
 
       if (another) {
+        this.expanded.set(Object.values(deadlines).every((deadline) => deadline === null));
         this.result.set(null);
       }
     });

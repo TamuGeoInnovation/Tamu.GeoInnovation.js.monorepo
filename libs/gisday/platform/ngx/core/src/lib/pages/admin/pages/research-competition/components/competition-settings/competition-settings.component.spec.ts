@@ -153,6 +153,13 @@ describe('CompetitionSettingsComponent', () => {
       expect.objectContaining({ posterSubmissionsCloseAt: posterCloses, posterFilesCloseAt: posterFilesClose })
     );
     expect(status()).toBe('Competitions and deadlines saved.');
+
+    // The season read again after the save: the panel stays open, so what became of the save can still be read.
+    fixture.componentRef.setInput('season', { ...posterAndPaper });
+    fixture.detectChanges();
+
+    expect(toggle()?.getAttribute('aria-expanded')).toBe('true');
+    expect(status()).toBe('Competitions and deadlines saved.');
   });
 
   it.each([
