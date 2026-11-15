@@ -15,7 +15,12 @@ describe('ReviewEmailModalComponent, an editable subject', () => {
         count: 2,
         subject: 'Update your {site} presenter profile',
         template: 'Howdy {first name}, {edit link}',
-        example: { title: 'Ana Ruiz', to: 'ana@example.edu', cc: '', values: { '{first name}': 'Ana', '{site}': 'TxGIS Day', '{edit link}': '(link)' } }
+        example: {
+          title: 'Ana Ruiz',
+          to: 'ana@example.edu',
+          cc: '',
+          values: { '{first name}': 'Ana', '{site}': 'TxGIS Day', '{edit link}': '(link)' }
+        }
       }
     ]
   };
@@ -49,7 +54,10 @@ describe('ReviewEmailModalComponent, an editable subject', () => {
     fixture.componentInstance.send();
 
     expect(page.querySelectorAll('tamu-gisc-textbox').length).toBe(2);
-    expect(close).toHaveBeenCalledWith({ profile: 'Howdy {first name}, {edit link}', 'profile:subject': 'Your {site} profile' });
+    expect(close).toHaveBeenCalledWith({
+      profile: 'Howdy {first name}, {edit link}',
+      'profile:subject': 'Your {site} profile'
+    });
   });
 
   it('keeps the subject fixed otherwise, as for the acceptance emails', () => {
@@ -58,5 +66,59 @@ describe('ReviewEmailModalComponent, an editable subject', () => {
     fixture.componentInstance.send();
 
     expect(close).toHaveBeenCalledWith({ profile: 'Howdy {first name}, {edit link}' });
+  });
+});
+
+/** #3046: who will not be emailed is listed before sending, not only after. */
+describe('ReviewEmailModalComponent, people not emailed', () => {
+  function open(notEmailed?: Array<{ name: string; submission: string }>) {
+    TestBed.configureTestingModule({
+      imports: [ReviewEmailModalComponent],
+      providers: [
+        {
+          provide: MODAL_DATA,
+          useValue: {
+            verb: 'Send profile email',
+            editableSubject: true,
+            preview: of({
+              groups: [
+                {
+                  kind: 'profile',
+                  label: 'Presenter profile emails',
+                  count: 1,
+                  subject: 'S',
+                  template: 'T {edit link}',
+                  example: { title: 'Ana Ruiz', to: 'ana@example.edu', cc: '', values: {} }
+                }
+              ],
+              notEmailed
+            })
+          }
+        },
+        { provide: ModalRefService, useValue: { close: jest.fn() } }
+      ]
+    });
+
+    const fixture = TestBed.createComponent(ReviewEmailModalComponent);
+    fixture.detectChanges();
+
+    return fixture.nativeElement as HTMLElement;
+  }
+
+  it('names each person on the submissions who has no presenter record, with their submission', () => {
+    const page = open([
+      { name: 'Ben Lee', submission: 'Flood maps' },
+      { name: 'Dee Fox', submission: 'Campus trees' }
+    ]);
+
+    expect(page.textContent).toContain('2 people on these submissions will not be emailed');
+    expect([...page.querySelectorAll('.review-email__not-emailed li')].map((li) => li.textContent.trim())).toEqual([
+      'Ben Lee: Flood maps',
+      'Dee Fox: Campus trees'
+    ]);
+  });
+
+  it('says nothing about it when everyone is emailed', () => {
+    expect(open([]).querySelector('.review-email__not-emailed')).toBeNull();
   });
 });

@@ -3,6 +3,18 @@
 
   @if (preview(); as preview) { @if (note) {
   <p>{{ note }}</p>
+  } @if (preview.notEmailed?.length) {
+  <div class="review-email__not-emailed">
+    <p>
+      <strong>{{ preview.notEmailed.length }} {{ preview.notEmailed.length === 1 ? 'person' : 'people' }} on these submissions will not be emailed:</strong>
+      they have no presenter record this season. Add them as speakers first if they should get it.
+    </p>
+    <ul>
+      @for (person of preview.notEmailed; track $index) {
+      <li>{{ person.name }}: {{ person.submission }}</li>
+      }
+    </ul>
+  </div>
   }
   <p>Nothing is sent until you choose Send. Each person gets their own copy, with these filled in: {{ placeholders }}.</p>
 

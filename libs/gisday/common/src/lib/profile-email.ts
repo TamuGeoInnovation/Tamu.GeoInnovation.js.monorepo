@@ -33,9 +33,24 @@ export function profileEmailSubject(): string {
   return 'Update your {site} presenter profile';
 }
 
-/** The text it starts from: the one it has always had, with its parts as placeholders. */
+/**
+ * The text it starts from: the maintainer's for the competition finalists (#3045, 15 November 2026), with its parts as
+ * placeholders. It opens from the Speakers list and an event too, where the admin can edit it for other presenters.
+ */
 export function profileEmailTemplate(): string {
   return `Howdy {first name},
+
+One of the best ways for you to get a full-time or internship position is for you to present at TAMU GIS Day in a competition so that you can demonstrate your technical and soft skills  - like being able to explain technical things quickly - to an audience.
+
+These are exactly the skills that employers look for but are nearly impossible to demonstrate on a resume alone.
+
+Congratulations! You are already on your way. The excellent presentation you are about to give to a room full of employers is your opportunity to show your mastery of these important skills.
+
+One key step of this is to have a professional bio that employers will be able to review while you are speaking, and afterwards as they are looking back at their notes of the presentations that they remember and the students they want to follow up with.
+
+We ask that you please complete your bio on {site} so you will be visible on the presenters page when the employers are trying to look you up. Your basic details have already been filled in for you.
+
+Without a bio or photo, you will not appear on the presenters page. Without a photo, they will still be able to dig to find your bio via the session you are in, but they will not remember your face - I promise you.
 
 You can update your presenter profile on {site} - your bio, photo, university, class year, affiliation and link - here:
 
@@ -43,7 +58,11 @@ You can update your presenter profile on {site} - your bio, photo, university, c
 
 This link is yours alone and works until {link expires}. The {site} team reviews each change before it appears on the site.
 
-If you did not expect this email, you can ignore it.`;
+If you did not expect this email, you can ignore it.
+
+We look forward to your presentation and we wish you the best of luck in the competition!
+
+- The Texas A&M GIS Day Team`;
 }
 
 /** Each placeholder's value for one speaker: `link` is their own, or `PROFILE_EDIT_LINK_PREVIEW` in a preview. */

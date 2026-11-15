@@ -19,6 +19,8 @@ export interface ReviewEmailPreview {
   }>;
   /** Those that get no email, with why: a final reminder's that already have a file or were not accepted (#3017). */
   skipped?: Array<{ title: string; reason: ReminderSkipReason }>;
+  /** People on the submissions who will not be emailed, having no speaker record (#3046, the profile email). */
+  notEmailed?: Array<{ name: string; submission: string }>;
 }
 
 /** What sending the final reminder to several submissions did, from the API (#3017). */

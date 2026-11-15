@@ -17,7 +17,7 @@ import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { ReviewEmailModalComponent } from '@tamu-gisc/gisday/platform/ngx/common';
-import { ResearchCompetitionListComponent, withData } from './research-competition-list.component';
+import { ResearchCompetitionListComponent, withData, profileEmailNote } from './research-competition-list.component';
 
 /** #2817: a filter offers All and only the choices the season's submissions have. */
 describe('withData', () => {
@@ -236,6 +236,7 @@ describe('ResearchCompetitionListComponent actions on the selected submissions',
       expect.objectContaining({ data: expect.objectContaining({ verb: 'Send profile email', editableSubject: true }) })
     );
     expect(modals.open.mock.calls[0][1].data.note).toContain('the 3 people of 2 submissions');
+    expect(modals.open.mock.calls[0][1].data.note).toContain("listed below and won't be emailed");
     expect(speakerEdits.previewForSubmissions).toHaveBeenCalledWith(['s1', 's2']);
     expect(speakerEdits.sendForSubmissions).toHaveBeenCalledWith(['s1', 's2'], {
       subject: 'Your profile',
@@ -482,5 +483,27 @@ describe('ResearchCompetitionListComponent, the final file and the final reminde
 
     expect(service.remind).not.toHaveBeenCalled();
     expect(toasts.toast).not.toHaveBeenCalled();
+  });
+});
+
+// #3043: the window's first line counts people as the server finds them: two addresses in one box are two people.
+describe('profileEmailNote', () => {
+  it('counts each address in a shared box, and a NetID once with its address', () => {
+    const note = profileEmailNote([
+      {
+        participants: [
+          { name: 'Eve Kim, Fay Ng', email: 'eve@tamu.edu; fay@tamu.edu' },
+          { name: 'Gus', email: 'gus1' }
+        ]
+      },
+      {
+        participants: [
+          { name: 'Gus', email: 'GUS1@tamu.edu' },
+          { name: 'No Email', email: '' }
+        ]
+      }
+    ] as never);
+
+    expect(note).toContain('For the 4 people of 2 submissions.');
   });
 });
