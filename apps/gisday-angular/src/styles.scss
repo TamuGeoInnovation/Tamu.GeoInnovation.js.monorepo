@@ -28,6 +28,9 @@
     --gisday-action: #{$aggie-maroon};
     // AggieMap's darker maroon.
     --gisday-action-hover: #3d0000;
+    // The shared textbox's focus outline, as on the search boxes, and the shared copy field's Copy link (#3084).
+    --textbox-focus-color: var(--gisday-primary);
+    --copy-button-color: var(--gisday-primary);
   }
 }
 

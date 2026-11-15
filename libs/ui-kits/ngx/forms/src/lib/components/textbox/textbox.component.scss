@@ -13,9 +13,10 @@
   padding: 0 1rem;
   box-sizing: border-box;
 
+  // A site can give the outline its own colour, as GIS Day's Texas A&M site gives it maroon (#3084).
   &:focus,
   &:focus-within {
-    border-color: #90caf9;
+    border-color: var(--textbox-focus-color, #90caf9);
   }
 }
 
