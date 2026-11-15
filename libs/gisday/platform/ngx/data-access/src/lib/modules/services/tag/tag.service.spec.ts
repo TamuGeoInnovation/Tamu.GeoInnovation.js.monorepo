@@ -10,7 +10,11 @@ import { TagService } from './tag.service';
 describe('TagService.getSessions()', () => {
   it("reads the tag's sessions from its admin route", () => {
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting(), { provide: EnvironmentService, useValue: { value: () => 'api' } }]
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: EnvironmentService, useValue: { value: () => 'api' } }
+      ]
     });
 
     const http = TestBed.inject(HttpTestingController);
