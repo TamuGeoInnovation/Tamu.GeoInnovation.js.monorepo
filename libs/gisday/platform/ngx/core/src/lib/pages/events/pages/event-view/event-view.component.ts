@@ -17,11 +17,10 @@ import {
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
-import { PlaceVisibilityOptions, SeasonDayCardComponent, SeasonLinkPipe } from '@tamu-gisc/gisday/platform/ngx/common';
+import { LinkedSearchComponent, PlaceVisibilityOptions, SeasonDayCardComponent, SeasonLinkPipe } from '@tamu-gisc/gisday/platform/ngx/common';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { CheckboxGroupComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
-import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { GISDAY_SITE } from '@tamu-gisc/gisday/platform/ngx/common';
 import { placesShownOn, siteSessionPlaces } from '@tamu-gisc/gisday/common';
 
@@ -37,7 +36,7 @@ import { placesShownOn, siteSessionPlaces } from '@tamu-gisc/gisday/common';
     ReactiveFormsModule,
     CheckboxGroupComponent,
     CheckboxComponent,
-    TextboxComponent,
+    LinkedSearchComponent,
     AsyncPipe,
     SeasonLinkPipe
   ]
