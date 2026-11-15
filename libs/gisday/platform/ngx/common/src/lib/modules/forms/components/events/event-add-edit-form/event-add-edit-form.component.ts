@@ -32,6 +32,7 @@ import {
   BroadcastService
 } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { serverMessage } from '../../../../../utils/server-message';
 import { SeasonsDayTileComponent } from '../../seasons/seasons-day-tile/seasons-day-tile.component';
 import { NgClass, AsyncPipe } from '@angular/common';
@@ -47,6 +48,7 @@ import { CheckboxGroupComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 import { injectBackToList } from '../../../admin-details-page';
+import { sendProfileEmail } from '../../../../modals/review-email-modal/profile-email';
 
 @Component({
   selector: 'tamu-gisc-event-add-edit-form',
@@ -81,6 +83,7 @@ export class EventAddEditFormComponent implements OnInit {
   private readonly eventService = inject(EventService);
   private readonly ns = inject(NotificationService);
   private readonly speakerEdits = inject(SpeakerEditsService);
+  private readonly modals = inject(ModalService);
 
   /**
    * What stops the event being saved, shown above the buttons after a save is tried (#1773).
@@ -314,13 +317,16 @@ export class EventAddEditFormComponent implements OnInit {
   /**
    * Emails each of the event's saved speakers their own link to edit their profile (#2936): for the competition finalists'
    * session, everyone on it at once. Speakers added on this page but not yet saved are included; the link is for their
-   * profile, not the event.
+   * profile, not the event. The email is read and edited first (#3023).
    */
   public emailSpeakersEditLinks() {
     this.eventSpeakers$
       .pipe(
         take(1),
-        switchMap((speakers) => this.speakerEdits.send(speakers.map((s) => s.guid)))
+        map((speakers) => speakers.map((s) => s.guid)),
+        switchMap((guids) =>
+          sendProfileEmail(this.modals, this.speakerEdits.preview(guids), (email) => this.speakerEdits.send(guids, email))
+        )
       )
       .subscribe({
         next: (result) => this.ns.toast(sendEditLinksToast(result)),

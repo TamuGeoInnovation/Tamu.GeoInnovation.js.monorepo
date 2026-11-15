@@ -6,7 +6,16 @@ import { BadRequestException, Injectable, Logger, NotFoundException } from '@nes
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, MoreThan, Repository } from 'typeorm';
 
-import { gisdaySite } from '@tamu-gisc/gisday/common';
+import {
+  PROFILE_EDIT_LINK_PREVIEW,
+  PROFILE_EMAIL_KIND,
+  fillProfileEmail,
+  gisdaySite,
+  profileEmailProblem,
+  profileEmailSubject,
+  profileEmailTemplate,
+  profileEmailValues
+} from '@tamu-gisc/gisday/common';
 
 import { senderAs } from '../_base/site-of-request';
 
@@ -42,6 +51,27 @@ export interface SpeakerEditFields {
 export interface SendResult {
   sent: Array<string>;
   skipped: Array<{ name: string; reason: string }>;
+}
+
+/** The profile email as an admin approved it (#3023): its subject and text, with their placeholders. */
+export interface ProfileEmail {
+  subject: string;
+  template: string;
+}
+
+/**
+ * The profile email before it is sent (#3023), in the shape the review emails' window reads: one group, with the text it
+ * starts from and an example for the first speaker, whose link is a stand-in.
+ */
+export interface ProfileEmailPreview {
+  groups: Array<{
+    kind: string;
+    label: string;
+    count: number;
+    subject: string;
+    template: string;
+    example: { title: string; to: string; cc: string; values: Record<string, string> };
+  }>;
 }
 
 /** Sending links for competition submissions' people (#2958): also who has no speaker record, with their submission. */
@@ -80,7 +110,74 @@ export class SpeakerEditService {
    * spaces, and each speaker found is sent one link, as `sendLinks` sends them. Anyone with no speaker record is
    * returned by name, with their submission's title, so the admin can add them.
    */
-  public async sendLinksForSubmissions(submissionGuids: Array<string>, host?: string): Promise<SendForSubmissionsResult> {
+  public async sendLinksForSubmissions(
+    submissionGuids: Array<string>,
+    host?: string,
+    /** The subject and text the admin approved (#3023); without it, the email as it has always been. */
+    email?: ProfileEmail
+  ): Promise<SendForSubmissionsResult> {
+    checkEmail(email);
+
+    const { matched, unmatched } = await this.speakersOfSubmissions(submissionGuids);
+    const sent = matched.length ? await this.sendLinks(matched, host, email) : { sent: [], skipped: [] };
+
+    return { ...sent, unmatched };
+  }
+
+  /** The profile email the people of the named submissions would get, for the admin to read and edit first (#3023). */
+  public async previewLinksForSubmissions(submissionGuids: Array<string>, host?: string): Promise<ProfileEmailPreview> {
+    const { matched } = await this.speakersOfSubmissions(submissionGuids);
+
+    return matched.length ? this.previewLinks(matched, host) : { groups: [] };
+  }
+
+  /**
+   * The profile email the named speakers would get, for the admin to read and edit first (#3023): today's subject and
+   * text, and an example for the first with an address, its link a stand-in. No link is made and nothing is sent.
+   */
+  public async previewLinks(speakerGuids: Array<string>, host?: string): Promise<ProfileEmailPreview> {
+    if (!Array.isArray(speakerGuids) || speakerGuids.length === 0) {
+      throw new BadRequestException('No speakers were named.');
+    }
+
+    const speakers = (await this.speakers.find({ where: { guid: In(speakerGuids) } })).filter((s) =>
+      looksLikeEmail(s.email)
+    );
+
+    if (speakers.length === 0) {
+      return { groups: [] };
+    }
+
+    const site = gisdaySite(process.env.GISDAY_SITE, host);
+    const [first] = speakers;
+
+    return {
+      groups: [
+        {
+          kind: PROFILE_EMAIL_KIND,
+          label: 'Presenter profile emails',
+          count: speakers.length,
+          subject: profileEmailSubject(),
+          template: profileEmailTemplate(),
+          example: {
+            title: fullName(first),
+            to: first.email.trim(),
+            cc: '',
+            values: profileEmailValues(first, site, PROFILE_EDIT_LINK_PREVIEW, linkExpiry())
+          }
+        }
+      ]
+    };
+  }
+
+  /**
+   * The speakers of the named submissions' people (#2958): each participant matched to a speaker record of their
+   * submission's season by email, ignoring case and surrounding spaces, each speaker once; and anyone with none, by
+   * name, with their submission's title.
+   */
+  private async speakersOfSubmissions(
+    submissionGuids: Array<string>
+  ): Promise<{ matched: Array<string>; unmatched: SendForSubmissionsResult['unmatched'] }> {
     if (!Array.isArray(submissionGuids) || submissionGuids.length === 0) {
       throw new BadRequestException('No submissions were named.');
     }
@@ -115,13 +212,16 @@ export class SpeakerEditService {
       }
     }
 
-    const sent = matched.size ? await this.sendLinks([...matched], host) : { sent: [], skipped: [] };
-
-    return { ...sent, unmatched };
+    return { matched: [...matched], unmatched };
   }
 
-  /** Emails each named speaker their own link (an admin's action). `host` is the address the admin is on. */
-  public async sendLinks(speakerGuids: Array<string>, host?: string): Promise<SendResult> {
+  /**
+   * Emails each named speaker their own link (an admin's action). `host` is the address the admin is on; `email` the
+   * subject and text the admin approved (#3023), checked before any link is made.
+   */
+  public async sendLinks(speakerGuids: Array<string>, host?: string, email?: ProfileEmail): Promise<SendResult> {
+    checkEmail(email);
+
     const result: SendResult = { sent: [], skipped: [] };
 
     if (!Array.isArray(speakerGuids) || speakerGuids.length === 0) {
@@ -139,7 +239,7 @@ export class SpeakerEditService {
       }
 
       try {
-        await this.emailLink(speaker, host);
+        await this.emailLink(speaker, host, email);
         result.sent.push(name);
       } catch (err) {
         Logger.error(`Could not email an edit link to speaker ${speaker.guid}: ${err.message}`, 'SpeakerEditService');
@@ -364,9 +464,9 @@ export class SpeakerEditService {
     return link;
   }
 
-  private async emailLink(speaker: Speaker, host?: string) {
+  private async emailLink(speaker: Speaker, host?: string, email?: ProfileEmail) {
     const token = randomBytes(32).toString('base64url');
-    const expires = new Date(Date.now() + SPEAKER_EDIT_LINK_DAYS * 24 * 60 * 60 * 1000);
+    const expires = linkExpiry();
     const site = gisdaySite(process.env.GISDAY_SITE, host);
     const url = `${site.address}/presenters/edit/${token}`;
 
@@ -379,37 +479,45 @@ export class SpeakerEditService {
       })
     );
 
+    // The text the admin approved (#3023), or the email as it has always been; either way this speaker's own link.
+    const { subject, text } = fillProfileEmail(
+      email ?? { subject: profileEmailSubject(), template: profileEmailTemplate() },
+      profileEmailValues(speaker, site, url, expires)
+    );
+
     await this.contact.sendMessage(
       {
         to: speaker.email.trim(),
         from: senderAs(site.name, process.env.MAILROOM_FROM),
         replyTo: process.env.MAILROOM_TO,
-        subject: `Update your ${site.name} presenter profile`,
-        text: linkEmail(speaker, site.name, url, expires)
+        subject,
+        text
       },
       true
     );
   }
 }
 
-/** The email a speaker receives. */
+/** When a link made now stops working. */
+function linkExpiry(): Date {
+  return new Date(Date.now() + SPEAKER_EDIT_LINK_DAYS * 24 * 60 * 60 * 1000);
+}
+
+/** Refuses an edited profile email that cannot be sent (#3023): no subject, no text, or no `{edit link}`. */
+function checkEmail(email: ProfileEmail | undefined): void {
+  const problem = email === undefined ? null : profileEmailProblem(email);
+
+  if (problem) {
+    throw new BadRequestException(problem);
+  }
+}
+
+/** The email a speaker receives, as it is sent unedited. */
 export function linkEmail(speaker: Pick<Speaker, 'firstName'>, siteName: string, url: string, expires: Date): string {
-  const until = expires.toLocaleDateString('en-US', {
-    timeZone: 'America/Chicago',
-    weekday: 'long',
-    month: 'long',
-    day: 'numeric'
-  });
-
-  return `Howdy${speaker.firstName ? ` ${speaker.firstName.trim()}` : ''},
-
-You can update your presenter profile on ${siteName} - your bio, photo, university, class year, affiliation and link - here:
-
-${url}
-
-This link is yours alone and works until ${until}. The ${siteName} team reviews each change before it appears on the site.
-
-If you did not expect this email, you can ignore it.`;
+  return fillProfileEmail(
+    { subject: profileEmailSubject(), template: profileEmailTemplate() },
+    profileEmailValues(speaker, { name: siteName, address: '' }, url, expires)
+  ).text;
 }
 
 // Where it lived first; kept so its importers need not change.

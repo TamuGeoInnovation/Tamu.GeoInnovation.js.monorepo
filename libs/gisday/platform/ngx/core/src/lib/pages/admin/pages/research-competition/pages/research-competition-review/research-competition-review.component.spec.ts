@@ -8,7 +8,7 @@ import { SubmissionFilesComponent } from '@tamu-gisc/gisday/platform/ngx/common'
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
-import { ReviewEmailModalComponent } from '../../components/review-email-modal/review-email-modal.component';
+import { ReviewEmailModalComponent } from '@tamu-gisc/gisday/platform/ngx/common';
 import { ResearchCompetitionReviewComponent } from './research-competition-review.component';
 
 @Component({ selector: 'tamu-gisc-submission-files', template: '' })
