@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle and listening.
+- **Batch 58 (gisday: #3038, #3029, #3039)**: started 9:27 AM Central, 15 November; #3038 first. #3039 (edit CLAUDE.md) held for the maintainer's own go-ahead.
 
 ## Finished
 - **Batch 55 (gisday: #3026, #3024)** (report `home/reports/2026-11-15-55.md`): both branches ready: `fix/3026-submissions-table-fit` `a4ef225fe` and `fix/3024-unread-by-site` `39f2cb518` (the API applies the site filter; the browser filter is gone). Red first; checks exit 0. No questions.
