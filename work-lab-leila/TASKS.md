@@ -8166,3 +8166,10 @@ the list and an event's Broadcast drop-down; a release note. Branch `feat/3047-b
    sets `x-forwarded-host`. Branch `chore/3050-proxy-forwarded-host`; no visible change.
 Each from the latest `development`, the bug-fix check, your own screenshots for 1; push and report "branch ready".
 
+## Batch 74 (gisday: #3051, the X that clears every admin search box; 15 November 2026, from `work (gisday)`) (Low) - **after 73**
+
+[#3051](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3051). One change in the shared
+`tamu-gisc-admin-search` (`[clearable]` on its textbox, as `linked-search` does), plus the Speaker badges search box.
+Test red first; the bug-fix check; before/after on Admin › Speakers with a search typed; a release note. Branch
+`fix/3051-admin-search-clear` from the latest `development`. Push and report "branch ready".
+
