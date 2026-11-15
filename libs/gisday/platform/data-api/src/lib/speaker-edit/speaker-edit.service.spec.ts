@@ -177,7 +177,9 @@ describe('SpeakerEditService', () => {
       });
 
       expect(sent[0].subject).toBe('Your profile, Ana');
-      expect(sent[0].text).toBe(`Hi Ana, update it at https://gisday.tamu.edu/presenters/edit/${tokenSent()} on Texas A&M GIS Day.`);
+      expect(sent[0].text).toBe(
+        `Hi Ana, update it at https://gisday.tamu.edu/presenters/edit/${tokenSent()} on Texas A&M GIS Day.`
+      );
       expect(links).toHaveLength(1);
     });
 
@@ -188,9 +190,7 @@ describe('SpeakerEditService', () => {
 
       const link = `https://gisday.tamu.edu/presenters/edit/${tokenSent()}`;
 
-      expect(sent[0].text).toBe(
-        fillReviewEmail(group.template, { ...group.example.values, '{edit link}': link })
-      );
+      expect(sent[0].text).toBe(fillReviewEmail(group.template, { ...group.example.values, '{edit link}': link }));
     });
 
     it('refuses a text without {edit link}, or with no subject, and makes no link and sends nothing', async () => {
@@ -250,10 +250,16 @@ describe('SpeakerEditService', () => {
     await service.sendLinks(['speaker-ana']);
 
     await expect(
-      service.propose(tokenSent(), {}, { originalname: 'face.svg', buffer: Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"/>') } as never)
+      service.propose(tokenSent(), {}, {
+        originalname: 'face.svg',
+        buffer: Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"/>')
+      } as never)
     ).rejects.toThrow(/JPEG or PNG/);
 
-    await service.propose(tokenSent(), { description: 'Bio' }, { originalname: 'face.jpg', buffer: declaredJpeg(10, 10) } as never);
+    await service.propose(tokenSent(), { description: 'Bio' }, {
+      originalname: 'face.jpg',
+      buffer: declaredJpeg(10, 10)
+    } as never);
     const photoPath = edits[0].photoPath as string;
 
     expect(photoPath).toMatch(/^speaker-edits\//);
@@ -307,7 +313,10 @@ describe('SpeakerEditService', () => {
 
   it('applies the proposal when an admin approves it, with the photo, and then removes the held photo', async () => {
     await service.sendLinks(['speaker-ana']);
-    await service.propose(tokenSent(), { description: 'Approved bio' }, { originalname: 'face.jpg', buffer: declaredJpeg(10, 10) } as never);
+    await service.propose(tokenSent(), { description: 'Approved bio' }, {
+      originalname: 'face.jpg',
+      buffer: declaredJpeg(10, 10)
+    } as never);
     const edit = edits[0];
     edit.speaker = ana;
     const photoPath = edit.photoPath as string;
@@ -376,6 +385,15 @@ describe('linkEmail', () => {
     expect(text).toContain('Saturday, November 21');
     expect(text).toContain('reviews each change before it appears');
   });
+
+  // #3045: the maintainer's text for the competition finalists is the one it starts from.
+  it("starts from the maintainer's text for the finalists", () => {
+    const text = linkEmail({ firstName: 'Ana' }, 'TxGIS Day', 'https://txgisday.org/presenters/edit/abc', new Date());
+
+    expect(text).toContain('One of the best ways for you to get a full-time or internship position');
+    expect(text).toContain('Without a bio or photo, you will not appear on the presenters page.');
+    expect(text).toContain('- The Texas A&M GIS Day Team');
+  });
 });
 
 describe('siteHost (#2951)', () => {
@@ -408,9 +426,13 @@ describe('SpeakerEditService.sendLinksForSubmissions (#2958)', () => {
   const S1 = '5a1d3c2e-0b4f-4c6a-9e8d-7f6a5b4c3d21';
   const S2 = '6b2e4d3f-1c5a-4d7b-8f9e-8a7b6c5d4e32';
   const S3 = '7c3f5e4a-2d6b-4e8c-9a0f-9b8c7d6e5f43';
+  const S4 = '8d4a6f5b-3e7c-4f9d-8b1a-0c9d8e7f6a54';
   const speakers = [
     { guid: 'sp-ana', firstName: 'Ana', lastName: 'Ruiz', email: ' Ana.Ruiz@TAMU.edu ', season: { guid: S2026 } },
     { guid: 'sp-cy', firstName: 'Cy', lastName: 'Diaz', email: 'cy@tamu.edu', season: { guid: S2026 } },
+    { guid: 'sp-eve', firstName: 'Eve', lastName: 'Kim', email: 'eve@tamu.edu', season: { guid: S2026 } },
+    { guid: 'sp-fay', firstName: 'Fay', lastName: 'Ng', email: 'fay@tamu.edu', season: { guid: S2026 } },
+    { guid: 'sp-gus', firstName: 'Gus', lastName: 'Oh', email: 'gus123@tamu.edu', season: { guid: S2026 } },
     // Last year's record is not this year's speaker.
     { guid: 'sp-ben-2025', firstName: 'Ben', lastName: 'Lee', email: 'ben@tamu.edu', season: { guid: 'season-2025' } }
   ];
@@ -435,7 +457,17 @@ describe('SpeakerEditService.sendLinksForSubmissions (#2958)', () => {
       ]
     },
     // A participant with no name is named by their address.
-    { guid: S3, title: 'Soil moisture', season: { guid: S2026 }, participants: [{ name: ' ', email: 'ben@tamu.edu' }] }
+    { guid: S3, title: 'Soil moisture', season: { guid: S2026 }, participants: [{ name: ' ', email: 'ben@tamu.edu' }] },
+    // #3043: co-authors typed into one email box, and one entered by NetID, as add-competition-speakers.ps1 read them.
+    {
+      guid: S4,
+      title: 'Heat islands',
+      season: { guid: S2026 },
+      participants: [
+        { name: 'Eve Kim, Fay Ng', email: 'Eve@tamu.edu; fay@tamu.edu' },
+        { name: 'Gus Oh', email: 'gus123' }
+      ]
+    }
   ];
 
   let sent: Array<{ to: string; text: string }>;
@@ -484,6 +516,24 @@ describe('SpeakerEditService.sendLinksForSubmissions (#2958)', () => {
     expect(sent).toEqual([]);
   });
 
+  // #3043: the finalists' co-authors are speakers, made from each address in a shared box and from a bare NetID.
+  it('emails each co-author typed into one box, and one entered by NetID', async () => {
+    const result = await service.sendLinksForSubmissions([S4], 'gisday.tamu.edu');
+
+    expect(result).toEqual({ sent: ['Eve Kim', 'Fay Ng', 'Gus Oh'], skipped: [], unmatched: [] });
+  });
+
+  // #3046: who won't be emailed is known before sending, not only after.
+  it('names, in the preview, everyone on the submissions with no speaker record', async () => {
+    const preview = await service.previewLinksForSubmissions([S1, S2, S4], 'gisday.tamu.edu');
+
+    expect(preview.groups[0].count).toBe(5);
+    expect(preview.notEmailed).toEqual([
+      { name: 'Ben Lee', submission: 'Flood maps' },
+      { name: 'Dee Fox', submission: 'Campus trees' }
+    ]);
+  });
+
   it('refuses an empty list', async () => {
     await expect(service.sendLinksForSubmissions([])).rejects.toThrow(BadRequestException);
     expect(sent).toEqual([]);
@@ -495,7 +545,10 @@ describe('SpeakerEditService.sendLinksForSubmissions (#2958)', () => {
     expect(preview.groups.map((g) => [g.kind, g.count])).toEqual([['profile', 2]]);
     expect(sent).toEqual([]);
 
-    await service.sendLinksForSubmissions([S1, S2], 'gisday.tamu.edu', { subject: 'Profile', template: 'Hi {first name}: {edit link}' });
+    await service.sendLinksForSubmissions([S1, S2], 'gisday.tamu.edu', {
+      subject: 'Profile',
+      template: 'Hi {first name}: {edit link}'
+    });
 
     expect(sent.map((m) => m.text.split(':')[0])).toEqual(['Hi Ana', 'Hi Cy']);
   });

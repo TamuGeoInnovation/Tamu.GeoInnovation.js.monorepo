@@ -6,3 +6,4 @@ export * from './lib/submission-deadlines';
 export * from './lib/season-competitions';
 export * from './lib/review-email';
 export * from './lib/profile-email';
+export * from './lib/participant-emails';
