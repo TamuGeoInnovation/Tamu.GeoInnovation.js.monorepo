@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch 54 (gisday: #3023, Urgent)**, profile email preview, branch `feat/3023-profile-email-preview`; started 7:52 AM Central, 15 November. Stacked on PR 3020 (not merged yet). Red proven; implementation committed; full check running.
+- Nothing. Idle and listening.
 
 ## Finished
+- **Batch 54 (gisday: #3023, Urgent)** (report `home/reports/2026-11-15-54.md`): branch ready, `feat/3023-profile-email-preview` on the fork at `66725e519`, no PR; **stacked on PR 3020**, merge that first. All three senders open the review emails' window (moved to ngx-common), subject and text editable; one server path; link never shown, {edit link} required. Red first; full check exit 0. No questions.
 - **Batch 53 (gisday: #3017 skip unaccepted)** (report `home/reports/2026-11-15-53.md`): pushed to `feat/3017-final-reminder-pr` (PR 3020) at `b866b0117`, fast-forward. The final reminder also skips submissions not accepted; window, preview, send and toasts say why. Red first; bug-fix check exit 0 (6 projects). No questions.
 - **Batch 52 (gisday: #3017)** (report `home/reports/2026-11-15-52.md`): branch ready, `feat/3017-final-reminder` on the fork at `c97557e13`, no PR. Final file column (any file counts) and Send final reminder by the review email's own path (two kinds, same window, one shared preview and send); skips those with a file. Red first; full check exit 0. One question.
 - **Batch 51 (gisday: #2948 join table)** (report `home/reports/2026-11-15-51.md`): branch ready, `feat/2948-season-competition-types` on the fork at `468840557`, no PR; kubernetes-config `7b98643`, never run. `season_competitions` (unique season+competition, cascade), eager on Season; no rows = every one; API and page unchanged. Migration generated and proven (up/down/up, unique, cascade, no drift). Development merged. Red first; full check exit 0. Filed #3013 (gisday-common specs never run). Two questions.
