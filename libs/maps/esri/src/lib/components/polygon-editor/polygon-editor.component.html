@@ -1,0 +1,8 @@
+<div class="polygon-editor-map">
+  <tamu-gisc-esri-map [config]="config" (loaded)="loaded($event)"></tamu-gisc-esri-map>
+</div>
+
+<div class="flex flex-row justify-end leader-1">
+  <tamu-gisc-button value="Draw" size="small" fit="snug" (go)="draw()"></tamu-gisc-button>
+  <tamu-gisc-button value="Clear" size="small" fit="snug" look="secondary" [disabled]="!hasPolygon()" (go)="clear()"></tamu-gisc-button>
+</div>
