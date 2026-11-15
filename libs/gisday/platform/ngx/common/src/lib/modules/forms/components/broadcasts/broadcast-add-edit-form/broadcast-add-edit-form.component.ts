@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, input } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Observable, filter, map, switchMap, take } from 'rxjs';
 
 import { EventBroadcast } from '@tamu-gisc/gisday/platform/data-api';
@@ -8,6 +8,8 @@ import { BroadcastService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+
+import { injectBackToList } from '../../../admin-details-page';
 
 @Component({
   selector: 'tamu-gisc-broadcast-add-edit-form',
@@ -17,7 +19,8 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 })
 export class BroadcastAddEditFormComponent implements OnInit {
   private readonly fb = inject(UntypedFormBuilder);
-  private readonly rt = inject(Router);
+  /** Leaves for the list once a save, create or delete has worked: the one the page was opened from (#2965). */
+  private readonly backToList = injectBackToList('/admin/broadcasts');
   private readonly at = inject(ActivatedRoute);
   private readonly bs = inject(BroadcastService);
   private readonly ns = inject(NotificationService);
@@ -51,18 +54,12 @@ export class BroadcastAddEditFormComponent implements OnInit {
       this.entity$.pipe(take(1)).subscribe((entity) => {
         this.form.patchValue(entity);
         this.form.removeControl('season');
-
-        // Opening the page is not a change (#2942), though each control echoes the value it is given.
-        this.form.markAsPristine();
       });
     } else {
       this.ss.activeSeason$.pipe(take(1)).subscribe((season) => {
         this.form.patchValue({
           season: season.guid
         });
-
-        // Opening the page is not a change (#2942), though each control echoes the value it is given.
-        this.form.markAsPristine();
       });
     }
   }
@@ -143,6 +140,6 @@ export class BroadcastAddEditFormComponent implements OnInit {
   }
 
   private _navigateBack() {
-    this.rt.navigate(['/admin/broadcasts']);
+    this.backToList();
   }
 }

@@ -56,6 +56,18 @@ export class SpeakerController {
     return this.provider.getSpeakersForActiveSeasonInEvents(true);
   }
 
+  /**
+   * Every speaker in a season's sessions, with or without a photo or bio, for the Speaker badges dashboard (#2995): each
+   * presenter needs a badge, and the public list below keeps only those with both, which left out the new competition
+   * finalists until they uploaded a photo.
+   */
+  @Permissions(['update:speakers'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Get('participating/season/:guid/all')
+  public async getAllParticipatingSpeakersForSeason(@Param('guid') seasonGuid: string) {
+    return this.provider.getSpeakersForSeasonInEvents(seasonGuid, false);
+  }
+
   @UseGuards(JwtGuard)
   @AllowAny()
   @Get('participating/season/:guid')

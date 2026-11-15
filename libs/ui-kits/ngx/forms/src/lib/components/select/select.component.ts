@@ -213,8 +213,13 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
     }
   }
 
+  /**
+   * Shows a value from the form without reporting it back as a change or a touch: a form loaded with a record would
+   * otherwise count as changed the moment it opened (#2964).
+   */
   public writeValue(value: T | string) {
-    this.value = value;
+    this._value.set(value === null || value === undefined || value === ('undefined' as unknown) ? undefined : value);
+    this.cd.markForCheck();
   }
 
   public registerOnChange(fn) {

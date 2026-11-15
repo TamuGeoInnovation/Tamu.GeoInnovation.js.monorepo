@@ -37,7 +37,7 @@
       </div>
 
       <div class="form-collection column">
-        <p class="form-input-description">Indicate whether this is an individual or group submission. For group submissions, only one submission is required. All participants' name, email, and student ID are required to be eligible for a distributed award.</p>
+        <p class="form-input-description">Indicate whether this is an individual or group submission. For group submissions, only one submission is required. Your name and email come from your account. For a group, list your co-authors one per line, and their emails one per line in the same order; every author's name and email are required to be eligible for a distributed award.</p>
 
         <tamu-gisc-slide-toggle formControlName="format" class="trailer-1" [options]="presentationFormatOptions" [displayPath]="'label'" [valuePath]="'format'"></tamu-gisc-slide-toggle>
       </div>
@@ -45,18 +45,19 @@
       <div class="form-collection column">
         @for (author of participants(); track author; let i = $index) {
         <ng-container formArrayName="participants">
+          <!-- The submitter, from their account, not typed (#2990). -->
           <div class="form-collection row" [formGroupName]="i">
-            <tamu-gisc-textbox formControlName="name" placeholder="Full Name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-            <tamu-gisc-textbox formControlName="email" placeholder="Email" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-            <tamu-gisc-textbox formControlName="studentId" placeholder="Student ID" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+            <tamu-gisc-textbox formControlName="name" placeholder="Your name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+            <tamu-gisc-textbox formControlName="email" placeholder="Your email" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
           </div>
         </ng-container>
         }
       </div>
 
-      @if ((selectedPresentationFormat$ | async) === 'group' && !form.disabled) {
-      <div class="flex flex-row justify-end">
-        <p class="form-collection-actions" (click)="addParticipant()" tabindex="0" role="button" (keydown.enter)="addParticipant()" (keydown.space)="addParticipant(); $event.preventDefault()">Add participant <span class="material-icons">add</span></p>
+      @if ((selectedPresentationFormat$ | async) === 'group') {
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="coAuthors" placeholder="Co-authors, one name per line" type="textarea" [rows]="4" [floatLabel]="true"> </tamu-gisc-textbox>
+        <tamu-gisc-textbox formControlName="coAuthorEmails" placeholder="Co-authors' emails, one per line, in the same order" type="textarea" [rows]="4" [floatLabel]="true"> </tamu-gisc-textbox>
       </div>
       }
 

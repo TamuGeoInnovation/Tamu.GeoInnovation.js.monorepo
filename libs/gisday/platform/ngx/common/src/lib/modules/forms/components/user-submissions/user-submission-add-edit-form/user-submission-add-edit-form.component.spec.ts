@@ -5,6 +5,7 @@ import { of } from 'rxjs';
 import { GISDAY_SITES } from '@tamu-gisc/gisday/common';
 import { SeasonService, SubmissionTypeService, UserSubmissionsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { AuthService } from '@tamu-gisc/common/ngx/auth';
 
 import { GISDAY_SITE } from '../../../../../site/site';
 import { UserSubmissionAddEditFormComponent } from './user-submission-add-edit-form.component';
@@ -36,7 +37,11 @@ describe('UserSubmissionAddEditFormComponent, on Texas A&M site', () => {
         { provide: UserSubmissionsService, useValue: { getEntity: () => of(entity), getFiles: () => of([]), createEntity } },
         { provide: SubmissionTypeService, useValue: { getEntities: () => of([]) } },
         { provide: SeasonService, useValue: { getActiveSeason: () => of({ guid: 'season' }) } },
-        { provide: NotificationService, useValue: { toast } }
+        { provide: NotificationService, useValue: { toast } },
+        {
+          provide: AuthService,
+          useValue: { user$: of({ given_name: 'Ana', family_name: 'Ruiz', name: 'ana@tamu.edu', email: 'Ana@tamu.edu' }) }
+        }
       ]
     });
 
@@ -62,6 +67,69 @@ describe('UserSubmissionAddEditFormComponent, on Texas A&M site', () => {
     expect(toast).toHaveBeenCalledWith(
       expect.objectContaining({ message: expect.stringContaining('The Texas A&M GIS Day team will review') })
     );
+  });
+
+  // #2990: the submitter is the signed-in account, so their name and email come from it and cannot be typed.
+  it("fills the submitter's name and email from their account, and does not let them be typed", () => {
+    const fixture = render('create');
+    const submitter = fixture.componentInstance.form.get('participants.0');
+
+    expect(submitter.get('name').value).toBe('Ana Ruiz');
+    expect(submitter.get('email').value).toBe('ana@tamu.edu');
+    expect(submitter.get('name').disabled).toBe(true);
+    expect(submitter.get('email').disabled).toBe(true);
+    // No student ID is asked for: the directory lookup gives it.
+    expect(submitter.get('studentId')).toBeNull();
+    expect((fixture.nativeElement as HTMLElement).textContent).not.toContain('Student ID');
+  });
+
+  // #2990: a group's other authors go in two boxes, names and emails one per line in the same order.
+  it("saves the co-authors after the submitter, each line's name with the same line's email", () => {
+    const fixture = render('create');
+    const form = fixture.componentInstance.form;
+
+    form.patchValue({
+      title: 'Heat',
+      format: 'group',
+      coAuthors: 'Ben Lee\n\nCy Diaz',
+      coAuthorEmails: 'BEN@tamu.edu\n\ncy@tamu.edu'
+    });
+    fixture.componentInstance.handleSubmission();
+
+    const sent = createEntity.mock.calls[0][0];
+
+    expect(sent.participants).toEqual([
+      { name: 'Ana Ruiz', email: 'ana@tamu.edu' },
+      { name: 'Ben Lee', email: 'ben@tamu.edu' },
+      { name: 'Cy Diaz', email: 'cy@tamu.edu' }
+    ]);
+    expect(sent.coAuthors).toBeUndefined();
+    expect(sent.coAuthorEmails).toBeUndefined();
+  });
+
+  it('keeps only the submitter for an individual submission', () => {
+    const fixture = render('create');
+
+    fixture.componentInstance.form.patchValue({ format: 'group', coAuthors: 'Ben Lee', coAuthorEmails: 'ben@tamu.edu' });
+    fixture.componentInstance.form.patchValue({ format: 'individual' });
+    fixture.componentInstance.handleSubmission();
+
+    expect(createEntity.mock.calls[0][0].participants).toEqual([{ name: 'Ana Ruiz', email: 'ana@tamu.edu' }]);
+  });
+
+  it("shows a saved group's other authors in the co-author boxes, one per line", () => {
+    entity.participants = [
+      { name: 'Ana', email: 'ana@tamu.edu' },
+      { name: 'Ben Lee', email: 'ben@tamu.edu' },
+      { name: 'Cy Diaz', email: 'cy@tamu.edu' }
+    ] as never;
+
+    const form = render('edit').componentInstance.form;
+
+    expect(form.get('coAuthors').value).toBe('Ben Lee\nCy Diaz');
+    expect(form.get('coAuthorEmails').value).toBe('ben@tamu.edu\ncy@tamu.edu');
+    expect((form.get('participants') as unknown as { length: number }).length).toBe(1);
+    entity.participants = [];
   });
 });
 

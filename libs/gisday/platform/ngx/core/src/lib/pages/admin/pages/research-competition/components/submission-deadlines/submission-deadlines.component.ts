@@ -1,4 +1,5 @@
 import { Component, computed, effect, inject, input, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 import { Season } from '@tamu-gisc/gisday/platform/data-api';
@@ -16,6 +17,7 @@ import {
 } from '@tamu-gisc/gisday/common';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { DateTimePickerComponent } from '@tamu-gisc/ui-kits/ngx/forms/date-time-picker';
+import { AccordionContentDirective, AccordionDirective, AccordionHeaderDirective } from '@tamu-gisc/ui-kits/ngx/layout';
 
 type DeadlinesForm = FormGroup<Record<SubmissionDeadlineField, FormControl<Date | string | null>>>;
 
@@ -23,12 +25,24 @@ type DeadlinesForm = FormGroup<Record<SubmissionDeadlineField, FormControl<Date 
  * When a season's competitions close, poster and presentation (#2934), paper and cartography (#2962), set by the admins
  * on the competitions' page: for each, when new submissions and edits close, and when, later, the files attached to them do. Empty leaves it open. The
  * API enforces them; the student's submission page shows them. Entered and shown as the scoring window is (#2474): the
- * picker, and beneath it the moment in Central time whatever the admin's computer is set to.
+ * picker, and beside it the moment in Central time whatever the admin's computer is set to.
+ *
+ * A panel (#2969), on the shared accordion: collapsed to a one-line summary once the season has deadlines, so the
+ * submissions below it are what the page opens on, and open to edit when it has none. Open, it is a table of one row
+ * per competition, however many the competitions table lists.
  */
 @Component({
   selector: 'tamu-gisc-submission-deadlines',
   templateUrl: './submission-deadlines.component.html',
-  imports: [ReactiveFormsModule, ButtonComponent, DateTimePickerComponent]
+  styleUrls: ['./submission-deadlines.component.scss'],
+  imports: [
+    ReactiveFormsModule,
+    ButtonComponent,
+    DateTimePickerComponent,
+    AccordionDirective,
+    AccordionHeaderDirective,
+    AccordionContentDirective
+  ]
 })
 export class SubmissionDeadlinesComponent {
   private readonly seasons = inject(SeasonService);
@@ -36,8 +50,9 @@ export class SubmissionDeadlinesComponent {
   /** The season whose deadlines are shown: the one the page's season picker has chosen. */
   public readonly season = input<Partial<Season> | null>(null);
 
+  /** One block per competition, from the shared table (#2962). */
   /**
-   * One block per competition the season runs (#2948), from the shared table (#2962). A competition turned off keeps
+   * One row per competition the season runs (#2948), from the shared table (#2962). A competition turned off keeps
    * whatever deadlines it had, so turning it on again brings them back.
    */
   public readonly competitions = computed(() =>
@@ -57,6 +72,34 @@ export class SubmissionDeadlinesComponent {
     ) as Record<SubmissionDeadlineField, FormControl<Date | string | null>>
   );
 
+  /** Whether the panel is open to edit. Set from the season each time one is chosen; the header toggles it. */
+  public readonly expanded = signal(true);
+
+  private readonly values = toSignal(this.form.valueChanges, { initialValue: this.form.getRawValue() });
+
+  /**
+   * The panel's line while collapsed (#2969): each competition's deadlines as the form holds them, in brief, with the
+   * zone named once. "Poster closes Fri, Nov 13, 5:00 PM; files Mon, Nov 16, 12:00 PM · Presentation open (Central time)"
+   */
+  public readonly summary = computed(() => {
+    const values = this.values();
+
+    if (SUBMISSION_DEADLINE_FIELDS.every((field) => !asDate(values[field]))) {
+      return 'No deadlines set: every competition is open.';
+    }
+
+    const brief = (field: SubmissionDeadlineField) => inCentralTime(values[field], '', { brief: true });
+    const lines = this.competitions().map(({ key }) => {
+      const name = `${key[0].toUpperCase()}${key.slice(1)}`;
+      const submissions = brief(deadlineField(key, 'submissions'));
+      const files = brief(deadlineField(key, 'files'));
+
+      return `${name} ${submissions ? `closes ${submissions}` : 'open'}${files ? `; files ${files}` : ''}`;
+    });
+
+    return `${lines.join(' · ')} (Central time)`;
+  });
+
   public readonly saving = signal(false);
 
   /** What became of the last save: saved, or why not. */
@@ -66,16 +109,16 @@ export class SubmissionDeadlinesComponent {
   public readonly inCentralTime = inCentralTime;
 
   constructor() {
-    // Another season chosen, or this one saved and read again: the form shows what the season holds.
+    // Another season chosen, or this one saved and read again: the form shows what the season holds, collapsed to its
+    // summary if it holds any deadline and open to set them if it holds none.
     effect(() => {
       const season = this.season();
+      const deadlines = Object.fromEntries(
+        SUBMISSION_DEADLINE_FIELDS.map((field) => [field, asDate(season?.[field])])
+      ) as Record<SubmissionDeadlineField, Date | null>;
 
-      this.form.reset(
-        Object.fromEntries(SUBMISSION_DEADLINE_FIELDS.map((field) => [field, asDate(season?.[field])])) as Record<
-          SubmissionDeadlineField,
-          Date | null
-        >
-      );
+      this.form.reset(deadlines);
+      this.expanded.set(Object.values(deadlines).every((deadline) => deadline === null));
     });
   }
 

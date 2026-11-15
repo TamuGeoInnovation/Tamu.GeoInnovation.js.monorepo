@@ -140,15 +140,17 @@ describe('PeopleDetailsComponent search (#2919)', () => {
     expect(root.querySelector('.search-results-container')).toBeNull();
   });
 
-  it('clears the search from the x in the box', async () => {
+  it("clears the search from the shared textbox's x, not a copy of its own (#2963)", async () => {
     const fixture = await open();
     const root = await type(fixture, 'texas');
+    const clear = () => root.querySelector('tamu-gisc-textbox button[aria-label="Clear the search"]') as HTMLButtonElement;
 
-    (root.querySelector('tamu-gisc-textbox .search-clear') as HTMLElement).click();
+    expect(root.querySelector('.search-clear')).toBeNull();
+    clear().click();
     fixture.detectChanges();
 
     expect(fixture.componentInstance.search.value).toBe('');
-    expect(root.querySelector('.search-clear')).toBeNull();
+    expect(clear()).toBeNull();
   });
 
   it('closes and clears when a presenter is chosen', async () => {

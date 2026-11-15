@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, viewChild } from '@angular/core';
-import { PlaceLocationAddEditFormComponent } from '@tamu-gisc/gisday/platform/ngx/common';
+import { PlaceLocationAddEditFormComponent, provideAdminDetailsPage } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { BaseAdminDetailsPageComponent } from '../../../base-admin-details-page/base-admin-details-page.component';
 
@@ -8,7 +8,8 @@ import { BaseAdminDetailsPageComponent } from '../../../base-admin-details-page/
   templateUrl: './place-edit.component.html',
   styleUrls: ['./place-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [PlaceLocationAddEditFormComponent]
+  imports: [PlaceLocationAddEditFormComponent],
+  providers: [provideAdminDetailsPage(() => PlaceEditComponent)]
 })
 export class PlaceEditComponent extends BaseAdminDetailsPageComponent {
   private readonly editor = viewChild(PlaceLocationAddEditFormComponent);

@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, input, signal } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import {
   Observable,
   filter,
@@ -45,6 +45,8 @@ import { sortSpeakersByName } from '../../../../../utils/speakers';
 import { CheckboxGroupComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
+import { injectBackToList } from '../../../admin-details-page';
+
 @Component({
   selector: 'tamu-gisc-event-add-edit-form',
   templateUrl: './event-add-edit-form.component.html',
@@ -68,7 +70,8 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 export class EventAddEditFormComponent implements OnInit {
   private readonly fb = inject(UntypedFormBuilder);
   private readonly at = inject(ActivatedRoute);
-  private readonly rt = inject(Router);
+  /** Leaves for the list once a save, create or delete has worked: the one the page was opened from (#2965). */
+  private readonly backToList = injectBackToList('/admin/events');
   private readonly seasonService = inject(SeasonService);
   private readonly speakerService = inject(SpeakerService);
   private readonly tagService = inject(TagService);
@@ -281,9 +284,6 @@ export class EventAddEditFormComponent implements OnInit {
         // Remove the season form control since we are editing an existing event
         // Will otherwise move to the active season
         this.form.removeControl('season');
-
-        // Opening the page is not a change (#2942), though each control echoes the value it is given.
-        this.form.markAsPristine();
       });
 
       this.selectedEventDateStart$ = this.entity$.pipe(take(1), this._timeStringFromEvent$('startTime'), shareReplay());
@@ -306,9 +306,6 @@ export class EventAddEditFormComponent implements OnInit {
         this.form.patchValue({
           season: season.guid
         });
-
-        // Opening the page is not a change (#2942), though each control echoes the value it is given.
-        this.form.markAsPristine();
       });
     }
   }
@@ -479,7 +476,7 @@ export class EventAddEditFormComponent implements OnInit {
   }
 
   private _navigateBack() {
-    this.rt.navigate(['/admin/events']);
+    this.backToList();
   }
 
   private _defaultTimeFromSelectedEvent$() {

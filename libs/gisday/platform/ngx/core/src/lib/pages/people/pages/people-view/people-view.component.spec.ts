@@ -103,20 +103,28 @@ describe('PeopleViewComponent link', () => {
     expect(copyButton(root).textContent).toContain('Copy link');
   });
 
-  it('holds Copy link and a clear inside the box, and clears a search a link arrived with (#2923)', () => {
+  // The clear is the shared textbox's own (#2963), not a copy kept by this page.
+  const clearButton = (root: HTMLElement) =>
+    root.querySelector('tamu-gisc-textbox button[aria-label="Clear the search"]') as HTMLButtonElement;
+
+  it('holds Copy link and the shared clear inside the box, and clears a search a link arrived with (#2923, #2963)', () => {
     const fixture = open('lower');
     const root = fixture.nativeElement as HTMLElement;
-    const clear = root.querySelector('tamu-gisc-textbox .search-clear') as HTMLElement;
+    const clear = clearButton(root);
 
     // Inside the box, beside the clear, as AggieMap's copy field holds its Copy; not the shared .button, which stretched.
-    expect(copyButton(root).closest('.textbox-actions').querySelector('.search-clear')).not.toBeNull();
+    expect(clear).not.toBeNull();
+    const actions = root.querySelector('tamu-gisc-textbox > .textbox-actions');
+    expect(actions.contains(copyButton(root))).toBe(true);
+    expect(actions.contains(clear)).toBe(true);
     expect(copyButton(root).classList.contains('button')).toBe(false);
+    expect(root.querySelector('.search-clear')).toBeNull();
 
     clear.click();
     fixture.detectChanges();
 
     expect(fixture.componentInstance.search.value).toBe('');
-    expect(root.querySelector('.search-clear')).toBeNull();
+    expect(clearButton(root)).toBeNull();
     expect(copyButton(root)).toBeNull();
     expect(root.querySelectorAll('tamu-gisc-speaker-card')).toHaveLength(2);
   });

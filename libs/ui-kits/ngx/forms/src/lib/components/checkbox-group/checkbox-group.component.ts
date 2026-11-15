@@ -152,15 +152,16 @@ export class CheckboxGroupComponent implements OnInit, ControlValueAccessor {
   public writeValue(value) {
     if (value === null) return;
 
+    // The form's own value, so it is not reported back to the form as a change (#2964).
     // Handle string inputs
     if (typeof value === 'string') {
       const split = value.split(',');
 
-      this.value = split;
+      this._value.set(split);
     } else if (typeof value === 'number') {
-      this.value = [value];
+      this._value.set([value]);
     } else {
-      this.value = [...value];
+      this._value.set([...value]);
     }
 
     this.setChildrenValue();
