@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
@@ -193,5 +194,22 @@ describe('CheckInDashboardComponent (#3006)', () => {
 
     expect(root.textContent).toContain('The check-ins could not be read');
     expect(root.querySelector('tamu-gisc-dashboard-table')).toBeNull();
+  });
+
+  // #3038: a 403 is a missing permission, which trying again can't fix, so the page says which.
+  it('names the missing permission on a 403, rather than saying to try again', () => {
+    checkIns.getDashboardForSeason = jest.fn(() =>
+      throwError(
+        () =>
+          new HttpErrorResponse({
+            status: 403,
+            error: { statusCode: 403, message: "Your account doesn't have the permission this needs: read:checkins." }
+          })
+      )
+    );
+    const root = open().nativeElement as HTMLElement;
+
+    expect(root.textContent).toContain('read:checkins');
+    expect(root.textContent).not.toContain('Try again in a moment');
   });
 });

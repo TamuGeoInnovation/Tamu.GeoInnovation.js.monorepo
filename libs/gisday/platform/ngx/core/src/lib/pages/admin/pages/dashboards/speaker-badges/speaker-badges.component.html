@@ -19,17 +19,10 @@
         </div>
       </div>
 
-      <p class="badges-counts">
-        {{ view.all }} {{ view.all === 1 ? 'presenter' : 'presenters' }}: <strong>{{ view.notPrinted }}</strong> not printed yet.
-        @if (view.changed > 0) {
-        <strong>{{ view.changed }}</strong> printed {{ view.changed === 1 ? 'badge has' : 'badges have' }} changed since, and {{ view.changed === 1 ? 'is' : 'are' }} flagged below.
-        }
-      </p>
+      <p class="badges-counts">{{ view.all }} {{ view.all === 1 ? 'presenter' : 'presenters' }}: <strong>{{ view.notPrinted }}</strong> not printed yet. @if (view.changed > 0) { <strong>{{ view.changed }}</strong> printed {{ view.changed === 1 ? 'badge has' : 'badges have' }} changed since, and {{ view.changed === 1 ? 'is' : 'are' }} flagged below. }</p>
 
       <div class="badges-summary">
-        <p>
-          Showing <strong>{{ view.shown.length }}</strong>. Click a heading to sort by it, and again to reverse it. The CSV holds what the table shows, in its order.
-        </p>
+        <p>Showing <strong>{{ view.shown.length }}</strong>. Click a heading to sort by it, and again to reverse it. The CSV holds what the table shows, in its order.</p>
         @if (view.shown.length > 0) {
         <div class="badges-actions">
           <a (click)="download()" tabindex="0" role="button" (keydown.enter)="download()" (keydown.space)="download(); $event.preventDefault()">Export as CSV <span class="material-icons action">file_download</span></a>
@@ -51,9 +44,7 @@
       </div>
       } @if (saveFailed()) {
       <p class="error">The badges could not be marked. Nothing was changed; try again in a moment.</p>
-      }
-
-      @if (view.shown.length > 0) {
+      } @if (view.shown.length > 0) {
       <div class="datatable-container">
         <ngx-datatable class="material" [rows]="view.shown" [columnMode]="'flex'" [headerHeight]="'auto'" [rowHeight]="'auto'" [footerHeight]="0" [scrollbarV]="false" [reorderable]="false" (sortsChange)="onSort($event)">
           @for (column of columns; track column.prop) {
@@ -69,8 +60,7 @@
               </div>
               @if (row.changedSincePrinted) {
               <div class="badges-changed bold clr-md-amber-800">Changed since printed</div>
-              }
-              }
+              } }
             </ng-template>
           </ngx-datatable-column>
         </ngx-datatable>

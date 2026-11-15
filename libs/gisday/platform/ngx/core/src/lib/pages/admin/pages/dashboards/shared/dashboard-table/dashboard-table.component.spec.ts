@@ -13,16 +13,45 @@ import {
 } from './dashboard-table.component';
 
 const rows: Array<DashboardTableRow> = [
-  { key: 'b', name: 'Workshop', note: 'ILCB 111', when: '2026-11-18T15:00:00.000Z', total: 3, counts: { students: 2, industry: 1 } },
-  { key: 'a', name: 'keynote', note: null, when: '2026-11-17T20:00:00.000Z', total: 5, counts: { students: 1, industry: 4 } },
-  { key: 'c', name: 'Career fair', note: null, when: '2026-11-19T15:00:00.000Z', total: 1, counts: { students: 1, industry: 0 } }
+  {
+    key: 'b',
+    name: 'Workshop',
+    note: 'ILCB 111',
+    when: '2026-11-18T15:00:00.000Z',
+    total: 3,
+    counts: { students: 2, industry: 1 }
+  },
+  {
+    key: 'a',
+    name: 'keynote',
+    note: null,
+    when: '2026-11-17T20:00:00.000Z',
+    total: 5,
+    counts: { students: 1, industry: 4 }
+  },
+  {
+    key: 'c',
+    name: 'Career fair',
+    note: null,
+    when: '2026-11-19T15:00:00.000Z',
+    total: 1,
+    counts: { students: 1, industry: 0 }
+  }
 ];
 
 @Component({
   imports: [DashboardTableComponent, DashboardRowDetailDirective],
   template: `
-    <tamu-gisc-dashboard-table [rows]="rows" [columns]="columns" nameLabel="Event" totalLabel="All events" (toggled)="opened.set($event)">
-      <ng-template tamuGiscDashboardRowDetail let-row><p class="detail">People of {{ row.name }}</p></ng-template>
+    <tamu-gisc-dashboard-table
+      [rows]="rows"
+      [columns]="columns"
+      nameLabel="Event"
+      totalLabel="All events"
+      (toggled)="opened.set($event)"
+    >
+      <ng-template tamuGiscDashboardRowDetail let-row
+        ><p class="detail">People of {{ row.name }}</p></ng-template
+      >
     </tamu-gisc-dashboard-table>
   `
 })
@@ -45,7 +74,9 @@ describe('DashboardTableComponent', () => {
   const summary = () =>
     Array.from(root.querySelectorAll('datatable-summary-row .datatable-body-cell')).map((c) => c.textContent.trim());
   const heading = (label: string) =>
-    Array.from(root.querySelectorAll('.datatable-header-cell-label')).find((h) => h.textContent.trim() === label) as HTMLElement;
+    Array.from(root.querySelectorAll('.datatable-header-cell-label')).find(
+      (h) => h.textContent.trim() === label
+    ) as HTMLElement;
 
   async function settle() {
     fixture.detectChanges();
@@ -96,9 +127,11 @@ describe('DashboardTableComponent', () => {
     expect(names()).toEqual(['keynote', 'Workshop', 'Career fair']);
   });
 
-  it("opens a row to show what the page gives it, one row at a time, and closes it on a second click", async () => {
+  it('opens a row to show what the page gives it, one row at a time, and closes it on a second click', async () => {
     const cell = (name: string) =>
-      Array.from(root.querySelectorAll('datatable-row-wrapper .datatable-body-cell')).find((c) => c.textContent.includes(name)) as HTMLElement;
+      Array.from(root.querySelectorAll('datatable-row-wrapper .datatable-body-cell')).find((c) =>
+        c.textContent.includes(name)
+      ) as HTMLElement;
 
     cell('Workshop').click();
     await settle();
@@ -120,7 +153,11 @@ describe('DashboardTableComponent', () => {
 /** The check-in dashboard's table: an event, its time, who checked in, the RSVPs beside them and six person types. */
 @Component({
   imports: [DashboardTableComponent],
-  template: `<tamu-gisc-dashboard-table [rows]="rows" [columns]="columns" totalHeading="Checked in"></tamu-gisc-dashboard-table>`
+  template: `<tamu-gisc-dashboard-table
+    [rows]="rows"
+    [columns]="columns"
+    totalHeading="Checked in"
+  ></tamu-gisc-dashboard-table>`
 })
 class CheckInsHostComponent {
   public rows = rows;
@@ -175,11 +212,15 @@ describe('adjustSorts()', () => {
   });
 
   it('starts a name or a time with the first, as the table does', () => {
-    expect(adjustSorts([{ prop: 'name', dir: 'asc' }], [{ prop: 'total', dir: 'desc' }], ascending)).toEqual([{ prop: 'name', dir: 'asc' }]);
+    expect(adjustSorts([{ prop: 'name', dir: 'asc' }], [{ prop: 'total', dir: 'desc' }], ascending)).toEqual([
+      { prop: 'name', dir: 'asc' }
+    ]);
   });
 
   it('lets a second click on the same column reverse it', () => {
-    expect(adjustSorts([{ prop: 'total', dir: 'asc' }], [{ prop: 'total', dir: 'desc' }], ascending)).toEqual([{ prop: 'total', dir: 'asc' }]);
+    expect(adjustSorts([{ prop: 'total', dir: 'asc' }], [{ prop: 'total', dir: 'desc' }], ascending)).toEqual([
+      { prop: 'total', dir: 'asc' }
+    ]);
   });
 });
 

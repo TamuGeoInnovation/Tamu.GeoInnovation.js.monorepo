@@ -2,7 +2,13 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import * as Papa from 'papaparse';
 
-import { DashboardPeopleComponent, DashboardPerson, groupPeople, peopleCsv, PERSON_TYPE_COLUMNS } from './dashboard-people.component';
+import {
+  DashboardPeopleComponent,
+  DashboardPerson,
+  groupPeople,
+  peopleCsv,
+  PERSON_TYPE_COLUMNS
+} from './dashboard-people.component';
 
 const person = (p: Partial<DashboardPerson>): DashboardPerson => ({
   firstName: null,
@@ -20,7 +26,14 @@ const person = (p: Partial<DashboardPerson>): DashboardPerson => ({
 const people = [
   person({ firstName: 'Zoe', lastName: 'Young', email: 'zoe@example.edu', type: 'undergraduate', classification: 'Senior' }),
   person({ firstName: 'Ana', lastName: 'Lee', email: 'ana@example.edu', type: 'undergraduate', classification: 'Junior' }),
-  person({ firstName: 'Pat', lastName: 'Kim', email: 'pat@example.edu', type: 'academia', position: 'Professor', organization: 'Texas A&M University' })
+  person({
+    firstName: 'Pat',
+    lastName: 'Kim',
+    email: 'pat@example.edu',
+    type: 'academia',
+    position: 'Professor',
+    organization: 'Texas A&M University'
+  })
 ];
 
 describe('groupPeople()', () => {
@@ -52,7 +65,14 @@ describe('peopleCsv()', () => {
 
 describe('PERSON_TYPE_COLUMNS', () => {
   it('heads a column per type, in order, with a soft hyphen in Undergraduate only', () => {
-    expect(PERSON_TYPE_COLUMNS.map((c) => c.key)).toEqual(['undergraduate', 'graduate', 'student', 'academia', 'industry', 'not-given']);
+    expect(PERSON_TYPE_COLUMNS.map((c) => c.key)).toEqual([
+      'undergraduate',
+      'graduate',
+      'student',
+      'academia',
+      'industry',
+      'not-given'
+    ]);
     expect(PERSON_TYPE_COLUMNS[0].label).toBe('Under\u00adgraduate');
     expect(PERSON_TYPE_COLUMNS.slice(1).every((c) => !c.label.includes('\u00ad'))).toBe(true);
   });
@@ -79,14 +99,19 @@ describe('DashboardPeopleComponent', () => {
   it('lists the people under their types, with the date column named as given', () => {
     const el = show({ people, dateLabel: 'Checked in' });
 
-    expect(Array.from(el.querySelectorAll('h4')).map((h) => h.textContent.trim())).toEqual(['Undergraduate (2)', 'Faculty & academia (1)']);
+    expect(Array.from(el.querySelectorAll('h4')).map((h) => h.textContent.trim())).toEqual([
+      'Undergraduate (2)',
+      'Faculty & academia (1)'
+    ]);
     expect(el.querySelector('th:last-child').textContent).toBe('Checked in');
     expect(el.textContent).toContain('ana@example.edu');
   });
 
   it('says so while reading, if the people could not be read, and if there are none', () => {
     expect(show({ people: null }).textContent).toContain('Reading the people');
-    expect(show({ people: [], emptyText: 'Nobody has checked in yet.' }).textContent).toContain('Nobody has checked in yet.');
+    expect(show({ people: [], emptyText: 'Nobody has checked in yet.' }).textContent).toContain(
+      'Nobody has checked in yet.'
+    );
     expect(show({ people, failed: true }).textContent).toContain('could not be read');
   });
 });

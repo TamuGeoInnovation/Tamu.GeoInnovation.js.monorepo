@@ -22,3 +22,25 @@ export function serverMessage(err: unknown, fallback: string): string {
 
   return lines.length > 0 ? lines.join('; ') : fallback;
 }
+
+/**
+ * Why an admin page could not read what it shows (#3038), or null when trying again is the right advice. A 403 means the
+ * account lacks a permission: the API names it, and trying again can never help (read:checkins, 15 November 2026). A
+ * 401 means the sign-in has run out.
+ */
+export function readRefusal(err: unknown): string | null {
+  const status = (err as { status?: unknown } | null | undefined)?.status;
+
+  if (status === 401) {
+    return 'Your sign-in has run out. Sign out and sign back in, then open this page again.';
+  }
+
+  if (status === 403) {
+    return serverMessage(
+      err,
+      "Your account doesn't have the permission this page needs. An administrator gives it in Auth0; then sign out and sign back in."
+    );
+  }
+
+  return null;
+}
