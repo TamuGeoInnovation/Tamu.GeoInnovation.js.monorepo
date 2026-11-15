@@ -8183,3 +8183,14 @@ signed in, the Online Broadcast panel's "Dial-in number" shows `br.password`. Sh
 bug-fix check; before/after of the panel, with the local broadcast's values (test ones, not production's); a release
 note. Branch `fix/3055-dial-in-number`. Push and report "branch ready".
 
+## Batch 76 (gisday: PR 3030's columns fit at 1280 px, and #3057; 15 November 2026, from `work (gisday)`) (Low) - **after 75**
+
+**Decided (the maintainer):** report 70: 1(c) lower the minimums of the columns that can wrap (Name, Submitted by,
+Department / major) so the table fits 879 px at 1280 without scrolling, keeping the inner scroll for narrower widths;
+2(a) leave the Department heading. Report 73: 1(a) filed as #3057; 2(a) leave the proxy's Origin as documented.
+
+1. On `fix/3026-submissions-table-fit-pr` (PR 3030): the change, its test updated, re-captured after images at 1280 and
+   1024 px, the bug-fix check, push (fast-forward), and the PR body's image section in your report.
+2. **[#3057](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3057)**, branch
+   `fix/3057-tamu-2023-sessions` from the latest `development`, as the issue says.
+
