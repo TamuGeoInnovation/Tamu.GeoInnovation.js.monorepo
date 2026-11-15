@@ -9,10 +9,17 @@
   @for (group of preview.groups; track group.kind) {
   <section class="review-email__group">
     <h3>{{ group.label }} ({{ group.count }})</h3>
+    @if (editableSubject) {
+    <tamu-gisc-textbox [formControl]="form.controls[group.kind + ':subject']" [placeholder]="'Subject'" [floatLabel]="true"></tamu-gisc-textbox>
+    } @else {
     <p class="review-email__meta"><strong>Subject:</strong> {{ group.subject }}</p>
+    }
     <tamu-gisc-textbox [formControl]="form.controls[group.kind]" [type]="'textarea'" [rows]="16" [placeholder]="'Email text'" [floatLabel]="true"></tamu-gisc-textbox>
     <h4>Preview, as "{{ group.example.title }}" gets it</h4>
     <p class="review-email__meta"><strong>To:</strong> {{ group.example.to }} @if (group.example.cc) { <strong>Cc:</strong> {{ group.example.cc }} }</p>
+    @if (editableSubject) {
+    <p class="review-email__meta"><strong>Subject:</strong> {{ exampleSubject(group.kind, group.example.values) }}</p>
+    }
     <pre class="review-email__preview">{{ example(group.kind, group.example.values) }}</pre>
   </section>
   }

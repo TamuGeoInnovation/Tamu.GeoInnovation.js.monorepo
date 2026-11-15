@@ -18,7 +18,7 @@ import { Response } from 'express';
 import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 import { DEFAULT_UPLOAD_LIMITS } from '@tamu-gisc/common/nest/services';
 
-import { SpeakerEditFields, SpeakerEditService } from './speaker-edit.service';
+import { ProfileEmail, SpeakerEditFields, SpeakerEditService } from './speaker-edit.service';
 import { siteHost } from '../_base/site-of-request';
 
 // Where it lived first; kept so its importers need not change.
@@ -33,12 +33,20 @@ export { siteHost };
 export class SpeakerEditController {
   constructor(private readonly service: SpeakerEditService) {}
 
-  /** Emails each named speaker their own link. */
+  /** Emails each named speaker their own link, in the subject and text the admin approved, if given (#3023). */
   @Permissions(['update:speakers'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Post('send')
-  public send(@Body('speakers') speakers: Array<string>, @Request() req) {
-    return this.service.sendLinks(speakers, siteHost(req?.headers));
+  public send(@Body() body: { speakers: Array<string> } & Partial<ProfileEmail>, @Request() req) {
+    return this.service.sendLinks(body?.speakers, siteHost(req?.headers), emailOf(body));
+  }
+
+  /** The email `send` would send, for the admin to read and edit first (#3023). Nothing is sent. */
+  @Permissions(['update:speakers'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Post('send/preview')
+  public preview(@Body('speakers') speakers: Array<string>, @Request() req) {
+    return this.service.previewLinks(speakers, siteHost(req?.headers));
   }
 
   /**
@@ -48,8 +56,16 @@ export class SpeakerEditController {
   @Permissions(['update:speakers', 'read:competitions'], 'all')
   @UseGuards(JwtGuard, PermissionsGuard)
   @Post('send-for-submissions')
-  public sendForSubmissions(@Body('submissions') submissions: Array<string>, @Request() req) {
-    return this.service.sendLinksForSubmissions(submissions, siteHost(req?.headers));
+  public sendForSubmissions(@Body() body: { submissions: Array<string> } & Partial<ProfileEmail>, @Request() req) {
+    return this.service.sendLinksForSubmissions(body?.submissions, siteHost(req?.headers), emailOf(body));
+  }
+
+  /** The email `send-for-submissions` would send, for the admin to read and edit first (#3023). Nothing is sent. */
+  @Permissions(['update:speakers', 'read:competitions'], 'all')
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Post('send-for-submissions/preview')
+  public previewForSubmissions(@Body('submissions') submissions: Array<string>, @Request() req) {
+    return this.service.previewLinksForSubmissions(submissions, siteHost(req?.headers));
   }
 
   /** A speaker asking for their own link. The same answer whoever asks. */
@@ -110,4 +126,11 @@ export class SpeakerEditController {
   ) {
     return this.service.propose(token, body, photo);
   }
+}
+
+/** The edited email in a send's body (#3023), or undefined when the admin sent neither part: the email as it always was. */
+function emailOf(body: Partial<ProfileEmail> | undefined): ProfileEmail | undefined {
+  return body?.subject === undefined && body?.template === undefined
+    ? undefined
+    : { subject: body.subject, template: body.template };
 }

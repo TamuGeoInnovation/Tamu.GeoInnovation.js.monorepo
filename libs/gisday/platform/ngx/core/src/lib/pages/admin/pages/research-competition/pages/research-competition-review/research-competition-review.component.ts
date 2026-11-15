@@ -18,7 +18,7 @@ import {
   ReviewEmailModalComponent,
   ReviewEmailModalData,
   ReviewEmailModalResult
-} from '../../components/review-email-modal/review-email-modal.component';
+} from '@tamu-gisc/gisday/platform/ngx/common';
 
 @Component({
   selector: 'tamu-gisc-research-competition-review',
