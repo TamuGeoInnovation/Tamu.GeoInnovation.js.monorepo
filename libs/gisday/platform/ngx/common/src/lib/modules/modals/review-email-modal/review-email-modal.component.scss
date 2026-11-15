@@ -31,7 +31,8 @@ tamu-gisc-textbox {
 }
 
 .review-email__preview {
-  white-space: pre-wrap;
+  // HTML from its Markdown now (#3044), so its own paragraphs and breaks set the spacing.
+  white-space: normal;
   font-family: inherit;
   border-left: 3px solid currentColor;
   padding-left: 0.75rem;

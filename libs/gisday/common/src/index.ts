@@ -7,4 +7,5 @@ export * from './lib/season-competitions';
 export * from './lib/review-email';
 export * from './lib/profile-email';
 export * from './lib/participant-emails';
+export * from './lib/email-markdown';
 export * from './lib/upload-images';

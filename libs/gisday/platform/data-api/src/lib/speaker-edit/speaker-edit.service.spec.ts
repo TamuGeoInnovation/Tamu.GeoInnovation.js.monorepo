@@ -193,6 +193,19 @@ describe('SpeakerEditService', () => {
       expect(sent[0].text).toBe(fillReviewEmail(group.template, { ...group.example.values, '{edit link}': link }));
     });
 
+    // #3065: the finalists' send reached the API twice, 30 seconds apart, and all 48 got it twice.
+    it('emails no one twice when the same send arrives again within minutes, and says why it skipped them', async () => {
+      const email = { subject: 'Profile', template: 'Hi {first name}: {edit link}' };
+
+      await service.sendLinks(['speaker-ana'], 'gisday.tamu.edu', email);
+      const again = await service.sendLinks(['speaker-ana'], 'gisday.tamu.edu', email);
+
+      expect(sent).toHaveLength(1);
+      expect(links).toHaveLength(1);
+      expect(again.sent).toEqual([]);
+      expect(again.skipped).toEqual([{ name: 'Ana Ruiz', reason: expect.stringContaining('already emailed') }]);
+    });
+
     it('refuses a text without {edit link}, or with no subject, and makes no link and sends nothing', async () => {
       await expect(
         service.sendLinks(['speaker-ana'], 'gisday.tamu.edu', { subject: 'Profile', template: 'Hi {first name}.' })
@@ -392,7 +405,7 @@ describe('linkEmail', () => {
 
     expect(text).toContain('One of the best ways for you to get a full-time or internship position');
     expect(text).toContain('Without a bio or photo, you will not appear on the presenters page.');
-    expect(text).toContain('- The Texas A&M GIS Day Team');
+    expect(text).toContain('— The Texas A&M GIS Day Team');
   });
 });
 
@@ -477,7 +490,8 @@ describe('SpeakerEditService.sendLinksForSubmissions (#2958)', () => {
   beforeEach(() => {
     sent = [];
     service = new SpeakerEditService(
-      { create: (x) => x, save: jest.fn(async (x) => x) } as never,
+      // No link sent to anyone yet, so the repeat guard (#3065) lets each through.
+      { create: (x) => x, save: jest.fn(async (x) => x), count: jest.fn(async () => 0) } as never,
       {} as never,
       {
         find: jest.fn(async ({ where }) =>
@@ -551,5 +565,41 @@ describe('SpeakerEditService.sendLinksForSubmissions (#2958)', () => {
     });
 
     expect(sent.map((m) => m.text.split(':')[0])).toEqual(['Hi Ana', 'Hi Cy']);
+  });
+
+  // #3044: the text may use Markdown; it goes as HTML beside the plain text, and HTML typed into it is not obeyed.
+  it('sends the Markdown as HTML beside the text, with any HTML typed into it shown, not obeyed', async () => {
+    (await service.sendLinksForSubmissions([S1], 'gisday.tamu.edu', {
+      subject: 'Profile',
+      template: 'Hi {first name}, **please** finish your bio <script>x()</script>: {edit link}'
+    })) as never;
+
+    const [m] = sent as Array<{ text: string; html?: string }>;
+
+    expect(m.text).toContain('**please**');
+    expect(m.html).toContain('<strong>please</strong>');
+    expect(m.html).toContain('&lt;script&gt;');
+    expect(m.html).not.toContain('<script>');
+    expect(m.html).toContain('href="https://gisday.tamu.edu/presenters/edit/');
+  });
+
+  // #3044, found in the lab's screenshots: a bare address with & stays whole, a javascript: link is no link, and the
+  // default sign-off is a line, not a one-item list.
+  it('keeps an address with & whole, makes only web and email links, and ends the default email on a line', async () => {
+    await service.sendLinksForSubmissions([S1], 'gisday.tamu.edu', {
+      subject: 'Profile',
+      template: 'Map: https://example.edu/map?a=1&b=2 and [bad](javascript:alert(1)) {edit link}'
+    });
+    const [m] = sent as Array<{ html?: string }>;
+
+    expect(m.html).toContain('href="https://example.edu/map?a=1&amp;b=2"');
+    expect(m.html).not.toContain('javascript:');
+
+    sent.length = 0;
+    await service.sendLinksForSubmissions([S2], 'gisday.tamu.edu');
+    const html = (sent[sent.length - 1] as { html?: string }).html;
+
+    expect(html).toContain('<p>— The Texas A&amp;M GIS Day Team</p>');
+    expect(html).not.toContain('<li>');
   });
 });

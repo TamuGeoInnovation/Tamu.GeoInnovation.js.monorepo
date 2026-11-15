@@ -167,6 +167,100 @@ describe('DashboardTableComponent widths (#3006)', () => {
   });
 });
 
+describe('DashboardTableComponent sideways scroll (#3029)', () => {
+  // At 1024 px the table is wider than its box, and the box's own scrollbar is at the bottom of a table that can be 60
+  // rows long. A unit test cannot lay a page out, so the box's widths are given here, and the browser is told it changed
+  // size as a ResizeObserver would; Playwright measured the real page at 1024 and 1280 px.
+  let fixture: ComponentFixture<CheckInsHostComponent>;
+  // Every ResizeObserver made, and what it watches: ngx-datatable makes its own, which are left alone.
+  let observers: Array<{ observer: ResizeObserver; callback: ResizeObserverCallback; targets: Set<Element> }>;
+  const original = globalThis.ResizeObserver;
+
+  /** Tells whoever watches the table's box that it changed size, as the browser would. */
+  function resized() {
+    for (const { observer, callback, targets } of observers) {
+      if (targets.has(box())) {
+        callback([{ target: box() } as unknown as ResizeObserverEntry], observer);
+      }
+    }
+  }
+
+  const box = () => (fixture.nativeElement as HTMLElement).querySelector('.dashboard-table') as HTMLElement;
+  const rail = () => (fixture.nativeElement as HTMLElement).querySelector('.dashboard-table-rail') as HTMLElement | null;
+
+  /** Gives an element the layout jsdom does not have: its widths, and a scroll position that can be set. */
+  function layOut(element: HTMLElement, clientWidth: number, scrollWidth: number) {
+    Object.defineProperty(element, 'clientWidth', { configurable: true, value: clientWidth });
+    Object.defineProperty(element, 'scrollWidth', { configurable: true, value: scrollWidth });
+    Object.defineProperty(element, 'scrollLeft', { configurable: true, writable: true, value: 0 });
+  }
+
+  async function resize(clientWidth: number, scrollWidth: number) {
+    layOut(box(), clientWidth, scrollWidth);
+    resized();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+  }
+
+  beforeEach(async () => {
+    observers = [];
+    globalThis.ResizeObserver = class {
+      private readonly targets = new Set<Element>();
+
+      constructor(callback: ResizeObserverCallback) {
+        observers.push({ observer: this as unknown as ResizeObserver, callback, targets: this.targets });
+      }
+      public observe(target: Element) {
+        this.targets.add(target);
+      }
+      public unobserve(target: Element) {
+        this.targets.delete(target);
+      }
+      public disconnect() {
+        this.targets.clear();
+      }
+    } as unknown as typeof ResizeObserver;
+
+    TestBed.configureTestingModule({ imports: [CheckInsHostComponent] });
+    fixture = TestBed.createComponent(CheckInsHostComponent);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    globalThis.ResizeObserver = original;
+  });
+
+  it('keeps a sideways scrollbar under the table, pinned to the bottom of the window, when the table is wider than its box', async () => {
+    await resize(600, 891);
+
+    expect(rail()).not.toBeNull();
+    expect(rail()?.hidden).toBe(false);
+    expect((rail()?.firstElementChild as HTMLElement).style.width).toBe('891px');
+  });
+
+  it('scrolls the table with that scrollbar, and the scrollbar with the table', async () => {
+    await resize(600, 891);
+    layOut(rail() as HTMLElement, 600, 891);
+
+    (rail() as HTMLElement).scrollLeft = 150;
+    rail()?.dispatchEvent(new Event('scroll'));
+    expect(box().scrollLeft).toBe(150);
+
+    box().scrollLeft = 40;
+    box().dispatchEvent(new Event('scroll'));
+    expect((rail() as HTMLElement).scrollLeft).toBe(40);
+  });
+
+  it('shows no second scrollbar when the table fits its box', async () => {
+    await resize(891, 891);
+
+    expect(rail()?.hidden ?? true).toBe(true);
+  });
+});
+
 describe('adjustSorts()', () => {
   const ascending = new Set(['name', 'when']);
 

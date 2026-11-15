@@ -2,6 +2,8 @@ import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angula
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Observable, catchError, filter, of, switchMap, tap } from 'rxjs';
 
+import { readRefusal } from '@tamu-gisc/gisday/platform/ngx/common';
+
 import { RSVP_PERSON_TYPES, RsvpPersonTypeCounts } from '@tamu-gisc/gisday/common';
 import type {
   GuidIdentity,
@@ -104,6 +106,8 @@ export abstract class EventDashboardComponent<D extends RsvpDashboard, E extends
   /** The season's dashboard, null while it loads, and `failed` if it could not be read. */
   public readonly dashboard = signal<D | null>(null);
   public readonly failed = signal(false);
+  /** Why it could not be read, when trying again won't help: a missing permission or an expired sign-in (#3038). */
+  public readonly refusal = signal<string | null>(null);
 
   /** The event whose people are shown, and them once they are read. */
   public readonly expanded = signal<string | null>(null);
@@ -138,12 +142,14 @@ export abstract class EventDashboardComponent<D extends RsvpDashboard, E extends
         tap(() => {
           this.dashboard.set(null);
           this.failed.set(false);
+          this.refusal.set(null);
           this.collapse();
         }),
         switchMap((season) =>
           this.seasonDashboard(season.guid).pipe(
-            catchError(() => {
+            catchError((err) => {
               this.failed.set(true);
+              this.refusal.set(readRefusal(err));
 
               return of(null);
             })

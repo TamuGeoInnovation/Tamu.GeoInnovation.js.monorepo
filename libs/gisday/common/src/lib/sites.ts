@@ -138,8 +138,8 @@ export const GISDAY_SITES = {
     hosts: ['gisday.tamu.edu', 'tamu.txgisday.org'],
     brand: 'tamu',
     // It shares txgisday.org's database, where every organization's sessions can be entered, so it lists only
-    // Texas A&M's (#2142).
-    sessionsFrom: ['Texas A&M University GIS Day(s)']
+    // Texas A&M's (#2142). In 2023 its place was named "Texas A&M University" (#3057).
+    sessionsFrom: ['Texas A&M University GIS Day(s)', 'Texas A&M University']
   },
   // gisday.ucgis.org, for UCGIS member universities (#1837). Its images are UCGIS's own, from its websites; the
   // banner's white surround was made transparent so it sits on the homepage's background.

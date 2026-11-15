@@ -3,6 +3,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { catchError, filter, of, switchMap, tap } from 'rxjs';
 
+import { readRefusal } from '@tamu-gisc/gisday/platform/ngx/common';
+
 import type { AccountDashboard, RsvpDashboardPerson, Season } from '@tamu-gisc/gisday/platform/data-api';
 import { SeasonService, UserService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -11,7 +13,11 @@ import { fileNamePart } from '@tamu-gisc/common/utils/ui';
 
 import { BaseAdminListComponent } from '../../base-admin-list/base-admin-list.component';
 import { DashboardPeopleComponent, PERSON_TYPE_COLUMNS } from '../shared/dashboard-people/dashboard-people.component';
-import { DashboardRowDetailDirective, DashboardTableComponent, DashboardTableRow } from '../shared/dashboard-table/dashboard-table.component';
+import {
+  DashboardRowDetailDirective,
+  DashboardTableComponent,
+  DashboardTableRow
+} from '../shared/dashboard-table/dashboard-table.component';
 
 /** The table's rows: a university or employer each, its accounts counted by person type. */
 export function accountTableRows(dashboard: AccountDashboard): Array<DashboardTableRow> {
@@ -39,7 +45,15 @@ export function accountFileName(year: number | null | undefined, rowName: string
   selector: 'tamu-gisc-account-dashboard',
   templateUrl: './account-dashboard.component.html',
   styleUrls: ['./account-dashboard.component.scss'],
-  imports: [SelectComponent, LineChartComponent, DashboardTableComponent, DashboardRowDetailDirective, DashboardPeopleComponent, AsyncPipe, DatePipe]
+  imports: [
+    SelectComponent,
+    LineChartComponent,
+    DashboardTableComponent,
+    DashboardRowDetailDirective,
+    DashboardPeopleComponent,
+    AsyncPipe,
+    DatePipe
+  ]
 })
 export class AccountDashboardComponent extends BaseAdminListComponent<Season> implements OnInit {
   // Accounts are not a GIS Day entity: the base class is here for its season selector, which is all this page lists by.
@@ -52,6 +66,8 @@ export class AccountDashboardComponent extends BaseAdminListComponent<Season> im
   /** The season's dashboard, null while it loads, and `failed` if it could not be read. */
   public readonly dashboard = signal<AccountDashboard | null>(null);
   public readonly failed = signal(false);
+  /** Why it could not be read, when trying again won't help: a missing permission or an expired sign-in (#3038). */
+  public readonly refusal = signal<string | null>(null);
   private readonly season = signal<{ guid: string; year: number } | null>(null);
 
   /** The row whose people are shown, and them once they are read. */
@@ -91,12 +107,14 @@ export class AccountDashboardComponent extends BaseAdminListComponent<Season> im
           this.season.set({ guid: season.guid, year: season.year });
           this.dashboard.set(null);
           this.failed.set(false);
+          this.refusal.set(null);
           this.collapse();
         }),
         switchMap((season) =>
           this.users.getDashboardForSeason(season.guid).pipe(
-            catchError(() => {
+            catchError((err) => {
               this.failed.set(true);
+              this.refusal.set(readRefusal(err));
 
               return of(null);
             })

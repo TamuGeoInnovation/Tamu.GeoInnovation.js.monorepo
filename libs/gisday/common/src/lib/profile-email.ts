@@ -62,7 +62,7 @@ If you did not expect this email, you can ignore it.
 
 We look forward to your presentation and we wish you the best of luck in the competition!
 
-- The Texas A&M GIS Day Team`;
+— The Texas A&M GIS Day Team`;
 }
 
 /** Each placeholder's value for one speaker: `link` is their own, or `PROFILE_EDIT_LINK_PREVIEW` in a preview. */
