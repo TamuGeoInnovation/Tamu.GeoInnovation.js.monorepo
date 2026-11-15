@@ -12,3 +12,8 @@ under its fields, the sessions that use it: each one's day, time and name, in da
 session's admin page, with a count, or "No sessions use this broadcast." Sessions hidden from the public schedule are
 included, so only admins who can edit broadcasts can see the list. On gisday.tamu.edu it shows only Texas A&M's sessions.
 ([#3032](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3032))
+
+| Before | After |
+| --- | --- |
+| ![A broadcast used by three sessions: its admin page shows only its fields](../screenshots/3032-broadcast-sessions/before-broadcast-with-sessions.png) | ![The same broadcast: under its fields, Sessions using this broadcast, "3 sessions use this broadcast." and each session's day, time and linked name](../screenshots/3032-broadcast-sessions/after-broadcast-with-sessions.png) |
+| ![A broadcast no session uses: its admin page shows only its fields](../screenshots/3032-broadcast-sessions/before-broadcast-without-sessions.png) | ![The same broadcast: under its fields, Sessions using this broadcast, "No sessions use this broadcast."](../screenshots/3032-broadcast-sessions/after-broadcast-without-sessions.png) |
