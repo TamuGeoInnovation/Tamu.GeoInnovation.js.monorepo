@@ -73,6 +73,14 @@ deployed container does when it starts. Sign-in works only on 4201, the one addr
 application accepts. The API is still the one `api` started, which serves every feature, and the data
 is the local database's.
 
+`gisday-site` also adds `x-forwarded-host: <the site's host>` (the host of its `address` in `sites.ts`, such as
+`gisday.tamu.edu`) to every request it passes on, so the API's site logic (`siteHost()`: which site's sessions a
+dashboard counts, which site an email is from) answers for that site, as it does behind the real site's ingress
+([#3050](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3050)). Before, a GET through
+4201 carried no `Origin` and the API answered as txgisday.org. A request that does carry an `Origin` (a `POST`,
+`PATCH` or `DELETE` from the page) still names `http://localhost:4201`, which `siteHost()` reads first, so those
+answer as txgisday.org; 4202 adds nothing and is txgisday.org throughout.
+
 ### A build instead of the dev server
 
 When the dev server will not finish its first page load ([below](#things-that-look-broken)), build the
