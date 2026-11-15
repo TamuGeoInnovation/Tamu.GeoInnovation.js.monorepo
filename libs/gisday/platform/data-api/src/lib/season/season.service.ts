@@ -28,7 +28,14 @@ import {
   Tag,
   University
 } from '../entities/all.entity';
-import { SUBMISSION_DEADLINE_FIELDS, SubmissionDeadlines, asDate, deadlinesProblem } from '@tamu-gisc/gisday/common';
+import {
+  SUBMISSION_DEADLINE_FIELDS,
+  SubmissionDeadlines,
+  asDate,
+  competitionTypesProblem,
+  competitionTypesValue,
+  deadlinesProblem
+} from '@tamu-gisc/gisday/common';
 
 import { ActiveSeasonDto } from './dto/active-season.dto';
 
@@ -530,6 +537,30 @@ export class SeasonService extends BaseProvider<Season> {
     await this.seasonRepo.update(guid, values);
 
     return values;
+  }
+
+  /**
+   * Sets which research competitions the season runs (#2948), as the admin page sends them: a list naming at least one.
+   * Every one is stored as empty, so the season runs whatever is added later, as a season set before this does.
+   */
+  public async setCompetitionTypes(guid: string, competitions: unknown): Promise<{ competitionTypes: string | null }> {
+    const problem = competitionTypesProblem(competitions);
+
+    if (problem) {
+      throw new BadRequestException(problem);
+    }
+
+    const season = await this.seasonRepo.findOne({ where: { guid } });
+
+    if (!season) {
+      throw new NotFoundException('Season not found.');
+    }
+
+    const competitionTypes = competitionTypesValue(competitions as Array<string>);
+
+    await this.seasonRepo.update(guid, { competitionTypes });
+
+    return { competitionTypes };
   }
 
   public override async deleteEntity(guidOrOptions?: LookupOneOptions<Season>) {

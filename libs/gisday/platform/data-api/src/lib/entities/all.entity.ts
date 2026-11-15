@@ -176,6 +176,13 @@ export class Season extends GuidIdentity {
   @Column({ type: 'datetimeoffset', nullable: true })
   public cartographyFilesCloseAt?: Date | null;
 
+  /**
+   * The research competitions the season runs, comma-separated, as `@tamu-gisc/gisday/common`'s `seasonCompetitions` reads
+   * them; empty runs every one (#2948). Set from the competitions' admin page.
+   */
+  @Column({ type: 'nvarchar', length: 255, nullable: true })
+  public competitionTypes?: string | null;
+
   // Season has multiple days
   @OneToMany(() => SeasonDay, (seasonDay) => seasonDay.season, { cascade: true, onDelete: 'CASCADE' })
   public days: SeasonDay[];

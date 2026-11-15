@@ -46,6 +46,17 @@ export class SeasonController {
     return this.seasonService.setSubmissionDeadlines(guid, deadlines);
   }
 
+  // Which research competitions the season runs (#2948), set beside their deadlines, by the same people.
+  @Permissions(['update:competitions'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Patch(':guid/competition-types')
+  public setCompetitionTypes(
+    @Param('guid', ParseUUIDPipe) guid: string,
+    @Body() body: { competitionTypes?: Array<string> }
+  ) {
+    return this.seasonService.setCompetitionTypes(guid, body?.competitionTypes);
+  }
+
   @Permissions(['update:seasons'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Patch(':guid')

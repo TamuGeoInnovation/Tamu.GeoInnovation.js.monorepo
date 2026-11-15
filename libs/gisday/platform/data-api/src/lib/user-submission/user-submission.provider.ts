@@ -24,7 +24,13 @@ import {
   reviewEmailValues,
   ReviewEmailSession
 } from '@tamu-gisc/gisday/common';
-import { closedAt, closedMessage, isDeadlineCompetition } from '@tamu-gisc/gisday/common';
+import {
+  closedAt,
+  closedMessage,
+  isDeadlineCompetition,
+  notRunningMessage,
+  runsCompetition
+} from '@tamu-gisc/gisday/common';
 
 import {
   Event as GisdayEvent,
@@ -270,8 +276,12 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
       throw new InternalServerErrorException('Missing required parameters.');
     }
 
-    // The deadline is that of the season it will be saved to: the one the body names, or the active one (#2934).
-    refuseIfClosed(await this._seasonFor(submission.season), submission.submissionType);
+    // The deadline is that of the season it will be saved to: the one the body names, or the active one (#2934). So is
+    // whether that season runs the competition at all (#2948).
+    const season = await this._seasonFor(submission.season);
+
+    refuseIfNotRunning(season, submission.submissionType);
+    refuseIfClosed(season, submission.submissionType);
 
     const userSubmission = this.userSubmissionRepo.create({ ...submission, accountGuid });
 
@@ -490,6 +500,12 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
       refuseIfClosed(existingSubmission.season, existingSubmission.submissionType);
       refuseIfClosed(existingSubmission.season, submission.submissionType);
 
+      // A submission to a competition since turned off stays as it is and may be edited, but none may be moved into one
+      // (#2948).
+      if (submission.submissionType !== undefined && submission.submissionType !== existingSubmission.submissionType) {
+        refuseIfNotRunning(existingSubmission.season, submission.submissionType);
+      }
+
       // Nor may an entrant move it to another season, whose deadline would then be the one that counts.
       delete submission.season;
     }
@@ -629,6 +645,13 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
 
       throw err;
     }
+  }
+}
+
+/** Refuses a submission to a research competition the season does not run (#2948). */
+function refuseIfNotRunning(season: Partial<Season> | null | undefined, submissionType: unknown): void {
+  if (isDeadlineCompetition(submissionType) && !runsCompetition(season, submissionType)) {
+    throw new BadRequestException(notRunningMessage(submissionType));
   }
 }
 

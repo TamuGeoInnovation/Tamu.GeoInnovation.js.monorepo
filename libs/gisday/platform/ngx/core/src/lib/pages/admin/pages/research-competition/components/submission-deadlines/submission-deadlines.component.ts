@@ -1,4 +1,4 @@
-import { Component, effect, inject, input, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 import { Season } from '@tamu-gisc/gisday/platform/data-api';
@@ -11,7 +11,8 @@ import {
   asDate,
   deadlineField,
   deadlinesProblem,
-  inCentralTime
+  inCentralTime,
+  runsCompetition
 } from '@tamu-gisc/gisday/common';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { DateTimePickerComponent } from '@tamu-gisc/ui-kits/ngx/forms/date-time-picker';
@@ -35,8 +36,15 @@ export class SubmissionDeadlinesComponent {
   /** The season whose deadlines are shown: the one the page's season picker has chosen. */
   public readonly season = input<Partial<Season> | null>(null);
 
-  /** One block per competition, from the shared table (#2962). */
-  public readonly competitions = DEADLINE_COMPETITION_TABLE.map(({ competition, label }) => ({ key: competition, label }));
+  /**
+   * One block per competition the season runs (#2948), from the shared table (#2962). A competition turned off keeps
+   * whatever deadlines it had, so turning it on again brings them back.
+   */
+  public readonly competitions = computed(() =>
+    DEADLINE_COMPETITION_TABLE.filter(({ competition }) => runsCompetition(this.season(), competition)).map(
+      ({ competition, label }) => ({ key: competition, label })
+    )
+  );
 
   public readonly kinds: ReadonlyArray<{ kind: DeadlineKind; label: string }> = [
     { kind: 'submissions', label: 'Submissions and edits close' },

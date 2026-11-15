@@ -5,7 +5,7 @@
   <p class="form-input-description">At a competition's deadline, new submissions and edits close; its files close at their own, later deadline. Empty leaves it open. Reviewers can still review and attach files after either.</p>
 
   <form [formGroup]="form" (ngSubmit)="save()">
-    @for (competition of competitions; track competition.key) {
+    @for (competition of competitions(); track competition.key) {
     <p><strong>{{ competition.label }}</strong></p>
     <div class="form-collection row">
       @for (k of kinds; track k.kind) { @let field = deadlineField(competition.key, k.kind);

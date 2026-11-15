@@ -11,7 +11,7 @@
     <div class="form-section-body">
       <div class="form-collection column">
         <p class="form-input-description">Select the competition type.</p>
-        <tamu-gisc-radio-group formControlName="submissionType" [options]="submissionTypeOptions" displayPath="label" valuePath="type"></tamu-gisc-radio-group>
+        <tamu-gisc-radio-group formControlName="submissionType" [options]="submissionTypeOptions()" displayPath="label" valuePath="type"></tamu-gisc-radio-group>
       </div>
 
       <!-- When the chosen competition closes, or that it has (#2934). The API refuses a submission or edit after it. -->

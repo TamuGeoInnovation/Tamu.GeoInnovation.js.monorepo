@@ -454,4 +454,47 @@ describe('SeasonService', () => {
       );
     });
   });
+
+  /** #2948: which research competitions a season runs, set from the competitions' admin page. */
+  describe('.setCompetitionTypes()', () => {
+    beforeEach(() => {
+      jest.spyOn(seasonRepo, 'findOne').mockResolvedValue({ guid: 'season-1' } as Season);
+    });
+
+    it("saves the season's competitions, in the admin page's order", async () => {
+      await expect(service.setCompetitionTypes('season-1', ['presentation', 'poster'])).resolves.toEqual({
+        competitionTypes: 'poster,presentation'
+      });
+      expect(seasonRepo.update).toHaveBeenCalledWith('season-1', { competitionTypes: 'poster,presentation' });
+    });
+
+    it('saves every competition as empty, so a competition added later runs too', async () => {
+      await service.setCompetitionTypes('season-1', ['poster', 'presentation', 'paper', 'cartography']);
+
+      expect(seasonRepo.update).toHaveBeenCalledWith('season-1', { competitionTypes: null });
+    });
+
+    it.each([
+      [[], 'A season must run at least one competition.'],
+      [['poster', 'vgi'], 'vgi is not a competition.'],
+      ['poster', 'The competitions must be a list.']
+    ])('refuses %j, and saves nothing', async (competitions, message) => {
+      await expect(service.setCompetitionTypes('season-1', competitions)).rejects.toThrow(new BadRequestException(message));
+      expect(seasonRepo.update).not.toHaveBeenCalled();
+    });
+
+    it('answers not found for a season that does not exist', async () => {
+      jest.spyOn(seasonRepo, 'findOne').mockResolvedValue(null);
+
+      await expect(service.setCompetitionTypes('missing', ['poster'])).rejects.toThrow(NotFoundException);
+    });
+
+    it('is a column on the season', () => {
+      const columns = getMetadataArgsStorage()
+        .columns.filter((c) => c.target === Season)
+        .map((c) => c.propertyName);
+
+      expect(columns).toContain('competitionTypes');
+    });
+  });
 });

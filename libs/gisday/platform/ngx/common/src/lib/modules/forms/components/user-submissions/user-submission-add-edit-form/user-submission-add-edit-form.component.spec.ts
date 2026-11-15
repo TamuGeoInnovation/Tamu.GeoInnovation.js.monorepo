@@ -64,3 +64,55 @@ describe('UserSubmissionAddEditFormComponent, on Texas A&M site', () => {
     );
   });
 });
+
+/** #2948: the form offers only the research competitions the season runs. */
+describe('UserSubmissionAddEditFormComponent, the competitions it offers', () => {
+  function render(type: 'create' | 'edit', season: Record<string, unknown>, submissionType = 'paper') {
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter([]),
+        { provide: GISDAY_SITE, useValue: GISDAY_SITES.tamu },
+        { provide: ActivatedRoute, useValue: { params: of({ guid: 'sub-1' }) } },
+        {
+          provide: UserSubmissionsService,
+          useValue: {
+            getEntity: () => of({ guid: 'sub-1', title: 'Old', participants: [], reviewed: false, submissionType, season }),
+            getFiles: () => of([]),
+            createEntity: jest.fn(() => of({}))
+          }
+        },
+        { provide: SubmissionTypeService, useValue: { getEntities: () => of([]) } },
+        { provide: SeasonService, useValue: { getActiveSeason: () => of({ guid: 'season', ...season }) } },
+        { provide: NotificationService, useValue: { toast: jest.fn() } }
+      ]
+    });
+
+    const fixture = TestBed.createComponent(UserSubmissionAddEditFormComponent);
+    fixture.componentRef.setInput('type', type);
+    fixture.detectChanges();
+
+    return fixture.componentInstance;
+  }
+
+  const offered = (form: UserSubmissionAddEditFormComponent) => form.submissionTypeOptions().map((o) => o.type);
+
+  it('offers every competition when the season names none', () => {
+    expect(offered(render('create', { competitionTypes: null }))).toEqual([
+      'presentation',
+      'paper',
+      'poster',
+      'cartography'
+    ]);
+  });
+
+  it('offers only those the season runs, and starts on one of them', () => {
+    const form = render('create', { competitionTypes: 'poster' });
+
+    expect(offered(form)).toEqual(['poster']);
+    expect(form.form.get('submissionType').value).toBe('poster');
+  });
+
+  it("keeps a saved submission's own competition when it has since been turned off", () => {
+    expect(offered(render('edit', { competitionTypes: 'poster' }, 'paper'))).toEqual(['paper', 'poster']);
+  });
+});

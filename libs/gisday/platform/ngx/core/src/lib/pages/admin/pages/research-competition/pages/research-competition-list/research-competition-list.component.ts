@@ -27,6 +27,7 @@ import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
 
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
 import { SubmissionDeadlinesComponent } from '../../components/submission-deadlines/submission-deadlines.component';
+import { SeasonCompetitionsComponent } from '../../components/season-competitions/season-competitions.component';
 import {
   ReviewEmailModalComponent,
   ReviewEmailModalData,
@@ -128,7 +129,8 @@ export function profileEmailConfirmation(rows: Array<Partial<Submission>>): Aler
     DatePipe,
     TitleCasePipe,
     ExistsPipe,
-    SubmissionDeadlinesComponent
+    SubmissionDeadlinesComponent,
+    SeasonCompetitionsComponent
   ]
 })
 export class ResearchCompetitionListComponent extends BaseAdminListComponent<Submission> implements OnInit {
