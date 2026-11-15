@@ -392,7 +392,7 @@ describe('linkEmail', () => {
 
     expect(text).toContain('One of the best ways for you to get a full-time or internship position');
     expect(text).toContain('Without a bio or photo, you will not appear on the presenters page.');
-    expect(text).toContain('- The Texas A&M GIS Day Team');
+    expect(text).toContain('— The Texas A&M GIS Day Team');
   });
 });
 
@@ -567,5 +567,25 @@ describe('SpeakerEditService.sendLinksForSubmissions (#2958)', () => {
     expect(m.html).toContain('&lt;script&gt;');
     expect(m.html).not.toContain('<script>');
     expect(m.html).toContain('href="https://gisday.tamu.edu/presenters/edit/');
+  });
+
+  // #3044, found in the lab's screenshots: a bare address with & stays whole, a javascript: link is no link, and the
+  // default sign-off is a line, not a one-item list.
+  it('keeps an address with & whole, makes only web and email links, and ends the default email on a line', async () => {
+    await service.sendLinksForSubmissions([S1], 'gisday.tamu.edu', {
+      subject: 'Profile',
+      template: 'Map: https://example.edu/map?a=1&b=2 and [bad](javascript:alert(1)) {edit link}'
+    });
+    const [m] = sent as Array<{ html?: string }>;
+
+    expect(m.html).toContain('href="https://example.edu/map?a=1&amp;b=2"');
+    expect(m.html).not.toContain('javascript:');
+
+    sent.length = 0;
+    await service.sendLinksForSubmissions([S2], 'gisday.tamu.edu');
+    const html = (sent[sent.length - 1] as { html?: string }).html;
+
+    expect(html).toContain('<p>— The Texas A&amp;M GIS Day Team</p>');
+    expect(html).not.toContain('<li>');
   });
 });
