@@ -9,11 +9,19 @@ import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ClipboardCopyDirective } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 
 /**
+ * The search a link carried to the page (#2919), for the page's control to start from:
+ * `new FormControl(searchFromAddress(inject(ActivatedRoute)))`. Read when the page is made, so its list is matched to it
+ * from the first draw rather than changed under it.
+ */
+export function searchFromAddress(route: ActivatedRoute): string {
+  return route.snapshot?.queryParamMap?.get('search') ?? '';
+}
+
+/**
  * A page's search box that can be linked to (#2919, #2921, #3027): the address follows the box as `?search=...`,
- * replacing the history entry rather than adding one per keystroke, and keeping the page's other parameters; a link
- * that carries a search opens with it filled in; and Copy link, inside the box beside its clear, gives the whole link,
- * ready to paste into an email. The page owns the control and does its own matching. First the Presenters page's, now
- * the Sessions page's too.
+ * replacing the history entry rather than adding one per keystroke, and keeping the page's other parameters; and Copy
+ * link, inside the box beside its clear, gives the whole link, ready to paste into an email. The page owns the control,
+ * started from `searchFromAddress`, and does its own matching. First the Presenters page's, now the Sessions page's too.
  */
 @Component({
   selector: 'tamu-gisc-linked-search',
@@ -36,16 +44,8 @@ export class LinkedSearchComponent implements OnInit {
   public copied$: Observable<boolean>;
 
   public ngOnInit(): void {
-    const control = this.control();
-    // A search carried here in the address (#2919).
-    const carried = this.route.snapshot?.queryParamMap?.get('search');
-
-    if (carried) {
-      control.setValue(carried);
-    }
-
     // The address follows the box (#2921), merged so the page's other parameters stay (#3027).
-    control.valueChanges.pipe(debounceTime(300), takeUntilDestroyed(this.destroyRef)).subscribe((search) => {
+    this.control().valueChanges.pipe(debounceTime(300), takeUntilDestroyed(this.destroyRef)).subscribe((search) => {
       void this.router.navigate([], {
         relativeTo: this.route,
         queryParams: { search: search.trim() || null },

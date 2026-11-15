@@ -5,7 +5,7 @@ import { Observable, combineLatest, map, startWith } from 'rxjs';
 
 import { SeasonService, SpeakerService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { Speaker } from '@tamu-gisc/gisday/platform/data-api';
-import { LinkedSearchComponent, SpeakerCardComponent } from '@tamu-gisc/gisday/platform/ngx/common';
+import { LinkedSearchComponent, SpeakerCardComponent, searchFromAddress } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { matchesSearch, presenterCount, presentersForRoute } from '../../presenters';
 import { AsyncPipe } from '@angular/common';
@@ -25,8 +25,8 @@ export class PeopleViewComponent implements OnInit {
   private seasonService = inject(SeasonService);
   private route = inject(ActivatedRoute);
 
-  /** The search, linked to the address and copied as a link by the shared search box (#2919, #2921, #3027). */
-  public readonly search = new FormControl('', { nonNullable: true });
+  /** The search, from the address and linked to it, and copied as a link, by the shared search box (#2919, #2921, #3027). */
+  public readonly search = new FormControl(searchFromAddress(this.route), { nonNullable: true });
 
   /** The season's presenters, by last name. */
   public people$: Observable<Array<Partial<Speaker>>>;
