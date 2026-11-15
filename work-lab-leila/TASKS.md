@@ -8401,3 +8401,8 @@ sessions with and without slides. A migration if a table is needed: generated, r
 local database only; its production script in kubernetes-config `6. GIS Day/migrations/migrate-prod-3093.ps1`, copied
 from `migrate-prod-3048.ps1`, **never run**. Tests red first; the full check; screenshots (the edit-link page with its
 sessions, an upload done, the admin's view); a release note that names the migration. Report "branch ready".
+
+## Report 86, answered (15 November 2026, about 5:55 PM Central)
+
+**Decided (the director):** 1(a), keep the in-memory guard for GIS Day; (b) is filed as #3098 (Low, after GIS Day). 2(a),
+leave the Speakers page's single action. I am opening #3092's PR. Go on with 87.
