@@ -33,7 +33,7 @@ import {
   ReviewEmailModalComponent,
   ReviewEmailModalData,
   ReviewEmailModalResult
-} from '../../components/review-email-modal/review-email-modal.component';
+} from '@tamu-gisc/gisday/platform/ngx/common';
 
 /**
  * A submission as the table shows it: with its review status worked out, so the table can sort by it (#2808), and

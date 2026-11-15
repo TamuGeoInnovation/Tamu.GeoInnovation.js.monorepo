@@ -14,7 +14,7 @@ import {
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
-import { ReviewEmailModalComponent } from '../../components/review-email-modal/review-email-modal.component';
+import { ReviewEmailModalComponent } from '@tamu-gisc/gisday/platform/ngx/common';
 import { ResearchCompetitionListComponent, withData } from './research-competition-list.component';
 
 /** #2817: a filter offers All and only the choices the season's submissions have. */

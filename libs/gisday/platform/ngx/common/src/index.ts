@@ -1,5 +1,6 @@
 export * from './lib/modules/modals/entity-actions-modals/entity-copy-modal/entity-copy-modal.component';
 export * from './lib/modules/modals/entity-actions-modals/entity-delete-modal/entity-delete-modal.component';
+export * from './lib/modules/modals/review-email-modal/review-email-modal.component';
 
 export * from './lib/pipes/asset-url/asset-url.pipe';
 export * from './lib/pipes/order-by/order-by.pipe';
