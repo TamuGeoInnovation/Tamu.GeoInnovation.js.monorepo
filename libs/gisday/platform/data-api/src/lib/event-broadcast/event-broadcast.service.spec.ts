@@ -92,6 +92,32 @@ describe('EventBroadcastService', () => {
     });
   });
 
+  describe('the order broadcasts are listed in (#3047)', () => {
+    // As the database returns them: the one added last first, numbers compared as text, and mixed case.
+    const unsorted = ['Zoom 4', 'TTU 1', 'TAMU Zoom 10', 'tamu zoom 2', 'TAMU Zoom 1', ' ATX'].map(
+      (name, i) => ({ guid: `b-${i}`, name }) as EventBroadcast
+    );
+    const natural = [' ATX', 'TAMU Zoom 1', 'tamu zoom 2', 'TAMU Zoom 10', 'TTU 1', 'Zoom 4'];
+    const names = (rows: Array<Partial<EventBroadcast>>) => rows.map((row) => row.name);
+
+    beforeEach(() => {
+      jest.spyOn(broadcastRepo, 'find').mockResolvedValue([...unsorted]);
+      jest.spyOn(seasonService, 'findOneActive').mockResolvedValue({ guid: 'active' } as never);
+    });
+
+    it("lists a season's broadcasts by name, ignoring case, with numbers in order", async () => {
+      expect(names(await service.getBroadcastsForSeason('season-1'))).toEqual(natural);
+    });
+
+    it("lists the active season's broadcasts, which every Broadcast drop-down reads, the same way", async () => {
+      expect(names(await service.getBroadcastsForActiveSeason())).toEqual(natural);
+    });
+
+    it('lists every broadcast the same way', async () => {
+      expect(names(await service.getEntities())).toEqual(natural);
+    });
+  });
+
   describe('.copyBroadcastsIntoSeason()', () => {
     it('strips identity and the old season, then attaches the target season', async () => {
       const source = {
