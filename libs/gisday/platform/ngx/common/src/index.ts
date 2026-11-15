@@ -55,3 +55,4 @@ export * from './lib/modules/forms/components/user-submissions/user-submission-a
 export * from './lib/site/site';
 export * from './lib/modules/submission-files/submission-files.component';
 export * from './lib/modules/search/linked-search/linked-search.component';
+export * from './lib/modules/sessions-using/sessions-using.component';

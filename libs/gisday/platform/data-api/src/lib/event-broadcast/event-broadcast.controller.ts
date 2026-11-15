@@ -19,6 +19,17 @@ export class EventBroadcastController {
     return this.ebs.getBroadcastsForSeason(seasonGuid);
   }
 
+  /**
+   * The sessions that use a broadcast, for its admin page (#3032). For admins only, as editing the broadcast is: it lists
+   * sessions hidden from the public schedule too.
+   */
+  @Permissions(['update:event-broadcasts'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Get(':guid/sessions')
+  public async getSessions(@Param('guid') guid: string) {
+    return this.ebs.getSessions(guid);
+  }
+
   @Get(':guid')
   public async getEntity(@Param('guid') guid) {
     return this.ebs.findOne({
