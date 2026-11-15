@@ -173,7 +173,7 @@
 
                 <ng-template #eventNotOngoing>
                   <div>
-                    <p>Checkin will be available at the start of the session.</p>
+                    <p>{{ (checkInOpens$ | async) ?? 'Checkin will be available at the start of the session.' }}</p>
                   </div>
                 </ng-template>
               </ng-container>
@@ -184,7 +184,9 @@
             </ng-container>
 
             <ng-template #notLoggedInCheckin>
-              <p>You must be logged in to checkin for this event.</p>
+              <!-- Sign-in comes back here with the QR code's check-in code, which then checks in (#3077). -->
+              <p class="trailer-1">Sign in, or create an account, to check in to this session.</p>
+              <tamu-gisc-button fit="snug" [look]="'secondary'" value="SIGN IN" (click)="signIn()"></tamu-gisc-button>
             </ng-template>
           </div>
         </div>
@@ -267,11 +269,15 @@
               </ng-container>
             </div>
 
-            <!-- #2560: attendees of a hybrid or virtual session check in by scanning this from the presenter's slides. -->
-            <div class="trailer-2" *ngIf="needsCheckInCode(event) && ('checkIns' | siteHas)">
+            <!-- #2560: attendees of a hybrid or virtual session check in by scanning this from the presenter's slides; at an
+                 in-person one it is the backup for a phone that cannot give its location (#3077). -->
+            <div class="trailer-2" *ngIf="'checkIns' | siteHas">
               <h3 class="trailer-1">Check-in QR Code</h3>
 
-              <p class="trailer-1">Attendees of this {{ event.mode }} session check in by scanning this code. Put it on the presenter's slides, or show it full screen on the shared screen. It is the same code every time, and it checks people in only while the session's check-in is open, or at any time if the session is set to allow it.</p>
+              <p class="trailer-1" *ngIf="needsCheckInCode(event); else inPersonCodeUse">Attendees of this {{ event.mode }} session check in by scanning this code. Put it on the presenter's slides, or show it full screen on the shared screen. It is the same code every time, and it checks people in only while the session's check-in is open, or at any time if the session is set to allow it.</p>
+              <ng-template #inPersonCodeUse>
+                <p class="trailer-1">Attendees of this in-person session can check in by scanning this code, instead of sharing their location, if their phone will not give it. Show it on the screen in the room. It is the same code every time, and it checks people in only while the session's check-in is open, or at any time if the session is set to allow it.</p>
+              </ng-template>
 
               <ng-container *ngIf="checkInLink() as link; else checkInCodeNotShown">
                 <tamu-gisc-qr-code class="trailer-1" [text]="link" [label]="'Check-in QR code for ' + event.name" [downloadName]="'check-in-qr-' + event.guid" [fullscreen]="true" [caption]="'Scan to check in to ' + event.name" [color]="checkInCodeColor" [logo]="checkInCodeLogo"></tamu-gisc-qr-code>

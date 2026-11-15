@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
-import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
+import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
 import { Angulartics2 } from 'angulartics2';
 import { of, throwError } from 'rxjs';
 
@@ -55,6 +55,7 @@ describe('EventDetailComponent check-in', () => {
     // (#2635), what the admins' list of its check-ins and the site's users answer, and its online broadcast (#3055).
     {
       query = {},
+      loggedIn = true,
       roles = [],
       anyTime = false,
       sessionCheckIns = () => of([] as Array<Record<string, unknown>>),
@@ -62,6 +63,7 @@ describe('EventDetailComponent check-in', () => {
       broadcast = undefined
     }: {
       query?: Record<string, string>;
+      loggedIn?: boolean;
       roles?: Array<string>;
       anyTime?: boolean;
       sessionCheckIns?: () => ReturnType<typeof of>;
@@ -72,6 +74,7 @@ describe('EventDetailComponent check-in', () => {
     let checkedIn = false;
 
     const getCheckInCode = jest.fn(() => of({ code: 'code-1' }));
+    const login = jest.fn();
     const getCheckinsForEvent = jest.fn(sessionCheckIns);
     const insertUserCheckin = jest.fn<ReturnType<typeof insert>, [string, unknown?, string?]>(() => {
       const result = insert();
@@ -101,7 +104,7 @@ describe('EventDetailComponent check-in', () => {
         },
         {
           provide: AuthService,
-          useValue: { isAuthenticated$: of(true), userRoles$: of(roles), user$: of({ sub: 'acct-1' }) }
+          useValue: { isAuthenticated$: of(loggedIn), userRoles$: of(roles), user$: of({ sub: 'acct-1' }), login }
         },
         {
           provide: UserService,
@@ -168,6 +171,7 @@ describe('EventDetailComponent check-in', () => {
       insertUserCheckin,
       getCheckInCode,
       getCheckinsForEvent,
+      login,
       detectChanges: () => f.detectChanges()
     };
   }
@@ -272,20 +276,43 @@ describe('EventDetailComponent check-in', () => {
       expect(line(page(), 'Dial-in number:')).toBe('Dial-in number: None');
     });
 
+    // #3077: scanning the code is the check-in. It used to open this page and wait for a button press that
+    // attendees did not know to make, so the code seemed to do nothing.
     it.each(['hybrid', 'virtual'])(
-      'checks in to a %s session from its QR code, sending the code and no location',
+      'checks in to a %s session from its QR code as the page opens, sending the code and no location',
       async (mode) => {
-        const { text, pressCheckIn, insertUserCheckin } = open(mode, undefined, undefined, scanned);
+        const { text, insertUserCheckin, detectChanges } = open(mode, undefined, undefined, scanned);
 
-        expect(text()).not.toContain('uses your location');
-
-        await pressCheckIn();
+        await new Promise((resolve) => setTimeout(resolve, 0));
+        detectChanges();
 
         expect(getCurrentPosition).not.toHaveBeenCalled();
+        expect(insertUserCheckin).toHaveBeenCalledTimes(1);
         expect(insertUserCheckin).toHaveBeenCalledWith('e-1', undefined, 'code-1');
         expect(text()).toContain('Your attendance has been registered');
       }
     );
+
+    it('does not check in by itself without the code', () => {
+      const { insertUserCheckin } = open('hybrid');
+
+      expect(insertUserCheckin).not.toHaveBeenCalled();
+    });
+
+    // #3077: signed out, the page offered no way to sign in, and the attendee lost the code finding one.
+    it('offers sign-in to an attendee who is signed out, coming back to this page with the code', async () => {
+      const { text, press, login, insertUserCheckin } = open('hybrid', undefined, undefined, {
+        ...scanned,
+        loggedIn: false
+      });
+
+      expect(insertUserCheckin).not.toHaveBeenCalled();
+      expect(text()).toContain('Sign in, or create an account, to check in to this session.');
+
+      await press('SIGN IN');
+
+      expect(login).toHaveBeenCalledWith({ appState: { target: TestBed.inject(Router).url } });
+    });
 
     it('offers no Check In button without the code, and says to scan it', () => {
       const { text, button } = open('virtual');
@@ -309,15 +336,16 @@ describe('EventDetailComponent check-in', () => {
       expect(text()).not.toContain('Your attendance has been registered');
     });
 
-    it('sends no code for an in-person session, even when the address has one', async () => {
-      const { pressCheckIn, insertUserCheckin } = open('in-person', undefined, undefined, {
-        query: { checkin: 'code-1' }
-      });
-      getCurrentPosition.mockImplementation(at(30.6132, -96.3406, 12));
+    // #3077: at an in-person session the QR code is the backup for a phone that cannot give its location.
+    it('checks in to an in-person session from its QR code with the code, asking for no location', async () => {
+      const { text, insertUserCheckin, detectChanges } = open('in-person', undefined, undefined, scanned);
 
-      await pressCheckIn();
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      detectChanges();
 
-      expect(insertUserCheckin.mock.calls[0][2]).toBeUndefined();
+      expect(getCurrentPosition).not.toHaveBeenCalled();
+      expect(insertUserCheckin).toHaveBeenCalledWith('e-1', undefined, 'code-1');
+      expect(text()).toContain('Your attendance has been registered');
     });
   });
 
@@ -369,10 +397,12 @@ describe('EventDetailComponent check-in', () => {
       expect(requestFullscreen).toHaveBeenCalledTimes(1);
     });
 
-    it('offers no code for an in-person session, which checks in by location', () => {
-      const { button } = open('in-person', undefined, undefined, organizer);
+    // #3077: the backup for a phone that cannot give its location.
+    it('offers the code for an in-person session too, saying what it is for', () => {
+      const { button, text } = open('in-person', undefined, undefined, organizer);
 
-      expect(button('Show check-in QR code')).toBeUndefined();
+      expect(button('Show check-in QR code')).toBeDefined();
+      expect(text()).toContain('instead of sharing their location, if their phone will not give it');
     });
 
     it('offers no code to an attendee', () => {
@@ -398,6 +428,19 @@ describe('EventDetailComponent check-in', () => {
 
     afterEach(() => {
       jest.useRealTimers();
+    });
+
+    // #3077: an attendee who scans early is told when to come back, rather than only "at the start".
+    it.each([
+      ['earlier that day', '2026-11-18T15:00:00Z', 'Check-in opens at 4:00 PM.'],
+      ['the day before', '2026-11-17T22:30:00Z', 'Check-in opens on Wednesday, November 18 at 4:00 PM.']
+    ])('before it opens, %s, says when it opens, and does not check in from the QR code', (_, now, message) => {
+      jest.useFakeTimers({ now: new Date(now), doNotFake: ['nextTick', 'setImmediate', 'queueMicrotask'] });
+
+      const { text, insertUserCheckin } = open('hybrid', undefined, session, { query: { checkin: 'code-1' } });
+
+      expect(text()).toContain(message);
+      expect(insertUserCheckin).not.toHaveBeenCalled();
     });
 
     it.each([

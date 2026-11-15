@@ -136,6 +136,31 @@ export function isCheckInOpen(
 }
 
 /**
+ * What a session's page says before its check-in opens (#3077): the time in Central, with the day when it is not
+ * today in Central. An attendee who scans a QR code early learns why nothing happened, and when to scan again.
+ */
+export function checkInOpensMessage(opens: Date, now: Date = new Date()): string {
+  const time = new Intl.DateTimeFormat('en-US', { timeZone: GISDAY_TIME_ZONE, hour: 'numeric', minute: '2-digit' }).format(
+    opens
+  );
+  const a = centralParts(opens);
+  const b = centralParts(now);
+
+  if (a.year === b.year && a.month === b.month && a.day === b.day) {
+    return `Check-in opens at ${time}.`;
+  }
+
+  const day = new Intl.DateTimeFormat('en-US', {
+    timeZone: GISDAY_TIME_ZONE,
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric'
+  }).format(opens);
+
+  return `Check-in opens on ${day} at ${time}.`;
+}
+
+/**
  * The year, month and day of an instant in Central time.
  */
 function centralParts(date: Date): { year: number; month: number; day: number } {

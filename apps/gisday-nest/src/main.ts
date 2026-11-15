@@ -2,6 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { json } from 'express';
 import { logStartupEnvironment } from '@tamu-gisc/common/nest/environment';
+import { retryDeadlockVictims } from '@tamu-gisc/gisday/platform/data-api';
+import { DataSource } from 'typeorm';
 
 import * as dotenv from 'dotenv';
 dotenv.config({ quiet: true });
@@ -49,6 +51,9 @@ async function bootstrap() {
       credentials: true
     }
   });
+
+  // SQL Server chose some reads as deadlock victims under load (#3082); they are run again, as its error asks.
+  retryDeadlockVictims(app.get(DataSource));
 
   const globalPrefix = environment.globalPrefix;
   app.setGlobalPrefix(globalPrefix);

@@ -2,9 +2,9 @@ import { InternalServerErrorException, NotFoundException } from '@nestjs/common'
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { Repository } from 'typeorm';
+import { Repository, getMetadataArgsStorage } from 'typeorm';
 
-import { EventBroadcast } from '../entities/all.entity';
+import { EventBroadcast, Place } from '../entities/all.entity';
 import { SeasonService } from '../season/season.service';
 import { EventBroadcastService } from './event-broadcast.service';
 import { EventBroadcastController } from './event-broadcast.controller';
@@ -52,7 +52,7 @@ describe('EventBroadcastService', () => {
       jest.spyOn(broadcastRepo, 'find').mockResolvedValue([{ guid: 'b-1' } as EventBroadcast]);
 
       await expect(service.getEntities()).resolves.toEqual([{ guid: 'b-1' }]);
-      expect(broadcastRepo.find).toHaveBeenCalledWith({ order: { name: 'ASC' } });
+      expect(broadcastRepo.find).toHaveBeenCalledWith({ relations: { place: true }, order: { name: 'ASC' } });
     });
   });
 
@@ -63,6 +63,7 @@ describe('EventBroadcastService', () => {
       await expect(service.getBroadcastsForSeason('season-1')).resolves.toEqual([{ guid: 'b-1' }]);
       expect(broadcastRepo.find).toHaveBeenCalledWith({
         where: { season: { guid: 'season-1' } },
+        relations: { place: true },
         order: { name: 'ASC' }
       });
     });
@@ -76,6 +77,7 @@ describe('EventBroadcastService', () => {
       await expect(service.getBroadcastsForActiveSeason()).resolves.toEqual([{ guid: 'b-1' }]);
       expect(broadcastRepo.find).toHaveBeenCalledWith({
         where: { season: { guid: 'active' } },
+        relations: { place: true },
         order: { name: 'ASC' }
       });
     });
@@ -256,5 +258,31 @@ describe('EventBroadcastService', () => {
       expect(Reflect.getMetadata(GUARDS_METADATA, handler)).toEqual(expect.arrayContaining([JwtGuard, PermissionsGuard]));
       expect(Reflect.getMetadata('Permissions', handler)[0]).toEqual(['update:event-broadcasts']);
     });
+  });
+});
+
+/**
+ * #3048. A broadcast belongs to an organization (a place), as a venue does, so each site's admin can list only its own
+ * organizations' Zooms. Every read the admin pages make carries it: the lists, which each site filters by it, and one
+ * broadcast, whose page shows and saves it.
+ */
+describe("EventBroadcast's organization", () => {
+  it('is a place, which may be empty until one is set', () => {
+    const relation = getMetadataArgsStorage().relations.find(
+      (r) => r.target === EventBroadcast && r.propertyName === 'place'
+    );
+
+    expect(relation?.relationType).toBe('many-to-one');
+    expect((relation?.type as () => unknown)()).toBe(Place);
+    expect(relation?.options.nullable).toBe(true);
+  });
+
+  it('is read with one broadcast, for its admin page', async () => {
+    const findOne = jest.fn().mockResolvedValue({ guid: 'b-1', place: { guid: 'tamu' } });
+    const controller = new EventBroadcastController({ findOne } as unknown as EventBroadcastService);
+
+    await controller.getEntity('b-1');
+
+    expect(findOne).toHaveBeenCalledWith({ where: { guid: 'b-1' }, relations: { place: true } });
   });
 });

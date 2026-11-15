@@ -52,7 +52,9 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
    * This stops checking in from home, not deliberate spoofing.
    *
    * A hybrid or virtual event needs no position but its QR code's `code` (#2560), the one
-   * `getCheckInCode` gives organizers to show on a slide.
+   * `getCheckInCode` gives organizers to show on a slide. Any session takes that code (#3077): at an in-person
+   * one it stands in for the position, for an attendee whose phone cannot give one, and a wrong code is refused
+   * rather than falling back to the zone.
    *
    * A session open at any time (`checkInAnyTime`, #2635) accepts a check-in outside its time too, held to
    * every other rule, and marks it `outsideSessionTime` for admins.
@@ -73,7 +75,7 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
         assertCheckInOpen(event);
       }
 
-      if (checksInByCode(event.mode)) {
+      if (checksInByCode(event.mode) || codeOffered(code)) {
         // Not selected with the event, so it is asked for on its own.
         const stored = await this.eventRepo.findOne({
           where: { guid: event.guid },
@@ -123,8 +125,8 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
   }
 
   /**
-   * The code in a hybrid or virtual session's check-in QR code (#2560), for an organizer to show on a
-   * slide. Made the first time it is asked for and the same ever after, so a slide made early still
+   * The code in a session's check-in QR code (#2560), for an organizer to show on a slide: any session's since
+   * #3077, so an in-person one has a way in for a phone that cannot give its location. Made the first time it is asked for and the same ever after, so a slide made early still
    * works. Two organizers asking at once get the same code: only the first write lands.
    */
   public async getCheckInCode(eventGuid: string): Promise<{ code: string }> {
@@ -135,10 +137,6 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
 
     if (!event) {
       throw new NotFoundException('Event could not be found');
-    }
-
-    if (!checksInByCode(event.mode)) {
-      throw new UnprocessableEntityException(null, 'Only hybrid and virtual sessions check in with a QR code.');
     }
 
     if (event.checkInCode) {
@@ -218,6 +216,14 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
  */
 function reach(accuracy: unknown): number {
   return typeof accuracy === 'number' && accuracy > 0 ? Math.min(accuracy, CHECK_IN_MAX_ACCURACY) : 0;
+}
+
+/**
+ * Whether the attendee sent a code at all, so that an in-person session checks it rather than their position
+ * (#3077). An empty one is none: the page sends nothing without a code in its address.
+ */
+function codeOffered(code: unknown): boolean {
+  return code !== undefined && code !== null && code !== '';
 }
 
 /**

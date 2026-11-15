@@ -42,10 +42,12 @@ export class EventBroadcastController {
   @UseGuards(JwtGuard, PermissionsGuard)
   @Get(':guid')
   public async getEntity(@Param('guid') guid) {
+    // With its place (#3048), which its admin page shows and saves.
     return this.ebs.findOne({
       where: {
         guid: guid
-      }
+      },
+      relations: { place: true }
     });
   }
 

@@ -209,9 +209,19 @@ export function siteSessionPlaces(site: GisdaySite, places: Array<{ guid?: strin
  * Whether a site lists a session, by its location's place (#2986): every session on a site that lists every
  * organization's; on gisday.tamu.edu, Texas A&M's, and any with no place yet, so an admin can still find and place it.
  */
-export function siteListsSession(site: GisdaySite, session: { location?: { place?: { guid?: string; name?: string } | null } | null }): boolean {
-  const place = session?.location?.place;
+export function siteListsSession(
+  site: GisdaySite,
+  session: { location?: { place?: { guid?: string; name?: string } | null } | null }
+): boolean {
+  return siteListsPlace(site, session?.location?.place);
+}
 
+/**
+ * Whether a site lists what belongs to a place: a session, by its venue's place, or a broadcast, by its own (#3048). Every
+ * place's on a site that lists every organization's; on gisday.tamu.edu, Texas A&M's, and anything with no place yet,
+ * so an admin can still find it and give it one.
+ */
+export function siteListsPlace(site: GisdaySite, place: { guid?: string; name?: string } | null | undefined): boolean {
   if (!site.sessionsFrom || !place?.guid) {
     return true;
   }
