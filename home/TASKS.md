@@ -16,6 +16,27 @@ are in `libs/gisday/platform/data-api/src/lib/check-in/`.
   check-ins on the local site); a release note. Push to the fork and report "branch ready". Branch
   `feat/3006-check-in-dashboard`.
 
+## Batch 52 (gisday: #3017, a "final file" column and a Send final reminder email on Research Competitions; 15 November 2026, from `work (gisday)`) (Medium) - **do this now**
+
+[#3017](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3017). The issue has the request and a draft email.
+
+**Decided (the maintainer):** batch 50's questions were 1A (the lab captures #3006's screenshots, batch 60), 2C (#3010 is
+High) and 3A (#3010 stays in PR 3014). Batch 51's two questions are with him.
+
+- **"Final file uploaded"**: a submission's attachments (`SubmissionFilesService`, #2933) have no kind, and the abstract
+  is text, so treat **any attached file as the final presentation or poster** unless you find otherwise. Say what you
+  found. The table already has a Files count. Make it sortable, or add an Uploaded / Missing column beside it that sorts,
+  whichever reads clearer, using the table's existing sort.
+- **Send final reminder** in the selected-actions bar, beside Send profile email. Reuse the acceptance email's whole path:
+  the editable preview (`review-email-modal`), `review-email.ts` (add the reminder as kinds, one for presenters and one
+  for posters, with the issue's draft as their default text), and the provider's send with recipients and sessions (PR
+  2994). Don't build a second email path. **Skip selected submissions that already have a file**, and say in the preview
+  and the result how many were skipped and why.
+- Admin only, as the other actions are (`update:competitions`).
+- Tests red first; **the full check** (`CHECK_MEMORY=24g CHECK_PARALLEL=3`); a release note. You can't sign in, so the
+  lab takes the screenshots afterwards. Say so in `.pr-body.md`. Branch `feat/3017-final-reminder`. Push to the fork
+  and report "branch ready".
+
 ## Batch 51 (gisday: #2948 reworked, a join table instead of `seasons.competitionTypes`; 15 November 2026, from `work (gisday)`) (Low) - **after 50**
 
 **Decided** (the maintainer, 15 November): your report 49's question 2 is **B, a join table of season and competition**,
