@@ -73,6 +73,14 @@ Commit to `docs/screenshots/2948-season-competition-types/` on that branch, link
 Commit each to `docs/screenshots/<issue>-<slug>/` on its branch, link from its release note, push (fast-forward, no
 force), and give each PR body's image section in your report. Report each branch as soon as it is done.
 
+## Batch 68 (gisday: screenshots for #3034, Admin, Events' "Only sessions with no tags"; 15 November 2026, from `work (gisday)`) (Low) - **after 67, before 66**
+
+Home built #3034 on `feat/3034-untagged-sessions` on the fork (`89b913b15`; **its last commit is `.pr-body.md`, leave it
+last**). Admin, Events gets an "Only sessions with no tags" checkbox. Before (`development`) and after: the list, then
+ticked, showing only untagged sessions; tag one and come back, and it is gone from the list. Commit to
+`docs/screenshots/3034-untagged-sessions/` on the branch, link from its release note, push (fast-forward, no force), and
+give the PR body's image section in your report.
+
 ## Batch 66 (gisday: #3037, one Competition settings panel with one Save; 15 November 2026, from `work (gisday)`) (Low) - **after 65**
 
 [#3037](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3037). You built the deadlines panel
