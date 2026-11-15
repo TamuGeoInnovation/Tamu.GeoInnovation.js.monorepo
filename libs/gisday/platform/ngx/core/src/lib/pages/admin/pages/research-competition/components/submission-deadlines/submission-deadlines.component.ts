@@ -50,7 +50,6 @@ export class SubmissionDeadlinesComponent {
   /** The season whose deadlines are shown: the one the page's season picker has chosen. */
   public readonly season = input<Partial<Season> | null>(null);
 
-  /** One block per competition, from the shared table (#2962). */
   /**
    * One row per competition the season runs (#2948), from the shared table (#2962). A competition turned off keeps
    * whatever deadlines it had, so turning it on again brings them back.
