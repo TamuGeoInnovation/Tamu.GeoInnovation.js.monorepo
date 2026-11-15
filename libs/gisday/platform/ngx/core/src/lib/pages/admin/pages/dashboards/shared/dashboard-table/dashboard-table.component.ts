@@ -82,6 +82,8 @@ export class DashboardTableComponent {
   /** The first column's heading, and the total row's name. */
   public readonly nameLabel = input('Name');
   public readonly totalLabel = input('All');
+  /** The total column's heading, such as "Checked in". */
+  public readonly totalHeading = input('Total');
   /** How `when` is shown, in Central time. */
   public readonly whenFormat = input('EEE MMM d, h:mm a');
 

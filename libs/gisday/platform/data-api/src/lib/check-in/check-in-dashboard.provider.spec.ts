@@ -30,7 +30,8 @@ function management(): ManagementService {
 
 const checkIn = (account: string, event: string, created: string) =>
   ({ accountGuid: account, event: { guid: event }, created: new Date(created) }) as CheckIn;
-const rsvp = (account: string, event: string) => ({ accountGuid: account, event: { guid: event }, created: new Date() }) as UserRsvp;
+const rsvp = (account: string, event: string) =>
+  ({ accountGuid: account, event: { guid: event }, created: new Date() }) as UserRsvp;
 
 describe('CheckInDashboardProvider (#3006)', () => {
   let dataSource: DataSource;
@@ -75,7 +76,12 @@ describe('CheckInDashboardProvider (#3006)', () => {
             day: { date: new Date('2026-11-18T06:00:00Z') },
             location: { building: 'ILCB', room: '111', place: { guid: 'p-tamu', name: 'Texas A&M University GIS Day(s)' } }
           },
-          { guid: 'e-2', name: 'Nobody came', startTime: '15:00:00 GMT-0600 (Central Standard Time)', day: { date: new Date('2026-11-18T06:00:00Z') } }
+          {
+            guid: 'e-2',
+            name: 'Nobody came',
+            startTime: '15:00:00 GMT-0600 (Central Standard Time)',
+            day: { date: new Date('2026-11-18T06:00:00Z') }
+          }
         ] as Array<Event>;
       };
 
@@ -107,7 +113,18 @@ describe('CheckInDashboardProvider (#3006)', () => {
     it("gives each event's place, so the page can list only the site's own sessions (#2986)", async () => {
       const dashboard = await provider.getSeason('s-1');
 
-      expect(dashboard.events.map((e) => e.place)).toEqual([{ guid: 'p-tamu', name: 'Texas A&M University GIS Day(s)' }, null]);
+      expect(dashboard.events.map((e) => e.place)).toEqual([
+        { guid: 'p-tamu', name: 'Texas A&M University GIS Day(s)' },
+        null
+      ]);
+    });
+
+    it("asks for each check-in's event, which a check-in does not load by itself as an RSVP does", async () => {
+      const asked = jest.spyOn(checkInRepo, 'find');
+
+      await provider.getSeason('s-1');
+
+      expect(asked.mock.calls[0][0]).toMatchObject({ relations: { event: true } });
     });
 
     it('gives when each check-in was made, for the chart, and carries no names', async () => {
@@ -132,7 +149,12 @@ describe('CheckInDashboardProvider (#3006)', () => {
       organizationRepo.find = async () => [{ guid: 'o-1', name: 'Esri' }] as Array<Organization>;
 
       await expect(provider.getEvent('e-1')).resolves.toEqual([
-        expect.objectContaining({ firstName: 'Sam', type: 'industry', organization: 'Esri', created: '2026-11-18T15:20:00.000Z' })
+        expect.objectContaining({
+          firstName: 'Sam',
+          type: 'industry',
+          organization: 'Esri',
+          created: '2026-11-18T15:20:00.000Z'
+        })
       ]);
     });
   });

@@ -4,7 +4,7 @@ import { tap } from 'rxjs';
 
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { LatLon } from '@tamu-gisc/common/utils/geometry';
-import { CheckIn } from '@tamu-gisc/gisday/platform/data-api';
+import { CheckIn, CheckInDashboard, RsvpDashboardPerson } from '@tamu-gisc/gisday/platform/data-api';
 
 import { BaseService } from '../_base/base.service';
 
@@ -27,6 +27,16 @@ export class CheckinService extends BaseService<CheckIn> {
    */
   public override createEntity(checkin?: Partial<CheckIn> & { userGuid?: string; eventGuid?: string }) {
     return this.http1.post<Partial<CheckIn>>(`${this.resource}/admin`, checkin);
+  }
+
+  /** The admin check-in dashboard for a season: each event's check-ins by person type, and its RSVPs (#3006). */
+  public getDashboardForSeason(seasonGuid: string) {
+    return this.http1.get<CheckInDashboard>(`${this.resource}/dashboard/season/${seasonGuid}`);
+  }
+
+  /** Who checked in at one event, and when, for the dashboard's expanded row and its CSV (#3006). */
+  public getDashboardForEvent(eventGuid: string) {
+    return this.http1.get<Array<RsvpDashboardPerson>>(`${this.resource}/dashboard/event/${eventGuid}`);
   }
 
   public getUserCheckins() {

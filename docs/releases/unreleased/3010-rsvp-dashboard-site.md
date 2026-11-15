@@ -1,0 +1,13 @@
+---
+issue: 3010
+title: "GIS Day admin: the RSVPs dashboard on gisday.tamu.edu counts only Texas A&M's sessions"
+testOnDev: |
+  | GIS Day admin: the RSVPs dashboard lists the site's own sessions ([#3010](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3010)) | Not on dev: GIS Day has no dev site. After release, as an admin open [Dashboards > RSVPs on gisday.tamu.edu](https://gisday.tamu.edu/admin/dashboards/rsvps), then the same on [txgisday.org](https://txgisday.org/admin/dashboards/rsvps) | gisday.tamu.edu lists only Texas A&M's sessions (and any with no place yet), and its totals and chart count only those; txgisday.org still lists every organization's |
+---
+
+### GIS Day admin: the RSVPs dashboard on gisday.tamu.edu counts only Texas A&M's sessions
+
+gisday.tamu.edu shares txgisday.org's database. Since [#2986](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2986) its admin lists start with Texas A&M's sessions, but the
+RSVPs dashboard listed and counted every organization's. It now lists, totals and charts only the site's own, as the
+new Check-ins dashboard does. txgisday.org is unchanged.
+([#3010](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3010))

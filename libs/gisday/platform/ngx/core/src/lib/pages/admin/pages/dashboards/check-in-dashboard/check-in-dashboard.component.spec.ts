@@ -27,9 +27,36 @@ const OTHER = { guid: 'p-other', name: 'Another university' };
 
 const dashboard: CheckInDashboard = {
   events: [
-    { guid: 'e-1', name: 'Workshop', starts: '2026-11-18T15:00:00.000Z', location: 'ILCB 111', place: TAMU, total: 2, rsvps: 5, counts: counts({ undergraduate: 1, industry: 1 }) },
-    { guid: 'e-2', name: 'Keynote', starts: '2026-11-18T20:00:00.000Z', location: null, place: null, total: 1, rsvps: 0, counts: counts({ academia: 1 }) },
-    { guid: 'e-3', name: 'Elsewhere', starts: '2026-11-19T15:00:00.000Z', location: null, place: OTHER, total: 4, rsvps: 4, counts: counts({ graduate: 4 }) }
+    {
+      guid: 'e-1',
+      name: 'Workshop',
+      starts: '2026-11-18T15:00:00.000Z',
+      location: 'ILCB 111',
+      place: TAMU,
+      total: 2,
+      rsvps: 5,
+      counts: counts({ undergraduate: 1, industry: 1 })
+    },
+    {
+      guid: 'e-2',
+      name: 'Keynote',
+      starts: '2026-11-18T20:00:00.000Z',
+      location: null,
+      place: null,
+      total: 1,
+      rsvps: 0,
+      counts: counts({ academia: 1 })
+    },
+    {
+      guid: 'e-3',
+      name: 'Elsewhere',
+      starts: '2026-11-19T15:00:00.000Z',
+      location: null,
+      place: OTHER,
+      total: 4,
+      rsvps: 4,
+      counts: counts({ graduate: 4 })
+    }
   ],
   made: [
     { event: 'e-1', created: '2026-11-18T15:05:00Z' },
@@ -66,10 +93,19 @@ describe('CheckInDashboardComponent (#3006)', () => {
         provideRouter([]),
         { provide: CheckinService, useValue: checkIns },
         { provide: GISDAY_SITE, useValue: gisdaySite(site) },
-        { provide: SeasonService, useValue: { seasons$: of([{ guid: 's-1', year: 2026 }]), activeSeason$: of({ guid: 's-1', year: 2026 }) } },
+        {
+          provide: SeasonService,
+          useValue: { seasons$: of([{ guid: 's-1', year: 2026 }]), activeSeason$: of({ guid: 's-1', year: 2026 }) }
+        },
         { provide: ModalService, useValue: {} },
         { provide: NotificationService, useValue: {} },
-        { provide: LINE_CHART_DRAWER, useValue: (_host: HTMLElement, options: LineChartOptions) => (drawn.push(options), Promise.resolve(() => undefined)) }
+        {
+          provide: LINE_CHART_DRAWER,
+          useValue: (_host: HTMLElement, options: LineChartOptions) => (
+            drawn.push(options),
+            Promise.resolve(() => undefined)
+          )
+        }
       ]
     });
 
@@ -79,13 +115,18 @@ describe('CheckInDashboardComponent (#3006)', () => {
     return fixture;
   }
 
-  const headings = (root: HTMLElement) => Array.from(root.querySelectorAll('.datatable-header-cell-label')).map((th) => th.textContent.trim());
+  const headings = (root: HTMLElement) =>
+    Array.from(root.querySelectorAll('.datatable-header-cell-label')).map((th) => th.textContent.trim());
   const rows = (root: HTMLElement) =>
     Array.from(root.querySelectorAll('datatable-row-wrapper datatable-body-row')).map((tr) =>
       Array.from(tr.querySelectorAll('.datatable-body-cell')).map((td) => td.textContent.trim())
     );
+  const names = (root: HTMLElement) =>
+    Array.from(root.querySelectorAll('datatable-row-wrapper .dashboard-table-name .bold')).map((n) => n.textContent.trim());
   const cellOf = (root: HTMLElement, name: string) =>
-    Array.from(root.querySelectorAll('datatable-row-wrapper .datatable-body-cell')).find((c) => c.textContent.includes(name)) as HTMLElement;
+    Array.from(root.querySelectorAll('datatable-row-wrapper .datatable-body-cell')).find((c) =>
+      c.textContent.includes(name)
+    ) as HTMLElement;
 
   async function settle(fixture: ReturnType<typeof open>) {
     fixture.detectChanges();
@@ -110,17 +151,17 @@ describe('CheckInDashboardComponent (#3006)', () => {
     expect(checkIns.getDashboardForSeason).toHaveBeenCalledWith('s-1');
     expect(root.querySelector('.dashboard-summary').textContent).toContain('7 check-ins at 3 events');
     expect(headings(root).slice(0, 5)).toEqual(['Event', 'When', 'Checked in', 'RSVPs', 'Under­graduate']);
-    expect(rows(root).map((r) => [r[0], ...r.slice(2, 4)])).toEqual([
-      ['expand_more Workshop ILCB 111', '2', '5'],
-      ['expand_more Keynote', '1', '0'],
-      ['expand_more Elsewhere', '4', '4']
+    expect(names(root)).toEqual(['Workshop', 'Keynote', 'Elsewhere']);
+    expect(rows(root).map((r) => r.slice(2, 4))).toEqual([
+      ['2', '5'],
+      ['1', '0'],
+      ['4', '4']
     ]);
-    expect(Array.from(root.querySelectorAll('datatable-summary-row .datatable-body-cell')).map((td) => td.textContent.trim()).slice(0, 4)).toEqual([
-      'All events',
-      '',
-      '7',
-      '9'
-    ]);
+    expect(
+      Array.from(root.querySelectorAll('datatable-summary-row .datatable-body-cell'))
+        .map((td) => td.textContent.trim())
+        .slice(0, 4)
+    ).toEqual(['All events', '', '7', '9']);
   });
 
   it("lists only the site's own sessions, and any with no place yet, on gisday.tamu.edu (#2986)", async () => {
@@ -129,7 +170,7 @@ describe('CheckInDashboardComponent (#3006)', () => {
     await settle(fixture);
     const root = fixture.nativeElement as HTMLElement;
 
-    expect(rows(root).map((r) => r[0])).toEqual(['expand_more Workshop ILCB 111', 'expand_more Keynote']);
+    expect(names(root)).toEqual(['Workshop', 'Keynote']);
     expect(root.querySelector('.dashboard-summary').textContent).toContain('3 check-ins at 2 events');
     expect(drawn[drawn.length - 1].series[0].points.map((p) => p.y)).toEqual([3]);
   });

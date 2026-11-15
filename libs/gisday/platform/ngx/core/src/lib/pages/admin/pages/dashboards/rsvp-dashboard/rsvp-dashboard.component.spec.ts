@@ -10,7 +10,7 @@ import { LINE_CHART_DRAWER, LineChartOptions } from '@tamu-gisc/ui-kits/ngx/char
 import { gisdaySite } from '@tamu-gisc/gisday/common';
 import { GISDAY_SITE } from '@tamu-gisc/gisday/platform/ngx/common';
 
-import { rsvpBands, RsvpDashboardComponent, rsvpDaily, rsvpFileName, rsvpRows, rsvpSeries, rsvpTotals } from './rsvp-dashboard.component';
+import { RsvpDashboardComponent } from './rsvp-dashboard.component';
 
 const counts = (c: Partial<RsvpDashboard['events'][0]['counts']>) => ({
   undergraduate: 0,
@@ -55,57 +55,6 @@ const people = [
   person({ firstName: 'Pat', lastName: 'Kim', email: 'pat@example.edu', type: 'academia', position: 'Professor', organization: 'Texas A&M University' })
 ];
 
-describe('rsvpTotals()', () => {
-  it('adds up every event, type by type', () => {
-    expect(rsvpTotals(dashboard.events)).toEqual({ total: 4, counts: counts({ undergraduate: 2, academia: 1, industry: 1 }) });
-  });
-});
-
-describe('rsvpRows()', () => {
-  it("gives the table each event, its venue under its name and its start in its own column", () => {
-    expect(rsvpRows(dashboard.events)[0]).toEqual({
-      key: 'e-1',
-      name: 'Workshop',
-      note: 'ILCB 111',
-      when: '2026-11-18T15:00:00.000Z',
-      total: 3,
-      counts: counts({ undergraduate: 2, academia: 1 })
-    });
-  });
-});
-
-describe('rsvpFileName()', () => {
-  it("names an event's CSV by its name and day, in Central time", () => {
-    expect(rsvpFileName(dashboard.events[0])).toBe('gisday-rsvps-workshop-2026-11-18');
-  });
-});
-
-describe('rsvpSeries()', () => {
-  it("draws every event's running total, and the opened event's own beside it", () => {
-    expect(rsvpSeries(dashboard, null).map((s) => [s.label, s.points.map((p) => p.y)])).toEqual([['All events', [2, 3, 4]]]);
-    expect(rsvpSeries(dashboard, dashboard.events[0]).map((s) => [s.label, s.points.map((p) => p.y)])).toEqual([
-      ['All events', [2, 3, 4]],
-      ['Workshop', [2, 3]]
-    ]);
-  });
-});
-
-describe('rsvpDaily()', () => {
-  it("counts every event's new RSVPs each day", () => {
-    expect(rsvpDaily(dashboard).points.map((p) => p.y)).toEqual([2, 1, 1]);
-  });
-});
-
-describe('rsvpBands()', () => {
-  it("shades the days the season's events run, in Central time", () => {
-    expect(rsvpBands(dashboard)).toEqual([{ from: new Date('2026-11-18T00:00:00Z'), to: new Date('2026-11-19T00:00:00Z'), label: 'GIS Day week' }]);
-  });
-
-  it('shades nothing when no event has a day', () => {
-    expect(rsvpBands({ ...dashboard, events: dashboard.events.map((e) => ({ ...e, starts: null })) })).toEqual([]);
-  });
-});
-
 describe('RsvpDashboardComponent', () => {
   let rsvps: { getDashboardForSeason: jest.Mock; getDashboardForEvent: jest.Mock };
   // amCharts draws on a canvas, which the test's DOM does not have: the chart's drawer is a stand-in that keeps what it is given.
@@ -137,6 +86,7 @@ describe('RsvpDashboardComponent', () => {
     Array.from(root.querySelectorAll('datatable-row-wrapper datatable-body-row')).map((tr) =>
       Array.from(tr.querySelectorAll('.datatable-body-cell')).map((td) => td.textContent.trim())
     );
+  const names = (root: HTMLElement) => Array.from(root.querySelectorAll('datatable-row-wrapper .dashboard-table-name .bold')).map((n) => n.textContent.trim());
   const cellOf = (root: HTMLElement, name: string) =>
     Array.from(root.querySelectorAll('datatable-row-wrapper .datatable-body-cell')).find((c) => c.textContent.includes(name)) as HTMLElement;
 
@@ -197,7 +147,7 @@ describe('RsvpDashboardComponent', () => {
     await settle(fixture);
     const root = fixture.nativeElement as HTMLElement;
 
-    expect(rows(root).map((r) => r[0])).toEqual(['expand_more Workshop ILCB 111', 'expand_more Keynote']);
+    expect(names(root)).toEqual(['Workshop', 'Keynote']);
     expect(root.querySelector('.dashboard-summary').textContent).toContain('4 RSVPs for 2 events');
     expect(lastChart().series[0].points.map((p) => p.y)).toEqual([2, 3, 4]);
   });
