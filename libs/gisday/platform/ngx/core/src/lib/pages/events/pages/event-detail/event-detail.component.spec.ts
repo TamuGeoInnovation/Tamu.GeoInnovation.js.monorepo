@@ -194,12 +194,8 @@ describe('EventDetailComponent check-in', () => {
 
     await pressCheckIn();
 
-    // An in-person session sends no QR code (#2560).
-    expect(insertUserCheckin).toHaveBeenCalledWith(
-      'e-1',
-      { latitude: 30.6132, longitude: -96.3406, accuracy: 12 },
-      undefined
-    );
+    // The session page never sends a QR code; that is the check-in page's (#3081).
+    expect(insertUserCheckin).toHaveBeenCalledWith('e-1', { latitude: 30.6132, longitude: -96.3406, accuracy: 12 });
     expect(text()).toContain('Your attendance has been registered');
   });
 
@@ -276,35 +272,19 @@ describe('EventDetailComponent check-in', () => {
       expect(line(page(), 'Dial-in number:')).toBe('Dial-in number: None');
     });
 
-    // #3077: scanning the code is the check-in. It used to open this page and wait for a button press that
-    // attendees did not know to make, so the code seemed to do nothing.
-    it.each(['hybrid', 'virtual'])(
-      'checks in to a %s session from its QR code as the page opens, sending the code and no location',
-      async (mode) => {
-        const { text, insertUserCheckin, detectChanges } = open(mode, undefined, undefined, scanned);
+    // #3081: the QR code has its own check-in page; this page never checks in by itself, code or not.
+    it.each(['hybrid', 'virtual', 'in-person'])(
+      'does not check in to a %s session by itself, even with a code in its address',
+      (mode) => {
+        const { insertUserCheckin } = open(mode, undefined, undefined, scanned);
 
-        await new Promise((resolve) => setTimeout(resolve, 0));
-        detectChanges();
-
-        expect(getCurrentPosition).not.toHaveBeenCalled();
-        expect(insertUserCheckin).toHaveBeenCalledTimes(1);
-        expect(insertUserCheckin).toHaveBeenCalledWith('e-1', undefined, 'code-1');
-        expect(text()).toContain('Your attendance has been registered');
+        expect(insertUserCheckin).not.toHaveBeenCalled();
       }
     );
 
-    it('does not check in by itself without the code', () => {
-      const { insertUserCheckin } = open('hybrid');
-
-      expect(insertUserCheckin).not.toHaveBeenCalled();
-    });
-
-    // #3077: signed out, the page offered no way to sign in, and the attendee lost the code finding one.
-    it('offers sign-in to an attendee who is signed out, coming back to this page with the code', async () => {
-      const { text, press, login, insertUserCheckin } = open('hybrid', undefined, undefined, {
-        ...scanned,
-        loggedIn: false
-      });
+    // #3077: signed out, the page offered no way to sign in.
+    it('offers sign-in to an attendee who is signed out, coming back to this page', async () => {
+      const { text, press, login, insertUserCheckin } = open('hybrid', undefined, undefined, { loggedIn: false });
 
       expect(insertUserCheckin).not.toHaveBeenCalled();
       expect(text()).toContain('Sign in, or create an account, to check in to this session.');
@@ -314,38 +294,11 @@ describe('EventDetailComponent check-in', () => {
       expect(login).toHaveBeenCalledWith({ appState: { target: TestBed.inject(Router).url } });
     });
 
-    it('offers no Check In button without the code, and says to scan it', () => {
-      const { text, button } = open('virtual');
+    it('offers no Check In button, even with a code in its address, and says to scan the QR code', () => {
+      const { text, button } = open('virtual', undefined, undefined, scanned);
 
       expect(button('CHECKIN')).toBeUndefined();
       expect(text()).toContain("Check in to this session by scanning the QR code on the presenter's slides.");
-    });
-
-    it('shows why a code was refused', async () => {
-      const refused = "Check in to this session by scanning the QR code on the presenter's slides.";
-      const { text, pressCheckIn } = open(
-        'hybrid',
-        () => throwError(() => new HttpErrorResponse({ status: 403, error: { statusCode: 403, message: refused } })),
-        undefined,
-        { query: { checkin: 'from-another-session' } }
-      );
-
-      await pressCheckIn();
-
-      expect(text()).toContain(refused);
-      expect(text()).not.toContain('Your attendance has been registered');
-    });
-
-    // #3077: at an in-person session the QR code is the backup for a phone that cannot give its location.
-    it('checks in to an in-person session from its QR code with the code, asking for no location', async () => {
-      const { text, insertUserCheckin, detectChanges } = open('in-person', undefined, undefined, scanned);
-
-      await new Promise((resolve) => setTimeout(resolve, 0));
-      detectChanges();
-
-      expect(getCurrentPosition).not.toHaveBeenCalled();
-      expect(insertUserCheckin).toHaveBeenCalledWith('e-1', undefined, 'code-1');
-      expect(text()).toContain('Your attendance has been registered');
     });
   });
 
@@ -355,14 +308,15 @@ describe('EventDetailComponent check-in', () => {
   describe('the check-in QR code, for organizers', () => {
     const organizer = { roles: ['GIS Day Organizer'] };
 
-    it('shows a hybrid session’s code, holding a link to this page with the code', async () => {
+    // #3081: the link is to the session's check-in page, which says whether the attendee is checked in.
+    it('shows a hybrid session’s code, holding a link to its check-in page with the code', async () => {
       const { page, press, getCheckInCode } = open('hybrid', undefined, undefined, organizer);
 
       expect(page().querySelector('tamu-gisc-qr-code')).toBeNull();
 
       await press('Show check-in QR code');
 
-      const link = `${window.location.origin}/sessions/details/e-1?checkin=code-1`;
+      const link = `${window.location.origin}/sessions/checkin/e-1?checkin=code-1`;
 
       expect(getCheckInCode).toHaveBeenCalledWith('e-1');
       expect(page().querySelector('tamu-gisc-qr-code svg')?.getAttribute('aria-label')).toBe(

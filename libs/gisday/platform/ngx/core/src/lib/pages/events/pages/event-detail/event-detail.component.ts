@@ -1,11 +1,9 @@
 import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   catchError,
-  combineLatest,
   filter,
   finalize,
   forkJoin,
@@ -136,15 +134,6 @@ export class EventDetailComponent implements OnInit, OnDestroy {
    * Why the last check-in did not work, shown beside the button.
    */
   public readonly checkInFailure = signal<string>(undefined);
-
-  /**
-   * The code from the session's QR code, which its link carries (#2560). A hybrid or virtual session
-   * offers the Check In button only with it.
-   */
-  public readonly checkInCode = toSignal(
-    this.route.queryParamMap.pipe(map((params) => params.get(CHECK_IN_CODE_PARAM) ?? undefined)),
-    { initialValue: undefined }
-  );
 
   public readonly checkInCodeMessage = CHECK_IN_CODE_MESSAGE;
 
@@ -332,20 +321,6 @@ export class EventDetailComponent implements OnInit, OnDestroy {
       })
     );
 
-    // Arriving from a session's QR code checks the attendee in, with no button to find (#3077): once they are
-    // signed in with a complete profile, not already checked in, and check-in is open. An attendee who scans
-    // early is checked in when it opens, if the page is still open. A refusal shows beside the button, which
-    // stays for a second try.
-    if (this.checkInCode()) {
-      combineLatest([this.event$, this.isLoggedIn$, this.userProfileComplete$, this.userCheckedIn$, this.eventLive$])
-        .pipe(
-          filter(([, loggedIn, profileComplete, checkedIn, live]) => loggedIn && profileComplete && !checkedIn && live),
-          take(1),
-          takeUntil(this._destroy$)
-        )
-        .subscribe(() => this.checkin());
-    }
-
     // Admins see the session's check-ins, each marked when made outside its time (#2635). Names come from
     // the site's users; without them (an account with no `read:users`, or Auth0 not reachable) the
     // account id stands in. Reloaded with the page's own check-in.
@@ -433,7 +408,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
         take(1),
         switchMap((event) =>
           this._checkInPosition(event).pipe(
-            switchMap((position) => this.checkinService.insertUserCheckin(event.guid, position, this.checkInCode()))
+            switchMap((position) => this.checkinService.insertUserCheckin(event.guid, position))
           )
         )
       )
@@ -453,8 +428,8 @@ export class EventDetailComponent implements OnInit, OnDestroy {
    * the location is inside the zone.
    */
   public needsCheckInLocation(event: Partial<Event>): boolean {
-    // The QR code's link stands in for the location at any session (#3077), for a phone that cannot give one.
-    return !this.checkInCode() && event?.mode === CHECK_IN_ZONE_EVENT_MODE && isLatLonPolygon(event?.location?.checkInZone);
+    // A phone that cannot give its location checks in with the session's QR code instead, on its own page (#3081).
+    return event?.mode === CHECK_IN_ZONE_EVENT_MODE && isLatLonPolygon(event?.location?.checkInZone);
   }
 
   /**
@@ -466,14 +441,14 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Shows an organizer the session's check-in QR code, which holds a link to this page with the code.
+   * Shows an organizer the session's check-in QR code, which holds a link to its check-in page with the code (#3081).
    */
   public showCheckInCode(event: Partial<Event>) {
     this.checkInCodeFailure.set(undefined);
 
     this.checkinService.getCheckInCode(event.guid).subscribe({
       next: ({ code }) => {
-        const link = new URL(`/sessions/details/${event.guid}`, window.location.origin);
+        const link = new URL(`/sessions/checkin/${event.guid}`, window.location.origin);
         link.searchParams.set(CHECK_IN_CODE_PARAM, code);
 
         this.checkInLink.set(link.toString());
