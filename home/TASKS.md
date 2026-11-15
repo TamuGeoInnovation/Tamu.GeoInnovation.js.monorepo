@@ -30,6 +30,28 @@ are in `libs/gisday/platform/data-api/src/lib/check-in/`.
 > director, in your report or a message to the director's session, and he answers the director. **#3039 is withdrawn
 > from you:** the director makes that CLAUDE.md change itself, as he asked it to directly. Carry on with #3038 and #3029.
 
+## Batch 59 (gisday: the profile email before the maintainer sends it - #3043, #3045, #3046, #3044; 15 November 2026, from `work (gisday)`) (**Urgent**) - **stop batch 58 where it is safe and do this now**
+
+The maintainer is waiting to send the finalists' profile emails until these are in. **One branch,
+`feat/profile-email-finalists`, from the latest `development`, one PR closing all four**, because they all change
+`speaker-edit.service.ts`, `profile-email.ts` and the email window, and four stacked PRs would conflict. One commit per
+issue, in this order, each red first:
+
+1. **[#3043](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3043) (Urgent)**: match co-authors.
+   Split each participant's email field on commas, semicolons and spaces, read a bare NetID as `@tamu.edu`, as
+   `add-competition-speakers.ps1` (kubernetes-config `6. GIS Day/data`) did when it made their speaker records. One
+   shared helper in `libs/gisday/common`.
+2. **[#3045](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3045) (Urgent)**: the new
+   default text, word for word from the issue.
+3. **[#3046](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3046) (Medium)**: the window lists,
+   before sending, who has no presenter record and won't be emailed (the preview returns `unmatched`).
+4. **[#3044](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3044) (Urgent)**: Markdown in the
+   editable emails (profile, acceptance, final reminder): HTML rendered by one shared, escaping renderer (`marked` is a
+   dependency) plus a plain-text part; the preview shows it formatted.
+
+The full check (`CHECK_MEMORY=24g CHECK_PARALLEL=3`); one release note per issue. Report "branch ready" with any
+questions **to the director**, never to the maintainer. The lab takes the screenshots, then the PR opens.
+
 ## Batch 58 (gisday: #3038, #3029 and #3039; 15 November 2026, from `work (gisday)`) (Low)
 
 1. **[#3038](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3038)**: an admin page that gets
