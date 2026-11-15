@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch 55 (gisday: #3026, #3024)**: #3026 started (PR 3020 merged), branch `fix/3026-submissions-table-fit`; #3024 waits for PR 3014 (still open).
+- **Batch 55 (gisday: #3026, #3024)**: #3026 branch ready (`fix/3026-submissions-table-fit` at `a4ef225fe`); **#3024 waiting for PR 3014 to merge** (open at 8:49 AM Central). Report `home/reports/2026-11-15-55.md`.
 
 ## Finished
 - **Batch 56 (gisday: #3027)** (report `home/reports/2026-11-15-56.md`): branch ready, `feat/3027-sessions-search-link` on the fork at `db5124dc2`, no PR. One shared `LinkedSearchComponent` (ngx-common) for Presenters and Sessions; screenshots taken here on a local build. Red first; bug-fix check exit 0. No questions.
