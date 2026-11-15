@@ -7,6 +7,8 @@ import { RsvpService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { LINE_CHART_DRAWER, LineChartOptions } from '@tamu-gisc/ui-kits/ngx/charts';
+import { gisdaySite } from '@tamu-gisc/gisday/common';
+import { GISDAY_SITE } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { rsvpBands, RsvpDashboardComponent, rsvpDaily, rsvpFileName, rsvpRows, rsvpSeries, rsvpTotals } from './rsvp-dashboard.component';
 
@@ -22,8 +24,8 @@ const counts = (c: Partial<RsvpDashboard['events'][0]['counts']>) => ({
 
 const dashboard: RsvpDashboard = {
   events: [
-    { guid: 'e-1', name: 'Workshop', starts: '2026-11-18T15:00:00.000Z', location: 'ILCB 111', total: 3, counts: counts({ undergraduate: 2, academia: 1 }) },
-    { guid: 'e-2', name: 'Keynote', starts: '2026-11-18T20:00:00.000Z', location: null, total: 1, counts: counts({ industry: 1 }) }
+    { guid: 'e-1', name: 'Workshop', starts: '2026-11-18T15:00:00.000Z', location: 'ILCB 111', place: null, total: 3, counts: counts({ undergraduate: 2, academia: 1 }) },
+    { guid: 'e-2', name: 'Keynote', starts: '2026-11-18T20:00:00.000Z', location: null, place: null, total: 1, counts: counts({ industry: 1 }) }
   ],
   made: [
     { event: 'e-1', created: '2026-11-01T15:00:00Z' },
@@ -110,11 +112,12 @@ describe('RsvpDashboardComponent', () => {
   let drawn: Array<LineChartOptions>;
   const lastChart = () => drawn[drawn.length - 1];
 
-  function open() {
+  function open(site = 'txgisday') {
     TestBed.configureTestingModule({
       imports: [RsvpDashboardComponent],
       providers: [
         provideRouter([]),
+        { provide: GISDAY_SITE, useValue: gisdaySite(site) },
         { provide: RsvpService, useValue: rsvps },
         { provide: SeasonService, useValue: { seasons$: of([{ guid: 's-1', year: 2026 }]), activeSeason$: of({ guid: 's-1', year: 2026 }) } },
         { provide: ModalService, useValue: {} },
@@ -185,6 +188,18 @@ describe('RsvpDashboardComponent', () => {
       '1',
       '0'
     ]);
+  });
+
+  it("lists only the site's own sessions, and any with no place yet, on gisday.tamu.edu (#2986)", async () => {
+    const elsewhere = { ...dashboard.events[1], guid: 'e-3', name: 'Elsewhere', total: 6, place: { guid: 'p-other', name: 'Another university' } };
+    rsvps.getDashboardForSeason = jest.fn(() => of({ ...dashboard, events: [...dashboard.events, elsewhere], made: [...dashboard.made, { event: 'e-3', created: '2026-11-05T15:00:00Z' }] }));
+    const fixture = open('tamu');
+    await settle(fixture);
+    const root = fixture.nativeElement as HTMLElement;
+
+    expect(rows(root).map((r) => r[0])).toEqual(['expand_more Workshop ILCB 111', 'expand_more Keynote']);
+    expect(root.querySelector('.dashboard-summary').textContent).toContain('4 RSVPs for 2 events');
+    expect(lastChart().series[0].points.map((p) => p.y)).toEqual([2, 3, 4]);
   });
 
   it("charts the running total, each day's new RSVPs beneath it, and the GIS Day week", async () => {

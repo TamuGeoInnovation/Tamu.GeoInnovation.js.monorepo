@@ -50,4 +50,12 @@ describe('CheckinService', () => {
     expect(request.request.body).toEqual({ guid: '', userGuid: 'attendee-1', eventGuid: 'event-1' });
     request.flush({});
   });
+
+  it("reads the admin check-in dashboard's season and an event's people from their admin routes (#3006)", () => {
+    service.getDashboardForSeason('season-1').subscribe();
+    http.expectOne({ method: 'GET', url: 'api/check-ins/dashboard/season/season-1' }).flush({ events: [], made: [], unreadAccounts: 0 });
+
+    service.getDashboardForEvent('event-1').subscribe();
+    http.expectOne({ method: 'GET', url: 'api/check-ins/dashboard/event/event-1' }).flush([]);
+  });
 });
