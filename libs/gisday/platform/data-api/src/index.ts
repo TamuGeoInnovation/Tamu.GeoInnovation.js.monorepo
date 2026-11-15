@@ -31,6 +31,8 @@ export * from './lib/event-broadcast/event-broadcast.module';
 export * from './lib/event-location/event-location.module';
 export * from './lib/place/place.module';
 export * from './lib/assets/assets.module';
+// The one check every GIS Day image upload uses, the competitions' photographs included (#2937, #2967)
+export * from './lib/assets/image-upload';
 export * from './lib/contact/contact.module';
 
 // Providers

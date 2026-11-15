@@ -10,6 +10,7 @@ import { GUARDS_METADATA, PATH_METADATA } from '@nestjs/common/constants';
 import { Test } from '@nestjs/testing';
 
 import { JwtGuard, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
+import { declaredJpeg, declaredPng } from '@tamu-gisc/common/node/images';
 
 import { FormService } from '../form/form.service';
 import { SubmissionService } from './submission.service';
@@ -249,12 +250,18 @@ describe('SubmissionController upload limits', () => {
   let url: string;
   let createCompetitionSubmission: jest.Mock;
 
-  const send = (...photos: Array<number>) => {
+  /** A photograph of `bytes` bytes: a JPEG's header, padded. */
+  const jpegOf = (bytes: number) => Buffer.concat([declaredJpeg(640, 480), Buffer.alloc(Math.max(0, bytes - declaredJpeg(640, 480).length))]);
+
+  /** Each photo a number of bytes of JPEG, or the bytes themselves; every one sent as `photo.jpg`, `image/jpeg`. */
+  const send = (...photos: Array<number | Buffer>) => {
     const form = new FormData();
     form.append('season', 'cs-1');
     form.append('value', '{"kind":"monument"}');
     form.append('location', '{"latitude":30.6,"longitude":-96.3}');
-    photos.forEach((bytes, i) => form.append(`head${i + 1}`, new Blob([new Uint8Array(bytes)], { type: 'image/jpeg' }), 'photo.jpg'));
+    photos.forEach((photo, i) =>
+      form.append(`head${i + 1}`, new Blob([new Uint8Array(typeof photo === 'number' ? jpegOf(photo) : photo)], { type: 'image/jpeg' }), 'photo.jpg')
+    );
 
     return fetch(`${url}/competitions/submissions`, { method: 'POST', body: form });
   };
@@ -309,5 +316,33 @@ describe('SubmissionController upload limits', () => {
 
     expect(res.status).toBe(400);
     expect(createCompetitionSubmission).not.toHaveBeenCalled();
+  });
+
+  /**
+   * The photographs are checked as every GIS Day image upload is, by `refuseUnsafeImage` (#2937, #2967): by content, not by
+   * the name or type the sender chose, and by the size the image declares before anything decodes it.
+   */
+  describe('only a JPEG or PNG is saved', () => {
+    it('refuses an SVG named photo.jpg with 400, and saves nothing', async () => {
+      const res = await send(Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"/>'));
+
+      expect(res.status).toBe(400);
+      expect((await res.json()).message).toBe('A photograph must be a JPEG or PNG image.');
+      expect(createCompetitionSubmission).not.toHaveBeenCalled();
+    });
+
+    it('refuses a photograph declaring 50,000 x 50,000 pixels with 413, and saves nothing', async () => {
+      const res = await send(1024, declaredJpeg(50_000, 50_000));
+
+      expect(res.status).toBe(413);
+      expect(createCompetitionSubmission).not.toHaveBeenCalled();
+    });
+
+    it('saves a PNG sent as image/jpeg as the PNG it is', async () => {
+      const res = await send(declaredPng(640, 480));
+
+      expect(res.status).toBe(201);
+      expect(createCompetitionSubmission.mock.calls[0][1]).toEqual([expect.objectContaining({ mimeType: 'image/png', fieldName: 'head1' })]);
+    });
   });
 });
