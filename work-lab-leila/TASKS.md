@@ -8200,3 +8200,19 @@ Department / major) so the table fits 879 px at 1280 without scrolling, keeping 
 2. **[#3057](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3057)**, branch
    `fix/3057-tamu-2023-sessions` from the latest `development`, as the issue says.
 
+## Batch 77 (gisday: #3038's screenshots, then #3029; 15 November 2026, about 1:15 PM Central, from `work (gisday)`) (Low)
+
+**Decided by the director, the maintainer away:** your report 71's questions 1 and 2 were fixed on the branch before PR
+3063 (the window's people count and its "listed below"; the entry named with its missing address); 3 kept. Your #3044
+report's 1 and 2 are fixed on its branch (the sign-off ends on an em dash; marked does its own escaping and makes only
+http, https and mailto links); its PR opens after the check. Report 76's #3026 question waits for the maintainer: don't
+push `fix/3026-columns-fit-1280` further.
+
+1. **#3038**, `fix/3038-permission-message` on the fork (the director built it; no `.pr-body.md`): an admin dashboard
+   refused with a 403 now names the missing permission instead of "Try again in a moment". On your local stack, show a
+   dashboard as an account without the permission (or the API's 403 for it) before (`development`) and after; then
+   push the images and a release note, fast-forward. No PR exists yet.
+2. **[#3029](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3029)**: the dashboards' sideways
+   scroll can be found at 1024 px, in the shared dashboard table. Branch `fix/3029-dashboard-scroll` from the latest
+   `development`; test red first, the bug-fix check, before/after, a release note. Report "branch ready".
+
