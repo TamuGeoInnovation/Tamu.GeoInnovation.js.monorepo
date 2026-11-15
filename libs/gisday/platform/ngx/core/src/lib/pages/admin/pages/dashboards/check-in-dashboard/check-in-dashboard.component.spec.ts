@@ -212,4 +212,14 @@ describe('CheckInDashboardComponent (#3006)', () => {
     expect(root.textContent).toContain('read:checkins');
     expect(root.textContent).not.toContain('Try again in a moment');
   });
+
+  // #3038: an API that names nothing (an older one, or no permissions at all) still says what to do.
+  it('says the account lacks a permission on a bare 403', () => {
+    checkIns.getDashboardForSeason = jest.fn(() =>
+      throwError(() => new HttpErrorResponse({ status: 403, error: { statusCode: 403, message: 'Forbidden' } }))
+    );
+    const root = open().nativeElement as HTMLElement;
+
+    expect(root.textContent).toContain("doesn't have the permission this page needs");
+  });
 });

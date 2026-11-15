@@ -35,4 +35,14 @@ describe('PermissionsGuard', () => {
   it('lets a request with the permission through', async () => {
     await expect(guard(['read:checkins']).canActivate(context(['read:checkins']))).resolves.toBe(true);
   });
+
+  it('names the permission too when the token carries no permissions at all', async () => {
+    const noPermissions = {
+      getHandler: () => undefined,
+      getClass: () => PermissionsGuard,
+      switchToHttp: () => ({ getRequest: () => ({ user: {} }) })
+    } as unknown as ExecutionContext;
+
+    await expect(guard(['read:checkins']).canActivate(noPermissions)).rejects.toThrow(/read:checkins/);
+  });
 });

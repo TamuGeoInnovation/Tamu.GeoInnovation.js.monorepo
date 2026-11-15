@@ -36,10 +36,12 @@ export function readRefusal(err: unknown): string | null {
   }
 
   if (status === 403) {
-    return serverMessage(
-      err,
-      "Your account doesn't have the permission this page needs. An administrator gives it in Auth0; then sign out and sign back in."
-    );
+    const fallback =
+      "Your account doesn't have the permission this page needs. An administrator gives it in Auth0; then sign out and sign back in.";
+    const named = serverMessage(err, fallback);
+
+    // Nest's bare 403 says only "Forbidden", which names nothing: an older API, or an account with no permissions.
+    return /^forbidden\.?$/i.test(named.trim()) ? fallback : named;
   }
 
   return null;

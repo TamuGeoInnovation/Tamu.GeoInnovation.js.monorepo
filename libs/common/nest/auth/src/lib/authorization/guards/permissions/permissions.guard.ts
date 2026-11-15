@@ -37,7 +37,7 @@ export class PermissionsGuard implements CanActivate {
     }
 
     if (request.user.permissions === undefined) {
-      throw new ForbiddenException();
+      throw new ForbiddenException(missingPermissionMessage(requiredPermissions, matchType));
     }
 
     const permissions = request.user.permissions;

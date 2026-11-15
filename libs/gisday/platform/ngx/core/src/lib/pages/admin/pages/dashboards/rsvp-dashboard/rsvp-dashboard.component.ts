@@ -18,14 +18,7 @@ import { DashboardRowDetailDirective, DashboardTableComponent } from '../shared/
   selector: 'tamu-gisc-rsvp-dashboard',
   templateUrl: './rsvp-dashboard.component.html',
   styleUrls: ['./rsvp-dashboard.component.scss'],
-  imports: [
-    SelectComponent,
-    LineChartComponent,
-    DashboardTableComponent,
-    DashboardRowDetailDirective,
-    DashboardPeopleComponent,
-    AsyncPipe
-  ]
+  imports: [SelectComponent, LineChartComponent, DashboardTableComponent, DashboardRowDetailDirective, DashboardPeopleComponent, AsyncPipe]
 })
 export class RsvpDashboardComponent extends EventDashboardComponent<RsvpDashboard, UserRsvp> {
   protected readonly entityService = inject(RsvpService);
