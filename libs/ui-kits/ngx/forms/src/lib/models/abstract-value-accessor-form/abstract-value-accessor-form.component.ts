@@ -80,4 +80,13 @@ export class AbstractValueAccessorFormComponent<T> implements ControlValueAccess
     this._onChange(v === null ? undefined : v);
     this._onTouched();
   }
+
+  /**
+   * For a control whose value is an object, such as a link with a label and an address: sets one of its fields on a new
+   * object, so the form hears of the user's change. Editing the object the form gave it in place changed the form's
+   * value without telling it, so the form never counted as changed and Escape left without asking (#3007).
+   */
+  public setInternalProperty<K extends keyof T>(key: K, v: T[K]) {
+    this.setInternalValue({ ...this.getInternalValue(), [key]: v } as T);
+  }
 }

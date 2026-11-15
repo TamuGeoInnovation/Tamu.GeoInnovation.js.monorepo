@@ -62,6 +62,24 @@ describe('AbstractValueAccessorFormComponent', () => {
     expect(onTouched).toHaveBeenCalled();
   });
 
+  // #3007: a field of an object value is set on a new object and reported, leaving the form's own object as it was.
+  it('reports a field set on an object value as a change, on a new object', () => {
+    const fixture = TestBed.createComponent<AbstractValueAccessorFormComponent<{ label: string; url: string }>>(
+      AbstractValueAccessorFormComponent
+    );
+    const link = fixture.componentInstance;
+    const onChange = vi.fn();
+    const loaded = { label: 'Volunteer', url: 'https://example.com/volunteer' };
+    link.registerOnChange(onChange);
+    link.writeValue(loaded);
+
+    link.setInternalProperty('url', 'https://example.com/sponsor');
+
+    expect(onChange).toHaveBeenCalledWith({ label: 'Volunteer', url: 'https://example.com/sponsor' });
+    expect(link.value).not.toBe(loaded);
+    expect(loaded.url).toBe('https://example.com/volunteer');
+  });
+
   it('should correctly evaluate setDisabledState', () => {
     component.setDisabledState(true);
     expect(component.disabled()).toBeTruthy();
