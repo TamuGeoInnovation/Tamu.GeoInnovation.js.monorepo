@@ -50,7 +50,9 @@ export const DEVELOPMENT_ONLY_ALL_MAPS_TILES = ['Code Maroon', 'Transportation']
  */
 export const DEVELOPMENT_ONLY_PAGES: Record<string, string> = {
   '/all-maps/transportation': '/all-maps',
-  '/map/d/trip/options': '/map/d/trip'
+  '/map/d/trip/options': '/map/d/trip',
+  // The event maps' copy of the same page, which their own side panel left ungated until it became the main map's (#2758).
+  '/events/tailgating/map/d/trip/options': '/events/tailgating/map/d/trip'
 };
 
 /**
