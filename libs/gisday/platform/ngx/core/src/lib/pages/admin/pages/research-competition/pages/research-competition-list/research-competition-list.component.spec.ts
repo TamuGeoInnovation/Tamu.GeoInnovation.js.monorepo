@@ -358,6 +358,59 @@ describe('ResearchCompetitionListComponent, the final file and the final reminde
     expect(select.minWidth).toBeGreaterThanOrEqual(56);
   });
 
+  /**
+   * #3026, the review of the fix above: the columns' minimums then added up to more than the table (1015 px in the 879
+   * a 1280 px screen gives it, 848 in 681 at 1024), and ngx-datatable drew the overflow off the table's left edge, taking
+   * the checkbox and the Name column with it. The table is now never narrower than its columns at their narrowest, so
+   * where they do not fit it scrolls sideways in its own box, as the dashboards' table does (#3006).
+   */
+  describe('its columns at their narrowest (#3026)', () => {
+    const templates = (fixture: ReturnType<typeof open>['fixture']) =>
+      fixture.debugElement.query(By.directive(DatatableComponent)).injector.get(DatatableComponent).columnTemplates();
+    const narrowest = (fixture: ReturnType<typeof open>['fixture']) =>
+      templates(fixture).reduce((sum, column) => sum + (column.minWidth() ?? 0), 0);
+
+    it('gives every column a narrowest, the select and Name columns included', () => {
+      const { fixture } = open([]);
+
+      for (const column of templates(fixture)) {
+        expect([column.prop(), column.minWidth()]).toEqual([column.prop(), expect.any(Number)]);
+        expect(column.minWidth()).toBeGreaterThan(0);
+      }
+    });
+
+    it('is never narrower than its columns at their narrowest, so none is drawn off its left edge', () => {
+      const { fixture, page } = open([]);
+      const table = page.querySelector('ngx-datatable') as HTMLElement;
+
+      expect(narrowest(fixture)).toBeGreaterThan(0);
+      expect(table.style.minWidth).toBe(`${narrowest(fixture)}px`);
+    });
+
+    it('keeps the checkbox column at its width and grows every other column in proportion to its narrowest', () => {
+      const { fixture } = open([]);
+      const [select, ...rest] = templates(fixture);
+
+      expect(select.prop()).toBe('select');
+      expect(select.canAutoResize()).toBe(false);
+      expect(select.width()).toBe(select.minWidth());
+
+      const ratios = rest.map((column) => (column.flexGrow() ?? 0) / (column.minWidth() ?? 1));
+
+      expect(new Set(ratios)).toEqual(new Set([1]));
+    });
+
+    // Measured in Playwright at the table's 0.9rem: "Pending Review", bold, is 110 px wide and "Presentation" 89, and a
+    // cell's side padding is 16.
+    it('holds the longest Status and Type whole', () => {
+      const { fixture } = open([]);
+      const minWidth = (prop: string) => templates(fixture).find((column) => column.prop() === prop)?.minWidth();
+
+      expect(minWidth('reviewStatus')).toBeGreaterThanOrEqual(110 + 16);
+      expect(minWidth('submissionType')).toBeGreaterThanOrEqual(89 + 16);
+    });
+  });
+
   it('shows the reminder first, editable, saying how many are skipped for having a file, then sends it with the text approved', () => {
     const { service, modals, toasts, click } = open(['s1', 's2']);
 
