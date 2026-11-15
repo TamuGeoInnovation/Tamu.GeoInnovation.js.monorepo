@@ -91,7 +91,7 @@ describe('EventProvider', () => {
       expect(qb.addOrderBy).toHaveBeenCalledWith('event.startTime', 'ASC');
     });
 
-    it('brings each event's tags, so the admin list can find the sessions with none (#3034)', async () => {
+    it("brings each event's tags, so the admin list can find the sessions with none (#3034)", async () => {
       const qb = queryBuilder([]);
       jest.spyOn(eventRepo, 'createQueryBuilder').mockReturnValue(qb as never);
 
