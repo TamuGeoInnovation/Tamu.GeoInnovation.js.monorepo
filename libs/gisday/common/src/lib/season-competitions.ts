@@ -5,28 +5,26 @@ import { DEADLINE_COMPETITIONS, DEADLINE_COMPETITION_TABLE, DeadlineCompetition 
  * the submission form offers only those, the admin filters and deadlines follow, and the API refuses a new submission to
  * one that is off. The VGI competition is not among them: the site's `competitions` feature switches it (`sites.ts`).
  *
- * The season holds them as one column, `competitionTypes`: the competitions it runs, comma-separated. **Empty means
- * every one**, so a season set before this, and a site that never sets it, runs them all as before. A submission already
- * made to a competition later turned off stays as it is, and admins still see it.
+ * The season holds them as rows of `season_competitions`, one per competition it runs, loaded with it as `competitions`.
+ * **None means every one**, so a season set before this, and a site that never sets it, runs them all as before. A
+ * submission already made to a competition later turned off stays as it is, and admins still see it.
  */
 
 /** Every research competition, in the admin page's order: those `DEADLINE_COMPETITION_TABLE` names. */
 export const SEASON_COMPETITIONS: ReadonlyArray<DeadlineCompetition> = DEADLINE_COMPETITIONS;
 
-/** What a season holds: the competitions it runs, comma-separated, or empty for every one. */
+/** What a season holds: a row for each competition it runs, or none for every one. */
 export interface SeasonCompetitions {
-  competitionTypes?: string | null;
+  competitions?: ReadonlyArray<{ competitionType: string }> | null;
 }
 
 /** The competitions a season runs, in the admin page's order. */
 export function seasonCompetitions(season: SeasonCompetitions | null | undefined): ReadonlyArray<DeadlineCompetition> {
-  const held = season?.competitionTypes?.trim();
+  const named = (season?.competitions ?? []).map((row) => row.competitionType);
 
-  if (!held) {
+  if (named.length === 0) {
     return SEASON_COMPETITIONS;
   }
-
-  const named = held.split(',').map((type) => type.trim());
 
   return SEASON_COMPETITIONS.filter((competition) => named.includes(competition));
 }
@@ -37,13 +35,13 @@ export function runsCompetition(season: SeasonCompetitions | null | undefined, s
 }
 
 /**
- * The column's value for a choice of competitions: `null` when it is every one, so the season keeps running whatever is
+ * The rows to store for a choice of competitions: none when it is every one, so the season keeps running whatever is
  * added later as a season set before this does; otherwise the competitions, in the admin page's order.
  */
-export function competitionTypesValue(competitions: ReadonlyArray<string>): string | null {
+export function competitionTypesValue(competitions: ReadonlyArray<string>): Array<DeadlineCompetition> {
   const chosen = SEASON_COMPETITIONS.filter((competition) => competitions.includes(competition));
 
-  return chosen.length === SEASON_COMPETITIONS.length ? null : chosen.join(',');
+  return chosen.length === SEASON_COMPETITIONS.length ? [] : chosen;
 }
 
 /**

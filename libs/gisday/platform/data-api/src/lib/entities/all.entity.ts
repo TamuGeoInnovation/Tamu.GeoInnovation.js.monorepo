@@ -13,7 +13,8 @@ import {
   JoinTable,
   OneToMany,
   FindOptionsRelations,
-  Relation
+  Relation,
+  Unique
 } from 'typeorm';
 
 import { TIMESTAMP_COLUMN } from './timestamps';
@@ -177,11 +178,12 @@ export class Season extends GuidIdentity {
   public cartographyFilesCloseAt?: Date | null;
 
   /**
-   * The research competitions the season runs, comma-separated, as `@tamu-gisc/gisday/common`'s `seasonCompetitions` reads
-   * them; empty runs every one (#2948). Set from the competitions' admin page.
+   * The research competitions the season runs, one row each, as `@tamu-gisc/gisday/common`'s `seasonCompetitions` reads
+   * them; none runs every one (#2948). Set from the competitions' admin page. Loaded with every season, so a page or a
+   * check that has a season has them too. Written only by `SeasonService.setCompetitionTypes`, so no cascade.
    */
-  @Column({ type: 'nvarchar', length: 255, nullable: true })
-  public competitionTypes?: string | null;
+  @OneToMany(() => SeasonCompetition, (competition) => competition.season, { eager: true })
+  public competitions?: SeasonCompetition[];
 
   // Season has multiple days
   @OneToMany(() => SeasonDay, (seasonDay) => seasonDay.season, { cascade: true, onDelete: 'CASCADE' })
@@ -237,6 +239,22 @@ export class Season extends GuidIdentity {
       year: new Date().getFullYear()
     });
   }
+}
+
+/**
+ * A research competition a season runs (#2948): one row per season and competition. A row of its own, rather than a list
+ * on the season, so that a setting for one season's competition can be added here as a column. A season with none runs
+ * every competition.
+ */
+@Entity({ name: 'season_competitions' })
+@Unique(['season', 'competitionType'])
+export class SeasonCompetition extends GuidIdentity {
+  @ManyToOne(() => Season, (season) => season.competitions, { nullable: false, onDelete: 'CASCADE' })
+  public season: Season;
+
+  /** `poster`, `presentation`, `paper` or `cartography`: `DEADLINE_COMPETITIONS` in `@tamu-gisc/gisday/common`. */
+  @Column({ type: 'nvarchar', length: 50, nullable: false })
+  public competitionType: string;
 }
 
 @Entity({ name: 'seasons_days' })
@@ -1239,6 +1257,7 @@ export type EntityName = 'event' | 'speaker';
 
 export const GISDAY_ENTITIES = [
   Season,
+  SeasonCompetition,
   SeasonDay,
   CheckIn,
   Class,

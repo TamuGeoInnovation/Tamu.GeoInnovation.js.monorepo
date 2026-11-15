@@ -97,12 +97,7 @@ describe('UserSubmissionAddEditFormComponent, the competitions it offers', () =>
   const offered = (form: UserSubmissionAddEditFormComponent) => form.submissionTypeOptions().map((o) => o.type);
 
   it('offers every competition when the season has no rows (#2948)', () => {
-    expect(offered(render('create', { competitions: [] }))).toEqual([
-      'presentation',
-      'paper',
-      'poster',
-      'cartography'
-    ]);
+    expect(offered(render('create', { competitions: [] }))).toEqual(['presentation', 'paper', 'poster', 'cartography']);
   });
 
   it('offers only those the season runs, and starts on one of them', () => {

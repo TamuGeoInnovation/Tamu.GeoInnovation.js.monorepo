@@ -21,4 +21,4 @@ a competition later turned off stays as it is, can still be edited, and is still
 is not among these: it is switched for each site as before.
 ([#2948](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2948))
 
-**Before the API is deployed**, the production migration `migrate-prod-2948.ps1` adds the one empty column it needs.
+**Before the API is deployed**, the production migration `migrate-prod-2948.ps1` adds the one empty table it needs, `season_competitions`.
