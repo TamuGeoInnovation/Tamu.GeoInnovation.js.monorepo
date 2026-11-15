@@ -39,6 +39,22 @@
 - A report per batch, `work-lab-leila/reports/2026-11-14-<n>.md`, saying **"branch ready: <name>"** with the check's exit
   code. Questions for the maintainer go in the report, with options and a recommendation; do not ask him.
 
+## Decided - 14 November 2026, 8:30 PM Central (gisday, the maintainer)
+
+- **Report 52, #2963:** (1) the button says "Clear the search"; (3) the tab order stays as it is on screen. Opened as PR 2996, with the latest `development` merged in.
+- **Report 53, #2969, question 1: yes, accept Auth0's consent for the local development test account,** and only that account on the local stack. Opened as PR 2999, on `fix/2969-deadlines-panel` with the latest `development` merged in. **Batch 57.**
+
+---
+
+## Batch 57 (gisday: #2969's screenshots; from `work (gisday)`) (Low) - **first, before 54**
+
+Accept the consent screen for the local test account (decided above). Capture #2969's before and after. Commit them, and
+the release note's image links, to `fix/2969-deadlines-panel` on the fork: `git pull` it first, because it now has a
+merge from `development` on top of yours, then push. That updates PR 2999. Put the body's image section in your report;
+home edits the PR.
+
+---
+
 ## Batch 54 (gisday: #2964, shared form controls report a loaded value as a change; 14 November 2026, from `work (gisday)`) (Low) - **first, now**
 
 [#2964](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2964). Your #2942 work found it:
