@@ -798,8 +798,8 @@ describe('UserSubmissionProvider', () => {
   describe("the season's competitions (#2948)", () => {
     const SEASON = { guid: 'season-2026', year: 2026 };
 
-    function seasonRunning(competitionTypes: string | null) {
-      const season = { ...SEASON, competitionTypes };
+    function seasonRunning(...types: Array<string>) {
+      const season = { ...SEASON, competitions: types.map((competitionType) => ({ competitionType })) };
 
       jest.spyOn(seasonService, 'findOne').mockResolvedValue(season as never);
       jest.spyOn(seasonService, 'findOneActive').mockResolvedValue(season as never);
@@ -813,7 +813,7 @@ describe('UserSubmissionProvider', () => {
     });
 
     it('refuses a new submission to a competition the season does not run, and saves nothing', async () => {
-      seasonRunning('poster,presentation');
+      seasonRunning('poster', 'presentation');
 
       await expect(
         provider.insertUserSubmission(OWNER, { submissionType: 'paper', season: SEASON.guid } as never)
@@ -822,15 +822,15 @@ describe('UserSubmissionProvider', () => {
     });
 
     it('takes a new submission to one it runs', async () => {
-      seasonRunning('poster,presentation');
+      seasonRunning('poster', 'presentation');
 
       await provider.insertUserSubmission(OWNER, { submissionType: 'poster', season: SEASON.guid } as never);
 
       expect(submissionRepo.save).toHaveBeenCalled();
     });
 
-    it('takes every competition when the season names none, as every season did before', async () => {
-      seasonRunning(null);
+    it('takes every competition when the season has no rows, as every season did before', async () => {
+      seasonRunning();
 
       await provider.insertUserSubmission(OWNER, { submissionType: 'cartography', season: SEASON.guid } as never);
 
