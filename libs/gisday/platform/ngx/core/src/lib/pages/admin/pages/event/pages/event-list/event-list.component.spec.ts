@@ -82,6 +82,35 @@ describe('EventListComponent', () => {
 
     expect(service.setActive).toHaveBeenCalledWith(['e-on', 'e-off'], true);
   });
+
+  // #3049. A search or filter that hides every session no longer reads as a season with none, and can be cleared.
+  describe('with nothing shown', () => {
+    const shown = (page: HTMLElement) => page.querySelectorAll('tr.selectable').length;
+
+    it('says the search hides every session, with a button that clears it', () => {
+      const { fixture, page } = open();
+
+      fixture.componentInstance.search.setValue('no such session');
+      fixture.detectChanges();
+
+      expect(page.textContent).toContain('No sessions match the search or filters.');
+      expect(page.textContent).not.toContain('There are no events for the selected season.');
+
+      (page.querySelector('button.clear-filters') as HTMLButtonElement).click();
+      fixture.detectChanges();
+
+      expect(fixture.componentInstance.search.value).toBe('');
+      expect(shown(page)).toBe(2);
+    });
+
+    it('still says a season with no sessions has none, with nothing to clear', () => {
+      const { page } = open([]);
+
+      expect(page.textContent).toContain('There are no events for the selected season.');
+      expect(page.textContent).not.toContain('No sessions match');
+      expect(page.querySelector('button.clear-filters')).toBeNull();
+    });
+  });
 });
 
 /**
@@ -139,6 +168,33 @@ describe('EventListComponent on gisday.tamu.edu', () => {
     fixture.componentInstance.organizations.setValue('all');
 
     expect(names().join('|')).toContain('Coffee & Networking');
+  });
+
+  // #3049. Every session of the season was another organization's, so the switch hid them all, and the list said the
+  // season had none.
+  it('says the switch hides every session, rather than that the season has none', () => {
+    TestBed.configureTestingModule({
+      imports: [EventListComponent],
+      providers: [
+        provideRouter([]),
+        { provide: GISDAY_SITE, useValue: GISDAY_SITES.tamu },
+        {
+          provide: EventService,
+          useValue: { getEntities: () => of([events[1]]), getEntitiesForActiveSeason: () => of([events[1]]), getEntitiesForSeason: () => of([events[1]]) }
+        },
+        { provide: SeasonService, useValue: { seasons$: of([]), activeSeason$: of(null) } },
+        { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
+        { provide: ModalService, useValue: {} },
+        { provide: NotificationService, useValue: { toast: jest.fn() } }
+      ]
+    });
+
+    const fixture = TestBed.createComponent(EventListComponent);
+    fixture.detectChanges();
+    const text = (fixture.nativeElement as HTMLElement).textContent;
+
+    expect(text).toContain('No sessions match the search or filters.');
+    expect(text).not.toContain('There are no events for the selected season.');
   });
 
   it("lists every organization's sessions on txgisday.org, with no switch", () => {

@@ -59,6 +59,14 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
   public searchCounts$: Observable<{ shown: number; total: number }>;
 
   /**
+   * Why the list shows no rows (#3049): 'none' when the season has none, 'hidden' when it has some and the search or the
+   * page's filters hide every one, so a page does not say the season has none while a filter is on. null while it shows rows.
+   */
+  public emptyBecause$: Observable<'none' | 'hidden' | null>;
+  /** Whether the search or any of the page's filters is changed from where it starts, so clearFilters() would change the list. */
+  public filtersInUse$: Observable<boolean>;
+
+  /**
    * The page's filters, by name: its search, and any filter of its own a page adds (#2942). They are kept in the
    * list's own history entry, so going back to the list from a details page (Escape there, or the browser's Back)
    * shows it as it was left, while opening the list afresh starts with none. The season is in the address already.
@@ -156,13 +164,17 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
         const fields = this.searchFields;
         const shown = fields && all ? all.filter((entity) => matchesText(fields(entity), this.search.value)) : all;
 
-        return { all, shown };
+        const inUse = Object.values(this.listFilters()).some((control) => control.value !== control.defaultValue);
+
+        return { listed: listed as Array<Partial<T>>, all, shown, inUse };
       }),
       shareReplay(1)
     );
 
     this.entitiesForActiveSeasonOrForSeasonGuid$ = searched$.pipe(map(({ shown }) => shown));
     this.searchCounts$ = searched$.pipe(map(({ all, shown }) => ({ shown: shown?.length ?? 0, total: all?.length ?? 0 })));
+    this.emptyBecause$ = searched$.pipe(map(({ listed, shown }) => (shown?.length ? null : listed?.length ? 'hidden' : 'none')));
+    this.filtersInUse$ = searched$.pipe(map(({ inUse }) => inUse));
 
     // A row the search hides cannot stay selected, or an action on "the selected rows" would act on rows not shown.
     this.search.valueChanges.pipe(takeUntilDestroyed(this.listDestroyRef)).subscribe(() => this._selectRow$.next(null));
@@ -194,6 +206,13 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
       // so acting on "the selected events" read none (#2092).
       shareReplay(1)
     );
+  }
+
+  /** Puts the search and every filter of the page back where they start, for a list they leave empty (#3049). */
+  public clearFilters() {
+    for (const control of Object.values(this.listFilters())) {
+      control.reset();
+    }
   }
 
   public setSeason(seasonGuid: string) {
