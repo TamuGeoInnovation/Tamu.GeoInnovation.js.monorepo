@@ -6,6 +6,7 @@ import { Observable, filter, map, switchMap, take } from 'rxjs';
 import { Tag } from '@tamu-gisc/gisday/platform/data-api';
 import { SeasonService, TagService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { serverMessage } from '../../../../../utils/server-message';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
@@ -83,7 +84,7 @@ export class TagAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'delete-tag-error',
           title: 'Delete Tag',
-          message: `Error deleting tag: ${err.status}`
+          message: serverMessage(err, `Error deleting tag: ${err.status}`)
         });
       }
     });
@@ -106,7 +107,7 @@ export class TagAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'update-tag-error',
           title: 'Update Tag',
-          message: `Error updating tag: ${err.status}`
+          message: serverMessage(err, `Error updating tag: ${err.status}`)
         });
       }
     });
@@ -129,7 +130,7 @@ export class TagAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'create-tag-error',
           title: 'Create Tag',
-          message: `Error creating tag: ${err.status}`
+          message: serverMessage(err, `Error creating tag: ${err.status}`)
         });
       }
     });

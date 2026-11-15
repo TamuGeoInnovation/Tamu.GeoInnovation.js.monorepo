@@ -7,6 +7,7 @@ import { Observable, filter, map, of, shareReplay, switchMap, take } from 'rxjs'
 import { Organization, Season } from '@tamu-gisc/gisday/platform/data-api';
 import { AssetsService, OrganizationService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { serverMessage } from '../../../../../utils/server-message';
 
 import { formToFormData } from '../../../../../utils/form-to-form-data';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -21,7 +22,15 @@ import { injectBackToList } from '../../../admin-details-page';
   selector: 'tamu-gisc-organization-add-edit-form',
   templateUrl: './organization-add-edit-form.component.html',
   styleUrls: ['./organization-add-edit-form.component.scss'],
-  imports: [ImagePreviewComponent, FormsModule, ReactiveFormsModule, TextboxComponent, FileComponent, ButtonComponent, AsyncPipe]
+  imports: [
+    ImagePreviewComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    TextboxComponent,
+    FileComponent,
+    ButtonComponent,
+    AsyncPipe
+  ]
 })
 export class OrganizationAddEditFormComponent implements OnInit {
   private readonly fb = inject(UntypedFormBuilder);
@@ -63,7 +72,6 @@ export class OrganizationAddEditFormComponent implements OnInit {
       switchMap((guid) => this.os.getEntity(guid)),
       shareReplay()
     );
-
 
     // The chosen logo, else the saved one, else nothing (#2569); drawn by tamu-gisc-image-preview, never a broken image.
     this.logoUrl$ = uploadPreviewUrl(
@@ -111,7 +119,7 @@ export class OrganizationAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'org-delete-failed',
           title: 'Delete organization',
-          message: `Error deleting organization: ${err.status}`
+          message: serverMessage(err, `Error deleting organization: ${err.status}`)
         });
       }
     });
@@ -135,7 +143,7 @@ export class OrganizationAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'org-update-failed',
           title: 'Update organization',
-          message: `Error updating organization: ${err.status}`
+          message: serverMessage(err, `Error updating organization: ${err.status}`)
         });
       }
     });
@@ -158,7 +166,7 @@ export class OrganizationAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'org-create-failed',
           title: 'Create organization',
-          message: `Error creating organization: ${err.status}`
+          message: serverMessage(err, `Error creating organization: ${err.status}`)
         });
       }
     });
