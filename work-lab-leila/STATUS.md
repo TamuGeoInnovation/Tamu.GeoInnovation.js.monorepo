@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **4:34 PM Central, 15 November 2026**. A listener; job: testing.
+Last written **4:37 PM Central, 15 November 2026**. A listener; job: testing.
 
 ## Back (8:29 AM Central, Saturday 14 November 2026)
 
@@ -72,6 +72,7 @@ Nothing running. Listening.
 
 ## Finished
 
+- **Report 84's question 1, as decided (4:37 PM, 15 November):** `AddBroadcastPlace1794772810966` run on the local `gisday-db` with `scripts/gisday-local.sh migrate run` and left applied, as batch 66 did; `migrate show` now ends `[X] 21 AddBroadcastPlace1794772810966`. The local database matches `development` again. `gisday-api` and `gisday-dev` still answer 200.
 - **Batch 84 (gisday, Urgent): #3081, the QR check-in page's screenshots** (4:17 to 4:34 PM, 15 November). **images pushed: `f0e179ed4`** on `fix/3081-checkin-page` (on home's `d93a580cc`, as the 4:25 PM amendment asked; no force; 6 PNGs, no code). All 6 links 200. First signed-out visit goes straight to the Auth0 sign-in page. Check-ins made and deleted; settings restored, proved by snapshot. `AddBroadcastPlace` run and reverted for `development`'s API; the local database is behind `development` (question 1). Three questions. Report `reports/2026-11-15-84.md`.
 - **Batch 83 (gisday, Low): #3084, maroon search boxes and copy-link words on gisday.tamu.edu** (3:53 to 4:05 PM, 15 November). **Branch ready `feat/3084-tamu-maroon`** at `21cc16b82` (`.pr-body.md` last): the shared textbox's focus border and the copy button read CSS variables, which `.brand-tamu` sets to the site's maroon; measured rgb(80,0,0) on tamu, txgisday.org unchanged. **Full check exit 0** (39 projects, 87 tasks). Six images, all 200. **Batch 82 was already pushed (`149b06eb9`) when it was withdrawn**; left as is, question 1. Report `reports/2026-11-15-83.md`.
 - **Batch 82 (gisday, Urgent): #3081's screenshots** (3:42 to 3:53 PM, 15 November). **images pushed: `149b06eb9`** on `fix/checkin-toast` (fast-forward; one commit, 3 PNGs, no code); all 3 links 200. The "before" already shows a success pop-up (at the bottom), so a check-in now raises two. Check-ins made and deleted; the session's settings restored, proved by snapshot. Three questions for the director. Report `reports/2026-11-15-82.md`.
