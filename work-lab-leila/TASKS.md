@@ -73,6 +73,17 @@ Commit to `docs/screenshots/2948-season-competition-types/` on that branch, link
 Commit each to `docs/screenshots/<issue>-<slug>/` on its branch, link from its release note, push (fast-forward, no
 force), and give each PR body's image section in your report. Report each branch as soon as it is done.
 
+## Batch 70 (gisday: #3026 fixed, the submissions table scrolls inside itself; 15 November 2026, from `work (gisday)`) (Low) - **after 67, before 68**
+
+**Decided (the maintainer):** report 65: 1(b) hold your screenshot commit, 2(a) the table scrolls sideways inside its own
+box, as PR 3014's dashboards do (batch 63), plus a unit test that the columns' minimum widths are honoured without
+clipping the first columns. Report 66: 1(a) and 2(a), PR for #3037 opens as pushed.
+
+On `fix/3026-submissions-table-fit-pr` (PR 3030, at `3b509fe21` on the fork): make the change, with the test red first,
+re-capture the "after" at 1280 and 1024 px (the select checkbox and Name in view, nothing breaking inside a word), drop or
+replace `ce0c0811d`'s after images, run the bug-fix check, and push once (fast-forward, no force). Give the PR body's
+image section in your report.
+
 ## Batch 68 (gisday: screenshots for #3034, Admin, Events' "Only sessions with no tags"; 15 November 2026, from `work (gisday)`) (Low) - **after 67, before 66**
 
 Home built #3034 on `feat/3034-untagged-sessions` on the fork (`89b913b15`; **its last commit is `.pr-body.md`, leave it
