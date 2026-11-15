@@ -14,6 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
+- **Batch 57 (gisday: #3032 High, #3033, #3034)**: started 8:54 AM Central, 15 November; #3032 first. #3024 (batch 55) is paused, code written, uncommitted.
 - **Batch 55 (gisday: #3026, #3024)**: #3026 branch ready (`fix/3026-submissions-table-fit` at `a4ef225fe`); **#3024 started** (PR 3014 merged), branch `fix/3024-unread-by-site`.
 
 ## Finished
