@@ -62,6 +62,14 @@ only, and revert it afterwards so your stack matches `development` again. On you
 Commit to `docs/screenshots/2948-season-competition-types/` on that branch, link them from its release note, push
 (fast-forward, no force), and give the PR body's image section in your report.
 
+## Batch 66 (gisday: #3037, one Competition settings panel with one Save; 15 November 2026, from `work (gisday)`) (Low) - **after 65**
+
+[#3037](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3037). You built the deadlines panel
+(#2969, #3012); #2948 (merged, PR 3016) added a separate "Competitions in <year>" section with its own Save above it.
+Combine them into one collapsible **Competition settings** panel, as the issue says, from the latest `development`.
+Tests red first; the bug-fix check; before/after at 1280 px with submissions masked; a release note. Branch
+`feat/3037-competition-settings`. Push to the fork and report "branch ready".
+
 ## Batch 65 (gisday: screenshots for #3026, the Research Competitions table at 1280 px; 15 November 2026, from `work (gisday)`) (Low) - **after 64**
 
 Home built #3026 on `fix/3026-submissions-table-fit-pr` on the fork, at `3b509fe21` (PR 3030): the Files count column is
