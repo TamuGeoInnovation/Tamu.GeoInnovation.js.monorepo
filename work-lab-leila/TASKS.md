@@ -51,6 +51,17 @@ test account's):
 Commit them to `docs/screenshots/3006-check-in-dashboard/` on that branch, link them from the release notes' entries,
 push (fast-forward, no force), and give the PR body's image section in your report.
 
+## Batch 61 (gisday: screenshots for #2948, the competitions a season runs; 15 November 2026, from `work (gisday)`) (Medium) - **after 60, before 59**
+
+Home built #2948 on `feat/2948-season-competition-types-pr` on the fork, at `ddb9fdd66` (PR 3016). Its "Has before/after
+images" check is red. It needs a migration (`AddSeasonCompetitions1794746266725`): run it on your **local** database
+only, and revert it afterwards so your stack matches `development` again. On your signed-in local stack:
+- **Before** (on `development`): Admin, Seasons, a season's page; the submission form's competition choices.
+- **After** (on the branch): the season's page with its competitions section, one competition turned off and saved; the
+  submission form no longer offering it.
+Commit to `docs/screenshots/2948-season-competition-types/` on that branch, link them from its release note, push
+(fast-forward, no force), and give the PR body's image section in your report.
+
 ## Batch 59 (gisday: #3012, make the collapsed Submission deadlines panel visible; 15 November 2026, from `work (gisday)`) (Low)
 
 [#3012](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3012). Your #2969 panel (PR 2999, merged
