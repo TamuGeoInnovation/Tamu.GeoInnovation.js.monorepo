@@ -14,6 +14,8 @@
       <!-- This site lists only its own organization's sessions; the database holds every organization's (#2986). -->
       <tamu-gisc-checkbox label="Show every organization's sessions" (changed)="organizations.setValue($event ? 'all' : '')" [checked]="organizations.value === 'all'"></tamu-gisc-checkbox>
       }
+      <!-- The sessions with no tags, to give them some (#3034). -->
+      <tamu-gisc-checkbox label="Only sessions with no tags" (changed)="tagged.setValue($event ? 'none' : '')" [checked]="tagged.value === 'none'"></tamu-gisc-checkbox>
 
       @if (eventsByDay$ | async; as days) { @if (days.length > 0) {
       <!-- One table per day, in the same dated card the public Sessions page uses for each day, so the
