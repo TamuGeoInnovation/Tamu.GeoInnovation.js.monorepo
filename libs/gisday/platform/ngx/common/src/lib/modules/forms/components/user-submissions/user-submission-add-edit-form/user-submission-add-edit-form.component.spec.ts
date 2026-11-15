@@ -151,7 +151,8 @@ describe('UserSubmissionAddEditFormComponent, the competitions it offers', () =>
         },
         { provide: SubmissionTypeService, useValue: { getEntities: () => of([]) } },
         { provide: SeasonService, useValue: { getActiveSeason: () => of({ guid: 'season', ...season }) } },
-        { provide: NotificationService, useValue: { toast: jest.fn() } }
+        { provide: NotificationService, useValue: { toast: jest.fn() } },
+        { provide: AuthService, useValue: { user$: of({ given_name: 'Ana', family_name: 'Ruiz', email: 'ana@example.edu' }) } }
       ]
     });
 
