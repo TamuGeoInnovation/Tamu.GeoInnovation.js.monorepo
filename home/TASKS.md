@@ -16,6 +16,20 @@ are in `libs/gisday/platform/data-api/src/lib/check-in/`.
   check-ins on the local site); a release note. Push to the fork and report "branch ready". Branch
   `feat/3006-check-in-dashboard`.
 
+## Batch 57 (gisday: #3032, #3033 and #3034, which sessions use a broadcast or a tag, and the untagged ones; 15 November 2026, from `work (gisday)`) (**High** for #3032) - **do this now; #3024 can wait**
+
+1. **[#3032](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3032) (High)**: a broadcast's
+   admin edit page lists the sessions that use it.
+2. **[#3033](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3033) (Medium)**: a tag's admin
+   edit page lists the sessions that have it. **Build one "sessions that use this" component** for both pages, in the
+   shared admin library, exported from its index.
+3. **[#3034](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3034) (Low)**: Admin, Events'
+   tag filter gets a "No tags" choice, as the issue proposes.
+
+One branch per issue (`feat/3032-broadcast-sessions`, then `feat/3033-tag-sessions` stacked on it, and
+`feat/3034-untagged-sessions`), each: tests red first, the bug-fix check, a release note. The lab takes the screenshots.
+Push each to the fork and report "branch ready" per branch, #3032 first, as soon as it's ready.
+
 ## Batch 56 (gisday: #3027, a Sessions page search can be linked to; 15 November 2026, from `work (gisday)`) (Medium) - **do this first, before 55**
 
 [#3027](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3027). The Presenters page
