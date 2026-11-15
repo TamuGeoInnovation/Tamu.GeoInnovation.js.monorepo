@@ -13,21 +13,22 @@ import { Repository } from 'typeorm';
 
 import { isOwnerOrPermitted } from '@tamu-gisc/common/nest/auth';
 import {
-  GisdaySite,
-  REVIEW_EMAIL_KINDS,
-  ReminderSkipReason,
-  ReviewEmailKind,
+  emailHtml,
   fillReviewEmail,
   gisdaySite,
+  GisdaySite,
   reminderEmailKind,
+  ReminderSkipReason,
   reminderSkipReason,
+  REVIEW_EMAIL_KINDS,
+  ReviewEmailKind,
   reviewEmailKind,
   reviewEmailKindLabel,
   reviewEmailKindSubject,
+  ReviewEmailSession,
   reviewEmailSubject,
   reviewEmailTemplate,
-  reviewEmailValues,
-  ReviewEmailSession
+  reviewEmailValues
 } from '@tamu-gisc/gisday/common';
 import {
   closedAt,
@@ -467,7 +468,10 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     const result: RemindManyResult = { sent: [], skipped: [], failed: [] };
 
     for (const guid of [...new Set(submissionGuids)]) {
-      const submission = await this.userSubmissionRepo.findOne({ where: { guid }, relations: { season: true, files: true } });
+      const submission = await this.userSubmissionRepo.findOne({
+        where: { guid },
+        relations: { season: true, files: true }
+      });
 
       if (!submission) {
         result.failed.push({ title: guid, reason: 'it no longer exists' });
@@ -515,7 +519,10 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     const skipped: Array<SkippedSubmission> = [];
 
     for (const guid of [...new Set(submissionGuids)]) {
-      const submission = await this.userSubmissionRepo.findOne({ where: { guid }, relations: { season: true, files: true } });
+      const submission = await this.userSubmissionRepo.findOne({
+        where: { guid },
+        relations: { season: true, files: true }
+      });
 
       if (!submission) {
         continue;
@@ -573,13 +580,17 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     recipients: { to: string; cc: Array<string> },
     sessions: Array<ReviewEmailSession>
   ) {
+    const text = fillReviewEmail(template ?? reviewEmailTemplate(kind), reviewEmailValues(submission, site, sessions));
+
     return this.contactService.sendMessage(
       {
         to: recipients.to,
         cc: recipients.cc.join(','),
         subject: reviewEmailKindSubject(kind, site.name),
         from: senderAs(site.name, process.env.MAILROOM_FROM),
-        text: fillReviewEmail(template ?? reviewEmailTemplate(kind), reviewEmailValues(submission, site, sessions)),
+        text,
+        // The Markdown as HTML, beside the plain text (#3044).
+        html: emailHtml(text),
         replyTo: process.env.MAILROOM_TO
       },
       true
@@ -693,7 +704,11 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
    * Deletes each of the named submissions, with their files, as `deleteUserSubmission` deletes one (#2992). Only a
    * reviewer may delete several; every id must be a submission's.
    */
-  public async deleteUserSubmissions(submissionGuids: Array<string>, accountGuid: string, requestorPermissions: Array<string> = []) {
+  public async deleteUserSubmissions(
+    submissionGuids: Array<string>,
+    accountGuid: string,
+    requestorPermissions: Array<string> = []
+  ) {
     if (!requestorPermissions.includes('delete:competitions')) {
       throw new ForbiddenException();
     }

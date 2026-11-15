@@ -358,6 +358,8 @@ describe('UserSubmissionProvider', () => {
       expect(email.text).toContain('under Presentation files');
       expect(email.text).toContain('5. Complete your presenter profile.');
       expect(email.text).toContain('https://gisday.tamu.edu/sessions');
+      // #3044: the same email as HTML, from its Markdown, beside the plain text.
+      expect(email.html).toContain('<p>Howdy Ana,');
       expect(email.text).toContain('Additional notes: Booth 4.');
       expect(email.text).not.toMatch(/TxGIS|txgisday|provide a link/);
     });
@@ -462,15 +464,13 @@ describe('UserSubmissionProvider', () => {
       });
 
       it('sends the links in the email itself, from the season of the submission', async () => {
-        jest
-          .spyOn(submissionRepo, 'findOne')
-          .mockResolvedValue(
-            submission({
-              submissionType: 'poster',
-              season: { guid: 'season-2026' },
-              participants: [{ email: 'a@tamu.edu' }]
-            })
-          );
+        jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(
+          submission({
+            submissionType: 'poster',
+            season: { guid: 'season-2026' },
+            participants: [{ email: 'a@tamu.edu' }]
+          })
+        );
 
         await provider.updateUserSubmission('sub-1', 'r', { acceptance: true }, REVIEWER_PERMS, 'gisday.tamu.edu');
         // A single review sends without waiting, after reading the season's sessions.
@@ -870,7 +870,9 @@ describe('UserSubmissionProvider', () => {
       expect(preview.groups[0].subject).toBe('Final reminder: upload your final poster for Texas A&M GIS Day');
       expect(preview.groups[1].template).toContain('This is your final reminder.');
       expect(preview.groups[1].template).toContain('your submission will be removed from the competition');
-      expect(preview.groups[0].example).toEqual(expect.objectContaining({ title: 'Flood maps', to: 'ana@tamu.edu', cc: 'ben@tamu.edu' }));
+      expect(preview.groups[0].example).toEqual(
+        expect.objectContaining({ title: 'Flood maps', to: 'ana@tamu.edu', cc: 'ben@tamu.edu' })
+      );
       expect(preview.skipped).toEqual([HAS_FILE]);
       expect(contactService.sendMessage).not.toHaveBeenCalled();
       expect(submissionRepo.update).not.toHaveBeenCalled();
@@ -894,14 +896,21 @@ describe('UserSubmissionProvider', () => {
       expect(sends()[1][0].text).toMatch(/^Hi Di, "Bike lanes" needs its slides by /);
       expect(submissionRepo.update).not.toHaveBeenCalled();
       // Its files are asked for: a submission is not loaded with them otherwise.
-      expect(submissionRepo.findOne).toHaveBeenCalledWith(expect.objectContaining({ relations: { season: true, files: true } }));
+      expect(submissionRepo.findOne).toHaveBeenCalledWith(
+        expect.objectContaining({ relations: { season: true, files: true } })
+      );
     });
 
     it('previews exactly the email that is then sent when the text is left as it is', async () => {
       const preview = await provider.previewReminders([C], REVIEWER_PERMS, 'gisday.tamu.edu');
       const [group] = preview.groups;
 
-      await provider.remindUserSubmissions([C], { templates: { [group.kind]: group.template } }, REVIEWER_PERMS, 'gisday.tamu.edu');
+      await provider.remindUserSubmissions(
+        [C],
+        { templates: { [group.kind]: group.template } },
+        REVIEWER_PERMS,
+        'gisday.tamu.edu'
+      );
 
       expect(sends()[0][0].text).toBe(fillReviewEmail(group.template, group.example.values));
     });
@@ -927,7 +936,11 @@ describe('UserSubmissionProvider', () => {
 
       const result = await provider.remindUserSubmissions([A, C], {}, REVIEWER_PERMS, 'gisday.tamu.edu');
 
-      expect(result).toEqual({ sent: ['Bike lanes'], skipped: [], failed: [{ title: 'Flood maps', reason: 'the email could not be sent' }] });
+      expect(result).toEqual({
+        sent: ['Bike lanes'],
+        skipped: [],
+        failed: [{ title: 'Flood maps', reason: 'the email could not be sent' }]
+      });
     });
 
     it('is for reviewers only, and checks what it is given', async () => {
@@ -935,9 +948,9 @@ describe('UserSubmissionProvider', () => {
       await expect(provider.remindUserSubmissions([A], {}, [])).rejects.toThrow(ForbiddenException);
       await expect(provider.remindUserSubmissions([], {}, REVIEWER_PERMS)).rejects.toThrow(BadRequestException);
       await expect(provider.remindUserSubmissions(['1; drop'], {}, REVIEWER_PERMS)).rejects.toThrow(BadRequestException);
-      await expect(provider.remindUserSubmissions([A], { templates: { 'poster-reminder': 5 } } as never, REVIEWER_PERMS)).rejects.toThrow(
-        BadRequestException
-      );
+      await expect(
+        provider.remindUserSubmissions([A], { templates: { 'poster-reminder': 5 } } as never, REVIEWER_PERMS)
+      ).rejects.toThrow(BadRequestException);
     });
   });
 
@@ -1067,7 +1080,10 @@ describe('UserSubmissionProvider', () => {
         .spyOn(submissionRepo, 'findOne')
         .mockResolvedValue(submission({ submissionType: 'paper', season: seasonRunning('poster') }));
 
-      await provider.updateUserSubmission('sub-1', OWNER, { title: 'Revised', submissionType: 'paper' } as Partial<Submission>);
+      await provider.updateUserSubmission('sub-1', OWNER, {
+        title: 'Revised',
+        submissionType: 'paper'
+      } as Partial<Submission>);
 
       expect(written()).toEqual(expect.objectContaining({ title: 'Revised' }));
     });

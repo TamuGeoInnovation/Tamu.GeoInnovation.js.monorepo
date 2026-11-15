@@ -122,3 +122,41 @@ describe('ReviewEmailModalComponent, people not emailed', () => {
     expect(open([]).querySelector('.review-email__not-emailed')).toBeNull();
   });
 });
+
+/** #3044: the preview shows the Markdown formatted, as it will arrive. */
+describe('ReviewEmailModalComponent, Markdown', () => {
+  it('shows bold text bold in the preview, and HTML typed into the text as text', () => {
+    TestBed.configureTestingModule({
+      imports: [ReviewEmailModalComponent],
+      providers: [
+        {
+          provide: MODAL_DATA,
+          useValue: {
+            verb: 'Send profile email',
+            preview: of({
+              groups: [
+                {
+                  kind: 'profile',
+                  label: 'Presenter profile emails',
+                  count: 1,
+                  subject: 'S',
+                  template: 'Hi **{first name}** <b>raw</b>',
+                  example: { title: 'Ana Ruiz', to: 'ana@example.edu', cc: '', values: { '{first name}': 'Ana' } }
+                }
+              ]
+            })
+          }
+        },
+        { provide: ModalRefService, useValue: { close: jest.fn() } }
+      ]
+    });
+
+    const fixture = TestBed.createComponent(ReviewEmailModalComponent);
+    fixture.detectChanges();
+    const preview = (fixture.nativeElement as HTMLElement).querySelector('.review-email__preview');
+
+    expect(preview.querySelector('strong')?.textContent).toBe('Ana');
+    expect(preview.querySelector('b')).toBeNull();
+    expect(preview.textContent).toContain('<b>raw</b>');
+  });
+});

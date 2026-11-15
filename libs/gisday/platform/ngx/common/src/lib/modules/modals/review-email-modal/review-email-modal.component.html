@@ -16,7 +16,7 @@
     </ul>
   </div>
   }
-  <p>Nothing is sent until you choose Send. Each person gets their own copy, with these filled in: {{ placeholders }}.</p>
+  <p>Nothing is sent until you choose Send. Each person gets their own copy, with these filled in: {{ placeholders }}. The text may use Markdown: **bold**, *italic*, [link text](https://...) and lists starting with - .</p>
 
   @for (group of preview.groups; track group.kind) {
   <section class="review-email__group">
@@ -32,7 +32,7 @@
     @if (editableSubject) {
     <p class="review-email__meta"><strong>Subject:</strong> {{ exampleSubject(group.kind, group.example.values) }}</p>
     }
-    <pre class="review-email__preview">{{ example(group.kind, group.example.values) }}</pre>
+    <div class="review-email__preview" [innerHTML]="exampleHtml(group.kind, group.example.values)"></div>
   </section>
   }
 
