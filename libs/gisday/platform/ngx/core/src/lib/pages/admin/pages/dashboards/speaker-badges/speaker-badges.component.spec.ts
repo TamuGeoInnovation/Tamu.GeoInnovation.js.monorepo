@@ -257,4 +257,26 @@ describe('SpeakerBadgesComponent', () => {
     expect(lastNames(root)).toEqual(['lee', 'Kim']);
     expect(csvLastNames(fixture.componentInstance.csv())).toEqual(['lee', 'Kim']);
   });
+
+  it('has the X that clears the search, and pressing it lists every badge again (#3051)', async () => {
+    const fixture = await open();
+    const root = fixture.nativeElement as HTMLElement;
+    const clearButton = () => root.querySelector('.badges-search button.textbox-clear') as HTMLButtonElement;
+    expect(clearButton()).toBeNull();
+
+    const input = root.querySelector('.badges-search input') as HTMLInputElement;
+    input.value = 'texas';
+    input.dispatchEvent(new Event('input'));
+    await settle(fixture);
+    expect(lastNames(root)).toEqual(['Kim', 'lee']);
+    expect(clearButton()?.getAttribute('aria-label')).toBe('Clear the search');
+
+    clearButton().click();
+    await settle(fixture);
+
+    expect(fixture.componentInstance.search.value).toBe('');
+    expect(input.value).toBe('');
+    expect(lastNames(root)).toEqual(['Kim', 'lee', 'Young']);
+    expect(clearButton()).toBeNull();
+  });
 });
