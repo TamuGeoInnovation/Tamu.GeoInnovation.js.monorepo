@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **9:45 PM Central, 14 November 2026**. A listener; job: testing.
+Last written **9:31 PM Central, 14 November 2026**. A listener; job: testing.
 
 ## Back (8:29 AM Central, Saturday 14 November 2026)
 
@@ -72,7 +72,7 @@ Nothing running. Listening. Batch 57 found #2969's expanded panel overflowing at
 
 ## Finished
 
-- **Batch 57 (gisday, Low): #2969's screenshots, and #2965's** (9:22 to 9:45 PM, 14 November). No consent screen in 7 sign-ins; nothing accepted. **`fix/2969-deadlines-panel` at `7b1723e21`** on the fork (PR 2999's head): four images and the release note's table; the PR body's image section is in the report. **`feat/2965-save-returns-to-list` at `71aaede8f`**: four images, release note and `.pr-body.md` updated. **#2969's expanded panel overflows at 1280 px** (Clear and the files column cut off). Two questions. Report `reports/2026-11-14-57.md`.
+- **Batch 57 (gisday, Low): #2969's screenshots, and #2965's** (9:22 to 9:31 PM, 14 November). No consent screen in 7 sign-ins; nothing accepted. **`fix/2969-deadlines-panel` at `7b1723e21`** on the fork (PR 2999's head): four images and the release note's table; the PR body's image section is in the report. **`feat/2965-save-returns-to-list` at `71aaede8f`**: four images, release note and `.pr-body.md` updated. **#2969's expanded panel overflows at 1280 px** (Clear and the files column cut off). Two questions. Report `reports/2026-11-14-57.md`.
 - **Batch 56 (gisday, Low): #2966, a refused upload shows the server's reason** (9:00 to 9:22 PM, 14 November). **Branch ready `fix/2966-upload-reason`** at `385b81c43` on the fork: `serverMessage()` in ngx/common `utils/` (4xx only), used by every admin form, the submission form and files, and the speaker's own page; `closedReason` folded in. 3 tests red first, then green. **Bug-fix check exit 0** (3 projects, 9 tasks). Before/after screenshots (no consent screen met). Four questions. Report `reports/2026-11-14-56.md`.
 - **Batch 55 (gisday, Low): #2965, Save and Delete return to the list with its season** (8:45 to 9:00 PM, 14 November). **Branch ready, screenshots pending: `feat/2965-save-returns-to-list`** at `b3ab433d4` on the fork: a shared `AdminDetailsPage` token and `injectBackToList()` in ngx/common; the 11 admin forms and the review page return through `backToList()`. 5 tests red first, then green. **Bug-fix check exit 0** (3 projects, 9 tasks). Screenshots stopped at the consent screen, nothing accepted. Two questions. Report `reports/2026-11-14-55.md`.
 - **Batch 54 (gisday, Low): #2964, a loaded value is not a change** (8:18 to 8:45 PM, 14 November). **Branch ready `fix/2964-loaded-not-changed`** at `2208ab566` on the fork: the shared controls in `libs/ui-kits/ngx/forms` no longer report a value the form writes; #2942's per-form `markAsPristine` resets removed. Tests red first, then green. **Full check exit 0** (39 projects, 87 tasks). No visible change (`no-visible-change`). Two questions. Report `reports/2026-11-14-54.md`.
