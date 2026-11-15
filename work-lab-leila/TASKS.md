@@ -8306,3 +8306,11 @@ profile, the code in the address), 390 px, the **first screen only, not cropped 
 Hover the pop-up to keep it (they close by themselves). Write to `docs/screenshots/3081-checkin-toast/`; undo every
 check-in and setting as in report 80. One commit, `docs(screenshots): #3081's before and after`, on the branch, pushed to
 the fork. Report "images pushed: <sha>", then go back to 81.
+
+## Batch 83 (gisday: #3084, maroon search boxes and copy-link words on gisday.tamu.edu; 15 November 2026, from `work (gisday)`) (Low) - **after 81**
+
+[#3084](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3084), as the issue says: on the Texas A&M site only, the search boxes get a maroon outline and the shared copy
+field's copy-link words go maroon, using the maroon that site already applies (find where; say where you looked). The
+other sites keep their look. Branch `feat/3084-tamu-maroon` from the latest `development`; the check with
+`CHECK_MEMORY=24g CHECK_PARALLEL=3`; before/after screenshots on gisday.tamu.edu and one other site unchanged; a release
+note. Report "branch ready".
