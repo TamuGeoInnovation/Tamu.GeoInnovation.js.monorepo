@@ -90,6 +90,22 @@ describe('siteSessionPlaces', () => {
   it("is none, not every place, when a season has no place by Texas A&M's name", () => {
     expect(siteSessionPlaces(gisdaySite('tamu'), places.slice(1))).toEqual([]);
   });
+
+  /**
+   * #3057. In 2023 Texas A&M's sessions were held under a place named "Texas A&M University", before it became "Texas
+   * A&M University GIS Day(s)", so gisday.tamu.edu hid all 20 of them. Both names are Texas A&M's; Texas A&M
+   * University-Corpus Christi's places, which begin with the same words, are not.
+   */
+  it("is 2023's Texas A&M place too, under its older name, and not Corpus Christi's (#3057)", () => {
+    const places2023 = [
+      { guid: 'tamu-2023', name: 'Texas A&M University' },
+      { guid: 'tamucc-2023', name: 'Texas A&M University Corpus Christi | Conrad Blucher Institute' },
+      { guid: 'tamucc', name: 'Texas A&M University-Corpus Christi' },
+      { guid: 'atx-2023', name: 'ATX GIS Day' }
+    ];
+
+    expect(siteSessionPlaces(gisdaySite('tamu'), places2023)).toEqual(['tamu-2023']);
+  });
 });
 
 describe('SiteHasPipe', () => {

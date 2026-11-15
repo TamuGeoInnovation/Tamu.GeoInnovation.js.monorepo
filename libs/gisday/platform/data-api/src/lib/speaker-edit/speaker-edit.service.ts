@@ -9,6 +9,7 @@ import { In, MoreThan, Repository } from 'typeorm';
 import {
   PROFILE_EDIT_LINK_PREVIEW,
   PROFILE_EMAIL_KIND,
+  emailHtml,
   fillProfileEmail,
   gisdaySite,
   participantEmails,
@@ -265,6 +266,16 @@ export class SpeakerEditService {
       if ((await this.links.count({ where: { speaker: { guid: speaker.guid }, created: MoreThan(since) } })) > 0) {
         part.skipped.push({ name, reason: `already emailed a link in the last ${REPEAT_SEND_MINUTES} minutes` });
         return part;
+      }
+
+      // Never the same email twice in a row (#3065): on 15 November 2026 one send reached the API twice, 30 seconds
+      // apart, and all 48 finalists got it twice. Every pod shares the links table, so a repeat landing on the other
+      // pod is caught too. Each link is recorded before its email goes, so two runs racing skip each other's.
+      const since = new Date(Date.now() - REPEAT_SEND_MINUTES * 60 * 1000);
+
+      if ((await this.links.count({ where: { speaker: { guid: speaker.guid }, created: MoreThan(since) } })) > 0) {
+        result.skipped.push({ name, reason: `already emailed a link in the last ${REPEAT_SEND_MINUTES} minutes` });
+        continue;
       }
 
       try {
@@ -525,7 +536,9 @@ export class SpeakerEditService {
         from: senderAs(site.name, process.env.MAILROOM_FROM),
         replyTo: process.env.MAILROOM_TO,
         subject,
-        text
+        text,
+        // The Markdown as HTML, beside the plain text (#3044).
+        html: emailHtml(text)
       },
       true
     );

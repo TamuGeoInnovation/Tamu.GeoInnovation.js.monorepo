@@ -358,6 +358,8 @@ describe('UserSubmissionProvider', () => {
       expect(email.text).toContain('under Presentation files');
       expect(email.text).toContain('5. Complete your presenter profile.');
       expect(email.text).toContain('https://gisday.tamu.edu/sessions');
+      // #3044: the same email as HTML, from its Markdown, beside the plain text.
+      expect(email.html).toContain('<p>Howdy Ana,');
       expect(email.text).toContain('Additional notes: Booth 4.');
       expect(email.text).not.toMatch(/TxGIS|txgisday|provide a link/);
     });

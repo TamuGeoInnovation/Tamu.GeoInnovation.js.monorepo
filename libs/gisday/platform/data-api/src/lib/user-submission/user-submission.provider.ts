@@ -13,21 +13,22 @@ import { Repository } from 'typeorm';
 
 import { isOwnerOrPermitted } from '@tamu-gisc/common/nest/auth';
 import {
-  GisdaySite,
-  REVIEW_EMAIL_KINDS,
-  ReminderSkipReason,
-  ReviewEmailKind,
+  emailHtml,
   fillReviewEmail,
   gisdaySite,
+  GisdaySite,
   reminderEmailKind,
+  ReminderSkipReason,
   reminderSkipReason,
+  REVIEW_EMAIL_KINDS,
+  ReviewEmailKind,
   reviewEmailKind,
   reviewEmailKindLabel,
   reviewEmailKindSubject,
+  ReviewEmailSession,
   reviewEmailSubject,
   reviewEmailTemplate,
-  reviewEmailValues,
-  ReviewEmailSession
+  reviewEmailValues
 } from '@tamu-gisc/gisday/common';
 import {
   closedAt,
@@ -600,13 +601,17 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     recipients: { to: string; cc: Array<string> },
     sessions: Array<ReviewEmailSession>
   ) {
+    const text = fillReviewEmail(template ?? reviewEmailTemplate(kind), reviewEmailValues(submission, site, sessions));
+
     return this.contactService.sendMessage(
       {
         to: recipients.to,
         cc: recipients.cc.join(','),
         subject: reviewEmailKindSubject(kind, site.name),
         from: senderAs(site.name, process.env.MAILROOM_FROM),
-        text: fillReviewEmail(template ?? reviewEmailTemplate(kind), reviewEmailValues(submission, site, sessions)),
+        text,
+        // The Markdown as HTML, beside the plain text (#3044).
+        html: emailHtml(text),
         replyTo: process.env.MAILROOM_TO
       },
       true
