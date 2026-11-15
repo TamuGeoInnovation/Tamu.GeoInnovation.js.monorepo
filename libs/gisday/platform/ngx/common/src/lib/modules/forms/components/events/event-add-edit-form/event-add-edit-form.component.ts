@@ -32,6 +32,7 @@ import {
   BroadcastService
 } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { serverMessage } from '../../../../../utils/server-message';
 import { SeasonsDayTileComponent } from '../../seasons/seasons-day-tile/seasons-day-tile.component';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { DateTimePickerComponent } from '@tamu-gisc/ui-kits/ngx/forms/date-time-picker';
@@ -423,7 +424,7 @@ export class EventAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'event-delete-failed',
           title: 'Delete event',
-          message: `Error deleting event: ${err.status}`
+          message: serverMessage(err, `Error deleting event: ${err.status}`)
         });
       }
     });
@@ -446,7 +447,7 @@ export class EventAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'event-update-failed',
           title: 'Update Event',
-          message: `Error updating event: ${err.status}`
+          message: serverMessage(err, `Error updating event: ${err.status}`)
         });
       }
     });
@@ -469,7 +470,7 @@ export class EventAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'event-create-failed',
           title: 'Create event',
-          message: `Error creating event: ${err.status}`
+          message: serverMessage(err, `Error creating event: ${err.status}`)
         });
       }
     });

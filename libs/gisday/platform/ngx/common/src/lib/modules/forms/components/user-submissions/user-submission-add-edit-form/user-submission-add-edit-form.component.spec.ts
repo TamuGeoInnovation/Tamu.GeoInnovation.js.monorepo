@@ -1,6 +1,7 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 import { GISDAY_SITES } from '@tamu-gisc/gisday/common';
 import { SeasonService, SubmissionTypeService, UserSubmissionsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -130,5 +131,39 @@ describe('UserSubmissionAddEditFormComponent, on Texas A&M site', () => {
     expect(form.get('coAuthorEmails').value).toBe('ben@tamu.edu\ncy@tamu.edu');
     expect((form.get('participants') as unknown as { length: number }).length).toBe(1);
     entity.participants = [];
+  });
+
+  // Only a closed competition's 403 reached the student; any other refusal said "Please try again later" (#2966).
+  it("shows the API's reason when a submission is refused", () => {
+    const fixture = render('create');
+    createEntity.mockReturnValue(
+      throwError(
+        () =>
+          new HttpErrorResponse({
+            status: 400,
+            error: { statusCode: 400, message: ['title should not be empty', 'abstract should not be empty'] }
+          })
+      )
+    );
+
+    fixture.componentInstance.handleSubmission();
+
+    expect(toast).toHaveBeenCalledWith(
+      expect.objectContaining({ message: 'title should not be empty; abstract should not be empty' })
+    );
+  });
+
+  it("still shows the API's words when the competition has closed (#2934)", () => {
+    const fixture = render('create');
+    createEntity.mockReturnValue(
+      throwError(
+        () =>
+          new HttpErrorResponse({ status: 403, error: { statusCode: 403, message: 'Submissions closed on 1 November.' } })
+      )
+    );
+
+    fixture.componentInstance.handleSubmission();
+
+    expect(toast).toHaveBeenCalledWith(expect.objectContaining({ message: 'Submissions closed on 1 November.' }));
   });
 });
