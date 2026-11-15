@@ -8245,3 +8245,6 @@ data script in `6. GIS Day/data/` that sets each existing broadcast's place from
 session uses, dry run by default, **never run**. Branch `feat/3048-broadcast-organization` from the latest `development`.
 Tests red first; the bug-fix check; before/after screenshots; a release note. Report "branch ready".
 
+> **Decided (the maintainer, 15 November):** report 76's #3026 question is (c): keep PR 3030's scroll; drop
+> `fix/3026-columns-fit-1280` (no PR). Report 78: 1(a), filed as #3074 (Low), for after #3048; 2(a), accept it.
+
