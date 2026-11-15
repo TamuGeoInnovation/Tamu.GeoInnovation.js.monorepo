@@ -177,6 +177,13 @@ export class SeasonService extends BaseService<Season> {
       .pipe(tap(() => this._signal$.next()));
   }
 
+  /** Sets which research competitions the season runs (#2948): at least one; every one is stored as no rows. */
+  public setCompetitionTypes(guid: string, competitionTypes: Array<string>) {
+    return this.http1
+      .patch<{ competitionTypes: Array<string> }>(`${this.resource}/${guid}/competition-types`, { competitionTypes })
+      .pipe(tap(() => this._signal$.next()));
+  }
+
   public override deleteEntity(entityGuid: string) {
     return this.http1.delete<Partial<Season>>(`${this.resource}/${entityGuid}`).pipe(tap(() => this._signal$.next()));
   }

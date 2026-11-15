@@ -6,7 +6,7 @@ import { Repository, getMetadataArgsStorage } from 'typeorm';
 
 import { SUBMISSION_DEADLINE_FIELDS } from '@tamu-gisc/gisday/common';
 
-import { Season, SeasonDay } from '../entities/all.entity';
+import { Season, SeasonCompetition, SeasonDay } from '../entities/all.entity';
 import { SeasonService } from './season.service';
 
 /**
@@ -452,6 +452,54 @@ describe('SeasonService', () => {
           'cartographyFilesCloseAt'
         ])
       );
+    });
+  });
+
+  /** #2948: which research competitions a season runs, set from the competitions' admin page, one row each. */
+  describe('.setCompetitionTypes()', () => {
+    let manager: { delete: jest.Mock; save: jest.Mock; create: jest.Mock };
+
+    beforeEach(() => {
+      jest.spyOn(seasonRepo, 'findOne').mockResolvedValue({ guid: 'season-1' } as Season);
+      manager = {
+        delete: jest.fn().mockResolvedValue({ affected: 0 }),
+        save: jest.fn(async (rows) => rows),
+        create: jest.fn((_entity, row) => row)
+      };
+      (seasonRepo.manager.transaction as jest.Mock).mockImplementation(async (work) => work(manager));
+    });
+
+    it("replaces the season's rows with one per competition, in the admin page's order", async () => {
+      await expect(service.setCompetitionTypes('season-1', ['presentation', 'poster'])).resolves.toEqual({
+        competitionTypes: ['poster', 'presentation']
+      });
+      expect(manager.delete).toHaveBeenCalledWith(SeasonCompetition, { season: { guid: 'season-1' } });
+      expect(manager.save).toHaveBeenCalledWith([
+        { season: { guid: 'season-1' }, competitionType: 'poster' },
+        { season: { guid: 'season-1' }, competitionType: 'presentation' }
+      ]);
+    });
+
+    it('saves every competition as no rows, so a competition added later runs too', async () => {
+      await service.setCompetitionTypes('season-1', ['poster', 'presentation', 'paper', 'cartography']);
+
+      expect(manager.delete).toHaveBeenCalledWith(SeasonCompetition, { season: { guid: 'season-1' } });
+      expect(manager.save).not.toHaveBeenCalled();
+    });
+
+    it.each([
+      [[], 'A season must run at least one competition.'],
+      [['poster', 'vgi'], 'vgi is not a competition.'],
+      ['poster', 'The competitions must be a list.']
+    ])('refuses %j, and saves nothing', async (competitions, message) => {
+      await expect(service.setCompetitionTypes('season-1', competitions)).rejects.toThrow(new BadRequestException(message));
+      expect(seasonRepo.manager.transaction).not.toHaveBeenCalled();
+    });
+
+    it('answers not found for a season that does not exist', async () => {
+      jest.spyOn(seasonRepo, 'findOne').mockResolvedValue(null);
+
+      await expect(service.setCompetitionTypes('missing', ['poster'])).rejects.toThrow(NotFoundException);
     });
   });
 });

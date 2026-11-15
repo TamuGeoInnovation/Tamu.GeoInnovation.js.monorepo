@@ -23,6 +23,7 @@ import { AsyncPipe } from '@angular/common';
 
 import { SubmissionFilesComponent } from '../../../../submission-files/submission-files.component';
 import { deadlineNotice } from '../../../../../utils/submission-deadline-notice';
+import { runsCompetition } from '@tamu-gisc/gisday/common';
 import { serverMessage } from '../../../../../utils/server-message';
 import { GISDAY_SITE } from '../../../../../site/site';
 import {
@@ -72,7 +73,13 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
 
   public presentationFormatOptions = [...SUBMISSION_FORMAT_OPTIONS];
 
-  public submissionTypeOptions = [...SUBMISSION_TYPE_OPTIONS];
+  /**
+   * The competitions offered: those the season runs (#2948), and the one a submission was saved to, which stays its own
+   * when that competition is later turned off.
+   */
+  public readonly submissionTypeOptions = computed(() =>
+    SUBMISSION_TYPE_OPTIONS.filter(({ type }) => runsCompetition(this.season(), type) || type === this.savedType())
+  );
 
   public entity$: Observable<Partial<Submission>>;
   public submissionTypes$: Observable<Array<Partial<SubmissionType>>>;
@@ -196,6 +203,13 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
         .subscribe((season) => {
           this.season.set(season);
           this.form.get('season').setValue(season.guid);
+
+          // The form starts on Presentation; when this season does not run it, on the first competition it does (#2948).
+          const offered = this.submissionTypeOptions();
+
+          if (offered.length > 0 && !offered.some(({ type }) => type === this.form.get('submissionType').value)) {
+            this.form.get('submissionType').setValue(offered[0].type);
+          }
         });
 
       this.addParticipant();

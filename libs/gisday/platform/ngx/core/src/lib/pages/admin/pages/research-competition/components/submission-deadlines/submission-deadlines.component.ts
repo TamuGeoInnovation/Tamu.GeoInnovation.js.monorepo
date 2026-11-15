@@ -12,7 +12,8 @@ import {
   asDate,
   deadlineField,
   deadlinesProblem,
-  inCentralTime
+  inCentralTime,
+  runsCompetition
 } from '@tamu-gisc/gisday/common';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { DateTimePickerComponent } from '@tamu-gisc/ui-kits/ngx/forms/date-time-picker';
@@ -49,8 +50,15 @@ export class SubmissionDeadlinesComponent {
   /** The season whose deadlines are shown: the one the page's season picker has chosen. */
   public readonly season = input<Partial<Season> | null>(null);
 
-  /** One block per competition, from the shared table (#2962). */
-  public readonly competitions = DEADLINE_COMPETITION_TABLE.map(({ competition, label }) => ({ key: competition, label }));
+  /**
+   * One row per competition the season runs (#2948), from the shared table (#2962). A competition turned off keeps
+   * whatever deadlines it had, so turning it on again brings them back.
+   */
+  public readonly competitions = computed(() =>
+    DEADLINE_COMPETITION_TABLE.filter(({ competition }) => runsCompetition(this.season(), competition)).map(
+      ({ competition, label }) => ({ key: competition, label })
+    )
+  );
 
   public readonly kinds: ReadonlyArray<{ kind: DeadlineKind; label: string }> = [
     { kind: 'submissions', label: 'Submissions and edits close' },
@@ -80,7 +88,7 @@ export class SubmissionDeadlinesComponent {
     }
 
     const brief = (field: SubmissionDeadlineField) => inCentralTime(values[field], '', { brief: true });
-    const lines = this.competitions.map(({ key }) => {
+    const lines = this.competitions().map(({ key }) => {
       const name = `${key[0].toUpperCase()}${key.slice(1)}`;
       const submissions = brief(deadlineField(key, 'submissions'));
       const files = brief(deadlineField(key, 'files'));

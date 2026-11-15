@@ -37,7 +37,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (competition of competitions; track competition.key) {
+          @for (competition of competitions(); track competition.key) {
           <tr>
             <th scope="row">{{ competition.label }}</th>
             @for (k of kinds; track k.kind) { @let field = deadlineField(competition.key, k.kind);
