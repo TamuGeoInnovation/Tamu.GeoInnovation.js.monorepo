@@ -62,6 +62,17 @@ only, and revert it afterwards so your stack matches `development` again. On you
 Commit to `docs/screenshots/2948-season-competition-types/` on that branch, link them from its release note, push
 (fast-forward, no force), and give the PR body's image section in your report.
 
+## Batch 62 (gisday: screenshots for #3017, the Final file column and Send final reminder; 15 November 2026, from `work (gisday)`) (Medium) - **after 61, before 59**
+
+Home built #3017 on `feat/3017-final-reminder-pr` on the fork, at `69822936c` (PR 3020). No migration. On your signed-in
+local stack, Admin, Research Competitions, with your own test submissions (one with a file, one without), masking any
+name or email that isn't the test account's:
+- **Before** (on `development`): the table and the selected-actions bar.
+- **After** (on the branch): the table with the Final file column sorted; the bar with Send final reminder; the reminder
+  window for the presenter and the poster kind, including its "skipped" note. **Don't send it.** Cancel.
+Commit to `docs/screenshots/3017-final-reminder/` on that branch, link them from its release note, push (fast-forward,
+no force), and give the PR body's image section in your report.
+
 ## Batch 59 (gisday: #3012, make the collapsed Submission deadlines panel visible; 15 November 2026, from `work (gisday)`) (Low)
 
 [#3012](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3012). Your #2969 panel (PR 2999, merged
