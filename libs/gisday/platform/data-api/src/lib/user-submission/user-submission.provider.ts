@@ -522,9 +522,13 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
 
     try {
       const updated = await this.userSubmissionRepo.update(submissionGuid, submission);
+      // Who it goes to and the season's sessions are read here, before the review returns, so the send itself is all a
+      // single review leaves to finish after answering. A sessions lookup that fails leaves the email without its links.
+      const recipients = shouldEmail ? await this._recipientsOf(existingSubmission) : null;
+      const sessions = shouldEmail ? await this._sessionsOf(existingSubmission.season).catch(() => []) : [];
       const sendReviewEmail = shouldEmail
         ? async () => {
-            const { to, cc } = await this._recipientsOf(existingSubmission);
+            const { to, cc } = recipients;
             const site = gisdaySite(process.env.GISDAY_SITE, host);
 
             // Send email to user
@@ -538,7 +542,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
                   existingSubmission,
                   site,
                   templates?.[reviewEmailKind(existingSubmission.acceptance, existingSubmission.submissionType)],
-                  await this._sessionsOf(existingSubmission.season)
+                  sessions
                 ),
                 replyTo: process.env.MAILROOM_TO
               },
@@ -633,9 +637,14 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     const others = account
       ? (submission.participants ?? []).slice(1).map((p) => `${p?.email ?? ''}`.trim())
       : typed.slice(1);
-    const cc = [...new Map(others.filter(Boolean).map((email) => [email.toLowerCase(), email])).values()].filter(
-      (email) => email.toLowerCase() !== to.toLowerCase()
-    );
+    // Each address once, as first typed, ignoring case; and never the address it goes to.
+    const cc: Array<string> = [];
+
+    for (const email of others.filter(Boolean)) {
+      if (email.toLowerCase() !== to.toLowerCase() && !cc.some((kept) => kept.toLowerCase() === email.toLowerCase())) {
+        cc.push(email);
+      }
+    }
 
     return { to, cc };
   }
