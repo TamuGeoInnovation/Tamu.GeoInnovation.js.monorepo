@@ -1,5 +1,21 @@
 # Home machine: current tasks
 
+## Batch 50 (gisday: #3006, an admin dashboard for event check-ins, modelled on the RSVPs dashboard; 15 November 2026, from `work (gisday)`) (Medium) - **do this now**
+
+[#3006](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3006). The issue has what is wanted.
+Model it on `libs/gisday/platform/ngx/core/src/lib/pages/admin/pages/dashboards/rsvp-dashboard/` and its API side,
+`libs/gisday/platform/data-api/src/lib/user-rsvp/rsvp-dashboard.provider.ts` and `dto/rsvp-dashboard.dto.ts`. Check-ins
+are in `libs/gisday/platform/data-api/src/lib/check-in/`.
+- **Reuse, don't copy:** if the RSVPs dashboard's season and event pickers, counts table or export can be shared, move
+  them to a shared component both dashboards use, behind the RSVPs dashboard's current interface.
+- **Admin only:** the route needs an admin permission; extend `private-fields.interceptor.spec.ts` (PR 3003 shows how an
+  admin-only read is listed).
+- **This site's events only** (`siteListsSession`/`placesShownOn` in `libs/gisday/common`, #2986).
+- Add it to the admin dashboards list.
+- Tests red first; **the full check** (it adds an API route); screenshots with nobody's name or email (seed your own
+  check-ins on the local site); a release note. Push to the fork and report "branch ready". Branch
+  `feat/3006-check-in-dashboard`.
+
 ## Batch 48 (gisday: #2967, VGI submission photos use the shared JPEG-and-PNG check; 14 November 2026, 8:20 PM Central, from `work (gisday)`) (Low)
 
 [#2967](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2967). #2937 gave every GIS Day image
