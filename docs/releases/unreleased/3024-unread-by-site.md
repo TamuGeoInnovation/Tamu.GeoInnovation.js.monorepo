@@ -13,3 +13,8 @@ records shown ("3197 RSVPs for 60 events. 3924 accounts could not be read"). The
 API, so the events, the chart and that count all cover the same records, and another organization's counts no longer
 leave the server.
 ([#3024](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3024))
+
+| Before | After |
+| --- | --- |
+| ![RSVPs, 2025, on gisday.tamu.edu: "3196 RSVPs for 60 events. 3924 accounts could not be read"](../screenshots/3024-unread-by-site/before-rsvps.png) | ![The same: "3196 RSVPs for 60 events. 3196 accounts could not be read"](../screenshots/3024-unread-by-site/after-rsvps.png) |
+| ![Check-ins, 2025, on gisday.tamu.edu: "1590 check-ins at 60 events. 1740 accounts could not be read"](../screenshots/3024-unread-by-site/before-check-ins.png) | ![The same: "1590 check-ins at 60 events. 1590 accounts could not be read"](../screenshots/3024-unread-by-site/after-check-ins.png) |
