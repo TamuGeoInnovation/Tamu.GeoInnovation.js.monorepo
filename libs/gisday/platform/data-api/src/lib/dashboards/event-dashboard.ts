@@ -2,7 +2,7 @@ import { NotFoundException } from '@nestjs/common';
 
 import { FindManyOptions, Repository } from 'typeorm';
 
-import { sessionTime } from '@tamu-gisc/gisday/common';
+import { gisdaySite, sessionTime, siteListsSession } from '@tamu-gisc/gisday/common';
 
 import { Event } from '../entities/all.entity';
 import { DashboardProfilesService } from './dashboard-profiles.service';
@@ -33,23 +33,34 @@ export class EventDashboard<T extends EventRecord> {
     protected readonly people: DashboardProfilesService
   ) {}
 
-  /** Every event in the season, with its records counted by person type, and when each record was made. */
-  public async getSeason(seasonGuid: string): Promise<RsvpDashboard> {
-    const events = await this.eventRepo.find({
-      where: { season: { guid: seasonGuid } },
-      relations: { day: true, location: { place: true } }
-    });
+  /**
+   * Every event in the season that the site lists, with its records counted by person type, and when each record was
+   * made. `host` is the site the admin is on: gisday.tamu.edu shares txgisday.org's database, and lists only Texas A&M's
+   * sessions (#2986), so the events, the chart and the count of accounts that could not be read all cover the same
+   * records (#3024).
+   */
+  public async getSeason(seasonGuid: string, host?: string): Promise<RsvpDashboard> {
+    const site = gisdaySite(process.env.GISDAY_SITE, host);
+    const events = (
+      await this.eventRepo.find({
+        where: { season: { guid: seasonGuid } },
+        relations: { day: true, location: { place: true } }
+      })
+    ).filter((e) => siteListsSession(site, e));
 
     // Generic over the record, so typeorm cannot see that every one has an event: the options are cast. The event is
     // asked for by name: an RSVP loads it eagerly, a check-in does not.
-    const records = await this.recordRepo.find({
-      where: { event: { season: { guid: seasonGuid } } },
-      relations: { event: true },
-      order: { created: 'ASC' }
-    } as FindManyOptions<T>);
+    const byEvent = new Map(events.map((e) => [e.guid, { total: 0, counts: emptyCounts() }]));
+    // Only the records of the events listed: another organization's are neither counted nor looked up.
+    const records = (
+      await this.recordRepo.find({
+        where: { event: { season: { guid: seasonGuid } } },
+        relations: { event: true },
+        order: { created: 'ASC' }
+      } as FindManyOptions<T>)
+    ).filter((r) => byEvent.has(r.event?.guid));
 
     const profiles = await this.people.profilesOf(records.map((r) => r.accountGuid));
-    const byEvent = new Map(events.map((e) => [e.guid, { total: 0, counts: emptyCounts() }]));
 
     for (const record of records) {
       const row = byEvent.get(record.event?.guid);
@@ -72,9 +83,7 @@ export class EventDashboard<T extends EventRecord> {
         }))
         // In the order they happen; an event with no time last.
         .sort((a, b) => (a.starts ?? '￿').localeCompare(b.starts ?? '￿')),
-      made: records
-        .filter((r) => byEvent.has(r.event?.guid))
-        .map((r) => ({ event: r.event.guid, created: new Date(r.created).toISOString() })),
+      made: records.map((r) => ({ event: r.event.guid, created: new Date(r.created).toISOString() })),
       unreadAccounts: [...new Set(records.map((r) => r.accountGuid))].filter((a) => profiles.get(a) === null).length
     };
   }

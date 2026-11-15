@@ -1,4 +1,3 @@
-import { gisdaySite } from '@tamu-gisc/gisday/common';
 import type { RsvpDashboard } from '@tamu-gisc/gisday/platform/data-api';
 
 import {
@@ -7,8 +6,7 @@ import {
   dashboardFileName,
   dashboardRows,
   dashboardSeries,
-  dashboardTotals,
-  siteDashboard
+  dashboardTotals
 } from './event-dashboard.component';
 
 const counts = (c: Partial<RsvpDashboard['events'][0]['counts']>) => ({
@@ -50,27 +48,6 @@ const dashboard: RsvpDashboard = {
   ],
   unreadAccounts: 0
 };
-
-describe('siteDashboard()', () => {
-  const placed: RsvpDashboard = {
-    ...dashboard,
-    events: [
-      { ...dashboard.events[0], place: { guid: 'p-tamu', name: 'Texas A&M University GIS Day(s)' } },
-      { ...dashboard.events[1], place: { guid: 'p-other', name: 'Another university' } }
-    ]
-  };
-
-  it('keeps every event on a site that lists every organization', () => {
-    expect(siteDashboard(gisdaySite('txgisday'), placed)).toEqual(placed);
-  });
-
-  it("keeps only the site's own events on gisday.tamu.edu, and only what was made for them (#2986)", () => {
-    const kept = siteDashboard(gisdaySite('tamu'), placed);
-
-    expect(kept.events.map((e) => e.guid)).toEqual(['e-1']);
-    expect(kept.made.map((m) => m.event)).toEqual(['e-1', 'e-1', 'e-1']);
-  });
-});
 
 describe('dashboardTotals()', () => {
   it('adds up every event, type by type', () => {

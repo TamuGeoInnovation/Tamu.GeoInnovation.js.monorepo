@@ -23,8 +23,8 @@ export class CheckInDashboardProvider extends EventDashboard<CheckIn> {
     super(checkInRepo, eventRepo, people);
   }
 
-  public override async getSeason(seasonGuid: string): Promise<CheckInDashboard> {
-    const dashboard = await super.getSeason(seasonGuid);
+  public override async getSeason(seasonGuid: string, host?: string): Promise<CheckInDashboard> {
+    const dashboard = await super.getSeason(seasonGuid, host);
     const rsvps = await this.rsvpRepo.find({
       where: { event: { season: { guid: seasonGuid } } },
       relations: { event: true },
