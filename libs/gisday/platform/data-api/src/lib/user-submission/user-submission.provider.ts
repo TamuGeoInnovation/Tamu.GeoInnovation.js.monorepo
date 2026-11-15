@@ -612,14 +612,17 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
    * submission copied, each once. The typed first address is used only when the account has none. Typed, the
    * submitter's address had been a test address or one no directory knew, and the email went there.
    */
-  private async _recipientsOf(submission: Pick<Submission, 'accountGuid' | 'participants'>): Promise<{ to: string; cc: Array<string> }> {
+  private async _recipientsOf(
+    submission: Pick<Submission, 'accountGuid' | 'participants'>
+  ): Promise<{ to: string; cc: Array<string> }> {
     const typed = (submission.participants ?? []).map((p) => `${p?.email ?? ''}`.trim()).filter(Boolean);
     let account = '';
 
     try {
       const profiles = submission.accountGuid ? await this.profiles.profilesOf([submission.accountGuid]) : null;
 
-      account = `${profiles?.get(submission.accountGuid)?.email ?? ''}`.trim();
+      // Auth0's profile type does not declare `email`, though every account carries one.
+      account = `${(profiles?.get(submission.accountGuid) as { email?: string } | null)?.email ?? ''}`.trim();
     } catch (err) {
       // The email still goes, to what was typed, if Auth0 cannot be read.
       Logger.warn(`Could not read the submitter's account for a review email: ${err.message}`, 'UserSubmissionProvider');
@@ -627,7 +630,9 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
 
     // The first row is the submitter: with their account's address known, what they typed for themselves is not copied.
     const to = account || typed[0] || '';
-    const others = account ? (submission.participants ?? []).slice(1).map((p) => `${p?.email ?? ''}`.trim()) : typed.slice(1);
+    const others = account
+      ? (submission.participants ?? []).slice(1).map((p) => `${p?.email ?? ''}`.trim())
+      : typed.slice(1);
     const cc = [...new Map(others.filter(Boolean).map((email) => [email.toLowerCase(), email])).values()].filter(
       (email) => email.toLowerCase() !== to.toLowerCase()
     );
