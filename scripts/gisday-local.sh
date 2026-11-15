@@ -184,8 +184,10 @@ SQL
       echo "gisday-dev started; the first compile takes several minutes: docker logs -f gisday-dev"
     fi
     if [ -n "$site" ]; then
+      # The site's own host, from its `address`, which the proxy passes to the API as x-forwarded-host (#3050).
+      site_host="$(sed -n "/^  $site: {/,/^  }/s#^ *address: 'https://\([^/']*\)'.*#\1#p" libs/gisday/common/src/lib/sites.ts)"
       docker run -d --name gisday-site --network "$NET" -p 4201:4201 -v "$REPO/scripts:/s:ro" \
-        "$NODE_IMAGE" node /s/gisday-site-proxy.js "$site" gisday-dev 4201 4201 >/dev/null
+        "$NODE_IMAGE" node /s/gisday-site-proxy.js "$site" gisday-dev 4201 4201 "$site_host" >/dev/null
       echo "Then open http://localhost:4201 for $site, and http://localhost:4202 for txgisday.org (no sign-in there)"
     else
       echo "Then open http://localhost:4201"

@@ -13,7 +13,13 @@ import {
   reviewSubmissionsToast,
   sendEditLinksToast
 } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { ReminderSkipReason, hasFinalFile, reminderSkipReason, reminderSkipSummary } from '@tamu-gisc/gisday/common';
+import {
+  hasFinalFile,
+  participantEmails,
+  ReminderSkipReason,
+  reminderSkipReason,
+  reminderSkipSummary
+} from '@tamu-gisc/gisday/common';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { AlertModalData } from '@tamu-gisc/ui-kits/ngx/layout/modal/alert-modal';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
@@ -104,8 +110,16 @@ export function reviewConfirmation(rows: Array<Partial<Submission>>, acceptance:
  * once however many submissions they are on.
  */
 export function profileEmailNote(rows: Array<Partial<Submission>>): string {
+  // People, not entries: each address in a box counts, read as the server reads it (#3043), and an entry with no
+  // address by its name.
   const people = new Set(
-    rows.flatMap((row) => (row.participants ?? []).map((p) => (p.email?.trim() || p.name?.trim() || '').toLowerCase()))
+    rows.flatMap((row) =>
+      (row.participants ?? []).flatMap((p) => {
+        const emails = participantEmails(p.email);
+
+        return emails.length ? emails : [(p.name?.trim() ?? '').toLowerCase()];
+      })
+    )
   );
 
   people.delete('');
@@ -114,7 +128,7 @@ export function profileEmailNote(rows: Array<Partial<Submission>>): string {
     rows.length,
     'submission',
     'submissions'
-  )}. Each with a speaker record this season gets their own link to update their presenter profile; anyone without one is listed afterwards, not emailed.`;
+  )}. Each with a presenter record this season gets their own link to update their presenter profile; anyone without one is listed below and won't be emailed.`;
 }
 
 /** Why each of the rows that gets no final reminder is skipped (#3017): not accepted, or a file already. */
@@ -140,6 +154,34 @@ export function finalReminderNote(rows: Array<Partial<Submission>>): string | nu
     ? 'Each one selected was accepted and has no file yet; each is reminded.'
     : `${skipped.length} of the ${rows.length} selected ${skipped.length === 1 ? 'is' : 'are'} skipped: ${reminderSkipSummary(skipped)}. Only the rest are reminded.`;
 }
+
+/**
+ * The narrowest each column of the submissions table may be, in pixels (#3026), each with its cell's 16 px of side
+ * padding and a few to spare. Status holds "Pending Review" (bold, 110 px), Type "Presentation" (89 px) and
+ * Classification "Undergraduate" (107 px) whole, measured in Playwright; Submitted, its heading, its date and time
+ * wrapping between words; the select column, its checkbox clear of the title beside it.
+ *
+ * Every column but the checkbox's also grows in proportion to its narrowest (its `flexGrow` is the same number), so
+ * wherever the table fits, no column is below its narrowest, as the dashboards' table does it (#3006). The table is
+ * never drawn narrower than all of them added up: where they do not fit, it scrolls sideways in its own box. Before, it
+ * was drawn at its box's width with the columns wider than it, and ngx-datatable pushed the select and Name columns
+ * off its left edge.
+ */
+export const SUBMISSION_TABLE_WIDTHS = {
+  select: 56,
+  name: 120,
+  submitted: 104,
+  submittedBy: 130,
+  department: 110,
+  type: 112,
+  format: 100,
+  classification: 132,
+  finalFile: 100,
+  status: 136
+} as const;
+
+/** The table's narrowest: every column at its narrowest. */
+export const SUBMISSION_TABLE_MIN_WIDTH = Object.values(SUBMISSION_TABLE_WIDTHS).reduce((sum, width) => sum + width, 0);
 
 @Component({
   selector: 'tamu-gisc-research-competition-list',
@@ -168,6 +210,8 @@ export class ResearchCompetitionListComponent extends BaseAdminListComponent<Sub
   private readonly toasts = inject(NotificationService);
 
   public SubmissionReviewStatus = SUBMISSION_REVIEW_STATUS;
+  public readonly widths = SUBMISSION_TABLE_WIDTHS;
+  public readonly minWidth = SUBMISSION_TABLE_MIN_WIDTH;
 
   public readonly classification = new FormControl('', { nonNullable: true });
   public readonly type = new FormControl('', { nonNullable: true });

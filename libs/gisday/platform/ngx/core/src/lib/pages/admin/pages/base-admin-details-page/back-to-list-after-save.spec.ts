@@ -40,7 +40,7 @@ describe('Save, Create and Delete on an admin details page', () => {
   const LIST_STATE = { adminList: { search: 'work' } };
 
   let modal: { isOpen: BehaviorSubject<boolean>; open: jest.Mock };
-  let tags: { getEntity: jest.Mock; updateEntity: jest.Mock; createEntity: jest.Mock; deleteEntity: jest.Mock };
+  let tags: { getEntity: jest.Mock; getSessions: jest.Mock; updateEntity: jest.Mock; createEntity: jest.Mock; deleteEntity: jest.Mock };
   let submissions: Record<string, jest.Mock>;
 
   beforeEach(() => {
@@ -48,6 +48,7 @@ describe('Save, Create and Delete on an admin details page', () => {
     modal = { isOpen: new BehaviorSubject(false), open: jest.fn(() => of({ poster: 'Howdy' })) };
     tags = {
       getEntity: jest.fn(() => of({ guid: 't1', name: 'Workshop' })),
+      getSessions: jest.fn(() => of([])),
       updateEntity: jest.fn(() => of({})),
       createEntity: jest.fn(() => of({})),
       deleteEntity: jest.fn(() => of({}))

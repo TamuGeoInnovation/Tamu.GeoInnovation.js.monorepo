@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 
 import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
+import { siteHost } from '../_base/site-of-request';
 
 import { UserRsvpProvider } from './user-rsvp.provider';
 import { RsvpDashboardProvider } from './rsvp-dashboard.provider';
@@ -36,8 +37,9 @@ export class UserRsvpController {
   @Permissions(['read:rsvps'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Get('dashboard/season/:guid')
-  public async getDashboardForSeason(@Param('guid') guid: string) {
-    return this.dashboard.getSeason(guid);
+  public async getDashboardForSeason(@Param('guid') guid: string, @Req() req) {
+    // From the admin's site, which lists only its own sessions (#3024).
+    return this.dashboard.getSeason(guid, siteHost(req?.headers));
   }
 
   /** The people who RSVP'd for one event, for the dashboard's expanded row and its CSV (#2878). */

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Location } from '@angular/common';
 import { provideLocationMocks } from '@angular/common/testing';
 import { TestBed } from '@angular/core/testing';
+import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EMPTY, firstValueFrom, of, throwError } from 'rxjs';
 
@@ -128,6 +129,93 @@ describe('BaseAdminListComponent search', () => {
 
     page.search.setValue('anything');
     expect(await guids(page)).toEqual(['for-season-2026']);
+  });
+});
+
+@Component({ template: '', standalone: false })
+class FilteredListComponent extends SearchedListComponent {
+  /** A filter of the page's own, as the Events list has: 'esri' keeps only Esri. */
+  public readonly only = new FormControl('', { nonNullable: true });
+
+  protected override listFilters(): Record<string, FormControl<string>> {
+    return { ...super.listFilters(), only: this.only };
+  }
+
+  protected override keepEntity(entity: Partial<Named>): boolean {
+    return this.only.value !== 'esri' || entity.name === 'Esri';
+  }
+}
+
+/**
+ * #3049. When the search or a page's filter hid every row, an admin list said the season had none ("There are no events
+ * for the selected season"), which reads as if the season had lost them. The list now tells the two apart, and its
+ * search and filters can be cleared at once.
+ */
+describe('BaseAdminListComponent with nothing shown', () => {
+  function open<C extends BaseAdminListComponent<Named>>(type: new (...args: Array<never>) => C, active: { guid: string } | null) {
+    TestBed.configureTestingModule({
+      declarations: [type],
+      providers: [
+        { provide: SeasonService, useValue: { seasons$: of([]), activeSeason$: of(active) } },
+        { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
+        { provide: Router, useValue: { events: EMPTY } },
+        { provide: ModalService, useValue: {} },
+        { provide: NotificationService, useValue: {} }
+      ]
+    });
+
+    const component = TestBed.createComponent(type).componentInstance;
+    component.ngOnInit();
+
+    return component;
+  }
+
+  const season = { guid: 'season-2026' };
+
+  it('says nothing while it shows rows', async () => {
+    const page = open(FilteredListComponent, season);
+
+    await expect(firstValueFrom(page.emptyBecause$)).resolves.toBeNull();
+    await expect(firstValueFrom(page.filtersInUse$)).resolves.toBe(false);
+  });
+
+  it('tells a search that hides every row from a season with none', async () => {
+    const page = open(FilteredListComponent, season);
+
+    page.search.setValue('no such row');
+
+    await expect(firstValueFrom(page.emptyBecause$)).resolves.toBe('hidden');
+    await expect(firstValueFrom(page.filtersInUse$)).resolves.toBe(true);
+  });
+
+  it("tells a page's own filter, with a search, that hides every row from a season with none", async () => {
+    const page = open(FilteredListComponent, season);
+
+    page.only.setValue('esri');
+    page.search.setValue('texas');
+
+    await expect(firstValueFrom(page.emptyBecause$)).resolves.toBe('hidden');
+  });
+
+  it('says a season with no rows has none', async () => {
+    const page = open(ThingListComponent as unknown as new () => BaseAdminListComponent<Named>, null);
+
+    page.search.setValue('anything');
+
+    await expect(firstValueFrom(page.emptyBecause$)).resolves.toBe('none');
+  });
+
+  it('clears the search and every filter of the page at once', async () => {
+    const page = open(FilteredListComponent, season);
+
+    page.only.setValue('esri');
+    page.search.setValue('texas');
+    page.clearFilters();
+
+    expect(page.search.value).toBe('');
+    expect(page.only.value).toBe('');
+    await expect(firstValueFrom(page.entitiesForActiveSeasonOrForSeasonGuid$)).resolves.toHaveLength(3);
+    await expect(firstValueFrom(page.filtersInUse$)).resolves.toBe(false);
   });
 });
 

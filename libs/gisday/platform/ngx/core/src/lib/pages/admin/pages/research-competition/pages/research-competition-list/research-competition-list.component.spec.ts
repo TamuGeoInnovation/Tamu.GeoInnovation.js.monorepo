@@ -1,5 +1,7 @@
 import { TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { ActivatedRoute, provideRouter } from '@angular/router';
+import { DatatableComponent } from '@swimlane/ngx-datatable';
 import { of, Subject } from 'rxjs';
 
 import { SUBMISSION_CLASSIFICATION_OPTIONS, SUBMISSION_TYPE_OPTIONS } from '@tamu-gisc/gisday/platform/ngx/common';
@@ -15,7 +17,7 @@ import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { ReviewEmailModalComponent } from '@tamu-gisc/gisday/platform/ngx/common';
-import { ResearchCompetitionListComponent, withData } from './research-competition-list.component';
+import { ResearchCompetitionListComponent, withData, profileEmailNote } from './research-competition-list.component';
 
 /** #2817: a filter offers All and only the choices the season's submissions have. */
 describe('withData', () => {
@@ -234,6 +236,7 @@ describe('ResearchCompetitionListComponent actions on the selected submissions',
       expect.objectContaining({ data: expect.objectContaining({ verb: 'Send profile email', editableSubject: true }) })
     );
     expect(modals.open.mock.calls[0][1].data.note).toContain('the 3 people of 2 submissions');
+    expect(modals.open.mock.calls[0][1].data.note).toContain("listed below and won't be emailed");
     expect(speakerEdits.previewForSubmissions).toHaveBeenCalledWith(['s1', 's2']);
     expect(speakerEdits.sendForSubmissions).toHaveBeenCalledWith(['s1', 's2'], {
       subject: 'Your profile',
@@ -344,6 +347,84 @@ describe('ResearchCompetitionListComponent, the final file and the final reminde
     expect(cells.sort()).toEqual(['Missing', 'Missing', 'Missing', 'Missing', 'Uploaded']);
   });
 
+  /**
+   * #3026: at 1280 px the table was cramped. Files and Final file ran together, short values broke mid-word ("Mis/sin/g",
+   * "Acce/pted"), and the select column's checkbox covered each title's first letter. Final file now says what the Files
+   * count did; the short values keep a width they fit in, whole; and the checkbox has the room it takes.
+   */
+  it('fits at 1280 px: no Files count beside Final file, short values whole, the checkbox clear of the title (#3026)', () => {
+    const { fixture, page } = open([]);
+    const headings = Array.from(page.querySelectorAll('.datatable-header-cell')).map((h) => h.textContent.trim());
+    const table = fixture.debugElement.query(By.directive(DatatableComponent)).componentInstance as DatatableComponent;
+    const column = (name: string) => table._internalColumns().find((c) => c.name === name);
+
+    expect(headings).not.toContain('Files');
+    expect(headings).toContain('Final file');
+
+    for (const name of ['Type', 'Format', 'Final file', 'Status']) {
+      expect(column(name).minWidth).toBeGreaterThanOrEqual(100);
+      expect(String(column(name).cellClass)).toContain('whole-value');
+    }
+
+    const select = table._internalColumns().find((c) => c.prop === 'select');
+
+    expect(select.width()).toBeGreaterThanOrEqual(56);
+    expect(select.minWidth).toBeGreaterThanOrEqual(56);
+  });
+
+  /**
+   * #3026, the review of the fix above: the columns' minimums then added up to more than the table (1015 px in the 879
+   * a 1280 px screen gives it, 848 in 681 at 1024), and ngx-datatable drew the overflow off the table's left edge, taking
+   * the checkbox and the Name column with it. The table is now never narrower than its columns at their narrowest, so
+   * where they do not fit it scrolls sideways in its own box, as the dashboards' table does (#3006).
+   */
+  describe('its columns at their narrowest (#3026)', () => {
+    const templates = (fixture: ReturnType<typeof open>['fixture']) =>
+      fixture.debugElement.query(By.directive(DatatableComponent)).injector.get(DatatableComponent).columnTemplates();
+    const narrowest = (fixture: ReturnType<typeof open>['fixture']) =>
+      templates(fixture).reduce((sum, column) => sum + (column.minWidth() ?? 0), 0);
+
+    it('gives every column a narrowest, the select and Name columns included', () => {
+      const { fixture } = open([]);
+
+      for (const column of templates(fixture)) {
+        expect([column.prop(), column.minWidth()]).toEqual([column.prop(), expect.any(Number)]);
+        expect(column.minWidth()).toBeGreaterThan(0);
+      }
+    });
+
+    it('is never narrower than its columns at their narrowest, so none is drawn off its left edge', () => {
+      const { fixture, page } = open([]);
+      const table = page.querySelector('ngx-datatable') as HTMLElement;
+
+      expect(narrowest(fixture)).toBeGreaterThan(0);
+      expect(table.style.minWidth).toBe(`${narrowest(fixture)}px`);
+    });
+
+    it('keeps the checkbox column at its width and grows every other column in proportion to its narrowest', () => {
+      const { fixture } = open([]);
+      const [select, ...rest] = templates(fixture);
+
+      expect(select.prop()).toBe('select');
+      expect(select.canAutoResize()).toBe(false);
+      expect(select.width()).toBe(select.minWidth());
+
+      const ratios = rest.map((column) => (column.flexGrow() ?? 0) / (column.minWidth() ?? 1));
+
+      expect(new Set(ratios)).toEqual(new Set([1]));
+    });
+
+    // Measured in Playwright at the table's 0.9rem: "Pending Review", bold, is 110 px wide and "Presentation" 89, and a
+    // cell's side padding is 16.
+    it('holds the longest Status and Type whole', () => {
+      const { fixture } = open([]);
+      const minWidth = (prop: string) => templates(fixture).find((column) => column.prop() === prop)?.minWidth();
+
+      expect(minWidth('reviewStatus')).toBeGreaterThanOrEqual(110 + 16);
+      expect(minWidth('submissionType')).toBeGreaterThanOrEqual(89 + 16);
+    });
+  });
+
   it('shows the reminder first, editable, saying how many are skipped for having a file, then sends it with the text approved', () => {
     const { service, modals, toasts, click } = open(['s1', 's2']);
 
@@ -402,5 +483,27 @@ describe('ResearchCompetitionListComponent, the final file and the final reminde
 
     expect(service.remind).not.toHaveBeenCalled();
     expect(toasts.toast).not.toHaveBeenCalled();
+  });
+});
+
+// #3043: the window's first line counts people as the server finds them: two addresses in one box are two people.
+describe('profileEmailNote', () => {
+  it('counts each address in a shared box, and a NetID once with its address', () => {
+    const note = profileEmailNote([
+      {
+        participants: [
+          { name: 'Eve Kim, Fay Ng', email: 'eve@tamu.edu; fay@tamu.edu' },
+          { name: 'Gus', email: 'gus1' }
+        ]
+      },
+      {
+        participants: [
+          { name: 'Gus', email: 'GUS1@tamu.edu' },
+          { name: 'No Email', email: '' }
+        ]
+      }
+    ] as never);
+
+    expect(note).toContain('For the 4 people of 2 submissions.');
   });
 });
