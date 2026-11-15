@@ -1,7 +1,7 @@
 <div class="form">
   <div class="form-collection row">
-    <tamu-gisc-textbox [(ngModel)]="value.label" placeholder="Label" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-    <tamu-gisc-textbox [(ngModel)]="value.url" placeholder="URL" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+    <tamu-gisc-textbox [ngModel]="value?.label" (ngModelChange)="setInternalProperty('label', $event)" placeholder="Label" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+    <tamu-gisc-textbox [ngModel]="value?.url" (ngModelChange)="setInternalProperty('url', $event)" placeholder="URL" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
     <div class="actions flex flex-row align-center">
       <span class="material-icons" title="Remove link" aria-label="Remove link" (click)="emitRemove()" tabindex="0" role="button" (keydown.enter)="emitRemove()" (keydown.space)="emitRemove(); $event.preventDefault()">delete</span>
     </div>
