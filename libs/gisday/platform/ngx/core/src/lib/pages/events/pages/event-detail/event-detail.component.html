@@ -47,7 +47,7 @@
                 <ng-container *ngIf="event.broadcast as br; else noBroadcastAvailable">
                   <p><strong>Link: </strong> <a [href]="br.publicUrl" target="_blank" rel="noopener noreferrer">{{br.publicUrl}}</a></p>
                   <p><strong>Password:</strong> {{br.password ? br.password : 'None'}}</p>
-                  <p><strong>Dial-in number:</strong> {{br.phoneNumber ? br.password : 'None'}}</p>
+                  <p><strong>Dial-in number:</strong> {{br.phoneNumber ? br.phoneNumber : 'None'}}</p>
                   <p *ngIf="br.meetingId"><strong>Meeting ID:</strong> {{br.meetingId}}</p>
 
                   <div *ngIf="br.details" [innerHTML]="br.details | markdownParse"></div>
