@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch 54 (gisday: #3023, Urgent)**, profile email preview, branch `feat/3023-profile-email-preview`; started 7:52 AM Central, 15 November.
+- **Batch 54 (gisday: #3023, Urgent)**, profile email preview, branch `feat/3023-profile-email-preview`; started 7:52 AM Central, 15 November. Stacked on PR 3020 (not merged yet). Red proven; implementation committed; full check running.
 
 ## Finished
 - **Batch 53 (gisday: #3017 skip unaccepted)** (report `home/reports/2026-11-15-53.md`): pushed to `feat/3017-final-reminder-pr` (PR 3020) at `b866b0117`, fast-forward. The final reminder also skips submissions not accepted; window, preview, send and toasts say why. Red first; bug-fix check exit 0 (6 projects). No questions.
