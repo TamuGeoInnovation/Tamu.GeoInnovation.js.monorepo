@@ -8216,3 +8216,18 @@ push `fix/3026-columns-fit-1280` further.
    scroll can be found at 1024 px, in the shared dashboard table. Branch `fix/3029-dashboard-scroll` from the latest
    `development`; test red first, the bug-fix check, before/after, a release note. Report "branch ready".
 
+## Batch 78 (gisday: #3007 and #3009; 15 November 2026, from `work (gisday)`) (Medium, then Low)
+
+**Your report 77, answered by the director:** 1 (a) and (b) are done on `fix/3038-permission-message`; 2, the
+reformatting was the director's formatter run over the whole folder, and it is undone; 3 (a), leave it.
+
+1. **[#3007](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3007) (Medium)**: editing only a
+   place's link doesn't mark the place form changed, so Escape leaves without asking. You found it (report 54). Branch
+   `fix/3007-place-link-dirty` from the latest `development`.
+2. **[#3009](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3009) (Low)**: the sponsor form's
+   logo picker accepts only what the server takes (JPEG, PNG), using the server's rule, not a copy. Branch
+   `fix/3009-sponsor-logo-types`.
+
+Each: test red first, the bug-fix check, before/after screenshots, a release note. **Run the formatter only on the files
+you change.** Report each "branch ready".
+
