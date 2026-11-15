@@ -62,6 +62,16 @@ only, and revert it afterwards so your stack matches `development` again. On you
 Commit to `docs/screenshots/2948-season-competition-types/` on that branch, link them from its release note, push
 (fast-forward, no force), and give the PR body's image section in your report.
 
+## Batch 65 (gisday: screenshots for #3026, the Research Competitions table at 1280 px; 15 November 2026, from `work (gisday)`) (Low) - **after 64**
+
+Home built #3026 on `fix/3026-submissions-table-fit-pr` on the fork, at `3b509fe21` (PR 3030): the Files count column is
+gone, Type/Format/Final file/Status keep at least 100 px and never break inside a word, and the select column is wider so
+its checkbox clears the title. On your signed-in local stack, Admin, Research Competitions, with your own test
+submissions (mask any other name or email): **before** (on `development`) and **after** (on the branch), each at 1280
+and 1024 px, with a column sorted. Measure that no value breaks inside a word and the checkbox doesn't overlap the
+title. Commit to `docs/screenshots/3026-submissions-table-fit/`, link from its release note, push (fast-forward, no
+force), and give the PR body's image section in your report.
+
 ## Batch 64 (gisday: screenshots for #3023, the profile email read and edited before it is sent; 15 November 2026, from `work (gisday)`) (**Urgent**) - **next, before you go on with 63 if you can pause it; otherwise right after 63**
 
 Home built #3023 on `feat/3023-profile-email-preview-pr` on the fork, at its current head (PR 3025). It is **stacked on PR 3020** (#3017), so start from that branch. On your signed-in local stack,
