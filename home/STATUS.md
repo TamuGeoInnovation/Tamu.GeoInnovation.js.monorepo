@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle and listening (8:14 PM Central, 14 November).
+- **Batch 48 (gisday: #2967)**: started 8:21 PM Central, 14 November. Batch 49 (#2948) after it.
 
 ## Finished
 - **Batch 47 (#2758)** (report `home/reports/2026-11-14-47.md`): branch ready, `fix/2758-one-sidebar` on the fork at `9f74264bd`, no PR. One side panel (`AggiemapSidebarComponent`) for every map, tabs declared once (`SIDEBAR_TABS`), panels from `sidebarRoutes`, event options via `SIDEBAR_OPTIONS`; event sidebar deleted. Also gates the event maps' Options page (#2801 drift). Red on dev and production first; production build 20/20 both ways; full check exit 0 after merging development. Two questions.
