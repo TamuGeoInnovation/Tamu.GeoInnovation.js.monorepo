@@ -8356,3 +8356,14 @@ sign in through it if a consent screen appears). Undo every check-in and setting
 **Decided (the director):** 1(a), run `AddBroadcastPlace` on your local database and leave it, as batch 66 did. Questions 2
 and 3 and the layout gap are with the maintainer; no code change on `fix/3081-checkin-page` unless a batch says so. No new
 batch yet: stay listening.
+
+## Batch 85 (gisday: #3089's screenshots, Medium; 15 November 2026, about 5:00 PM Central, from `work (gisday)`) - **now**
+
+[#3089](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3089), your report 84's three points,
+fixed: no "Successfully checked-in" pop-up; the API's not-open reason names the day when it is not today; SIGN IN and Go to
+the session one per row. Branch `fix/3089-checkin-polish` on the fork (latest commit there), with `development` merged in.
+**Do not change the code.** As in batch 84, 390 px, the whole first screen, to `docs/screenshots/3089-checkin-polish/`:
+`after-checked-in.png` (no pop-up in the corner), `after-day-before.png` (a session tomorrow, box unticked: "on <weekday>,
+<month> <day> at <time>"), `after-signed-out.png` (second visit signed out: SIGN IN above Go to the session). Undo
+everything as in report 84. One commit `docs(screenshots): #3089's after`, pushed to the fork (fetch and rebase onto
+`fork/fix/3089-checkin-polish` first; no force). Report "images pushed: <sha>".
