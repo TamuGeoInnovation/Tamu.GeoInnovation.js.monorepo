@@ -37,7 +37,7 @@ export class PermissionsGuard implements CanActivate {
     }
 
     if (request.user.permissions === undefined) {
-      throw new ForbiddenException();
+      throw new ForbiddenException(missingPermissionMessage(requiredPermissions, matchType));
     }
 
     const permissions = request.user.permissions;
@@ -50,7 +50,10 @@ export class PermissionsGuard implements CanActivate {
     }
 
     if (ret === false) {
-      throw new ForbiddenException();
+      // Name what was missing (#3038): a permission never defined in the identity provider answered every admin with a
+      // bare 403 that the page could only call a failure to "try again" (read:rsvps on 12 November, read:checkins on
+      // 15 November 2026).
+      throw new ForbiddenException(missingPermissionMessage(requiredPermissions, matchType));
     }
 
     return true;
@@ -67,4 +70,14 @@ export class PermissionsGuard implements CanActivate {
       return permissions.includes(rp);
     });
   }
+}
+
+/**
+ * What a 403 from this guard says (#3038): which permission the account lacks, and how it is given. The page shows it
+ * as the reason, rather than suggesting the request be tried again.
+ */
+export function missingPermissionMessage(requiredPermissions: Array<string>, matchType?: PermissionsMatchType): string {
+  const names = requiredPermissions.join(matchType === 'all' ? ' and ' : ' or ');
+
+  return `Your account doesn't have the permission this needs: ${names}. An administrator gives it in Auth0 (on the API and the admin role); then sign out and sign back in.`;
 }

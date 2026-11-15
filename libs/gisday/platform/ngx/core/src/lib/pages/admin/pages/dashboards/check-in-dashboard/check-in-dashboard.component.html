@@ -9,7 +9,7 @@
 
     <div class="form-section-body">
       @if (failed()) {
-      <p class="error">The check-ins could not be read. Try again in a moment.</p>
+      <p class="error">{{ refusal() ?? 'The check-ins could not be read. Try again in a moment.' }}</p>
       } @else if (dashboard(); as view) {
       <p class="dashboard-summary"><strong>{{ totals().total }}</strong> {{ totals().total === 1 ? 'check-in' : 'check-ins' }} at {{ view.events.length }} {{ view.events.length === 1 ? 'event' : 'events' }}. @if (view.unreadAccounts > 0) { {{ view.unreadAccounts }} {{ view.unreadAccounts === 1 ? 'account' : 'accounts' }} could not be read and {{ view.unreadAccounts === 1 ? 'is' : 'are' }} counted as Not given. }</p>
 
