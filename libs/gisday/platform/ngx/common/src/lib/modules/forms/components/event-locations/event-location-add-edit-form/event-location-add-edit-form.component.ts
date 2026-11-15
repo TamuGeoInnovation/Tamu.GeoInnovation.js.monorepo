@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, input } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Observable, filter, map, switchMap, take } from 'rxjs';
 
 import { EventLocation, Place } from '@tamu-gisc/gisday/platform/data-api';
@@ -14,6 +14,8 @@ import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
 
+import { injectBackToList } from '../../../admin-details-page';
+
 @Component({
   selector: 'tamu-gisc-event-location-add-edit-form',
   templateUrl: './event-location-add-edit-form.component.html',
@@ -22,7 +24,8 @@ import { AsyncPipe } from '@angular/common';
 })
 export class EventLocationAddEditFormComponent implements OnInit {
   private readonly fb = inject(UntypedFormBuilder);
-  private readonly rt = inject(Router);
+  /** Leaves for the list once a save, create or delete has worked: the one the page was opened from (#2965). */
+  private readonly backToList = injectBackToList('/admin/event-locations');
   private readonly at = inject(ActivatedRoute);
   private readonly els = inject(LocationService);
   private readonly ps = inject(PlaceService);
@@ -69,18 +72,12 @@ export class EventLocationAddEditFormComponent implements OnInit {
 
         // If the entity has a season, remove the season control from the form
         this.form.removeControl('season');
-
-        // Opening the page is not a change (#2942), though each control echoes the value it is given.
-        this.form.markAsPristine();
       });
     } else {
       this.ss.activeSeason$.pipe(take(1)).subscribe((season) => {
         this.form.patchValue({
           season: season.guid
         });
-
-        // Opening the page is not a change (#2942), though each control echoes the value it is given.
-        this.form.markAsPristine();
       });
     }
   }
@@ -191,6 +188,6 @@ export class EventLocationAddEditFormComponent implements OnInit {
   }
 
   private _navigateBack() {
-    this.rt.navigate(['/admin/event-locations']);
+    this.backToList();
   }
 }

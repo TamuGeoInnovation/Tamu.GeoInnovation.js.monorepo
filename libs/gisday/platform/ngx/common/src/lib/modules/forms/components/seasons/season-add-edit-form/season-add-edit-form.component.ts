@@ -8,7 +8,7 @@ import {
   FormsModule,
   ReactiveFormsModule
 } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Observable, filter, map, shareReplay, switchMap, take } from 'rxjs';
 
 import { Season, SeasonDay } from '@tamu-gisc/gisday/platform/data-api';
@@ -20,6 +20,8 @@ import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { SeasonsDayTileComponent } from '../seasons-day-tile/seasons-day-tile.component';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
+import { injectBackToList } from '../../../admin-details-page';
+
 @Component({
   selector: 'tamu-gisc-season-add-edit-form',
   templateUrl: './season-add-edit-form.component.html',
@@ -30,7 +32,8 @@ export class SeasonAddEditFormComponent implements OnInit {
   private fb = inject(UntypedFormBuilder);
   private at = inject(ActivatedRoute);
   private ss = inject(SeasonService);
-  private rt = inject(Router);
+  /** Leaves for the list once a save, create or delete has worked: the one the page was opened from (#2965). */
+  private readonly backToList = injectBackToList('/admin/seasons');
   private readonly ns = inject(NotificationService);
 
   public readonly type = input<'create' | 'edit'>(undefined);
@@ -171,6 +174,6 @@ export class SeasonAddEditFormComponent implements OnInit {
   }
 
   private _navigateBack() {
-    this.rt.navigate(['/admin/seasons']);
+    this.backToList();
   }
 }

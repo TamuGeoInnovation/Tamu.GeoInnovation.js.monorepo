@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, input } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Observable, filter, map, of, shareReplay, switchMap, take } from 'rxjs';
 
@@ -16,6 +16,7 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
 import { ImagePreviewComponent } from '../../../../images/components/image-preview/image-preview.component';
 import { uploadPreviewUrl } from '../../../../images/upload-preview-url';
+import { injectBackToList } from '../../../admin-details-page';
 
 @Component({
   selector: 'tamu-gisc-organization-add-edit-form',
@@ -34,7 +35,8 @@ import { uploadPreviewUrl } from '../../../../images/upload-preview-url';
 export class OrganizationAddEditFormComponent implements OnInit {
   private readonly fb = inject(UntypedFormBuilder);
   private readonly at = inject(ActivatedRoute);
-  private readonly rt = inject(Router);
+  /** Leaves for the list once a save, create or delete has worked: the one the page was opened from (#2965). */
+  private readonly backToList = injectBackToList('/admin/organizations');
   private readonly as = inject(AssetsService);
   private readonly os = inject(OrganizationService);
   private readonly ss = inject(SeasonService);
@@ -86,16 +88,10 @@ export class OrganizationAddEditFormComponent implements OnInit {
           ...entity,
           season: entity?.season?.guid
         });
-
-        // Opening the page is not a change (#2942), though each control echoes the value it is given.
-        this.form.markAsPristine();
       });
     } else {
       this.activeSeasons$.pipe(take(1)).subscribe((season) => {
         this.form.patchValue({ season: season.guid });
-
-        // Opening the page is not a change (#2942), though each control echoes the value it is given.
-        this.form.markAsPristine();
       });
     }
   }
@@ -177,6 +173,6 @@ export class OrganizationAddEditFormComponent implements OnInit {
   }
 
   private _navigateBack() {
-    this.rt.navigate(['/admin/organizations']);
+    this.backToList();
   }
 }

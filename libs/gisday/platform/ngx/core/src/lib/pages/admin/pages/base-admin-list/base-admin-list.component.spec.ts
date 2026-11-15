@@ -3,7 +3,7 @@ import { Location } from '@angular/common';
 import { provideLocationMocks } from '@angular/common/testing';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
-import { EMPTY, firstValueFrom, of } from 'rxjs';
+import { EMPTY, firstValueFrom, of, throwError } from 'rxjs';
 
 import { BaseService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
@@ -179,5 +179,68 @@ describe('BaseAdminListComponent search, on the way back from a details page', (
     const { component } = open({ navigationId: 3 });
 
     expect(component.search.value).toBe('');
+  });
+});
+
+@Component({ template: '', standalone: false })
+class DeletingListComponent extends BaseAdminListComponent<GuidIdentity> {
+  public reads = 0;
+  public refuse = false;
+
+  protected readonly entityService = {
+    getEntities: () => of([]),
+    getEntitiesForActiveSeason: () => of([]),
+    getEntitiesForSeason: () => {
+      this.reads++;
+
+      return of([{ guid: 'a' }]);
+    },
+    deleteEntities: () => (this.refuse ? throwError(() => ({ status: 404, statusText: 'Not Found' })) : of({}))
+  } as unknown as BaseService<GuidIdentity>;
+}
+
+/**
+ * #2992. Research Competitions' Delete did nothing: the API refused it, and the page said nothing. A delete that works
+ * reads the list again, once, so the row goes.
+ */
+describe('BaseAdminListComponent delete', () => {
+  function open(refuse: boolean) {
+    const toast = jest.fn();
+
+    TestBed.configureTestingModule({
+      declarations: [DeletingListComponent],
+      providers: [
+        { provide: SeasonService, useValue: { seasons$: of([]), activeSeason$: of({ guid: 'season-2026' }) } },
+        { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
+        { provide: Router, useValue: { events: EMPTY } },
+        { provide: ModalService, useValue: { open: () => of({ delete: true, identities: ['a'] }) } },
+        { provide: NotificationService, useValue: { toast } }
+      ]
+    });
+
+    const component = TestBed.createComponent(DeletingListComponent).componentInstance;
+
+    component.refuse = refuse;
+    component.ngOnInit();
+    component.entitiesForActiveSeasonOrForSeasonGuid$.subscribe();
+
+    return { component, toast };
+  }
+
+  it('reads the list again once after a delete, so the row goes', () => {
+    const { component } = open(false);
+    const before = component.reads;
+
+    component.promptDeleteModal('Submission');
+
+    expect(component.reads).toBe(before + 1);
+  });
+
+  it('says so when nothing was deleted', () => {
+    const { component, toast } = open(true);
+
+    component.promptDeleteModal('Submission');
+
+    expect(toast).toHaveBeenCalledWith(expect.objectContaining({ title: 'Submission Not Deleted' }));
   });
 });

@@ -146,6 +146,23 @@ describe('EventViewComponent search', () => {
     expect(names(fixture)).toEqual(['Opening keynote']);
   });
 
+  it("clears the search from the shared textbox's x, listing every session again (#2963)", () => {
+    const fixture = open();
+    const clear = () =>
+      root(fixture).querySelector('#default-content tamu-gisc-textbox button[aria-label="Clear the search"]') as HTMLButtonElement;
+
+    expect(clear()).toBeNull();
+    search(fixture, 'mapathon');
+    expect(names(fixture)).toEqual(['Mapathon']);
+
+    clear().click();
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.search.value).toBe('');
+    expect(clear()).toBeNull();
+    expect(names(fixture)).toEqual(['Opening keynote', 'Mapathon', 'Drone flights']);
+  });
+
   it('says no sessions match when none do, and lists them again when the search is cleared', () => {
     const fixture = open();
 

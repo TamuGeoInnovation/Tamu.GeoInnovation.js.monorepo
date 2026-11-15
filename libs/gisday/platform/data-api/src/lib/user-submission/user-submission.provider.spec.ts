@@ -535,6 +535,59 @@ describe('UserSubmissionProvider', () => {
   });
 
   /**
+   * #2990: the review email goes to the submitter's own account address. The typed one had been a test address, or one
+   * no directory knew, and the email went there.
+   */
+  describe('who the review email goes to', () => {
+    const sent = async (participants: Array<{ name: string; email: string }>, accountEmail: string | null) => {
+      (profiles.profilesOf as jest.Mock).mockResolvedValue(
+        new Map([[OWNER, accountEmail ? ({ email: accountEmail } as never) : null]])
+      );
+      jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission({ participants, title: 'T' }));
+
+      await provider.updateUserSubmission('sub-1', 'r', { acceptance: true }, REVIEWER_PERMS, 'gisday.tamu.edu');
+      await new Promise((resolve) => setImmediate(resolve));
+
+      return (contactService.sendMessage as jest.Mock).mock.calls[0][0];
+    };
+
+    it("goes to the account's address, not the address the submitter typed for themselves", async () => {
+      const email = await sent([{ name: 'Dan', email: 'dan@test.com' }], 'daniel@tamu.edu');
+
+      expect(email.to).toBe('daniel@tamu.edu');
+      expect(email.cc).toBe('');
+    });
+
+    it('copies the other members of a group, each once', async () => {
+      const email = await sent(
+        [
+          { name: 'Ana', email: 'ana@agnet.tamu.edu' },
+          { name: 'Ben', email: 'ben@tamu.edu' },
+          { name: 'Ben', email: 'BEN@tamu.edu' },
+          { name: 'Ana', email: 'ana@tamu.edu' }
+        ],
+        'ana@tamu.edu'
+      );
+
+      expect(email.to).toBe('ana@tamu.edu');
+      expect(email.cc).toBe('ben@tamu.edu');
+    });
+
+    it('goes to the typed address when the account has none', async () => {
+      const email = await sent(
+        [
+          { name: 'Ana', email: 'ana@tamu.edu' },
+          { name: 'Ben', email: 'ben@tamu.edu' }
+        ],
+        null
+      );
+
+      expect(email.to).toBe('ana@tamu.edu');
+      expect(email.cc).toBe('ben@tamu.edu');
+    });
+  });
+
+  /**
    * #2958: an admin approves or rejects the selected submissions at once. Each is reviewed exactly as Submit Review
    * reviews one - the decision recorded, the submitter emailed from the reviewer's site - and the result says which were
    * done and which failed, by title.
@@ -769,6 +822,32 @@ describe('UserSubmissionProvider', () => {
       jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(null);
 
       await expect(provider.deleteUserSubmission('missing', OWNER)).rejects.toThrow(NotFoundException);
+    });
+  });
+
+  // #2992: Research Competitions' Delete sends the selected ids at once, and there was no route for them.
+  describe('.deleteUserSubmissions()', () => {
+    const A = '0f8c9a52-1b2c-4d3e-8f4a-5b6c7d8e9f01';
+    const B = '1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d';
+
+    it('deletes each selected submission, once each', async () => {
+      jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission());
+
+      await expect(provider.deleteUserSubmissions([A, B, A], 'r', ['delete:competitions'])).resolves.toEqual({ deleted: 2 });
+      expect((submissionRepo.delete as jest.Mock).mock.calls.map((c) => c[0])).toEqual([A, B]);
+    });
+
+    it('refuses anyone without delete:competitions, even an owner, and deletes nothing', async () => {
+      await expect(provider.deleteUserSubmissions([A], OWNER, [])).rejects.toThrow(ForbiddenException);
+      expect(submissionRepo.delete).not.toHaveBeenCalled();
+    });
+
+    it('refuses an empty list or an id that is not a submission id, and deletes nothing', async () => {
+      await expect(provider.deleteUserSubmissions([], 'r', ['delete:competitions'])).rejects.toThrow(BadRequestException);
+      await expect(provider.deleteUserSubmissions([A, '1; drop'], 'r', ['delete:competitions'])).rejects.toThrow(
+        BadRequestException
+      );
+      expect(submissionRepo.delete).not.toHaveBeenCalled();
     });
   });
 

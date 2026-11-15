@@ -36,6 +36,32 @@ describe('AbstractValueAccessorFormComponent', () => {
     component.registerOnTouched(component.writeValue(true));
     expect(component.value).toBeTruthy();
   });
+  // #2964: a value the form writes is the form's own, not a change for the control to report back.
+  it('takes a value the form writes without reporting it as a change or a touch', () => {
+    const onChange = vi.fn();
+    const onTouched = vi.fn();
+    component.registerOnChange(onChange);
+    component.registerOnTouched(onTouched);
+
+    component.writeValue(true);
+
+    expect(component.value).toBe(true);
+    expect(onChange).not.toHaveBeenCalled();
+    expect(onTouched).not.toHaveBeenCalled();
+  });
+
+  it('reports a value the control sets itself, as from the user', () => {
+    const onChange = vi.fn();
+    const onTouched = vi.fn();
+    component.registerOnChange(onChange);
+    component.registerOnTouched(onTouched);
+
+    component.value = true;
+
+    expect(onChange).toHaveBeenCalledWith(true);
+    expect(onTouched).toHaveBeenCalled();
+  });
+
   it('should correctly evaluate setDisabledState', () => {
     component.setDisabledState(true);
     expect(component.disabled()).toBeTruthy();

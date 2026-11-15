@@ -4,6 +4,7 @@ import { Location } from '@angular/common';
 import { AbstractControl } from '@angular/forms';
 import { ActivatedRoute, Router, UrlTree } from '@angular/router';
 
+import { AdminDetailsPage } from '@tamu-gisc/gisday/platform/ngx/common';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { AlertModalComponent, AlertModalData } from '@tamu-gisc/ui-kits/ngx/layout/modal/alert-modal';
 
@@ -23,14 +24,27 @@ import { AlertModalComponent, AlertModalData } from '@tamu-gisc/ui-kits/ngx/layo
  * the key comes up, after every handler of its keydown has run, whichever order they were added in. It is the keyup,
  * too, that would close a modal opened on the keydown, so the question asked here could never be read.
  *
- * A page adopts it by extending it and, if it has a form, naming it in `detailsForm()`.
+ * **Save, Create and Delete go back the same way** (#2965), once they have worked: a page that saves itself calls
+ * `backToList()`; the shared add-and-edit forms in gisday/platform/ngx/common reach it through AdminDetailsPage. Leaving
+ * that way never asks "Leave without saving?": what was on the page has been saved. A create that stays on its page,
+ * as Create Class does with the sections it could not add, does not call it.
+ *
+ * A page adopts it by extending it, providing itself as the AdminDetailsPage its form goes back through, and, if it has
+ * a form, naming it in `detailsForm()`:
+ *
+ * ```ts
+ * @Component({ ..., providers: [provideAdminDetailsPage(() => TagsEditComponent)] })
+ * export class TagsEditComponent extends BaseAdminDetailsPageComponent { ... }
+ * ```
+ *
+ * The provider cannot be given here: Angular does not pass a base component's providers on to those extending it.
  */
 @Component({
   selector: 'tamu-gisc-base-admin-details-page',
   template: '',
   standalone: false
 })
-export abstract class BaseAdminDetailsPageComponent {
+export abstract class BaseAdminDetailsPageComponent implements AdminDetailsPage {
   private readonly detailsRouter = inject(Router);
   private readonly detailsRoute = inject(ActivatedRoute);
   private readonly detailsLocation = inject(Location);

@@ -299,8 +299,12 @@ export class DateTimePickerComponent implements ControlValueAccessor, AfterViewI
     this.tooltipComponent().isVisible.set(false);
   }
 
+  /**
+   * Shows a value from the form without reporting it back as a change or a touch: a form loaded with a record would
+   * otherwise count as changed the moment it opened (#2964).
+   */
   public writeValue(v) {
-    this.value = v;
+    this._value.set(isValidDate(v) ? new Date(v.getTime()) : null);
   }
 
   public registerOnChange(fn) {

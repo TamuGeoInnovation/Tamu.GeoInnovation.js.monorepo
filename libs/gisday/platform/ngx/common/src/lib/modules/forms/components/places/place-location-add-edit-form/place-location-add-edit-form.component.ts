@@ -1,20 +1,12 @@
 import { Component, OnInit, inject, input, signal } from '@angular/core';
-import {
-  AbstractControl,
-  UntypedFormArray,
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  FormsModule,
-  ReactiveFormsModule
-} from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Observable, filter, map, of, shareReplay, switchMap, take } from 'rxjs';
 
 import { Place, PlaceLink } from '@tamu-gisc/gisday/platform/data-api';
 import { AssetsService, PlaceService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { serverMessage } from '../../../../../utils/server-message';
 
 import { formToFormData } from '../../../../../utils/form-to-form-data';
 import { PlaceVisibilityOptions } from '../../../../../enums/place-visibility-options.enum';
@@ -27,13 +19,13 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
 import { ImagePreviewComponent } from '../../../../images/components/image-preview/image-preview.component';
 import { uploadPreviewUrl } from '../../../../images/upload-preview-url';
+import { injectBackToList } from '../../../admin-details-page';
 
 @Component({
   selector: 'tamu-gisc-place-location-add-edit-form',
   templateUrl: './place-location-add-edit-form.component.html',
   styleUrls: ['./place-location-add-edit-form.component.scss'],
-  imports: [
-    ImagePreviewComponent,
+  imports: [ImagePreviewComponent, 
     FormsModule,
     ReactiveFormsModule,
     TextboxComponent,
@@ -48,7 +40,8 @@ import { uploadPreviewUrl } from '../../../../images/upload-preview-url';
 export class PlaceLocationAddEditFormComponent implements OnInit {
   private readonly fb = inject(UntypedFormBuilder);
   private readonly at = inject(ActivatedRoute);
-  private readonly rt = inject(Router);
+  /** Leaves for the list once a save, create or delete has worked: the one the page was opened from (#2965). */
+  private readonly backToList = injectBackToList('/admin/places');
   private readonly as = inject(AssetsService);
   private readonly ps = inject(PlaceService);
   private readonly sn = inject(DomSanitizer);
@@ -107,18 +100,13 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
 
         // If the entity has a season, remove the season control from the form
         this.form.removeControl('season');
-
-        // Opening the page is not a change (#2942), though each control echoes the value it is given.
-        this.form.markAsPristine();
       });
+
     } else {
       this.ss.activeSeason$.pipe(take(1)).subscribe((season) => {
         this.form.patchValue({
           season: season.guid
         });
-
-        // Opening the page is not a change (#2942), though each control echoes the value it is given.
-        this.form.markAsPristine();
       });
     }
 
@@ -155,7 +143,7 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'place-delete-failed',
           title: 'Delete Place',
-          message: serverMessage(err, `Error deleting place: ${err.status}`)
+          message: `Error deleting place: ${err.status}`
         });
       }
     });
@@ -206,7 +194,7 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'place-update-failed',
           title: 'Update Place',
-          message: serverMessage(err, `Error updating place: ${err.status}`)
+          message: `Error updating place: ${err.status}`
         });
       }
     });
@@ -229,13 +217,13 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'place-create-failed',
           title: 'Create Place',
-          message: serverMessage(err, `Error creating place: ${err.status}`)
+          message: `Error creating place: ${err.status}`
         });
       }
     });
   }
 
   private _navigateBack() {
-    this.rt.navigate(['/admin/places']);
+    this.backToList();
   }
 }
