@@ -25,8 +25,9 @@ The door itself is a data fault and is being fixed at source
 the next one survivable, because the application cannot tell a dead piece of network from a live one.
 ([#2843](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2843))
 
-| Before |
-| --- |
-| ![No reasonable route was found, between two searched buildings](../screenshots/2843-route-destination/omb-to-msc-both-from-dropdown-no-route.jpg) |
+| Before | After |
+| --- | --- |
+| ![No reasonable route was found, between two searched buildings](../screenshots/2843-route-destination/omb-to-msc-both-from-dropdown-no-route.jpg) | ![The same trip, ten minutes on foot](../screenshots/2843-route-destination/after-local-build-omb-to-msc-routes.jpg) |
 
-An "after" capture needs a dev server built from the branch; it is added to the pull request before merging.
+The same trip, both ends chosen from the search box: ten minutes on foot, drawn on the map. Verified against
+production's own entrances and routing services, which is where the fault was.
