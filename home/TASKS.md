@@ -21,6 +21,10 @@ are in `libs/gisday/platform/data-api/src/lib/check-in/`.
 > branch complete. Until then the lab takes them, and the director opens a PR only after they are pushed (DIRECTOR.md,
 > "A pull request opens with its screenshots").
 
+> **The maintainer, 15 November 2026, to the director:** listeners never ask him anything. Every question goes to the
+> director, in your report or a message to the director's session, and he answers the director. **#3039 is withdrawn
+> from you:** the director makes that CLAUDE.md change itself, as he asked it to directly. Carry on with #3038 and #3029.
+
 ## Batch 58 (gisday: #3038, #3029 and #3039; 15 November 2026, from `work (gisday)`) (Low)
 
 1. **[#3038](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3038)**: an admin page that gets
