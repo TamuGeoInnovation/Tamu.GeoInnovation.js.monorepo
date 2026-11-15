@@ -1,3 +1,5 @@
+import { randomBytes } from 'crypto';
+
 import {
   HttpException,
   Injectable,
@@ -569,8 +571,10 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
 
     file = { ...file, buffer: fitted.buffer, size: fitted.buffer.length };
 
+    // A token of its own in every name (#3091): uploads are served as immutable for a year, so a photo saved under the last
+    // one's name (two uploads of headshot.jpg) would go on showing the old photo in every browser that had seen it.
     return this.assetService.saveAsset(this._resourcePath, file, 'speaker-image', {
-      prefix: `${guid}-`
+      prefix: `${guid}-${randomBytes(4).toString('hex')}-`
     });
   }
 

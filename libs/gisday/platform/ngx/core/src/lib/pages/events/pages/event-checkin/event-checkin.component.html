@@ -9,8 +9,7 @@
   <p>Sign in, or create an account, and you will come back here to be checked in.</p>
   } @case ('signed-out') {
   <h1 class="error"><span class="material-icons" aria-hidden="true">error</span> You are not checked in yet</h1>
-  <p class="trailer-1">Sign in, or create an account, to check in to this session.</p>
-  <tamu-gisc-button fit="snug" value="SIGN IN" (go)="signIn()"></tamu-gisc-button>
+  <p>Sign in, or create an account, to check in to this session.</p>
   } @case ('profile') {
   <h1 class="error"><span class="material-icons" aria-hidden="true">error</span> You are not checked in yet</h1>
   <p>Complete your <a routerLink="/account/details">profile</a> first, then scan the QR code again.</p>
@@ -29,7 +28,15 @@
   } @case ('not-found') {
   <h1 class="error"><span class="material-icons" aria-hidden="true">error</span> You are not checked in</h1>
   <p>This session could not be found. Scan the QR code shown in the session again.</p>
-  } } @if (state() !== 'checking' && state() !== 'signing-in' && state() !== 'not-found') {
-  <tamu-gisc-button class="leader-1" fit="snug" [look]="'secondary'" value="Go to the session" [routerLink]="['/sessions/details', guid]"></tamu-gisc-button>
-  }
+  } }
+  <!-- One button per row, spaced with the site's leader-1 (#3089). -->
+  <div class="checkin-actions">
+    @if (state() === 'signed-out') {
+    <div class="leader-1"><tamu-gisc-button fit="snug" value="SIGN IN" (go)="signIn()"></tamu-gisc-button></div>
+    } @if (state() !== 'checking' && state() !== 'signing-in' && state() !== 'not-found') {
+    <div class="leader-1">
+      <tamu-gisc-button fit="snug" [look]="'secondary'" value="Go to the session" [routerLink]="['/sessions/details', guid]"></tamu-gisc-button>
+    </div>
+    }
+  </div>
 </div>

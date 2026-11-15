@@ -439,7 +439,8 @@ export class SpeakerEditService {
     const edit = await this.pendingEdit(editGuid);
     const buffer = edit.photoPath ? await readFile(join(appData(), edit.photoPath)) : null;
     // The speaker provider prefixes the speaker's guid, and its upload check names the file for its content (#2937).
-    const photo = buffer ? { buffer, originalname: 'photo' } : undefined;
+    // Named for this edit, so a new photo never takes the old one's address (#3091): uploads are served as immutable.
+    const photo = buffer ? { buffer, originalname: `photo-${edit.guid}` } : undefined;
 
     await this.speakerProvider.applySelfEdit(
       edit.speaker.guid,
