@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch 51 (gisday: #2948 join table)**, on `feat/2948-season-competition-types`; started 6:35 AM Central, 15 November. Entity, service and migration written; migration proven up/down/up, unique pair and cascade in a throwaway SQL Server (removed); red run going.
+- **Batch 51 (gisday: #2948 join table)**, on `feat/2948-season-competition-types`; started 6:35 AM Central, 15 November. Red proven; code, migration and kubernetes-config script (`7b98643`, never run) done; development merged; full check running. Filed #3013 (gisday-common specs never run).
 
 ## Finished
 - **Batch 50 (gisday: #3006)** (report `home/reports/2026-11-15-50.md`): branch ready, `feat/3006-check-in-dashboard` on the fork at `551cd25c2`, no PR. Check-ins dashboard on a shared `EventDashboard` (API) and `EventDashboardComponent` (page) both dashboards extend; RSVPs beside check-ins; `read:checkins`; site filter. Filed and fixed #3010 (RSVPs dashboard ignored the site). Red first; full check exit 0. No screenshots. Three questions.
