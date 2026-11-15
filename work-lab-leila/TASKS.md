@@ -44,6 +44,16 @@
 > undoable, or go on to the next part or batch. The director asks him and brings back his answer (DIRECTOR.md, "Every
 > listener").
 
+## Batch 71 (gisday: screenshots for the finalists' profile email, #3043/#3045/#3046/#3044; 15 November 2026, from `work (gisday)`) (**Urgent**) - **as soon as `feat/profile-email-finalists` appears on the fork, before anything else**
+
+Home is building it now. The maintainer is holding the finalists' profile emails until it ships. Watch the fork
+(`git ls-remote fork feat/profile-email-finalists`); when it appears, on your signed-in local stack with your own test
+submissions (a group one whose co-authors are typed into one email box, one co-author by NetID, and one person with no
+speaker record), Research Competitions › Send profile email, **never Send**: before (`development`) and after (the
+window: the new text, the Markdown rendered in the preview, the count including the co-authors, and the list of who
+won't be emailed). Commit to `docs/screenshots/profile-email-finalists/`, link from the release notes, push (fast-forward,
+no force; keep home's `.pr-body.md` last if there is one), and give the PR body's image section in your report.
+
 ## Batch 60 (gisday: screenshots for #3006, the check-in dashboard, and #3010; 15 November 2026, from `work (gisday)`) (Medium) - **first, before 59**
 
 Home built #3006 (and fixed #3010, the RSVPs dashboard listing every organization's sessions on gisday.tamu.edu) on
