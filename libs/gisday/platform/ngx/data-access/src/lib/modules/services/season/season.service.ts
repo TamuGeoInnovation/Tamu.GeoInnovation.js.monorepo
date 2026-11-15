@@ -170,7 +170,7 @@ export class SeasonService extends BaseService<Season> {
       .pipe(tap(() => this._signal$.next()));
   }
 
-  /** Sets when the season's poster and presentation competitions close (#2934); every page reading a season sees it. */
+  /** Sets when the season's competitions close (#2934, #2962); every page reading a season sees it. */
   public setSubmissionDeadlines(guid: string, deadlines: SubmissionDeadlines) {
     return this.http1
       .patch<SubmissionDeadlines>(`${this.resource}/${guid}/submission-deadlines`, deadlines)

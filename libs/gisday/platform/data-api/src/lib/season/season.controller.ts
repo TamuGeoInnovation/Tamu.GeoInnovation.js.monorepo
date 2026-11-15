@@ -37,7 +37,7 @@ export class SeasonController {
     return this.seasonService.clonePreviousSeason();
   }
 
-  // When the poster and presentation competitions close (#2934), set from the competitions' admin page, so by those who
+  // When each competition closes (#2934, #2962), set from the competitions' admin page, so by those who
   // run the competitions rather than those who may change the season.
   @Permissions(['update:competitions'])
   @UseGuards(JwtGuard, PermissionsGuard)

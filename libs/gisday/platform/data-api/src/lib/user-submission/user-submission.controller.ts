@@ -52,6 +52,44 @@ export class UserSubmissionController {
     return this.files.zipForSeason(seasonGuid, req.user);
   }
 
+  /**
+   * Approves or rejects the named submissions at once, for Research Competitions' selected rows (#2958): each is reviewed
+   * and emailed as Submit Review does one, from the reviewer's site. Body: `{ submissions: [guid], acceptance, message? }`.
+   */
+  @Permissions(['update:competitions'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Post('review')
+  public reviewMany(
+    @Body()
+    body: { submissions: Array<string>; acceptance: boolean; message?: string; templates?: Record<string, string> },
+    @Request() req
+  ) {
+    return this.provider.reviewUserSubmissions(
+      body?.submissions,
+      req.user.sub,
+      // `templates`: the email text the reviewer saw and approved, by kind (#2981).
+      { acceptance: body?.acceptance, message: body?.message, templates: body?.templates },
+      req.user.permissions,
+      siteHost(req.headers)
+    );
+  }
+
+  /**
+   * The email approving or rejecting the named submissions would send, for the reviewer to read and edit first (#2981).
+   * Nothing is recorded or sent. Body: `{ submissions: [guid], acceptance, message? }`.
+   */
+  @Permissions(['update:competitions'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Post('review/preview')
+  public previewReview(@Body() body: { submissions: Array<string>; acceptance: boolean; message?: string }, @Request() req) {
+    return this.provider.previewReview(
+      body?.submissions,
+      { acceptance: body?.acceptance, message: body?.message },
+      req.user.permissions,
+      siteHost(req.headers)
+    );
+  }
+
   // A submission's attached files (#2933): its owner, or anyone who may read the competitions.
   @UseGuards(JwtGuard)
   @Get(':guid/files')

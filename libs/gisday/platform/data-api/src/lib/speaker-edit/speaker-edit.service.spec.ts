@@ -2,7 +2,7 @@ import { existsSync, mkdtempSync, rmSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
 
-import { NotFoundException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 import { declaredJpeg } from '@tamu-gisc/common/node/images';
 
@@ -109,7 +109,8 @@ describe('SpeakerEditService', () => {
         applySelfEdit: async (guid: string, fields: object, photo?: object) => applied.push({ guid, fields, photo })
       } as never,
       { sendMessage: jest.fn(async (m) => sent.push(m)) } as never,
-      { findOneActive: async () => ({ guid: 'season' }) } as never
+      { findOneActive: async () => ({ guid: 'season' }) } as never,
+      {} as never
     );
   });
 
@@ -338,5 +339,97 @@ describe('senderAs (#2951)', () => {
     expect(senderAs('Texas A&M GIS Day', 'TxGIS Day <gisday@example.edu>')).toBe('"Texas A&M GIS Day" <gisday@example.edu>');
     expect(senderAs('UCGIS GIS Day', 'gisday@example.edu')).toBe('"UCGIS GIS Day" <gisday@example.edu>');
     expect(senderAs('TxGIS Day', undefined)).toBeUndefined();
+  });
+});
+
+/**
+ * #2958: "Send profile email" on Research Competitions. Each selected submission's people are matched to their season's
+ * speaker records by email, ignoring case and spaces, and each speaker found gets their own link as the Speakers list
+ * sends it. Anyone with no speaker record is returned by name, so the admin can add them, rather than silently skipped.
+ */
+describe('SpeakerEditService.sendLinksForSubmissions (#2958)', () => {
+  const S2026 = 'season-2026';
+  const S1 = '5a1d3c2e-0b4f-4c6a-9e8d-7f6a5b4c3d21';
+  const S2 = '6b2e4d3f-1c5a-4d7b-8f9e-8a7b6c5d4e32';
+  const S3 = '7c3f5e4a-2d6b-4e8c-9a0f-9b8c7d6e5f43';
+  const speakers = [
+    { guid: 'sp-ana', firstName: 'Ana', lastName: 'Ruiz', email: ' Ana.Ruiz@TAMU.edu ', season: { guid: S2026 } },
+    { guid: 'sp-cy', firstName: 'Cy', lastName: 'Diaz', email: 'cy@tamu.edu', season: { guid: S2026 } },
+    // Last year's record is not this year's speaker.
+    { guid: 'sp-ben-2025', firstName: 'Ben', lastName: 'Lee', email: 'ben@tamu.edu', season: { guid: 'season-2025' } }
+  ];
+  const submissions = [
+    {
+      guid: S1,
+      title: 'Flood maps',
+      season: { guid: S2026 },
+      participants: [
+        { name: 'Ana Ruiz', email: 'ana.ruiz@tamu.edu' },
+        { name: 'Ben Lee', email: 'BEN@tamu.edu' }
+      ]
+    },
+    {
+      guid: S2,
+      title: 'Campus trees',
+      season: { guid: S2026 },
+      participants: [
+        { name: 'Cy Diaz', email: 'CY@tamu.edu' },
+        { name: 'Ana Ruiz', email: 'ana.ruiz@tamu.edu' },
+        { name: 'Dee Fox', email: '' }
+      ]
+    },
+    // A participant with no name is named by their address.
+    { guid: S3, title: 'Soil moisture', season: { guid: S2026 }, participants: [{ name: ' ', email: 'ben@tamu.edu' }] }
+  ];
+
+  let sent: Array<{ to: string; text: string }>;
+  let service: SpeakerEditService;
+  const values = (condition) => condition?._value ?? [condition];
+
+  beforeEach(() => {
+    sent = [];
+    service = new SpeakerEditService(
+      { create: (x) => x, save: jest.fn(async (x) => x) } as never,
+      {} as never,
+      {
+        find: jest.fn(async ({ where }) =>
+          speakers.filter((s) =>
+            where.guid ? values(where.guid).includes(s.guid) : values(where.season.guid).includes(s.season.guid)
+          )
+        )
+      } as never,
+      {} as never,
+      {} as never,
+      { sendMessage: jest.fn(async (m) => sent.push(m)) } as never,
+      { findOneActive: async () => ({ guid: S2026 }) } as never,
+      { find: jest.fn(async ({ where }) => submissions.filter((s) => values(where.guid).includes(s.guid))) } as never
+    );
+  });
+
+  it('emails each matched speaker once, ignoring case, and names everyone with no speaker record', async () => {
+    const result = await service.sendLinksForSubmissions([S1, S2], 'gisday.tamu.edu');
+
+    expect(result).toEqual({
+      sent: ['Ana Ruiz', 'Cy Diaz'],
+      skipped: [],
+      unmatched: [
+        { name: 'Ben Lee', submission: 'Flood maps' },
+        { name: 'Dee Fox', submission: 'Campus trees' }
+      ]
+    });
+    expect(sent.map((m) => m.to)).toEqual(['Ana.Ruiz@TAMU.edu', 'cy@tamu.edu']);
+    expect(sent[0].text).toContain('https://gisday.tamu.edu/presenters/edit/');
+  });
+
+  it('sends nothing, and still names them, when no one has a speaker record', async () => {
+    const result = await service.sendLinksForSubmissions([S3]);
+
+    expect(result).toEqual({ sent: [], skipped: [], unmatched: [{ name: 'ben@tamu.edu', submission: 'Soil moisture' }] });
+    expect(sent).toEqual([]);
+  });
+
+  it('refuses an empty list', async () => {
+    await expect(service.sendLinksForSubmissions([])).rejects.toThrow(BadRequestException);
+    expect(sent).toEqual([]);
   });
 });

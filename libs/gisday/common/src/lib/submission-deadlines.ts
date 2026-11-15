@@ -1,51 +1,63 @@
 /**
- * When the poster and presentation competitions stop taking submissions (#2934). An admin sets them on the season, one
- * pair per competition: when new submissions and edits close, and a later one for when the files attached to them
- * (#2933) close. An empty moment means that side stays open. One set of rules, read by the API, which enforces them,
- * and by the site, which shows them.
+ * When each research competition stops taking submissions: poster and presentation (#2934), paper and cartography
+ * (#2962). An admin sets them on the season, one pair per competition: when new submissions and edits close, and a
+ * later one for when the files attached to them (#2933) close. An empty moment means that side stays open. One set of
+ * rules, read by the API, which enforces them, and by the site, which shows them.
+ *
+ * The rules are one table, the competitions by the two kinds of deadline. A competition added to
+ * `DEADLINE_COMPETITION_TABLE` gets its two fields, its checks and its place in the admin page's Submission deadlines
+ * section from here; it needs only its two columns on the season (a test checks they are there) and a migration.
  *
  * A competition closes at its moment: a request made at that moment or later is refused. Reviewers, who hold
  * `update:competitions`, are not held to them; they review after submissions have closed.
  */
 
-/** The competitions that close at a deadline, as `Submission.submissionType` names them. */
-export const DEADLINE_COMPETITIONS = Object.freeze(['poster', 'presentation'] as const);
-
-export type DeadlineCompetition = (typeof DEADLINE_COMPETITIONS)[number];
-
-/** The four moments, as the season holds them: a date, the text the API sends, or empty for open. */
-export interface SubmissionDeadlines {
-  posterSubmissionsCloseAt?: Date | string | null;
-  posterFilesCloseAt?: Date | string | null;
-  presentationSubmissionsCloseAt?: Date | string | null;
-  presentationFilesCloseAt?: Date | string | null;
-}
-
-export const SUBMISSION_DEADLINE_FIELDS = Object.freeze([
-  'posterSubmissionsCloseAt',
-  'posterFilesCloseAt',
-  'presentationSubmissionsCloseAt',
-  'presentationFilesCloseAt'
+/**
+ * The competitions that close at a deadline, as `Submission.submissionType` names them, in the order the admin page
+ * lists them, with its name for each. Every competition type is here (#2962).
+ */
+export const DEADLINE_COMPETITION_TABLE = Object.freeze([
+  { competition: 'poster', label: 'Poster competition' },
+  { competition: 'presentation', label: 'Presentation competition' },
+  { competition: 'paper', label: 'Paper competition' },
+  { competition: 'cartography', label: 'Cartography competition' }
 ] as const);
 
-export type SubmissionDeadlineField = (typeof SUBMISSION_DEADLINE_FIELDS)[number];
+export type DeadlineCompetition = (typeof DEADLINE_COMPETITION_TABLE)[number]['competition'];
+
+export const DEADLINE_COMPETITIONS: ReadonlyArray<DeadlineCompetition> = Object.freeze(
+  DEADLINE_COMPETITION_TABLE.map((row) => row.competition)
+);
 
 /** What a deadline closes: the submission itself (new ones and edits), or the files attached to it. */
-export type DeadlineKind = 'submissions' | 'files';
+export const DEADLINE_KINDS = Object.freeze(['submissions', 'files'] as const);
 
-/** Whether a submission type is one of the competitions that close at a deadline. */
-export function isDeadlineCompetition(submissionType: unknown): submissionType is DeadlineCompetition {
-  return DEADLINE_COMPETITIONS.includes(submissionType as DeadlineCompetition);
-}
+export type DeadlineKind = (typeof DEADLINE_KINDS)[number];
+
+/** A season's field for one competition's deadline of one kind: `posterSubmissionsCloseAt`, `paperFilesCloseAt`. */
+export type SubmissionDeadlineField = `${DeadlineCompetition}${Capitalize<DeadlineKind>}CloseAt`;
+
+/** The moments, as the season holds them: a date, the text the API sends, or empty for open. */
+export type SubmissionDeadlines = { [field in SubmissionDeadlineField]?: Date | string | null };
 
 /** The season's field for a competition's deadline of one kind. */
 export function deadlineField(competition: DeadlineCompetition, kind: DeadlineKind): SubmissionDeadlineField {
   return `${competition}${kind === 'submissions' ? 'Submissions' : 'Files'}CloseAt` as SubmissionDeadlineField;
 }
 
+/** Every deadline field, competition by competition, each competition's submissions before its files. */
+export const SUBMISSION_DEADLINE_FIELDS: ReadonlyArray<SubmissionDeadlineField> = Object.freeze(
+  DEADLINE_COMPETITIONS.flatMap((competition) => DEADLINE_KINDS.map((kind) => deadlineField(competition, kind)))
+);
+
+/** Whether a submission type is one of the competitions that close at a deadline. */
+export function isDeadlineCompetition(submissionType: unknown): submissionType is DeadlineCompetition {
+  return DEADLINE_COMPETITIONS.includes(submissionType as DeadlineCompetition);
+}
+
 /**
- * When a submission type's submissions, or its files, close, or `null` when they do not: the type has no deadline
- * (paper, cartography), or none is set.
+ * When a submission type's submissions, or its files, close, or `null` when they do not: the type has no deadline, or
+ * none is set.
  */
 export function closesAt(
   season: SubmissionDeadlines | null | undefined,

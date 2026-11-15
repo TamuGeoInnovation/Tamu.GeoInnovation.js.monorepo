@@ -13,6 +13,9 @@ import { AsyncPipe, DatePipe } from '@angular/common';
 import { EventDayGroup, ParseDateTimeStringsPipe, groupEventsByDay, sessionSearchFields } from '@tamu-gisc/gisday/platform/ngx/common';
 import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { GISDAY_SITE } from '@tamu-gisc/gisday/platform/ngx/common';
+import { siteListsSession } from '@tamu-gisc/gisday/common';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'tamu-gisc-event-list',
@@ -26,6 +29,21 @@ export class EventListComponent extends BaseAdminListComponent<Event> implements
 
   protected readonly entityService = inject(EventService);
   private readonly notifications = inject(NotificationService);
+  public readonly site = inject(GISDAY_SITE);
+
+  /**
+   * On a site that lists only some organizations' sessions (gisday.tamu.edu), the list starts with those, and this
+   * shows every organization's, as txgisday.org's admins share the database (#2986). 'all' or ''.
+   */
+  public readonly organizations = new FormControl('', { nonNullable: true });
+
+  protected override listFilters(): Record<string, FormControl<string>> {
+    return { ...super.listFilters(), organizations: this.organizations };
+  }
+
+  protected override keepEntity(event: Partial<Event>): boolean {
+    return this.organizations.value === 'all' || siteListsSession(this.site, event);
+  }
 
   /**
    * The season's events as one table per day, under its date (#1775).

@@ -5,7 +5,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Season } from '@tamu-gisc/gisday/platform/data-api';
 import { SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import {
-  DEADLINE_COMPETITIONS,
+  DEADLINE_COMPETITION_TABLE,
   DeadlineKind,
   SUBMISSION_DEADLINE_FIELDS,
   SubmissionDeadlineField,
@@ -21,8 +21,8 @@ import { AccordionContentDirective, AccordionDirective, AccordionHeaderDirective
 type DeadlinesForm = FormGroup<Record<SubmissionDeadlineField, FormControl<Date | string | null>>>;
 
 /**
- * When a season's poster and presentation competitions close (#2934), set by the admins on the competitions' page: for
- * each, when new submissions and edits close, and when, later, the files attached to them do. Empty leaves it open. The
+ * When a season's competitions close, poster and presentation (#2934), paper and cartography (#2962), set by the admins
+ * on the competitions' page: for each, when new submissions and edits close, and when, later, the files attached to them do. Empty leaves it open. The
  * API enforces them; the student's submission page shows them. Entered and shown as the scoring window is (#2474): the
  * picker, and beside it the moment in Central time whatever the admin's computer is set to.
  *
@@ -49,10 +49,8 @@ export class SubmissionDeadlinesComponent {
   /** The season whose deadlines are shown: the one the page's season picker has chosen. */
   public readonly season = input<Partial<Season> | null>(null);
 
-  public readonly competitions = DEADLINE_COMPETITIONS.map((key) => ({
-    key,
-    label: key === 'poster' ? 'Poster competition' : 'Presentation competition'
-  }));
+  /** One block per competition, from the shared table (#2962). */
+  public readonly competitions = DEADLINE_COMPETITION_TABLE.map(({ competition, label }) => ({ key: competition, label }));
 
   public readonly kinds: ReadonlyArray<{ kind: DeadlineKind; label: string }> = [
     { kind: 'submissions', label: 'Submissions and edits close' },

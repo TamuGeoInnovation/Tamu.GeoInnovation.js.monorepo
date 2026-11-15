@@ -23,7 +23,7 @@ import { CheckboxGroupComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { GISDAY_SITE } from '@tamu-gisc/gisday/platform/ngx/common';
-import { siteSessionPlaces } from '@tamu-gisc/gisday/common';
+import { placesShownOn, siteSessionPlaces } from '@tamu-gisc/gisday/common';
 
 @Component({
   selector: 'tamu-gisc-event-view',
@@ -140,14 +140,8 @@ export class EventViewComponent implements OnInit, OnDestroy {
       shareReplay(1)
     );
     // A site that lists only some places' sessions offers only those places as filters.
-    this.organizations$ = this.sessionPlaces$.pipe(
-      withLatestFrom(places$),
-      map(([{ only }, places]) =>
-        places.filter(
-          (place) =>
-            place?.visibilitySettings?.includes(PlaceVisibilityOptions.SessionsFilter) && (only === null || only.includes(place.guid))
-        )
-      ),
+    this.organizations$ = places$.pipe(
+      map((places) => placesShownOn(this.site, places, PlaceVisibilityOptions.SessionsFilter)),
       shareReplay(1)
     );
 

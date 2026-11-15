@@ -15,6 +15,7 @@ import {
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { formToFormData } from '../../../../../utils/form-to-form-data';
+import { classBannerSpeaker } from '../../../../../utils/speakers';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { FileComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -94,15 +95,7 @@ export class SpeakerAddEditFormComponent implements OnInit {
     this.bannerSpeaker$ = combineLatest([
       this.form.valueChanges.pipe(startWith(this.form.getRawValue())),
       this.universities$.pipe(startWith([] as Array<Partial<University>>))
-    ]).pipe(
-      map(
-        ([value, universities]) =>
-          ({
-            university: (universities ?? []).find((university) => university.guid === value.university) ?? null,
-            graduationYear: value.graduationYear ?? ''
-          }) as Partial<Speaker>
-      )
-    );
+    ]).pipe(map(([value, universities]) => classBannerSpeaker(value.university, value.graduationYear, universities)));
 
     this.entity$ = this.at.params.pipe(
       map((params) => params.guid),

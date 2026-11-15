@@ -7,6 +7,55 @@ import { SubmissionFileDto } from '@tamu-gisc/gisday/common';
 
 import { BaseService } from '../_base/base.service';
 
+/** The email a review would send, before it is sent (#2981): one group per kind of email in the selection. */
+export interface ReviewEmailPreview {
+  groups: Array<{
+    kind: string;
+    label: string;
+    count: number;
+    subject: string;
+    template: string;
+    example: { title: string; to: string; cc: string; values: Record<string, string> };
+  }>;
+}
+
+/** What approving or rejecting several submissions did, from the API (#2958). */
+export interface ReviewSubmissionsResult {
+  /** The titles of those reviewed. */
+  reviewed: Array<string>;
+  /** Each that failed, or was reviewed but not emailed, by title, with why. */
+  failed: Array<{ title: string; reason: string }>;
+}
+
+/**
+ * The toast an admin sees after approving or rejecting the selected submissions (#2958): how many were done, and each
+ * that failed, by title.
+ */
+export function reviewSubmissionsToast(
+  result: ReviewSubmissionsResult,
+  acceptance: boolean
+): { id: string; title: string; message: string } {
+  const done = acceptance ? 'Approved' : 'Rejected';
+  const count = result.reviewed.length;
+  // Only claimed when every one reviewed was emailed; otherwise the problems say which were not.
+  const allEmailed = !result.failed.some((f) => result.reviewed.includes(f.title));
+  const reviewed =
+    count === 1
+      ? `${done} "${result.reviewed[0]}"${allEmailed ? ' and emailed its submitter' : ''}.`
+      : `${done} ${count} submissions${allEmailed ? ' and emailed their submitters' : ''}.`;
+  const failed = result.failed.map((f) => `${f.title}: ${f.reason}`).join('; ');
+
+  return {
+    id: 'submission-review',
+    title: failed
+      ? `Some submissions were not ${done.toLowerCase()} or emailed`
+      : `${count === 1 ? 'Submission' : 'Submissions'} ${done.toLowerCase()}`,
+    message: [count ? reviewed : `None were ${done.toLowerCase()}.`, failed ? `Problems - ${failed}.` : '']
+      .filter(Boolean)
+      .join(' ')
+  };
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -18,6 +67,37 @@ export class UserSubmissionsService extends BaseService<Submission> {
 
   constructor() {
     super('user-submissions');
+  }
+
+  /**
+   * Approves or rejects the submissions at once, as Submit Review does one: each is recorded and its submitter emailed
+   * (#2958). One request for the whole selection.
+   */
+  public review(
+    submissionGuids: Array<string>,
+    acceptance: boolean,
+    message?: string,
+    /** The email text the reviewer saw and approved, by kind (#2981). */
+    templates?: Record<string, string>
+  ) {
+    return this.http1.post<ReviewSubmissionsResult>(`${this.resource}/review`, {
+      submissions: submissionGuids,
+      acceptance,
+      ...(message?.trim() ? { message: message.trim() } : {}),
+      ...(templates ? { templates } : {})
+    });
+  }
+
+  /**
+   * The email approving or rejecting the submissions would send, to read and edit before anything is sent (#2981).
+   * Nothing is recorded or sent.
+   */
+  public previewReview(submissionGuids: Array<string>, acceptance: boolean, message?: string) {
+    return this.http1.post<ReviewEmailPreview>(`${this.resource}/review/preview`, {
+      submissions: submissionGuids,
+      acceptance,
+      ...(message?.trim() ? { message: message.trim() } : {})
+    });
   }
 
   public getPresentationsForActiveSeason() {
