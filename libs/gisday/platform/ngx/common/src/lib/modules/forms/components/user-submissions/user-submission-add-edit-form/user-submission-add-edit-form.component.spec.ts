@@ -88,7 +88,10 @@ describe('UserSubmissionAddEditFormComponent, on Texas A&M site', () => {
   it("still shows the API's words when the competition has closed (#2934)", () => {
     const fixture = render('create');
     createEntity.mockReturnValue(
-      throwError(() => new HttpErrorResponse({ status: 403, error: { statusCode: 403, message: 'Submissions closed on 1 November.' } }))
+      throwError(
+        () =>
+          new HttpErrorResponse({ status: 403, error: { statusCode: 403, message: 'Submissions closed on 1 November.' } })
+      )
     );
 
     fixture.componentInstance.handleSubmission();

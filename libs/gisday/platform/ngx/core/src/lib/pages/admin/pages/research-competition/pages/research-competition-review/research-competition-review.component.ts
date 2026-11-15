@@ -7,7 +7,7 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { Submission } from '@tamu-gisc/gisday/platform/data-api';
 import { SeasonService, UserSubmissionsService, reviewSubmissionsToast } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
-import { SubmissionFilesComponent } from '@tamu-gisc/gisday/platform/ngx/common';
+import { serverMessage, SubmissionFilesComponent } from '@tamu-gisc/gisday/platform/ngx/common';
 import { SlideToggleComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -100,7 +100,7 @@ export class ResearchCompetitionReviewComponent extends BaseAdminDetailsPageComp
         this.ns.toast({
           id: 'delete-submission-error',
           title: 'Delete Submission',
-          message: `Error deleting submission: ${err.status}`
+          message: serverMessage(err, `Error deleting submission: ${err.status}`)
         });
       }
     });
@@ -141,7 +141,7 @@ export class ResearchCompetitionReviewComponent extends BaseAdminDetailsPageComp
           this.ns.toast({
             id: 'update-submission-error',
             title: 'Update Submission',
-            message: `Error inserting submission review: ${err.status}`
+            message: serverMessage(err, `Error inserting submission review: ${err.status}`)
           });
         }
       });

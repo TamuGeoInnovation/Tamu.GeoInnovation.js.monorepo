@@ -41,7 +41,7 @@ describe('serverMessage', () => {
     expect(serverMessage(refused(413, '<html>413 Request Entity Too Large</html>'), fallback)).toBe(fallback);
   });
 
-  it("gives the fallback for a server failure, whose message is not a reason the user can act on", () => {
+  it('gives the fallback for a server failure, whose message is not a reason the user can act on', () => {
     expect(serverMessage(refused(500, { statusCode: 500, message: 'Internal server error' }), fallback)).toBe(fallback);
   });
 

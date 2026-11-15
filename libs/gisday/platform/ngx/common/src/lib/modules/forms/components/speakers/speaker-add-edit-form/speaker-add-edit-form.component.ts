@@ -2,7 +2,20 @@ import { Component, OnInit, inject, input } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, combineLatest, distinctUntilChanged, filter, map, merge, of, race, shareReplay, startWith, switchMap, take } from 'rxjs';
+import {
+  Observable,
+  combineLatest,
+  distinctUntilChanged,
+  filter,
+  map,
+  merge,
+  of,
+  race,
+  shareReplay,
+  startWith,
+  switchMap,
+  take
+} from 'rxjs';
 
 import { Organization, Speaker, University } from '@tamu-gisc/gisday/platform/data-api';
 import {
@@ -13,6 +26,7 @@ import {
   UniversityService
 } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { serverMessage } from '../../../../../utils/server-message';
 
 import { formToFormData } from '../../../../../utils/form-to-form-data';
 import { classBannerSpeaker } from '../../../../../utils/speakers';
@@ -187,7 +201,7 @@ export class SpeakerAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'speaker-create-failed',
           title: 'Create Speaker',
-          message: `Error creating speaker: ${err.status}`
+          message: serverMessage(err, `Error creating speaker: ${err.status}`)
         });
       }
     });
@@ -211,7 +225,7 @@ export class SpeakerAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'speaker-update-failed',
           title: 'Update Speaker',
-          message: `Error updating speaker: ${err.status}`
+          message: serverMessage(err, `Error updating speaker: ${err.status}`)
         });
       }
     });
@@ -232,7 +246,7 @@ export class SpeakerAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'speaker-delete-failed',
           title: 'Delete Speaker',
-          message: `Error deleting speaker: ${err.status}`
+          message: serverMessage(err, `Error deleting speaker: ${err.status}`)
         });
       }
     });

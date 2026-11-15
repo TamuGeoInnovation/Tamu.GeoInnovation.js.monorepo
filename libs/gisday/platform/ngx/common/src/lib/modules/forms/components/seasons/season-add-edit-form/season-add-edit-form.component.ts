@@ -14,6 +14,7 @@ import { Observable, filter, map, shareReplay, switchMap, take } from 'rxjs';
 import { Season, SeasonDay } from '@tamu-gisc/gisday/platform/data-api';
 import { SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { serverMessage } from '../../../../../utils/server-message';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { SeasonsDayTileComponent } from '../seasons-day-tile/seasons-day-tile.component';
@@ -135,7 +136,7 @@ export class SeasonAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'season-update-failed',
           title: 'Update season',
-          message: `Error updating season: ${err.status}`
+          message: serverMessage(err, `Error updating season: ${err.status}`)
         });
       }
     });
@@ -161,7 +162,7 @@ export class SeasonAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'season-delete-failed',
           title: 'Delete season',
-          message: `Error deleting season: ${err.status}`
+          message: serverMessage(err, `Error deleting season: ${err.status}`)
         });
       }
     });

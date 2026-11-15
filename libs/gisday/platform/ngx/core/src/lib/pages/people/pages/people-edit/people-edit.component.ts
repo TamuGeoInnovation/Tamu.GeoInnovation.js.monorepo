@@ -12,6 +12,7 @@ import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
 import {
   classBannerSpeaker,
   ImagePreviewComponent,
+  serverMessage,
   SpeakerClassBannerComponent
 } from '@tamu-gisc/gisday/platform/ngx/common';
 
@@ -198,17 +199,9 @@ export class PeopleEditComponent implements OnInit {
 }
 
 function messageOf(err: unknown, fallback: string): string {
-  if (err instanceof HttpErrorResponse) {
-    if (err.status === 413) {
-      return 'The photo is too large. Please send one under 5 MB.';
-    }
-
-    const message = err.error?.message;
-
-    if (typeof message === 'string' && message) {
-      return message;
-    }
+  if (err instanceof HttpErrorResponse && err.status === 413) {
+    return 'The photo is too large. Please send one under 5 MB.';
   }
 
-  return fallback;
+  return serverMessage(err, fallback);
 }

@@ -6,6 +6,7 @@ import { Observable, filter, map, switchMap, take } from 'rxjs';
 import { EventLocation, Place } from '@tamu-gisc/gisday/platform/data-api';
 import { LocationService, PlaceService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { serverMessage } from '../../../../../utils/server-message';
 import { formatLatLonLines, isLatLonPolygon, parseLatLonLines } from '@tamu-gisc/common/utils/geometry';
 import { CHECK_IN_MAX_ACCURACY } from '@tamu-gisc/gisday/common';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -107,7 +108,7 @@ export class EventLocationAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'delete-event-location-error',
           title: 'Delete Event Location',
-          message: `Error deleting event location: ${err.status}`
+          message: serverMessage(err, `Error deleting event location: ${err.status}`)
         });
       }
     });
@@ -134,7 +135,7 @@ export class EventLocationAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'update-event-location-error',
           title: 'Update Event Location',
-          message: `Error updating event location: ${err.status}`
+          message: serverMessage(err, `Error updating event location: ${err.status}`)
         });
       }
     });
@@ -161,7 +162,7 @@ export class EventLocationAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'create-event-location-error',
           title: 'Create Event Location',
-          message: `Error creating event location: ${err.status}`
+          message: serverMessage(err, `Error creating event location: ${err.status}`)
         });
       }
     });

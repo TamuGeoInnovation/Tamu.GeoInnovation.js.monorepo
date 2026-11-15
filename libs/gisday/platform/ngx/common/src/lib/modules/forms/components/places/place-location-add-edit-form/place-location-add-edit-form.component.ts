@@ -1,5 +1,12 @@
 import { Component, OnInit, inject, input, signal } from '@angular/core';
-import { AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  AbstractControl,
+  UntypedFormArray,
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  FormsModule,
+  ReactiveFormsModule
+} from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Observable, filter, map, of, shareReplay, switchMap, take } from 'rxjs';
@@ -7,6 +14,7 @@ import { Observable, filter, map, of, shareReplay, switchMap, take } from 'rxjs'
 import { Place, PlaceLink } from '@tamu-gisc/gisday/platform/data-api';
 import { AssetsService, PlaceService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { serverMessage } from '../../../../../utils/server-message';
 
 import { formToFormData } from '../../../../../utils/form-to-form-data';
 import { PlaceVisibilityOptions } from '../../../../../enums/place-visibility-options.enum';
@@ -24,7 +32,8 @@ import { uploadPreviewUrl } from '../../../../images/upload-preview-url';
   selector: 'tamu-gisc-place-location-add-edit-form',
   templateUrl: './place-location-add-edit-form.component.html',
   styleUrls: ['./place-location-add-edit-form.component.scss'],
-  imports: [ImagePreviewComponent, 
+  imports: [
+    ImagePreviewComponent,
     FormsModule,
     ReactiveFormsModule,
     TextboxComponent,
@@ -102,7 +111,6 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
         // Opening the page is not a change (#2942), though each control echoes the value it is given.
         this.form.markAsPristine();
       });
-
     } else {
       this.ss.activeSeason$.pipe(take(1)).subscribe((season) => {
         this.form.patchValue({
@@ -147,7 +155,7 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'place-delete-failed',
           title: 'Delete Place',
-          message: `Error deleting place: ${err.status}`
+          message: serverMessage(err, `Error deleting place: ${err.status}`)
         });
       }
     });
@@ -198,7 +206,7 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'place-update-failed',
           title: 'Update Place',
-          message: `Error updating place: ${err.status}`
+          message: serverMessage(err, `Error updating place: ${err.status}`)
         });
       }
     });
@@ -221,7 +229,7 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'place-create-failed',
           title: 'Create Place',
-          message: `Error creating place: ${err.status}`
+          message: serverMessage(err, `Error creating place: ${err.status}`)
         });
       }
     });

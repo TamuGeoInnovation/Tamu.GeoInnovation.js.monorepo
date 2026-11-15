@@ -6,6 +6,7 @@ import { Observable, filter, map, switchMap, take } from 'rxjs';
 import { University } from '@tamu-gisc/gisday/platform/data-api';
 import { SeasonService, UniversityService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { serverMessage } from '../../../../../utils/server-message';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
@@ -92,7 +93,7 @@ export class UniversityAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'university-delete-error',
           title: 'Delete University',
-          message: `Error deleting university: ${err.status}`
+          message: serverMessage(err, `Error deleting university: ${err.status}`)
         });
       }
     });
@@ -115,7 +116,7 @@ export class UniversityAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'university-update-error',
           title: 'Update University',
-          message: `Error updating university: ${err.status}`
+          message: serverMessage(err, `Error updating university: ${err.status}`)
         });
       }
     });
@@ -138,7 +139,7 @@ export class UniversityAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'university-create-error',
           title: 'Create University',
-          message: `Error creating university: ${err.status}`
+          message: serverMessage(err, `Error creating university: ${err.status}`)
         });
       }
     });

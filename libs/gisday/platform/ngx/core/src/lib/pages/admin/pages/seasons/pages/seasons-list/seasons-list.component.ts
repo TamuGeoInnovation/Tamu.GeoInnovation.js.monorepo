@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { Season, SeasonDay } from '@tamu-gisc/gisday/platform/data-api';
 import { SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { serverMessage } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
 import { AsyncPipe, DatePipe } from '@angular/common';
@@ -41,7 +42,7 @@ export class SeasonsListComponent extends BaseAdminListComponent<Season> impleme
         this.ns.toast({
           id: 'create-season-error',
           title: 'Create season',
-          message: `Error creating event: ${err.status}`
+          message: serverMessage(err, `Error creating event: ${err.status}`)
         });
       }
     });

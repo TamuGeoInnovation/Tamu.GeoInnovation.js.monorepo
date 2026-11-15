@@ -22,6 +22,7 @@ import { AsyncPipe } from '@angular/common';
 
 import { SubmissionFilesComponent } from '../../../../submission-files/submission-files.component';
 import { deadlineNotice } from '../../../../../utils/submission-deadline-notice';
+import { serverMessage } from '../../../../../utils/server-message';
 import { GISDAY_SITE } from '../../../../../site/site';
 import {
   SUBMISSION_CLASSIFICATION_OPTIONS,
@@ -242,7 +243,7 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
         this.ns.toast({
           id: 'submission-create-error',
           title: 'Submission Error',
-          message: closedReason(err) ?? 'There was an error creating the submission. Please try again later.'
+          message: serverMessage(err, 'There was an error creating the submission. Please try again later.')
         });
       }
     });
@@ -272,7 +273,7 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
           this.ns.toast({
             id: 'submission-update-error',
             title: 'Update Error',
-            message: closedReason(err) ?? 'There was an error updating the submission. Please try again later.'
+            message: serverMessage(err, 'There was an error updating the submission. Please try again later.')
           });
         }
       });
@@ -299,9 +300,4 @@ interface ICompetitionParticipant {
   name: string;
   email: string;
   studentId: string;
-}
-
-/** The API's own words when it refused because the competition has closed (#2934), which say when; null otherwise. */
-function closedReason(err: { status?: number; error?: { message?: unknown } }): string | null {
-  return err?.status === 403 && typeof err.error?.message === 'string' ? err.error.message : null;
 }
