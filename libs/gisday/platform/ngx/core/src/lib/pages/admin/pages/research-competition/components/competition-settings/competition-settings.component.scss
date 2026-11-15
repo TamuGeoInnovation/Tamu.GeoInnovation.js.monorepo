@@ -1,21 +1,21 @@
 @import 'libs/sass/mixins';
 
-// Layout only (#2969). The section, its toolbar and its body are the shared form styles (libs/sass/modules/_forms.scss),
+// Layout only (#2969, #3037). The section, its toolbar and its body are the shared form styles (libs/sass/modules/_forms.scss),
 // the open and close the shared accordion's, and the buttons the shared form button's.
 
 // The toolbar is the panel's header: all of it opens and closes the panel. Closed, it is the whole section, so it
 // keeps no gap beneath it for a body that is not there.
-.deadlines-toolbar {
+.settings-toolbar {
   @include justify-content(flex-start);
   cursor: pointer;
 }
 
-:host .deadlines-toolbar:last-child {
+:host .settings-toolbar:last-child {
   margin-bottom: 0;
 }
 
 // The section's name, as a button so the keyboard can open the panel too, without a button's own look.
-.deadlines-toggle {
+.settings-toggle {
   @include flexbox();
   @include align-items(center);
   flex-shrink: 0;
@@ -34,7 +34,7 @@
   }
 }
 
-.deadlines-summary {
+.settings-summary {
   padding: 0.5rem;
   font-size: 0.9rem;
   font-weight: 400;
