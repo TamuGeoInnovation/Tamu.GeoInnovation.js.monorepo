@@ -1,0 +1,16 @@
+:host {
+  display: block;
+}
+
+// The map needs a height of its own: the element fills its box, and a box with no height draws nothing.
+.polygon-editor-map {
+  height: 20rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+// Between the buttons, which the flexbox utilities do not space.
+tamu-gisc-button + tamu-gisc-button {
+  margin-left: 0.5rem;
+}

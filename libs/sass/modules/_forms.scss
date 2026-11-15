@@ -77,6 +77,24 @@ form,
           margin-right: 0;
         }
       }
+
+      // A row whose items stack, one above the next, on a phone, such as the GIS Day venue form's
+      // check-in zone corners and its map (#3078).
+      &.stack-narrow {
+        @media only screen and (max-width: 767px) {
+          @include mixins.flex-direction(column);
+
+          & > * {
+            flex: none;
+            margin-right: 0;
+            margin-left: 0;
+          }
+
+          & > * + * {
+            margin-top: 1rem;
+          }
+        }
+      }
     }
 
     &.column {

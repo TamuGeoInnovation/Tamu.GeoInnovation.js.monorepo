@@ -10,20 +10,20 @@ import { EventLocationAddEditFormComponent } from './event-location-add-edit-for
 // The zone's map is Esri's, which jsdom cannot draw. It is stood in for by a component with the same selector,
 // inputs and output, so what is asked here is what the form gives the map and what it does with the map's answer.
 jest.mock('@tamu-gisc/maps/esri', () => {
-  const { Component, input, output } = jest.requireActual('@angular/core');
+  const { Component, EventEmitter, Input, Output } = jest.requireActual('@angular/core');
 
   @Component({ selector: 'tamu-gisc-polygon-editor', template: '' })
   class PolygonEditorComponent {
-    public readonly corners = input([]);
-    public readonly center = input(undefined);
-    public readonly cornersChange = output();
+    @Input() public corners = [];
+    @Input() public center: unknown;
+    @Output() public cornersChange = new EventEmitter();
   }
 
   return { PolygonEditorComponent };
 });
 
 interface ZoneMap {
-  corners(): Array<{ latitude: number; longitude: number }>;
+  corners: Array<{ latitude: number; longitude: number }>;
   cornersChange: { emit(corners: Array<{ latitude: number; longitude: number }>): void };
 }
 
@@ -208,18 +208,18 @@ describe('EventLocationAddEditFormComponent', () => {
     it("shows a venue's corners on the map as the form opens", async () => {
       const { zoneMap } = await open({ guid: 'venue', place: { guid: 'place' }, checkInZone: rudderPlaza });
 
-      expect(zoneMap().corners()).toEqual(rudderPlaza);
+      expect(zoneMap().corners).toEqual(rudderPlaza);
     });
 
     it('shows corners typed into the box on the map', async () => {
       const { fixture, zoneMap } = await open({ guid: 'venue', place: { guid: 'place' }, checkInZone: null });
 
-      expect(zoneMap().corners()).toEqual([]);
+      expect(zoneMap().corners).toEqual([]);
 
       fixture.componentInstance.form.controls.checkInZoneText.setValue(typed);
       fixture.detectChanges();
 
-      expect(zoneMap().corners()).toEqual(rudderPlaza);
+      expect(zoneMap().corners).toEqual(rudderPlaza);
     });
 
     it('keeps the last readable zone on the map while a line is half typed', async () => {
@@ -228,7 +228,7 @@ describe('EventLocationAddEditFormComponent', () => {
       fixture.componentInstance.form.controls.checkInZoneText.setValue(`${typed}\n30.61`);
       fixture.detectChanges();
 
-      expect(zoneMap().corners()).toEqual(rudderPlaza);
+      expect(zoneMap().corners).toEqual(rudderPlaza);
     });
 
     it('writes corners drawn or moved on the map into the box, one per line, as typed corners are', async () => {
@@ -251,7 +251,7 @@ describe('EventLocationAddEditFormComponent', () => {
       fixture.detectChanges();
 
       expect(text()).toBe('');
-      expect(zoneMap().corners()).toEqual([]);
+      expect(zoneMap().corners).toEqual([]);
     });
   });
 });
