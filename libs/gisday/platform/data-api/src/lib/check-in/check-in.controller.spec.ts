@@ -6,6 +6,7 @@ import { JwtGuard, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 
 import { CheckInController } from './check-in.controller';
 import { CheckInProvider } from './check-in.provider';
+import { CheckInDashboardProvider } from './check-in-dashboard.provider';
 
 /**
  * Requests go through Nest's real routing, body parsing and `PermissionsGuard`, so what is checked is
@@ -41,7 +42,10 @@ describe('CheckInController', () => {
 
     const module = await Test.createTestingModule({
       controllers: [CheckInController],
-      providers: [{ provide: CheckInProvider, useValue: provider }]
+      providers: [
+        { provide: CheckInProvider, useValue: provider },
+        { provide: CheckInDashboardProvider, useValue: {} }
+      ]
     })
       .overrideGuard(JwtGuard)
       .useValue({
