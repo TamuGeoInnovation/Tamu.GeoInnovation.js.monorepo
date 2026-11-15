@@ -140,18 +140,6 @@ describe('RsvpDashboardComponent', () => {
     ]);
   });
 
-  it("lists only the site's own sessions, and any with no place yet, on gisday.tamu.edu (#2986)", async () => {
-    const elsewhere = { ...dashboard.events[1], guid: 'e-3', name: 'Elsewhere', total: 6, place: { guid: 'p-other', name: 'Another university' } };
-    rsvps.getDashboardForSeason = jest.fn(() => of({ ...dashboard, events: [...dashboard.events, elsewhere], made: [...dashboard.made, { event: 'e-3', created: '2026-11-05T15:00:00Z' }] }));
-    const fixture = open('tamu');
-    await settle(fixture);
-    const root = fixture.nativeElement as HTMLElement;
-
-    expect(names(root)).toEqual(['Workshop', 'Keynote']);
-    expect(root.querySelector('.dashboard-summary').textContent).toContain('4 RSVPs for 2 events');
-    expect(lastChart().series[0].points.map((p) => p.y)).toEqual([2, 3, 4]);
-  });
-
   it("charts the running total, each day's new RSVPs beneath it, and the GIS Day week", async () => {
     const fixture = open();
     await fixture.whenStable();

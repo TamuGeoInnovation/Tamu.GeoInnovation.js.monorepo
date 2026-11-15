@@ -6,9 +6,10 @@ import { getMetadataArgsStorage } from 'typeorm';
 
 import { JwtGuard, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 
-import { Event, Organization, Speaker, Sponsor } from '../entities/all.entity';
+import { Event, EventBroadcast, Organization, Speaker, Sponsor } from '../entities/all.entity';
 import { CheckInController } from '../check-in/check-in.controller';
 import { EventController } from '../event/event.controller';
+import { EventBroadcastController } from '../event-broadcast/event-broadcast.controller';
 import { EventProvider } from '../event/event.provider';
 import { OrganizationController } from '../organization/organization.controller';
 import { OrganizationService } from '../organization/organization.service';
@@ -49,7 +50,7 @@ function speaker() {
     email: 'sam@example.com',
     accountGuid: 'auth0|speaker-1',
     badgePrintedAt: new Date('2026-11-13T17:00:00Z'),
-    badgePrintedText: "Sam|Lee|An organization|",
+    badgePrintedText: 'Sam|Lee|An organization|',
     organization: organization()
   });
 }
@@ -219,7 +220,11 @@ describe('PrivateFieldsInterceptor', () => {
     it('gets the speakers with their emails, accounts and printed badges', async () => {
       const [s] = await get('/speakers');
 
-      expect(s).toMatchObject({ email: 'sam@example.com', accountGuid: 'auth0|speaker-1', badgePrintedText: 'Sam|Lee|An organization|' });
+      expect(s).toMatchObject({
+        email: 'sam@example.com',
+        accountGuid: 'auth0|speaker-1',
+        badgePrintedText: 'Sam|Lee|An organization|'
+      });
     });
   });
 
@@ -343,7 +348,10 @@ describe('every column of sponsors, organizations and speakers is decided', () =
       'affiliation',
       'description',
       'socialMedia'
-    ]
+    ],
+    // The join details a session's page shows its signed-in visitors (#3054): the event route gives them only to them,
+    // and the broadcast routes are for admins.
+    EventBroadcast: ['guid', 'created', 'updated', 'name', 'password', 'phoneNumber', 'meetingId', 'publicUrl', 'details']
   };
 
   const columnsOf = (type: object) => {
@@ -389,5 +397,48 @@ describe("the admin dashboards' routes", () => {
     expect(Reflect.getMetadata(GUARDS_METADATA, handler)).toEqual(expect.arrayContaining([JwtGuard, PermissionsGuard]));
     expect(Reflect.getMetadata('AllowAny', handler)).toBeUndefined();
     expect(Reflect.getMetadata('Permissions', handler)[0]).toEqual([expect.stringMatching(/^read:(rsvps|checkins)$/)]);
+  });
+});
+
+/**
+ * #3054. The broadcast routes answered anyone, signed in or not, with every Zoom's presenter link and join details.
+ * Only admin pages read them, so each read needs the permission that edits a broadcast; and the presenter link is
+ * private wherever a broadcast appears, an event's included.
+ */
+describe('broadcasts', () => {
+  const reads = Object.getOwnPropertyNames(EventBroadcastController.prototype)
+    .map((name) => ({ name, handler: EventBroadcastController.prototype[name] }))
+    .filter(
+      ({ handler }) => typeof handler === 'function' && Reflect.getMetadata(METHOD_METADATA, handler) === RequestMethod.GET
+    );
+
+  it.each(reads.map((r) => [r.name, r]))('%s is for broadcast admins only', (_, r) => {
+    expect(Reflect.getMetadata(GUARDS_METADATA, r.handler)).toEqual(expect.arrayContaining([JwtGuard, PermissionsGuard]));
+    expect(Reflect.getMetadata('Permissions', r.handler)[0]).toEqual(['update:event-broadcasts']);
+    expect(Reflect.getMetadata('AllowAny', r.handler)).toBeUndefined();
+  });
+
+  function broadcast() {
+    return Object.assign(new EventBroadcast(), {
+      name: 'Zoom 1',
+      presenterUrl: 'https://example.com/presenter',
+      publicUrl: 'https://example.com/join'
+    });
+  }
+
+  it("keeps a broadcast's presenter link from anyone who can't edit broadcasts, in an event too", () => {
+    const e = event();
+    e.broadcast = broadcast();
+
+    withoutPrivateFields(e, ['update:events']);
+
+    expect(e.broadcast.presenterUrl).toBeUndefined();
+    expect(e.broadcast.publicUrl).toBe('https://example.com/join');
+  });
+
+  it('keeps it for a broadcast admin', () => {
+    const [b] = withoutPrivateFields([broadcast()], ['update:event-broadcasts']);
+
+    expect(b.presenterUrl).toBe('https://example.com/presenter');
   });
 });

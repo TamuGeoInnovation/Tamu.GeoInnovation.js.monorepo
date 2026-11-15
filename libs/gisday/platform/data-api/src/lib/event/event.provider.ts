@@ -67,6 +67,8 @@ export class EventProvider extends BaseProvider<Event> {
         .leftJoinAndSelect('event.location', 'location')
         // Its place, so a site that lists only some organizations' sessions can tell which are its own (#2986).
         .leftJoinAndSelect('location.place', 'place')
+        // Its tags, so the admin Events list can find the sessions with none (#3034).
+        .leftJoinAndSelect('event.tags', 'tags')
         .where('event.season = :guid', { guid: seasonGuid })
         .orderBy('eventDay.date', 'ASC')
         .addOrderBy('event.startTime', 'ASC')
