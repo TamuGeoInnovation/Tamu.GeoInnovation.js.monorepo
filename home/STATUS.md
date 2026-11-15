@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle and listening.
+- **Batch 53 (gisday: #3017 skip unaccepted)**, on `feat/3017-final-reminder-pr` (PR 3020); started 7:25 AM Central, 15 November.
 
 ## Finished
 - **Batch 52 (gisday: #3017)** (report `home/reports/2026-11-15-52.md`): branch ready, `feat/3017-final-reminder` on the fork at `c97557e13`, no PR. Final file column (any file counts) and Send final reminder by the review email's own path (two kinds, same window, one shared preview and send); skips those with a file. Red first; full check exit 0. One question.
