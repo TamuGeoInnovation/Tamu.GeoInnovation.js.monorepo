@@ -38,6 +38,14 @@
     font-variant-numeric: tabular-nums;
   }
 
+  // A count needs little room beside it, so its heading keeps the width for its words, and ten columns fit beside the
+  // admin menu at 1280 px (#3006).
+  ::ng-deep .datatable-header .datatable-header-cell.dashboard-table-count,
+  ::ng-deep .datatable-body .datatable-body-cell.dashboard-table-count {
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+  }
+
   // The total row: bold, set off from the rows above it.
   ::ng-deep .datatable-summary-row .datatable-body-row {
     font-weight: bold;

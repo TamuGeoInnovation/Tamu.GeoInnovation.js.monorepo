@@ -21,6 +21,28 @@ export interface DashboardTableColumn {
   label: string;
 }
 
+/**
+ * The narrowest each kind of column may be, in pixels (#3006), small enough that the check-in dashboard's ten columns
+ * fit the 879 px a 1280 px screen gives the table beside the admin menu. At 88 px a count column, they did not, and the
+ * last columns, and an opened event's Export as CSV and times, were cut off with no way to scroll to them. A count
+ * column's narrowest still holds its heading's longest word, "academia" (66 px), inside its narrower padding.
+ *
+ * Each column also grows in proportion to its narrowest (its `flexGrow` is the same number), so wherever the table fits,
+ * no column is ever below its narrowest. ngx-datatable's flex mode does not give back the width a column held at its
+ * minimum takes from the others, so a column whose share falls below its minimum leaves the table wider than its box.
+ */
+export const DASHBOARD_TABLE_WIDTHS = { name: 192, when: 88, total: 66, count: 75 } as const;
+
+/**
+ * The table's narrowest: every column at its narrowest. The table is never drawn narrower, so in less space it scrolls
+ * in its own box rather than cutting off its last columns.
+ */
+export function dashboardTableMinWidth(countColumns: number, hasWhen: boolean): number {
+  const { name, when, total, count } = DASHBOARD_TABLE_WIDTHS;
+
+  return name + (hasWhen ? when : 0) + total + countColumns * count;
+}
+
 /** What a row opens to: `<ng-template tamuGiscDashboardRowDetail let-row>`, given the row. */
 @Directive({ selector: '[tamuGiscDashboardRowDetail]' })
 export class DashboardRowDetailDirective {}
@@ -82,6 +104,8 @@ export class DashboardTableComponent {
   /** The first column's heading, and the total row's name. */
   public readonly nameLabel = input('Name');
   public readonly totalLabel = input('All');
+  /** The total column's heading, such as "Checked in". */
+  public readonly totalHeading = input('Total');
   /** How `when` is shown, in Central time. */
   public readonly whenFormat = input('EEE MMM d, h:mm a');
 
@@ -94,6 +118,8 @@ export class DashboardTableComponent {
   public readonly tableRows = computed(() => tableRowsOf(this.rows()));
   public readonly countProp = countProp;
   public readonly hasWhen = computed(() => this.rows().some((r) => Boolean(r.when)));
+  public readonly widths = DASHBOARD_TABLE_WIDTHS;
+  public readonly minWidth = computed(() => dashboardTableMinWidth(this.columns().length, this.hasWhen()));
   public readonly sorts = signal<Array<SortPropDir>>([]);
   private readonly opened = signal<string | null>(null);
 
