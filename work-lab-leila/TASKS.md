@@ -8317,3 +8317,7 @@ note. Report "branch ready".
 
 > **Batch 83, the maintainer's example:** gisday.tamu.edu/sessions?search=intel. The search box's **focus outline** is blue
 > and the **Copy link** words inside the box are blue; both become the site's maroon. Capture that page, focused.
+
+> **Batch 82 is withdrawn (15 November, about 3:55 PM Central).** The maintainer chose a check-in page between the QR code
+> and the session page instead of a pop-up, so #3081's pop-up images are not needed. Stop it, put the local site and
+> database back as in report 80, and report what you had done. Do not push to `fix/checkin-toast`. Then go on to 83.
