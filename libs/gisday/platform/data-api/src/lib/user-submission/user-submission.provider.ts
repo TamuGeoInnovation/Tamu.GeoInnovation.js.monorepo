@@ -46,6 +46,7 @@ import {
 } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
 import { senderAs } from '../_base/site-of-request';
+import { EMAIL_LANES, inParallel } from '../_base/in-parallel';
 import { SeasonService } from '../season/season.service';
 import { ContactService } from '../contact/contact.service';
 import { PosterDto } from './dto/poster.dto';
@@ -126,6 +127,9 @@ function checkedTemplates(templates: unknown): Partial<Record<ReviewEmailKind, s
 
   return checked;
 }
+
+/** How soon the same review decision again is taken as a repeated request and sends no second email (#3067). */
+export const REPEAT_REVIEW_MINUTES = 10;
 
 @Injectable()
 export class UserSubmissionProvider extends BaseProvider<Submission> {
@@ -369,7 +373,10 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     const templates = checkedTemplates(review.templates);
     const result: ReviewManyResult = { reviewed: [], failed: [] };
 
-    for (const guid of [...new Set(submissionGuids)]) {
+    // Several at a time (#3067): one by one, a long send waited long enough to be repeated (#3065).
+    const parts = await inParallel([...new Set(submissionGuids)], EMAIL_LANES, async (guid) => {
+      const part: typeof result = { reviewed: [], failed: [] };
+
       let reviewed: Awaited<ReturnType<UserSubmissionProvider['_update']>>;
 
       try {
@@ -384,24 +391,29 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
         );
       } catch (err) {
         Logger.error(`Could not review submission ${guid}: ${err.message}`, 'UserSubmissionProvider');
-        result.failed.push({
+        part.failed.push({
           title: guid,
           reason: err instanceof NotFoundException ? 'it no longer exists' : 'the decision could not be saved'
         });
-        continue;
+        return part;
       }
 
       const title = reviewed.submission.title || guid;
 
-      result.reviewed.push(title);
+      part.reviewed.push(title);
 
       try {
         await reviewed.sendReviewEmail?.();
       } catch (err) {
         Logger.error(`Error sending email to user: ${err.message}`, 'UserSubmissionProvider');
-        result.failed.push({ title, reason: 'reviewed, but the email could not be sent' });
+        part.failed.push({ title, reason: 'reviewed, but the email could not be sent' });
       }
-    }
+
+      return part;
+    });
+
+    result.reviewed.push(...parts.flatMap((p) => p.reviewed));
+    result.failed.push(...parts.flatMap((p) => p.failed));
 
     return result;
   }
@@ -466,20 +478,26 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     const site = gisdaySite(process.env.GISDAY_SITE, host);
     const result: RemindManyResult = { sent: [], skipped: [], failed: [] };
 
-    for (const guid of [...new Set(submissionGuids)]) {
-      const submission = await this.userSubmissionRepo.findOne({ where: { guid }, relations: { season: true, files: true } });
+    // Several at a time (#3067): one by one, a long send waited long enough to be repeated (#3065).
+    const parts = await inParallel([...new Set(submissionGuids)], EMAIL_LANES, async (guid) => {
+      const part: typeof result = { sent: [], skipped: [], failed: [] };
+
+      const submission = await this.userSubmissionRepo.findOne({
+        where: { guid },
+        relations: { season: true, files: true }
+      });
 
       if (!submission) {
-        result.failed.push({ title: guid, reason: 'it no longer exists' });
-        continue;
+        part.failed.push({ title: guid, reason: 'it no longer exists' });
+        return part;
       }
 
       const title = submission.title || guid;
       const reminder = reminderOf(submission);
 
       if ('skip' in reminder) {
-        result.skipped.push({ title, reason: reminder.skip });
-        continue;
+        part.skipped.push({ title, reason: reminder.skip });
+        return part;
       }
 
       const { kind } = reminder;
@@ -489,12 +507,18 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
         const sessions = await this._sessionsOf(submission.season).catch(() => []);
 
         await this._sendEmail(submission, kind, site, templates?.[kind], recipients, sessions);
-        result.sent.push(title);
+        part.sent.push(title);
       } catch (err) {
         Logger.error(`Error sending a final reminder: ${err.message}`, 'UserSubmissionProvider');
-        result.failed.push({ title, reason: 'the email could not be sent' });
+        part.failed.push({ title, reason: 'the email could not be sent' });
       }
-    }
+
+      return part;
+    });
+
+    result.sent.push(...parts.flatMap((p) => p.sent));
+    result.skipped.push(...parts.flatMap((p) => p.skipped));
+    result.failed.push(...parts.flatMap((p) => p.failed));
 
     return result;
   }
@@ -515,7 +539,10 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     const skipped: Array<SkippedSubmission> = [];
 
     for (const guid of [...new Set(submissionGuids)]) {
-      const submission = await this.userSubmissionRepo.findOne({ where: { guid }, relations: { season: true, files: true } });
+      const submission = await this.userSubmissionRepo.findOne({
+        where: { guid },
+        relations: { season: true, files: true }
+      });
 
       if (!submission) {
         continue;
@@ -646,11 +673,18 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     // including `acceptance` in the PATCH body.
     if (requestorPermissions.indexOf('update:competitions') > -1) {
       if (submission.acceptance !== undefined) {
+        // The same decision again within minutes is a repeated request, not a new review, so it emails no one twice
+        // (#3067): on 15 November 2026 a bulk send reached the API twice, 30 seconds apart (#3065).
+        const repeat =
+          existingSubmission.reviewed === true &&
+          existingSubmission.acceptance === submission.acceptance &&
+          Date.now() - new Date(existingSubmission.updated).getTime() < REPEAT_REVIEW_MINUTES * 60 * 1000;
+
         existingSubmission.reviewed = true;
         existingSubmission.acceptance = submission.acceptance;
         existingSubmission.message = submission.message;
         submission.reviewed = true;
-        shouldEmail = true;
+        shouldEmail = !repeat;
       }
     } else {
       delete submission.acceptance;
@@ -693,7 +727,11 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
    * Deletes each of the named submissions, with their files, as `deleteUserSubmission` deletes one (#2992). Only a
    * reviewer may delete several; every id must be a submission's.
    */
-  public async deleteUserSubmissions(submissionGuids: Array<string>, accountGuid: string, requestorPermissions: Array<string> = []) {
+  public async deleteUserSubmissions(
+    submissionGuids: Array<string>,
+    accountGuid: string,
+    requestorPermissions: Array<string> = []
+  ) {
     if (!requestorPermissions.includes('delete:competitions')) {
       throw new ForbiddenException();
     }

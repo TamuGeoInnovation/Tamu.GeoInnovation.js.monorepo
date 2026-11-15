@@ -19,6 +19,7 @@ import {
 } from '@tamu-gisc/gisday/common';
 
 import { senderAs } from '../_base/site-of-request';
+import { EMAIL_LANES, inParallel } from '../_base/in-parallel';
 
 import { Speaker, SpeakerEdit, SpeakerEditLink, Submission, University } from '../entities/all.entity';
 import { refuseUnsafeImage } from '../assets/image-upload';
@@ -245,12 +246,15 @@ export class SpeakerEditService {
 
     const speakers = await this.speakers.find({ where: { guid: In(speakerGuids) } });
 
-    for (const speaker of speakers) {
+    // Several at a time (#3067): one by one, 48 emails took long enough for the request to be repeated (#3065).
+    const parts = await inParallel(speakers, EMAIL_LANES, async (speaker) => {
+      const part: SendResult = { sent: [], skipped: [] };
+
       const name = fullName(speaker);
 
       if (!looksLikeEmail(speaker.email)) {
-        result.skipped.push({ name, reason: 'no email address on their record' });
-        continue;
+        part.skipped.push({ name, reason: 'no email address on their record' });
+        return part;
       }
 
       // Never the same email twice in a row (#3065): on 15 November 2026 one send reached the API twice, 30 seconds
@@ -259,18 +263,23 @@ export class SpeakerEditService {
       const since = new Date(Date.now() - REPEAT_SEND_MINUTES * 60 * 1000);
 
       if ((await this.links.count({ where: { speaker: { guid: speaker.guid }, created: MoreThan(since) } })) > 0) {
-        result.skipped.push({ name, reason: `already emailed a link in the last ${REPEAT_SEND_MINUTES} minutes` });
-        continue;
+        part.skipped.push({ name, reason: `already emailed a link in the last ${REPEAT_SEND_MINUTES} minutes` });
+        return part;
       }
 
       try {
         await this.emailLink(speaker, host, email);
-        result.sent.push(name);
+        part.sent.push(name);
       } catch (err) {
         Logger.error(`Could not email an edit link to speaker ${speaker.guid}: ${err.message}`, 'SpeakerEditService');
-        result.skipped.push({ name, reason: 'the email could not be sent' });
+        part.skipped.push({ name, reason: 'the email could not be sent' });
       }
-    }
+
+      return part;
+    });
+
+    result.sent.push(...parts.flatMap((p) => p.sent));
+    result.skipped.push(...parts.flatMap((p) => p.skipped));
 
     return result;
   }

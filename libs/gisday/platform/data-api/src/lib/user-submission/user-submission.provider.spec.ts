@@ -462,15 +462,13 @@ describe('UserSubmissionProvider', () => {
       });
 
       it('sends the links in the email itself, from the season of the submission', async () => {
-        jest
-          .spyOn(submissionRepo, 'findOne')
-          .mockResolvedValue(
-            submission({
-              submissionType: 'poster',
-              season: { guid: 'season-2026' },
-              participants: [{ email: 'a@tamu.edu' }]
-            })
-          );
+        jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(
+          submission({
+            submissionType: 'poster',
+            season: { guid: 'season-2026' },
+            participants: [{ email: 'a@tamu.edu' }]
+          })
+        );
 
         await provider.updateUserSubmission('sub-1', 'r', { acceptance: true }, REVIEWER_PERMS, 'gisday.tamu.edu');
         // A single review sends without waiting, after reading the season's sessions.
@@ -621,6 +619,24 @@ describe('UserSubmissionProvider', () => {
         .spyOn(submissionRepo, 'findOne')
         .mockImplementation((async ({ where }: { where: { guid: string } }) =>
           rows[where.guid] ? { ...rows[where.guid], participants: [...rows[where.guid].participants] } : null) as never);
+    });
+
+    // #3067: a bulk send reached the API twice, 30 seconds apart (#3065). The same decision again within minutes is that
+    // repeat, and emails no one a second time; a decision changed, or made long ago, emails as before.
+    it('emails no one again when the same decision repeats within minutes', async () => {
+      rows[A] = { ...rows[A], reviewed: true, acceptance: true, updated: new Date() } as Submission;
+      rows[B] = { ...rows[B], reviewed: true, acceptance: false, updated: new Date() } as Submission;
+
+      try {
+        const result = await provider.reviewUserSubmissions([A, B], 'acct-reviewer', { acceptance: true }, REVIEWER_PERMS);
+
+        expect(result).toEqual({ reviewed: ['Flood maps', 'Campus trees'], failed: [] });
+        // A was already accepted moments ago: no second email. B's decision changed: its email goes.
+        expect(sends().map(([m]) => m.to)).toEqual(['cy@tamu.edu']);
+      } finally {
+        delete (rows[A] as Partial<Submission>).reviewed;
+        delete (rows[B] as Partial<Submission>).reviewed;
+      }
     });
 
     it("reviews and emails each one exactly as a single review does, from the reviewer's site", async () => {
@@ -870,7 +886,9 @@ describe('UserSubmissionProvider', () => {
       expect(preview.groups[0].subject).toBe('Final reminder: upload your final poster for Texas A&M GIS Day');
       expect(preview.groups[1].template).toContain('This is your final reminder.');
       expect(preview.groups[1].template).toContain('your submission will be removed from the competition');
-      expect(preview.groups[0].example).toEqual(expect.objectContaining({ title: 'Flood maps', to: 'ana@tamu.edu', cc: 'ben@tamu.edu' }));
+      expect(preview.groups[0].example).toEqual(
+        expect.objectContaining({ title: 'Flood maps', to: 'ana@tamu.edu', cc: 'ben@tamu.edu' })
+      );
       expect(preview.skipped).toEqual([HAS_FILE]);
       expect(contactService.sendMessage).not.toHaveBeenCalled();
       expect(submissionRepo.update).not.toHaveBeenCalled();
@@ -894,14 +912,21 @@ describe('UserSubmissionProvider', () => {
       expect(sends()[1][0].text).toMatch(/^Hi Di, "Bike lanes" needs its slides by /);
       expect(submissionRepo.update).not.toHaveBeenCalled();
       // Its files are asked for: a submission is not loaded with them otherwise.
-      expect(submissionRepo.findOne).toHaveBeenCalledWith(expect.objectContaining({ relations: { season: true, files: true } }));
+      expect(submissionRepo.findOne).toHaveBeenCalledWith(
+        expect.objectContaining({ relations: { season: true, files: true } })
+      );
     });
 
     it('previews exactly the email that is then sent when the text is left as it is', async () => {
       const preview = await provider.previewReminders([C], REVIEWER_PERMS, 'gisday.tamu.edu');
       const [group] = preview.groups;
 
-      await provider.remindUserSubmissions([C], { templates: { [group.kind]: group.template } }, REVIEWER_PERMS, 'gisday.tamu.edu');
+      await provider.remindUserSubmissions(
+        [C],
+        { templates: { [group.kind]: group.template } },
+        REVIEWER_PERMS,
+        'gisday.tamu.edu'
+      );
 
       expect(sends()[0][0].text).toBe(fillReviewEmail(group.template, group.example.values));
     });
@@ -927,7 +952,11 @@ describe('UserSubmissionProvider', () => {
 
       const result = await provider.remindUserSubmissions([A, C], {}, REVIEWER_PERMS, 'gisday.tamu.edu');
 
-      expect(result).toEqual({ sent: ['Bike lanes'], skipped: [], failed: [{ title: 'Flood maps', reason: 'the email could not be sent' }] });
+      expect(result).toEqual({
+        sent: ['Bike lanes'],
+        skipped: [],
+        failed: [{ title: 'Flood maps', reason: 'the email could not be sent' }]
+      });
     });
 
     it('is for reviewers only, and checks what it is given', async () => {
@@ -935,9 +964,9 @@ describe('UserSubmissionProvider', () => {
       await expect(provider.remindUserSubmissions([A], {}, [])).rejects.toThrow(ForbiddenException);
       await expect(provider.remindUserSubmissions([], {}, REVIEWER_PERMS)).rejects.toThrow(BadRequestException);
       await expect(provider.remindUserSubmissions(['1; drop'], {}, REVIEWER_PERMS)).rejects.toThrow(BadRequestException);
-      await expect(provider.remindUserSubmissions([A], { templates: { 'poster-reminder': 5 } } as never, REVIEWER_PERMS)).rejects.toThrow(
-        BadRequestException
-      );
+      await expect(
+        provider.remindUserSubmissions([A], { templates: { 'poster-reminder': 5 } } as never, REVIEWER_PERMS)
+      ).rejects.toThrow(BadRequestException);
     });
   });
 
@@ -1067,7 +1096,10 @@ describe('UserSubmissionProvider', () => {
         .spyOn(submissionRepo, 'findOne')
         .mockResolvedValue(submission({ submissionType: 'paper', season: seasonRunning('poster') }));
 
-      await provider.updateUserSubmission('sub-1', OWNER, { title: 'Revised', submissionType: 'paper' } as Partial<Submission>);
+      await provider.updateUserSubmission('sub-1', OWNER, {
+        title: 'Revised',
+        submissionType: 'paper'
+      } as Partial<Submission>);
 
       expect(written()).toEqual(expect.objectContaining({ title: 'Revised' }));
     });
