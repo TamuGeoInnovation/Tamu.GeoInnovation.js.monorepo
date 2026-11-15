@@ -12,3 +12,16 @@ went out as plain text only, so nothing in them could be bold. Their text may no
 `[link text](https://...)` and lists. Each email goes out as HTML formatted from it, with the plain text beside it, and
 the window's preview shows it formatted, as it will arrive. HTML typed into the text is shown as written, never obeyed.
 ([#3044](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3044))
+
+The same text, with `**Please complete your bio by Friday.**` and `*about five minutes*` typed into it, in Research
+Competitions > **Send profile email**, for a made-up test presenter on a local copy of the site:
+
+| Before | After |
+| --- | --- |
+| ![The preview shows the asterisks as typed](../screenshots/3044-email-markdown/before-profile-preview.png) | ![The preview shows "Please complete your bio by Friday." in bold and "about five minutes" in italics](../screenshots/3044-email-markdown/after-profile-preview.png) |
+| ![The whole window before](../screenshots/3044-email-markdown/before-profile-window.png) | ![The whole window after, with the Markdown note under the placeholders](../screenshots/3044-email-markdown/after-profile-window.png) |
+
+The HTML part of that email as the API builds it, drawn by a browser from a file: no email was sent, and the edit link
+is a made-up one. A mail client applies its own fonts.
+
+![The email's HTML part: the bold and italic line, and the edit link as a link](../screenshots/3044-email-markdown/after-email-html.png)
