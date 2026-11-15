@@ -15,3 +15,9 @@ first person gets. Its placeholders are {first name}, {site}, {site address}, {e
 Each person's own link is made and filled in only when their email is sent, so the preview never shows a real link
 and an edit cannot break one. A text without {edit link} is refused, and nothing is sent.
 ([#3023](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3023))
+
+| Before (`development`, the local site): sent with no window from Speakers, and after a yes/no question from Research Competitions | After (the local site): the same window from all three, its subject and text editable, the preview's link a stand-in |
+| --- | --- |
+| ![Speakers before, a test speaker selected and Send profile email among the actions, which sent at once with nothing shown](../screenshots/3023-profile-email-preview/before-speakers-selected.png) | ![The profile email's window from Speakers: the subject and the text editable, and a preview for the first speaker in which the link reads (their own edit link, added when it is sent)](../screenshots/3023-profile-email-preview/after-speakers-window.png) |
+| ![Research Competitions before, Send profile email asking only Send profile emails to the 1 person of 1 submission?, with Cancel and Send](../screenshots/3023-profile-email-preview/before-research-competition-confirmation.png) | ![The same window from Research Competitions, saying first how many people of how many submissions it is for](../screenshots/3023-profile-email-preview/after-research-competition-window.png) |
+| | ![The same window from an event's Send profile emails to these speakers](../screenshots/3023-profile-email-preview/after-event-window.png) |
