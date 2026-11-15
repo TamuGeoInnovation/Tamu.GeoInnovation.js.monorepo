@@ -8284,3 +8284,8 @@ and `libs/ui-kits/ngx/**` for an existing Esri map component and sketch tool, an
 venue's own point, else campus. Branch `feat/3078-zone-map` from the latest `development`. Tests red first (the form keeps
 the map and the textarea in step); the full check with `CHECK_MEMORY=24g CHECK_PARALLEL=3`; before/after screenshots of
 a venue with a zone (Blocker or OMB, once the maintainer has entered them); a release note. Report "branch ready".
+
+> **Batch 81, the maintainer's own words (15 November, after it was queued):** "a map selector built into the venue page so
+> all of this can be done in one location. Can live next to the check in corners box that is already there. Existing
+> points should show on the map." So: the map sits **beside** the Check-In Zone Corners box on the venue form (stacked
+> at phone width), and a venue that already has corners shows them on the map as soon as the form opens.
