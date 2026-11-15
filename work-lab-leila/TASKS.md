@@ -39,6 +39,33 @@
 - A report per batch, `work-lab-leila/reports/2026-11-14-<n>.md`, saying **"branch ready: <name>"** with the check's exit
   code. Questions for the maintainer go in the report, with options and a recommendation; do not ask him.
 
+## Batch 54 (gisday: #2964, shared form controls report a loaded value as a change; 14 November 2026, from `work (gisday)`) (Low) - **first, now**
+
+[#2964](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2964). Your #2942 work found it:
+`AbstractValueAccessorFormComponent` and the controls built on it (select, checkbox group and the rest) report a value
+a form writes into them back as the user's change, so every edit page read as changed when it opened; #2942 worked
+around it per form with `markAsPristine`. Fix it in the shared base, behind its existing interface, so the workarounds
+can go; `libs/ui-kits` is shared, so run the **full** check. Branch `fix/2964-loaded-not-changed`.
+
+---
+
+## Batch 55 (gisday: #2965, Save and Delete on admin details pages return to the list with its season; from `work (gisday)`) (Low) - **after 54**
+
+[#2965](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2965). Use your
+`BaseAdminDetailsPageComponent` (#2942): after a save or a delete, go back the way Escape does, to the list it was
+opened from with its season and filters. Branch `feat/2965-save-returns-to-list`.
+
+---
+
+## Batch 56 (gisday: #2966, a refused upload shows the server's reason; from `work (gisday)`) (Low) - **after 55**
+
+[#2966](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2966). Where an upload's refusal
+shows only a status code (`Error ... 400`), show the API's own message (#2937's "The logo must be a JPEG or PNG image.",
+#2934's closed message). Look for one shared way to read it first (`closedReason` in the submission form is one). Branch
+`fix/2966-upload-reason`.
+
+---
+
 ## Batch 41 (gisday: re-run #2936's check at the fixed commit; 14 November 2026, from `home (gisday)`) (High, first)
 
 Your batch 40 found exactly the build error home had just fixed. Re-run the same check at **`65891ddea`** on

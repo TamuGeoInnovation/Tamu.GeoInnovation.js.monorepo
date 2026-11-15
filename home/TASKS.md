@@ -1,5 +1,21 @@
 # Home machine: current tasks
 
+## Batch 48 (gisday: #2967, VGI submission photos use the shared JPEG-and-PNG check; 14 November 2026, 8:20 PM Central, from `work (gisday)`) (Low)
+
+[#2967](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2967). #2937 gave every GIS Day image
+upload one check, `refuseUnsafeImage` in `libs/gisday/platform/data-api/src/lib/assets/image-upload.ts` (JPEG or PNG by
+content). The VGI competition's submission photos (`libs/gisday/competitions/data-api`) still take `accept="image/*"` and
+anything sent: use the same check, not a copy. Tests red first; the bug-fix check; push to the fork and report
+"branch ready". Branch `fix/2967-vgi-photo-check`.
+
+## Batch 49 (gisday: #2948, admins choose which competition types a season runs; from `work (gisday)`) (Low) - **after 48**
+
+[#2948](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2948). The issue has the design. It
+needs a season column, so write its production migration script in kubernetes-config `6. GIS Day/migrations/` beside
+`migrate-prod-2962.ps1`, on its own branch pushed to origin, never run. Branch `feat/2948-season-competition-types`.
+
+---
+
 
 > **From 25 October 2026, every listener checks in** (DIRECTOR.md, **Checking in**; #2338): use `tools/listen.sh <your name>` as your watcher, and
 > `tools/heartbeat.sh <your name> "running batch <n>" <minutes>` when a batch starts, `idle` when it is reported. `tools/roster.sh` shows everyone.
