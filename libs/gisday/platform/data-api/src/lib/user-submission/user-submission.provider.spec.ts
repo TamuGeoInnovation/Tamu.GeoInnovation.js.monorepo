@@ -535,6 +535,59 @@ describe('UserSubmissionProvider', () => {
   });
 
   /**
+   * #2990: the review email goes to the submitter's own account address. The typed one had been a test address, or one
+   * no directory knew, and the email went there.
+   */
+  describe('who the review email goes to', () => {
+    const sent = async (participants: Array<{ name: string; email: string }>, accountEmail: string | null) => {
+      (profiles.profilesOf as jest.Mock).mockResolvedValue(
+        new Map([[OWNER, accountEmail ? ({ email: accountEmail } as never) : null]])
+      );
+      jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission({ participants, title: 'T' }));
+
+      await provider.updateUserSubmission('sub-1', 'r', { acceptance: true }, REVIEWER_PERMS, 'gisday.tamu.edu');
+      await new Promise((resolve) => setImmediate(resolve));
+
+      return (contactService.sendMessage as jest.Mock).mock.calls[0][0];
+    };
+
+    it("goes to the account's address, not the address the submitter typed for themselves", async () => {
+      const email = await sent([{ name: 'Dan', email: 'dan@test.com' }], 'daniel@tamu.edu');
+
+      expect(email.to).toBe('daniel@tamu.edu');
+      expect(email.cc).toBe('');
+    });
+
+    it('copies the other members of a group, each once', async () => {
+      const email = await sent(
+        [
+          { name: 'Ana', email: 'ana@agnet.tamu.edu' },
+          { name: 'Ben', email: 'ben@tamu.edu' },
+          { name: 'Ben', email: 'BEN@tamu.edu' },
+          { name: 'Ana', email: 'ana@tamu.edu' }
+        ],
+        'ana@tamu.edu'
+      );
+
+      expect(email.to).toBe('ana@tamu.edu');
+      expect(email.cc).toBe('ben@tamu.edu');
+    });
+
+    it('goes to the typed address when the account has none', async () => {
+      const email = await sent(
+        [
+          { name: 'Ana', email: 'ana@tamu.edu' },
+          { name: 'Ben', email: 'ben@tamu.edu' }
+        ],
+        null
+      );
+
+      expect(email.to).toBe('ana@tamu.edu');
+      expect(email.cc).toBe('ben@tamu.edu');
+    });
+  });
+
+  /**
    * #2958: an admin approves or rejects the selected submissions at once. Each is reviewed exactly as Submit Review
    * reviews one - the decision recorded, the submitter emailed from the reviewer's site - and the result says which were
    * done and which failed, by title.

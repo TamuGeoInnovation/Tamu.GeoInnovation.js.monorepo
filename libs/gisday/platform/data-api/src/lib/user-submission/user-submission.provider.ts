@@ -428,7 +428,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
         continue;
       }
 
-      const [to, ...cc] = (submission.participants ?? []).map((p) => p.email);
+      const { to, cc } = await this._recipientsOf(submission);
 
       groups.set(kind, {
         kind,
@@ -438,7 +438,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
         template: reviewEmailTemplate(kind),
         example: {
           title: submission.title ?? '',
-          to: to ?? '',
+          to,
           cc: cc.join(', '),
           values: reviewEmailValues(
             { ...submission, message: review.message ?? submission.message },
@@ -522,24 +522,27 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
 
     try {
       const updated = await this.userSubmissionRepo.update(submissionGuid, submission);
+      // Who it goes to and the season's sessions are read here, before the review returns, so the send itself is all a
+      // single review leaves to finish after answering. A sessions lookup that fails leaves the email without its links.
+      const recipients = shouldEmail ? await this._recipientsOf(existingSubmission) : null;
+      const sessions = shouldEmail ? await this._sessionsOf(existingSubmission.season).catch(() => []) : [];
       const sendReviewEmail = shouldEmail
         ? async () => {
-            const participantEmails = existingSubmission.participants.map((p) => p.email);
-            const primaryParticipant = participantEmails.splice(0, 1);
+            const { to, cc } = recipients;
             const site = gisdaySite(process.env.GISDAY_SITE, host);
 
             // Send email to user
             return this.contactService.sendMessage(
               {
-                to: primaryParticipant[0],
-                cc: participantEmails.join(','),
+                to,
+                cc: cc.join(','),
                 subject: reviewSubject(existingSubmission, site),
                 from: senderAs(site.name, process.env.MAILROOM_FROM),
                 text: reviewEmail(
                   existingSubmission,
                   site,
                   templates?.[reviewEmailKind(existingSubmission.acceptance, existingSubmission.submissionType)],
-                  await this._sessionsOf(existingSubmission.season)
+                  sessions
                 ),
                 replyTo: process.env.MAILROOM_TO
               },
@@ -628,6 +631,44 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     }
 
     return this.events.find({ where: { season: { guid: season.guid } }, relations: { day: true, location: true } });
+  }
+
+  /**
+   * Who a review email goes to (#2990): the submitter's own account address, from Auth0, and the other people on the
+   * submission copied, each once. The typed first address is used only when the account has none. Typed, the
+   * submitter's address had been a test address or one no directory knew, and the email went there.
+   */
+  private async _recipientsOf(
+    submission: Pick<Submission, 'accountGuid' | 'participants'>
+  ): Promise<{ to: string; cc: Array<string> }> {
+    const typed = (submission.participants ?? []).map((p) => `${p?.email ?? ''}`.trim()).filter(Boolean);
+    let account = '';
+
+    try {
+      const profiles = submission.accountGuid ? await this.profiles.profilesOf([submission.accountGuid]) : null;
+
+      // Auth0's profile type does not declare `email`, though every account carries one.
+      account = `${(profiles?.get(submission.accountGuid) as { email?: string } | null)?.email ?? ''}`.trim();
+    } catch (err) {
+      // The email still goes, to what was typed, if Auth0 cannot be read.
+      Logger.warn(`Could not read the submitter's account for a review email: ${err.message}`, 'UserSubmissionProvider');
+    }
+
+    // The first row is the submitter: with their account's address known, what they typed for themselves is not copied.
+    const to = account || typed[0] || '';
+    const others = account
+      ? (submission.participants ?? []).slice(1).map((p) => `${p?.email ?? ''}`.trim())
+      : typed.slice(1);
+    // Each address once, as first typed, ignoring case; and never the address it goes to.
+    const cc: Array<string> = [];
+
+    for (const email of others.filter(Boolean)) {
+      if (email.toLowerCase() !== to.toLowerCase() && !cc.some((kept) => kept.toLowerCase() === email.toLowerCase())) {
+        cc.push(email);
+      }
+    }
+
+    return { to, cc };
   }
 
   /**

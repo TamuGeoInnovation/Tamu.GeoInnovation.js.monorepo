@@ -997,7 +997,7 @@ export class Submission extends GuidIdentity {
   public title: string;
 
   @Column({ nullable: true, type: 'simple-json' })
-  public participants: Array<{ name: string; email: string; studentId: string }>;
+  public participants: Array<{ name: string; email: string; studentId?: string }>;
 
   @Column({ nullable: true, length: 'MAX' })
   public abstract: string;
