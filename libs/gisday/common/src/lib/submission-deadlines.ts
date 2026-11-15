@@ -5,8 +5,8 @@
  * rules, read by the API, which enforces them, and by the site, which shows them.
  *
  * The rules are one table, the competitions by the two kinds of deadline. A competition added to
- * `DEADLINE_COMPETITION_TABLE` gets its two fields, its checks and its place in the admin page's Submission deadlines
- * section from here; it needs only its two columns on the season (a test checks they are there) and a migration.
+ * `DEADLINE_COMPETITION_TABLE` gets its two fields, its checks and its place in the admin page's Competition settings
+ * panel (#3037) from here; it needs only its two columns on the season (a test checks they are there) and a migration.
  *
  * A competition closes at its moment: a request made at that moment or later is refused. Reviewers, who hold
  * `update:competitions`, are not held to them; they review after submissions have closed.

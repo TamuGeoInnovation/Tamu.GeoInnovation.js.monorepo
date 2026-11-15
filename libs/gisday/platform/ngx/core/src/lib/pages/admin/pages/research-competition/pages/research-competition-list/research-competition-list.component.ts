@@ -28,8 +28,7 @@ import { downloadFile } from '@tamu-gisc/common/utils/ui';
 import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
 
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
-import { SubmissionDeadlinesComponent } from '../../components/submission-deadlines/submission-deadlines.component';
-import { SeasonCompetitionsComponent } from '../../components/season-competitions/season-competitions.component';
+import { CompetitionSettingsComponent } from '../../components/competition-settings/competition-settings.component';
 import {
   ReviewEmailModalComponent,
   ReviewEmailModalData,
@@ -161,8 +160,7 @@ export function finalReminderNote(rows: Array<Partial<Submission>>): string | nu
     DatePipe,
     TitleCasePipe,
     ExistsPipe,
-    SubmissionDeadlinesComponent,
-    SeasonCompetitionsComponent
+    CompetitionSettingsComponent
   ]
 })
 export class ResearchCompetitionListComponent extends BaseAdminListComponent<Submission> implements OnInit {
