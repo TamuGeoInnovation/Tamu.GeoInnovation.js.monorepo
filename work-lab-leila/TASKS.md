@@ -62,10 +62,9 @@ only, and revert it afterwards so your stack matches `development` again. On you
 Commit to `docs/screenshots/2948-season-competition-types/` on that branch, link them from its release note, push
 (fast-forward, no force), and give the PR body's image section in your report.
 
-## Batch 64 (gisday: screenshots for #3023, the profile email read and edited before it is sent; 15 November 2026, from `work (gisday)`) (**Urgent**) - **right after 62, before 63**
+## Batch 64 (gisday: screenshots for #3023, the profile email read and edited before it is sent; 15 November 2026, from `work (gisday)`) (**Urgent**) - **next, before you go on with 63 if you can pause it; otherwise right after 63**
 
-Home built #3023 on `feat/3023-profile-email-preview-pr` on the fork, at `bb8b2b6a1`'s parent of the PR body, i.e. the
-branch head (PR 3025). It is **stacked on PR 3020** (#3017), so start from that branch. On your signed-in local stack,
+Home built #3023 on `feat/3023-profile-email-preview-pr` on the fork, at its current head (PR 3025). It is **stacked on PR 3020** (#3017), so start from that branch. On your signed-in local stack,
 with your own test speaker only (mask any other name or email):
 - **Before** (on `development`): Admin, Speakers with a speaker selected and the Email edit links action; Research
   Competitions' Send profile email confirmation.
