@@ -552,4 +552,20 @@ describe('SpeakerEditService.sendLinksForSubmissions (#2958)', () => {
 
     expect(sent.map((m) => m.text.split(':')[0])).toEqual(['Hi Ana', 'Hi Cy']);
   });
+
+  // #3044: the text may use Markdown; it goes as HTML beside the plain text, and HTML typed into it is not obeyed.
+  it('sends the Markdown as HTML beside the text, with any HTML typed into it shown, not obeyed', async () => {
+    (await service.sendLinksForSubmissions([S1], 'gisday.tamu.edu', {
+      subject: 'Profile',
+      template: 'Hi {first name}, **please** finish your bio <script>x()</script>: {edit link}'
+    })) as never;
+
+    const [m] = sent as Array<{ text: string; html?: string }>;
+
+    expect(m.text).toContain('**please**');
+    expect(m.html).toContain('<strong>please</strong>');
+    expect(m.html).toContain('&lt;script&gt;');
+    expect(m.html).not.toContain('<script>');
+    expect(m.html).toContain('href="https://gisday.tamu.edu/presenters/edit/');
+  });
 });

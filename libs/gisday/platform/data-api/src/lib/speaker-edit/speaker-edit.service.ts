@@ -9,6 +9,7 @@ import { In, MoreThan, Repository } from 'typeorm';
 import {
   PROFILE_EDIT_LINK_PREVIEW,
   PROFILE_EMAIL_KIND,
+  emailHtml,
   fillProfileEmail,
   gisdaySite,
   participantEmails,
@@ -502,7 +503,9 @@ export class SpeakerEditService {
         from: senderAs(site.name, process.env.MAILROOM_FROM),
         replyTo: process.env.MAILROOM_TO,
         subject,
-        text
+        text,
+        // The Markdown as HTML, beside the plain text (#3044).
+        html: emailHtml(text)
       },
       true
     );

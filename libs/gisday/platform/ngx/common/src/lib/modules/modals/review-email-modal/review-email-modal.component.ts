@@ -2,7 +2,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 
-import { REVIEW_EMAIL_PLACEHOLDERS, fillReviewEmail } from '@tamu-gisc/gisday/common';
+import { REVIEW_EMAIL_PLACEHOLDERS, emailHtml, fillReviewEmail } from '@tamu-gisc/gisday/common';
 import { ReviewEmailPreview } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { ButtonComponent, TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { MODAL_DATA, ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
@@ -72,6 +72,11 @@ export class ReviewEmailModalComponent implements OnInit {
   /** The email as the first submission of a kind would get it, from the text as it now stands. */
   public example(kind: string, values: Record<string, string>): string {
     return fillReviewEmail(this.form.controls[kind]?.value ?? '', values);
+  }
+
+  /** The same, formatted from its Markdown as it will arrive (#3044); Angular's sanitiser checks it on the way in. */
+  public exampleHtml(kind: string, values: Record<string, string>): string {
+    return emailHtml(this.example(kind, values));
   }
 
   /** The subject as the first of a kind would get it, from the subject as it now stands (#3023). */
