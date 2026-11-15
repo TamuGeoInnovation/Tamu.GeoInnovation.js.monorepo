@@ -798,12 +798,15 @@ describe('UserSubmissionProvider', () => {
   /**
    * #3017: the final reminder to finalists who have not uploaded their final presentation or poster, by the review email's
    * own path: previewed and edited first, one kind per competition, sent to the same people. A submission that already
-   * has a file is skipped, and said to be.
+   * has a file, or that was not accepted (rejected, or not yet reviewed), is skipped, and said to be, with why.
    */
   describe('the final reminder (#3017)', () => {
     const A = '0f8c9a52-1b2c-4d3e-8f4a-5b6c7d8e9f01';
     const B = '1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d';
     const C = '2b3c4d5e-6f7a-4b8c-9d0e-1f2a3b4c5d6e';
+    const REJECTED = '3c4d5e6f-7a8b-4c9d-8e0f-2a3b4c5d6e7f';
+    const UNREVIEWED = '4d5e6f7a-8b9c-4d0e-9f1a-3b4c5d6e7f8a';
+    const accepted = { reviewed: true, acceptance: true };
     const rows: Record<string, Submission> = {
       [A]: submission({
         guid: A,
@@ -813,22 +816,40 @@ describe('UserSubmissionProvider', () => {
           { name: 'Ana Ruiz', email: 'ana@tamu.edu' },
           { name: 'Ben Lee', email: 'ben@tamu.edu' }
         ],
-        files: []
+        files: [],
+        ...accepted
       }),
       [B]: submission({
         guid: B,
         title: 'Campus trees',
         submissionType: 'presentation',
         participants: [{ name: 'Cy Diaz', email: 'cy@tamu.edu' }],
-        files: [{ guid: 'f-1', name: 'slides.pptx' }]
+        files: [{ guid: 'f-1', name: 'slides.pptx' }],
+        ...accepted
       }),
       [C]: submission({
         guid: C,
         title: 'Bike lanes',
         submissionType: 'presentation',
-        participants: [{ name: 'Di Park', email: 'di@tamu.edu' }]
+        participants: [{ name: 'Di Park', email: 'di@tamu.edu' }],
+        ...accepted
+      }),
+      [REJECTED]: submission({
+        guid: REJECTED,
+        title: 'Old roads',
+        submissionType: 'poster',
+        participants: [{ name: 'Ed Wu', email: 'ed@tamu.edu' }],
+        reviewed: true,
+        acceptance: false
+      }),
+      [UNREVIEWED]: submission({
+        guid: UNREVIEWED,
+        title: 'Rivers',
+        submissionType: 'presentation',
+        participants: [{ name: 'Fay Ng', email: 'fay@tamu.edu' }]
       })
     };
+    const HAS_FILE = { title: 'Campus trees', reason: 'already has a file' };
     const sends = () => (contactService.sendMessage as jest.Mock).mock.calls;
 
     beforeEach(() => {
@@ -850,7 +871,7 @@ describe('UserSubmissionProvider', () => {
       expect(preview.groups[1].template).toContain('This is your final reminder.');
       expect(preview.groups[1].template).toContain('your submission will be removed from the competition');
       expect(preview.groups[0].example).toEqual(expect.objectContaining({ title: 'Flood maps', to: 'ana@tamu.edu', cc: 'ben@tamu.edu' }));
-      expect(preview.skipped).toEqual(['Campus trees']);
+      expect(preview.skipped).toEqual([HAS_FILE]);
       expect(contactService.sendMessage).not.toHaveBeenCalled();
       expect(submissionRepo.update).not.toHaveBeenCalled();
     });
@@ -863,7 +884,7 @@ describe('UserSubmissionProvider', () => {
         'gisday.tamu.edu'
       );
 
-      expect(result).toEqual({ sent: ['Flood maps', 'Bike lanes'], skipped: ['Campus trees'], failed: [] });
+      expect(result).toEqual({ sent: ['Flood maps', 'Bike lanes'], skipped: [HAS_FILE], failed: [] });
       expect(sends().map(([m]) => [m.to, m.subject])).toEqual([
         ['ana@tamu.edu', 'Final reminder: upload your final poster for Texas A&M GIS Day'],
         ['di@tamu.edu', 'Final reminder: upload your final presentation for Texas A&M GIS Day']
@@ -883,6 +904,22 @@ describe('UserSubmissionProvider', () => {
       await provider.remindUserSubmissions([C], { templates: { [group.kind]: group.template } }, REVIEWER_PERMS, 'gisday.tamu.edu');
 
       expect(sends()[0][0].text).toBe(fillReviewEmail(group.template, group.example.values));
+    });
+
+    it('skips one that was rejected or is not yet reviewed, in the preview and the send, and says why (decided 15 November)', async () => {
+      const preview = await provider.previewReminders([A, REJECTED, UNREVIEWED], REVIEWER_PERMS, 'gisday.tamu.edu');
+
+      expect(preview.groups.map((g) => [g.kind, g.count])).toEqual([['poster-reminder', 1]]);
+      expect(preview.skipped).toEqual([
+        { title: 'Old roads', reason: 'not accepted' },
+        { title: 'Rivers', reason: 'not accepted' }
+      ]);
+
+      const result = await provider.remindUserSubmissions([A, REJECTED, UNREVIEWED], {}, REVIEWER_PERMS, 'gisday.tamu.edu');
+
+      expect(result.sent).toEqual(['Flood maps']);
+      expect(result.skipped).toEqual(preview.skipped);
+      expect(sends().map(([m]) => m.to)).toEqual(['ana@tamu.edu']);
     });
 
     it('names one whose email could not be sent, and carries on', async () => {
