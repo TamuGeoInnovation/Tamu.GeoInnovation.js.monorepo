@@ -157,6 +157,17 @@ export class UserSubmissionController {
     }
   }
 
+  /**
+   * Deletes the selected submissions, for Research Competitions' Delete (#2992). Body: `{ guid: 'guid,guid' }`, as every
+   * admin list sends it. The route was missing, so the list's Delete did nothing.
+   */
+  @Permissions(['delete:competitions'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Delete()
+  public deleteEntities(@Req() req, @Body('guid') guids: string) {
+    return this.provider.deleteUserSubmissions(`${guids ?? ''}`.split(','), req.user.sub, req.user.permissions);
+  }
+
   @UseGuards(JwtGuard)
   @Delete(':guid')
   public deleteEntity(@Req() req, @Param('guid') guid: string) {

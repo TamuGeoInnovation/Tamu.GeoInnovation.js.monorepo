@@ -772,6 +772,32 @@ describe('UserSubmissionProvider', () => {
     });
   });
 
+  // #2992: Research Competitions' Delete sends the selected ids at once, and there was no route for them.
+  describe('.deleteUserSubmissions()', () => {
+    const A = '0f8c9a52-1b2c-4d3e-8f4a-5b6c7d8e9f01';
+    const B = '1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d';
+
+    it('deletes each selected submission, once each', async () => {
+      jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission());
+
+      await expect(provider.deleteUserSubmissions([A, B, A], 'r', ['delete:competitions'])).resolves.toEqual({ deleted: 2 });
+      expect((submissionRepo.delete as jest.Mock).mock.calls.map((c) => c[0])).toEqual([A, B]);
+    });
+
+    it('refuses anyone without delete:competitions, even an owner, and deletes nothing', async () => {
+      await expect(provider.deleteUserSubmissions([A], OWNER, [])).rejects.toThrow(ForbiddenException);
+      expect(submissionRepo.delete).not.toHaveBeenCalled();
+    });
+
+    it('refuses an empty list or an id that is not a submission id, and deletes nothing', async () => {
+      await expect(provider.deleteUserSubmissions([], 'r', ['delete:competitions'])).rejects.toThrow(BadRequestException);
+      await expect(provider.deleteUserSubmissions([A, '1; drop'], 'r', ['delete:competitions'])).rejects.toThrow(
+        BadRequestException
+      );
+      expect(submissionRepo.delete).not.toHaveBeenCalled();
+    });
+  });
+
   describe('.insertUserSubmission()', () => {
     it('stamps the submission with the account that created it', async () => {
       jest.spyOn(submissionRepo, 'create').mockImplementation((s) => s as never);
