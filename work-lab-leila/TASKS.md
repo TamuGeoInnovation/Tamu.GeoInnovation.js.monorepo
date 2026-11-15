@@ -8367,3 +8367,23 @@ the session one per row. Branch `fix/3089-checkin-polish` on the fork (latest co
 <month> <day> at <time>"), `after-signed-out.png` (second visit signed out: SIGN IN above Go to the session). Undo
 everything as in report 84. One commit `docs(screenshots): #3089's after`, pushed to the fork (fetch and rebase onto
 `fork/fix/3089-checkin-polish` first; no force). Report "images pushed: <sha>".
+
+## Batch 86 (gisday: #3092, a session's speakers get a session details email, and email actions go in one menu; 15 November 2026, from `work (gisday)`) (High) - **after 85**
+
+[#3092](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3092). **Decided (the maintainer): 1A,
+2A.**
+1. **A shared action menu** in `libs/ui-kits/ngx` (none exists; say where you looked), exported for reuse: a button
+   ("Email these speakers ▾") that opens a short list of actions, keyboard and screen-reader usable, closing on Escape and
+   outside click. The session admin page (`event-add-edit-form`) puts "Profile email" (what "Send profile emails to these
+   speakers" does now) and "Session details" in it. Find every other admin page with more than one email action side by
+   side and move them to the same menu; list them in the report.
+2. **The session details email**, sent to the session's speakers through the same composer as the finalists' and profile
+   emails (`ReviewEmailModalComponent`: subject and text editable, Markdown, preview, who will not be emailed), with the
+   same 10-minute repeat guard and parallel sending the profile email has (`REPEAT_SEND_MINUTES`, `inParallel`).
+   Prefilled from the session: name; day and time in Central; venue and room, or "online"; for hybrid or virtual, the
+   Zoom link and dial-in (the broadcast's, as the session page shows them); that the check-in QR code is shown at the
+   session and scanned there; what to bring (the session's requirements). An API route guarded like the profile email's.
+Branch `feat/3092-session-details-email` from the latest `development`. Tests red first; the full check with
+`CHECK_MEMORY=24g CHECK_PARALLEL=3`; before/after screenshots (the session page's header, the open menu, the composer with
+the prefilled email and its preview); a release note. **Send no real email**: point the mailer at nothing, as in earlier
+email batches. Report "branch ready".
