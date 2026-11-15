@@ -14,3 +14,8 @@ opens it to edit: a table with one row per competition, each date picker with it
 Clear, and **Save deadlines** at the end of the panel instead of across the page. A season with no deadlines opens with
 the panel open, ready to set them.
 ([#2969](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2969))
+
+| Before: the section as it was, every date open above the submissions | After: collapsed to one line, the submissions right below |
+| --- | --- |
+| ![Submission deadlines before, a field per competition and date, with Save deadlines across the page](../screenshots/2969-deadlines-panel/before-page.png) | ![Submission deadlines after, collapsed to one line summarizing each competition's dates in Central time](../screenshots/2969-deadlines-panel/after-collapsed.png) |
+| ![The whole Submission deadlines section before](../screenshots/2969-deadlines-panel/before-section.png) | ![Submission deadlines after, opened to a table with one row per competition and Save deadlines on the right](../screenshots/2969-deadlines-panel/after-expanded.png) |
