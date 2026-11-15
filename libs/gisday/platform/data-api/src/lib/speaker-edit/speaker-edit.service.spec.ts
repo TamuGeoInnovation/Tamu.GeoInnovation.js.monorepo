@@ -5,6 +5,7 @@ import { join } from 'path';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 import { declaredJpeg } from '@tamu-gisc/common/node/images';
+import { PROFILE_EDIT_LINK_PREVIEW, fillReviewEmail } from '@tamu-gisc/gisday/common';
 
 import { SpeakerEditService, cleanFields, hashOf, linkEmail, senderAs } from './speaker-edit.service';
 import { siteHost } from './speaker-edit.controller';
@@ -147,6 +148,60 @@ describe('SpeakerEditService', () => {
     );
     expect(sent[0].text).toContain('on Texas A&M GIS Day');
     expect(sent[0].text).toContain('https://gisday.tamu.edu/presenters/edit/');
+  });
+
+  /**
+   * #3023: the email is shown and editable before it goes, as the acceptance emails are: one group, today's subject and
+   * text as the default, and an example for the first speaker with a stand-in for the link, never a real one.
+   */
+  describe('the email, read and edited first (#3023)', () => {
+    it("previews today's subject and text for those with an address, makes no link and sends nothing", async () => {
+      const preview = await service.previewLinks(['speaker-ana', 'speaker-ben'], 'gisday.tamu.edu');
+
+      expect(preview.groups.map((g) => [g.kind, g.label, g.count])).toEqual([['profile', 'Presenter profile emails', 1]]);
+      expect(preview.groups[0].subject).toBe('Update your Texas A&M GIS Day presenter profile');
+      expect(preview.groups[0].template).toContain('{edit link}');
+      expect(preview.groups[0].example.to).toBe('ana@example.edu');
+      expect(preview.groups[0].example.values['{first name}']).toBe('Ana');
+      expect(preview.groups[0].example.values['{edit link}']).toBe(PROFILE_EDIT_LINK_PREVIEW);
+      expect(JSON.stringify(preview)).not.toContain('/presenters/edit/');
+      expect(links).toEqual([]);
+      expect(sent).toEqual([]);
+    });
+
+    it("sends the subject and text as edited, with each speaker's own link filled in", async () => {
+      await service.sendLinks(['speaker-ana'], 'gisday.tamu.edu', {
+        subject: 'Your profile, {first name}',
+        template: 'Hi {first name}, update it at {edit link} on {site}.'
+      });
+
+      expect(sent[0].subject).toBe('Your profile, Ana');
+      expect(sent[0].text).toBe(`Hi Ana, update it at https://gisday.tamu.edu/presenters/edit/${tokenSent()} on Texas A&M GIS Day.`);
+      expect(links).toHaveLength(1);
+    });
+
+    it("sends exactly the preview's text when it is left as it is, but with the real link", async () => {
+      const [group] = (await service.previewLinks(['speaker-ana'], 'gisday.tamu.edu')).groups;
+
+      await service.sendLinks(['speaker-ana'], 'gisday.tamu.edu', { subject: group.subject, template: group.template });
+
+      const link = `https://gisday.tamu.edu/presenters/edit/${tokenSent()}`;
+
+      expect(sent[0].text).toBe(
+        fillReviewEmail(group.template, { ...group.example.values, '{edit link}': link })
+      );
+    });
+
+    it('refuses a text without {edit link}, or with no subject, and makes no link and sends nothing', async () => {
+      await expect(
+        service.sendLinks(['speaker-ana'], 'gisday.tamu.edu', { subject: 'Profile', template: 'Hi {first name}.' })
+      ).rejects.toThrow(BadRequestException);
+      await expect(
+        service.sendLinks(['speaker-ana'], 'gisday.tamu.edu', { subject: ' ', template: 'Hi {edit link}' })
+      ).rejects.toThrow(BadRequestException);
+      expect(links).toEqual([]);
+      expect(sent).toEqual([]);
+    });
   });
 
   it('keeps only a hash of the token, never the token', async () => {
@@ -431,5 +486,16 @@ describe('SpeakerEditService.sendLinksForSubmissions (#2958)', () => {
   it('refuses an empty list', async () => {
     await expect(service.sendLinksForSubmissions([])).rejects.toThrow(BadRequestException);
     expect(sent).toEqual([]);
+  });
+
+  it('previews the email for the matched speakers, each once, and sends it as edited (#3023)', async () => {
+    const preview = await service.previewLinksForSubmissions([S1, S2], 'gisday.tamu.edu');
+
+    expect(preview.groups.map((g) => [g.kind, g.count])).toEqual([['profile', 2]]);
+    expect(sent).toEqual([]);
+
+    await service.sendLinksForSubmissions([S1, S2], 'gisday.tamu.edu', { subject: 'Profile', template: 'Hi {first name}: {edit link}' });
+
+    expect(sent.map((m) => m.text.split(':')[0])).toEqual(['Hi Ana', 'Hi Cy']);
   });
 });

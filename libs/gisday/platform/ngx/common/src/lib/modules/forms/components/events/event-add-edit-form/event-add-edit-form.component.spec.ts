@@ -12,8 +12,10 @@ import {
   TagService
 } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 
 import { EventAddEditFormComponent } from './event-add-edit-form.component';
+import { ReviewEmailModalComponent } from '../../../../modals/review-email-modal/review-email-modal.component';
 
 /**
  * #2706. "Is accepting RSVPs?" starts ticked on a new event, as the database column's default is, so an event made in the
@@ -21,7 +23,13 @@ import { EventAddEditFormComponent } from './event-add-edit-form.component';
  * site had been saved with it off.
  */
 describe('EventAddEditFormComponent', () => {
+  let speakerEdits: { preview: jest.Mock; send: jest.Mock };
+  let modals: { open: jest.Mock };
+
   function create(type: 'create' | 'edit', event?: object, seasonSpeakers: Array<object> = []) {
+    speakerEdits = { preview: jest.fn(() => of({ groups: [] })), send: jest.fn(() => of({ sent: [], skipped: [] })) };
+    modals = { open: jest.fn(() => of({ profile: 'Hi {edit link}', 'profile:subject': 'Profile' })) };
+
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
@@ -33,7 +41,8 @@ describe('EventAddEditFormComponent', () => {
         { provide: BroadcastService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
         { provide: EventService, useValue: { getEntity: () => of(event) } },
         { provide: NotificationService, useValue: { toast: jest.fn() } },
-        { provide: SpeakerEditsService, useValue: {} }
+        { provide: SpeakerEditsService, useValue: speakerEdits },
+        { provide: ModalService, useValue: modals }
       ]
     });
     // The form's own setup is what is under test, not its template.
@@ -87,5 +96,42 @@ describe('EventAddEditFormComponent', () => {
 
       expect(names(shown[shown.length - 1])).toEqual(['Ethan Ablack', 'Sunny Zheng']);
     });
+  });
+});
+
+/** #3023: the event's own "Email speakers their edit links" shows the email first, editable, as the other two places do. */
+describe('EventAddEditFormComponent, the profile email', () => {
+  it("shows the email for the event's speakers first, then sends it as edited", () => {
+    const speakerEdits = { preview: jest.fn(() => of({ groups: [] })), send: jest.fn(() => of({ sent: [], skipped: [] })) };
+    const modals = { open: jest.fn(() => of({ profile: 'Hi {edit link}', 'profile:subject': 'Profile' })) };
+
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter([]),
+        { provide: ActivatedRoute, useValue: { params: of({ guid: 'event' }) } },
+        { provide: SeasonService, useValue: { activeSeason$: of({ guid: 'season', days: [] }) } },
+        { provide: SpeakerService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+        { provide: TagService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+        { provide: LocationService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+        { provide: BroadcastService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+        { provide: EventService, useValue: { getEntity: () => of({ guid: 'event', speakers: [{ guid: 'sp-1', lastName: 'Abe' }, { guid: 'sp-2', lastName: 'Bo' }] }) } },
+        { provide: NotificationService, useValue: { toast: jest.fn() } },
+        { provide: SpeakerEditsService, useValue: speakerEdits },
+        { provide: ModalService, useValue: modals }
+      ]
+    });
+    TestBed.overrideTemplate(EventAddEditFormComponent, '');
+
+    const fixture = TestBed.createComponent(EventAddEditFormComponent);
+    fixture.componentRef.setInput('type', 'edit');
+    fixture.componentInstance.ngOnInit();
+    fixture.componentInstance.emailSpeakersEditLinks();
+
+    expect(modals.open).toHaveBeenCalledWith(
+      ReviewEmailModalComponent,
+      expect.objectContaining({ data: expect.objectContaining({ verb: 'Send profile email', editableSubject: true }) })
+    );
+    expect(speakerEdits.preview).toHaveBeenCalledWith(['sp-1', 'sp-2']);
+    expect(speakerEdits.send).toHaveBeenCalledWith(['sp-1', 'sp-2'], { subject: 'Profile', template: 'Hi {edit link}' });
   });
 });
