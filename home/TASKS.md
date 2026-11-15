@@ -16,6 +16,21 @@ are in `libs/gisday/platform/data-api/src/lib/check-in/`.
   check-ins on the local site); a release note. Push to the fork and report "branch ready". Branch
   `feat/3006-check-in-dashboard`.
 
+## Batch 55 (gisday: #3026 and #3024, two Low follow-ups on Research Competitions and the dashboards; 15 November 2026, from `work (gisday)`) (Low)
+
+**Decided (the maintainer):** lab report 62's questions: the cramped table is a follow-up (#3026), and the reminder
+window keeps counts and reasons, without titles.
+
+1. **[#3026](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3026)**, the cramped submissions
+   table. **Start once PR 3020 has merged** (`gh pr view 3020 --json state`), from the latest `development`. Branch
+   `fix/3026-submissions-table-fit`.
+2. **[#3024](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3024)**, the dashboards'
+   unread-accounts count not filtered by site. **Start once PR 3014 has merged**; the lab is changing its table now
+   (batch 63). Branch `fix/3024-unread-by-site`.
+
+Each: tests red first, the bug-fix check, a release note; the lab takes screenshots. Push to the fork and report
+"branch ready" for each. If neither PR has merged, report that and stay listening.
+
 ## Batch 54 (gisday: #3023, review and edit the speaker profile email before it is sent; 15 November 2026, from `work (gisday)`) (**Urgent**) - **do this now**
 
 [#3023](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3023). The maintainer is waiting on
