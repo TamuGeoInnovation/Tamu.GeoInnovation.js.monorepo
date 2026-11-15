@@ -5,14 +5,20 @@ import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 /**
  * The search box at the top of an admin list page (#2914), with how many the list holds, and how many of them it
- * shows while a search is in use.
+ * shows while a search is in use. Its X empties the search, which lists every row again (#3051).
  * The page's BaseAdminListComponent owns the search and does the filtering; this only draws it.
  */
 @Component({
   selector: 'tamu-gisc-admin-search',
   template: `
     <div class="admin-search">
-      <tamu-gisc-textbox type="text" [placeholder]="placeholder()" [formControl]="control()"></tamu-gisc-textbox>
+      <tamu-gisc-textbox
+        type="text"
+        [placeholder]="placeholder()"
+        [formControl]="control()"
+        [clearable]="true"
+        clearLabel="Clear the search"
+      ></tamu-gisc-textbox>
       @if (counts(); as c) {
         <p class="admin-search-count">
           @if (control().value.trim()) {
