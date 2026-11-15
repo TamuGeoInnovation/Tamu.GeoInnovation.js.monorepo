@@ -8273,3 +8273,14 @@ to the Checkin section. Write to `docs/screenshots/3077-qr-checkin/`, exactly th
 
 Undo every check-in and setting you made, as in report 79. One commit, `docs(screenshots): #3077's before and after`, on
 the branch, pushed to the fork. Report "images pushed: <sha>" and stop.
+
+## Batch 81 (gisday: #3078, draw a venue's check-in zone on a map; 15 November 2026, from `work (gisday)`) (High) - **after 80**
+
+[#3078](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3078). **Decided (the maintainer, 15
+November): A.** Zones stay on venues (`event_location.checkInZone`); Admin > Venues' form gets a map that shows the zone
+and lets an admin draw, move and clear its corners, kept in step with the existing **Check-In Zone Corners** textarea
+(either one edits the same value; the textarea stays). No schema change. Reuse before building: look in `libs/maps/**`
+and `libs/ui-kits/ngx/**` for an existing Esri map component and sketch tool, and say where you looked. Default view: the
+venue's own point, else campus. Branch `feat/3078-zone-map` from the latest `development`. Tests red first (the form keeps
+the map and the textarea in step); the full check with `CHECK_MEMORY=24g CHECK_PARALLEL=3`; before/after screenshots of
+a venue with a zone (Blocker or OMB, once the maintainer has entered them); a release note. Report "branch ready".
