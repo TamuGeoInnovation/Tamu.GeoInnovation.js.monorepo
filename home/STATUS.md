@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle and listening (6:55 AM Central, 15 November).
+- **Batch 52 (gisday: #3017)**, final file column and final reminder email, branch `feat/3017-final-reminder`; started 7:04 AM Central, 15 November.
 
 ## Finished
 - **Batch 51 (gisday: #2948 join table)** (report `home/reports/2026-11-15-51.md`): branch ready, `feat/2948-season-competition-types` on the fork at `468840557`, no PR; kubernetes-config `7b98643`, never run. `season_competitions` (unique season+competition, cascade), eager on Season; no rows = every one; API and page unchanged. Migration generated and proven (up/down/up, unique, cascade, no drift). Development merged. Red first; full check exit 0. Filed #3013 (gisday-common specs never run). Two questions.
