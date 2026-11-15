@@ -140,6 +140,14 @@ export function isCheckInOpen(
  * today in Central. An attendee who scans a QR code early learns why nothing happened, and when to scan again.
  */
 export function checkInOpensMessage(opens: Date, now: Date = new Date()): string {
+  return `Check-in opens ${checkInOpensAt(opens, now)}.`;
+}
+
+/**
+ * When check-in opens, in Central time: "at 2:00 PM" on the same Central day as `now`, otherwise "on Wednesday,
+ * November 18 at 2:00 PM". The page's message and the API's refusal both say it this way (#3077, #3089).
+ */
+export function checkInOpensAt(opens: Date, now: Date = new Date()): string {
   const time = new Intl.DateTimeFormat('en-US', { timeZone: GISDAY_TIME_ZONE, hour: 'numeric', minute: '2-digit' }).format(
     opens
   );
@@ -147,7 +155,7 @@ export function checkInOpensMessage(opens: Date, now: Date = new Date()): string
   const b = centralParts(now);
 
   if (a.year === b.year && a.month === b.month && a.day === b.day) {
-    return `Check-in opens at ${time}.`;
+    return `at ${time}`;
   }
 
   const day = new Intl.DateTimeFormat('en-US', {
@@ -157,7 +165,7 @@ export function checkInOpensMessage(opens: Date, now: Date = new Date()): string
     day: 'numeric'
   }).format(opens);
 
-  return `Check-in opens on ${day} at ${time}.`;
+  return `on ${day} at ${time}`;
 }
 
 /**

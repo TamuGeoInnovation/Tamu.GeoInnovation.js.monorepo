@@ -120,6 +120,16 @@ describe('EventCheckinComponent', () => {
     expect(text()).toContain('Taking you to sign in');
   });
 
+  // #3089: SIGN IN and Go to the session sat side by side with no gap.
+  it('stacks SIGN IN above Go to the session, each in its own row', () => {
+    sessionStorage.setItem('gisday-checkin-sign-in:code-1', '1');
+
+    const { fixture } = open({ loggedIn: false });
+    const rows = Array.from((fixture.nativeElement as HTMLElement).querySelectorAll('.checkin-actions > *'));
+
+    expect(rows.map((r) => r.querySelector('input')?.value)).toEqual(['SIGN IN', 'Go to the session']);
+  });
+
   it('sends them only once per scan, so someone who cancels sign-in sees why and a SIGN IN button', () => {
     sessionStorage.setItem('gisday-checkin-sign-in:code-1', '1');
 
