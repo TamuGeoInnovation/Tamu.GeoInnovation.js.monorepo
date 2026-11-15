@@ -8314,3 +8314,6 @@ field's copy-link words go maroon, using the maroon that site already applies (f
 other sites keep their look. Branch `feat/3084-tamu-maroon` from the latest `development`; the check with
 `CHECK_MEMORY=24g CHECK_PARALLEL=3`; before/after screenshots on gisday.tamu.edu and one other site unchanged; a release
 note. Report "branch ready".
+
+> **Batch 83, the maintainer's example:** gisday.tamu.edu/sessions?search=intel. The search box's **focus outline** is blue
+> and the **Copy link** words inside the box are blue; both become the site's maroon. Capture that page, focused.
