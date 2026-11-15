@@ -150,7 +150,7 @@ export class SpeakerBadgesComponent extends BaseAdminListComponent<Speaker> impl
     super.ngOnInit();
 
     const badges$ = combineLatest([this.selectedSeason$, this.reload$]).pipe(
-      switchMap(([season]) => (season?.guid ? this.entityService.getParticipatingPresentersForSeason(season.guid) : of([]))),
+      switchMap(([season]) => (season?.guid ? this.entityService.getAllParticipatingPresentersForSeason(season.guid) : of([]))),
       map((speakers) => badgesOf(speakers ?? [])),
       shareReplay(1)
     );

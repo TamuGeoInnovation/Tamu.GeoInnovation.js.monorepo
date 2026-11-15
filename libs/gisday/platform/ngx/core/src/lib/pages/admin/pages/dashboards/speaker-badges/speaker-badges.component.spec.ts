@@ -94,11 +94,11 @@ describe('sortBadges() and badgesCsv()', () => {
 });
 
 describe('SpeakerBadgesComponent', () => {
-  let service: { getParticipatingPresentersForSeason: jest.Mock; markBadgesPrinted: jest.Mock; clearBadgesPrinted: jest.Mock };
+  let service: { getAllParticipatingPresentersForSeason: jest.Mock; markBadgesPrinted: jest.Mock; clearBadgesPrinted: jest.Mock };
 
   async function open(rows: Array<Partial<Speaker>> = speakers) {
     service = {
-      getParticipatingPresentersForSeason: jest.fn(() => of(rows)),
+      getAllParticipatingPresentersForSeason: jest.fn(() => of(rows)),
       markBadgesPrinted: jest.fn(() => of({ marked: 1 })),
       clearBadgesPrinted: jest.fn(() => of({ cleared: 1 }))
     };
@@ -130,11 +130,12 @@ describe('SpeakerBadgesComponent', () => {
   const csvLastNames = (csv: string) => Papa.parse<Record<string, string>>(csv, { header: true }).data.map((r) => r['Last name']);
   const link = (root: HTMLElement, text: string) => Array.from(root.querySelectorAll('a, button')).find((a) => a.textContent.includes(text)) as HTMLElement;
 
-  it("lists the season's presenters, as the Presenters page reads them, under the five headings and Printed", async () => {
+  it("lists the season's presenters, every one, photo or not, under the five headings and Printed", async () => {
     const fixture = await open();
     const root = fixture.nativeElement as HTMLElement;
 
-    expect(service.getParticipatingPresentersForSeason).toHaveBeenCalledWith('s-1');
+    // Every presenter, photo or not: the public list leaves out those with no photo, the new finalists among them (#2995).
+    expect(service.getAllParticipatingPresentersForSeason).toHaveBeenCalledWith('s-1');
     expect(Array.from(root.querySelectorAll('.datatable-header-cell-label')).map((h) => h.textContent.trim())).toEqual([
       'First name',
       'Last name',
@@ -182,7 +183,7 @@ describe('SpeakerBadgesComponent', () => {
       { guid: 'g-lee', text: 'Ana|lee|Texas A&M University|' }
     ]);
     // The badges are read again, to show what is now printed.
-    expect(service.getParticipatingPresentersForSeason).toHaveBeenCalledTimes(2);
+    expect(service.getAllParticipatingPresentersForSeason).toHaveBeenCalledTimes(2);
     expect(root.querySelector('.badges-confirm')).toBeNull();
   });
 
