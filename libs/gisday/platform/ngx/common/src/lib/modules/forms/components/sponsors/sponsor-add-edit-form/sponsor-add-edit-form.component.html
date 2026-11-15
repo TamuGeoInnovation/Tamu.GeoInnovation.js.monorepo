@@ -49,9 +49,12 @@
         <div>
           <tamu-gisc-image-preview [src]="logoUrl$ | async" alt="Logo preview" fallback="business" fallbackLabel="No logo yet"></tamu-gisc-image-preview>
 
-          <tamu-gisc-file formControlName="file" accept="image/jpeg,image/png">
+          <tamu-gisc-file formControlName="file" [accept]="logoRules.accept" (fileSelected)="chooseLogo($event)">
             <p class="placeholder">Select Logo Image</p>
           </tamu-gisc-file>
+          @if (logoProblem(); as problem) {
+          <p class="error" role="alert">{{ problem }}</p>
+          }
         </div>
       </div>
     </div>

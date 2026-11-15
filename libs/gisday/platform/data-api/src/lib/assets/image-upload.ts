@@ -1,12 +1,13 @@
 import { BadRequestException, PayloadTooLargeException } from '@nestjs/common';
 
 import { IMAGE_SIZE_LIMITS, ImageSize, exceedsImageSizeLimits, readImageSize } from '@tamu-gisc/common/node/images';
+import { UPLOAD_IMAGE_RULES, uploadImageRefusal } from '@tamu-gisc/gisday/common';
 
 /**
- * The image formats an upload may be, judged by content. Uploads are served from the site's own origin, so a format a browser
- * runs (SVG can carry script) must never be stored; a JPEG or PNG is all a speaker photo or a logo needs (#2937).
+ * The image formats an upload may be, judged by content (#2937). Defined once in `@tamu-gisc/gisday/common`, which the site
+ * reads too, so its logo picker offers the same types and refuses another in the same words (#3009).
  */
-export const UPLOAD_IMAGE_FORMATS: ReadonlyArray<ImageSize['format']> = ['jpeg', 'png'];
+export const UPLOAD_IMAGE_FORMATS: ReadonlyArray<ImageSize['format']> = UPLOAD_IMAGE_RULES.formats;
 
 /**
  * Checks an uploaded image before anything decodes or stores it, and returns it named for what it is. Every image upload uses
@@ -30,7 +31,7 @@ export function refuseUnsafeImage<T extends { buffer?: Buffer; originalname?: st
   const size = file?.buffer ? readImageSize(file.buffer) : null;
 
   if (!size || !UPLOAD_IMAGE_FORMATS.includes(size.format)) {
-    throw new BadRequestException(`${label} must be a JPEG or PNG image.`);
+    throw new BadRequestException(uploadImageRefusal(label));
   }
 
   if (exceedsImageSizeLimits(size)) {
