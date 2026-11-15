@@ -37,12 +37,18 @@ export class EventListComponent extends BaseAdminListComponent<Event> implements
    */
   public readonly organizations = new FormControl('', { nonNullable: true });
 
+  /** 'none' lists only the sessions with no tags, so they can be given some, the list shrinking as they are (#3034). */
+  public readonly tagged = new FormControl('', { nonNullable: true });
+
   protected override listFilters(): Record<string, FormControl<string>> {
-    return { ...super.listFilters(), organizations: this.organizations };
+    return { ...super.listFilters(), organizations: this.organizations, tagged: this.tagged };
   }
 
   protected override keepEntity(event: Partial<Event>): boolean {
-    return this.organizations.value === 'all' || siteListsSession(this.site, event);
+    return (
+      (this.organizations.value === 'all' || siteListsSession(this.site, event)) &&
+      (this.tagged.value !== 'none' || !event.tags?.length)
+    );
   }
 
   /**

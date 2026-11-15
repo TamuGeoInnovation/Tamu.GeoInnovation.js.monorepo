@@ -148,3 +148,58 @@ describe('EventListComponent on gisday.tamu.edu', () => {
     expect((fixture.nativeElement as HTMLElement).textContent).not.toContain("Show every organization's sessions");
   });
 });
+
+/** #3034: the sessions with no tags, in one step, so they can be given some; the list shrinks as they are. */
+describe('EventListComponent, the sessions with no tags', () => {
+  const events = [
+    { guid: 'e-tagged', name: 'Keynote', active: true, tags: [{ guid: 't-1', name: 'Keynote' }] },
+    { guid: 'e-bare', name: 'Mapathon', active: true, tags: [] },
+    { guid: 'e-unset', name: 'Drone flights', active: true }
+  ];
+
+  function open() {
+    TestBed.configureTestingModule({
+      imports: [EventListComponent],
+      providers: [
+        provideRouter([]),
+        { provide: GISDAY_SITE, useValue: GISDAY_SITES.txgisday },
+        {
+          provide: EventService,
+          useValue: { getEntities: () => of(events), getEntitiesForActiveSeason: () => of(events), getEntitiesForSeason: () => of(events) }
+        },
+        { provide: SeasonService, useValue: { seasons$: of([]), activeSeason$: of(null) } },
+        { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
+        { provide: ModalService, useValue: {} },
+        { provide: NotificationService, useValue: { toast: jest.fn() } }
+      ]
+    });
+
+    const fixture = TestBed.createComponent(EventListComponent);
+    fixture.detectChanges();
+
+    const names = () => {
+      fixture.detectChanges();
+
+      return [...(fixture.nativeElement as HTMLElement).querySelectorAll('tr.selectable')].map((row) => row.textContent.trim());
+    };
+
+    return { fixture, names };
+  }
+
+  it('offers "No tags", which lists only the sessions with none, and every one again when unticked', () => {
+    const { fixture, names } = open();
+
+    expect((fixture.nativeElement as HTMLElement).textContent).toContain('Only sessions with no tags');
+    expect(names()).toHaveLength(3);
+
+    fixture.componentInstance.tagged.setValue('none');
+
+    expect(names().join('|')).toContain('Mapathon');
+    expect(names().join('|')).toContain('Drone flights');
+    expect(names().join('|')).not.toContain('Keynote');
+
+    fixture.componentInstance.tagged.setValue('');
+
+    expect(names()).toHaveLength(3);
+  });
+});

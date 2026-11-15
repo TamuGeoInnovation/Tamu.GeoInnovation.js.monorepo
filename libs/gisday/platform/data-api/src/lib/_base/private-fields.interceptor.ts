@@ -2,7 +2,7 @@ import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nes
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Organization, Speaker, Sponsor } from '../entities/all.entity';
+import { EventBroadcast, Organization, Speaker, Sponsor } from '../entities/all.entity';
 
 /**
  * The fields of a record that only the people who manage it may read, and the permission that lets them. Everyone
@@ -26,7 +26,9 @@ export const PRIVATE_FIELDS: Array<{ type: new () => object; fields: Array<strin
     permission: 'update:organizations'
   },
   // Whether a speaker's badge is printed is for the admins who print them (#2908).
-  { type: Speaker, fields: ['email', 'accountGuid', 'badgePrintedAt', 'badgePrintedText'], permission: 'update:speakers' }
+  { type: Speaker, fields: ['email', 'accountGuid', 'badgePrintedAt', 'badgePrintedText'], permission: 'update:speakers' },
+  // A Zoom's presenter link is shown nowhere but its admin page, yet came with every broadcast and every event's (#3054).
+  { type: EventBroadcast, fields: ['presenterUrl'], permission: 'update:event-broadcasts' }
 ];
 
 /**

@@ -5,12 +5,16 @@
 .datatable-container {
   --datatable-height: auto;
 
+  // Ten columns beside the admin menu: where they do not fit at their narrowest, the table scrolls in its own box, not the
+  // page, as the dashboards' table does (#3006, #3026).
+  overflow-x: auto;
+
   // A row opens the submission.
   ::ng-deep .datatable-body .datatable-row-wrapper {
     cursor: pointer;
   }
 
-  // Eight columns beside the admin menu: half the shared table's side padding, so short values stay whole.
+  // Ten columns beside the admin menu: half the shared table's side padding, so short values stay whole.
   ::ng-deep .datatable-header .datatable-header-cell,
   ::ng-deep .datatable-body .datatable-body-cell {
     padding-left: 0.5rem;
@@ -21,5 +25,12 @@
   ::ng-deep .datatable-body-cell-label {
     white-space: normal;
     overflow-wrap: break-word;
+  }
+
+  // A short value (a type, a format, Uploaded, Accepted) reads whole, in a column wide enough for it (#3026): broken, it
+  // read "Mis/sin/g".
+  ::ng-deep .whole-value .datatable-body-cell-label {
+    white-space: nowrap;
+    overflow-wrap: normal;
   }
 }

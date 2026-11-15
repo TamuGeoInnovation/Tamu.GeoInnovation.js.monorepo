@@ -164,17 +164,6 @@ describe('CheckInDashboardComponent (#3006)', () => {
     ).toEqual(['All events', '', '7', '9']);
   });
 
-  it("lists only the site's own sessions, and any with no place yet, on gisday.tamu.edu (#2986)", async () => {
-    site = 'tamu';
-    const fixture = open();
-    await settle(fixture);
-    const root = fixture.nativeElement as HTMLElement;
-
-    expect(names(root)).toEqual(['Workshop', 'Keynote']);
-    expect(root.querySelector('.dashboard-summary').textContent).toContain('3 check-ins at 2 events');
-    expect(drawn[drawn.length - 1].series[0].points.map((p) => p.y)).toEqual([3]);
-  });
-
   it('charts check-ins by day', async () => {
     const fixture = open();
     await fixture.whenStable();

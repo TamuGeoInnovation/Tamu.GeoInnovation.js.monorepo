@@ -1,8 +1,8 @@
-import { HttpException, Injectable, UnprocessableEntityException } from '@nestjs/common';
+import { HttpException, Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 
-import { Tag, Season } from '../entities/all.entity';
+import { Event, Tag, Season } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
 import { SeasonService } from '../season/season.service';
 
@@ -13,6 +13,23 @@ export class TagProvider extends BaseProvider<Tag> {
     private readonly seasonService: SeasonService
   ) {
     super(tagRepo);
+  }
+
+  /**
+   * The sessions that have a tag (#3033), for its admin page, as a broadcast's (#3032): each with its day and place, so the
+   * page can order them and list only its site's. Hidden sessions too, which is why the route is for admins.
+   */
+  public async getSessions(guid: string) {
+    const tag = await this.tagRepo.findOne({ where: { guid } });
+
+    if (!tag) {
+      throw new NotFoundException('Tag not found.');
+    }
+
+    return this.tagRepo.manager.find(Event, {
+      where: { tags: { guid } },
+      relations: { day: true, location: { place: true } }
+    });
   }
 
   public async getTagsForSeason(seasonGuid: string) {

@@ -1,12 +1,16 @@
-import { UnprocessableEntityException } from '@nestjs/common';
+import { NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import { GUARDS_METADATA } from '@nestjs/common/constants';
+
+import { JwtGuard, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { Repository } from 'typeorm';
 
-import { Season, Tag } from '../entities/all.entity';
+import { Event, Season, Tag } from '../entities/all.entity';
 import { SeasonService } from '../season/season.service';
 import { TagProvider } from './tag.provider';
+import { TagController } from './tag.controller';
 
 describe('TagProvider', () => {
   let provider: TagProvider;
@@ -33,7 +37,9 @@ describe('TagProvider', () => {
             create: jest.fn(),
             save: jest.fn(),
             insert: jest.fn(),
-            createQueryBuilder: jest.fn()
+            findOne: jest.fn(),
+            createQueryBuilder: jest.fn(),
+            manager: { find: jest.fn() }
           }
         },
         { provide: SeasonService, useValue: { findOne: jest.fn(), findOneActive: jest.fn() } }
@@ -210,6 +216,34 @@ describe('TagProvider', () => {
       await provider.createTag({ name: 'LiDAR' });
 
       expect(qb.leftJoin).not.toHaveBeenCalled();
+    });
+  });
+
+  /** #3033: a tag's admin page lists the sessions that have it, as a broadcast's does (#3032). */
+  describe('.getSessions()', () => {
+    it('gives the sessions that have the tag, each with its day and place, for the admin page', async () => {
+      const sessions = [{ guid: 'e-1', name: 'Keynote' }];
+      jest.spyOn(tagRepo, 'findOne').mockResolvedValue({ guid: 't-1' } as Tag);
+      (tagRepo.manager.find as jest.Mock).mockResolvedValue(sessions);
+
+      await expect(provider.getSessions('t-1')).resolves.toEqual(sessions);
+      expect(tagRepo.manager.find).toHaveBeenCalledWith(Event, {
+        where: { tags: { guid: 't-1' } },
+        relations: { day: true, location: { place: true } }
+      });
+    });
+
+    it('answers 404 for a tag that does not exist', async () => {
+      jest.spyOn(tagRepo, 'findOne').mockResolvedValue(null);
+
+      await expect(provider.getSessions('t-x')).rejects.toThrow(NotFoundException);
+    });
+
+    it('is for admins only: it lists sessions hidden from the public schedule too', () => {
+      const handler = TagController.prototype.getSessions;
+
+      expect(Reflect.getMetadata(GUARDS_METADATA, handler)).toEqual(expect.arrayContaining([JwtGuard, PermissionsGuard]));
+      expect(Reflect.getMetadata('Permissions', handler)[0]).toEqual(['update:tags']);
     });
   });
 });

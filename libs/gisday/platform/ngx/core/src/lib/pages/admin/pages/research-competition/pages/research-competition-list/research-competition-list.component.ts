@@ -141,6 +141,34 @@ export function finalReminderNote(rows: Array<Partial<Submission>>): string | nu
     : `${skipped.length} of the ${rows.length} selected ${skipped.length === 1 ? 'is' : 'are'} skipped: ${reminderSkipSummary(skipped)}. Only the rest are reminded.`;
 }
 
+/**
+ * The narrowest each column of the submissions table may be, in pixels (#3026), each with its cell's 16 px of side
+ * padding and a few to spare. Status holds "Pending Review" (bold, 110 px), Type "Presentation" (89 px) and
+ * Classification "Undergraduate" (107 px) whole, measured in Playwright; Submitted, its heading, its date and time
+ * wrapping between words; the select column, its checkbox clear of the title beside it.
+ *
+ * Every column but the checkbox's also grows in proportion to its narrowest (its `flexGrow` is the same number), so
+ * wherever the table fits, no column is below its narrowest, as the dashboards' table does it (#3006). The table is
+ * never drawn narrower than all of them added up: where they do not fit, it scrolls sideways in its own box. Before, it
+ * was drawn at its box's width with the columns wider than it, and ngx-datatable pushed the select and Name columns
+ * off its left edge.
+ */
+export const SUBMISSION_TABLE_WIDTHS = {
+  select: 56,
+  name: 120,
+  submitted: 104,
+  submittedBy: 130,
+  department: 110,
+  type: 112,
+  format: 100,
+  classification: 132,
+  finalFile: 100,
+  status: 136
+} as const;
+
+/** The table's narrowest: every column at its narrowest. */
+export const SUBMISSION_TABLE_MIN_WIDTH = Object.values(SUBMISSION_TABLE_WIDTHS).reduce((sum, width) => sum + width, 0);
+
 @Component({
   selector: 'tamu-gisc-research-competition-list',
   templateUrl: './research-competition-list.component.html',
@@ -168,6 +196,8 @@ export class ResearchCompetitionListComponent extends BaseAdminListComponent<Sub
   private readonly toasts = inject(NotificationService);
 
   public SubmissionReviewStatus = SUBMISSION_REVIEW_STATUS;
+  public readonly widths = SUBMISSION_TABLE_WIDTHS;
+  public readonly minWidth = SUBMISSION_TABLE_MIN_WIDTH;
 
   public readonly classification = new FormControl('', { nonNullable: true });
   public readonly type = new FormControl('', { nonNullable: true });

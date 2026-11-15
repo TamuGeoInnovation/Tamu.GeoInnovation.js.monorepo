@@ -2,31 +2,19 @@ import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angula
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Observable, catchError, filter, of, switchMap, tap } from 'rxjs';
 
-import { GisdaySite, RSVP_PERSON_TYPES, RsvpPersonTypeCounts, siteListsSession } from '@tamu-gisc/gisday/common';
+import { RSVP_PERSON_TYPES, RsvpPersonTypeCounts } from '@tamu-gisc/gisday/common';
 import type {
   GuidIdentity,
   RsvpDashboard,
   RsvpDashboardEvent,
   RsvpDashboardPerson
 } from '@tamu-gisc/gisday/platform/data-api';
-import { GISDAY_SITE } from '@tamu-gisc/gisday/platform/ngx/common';
 import { bandOfDays, ChartBand, ChartSeries, countsByDay, dayIn, runningTotalByDay } from '@tamu-gisc/ui-kits/ngx/charts';
 import { fileNamePart } from '@tamu-gisc/common/utils/ui';
 
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
 import { PERSON_TYPE_COLUMNS } from '../dashboard-people/dashboard-people.component';
 import { DashboardTableRow } from '../dashboard-table/dashboard-table.component';
-
-/**
- * Only the events the site lists (#2986), and only what was made for them. gisday.tamu.edu shares txgisday.org's
- * database, so its dashboards would otherwise count every organization's sessions (#3010).
- */
-export function siteDashboard<D extends RsvpDashboard>(site: GisdaySite, dashboard: D): D {
-  const events = dashboard.events.filter((e) => siteListsSession(site, { location: { place: e.place } }));
-  const kept = new Set(events.map((e) => e.guid));
-
-  return { ...dashboard, events, made: dashboard.made.filter((m) => kept.has(m.event)) };
-}
 
 /** Every type's count summed over `events`, and the total, for the table's last row. */
 export function dashboardTotals(events: Array<RsvpDashboardEvent>): { total: number; counts: RsvpPersonTypeCounts } {
@@ -95,9 +83,9 @@ export function dashboardBands(dashboard: RsvpDashboard): Array<ChartBand> {
 
 /**
  * A dashboard of a season's events (#2878, #3006): how many of something (RSVPs, check-ins) each event has, by person
- * type, how that grew over time, and, for one event at a time, who they are, with a CSV of them. Only the site's own
- * events (#2986). A page names where its season and its people come from, and its CSV's prefix; the table, people and
- * chart are shared components.
+ * type, how that grew over time, and, for one event at a time, who they are, with a CSV of them. The API lists only the
+ * site's own events (#2986, #3024). A page names where its season and its people come from, and its CSV's prefix; the
+ * table, people and chart are shared components.
  */
 @Component({ selector: 'tamu-gisc-event-dashboard', template: '', standalone: false })
 export abstract class EventDashboardComponent<D extends RsvpDashboard, E extends GuidIdentity>
@@ -105,7 +93,6 @@ export abstract class EventDashboardComponent<D extends RsvpDashboard, E extends
   implements OnInit
 {
   private readonly destroyRef = inject(DestroyRef);
-  private readonly site = inject(GISDAY_SITE);
 
   /** The start of each event's CSV file name, such as gisday-rsvps. */
   protected abstract readonly filePrefix: string;
@@ -164,7 +151,7 @@ export abstract class EventDashboardComponent<D extends RsvpDashboard, E extends
         ),
         takeUntilDestroyed(this.destroyRef)
       )
-      .subscribe((dashboard) => this.dashboard.set(dashboard ? siteDashboard(this.site, dashboard) : null));
+      .subscribe((dashboard) => this.dashboard.set(dashboard));
   }
 
   /** Reads the people of the event the table opened, or forgets them when it closes. */
