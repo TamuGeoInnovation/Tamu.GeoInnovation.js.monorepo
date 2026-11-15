@@ -21,10 +21,8 @@ export const MainMapDiscoverApplications: InternalDiscoverApplication[] = [
     // maintainer, 8 November 2026.
     route: ['/map', 'd', 'bus'],
     mapTypes: ['transportation'],
-    // Development-only, as the Bus Routes panel is (`DEVELOPMENT_ONLY_SECTIONS`). Its service is public on production
-    // since #2636, but moving bus routes there is the maintainer's decision (#1229). `visible: false` lists it where
-    // development-only features are on, as for the development-only campuses.
-    visible: false,
+    // Listed on every environment since #2895. The Bus Routes panel itself moved to production on 9 November 2026
+    // (#2789), so the listing that links to it had no reason to stay hidden; its service has been public since #2636.
     keywords: ['bus', 'buses', 'aggiespirit', 'shuttle', 'transit', 'routes', 'stops']
   }
 ];

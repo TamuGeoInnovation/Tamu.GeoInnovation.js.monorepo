@@ -1061,50 +1061,7 @@ tamu-gisc-builder {
 //   Action feedback
 //  ==========================================================================
 
-.copy-button {
-  color: $main-blue;
-  padding: 0.8rem 0.75rem;
-  font-weight: 600;
-  width: initial;
-  position: relative;
-
-  &:focus {
-    outline: none;
-  }
-
-  &::before {
-    content: attr(copy-label);
-    font-size: 0.6rem;
-    left: 50%;
-    top: 50%;
-    @include transform(translateX(-50%) translateY(-50%));
-    opacity: 0;
-    position: absolute;
-    color: lighten($main-blue, 5%);
-  }
-
-  &.copying {
-    &::before {
-      @include animation(float-text 0.7s);
-    }
-  }
-}
-
-@include keyframes(float-text) {
-  0% {
-    opacity: 0;
-  }
-
-  50% {
-    opacity: 1;
-    @include transform(translateX(-50%) translateY(-175%));
-  }
-
-  100% {
-    opacity: 0;
-    @include transform(translateX(-50%) translateY(-250%));
-  }
-}
+@import 'libs/sass/components/copy-button';
 
 // Changelog Markdown styles
 // As to not remove view encapsulation for those component styles

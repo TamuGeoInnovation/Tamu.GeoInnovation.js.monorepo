@@ -1,5 +1,6 @@
 // Entities
 export * from './lib/entities/all.entity';
+export * from './lib/entities/timestamps';
 export * from './lib/_base/private-fields.interceptor';
 
 // Modules
@@ -10,6 +11,7 @@ export * from './lib/initial-survey/initial-survey.module';
 export * from './lib/question-type/question-type.module';
 export * from './lib/rsvp-type/rsvp-type.module';
 export * from './lib/speaker/speaker.module';
+export * from './lib/speaker-edit/speaker-edit.module';
 export * from './lib/speaker-role/speaker-role.module';
 export * from './lib/sponsor/sponsor.module';
 export * from './lib/submission-type/submission-type.module';
@@ -29,6 +31,8 @@ export * from './lib/event-broadcast/event-broadcast.module';
 export * from './lib/event-location/event-location.module';
 export * from './lib/place/place.module';
 export * from './lib/assets/assets.module';
+// The one check every GIS Day image upload uses, the competitions' photographs included (#2937, #2967)
+export * from './lib/assets/image-upload';
 export * from './lib/contact/contact.module';
 
 // Providers
@@ -47,4 +51,6 @@ export * from './lib/event/dto/event-active.dto';
 export * from './lib/season/dto/active-season.dto';
 export * from './lib/user-submission/dto/poster.dto';
 export * from './lib/user-submission/dto/submission-submitter.dto';
+export * from './lib/user-rsvp/dto/rsvp-dashboard.dto';
+export * from './lib/user-info/dto/account-dashboard.dto';
 export * from './lib/season-day/dto/simplified-season-day.dto';

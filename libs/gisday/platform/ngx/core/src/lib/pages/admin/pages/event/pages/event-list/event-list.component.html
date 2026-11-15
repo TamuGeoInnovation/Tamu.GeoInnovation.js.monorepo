@@ -9,12 +9,18 @@
     </div>
 
     <div class="form-section-body">
+      <tamu-gisc-admin-search [control]="search" placeholder="Search by name, building or room" one="event" many="events" [counts]="searchCounts$ | async"></tamu-gisc-admin-search>
+      @if (site.sessionsFrom) {
+      <!-- This site lists only its own organization's sessions; the database holds every organization's (#2986). -->
+      <tamu-gisc-checkbox label="Show every organization's sessions" (changed)="organizations.setValue($event ? 'all' : '')" [checked]="organizations.value === 'all'"></tamu-gisc-checkbox>
+      }
+
       @if (eventsByDay$ | async; as days) { @if (days.length > 0) {
       <!-- One table per day, in the same dated card the public Sessions page uses for each day, so the
            rows of one day do not run into the next (#1775). -->
       @for (group of days; track group.key) {
       <div class="card">
-      <h2>@if (group.date) {{{ group.date | date: 'MMMM dd' }}} @else {No day set}</h2>
+      <h2>@if (group.date) {{{ group.date | date: 'EEEE, MMMM d' : '-0600' }}} @else {No day set}</h2>
       <table class="floating-table">
         <thead>
           <tr>
@@ -41,7 +47,9 @@
         </tbody>
       </table>
       </div>
-      } } @else {
+      } } @else if (search.value.trim()) {
+      <p>No events match "{{ search.value }}".</p>
+      } @else {
       <p>There are no events for the selected season.</p>
       } @if ((selectedRows$ | async)?.length > 0) {
       <div class="selected-action-container info-block context">

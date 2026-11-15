@@ -2,7 +2,9 @@ import { BadRequestException, ConflictException, NotFoundException } from '@nest
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { Repository } from 'typeorm';
+import { Repository, getMetadataArgsStorage } from 'typeorm';
+
+import { SUBMISSION_DEADLINE_FIELDS } from '@tamu-gisc/gisday/common';
 
 import { Season, SeasonDay } from '../entities/all.entity';
 import { SeasonService } from './season.service';
@@ -35,6 +37,7 @@ describe('SeasonService', () => {
             findOne: jest.fn(),
             create: jest.fn(),
             save: jest.fn(),
+            update: jest.fn().mockResolvedValue({ affected: 1 }),
             remove: jest.fn(),
             manager: { transaction: jest.fn(), find: jest.fn() }
           }
@@ -346,6 +349,108 @@ describe('SeasonService', () => {
       );
       expect(findOne).toHaveBeenLastCalledWith(
         expect.objectContaining({ where: { guid: 'by-options' } })
+      );
+    });
+  });
+
+  /** #2934, #2962: when each competition closes, set by an admin. */
+  describe('.setSubmissionDeadlines()', () => {
+    const closes = '2026-11-01T17:00:00.000Z';
+    const filesClose = '2026-11-05T17:00:00.000Z';
+
+    beforeEach(() => {
+      jest.spyOn(seasonRepo, 'findOne').mockResolvedValue(seasonWithDays([]));
+    });
+
+    it('saves every moment, each a date or empty for open', async () => {
+      await service.setSubmissionDeadlines('season-1', {
+        posterSubmissionsCloseAt: closes,
+        posterFilesCloseAt: filesClose,
+        presentationSubmissionsCloseAt: ''
+      });
+
+      expect(seasonRepo.update).toHaveBeenCalledWith('season-1', {
+        posterSubmissionsCloseAt: new Date(closes),
+        posterFilesCloseAt: new Date(filesClose),
+        presentationSubmissionsCloseAt: null,
+        presentationFilesCloseAt: null,
+        paperSubmissionsCloseAt: null,
+        paperFilesCloseAt: null,
+        cartographySubmissionsCloseAt: null,
+        cartographyFilesCloseAt: null
+      });
+    });
+
+    it('refuses a moment that is not a date', async () => {
+      await expect(service.setSubmissionDeadlines('season-1', { posterSubmissionsCloseAt: 'next Friday' })).rejects.toThrow(
+        BadRequestException
+      );
+      expect(seasonRepo.update).not.toHaveBeenCalled();
+    });
+
+    it('refuses files that would close before their submissions, or while they stay open', async () => {
+      await expect(
+        service.setSubmissionDeadlines('season-1', { posterSubmissionsCloseAt: filesClose, posterFilesCloseAt: closes })
+      ).rejects.toThrow('File uploads for the poster competition cannot close before its submissions do.');
+      await expect(service.setSubmissionDeadlines('season-1', { presentationFilesCloseAt: closes })).rejects.toThrow(
+        BadRequestException
+      );
+      expect(seasonRepo.update).not.toHaveBeenCalled();
+    });
+
+    it('answers not found for a season that does not exist', async () => {
+      jest.spyOn(seasonRepo, 'findOne').mockResolvedValue(null);
+
+      await expect(service.setSubmissionDeadlines('missing', {})).rejects.toThrow(NotFoundException);
+    });
+
+    /** #2962: paper and cartography have the same pair, saved and checked the same way. */
+    it('saves the paper and cartography moments too', async () => {
+      await service.setSubmissionDeadlines('season-1', {
+        paperSubmissionsCloseAt: closes,
+        paperFilesCloseAt: filesClose,
+        cartographySubmissionsCloseAt: closes,
+        cartographyFilesCloseAt: filesClose
+      });
+
+      expect(seasonRepo.update).toHaveBeenCalledWith(
+        'season-1',
+        expect.objectContaining({
+          paperSubmissionsCloseAt: new Date(closes),
+          paperFilesCloseAt: new Date(filesClose),
+          cartographySubmissionsCloseAt: new Date(closes),
+          cartographyFilesCloseAt: new Date(filesClose)
+        })
+      );
+    });
+
+    it.each(['paper', 'cartography'])('refuses %s files that would close before its submissions', async (type) => {
+      await expect(
+        service.setSubmissionDeadlines('season-1', {
+          [`${type}SubmissionsCloseAt`]: filesClose,
+          [`${type}FilesCloseAt`]: closes
+        } as never)
+      ).rejects.toThrow(`File uploads for the ${type} competition cannot close before its submissions do.`);
+      await expect(
+        service.setSubmissionDeadlines('season-1', { [`${type}SubmissionsCloseAt`]: 'next Friday' } as never)
+      ).rejects.toThrow(`${type}SubmissionsCloseAt is not a date.`);
+      expect(seasonRepo.update).not.toHaveBeenCalled();
+    });
+
+    /** Every moment the rules name is a column on the season, so none is accepted by the API and then lost. */
+    it('has a column on the season for every deadline the rules name', () => {
+      const columns = getMetadataArgsStorage()
+        .columns.filter((c) => c.target === Season)
+        .map((c) => c.propertyName);
+
+      expect(columns).toEqual(expect.arrayContaining([...SUBMISSION_DEADLINE_FIELDS]));
+      expect(SUBMISSION_DEADLINE_FIELDS).toEqual(
+        expect.arrayContaining([
+          'paperSubmissionsCloseAt',
+          'paperFilesCloseAt',
+          'cartographySubmissionsCloseAt',
+          'cartographyFilesCloseAt'
+        ])
       );
     });
   });

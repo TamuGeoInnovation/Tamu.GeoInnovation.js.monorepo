@@ -1,12 +1,13 @@
 import { Component, OnInit, inject, input } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Observable, filter, map, of, shareReplay, switchMap, take } from 'rxjs';
 
 import { Organization, Season } from '@tamu-gisc/gisday/platform/data-api';
 import { AssetsService, OrganizationService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { serverMessage } from '../../../../../utils/server-message';
 
 import { formToFormData } from '../../../../../utils/form-to-form-data';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -15,17 +16,27 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
 import { ImagePreviewComponent } from '../../../../images/components/image-preview/image-preview.component';
 import { uploadPreviewUrl } from '../../../../images/upload-preview-url';
+import { injectBackToList } from '../../../admin-details-page';
 
 @Component({
   selector: 'tamu-gisc-organization-add-edit-form',
   templateUrl: './organization-add-edit-form.component.html',
   styleUrls: ['./organization-add-edit-form.component.scss'],
-  imports: [ImagePreviewComponent, FormsModule, ReactiveFormsModule, TextboxComponent, FileComponent, ButtonComponent, AsyncPipe]
+  imports: [
+    ImagePreviewComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    TextboxComponent,
+    FileComponent,
+    ButtonComponent,
+    AsyncPipe
+  ]
 })
 export class OrganizationAddEditFormComponent implements OnInit {
   private readonly fb = inject(UntypedFormBuilder);
   private readonly at = inject(ActivatedRoute);
-  private readonly rt = inject(Router);
+  /** Leaves for the list once a save, create or delete has worked: the one the page was opened from (#2965). */
+  private readonly backToList = injectBackToList('/admin/organizations');
   private readonly as = inject(AssetsService);
   private readonly os = inject(OrganizationService);
   private readonly ss = inject(SeasonService);
@@ -61,7 +72,6 @@ export class OrganizationAddEditFormComponent implements OnInit {
       switchMap((guid) => this.os.getEntity(guid)),
       shareReplay()
     );
-
 
     // The chosen logo, else the saved one, else nothing (#2569); drawn by tamu-gisc-image-preview, never a broken image.
     this.logoUrl$ = uploadPreviewUrl(
@@ -109,7 +119,7 @@ export class OrganizationAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'org-delete-failed',
           title: 'Delete organization',
-          message: `Error deleting organization: ${err.status}`
+          message: serverMessage(err, `Error deleting organization: ${err.status}`)
         });
       }
     });
@@ -133,7 +143,7 @@ export class OrganizationAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'org-update-failed',
           title: 'Update organization',
-          message: `Error updating organization: ${err.status}`
+          message: serverMessage(err, `Error updating organization: ${err.status}`)
         });
       }
     });
@@ -156,13 +166,13 @@ export class OrganizationAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'org-create-failed',
           title: 'Create organization',
-          message: `Error creating organization: ${err.status}`
+          message: serverMessage(err, `Error creating organization: ${err.status}`)
         });
       }
     });
   }
 
   private _navigateBack() {
-    this.rt.navigate(['/admin/organizations']);
+    this.backToList();
   }
 }

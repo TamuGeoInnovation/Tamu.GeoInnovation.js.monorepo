@@ -86,12 +86,21 @@ export class FileComponent implements ControlValueAccessor {
     this._onTouch = fn;
   }
 
+  /**
+   * Takes a value from the form without reporting it back as a change or a touch: a form loaded with a record would
+   * otherwise count as changed the moment it opened (#2964).
+   */
   public writeValue(val) {
-    this.value = val;
+    this._value.set(val);
   }
 
+  /**
+   * The picker has no disabled look. Disabling it is not a change of file: this used to put the disabled flag in as
+   * the value and report that to the form as the user's choice (#2964).
+   */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public setDisabledState(disabled?: boolean) {
-    this.value = disabled;
+    return;
   }
 
   public reset() {

@@ -66,6 +66,36 @@ export class TextboxComponent extends AbstractValueAccessorFormComponent<string>
 
   public readonly autofocus = input(false);
 
+  /**
+   * Shows a clear (x) button in the box's action slot while it holds text, for a search box (#2963).
+   *
+   * Off unless asked for, so a textbox that does not set it renders as it always has.
+   *
+   * Defaults to `false`
+   */
+  public readonly clearable = input(false);
+
+  /**
+   * The clear button's accessible name and tooltip, saying what it clears.
+   *
+   * Defaults to `Clear`
+   */
+  public readonly clearLabel = input('Clear');
+
+  /** Whether the box holds any text, which is when a clearable box shows its clear button. */
+  public get hasText(): boolean {
+    return this.value !== undefined && this.value !== null && this.value.toString().length > 0;
+  }
+
+  /**
+   * Empties the box through the same path as typing, so the form control, `ngModel` and `valueChange` all hear it,
+   * and puts focus back in the box, since the button that had it is gone.
+   */
+  public clear() {
+    this.value = '';
+    this.inputElement()?.nativeElement.focus();
+  }
+
   ngAfterViewInit(): void {
     if (this.autofocus() && this.inputElement()) {
       setTimeout(() => {

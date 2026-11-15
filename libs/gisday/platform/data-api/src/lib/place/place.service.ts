@@ -12,6 +12,7 @@ import { DeleteResult, In, Repository } from 'typeorm';
 import { Asset, EventLocation, Place, PlaceLink } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
 import { AssetsService } from '../assets/assets.service';
+import { refuseUnsafeImage } from '../assets/image-upload';
 import { SeasonService } from '../season/season.service';
 
 @Injectable()
@@ -174,6 +175,9 @@ export class PlaceService extends BaseProvider<Place> {
   }
 
   public async createPlace(place: Partial<Place>, file?: Express.Multer.File) {
+    // Checked before anything is saved, so a refused logo leaves nothing behind (#2937).
+    file = file ? refuseUnsafeImage(file, 'The logo') : file;
+
     try {
       let links: Array<PlaceLink> = [];
       const visibilitySettings = this._deserializeStringifiedJSON(place.visibilitySettings as unknown as string);
@@ -226,6 +230,9 @@ export class PlaceService extends BaseProvider<Place> {
   }
 
   public async updatePlace(guid: string, place: Partial<Place>, file?: Express.Multer.File) {
+    // Checked before anything is saved, so a refused logo leaves nothing behind (#2937).
+    file = file ? refuseUnsafeImage(file, 'The logo') : file;
+
     delete place.guid;
 
     try {

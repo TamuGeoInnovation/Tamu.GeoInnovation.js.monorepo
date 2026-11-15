@@ -1,17 +1,20 @@
 import { Component, OnInit, inject, input } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Observable, filter, map, switchMap, take } from 'rxjs';
 
 import { EventLocation, Place } from '@tamu-gisc/gisday/platform/data-api';
 import { LocationService, PlaceService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { serverMessage } from '../../../../../utils/server-message';
 import { formatLatLonLines, isLatLonPolygon, parseLatLonLines } from '@tamu-gisc/common/utils/geometry';
 import { CHECK_IN_MAX_ACCURACY } from '@tamu-gisc/gisday/common';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
+
+import { injectBackToList } from '../../../admin-details-page';
 
 @Component({
   selector: 'tamu-gisc-event-location-add-edit-form',
@@ -21,7 +24,8 @@ import { AsyncPipe } from '@angular/common';
 })
 export class EventLocationAddEditFormComponent implements OnInit {
   private readonly fb = inject(UntypedFormBuilder);
-  private readonly rt = inject(Router);
+  /** Leaves for the list once a save, create or delete has worked: the one the page was opened from (#2965). */
+  private readonly backToList = injectBackToList('/admin/event-locations');
   private readonly at = inject(ActivatedRoute);
   private readonly els = inject(LocationService);
   private readonly ps = inject(PlaceService);
@@ -102,7 +106,7 @@ export class EventLocationAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'delete-event-location-error',
           title: 'Delete Event Location',
-          message: `Error deleting event location: ${err.status}`
+          message: serverMessage(err, `Error deleting event location: ${err.status}`)
         });
       }
     });
@@ -129,7 +133,7 @@ export class EventLocationAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'update-event-location-error',
           title: 'Update Event Location',
-          message: `Error updating event location: ${err.status}`
+          message: serverMessage(err, `Error updating event location: ${err.status}`)
         });
       }
     });
@@ -156,7 +160,7 @@ export class EventLocationAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'create-event-location-error',
           title: 'Create Event Location',
-          message: `Error creating event location: ${err.status}`
+          message: serverMessage(err, `Error creating event location: ${err.status}`)
         });
       }
     });
@@ -197,6 +201,6 @@ export class EventLocationAddEditFormComponent implements OnInit {
   }
 
   private _navigateBack() {
-    this.rt.navigate(['/admin/event-locations']);
+    this.backToList();
   }
 }

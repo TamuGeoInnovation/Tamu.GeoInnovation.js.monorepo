@@ -5,7 +5,19 @@ variables:
   EXCLUDED_PROJECTS: 'geoservices-angular,geoservices-nest,gisday-angular,gisday-nest,mailroom-angular,mailroom-helper-nest,mailroom-nest,aggiemap-ngx-core'
   # true runs the heavy jobs on the lab's agents (pool Linux-Build); false runs them on the hosted pool, as before
   # the lab (#2212). There is no automatic fallback, so if the lab is down, this is the one line to change.
-  useLab: true
+  #
+  # false since #2902. On 13 November 2026 the lab machine was restarted, its three agent tasks never ran because
+  # their trigger is -AtLogOn, and build 6077 queued for over an hour at zero seconds elapsed with every GitHub
+  # check green. Nothing failed and nothing warned; it took somebody logging in to that machine to clear it.
+  #
+  # The cost of false is real: the lab runs this work in 3 to 5 minutes and a hosted agent takes 15 to 25
+  # (tools/build-agent/README.md). That is the trade - slower builds that always finish, over fast builds that can
+  # stop entirely.
+  #
+  # Set it back to true when the lab returns to service without a human, or when a build fails fast instead of
+  # queueing in silence: #2901. Do that deliberately, with that issue closed; do not flip it back merely because
+  # builds are slow.
+  useLab: false
   IS_DEVELOPMENT: $[eq(variables['Build.SourceBranchName'], 'development')]
   IS_MASTER: $[eq(variables['Build.SourceBranchName'], 'master')]
   # Branches whose builds are deployed. Their artifacts must be complete, so they build

@@ -1,10 +1,11 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { BehaviorSubject, EMPTY, Observable, Subject, combineLatest, forkJoin, merge, of } from 'rxjs';
 import { filter, map, shareReplay, switchMap, take, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
-import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import { ActiveSeasonDto, Event, GisDayAppMetadata, Place, Tag } from '@tamu-gisc/gisday/platform/data-api';
+import { ActiveSeasonDto, Event, GisDayAppMetadata, Place, SeasonDay, Tag } from '@tamu-gisc/gisday/platform/data-api';
 import {
   EventService,
   PlaceService,
@@ -20,8 +21,9 @@ import { PlaceVisibilityOptions, SeasonDayCardComponent, SeasonLinkPipe } from '
 import { NgClass, AsyncPipe } from '@angular/common';
 import { CheckboxGroupComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { GISDAY_SITE } from '@tamu-gisc/gisday/platform/ngx/common';
-import { siteSessionPlaces } from '@tamu-gisc/gisday/common';
+import { placesShownOn, siteSessionPlaces } from '@tamu-gisc/gisday/common';
 
 @Component({
   selector: 'tamu-gisc-event-view',
@@ -35,6 +37,7 @@ import { siteSessionPlaces } from '@tamu-gisc/gisday/common';
     ReactiveFormsModule,
     CheckboxGroupComponent,
     CheckboxComponent,
+    TextboxComponent,
     AsyncPipe,
     SeasonLinkPipe
   ]
@@ -83,6 +86,16 @@ export class EventViewComponent implements OnInit, OnDestroy {
    */
   public form: UntypedFormGroup;
 
+  /**
+   * The search above the sessions (#2944), by a session's name, building or room, or a presenter's name, as the admin
+   * Events list and the Presenters page search. Each day's card narrows its own list by it, alongside the filters.
+   */
+  public readonly search = new FormControl('', { nonNullable: true });
+  public readonly searchText = toSignal(this.search.valueChanges, { initialValue: '' });
+
+  /** How many sessions each day's card shows, by day, as each card reports it. */
+  private readonly _dayMatches = signal<Record<string, number>>({});
+
   public ngOnInit() {
     this.form = this.fb.group({
       tags: [null],
@@ -127,14 +140,8 @@ export class EventViewComponent implements OnInit, OnDestroy {
       shareReplay(1)
     );
     // A site that lists only some places' sessions offers only those places as filters.
-    this.organizations$ = this.sessionPlaces$.pipe(
-      withLatestFrom(places$),
-      map(([{ only }, places]) =>
-        places.filter(
-          (place) =>
-            place?.visibilitySettings?.includes(PlaceVisibilityOptions.SessionsFilter) && (only === null || only.includes(place.guid))
-        )
-      ),
+    this.organizations$ = places$.pipe(
+      map((places) => placesShownOn(this.site, places, PlaceVisibilityOptions.SessionsFilter)),
       shareReplay(1)
     );
 
@@ -286,6 +293,19 @@ export class EventViewComponent implements OnInit, OnDestroy {
   public ngOnDestroy(): void {
     this._destroy$.next(true);
     this._destroy$.complete();
+  }
+
+  public dayMatched(dayGuid: string, count: number) {
+    if (this._dayMatches()[dayGuid] !== count) {
+      this._dayMatches.update((matches) => ({ ...matches, [dayGuid]: count }));
+    }
+  }
+
+  /** Whether a search is in use and every day has reported finding none of its sessions. */
+  public noSessionsMatch(days: Array<Partial<SeasonDay>> | null | undefined): boolean {
+    const matches = this._dayMatches();
+
+    return this.searchText().trim().length > 0 && (days?.length ?? 0) > 0 && days.every((day) => matches[day.guid] === 0);
   }
 
   public toggleFilters() {

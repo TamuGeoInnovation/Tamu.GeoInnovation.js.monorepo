@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
-import { combineLatest, filter, map, mergeMap, Observable, switchMap, toArray } from 'rxjs';
+import { combineLatest, filter, map, Observable, switchMap } from 'rxjs';
+import { placesShownOn } from '@tamu-gisc/gisday/common';
 
 import { Place, Season } from '@tamu-gisc/gisday/platform/data-api';
 import { PlaceService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -44,9 +45,7 @@ export class FooterComponent implements OnInit {
     this.organizations$ = this.ss.activeSeason$.pipe(
       switchMap(() => {
         return this.os.getEntitiesForActiveSeason().pipe(
-          mergeMap((places) => places),
-          filter((place) => place?.visibilitySettings && place.visibilitySettings.includes(PlaceVisibilityOptions.Footer)),
-          toArray()
+          map((places) => placesShownOn(this.site, places, PlaceVisibilityOptions.Footer))
         );
       })
     );

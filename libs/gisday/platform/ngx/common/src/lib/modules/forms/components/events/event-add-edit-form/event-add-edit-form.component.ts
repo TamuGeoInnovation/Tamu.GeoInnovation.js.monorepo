@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, input, signal } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import {
   Observable,
   filter,
@@ -26,10 +26,13 @@ import {
   LocationService,
   SeasonService,
   SpeakerService,
+  SpeakerEditsService,
+  sendEditLinksToast,
   TagService,
   BroadcastService
 } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { serverMessage } from '../../../../../utils/server-message';
 import { SeasonsDayTileComponent } from '../../seasons/seasons-day-tile/seasons-day-tile.component';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { DateTimePickerComponent } from '@tamu-gisc/ui-kits/ngx/forms/date-time-picker';
@@ -39,8 +42,11 @@ import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { SelectListComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { PresenterCardComponent } from '../../../../people/components/presenter-card/presenter-card.component';
 import { eventFormProblems } from '../../../../../utils/event-form-problems';
+import { sortSpeakersByName } from '../../../../../utils/speakers';
 import { CheckboxGroupComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+
+import { injectBackToList } from '../../../admin-details-page';
 
 @Component({
   selector: 'tamu-gisc-event-add-edit-form',
@@ -65,7 +71,8 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 export class EventAddEditFormComponent implements OnInit {
   private readonly fb = inject(UntypedFormBuilder);
   private readonly at = inject(ActivatedRoute);
-  private readonly rt = inject(Router);
+  /** Leaves for the list once a save, create or delete has worked: the one the page was opened from (#2965). */
+  private readonly backToList = injectBackToList('/admin/events');
   private readonly seasonService = inject(SeasonService);
   private readonly speakerService = inject(SpeakerService);
   private readonly tagService = inject(TagService);
@@ -73,6 +80,7 @@ export class EventAddEditFormComponent implements OnInit {
   private readonly eventBroadcastService = inject(BroadcastService);
   private readonly eventService = inject(EventService);
   private readonly ns = inject(NotificationService);
+  private readonly speakerEdits = inject(SpeakerEditsService);
 
   /**
    * What stops the event being saved, shown above the buttons after a save is tried (#1773).
@@ -234,9 +242,8 @@ export class EventAddEditFormComponent implements OnInit {
     const formSpeakerChanges = (this.eventSpeakers$ = this.form.get('speakers').valueChanges.pipe(
       withLatestFrom(this.speakers$),
       map(([speakerGuids, speakers]) => {
-        return speakerGuids.map((guid) => {
-          return speakers.find((speaker) => speaker.guid === guid);
-        });
+        // By last name, as they are added and removed (#2940).
+        return sortSpeakersByName(speakerGuids.map((guid) => speakers.find((speaker) => speaker.guid === guid)));
       })
     ));
 
@@ -257,9 +264,8 @@ export class EventAddEditFormComponent implements OnInit {
       this.eventSpeakers$ = merge(
         formSpeakerChanges,
         this.entity$.pipe(
-          map((event) => {
-            return event.speakers;
-          })
+          // By last name, as the API returns them in the order they were added (#2940).
+          map((event) => sortSpeakersByName(event.speakers))
         )
       ).pipe(shareReplay(1));
 
@@ -305,6 +311,24 @@ export class EventAddEditFormComponent implements OnInit {
     }
   }
 
+  /**
+   * Emails each of the event's saved speakers their own link to edit their profile (#2936): for the competition finalists'
+   * session, everyone on it at once. Speakers added on this page but not yet saved are included; the link is for their
+   * profile, not the event.
+   */
+  public emailSpeakersEditLinks() {
+    this.eventSpeakers$
+      .pipe(
+        take(1),
+        switchMap((speakers) => this.speakerEdits.send(speakers.map((s) => s.guid)))
+      )
+      .subscribe({
+        next: (result) => this.ns.toast(sendEditLinksToast(result)),
+        error: () =>
+          this.ns.toast({ id: 'speaker-edit-links', title: 'Profile emails not sent', message: 'Please try again.' })
+      });
+  }
+
   public patchSpeaker(speaker: Partial<Speaker>, operation?: 'add' | 'remove') {
     const currentSpeakers = this.form.getRawValue().speakers;
     let updatedSpeakers;
@@ -326,12 +350,16 @@ export class EventAddEditFormComponent implements OnInit {
     this.form.patchValue({
       speakers: updatedSpeakers
     });
+
+    // Changed by a click rather than typed, and still a change not yet saved (#2942).
+    this.form.markAsDirty();
   }
 
   public setEventDate(day: Partial<SeasonDay>) {
     this.form.patchValue({
       day: day.guid
     });
+    this.form.markAsDirty();
   }
 
   public setEventTime(time: DateTimePickerChange<Date>, which: 'start' | 'end') {
@@ -355,6 +383,8 @@ export class EventAddEditFormComponent implements OnInit {
         endTime: timeString
       });
     }
+
+    this.form.markAsDirty();
   }
 
   public handleSubmission() {
@@ -394,7 +424,7 @@ export class EventAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'event-delete-failed',
           title: 'Delete event',
-          message: `Error deleting event: ${err.status}`
+          message: serverMessage(err, `Error deleting event: ${err.status}`)
         });
       }
     });
@@ -417,7 +447,7 @@ export class EventAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'event-update-failed',
           title: 'Update Event',
-          message: `Error updating event: ${err.status}`
+          message: serverMessage(err, `Error updating event: ${err.status}`)
         });
       }
     });
@@ -440,14 +470,14 @@ export class EventAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'event-create-failed',
           title: 'Create event',
-          message: `Error creating event: ${err.status}`
+          message: serverMessage(err, `Error creating event: ${err.status}`)
         });
       }
     });
   }
 
   private _navigateBack() {
-    this.rt.navigate(['/admin/events']);
+    this.backToList();
   }
 
   private _defaultTimeFromSelectedEvent$() {

@@ -1,10 +1,34 @@
-@if (people$ | async; as people) { @if (people.length > 0) {
+@if (view$ | async; as view) { @if (view.total > 0) {
+<!-- Search by first name, last name, organization (#2859) or university (#2869). -->
+<div class="container12 flex flex-column align-center search trailer-2">
+  <tamu-gisc-textbox type="text" placeholder="Search by name, organization or university" [formControl]="search" [clearable]="true" clearLabel="Clear the search">
+    <!-- Copy inside the box, in its own action slot, as AggieMap's copy field holds its Copy (#2923), beside the
+         textbox's own clear (#2963). Copy gives a link to this list already searched, to send a company a page of
+         its people (#2921). -->
+    @if (search.value.trim()) {
+    <span class="textbox-actions search-actions">
+      <span class="copy-button" clipboard-copy [text]="link()" (copying)="copied$ = $event" [class.copying]="copied$ | async" copy-label="Copied!" tabindex="0" role="button" [attr.aria-label]="'Copy a link to these ' + view.shown.length + ' presenters'" (keydown.enter)="$any($event.target).click()" (keydown.space)="$any($event.target).click(); $event.preventDefault()">Copy link</span>
+    </span>
+    }
+  </tamu-gisc-textbox>
+  @if (search.value.trim()) {
+  <p>{{view.count}}</p>
+  }
+</div>
+
+@if (view.shown.length > 0) {
 <div class="container12 flex flex-row justify-center wrap">
-  @for (person of people; track person) {
+  @for (person of view.shown; track person.guid) {
   <tamu-gisc-speaker-card [speaker]="person"></tamu-gisc-speaker-card>
   }
 </div>
+<!-- How many are listed, under the list too, with or without a search (#2870). -->
+<div class="container12 flex flex-column align-center leader-1">
+  <p class="presenter-count">{{view.count}}</p>
+</div>
 } @else {
+<p>No presenters match "{{search.value}}".</p>
+} } @else {
 <!-- No presenters yet, including on a new site with no season (#2076). An empty list used to show a spinner. -->
 <p>We're putting together an amazing lineup, please check back later!</p>
 } } @else {

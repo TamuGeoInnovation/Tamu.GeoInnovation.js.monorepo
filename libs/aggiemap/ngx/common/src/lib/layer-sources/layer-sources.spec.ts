@@ -10,8 +10,6 @@ vi.mock('@tamu-gisc/aggiemap/ngx/popups', () => ({
   }
 }));
 
-type GroupLayerSource = Extract<LayerSource, { type: 'group' }>;
-
 describe('LayerSources', () => {
   let connections: IComposedConnections;
   let definitions: IComposedIDefinitions;
@@ -180,14 +178,15 @@ describe('LayerSources', () => {
   it('should return all layer sources when no options are provided', () => {
     const result = LayerSources(connections, definitions);
 
-    expect(result.length).toBe(18);
+    // 16 since #2895 took the Micromobility and Sustainable Transportation groups off the main map.
+    expect(result.length).toBe(16);
   });
 
   it('should exclude specified layers', () => {
     options.exclude = ['BUILDINGS', 'CONSTRUCTION'];
     const result = LayerSources(connections, definitions, options);
 
-    expect(result.length).toBe(16);
+    expect(result.length).toBe(14);
     expect(result.find((layer) => layer.id === 'buildings')).toBeUndefined();
     expect(result.find((layer) => layer.id === 'construction')).toBeUndefined();
   });
@@ -196,18 +195,16 @@ describe('LayerSources', () => {
     options.exclude = [];
     const result = LayerSources(connections, definitions, options);
 
-    expect(result.length).toBe(18);
+    expect(result.length).toBe(16);
   });
 
   it('should retain only non-definition-backed top-level layers when all definitions are excluded', () => {
     options.exclude = Object.keys(definitions) as Array<keyof IComposedIDefinitions>;
     const resultWithExclusions = LayerSources(connections, definitions, options);
 
-    expect(resultWithExclusions.map((layer) => layer.id)).toEqual([
-      'selection-layer',
-      'bus-route-layer',
-      'sustainable-transportation-group-layer'
-    ]);
+    // The Sustainable Transportation group was the third of these until #2895 took it off the main map. Its id was a
+    // literal rather than a definition's `layerId`, which is why excluding every definition used to leave it standing.
+    expect(resultWithExclusions.map((layer) => layer.id)).toEqual(['selection-layer', 'bus-route-layer']);
   });
 
   it('should offer no 150th events at all, now that every one of them has passed', () => {
@@ -222,35 +219,5 @@ describe('LayerSources', () => {
 
     expect(titles).not.toContain('150th Events');
     expect(titles).not.toContain('150 Cake & Ice Cream');
-  });
-
-  it('should split shared bike racks into flat sustainable transportation child layers', () => {
-    const result = LayerSources(connections, definitions);
-    const sustainableTransportationGroup = result.find((layer) => layer.id === 'sustainable-transportation-group-layer') as
-      GroupLayerSource | undefined;
-    const childSources = sustainableTransportationGroup?.sources ?? [];
-    const childTitles = childSources.map((layer) => layer.title);
-    const childIds = childSources.map((layer) => layer.id);
-
-    expect(sustainableTransportationGroup?.type).toBe('group');
-    expect(childTitles).toEqual([
-      'Bike Dismount Zones',
-      'City Bike Lanes and Routes',
-      'Campus Bike Lanes',
-      'Bike Fix Stations',
-      'Bike Racks',
-      'EV Charge Stations'
-    ]);
-    expect(childIds).toEqual(
-      expect.arrayContaining([
-        'bike-dismount-zones',
-        'city-bike-lanes-routes',
-        'campus-bike-lanes',
-        'bike-fix-stations',
-        'bike-racks-map',
-        'ev-charge-stations'
-      ])
-    );
-    expect(childIds.filter((id) => id === 'bike-racks-map')).toHaveLength(1);
   });
 });
