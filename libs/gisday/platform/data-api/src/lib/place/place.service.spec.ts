@@ -1,8 +1,10 @@
-import { InternalServerErrorException, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import { BadRequestException, InternalServerErrorException, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { Repository } from 'typeorm';
+
+import { declaredPng } from '@tamu-gisc/common/node/images';
 
 import { AssetsService } from '../assets/assets.service';
 import { Asset, EventLocation, Place, PlaceLink } from '../entities/all.entity';
@@ -229,7 +231,7 @@ describe('PlaceService', () => {
       jest.spyOn(placeRepo, 'save').mockResolvedValue(saved);
       jest.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'a-1' } as never);
 
-      await service.createPlace({ name: 'Alpha' }, { originalname: 'logo.png' } as never);
+      await service.createPlace({ name: 'Alpha' }, { originalname: 'logo.png', buffer: declaredPng(10, 10) } as never);
 
       expect(assetService.saveAsset).toHaveBeenCalledWith(
         'images/places',
@@ -336,6 +338,47 @@ describe('PlaceService', () => {
       // Through AssetsService, which deletes the rows by guid and their files after commit (#2205).
       expect(assetService.deleteAssets).toHaveBeenCalledWith(manager, [logo]);
       expect(assetService.deleteAssetFiles).toHaveBeenCalledWith([logo]);
+    });
+  });
+
+  /**
+   * #2937. A logo is served from the site's own origin, and an SVG can carry script, so only a JPEG or PNG is taken, judged
+   * by its content: an SVG named .png is still an SVG.
+   */
+  describe('logo uploads (#2937)', () => {
+    const svg = Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"/>');
+    const upload = (originalname: string, buffer: Buffer) =>
+      ({ originalname, mimetype: 'image/png', buffer, size: buffer.length }) as Express.Multer.File;
+
+    it.each([
+      ['an SVG', upload('logo.svg', svg)],
+      ['an SVG renamed to .png', upload('logo.png', svg)]
+    ])('refuses %s on create with 400, and creates no place', async (_name, file) => {
+      jest.spyOn(placeRepo, 'create').mockReturnValue({ guid: 'p-new' } as Place);
+
+      await expect(service.createPlace({ name: 'Alpha' }, file)).rejects.toThrow(BadRequestException);
+      expect(placeRepo.save).not.toHaveBeenCalled();
+      expect(assetService.saveAsset).not.toHaveBeenCalled();
+    });
+
+    it('refuses an SVG renamed to .png on update with 400', async () => {
+      jest.spyOn(placeRepo, 'findOne').mockResolvedValue({ guid: 'p-1', logos: [] } as unknown as Place);
+
+      await expect(service.updatePlace('p-1', { name: 'Alpha' }, upload('logo.png', svg))).rejects.toThrow(
+        BadRequestException
+      );
+      expect(assetService.saveAsset).not.toHaveBeenCalled();
+      expect(placeRepo.save).not.toHaveBeenCalled();
+    });
+
+    it('stores a PNG named .svg under a .png name', async () => {
+      jest.spyOn(placeRepo, 'findOne').mockResolvedValue({ guid: 'p-1', logos: [] } as unknown as Place);
+      jest.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'a-2' } as never);
+      jest.spyOn(placeRepo, 'save').mockImplementation((e) => Promise.resolve(e as Place));
+
+      await service.updatePlace('p-1', { name: 'Alpha' }, upload('logo.svg', declaredPng(10, 10)));
+
+      expect((assetService.saveAsset as jest.Mock).mock.calls[0][1].originalname).toBe('logo.png');
     });
   });
 });

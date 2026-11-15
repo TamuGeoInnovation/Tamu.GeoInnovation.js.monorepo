@@ -77,6 +77,22 @@ export class SpeakerController {
     return this.provider.getPresenters();
   }
 
+  /** Marks speakers' badges printed, each with what its badge said (#2908). */
+  @Permissions(['update:speakers'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Post('badges/printed')
+  public async markBadgesPrinted(@Body('badges') badges: Array<{ guid: string; text: string }>) {
+    return this.provider.markBadgesPrinted(badges);
+  }
+
+  /** Clears speakers' printed mark (#2908). */
+  @Permissions(['update:speakers'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Post('badges/not-printed')
+  public async clearBadgesPrinted(@Body('guids') guids: Array<string>) {
+    return this.provider.clearBadgesPrinted(guids);
+  }
+
   @Permissions(['create:speakers'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Post('bulk')

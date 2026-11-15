@@ -576,6 +576,21 @@ however good it was. See #1056.
 File the issue as soon as the work is identified, including work noticed while doing something else —
 that is the case most likely to be skipped.
 
+**An issue closes when its work merges to `development`, not when a release carries it to production.**
+`Closes #<issue>` in the pull request body does that by itself, which is the rule above; this is why that
+is right rather than something to work around. The maintainer's words, 13 November 2026: *"We close things
+in development, not in prod."*
+
+It comes up whenever an issue is written as a request for production — #2864 was "Micromobility Map for
+Prod", and when it merged, its production address still redirected to the main map. Holding such an issue
+open until the deploy leaves the project board and the funding record lagging the work by however long a
+release takes, and the question gets decided differently each time it is asked.
+
+**What a deployment is tracked by instead:** the `dev-*` and `prod-*` tags record which commit reached
+which environment (#1145), and the release notes say what a release contains. An issue answers whether the
+work is done; a tag answers where it is. So a closing comment is the place to say what is true for a
+reader — merged, on dev, not yet on production, and the address that will start working when it is.
+
 **Fill in every field on the issue and the pull request, not only the title and body.** A field left
 empty drops the work out of the project board and the funding record just as surely as a missing
 issue does. Where a value is not known and not covered below, **ask the user before filing**; never

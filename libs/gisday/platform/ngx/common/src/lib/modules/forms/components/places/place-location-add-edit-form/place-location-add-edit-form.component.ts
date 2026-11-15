@@ -98,6 +98,9 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
 
         // If the entity has a season, remove the season control from the form
         this.form.removeControl('season');
+
+        // Opening the page is not a change (#2942), though each control echoes the value it is given.
+        this.form.markAsPristine();
       });
 
     } else {
@@ -105,6 +108,9 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
         this.form.patchValue({
           season: season.guid
         });
+
+        // Opening the page is not a change (#2942), though each control echoes the value it is given.
+        this.form.markAsPristine();
       });
     }
 
@@ -152,11 +158,14 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
 
     (this.form.get('links') as UntypedFormArray).push(control);
     this._syncLinks();
+    // Changed by a click rather than typed, and still a change not yet saved (#2942).
+    this.form.markAsDirty();
   }
 
   public removeOrgLink(index: number) {
     (this.form.get('links') as UntypedFormArray).removeAt(index);
     this._syncLinks();
+    this.form.markAsDirty();
   }
 
   private _syncLinks() {

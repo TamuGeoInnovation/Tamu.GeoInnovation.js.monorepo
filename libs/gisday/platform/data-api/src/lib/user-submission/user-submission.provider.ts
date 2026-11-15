@@ -1,24 +1,113 @@
-import { HttpException, Injectable, InternalServerErrorException, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  HttpException,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  NotFoundException,
+  UnauthorizedException
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { isOwnerOrPermitted, ManagementService } from '@tamu-gisc/common/nest/auth';
+import { isOwnerOrPermitted } from '@tamu-gisc/common/nest/auth';
+import {
+  GisdaySite,
+  ReviewEmailKind,
+  fillReviewEmail,
+  gisdaySite,
+  reviewEmailKind,
+  reviewEmailKindLabel,
+  reviewEmailSubject,
+  reviewEmailTemplate,
+  reviewEmailValues,
+  ReviewEmailSession
+} from '@tamu-gisc/gisday/common';
+import { closedAt, closedMessage, isDeadlineCompetition } from '@tamu-gisc/gisday/common';
 
-import { SubmissionType, Submission, Season, PRESENTATION_SUBMISSION_TYPE } from '../entities/all.entity';
+import {
+  Event as GisdayEvent,
+  SubmissionType,
+  Submission,
+  Season,
+  PRESENTATION_SUBMISSION_TYPE
+} from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
+import { senderAs } from '../_base/site-of-request';
 import { SeasonService } from '../season/season.service';
 import { ContactService } from '../contact/contact.service';
 import { PosterDto } from './dto/poster.dto';
-import { SubmissionSubmitter, SubmissionWithSubmitter, submitterOf } from './dto/submission-submitter.dto';
+import { SubmissionWithSubmitter, submitterOf } from './dto/submission-submitter.dto';
+import { DashboardProfilesService } from '../dashboards/dashboard-profiles.service';
+import { AssetsService } from '../assets/assets.service';
+
+/** A submission's id, as the database makes them. */
+const GUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/** What approving or rejecting several submissions did (#2958): the titles reviewed, and each that failed, with why. */
+export interface ReviewManyResult {
+  reviewed: Array<string>;
+  failed: Array<{ title: string; reason: string }>;
+}
+
+/**
+ * The email a review would send, before it is sent (#2981): one group per kind of email in the selection, each with the
+ * text it starts from and an example filled in for its first submission.
+ */
+export interface ReviewEmailPreview {
+  groups: Array<{
+    kind: ReviewEmailKind;
+    label: string;
+    count: number;
+    subject: string;
+    template: string;
+    example: { title: string; to: string; cc: string; values: Record<string, string> };
+  }>;
+}
+
+/** The longest email text a reviewer may send (#2981). */
+const MAX_TEMPLATE = 20000;
+
+/** The edited texts a review was given, by kind, after checking each is text of a sensible size (#2981). */
+function checkedTemplates(templates: unknown): Partial<Record<ReviewEmailKind, string>> | undefined {
+  if (templates === undefined || templates === null) {
+    return undefined;
+  }
+
+  if (typeof templates !== 'object' || Array.isArray(templates)) {
+    throw new BadRequestException('The email texts must be given by kind.');
+  }
+
+  const checked: Partial<Record<ReviewEmailKind, string>> = {};
+
+  for (const kind of ['poster', 'presentation', 'rejection'] as Array<ReviewEmailKind>) {
+    const text = (templates as Record<string, unknown>)[kind];
+
+    if (text === undefined) {
+      continue;
+    }
+
+    if (typeof text !== 'string' || !text.trim() || text.length > MAX_TEMPLATE) {
+      throw new BadRequestException(`The ${kind} email must be text, up to ${MAX_TEMPLATE} characters.`);
+    }
+
+    checked[kind] = text;
+  }
+
+  return checked;
+}
 
 @Injectable()
 export class UserSubmissionProvider extends BaseProvider<Submission> {
   constructor(
     @InjectRepository(Submission) public userSubmissionRepo: Repository<Submission>,
     @InjectRepository(SubmissionType) public submissionTypeRepo: Repository<SubmissionType>,
+    @InjectRepository(GisdayEvent) private readonly events: Repository<GisdayEvent>,
     private readonly seasonService: SeasonService,
     private readonly contactService: ContactService,
-    private readonly ms: ManagementService
+    private readonly profiles: DashboardProfilesService,
+    private readonly assets: AssetsService
   ) {
     super(userSubmissionRepo);
   }
@@ -41,7 +130,9 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
       const submissions = await this.userSubmissionRepo.find({
         where: {
           season: { guid: existingSeason.guid }
-        }
+        },
+        // The list shows how many files each has (#2933).
+        relations: { files: true }
       });
 
       return await this.withSubmitters(submissions);
@@ -57,22 +148,19 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
   }
 
   /**
-   * Adds each submission's submitter from their Auth0 profile. One account at a time, as the class roster reads them,
-   * and once per account however many it submitted. An account that cannot be read (deleted, or Auth0 management is
-   * not configured, as locally) leaves `submitter` null rather than failing the list.
+   * Adds each submission's submitter from their Auth0 profile, read for every account at once and kept for a few
+   * minutes, as the dashboards read them (#2925): a request per account, in turn, was most of the page's load time. An
+   * account that cannot be read (deleted, or Auth0 management is not configured, as locally) leaves `submitter` null
+   * rather than failing the list.
    */
   private async withSubmitters(submissions: Array<Submission>): Promise<Array<SubmissionWithSubmitter>> {
-    const submitters = new Map<string, SubmissionSubmitter | null>();
+    const profiles = await this.profiles.profilesOf([...new Set(submissions.map((s) => s.accountGuid).filter(Boolean))]);
 
-    for (const accountGuid of new Set(submissions.map((s) => s.accountGuid).filter(Boolean))) {
-      try {
-        submitters.set(accountGuid, submitterOf(await this.ms.getUserMetadata(accountGuid, undefined, true)));
-      } catch {
-        submitters.set(accountGuid, null);
-      }
-    }
+    return submissions.map((s) => {
+      const profile = profiles.get(s.accountGuid);
 
-    return submissions.map((s) => Object.assign(s, { submitter: submitters.get(s.accountGuid) ?? null }));
+      return Object.assign(s, { submitter: profile ? submitterOf(profile) : null });
+    });
   }
 
   public async getSubmissionsForActiveSeason() {
@@ -159,7 +247,9 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     const presentation = await this.userSubmissionRepo.findOne({
       where: {
         guid: submissionGuid
-      }
+      },
+      // Its season says when its competition closes, which the page shows (#2934).
+      relations: { season: true }
     });
 
     if (!presentation) {
@@ -180,6 +270,9 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
       throw new InternalServerErrorException('Missing required parameters.');
     }
 
+    // The deadline is that of the season it will be saved to: the one the body names, or the active one (#2934).
+    refuseIfClosed(await this._seasonFor(submission.season), submission.submissionType);
+
     const userSubmission = this.userSubmissionRepo.create({ ...submission, accountGuid });
 
     try {
@@ -199,12 +292,186 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     submissionGuid: string,
     userGuid: string,
     submission: Partial<Submission>,
-    requestorPermissions: Array<string> = []
+    requestorPermissions: Array<string> = [],
+    /** The site the reviewer is on, which the review email names and links to (#2957). */
+    host?: string
+  ) {
+    const { updated, sendReviewEmail } = await this._update(
+      submissionGuid,
+      userGuid,
+      submission,
+      requestorPermissions,
+      host
+    );
+
+    // The decision stands whether or not the email goes: a reviewer's decision must not be lost to the mail server.
+    sendReviewEmail?.().catch((err) => {
+      Logger.error(`Error sending email to user: ${err.message}`, 'UserSubmissionProvider');
+    });
+
+    return updated;
+  }
+
+  /**
+   * Approves or rejects each of the named submissions, as `updateUserSubmission` reviews one from Submit Review (#2958):
+   * the decision recorded and the submitter emailed from the reviewer's site, one after another. A submission that
+   * cannot be reviewed does not stop the rest; the result names it, by title, with why, as it does one that was reviewed
+   * but whose email could not be sent.
+   */
+  public async reviewUserSubmissions(
+    submissionGuids: Array<string>,
+    userGuid: string,
+    review: { acceptance: boolean; message?: string; templates?: Partial<Record<ReviewEmailKind, string>> },
+    requestorPermissions: Array<string> = [],
+    host?: string
+  ): Promise<ReviewManyResult> {
+    // The single review lets an owner through to edit their own; a review of many is a reviewer's alone.
+    if (!requestorPermissions.includes('update:competitions')) {
+      throw new ForbiddenException();
+    }
+
+    if (!Array.isArray(submissionGuids) || submissionGuids.length === 0) {
+      throw new BadRequestException('No submissions were named.');
+    }
+
+    if (submissionGuids.some((guid) => typeof guid !== 'string' || !GUID.test(guid))) {
+      throw new BadRequestException('Name each submission by its id.');
+    }
+
+    if (typeof review?.acceptance !== 'boolean') {
+      throw new BadRequestException('Say whether the submissions are accepted.');
+    }
+
+    // The text the reviewer saw and approved (#2981); a kind not given keeps its own.
+    const templates = checkedTemplates(review.templates);
+    const result: ReviewManyResult = { reviewed: [], failed: [] };
+
+    for (const guid of [...new Set(submissionGuids)]) {
+      let reviewed: Awaited<ReturnType<UserSubmissionProvider['_update']>>;
+
+      try {
+        // A new body each time: the review writes into the object it is given.
+        reviewed = await this._update(
+          guid,
+          userGuid,
+          { acceptance: review.acceptance, message: review.message } as Partial<Submission>,
+          requestorPermissions,
+          host,
+          templates
+        );
+      } catch (err) {
+        Logger.error(`Could not review submission ${guid}: ${err.message}`, 'UserSubmissionProvider');
+        result.failed.push({
+          title: guid,
+          reason: err instanceof NotFoundException ? 'it no longer exists' : 'the decision could not be saved'
+        });
+        continue;
+      }
+
+      const title = reviewed.submission.title || guid;
+
+      result.reviewed.push(title);
+
+      try {
+        await reviewed.sendReviewEmail?.();
+      } catch (err) {
+        Logger.error(`Error sending email to user: ${err.message}`, 'UserSubmissionProvider');
+        result.failed.push({ title, reason: 'reviewed, but the email could not be sent' });
+      }
+    }
+
+    return result;
+  }
+
+  /**
+   * The email approving or rejecting the named submissions would send, for the reviewer to read and edit first (#2981).
+   * Nothing is recorded or sent. Each kind of email in the selection is one group, in the order poster, presentation,
+   * rejection, with the text it starts from and an example filled in for its first submission, as `reviewEmail` sends it.
+   */
+  public async previewReview(
+    submissionGuids: Array<string>,
+    review: { acceptance: boolean; message?: string },
+    requestorPermissions: Array<string> = [],
+    host?: string
+  ): Promise<ReviewEmailPreview> {
+    if (!requestorPermissions.includes('update:competitions')) {
+      throw new ForbiddenException();
+    }
+
+    if (!Array.isArray(submissionGuids) || submissionGuids.length === 0) {
+      throw new BadRequestException('No submissions were named.');
+    }
+
+    if (submissionGuids.some((guid) => typeof guid !== 'string' || !GUID.test(guid))) {
+      throw new BadRequestException('Name each submission by its id.');
+    }
+
+    if (typeof review?.acceptance !== 'boolean') {
+      throw new BadRequestException('Say whether the submissions are accepted.');
+    }
+
+    const site = gisdaySite(process.env.GISDAY_SITE, host);
+    const groups = new Map<ReviewEmailKind, ReviewEmailPreview['groups'][number]>();
+
+    for (const guid of [...new Set(submissionGuids)]) {
+      const submission = await this.userSubmissionRepo.findOne({ where: { guid }, relations: { season: true } });
+
+      if (!submission) {
+        continue;
+      }
+
+      const kind = reviewEmailKind(review.acceptance, submission.submissionType);
+      const group = groups.get(kind);
+
+      if (group) {
+        group.count++;
+        continue;
+      }
+
+      const [to, ...cc] = (submission.participants ?? []).map((p) => p.email);
+
+      groups.set(kind, {
+        kind,
+        label: reviewEmailKindLabel(kind),
+        count: 1,
+        subject: reviewEmailSubject(review.acceptance, site.name),
+        template: reviewEmailTemplate(kind),
+        example: {
+          title: submission.title ?? '',
+          to: to ?? '',
+          cc: cc.join(', '),
+          values: reviewEmailValues(
+            { ...submission, message: review.message ?? submission.message },
+            site,
+            await this._sessionsOf(submission.season)
+          )
+        }
+      });
+    }
+
+    const order: Array<ReviewEmailKind> = ['poster', 'presentation', 'rejection'];
+
+    return { groups: order.filter((kind) => groups.has(kind)).map((kind) => groups.get(kind)) };
+  }
+
+  /**
+   * Writes a submission's changes, and says how to send its review email when the change was a review. The single review
+   * sends it without waiting; a review of many waits, to report any that did not go.
+   */
+  private async _update(
+    submissionGuid: string,
+    userGuid: string,
+    submission: Partial<Submission>,
+    requestorPermissions: Array<string>,
+    host?: string,
+    /** The texts the reviewer approved, by kind (#2981). */
+    templates?: Partial<Record<ReviewEmailKind, string>>
   ) {
     const existingSubmission = await this.userSubmissionRepo.findOne({
       where: {
         guid: submissionGuid
-      }
+      },
+      relations: { season: true }
     });
 
     if (!existingSubmission) {
@@ -215,6 +482,16 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
 
     if (!isOwnerOrPermitted(requestor, existingSubmission.accountGuid, 'update:competitions')) {
       throw new UnauthorizedException();
+    }
+
+    // An entrant's edits close with their competition (#2934), as does an edit that would move the submission into one
+    // that has closed. Reviewers are not held to it: they review once submissions have closed.
+    if (requestorPermissions.indexOf('update:competitions') === -1) {
+      refuseIfClosed(existingSubmission.season, existingSubmission.submissionType);
+      refuseIfClosed(existingSubmission.season, submission.submissionType);
+
+      // Nor may an entrant move it to another season, whose deadline would then be the one that counts.
+      delete submission.season;
     }
 
     // The row is written from `submission` -- the caller's request body -- so anything that must
@@ -244,30 +521,34 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     }
 
     try {
-      return this.userSubmissionRepo.update(submissionGuid, submission).then((updated) => {
-        if (shouldEmail) {
-          const participantEmails = existingSubmission.participants.map((p) => p.email);
-          const primaryParticipant = participantEmails.splice(0, 1);
-          // Send email to user
-          this.contactService
-            .sendMessage(
+      const updated = await this.userSubmissionRepo.update(submissionGuid, submission);
+      const sendReviewEmail = shouldEmail
+        ? async () => {
+            const participantEmails = existingSubmission.participants.map((p) => p.email);
+            const primaryParticipant = participantEmails.splice(0, 1);
+            const site = gisdaySite(process.env.GISDAY_SITE, host);
+
+            // Send email to user
+            return this.contactService.sendMessage(
               {
                 to: primaryParticipant[0],
                 cc: participantEmails.join(','),
-                subject: 'GIS Day Presentation Submission Review Result',
-                from: process.env.MAILROOM_FROM,
-                text: this._generateResponseEmail(existingSubmission),
+                subject: reviewSubject(existingSubmission, site),
+                from: senderAs(site.name, process.env.MAILROOM_FROM),
+                text: reviewEmail(
+                  existingSubmission,
+                  site,
+                  templates?.[reviewEmailKind(existingSubmission.acceptance, existingSubmission.submissionType)],
+                  await this._sessionsOf(existingSubmission.season)
+                ),
                 replyTo: process.env.MAILROOM_TO
               },
               true
-            )
-            .catch((err) => {
-              Logger.error(`Error sending email to user: ${err.message}`, 'UserSubmissionProvider');
-            });
-        }
+            );
+          }
+        : null;
 
-        return updated;
-      });
+      return { updated, submission: existingSubmission, sendReviewEmail };
     } catch (err) {
       // An HttpException carries a deliberate status. Re-wrapping it below turned intended
       // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
@@ -283,7 +564,8 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     const submission = await this.userSubmissionRepo.findOne({
       where: {
         guid: submissionGuid
-      }
+      },
+      relations: { files: true }
     });
 
     if (!submission) {
@@ -297,7 +579,12 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     }
 
     try {
-      return this.userSubmissionRepo.delete(submissionGuid);
+      // Its file rows go with it (ON DELETE CASCADE); the files themselves are removed once that has committed (#2933).
+      const deleted = await this.userSubmissionRepo.delete(submissionGuid);
+
+      await this.assets.deleteAssetFiles(submission.files ?? []);
+
+      return deleted;
     } catch (err) {
       // An HttpException carries a deliberate status. Re-wrapping it below turned intended
       // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
@@ -309,26 +596,72 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     }
   }
 
-  private _generateResponseEmail(existingSubmission: Submission) {
-    const { title, message, acceptance } = existingSubmission;
+  /**
+   * The sessions of a submission's season, with their day and place, for the email's links to the finalist's own session
+   * and the awards session (#2985). None when it has no season.
+   */
+  private async _sessionsOf(season: Partial<Season> | null | undefined): Promise<Array<GisdayEvent>> {
+    if (!season?.guid) {
+      return [];
+    }
 
-    return `
-Howdy!
+    return this.events.find({ where: { season: { guid: season.guid } }, relations: { day: true, location: true } });
+  }
 
-Thank you for your recent research presentation submission, titled "${title}."
+  /**
+   * The season a new submission is saved to: the one the body names, by its guid or as an object with one, or the
+   * active one when it names none.
+   */
+  private async _seasonFor(named: Partial<Season> | string | undefined): Promise<Partial<Season> | null> {
+    const guid = typeof named === 'string' ? named : named?.guid;
 
-${
-  acceptance
-    ? `We are pleased to inform you that your submission has been **approved** for inclusion in the TxGIS Day event. Please make sure you have reviewed the event schedule (https://txgisday.org/competitions/presentation) and are prepared to present at your designated time. If you have not done so yet, please ensure that you provide a link to your presentation materials in the submission portal. We look forward to seeing you at the event!`
-    : `We regret to inform you that your submission has not been accepted for the TxGIS Day competition event. We appreciate the time and effort you put into your work, and encourage you to consider future opportunities to engage with the GIS community.`
+    if (guid) {
+      return this.seasonService.findOne({ where: { guid } });
+    }
+
+    // A site with no active season has no deadline to hold it to.
+    try {
+      return await this.seasonService.findOneActive();
+    } catch (err) {
+      if (err instanceof NotFoundException) {
+        return null;
+      }
+
+      throw err;
+    }
+  }
 }
 
-${message ? `Additional notes: ${message}` : ''}
+/** Refuses a request to a competition whose submissions have closed (#2934, #2962). */
+function refuseIfClosed(season: Partial<Season> | null | undefined, submissionType: unknown): void {
+  const at = closedAt(season, submissionType, 'submissions');
 
-If you have any questions or concerns, please feel free to reach out to the TxGIS Day team at your convenience. We are here to assist you.
-
-Best regards,
-The TxGIS Day Team
-      `;
+  if (at && isDeadlineCompetition(submissionType)) {
+    throw new ForbiddenException(closedMessage(submissionType, 'submissions', at));
   }
+}
+
+/** The review email's subject, naming the site and the decision (#2957). */
+export function reviewSubject(submission: Pick<Submission, 'acceptance'>, site: Pick<GisdaySite, 'name'>): string {
+  return reviewEmailSubject(submission.acceptance, site.name);
+}
+
+/**
+ * The email a submitter gets when their submission is reviewed (#2957): a poster finalist's (#2980), a presenter's or a
+ * rejection, on the site the reviewer is on. `template` is the text the reviewer approved (#2981); without it, the kind's
+ * own. Its placeholders are filled in for this submission.
+ */
+export function reviewEmail(
+  submission: Pick<Submission, 'title' | 'message' | 'acceptance' | 'submissionType' | 'participants'> & {
+    season?: Partial<Season> | null;
+    classificationType?: string | null;
+  },
+  site: Pick<GisdaySite, 'name' | 'address'>,
+  template?: string,
+  /** The season's sessions, for the finalist's own and the awards session (#2985). */
+  sessions?: Array<ReviewEmailSession>
+): string {
+  const text = template ?? reviewEmailTemplate(reviewEmailKind(submission.acceptance, submission.submissionType));
+
+  return fillReviewEmail(text, reviewEmailValues(submission, site, sessions));
 }

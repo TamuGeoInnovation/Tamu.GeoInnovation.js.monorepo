@@ -5,6 +5,8 @@ import { of } from 'rxjs';
 import { EventService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { GISDAY_SITES } from '@tamu-gisc/gisday/common';
+import { GISDAY_SITE } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { EventListComponent } from './event-list.component';
 
@@ -19,11 +21,11 @@ describe('EventListComponent', () => {
     { guid: 'e-off', name: 'TBD Industry Presentation', active: false }
   ];
 
-  function open() {
+  function open(list: Array<object> = events) {
     const service = {
-      getEntities: () => of(events),
-      getEntitiesForActiveSeason: () => of(events),
-      getEntitiesForSeason: () => of(events),
+      getEntities: () => of(list),
+      getEntitiesForActiveSeason: () => of(list),
+      getEntitiesForSeason: () => of(list),
       setActive: jest.fn((guids: Array<string>) => of({ updated: guids.length }))
     };
 
@@ -46,6 +48,13 @@ describe('EventListComponent', () => {
   }
 
   const activeBoxes = (page: HTMLElement) => [...page.querySelectorAll('td.event-active tamu-gisc-checkbox')];
+
+  // #2943. Each day is headed as the public Sessions page heads it, with its day of the week, in Central time.
+  it('heads each day with its day of the week, as the Sessions page does', () => {
+    const { page } = open([{ guid: 'e-1', name: 'Workshop', active: true, day: { guid: 'd-1', date: '2026-11-16T06:00:00.000Z' } }]);
+
+    expect(page.querySelector('.card h2').textContent.trim()).toBe('Monday, November 16');
+  });
 
   it('shows whether each event is on the public schedule', () => {
     const { page } = open();
@@ -72,5 +81,70 @@ describe('EventListComponent', () => {
     await fixture.componentInstance.setSelectedActive(true);
 
     expect(service.setActive).toHaveBeenCalledWith(['e-on', 'e-off'], true);
+  });
+});
+
+/**
+ * #2986. gisday.tamu.edu shares txgisday.org's database, and its admin Sessions list showed Texas State's sessions. It
+ * now starts with Texas A&M's, and a switch shows every organization's.
+ */
+describe('EventListComponent on gisday.tamu.edu', () => {
+  const at = (guid: string, name: string, place: string) => ({
+    guid,
+    name,
+    active: true,
+    location: { building: 'B', place: { guid: place, name: place === 'tamu' ? 'Texas A&M University GIS Day(s)' : 'Texas State University GIS Day' } }
+  });
+  const events = [at('e-tamu', 'Keynote', 'tamu'), at('e-txst', 'Coffee & Networking', 'txst')];
+
+  function open(site = GISDAY_SITES.tamu) {
+    TestBed.configureTestingModule({
+      imports: [EventListComponent],
+      providers: [
+        provideRouter([]),
+        { provide: GISDAY_SITE, useValue: site },
+        {
+          provide: EventService,
+          useValue: { getEntities: () => of(events), getEntitiesForActiveSeason: () => of(events), getEntitiesForSeason: () => of(events) }
+        },
+        { provide: SeasonService, useValue: { seasons$: of([]), activeSeason$: of(null) } },
+        { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
+        { provide: ModalService, useValue: {} },
+        { provide: NotificationService, useValue: { toast: jest.fn() } }
+      ]
+    });
+
+    const fixture = TestBed.createComponent(EventListComponent);
+    fixture.detectChanges();
+
+    const names = () => {
+      fixture.detectChanges();
+
+      return [...(fixture.nativeElement as HTMLElement).querySelectorAll('tr.selectable')].map((row) => row.textContent.trim());
+    };
+
+    return { fixture, names };
+  }
+
+  it("starts with Texas A&M's sessions only", () => {
+    const { names } = open();
+
+    expect(names().join('|')).toContain('Keynote');
+    expect(names().join('|')).not.toContain('Coffee & Networking');
+  });
+
+  it("shows every organization's sessions when switched", () => {
+    const { fixture, names } = open();
+
+    fixture.componentInstance.organizations.setValue('all');
+
+    expect(names().join('|')).toContain('Coffee & Networking');
+  });
+
+  it("lists every organization's sessions on txgisday.org, with no switch", () => {
+    const { fixture, names } = open(GISDAY_SITES.txgisday);
+
+    expect(names().join('|')).toContain('Coffee & Networking');
+    expect((fixture.nativeElement as HTMLElement).textContent).not.toContain("Show every organization's sessions");
   });
 });

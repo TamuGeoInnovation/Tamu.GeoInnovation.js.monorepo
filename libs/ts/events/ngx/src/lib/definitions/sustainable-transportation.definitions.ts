@@ -183,10 +183,9 @@ export const SustainableTransportationTs: AggiemapCustomMapConfiguration = {
   sources: SustainableTransportationColdLayerSources,
   references: SUSTAINABLE_TRANSPORTATION_LAYERS,
   type: 'general-map',
-  // The bike layers are being reworked, and whether they stay is decided early in the week of 9 November 2026; until
-  // then this map is not on production at all. On a development build its six layers read production's TS/BikeMap,
-  // which the development GIS server serves only with a token (#2744).
-  developmentOnly: '#2742: the bike layers are being reworked; whether they stay is still to be decided',
+  // On production since #2895: the maintainer settled #2742's open question on 13 November 2026 and the bike layers
+  // stay. They read production's TS/BikeMap on every environment, which the development GIS server serves only with a
+  // token, so a development build still reads it from production (#2744).
   discover: {
     id: SustainableTransportationConfiguration.id,
     name: SustainableTransportationConfiguration.name,

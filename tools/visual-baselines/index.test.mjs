@@ -161,3 +161,19 @@ test('shots taken before their map finished are counted on the home page and mar
   assert.match(fs.readFileSync(path.join(root, 'index.html'), 'utf8'), /1 unfinished/);
   assert.match(fs.readFileSync(path.join(dir, 'index.html'), 'utf8'), /title="it was still drawing after 60 s">unfinished/);
 });
+
+test('every picture in a gallery can be picked, and the bar knows how to retake the set', () => {
+  const root = folder();
+  const dir = addSet(root, 'development', 'dev-2026-11-10', { capturedAt: '2026-11-10 02:14:00 US Central', routes: ['/all-maps', '/events/big-event/map/d?map-type=Tool+Dropoff'] });
+
+  buildIndex(root, NO_STYLES);
+
+  const gallery = fs.readFileSync(path.join(dir, 'index.html'), 'utf8');
+
+  // two routes at two viewports
+  assert.equal((gallery.match(/data-pick-key=/g) || []).length, 4);
+  assert.match(gallery, /data-slug="events-big-event-map-d__map-type__Tool-Dropoff"/);
+  assert.match(gallery, /data-route="\/events\/big-event\/map\/d\?map-type=Tool\+Dropoff"/);
+  assert.match(gallery, /Copy the retake command/);
+  assert.match(gallery, /"kind":"development","release":"dev-2026-11-10","environment":"development"/);
+});

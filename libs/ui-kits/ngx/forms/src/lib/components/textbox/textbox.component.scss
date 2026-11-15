@@ -4,6 +4,8 @@
   @include flexbox();
   @include flex-direction(row);
   @include justify-content(space-between);
+  // The input sits in the middle of the box, beside actions that make it taller, such as a copy field's Copy (#2930).
+  @include align-items(center);
   position: relative;
   background: #f1f3f4;
   border-radius: 5pt;
@@ -25,6 +27,8 @@ textarea {
   border: none;
   background: none;
   outline: none;
+  // The page's font, as the placeholder's: a browser gives a form control its own (#2930).
+  font-family: inherit;
   font-size: 1rem;
   padding: 0.6rem 0;
   box-sizing: border-box;
@@ -41,14 +45,13 @@ textarea {
 }
 
 textarea {
-  font-family: inherit;
   resize: none;
 }
 
 label {
   position: absolute;
   color: #757575;
-  left: 1rem;
+  left: 0;
   top: 0.55rem;
   pointer-events: none;
   z-index: 1;
@@ -64,6 +67,8 @@ label {
 
 .textbox-control {
   @include flex(1);
+  // The placeholder is placed against the input, so it stays on the text's line however tall the box is (#2930).
+  position: relative;
   z-index: 0;
 }
 

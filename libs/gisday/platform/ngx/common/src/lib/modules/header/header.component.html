@@ -42,7 +42,8 @@
     <tamu-gisc-tile-icon><div class="material-icons">login</div></tamu-gisc-tile-icon>
     <tamu-gisc-tile-title tabindex="0" role="button" (click)="login()" (keydown.enter)="login()" (keydown.space)="login(); $event.preventDefault()">Login</tamu-gisc-tile-title>
   </tamu-gisc-tile>
-  } @else { @if ((loggedIn$ | async) === true) {
+  } @else if ((loggedIn$ | async) === true) {
+  <!-- One block, not @else { @if }: the menu projects only tamu-gisc-tile, and a tile two blocks deep is dropped (#2884). -->
   <tamu-gisc-tile>
     <tamu-gisc-tile-icon><div class="material-icons">account_circle</div></tamu-gisc-tile-icon>
     <tamu-gisc-tile-title>Account</tamu-gisc-tile-title>
@@ -56,7 +57,7 @@
       <p (click)="logout()" tabindex="0" role="button" (keydown.enter)="logout()" (keydown.space)="logout(); $event.preventDefault()">Logout</p>
     </tamu-gisc-tile-submenu>
   </tamu-gisc-tile>
-  } }
+  }
 </tamu-gisc-tile-navigation>
 
 <header>

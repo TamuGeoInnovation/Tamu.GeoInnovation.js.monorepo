@@ -1,8 +1,14 @@
 <div class="form">
+  <!-- When each competition closes, for the season chosen below (#2934, #2962). -->
+  <tamu-gisc-submission-deadlines class="form-section" [season]="selectedSeason$ | async"></tamu-gisc-submission-deadlines>
+
   <div class="form-section">
     <div class="form-section-toolbar">
       <div class="form-section-name">Student Competition Submissions</div>
       <div class="form-section-actions">
+        <!-- Every attached file, a folder per submission (#2933). -->
+        <!-- The toolbar's own action style (libs/sass/modules/_forms.scss), as the other admin toolbars' actions. -->
+        <a class="post-1" tabindex="0" role="button" [attr.aria-disabled]="zipping()" (click)="zipping() || downloadAllFiles()" (keydown.enter)="zipping() || downloadAllFiles()">{{ zipping() ? 'Preparing zip…' : 'Download all files' }}</a>
         <tamu-gisc-select class="post-1" placeholder="Season" [floatLabel]="false" [data]="seasons$ | async" displayTemplate="year" valueTemplate="guid" [value]="$safeNavigationMigration((selectedSeason$ | async)?.guid)" (changed)="setSeason($event)"></tamu-gisc-select>
       </div>
     </div>
@@ -20,6 +26,10 @@
           <tamu-gisc-radio-group [formControl]="type" [options]="view.typeOptions" displayPath="label" valuePath="type"></tamu-gisc-radio-group>
         </div>
       </div>
+
+      @if (zipProblem(); as problem) {
+      <p class="clr-md-red-500" role="alert">{{problem}}</p>
+      }
 
       <p>Showing <strong>{{view.rows.length}}</strong> of {{view.total}} submissions.</p>
 
@@ -69,6 +79,11 @@
             <ng-template let-row="row" ngx-datatable-cell-template>{{row.classificationType | titlecase}}</ng-template>
           </ngx-datatable-column>
 
+          <!-- How many files the student attached (#2933); the review page lists and downloads them. -->
+          <ngx-datatable-column name="Files" prop="files.length" [width]="80">
+            <ng-template let-row="row" ngx-datatable-cell-template>{{row.files?.length || ''}}</ng-template>
+          </ngx-datatable-column>
+
           <ngx-datatable-column name="Status" prop="reviewStatus" [width]="110">
             <ng-template let-row="row" ngx-datatable-cell-template>
               <span class="bold" [ngClass]="{'clr-md-amber-800': row.reviewStatus === SubmissionReviewStatus.InReview, 'clr-md-green-600': row.reviewStatus === SubmissionReviewStatus.Accepted, 'clr-md-red-500': row.reviewStatus === SubmissionReviewStatus.Rejected}">{{row.reviewStatus}}</span>
@@ -80,12 +95,20 @@
       <p>No submissions match these filters.</p>
       } @else {
       <p>There are no student competition submissions for the selected season.</p>
-      } } @if ((selectedRows$ | async)?.length > 0) {
+      } } @else {
+      <!-- The site's loader while the season's submissions load, rather than a blank page (#2924). -->
+      <div class="loader"></div>
+      } @if ((selectedRows$ | async)?.length > 0) {
       <div class="selected-action-container info-block context">
         <div>
           <p><strong>{{(selectedRows$ | async).length}} selected</strong></p>
         </div>
         <div class="selected-actions">
+          <!-- Each reviewed and emailed as Submit Review does one, after the page asks (#2958). -->
+          <p class="selected-action" (click)="reviewSelected(true)" tabindex="0" role="button" (keydown.enter)="reviewSelected(true)" (keydown.space)="reviewSelected(true); $event.preventDefault()">Approve <span class="material-icons action">check_circle</span></p>
+          <p class="selected-action" (click)="reviewSelected(false)" tabindex="0" role="button" (keydown.enter)="reviewSelected(false)" (keydown.space)="reviewSelected(false); $event.preventDefault()">Reject <span class="material-icons action">cancel</span></p>
+          <!-- Each person's own profile link, as the Speakers list sends it (#2936, #2958). -->
+          <p class="selected-action" (click)="sendProfileEmails()" tabindex="0" role="button" (keydown.enter)="sendProfileEmails()" (keydown.space)="sendProfileEmails(); $event.preventDefault()">Send profile email <span class="material-icons action">forward_to_inbox</span></p>
           <p class="selected-action caution" (click)="promptDeleteModal('Submission')" tabindex="0" role="button" (keydown.enter)="promptDeleteModal('Submission')" (keydown.space)="promptDeleteModal('Submission'); $event.preventDefault()">Delete <span class="material-icons action">delete_forever</span></p>
         </div>
       </div>

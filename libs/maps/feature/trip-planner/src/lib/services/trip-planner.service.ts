@@ -37,7 +37,9 @@ import * as gju from 'geojson-utils';
 import { LayerSource } from '@tamu-gisc/common/types';
 import { findNearestIndex, isCoordinatePair, getGeolocation } from '@tamu-gisc/common/utils/geometry/generic';
 import { centroidFromPolygonGeometry } from '@tamu-gisc/common/utils/geometry/esri';
-import { minBy, pairwiseOverlap } from '@tamu-gisc/common/utils/collection';
+import { pairwiseOverlap } from '@tamu-gisc/common/utils/collection';
+
+import { DoorPoint, firstRoutableDoor, rankDoorsByDistance } from './trip-planner-door-choice';
 import { timeStringForDate } from '@tamu-gisc/common/utils/date';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -2609,39 +2611,26 @@ export class TripPlannerService implements OnDestroy {
             })
             .then((doors) => {
               if (doors.length > 0) {
-                // If doors found, find the one with shortest straight line distance from the provided point
-                const distanceRef = [];
-                const distanceValue = [];
+                // If doors found, choose one by distance and then by whether the network can route from it.
+                void (async () => {
+                  // Nearest first, then the first one the network can actually route from. The nearest door is a
+                  // preference, not a requirement: one door that locates onto a disconnected piece of network used to
+                  // fail the whole trip, in every travel mode, while other doors on the same building worked (#2843).
+                  const ranked = rankDoorsByDistance(
+                    doors,
+                    (door) => door.geometry as unknown as DoorPoint,
+                    relativeTo.geometry as unknown as DoorPoint
+                  );
 
-                this.moduleProvider.require(['Point'], true).then((modules: { Point: typeof esri.Point }) => {
-                  doors.forEach((door) => {
-                    // Point used to calculate euclidean distance between it and the reference point
-                    const currentPoint = new modules.Point({
-                      latitude: door.geometry['latitude'],
-                      longitude: door.geometry['longitude']
-                    });
+                  const ret: esri.Graphic = await firstRoutableDoor(ranked, (door) => this.doorRoutes(door, relativeTo));
 
-                    const relativePoint = new modules.Point({
-                      latitude: relativeTo.geometry.latitude,
-                      longitude: relativeTo.geometry.longitude
-                    });
+                  if (!ret) {
+                    // No door within the limit could be routed from. Leave the stop on the building's own point, which
+                    // routes, rather than moving it somewhere the network cannot use.
+                    resolve(stop);
 
-                    distanceRef.push({
-                      distance: currentPoint.distance(relativePoint),
-                      fid: door.attributes['GIS.FCOR.Bldg_Entrance.FID']
-                    });
-
-                    distanceValue.push(currentPoint.distance(relativePoint));
-                  });
-
-                  // Get the index of the smallest value in the distances array
-                  const min = minBy(distanceRef, (o) => {
-                    return o.distance;
-                  });
-
-                  const ret: esri.Graphic = doors.find((feature) => {
-                    return feature.attributes['GIS.FCOR.Bldg_Entrance.FID'] === min.fid;
-                  });
+                    return;
+                  }
 
                   const transformationDefinition: TripPointOriginTransformationsParams = {
                     type: 'nearest-door',
@@ -2659,7 +2648,7 @@ export class TripPlannerService implements OnDestroy {
                   transformed.geometry.longitude = (<TripPointGeometry>ret.geometry).longitude;
 
                   resolve(transformed);
-                });
+                })();
               } else {
                 resolve(stop);
               }
@@ -2674,6 +2663,38 @@ export class TripPlannerService implements OnDestroy {
         resolve(stop);
       }
     });
+  }
+
+  /**
+   * Whether the routing network can route from this door to the other end of the trip (#2843).
+   *
+   * Asked in the travel mode the visitor is in, so a door is judged by the network they are actually using. Any failure
+   * - an error, a refusal, no route - is "no": the point of asking is to move on to the next door rather than to
+   * diagnose the network.
+   */
+  private async doorRoutes(door: esri.Graphic, relativeTo: TripPoint): Promise<boolean> {
+    const { supportedTravelModes } = await this._Modules.networkService.fetchServiceDescription(this.connection.url());
+
+    const from = {
+      attributes: { name: 'door' },
+      geometry: door.geometry as unknown as TripPointGeometry
+    } as unknown as TripPoint;
+
+    const params = new this._Modules.RouteParameters({
+      outSpatialReference: {
+        wkid: 4326
+      },
+      stops: this.graphicsToStopsCollection([from, relativeTo]),
+      travelMode: {
+        id: this._TravelOptions.value.travel_mode.toString()
+      },
+      returnDirections: false,
+      returnZ: false
+    });
+
+    const result = await this.solveWithNetworkMode(supportedTravelModes, params as esri.RouteParameters);
+
+    return Boolean(result);
   }
 
   private graphicsToStopsCollection(tripPoints: Array<TripPoint>) {

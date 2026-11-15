@@ -322,9 +322,7 @@
       "micromobility-slow-zones",
       "micromobility-shared-paths",
       "micromobility-dedicated-paths"
-    ],
-    "developmentOnly": true,
-    "address": "/transportation/micromobility"
+    ]
   },
   "motorcycle-parking": {
     "layerList": true,
@@ -526,9 +524,7 @@
       "sustainable-transportation-bike-lanes",
       "sustainable-transportation-city-bike-lanes-routes",
       "sustainable-transportation-bike-dismount-zones"
-    ],
-    "developmentOnly": true,
-    "address": "/transportation/sustainable-transportation"
+    ]
   },
   "swimming-parking": {
     "layerList": true,

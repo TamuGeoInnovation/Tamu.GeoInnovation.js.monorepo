@@ -11,17 +11,26 @@ import {
   Req,
   Request,
   UnauthorizedException,
-  UseGuards
+  UploadedFile,
+  UseGuards,
+  UseInterceptors
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 import { JwtGuard, PermissionsGuard, Permissions } from '@tamu-gisc/common/nest/auth';
 
 import { Submission } from '../entities/all.entity';
 import { UserSubmissionProvider } from './user-submission.provider';
+import { siteHost } from '../_base/site-of-request';
+import { SubmissionFilesService } from './submission-files.service';
+import { SUBMISSION_FILE_UPLOAD } from './submission-file-upload';
 
 @Controller('user-submissions')
 export class UserSubmissionController {
-  constructor(private readonly provider: UserSubmissionProvider) {}
+  constructor(
+    private readonly provider: UserSubmissionProvider,
+    private readonly files: SubmissionFilesService
+  ) {}
 
   @UseGuards(JwtGuard)
   @Get('me')
@@ -33,6 +42,78 @@ export class UserSubmissionController {
   @Get('posters')
   public async getPosters(@Query('season', new ParseUUIDPipe({ optional: true })) seasonGuid?: string) {
     return this.provider.getPosters(seasonGuid);
+  }
+
+  // Every file of a season's submissions as one zip, for the admins (#2933).
+  @Permissions(['read:competitions'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Get('season/:guid/files.zip')
+  public getSeasonFiles(@Param('guid', ParseUUIDPipe) seasonGuid: string, @Request() req) {
+    return this.files.zipForSeason(seasonGuid, req.user);
+  }
+
+  /**
+   * Approves or rejects the named submissions at once, for Research Competitions' selected rows (#2958): each is reviewed
+   * and emailed as Submit Review does one, from the reviewer's site. Body: `{ submissions: [guid], acceptance, message? }`.
+   */
+  @Permissions(['update:competitions'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Post('review')
+  public reviewMany(
+    @Body()
+    body: { submissions: Array<string>; acceptance: boolean; message?: string; templates?: Record<string, string> },
+    @Request() req
+  ) {
+    return this.provider.reviewUserSubmissions(
+      body?.submissions,
+      req.user.sub,
+      // `templates`: the email text the reviewer saw and approved, by kind (#2981).
+      { acceptance: body?.acceptance, message: body?.message, templates: body?.templates },
+      req.user.permissions,
+      siteHost(req.headers)
+    );
+  }
+
+  /**
+   * The email approving or rejecting the named submissions would send, for the reviewer to read and edit first (#2981).
+   * Nothing is recorded or sent. Body: `{ submissions: [guid], acceptance, message? }`.
+   */
+  @Permissions(['update:competitions'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Post('review/preview')
+  public previewReview(@Body() body: { submissions: Array<string>; acceptance: boolean; message?: string }, @Request() req) {
+    return this.provider.previewReview(
+      body?.submissions,
+      { acceptance: body?.acceptance, message: body?.message },
+      req.user.permissions,
+      siteHost(req.headers)
+    );
+  }
+
+  // A submission's attached files (#2933): its owner, or anyone who may read the competitions.
+  @UseGuards(JwtGuard)
+  @Get(':guid/files')
+  public getFiles(@Param('guid', ParseUUIDPipe) guid: string, @Request() req) {
+    return this.files.list(guid, req.user);
+  }
+
+  @UseGuards(JwtGuard)
+  @Get(':guid/files/:file')
+  public getFile(@Param('guid', ParseUUIDPipe) guid: string, @Param('file', ParseUUIDPipe) file: string, @Request() req) {
+    return this.files.download(guid, file, req.user);
+  }
+
+  @UseGuards(JwtGuard)
+  @Post(':guid/files')
+  @UseInterceptors(FileInterceptor('file', SUBMISSION_FILE_UPLOAD))
+  public addFile(@Param('guid', ParseUUIDPipe) guid: string, @Request() req, @UploadedFile() file: Express.Multer.File) {
+    return this.files.add(guid, req.user, file);
+  }
+
+  @UseGuards(JwtGuard)
+  @Delete(':guid/files/:file')
+  public deleteFile(@Param('guid', ParseUUIDPipe) guid: string, @Param('file', ParseUUIDPipe) file: string, @Request() req) {
+    return this.files.remove(guid, file, req.user);
   }
 
   @UseGuards(JwtGuard)
@@ -70,7 +151,7 @@ export class UserSubmissionController {
   @Patch(':guid')
   public async updateEntity(@Request() req, @Param('guid') guid, @Body() submission: Partial<Submission>) {
     if (req.user) {
-      return this.provider.updateUserSubmission(guid, req.user.sub, submission, req.user.permissions);
+      return this.provider.updateUserSubmission(guid, req.user.sub, submission, req.user.permissions, siteHost(req.headers));
     } else {
       throw new UnauthorizedException();
     }

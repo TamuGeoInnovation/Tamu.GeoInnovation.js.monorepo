@@ -187,6 +187,18 @@ export class SearchComponent implements OnInit, OnDestroy {
    */
   public searchResultsActive: boolean = undefined;
 
+  /**
+   * Set while a result is being chosen, so that the focus the browser gives the chosen option does not
+   * reopen the drop down that choosing it just closed (#2844).
+   *
+   * The options are chosen on `mousedown` deliberately: the input's own `blur` would otherwise hide the
+   * list before a `click` could land on one. But `mousedown` runs before the browser moves focus, so
+   * `setSelected` closes the list and the option then takes focus and fires the template's
+   * `(focus)="setFocus()"`, opening it again. Cleared by the first `setFocus` after a selection, and on a
+   * timeout as well in case the option was already focused and no focus event follows.
+   */
+  private _selecting = false;
+
   private _sources: SearchSource[];
 
   /**
@@ -317,6 +329,14 @@ export class SearchComponent implements OnInit, OnDestroy {
    * Sets focus on the search results, showing them
    */
   public setFocus(): void {
+    // The focus the browser gives the option that was just chosen. It is not a visitor asking for the list
+    // back, so swallow it once (#2844).
+    if (this._selecting) {
+      this._selecting = false;
+
+      return;
+    }
+
     this.searchResultsActive = true;
     this.searchActionsActive = true;
 
@@ -379,7 +399,10 @@ export class SearchComponent implements OnInit, OnDestroy {
       // Update the DOM model value
       this.value.set(this.evaluateDisplayTemplate(feature as unknown as object, parentResult.displayTemplate));
 
-      // De-focus the component
+      // De-focus the component, and ignore the focus the chosen option is about to take (#2844).
+      this._selecting = true;
+      setTimeout(() => (this._selecting = false), 0);
+
       this.loseFocus();
     }
 

@@ -22,6 +22,7 @@ import * as path from 'path';
 import { pathToFileURL } from 'url';
 
 import { escape, page, sharedCss } from './page.mjs';
+import { PICK_BAR, PICK_CSS, pickBox, pickScript } from './pick.mjs';
 import { slugFor } from './slug.mjs';
 
 const REPOSITORY = 'https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo';
@@ -292,9 +293,17 @@ function setPage(set, shared) {
           const label = route || file;
           const src = `${encodeURIComponent(viewport)}/${encodeURIComponent(file)}`;
 
-          return `<figure class="shot" data-viewport="${escape(viewport)}" data-label="${escape(label.toLowerCase())}">
+          const pick = pickBox({
+            key: `${viewport}/${file}`,
+            slug: file.replace(/\.png$/, ''),
+            route: label,
+            viewport,
+            links: [['picture', src], ...(route && base ? [['live', base + route]] : [])]
+          });
+
+          return `<figure class="shot" data-viewport="${escape(viewport)}" data-label="${escape(label.toLowerCase())}" data-pick-item>
       <a href="${src}" target="_blank"><img loading="lazy" src="${src}" alt="${escape(label)}"${size(viewport)}></a>
-      <figcaption>${m.unsettled?.[`${viewport}/${file}`] ? `<span class="chip chip-external" title="${escape(m.unsettled[`${viewport}/${file}`])}">unfinished</span> ` : ''}<span class="mono">${escape(label)}</span>${route && base ? ` <a href="${escape(base + route)}" target="_blank">live</a>` : ''}</figcaption>
+      <figcaption>${pick} ${m.unsettled?.[`${viewport}/${file}`] ? `<span class="chip chip-external" title="${escape(m.unsettled[`${viewport}/${file}`])}">unfinished</span> ` : ''}<span class="mono">${escape(label)}</span>${route && base ? ` <a href="${escape(base + route)}" target="_blank">live</a>` : ''}</figcaption>
     </figure>`;
         })
         .join('\n')
@@ -323,8 +332,8 @@ function setPage(set, shared) {
       .join(' ')}
     <input type="search" id="filter" placeholder="Filter by route" aria-label="Filter by route">
     <span class="meta" id="count"></span>
-    <span class="meta">Click a picture for full size; "live" opens the page itself.</span>`,
-    body: `<div class="grid">\n${figures}\n</div>`,
+    <span class="meta">Click a picture for full size; "live" opens the page itself; tick "pick" on any that looks wrong.</span>`,
+    body: `<div class="grid">\n${figures}\n</div>` + PICK_BAR,
     css: `
   .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:14px; }
   body.phone .grid { grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); }
@@ -333,7 +342,8 @@ function setPage(set, shared) {
   .shot figcaption { font-size:12px; color:#555; margin-top:4px; overflow-wrap:anywhere; }
   .shot.hidden { display:none; }
   #filter { padding:0.35rem 0.6rem; border:1px solid #ccc; border-radius:6px; min-width:240px; }
-`,
+  body.picked-only .shot.picked { display:block !important; }
+` + PICK_CSS,
     script: `
   const shots = [...document.querySelectorAll('.shot')];
   const filter = document.getElementById('filter');
@@ -352,7 +362,15 @@ function setPage(set, shared) {
   document.querySelectorAll('input[name=viewport]').forEach((input) => input.addEventListener('change', show));
   filter.addEventListener('input', show);
   show();
-`
+` +
+      pickScript({
+        pageId: `${set.kind}/${set.name}`,
+        kind: set.kind,
+        release: set.name,
+        environment: m.environment || 'development',
+        as: m.actingAs || null,
+        app: m.app || 'aggiemap'
+      })
   });
 }
 

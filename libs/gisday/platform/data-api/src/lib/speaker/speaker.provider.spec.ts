@@ -27,6 +27,7 @@ describe('SpeakerProvider', () => {
     findOne: jest.fn(),
     create: jest.fn(),
     save: jest.fn(),
+    update: jest.fn(),
     manager: { transaction: jest.fn() }
   });
 
@@ -306,7 +307,7 @@ describe('SpeakerProvider', () => {
       jest.spyOn(speakerRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
       jest.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'i-2' } as never);
 
-      await provider.updateWithInfo('s-1', {}, { originalname: 'face.png' });
+      await provider.updateWithInfo('s-1', {}, { originalname: 'face.png', buffer: declaredPng(10, 10) });
 
       expect(assetService.saveAsset).toHaveBeenCalledWith(
         'images/speakers',
@@ -377,6 +378,81 @@ describe('SpeakerProvider', () => {
 
       expect((speakerRepo.save as jest.Mock).mock.calls[0][0].guid).toBe('s-1');
     });
+
+    /**
+     * #2937. Speaker photos already refused an SVG (#2352); they now take a JPEG or PNG only, as the logos do, with the same
+     * check, and the stored name follows the content.
+     */
+    describe('photo uploads (#2937)', () => {
+      const svg = Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"/>');
+      // A GIF's header: its signature, then a 1 x 1 logical screen.
+      const gif = Buffer.concat([Buffer.from('GIF89a', 'latin1'), Buffer.from([1, 0, 1, 0, 0, 0, 0, 0, 0, 0])]);
+      const upload = (originalname: string, buffer: Buffer) => ({ originalname, mimetype: 'image/png', buffer, size: buffer.length });
+
+      it.each([
+        ['an SVG renamed to .png', upload('face.png', svg)],
+        ['a GIF', upload('face.gif', gif)]
+      ])('refuses %s with 400, on update and on create', async (_name, file) => {
+        jest.spyOn(speakerRepo, 'findOne').mockResolvedValue(existing());
+        const save = jest.fn();
+        jest.spyOn(speakerRepo, 'create').mockReturnValue({ save } as never);
+
+        await expect(provider.updateWithInfo('s-1', {}, file)).rejects.toThrow(BadRequestException);
+        await expect(provider.insertWithInfo({ firstName: 'A' }, file)).rejects.toThrow(BadRequestException);
+        expect(save).not.toHaveBeenCalled();
+        expect(assetService.saveAsset).not.toHaveBeenCalled();
+      });
+
+      it('stores a PNG named .svg under a .png name', async () => {
+        jest.spyOn(speakerRepo, 'findOne').mockResolvedValue(existing());
+        jest.spyOn(speakerRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
+        jest.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'i-2' } as never);
+
+        await provider.updateWithInfo('s-1', {}, upload('face.svg', declaredPng(10, 10)));
+
+        expect((assetService.saveAsset as jest.Mock).mock.calls[0][1].originalname).toBe('face.png');
+      });
+    });
+  });
+
+  describe('badges printed (#2908)', () => {
+    it('marks each badge printed at one time, with what it said, and says how many', async () => {
+      jest.spyOn(speakerRepo, 'update').mockResolvedValue({ affected: 1 } as never);
+
+      await expect(
+        provider.markBadgesPrinted([
+          { guid: 's-1', text: "Ana|Lee|Esri|'11" },
+          { guid: 's-2', text: 'Pat|Kim|TWDB|' }
+        ])
+      ).resolves.toEqual({ marked: 2 });
+
+      const calls = (speakerRepo.update as jest.Mock).mock.calls;
+      expect(calls.map((c) => [c[0], c[1].badgePrintedText])).toEqual([
+        [{ guid: 's-1' }, "Ana|Lee|Esri|'11"],
+        [{ guid: 's-2' }, 'Pat|Kim|TWDB|']
+      ]);
+      expect(calls[0][1].badgePrintedAt).toBeInstanceOf(Date);
+      expect(calls[0][1].badgePrintedAt).toBe(calls[1][1].badgePrintedAt);
+    });
+
+    it('counts only the speakers it found', async () => {
+      jest.spyOn(speakerRepo, 'update').mockResolvedValueOnce({ affected: 1 } as never).mockResolvedValueOnce({ affected: 0 } as never);
+
+      await expect(provider.markBadgesPrinted([{ guid: 's-1', text: 'a' }, { guid: 'gone', text: 'b' }])).resolves.toEqual({ marked: 1 });
+    });
+
+    it('refuses an empty or malformed list rather than marking nothing silently', async () => {
+      await expect(provider.markBadgesPrinted([])).rejects.toThrow(BadRequestException);
+      await expect(provider.markBadgesPrinted([{ guid: '', text: 'a' }] as never)).rejects.toThrow(BadRequestException);
+      await expect(provider.clearBadgesPrinted([])).rejects.toThrow(BadRequestException);
+    });
+
+    it('clears the mark and what the badge said', async () => {
+      jest.spyOn(speakerRepo, 'update').mockResolvedValue({ affected: 2 } as never);
+
+      await expect(provider.clearBadgesPrinted(['s-1', 's-2'])).resolves.toEqual({ cleared: 2 });
+      expect((speakerRepo.update as jest.Mock).mock.calls[0][1]).toEqual({ badgePrintedAt: null, badgePrintedText: null });
+    });
   });
 
   describe('.copySpeakersIntoSeason()', () => {
@@ -403,6 +479,8 @@ describe('SpeakerProvider', () => {
         created: new Date(),
         updated: new Date(),
         firstName: 'A',
+        badgePrintedAt: new Date(),
+        badgePrintedText: 'A||Esri|',
         images: [{ guid: 'i-1', created: new Date(), updated: new Date() }]
       } as unknown as Speaker;
 
@@ -417,6 +495,9 @@ describe('SpeakerProvider', () => {
       const passed = (speakerRepo.create as jest.Mock).mock.calls[0][0];
       expect(passed.guid).toBeUndefined();
       expect(passed.season).toEqual({ guid: 'season-2' });
+      // Last season's printed badge is not this season's (#2908).
+      expect(passed.badgePrintedAt).toBeNull();
+      expect(passed.badgePrintedText).toBeNull();
       // The image is a separate row; carrying its guid would move it off the original speaker.
       expect(passed.images[0].guid).toBeUndefined();
       expect(passed.firstName).toBe('A');
