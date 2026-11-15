@@ -62,6 +62,17 @@ only, and revert it afterwards so your stack matches `development` again. On you
 Commit to `docs/screenshots/2948-season-competition-types/` on that branch, link them from its release note, push
 (fast-forward, no force), and give the PR body's image section in your report.
 
+## Batch 67 (gisday: screenshots for #3032 and #3033, the sessions on a broadcast's and a tag's admin page; 15 November 2026, from `work (gisday)`) (**High**) - **next, before 66**
+
+1. **#3032**, PR 3036, branch `feat/3032-broadcast-sessions-pr` on the fork (`bc9378404`): a broadcast's admin edit page
+   lists the sessions that use it. Before (`development`) and after, on one broadcast with a few sessions and one with
+   none.
+2. **#3033**, branch `feat/3033-tag-sessions` on the fork (`0f7d90368`, stacked on #3032; **its last commit is
+   `.pr-body.md`, leave it last**): a tag's admin edit page lists the sessions that have it. Before and after, one tag
+   with sessions and one without. No PR exists yet; it opens once your images are pushed.
+Commit each to `docs/screenshots/<issue>-<slug>/` on its branch, link from its release note, push (fast-forward, no
+force), and give each PR body's image section in your report. Report each branch as soon as it is done.
+
 ## Batch 66 (gisday: #3037, one Competition settings panel with one Save; 15 November 2026, from `work (gisday)`) (Low) - **after 65**
 
 [#3037](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3037). You built the deadlines panel
