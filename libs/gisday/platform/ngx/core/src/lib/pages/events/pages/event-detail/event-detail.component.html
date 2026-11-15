@@ -157,8 +157,8 @@
 
                   <ng-template #notCheckedIn>
                     <div *ngIf="eventLive$ | async; else eventNotOngoing">
-                      <!-- A hybrid or virtual session checks in from its QR code's link, which carries the code (#2560). -->
-                      <p *ngIf="needsCheckInCode(event) && !checkInCode(); else checkInButton">{{ checkInCodeMessage }}</p>
+                      <!-- A hybrid or virtual session checks in only from its QR code, on its own check-in page (#2560, #3081). -->
+                      <p *ngIf="needsCheckInCode(event); else checkInButton">{{ checkInCodeMessage }}</p>
 
                       <ng-template #checkInButton>
                         <p class="trailer-1">Check-in to register your attendance for this event.</p>
