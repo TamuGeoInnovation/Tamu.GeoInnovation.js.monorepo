@@ -1,10 +1,11 @@
 import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   catchError,
+  combineLatest,
   filter,
   finalize,
   forkJoin,
@@ -47,6 +48,7 @@ import {
   CHECK_IN_CODE_MESSAGE,
   CHECK_IN_CODE_PARAM,
   CHECK_IN_ZONE_EVENT_MODE,
+  checkInOpensMessage,
   checkInWindow,
   checksInByCode,
   OUTSIDE_SESSION_TIME_LABEL
@@ -82,6 +84,7 @@ import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 })
 export class EventDetailComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly auth = inject(AuthService);
   private readonly eventService = inject(EventService);
   private readonly checkinService = inject(CheckinService);
@@ -109,6 +112,11 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   );
   public eventLive$: Observable<boolean>;
   public eventElapsed$: Observable<boolean>;
+
+  /**
+   * When check-in opens, while it has not yet (#3077): "Check-in opens at 2:00 PM.", in Central time.
+   */
+  public checkInOpens$: Observable<string | null>;
 
   /**
    * The session's check-ins for admins (#2635), or why they could not be loaded.
@@ -309,6 +317,35 @@ export class EventDetailComponent implements OnInit, OnDestroy {
       })
     );
 
+    this.checkInOpens$ = parsedDates.pipe(
+      switchMap((startEndTimes) => {
+        return interval(1000).pipe(
+          startWith(0),
+          map(() => {
+            const now = new Date();
+
+            return !startEndTimes.anyTime && startEndTimes.start !== null && now < startEndTimes.start
+              ? checkInOpensMessage(startEndTimes.start, now)
+              : null;
+          })
+        );
+      })
+    );
+
+    // Arriving from a session's QR code checks the attendee in, with no button to find (#3077): once they are
+    // signed in with a complete profile, not already checked in, and check-in is open. An attendee who scans
+    // early is checked in when it opens, if the page is still open. A refusal shows beside the button, which
+    // stays for a second try.
+    if (this.checkInCode()) {
+      combineLatest([this.event$, this.isLoggedIn$, this.userProfileComplete$, this.userCheckedIn$, this.eventLive$])
+        .pipe(
+          filter(([, loggedIn, profileComplete, checkedIn, live]) => loggedIn && profileComplete && !checkedIn && live),
+          take(1),
+          takeUntil(this._destroy$)
+        )
+        .subscribe(() => this.checkin());
+    }
+
     // Admins see the session's check-ins, each marked when made outside its time (#2635). Names come from
     // the site's users; without them (an account with no `read:users`, or Auth0 not reachable) the
     // account id stands in. Reloaded with the page's own check-in.
@@ -380,6 +417,14 @@ export class EventDetailComponent implements OnInit, OnDestroy {
       });
   }
 
+  /**
+   * Signs in, or signs up, and comes back to this page with its address as it was, a QR code's check-in code
+   * included (#3077), as the header's Login does.
+   */
+  public signIn() {
+    this.auth.login({ appState: { target: this.router.url } });
+  }
+
   public checkin() {
     this.checkInFailure.set(undefined);
 
@@ -388,13 +433,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
         take(1),
         switchMap((event) =>
           this._checkInPosition(event).pipe(
-            switchMap((position) =>
-              this.checkinService.insertUserCheckin(
-                event.guid,
-                position,
-                this.needsCheckInCode(event) ? this.checkInCode() : undefined
-              )
-            )
+            switchMap((position) => this.checkinService.insertUserCheckin(event.guid, position, this.checkInCode()))
           )
         )
       )
@@ -414,7 +453,8 @@ export class EventDetailComponent implements OnInit, OnDestroy {
    * the location is inside the zone.
    */
   public needsCheckInLocation(event: Partial<Event>): boolean {
-    return event?.mode === CHECK_IN_ZONE_EVENT_MODE && isLatLonPolygon(event?.location?.checkInZone);
+    // The QR code's link stands in for the location at any session (#3077), for a phone that cannot give one.
+    return !this.checkInCode() && event?.mode === CHECK_IN_ZONE_EVENT_MODE && isLatLonPolygon(event?.location?.checkInZone);
   }
 
   /**
