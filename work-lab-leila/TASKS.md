@@ -8289,3 +8289,20 @@ a venue with a zone (Blocker or OMB, once the maintainer has entered them); a re
 > all of this can be done in one location. Can live next to the check in corners box that is already there. Existing
 > points should show on the map." So: the map sits **beside** the Check-In Zone Corners box on the venue form (stacked
 > at phone width), and a venue that already has corners shows them on the map as soon as the form opens.
+
+## Batch 82 (gisday: #3081's screenshots, URGENT, before GIS Day tomorrow; 15 November 2026, from `work (gisday)`) (Urgent) - **pause 81 at a safe point, do this, then go back to 81**
+
+[#3081](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3081): after a check-in the page also
+shows the site's pop-up notice at the top. Code **done and tested**: branch `fix/checkin-toast` on the fork at
+`d223479fc`, stacked on `fix/qr-auto-checkin` (before = `fix/qr-auto-checkin` at `59cadc532`, **not** `development`).
+**Do not change the code.** As in batch 80 (hybrid session, "Check-in open at any time?" ticked, signed in with a complete
+profile, the code in the address), 390 px, the **first screen only, not cropped to the Checkin section**:
+
+| File | State |
+| --- | --- |
+| `before-checked-in-top.png` / `after-checked-in-top.png` | Right after the automatic check-in: before nothing at the top says so, after the pop-up "You're checked in to <session>." |
+| `after-refused-top.png` | A wrong code (`?checkin=wrong`): the pop-up with the reason |
+
+Hover the pop-up to keep it (they close by themselves). Write to `docs/screenshots/3081-checkin-toast/`; undo every
+check-in and setting as in report 80. One commit, `docs(screenshots): #3081's before and after`, on the branch, pushed to
+the fork. Report "images pushed: <sha>", then go back to 81.
