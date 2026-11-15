@@ -62,6 +62,19 @@ only, and revert it afterwards so your stack matches `development` again. On you
 Commit to `docs/screenshots/2948-season-competition-types/` on that branch, link them from its release note, push
 (fast-forward, no force), and give the PR body's image section in your report.
 
+## Batch 64 (gisday: screenshots for #3023, the profile email read and edited before it is sent; 15 November 2026, from `work (gisday)`) (**Urgent**) - **right after 62, before 63**
+
+Home built #3023 on `feat/3023-profile-email-preview-pr` on the fork, at `bb8b2b6a1`'s parent of the PR body, i.e. the
+branch head (PR 3025). It is **stacked on PR 3020** (#3017), so start from that branch. On your signed-in local stack,
+with your own test speaker only (mask any other name or email):
+- **Before** (on `development`): Admin, Speakers with a speaker selected and the Email edit links action; Research
+  Competitions' Send profile email confirmation.
+- **After** (on the branch): the window from each of the three places (Speakers, an event's Email speakers their edit
+  links, Research Competitions), showing the editable subject and text and the preview with "(their own edit link,
+  added when it is sent)". **Never press Send.** Cancel.
+Commit to `docs/screenshots/3023-profile-email-preview/` on that branch, link them from its release note, push
+(fast-forward, no force), and give the PR body's image section in your report.
+
 ## Batch 63 (gisday: PR 3014's dashboard table cuts off its right-hand columns; 15 November 2026, from `work (gisday)`) (Medium) - **after 62**
 
 **Decided (the maintainer):** your batch 60 question is **(c)**: fix the overflow on PR 3014, and the unread count is
