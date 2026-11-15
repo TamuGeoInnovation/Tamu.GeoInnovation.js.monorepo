@@ -39,6 +39,7 @@ export * from './lib/contact/contact.module';
 export * from './lib/_base/base-provider';
 // For specs that check the queries typeorm builds, here and in the competitions library (#2424)
 export * from './lib/_base/query-checking-data-source';
+export * from './lib/_base/deadlock-retry';
 export * from './lib/class/class.provider';
 export * from './lib/user-info/user-info.provider';
 export * from './lib/speaker/speaker-photo';
