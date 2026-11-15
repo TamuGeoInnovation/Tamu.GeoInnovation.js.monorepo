@@ -39,6 +39,18 @@
 - A report per batch, `work-lab-leila/reports/2026-11-14-<n>.md`, saying **"branch ready: <name>"** with the check's exit
   code. Questions for the maintainer go in the report, with options and a recommendation; do not ask him.
 
+## Batch 60 (gisday: screenshots for #3006, the check-in dashboard, and #3010; 15 November 2026, from `work (gisday)`) (Medium) - **first, before 59**
+
+Home built #3006 (and fixed #3010, the RSVPs dashboard listing every organization's sessions on gisday.tamu.edu) on
+`feat/3006-check-in-dashboard-pr` on the fork, at `2d5933360`. It has no screenshots: home can't sign in. On your
+signed-in local stack, as in batches 57 and 58 (seed your own check-ins and RSVPs; mask any name or email that isn't the
+test account's):
+- **Before** (on `development`): the Dashboards list, and the RSVPs dashboard as the gisday.tamu.edu site.
+- **After** (on the branch): the Dashboards list with Check-ins, the Check-ins dashboard, one event opened with its
+  people, and the RSVPs dashboard as gisday.tamu.edu listing only its own sessions.
+Commit them to `docs/screenshots/3006-check-in-dashboard/` on that branch, link them from the release notes' entries,
+push (fast-forward, no force), and give the PR body's image section in your report.
+
 ## Batch 59 (gisday: #3012, make the collapsed Submission deadlines panel visible; 15 November 2026, from `work (gisday)`) (Low)
 
 [#3012](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3012). Your #2969 panel (PR 2999, merged
