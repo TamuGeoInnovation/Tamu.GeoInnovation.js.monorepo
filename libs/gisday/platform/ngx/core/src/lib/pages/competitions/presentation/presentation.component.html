@@ -79,28 +79,21 @@
 
         <div class="trailer-4" id="five">
           <h2 class="trailer-1">Presentation Competition Session</h2>
-          <p>All finalists will be required to deliver a 10 minute oral presentation, with a few additional minutes for questions.</p>
+          <!-- Each session as the database has it (#3011): these were typed in here and went stale when the sessions moved. -->
+          <p>Each finalist has 5 minutes in all, questions included: about 4 minutes to present and 1 for questions. You will be cut off when your time is up.</p>
 
-          <p>Undergraduate student presentation competition session details:</p>
-          <ul>
-            <li>Date: Tuesday November 17th, 2026</li>
-            <li>Time: 2:00 - 3:00 PM</li>
-            <li>Location: TAMU Memorial Student Center Gates Ballroom 2400</li>
-          </ul>
+          <p>Undergraduate student presentation competition session:</p>
+          <tamu-gisc-competition-session kind="undergraduate"></tamu-gisc-competition-session>
 
-          <p>Graduate student presentation competition session details:</p>
-          <ul>
-            <li>Date: Tuesday November 17th, 2026</li>
-            <li>Time: 3:00 - 4:00 PM</li>
-            <li>Location: TAMU Memorial Student Center Bethancourt Ballroom 2300</li>
-          </ul>
+          <p>Graduate student presentation competition session:</p>
+          <tamu-gisc-competition-session kind="graduate"></tamu-gisc-competition-session>
         </div>
 
         <div class="trailer-4" id="six">
           <h2 class="trailer-1">First Place Award Announcement</h2>
 
-          <!-- The awards session the maintainer added on 14 November 2026 (#2985). -->
-          <p>Winners will be announced on Thursday, November 19th, 1:00 to 1:15 PM, at <a [routerLink]="['/sessions/details', '9c73d7f1-3eeb-4294-97a8-5f0a3aea07c2']">AWARDS: Student Presentation &amp; Poster Competition Winner Announcements</a>, TAMU Memorial Student Center, Bethancourt Ballroom 2300 A&amp;B.</p>
+          <p>Winners will be announced at the awards session:</p>
+          <tamu-gisc-competition-session kind="awards"></tamu-gisc-competition-session>
         </div>
 
         <div class="trailer-4" id="seven">
@@ -118,7 +111,8 @@
         <div class="trailer-4" id="eight">
           <h2 class="trailer-1">Presentation Guidelines</h2>
           <ul>
-            <li>10 minute oral presentation, with ~2-3 minutes for questions</li>
+            <li>5 minutes in all, questions included: about 4 minutes to present and 1 for questions</li>
+            <li>Plan on one slide per minute: about 4 slides fits your time</li>
             <li>Powerpoint encouraged</li>
             <li>Presentation should include introduction, objectives, approach, results, discussion, and conclusions (or their equivalents)</li>
             <li>Only individuals and/or teams selected as finalists will present in the competition session</li>
