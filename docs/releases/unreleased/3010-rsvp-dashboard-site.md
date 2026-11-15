@@ -11,3 +11,10 @@ gisday.tamu.edu shares txgisday.org's database. Since [#2986](https://github.com
 RSVPs dashboard listed and counted every organization's. It now lists, totals and charts only the site's own, as the
 new Check-ins dashboard does. txgisday.org is unchanged.
 ([#3010](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3010))
+
+Captured on a local copy of the site served as gisday.tamu.edu, for the 2025 season.
+
+| Before | After |
+| --- | --- |
+| ![RSVPs for 114 events: every organization's](../screenshots/3006-check-in-dashboard/before-rsvps-tamu-site.png) | ![RSVPs for 60 events: Texas A&M's, and those with no place yet](../screenshots/3006-check-in-dashboard/after-rsvps-tamu-site.png) |
+| ![ATX GIS Day's Map Gallery listed among Texas A&M's sessions](../screenshots/3006-check-in-dashboard/before-rsvps-tamu-site-table.png) | ![Only Texas A&M's sessions listed](../screenshots/3006-check-in-dashboard/after-rsvps-tamu-site-table.png) |

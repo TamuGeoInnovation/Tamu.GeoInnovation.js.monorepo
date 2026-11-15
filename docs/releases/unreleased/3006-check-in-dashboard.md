@@ -20,3 +20,16 @@ It is the RSVPs dashboard's page over check-ins: the same table, people list, ch
 read only when an event is opened, and only by an admin with the `read:checkins` permission. On gisday.tamu.edu it
 lists only Texas A&M's sessions, as the other admin lists do.
 ([#3006](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3006))
+
+Captured on a local copy of the site with made-up people, served as gisday.tamu.edu, for the 2025 season. Names and
+emails are masked.
+
+| Before | After |
+| --- | --- |
+| ![The Dashboards menu: RSVPs, User accounts and Speaker badges](../screenshots/3006-check-in-dashboard/before-dashboards-menu.png) | ![The Dashboards menu with Check-ins under RSVPs](../screenshots/3006-check-in-dashboard/after-dashboards-menu.png) |
+
+| After |
+| --- |
+| ![The Check-ins dashboard: 1591 check-ins at 60 events, and check-ins over GIS Day week as a running total by day](../screenshots/3006-check-in-dashboard/after-check-ins.png) |
+| ![By event: each event's check-ins, with its RSVPs beside them, counted by person type](../screenshots/3006-check-in-dashboard/after-check-ins-table.png) |
+| ![One event opened: who checked in, under their type's heading, with an Export as CSV link](../screenshots/3006-check-in-dashboard/after-check-ins-event-opened.png) |
