@@ -182,6 +182,21 @@ checks, sweeps and records that are not about the change in hand.
 **Do not interrupt a run to reorder.** Let what is measuring finish — a half-finished measurement is wasted and
 usually has to start again — then take the visible work next.
 
+## A pull request opens with its screenshots, so CI runs once (15 November 2026, the maintainer's 1A and 2A)
+
+On 15 November most open pull requests were red for the same two reasons, and each cost a second CI run: a PR opened
+before its screenshots existed fails "Has before/after images" until they are pushed, and a PR stacked on another
+conflicts once the one below merges.
+
+1. **The builder pushes the branch; the PR waits for its screenshots.** A change with a visible result is reported
+   "branch ready" with its `.pr-body.md`, then the machine that can sign in (the lab) captures before/after on that
+   branch and pushes them. **Only then** does the director update it with `development` and open the PR. One CI run,
+   green the first time. A change with no visible result opens at once.
+2. **Later (the maintainer's 1B):** the home machine gets a signed-in local site, once the maintainer is at it, so it
+   takes its own screenshots before it pushes. Until then, 1 applies.
+3. **Stack only when both are needed soon.** When the PR underneath merges, the director updates the one on top with
+   `development` at once, before its screenshots are taken, so it rebuilds once, not twice.
+
 ## The director
 - Is the only session that asks the maintainer anything, and the only one that takes instructions from him.
 - Writes each listener's `<folder>/TASKS.md`, with each batch and a **Decided** list of his answers.

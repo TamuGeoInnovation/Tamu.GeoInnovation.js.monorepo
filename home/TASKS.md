@@ -16,6 +16,11 @@ are in `libs/gisday/platform/data-api/src/lib/check-in/`.
   check-ins on the local site); a release note. Push to the fork and report "branch ready". Branch
   `feat/3006-check-in-dashboard`.
 
+> **When the maintainer is at the home machine (his 1B, 15 November 2026):** ask him, once, to sign in to the local
+> GIS Day site with the test admin account, so from then on you take your own before/after screenshots and push a
+> branch complete. Until then the lab takes them, and the director opens a PR only after they are pushed (DIRECTOR.md,
+> "A pull request opens with its screenshots").
+
 ## Batch 57 (gisday: #3032, #3033 and #3034, which sessions use a broadcast or a tag, and the untagged ones; 15 November 2026, from `work (gisday)`) (**High** for #3032) - **do this now; #3024 can wait**
 
 1. **[#3032](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3032) (High)**: a broadcast's
