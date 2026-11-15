@@ -41,11 +41,14 @@ export class EventBroadcastService extends BaseProvider<EventBroadcast> {
    * Every read of a list of broadcasts is in natural order by name (#3047): case ignored and numbers as numbers, which
    * the database's ORDER BY cannot do ("Zoom 10" before "Zoom 2"). Sorted here, once, so Admin > Broadcasts and every
    * Broadcast drop-down (an event's, which reads the active season's) agree.
+   *
+   * Each with its place (#3048), by which each site lists only its own organizations' broadcasts.
    */
   public getEntities() {
     try {
       return this.eb
         .find({
+          relations: { place: true },
           order: {
             name: 'ASC'
           }
@@ -66,6 +69,7 @@ export class EventBroadcastService extends BaseProvider<EventBroadcast> {
     try {
       return this.eb
         .find({
+          relations: { place: true },
           where: {
             season: { guid: seasonGuid }
           },
@@ -91,6 +95,7 @@ export class EventBroadcastService extends BaseProvider<EventBroadcast> {
     try {
       return this.eb
         .find({
+          relations: { place: true },
           where: {
             season: { guid: season.guid }
           },

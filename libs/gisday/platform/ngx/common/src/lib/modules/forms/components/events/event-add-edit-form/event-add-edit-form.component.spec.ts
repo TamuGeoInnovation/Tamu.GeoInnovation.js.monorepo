@@ -13,7 +13,9 @@ import {
 } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
+import { GISDAY_SITES, GisdaySite } from '@tamu-gisc/gisday/common';
 
+import { GISDAY_SITE } from '../../../../../site/site';
 import { EventAddEditFormComponent } from './event-add-edit-form.component';
 import { ReviewEmailModalComponent } from '../../../../modals/review-email-modal/review-email-modal.component';
 
@@ -133,5 +135,61 @@ describe('EventAddEditFormComponent, the profile email', () => {
     );
     expect(speakerEdits.preview).toHaveBeenCalledWith(['sp-1', 'sp-2']);
     expect(speakerEdits.send).toHaveBeenCalledWith(['sp-1', 'sp-2'], { subject: 'Profile', template: 'Hi {edit link}' });
+  });
+});
+
+/**
+ * #3048. An event's Broadcast drop-down on gisday.tamu.edu listed every organization's Zooms, so another university's
+ * could be picked for a Texas A&M session by mistake. It lists the site's own, those with no place yet, and the one the
+ * event already has, whoever's it is, so opening an event never drops its broadcast.
+ */
+describe('EventAddEditFormComponent, the Broadcast drop-down', () => {
+  const tamu = { guid: 'tamu', name: 'Texas A&M University GIS Day(s)' };
+  const ttu = { guid: 'ttu', name: 'Texas Tech University GIS Day' };
+  const broadcasts = [
+    { guid: 'b-tamu', name: 'TAMU Zoom 1', place: tamu },
+    { guid: 'b-ttu', name: 'TTU 1', place: ttu },
+    { guid: 'b-ttu-2', name: 'TTU 2', place: ttu },
+    { guid: 'b-none', name: 'Unplaced Zoom', place: null }
+  ];
+
+  async function listed(site: GisdaySite, type: 'create' | 'edit', event?: object) {
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter([]),
+        { provide: GISDAY_SITE, useValue: site },
+        { provide: ActivatedRoute, useValue: { params: of({ guid: 'event' }) } },
+        { provide: SeasonService, useValue: { activeSeason$: of({ guid: 'season', days: [] }) } },
+        { provide: SpeakerService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+        { provide: TagService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+        { provide: LocationService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+        { provide: BroadcastService, useValue: { getEntitiesForActiveSeason: () => of(broadcasts) } },
+        { provide: EventService, useValue: { getEntity: () => of(event) } },
+        { provide: NotificationService, useValue: { toast: jest.fn() } },
+        { provide: SpeakerEditsService, useValue: {} },
+        { provide: ModalService, useValue: {} }
+      ]
+    });
+    TestBed.overrideTemplate(EventAddEditFormComponent, '');
+
+    const fixture = TestBed.createComponent(EventAddEditFormComponent);
+    fixture.componentRef.setInput('type', type);
+    fixture.componentInstance.ngOnInit();
+
+    return (await firstValueFrom(fixture.componentInstance.broadcasts$)).map((b) => b.name);
+  }
+
+  it("lists only the site's own broadcasts on gisday.tamu.edu, and those with no place yet", async () => {
+    expect(await listed(GISDAY_SITES.tamu, 'create')).toEqual(['TAMU Zoom 1', 'Unplaced Zoom']);
+  });
+
+  it("keeps the event's own broadcast, though it is another organization's", async () => {
+    const event = { guid: 'event', speakers: [], tags: [], broadcast: { guid: 'b-ttu', name: 'TTU 1' } };
+
+    expect(await listed(GISDAY_SITES.tamu, 'edit', event)).toEqual(['TAMU Zoom 1', 'TTU 1', 'Unplaced Zoom']);
+  });
+
+  it("lists every organization's broadcasts on txgisday.org", async () => {
+    expect(await listed(GISDAY_SITES.txgisday, 'create')).toHaveLength(4);
   });
 });

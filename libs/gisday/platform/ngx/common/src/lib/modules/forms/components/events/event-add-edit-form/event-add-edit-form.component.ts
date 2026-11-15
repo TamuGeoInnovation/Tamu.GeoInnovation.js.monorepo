@@ -3,6 +3,7 @@ import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule 
 import { ActivatedRoute } from '@angular/router';
 import {
   Observable,
+  combineLatest,
   filter,
   from,
   map,
@@ -32,6 +33,7 @@ import {
   BroadcastService
 } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { siteListsPlace } from '@tamu-gisc/gisday/common';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { serverMessage } from '../../../../../utils/server-message';
 import { SeasonsDayTileComponent } from '../../seasons/seasons-day-tile/seasons-day-tile.component';
@@ -47,6 +49,7 @@ import { sortSpeakersByName } from '../../../../../utils/speakers';
 import { CheckboxGroupComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
+import { GISDAY_SITE } from '../../../../../site/site';
 import { injectBackToList } from '../../../admin-details-page';
 import { sendProfileEmail } from '../../../../modals/review-email-modal/profile-email';
 
@@ -84,6 +87,7 @@ export class EventAddEditFormComponent implements OnInit {
   private readonly ns = inject(NotificationService);
   private readonly speakerEdits = inject(SpeakerEditsService);
   private readonly modals = inject(ModalService);
+  private readonly site = inject(GISDAY_SITE);
 
   /**
    * What stops the event being saved, shown above the buttons after a save is tried (#1773).
@@ -205,7 +209,7 @@ export class EventAddEditFormComponent implements OnInit {
 
     this.tags$ = this.tagService.getEntitiesForActiveSeason().pipe(shareReplay(1));
     this.speakers$ = this.speakerService.getEntitiesForActiveSeason().pipe(shareReplay(1));
-    this.broadcasts$ = this.eventBroadcastService.getEntitiesForActiveSeason().pipe(shareReplay(1));
+    const seasonBroadcasts$ = this.eventBroadcastService.getEntitiesForActiveSeason();
     this.locations$ = this.eventLocationService.getEntitiesForActiveSeason().pipe(
       mergeMap((locations) => locations),
       map((loc) => {
@@ -312,6 +316,20 @@ export class EventAddEditFormComponent implements OnInit {
         });
       });
     }
+
+    // The site's own organizations' broadcasts, those with no place yet, and the event's own, whoever's it is, so opening
+    // an event never drops its broadcast (#3048). gisday.tamu.edu listed every organization's Zooms.
+    const ownBroadcast$ = this.entity$
+      ? this.entity$.pipe(
+          take(1),
+          map((event) => event?.broadcast?.guid ?? null)
+        )
+      : of(null);
+
+    this.broadcasts$ = combineLatest([seasonBroadcasts$, ownBroadcast$]).pipe(
+      map(([broadcasts, own]) => (broadcasts ?? []).filter((b) => b.guid === own || siteListsPlace(this.site, b.place))),
+      shareReplay(1)
+    );
   }
 
   /**
