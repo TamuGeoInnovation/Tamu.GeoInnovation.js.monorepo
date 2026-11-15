@@ -30,8 +30,11 @@
             @for (k of kinds; track k.kind) { @let field = deadlineField(competition.key, k.kind);
             <td>
               <div class="flex flex-row align-center">
-                <tamu-gisc-date-time-picker [formControlName]="field" [maxView]="'year'" [minView]="'minute'" [startView]="'day'"></tamu-gisc-date-time-picker>
-                <span class="deadline-central pre-1">{{ inCentralTime(form.controls[field].value, 'Open') }}</span>
+                <!-- The Central time goes under its picker, not beside it, so both columns fit at 1280 and 1024 px (#2969). -->
+                <div class="flex flex-column align-start">
+                  <tamu-gisc-date-time-picker [formControlName]="field" [maxView]="'year'" [minView]="'minute'" [startView]="'day'"></tamu-gisc-date-time-picker>
+                  <span class="deadline-central">{{ inCentralTime(form.controls[field].value, 'Open') }}</span>
+                </div>
                 <tamu-gisc-button class="pre-1" type="button" fit="snug" size="small" look="secondary" value="Clear" (click)="clear(field)"></tamu-gisc-button>
               </div>
             </td>

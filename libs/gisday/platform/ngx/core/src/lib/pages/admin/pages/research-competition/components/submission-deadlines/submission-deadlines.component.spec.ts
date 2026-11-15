@@ -10,7 +10,7 @@ import { SubmissionDeadlinesComponent } from './submission-deadlines.component';
 /**
  * #2969: the Submission deadlines section took half the Research Competitions page. It is a panel, collapsed to a
  * one-line summary once a season has deadlines, and open to edit when it has none; open, it is one row per competition
- * with the Central time beside each picker, a small Clear and Save at the end, not across the page.
+ * with the Central time under each picker, a small Clear and Save at the end, not across the page.
  *
  * The rows come from the competitions table, so these hold whether it lists two competitions (#2934) or four (#2962).
  */
@@ -67,7 +67,7 @@ describe('SubmissionDeadlinesComponent', () => {
     const rows = Array.from(page.querySelectorAll('tbody tr'));
     expect(rows).toHaveLength(DEADLINE_COMPETITIONS.length);
 
-    // Each row: the competition, then each deadline's picker with its Central time beside it and a small Clear.
+    // Each row: the competition, then each deadline's picker with its Central time under it and a small Clear.
     for (const row of rows) {
       expect(row.querySelectorAll('tamu-gisc-date-time-picker')).toHaveLength(2);
       expect(row.querySelectorAll('tamu-gisc-button.small')).toHaveLength(2);
@@ -84,6 +84,32 @@ describe('SubmissionDeadlinesComponent', () => {
 
     expect(toggle()?.getAttribute('aria-expanded')).toBe('false');
     expect(page.querySelector('tamu-gisc-date-time-picker')).toBeNull();
+  });
+
+  // At 1280 px the Central time beside each picker pushed the second column and its Clear past the page's edge. The
+  // Central time goes under its picker, in one stack, with Clear beside the stack rather than between the two.
+  it('puts each Central time under its picker, with Clear beside them', () => {
+    const { fixture, page, toggle } = open(withDeadlines);
+
+    toggle()?.click();
+    fixture.detectChanges();
+
+    const cells = Array.from(page.querySelectorAll('tbody td'));
+    expect(cells).toHaveLength(DEADLINE_COMPETITIONS.length * 2);
+
+    for (const cell of cells) {
+      const picker = cell.querySelector('tamu-gisc-date-time-picker');
+      const central = cell.querySelector('.deadline-central');
+      const clear = cell.querySelector('tamu-gisc-button');
+
+      // Picker and Central time share one column-direction stack, picker first, and Clear is not in it.
+      const stack = picker?.parentElement;
+      expect(stack?.classList).toContain('flex-column');
+      expect(central?.parentElement).toBe(stack);
+      expect(picker?.nextElementSibling).toBe(central);
+      expect(stack?.contains(clear ?? null)).toBe(false);
+      expect(stack?.nextElementSibling).toBe(clear);
+    }
   });
 
   it('is open to edit when the season has no deadlines, and says so when collapsed', () => {

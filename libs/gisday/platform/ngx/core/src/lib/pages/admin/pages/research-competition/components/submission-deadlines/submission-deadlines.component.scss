@@ -37,13 +37,14 @@
   color: #616161;
 }
 
-// One row per competition; each cell is a deadline's picker, its Central time and its Clear.
+// One row per competition; each cell is a deadline's picker with its Central time under it, and its Clear. Where the
+// content area is narrow (1024 px), a competition's name and a Central time wrap rather than push the table past it.
 .deadlines-table {
   border-collapse: collapse;
 
   th,
   td {
-    padding: 0.25rem 1.5rem 0.25rem 0;
+    padding: 0.25rem 1rem 0.25rem 0;
     text-align: left;
     vertical-align: middle;
   }
@@ -55,11 +56,11 @@
 
   tbody th {
     font-weight: 600;
-    white-space: nowrap;
   }
 }
 
+// Under its picker, a little apart from it.
 .deadline-central {
+  margin-top: 0.25rem;
   font-size: 0.85rem;
-  white-space: nowrap;
 }
