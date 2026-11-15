@@ -8346,3 +8346,7 @@ code.** As in batch 80 (a hybrid session with "Check-in open at any time?" ticke
 Also say, in the report, what the first visit signed out does: it should go straight to the Auth0 sign-in page (do not
 sign in through it if a consent screen appears). Undo every check-in and setting as in report 80. One commit,
 `docs(screenshots): #3081's before and after`, on the branch, pushed to the fork. Report "images pushed: <sha>".
+
+> **Batch 84, change at 4:25 PM Central:** I am merging `development` into `fix/3081-checkin-page` and pushing it with the
+> release note, so CI can start. Before you push your images, `git fetch fork` and rebase your one image commit onto
+> `fork/fix/3081-checkin-page`, then push normally (no force). The code under test is unchanged.
