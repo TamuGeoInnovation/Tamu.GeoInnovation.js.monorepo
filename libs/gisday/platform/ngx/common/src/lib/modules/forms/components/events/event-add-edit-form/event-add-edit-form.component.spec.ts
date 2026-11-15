@@ -116,7 +116,19 @@ describe('EventAddEditFormComponent, the profile email', () => {
         { provide: TagService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
         { provide: LocationService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
         { provide: BroadcastService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
-        { provide: EventService, useValue: { getEntity: () => of({ guid: 'event', speakers: [{ guid: 'sp-1', lastName: 'Abe' }, { guid: 'sp-2', lastName: 'Bo' }] }) } },
+        {
+          provide: EventService,
+          useValue: {
+            getEntity: () =>
+              of({
+                guid: 'event',
+                speakers: [
+                  { guid: 'sp-1', lastName: 'Abe' },
+                  { guid: 'sp-2', lastName: 'Bo' }
+                ]
+              })
+          }
+        },
         { provide: NotificationService, useValue: { toast: jest.fn() } },
         { provide: SpeakerEditsService, useValue: speakerEdits },
         { provide: ModalService, useValue: modals }
@@ -193,3 +205,141 @@ describe('EventAddEditFormComponent, the Broadcast drop-down', () => {
     expect(await listed(GISDAY_SITES.txgisday, 'create')).toHaveLength(4);
   });
 });
+
+/**
+ * #3092: the session's email actions are one "Email these speakers" menu, Profile email and Session details, rather than
+ * buttons side by side. Session details opens the same window as the profile email, prefilled from the session.
+ */
+describe('EventAddEditFormComponent, the Email these speakers menu', () => {
+  const event = {
+    guid: 'event',
+    name: 'WORKSHOP: Mapping floods',
+    speakers: [
+      { guid: 'sp-1', firstName: 'Ana', lastName: 'Abe' },
+      { guid: 'sp-2', firstName: 'Bo', lastName: 'Bo' }
+    ],
+    tags: []
+  };
+
+  function render(
+    closesWith: object | null = { 'session-details': 'Hi {first name}', 'session-details:subject': 'Your session' }
+  ) {
+    const speakerEdits = {
+      preview: jest.fn(() => of({ groups: [] })),
+      send: jest.fn(() => of({ sent: [], skipped: [] })),
+      previewSessionDetails: jest.fn(() => of({ groups: [] })),
+      sendSessionDetails: jest.fn(() => of({ sent: ['Ana Abe'], skipped: [] }))
+    };
+    const modals = {
+      open: jest.fn((_component: unknown, options: { data: { verb: string } }) =>
+        of(
+          closesWith && options.data.verb === 'Send profile email'
+            ? { profile: 'Hi {edit link}', 'profile:subject': 'Profile' }
+            : closesWith
+        )
+      )
+    };
+    const toasts = { toast: jest.fn() };
+
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter([]),
+        { provide: ActivatedRoute, useValue: { params: of({ guid: 'event' }) } },
+        { provide: SeasonService, useValue: { activeSeason$: of({ guid: 'season', days: [] }) } },
+        { provide: SpeakerService, useValue: { getEntitiesForActiveSeason: () => of(event.speakers) } },
+        { provide: TagService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+        { provide: LocationService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+        { provide: BroadcastService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+        { provide: EventService, useValue: { getEntity: () => of(event) } },
+        { provide: NotificationService, useValue: toasts },
+        { provide: SpeakerEditsService, useValue: speakerEdits },
+        { provide: ModalService, useValue: modals }
+      ]
+    });
+    // Only the Speakers section's toolbar, as the page draws it: the rest of the form is not under test.
+    TestBed.overrideTemplate(EventAddEditFormComponent, speakersToolbar());
+
+    const fixture = TestBed.createComponent(EventAddEditFormComponent);
+    fixture.componentRef.setInput('type', 'edit');
+    fixture.detectChanges();
+
+    const page = fixture.nativeElement as HTMLElement;
+    const choose = (label: string) => {
+      page.querySelector<HTMLButtonElement>('tamu-gisc-action-menu button[aria-haspopup="menu"]').click();
+      fixture.detectChanges();
+      Array.from(page.querySelectorAll<HTMLElement>('[role="menuitem"]'))
+        .find((item) => item.textContent.trim() === label)
+        .click();
+      fixture.detectChanges();
+    };
+
+    return { page, fixture, speakerEdits, modals, toasts, choose };
+  }
+
+  it('shows one Email these speakers menu with Profile email and Session details, and no separate email buttons', () => {
+    const { page, fixture } = render();
+    const toolbar = page.querySelector('.form-section-actions');
+
+    expect(toolbar).not.toBeNull();
+    expect(toolbar.querySelectorAll('tamu-gisc-action-menu')).toHaveLength(1);
+    expect(toolbar.textContent).toContain('Email these speakers');
+    expect(toolbar.textContent).not.toContain('Send profile emails to these speakers');
+    expect(toolbar.querySelectorAll('a')).toHaveLength(0);
+
+    toolbar.querySelector<HTMLButtonElement>('button[aria-haspopup="menu"]').click();
+    fixture.detectChanges();
+
+    expect(Array.from(toolbar.querySelectorAll('[role="menuitem"]')).map((i) => i.textContent.trim())).toEqual([
+      'Profile email',
+      'Session details'
+    ]);
+  });
+
+  it('sends the profile email from the menu, as the button did', () => {
+    const { speakerEdits, choose } = render();
+
+    choose('Profile email');
+
+    expect(speakerEdits.preview).toHaveBeenCalledWith(['sp-1', 'sp-2']);
+    expect(speakerEdits.send).toHaveBeenCalledWith(['sp-1', 'sp-2'], { subject: 'Profile', template: 'Hi {edit link}' });
+  });
+
+  it("opens the session details in the profile email's window, editable, then sends it for this session as edited", () => {
+    const { speakerEdits, modals, toasts, choose } = render();
+
+    choose('Session details');
+
+    expect(modals.open).toHaveBeenCalledWith(
+      ReviewEmailModalComponent,
+      expect.objectContaining({ data: expect.objectContaining({ verb: 'Send session details', editableSubject: true }) })
+    );
+    expect(speakerEdits.previewSessionDetails).toHaveBeenCalledWith('event');
+    expect(speakerEdits.sendSessionDetails).toHaveBeenCalledWith('event', {
+      subject: 'Your session',
+      template: 'Hi {first name}'
+    });
+    expect(toasts.toast).toHaveBeenCalledWith(expect.objectContaining({ title: 'Session details sent' }));
+  });
+
+  it('sends nothing when the window is cancelled', () => {
+    const { speakerEdits, toasts, choose } = render(null);
+
+    choose('Session details');
+
+    expect(speakerEdits.sendSessionDetails).not.toHaveBeenCalled();
+    expect(toasts.toast).not.toHaveBeenCalled();
+  });
+});
+
+/** The Speakers section's toolbar from the page's own template, so the test draws what the page draws. */
+function speakersToolbar(): string {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { readFileSync } = require('fs');
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { join } = require('path');
+  const html: string = readFileSync(join(__dirname, 'event-add-edit-form.component.html'), 'utf8');
+  const start = html.indexOf('<div class="form-section-title">Speakers</div>');
+  const end = html.indexOf('</div>\n\n    <div class="form-section-body">', start);
+
+  return `<div class="form-section-toolbar">${html.slice(start, end)}</div>`;
+}

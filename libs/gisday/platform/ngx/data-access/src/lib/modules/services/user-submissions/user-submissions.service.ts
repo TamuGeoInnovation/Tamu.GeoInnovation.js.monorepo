@@ -21,6 +21,8 @@ export interface ReviewEmailPreview {
   skipped?: Array<{ title: string; reason: ReminderSkipReason }>;
   /** People on the submissions who will not be emailed, having no speaker record (#3046, the profile email). */
   notEmailed?: Array<{ name: string; submission: string }>;
+  /** A session's speakers with no email address on their record, by name, who will not be emailed (#3092). */
+  noAddress?: Array<string>;
 }
 
 /** What sending the final reminder to several submissions did, from the API (#3017). */

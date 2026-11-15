@@ -83,13 +83,33 @@ export function sendEditLinksToast(result: SendEditLinksResult): { id: string; t
 }
 
 /**
+ * The toast an admin sees after sending a session's details to its speakers (#3092): who got them, and who did not and
+ * why (no email address, sent in the last few minutes, or a mail failure).
+ */
+export function sendSessionDetailsToast(result: SendEditLinksResult): { id: string; title: string; message: string } {
+  const sent = result.sent.length === 1 ? `Sent to ${result.sent[0]}.` : `Sent to ${result.sent.length} speakers.`;
+  const skipped = result.skipped.map((s) => `${s.name}: ${s.reason}`).join('; ');
+
+  return {
+    id: 'session-details-email',
+    title: skipped ? 'Some session details emails were not sent' : 'Session details sent',
+    message: [result.sent.length ? sent : 'None were sent.', skipped ? `Not sent - ${skipped}.` : '']
+      .filter(Boolean)
+      .join(' ')
+  };
+}
+
+/**
  * Speakers editing their own presenter profile through an emailed link (#2936): the speaker's link pages, which need no
  * sign-in, and the admins' sending and review.
  */
 @Injectable({ providedIn: 'root' })
 export class SpeakerEditsService {
   private readonly http = inject(HttpClient);
-  private readonly resource = inject(EnvironmentService).value('api_url') + '/speaker-edits';
+  private readonly api = inject(EnvironmentService).value('api_url');
+  private readonly resource = this.api + '/speaker-edits';
+  /** The session details email's routes (#3092), beside the profile email's on the API. */
+  private readonly sessionEmails = this.api + '/session-emails';
 
   /** Emails each speaker their own link, in the subject and text the admin approved (#3023). */
   public send(speakerGuids: Array<string>, email?: ProfileEmail) {
@@ -117,6 +137,16 @@ export class SpeakerEditsService {
     return this.http.post<ReviewEmailPreview>(`${this.resource}/send-for-submissions/preview`, {
       submissions: submissionGuids
     });
+  }
+
+  /** The session details email for the session's speakers, prefilled from the session, to read and edit first (#3092). */
+  public previewSessionDetails(eventGuid: string) {
+    return this.http.post<ReviewEmailPreview>(`${this.sessionEmails}/details/preview`, { event: eventGuid });
+  }
+
+  /** Emails the session's speakers its details, in the subject and text the admin approved (#3092). */
+  public sendSessionDetails(eventGuid: string, email?: ProfileEmail) {
+    return this.http.post<SendEditLinksResult>(`${this.sessionEmails}/details`, { event: eventGuid, ...(email ?? {}) });
   }
 
   /** A speaker asking for their own link by email address. */

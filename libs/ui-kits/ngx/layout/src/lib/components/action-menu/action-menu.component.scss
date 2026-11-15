@@ -1,0 +1,83 @@
+@import 'libs/sass/mixins';
+@import 'libs/sass/variables';
+
+:host {
+  position: relative;
+  display: inline-block;
+}
+
+// The button takes the look of the actions it sits among (`triggerClass`); only a button's own chrome is removed.
+.action-menu__trigger {
+  background: none;
+  border: none;
+  font: inherit;
+  color: inherit;
+  @include flexbox();
+  @include align-items(center);
+
+  .material-icons {
+    color: inherit;
+  }
+
+  .action-menu__arrow {
+    margin-left: 0;
+  }
+}
+
+.action-menu__list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 10;
+  min-width: 100%;
+  margin-top: 0.25rem;
+  padding: 0.25rem 0;
+  background: #ffffff;
+  border: 1px solid #f5f5f5;
+  border-radius: 0.5rem;
+  box-shadow: 3px 3px 20px -5px rgba(0, 0, 0, 0.25);
+  @include flexbox();
+  @include flex-direction(column);
+
+  &--up {
+    top: auto;
+    bottom: 100%;
+    margin-top: 0;
+    margin-bottom: 0.25rem;
+  }
+
+  &--end {
+    left: auto;
+    right: 0;
+  }
+}
+
+.action-menu__item {
+  background: none;
+  border: none;
+  font: inherit;
+  font-weight: 600;
+  color: $font-color;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  @include flexbox();
+  @include align-items(center);
+
+  .material-icons {
+    font-size: 1.25rem;
+    margin-right: 0.5rem;
+  }
+
+  &:hover,
+  &:focus {
+    background: $form-grey;
+    outline: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $main-blue;
+    outline-offset: -2px;
+  }
+}

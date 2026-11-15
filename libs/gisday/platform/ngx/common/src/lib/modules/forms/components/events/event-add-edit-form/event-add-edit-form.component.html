@@ -87,9 +87,9 @@
     <div class="form-section-toolbar">
       <div class="form-section-title">Speakers</div>
       @if (type() === 'edit' && (eventSpeakers$ | async)?.length > 0) {
-      <!-- Everyone on this event gets their own link to edit their profile (#2936). -->
+      <!-- The emails to everyone on this session, in one menu (#3092): each their own profile link (#2936), and the session's details. -->
       <div class="form-section-actions">
-        <a tabindex="0" role="button" (click)="emailSpeakersEditLinks()" (keydown.enter)="emailSpeakersEditLinks()">Send profile emails to these speakers <span class="material-icons action">forward_to_inbox</span></a>
+        <tamu-gisc-action-menu label="Email these speakers" icon="forward_to_inbox" triggerClass="__form-action" align="end" [items]="speakerEmails" (chosen)="emailSpeakers($event)"></tamu-gisc-action-menu>
       </div>
       }
     </div>

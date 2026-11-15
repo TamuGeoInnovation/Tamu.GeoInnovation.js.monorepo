@@ -1,0 +1,17 @@
+<button #button type="button" class="action-menu__trigger" [class]="triggerClass()" [id]="buttonId" aria-haspopup="menu" [attr.aria-expanded]="open()" [attr.aria-controls]="open() ? menuId : null" (click)="toggle()" (keydown)="onButtonKeydown($event)" (keyup)="onButtonKeyup($event)">
+  {{ label() }} @if (icon()) {
+  <span class="material-icons" aria-hidden="true">{{ icon() }}</span>
+  }
+  <span class="material-icons action-menu__arrow" aria-hidden="true">{{ open() === (opens() === 'up') ? 'arrow_drop_down' : 'arrow_drop_up' }}</span>
+</button>
+@if (open()) {
+<div class="action-menu__list" [class.action-menu__list--up]="opens() === 'up'" [class.action-menu__list--end]="align() === 'end'" role="menu" [id]="menuId" [attr.aria-labelledby]="buttonId">
+  @for (item of items(); track item.id; let i = $index) {
+  <button #item type="button" class="action-menu__item" role="menuitem" tabindex="-1" (click)="choose(item)" (keydown)="onMenuKeydown($event, i)">
+    @if (item.icon) {
+    <span class="material-icons" aria-hidden="true">{{ item.icon }}</span>
+    }{{ item.label }}
+  </button>
+  }
+</div>
+}
