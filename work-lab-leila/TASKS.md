@@ -8248,3 +8248,28 @@ Tests red first; the bug-fix check; before/after screenshots; a release note. Re
 > **Decided (the maintainer, 15 November):** report 76's #3026 question is (c): keep PR 3030's scroll; drop
 > `fix/3026-columns-fit-1280` (no PR). Report 78: 1(a), filed as #3074 (Low), for after #3048; 2(a), accept it.
 
+
+## Batch 80 (gisday: #3077's screenshots, URGENT, before GIS Day tomorrow; 15 November 2026, about 3:05 PM Central, from `work (gisday)`) (Urgent) - **before anything else**
+
+**Report 79:** thank you. The maintainer decided 2(a) organization required and 3(a) refuse the delete. For your 1: use
+`CHECK_MEMORY=24g CHECK_PARALLEL=3`, which the script already takes (#2498), not a split; no issue needed. I open #3048's PR.
+
+[#3077](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3077): scanning a session's QR code now
+checks the attendee in by itself. The code is **done, tested and checked** (pre-push check exit 0): branch
+`fix/qr-auto-checkin` on the fork at `be0fd12f8`. **Do not change the code.** Only capture, commit and push images, as fast
+as you can.
+
+Before = `development` (`ab041f576`), after = the branch, on your local GIS Day site as gisday.tamu.edu, 390 px wide (a
+phone, as attendees scan) unless said. Use a **hybrid** session with "Check-in open at any time?" ticked unless said; the
+code from its "Show check-in QR code" (an organizer) in the address: `/sessions/details/<guid>?checkin=<code>`. Crop each
+to the Checkin section. Write to `docs/screenshots/3077-qr-checkin/`, exactly these names:
+
+| File | State |
+| --- | --- |
+| `before-signed-out.png` / `after-signed-out.png` | Signed out, with the code: before "You must be logged in…", after the SIGN IN button |
+| `before-signed-in.png` / `after-signed-in.png` | Signed in, profile complete, not checked in, with the code: before the CHECKIN button, after "Your attendance has been registered" with no press |
+| `before-not-open.png` / `after-not-open.png` | The box **unticked** and the session later today or tomorrow, with the code: before "Checkin will be available at the start…", after "Check-in opens at …" |
+| `before-organizer-in-person.png` / `after-organizer-in-person.png` | 1280 px, an organizer on an **in-person** session: before no Check-in QR Code panel, after the panel with its in-person wording |
+
+Undo every check-in and setting you made, as in report 79. One commit, `docs(screenshots): #3077's before and after`, on
+the branch, pushed to the fork. Report "images pushed: <sha>" and stop.
