@@ -101,6 +101,10 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
     this.form = this.fb.group({
       title: [''],
       participants: this.fb.array([]),
+      // The other authors, one per line, and their emails in the same order (#2990). Saved as participants after the
+      // submitter, so the stored submission and the review email are as before.
+      coAuthors: [''],
+      coAuthorEmails: [''],
       abstract: [''],
       link: [''],
       submissionType: ['presentation'],
@@ -134,6 +138,7 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
             this._getParticipantsControl().removeAt(1);
           }
 
+          this.form.patchValue({ coAuthors: '', coAuthorEmails: '' });
           this._syncParticipants();
         }
       });
@@ -161,6 +166,21 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
         this.form.patchValue({
           ...entity
         });
+
+        // Everyone after the submitter goes into the co-author boxes, one per line (#2990); the form keeps one row, theirs.
+        const others = (entity.participants ?? []).slice(1);
+
+        this.form.patchValue({
+          coAuthors: others.map((p) => p.name ?? '').join('\n'),
+          coAuthorEmails: others.map((p) => p.email ?? '').join('\n')
+        });
+
+        while (this._getParticipantsControl().length > 1) {
+          this._getParticipantsControl().removeAt(1);
+        }
+
+        this._syncParticipants();
+        this._submitterFromAccount();
 
         // If the entity has a season, remove the season control from the form
         this.form.removeControl('season');
@@ -229,7 +249,7 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
   }
 
   private _createSubmission() {
-    const form = this.form.getRawValue();
+    const form = this._withCoAuthors(this.form.getRawValue());
 
     this.userSubmissionService.createEntity(form).subscribe({
       next: () => {
@@ -252,7 +272,7 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
   }
 
   private _updateSubmission() {
-    const form = this.form.getRawValue();
+    const form = this._withCoAuthors(this.form.getRawValue());
 
     this.entity$
       .pipe(
@@ -290,6 +310,25 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * The form's values as the API takes them (#2990): the submitter, then each co-author, a line of the names box paired
+   * with the same line of the emails box. Blank lines are left out; a name with no email, or an email with no name, is
+   * kept with the other empty.
+   */
+  private _withCoAuthors(form: Record<string, unknown>) {
+    const lines = (text: unknown) => `${text ?? ''}`.split(/\r?\n/).map((line) => line.trim());
+    const names = lines(form['coAuthors']);
+    const emails = lines(form['coAuthorEmails']);
+    const others = Array.from({ length: Math.max(names.length, emails.length) }, (_, i) => ({
+      name: names[i] ?? '',
+      email: (emails[i] ?? '').toLowerCase()
+    })).filter((p) => p.name || p.email);
+    const submitter = ((form['participants'] as Array<ICompetitionParticipant>) ?? [])[0];
+    const { coAuthors, coAuthorEmails, ...rest } = form;
+
+    return { ...rest, participants: [...(submitter ? [submitter] : []), ...(form['format'] === 'group' ? others : [])] };
+  }
+
+  /**
    * The submitter is the signed-in account: their name and email come from it and cannot be typed (#2990). Typed, they
    * disagreed with the account (an address no directory knew; a test address), and the review email went to the typed
    * one. Any other member of a group is still typed.
@@ -297,7 +336,8 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
   private _submitterFromAccount() {
     this.auth.user$.pipe(take(1)).subscribe((user) => {
       const submitter = this._getParticipantsControl().at(0);
-      const name = [user?.given_name, user?.family_name].filter((part) => `${part ?? ''}`.trim()).join(' ') || user?.name || '';
+      const name =
+        [user?.given_name, user?.family_name].filter((part) => `${part ?? ''}`.trim()).join(' ') || user?.name || '';
 
       if (!submitter || !user?.email) {
         return;

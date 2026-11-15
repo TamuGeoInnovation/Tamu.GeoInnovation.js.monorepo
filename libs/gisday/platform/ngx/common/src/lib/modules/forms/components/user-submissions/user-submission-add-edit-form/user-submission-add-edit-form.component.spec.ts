@@ -83,4 +83,52 @@ describe('UserSubmissionAddEditFormComponent, on Texas A&M site', () => {
     expect((fixture.nativeElement as HTMLElement).textContent).not.toContain('Student ID');
   });
 
+  // #2990: a group's other authors go in two boxes, names and emails one per line in the same order.
+  it("saves the co-authors after the submitter, each line's name with the same line's email", () => {
+    const fixture = render('create');
+    const form = fixture.componentInstance.form;
+
+    form.patchValue({
+      title: 'Heat',
+      format: 'group',
+      coAuthors: 'Ben Lee\n\nCy Diaz',
+      coAuthorEmails: 'BEN@tamu.edu\n\ncy@tamu.edu'
+    });
+    fixture.componentInstance.handleSubmission();
+
+    const sent = createEntity.mock.calls[0][0];
+
+    expect(sent.participants).toEqual([
+      { name: 'Ana Ruiz', email: 'ana@tamu.edu' },
+      { name: 'Ben Lee', email: 'ben@tamu.edu' },
+      { name: 'Cy Diaz', email: 'cy@tamu.edu' }
+    ]);
+    expect(sent.coAuthors).toBeUndefined();
+    expect(sent.coAuthorEmails).toBeUndefined();
+  });
+
+  it('keeps only the submitter for an individual submission', () => {
+    const fixture = render('create');
+
+    fixture.componentInstance.form.patchValue({ format: 'group', coAuthors: 'Ben Lee', coAuthorEmails: 'ben@tamu.edu' });
+    fixture.componentInstance.form.patchValue({ format: 'individual' });
+    fixture.componentInstance.handleSubmission();
+
+    expect(createEntity.mock.calls[0][0].participants).toEqual([{ name: 'Ana Ruiz', email: 'ana@tamu.edu' }]);
+  });
+
+  it("shows a saved group's other authors in the co-author boxes, one per line", () => {
+    entity.participants = [
+      { name: 'Ana', email: 'ana@tamu.edu' },
+      { name: 'Ben Lee', email: 'ben@tamu.edu' },
+      { name: 'Cy Diaz', email: 'cy@tamu.edu' }
+    ] as never;
+
+    const form = render('edit').componentInstance.form;
+
+    expect(form.get('coAuthors').value).toBe('Ben Lee\nCy Diaz');
+    expect(form.get('coAuthorEmails').value).toBe('ben@tamu.edu\ncy@tamu.edu');
+    expect((form.get('participants') as unknown as { length: number }).length).toBe(1);
+    entity.participants = [];
+  });
 });
