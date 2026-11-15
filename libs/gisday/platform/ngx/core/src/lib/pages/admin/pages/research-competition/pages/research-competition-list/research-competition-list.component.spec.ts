@@ -354,7 +354,7 @@ describe('ResearchCompetitionListComponent, the final file and the final reminde
 
     const select = table._internalColumns().find((c) => c.prop === 'select');
 
-    expect(select.width).toBeGreaterThanOrEqual(56);
+    expect(select.width()).toBeGreaterThanOrEqual(56);
     expect(select.minWidth).toBeGreaterThanOrEqual(56);
   });
 
