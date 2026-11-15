@@ -8149,3 +8149,11 @@ The maintainer answered these; nobody needs to ask again. Each is also in the re
   have checked, or use `development` once the notes have merged.
 - **PR 2834 was already merged when its corrections were written**, which is why they came as a second pull
   request. Check `state` before trying to push to a pull request you believe is open.
+
+## Batch 72 (gisday: #3047, broadcasts listed alphabetically; 15 November 2026, from `work (gisday)`) (Low) - **last, after everything above**
+
+[#3047](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3047). Sort once where the season's
+broadcasts are read, so Admin › Broadcasts and every drop-down agree. Test red first; the bug-fix check; before/after of
+the list and an event's Broadcast drop-down; a release note. Branch `feat/3047-broadcasts-sorted` from the latest
+`development`. Push to the fork and report "branch ready"; the PR opens with your images.
+
