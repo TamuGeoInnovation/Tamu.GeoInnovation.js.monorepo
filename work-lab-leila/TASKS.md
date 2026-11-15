@@ -8157,3 +8157,12 @@ broadcasts are read, so Admin › Broadcasts and every drop-down agree. Test red
 the list and an event's Broadcast drop-down; a release note. Branch `feat/3047-broadcasts-sorted` from the latest
 `development`. Push to the fork and report "branch ready"; the PR opens with your images.
 
+## Batch 73 (gisday: #3049 and #3050, two Low follow-ups from your reports 68 and 69; 15 November 2026, from `work (gisday)`) (Low) - **after 72**
+
+**Decided (the maintainer):** report 68's question is (a), filed as #3049; report 69's is (a), filed as #3050.
+1. **[#3049](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3049)**: admin lists say "No
+   sessions match" when a search or filter hides them all. Branch `fix/3049-no-match-message`.
+2. **[#3050](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3050)**: the local site proxy
+   sets `x-forwarded-host`. Branch `chore/3050-proxy-forwarded-host`; no visible change.
+Each from the latest `development`, the bug-fix check, your own screenshots for 1; push and report "branch ready".
+
