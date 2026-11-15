@@ -7,6 +7,7 @@ import {
   SeasonService,
   SpeakerEditsService,
   UserSubmissionsService,
+  finalRemindersToast,
   reviewSubmissionsToast,
   sendEditLinksToast
 } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -243,6 +244,150 @@ describe('ResearchCompetitionListComponent actions on the selected submissions',
 
     expect(service.review).not.toHaveBeenCalled();
     expect(speakerEdits.sendForSubmissions).not.toHaveBeenCalled();
+    expect(toasts.toast).not.toHaveBeenCalled();
+  });
+});
+
+/**
+ * #3017: who has uploaded their final presentation or poster, as a column that sorts, and a final reminder to the rest,
+ * by the review email's own window. A submission's files have no kind, so any file it has counts as its final one.
+ */
+describe('ResearchCompetitionListComponent, the final file and the final reminder (#3017)', () => {
+  const accepted = { reviewed: true, acceptance: true };
+  const rows = [
+    { guid: 's1', title: 'Flood maps', submissionType: 'poster', participants: [], files: [], ...accepted },
+    {
+      guid: 's2',
+      title: 'Campus trees',
+      submissionType: 'presentation',
+      participants: [],
+      files: [{ guid: 'f-1', name: 'slides.pptx' }],
+      ...accepted
+    },
+    { guid: 's3', title: 'Bike lanes', submissionType: 'presentation', participants: [], ...accepted },
+    // Not accepted, so skipped too (decided 15 November): one rejected, one not yet reviewed.
+    { guid: 's4', title: 'Old roads', submissionType: 'poster', participants: [], reviewed: true, acceptance: false },
+    { guid: 's5', title: 'Rivers', submissionType: 'presentation', participants: [] }
+  ];
+  const templates = { 'poster-reminder': 'Edited reminder' };
+  const result = {
+    sent: ['Flood maps'],
+    skipped: [{ title: 'Campus trees', reason: 'already has a file' as const }],
+    failed: []
+  };
+
+  function open(selected: Array<string>, confirmed = true) {
+    const service = {
+      previewReminders: jest.fn(() => of({ groups: [], skipped: [] })),
+      remind: jest.fn(() => of(result)),
+      getEntitiesForActiveSeason: () => of(rows),
+      getEntitiesForSeason: () => of(rows),
+      getEntities: () => of(rows)
+    };
+    const modals = { open: jest.fn(() => of(confirmed ? templates : null)) };
+    const toasts = { toast: jest.fn() };
+
+    TestBed.configureTestingModule({
+      imports: [ResearchCompetitionListComponent],
+      providers: [
+        provideRouter([]),
+        { provide: UserSubmissionsService, useValue: service },
+        { provide: SpeakerEditsService, useValue: {} },
+        { provide: SeasonService, useValue: { seasons$: of([]), activeSeason$: of(null) } },
+        { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
+        { provide: ModalService, useValue: modals },
+        { provide: NotificationService, useValue: toasts }
+      ]
+    });
+
+    const fixture = TestBed.createComponent(ResearchCompetitionListComponent);
+    fixture.detectChanges();
+    selected.forEach((guid) => fixture.componentInstance.toggleRow(guid));
+    fixture.detectChanges();
+
+    const page = fixture.nativeElement as HTMLElement;
+    const click = (label: string) => {
+      Array.from(page.querySelectorAll<HTMLElement>('.selected-action'))
+        .find((a) => a.textContent.includes(label))
+        .click();
+      fixture.detectChanges();
+    };
+
+    return { fixture, page, service, modals, toasts, click };
+  }
+
+  it('shows each submission as Uploaded or Missing, in a column of its own that sorts', () => {
+    const { page } = open([]);
+    const headings = Array.from(page.querySelectorAll('.datatable-header-cell')).map((h) => h.textContent.trim());
+    const column = headings.indexOf('Final file');
+
+    expect(column).toBeGreaterThan(-1);
+    expect(page.querySelectorAll('.datatable-header-cell')[column].classList).toContain('sortable');
+
+    const cells = Array.from(page.querySelectorAll('datatable-body-row')).map((row) =>
+      row.querySelectorAll('.datatable-body-cell')[column].textContent.trim()
+    );
+
+    expect(cells.sort()).toEqual(['Missing', 'Missing', 'Missing', 'Missing', 'Uploaded']);
+  });
+
+  it('shows the reminder first, editable, saying how many are skipped for having a file, then sends it with the text approved', () => {
+    const { service, modals, toasts, click } = open(['s1', 's2']);
+
+    click('Send final reminder');
+
+    expect(service.previewReminders).toHaveBeenCalledWith(['s1', 's2']);
+    expect(modals.open).toHaveBeenCalledWith(
+      ReviewEmailModalComponent,
+      expect.objectContaining({ data: expect.objectContaining({ verb: 'Send final reminder' }) })
+    );
+    expect(modals.open.mock.calls[0][1].data.note).toBe(
+      '1 of the 2 selected is skipped: 1 that already has a file. Only the rest are reminded.'
+    );
+    expect(service.remind).toHaveBeenCalledWith(['s1', 's2'], templates);
+    expect(toasts.toast).toHaveBeenCalledWith(finalRemindersToast(result));
+  });
+
+  it('skips those not accepted as well, and says why each group is skipped', () => {
+    const { service, modals, click } = open(['s1', 's2', 's4', 's5']);
+
+    click('Send final reminder');
+
+    expect(modals.open.mock.calls[0][1].data.note).toBe(
+      '3 of the 4 selected are skipped: 1 that already has a file and 2 that were not accepted. Only the rest are reminded.'
+    );
+    expect(service.previewReminders).toHaveBeenCalledWith(['s1', 's2', 's4', 's5']);
+  });
+
+  it('sends nothing, and says why, when every one selected is skipped', () => {
+    const { modals, toasts, click } = open(['s2', 's4']);
+
+    click('Send final reminder');
+
+    expect(modals.open).not.toHaveBeenCalled();
+    expect(toasts.toast).toHaveBeenCalledWith(
+      expect.objectContaining({ message: 'Nothing to send: 1 that already has a file and 1 that was not accepted.' })
+    );
+  });
+
+  it('sends nothing, and says why, when every one selected already has a file', () => {
+    const { service, modals, toasts, click } = open(['s2']);
+
+    click('Send final reminder');
+
+    expect(modals.open).not.toHaveBeenCalled();
+    expect(service.remind).not.toHaveBeenCalled();
+    expect(toasts.toast).toHaveBeenCalledWith(
+      expect.objectContaining({ message: expect.stringContaining('already has a file') })
+    );
+  });
+
+  it('sends nothing when the admin cancels', () => {
+    const { service, toasts, click } = open(['s1'], false);
+
+    click('Send final reminder');
+
+    expect(service.remind).not.toHaveBeenCalled();
     expect(toasts.toast).not.toHaveBeenCalled();
   });
 });

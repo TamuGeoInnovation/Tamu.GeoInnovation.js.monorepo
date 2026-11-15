@@ -9,7 +9,9 @@ import { MODAL_DATA, ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal
 
 /** What the window is opened with: the decision, and the email each kind of submission would get. */
 export interface ReviewEmailModalData {
-  acceptance: boolean;
+  acceptance?: boolean;
+  /** What the window is for, when it is not a decision: "Send final reminder" (#3017). Its button then says "Send". */
+  verb?: string;
   preview: Observable<ReviewEmailPreview>;
   /** Anything else the reviewer should know first, such as how many have been reviewed before. */
   note?: string;
@@ -34,7 +36,9 @@ export class ReviewEmailModalComponent implements OnInit {
   private readonly data = inject<ReviewEmailModalData>(MODAL_DATA);
 
   public readonly placeholders = REVIEW_EMAIL_PLACEHOLDERS.join(', ');
-  public readonly verb = this.data.acceptance ? 'Approve' : 'Reject';
+  public readonly verb = this.data.verb ?? (this.data.acceptance ? 'Approve' : 'Reject');
+  /** The button's words before its count: "Approve and send", or for anything but a decision, "Send". */
+  public readonly sendWords = this.data.verb ? 'Send' : `${this.verb} and send`;
   public readonly note = this.data.note ?? '';
   public readonly preview = signal<ReviewEmailPreview | null>(null);
   public readonly failed = signal(false);
