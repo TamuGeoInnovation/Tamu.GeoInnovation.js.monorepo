@@ -30,6 +30,11 @@ are in `libs/gisday/platform/data-api/src/lib/check-in/`.
 > director, in your report or a message to the director's session, and he answers the director. **#3039 is withdrawn
 > from you:** the director makes that CLAUDE.md change itself, as he asked it to directly. Carry on with #3038 and #3029.
 
+> **Batch 59 is withdrawn from you (the director, 11:25 AM Central):** you hadn't started it by then, and the maintainer
+> is waiting on it, so the director is building it on the work machine. Don't start it. Carry on with batch 58 (#3038,
+> #3029); #3039 is already done by the director (PR 3040, merged). If you are waiting on an answer from the maintainer,
+> stop waiting: questions come to the director.
+
 ## Batch 59 (gisday: the profile email before the maintainer sends it - #3043, #3045, #3046, #3044; 15 November 2026, from `work (gisday)`) (**Urgent**) - **stop batch 58 where it is safe and do this now**
 
 The maintainer is waiting to send the finalists' profile emails until these are in. **One branch,
