@@ -17,6 +17,7 @@ The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47
 - **Batch 47 (#2758)**: started 2:02 AM Central, 10 November.
   - 2:08 AM: one side panel for every map, written and committed; smoke check red on dev for the event map's Bus Routes and Experiments; full check running.
   - 2:14 AM: full check exit 0 (8 projects). After screenshots taken from the build: the tailgating map has all five tabs and opens the bus list. Local smoke runs both ways in progress.
+  - Saturday 14 November 8:06 PM Central: resumed after a gap in this session. As development, locally: 28/28. Event map Options page red on production as expected. Merged the latest development (one conflict, kept #2898's removal); full check and a production build running.
 
 ## Finished
 - **Batch 46 (#2821, #2776)** (report `home/reports/2026-11-10-46.md`): two branches ready, no PRs. `fix/2821-fixtures-from-environment` at `0ba5e11b8` (AVP lot found by name in global setup like the bus stop; parking-spaces asks the environment's host; closes #2777 too). `fix/2776-kiosk-layers-from-definition` at `c46f2c061` (kiosk list derived from the tailgating and main maps). Red then green on dev, green on production; checks exit 0. Production's directions popup cases are red until the release is deployed (#2804 merged). No questions.
