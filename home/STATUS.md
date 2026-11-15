@@ -15,6 +15,7 @@ The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47
 
 ## Running now
 - **Batch 49 (gisday: #2948)**: started 8:30 PM Central, 14 November.
+  - 8:56 PM: written and committed (`b5b480344`); migration script pushed to kubernetes-config `feat/2948-season-competition-types`, not run. Full check killed for memory three times at --parallel=8 with 16 GB (no code errors); rerunning at 3 with 24 GB.
 
 ## Finished
 - **Batch 48 (gisday: #2967)** (report `home/reports/2026-11-14-48.md`): branch ready, `fix/2967-vgi-photo-check` on the fork at `59ce1d8c3`, no PR. VGI photographs go through `refuseUnsafeImage` (exported from platform data-api, not copied). Red 3/3 first; bug-fix check exit 0. No questions.
