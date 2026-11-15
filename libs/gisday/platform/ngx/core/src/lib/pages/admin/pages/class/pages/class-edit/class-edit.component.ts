@@ -8,7 +8,7 @@ import * as Papa from 'papaparse';
 import { ClassService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { downloadFile } from '@tamu-gisc/common/utils/ui';
-import { ClassAddEditFormComponent } from '@tamu-gisc/gisday/platform/ngx/common';
+import { ClassAddEditFormComponent, provideAdminDetailsPage } from '@tamu-gisc/gisday/platform/ngx/common';
 import { AsyncPipe, DatePipe } from '@angular/common';
 
 import { BaseAdminDetailsPageComponent } from '../../../base-admin-details-page/base-admin-details-page.component';
@@ -17,7 +17,8 @@ import { BaseAdminDetailsPageComponent } from '../../../base-admin-details-page/
   selector: 'tamu-gisc-class-edit',
   templateUrl: './class-edit.component.html',
   styleUrls: ['./class-edit.component.scss'],
-  imports: [ClassAddEditFormComponent, AsyncPipe, DatePipe]
+  imports: [ClassAddEditFormComponent, AsyncPipe, DatePipe],
+  providers: [provideAdminDetailsPage(() => ClassEditComponent)]
 })
 export class ClassEditComponent extends BaseAdminDetailsPageComponent implements OnInit {
   private readonly at = inject(ActivatedRoute);

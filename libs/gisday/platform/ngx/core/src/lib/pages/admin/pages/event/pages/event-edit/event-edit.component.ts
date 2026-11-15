@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, viewChild } from '@angular/core';
-import { EventAddEditFormComponent } from '@tamu-gisc/gisday/platform/ngx/common';
+import { EventAddEditFormComponent, provideAdminDetailsPage } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { BaseAdminDetailsPageComponent } from '../../../base-admin-details-page/base-admin-details-page.component';
 
@@ -8,7 +8,8 @@ import { BaseAdminDetailsPageComponent } from '../../../base-admin-details-page/
   templateUrl: './event-edit.component.html',
   styleUrls: ['./event-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [EventAddEditFormComponent]
+  imports: [EventAddEditFormComponent],
+  providers: [provideAdminDetailsPage(() => EventEditComponent)]
 })
 export class EventEditComponent extends BaseAdminDetailsPageComponent {
   private readonly editor = viewChild(EventAddEditFormComponent);
