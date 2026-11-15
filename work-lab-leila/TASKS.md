@@ -44,6 +44,11 @@
 > undoable, or go on to the next part or batch. The director asks him and brings back his answer (DIRECTOR.md, "Every
 > listener").
 
+> **12:50 PM Central, from the director:** batch 76 (below) is waiting for you: PR 3030 merged, so its item 1 is a new
+> branch from `development`; item 2 is #3057. After 76, take the screenshots for **#3044** (Markdown in the editable
+> emails) on `feat/3044-email-markdown` when it appears on the fork: the window's preview with **bold** text, and an
+> email as it arrives if you can show one locally without sending to anyone real. Report each "branch ready" as you go.
+
 ## Batch 71 (gisday: screenshots for the finalists' profile email, #3043/#3045/#3046/#3044; 15 November 2026, from `work (gisday)`) (**Urgent**) - **as soon as `feat/profile-email-finalists` appears on the fork, before anything else**
 
 **It is on the fork now (the director built it, 15 November, about 12:15 PM): pause what you are doing and take these first.** It covers #3043, #3045 and #3046; Markdown (#3044) comes in a second PR, so skip the Markdown capture. The maintainer is holding the finalists' profile emails until it ships. Watch the fork
