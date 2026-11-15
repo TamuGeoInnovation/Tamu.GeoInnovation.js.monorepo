@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 
+import { provideCompetitionSessions } from '../competition-session/competition-session.testing';
 import { PresentationComponent } from './presentation.component';
 
 /**
@@ -9,7 +10,7 @@ import { PresentationComponent } from './presentation.component';
  */
 describe('PresentationComponent', () => {
   function text() {
-    TestBed.configureTestingModule({ providers: [provideRouter([])] });
+    TestBed.configureTestingModule({ providers: [provideRouter([]), provideCompetitionSessions()] });
 
     const fixture = TestBed.createComponent(PresentationComponent);
     fixture.detectChanges();
@@ -38,5 +39,20 @@ describe('PresentationComponent', () => {
     expect(rendered).not.toContain('Center for Teaching Excellence');
     expect(rendered).not.toContain('Montague-CTE');
     expect(rendered).toContain('$250');
+  });
+
+  // #3011. The sessions moved and the page still gave the old times and rooms, typed in; and finalists have 5 minutes.
+  it('gives each session as the database has it, and 5 minutes in all for a talk', () => {
+    const rendered = text();
+
+    expect(rendered).toContain('COMPETITION: Undergraduate Research Competition');
+    expect(rendered).toContain('Time: 2:00 to 2:40 PM');
+    expect(rendered).toContain('COMPETITION: Graduate Student Research');
+    expect(rendered).toContain('Time: 2:40 to 4:00 PM');
+    expect(rendered).toContain('Time: 1:00 to 1:15 PM');
+    expect(rendered).toContain('5 minutes in all, questions included');
+    expect(rendered).not.toContain('Gates Ballroom 2400');
+    expect(rendered).not.toContain('3:00 - 4:00 PM');
+    expect(rendered).not.toContain('10 minute');
   });
 });

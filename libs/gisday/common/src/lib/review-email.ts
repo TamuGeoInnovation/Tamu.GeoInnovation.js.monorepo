@@ -151,22 +151,42 @@ function clockTime(stored: string | null | undefined): string {
   return `${hours % 12 || 12}:${match[2]} ${hours < 12 ? 'AM' : 'PM'}`;
 }
 
+/**
+ * A session's day in Central time (#3011): "Thu, Nov 19" short, as the emails give it, or "Thursday, November 19, 2026"
+ * long, as the competition pages give it. Empty when the session has no day.
+ */
+export function sessionDay(session: ReviewEmailSession, style: 'short' | 'long' = 'short'): string {
+  const date = session.day?.date ? new Date(session.day.date) : null;
+
+  if (!date || isNaN(date.getTime())) {
+    return '';
+  }
+
+  return new Intl.DateTimeFormat(
+    'en-US',
+    style === 'short'
+      ? { timeZone: 'America/Chicago', weekday: 'short', month: 'short', day: 'numeric' }
+      : { timeZone: 'America/Chicago', weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }
+  ).format(date);
+}
+
+/** A session's times (#3011): "1:00 to 1:15 PM", or "11:30 AM to 1:00 PM" across noon. */
+export function sessionHours(session: ReviewEmailSession): string {
+  const [start, end] = [clockTime(session.startTime), clockTime(session.endTime)];
+
+  return start && end ? `${start.replace(/ (AM|PM)$/, end.endsWith(start.slice(-2)) ? '' : ' $1')} to ${end}` : start;
+}
+
+/** Where a session is (#3011): its building and room. */
+export function sessionPlace(session: ReviewEmailSession): string {
+  return [session.location?.building, session.location?.room].filter((part) => part?.trim()).join(' ');
+}
+
 /** "AWARDS: Winner Announcements, Thu, Nov 19, 1:00 to 1:15 PM, MSC Ballroom 2300 A&B: <link to the session>". */
 export function sessionLine(session: ReviewEmailSession, address: string): string {
-  const date = session.day?.date ? new Date(session.day.date) : null;
-  const day =
-    date && !isNaN(date.getTime())
-      ? new Intl.DateTimeFormat('en-US', {
-          timeZone: 'America/Chicago',
-          weekday: 'short',
-          month: 'short',
-          day: 'numeric'
-        }).format(date)
-      : '';
-  const [start, end] = [clockTime(session.startTime), clockTime(session.endTime)];
-  const when = start && end ? `${start.replace(/ (AM|PM)$/, end.endsWith(start.slice(-2)) ? '' : ' $1')} to ${end}` : start;
-  const where = [session.location?.building, session.location?.room].filter((part) => part?.trim()).join(' ');
-  const parts = [(session.name ?? '').trim(), day, when, where].filter(Boolean).join(', ');
+  const parts = [(session.name ?? '').trim(), sessionDay(session), sessionHours(session), sessionPlace(session)]
+    .filter(Boolean)
+    .join(', ');
 
   return `${parts}: ${address}/sessions/details/${session.guid}`;
 }
