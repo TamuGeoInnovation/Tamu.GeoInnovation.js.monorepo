@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle and listening.
+- **Batch 56 (gisday: #3027)**, Sessions search in the address, branch `feat/3027-sessions-search-link`; started 8:18 AM Central, 15 November. Batch 55 next (waits on PRs 3020 and 3014).
 
 ## Finished
 - **Batch 54 (gisday: #3023, Urgent)** (report `home/reports/2026-11-15-54.md`): branch ready, `feat/3023-profile-email-preview` on the fork at `66725e519`, no PR; **stacked on PR 3020**, merge that first. All three senders open the review emails' window (moved to ngx-common), subject and text editable; one server path; link never shown, {edit link} required. Red first; full check exit 0. No questions.
