@@ -6,8 +6,20 @@ import { closesAt, inCentralTime, SubmissionDeadlines } from './submission-deadl
  * for each submission.
  */
 
-/** Which email a decision sends: a poster finalist's, a presenter's, or a rejection. */
-export type ReviewEmailKind = 'poster' | 'presentation' | 'rejection';
+/**
+ * Which email is sent: on a decision, a poster finalist's, a presenter's, or a rejection; or the final reminder to upload
+ * the final poster or presentation (#3017).
+ */
+export type ReviewEmailKind = 'poster' | 'presentation' | 'rejection' | 'poster-reminder' | 'presentation-reminder';
+
+/** Every kind, in the order a preview lists them. */
+export const REVIEW_EMAIL_KINDS: ReadonlyArray<ReviewEmailKind> = Object.freeze([
+  'poster',
+  'presentation',
+  'rejection',
+  'poster-reminder',
+  'presentation-reminder'
+]);
 
 /** The placeholders a template may use, filled in for each submission. */
 export const REVIEW_EMAIL_PLACEHOLDERS = Object.freeze([
@@ -32,9 +44,63 @@ export function reviewEmailKind(acceptance: boolean, submissionType: unknown): R
   return submissionType === 'poster' ? 'poster' : 'presentation';
 }
 
+/** The final reminder's kind for a submission (#3017): a poster's, or a presentation's. */
+export function reminderEmailKind(submissionType: unknown): ReviewEmailKind {
+  return submissionType === 'poster' ? 'poster-reminder' : 'presentation-reminder';
+}
+
+/**
+ * Whether a submission has its final presentation or poster uploaded (#3017). A submission's files have no kind (#2933)
+ * and its abstract is text, so any file it has is its final one.
+ */
+export function hasFinalFile(submission: { files?: ReadonlyArray<unknown> | null }): boolean {
+  return (submission.files?.length ?? 0) > 0;
+}
+
+/** Why a selected submission gets no final reminder (#3017). */
+export type ReminderSkipReason = 'already has a file' | 'not accepted';
+
+/**
+ * Why a submission gets no final reminder, or null when it gets one (#3017): it was not accepted (rejected, or not yet
+ * reviewed; decided 15 November), or it already has its final file.
+ */
+export function reminderSkipReason(submission: {
+  reviewed?: boolean | null;
+  acceptance?: boolean | null;
+  files?: ReadonlyArray<unknown> | null;
+}): ReminderSkipReason | null {
+  if (!(submission.reviewed && submission.acceptance)) {
+    return 'not accepted';
+  }
+
+  return hasFinalFile(submission) ? 'already has a file' : null;
+}
+
+/** How many were skipped, and why: "1 that already has a file and 2 that were not accepted". */
+export function reminderSkipSummary(skipped: ReadonlyArray<{ reason: ReminderSkipReason }>): string {
+  const count = (reason: ReminderSkipReason) => skipped.filter((s) => s.reason === reason).length;
+  const files = count('already has a file');
+  const unaccepted = count('not accepted');
+
+  return [
+    files ? `${files} that already ${files === 1 ? 'has' : 'have'} a file` : '',
+    unaccepted ? `${unaccepted} that ${unaccepted === 1 ? 'was' : 'were'} not accepted` : ''
+  ]
+    .filter(Boolean)
+    .join(' and ');
+}
+
+const KIND_LABELS: Record<ReviewEmailKind, string> = {
+  poster: 'Accepted posters',
+  presentation: 'Accepted presentations',
+  rejection: 'Rejections',
+  'poster-reminder': 'Final reminders: posters',
+  'presentation-reminder': 'Final reminders: presentations'
+};
+
 /** What each kind is called where the reviewer chooses its text. */
 export function reviewEmailKindLabel(kind: ReviewEmailKind): string {
-  return kind === 'poster' ? 'Accepted posters' : kind === 'presentation' ? 'Accepted presentations' : 'Rejections';
+  return KIND_LABELS[kind];
 }
 
 /** The email's subject, naming the site and the decision. */
@@ -42,8 +108,57 @@ export function reviewEmailSubject(acceptance: boolean, siteName: string): strin
   return acceptance ? `Your ${siteName} submission has been accepted` : `Your ${siteName} submission`;
 }
 
+/** A kind's subject, naming the site: a decision's, or the final reminder's (#3017). */
+export function reviewEmailKindSubject(kind: ReviewEmailKind, siteName: string): string {
+  if (kind === 'poster-reminder' || kind === 'presentation-reminder') {
+    return `Final reminder: upload your final ${kind === 'poster-reminder' ? 'poster' : 'presentation'} for ${siteName}`;
+  }
+
+  return reviewEmailSubject(kind !== 'rejection', siteName);
+}
+
 /** The text each kind starts from, before the reviewer edits it. */
 export function reviewEmailTemplate(kind: ReviewEmailKind): string {
+  if (kind === 'presentation-reminder') {
+    // The maintainer's draft (#3017), with the other emails' sign-off.
+    return `Hi {first name},
+
+This is your final reminder. We don't yet have the final presentation slides for "{title}".
+
+Upload them on {site} at {site address}/account/submissions by {upload deadline}. If your final slides are not uploaded by then, your submission will be removed from the competition and you won't present.
+
+Your session: {your session}
+
+You have 5 minutes in all, questions included: about 4 minutes to present and 1 for questions. Plan on about 4 slides.
+
+Winners are announced at {awards session}.
+
+If you've uploaded them in the last few minutes, thank you, and you can ignore this message.
+
+Best regards,
+The {site} Team`;
+  }
+
+  if (kind === 'poster-reminder') {
+    // The same draft for a poster, with the poster finalist's details (#2980).
+    return `Hi {first name},
+
+This is your final reminder. We don't yet have the final poster for "{title}".
+
+Upload it on {site} at {site address}/account/submissions by {upload deadline}. If your final poster is not uploaded by then, your submission will be removed from the competition and won't be judged.
+
+Your session: {your session}
+
+Print your poster, 36 x 48 inches or smaller, and bring it with you. You, or at least one member of your team, must be at your poster during the competition to be eligible for an award.
+
+Winners are announced at {awards session}.
+
+If you've uploaded it in the last few minutes, thank you, and you can ignore this message.
+
+Best regards,
+The {site} Team`;
+  }
+
   if (kind === 'rejection') {
     return `Howdy {first name},
 
