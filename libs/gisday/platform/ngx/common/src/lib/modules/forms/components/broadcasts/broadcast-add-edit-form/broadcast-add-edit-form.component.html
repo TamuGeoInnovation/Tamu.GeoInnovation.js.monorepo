@@ -10,6 +10,12 @@
 
     <div class="form-section-body">
       <div class="form-collection column pad-top">
+        <p class="trailer-1">The organization the broadcast belongs to (required). Each site lists only its own organizations' broadcasts, here and in an event's Broadcast list.</p>
+
+        <tamu-gisc-select formControlName="place" [data]="places$ | async" [valueTemplate]="'guid'" [displayTemplate]="'name'" [placeholder]="'Select organization'"> </tamu-gisc-select>
+      </div>
+
+      <div class="form-collection column">
         <p>A human-readable display name that can be used to quickly reference a broadcast when binding to an event from a dropdown list.</p>
 
         <tamu-gisc-textbox formControlName="name" placeholder="Display Name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>

@@ -336,6 +336,14 @@ export class EventBroadcast extends GuidIdentity {
   @OneToMany(() => Event, (event) => event.broadcast, { cascade: true })
   public events?: Event[];
 
+  /**
+   * The organization the broadcast belongs to (#3048), as a venue's place is: each site's admin lists only its own
+   * places' broadcasts, in Admin > Broadcasts and an event's Broadcast drop-down. Empty for one made before this, until
+   * kubernetes-config's set-broadcast-places.ps1 gives it the place of the sessions that use it, or an admin sets it.
+   */
+  @ManyToOne(() => Place, { nullable: true })
+  public place?: Place;
+
   @ManyToOne(() => Season, (season) => season.broadcasts, { onDelete: 'CASCADE' })
   public season?: Season;
 }
