@@ -62,6 +62,19 @@ only, and revert it afterwards so your stack matches `development` again. On you
 Commit to `docs/screenshots/2948-season-competition-types/` on that branch, link them from its release note, push
 (fast-forward, no force), and give the PR body's image section in your report.
 
+## Batch 63 (gisday: PR 3014's dashboard table cuts off its right-hand columns; 15 November 2026, from `work (gisday)`) (Medium) - **after 62**
+
+**Decided (the maintainer):** your batch 60 question is **(c)**: fix the overflow on PR 3014, and the unread count is
+filed as #3024 (Low). Batch 59's two questions are both **(a)**: PR 3022 stays as pushed. Batch 61's `.pr-body.md` has
+been removed from PR 3016's branch.
+
+On `feat/3006-check-in-dashboard-pr` (PR 3014; fetch it first, it is at `e18d09855` or later): make the shared dashboard
+table show every column at 1280 px, in the shared `EventDashboardComponent` (or the shared table styles) so the RSVPs
+page is fixed too. Fitting is better than a sideways scroll if it reads clearly; a scroll inside the table is fine
+otherwise. Never a page-level scroll. Measure at 1280 and 1024 px as you did for #2969. A test if the change is
+structural; the bug-fix check; re-capture the after images that showed the cut-off; push (fast-forward, no force) and
+give the PR body's image section in your report.
+
 ## Batch 62 (gisday: screenshots for #3017, the Final file column and Send final reminder; 15 November 2026, from `work (gisday)`) (Medium) - **after 61, before 59**
 
 Home built #3017 on `feat/3017-final-reminder-pr` on the fork, at `69822936c` (PR 3020). No migration. On your signed-in
