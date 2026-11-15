@@ -8387,3 +8387,17 @@ Branch `feat/3092-session-details-email` from the latest `development`. Tests re
 `CHECK_MEMORY=24g CHECK_PARALLEL=3`; before/after screenshots (the session page's header, the open menu, the composer with
 the prefilled email and its preview); a release note. **Send no real email**: point the mailer at nothing, as in earlier
 email batches. Report "branch ready".
+
+## Batch 87 (gisday: #3093, speakers upload their slides from their edit link; 15 November 2026, from `work (gisday)`) (High) - **after 86**
+
+[#3093](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3093), as its "Proposed" says.
+**Decided (the maintainer): 1A, 2A, 3A**: admins only see the files; an upload is saved at once, no approval; built after
+#3092, so branch `feat/3093-speaker-slides` from `development` with #3092 merged (or from `feat/3092-session-details-email`
+if it has not merged, and say so). The edit-link page gets "Your sessions": each session the speaker presents this
+season, with upload (PDF or PowerPoint), what is uploaded now (name, size, when), replace, remove. Reuse the submission
+files' upload, storage and checks (`libs/gisday/common/src/lib/submission-files.ts` and their API), no second copy; the
+token check is the edit link's own. Admins: the files on the session's admin page, with downloads, and a season list of
+sessions with and without slides. A migration if a table is needed: generated, read by hand, run and reverted on your
+local database only; its production script in kubernetes-config `6. GIS Day/migrations/migrate-prod-3093.ps1`, copied
+from `migrate-prod-3048.ps1`, **never run**. Tests red first; the full check; screenshots (the edit-link page with its
+sessions, an upload done, the admin's view); a release note that names the migration. Report "branch ready".
