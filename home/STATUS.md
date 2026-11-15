@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle and listening (9:10 PM Central, 14 November).
+- **Batch 50 (gisday: #3006)**, check-in dashboard, branch `feat/3006-check-in-dashboard`; started 6:20 AM Central, 15 November.
 
 ## Finished
 - **Batch 49 (gisday: #2948)** (report `home/reports/2026-11-14-49.md`): branch ready, `feat/2948-season-competition-types` on the fork at `8bf24e4ee`, no PR; migration script on kubernetes-config `feat/2948-season-competition-types` (`431d018`), never run. One nullable column (empty = every competition); admin section, form, landing, API all follow. Migration proven up/down/up in a throwaway SQL Server, generate finds no changes. Full check exit 0 at parallel 3 / 24 GB (killed for memory at the defaults). No screenshots: needs a signed-in admin. Two questions.
