@@ -193,6 +193,19 @@ describe('SpeakerEditService', () => {
       expect(sent[0].text).toBe(fillReviewEmail(group.template, { ...group.example.values, '{edit link}': link }));
     });
 
+    // #3065: the finalists' send reached the API twice, 30 seconds apart, and all 48 got it twice.
+    it('emails no one twice when the same send arrives again within minutes, and says why it skipped them', async () => {
+      const email = { subject: 'Profile', template: 'Hi {first name}: {edit link}' };
+
+      await service.sendLinks(['speaker-ana'], 'gisday.tamu.edu', email);
+      const again = await service.sendLinks(['speaker-ana'], 'gisday.tamu.edu', email);
+
+      expect(sent).toHaveLength(1);
+      expect(links).toHaveLength(1);
+      expect(again.sent).toEqual([]);
+      expect(again.skipped).toEqual([{ name: 'Ana Ruiz', reason: expect.stringContaining('already emailed') }]);
+    });
+
     it('refuses a text without {edit link}, or with no subject, and makes no link and sends nothing', async () => {
       await expect(
         service.sendLinks(['speaker-ana'], 'gisday.tamu.edu', { subject: 'Profile', template: 'Hi {first name}.' })
@@ -477,7 +490,8 @@ describe('SpeakerEditService.sendLinksForSubmissions (#2958)', () => {
   beforeEach(() => {
     sent = [];
     service = new SpeakerEditService(
-      { create: (x) => x, save: jest.fn(async (x) => x) } as never,
+      // No link sent to anyone yet, so the repeat guard (#3065) lets each through.
+      { create: (x) => x, save: jest.fn(async (x) => x), count: jest.fn(async () => 0) } as never,
       {} as never,
       {
         find: jest.fn(async ({ where }) =>

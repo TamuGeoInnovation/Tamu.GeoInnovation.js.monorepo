@@ -27,6 +27,9 @@ import { ContactService } from '../contact/contact.service';
 import { SeasonService } from '../season/season.service';
 
 /** How long an edit link works. Long enough for a speaker to come back to it; short enough that an old email is dead. */
+/** How long after a speaker is emailed their link an admin's send skips them, so a repeated request emails no one twice (#3065). */
+export const REPEAT_SEND_MINUTES = 10;
+
 export const SPEAKER_EDIT_LINK_DAYS = 7;
 
 /** The most a speaker may send in one field. A bio is a few paragraphs; this stops a page of junk. */
@@ -247,6 +250,16 @@ export class SpeakerEditService {
 
       if (!looksLikeEmail(speaker.email)) {
         result.skipped.push({ name, reason: 'no email address on their record' });
+        continue;
+      }
+
+      // Never the same email twice in a row (#3065): on 15 November 2026 one send reached the API twice, 30 seconds
+      // apart, and all 48 finalists got it twice. Every pod shares the links table, so a repeat landing on the other
+      // pod is caught too. Each link is recorded before its email goes, so two runs racing skip each other's.
+      const since = new Date(Date.now() - REPEAT_SEND_MINUTES * 60 * 1000);
+
+      if ((await this.links.count({ where: { speaker: { guid: speaker.guid }, created: MoreThan(since) } })) > 0) {
+        result.skipped.push({ name, reason: `already emailed a link in the last ${REPEAT_SEND_MINUTES} minutes` });
         continue;
       }
 
