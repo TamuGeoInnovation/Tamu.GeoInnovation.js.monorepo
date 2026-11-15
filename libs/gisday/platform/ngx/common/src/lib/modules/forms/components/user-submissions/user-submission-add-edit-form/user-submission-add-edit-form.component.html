@@ -37,7 +37,7 @@
       </div>
 
       <div class="form-collection column">
-        <p class="form-input-description">Indicate whether this is an individual or group submission. For group submissions, only one submission is required. Your name and email come from your account; add your student ID, and for a group, each other member's name, email and student ID, one per row. All are required to be eligible for a distributed award.</p>
+        <p class="form-input-description">Indicate whether this is an individual or group submission. For group submissions, only one submission is required. Your name and email come from your account. For a group, add each other member's name and Texas A&amp;M email, one per row; all are required to be eligible for a distributed award.</p>
 
         <tamu-gisc-slide-toggle formControlName="format" class="trailer-1" [options]="presentationFormatOptions" [displayPath]="'label'" [valuePath]="'format'"></tamu-gisc-slide-toggle>
       </div>
@@ -48,7 +48,6 @@
           <div class="form-collection row" [formGroupName]="i">
             <tamu-gisc-textbox formControlName="name" placeholder="Full Name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
             <tamu-gisc-textbox formControlName="email" placeholder="Email" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-            <tamu-gisc-textbox formControlName="studentId" placeholder="Student ID" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
           </div>
         </ng-container>
         }

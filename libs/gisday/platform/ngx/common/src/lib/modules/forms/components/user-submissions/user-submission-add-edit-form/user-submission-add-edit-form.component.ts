@@ -281,18 +281,18 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
       });
   }
 
-  private _createParticipantGroup(fields: ICompetitionParticipant = { name: '', email: '', studentId: '' }) {
+  // No student ID: the Entra and TAMU directory lookup gives it, from the email (#2990). A saved submission's stays.
+  private _createParticipantGroup(fields: ICompetitionParticipant = { name: '', email: '' }) {
     return this.fb.group({
       name: [fields.name],
-      email: [fields.email],
-      studentId: [fields.studentId]
+      email: [fields.email]
     });
   }
 
   /**
    * The submitter is the signed-in account: their name and email come from it and cannot be typed (#2990). Typed, they
    * disagreed with the account (an address no directory knew; a test address), and the review email went to the typed
-   * one. Only their student ID is asked for. Any other member of a group is still typed.
+   * one. Any other member of a group is still typed.
    */
   private _submitterFromAccount() {
     this.auth.user$.pipe(take(1)).subscribe((user) => {
@@ -321,7 +321,7 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
 interface ICompetitionParticipant {
   name: string;
   email: string;
-  studentId: string;
+  studentId?: string;
 }
 
 /** The API's own words when it refused because the competition has closed (#2934), which say when; null otherwise. */

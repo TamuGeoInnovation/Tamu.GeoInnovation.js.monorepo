@@ -78,8 +78,9 @@ describe('UserSubmissionAddEditFormComponent, on Texas A&M site', () => {
     expect(submitter.get('email').value).toBe('ana@tamu.edu');
     expect(submitter.get('name').disabled).toBe(true);
     expect(submitter.get('email').disabled).toBe(true);
-    // Their student ID is still theirs to give.
-    expect(submitter.get('studentId').enabled).toBe(true);
+    // No student ID is asked for: the directory lookup gives it.
+    expect(submitter.get('studentId')).toBeNull();
+    expect((fixture.nativeElement as HTMLElement).textContent).not.toContain('Student ID');
   });
 
 });
