@@ -256,6 +256,12 @@ conflicts once the one below merges.
 - **Never asks the maintainer anything, never offers or suggests work, and takes no decisions from him.** Each turn
   ends with a one-line status. Questions go in its report under **Questions for the director**, with options and a
   recommendation.
+- **Never pauses to wait for an answer** (the maintainer, 15 November 2026). A question goes to the director, in the
+  report or in a message to the director's session, and the listener carries straight on: with the same batch on its
+  recommended option where that is safe and undoable, otherwise with the next part or the next batch. It never asks the
+  maintainer in its own chat, even about something it won't do on a relayed instruction; it tells the director that,
+  and the director takes it to him and acts on his answer. On 15 November `home` asked him directly about a CLAUDE.md
+  change, and he restated the rule: workers send questions to the director, and he answers them there.
 - Files issues **without a priority**; its report suggests one, and the director asks.
 - Records ideas, possible work and things noticed under **Findings** in its `STATUS.md`. A finding is never a
   request and is never acted on until a batch asks for it; the director reads them and brings any worth doing

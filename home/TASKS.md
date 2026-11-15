@@ -21,6 +21,11 @@ are in `libs/gisday/platform/data-api/src/lib/check-in/`.
 > branch complete. Until then the lab takes them, and the director opens a PR only after they are pushed (DIRECTOR.md,
 > "A pull request opens with its screenshots").
 
+> **Every listener, from the maintainer (15 November 2026):** never ask him anything, and never stop to wait for an
+> answer. Put the question in your report or a message to the director, take your recommended option if it is safe and
+> undoable, or go on to the next part or batch. The director asks him and brings back his answer (DIRECTOR.md, "Every
+> listener").
+
 > **The maintainer, 15 November 2026, to the director:** listeners never ask him anything. Every question goes to the
 > director, in your report or a message to the director's session, and he answers the director. **#3039 is withdrawn
 > from you:** the director makes that CLAUDE.md change itself, as he asked it to directly. Carry on with #3038 and #3029.

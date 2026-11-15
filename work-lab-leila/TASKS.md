@@ -39,6 +39,11 @@
 - A report per batch, `work-lab-leila/reports/2026-11-14-<n>.md`, saying **"branch ready: <name>"** with the check's exit
   code. Questions for the maintainer go in the report, with options and a recommendation; do not ask him.
 
+> **Every listener, from the maintainer (15 November 2026):** never ask him anything, and never stop to wait for an
+> answer. Put the question in your report or a message to the director, take your recommended option if it is safe and
+> undoable, or go on to the next part or batch. The director asks him and brings back his answer (DIRECTOR.md, "Every
+> listener").
+
 ## Batch 60 (gisday: screenshots for #3006, the check-in dashboard, and #3010; 15 November 2026, from `work (gisday)`) (Medium) - **first, before 59**
 
 Home built #3006 (and fixed #3010, the RSVPs dashboard listing every organization's sessions on gisday.tamu.edu) on
