@@ -4,3 +4,4 @@ export * from './lib/sites';
 export * from './lib/submission-files';
 export * from './lib/submission-deadlines';
 export * from './lib/review-email';
+export * from './lib/profile-email';

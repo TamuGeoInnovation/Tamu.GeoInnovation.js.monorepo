@@ -159,7 +159,8 @@ describe('SpeakerEditService', () => {
       const preview = await service.previewLinks(['speaker-ana', 'speaker-ben'], 'gisday.tamu.edu');
 
       expect(preview.groups.map((g) => [g.kind, g.label, g.count])).toEqual([['profile', 'Presenter profile emails', 1]]);
-      expect(preview.groups[0].subject).toBe('Update your Texas A&M GIS Day presenter profile');
+      // The subject is editable, so it comes with its placeholders, as the text does.
+      expect(preview.groups[0].subject).toBe('Update your {site} presenter profile');
       expect(preview.groups[0].template).toContain('{edit link}');
       expect(preview.groups[0].example.to).toBe('ana@example.edu');
       expect(preview.groups[0].example.values['{first name}']).toBe('Ana');

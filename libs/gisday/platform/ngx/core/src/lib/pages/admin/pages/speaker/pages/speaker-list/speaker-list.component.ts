@@ -4,6 +4,8 @@ import { RouterLink } from '@angular/router';
 import { Speaker } from '@tamu-gisc/gisday/platform/data-api';
 import { SpeakerEditsService, SpeakerService, sendEditLinksToast } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { sendProfileEmail } from '@tamu-gisc/gisday/platform/ngx/common';
+import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { switchMap, take } from 'rxjs';
 
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
@@ -30,13 +32,16 @@ export class SpeakerListComponent extends BaseAdminListComponent<Speaker> {
   protected readonly entityService = inject(SpeakerService);
   private readonly speakerEdits = inject(SpeakerEditsService);
   private readonly toasts = inject(NotificationService);
+  private readonly modals = inject(ModalService);
 
-  /** Emails each selected speaker their own link to edit their profile (#2936). */
+  /** Emails each selected speaker their own link to edit their profile (#2936), the email read and edited first (#3023). */
   public emailEditLinks() {
     this.selectedRows$
       .pipe(
         take(1),
-        switchMap((guids) => this.speakerEdits.send(guids))
+        switchMap((guids) =>
+          sendProfileEmail(this.modals, this.speakerEdits.preview(guids), (email) => this.speakerEdits.send(guids, email))
+        )
       )
       .subscribe({
         next: (result) => this.toasts.toast(sendEditLinksToast(result)),

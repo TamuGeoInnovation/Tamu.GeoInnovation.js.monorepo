@@ -15,6 +15,13 @@ export interface ReviewEmailModalData {
   preview: Observable<ReviewEmailPreview>;
   /** Anything else the reviewer should know first, such as how many have been reviewed before. */
   note?: string;
+  /**
+   * Whether the subject is edited too (#3023, the profile email): it comes back beside the text, as `<kind>:subject`.
+   * The review emails keep their subject fixed.
+   */
+  editableSubject?: boolean;
+  /** The placeholders the window lists; the review emails' when not given. */
+  placeholders?: ReadonlyArray<string>;
 }
 
 /** What it closes with: the text of each kind's email, as the reviewer left it, or `null` when nothing is to be sent. */
@@ -35,7 +42,8 @@ export class ReviewEmailModalComponent implements OnInit {
   private readonly mr = inject(ModalRefService);
   private readonly data = inject<ReviewEmailModalData>(MODAL_DATA);
 
-  public readonly placeholders = REVIEW_EMAIL_PLACEHOLDERS.join(', ');
+  public readonly placeholders = (this.data.placeholders ?? REVIEW_EMAIL_PLACEHOLDERS).join(', ');
+  public readonly editableSubject = !!this.data.editableSubject;
   public readonly verb = this.data.verb ?? (this.data.acceptance ? 'Approve' : 'Reject');
   /** The button's words before its count: "Approve and send", or for anything but a decision, "Send". */
   public readonly sendWords = this.data.verb ? 'Send' : `${this.verb} and send`;
@@ -49,6 +57,10 @@ export class ReviewEmailModalComponent implements OnInit {
       next: (preview) => {
         for (const group of preview.groups) {
           this.form.addControl(group.kind, new FormControl(group.template, { nonNullable: true }));
+
+          if (this.editableSubject) {
+            this.form.addControl(`${group.kind}:subject`, new FormControl(group.subject, { nonNullable: true }));
+          }
         }
 
         this.preview.set(preview);
@@ -60,6 +72,11 @@ export class ReviewEmailModalComponent implements OnInit {
   /** The email as the first submission of a kind would get it, from the text as it now stands. */
   public example(kind: string, values: Record<string, string>): string {
     return fillReviewEmail(this.form.controls[kind]?.value ?? '', values);
+  }
+
+  /** The subject as the first of a kind would get it, from the subject as it now stands (#3023). */
+  public exampleSubject(kind: string, values: Record<string, string>): string {
+    return fillReviewEmail(this.form.controls[`${kind}:subject`]?.value ?? '', values);
   }
 
   public total(preview: ReviewEmailPreview): number {
