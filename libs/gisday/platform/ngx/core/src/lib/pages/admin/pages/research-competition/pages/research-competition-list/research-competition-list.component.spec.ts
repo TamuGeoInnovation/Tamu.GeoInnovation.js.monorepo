@@ -342,7 +342,7 @@ describe('ResearchCompetitionListComponent, the final file and the final reminde
     const { fixture, page } = open([]);
     const headings = Array.from(page.querySelectorAll('.datatable-header-cell')).map((h) => h.textContent.trim());
     const table = fixture.debugElement.query(By.directive(DatatableComponent)).componentInstance as DatatableComponent;
-    const column = (name: string) => table._internalColumns.find((c) => c.name === name);
+    const column = (name: string) => table._internalColumns().find((c) => c.name === name);
 
     expect(headings).not.toContain('Files');
     expect(headings).toContain('Final file');
