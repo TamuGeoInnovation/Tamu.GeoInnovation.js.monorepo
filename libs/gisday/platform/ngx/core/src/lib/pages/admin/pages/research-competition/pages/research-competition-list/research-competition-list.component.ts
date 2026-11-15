@@ -2,11 +2,19 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { NgClass, AsyncPipe, DatePipe, TitleCasePipe } from '@angular/common';
-import { combineLatest, map, Observable, shareReplay, startWith, switchMap, take } from 'rxjs';
+import { combineLatest, filter, map, Observable, shareReplay, startWith, switchMap, take } from 'rxjs';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 import { Submission, SubmissionWithSubmitter } from '@tamu-gisc/gisday/platform/data-api';
-import { UserSubmissionsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import {
+  SpeakerEditsService,
+  UserSubmissionsService,
+  reviewSubmissionsToast,
+  sendEditLinksToast
+} from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
+import { AlertModalComponent, AlertModalData } from '@tamu-gisc/ui-kits/ngx/layout/modal/alert-modal';
+import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import {
   SUBMISSION_CLASSIFICATION_OPTIONS,
   SUBMISSION_REVIEW_STATUS,
@@ -19,6 +27,11 @@ import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
 
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
 import { SubmissionDeadlinesComponent } from '../../components/submission-deadlines/submission-deadlines.component';
+import {
+  ReviewEmailModalComponent,
+  ReviewEmailModalData,
+  ReviewEmailModalResult
+} from '../../components/review-email-modal/review-email-modal.component';
 
 /** A submission as the table shows it: with its review status worked out, so the table can sort by it (#2808). */
 export type SubmissionRow = Partial<SubmissionWithSubmitter> & { reviewStatus: SUBMISSION_REVIEW_STATUS };
@@ -47,6 +60,59 @@ function keepIfOffered(control: FormControl<string>, chosen: string, offered: Ar
   return chosen;
 }
 
+const plural = (count: number, one: string, many: string) => `${count} ${count === 1 ? one : many}`;
+
+/**
+ * What the page asks before approving or rejecting the selected submissions (#2958), in the page: the site cannot use
+ * `confirm()`. Every one is emailed, including any already reviewed, so it says how many of those there are.
+ */
+export function reviewConfirmation(rows: Array<Partial<Submission>>, acceptance: boolean): AlertModalData {
+  const verb = acceptance ? 'Approve' : 'Reject';
+  const count = rows.length;
+  const again = rows.filter((row) => row.reviewed).length;
+  const ask =
+    count === 1
+      ? `${verb} 1 submission and email its submitter?`
+      : `${verb} ${count} submissions and email their submitters?`;
+  const note = !again
+    ? ''
+    : count === 1
+      ? ' It has already been reviewed; its submitter will be emailed again.'
+      : ` ${again} of them ${again === 1 ? 'has' : 'have'} already been reviewed; ${
+          again === 1 ? 'its submitter' : 'their submitters'
+        } will be emailed again.`;
+
+  return {
+    title: `${verb} ${plural(count, 'submission', 'submissions')}`,
+    message: ask + note,
+    primaryText: `${verb} and email`,
+    secondaryText: 'Cancel'
+  };
+}
+
+/**
+ * What the page asks before sending profile emails for the selected submissions (#2958): how many people, each counted
+ * once however many submissions they are on.
+ */
+export function profileEmailConfirmation(rows: Array<Partial<Submission>>): AlertModalData {
+  const people = new Set(
+    rows.flatMap((row) => (row.participants ?? []).map((p) => (p.email?.trim() || p.name?.trim() || '').toLowerCase()))
+  );
+
+  people.delete('');
+
+  return {
+    title: 'Send profile emails',
+    message: `Send profile emails to the ${plural(people.size, 'person', 'people')} of ${plural(
+      rows.length,
+      'submission',
+      'submissions'
+    )}? Each with a speaker record this season gets their own link to update their presenter profile; anyone without one is listed afterwards, not emailed.`,
+    primaryText: 'Send',
+    secondaryText: 'Cancel'
+  };
+}
+
 @Component({
   selector: 'tamu-gisc-research-competition-list',
   templateUrl: './research-competition-list.component.html',
@@ -69,6 +135,9 @@ export class ResearchCompetitionListComponent extends BaseAdminListComponent<Sub
   protected readonly entityService = inject(UserSubmissionsService);
   private readonly nav = inject(Router);
   private readonly here = inject(ActivatedRoute);
+  private readonly speakerEdits = inject(SpeakerEditsService);
+  private readonly modals = inject(ModalService);
+  private readonly toasts = inject(NotificationService);
 
   public SubmissionReviewStatus = SUBMISSION_REVIEW_STATUS;
 
@@ -151,6 +220,74 @@ export class ResearchCompetitionListComponent extends BaseAdminListComponent<Sub
           );
         }
       });
+  }
+
+  /**
+   * Approves or rejects the selected submissions at once (#2958), as Submit Review does one: each is recorded and its
+   * submitter emailed. Every one sends an email, so the page asks first, saying how many.
+   */
+  public reviewSelected(acceptance: boolean) {
+    this.selectedSubmissions()
+      .pipe(
+        switchMap((rows) => {
+          const guids = rows.map((row) => row.guid);
+          // The email is shown, and can be edited, before anything is decided or sent (#2981).
+          const data: ReviewEmailModalData = {
+            acceptance,
+            note: reviewConfirmation(rows, acceptance).message,
+            preview: this.entityService.previewReview(guids, acceptance)
+          };
+
+          return this.modals.open<ReviewEmailModalResult>(ReviewEmailModalComponent, { data }).pipe(
+            filter((templates): templates is Record<string, string> => !!templates),
+            switchMap((templates) => this.entityService.review(guids, acceptance, undefined, templates))
+          );
+        })
+      )
+      .subscribe({
+        next: (result) => {
+          this.toasts.toast(reviewSubmissionsToast(result, acceptance));
+          // The list shows each one's new status.
+          this.$signal.next(true);
+        },
+        error: () =>
+          this.toasts.toast({
+            id: 'submission-review',
+            title: `Submissions not ${acceptance ? 'approved' : 'rejected'}`,
+            message: 'Please try again.'
+          })
+      });
+  }
+
+  /**
+   * Emails each person of the selected submissions their own link to their presenter profile (#2958), as the Speakers
+   * list's action does: each is matched to the season's speaker records by email, and anyone with none is listed.
+   */
+  public sendProfileEmails() {
+    this.selectedSubmissions()
+      .pipe(
+        switchMap((rows) =>
+          this.modals.open<boolean>(AlertModalComponent, { data: profileEmailConfirmation(rows) }).pipe(
+            filter(Boolean),
+            switchMap(() => this.speakerEdits.sendForSubmissions(rows.map((row) => row.guid)))
+          )
+        )
+      )
+      .subscribe({
+        next: (result) => this.toasts.toast(sendEditLinksToast(result)),
+        error: () =>
+          this.toasts.toast({ id: 'speaker-edit-links', title: 'Profile emails not sent', message: 'Please try again.' })
+      });
+  }
+
+  /** The selected submissions, in the order they were selected. */
+  private selectedSubmissions(): Observable<Array<SubmissionRow>> {
+    return combineLatest([this.selectedRows$, this.view$]).pipe(
+      take(1),
+      map(([guids, view]) =>
+        guids.map((guid) => view.rows.find((row) => row.guid === guid)).filter((row): row is SubmissionRow => !!row)
+      )
+    );
   }
 
   /** A click on a row opens it for review; a click in its checkbox only selects it. */

@@ -1,5 +1,5 @@
 <div class="form">
-  <!-- When the poster and presentation competitions close, for the season chosen below (#2934). -->
+  <!-- When each competition closes, for the season chosen below (#2934, #2962). -->
   <tamu-gisc-submission-deadlines class="form-section" [season]="selectedSeason$ | async"></tamu-gisc-submission-deadlines>
 
   <div class="form-section">
@@ -104,6 +104,11 @@
           <p><strong>{{(selectedRows$ | async).length}} selected</strong></p>
         </div>
         <div class="selected-actions">
+          <!-- Each reviewed and emailed as Submit Review does one, after the page asks (#2958). -->
+          <p class="selected-action" (click)="reviewSelected(true)" tabindex="0" role="button" (keydown.enter)="reviewSelected(true)" (keydown.space)="reviewSelected(true); $event.preventDefault()">Approve <span class="material-icons action">check_circle</span></p>
+          <p class="selected-action" (click)="reviewSelected(false)" tabindex="0" role="button" (keydown.enter)="reviewSelected(false)" (keydown.space)="reviewSelected(false); $event.preventDefault()">Reject <span class="material-icons action">cancel</span></p>
+          <!-- Each person's own profile link, as the Speakers list sends it (#2936, #2958). -->
+          <p class="selected-action" (click)="sendProfileEmails()" tabindex="0" role="button" (keydown.enter)="sendProfileEmails()" (keydown.space)="sendProfileEmails(); $event.preventDefault()">Send profile email <span class="material-icons action">forward_to_inbox</span></p>
           <p class="selected-action caution" (click)="promptDeleteModal('Submission')" tabindex="0" role="button" (keydown.enter)="promptDeleteModal('Submission')" (keydown.space)="promptDeleteModal('Submission'); $event.preventDefault()">Delete <span class="material-icons action">delete_forever</span></p>
         </div>
       </div>

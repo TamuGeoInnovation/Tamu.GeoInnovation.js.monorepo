@@ -88,11 +88,14 @@
             <div class="form-collection column">
               <p class="form-input-description">Photo: a JPEG or PNG, up to 5 MB. A head-and-shoulders photo works best.</p>
               <div class="photo-row">
-                @if (photoPreview(); as preview) {
-                <img class="photo" [src]="preview" alt="The photo you chose" />
-                } @else if (p.photo) {
-                <img class="photo" [src]="photoUrl(p.photo)" alt="Your current photo" />
-                }
+                <!-- As the admin speaker form shows it, with its components (#2956): full size, with the school banner and class year
+                     following the University and Graduation year above, drawn only over a photo, never over the person icon (#2568). -->
+                <div class="speaker-photo">
+                  @if (preview.showing()) {
+                  <tamu-gisc-speaker-class-banner [speaker]="bannerSpeaker()"></tamu-gisc-speaker-class-banner>
+                  }
+                  <tamu-gisc-image-preview #preview [src]="photoSrc()" [alt]="photoPreview() ? 'The photo you chose' : 'Your current photo'" fallback="person" fallbackLabel="No photo yet"></tamu-gisc-image-preview>
+                </div>
                 <tamu-gisc-file class="button snug" accept="image/jpeg,image/png" (fileSelected)="choosePhoto($event)">Choose a photo</tamu-gisc-file>
               </div>
               @if (p.pending?.photo && !photo()) {

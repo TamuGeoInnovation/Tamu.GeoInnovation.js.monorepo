@@ -65,6 +65,8 @@ export class EventProvider extends BaseProvider<Event> {
         .createQueryBuilder('event')
         .leftJoinAndSelect('event.day', 'eventDay')
         .leftJoinAndSelect('event.location', 'location')
+        // Its place, so a site that lists only some organizations' sessions can tell which are its own (#2986).
+        .leftJoinAndSelect('location.place', 'place')
         .where('event.season = :guid', { guid: seasonGuid })
         .orderBy('eventDay.date', 'ASC')
         .addOrderBy('event.startTime', 'ASC')
