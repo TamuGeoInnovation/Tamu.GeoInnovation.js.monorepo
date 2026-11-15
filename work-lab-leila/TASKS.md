@@ -8321,3 +8321,28 @@ note. Report "branch ready".
 > **Batch 82 is withdrawn (15 November, about 3:55 PM Central).** The maintainer chose a check-in page between the QR code
 > and the session page instead of a pop-up, so #3081's pop-up images are not needed. Stop it, put the local site and
 > database back as in report 80, and report what you had done. Do not push to `fix/checkin-toast`. Then go on to 83.
+
+## Batch 84 (gisday: #3081, the QR check-in page's screenshots, URGENT, before GIS Day tomorrow; 15 November 2026, about 4:15 PM Central, from `work (gisday)`) (Urgent) - **now**
+
+**Report 83:** thank you. 1(a), leave `fix/checkin-toast` as it is; it is abandoned. 2 and 3 are with the maintainer. I
+open #3084's PR.
+
+[#3081](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3081) (rewritten): the QR code now
+opens its own page, `/sessions/checkin/<guid>?checkin=<code>`, which says in words whether the attendee is checked in,
+with "Go to the session"; the session page no longer handles a code. Code **done and tested**: branch
+`fix/3081-checkin-page` on the fork at `be70e8c1f`, from `development` (before = `development`). **Do not change the
+code.** As in batch 80 (a hybrid session with "Check-in open at any time?" ticked, its code from "Show check-in QR code"),
+390 px, the **whole first screen**. Write to `docs/screenshots/3081-checkin-page/`:
+
+| File | State |
+| --- | --- |
+| `before-scan.png` | `development`: the session page opened from the QR link, signed in, after its automatic check-in (first screen only) |
+| `after-checked-in.png` | The new page: "You're checked in", with Go to the session |
+| `after-already.png` | The same link again: "You're already checked in" |
+| `after-not-open.png` | The box unticked on a session later today or tomorrow: "You are not checked in" with the API's opens-at reason |
+| `after-signed-out.png` | Signed out, after cancelling sign-in once (the second visit): "You are not checked in yet" and SIGN IN |
+| `after-organizer-link.png` | 1280 px, the organizer's QR panel, its copy field showing `/sessions/checkin/…` |
+
+Also say, in the report, what the first visit signed out does: it should go straight to the Auth0 sign-in page (do not
+sign in through it if a consent screen appears). Undo every check-in and setting as in report 80. One commit,
+`docs(screenshots): #3081's before and after`, on the branch, pushed to the fork. Report "images pushed: <sha>".
