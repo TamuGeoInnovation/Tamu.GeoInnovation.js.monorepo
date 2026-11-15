@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch 55 (gisday: #3026, #3024)**: #3026 branch ready; **#3024** committed (`4abf2fa96`), bug-fix check running.
+- Nothing. Idle and listening.
 
 ## Finished
+- **Batch 55 (gisday: #3026, #3024)** (report `home/reports/2026-11-15-55.md`): both branches ready: `fix/3026-submissions-table-fit` `a4ef225fe` and `fix/3024-unread-by-site` `39f2cb518` (the API applies the site filter; the browser filter is gone). Red first; checks exit 0. No questions.
 - **Batch 57 (gisday: #3032, #3033, #3034)** (report `home/reports/2026-11-15-57.md`): three branches ready: `feat/3032-broadcast-sessions` `690bfcbfe`, `feat/3033-tag-sessions` `0f7d90368` (stacked), `feat/3034-untagged-sessions` `89b913b15`. One shared SessionsUsingComponent; admin routes behind existing permissions. Red first; checks exit 0. No questions.
 - **Batch 56 (gisday: #3027)** (report `home/reports/2026-11-15-56.md`): branch ready, `feat/3027-sessions-search-link` on the fork at `db5124dc2`, no PR. One shared `LinkedSearchComponent` (ngx-common) for Presenters and Sessions; screenshots taken here on a local build. Red first; bug-fix check exit 0. No questions.
 - **Batch 54 (gisday: #3023, Urgent)** (report `home/reports/2026-11-15-54.md`): branch ready, `feat/3023-profile-email-preview` on the fork at `66725e519`, no PR; **stacked on PR 3020**, merge that first. All three senders open the review emails' window (moved to ngx-common), subject and text editable; one server path; link never shown, {edit link} required. Red first; full check exit 0. No questions.
