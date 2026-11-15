@@ -650,6 +650,22 @@ gh project item-edit --id "$item" --project-id <project node id> --field-id <sta
 request. Do not wait to be asked. A CI check enforces this; the escape hatch is the
 `no-visible-change` label, which is a deliberate act and stays visible afterwards.
 
+**A pull request with a visible result opens once its screenshots are on the branch, so CI runs once.**
+On 15 November 2026 most open GIS Day pull requests were red for the same two avoidable reasons, and each
+cost a second CI run: a pull request opened before its images existed fails "Has before/after images"
+until they are pushed, and one stacked on another conflicts as soon as the one underneath merges. So:
+
+- **Push the branch, take the before/after screenshots on it, merge the latest `development` in, then
+  open the pull request.** When the machine that built the change cannot sign in to take them, another
+  takes them on the branch first; the pull request still waits. A change with no visible result opens at
+  once.
+- **Stack a pull request on another only when both are needed soon.** When the one underneath merges,
+  merge `development` into the one on top at once, before its screenshots are taken, so it rebuilds
+  once. Read the pre-push check's result after that merge: on 15 November a clean-looking merge declared
+  two functions twice and failed to compile.
+
+The maintainer's decision (#3039). The mailbox's `DIRECTOR.md` says the same for the machines.
+
 **Build the pull request body from [`.github/pull_request_template.md`](.github/pull_request_template.md),
 with every section filled in.** `gh pr create --body-file` *replaces* the template rather than
 pre-filling it, so the checklist is never rendered and nothing notices it is gone - which is exactly
