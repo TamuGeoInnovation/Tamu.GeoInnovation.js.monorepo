@@ -8,6 +8,8 @@ import { UserSubmissionsService } from '@tamu-gisc/gisday/platform/ngx/data-acce
 import { downloadFile } from '@tamu-gisc/common/utils/ui';
 import { FileComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
+import { serverMessage } from '../../utils/server-message';
+
 /**
  * The files attached to one poster or presentation submission (#2933): listed with a download for each, and, when
  * `editable`, a picker that uploads a file as soon as it is chosen and a Remove on each. The student's submission page
@@ -136,19 +138,11 @@ export class SubmissionFilesComponent implements OnInit {
   }
 }
 
-/** The API's own message when it gave one ("… is not a PowerPoint or PDF file"), otherwise `fallback`. */
+/** The API's own message when it gave one ("… is not a PowerPoint or PDF file"), otherwise `fallback` (#2966). */
 function messageOf(err: unknown, fallback: string): string {
-  if (err instanceof HttpErrorResponse) {
-    if (err.status === 413) {
-      return `${fallback} Files can be up to ${megabytes(SUBMISSION_FILE_RULES.maxBytes)}.`;
-    }
-
-    const message = err.error?.message;
-
-    if (typeof message === 'string' && message.length > 0) {
-      return message;
-    }
+  if (err instanceof HttpErrorResponse && err.status === 413) {
+    return `${fallback} Files can be up to ${megabytes(SUBMISSION_FILE_RULES.maxBytes)}.`;
   }
 
-  return fallback;
+  return serverMessage(err, fallback);
 }

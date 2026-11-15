@@ -1,5 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { DatatableComponent } from '@swimlane/ngx-datatable';
 
 import {
   compareNames,
@@ -112,6 +114,56 @@ describe('DashboardTableComponent', () => {
     await settle();
     expect(fixture.componentInstance.opened()).toBeNull();
     expect(root.querySelector('.detail')).toBeNull();
+  });
+});
+
+/** The check-in dashboard's table: an event, its time, who checked in, the RSVPs beside them and six person types. */
+@Component({
+  imports: [DashboardTableComponent],
+  template: `<tamu-gisc-dashboard-table [rows]="rows" [columns]="columns" totalHeading="Checked in"></tamu-gisc-dashboard-table>`
+})
+class CheckInsHostComponent {
+  public rows = rows;
+  public columns = ['rsvps', 'undergraduate', 'graduate', 'student', 'academia', 'industry', 'not-given'].map((key) => ({
+    key,
+    label: key
+  }));
+}
+
+describe('DashboardTableComponent widths (#3006)', () => {
+  // The width the admin page gives the table on a 1280 px screen, measured in Playwright on the RSVPs and Check-ins
+  // dashboards. A unit test cannot lay a page out; that measurement is the evidence the table fits.
+  const AT_1280 = 879;
+
+  let fixture: ComponentFixture<CheckInsHostComponent>;
+
+  const columns = () =>
+    fixture.debugElement.query(By.directive(DatatableComponent)).injector.get(DatatableComponent).columnTemplates();
+  const narrowest = () => columns().reduce((sum, column) => sum + (column.minWidth() ?? 0), 0);
+
+  beforeEach(async () => {
+    TestBed.configureTestingModule({ imports: [CheckInsHostComponent] });
+    fixture = TestBed.createComponent(CheckInsHostComponent);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+  });
+
+  it("fits the check-in dashboard's ten columns, each at its narrowest, in the width a 1280 px screen gives the table", () => {
+    expect(columns()).toHaveLength(10);
+    expect(narrowest()).toBeLessThanOrEqual(AT_1280);
+  });
+
+  it('grows each column in proportion to its narrowest, so a table that fits has no column squeezed below it', () => {
+    const ratios = columns().map((column) => (column.flexGrow() ?? 0) / (column.minWidth() ?? 1));
+
+    expect(new Set(ratios).size).toBe(1);
+  });
+
+  it('is never narrower than its columns at their narrowest, so a narrower screen scrolls it in its own box rather than cutting columns off', () => {
+    const table = (fixture.nativeElement as HTMLElement).querySelector('ngx-datatable') as HTMLElement;
+
+    expect(table.style.minWidth).toBe(`${narrowest()}px`);
   });
 });
 

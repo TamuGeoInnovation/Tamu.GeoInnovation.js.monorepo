@@ -1,9 +1,22 @@
 <!-- A panel on the shared accordion (#2969): the toolbar opens and closes it, and shows the summary while it is closed. -->
+<!-- Closed, it is a box to open (#3012): the shared tinted box (.info-block.context, as the admin lists' selection bars),
+     its name in the link colour of a toolbar action (.__form-action) with a "Set dates" hint. Open, the plain section toolbar. -->
 <ng-template giscAccordion [(expanded)]="expanded" let-accordion>
-  <div class="form-section-toolbar deadlines-toolbar" [giscAccordionHeader]="accordion">
-    <button type="button" class="form-section-name deadlines-toggle" [attr.aria-expanded]="accordion.expanded()" aria-controls="submission-deadlines-body">
+  <div
+    class="deadlines-toolbar"
+    [class.form-section-toolbar]="accordion.expanded()"
+    [class.info-block]="!accordion.expanded()"
+    [class.context]="!accordion.expanded()"
+    [class.flex]="!accordion.expanded()"
+    [class.flex-row]="!accordion.expanded()"
+    [class.align-center]="!accordion.expanded()"
+    [giscAccordionHeader]="accordion">
+    <button type="button" class="form-section-name deadlines-toggle" [class.__form-action]="!accordion.expanded()" [attr.aria-expanded]="accordion.expanded()" aria-controls="submission-deadlines-body">
       <span class="material-icons" aria-hidden="true">{{ accordion.expanded() ? 'expand_less' : 'expand_more' }}</span>
       Submission deadlines{{ season()?.year ? ' for ' + season().year : '' }}
+      @if (!accordion.expanded()) {
+      <span class="deadlines-hint pre-1">Set dates</span>
+      }
     </button>
     @if (!accordion.expanded()) {
     <span class="deadlines-summary">{{ summary() }}</span>
@@ -24,7 +37,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (competition of competitions; track competition.key) {
+          @for (competition of competitions(); track competition.key) {
           <tr>
             <th scope="row">{{ competition.label }}</th>
             @for (k of kinds; track k.kind) { @let field = deadlineField(competition.key, k.kind);

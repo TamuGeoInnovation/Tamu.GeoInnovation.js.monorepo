@@ -1019,6 +1019,71 @@ describe('UserSubmissionProvider', () => {
    * #2934: an admin sets when each competition, poster and presentation, stops taking submissions. At that moment new
    * submissions and edits close, refused by the API whatever the page shows. Reviewers are not held to it.
    */
+  /** #2948: a season runs only the research competitions its admins turned on; every one when none is set. */
+  describe("the season's competitions (#2948)", () => {
+    const SEASON = { guid: 'season-2026', year: 2026 };
+
+    function seasonRunning(...types: Array<string>) {
+      const season = { ...SEASON, competitions: types.map((competitionType) => ({ competitionType })) };
+
+      jest.spyOn(seasonService, 'findOne').mockResolvedValue(season as never);
+      jest.spyOn(seasonService, 'findOneActive').mockResolvedValue(season as never);
+
+      return season;
+    }
+
+    beforeEach(() => {
+      jest.spyOn(submissionRepo, 'create').mockImplementation((s) => s as never);
+      jest.spyOn(submissionRepo, 'save').mockImplementation((s) => Promise.resolve(s as never));
+    });
+
+    it('refuses a new submission to a competition the season does not run, and saves nothing', async () => {
+      seasonRunning('poster', 'presentation');
+
+      await expect(
+        provider.insertUserSubmission(OWNER, { submissionType: 'paper', season: SEASON.guid } as never)
+      ).rejects.toThrow(new BadRequestException('The paper competition is not running this season.'));
+      expect(submissionRepo.save).not.toHaveBeenCalled();
+    });
+
+    it('takes a new submission to one it runs', async () => {
+      seasonRunning('poster', 'presentation');
+
+      await provider.insertUserSubmission(OWNER, { submissionType: 'poster', season: SEASON.guid } as never);
+
+      expect(submissionRepo.save).toHaveBeenCalled();
+    });
+
+    it('takes every competition when the season has no rows, as every season did before', async () => {
+      seasonRunning();
+
+      await provider.insertUserSubmission(OWNER, { submissionType: 'cartography', season: SEASON.guid } as never);
+
+      expect(submissionRepo.save).toHaveBeenCalled();
+    });
+
+    it('lets the entrant edit a submission to a competition since turned off', async () => {
+      jest
+        .spyOn(submissionRepo, 'findOne')
+        .mockResolvedValue(submission({ submissionType: 'paper', season: seasonRunning('poster') }));
+
+      await provider.updateUserSubmission('sub-1', OWNER, { title: 'Revised', submissionType: 'paper' } as Partial<Submission>);
+
+      expect(written()).toEqual(expect.objectContaining({ title: 'Revised' }));
+    });
+
+    it('refuses to move a submission into a competition the season does not run', async () => {
+      jest
+        .spyOn(submissionRepo, 'findOne')
+        .mockResolvedValue(submission({ submissionType: 'poster', season: seasonRunning('poster') }));
+
+      await expect(
+        provider.updateUserSubmission('sub-1', OWNER, { submissionType: 'cartography' } as Partial<Submission>)
+      ).rejects.toThrow(BadRequestException);
+      expect(submissionRepo.update).not.toHaveBeenCalled();
+    });
+  });
+
   describe('the submission deadline (#2934)', () => {
     const past = '2026-11-01T17:00:00.000Z';
     const future = '2099-11-01T17:00:00.000Z';

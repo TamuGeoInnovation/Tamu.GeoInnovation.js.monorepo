@@ -20,3 +20,16 @@ the competition. Research Competitions now shows who has:
 
 Only admins who can review the competitions can send it. Nothing about the submissions is recorded.
 ([#3017](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3017))
+
+Captured on a local copy of the site at 1280 pixels wide, with made-up local test submissions; everyone else's rows are
+greyed out.
+
+| Research Competitions | Before | After |
+| --- | --- | --- |
+| The submissions table | ![No Final file column](../screenshots/3017-final-reminder/before-table.png) | ![A Final file column, Missing or Uploaded, sorted by it](../screenshots/3017-final-reminder/after-table-final-file-sorted.png) |
+| Three presentations selected | ![Approve, Reject, Send profile email, Delete](../screenshots/3017-final-reminder/before-selected-actions.png) | ![Send final reminder among the actions](../screenshots/3017-final-reminder/after-selected-actions.png) |
+
+| Send final reminder | |
+| --- | --- |
+| Three presentations: accepted with no file, accepted with a file, and rejected | ![The presentations' reminder: two skipped, one for having a file and one for not being accepted; the text to edit and its preview](../screenshots/3017-final-reminder/after-final-reminder-presentation.png) |
+| Three posters: accepted with no file, accepted with a file, and not yet reviewed | ![The posters' reminder: two skipped, one for having a file and one for not being accepted; the text to edit and its preview](../screenshots/3017-final-reminder/after-final-reminder-poster.png) |

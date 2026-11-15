@@ -7,6 +7,7 @@ import { getMetadataArgsStorage } from 'typeorm';
 import { JwtGuard, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 
 import { Event, Organization, Speaker, Sponsor } from '../entities/all.entity';
+import { CheckInController } from '../check-in/check-in.controller';
 import { EventController } from '../event/event.controller';
 import { EventProvider } from '../event/event.provider';
 import { OrganizationController } from '../organization/organization.controller';
@@ -15,6 +16,7 @@ import { SpeakerController } from '../speaker/speaker.controller';
 import { SpeakerProvider } from '../speaker/speaker.provider';
 import { SponsorController } from '../sponsor/sponsor.controller';
 import { SponsorProvider } from '../sponsor/sponsor.provider';
+import { UserRsvpController } from '../user-rsvp/user-rsvp.controller';
 import { PRIVATE_FIELDS, PrivateFieldsInterceptor, withoutPrivateFields } from './private-fields.interceptor';
 
 const PRIVATE_KEYS = [
@@ -360,5 +362,32 @@ describe('every column of sponsors, organizations and speakers is decided', () =
     const decided = [...PUBLIC[name as string], ...rule.fields].sort();
 
     expect(columnsOf(rule.type)).toEqual(decided);
+  });
+});
+
+/**
+ * The admin dashboards answer with people's names and emails as plain objects, which the interceptor does not look into
+ * (it removes `email` only from speakers), so the permission on each route is what keeps them private (#2878, #3006).
+ */
+describe("the admin dashboards' routes", () => {
+  const dashboards = [UserRsvpController, CheckInController].flatMap((controller) =>
+    Object.getOwnPropertyNames(controller.prototype)
+      .filter((name) => /^getDashboardFor/.test(name))
+      .map((name) => ({ name: `${controller.name}.${name}`, handler: controller.prototype[name] }))
+  );
+
+  it('are all found', () => {
+    expect(dashboards.map((d) => d.name)).toEqual([
+      'UserRsvpController.getDashboardForSeason',
+      'UserRsvpController.getDashboardForEvent',
+      'CheckInController.getDashboardForSeason',
+      'CheckInController.getDashboardForEvent'
+    ]);
+  });
+
+  it.each(dashboards.map((d) => [d.name, d.handler]))('%s requires a token and an admin permission', (_, handler) => {
+    expect(Reflect.getMetadata(GUARDS_METADATA, handler)).toEqual(expect.arrayContaining([JwtGuard, PermissionsGuard]));
+    expect(Reflect.getMetadata('AllowAny', handler)).toBeUndefined();
+    expect(Reflect.getMetadata('Permissions', handler)[0]).toEqual([expect.stringMatching(/^read:(rsvps|checkins)$/)]);
   });
 });

@@ -6,6 +6,7 @@ import { Observable, catchError, concatMap, filter, from, map, of, shareReplay, 
 import { Class, Season, UserClass } from '@tamu-gisc/gisday/platform/data-api';
 import { ClassService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { serverMessage } from '../../../../../utils/server-message';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
@@ -98,7 +99,7 @@ export class ClassAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'class-delete-failed',
           title: 'Delete class',
-          message: `Error deleting class: ${err.status}`
+          message: serverMessage(err, `Error deleting class: ${err.status}`)
         });
       }
     });
@@ -121,7 +122,7 @@ export class ClassAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'class-update-failed',
           title: 'Update class',
-          message: `Error updating class: ${err.status}`
+          message: serverMessage(err, `Error updating class: ${err.status}`)
         });
       }
     });
@@ -145,7 +146,7 @@ export class ClassAddEditFormComponent implements OnInit {
         concatMap((section) =>
           this.cs.createEntity({ ...rawValue, section }).pipe(
             map(() => ({ section, error: undefined as string })),
-            catchError((err) => of({ section, error: `${err?.error?.message ?? err.status}` }))
+            catchError((err) => of({ section, error: serverMessage(err, `${err?.status}`) }))
           )
         ),
         toArray()
@@ -193,7 +194,7 @@ export class ClassAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'class-create-failed',
           title: 'Create class',
-          message: `Error creating class: ${err?.error?.message ?? err.status}`
+          message: `Error creating class: ${serverMessage(err, `${err?.status}`)}`
         });
       }
     });

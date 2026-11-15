@@ -11,6 +11,8 @@ export interface RsvpDashboardEvent {
   /** When the event starts (its day at its start time, in Central time), or null for an event with no day or time. */
   starts: string | null;
   location: string | null;
+  /** The organization whose session it is, by its location's place: the admin page lists only its site's (#2986, #3006). */
+  place: { guid: string; name: string } | null;
   total: number;
   counts: RsvpPersonTypeCounts;
 }

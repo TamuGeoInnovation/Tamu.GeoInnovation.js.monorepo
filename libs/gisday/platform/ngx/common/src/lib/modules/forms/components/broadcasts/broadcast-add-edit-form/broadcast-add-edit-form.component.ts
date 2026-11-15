@@ -6,6 +6,7 @@ import { Observable, filter, map, switchMap, take } from 'rxjs';
 import { EventBroadcast } from '@tamu-gisc/gisday/platform/data-api';
 import { BroadcastService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { serverMessage } from '../../../../../utils/server-message';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
@@ -87,7 +88,7 @@ export class BroadcastAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'delete-broadcast-error',
           title: 'Delete Broadcast',
-          message: `Error deleting broadcast: ${err.status}`
+          message: serverMessage(err, `Error deleting broadcast: ${err.status}`)
         });
       }
     });
@@ -110,7 +111,7 @@ export class BroadcastAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'update-broadcast-error',
           title: 'Update Broadcast',
-          message: `Error updating broadcast: ${err.status}`
+          message: serverMessage(err, `Error updating broadcast: ${err.status}`)
         });
       }
     });
@@ -133,7 +134,7 @@ export class BroadcastAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'create-broadcast-error',
           title: 'Create Broadcast',
-          message: `Error creating broadcast: ${err.status}`
+          message: serverMessage(err, `Error creating broadcast: ${err.status}`)
         });
       }
     });

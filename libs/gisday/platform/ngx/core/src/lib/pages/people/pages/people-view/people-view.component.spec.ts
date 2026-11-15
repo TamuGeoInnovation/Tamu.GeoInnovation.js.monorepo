@@ -1,9 +1,11 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router, provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 
 import { SeasonService, SpeakerService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import { LinkedSearchComponent } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { compareByLastName, matchesSearch, PeopleViewComponent, presenterCount } from './people-view.component';
 
@@ -145,9 +147,10 @@ describe('PeopleViewComponent link', () => {
     expect(navigate).toHaveBeenLastCalledWith([], expect.objectContaining({ queryParams: { search: null } }));
   }));
 
-  it('copies the whole link, ready to paste into an email', () => {
+  it('copies the whole link, ready to paste into an email, from the search box Sessions shares (#3027)', () => {
     const fixture = open('lower colorado');
+    const linked = fixture.debugElement.query(By.directive(LinkedSearchComponent)).componentInstance as LinkedSearchComponent;
 
-    expect(fixture.componentInstance.link()).toBe(`${window.location.origin}/?search=lower%20colorado`);
+    expect(linked.link()).toBe(`${window.location.origin}/?search=lower%20colorado`);
   });
 });

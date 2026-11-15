@@ -22,8 +22,12 @@
   border: none;
   background: none;
   font: inherit;
-  color: inherit;
   cursor: pointer;
+
+  // Open, the section's title colour; closed, the link colour .__form-action gives it (#3012).
+  &:not(.__form-action) {
+    color: inherit;
+  }
 
   .material-icons {
     margin-right: 0.25rem;

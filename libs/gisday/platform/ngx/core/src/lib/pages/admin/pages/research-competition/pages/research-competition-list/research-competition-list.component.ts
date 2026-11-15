@@ -29,6 +29,7 @@ import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
 
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
 import { SubmissionDeadlinesComponent } from '../../components/submission-deadlines/submission-deadlines.component';
+import { SeasonCompetitionsComponent } from '../../components/season-competitions/season-competitions.component';
 import {
   ReviewEmailModalComponent,
   ReviewEmailModalData,
@@ -141,6 +142,30 @@ export function finalReminderNote(rows: Array<Partial<Submission>>): string | nu
     : `${skipped.length} of the ${rows.length} selected ${skipped.length === 1 ? 'is' : 'are'} skipped: ${reminderSkipSummary(skipped)}. Only the rest are reminded.`;
 }
 
+/** Why each of the rows that gets no final reminder is skipped (#3017): not accepted, or a file already. */
+export function reminderSkips(rows: Array<Partial<Submission>>): Array<{ reason: ReminderSkipReason }> {
+  return rows
+    .map((row) => reminderSkipReason(row))
+    .filter((reason): reason is ReminderSkipReason => reason !== null)
+    .map((reason) => ({ reason }));
+}
+
+/**
+ * What the final reminder's window says first (#3017): how many of the selection are skipped, and why. Null when every
+ * one is, and there is nothing to send.
+ */
+export function finalReminderNote(rows: Array<Partial<Submission>>): string | null {
+  const skipped = reminderSkips(rows);
+
+  if (skipped.length === rows.length) {
+    return null;
+  }
+
+  return skipped.length === 0
+    ? 'Each one selected was accepted and has no file yet; each is reminded.'
+    : `${skipped.length} of the ${rows.length} selected ${skipped.length === 1 ? 'is' : 'are'} skipped: ${reminderSkipSummary(skipped)}. Only the rest are reminded.`;
+}
+
 @Component({
   selector: 'tamu-gisc-research-competition-list',
   templateUrl: './research-competition-list.component.html',
@@ -156,7 +181,8 @@ export function finalReminderNote(rows: Array<Partial<Submission>>): string | nu
     DatePipe,
     TitleCasePipe,
     ExistsPipe,
-    SubmissionDeadlinesComponent
+    SubmissionDeadlinesComponent,
+    SeasonCompetitionsComponent
   ]
 })
 export class ResearchCompetitionListComponent extends BaseAdminListComponent<Submission> implements OnInit {
