@@ -13,9 +13,26 @@ const day = (date: string) => ({ date: new Date(date) });
 /** #3032, #3033: an admin page lists the sessions that use what it edits, a broadcast or a tag. */
 describe('SessionsUsingComponent', () => {
   const sessions = [
-    { guid: 'e-late', name: 'Keynote', startTime: '15:00:00 GMT-0600 (Central Standard Time)', day: day('2026-11-18T06:00:00Z'), location: { place: TAMU } },
-    { guid: 'e-early', name: 'Workshop', startTime: '09:00:00 GMT-0600 (Central Standard Time)', day: day('2026-11-17T06:00:00Z') },
-    { guid: 'e-elsewhere', name: 'Elsewhere', startTime: '10:00:00 GMT-0600 (Central Standard Time)', day: day('2026-11-17T06:00:00Z'), location: { place: OTHER } }
+    {
+      guid: 'e-late',
+      name: 'Keynote',
+      startTime: '15:00:00 GMT-0600 (Central Standard Time)',
+      day: day('2026-11-18T06:00:00Z'),
+      location: { place: TAMU }
+    },
+    {
+      guid: 'e-early',
+      name: 'Workshop',
+      startTime: '09:00:00 GMT-0600 (Central Standard Time)',
+      day: day('2026-11-17T06:00:00Z')
+    },
+    {
+      guid: 'e-elsewhere',
+      name: 'Elsewhere',
+      startTime: '10:00:00 GMT-0600 (Central Standard Time)',
+      day: day('2026-11-17T06:00:00Z'),
+      location: { place: OTHER }
+    }
   ];
 
   function render(list: Array<object> | null, site = 'txgisday') {
@@ -35,7 +52,9 @@ describe('SessionsUsingComponent', () => {
   }
 
   const rows = (root: HTMLElement) =>
-    Array.from(root.querySelectorAll('tbody tr'), (tr) => Array.from(tr.querySelectorAll('td'), (td) => td.textContent.replace(/\s+/g, ' ').trim()));
+    Array.from(root.querySelectorAll('tbody tr'), (tr) =>
+      Array.from(tr.querySelectorAll('td'), (td) => td.textContent.replace(/\s+/g, ' ').trim())
+    );
 
   it('lists them in date and time order, each day, time and name, with a count', () => {
     const root = render(sessions);

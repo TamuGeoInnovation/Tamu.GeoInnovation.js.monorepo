@@ -10,7 +10,11 @@ import { BroadcastService } from './broadcast.service';
 describe('BroadcastService.getSessions()', () => {
   it("reads the broadcast's sessions from its admin route", () => {
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting(), { provide: EnvironmentService, useValue: { value: () => 'api' } }]
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: EnvironmentService, useValue: { value: () => 'api' } }
+      ]
     });
 
     const http = TestBed.inject(HttpTestingController);
