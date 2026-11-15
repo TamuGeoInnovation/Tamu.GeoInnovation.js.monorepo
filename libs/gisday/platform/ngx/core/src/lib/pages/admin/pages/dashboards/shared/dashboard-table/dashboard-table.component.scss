@@ -5,8 +5,19 @@
 .dashboard-table {
   --datatable-height: auto;
 
-  // Many columns beside the admin menu: on a narrow screen the table scrolls in its own box, not the page.
+  // Many columns beside the admin menu: on a narrow screen the table scrolls in its own box, not the page. The frame
+  // around the box and its rail keeps the margin, so the rail sits directly under the box.
   overflow-x: auto;
+  margin: 0;
+
+  // While the rail below stands in for it, the box's own scrollbar, at the bottom of a long table, is not drawn twice.
+  &.dashboard-table-railed {
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
 
   ::ng-deep .datatable-body .datatable-row-wrapper {
     cursor: pointer;
@@ -74,4 +85,41 @@
 
 .dashboard-table-detail {
   padding: 0.5rem 1rem 1rem 2.25rem;
+}
+
+.dashboard-table-frame {
+  margin: 2rem 0;
+}
+
+// The box's sideways scrollbar, under the table and pinned to the bottom of the window while any of the table is in
+// view (#3029): at 1024 px the table is wider than its box, and the box's own scrollbar is at the bottom of a table that
+// can be 60 rows long, out of sight. Its side borders match the box's, so the two scroll the same distance. A thumb and
+// track of its own keep it drawn where the system would hide an idle scrollbar.
+.dashboard-table-rail {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border: 1pt solid transparent;
+  border-top: 0;
+  border-bottom: 0;
+  background: #fff;
+
+  > div {
+    height: 1px;
+  }
+
+  &::-webkit-scrollbar {
+    height: 12px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $lightened-inactive-color;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.35);
+    border-radius: 6px;
+  }
 }
