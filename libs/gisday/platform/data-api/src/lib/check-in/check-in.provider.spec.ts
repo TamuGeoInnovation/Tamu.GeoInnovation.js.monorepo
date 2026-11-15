@@ -150,15 +150,13 @@ describe('CheckInProvider', () => {
 
     const withEvent = (mode: string, checkInZone: Array<{ latitude: number; longitude: number }> = msc) => {
       jest.spyOn(checkInRepo, 'findOne').mockResolvedValue(null);
-      jest
-        .spyOn(eventRepo, 'findOne')
-        .mockResolvedValue({
-          guid: 'e-1',
-          mode,
-          ...openNow,
-          checkInCode: 'code-1',
-          location: { building: venue, checkInZone }
-        } as unknown as Event);
+      jest.spyOn(eventRepo, 'findOne').mockResolvedValue({
+        guid: 'e-1',
+        mode,
+        ...openNow,
+        checkInCode: 'code-1',
+        location: { building: venue, checkInZone }
+      } as unknown as Event);
       save = jest.fn().mockResolvedValue({ guid: 'c-new' });
       jest.spyOn(checkInRepo, 'create').mockReturnValue({ save } as never);
     };
@@ -326,6 +324,17 @@ describe('CheckInProvider', () => {
       jest.useRealTimers();
     });
 
+    // #3089: scanned the day before, "opens when it starts, at 4:00 PM" read as if it opened that day.
+    it('names the day when an attendee is refused on an earlier day', async () => {
+      withSession();
+      at('2026-11-17T22:30:00Z'); // 4:30 PM Central the day before
+
+      await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(
+        new ForbiddenException('Check-in for this session opens when it starts, on Wednesday, November 18 at 4:00 PM.')
+      );
+      expect(save).not.toHaveBeenCalled();
+    });
+
     it('refuses an attendee a minute early, and says when it opens', async () => {
       withSession();
       at('2026-11-18T21:59:00Z'); // 3:59 PM Central
@@ -426,15 +435,13 @@ describe('CheckInProvider', () => {
 
     const withSession = (overrides: Record<string, unknown> = {}) => {
       jest.spyOn(checkInRepo, 'findOne').mockResolvedValue(null);
-      jest
-        .spyOn(eventRepo, 'findOne')
-        .mockResolvedValue({
-          guid: 'e-1',
-          mode: 'in-person',
-          checkInAnyTime: true,
-          ...times,
-          ...overrides
-        } as unknown as Event);
+      jest.spyOn(eventRepo, 'findOne').mockResolvedValue({
+        guid: 'e-1',
+        mode: 'in-person',
+        checkInAnyTime: true,
+        ...times,
+        ...overrides
+      } as unknown as Event);
       save = jest.fn().mockResolvedValue({ guid: 'c-new' });
       jest.spyOn(checkInRepo, 'create').mockReturnValue({ save } as never);
     };
