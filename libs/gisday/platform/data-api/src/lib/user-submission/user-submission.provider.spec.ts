@@ -623,6 +623,24 @@ describe('UserSubmissionProvider', () => {
           rows[where.guid] ? { ...rows[where.guid], participants: [...rows[where.guid].participants] } : null) as never);
     });
 
+    // #3067: a bulk send reached the API twice, 30 seconds apart (#3065). The same decision again within minutes is that
+    // repeat, and emails no one a second time; a decision changed, or made long ago, emails as before.
+    it('emails no one again when the same decision repeats within minutes', async () => {
+      rows[A] = { ...rows[A], reviewed: true, acceptance: true, updated: new Date() } as Submission;
+      rows[B] = { ...rows[B], reviewed: true, acceptance: false, updated: new Date() } as Submission;
+
+      try {
+        const result = await provider.reviewUserSubmissions([A, B], 'acct-reviewer', { acceptance: true }, REVIEWER_PERMS);
+
+        expect(result).toEqual({ reviewed: ['Flood maps', 'Campus trees'], failed: [] });
+        // A was already accepted moments ago: no second email. B's decision changed: its email goes.
+        expect(sends().map(([m]) => m.to)).toEqual(['cy@tamu.edu']);
+      } finally {
+        delete (rows[A] as Partial<Submission>).reviewed;
+        delete (rows[B] as Partial<Submission>).reviewed;
+      }
+    });
+
     it("reviews and emails each one exactly as a single review does, from the reviewer's site", async () => {
       await provider.updateUserSubmission(
         A,
