@@ -8231,3 +8231,17 @@ reformatting was the director's formatter run over the whole folder, and it is u
 Each: test red first, the bug-fix check, before/after screenshots, a release note. **Run the formatter only on the files
 you change.** Report each "branch ready".
 
+## Batch 79 (gisday: #3048, a broadcast belongs to an organization; 15 November 2026, from `work (gisday)`) (Low)
+
+**Report 78:** both PRs open once their checks pass; your two questions (the other image pickers, and a refused file
+clearing an earlier choice) are with the maintainer.
+
+[#3048](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3048), as the issue says: a broadcast
+gets a place (set on its admin page, as a venue's is), and each site's admin lists only its places' broadcasts
+(`placesShownOn`/`siteListsSession` in `libs/gisday/common`; #3054 made the broadcast routes admin-only, which stays). A
+TypeORM migration, run on your **local** database only and reverted afterwards; its production script in kubernetes-config
+`6. GIS Day/migrations/migrate-prod-3048.ps1`, copied from `migrate-prod-2948.ps1`, on its own branch, **never run**; and a
+data script in `6. GIS Day/data/` that sets each existing broadcast's place from the sessions that use it, listing any no
+session uses, dry run by default, **never run**. Branch `feat/3048-broadcast-organization` from the latest `development`.
+Tests red first; the bug-fix check; before/after screenshots; a release note. Report "branch ready".
+
