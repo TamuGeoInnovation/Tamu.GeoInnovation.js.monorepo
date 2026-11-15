@@ -795,6 +795,115 @@ describe('UserSubmissionProvider', () => {
     });
   });
 
+  /**
+   * #3017: the final reminder to finalists who have not uploaded their final presentation or poster, by the review email's
+   * own path: previewed and edited first, one kind per competition, sent to the same people. A submission that already
+   * has a file is skipped, and said to be.
+   */
+  describe('the final reminder (#3017)', () => {
+    const A = '0f8c9a52-1b2c-4d3e-8f4a-5b6c7d8e9f01';
+    const B = '1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d';
+    const C = '2b3c4d5e-6f7a-4b8c-9d0e-1f2a3b4c5d6e';
+    const rows: Record<string, Submission> = {
+      [A]: submission({
+        guid: A,
+        title: 'Flood maps',
+        submissionType: 'poster',
+        participants: [
+          { name: 'Ana Ruiz', email: 'ana@tamu.edu' },
+          { name: 'Ben Lee', email: 'ben@tamu.edu' }
+        ],
+        files: []
+      }),
+      [B]: submission({
+        guid: B,
+        title: 'Campus trees',
+        submissionType: 'presentation',
+        participants: [{ name: 'Cy Diaz', email: 'cy@tamu.edu' }],
+        files: [{ guid: 'f-1', name: 'slides.pptx' }]
+      }),
+      [C]: submission({
+        guid: C,
+        title: 'Bike lanes',
+        submissionType: 'presentation',
+        participants: [{ name: 'Di Park', email: 'di@tamu.edu' }]
+      })
+    };
+    const sends = () => (contactService.sendMessage as jest.Mock).mock.calls;
+
+    beforeEach(() => {
+      jest
+        .spyOn(submissionRepo, 'findOne')
+        .mockImplementation((async ({ where }: { where: { guid: string } }) =>
+          rows[where.guid] ? { ...rows[where.guid], participants: [...rows[where.guid].participants] } : null) as never);
+    });
+
+    it('previews one group per competition, skipping and naming any that already has a file, and sends nothing', async () => {
+      const preview = await provider.previewReminders([A, B, C], REVIEWER_PERMS, 'gisday.tamu.edu');
+
+      expect(preview.groups.map((g) => [g.kind, g.label, g.count])).toEqual([
+        ['poster-reminder', 'Final reminders: posters', 1],
+        ['presentation-reminder', 'Final reminders: presentations', 1]
+      ]);
+      expect(preview.groups[1].subject).toBe('Final reminder: upload your final presentation for Texas A&M GIS Day');
+      expect(preview.groups[0].subject).toBe('Final reminder: upload your final poster for Texas A&M GIS Day');
+      expect(preview.groups[1].template).toContain('This is your final reminder.');
+      expect(preview.groups[1].template).toContain('your submission will be removed from the competition');
+      expect(preview.groups[0].example).toEqual(expect.objectContaining({ title: 'Flood maps', to: 'ana@tamu.edu', cc: 'ben@tamu.edu' }));
+      expect(preview.skipped).toEqual(['Campus trees']);
+      expect(contactService.sendMessage).not.toHaveBeenCalled();
+      expect(submissionRepo.update).not.toHaveBeenCalled();
+    });
+
+    it('sends the text as edited to each without a file, skips the one with a file, and records nothing', async () => {
+      const result = await provider.remindUserSubmissions(
+        [A, B, C],
+        { templates: { 'presentation-reminder': 'Hi {first name}, "{title}" needs its slides by {upload deadline}.' } },
+        REVIEWER_PERMS,
+        'gisday.tamu.edu'
+      );
+
+      expect(result).toEqual({ sent: ['Flood maps', 'Bike lanes'], skipped: ['Campus trees'], failed: [] });
+      expect(sends().map(([m]) => [m.to, m.subject])).toEqual([
+        ['ana@tamu.edu', 'Final reminder: upload your final poster for Texas A&M GIS Day'],
+        ['di@tamu.edu', 'Final reminder: upload your final presentation for Texas A&M GIS Day']
+      ]);
+      expect(sends()[0][0].cc).toBe('ben@tamu.edu');
+      expect(sends()[0][0].text).toContain('This is your final reminder.');
+      expect(sends()[1][0].text).toMatch(/^Hi Di, "Bike lanes" needs its slides by /);
+      expect(submissionRepo.update).not.toHaveBeenCalled();
+      // Its files are asked for: a submission is not loaded with them otherwise.
+      expect(submissionRepo.findOne).toHaveBeenCalledWith(expect.objectContaining({ relations: { season: true, files: true } }));
+    });
+
+    it('previews exactly the email that is then sent when the text is left as it is', async () => {
+      const preview = await provider.previewReminders([C], REVIEWER_PERMS, 'gisday.tamu.edu');
+      const [group] = preview.groups;
+
+      await provider.remindUserSubmissions([C], { templates: { [group.kind]: group.template } }, REVIEWER_PERMS, 'gisday.tamu.edu');
+
+      expect(sends()[0][0].text).toBe(fillReviewEmail(group.template, group.example.values));
+    });
+
+    it('names one whose email could not be sent, and carries on', async () => {
+      (contactService.sendMessage as jest.Mock).mockRejectedValueOnce(new Error('mailroom unreachable'));
+
+      const result = await provider.remindUserSubmissions([A, C], {}, REVIEWER_PERMS, 'gisday.tamu.edu');
+
+      expect(result).toEqual({ sent: ['Bike lanes'], skipped: [], failed: [{ title: 'Flood maps', reason: 'the email could not be sent' }] });
+    });
+
+    it('is for reviewers only, and checks what it is given', async () => {
+      await expect(provider.previewReminders([A], [])).rejects.toThrow(ForbiddenException);
+      await expect(provider.remindUserSubmissions([A], {}, [])).rejects.toThrow(ForbiddenException);
+      await expect(provider.remindUserSubmissions([], {}, REVIEWER_PERMS)).rejects.toThrow(BadRequestException);
+      await expect(provider.remindUserSubmissions(['1; drop'], {}, REVIEWER_PERMS)).rejects.toThrow(BadRequestException);
+      await expect(provider.remindUserSubmissions([A], { templates: { 'poster-reminder': 5 } } as never, REVIEWER_PERMS)).rejects.toThrow(
+        BadRequestException
+      );
+    });
+  });
+
   describe('.deleteUserSubmission()', () => {
     it('lets the owner delete their own submission', async () => {
       jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission());

@@ -144,3 +144,74 @@ describe('UserSubmissionController POST /user-submissions/review', () => {
     expect(updateUserSubmission).not.toHaveBeenCalled();
   });
 });
+
+/** #3017: the final reminder's two routes, beside the review's, for reviewers only. */
+describe('UserSubmissionController POST /user-submissions/remind', () => {
+  let app: INestApplication;
+  let url: string;
+  let permissions: Array<string>;
+  const remindUserSubmissions = jest.fn();
+  const previewReminders = jest.fn();
+  const updateUserSubmission = jest.fn();
+
+  const post = (path: string, body: object) =>
+    fetch(`${url}/user-submissions/${path}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Origin: 'https://gisday.tamu.edu' },
+      body: JSON.stringify(body)
+    });
+
+  beforeEach(async () => {
+    permissions = [];
+    remindUserSubmissions.mockReset().mockResolvedValue({ sent: ['Flood maps'], skipped: [], failed: [] });
+    previewReminders.mockReset().mockResolvedValue({ groups: [], skipped: [] });
+    updateUserSubmission.mockReset();
+
+    const module = await Test.createTestingModule({
+      controllers: [UserSubmissionController],
+      providers: [
+        { provide: UserSubmissionProvider, useValue: { remindUserSubmissions, previewReminders, updateUserSubmission } },
+        { provide: SubmissionFilesService, useValue: {} }
+      ]
+    })
+      .overrideGuard(JwtGuard)
+      .useValue({
+        canActivate: (context: ExecutionContext) => {
+          context.switchToHttp().getRequest().user = { sub: 'admin-1', permissions };
+          return true;
+        }
+      })
+      .compile();
+
+    app = module.createNestApplication({ logger: false });
+    await app.listen(0, '127.0.0.1');
+    url = await app.getUrl();
+  });
+
+  afterEach(async () => {
+    await app.close();
+  });
+
+  it('refuses an admin without update:competitions, on both routes', async () => {
+    permissions = ['read:competitions'];
+
+    expect((await post('remind', { submissions: ['a'] })).status).toBe(403);
+    expect((await post('remind/preview', { submissions: ['a'] })).status).toBe(403);
+    expect(remindUserSubmissions).not.toHaveBeenCalled();
+    expect(previewReminders).not.toHaveBeenCalled();
+  });
+
+  it("previews and sends the list in one call each, from the reviewer's site, with the text approved", async () => {
+    permissions = ['update:competitions'];
+    const templates = { 'poster-reminder': 'Hi {first name}' };
+
+    expect((await post('remind/preview', { submissions: ['a', 'b'] })).status).toBe(201);
+    expect(previewReminders).toHaveBeenCalledWith(['a', 'b'], ['update:competitions'], 'gisday.tamu.edu');
+
+    const response = await post('remind', { submissions: ['a', 'b'], templates });
+
+    expect(await response.json()).toEqual({ sent: ['Flood maps'], skipped: [], failed: [] });
+    expect(remindUserSubmissions).toHaveBeenCalledWith(['a', 'b'], { templates }, ['update:competitions'], 'gisday.tamu.edu');
+    expect(updateUserSubmission).not.toHaveBeenCalled();
+  });
+});
