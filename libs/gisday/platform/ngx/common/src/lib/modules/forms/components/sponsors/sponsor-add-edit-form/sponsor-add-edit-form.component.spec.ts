@@ -1,10 +1,12 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { Observable, of, Subject, throwError } from 'rxjs';
 
 import { AssetsService, SeasonService, SponsorService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { FileComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 import { SponsorAddEditFormComponent } from './sponsor-add-edit-form.component';
 
@@ -167,6 +169,75 @@ describe('SponsorAddEditFormComponent', () => {
       component.handleSubmission();
 
       expect(toast).toHaveBeenCalledWith(expect.objectContaining({ message: 'The photo must be a PNG or JPEG image' }));
+    });
+  });
+
+  /**
+   * #3009. The logo picker takes only what the API takes, a JPEG or PNG (#2937). An SVG used to be taken and previewed,
+   * and refused only once the sponsor was saved; it is now refused as soon as it is chosen, in the API's words, and the
+   * form keeps the logo it had.
+   */
+  describe('choosing a logo', () => {
+    function open() {
+      TestBed.configureTestingModule({
+        providers: [
+          provideRouter([]),
+          { provide: ActivatedRoute, useValue: { params: of({ guid: 'sp-1' }) } },
+          { provide: SponsorService, useValue: { getEntity: () => of({ guid: 'sp-1', name: 'Sponsor' }) } },
+          { provide: AssetsService, useValue: { getAssetUrl: () => of(null) } },
+          { provide: SeasonService, useValue: { activeSeason$: of({ guid: 'season' }) } },
+          { provide: NotificationService, useValue: { toast: () => undefined } }
+        ]
+      });
+
+      const fixture = TestBed.createComponent(SponsorAddEditFormComponent);
+      fixture.componentRef.setInput('type', 'edit');
+      fixture.detectChanges();
+
+      // jsdom cannot put a file in a file input, so the picker is given the input's change, as the browser gives it.
+      const choose = (file: File) => {
+        fixture.debugElement
+          .query(By.directive(FileComponent))
+          .componentInstance.handleFileChange({ target: { files: [file], value: file.name } });
+        fixture.detectChanges();
+      };
+
+      const alert = () => (fixture.nativeElement as HTMLElement).querySelector('[role="alert"]')?.textContent?.trim();
+
+      return { fixture, choose, alert };
+    }
+
+    it('offers only JPEG and PNG files', () => {
+      const { fixture } = open();
+
+      const input = (fixture.nativeElement as HTMLElement).querySelector<HTMLInputElement>(
+        'tamu-gisc-file input[type="file"]'
+      );
+
+      expect(input.accept).toBe('image/jpeg,image/png');
+    });
+
+    it.each([
+      ['an SVG', new File(['<svg xmlns="http://www.w3.org/2000/svg"/>'], 'logo.svg', { type: 'image/svg+xml' })],
+      ['a GIF', new File(['GIF89a'], 'logo.gif', { type: 'image/gif' })]
+    ])("refuses %s as soon as it is chosen, in the API's words, and keeps no file", (_name, file) => {
+      const { fixture, choose, alert } = open();
+
+      choose(file);
+
+      expect(alert()).toBe('The logo must be a JPEG or PNG image.');
+      expect(fixture.componentInstance.form.getRawValue().file).toBeFalsy();
+    });
+
+    it('takes a PNG, and clears the refusal', () => {
+      const { fixture, choose, alert } = open();
+      const png = new File(['png'], 'logo.png', { type: 'image/png' });
+
+      choose(new File(['<svg/>'], 'logo.svg', { type: 'image/svg+xml' }));
+      choose(png);
+
+      expect(alert()).toBeUndefined();
+      expect(fixture.componentInstance.form.getRawValue().file).toBe(png);
     });
   });
 });
