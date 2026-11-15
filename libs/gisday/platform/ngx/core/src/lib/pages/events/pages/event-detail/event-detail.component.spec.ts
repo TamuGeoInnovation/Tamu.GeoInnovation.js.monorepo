@@ -52,19 +52,21 @@ describe('EventDetailComponent check-in', () => {
       endTime: '23:59:59'
     },
     // The page's query string, the signed-in account's roles, whether the session is open at any time
-    // (#2635), and what the admins' list of its check-ins and the site's users answer.
+    // (#2635), what the admins' list of its check-ins and the site's users answer, and its online broadcast (#3055).
     {
       query = {},
       roles = [],
       anyTime = false,
       sessionCheckIns = () => of([] as Array<Record<string, unknown>>),
-      users = () => of([] as Array<Record<string, unknown>>)
+      users = () => of([] as Array<Record<string, unknown>>),
+      broadcast = undefined
     }: {
       query?: Record<string, string>;
       roles?: Array<string>;
       anyTime?: boolean;
       sessionCheckIns?: () => ReturnType<typeof of>;
       users?: () => ReturnType<typeof of>;
+      broadcast?: Record<string, string>;
     } = {}
   ) {
     let checkedIn = false;
@@ -86,7 +88,8 @@ describe('EventDetailComponent check-in', () => {
       ...schedule,
       checkInAnyTime: anyTime,
       speakers: [],
-      location: { building: 'TAMU Rudder Plaza', checkInZone: zone }
+      location: { building: 'TAMU Rudder Plaza', checkInZone: zone },
+      broadcast
     };
 
     TestBed.configureTestingModule({
@@ -246,6 +249,28 @@ describe('EventDetailComponent check-in', () => {
    */
   describe('a hybrid or virtual session', () => {
     const scanned = { query: { checkin: 'code-1' } };
+
+    /** The Online Broadcast panel's line that starts with `label`, as one line of text. */
+    const line = (page: HTMLElement, label: string) =>
+      Array.from(page.querySelectorAll('tamu-gisc-accordion-content p'))
+        .map((p) => p.textContent.replace(/\s+/g, ' ').trim())
+        .find((t) => t.startsWith(label));
+
+    it('shows the broadcast’s phone number as its dial-in number, not its password (#3055)', () => {
+      const broadcast = { publicUrl: 'https://example.com/j/1', password: 'test-3055', phoneNumber: '555-0100' };
+      const { page } = open('hybrid', undefined, undefined, { broadcast });
+
+      expect(line(page(), 'Dial-in number:')).toBe('Dial-in number: 555-0100');
+      expect(line(page(), 'Password:')).toBe('Password: test-3055');
+    });
+
+    it('says None for a broadcast with no dial-in number', () => {
+      const { page } = open('virtual', undefined, undefined, {
+        broadcast: { publicUrl: 'https://example.com/j/1', password: 'test-3055' }
+      });
+
+      expect(line(page(), 'Dial-in number:')).toBe('Dial-in number: None');
+    });
 
     it.each(['hybrid', 'virtual'])(
       'checks in to a %s session from its QR code, sending the code and no location',
