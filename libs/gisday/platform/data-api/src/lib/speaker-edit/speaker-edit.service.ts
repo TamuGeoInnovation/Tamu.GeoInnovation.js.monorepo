@@ -217,7 +217,8 @@ export class SpeakerEditService {
           if (speaker) {
             matched.add(speaker.guid);
           } else {
-            unmatched.push({ name: emails.length === 1 ? named : email, submission: submission.title });
+            // An entry with several addresses is named with the one not found, so the admin knows which (#3043).
+            unmatched.push({ name: emails.length === 1 ? named : `${named} (${email})`, submission: submission.title });
           }
         }
       }

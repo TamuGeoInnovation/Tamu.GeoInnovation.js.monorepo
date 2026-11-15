@@ -13,7 +13,13 @@ import {
   reviewSubmissionsToast,
   sendEditLinksToast
 } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { ReminderSkipReason, hasFinalFile, reminderSkipReason, reminderSkipSummary } from '@tamu-gisc/gisday/common';
+import {
+  hasFinalFile,
+  participantEmails,
+  ReminderSkipReason,
+  reminderSkipReason,
+  reminderSkipSummary
+} from '@tamu-gisc/gisday/common';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { AlertModalData } from '@tamu-gisc/ui-kits/ngx/layout/modal/alert-modal';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
@@ -104,8 +110,16 @@ export function reviewConfirmation(rows: Array<Partial<Submission>>, acceptance:
  * once however many submissions they are on.
  */
 export function profileEmailNote(rows: Array<Partial<Submission>>): string {
+  // People, not entries: each address in a box counts, read as the server reads it (#3043), and an entry with no
+  // address by its name.
   const people = new Set(
-    rows.flatMap((row) => (row.participants ?? []).map((p) => (p.email?.trim() || p.name?.trim() || '').toLowerCase()))
+    rows.flatMap((row) =>
+      (row.participants ?? []).flatMap((p) => {
+        const emails = participantEmails(p.email);
+
+        return emails.length ? emails : [(p.name?.trim() ?? '').toLowerCase()];
+      })
+    )
   );
 
   people.delete('');
@@ -114,7 +128,7 @@ export function profileEmailNote(rows: Array<Partial<Submission>>): string {
     rows.length,
     'submission',
     'submissions'
-  )}. Each with a speaker record this season gets their own link to update their presenter profile; anyone without one is listed afterwards, not emailed.`;
+  )}. Each with a presenter record this season gets their own link to update their presenter profile; anyone without one is listed below and won't be emailed.`;
 }
 
 /** Why each of the rows that gets no final reminder is skipped (#3017): not accepted, or a file already. */
