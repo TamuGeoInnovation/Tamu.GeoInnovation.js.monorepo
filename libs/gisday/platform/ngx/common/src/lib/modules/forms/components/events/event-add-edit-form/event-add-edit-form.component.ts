@@ -281,9 +281,6 @@ export class EventAddEditFormComponent implements OnInit {
         // Remove the season form control since we are editing an existing event
         // Will otherwise move to the active season
         this.form.removeControl('season');
-
-        // Opening the page is not a change (#2942), though each control echoes the value it is given.
-        this.form.markAsPristine();
       });
 
       this.selectedEventDateStart$ = this.entity$.pipe(take(1), this._timeStringFromEvent$('startTime'), shareReplay());
@@ -306,9 +303,6 @@ export class EventAddEditFormComponent implements OnInit {
         this.form.patchValue({
           season: season.guid
         });
-
-        // Opening the page is not a change (#2942), though each control echoes the value it is given.
-        this.form.markAsPristine();
       });
     }
   }

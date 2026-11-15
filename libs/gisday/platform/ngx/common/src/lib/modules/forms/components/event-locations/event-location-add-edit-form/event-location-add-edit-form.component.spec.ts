@@ -84,7 +84,7 @@ describe('EventLocationAddEditFormComponent', () => {
 
   /**
    * #2942. Escape on an admin details page asks before leaving only when the form has changes. A venue opened and left
-   * as it was has none, although its controls write back the values the page gives them.
+   * as it was has none: its controls take the values the page gives them without reporting them back (#2964).
    */
   describe('as it opens', () => {
     it('holds no changes once the venue it shows has arrived', () => {

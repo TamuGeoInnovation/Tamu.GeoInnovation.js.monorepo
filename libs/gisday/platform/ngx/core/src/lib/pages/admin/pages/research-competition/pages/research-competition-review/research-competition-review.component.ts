@@ -79,9 +79,6 @@ export class ResearchCompetitionReviewComponent extends BaseAdminDetailsPageComp
       const acceptance = entity.acceptance.toString();
 
       this.form.patchValue({ guid: entity.guid, acceptance, message: entity.message });
-
-      // Opening the page is not a change (#2942), though each control echoes the value it is given.
-      this.form.markAsPristine();
     });
   }
 
