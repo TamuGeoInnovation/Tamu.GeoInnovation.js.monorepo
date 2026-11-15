@@ -340,11 +340,36 @@ describe('SpeakerEditService', () => {
       expect.objectContaining({
         guid: 'speaker-ana',
         fields: expect.objectContaining({ description: 'Approved bio' }),
-        photo: expect.objectContaining({ buffer: declaredJpeg(10, 10), originalname: 'photo' })
+        photo: expect.objectContaining({ buffer: declaredJpeg(10, 10), originalname: `photo-${edit.guid}` })
       })
     ]);
     expect(edit).toEqual(expect.objectContaining({ status: 'approved', reviewedBy: 'auth0|admin', photoPath: null }));
     expect(existsSync(join(appData, photoPath))).toBe(false);
+  });
+
+  // #3091: every approved photo was named `photo`, so it kept the old one's address, and browsers, told to keep an upload
+  // for a year, went on showing the old photo.
+  it("names each approved photo for its own edit, so a new photo never takes the old one's address", async () => {
+    await service.sendLinks(['speaker-ana']);
+    await service.propose(tokenSent(), { description: 'One' }, {
+      originalname: 'a.jpg',
+      buffer: declaredJpeg(10, 10)
+    } as never);
+    edits[0].speaker = ana;
+    await service.approve(edits[0].guid as string, 'auth0|admin');
+
+    await service.propose(tokenSent(), { description: 'Two' }, {
+      originalname: 'a.jpg',
+      buffer: declaredJpeg(10, 10)
+    } as never);
+    const second = edits.find((e) => e.status === 'pending');
+    second.speaker = ana;
+    await service.approve(second.guid as string, 'auth0|admin');
+
+    const names = applied.map((a) => (a as { photo?: { originalname: string } }).photo?.originalname);
+
+    expect(names).toHaveLength(2);
+    expect(names[0]).not.toEqual(names[1]);
   });
 
   it('changes nothing on the speaker when an admin rejects', async () => {

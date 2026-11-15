@@ -1,4 +1,9 @@
-import { BadRequestException, NotFoundException, PayloadTooLargeException, UnprocessableEntityException } from '@nestjs/common';
+import {
+  BadRequestException,
+  NotFoundException,
+  PayloadTooLargeException,
+  UnprocessableEntityException
+} from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 
@@ -33,7 +38,14 @@ describe('SpeakerProvider', () => {
 
   /** A speaker as it comes back on an event, with the fields `limitToPopulated` looks at. */
   const speaker = (guid: string, over: Record<string, unknown> = {}) =>
-    ({ guid, firstName: 'A', lastName: 'B', description: 'A bio', images: [{ guid: 'i-1' }], ...over }) as unknown as Speaker;
+    ({
+      guid,
+      firstName: 'A',
+      lastName: 'B',
+      description: 'A bio',
+      images: [{ guid: 'i-1' }],
+      ...over
+    }) as unknown as Speaker;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -75,9 +87,7 @@ describe('SpeakerProvider', () => {
     it('scopes to the season and orders by last then first name', async () => {
       jest.spyOn(speakerRepo, 'find').mockResolvedValue([speaker('s-1')]);
 
-      await expect(provider.getSpeakersForSeason('season-1')).resolves.toEqual([
-        expect.objectContaining({ guid: 's-1' })
-      ]);
+      await expect(provider.getSpeakersForSeason('season-1')).resolves.toEqual([expect.objectContaining({ guid: 's-1' })]);
       expect(speakerRepo.find).toHaveBeenCalledWith(
         expect.objectContaining({
           where: { season: { guid: 'season-1' } },
@@ -117,17 +127,11 @@ describe('SpeakerProvider', () => {
     });
 
     it('keeps only speakers with both a bio and an image when asked to', async () => {
-      jest
-        .spyOn(seasonService, 'findOneActive')
-        .mockResolvedValue(activeSeason([{ events: [{ guid: 'e-1' }] }]) as never);
+      jest.spyOn(seasonService, 'findOneActive').mockResolvedValue(activeSeason([{ events: [{ guid: 'e-1' }] }]) as never);
       jest.spyOn(eventRepo, 'find').mockResolvedValue([
         {
           guid: 'e-1',
-          speakers: [
-            speaker('s-complete'),
-            speaker('s-no-bio', { description: '' }),
-            speaker('s-no-image', { images: [] })
-          ]
+          speakers: [speaker('s-complete'), speaker('s-no-bio', { description: '' }), speaker('s-no-image', { images: [] })]
         }
       ] as unknown as Event[]);
 
@@ -137,12 +141,10 @@ describe('SpeakerProvider', () => {
     });
 
     it('keeps incomplete speakers when not asked to filter', async () => {
+      jest.spyOn(seasonService, 'findOneActive').mockResolvedValue(activeSeason([{ events: [{ guid: 'e-1' }] }]) as never);
       jest
-        .spyOn(seasonService, 'findOneActive')
-        .mockResolvedValue(activeSeason([{ events: [{ guid: 'e-1' }] }]) as never);
-      jest.spyOn(eventRepo, 'find').mockResolvedValue([
-        { guid: 'e-1', speakers: [speaker('s-no-bio', { description: '' })] }
-      ] as unknown as Event[]);
+        .spyOn(eventRepo, 'find')
+        .mockResolvedValue([{ guid: 'e-1', speakers: [speaker('s-no-bio', { description: '' })] }] as unknown as Event[]);
 
       await expect(provider.getSpeakersForActiveSeasonInEvents()).resolves.toHaveLength(1);
     });
@@ -166,18 +168,14 @@ describe('SpeakerProvider', () => {
       await expect(provider.getSpeakersForActiveSeasonInEvents()).resolves.toEqual([]);
       // It does not short-circuit: the lookup still runs with an empty `In([])`. That is wasteful
       // rather than wrong, and is asserted so the behaviour is recorded rather than assumed.
-      expect(find).toHaveBeenCalledWith(
-        expect.objectContaining({ where: { guid: expect.anything() } })
-      );
+      expect(find).toHaveBeenCalledWith(expect.objectContaining({ where: { guid: expect.anything() } }));
     });
 
     it('tolerates a day with no events on it', async () => {
       jest
         .spyOn(seasonService, 'findOneActive')
         .mockResolvedValue(activeSeason([{ events: [] }, { events: [{ guid: 'e-1' }] }]) as never);
-      jest
-        .spyOn(eventRepo, 'find')
-        .mockResolvedValue([{ guid: 'e-1', speakers: [speaker('s-1')] }] as unknown as Event[]);
+      jest.spyOn(eventRepo, 'find').mockResolvedValue([{ guid: 'e-1', speakers: [speaker('s-1')] }] as unknown as Event[]);
 
       await expect(provider.getSpeakersForActiveSeasonInEvents()).resolves.toHaveLength(1);
     });
@@ -205,9 +203,11 @@ describe('SpeakerProvider', () => {
       jest
         .spyOn(seasonService, 'findOneWithDaysAndEvents')
         .mockResolvedValue(pastSeason([{ events: [{ guid: 'e-1' }] }]) as never);
-      jest.spyOn(eventRepo, 'find').mockResolvedValue([
-        { guid: 'e-1', speakers: [speaker('s-complete'), speaker('s-no-image', { images: [] })] }
-      ] as unknown as Event[]);
+      jest
+        .spyOn(eventRepo, 'find')
+        .mockResolvedValue([
+          { guid: 'e-1', speakers: [speaker('s-complete'), speaker('s-no-image', { images: [] })] }
+        ] as unknown as Event[]);
 
       const result = await provider.getSpeakersForSeasonInEvents('season-2025', true);
 
@@ -233,9 +233,7 @@ describe('SpeakerProvider', () => {
 
       await provider.getAllTimeOrganizers();
 
-      expect(speakerRepo.find).toHaveBeenCalledWith(
-        expect.objectContaining({ where: { isOrganizer: true } })
-      );
+      expect(speakerRepo.find).toHaveBeenCalledWith(expect.objectContaining({ where: { isOrganizer: true } }));
     });
 
     it('restricts to organizers for whichever season is active', async () => {
@@ -309,13 +307,25 @@ describe('SpeakerProvider', () => {
 
       await provider.updateWithInfo('s-1', {}, { originalname: 'face.png', buffer: declaredPng(10, 10) });
 
-      expect(assetService.saveAsset).toHaveBeenCalledWith(
-        'images/speakers',
-        expect.anything(),
-        'speaker-image',
-        { prefix: 's-1-' }
-      );
+      expect(assetService.saveAsset).toHaveBeenCalledWith('images/speakers', expect.anything(), 'speaker-image', {
+        prefix: expect.stringMatching(/^s-1-[0-9a-f]{8}-$/)
+      });
       expect((speakerRepo.save as jest.Mock).mock.calls[0][0].images).toEqual([{ guid: 'i-2' }]);
+    });
+
+    // #3091: uploads are served as immutable for a year, so a new photo saved under an old one's name kept showing the
+    // old photo. Two uploads with the same file name get different addresses.
+    it('gives a new photo its own address even when its file has the same name as the last one', async () => {
+      jest.spyOn(speakerRepo, 'findOne').mockResolvedValue(existing());
+      jest.spyOn(speakerRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
+      jest.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'i-2' } as never);
+
+      await provider.updateWithInfo('s-1', {}, { originalname: 'headshot.png', buffer: declaredPng(10, 10) });
+      await provider.updateWithInfo('s-1', {}, { originalname: 'headshot.png', buffer: declaredPng(10, 10) });
+
+      const [first, second] = (assetService.saveAsset as jest.Mock).mock.calls.map((c) => c[3].prefix);
+
+      expect(first).not.toEqual(second);
     });
 
     // jimp is pure JavaScript, so a 3000 px photo takes a second or more; 30 s, not 5, under the full check's load.
@@ -325,7 +335,11 @@ describe('SpeakerProvider', () => {
       jest.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'i-2' } as never);
       const upload = await new Jimp({ width: 3000, height: 3000, color: 0x7f7f7fff }).getBuffer('image/jpeg');
 
-      await provider.updateWithInfo('s-1', {}, { originalname: 'face.jpg', mimetype: 'image/jpeg', buffer: upload, size: upload.length });
+      await provider.updateWithInfo(
+        's-1',
+        {},
+        { originalname: 'face.jpg', mimetype: 'image/jpeg', buffer: upload, size: upload.length }
+      );
 
       const stored = (assetService.saveAsset as jest.Mock).mock.calls[0][1];
       const { width, height } = (await Jimp.fromBuffer(stored.buffer)).bitmap;
@@ -343,7 +357,11 @@ describe('SpeakerProvider', () => {
       expect(bomb.length).toBeLessThan(4096);
 
       await expect(
-        provider.updateWithInfo('s-1', {}, { originalname: 'bomb.png', mimetype: 'image/png', buffer: bomb, size: bomb.length })
+        provider.updateWithInfo(
+          's-1',
+          {},
+          { originalname: 'bomb.png', mimetype: 'image/png', buffer: bomb, size: bomb.length }
+        )
       ).rejects.toThrow(PayloadTooLargeException);
       expect(assetService.saveAsset).not.toHaveBeenCalled();
     });
@@ -354,7 +372,10 @@ describe('SpeakerProvider', () => {
       const bomb = declaredPng(9000, 9000);
 
       await expect(
-        provider.insertWithInfo({ firstName: 'A' }, { originalname: 'bomb.png', mimetype: 'image/png', buffer: bomb, size: bomb.length })
+        provider.insertWithInfo(
+          { firstName: 'A' },
+          { originalname: 'bomb.png', mimetype: 'image/png', buffer: bomb, size: bomb.length }
+        )
       ).rejects.toThrow(PayloadTooLargeException);
       expect(save).not.toHaveBeenCalled();
     });
@@ -365,7 +386,11 @@ describe('SpeakerProvider', () => {
       const notAnImage = Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>');
 
       await expect(
-        provider.updateWithInfo('s-1', {}, { originalname: 'face.svg', mimetype: 'image/svg+xml', buffer: notAnImage, size: notAnImage.length })
+        provider.updateWithInfo(
+          's-1',
+          {},
+          { originalname: 'face.svg', mimetype: 'image/svg+xml', buffer: notAnImage, size: notAnImage.length }
+        )
       ).rejects.toThrow(BadRequestException);
       expect(assetService.saveAsset).not.toHaveBeenCalled();
     });
@@ -387,7 +412,12 @@ describe('SpeakerProvider', () => {
       const svg = Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"/>');
       // A GIF's header: its signature, then a 1 x 1 logical screen.
       const gif = Buffer.concat([Buffer.from('GIF89a', 'latin1'), Buffer.from([1, 0, 1, 0, 0, 0, 0, 0, 0, 0])]);
-      const upload = (originalname: string, buffer: Buffer) => ({ originalname, mimetype: 'image/png', buffer, size: buffer.length });
+      const upload = (originalname: string, buffer: Buffer) => ({
+        originalname,
+        mimetype: 'image/png',
+        buffer,
+        size: buffer.length
+      });
 
       it.each([
         ['an SVG renamed to .png', upload('face.png', svg)],
@@ -436,9 +466,17 @@ describe('SpeakerProvider', () => {
     });
 
     it('counts only the speakers it found', async () => {
-      jest.spyOn(speakerRepo, 'update').mockResolvedValueOnce({ affected: 1 } as never).mockResolvedValueOnce({ affected: 0 } as never);
+      jest
+        .spyOn(speakerRepo, 'update')
+        .mockResolvedValueOnce({ affected: 1 } as never)
+        .mockResolvedValueOnce({ affected: 0 } as never);
 
-      await expect(provider.markBadgesPrinted([{ guid: 's-1', text: 'a' }, { guid: 'gone', text: 'b' }])).resolves.toEqual({ marked: 1 });
+      await expect(
+        provider.markBadgesPrinted([
+          { guid: 's-1', text: 'a' },
+          { guid: 'gone', text: 'b' }
+        ])
+      ).resolves.toEqual({ marked: 1 });
     });
 
     it('refuses an empty or malformed list rather than marking nothing silently', async () => {
@@ -459,18 +497,14 @@ describe('SpeakerProvider', () => {
     it('rejects a season that does not exist', async () => {
       jest.spyOn(seasonService, 'findOne').mockResolvedValue(null);
 
-      await expect(provider.copySpeakersIntoSeason('missing', ['s-1'])).rejects.toThrow(
-        UnprocessableEntityException
-      );
+      await expect(provider.copySpeakersIntoSeason('missing', ['s-1'])).rejects.toThrow(UnprocessableEntityException);
     });
 
     it('rejects when none of the requested speakers exist', async () => {
       jest.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
       jest.spyOn(speakerRepo, 'find').mockResolvedValue([]);
 
-      await expect(provider.copySpeakersIntoSeason('season-2', ['s-1'])).rejects.toThrow(
-        UnprocessableEntityException
-      );
+      await expect(provider.copySpeakersIntoSeason('season-2', ['s-1'])).rejects.toThrow(UnprocessableEntityException);
     });
 
     it('strips identity from the speaker and their images', async () => {
