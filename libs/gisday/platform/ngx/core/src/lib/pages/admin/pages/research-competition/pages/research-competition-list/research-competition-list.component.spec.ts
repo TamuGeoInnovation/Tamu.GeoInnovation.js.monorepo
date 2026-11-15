@@ -1,5 +1,7 @@
 import { TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { ActivatedRoute, provideRouter } from '@angular/router';
+import { DatatableComponent } from '@swimlane/ngx-datatable';
 import { of, Subject } from 'rxjs';
 
 import { SUBMISSION_CLASSIFICATION_OPTIONS, SUBMISSION_TYPE_OPTIONS } from '@tamu-gisc/gisday/platform/ngx/common';
@@ -329,6 +331,29 @@ describe('ResearchCompetitionListComponent, the final file and the final reminde
     );
 
     expect(cells.sort()).toEqual(['Missing', 'Missing', 'Missing', 'Missing', 'Uploaded']);
+  });
+
+  /**
+   * #3026: at 1280 px the table was cramped. Files and Final file ran together, short values broke mid-word ("Mis/sin/g",
+   * "Acce/pted"), and the select column's checkbox covered each title's first letter. Final file now says what the Files
+   * count did; the short values keep a width they fit in, whole; and the checkbox has the room it takes.
+   */
+  it('fits at 1280 px: no Files count beside Final file, short values whole, the checkbox clear of the title (#3026)', () => {
+    const { fixture, page } = open([]);
+    const headings = Array.from(page.querySelectorAll('.datatable-header-cell')).map((h) => h.textContent.trim());
+    const table = fixture.debugElement.query(By.directive(DatatableComponent)).componentInstance as DatatableComponent;
+    const column = (name: string) => table._internalColumns.find((c) => c.name === name);
+
+    expect(headings).not.toContain('Files');
+    expect(headings).toContain('Final file');
+
+    for (const name of ['Type', 'Format', 'Final file', 'Status']) {
+      expect(column(name).minWidth).toBeGreaterThanOrEqual(100);
+      expect(String(column(name).cellClass)).toContain('whole-value');
+    }
+
+    expect(column('').width).toBeGreaterThanOrEqual(56);
+    expect(column('').minWidth).toBeGreaterThanOrEqual(56);
   });
 
   it('shows the reminder first, editable, saying how many are skipped for having a file, then sends it with the text approved', () => {
