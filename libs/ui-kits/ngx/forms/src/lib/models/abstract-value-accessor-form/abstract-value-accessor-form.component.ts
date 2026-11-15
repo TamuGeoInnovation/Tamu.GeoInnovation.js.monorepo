@@ -31,8 +31,21 @@ export class AbstractValueAccessorFormComponent<T> implements ControlValueAccess
     return;
   };
 
+  /** While the form is writing a value in, which is not a change to report back to it (#2964). */
+  private _writing = false;
+
+  /**
+   * Takes a value from the form, through the `value` setter so a child's side effects still run, without reporting it
+   * back as a change or a touch: the form would count as changed the moment a page loaded a record into it (#2964).
+   */
   public writeValue(v: T) {
-    this.value = v;
+    this._writing = true;
+
+    try {
+      this.value = v;
+    } finally {
+      this._writing = false;
+    }
   }
 
   public registerOnChange(fn) {
@@ -59,6 +72,10 @@ export class AbstractValueAccessorFormComponent<T> implements ControlValueAccess
     this._value.set(v === null ? undefined : v);
 
     this.cd.markForCheck();
+
+    if (this._writing) {
+      return;
+    }
 
     this._onChange(v === null ? undefined : v);
     this._onTouched();
