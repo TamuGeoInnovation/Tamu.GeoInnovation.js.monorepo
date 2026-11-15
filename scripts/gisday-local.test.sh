@@ -83,6 +83,18 @@ for args in "--static --site ucgis" "--site ucgis --static"; do
     'grep -- "--name gisday-site" <<<"$calls" | grep -q -- "-p 4201:4201 .*gisday-site-proxy.js ucgis gisday-dev 4201 4201"'
 done
 
+# The API picks a site's sessions and emails by the request's host (siteHost), and a same-origin GET through the proxy
+# carries no Origin, so the proxy names the site's own host in x-forwarded-host; without it the API answered as
+# txgisday.org (#3050). The host is the one in the site's `address` in sites.ts.
+for key in ucgis tamu txgisday; do
+  host="$(sed -n "/^  $key: {/,/^  }/s#^ *address: 'https://\([^/']*\)'.*#\1#p" "$repo/libs/gisday/common/src/lib/sites.ts")"
+  calls="$(web_calls --static --site "$key")"
+  check "web --site $key tells the site proxy its host, $host" \
+    '[ -n "$host" ] && grep -- "--name gisday-site" <<<"$calls" | grep -q -- "gisday-site-proxy.js $key gisday-dev 4201 4201 $host\$"'
+done
+check "the site proxy sends the host it is given as x-forwarded-host" \
+  'grep -q "x-forwarded-host" "$repo/scripts/gisday-site-proxy.js"'
+
 check "the nginx settings sit beside the script" '[ -f "$repo/scripts/gisday-local-static.conf" ]'
 
 # Every docker call for `restore`, with a settings folder of its own: `restore` only needs local-db.env to exist.
