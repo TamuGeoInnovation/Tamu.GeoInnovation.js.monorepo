@@ -37,7 +37,8 @@
       <!-- ngx-datatable, as the VGI review list uses it: a click on a heading sorts by it (#2808). -->
       <div class="datatable-container">
         <ngx-datatable class="material" [rows]="view.rows" [columnMode]="'force'" [headerHeight]="50" [rowHeight]="'auto'" [footerHeight]="0" [scrollbarV]="false" [reorderable]="false" [sorts]="[{ prop: 'created', dir: 'desc' }]" (activate)="onActivate($event)">
-          <ngx-datatable-column prop="select" name="" [width]="45" [maxWidth]="45" [sortable]="false" [resizeable]="false">
+          <!-- Room for the checkbox and the cell's padding, so it does not cover the title beside it (#3026). -->
+          <ngx-datatable-column prop="select" name="" [width]="56" [minWidth]="56" [maxWidth]="56" [sortable]="false" [resizeable]="false">
             <ng-template ngx-datatable-header-template>
               <tamu-gisc-checkbox label="" (changed)="toggleAllRows(view.rows)" [checked]="(selectedRows$ | async)?.length === view.rows.length"></tamu-gisc-checkbox>
             </ng-template>
@@ -67,11 +68,11 @@
           <!-- The submitter's field of study, or department for anyone but a student (#2799). -->
           <ngx-datatable-column name="Department / major" prop="submitter.department" [width]="160"></ngx-datatable-column>
 
-          <ngx-datatable-column name="Type" prop="submissionType" [width]="125">
+          <ngx-datatable-column name="Type" prop="submissionType" [width]="125" [minWidth]="100" cellClass="whole-value">
             <ng-template let-row="row" ngx-datatable-cell-template>{{row.submissionType | titlecase}}</ng-template>
           </ngx-datatable-column>
 
-          <ngx-datatable-column name="Format" prop="format" [width]="115">
+          <ngx-datatable-column name="Format" prop="format" [width]="115" [minWidth]="100" cellClass="whole-value">
             <ng-template let-row="row" ngx-datatable-cell-template>{{row.format | titlecase}}</ng-template>
           </ngx-datatable-column>
 
@@ -79,19 +80,16 @@
             <ng-template let-row="row" ngx-datatable-cell-template>{{row.classificationType | titlecase}}</ng-template>
           </ngx-datatable-column>
 
-          <!-- How many files the student attached (#2933); the review page lists and downloads them. -->
-          <ngx-datatable-column name="Files" prop="files.length" [width]="80">
-            <ng-template let-row="row" ngx-datatable-cell-template>{{row.files?.length || ''}}</ng-template>
-          </ngx-datatable-column>
 
-          <!-- Whether the final presentation or poster is uploaded (#3017): any file counts, as files have no kind. -->
-          <ngx-datatable-column name="Final file" prop="finalFile" [width]="100">
+          <!-- Whether the final presentation or poster is uploaded (#3017): any file counts, as files have no kind. It
+               replaced the Files count, which crowded it at 1280 px (#3026); the review page lists the files. -->
+          <ngx-datatable-column name="Final file" prop="finalFile" [width]="110" [minWidth]="100" cellClass="whole-value">
             <ng-template let-row="row" ngx-datatable-cell-template>
               <span [ngClass]="{'clr-md-red-500': row.finalFile === 'Missing'}">{{row.finalFile}}</span>
             </ng-template>
           </ngx-datatable-column>
 
-          <ngx-datatable-column name="Status" prop="reviewStatus" [width]="110">
+          <ngx-datatable-column name="Status" prop="reviewStatus" [width]="110" [minWidth]="100" cellClass="whole-value">
             <ng-template let-row="row" ngx-datatable-cell-template>
               <span class="bold" [ngClass]="{'clr-md-amber-800': row.reviewStatus === SubmissionReviewStatus.InReview, 'clr-md-green-600': row.reviewStatus === SubmissionReviewStatus.Accepted, 'clr-md-red-500': row.reviewStatus === SubmissionReviewStatus.Rejected}">{{row.reviewStatus}}</span>
             </ng-template>

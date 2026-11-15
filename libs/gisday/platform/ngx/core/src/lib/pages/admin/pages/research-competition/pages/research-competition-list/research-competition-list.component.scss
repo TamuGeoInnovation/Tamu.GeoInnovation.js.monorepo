@@ -22,4 +22,11 @@
     white-space: normal;
     overflow-wrap: break-word;
   }
+
+  // A short value (a type, a format, Uploaded, Accepted) reads whole, in a column wide enough for it (#3026): broken, it
+  // read "Mis/sin/g".
+  ::ng-deep .whole-value .datatable-body-cell-label {
+    white-space: nowrap;
+    overflow-wrap: normal;
+  }
 }
