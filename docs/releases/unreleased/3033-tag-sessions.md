@@ -12,3 +12,8 @@ one's day, time and name, in date and time order, linked to the session's admin 
 this tag." It is the same list a broadcast's page shows ([#3032](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3032)), with sessions hidden from the public
 schedule included for admins who can edit tags. On gisday.tamu.edu it shows only Texas A&M's sessions.
 ([#3033](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3033))
+
+| Before | After |
+| --- | --- |
+| ![A tag four sessions have: its admin page shows only its name](../screenshots/3033-tag-sessions/before-tag-with-sessions.png) | ![The same tag: under its name, Sessions with this tag, "4 sessions have this tag." and each session's day, time and linked name](../screenshots/3033-tag-sessions/after-tag-with-sessions.png) |
+| ![A tag no session has: its admin page shows only its name](../screenshots/3033-tag-sessions/before-tag-without-sessions.png) | ![The same tag: under its name, Sessions with this tag, "No sessions have this tag."](../screenshots/3033-tag-sessions/after-tag-without-sessions.png) |
