@@ -14,7 +14,7 @@ import {
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
-import { ReviewEmailModalComponent } from '../../components/review-email-modal/review-email-modal.component';
+import { ReviewEmailModalComponent } from '@tamu-gisc/gisday/platform/ngx/common';
 import { ResearchCompetitionListComponent, withData } from './research-competition-list.component';
 
 /** #2817: a filter offers All and only the choices the season's submissions have. */
@@ -127,6 +127,8 @@ describe('ResearchCompetitionListComponent actions on the selected submissions',
   // The email text the reviewer approved in the window, by kind (#2981).
   const templates = { poster: 'Howdy {first name}, edited poster text', presentation: 'Edited presentation text' };
   const preview = { groups: [] };
+  // The profile email's window closes with its text and its subject (#3023).
+  const profileEmail = { profile: 'Hi {first name}: {edit link}', 'profile:subject': 'Your profile' };
 
   function open(confirmed: boolean) {
     const service = {
@@ -137,14 +139,17 @@ describe('ResearchCompetitionListComponent actions on the selected submissions',
       review: jest.fn(() => of({ reviewed: ['Flood maps', 'Campus trees'], failed: [] }))
     };
     const speakerEdits = {
+      previewForSubmissions: jest.fn(() => of(preview)),
       sendForSubmissions: jest.fn(() =>
         of({ sent: ['Ana Ruiz', 'Cy Diaz'], skipped: [], unmatched: [{ name: 'Ben Lee', submission: 'Flood maps' }] })
       )
     };
     // The email window closes with the approved texts, or nothing; the profile email's question with yes or no.
     const modals = {
-      open: jest.fn((component: unknown) =>
-        component === ReviewEmailModalComponent ? of(confirmed ? templates : null) : of(confirmed)
+      open: jest.fn((component: unknown, options?: { data?: { verb?: string } }) =>
+        component === ReviewEmailModalComponent
+          ? of(confirmed ? (options?.data?.verb === 'Send profile email' ? profileEmail : templates) : null)
+          : of(confirmed)
       )
     };
     const toasts = { toast: jest.fn() };
@@ -219,13 +224,21 @@ describe('ResearchCompetitionListComponent actions on the selected submissions',
     expect(service.review).toHaveBeenCalledWith(['s1', 's2'], false, undefined, templates);
   });
 
-  it('asks before sending profile emails, counting the people once each, and lists anyone with no speaker record', () => {
+  it('shows the profile email first, editable, counting the people once each, then sends it as edited (#3023)', () => {
     const { speakerEdits, modals, toasts, click } = open(true);
 
     click('Send profile email');
 
-    expect(modals.open.mock.calls[0][1].data.message).toContain('Send profile emails to the 3 people of 2 submissions?');
-    expect(speakerEdits.sendForSubmissions).toHaveBeenCalledWith(['s1', 's2']);
+    expect(modals.open).toHaveBeenCalledWith(
+      ReviewEmailModalComponent,
+      expect.objectContaining({ data: expect.objectContaining({ verb: 'Send profile email', editableSubject: true }) })
+    );
+    expect(modals.open.mock.calls[0][1].data.note).toContain('the 3 people of 2 submissions');
+    expect(speakerEdits.previewForSubmissions).toHaveBeenCalledWith(['s1', 's2']);
+    expect(speakerEdits.sendForSubmissions).toHaveBeenCalledWith(['s1', 's2'], {
+      subject: 'Your profile',
+      template: 'Hi {first name}: {edit link}'
+    });
     expect(toasts.toast).toHaveBeenCalledWith(
       sendEditLinksToast({
         sent: ['Ana Ruiz', 'Cy Diaz'],

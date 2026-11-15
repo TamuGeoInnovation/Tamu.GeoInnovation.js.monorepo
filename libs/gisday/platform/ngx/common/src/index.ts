@@ -1,5 +1,7 @@
 export * from './lib/modules/modals/entity-actions-modals/entity-copy-modal/entity-copy-modal.component';
 export * from './lib/modules/modals/entity-actions-modals/entity-delete-modal/entity-delete-modal.component';
+export * from './lib/modules/modals/review-email-modal/review-email-modal.component';
+export * from './lib/modules/modals/review-email-modal/profile-email';
 
 export * from './lib/pipes/asset-url/asset-url.pipe';
 export * from './lib/pipes/order-by/order-by.pipe';
@@ -53,3 +55,4 @@ export * from './lib/modules/forms/components/user-submissions/user-submission-a
 export * from './lib/site/site';
 export * from './lib/modules/submission-files/submission-files.component';
 export * from './lib/modules/search/linked-search/linked-search.component';
+export * from './lib/modules/sessions-using/sessions-using.component';

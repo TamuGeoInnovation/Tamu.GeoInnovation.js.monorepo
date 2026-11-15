@@ -1,9 +1,6 @@
 <div class="form">
-  <!-- Which research competitions the season chosen below runs (#2948). -->
-  <tamu-gisc-season-competitions class="form-section" [season]="selectedSeason$ | async"></tamu-gisc-season-competitions>
-
-  <!-- When each competition closes, for the season chosen below (#2934, #2962). -->
-  <tamu-gisc-submission-deadlines class="form-section" [season]="selectedSeason$ | async"></tamu-gisc-submission-deadlines>
+  <!-- Which research competitions the season chosen below runs (#2948) and when each closes (#2934, #2962): one panel (#3037). -->
+  <tamu-gisc-competition-settings class="form-section" [season]="selectedSeason$ | async"></tamu-gisc-competition-settings>
 
   <div class="form-section">
     <div class="form-section-toolbar">

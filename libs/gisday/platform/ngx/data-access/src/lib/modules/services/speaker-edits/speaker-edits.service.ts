@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
+import { ReviewEmailPreview } from '../user-submissions/user-submissions.service';
+
 /** The fields a speaker may change on their own profile (#2936). */
 export interface SpeakerEditFields {
   description?: string | null;
@@ -39,6 +41,12 @@ export interface PendingSpeakerEdit {
   photo: boolean;
   /** The speaker's photo now, under the site's uploads, or null. */
   currentPhoto: string | null;
+}
+
+/** The profile email as the admin approved it (#3023): its subject and text, with their placeholders. */
+export interface ProfileEmail {
+  subject: string;
+  template: string;
 }
 
 /** What sending edit links did, from the API. */
@@ -83,16 +91,30 @@ export class SpeakerEditsService {
   private readonly http = inject(HttpClient);
   private readonly resource = inject(EnvironmentService).value('api_url') + '/speaker-edits';
 
-  /** Emails each speaker their own link. */
-  public send(speakerGuids: Array<string>) {
+  /** Emails each speaker their own link, in the subject and text the admin approved (#3023). */
+  public send(speakerGuids: Array<string>, email?: ProfileEmail) {
     return this.http.post<SendEditLinksResult>(`${this.resource}/send`, {
-      speakers: speakerGuids
+      speakers: speakerGuids,
+      ...(email ?? {})
     });
   }
 
-  /** Emails the people of each competition submission who have a speaker record their own link (#2958). */
-  public sendForSubmissions(submissionGuids: Array<string>) {
+  /** Emails the people of each competition submission who have a speaker record their own link (#2958, #3023). */
+  public sendForSubmissions(submissionGuids: Array<string>, email?: ProfileEmail) {
     return this.http.post<SendEditLinksResult>(`${this.resource}/send-for-submissions`, {
+      submissions: submissionGuids,
+      ...(email ?? {})
+    });
+  }
+
+  /** The email `send` would send, for the admin to read and edit first (#3023). */
+  public preview(speakerGuids: Array<string>) {
+    return this.http.post<ReviewEmailPreview>(`${this.resource}/send/preview`, { speakers: speakerGuids });
+  }
+
+  /** The email `sendForSubmissions` would send, for the admin to read and edit first (#3023). */
+  public previewForSubmissions(submissionGuids: Array<string>) {
+    return this.http.post<ReviewEmailPreview>(`${this.resource}/send-for-submissions/preview`, {
       submissions: submissionGuids
     });
   }

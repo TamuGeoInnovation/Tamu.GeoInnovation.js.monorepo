@@ -15,7 +15,7 @@ import {
 } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { ReminderSkipReason, hasFinalFile, reminderSkipReason, reminderSkipSummary } from '@tamu-gisc/gisday/common';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
-import { AlertModalComponent, AlertModalData } from '@tamu-gisc/ui-kits/ngx/layout/modal/alert-modal';
+import { AlertModalData } from '@tamu-gisc/ui-kits/ngx/layout/modal/alert-modal';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import {
   SUBMISSION_CLASSIFICATION_OPTIONS,
@@ -28,13 +28,13 @@ import { downloadFile } from '@tamu-gisc/common/utils/ui';
 import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
 
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
-import { SubmissionDeadlinesComponent } from '../../components/submission-deadlines/submission-deadlines.component';
-import { SeasonCompetitionsComponent } from '../../components/season-competitions/season-competitions.component';
+import { CompetitionSettingsComponent } from '../../components/competition-settings/competition-settings.component';
 import {
   ReviewEmailModalComponent,
   ReviewEmailModalData,
-  ReviewEmailModalResult
-} from '../../components/review-email-modal/review-email-modal.component';
+  ReviewEmailModalResult,
+  sendProfileEmail
+} from '@tamu-gisc/gisday/platform/ngx/common';
 
 /**
  * A submission as the table shows it: with its review status worked out, so the table can sort by it (#2808), and
@@ -100,26 +100,21 @@ export function reviewConfirmation(rows: Array<Partial<Submission>>, acceptance:
 }
 
 /**
- * What the page asks before sending profile emails for the selected submissions (#2958): how many people, each counted
+ * What the profile email's window says first for the selected submissions (#2958, #3023): how many people, each counted
  * once however many submissions they are on.
  */
-export function profileEmailConfirmation(rows: Array<Partial<Submission>>): AlertModalData {
+export function profileEmailNote(rows: Array<Partial<Submission>>): string {
   const people = new Set(
     rows.flatMap((row) => (row.participants ?? []).map((p) => (p.email?.trim() || p.name?.trim() || '').toLowerCase()))
   );
 
   people.delete('');
 
-  return {
-    title: 'Send profile emails',
-    message: `Send profile emails to the ${plural(people.size, 'person', 'people')} of ${plural(
-      rows.length,
-      'submission',
-      'submissions'
-    )}? Each with a speaker record this season gets their own link to update their presenter profile; anyone without one is listed afterwards, not emailed.`,
-    primaryText: 'Send',
-    secondaryText: 'Cancel'
-  };
+  return `For the ${plural(people.size, 'person', 'people')} of ${plural(
+    rows.length,
+    'submission',
+    'submissions'
+  )}. Each with a speaker record this season gets their own link to update their presenter profile; anyone without one is listed afterwards, not emailed.`;
 }
 
 /** Why each of the rows that gets no final reminder is skipped (#3017): not accepted, or a file already. */
@@ -161,8 +156,7 @@ export function finalReminderNote(rows: Array<Partial<Submission>>): string | nu
     DatePipe,
     TitleCasePipe,
     ExistsPipe,
-    SubmissionDeadlinesComponent,
-    SeasonCompetitionsComponent
+    CompetitionSettingsComponent
   ]
 })
 export class ResearchCompetitionListComponent extends BaseAdminListComponent<Submission> implements OnInit {
@@ -299,17 +293,22 @@ export class ResearchCompetitionListComponent extends BaseAdminListComponent<Sub
 
   /**
    * Emails each person of the selected submissions their own link to their presenter profile (#2958), as the Speakers
-   * list's action does: each is matched to the season's speaker records by email, and anyone with none is listed.
+   * list's action does: each is matched to the season's speaker records by email, and anyone with none is listed. The
+   * email is read and edited first, saying how many people it goes to (#3023).
    */
   public sendProfileEmails() {
     this.selectedSubmissions()
       .pipe(
-        switchMap((rows) =>
-          this.modals.open<boolean>(AlertModalComponent, { data: profileEmailConfirmation(rows) }).pipe(
-            filter(Boolean),
-            switchMap(() => this.speakerEdits.sendForSubmissions(rows.map((row) => row.guid)))
-          )
-        )
+        switchMap((rows) => {
+          const guids = rows.map((row) => row.guid);
+
+          return sendProfileEmail(
+            this.modals,
+            this.speakerEdits.previewForSubmissions(guids),
+            (email) => this.speakerEdits.sendForSubmissions(guids, email),
+            profileEmailNote(rows)
+          );
+        })
       )
       .subscribe({
         next: (result) => this.toasts.toast(sendEditLinksToast(result)),

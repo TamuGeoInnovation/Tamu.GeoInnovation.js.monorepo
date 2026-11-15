@@ -1,4 +1,11 @@
-import { HttpException, Injectable, InternalServerErrorException, Logger, UnprocessableEntityException } from '@nestjs/common';
+import {
+  HttpException,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  NotFoundException,
+  UnprocessableEntityException
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, In, Repository } from 'typeorm';
 
@@ -10,6 +17,23 @@ import { SeasonService } from '../season/season.service';
 export class EventBroadcastService extends BaseProvider<EventBroadcast> {
   constructor(@InjectRepository(EventBroadcast) private eb: Repository<EventBroadcast>, private readonly ss: SeasonService) {
     super(eb);
+  }
+
+  /**
+   * The sessions that use a broadcast (#3032), for its admin page: each with its day and place, so the page can order them
+   * and list only its site's. Hidden sessions too, which is why the route is for admins.
+   */
+  public async getSessions(guid: string) {
+    const broadcast = await this.eb.findOne({
+      where: { guid },
+      relations: { events: { day: true, location: { place: true } } }
+    });
+
+    if (!broadcast) {
+      throw new NotFoundException('Broadcast not found.');
+    }
+
+    return broadcast.events ?? [];
   }
 
   public getEntities() {
