@@ -16,6 +16,16 @@ are in `libs/gisday/platform/data-api/src/lib/check-in/`.
   check-ins on the local site); a release note. Push to the fork and report "branch ready". Branch
   `feat/3006-check-in-dashboard`.
 
+## Batch 56 (gisday: #3027, a Sessions page search can be linked to; 15 November 2026, from `work (gisday)`) (Medium) - **do this first, before 55**
+
+[#3027](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3027). The Presenters page
+(`people-view.component.ts`, #2919/#2921) already has search-in-the-address, a carried search, and a copy-link button.
+Move that into one shared piece (where the next caller will find it, exported from its index) and use it on both pages,
+keeping the Presenters page's behaviour and the Sessions page's `tags` and `orgs` parameters. Tests red first; the
+bug-fix check on the projects it edits; a release note. The page is public, so take the before/after screenshots
+yourself on the local site (no sign-in needed). Branch `feat/3027-sessions-search-link` from the latest `development`.
+Push to the fork and report "branch ready".
+
 ## Batch 55 (gisday: #3026 and #3024, two Low follow-ups on Research Competitions and the dashboards; 15 November 2026, from `work (gisday)`) (Low)
 
 **Decided (the maintainer):** lab report 62's questions: the cramped table is a follow-up (#3026), and the reminder
