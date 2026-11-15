@@ -21,4 +21,10 @@ a competition later turned off stays as it is, can still be edited, and is still
 is not among these: it is switched for each site as before.
 ([#2948](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2948))
 
+| Research competitions, 1280 pixels wide | Before | After |
+| --- | --- | --- |
+| Research Competitions | ![No way to choose the competitions; the deadlines list all four](../screenshots/2948-season-competition-types/before-research-competitions.png) | ![A Competitions section above the deadlines, all four ticked](../screenshots/2948-season-competition-types/after-competitions-section.png) |
+| Paper turned off and saved | | ![Paper unticked, Competitions saved, and the deadlines no longer list Paper](../screenshots/2948-season-competition-types/after-paper-off-saved.png) |
+| The new-submission form | ![Presentation, Paper, Poster and Cartography offered](../screenshots/2948-season-competition-types/before-submission-form.png) | ![Presentation, Poster and Cartography offered; Paper is not](../screenshots/2948-season-competition-types/after-submission-form-no-paper.png) |
+
 **Before the API is deployed**, the production migration `migrate-prod-2948.ps1` adds the one empty table it needs, `season_competitions`.
