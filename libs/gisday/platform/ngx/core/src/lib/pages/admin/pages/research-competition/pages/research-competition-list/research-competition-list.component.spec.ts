@@ -352,8 +352,10 @@ describe('ResearchCompetitionListComponent, the final file and the final reminde
       expect(String(column(name).cellClass)).toContain('whole-value');
     }
 
-    expect(column('').width).toBeGreaterThanOrEqual(56);
-    expect(column('').minWidth).toBeGreaterThanOrEqual(56);
+    const select = table._internalColumns().find((c) => c.prop === 'select');
+
+    expect(select.width).toBeGreaterThanOrEqual(56);
+    expect(select.minWidth).toBeGreaterThanOrEqual(56);
   });
 
   it('shows the reminder first, editable, saying how many are skipped for having a file, then sends it with the text approved', () => {
