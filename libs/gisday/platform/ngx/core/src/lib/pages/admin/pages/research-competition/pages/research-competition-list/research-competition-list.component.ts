@@ -13,7 +13,7 @@ import {
   reviewSubmissionsToast,
   sendEditLinksToast
 } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { hasFinalFile } from '@tamu-gisc/gisday/common';
+import { ReminderSkipReason, hasFinalFile, reminderSkipReason, reminderSkipSummary } from '@tamu-gisc/gisday/common';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { AlertModalComponent, AlertModalData } from '@tamu-gisc/ui-kits/ngx/layout/modal/alert-modal';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
@@ -121,20 +121,28 @@ export function profileEmailConfirmation(rows: Array<Partial<Submission>>): Aler
   };
 }
 
+/** Why each of the rows that gets no final reminder is skipped (#3017): not accepted, or a file already. */
+export function reminderSkips(rows: Array<Partial<Submission>>): Array<{ reason: ReminderSkipReason }> {
+  return rows
+    .map((row) => reminderSkipReason(row))
+    .filter((reason): reason is ReminderSkipReason => reason !== null)
+    .map((reason) => ({ reason }));
+}
+
 /**
- * What the final reminder's window says first (#3017): how many of the selection already have a file, and so are
- * skipped. Null when every one does, and there is nothing to send.
+ * What the final reminder's window says first (#3017): how many of the selection are skipped, and why. Null when every
+ * one is, and there is nothing to send.
  */
 export function finalReminderNote(rows: Array<Partial<Submission>>): string | null {
-  const skipped = rows.filter((row) => hasFinalFile(row)).length;
+  const skipped = reminderSkips(rows);
 
-  if (skipped === rows.length) {
+  if (skipped.length === rows.length) {
     return null;
   }
 
-  return skipped === 0
-    ? 'None of those selected has a file yet; each is reminded.'
-    : `${skipped} of the ${rows.length} selected already ${skipped === 1 ? 'has a file and is' : 'have a file and are'} skipped; only those without one are reminded.`;
+  return skipped.length === 0
+    ? 'Each one selected was accepted and has no file yet; each is reminded.'
+    : `${skipped.length} of the ${rows.length} selected ${skipped.length === 1 ? 'is' : 'are'} skipped: ${reminderSkipSummary(skipped)}. Only the rest are reminded.`;
 }
 
 @Component({
@@ -309,9 +317,9 @@ export class ResearchCompetitionListComponent extends BaseAdminListComponent<Sub
   }
 
   /**
-   * Emails the final reminder to the selected submissions that have no file yet (#3017), by the review's own window: the
-   * email shown and editable first, saying how many are skipped for already having one. Nothing opens when every one
-   * selected has a file.
+   * Emails the final reminder to the selected accepted submissions that have no file yet (#3017), by the review's own
+   * window: the email shown and editable first, saying how many are skipped and why. Nothing opens when every one
+   * selected is skipped.
    */
   public sendFinalReminders() {
     this.selectedSubmissions()
@@ -323,10 +331,7 @@ export class ResearchCompetitionListComponent extends BaseAdminListComponent<Sub
             this.toasts.toast({
               id: 'final-reminder',
               title: 'No final reminder sent',
-              message:
-                rows.length === 1
-                  ? 'The one selected already has a file.'
-                  : `Each of the ${rows.length} selected already has a file.`
+              message: `Nothing to send: ${reminderSkipSummary(reminderSkips(rows))}.`
             });
 
             return EMPTY;

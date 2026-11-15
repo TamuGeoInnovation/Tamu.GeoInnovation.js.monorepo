@@ -57,6 +57,39 @@ export function hasFinalFile(submission: { files?: ReadonlyArray<unknown> | null
   return (submission.files?.length ?? 0) > 0;
 }
 
+/** Why a selected submission gets no final reminder (#3017). */
+export type ReminderSkipReason = 'already has a file' | 'not accepted';
+
+/**
+ * Why a submission gets no final reminder, or null when it gets one (#3017): it was not accepted (rejected, or not yet
+ * reviewed; decided 15 November), or it already has its final file.
+ */
+export function reminderSkipReason(submission: {
+  reviewed?: boolean | null;
+  acceptance?: boolean | null;
+  files?: ReadonlyArray<unknown> | null;
+}): ReminderSkipReason | null {
+  if (!(submission.reviewed && submission.acceptance)) {
+    return 'not accepted';
+  }
+
+  return hasFinalFile(submission) ? 'already has a file' : null;
+}
+
+/** How many were skipped, and why: "1 that already has a file and 2 that were not accepted". */
+export function reminderSkipSummary(skipped: ReadonlyArray<{ reason: ReminderSkipReason }>): string {
+  const count = (reason: ReminderSkipReason) => skipped.filter((s) => s.reason === reason).length;
+  const files = count('already has a file');
+  const unaccepted = count('not accepted');
+
+  return [
+    files ? `${files} that already ${files === 1 ? 'has' : 'have'} a file` : '',
+    unaccepted ? `${unaccepted} that ${unaccepted === 1 ? 'was' : 'were'} not accepted` : ''
+  ]
+    .filter(Boolean)
+    .join(' and ');
+}
+
 const KIND_LABELS: Record<ReviewEmailKind, string> = {
   poster: 'Accepted posters',
   presentation: 'Accepted presentations',

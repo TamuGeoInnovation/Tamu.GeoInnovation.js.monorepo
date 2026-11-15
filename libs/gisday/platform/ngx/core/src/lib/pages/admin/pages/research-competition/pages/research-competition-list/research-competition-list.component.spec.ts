@@ -270,7 +270,11 @@ describe('ResearchCompetitionListComponent, the final file and the final reminde
     { guid: 's5', title: 'Rivers', submissionType: 'presentation', participants: [] }
   ];
   const templates = { 'poster-reminder': 'Edited reminder' };
-  const result = { sent: ['Flood maps'], skipped: [{ title: 'Campus trees', reason: 'already has a file' as const }], failed: [] };
+  const result = {
+    sent: ['Flood maps'],
+    skipped: [{ title: 'Campus trees', reason: 'already has a file' as const }],
+    failed: []
+  };
 
   function open(selected: Array<string>, confirmed = true) {
     const service = {
@@ -337,7 +341,9 @@ describe('ResearchCompetitionListComponent, the final file and the final reminde
       ReviewEmailModalComponent,
       expect.objectContaining({ data: expect.objectContaining({ verb: 'Send final reminder' }) })
     );
-    expect(modals.open.mock.calls[0][1].data.note).toBe('1 of the 2 selected is skipped: 1 that already has a file. Only the rest are reminded.');
+    expect(modals.open.mock.calls[0][1].data.note).toBe(
+      '1 of the 2 selected is skipped: 1 that already has a file. Only the rest are reminded.'
+    );
     expect(service.remind).toHaveBeenCalledWith(['s1', 's2'], templates);
     expect(toasts.toast).toHaveBeenCalledWith(finalRemindersToast(result));
   });

@@ -112,7 +112,9 @@ describe('UserSubmissionsService, the final reminder', () => {
 
 describe('finalRemindersToast', () => {
   it('says how many were reminded, and how many were skipped for already having a file', () => {
-    expect(finalRemindersToast({ sent: ['A', 'B'], skipped: [{ title: 'C', reason: 'already has a file' }], failed: [] })).toEqual({
+    expect(
+      finalRemindersToast({ sent: ['A', 'B'], skipped: [{ title: 'C', reason: 'already has a file' }], failed: [] })
+    ).toEqual({
       id: 'final-reminder',
       title: 'Final reminders sent',
       message: 'Reminded 2 submissions. Skipped 1 that already has a file.'

@@ -15,11 +15,12 @@ import { isOwnerOrPermitted } from '@tamu-gisc/common/nest/auth';
 import {
   GisdaySite,
   REVIEW_EMAIL_KINDS,
+  ReminderSkipReason,
   ReviewEmailKind,
   fillReviewEmail,
   gisdaySite,
-  hasFinalFile,
   reminderEmailKind,
+  reminderSkipReason,
   reviewEmailKind,
   reviewEmailKindLabel,
   reviewEmailKindSubject,
@@ -68,17 +69,23 @@ export interface ReviewEmailPreview {
     template: string;
     example: { title: string; to: string; cc: string; values: Record<string, string> };
   }>;
-  /** The titles of those that get no email, such as a final reminder's submissions that already have a file (#3017). */
-  skipped?: Array<string>;
+  /** Those that get no email, with why: a final reminder's that already have a file or were not accepted (#3017). */
+  skipped?: Array<SkippedSubmission>;
+}
+
+/** A submission that gets no email, by title, with why (#3017). */
+export interface SkippedSubmission {
+  title: string;
+  reason: ReminderSkipReason;
 }
 
 /**
  * What sending the final reminder to several submissions did (#3017): the titles emailed, those skipped because they
- * already have a file, and each that failed, with why.
+ * already have a file or were not accepted, and each that failed, with why.
  */
 export interface RemindManyResult {
   sent: Array<string>;
-  skipped: Array<string>;
+  skipped: Array<SkippedSubmission>;
   failed: Array<{ title: string; reason: string }>;
 }
 
@@ -408,7 +415,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
 
     const { groups } = await this._preview(
       submissionGuids,
-      (submission) => reviewEmailKind(review.acceptance, submission.submissionType),
+      (submission) => ({ kind: reviewEmailKind(review.acceptance, submission.submissionType) }),
       host,
       review.message
     );
@@ -419,7 +426,8 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
   /**
    * The final reminder the named submissions would get (#3017), for the reviewer to read and edit first, as the review's
    * email is: one group per competition, with the text it starts from and an example for its first submission. A
-   * submission that already has a file gets none, and is named in `skipped`. Nothing is sent.
+   * submission that already has a file, or was not accepted, gets none, and is named in `skipped` with why. Nothing is
+   * sent.
    */
   public async previewReminders(
     submissionGuids: Array<string>,
@@ -428,11 +436,11 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
   ): Promise<ReviewEmailPreview> {
     checkReviewerAndGuids(submissionGuids, requestorPermissions);
 
-    return this._preview(submissionGuids, reminderKindOf, host);
+    return this._preview(submissionGuids, reminderOf, host);
   }
 
   /**
-   * Sends the final reminder to each of the named submissions that has no file yet (#3017), to the same people and with
+   * Sends the final reminder to each of the named accepted submissions that has no file yet (#3017), to the same people and with
    * the same placeholders as the review's email, in the text the reviewer approved. Nothing about the submission is
    * recorded. One that cannot be emailed does not stop the rest; the result names it, with why.
    */
@@ -457,12 +465,14 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
       }
 
       const title = submission.title || guid;
-      const kind = reminderKindOf(submission);
+      const reminder = reminderOf(submission);
 
-      if (!kind) {
-        result.skipped.push(title);
+      if ('skip' in reminder) {
+        result.skipped.push({ title, reason: reminder.skip });
         continue;
       }
+
+      const { kind } = reminder;
 
       try {
         const recipients = await this._recipientsOf(submission);
@@ -481,18 +491,18 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
 
   /**
    * The email each of the named submissions would get, grouped by kind in `REVIEW_EMAIL_KINDS`'s order, with the text it
-   * starts from and an example filled in for the first of each kind (#2981). `kindOf` says a submission's kind, or null
-   * for one that gets none, which is then named in `skipped` (#3017).
+   * starts from and an example filled in for the first of each kind (#2981). `kindOf` says a submission's kind, or why it
+   * gets none, and it is then named in `skipped` (#3017).
    */
   private async _preview(
     submissionGuids: Array<string>,
-    kindOf: (submission: Submission) => ReviewEmailKind | null,
+    kindOf: (submission: Submission) => { kind: ReviewEmailKind } | { skip: ReminderSkipReason },
     host?: string,
     message?: string
   ): Promise<ReviewEmailPreview> {
     const site = gisdaySite(process.env.GISDAY_SITE, host);
     const groups = new Map<ReviewEmailKind, ReviewEmailPreview['groups'][number]>();
-    const skipped: Array<string> = [];
+    const skipped: Array<SkippedSubmission> = [];
 
     for (const guid of [...new Set(submissionGuids)]) {
       const submission = await this.userSubmissionRepo.findOne({ where: { guid }, relations: { season: true, files: true } });
@@ -501,12 +511,14 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
         continue;
       }
 
-      const kind = kindOf(submission);
+      const chosen = kindOf(submission);
 
-      if (!kind) {
-        skipped.push(submission.title || guid);
+      if ('skip' in chosen) {
+        skipped.push({ title: submission.title || guid, reason: chosen.skip });
         continue;
       }
+
+      const { kind } = chosen;
 
       const group = groups.get(kind);
 
@@ -793,9 +805,11 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
   }
 }
 
-/** A submission's final reminder (#3017), or none when it already has a file. */
-function reminderKindOf(submission: Submission): ReviewEmailKind | null {
-  return hasFinalFile(submission) ? null : reminderEmailKind(submission.submissionType);
+/** A submission's final reminder (#3017), or why it gets none: not accepted, or a file already. */
+function reminderOf(submission: Submission): { kind: ReviewEmailKind } | { skip: ReminderSkipReason } {
+  const skip = reminderSkipReason(submission);
+
+  return skip ? { skip } : { kind: reminderEmailKind(submission.submissionType) };
 }
 
 /** Refuses an action on several submissions to anyone but a reviewer, or one not naming each submission by its id. */
