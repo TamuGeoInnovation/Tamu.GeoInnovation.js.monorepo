@@ -16,5 +16,10 @@ Sponsors, Tags, Universities and the Research Competitions review. A page opened
 Create Class, when some sections could not be added, still stays on its page with them in the form.
 ([#2965](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2965))
 
-No before and after images: the local site's sign-in stopped at the development Auth0 tenant's "Authorize App"
-screen, which this capture does not accept.
+Universities on the 2025 season, searched for "Austin"; Austin Community College opened and **Update** pressed
+without changing anything:
+
+| | Before | After |
+| --- | --- | --- |
+| The list, before opening a university | ![Universities on 2025, searched for Austin, before](../screenshots/2965-save-returns-to-list/before-1-list.png) | ![Universities on 2025, searched for Austin, after](../screenshots/2965-save-returns-to-list/after-1-list.png) |
+| Where Update lands | ![Before: the bare list, on 2026 with nothing searched](../screenshots/2965-save-returns-to-list/before-2-after-update.png) | ![After: back on 2025 with Austin still searched](../screenshots/2965-save-returns-to-list/after-2-after-update.png) |
