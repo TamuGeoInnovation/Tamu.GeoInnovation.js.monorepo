@@ -81,6 +81,14 @@ ticked, showing only untagged sessions; tag one and come back, and it is gone fr
 `docs/screenshots/3034-untagged-sessions/` on the branch, link from its release note, push (fast-forward, no force), and
 give the PR body's image section in your report.
 
+## Batch 69 (gisday: screenshots for #3024, the dashboards' counts filtered by site in the API; 15 November 2026, from `work (gisday)`) (Low) - **after 68, before 66**
+
+Home built #3024 on `fix/3024-unread-by-site` on the fork (`39f2cb518`; **its last commit is `.pr-body.md`, leave it
+last**). As gisday.tamu.edu: the RSVPs and Check-ins dashboards' totals line ("N RSVPs for M events. K accounts could not
+be read") before (`development`, where K exceeds N) and after (K covers only the records shown). Commit to
+`docs/screenshots/3024-unread-by-site/`, link from its release note, push (fast-forward, no force), and give the PR body's
+image section in your report.
+
 ## Batch 66 (gisday: #3037, one Competition settings panel with one Save; 15 November 2026, from `work (gisday)`) (Low) - **after 65**
 
 [#3037](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3037). You built the deadlines panel

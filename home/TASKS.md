@@ -21,6 +21,22 @@ are in `libs/gisday/platform/data-api/src/lib/check-in/`.
 > branch complete. Until then the lab takes them, and the director opens a PR only after they are pushed (DIRECTOR.md,
 > "A pull request opens with its screenshots").
 
+## Batch 58 (gisday: #3038, #3029 and #3039; 15 November 2026, from `work (gisday)`) (Low)
+
+1. **[#3038](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3038)**: an admin page that gets
+   a 403 says the account lacks the permission and names it, not "try again". One shared helper or interceptor; make
+   `PermissionsGuard` name the permission if it doesn't. Also the check the issue suggests, if it fits: every permission
+   the routes ask for, listed, so it can be compared with Auth0's. Branch `fix/3038-permission-message`.
+2. **[#3029](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3029)**: the dashboards'
+   sideways scroll is findable at 1024 px. **Start after PR 3014's table is in `development`** (it is). Branch
+   `fix/3029-dashboard-scroll`.
+3. **[#3039](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3039)**: CLAUDE.md's Pull
+   requests section gets DIRECTOR.md's new rule, "A pull request opens with its screenshots". Docs only, no visible
+   change. Branch `docs/3039-pr-with-screenshots`.
+
+Each: tests red first where there's behaviour, the bug-fix check, a release note for 1 and 2. The lab takes 1 and 2's
+screenshots. Report each "branch ready" as it is done.
+
 ## Batch 57 (gisday: #3032, #3033 and #3034, which sessions use a broadcast or a tag, and the untagged ones; 15 November 2026, from `work (gisday)`) (**High** for #3032) - **do this now; #3024 can wait**
 
 1. **[#3032](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3032) (High)**: a broadcast's
