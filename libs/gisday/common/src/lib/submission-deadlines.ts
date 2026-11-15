@@ -129,9 +129,14 @@ export function asDate(value: unknown): Date | null {
 
 /**
  * A moment as GIS Day's own clock reads it, so everyone sees the Central time whatever their computer is set to
- * (#2474): "Fri, Nov 14, 2026, 5:00 PM Central". `empty` when there is none.
+ * (#2474): "Fri, Nov 14, 2026, 5:00 PM Central". `empty` when there is none. `brief` leaves out the year and the zone,
+ * for a line of several moments that names the zone once: "Fri, Nov 14, 5:00 PM" (#2969).
  */
-export function inCentralTime(value: Date | string | null | undefined, empty = 'No limit'): string {
+export function inCentralTime(
+  value: Date | string | null | undefined,
+  empty = 'No limit',
+  { brief = false }: { brief?: boolean } = {}
+): string {
   const date = asDate(value);
 
   if (!date) {
@@ -143,11 +148,13 @@ export function inCentralTime(value: Date | string | null | undefined, empty = '
     weekday: 'short',
     month: 'short',
     day: 'numeric',
-    year: 'numeric',
+    year: brief ? undefined : 'numeric',
     hour: 'numeric',
     minute: '2-digit'
   }).format(date);
 
   // Newer ICU puts a narrow no-break space before AM and PM.
-  return `${text.replace(/\u202f/g, ' ')} Central`;
+  const time = text.replace(/\u202f/g, ' ');
+
+  return brief ? time : `${time} Central`;
 }
