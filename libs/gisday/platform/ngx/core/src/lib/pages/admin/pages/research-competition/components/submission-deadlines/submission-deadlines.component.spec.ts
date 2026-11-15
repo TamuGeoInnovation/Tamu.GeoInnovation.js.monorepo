@@ -112,6 +112,29 @@ describe('SubmissionDeadlinesComponent', () => {
     }
   });
 
+  // #3012: closed, the panel read as one line of plain text, not as something to open. Closed, it is the shared tinted
+  // box (.info-block.context, as the admin lists' selection bars), its name in the toolbar actions' link colour
+  // (.__form-action) with a "Set dates" hint; open, it is the plain section toolbar it was.
+  it('is a box to open while closed, and the plain section toolbar while open', () => {
+    const { fixture, page, toggle } = open(withDeadlines);
+    const toolbar = () => page.querySelector<HTMLElement>('.deadlines-toolbar');
+
+    expect(toolbar()?.classList).not.toContain('form-section-toolbar');
+    expect(toolbar()?.classList).toContain('info-block');
+    expect(toolbar()?.classList).toContain('context');
+    expect(toggle()?.classList).toContain('__form-action');
+    expect(toggle()?.querySelector('.deadlines-hint')?.textContent?.trim()).toBe('Set dates');
+
+    toggle()?.click();
+    fixture.detectChanges();
+
+    expect(toolbar()?.classList).toContain('form-section-toolbar');
+    expect(toolbar()?.classList).not.toContain('info-block');
+    expect(toolbar()?.classList).not.toContain('context');
+    expect(toggle()?.classList).not.toContain('__form-action');
+    expect(page.querySelector('.deadlines-hint')).toBeNull();
+  });
+
   it('is open to edit when the season has no deadlines, and says so when collapsed', () => {
     const { fixture, page, toggle } = open({ guid: 'season-1', year: 2026 } as Partial<Season>);
 
