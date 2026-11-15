@@ -16,6 +16,18 @@ are in `libs/gisday/platform/data-api/src/lib/check-in/`.
   check-ins on the local site); a release note. Push to the fork and report "branch ready". Branch
   `feat/3006-check-in-dashboard`.
 
+## Batch 51 (gisday: #2948 reworked, a join table instead of `seasons.competitionTypes`; 15 November 2026, from `work (gisday)`) (Low) - **after 50**
+
+**Decided** (the maintainer, 15 November): your report 49's question 2 is **B, a join table of season and competition**,
+because per-competition settings per season are expected. On `feat/2948-season-competition-types`:
+- Replace the nullable `seasons.competitionTypes` column with a `season_competitions` entity (season guid plus
+  competition type, unique together), so a later setting can be added as a column there. Keep the API and the admin
+  form's interface the same, so the page doesn't change.
+- Redo the TypeORM migration, and the never-run production script in kubernetes-config `6. GIS Day/migrations/` on its
+  branch. A season with no rows still means "all four", as the column's null did.
+- Tests red first where behaviour is new; the full check (`CHECK_MEMORY=24g CHECK_PARALLEL=3`, #3000); push to the
+  fork and report "branch ready". Screenshots stay for after the next deploy (decided 4A).
+
 ## Batch 48 (gisday: #2967, VGI submission photos use the shared JPEG-and-PNG check; 14 November 2026, 8:20 PM Central, from `work (gisday)`) (Low)
 
 [#2967](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2967). #2937 gave every GIS Day image
