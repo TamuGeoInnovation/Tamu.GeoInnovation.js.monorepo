@@ -64,9 +64,7 @@ describe('CheckInProvider', () => {
     it('rejects a missing account guid instead of querying', async () => {
       const find = jest.spyOn(checkInRepo, 'find');
 
-      await expect(provider.getCheckinsForUser(undefined)).rejects.toThrow(
-        UnprocessableEntityException
-      );
+      await expect(provider.getCheckinsForUser(undefined)).rejects.toThrow(UnprocessableEntityException);
       await expect(provider.getCheckinsForUser('')).rejects.toThrow(UnprocessableEntityException);
       expect(find).not.toHaveBeenCalled();
     });
@@ -89,9 +87,7 @@ describe('CheckInProvider', () => {
       jest.spyOn(checkInRepo, 'findOne').mockResolvedValue({ guid: 'c-existing' } as CheckIn);
       const create = jest.spyOn(checkInRepo, 'create');
 
-      await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(
-        UnprocessableEntityException
-      );
+      await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(UnprocessableEntityException);
       expect(create).not.toHaveBeenCalled();
     });
 
@@ -114,9 +110,7 @@ describe('CheckInProvider', () => {
       jest.spyOn(eventRepo, 'findOne').mockResolvedValue(null);
       const create = jest.spyOn(checkInRepo, 'create');
 
-      await expect(provider.insertUserCheckin('missing', 'acct-1')).rejects.toThrow(
-        UnprocessableEntityException
-      );
+      await expect(provider.insertUserCheckin('missing', 'acct-1')).rejects.toThrow(UnprocessableEntityException);
       expect(create).not.toHaveBeenCalled();
     });
   });
@@ -158,7 +152,13 @@ describe('CheckInProvider', () => {
       jest.spyOn(checkInRepo, 'findOne').mockResolvedValue(null);
       jest
         .spyOn(eventRepo, 'findOne')
-        .mockResolvedValue({ guid: 'e-1', mode, ...openNow, checkInCode: 'code-1', location: { building: venue, checkInZone } } as unknown as Event);
+        .mockResolvedValue({
+          guid: 'e-1',
+          mode,
+          ...openNow,
+          checkInCode: 'code-1',
+          location: { building: venue, checkInZone }
+        } as unknown as Event);
       save = jest.fn().mockResolvedValue({ guid: 'c-new' });
       jest.spyOn(checkInRepo, 'create').mockReturnValue({ save } as never);
     };
@@ -208,12 +208,12 @@ describe('CheckInProvider', () => {
     it(`counts no more than ${cap} m of accuracy, so a vague position cannot reach the zone`, async () => {
       withEvent('in-person');
 
-      await expect(
-        provider.insertUserCheckin('e-1', 'acct-1', southOfMsc(cap + 20, 5000))
-      ).rejects.toThrow(ForbiddenException);
-      await expect(
-        provider.insertUserCheckin('e-1', 'acct-1', southOfMsc(cap - 20, 5000))
-      ).resolves.toEqual({ guid: 'c-new' });
+      await expect(provider.insertUserCheckin('e-1', 'acct-1', southOfMsc(cap + 20, 5000))).rejects.toThrow(
+        ForbiddenException
+      );
+      await expect(provider.insertUserCheckin('e-1', 'acct-1', southOfMsc(cap - 20, 5000))).resolves.toEqual({
+        guid: 'c-new'
+      });
     });
 
     it('ignores a nonsense accuracy', async () => {
@@ -221,9 +221,7 @@ describe('CheckInProvider', () => {
       const notANumber = { ...southOfMsc(20), accuracy: '50' as never };
 
       await expect(provider.insertUserCheckin('e-1', 'acct-1', notANumber)).rejects.toThrow(ForbiddenException);
-      await expect(provider.insertUserCheckin('e-1', 'acct-1', southOfMsc(20, -50))).rejects.toThrow(
-        ForbiddenException
-      );
+      await expect(provider.insertUserCheckin('e-1', 'acct-1', southOfMsc(20, -50))).rejects.toThrow(ForbiddenException);
     });
 
     it('refuses an attendee at Kyle Field', async () => {
@@ -430,7 +428,13 @@ describe('CheckInProvider', () => {
       jest.spyOn(checkInRepo, 'findOne').mockResolvedValue(null);
       jest
         .spyOn(eventRepo, 'findOne')
-        .mockResolvedValue({ guid: 'e-1', mode: 'in-person', checkInAnyTime: true, ...times, ...overrides } as unknown as Event);
+        .mockResolvedValue({
+          guid: 'e-1',
+          mode: 'in-person',
+          checkInAnyTime: true,
+          ...times,
+          ...overrides
+        } as unknown as Event);
       save = jest.fn().mockResolvedValue({ guid: 'c-new' });
       jest.spyOn(checkInRepo, 'create').mockReturnValue({ save } as never);
     };
@@ -481,7 +485,9 @@ describe('CheckInProvider', () => {
       at('2026-11-17T22:30:00Z');
 
       await expect(provider.insertUserCheckin('e-1', 'acct-1', kyleField)).rejects.toThrow(
-        new ForbiddenException('You need to be inside the check-in zone at TAMU Memorial Student Center to check in to this event.')
+        new ForbiddenException(
+          'You need to be inside the check-in zone at TAMU Memorial Student Center to check in to this event.'
+        )
       );
       await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(/needs your location/);
       expect(save).not.toHaveBeenCalled();
@@ -620,6 +626,59 @@ describe('CheckInProvider', () => {
       await expect(provider.insertUserCheckin('e-1', 'acct-1')).resolves.toEqual({ guid: 'c-new' });
     });
 
+    /**
+     * #3077: the QR code is the backup at an in-person session, for a phone that cannot give its location.
+     */
+    describe('at an in-person session with a check-in zone', () => {
+      const zone = [
+        { latitude: 30.6, longitude: -96.3 },
+        { latitude: 30.6, longitude: -96.2 },
+        { latitude: 30.5, longitude: -96.2 },
+        { latitude: 30.5, longitude: -96.3 }
+      ];
+
+      const withZone = (checkInCode: string | null = 'code-1') => {
+        jest.spyOn(checkInRepo, 'findOne').mockResolvedValue(null);
+        jest.spyOn(eventRepo, 'findOne').mockResolvedValue({
+          guid: 'e-1',
+          mode: 'in-person',
+          ...openNow,
+          location: { building: 'TAMU Rudder Plaza', checkInZone: zone },
+          checkInCode
+        } as unknown as Event);
+        save = jest.fn().mockResolvedValue({ guid: 'c-new' });
+        jest.spyOn(checkInRepo, 'create').mockReturnValue({ save } as never);
+      };
+
+      it('checks in an attendee with the session’s code and no location', async () => {
+        withZone();
+
+        await expect(provider.insertUserCheckin('e-1', 'acct-1', undefined, 'code-1')).resolves.toEqual({
+          guid: 'c-new'
+        });
+      });
+
+      it('refuses a code that is not the session’s, even from inside the zone', async () => {
+        withZone();
+
+        await expect(
+          provider.insertUserCheckin('e-1', 'acct-1', { latitude: 30.55, longitude: -96.25, accuracy: 5 }, 'code-2')
+        ).rejects.toThrow(ForbiddenException);
+        expect(save).not.toHaveBeenCalled();
+      });
+
+      it('still checks in by location without a code', async () => {
+        withZone();
+
+        await expect(
+          provider.insertUserCheckin('e-1', 'acct-1', { latitude: 30.55, longitude: -96.25, accuracy: 5 })
+        ).resolves.toEqual({ guid: 'c-new' });
+        await expect(provider.insertUserCheckin('e-1', 'acct-1', undefined, '')).rejects.toThrow(
+          'Checking in to this event needs your location.'
+        );
+      });
+    });
+
     it('lets an organizer add a check-in to a QR session with no code', async () => {
       withSession('hybrid');
 
@@ -669,11 +728,11 @@ describe('CheckInProvider', () => {
       expect(update.mock.calls[0][1].checkInCode).not.toEqual(update.mock.calls[1][1].checkInCode);
     });
 
-    it('refuses an in-person session, which checks in by location', async () => {
-      jest.spyOn(eventRepo, 'findOne').mockResolvedValue({ guid: 'e-1', mode: 'in-person' } as Event);
+    // #3077: every session has one, as the backup for a phone that cannot give its location.
+    it('gives an in-person session its code too', async () => {
+      jest.spyOn(eventRepo, 'findOne').mockResolvedValue({ guid: 'e-1', mode: 'in-person', checkInCode: 'code-1' } as Event);
 
-      await expect(provider.getCheckInCode('e-1')).rejects.toThrow(UnprocessableEntityException);
-      expect(update).not.toHaveBeenCalled();
+      await expect(provider.getCheckInCode('e-1')).resolves.toEqual({ code: 'code-1' });
     });
 
     it('refuses a session that does not exist', async () => {
@@ -698,9 +757,7 @@ describe('CheckInProvider', () => {
     it('throws NotFound when the attendee has not checked in', async () => {
       jest.spyOn(checkInRepo, 'findOne').mockResolvedValue(null);
 
-      await expect(provider.getUserCheckinForEvent('e-1', 'acct-1')).rejects.toThrow(
-        NotFoundException
-      );
+      await expect(provider.getUserCheckinForEvent('e-1', 'acct-1')).rejects.toThrow(NotFoundException);
     });
   });
 });
