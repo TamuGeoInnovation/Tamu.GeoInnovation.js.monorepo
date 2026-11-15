@@ -268,16 +268,6 @@ export class SpeakerEditService {
         return part;
       }
 
-      // Never the same email twice in a row (#3065): on 15 November 2026 one send reached the API twice, 30 seconds
-      // apart, and all 48 finalists got it twice. Every pod shares the links table, so a repeat landing on the other
-      // pod is caught too. Each link is recorded before its email goes, so two runs racing skip each other's.
-      const since = new Date(Date.now() - REPEAT_SEND_MINUTES * 60 * 1000);
-
-      if ((await this.links.count({ where: { speaker: { guid: speaker.guid }, created: MoreThan(since) } })) > 0) {
-        result.skipped.push({ name, reason: `already emailed a link in the last ${REPEAT_SEND_MINUTES} minutes` });
-        continue;
-      }
-
       try {
         await this.emailLink(speaker, host, email);
         part.sent.push(name);
