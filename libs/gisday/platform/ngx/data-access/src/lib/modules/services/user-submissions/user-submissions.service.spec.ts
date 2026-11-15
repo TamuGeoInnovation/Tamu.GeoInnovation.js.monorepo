@@ -120,7 +120,11 @@ describe('finalRemindersToast', () => {
   });
 
   it('names one by its title, and lists each that failed, with why', () => {
-    const toast = finalRemindersToast({ sent: ['Flood maps'], skipped: [], failed: [{ title: 'Bike lanes', reason: 'the email could not be sent' }] });
+    const toast = finalRemindersToast({
+      sent: ['Flood maps'],
+      skipped: [],
+      failed: [{ title: 'Bike lanes', reason: 'the email could not be sent' }]
+    });
 
     expect(toast.title).toBe('Some final reminders were not sent');
     expect(toast.message).toBe('Reminded "Flood maps". Problems - Bike lanes: the email could not be sent.');

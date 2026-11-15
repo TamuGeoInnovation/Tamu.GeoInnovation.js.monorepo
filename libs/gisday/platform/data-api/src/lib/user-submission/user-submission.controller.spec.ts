@@ -211,7 +211,12 @@ describe('UserSubmissionController POST /user-submissions/remind', () => {
     const response = await post('remind', { submissions: ['a', 'b'], templates });
 
     expect(await response.json()).toEqual({ sent: ['Flood maps'], skipped: [], failed: [] });
-    expect(remindUserSubmissions).toHaveBeenCalledWith(['a', 'b'], { templates }, ['update:competitions'], 'gisday.tamu.edu');
+    expect(remindUserSubmissions).toHaveBeenCalledWith(
+      ['a', 'b'],
+      { templates },
+      ['update:competitions'],
+      'gisday.tamu.edu'
+    );
     expect(updateUserSubmission).not.toHaveBeenCalled();
   });
 });

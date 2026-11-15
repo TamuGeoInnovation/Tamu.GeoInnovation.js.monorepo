@@ -90,6 +90,30 @@ export class UserSubmissionController {
     );
   }
 
+  /**
+   * Sends the final reminder to the named submissions that have no file yet (#3017), in the text the reviewer approved.
+   * Body: `{ submissions: [guid], templates? }`.
+   */
+  @Permissions(['update:competitions'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Post('remind')
+  public remindMany(@Body() body: { submissions: Array<string>; templates?: Record<string, string> }, @Request() req) {
+    return this.provider.remindUserSubmissions(
+      body?.submissions,
+      { templates: body?.templates },
+      req.user.permissions,
+      siteHost(req.headers)
+    );
+  }
+
+  /** The final reminder the named submissions would get, for the reviewer to read and edit first (#3017). */
+  @Permissions(['update:competitions'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Post('remind/preview')
+  public previewReminders(@Body() body: { submissions: Array<string> }, @Request() req) {
+    return this.provider.previewReminders(body?.submissions, req.user.permissions, siteHost(req.headers));
+  }
+
   // A submission's attached files (#2933): its owner, or anyone who may read the competitions.
   @UseGuards(JwtGuard)
   @Get(':guid/files')

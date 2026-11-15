@@ -255,7 +255,13 @@ describe('ResearchCompetitionListComponent actions on the selected submissions',
 describe('ResearchCompetitionListComponent, the final file and the final reminder (#3017)', () => {
   const rows = [
     { guid: 's1', title: 'Flood maps', submissionType: 'poster', participants: [], files: [] },
-    { guid: 's2', title: 'Campus trees', submissionType: 'presentation', participants: [], files: [{ guid: 'f-1', name: 'slides.pptx' }] },
+    {
+      guid: 's2',
+      title: 'Campus trees',
+      submissionType: 'presentation',
+      participants: [],
+      files: [{ guid: 'f-1', name: 'slides.pptx' }]
+    },
     { guid: 's3', title: 'Bike lanes', submissionType: 'presentation', participants: [] }
   ];
   const templates = { 'poster-reminder': 'Edited reminder' };
@@ -309,7 +315,9 @@ describe('ResearchCompetitionListComponent, the final file and the final reminde
     expect(column).toBeGreaterThan(-1);
     expect(page.querySelectorAll('.datatable-header-cell')[column].classList).toContain('sortable');
 
-    const cells = Array.from(page.querySelectorAll('datatable-body-row')).map((row) => row.querySelectorAll('.datatable-body-cell')[column].textContent.trim());
+    const cells = Array.from(page.querySelectorAll('datatable-body-row')).map((row) =>
+      row.querySelectorAll('.datatable-body-cell')[column].textContent.trim()
+    );
 
     expect(cells.sort()).toEqual(['Missing', 'Missing', 'Uploaded']);
   });
@@ -336,7 +344,9 @@ describe('ResearchCompetitionListComponent, the final file and the final reminde
 
     expect(modals.open).not.toHaveBeenCalled();
     expect(service.remind).not.toHaveBeenCalled();
-    expect(toasts.toast).toHaveBeenCalledWith(expect.objectContaining({ message: expect.stringContaining('already has a file') }));
+    expect(toasts.toast).toHaveBeenCalledWith(
+      expect.objectContaining({ message: expect.stringContaining('already has a file') })
+    );
   });
 
   it('sends nothing when the admin cancels', () => {

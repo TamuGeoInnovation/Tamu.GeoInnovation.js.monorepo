@@ -17,6 +17,35 @@ export interface ReviewEmailPreview {
     template: string;
     example: { title: string; to: string; cc: string; values: Record<string, string> };
   }>;
+  /** The titles of those that get no email: a final reminder's submissions that already have a file (#3017). */
+  skipped?: Array<string>;
+}
+
+/** What sending the final reminder to several submissions did, from the API (#3017). */
+export interface FinalRemindersResult {
+  sent: Array<string>;
+  /** Those that already have a file, so got none. */
+  skipped: Array<string>;
+  failed: Array<{ title: string; reason: string }>;
+}
+
+/**
+ * The toast an admin sees after sending the final reminder (#3017): how many were reminded, how many were skipped for
+ * already having a file, and each that failed, by title.
+ */
+export function finalRemindersToast(result: FinalRemindersResult): { id: string; title: string; message: string } {
+  const count = result.sent.length;
+  const sent =
+    count === 0 ? 'None were reminded.' : count === 1 ? `Reminded "${result.sent[0]}".` : `Reminded ${count} submissions.`;
+  const skipped = result.skipped.length;
+  const skippedText = skipped ? `Skipped ${skipped} that already ${skipped === 1 ? 'has' : 'have'} a file.` : '';
+  const failed = result.failed.map((f) => `${f.title}: ${f.reason}`).join('; ');
+
+  return {
+    id: 'final-reminder',
+    title: failed ? 'Some final reminders were not sent' : 'Final reminders sent',
+    message: [sent, skippedText, failed ? `Problems - ${failed}.` : ''].filter(Boolean).join(' ')
+  };
 }
 
 /** What approving or rejecting several submissions did, from the API (#2958). */
@@ -98,6 +127,16 @@ export class UserSubmissionsService extends BaseService<Submission> {
       acceptance,
       ...(message?.trim() ? { message: message.trim() } : {})
     });
+  }
+
+  /** The final reminder the selected submissions would get, for the reviewer to read and edit first (#3017). */
+  public previewReminders(submissionGuids: Array<string>) {
+    return this.http1.post<ReviewEmailPreview>(`${this.resource}/remind/preview`, { submissions: submissionGuids });
+  }
+
+  /** Sends the final reminder to the selected submissions that have no file yet, in the text approved (#3017). */
+  public remind(submissionGuids: Array<string>, templates: Record<string, string>) {
+    return this.http1.post<FinalRemindersResult>(`${this.resource}/remind`, { submissions: submissionGuids, templates });
   }
 
   public getPresentationsForActiveSeason() {

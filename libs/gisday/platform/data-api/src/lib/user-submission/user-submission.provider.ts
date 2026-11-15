@@ -14,11 +14,15 @@ import { Repository } from 'typeorm';
 import { isOwnerOrPermitted } from '@tamu-gisc/common/nest/auth';
 import {
   GisdaySite,
+  REVIEW_EMAIL_KINDS,
   ReviewEmailKind,
   fillReviewEmail,
   gisdaySite,
+  hasFinalFile,
+  reminderEmailKind,
   reviewEmailKind,
   reviewEmailKindLabel,
+  reviewEmailKindSubject,
   reviewEmailSubject,
   reviewEmailTemplate,
   reviewEmailValues,
@@ -64,6 +68,18 @@ export interface ReviewEmailPreview {
     template: string;
     example: { title: string; to: string; cc: string; values: Record<string, string> };
   }>;
+  /** The titles of those that get no email, such as a final reminder's submissions that already have a file (#3017). */
+  skipped?: Array<string>;
+}
+
+/**
+ * What sending the final reminder to several submissions did (#3017): the titles emailed, those skipped because they
+ * already have a file, and each that failed, with why.
+ */
+export interface RemindManyResult {
+  sent: Array<string>;
+  skipped: Array<string>;
+  failed: Array<{ title: string; reason: string }>;
 }
 
 /** The longest email text a reviewer may send (#2981). */
@@ -81,7 +97,7 @@ function checkedTemplates(templates: unknown): Partial<Record<ReviewEmailKind, s
 
   const checked: Partial<Record<ReviewEmailKind, string>> = {};
 
-  for (const kind of ['poster', 'presentation', 'rejection'] as Array<ReviewEmailKind>) {
+  for (const kind of REVIEW_EMAIL_KINDS) {
     const text = (templates as Record<string, unknown>)[kind];
 
     if (text === undefined) {
@@ -326,17 +342,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     host?: string
   ): Promise<ReviewManyResult> {
     // The single review lets an owner through to edit their own; a review of many is a reviewer's alone.
-    if (!requestorPermissions.includes('update:competitions')) {
-      throw new ForbiddenException();
-    }
-
-    if (!Array.isArray(submissionGuids) || submissionGuids.length === 0) {
-      throw new BadRequestException('No submissions were named.');
-    }
-
-    if (submissionGuids.some((guid) => typeof guid !== 'string' || !GUID.test(guid))) {
-      throw new BadRequestException('Name each submission by its id.');
-    }
+    checkReviewerAndGuids(submissionGuids, requestorPermissions);
 
     if (typeof review?.acceptance !== 'boolean') {
       throw new BadRequestException('Say whether the submissions are accepted.');
@@ -394,33 +400,114 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     requestorPermissions: Array<string> = [],
     host?: string
   ): Promise<ReviewEmailPreview> {
-    if (!requestorPermissions.includes('update:competitions')) {
-      throw new ForbiddenException();
-    }
-
-    if (!Array.isArray(submissionGuids) || submissionGuids.length === 0) {
-      throw new BadRequestException('No submissions were named.');
-    }
-
-    if (submissionGuids.some((guid) => typeof guid !== 'string' || !GUID.test(guid))) {
-      throw new BadRequestException('Name each submission by its id.');
-    }
+    checkReviewerAndGuids(submissionGuids, requestorPermissions);
 
     if (typeof review?.acceptance !== 'boolean') {
       throw new BadRequestException('Say whether the submissions are accepted.');
     }
 
+    const { groups } = await this._preview(
+      submissionGuids,
+      (submission) => reviewEmailKind(review.acceptance, submission.submissionType),
+      host,
+      review.message
+    );
+
+    return { groups };
+  }
+
+  /**
+   * The final reminder the named submissions would get (#3017), for the reviewer to read and edit first, as the review's
+   * email is: one group per competition, with the text it starts from and an example for its first submission. A
+   * submission that already has a file gets none, and is named in `skipped`. Nothing is sent.
+   */
+  public async previewReminders(
+    submissionGuids: Array<string>,
+    requestorPermissions: Array<string> = [],
+    host?: string
+  ): Promise<ReviewEmailPreview> {
+    checkReviewerAndGuids(submissionGuids, requestorPermissions);
+
+    return this._preview(submissionGuids, reminderKindOf, host);
+  }
+
+  /**
+   * Sends the final reminder to each of the named submissions that has no file yet (#3017), to the same people and with
+   * the same placeholders as the review's email, in the text the reviewer approved. Nothing about the submission is
+   * recorded. One that cannot be emailed does not stop the rest; the result names it, with why.
+   */
+  public async remindUserSubmissions(
+    submissionGuids: Array<string>,
+    reminder: { templates?: Partial<Record<ReviewEmailKind, string>> },
+    requestorPermissions: Array<string> = [],
+    host?: string
+  ): Promise<RemindManyResult> {
+    checkReviewerAndGuids(submissionGuids, requestorPermissions);
+
+    const templates = checkedTemplates(reminder?.templates);
     const site = gisdaySite(process.env.GISDAY_SITE, host);
-    const groups = new Map<ReviewEmailKind, ReviewEmailPreview['groups'][number]>();
+    const result: RemindManyResult = { sent: [], skipped: [], failed: [] };
 
     for (const guid of [...new Set(submissionGuids)]) {
-      const submission = await this.userSubmissionRepo.findOne({ where: { guid }, relations: { season: true } });
+      const submission = await this.userSubmissionRepo.findOne({ where: { guid }, relations: { season: true, files: true } });
+
+      if (!submission) {
+        result.failed.push({ title: guid, reason: 'it no longer exists' });
+        continue;
+      }
+
+      const title = submission.title || guid;
+      const kind = reminderKindOf(submission);
+
+      if (!kind) {
+        result.skipped.push(title);
+        continue;
+      }
+
+      try {
+        const recipients = await this._recipientsOf(submission);
+        const sessions = await this._sessionsOf(submission.season).catch(() => []);
+
+        await this._sendEmail(submission, kind, site, templates?.[kind], recipients, sessions);
+        result.sent.push(title);
+      } catch (err) {
+        Logger.error(`Error sending a final reminder: ${err.message}`, 'UserSubmissionProvider');
+        result.failed.push({ title, reason: 'the email could not be sent' });
+      }
+    }
+
+    return result;
+  }
+
+  /**
+   * The email each of the named submissions would get, grouped by kind in `REVIEW_EMAIL_KINDS`'s order, with the text it
+   * starts from and an example filled in for the first of each kind (#2981). `kindOf` says a submission's kind, or null
+   * for one that gets none, which is then named in `skipped` (#3017).
+   */
+  private async _preview(
+    submissionGuids: Array<string>,
+    kindOf: (submission: Submission) => ReviewEmailKind | null,
+    host?: string,
+    message?: string
+  ): Promise<ReviewEmailPreview> {
+    const site = gisdaySite(process.env.GISDAY_SITE, host);
+    const groups = new Map<ReviewEmailKind, ReviewEmailPreview['groups'][number]>();
+    const skipped: Array<string> = [];
+
+    for (const guid of [...new Set(submissionGuids)]) {
+      const submission = await this.userSubmissionRepo.findOne({ where: { guid }, relations: { season: true, files: true } });
 
       if (!submission) {
         continue;
       }
 
-      const kind = reviewEmailKind(review.acceptance, submission.submissionType);
+      const kind = kindOf(submission);
+
+      if (!kind) {
+        skipped.push(submission.title || guid);
+        continue;
+      }
+
       const group = groups.get(kind);
 
       if (group) {
@@ -434,14 +521,14 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
         kind,
         label: reviewEmailKindLabel(kind),
         count: 1,
-        subject: reviewEmailSubject(review.acceptance, site.name),
+        subject: reviewEmailKindSubject(kind, site.name),
         template: reviewEmailTemplate(kind),
         example: {
           title: submission.title ?? '',
           to,
           cc: cc.join(', '),
           values: reviewEmailValues(
-            { ...submission, message: review.message ?? submission.message },
+            { ...submission, message: message ?? submission.message },
             site,
             await this._sessionsOf(submission.season)
           )
@@ -449,9 +536,32 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
       });
     }
 
-    const order: Array<ReviewEmailKind> = ['poster', 'presentation', 'rejection'];
+    return { groups: REVIEW_EMAIL_KINDS.filter((kind) => groups.has(kind)).map((kind) => groups.get(kind)), skipped };
+  }
 
-    return { groups: order.filter((kind) => groups.has(kind)).map((kind) => groups.get(kind)) };
+  /**
+   * Sends one submission its email of `kind` (#2957, #3017): from the site, to its people, in `template` (the text the
+   * reviewer approved) or the kind's own, with its placeholders filled in.
+   */
+  private _sendEmail(
+    submission: Submission,
+    kind: ReviewEmailKind,
+    site: GisdaySite,
+    template: string | undefined,
+    recipients: { to: string; cc: Array<string> },
+    sessions: Array<ReviewEmailSession>
+  ) {
+    return this.contactService.sendMessage(
+      {
+        to: recipients.to,
+        cc: recipients.cc.join(','),
+        subject: reviewEmailKindSubject(kind, site.name),
+        from: senderAs(site.name, process.env.MAILROOM_FROM),
+        text: fillReviewEmail(template ?? reviewEmailTemplate(kind), reviewEmailValues(submission, site, sessions)),
+        replyTo: process.env.MAILROOM_TO
+      },
+      true
+    );
   }
 
   /**
@@ -526,29 +636,17 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
       // single review leaves to finish after answering. A sessions lookup that fails leaves the email without its links.
       const recipients = shouldEmail ? await this._recipientsOf(existingSubmission) : null;
       const sessions = shouldEmail ? await this._sessionsOf(existingSubmission.season).catch(() => []) : [];
+      const kind = reviewEmailKind(existingSubmission.acceptance, existingSubmission.submissionType);
       const sendReviewEmail = shouldEmail
-        ? async () => {
-            const { to, cc } = recipients;
-            const site = gisdaySite(process.env.GISDAY_SITE, host);
-
-            // Send email to user
-            return this.contactService.sendMessage(
-              {
-                to,
-                cc: cc.join(','),
-                subject: reviewSubject(existingSubmission, site),
-                from: senderAs(site.name, process.env.MAILROOM_FROM),
-                text: reviewEmail(
-                  existingSubmission,
-                  site,
-                  templates?.[reviewEmailKind(existingSubmission.acceptance, existingSubmission.submissionType)],
-                  sessions
-                ),
-                replyTo: process.env.MAILROOM_TO
-              },
-              true
-            );
-          }
+        ? async () =>
+            this._sendEmail(
+              existingSubmission,
+              kind,
+              gisdaySite(process.env.GISDAY_SITE, host),
+              templates?.[kind],
+              recipients,
+              sessions
+            )
         : null;
 
       return { updated, submission: existingSubmission, sendReviewEmail };
@@ -692,6 +790,26 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
 
       throw err;
     }
+  }
+}
+
+/** A submission's final reminder (#3017), or none when it already has a file. */
+function reminderKindOf(submission: Submission): ReviewEmailKind | null {
+  return hasFinalFile(submission) ? null : reminderEmailKind(submission.submissionType);
+}
+
+/** Refuses an action on several submissions to anyone but a reviewer, or one not naming each submission by its id. */
+function checkReviewerAndGuids(submissionGuids: unknown, requestorPermissions: Array<string>): void {
+  if (!requestorPermissions.includes('update:competitions')) {
+    throw new ForbiddenException();
+  }
+
+  if (!Array.isArray(submissionGuids) || submissionGuids.length === 0) {
+    throw new BadRequestException('No submissions were named.');
+  }
+
+  if (submissionGuids.some((guid) => typeof guid !== 'string' || !GUID.test(guid))) {
+    throw new BadRequestException('Name each submission by its id.');
   }
 }
 

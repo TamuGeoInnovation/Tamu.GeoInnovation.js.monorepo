@@ -2,16 +2,18 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { NgClass, AsyncPipe, DatePipe, TitleCasePipe } from '@angular/common';
-import { combineLatest, filter, map, Observable, shareReplay, startWith, switchMap, take } from 'rxjs';
+import { combineLatest, EMPTY, filter, map, Observable, shareReplay, startWith, switchMap, take } from 'rxjs';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 import { Submission, SubmissionWithSubmitter } from '@tamu-gisc/gisday/platform/data-api';
 import {
   SpeakerEditsService,
   UserSubmissionsService,
+  finalRemindersToast,
   reviewSubmissionsToast,
   sendEditLinksToast
 } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { hasFinalFile } from '@tamu-gisc/gisday/common';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { AlertModalComponent, AlertModalData } from '@tamu-gisc/ui-kits/ngx/layout/modal/alert-modal';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
@@ -33,8 +35,14 @@ import {
   ReviewEmailModalResult
 } from '../../components/review-email-modal/review-email-modal.component';
 
-/** A submission as the table shows it: with its review status worked out, so the table can sort by it (#2808). */
-export type SubmissionRow = Partial<SubmissionWithSubmitter> & { reviewStatus: SUBMISSION_REVIEW_STATUS };
+/**
+ * A submission as the table shows it: with its review status worked out, so the table can sort by it (#2808), and
+ * whether its final presentation or poster is uploaded (#3017), likewise.
+ */
+export type SubmissionRow = Partial<SubmissionWithSubmitter> & {
+  reviewStatus: SUBMISSION_REVIEW_STATUS;
+  finalFile: 'Uploaded' | 'Missing';
+};
 
 const ALL = { type: '', label: 'All' };
 
@@ -113,6 +121,22 @@ export function profileEmailConfirmation(rows: Array<Partial<Submission>>): Aler
   };
 }
 
+/**
+ * What the final reminder's window says first (#3017): how many of the selection already have a file, and so are
+ * skipped. Null when every one does, and there is nothing to send.
+ */
+export function finalReminderNote(rows: Array<Partial<Submission>>): string | null {
+  const skipped = rows.filter((row) => hasFinalFile(row)).length;
+
+  if (skipped === rows.length) {
+    return null;
+  }
+
+  return skipped === 0
+    ? 'None of those selected has a file yet; each is reminded.'
+    : `${skipped} of the ${rows.length} selected already ${skipped === 1 ? 'has a file and is' : 'have a file and are'} skipped; only those without one are reminded.`;
+}
+
 @Component({
   selector: 'tamu-gisc-research-competition-list',
   templateUrl: './research-competition-list.component.html',
@@ -182,7 +206,11 @@ export class ResearchCompetitionListComponent extends BaseAdminListComponent<Sub
         const rows = all
           .filter((e) => !classification || e.classificationType === classification)
           .filter((e) => !type || e.submissionType === type)
-          .map((e) => ({ ...(e as Partial<SubmissionWithSubmitter>), reviewStatus: this.reviewStatus.transform(e) }));
+          .map((e) => ({
+            ...(e as Partial<SubmissionWithSubmitter>),
+            reviewStatus: this.reviewStatus.transform(e),
+            finalFile: hasFinalFile(e) ? ('Uploaded' as const) : ('Missing' as const)
+          }));
 
         return { rows, total: all.length, classificationOptions, typeOptions };
       }),
@@ -277,6 +305,50 @@ export class ResearchCompetitionListComponent extends BaseAdminListComponent<Sub
         next: (result) => this.toasts.toast(sendEditLinksToast(result)),
         error: () =>
           this.toasts.toast({ id: 'speaker-edit-links', title: 'Profile emails not sent', message: 'Please try again.' })
+      });
+  }
+
+  /**
+   * Emails the final reminder to the selected submissions that have no file yet (#3017), by the review's own window: the
+   * email shown and editable first, saying how many are skipped for already having one. Nothing opens when every one
+   * selected has a file.
+   */
+  public sendFinalReminders() {
+    this.selectedSubmissions()
+      .pipe(
+        switchMap((rows) => {
+          const note = finalReminderNote(rows);
+
+          if (note === null) {
+            this.toasts.toast({
+              id: 'final-reminder',
+              title: 'No final reminder sent',
+              message:
+                rows.length === 1
+                  ? 'The one selected already has a file.'
+                  : `Each of the ${rows.length} selected already has a file.`
+            });
+
+            return EMPTY;
+          }
+
+          const guids = rows.map((row) => row.guid);
+          const data: ReviewEmailModalData = {
+            verb: 'Send final reminder',
+            note,
+            preview: this.entityService.previewReminders(guids)
+          };
+
+          return this.modals.open<ReviewEmailModalResult>(ReviewEmailModalComponent, { data }).pipe(
+            filter((templates): templates is Record<string, string> => !!templates),
+            switchMap((templates) => this.entityService.remind(guids, templates))
+          );
+        })
+      )
+      .subscribe({
+        next: (result) => this.toasts.toast(finalRemindersToast(result)),
+        error: () =>
+          this.toasts.toast({ id: 'final-reminder', title: 'Final reminders not sent', message: 'Please try again.' })
       });
   }
 
