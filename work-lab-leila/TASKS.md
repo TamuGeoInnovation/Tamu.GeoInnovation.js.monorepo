@@ -8173,3 +8173,13 @@ Each from the latest `development`, the bug-fix check, your own screenshots for 
 Test red first; the bug-fix check; before/after on Admin › Speakers with a search typed; a release note. Branch
 `fix/3051-admin-search-clear` from the latest `development`. Push and report "branch ready".
 
+## Batch 75 (gisday: #3055, the dial-in number shows the password; 15 November 2026, from `work (gisday)`) (Low) - **after 74**
+
+**Your report 72's question, answered:** production's "Zoom 4" name starts with a space, read from its API, so your
+trimming `byName` fixes it; its PR opens as pushed.
+
+[#3055](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3055): on a hybrid session's page,
+signed in, the Online Broadcast panel's "Dial-in number" shows `br.password`. Show `br.phoneNumber`. Test red first; the
+bug-fix check; before/after of the panel, with the local broadcast's values (test ones, not production's); a release
+note. Branch `fix/3055-dial-in-number`. Push and report "branch ready".
+
