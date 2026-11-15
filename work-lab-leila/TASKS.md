@@ -39,6 +39,14 @@
 - A report per batch, `work-lab-leila/reports/2026-11-14-<n>.md`, saying **"branch ready: <name>"** with the check's exit
   code. Questions for the maintainer go in the report, with options and a recommendation; do not ask him.
 
+## Batch 59 (gisday: #3012, make the collapsed Submission deadlines panel visible; 15 November 2026, from `work (gisday)`) (Low)
+
+[#3012](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3012). Your #2969 panel (PR 2999, merged
+and live) reads as plain text when collapsed, so the maintainer could hardly see it was there. Make it look like a box you
+can open, using the shared accordion and existing styles, not purpose-built CSS; opened, it stays as it is. Branch
+`fix/3012-deadlines-panel-visible` from the latest `development`. A test if the change is structural; the bug-fix check;
+before/after at 1280 px with the submission rows masked; a release note. Push to the fork and report "branch ready".
+
 ## Batch 58 (gisday: #2969, the deadlines panel fits at 1280 px; 14 November 2026, 9:20 PM Central, from `work (gisday)`) (Low) - **first, now**
 
 Report 57, question 1: **(a)**, the director's call so PR 2999 can go green; the maintainer may still change it. Make the
