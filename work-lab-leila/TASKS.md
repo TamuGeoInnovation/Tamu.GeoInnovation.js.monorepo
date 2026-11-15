@@ -8189,8 +8189,9 @@ note. Branch `fix/3055-dial-in-number`. Push and report "branch ready".
 Department / major) so the table fits 879 px at 1280 without scrolling, keeping the inner scroll for narrower widths;
 2(a) leave the Department heading. Report 73: 1(a) filed as #3057; 2(a) leave the proxy's Origin as documented.
 
-1. On `fix/3026-submissions-table-fit-pr` (PR 3030): the change, its test updated, re-captured after images at 1280 and
-   1024 px, the bug-fix check, push (fast-forward), and the PR body's image section in your report.
+1. **PR 3030 is being merged as it is** (the scroll fix). Do 1(c) on a new branch `fix/3026-columns-fit-1280` from the
+   latest `development` once PR 3030 is in it: the change, its test, before/after at 1280 and 1024 px, the bug-fix check;
+   push and report "branch ready".
 2. **[#3057](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3057)**, branch
    `fix/3057-tamu-2023-sessions` from the latest `development`, as the issue says.
 
