@@ -42,12 +42,14 @@ $Report = Join-Path $Here ("setup-auth0-dev-{0}.txt" -f (Get-Date -Format 'yyyyM
 $EnvFile = Join-Path $Here 'auth0-dev.local.env'
 function Say($text) { $text | Tee-Object -FilePath $Report -Append | Out-Host }
 
-# The permissions the GIS Day API checks (@Permissions in libs/gisday and apps/gisday-nest, 20 October 2026).
+# The permissions the GIS Day API checks (@Permissions in libs/gisday and apps/gisday-nest, 20 October 2026;
+# delete:competitions added 15 November for #2992's bulk delete). route-permissions.spec.ts in the data API fails when a
+# route asks for one not listed here (#3101): add it here, and to the production Auth0 API.
 $Permissions = @(
   'create:assets','create:checkins','create:classes','create:competitions','create:event-broadcasts','create:event-locations',
   'create:events','create:organizations','create:places','create:season-days','create:seasons','create:speakers','create:sponsors',
   'create:tags','create:universities','create:users',
-  'delete:assets','delete:checkins','delete:classes','delete:event-broadcasts','delete:event-locations','delete:events',
+  'delete:assets','delete:checkins','delete:classes','delete:competitions','delete:event-broadcasts','delete:event-locations','delete:events',
   'delete:organizations','delete:places','delete:season-days','delete:seasons','delete:speakers','delete:sponsors','delete:tags',
   'delete:universities','delete:users',
   'read:checkins','read:classes','read:competitions','read:rsvps','read:users',
