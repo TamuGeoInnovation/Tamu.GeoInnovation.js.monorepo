@@ -8615,3 +8615,17 @@ branch.** Carry on: 98, 99, 96, 100.
 > **Correction to report 90's answer:** the rebuilt #3104 is on the fork as **`feat/3104-speaker-choice-rebuilt`**
 > (`973726e65`), PR 3119; your `feat/3104-speaker-choice` is left as it was, not overwritten. For batch 96 (#3113),
 > stack on `feat/3104-speaker-choice-rebuilt` (or `development` if PR 3119 has merged when you start).
+
+## Batch 101 (gisday: #3114's screenshots, High) - **after 100**
+
+[#3114](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3114), built by the home machine:
+branch `feat/3114-tamu-email-design` on the fork at `7b6ce3ff4` (`.pr-body.md` last; leave it). **Do not change the
+code. Send no email.** As the local test admin, 1280 px: the email window's preview on gisday.tamu.edu for the profile
+email, session details and a review decision, before (`development`, plain) and after (designed); and txgisday.org after
+(still plain). Scroll the preview so the title block, the details box and the sign-off each show (several images per
+email is fine). To `docs/screenshots/3114-tamu-email-design/`, with the image table in `3114-tamu-email-design.md`. One
+commit, fetched and rebased, pushed (no force). Report "images pushed: <sha>".
+
+> **Batch 96 (#3113), also:** the designed email (#3114) wraps every site email through `siteEmailHtml` in
+> `libs/gisday/common/src/lib/site-email.ts`. If #3114 has merged when you build #3113, send the slides request through
+> `siteEmailHtml` with `sessionEmailDesign`; if not, say so in your report, and whichever merges second wires it.
