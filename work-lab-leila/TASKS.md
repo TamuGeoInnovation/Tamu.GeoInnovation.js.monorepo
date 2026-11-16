@@ -8717,3 +8717,12 @@ after GIS Day; not queued. Question 2 (the consent screen) is still with him: ke
 **Do not edit this machine's hosts file**: the maintainer adds the line. Until he has run the script and added it, keep to
 one page per sign-in and never accept a consent screen. The check for the projects you touch. Report "branch ready", and
 say what the maintainer must run, in order.
+
+> **Batch 107, a correction (6:40 AM Central, 16 November 2026, from the director):** the callback the site uses is its
+> origin plus `/callback` (`environment.local.ts`, `redirect_uri`), so the script adds
+> `http://gisday.local.test:4201/callback` to Allowed Callback URLs, and the bare `http://gisday.local.test:4201` to
+> Allowed Logout URLs and Allowed Web Origins, as it does for localhost. **Only in `txgisday-dev`** (client
+> `MK6AwXWd…`): the `geoservices` tenant has an application with the same name and a different client ID, which is not
+> the one the local site uses; the script must never touch that tenant, and should print the tenant and client it is
+> changing before it changes anything. After applying, have it read the application and the API back and say whether
+> each setting is as intended.
