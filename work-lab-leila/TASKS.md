@@ -8524,3 +8524,6 @@ table, its total row and the chart); a feature type opened to its submitters; an
 (with the entry) and as gisday.ucgis.org (without). After only (it is a new page), plus a before of the Dashboards menu.
 Export nothing to the repository. To `docs/screenshots/2894-vgi-dashboard/`, with the image table added to the release
 note `2894-vgi-dashboard.md`. One commit, fetched and rebased first, pushed (no force). Report "images pushed: <sha>".
+
+> **Order, 8:35 PM Central:** you resumed 88 (#3100, High): keep going with it. Batches 94 and 95 (screenshots for #2582
+> and #2894) come **after 88**, then 90. Report 93 is read; the director opens #3074's PR.
