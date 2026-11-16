@@ -8,6 +8,7 @@ import type { RsvpDashboardPerson } from '@tamu-gisc/gisday/platform/data-api';
 import { downloadFile } from '@tamu-gisc/common/utils/ui';
 
 import type { DashboardTableColumn } from '../dashboard-table/dashboard-table.component';
+import { DashboardScrollComponent } from '../dashboard-scroll/dashboard-scroll.component';
 
 /**
  * A person as every dashboard lists them: their profile, when they did what the dashboard counts, and any counts of
@@ -81,6 +82,21 @@ export const PERSON_TYPE_COLUMNS: Array<DashboardTableColumn> = RSVP_PERSON_TYPE
   label: label.replace('Undergraduate', 'Under\u00adgraduate')
 }));
 
+/**
+ * The narrowest each column of the people's tables may be, in pixels (#2894). The six a person always has fit the width
+ * an opened row gives them beside the admin menu at 1280 px (about 820 px), as they did when they were shares of it. A
+ * count column holds its heading, "Submissions", whole: shared out by percentage, the VGI dashboard's three count
+ * columns were left a letter wide, and the date column below them one letter a line.
+ */
+export const PEOPLE_TABLE_WIDTHS = { name: 140, email: 200, detail: 120, date: 110, count: 110 } as const;
+
+/** Each column's narrowest, in order: name, email, the three details, any counts, then the date. */
+export function peopleColumnWidths(countColumns: number): Array<number> {
+  const { name, email, detail, date, count } = PEOPLE_TABLE_WIDTHS;
+
+  return [name, email, detail, detail, detail, ...Array<number>(countColumns).fill(count), date];
+}
+
 /** A student's group shows classification, field of study and university; anyone else's, position, department and employer. */
 export function isStudent(type: RsvpPersonType): boolean {
   return type === 'undergraduate' || type === 'graduate' || type === 'student';
@@ -95,7 +111,7 @@ export function isStudent(type: RsvpPersonType): boolean {
   selector: 'tamu-gisc-dashboard-people',
   templateUrl: './dashboard-people.component.html',
   styleUrls: ['./dashboard-people.component.scss'],
-  imports: [DatePipe]
+  imports: [DatePipe, DashboardScrollComponent]
 })
 export class DashboardPeopleComponent {
   /** The people, or null while they are read. */
@@ -110,6 +126,9 @@ export class DashboardPeopleComponent {
   public readonly countColumns = input<Array<DashboardTableColumn>>([]);
 
   public readonly groups = computed(() => groupPeople(this.people() ?? []));
+  /** Each column's narrowest, and the table's: every column at its narrowest, so a wider table scrolls. */
+  public readonly widths = computed(() => peopleColumnWidths(this.countColumns().length));
+  public readonly minWidth = computed(() => this.widths().reduce((sum, w) => sum + w, 0));
   public readonly isStudent = isStudent;
 
   public download() {

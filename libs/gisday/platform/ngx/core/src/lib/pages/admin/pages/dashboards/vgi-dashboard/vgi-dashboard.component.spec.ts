@@ -131,7 +131,8 @@ describe('VgiDashboardComponent (#2894)', () => {
     expect(root.querySelector('.dashboard-summary').textContent).toContain('4 submissions of 2 feature types');
     expect(headings(root)).toEqual([
       'Feature type',
-      'Submissions',
+      // Breaks as "Sub-missions" in a narrow column, rather than cut to "Submissio".
+      'Sub­missions',
       'New finds',
       'Repeats',
       'People',

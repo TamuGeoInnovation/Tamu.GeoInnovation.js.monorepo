@@ -185,8 +185,8 @@ describe('DashboardTableComponent sideways scroll (#3029)', () => {
     }
   }
 
-  const box = () => (fixture.nativeElement as HTMLElement).querySelector('.dashboard-table') as HTMLElement;
-  const rail = () => (fixture.nativeElement as HTMLElement).querySelector('.dashboard-table-rail') as HTMLElement | null;
+  const box = () => (fixture.nativeElement as HTMLElement).querySelector('.dashboard-scroll') as HTMLElement;
+  const rail = () => (fixture.nativeElement as HTMLElement).querySelector('.dashboard-scroll-rail') as HTMLElement | null;
 
   /** Gives an element the layout jsdom does not have: its widths, and a scroll position that can be set. */
   function layOut(element: HTMLElement, clientWidth: number, scrollWidth: number) {

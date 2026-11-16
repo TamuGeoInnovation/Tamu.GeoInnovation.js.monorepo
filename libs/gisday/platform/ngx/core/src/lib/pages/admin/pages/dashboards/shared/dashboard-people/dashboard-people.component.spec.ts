@@ -2,7 +2,15 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import * as Papa from 'papaparse';
 
-import { DashboardPeopleComponent, DashboardPerson, groupPeople, peopleCsv, PERSON_TYPE_COLUMNS } from './dashboard-people.component';
+import {
+  DashboardPeopleComponent,
+  DashboardPerson,
+  groupPeople,
+  peopleColumnWidths,
+  peopleCsv,
+  PEOPLE_TABLE_WIDTHS,
+  PERSON_TYPE_COLUMNS
+} from './dashboard-people.component';
 
 const person = (p: Partial<DashboardPerson>): DashboardPerson => ({
   firstName: null,
@@ -101,6 +109,40 @@ describe('DashboardPeopleComponent', () => {
 
     const rows = Papa.parse<Record<string, string>>(peopleCsv(counted, 'First submitted', countColumns), { header: true }).data;
     expect(rows.find((r) => r.Email === 'pat@example.edu')).toEqual(expect.objectContaining({ Submissions: '3', 'New finds': '2' }));
+  });
+
+  /**
+   * #2894: the VGI dashboard's three count columns made nine, shared out by percentage, so at 1280 px the last were a
+   * letter wide and "Submissions" was cut. The tables now sit in the dashboards' scrolling box, each column at least its
+   * narrowest, so a wider table scrolls rather than squeezing a column.
+   */
+  it('puts the tables in the scrolling box, never narrower than their columns at their narrowest', () => {
+    const counted = people.map((p) => ({ ...p, counts: { submissions: 1, newFinds: 0, repeats: 1 } }));
+    const countColumns = [
+      { key: 'submissions', label: 'Submissions' },
+      { key: 'newFinds', label: 'New finds' },
+      { key: 'repeats', label: 'Repeats' }
+    ];
+    const el = show({ people: counted, countColumns });
+    const tables = Array.from(el.querySelectorAll<HTMLElement>('table'));
+    const widths = peopleColumnWidths(3);
+
+    expect(el.querySelector('tamu-gisc-dashboard-scroll .dashboard-scroll')).not.toBeNull();
+    expect(tables.every((t) => t.closest('.dashboard-scroll'))).toBe(true);
+    expect(widths).toHaveLength(9);
+    expect(tables[0].style.minWidth).toBe(`${widths.reduce((a, b) => a + b, 0)}px`);
+    expect(Array.from(tables[0].querySelectorAll('col')).map((c) => (c as HTMLElement).style.width)).toEqual(
+      widths.map((w) => `${w}px`)
+    );
+  });
+
+  it("gives each column room for its heading, and fits a person's six columns beside the admin menu at 1280 px", () => {
+    // "Submissions" in the table's bold heading, with its padding, is about 104 px wide: an estimate, which the lab's
+    // screenshot of an opened VGI row at 1280 px checks.
+    expect(PEOPLE_TABLE_WIDTHS.count).toBeGreaterThanOrEqual(104);
+    // An opened row gives the people about 820 px beside the admin menu at 1280 px (the table's 879, less the detail's
+    // padding): six columns fit there without a scrollbar, as they did as shares of it.
+    expect(peopleColumnWidths(0).reduce((a, b) => a + b, 0)).toBeLessThanOrEqual(820);
   });
 
   it('says so while reading, if the people could not be read, and if there are none', () => {

@@ -20,7 +20,8 @@
       <h3 class="dashboard-heading">By feature type</h3>
       @if (view.events.length > 0) {
       <p class="dashboard-note">Each feature type on the season's form. New finds and repeats are scored as the leaderboard scores them; a discarded submission, or one outside the scoring window, is neither. Click a heading to sort by it, and again to reverse it. Click a feature type to see who submitted it.</p>
-      <tamu-gisc-dashboard-table [rows]="rows()" [columns]="tableColumns()" nameLabel="Feature type" totalHeading="Submissions" totalLabel="All types" (toggled)="toggle($event)">
+      <!-- "Sub&shy;missions": at its narrowest the total column cut the word to "Submissio", and Chrome does not hyphenate a word starting with a capital. -->
+      <tamu-gisc-dashboard-table [rows]="rows()" [columns]="tableColumns()" nameLabel="Feature type" totalHeading="Sub&shy;missions" totalLabel="All types" (toggled)="toggle($event)">
         <ng-template tamuGiscDashboardRowDetail>
           <tamu-gisc-dashboard-people [people]="people()" [failed]="peopleFailed()" [fileName]="fileName()" [countColumns]="submitterColumns" dateLabel="First submitted" emptyText="Nobody has submitted this feature type yet."></tamu-gisc-dashboard-people>
         </ng-template>
