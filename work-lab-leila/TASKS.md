@@ -8603,3 +8603,11 @@ fetched and rebased, pushed (no force). Report "images pushed: <sha>".
 
 > **Batch 97 (#3114, the designed email) moves to the home machine**, to run beside your queue. Do not start it. Your
 > order is now: 90, 98, 99, 96, 100.
+
+## Report 90, answered (9:32 PM Central, read from the clock; my earlier "about" times were guesses, and I'll read the clock from now on)
+
+**Decided (the director):** 1(a): the Profile email goes as a copy each only, as built, for the same reason as the slides
+email (each carries the speaker's own edit link; the maintainer decided that for #3113). 2(a). 3: #3100 had already merged
+(squashed, as PR 3117); the director rebuilt `feat/3104-speaker-choice` as `development` plus your three commits
+(cherry-picked, no conflicts) and is running the full check before force-pushing it to the fork. **Don't push to that
+branch.** Carry on: 98, 99, 96, 100.
