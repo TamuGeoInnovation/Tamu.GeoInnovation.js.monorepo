@@ -2,6 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 
+import { ALREADY_SIGNED_IN_PATH } from '@tamu-gisc/gisday/platform/ngx/common';
+
 import { NotAuthedComponent } from '../not-authed/not-authed.component';
 import { wrapperRoutes } from './wrapper.routes';
 
@@ -31,5 +33,27 @@ describe('wrapperRoutes, an unknown address', () => {
     expect(Array.from(element.querySelectorAll('a')).map((a) => a.getAttribute('href'))).toEqual(['/', '/sessions']);
     // The address stays as typed, so the visitor can see what was wrong with it.
     expect(TestBed.inject(Router).url).toBe('/no-such-page');
+  });
+});
+
+/**
+ * #3154. A visitor already signed in who follows a "create an account" or "log in" link is told so, with a way on to the
+ * site and a way to log out, rather than seeing the page they were on come back as if nothing happened.
+ */
+describe('wrapperRoutes, already signed in', () => {
+  it('says the visitor is already signed in, with Continue to the site and Log out', async () => {
+    const signedIn = (wrapperRoutes[0].children ?? []).find((r) => r.path === ALREADY_SIGNED_IN_PATH);
+
+    TestBed.configureTestingModule({ providers: [provideRouter([signedIn])] });
+
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl(`/${ALREADY_SIGNED_IN_PATH}`, NotAuthedComponent);
+    const element = harness.routeNativeElement as HTMLElement;
+
+    expect(element.querySelector('h1').textContent.trim()).toBe("You're already signed in");
+    expect(Array.from(element.querySelectorAll('a')).map((a) => [a.textContent.trim(), a.getAttribute('href')])).toEqual([
+      ['Continue to the site', '/'],
+      ['Log out', '/logout']
+    ]);
   });
 });
