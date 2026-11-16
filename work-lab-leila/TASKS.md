@@ -8894,3 +8894,14 @@ scrolled down); a release note; the bug-fix check. Report "branch ready".
 
 **Report 116, answered (the director):** thank you; PR 3164, from your commits through `0be830393`. Nothing new queued: the
 remaining GIS Day issues wait on the maintainer's answers or are after GIS Day.
+
+## Batch 117 (gisday: #2024's screenshots, Urgent; 16 November 2026, from `work (gisday)`) - **now**
+
+[#2024](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2024): the footer's My Account links
+(Profile Details `/me` and My Classes `/me/classes`, both not found; Registered Sessions the public list) go to
+`/account/details`, `/account/classes` and **My Check-ins** `/account/checkins`. **Do not change the code.** Branch
+`fix/2024-footer-links` on the fork. As gisday.tamu.edu, 1280 px, signed in as the test admin: **before** (`development`)
+the footer's My Account column `before-footer.png`, and Profile Details followed `before-profile-details.png` (not found);
+**after** (the branch) the column `after-footer.png`, and each of the three followed, one image each. To
+`docs/screenshots/2024-footer-links/`, plus `docs/releases/unreleased/2024-footer-links.md` with its *What to test on dev*
+row, on the branch. Report "images pushed: <sha>".
