@@ -24,7 +24,9 @@ describe('SessionDetailsEmailService', () => {
     location: { building: 'MSC', room: '2300' },
     broadcast: { publicUrl: 'https://zoom.example/j/123', phoneNumber: '+1 555 0100' },
     requirements: 'A laptop.',
-    speakers: [ana, cy, noAddress]
+    speakers: [ana, cy, noAddress],
+    // The season's days, for the email's design on Texas A&M's site (#3114).
+    season: { days: ['16', '17', '18', '19', '20'].map((d) => ({ date: `2026-11-${d}T06:00:00.000Z` })) }
   };
 
   let sent: Array<{ to: string; subject: string; text: string; html: string; from: string }>;
@@ -90,6 +92,37 @@ describe('SessionDetailsEmailService', () => {
         subject: 'About Texas A&M GIS Day',
         text: 'Hi **Ana**',
         html: expect.stringContaining('<strong>Ana</strong>')
+      })
+    );
+  });
+
+  /**
+   * #3114: on gisday.tamu.edu the email wears the Texas A&M GIS Day design, with the season's dates, the session in its
+   * details box and the sender's sign-off; txgisday.org's stays plain. The plain text goes beside it either way.
+   */
+  it("sends Texas A&M's speakers the designed email, and txgisday.org's the plain one", async () => {
+    await service.send('e-1', 'gisday.tamu.edu', { subject: 'About {site}', template: 'Hi **{first name}**' });
+    const tamu = sent.find((m) => m.to === 'ana@example.edu');
+
+    expect(tamu.html).toContain('GIS DAY(S)');
+    expect(tamu.html).toContain('November 16–20, 2026');
+    expect(tamu.html).toContain('<b>Where:</b> MSC 2300');
+    expect(tamu.html).toContain('<strong>Ana</strong>');
+    expect(tamu.text).toBe('Hi **Ana**');
+
+    sent = [];
+    await service.send('e-1', 'txgisday.org', { subject: 'About {site}', template: 'Hi **{first name}**' });
+
+    expect(sent.find((m) => m.to === 'ana@example.edu').html).not.toContain('GIS DAY(S)');
+  });
+
+  it("gives the preview the design, so the window shows the whole email: the season's days and the session", async () => {
+    const [group] = (await service.preview('e-1', 'gisday.tamu.edu')).groups;
+
+    expect(group.design).toEqual(
+      expect.objectContaining({
+        days: expect.arrayContaining(['2026-11-16T06:00:00.000Z', '2026-11-20T06:00:00.000Z']),
+        session: expect.objectContaining({ name: 'WORKSHOP: Mapping floods', where: 'MSC 2300, and online' })
       })
     );
   });

@@ -481,7 +481,14 @@ describe('SpeakerEditService.sendLinksForSubmissions (#2958)', () => {
   const S3 = '7c3f5e4a-2d6b-4e8c-9a0f-9b8c7d6e5f43';
   const S4 = '8d4a6f5b-3e7c-4f9d-8b1a-0c9d8e7f6a54';
   const speakers = [
-    { guid: 'sp-ana', firstName: 'Ana', lastName: 'Ruiz', email: ' Ana.Ruiz@TAMU.edu ', season: { guid: S2026 } },
+    {
+      guid: 'sp-ana',
+      firstName: 'Ana',
+      lastName: 'Ruiz',
+      email: ' Ana.Ruiz@TAMU.edu ',
+      // The season's days, for the email's design on Texas A&M's site (#3114).
+      season: { guid: S2026, days: [{ date: '2026-11-16T06:00:00.000Z' }, { date: '2026-11-20T06:00:00.000Z' }] }
+    },
     { guid: 'sp-cy', firstName: 'Cy', lastName: 'Diaz', email: 'cy@tamu.edu', season: { guid: S2026 } },
     { guid: 'sp-eve', firstName: 'Eve', lastName: 'Kim', email: 'eve@tamu.edu', season: { guid: S2026 } },
     { guid: 'sp-fay', firstName: 'Fay', lastName: 'Ng', email: 'fay@tamu.edu', season: { guid: S2026 } },
@@ -615,6 +622,26 @@ describe('SpeakerEditService.sendLinksForSubmissions (#2958)', () => {
 
     expect(sent).toHaveLength(2);
     expect(sent).toEqual([expect.objectContaining(chosen), expect.objectContaining(chosen)]);
+  });
+
+  // #3114: on gisday.tamu.edu the profile email wears the Texas A&M GIS Day design, with its season's dates and the
+  // sender's sign-off; txgisday.org's stays plain.
+  it("sends Texas A&M's finalists the designed email, and txgisday.org's the plain one", async () => {
+    const chosen = { from: '"Jo Admin (Texas A&M GIS Day)" <jadmin@tamu.edu>', replyTo: 'jadmin@tamu.edu' };
+
+    await service.sendLinksForSubmissions([S1], 'gisday.tamu.edu', undefined, chosen);
+    const [designed] = sent as Array<{ text: string; html: string }>;
+
+    expect(designed.html).toContain('GIS DAY(S)');
+    expect(designed.html).toContain('November 16–20, 2026');
+    expect(designed.html).toContain('href="mailto:jadmin@tamu.edu"');
+    expect(designed.html).toContain('href="https://gisday.tamu.edu/presenters/edit/');
+    expect(designed.text).toContain('https://gisday.tamu.edu/presenters/edit/');
+
+    sent.length = 0;
+    await service.sendLinksForSubmissions([S1], 'txgisday.org');
+
+    expect((sent as Array<{ html: string }>)[0].html).not.toContain('GIS DAY(S)');
   });
 
   // #3044: the text may use Markdown; it goes as HTML beside the plain text, and HTML typed into it is not obeyed.
