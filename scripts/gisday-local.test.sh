@@ -97,6 +97,45 @@ check "the site proxy sends the host it is given as x-forwarded-host" \
 
 check "the nginx settings sit beside the script" '[ -f "$repo/scripts/gisday-local-static.conf" ]'
 
+# Auth0 never skips its consent screen for a page on localhost, so the site is opened at gisday.local.test, which the
+# hosts file points at 127.0.0.1 (#3136). `web` says so, and says when the hosts file does not have it; it never edits it.
+web_says() {
+  local hosts="$1"
+  shift
+  : >"$log"
+  (cd "$repo" && PATH="$bin:$PATH" DOCKER_LOG="$log" GISDAY_HOSTS_FILE="$hosts" bash scripts/gisday-local.sh web "$@" 2>&1)
+}
+printf '# hosts\n127.0.0.1 localhost\n127.0.0.1\tgisday.local.test  # GIS Day local, #3136\n' >"$bin/hosts-with"
+printf '127.0.0.1 localhost\n# 127.0.0.1 gisday.local.test\n10.0.0.1 gisday.local.test\n127.0.0.1 gisday.local.test.example\n' \
+  >"$bin/hosts-without"
+cp "$bin/hosts-with" "$bin/hosts-with.before"
+for args in "" "--static" "--site ucgis"; do
+  # shellcheck disable=SC2086
+  said="$(web_says "$bin/hosts-with" $args)"
+  check "web $args says to open http://gisday.local.test:4201" 'grep -q "Then open http://gisday.local.test:4201 " <<<"$said"'
+  check "web $args still offers http://localhost:4201" 'grep -q "or http://localhost:4201" <<<"$said"'
+  check "web $args says nothing about the hosts file when it has the name" '! grep -q "is not in" <<<"$said"'
+  # auth0-spa-js runs only on a secure page, and http://gisday.local.test is not one unless the browser is told (#3136).
+  check "web $args says the browser must treat gisday.local.test as secure" \
+    'grep -q "the browser must treat it as secure: docs/gisday-local.md#signing-in" <<<"$said"'
+  # shellcheck disable=SC2086
+  said="$(web_says "$bin/hosts-without" $args)"
+  check "web $args says when the hosts file does not point gisday.local.test at 127.0.0.1" \
+    'grep -q "gisday.local.test is not in .*hosts-without. Add the line .127.0.0.1 gisday.local.test." <<<"$said"'
+done
+check "web leaves the hosts file as it was" 'cmp -s "$bin/hosts-with" "$bin/hosts-with.before"'
+check "web without a hosts file says to add the line" \
+  'web_says "$bin/no-such-hosts" | grep -q "gisday.local.test is not in"'
+# The dev server refuses a request whose Host it does not know (Vite's allowedHosts), so the name has to be allowed
+# in the configuration `web` serves, which is `local`.
+check "the local dev server answers to gisday.local.test" \
+  'sed -n "/\"serve\": {/,/\"readyWhen\"/p" "$repo/apps/gisday-angular/project.json" |
+     sed -n "/\"local\": {/,/}/p" | grep -q "\"allowedHosts\": \[\"gisday.local.test\"\]"'
+check "the API sample allows gisday.local.test as an origin, beside localhost" \
+  'grep -qx "ORIGINS=http://localhost:4201,http://gisday.local.test:4201" "$repo/apps/gisday-nest/local.env.sample"'
+check "the site returns from sign-in to its own address, not to a fixed host" \
+  'grep -q "redirect_uri: window.location.origin + .\/callback." "$repo/apps/gisday-angular/src/environments/environment.local.ts"'
+
 # Every docker call for `restore`, with a settings folder of its own: `restore` only needs local-db.env to exist.
 restore_calls() {
   local dir

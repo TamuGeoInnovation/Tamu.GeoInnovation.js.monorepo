@@ -38,6 +38,11 @@ DB_NAME=gisday-nest-eh
 SCRUB_DB=gisday-scrubbed
 # The starting database for local development: a copy with nobody's real data in it (docs/gisday-local.md).
 SEED=apps/gisday-nest/src/database/gisday-local.bak
+# The address to sign in at: Auth0 never skips its consent screen for a page on localhost or 127.0.0.1, so the
+# site is also served under a name the hosts file points at 127.0.0.1 (#3136). .test is reserved; it is never a real host.
+LOCAL_HOST=gisday.local.test
+LOCAL_SITE="http://$LOCAL_HOST:4201"
+HOSTS_FILE="${GISDAY_HOSTS_FILE:-C:/Windows/System32/drivers/etc/hosts}"
 
 need() {
   [ -f "$1" ] || { echo "Missing $1. See docs/gisday-local.md." >&2; exit 2; }
@@ -144,6 +149,7 @@ SQL
   web)
     # --site serves the app as another site (a key of GISDAY_SITES in libs/gisday/common/src/lib/sites.ts),
     # through a proxy on 4201, the only port the local Auth0 application accepts sign-ins on.
+    # Signing in skips Auth0's consent screen only at http://gisday.local.test:4201, never at localhost (#3136).
     # --static builds once and serves the build from nginx, for when the dev server never finishes its
     # first page load (#2057).
     site="" port=4201 static=""
@@ -188,9 +194,18 @@ SQL
       site_host="$(sed -n "/^  $site: {/,/^  }/s#^ *address: 'https://\([^/']*\)'.*#\1#p" libs/gisday/common/src/lib/sites.ts)"
       docker run -d --name gisday-site --network "$NET" -p 4201:4201 -v "$REPO/scripts:/s:ro" \
         "$NODE_IMAGE" node /s/gisday-site-proxy.js "$site" gisday-dev 4201 4201 "$site_host" >/dev/null
-      echo "Then open http://localhost:4201 for $site, and http://localhost:4202 for txgisday.org (no sign-in there)"
+      echo "Then open $LOCAL_SITE for $site (or http://localhost:4201), and http://localhost:4202 for txgisday.org (no sign-in there)"
     else
-      echo "Then open http://localhost:4201"
+      echo "Then open $LOCAL_SITE (or http://localhost:4201)"
+    fi
+    # auth0-spa-js runs only on a secure page, which http://gisday.local.test is not unless the browser is told so.
+    echo "To sign in at $LOCAL_SITE without a consent screen, the browser must treat it as secure: docs/gisday-local.md#signing-in"
+    # Read only: the hosts file is the machine's own, and is never changed from here.
+    # A line counts when, before any comment, it gives 127.0.0.1 and then the name among its host names.
+    if ! awk -v h="$LOCAL_HOST" '{ sub(/#.*/, "") } $1 == "127.0.0.1" { for (i = 2; i <= NF; i++) if (tolower($i) == h) found = 1 }
+        END { exit !found }' "$HOSTS_FILE" 2>/dev/null; then
+      echo "$LOCAL_HOST is not in $HOSTS_FILE. Add the line '127.0.0.1 $LOCAL_HOST' to it (as an administrator)," \
+        "or sign in at http://localhost:4201, where Auth0 always shows its consent screen (docs/gisday-local.md#signing-in)."
     fi
     ;;
 
