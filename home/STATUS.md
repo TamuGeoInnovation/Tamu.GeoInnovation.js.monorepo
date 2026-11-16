@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch 65 (gisday: #2894, VGI submissions dashboard)**: started 8:02 PM Central, 15 November, branch `feat/2894-vgi-dashboard`.
+- Nothing. Idle and listening.
 
 ## Finished
+- **Batch 65 (gisday: #2894)** (report `home/reports/2026-11-15-65.md`): branch ready, `feat/2894-vgi-dashboard` on the fork at `c4a9bef0a`, no PR. VGI submissions dashboard on the shared dashboard pieces, scored by the leaderboard's own `scoreSubmissions`; `read:competitions`, nothing new for Auth0. Red first; full check exit 0. Screenshots to the lab. No questions.
 - **Batch 64 (gisday: #2582)** (report `home/reports/2026-11-15-64.md`): branch ready, `fix/2582-designer-feedback` on the fork at `5b6a35de0`, no PR. Fetching, failure and success messages; Save feedback and instructions too, so the issue can close. Red first; check exit 0. Screenshots to the lab. No questions.
 - **Batch 63 (gisday: #3074)** (report `home/reports/2026-11-15-63.md`): branch ready, `fix/3074-image-upload-rule` on the fork at `779724db6`, no PR. Five image pickers on one shared `UploadImagePicker`; the rule gains the API's 5 MB. Red first; check exit 0. Screenshots to the lab. No questions.
 - **Batch 62 (gisday: #2084)** (report `home/reports/2026-11-15-62.md`): branch ready, `fix/2084-tamu-tab-icon` on the fork at `9685c2aa3`, no PR. AggieMap's favicon moved to libs/assets and shared, still served at /favicon.ico; each site's page names its icon. Red first; check exit 0. Screenshots to the lab. No questions.
