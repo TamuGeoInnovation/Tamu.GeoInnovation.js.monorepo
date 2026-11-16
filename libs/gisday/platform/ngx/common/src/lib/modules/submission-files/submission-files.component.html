@@ -14,8 +14,15 @@
     }
     <!-- Who uploaded it, where the list is several people's: a session's slides on its admin page (#3093). -->
     <span class="file-detail">@if (file.uploadedBy) {<span class="file-by">{{ file.uploadedBy }}</span> · }{{ size(file.size) }} · {{ file.uploaded | date: 'MMM d, h:mm a' }}</span>
-    @if (editable()) {
-    <button type="button" class="inline-link danger" [disabled]="busy() === file.guid" (click)="remove(file)">Remove</button>
+    @if (editable() || askBeforeRemoving()) {
+    <button type="button" class="inline-link danger" [disabled]="busy() === file.guid || asking() === file.guid" (click)="askToRemove(file)">Remove</button>
+    } @if (asking() === file.guid) {
+    <!-- Asked on the page, not in the browser's confirm(), as the speaker badges ask (#2908, #3105). -->
+    <div class="info-block context file-confirm" role="alert">
+      <p>Remove <strong>{{ file.name }}</strong>@if (file.uploadedBy) {, uploaded by {{ file.uploadedBy }}}? It cannot be undone.</p>
+      <button class="button primary" type="button" (click)="remove(file)">Remove the file</button>
+      <button class="button secondary" type="button" (click)="asking.set(null)">Keep it</button>
+    </div>
     }
   </li>
   } @if (uploading(); as upload) {

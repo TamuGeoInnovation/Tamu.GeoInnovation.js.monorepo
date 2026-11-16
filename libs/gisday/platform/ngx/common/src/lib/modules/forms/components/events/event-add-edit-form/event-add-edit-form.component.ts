@@ -315,7 +315,7 @@ export class EventAddEditFormComponent implements OnInit {
 
       this.selectedEventDateEnd$ = this.entity$.pipe(take(1), this._timeStringFromEvent$('endTime'), shareReplay());
 
-      // The session's slides (#3093), from its speakers' edit links: listed here to download, never changed here.
+      // The session's slides (#3093), from its speakers' edit links: listed here to download, and to remove (#3105).
       this.at.params
         .pipe(
           map((params) => params.guid as string),
@@ -326,7 +326,8 @@ export class EventAddEditFormComponent implements OnInit {
             list: () => this.sessionFiles.forEvent(guid),
             download: (file) => this.sessionFiles.download(guid, file),
             add: () => EMPTY,
-            remove: () => EMPTY
+            // Any speaker's, asked about on the page first (#3105).
+            remove: (file) => this.sessionFiles.removeFromEvent(guid, file)
           })
         );
     } else {

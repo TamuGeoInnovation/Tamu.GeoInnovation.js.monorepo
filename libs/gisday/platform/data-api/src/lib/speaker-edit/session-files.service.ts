@@ -88,10 +88,14 @@ export class SessionFilesService {
     }
   }
 
-  /** Removes one of the speaker's own files from the session. Another speaker's file, or none, reads as not found. */
-  public async remove(link: SpeakerEditLink, eventGuid: string, fileGuid: string): Promise<void> {
-    const session = await this.sessionFor(link, eventGuid);
-    const file = (await this.filesOf([session.guid], link)).find((f) => f.guid === fileGuid);
+  /**
+   * Removes a file from the session. With a speaker's link, only one of that speaker's own: another speaker's file, or
+   * none, reads as not found. Without one, for the admins, any speaker's file on the session, one whose speaker is no
+   * longer listed included (#3105); a file of another session reads as not found.
+   */
+  public async remove(link: SpeakerEditLink | null, eventGuid: string, fileGuid: string): Promise<void> {
+    const session = link ? (await this.sessionFor(link, eventGuid)).guid : eventGuid;
+    const file = (await this.filesOf([session], link ?? undefined)).find((f) => f.guid === fileGuid);
 
     if (!file) {
       throw new NotFoundException('File not found.');
