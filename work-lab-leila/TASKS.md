@@ -8572,3 +8572,11 @@ on with 90, 96, 97.
 > (`user-submission.provider`: finalists' and review decisions, reminders). One place builds the HTML (around
 > `emailHtml` and `senderAs`), so every caller gets the shell without its own copy. List in the report every email the
 > site sends and whether it now carries the design; any that cannot (e.g. the contact form's, sent to the team), say why.
+
+## Batch 98 (gisday: #2894, retake one image; 15 November 2026, from `work (gisday)`) - **after 90, before 96**
+
+The home machine fixed the squeezed people table on `feat/2894-vgi-dashboard` (fork, `fc5b8608c`, `.pr-body.md` last;
+leave it): a shared `DashboardScrollComponent` rail, and "Sub&shy;missions". **Do not change the code.** Retake
+`docs/screenshots/2894-vgi-dashboard/after-feature-type-open.png` (and the main table's image if "Submissions" changed), as
+in batch 95; say whether every heading is whole and the rail shows. One commit, fetched and rebased, pushed (no force).
+Report "images pushed: <sha>".
