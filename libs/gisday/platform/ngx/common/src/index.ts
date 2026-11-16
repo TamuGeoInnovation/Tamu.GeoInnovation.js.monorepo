@@ -18,6 +18,7 @@ export * from './lib/utils/events-by-day';
 export * from './lib/utils/event-form-problems';
 export * from './lib/utils/speakers';
 export * from './lib/utils/search-text';
+export * from './lib/utils/upload-image-picker';
 export * from './lib/utils/submission-deadline-notice';
 export * from './lib/utils/server-message';
 

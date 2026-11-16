@@ -13,7 +13,8 @@ import {
   classBannerSpeaker,
   ImagePreviewComponent,
   serverMessage,
-  SpeakerClassBannerComponent
+  SpeakerClassBannerComponent,
+  UploadImagePicker
 } from '@tamu-gisc/gisday/platform/ngx/common';
 
 /**
@@ -62,6 +63,9 @@ export class PeopleEditComponent implements OnInit {
   public readonly sending = signal(false);
   public readonly sent = signal(false);
   public readonly problem = signal<string | null>(null);
+
+  /** The photo picker, on the shared upload rule (#3074). */
+  public readonly photoPicker = new UploadImagePicker('The photo');
   /** The answer to a request for a link. */
   public readonly requested = signal<string | null>(null);
 
@@ -108,13 +112,9 @@ export class PeopleEditComponent implements OnInit {
   public choosePhoto(file: File | undefined): void {
     this.problem.set(null);
 
-    if (file && !/^image\/(jpeg|png)$/.test(file.type)) {
-      this.problem.set(`${file.name} is not a JPEG or PNG photo.`);
-      return;
-    }
-
-    if (file && file.size > 5 * 1024 * 1024) {
-      this.problem.set(`${file.name} is larger than 5 MB.`);
+    // The shared upload rule (#3074): what the API takes, refused in its words.
+    if (file && !this.photoPicker.choose(file)) {
+      this.problem.set(this.photoPicker.problem());
       return;
     }
 
