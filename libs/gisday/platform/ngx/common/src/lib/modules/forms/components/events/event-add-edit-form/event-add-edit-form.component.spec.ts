@@ -1,3 +1,4 @@
+import { ApplicationRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { firstValueFrom, of } from 'rxjs';
@@ -379,7 +380,11 @@ describe('EventAddEditFormComponent, the Slides section (#3093)', () => {
   });
 
   function render(type: 'create' | 'edit', files: Array<object> = [deck]) {
-    const sessionFiles = { forEvent: jest.fn(() => of(files)), download: jest.fn(() => of(new Blob(['x']))) };
+    const sessionFiles = {
+      forEvent: jest.fn(() => of(files)),
+      download: jest.fn(() => of(new Blob(['x']))),
+      removeFromEvent: jest.fn(() => of(undefined))
+    };
 
     TestBed.configureTestingModule({
       providers: [
@@ -424,12 +429,54 @@ describe('EventAddEditFormComponent, the Slides section (#3093)', () => {
     expect(sessionFiles.download).toHaveBeenCalledWith('event', 'f-1');
   });
 
-  it('offers nothing to change them, and says when there are none', () => {
+  it('offers no upload, and says when there are none', () => {
     const { page } = render('edit', []);
 
     expect(page.querySelector('.files-empty').textContent.trim()).toBe('No slides uploaded yet.');
     expect(page.querySelector('tamu-gisc-file')).toBeNull();
-    expect(page.textContent).not.toContain('Remove');
+  });
+
+  /**
+   * #3105: the admins can remove any speaker's file, one whose speaker is no longer listed included, after saying so on
+   * the page: the site asks there, never in the browser's own confirm().
+   */
+  describe('removing a file (#3105)', () => {
+    const gone = { ...deck, uploadedBy: 'A speaker no longer listed' };
+    const button = (page: HTMLElement, text: string) =>
+      [...page.querySelectorAll<HTMLButtonElement>('button')].find((b) => b.textContent.trim() === text);
+
+    it('asks on the page first, naming the file and who uploaded it, and removes nothing until told to', () => {
+      const confirm = jest.spyOn(window, 'confirm');
+      const { page, sessionFiles } = render('edit', [gone]);
+
+      button(page, 'Remove').click();
+      TestBed.inject(ApplicationRef).tick();
+
+      const asked = page.querySelector('[role="alert"]');
+      expect(asked.textContent.replace(/\s+/g, ' ')).toContain(
+        'Remove Example watersheds.pptx, uploaded by A speaker no longer listed? It cannot be undone.'
+      );
+      expect(confirm).not.toHaveBeenCalled();
+      expect(sessionFiles.removeFromEvent).not.toHaveBeenCalled();
+
+      button(page, 'Keep it').click();
+      TestBed.inject(ApplicationRef).tick();
+
+      expect(page.querySelector('[role="alert"]')).toBeNull();
+      expect(page.querySelectorAll('.file')).toHaveLength(1);
+    });
+
+    it('removes the file once told to, and takes it off the list', () => {
+      const { page, sessionFiles } = render('edit', [gone, theirs]);
+
+      button(page, 'Remove').click();
+      TestBed.inject(ApplicationRef).tick();
+      button(page, 'Remove the file').click();
+      TestBed.inject(ApplicationRef).tick();
+
+      expect(sessionFiles.removeFromEvent).toHaveBeenCalledWith('event', 'f-1');
+      expect([...page.querySelectorAll('.file-name')].map((f) => f.textContent.trim())).toEqual(['Lightning.pdf']);
+    });
   });
 
   it('has no Slides section on a new event', () => {

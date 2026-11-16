@@ -416,7 +416,52 @@ describe('SessionFilesController (#3093)', () => {
         for (const path of [`event/${MINE}`, `event/${MINE}/${guid}`, `season/${SEASON}`]) {
           expect((await fetch(`${url}/session-files/${path}`)).status).toBe(403);
         }
+
+        // #3105: nor remove one.
+        expect((await fetch(`${url}/session-files/event/${MINE}/${guid}`, { method: 'DELETE' })).status).toBe(403);
       }
+
+      expect(rows).toHaveLength(1);
+    });
+
+    /**
+     * #3105: a speaker removes only their own files, and the admins' list only downloaded, so a file whose speaker was
+     * deleted ("A speaker no longer listed") could not be removed by anyone.
+     */
+    it("removes any speaker's file from the session, its row and the file itself", async () => {
+      await upload(OTHER_TOKEN, MINE, 'Their deck.pptx');
+      const theirs = rows.find((r) => r.name === 'Their deck.pptx');
+      as(['update:events']);
+
+      const response = await fetch(`${url}/session-files/event/${MINE}/${theirs.guid}`, { method: 'DELETE' });
+
+      expect(response.status).toBe(204);
+      expect(rows.map((r) => r.name)).toEqual(['Watersheds.pdf']);
+      expect(existsSync(join(appData, theirs.path))).toBe(false);
+    });
+
+    it('removes the file of a speaker no longer listed', async () => {
+      const file = rows[0];
+      // The speaker who uploaded it has since been deleted.
+      file.uploadedBy = { guid: '99999999-9999-4999-8999-999999999999' } as Speaker;
+      as(['update:events']);
+
+      expect(await (await fetch(`${url}/session-files/event/${MINE}`)).json()).toEqual([
+        expect.objectContaining({ name: 'Watersheds.pdf', uploadedBy: 'A speaker no longer listed' })
+      ]);
+
+      expect((await fetch(`${url}/session-files/event/${MINE}/${file.guid}`, { method: 'DELETE' })).status).toBe(204);
+      expect(rows).toEqual([]);
+      expect(existsSync(join(appData, file.path))).toBe(false);
+    });
+
+    it("reads another session's file as not found, and removes nothing", async () => {
+      const file = rows[0];
+      as(['update:events']);
+
+      expect((await fetch(`${url}/session-files/event/${MINE_TOO}/${file.guid}`, { method: 'DELETE' })).status).toBe(404);
+      expect(rows).toHaveLength(1);
+      expect(existsSync(join(appData, file.path))).toBe(true);
     });
   });
 });
