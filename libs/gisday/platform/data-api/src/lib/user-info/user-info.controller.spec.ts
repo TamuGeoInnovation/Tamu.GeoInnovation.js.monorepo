@@ -8,6 +8,7 @@ import { JwtGuard, ManagementService, PermissionsGuard } from '@tamu-gisc/common
 import { Organization, University, UserInfo } from '../entities/all.entity';
 import { UserInfoController } from './user-info.controller';
 import { UserInfoProvider } from './user-info.provider';
+import { AccountDashboardProvider } from './account-dashboard.provider';
 
 /**
  * `GET /users`, which Admin -> Users reads, through Nest's real routing, the real provider and the real
@@ -63,6 +64,8 @@ describe('UserInfoController, GET /users (#2574)', () => {
       controllers: [UserInfoController],
       providers: [
         UserInfoProvider,
+        // Development's accounts dashboard (#2892), which this route does not use.
+        { provide: AccountDashboardProvider, useValue: {} },
         { provide: ManagementService, useValue: management },
         { provide: getRepositoryToken(UserInfo), useValue: {} },
         { provide: getRepositoryToken(University), useValue: {} },
