@@ -8432,3 +8432,8 @@ Start from **`fork/feat/3093-speaker-slides`** as it is now: the director merged
 squash, conflicts resolved, `.pr-body.md` removed; the PR body is with the director). Tests red first for the new rules
 (a third... fourth file refused; another speaker's file not listed or removable); the full check; replace the screenshots
 that change; update the release note. Push to the same branch (no force). Report "branch ready" with the sha.
+
+> **Batch 87b, also (6:55 PM Central):** the director's full check on the merged branch (`2b0223578`) failed one test,
+> on time, not on behaviour: `session-files.controller.spec.ts` "cuts off a file over the size limit, as a submission
+> file is" exceeded Jest's 5 s (5.7 s) under the check's load. Give it a timeout with a comment saying why, as the
+> repository's other heavy tests do (e.g. the speaker photo resize test's 30 s), and say in the report how long it takes.
