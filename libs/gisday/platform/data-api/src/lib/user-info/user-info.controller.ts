@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Request,
   UseGuards
 } from '@nestjs/common';
@@ -54,9 +55,10 @@ export class UserInfoController {
 
   @Permissions(['read:users'])
   @UseGuards(JwtGuard, PermissionsGuard)
+  /** `{ users, truncated }`: the first 1,000 users, or with `?q=` a search of them all by name or email (#2574). */
   @Get()
-  public async getAllUsers() {
-    return this.provider.getUsers();
+  public async getAllUsers(@Query('q') q?: string) {
+    return this.provider.getUsers(q);
   }
 
   @Permissions(['create:users'])

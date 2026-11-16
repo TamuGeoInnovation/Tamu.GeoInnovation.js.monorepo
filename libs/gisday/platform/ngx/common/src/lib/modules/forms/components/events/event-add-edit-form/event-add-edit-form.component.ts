@@ -2,6 +2,7 @@ import { Component, OnInit, inject, input, signal } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import {
+  EMPTY,
   Observable,
   combineLatest,
   filter,
@@ -28,6 +29,7 @@ import {
   SeasonService,
   SpeakerService,
   SpeakerEditsService,
+  SessionFilesService,
   sendEditLinksToast,
   sendSessionDetailsToast,
   TagService,
@@ -54,6 +56,7 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { GISDAY_SITE } from '../../../../../site/site';
 import { injectBackToList } from '../../../admin-details-page';
 import { sendProfileEmail, sendSessionDetailsEmail } from '../../../../modals/review-email-modal/profile-email';
+import { FilesSource, SubmissionFilesComponent } from '../../../../submission-files/submission-files.component';
 
 @Component({
   selector: 'tamu-gisc-event-add-edit-form',
@@ -73,6 +76,7 @@ import { sendProfileEmail, sendSessionDetailsEmail } from '../../../../modals/re
     CheckboxGroupComponent,
     ButtonComponent,
     ActionMenuComponent,
+    SubmissionFilesComponent,
     AsyncPipe
   ]
 })
@@ -89,6 +93,7 @@ export class EventAddEditFormComponent implements OnInit {
   private readonly eventService = inject(EventService);
   private readonly ns = inject(NotificationService);
   private readonly speakerEdits = inject(SpeakerEditsService);
+  private readonly sessionFiles = inject(SessionFilesService);
   private readonly modals = inject(ModalService);
   private readonly site = inject(GISDAY_SITE);
 
@@ -98,6 +103,9 @@ export class EventAddEditFormComponent implements OnInit {
   public readonly problems = signal<Array<string>>([]);
 
   public readonly type = input<'create' | 'edit'>(undefined);
+
+  /** The session's slides (#3093), uploaded by its speakers, for the admins to download. Set on an existing event. */
+  public readonly slides = signal<FilesSource | null>(null);
 
   /** What the Speakers section's Email these speakers menu offers (#3092). */
   public readonly speakerEmails: ReadonlyArray<ActionMenuItem> = [
@@ -306,6 +314,21 @@ export class EventAddEditFormComponent implements OnInit {
       this.selectedEventDateStart$ = this.entity$.pipe(take(1), this._timeStringFromEvent$('startTime'), shareReplay());
 
       this.selectedEventDateEnd$ = this.entity$.pipe(take(1), this._timeStringFromEvent$('endTime'), shareReplay());
+
+      // The session's slides (#3093), from its speakers' edit links: listed here to download, never changed here.
+      this.at.params
+        .pipe(
+          map((params) => params.guid as string),
+          filter((guid) => guid !== undefined)
+        )
+        .subscribe((guid) =>
+          this.slides.set({
+            list: () => this.sessionFiles.forEvent(guid),
+            download: (file) => this.sessionFiles.download(guid, file),
+            add: () => EMPTY,
+            remove: () => EMPTY
+          })
+        );
     } else {
       this.eventSpeakers$ = formSpeakerChanges;
 

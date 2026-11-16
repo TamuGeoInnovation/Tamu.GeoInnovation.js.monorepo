@@ -495,8 +495,11 @@ export class SpeakerEditService {
     return edit;
   }
 
-  /** The link a token belongs to, if it is one and still works. Every failure reads the same. */
-  private async linkFor(token: string): Promise<SpeakerEditLink> {
+  /**
+   * The link a token belongs to, if it is one and still works. Every failure reads the same. The one check of a speaker's
+   * link: the profile edit uses it, and so does `SpeakerEditLinkGuard`, before a session's slides are touched (#3093).
+   */
+  public async linkFor(token: string): Promise<SpeakerEditLink> {
     const link =
       typeof token === 'string' && /^[A-Za-z0-9_-]{43}$/.test(token)
         ? await this.links.findOne({ where: { tokenHash: hashOf(token) }, relations: { speaker: true } })
