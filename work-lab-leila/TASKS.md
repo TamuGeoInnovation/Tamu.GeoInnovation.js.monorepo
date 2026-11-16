@@ -8737,3 +8737,22 @@ say what the maintainer must run, in order.
 > outside the repository are done; once your branch makes the stack answer at `http://gisday.local.test:4201`, a sign-in
 > there may be tried, a fresh page and then a second page in the same session, with consent never accepted. Say in the
 > report whether either showed a consent screen.
+
+## Batch 108 (gisday: #3142's screenshots, URGENT; 16 November 2026, from `work (gisday)`) - **now, before 107; pause 107 at a safe point if you are in it**
+
+[#3142](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3142): the composer's **Who gets it**
+list in alphabetical order, with a **Select all** box that ticks everyone, and with everyone ticked unticks them all.
+**Do not change the code.** Branch `feat/3142-who-gets-it-order` on the fork (it appears when its check passes, from
+`development`). **Made-up speakers only**, at least five on one session, given in a non-alphabetical order (this repository
+is public: no real speaker's name or address anywhere). Served as gisday.tamu.edu, 1280 px, Email these speakers, Session
+details:
+
+- **before** (`development`): the list in the API's order, no Select all - `before-who-gets-it.png`;
+- **after** (the branch): the list alphabetical, with Select all above it, ticked - `after-who-gets-it.png`;
+- **after**, Select all clicked: every speaker unticked, Select all unticked - `after-select-none.png`;
+- **after**, one speaker ticked, then Select all clicked: everyone ticked again - `after-select-all.png`.
+
+Say whether Select all reads as part of the list or apart from it; if it needs a line or spacing to set it apart, say so
+with a recommendation (shared spacing utilities only, no purpose-built CSS) and do not change it yourself.
+To `docs/screenshots/3142-who-gets-it-order/`, plus `docs/releases/unreleased/3142-who-gets-it-order.md` with its *What
+to test on dev* row. Send nothing. One commit, fetched and rebased, pushed (no force). Report "images pushed: <sha>".
