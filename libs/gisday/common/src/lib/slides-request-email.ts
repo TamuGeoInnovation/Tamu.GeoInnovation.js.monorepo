@@ -36,20 +36,25 @@ export function slidesRequestEmailSubject(session: Pick<SessionDetailsSession, '
  * The text it starts from, for the session as it is saved: its name, its day and time in Central and its room, as the
  * session details email says them; where to upload, the speaker's own `{edit link}`; and what may be uploaded, from the
  * upload rule.
+ *
+ * @param designed Whether the email goes in Texas A&M's design (`hasEmailDesign`), whose details box already says when
+ * and where: the text then leaves them out, so they are said once, as the session details email does (#3126).
  */
-export function slidesRequestEmailTemplate(session: SessionDetailsSession): string {
+export function slidesRequestEmailTemplate(session: SessionDetailsSession, designed = false): string {
   const name = (session.name ?? '').trim() || 'your session';
 
   return [
     'Howdy {first name},',
     `Thank you for presenting at {site}. Please upload your slides for your session, **${name}**, so the {site} team has them before the day.`,
-    [`- **When:** ${sessionWhen(session)}`, `- **Where:** ${sessionWhere(session)}`].join('\n'),
+    designed ? '' : [`- **When:** ${sessionWhen(session)}`, `- **Where:** ${sessionWhere(session)}`].join('\n'),
     '**Upload them here:** {edit link}',
     'This link is yours alone and works until {link expires}. Under **Your sessions**, choose **Upload slides** for this session. Your files are saved as soon as you choose them.',
     `**What you can upload:** ${SESSION_FILES_RULE}`,
     'Questions? Reply to this email.',
     '— The {site} Team'
-  ].join('\n\n');
+  ]
+    .filter(Boolean)
+    .join('\n\n');
 }
 
 /**

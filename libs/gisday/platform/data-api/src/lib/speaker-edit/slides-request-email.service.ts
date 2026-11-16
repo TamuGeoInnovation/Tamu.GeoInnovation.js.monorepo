@@ -6,10 +6,14 @@ import {
   PROFILE_EDIT_LINK_PREVIEW,
   SLIDES_REQUEST_COPY_EACH,
   SLIDES_REQUEST_EMAIL_KIND,
-  emailHtml,
   fillProfileEmail,
   gisdaySite,
+  hasEmailDesign,
   profileEmailValues,
+  seasonDaysOf,
+  sessionEmailDesign,
+  sessionEmailDetails,
+  siteEmailHtml,
   slidesRequestEmailProblem,
   slidesRequestEmailSubject,
   slidesRequestEmailTemplate
@@ -82,7 +86,9 @@ export class SlidesRequestEmailService {
           label: 'Ask for slides',
           count: reachable.length,
           subject: slidesRequestEmailSubject(session),
-          template: slidesRequestEmailTemplate(session),
+          template: slidesRequestEmailTemplate(session, hasEmailDesign(site)),
+          // What the window needs to show the whole email as it will arrive, in Texas A&M's design (#3126).
+          design: sessionEmailDesign(site.name, seasonDaysOf(session.season), sessionEmailDetails(session)),
           example: {
             title: fullName(first),
             to: first.email.trim(),
@@ -123,9 +129,11 @@ export class SlidesRequestEmailService {
     const site = gisdaySite(process.env.GISDAY_SITE, host);
     const approved = email ?? {
       subject: slidesRequestEmailSubject(session),
-      template: slidesRequestEmailTemplate(session)
+      template: slidesRequestEmailTemplate(session, hasEmailDesign(site))
     };
     const { reachable, noAddress } = speakersOf(session);
+    const from = sender ?? siteSender(site.name);
+    const design = sessionEmailDesign(site.name, seasonDaysOf(session.season), sessionEmailDetails(session));
     // Only the session's own speakers, of those ticked: an id from anywhere else is not one of them.
     const chosen = ticked ? reachable.filter((s) => ticked.includes(s.guid)) : reachable;
 
@@ -162,11 +170,11 @@ export class SlidesRequestEmailService {
         await this.contact.sendMessage(
           {
             to: speaker.email.trim(),
-            ...(sender ?? siteSender(site.name)),
+            ...from,
             subject,
             text,
-            // The Markdown as HTML, beside the plain text (#3044).
-            html: emailHtml(text)
+            // The Markdown as HTML (#3044), in Texas A&M's design on its site (#3126), beside the plain text.
+            html: siteEmailHtml(text, { site, subject, from: from.from, design })
           },
           true
         );
