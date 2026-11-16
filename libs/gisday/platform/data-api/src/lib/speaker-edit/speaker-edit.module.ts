@@ -14,6 +14,7 @@ import {
 } from '../entities/all.entity';
 import { SpeakerModule } from '../speaker/speaker.module';
 import { ContactService } from '../contact/contact.service';
+import { EmailSenderService } from '../contact/email-sender.service';
 import { SeasonService } from '../season/season.service';
 import { SpeakerEditController } from './speaker-edit.controller';
 import { SpeakerEditService } from './speaker-edit.service';
@@ -46,6 +47,7 @@ import { AssetsService } from '../assets/assets.service';
     SpeakerEditService,
     SessionDetailsEmailService,
     ContactService,
+    EmailSenderService,
     SeasonService,
     SessionFilesService,
     SpeakerEditLinkGuard,

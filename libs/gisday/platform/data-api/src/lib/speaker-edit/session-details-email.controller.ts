@@ -3,6 +3,7 @@ import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
 import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 
 import { siteHost } from '../_base/site-of-request';
+import { EmailSenderService } from '../contact/email-sender.service';
 import { SessionDetailsEmail, SessionDetailsEmailService } from './session-details-email.service';
 
 /**
@@ -11,14 +12,23 @@ import { SessionDetailsEmail, SessionDetailsEmailService } from './session-detai
  */
 @Controller('session-emails')
 export class SessionDetailsEmailController {
-  constructor(private readonly service: SessionDetailsEmailService) {}
+  constructor(
+    private readonly service: SessionDetailsEmailService,
+    private readonly senders: EmailSenderService
+  ) {}
 
-  /** Emails each of the session's speakers its details, in the subject and text the admin approved, if given. */
+  /**
+   * Emails each of the session's speakers its details, in the subject and text the admin approved, if given, as the
+   * sender they chose, checked first (#3100).
+   */
   @Permissions(['update:speakers'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Post('details')
-  public send(@Body() body: { event: string } & Partial<SessionDetailsEmail>, @Request() req) {
-    return this.service.send(body?.event, siteHost(req?.headers), emailOf(body));
+  public async send(@Body() body: { event: string; sender?: string } & Partial<SessionDetailsEmail>, @Request() req) {
+    const host = siteHost(req?.headers);
+    const sender = await this.senders.resolve(req?.user, body?.sender, host);
+
+    return this.service.send(body?.event, host, emailOf(body), sender);
   }
 
   /** The email `details` would send, prefilled from the session, for the admin to read and edit first. Nothing is sent. */

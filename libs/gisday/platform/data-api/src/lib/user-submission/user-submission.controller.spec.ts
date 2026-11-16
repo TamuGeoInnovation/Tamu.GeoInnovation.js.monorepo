@@ -6,6 +6,7 @@ import { JwtGuard } from '@tamu-gisc/common/nest/auth';
 import { UserSubmissionController } from './user-submission.controller';
 import { UserSubmissionProvider } from './user-submission.provider';
 import { SubmissionFilesService } from './submission-files.service';
+import { EMAIL_SENDER_TEST_PROVIDERS } from '../contact/email-sender.testing';
 
 describe('UserSubmissionController posters', () => {
   let app: INestApplication;
@@ -19,7 +20,8 @@ describe('UserSubmissionController posters', () => {
       controllers: [UserSubmissionController],
       providers: [
         { provide: UserSubmissionProvider, useValue: { getPosters } },
-        { provide: SubmissionFilesService, useValue: {} }
+        { provide: SubmissionFilesService, useValue: {} },
+        ...EMAIL_SENDER_TEST_PROVIDERS
       ]
     }).compile();
 
@@ -92,7 +94,8 @@ describe('UserSubmissionController POST /user-submissions/review', () => {
       controllers: [UserSubmissionController],
       providers: [
         { provide: UserSubmissionProvider, useValue: { reviewUserSubmissions, updateUserSubmission } },
-        { provide: SubmissionFilesService, useValue: {} }
+        { provide: SubmissionFilesService, useValue: {} },
+        ...EMAIL_SENDER_TEST_PROVIDERS
       ]
     })
       .overrideGuard(JwtGuard)
@@ -171,7 +174,8 @@ describe('UserSubmissionController POST /user-submissions/remind', () => {
       controllers: [UserSubmissionController],
       providers: [
         { provide: UserSubmissionProvider, useValue: { remindUserSubmissions, previewReminders, updateUserSubmission } },
-        { provide: SubmissionFilesService, useValue: {} }
+        { provide: SubmissionFilesService, useValue: {} },
+        ...EMAIL_SENDER_TEST_PROVIDERS
       ]
     })
       .overrideGuard(JwtGuard)

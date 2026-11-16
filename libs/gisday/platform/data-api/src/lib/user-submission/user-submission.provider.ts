@@ -46,7 +46,7 @@ import {
   PRESENTATION_SUBMISSION_TYPE
 } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
-import { senderAs } from '../_base/site-of-request';
+import { EmailSender, siteSender } from '../contact/email-sender.service';
 import { EMAIL_LANES, inParallel } from '../_base/in-parallel';
 import { SeasonService } from '../season/season.service';
 import { ContactService } from '../contact/contact.service';
@@ -359,7 +359,13 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
   public async reviewUserSubmissions(
     submissionGuids: Array<string>,
     userGuid: string,
-    review: { acceptance: boolean; message?: string; templates?: Partial<Record<ReviewEmailKind, string>> },
+    review: {
+      acceptance: boolean;
+      message?: string;
+      templates?: Partial<Record<ReviewEmailKind, string>>;
+      /** Who the emails are from, as the reviewer chose and the controller checked (#3100); the site without it. */
+      sender?: EmailSender;
+    },
     requestorPermissions: Array<string> = [],
     host?: string
   ): Promise<ReviewManyResult> {
@@ -388,7 +394,8 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
           { acceptance: review.acceptance, message: review.message } as Partial<Submission>,
           requestorPermissions,
           host,
-          templates
+          templates,
+          review.sender
         );
       } catch (err) {
         Logger.error(`Could not review submission ${guid}: ${err.message}`, 'UserSubmissionProvider');
@@ -469,13 +476,15 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
    */
   public async remindUserSubmissions(
     submissionGuids: Array<string>,
-    reminder: { templates?: Partial<Record<ReviewEmailKind, string>> },
+    reminder: { templates?: Partial<Record<ReviewEmailKind, string>>; sender?: EmailSender },
     requestorPermissions: Array<string> = [],
     host?: string
   ): Promise<RemindManyResult> {
     checkReviewerAndGuids(submissionGuids, requestorPermissions);
 
     const templates = checkedTemplates(reminder?.templates);
+    // Who it is from (#3100), taken here: `reminder` names each submission's own below.
+    const sender = reminder?.sender;
     const site = gisdaySite(process.env.GISDAY_SITE, host);
     const result: RemindManyResult = { sent: [], skipped: [], failed: [] };
 
@@ -507,7 +516,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
         const recipients = await this._recipientsOf(submission);
         const sessions = await this._sessionsOf(submission.season).catch(() => []);
 
-        await this._sendEmail(submission, kind, site, templates?.[kind], recipients, sessions);
+        await this._sendEmail(submission, kind, site, templates?.[kind], recipients, sessions, sender);
         part.sent.push(title);
       } catch (err) {
         Logger.error(`Error sending a final reminder: ${err.message}`, 'UserSubmissionProvider');
@@ -599,7 +608,9 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     site: GisdaySite,
     template: string | undefined,
     recipients: { to: string; cc: Array<string> },
-    sessions: Array<ReviewEmailSession>
+    sessions: Array<ReviewEmailSession>,
+    /** Who it is from, as the reviewer chose (#3100); the site without it. */
+    sender?: EmailSender
   ) {
     const text = fillReviewEmail(template ?? reviewEmailTemplate(kind), reviewEmailValues(submission, site, sessions));
 
@@ -608,11 +619,10 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
         to: recipients.to,
         cc: recipients.cc.join(','),
         subject: reviewEmailKindSubject(kind, site.name),
-        from: senderAs(site.name, process.env.MAILROOM_FROM),
         text,
         // The Markdown as HTML, beside the plain text (#3044).
         html: emailHtml(text),
-        replyTo: process.env.MAILROOM_TO
+        ...(sender ?? siteSender(site.name))
       },
       true
     );
@@ -629,7 +639,9 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     requestorPermissions: Array<string>,
     host?: string,
     /** The texts the reviewer approved, by kind (#2981). */
-    templates?: Partial<Record<ReviewEmailKind, string>>
+    templates?: Partial<Record<ReviewEmailKind, string>>,
+    /** Who its email is from, as the reviewer chose (#3100); the site without it. */
+    sender?: EmailSender
   ) {
     const existingSubmission = await this.userSubmissionRepo.findOne({
       where: {
@@ -712,7 +724,8 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
               gisdaySite(process.env.GISDAY_SITE, host),
               templates?.[kind],
               recipients,
-              sessions
+              sessions,
+              sender
             )
         : null;
 
