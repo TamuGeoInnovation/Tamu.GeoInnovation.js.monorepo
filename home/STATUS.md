@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch 66 (gisday: #3105, admins remove a session's slide files)**: started 9:09 PM Central, 15 November, branch `feat/3105-remove-session-files`.
+- Nothing. Idle and listening.
 
 ## Finished
+- **Batch 66 (gisday: #3105) and a #2894 fix** (report `home/reports/2026-11-15-66.md`): #2894 pushed at `fc5b8608c` (people tables scroll in the shared box; headings whole). #3105 branch ready, `feat/3105-remove-session-files` at `a06bc7f83`, no PR: admins remove any speaker's session file, asked on the page; one delete. Checks exit 0. Screenshots to the lab. No questions.
 - **Batch 65 (gisday: #2894)** (report `home/reports/2026-11-15-65.md`): branch ready, `feat/2894-vgi-dashboard` on the fork at `c4a9bef0a`, no PR. VGI submissions dashboard on the shared dashboard pieces, scored by the leaderboard's own `scoreSubmissions`; `read:competitions`, nothing new for Auth0. Red first; full check exit 0. Screenshots to the lab. No questions.
 - **Batch 64 (gisday: #2582)** (report `home/reports/2026-11-15-64.md`): branch ready, `fix/2582-designer-feedback` on the fork at `5b6a35de0`, no PR. Fetching, failure and success messages; Save feedback and instructions too, so the issue can close. Red first; check exit 0. Screenshots to the lab. No questions.
 - **Batch 63 (gisday: #3074)** (report `home/reports/2026-11-15-63.md`): branch ready, `fix/3074-image-upload-rule` on the fork at `779724db6`, no PR. Five image pickers on one shared `UploadImagePicker`; the rule gains the API's 5 MB. Red first; check exit 0. Screenshots to the lab. No questions.
