@@ -19,6 +19,8 @@ export class FaqComponent {
   private route = inject(ActivatedRoute);
   private document = inject(DOCUMENT);
   private destroyRef = inject(DestroyRef);
+  /** The site the page is on, whose name its answers give (#3152): on gisday.tamu.edu, Texas A&M GIS Day. */
+  public readonly site = inject(GISDAY_SITE);
 
   /** The question whose link was just copied, to show a tick for a moment. */
   public readonly copied = signal<string | null>(null);
@@ -26,7 +28,7 @@ export class FaqComponent {
   private copiedTimer: ReturnType<typeof setTimeout> | undefined;
 
   constructor() {
-    this.titleService.setTitle(`FAQ | ${inject(GISDAY_SITE).name}`);
+    this.titleService.setTitle(`FAQ | ${this.site.name}`);
 
     // A link to one question (/faq#event-cost) opens that question and brings it into view (#2548), on arrival and
     // when a link on this page points at another question. The questions only exist once the page has rendered.
