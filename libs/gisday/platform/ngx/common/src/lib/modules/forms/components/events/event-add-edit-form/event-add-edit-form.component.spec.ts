@@ -457,6 +457,10 @@ describe('EventAddEditFormComponent, the Slides section (#3093)', () => {
       );
       expect(confirm).not.toHaveBeenCalled();
       expect(sessionFiles.removeFromEvent).not.toHaveBeenCalled();
+      // Side by side, in the site's shared button row (libs/sass/_dom_flexbox.scss), not one above the other.
+      const row = button(page, 'Remove the file').parentElement;
+      expect(row.classList).toEqual(expect.objectContaining({ value: 'flex flex-row wrap align-center file-confirm-actions' }));
+      expect(button(page, 'Keep it').parentElement).toBe(row);
 
       button(page, 'Keep it').click();
       fixture.detectChanges();
