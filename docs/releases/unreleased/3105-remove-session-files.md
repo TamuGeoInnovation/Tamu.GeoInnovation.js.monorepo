@@ -11,3 +11,9 @@ A session's slides ([#3093](https://github.com/TamuGeoInnovation/Tamu.GeoInnovat
 deleted, shown as "A speaker no longer listed", stayed on the session for good. On the session's admin page each file
 now has a **Remove**, which asks on the page first, naming the file and who uploaded it, and then removes the file and
 its record ([#3105](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3105)).
+
+| Before | After |
+| --- | --- |
+| ![A session's Slides on its admin page with one made-up file, which can only be downloaded](../screenshots/3105-remove-session-files/before-slides.png) | ![The same Slides, the file now with a Remove](../screenshots/3105-remove-session-files/after-slides-remove.png) |
+|  | ![After Remove, the question asked on the page: remove the file, uploaded by its speaker? It cannot be undone. With Remove the file and Keep it](../screenshots/3105-remove-session-files/after-confirm.png) |
+|  | ![After Remove the file, the Slides list reads No slides uploaded yet.](../screenshots/3105-remove-session-files/after-removed.png) |
