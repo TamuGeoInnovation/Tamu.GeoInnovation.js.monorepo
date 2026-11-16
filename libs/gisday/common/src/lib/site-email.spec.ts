@@ -62,7 +62,8 @@ describe('siteEmailHtml (#3114)', () => {
     expect(html).not.toContain('<b>When:</b>');
     expect(html).not.toMatch(/unsubscribe/i);
     expect(html).not.toContain('<style');
-    expect(html).toContain(design.why);
+    // Escaped, as everything filled in is.
+    expect(html).toContain(design.why.replace('&', '&amp;'));
   });
 
   it('keeps txgisday.org and UCGIS plain, as before', () => {

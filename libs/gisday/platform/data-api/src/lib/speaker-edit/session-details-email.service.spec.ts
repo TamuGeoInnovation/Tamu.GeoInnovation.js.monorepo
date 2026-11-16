@@ -110,8 +110,13 @@ describe('SessionDetailsEmailService', () => {
     expect(tamu.html).toContain('<strong>Ana</strong>');
     expect(tamu.text).toBe('Hi **Ana**');
 
+    // Another copy of the service, so the repeat guard (#3065) does not skip the same speakers.
     sent = [];
-    await service.send('e-1', 'txgisday.org', { subject: 'About {site}', template: 'Hi **{first name}**' });
+    await new SessionDetailsEmailService(events as never, { sendMessage: jest.fn(async (m) => sent.push(m)) } as never).send(
+      'e-1',
+      'txgisday.org',
+      { subject: 'About {site}', template: 'Hi **{first name}**' }
+    );
 
     expect(sent.find((m) => m.to === 'ana@example.edu').html).not.toContain('GIS DAY(S)');
   });
