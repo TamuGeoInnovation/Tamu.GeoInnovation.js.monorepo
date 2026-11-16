@@ -8565,3 +8565,10 @@ maintainer's, after release; the director will ask for it. Go on: 95, 90, 96, 97
 **Decided (the director):** 1(a). The home machine gives the people table the shared scroll rail (#3029) on
 `fix/2894-vgi-dashboard`; when it reports, the director queues you to retake `the opened feature type` image only. Carry
 on with 90, 96, 97.
+
+> **Batch 97 (#3114), scope made explicit (9:35 PM Central):** the designed email goes on **every** email gisday.tamu.edu
+> sends through the site's email code, not only the composer's: the profile email and edit links (`speaker-edit.service`),
+> the session details email (`session-details-email.service`), the slides request (#3113), and the competition emails
+> (`user-submission.provider`: finalists' and review decisions, reminders). One place builds the HTML (around
+> `emailHtml` and `senderAs`), so every caller gets the shell without its own copy. List in the report every email the
+> site sends and whether it now carries the design; any that cannot (e.g. the contact form's, sent to the team), say why.
