@@ -8611,3 +8611,7 @@ email (each carries the speaker's own edit link; the maintainer decided that for
 (squashed, as PR 3117); the director rebuilt `feat/3104-speaker-choice` as `development` plus your three commits
 (cherry-picked, no conflicts) and is running the full check before force-pushing it to the fork. **Don't push to that
 branch.** Carry on: 98, 99, 96, 100.
+
+> **Correction to report 90's answer:** the rebuilt #3104 is on the fork as **`feat/3104-speaker-choice-rebuilt`**
+> (`973726e65`), PR 3119; your `feat/3104-speaker-choice` is left as it was, not overwritten. For batch 96 (#3113),
+> stack on `feat/3104-speaker-choice-rebuilt` (or `development` if PR 3119 has merged when you start).
