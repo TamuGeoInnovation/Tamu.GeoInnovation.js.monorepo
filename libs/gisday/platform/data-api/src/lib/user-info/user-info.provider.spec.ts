@@ -85,10 +85,21 @@ describe('UserInfoProvider', () => {
 
       await provider.getUsers();
 
-      expect(management.getUsers).toHaveBeenCalledWith({
-        app_metadata: 'gisday',
-        user_metadata: ['occupation', 'education']
-      });
+      expect(management.getUsers).toHaveBeenCalledWith(
+        { app_metadata: 'gisday', user_metadata: ['occupation', 'education'] },
+        undefined
+      );
+    });
+
+    it('passes a search on to Auth0 (#2574)', async () => {
+      jest.spyOn(management, 'getUsers').mockResolvedValue({ users: [], truncated: false } as never);
+
+      await provider.getUsers('ada');
+
+      expect(management.getUsers).toHaveBeenCalledWith(
+        { app_metadata: 'gisday', user_metadata: ['occupation', 'education'] },
+        'ada'
+      );
     });
   });
 
