@@ -159,6 +159,35 @@ describe('DashboardPeopleComponent', () => {
     expect(box.classList).not.toContain('dashboard-scroll-railed');
   });
 
+  /**
+   * #3125: in the capped box, 705 people scrolled their column headings out of sight, so a reader halfway down could not
+   * tell Classification from Field of study. The headings stick to the top of the box, the nearest box that scrolls up and
+   * down, with the page's background so the rows scrolling under them do not show through. jsdom lays nothing out and the
+   * tests are given no component styles, so the rule is read where it is written; the browser measured the rest.
+   */
+  it('keeps each table\'s column headings at the top of the capped box as it scrolls', () => {
+    const el = show({ people });
+    const box = el.querySelector('tamu-gisc-dashboard-scroll > .dashboard-scroll-capped') as HTMLElement;
+
+    // Every heading is a table's own, inside the capped box: nothing of the component's scrolls between the two.
+    expect(box.querySelectorAll('table.dashboard-person-table > thead > tr > th').length).toBe(12);
+
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { readFileSync } = require('fs');
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { join } = require('path');
+    const scss: string = readFileSync(join(__dirname, 'dashboard-people.component.scss'), 'utf8');
+    const start = scss.indexOf('thead th {');
+    const rule = start < 0 ? '' : scss.slice(start, scss.indexOf('}', start));
+
+    expect(rule).toMatch(/position: sticky;/);
+    expect(rule).toMatch(/top: 0;/);
+    expect(rule).toMatch(/background: \$background;/);
+    expect(scss).toMatch(/@import 'libs\/gisday\/sass\/variables';/);
+    // The table's own rule clips nothing, which would make the table, not the box, the headings' scroller.
+    expect(scss).not.toMatch(/overflow(-[xy])?: (auto|hidden|scroll|clip)/);
+  });
+
   it('says so while reading, if the people could not be read, and if there are none', () => {
     expect(show({ people: null }).textContent).toContain('Reading the people');
     expect(show({ people: [], emptyText: 'Nobody has checked in yet.' }).textContent).toContain('Nobody has checked in yet.');
