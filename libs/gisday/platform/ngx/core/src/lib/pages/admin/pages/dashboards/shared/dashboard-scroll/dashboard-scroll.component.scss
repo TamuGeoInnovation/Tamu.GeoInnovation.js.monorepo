@@ -16,6 +16,14 @@
       display: none;
     }
   }
+
+  // No taller than the window, less room for the opened row's heading above it and the dashboard table's rail below
+  // (#3120), so it scrolls up and down inside itself and its own sideways scrollbar is in view whenever the box is. The
+  // page's header scrolls away, so it needs no room. A most, not a height: a few people make a box only as tall as they are.
+  &.dashboard-scroll-capped {
+    max-height: calc(100vh - 6rem);
+    overflow-y: auto;
+  }
 }
 
 // The box's sideways scrollbar, under it and pinned to the bottom of the window while any of the box is in view (#3029):

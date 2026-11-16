@@ -145,6 +145,18 @@ describe('DashboardPeopleComponent', () => {
     expect(peopleColumnWidths(0).reduce((a, b) => a + b, 0)).toBeLessThanOrEqual(820);
   });
 
+  /**
+   * #3120: 705 people under one opened VGI feature type put their box's sideways scrollbar about 38,000 px down the page.
+   * Every dashboard's people (RSVPs, check-ins, accounts, VGI submitters) sit in a capped box, which scrolls inside
+   * itself with its own scrollbar in view; the dashboard's table around them is not capped.
+   */
+  it('puts the people in a capped box, which keeps its own scrollbar', () => {
+    const box = show({ people }).querySelector('tamu-gisc-dashboard-scroll > .dashboard-scroll') as HTMLElement;
+
+    expect(box.classList).toContain('dashboard-scroll-capped');
+    expect(box.classList).not.toContain('dashboard-scroll-railed');
+  });
+
   it('says so while reading, if the people could not be read, and if there are none', () => {
     expect(show({ people: null }).textContent).toContain('Reading the people');
     expect(show({ people: [], emptyText: 'Nobody has checked in yet.' }).textContent).toContain('Nobody has checked in yet.');
