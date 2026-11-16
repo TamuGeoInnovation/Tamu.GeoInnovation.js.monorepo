@@ -8447,3 +8447,13 @@ toast on a failed decision: a **404** (approve an edit twice, or one already dec
 review.") and a **403** (an account without `update:speakers`, or the guard forced locally and undone). Write to
 `docs/screenshots/3083-edit-decision-message/` as `before-404.png`, `after-404.png`, `before-403.png`, `after-403.png`;
 undo every change. One commit, pushed to the fork (fetch and rebase first; no force). Report "images pushed: <sha>".
+
+## Batch 90 (gisday: #3104, choose which speakers get a session's details; 15 November 2026, from `work (gisday)`) (Low) - **after 88**
+
+[#3104](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3104), as its "Proposed" says.
+**Decided (the maintainer): 1A**: every speaker ticked to start; "one email to all of them together" is the default when
+more than one is ticked, "a copy each" the other choice; together, one email with every ticked speaker on To and a
+greeting naming them all; the repeat guard counts a together send once. Also leave out "Dial-in number: None" (and any
+broadcast line with no value). In the shared composer where it fits, so the profile email can use it later. Branch from
+the latest `development` (with #3100's "Send as" if merged; say which). Tests red first; the check; screenshots (the
+ticks and the choice, the together preview); a release note. **Send no real email.** Report "branch ready".
