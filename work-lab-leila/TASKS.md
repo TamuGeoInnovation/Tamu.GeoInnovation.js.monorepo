@@ -8857,3 +8857,10 @@ Report "images pushed: <sha>".
 `--toggle-shadow-color`, the radio group's tick `--radio-active-color`, each with its old blue as the fallback, set under the
 Texas A&M brand); a retake will follow once its check passes. 2(a): yes, move your usual stack to the latest `development`,
 as the first step of the next batch that needs it, and say in that report which commit it is on.
+
+## Batch 113b (gisday: #3143, retake the toggle; Low) - **after 112b**
+
+The two blues are fixed on `fix/3143-maroon-links` (`41605b329`). **Do not change the code.** Retake `after-toggle-tamu.png`
+on the new-submission form as gisday.tamu.edu, and check the computed colours of the toggle's edge and the competition-type
+radio's tick as you did; say whether anything on the form is still blue. One commit on the branch, fetched and rebased,
+pushed (no force). Report "images pushed: <sha>".
