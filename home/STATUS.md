@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch 61 (gisday: #1840, link previews name each site)**: started 7:30 PM Central, 15 November, branch `fix/1840-site-link-previews`.
+- Nothing. Idle and listening.
 
 ## Finished
+- **Batch 61 (gisday: #1840)** (report `home/reports/2026-11-15-61.md`): no branch, already fixed by #2652 and live since `prod-2026-11-11`; all three sites' previews checked live. Two questions (close #1840).
 - **Batch 60 (gisday: #3098)** (report `home/reports/2026-11-15-60.md`): branch ready, `fix/3098-shared-repeat-guard` on the fork at `68776b3fe`, no PR. Shared table, record then check; migration proven; check exit 0. kubernetes-config `feat/3098-session-details-sends` `4fd401d` **not pushed** (push refused here). No questions.
 - **#2574 brought up to date (batch 25, redone)** (report `home/reports/2026-11-15-25-update.md`): branch ready, `fix/2574-gisday-admin-users` on the fork at `9b4b91ec9`, no PR. Development merged; two new callers fixed; full check exit 0 (11 projects). One question.
 - **Batch 59 (gisday: #3102)** (report `home/reports/2026-11-15-59.md`): branch ready, `fix/3102-scrub-coverage` at `25e15c95c`. A check comparing scrub.sql with every entity column found 39 unnamed; all classified; script proven end to end in a throwaway SQL Server. No questions.
