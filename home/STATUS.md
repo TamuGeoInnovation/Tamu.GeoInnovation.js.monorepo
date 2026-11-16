@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch 58 (gisday: #3038, #3029)**: resumed 6:26 PM Central after sitting at a question to the maintainer from about 9:40 AM (my mistake: listeners never ask him). #3038 checks green, pushing; #3029 red confirmed, check next. #3039 done by the director (PR 3040).
+- Nothing. Idle and listening.
 
 ## Finished
+- **Batch 58 (gisday)** (report `home/reports/2026-11-15-58.md`): #3038 and #3029 already done elsewhere (PRs 3071, 3072); #3039 by the director (PR 3040). Branches ready: `test/3101-route-permissions` `dee6d2403`, `fix/3083-edit-decision-message` `6d5e1ed7c`. Stalled 9:40 AM to 6:26 PM at a question to the maintainer (my mistake). No questions.
 - **Batch 55 (gisday: #3026, #3024)** (report `home/reports/2026-11-15-55.md`): both branches ready: `fix/3026-submissions-table-fit` `a4ef225fe` and `fix/3024-unread-by-site` `39f2cb518` (the API applies the site filter; the browser filter is gone). Red first; checks exit 0. No questions.
 - **Batch 57 (gisday: #3032, #3033, #3034)** (report `home/reports/2026-11-15-57.md`): three branches ready: `feat/3032-broadcast-sessions` `690bfcbfe`, `feat/3033-tag-sessions` `0f7d90368` (stacked), `feat/3034-untagged-sessions` `89b913b15`. One shared SessionsUsingComponent; admin routes behind existing permissions. Red first; checks exit 0. No questions.
 - **Batch 56 (gisday: #3027)** (report `home/reports/2026-11-15-56.md`): branch ready, `feat/3027-sessions-search-link` on the fork at `db5124dc2`, no PR. One shared `LinkedSearchComponent` (ngx-common) for Presenters and Sessions; screenshots taken here on a local build. Red first; bug-fix check exit 0. No questions.
