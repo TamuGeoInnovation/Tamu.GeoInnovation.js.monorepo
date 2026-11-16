@@ -36,6 +36,9 @@
     // The links that named their blue: the inline links, such as a session's slide files, and the slide toggles' (#3143).
     --support-link-color: var(--gisday-primary);
     --inline-link-color: var(--gisday-primary);
+    // The shared slide toggle's edge and radio group's tick, on the submission form (the lab's report 113).
+    --toggle-shadow-color: #3d0000;
+    --radio-active-color: var(--gisday-primary);
   }
 }
 

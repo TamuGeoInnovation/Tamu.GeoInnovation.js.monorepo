@@ -33,7 +33,8 @@
   z-index: 1;
   pointer-events: none;
   background: var(--support-link-color, #536dfe);
-  box-shadow: inset 0 0 5px 1px #4154be;
+  // Its edge, as a site's brand gives it, else this blue (#3143).
+  box-shadow: inset 0 0 5px 1px var(--toggle-shadow-color, #4154be);
   @include mixins.transform-origin(center center);
   @include mixins.transform(translateX(0));
   @include mixins.transition(transform 0.2s, min-width 0.1s);
