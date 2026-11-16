@@ -9,29 +9,41 @@
     -->
     <!-- site head -->
     <title>TxGIS Day</title>
+    <link rel="icon" href="favicon.ico" />
     <meta name="description" content="Three days of workshops and programs celebrating geospatial technology dedicated to students and faculty as they educate, innovate, and collaborate." />
     <!-- /site head -->
     <meta name="keywords" content="event, details, agenda, schedule" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
     <base href="/" />
-    <link rel="icon" type="image/x-icon" href="favicon.ico" />
     <link rel="manifest" href="manifest.webmanifest" />
   </head>
   <body>
     <tamu-gisc-root></tamu-gisc-root>
 
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=___G_TAG___"></script>
-
+    <!-- Google tag (gtag.js). The container fills in G_TAG when it starts, but leaves the placeholder when G_TAG is empty, as
+         on a site with no Analytics property yet (gisday.ucgis.org), so the tag is loaded only for a real ID (#2657). gtag
+         is defined either way, so anything that calls it does not fail. -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag() {
         dataLayer.push(arguments);
       }
-      gtag('js', new Date());
+      window.gtag = gtag;
 
-      gtag('config', '___G_TAG___');
+      (function (id) {
+        if (!id || id.indexOf('___') === 0) {
+          return;
+        }
+
+        var tag = document.createElement('script');
+        tag.async = true;
+        tag.src = 'https://www.googletagmanager.com/gtag/js?id=' + id;
+        document.head.appendChild(tag);
+
+        gtag('js', new Date());
+        gtag('config', id);
+      })('___G_TAG___');
     </script>
   </body>
 </html>

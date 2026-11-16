@@ -84,6 +84,19 @@ export const wrapperRoutes: Routes = [
         path: '',
         pathMatch: 'full',
         loadChildren: () => import('../landing/landing.routes').then((m) => m.landingRoutes)
+      },
+      {
+        // Last: an address the site does not know says so inside the site, instead of failing the router, which went
+        // to `/` and drew a blank white page (#1765). The address stays as typed.
+        path: '**',
+        data: {
+          message: "We couldn't find that page.",
+          links: [
+            { text: 'Home page', to: '/' },
+            { text: 'Sessions', to: '/sessions' }
+          ]
+        },
+        loadChildren: () => import('../not-authed/not-authed.routes').then((m) => m.notAuthedRoutes)
       }
     ]
   }

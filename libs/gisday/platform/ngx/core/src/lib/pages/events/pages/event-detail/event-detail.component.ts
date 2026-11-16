@@ -331,7 +331,10 @@ export class EventDetailComponent implements OnInit, OnDestroy {
       switchMap((event) =>
         forkJoin([
           this.checkinService.getCheckinsForEvent(event.guid),
-          this.us.getUsers().pipe(catchError(() => of([])))
+          this.us.getUsers().pipe(
+            map((list) => list.users),
+            catchError(() => of([]))
+          )
         ]).pipe(
           map(([checkIns, users]) => ({ rows: sessionCheckInRows(checkIns, users) })),
           catchError((err) =>
