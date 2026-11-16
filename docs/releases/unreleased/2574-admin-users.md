@@ -11,3 +11,8 @@ Admin, Users spun for ever, because the list behind it failed: it asked Auth0 fo
 more than the first 1,000, which the site has passed. The list now stops at 1,000 and says so, and a search box
 above it asks Auth0 for anyone by name or email, however far down the list they are
 ([#2574](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2574)).
+
+| Admin, Users, 1280 pixels | After |
+| --- | --- |
+| The list (the local test tenant has 3 users, so the 1,000 note does not show; check it on production) | ![3 users, with the search box](../screenshots/2574-admin-users/after-list.png) |
+| A search for "tamu" | ![Showing 2 of 2 users](../screenshots/2574-admin-users/after-search.png) |
