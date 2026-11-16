@@ -1,17 +1,32 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 
 import {
+  EMAIL_RECIPIENTS_KEY,
   EMAIL_SENDER_KEY,
+  EMAIL_TOGETHER_KEY,
+  EmailRecipient,
   EmailSenderChoice,
   EmailSenderChoices,
+  FIRST_NAME_PLACEHOLDER,
   REVIEW_EMAIL_PLACEHOLDERS,
   emailHtml,
-  fillReviewEmail
+  fillReviewEmail,
+  joinNames,
+  togetherFirstNames,
+  togetherTo
 } from '@tamu-gisc/gisday/common';
 import { ContactService, ReviewEmailPreview } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { ButtonComponent, SelectComponent, TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import {
+  ButtonComponent,
+  CheckboxComponent,
+  CheckboxGroupComponent,
+  RadioGroupComponent,
+  SelectComponent,
+  TextboxComponent
+} from '@tamu-gisc/ui-kits/ngx/forms';
 import { MODAL_DATA, ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 
 /** What the window is opened with: the decision, and the email each kind of submission would get. */
@@ -33,9 +48,16 @@ export interface ReviewEmailModalData {
 
 /**
  * What it closes with: the text of each kind's email, as the reviewer left it, and the address chosen to send as under
- * `EMAIL_SENDER_KEY` (#3100), or `null` when nothing is to be sent.
+ * `EMAIL_SENDER_KEY` (#3100), or `null` when nothing is to be sent. A speaker email that listed its speakers (#3104) also
+ * closes with those ticked under `EMAIL_RECIPIENTS_KEY`, and `EMAIL_TOGETHER_KEY` when they get one email together.
  */
 export type ReviewEmailModalResult = Record<string, string> | null;
+
+/** One email to all the speakers ticked, or a copy each (#3104). */
+type How = 'together' | 'each';
+
+/** A group's example, as the window shows it: who it is to, and the placeholders' values. */
+type Example = ReviewEmailPreview['groups'][number]['example'];
 
 /**
  * Shows the email a review sends before it is sent (#2981): one box per kind of email in the selection (accepted
@@ -44,12 +66,25 @@ export type ReviewEmailModalResult = Record<string, string> | null;
  *
  * Its **Send as** box (#3100) offers the addresses the API says the admin may send as, their own first and chosen, and the
  * preview shows the From recipients will see. With no choice to offer, the email goes from the site, as before.
+ *
+ * A speaker email lists its speakers (#3104), each with a tick box, all ticked to start. With more than one ticked it
+ * offers **one email to all of them together**, the default, or **a copy each**, unless the preview says why it may only
+ * go as a copy each (the profile email, whose every copy carries its speaker's own link). Together, the preview shows
+ * every address on To and `{first name}` naming them all, as it will be sent.
  */
 @Component({
   selector: 'tamu-gisc-review-email-modal',
   templateUrl: './review-email-modal.component.html',
   styleUrls: ['./review-email-modal.component.scss'],
-  imports: [ReactiveFormsModule, ButtonComponent, SelectComponent, TextboxComponent]
+  imports: [
+    ReactiveFormsModule,
+    ButtonComponent,
+    CheckboxComponent,
+    CheckboxGroupComponent,
+    RadioGroupComponent,
+    SelectComponent,
+    TextboxComponent
+  ]
 })
 export class ReviewEmailModalComponent implements OnInit {
   private readonly mr = inject(ModalRefService);
@@ -70,6 +105,17 @@ export class ReviewEmailModalComponent implements OnInit {
   /** Who the admin may send as, from the API (#3100). */
   public readonly senders = signal<EmailSenderChoices | null>(null);
   public readonly sendersFailed = signal(false);
+  /** The speakers ticked, by id (#3104): every one listed, to start. */
+  public readonly chosen = new FormControl<Array<string>>([], { nonNullable: true });
+  /** Together or a copy each (#3104): together to start, when it may go together. */
+  public readonly how = new FormControl<How>('together', { nonNullable: true });
+  /** The two as signals, so the window, which is checked only when told, redraws as they change. */
+  private readonly chosenNow = toSignal(this.chosen.valueChanges, { initialValue: this.chosen.value });
+  private readonly howNow = toSignal(this.how.valueChanges, { initialValue: this.how.value });
+  public readonly howOptions: Array<{ value: How; label: string }> = [
+    { value: 'together', label: 'One email to all of them together' },
+    { value: 'each', label: 'A copy each' }
+  ];
 
   public ngOnInit(): void {
     // Their own address first, and chosen (#3100); it comes back with the texts under `EMAIL_SENDER_KEY`.
@@ -94,10 +140,56 @@ export class ReviewEmailModalComponent implements OnInit {
           }
         }
 
+        // Every speaker ticked to start, and together unless it may only go as a copy each (#3104).
+        this.chosen.setValue((preview.recipients ?? []).map((r) => r.guid));
+        this.how.setValue(preview.copyEachReason ? 'each' : 'together');
         this.preview.set(preview);
       },
       error: () => this.failed.set(true)
     });
+  }
+
+  /** Whether the email lists its speakers to tick (#3104); the review emails do not. */
+  public listsRecipients(): boolean {
+    return !!this.preview()?.recipients?.length;
+  }
+
+  /** The speakers ticked, in the order listed (#3104). */
+  public ticked(): Array<EmailRecipient> {
+    const chosen = this.chosenNow();
+
+    return (this.preview()?.recipients ?? []).filter((r) => chosen.includes(r.guid));
+  }
+
+  /** Whether to offer together or a copy each: more than one ticked, and nothing to stop it going together (#3104). */
+  public offersTogether(): boolean {
+    return this.listsRecipients() && !this.preview()?.copyEachReason && this.ticked().length > 1;
+  }
+
+  /** Whether it goes as one email to all those ticked (#3104). */
+  public together(): boolean {
+    return this.offersTogether() && this.howNow() === 'together';
+  }
+
+  /**
+   * Who the preview is for, and what it fills in (#3104): together, every ticked address on To and `{first name}` naming
+   * them all; a copy each, the first ticked. As the API gave it for an email that lists no speakers.
+   */
+  public exampleOf(group: { example: Example }): Example {
+    const ticked = this.ticked();
+
+    if (!this.listsRecipients() || ticked.length === 0) {
+      return group.example;
+    }
+
+    const shown = this.together() ? ticked : ticked.slice(0, 1);
+
+    return {
+      title: joinNames(shown.map((r) => r.name)),
+      to: togetherTo(shown),
+      cc: '',
+      values: { ...group.example.values, [FIRST_NAME_PLACEHOLDER]: togetherFirstNames(shown) }
+    };
   }
 
   /** The email as the first submission of a kind would get it, from the text as it now stands. */
@@ -122,12 +214,38 @@ export class ReviewEmailModalComponent implements OnInit {
     return this.senders()?.choices.find((choice) => choice.address === address);
   }
 
+  /** How many emails a group sends: one together, one per speaker ticked (#3104), or as many as the API counted. */
+  public count(group: { count: number }): number {
+    if (!this.listsRecipients()) {
+      return group.count;
+    }
+
+    return this.together() ? 1 : this.ticked().length;
+  }
+
   public total(preview: ReviewEmailPreview): number {
-    return preview.groups.reduce((sum, group) => sum + group.count, 0);
+    return preview.groups.reduce((sum, group) => sum + this.count(group), 0);
   }
 
   public send() {
-    this.mr.close(this.form.getRawValue());
+    const result: Record<string, string> = this.form.getRawValue();
+
+    // Those ticked, and together when chosen (#3104); with no one ticked there is no one to send it to.
+    if (this.listsRecipients()) {
+      const ticked = this.ticked();
+
+      if (ticked.length === 0) {
+        return;
+      }
+
+      result[EMAIL_RECIPIENTS_KEY] = ticked.map((r) => r.guid).join(',');
+
+      if (this.together()) {
+        result[EMAIL_TOGETHER_KEY] = 'true';
+      }
+    }
+
+    this.mr.close(result);
   }
 
   public cancel() {

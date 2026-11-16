@@ -7,7 +7,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { In, MoreThan, Repository } from 'typeorm';
 
 import {
+  EmailRecipient,
   PROFILE_EDIT_LINK_PREVIEW,
+  PROFILE_EMAIL_COPY_EACH,
   PROFILE_EMAIL_KIND,
   emailHtml,
   fillProfileEmail,
@@ -81,6 +83,10 @@ export interface ProfileEmailPreview {
   }>;
   /** The people on the named submissions with no speaker record, who will not be emailed (#3046). */
   notEmailed?: Array<{ name: string; submission: string }>;
+  /** The speakers it can go to, each with an address, for the window's tick boxes (#3104). */
+  recipients?: Array<EmailRecipient>;
+  /** Why it may only go as a copy each, when it may not go to them together (#3104): the profile email's own links. */
+  copyEachReason?: string;
 }
 
 /** Sending links for competition submissions' people (#2958): also who has no speaker record, with their submission. */
@@ -125,11 +131,16 @@ export class SpeakerEditService {
     /** The subject and text the admin approved (#3023); without it, the email as it has always been. */
     email?: ProfileEmail,
     /** Who it is from, as the admin chose and the controller checked (#3100); the site without it. */
-    sender?: EmailSender
+    sender?: EmailSender,
+    /** The speakers ticked in the window (#3104), of those matched; every one matched without it. */
+    speakers?: Array<string>
   ): Promise<SendForSubmissionsResult> {
     checkEmail(email);
 
-    const { matched, unmatched } = await this.speakersOfSubmissions(submissionGuids);
+    const chosen = chosenSpeakers(speakers);
+    const found = await this.speakersOfSubmissions(submissionGuids);
+    const { unmatched } = found;
+    const matched = chosen ? found.matched.filter((guid) => chosen.includes(guid)) : found.matched;
     const sent = matched.length ? await this.sendLinks(matched, host, email, sender) : { sent: [], skipped: [] };
 
     return { ...sent, unmatched };
@@ -179,7 +190,10 @@ export class SpeakerEditService {
             values: profileEmailValues(first, site, PROFILE_EDIT_LINK_PREVIEW, linkExpiry())
           }
         }
-      ]
+      ],
+      // Each to tick (#3104), and a copy each only: one email to several would give each the others' edit links.
+      recipients: speakers.map(recipientOf),
+      copyEachReason: PROFILE_EMAIL_COPY_EACH
     };
   }
 
@@ -636,6 +650,31 @@ function profileOf(
 /** A speaker's name as the results and previews give it. */
 export function fullName(s: Pick<Speaker, 'firstName' | 'lastName'>): string {
   return `${s.firstName ?? ''} ${s.lastName ?? ''}`.replace(/\s+/g, ' ').trim();
+}
+
+/** A speaker with an address as a speaker email's preview lists them, for the window's tick boxes (#3104). */
+export function recipientOf(s: Pick<Speaker, 'guid' | 'firstName' | 'lastName' | 'email'>): EmailRecipient {
+  return { guid: s.guid, name: fullName(s), firstName: s.firstName?.trim() ?? '', email: s.email.trim() };
+}
+
+/**
+ * The speakers ticked in the window, as a send names them (#3104), or undefined when it names none: everyone, as before.
+ * A list of no one, or anything but ids, is refused, so a send can never quietly go to everyone instead.
+ */
+export function chosenSpeakers(speakers: unknown): Array<string> | undefined {
+  if (speakers === undefined || speakers === null) {
+    return undefined;
+  }
+
+  if (!Array.isArray(speakers) || speakers.some((s) => typeof s !== 'string')) {
+    throw new BadRequestException('Name the speakers chosen by their ids.');
+  }
+
+  if (speakers.length === 0) {
+    throw new BadRequestException('No speakers were chosen.');
+  }
+
+  return speakers;
 }
 
 /** Whether a record's email address could be sent to. */

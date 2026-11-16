@@ -41,3 +41,36 @@ describe('sendEditableEmail, Send as', () => {
     expect(send.mock.calls[0][0]).toEqual({ subject: 'Profile', template: 'Hi {edit link}' });
   });
 });
+
+/** #3104: the speakers ticked in the window, and together, go with the email; the profile email never goes together. */
+describe('sendEditableEmail, choosing speakers', () => {
+  const preview = of({ groups: [] });
+
+  it('sends the session details to the speakers ticked, together when chosen', () => {
+    const modals = {
+      open: () =>
+        of({
+          'session-details': 'Hi',
+          'session-details:subject': 'S',
+          ':recipients': 'sp-1,sp-2',
+          ':together': 'true'
+        })
+    } as unknown as ModalService;
+    const send = jest.fn((email: object) => of(email));
+
+    sendSessionDetailsEmail(modals, preview, send).subscribe();
+
+    expect(send.mock.calls[0][0]).toEqual({ subject: 'S', template: 'Hi', speakers: ['sp-1', 'sp-2'], together: true });
+  });
+
+  it('sends the profile email to the speakers ticked, a copy each, even if asked for together', () => {
+    const modals = {
+      open: () => of({ profile: 'Hi {edit link}', 'profile:subject': 'P', ':recipients': 'sp-2', ':together': 'true' })
+    } as unknown as ModalService;
+    const send = jest.fn((email: object) => of(email));
+
+    sendProfileEmail(modals, preview, send).subscribe();
+
+    expect(send.mock.calls[0][0]).toEqual({ subject: 'P', template: 'Hi {edit link}', speakers: ['sp-2'] });
+  });
+});
