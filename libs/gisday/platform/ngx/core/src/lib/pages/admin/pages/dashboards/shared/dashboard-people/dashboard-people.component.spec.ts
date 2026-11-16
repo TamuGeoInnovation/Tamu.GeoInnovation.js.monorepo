@@ -84,6 +84,25 @@ describe('DashboardPeopleComponent', () => {
     expect(el.textContent).toContain('ana@example.edu');
   });
 
+  // #2894: the VGI dashboard lists each submitter with their counts, before the date, and in the CSV.
+  it('shows count columns when given, before the date, and puts them in the CSV', () => {
+    const counted = people.map((p, i) => ({ ...p, counts: { submissions: i + 1, newFinds: i } }));
+    const countColumns = [
+      { key: 'submissions', label: 'Submissions' },
+      { key: 'newFinds', label: 'New finds' }
+    ];
+    const el = show({ people: counted, dateLabel: 'First submitted', countColumns });
+
+    expect(Array.from(el.querySelectorAll('h4 + table th')).map((th) => th.textContent.trim()).slice(-3)).toEqual([
+      'Submissions',
+      'New finds',
+      'First submitted'
+    ]);
+
+    const rows = Papa.parse<Record<string, string>>(peopleCsv(counted, 'First submitted', countColumns), { header: true }).data;
+    expect(rows.find((r) => r.Email === 'pat@example.edu')).toEqual(expect.objectContaining({ Submissions: '3', 'New finds': '2' }));
+  });
+
   it('says so while reading, if the people could not be read, and if there are none', () => {
     expect(show({ people: null }).textContent).toContain('Reading the people');
     expect(show({ people: [], emptyText: 'Nobody has checked in yet.' }).textContent).toContain('Nobody has checked in yet.');
