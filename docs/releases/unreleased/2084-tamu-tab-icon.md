@@ -10,3 +10,11 @@ testOnDev: |
 gisday.tamu.edu's browser-tab icon was the Texas A&M box logo with a wide margin, so it looked smaller than AggieMap's.
 It is now AggieMap's own icon, from the one copy both sites serve, and the page names it from the start rather than
 only once the app runs ([#2084](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2084)).
+
+Headed Chromium's real tab strip, on local builds: the Texas A&M site beside AggieMap, then txgisday.org and UCGIS, unchanged.
+
+| Before | After |
+| --- | --- |
+| ![A browser's tabs: Texas A&M GIS Day with a smaller box logo, beside Aggie Map with a larger one](../screenshots/2084-tamu-tab-icon/before-tamu-and-aggiemap.png) | ![The same tabs: Texas A&M GIS Day and Aggie Map now show the same icon at the same size](../screenshots/2084-tamu-tab-icon/after-tamu-and-aggiemap.png) |
+| | ![The TxGIS Day tab with its Texas flag icon, unchanged](../screenshots/2084-tamu-tab-icon/after-txgisday.png) |
+| | ![The UCGIS GIS Day tab with its own icon, unchanged](../screenshots/2084-tamu-tab-icon/after-ucgis.png) |
