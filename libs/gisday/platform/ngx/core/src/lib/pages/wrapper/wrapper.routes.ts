@@ -87,8 +87,10 @@ export const wrapperRoutes: Routes = [
         // and the page they were on coming back looked like the link did nothing.
         path: ALREADY_SIGNED_IN_PATH,
         data: {
+          title: 'Already signed in',
           heading: "You're already signed in",
-          message: 'You are signed in to this site already, so there is nothing more to sign in or sign up for.',
+          showSignedInAs: true,
+          message: 'There is nothing more to sign in or sign up for. To use another account, log out first.',
           links: [
             { text: 'Continue to the site', to: '/' },
             { text: 'Log out', to: '/logout' }
