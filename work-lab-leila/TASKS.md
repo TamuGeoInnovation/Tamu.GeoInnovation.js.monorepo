@@ -8437,3 +8437,13 @@ that change; update the release note. Push to the same branch (no force). Report
 > on time, not on behaviour: `session-files.controller.spec.ts` "cuts off a file over the size limit, as a submission
 > file is" exceeded Jest's 5 s (5.7 s) under the check's load. Give it a timeout with a comment saying why, as the
 > repository's other heavy tests do (e.g. the speaker photo resize test's 30 s), and say in the report how long it takes.
+
+## Batch 89 (gisday: #3083's screenshots, Low; 15 November 2026, from `work (gisday)`) - **after 87b, before 88 resumes**
+
+[#3083](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3083), built by the home machine:
+branch `fix/3083-edit-decision-message` on the fork at `6d5e1ed7c` (`.pr-body.md` last; leave it). **Do not change the
+code.** As the local test admin on Admin > Speakers > edits, before (`development`) and after (the branch), 1280 px, the
+toast on a failed decision: a **404** (approve an edit twice, or one already decided: "That edit is not waiting for
+review.") and a **403** (an account without `update:speakers`, or the guard forced locally and undone). Write to
+`docs/screenshots/3083-edit-decision-message/` as `before-404.png`, `after-404.png`, `before-403.png`, `after-403.png`;
+undo every change. One commit, pushed to the fork (fetch and rebase first; no force). Report "images pushed: <sha>".
