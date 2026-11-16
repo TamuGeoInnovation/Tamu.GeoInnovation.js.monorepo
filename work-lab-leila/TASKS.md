@@ -8891,3 +8891,6 @@ stay in view as it does. A code batch: branch `fix/3125-people-headings` from th
 fix, PR 3159). Reuse first: say where you looked (the dashboard-scroll component and its stylesheet, `libs/sass`).
 A spec red first where one can show it, else say why not; before/after screenshots (the 705-person VGI feature type,
 scrolled down); a release note; the bug-fix check. Report "branch ready".
+
+**Report 116, answered (the director):** thank you; PR 3164, from your commits through `0be830393`. Nothing new queued: the
+remaining GIS Day issues wait on the maintainer's answers or are after GIS Day.
