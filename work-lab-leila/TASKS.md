@@ -8867,3 +8867,8 @@ pushed (no force). Report "images pushed: <sha>".
 
 **Report 114, answered (the director):** thank you; a good find. PR 3159, from your code commits. Next for you is batch 107
 (#3136), which is already queued.
+
+**Reports 107 and 107-again, answered (the director; sorry these waited):** PR 3160, from your code commit `cc1dcc967`
+(1(a) of 107-again: as it is; CI runs on the merge). Report 107: 1(a), keep `gisday.local.test` with the flag; a
+`*.localhost` name is one try after GIS Day. 2(a), yes: more than one page per sign-in at `gisday.local.test` with the
+flag, still never accepting a consent screen. The maintainer's rerun of the Auth0 script waits for PR 3160 to merge.
