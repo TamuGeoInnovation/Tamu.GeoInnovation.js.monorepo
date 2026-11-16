@@ -21,3 +21,14 @@ its campaign emails, rather than as plain text
 That covers the presenter profile email and edit links, the session details email, and the competition's decision,
 finalist and reminder emails. Each still carries a plain-text version. The email window's preview shows the whole email
 as it will arrive. txgisday.org and the UCGIS site keep their plain emails until each has a design of its own.
+
+| The email window's preview, 1280 pixels | Before | After |
+| --- | --- | --- |
+| gisday.tamu.edu, profile email: title block | ![The profile email as plain text](../screenshots/3114-tamu-email-design/before-profile.png) | ![The maroon bar, YOUR PRESENTER PROFILE, GIS DAY(S), November 16–20, 2026 and the day strip](../screenshots/3114-tamu-email-design/after-profile-title.png) |
+| gisday.tamu.edu, profile email: sign-off | | ![The text's closing line, the divider and the footer, with no unsubscribe line](../screenshots/3114-tamu-email-design/after-profile-signoff.png) |
+| gisday.tamu.edu, session details: title block | ![The session details email as plain text](../screenshots/3114-tamu-email-design/before-session-details.png) | ![YOUR SESSION over GIS DAY(S), the season's dates and days](../screenshots/3114-tamu-email-design/after-session-details-title.png) |
+| gisday.tamu.edu, session details: text | | ![The email's own text, with its Markdown formatting](../screenshots/3114-tamu-email-design/after-session-details-text.png) |
+| gisday.tamu.edu, session details: details box and sign-off | | ![The session's name, when, where and online link in the details box, then the footer](../screenshots/3114-tamu-email-design/after-session-details-box.png) |
+| gisday.tamu.edu, review decision (Approve): title block | ![The acceptance email as plain text](../screenshots/3114-tamu-email-design/before-review.png) | ![YOUR SUBMISSION over GIS DAY(S), the season's dates and days](../screenshots/3114-tamu-email-design/after-review-title.png) |
+| gisday.tamu.edu, review decision (Approve): sign-off | | ![The closing lines and the footer about the person's submission](../screenshots/3114-tamu-email-design/after-review-signoff.png) |
+| txgisday.org, session details | | ![The same email, still plain](../screenshots/3114-tamu-email-design/after-txgisday-plain.png) |
