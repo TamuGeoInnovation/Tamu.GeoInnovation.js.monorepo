@@ -9,14 +9,17 @@ import { In, MoreThan, Repository } from 'typeorm';
 import {
   PROFILE_EDIT_LINK_PREVIEW,
   PROFILE_EMAIL_KIND,
-  emailHtml,
   fillProfileEmail,
   gisdaySite,
   participantEmails,
   profileEmailProblem,
   profileEmailSubject,
   profileEmailTemplate,
-  profileEmailValues
+  profileEmailValues,
+  profileEmailDesign,
+  seasonDaysOf,
+  siteEmailHtml,
+  EmailDesign
 } from '@tamu-gisc/gisday/common';
 
 import { senderAs } from '../_base/site-of-request';
@@ -77,11 +80,16 @@ export interface ProfileEmailPreview {
     count: number;
     subject: string;
     template: string;
+    /** What the window needs to show the whole email as it will arrive, in Texas A&M's design (#3114). */
+    design?: EmailDesign;
     example: { title: string; to: string; cc: string; values: Record<string, string> };
   }>;
   /** The people on the named submissions with no speaker record, who will not be emailed (#3046). */
   notEmailed?: Array<{ name: string; submission: string }>;
 }
+
+/** A speaker as the profile email reads them: with their season's days, for the email's design (#3114). */
+const SPEAKER_WITH_DAYS = { season: { days: true } } as const;
 
 /** Sending links for competition submissions' people (#2958): also who has no speaker record, with their submission. */
 export interface SendForSubmissionsResult extends SendResult {
@@ -153,8 +161,8 @@ export class SpeakerEditService {
       throw new BadRequestException('No speakers were named.');
     }
 
-    const speakers = (await this.speakers.find({ where: { guid: In(speakerGuids) } })).filter((s) =>
-      looksLikeEmail(s.email)
+    const speakers = (await this.speakers.find({ where: { guid: In(speakerGuids) }, relations: SPEAKER_WITH_DAYS })).filter(
+      (s) => looksLikeEmail(s.email)
     );
 
     if (speakers.length === 0) {
@@ -172,6 +180,8 @@ export class SpeakerEditService {
           count: speakers.length,
           subject: profileEmailSubject(),
           template: profileEmailTemplate(),
+          // What the window needs to show the whole email as it will arrive (#3114).
+          design: profileEmailDesign(site.name, seasonDaysOf(first.season)),
           example: {
             title: fullName(first),
             to: first.email.trim(),
@@ -254,7 +264,7 @@ export class SpeakerEditService {
       throw new BadRequestException('No speakers were named.');
     }
 
-    const speakers = await this.speakers.find({ where: { guid: In(speakerGuids) } });
+    const speakers = await this.speakers.find({ where: { guid: In(speakerGuids) }, relations: SPEAKER_WITH_DAYS });
 
     // Several at a time (#3067): one by one, 48 emails took long enough for the request to be repeated (#3065).
     const parts = await inParallel(speakers, EMAIL_LANES, async (speaker) => {
@@ -309,7 +319,7 @@ export class SpeakerEditService {
       return;
     }
 
-    const candidates = await this.speakers.find({ where: { season: { guid: season.guid } } });
+    const candidates = await this.speakers.find({ where: { season: { guid: season.guid } }, relations: SPEAKER_WITH_DAYS });
     const speaker = candidates.find((s) => s.email?.trim().toLowerCase() === email.trim().toLowerCase());
 
     if (!speaker) {
@@ -533,15 +543,22 @@ export class SpeakerEditService {
       profileEmailValues(speaker, site, url, expires)
     );
 
+    // As the admin chose (#3100), or from the site, as a speaker asking for their own link is.
+    const from = sender ?? siteSender(site.name);
+
     await this.contact.sendMessage(
       {
         to: speaker.email.trim(),
-        // As the admin chose (#3100), or from the site, as a speaker asking for their own link is.
-        ...(sender ?? siteSender(site.name)),
+        ...from,
         subject,
         text,
-        // The Markdown as HTML, beside the plain text (#3044).
-        html: emailHtml(text)
+        // The Markdown as HTML (#3044), in Texas A&M's design on its site (#3114), beside the plain text.
+        html: siteEmailHtml(text, {
+          site,
+          subject,
+          from: from.from,
+          design: profileEmailDesign(site.name, seasonDaysOf(speaker.season))
+        })
       },
       true
     );

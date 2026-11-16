@@ -236,7 +236,7 @@ describe('ReviewEmailModalComponent, the email design', () => {
 
   it("shows Texas A&M's whole designed email, with the season's dates, the session and the sender chosen", () => {
     const frame = open('tamu').querySelector<HTMLIFrameElement>('iframe.review-email__frame');
-    const html = frame?.getAttribute('srcdoc') ?? '';
+    const html = frame?.srcdoc || frame?.getAttribute('srcdoc') || '';
 
     expect(html).toContain('GIS DAY(S)');
     expect(html).toContain('November 16–20, 2026');

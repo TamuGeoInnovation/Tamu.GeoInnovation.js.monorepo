@@ -630,7 +630,7 @@ describe('SpeakerEditService.sendLinksForSubmissions (#2958)', () => {
     const chosen = { from: '"Jo Admin (Texas A&M GIS Day)" <jadmin@tamu.edu>', replyTo: 'jadmin@tamu.edu' };
 
     await service.sendLinksForSubmissions([S1], 'gisday.tamu.edu', undefined, chosen);
-    const [designed] = sent as Array<{ text: string; html: string }>;
+    const [designed] = sent as unknown as Array<{ text: string; html: string }>;
 
     expect(designed.html).toContain('GIS DAY(S)');
     expect(designed.html).toContain('November 16–20, 2026');
@@ -641,7 +641,7 @@ describe('SpeakerEditService.sendLinksForSubmissions (#2958)', () => {
     sent.length = 0;
     await service.sendLinksForSubmissions([S1], 'txgisday.org');
 
-    expect((sent as Array<{ html: string }>)[0].html).not.toContain('GIS DAY(S)');
+    expect((sent as unknown as Array<{ html: string }>)[0].html).not.toContain('GIS DAY(S)');
   });
 
   // #3044: the text may use Markdown; it goes as HTML beside the plain text, and HTML typed into it is not obeyed.

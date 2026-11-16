@@ -4,13 +4,16 @@ import { Repository } from 'typeorm';
 
 import {
   SESSION_DETAILS_EMAIL_KIND,
-  emailHtml,
   fillProfileEmail,
   gisdaySite,
   sessionDetailsEmailProblem,
   sessionDetailsEmailSubject,
   sessionDetailsEmailTemplate,
-  sessionDetailsEmailValues
+  sessionDetailsEmailValues,
+  seasonDaysOf,
+  sessionEmailDesign,
+  sessionEmailDetails,
+  siteEmailHtml
 } from '@tamu-gisc/gisday/common';
 
 import { Event, Speaker } from '../entities/all.entity';
@@ -77,6 +80,8 @@ export class SessionDetailsEmailService {
           count: reachable.length,
           subject: sessionDetailsEmailSubject(session),
           template: sessionDetailsEmailTemplate(session, site.address),
+          // What the window needs to show the whole email as it will arrive (#3114).
+          design: sessionEmailDesign(site.name, seasonDaysOf(session.season), sessionEmailDetails(session)),
           example: {
             title: fullName(first),
             to: first.email.trim(),
@@ -114,6 +119,8 @@ export class SessionDetailsEmailService {
       template: sessionDetailsEmailTemplate(session, site.address)
     };
     const { reachable, noAddress } = speakersOf(session);
+    const from = sender ?? siteSender(site.name);
+    const design = sessionEmailDesign(site.name, seasonDaysOf(session.season), sessionEmailDetails(session));
     const result: SendResult = {
       sent: [],
       skipped: noAddress.map((s) => ({ name: fullName(s), reason: 'no email address on their record' }))
@@ -144,11 +151,11 @@ export class SessionDetailsEmailService {
         await this.contact.sendMessage(
           {
             to: speaker.email.trim(),
-            ...(sender ?? siteSender(site.name)),
+            ...from,
             subject,
             text,
-            // The Markdown as HTML, beside the plain text (#3044).
-            html: emailHtml(text)
+            // The Markdown as HTML (#3044), in Texas A&M's design on its site (#3114), beside the plain text.
+            html: siteEmailHtml(text, { site, subject, from: from.from, design })
           },
           true
         );
@@ -181,7 +188,8 @@ export class SessionDetailsEmailService {
 
     const session = await this.events.findOne({
       where: { guid: eventGuid },
-      relations: { day: true, location: true, broadcast: true, speakers: true }
+      // The season's days for the email's design on Texas A&M's site (#3114).
+      relations: { day: true, location: true, broadcast: true, speakers: true, season: { days: true } }
     });
 
     if (!session) {

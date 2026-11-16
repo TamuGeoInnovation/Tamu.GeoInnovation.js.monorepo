@@ -965,7 +965,8 @@ describe('UserSubmissionProvider', () => {
       expect(submissionRepo.update).not.toHaveBeenCalled();
       // Its files are asked for: a submission is not loaded with them otherwise.
       expect(submissionRepo.findOne).toHaveBeenCalledWith(
-        expect.objectContaining({ relations: { season: true, files: true } })
+        // With its season's days, for the email's design on Texas A&M's site (#3114).
+        expect.objectContaining({ relations: { season: { days: true }, files: true } })
       );
     });
 

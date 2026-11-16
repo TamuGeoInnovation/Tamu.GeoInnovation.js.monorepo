@@ -1,4 +1,5 @@
 import { ReviewEmailSession, sessionDay, sessionHours, sessionPlace } from './review-email';
+import type { EmailSessionDetails } from './site-email';
 
 /**
  * The email that brings a session's speakers its details (#3092): when and where it is, how to join it online, how
@@ -56,12 +57,7 @@ export function sessionDetailsEmailSubject(session: SessionDetailsSession): stri
  */
 export function sessionDetailsEmailTemplate(session: SessionDetailsSession, address: string): string {
   const name = (session.name ?? '').trim() || 'your session';
-  const day = sessionDay(session, 'long');
-  const hours = sessionHours(session);
-  const when = day && hours ? `${day}, ${hours} Central` : day || 'To be announced';
-  const room = sessionPlace(session);
-  const where =
-    session.mode === 'virtual' ? 'Online' : room ? (isOnline(session) ? `${room}, and online` : room) : 'To be announced';
+  const { when, where } = sessionEmailDetails(session);
   const requirements = (session.requirements ?? '').trim();
 
   return [
@@ -78,6 +74,24 @@ export function sessionDetailsEmailTemplate(session: SessionDetailsSession, addr
   ]
     .filter(Boolean)
     .join('\n\n');
+}
+
+/**
+ * The session as the email's text and its design's details box say it (#3114): its name, its day and time in Central,
+ * its building and room or online, and its broadcast's link when it is online and has one.
+ */
+export function sessionEmailDetails(session: SessionDetailsSession): EmailSessionDetails {
+  const day = sessionDay(session, 'long');
+  const hours = sessionHours(session);
+  const room = sessionPlace(session);
+
+  return {
+    name: (session.name ?? '').trim() || 'Your session',
+    when: day && hours ? `${day}, ${hours} Central` : day || 'To be announced',
+    where:
+      session.mode === 'virtual' ? 'Online' : room ? (isOnline(session) ? `${room}, and online` : room) : 'To be announced',
+    online: isOnline(session) ? session.broadcast?.publicUrl?.trim() || null : null
+  };
 }
 
 /** A hybrid or virtual session's broadcast, as its page's Online Broadcast panel shows it (#3055). */

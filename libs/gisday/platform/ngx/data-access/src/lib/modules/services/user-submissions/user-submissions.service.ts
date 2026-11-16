@@ -3,7 +3,13 @@ import { HttpClient, HttpEvent } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { PosterDto, Submission } from '@tamu-gisc/gisday/platform/data-api';
-import { ReminderSkipReason, SubmissionFileDto, reminderSkipSummary, withoutSender } from '@tamu-gisc/gisday/common';
+import {
+  ReminderSkipReason,
+  SubmissionFileDto,
+  reminderSkipSummary,
+  withoutSender,
+  EmailDesign
+} from '@tamu-gisc/gisday/common';
 
 import { BaseService } from '../_base/base.service';
 
@@ -15,6 +21,8 @@ export interface ReviewEmailPreview {
     count: number;
     subject: string;
     template: string;
+    /** What the window needs to show the whole email as it will arrive, in Texas A&M's design (#3114). */
+    design?: EmailDesign;
     example: { title: string; to: string; cc: string; values: Record<string, string> };
   }>;
   /** Those that get no email, with why: a final reminder's that already have a file or were not accepted (#3017). */
