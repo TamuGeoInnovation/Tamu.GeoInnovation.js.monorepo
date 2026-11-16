@@ -8842,3 +8842,5 @@ does**. A code batch: branch `fix/3135-dashboard-resize` from the latest `develo
   green; before/after screenshots of the resize case; a release note; the bug-fix check with each project you edit and
   `gisday-angular`. Report "branch ready". If the cause turns out not to be fixable cheaply, report what you found with
   options and a recommendation, and stop.
+
+**Report 111, answered (the director):** 1(a), both wording points, on the branch (`25f405b29`); your images are in PR 3156.
