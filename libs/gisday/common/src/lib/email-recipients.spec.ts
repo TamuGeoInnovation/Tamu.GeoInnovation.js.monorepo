@@ -1,6 +1,7 @@
 import {
   EMAIL_RECIPIENTS_KEY,
   EMAIL_TOGETHER_KEY,
+  alphabetical,
   joinNames,
   togetherFirstNames,
   togetherTo,
@@ -48,5 +49,23 @@ describe('email recipients', () => {
     expect(withoutRecipients({ [EMAIL_RECIPIENTS_KEY]: 's-1' })).toEqual({ speakers: ['s-1'], rest: {} });
     // A composer that listed no speakers (the review emails) leaves both out, so nothing is narrowed.
     expect(withoutRecipients({ poster: 'T' })).toEqual({ rest: { poster: 'T' } });
+  });
+
+  // #3142: the composer lists them by last name (the maintainer's call, 16 November 2026), whatever order the API gave.
+  it('puts them in order by last name, then first, ignoring case and accents, without changing the list given', () => {
+    const given = [
+      { guid: 'zh', name: 'Ana Zhou', firstName: 'Ana' },
+      { guid: 'ad', name: 'Zed Adams', firstName: 'Zed' },
+      // A first name of two words still sorts by the surname after it.
+      { guid: 'br', name: 'Mary Ann Brown', firstName: 'Mary Ann' },
+      { guid: 'ec', name: 'Bo écrit', firstName: 'Bo' },
+      { guid: 'ab', name: 'Ann Adams', firstName: 'Ann' },
+      // No first name on the record: the last word is taken as the surname.
+      { guid: 'cl', name: 'Pat Clark', firstName: '' }
+    ];
+
+    expect(alphabetical(given).map((r) => r.guid)).toEqual(['ab', 'ad', 'br', 'cl', 'ec', 'zh']);
+    expect(given.map((r) => r.guid)).toEqual(['zh', 'ad', 'br', 'ec', 'ab', 'cl']);
+    expect(alphabetical(undefined)).toEqual([]);
   });
 });

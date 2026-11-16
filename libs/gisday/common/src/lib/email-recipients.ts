@@ -57,6 +57,36 @@ export function togetherTo(recipients: ReadonlyArray<{ email: string }>): string
   return recipients.map((r) => r.email.trim()).join(', ');
 }
 
+/**
+ * A speaker's last name, for sorting: their full name less their first name when it starts with it ("Mary Ann Brown"
+ * with "Mary Ann" is "Brown"), or else the name's last word.
+ */
+function lastName(recipient: { name: string; firstName?: string | null }): string {
+  const name = (recipient.name ?? '').trim();
+  const first = (recipient.firstName ?? '').trim();
+
+  if (first && name.toLowerCase().startsWith(`${first.toLowerCase()} `)) {
+    return name.slice(first.length).trim();
+  }
+
+  return name.split(/\s+/).pop() ?? '';
+}
+
+/**
+ * The speakers in order by last name, then first, as the composer lists them (#3142, the maintainer's call, 16 November
+ * 2026), ignoring case and accents; a new list, so the one given is left as it was. Their ticks, the preview's example
+ * and the send all follow this order.
+ */
+export function alphabetical<T extends { name: string; firstName?: string | null }>(
+  recipients: ReadonlyArray<T> | null | undefined
+): Array<T> {
+  const compare = (a: string, b: string) => a.localeCompare(b, 'en', { sensitivity: 'base' });
+
+  return [...(recipients ?? [])].sort(
+    (a, b) => compare(lastName(a), lastName(b)) || compare((a.name ?? '').trim(), (b.name ?? '').trim())
+  );
+}
+
 /** The composer's result split into the speakers ticked and whether together, when it listed any, and the rest. */
 export function withoutRecipients(result: Record<string, string> | null | undefined): {
   speakers?: Array<string>;

@@ -421,10 +421,11 @@ describe('ReviewEmailModalComponent, Send as', () => {
  * greeting names them all.
  */
 describe('ReviewEmailModalComponent, choosing speakers', () => {
+  // Given out of order; the window lists them by last name (#3142): Example, Sample, Test.
   const recipients = [
+    { guid: 'sp-ca', name: 'Cara Test', firstName: 'Cara', email: 'cara@example.com' },
     { guid: 'sp-sh', name: 'Sharmin Example', firstName: 'Sharmin', email: 'sharmin@example.com' },
-    { guid: 'sp-co', name: 'Colby Sample', firstName: 'Colby', email: 'colby@example.com' },
-    { guid: 'sp-ca', name: 'Cara Test', firstName: 'Cara', email: 'cara@example.com' }
+    { guid: 'sp-co', name: 'Colby Sample', firstName: 'Colby', email: 'colby@example.com' }
   ];
 
   function open(kind: string, extra: object = {}) {
@@ -483,9 +484,9 @@ describe('ReviewEmailModalComponent, choosing speakers', () => {
     return { fixture, close, page, text, toLine, button, tick };
   }
 
-  it('lists each speaker with their address and a tick box, all ticked to start', () => {
+  it('lists each speaker by last name, with their address and a tick box, all ticked to start', () => {
     const { fixture, page } = open('session-details');
-    const boxes = [...page.querySelectorAll('.review-email__recipients tamu-gisc-checkbox')];
+    const boxes = [...page.querySelectorAll('.review-email__recipients tamu-gisc-checkbox-group tamu-gisc-checkbox')];
 
     expect(
       boxes.map((b) => [
@@ -567,6 +568,35 @@ describe('ReviewEmailModalComponent, choosing speakers', () => {
     expect(close.mock.calls[0][0][':recipients']).toBe('sp-ca');
   });
 
+  // #3142: one box ticks every speaker, and with all ticked, unticks every one.
+  it('offers Select all, which ticks everyone, and with everyone ticked unticks them all', () => {
+    const { fixture, page, tick } = open('session-details');
+    const selectAll = () => page.querySelector('.review-email__select-all tamu-gisc-checkbox');
+    const mark = () => selectAll().querySelector('.icon-container').textContent.trim();
+    const click = () => {
+      (selectAll().querySelector('input[type="checkbox"]') as HTMLInputElement).click();
+      fixture.detectChanges();
+    };
+
+    expect(selectAll().querySelector('label').textContent.trim()).toBe('Select all');
+    // All ticked to start, so it shows ticked; clicking it unticks everyone.
+    expect(mark()).toBe('check_box');
+    click();
+    expect(fixture.componentInstance.chosen.value).toEqual([]);
+    expect(mark()).toBe('check_box_outline_blank');
+
+    // From none, it ticks everyone, in the order listed.
+    click();
+    expect(fixture.componentInstance.chosen.value).toEqual(['sp-sh', 'sp-co', 'sp-ca']);
+
+    // From some, it ticks everyone too.
+    tick(['sp-co']);
+    expect(mark()).toBe('check_box_outline_blank');
+    click();
+    expect(fixture.componentInstance.chosen.value).toEqual(['sp-sh', 'sp-co', 'sp-ca']);
+    expect(mark()).toBe('check_box');
+  });
+
   it('sends nothing with no one ticked, and says so', () => {
     const { fixture, page, close, tick } = open('session-details');
 
@@ -581,7 +611,8 @@ describe('ReviewEmailModalComponent, choosing speakers', () => {
     const reason = 'Each speaker gets their own copy: it carries their own link to edit their profile.';
     const { fixture, page, toLine, button, close } = open('profile', { copyEachReason: reason });
 
-    expect(page.querySelectorAll('.review-email__recipients tamu-gisc-checkbox').length).toBe(3);
+    // The speakers' own boxes, not Select all (#3142).
+    expect(page.querySelectorAll('.review-email__recipients tamu-gisc-checkbox-group tamu-gisc-checkbox').length).toBe(3);
     expect(page.querySelector('.review-email__recipients tamu-gisc-radio-group')).toBeNull();
     expect(page.textContent).toContain(reason);
     expect(toLine()).toBe('To: sharmin@example.com');

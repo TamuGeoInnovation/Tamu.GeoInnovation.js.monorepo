@@ -13,6 +13,7 @@ import {
   EmailSenderChoices,
   FIRST_NAME_PLACEHOLDER,
   REVIEW_EMAIL_PLACEHOLDERS,
+  alphabetical,
   emailHtml,
   fillReviewEmail,
   hasEmailDesign,
@@ -138,7 +139,10 @@ export class ReviewEmailModalComponent implements OnInit {
     });
 
     this.data.preview.subscribe({
-      next: (preview) => {
+      next: (given) => {
+        // Listed alphabetically (#3142), whatever order the API gave; everything below follows this order.
+        const preview = given.recipients ? { ...given, recipients: alphabetical(given.recipients) } : given;
+
         for (const group of preview.groups) {
           this.form.addControl(group.kind, new FormControl(group.template, { nonNullable: true }));
 
@@ -166,6 +170,18 @@ export class ReviewEmailModalComponent implements OnInit {
     const chosen = this.chosenNow();
 
     return (this.preview()?.recipients ?? []).filter((r) => chosen.includes(r.guid));
+  }
+
+  /** Whether every speaker listed is ticked, so Select all shows ticked (#3142). */
+  public allTicked(): boolean {
+    const listed = this.preview()?.recipients ?? [];
+
+    return listed.length > 0 && this.ticked().length === listed.length;
+  }
+
+  /** Select all (#3142): with everyone ticked, unticks everyone; otherwise ticks everyone, in the order listed. */
+  public toggleAll(): void {
+    this.chosen.setValue(this.allTicked() ? [] : (this.preview()?.recipients ?? []).map((r) => r.guid));
   }
 
   /** Whether to offer together or a copy each: more than one ticked, and nothing to stop it going together (#3104). */
