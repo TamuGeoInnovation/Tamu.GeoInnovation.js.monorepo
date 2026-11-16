@@ -58,11 +58,11 @@ Updated at every GIS Day rollout, as step 4 of
 
 | | |
 | --- | --- |
-| Image, `gisday-nest` and `gisday-angular`, both namespaces (`gisday`, `gisday-ucgis`) | `sha-47c01fc` |
-| Its last commit | `47c01fcb2`, PR 3138 ([#3126](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3126), Ask for slides in Texas A&M's email design) |
-| Rolled out | 16 November 2026, about 7:50 AM Central, by the maintainer |
-| The image before it | `sha-41f5730` (16 November, about 7:25 AM Central, from `sha-ad86ae1`) |
-| The last migration in it | `AddSessionFiles` (`1794786922753`); none since `41f5730` |
+| Image, `gisday-nest` and `gisday-angular`, both namespaces (`gisday`, `gisday-ucgis`) | `sha-3cb0c6d` |
+| Its last commit | `3cb0c6d3f`, PR 3151 ([#3148](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3148), the FAQ page's links), with PR 3146 ([#3144](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3144), a submission's Presentation files first) |
+| Rolled out | 16 November 2026, about 9:40 AM Central, by the maintainer; checked signed in and in a private window |
+| The image before it | `sha-47c01fc` (16 November, about 7:50 AM Central), the rollback target |
+| The last migration in it | `AddSessionFiles` (`1794786922753`); none since `47c01fc` |
 
 The cluster is the final word:
 `kubectl -n gisday get deployment gisday-nest gisday-angular -o custom-columns=NAME:.metadata.name,IMAGE:.spec.template.spec.containers[0].image`,
