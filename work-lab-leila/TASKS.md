@@ -8731,3 +8731,9 @@ say what the maintainer must run, in order.
 > half by hand in `txgisday-dev`, exactly as the correction above lists. Your script change must set the same values, so
 > a rerun keeps them; **do not run it.** He is adding the hosts line on this machine in person. Do not edit the hosts
 > file yourself, and do not try a sign-in at `gisday.local.test` until your branch makes the stack answer there.
+
+> **Batch 107, the hosts line is in (about 6:46 AM Central, from the director):** the maintainer added `127.0.0.1 gisday.local.test`
+> to this machine's hosts file, and restarted Docker Desktop after the stale `engine.sock` again (29.9.1). Both halves
+> outside the repository are done; once your branch makes the stack answer at `http://gisday.local.test:4201`, a sign-in
+> there may be tried, a fresh page and then a second page in the same session, with consent never accepted. Say in the
+> report whether either showed a consent screen.
