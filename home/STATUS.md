@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle and listening.
+- **Batch 62 (gisday: #2084, Texas A&M GIS Day's tab icon)**: started 7:40 PM Central, 15 November, branch `fix/2084-tamu-tab-icon`. Red proven; bug-fix check running.
 
 ## Finished
 - **Batch 61 (gisday: #1840)** (report `home/reports/2026-11-15-61.md`): no branch, already fixed by #2652 and live since `prod-2026-11-11`; all three sites' previews checked live. Two questions (close #1840).
