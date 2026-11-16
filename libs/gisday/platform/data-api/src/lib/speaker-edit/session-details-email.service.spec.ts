@@ -94,6 +94,16 @@ describe('SessionDetailsEmailService', () => {
     );
   });
 
+  // #3100: as the sender the admin chose in the window, as the controller checked it, with replies to it.
+  it('sends as the sender chosen, with replies to it', async () => {
+    const chosen = { from: '"Jo Admin (Texas A&M GIS Day)" <jadmin@tamu.edu>', replyTo: 'jadmin@tamu.edu' };
+
+    await service.send('e-1', 'gisday.tamu.edu', undefined, chosen);
+
+    expect(sent).toHaveLength(2);
+    expect(sent).toEqual([expect.objectContaining(chosen), expect.objectContaining(chosen)]);
+  });
+
   it("sends the session's prefilled email when no edited one is given", async () => {
     await service.send('e-1', 'gisday.tamu.edu');
 

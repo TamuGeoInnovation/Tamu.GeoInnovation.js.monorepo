@@ -20,6 +20,7 @@ import {
 } from '@tamu-gisc/gisday/common';
 
 import { senderAs } from '../_base/site-of-request';
+import { EmailSender, siteSender } from '../contact/email-sender.service';
 import { EMAIL_LANES, inParallel } from '../_base/in-parallel';
 
 import { Speaker, SpeakerEdit, SpeakerEditLink, Submission, University } from '../entities/all.entity';
@@ -122,12 +123,14 @@ export class SpeakerEditService {
     submissionGuids: Array<string>,
     host?: string,
     /** The subject and text the admin approved (#3023); without it, the email as it has always been. */
-    email?: ProfileEmail
+    email?: ProfileEmail,
+    /** Who it is from, as the admin chose and the controller checked (#3100); the site without it. */
+    sender?: EmailSender
   ): Promise<SendForSubmissionsResult> {
     checkEmail(email);
 
     const { matched, unmatched } = await this.speakersOfSubmissions(submissionGuids);
-    const sent = matched.length ? await this.sendLinks(matched, host, email) : { sent: [], skipped: [] };
+    const sent = matched.length ? await this.sendLinks(matched, host, email, sender) : { sent: [], skipped: [] };
 
     return { ...sent, unmatched };
   }
@@ -234,9 +237,15 @@ export class SpeakerEditService {
 
   /**
    * Emails each named speaker their own link (an admin's action). `host` is the address the admin is on; `email` the
-   * subject and text the admin approved (#3023), checked before any link is made.
+   * subject and text the admin approved (#3023), checked before any link is made; `sender` who it is from, as the admin
+   * chose and the controller checked (#3100), or the site.
    */
-  public async sendLinks(speakerGuids: Array<string>, host?: string, email?: ProfileEmail): Promise<SendResult> {
+  public async sendLinks(
+    speakerGuids: Array<string>,
+    host?: string,
+    email?: ProfileEmail,
+    sender?: EmailSender
+  ): Promise<SendResult> {
     checkEmail(email);
 
     const result: SendResult = { sent: [], skipped: [] };
@@ -269,7 +278,7 @@ export class SpeakerEditService {
       }
 
       try {
-        await this.emailLink(speaker, host, email);
+        await this.emailLink(speaker, host, email, sender);
         part.sent.push(name);
       } catch (err) {
         Logger.error(`Could not email an edit link to speaker ${speaker.guid}: ${err.message}`, 'SpeakerEditService');
@@ -486,8 +495,11 @@ export class SpeakerEditService {
     return edit;
   }
 
-  /** The link a token belongs to, if it is one and still works. Every failure reads the same. */
-  private async linkFor(token: string): Promise<SpeakerEditLink> {
+  /**
+   * The link a token belongs to, if it is one and still works. Every failure reads the same. The one check of a speaker's
+   * link: the profile edit uses it, and so does `SpeakerEditLinkGuard`, before a session's slides are touched (#3093).
+   */
+  public async linkFor(token: string): Promise<SpeakerEditLink> {
     const link =
       typeof token === 'string' && /^[A-Za-z0-9_-]{43}$/.test(token)
         ? await this.links.findOne({ where: { tokenHash: hashOf(token) }, relations: { speaker: true } })
@@ -500,7 +512,7 @@ export class SpeakerEditService {
     return link;
   }
 
-  private async emailLink(speaker: Speaker, host?: string, email?: ProfileEmail) {
+  private async emailLink(speaker: Speaker, host?: string, email?: ProfileEmail, sender?: EmailSender) {
     const token = randomBytes(32).toString('base64url');
     const expires = linkExpiry();
     const site = gisdaySite(process.env.GISDAY_SITE, host);
@@ -524,8 +536,8 @@ export class SpeakerEditService {
     await this.contact.sendMessage(
       {
         to: speaker.email.trim(),
-        from: senderAs(site.name, process.env.MAILROOM_FROM),
-        replyTo: process.env.MAILROOM_TO,
+        // As the admin chose (#3100), or from the site, as a speaker asking for their own link is.
+        ...(sender ?? siteSender(site.name)),
         subject,
         text,
         // The Markdown as HTML, beside the plain text (#3044).
