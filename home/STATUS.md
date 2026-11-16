@@ -17,6 +17,7 @@ The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47
 - Nothing. Idle and listening.
 
 ## Finished
+- **#3102 brought up to date** (after #3093 merged): `fix/3102-scrub-coverage` on the fork at `0e4d20027`, development merged, `assets.eventGuid` and `assets.uploadedByGuid` kept in scrub.sql; bug-fix check exit 0.
 - **Batch 67 (gisday: #3114)** (report `home/reports/2026-11-15-67.md`): branch ready, `feat/3114-tamu-email-design` at `7b6ce3ff4`, no PR. Every email gisday.tamu.edu sends to a person wears the GIS Day design from one `siteEmailHtml`; others plain; composer shows the whole email. Full check exit 0. One question (#3113's wiring).
 - **Batch 66 (gisday: #3105) and a #2894 fix** (report `home/reports/2026-11-15-66.md`): #2894 pushed at `8def7c3d4` (people tables scroll in the shared box, a nested box shows its own scrollbar; headings whole). #3105 branch ready, `feat/3105-remove-session-files` at `2fb52ba7f`, no PR: admins remove any speaker's session file, asked on the page; one delete. Checks exit 0. Screenshots to the lab. No questions.
 - **Batch 65 (gisday: #2894)** (report `home/reports/2026-11-15-65.md`): branch ready, `feat/2894-vgi-dashboard` on the fork at `c4a9bef0a`, no PR. VGI submissions dashboard on the shared dashboard pieces, scored by the leaderboard's own `scoreSubmissions`; `read:competitions`, nothing new for Auth0. Red first; full check exit 0. Screenshots to the lab. No questions.
