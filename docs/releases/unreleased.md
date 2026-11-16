@@ -50,6 +50,24 @@ Nothing in this section has merged into a release yet. It exists because
 read rather than reconstructed. The 30 October section below it is kept as a record and is **out of date**; read
 this one.
 
+### GIS Day on production
+
+Updated at every GIS Day rollout, as step 4 of
+[Before any deploy](../gisday-migrations.md#before-any-deploy-what-is-in-the-image)
+([#3139](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3139)).
+
+| | |
+| --- | --- |
+| Image, `gisday-nest` and `gisday-angular`, both namespaces (`gisday`, `gisday-ucgis`) | `sha-41f5730` |
+| Its last commit | `41f5730b7`, PR 3130 ([#3113](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3113), Ask for slides) |
+| Rolled out | 16 November 2026, about 7:25 AM Central, by the maintainer |
+| The image before it | `sha-ad86ae1` |
+| The last migration in it | `AddSessionFiles` (`1794786922753`); none since `ad86ae1` |
+
+The cluster is the final word:
+`kubectl -n gisday get deployment gisday-nest gisday-angular -o custom-columns=NAME:.metadata.name,IMAGE:.spec.template.spec.containers[0].image`,
+and the same with `-n gisday-ucgis`. If it disagrees with this table, the table is out of date: correct it.
+
 ### AggieMap on 10 November, 2:00 AM Central: what another machine most needs to know
 
 **Dev is cleared, the notes are cut, and the promotion is the only step left.** `3254b114e` is tagged **`dev-2026-11-10`** and was cleared
