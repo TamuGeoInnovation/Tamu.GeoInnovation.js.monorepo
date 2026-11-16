@@ -4,18 +4,27 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AsyncPipe, DatePipe } from '@angular/common';
-import { combineLatest, map, shareReplay, startWith } from 'rxjs';
+import { combineLatest, map, of, shareReplay, startWith } from 'rxjs';
 
-import { SpeakerEditPage, SpeakerEditsService, UniversityService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import {
+  SessionFilesService,
+  SpeakerEditPage,
+  SpeakerEditsService,
+  UniversityService
+} from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { ButtonComponent, FileComponent, SelectComponent, TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
 import {
   classBannerSpeaker,
+  FilesSource,
   ImagePreviewComponent,
+  ParseDateTimeStringsPipe,
   serverMessage,
   SpeakerClassBannerComponent,
+  SubmissionFilesComponent,
   UploadImagePicker
 } from '@tamu-gisc/gisday/platform/ngx/common';
+import { SESSION_FILES_LIMIT, SpeakerSessionDto } from '@tamu-gisc/gisday/common';
 
 /**
  * A speaker editing their own presenter profile through the link emailed to them (#2936), with no account. Without a
@@ -37,13 +46,25 @@ import {
     TextboxComponent,
     MarkdownParsePipe,
     ImagePreviewComponent,
-    SpeakerClassBannerComponent
+    SpeakerClassBannerComponent,
+    SubmissionFilesComponent,
+    ParseDateTimeStringsPipe
   ]
 })
 export class PeopleEditComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly edits = inject(SpeakerEditsService);
+  private readonly sessionFiles = inject(SessionFilesService);
   private readonly destroyRef = inject(DestroyRef);
+
+  /** What a fourth file on a session is refused with (#3093). */
+  public readonly sessionFilesLimit = SESSION_FILES_LIMIT;
+
+  /**
+   * The sessions the speaker presents this season (#3093), each with the speaker's own slides as a source for the shared
+   * files list: up to three, uploaded and removed through the link, kept at once with no review. Null until listed.
+   */
+  public readonly sessions = signal<Array<{ session: SpeakerSessionDto; slides: FilesSource }> | null>(null);
 
   /** The season's universities, for a speaker to choose theirs from, as the admin speaker form does (#2953). */
   public readonly universities$ = inject(UniversityService).getEntitiesForActiveSeason().pipe(shareReplay(1));
@@ -192,8 +213,30 @@ export class PeopleEditComponent implements OnInit {
             university: start.university?.guid ?? ''
           });
           this.page.set(page);
+          this.loadSessions(token);
         },
         error: () => this.page.set('invalid')
+      });
+  }
+
+  /** The speaker's sessions and their slides (#3093). A failure leaves the profile as it is, with no sessions shown. */
+  private loadSessions(token: string): void {
+    this.sessionFiles
+      .forLink(token)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (sessions) =>
+          this.sessions.set(
+            sessions.map((session) => ({
+              session,
+              slides: {
+                list: () => of(session.files),
+                add: (file: File) => this.sessionFiles.upload(token, session.guid, file),
+                remove: (fileGuid: string) => this.sessionFiles.remove(token, session.guid, fileGuid)
+              }
+            }))
+          ),
+        error: () => this.sessions.set([])
       });
   }
 }

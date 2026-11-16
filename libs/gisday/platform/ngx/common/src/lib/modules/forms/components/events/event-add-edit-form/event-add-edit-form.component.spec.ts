@@ -8,6 +8,7 @@ import {
   LocationService,
   SeasonService,
   SpeakerEditsService,
+  SessionFilesService,
   SpeakerService,
   TagService
 } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -44,6 +45,7 @@ describe('EventAddEditFormComponent', () => {
         { provide: EventService, useValue: { getEntity: () => of(event) } },
         { provide: NotificationService, useValue: { toast: jest.fn() } },
         { provide: SpeakerEditsService, useValue: speakerEdits },
+        { provide: SessionFilesService, useValue: { forEvent: () => of([]) } },
         { provide: ModalService, useValue: modals }
       ]
     });
@@ -131,6 +133,7 @@ describe('EventAddEditFormComponent, the profile email', () => {
         },
         { provide: NotificationService, useValue: { toast: jest.fn() } },
         { provide: SpeakerEditsService, useValue: speakerEdits },
+        { provide: SessionFilesService, useValue: { forEvent: () => of([]) } },
         { provide: ModalService, useValue: modals }
       ]
     });
@@ -179,6 +182,7 @@ describe('EventAddEditFormComponent, the Broadcast drop-down', () => {
         { provide: EventService, useValue: { getEntity: () => of(event) } },
         { provide: NotificationService, useValue: { toast: jest.fn() } },
         { provide: SpeakerEditsService, useValue: {} },
+        { provide: SessionFilesService, useValue: { forEvent: () => of([]) } },
         { provide: ModalService, useValue: {} }
       ]
     });
@@ -253,6 +257,7 @@ describe('EventAddEditFormComponent, the Email these speakers menu', () => {
         { provide: EventService, useValue: { getEntity: () => of(event) } },
         { provide: NotificationService, useValue: toasts },
         { provide: SpeakerEditsService, useValue: speakerEdits },
+        { provide: SessionFilesService, useValue: { forEvent: () => of([]) } },
         { provide: ModalService, useValue: modals }
       ]
     });
@@ -342,4 +347,105 @@ function speakersToolbar(): string {
   const end = html.indexOf('</div>\n\n    <div class="form-section-body">', start);
 
   return `<div class="form-section-toolbar">${html.slice(start, end)}</div>`;
+}
+
+/**
+ * #3093. A session's slides, uploaded by its speakers from their edit links, on the session's admin page: every
+ * speaker's, each labelled with who uploaded it, listed with a download for each, and nothing there to change them.
+ */
+describe('EventAddEditFormComponent, the Slides section (#3093)', () => {
+  // Made-up speakers.
+  const deck = {
+    guid: 'f-1',
+    name: 'Example watersheds.pptx',
+    size: 3_300_000,
+    uploaded: '2026-11-15T18:00:00.000Z',
+    uploadedBy: 'Avery Example'
+  };
+  const theirs = { ...deck, guid: 'f-2', name: 'Lightning.pdf', size: 1024, uploadedBy: 'Blair Sample' };
+
+  it("lists every speaker's files, each labelled with who uploaded it", () => {
+    const { page } = render('edit', [deck, theirs]);
+
+    const files = [...page.querySelectorAll('.file')].map((f) => [
+      f.querySelector('.file-name').textContent.trim(),
+      f.querySelector('.file-detail').textContent.replace(/\s+/g, ' ').trim()
+    ]);
+
+    expect(files).toEqual([
+      ['Example watersheds.pptx', expect.stringMatching(/^Avery Example · 3\.1 MB · Nov 15/)],
+      ['Lightning.pdf', expect.stringMatching(/^Blair Sample · 1 KB · Nov 15/)]
+    ]);
+  });
+
+  function render(type: 'create' | 'edit', files: Array<object> = [deck]) {
+    const sessionFiles = { forEvent: jest.fn(() => of(files)), download: jest.fn(() => of(new Blob(['x']))) };
+
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter([]),
+        { provide: ActivatedRoute, useValue: { params: of({ guid: 'event' }) } },
+        { provide: SeasonService, useValue: { activeSeason$: of({ guid: 'season', days: [] }) } },
+        { provide: SpeakerService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+        { provide: TagService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+        { provide: LocationService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+        { provide: BroadcastService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+        { provide: EventService, useValue: { getEntity: () => of({ guid: 'event', speakers: [], tags: [] }) } },
+        { provide: NotificationService, useValue: { toast: jest.fn() } },
+        { provide: SpeakerEditsService, useValue: {} },
+        { provide: SessionFilesService, useValue: sessionFiles },
+        { provide: ModalService, useValue: {} }
+      ]
+    });
+    // Only the Slides section, as the page draws it.
+    TestBed.overrideTemplate(EventAddEditFormComponent, slidesSection());
+
+    const fixture = TestBed.createComponent(EventAddEditFormComponent);
+    fixture.componentRef.setInput('type', type);
+    fixture.detectChanges();
+
+    return { page: fixture.nativeElement as HTMLElement, sessionFiles };
+  }
+
+  it("lists the session's slides with their size and date, each a download", () => {
+    const { page, sessionFiles } = render('edit');
+
+    expect(page.querySelector('.form-section-title').textContent.trim()).toBe('Slides');
+    expect(sessionFiles.forEvent).toHaveBeenCalledWith('event');
+
+    const name = page.querySelector<HTMLButtonElement>('button.file-name');
+
+    expect(name.textContent.trim()).toBe('Example watersheds.pptx');
+    expect(page.querySelector('.file-detail').textContent).toContain('3.1 MB');
+
+    Object.assign(URL, { createObjectURL: jest.fn(() => 'blob:deck'), revokeObjectURL: jest.fn() });
+    name.click();
+
+    expect(sessionFiles.download).toHaveBeenCalledWith('event', 'f-1');
+  });
+
+  it('offers nothing to change them, and says when there are none', () => {
+    const { page } = render('edit', []);
+
+    expect(page.querySelector('.files-empty').textContent.trim()).toBe('No slides uploaded yet.');
+    expect(page.querySelector('tamu-gisc-file')).toBeNull();
+    expect(page.textContent).not.toContain('Remove');
+  });
+
+  it('has no Slides section on a new event', () => {
+    expect(render('create').page.querySelector('tamu-gisc-submission-files')).toBeNull();
+  });
+});
+
+/** The Slides section from the page's own template. */
+function slidesSection(): string {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { readFileSync } = require('fs');
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { join } = require('path');
+  const html: string = readFileSync(join(__dirname, 'event-add-edit-form.component.html'), 'utf8');
+  const start = html.indexOf('@if (slides(); as slides) {');
+  const end = html.indexOf('<div class="form-section">', html.indexOf('<div class="form-section-title">Slides</div>'));
+
+  return html.slice(start, end);
 }
