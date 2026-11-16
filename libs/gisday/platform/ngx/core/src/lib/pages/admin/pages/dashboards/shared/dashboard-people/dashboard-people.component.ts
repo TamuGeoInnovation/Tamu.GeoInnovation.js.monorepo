@@ -86,9 +86,10 @@ export const PERSON_TYPE_COLUMNS: Array<DashboardTableColumn> = RSVP_PERSON_TYPE
  * The narrowest each column of the people's tables may be, in pixels (#2894). The six a person always has fit the width
  * an opened row gives them beside the admin menu at 1280 px (about 820 px), as they did when they were shares of it. A
  * count column holds its heading, "Submissions", whole: shared out by percentage, the VGI dashboard's three count
- * columns were left a letter wide, and the date column below them one letter a line.
+ * columns were left a letter wide, and the date column below them one letter a line. The email column gave 10 px when
+ * the people's box was capped (#3120): a long list's up-and-down scrollbar leaves them about 800 px.
  */
-export const PEOPLE_TABLE_WIDTHS = { name: 140, email: 200, detail: 120, date: 110, count: 110 } as const;
+export const PEOPLE_TABLE_WIDTHS = { name: 140, email: 190, detail: 120, date: 110, count: 110 } as const;
 
 /** Each column's narrowest, in order: name, email, the three details, any counts, then the date. */
 export function peopleColumnWidths(countColumns: number): Array<number> {

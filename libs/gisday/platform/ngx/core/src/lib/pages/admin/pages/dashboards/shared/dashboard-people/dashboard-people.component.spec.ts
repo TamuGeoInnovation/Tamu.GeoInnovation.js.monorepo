@@ -141,8 +141,10 @@ describe('DashboardPeopleComponent', () => {
     // screenshot of an opened VGI row at 1280 px checks.
     expect(PEOPLE_TABLE_WIDTHS.count).toBeGreaterThanOrEqual(104);
     // An opened row gives the people about 820 px beside the admin menu at 1280 px (the table's 879, less the detail's
-    // padding): six columns fit there without a scrollbar, as they did as shares of it.
-    expect(peopleColumnWidths(0).reduce((a, b) => a + b, 0)).toBeLessThanOrEqual(820);
+    // padding): six columns fit there without a scrollbar, as they did as shares of it. Capped (#3120), a long list has an
+    // up-and-down scrollbar too, which takes 15 px of that: the lab measured 801 px at 1280 px, so they must fit in 800,
+    // or every long RSVP list grew a sideways scrollbar for 9 px.
+    expect(peopleColumnWidths(0).reduce((a, b) => a + b, 0)).toBeLessThanOrEqual(800);
   });
 
   /**
