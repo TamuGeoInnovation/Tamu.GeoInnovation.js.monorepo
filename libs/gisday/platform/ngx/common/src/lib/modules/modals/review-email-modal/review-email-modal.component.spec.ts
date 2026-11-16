@@ -4,6 +4,9 @@ import { of } from 'rxjs';
 import { MODAL_DATA, ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 
 import { ContactService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { gisdaySite } from '@tamu-gisc/gisday/common';
+
+import { GISDAY_SITE } from '../../../site/site';
 
 import { ReviewEmailModalComponent } from './review-email-modal.component';
 
@@ -166,6 +169,89 @@ describe('ReviewEmailModalComponent, Markdown', () => {
     expect(preview.querySelector('strong')?.textContent).toBe('Ana');
     expect(preview.querySelector('b')).toBeNull();
     expect(preview.textContent).toContain('<b>raw</b>');
+  });
+});
+
+/**
+ * #3114: on Texas A&M's site the window shows the whole email as it will arrive, in the GIS Day design, with the season's
+ * dates and the sender chosen; elsewhere the plain preview, as before.
+ */
+describe('ReviewEmailModalComponent, the email design', () => {
+  function open(site: string) {
+    TestBed.configureTestingModule({
+      imports: [ReviewEmailModalComponent],
+      providers: [
+        {
+          provide: MODAL_DATA,
+          useValue: {
+            verb: 'Send session details',
+            preview: of({
+              groups: [
+                {
+                  kind: 'session-details',
+                  label: 'Session details',
+                  count: 1,
+                  subject: 'Your session',
+                  template: 'Hi **{first name}**',
+                  example: { title: 'Ana Ruiz', to: 'ana@example.edu', cc: '', values: { '{first name}': 'Ana' } },
+                  design: {
+                    label: 'Your session',
+                    days: ['2026-11-16', '2026-11-20'],
+                    session: { name: 'Mapping floods', when: 'Thursday', where: 'MSC 2300' },
+                    why: 'You are presenting.'
+                  }
+                }
+              ]
+            })
+          }
+        },
+        { provide: ModalRefService, useValue: { close: jest.fn() } },
+        { provide: GISDAY_SITE, useValue: gisdaySite(site) },
+        {
+          provide: ContactService,
+          useValue: {
+            senders: () =>
+              of({
+                choices: [
+                  {
+                    kind: 'own',
+                    address: 'jadmin@tamu.edu',
+                    label: 'Your address',
+                    from: '"Jo Admin (Texas A&M GIS Day)" <jadmin@tamu.edu>',
+                    replyTo: 'jadmin@tamu.edu'
+                  }
+                ],
+                unavailable: []
+              })
+          }
+        }
+      ]
+    });
+
+    const fixture = TestBed.createComponent(ReviewEmailModalComponent);
+    fixture.detectChanges();
+
+    return fixture.nativeElement as HTMLElement;
+  }
+
+  it("shows Texas A&M's whole designed email, with the season's dates, the session and the sender chosen", () => {
+    const frame = open('tamu').querySelector<HTMLIFrameElement>('iframe.review-email__frame');
+    const html = frame?.srcdoc || frame?.getAttribute('srcdoc') || '';
+
+    expect(html).toContain('GIS DAY(S)');
+    expect(html).toContain('November 16–20, 2026');
+    expect(html).toContain('Mapping floods');
+    expect(html).toContain('jadmin@tamu.edu');
+    expect(html).toContain('<strong>Ana</strong>');
+    // Sandboxed: the email is shown, never run.
+    expect(frame.getAttribute('sandbox')).toBe('');
+  });
+
+  it("shows txgisday.org's plain email, as before", () => {
+    const page = open('txgisday');
+
+    expect(page.querySelector('iframe')).toBeNull();
+    expect(page.querySelector('.review-email__preview strong')?.textContent).toBe('Ana');
   });
 });
 

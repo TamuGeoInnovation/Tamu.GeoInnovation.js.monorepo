@@ -5,14 +5,18 @@ import { Repository } from 'typeorm';
 import {
   FIRST_NAME_PLACEHOLDER,
   SESSION_DETAILS_EMAIL_KIND,
-  emailHtml,
   fillProfileEmail,
   gisdaySite,
+  hasEmailDesign,
   joinNames,
   sessionDetailsEmailProblem,
   sessionDetailsEmailSubject,
   sessionDetailsEmailTemplate,
   sessionDetailsEmailValues,
+  seasonDaysOf,
+  sessionEmailDesign,
+  sessionEmailDetails,
+  siteEmailHtml,
   togetherFirstNames,
   togetherTo
 } from '@tamu-gisc/gisday/common';
@@ -94,7 +98,9 @@ export class SessionDetailsEmailService {
           label: 'Session details',
           count: reachable.length,
           subject: sessionDetailsEmailSubject(session),
-          template: sessionDetailsEmailTemplate(session, site.address),
+          template: sessionDetailsEmailTemplate(session, site.address, hasEmailDesign(site)),
+          // What the window needs to show the whole email as it will arrive (#3114).
+          design: sessionEmailDesign(site.name, seasonDaysOf(session.season), sessionEmailDetails(session)),
           example: {
             title: fullName(first),
             to: first.email.trim(),
@@ -134,9 +140,11 @@ export class SessionDetailsEmailService {
     const site = gisdaySite(process.env.GISDAY_SITE, host);
     const approved = email ?? {
       subject: sessionDetailsEmailSubject(session),
-      template: sessionDetailsEmailTemplate(session, site.address)
+      template: sessionDetailsEmailTemplate(session, site.address, hasEmailDesign(site))
     };
     const { reachable, noAddress } = speakersOf(session);
+    const from = sender ?? siteSender(site.name);
+    const design = sessionEmailDesign(site.name, seasonDaysOf(session.season), sessionEmailDetails(session));
     // Only the session's own speakers, of those ticked: an id from anywhere else is not one of them.
     const chosen = ticked ? reachable.filter((s) => ticked.includes(s.guid)) : reachable;
 
@@ -181,11 +189,11 @@ export class SessionDetailsEmailService {
           {
             // Together, every one on To, so they see each other and can reply to all.
             to: togetherTo(group),
-            ...(sender ?? siteSender(site.name)),
+            ...from,
             subject,
             text,
-            // The Markdown as HTML, beside the plain text (#3044).
-            html: emailHtml(text)
+            // The Markdown as HTML (#3044), in Texas A&M's design on its site (#3114), beside the plain text.
+            html: siteEmailHtml(text, { site, subject, from: from.from, design })
           },
           true
         );
@@ -229,7 +237,8 @@ export async function sessionForEmail(events: Repository<Event>, eventGuid: stri
 
   const session = await events.findOne({
     where: { guid: eventGuid },
-    relations: { day: true, location: true, broadcast: true, speakers: true }
+    // The season's days for the email's design on Texas A&M's site (#3114).
+    relations: { day: true, location: true, broadcast: true, speakers: true, season: { days: true } }
   });
 
   if (!session) {

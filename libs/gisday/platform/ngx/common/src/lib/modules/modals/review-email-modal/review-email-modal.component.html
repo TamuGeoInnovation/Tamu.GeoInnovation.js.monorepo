@@ -77,8 +77,12 @@
     <p class="review-email__meta"><strong>To:</strong> {{ shown.to }} @if (shown.cc) { <strong>Cc:</strong> {{ shown.cc }} }</p>
     @if (editableSubject) {
     <p class="review-email__meta"><strong>Subject:</strong> {{ exampleSubject(group.kind, shown.values) }}</p>
-    }
+    } @if (isDesigned(group)) {
+    <!-- Texas A&M's site: the whole email in its design, as it will arrive (#3114). Sandboxed: shown, never run. -->
+    <iframe class="review-email__frame" sandbox="" title="The email as it will arrive" [srcdoc]="designedHtml(group)"></iframe>
+    } @else {
     <div class="review-email__preview" [innerHTML]="exampleHtml(group.kind, shown.values)"></div>
+    }
   </section>
   }
 

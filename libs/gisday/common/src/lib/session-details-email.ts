@@ -1,4 +1,5 @@
 import { ReviewEmailSession, sessionDay, sessionHours, sessionPlace } from './review-email';
+import type { EmailSessionDetails } from './site-email';
 
 /**
  * The email that brings a session's speakers its details (#3092): when and where it is, how to join it online, how
@@ -53,19 +54,20 @@ export function sessionDetailsEmailSubject(session: SessionDetailsSession): stri
  * and room, or online; for a hybrid or virtual session, its broadcast's link, password, dial-in number and meeting ID, as
  * the session's page shows them, each it has (#3104); that attendees check in by the QR code shown at the session; and what to bring, from
  * its requirements. `address` is the site's, for the link to the session's page.
+ *
+ * @param designed Whether the email goes in Texas A&M's design (`hasEmailDesign`), whose details box already says when
+ * and where: the text then leaves them out, so they are said once (#3114, the maintainer's call, 16 November 2026).
  */
-export function sessionDetailsEmailTemplate(session: SessionDetailsSession, address: string): string {
+export function sessionDetailsEmailTemplate(session: SessionDetailsSession, address: string, designed = false): string {
   const name = (session.name ?? '').trim() || 'your session';
-  const when = sessionWhen(session);
-  const where = sessionWhere(session);
+  const { when, where } = sessionEmailDetails(session);
   const requirements = (session.requirements ?? '').trim();
+  const page = `- **Session page:** ${address}/sessions/details/${session.guid}`;
 
   return [
     'Howdy {first name},',
     `Thank you for presenting at {site}. Here are the details of your session, **${name}**.`,
-    [`- **When:** ${when}`, `- **Where:** ${where}`, `- **Session page:** ${address}/sessions/details/${session.guid}`].join(
-      '\n'
-    ),
+    (designed ? [page] : [`- **When:** ${when}`, `- **Where:** ${where}`, page]).join('\n'),
     isOnline(session) ? onlineDetails(session) : '',
     "**Check-in:** attendees check in by scanning the session's check-in QR code with their phone. The code is shown at the session and scanned there, so please leave a moment for it at the start.",
     requirements ? `**What to bring:**\n\n${requirements}` : '**What to bring:** the session lists no requirements.',
@@ -98,6 +100,19 @@ export function sessionWhere(session: SessionDetailsSession): string {
         ? `${room}, and online`
         : room
       : 'To be announced';
+}
+
+/**
+ * The session as the email's text and its design's details box say it (#3114): its name, its day and time in Central,
+ * its building and room or online, and its broadcast's link when it is online and has one.
+ */
+export function sessionEmailDetails(session: SessionDetailsSession): EmailSessionDetails {
+  return {
+    name: (session.name ?? '').trim() || 'Your session',
+    when: sessionWhen(session),
+    where: sessionWhere(session),
+    online: isOnline(session) ? session.broadcast?.publicUrl?.trim() || null : null
+  };
 }
 
 /** A hybrid or virtual session's broadcast, as its page's Online Broadcast panel shows it (#3055). */

@@ -24,7 +24,9 @@ describe('SessionDetailsEmailService', () => {
     location: { building: 'MSC', room: '2300' },
     broadcast: { publicUrl: 'https://zoom.example/j/123', phoneNumber: '+1 555 0100' },
     requirements: 'A laptop.',
-    speakers: [ana, cy, noAddress]
+    speakers: [ana, cy, noAddress],
+    // The season's days, for the email's design on Texas A&M's site (#3114).
+    season: { days: ['16', '17', '18', '19', '20'].map((d) => ({ date: `2026-11-${d}T06:00:00.000Z` })) }
   };
 
   let sent: Array<{ to: string; subject: string; text: string; html: string; from: string }>;
@@ -63,7 +65,9 @@ describe('SessionDetailsEmailService', () => {
     expect(group.kind).toBe(SESSION_DETAILS_EMAIL_KIND);
     expect(group.count).toBe(2);
     expect(group.subject).toContain('WORKSHOP: Mapping floods');
-    expect(group.template).toContain('Thursday, November 19, 2026, 1:00 to 2:15 PM Central');
+    // Texas A&M's site: when and where are in the design's details box, said once, not in the text too (#3114).
+    expect(group.template).not.toContain('Thursday, November 19, 2026, 1:00 to 2:15 PM Central');
+    expect(group.design?.session?.when).toBe('Thursday, November 19, 2026, 1:00 to 2:15 PM Central');
     expect(group.template).toContain('https://zoom.example/j/123');
     expect(group.template).toContain('https://gisday.tamu.edu/sessions/details/e-1');
     expect(group.example).toEqual(
@@ -74,6 +78,13 @@ describe('SessionDetailsEmailService', () => {
       })
     );
     expect(preview.noAddress).toEqual(['Dee Fox']);
+  });
+
+  it('keeps when and where in the text on a site without the design, where nothing else says them (#3114)', async () => {
+    const [group] = (await service.preview('e-1', 'gisday.ucgis.org')).groups;
+
+    expect(group.template).toContain('**When:** Thursday, November 19, 2026, 1:00 to 2:15 PM Central');
+    expect(group.template).toContain('**Where:**');
   });
 
   it('sends each speaker with an address their own copy, as edited, from the site, as Markdown and HTML', async () => {
@@ -90,6 +101,42 @@ describe('SessionDetailsEmailService', () => {
         subject: 'About Texas A&M GIS Day',
         text: 'Hi **Ana**',
         html: expect.stringContaining('<strong>Ana</strong>')
+      })
+    );
+  });
+
+  /**
+   * #3114: on gisday.tamu.edu the email wears the Texas A&M GIS Day design, with the season's dates, the session in its
+   * details box and the sender's sign-off; txgisday.org's stays plain. The plain text goes beside it either way.
+   */
+  it("sends Texas A&M's speakers the designed email, and txgisday.org's the plain one", async () => {
+    await service.send('e-1', 'gisday.tamu.edu', { subject: 'About {site}', template: 'Hi **{first name}**' });
+    const tamu = sent.find((m) => m.to === 'ana@example.edu');
+
+    expect(tamu.html).toContain('GIS DAY(S)');
+    expect(tamu.html).toContain('November 16–20, 2026');
+    expect(tamu.html).toContain('<b>Where:</b> MSC 2300');
+    expect(tamu.html).toContain('<strong>Ana</strong>');
+    expect(tamu.text).toBe('Hi **Ana**');
+
+    // Another copy of the service, so the repeat guard (#3065) does not skip the same speakers.
+    sent = [];
+    await new SessionDetailsEmailService(events as never, { sendMessage: jest.fn(async (m) => sent.push(m)) } as never).send(
+      'e-1',
+      'txgisday.org',
+      { subject: 'About {site}', template: 'Hi **{first name}**' }
+    );
+
+    expect(sent.find((m) => m.to === 'ana@example.edu').html).not.toContain('GIS DAY(S)');
+  });
+
+  it("gives the preview the design, so the window shows the whole email: the season's days and the session", async () => {
+    const [group] = (await service.preview('e-1', 'gisday.tamu.edu')).groups;
+
+    expect(group.design).toEqual(
+      expect.objectContaining({
+        days: expect.arrayContaining(['2026-11-16T06:00:00.000Z', '2026-11-20T06:00:00.000Z']),
+        session: expect.objectContaining({ name: 'WORKSHOP: Mapping floods', where: 'MSC 2300, and online' })
       })
     );
   });

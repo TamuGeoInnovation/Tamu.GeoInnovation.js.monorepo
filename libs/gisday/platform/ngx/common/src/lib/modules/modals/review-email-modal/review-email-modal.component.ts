@@ -1,5 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 
@@ -14,7 +15,9 @@ import {
   REVIEW_EMAIL_PLACEHOLDERS,
   emailHtml,
   fillReviewEmail,
+  hasEmailDesign,
   joinNames,
+  siteEmailHtml,
   togetherFirstNames,
   togetherTo
 } from '@tamu-gisc/gisday/common';
@@ -28,6 +31,8 @@ import {
   TextboxComponent
 } from '@tamu-gisc/ui-kits/ngx/forms';
 import { MODAL_DATA, ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
+
+import { GISDAY_SITE } from '../../../site/site';
 
 /** What the window is opened with: the decision, and the email each kind of submission would get. */
 export interface ReviewEmailModalData {
@@ -90,6 +95,8 @@ export class ReviewEmailModalComponent implements OnInit {
   private readonly mr = inject(ModalRefService);
   private readonly data = inject<ReviewEmailModalData>(MODAL_DATA);
   private readonly contact = inject(ContactService);
+  private readonly site = inject(GISDAY_SITE);
+  private readonly sanitizer = inject(DomSanitizer);
 
   public readonly placeholders = (this.data.placeholders ?? REVIEW_EMAIL_PLACEHOLDERS).join(', ');
   public readonly editableSubject = !!this.data.editableSubject;
@@ -200,6 +207,34 @@ export class ReviewEmailModalComponent implements OnInit {
   /** The same, formatted from its Markdown as it will arrive (#3044); Angular's sanitiser checks it on the way in. */
   public exampleHtml(kind: string, values: Record<string, string>): string {
     return emailHtml(this.example(kind, values));
+  }
+
+  /**
+   * Whether the preview is the whole designed email (#3114): on Texas A&M's site, for an email whose design the API gave.
+   * It is drawn in a sandboxed frame, since Angular's sanitiser takes out the inline styles the design is made of.
+   */
+  public isDesigned(group: ReviewEmailPreview['groups'][number]): boolean {
+    return !!group.design && hasEmailDesign(this.site);
+  }
+
+  /**
+   * The whole email as the example shown would get it (the first ticked, or all of them together, #3104), in the design,
+   * from the same function the API sends it with, signed as the sender chosen in the box (#3114). Trusted for the
+   * frame's `srcdoc`: it is made by the site's own code, whose Markdown shows typed HTML as text, and the frame is
+   * sandboxed, so nothing in it runs.
+   */
+  public designedHtml(group: ReviewEmailPreview['groups'][number]): SafeHtml {
+    const { values } = this.exampleOf(group);
+    const subject = this.editableSubject ? this.exampleSubject(group.kind, values) : group.subject;
+
+    return this.sanitizer.bypassSecurityTrustHtml(
+      siteEmailHtml(this.example(group.kind, values), {
+        site: this.site,
+        subject,
+        from: this.chosenSender()?.from ?? null,
+        design: group.design
+      })
+    );
   }
 
   /** The subject as the first of a kind would get it, from the subject as it now stands (#3023). */
