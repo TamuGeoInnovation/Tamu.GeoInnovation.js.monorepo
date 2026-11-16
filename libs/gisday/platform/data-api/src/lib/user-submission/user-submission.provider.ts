@@ -13,7 +13,6 @@ import { Repository } from 'typeorm';
 
 import { isOwnerOrPermitted } from '@tamu-gisc/common/nest/auth';
 import {
-  emailHtml,
   fillReviewEmail,
   gisdaySite,
   GisdaySite,
@@ -28,7 +27,11 @@ import {
   ReviewEmailSession,
   reviewEmailSubject,
   reviewEmailTemplate,
-  reviewEmailValues
+  reviewEmailValues,
+  reviewEmailDesign,
+  seasonDaysOf,
+  siteEmailHtml,
+  EmailDesign
 } from '@tamu-gisc/gisday/common';
 import {
   closedAt,
@@ -75,6 +78,8 @@ export interface ReviewEmailPreview {
     count: number;
     subject: string;
     template: string;
+    /** What the window needs to show the whole email as it will arrive, in Texas A&M's design (#3114). */
+    design?: EmailDesign;
     example: { title: string; to: string; cc: string; values: Record<string, string> };
   }>;
   /** Those that get no email, with why: a final reminder's that already have a file or were not accepted (#3017). */
@@ -494,7 +499,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
 
       const submission = await this.userSubmissionRepo.findOne({
         where: { guid },
-        relations: { season: true, files: true }
+        relations: { season: { days: true }, files: true }
       });
 
       if (!submission) {
@@ -551,7 +556,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     for (const guid of [...new Set(submissionGuids)]) {
       const submission = await this.userSubmissionRepo.findOne({
         where: { guid },
-        relations: { season: true, files: true }
+        relations: { season: { days: true }, files: true }
       });
 
       if (!submission) {
@@ -582,6 +587,8 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
         count: 1,
         subject: reviewEmailKindSubject(kind, site.name),
         template: reviewEmailTemplate(kind),
+        // What the window needs to show the whole email as it will arrive (#3114).
+        design: reviewEmailDesign(site.name, seasonDaysOf(submission.season)),
         example: {
           title: submission.title ?? '',
           to,
@@ -613,16 +620,23 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     sender?: EmailSender
   ) {
     const text = fillReviewEmail(template ?? reviewEmailTemplate(kind), reviewEmailValues(submission, site, sessions));
+    const subject = reviewEmailKindSubject(kind, site.name);
+    const from = sender ?? siteSender(site.name);
 
     return this.contactService.sendMessage(
       {
         to: recipients.to,
         cc: recipients.cc.join(','),
-        subject: reviewEmailKindSubject(kind, site.name),
+        subject,
         text,
-        // The Markdown as HTML, beside the plain text (#3044).
-        html: emailHtml(text),
-        ...(sender ?? siteSender(site.name))
+        // The Markdown as HTML (#3044), in Texas A&M's design on its site (#3114), beside the plain text.
+        html: siteEmailHtml(text, {
+          site,
+          subject,
+          from: from.from,
+          design: reviewEmailDesign(site.name, seasonDaysOf(submission.season))
+        }),
+        ...from
       },
       true
     );

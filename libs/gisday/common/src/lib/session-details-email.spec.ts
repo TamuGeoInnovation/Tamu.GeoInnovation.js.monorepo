@@ -40,6 +40,17 @@ describe('the session details email', () => {
     expect(text).toContain(`${address}/sessions/details/e-1`);
   });
 
+  // #3114: on Texas A&M's site the design's details box already says when and where, so the text does not say it again.
+  it('leaves when and where to the details box when the email is in the design, and keeps the session page', () => {
+    const text = sessionDetailsEmailTemplate(hybrid, address, true);
+
+    expect(text).not.toContain('**When:**');
+    expect(text).not.toContain('**Where:**');
+    expect(text).not.toContain('1:00 to 2:15 PM Central');
+    expect(text).toContain(`${address}/sessions/details/e-1`);
+    expect(text).toContain('**Joining online:**');
+  });
+
   it('gives a hybrid or virtual session its Zoom link and dial-in, as the session page shows them', () => {
     for (const mode of ['hybrid', 'virtual']) {
       const text = sessionDetailsEmailTemplate({ ...hybrid, mode }, address);

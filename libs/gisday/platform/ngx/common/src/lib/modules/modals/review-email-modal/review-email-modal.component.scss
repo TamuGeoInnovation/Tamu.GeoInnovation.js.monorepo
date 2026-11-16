@@ -45,3 +45,11 @@ tamu-gisc-select {
   flex-direction: column;
   gap: 0.5rem;
 }
+
+// The whole designed email (#3114): its own page inside the window, as tall as most emails, scrolling for the rest.
+.review-email__frame {
+  display: block;
+  width: 100%;
+  height: 32rem;
+  border: 1px solid #ddd;
+}
