@@ -52,4 +52,22 @@ describe('GIS Day link colours', () => {
     // `--link-color` follows `--gisday-primary-light`, which the brand switches, so it needs no line of its own.
     expect(main.filter((name) => name !== '--link-color' && !tamu.includes(name))).toEqual([]);
   });
+
+  // The lab's report 113: on the new-submission form, the slide toggle's inset shadow and the competition-type radio's
+  // checked icon were still blue, each named in the shared form component. They read a custom property now, with their
+  // old colour as its fallback, so AggieMap and txgisday.org are unchanged and the Texas A&M brand sets it.
+  it.each([
+    ['slide-toggle/slide-toggle.component.scss', '--toggle-shadow-color'],
+    ['radio-group/radio-group.component.scss', '--radio-active-color']
+  ])('lets the brand colour the shared %s, through %s', (file, property) => {
+    const shared = readFileSync(
+      join(__dirname, '..', '..', '..', 'libs', 'ui-kits', 'ngx', 'forms', 'src', 'lib', 'components', file),
+      'utf-8'
+    );
+
+    expect(shared).toContain(`var(${property},`);
+    expect(names(block('&.brand-tamu {')).concat(block('&.brand-tamu {').match(/--[\w-]+(?=\s*:)/g) ?? [])).toContain(
+      property
+    );
+  });
 });
