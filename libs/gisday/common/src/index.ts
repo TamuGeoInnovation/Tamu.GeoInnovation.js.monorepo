@@ -10,3 +10,4 @@ export * from './lib/session-details-email';
 export * from './lib/participant-emails';
 export * from './lib/email-markdown';
 export * from './lib/upload-images';
+export * from './lib/email-sender';

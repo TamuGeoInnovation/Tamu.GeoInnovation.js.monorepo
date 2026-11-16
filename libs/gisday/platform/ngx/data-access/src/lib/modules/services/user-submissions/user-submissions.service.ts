@@ -3,7 +3,7 @@ import { HttpClient, HttpEvent } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { PosterDto, Submission } from '@tamu-gisc/gisday/platform/data-api';
-import { ReminderSkipReason, SubmissionFileDto, reminderSkipSummary } from '@tamu-gisc/gisday/common';
+import { ReminderSkipReason, SubmissionFileDto, reminderSkipSummary, withoutSender } from '@tamu-gisc/gisday/common';
 
 import { BaseService } from '../_base/base.service';
 
@@ -109,14 +109,17 @@ export class UserSubmissionsService extends BaseService<Submission> {
     submissionGuids: Array<string>,
     acceptance: boolean,
     message?: string,
-    /** The email text the reviewer saw and approved, by kind (#2981). */
+    /** The email text the reviewer saw and approved, by kind (#2981), and the sender they chose in it (#3100). */
     templates?: Record<string, string>
   ) {
+    const { sender, texts } = withoutSender(templates);
+
     return this.http1.post<ReviewSubmissionsResult>(`${this.resource}/review`, {
       submissions: submissionGuids,
       acceptance,
       ...(message?.trim() ? { message: message.trim() } : {}),
-      ...(templates ? { templates } : {})
+      ...(templates ? { templates: texts } : {}),
+      ...(sender ? { sender } : {})
     });
   }
 
@@ -137,9 +140,18 @@ export class UserSubmissionsService extends BaseService<Submission> {
     return this.http1.post<ReviewEmailPreview>(`${this.resource}/remind/preview`, { submissions: submissionGuids });
   }
 
-  /** Sends the final reminder to the selected accepted submissions that have no file yet, in the text approved (#3017). */
+  /**
+   * Sends the final reminder to the selected accepted submissions that have no file yet, in the text approved (#3017), as
+   * the sender chosen in the window (#3100).
+   */
   public remind(submissionGuids: Array<string>, templates: Record<string, string>) {
-    return this.http1.post<FinalRemindersResult>(`${this.resource}/remind`, { submissions: submissionGuids, templates });
+    const { sender, texts } = withoutSender(templates);
+
+    return this.http1.post<FinalRemindersResult>(`${this.resource}/remind`, {
+      submissions: submissionGuids,
+      templates: texts,
+      ...(sender ? { sender } : {})
+    });
   }
 
   public getPresentationsForActiveSeason() {

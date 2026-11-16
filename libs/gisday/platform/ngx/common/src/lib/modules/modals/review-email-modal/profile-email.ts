@@ -1,6 +1,7 @@
 import { Observable, filter, map, switchMap } from 'rxjs';
 
 import {
+  EMAIL_SENDER_KEY,
   PROFILE_EMAIL_KIND,
   PROFILE_EMAIL_PLACEHOLDERS,
   SESSION_DETAILS_EMAIL_KIND,
@@ -34,7 +35,12 @@ export function sendEditableEmail<R>(
 
   return modals.open<ReviewEmailModalResult>(ReviewEmailModalComponent, { data }).pipe(
     filter((result): result is Record<string, string> => !!result),
-    map((result) => ({ subject: result[`${email.kind}:subject`], template: result[email.kind] })),
+    map((result) => ({
+      subject: result[`${email.kind}:subject`],
+      template: result[email.kind],
+      // The address chosen in the window's "Send as" box (#3100), when it had one.
+      ...(result[EMAIL_SENDER_KEY] ? { sender: result[EMAIL_SENDER_KEY] } : {})
+    })),
     switchMap(send)
   );
 }

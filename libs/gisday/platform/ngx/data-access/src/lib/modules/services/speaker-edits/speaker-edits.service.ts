@@ -47,6 +47,8 @@ export interface PendingSpeakerEdit {
 export interface ProfileEmail {
   subject: string;
   template: string;
+  /** The address chosen in the window's "Send as" box (#3100); the site's when not given. */
+  sender?: string;
 }
 
 /** What sending edit links did, from the API. */

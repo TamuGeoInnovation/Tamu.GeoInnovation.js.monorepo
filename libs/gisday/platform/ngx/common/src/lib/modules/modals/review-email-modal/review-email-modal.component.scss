@@ -21,8 +21,10 @@
   }
 }
 
-// The shared textbox sizes to its content unless told otherwise: the email's text is edited across the window's width.
-tamu-gisc-textbox {
+// The shared textbox sizes to its content unless told otherwise: the email's text is edited across the window's width, and
+// its "Send as" box (#3100) with it.
+tamu-gisc-textbox,
+tamu-gisc-select {
   width: 100%;
 }
 

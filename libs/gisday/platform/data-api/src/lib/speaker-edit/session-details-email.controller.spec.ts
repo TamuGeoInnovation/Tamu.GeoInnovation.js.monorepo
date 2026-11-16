@@ -5,6 +5,7 @@ import { JwtGuard } from '@tamu-gisc/common/nest/auth';
 
 import { SessionDetailsEmailController } from './session-details-email.controller';
 import { SessionDetailsEmailService } from './session-details-email.service';
+import { EMAIL_SENDER_TEST_PROVIDERS } from '../contact/email-sender.testing';
 
 /**
  * #3092: the session details email is sent, and previewed, behind the profile email's own permission, `update:speakers`.
@@ -30,7 +31,7 @@ describe('SessionDetailsEmailController', () => {
 
     const module = await Test.createTestingModule({
       controllers: [SessionDetailsEmailController],
-      providers: [{ provide: SessionDetailsEmailService, useValue: service }]
+      providers: [{ provide: SessionDetailsEmailService, useValue: service }, ...EMAIL_SENDER_TEST_PROVIDERS]
     })
       .overrideGuard(JwtGuard)
       .useValue({
@@ -78,10 +79,11 @@ describe('SessionDetailsEmailController', () => {
 
     expect(response.status).toBe(201);
     expect(await response.json()).toEqual({ sent: ['Ana Ruiz'], skipped: [] });
-    expect(service.send).toHaveBeenCalledWith('e-1', 'gisday.tamu.edu', { subject: 'S', template: 'T' });
+    expect(service.send).toHaveBeenCalledWith('e-1', 'gisday.tamu.edu', { subject: 'S', template: 'T' }, undefined);
 
     await post('details', { event: 'e-1' });
 
-    expect(service.send).toHaveBeenLastCalledWith('e-1', 'gisday.tamu.edu', undefined);
+    // No sender chosen (#3100): the service sends from the site, as before.
+    expect(service.send).toHaveBeenLastCalledWith('e-1', 'gisday.tamu.edu', undefined, undefined);
   });
 });

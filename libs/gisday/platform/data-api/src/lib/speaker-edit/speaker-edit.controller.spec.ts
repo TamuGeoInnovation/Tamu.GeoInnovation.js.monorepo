@@ -5,6 +5,7 @@ import { JwtGuard } from '@tamu-gisc/common/nest/auth';
 
 import { SpeakerEditController } from './speaker-edit.controller';
 import { SpeakerEditService } from './speaker-edit.service';
+import { EMAIL_SENDER_TEST_PROVIDERS } from '../contact/email-sender.testing';
 
 /**
  * #2958: profile emails for the selected submissions' people, from Research Competitions. It reads the submissions'
@@ -30,7 +31,7 @@ describe('SpeakerEditController POST /speaker-edits/send-for-submissions', () =>
 
     const module = await Test.createTestingModule({
       controllers: [SpeakerEditController],
-      providers: [{ provide: SpeakerEditService, useValue: { sendLinksForSubmissions } }]
+      providers: [{ provide: SpeakerEditService, useValue: { sendLinksForSubmissions } }, ...EMAIL_SENDER_TEST_PROVIDERS]
     })
       .overrideGuard(JwtGuard)
       .useValue({
@@ -67,7 +68,7 @@ describe('SpeakerEditController POST /speaker-edits/send-for-submissions', () =>
 
     expect(response.status).toBe(201);
     expect(await response.json()).toEqual({ sent: ['Ana Ruiz'], skipped: [], unmatched: [] });
-    expect(sendLinksForSubmissions).toHaveBeenCalledWith(['sub-1', 'sub-2'], 'gisday.tamu.edu', undefined);
+    expect(sendLinksForSubmissions).toHaveBeenCalledWith(['sub-1', 'sub-2'], 'gisday.tamu.edu', undefined, undefined);
   });
 });
 
@@ -96,7 +97,7 @@ describe('SpeakerEditController, the profile email read and edited first (#3023)
 
     const module = await Test.createTestingModule({
       controllers: [SpeakerEditController],
-      providers: [{ provide: SpeakerEditService, useValue: service }]
+      providers: [{ provide: SpeakerEditService, useValue: service }, ...EMAIL_SENDER_TEST_PROVIDERS]
     })
       .overrideGuard(JwtGuard)
       .useValue({
@@ -138,9 +139,9 @@ describe('SpeakerEditController, the profile email read and edited first (#3023)
     expect(service.previewLinksForSubmissions).toHaveBeenCalledWith(['sub-1'], 'gisday.tamu.edu');
 
     await post('send', { speakers: ['sp-1'], ...email });
-    expect(service.sendLinks).toHaveBeenCalledWith(['sp-1'], 'gisday.tamu.edu', email);
+    expect(service.sendLinks).toHaveBeenCalledWith(['sp-1'], 'gisday.tamu.edu', email, undefined);
 
     await post('send-for-submissions', { submissions: ['sub-1'], ...email });
-    expect(service.sendLinksForSubmissions).toHaveBeenCalledWith(['sub-1'], 'gisday.tamu.edu', email);
+    expect(service.sendLinksForSubmissions).toHaveBeenCalledWith(['sub-1'], 'gisday.tamu.edu', email, undefined);
   });
 });
