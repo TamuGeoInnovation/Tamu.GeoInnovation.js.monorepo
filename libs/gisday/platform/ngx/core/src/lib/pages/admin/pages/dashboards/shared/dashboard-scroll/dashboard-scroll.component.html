@@ -1,0 +1,4 @@
+<div #box class="dashboard-scroll" [class.dashboard-scroll-railed]="overflow() !== null" (scroll)="followBox()"><ng-content></ng-content></div>
+
+<!-- The box's sideways scrollbar, kept at the bottom of the window while the box is in view (#3029). -->
+<div #rail class="dashboard-scroll-rail" aria-hidden="true" [hidden]="overflow() === null" (scroll)="followRail()"><div [style.width.px]="overflow() ?? 0"></div></div>

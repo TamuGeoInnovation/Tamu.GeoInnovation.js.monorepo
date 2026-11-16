@@ -12,3 +12,4 @@ export * from './lib/email-markdown';
 export * from './lib/site-email';
 export * from './lib/upload-images';
 export * from './lib/email-sender';
+export * from './lib/email-recipients';

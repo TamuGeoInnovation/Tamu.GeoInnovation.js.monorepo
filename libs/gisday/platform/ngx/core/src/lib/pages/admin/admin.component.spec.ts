@@ -19,12 +19,12 @@ class EmptyPageComponent {}
  * version passed a [hidden] check while the menu still showed on a phone.
  */
 describe('AdminComponent', () => {
-  function open(isMobile: boolean) {
+  function open(isMobile: boolean, site = '') {
     TestBed.configureTestingModule({
       imports: [AdminComponent],
       providers: [
         provideRouter([{ path: 'admin/seasons', component: EmptyPageComponent }]),
-        { provide: GISDAY_SITE, useValue: gisdaySite('') },
+        { provide: GISDAY_SITE, useValue: gisdaySite(site) },
         { provide: ResponsiveService, useValue: { isMobile: new BehaviorSubject(isMobile) } }
       ]
     });
@@ -70,12 +70,21 @@ describe('AdminComponent', () => {
     expect(menu(root)).toBeNull();
   });
 
-  it('opens the menu with Dashboards, and the RSVP, Check-ins, User accounts and Speaker badges dashboards under it (#2878, #3006, #2892, #2899)', () => {
+  it('opens the menu with Dashboards, and the RSVP, Check-ins, VGI submissions, User accounts and Speaker badges dashboards under it (#2878, #3006, #2894, #2892, #2899)', () => {
     const root = open(false).nativeElement as HTMLElement;
     const first = menu(root)?.querySelector(':scope > li');
 
     expect(first?.querySelector(':scope > a')?.textContent?.trim()).toBe('dashboard Dashboards');
     expect(first?.querySelector(':scope > a')?.getAttribute('href')).toContain('/dashboards');
-    expect(Array.from(first?.querySelectorAll('.sidebar_sublevel a') ?? []).map((a) => a.textContent?.trim())).toEqual(['RSVPs', 'Check-ins', 'User accounts', 'Speaker badges']);
+    expect(Array.from(first?.querySelectorAll('.sidebar_sublevel a') ?? []).map((a) => a.textContent?.trim())).toEqual(['RSVPs', 'Check-ins', 'VGI submissions', 'User accounts', 'Speaker badges']);
+  });
+
+  // #2894: UCGIS's site has no VGI competition, so no VGI submissions dashboard either.
+  it('leaves the VGI submissions dashboard out on a site without the competition', () => {
+    const root = open(false, 'ucgis').nativeElement as HTMLElement;
+    const dashboards = Array.from(root.querySelectorAll('.sidebar_sublevel a')).map((a) => a.textContent?.trim());
+
+    expect(dashboards).toContain('RSVPs');
+    expect(dashboards).not.toContain('VGI submissions');
   });
 });

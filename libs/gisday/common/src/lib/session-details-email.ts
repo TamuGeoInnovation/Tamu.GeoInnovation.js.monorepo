@@ -52,7 +52,7 @@ export function sessionDetailsEmailSubject(session: SessionDetailsSession): stri
 /**
  * The text it starts from, for the session as it is saved (#3092): its name; its day and time in Central; its building
  * and room, or online; for a hybrid or virtual session, its broadcast's link, password, dial-in number and meeting ID, as
- * the session's page shows them; that attendees check in by the QR code shown at the session; and what to bring, from
+ * the session's page shows them, each it has (#3104); that attendees check in by the QR code shown at the session; and what to bring, from
  * its requirements. `address` is the site's, for the link to the session's page.
  */
 export function sessionDetailsEmailTemplate(session: SessionDetailsSession, address: string): string {
@@ -107,7 +107,8 @@ function onlineDetails(session: SessionDetailsSession): string {
     '',
     `- **Link:** ${br.publicUrl.trim()}`,
     br.password?.trim() ? `- **Password:** ${br.password.trim()}` : '',
-    `- **Dial-in number:** ${br.phoneNumber?.trim() || 'None'}`,
+    // Left out with no number, as the password and meeting ID are: "Dial-in number: None" read as a number to call (#3104).
+    br.phoneNumber?.trim() ? `- **Dial-in number:** ${br.phoneNumber.trim()}` : '',
     br.meetingId?.trim() ? `- **Meeting ID:** ${br.meetingId.trim()}` : ''
   ]
     .filter((line, i) => i === 1 || line)

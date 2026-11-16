@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 
 import { PosterDto, Submission } from '@tamu-gisc/gisday/platform/data-api';
 import {
+  EmailRecipient,
   ReminderSkipReason,
   SubmissionFileDto,
   reminderSkipSummary,
@@ -31,6 +32,10 @@ export interface ReviewEmailPreview {
   notEmailed?: Array<{ name: string; submission: string }>;
   /** A session's speakers with no email address on their record, by name, who will not be emailed (#3092). */
   noAddress?: Array<string>;
+  /** The speakers it can go to, each with an address, for the window's tick boxes (#3104). */
+  recipients?: Array<EmailRecipient>;
+  /** Why it may only go as a copy each, when it may not go to them together (#3104). */
+  copyEachReason?: string;
 }
 
 /** What sending the final reminder to several submissions did, from the API (#3017). */

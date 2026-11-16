@@ -38,35 +38,57 @@
       }
     </ul>
   </div>
-  }
+  } @if (preview.recipients?.length) {
+  <!-- Who gets it (#3104): each speaker ticked to start; together or a copy each, when more than one is ticked. -->
+  <section class="review-email__group review-email__recipients">
+    <h3>Who gets it</h3>
+    <tamu-gisc-checkbox-group referenceId="guid" [formControl]="chosen">
+      @for (recipient of preview.recipients; track recipient.guid) {
+      <tamu-gisc-checkbox [data]="recipient" [label]="recipient.name" [description]="recipient.email" [name]="'recipient-' + recipient.guid" [ariaLabel]="'Send it to ' + recipient.name"></tamu-gisc-checkbox>
+      }
+    </tamu-gisc-checkbox-group>
+    @if (offersTogether()) {
+    <tamu-gisc-radio-group [formControl]="how" [options]="howOptions" displayPath="label" valuePath="value"></tamu-gisc-radio-group>
+    } @else if (preview.copyEachReason) {
+    <p class="review-email__meta">{{ preview.copyEachReason }}</p>
+    } @if (!ticked().length) {
+    <p class="review-email__meta"><strong>Tick at least one speaker to send it.</strong></p>
+    }
+  </section>
+  } @if (together()) {
+  <p>Nothing is sent until you choose Send. Everyone ticked gets one email together, all on its To line, with these filled in: {{ placeholders }}; {{ '{' }}first name{{ '}' }} names them all. The text may use Markdown: **bold**, *italic*, [link text](https://...) and lists starting with - .</p>
+  } @else {
   <p>Nothing is sent until you choose Send. Each person gets their own copy, with these filled in: {{ placeholders }}. The text may use Markdown: **bold**, *italic*, [link text](https://...) and lists starting with - .</p>
-
-  @for (group of preview.groups; track group.kind) {
+  } @for (group of preview.groups; track group.kind) { @let shown = exampleOf(group);
   <section class="review-email__group">
-    <h3>{{ group.label }} ({{ group.count }})</h3>
+    <h3>{{ group.label }} ({{ count(group) }})</h3>
     @if (editableSubject) {
     <tamu-gisc-textbox [formControl]="form.controls[group.kind + ':subject']" [placeholder]="'Subject'" [floatLabel]="true"></tamu-gisc-textbox>
     } @else {
     <p class="review-email__meta"><strong>Subject:</strong> {{ group.subject }}</p>
     }
     <tamu-gisc-textbox [formControl]="form.controls[group.kind]" [type]="'textarea'" [rows]="16" [placeholder]="'Email text'" [floatLabel]="true"></tamu-gisc-textbox>
-    <h4>Preview, as "{{ group.example.title }}" gets it</h4>
+    @if (together()) {
+    <h4>Preview of the one email to all of them</h4>
+    } @else {
+    <h4>Preview, as "{{ shown.title }}" gets it</h4>
+    }
     <p class="review-email__meta"><strong>From:</strong> {{ chosenSender()?.from ?? "The site's address" }} @if (chosenSender()?.replyTo; as replyTo) { <strong>Replies to:</strong> {{ replyTo }} }</p>
-    <p class="review-email__meta"><strong>To:</strong> {{ group.example.to }} @if (group.example.cc) { <strong>Cc:</strong> {{ group.example.cc }} }</p>
+    <p class="review-email__meta"><strong>To:</strong> {{ shown.to }} @if (shown.cc) { <strong>Cc:</strong> {{ shown.cc }} }</p>
     @if (editableSubject) {
-    <p class="review-email__meta"><strong>Subject:</strong> {{ exampleSubject(group.kind, group.example.values) }}</p>
+    <p class="review-email__meta"><strong>Subject:</strong> {{ exampleSubject(group.kind, shown.values) }}</p>
     } @if (isDesigned(group)) {
     <!-- Texas A&M's site: the whole email in its design, as it will arrive (#3114). Sandboxed: shown, never run. -->
     <iframe class="review-email__frame" sandbox="" title="The email as it will arrive" [srcdoc]="designedHtml(group)"></iframe>
     } @else {
-    <div class="review-email__preview" [innerHTML]="exampleHtml(group.kind, group.example.values)"></div>
+    <div class="review-email__preview" [innerHTML]="exampleHtml(group.kind, shown.values)"></div>
     }
   </section>
   }
 
   <div class="review-email__footer">
     <tamu-gisc-button value="Cancel" fit="relaxed" look="secondary" (click)="cancel()"></tamu-gisc-button>
-    <tamu-gisc-button [value]="sendWords + ' ' + total(preview) + (total(preview) === 1 ? ' email' : ' emails')" fit="relaxed" (click)="send()"></tamu-gisc-button>
+    <tamu-gisc-button [value]="sendWords + ' ' + total(preview) + (total(preview) === 1 ? ' email' : ' emails')" fit="relaxed" [disabled]="listsRecipients() && !ticked().length" (click)="send()"></tamu-gisc-button>
   </div>
   } @else if (failed()) {
   <p>The email could not be loaded, so nothing was sent. Please try again.</p>

@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -44,7 +45,12 @@ export class SpeakerEditController {
   @Permissions(['update:speakers'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Post('send')
-  public async send(@Body() body: { speakers: Array<string>; sender?: string } & Partial<ProfileEmail>, @Request() req) {
+  public async send(
+    @Body() body: { speakers: Array<string>; sender?: string; together?: unknown } & Partial<ProfileEmail>,
+    @Request() req
+  ) {
+    refuseTogether(body);
+
     const host = siteHost(req?.headers);
     const sender = await this.senders.resolve(req?.user, body?.sender, host);
 
@@ -67,14 +73,23 @@ export class SpeakerEditController {
   @UseGuards(JwtGuard, PermissionsGuard)
   @Post('send-for-submissions')
   public async sendForSubmissions(
-    @Body() body: { submissions: Array<string>; sender?: string } & Partial<ProfileEmail>,
+    @Body()
+    body: {
+      submissions: Array<string>;
+      sender?: string;
+      speakers?: Array<string>;
+      together?: unknown;
+    } & Partial<ProfileEmail>,
     @Request() req
   ) {
+    refuseTogether(body);
+
     const host = siteHost(req?.headers);
     // The sender they chose, checked before anything is sent (#3100).
     const sender = await this.senders.resolve(req?.user, body?.sender, host);
 
-    return this.service.sendLinksForSubmissions(body?.submissions, host, emailOf(body), sender);
+    // Only the speakers ticked in the window, when it names them (#3104).
+    return this.service.sendLinksForSubmissions(body?.submissions, host, emailOf(body), sender, body?.speakers);
   }
 
   /** The email `send-for-submissions` would send, for the admin to read and edit first (#3023). Nothing is sent. */
@@ -142,6 +157,19 @@ export class SpeakerEditController {
     @UploadedFile() photo?: Express.Multer.File
   ) {
     return this.service.propose(token, body, photo);
+  }
+}
+
+/**
+ * Refuses a profile email asked to go to its speakers together (#3104). Each copy carries that speaker's own link to edit
+ * their profile, so one email to several would hand each of them the others' links. The window never offers it; this
+ * stops a request that asks anyway, before anything is sent.
+ */
+function refuseTogether(body: { together?: unknown } | undefined): void {
+  if (body?.together) {
+    throw new BadRequestException(
+      "The profile email carries each speaker's own link to edit their profile, so it is sent as a copy each, never together."
+    );
   }
 }
 

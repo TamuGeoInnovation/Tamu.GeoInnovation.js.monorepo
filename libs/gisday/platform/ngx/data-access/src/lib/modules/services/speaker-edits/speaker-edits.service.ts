@@ -49,6 +49,10 @@ export interface ProfileEmail {
   template: string;
   /** The address chosen in the window's "Send as" box (#3100); the site's when not given. */
   sender?: string;
+  /** The speakers ticked in the window (#3104), by id; every one the page named when not given. */
+  speakers?: Array<string>;
+  /** One email to all of them together rather than a copy each (#3104); only the session details email offers it. */
+  together?: boolean;
 }
 
 /** What sending edit links did, from the API. */
@@ -113,7 +117,10 @@ export class SpeakerEditsService {
   /** The session details email's routes (#3092), beside the profile email's on the API. */
   private readonly sessionEmails = this.api + '/session-emails';
 
-  /** Emails each speaker their own link, in the subject and text the admin approved (#3023). */
+  /**
+   * Emails each speaker their own link, in the subject and text the admin approved (#3023): those ticked in the window,
+   * `email.speakers`, when it names them (#3104).
+   */
   public send(speakerGuids: Array<string>, email?: ProfileEmail) {
     return this.http.post<SendEditLinksResult>(`${this.resource}/send`, {
       speakers: speakerGuids,
@@ -146,7 +153,10 @@ export class SpeakerEditsService {
     return this.http.post<ReviewEmailPreview>(`${this.sessionEmails}/details/preview`, { event: eventGuid });
   }
 
-  /** Emails the session's speakers its details, in the subject and text the admin approved (#3092). */
+  /**
+   * Emails the session's speakers its details, in the subject and text the admin approved (#3092): those ticked, together
+   * or a copy each, as `email` says (#3104).
+   */
   public sendSessionDetails(eventGuid: string, email?: ProfileEmail) {
     return this.http.post<SendEditLinksResult>(`${this.sessionEmails}/details`, { event: eventGuid, ...(email ?? {}) });
   }

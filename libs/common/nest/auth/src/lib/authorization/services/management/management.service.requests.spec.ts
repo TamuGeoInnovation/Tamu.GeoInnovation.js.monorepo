@@ -95,8 +95,12 @@ describe('ManagementService, against a stand-in for the Management API', () => {
         const range = /^created_at:\[(\S+) TO (\S+)\}/.exec(q);
         // A search by id, as getUsersByIds sends it: user_id:("a" OR "b").
         const ids = [...q.matchAll(/"([^"]*)"/g)].map((m) => m[1]);
-        // A search by name or email, as getUsers sends it (#2574): (name:*word* OR email:*word*) for each word, escaped.
-        const terms = [...q.matchAll(/name:\*((?:\\.|[^*\\])+)\*/g)].map((m) => m[1].replace(/\\(.)/g, '$1').toLowerCase());
+        // A search by name or email, as getUsers sends it (#2574, #3116): (name:word* OR given_name:word* OR ...) for each
+        // word, escaped, matching from the start of a word, as Auth0's v3 search does. A leading wildcard (name:*word*)
+        // matches nothing here, as Auth0 refuses it.
+        const terms = [...q.matchAll(/\bname:((?:\\.|[^*\\\s])+)\*/g)].map((m) =>
+          m[1].replace(/\\(.)/g, '$1').toLowerCase()
+        );
         const all = Object.values(users)
           .filter((u) => {
             if (!q) {
@@ -105,13 +109,22 @@ describe('ManagementService, against a stand-in for the Management API', () => {
 
             if (range) {
               const made = String(u['created_at']);
-              const gisday = !q.includes('_exists_:app_metadata.gisday') || Boolean((u['app_metadata'] as Record<string, unknown>)?.['gisday']);
+              const gisday =
+                !q.includes('_exists_:app_metadata.gisday') ||
+                Boolean((u['app_metadata'] as Record<string, unknown>)?.['gisday']);
 
               return made >= range[1] && made < range[2] && gisday;
             }
 
             if (terms.length > 0) {
-              return terms.every((t) => [u['name'], u['email']].some((v) => String(v ?? '').toLowerCase().includes(t)));
+              return terms.every((t) =>
+                [u['name'], u['given_name'], u['family_name'], u['email']].some((v) =>
+                  String(v ?? '')
+                    .toLowerCase()
+                    .split(/\s+/)
+                    .some((word) => word.startsWith(t))
+                )
+              );
             }
 
             return ids.includes(String(u['user_id']));
@@ -310,7 +323,6 @@ describe('ManagementService, against a stand-in for the Management API', () => {
       expect(apiRequests().map((r) => r.query['page'])).toEqual(['0', '1']);
       expect(apiRequests().every((r) => r.query['sort'] === 'name:1' && r.query['per_page'] === '50')).toBe(true);
     });
-
   });
 
   describe('getUsers, with more users than the API will page through (#2574)', () => {
@@ -366,17 +378,23 @@ describe('ManagementService, against a stand-in for the Management API', () => {
         page: '0',
         per_page: '50',
         include_totals: 'true',
-        q: '(name:*Zed* OR email:*Zed*) AND (name:*user1040* OR email:*user1040*)',
+        // #3116: from the start of each word. Auth0's v3 search refuses a leading wildcard (name:*Zed*), so every search
+        // failed and Admin > Users spun for ever.
+        q:
+          '(name:Zed* OR given_name:Zed* OR family_name:Zed* OR email:Zed*) AND ' +
+          '(name:user1040* OR given_name:user1040* OR family_name:user1040* OR email:user1040*)',
         search_engine: 'v3'
       });
     });
 
-    it('escapes what Lucene would read as syntax', async () => {
+    it('escapes what Lucene would read as syntax, and puts no wildcard before a word', async () => {
       await new ManagementService(credentials).getUsers(undefined, 'a+b:c*(d)"e\\');
 
-      expect(apiRequests()[0].query['q']).toBe(
-        '(name:*a\\+b\\:c\\*\\(d\\)\\"e\\\\* OR email:*a\\+b\\:c\\*\\(d\\)\\"e\\\\*)'
-      );
+      const escaped = String.raw`a\+b\:c\*\(d\)\"e\\`;
+      const q = apiRequests()[0].query['q'];
+
+      expect(q).toBe(`(name:${escaped}* OR given_name:${escaped}* OR family_name:${escaped}* OR email:${escaped}*)`);
+      expect(q).not.toMatch(/:\*/);
     });
 
     it('treats a blank search as no search', async () => {
@@ -430,7 +448,12 @@ describe('ManagementService, against a stand-in for the Management API', () => {
         };
       }
 
-      users['auth0|old'] = { user_id: 'auth0|old', name: 'Old', created_at: '2024-01-01T00:00:00.000Z', app_metadata: { gisday: {} } };
+      users['auth0|old'] = {
+        user_id: 'auth0|old',
+        name: 'Old',
+        created_at: '2024-01-01T00:00:00.000Z',
+        app_metadata: { gisday: {} }
+      };
     });
 
     const searches = () => apiRequests().map((r) => r.query['q']);
@@ -438,16 +461,33 @@ describe('ManagementService, against a stand-in for the Management API', () => {
     it('asks for the accounts made in the window, with ISO times and an end it does not include', async () => {
       await new ManagementService(credentials).getUsersCreatedBetween(from, to, '_exists_:app_metadata.gisday');
 
-      expect(searches()[0]).toBe('created_at:[2025-11-21T06:00:00.000Z TO 2026-11-21T06:00:00.000Z} AND _exists_:app_metadata.gisday');
+      expect(searches()[0]).toBe(
+        'created_at:[2025-11-21T06:00:00.000Z TO 2026-11-21T06:00:00.000Z} AND _exists_:app_metadata.gisday'
+      );
     });
 
     it('returns each account with a GIS Day profile in the window, oldest first, with when it was made', async () => {
-      const found = await new ManagementService(credentials).getUsersCreatedBetween(from, to, '_exists_:app_metadata.gisday', {
-        app_metadata: 'gisday',
-        user_metadata: []
-      });
+      const found = await new ManagementService(credentials).getUsersCreatedBetween(
+        from,
+        to,
+        '_exists_:app_metadata.gisday',
+        {
+          app_metadata: 'gisday',
+          user_metadata: []
+        }
+      );
 
-      expect(found.map((f) => f.profile.user_info.id)).toEqual(['auth0|0', 'auth0|1', 'auth0|3', 'auth0|4', 'auth0|5', 'auth0|6', 'auth0|7', 'auth0|8', 'auth0|9']);
+      expect(found.map((f) => f.profile.user_info.id)).toEqual([
+        'auth0|0',
+        'auth0|1',
+        'auth0|3',
+        'auth0|4',
+        'auth0|5',
+        'auth0|6',
+        'auth0|7',
+        'auth0|8',
+        'auth0|9'
+      ]);
       expect(found[0].created).toBe('2025-12-15T00:00:00.000Z');
       expect(found[0].profile.app_metadata).toEqual({ gisday: { attendeeType: 'student' } });
     });

@@ -1,0 +1,52 @@
+@import 'libs/gisday/sass/variables';
+
+:host {
+  display: block;
+}
+
+// Content wider than the box scrolls in it, not the page.
+.dashboard-scroll {
+  overflow-x: auto;
+
+  // While the rail below stands in for it, the box's own scrollbar, at the bottom of a long table, is not drawn twice.
+  &.dashboard-scroll-railed {
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}
+
+// The box's sideways scrollbar, under it and pinned to the bottom of the window while any of the box is in view (#3029):
+// at 1024 px a dashboard's table is wider than its box, and the box's own scrollbar is at the bottom of a table that can
+// be 60 rows long, out of sight. Its side borders match the table's, so the two scroll the same distance. A thumb and
+// track of its own keep it drawn where the system would hide an idle scrollbar.
+.dashboard-scroll-rail {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border: 1pt solid transparent;
+  border-top: 0;
+  border-bottom: 0;
+  background: #fff;
+
+  > div {
+    height: 1px;
+  }
+
+  &::-webkit-scrollbar {
+    height: 12px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $lightened-inactive-color;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.35);
+    border-radius: 6px;
+  }
+}

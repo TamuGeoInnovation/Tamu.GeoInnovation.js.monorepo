@@ -199,8 +199,9 @@ export class ManagementService {
   }
 
   /**
-   * A v3 search for users whose name or email holds every word of `search`, each word escaped so that Lucene reads
-   * it as text. Undefined for a blank search.
+   * A v3 search for users whose name, first name, last name or email starts with every word of `search`, each word
+   * escaped so that Lucene reads it as text. From the start of the word: Auth0's v3 search refuses a leading wildcard
+   * (`name:*zh*`), which made every search fail (#3116). Undefined for a blank search.
    */
   private _searchQuery(search?: string): string | undefined {
     const words = (search ?? '').trim().split(/\s+/).filter(Boolean);
@@ -211,7 +212,7 @@ export class ManagementService {
 
     return words
       .map((w) => w.replace(/[+\-&|!(){}[\]^"~*?:\\/]/g, '\\$&'))
-      .map((w) => `(name:*${w}* OR email:*${w}*)`)
+      .map((w) => `(name:${w}* OR given_name:${w}* OR family_name:${w}* OR email:${w}*)`)
       .join(' AND ');
   }
 
@@ -255,7 +256,10 @@ export class ManagementService {
 
     const mid = middleOf(from, to);
 
-    return (await this.countUsersCreatedBetween(from, mid, query, max)) + (await this.countUsersCreatedBetween(mid, to, query, max));
+    return (
+      (await this.countUsersCreatedBetween(from, mid, query, max)) +
+      (await this.countUsersCreatedBetween(mid, to, query, max))
+    );
   }
 
   /**

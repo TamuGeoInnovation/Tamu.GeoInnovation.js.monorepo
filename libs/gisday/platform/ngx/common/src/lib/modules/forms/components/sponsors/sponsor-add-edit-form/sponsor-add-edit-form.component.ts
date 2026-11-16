@@ -1,14 +1,14 @@
-import { Component, OnInit, inject, input, signal, viewChild } from '@angular/core';
+import { Component, OnInit, inject, input } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Observable, filter, map, of, shareReplay, switchMap, take } from 'rxjs';
 
 import { Sponsor, Season } from '@tamu-gisc/gisday/platform/data-api';
-import { UPLOAD_IMAGE_RULES, uploadImageProblem } from '@tamu-gisc/gisday/common';
 import { AssetsService, SeasonService, SponsorService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { serverMessage } from '../../../../../utils/server-message';
+import { UploadImagePicker } from '../../../../../utils/upload-image-picker';
 
 import { formToFormData } from '../../../../../utils/form-to-form-data';
 import { SPONSOR_LOGO_SIZES } from '../../../../../utils/sponsor-logo-size';
@@ -56,13 +56,8 @@ export class SponsorAddEditFormComponent implements OnInit {
   public logoUrl$: Observable<SafeUrl | string | null>;
   public form: UntypedFormGroup;
 
-  /** What the logo picker offers: the types the API takes (#3009). */
-  public readonly logoRules = UPLOAD_IMAGE_RULES;
-
-  /** Why the logo just chosen was refused, in the API's words, or null. */
-  public readonly logoProblem = signal<string | null>(null);
-
-  private readonly logoPicker = viewChild(FileComponent);
+  /** The logo picker, on the shared upload rule (#3009, #3074). */
+  public readonly logo = new UploadImagePicker('The logo');
 
   public logoSizesDict = SPONSOR_LOGO_SIZES;
 
@@ -134,25 +129,6 @@ export class SponsorAddEditFormComponent implements OnInit {
       this.activeSeasons$.pipe(take(1)).subscribe((season) => {
         this.form.patchValue({ season: season.guid });
       });
-    }
-  }
-
-  /**
-   * Refuses a logo the API would refuse as soon as it is chosen, rather than previewing it and refusing it on save, and
-   * keeps the logo the form had (#3009). The API still judges the file's content when it is sent.
-   */
-  public chooseLogo(file: File | undefined) {
-    // The picker's own reset, below, reports no file; that is not a choice.
-    if (!file) {
-      return;
-    }
-
-    const problem = uploadImageProblem(file, 'The logo');
-
-    this.logoProblem.set(problem);
-
-    if (problem) {
-      this.logoPicker()?.reset();
     }
   }
 

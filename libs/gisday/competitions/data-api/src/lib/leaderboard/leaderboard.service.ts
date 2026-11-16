@@ -158,10 +158,14 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
    *
    * Whatever the names, a participant's own earlier submission of the same type within the type's distance
    * makes theirs a repeat, so nobody scores twice at one plaque by typing its name differently.
+   *
+   * Returns every submission of the season, oldest first, with its points, or null for one that does not count
+   * (discarded, or outside the scoring window). The leaderboard sums them; the VGI dashboard counts its new finds and
+   * repeats from them (#2894), so both score alike.
    */
-  private async calculateLeaderboard(
+  public async scoreSubmissions(
     competitionSeason: CompetitionSeason
-  ): Promise<Array<{ identity: string; guid: string; points: number }>> {
+  ): Promise<Array<{ submission: CompetitionSubmission; points: number | null }>> {
     const typeQuestion = competitionSeason.form?.model?.find((q) => q.isDiscriminator === true);
     const typeAttribute = typeQuestion?.attribute;
     const settingsFor = (type: unknown): ICompetitionSeasonFormOption | undefined =>
@@ -180,7 +184,7 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
     const { finds: earlierFinds } = await previousSeasonFinds(this.compSeasonRepo, this.submissionRepo, competitionSeason);
     const newFinds: Array<{ location: { latitude: number; longitude: number }; type: unknown; name: unknown }> = [];
     const submittedBy = new Map<string, Array<{ location: { latitude: number; longitude: number }; type: unknown }>>();
-    const userPointsMap = new Map<string, number>();
+    const scored = new Map<CompetitionSubmission, number>();
 
     // Only submissions made inside the season's scoring window count, and the rest are not earlier finds
     // either (#2474).
@@ -223,7 +227,22 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
         submittedBy.set(submission.userGuid, [...(submittedBy.get(submission.userGuid) ?? []), { location, type }]);
       }
 
-      userPointsMap.set(submission.userGuid, (userPointsMap.get(submission.userGuid) || 0) + points);
+      scored.set(submission, points);
+    }
+
+    return submissions.map((submission) => ({ submission, points: scored.get(submission) ?? null }));
+  }
+
+  /** Each participant's points, highest first: their submissions' scores summed (`scoreSubmissions`). */
+  private async calculateLeaderboard(
+    competitionSeason: CompetitionSeason
+  ): Promise<Array<{ identity: string; guid: string; points: number }>> {
+    const userPointsMap = new Map<string, number>();
+
+    for (const { submission, points } of await this.scoreSubmissions(competitionSeason)) {
+      if (points !== null) {
+        userPointsMap.set(submission.userGuid, (userPointsMap.get(submission.userGuid) || 0) + points);
+      }
     }
 
     // Convert map to array and sort by points descending

@@ -3,9 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import {
+  FIRST_NAME_PLACEHOLDER,
   SESSION_DETAILS_EMAIL_KIND,
   fillProfileEmail,
   gisdaySite,
+  joinNames,
   sessionDetailsEmailProblem,
   sessionDetailsEmailSubject,
   sessionDetailsEmailTemplate,
@@ -13,7 +15,9 @@ import {
   seasonDaysOf,
   sessionEmailDesign,
   sessionEmailDetails,
-  siteEmailHtml
+  siteEmailHtml,
+  togetherFirstNames,
+  togetherTo
 } from '@tamu-gisc/gisday/common';
 
 import { Event, Speaker } from '../entities/all.entity';
@@ -25,8 +29,10 @@ import {
   ProfileEmailPreview,
   REPEAT_SEND_MINUTES,
   SendResult,
+  chosenSpeakers,
   fullName,
-  looksLikeEmail
+  looksLikeEmail,
+  recipientOf
 } from './speaker-edit.service';
 
 /** The session details email as an admin approved it: its subject and text, with their placeholders. */
@@ -38,10 +44,22 @@ export interface SessionDetailsEmailPreview extends ProfileEmailPreview {
   noAddress: Array<string>;
 }
 
+/** Who of the session's speakers it goes to, as ticked in the window, and whether in one email together (#3104). */
+export interface SpeakerChoice {
+  /** The speakers ticked, by id; every one with an address when not given. */
+  speakers?: Array<string>;
+
+  /** One email with every one of them on To, rather than a copy each. */
+  together?: boolean;
+}
+
 /**
  * A session's speakers emailed its details (#3092), from the session's admin page: prefilled from the session, read and
  * edited first in the window the profile email uses, sent several at a time (#3067), and never twice to one speaker for
  * the same session within `REPEAT_SEND_MINUTES` (#3065).
+ *
+ * The admin ticks which speakers get it, and sends one email to all of them together or a copy each (#3104). Together,
+ * every one is on To and `{first name}` names them all; the repeat guard counts it once, for its whole group.
  *
  * The repeat guard is kept by this API process, as nothing else records these emails: a repeat that reaches the same
  * process is caught, one that reaches another pod is not. The profile email's guard reads its links table, which every
@@ -59,7 +77,8 @@ export class SessionDetailsEmailService {
 
   /**
    * The email the session's speakers would get, for the admin to read and edit first: the text prefilled from the
-   * session, an example for the first speaker with an address, and who has none. Nothing is sent.
+   * session, an example for the first speaker with an address, each of them to tick (#3104), and who has none. Nothing
+   * is sent.
    */
   public async preview(eventGuid: string, host?: string): Promise<SessionDetailsEmailPreview> {
     const session = await this.sessionOf(eventGuid);
@@ -90,21 +109,25 @@ export class SessionDetailsEmailService {
           }
         }
       ],
+      // Nothing in it is one speaker's own, so it may go to them together: no `copyEachReason`.
+      recipients: reachable.map(recipientOf),
       noAddress: noAddress.map(fullName)
     };
   }
 
   /**
-   * Emails each of the session's speakers its details, in the subject and text the admin approved, or as prefilled when
-   * none is given. A speaker with no address, or sent this session's details in the last `REPEAT_SEND_MINUTES`, is
-   * skipped and named with why. `sender` is who it is from, as the admin chose and the controller checked (#3100), or the
-   * site.
+   * Emails the session's speakers its details, in the subject and text the admin approved, or as prefilled when none is
+   * given. `choice` is who was ticked and whether together (#3104); without it, every speaker with an address gets a copy
+   * each, and those with none are named as skipped. A speaker, or a together email's group, sent this session's details
+   * in the last `REPEAT_SEND_MINUTES` is skipped and named with why. `sender` is who it is from, as the admin chose and
+   * the controller checked (#3100), or the site.
    */
   public async send(
     eventGuid: string,
     host?: string,
     email?: SessionDetailsEmail,
-    sender?: EmailSender
+    sender?: EmailSender,
+    choice?: SpeakerChoice
   ): Promise<SendResult> {
     const problem = email === undefined ? null : sessionDetailsEmailProblem(email);
 
@@ -112,6 +135,7 @@ export class SessionDetailsEmailService {
       throw new BadRequestException(problem);
     }
 
+    const ticked = chosenSpeakers(choice?.speakers);
     const session = await this.sessionOf(eventGuid);
     const site = gisdaySite(process.env.GISDAY_SITE, host);
     const approved = email ?? {
@@ -121,21 +145,32 @@ export class SessionDetailsEmailService {
     const { reachable, noAddress } = speakersOf(session);
     const from = sender ?? siteSender(site.name);
     const design = sessionEmailDesign(site.name, seasonDaysOf(session.season), sessionEmailDetails(session));
+    // Only the session's own speakers, of those ticked: an id from anywhere else is not one of them.
+    const chosen = ticked ? reachable.filter((s) => ticked.includes(s.guid)) : reachable;
+
+    if (ticked && chosen.length === 0) {
+      throw new BadRequestException('None of the speakers chosen is on this session with an email address.');
+    }
+
     const result: SendResult = {
       sent: [],
-      skipped: noAddress.map((s) => ({ name: fullName(s), reason: 'no email address on their record' }))
+      // Those with no address are named when everyone was meant; when the admin ticked, the window already named them.
+      skipped: ticked ? [] : noAddress.map((s) => ({ name: fullName(s), reason: 'no email address on their record' }))
     };
+    // One email to them all together, or one each (#3104). Together with one ticked is that one's own copy.
+    const emails: Array<Array<Speaker>> = choice?.together && chosen.length > 1 ? [chosen] : chosen.map((s) => [s]);
 
     // Several at a time (#3067), as the profile email: one by one, a long send waited long enough to be repeated (#3065).
-    const parts = await inParallel(reachable, EMAIL_LANES, async (speaker) => {
+    const parts = await inParallel(emails, EMAIL_LANES, async (group) => {
       const part: SendResult = { sent: [], skipped: [] };
-      const name = fullName(speaker);
-      const key = `${session.guid}:${speaker.guid}`;
+      // A together email is one email, so it is named, sent, skipped or failed once, for its whole group (#3104).
+      const name = joinNames(group.map(fullName));
+      const keys = group.map((speaker) => `${session.guid}:${speaker.guid}`);
       const now = Date.now();
 
       // Recorded before the email goes, with nothing awaited between the check and the record, so two sends racing in
-      // this process skip each other's speakers.
-      if (now - (this.lastSent.get(key) ?? -Infinity) <= REPEAT_SEND_MINUTES * 60 * 1000) {
+      // this process skip each other's speakers. A group is a repeat if any of it was sent these details just now.
+      if (keys.some((key) => now - (this.lastSent.get(key) ?? -Infinity) <= REPEAT_SEND_MINUTES * 60 * 1000)) {
         part.skipped.push({
           name,
           reason: `already emailed this session's details in the last ${REPEAT_SEND_MINUTES} minutes`
@@ -143,14 +178,20 @@ export class SessionDetailsEmailService {
         return part;
       }
 
-      this.lastSent.set(key, now);
+      keys.forEach((key) => this.lastSent.set(key, now));
 
       try {
-        const { subject, text } = fillProfileEmail(approved, sessionDetailsEmailValues(speaker, site));
+        const values = sessionDetailsEmailValues(group[0], site);
+        const { subject, text } = fillProfileEmail(
+          approved,
+          // Together, `{first name}` names them all: "Sharmin and Colby", "Ana, Ben and Cara".
+          group.length > 1 ? { ...values, [FIRST_NAME_PLACEHOLDER]: togetherFirstNames(group) } : values
+        );
 
         await this.contact.sendMessage(
           {
-            to: speaker.email.trim(),
+            // Together, every one on To, so they see each other and can reply to all.
+            to: togetherTo(group),
             ...from,
             subject,
             text,
@@ -162,9 +203,11 @@ export class SessionDetailsEmailService {
         part.sent.push(name);
       } catch (err) {
         // Not sent, so not a repeat: the admin may try again at once.
-        this.lastSent.delete(key);
+        keys.forEach((key) => this.lastSent.delete(key));
         Logger.error(
-          `Could not email session ${session.guid}'s details to speaker ${speaker.guid}: ${err.message}`,
+          `Could not email session ${session.guid}'s details to speaker(s) ${group.map((s) => s.guid).join(', ')}: ${
+            err.message
+          }`,
           'SessionDetailsEmailService'
         );
         part.skipped.push({ name, reason: 'the email could not be sent' });

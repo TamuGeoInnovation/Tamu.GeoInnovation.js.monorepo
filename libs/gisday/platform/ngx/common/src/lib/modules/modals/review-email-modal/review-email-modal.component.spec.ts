@@ -414,3 +414,196 @@ describe('ReviewEmailModalComponent, Send as', () => {
     expect(close).toHaveBeenCalledWith({ profile: 'T', 'profile:subject': 'S' });
   });
 });
+
+/**
+ * #3104: a speaker email lists its speakers, each with a tick box, all ticked to start. With more than one ticked, it
+ * offers one email to all of them together, the default, or a copy each; together, every address is on To and the
+ * greeting names them all.
+ */
+describe('ReviewEmailModalComponent, choosing speakers', () => {
+  const recipients = [
+    { guid: 'sp-sh', name: 'Sharmin Example', firstName: 'Sharmin', email: 'sharmin@example.com' },
+    { guid: 'sp-co', name: 'Colby Sample', firstName: 'Colby', email: 'colby@example.com' },
+    { guid: 'sp-ca', name: 'Cara Test', firstName: 'Cara', email: 'cara@example.com' }
+  ];
+
+  function open(kind: string, extra: object = {}) {
+    const close = jest.fn();
+
+    TestBed.configureTestingModule({
+      imports: [ReviewEmailModalComponent],
+      providers: [
+        {
+          provide: MODAL_DATA,
+          useValue: {
+            verb: 'Send session details',
+            editableSubject: true,
+            preview: of({
+              groups: [
+                {
+                  kind,
+                  label: 'Session details',
+                  count: 3,
+                  subject: 'Your {site} session',
+                  template: 'Howdy {first name},\n\nSee you.',
+                  example: {
+                    title: 'Sharmin Example',
+                    to: 'sharmin@example.com',
+                    cc: '',
+                    values: { '{first name}': 'Sharmin', '{site}': 'TxGIS Day' }
+                  }
+                }
+              ],
+              recipients,
+              ...extra
+            })
+          }
+        },
+        { provide: ModalRefService, useValue: { close } },
+        NO_SENDERS
+      ]
+    });
+
+    const fixture = TestBed.createComponent(ReviewEmailModalComponent);
+    fixture.detectChanges();
+
+    const page = fixture.nativeElement as HTMLElement;
+    const text = (selector: string) => page.querySelector(selector)?.textContent.replace(/\s+/g, ' ').trim();
+    const toLine = () =>
+      [...page.querySelectorAll('.review-email__meta')]
+        .map((p) => p.textContent.replace(/\s+/g, ' ').trim())
+        .find((t) => t.startsWith('To:'));
+    const button = () =>
+      [...page.querySelectorAll('tamu-gisc-button input')].map((b) => (b as HTMLInputElement).value).pop();
+    const tick = (guids: Array<string>) => {
+      fixture.componentInstance.chosen.setValue(guids);
+      fixture.detectChanges();
+    };
+
+    return { fixture, close, page, text, toLine, button, tick };
+  }
+
+  it('lists each speaker with their address and a tick box, all ticked to start', () => {
+    const { fixture, page } = open('session-details');
+    const boxes = [...page.querySelectorAll('.review-email__recipients tamu-gisc-checkbox')];
+
+    expect(
+      boxes.map((b) => [
+        b.querySelector('label').textContent.trim(),
+        b.querySelector('.description').textContent.trim(),
+        b.querySelector('.icon-container').textContent.trim()
+      ])
+    ).toEqual([
+      ['Sharmin Example', 'sharmin@example.com', 'check_box'],
+      ['Colby Sample', 'colby@example.com', 'check_box'],
+      ['Cara Test', 'cara@example.com', 'check_box']
+    ]);
+    expect(fixture.componentInstance.chosen.value).toEqual(['sp-sh', 'sp-co', 'sp-ca']);
+  });
+
+  it('sends them one email together by default, every address on To and the greeting naming them all', () => {
+    const { fixture, page, text, toLine, button, close } = open('session-details');
+
+    expect(page.querySelector('.review-email__recipients tamu-gisc-radio-group')).not.toBeNull();
+    expect(fixture.componentInstance.how.value).toBe('together');
+    expect(toLine()).toBe('To: sharmin@example.com, colby@example.com, cara@example.com');
+    expect(text('.review-email__preview')).toBe('Howdy Sharmin, Colby and Cara, See you.');
+    expect(button()).toBe('Send 1 email');
+
+    fixture.componentInstance.send();
+
+    expect(close).toHaveBeenCalledWith({
+      'session-details': 'Howdy {first name},\n\nSee you.',
+      'session-details:subject': 'Your {site} session',
+      ':recipients': 'sp-sh,sp-co,sp-ca',
+      ':together': 'true'
+    });
+  });
+
+  it('names two as "A and B", and sends nothing to a speaker unticked', () => {
+    const { fixture, text, toLine, close, tick } = open('session-details');
+
+    tick(['sp-sh', 'sp-co']);
+
+    expect(toLine()).toBe('To: sharmin@example.com, colby@example.com');
+    expect(text('.review-email__preview')).toBe('Howdy Sharmin and Colby, See you.');
+
+    fixture.componentInstance.send();
+
+    expect(close.mock.calls[0][0][':recipients']).toBe('sp-sh,sp-co');
+  });
+
+  it('sends a copy each when chosen, as the first ticked gets it, and says how many', () => {
+    const { fixture, text, toLine, button, close, tick } = open('session-details');
+
+    tick(['sp-co', 'sp-ca']);
+    fixture.componentInstance.how.setValue('each');
+    fixture.detectChanges();
+
+    expect(toLine()).toBe('To: colby@example.com');
+    expect(text('.review-email__preview')).toBe('Howdy Colby, See you.');
+    expect(button()).toBe('Send 2 emails');
+
+    fixture.componentInstance.send();
+
+    expect(close.mock.calls[0][0]).toEqual({
+      'session-details': 'Howdy {first name},\n\nSee you.',
+      'session-details:subject': 'Your {site} session',
+      ':recipients': 'sp-co,sp-ca'
+    });
+  });
+
+  it('offers no choice with one ticked, and sends that one their own copy', () => {
+    const { fixture, page, text, close, tick } = open('session-details');
+
+    tick(['sp-ca']);
+
+    expect(page.querySelector('.review-email__recipients tamu-gisc-radio-group')).toBeNull();
+    expect(text('.review-email__preview')).toBe('Howdy Cara, See you.');
+
+    fixture.componentInstance.send();
+
+    expect(close.mock.calls[0][0][':together']).toBeUndefined();
+    expect(close.mock.calls[0][0][':recipients']).toBe('sp-ca');
+  });
+
+  it('sends nothing with no one ticked, and says so', () => {
+    const { fixture, page, close, tick } = open('session-details');
+
+    tick([]);
+    fixture.componentInstance.send();
+
+    expect(close).not.toHaveBeenCalled();
+    expect(page.textContent).toContain('Tick at least one speaker to send it.');
+  });
+
+  it('offers only a copy each when the email cannot go together, and says why', () => {
+    const reason = 'Each speaker gets their own copy: it carries their own link to edit their profile.';
+    const { fixture, page, toLine, button, close } = open('profile', { copyEachReason: reason });
+
+    expect(page.querySelectorAll('.review-email__recipients tamu-gisc-checkbox').length).toBe(3);
+    expect(page.querySelector('.review-email__recipients tamu-gisc-radio-group')).toBeNull();
+    expect(page.textContent).toContain(reason);
+    expect(toLine()).toBe('To: sharmin@example.com');
+    expect(button()).toBe('Send 3 emails');
+
+    fixture.componentInstance.how.setValue('together');
+    fixture.componentInstance.send();
+
+    expect(close.mock.calls[0][0][':together']).toBeUndefined();
+    expect(close.mock.calls[0][0][':recipients']).toBe('sp-sh,sp-co,sp-ca');
+  });
+
+  it('lists no speakers, and closes with the texts alone, for an email that does not list them', () => {
+    const { fixture, page, close } = open('session-details', { recipients: undefined });
+
+    expect(page.querySelector('.review-email__recipients')).toBeNull();
+
+    fixture.componentInstance.send();
+
+    expect(close).toHaveBeenCalledWith({
+      'session-details': 'Howdy {first name},\n\nSee you.',
+      'session-details:subject': 'Your {site} session'
+    });
+  });
+});

@@ -24,6 +24,13 @@ export const PROFILE_EMAIL_PLACEHOLDERS = Object.freeze([
  */
 export const PROFILE_EDIT_LINK_PREVIEW = '(their own edit link, added when it is sent)';
 
+/**
+ * Why the profile email is only ever sent as a copy each (#3104), as the window says beside its tick boxes: each speaker's
+ * link opens their own profile to anyone who has it, so one email to several would let each edit the others'.
+ */
+export const PROFILE_EMAIL_COPY_EACH =
+  'Each speaker gets their own copy: it carries their own link to edit their profile, which no one else should have.';
+
 /** The longest subject and text an admin may send. */
 const MAX_SUBJECT = 200;
 const MAX_TEMPLATE = 20000;

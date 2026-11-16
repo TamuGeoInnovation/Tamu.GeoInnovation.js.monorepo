@@ -156,6 +156,32 @@ describe('SpeakerEditsService, the session details email', () => {
 
     await expect(result).resolves.toEqual({ sent: ['Ana Ruiz'], skipped: [] });
   });
+
+  // #3104: the speakers ticked in the window, and together, go with it.
+  it('sends it to the speakers ticked, together when chosen', () => {
+    service
+      .sendSessionDetails('e-1', { subject: 'S', template: 'T', speakers: ['sp-1', 'sp-2'], together: true })
+      .subscribe();
+
+    expect(http.expectOne('api/session-emails/details').request.body).toEqual({
+      event: 'e-1',
+      subject: 'S',
+      template: 'T',
+      speakers: ['sp-1', 'sp-2'],
+      together: true
+    });
+  });
+
+  // #3104: the profile email goes to the speakers ticked, of those the page named.
+  it('sends the profile email to the speakers ticked rather than every one the page named', () => {
+    service.send(['sp-1', 'sp-2', 'sp-3'], { subject: 'S', template: 'T {edit link}', speakers: ['sp-2'] }).subscribe();
+
+    expect(http.expectOne('api/speaker-edits/send').request.body).toEqual({
+      speakers: ['sp-2'],
+      subject: 'S',
+      template: 'T {edit link}'
+    });
+  });
 });
 
 describe('sendSessionDetailsToast', () => {

@@ -5,7 +5,9 @@ import {
   ICompetitionSubmission,
   ValidateSubmissionDto,
   SubmissionReviewDto,
-  SubmissionMediaDto
+  SubmissionMediaDto,
+  VgiDashboard,
+  VgiSubmitter
 } from '@tamu-gisc/gisday/competitions/data-api/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
@@ -37,6 +39,18 @@ export class SubmissionService {
       observe: 'events',
       headers: httpOptions.headers
     });
+  }
+
+  /** The VGI submissions dashboard for a GIS Day season: its submissions by feature type (#2894). */
+  public getDashboardForSeason(seasonGuid: string) {
+    return this.http.get<VgiDashboard>(`${this.resource}/dashboard/season/${seasonGuid}`);
+  }
+
+  /** Who submitted one feature type in a season, with their counts, for the dashboard's opened row (#2894). */
+  public getDashboardForType(seasonGuid: string, type: string) {
+    return this.http.get<Array<VgiSubmitter>>(
+      `${this.resource}/dashboard/season/${seasonGuid}/type/${encodeURIComponent(type)}`
+    );
   }
 
   public getSubmissionDetails(submissionGuid: string) {

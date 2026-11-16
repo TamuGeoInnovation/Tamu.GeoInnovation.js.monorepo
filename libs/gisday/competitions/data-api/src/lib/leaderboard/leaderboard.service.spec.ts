@@ -70,6 +70,23 @@ describe('LeaderboardService', () => {
     expect(await scores()).toEqual({ ann: 3 });
   });
 
+  // #2894: the VGI dashboard reads each submission's score from here, so it counts new finds and repeats as this does.
+  it('gives each submission its own score, and none to one that does not count', async () => {
+    submissions = [
+      submission('ann', monument),
+      submission('bob', north(5)),
+      submission('cat', north(9), 'monument', COMPETITION_VALIDATION_STATUS.discarded)
+    ];
+
+    const scored = await service.scoreSubmissions({ guid: 'cs-1', form } as never);
+
+    expect(scored.map((s) => [s.submission.userGuid, s.points])).toEqual([
+      ['auth0|ann', NEW_FIND_POINTS],
+      ['auth0|bob', ALREADY_SUBMITTED_POINTS],
+      ['auth0|cat', null]
+    ]);
+  });
+
   it('compares submissions oldest first, and two made in the same instant in a fixed order', async () => {
     submissions = [submission('ann', monument), submission('bob', north(2))];
     await scores();

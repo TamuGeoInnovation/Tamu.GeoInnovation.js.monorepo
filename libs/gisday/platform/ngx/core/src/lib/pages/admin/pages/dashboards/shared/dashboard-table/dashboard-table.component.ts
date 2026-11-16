@@ -1,20 +1,8 @@
-import {
-  Component,
-  DestroyRef,
-  Directive,
-  ElementRef,
-  TemplateRef,
-  afterNextRender,
-  computed,
-  contentChild,
-  inject,
-  input,
-  output,
-  signal,
-  viewChild
-} from '@angular/core';
+import { Component, Directive, TemplateRef, computed, contentChild, input, output, signal, viewChild } from '@angular/core';
 import { DatePipe, NgTemplateOutlet } from '@angular/common';
 import { DatatableComponent, NgxDatatableModule, SortPropDir } from '@swimlane/ngx-datatable';
+
+import { DashboardScrollComponent } from '../dashboard-scroll/dashboard-scroll.component';
 
 /** One row of a dashboard's table: a thing counted (an event, a university, a feature type) and its counts. */
 export interface DashboardTableRow {
@@ -33,6 +21,11 @@ export interface DashboardTableRow {
 export interface DashboardTableColumn {
   key: string;
   label: string;
+  /**
+   * The total row's figure, when the column's counts do not add up: a person counted in two rows is one person (#2894).
+   * Without it, the column's sum.
+   */
+  total?: number;
 }
 
 /**
@@ -110,7 +103,7 @@ export function compareTimes(a: string | null, b: string | null): number {
   selector: 'tamu-gisc-dashboard-table',
   templateUrl: './dashboard-table.component.html',
   styleUrls: ['./dashboard-table.component.scss'],
-  imports: [NgxDatatableModule, NgTemplateOutlet, DatePipe]
+  imports: [NgxDatatableModule, NgTemplateOutlet, DatePipe, DashboardScrollComponent]
 })
 export class DashboardTableComponent {
   public readonly rows = input.required<Array<DashboardTableRow>>();
@@ -140,56 +133,12 @@ export class DashboardTableComponent {
   public readonly compareNames = compareNames;
   public readonly compareTimes = compareTimes;
   public readonly sum = (cells: Array<number>) => cells.reduce((total, n) => total + (Number(n) || 0), 0);
+  /** Each count column's total: its own, or its sum. Made once per set of columns, so the table is not redrawn. */
+  public readonly summaries = computed(
+    () => new Map(this.columns().map((c) => [c.key, c.total === undefined ? this.sum : () => c.total]))
+  );
   public readonly totalName = () => this.totalLabel();
   public readonly blank = () => '';
-
-  /**
-   * How wide the table is, in pixels, while it is wider than its box, else null (#3029). The rail under the box is then
-   * drawn that wide and scrolls with it, so the hidden columns can be found and reached without scrolling to the bottom
-   * of a long table, where the box's own scrollbar is.
-   */
-  public readonly overflow = signal<number | null>(null);
-  private readonly box = viewChild.required<ElementRef<HTMLElement>>('box');
-  private readonly rail = viewChild.required<ElementRef<HTMLElement>>('rail');
-
-  constructor() {
-    const destroyRef = inject(DestroyRef);
-
-    // The box changes width with the window, and the table inside it with its columns and an opened row.
-    afterNextRender(() => {
-      if (typeof ResizeObserver === 'undefined') {
-        return;
-      }
-
-      const box = this.box().nativeElement;
-      const observer = new ResizeObserver(() => this.measure());
-
-      observer.observe(box);
-      Array.from(box.children).forEach((child) => observer.observe(child));
-      destroyRef.onDestroy(() => observer.disconnect());
-    });
-  }
-
-  public measure() {
-    const { scrollWidth, clientWidth } = this.box().nativeElement;
-
-    this.overflow.set(scrollWidth > clientWidth ? scrollWidth : null);
-  }
-
-  /** Keeps the rail where the box is scrolled to, and the box where the rail is. */
-  public followBox() {
-    this.align(this.box().nativeElement, this.rail().nativeElement);
-  }
-
-  public followRail() {
-    this.align(this.rail().nativeElement, this.box().nativeElement);
-  }
-
-  private align(from: HTMLElement, to: HTMLElement) {
-    if (to.scrollLeft !== from.scrollLeft) {
-      to.scrollLeft = from.scrollLeft;
-    }
-  }
 
   public onSortsChange(next: Array<SortPropDir>) {
     this.sorts.set(adjustSorts(next, this.sorts(), new Set(['name', 'when'])));

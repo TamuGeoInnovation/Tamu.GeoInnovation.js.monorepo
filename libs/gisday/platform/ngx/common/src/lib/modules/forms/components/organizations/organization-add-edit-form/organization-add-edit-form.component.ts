@@ -10,6 +10,7 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { serverMessage } from '../../../../../utils/server-message';
 
 import { formToFormData } from '../../../../../utils/form-to-form-data';
+import { UploadImagePicker } from '../../../../../utils/upload-image-picker';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { FileComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -49,6 +50,9 @@ export class OrganizationAddEditFormComponent implements OnInit {
   public activeSeasons$: Observable<Partial<Season>>;
   public logoUrl$: Observable<SafeUrl | string | null>;
   public form: UntypedFormGroup;
+
+  /** The logo picker, on the shared upload rule (#3074). */
+  public readonly logo = new UploadImagePicker('The logo');
 
   public ngOnInit(): void {
     this.form = this.fb.group({

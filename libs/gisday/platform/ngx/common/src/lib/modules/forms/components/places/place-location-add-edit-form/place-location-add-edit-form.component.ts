@@ -9,6 +9,7 @@ import { AssetsService, PlaceService, SeasonService } from '@tamu-gisc/gisday/pl
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { formToFormData } from '../../../../../utils/form-to-form-data';
+import { UploadImagePicker } from '../../../../../utils/upload-image-picker';
 import { PlaceVisibilityOptions } from '../../../../../enums/place-visibility-options.enum';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { FileComponent } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -51,6 +52,9 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
   public readonly type = input<'create' | 'edit'>(undefined);
 
   public form: UntypedFormGroup;
+
+  /** The logo picker, on the shared upload rule (#3074). */
+  public readonly logo = new UploadImagePicker('The logo');
 
   /**
    * The link controls, as a new list whenever a link is added or removed.
