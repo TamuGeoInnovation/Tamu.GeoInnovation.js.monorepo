@@ -1,4 +1,3 @@
-import { ApplicationRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { firstValueFrom, of } from 'rxjs';
@@ -409,7 +408,7 @@ describe('EventAddEditFormComponent, the Slides section (#3093)', () => {
     fixture.componentRef.setInput('type', type);
     fixture.detectChanges();
 
-    return { page: fixture.nativeElement as HTMLElement, sessionFiles };
+    return { page: fixture.nativeElement as HTMLElement, sessionFiles, fixture };
   }
 
   it("lists the session's slides with their size and date, each a download", () => {
@@ -447,10 +446,10 @@ describe('EventAddEditFormComponent, the Slides section (#3093)', () => {
 
     it('asks on the page first, naming the file and who uploaded it, and removes nothing until told to', () => {
       const confirm = jest.spyOn(window, 'confirm');
-      const { page, sessionFiles } = render('edit', [gone]);
+      const { page, sessionFiles, fixture } = render('edit', [gone]);
 
       button(page, 'Remove').click();
-      TestBed.inject(ApplicationRef).tick();
+      fixture.detectChanges();
 
       const asked = page.querySelector('[role="alert"]');
       expect(asked.textContent.replace(/\s+/g, ' ')).toContain(
@@ -460,19 +459,19 @@ describe('EventAddEditFormComponent, the Slides section (#3093)', () => {
       expect(sessionFiles.removeFromEvent).not.toHaveBeenCalled();
 
       button(page, 'Keep it').click();
-      TestBed.inject(ApplicationRef).tick();
+      fixture.detectChanges();
 
       expect(page.querySelector('[role="alert"]')).toBeNull();
       expect(page.querySelectorAll('.file')).toHaveLength(1);
     });
 
     it('removes the file once told to, and takes it off the list', () => {
-      const { page, sessionFiles } = render('edit', [gone, theirs]);
+      const { page, sessionFiles, fixture } = render('edit', [gone, theirs]);
 
       button(page, 'Remove').click();
-      TestBed.inject(ApplicationRef).tick();
+      fixture.detectChanges();
       button(page, 'Remove the file').click();
-      TestBed.inject(ApplicationRef).tick();
+      fixture.detectChanges();
 
       expect(sessionFiles.removeFromEvent).toHaveBeenCalledWith('event', 'f-1');
       expect([...page.querySelectorAll('.file-name')].map((f) => f.textContent.trim())).toEqual(['Lightning.pdf']);
