@@ -8527,3 +8527,28 @@ note `2894-vgi-dashboard.md`. One commit, fetched and rebased first, pushed (no 
 
 > **Order, 8:35 PM Central:** you resumed 88 (#3100, High): keep going with it. Batches 94 and 95 (screenshots for #2582
 > and #2894) come **after 88**, then 90. Report 93 is read; the director opens #3074's PR.
+
+## Batches 96 and 97 (gisday: #3113 and #3114; 15 November 2026, about 8:45 PM Central, from `work (gisday)`) (High) - **in this order: 88, 95, 90, 96, 97**
+
+**Batch 90 (#3104) is now High and wider:** the speaker choice (tick boxes; "one email to all of them together" or "a copy
+each") goes in the **shared composer**, and the **Profile email** gets it too, not only Session details. Read #3104's
+latest comment.
+
+**Batch 96: [#3113](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3113), Ask for slides.**
+A third item in "Email these speakers ▾": its own prefilled template (subject and Markdown, previewed) asking for the
+session's slides, with **each speaker's own edit link** (#3093's upload page), what they may upload (from the upload rule,
+not typed), and the session's name, day, time and room. **Decided: 1A**: it always goes as a copy each; no "together".
+Speakers chosen with #3104's tick boxes. The repeat guard as the other speaker emails. Branch from `development` with
+#3104 merged (or stacked on its branch; say which). Tests red first; the check; screenshots (the menu, the composer, the
+preview with the link); a release note. **Send no real email.** Report "branch ready".
+
+**Batch 97: [#3114](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3114), the designed email.**
+Read the issue's "Proposed". The maintainer's shell is `C:\Claude\Marketing Strategy\Strategy Docs\Campaigns\Templates\TAMU_GIS_Day_Email_Shell_Template.html`
+on the home machine: **the director will copy it to you** as `work-lab-leila/assets/TAMU_GIS_Day_Email_Shell_Template.html`
+on this branch before you start; it is the source of truth for the design. Put it in `libs/gisday/common` as a template,
+inline styles kept; fill the dates and day strip from the season, the sign-off from the chosen sender (#3100), the details
+box from the session where there is one; the body is `emailHtml`'s output. **Decided: 2A**: Texas A&M's site only; the
+others stay plain. No unsubscribe line. Keep the plain-text part. The composer's preview shows the whole designed email.
+Tests red first (Texas A&M gets the shell, the others do not; the dates come from the season); the check; screenshots of
+the preview and of the email as received in a local mail catcher if you have one (no real email); a release note. Report
+"branch ready".

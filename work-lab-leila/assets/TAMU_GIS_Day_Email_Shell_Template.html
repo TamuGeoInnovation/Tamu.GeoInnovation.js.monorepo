@@ -1,0 +1,91 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{{EMAIL_TITLE}}</title></head><body style="margin:0;padding:0;background:#d6d6d6;">
+<!--
+  TAMU GIS Day email template (blank). Same design as the 2026 Save the Date, Week at a Glance and Pick Your Path emails.
+  How to use it:
+  1. Replace every {{PLACEHOLDER}} with your own text. Write & as &amp; in the text.
+  2. Remove any block you do not need. Each block sits between its own BLOCK START / BLOCK END comments.
+  3. Copy a card cell (CARD START to CARD END) to add more highlight cards. Two cards go on each row.
+  4. All styles are written into each tag on purpose, so the email looks the same in Outlook, Gmail and phone mail apps. Do not move them into a <style> block.
+  Colors: maroon #500000, dark title block #2b2b2b, tan text #e8d9c0, card background #f4f1ea, body text #3c3c3c, gray text #707070, page background #d6d6d6.
+-->
+<div style="display:none;max-height:0;overflow:hidden;">{{PREHEADER_TEXT_SHOWN_IN_INBOX_PREVIEW}}</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#d6d6d6"><tr><td align="center" style="padding:24px 8px;">
+<table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px;max-width:100%;background:#ffffff;">
+
+<!-- BLOCK START: top bar -->
+<tr><td bgcolor="#500000" style="font-family:Arial,Helvetica,sans-serif;padding:20px 32px;color:#ffffff;font-size:13px;letter-spacing:1px;">TEXAS A&amp;M UNIVERSITY&nbsp;&nbsp;|&nbsp;&nbsp;DEPARTMENT OF GEOGRAPHY</td></tr>
+<!-- BLOCK END: top bar -->
+
+<!-- BLOCK START: title block -->
+<tr><td bgcolor="#2b2b2b" align="center" style="font-family:Arial,Helvetica,sans-serif;padding:40px 24px 30px;color:#ffffff;">
+<div style="font-size:14px;letter-spacing:4px;color:#e8d9c0;">{{SMALL_LABEL_ABOVE_TITLE}}</div>
+<div style="font-size:52px;line-height:56px;font-weight:bold;margin:10px 0 4px;">GIS DAY(S)</div>
+<div style="font-size:22px;line-height:28px;">November 16&#8211;20, 2026</div>
+<div style="font-size:14px;color:#cccccc;padding-top:6px;">Texas A&amp;M University &#183; College Station &#183; Free</div>
+</td></tr>
+<!-- BLOCK END: title block -->
+
+<!-- BLOCK START: day strip -->
+<tr><td bgcolor="#500000"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+<td align="center" width="20%" style="font-family:Arial,Helvetica,sans-serif;padding:10px 2px;"><div style="font-size:16px;font-weight:bold;color:#ffffff;">MON</div><div style="font-size:11px;color:#e8d9c0;line-height:14px;">Workshops</div></td>
+<td align="center" width="20%" style="font-family:Arial,Helvetica,sans-serif;padding:10px 2px;"><div style="font-size:16px;font-weight:bold;color:#ffffff;">TUE</div><div style="font-size:11px;color:#e8d9c0;line-height:14px;">Students &amp; Keynote</div></td>
+<td align="center" width="20%" style="font-family:Arial,Helvetica,sans-serif;padding:10px 2px;"><div style="font-size:16px;font-weight:bold;color:#ffffff;">WED</div><div style="font-size:11px;color:#e8d9c0;line-height:14px;">Industry &amp; Career Fair</div></td>
+<td align="center" width="20%" style="font-family:Arial,Helvetica,sans-serif;padding:10px 2px;"><div style="font-size:16px;font-weight:bold;color:#ffffff;">THU</div><div style="font-size:11px;color:#e8d9c0;line-height:14px;">Showcases &amp; Careers</div></td>
+<td align="center" width="20%" style="font-family:Arial,Helvetica,sans-serif;padding:10px 2px;"><div style="font-size:16px;font-weight:bold;color:#ffffff;">FRI</div><div style="font-size:11px;color:#e8d9c0;line-height:14px;">Field Day</div></td>
+</tr></table></td></tr>
+<!-- BLOCK END: day strip -->
+
+<!-- BLOCK START: greeting and body text. Copy the second row for more paragraphs. -->
+<tr><td style="font-family:Arial,Helvetica,sans-serif;padding:28px 32px 16px;color:#3c3c3c;font-size:15px;line-height:24px;">{{GREETING}}</td></tr>
+<tr><td style="font-family:Arial,Helvetica,sans-serif;padding:0 32px 16px;color:#3c3c3c;font-size:15px;line-height:24px;">{{BODY_PARAGRAPH}}</td></tr>
+<!-- BLOCK END: greeting and body text -->
+
+<!-- BLOCK START: details box (for a confirmation: session, date, time, room, online link) -->
+<tr><td style="padding:0 32px 16px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f4f1ea" style="border-left:4px solid #500000;"><tr><td style="font-family:Arial,Helvetica,sans-serif;padding:14px 16px;color:#3c3c3c;font-size:14px;line-height:22px;">
+<div style="font-size:17px;font-weight:bold;color:#500000;padding-bottom:4px;line-height:21px;">{{SESSION_NAME}}</div>
+<b>When:</b> {{DAY_DATE_AND_TIME}}<br>
+<b>Where:</b> {{BUILDING_AND_ROOM}}<br>
+<b>Online:</b> {{ONLINE_LINK_OR_REMOVE_THIS_LINE}}
+</td></tr></table></td></tr>
+<!-- BLOCK END: details box -->
+
+<!-- BLOCK START: highlight cards -->
+<tr><td style="font-family:Arial,Helvetica,sans-serif;padding:0 32px 6px;color:#3c3c3c;font-size:15px;line-height:24px;"><b style="font-size:18px;color:#500000;">{{CARDS_HEADING}}</b></td></tr>
+<tr><td style="padding:0 26px 14px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+<!-- CARD START -->
+<td width="50%" valign="top" style="padding:6px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f4f1ea" style="border-top:4px solid #500000;"><tr><td style="font-family:Arial,Helvetica,sans-serif;padding:14px;color:#3c3c3c;">
+<div style="font-size:11px;letter-spacing:1px;color:#707070;font-weight:bold;">{{CARD_DAY_AND_TIME}}</div>
+<div style="font-size:17px;font-weight:bold;color:#500000;padding:4px 0;line-height:21px;">{{CARD_TITLE}}</div>
+<div style="font-size:13px;line-height:18px;">{{CARD_DESCRIPTION}}</div>
+</td></tr></table></td>
+<!-- CARD END -->
+<!-- CARD START -->
+<td width="50%" valign="top" style="padding:6px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f4f1ea" style="border-top:4px solid #500000;"><tr><td style="font-family:Arial,Helvetica,sans-serif;padding:14px;color:#3c3c3c;">
+<div style="font-size:11px;letter-spacing:1px;color:#707070;font-weight:bold;">{{CARD_DAY_AND_TIME}}</div>
+<div style="font-size:17px;font-weight:bold;color:#500000;padding:4px 0;line-height:21px;">{{CARD_TITLE}}</div>
+<div style="font-size:13px;line-height:18px;">{{CARD_DESCRIPTION}}</div>
+</td></tr></table></td>
+<!-- CARD END -->
+</tr></table></td></tr>
+<!-- BLOCK END: highlight cards -->
+
+<!-- BLOCK START: button -->
+<tr><td style="padding:10px 32px 24px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;"><tr><td bgcolor="#500000" style="border-radius:4px;"><a href="{{BUTTON_LINK}}" style="font-family:Arial,Helvetica,sans-serif;display:inline-block;padding:13px 28px;font-size:16px;font-weight:bold;color:#ffffff;text-decoration:none;border-radius:4px;">{{BUTTON_TEXT}}</a></td></tr></table></td></tr>
+<!-- BLOCK END: button -->
+
+<!-- BLOCK START: divider -->
+<tr><td style="padding:4px 32px 20px;"><div style="border-top:1px solid #dcd6c8;font-size:0;line-height:0;">&nbsp;</div></td></tr>
+<!-- BLOCK END: divider -->
+
+<!-- BLOCK START: sign-off -->
+<tr><td style="font-family:Arial,Helvetica,sans-serif;padding:8px 32px 28px;color:#3c3c3c;font-size:15px;line-height:24px;">{{CLOSING_LINE}}<br><br>{{SENDER_NAME}}<br><br>
+<span style="font-size:13px;line-height:20px;color:#707070;">{{SENDER_FULL_NAME_AND_TITLE}}<br>Department of Geography, Texas A&amp;M University<br><a href="mailto:{{SENDER_EMAIL}}" style="color:#500000;">{{SENDER_EMAIL}}</a></span>
+</td></tr>
+<!-- BLOCK END: sign-off -->
+
+<!-- BLOCK START: footer -->
+<tr><td bgcolor="#3c3c3c" align="center" style="font-family:Arial,Helvetica,sans-serif;padding:20px 24px;color:#dddddd;font-size:12px;line-height:19px;">Texas A&amp;M University&nbsp;&nbsp;|&nbsp;&nbsp;Department of Geography&nbsp;&nbsp;|&nbsp;&nbsp;College Station, TX 77843-3147<br>{{WHY_YOU_ARE_GETTING_THIS_EMAIL}}<br><a href="{{UNSUBSCRIBE_LINK_OR_REMOVE}}" style="color:#dddddd;">Unsubscribe</a></td></tr>
+<!-- BLOCK END: footer -->
+
+</table></td></tr></table>
+</body></html>
