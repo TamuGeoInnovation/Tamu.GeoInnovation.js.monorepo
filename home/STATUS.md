@@ -17,7 +17,7 @@ The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47
 - Nothing. Idle and listening.
 
 ## Finished
-- **Batch 62 (gisday: #2084)** (report `home/reports/2026-11-15-62.md`): branch ready, `fix/2084-tamu-tab-icon` on the fork at `ff92a3baf`, no PR. AggieMap's favicon moved to libs/assets and shared; each site's page names its icon. Red first; check exit 0. Screenshots to the lab. No questions.
+- **Batch 62 (gisday: #2084)** (report `home/reports/2026-11-15-62.md`): branch ready, `fix/2084-tamu-tab-icon` on the fork at `9685c2aa3`, no PR. AggieMap's favicon moved to libs/assets and shared, still served at /favicon.ico; each site's page names its icon. Red first; check exit 0. Screenshots to the lab. No questions.
 - **Batch 61 (gisday: #1840)** (report `home/reports/2026-11-15-61.md`): no branch, already fixed by #2652 and live since `prod-2026-11-11`; all three sites' previews checked live. Two questions (close #1840).
 - **Batch 60 (gisday: #3098)** (report `home/reports/2026-11-15-60.md`): branch ready, `fix/3098-shared-repeat-guard` on the fork at `68776b3fe`, no PR. Shared table, record then check; migration proven; check exit 0. kubernetes-config `feat/3098-session-details-sends` `4fd401d` **not pushed** (push refused here). No questions.
 - **#2574 brought up to date (batch 25, redone)** (report `home/reports/2026-11-15-25-update.md`): branch ready, `fix/2574-gisday-admin-users` on the fork at `9b4b91ec9`, no PR. Development merged; two new callers fixed; full check exit 0 (11 projects). One question.
