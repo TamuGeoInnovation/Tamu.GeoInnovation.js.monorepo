@@ -882,6 +882,23 @@ export class SpeakerEdit extends GuidIdentity {
   public reviewedBy: string | null;
 }
 
+/**
+ * One speaker sent one session's details (#3092, #3098): which session, which speaker, who sent it and when (`created`).
+ * Every copy of the API reads these, so a send repeated within `REPEAT_SEND_MINUTES` is caught whichever copy it reaches.
+ */
+@Entity({ name: 'session_details_sends' })
+export class SessionDetailsSend extends GuidIdentity {
+  @ManyToOne(() => Event, { nullable: false, onDelete: 'CASCADE' })
+  public session: Relation<Event>;
+
+  @ManyToOne(() => Speaker, { nullable: false, onDelete: 'CASCADE' })
+  public speaker: Relation<Speaker>;
+
+  /** The admin's account id, as the API's token gives it. */
+  @Column({ nullable: true })
+  public sentBy: string | null;
+}
+
 @Entity({
   name: 'checkins'
 })
@@ -1285,6 +1302,7 @@ export const GISDAY_ENTITIES = [
   SpeakerRole,
   SpeakerEditLink,
   SpeakerEdit,
+  SessionDetailsSend,
   SubmissionType,
   Sponsor,
   Tag,

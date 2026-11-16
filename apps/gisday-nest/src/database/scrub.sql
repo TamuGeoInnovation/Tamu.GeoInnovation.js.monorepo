@@ -39,6 +39,8 @@ INSERT @kept VALUES
   (N'rsvp_types', N'guid,type'),
   (N'seasons', N'guid,year,active'),
   (N'seasons_days', N'guid,date,seasonGuid'),
+  -- Each session details email sent (#3098): which session and speaker. Who sent it goes below, as every account id.
+  (N'session_details_sends', N'guid,sessionGuid,speakerGuid'),
   (N'speaker_roles', N'guid,name'),
   (N'speakers', N'guid,isActive,seasonGuid,organizationGuid,universityGuid,isOrganizer'),
   (N'sponsors', N'guid,name,website,sponsorshipLevel,seasonGuid,description'),
@@ -79,7 +81,8 @@ INSERT @scrubbed VALUES
   (N'user_info', N'accountGuid', @account),
   (N'user_rsvps', N'accountGuid', @account),
   (N'vgi_submissions', N'userGuid', @account),
-  (N'vgi_submission_validation_status', N'verifiedBy', @account);
+  (N'vgi_submission_validation_status', N'verifiedBy', @account),
+  (N'session_details_sends', N'sentBy', @account);
 
 -- Every real person's full name in the database: speakers, contacts, professors and competition entrants. Text that is
 -- otherwise kept is replaced when it holds one of them, or an email address.

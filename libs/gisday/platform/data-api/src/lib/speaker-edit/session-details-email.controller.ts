@@ -18,7 +18,8 @@ export class SessionDetailsEmailController {
   @UseGuards(JwtGuard, PermissionsGuard)
   @Post('details')
   public send(@Body() body: { event: string } & Partial<SessionDetailsEmail>, @Request() req) {
-    return this.service.send(body?.event, siteHost(req?.headers), emailOf(body));
+    // Who sent it is recorded with the send (#3098).
+    return this.service.send(body?.event, siteHost(req?.headers), emailOf(body), req?.user?.sub);
   }
 
   /** The email `details` would send, prefilled from the session, for the admin to read and edit first. Nothing is sent. */

@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { MoreThan, Repository } from 'typeorm';
 
 import {
   SESSION_DETAILS_EMAIL_KIND,
@@ -13,7 +13,7 @@ import {
   sessionDetailsEmailValues
 } from '@tamu-gisc/gisday/common';
 
-import { Event, Speaker } from '../entities/all.entity';
+import { Event, SessionDetailsSend, Speaker } from '../entities/all.entity';
 import { ContactService } from '../contact/contact.service';
 import { senderAs } from '../_base/site-of-request';
 import { EMAIL_LANES, inParallel } from '../_base/in-parallel';
@@ -40,17 +40,14 @@ export interface SessionDetailsEmailPreview extends ProfileEmailPreview {
  * edited first in the window the profile email uses, sent several at a time (#3067), and never twice to one speaker for
  * the same session within `REPEAT_SEND_MINUTES` (#3065).
  *
- * The repeat guard is kept by this API process, as nothing else records these emails: a repeat that reaches the same
- * process is caught, one that reaches another pod is not. The profile email's guard reads its links table, which every
- * pod shares.
+ * Each send is recorded in `session_details_sends` (#3098), which every copy of the API shares, so a repeat is caught
+ * whichever copy it reaches. Until then the guard was kept in each copy's memory, and production runs two.
  */
 @Injectable()
 export class SessionDetailsEmailService {
-  /** When each speaker was last sent each session's details, by `<session>:<speaker>`, in milliseconds. */
-  private readonly lastSent = new Map<string, number>();
-
   constructor(
     @InjectRepository(Event) private readonly events: Repository<Event>,
+    @InjectRepository(SessionDetailsSend) private readonly sends: Repository<SessionDetailsSend>,
     private readonly contact: ContactService
   ) {}
 
@@ -92,9 +89,9 @@ export class SessionDetailsEmailService {
   /**
    * Emails each of the session's speakers its details, in the subject and text the admin approved, or as prefilled when
    * none is given. A speaker with no address, or sent this session's details in the last `REPEAT_SEND_MINUTES`, is
-   * skipped and named with why.
+   * skipped and named with why. `sentBy` is the admin's account id, recorded with each send (#3098).
    */
-  public async send(eventGuid: string, host?: string, email?: SessionDetailsEmail): Promise<SendResult> {
+  public async send(eventGuid: string, host?: string, email?: SessionDetailsEmail, sentBy?: string): Promise<SendResult> {
     const problem = email === undefined ? null : sessionDetailsEmailProblem(email);
 
     if (problem) {
@@ -117,20 +114,26 @@ export class SessionDetailsEmailService {
     const parts = await inParallel(reachable, EMAIL_LANES, async (speaker) => {
       const part: SendResult = { sent: [], skipped: [] };
       const name = fullName(speaker);
-      const key = `${session.guid}:${speaker.guid}`;
-      const now = Date.now();
 
-      // Recorded before the email goes, with nothing awaited between the check and the record, so two sends racing in
-      // this process skip each other's speakers.
-      if (now - (this.lastSent.get(key) ?? -Infinity) <= REPEAT_SEND_MINUTES * 60 * 1000) {
+      // Recorded first, then checked (#3098): this send stands only if it is the earliest for this session and speaker
+      // in the last `REPEAT_SEND_MINUTES`. Two sends racing, in one copy of the API or in two, each record theirs and
+      // then agree which came first, so exactly one goes.
+      const record = await this.sends.save(
+        this.sends.create({ session: { guid: session.guid }, speaker: { guid: speaker.guid }, sentBy: sentBy ?? null })
+      );
+      const since = new Date(Date.now() - REPEAT_SEND_MINUTES * 60 * 1000);
+      const recent = await this.sends.find({
+        where: { session: { guid: session.guid }, speaker: { guid: speaker.guid }, created: MoreThan(since) }
+      });
+
+      if (firstOf([...recent, record]).guid !== record.guid) {
+        await this.sends.delete({ guid: record.guid });
         part.skipped.push({
           name,
           reason: `already emailed this session's details in the last ${REPEAT_SEND_MINUTES} minutes`
         });
         return part;
       }
-
-      this.lastSent.set(key, now);
 
       try {
         const { subject, text } = fillProfileEmail(approved, sessionDetailsEmailValues(speaker, site));
@@ -150,7 +153,7 @@ export class SessionDetailsEmailService {
         part.sent.push(name);
       } catch (err) {
         // Not sent, so not a repeat: the admin may try again at once.
-        this.lastSent.delete(key);
+        await this.sends.delete({ guid: record.guid });
         Logger.error(
           `Could not email session ${session.guid}'s details to speaker ${speaker.guid}: ${err.message}`,
           'SessionDetailsEmailService'
@@ -163,7 +166,6 @@ export class SessionDetailsEmailService {
 
     result.sent.push(...parts.flatMap((p) => p.sent));
     result.skipped.push(...parts.flatMap((p) => p.skipped));
-    this.forgetOld();
 
     return result;
   }
@@ -185,17 +187,13 @@ export class SessionDetailsEmailService {
 
     return session;
   }
+}
 
-  /** Drops records older than the guard, so the map holds only the last few minutes' sends. */
-  private forgetOld() {
-    const since = Date.now() - REPEAT_SEND_MINUTES * 60 * 1000;
-
-    for (const [key, at] of this.lastSent) {
-      if (at < since) {
-        this.lastSent.delete(key);
-      }
-    }
-  }
+/** The earliest of some sends: by when, then by guid, so every copy of the API picks the same one. */
+function firstOf(sends: Array<Pick<SessionDetailsSend, 'guid' | 'created'>>): Pick<SessionDetailsSend, 'guid' | 'created'> {
+  return [...sends].sort(
+    (a, b) => new Date(a.created).getTime() - new Date(b.created).getTime() || a.guid.localeCompare(b.guid)
+  )[0];
 }
 
 /** The session's speakers with an address to email, and those with none. */
