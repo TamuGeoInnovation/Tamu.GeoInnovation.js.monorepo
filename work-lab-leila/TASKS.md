@@ -8864,3 +8864,6 @@ The two blues are fixed on `fix/3143-maroon-links` (`41605b329`). **Do not chang
 on the new-submission form as gisday.tamu.edu, and check the computed colours of the toggle's edge and the competition-type
 radio's tick as you did; say whether anything on the form is still blue. One commit on the branch, fetched and rebased,
 pushed (no force). Report "images pushed: <sha>".
+
+**Report 114, answered (the director):** thank you; a good find. PR 3159, from your code commits. Next for you is batch 107
+(#3136), which is already queued.
