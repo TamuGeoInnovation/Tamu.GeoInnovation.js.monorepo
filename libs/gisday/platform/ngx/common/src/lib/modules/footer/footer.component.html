@@ -46,11 +46,15 @@
       <div class="column3">
         <p class="footer-column-title">My Account</p>
         <ul>
-          <li><a [routerLink]="['/sessions']">Registered Sessions</a></li>
-          @if ('classes' | siteHas) {
-          <li><a [routerLink]="['/me/classes']">My Classes</a></li>
+          <!-- The visitor's own sessions, their check-ins (the maintainer, 16 November 2026): "Registered Sessions" went to the
+          public list of every session, and there is no page of a visitor's registrations. Only where check-ins are on. -->
+          @if ('checkIns' | siteHas) {
+          <li><a [routerLink]="['/account/checkins']">My Check-ins</a></li>
+          } @if ('classes' | siteHas) {
+          <!-- The account's own pages (#2024): /me and /me/classes were never routes, so both were "not found". -->
+          <li><a [routerLink]="['/account/classes']">My Classes</a></li>
           }
-          <li><a [routerLink]="['/me']">Profile Details</a></li>
+          <li><a [routerLink]="['/account/details']">Profile Details</a></li>
         </ul>
       </div>
       <div class="column3">
