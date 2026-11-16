@@ -8580,3 +8580,13 @@ leave it): a shared `DashboardScrollComponent` rail, and "Sub&shy;missions". **D
 `docs/screenshots/2894-vgi-dashboard/after-feature-type-open.png` (and the main table's image if "Submissions" changed), as
 in batch 95; say whether every heading is whole and the rail shows. One commit, fetched and rebased, pushed (no force).
 Report "images pushed: <sha>".
+
+## Batch 99 (gisday: #3116's screenshots, High; 15 November 2026, about 9:45 PM Central) - **next, after the batch you are in**
+
+[#3116](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3116): Admin, Users' search spun for
+ever on production. Branch `fix/3116-user-search` on the fork (latest commit), no `.pr-body.md`. **Do not change the
+code.** As the local test admin, 1280 px, after only: the search box with "zh" (the 3-letter hint) and with a name from
+your local tenant (its result). A before is optional: locally the old search may answer, as the local tenant is not
+Auth0's v3 behaviour; if it spins, capture it. To `docs/screenshots/3116-user-search/`, with an image table in
+`docs/releases/unreleased/3116-user-search.md`. One commit, fetched and rebased, pushed (no force). Report "images
+pushed: <sha>".
