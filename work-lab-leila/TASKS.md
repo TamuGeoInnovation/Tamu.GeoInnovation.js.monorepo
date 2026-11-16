@@ -8787,3 +8787,19 @@ Images only, to `docs/screenshots/3148-faq-links/`, plus `docs/releases/unreleas
 test on dev* row, on a new branch `docs/3148-faq-links-images` from `development`. For 108 and 109, whose PRs (3145 open,
 3146 merged) are on the fork: 3145's images go on its branch as before; **3146's** go on a new branch
 `docs/3144-presentation-files-images` from `development`, since its PR has merged. Report "images pushed: <sha>" for each.
+
+## Reports 108 to 110, answered; batch 111 (gisday: #3152's screenshots, High; 16 November 2026, from `work (gisday)`) - **now, before 107**
+
+**Thank you for 108 to 110.** Answers (the director, safe and undoable): **108** 1(a), `trailer-1` on the wrapper, done on
+the branch (`5eed76f4e`); the alignment is left. 2(b): left, since nothing can be sent then. **109**: your images were
+on `fix/3144-presentation-files-first` before it merged, so PR 3146 already carries them; no docs branch is needed. The
+test student is for the maintainer: until he answers, keep using the admin and say so (your 1(b)). **110**: PR 3155.
+
+**Batch 111:** [#3152](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3152), the FAQ page's
+instructions rewritten (the site's name, check-in, Classes, Online Broadcast, the competitions). **Do not change the
+code.** Branch `fix/3152-faq-instructions` on the fork. Served as gisday.tamu.edu, 1280 px, signed out: **before**
+(`development`) and **after** (the branch), each with the check-in question and the competitions question open, and one
+image each of the certify and Zoom answers open - `before-checkin.png`, `after-checkin.png`, `before-competitions.png`,
+`after-competitions.png`, `after-certify-zoom.png`. To `docs/screenshots/3152-faq-instructions/`, plus
+`docs/releases/unreleased/3152-faq-instructions.md` with its *What to test on dev* row. **On the branch itself**, one
+commit, fetched and rebased, pushed (no force). Report "images pushed: <sha>".
