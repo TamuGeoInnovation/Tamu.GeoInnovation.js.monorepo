@@ -42,7 +42,8 @@ describe('DesignFormComponent, the scoring window', () => {
       imports: [DesignFormComponent],
       providers: [
         { provide: FormService, useValue: {} },
-        { provide: HttpClient, useValue: { get: jest.fn() } }
+        { provide: HttpClient, useValue: { get: jest.fn() } },
+        { provide: NotificationService, useValue: { toast: jest.fn() } }
       ]
     })
       .overrideComponent(DesignFormComponent, { set: { template: '' } })
