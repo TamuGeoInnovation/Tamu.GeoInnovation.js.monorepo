@@ -8803,3 +8803,14 @@ image each of the certify and Zoom answers open - `before-checkin.png`, `after-c
 `after-competitions.png`, `after-certify-zoom.png`. To `docs/screenshots/3152-faq-instructions/`, plus
 `docs/releases/unreleased/3152-faq-instructions.md` with its *What to test on dev* row. **On the branch itself**, one
 commit, fetched and rebased, pushed (no force). Report "images pushed: <sha>".
+
+## Batch 112 (gisday: #3154's screenshots, Medium; 16 November 2026, from `work (gisday)`) - **after 111, before 107**
+
+[#3154](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3154): a visitor already signed in who
+follows the FAQ's "create an account" is told so, with Continue to the site and Log out. **Do not change the code.**
+Branch `feat/3154-already-signed-in` on the fork. Served as gisday.tamu.edu, 1280 px, **signed in** as the test admin
+(one page, one sign-in): the FAQ's first question open, "create an account" followed - **before** (`development`): the
+FAQ page coming back, `before-signed-in.png`; **after** (the branch): the "You're already signed in" page,
+`after-signed-in.png`. **Do not click Log out** unless it is the run's last step; if you do, say so. To
+`docs/screenshots/3154-already-signed-in/`, plus `docs/releases/unreleased/3154-already-signed-in.md` with its *What to
+test on dev* row, on the branch. Report "images pushed: <sha>".
