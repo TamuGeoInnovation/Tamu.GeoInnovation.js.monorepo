@@ -214,10 +214,19 @@ describe('siteHead', () => {
     const icon = GISDAY_SITES.tamu.favicon;
 
     expect(siteHead(GISDAY_SITES.tamu)).toContain(`<link rel="icon" href="${icon}" />`);
-    expect(icon).toBe('assets/images/logo/TAM-favicon.ico');
+    expect(icon).toBe('assets/images/logo/favicon.ico');
     expect(existsSync(join(root, 'libs', icon))).toBe(true);
-    expect(readFileSync(join(root, 'apps/aggiemap-angular/src/index.html'), 'utf8')).toContain(`href="${icon}"`);
     expect(existsSync(join(root, 'apps/aggiemap-angular/src/favicon.ico'))).toBe(false);
+  });
+
+  // AggieMap serves the same file at its root, where browsers, bookmarks and old tabs ask for /favicon.ico by convention.
+  it('has AggieMap serve that one copy as /favicon.ico, and name it there', () => {
+    const root = join(__dirname, '../../../../../../../..');
+    const project = JSON.parse(readFileSync(join(root, 'apps/aggiemap-angular/project.json'), 'utf8'));
+    const assets: Array<string | { glob: string; input: string; output: string }> = project.targets.build.options.assets;
+
+    expect(assets).toContainEqual({ glob: 'favicon.ico', input: './libs/assets/images/logo/', output: '/' });
+    expect(readFileSync(join(root, 'apps/aggiemap-angular/src/index.html'), 'utf8')).toContain('href="favicon.ico"');
   });
 
   it('refuses a page without the markers rather than leaving it as it was', () => {

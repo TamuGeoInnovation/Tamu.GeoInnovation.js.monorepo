@@ -129,7 +129,7 @@ export const GISDAY_SITES = {
     banner: 'assets/images/logo/TAM-LogoBox.svg',
     owner: 'GeoInnovation Service Center',
     // AggieMap's own tab icon, which fills the tab; the box logo's SVG has a wide margin and looked smaller (#2084).
-    favicon: 'assets/images/logo/TAM-favicon.ico',
+    favicon: 'assets/images/logo/favicon.ico',
     address: 'https://gisday.tamu.edu',
     description:
       'Three days of workshops and programs celebrating geospatial technology dedicated to students and faculty as they educate, innovate, and collaborate.',
