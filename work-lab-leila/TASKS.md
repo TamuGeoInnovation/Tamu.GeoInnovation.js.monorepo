@@ -8905,3 +8905,38 @@ the footer's My Account column `before-footer.png`, and Profile Details followed
 **after** (the branch) the column `after-footer.png`, and each of the three followed, one image each. To
 `docs/screenshots/2024-footer-links/`, plus `docs/releases/unreleased/2024-footer-links.md` with its *What to test on dev*
 row, on the branch. Report "images pushed: <sha>".
+
+## Batch 118 (gisday: #3167's screenshots, Medium; 16 November 2026, from `work (gisday)`) - **now**
+
+[#3167](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3167): every email the site sends a
+speaker is now recorded, and the speaker email window ("Who gets it") says under each speaker whether and when they were
+sent that email. It also offers **Tick only those not sent it yet**, **List those not sent it yet first**, and a list of
+every email each speaker was sent. **Do not change the code.** Branch `feat/3167-email-log` on the fork (`1d55aa869`). It
+has a migration, `AddSpeakerEmailSends`: run `scripts/gisday-local.sh migrate run` before the after images.
+
+- **Never send a real email.** Make a made-up session with three made-up speakers on the local stack, with addresses
+  at `example.com`. To show someone as already sent, insert rows into the local `speaker_email_sends` by hand (kind
+  `session-details`, that session's guid as `eventGuid`). Don't use Send.
+- As gisday.tamu.edu, 1280 px, signed in as the test admin. **Before** (`development`): that session's Email these speakers
+  → Session details, the Who gets it part, `before-who-gets-it.png`. **After** (the branch): the same, with one speaker
+  sent twice and one sent a profile email only, `after-who-gets-it.png`. Then after **Tick only those not sent it yet**,
+  `after-tick-not-sent.png`; and with **Every email each was sent** opened, `after-history.png`.
+- To `docs/screenshots/3167-email-sends/`, plus `docs/releases/unreleased/3167-email-sends.md` with its *What to test on
+  dev* row (dev link: a session's Email these speakers), on the branch. Report "images pushed: <sha>".
+
+## Batch 119 (gisday: #3147's screenshots, Low; 16 November 2026, from `work (gisday)`) - **after 118**
+
+[#3147](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3147): a session can be marked **No
+slides for this session**. Then its Email these speakers menu has no Ask for slides, and its speakers' presenter pages say
+"No slides are needed for this session." with no upload. **Do not change the code.** Branch `feat/3147-no-slides` on the
+fork (`c0e7a42d3`). It has a migration, `AddEventNoSlides`: run `migrate run` before the after images. Made-up session and
+speakers only.
+
+- **Before** (`development`): the session form's checkboxes, `before-form.png`; its Email these speakers menu open,
+  `before-menu.png`.
+- **After** (the branch), with the box ticked: the checkboxes, `after-form.png`; the menu open, `after-menu.png`. And one
+  speaker's presenter page through their edit link (make the link by hand in the local db, or with the profile email to an
+  `example.com` address only if the local stack does not really send), showing that session's "No slides are needed",
+  `after-presenter-page.png`.
+- To `docs/screenshots/3147-no-slides/`, plus `docs/releases/unreleased/3147-no-slides.md` with its *What to test on dev*
+  row, on the branch. Report "images pushed: <sha>".
