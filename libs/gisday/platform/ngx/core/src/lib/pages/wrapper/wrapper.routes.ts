@@ -3,7 +3,13 @@ import { Routes } from '@angular/router';
 import { AuthGuard } from '@auth0/auth0-angular';
 
 import { RoleGuard } from '@tamu-gisc/common/ngx/auth';
-import { GISDayRoles, siteFeatureGuard, startSignIn } from '@tamu-gisc/gisday/platform/ngx/common';
+import {
+  ALREADY_SIGNED_IN_PATH,
+  GISDayRoles,
+  logOut,
+  siteFeatureGuard,
+  startSignIn
+} from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { WrapperComponent } from './wrapper.component';
 
@@ -76,8 +82,22 @@ export const wrapperRoutes: Routes = [
       // `/signup` had no route, so it was not found, and `/login` drew an empty page. One Auth0 page does both.
       { path: 'login', canActivate: [startSignIn], children: [] },
       { path: 'signup', canActivate: [startSignIn], children: [] },
-      // Renders nothing inside the wrapper: it used to lazy-load an empty NgModule with no routes of its own (#1569).
-      { path: 'logout', children: [] },
+      {
+        // Where `/login` and `/signup` send a visitor already signed in (#3154): Auth0 would have sent them straight back,
+        // and the page they were on coming back looked like the link did nothing.
+        path: ALREADY_SIGNED_IN_PATH,
+        data: {
+          heading: "You're already signed in",
+          message: 'You are signed in to this site already, so there is nothing more to sign in or sign up for.',
+          links: [
+            { text: 'Continue to the site', to: '/' },
+            { text: 'Log out', to: '/logout' }
+          ]
+        },
+        loadChildren: () => import('../not-authed/not-authed.routes').then((m) => m.notAuthedRoutes)
+      },
+      // Logs out, as the header's Logout does (#3154); it used to render nothing (#1569).
+      { path: 'logout', canActivate: [logOut], children: [] },
       {
         path: 'forbidden',
         loadChildren: () => import('../not-authed/not-authed.routes').then((m) => m.notAuthedRoutes)

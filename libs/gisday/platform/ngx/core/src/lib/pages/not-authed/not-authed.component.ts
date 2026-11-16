@@ -3,8 +3,8 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 
 /**
  * A page that says the visitor cannot see what they asked for: by default, that they are not signed in or lack the
- * rights (`/forbidden`). A route can give its own words and links in `data` (`message`, `links`), as the catch-all does
- * for an address the site does not know (#1765).
+ * rights (`/forbidden`). A route can give its own words and links in `data` (`heading`, `message`, `links`), as the
+ * catch-all does for an address the site does not know (#1765), and `/signed-in` for a visitor already signed in (#3154).
  */
 @Component({
   selector: 'tamu-gisc-not-authed',
@@ -15,6 +15,9 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 })
 export class NotAuthedComponent {
   private readonly data = inject(ActivatedRoute).snapshot.data;
+
+  /** The page's heading: "Sorry" unless the route gives its own, as the already-signed-in page does (#3154). */
+  public readonly heading: string = this.data['heading'] ?? 'Sorry';
 
   public readonly message: string =
     this.data['message'] ?? 'Either you have not logged in or you lack sufficient rights to view this page.';
