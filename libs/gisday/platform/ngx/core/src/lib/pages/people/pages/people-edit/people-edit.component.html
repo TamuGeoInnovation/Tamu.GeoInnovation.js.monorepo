@@ -96,7 +96,7 @@
                   }
                   <tamu-gisc-image-preview #preview [src]="photoSrc()" [alt]="photoPreview() ? 'The photo you chose' : 'Your current photo'" fallback="person" fallbackLabel="No photo yet"></tamu-gisc-image-preview>
                 </div>
-                <tamu-gisc-file class="button snug" accept="image/jpeg,image/png" (fileSelected)="choosePhoto($event)">Choose a photo</tamu-gisc-file>
+                <tamu-gisc-file class="button snug" [accept]="photoPicker.accept" (fileSelected)="choosePhoto($event)">Choose a photo</tamu-gisc-file>
               </div>
               @if (p.pending?.photo && !photo()) {
               <p class="form-input-description">You already sent a new photo; it is waiting for review.</p>

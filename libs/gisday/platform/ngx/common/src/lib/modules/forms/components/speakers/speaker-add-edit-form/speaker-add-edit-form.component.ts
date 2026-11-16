@@ -15,6 +15,7 @@ import {
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { formToFormData } from '../../../../../utils/form-to-form-data';
+import { UploadImagePicker } from '../../../../../utils/upload-image-picker';
 import { classBannerSpeaker } from '../../../../../utils/speakers';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { FileComponent } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -70,6 +71,9 @@ export class SpeakerAddEditFormComponent implements OnInit {
   public bannerSpeaker$: Observable<Partial<Speaker>>;
 
   public form: UntypedFormGroup;
+
+  /** The photo picker, on the shared upload rule (#3074). */
+  public readonly photoPicker = new UploadImagePicker('The photo');
 
   public ngOnInit() {
     this.form = this.fb.group({
