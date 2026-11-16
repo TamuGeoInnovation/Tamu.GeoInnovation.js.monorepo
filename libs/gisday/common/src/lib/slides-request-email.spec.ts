@@ -52,6 +52,16 @@ describe('The Ask for slides email (#3113)', () => {
     expect(text).toContain('{link expires}');
   });
 
+  // #3126: in Texas A&M's design the details box says when and where, so the text does not say them again.
+  it('leaves when and where to the details box when the email is in the design, and keeps the upload link', () => {
+    const text = slidesRequestEmailTemplate(session, true);
+
+    expect(text).not.toContain('**When:**');
+    expect(text).not.toContain('**Where:**');
+    expect(text).toContain('**Made-up hybrid session**');
+    expect(text).toContain('{edit link}');
+  });
+
   it('says what may be uploaded in the upload rule’s own words, not typed', () => {
     expect(SESSION_FILES_RULE).toContain(megabytes(SUBMISSION_FILE_RULES.maxBytes));
     expect(SESSION_FILES_RULE).toContain(SESSION_FILES_LIMIT);
