@@ -59,7 +59,7 @@ export class SubmissionFilesComponent implements OnInit {
   public readonly source = input<FilesSource | null>(null);
   public readonly editable = input(false);
   /** How many files the list holds. At 1, the picker replaces the file there. */
-  public readonly max = input(SUBMISSION_FILE_RULES.maxFiles);
+  public readonly max = input<number>(SUBMISSION_FILE_RULES.maxFiles);
   public readonly pickLabel = input('Attach a file');
   public readonly emptyLabel = input('No files attached yet.');
 
