@@ -8770,3 +8770,20 @@ test student, served as gisday.tamu.edu, 1280 px, Account, Submissions, open it,
 
 To `docs/screenshots/3144-presentation-files-first/`, plus `docs/releases/unreleased/3144-presentation-files-first.md`
 with its *What to test on dev* row. One commit, fetched and rebased, pushed (no force). Report "images pushed: <sha>".
+
+## Batch 110 (gisday: #3148's screenshots, URGENT; 16 November 2026, from `work (gisday)`) - **after 108 and 109, before 107**
+
+[#3148](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3148): the FAQ page's sign-up and login
+links led to "not found" (`/signup`) and an empty page (`/login`), and the classes link to `/account/my-classes`. PR 3151
+**has merged** (`3cb0c6d`); PRs 3145 and 3146 still lack their images too (batches 108, 109). **Do not change the code.**
+Served as gisday.tamu.edu, 1280 px, not signed in:
+
+- **before** (`24ae2e2`, development before the fix): the FAQ page's "sign up" link followed - `before-signup.png` (the
+  not-found page); a "log in" link followed - `before-login.png` (the empty page);
+- **after** (`3cb0c6d`): a "sign up" link followed - `after-signup.png` (Auth0's sign-in page on the dev tenant; **do not
+  sign in or accept anything**); the classes link, signed out - `after-classes.png` (wherever it lands, say what).
+
+Images only, to `docs/screenshots/3148-faq-links/`, plus `docs/releases/unreleased/3148-faq-links.md` with its *What to
+test on dev* row, on a new branch `docs/3148-faq-links-images` from `development`. For 108 and 109, whose PRs (3145 open,
+3146 merged) are on the fork: 3145's images go on its branch as before; **3146's** go on a new branch
+`docs/3144-presentation-files-images` from `development`, since its PR has merged. Report "images pushed: <sha>" for each.
