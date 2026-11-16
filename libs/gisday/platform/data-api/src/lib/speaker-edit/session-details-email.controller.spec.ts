@@ -78,10 +78,11 @@ describe('SessionDetailsEmailController', () => {
 
     expect(response.status).toBe(201);
     expect(await response.json()).toEqual({ sent: ['Ana Ruiz'], skipped: [] });
-    expect(service.send).toHaveBeenCalledWith('e-1', 'gisday.tamu.edu', { subject: 'S', template: 'T' });
+    // Who sent it is recorded with the send (#3098).
+    expect(service.send).toHaveBeenCalledWith('e-1', 'gisday.tamu.edu', { subject: 'S', template: 'T' }, 'admin-1');
 
     await post('details', { event: 'e-1' });
 
-    expect(service.send).toHaveBeenLastCalledWith('e-1', 'gisday.tamu.edu', undefined);
+    expect(service.send).toHaveBeenLastCalledWith('e-1', 'gisday.tamu.edu', undefined, 'admin-1');
   });
 });

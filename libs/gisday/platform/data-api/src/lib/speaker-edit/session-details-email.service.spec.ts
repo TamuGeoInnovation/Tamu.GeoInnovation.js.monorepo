@@ -10,6 +10,39 @@ import { SessionDetailsEmailService } from './session-details-email.service';
  * profile email uses, sent several at a time, and never twice to the same speaker for the same session within
  * `REPEAT_SEND_MINUTES` (#3065).
  */
+/**
+ * The table of sends (#3098), as every copy of the API shares it: each copy's service is given the same one. A row has
+ * the session, the speaker, who sent it and when.
+ */
+function sendsTable() {
+  const rows: Array<{ guid: string; session: { guid: string }; speaker: { guid: string }; sentBy: string | null; created: Date }> = [];
+  let next = 0;
+
+  return {
+    rows,
+    create: (row: object) => row,
+    save: jest.fn(async (row: { session: { guid: string }; speaker: { guid: string }; sentBy: string | null }) => {
+      const saved = { ...row, guid: `send-${String(++next).padStart(6, '0')}`, created: new Date(Date.now()) };
+
+      rows.push(saved);
+
+      return saved;
+    }),
+    find: jest.fn(async ({ where }) =>
+      rows.filter(
+        (r) => r.session.guid === where.session.guid && r.speaker.guid === where.speaker.guid && r.created > where.created._value
+      )
+    ),
+    delete: jest.fn(async ({ guid }) => {
+      const at = rows.findIndex((r) => r.guid === guid);
+
+      if (at >= 0) {
+        rows.splice(at, 1);
+      }
+    })
+  };
+}
+
 describe('SessionDetailsEmailService', () => {
   const ana = { guid: 'sp-ana', firstName: 'Ana', lastName: 'Ruiz', email: ' ana@example.edu ' };
   const cy = { guid: 'sp-cy', firstName: 'Cy', lastName: 'Diaz', email: 'cy@example.edu' };
@@ -29,6 +62,8 @@ describe('SessionDetailsEmailService', () => {
 
   let sent: Array<{ to: string; subject: string; text: string; html: string; from: string }>;
   let events: { findOne: jest.Mock };
+  let sends: ReturnType<typeof sendsTable>;
+  let contact: { sendMessage: jest.Mock };
   let service: SessionDetailsEmailService;
   let inFlight: number;
   let mostInFlight: number;
@@ -38,18 +73,17 @@ describe('SessionDetailsEmailService', () => {
     inFlight = 0;
     mostInFlight = 0;
     events = { findOne: jest.fn(async ({ where }) => (where.guid === session.guid ? session : null)) };
-    service = new SessionDetailsEmailService(
-      events as never,
-      {
-        sendMessage: jest.fn(async (m) => {
-          inFlight++;
-          mostInFlight = Math.max(mostInFlight, inFlight);
-          await new Promise((resolve) => setTimeout(resolve, 5));
-          inFlight--;
-          sent.push(m);
-        })
-      } as never
-    );
+    sends = sendsTable();
+    contact = {
+      sendMessage: jest.fn(async (m) => {
+        inFlight++;
+        mostInFlight = Math.max(mostInFlight, inFlight);
+        await new Promise((resolve) => setTimeout(resolve, 5));
+        inFlight--;
+        sent.push(m);
+      })
+    };
+    service = new SessionDetailsEmailService(events as never, sends as never, contact as never);
   });
 
   it("previews the session's email for its speakers with an address, and names those it cannot reach; nothing is sent", async () => {
@@ -137,6 +171,34 @@ describe('SessionDetailsEmailService', () => {
     expect(sent).toHaveLength(2);
   });
 
+  /**
+   * #3098: production runs two copies of the API. A guard kept in one copy's memory let a repeat that reached the other
+   * copy email everyone again; the sends are now recorded in a table both copies share.
+   */
+  it('emails no one twice when the repeat reaches the other copy of the API (#3098)', async () => {
+    const otherCopy = new SessionDetailsEmailService(events as never, sends as never, contact as never);
+
+    const [first, again] = await Promise.all([
+      service.send('e-1', 'gisday.tamu.edu', undefined, 'auth0|admin'),
+      otherCopy.send('e-1', 'gisday.tamu.edu', undefined, 'auth0|admin')
+    ]);
+
+    expect(sent).toHaveLength(2);
+    expect([...first.sent, ...again.sent].sort()).toEqual(['Ana Ruiz', 'Cy Diaz']);
+    expect((await otherCopy.send('e-1', 'gisday.tamu.edu')).sent).toEqual([]);
+    expect(sent).toHaveLength(2);
+  });
+
+  it('records each send: the session, the speaker, who sent it and when (#3098)', async () => {
+    await service.send('e-1', 'gisday.tamu.edu', undefined, 'auth0|admin');
+
+    expect(sends.rows.map((r) => [r.session.guid, r.speaker.guid, r.sentBy]).sort()).toEqual([
+      ['e-1', 'sp-ana', 'auth0|admin'],
+      ['e-1', 'sp-cy', 'auth0|admin']
+    ]);
+    expect(sends.rows.every((r) => r.created instanceof Date)).toBe(true);
+  });
+
   it(`emails them again after ${REPEAT_SEND_MINUTES} minutes`, async () => {
     const now = jest.spyOn(Date, 'now');
 
@@ -151,8 +213,8 @@ describe('SessionDetailsEmailService', () => {
   });
 
   it('lets a speaker whose email failed be sent again at once, and says it failed', async () => {
-    const contact = { sendMessage: jest.fn().mockRejectedValueOnce(new Error('mailroom down')).mockResolvedValue({}) };
-    const failing = new SessionDetailsEmailService(events as never, contact as never);
+    const failingContact = { sendMessage: jest.fn().mockRejectedValueOnce(new Error('mailroom down')).mockResolvedValue({}) };
+    const failing = new SessionDetailsEmailService(events as never, sendsTable() as never, failingContact as never);
 
     events.findOne.mockResolvedValue({ ...session, speakers: [ana] });
 
