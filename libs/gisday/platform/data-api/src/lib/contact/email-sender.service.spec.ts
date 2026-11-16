@@ -21,7 +21,7 @@ describe('EmailSenderService', () => {
       previous[name] = process.env[name];
     }
 
-    process.env.MAILROOM_FROM = 'Texas A&M GIS Day <geoservices@tamu.edu>';
+    process.env.MAILROOM_FROM = 'Texas A&M GIS Day <gisday.example@tamu.edu>';
     process.env.MAILROOM_TO = 'gisday.inbox@example.com';
     process.env.MAILROOM_SENDERS = 'gisday@tamu.edu, gisday@gmail.com';
     delete process.env.GISDAY_SITE;
@@ -55,9 +55,9 @@ describe('EmailSenderService', () => {
       },
       {
         kind: 'site',
-        address: 'geoservices@tamu.edu',
-        label: "The site's address (geoservices@tamu.edu)",
-        from: '"Texas A&M GIS Day" <geoservices@tamu.edu>',
+        address: 'gisday.example@tamu.edu',
+        label: "The site's address (gisday.example@tamu.edu)",
+        from: '"Texas A&M GIS Day" <gisday.example@tamu.edu>',
         replyTo: 'gisday.inbox@example.com'
       },
       {
@@ -79,11 +79,11 @@ describe('EmailSenderService', () => {
   });
 
   it("accepts the site's MAILROOM_FROM, as every email was sent before", async () => {
-    await expect(service.resolve(admin, 'geoservices@tamu.edu', 'gisday.tamu.edu')).resolves.toEqual(
+    await expect(service.resolve(admin, 'gisday.example@tamu.edu', 'gisday.tamu.edu')).resolves.toEqual(
       siteSender('Texas A&M GIS Day')
     );
     expect(siteSender('Texas A&M GIS Day')).toEqual({
-      from: '"Texas A&M GIS Day" <geoservices@tamu.edu>',
+      from: '"Texas A&M GIS Day" <gisday.example@tamu.edu>',
       replyTo: 'gisday.inbox@example.com'
     });
   });

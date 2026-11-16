@@ -59,7 +59,7 @@ describe('Send as, on every route that uses the email composer', () => {
       previous[name] = process.env[name];
     }
 
-    process.env.MAILROOM_FROM = 'Texas A&M GIS Day <geoservices@tamu.edu>';
+    process.env.MAILROOM_FROM = 'Texas A&M GIS Day <gisday.example@tamu.edu>';
     process.env.MAILROOM_TO = 'gisday.inbox@example.com';
     process.env.MAILROOM_SENDERS = 'gisday@tamu.edu,gisday@gmail.com';
     delete process.env.GISDAY_SITE;
@@ -120,7 +120,7 @@ describe('Send as, on every route that uses the email composer', () => {
       expect(response.status).toBe(200);
       expect((await response.json()).choices.map((c) => [c.kind, c.address, c.from])).toEqual([
         ['own', 'jadmin@tamu.edu', '"Jo Admin (Texas A&M GIS Day)" <jadmin@tamu.edu>'],
-        ['site', 'geoservices@tamu.edu', '"Texas A&M GIS Day" <geoservices@tamu.edu>'],
+        ['site', 'gisday.example@tamu.edu', '"Texas A&M GIS Day" <gisday.example@tamu.edu>'],
         ['shared', 'gisday@tamu.edu', '"Texas A&M GIS Day" <gisday@tamu.edu>']
       ]);
     }
@@ -162,13 +162,13 @@ describe('Send as, on every route that uses the email composer', () => {
     "%s sends as the admin's own address, with replies to them, and as the site's",
     async (_path, { path, body, sends }) => {
       expect((await call(path, { ...body, sender: 'jadmin@tamu.edu' })).status).toBe(201);
-      expect((await call(path, { ...body, sender: 'geoservices@tamu.edu' })).status).toBe(201);
+      expect((await call(path, { ...body, sender: 'gisday.example@tamu.edu' })).status).toBe(201);
 
       expect(JSON.stringify(sends.mock.calls[0])).toContain(
         JSON.stringify({ from: '"Jo Admin (Texas A&M GIS Day)" <jadmin@tamu.edu>', replyTo: 'jadmin@tamu.edu' })
       );
       expect(JSON.stringify(sends.mock.calls[1])).toContain(
-        JSON.stringify({ from: '"Texas A&M GIS Day" <geoservices@tamu.edu>', replyTo: 'gisday.inbox@example.com' })
+        JSON.stringify({ from: '"Texas A&M GIS Day" <gisday.example@tamu.edu>', replyTo: 'gisday.inbox@example.com' })
       );
     }
   );
