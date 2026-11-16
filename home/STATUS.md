@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle and listening.
+- **Batch 67 (gisday: #3114, Texas A&M emails in the GIS Day design)**: started 9:26 PM Central, 15 November, branch `feat/3114-tamu-email-design`.
 
 ## Finished
 - **Batch 66 (gisday: #3105) and a #2894 fix** (report `home/reports/2026-11-15-66.md`): #2894 pushed at `fc5b8608c` (people tables scroll in the shared box; headings whole). #3105 branch ready, `feat/3105-remove-session-files` at `a06bc7f83`, no PR: admins remove any speaker's session file, asked on the page; one delete. Checks exit 0. Screenshots to the lab. No questions.
