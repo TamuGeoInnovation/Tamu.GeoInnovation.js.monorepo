@@ -8756,3 +8756,17 @@ Say whether Select all reads as part of the list or apart from it; if it needs a
 with a recommendation (shared spacing utilities only, no purpose-built CSS) and do not change it yourself.
 To `docs/screenshots/3142-who-gets-it-order/`, plus `docs/releases/unreleased/3142-who-gets-it-order.md` with its *What
 to test on dev* row. Send nothing. One commit, fetched and rebased, pushed (no force). Report "images pushed: <sha>".
+
+## Batch 109 (gisday: #3144's screenshots, URGENT; 16 November 2026, from `work (gisday)`) - **right after 108, before 107**
+
+[#3144](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3144): a submission's **Presentation
+files** box moved from the bottom of its page to the top, above the form. **Do not change the code.** Branch
+`fix/3144-presentation-files-first` on the fork (it appears when its check passes). A made-up submission, signed in as the
+test student, served as gisday.tamu.edu, 1280 px, Account, Submissions, open it, the page as it first loads (no scrolling):
+
+- **before** (`development`): the form, with Presentation files out of sight below it - `before-first-view.png`; and
+  scrolled to the bottom, where it was - `before-bottom.png`;
+- **after** (the branch): Presentation files the first thing on the page - `after-first-view.png`.
+
+To `docs/screenshots/3144-presentation-files-first/`, plus `docs/releases/unreleased/3144-presentation-files-first.md`
+with its *What to test on dev* row. One commit, fetched and rebased, pushed (no force). Report "images pushed: <sha>".
