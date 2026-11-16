@@ -8636,3 +8636,10 @@ Report 98-99's question: decided (a). The home machine made a nested scroll box 
 `feat/2894-vgi-dashboard` on the fork at `8def7c3d4` (`.pr-body.md` last; leave it). **Do not change the code.** Retake
 `after-feature-type-open.png` at 1280 px so the people table's scrollbar shows under it; say whether it does and the outer
 table keeps its rail. One commit, fetched and rebased, pushed (no force). Report "images pushed: <sha>".
+
+## Report 96, answered (10:13 PM Central)
+
+**Decided (the director):** 1(a): #3113's PR waits until PR 3119 (#3104) merges; then the director rebuilds it on
+`development` (your own commits, cherry-picked) and opens it. **Don't push to `feat/3113-ask-for-slides` meanwhile.**
+2(a): keep the per-process guard; #3098's shared table now covers the slides email too (noted on the issue). Carry on:
+102, 100, 101.
