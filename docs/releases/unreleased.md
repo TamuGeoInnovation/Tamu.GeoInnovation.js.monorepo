@@ -58,11 +58,11 @@ Updated at every GIS Day rollout, as step 4 of
 
 | | |
 | --- | --- |
-| Image, `gisday-nest` and `gisday-angular`, both namespaces (`gisday`, `gisday-ucgis`) | `sha-3cb0c6d` |
-| Its last commit | `3cb0c6d3f`, PR 3151 ([#3148](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3148), the FAQ page's links), with PR 3146 ([#3144](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3144), a submission's Presentation files first) |
-| Rolled out | 16 November 2026, about 9:40 AM Central, by the maintainer; checked signed in and in a private window |
-| The image before it | `sha-47c01fc` (16 November, about 7:50 AM Central), the rollback target |
-| The last migration in it | `AddSessionFiles` (`1794786922753`); none since `47c01fc` |
+| Image, `gisday-nest` and `gisday-angular`, both namespaces (`gisday`, `gisday-ucgis`) | `sha-592e5f5` |
+| Its last commit | `592e5f58a`, PR 3145 ([#3142](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3142)), with PRs 3153, 3155, 3156 ([#3152](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3152)), 3157 ([#3154](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3154)), 3158 ([#3143](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3143)), 3159 ([#3135](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3135)), 3160 ([#3136](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3136)) and 3163 ([#3162](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3162)) |
+| Rolled out | 16 November 2026, about 2:00 PM Central, by the maintainer; sign-in, logout and check-in checked |
+| The image before it | `sha-3cb0c6d` (16 November, about 9:40 AM Central), the rollback target |
+| The last migration in it | `AddSessionFiles` (`1794786922753`); none since `3cb0c6d` |
 
 The cluster is the final word:
 `kubectl -n gisday get deployment gisday-nest gisday-angular -o custom-columns=NAME:.metadata.name,IMAGE:.spec.template.spec.containers[0].image`,
