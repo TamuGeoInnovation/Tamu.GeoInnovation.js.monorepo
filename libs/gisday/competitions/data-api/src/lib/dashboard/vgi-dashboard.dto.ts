@@ -1,7 +1,10 @@
 import type { RsvpDashboardMade, RsvpDashboardPerson } from '@tamu-gisc/gisday/platform/data-api';
 
-/** A feature type's counts on the VGI submissions dashboard (#2894). */
-export interface VgiDashboardCounts {
+/**
+ * A feature type's counts on the VGI submissions dashboard (#2894). A type, not an interface, so it is a
+ * `Record<string, number>` as the shared dashboard page reads every row's counts.
+ */
+export type VgiDashboardCounts = {
   /** Submissions the leaderboard scores as new finds, and as repeats; a discarded one, or one outside the scoring window, is neither. */
   newFinds: number;
   repeats: number;
@@ -11,7 +14,7 @@ export interface VgiDashboardCounts {
   unverified: number;
   verified: number;
   discarded: number;
-}
+};
 
 /**
  * One feature type, as chosen on the season's form: its submissions and their counts. Shaped as the other dashboards'
