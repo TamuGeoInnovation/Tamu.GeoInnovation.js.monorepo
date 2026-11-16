@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle and listening.
+- **Batch 65 (gisday: #2894, VGI submissions dashboard)**: started 8:02 PM Central, 15 November, branch `feat/2894-vgi-dashboard`.
 
 ## Finished
 - **Batch 64 (gisday: #2582)** (report `home/reports/2026-11-15-64.md`): branch ready, `fix/2582-designer-feedback` on the fork at `5b6a35de0`, no PR. Fetching, failure and success messages; Save feedback and instructions too, so the issue can close. Red first; check exit 0. Screenshots to the lab. No questions.
