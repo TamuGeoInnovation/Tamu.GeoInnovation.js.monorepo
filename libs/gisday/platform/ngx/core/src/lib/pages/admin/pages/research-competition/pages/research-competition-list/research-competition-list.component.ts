@@ -21,6 +21,7 @@ import {
   reminderSkipSummary
 } from '@tamu-gisc/gisday/common';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
+import { ActionMenuComponent, ActionMenuItem } from '@tamu-gisc/ui-kits/ngx/layout';
 import { AlertModalData } from '@tamu-gisc/ui-kits/ngx/layout/modal/alert-modal';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import {
@@ -198,7 +199,8 @@ export const SUBMISSION_TABLE_MIN_WIDTH = Object.values(SUBMISSION_TABLE_WIDTHS)
     DatePipe,
     TitleCasePipe,
     ExistsPipe,
-    CompetitionSettingsComponent
+    CompetitionSettingsComponent,
+    ActionMenuComponent
   ]
 })
 export class ResearchCompetitionListComponent extends BaseAdminListComponent<Submission> implements OnInit {
@@ -212,6 +214,12 @@ export class ResearchCompetitionListComponent extends BaseAdminListComponent<Sub
   public SubmissionReviewStatus = SUBMISSION_REVIEW_STATUS;
   public readonly widths = SUBMISSION_TABLE_WIDTHS;
   public readonly minWidth = SUBMISSION_TABLE_MIN_WIDTH;
+
+  /** What the selection bar's Email menu offers (#3092), in place of an action each. */
+  public readonly selectionEmails: ReadonlyArray<ActionMenuItem> = [
+    { id: 'profile', label: 'Profile email' },
+    { id: 'final-reminder', label: 'Final reminder' }
+  ];
 
   public readonly classification = new FormControl('', { nonNullable: true });
   public readonly type = new FormControl('', { nonNullable: true });
@@ -333,6 +341,15 @@ export class ResearchCompetitionListComponent extends BaseAdminListComponent<Sub
             message: 'Please try again.'
           })
       });
+  }
+
+  /** The email chosen from the selection bar's Email menu (#3092). */
+  public emailSelection(choice: string) {
+    if (choice === 'final-reminder') {
+      this.sendFinalReminders();
+    } else {
+      this.sendProfileEmails();
+    }
   }
 
   /**

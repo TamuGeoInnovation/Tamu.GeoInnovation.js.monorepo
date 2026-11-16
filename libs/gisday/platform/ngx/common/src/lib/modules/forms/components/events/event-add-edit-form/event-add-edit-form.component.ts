@@ -29,12 +29,14 @@ import {
   SpeakerService,
   SpeakerEditsService,
   sendEditLinksToast,
+  sendSessionDetailsToast,
   TagService,
   BroadcastService
 } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { siteListsPlace } from '@tamu-gisc/gisday/common';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
+import { ActionMenuComponent, ActionMenuItem } from '@tamu-gisc/ui-kits/ngx/layout';
 import { serverMessage } from '../../../../../utils/server-message';
 import { SeasonsDayTileComponent } from '../../seasons/seasons-day-tile/seasons-day-tile.component';
 import { NgClass, AsyncPipe } from '@angular/common';
@@ -51,7 +53,7 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 import { GISDAY_SITE } from '../../../../../site/site';
 import { injectBackToList } from '../../../admin-details-page';
-import { sendProfileEmail } from '../../../../modals/review-email-modal/profile-email';
+import { sendProfileEmail, sendSessionDetailsEmail } from '../../../../modals/review-email-modal/profile-email';
 
 @Component({
   selector: 'tamu-gisc-event-add-edit-form',
@@ -70,6 +72,7 @@ import { sendProfileEmail } from '../../../../modals/review-email-modal/profile-
     PresenterCardComponent,
     CheckboxGroupComponent,
     ButtonComponent,
+    ActionMenuComponent,
     AsyncPipe
   ]
 })
@@ -95,6 +98,12 @@ export class EventAddEditFormComponent implements OnInit {
   public readonly problems = signal<Array<string>>([]);
 
   public readonly type = input<'create' | 'edit'>(undefined);
+
+  /** What the Speakers section's Email these speakers menu offers (#3092). */
+  public readonly speakerEmails: ReadonlyArray<ActionMenuItem> = [
+    { id: 'profile', label: 'Profile email' },
+    { id: 'session-details', label: 'Session details' }
+  ];
 
   public form: UntypedFormGroup;
 
@@ -330,6 +339,37 @@ export class EventAddEditFormComponent implements OnInit {
       map(([broadcasts, own]) => (broadcasts ?? []).filter((b) => b.guid === own || siteListsPlace(this.site, b.place))),
       shareReplay(1)
     );
+  }
+
+  /** The email chosen from the Email these speakers menu (#3092). */
+  public emailSpeakers(choice: string) {
+    if (choice === 'session-details') {
+      this.emailSessionDetails();
+    } else {
+      this.emailSpeakersEditLinks();
+    }
+  }
+
+  /**
+   * Emails the session's saved speakers its details (#3092): when and where, the Zoom link and dial-in for a hybrid or
+   * virtual session, check-in by its QR code, and what to bring, prefilled from the session as it is saved, then read and
+   * edited first in the profile email's window.
+   */
+  public emailSessionDetails() {
+    this.entity$
+      .pipe(
+        take(1),
+        switchMap((event) =>
+          sendSessionDetailsEmail(this.modals, this.speakerEdits.previewSessionDetails(event.guid), (email) =>
+            this.speakerEdits.sendSessionDetails(event.guid, email)
+          )
+        )
+      )
+      .subscribe({
+        next: (result) => this.ns.toast(sendSessionDetailsToast(result)),
+        error: () =>
+          this.ns.toast({ id: 'session-details-email', title: 'Session details not sent', message: 'Please try again.' })
+      });
   }
 
   /**

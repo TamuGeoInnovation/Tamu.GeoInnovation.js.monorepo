@@ -176,25 +176,46 @@ describe('ResearchCompetitionListComponent actions on the selected submissions',
     fixture.detectChanges();
 
     const page = fixture.nativeElement as HTMLElement;
-    const click = (label: string) => {
-      const action = Array.from(page.querySelectorAll<HTMLElement>('.selected-action')).find((a) =>
-        a.textContent.includes(label)
-      );
+    const click = (label: string) => chooseSelectedAction(page, () => fixture.detectChanges(), label);
 
-      expect(action).toBeDefined();
-      action.click();
-      fixture.detectChanges();
-    };
-
-    return { service, speakerEdits, modals, toasts, click };
+    return { service, speakerEdits, modals, toasts, click, page, fixture };
   }
 
-  it('offers Approve, Reject and Send profile email beside Delete', () => {
+  it('offers Approve, Reject and the Email menu beside Delete', () => {
     const { click } = open(false);
 
-    for (const label of ['Approve', 'Reject', 'Send profile email', 'Delete']) {
+    for (const label of ['Approve', 'Reject', 'Profile email', 'Final reminder', 'Delete']) {
       click(label);
     }
+  });
+
+  // #3092: the two emails are one menu, rather than two more actions side by side in the bar.
+  it('puts Profile email and Final reminder in one Email menu, and no email action stands alone in the bar', () => {
+    const { page, fixture } = open(false);
+    const bar = page.querySelector('.selected-actions');
+    const menus = bar.querySelectorAll('tamu-gisc-action-menu');
+
+    expect(menus).toHaveLength(1);
+
+    const trigger = menus[0].querySelector<HTMLButtonElement>('button[aria-haspopup="menu"]');
+
+    expect(trigger.classList).toContain('selected-action');
+    expect(trigger.textContent).toContain('Email');
+
+    // Approve, Reject and Delete stay as they were; nothing else in the bar sends an email on its own.
+    const alone = Array.from(bar.querySelectorAll<HTMLElement>('.selected-action'))
+      .filter((a) => a !== trigger)
+      .map((a) => a.textContent.replace(/\s+/g, ' ').trim());
+
+    expect(alone).toEqual(['Approve check_circle', 'Reject cancel', 'Delete delete_forever']);
+
+    trigger.click();
+    fixture.detectChanges();
+
+    expect(Array.from(bar.querySelectorAll('[role="menuitem"]')).map((i) => i.textContent.trim())).toEqual([
+      'Profile email',
+      'Final reminder'
+    ]);
   });
 
   it('shows the email first, editable, then approves the selection in one request with the text approved (#2981)', () => {
@@ -229,7 +250,7 @@ describe('ResearchCompetitionListComponent actions on the selected submissions',
   it('shows the profile email first, editable, counting the people once each, then sends it as edited (#3023)', () => {
     const { speakerEdits, modals, toasts, click } = open(true);
 
-    click('Send profile email');
+    click('Profile email');
 
     expect(modals.open).toHaveBeenCalledWith(
       ReviewEmailModalComponent,
@@ -256,7 +277,7 @@ describe('ResearchCompetitionListComponent actions on the selected submissions',
 
     click('Approve');
     click('Reject');
-    click('Send profile email');
+    click('Profile email');
 
     expect(service.review).not.toHaveBeenCalled();
     expect(speakerEdits.sendForSubmissions).not.toHaveBeenCalled();
@@ -322,12 +343,7 @@ describe('ResearchCompetitionListComponent, the final file and the final reminde
     fixture.detectChanges();
 
     const page = fixture.nativeElement as HTMLElement;
-    const click = (label: string) => {
-      Array.from(page.querySelectorAll<HTMLElement>('.selected-action'))
-        .find((a) => a.textContent.includes(label))
-        .click();
-      fixture.detectChanges();
-    };
+    const click = (label: string) => chooseSelectedAction(page, () => fixture.detectChanges(), label);
 
     return { fixture, page, service, modals, toasts, click };
   }
@@ -418,7 +434,10 @@ describe('ResearchCompetitionListComponent, the final file and the final reminde
     // cell's side padding is 16.
     it('holds the longest Status and Type whole', () => {
       const { fixture } = open([]);
-      const minWidth = (prop: string) => templates(fixture).find((column) => column.prop() === prop)?.minWidth();
+      const minWidth = (prop: string) =>
+        templates(fixture)
+          .find((column) => column.prop() === prop)
+          ?.minWidth();
 
       expect(minWidth('reviewStatus')).toBeGreaterThanOrEqual(110 + 16);
       expect(minWidth('submissionType')).toBeGreaterThanOrEqual(89 + 16);
@@ -428,7 +447,7 @@ describe('ResearchCompetitionListComponent, the final file and the final reminde
   it('shows the reminder first, editable, saying how many are skipped for having a file, then sends it with the text approved', () => {
     const { service, modals, toasts, click } = open(['s1', 's2']);
 
-    click('Send final reminder');
+    click('Final reminder');
 
     expect(service.previewReminders).toHaveBeenCalledWith(['s1', 's2']);
     expect(modals.open).toHaveBeenCalledWith(
@@ -445,7 +464,7 @@ describe('ResearchCompetitionListComponent, the final file and the final reminde
   it('skips those not accepted as well, and says why each group is skipped', () => {
     const { service, modals, click } = open(['s1', 's2', 's4', 's5']);
 
-    click('Send final reminder');
+    click('Final reminder');
 
     expect(modals.open.mock.calls[0][1].data.note).toBe(
       '3 of the 4 selected are skipped: 1 that already has a file and 2 that were not accepted. Only the rest are reminded.'
@@ -456,7 +475,7 @@ describe('ResearchCompetitionListComponent, the final file and the final reminde
   it('sends nothing, and says why, when every one selected is skipped', () => {
     const { modals, toasts, click } = open(['s2', 's4']);
 
-    click('Send final reminder');
+    click('Final reminder');
 
     expect(modals.open).not.toHaveBeenCalled();
     expect(toasts.toast).toHaveBeenCalledWith(
@@ -467,7 +486,7 @@ describe('ResearchCompetitionListComponent, the final file and the final reminde
   it('sends nothing, and says why, when every one selected already has a file', () => {
     const { service, modals, toasts, click } = open(['s2']);
 
-    click('Send final reminder');
+    click('Final reminder');
 
     expect(modals.open).not.toHaveBeenCalled();
     expect(service.remind).not.toHaveBeenCalled();
@@ -479,7 +498,7 @@ describe('ResearchCompetitionListComponent, the final file and the final reminde
   it('sends nothing when the admin cancels', () => {
     const { service, toasts, click } = open(['s1'], false);
 
-    click('Send final reminder');
+    click('Final reminder');
 
     expect(service.remind).not.toHaveBeenCalled();
     expect(toasts.toast).not.toHaveBeenCalled();
@@ -507,3 +526,33 @@ describe('profileEmailNote', () => {
     expect(note).toContain('For the 4 people of 2 submissions.');
   });
 });
+
+/**
+ * Chooses one of the selected rows' actions by its words: one in the bar, or one in its Email menu (#3092), opened first
+ * as an admin opens it.
+ */
+function chooseSelectedAction(page: HTMLElement, detectChanges: () => void, label: string) {
+  const inBar = Array.from(page.querySelectorAll<HTMLElement>('.selected-action:not([aria-haspopup])')).find((a) =>
+    a.textContent.includes(label)
+  );
+
+  if (inBar) {
+    inBar.click();
+    detectChanges();
+    return;
+  }
+
+  const trigger = page.querySelector<HTMLButtonElement>('.selected-actions button[aria-haspopup="menu"]');
+
+  expect(trigger).not.toBeNull();
+  trigger.click();
+  detectChanges();
+
+  const item = Array.from(page.querySelectorAll<HTMLElement>('[role="menuitem"]')).find(
+    (i) => i.textContent.trim() === label
+  );
+
+  expect(item).toBeDefined();
+  item.click();
+  detectChanges();
+}

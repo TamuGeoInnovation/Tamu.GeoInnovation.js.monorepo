@@ -621,11 +621,13 @@ function profileOf(
   };
 }
 
-function fullName(s: Pick<Speaker, 'firstName' | 'lastName'>): string {
+/** A speaker's name as the results and previews give it. */
+export function fullName(s: Pick<Speaker, 'firstName' | 'lastName'>): string {
   return `${s.firstName ?? ''} ${s.lastName ?? ''}`.replace(/\s+/g, ' ').trim();
 }
 
-function looksLikeEmail(value: unknown): value is string {
+/** Whether a record's email address could be sent to. */
+export function looksLikeEmail(value: unknown): value is string {
   return typeof value === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 }
 

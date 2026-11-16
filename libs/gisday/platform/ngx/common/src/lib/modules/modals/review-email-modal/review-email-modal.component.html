@@ -15,6 +15,16 @@
       }
     </ul>
   </div>
+  } @if (preview.noAddress?.length) {
+  <!-- A session's speakers with no address, named before the session details are sent (#3092). -->
+  <div class="review-email__not-emailed">
+    <p><strong>{{ preview.noAddress.length }} {{ preview.noAddress.length === 1 ? 'person' : 'people' }} will not be emailed:</strong> they have no email address on their record.</p>
+    <ul>
+      @for (name of preview.noAddress; track $index) {
+      <li>{{ name }}</li>
+      }
+    </ul>
+  </div>
   }
   <p>Nothing is sent until you choose Send. Each person gets their own copy, with these filled in: {{ placeholders }}. The text may use Markdown: **bold**, *italic*, [link text](https://...) and lists starting with - .</p>
 

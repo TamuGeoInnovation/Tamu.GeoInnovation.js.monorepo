@@ -5,7 +5,7 @@ import { firstValueFrom } from 'rxjs';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
-import { SpeakerEditsService, sendEditLinksToast } from './speaker-edits.service';
+import { SpeakerEditsService, sendEditLinksToast, sendSessionDetailsToast } from './speaker-edits.service';
 
 /** #2958: profile emails for the selected submissions' people, in one request. */
 describe('SpeakerEditsService.sendForSubmissions()', () => {
@@ -91,7 +91,9 @@ describe('SpeakerEditsService, the email read and edited first', () => {
     const email = { subject: 'Profile', template: 'Hi {edit link}' };
 
     service.preview(['sp-1']).subscribe();
-    expect(http.expectOne({ method: 'POST', url: 'api/speaker-edits/send/preview' }).request.body).toEqual({ speakers: ['sp-1'] });
+    expect(http.expectOne({ method: 'POST', url: 'api/speaker-edits/send/preview' }).request.body).toEqual({
+      speakers: ['sp-1']
+    });
 
     service.previewForSubmissions(['sub-1']).subscribe();
     expect(http.expectOne({ method: 'POST', url: 'api/speaker-edits/send-for-submissions/preview' }).request.body).toEqual({
@@ -99,12 +101,79 @@ describe('SpeakerEditsService, the email read and edited first', () => {
     });
 
     service.send(['sp-1'], email).subscribe();
-    expect(http.expectOne({ method: 'POST', url: 'api/speaker-edits/send' }).request.body).toEqual({ speakers: ['sp-1'], ...email });
+    expect(http.expectOne({ method: 'POST', url: 'api/speaker-edits/send' }).request.body).toEqual({
+      speakers: ['sp-1'],
+      ...email
+    });
 
     service.sendForSubmissions(['sub-1'], email).subscribe();
     expect(http.expectOne({ method: 'POST', url: 'api/speaker-edits/send-for-submissions' }).request.body).toEqual({
       submissions: ['sub-1'],
       ...email
+    });
+  });
+});
+
+/** #3092: a session's speakers emailed its details, previewed first, by the session's id. */
+describe('SpeakerEditsService, the session details email', () => {
+  let service: SpeakerEditsService;
+  let http: HttpTestingController;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: EnvironmentService, useValue: { value: () => 'api' } }
+      ]
+    });
+
+    service = TestBed.inject(SpeakerEditsService);
+    http = TestBed.inject(HttpTestingController);
+  });
+
+  afterEach(() => http.verify());
+
+  it('previews the email for the session', async () => {
+    const preview = firstValueFrom(service.previewSessionDetails('e-1'));
+    const request = http.expectOne('api/session-emails/details/preview');
+
+    expect(request.request.method).toBe('POST');
+    expect(request.request.body).toEqual({ event: 'e-1' });
+
+    request.flush({ groups: [] });
+
+    await expect(preview).resolves.toEqual({ groups: [] });
+  });
+
+  it('sends it as edited', async () => {
+    const result = firstValueFrom(service.sendSessionDetails('e-1', { subject: 'S', template: 'T' }));
+    const request = http.expectOne('api/session-emails/details');
+
+    expect(request.request.body).toEqual({ event: 'e-1', subject: 'S', template: 'T' });
+
+    request.flush({ sent: ['Ana Ruiz'], skipped: [] });
+
+    await expect(result).resolves.toEqual({ sent: ['Ana Ruiz'], skipped: [] });
+  });
+});
+
+describe('sendSessionDetailsToast', () => {
+  it('says who got the details, and who did not and why', () => {
+    expect(sendSessionDetailsToast({ sent: ['Ana Ruiz'], skipped: [] })).toEqual({
+      id: 'session-details-email',
+      title: 'Session details sent',
+      message: 'Sent to Ana Ruiz.'
+    });
+    expect(
+      sendSessionDetailsToast({
+        sent: ['Ana Ruiz', 'Cy Diaz'],
+        skipped: [{ name: 'Dee Fox', reason: 'no email address on their record' }]
+      })
+    ).toEqual({
+      id: 'session-details-email',
+      title: 'Some session details emails were not sent',
+      message: 'Sent to 2 speakers. Not sent - Dee Fox: no email address on their record.'
     });
   });
 });

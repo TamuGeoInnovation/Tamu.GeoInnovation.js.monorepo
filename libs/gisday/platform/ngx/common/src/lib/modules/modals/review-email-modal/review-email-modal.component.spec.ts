@@ -160,3 +160,58 @@ describe('ReviewEmailModalComponent, Markdown', () => {
     expect(preview.textContent).toContain('<b>raw</b>');
   });
 });
+
+/** #3092: a session's speakers with no email address are named before the session details are sent. */
+describe('ReviewEmailModalComponent, speakers with no address', () => {
+  function open(noAddress?: Array<string>) {
+    TestBed.configureTestingModule({
+      imports: [ReviewEmailModalComponent],
+      providers: [
+        {
+          provide: MODAL_DATA,
+          useValue: {
+            verb: 'Send session details',
+            editableSubject: true,
+            preview: of({
+              groups: [
+                {
+                  kind: 'session-details',
+                  label: 'Session details',
+                  count: 1,
+                  subject: 'S',
+                  template: 'T',
+                  example: { title: 'Ana Ruiz', to: 'ana@example.edu', cc: '', values: {} }
+                }
+              ],
+              noAddress
+            })
+          }
+        },
+        { provide: ModalRefService, useValue: { close: jest.fn() } }
+      ]
+    });
+
+    const fixture = TestBed.createComponent(ReviewEmailModalComponent);
+    fixture.detectChanges();
+
+    return fixture.nativeElement as HTMLElement;
+  }
+
+  it('names each one, and says why they will not be emailed', () => {
+    const page = open(['Dee Fox', 'Eli Ng']);
+
+    expect(page.textContent).toContain('2 people will not be emailed: they have no email address on their record.');
+    expect([...page.querySelectorAll('.review-email__not-emailed li')].map((li) => li.textContent.trim())).toEqual([
+      'Dee Fox',
+      'Eli Ng'
+    ]);
+  });
+
+  it('says nothing about it when everyone has an address', () => {
+    expect(open([]).querySelector('.review-email__not-emailed')).toBeNull();
+  });
+
+  it('says nothing about it for an email that does not list them', () => {
+    expect(open(undefined).querySelector('.review-email__not-emailed')).toBeNull();
+  });
+});
