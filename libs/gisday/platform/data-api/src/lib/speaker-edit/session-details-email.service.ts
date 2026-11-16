@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, NotFoundException, Optional } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -26,6 +26,7 @@ import { ContactService } from '../contact/contact.service';
 import { EmailSender, siteSender } from '../contact/email-sender.service';
 import { EMAIL_LANES, inParallel } from '../_base/in-parallel';
 import { RecentSends } from '../_base/recent-sends';
+import { EmailSendLog } from './email-send-log';
 import {
   ProfileEmail,
   ProfileEmailPreview,
@@ -72,7 +73,9 @@ export class SessionDetailsEmailService {
 
   constructor(
     @InjectRepository(Event) private readonly events: Repository<Event>,
-    private readonly contact: ContactService
+    private readonly contact: ContactService,
+    /** The record of what each speaker was sent (#3167). */
+    @Optional() private readonly sendLog?: EmailSendLog
   ) {}
 
   /**
@@ -109,8 +112,11 @@ export class SessionDetailsEmailService {
           }
         }
       ],
-      // Nothing in it is one speaker's own, so it may go to them together: no `copyEachReason`.
-      recipients: reachable.map(recipientOf),
+      // Nothing in it is one speaker's own, so it may go to them together: no `copyEachReason`. Each with when they were
+      // sent this session's details before (#3167).
+      recipients: this.sendLog
+        ? await this.sendLog.withSends(reachable.map(recipientOf), SESSION_DETAILS_EMAIL_KIND, session.guid)
+        : reachable.map(recipientOf),
       noAddress: noAddress.map(fullName)
     };
   }
@@ -198,6 +204,8 @@ export class SessionDetailsEmailService {
           true
         );
         part.sent.push(name);
+        // Recorded once it has gone (#3167): together, once for each speaker on it.
+        await this.sendLog?.record(group, SESSION_DETAILS_EMAIL_KIND, session.guid, from.from);
       } catch (err) {
         // Not sent, so not a repeat: the admin may try again at once.
         this.lastSent.release(keys);

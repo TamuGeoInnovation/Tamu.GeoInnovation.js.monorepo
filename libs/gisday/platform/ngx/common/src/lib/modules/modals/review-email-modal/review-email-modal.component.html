@@ -46,11 +46,35 @@
     <div class="review-email__select-all trailer-1">
       <tamu-gisc-checkbox label="Select all" name="recipients-select-all" ariaLabel="Select all speakers, or none when all are ticked" [checked]="allTicked()" (changed)="toggleAll()"></tamu-gisc-checkbox>
     </div>
+    @if (knowsSends()) {
+    <!-- Who was sent it before (#3167): tick only those never sent it, and list them first. -->
+    <div class="review-email__sent-choices trailer-1">
+      <p class="review-email__meta">
+        <strong>{{ notYetSentCount() }} of {{ preview.recipients.length }}</strong> {{ notYetSentCount() === 1 ? 'has' : 'have' }} not been sent this email yet.
+      </p>
+      <tamu-gisc-button class="review-email__tick-not-sent" value="Tick only those not sent it yet" fit="relaxed" look="secondary" [disabled]="notYetSentCount() === 0" (click)="tickNotYetSent()"></tamu-gisc-button>
+      <tamu-gisc-checkbox label="List those not sent it yet first" name="recipients-not-sent-first" [formControl]="notSentFirst"></tamu-gisc-checkbox>
+    </div>
+    }
     <tamu-gisc-checkbox-group referenceId="guid" [formControl]="chosen">
-      @for (recipient of preview.recipients; track recipient.guid) {
-      <tamu-gisc-checkbox [data]="recipient" [label]="recipient.name" [description]="recipient.email" [name]="'recipient-' + recipient.guid" [ariaLabel]="'Send it to ' + recipient.name"></tamu-gisc-checkbox>
+      @for (recipient of listed(); track recipient.guid) {
+      <tamu-gisc-checkbox [data]="recipient" [label]="recipient.name" [description]="descriptionOf(recipient)" [name]="'recipient-' + recipient.guid" [ariaLabel]="'Send it to ' + recipient.name"></tamu-gisc-checkbox>
       }
     </tamu-gisc-checkbox-group>
+    @if (knowsSends()) {
+    <!-- Every email each was sent, with its date (#3167), for anyone who needs more than the last one. -->
+    <details class="review-email__history">
+      <summary>Every email each was sent</summary>
+      <ul>
+        @for (recipient of listed(); track recipient.guid) { @let history = historyOf(recipient);
+        <li>
+          <strong>{{ recipient.name }}:</strong>
+          @if (history.length) { {{ history.join('; ') }} } @else { nothing yet }
+        </li>
+        }
+      </ul>
+    </details>
+    }
     @if (offersTogether()) {
     <tamu-gisc-radio-group [formControl]="how" [options]="howOptions" displayPath="label" valuePath="value"></tamu-gisc-radio-group>
     } @else if (preview.copyEachReason) {

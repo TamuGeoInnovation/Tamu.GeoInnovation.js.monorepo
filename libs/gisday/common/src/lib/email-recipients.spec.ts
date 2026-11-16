@@ -3,6 +3,10 @@ import {
   EMAIL_TOGETHER_KEY,
   alphabetical,
   joinNames,
+  notSentFirst,
+  sendsDetail,
+  sendsLine,
+  wasSent,
   togetherFirstNames,
   togetherTo,
   withoutRecipients
@@ -67,5 +71,44 @@ describe('email recipients', () => {
     expect(alphabetical(given).map((r) => r.guid)).toEqual(['ab', 'ad', 'br', 'cl', 'ec', 'zh']);
     expect(given.map((r) => r.guid)).toEqual(['zh', 'ad', 'br', 'ec', 'ab', 'cl']);
     expect(alphabetical(undefined)).toEqual([]);
+  });
+});
+
+/** #3167: what each speaker was sent before, as the composer says it. Times are shown in US Central. */
+describe('the record of sends', () => {
+  const never = { name: 'Avery Example', sends: { thisEmail: [], others: [] } };
+  const twice = {
+    name: 'Blair Sample',
+    sends: {
+      // 4:05 PM and 9:30 AM Central, 16 November 2026.
+      thisEmail: ['2026-11-16T22:05:00.000Z', '2026-11-16T15:30:00.000Z'],
+      others: [{ kind: 'profile', at: '2026-11-15T20:10:00.000Z' }]
+    }
+  };
+  const unknown = { name: 'Cara Test' };
+
+  it('says whether and when each was sent this email, and nothing when the API kept no record', () => {
+    expect(sendsLine(never)).toBe('Not sent yet');
+    expect(sendsLine(twice)).toBe('Sent 2 times, last Nov 16, 4:05 PM');
+    expect(sendsLine({ sends: { thisEmail: ['2026-11-16T15:30:00.000Z'], others: [] } })).toBe(
+      'Sent once, last Nov 16, 9:30 AM'
+    );
+    expect(sendsLine(unknown)).toBe('');
+  });
+
+  it('lists every email each was sent with its date, newest first, naming the others', () => {
+    expect(sendsDetail(twice)).toEqual([
+      'Nov 16, 4:05 PM: this email',
+      'Nov 16, 9:30 AM: this email',
+      'Nov 15, 2:10 PM: the presenter profile email'
+    ]);
+    expect(sendsDetail(never)).toEqual([]);
+  });
+
+  it('puts those not yet sent it first, each part in the order given', () => {
+    const also = { name: 'Dana Other', sends: { thisEmail: [], others: [] } };
+
+    expect(notSentFirst([twice, never, also]).map((r) => r.name)).toEqual(['Avery Example', 'Dana Other', 'Blair Sample']);
+    expect([never, twice, unknown].map(wasSent)).toEqual([false, true, false]);
   });
 });

@@ -2,7 +2,7 @@ import { createHash, randomBytes } from 'crypto';
 import { mkdir, readFile, unlink, writeFile } from 'fs/promises';
 import { join } from 'path';
 
-import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, NotFoundException, Optional } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, MoreThan, Repository } from 'typeorm';
 
@@ -33,6 +33,7 @@ import { refuseUnsafeImage } from '../assets/image-upload';
 import { SpeakerProvider } from '../speaker/speaker.provider';
 import { ContactService } from '../contact/contact.service';
 import { SeasonService } from '../season/season.service';
+import { EmailSendLog } from './email-send-log';
 
 /** How long an edit link works. Long enough for a speaker to come back to it; short enough that an old email is dead. */
 /** How long after a speaker is emailed their link an admin's send skips them, so a repeated request emails no one twice (#3065). */
@@ -124,7 +125,9 @@ export class SpeakerEditService {
     private readonly speakerProvider: SpeakerProvider,
     private readonly contact: ContactService,
     private readonly seasons: SeasonService,
-    @InjectRepository(Submission) private readonly submissions: Repository<Submission>
+    @InjectRepository(Submission) private readonly submissions: Repository<Submission>,
+    /** The record of what each speaker was sent (#3167). */
+    @Optional() private readonly sendLog?: EmailSendLog
   ) {}
 
   /**
@@ -201,8 +204,11 @@ export class SpeakerEditService {
           }
         }
       ],
-      // Each to tick (#3104), and a copy each only: one email to several would give each the others' edit links.
-      recipients: speakers.map(recipientOf),
+      // Each to tick (#3104), and a copy each only: one email to several would give each the others' edit links. Each
+      // with when they were sent it before (#3167).
+      recipients: this.sendLog
+        ? await this.sendLog.withSends(speakers.map(recipientOf), PROFILE_EMAIL_KIND, null)
+        : speakers.map(recipientOf),
       copyEachReason: PROFILE_EMAIL_COPY_EACH
     };
   }
@@ -587,6 +593,9 @@ export class SpeakerEditService {
       },
       true
     );
+
+    // Recorded once it has gone (#3167), whoever sent it: an admin, or the speaker asking for their own link.
+    await this.sendLog?.record([speaker], PROFILE_EMAIL_KIND, null, from.from);
   }
 }
 
