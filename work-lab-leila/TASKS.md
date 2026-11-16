@@ -8477,3 +8477,14 @@ Report "images pushed" with each sha.
 **Decided (the director):** 1(a), keep `uploadedBy`: right call, the photo relation must not carry slides. 2(a) for
 tonight; (c), an admin Remove, is #3105 (Low, after GIS Day). 3(a), done: the director merged `development` (#3103) into
 the branch and is running the check, then opens the PR. Carry on with 89, 91, then 88.
+
+## Batch 92 (gisday and aggiemap: #2084's screenshots, Low; 15 November 2026, from `work (gisday)`) - **after 91, before 88 resumes**
+
+[#2084](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2084), built by the home machine:
+branch `fix/2084-tamu-tab-icon` on the fork at `9685c2aa3` (`.pr-body.md` last; leave it). **Do not change the code.**
+With the browser tab visible (a headed capture, or the tab strip cropped in), before (`development`) and after (the
+branch): the local GIS Day site served as gisday.tamu.edu beside AggieMap's local build, so the two icons can be compared;
+after only, txgisday.org and gisday.ucgis.org, unchanged. Also confirm `/favicon.ico` on AggieMap's local build still
+answers 200 with AggieMap's icon. To `docs/screenshots/2084-tamu-tab-icon/` with names you choose, linked from the
+release note `2084-tamu-tab-icon.md` (edit only its image table). One commit, fetched and rebased first, pushed (no
+force). Report "images pushed: <sha>".
