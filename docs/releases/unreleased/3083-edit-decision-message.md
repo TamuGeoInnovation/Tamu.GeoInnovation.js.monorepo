@@ -12,3 +12,8 @@ the server answered. It now says the server's own reason (for example "That edit
 another admin got there first), names the permission an account lacks as the dashboards do, and keeps "Please try again."
 for when the server itself failed.
 ([#3083](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3083))
+
+| Admin, Speakers, edits, 1280 pixels | Before | After |
+| --- | --- | --- |
+| The edit was already decided (404) | ![Could not save the decision, Please try again](../screenshots/3083-edit-decision-message/before-404.png) | ![That edit is not waiting for review](../screenshots/3083-edit-decision-message/after-404.png) |
+| The account lacks the permission (403) | ![Could not save the decision, Please try again](../screenshots/3083-edit-decision-message/before-403.png) | ![The missing permission named](../screenshots/3083-edit-decision-message/after-403.png) |
