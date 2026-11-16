@@ -8514,3 +8514,13 @@ Fetch Schema with this site's `/assets/competitions/2026-monument-trail.json` (a
 site's address (after: "Couldn't load that address…"); after only, the moment it is fetching if you can catch it. Save
 nothing. To `docs/screenshots/2582-designer-feedback/`, with the image table added to the release note
 `2582-designer-feedback.md`. One commit, fetched and rebased first, pushed (no force). Report "images pushed: <sha>".
+
+## Batch 95 (gisday: #2894's screenshots, Medium; 15 November 2026, from `work (gisday)`) - **after 94, before 88 resumes**
+
+[#2894](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2894), built by the home machine:
+branch `feat/2894-vgi-dashboard` on the fork at `c4a9bef0a` (`.pr-body.md` last; leave it). **Do not change the code.**
+As the local test admin, 1280 px, with the local copy's 2026 VGI submissions: Admin, Dashboards, VGI submissions (the
+table, its total row and the chart); a feature type opened to its submitters; and the Dashboards menu as txgisday.org
+(with the entry) and as gisday.ucgis.org (without). After only (it is a new page), plus a before of the Dashboards menu.
+Export nothing to the repository. To `docs/screenshots/2894-vgi-dashboard/`, with the image table added to the release
+note `2894-vgi-dashboard.md`. One commit, fetched and rebased first, pushed (no force). Report "images pushed: <sha>".
