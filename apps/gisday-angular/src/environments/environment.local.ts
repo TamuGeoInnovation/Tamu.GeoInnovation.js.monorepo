@@ -4,7 +4,8 @@
 // start; a local serve does not, so sign-in went to a host named after the placeholder (#1522). These
 // are the values for the "GIS Day (local development)" application in the development Auth0 tenant,
 // txgisday-dev, which scripts/gisday-auth0-dev.ps1 builds (#1623). It only accepts sign-ins that return
-// to http://localhost:4201, and its accounts are test accounts, never production's. None is a secret:
+// to http://localhost:4201 or http://gisday.local.test:4201 (redirect_uri follows the page; only the second skips
+// the consent screen, #3136), and its accounts are test accounts, never production's. None is a secret:
 // a single-page application sends them to every browser.
 
 import { api_url } from './common.config';

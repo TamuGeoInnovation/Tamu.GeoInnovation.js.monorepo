@@ -193,7 +193,8 @@
         },
         "local": {
           "buildTarget": "gisday-angular:build-app:local",
-          "proxyConfig": "apps/gisday-angular/proxy.local.json"
+          "proxyConfig": "apps/gisday-angular/proxy.local.json",
+          "allowedHosts": ["gisday.local.test"]
         }
       },
       "readyWhen": {
