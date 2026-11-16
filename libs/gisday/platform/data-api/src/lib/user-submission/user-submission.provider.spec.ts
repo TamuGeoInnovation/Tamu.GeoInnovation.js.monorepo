@@ -735,6 +735,19 @@ describe('UserSubmissionProvider', () => {
       });
     });
 
+    // #3100: each submitter's email goes as the sender the reviewer chose, as the controller checked it.
+    it('emails each as the sender chosen, with replies to it', async () => {
+      const sender = { from: '"Jo Admin (Texas A&M GIS Day)" <jadmin@tamu.edu>', replyTo: 'jadmin@tamu.edu' };
+
+      await provider.reviewUserSubmissions([A, B], 'acct-reviewer', { acceptance: true, sender }, REVIEWER_PERMS);
+
+      expect(sends()).toHaveLength(2);
+      expect(sends().map(([m]) => [m.from, m.replyTo])).toEqual([
+        [sender.from, sender.replyTo],
+        [sender.from, sender.replyTo]
+      ]);
+    });
+
     it('reviews a submission named twice once', async () => {
       await provider.reviewUserSubmissions([A, A], 'acct-reviewer', { acceptance: true }, REVIEWER_PERMS);
 
@@ -917,6 +930,19 @@ describe('UserSubmissionProvider', () => {
       expect(submissionRepo.findOne).toHaveBeenCalledWith(
         expect.objectContaining({ relations: { season: true, files: true } })
       );
+    });
+
+    // #3100: as the sender the reviewer chose, as the controller checked it.
+    it('sends each reminder as the sender chosen, with replies to it', async () => {
+      const sender = { from: '"Jo Admin (Texas A&M GIS Day)" <jadmin@tamu.edu>', replyTo: 'jadmin@tamu.edu' };
+
+      await provider.remindUserSubmissions([A, B, C], { sender }, REVIEWER_PERMS, 'gisday.tamu.edu');
+
+      expect(sends()).toHaveLength(2);
+      expect(sends().map(([m]) => [m.from, m.replyTo])).toEqual([
+        [sender.from, sender.replyTo],
+        [sender.from, sender.replyTo]
+      ]);
     });
 
     it('previews exactly the email that is then sent when the text is left as it is', async () => {

@@ -15,7 +15,7 @@ import {
 
 import { Event, Speaker } from '../entities/all.entity';
 import { ContactService } from '../contact/contact.service';
-import { senderAs } from '../_base/site-of-request';
+import { EmailSender, siteSender } from '../contact/email-sender.service';
 import { EMAIL_LANES, inParallel } from '../_base/in-parallel';
 import {
   ProfileEmail,
@@ -92,9 +92,15 @@ export class SessionDetailsEmailService {
   /**
    * Emails each of the session's speakers its details, in the subject and text the admin approved, or as prefilled when
    * none is given. A speaker with no address, or sent this session's details in the last `REPEAT_SEND_MINUTES`, is
-   * skipped and named with why.
+   * skipped and named with why. `sender` is who it is from, as the admin chose and the controller checked (#3100), or the
+   * site.
    */
-  public async send(eventGuid: string, host?: string, email?: SessionDetailsEmail): Promise<SendResult> {
+  public async send(
+    eventGuid: string,
+    host?: string,
+    email?: SessionDetailsEmail,
+    sender?: EmailSender
+  ): Promise<SendResult> {
     const problem = email === undefined ? null : sessionDetailsEmailProblem(email);
 
     if (problem) {
@@ -138,8 +144,7 @@ export class SessionDetailsEmailService {
         await this.contact.sendMessage(
           {
             to: speaker.email.trim(),
-            from: senderAs(site.name, process.env.MAILROOM_FROM),
-            replyTo: process.env.MAILROOM_TO,
+            ...(sender ?? siteSender(site.name)),
             subject,
             text,
             // The Markdown as HTML, beside the plain text (#3044).

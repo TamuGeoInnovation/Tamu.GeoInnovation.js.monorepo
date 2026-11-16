@@ -2,9 +2,16 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 
-import { REVIEW_EMAIL_PLACEHOLDERS, emailHtml, fillReviewEmail } from '@tamu-gisc/gisday/common';
-import { ReviewEmailPreview } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { ButtonComponent, TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import {
+  EMAIL_SENDER_KEY,
+  EmailSenderChoice,
+  EmailSenderChoices,
+  REVIEW_EMAIL_PLACEHOLDERS,
+  emailHtml,
+  fillReviewEmail
+} from '@tamu-gisc/gisday/common';
+import { ContactService, ReviewEmailPreview } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { ButtonComponent, SelectComponent, TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { MODAL_DATA, ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 
 /** What the window is opened with: the decision, and the email each kind of submission would get. */
@@ -24,23 +31,30 @@ export interface ReviewEmailModalData {
   placeholders?: ReadonlyArray<string>;
 }
 
-/** What it closes with: the text of each kind's email, as the reviewer left it, or `null` when nothing is to be sent. */
+/**
+ * What it closes with: the text of each kind's email, as the reviewer left it, and the address chosen to send as under
+ * `EMAIL_SENDER_KEY` (#3100), or `null` when nothing is to be sent.
+ */
 export type ReviewEmailModalResult = Record<string, string> | null;
 
 /**
  * Shows the email a review sends before it is sent (#2981): one box per kind of email in the selection (accepted
  * posters, accepted presentations, rejections), each editable, with a preview filled in for the first submission of that
  * kind. Nothing is decided or sent until **Send**.
+ *
+ * Its **Send as** box (#3100) offers the addresses the API says the admin may send as, their own first and chosen, and the
+ * preview shows the From recipients will see. With no choice to offer, the email goes from the site, as before.
  */
 @Component({
   selector: 'tamu-gisc-review-email-modal',
   templateUrl: './review-email-modal.component.html',
   styleUrls: ['./review-email-modal.component.scss'],
-  imports: [ReactiveFormsModule, ButtonComponent, TextboxComponent]
+  imports: [ReactiveFormsModule, ButtonComponent, SelectComponent, TextboxComponent]
 })
 export class ReviewEmailModalComponent implements OnInit {
   private readonly mr = inject(ModalRefService);
   private readonly data = inject<ReviewEmailModalData>(MODAL_DATA);
+  private readonly contact = inject(ContactService);
 
   public readonly placeholders = (this.data.placeholders ?? REVIEW_EMAIL_PLACEHOLDERS).join(', ');
   public readonly editableSubject = !!this.data.editableSubject;
@@ -51,8 +65,25 @@ export class ReviewEmailModalComponent implements OnInit {
   public readonly preview = signal<ReviewEmailPreview | null>(null);
   public readonly failed = signal(false);
   public readonly form = new FormGroup<Record<string, FormControl<string>>>({});
+  /** The form's key for the "Send as" box (#3100). */
+  public readonly senderKey = EMAIL_SENDER_KEY;
+  /** Who the admin may send as, from the API (#3100). */
+  public readonly senders = signal<EmailSenderChoices | null>(null);
+  public readonly sendersFailed = signal(false);
 
   public ngOnInit(): void {
+    // Their own address first, and chosen (#3100); it comes back with the texts under `EMAIL_SENDER_KEY`.
+    this.contact.senders().subscribe({
+      next: (senders) => {
+        if (senders.choices.length) {
+          this.form.addControl(EMAIL_SENDER_KEY, new FormControl(senders.choices[0].address, { nonNullable: true }));
+        }
+
+        this.senders.set(senders);
+      },
+      error: () => this.sendersFailed.set(true)
+    });
+
     this.data.preview.subscribe({
       next: (preview) => {
         for (const group of preview.groups) {
@@ -82,6 +113,13 @@ export class ReviewEmailModalComponent implements OnInit {
   /** The subject as the first of a kind would get it, from the subject as it now stands (#3023). */
   public exampleSubject(kind: string, values: Record<string, string>): string {
     return fillReviewEmail(this.form.controls[`${kind}:subject`]?.value ?? '', values);
+  }
+
+  /** The sender chosen in the box, or none when there was nothing to choose: the site's, as before. */
+  public chosenSender(): EmailSenderChoice | undefined {
+    const address = this.form.controls[EMAIL_SENDER_KEY]?.value;
+
+    return this.senders()?.choices.find((choice) => choice.address === address);
   }
 
   public total(preview: ReviewEmailPreview): number {

@@ -15,6 +15,7 @@ import {
 } from '../entities/all.entity';
 import { SeasonService } from '../season/season.service';
 import { ContactService } from '../contact/contact.service';
+import { EmailSenderService } from '../contact/email-sender.service';
 import { DashboardProfilesService } from '../dashboards/dashboard-profiles.service';
 import { AssetsService } from '../assets/assets.service';
 import { SubmissionFilesService } from './submission-files.service';
@@ -28,6 +29,7 @@ import { SubmissionFilesService } from './submission-files.service';
     UserSubmissionProvider,
     SeasonService,
     ContactService,
+    EmailSenderService,
     DashboardProfilesService,
     AssetsService,
     SubmissionFilesService
