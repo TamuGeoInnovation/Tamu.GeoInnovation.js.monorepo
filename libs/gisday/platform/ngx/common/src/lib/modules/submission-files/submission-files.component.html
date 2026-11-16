@@ -20,8 +20,11 @@
     <!-- Asked on the page, not in the browser's confirm(), as the speaker badges ask (#2908, #3105). -->
     <div class="info-block context file-confirm" role="alert">
       <p>Remove <strong>{{ file.name }}</strong>@if (file.uploadedBy) {, uploaded by {{ file.uploadedBy }}}? It cannot be undone.</p>
-      <button class="button primary" type="button" (click)="remove(file)">Remove the file</button>
-      <button class="button secondary" type="button" (click)="asking.set(null)">Keep it</button>
+      <!-- Side by side in the site's shared button row (libs/sass/_dom_flexbox.scss), as other button rows use it. -->
+      <div class="flex flex-row wrap align-center file-confirm-actions">
+        <button class="button primary" type="button" (click)="remove(file)">Remove the file</button>
+        <button class="button secondary" type="button" (click)="asking.set(null)">Keep it</button>
+      </div>
     </div>
     }
   </li>
