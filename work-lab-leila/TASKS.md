@@ -8471,3 +8471,9 @@ Two branches whose builders cannot sign in as a local admin or capture the site.
    fewer than 1,000 users, say so and capture the search instead), and a search result.
 One commit per branch, `docs(screenshots): #<n>'s before and after`, fetched and rebased first, pushed (no force).
 Report "images pushed" with each sha.
+
+## Report 87b, answered (15 November 2026, about 7:30 PM Central)
+
+**Decided (the director):** 1(a), keep `uploadedBy`: right call, the photo relation must not carry slides. 2(a) for
+tonight; (c), an admin Remove, is #3105 (Low, after GIS Day). 3(a), done: the director merged `development` (#3103) into
+the branch and is running the check, then opens the PR. Carry on with 89, 91, then 88.
