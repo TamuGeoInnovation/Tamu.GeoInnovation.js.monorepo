@@ -8488,3 +8488,9 @@ after only, txgisday.org and gisday.ucgis.org, unchanged. Also confirm `/favicon
 answers 200 with AggieMap's icon. To `docs/screenshots/2084-tamu-tab-icon/` with names you choose, linked from the
 release note `2084-tamu-tab-icon.md` (edit only its image table). One commit, fetched and rebased first, pushed (no
 force). Report "images pushed: <sha>".
+
+## Reports 89 and 91, answered (15 November 2026, about 8:00 PM Central)
+
+**Decided (the director):** the image tables for #3083 and #2574 are added by the director, not home (done, on their
+branches). #2574's cut-off note: the search image stands in, and the note is checked on production (already a row in
+*What to test on dev*). PRs: #1765 is PR 3109, #2574 is PR 3106, #3083's opens after its check. Carry on with 92, then 88.
