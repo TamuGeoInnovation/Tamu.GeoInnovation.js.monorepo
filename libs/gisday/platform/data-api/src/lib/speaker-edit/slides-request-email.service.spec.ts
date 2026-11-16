@@ -65,6 +65,18 @@ describe('SlidesRequestEmailService', () => {
     service = new SlidesRequestEmailService(events as never, contact() as never, links as never);
   });
 
+  // #3147: a session marked as having no slides asks nobody for any, whatever page sends it.
+  it('refuses to preview or send it for a session with no slides, and makes no link and sends nothing', async () => {
+    events.findOne.mockImplementation(async () => ({ ...session, noSlides: true }));
+
+    await expect(service.preview('e-1', 'gisday.tamu.edu')).rejects.toThrow(BadRequestException);
+    await expect(service.send('e-1', 'gisday.tamu.edu')).rejects.toThrow(
+      'No slides are needed for this session. Its speakers are not asked for any.'
+    );
+    expect(links.newLink).not.toHaveBeenCalled();
+    expect(sent).toEqual([]);
+  });
+
   it('previews it for the speakers with an address, a copy each, with a stand-in for the link; nothing is made or sent', async () => {
     const preview = await service.preview('e-1', 'gisday.tamu.edu');
 

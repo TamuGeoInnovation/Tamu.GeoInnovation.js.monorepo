@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import {
+  NO_SLIDES_FOR_SESSION,
   PROFILE_EDIT_LINK_PREVIEW,
   SLIDES_REQUEST_COPY_EACH,
   SLIDES_REQUEST_EMAIL_KIND,
@@ -69,7 +70,7 @@ export class SlidesRequestEmailService {
    * each, and who has no address. No link is made and nothing is sent.
    */
   public async preview(eventGuid: string, host?: string): Promise<SessionDetailsEmailPreview> {
-    const session = await sessionForEmail(this.events, eventGuid);
+    const session = await slidesSession(this.events, eventGuid);
     const site = gisdaySite(process.env.GISDAY_SITE, host);
     const { reachable, noAddress } = speakersOf(session);
 
@@ -125,7 +126,7 @@ export class SlidesRequestEmailService {
     }
 
     const ticked = chosenSpeakers(speakers);
-    const session = await sessionForEmail(this.events, eventGuid);
+    const session = await slidesSession(this.events, eventGuid);
     const site = gisdaySite(process.env.GISDAY_SITE, host);
     const approved = email ?? {
       subject: slidesRequestEmailSubject(session),
@@ -198,4 +199,18 @@ export class SlidesRequestEmailService {
 
     return result;
   }
+}
+
+/**
+ * The session, for its Ask for slides email, unless it has no slides (#3147): then nobody is asked for any, whether the
+ * admin's page offers the email or not.
+ */
+async function slidesSession(events: Repository<Event>, eventGuid: string): Promise<Event> {
+  const session = await sessionForEmail(events, eventGuid);
+
+  if (session.noSlides) {
+    throw new BadRequestException(`${NO_SLIDES_FOR_SESSION} Its speakers are not asked for any.`);
+  }
+
+  return session;
 }
