@@ -3,7 +3,7 @@ import { Routes } from '@angular/router';
 import { AuthGuard } from '@auth0/auth0-angular';
 
 import { RoleGuard } from '@tamu-gisc/common/ngx/auth';
-import { GISDayRoles, siteFeatureGuard } from '@tamu-gisc/gisday/platform/ngx/common';
+import { GISDayRoles, siteFeatureGuard, startSignIn } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { WrapperComponent } from './wrapper.component';
 
@@ -72,9 +72,11 @@ export const wrapperRoutes: Routes = [
         canActivate: [AuthGuard],
         loadChildren: () => import('../account/account.routes').then((m) => m.accountRoutes)
       },
-      // Both render nothing inside the wrapper: each used to lazy-load an empty NgModule with no routes
-      // of its own, and an empty `children` is the same route without the module (#1569).
-      { path: 'login', children: [] },
+      // `/login` and `/signup` start signing in, as the header's Login/Signup does (#3148). The FAQ page links to both;
+      // `/signup` had no route, so it was not found, and `/login` drew an empty page. One Auth0 page does both.
+      { path: 'login', canActivate: [startSignIn], children: [] },
+      { path: 'signup', canActivate: [startSignIn], children: [] },
+      // Renders nothing inside the wrapper: it used to lazy-load an empty NgModule with no routes of its own (#1569).
       { path: 'logout', children: [] },
       {
         path: 'forbidden',
