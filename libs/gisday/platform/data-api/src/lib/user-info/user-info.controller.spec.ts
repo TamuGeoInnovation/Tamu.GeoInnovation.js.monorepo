@@ -31,8 +31,9 @@ describe('UserInfoController, GET /users (#2574)', () => {
     listed.push(request);
 
     const perPage = Number(request['per_page'] ?? 50);
-    const word = /\*([^*]+)\*/.exec(String(request['q'] ?? ''))?.[1];
-    const matches = word ? all.filter((u) => u.name.includes(word)) : all;
+    // From the start of a word, as Auth0's v3 search matches name:word* (#3116); it refuses a leading wildcard.
+    const word = /\bname:([^*\s)]+)\*/.exec(String(request['q'] ?? ''))?.[1];
+    const matches = word ? all.filter((u) => u.name.split(/\s+/).some((w) => w.startsWith(word))) : all;
 
     const load = async (index: number) => {
       if ((index + 1) * perPage > 1000) {
@@ -114,7 +115,10 @@ describe('UserInfoController, GET /users (#2574)', () => {
       users: [{ user_info: { id: 'auth0|1040', name: 'User 1040 Zed' } }],
       truncated: false
     });
-    expect(listed[0]).toMatchObject({ q: '(name:*Zed* OR email:*Zed*)', search_engine: 'v3' });
+    expect(listed[0]).toMatchObject({
+      q: '(name:Zed* OR given_name:Zed* OR family_name:Zed* OR email:Zed*)',
+      search_engine: 'v3'
+    });
   });
 
   it('is still guarded by a token and the read:users permission', () => {
