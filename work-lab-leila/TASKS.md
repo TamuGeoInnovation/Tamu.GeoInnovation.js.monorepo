@@ -8694,3 +8694,7 @@ on `feat/3113-ask-for-slides-rebuilt`, PR 3130). Served as gisday.tamu.edu, a se
 To `docs/screenshots/3126-slides-email-design/`, plus `docs/releases/unreleased/3126-slides-email-design.md` with its
 *What to test on dev* row (`node scripts/collate-release-notes.mjs --check` passes). Send nothing to anyone. One commit,
 fetched and rebased, pushed (no force). Report "images pushed: <sha>".
+
+**Report 105, question 1 (the maintainer, 16 November 2026):** 1(a), with a loading spinner while the table recomputes.
+Filed as [#3135](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3135) (Bug, Low), for
+after GIS Day; not queued. Question 2 (the consent screen) is still with him: keep to one page per sign-in.
