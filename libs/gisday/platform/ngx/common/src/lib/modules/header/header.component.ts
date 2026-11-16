@@ -24,8 +24,7 @@ import { SeasonLinkPipe } from '../../pipes/season-link/season-link.pipe';
 import { GISDAY_SITE, SiteHasPipe } from '../../site/site';
 import { clearApiCache } from '../../utils/clear-api-cache';
 import { LockupComponent } from '@tamu-gisc/ui-kits/ngx/branding';
-import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
-import { AlertModalComponent, AlertModalData } from '@tamu-gisc/ui-kits/ngx/layout/modal/alert-modal';
+import { SignInService } from '../../site/sign-in';
 
 @Component({
   selector: 'tamu-gisc-app-header',
@@ -56,7 +55,7 @@ export class HeaderComponent implements OnInit {
   private readonly ps = inject(PlaceService);
   private readonly rt = inject(Router);
   private readonly at = inject(ActivatedRoute);
-  private readonly ms = inject(ModalService);
+  private readonly signIn = inject(SignInService);
 
   public loggedIn$: Observable<boolean>;
   public userRoles$: Observable<Array<string>>;
@@ -113,42 +112,9 @@ export class HeaderComponent implements OnInit {
     );
   }
 
+  /** Login/Signup: the shared sign-in (#3148), which `/login` and `/signup` start too, back to this page afterwards. */
   public login() {
-    const note = this.site.signInNote;
-
-    if (!note) {
-      this.signIn();
-      return;
-    }
-
-    // Another organization's sign-in page comes next, and it does not say whose account it wants (#2662).
-    this.ms
-      .open<boolean>(AlertModalComponent, {
-        data: {
-          title: note.title,
-          message: note.message,
-          image: this.site.logo,
-          imageAlt: this.site.name,
-          primaryText: 'Continue',
-          secondaryText: 'Cancel'
-        } satisfies AlertModalData
-      })
-      .subscribe((go) => {
-        if (go) {
-          this.signIn();
-        }
-      });
-  }
-
-  private signIn() {
-    this.as.login({
-      // No `prompt=login`, on any site. On UCGIS's, Auth0 passes it on to Tradewing, which then signs the visitor in to
-      // ucgis.org and never sends them back to GIS Day (#2700). So a Tradewing session left after Logout still signs
-      // the next Login/Signup straight in (#2672); only Tradewing can end it.
-      appState: {
-        target: this.rt.url
-      }
-    });
+    this.signIn.start();
   }
 
   public async logout() {
