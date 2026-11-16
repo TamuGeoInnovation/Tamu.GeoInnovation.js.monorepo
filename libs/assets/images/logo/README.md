@@ -7,6 +7,7 @@ editing one of these.
 | File | What it is |
 | --- | --- |
 | `TAM-LogoBox.svg` | The maroon box logo. The shared lockup (`@tamu-gisc/ui-kits/ngx/branding`) uses it, and so does GIS Day's Texas A&M site (#2012) |
+| `favicon.ico` | The browser-tab icon of AggieMap, which its build also copies to its root as `/favicon.ico`, and of GIS Day's Texas A&M site (#2084). It fills the tab, where `TAM-LogoBox.svg`'s margin makes it look small |
 | `TAM-Logo.svg`, `TAM-Logo-white.svg` | The logo without the box, maroon and white |
 | `TAM-PrimaryMarkBB.svg` | The box logo with a name beside it. **The name is "Aggie Map"**, drawn as shapes rather than text, so it is AggieMap's alone |
 | `TAM-PrimaryMarkBB-AggieMapp-white.svg` | The same in white, for AggieMap's loading screen |
