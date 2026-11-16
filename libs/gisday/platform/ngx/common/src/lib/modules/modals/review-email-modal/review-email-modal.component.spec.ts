@@ -611,7 +611,8 @@ describe('ReviewEmailModalComponent, choosing speakers', () => {
     const reason = 'Each speaker gets their own copy: it carries their own link to edit their profile.';
     const { fixture, page, toLine, button, close } = open('profile', { copyEachReason: reason });
 
-    expect(page.querySelectorAll('.review-email__recipients tamu-gisc-checkbox').length).toBe(3);
+    // The speakers' own boxes, not Select all (#3142).
+    expect(page.querySelectorAll('.review-email__recipients tamu-gisc-checkbox-group tamu-gisc-checkbox').length).toBe(3);
     expect(page.querySelector('.review-email__recipients tamu-gisc-radio-group')).toBeNull();
     expect(page.textContent).toContain(reason);
     expect(toLine()).toBe('To: sharmin@example.com');
