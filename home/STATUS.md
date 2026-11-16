@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch 59 (gisday: #3102)**, scrub script up to date plus a drift check; started 6:41 PM Central, 15 November.
+- Nothing. Idle and listening.
 
 ## Finished
+- **Batch 59 (gisday: #3102)** (report `home/reports/2026-11-15-59.md`): branch ready, `fix/3102-scrub-coverage` at `25e15c95c`. A check comparing scrub.sql with every entity column found 39 unnamed; all classified; script proven end to end in a throwaway SQL Server. No questions.
 - **Batch 58 (gisday)** (report `home/reports/2026-11-15-58.md`): #3038 and #3029 already done elsewhere (PRs 3071, 3072); #3039 by the director (PR 3040). Branches ready: `test/3101-route-permissions` `dee6d2403`, `fix/3083-edit-decision-message` `6d5e1ed7c`. Stalled 9:40 AM to 6:26 PM at a question to the maintainer (my mistake). No questions.
 - **Batch 55 (gisday: #3026, #3024)** (report `home/reports/2026-11-15-55.md`): both branches ready: `fix/3026-submissions-table-fit` `a4ef225fe` and `fix/3024-unread-by-site` `39f2cb518` (the API applies the site filter; the browser filter is gone). Red first; checks exit 0. No questions.
 - **Batch 57 (gisday: #3032, #3033, #3034)** (report `home/reports/2026-11-15-57.md`): three branches ready: `feat/3032-broadcast-sessions` `690bfcbfe`, `feat/3033-tag-sessions` `0f7d90368` (stacked), `feat/3034-untagged-sessions` `89b913b15`. One shared SessionsUsingComponent; admin routes behind existing permissions. Red first; checks exit 0. No questions.
