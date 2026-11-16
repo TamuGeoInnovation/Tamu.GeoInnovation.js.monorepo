@@ -13,3 +13,9 @@ what it found, or why it couldn't: another site's file, an address that refused,
 with no fields. Save says whether the form was saved, and why not. The instructions now say what can be read: a form
 file on this site or a public ArcGIS layer
 ([#2582](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2582)).
+
+| Before | After |
+| --- | --- |
+| ![Fetch Schema with this site's form file: no message, under the old ESRI-only instructions](../screenshots/2582-designer-feedback/before-fetch-ok.png) | ![This site's form file: "Found 2 fields: What did you find?, Name on the plaque or marker, or the monument's name."](../screenshots/2582-designer-feedback/after-fetch-ok.png) |
+| Nothing said while it waited | ![While it waits: "Fetching…" on the disabled button and "Fetching the schema…"](../screenshots/2582-designer-feedback/after-fetching.png) |
+| ![Fetch Schema with another site's file: nothing happens](../screenshots/2582-designer-feedback/before-fetch-other.png) | ![Another site's file: "Couldn't load that address. Use a form file on this site (/assets/competitions/...) or a public ArcGIS layer."](../screenshots/2582-designer-feedback/after-fetch-other.png) |
