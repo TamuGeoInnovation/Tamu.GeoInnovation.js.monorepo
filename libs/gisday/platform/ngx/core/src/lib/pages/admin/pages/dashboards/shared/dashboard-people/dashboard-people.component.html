@@ -9,8 +9,9 @@
   <a (click)="download()" tabindex="0" role="button" (keydown.enter)="download()" (keydown.space)="download(); $event.preventDefault()">Export as CSV <span class="material-icons action">file_download</span></a>
 </div>
 
-<!-- Wider than an opened row on a narrow screen, or with count columns, the tables scroll, as the dashboard's does (#2894). -->
-<tamu-gisc-dashboard-scroll>
+<!-- Wider than an opened row on a narrow screen, or with count columns, the tables scroll, as the dashboard's does (#2894).
+  Capped at the window's height, a long list scrolls in its box, with the box's sideways scrollbar in view (#3120). -->
+<tamu-gisc-dashboard-scroll [capped]="true">
   @for (group of groups(); track group.type) {
   <h4>{{ group.label }} ({{ group.people.length }})</h4>
   <table class="dashboard-person-table" [style.min-width.px]="minWidth()">

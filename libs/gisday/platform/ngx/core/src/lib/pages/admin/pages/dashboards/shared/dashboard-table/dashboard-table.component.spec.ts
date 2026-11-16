@@ -239,6 +239,8 @@ describe('DashboardTableComponent sideways scroll (#3029)', () => {
     expect(rail()).not.toBeNull();
     expect(rail()?.hidden).toBe(false);
     expect((rail()?.firstElementChild as HTMLElement).style.width).toBe('891px');
+    // #3120 caps an opened row's people; the table itself is as tall as its rows, its rail standing in for its scrollbar.
+    expect(box().classList).not.toContain('dashboard-scroll-capped');
   });
 
   it('scrolls the table with that scrollbar, and the scrollbar with the table', async () => {

@@ -64,3 +64,83 @@ describe('DashboardScrollComponent, one inside another', () => {
     expect(box(outer.nativeElement).classList).toContain('dashboard-scroll-railed');
   });
 });
+
+/** An opened row's people, capped, beside a box with the default: the dashboard's own table. */
+@Component({
+  imports: [DashboardScrollComponent],
+  template: `<tamu-gisc-dashboard-scroll class="plain"><table></table></tamu-gisc-dashboard-scroll>
+    <tamu-gisc-dashboard-scroll class="capped" [capped]="true"><table></table></tamu-gisc-dashboard-scroll>`
+})
+class CappedHostComponent {}
+
+/**
+ * The declarations of the capped box's rule, from the component's own stylesheet: jsdom lays nothing out, and the
+ * tests are given no component styles, so the rule the browser applies is read where it is written.
+ */
+function cappedRule(): string {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { readFileSync } = require('fs');
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { join } = require('path');
+  const scss: string = readFileSync(join(__dirname, 'dashboard-scroll.component.scss'), 'utf8');
+  const start = scss.indexOf('&.dashboard-scroll-capped {');
+
+  return start < 0 ? '' : scss.slice(start, scss.indexOf('}', start));
+}
+
+/**
+ * #3120: an opened feature type on the VGI dashboard listed 705 people, and the people's box, as tall as all of them,
+ * kept its own sideways scrollbar about 38,000 px down the page. A capped box is no taller than the window, less room for
+ * the opened row's heading above it and the dashboard table's rail below, so it scrolls inside itself and its scrollbar
+ * is in view whenever the box is. Playwright measured the real page at 1280 x 900.
+ */
+describe('DashboardScrollComponent, capped (#3120)', () => {
+  let fixture: ComponentFixture<CappedHostComponent>;
+
+  const host = (name: string) =>
+    (fixture.nativeElement as HTMLElement).querySelector(`tamu-gisc-dashboard-scroll.${name}`) as HTMLElement;
+  const box = (name: string) => host(name).querySelector(':scope > .dashboard-scroll') as HTMLElement;
+  const rail = (name: string) => host(name).querySelector(':scope > .dashboard-scroll-rail') as HTMLElement;
+  const instance = (name: string) =>
+    fixture.debugElement.queryAll(By.directive(DashboardScrollComponent)).find((d) => d.nativeElement === host(name))
+      ?.componentInstance as DashboardScrollComponent;
+
+  beforeEach(async () => {
+    TestBed.configureTestingModule({ imports: [CappedHostComponent] });
+    fixture = TestBed.createComponent(CappedHostComponent);
+    fixture.detectChanges();
+    await fixture.whenStable();
+  });
+
+  it('caps the box at the window, less room around it, and scrolls it up and down inside itself', () => {
+    expect(box('capped').classList).toContain('dashboard-scroll-capped');
+    expect(cappedRule()).toMatch(/max-height: calc\(100vh - [^;]+\);/);
+    expect(cappedRule()).toMatch(/overflow-y: auto;/);
+  });
+
+  it('keeps its own sideways scrollbar, never a rail, since its bottom is in view with the box', () => {
+    Object.defineProperty(box('capped'), 'clientWidth', { configurable: true, value: 600 });
+    Object.defineProperty(box('capped'), 'scrollWidth', { configurable: true, value: 1100 });
+    instance('capped').measure();
+    fixture.detectChanges();
+
+    expect(instance('capped').overflow()).toBeNull();
+    expect(box('capped').classList).not.toContain('dashboard-scroll-railed');
+    expect(rail('capped').hidden).toBe(true);
+  });
+
+  it('gives a short list no height of its own: a few people make a box only as tall as they are', () => {
+    expect(cappedRule()).not.toBe('');
+    expect(cappedRule()).not.toMatch(/(^|[\s;{])(min-)?height:/);
+  });
+
+  it('leaves a box uncapped unless asked, as the dashboard table is, with its rail when it is wider than the box', () => {
+    Object.defineProperty(box('plain'), 'clientWidth', { configurable: true, value: 600 });
+    Object.defineProperty(box('plain'), 'scrollWidth', { configurable: true, value: 891 });
+    instance('plain').measure();
+    fixture.detectChanges();
+
+    expect(box('plain').classList).not.toContain('dashboard-scroll-capped');
+    expect(rail('plain').hidden).toBe(false);
+  });
+});

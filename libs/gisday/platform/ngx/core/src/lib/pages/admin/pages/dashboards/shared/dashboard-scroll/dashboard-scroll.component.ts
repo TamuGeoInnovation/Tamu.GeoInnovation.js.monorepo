@@ -1,4 +1,4 @@
-import { Component, DestroyRef, ElementRef, afterNextRender, inject, signal, viewChild } from '@angular/core';
+import { Component, DestroyRef, ElementRef, afterNextRender, inject, input, signal, viewChild } from '@angular/core';
 
 /**
  * A box that scrolls its content sideways when it is wider than the box, with a second scrollbar under it, pinned to the
@@ -10,6 +10,10 @@ import { Component, DestroyRef, ElementRef, afterNextRender, inject, signal, vie
  * a sticky rail sticks to the nearest box that scrolls, here the outer one, so it was never in view, and a box with a rail
  * hides its own scrollbar, which left nothing showing the people could be scrolled (#2894, the lab's retake). Making the
  * rail stick to the window instead is not possible from inside a scrolling box, so the inner box keeps the plain rule.
+ *
+ * A `capped` box is never taller than the window, less room around it, and scrolls up and down inside itself, so its own
+ * sideways scrollbar is in view whenever the box is (#3120). An opened row's people are capped: 705 people under one VGI
+ * feature type put their box's scrollbar about 38,000 px down the page.
  */
 @Component({
   selector: 'tamu-gisc-dashboard-scroll',
@@ -22,6 +26,11 @@ export class DashboardScrollComponent {
    * that wide and scrolls with it, so the hidden columns can be found and reached without scrolling to the bottom.
    */
   public readonly overflow = signal<number | null>(null);
+  /**
+   * Whether the box is capped at the window's height. Its bottom, and so its own scrollbar, is then in view with the
+   * box, and it has no rail. A box that fits is only as tall as its content.
+   */
+  public readonly capped = input(false);
   private readonly box = viewChild.required<ElementRef<HTMLElement>>('box');
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly rail = viewChild.required<ElementRef<HTMLElement>>('rail');
@@ -47,8 +56,8 @@ export class DashboardScrollComponent {
   public measure() {
     const { scrollWidth, clientWidth } = this.box().nativeElement;
 
-    // Nested, the box keeps its own scrollbar, never a rail.
-    this.overflow.set(scrollWidth > clientWidth && !this.nested() ? scrollWidth : null);
+    // Nested or capped, the box keeps its own scrollbar, never a rail.
+    this.overflow.set(scrollWidth > clientWidth && !this.nested() && !this.capped() ? scrollWidth : null);
   }
 
   /**
