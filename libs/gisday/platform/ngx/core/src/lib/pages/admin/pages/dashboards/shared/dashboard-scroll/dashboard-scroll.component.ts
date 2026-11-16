@@ -1,6 +1,13 @@
 import { Component, DestroyRef, ElementRef, afterNextRender, inject, input, signal, viewChild } from '@angular/core';
 
 /**
+ * How long a resized box waits after the last change to its width before it measures its content again (#3135). The
+ * content can be laid out after the box: ngx-datatable recomputes its columns from a ResizeObserver of its own, a few
+ * milliseconds later, and dragging a window's edge resizes the box many times. Measured once, after the last of them.
+ */
+export const DASHBOARD_SCROLL_SETTLE_MS = 250;
+
+/**
  * A box that scrolls its content sideways when it is wider than the box, with a second scrollbar under it, pinned to the
  * bottom of the window while any of the box is in view (#3029). A dashboard's table can be 60 rows long, and the box's
  * own scrollbar is at its bottom, out of sight. Moved here from the dashboard table, so its people's tables, which grew
@@ -31,9 +38,18 @@ export class DashboardScrollComponent {
    * box, and it has no rail. A box that fits is only as tall as its content.
    */
   public readonly capped = input(false);
+  /**
+   * Whether the box has changed width and its content is being laid out again (#3135): the shared spinner shows over
+   * it until the content has settled and its rail has been measured again, so the moment between the old layout and
+   * the new one does not read as broken.
+   */
+  public readonly settling = signal(false);
   private readonly box = viewChild.required<ElementRef<HTMLElement>>('box');
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly rail = viewChild.required<ElementRef<HTMLElement>>('rail');
+  /** The box's width when last seen, or null before it has been. */
+  private width: number | null = null;
+  private settle: ReturnType<typeof setTimeout> | undefined;
 
   constructor() {
     const destroyRef = inject(DestroyRef);
@@ -45,12 +61,40 @@ export class DashboardScrollComponent {
       }
 
       const box = this.box().nativeElement;
-      const observer = new ResizeObserver(() => this.measure());
+      const observer = new ResizeObserver(() => this.resized());
 
       observer.observe(box);
       Array.from(box.children).forEach((child) => observer.observe(child));
-      destroyRef.onDestroy(() => observer.disconnect());
+      destroyRef.onDestroy(() => {
+        observer.disconnect();
+        clearTimeout(this.settle);
+      });
     });
+  }
+
+  /**
+   * Measures the box at once when only its content changed (an opened row), or when it is first seen. When the box
+   * itself changed width, as on a resized window, its content is laid out again after it: the box waits for that, with
+   * the spinner showing, and measures once it has settled. Measured at once, a box resized from 1280 to 1024 px kept
+   * the rail it had before the table recomputed its columns (#3135).
+   */
+  public resized() {
+    const width = this.box().nativeElement.clientWidth;
+    const changed = this.width !== null && width !== this.width;
+
+    this.width = width;
+
+    if (!changed && !this.settling()) {
+      this.measure();
+      return;
+    }
+
+    this.settling.set(true);
+    clearTimeout(this.settle);
+    this.settle = setTimeout(() => {
+      this.measure();
+      this.settling.set(false);
+    }, DASHBOARD_SCROLL_SETTLE_MS);
   }
 
   public measure() {
