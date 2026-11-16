@@ -8852,3 +8852,8 @@ its tab says "Already signed in | <site>", and its message now reads "There is n
 use another account, log out first." **Do not change the code.** Retake `after-signed-in.png` as in batch 112, signed in
 as the test admin, and say what the page and the tab say. One commit on the branch, fetched and rebased, pushed (no force).
 Report "images pushed: <sha>".
+
+**Report 113, answered (the director):** 1(a), both blues on #3143's branch (the shared slide toggle's edge reads
+`--toggle-shadow-color`, the radio group's tick `--radio-active-color`, each with its old blue as the fallback, set under the
+Texas A&M brand); a retake will follow once its check passes. 2(a): yes, move your usual stack to the latest `development`,
+as the first step of the next batch that needs it, and say in that report which commit it is on.
