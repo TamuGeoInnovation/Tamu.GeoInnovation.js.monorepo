@@ -1,3 +1,5 @@
+@import 'libs/gisday/sass/variables';
+
 :host {
   display: block;
 }
@@ -30,5 +32,17 @@
   th {
     overflow-wrap: normal;
     word-break: normal;
+  }
+
+  // In the capped box, which scrolls up and down inside itself (#3120), each table's headings stay at the box's top while
+  // its rows scroll under them, so a reader 300 people down still sees which column is which (#3125). The box is the
+  // nearest element that scrolls, and nothing between it and the table clips. The page's background hides the rows
+  // underneath. Not libs/sass's floating-table, the one other sticky heading: its padding and nowrap cells would
+  // restyle the table.
+  thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: $background;
   }
 }
