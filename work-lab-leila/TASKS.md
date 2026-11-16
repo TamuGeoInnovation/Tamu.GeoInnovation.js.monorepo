@@ -8664,3 +8664,12 @@ box, with its scrollbar always in view, in the shared `DashboardScrollComponent`
 adds. Branch `fix/3120-people-scroll-cap` from `feat/2894-vgi-dashboard` (fork) and say so; it rebases on `development`
 once PR 3121 merges. Tests red first; the bug-fix check; before/after screenshots (the 705-person type at 1280 px); a
 release note. Report "branch ready".
+
+## Report 104, answered; batch 105 (gisday: a fresh 1024 px check of the dashboard table)
+
+**Decided (the director):** `fix/3120-people-scroll-cap`'s PR waits for PR 3121 (#2894) to merge, then the director
+rebuilds it on `development` and opens it; don't push to it meanwhile. 1(b) is filed as #3125 (Low), for later. 2(a):
+**batch 105, now:** on `development`, load Admin, Dashboards (RSVPs and Check-ins) **fresh at 1024 px** (a new page, not
+a resize) and say whether the main table's last columns are reachable, with the #3029 rail. If they are not, that is a
+regression of #3029: file it (Bug, `bug`, assignee danielgoldbergtamu) and say so. If they are, note the resize-only
+case and stop. Screenshots of what you see, to the report only (not a branch). Report "report ready".
