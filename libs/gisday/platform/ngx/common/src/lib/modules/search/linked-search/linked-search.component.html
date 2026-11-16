@@ -1,0 +1,9 @@
+<tamu-gisc-textbox type="text" [placeholder]="placeholder()" [formControl]="control()" [clearable]="true" clearLabel="Clear the search">
+  <!-- Copy inside the box, in its own action slot, as AggieMap's copy field holds its Copy (#2923), beside the
+       textbox's own clear (#2963). -->
+  @if (control().value.trim()) {
+  <span class="textbox-actions search-actions">
+    <span class="copy-button" clipboard-copy [text]="link()" (copying)="copied$ = $event" [class.copying]="copied$ | async" copy-label="Copied!" tabindex="0" role="button" [attr.aria-label]="copyLabel()" (keydown.enter)="$any($event.target).click()" (keydown.space)="$any($event.target).click(); $event.preventDefault()">Copy link</span>
+  </span>
+  }
+</tamu-gisc-textbox>

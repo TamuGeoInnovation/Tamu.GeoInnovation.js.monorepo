@@ -1,25 +1,15 @@
+import { sessionTime } from '@tamu-gisc/gisday/common';
+
 /**
- * Accepts a date string (date.toDateString()) and a time string (date.toTimeString())
- * and returns a Date object with the date and time set to the values of the input strings.
+ * Accepts an event day's date and a stored time (`09:00:00 GMT-0600 (Central Standard Time)`) and returns the
+ * instant the session starts or ends, or null when either is missing or cannot be read.
  *
- * This is useful for event dates and times which are stored as separate columns in the database.
+ * This is useful for event dates and times which are stored as separate columns in the database. The day is taken
+ * as its calendar date in Central time, wherever the visitor is, as check-in does (`sessionTime`, #2710). It used to
+ * be the visitor's own date, which further west is the day before, so a Thursday session was put on Wednesday.
  */
 export function parseDateStrings(dateString: string | Date, timeString: string) {
-  if (!dateString || !timeString) {
-    return null;
-  }
-
-  // A date string can be a partial date string, e.g. "Mon Nov 09 2020" or a full date string, e.g. "Mon Nov 09 2020 00:00:00 GMT-0600 (Central Standard Time)"
-  // We can get the date string from the parsed date object, but we need to parse the time string manually.
-  const dateFromDateString = dateString instanceof Date ? dateString.toDateString() : new Date(dateString).toDateString();
-
-  // A qualified date string is a composite of a date string and a time string, separated by a space.
-  // Knowing this, we can parse a new date using the two values.
-  const qualifiedDateString = `${dateFromDateString} ${timeString}`;
-
-  const parsedDateTime = new Date(qualifiedDateString);
-
   // A stored time that cannot be read, such as "Invalid Date" (#1772), answers null like a missing one.
   // An invalid Date makes Angular's date pipe throw, which took the whole Sessions page down.
-  return isNaN(parsedDateTime.getTime()) ? null : parsedDateTime;
+  return sessionTime(dateString, timeString);
 }

@@ -10,6 +10,12 @@
 
     <div class="form-section-body">
       <div class="form-collection column pad-top">
+        <p class="trailer-1">Indicate the hosting organization (required). Address is inherited from the selected organization, and sessions at a venue without one are left off the Sessions page.</p>
+
+        <tamu-gisc-select formControlName="place" [data]="places$ | async" [valueTemplate]="'guid'" [displayTemplate]="'name'" [placeholder]="'Select hosting organization'"> </tamu-gisc-select>
+      </div>
+
+      <div class="form-collection column">
         <tamu-gisc-textbox formControlName="building" placeholder="Venue Name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
       </div>
 
@@ -26,19 +32,19 @@
       </div>
 
       <div class="form-collection column">
-        <p class="trailer-1">Indicate the hosting organization. Address is inherited from the selected organization.</p>
-
-        <tamu-gisc-select formControlName="place" [data]="places$ | async" [valueTemplate]="'guid'" [displayTemplate]="'name'" [placeholder]="'Select hosting organization'"> </tamu-gisc-select>
-      </div>
-
-      <div class="form-collection column">
         <p class="trailer-1">A venue is typically assumed to be within an organization's host campus/building. In some cases, sessions may be hosted in venues in the surrounding area (restaurant, bar, conference center, etc). Use this field to display a different street address than the hosting organization.</p>
         <tamu-gisc-textbox formControlName="streetAddressOverride" placeholder="Street Address Override (Optional)" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
       </div>
 
       <div class="form-collection column">
-        <p class="trailer-1">Attendees of an in-person session here can only check in from inside this zone, or close enough that their phone's reported accuracy (up to {{ checkInMaxAccuracy }} m) reaches it. Type its corners in order around it, one per line, each as <em>latitude, longitude</em>: in Google Maps, right-click a corner and click the coordinates to copy them. Leave it empty for no location check. Hybrid and virtual sessions never check location.</p>
-        <tamu-gisc-textbox formControlName="checkInZoneText" placeholder="Check-In Zone Corners (Optional)" type="textarea" [rows]="5" [floatLabel]="true"> </tamu-gisc-textbox>
+        <p class="trailer-1">Attendees of an in-person session here can only check in from inside this zone, or close enough that their phone's reported accuracy (up to {{ checkInMaxAccuracy }} m) reaches it. Draw it on the map: click <em>Draw</em>, click each corner in turn and double-click the last; click the zone to drag a corner or the whole zone. Or type its corners in order around it, one per line, each as <em>latitude, longitude</em>: in Google Maps, right-click a corner and click the coordinates to copy them. The map and the box show the same zone. Leave it empty for no location check. Hybrid and virtual sessions never check location.</p>
+        <div class="form-collection row stack-narrow flex align-start">
+          <tamu-gisc-textbox formControlName="checkInZoneText" placeholder="Check-In Zone Corners (Optional)" type="textarea" [rows]="5" [floatLabel]="true"> </tamu-gisc-textbox>
+          <!-- Esri's map loads only once the form has drawn, with the rest of ArcGIS (#3078). -->
+          @defer (on immediate) {
+          <tamu-gisc-polygon-editor [corners]="zoneCorners()" (cornersChange)="setZoneFromMap($event)"></tamu-gisc-polygon-editor>
+          }
+        </div>
       </div>
     </div>
   </div>

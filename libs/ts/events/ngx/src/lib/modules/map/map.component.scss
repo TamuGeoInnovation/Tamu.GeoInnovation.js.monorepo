@@ -54,3 +54,22 @@
     top: 4.25rem;
   }
 }
+
+// On a phone, Esri's locate button heads the stack of round Legend and Layers buttons (#2642). Its button is drawn in
+// its own shadow root at 32px, so the element is zoomed to their 40px and clipped round, rather than restyled inside.
+arcgis-track.overlay-locate {
+  display: block;
+  zoom: 1.25;
+  border-radius: 99rem;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 30%);
+
+  // Calcite draws its focus ring square, inside the shadow root, where the clipping cuts its corners off. The ring is
+  // kept, for whoever moves by keyboard, and drawn round on the element instead.
+  --calcite-color-focus: transparent;
+
+  &:focus-within {
+    outline: 2px solid rgb(0 122 194);
+    outline-offset: -2px;
+  }
+}

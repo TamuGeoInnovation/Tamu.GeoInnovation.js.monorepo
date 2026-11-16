@@ -1,14 +1,10 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { Observable } from 'rxjs';
-
-import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 
 import { EventConfiguration } from '../../interfaces/special-event.interface';
 import { EventSettingsService } from '../../services/settings/event-settings.service';
 
 import { TamuBlockBrandingComponent } from '@tamu-gisc/ui-kits/ngx/branding';
 import { RouterOutlet } from '@angular/router';
-import { AsyncPipe } from '@angular/common';
 import { SidebarComponent } from '@tamu-gisc/common/ngx/ui/sidebar';
 import { SidebarTabComponent } from '@tamu-gisc/common/ngx/ui/sidebar';
 import { PopupComponent } from '@tamu-gisc/maps/feature/popup';
@@ -24,22 +20,13 @@ import { RevealSidebarOnPopupDirective } from '@tamu-gisc/maps/feature/popup';
     PopupComponent,
     RevealSidebarOnPopupDirective,
     TamuBlockBrandingComponent,
-    RouterOutlet,
-    AsyncPipe
+    RouterOutlet
   ]
 })
 export class MoveInOutSidebarComponent implements OnInit {
   private readonly eventSettingsService = inject(EventSettingsService);
-  private readonly testing = inject(TestingService);
 
   public configuration: EventConfiguration | null;
-
-  /** Development and localhost only; gates the Directions tab while routing is unpublished (#1003). */
-  public isDev: Observable<boolean>;
-
-  constructor() {
-    this.isDev = this.testing.get('isTesting');
-  }
 
   public ngOnInit(): void {
     this.configuration = this.eventSettingsService.eventConfiguration()?.configuration ?? null;

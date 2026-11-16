@@ -51,7 +51,5 @@
   <div [innerHTML]="data.attributes.description| markdownParse"></div>
   }
   <!-- Directions To Button -->
-  @if (directionsAvailable | async) {
   <div class="button" [attr.building-number]="data.attributes.name" (tamuGiscActivate)="startDirections()">Directions To Here</div>
-  }
 </div>

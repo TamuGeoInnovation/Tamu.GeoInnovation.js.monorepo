@@ -90,6 +90,8 @@ const dictionary = {
   Point: () => import('@arcgis/core/geometry/Point.js'),
   Polygon: () => import('@arcgis/core/geometry/Polygon.js'),
   Polyline: () => import('@arcgis/core/geometry/Polyline.js'),
+  // A circle of a radius on the ground, for how far off a phone's location may be (#2625).
+  Circle: () => import('@arcgis/core/geometry/Circle.js'),
   FeatureLayer: () => import('@arcgis/core/layers/FeatureLayer.js'),
   SceneLayer: () => import('@arcgis/core/layers/SceneLayer.js'),
   // Esri moved it to layers/support. The old esri/views/layers/support path this dictionary named 404s on

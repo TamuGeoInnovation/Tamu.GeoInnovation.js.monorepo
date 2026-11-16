@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, input } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Observable, combineLatest, distinctUntilChanged, filter, map, merge, of, race, shareReplay, startWith, switchMap, take } from 'rxjs';
 
 import { Organization, Speaker, University } from '@tamu-gisc/gisday/platform/data-api';
@@ -15,6 +15,7 @@ import {
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { formToFormData } from '../../../../../utils/form-to-form-data';
+import { classBannerSpeaker } from '../../../../../utils/speakers';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { FileComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -23,6 +24,7 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
 import { SpeakerClassBannerComponent } from '../../../../people/components/speaker-class-banner/speaker-class-banner.component';
 import { ImagePreviewComponent } from '../../../../images/components/image-preview/image-preview.component';
+import { injectBackToList } from '../../../admin-details-page';
 
 @Component({
   selector: 'tamu-gisc-speaker-add-edit-form',
@@ -43,7 +45,8 @@ import { ImagePreviewComponent } from '../../../../images/components/image-previ
 })
 export class SpeakerAddEditFormComponent implements OnInit {
   private readonly fb = inject(UntypedFormBuilder);
-  private readonly rt = inject(Router);
+  /** Leaves for the list once a save, create or delete has worked: the one the page was opened from (#2965). */
+  private readonly backToList = injectBackToList('/admin/speakers');
   private readonly at = inject(ActivatedRoute);
   private readonly ss = inject(SpeakerService);
   private readonly as = inject(AssetsService);
@@ -94,15 +97,7 @@ export class SpeakerAddEditFormComponent implements OnInit {
     this.bannerSpeaker$ = combineLatest([
       this.form.valueChanges.pipe(startWith(this.form.getRawValue())),
       this.universities$.pipe(startWith([] as Array<Partial<University>>))
-    ]).pipe(
-      map(
-        ([value, universities]) =>
-          ({
-            university: (universities ?? []).find((university) => university.guid === value.university) ?? null,
-            graduationYear: value.graduationYear ?? ''
-          }) as Partial<Speaker>
-      )
-    );
+    ]).pipe(map(([value, universities]) => classBannerSpeaker(value.university, value.graduationYear, universities)));
 
     this.entity$ = this.at.params.pipe(
       map((params) => params.guid),
@@ -240,6 +235,6 @@ export class SpeakerAddEditFormComponent implements OnInit {
   }
 
   private _navigateBack() {
-    this.rt.navigate(['/admin/speakers']);
+    this.backToList();
   }
 }

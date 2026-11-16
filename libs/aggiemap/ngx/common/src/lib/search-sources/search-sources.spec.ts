@@ -17,6 +17,8 @@ describe('SearchSources', () => {
   // the partial fixture assignable without enumerating every unrelated connection.
   const connections = {
     basemapUrl: 'https://example.com/basemap',
+    buildingsUrl: 'https://example.com/buildings/FeatureServer/0',
+    surfaceLotsUrl: 'https://example.com/buildings/FeatureServer/6',
     departmentUrl: 'https://example.com/department',
     bikeRacksUrl: 'https://example.com/bike-racks',
     accessibleUrl: 'https://example.com/accessible',
@@ -40,6 +42,12 @@ describe('SearchSources', () => {
       layerId: 'poi-layer',
       name: 'Points of Interest',
       url: 'https://example.com/poi'
+    },
+    NATURE_RX: {
+      id: 'nature-rx',
+      layerId: 'nature-rx-layer',
+      name: 'Nature Rx',
+      url: 'https://example.com/nature-rx'
     },
     BUILDINGS: {
       id: 'buildings',
@@ -117,7 +125,7 @@ describe('SearchSources', () => {
 
   it('should return all search sources when no options are provided', () => {
     const result = SearchSources(connections, definitions);
-    expect(result.length).toBe(15); // Ensure the number of search sources matches
+    expect(result.length).toBe(17); // Ensure the number of search sources matches
   });
 
   it('should exclude specified search sources', () => {
@@ -125,7 +133,7 @@ describe('SearchSources', () => {
       exclude: ['BUILDING', 'BIKE_RACKS']
     };
     const result = SearchSources(connections, definitions, options);
-    expect(result.length).toBe(13); // Ensure the number of search sources matches after exclusion
+    expect(result.length).toBe(15); // Ensure the number of search sources matches after exclusion
     expect(result.find((source) => source.source === 'building')).toBeUndefined();
     expect(result.find((source) => source.source === 'bike-racks')).toBeUndefined();
   });
@@ -135,7 +143,7 @@ describe('SearchSources', () => {
       exclude: []
     };
     const result = SearchSources(connections, definitions, options);
-    expect(result.length).toBe(15); // Ensure the number of search sources matches
+    expect(result.length).toBe(17); // Ensure the number of search sources matches
   });
 
   it('should return an empty array if all search sources are excluded', () => {
@@ -154,6 +162,8 @@ describe('SearchSources', () => {
         'PARKING_LOT',
         'POINTS_OF_INTEREST_EXACT',
         'POINTS_OF_INTEREST',
+        'NATURE_RX_EXACT',
+        'NATURE_RX',
         'BIKE_RACKS',
         'BUS_STOPS_EXACT'
       ]
@@ -191,11 +201,12 @@ describe('SearchSources', () => {
     const bldgExact = result.find((source) => source.source === 'building-exact');
     const bldgExactAbbr = result.find((source) => source.source === 'building-exact-abbr');
 
-    // `?bldg=1510` style links query the building Number field.
+    // `?bldg=1510` style links query the building's unpadded `number` field, on the buildings service (#2707).
     expect(bldgExact?.urlQueryParam).toBe('bldg');
     expect(bldgExact?.urlQueryParamAliases).toEqual(['Bldg']);
+    expect(bldgExact?.url).toBe(connections.buildingsUrl);
     expect(bldgExact?.queryParams?.where).toEqual({
-      keys: ['Number'],
+      keys: ['number'],
       operators: ['=']
     });
 
@@ -203,7 +214,7 @@ describe('SearchSources', () => {
     expect(bldgExactAbbr?.urlQueryParam).toBe('BldgAbbrv');
     expect(bldgExactAbbr?.urlQueryParamAliases).toEqual(['bldgabbrv', 'BldgAbbr', 'bldgabbr']);
     expect(bldgExactAbbr?.queryParams?.where).toEqual({
-      keys: ['BldgAbbrev'],
+      keys: ['bldgabbrev'],
       operators: ['='],
       transformations: ['UPPER']
     });
@@ -216,10 +227,12 @@ describe('SearchSources', () => {
     expect(parkingLot?.urlQueryParam).toBe('lot');
     expect(parkingLot?.urlQueryParamAliases).toEqual(['Lot']);
 
-    // `?lot=077` (zero-padded, as TS parking map links are) has to match on FAC_CODE; `?lot=77`
-    // matches on Name. Dropping either key makes one of the two link styles unresolvable.
+    // `?lot=077` (zero-padded, as TS parking map links are) has to match on fac_code; `?lot=77`
+    // matches on name. Dropping either key makes one of the two link styles unresolvable. The lots come from the
+    // surface lots service, whose field names are lower case (#2722).
+    expect(parkingLot?.url).toBe(connections.surfaceLotsUrl);
     expect(parkingLot?.queryParams?.where).toEqual({
-      keys: ['LotName', 'Name', 'FAC_CODE'],
+      keys: ['lotname', 'name', 'fac_code'],
       operators: ['LIKE', 'LIKE', 'LIKE'],
       wildcards: ['includes', 'includes', 'includes'],
       transformations: ['UPPER', 'UPPER', 'UPPER']
@@ -228,7 +241,7 @@ describe('SearchSources', () => {
     // Multiple polygons share a lot's name and facility code. Without an explicit ordering the
     // service answers in OBJECTID order and `features[0]` lands on whichever loading, restricted,
     // or visitor sub-area was digitized first - the Lot 77 and Lot 97 deep link defect.
-    expect(parkingLot?.queryParams?.orderByFields).toBe('AggieMap DESC, CIT_CODE ASC');
-    expect(parkingLot?.scoringKeys).toEqual(['attributes.Name', 'attributes.FAC_CODE', 'attributes.LotName']);
+    expect(parkingLot?.queryParams?.orderByFields).toBe('aggiemap DESC, cit_code ASC');
+    expect(parkingLot?.scoringKeys).toEqual(['attributes.name', 'attributes.fac_code', 'attributes.lotname']);
   });
 });

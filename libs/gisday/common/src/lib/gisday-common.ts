@@ -58,6 +58,12 @@ export const CHECK_IN_CODE_PARAM = 'checkin';
 export const CHECK_IN_CODE_MESSAGE = "Check in to this session by scanning the QR code on the presenter's slides.";
 
 /**
+ * What admins see beside a check-in made outside its session's time, which a session open at any time
+ * allows (#2635).
+ */
+export const OUTSIDE_SESSION_TIME_LABEL = 'Outside Session Time Check-In';
+
+/**
  * Minutes after a session's end that check-in stays open, for attendees who check in late.
  */
 export const CHECK_IN_GRACE_MINUTES = 15;
@@ -84,7 +90,27 @@ export function checkInWindow(
   startTime: string | undefined | null,
   endTime: string | undefined | null
 ): { opens: Date; closes: Date } | null {
-  if (!day || !startTime || !endTime) {
+  const opens = sessionTime(day, startTime);
+  const closes = sessionTime(day, endTime);
+
+  if (!opens || !closes) {
+    return null;
+  }
+
+  closes.setMinutes(closes.getMinutes() + CHECK_IN_GRACE_MINUTES);
+
+  return { opens, closes };
+}
+
+/**
+ * The instant a session starts or ends: its stored time (`16:00:00 GMT-0600 (Central Standard Time)`) on its day's
+ * calendar date in Central time. The same wherever the visitor is: a day arrives as midnight Central, which further
+ * west is still the day before (#2710). The offset, when present, is honoured; without one the time is Central time.
+ *
+ * @returns `null` when the day or the time is missing or cannot be read (#1772).
+ */
+export function sessionTime(day: Date | string | undefined | null, time: string | undefined | null): Date | null {
+  if (!day || !time) {
     return null;
   }
 
@@ -94,17 +120,7 @@ export function checkInWindow(
     return null;
   }
 
-  const calendarDay = centralParts(date);
-  const opens = atTime(calendarDay, startTime);
-  const closes = atTime(calendarDay, endTime);
-
-  if (!opens || !closes) {
-    return null;
-  }
-
-  closes.setMinutes(closes.getMinutes() + CHECK_IN_GRACE_MINUTES);
-
-  return { opens, closes };
+  return atTime(centralParts(date), time);
 }
 
 /**
@@ -117,6 +133,39 @@ export function isCheckInOpen(
   const window = checkInWindow(session?.day?.date, session?.startTime, session?.endTime);
 
   return window !== null && now >= window.opens && now <= window.closes;
+}
+
+/**
+ * What a session's page says before its check-in opens (#3077): the time in Central, with the day when it is not
+ * today in Central. An attendee who scans a QR code early learns why nothing happened, and when to scan again.
+ */
+export function checkInOpensMessage(opens: Date, now: Date = new Date()): string {
+  return `Check-in opens ${checkInOpensAt(opens, now)}.`;
+}
+
+/**
+ * When check-in opens, in Central time: "at 2:00 PM" on the same Central day as `now`, otherwise "on Wednesday,
+ * November 18 at 2:00 PM". The page's message and the API's refusal both say it this way (#3077, #3089).
+ */
+export function checkInOpensAt(opens: Date, now: Date = new Date()): string {
+  const time = new Intl.DateTimeFormat('en-US', { timeZone: GISDAY_TIME_ZONE, hour: 'numeric', minute: '2-digit' }).format(
+    opens
+  );
+  const a = centralParts(opens);
+  const b = centralParts(now);
+
+  if (a.year === b.year && a.month === b.month && a.day === b.day) {
+    return `at ${time}`;
+  }
+
+  const day = new Intl.DateTimeFormat('en-US', {
+    timeZone: GISDAY_TIME_ZONE,
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric'
+  }).format(opens);
+
+  return `on ${day} at ${time}`;
 }
 
 /**

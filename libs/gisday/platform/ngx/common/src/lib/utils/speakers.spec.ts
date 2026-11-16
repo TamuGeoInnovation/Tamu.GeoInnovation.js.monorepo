@@ -1,6 +1,12 @@
 import { Speaker } from '@tamu-gisc/gisday/platform/data-api';
 
-import { isAggieFormerStudent, shortClassYear, sortSpeakersByAffiliation, speakerAffiliation } from './speakers';
+import {
+  classBannerSpeaker,
+  isAggieFormerStudent,
+  shortClassYear,
+  sortSpeakersByAffiliation,
+  speakerAffiliation
+} from './speakers';
 
 const person = (firstName: string, lastName: string, organization?: string, affiliation?: string) =>
   ({ firstName, lastName, organization: organization ? { name: organization } : null, affiliation }) as Partial<Speaker>;
@@ -22,6 +28,28 @@ describe('shortClassYear', () => {
     expect(shortClassYear(undefined)).toBe('');
     expect(shortClassYear('')).toBe('');
     expect(shortClassYear('Spring')).toBe('');
+  });
+});
+
+describe('classBannerSpeaker (#2956)', () => {
+  const universities = [
+    { guid: 'u-1', acronym: 'ESU', hexTriplet: '500000' },
+    { guid: 'u-2', acronym: 'STECH', hexTriplet: '0039a6' }
+  ];
+
+  it('finds the chosen university in the list, with the year typed', () => {
+    expect(classBannerSpeaker('u-2', '2018', universities)).toEqual({ university: universities[1], graduationYear: '2018' });
+  });
+
+  it('has no university when none is chosen, the one chosen is not in the list, or the list has not loaded', () => {
+    expect(classBannerSpeaker('', '2018', universities).university).toBeNull();
+    expect(classBannerSpeaker(null, '2018', universities).university).toBeNull();
+    expect(classBannerSpeaker('u-9', '2018', universities).university).toBeNull();
+    expect(classBannerSpeaker('u-1', '2018', null).university).toBeNull();
+  });
+
+  it('gives a missing year as an empty string', () => {
+    expect(classBannerSpeaker('u-1', null, universities).graduationYear).toBe('');
   });
 });
 

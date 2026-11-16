@@ -267,7 +267,7 @@ test.describe('legend', () => {
 
       await listItem.locator('p').click();
 
-      await expect(listItem, `the Layers list does not show ${title} off`).not.toHaveClass(/visible/);
+      await expect(listItem, `the Layers list does not show ${title} off`).not.toHaveClass(/\bvisible\b/);
       await expect(entrySymbol, `the legend still lists ${title} after it was switched off`).toBeHidden({ timeout: 30_000 });
 
       await listItem.locator('p').click();

@@ -6,7 +6,8 @@ import { blockAnalytics } from './analytics';
 import { loadBuilderTargets } from './builder-destinations';
 import { directionsAvailable, directionsEntryPoints } from './directions';
 import { describePaint, waitForPaint } from './paint';
-import { environmentIsDevelopment, isDevelopmentHostRequest } from './gis-hosts';
+import { isDevelopmentUrl } from './gis-hosts';
+import { describeTitles, judgeTitles } from './layer-titles';
 
 /**
  * Behaviours 1 and 2 of #1034, for every map the target environment lists.
@@ -38,7 +39,6 @@ const MIN_MAPS = Number(process.env.AGGIEMAP_SMOKE_MIN_MAPS ?? 55);
  * The two environments legitimately differ, and so does a local run, so a single strict expectation
  * cannot fit all three:
  *
- * - **Production**: `TS/Bus_Routes` is not published, so the bus layers fail there and not on dev.
  * - **Development**: the development GIS server does not host every service production does.
  * - **A local run**: `Dining Locations` is fetched from `api.aggiemap.tamu.edu`, whose CORS
  *   allowlist names specific origins. `127.0.0.1:4200` is on it; the address a container reaches the
@@ -82,6 +82,10 @@ interface ProbeLayer {
 
   /** Absent on builds older than this field; see the symbology check below. */
   symbology?: 'own' | 'portal' | 'service' | 'default' | null;
+
+  /** Absent on builds older than this field; see the title check below. */
+  serviceName?: string | null;
+  basemap?: boolean;
 }
 
 interface ProbeSnapshot {
@@ -157,7 +161,7 @@ for (const { mapPath, loadPath, title, borrowedFrom } of cases) {
 
     page.on('pageerror', (error) => pageErrors.push(error.message));
     page.on('request', (request) => {
-      if (isDevelopmentHostRequest(request.url())) {
+      if (isDevelopmentUrl(request.url())) {
         developmentHostRequests.push(request.url());
       }
     });
@@ -297,6 +301,34 @@ for (const { mapPath, loadPath, title, borrowedFrom } of cases) {
         `with the reason beside it (docs/map-layers.md)`
     ).toEqual([]);
 
+    // Each layer shows the name its service publishes, or a title declared on purpose in
+    // layer-title-overrides.json (#2731). A layer that did not load is reported as that and its name is not judged:
+    // an untitled layer that never loaded shows a name ArcGIS makes from its service's address, which reads exactly
+    // like a naming fault, and on 8 November 2026 a correct change was reverted on that misreading (#2728). Load
+    // failures are the next check's business.
+    //
+    // Soft, so a naming fault does not hide whether the map loads and draws. Skipped on a build older than the
+    // probe's `serviceName`, which cannot answer.
+    if (snapshot.layers.some((l) => l.serviceName !== undefined)) {
+      const titles = judgeTitles(mapPath, snapshot.layers);
+
+      test.info().annotations.push({ type: 'layer titles', description: describeTitles(titles) });
+
+      expect
+        .soft(
+          titles
+            .filter((l) => l.verdict === 'wrong' || l.verdict === 'declared, not shown')
+            .map((l) =>
+              l.verdict === 'wrong'
+                ? `${l.id} shows "${l.title}"; its service names it "${l.serviceName}"`
+                : `${l.id} shows "${l.title}"; layer-title-overrides.json declares "${l.declared}"`
+            ),
+          `${mapPath} has layers whose title is neither their service's name nor a declared override ` +
+            `(test/smoke/aggiemap/layer-title-overrides.json, docs/map-layers.md)`
+        )
+        .toEqual([]);
+    }
+
     const failed = snapshot.layers.filter((l) => l.error !== null);
     const tolerated = failed.filter(
       (l) => ALLOWED_LAYER_FAILURES.includes(l.title) || ALLOWED_LAYER_FAILURES.includes(l.id)
@@ -362,7 +394,7 @@ for (const { mapPath, loadPath, title, borrowedFrom } of cases) {
     //
     // One-directional: development legitimately reaches production services, so nothing is asserted
     // there. `gis-hosts.ts` carries the rule and its own tests.
-    if (!environmentIsDevelopment(manifest.baseUrl)) {
+    if (!isDevelopmentUrl(manifest.baseUrl)) {
       expect(
         [...new Set(developmentHostRequests)],
         `${mapPath} requested a development host from ${manifest.baseUrl}`

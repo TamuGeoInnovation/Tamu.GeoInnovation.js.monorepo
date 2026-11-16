@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 
 import { BaseDirectionsComponent } from '../base-directions/base-directions.component';
 import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
-import { AsyncPipe } from '@angular/common';
 import { ActivateDirective } from '@tamu-gisc/ui-kits/ngx/interactions/keyboard';
 
 /**
@@ -17,7 +16,7 @@ import { ActivateDirective } from '@tamu-gisc/ui-kits/ngx/interactions/keyboard'
   selector: 'tamu-gisc-parking-garage-popup-component',
   templateUrl: '../parking-lot/parking-lot.component.html',
   styleUrls: ['../base/base.popup.component.scss'],
-  imports: [CopyComponent, AsyncPipe, ActivateDirective]
+  imports: [CopyComponent, ActivateDirective]
 })
 export class ParkingGaragePopupComponent extends BaseDirectionsComponent {
   /** The garage code (`CCG`) where there is one, else its name; the garage search source matches either. */

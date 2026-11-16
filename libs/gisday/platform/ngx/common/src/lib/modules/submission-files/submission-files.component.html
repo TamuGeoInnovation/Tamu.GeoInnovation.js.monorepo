@@ -1,0 +1,31 @@
+@if (editable()) {
+<!-- Always shown, not only as the picker's placeholder, which goes while a file uploads and once the limit is reached (#2938). -->
+<p class="files-limits">PowerPoint (.ppt, .pptx) or PDF · up to {{ limit }} each · up to {{ rules.maxFiles }} files</p>
+} @if (files(); as files) { @if (files.length === 0 && !uploading()) {
+<p class="files-empty">No files attached yet.</p>
+} @else {
+<ul class="files">
+  @for (file of files; track file.guid) {
+  <li class="file">
+    <button type="button" class="inline-link file-name" [disabled]="busy() === file.guid" (click)="download(file)">{{ file.name }}</button>
+    <span class="file-detail">{{ size(file.size) }} · {{ file.uploaded | date: 'MMM d, h:mm a' }}</span>
+    @if (editable()) {
+    <button type="button" class="inline-link danger" [disabled]="busy() === file.guid" (click)="remove(file)">Remove</button>
+    }
+  </li>
+  } @if (uploading(); as upload) {
+  <li class="file">
+    <span class="file-name">{{ upload.name }}</span>
+    <progress max="100" [value]="upload.percent"></progress>
+    <span class="file-detail">{{ upload.percent }}%</span>
+  </li>
+  }
+</ul>
+} @if (editable() && !uploading() && files.length < rules.maxFiles) {
+<!-- The shared picker, wearing the site's .button, so it reads as something to press rather than a line of text (#2938). -->
+<tamu-gisc-file class="button snug" [accept]="rules.accept" (fileSelected)="upload($event)">Attach a file</tamu-gisc-file>
+} @if (problem(); as problem) {
+<p class="files-problem" role="alert">{{ problem }}</p>
+} } @else {
+<div class="loader"></div>
+}

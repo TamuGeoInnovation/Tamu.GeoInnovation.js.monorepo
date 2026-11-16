@@ -26,16 +26,21 @@ export class SeasonDayService extends BaseProvider<SeasonDay> {
           const eventTagGuids = e.tags?.map((t) => t.guid) || [];
           const eventOrgGuids = e.speakers.filter((s) => s.organization !== null).map((s) => s.organization.guid) || [];
           const placeGuids = e.location?.place?.guid ? [e.location.place.guid] : [];
+          // Their names only, which the Presenters page shows already, so the Sessions list can be searched by them (#2944).
+          const presenterNames = e.speakers
+            .map((s) => [s.firstName, s.lastName].filter((part) => part?.trim()).join(' '))
+            .filter((name) => name.length > 0);
 
-          // Don't send the speakers, they're not needed. They're only needed to
-          // get the participating organizations for an event.
+          // Don't send the speakers themselves, only what is taken from them above: a speaker's email and account
+          // are not for the public list.
           delete e.speakers;
 
           return {
             ...e,
             tags: eventTagGuids,
             affiliations: eventOrgGuids,
-            organizations: placeGuids
+            organizations: placeGuids,
+            presenters: presenterNames
           };
         });
 

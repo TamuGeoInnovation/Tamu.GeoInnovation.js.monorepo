@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
-import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
+import { AllowAny, JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 import { DEFAULT_UPLOAD_LIMITS } from '@tamu-gisc/common/nest/services';
 
 import { Sponsor } from '../entities/all.entity';
@@ -11,16 +11,24 @@ import { SponsorProvider } from './sponsor.provider';
 export class SponsorController {
   constructor(private readonly provider: SponsorProvider) {}
 
+  // Read by the public pages and the admin pages alike. The token, when there is one, says whether the caller may
+  // see the private fields, which PrivateFieldsInterceptor removes otherwise (contact details, a speaker's email).
+  @UseGuards(JwtGuard)
+  @AllowAny()
   @Get('season/active')
   public getActive() {
     return this.provider.getSponsorsForActiveSeason();
   }
 
+  @UseGuards(JwtGuard)
+  @AllowAny()
   @Get('season/:guid')
   public getSponsorsForSeason(@Param('guid') seasonGuid: string) {
     return this.provider.getSponsorsForSeason(seasonGuid);
   }
 
+  @UseGuards(JwtGuard)
+  @AllowAny()
   @Get(':guid')
   public async getEntity(@Param('guid') guid) {
     return this.provider.findOne({
@@ -31,6 +39,8 @@ export class SponsorController {
     });
   }
 
+  @UseGuards(JwtGuard)
+  @AllowAny()
   @Get()
   public async getEntities() {
     return this.provider.find({

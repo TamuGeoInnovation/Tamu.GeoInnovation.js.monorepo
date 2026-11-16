@@ -112,6 +112,28 @@ It writes the pages for browsing a whole baselines folder ([#2345][2345]):
 Run it again after anything changes; on the cluster every capture, comparison and clean-up does. It reads
 only what is on disk, so a folder of older sets works too.
 
+### Picking pages that look wrong
+
+**Every comparison row and every gallery picture has a "pick" box** ([#2841][2841]). Tick the pages that look
+wrong and a bar at the bottom of the page gives:
+
+- **Copy the list:** one line per page (route, viewport, how much changed), with full links to its before, after
+  and what-changed pictures, for an issue, a chat or a lab batch;
+- **Copy a link to these:** the same page with the picks in the address (`#pick=`), which opens showing only them;
+- **Copy the retake command:** `start-capture.ps1` for just those pages, as a retake of the set;
+- **Copy the compare command:** `start-compare.ps1` for the retake against the set, a page with only those pages.
+
+Picks are remembered in that browser, so they can be gathered over several visits. Nothing is sent anywhere:
+the page is static, and starting the retake is still a command, because a button that did it would need a
+service allowed to start cluster Jobs and a sign-in.
+
+**A retake is not a release.** `--recheck` puts it under `<kind>-recheck/` and names it after the time
+(`dev-2026-11-10-recheck-20261110-1228`). The clean-up keeps three of them apart from the releases, and the
+poller neither compares a retake nor compares the next release with one. `--only` also matches a route's
+file name exactly, which is what a pick gives: a builder destination's route has `?`, `&` and `=`, which
+`start-capture.ps1 -Only` refuses. A comparison whose two sets were served different bundles says so at the
+top, since a retake after a new deploy photographs a different build.
+
 **The pages use the repository's shared styles**, not their own: `pages.scss` brings in `libs/sass` (the
 `.button`, the `floating-table`, spacing and fonts) and All Maps' `discover-shared.scss` (the page shell,
 section headings and `.chip` labels), and `page.mjs` compiles it into each page, for `review.mjs` too. So
@@ -193,4 +215,5 @@ out. Neither run meant anything and both had to be thrown away.
 [2346]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2346
 [2347]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2347
 [2357]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2357
+[2841]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2841
 [2364]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2364

@@ -2,15 +2,13 @@
   <div class="form-section">
     <div class="form-section-toolbar">
       <div class="form-section-name">Student Competitions</div>
-
-      <div class="form-section-actions">
-        <a routerLink="add">New submission <span class="material-icons action">add</span></a>
-      </div>
     </div>
 
     <div class="form-section-body">
       <div>
         <p class="trailer-1">Submit your work for <a routerLink="/competitions" target="_blank">TX GIS Day's yearly student competitions</a>, open to all undergraduate and graduate students!</p>
+        <!-- A button, not the toolbar's small text link: students wrote in that they could not find how to submit (#451). -->
+        <a class="button trailer-1" routerLink="add">New submission</a>
       </div>
 
       @if ((presentationSubmissions$ | async)?.length > 0) {

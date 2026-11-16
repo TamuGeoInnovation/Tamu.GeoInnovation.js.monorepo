@@ -6,12 +6,13 @@ import { expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
 import { readGraphicTypes } from './framing';
 import { BUS_NOTICE, BUS_PANEL, BUS_ROUTE, MANIFEST_PATH, MapManifest } from './global-setup';
+import { smokeBaseUrl } from './gis-hosts';
 
 /**
  * Every bus route draws its stops, and choosing a route shows them (#1174).
  *
- * The bus panel lists a route's stops from the route's own `Stop1`..`Stop31` fields, but the map draws
- * them from the Bus Stops layer, finding the stops whose `Route` field names the route. When the two
+ * The bus panel lists a route's stops from the route's own `stop1`, `stop2`, ... fields, but the map draws
+ * them from the Bus Stops layer, finding the stops whose `route` field names the route. When the two
  * disagree, a route is drawn with its stops listed in the panel and none on the map: five routes did
  * exactly that on dev (NW0104, NW0305, NW4041, 15R, 47/48), because no stop in the layer was tagged
  * with them.
@@ -24,11 +25,12 @@ import { BUS_NOTICE, BUS_PANEL, BUS_ROUTE, MANIFEST_PATH, MapManifest } from './
  * Drawn graphics are read through the map probe's `graphicTypes` for the bus routes layer: the line is
  * tagged `route` and each stop `waypoints`.
  *
- * Where bus routes are not offered (production, until `TS/Bus_Routes` is published there) the panel
- * shows a notice instead, and these tests skip. They start checking there as soon as routes appear.
+ * Bus routes are offered on every environment since #2789. They were development-only until then (#1229), and these
+ * tests skipped where the panel showed its "unavailable" notice instead; that notice now fails them, so a gate put
+ * back cannot pass unseen.
  */
 
-const BASE_URL = process.env.AGGIEMAP_SMOKE_BASE_URL ?? 'https://aggiemap.tamu.edu';
+const BASE_URL = smokeBaseUrl();
 const PROBE_GLOBAL = '__tamuGiscMapProbe';
 const BUS_LAYER = 'bus-route-layer';
 
@@ -42,8 +44,7 @@ function allowedFailures(): Record<string, string> {
   const environments: Record<string, EnvironmentSettings> = JSON.parse(
     fs.readFileSync(path.join(__dirname, 'environments.json'), 'utf8')
   );
-  const normalised = BASE_URL.replace(/\/$/, '');
-  const match = Object.values(environments).find((env) => env.baseUrl.replace(/\/$/, '') === normalised);
+  const match = Object.values(environments).find((env) => env.baseUrl.replace(/\/$/, '') === BASE_URL);
 
   return match?.allowedBusRouteFailures ?? {};
 }
@@ -100,7 +101,9 @@ async function openBusPanel(page: Page): Promise<Locator> {
   const notice = page.locator(BUS_NOTICE);
 
   await expect(routes.first().or(notice)).toBeVisible({ timeout: 60_000 });
-  test.skip(await notice.isVisible(), 'bus routes are not offered on this environment yet');
+  // Offered on every environment since #2789, so the panel's "unavailable" notice is a regression, not a reason to
+  // skip: skipping is how a gate put back would go unnoticed.
+  expect(await notice.isVisible(), 'the bus panel says bus routes are unavailable here (#2789)').toBe(false);
 
   return routes;
 }

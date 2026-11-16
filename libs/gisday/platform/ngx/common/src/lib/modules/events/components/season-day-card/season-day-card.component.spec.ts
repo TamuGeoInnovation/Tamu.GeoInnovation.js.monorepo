@@ -62,6 +62,71 @@ describe('SeasonDayCardComponent', () => {
     expect(names()).toEqual(['Texas A&M keynote']);
   });
 
+  /**
+   * #2708. Each day is headed with its weekday, and in Central time whatever the visitor's own: the API sends a day as
+   * midnight Central, which in Pacific time is still the evening before.
+   */
+  it('heads the day with its weekday, month and day, in Central time', () => {
+    TestBed.configureTestingModule({
+      providers: [provideRouter([]), { provide: SeasonDayService, useValue: { getDayEvents: () => of([]) } }]
+    });
+
+    const heading = (date: string) => {
+      const fixture = TestBed.createComponent(SeasonDayCardComponent);
+      fixture.componentRef.setInput('seasonDay', { guid: 'day', date: date as unknown as Date });
+      fixture.detectChanges();
+
+      return (fixture.nativeElement as HTMLElement).querySelector('h2').textContent.trim();
+    };
+
+    expect(heading('2026-11-19T06:00:00.000Z')).toBe('Thursday, November 19');
+    expect(heading('2026-11-09T06:00:00.000Z')).toBe('Monday, November 9');
+    // The last moment of the Central day, already the next day in UTC.
+    expect(heading('2026-11-20T05:59:00.000Z')).toBe('Thursday, November 19');
+  });
+
+  /**
+   * #2944. The Sessions page's search: the card lists the sessions whose name, building, room or presenter matches,
+   * alongside the tags, says how many it shows, and is left out altogether when a search finds none of its sessions.
+   */
+  it('lists only the sessions the search finds, and leaves the day out when it finds none', () => {
+    const events = [
+      { guid: 'a', name: 'Opening keynote', location: { building: 'Rudder Tower', room: '301' }, presenters: ['José Ortiz'], tags: ['t'], organizations: [] },
+      { guid: 'b', name: 'Mapathon', location: { building: 'Evans Library', room: '204' }, presenters: [], tags: [], organizations: [] }
+    ];
+
+    TestBed.configureTestingModule({
+      providers: [provideRouter([]), { provide: SeasonDayService, useValue: { getDayEvents: () => of(events) } }]
+    });
+
+    const fixture = TestBed.createComponent(SeasonDayCardComponent);
+    const counts: Array<number> = [];
+    fixture.componentInstance.matches.subscribe((count) => counts.push(count));
+    fixture.componentRef.setInput('seasonDay', { guid: 'day', date: new Date(2026, 10, 16) });
+    fixture.componentRef.setInput('search', 'jose');
+    fixture.detectChanges();
+
+    const root = fixture.nativeElement as HTMLElement;
+    const names = () => Array.from(root.querySelectorAll('tamu-gisc-event-row .name'), (name) => name.textContent);
+
+    expect(names()).toEqual(['Opening keynote']);
+    expect(counts[counts.length - 1]).toBe(1);
+
+    fixture.componentRef.setInput('search', 'library');
+    fixture.componentRef.setInput('tags', ['t']);
+    fixture.detectChanges();
+
+    expect(root.querySelector('.card')).toBeNull();
+    expect(counts[counts.length - 1]).toBe(0);
+
+    // With no search, a filter that matches nothing still says so in the day's card, as before.
+    fixture.componentRef.setInput('search', '');
+    fixture.componentRef.setInput('tags', ['none']);
+    fixture.detectChanges();
+
+    expect(root.querySelector('.card')?.textContent).toContain('No matching events for filter criteria.');
+  });
+
   it('lists every place when the site lists them all', () => {
     const events = [
       { guid: 'a', name: 'Texas A&M keynote', tags: [], organizations: ['tamu-place'] },

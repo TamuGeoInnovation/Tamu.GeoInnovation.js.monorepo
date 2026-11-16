@@ -1,0 +1,1864 @@
+{
+  "_about": "The quick tier's committed pairs (#2655). Keyed by OBJECTID; abbrev and name are what each building was called when the pair was added, so a basemap republish that renumbers buildings stops the run instead of testing the wrong ones. Add every pair a run flags, with why, so a found fault stays found. The stratified part came from `run.mjs sample`.",
+  "pairs": [
+    {
+      "from": {
+        "id": 1623,
+        "abbrev": "AGSV",
+        "name": "AgriLife Services Building"
+      },
+      "to": {
+        "id": 1629,
+        "abbrev": "HCRB",
+        "name": "Human Clinical Research Building"
+      },
+      "why": "worst ratio measured in #2655 (2.59, 201 m straight)"
+    },
+    {
+      "from": {
+        "id": 1666,
+        "abbrev": "2RPK",
+        "name": "2 Research Park"
+      },
+      "to": {
+        "id": 1672,
+        "abbrev": "CEN",
+        "name": "Centeq Building"
+      },
+      "why": "second-worst measured in #2655 (2.06)"
+    },
+    {
+      "from": {
+        "id": 1144,
+        "abbrev": "ARCB",
+        "name": "Architecture Building B"
+      },
+      "to": {
+        "id": 1257,
+        "abbrev": "MCFA",
+        "name": "McFadden Residence Hall"
+      },
+      "why": "best measured in #2655 (1.12)"
+    },
+    {
+      "from": {
+        "id": 1044,
+        "abbrev": "ARTF",
+        "name": "Aquaculture Research Teaching Facility"
+      },
+      "to": {
+        "id": 1915,
+        "abbrev": null,
+        "name": "RELLIS Multiuse Facility 8610"
+      },
+      "why": "largest detour from ARTF on 6 November 2026 (+12.7 km, 2.19x)"
+    },
+    {
+      "from": {
+        "id": 1044,
+        "abbrev": "ARTF",
+        "name": "Aquaculture Research Teaching Facility"
+      },
+      "to": {
+        "id": 1143,
+        "abbrev": "DPDC",
+        "name": "Davis Football Player Development Center"
+      },
+      "why": "no route from ARTF on 6 November 2026"
+    },
+    {
+      "from": {
+        "id": 1044,
+        "abbrev": "ARTF",
+        "name": "Aquaculture Research Teaching Facility"
+      },
+      "to": {
+        "id": 1145,
+        "abbrev": "BFC",
+        "name": "Bright-Slocum Center Texas A&M Football"
+      },
+      "why": "no route from ARTF on 6 November 2026"
+    },
+    {
+      "from": {
+        "id": 1044,
+        "abbrev": "ARTF",
+        "name": "Aquaculture Research Teaching Facility"
+      },
+      "to": {
+        "id": 1655,
+        "abbrev": "EBCS",
+        "name": "E.B. Cushing Stadium"
+      },
+      "why": "no route from ARTF on 6 November 2026"
+    },
+    {
+      "from": {
+        "id": 1044,
+        "abbrev": "ARTF",
+        "name": "Aquaculture Research Teaching Facility"
+      },
+      "to": {
+        "id": 1226,
+        "abbrev": "YMCA",
+        "name": "YMCA Building"
+      },
+      "why": "no route from ARTF on 6 November 2026"
+    },
+    {
+      "from": {
+        "id": 1146,
+        "abbrev": "KYLE",
+        "name": "Kyle Field"
+      },
+      "to": {
+        "id": 1143,
+        "abbrev": "DPDC",
+        "name": "Davis Football Player Development Center"
+      },
+      "why": "Kyle Field to the football player development center next to it: is DPDC reachable at all?"
+    },
+    {
+      "from": {
+        "id": 1206,
+        "abbrev": "MSC",
+        "name": "Memorial Student Center"
+      },
+      "to": {
+        "id": 1145,
+        "abbrev": "BFC",
+        "name": "Bright-Slocum Center Texas A&M Football"
+      },
+      "why": "MSC to the Bright-Slocum football center: is BFC reachable at all?"
+    },
+    {
+      "from": {
+        "id": 1206,
+        "abbrev": "MSC",
+        "name": "Memorial Student Center"
+      },
+      "to": {
+        "id": 1250,
+        "abbrev": "ZACH",
+        "name": "Zachry Engineering Education Complex"
+      },
+      "why": "MSC to Zachry: a walk people ask the trip planner for"
+    },
+    {
+      "from": {
+        "id": 1206,
+        "abbrev": "MSC",
+        "name": "Memorial Student Center"
+      },
+      "to": {
+        "id": 1146,
+        "abbrev": "KYLE",
+        "name": "Kyle Field"
+      },
+      "why": "MSC to Kyle Field: game day"
+    },
+    {
+      "from": {
+        "id": 1201,
+        "abbrev": "RDER",
+        "name": "Rudder Tower"
+      },
+      "to": {
+        "id": 1252,
+        "abbrev": "HELD",
+        "name": "Heldenfels Hall"
+      },
+      "why": "Rudder to Heldenfels: across the center of campus"
+    },
+    {
+      "from": {
+        "id": 1253,
+        "abbrev": "BLOC",
+        "name": "Blocker Building"
+      },
+      "to": {
+        "id": 1250,
+        "abbrev": "ZACH",
+        "name": "Zachry Engineering Education Complex"
+      },
+      "why": "Blocker to Zachry: west to east campus"
+    },
+    {
+      "from": {
+        "id": 1232,
+        "abbrev": "FERM",
+        "name": "Fermier Hall"
+      },
+      "to": {
+        "id": 1756,
+        "abbrev": "UACC",
+        "name": "Gardens Community Center"
+      },
+      "why": "stratified sample, 1-2 km"
+    },
+    {
+      "from": {
+        "id": 1257,
+        "abbrev": "MCFA",
+        "name": "McFadden Residence Hall"
+      },
+      "to": {
+        "id": 1622,
+        "abbrev": "AGLS",
+        "name": "Agriculture and Life Sciences Building"
+      },
+      "why": "stratified sample, 1-2 km"
+    },
+    {
+      "from": {
+        "id": 1183,
+        "abbrev": "HOTA",
+        "name": "Hotard Hall"
+      },
+      "to": {
+        "id": 1628,
+        "abbrev": "PEBC",
+        "name": "Physical Education Boot Camp and Archery Annex"
+      },
+      "why": "stratified sample, 1-2 km"
+    },
+    {
+      "from": {
+        "id": 1238,
+        "abbrev": "UCO",
+        "name": "Utilities & Energy Services Central Office"
+      },
+      "to": {
+        "id": 1600,
+        "abbrev": "HFSB",
+        "name": "Horticulture/Forest Science Building"
+      },
+      "why": "stratified sample, 1-2 km"
+    },
+    {
+      "from": {
+        "id": 2036,
+        "abbrev": "CS11",
+        "name": "Century Square #11"
+      },
+      "to": {
+        "id": 1591,
+        "abbrev": "UBO",
+        "name": "Utilities & Energy Services Business Office"
+      },
+      "why": "stratified sample, 1-2 km"
+    },
+    {
+      "from": {
+        "id": 1304,
+        "abbrev": "SCSFGH",
+        "name": "SCS Forage Greenhouse"
+      },
+      "to": {
+        "id": 1672,
+        "abbrev": "CEN",
+        "name": "Centeq Building"
+      },
+      "why": "stratified sample, 1-2 km"
+    },
+    {
+      "from": {
+        "id": 1688,
+        "abbrev": "RPSW",
+        "name": "Research Park Switching Station"
+      },
+      "to": {
+        "id": 1618,
+        "abbrev": "NMR",
+        "name": "Nuclear Magnetic Resonance Facility"
+      },
+      "why": "stratified sample, 1-2 km"
+    },
+    {
+      "from": {
+        "id": 1386,
+        "abbrev": "BCC",
+        "name": "Biological Control Facility"
+      },
+      "to": {
+        "id": 1174,
+        "abbrev": "WHIT",
+        "name": "White Hall-Dorm 10"
+      },
+      "why": "stratified sample, 1-2 km"
+    },
+    {
+      "from": {
+        "id": 1252,
+        "abbrev": "HELD",
+        "name": "Heldenfels Hall"
+      },
+      "to": {
+        "id": 1592,
+        "abbrev": "SUP1",
+        "name": "Satellite Utility Plant No. 1"
+      },
+      "why": "stratified sample, 1-2 km"
+    },
+    {
+      "from": {
+        "id": 1661,
+        "abbrev": "BLDG A",
+        "name": "White Creek Apartments A"
+      },
+      "to": {
+        "id": 1147,
+        "abbrev": "CLAC",
+        "name": "Williams Alumni Center"
+      },
+      "why": "stratified sample, 1-2 km"
+    },
+    {
+      "from": {
+        "id": 2016,
+        "abbrev": "CC04",
+        "name": "Cavalry Court #04"
+      },
+      "to": {
+        "id": 1416,
+        "abbrev": "VMSB",
+        "name": "TVMC-Surgery Building"
+      },
+      "why": "stratified sample, 1-2 km"
+    },
+    {
+      "from": {
+        "id": 1712,
+        "abbrev": "VMR",
+        "name": "Vet Med Research Bldg Addition"
+      },
+      "to": {
+        "id": 1246,
+        "abbrev": "DRTY",
+        "name": "Doherty Building"
+      },
+      "why": "stratified sample, 1-2 km"
+    },
+    {
+      "from": {
+        "id": 1217,
+        "abbrev": "EVANS",
+        "name": "Evans Library"
+      },
+      "to": {
+        "id": 1302,
+        "abbrev": "FLSV",
+        "name": "Fleet Services"
+      },
+      "why": "stratified sample, 1-2 km"
+    },
+    {
+      "from": {
+        "id": 1637,
+        "abbrev": "PISC",
+        "name": "Penberthy Intramural Sports Center"
+      },
+      "to": {
+        "id": 1213,
+        "abbrev": "PSYC",
+        "name": "Psychology Building"
+      },
+      "why": "stratified sample, 1-2 km"
+    },
+    {
+      "from": {
+        "id": 1647,
+        "abbrev": "WCTC",
+        "name": "Omar Smith Instructional Tennis Center"
+      },
+      "to": {
+        "id": 1252,
+        "abbrev": "HELD",
+        "name": "Heldenfels Hall"
+      },
+      "why": "stratified sample, 1-2 km"
+    },
+    {
+      "from": {
+        "id": 1197,
+        "abbrev": "DUNN",
+        "name": "Dunn Residence Hall"
+      },
+      "to": {
+        "id": 1997,
+        "abbrev": "PW 1600",
+        "name": "Park West A - 1600"
+      },
+      "why": "stratified sample, 1-2 km"
+    },
+    {
+      "from": {
+        "id": 2013,
+        "abbrev": "PW 6100",
+        "name": "Park West Q - 6100"
+      },
+      "to": {
+        "id": 1638,
+        "abbrev": "CMCB",
+        "name": "Cox-McFerrin Center for Aggie Basketball"
+      },
+      "why": "stratified sample, 1-2 km"
+    },
+    {
+      "from": {
+        "id": 1076,
+        "abbrev": "SEBHC",
+        "name": "Schubot Exotic Bird Health Center"
+      },
+      "to": {
+        "id": 1597,
+        "abbrev": "CMAT",
+        "name": "Cater-Mattil Hall"
+      },
+      "why": "stratified sample, 1-2 km"
+    },
+    {
+      "from": {
+        "id": 1325,
+        "abbrev": "VMCA",
+        "name": "TVMC-Caged Animals"
+      },
+      "to": {
+        "id": 1235,
+        "abbrev": "HALB",
+        "name": "Halbouty Geosciences Building"
+      },
+      "why": "stratified sample, 1-2 km"
+    },
+    {
+      "from": {
+        "id": 1233,
+        "abbrev": "THOM",
+        "name": "Thompson Hall"
+      },
+      "to": {
+        "id": 1677,
+        "abbrev": "HTB",
+        "name": "Health Technologies Building"
+      },
+      "why": "stratified sample, 1-2 km"
+    },
+    {
+      "from": {
+        "id": 1182,
+        "abbrev": "WALT",
+        "name": "Walton Residence Hall"
+      },
+      "to": {
+        "id": 1198,
+        "abbrev": "OMB",
+        "name": "Eller Oceanography & Meteorology Building"
+      },
+      "why": "stratified sample, 500 m-1 km"
+    },
+    {
+      "from": {
+        "id": 1560,
+        "abbrev": "HLBL",
+        "name": "Hullabaloo Residence Hall"
+      },
+      "to": {
+        "id": 1618,
+        "abbrev": "NMR",
+        "name": "Nuclear Magnetic Resonance Facility"
+      },
+      "why": "stratified sample, 500 m-1 km"
+    },
+    {
+      "from": {
+        "id": 1103,
+        "abbrev": "WELL",
+        "name": "Wells Residence Hall"
+      },
+      "to": {
+        "id": 1163,
+        "abbrev": "ARCA",
+        "name": "Langford Architecture Center Building A"
+      },
+      "why": "stratified sample, 500 m-1 km"
+    },
+    {
+      "from": {
+        "id": 2032,
+        "abbrev": "CS05",
+        "name": "Century Square #05"
+      },
+      "to": {
+        "id": 1148,
+        "abbrev": "CHAN",
+        "name": "Chemistry"
+      },
+      "why": "stratified sample, 500 m-1 km"
+    },
+    {
+      "from": {
+        "id": 1606,
+        "abbrev": "SCIG",
+        "name": "Southern Crop Improvement Greenhouse"
+      },
+      "to": {
+        "id": 1064,
+        "abbrev": "WCOB04",
+        "name": "West Campus Office Building 04"
+      },
+      "why": "stratified sample, 500 m-1 km"
+    },
+    {
+      "from": {
+        "id": 1160,
+        "abbrev": "MEOB",
+        "name": "Mechanical Engineering Office Building"
+      },
+      "to": {
+        "id": 1190,
+        "abbrev": "MOSH",
+        "name": "Mosher Residence Hall"
+      },
+      "why": "stratified sample, 500 m-1 km"
+    },
+    {
+      "from": {
+        "id": 2004,
+        "abbrev": "PW 5000",
+        "name": "Park West H - 5000"
+      },
+      "to": {
+        "id": 1655,
+        "abbrev": "EBCS",
+        "name": "E.B. Cushing Stadium"
+      },
+      "why": "stratified sample, 500 m-1 km"
+    },
+    {
+      "from": {
+        "id": 1109,
+        "abbrev": "MPHY",
+        "name": "Mitchell Physics Building"
+      },
+      "to": {
+        "id": 1226,
+        "abbrev": "YMCA",
+        "name": "YMCA Building"
+      },
+      "why": "stratified sample, 500 m-1 km"
+    },
+    {
+      "from": {
+        "id": 1995,
+        "abbrev": "UC10",
+        "name": "U Centre #10"
+      },
+      "to": {
+        "id": 1240,
+        "abbrev": "EIC",
+        "name": "Engineering Innovation Center"
+      },
+      "why": "stratified sample, 500 m-1 km"
+    },
+    {
+      "from": {
+        "id": 1711,
+        "abbrev": "OTSC",
+        "name": "Office of the State Chemist Building"
+      },
+      "to": {
+        "id": 1605,
+        "abbrev": "WCL",
+        "name": "West Campus Library"
+      },
+      "why": "stratified sample, 500 m-1 km"
+    },
+    {
+      "from": {
+        "id": 1168,
+        "abbrev": "FOUN",
+        "name": "Fountain Hall-Dorm 4"
+      },
+      "to": {
+        "id": 1231,
+        "abbrev": "HEAT",
+        "name": "Heaton Hall"
+      },
+      "why": "stratified sample, 500 m-1 km"
+    },
+    {
+      "from": {
+        "id": 1596,
+        "abbrev": "HPCT",
+        "name": "HEEP Center"
+      },
+      "to": {
+        "id": 1239,
+        "abbrev": "CUP",
+        "name": "Central Utility Plant"
+      },
+      "why": "stratified sample, 500 m-1 km"
+    },
+    {
+      "from": {
+        "id": 1451,
+        "abbrev": "VMTF",
+        "name": "Theriogenology Facility, Equine Reproduction"
+      },
+      "to": {
+        "id": 1605,
+        "abbrev": "WCL",
+        "name": "West Campus Library"
+      },
+      "why": "stratified sample, 500 m-1 km"
+    },
+    {
+      "from": {
+        "id": 2018,
+        "abbrev": "CC05",
+        "name": "Cavalry Court #05"
+      },
+      "to": {
+        "id": 1189,
+        "abbrev": "ARCC",
+        "name": "Architecture Building C"
+      },
+      "why": "stratified sample, 500 m-1 km"
+    },
+    {
+      "from": {
+        "id": 1250,
+        "abbrev": "ZACH",
+        "name": "Zachry Engineering Education Complex"
+      },
+      "to": {
+        "id": 1567,
+        "abbrev": "BLDG K",
+        "name": "The Gardens K"
+      },
+      "why": "stratified sample, 500 m-1 km"
+    },
+    {
+      "from": {
+        "id": 1613,
+        "abbrev": "SPHC",
+        "name": "School of Public Health - Classroom Bldg"
+      },
+      "to": {
+        "id": 1599,
+        "abbrev": "MSTC",
+        "name": "Rosenthal Meat Science & Technology Center"
+      },
+      "why": "stratified sample, 500 m-1 km"
+    },
+    {
+      "from": {
+        "id": 1208,
+        "abbrev": "EABC",
+        "name": "Engineering Activities Bldg C"
+      },
+      "to": {
+        "id": 1250,
+        "abbrev": "ZACH",
+        "name": "Zachry Engineering Education Complex"
+      },
+      "why": "stratified sample, 500 m-1 km"
+    },
+    {
+      "from": {
+        "id": 1343,
+        "abbrev": "AEPM",
+        "name": "Ag Engineering Power & Machinery Building"
+      },
+      "to": {
+        "id": 1230,
+        "abbrev": "BLTN",
+        "name": "Bolton Hall"
+      },
+      "why": "stratified sample, 500 m-1 km"
+    },
+    {
+      "from": {
+        "id": 1986,
+        "abbrev": "UC01",
+        "name": "U Centre #01"
+      },
+      "to": {
+        "id": 1156,
+        "abbrev": "RICH",
+        "name": "Joe C. Richardson Petroleum Engineering Building"
+      },
+      "why": "stratified sample, 500 m-1 km"
+    },
+    {
+      "from": {
+        "id": 1226,
+        "abbrev": "YMCA",
+        "name": "YMCA Building"
+      },
+      "to": {
+        "id": 1205,
+        "abbrev": "DCAN",
+        "name": "Duncan Dining Hall"
+      },
+      "why": "stratified sample, 500 m-1 km"
+    },
+    {
+      "from": {
+        "id": 1993,
+        "abbrev": "UC08",
+        "name": "U Centre #08"
+      },
+      "to": {
+        "id": 1800,
+        "abbrev": "WWTP",
+        "name": "Wastewater Treatment Plant"
+      },
+      "why": "stratified sample, 2 km +"
+    },
+    {
+      "from": {
+        "id": 1204,
+        "abbrev": "BSBW",
+        "name": "Biological Sciences Bldg West"
+      },
+      "to": {
+        "id": 2012,
+        "abbrev": "PW 6200",
+        "name": "Park West P - 6200"
+      },
+      "why": "stratified sample, 2 km +"
+    },
+    {
+      "from": {
+        "id": 1988,
+        "abbrev": "UC03",
+        "name": "U Centre #03"
+      },
+      "to": {
+        "id": 1676,
+        "abbrev": "WCSS",
+        "name": "West Campus Social Sciences Building"
+      },
+      "why": "stratified sample, 2 km +"
+    },
+    {
+      "from": {
+        "id": 1765,
+        "abbrev": "MREB",
+        "name": "Medical Research & Education Bldg (old HSC 1001)"
+      },
+      "to": {
+        "id": 1213,
+        "abbrev": "PSYC",
+        "name": "Psychology Building"
+      },
+      "why": "stratified sample, 2 km +"
+    },
+    {
+      "from": {
+        "id": 1194,
+        "abbrev": "HECC",
+        "name": "Harrington Education Center Classroom Building"
+      },
+      "to": {
+        "id": 1767,
+        "abbrev": "HSTEL",
+        "name": "HSC Telecommunications Bldg (old HSC 1003)"
+      },
+      "why": "stratified sample, 2 km +"
+    },
+    {
+      "from": {
+        "id": 1771,
+        "abbrev": "CB1",
+        "name": "Clinical Building 1 (old HSC 2000)"
+      },
+      "to": {
+        "id": 1252,
+        "abbrev": "HELD",
+        "name": "Heldenfels Hall"
+      },
+      "why": "stratified sample, 2 km +"
+    },
+    {
+      "from": {
+        "id": 1104,
+        "abbrev": "RUDD",
+        "name": "Rudder Residence Hall"
+      },
+      "to": {
+        "id": 2006,
+        "abbrev": "PW 3000",
+        "name": "Park West J - 3000/4000"
+      },
+      "why": "stratified sample, 2 km +"
+    },
+    {
+      "from": {
+        "id": 1670,
+        "abbrev": "DLH",
+        "name": "Donald L. Houston Building"
+      },
+      "to": {
+        "id": 1222,
+        "abbrev": "GLAS",
+        "name": "Melbern G. Glasscock Building"
+      },
+      "why": "stratified sample, 2 km +"
+    },
+    {
+      "from": {
+        "id": 1416,
+        "abbrev": "VMSB",
+        "name": "TVMC-Surgery Building"
+      },
+      "to": {
+        "id": 2001,
+        "abbrev": "PW 1200",
+        "name": "Park West E - 1200"
+      },
+      "why": "stratified sample, 2 km +"
+    },
+    {
+      "from": {
+        "id": 1575,
+        "abbrev": "BLDG Q",
+        "name": "The Gardens Q"
+      },
+      "to": {
+        "id": 1592,
+        "abbrev": "SUP1",
+        "name": "Satellite Utility Plant No. 1"
+      },
+      "why": "stratified sample, 2 km +"
+    },
+    {
+      "from": {
+        "id": 1123,
+        "abbrev": "CVLB",
+        "name": "CVE Lab Building"
+      },
+      "to": {
+        "id": 2005,
+        "abbrev": "PW GAR",
+        "name": "Park West J - 3000/4000"
+      },
+      "why": "stratified sample, 2 km +"
+    },
+    {
+      "from": {
+        "id": 1171,
+        "abbrev": "LEON",
+        "name": "Leonard Hall-Dorm 7"
+      },
+      "to": {
+        "id": 1708,
+        "abbrev": "STLS",
+        "name": "Scotts Turf Lab 2 (Shop Bldg)"
+      },
+      "why": "stratified sample, 2 km +"
+    },
+    {
+      "from": {
+        "id": 1802,
+        "abbrev": "TPSP",
+        "name": "WWTP Secondary Pump Building"
+      },
+      "to": {
+        "id": 1425,
+        "abbrev": "POSC",
+        "name": "Poultry Sci Handling & Judging"
+      },
+      "why": "stratified sample, 2 km +"
+    },
+    {
+      "from": {
+        "id": 1217,
+        "abbrev": "EVANS",
+        "name": "Evans Library"
+      },
+      "to": {
+        "id": 1490,
+        "abbrev": "LASR",
+        "name": "Land, Air, Space Robotics"
+      },
+      "why": "stratified sample, 2 km +"
+    },
+    {
+      "from": {
+        "id": 1800,
+        "abbrev": "WWTP",
+        "name": "Wastewater Treatment Plant"
+      },
+      "to": {
+        "id": 1087,
+        "abbrev": "EQES",
+        "name": "Equine Initiative Equipment Shed"
+      },
+      "why": "stratified sample, 2 km +"
+    },
+    {
+      "from": {
+        "id": 2003,
+        "abbrev": "PW 2000",
+        "name": "Park West G - 2000"
+      },
+      "to": {
+        "id": 1910,
+        "abbrev": "TTI",
+        "name": "TTI Headquarters - RELLIS"
+      },
+      "why": "stratified sample, 2 km +"
+    },
+    {
+      "from": {
+        "id": 1389,
+        "abbrev": "FREE",
+        "name": "Equine Center Restroom"
+      },
+      "to": {
+        "id": 1231,
+        "abbrev": "HEAT",
+        "name": "Heaton Hall"
+      },
+      "why": "stratified sample, 2 km +"
+    },
+    {
+      "from": {
+        "id": 1108,
+        "abbrev": "MIST",
+        "name": "Mitchell Inst for Fundamental Phys & Astronomy"
+      },
+      "to": {
+        "id": 1670,
+        "abbrev": "DLH",
+        "name": "Donald L. Houston Building"
+      },
+      "why": "stratified sample, 2 km +"
+    },
+    {
+      "from": {
+        "id": 2008,
+        "abbrev": "PW 6600",
+        "name": "Park West K - 6600"
+      },
+      "to": {
+        "id": 1240,
+        "abbrev": "EIC",
+        "name": "Engineering Innovation Center"
+      },
+      "why": "stratified sample, 2 km +"
+    },
+    {
+      "from": {
+        "id": 1225,
+        "abbrev": "ADMN",
+        "name": "Jack K. Williams Administration Building"
+      },
+      "to": {
+        "id": 1998,
+        "abbrev": "PW 1500",
+        "name": "Park West B - 1500"
+      },
+      "why": "stratified sample, 2 km +"
+    },
+    {
+      "from": {
+        "id": 1156,
+        "abbrev": "RICH",
+        "name": "Joe C. Richardson Petroleum Engineering Building"
+      },
+      "to": {
+        "id": 1191,
+        "abbrev": "CYCL",
+        "name": "Luedecke Building (Cyclotron)"
+      },
+      "why": "stratified sample, 0-250 m"
+    },
+    {
+      "from": {
+        "id": 1223,
+        "abbrev": "PAV",
+        "name": "Pavilion"
+      },
+      "to": {
+        "id": 1163,
+        "abbrev": "ARCA",
+        "name": "Langford Architecture Center Building A"
+      },
+      "why": "stratified sample, 0-250 m"
+    },
+    {
+      "from": {
+        "id": 1123,
+        "abbrev": "CVLB",
+        "name": "CVE Lab Building"
+      },
+      "to": {
+        "id": 1240,
+        "abbrev": "EIC",
+        "name": "Engineering Innovation Center"
+      },
+      "why": "stratified sample, 0-250 m"
+    },
+    {
+      "from": {
+        "id": 1802,
+        "abbrev": "TPSP",
+        "name": "WWTP Secondary Pump Building"
+      },
+      "to": {
+        "id": 1803,
+        "abbrev": "TPDB",
+        "name": "WWTP Disinfection Building"
+      },
+      "why": "stratified sample, 0-250 m"
+    },
+    {
+      "from": {
+        "id": 1596,
+        "abbrev": "HPCT",
+        "name": "HEEP Center"
+      },
+      "to": {
+        "id": 1372,
+        "abbrev": "WCS",
+        "name": "West Campus Switching Station"
+      },
+      "why": "stratified sample, 0-250 m"
+    },
+    {
+      "from": {
+        "id": 1214,
+        "abbrev": "BTLR",
+        "name": "Butler Hall"
+      },
+      "to": {
+        "id": 1208,
+        "abbrev": "EABC",
+        "name": "Engineering Activities Bldg C"
+      },
+      "why": "stratified sample, 0-250 m"
+    },
+    {
+      "from": {
+        "id": 1220,
+        "abbrev": "SCC",
+        "name": "Student Computing Center"
+      },
+      "to": {
+        "id": 1208,
+        "abbrev": "EABC",
+        "name": "Engineering Activities Bldg C"
+      },
+      "why": "stratified sample, 0-250 m"
+    },
+    {
+      "from": {
+        "id": 1248,
+        "abbrev": "CSC",
+        "name": "Computing Services Center"
+      },
+      "to": {
+        "id": 1221,
+        "abbrev": "CCG",
+        "name": "Central Campus Parking Garage"
+      },
+      "why": "stratified sample, 0-250 m"
+    },
+    {
+      "from": {
+        "id": 1151,
+        "abbrev": "UCG",
+        "name": "University Center Parking Garage"
+      },
+      "to": {
+        "id": 1168,
+        "abbrev": "FOUN",
+        "name": "Fountain Hall-Dorm 4"
+      },
+      "why": "stratified sample, 0-250 m"
+    },
+    {
+      "from": {
+        "id": 1231,
+        "abbrev": "HEAT",
+        "name": "Heaton Hall"
+      },
+      "to": {
+        "id": 1180,
+        "abbrev": "LEGE",
+        "name": "Legett Residence Hall"
+      },
+      "why": "stratified sample, 0-250 m"
+    },
+    {
+      "from": {
+        "id": 2018,
+        "abbrev": "CC05",
+        "name": "Cavalry Court #05"
+      },
+      "to": {
+        "id": 2024,
+        "abbrev": "GH02",
+        "name": "The George Hotel #02"
+      },
+      "why": "stratified sample, 0-250 m"
+    },
+    {
+      "from": {
+        "id": 1204,
+        "abbrev": "BSBW",
+        "name": "Biological Sciences Bldg West"
+      },
+      "to": {
+        "id": 1217,
+        "abbrev": "EVANS",
+        "name": "Evans Library"
+      },
+      "why": "stratified sample, 0-250 m"
+    },
+    {
+      "from": {
+        "id": 1156,
+        "abbrev": "RICH",
+        "name": "Joe C. Richardson Petroleum Engineering Building"
+      },
+      "to": {
+        "id": 1189,
+        "abbrev": "ARCC",
+        "name": "Architecture Building C"
+      },
+      "why": "stratified sample, 0-250 m"
+    },
+    {
+      "from": {
+        "id": 1805,
+        "abbrev": "TPES",
+        "name": "WWTP Equipment Storage Building"
+      },
+      "to": {
+        "id": 1800,
+        "abbrev": "WWTP",
+        "name": "Wastewater Treatment Plant"
+      },
+      "why": "stratified sample, 0-250 m"
+    },
+    {
+      "from": {
+        "id": 1300,
+        "abbrev": "PGBG",
+        "name": "Perennial Grass Breeding and Genetics"
+      },
+      "to": {
+        "id": 1947,
+        "abbrev": "GSCPB",
+        "name": "GSC Portable Building"
+      },
+      "why": "stratified sample, 0-250 m"
+    },
+    {
+      "from": {
+        "id": 1678,
+        "abbrev": "GERB",
+        "name": "Giesecke Engineering Research Building"
+      },
+      "to": {
+        "id": 1688,
+        "abbrev": "RPSW",
+        "name": "Research Park Switching Station"
+      },
+      "why": "stratified sample, 0-250 m"
+    },
+    {
+      "from": {
+        "id": 2022,
+        "abbrev": "CC09",
+        "name": "Cavalry Court #09"
+      },
+      "to": {
+        "id": 2023,
+        "abbrev": "GH01",
+        "name": "The George Hotel #01"
+      },
+      "why": "stratified sample, 0-250 m"
+    },
+    {
+      "from": {
+        "id": 1573,
+        "abbrev": "BLDG N",
+        "name": "The Gardens N"
+      },
+      "to": {
+        "id": 1566,
+        "abbrev": "BLDG J",
+        "name": "The Gardens J"
+      },
+      "why": "stratified sample, 0-250 m"
+    },
+    {
+      "from": {
+        "id": 1108,
+        "abbrev": "MIST",
+        "name": "Mitchell Inst for Fundamental Phys & Astronomy"
+      },
+      "to": {
+        "id": 1191,
+        "abbrev": "CYCL",
+        "name": "Luedecke Building (Cyclotron)"
+      },
+      "why": "stratified sample, 0-250 m"
+    },
+    {
+      "from": {
+        "id": 1195,
+        "abbrev": "COMM",
+        "name": "Commons"
+      },
+      "to": {
+        "id": 1219,
+        "abbrev": "ANNEX",
+        "name": "Evans Library Annex"
+      },
+      "why": "stratified sample, 250-500 m"
+    },
+    {
+      "from": {
+        "id": 1238,
+        "abbrev": "UCO",
+        "name": "Utilities & Energy Services Central Office"
+      },
+      "to": {
+        "id": 1123,
+        "abbrev": "CVLB",
+        "name": "CVE Lab Building"
+      },
+      "why": "stratified sample, 250-500 m"
+    },
+    {
+      "from": {
+        "id": 1199,
+        "abbrev": "PETR",
+        "name": "Peterson Building"
+      },
+      "to": {
+        "id": 1173,
+        "abbrev": "WHTE",
+        "name": "Whiteley Hall-Dorm 9"
+      },
+      "why": "stratified sample, 250-500 m"
+    },
+    {
+      "from": {
+        "id": 1451,
+        "abbrev": "VMTF",
+        "name": "Theriogenology Facility, Equine Reproduction"
+      },
+      "to": {
+        "id": 1412,
+        "abbrev": "LFB",
+        "name": "W.P. Luse Foundation Building"
+      },
+      "why": "stratified sample, 250-500 m"
+    },
+    {
+      "from": {
+        "id": 1106,
+        "abbrev": "APPE",
+        "name": "Appelt Residence Hall"
+      },
+      "to": {
+        "id": 1214,
+        "abbrev": "BTLR",
+        "name": "Butler Hall"
+      },
+      "why": "stratified sample, 250-500 m"
+    },
+    {
+      "from": {
+        "id": 1213,
+        "abbrev": "PSYC",
+        "name": "Psychology Building"
+      },
+      "to": {
+        "id": 1228,
+        "abbrev": "ANTH",
+        "name": "Anthropology Building"
+      },
+      "why": "stratified sample, 250-500 m"
+    },
+    {
+      "from": {
+        "id": 1218,
+        "abbrev": "CUSH",
+        "name": "Cushing Memorial Library"
+      },
+      "to": {
+        "id": 1236,
+        "abbrev": "HEB",
+        "name": "H.J. (Bill) and Reta Haynes Engineering Building"
+      },
+      "why": "stratified sample, 250-500 m"
+    },
+    {
+      "from": {
+        "id": 1571,
+        "abbrev": "BLDG H",
+        "name": "The Gardens H"
+      },
+      "to": {
+        "id": 1093,
+        "abbrev": "ETB",
+        "name": "Emerging Technologies Building"
+      },
+      "why": "stratified sample, 250-500 m"
+    },
+    {
+      "from": {
+        "id": 1193,
+        "abbrev": "RDMC",
+        "name": "Reed-McDonald Building"
+      },
+      "to": {
+        "id": 1200,
+        "abbrev": "TEAG",
+        "name": "Teague Research Center"
+      },
+      "why": "stratified sample, 250-500 m"
+    },
+    {
+      "from": {
+        "id": 1633,
+        "abbrev": "SSB",
+        "name": "Student Services Building"
+      },
+      "to": {
+        "id": 1217,
+        "abbrev": "EVANS",
+        "name": "Evans Library"
+      },
+      "why": "stratified sample, 250-500 m"
+    },
+    {
+      "from": {
+        "id": 1191,
+        "abbrev": "CYCL",
+        "name": "Luedecke Building (Cyclotron)"
+      },
+      "to": {
+        "id": 1237,
+        "abbrev": "SBSA",
+        "name": "Sbisa Dining Hall"
+      },
+      "why": "stratified sample, 250-500 m"
+    },
+    {
+      "from": {
+        "id": 1715,
+        "abbrev": "VICI",
+        "name": "Veterinary Medicine Building 3 - VICI"
+      },
+      "to": {
+        "id": 1242,
+        "abbrev": "VTH",
+        "name": "Veterinary Teaching Hospital"
+      },
+      "why": "stratified sample, 250-500 m"
+    },
+    {
+      "from": {
+        "id": 1066,
+        "abbrev": "WCOB05",
+        "name": "West Campus Office Building 05"
+      },
+      "to": {
+        "id": 1720,
+        "abbrev": "TIPS A",
+        "name": "Texas A&M Institute for Preclinical Studies A"
+      },
+      "why": "stratified sample, 250-500 m"
+    },
+    {
+      "from": {
+        "id": 1218,
+        "abbrev": "CUSH",
+        "name": "Cushing Memorial Library"
+      },
+      "to": {
+        "id": 1198,
+        "abbrev": "OMB",
+        "name": "Eller Oceanography & Meteorology Building"
+      },
+      "why": "stratified sample, 250-500 m"
+    },
+    {
+      "from": {
+        "id": 1612,
+        "abbrev": "SPHB",
+        "name": "School of Public Health - Lab Bldg"
+      },
+      "to": {
+        "id": 1720,
+        "abbrev": "TIPS A",
+        "name": "Texas A&M Institute for Preclinical Studies A"
+      },
+      "why": "stratified sample, 250-500 m"
+    },
+    {
+      "from": {
+        "id": 1143,
+        "abbrev": "DPDC",
+        "name": "Davis Football Player Development Center"
+      },
+      "to": {
+        "id": 1174,
+        "abbrev": "WHIT",
+        "name": "White Hall-Dorm 10"
+      },
+      "why": "stratified sample, 250-500 m"
+    },
+    {
+      "from": {
+        "id": 1104,
+        "abbrev": "RUDD",
+        "name": "Rudder Residence Hall"
+      },
+      "to": {
+        "id": 1209,
+        "abbrev": "EABB",
+        "name": "Engineering Activities Bldg B"
+      },
+      "why": "stratified sample, 250-500 m"
+    },
+    {
+      "from": {
+        "id": 1152,
+        "abbrev": "JJKB",
+        "name": "Koldus Building"
+      },
+      "to": {
+        "id": 1230,
+        "abbrev": "BLTN",
+        "name": "Bolton Hall"
+      },
+      "why": "stratified sample, 250-500 m"
+    },
+    {
+      "from": {
+        "id": 1180,
+        "abbrev": "LEGE",
+        "name": "Legett Residence Hall"
+      },
+      "to": {
+        "id": 1201,
+        "abbrev": "RDER",
+        "name": "Rudder Tower"
+      },
+      "why": "stratified sample, 250-500 m"
+    },
+    {
+      "from": {
+        "id": 1835,
+        "abbrev": null,
+        "name": "TTI Sediment & Erosion Control Lab"
+      },
+      "to": {
+        "id": 1852,
+        "abbrev": null,
+        "name": "TEEX - LAW Driving Track Pavilion"
+      },
+      "why": "island of 5 in the full run of 6 November 2026 (#2655): these reach each other and nothing else"
+    },
+    {
+      "from": {
+        "id": 1930,
+        "abbrev": null,
+        "name": "TEES DRTF Instrument Enclosure-RELLIS"
+      },
+      "to": {
+        "id": 1206,
+        "abbrev": "MSC",
+        "name": "Memorial Student Center"
+      },
+      "why": "island in the full run of 6 November 2026 (#2655): no route to the rest of campus"
+    },
+    {
+      "from": {
+        "id": 1380,
+        "abbrev": null,
+        "name": "Nuclear Science Center"
+      },
+      "to": {
+        "id": 1495,
+        "abbrev": null,
+        "name": "Nuclear Science Center Laboratory"
+      },
+      "why": "island of 2 in the full run of 6 November 2026 (#2655): these reach each other and nothing else"
+    },
+    {
+      "from": {
+        "id": 1495,
+        "abbrev": null,
+        "name": "Nuclear Science Center Laboratory"
+      },
+      "to": {
+        "id": 1206,
+        "abbrev": "MSC",
+        "name": "Memorial Student Center"
+      },
+      "why": "island in the full run of 6 November 2026 (#2655): no route to the rest of campus"
+    },
+    {
+      "from": {
+        "id": 1089,
+        "abbrev": null,
+        "name": "Equine Nutrition and Reproduction"
+      },
+      "to": {
+        "id": 1206,
+        "abbrev": "MSC",
+        "name": "Memorial Student Center"
+      },
+      "why": "island in the full run of 6 November 2026 (#2655): no route to the rest of campus"
+    },
+    {
+      "from": {
+        "id": 1102,
+        "abbrev": null,
+        "name": "Central Utility Plant Electrical Building"
+      },
+      "to": {
+        "id": 1206,
+        "abbrev": "MSC",
+        "name": "Memorial Student Center"
+      },
+      "why": "island in the full run of 6 November 2026 (#2655): no route to the rest of campus"
+    },
+    {
+      "from": {
+        "id": 1143,
+        "abbrev": "DPDC",
+        "name": "Davis Football Player Development Center"
+      },
+      "to": {
+        "id": 1206,
+        "abbrev": "MSC",
+        "name": "Memorial Student Center"
+      },
+      "why": "island in the full run of 6 November 2026 (#2655): no route to the rest of campus"
+    },
+    {
+      "from": {
+        "id": 1226,
+        "abbrev": "YMCA",
+        "name": "YMCA Building"
+      },
+      "to": {
+        "id": 1206,
+        "abbrev": "MSC",
+        "name": "Memorial Student Center"
+      },
+      "why": "island in the full run of 6 November 2026 (#2655): no route to the rest of campus"
+    },
+    {
+      "from": {
+        "id": 1655,
+        "abbrev": "EBCS",
+        "name": "E.B. Cushing Stadium"
+      },
+      "to": {
+        "id": 1206,
+        "abbrev": "MSC",
+        "name": "Memorial Student Center"
+      },
+      "why": "island in the full run of 6 November 2026 (#2655): no route to the rest of campus"
+    },
+    {
+      "from": {
+        "id": 1811,
+        "abbrev": null,
+        "name": "Veterinary Support Building"
+      },
+      "to": {
+        "id": 1206,
+        "abbrev": "MSC",
+        "name": "Memorial Student Center"
+      },
+      "why": "island in the full run of 6 November 2026 (#2655): no route to the rest of campus"
+    },
+    {
+      "from": {
+        "id": 1833,
+        "abbrev": "RNCH",
+        "name": "Architecture - Fabrication and Design Lab"
+      },
+      "to": {
+        "id": 1206,
+        "abbrev": "MSC",
+        "name": "Memorial Student Center"
+      },
+      "why": "island in the full run of 6 November 2026 (#2655): no route to the rest of campus"
+    },
+    {
+      "from": {
+        "id": 1834,
+        "abbrev": null,
+        "name": "Architecture - Fabrication & Design Expansion"
+      },
+      "to": {
+        "id": 1206,
+        "abbrev": "MSC",
+        "name": "Memorial Student Center"
+      },
+      "why": "island in the full run of 6 November 2026 (#2655): no route to the rest of campus"
+    },
+    {
+      "from": {
+        "id": 1471,
+        "abbrev": null,
+        "name": "Easterwood Airport ARFF Station"
+      },
+      "to": {
+        "id": 1760,
+        "abbrev": "AMSB",
+        "name": "Texas A&M System Agency Office Building"
+      },
+      "why": "worst detour of a building in 642 detours in the full run of 6 November 2026 (#2655) (+13136 m, 2.053x)"
+    },
+    {
+      "from": {
+        "id": 1469,
+        "abbrev": null,
+        "name": "TAC Realty Hangar"
+      },
+      "to": {
+        "id": 1789,
+        "abbrev": null,
+        "name": "Beef Research Unit-Burleson County"
+      },
+      "why": "worst detour of a building in 629 detours in the full run of 6 November 2026 (#2655) (+13389 m, 2.574x)"
+    },
+    {
+      "from": {
+        "id": 1401,
+        "abbrev": null,
+        "name": "Environmental Health and Safety Storage #2"
+      },
+      "to": {
+        "id": 1789,
+        "abbrev": null,
+        "name": "Beef Research Unit-Burleson County"
+      },
+      "why": "worst detour of a building in 503 detours in the full run of 6 November 2026 (#2655) (+13480 m, 2.616x)"
+    },
+    {
+      "from": {
+        "id": 1760,
+        "abbrev": "AMSB",
+        "name": "Texas A&M System Agency Office Building"
+      },
+      "to": {
+        "id": 1803,
+        "abbrev": "TPDB",
+        "name": "WWTP Disinfection Building"
+      },
+      "why": "worst detour of a building in 489 detours in the full run of 6 November 2026 (#2655) (+13318 m, 2.08x)"
+    },
+    {
+      "from": {
+        "id": 1760,
+        "abbrev": "AMSB",
+        "name": "Texas A&M System Agency Office Building"
+      },
+      "to": {
+        "id": 1802,
+        "abbrev": "TPSP",
+        "name": "WWTP Secondary Pump Building"
+      },
+      "why": "worst detour of a building in 486 detours in the full run of 6 November 2026 (#2655) (+13314 m, 2.083x)"
+    },
+    {
+      "from": {
+        "id": 1760,
+        "abbrev": "AMSB",
+        "name": "Texas A&M System Agency Office Building"
+      },
+      "to": {
+        "id": 1800,
+        "abbrev": "WWTP",
+        "name": "Wastewater Treatment Plant"
+      },
+      "why": "worst detour of a building in 485 detours in the full run of 6 November 2026 (#2655) (+13562 m, 2.115x)"
+    },
+    {
+      "from": {
+        "id": 1760,
+        "abbrev": "AMSB",
+        "name": "Texas A&M System Agency Office Building"
+      },
+      "to": {
+        "id": 1806,
+        "abbrev": null,
+        "name": "WWTP Electrical Building"
+      },
+      "why": "worst detour of a building in 482 detours in the full run of 6 November 2026 (#2655) (+13418 m, 2.1x)"
+    },
+    {
+      "from": {
+        "id": 1760,
+        "abbrev": "AMSB",
+        "name": "Texas A&M System Agency Office Building"
+      },
+      "to": {
+        "id": 1805,
+        "abbrev": "TPES",
+        "name": "WWTP Equipment Storage Building"
+      },
+      "why": "worst detour of a building in 481 detours in the full run of 6 November 2026 (#2655) (+13555 m, 2.112x)"
+    },
+    {
+      "from": {
+        "id": 1760,
+        "abbrev": "AMSB",
+        "name": "Texas A&M System Agency Office Building"
+      },
+      "to": {
+        "id": 1801,
+        "abbrev": "TPPP",
+        "name": "WWTP Primary Pump Building"
+      },
+      "why": "worst detour of a building in 478 detours in the full run of 6 November 2026 (#2655) (+13394 m, 2.096x)"
+    },
+    {
+      "from": {
+        "id": 1760,
+        "abbrev": "AMSB",
+        "name": "Texas A&M System Agency Office Building"
+      },
+      "to": {
+        "id": 1804,
+        "abbrev": "TPBB",
+        "name": "WWTP Digester Boiler Building"
+      },
+      "why": "worst detour of a building in 478 detours in the full run of 6 November 2026 (#2655) (+13471 m, 2.107x)"
+    },
+    {
+      "from": {
+        "id": 1408,
+        "abbrev": "NEBB",
+        "name": "Nuclear Engineering Education Building"
+      },
+      "to": {
+        "id": 1789,
+        "abbrev": null,
+        "name": "Beef Research Unit-Burleson County"
+      },
+      "why": "worst detour of a building in 461 detours in the full run of 6 November 2026 (#2655) (+13736 m, 2.678x)"
+    },
+    {
+      "from": {
+        "id": 1496,
+        "abbrev": "ENRTA",
+        "name": "Ecology & Natural Resources Teaching Area"
+      },
+      "to": {
+        "id": 1789,
+        "abbrev": null,
+        "name": "Beef Research Unit-Burleson County"
+      },
+      "why": "worst detour of a building in 453 detours in the full run of 6 November 2026 (#2655) (+14102 m, 2.759x)"
+    },
+    {
+      "from": {
+        "id": 1497,
+        "abbrev": "ENRTA",
+        "name": "Ecology & Natural Resources Teaching Building"
+      },
+      "to": {
+        "id": 1789,
+        "abbrev": null,
+        "name": "Beef Research Unit-Burleson County"
+      },
+      "why": "worst detour of a building in 449 detours in the full run of 6 November 2026 (#2655) (+14116 m, 2.763x)"
+    },
+    {
+      "from": {
+        "id": 1468,
+        "abbrev": null,
+        "name": "McKenzie Terminal Building"
+      },
+      "to": {
+        "id": 1471,
+        "abbrev": null,
+        "name": "Easterwood Airport ARFF Station"
+      },
+      "why": "worst detour of a building in 369 detours in the full run of 6 November 2026 (#2655) (+7643 m, 11.815x)"
+    },
+    {
+      "from": {
+        "id": 1470,
+        "abbrev": null,
+        "name": "Hot Rapid Refuel Shop"
+      },
+      "to": {
+        "id": 1471,
+        "abbrev": null,
+        "name": "Easterwood Airport ARFF Station"
+      },
+      "why": "worst detour of a building in 350 detours in the full run of 6 November 2026 (#2655) (+7385 m, 9.974x)"
+    },
+    {
+      "from": {
+        "id": 1760,
+        "abbrev": "AMSB",
+        "name": "Texas A&M System Agency Office Building"
+      },
+      "to": {
+        "id": 1789,
+        "abbrev": null,
+        "name": "Beef Research Unit-Burleson County"
+      },
+      "why": "largest excess in the full run of 6 November 2026 (#2655) (+17453 m, 2.041x)"
+    },
+    {
+      "from": {
+        "id": 1853,
+        "abbrev": null,
+        "name": "TEEX - LAW Driving Track Restroom"
+      },
+      "to": {
+        "id": 1913,
+        "abbrev": null,
+        "name": "TEEX - LAW UXO Demo Range Pavilion"
+      },
+      "why": "impossible in the full run of 6 November 2026 (#2655): 639 m straight, 11 m by network"
+    },
+    {
+      "from": {
+        "id": 1852,
+        "abbrev": null,
+        "name": "TEEX - LAW Driving Track Pavilion"
+      },
+      "to": {
+        "id": 1913,
+        "abbrev": null,
+        "name": "TEEX - LAW UXO Demo Range Pavilion"
+      },
+      "why": "impossible in the full run of 6 November 2026 (#2655): 626 m straight, 11 m by network"
+    },
+    {
+      "from": {
+        "id": 1853,
+        "abbrev": null,
+        "name": "TEEX - LAW Driving Track Restroom"
+      },
+      "to": {
+        "id": 1930,
+        "abbrev": null,
+        "name": "TEES DRTF Instrument Enclosure-RELLIS"
+      },
+      "why": "impossible in the full run of 6 November 2026 (#2655): 825 m straight, 219 m by network"
+    }
+  ]
+}

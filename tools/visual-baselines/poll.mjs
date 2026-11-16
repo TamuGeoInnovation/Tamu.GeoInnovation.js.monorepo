@@ -191,7 +191,8 @@ export function runningCapture(out, now = new Date()) {
  */
 export function missingComparisons(out) {
   const kinds = (fs.existsSync(out) ? fs.readdirSync(out) : []).filter(
-    (kind) => kind !== 'compare' && kind !== 'lost+found' && fs.statSync(path.join(out, kind)).isDirectory()
+    // A retake of a few pages (`<kind>-recheck`, #2841) is compared by whoever took it, never as a release.
+    (kind) => kind !== 'compare' && kind !== 'lost+found' && !kind.endsWith('-recheck') && fs.statSync(path.join(out, kind)).isDirectory()
   );
   const made = fs.existsSync(path.join(out, 'compare'))
     ? fs

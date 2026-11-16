@@ -23,7 +23,16 @@ export interface ExternalDiscoverApplication extends BaseDiscoverApplication {
 
 export interface InternalDiscoverApplication extends BaseDiscoverApplication {
   source: 'internal';
-  type: 'event' | 'parking' | 'operations' | 'satellite-campus' | 'kiosk';
+  /**
+   * `main-map` is the main campus map opened on one of its own panels (`route`), rather than a map of its own: the bus
+   * map is `/map/d/bus` (#2743). It has no definition, so it has no `configuration`.
+   */
+  type: 'event' | 'parking' | 'operations' | 'satellite-campus' | 'kiosk' | 'main-map';
+  /**
+   * Where the entry opens, when that is not the `/<type>/<id>` its type gives: a panel of the main map. Taken as is by
+   * `getApplicationRoute`.
+   */
+  route?: string[];
   /**
    * Every detail page this map is listed on. Always at least one entry, so consumers can test
    * membership with `includes` and never have to handle a missing value.
@@ -38,7 +47,8 @@ export interface InternalDiscoverApplication extends BaseDiscoverApplication {
    * one, and they label it.
    */
   status?: 'retired';
-  configuration: EventConfiguration;
+  /** The map's definition. Absent for a `main-map` entry, which opens the main map and has no dates of its own. */
+  configuration?: EventConfiguration;
 }
 
 export type DiscoverApplication = ExternalDiscoverApplication | InternalDiscoverApplication;

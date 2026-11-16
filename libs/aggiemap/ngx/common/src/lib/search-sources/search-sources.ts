@@ -19,35 +19,37 @@ export function SearchSources(
     BUILDING: {
       source: 'building',
       name: 'Building',
-      url: `${connections.basemapUrl}/1`,
+      url: connections.buildingsUrl,
       queryParams: {
-        ...containsSearch(['Number', 'BldgAbbrev', 'BldgName']),
+        ...containsSearch(['number', 'bldgabbrev', 'bldgname']),
         scoringWhere: {
-          keys: ['BldgName', 'BldgAbbrev'],
+          keys: ['bldgname', 'bldgabbrev'],
           operators: ['LIKE', 'LIKE'],
           wildcards: ['startsWith', 'startsWith'],
           transformations: ['UPPER', 'UPPER']
         }
       },
-      scoringKeys: ['attributes.BldgAbbrev', 'attributes.Number', 'attributes.BldgName'],
+      scoringKeys: ['attributes.bldgabbrev', 'attributes.number', 'attributes.bldgname'],
       featuresLocation: 'features',
-      displayTemplate: '{attributes.BldgName} ({attributes.Number})',
+      displayTemplate: '{attributes.bldgname} ({attributes.number})',
       popupComponent: Popups.BuildingPopupComponent,
       searchActive: true
     },
     BUILDING_EXACT: {
       source: 'building-exact',
       name: 'Building',
-      url: `${connections.basemapUrl}/1`,
+      url: connections.buildingsUrl,
       queryParams: {
         ...searchQueryParams,
+        // `number`, not `bldgnum`: `number` is stored without padding, `bldgnum` padded to ten characters, so an exact
+        // match on `bldgnum = '0468'` finds nothing (measured 9 November 2026, #2707).
         where: {
-          keys: ['Number'],
+          keys: ['number'],
           operators: ['=']
         }
       },
       featuresLocation: 'features',
-      displayTemplate: '{attributes.BldgName} ({attributes.Number})',
+      displayTemplate: '{attributes.bldgname} ({attributes.number})',
       popupComponent: Popups.BuildingPopupComponent,
       searchActive: false,
       urlQueryParam: 'bldg',
@@ -56,21 +58,21 @@ export function SearchSources(
     // Resolves a building from its abbreviation (e.g. `?BldgAbbrv=WCBA`) rather than its number.
     // Kept separate from BUILDING_EXACT because the registrar's links select by `BldgAbbr`, which
     // requires its own where clause; folding it into BUILDING_EXACT's aliases would (incorrectly)
-    // query the abbreviation against the `Number` field and return no results.
+    // query the abbreviation against the `number` field and return no results.
     BUILDING_EXACT_ABBR: {
       source: 'building-exact-abbr',
       name: 'Building',
-      url: `${connections.basemapUrl}/1`,
+      url: connections.buildingsUrl,
       queryParams: {
         ...searchQueryParams,
         where: {
-          keys: ['BldgAbbrev'],
+          keys: ['bldgabbrev'],
           operators: ['='],
           transformations: ['UPPER']
         }
       },
       featuresLocation: 'features',
-      displayTemplate: '{attributes.BldgName} ({attributes.Number})',
+      displayTemplate: '{attributes.bldgname} ({attributes.number})',
       popupComponent: Popups.BuildingPopupComponent,
       searchActive: false,
       urlQueryParam: 'BldgAbbrv',
@@ -193,6 +195,8 @@ export function SearchSources(
     PARKING_GARAGE: {
       source: 'parking-garage',
       name: 'Parking Garage',
+      // Still the old campus basemap: its garage layer has no counterpart in the feature service the rest moved to, so
+      // this waits on the GIS team (`campus-basemap.ts` says what is missing; #2722).
       url: `${connections.basemapUrl}/0`,
       queryParams: {
         ...containsSearch(['LotName', 'Name'])
@@ -216,24 +220,24 @@ export function SearchSources(
     // have been digitized first wins. `?lot=077` landed on the Lot 77 loading zone and `?lot=097`
     // on the Lot 97 visitor section for exactly this reason.
     //
-    // `AggieMap DESC` drops the sub-areas flagged as not shown on this map below the ones that are,
-    // and `CIT_CODE ASC` then prefers the lot itself over its sub-areas - together resolving a bare
+    // `aggiemap DESC` drops the sub-areas flagged as not shown on this map below the ones that are,
+    // and `cit_code ASC` then prefers the lot itself over its sub-areas - together resolving a bare
     // lot number to the same polygon the TS parking map's `?cit=<lot>00` link points at.
     PARKING_LOT: {
       source: 'parking-lot',
       name: 'Parking Lot',
-      url: `${connections.basemapUrl}/9`,
+      url: connections.surfaceLotsUrl,
       queryParams: {
-        // `FAC_CODE` is matched alongside the display names so the zero-padded facility number
-        // used by TS links (`?lot=077`) resolves as readily as the unpadded `Name` (`?lot=77`).
-        ...containsSearch(['LotName', 'Name', 'FAC_CODE']),
-        orderByFields: 'AggieMap DESC, CIT_CODE ASC',
+        // `fac_code` is matched alongside the display names so the zero-padded facility number
+        // used by TS links (`?lot=077`) resolves as readily as the unpadded `name` (`?lot=77`).
+        ...containsSearch(['lotname', 'name', 'fac_code']),
+        orderByFields: 'aggiemap DESC, cit_code ASC',
       },
       // Ranks an exact identifier match above the partial ones the `includes` wildcards let through,
       // so `?lot=100` cannot settle on `Lot 1001` when `Lot 100` exists.
-      scoringKeys: ['attributes.Name', 'attributes.FAC_CODE', 'attributes.LotName'],
+      scoringKeys: ['attributes.name', 'attributes.fac_code', 'attributes.lotname'],
       featuresLocation: 'features',
-      displayTemplate: '{attributes.LotName}',
+      displayTemplate: '{attributes.lotname}',
       popupComponent: Popups.ParkingLotPopupComponent,
       searchActive: true,
       urlQueryParam: 'lot',
@@ -269,6 +273,39 @@ export function SearchSources(
       popupComponent: Popups.PoiPopupComponent,
       searchActive: true
     },
+    // Nature Rx (#2630), as Points of Interest is: one source a visitor searches, and an exact one a
+    // shared link opens. `key_words` is searched as well as the name because the service publishes it for
+    // that - a space is as likely to be looked for as "hammocks" or "disc golf" as by its own name.
+    NATURE_RX_EXACT: {
+      source: 'nature-rx-exact',
+      name: 'Nature Rx',
+      url: definitions.NATURE_RX.url,
+      queryParams: {
+        ...searchQueryParams,
+        where: {
+          keys: ['objectid'],
+          operators: ['=']
+        }
+      },
+      featuresLocation: 'features',
+      displayTemplate: '{attributes.area_name}',
+      popupComponent: Popups.NatureRxPopupComponent,
+      searchActive: false,
+      urlQueryParam: 'naturerx',
+      urlQueryParamAliases: ['NatureRx', 'nature-rx']
+    },
+    NATURE_RX: {
+      source: 'nature-rx',
+      name: 'Nature Rx',
+      url: definitions.NATURE_RX.url,
+      queryParams: {
+        ...containsSearch(['area_name', 'key_words'])
+      },
+      featuresLocation: 'features',
+      displayTemplate: '{attributes.area_name}',
+      popupComponent: Popups.NatureRxPopupComponent,
+      searchActive: true
+    },
     BIKE_RACKS: {
       source: 'bike-racks',
       name: 'Bike Racks',
@@ -285,8 +322,8 @@ export function SearchSources(
       displayTemplate: '{attributes.Type}',
       searchActive: false
     },
-    // Deep-link-only source (searchActive: false) so a shared `?busstop=<OBJECTID>` URL re-opens a
-    // bus stop with its popup, like other point features. Keyed on OBJECTID because StopName/StopNum
+    // Deep-link-only source (searchActive: false) so a shared `?busstop=<objectid>` URL re-opens a
+    // bus stop with its popup, like other point features. Keyed on objectid because stopname/stopnum
     // are not unique across routes. Backs the copy-link in BusStopPopupComponent.
     BUS_STOPS_EXACT: {
       source: 'bus-stops-exact',
@@ -295,16 +332,17 @@ export function SearchSources(
       queryParams: {
         ...searchQueryParams,
         where: {
-          keys: ['OBJECTID'],
+          keys: ['objectid'],
           operators: ['=']
         }
       },
       featuresLocation: 'features',
-      displayTemplate: '{attributes.StopName}',
+      displayTemplate: '{attributes.stopname}',
       popupComponent: Popups.BusStopPopupComponent,
       searchActive: false,
       urlQueryParam: 'busstop',
-      // OBJECTID is an integer field on a strict MapServer layer; the value must be unquoted.
+      // objectid is an integer field; the value must be unquoted. The ids are each environment's own (#2636), so a
+      // link opens its stop only on the environment it was copied on, and one from the old `TS/Bus_Routes` on none.
       urlQueryParamNumeric: true
     }
   };
@@ -342,6 +380,8 @@ export type ComposedSearchSourcesKeyMap = {
   PARKING_LOT: SearchSource;
   POINTS_OF_INTEREST_EXACT: SearchSource;
   POINTS_OF_INTEREST: SearchSource;
+  NATURE_RX_EXACT: SearchSource;
+  NATURE_RX: SearchSource;
   BIKE_RACKS: SearchSource;
   BUS_STOPS_EXACT: SearchSource;
 };

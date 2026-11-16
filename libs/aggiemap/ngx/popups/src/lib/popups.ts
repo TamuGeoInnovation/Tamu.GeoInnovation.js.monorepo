@@ -33,6 +33,9 @@ export const Popups = {
     import('./components/restroom/restroom.component').then((m) => m.RestroomPopupComponent)
   ),
   PoiPopupComponent: lazyPopup(() => import('./components/poi/poi.component').then((m) => m.PoiPopupComponent)),
+  NatureRxPopupComponent: lazyPopup(() =>
+    import('./components/nature-rx/nature-rx.component').then((m) => m.NatureRxPopupComponent)
+  ),
   BonfirePopupComponent: lazyPopup(() =>
     import('./components/bonfire/bonfire.component').then((m) => m.BonfirePopupComponent)
   ),

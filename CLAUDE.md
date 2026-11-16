@@ -31,7 +31,7 @@ Ten places, each with one job.
 | [`docs/testing-maps.md`](docs/testing-maps.md) | Which signal to wait for when a test needs a map to be finished, and why `ready` is not the one for a screenshot. |
 | [`docs/build-times.md`](docs/build-times.md) | How long runs and page loads take, so a change meant to speed something up can be shown to have done it: before-and-after comparisons and what they show, and the run files in [`docs/build-times/runs/`](docs/build-times/runs) the scripts write when asked. Measurements, not rules. |
 | [`docs/gisday-local.md`](docs/gisday-local.md) | How to run the whole GIS Day site on one machine with `scripts/gisday-local.sh`: the containers, the settings kept outside the repository, and what works locally and what does not. |
-| [`docs/gisday-migrations.md`](docs/gisday-migrations.md) | How the GIS Day database schema is changed: the migration commands, the process from entity to production, and what has been proven. Read before editing a GIS Day entity. |
+| [`docs/gisday-migrations.md`](docs/gisday-migrations.md) | How the GIS Day database schema is changed: the migration commands, the process from entity to production, and what has been proven. Read before editing a GIS Day entity, **and before changing any production GIS Day data**: it says where the scripts that do that are kept. |
 | [`docs/releases/unreleased.md`](docs/releases/unreleased.md) | Day-to-day state **anyone** picking this up needs: what has merged since the last production release, where it is deployed, what still needs a decision, and work in flight. [`CLAUDE_SETUP.md`](CLAUDE_SETUP.md) sends a new session here first. |
 | The `cloud-mailbox` branch | The cloud session's current batch (`cloud/TASKS.md`) and its reports (`cloud/reports/`). Written by the desktop and cloud sessions; never merged. See [The cloud session](#the-cloud-session). |
 | The `work-mailbox` branch | The work machine's current batch of test runs (`work/TASKS.md`) and its reports (`work/reports/`). Written by the home and work sessions; never merged. See [The work machine](#the-work-machine). |
@@ -269,6 +269,25 @@ print `Waiting for aggiemap-angular:serve in another nx process` and never conti
 documented for the GIS Day dev server and missing from this one, which is the command most likely to be copied
 (#2009).
 
+**That same hang has a second cause, and it is the cheaper one to check first: a stale Vite optimizer cache
+in the volume.** `node_modules/.vite` holds the optimizer's metadata and `node_modules/.vite-temp` is the
+directory it renames into place while writing a new one, so a leftover `.vite-temp` means an optimizer run
+was killed mid-write - which is exactly what `docker rm -f aggiemap-dev` does. The next start then stops at
+`[optimizer] bundling dependencies...` with `UV_THREADPOOL_SIZE=64` already set, which reads as the thread-pool
+problem above and is not. **One volume serves every checkout, so one dev server killed in one worktree breaks
+the next start in all of them.** Clear it and start again, unchanged:
+
+```bash
+MSYS_NO_PATHCONV=1 docker run --rm -v tamu-js-dev-nm:/nm node:24.22.1 sh -c "rm -rf /nm/.vite /nm/.vite-temp"
+```
+
+On 3 November the documented command then worked exactly as written, `--poll=2000` included. On 30 October a
+second machine met the same hang and dropped `--poll` instead, which starts the server and leaves the stale
+cache in the volume for whoever mounts it next. **`docker stop` is not a way out of this**: Nx's serve does
+not exit inside the default ten-second grace, so stop kills it too - measured on 5 November, `docker stop
+aggiemap-dev` on a container up 42 hours exited `137`. Clear the cache whenever the container did not shut
+itself down, which in practice is every time. See #2650.
+
 One volume serves whichever checkout is mounted, so it must match that checkout's lock. Check before
 trusting it: `node_modules/@angular/core/package.json` must show the version the checkout uses. On 4
 October an install two upgrades behind made Nx fail with a misleading error. The dev server recompiles
@@ -401,11 +420,22 @@ itself when a later run passes. Say so when reporting a failure, so nobody opens
 ## Before changing code
 
 **Nothing without a production service is visible on production unless explicitly allowed.** A
-layer, basemap or service published only on dev is gated with `TestingService` (`isTesting`), as bus
-routes and the vector tile basemap are. Add it to `DEVELOPMENT_ONLY_SERVICES` in
+layer, basemap or service published only on dev is gated with `TestingService` (`isTesting`), as the basemap
+gallery's dated campus basemaps are (`aggiemapGalleryBasemaps`). Add it to `DEVELOPMENT_ONLY_SERVICES` in
 `test/smoke/aggiemap/development-only.ts`, with the pages that request it, so the smoke suite fails
 if production ever requests it.
-The maintainer decides when it moves to production. See #1229.
+The maintainer decides when it moves to production. See #1229. When a section moves, it goes from
+`DEVELOPMENT_ONLY_SECTIONS` to `SECTIONS_ON_EVERY_ENVIRONMENT` in the same file, as bus routes did on 9 November 2026
+(#2789): taking it out of the first list alone only stops checking it.
+
+**Which gate: a thing that reads a service is left out of the build; structure is gated at run time** (#2753).
+Layer sources and search sources go in `DEVELOPMENT_ONLY_LAYER_SOURCES`, and a map in `developmentOnly`, so a
+production build does not contain them. Routes, tabs, tiles, listings and controls are gated with `TestingService`
+(`visible: false` on a listing, `DevelopmentOnlyMapGuard` on a route), so `?as=production` keeps working.
+`development-only-gates.spec.ts` in `aggiemap-ngx-discover` fails when that and the smoke suite's lists disagree: a
+thing kept off production that no list checks, a service the suite watches that nothing gates, or a map hidden from
+production's listings with neither a check nor a reason in `LISTINGS_HIDDEN_FROM_PRODUCTION`. A gate inside a template
+cannot be listed, so a service gated that way says where in `runTimeGate`, and only the smoke run proves it.
 
 **Reuse before building; build to be reused.** No one-offs: not components, not services, not
 utilities, not styles, not test helpers. This is the maintainer's standing rule for every change, by
@@ -413,7 +443,9 @@ anyone.
 
 - **Look first, and say where you looked.** Components: `libs/ui-kits/ngx/**`. Services, pipes and
   helpers: `libs/common/**`. Map features: `libs/maps/feature/**`. Styles: `libs/sass/` and the app's
-  global `styles.scss`. Smoke-suite helpers: the shared modules in `test/smoke/aggiemap/`. There is a
+  global `styles.scss`. Smoke-suite helpers: the shared modules in `test/smoke/aggiemap/`. **Behaviour
+  shared by more than one event map: `libs/ts/events/ngx/src/lib/definitions/common.definitions.ts`,
+  or the event's own `EventConfiguration` where it is a property of the event.** There is a
   shared copy-field component, a shared `.button` with variants, spacing utilities and a flexbox
   mixin set. Purpose-built CSS is unwanted.
 - **Extend what exists rather than copy it.** If a shared piece nearly fits, add the input, option
@@ -425,6 +457,17 @@ anyone.
 - **Follow the patterns already in the repository**: how definitions declare things (for example,
   the per-choice `mapView` used by the event maps), how modules are wired, how tests are written.
   A new way of doing something the repository already does needs a reason in the pull request.
+- **A behaviour copied between definition files is a one-off too.** This rule reads as being about
+  shared libraries, and a definition file is not a library - which is how **game-day refresh came to
+  be written three times**: `lotsNative()` in football's definitions, a separate `gameDayNative()` in
+  men's basketball, and `athleticsDevelopmentSource`, the shared helper, unable to express a refresh
+  at all. Nobody broke this rule knowingly. Each copy read as reasonable; only the set was wrong, and
+  it surfaced only when a fourth map was asked for the same thing. #2581 made it one switch on
+  `EventConfiguration`; #2591 is the sweep for whatever else reads like this.
+- **The tell: two pieces of code that would both need changing to fix one bug.** That is the fault,
+  and it is worth looking for directly - more than any filename or folder pattern. If you are about
+  to write a small helper at the top of a definition file, search the other definition files for one
+  doing the same job under a different name.
 
 **A layer's symbology, title and order come from its service.** Overriding any of them in a
 definition is a deliberate act that needs a reason written beside it:
@@ -533,6 +576,21 @@ however good it was. See #1056.
 File the issue as soon as the work is identified, including work noticed while doing something else —
 that is the case most likely to be skipped.
 
+**An issue closes when its work merges to `development`, not when a release carries it to production.**
+`Closes #<issue>` in the pull request body does that by itself, which is the rule above; this is why that
+is right rather than something to work around. The maintainer's words, 13 November 2026: *"We close things
+in development, not in prod."*
+
+It comes up whenever an issue is written as a request for production — #2864 was "Micromobility Map for
+Prod", and when it merged, its production address still redirected to the main map. Holding such an issue
+open until the deploy leaves the project board and the funding record lagging the work by however long a
+release takes, and the question gets decided differently each time it is asked.
+
+**What a deployment is tracked by instead:** the `dev-*` and `prod-*` tags record which commit reached
+which environment (#1145), and the release notes say what a release contains. An issue answers whether the
+work is done; a tag answers where it is. So a closing comment is the place to say what is true for a
+reader — merged, on dev, not yet on production, and the address that will start working when it is.
+
 **Fill in every field on the issue and the pull request, not only the title and body.** A field left
 empty drops the work out of the project board and the funding record just as surely as a missing
 issue does. Where a value is not known and not covered below, **ask the user before filing**; never
@@ -591,6 +649,22 @@ gh project item-edit --id "$item" --project-id <project node id> --field-id <sta
 **Anything with a visible result carries before/after screenshots**, in the issue and the pull
 request. Do not wait to be asked. A CI check enforces this; the escape hatch is the
 `no-visible-change` label, which is a deliberate act and stays visible afterwards.
+
+**A pull request with a visible result opens once its screenshots are on the branch, so CI runs once.**
+On 15 November 2026 most open GIS Day pull requests were red for the same two avoidable reasons, and each
+cost a second CI run: a pull request opened before its images existed fails "Has before/after images"
+until they are pushed, and one stacked on another conflicts as soon as the one underneath merges. So:
+
+- **Push the branch, take the before/after screenshots on it, merge the latest `development` in, then
+  open the pull request.** When the machine that built the change cannot sign in to take them, another
+  takes them on the branch first; the pull request still waits. A change with no visible result opens at
+  once.
+- **Stack a pull request on another only when both are needed soon.** When the one underneath merges,
+  merge `development` into the one on top at once, before its screenshots are taken, so it rebuilds
+  once. Read the pre-push check's result after that merge: on 15 November a clean-looking merge declared
+  two functions twice and failed to compile.
+
+The maintainer's decision (#3039). The mailbox's `DIRECTOR.md` says the same for the machines.
 
 **Build the pull request body from [`.github/pull_request_template.md`](.github/pull_request_template.md),
 with every section filled in.** `gh pr create --body-file` *replaces* the template rather than

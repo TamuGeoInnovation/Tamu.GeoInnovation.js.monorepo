@@ -31,6 +31,26 @@ const ROUTE_NUMBER_REGEX = /on ([0-9\-A-Za-z]+)$/;
  */
 export const BUS_STOP_POPUP_COMPONENT = new InjectionToken<PopupComponentReference>('BUS_STOP_POPUP_COMPONENT');
 
+/**
+ * The AggieSpirit bus stops and routes service: layer 0 is Bus Stops (multipoint), layer 1 Bus Routes (polyline, with
+ * a uniqueValue renderer on `routenum` that supplies each route's color). AggieMap provides its own environment's from
+ * `Connections.busRoutesUrl`, which this library cannot import; anything else reads production's (#2636).
+ */
+export const BUS_ROUTES_URL = new InjectionToken<string>('BUS_ROUTES_URL', {
+  providedIn: 'root',
+  factory: () => 'https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Bus_Routes_view/FeatureServer'
+});
+
+/**
+ * The Bus Routes layer's `stop1`, `stop2`, ... field names in an answer's attributes, in stop order. How many there are
+ * differs between the environments' services (#2636).
+ */
+export function routeStopFields(attributes: { [field: string]: unknown }): string[] {
+  return Object.keys(attributes)
+    .filter((field) => /^stop\d+$/.test(field))
+    .sort((a, b) => Number(a.slice(4)) - Number(b.slice(4)));
+}
+
 @Injectable({ providedIn: 'root' })
 export class BusService {
   private http = inject(HttpClient);
@@ -45,15 +65,7 @@ export class BusService {
   // are kept for compilation but are not exercised by the bus map.
   private base_url = 'https://nodes.geoservices.tamu.edu/api/route';
 
-  // AggieSpirit Bus Routes ArcGIS MapServer. Layer 0 = Bus Stops (multipoint), Layer 1 = Bus Routes
-  // (polyline, with a uniqueValue renderer on RouteNum that supplies per-route colors).
-  //
-  // NOTE: TS/Bus_Routes is currently published only to the dev GIS host. It is pinned here (rather than
-  // host-derived) so it also resolves on localhost - a host-from-hostname helper returns the prod host
-  // for `localhost`, which 404s for this dev-only service. It will 404 on production until TS publishes
-  // the service there; at that point switch this to the host-derived (prod) URL.
-  // TODO: un-pin to `gis.it.tamu.edu` once TS/Bus_Routes is published to production.
-  private serviceUrl = 'https://gis-dev.it.tamu.edu/arcgis/rest/services/TS/Bus_Routes/MapServer';
+  private serviceUrl = inject(BUS_ROUTES_URL);
 
   private _routes = null;
   private stop_map = [];
@@ -97,7 +109,7 @@ export class BusService {
    * while the service remains alive.
    *
    * ArcGIS attributes are mapped into the legacy `TSRoute` shape so the existing UI works unchanged:
-   * `RouteNum` -> `ShortName`, `RouteName` -> `Name`, renderer color -> `Color`, and `Campus` -> group.
+   * `routenum` -> `ShortName`, `routename` -> `Name`, renderer color -> `Color`, and `campus` -> group.
    */
   public getRoutes(): Observable<TSRoute[]> {
     if (this._routes != null) {
@@ -107,7 +119,7 @@ export class BusService {
     return forkJoin([
       this.arcgisQuery(1, {
         where: '1=1',
-        outFields: 'RouteNum,RouteName,Campus',
+        outFields: 'routenum,routename,campus',
         returnGeometry: 'false'
       }),
       // Layer metadata, for the uniqueValue renderer that defines each route's color.
@@ -121,15 +133,15 @@ export class BusService {
 
         for (const feature of query.features || []) {
           const attributes = feature.attributes || {};
-          const shortName = (attributes.RouteNum ?? '').toString().trim();
+          const shortName = (attributes.routenum ?? '').toString().trim();
 
-          // Skip blank route numbers and de-duplicate (the source has repeated RouteNum rows, e.g. `47/48`).
+          // Skip blank route numbers and de-duplicate (the source has repeated routenum rows, e.g. `47/48`).
           if (shortName === '' || seen.has(shortName)) {
             continue;
           }
           seen.add(shortName);
 
-          const onCampus = (attributes.Campus ?? '').toString().trim().toLowerCase() === 'on';
+          const onCampus = (attributes.campus ?? '').toString().trim().toLowerCase() === 'on';
 
           routes.push({
             Color: colors[shortName] || '#500000',
@@ -141,7 +153,7 @@ export class BusService {
             },
             Icon: '',
             Key: shortName,
-            Name: (attributes.RouteName ?? '').toString().trim() || shortName,
+            Name: (attributes.routename ?? '').toString().trim() || shortName,
             ShortName: shortName
           });
         }
@@ -741,11 +753,11 @@ export class BusService {
             attributes: {
               id: short_name,
               type: 'waypoints',
-              OBJECTID: stop.objectId,
-              StopName: stop.name,
-              Route: stop.routes,
-              StopType: stop.stopType,
-              StopClass: stop.stopClass
+              objectid: stop.objectId,
+              stopname: stop.name,
+              route: stop.routes,
+              stoptype: stop.stopType,
+              stopclass: stop.stopClass
             },
             symbol: new SimpleMarkerSymbol({
               style: stop.timed ? 'square' : 'circle',
@@ -799,15 +811,16 @@ export class BusService {
   }
 
   /**
-   * Returns the ordered list of stop names for a route, sourced from the denormalized `Stop1..Stop31`
+   * Returns the ordered list of stop names for a route, sourced from the denormalized `stop1`, `stop2`, ...
    * fields on the Bus Routes layer. Used to populate the route detail panel.
+   *
+   * The number of those fields is read from the answer, not assumed: production's view has `stop32`, which route 47
+   * uses, and development's stops at `stop31`, so naming either count would drop a stop or fail the query (#2636).
    */
   public getRouteStops(short_name: string): Observable<string[]> {
-    const stopFields = Array.from({ length: 31 }, (_, i) => `Stop${i + 1}`);
-
     return this.arcgisQuery(1, {
-      where: `RouteNum='${escapeSqlString(short_name)}'`,
-      outFields: stopFields.join(','),
+      where: `routenum='${escapeSqlString(short_name)}'`,
+      outFields: '*',
       returnGeometry: 'false'
     }).pipe(
       map((response: ArcGISQueryResponse) => {
@@ -817,7 +830,7 @@ export class BusService {
           return [];
         }
 
-        return stopFields
+        return routeStopFields(feature.attributes)
           .map((field) => feature.attributes[field])
           .filter((value): value is string | number => value != null && value.toString().trim() !== '')
           .map((value) => value.toString().trim());
@@ -831,8 +844,8 @@ export class BusService {
    */
   private routeGeometry(short_name: string): Observable<number[][][]> {
     return this.arcgisQuery(1, {
-      where: `RouteNum='${escapeSqlString(short_name)}'`,
-      outFields: 'RouteNum',
+      where: `routenum='${escapeSqlString(short_name)}'`,
+      outFields: 'routenum',
       returnGeometry: 'true',
       outSR: '4326'
     }).pipe(
@@ -857,13 +870,13 @@ export class BusService {
   /**
    * Fetches the stops that serve a route from the Bus Stops layer, in WGS84.
    *
-   * The `Route` field is a comma-separated list (e.g. `05, 08, 35`), so the `LIKE` pre-filter is narrowed
+   * The `route` field is a comma-separated list (e.g. `05, 08, 35`), so the `LIKE` pre-filter is narrowed
    * with an exact token match to avoid false positives (e.g. `05` matching `NW0305`).
    */
   private routeStops(short_name: string): Observable<MapStop[]> {
     return this.arcgisQuery(0, {
-      where: `Route LIKE '%${escapeSqlString(short_name)}%'`,
-      outFields: 'OBJECTID,StopName,Route,StopType,StopClass',
+      where: `route LIKE '%${escapeSqlString(short_name)}%'`,
+      outFields: 'objectid,stopname,route,stoptype,stopclass',
       returnGeometry: 'true',
       outSR: '4326'
     }).pipe(
@@ -871,14 +884,14 @@ export class BusService {
         const stops: MapStop[] = [];
 
         for (const feature of response.features || []) {
-          const routes = (feature.attributes.Route ?? '').toString().trim();
+          const routes = (feature.attributes.route ?? '').toString().trim();
           const routeTokens = routes.split(',').map((token) => token.trim());
 
           if (routeTokens.indexOf(short_name) === -1) {
             continue;
           }
 
-          const stopType = (feature.attributes.StopType ?? '').toString().trim();
+          const stopType = (feature.attributes.stoptype ?? '').toString().trim();
           const timed = stopType.toLowerCase() === 'time';
           const points = (feature.geometry && feature.geometry.points) || [];
 
@@ -887,11 +900,11 @@ export class BusService {
               longitude: point[0],
               latitude: point[1],
               timed: timed,
-              objectId: Number(feature.attributes.OBJECTID),
-              name: (feature.attributes.StopName ?? '').toString().trim(),
+              objectId: Number(feature.attributes.objectid),
+              name: (feature.attributes.stopname ?? '').toString().trim(),
               routes: routes,
               stopType: stopType,
-              stopClass: (feature.attributes.StopClass ?? '').toString().trim()
+              stopClass: (feature.attributes.stopclass ?? '').toString().trim()
             });
           }
         }
@@ -906,7 +919,7 @@ export class BusService {
   }
 
   /**
-   * Issues a query against a layer of the ArcGIS Bus Routes MapServer, returning the parsed JSON.
+   * Issues a query against a layer of the bus routes service, returning the parsed JSON.
    */
   private arcgisQuery(layerId: number, params: { [key: string]: string }): Observable<ArcGISQueryResponse> {
     const query = Object.entries({ f: 'json', ...params })
@@ -917,7 +930,7 @@ export class BusService {
   }
 
   /**
-   * Builds a `RouteNum -> css color` map from the Bus Routes layer's uniqueValue renderer.
+   * Builds a `routenum -> css color` map from the Bus Routes layer's uniqueValue renderer.
    */
   private buildRouteColorMap(layerInfo: ArcGISLayerInfo): { [routeNum: string]: string } {
     const colors: { [routeNum: string]: string } = {};

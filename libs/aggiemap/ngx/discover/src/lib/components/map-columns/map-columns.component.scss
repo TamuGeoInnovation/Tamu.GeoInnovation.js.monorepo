@@ -7,6 +7,29 @@
   max-width: 78rem;
 }
 
+// A layout split: one list, flowed across the rows, because that is the order it is read in (#2681).
+// Same three tracks and the same gaps as `.parking-columns`, so nothing moves on screen except which
+// tile sits where - and on a phone it is one column, which is what the list was anyway.
+.map-entry-list--split {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.15rem 3rem;
+  max-width: 78rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (max-width: 768px) {
+  .map-entry-list--split {
+    grid-template-columns: 1fr;
+
+    // The row gap goes with the single column, as it does for the stacked groups below: the item
+    // spacing comes from `.map-entry` and is already even.
+    gap: 0;
+  }
+}
+
 .parking-column-heading {
   color: #500000 !important;
   font-family: 'Open Sans', sans-serif !important;

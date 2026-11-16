@@ -1,13 +1,18 @@
 import { DiscoverApplication, InternalDiscoverApplication } from '../interfaces/discover-application.interface';
 import { nextEventDate, parseEventDate } from '@tamu-gisc/common/utils/date';
+import { mapSegment } from '@tamu-gisc/ts/events/ngx';
 
 /**
- * Builds the router commands used to navigate to a map application. Events live under `/events`,
- * satellite-campus maps live under `/campus`, everything else (parking, operations) is routed
- * under its own type segment.
+ * Builds the router commands used to navigate to a map application. The first segment is `mapSegment`'s, which the
+ * map's own route redirects to as well, so a link and the address it ends at cannot disagree (#2767).
  */
 export function getApplicationRoute(app: InternalDiscoverApplication): string[] {
-  const routeSegment = app.type === 'event' ? 'events' : app.type === 'satellite-campus' ? 'campus' : app.type;
+  // A panel of the main map, such as the bus map (#2743): the route is the entry's own.
+  if (app.route) {
+    return app.route;
+  }
+
+  const routeSegment = mapSegment(app);
 
   // Kiosk maps have no builder/options flow, so their working route always includes the trailing
   // `map` segment (e.g. `/kiosk/dining/map`) rather than `/kiosk/dining`.
@@ -120,13 +125,6 @@ export function buildMapColumnGroups(
   }));
 }
 
-/**
- * Index the second ordered-list column should start at so numbering continues across columns.
- */
-export function getSecondColumnStart(columns: InternalDiscoverApplication[][]): number {
-  return columns[0].length + 1;
-}
-
 export function sortApplicationsByName<T extends DiscoverApplication>(apps: T[]): T[] {
   return [...apps].sort((a, b) => a.name.localeCompare(b.name));
 }
@@ -187,7 +185,7 @@ export function filterUpcomingEvents(apps: InternalDiscoverApplication[]): Inter
   const todayMs = today.getTime();
 
   return apps.filter((app) => {
-    const dates = app.configuration.eventDates;
+    const dates = app.configuration?.eventDates;
     if (!dates || dates.length === 0) return true;
     return dates.some((date) => parseEventDate(date) >= todayMs);
   });

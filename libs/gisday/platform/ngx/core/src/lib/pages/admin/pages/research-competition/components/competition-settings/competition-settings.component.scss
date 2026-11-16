@@ -1,0 +1,70 @@
+@import 'libs/sass/mixins';
+
+// Layout only (#2969, #3037). The section, its toolbar and its body are the shared form styles (libs/sass/modules/_forms.scss),
+// the open and close the shared accordion's, and the buttons the shared form button's.
+
+// The toolbar is the panel's header: all of it opens and closes the panel. Closed, it is the whole section, so it
+// keeps no gap beneath it for a body that is not there.
+.settings-toolbar {
+  @include justify-content(flex-start);
+  cursor: pointer;
+}
+
+:host .settings-toolbar:last-child {
+  margin-bottom: 0;
+}
+
+// The section's name, as a button so the keyboard can open the panel too, without a button's own look.
+.settings-toggle {
+  @include flexbox();
+  @include align-items(center);
+  flex-shrink: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+
+  // Open, the section's title colour; closed, the link colour .__form-action gives it (#3012).
+  &:not(.__form-action) {
+    color: inherit;
+  }
+
+  .material-icons {
+    margin-right: 0.25rem;
+  }
+}
+
+.settings-summary {
+  padding: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: #616161;
+}
+
+// One row per competition; each cell is a deadline's picker with its Central time under it, and its Clear. Where the
+// content area is narrow (1024 px), a competition's name and a Central time wrap rather than push the table past it.
+.deadlines-table {
+  border-collapse: collapse;
+
+  th,
+  td {
+    padding: 0.25rem 1rem 0.25rem 0;
+    text-align: left;
+    vertical-align: middle;
+  }
+
+  thead th {
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  tbody th {
+    font-weight: 600;
+  }
+}
+
+// Under its picker, a little apart from it.
+.deadline-central {
+  margin-top: 0.25rem;
+  font-size: 0.85rem;
+}

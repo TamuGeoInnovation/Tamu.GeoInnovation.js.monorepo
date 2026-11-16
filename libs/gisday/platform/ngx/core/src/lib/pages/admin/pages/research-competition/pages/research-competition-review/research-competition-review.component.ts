@@ -1,15 +1,24 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { map, Observable, shareReplay, switchMap } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { filter, map, Observable, shareReplay, switchMap } from 'rxjs';
 
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { Submission } from '@tamu-gisc/gisday/platform/data-api';
-import { SeasonService, UserSubmissionsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { SeasonService, UserSubmissionsService, reviewSubmissionsToast } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
+import { serverMessage, SubmissionFilesComponent, provideAdminDetailsPage } from '@tamu-gisc/gisday/platform/ngx/common';
 import { SlideToggleComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe, TitleCasePipe } from '@angular/common';
+
+import { BaseAdminDetailsPageComponent } from '../../../base-admin-details-page/base-admin-details-page.component';
+import {
+  ReviewEmailModalComponent,
+  ReviewEmailModalData,
+  ReviewEmailModalResult
+} from '@tamu-gisc/gisday/platform/ngx/common';
 
 @Component({
   selector: 'tamu-gisc-research-competition-review',
@@ -22,16 +31,18 @@ import { AsyncPipe, TitleCasePipe } from '@angular/common';
     TextboxComponent,
     ButtonComponent,
     AsyncPipe,
-    TitleCasePipe
-  ]
+    TitleCasePipe,
+    SubmissionFilesComponent
+  ],
+  providers: [provideAdminDetailsPage(() => ResearchCompetitionReviewComponent)]
 })
-export class ResearchCompetitionReviewComponent implements OnInit {
+export class ResearchCompetitionReviewComponent extends BaseAdminDetailsPageComponent implements OnInit {
   private readonly fb = inject(UntypedFormBuilder);
-  private readonly rt = inject(Router);
   private readonly at = inject(ActivatedRoute);
   private readonly submissionService = inject(UserSubmissionsService);
   private readonly ns = inject(NotificationService);
   private readonly ss = inject(SeasonService);
+  private readonly modals = inject(ModalService);
 
   public entity$: Observable<Partial<Submission>>;
   public form: UntypedFormGroup;
@@ -46,6 +57,10 @@ export class ResearchCompetitionReviewComponent implements OnInit {
       label: 'Reject'
     }
   ];
+
+  protected override detailsForm() {
+    return this.form;
+  }
 
   public ngOnInit(): void {
     this.form = this.fb.group({
@@ -76,45 +91,56 @@ export class ResearchCompetitionReviewComponent implements OnInit {
           message: 'Submission deleted successfully.'
         });
 
-        this._navigateBack();
+        this.backToList();
       },
       error: (err) => {
         this.ns.toast({
           id: 'delete-submission-error',
           title: 'Delete Submission',
-          message: `Error deleting submission: ${err.status}`
+          message: serverMessage(err, `Error deleting submission: ${err.status}`)
         });
       }
     });
   }
 
+  /**
+   * Submit Review: shows the email the decision will send, editable, and records the decision and sends it only on
+   * Send (#2981). Cancel leaves the submission as it was.
+   */
   public updateSubmission() {
     const rawValue = this.form.getRawValue();
 
-    // `accepted` has been coerced into a string. We need to convert it back to a boolean.
-    rawValue.acceptance = rawValue.acceptance === 'true';
+    // `acceptance` has been coerced into a string. We need to convert it back to a boolean.
+    const acceptance = rawValue.acceptance === 'true';
+    const guids = [rawValue.guid];
+    const data: ReviewEmailModalData = {
+      acceptance,
+      preview: this.submissionService.previewReview(guids, acceptance, rawValue.message)
+    };
 
-    this.submissionService.updateEntity(rawValue.guid, rawValue).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'update-submission-success',
-          title: 'Update Submission',
-          message: 'Submission review submitted successfully.'
-        });
+    this.modals
+      .open<ReviewEmailModalResult>(ReviewEmailModalComponent, { data })
+      .pipe(
+        filter((templates): templates is Record<string, string> => !!templates),
+        switchMap((templates) => this.submissionService.review(guids, acceptance, rawValue.message, templates))
+      )
+      .subscribe({
+        next: (result) => {
+          this.ns.toast(reviewSubmissionsToast(result, acceptance));
 
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'update-submission-error',
-          title: 'Update Submission',
-          message: `Error inserting submission review: ${err.status}`
-        });
-      }
-    });
-  }
-
-  private _navigateBack() {
-    this.rt.navigate(['/admin/research-competition']);
+          if (result.reviewed.length) {
+            // The decision is saved: leaving is not leaving unsaved changes (#2942).
+            this.form.markAsPristine();
+            this.backToList();
+          }
+        },
+        error: (err) => {
+          this.ns.toast({
+            id: 'update-submission-error',
+            title: 'Update Submission',
+            message: serverMessage(err, `Error inserting submission review: ${err.status}`)
+          });
+        }
+      });
   }
 }

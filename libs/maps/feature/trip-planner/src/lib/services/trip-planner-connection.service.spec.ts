@@ -4,20 +4,37 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { firstValueFrom } from 'rxjs';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 
 import { TripPlannerConnectionService } from './trip-planner-connection.service';
 
 const ROUTING = 'https://gis.example.edu/arcgis/rest/services/Routing';
+const NETWORK = 'https://gis.example.edu/arcgis/rest/services/RoutingProPublish';
+
+const SUPPORTED = [
+  { id: '1', name: 'Bike', type: 'AUTOMOBILE' },
+  { id: '4', name: 'Walk', type: 'WALK' }
+];
 
 describe('TripPlannerConnectionService', () => {
   let http: HttpTestingController;
+  let isTesting: boolean;
+  /** The network the application names, `routingNetworkUrl`; discovery is for an application that names none. */
+  let network: string | undefined;
 
   beforeEach(() => {
+    isTesting = false;
+    network = undefined;
+
     TestBed.configureTestingModule({
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        { provide: EnvironmentService, useValue: { value: () => ({ routingBaseUrl: ROUTING }) } }
+        {
+          provide: EnvironmentService,
+          useValue: { value: () => ({ routingBaseUrl: ROUTING, routingNetworkUrl: network }) }
+        },
+        { provide: TestingService, useValue: { get isTesting() { return isTesting; } } }
       ]
     });
     http = TestBed.inject(HttpTestingController);
@@ -52,7 +69,69 @@ describe('TripPlannerConnectionService', () => {
       { name: 'Routing/ChrisRoutingTest', type: 'NAServer' }
     ]);
 
-    expect(service.connection().url()).toBe('https://gis.example.edu/arcgis/rest/services/Routing/20220119/NAServer/Route');
+    const route = 'https://gis.example.edu/arcgis/rest/services/Routing/20220119/NAServer/Route';
+
+    expect(service.connection().url()).toBe(route);
     expect((await firstValueFrom(service.currentNetwork)).name).toBe('Routing/20220119');
+
+    // It then asks that network what it can solve.
+    http.expectOne(`${route}?f=json`).flush({ supportedTravelModes: SUPPORTED });
+    expect(await firstValueFrom(service.supportedTravelModes)).toEqual(SUPPORTED);
+  });
+
+  // RoutingProPublish/Map is the network the Transportation GIS team published for #659. It is not under the
+  // dated `Routing/yyyymmdd` names discovery looks for, so the application names it (#2804).
+  describe('where the application names its network', () => {
+    beforeEach(() => {
+      network = NETWORK;
+    });
+
+    // On production too: development-only features have nothing to do with which network the planner uses (#2804).
+    it.each([true, false])('connects to it, with development-only features on: %s', (testing) => {
+      isTesting = testing;
+
+      const service = TestBed.inject(TripPlannerConnectionService);
+
+      http.expectOne(`${NETWORK}/Map/NAServer/Route?f=json`).flush({ supportedTravelModes: SUPPORTED });
+
+      expect(service.connection().url()).toBe(`${NETWORK}/Map/NAServer/Route`);
+    });
+
+    it('connects to the published network without discovering anything', async () => {
+      const service = TestBed.inject(TripPlannerConnectionService);
+      const route = `${NETWORK}/Map/NAServer/Route`;
+
+      http.expectNone(`${ROUTING}?f=pjson`);
+      http.expectOne(`${route}?f=json`).flush({ supportedTravelModes: SUPPORTED });
+
+      expect(service.connection().url()).toBe(route);
+      expect((await firstValueFrom(service.currentNetwork)).name).toBe('RoutingProPublish/Map');
+    });
+
+    it('says what the network can solve, read from the network', async () => {
+      const service = TestBed.inject(TripPlannerConnectionService);
+
+      expect(await firstValueFrom(service.supportedTravelModes)).toBeNull();
+
+      http.expectOne(`${NETWORK}/Map/NAServer/Route?f=json`).flush({ supportedTravelModes: SUPPORTED });
+
+      expect(await firstValueFrom(service.supportedTravelModes)).toEqual(SUPPORTED);
+    });
+
+    it('offers no mode, rather than every one, when the network cannot say what it solves', async () => {
+      const service = TestBed.inject(TripPlannerConnectionService);
+
+      http
+        .expectOne(`${NETWORK}/Map/NAServer/Route?f=json`)
+        .flush('down', { status: 503, statusText: 'Service Unavailable' });
+
+      expect(await firstValueFrom(service.supportedTravelModes)).toEqual([]);
+    });
+  });
+
+  it('discovers, and touches no named network, where the application names none', () => {
+    answeredWith([]);
+
+    http.expectNone((request) => request.url.includes('RoutingProPublish'));
   });
 });

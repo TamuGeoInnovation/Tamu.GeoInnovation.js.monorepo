@@ -5,11 +5,14 @@
       <div class="form-section-actions">
         <tamu-gisc-select class="post-1" placeholder="Season" [floatLabel]="false" [data]="seasons$ | async" displayTemplate="year" valueTemplate="guid" [value]="$safeNavigationMigration((selectedSeason$ | async)?.guid)" (changed)="setSeason($event)"></tamu-gisc-select>
 
+        <a class="post-1" routerLink="edits">Edits to review <span class="material-icons action">rate_review</span></a>
         <a routerLink="add">Add speaker <span class="material-icons action">add</span></a>
       </div>
     </div>
 
     <div class="form-section-body">
+      <tamu-gisc-admin-search [control]="search" placeholder="Search by name, email or organization" one="speaker" many="speakers" [counts]="searchCounts$ | async"></tamu-gisc-admin-search>
+
       @if (entitiesForActiveSeasonOrForSeasonGuid$ | async; as entities) { @if (entities?.length > 0) {
       <table class="floating-table">
         <thead>
@@ -35,6 +38,8 @@
           }
         </tbody>
       </table>
+      } @else if (search.value.trim()) {
+      <p>No speakers match "{{ search.value }}".</p>
       } @else {
       <p>There are no speakers for the selected season.</p>
       } @if ((selectedRows$ | async)?.length > 0) {
@@ -43,6 +48,8 @@
           <p><strong>{{(selectedRows$ | async).length}} selected</strong></p>
         </div>
         <div class="selected-actions">
+          <!-- Each selected speaker gets their own link to edit their profile (#2936), named as the maintainer asked (#2953). -->
+          <p class="selected-action" (click)="emailEditLinks()" tabindex="0" role="button" (keydown.enter)="emailEditLinks()" (keydown.space)="emailEditLinks(); $event.preventDefault()">Send profile email <span class="material-icons action">forward_to_inbox</span></p>
           <p class="selected-action" (click)="promptCopyModal('Speaker')" tabindex="0" role="button" (keydown.enter)="promptCopyModal('Speaker')" (keydown.space)="promptCopyModal('Speaker'); $event.preventDefault()">Copy <span class="material-icons action">content_copy</span></p>
           <p class="selected-action caution" (click)="promptDeleteModal('Speaker')" tabindex="0" role="button" (keydown.enter)="promptDeleteModal('Speaker')" (keydown.space)="promptDeleteModal('Speaker'); $event.preventDefault()">Delete <span class="material-icons action">delete_forever</span></p>
         </div>

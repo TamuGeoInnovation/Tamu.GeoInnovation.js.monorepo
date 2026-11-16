@@ -188,3 +188,21 @@ test('no comparison is made while another capture runs', () => {
 
   assert.deepEqual(calls, []);
 });
+
+test('a retake of a few pages is never compared as a release, nor a release with it', () => {
+  const out = fs.mkdtempSync(path.join(os.tmpdir(), 'poll-'));
+  const write = (kind, name, manifest) => {
+    fs.mkdirSync(path.join(out, kind, name), { recursive: true });
+    fs.writeFileSync(path.join(out, kind, name, 'manifest.json'), JSON.stringify(manifest));
+  };
+
+  write('development', 'dev-2026-10-30', { ...done, capturedAt: '2026-10-30 12:00:00 US Central', completedAt: '2026-10-30 15:00:00 US Central' });
+  write('development', 'dev-2026-11-10', { ...done, capturedAt: '2026-11-10 02:14:00 US Central', completedAt: '2026-11-10 05:18:00 US Central' });
+  write('development-recheck', 'dev-2026-11-10-recheck-20261110-1300', { ...done, capturedAt: '2026-11-10 13:00:00 US Central', completedAt: '2026-11-10 13:04:00 US Central' });
+  write('development-recheck', 'dev-2026-11-10-recheck-20261110-1400', { ...done, capturedAt: '2026-11-10 14:00:00 US Central', completedAt: '2026-11-10 14:04:00 US Central' });
+
+  assert.deepEqual(
+    missingComparisons(out).map((c) => `${c.kind}: ${c.before} -> ${c.after}`),
+    ['development: dev-2026-10-30 -> dev-2026-11-10']
+  );
+});

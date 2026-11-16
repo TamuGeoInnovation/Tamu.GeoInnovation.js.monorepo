@@ -6,6 +6,12 @@
   z-index: 0;
 }
 
+// While it has focus, above the fields after it, so a searchable select's open list is not drawn under them: z-index 0
+// keeps the list's own z-index inside this element (#2656).
+:host:focus-within {
+  z-index: 31;
+}
+
 select {
   padding: 0.25rem;
   width: inherit;

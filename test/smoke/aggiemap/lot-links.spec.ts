@@ -6,6 +6,7 @@ import { Connections } from '../../../libs/aggiemap/ngx/common/src/lib/connectio
 
 import { expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
+import { gisHostFor, smokeBaseUrl } from './gis-hosts';
 
 /**
  * A `?lot=` link opens the lot on a parking map, whether its service names its fields by table or not
@@ -27,6 +28,13 @@ import { blockAnalytics } from './analytics';
  * itself with its layer's title said "Selected Buildings" for whatever a link had opened.
  */
 
+/**
+ * The services of the environment under test, as `search-sources.spec.ts` reads them. The default `Connections` resolves
+ * to production's hosts in this process, so on dev the expected object ids were production's while the maps drew
+ * development's layers, whose ids differ since #2667: five failures with a correct application underneath.
+ */
+const connections = Connections(gisHostFor(smokeBaseUrl()));
+
 const PROBE_GLOBAL = '__tamuGiscMapProbe';
 const POPUP = 'tamu-gisc-feature-popup .popup';
 const SELECTION_LAYER_ID = 'selection-layer';
@@ -34,8 +42,6 @@ const SELECTION_LAYER_ID = 'selection-layer';
 /** How long the main map's lot search is held back to show #1969. */
 const LATE_SERVICE_MS = 6_000;
 
-/** The main map's parking lots in the campus basemap service, which its `lot` search source asks (`search-sources.ts`). */
-const MAIN_MAP_LOTS_LAYER = 9;
 
 interface LotLink {
   /** Which map, and which group of the issue's audit it stands for. */
@@ -43,7 +49,7 @@ interface LotLink {
   path: string;
   /** The map's layer the lot must be selected on. */
   layerId: string;
-  /** That layer's address. The transportation GIS host is the same for every environment (getDefaultGisHosts()). */
+  /** That layer's address, on the environment under test: each environment numbers its features differently (#2667). */
   url: string;
   /** Finds the features the link may select, asked of the service: object ids change when it is republished. */
   where: string;
@@ -56,7 +62,7 @@ const VISITOR_PARKING: LotLink = {
   name: 'Visitor Parking, whose fields are named by table',
   path: '/parking/visitor-parking/map?lot=100j',
   layerId: 'Visitor Parking Lots',
-  url: `${Connections.visitorParkingUrl}/1`,
+  url: `${connections.visitorParkingUrl}/1`,
   where: `GIS.TS.ParkingLots.Name = '100j'`,
   objectIdField: 'GIS.TS.ParkingLots.OBJECTID'
 };
@@ -67,7 +73,7 @@ const LOT_LINKS: LotLink[] = [
     name: 'Motorcycle Parking, whose fields are not',
     path: '/parking/motorcycle-parking/map?lot=100j',
     layerId: 'motorcycle-parking-space',
-    url: `${Connections.motorcycleParkingUrl}/0`,
+    url: `${connections.motorcycleParkingUrl}/0`,
     // A lot link on a map of spaces opens one of the lot's spaces.
     where: `LotName = '100j'`,
     objectIdField: 'OBJECTID',
@@ -180,11 +186,12 @@ test.describe('lot links on the parking maps', () => {
     }) => {
       test.setTimeout(150_000);
       const objectIds = await expectedObjectIds(request, link);
-      const mainMapLots = `${Connections.basemapUrl}/${MAIN_MAP_LOTS_LAYER}/query`;
+      // The main map's parking lots, which its `lot` search source asks (`search-sources.ts`).
+      const mainMapLots = `${connections.surfaceLotsUrl}/query`;
 
       await page.route(
         // The search for the link's lot, not the queries that draw the campus lots. The search source asks
-        // `.../MapServer/9//query`, so repeated slashes are folded before comparing.
+        // `.../FeatureServer/6//query`, so repeated slashes are folded before comparing.
         (url) =>
           url.href.replace(/([^:])\/{2,}/g, '$1/').startsWith(mainMapLots) && /100J/i.test(decodeURIComponent(url.search)),
         async (route) => {

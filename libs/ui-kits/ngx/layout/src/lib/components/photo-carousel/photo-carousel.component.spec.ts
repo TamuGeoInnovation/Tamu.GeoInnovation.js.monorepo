@@ -78,4 +78,66 @@ describe('PhotoCarouselComponent', () => {
 
     expect(destroy).toHaveBeenCalledTimes(1);
   });
+
+  /**
+   * Only the photo on show is fetched when the carousel opens; each further one when its slide is reached, with the
+   * one either side of it (#2716). Every photo used to be fetched at once: a Nature Rx space's ran to 6.5 MB.
+   */
+  describe('fetching photos', () => {
+    /** The photos the slides would fetch now: an `<img>` with no address fetches nothing. */
+    function fetched(fixture: ReturnType<typeof create>): Array<string | null> {
+      return Array.from((fixture.nativeElement as HTMLElement).querySelectorAll('img')).map((img) =>
+        img.getAttribute('src')
+      );
+    }
+
+    /** Moves the stand-in carousel to `realIndex` and reports the change as Swiper's web component does. */
+    function slideTo(fixture: ReturnType<typeof create>, realIndex: number): void {
+      const swiper = (fixture.nativeElement as HTMLElement).querySelector('swiper-container') as HTMLElement & {
+        swiper?: { realIndex: number };
+      };
+
+      swiper.swiper = { realIndex };
+      swiper.dispatchEvent(new Event('swiperslidechange'));
+      fixture.detectChanges();
+    }
+
+    it('fetches only the first photo when it opens', () => {
+      expect(fetched(create())).toEqual([photos[0], null, null]);
+    });
+
+    it('fetches nothing more for the changes Swiper reports while laying out, still on the first slide', () => {
+      const fixture = create();
+
+      slideTo(fixture, 0);
+      slideTo(fixture, 0);
+
+      expect(fetched(fixture)).toEqual([photos[0], null, null]);
+    });
+
+    it('fetches a photo, and the one either side of it, once its slide is reached', () => {
+      const fixture = create();
+
+      slideTo(fixture, 1);
+
+      expect(fetched(fixture)).toEqual(photos);
+    });
+
+    it('goes round the loop: going back from the first fetches the last', () => {
+      const many = ['a', 'b', 'c', 'd', 'e'].map((name) => `https://example.com/${name}.jpg`);
+      const fixture = TestBed.createComponent(PhotoCarouselComponent);
+      fixture.componentRef.setInput('photos', many);
+      fixture.detectChanges();
+
+      slideTo(fixture, 4);
+
+      expect(fetched(fixture)).toEqual([many[0], null, null, many[3], many[4]]);
+    });
+
+    it('keeps every slide a link to its photo, fetched or not', () => {
+      const links = (create().nativeElement as HTMLElement).querySelectorAll('a');
+
+      expect(Array.from(links).map((link) => link.getAttribute('href'))).toEqual(photos);
+    });
+  });
 });

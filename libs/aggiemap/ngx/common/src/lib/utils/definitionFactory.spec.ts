@@ -8,10 +8,11 @@ import { factory } from './definitionFactory';
  * dev site the switch hid the development features and left every layer on the development server,
  * so the layers only production has stayed struck through as failed.
  *
- * `inforUrl` stands for all of them: it is built from the GIS host and nothing else.
+ * `departmentUrl` stands for all of them: it is built from the GIS host and nothing else. (`inforUrl` did, until the
+ * development server's copy turned out to have no layers and it was read from production there, #2744.)
  */
 const hostOf = (environment: 'dev' | 'prod' | undefined) =>
-  new URL(factory(environment ? { environment } : undefined).Connections.inforUrl).hostname;
+  new URL(factory(environment ? { environment } : undefined).Connections.departmentUrl).hostname;
 
 describe('the GIS server a build draws from', () => {
   afterEach(() => {

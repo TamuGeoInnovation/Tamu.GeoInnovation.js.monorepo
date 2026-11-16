@@ -10,9 +10,11 @@ import {
   CHECK_IN_CODE_MESSAGE,
   CHECK_IN_MAX_ACCURACY,
   CHECK_IN_ZONE_EVENT_MODE,
+  checkInOpensAt,
   checkInWindow,
   checkInZoneMessage,
-  checksInByCode
+  checksInByCode,
+  isCheckInOpen
 } from '@tamu-gisc/gisday/common';
 
 import { CheckIn, Event } from '../entities/all.entity';
@@ -51,7 +53,12 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
    * This stops checking in from home, not deliberate spoofing.
    *
    * A hybrid or virtual event needs no position but its QR code's `code` (#2560), the one
-   * `getCheckInCode` gives organizers to show on a slide.
+   * `getCheckInCode` gives organizers to show on a slide. Any session takes that code (#3077): at an in-person
+   * one it stands in for the position, for an attendee whose phone cannot give one, and a wrong code is refused
+   * rather than falling back to the zone.
+   *
+   * A session open at any time (`checkInAnyTime`, #2635) accepts a check-in outside its time too, held to
+   * every other rule, and marks it `outsideSessionTime` for admins.
    */
   public insertUserCheckin(
     eventGuid: string,
@@ -61,11 +68,15 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
   ) {
     return this.insert(eventGuid, accountGuid, async (event) => {
       // Only while the session page shows the button, the same rule (#1795), so nobody checks in early
-      // or late by calling the API directly. Checked before the location or the code, so an early
-      // attendee is told when rather than how.
-      assertCheckInOpen(event);
+      // or late by calling the API directly; unless the session is open at any time. Checked before the
+      // location or the code, so an early attendee is told when rather than how.
+      const outsideSessionTime = !isCheckInOpen(event);
 
-      if (checksInByCode(event.mode)) {
+      if (outsideSessionTime && !event.checkInAnyTime) {
+        assertCheckInOpen(event);
+      }
+
+      if (checksInByCode(event.mode) || codeOffered(code)) {
         // Not selected with the event, so it is asked for on its own.
         const stored = await this.eventRepo.findOne({
           where: { guid: event.guid },
@@ -76,22 +87,33 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
           throw new ForbiddenException(CHECK_IN_CODE_MESSAGE);
         }
 
-        return;
+        return { outsideSessionTime };
       }
 
       const zone = event.location?.checkInZone;
 
-      if (event.mode !== CHECK_IN_ZONE_EVENT_MODE || !isLatLonPolygon(zone)) {
-        return;
+      if (event.mode === CHECK_IN_ZONE_EVENT_MODE && isLatLonPolygon(zone)) {
+        if (!isLatLon(position)) {
+          throw new ForbiddenException('Checking in to this event needs your location.');
+        }
+
+        if (!isWithinPolygon(position, zone, reach(position.accuracy))) {
+          throw new ForbiddenException(checkInZoneMessage(event.location.building));
+        }
       }
 
-      if (!isLatLon(position)) {
-        throw new ForbiddenException('Checking in to this event needs your location.');
-      }
+      return { outsideSessionTime };
+    });
+  }
 
-      if (!isWithinPolygon(position, zone, reach(position.accuracy))) {
-        throw new ForbiddenException(checkInZoneMessage(event.location.building));
-      }
+  /**
+   * A session's check-ins, newest first, for admins on its page (#2635): who, when, and whether it was
+   * made outside the session's time.
+   */
+  public getCheckinsForEvent(eventGuid: string) {
+    return this.checkInRepo.find({
+      where: { event: { guid: eventGuid } },
+      order: { created: 'DESC' }
     });
   }
 
@@ -104,8 +126,8 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
   }
 
   /**
-   * The code in a hybrid or virtual session's check-in QR code (#2560), for an organizer to show on a
-   * slide. Made the first time it is asked for and the same ever after, so a slide made early still
+   * The code in a session's check-in QR code (#2560), for an organizer to show on a slide: any session's since
+   * #3077, so an in-person one has a way in for a phone that cannot give its location. Made the first time it is asked for and the same ever after, so a slide made early still
    * works. Two organizers asking at once get the same code: only the first write lands.
    */
   public async getCheckInCode(eventGuid: string): Promise<{ code: string }> {
@@ -116,10 +138,6 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
 
     if (!event) {
       throw new NotFoundException('Event could not be found');
-    }
-
-    if (!checksInByCode(event.mode)) {
-      throw new UnprocessableEntityException(null, 'Only hybrid and virtual sessions check in with a QR code.');
     }
 
     if (event.checkInCode) {
@@ -136,7 +154,14 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
     return { code: saved.checkInCode };
   }
 
-  private async insert(eventGuid: string, accountGuid: string, admit?: (event: Event) => void | Promise<void>) {
+  /**
+   * @param admit Refuses the check-in by throwing, or returns anything to record with it.
+   */
+  private async insert(
+    eventGuid: string,
+    accountGuid: string,
+    admit?: (event: Event) => Partial<CheckIn> | void | Promise<Partial<CheckIn> | void>
+  ) {
     const existing = await this.checkInRepo.findOne({
       where: {
         event: { guid: eventGuid },
@@ -159,9 +184,10 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
       throw new UnprocessableEntityException(null, 'Event could not be found');
     }
 
-    await admit?.(event);
+    const recorded = await admit?.(event);
 
     const checkin = this.checkInRepo.create({
+      ...(recorded || {}),
       event: event,
       accountGuid: accountGuid
     });
@@ -191,6 +217,14 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
  */
 function reach(accuracy: unknown): number {
   return typeof accuracy === 'number' && accuracy > 0 ? Math.min(accuracy, CHECK_IN_MAX_ACCURACY) : 0;
+}
+
+/**
+ * Whether the attendee sent a code at all, so that an in-person session checks it rather than their position
+ * (#3077). An empty one is none: the page sends nothing without a code in its address.
+ */
+function codeOffered(code: unknown): boolean {
+  return code !== undefined && code !== null && code !== '';
 }
 
 /**
@@ -227,17 +261,10 @@ function assertCheckInOpen(event: Event, now: Date = new Date()) {
   }
 
   if (now < window.opens) {
-    throw new ForbiddenException(`Check-in for this session opens when it starts, at ${centralTime(window.opens)}.`);
+    throw new ForbiddenException(`Check-in for this session opens when it starts, ${checkInOpensAt(window.opens, now)}.`);
   }
 
   if (now > window.closes) {
     throw new ForbiddenException('Check-in for this session has closed.');
   }
-}
-
-/**
- * A time of day in Central time, such as `4:00 PM`.
- */
-function centralTime(at: Date): string {
-  return new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', hour: 'numeric', minute: '2-digit' }).format(at);
 }

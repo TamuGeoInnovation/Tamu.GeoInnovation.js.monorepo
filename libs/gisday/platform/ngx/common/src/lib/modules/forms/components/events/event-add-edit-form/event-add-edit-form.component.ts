@@ -1,8 +1,9 @@
 import { Component, OnInit, inject, input, signal } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import {
   Observable,
+  combineLatest,
   filter,
   from,
   map,
@@ -26,10 +27,17 @@ import {
   LocationService,
   SeasonService,
   SpeakerService,
+  SpeakerEditsService,
+  sendEditLinksToast,
+  sendSessionDetailsToast,
   TagService,
   BroadcastService
 } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { siteListsPlace } from '@tamu-gisc/gisday/common';
+import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
+import { ActionMenuComponent, ActionMenuItem } from '@tamu-gisc/ui-kits/ngx/layout';
+import { serverMessage } from '../../../../../utils/server-message';
 import { SeasonsDayTileComponent } from '../../seasons/seasons-day-tile/seasons-day-tile.component';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { DateTimePickerComponent } from '@tamu-gisc/ui-kits/ngx/forms/date-time-picker';
@@ -39,8 +47,13 @@ import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { SelectListComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { PresenterCardComponent } from '../../../../people/components/presenter-card/presenter-card.component';
 import { eventFormProblems } from '../../../../../utils/event-form-problems';
+import { sortSpeakersByName } from '../../../../../utils/speakers';
 import { CheckboxGroupComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+
+import { GISDAY_SITE } from '../../../../../site/site';
+import { injectBackToList } from '../../../admin-details-page';
+import { sendProfileEmail, sendSessionDetailsEmail } from '../../../../modals/review-email-modal/profile-email';
 
 @Component({
   selector: 'tamu-gisc-event-add-edit-form',
@@ -59,13 +72,15 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
     PresenterCardComponent,
     CheckboxGroupComponent,
     ButtonComponent,
+    ActionMenuComponent,
     AsyncPipe
   ]
 })
 export class EventAddEditFormComponent implements OnInit {
   private readonly fb = inject(UntypedFormBuilder);
   private readonly at = inject(ActivatedRoute);
-  private readonly rt = inject(Router);
+  /** Leaves for the list once a save, create or delete has worked: the one the page was opened from (#2965). */
+  private readonly backToList = injectBackToList('/admin/events');
   private readonly seasonService = inject(SeasonService);
   private readonly speakerService = inject(SpeakerService);
   private readonly tagService = inject(TagService);
@@ -73,6 +88,9 @@ export class EventAddEditFormComponent implements OnInit {
   private readonly eventBroadcastService = inject(BroadcastService);
   private readonly eventService = inject(EventService);
   private readonly ns = inject(NotificationService);
+  private readonly speakerEdits = inject(SpeakerEditsService);
+  private readonly modals = inject(ModalService);
+  private readonly site = inject(GISDAY_SITE);
 
   /**
    * What stops the event being saved, shown above the buttons after a save is tried (#1773).
@@ -80,6 +98,12 @@ export class EventAddEditFormComponent implements OnInit {
   public readonly problems = signal<Array<string>>([]);
 
   public readonly type = input<'create' | 'edit'>(undefined);
+
+  /** What the Speakers section's Email these speakers menu offers (#3092). */
+  public readonly speakerEmails: ReadonlyArray<ActionMenuItem> = [
+    { id: 'profile', label: 'Profile email' },
+    { id: 'session-details', label: 'Session details' }
+  ];
 
   public form: UntypedFormGroup;
 
@@ -180,8 +204,10 @@ export class EventAddEditFormComponent implements OnInit {
       mode: [null],
       eventType: [null],
       presentationType: [null],
-      isAcceptingRsvps: [false],
+      // Ticked, as the database column's default is, so a new event accepts RSVPs unless the organizer unticks it (#2706).
+      isAcceptingRsvps: [true],
       isBringYourOwnDevice: [false],
+      checkInAnyTime: [false],
       requirements: [null],
       broadcast: [null],
       location: [null],
@@ -192,7 +218,7 @@ export class EventAddEditFormComponent implements OnInit {
 
     this.tags$ = this.tagService.getEntitiesForActiveSeason().pipe(shareReplay(1));
     this.speakers$ = this.speakerService.getEntitiesForActiveSeason().pipe(shareReplay(1));
-    this.broadcasts$ = this.eventBroadcastService.getEntitiesForActiveSeason().pipe(shareReplay(1));
+    const seasonBroadcasts$ = this.eventBroadcastService.getEntitiesForActiveSeason();
     this.locations$ = this.eventLocationService.getEntitiesForActiveSeason().pipe(
       mergeMap((locations) => locations),
       map((loc) => {
@@ -232,9 +258,8 @@ export class EventAddEditFormComponent implements OnInit {
     const formSpeakerChanges = (this.eventSpeakers$ = this.form.get('speakers').valueChanges.pipe(
       withLatestFrom(this.speakers$),
       map(([speakerGuids, speakers]) => {
-        return speakerGuids.map((guid) => {
-          return speakers.find((speaker) => speaker.guid === guid);
-        });
+        // By last name, as they are added and removed (#2940).
+        return sortSpeakersByName(speakerGuids.map((guid) => speakers.find((speaker) => speaker.guid === guid)));
       })
     ));
 
@@ -255,9 +280,8 @@ export class EventAddEditFormComponent implements OnInit {
       this.eventSpeakers$ = merge(
         formSpeakerChanges,
         this.entity$.pipe(
-          map((event) => {
-            return event.speakers;
-          })
+          // By last name, as the API returns them in the order they were added (#2940).
+          map((event) => sortSpeakersByName(event.speakers))
         )
       ).pipe(shareReplay(1));
 
@@ -301,6 +325,72 @@ export class EventAddEditFormComponent implements OnInit {
         });
       });
     }
+
+    // The site's own organizations' broadcasts, those with no place yet, and the event's own, whoever's it is, so opening
+    // an event never drops its broadcast (#3048). gisday.tamu.edu listed every organization's Zooms.
+    const ownBroadcast$ = this.entity$
+      ? this.entity$.pipe(
+          take(1),
+          map((event) => event?.broadcast?.guid ?? null)
+        )
+      : of(null);
+
+    this.broadcasts$ = combineLatest([seasonBroadcasts$, ownBroadcast$]).pipe(
+      map(([broadcasts, own]) => (broadcasts ?? []).filter((b) => b.guid === own || siteListsPlace(this.site, b.place))),
+      shareReplay(1)
+    );
+  }
+
+  /** The email chosen from the Email these speakers menu (#3092). */
+  public emailSpeakers(choice: string) {
+    if (choice === 'session-details') {
+      this.emailSessionDetails();
+    } else {
+      this.emailSpeakersEditLinks();
+    }
+  }
+
+  /**
+   * Emails the session's saved speakers its details (#3092): when and where, the Zoom link and dial-in for a hybrid or
+   * virtual session, check-in by its QR code, and what to bring, prefilled from the session as it is saved, then read and
+   * edited first in the profile email's window.
+   */
+  public emailSessionDetails() {
+    this.entity$
+      .pipe(
+        take(1),
+        switchMap((event) =>
+          sendSessionDetailsEmail(this.modals, this.speakerEdits.previewSessionDetails(event.guid), (email) =>
+            this.speakerEdits.sendSessionDetails(event.guid, email)
+          )
+        )
+      )
+      .subscribe({
+        next: (result) => this.ns.toast(sendSessionDetailsToast(result)),
+        error: () =>
+          this.ns.toast({ id: 'session-details-email', title: 'Session details not sent', message: 'Please try again.' })
+      });
+  }
+
+  /**
+   * Emails each of the event's saved speakers their own link to edit their profile (#2936): for the competition finalists'
+   * session, everyone on it at once. Speakers added on this page but not yet saved are included; the link is for their
+   * profile, not the event. The email is read and edited first (#3023).
+   */
+  public emailSpeakersEditLinks() {
+    this.eventSpeakers$
+      .pipe(
+        take(1),
+        map((speakers) => speakers.map((s) => s.guid)),
+        switchMap((guids) =>
+          sendProfileEmail(this.modals, this.speakerEdits.preview(guids), (email) => this.speakerEdits.send(guids, email))
+        )
+      )
+      .subscribe({
+        next: (result) => this.ns.toast(sendEditLinksToast(result)),
+        error: () =>
+          this.ns.toast({ id: 'speaker-edit-links', title: 'Profile emails not sent', message: 'Please try again.' })
+      });
   }
 
   public patchSpeaker(speaker: Partial<Speaker>, operation?: 'add' | 'remove') {
@@ -324,12 +414,16 @@ export class EventAddEditFormComponent implements OnInit {
     this.form.patchValue({
       speakers: updatedSpeakers
     });
+
+    // Changed by a click rather than typed, and still a change not yet saved (#2942).
+    this.form.markAsDirty();
   }
 
   public setEventDate(day: Partial<SeasonDay>) {
     this.form.patchValue({
       day: day.guid
     });
+    this.form.markAsDirty();
   }
 
   public setEventTime(time: DateTimePickerChange<Date>, which: 'start' | 'end') {
@@ -353,6 +447,8 @@ export class EventAddEditFormComponent implements OnInit {
         endTime: timeString
       });
     }
+
+    this.form.markAsDirty();
   }
 
   public handleSubmission() {
@@ -392,7 +488,7 @@ export class EventAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'event-delete-failed',
           title: 'Delete event',
-          message: `Error deleting event: ${err.status}`
+          message: serverMessage(err, `Error deleting event: ${err.status}`)
         });
       }
     });
@@ -415,7 +511,7 @@ export class EventAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'event-update-failed',
           title: 'Update Event',
-          message: `Error updating event: ${err.status}`
+          message: serverMessage(err, `Error updating event: ${err.status}`)
         });
       }
     });
@@ -438,14 +534,14 @@ export class EventAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'event-create-failed',
           title: 'Create event',
-          message: `Error creating event: ${err.status}`
+          message: serverMessage(err, `Error creating event: ${err.status}`)
         });
       }
     });
   }
 
   private _navigateBack() {
-    this.rt.navigate(['/admin/events']);
+    this.backToList();
   }
 
   private _defaultTimeFromSelectedEvent$() {

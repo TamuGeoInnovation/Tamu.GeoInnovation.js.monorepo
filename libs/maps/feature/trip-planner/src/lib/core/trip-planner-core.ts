@@ -160,10 +160,13 @@ export class TripPoint {
           // is not useful for a stop unless the centroid is calculated.
 
           if (this.originAttributes) {
-            if (this.originAttributes.Latitude && this.originAttributes.Longitude) {
+            const latitude = attributeOf(this.originAttributes, 'Latitude');
+            const longitude = attributeOf(this.originAttributes, 'Longitude');
+
+            if (latitude && longitude) {
               this.geometry = {
-                latitude: parseFloat(this.originAttributes.Latitude),
-                longitude: parseFloat(this.originAttributes.Longitude)
+                latitude: parseFloat(latitude),
+                longitude: parseFloat(longitude)
               };
 
               this.addTransformation({
@@ -334,13 +337,15 @@ export class TripPoint {
    * and aliases (building name, building number).
    */
   public getIdentifier(): string {
-    const attr = this.attributes as unknown as TripPointAttributesMaybeIdentifiable;
-    if (attr.Number && attr.Number !== '') {
+    const number = attributeOf(this.attributes, 'Number');
+    const abbreviation = attributeOf(this.attributes, 'BldgAbbr');
+
+    if (number) {
       // Test building number
-      return attr.Number;
-    } else if (attr.BldgAbbr && attr.BldgAbbr !== '') {
+      return number;
+    } else if (abbreviation) {
       // Test building abbreviation
-      return attr.BldgAbbr;
+      return abbreviation;
     } else {
       // Default to lat/lon geometry
       return `${this.geometry.latitude},${this.geometry.longitude}`;
@@ -566,7 +571,16 @@ export interface TripPointProperties {
   geometry?: TripPointGeometry;
 }
 
-interface TripPointAttributesMaybeIdentifiable extends TripPointAttributes {
-  Number?: string;
-  BldgAbbr?: string;
+/**
+ * A stop's attribute by name, whatever its case, or `undefined` when it is missing or empty. Stops come from services
+ * that spell the same field differently: the buildings service publishes `latitude`, `number` and `bldg_number` where
+ * the others publish `Latitude`, `Number` and `Bldg_Number` (#2707).
+ */
+export function attributeOf(attributes: object | undefined, name: string): string | undefined {
+  const key = attributes
+    ? Object.keys(attributes).find((candidate) => candidate.toLowerCase() === name.toLowerCase())
+    : undefined;
+  const value = key === undefined ? undefined : (attributes as Record<string, unknown>)[key];
+
+  return value === undefined || value === null || value === '' ? undefined : String(value);
 }

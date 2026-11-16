@@ -1,20 +1,9 @@
 import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import {
-  distinctUntilChanged,
-  filter,
-  interval,
-  map,
-  mergeMap,
-  NEVER,
-  Observable,
-  pipe,
-  shareReplay,
-  startWith,
-  Subscription,
-  switchMap,
-  toArray
+  distinctUntilChanged, filter, interval, map, NEVER, Observable, pipe, shareReplay, startWith, Subscription, switchMap
 } from 'rxjs';
+import { placesShownOn } from '@tamu-gisc/gisday/common';
 
 import { PlaceService, SeasonService, SponsorService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { ActiveSeasonDto, Place, SeasonDay, Sponsor } from '@tamu-gisc/gisday/platform/data-api';
@@ -80,9 +69,7 @@ export class LandingComponent implements OnInit {
     // Sponsors switched off for the season are kept in the admin pages but not shown (#1962).
     this.sponsors$ = this.sponsorService.getEntitiesForActiveSeason().pipe(map(activeSponsors), shareReplay());
     this.organizations$ = this.placeService.getEntitiesForActiveSeason().pipe(
-      mergeMap((places) => places),
-      filter((place) => place?.visibilitySettings && place.visibilitySettings.includes(PlaceVisibilityOptions.OrgPage)),
-      toArray(),
+      map((places) => placesShownOn(this.site, places, PlaceVisibilityOptions.OrgPage)),
       shareReplay()
     );
 

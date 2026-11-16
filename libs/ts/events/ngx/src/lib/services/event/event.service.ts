@@ -1,8 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { delay } from 'rxjs';
 
-import deepmerge from 'deepmerge';
-
 import {
   EsriMapService,
   EsriModuleProviderService,
@@ -13,7 +11,7 @@ import {
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { LayerSource } from '@tamu-gisc/common/types';
 import { escapeSqlString } from '@tamu-gisc/common/utils/database';
-import { getPropertyValue } from '@tamu-gisc/common/utils/object';
+import { deepMerge, getPropertyValue } from '@tamu-gisc/common/utils/object';
 import { hasTemplateExpression, TemplateRenderer } from '@tamu-gisc/common/utils/string';
 import { SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
 
@@ -135,7 +133,7 @@ export class EventService {
                         // If propOverrides are provided, assign them to the source layer.
                         // This enables the ability to, for example, show/hide layers based on accommodation selections.
                         if (correspondingOption && correspondingOption.propOverrides) {
-                          source = deepmerge(source, correspondingOption.propOverrides) as LayerSource;
+                          source = deepMerge(source, correspondingOption.propOverrides) as LayerSource;
                         }
 
                         if (correspondingOption && correspondingOption.expression) {
@@ -322,7 +320,7 @@ export class EventService {
           }
 
           if (conversion.propOverrides) {
-            Object.assign(child, deepmerge(child, conversion.propOverrides));
+            Object.assign(child, deepMerge(child, conversion.propOverrides));
           }
 
           if (conversion.expression) {
@@ -752,11 +750,13 @@ export class EventService {
       // A service that joins several tables names its fields by table - `GIS.TS.ParkingLots.LotName`,
       // not `LotName` - so a candidate matches a field's last dot-separated part, and the query below
       // names the layer's own field. Compared whole, no field matched and a `?lot=` link opened nothing
-      // on fourteen parking maps (#1952).
+      // on fourteen parking maps (#1952). And whatever its case: the application's lot and building sources
+      // name the campus features service's fields, which are lower case (`lotname`), where an event map's
+      // own layers name theirs `LotName`, and the link skipped the map's own lot (#2722).
       const matches = candidateFields
         .map((candidate, priority) => ({
           priority,
-          fields: layerFields.filter((name) => name.split('.').pop() === candidate)
+          fields: layerFields.filter((name) => name.split('.').pop()?.toLowerCase() === candidate.toLowerCase())
         }))
         .filter((match) => match.fields.length > 0);
 

@@ -1,0 +1,217 @@
+import { TestBed } from '@angular/core/testing';
+import { of } from 'rxjs';
+
+import { MODAL_DATA, ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
+
+import { ReviewEmailModalComponent } from './review-email-modal.component';
+
+/** #3023: the profile email's subject is editable too, and comes back beside the text, as `<kind>:subject`. */
+describe('ReviewEmailModalComponent, an editable subject', () => {
+  const preview = {
+    groups: [
+      {
+        kind: 'profile',
+        label: 'Presenter profile emails',
+        count: 2,
+        subject: 'Update your {site} presenter profile',
+        template: 'Howdy {first name}, {edit link}',
+        example: {
+          title: 'Ana Ruiz',
+          to: 'ana@example.edu',
+          cc: '',
+          values: { '{first name}': 'Ana', '{site}': 'TxGIS Day', '{edit link}': '(link)' }
+        }
+      }
+    ]
+  };
+
+  function open(editableSubject: boolean) {
+    const close = jest.fn();
+
+    TestBed.configureTestingModule({
+      imports: [ReviewEmailModalComponent],
+      providers: [
+        { provide: MODAL_DATA, useValue: { verb: 'Send profile email', editableSubject, preview: of(preview) } },
+        { provide: ModalRefService, useValue: { close } }
+      ]
+    });
+
+    const fixture = TestBed.createComponent(ReviewEmailModalComponent);
+    fixture.detectChanges();
+
+    return { fixture, close };
+  }
+
+  it('offers the subject as a box of its own, filled in for the example, and sends it back as edited', () => {
+    const { fixture, close } = open(true);
+    const page = fixture.nativeElement as HTMLElement;
+
+    expect(fixture.componentInstance.exampleSubject('profile', preview.groups[0].example.values)).toBe(
+      'Update your TxGIS Day presenter profile'
+    );
+
+    fixture.componentInstance.form.controls['profile:subject'].setValue('Your {site} profile');
+    fixture.componentInstance.send();
+
+    expect(page.querySelectorAll('tamu-gisc-textbox').length).toBe(2);
+    expect(close).toHaveBeenCalledWith({
+      profile: 'Howdy {first name}, {edit link}',
+      'profile:subject': 'Your {site} profile'
+    });
+  });
+
+  it('keeps the subject fixed otherwise, as for the acceptance emails', () => {
+    const { fixture, close } = open(false);
+
+    fixture.componentInstance.send();
+
+    expect(close).toHaveBeenCalledWith({ profile: 'Howdy {first name}, {edit link}' });
+  });
+});
+
+/** #3046: who will not be emailed is listed before sending, not only after. */
+describe('ReviewEmailModalComponent, people not emailed', () => {
+  function open(notEmailed?: Array<{ name: string; submission: string }>) {
+    TestBed.configureTestingModule({
+      imports: [ReviewEmailModalComponent],
+      providers: [
+        {
+          provide: MODAL_DATA,
+          useValue: {
+            verb: 'Send profile email',
+            editableSubject: true,
+            preview: of({
+              groups: [
+                {
+                  kind: 'profile',
+                  label: 'Presenter profile emails',
+                  count: 1,
+                  subject: 'S',
+                  template: 'T {edit link}',
+                  example: { title: 'Ana Ruiz', to: 'ana@example.edu', cc: '', values: {} }
+                }
+              ],
+              notEmailed
+            })
+          }
+        },
+        { provide: ModalRefService, useValue: { close: jest.fn() } }
+      ]
+    });
+
+    const fixture = TestBed.createComponent(ReviewEmailModalComponent);
+    fixture.detectChanges();
+
+    return fixture.nativeElement as HTMLElement;
+  }
+
+  it('names each person on the submissions who has no presenter record, with their submission', () => {
+    const page = open([
+      { name: 'Ben Lee', submission: 'Flood maps' },
+      { name: 'Dee Fox', submission: 'Campus trees' }
+    ]);
+
+    expect(page.textContent).toContain('2 people on these submissions will not be emailed');
+    expect([...page.querySelectorAll('.review-email__not-emailed li')].map((li) => li.textContent.trim())).toEqual([
+      'Ben Lee: Flood maps',
+      'Dee Fox: Campus trees'
+    ]);
+  });
+
+  it('says nothing about it when everyone is emailed', () => {
+    expect(open([]).querySelector('.review-email__not-emailed')).toBeNull();
+  });
+});
+
+/** #3044: the preview shows the Markdown formatted, as it will arrive. */
+describe('ReviewEmailModalComponent, Markdown', () => {
+  it('shows bold text bold in the preview, and HTML typed into the text as text', () => {
+    TestBed.configureTestingModule({
+      imports: [ReviewEmailModalComponent],
+      providers: [
+        {
+          provide: MODAL_DATA,
+          useValue: {
+            verb: 'Send profile email',
+            preview: of({
+              groups: [
+                {
+                  kind: 'profile',
+                  label: 'Presenter profile emails',
+                  count: 1,
+                  subject: 'S',
+                  template: 'Hi **{first name}** <b>raw</b>',
+                  example: { title: 'Ana Ruiz', to: 'ana@example.edu', cc: '', values: { '{first name}': 'Ana' } }
+                }
+              ]
+            })
+          }
+        },
+        { provide: ModalRefService, useValue: { close: jest.fn() } }
+      ]
+    });
+
+    const fixture = TestBed.createComponent(ReviewEmailModalComponent);
+    fixture.detectChanges();
+    const preview = (fixture.nativeElement as HTMLElement).querySelector('.review-email__preview');
+
+    expect(preview.querySelector('strong')?.textContent).toBe('Ana');
+    expect(preview.querySelector('b')).toBeNull();
+    expect(preview.textContent).toContain('<b>raw</b>');
+  });
+});
+
+/** #3092: a session's speakers with no email address are named before the session details are sent. */
+describe('ReviewEmailModalComponent, speakers with no address', () => {
+  function open(noAddress?: Array<string>) {
+    TestBed.configureTestingModule({
+      imports: [ReviewEmailModalComponent],
+      providers: [
+        {
+          provide: MODAL_DATA,
+          useValue: {
+            verb: 'Send session details',
+            editableSubject: true,
+            preview: of({
+              groups: [
+                {
+                  kind: 'session-details',
+                  label: 'Session details',
+                  count: 1,
+                  subject: 'S',
+                  template: 'T',
+                  example: { title: 'Ana Ruiz', to: 'ana@example.edu', cc: '', values: {} }
+                }
+              ],
+              noAddress
+            })
+          }
+        },
+        { provide: ModalRefService, useValue: { close: jest.fn() } }
+      ]
+    });
+
+    const fixture = TestBed.createComponent(ReviewEmailModalComponent);
+    fixture.detectChanges();
+
+    return fixture.nativeElement as HTMLElement;
+  }
+
+  it('names each one, and says why they will not be emailed', () => {
+    const page = open(['Dee Fox', 'Eli Ng']);
+
+    expect(page.textContent).toContain('2 people will not be emailed: they have no email address on their record.');
+    expect([...page.querySelectorAll('.review-email__not-emailed li')].map((li) => li.textContent.trim())).toEqual([
+      'Dee Fox',
+      'Eli Ng'
+    ]);
+  });
+
+  it('says nothing about it when everyone has an address', () => {
+    expect(open([]).querySelector('.review-email__not-emailed')).toBeNull();
+  });
+
+  it('says nothing about it for an email that does not list them', () => {
+    expect(open(undefined).querySelector('.review-email__not-emailed')).toBeNull();
+  });
+});

@@ -15,7 +15,8 @@
   --gisday-primary-light: #{$gisday-blue-secondary};
   --link-color: var(--gisday-primary-light);
   --support-link-color: rgba(85, 138, 216, 1);
-  // Buttons, which are a brighter blue than links.
+  // Buttons, which are a brighter blue than links: read by the global .button below and by the shared form button,
+  // tamu-gisc-button, so every button on a site is one colour (#2946).
   --gisday-action: rgba(85, 138, 216, 1);
   --gisday-action-hover: #{darken(rgba(85, 138, 216, 1), 10%)};
 
@@ -27,6 +28,9 @@
     --gisday-action: #{$aggie-maroon};
     // AggieMap's darker maroon.
     --gisday-action-hover: #3d0000;
+    // The shared textbox's focus outline, as on the search boxes, and the shared copy field's Copy link (#3084).
+    --textbox-focus-color: var(--gisday-primary);
+    --copy-button-color: var(--gisday-primary);
   }
 }
 
@@ -1976,6 +1980,50 @@ article .row {
       & > div:first-child,
       a:first-child {
         width: 250px;
+      }
+    }
+
+    // A sponsor's logo size, chosen in its admin form (#2638). Regular is the box above, 250px wide and
+    // held to 4rem tall by `.sponsor-list a`; the others lift that cap. Large and Extra large are about
+    // 2:1, not Regular's 25:6, so a stacked logo grows in height too; a wide one still stops at the
+    // width (#2646).
+    // Never wider than the screen, so a phone still shows the whole logo: the list around the logos
+    // takes its width from them, so the cap is the screen's, not the list's.
+    &.logo-small,
+    &.logo-large,
+    &.logo-extra-large {
+      max-width: calc(100vw - 6rem);
+
+      a:first-child {
+        max-width: 100%;
+        max-height: none;
+      }
+    }
+
+    &.logo-small {
+      width: 14.125rem;
+
+      a:first-child {
+        width: 160px;
+        height: 38px;
+      }
+    }
+
+    &.logo-large {
+      width: 31rem;
+
+      a:first-child {
+        width: 450px;
+        height: 200px;
+      }
+    }
+
+    &.logo-extra-large {
+      width: 45rem;
+
+      a:first-child {
+        width: 650px;
+        height: 300px;
       }
     }
   }

@@ -1,8 +1,11 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Location } from '@angular/common';
+import { FormControl } from '@angular/forms';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
-import { merge, Observable, of, Subject } from 'rxjs';
-import { map, scan, shareReplay, startWith, switchMap, tap, withLatestFrom } from 'rxjs/operators';
+import { combineLatest, merge, Observable, of, Subject } from 'rxjs';
+import { filter, map, scan, shareReplay, startWith, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 
 import { GuidIdentity, Season } from '@tamu-gisc/gisday/platform/data-api';
 import { BaseService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -12,7 +15,8 @@ import {
   CopyEntityModalResponse,
   EntityCopyModalComponent,
   EntityDeleteModalComponent,
-  EntityDeleteModalResponse
+  EntityDeleteModalResponse,
+  matchesText
 } from '@tamu-gisc/gisday/platform/ngx/common';
 
 @Component({
@@ -29,6 +33,8 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
   private readonly router = inject(Router);
   private readonly modalService = inject(ModalService);
   private readonly notificationService = inject(NotificationService);
+  private readonly listDestroyRef = inject(DestroyRef);
+  private readonly listLocation = inject(Location);
 
   public seasons$ = this.seasonService.seasons$;
   public activeSeason$ = this.seasonService.activeSeason$;
@@ -42,7 +48,70 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
 
   private _selectRow$: Subject<string | Array<string>> = new Subject();
 
+  /**
+   * The page's search (#2914). A page that wants one names the text of each row to search, the columns it displays,
+   * and puts <tamu-gisc-admin-search> above its list; the list it reads, entitiesForActiveSeasonOrForSeasonGuid$, is
+   * then only the rows that match. A page that names none lists every row, as before.
+   */
+  public readonly search = new FormControl('', { nonNullable: true });
+  protected readonly searchFields: ((entity: Partial<T>) => Array<string | null | undefined>) | null = null;
+  /** How many rows the search shows, of how many, for the search box. */
+  public searchCounts$: Observable<{ shown: number; total: number }>;
+
+  /**
+   * Why the list shows no rows (#3049): 'none' when the season has none, 'hidden' when it has some and the search or the
+   * page's filters hide every one, so a page does not say the season has none while a filter is on. null while it shows rows.
+   */
+  public emptyBecause$: Observable<'none' | 'hidden' | null>;
+  /** Whether the search or any of the page's filters is changed from where it starts, so clearFilters() would change the list. */
+  public filtersInUse$: Observable<boolean>;
+
+  /**
+   * The page's filters, by name: its search, and any filter of its own a page adds (#2942). They are kept in the
+   * list's own history entry, so going back to the list from a details page (Escape there, or the browser's Back)
+   * shows it as it was left, while opening the list afresh starts with none. The season is in the address already.
+   */
+  protected listFilters(): Record<string, FormControl<string>> {
+    return { search: this.search };
+  }
+
+  /**
+   * Whether the list shows an entity at all, before the search: every one, unless a page narrows it (#2986). Read again
+   * whenever one of the page's filters changes.
+   */
+  protected keepEntity(entity: Partial<T>): boolean {
+    return !!entity;
+  }
+
+  private keepFiltersInHistory() {
+    const filters = this.listFilters();
+    const kept = (this.listLocation.getState() as { adminList?: Record<string, unknown> } | null)?.adminList ?? {};
+
+    for (const [name, control] of Object.entries(filters)) {
+      if (typeof kept[name] === 'string') {
+        control.setValue(kept[name] as string);
+      }
+    }
+
+    // On every change, and on every new entry the list makes for itself (choosing a season), once its address is in
+    // place: the filters stay as they are across a change of season, so the new entry must carry them too.
+    merge(
+      ...Object.values(filters).map((control) => control.valueChanges),
+      this.router.events.pipe(filter((event) => event instanceof NavigationEnd))
+    )
+      .pipe(takeUntilDestroyed(this.listDestroyRef))
+      .subscribe(() => {
+        const values = Object.fromEntries(Object.entries(filters).map(([name, control]) => [name, control.value]));
+        const state = (this.listLocation.getState() as Record<string, unknown> | null) ?? {};
+
+        // The same address, with the router's own state kept beside the filters.
+        this.listLocation.replaceState(this.listLocation.path(), '', { ...state, adminList: values });
+      });
+  }
+
   public ngOnInit(): void {
+    this.keepFiltersInHistory();
+
     this.selectedSeason$ = merge(
       this.$signal.pipe(map(() => this.activatedRoute.snapshot.queryParams)),
       this.activatedRoute.queryParams
@@ -82,12 +151,33 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
 
     // A conditional, not iif: iif builds both branches at once, so with no season (a new site) it read
     // season.guid on null and the list was blank (#2076).
-    this.entitiesForActiveSeasonOrForSeasonGuid$ = this.selectedSeason$.pipe(
+    const seasonEntities$ = this.selectedSeason$.pipe(
       switchMap((season) =>
         season ? this.entityService.getEntitiesForSeason(season.guid) : this.entityService.getEntitiesForActiveSeason()
       ),
       shareReplay()
     );
+    const filters = Object.values(this.listFilters()).map((control) => control.valueChanges.pipe(startWith(control.value)));
+    const searched$ = combineLatest([seasonEntities$, ...filters]).pipe(
+      map(([listed]) => {
+        const all = listed ? (listed as Array<Partial<T>>).filter((entity) => this.keepEntity(entity)) : listed;
+        const fields = this.searchFields;
+        const shown = fields && all ? all.filter((entity) => matchesText(fields(entity), this.search.value)) : all;
+
+        const inUse = Object.values(this.listFilters()).some((control) => control.value !== control.defaultValue);
+
+        return { listed: listed as Array<Partial<T>>, all, shown, inUse };
+      }),
+      shareReplay(1)
+    );
+
+    this.entitiesForActiveSeasonOrForSeasonGuid$ = searched$.pipe(map(({ shown }) => shown));
+    this.searchCounts$ = searched$.pipe(map(({ all, shown }) => ({ shown: shown?.length ?? 0, total: all?.length ?? 0 })));
+    this.emptyBecause$ = searched$.pipe(map(({ listed, shown }) => (shown?.length ? null : listed?.length ? 'hidden' : 'none')));
+    this.filtersInUse$ = searched$.pipe(map(({ inUse }) => inUse));
+
+    // A row the search hides cannot stay selected, or an action on "the selected rows" would act on rows not shown.
+    this.search.valueChanges.pipe(takeUntilDestroyed(this.listDestroyRef)).subscribe(() => this._selectRow$.next(null));
 
     this.selectedRows$ = this._selectRow$.pipe(
       scan((acc, guidOrList) => {
@@ -116,6 +206,13 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
       // so acting on "the selected events" read none (#2092).
       shareReplay(1)
     );
+  }
+
+  /** Puts the search and every filter of the page back where they start, for a list they leave empty (#3049). */
+  public clearFilters() {
+    for (const control of Object.values(this.listFilters())) {
+      control.reset();
+    }
   }
 
   public setSeason(seasonGuid: string) {
@@ -213,14 +310,24 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
           if (result?.delete) {
             const normalizedEntityName = this._pluralizeEntityName(singularEntityName, result.identities, pluralEntityName);
 
-            this.entityService.deleteEntities(result?.identities).subscribe(() => {
-              this.notificationService.toast({
-                message: `${result.identities.length} ${normalizedEntityName.toLowerCase()} deleted`,
-                id: 'entity-delete-success',
-                title: `${normalizedEntityName} Deleted`
-              });
+            this.entityService.deleteEntities(result?.identities).subscribe({
+              next: () => {
+                this.notificationService.toast({
+                  message: `${result.identities.length} ${normalizedEntityName.toLowerCase()} deleted`,
+                  id: 'entity-delete-success',
+                  title: `${normalizedEntityName} Deleted`
+                });
 
-              this.$signal.next(null);
+                this.$signal.next(null);
+              },
+              // A refused delete said nothing, so the rows simply stayed (#2992).
+              error: (err) => {
+                this.notificationService.toast({
+                  message: `Nothing was deleted: ${err?.error?.message ?? err?.statusText ?? 'the server refused'}.`,
+                  id: 'entity-delete-failed',
+                  title: `${normalizedEntityName} Not Deleted`
+                });
+              }
             });
           } else {
             console.log('Delete canceled');

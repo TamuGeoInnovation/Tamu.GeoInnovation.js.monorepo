@@ -78,7 +78,7 @@ export const SoccerParkingColdLayerSources: LayerSource[] = [
  * Production still serves the four-layer version, so this stands beside `SoccerParkingColdLayerSources`
  * rather than replacing it; `event-settings.service.ts` chooses between them.
  *
- * `eventUrl` already resolves to the development host, because `athleticsHost` in `connections.ts` does
+ * `eventUrl` already resolves to the development host, because `tsgisHost` in `connections.ts` does
  * - so only the layer indexes are restated here. They are the view's own and bear no relation to
  * production's: Accessible Parking Spaces is 0 here and 1 there.
  *

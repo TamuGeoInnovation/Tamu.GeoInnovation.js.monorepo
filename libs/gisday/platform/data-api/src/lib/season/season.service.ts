@@ -25,9 +25,19 @@ import {
   SeasonDay,
   Speaker,
   Sponsor,
+  SeasonCompetition,
   Tag,
   University
 } from '../entities/all.entity';
+import {
+  SUBMISSION_DEADLINE_FIELDS,
+  SubmissionDeadlines,
+  asDate,
+  competitionTypesProblem,
+  competitionTypesValue,
+  deadlinesProblem
+} from '@tamu-gisc/gisday/common';
+
 import { ActiveSeasonDto } from './dto/active-season.dto';
 
 @Injectable()
@@ -503,6 +513,64 @@ export class SeasonService extends BaseProvider<Season> {
 
       return existingCurrent.save();
     }
+  }
+
+  /**
+   * Sets when the season's competitions close (#2934, #2962): every moment, each a date or empty
+   * for open, as the admin page sends them. Refuses a moment that is not a date, and files that would close before
+   * their competition's submissions.
+   */
+  public async setSubmissionDeadlines(guid: string, deadlines: SubmissionDeadlines): Promise<SubmissionDeadlines> {
+    const problem = deadlinesProblem(deadlines ?? {});
+
+    if (problem) {
+      throw new BadRequestException(problem);
+    }
+
+    const season = await this.seasonRepo.findOne({ where: { guid } });
+
+    if (!season) {
+      throw new NotFoundException('Season not found.');
+    }
+
+    const values = Object.fromEntries(SUBMISSION_DEADLINE_FIELDS.map((field) => [field, asDate(deadlines[field])]));
+
+    await this.seasonRepo.update(guid, values);
+
+    return values;
+  }
+
+  /**
+   * Sets which research competitions the season runs (#2948), as the admin page sends them: a list naming at least one.
+   * Its rows are replaced together, one per competition. Every one is stored as no rows, so the season runs whatever is
+   * added later, as a season set before this does.
+   */
+  public async setCompetitionTypes(guid: string, competitions: unknown): Promise<{ competitionTypes: Array<string> }> {
+    const problem = competitionTypesProblem(competitions);
+
+    if (problem) {
+      throw new BadRequestException(problem);
+    }
+
+    const season = await this.seasonRepo.findOne({ where: { guid } });
+
+    if (!season) {
+      throw new NotFoundException('Season not found.');
+    }
+
+    const competitionTypes = competitionTypesValue(competitions as Array<string>);
+
+    await this.seasonRepo.manager.transaction(async (manager) => {
+      await manager.delete(SeasonCompetition, { season: { guid } });
+
+      if (competitionTypes.length > 0) {
+        await manager.save(
+          competitionTypes.map((competitionType) => manager.create(SeasonCompetition, { season: { guid }, competitionType }))
+        );
+      }
+    });
+
+    return { competitionTypes };
   }
 
   public override async deleteEntity(guidOrOptions?: LookupOneOptions<Season>) {

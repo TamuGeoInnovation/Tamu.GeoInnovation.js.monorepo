@@ -18,6 +18,7 @@ import {
 import {
   catchError,
   concatMap,
+  filter,
   flatMap,
   map,
   mergeMap,
@@ -36,7 +37,9 @@ import * as gju from 'geojson-utils';
 import { LayerSource } from '@tamu-gisc/common/types';
 import { findNearestIndex, isCoordinatePair, getGeolocation } from '@tamu-gisc/common/utils/geometry/generic';
 import { centroidFromPolygonGeometry } from '@tamu-gisc/common/utils/geometry/esri';
-import { minBy, pairwiseOverlap } from '@tamu-gisc/common/utils/collection';
+import { pairwiseOverlap } from '@tamu-gisc/common/utils/collection';
+
+import { DoorPoint, firstRoutableDoor, rankDoorsByDistance } from './trip-planner-door-choice';
 import { timeStringForDate } from '@tamu-gisc/common/utils/date';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -45,6 +48,8 @@ import { EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 import { SearchService, SearchResult, SearchResultItem } from '@tamu-gisc/ui-kits/ngx/search';
 import { SettingsService, SettingsInitializationConfig } from '@tamu-gisc/common/ngx/settings';
 import { TripPlannerConnection, TripPlannerConnectionService } from './trip-planner-connection.service';
+import { TripPlannerNetworkTravelMode, networkTravelModeFor, offeredTravelMode } from './trip-planner-travel-modes';
+import { lastStretch, lastStretchFinishText, routeEndVertex } from './trip-planner-last-stretch';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import {
   TripResult,
@@ -53,7 +58,8 @@ import {
   TripPointOriginTransformationsParams,
   TripPointOriginParams,
   TripPointGeometry,
-  TripPointAttributes
+  TripPointAttributes,
+  attributeOf
 } from '../core/trip-planner-core';
 
 import { BusService, TimetableRow } from '../services/transportation/bus/bus.service';
@@ -317,6 +323,11 @@ export class TripPlannerService implements OnDestroy {
    */
   public connection: TripPlannerConnection;
 
+  /**
+   * What the current network says it can solve, or `null` before it has said. Modes it lacks are not offered (#659).
+   */
+  private _supportedTravelModes: TripPlannerNetworkTravelMode[] | null = null;
+
   private _map: esri.Map;
 
   private _view: esri.MapView | esri.SceneView;
@@ -493,11 +504,20 @@ export class TripPlannerService implements OnDestroy {
         this.initializeHandlers();
       });
 
-    // Subscribe to the trip planner connection service and store the selected connection url when available.
-    this._currentNetworkSubscription = this.connectionService.currentNetwork
-      .pipe(takeUntil(this.$destroy))
-      .subscribe((connection) => {
+    // Subscribe to the trip planner connection service and store the selected connection url when available. A
+    // network is acted on once it has said which travel modes it supports, so a trip is never requested in a mode it
+    // lacks; a network that is not there (nothing published) has nothing to wait for.
+    this._currentNetworkSubscription = combineLatest([
+      this.connectionService.currentNetwork,
+      this.connectionService.supportedTravelModes
+    ])
+      .pipe(
+        filter(([connection, supported]) => supported !== null || !connection.name),
+        takeUntil(this.$destroy)
+      )
+      .subscribe(([connection, supported]) => {
         this.connection = connection;
+        this._supportedTravelModes = supported;
 
         this.executeTripTask();
       });
@@ -686,8 +706,13 @@ export class TripPlannerService implements OnDestroy {
 
     const ruleModes = this.flattenRule(rule);
 
-    // Limit the modes to a list of qualifying modes based on travel option constraint values.
+    // Limit the modes to a list of qualifying modes based on travel option constraint values, and to those the
+    // network can solve.
     const qualifying = ruleModes.filter((mode) => {
+      if (!offeredTravelMode(this._supportedTravelModes, mode.mode)) {
+        return false;
+      }
+
       const passAllConditions = Object.keys(rootConditions).every((condition) => {
         const modeOptions = mode.determinants;
 
@@ -750,12 +775,43 @@ export class TripPlannerService implements OnDestroy {
     }
   }
 
+  /**
+   * The network's travel mode for a planner mode, found by name, carrying the planner's own mode number as its id.
+   *
+   * The planner reads `params.travelMode.id` back as its mode number all through its results, and a network numbers its
+   * modes itself (#659), so the id is the planner's. `solveWithNetworkMode` puts the network's own mode back to solve.
+   */
   private getTravelModeById(supportedTravelModes: esri.TravelMode[], id: string | number) {
-    const parsedId = typeof id === 'number' ? id.toString() : id;
+    const mode = typeof id === 'number' ? id : parseInt(id, 10);
+    const networkMode = networkTravelModeFor(supportedTravelModes, mode);
 
-    return supportedTravelModes.find((mode) => {
-      return mode.id === parsedId;
-    });
+    if (!networkMode) {
+      return undefined;
+    }
+
+    const travelMode = networkMode.clone();
+
+    travelMode.id = mode.toString();
+
+    return travelMode;
+  }
+
+  /**
+   * Solves a route in the network's own travel mode for the planner mode in its parameters. A mode the network lacks is
+   * an error, never a solve in whatever mode the network defaults to.
+   */
+  private solveWithNetworkMode(supportedTravelModes: esri.TravelMode[], params: esri.RouteParameters) {
+    const networkMode = networkTravelModeFor(supportedTravelModes, parseInt(params.travelMode?.id, 10));
+
+    if (!networkMode) {
+      return Promise.reject(new Error(`The routing network has no travel mode for mode ${params.travelMode?.id}.`));
+    }
+
+    const solveParams = params.clone();
+
+    solveParams.travelMode = networkMode;
+
+    return this._Modules.route.solve(this.connection.url(), solveParams);
   }
 
   /**
@@ -1158,7 +1214,7 @@ export class TripPlannerService implements OnDestroy {
                 from(rq.tasks).pipe(
                   concatMap((t) => {
                     // Execute inner trip task with own trip params
-                    return from(this._Modules.route.solve(this.connection.url(), t.params as esri.RouteParameters)).pipe(
+                    return from(this.solveWithNetworkMode(supportedTravelModes, t.params as esri.RouteParameters)).pipe(
                       map((result) => {
                         return {
                           result,
@@ -1408,15 +1464,23 @@ export class TripPlannerService implements OnDestroy {
               new Date(baseDate.getTime() + features[features.length - 1].attributes.relativeTime * 60 * 1000)
             );
 
+            // When the destination is off the network, the last step says to leave the path for it (#2639).
+            const stretch = lastStretch(
+              routeEndVertex(features),
+              this._Stops.value[this._Stops.value.length - 1].geometry
+            );
+            const finishText = (time: string) =>
+              stretch ? lastStretchFinishText(stretch, lastStopName, time) : `Finish at ${lastStopName} at ${time}`;
+
             // Setting the text on these should update the response directions as `features` are a reference to those.
             if (this._TravelOptions.getValue().time_mode === 'arrive') {
               features[0].attributes.text = `Start at ${firstStopName} at ${lastTime}`;
 
-              features[features.length - 1].attributes.text = `Finish at ${lastStopName} at ${firstTime}`;
+              features[features.length - 1].attributes.text = finishText(firstTime);
             } else {
               features[0].attributes.text = `Start at ${firstStopName} at ${firstTime}`;
 
-              features[features.length - 1].attributes.text = `Finish at ${lastStopName} at ${lastTime}`;
+              features[features.length - 1].attributes.text = finishText(lastTime);
             }
 
             const features_length = features.length;
@@ -1910,6 +1974,26 @@ export class TripPlannerService implements OnDestroy {
 
             graphicCollection.push(graphic);
           });
+
+          // The last stretch, from where the network's route ends to the destination itself, dashed because no
+          // path is known there (#2639). Drawn with the route, so it is zoomed to and cleared with it.
+          const stretch = lastStretch(
+            routeEndVertex(result.result.directions.features),
+            this._Stops.value[this._Stops.value.length - 1]?.geometry
+          );
+
+          if (stretch && this._view.type === '2d') {
+            graphicCollection.push(
+              new Graphic({
+                geometry: new Polyline({
+                  spatialReference: { wkid: 4326 },
+                  paths: [[stretch.from, stretch.to]]
+                }),
+                symbol: { ...routeSymbols.walk_2d, id: 'last-stretch', style: 'dash' } as esri.GraphicProperties['symbol'],
+                attributes: { lastStretchMetres: stretch.metres }
+              })
+            );
+          }
 
           // Add all graphics generated from the route segments.
           layer.addMany(graphicCollection);
@@ -2494,7 +2578,7 @@ export class TripPlannerService implements OnDestroy {
 
     return new Promise((resolve) => {
       try {
-        const buildingNumber = (stop.attributes as TripPointAttributesWithBldgNumber).Bldg_Number;
+        const buildingNumber = attributeOf(stop.attributes, 'Bldg_Number');
         return this.mapService.findLayerOrCreateFromSource(source).then((layer: esri.FeatureLayer): Promise<TripPoint> => {
           return layer
             .queryFeatures({
@@ -2527,39 +2611,26 @@ export class TripPlannerService implements OnDestroy {
             })
             .then((doors) => {
               if (doors.length > 0) {
-                // If doors found, find the one with shortest straight line distance from the provided point
-                const distanceRef = [];
-                const distanceValue = [];
+                // If doors found, choose one by distance and then by whether the network can route from it.
+                void (async () => {
+                  // Nearest first, then the first one the network can actually route from. The nearest door is a
+                  // preference, not a requirement: one door that locates onto a disconnected piece of network used to
+                  // fail the whole trip, in every travel mode, while other doors on the same building worked (#2843).
+                  const ranked = rankDoorsByDistance(
+                    doors,
+                    (door) => door.geometry as unknown as DoorPoint,
+                    relativeTo.geometry as unknown as DoorPoint
+                  );
 
-                this.moduleProvider.require(['Point'], true).then((modules: { Point: typeof esri.Point }) => {
-                  doors.forEach((door) => {
-                    // Point used to calculate euclidean distance between it and the reference point
-                    const currentPoint = new modules.Point({
-                      latitude: door.geometry['latitude'],
-                      longitude: door.geometry['longitude']
-                    });
+                  const ret: esri.Graphic = await firstRoutableDoor(ranked, (door) => this.doorRoutes(door, relativeTo));
 
-                    const relativePoint = new modules.Point({
-                      latitude: relativeTo.geometry.latitude,
-                      longitude: relativeTo.geometry.longitude
-                    });
+                  if (!ret) {
+                    // No door within the limit could be routed from. Leave the stop on the building's own point, which
+                    // routes, rather than moving it somewhere the network cannot use.
+                    resolve(stop);
 
-                    distanceRef.push({
-                      distance: currentPoint.distance(relativePoint),
-                      fid: door.attributes['GIS.FCOR.Bldg_Entrance.FID']
-                    });
-
-                    distanceValue.push(currentPoint.distance(relativePoint));
-                  });
-
-                  // Get the index of the smallest value in the distances array
-                  const min = minBy(distanceRef, (o) => {
-                    return o.distance;
-                  });
-
-                  const ret: esri.Graphic = doors.find((feature) => {
-                    return feature.attributes['GIS.FCOR.Bldg_Entrance.FID'] === min.fid;
-                  });
+                    return;
+                  }
 
                   const transformationDefinition: TripPointOriginTransformationsParams = {
                     type: 'nearest-door',
@@ -2577,7 +2648,7 @@ export class TripPlannerService implements OnDestroy {
                   transformed.geometry.longitude = (<TripPointGeometry>ret.geometry).longitude;
 
                   resolve(transformed);
-                });
+                })();
               } else {
                 resolve(stop);
               }
@@ -2592,6 +2663,38 @@ export class TripPlannerService implements OnDestroy {
         resolve(stop);
       }
     });
+  }
+
+  /**
+   * Whether the routing network can route from this door to the other end of the trip (#2843).
+   *
+   * Asked in the travel mode the visitor is in, so a door is judged by the network they are actually using. Any failure
+   * - an error, a refusal, no route - is "no": the point of asking is to move on to the next door rather than to
+   * diagnose the network.
+   */
+  private async doorRoutes(door: esri.Graphic, relativeTo: TripPoint): Promise<boolean> {
+    const { supportedTravelModes } = await this._Modules.networkService.fetchServiceDescription(this.connection.url());
+
+    const from = {
+      attributes: { name: 'door' },
+      geometry: door.geometry as unknown as TripPointGeometry
+    } as unknown as TripPoint;
+
+    const params = new this._Modules.RouteParameters({
+      outSpatialReference: {
+        wkid: 4326
+      },
+      stops: this.graphicsToStopsCollection([from, relativeTo]),
+      travelMode: {
+        id: this._TravelOptions.value.travel_mode.toString()
+      },
+      returnDirections: false,
+      returnZ: false
+    });
+
+    const result = await this.solveWithNetworkMode(supportedTravelModes, params as esri.RouteParameters);
+
+    return Boolean(result);
   }
 
   private graphicsToStopsCollection(tripPoints: Array<TripPoint>) {
@@ -2908,10 +3011,6 @@ export type TimeModeOption = 'now' | 'leave' | 'arrive';
 
 interface EsriError extends Error {
   details?: esri.EsriErrorDetails;
-}
-
-interface TripPointAttributesWithBldgNumber extends TripPointAttributes {
-  Bldg_Number: string;
 }
 
 interface CollectionConstructor {

@@ -1,1 +1,11 @@
 <tamu-gisc-esri-map [config]="config"></tamu-gisc-esri-map>
+
+<tamu-gisc-map-location class="locate"></tamu-gisc-map-location>
+
+@if (showsMine()) {
+  <ul class="key" aria-label="Map key">
+    <li><span class="symbol mine" aria-hidden="true"></span>Yours</li>
+    <li><span class="symbol others" aria-hidden="true"></span>Everyone else's</li>
+    <li><span class="symbol found" aria-hidden="true"></span>Found last year</li>
+  </ul>
+}

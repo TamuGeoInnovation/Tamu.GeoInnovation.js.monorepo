@@ -44,9 +44,7 @@ export const MensBasketball_ColdLayerSources: LayerSource[] = [
     url: MensBasketball_Definitions.GATES.url,
     visible: true,
     listMode: 'show',
-    native: {
-      outFields: ['*']
-    }
+    native: { outFields: ['*'] }
   },
 
   {
@@ -60,9 +58,7 @@ export const MensBasketball_ColdLayerSources: LayerSource[] = [
     },
     visible: true,
     listMode: 'show',
-    native: {
-      outFields: ['*']
-    }
+    native: { outFields: ['*'] }
   },
 
   {
@@ -76,9 +72,7 @@ export const MensBasketball_ColdLayerSources: LayerSource[] = [
     },
     visible: true,
     listMode: 'show',
-    native: {
-      outFields: ['*']
-    }
+    native: { outFields: ['*'] }
   }
 ];
 
@@ -110,7 +104,13 @@ export const MensBasketball_Configuration: EventConfiguration = {
   ],
   scheduleUrl: 'https://12thman.com/sports/mens-basketball/schedule',
   zoom: 16,
-  mapCenter: [-96.34467, 30.60585]
+  mapCenter: [-96.34467, 30.60585],
+  // Staff edit all three layers on game day - a lot set to Lot Closed, a closure drawn, an Alert icon placed - so
+  // all three poll the service (#2558).
+  gameDayRefresh: {
+    enabled: true,
+    layers: [MENS_BASKETBALL_LAYERS.GATES, MENS_BASKETBALL_LAYERS.SYMBOLS, MENS_BASKETBALL_LAYERS.PARKING_LOTS]
+  }
 };
 
 export const MensBasketball_Options: SpecialEventOptions = [];

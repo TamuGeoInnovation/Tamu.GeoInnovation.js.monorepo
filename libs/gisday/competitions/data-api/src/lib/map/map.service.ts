@@ -3,10 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { Season } from '@tamu-gisc/gisday/platform/data-api';
+import { distanceInMetres } from '@tamu-gisc/common/utils/geometry';
 
 import { COMPETITION_VALIDATION_STATUS } from '@tamu-gisc/gisday/common';
 
-import { CompetitionSeason, CompetitionSubmission } from '../entities/all.entities';
+import { CompetitionSeason, CompetitionSubmission, ICompetitionSeasonFormOption } from '../entities/all.entities';
 import { BaseService } from '../_base/base.service';
 import { previousSeasonFinds } from '../leaderboard/leaderboard.service';
 
@@ -60,19 +61,43 @@ export class MapService extends BaseService<CompetitionSubmission> {
   /**
    * Where things were already found in the previous competition season, as this season's types: the
    * baseline scoring counts as already found (#2162), shown on the map so participants look elsewhere
-   * (#2166). Position, type and year only: nothing about who found them or how they were reviewed.
-   * Empty when this season's form does not continue an earlier one.
+   * (#2166). Position, type, year and how many times it was found only: nothing about who found them or
+   * how they were reviewed. Empty when this season's form does not continue an earlier one.
+   *
+   * One thing found several times is one point (#2625): finds of a type within the type's
+   * `earlier.metres` of an earlier one of that type are counted with it, at its place. That is the
+   * distance scoring uses to call a find of this season already found, so a point still means "a find
+   * here scores as already found". As in scoring, only the first find of each thing is compared with,
+   * so a row of plaques a few metres apart does not chain into one.
    */
   public async getAlreadyFoundForActiveSeason(format: ResponseFormat = 'json') {
     const competitionSeason = await this._getActiveCompetitionSeason({ form: true, season: true });
     const typeQuestion = competitionSeason.form?.model?.find((q) => q.isDiscriminator === true);
     const { year, finds } = await previousSeasonFinds(this.compSeasonRepo, this.submissionRepo, competitionSeason);
 
-    const points = finds.flatMap((find) => {
-      const option = typeQuestion?.options?.find((candidate) => candidate.earlier?.values.includes(find.type as string));
+    const things: Array<{ location: { latitude: number; longitude: number }; option: ICompetitionSeasonFormOption; count: number }> =
+      [];
 
-      return option ? [{ ...find.location, type: option.value, typeName: option.name, year }] : [];
-    });
+    for (const find of finds) {
+      const option = typeQuestion?.options?.find((candidate) => candidate.earlier?.values.includes(find.type as string));
+      const same = option
+        ? things.find((thing) => thing.option === option && distanceInMetres(thing.location, find.location) <= option.earlier.metres)
+        : undefined;
+
+      if (same) {
+        same.count++;
+      } else if (option) {
+        things.push({ location: find.location, option, count: 1 });
+      }
+    }
+
+    const points = things.map(({ location, option, count }) => ({
+      ...location,
+      type: option.value,
+      typeName: option.name,
+      year,
+      count
+    }));
 
     if (format === 'geojson') {
       return {

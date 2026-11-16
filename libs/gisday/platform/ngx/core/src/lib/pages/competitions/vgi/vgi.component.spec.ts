@@ -31,4 +31,11 @@ describe('VgiComponent', () => {
     expect(rendered).not.toContain('November 9');
     expect(rendered).not.toContain('November 19');
   });
+
+  // #2677. The 2026 competition's prizes come from the Office of the University Architect.
+  it('credits the prizes to the Office of the University Architect', () => {
+    expect(text()).toContain(
+      'Prizes for the 2026 VGI Competition are being generously provided by the Texas A&M Office of the University Architect.'
+    );
+  });
 });

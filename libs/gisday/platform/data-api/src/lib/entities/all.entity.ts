@@ -12,12 +12,14 @@ import {
   ManyToMany,
   JoinTable,
   OneToMany,
-  FindOptionsRelations
+  FindOptionsRelations,
+  Relation,
+  Unique
 } from 'typeorm';
 
+import { TIMESTAMP_COLUMN } from './timestamps';
 
 // TODO:
-
 
 /**
  * A flat object of primitive values, as a GeoJSON feature's `properties`. Lives here, beside its only users (this file and
@@ -115,10 +117,11 @@ export class OldCompetitionEntity extends BaseEntity {
 
 @Entity()
 export class TimeStampEntity extends BaseEntity {
-  @UpdateDateColumn({ type: 'datetimeoffset' })
+  // The server's clock with its offset, not getdate() (#2926): see TIMESTAMP_COLUMN.
+  @UpdateDateColumn(TIMESTAMP_COLUMN)
   public updated: Date;
 
-  @CreateDateColumn({ type: 'datetimeoffset' })
+  @CreateDateColumn(TIMESTAMP_COLUMN)
   public created: Date;
 }
 
@@ -143,6 +146,44 @@ export class Season extends GuidIdentity {
 
   @Column({ default: false })
   public active: boolean;
+
+  /**
+   * When each competition stops taking new submissions and edits, and when, later, the files attached to them close:
+   * poster and presentation (#2934), paper and cartography (#2962). Empty leaves that side open.
+   * `@tamu-gisc/gisday/common`'s `SUBMISSION_DEADLINE_FIELDS` names them all, and `closedAt` reads them; a test checks
+   * every field it names is a column here.
+   */
+  @Column({ type: 'datetimeoffset', nullable: true })
+  public posterSubmissionsCloseAt?: Date | null;
+
+  @Column({ type: 'datetimeoffset', nullable: true })
+  public posterFilesCloseAt?: Date | null;
+
+  @Column({ type: 'datetimeoffset', nullable: true })
+  public presentationSubmissionsCloseAt?: Date | null;
+
+  @Column({ type: 'datetimeoffset', nullable: true })
+  public presentationFilesCloseAt?: Date | null;
+
+  @Column({ type: 'datetimeoffset', nullable: true })
+  public paperSubmissionsCloseAt?: Date | null;
+
+  @Column({ type: 'datetimeoffset', nullable: true })
+  public paperFilesCloseAt?: Date | null;
+
+  @Column({ type: 'datetimeoffset', nullable: true })
+  public cartographySubmissionsCloseAt?: Date | null;
+
+  @Column({ type: 'datetimeoffset', nullable: true })
+  public cartographyFilesCloseAt?: Date | null;
+
+  /**
+   * The research competitions the season runs, one row each, as `@tamu-gisc/gisday/common`'s `seasonCompetitions` reads
+   * them; none runs every one (#2948). Set from the competitions' admin page. Loaded with every season, so a page or a
+   * check that has a season has them too. Written only by `SeasonService.setCompetitionTypes`, so no cascade.
+   */
+  @OneToMany(() => SeasonCompetition, (competition) => competition.season, { eager: true })
+  public competitions?: SeasonCompetition[];
 
   // Season has multiple days
   @OneToMany(() => SeasonDay, (seasonDay) => seasonDay.season, { cascade: true, onDelete: 'CASCADE' })
@@ -198,6 +239,22 @@ export class Season extends GuidIdentity {
       year: new Date().getFullYear()
     });
   }
+}
+
+/**
+ * A research competition a season runs (#2948): one row per season and competition. A row of its own, rather than a list
+ * on the season, so that a setting for one season's competition can be added here as a column. A season with none runs
+ * every competition.
+ */
+@Entity({ name: 'season_competitions' })
+@Unique(['season', 'competitionType'])
+export class SeasonCompetition extends GuidIdentity {
+  @ManyToOne(() => Season, (season) => season.competitions, { nullable: false, onDelete: 'CASCADE' })
+  public season: Season;
+
+  /** `poster`, `presentation`, `paper` or `cartography`: `DEADLINE_COMPETITIONS` in `@tamu-gisc/gisday/common`. */
+  @Column({ type: 'nvarchar', length: 50, nullable: false })
+  public competitionType: string;
 }
 
 @Entity({ name: 'seasons_days' })
@@ -278,6 +335,14 @@ export class EventBroadcast extends GuidIdentity {
 
   @OneToMany(() => Event, (event) => event.broadcast, { cascade: true })
   public events?: Event[];
+
+  /**
+   * The organization the broadcast belongs to (#3048), as a venue's place is: each site's admin lists only its own
+   * places' broadcasts, in Admin > Broadcasts and an event's Broadcast drop-down. Empty for one made before this, until
+   * kubernetes-config's set-broadcast-places.ps1 gives it the place of the sessions that use it, or an admin sets it.
+   */
+  @ManyToOne(() => Place, { nullable: true })
+  public place?: Place;
 
   @ManyToOne(() => Season, (season) => season.broadcasts, { onDelete: 'CASCADE' })
   public season?: Season;
@@ -372,6 +437,14 @@ export class Event extends GuidIdentity {
    */
   @Column({ nullable: true, length: 64, select: false })
   public checkInCode?: string;
+
+  /**
+   * Whether attendees may check in at any time, not only from the session's start until 15 minutes
+   * after its end (#2635). Every other rule still applies: the zone, the QR code. A check-in outside the
+   * session's time is marked `outsideSessionTime`.
+   */
+  @Column({ nullable: false, default: false })
+  public checkInAnyTime: boolean;
 
   @Column({ nullable: true })
   public mode: string;
@@ -620,6 +693,17 @@ export class Speaker extends GuidIdentity {
   @Column({ nullable: true })
   public accountGuid: string;
 
+  /** When an admin marked this speaker's name badge printed, or null if it is not (#2908). */
+  @Column({ type: 'datetimeoffset', nullable: true })
+  public badgePrintedAt: Date | null;
+
+  /**
+   * What the printed badge said, as exported (name, organization, class year), so the badges page can say when the
+   * speaker has changed since: comparing times would not do, because marking the badge also updates the record.
+   */
+  @Column({ type: 'nvarchar', length: 1000, nullable: true })
+  public badgePrintedText: string | null;
+
   @ManyToMany(() => Event, (event) => event.speakers, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   public events: Event[];
 
@@ -646,6 +730,11 @@ export class Tag extends GuidIdentity {
   @ManyToOne(() => Season, (season) => season.tags, { nullable: true })
   public season: Season;
 }
+
+/**
+ * The sizes a sponsor's logo can be drawn at on the Sponsors page, smallest first (#2638).
+ */
+export type SponsorLogoSize = 'small' | 'regular' | 'large' | 'extra-large';
 
 @Entity({
   name: 'sponsors'
@@ -682,6 +771,13 @@ export class Sponsor extends GuidIdentity {
   @Column({ nullable: false, default: true })
   public active: boolean;
 
+  /**
+   * How large the sponsor's logo is drawn on the public Sponsors page, so a logo with small detail
+   * can be shown bigger than its neighbours. Existing sponsors are `regular`, the size before (#2638).
+   */
+  @Column({ nullable: false, default: 'regular' })
+  public logoSize: SponsorLogoSize;
+
   @ManyToOne(() => Season, (season) => season.sponsors)
   public season: Season;
 
@@ -713,6 +809,77 @@ export class Asset extends GuidIdentity {
 
   @ManyToOne(() => Sponsor, (s) => s.logos, { nullable: true })
   public sponsor?: Sponsor;
+
+  /**
+   * A file a student attached to their submission (#2933): `name` is the name it was uploaded with, `path` where it is
+   * kept under APP_DATA. Deleted with its submission.
+   */
+  // Relation<>: Submission is declared further down this file, and a plain type would be read before it exists.
+  @ManyToOne(() => Submission, (s) => s.files, { nullable: true, onDelete: 'CASCADE' })
+  public submission?: Relation<Submission>;
+}
+
+/**
+ * A personal link that lets one speaker propose changes to their own presenter profile without an account (#2936). Only
+ * a hash of its token is kept, so a copy of the database holds no working links. It works until `expires`, as often as
+ * the speaker likes; each use replaces their pending edit.
+ */
+@Entity({ name: 'speaker_edit_links' })
+export class SpeakerEditLink extends GuidIdentity {
+  @ManyToOne(() => Speaker, { nullable: false, onDelete: 'CASCADE' })
+  public speaker: Relation<Speaker>;
+
+  /** SHA-256 of the token, hex. */
+  @Column({ length: 64 })
+  public tokenHash: string;
+
+  @Column({ type: 'datetimeoffset' })
+  public expires: Date;
+
+  /** The address the link was emailed to. */
+  @Column({ nullable: true })
+  public sentTo: string;
+}
+
+/**
+ * Changes a speaker proposed to their own profile (#2936), waiting for an admin. Nothing here reaches the public site
+ * until it is approved. A speaker has at most one pending edit; sending another replaces it.
+ */
+@Entity({ name: 'speaker_edits' })
+export class SpeakerEdit extends GuidIdentity {
+  @ManyToOne(() => Speaker, { nullable: false, onDelete: 'CASCADE' })
+  public speaker: Relation<Speaker>;
+
+  @Column({ nullable: true, length: 'MAX' })
+  public description: string | null;
+
+  @Column({ nullable: true })
+  public affiliation: string | null;
+
+  @Column({ nullable: true })
+  public socialMedia: string | null;
+
+  /** The class year a presenter card shows after the name, as the admin form takes it: "2018", or "2014, 2016" (#2953). */
+  @Column({ nullable: true, length: 50 })
+  public graduationYear: string | null;
+
+  /** The university, chosen from the season's list (#2953). Kept if the university is deleted, without it. */
+  @ManyToOne(() => University, { nullable: true, onDelete: 'SET NULL' })
+  public university?: Relation<University> | null;
+
+  /** A proposed photo, under APP_DATA, until it is approved or rejected. */
+  @Column({ nullable: true })
+  public photoPath: string | null;
+
+  @Column({ default: 'pending' })
+  public status: 'pending' | 'approved' | 'rejected' | string;
+
+  @Column({ type: 'datetimeoffset', nullable: true })
+  public reviewedAt: Date | null;
+
+  /** The admin's account id. */
+  @Column({ nullable: true })
+  public reviewedBy: string | null;
 }
 
 @Entity({
@@ -724,6 +891,13 @@ export class CheckIn extends GuidIdentity {
 
   @Column({ nullable: false })
   public accountGuid: string;
+
+  /**
+   * Made outside the session's time, which a session open at any time allows (#2635). Decided when the
+   * check-in is made, so moving the session later does not change it. Organizers' check-ins are never marked.
+   */
+  @Column({ nullable: false, default: false })
+  public outsideSessionTime: boolean;
 }
 
 @Entity({
@@ -856,7 +1030,7 @@ export class Submission extends GuidIdentity {
   public title: string;
 
   @Column({ nullable: true, type: 'simple-json' })
-  public participants: Array<{ name: string; email: string; studentId: string }>;
+  public participants: Array<{ name: string; email: string; studentId?: string }>;
 
   @Column({ nullable: true, length: 'MAX' })
   public abstract: string;
@@ -884,6 +1058,10 @@ export class Submission extends GuidIdentity {
 
   @ManyToOne(() => Season, (season) => season.submissions, { nullable: true })
   public season: Season;
+
+  /** The slides or poster the student attached (#2933). Not loaded unless asked for. */
+  @OneToMany(() => Asset, (asset) => asset.submission)
+  public files?: Asset[];
 }
 
 @Entity({
@@ -1087,6 +1265,7 @@ export type EntityName = 'event' | 'speaker';
 
 export const GISDAY_ENTITIES = [
   Season,
+  SeasonCompetition,
   SeasonDay,
   CheckIn,
   Class,
@@ -1104,6 +1283,8 @@ export const GISDAY_ENTITIES = [
   RsvpType,
   Speaker,
   SpeakerRole,
+  SpeakerEditLink,
+  SpeakerEdit,
   SubmissionType,
   Sponsor,
   Tag,

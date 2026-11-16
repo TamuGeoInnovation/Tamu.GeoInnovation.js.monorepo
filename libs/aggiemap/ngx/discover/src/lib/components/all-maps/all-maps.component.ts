@@ -182,7 +182,7 @@ export class AllMapsComponent implements OnInit {
       this.discoveryService
         .getVisibleInternalDiscoverApplications()
         // Each event's next date, counting today's: an event is on for its whole day (#1301).
-        .map((app) => ({ app, next: nextEventDate(app.configuration.eventDates, now) }))
+        .map((app) => ({ app, next: nextEventDate(app.configuration?.eventDates, now) }))
         .filter((upcoming): upcoming is { app: InternalDiscoverApplication; next: number } => upcoming.next !== null)
         .sort((a, b) => a.next - b.next || a.app.name.localeCompare(b.app.name))
         .slice(0, 3)

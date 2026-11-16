@@ -50,4 +50,22 @@ describe('CheckinService', () => {
     expect(request.request.body).toEqual({ guid: '', userGuid: 'attendee-1', eventGuid: 'event-1' });
     request.flush({});
   });
+
+  // #3089: the QR check-in page says "You're checked in" itself; this pop-up said it a second time over the top of it.
+  it('checks the attendee in with no pop-up of its own, as each page says the outcome itself', () => {
+    service.insertUserCheckin('event-1', undefined, 'code-1').subscribe();
+    http.expectOne({ method: 'POST', url: 'api/check-ins' }).flush({ guid: 'c-1' });
+
+    expect(TestBed.inject(NotificationService).toast).not.toHaveBeenCalled();
+  });
+
+  it("reads the admin check-in dashboard's season and an event's people from their admin routes (#3006)", () => {
+    service.getDashboardForSeason('season-1').subscribe();
+    http
+      .expectOne({ method: 'GET', url: 'api/check-ins/dashboard/season/season-1' })
+      .flush({ events: [], made: [], unreadAccounts: 0 });
+
+    service.getDashboardForEvent('event-1').subscribe();
+    http.expectOne({ method: 'GET', url: 'api/check-ins/dashboard/event/event-1' }).flush([]);
+  });
 });

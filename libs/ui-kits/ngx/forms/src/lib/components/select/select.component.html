@@ -1,3 +1,7 @@
+@if (searchable()) {
+<!-- Searchable (#2656): the shared autocomplete, with the whole list on focus so it is a drop-down too. -->
+<tamu-gisc-autocomplete [control]="search" [options]="matches()" [showOnFocus]="true" [placeholder]="placeholder() || 'Select an option'" [displayWith]="label" (optionSelected)="choose($event)" (focusout)="leave($event)"></tamu-gisc-autocomplete>
+} @else {
 <select [(ngModel)]="value" (change)="changeEvent()" [disabled]="disabled()">
   <option value="undefined">{{ placeholder() ? placeholder() : 'Select an option' }}</option>
   @if (data(); as data) { @for (item of data; track item) {
@@ -13,4 +17,5 @@
 <!-- Floating label -->
 @if (floatLabel() && placeholder()) {
 <label [for]="formControlName()" [ngClass]="{ float: value !== undefined && value.toString().length > 0 }">{{ placeholder() }}</label>
+}
 }

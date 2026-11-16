@@ -6,6 +6,7 @@ import { JwtGuard, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 
 import { CheckInController } from './check-in.controller';
 import { CheckInProvider } from './check-in.provider';
+import { CheckInDashboardProvider } from './check-in-dashboard.provider';
 
 /**
  * Requests go through Nest's real routing, body parsing and `PermissionsGuard`, so what is checked is
@@ -16,7 +17,13 @@ describe('CheckInController', () => {
   let app: INestApplication;
   let url: string;
   let permissions: Array<string>;
-  const provider = { insertUserCheckin: jest.fn(), insertAttendeeCheckin: jest.fn(), getCheckInCode: jest.fn() };
+  const dashboard = { getSeason: jest.fn().mockResolvedValue({ events: [], made: [], unreadAccounts: 0 }) };
+  const provider = {
+    insertUserCheckin: jest.fn(),
+    insertAttendeeCheckin: jest.fn(),
+    getCheckInCode: jest.fn(),
+    getCheckinsForEvent: jest.fn()
+  };
 
   const post = (path: string, body: object) =>
     fetch(`${url}/check-ins${path}`, {
@@ -30,10 +37,16 @@ describe('CheckInController', () => {
     provider.insertUserCheckin.mockReset().mockResolvedValue({ guid: 'checkin-1' });
     provider.insertAttendeeCheckin.mockReset().mockResolvedValue({ guid: 'checkin-1' });
     provider.getCheckInCode.mockReset().mockResolvedValue({ code: 'code-1' });
+    provider.getCheckinsForEvent
+      .mockReset()
+      .mockResolvedValue([{ guid: 'checkin-1', accountGuid: 'attendee-1', outsideSessionTime: true }]);
 
     const module = await Test.createTestingModule({
       controllers: [CheckInController],
-      providers: [{ provide: CheckInProvider, useValue: provider }]
+      providers: [
+        { provide: CheckInProvider, useValue: provider },
+        { provide: CheckInDashboardProvider, useValue: dashboard }
+      ]
     })
       .overrideGuard(JwtGuard)
       .useValue({
@@ -51,6 +64,18 @@ describe('CheckInController', () => {
 
   afterEach(async () => {
     await app.close();
+  });
+
+  /** #3024: the check-in dashboard lists the site's own sessions, so it is asked for from the admin's site. */
+  describe('GET /check-ins/dashboard/season/:guid', () => {
+    it("reads the season's dashboard for the admin's site", async () => {
+      permissions = ['read:checkins'];
+
+      const response = await fetch(`${url}/check-ins/dashboard/season/s-1`, { headers: { Origin: 'https://gisday.tamu.edu' } });
+
+      expect(response.status).toBe(200);
+      expect(dashboard.getSeason).toHaveBeenCalledWith('s-1', 'gisday.tamu.edu');
+    });
   });
 
   describe('POST /check-ins (attendee)', () => {
@@ -74,6 +99,23 @@ describe('CheckInController', () => {
       await post('', { eventGuid: 'event-1', code: 'code-1' });
 
       expect(provider.insertUserCheckin).toHaveBeenCalledWith('event-1', 'admin-1', expect.anything(), 'code-1');
+    });
+  });
+
+  describe('GET /check-ins/event/:eventGuid (#2635)', () => {
+    it("gives an admin with read:checkins the session's check-ins, with the mark", async () => {
+      permissions = ['read:checkins'];
+
+      const response = await fetch(`${url}/check-ins/event/event-1`);
+
+      expect(response.status).toBe(200);
+      expect(await response.json()).toEqual([{ guid: 'checkin-1', accountGuid: 'attendee-1', outsideSessionTime: true }]);
+      expect(provider.getCheckinsForEvent).toHaveBeenCalledWith('event-1');
+    });
+
+    it('refuses an attendee, who would see who else checked in', async () => {
+      expect((await fetch(`${url}/check-ins/event/event-1`)).status).toBe(403);
+      expect(provider.getCheckinsForEvent).not.toHaveBeenCalled();
     });
   });
 

@@ -311,9 +311,12 @@ export async function previousSeasonFinds(
 
     return { finds: [] };
   }
+  // Oldest first, so the map counts each thing at the place it was first found (#2625); scoring does not
+  // depend on the order.
   const submissions = await submissionRepo.find({
     where: { season: { guid: previous.guid } },
-    relations: { validationStatus: true, location: true }
+    relations: { validationStatus: true, location: true },
+    order: { created: 'ASC', guid: 'ASC' }
   });
 
   return {

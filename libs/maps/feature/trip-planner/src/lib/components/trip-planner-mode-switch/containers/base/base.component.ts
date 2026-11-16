@@ -49,8 +49,14 @@ export class TripPlannerModeSwitchComponent implements OnInit {
     }
 
     const rule = this.tripPlanner.getRuleForModes([parseInt(travelMode, 10)]);
-    const mode = this.tripPlanner.getTravelModeFromRule(rule);
+    const mode = rule ? this.tripPlanner.getTravelModeFromRule(rule) : undefined;
 
+    // A mode the network cannot solve has no icon to show; its result is an error.
+    if (!mode) {
+      this.mode_icon = null;
+      this.mode_header = '';
+      return;
+    }
     this.mode_icon = mode.directions_icon;
     this.mode_header = mode.directions_verb;
   }

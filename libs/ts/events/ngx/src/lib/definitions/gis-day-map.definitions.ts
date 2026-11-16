@@ -77,7 +77,24 @@ export const GisDayConfiguration: EventConfiguration = {
   introductionText: 'Building and parking locations for GIS Day.',
   eventDates: ['2026-11-16', '2026-11-17', '2026-11-18', '2026-11-19', '2026-11-20'],
   mapCenter: [-96.3379, 30.61286],
-  zoom: 16
+  zoom: 16,
+  // The main map's notice through GIS Day week and the seven days before it (#2678). The dates above were
+  // this year's all along; without a toast, `EventNotificationsService` skipped the event before it looked
+  // at them, so the notice had never been capable of appearing. No season in the id: the service appends the
+  // year of the earliest date itself (#2051), which is what brings the notice back for a new GIS Day.
+  toast: {
+    id: 'gis-day-notification',
+    title: 'GIS Day Map Available',
+    message:
+      'Coming to Texas A&M GIS Day? Click me to open the GIS Day map for building and parking locations around the MSC and Rudder Tower.',
+    imgUrl: './assets/images/icons/transportation/Parking.png',
+    imgAltText: 'Parking Icon',
+    acknowledge: true,
+    action: {
+      type: 'internal',
+      value: '/events/gis-day'
+    }
+  }
 };
 
 export const GisDayOptions: SpecialEventOptions = [];

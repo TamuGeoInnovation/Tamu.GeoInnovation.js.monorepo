@@ -316,6 +316,14 @@
       "mens-basketball-parking-lots"
     ]
   },
+  "micromobility": {
+    "layerList": true,
+    "layers": [
+      "micromobility-slow-zones",
+      "micromobility-shared-paths",
+      "micromobility-dedicated-paths"
+    ]
+  },
   "motorcycle-parking": {
     "layerList": true,
     "layers": [
@@ -360,6 +368,15 @@
       "muster-accessible-parking",
       "muster-parking"
     ]
+  },
+  "ncaa-volleyball": {
+    "layerList": true,
+    "layers": [
+      "ncaa-volleyball-accessible-parking",
+      "ncaa-volleyball-parking-lots"
+    ],
+    "developmentOnly": true,
+    "address": "/parking/ncaa-volleyball"
   },
   "night-weekend": {
     "layerList": true,
@@ -533,6 +550,7 @@
       "tailgating-construction",
       "tailgating-simpson-tents",
       "tailgating-tents",
+      "tailgating-restrooms",
       "tailgating-zone-numbers"
     ]
   },

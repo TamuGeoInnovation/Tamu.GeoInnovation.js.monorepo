@@ -21,14 +21,23 @@ export const DEFINITIONS_PREFIX = 'libs/ts/events/ngx/src/lib/definitions/';
 
 export const RETIRED_MARKER = /\bstatus:\s*'retired'/;
 
-/** The route section for each discover `type`, as `getApplicationRoute` builds it. */
-const SECTION_BY_TYPE: Record<string, string> = {
-  event: 'events',
-  parking: 'parking',
-  operations: 'operations',
-  'satellite-campus': 'campus',
-  kiosk: 'kiosk'
-};
+/**
+ * A copy of the application's `mapSegment` (`libs/ts/events/ngx/src/lib/guards/map-address/map-address.guard.ts`),
+ * the first segment of a map's address: a map in the Transportation section is at `/transportation`, whatever its
+ * `type`, and every other map is under its type (#2767).
+ *
+ * A copy because the suite cannot import that file, which imports Angular. The copy this replaced decided by `type`
+ * alone, and #2767 left it building `/parking/` for the two Transportation maps, so the quick tier ran nothing at their
+ * real addresses (#2775). `scope.spec.ts` now fails when this disagrees with the application's own answer, recorded in
+ * `declared-layers.generated.json`. Keep the two the same, line for line.
+ */
+export function mapSegment(discover: { type: string; mapType?: string; mapTypes?: readonly string[] }): string {
+  if ((discover.mapTypes ?? [discover.mapType]).includes('transportation')) {
+    return 'transportation';
+  }
+
+  return discover.type === 'event' ? 'events' : discover.type === 'satellite-campus' ? 'campus' : discover.type;
+}
 
 export interface DefinedMap {
   id: string;
@@ -60,15 +69,22 @@ export function parseDefinition(file: string, source: string): DefinedMap | null
 
   const name = configuration[2] ?? configuration[3];
 
-  // The discover block's `type` decides the route section; `event` is the default.
+  // The route section is `mapSegment`'s, given what the discover block declares: its section (`mapType` or `mapTypes`)
+  // and its `type`, which defaults to `event`.
   const discover = source.slice(source.indexOf('discover: {'));
-  const type = discover.match(/\btype: '([a-z-]+)'/)?.[1] ?? 'event';
+  const mapTypes = discover.match(/\bmapTypes: \[([^\]]*)\]/)?.[1];
+
+  const segment = mapSegment({
+    type: discover.match(/\btype: '([a-z-]+)'/)?.[1] ?? 'event',
+    mapType: discover.match(/\bmapType: '([a-z-]+)'/)?.[1],
+    mapTypes: mapTypes === undefined ? undefined : [...mapTypes.matchAll(/'([a-z-]+)'/g)].map((match) => match[1])
+  });
 
   return {
     id: configuration[1],
     name,
     file,
-    route: `/${SECTION_BY_TYPE[type] ?? 'events'}/${configuration[1]}`,
+    route: `/${segment}/${configuration[1]}`,
     retired: RETIRED_MARKER.test(source)
   };
 }

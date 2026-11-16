@@ -4,11 +4,14 @@ export * from './lib/connections';
 // The switch that makes a development host behave as production (#1722)
 export * from './lib/acting-as-production';
 
+// Layers that a production build leaves out, each with the issue keeping it off (#2673)
+export * from './lib/development-only-sources';
+
 // // Dictionary of map layer definitions
 // export * from './lib/definitions';
 
 // // Layer definitions
-export { commonLayerProps } from './lib/layer-sources/layer-sources';
+export { buildingsClickLayerNative, commonLayerProps } from './lib/layer-sources/layer-sources';
 
 // // Static legend items
 // export * from './lib/legend-sources';

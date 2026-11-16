@@ -16,7 +16,17 @@ describe('CONSTRUCTION_HATCH_RENDERER', () => {
       ['CIMHatchFill', 0],
       ['CIMHatchFill', 90]
     ]);
-    expect(JSON.stringify(hatches)).toContain('[230,152,0,255]');
     expect(symbolLayers.map((layer) => layer['type'])).not.toContain('CIMSolidFill');
+  });
+
+  it('draws the grid at 60% opacity, so a building number under it stays readable (#2573)', () => {
+    const strokes = symbolLayers
+      .slice(1)
+      .map((hatch) => (hatch['lineSymbol'] as { symbolLayers: Array<{ color: number[] }> }).symbolLayers[0].color);
+
+    expect(strokes).toEqual([
+      [230, 152, 0, 153],
+      [230, 152, 0, 153]
+    ]);
   });
 });

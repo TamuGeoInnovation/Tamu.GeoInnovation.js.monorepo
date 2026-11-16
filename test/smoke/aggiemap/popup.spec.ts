@@ -2,9 +2,12 @@ import { Page } from '@playwright/test';
 import * as fs from 'fs';
 import * as path from 'path';
 
+import { Connections } from '../../../libs/aggiemap/ngx/common/src/lib/connections';
+
 import { expect, HEAVY, test } from './fixtures';
 import { blockAnalytics } from './analytics';
 import { waitForSettledFraming } from './framing';
+import { smokeBaseUrl } from './gis-hosts';
 
 /**
  * Clicking a feature on a map opens its popup, and the popup shows that feature's data (#1117).
@@ -63,15 +66,14 @@ const POPUP_CASES: PopupCase[] = [
   }
 ];
 
-const BASE_URL = process.env.AGGIEMAP_SMOKE_BASE_URL ?? 'https://aggiemap.tamu.edu';
+const BASE_URL = smokeBaseUrl();
 
 /** Maps whose popup is known to be broken here, by map path, each tied to an issue. From environments.json. */
 function allowedFailures(): Record<string, string> {
   const environments: Record<string, { baseUrl: string; allowedPopupFailures?: Record<string, string> }> = JSON.parse(
     fs.readFileSync(path.join(__dirname, 'environments.json'), 'utf8')
   );
-  const normalised = BASE_URL.replace(/\/$/, '');
-  const match = Object.values(environments).find((env) => env.baseUrl.replace(/\/$/, '') === normalised);
+  const match = Object.values(environments).find((env) => env.baseUrl.replace(/\/$/, '') === BASE_URL);
 
   return match?.allowedPopupFailures ?? {};
 }
@@ -173,6 +175,77 @@ test.describe('popup', () => {
       }
     });
   }
+
+  /**
+   * A click on a building while the buildings layer is still drawing opens its popup (#2707).
+   *
+   * The popup came only from `view.hitTest`, which finds what a layer view has drawn. On a fresh load that
+   * is several seconds after the page looks ready: 0 of 20 clicks opened a popup on dev once the framing
+   * had settled, and a check that waits for `ready`, or for drawing to finish as the cases above do, never
+   * clicks in that window. So this one makes the window: it holds back the buildings layer's own drawing
+   * requests, clicks while its layer view is still drawing, and lets through only what is asked after the
+   * click. Before the fix the click opened nothing.
+   */
+  test('/map/d: clicking a building while its layer is still drawing opens its popup', async ({ page }) => {
+    test.setTimeout(120_000);
+
+    const mapPath = '/map/d';
+    const buildingsQuery = `${Connections.buildingsUrl}/query`;
+    const held: Array<() => Promise<void>> = [];
+    let clicked = false;
+
+    await page.route(
+      (url) => url.href.replace(/([^:])\/{2,}/g, '$1/').startsWith(buildingsQuery),
+      async (route) => {
+        if (clicked) {
+          await route.continue().catch(() => undefined);
+        } else {
+          held.push(() => route.continue().catch(() => undefined));
+        }
+      }
+    );
+
+    await blockAnalytics(page);
+    await page.goto(mapPath);
+
+    // The buildings layer exists and its layer view is drawing, which it cannot finish while its requests are held.
+    await expect
+      .poll(
+        async () =>
+          await page.evaluate(() => {
+            type LayerView = { layer: { id: string }; updating: boolean };
+            type View = { allLayerViews?: { toArray(): LayerView[] } };
+            const view = (document.querySelector('arcgis-map') as unknown as { view?: View } | null)?.view;
+
+            return view?.allLayerViews?.toArray().find((layerView) => layerView.layer.id === 'buildings-layer')?.updating === true;
+          }),
+        { message: `the buildings layer on ${mapPath} never started drawing`, timeout: 60_000, intervals: [500] }
+      )
+      .toBe(true);
+    await expect(page.locator('div.loader'), `the loading overlay on ${mapPath} never went away`).toBeHidden({
+      timeout: 30_000
+    });
+
+    const view = page.locator('.esri-view-surface').first();
+    const box = await view.boundingBox();
+
+    expect(box, `${mapPath} has no map view to click`).not.toBeNull();
+
+    // The Interdisciplinary Life Sciences Building, in the opening view.
+    const at = await clickPoint(page, { longitude: -96.343611, latitude: 30.61429 }, box!.width, box!.height);
+
+    clicked = true;
+    await page.mouse.click(box!.x + at.x, box!.y + at.y);
+
+    try {
+      await expect(
+        page.locator('tamu-gisc-feature-popup .popup'),
+        `clicking a building on ${mapPath} while its layer was drawing opened no popup`
+      ).toContainText(/Interdisciplinary Life Sciences/, { timeout: 20_000 });
+    } finally {
+      await Promise.all(held.map((release) => release()));
+    }
+  });
 
   /**
    * With a popup open, clicking another feature shows that feature's details, not the first's (#1672).

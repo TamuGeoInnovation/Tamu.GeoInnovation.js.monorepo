@@ -3,6 +3,7 @@ import * as path from 'path';
 
 import { expect, test } from './fixtures';
 import { MANIFEST_PATH, MapManifest } from './global-setup';
+import { smokeBaseUrl } from './gis-hosts';
 
 /**
  * Event maps agree about whether their event is over, at College Station time (#1302).
@@ -42,7 +43,7 @@ const eventMaps = manifest.maps.filter((route) => route.startsWith('/events/'));
  * below, so a map that gains dates is noticed, and a **new** undated event map still fails.
  */
 function allowedUndated(): Record<string, string> {
-  const base = (process.env.AGGIEMAP_SMOKE_BASE_URL ?? 'https://aggiemap.tamu.edu').replace(/\/$/, '');
+  const base = smokeBaseUrl();
   const environments: Record<string, { baseUrl: string; allowedUndatedEventMaps?: Record<string, string> }> =
     JSON.parse(fs.readFileSync(path.join(__dirname, 'environments.json'), 'utf8'));
   const match = Object.values(environments).find((env) => env.baseUrl.replace(/\/$/, '') === base);
