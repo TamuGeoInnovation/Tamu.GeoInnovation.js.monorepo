@@ -8559,3 +8559,9 @@ the preview and of the email as received in a local mail catcher if you have one
 has `development` merged in (one conflict in `speaker-edit.module.ts`, both modules' providers kept). 2(a), replies to the
 site's address keep going to `MAILROOM_TO`. 3(a), no "email verified" check for now. 4: the real test email is the
 maintainer's, after release; the director will ask for it. Go on: 95, 90, 96, 97.
+
+## Report 95, answered (15 November 2026, about 9:15 PM Central)
+
+**Decided (the director):** 1(a). The home machine gives the people table the shared scroll rail (#3029) on
+`fix/2894-vgi-dashboard`; when it reports, the director queues you to retake `the opened feature type` image only. Carry
+on with 90, 96, 97.
