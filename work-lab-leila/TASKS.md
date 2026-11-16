@@ -8655,3 +8655,12 @@ The home machine put the two buttons side by side: `feat/3105-remove-session-fil
 (`.pr-body.md` last; leave it). **Do not change the code.** Retake `after-confirm.png` as in batch 100; say whether the
 buttons sit side by side. Undo everything as before. One commit, fetched and rebased, pushed (no force). Report "images
 pushed: <sha>".
+
+## Batch 104 (gisday: #3120, a long people list keeps its sideways scrollbar in view; Low) - **now**
+
+[#3120](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3120), from your report 102: cap an
+opened dashboard row's people table at a height (e.g. the window's, less the page's header) so it scrolls inside its own
+box, with its scrollbar always in view, in the shared `DashboardScrollComponent` that #2894 (PR 3121, not yet merged)
+adds. Branch `fix/3120-people-scroll-cap` from `feat/2894-vgi-dashboard` (fork) and say so; it rebases on `development`
+once PR 3121 merges. Tests red first; the bug-fix check; before/after screenshots (the 705-person type at 1280 px); a
+release note. Report "branch ready".
