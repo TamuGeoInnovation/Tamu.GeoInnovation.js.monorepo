@@ -165,9 +165,19 @@ describe('DashboardTableComponent widths (#3006)', () => {
 
     expect(table.style.minWidth).toBe(`${narrowest()}px`);
   });
+
+  it('keeps the bordered frame around the table as wide as the table, so the box around both scrolls to its last columns (#3135)', () => {
+    // The frame is the shared .datatable-container, whose overflow: hidden rounds its corners. Since #3121 moved the
+    // scrolling out to tamu-gisc-dashboard-scroll, a frame only as wide as the box cut the table off at the box's edge,
+    // and the box, holding nothing wider than itself, drew no rail: Playwright measured 669 px of box and frame around
+    // an 871 px check-ins table at 1024 px, with the box's scroll width 669.
+    const frame = (fixture.nativeElement as HTMLElement).querySelector('.datatable-container') as HTMLElement;
+
+    expect(frame.style.minWidth).toBe(`${narrowest()}px`);
+  });
 });
 
-describe('DashboardTableComponent sideways scroll (#3029)', () => {
+describe('DashboardTableComponent sideways scroll (#3029, #3135)', () => {
   // At 1024 px the table is wider than its box, and the box's own scrollbar is at the bottom of a table that can be 60
   // rows long. A unit test cannot lay a page out, so the box's widths are given here, and the browser is told it changed
   // size as a ResizeObserver would; Playwright measured the real page at 1024 and 1280 px.
@@ -260,6 +270,51 @@ describe('DashboardTableComponent sideways scroll (#3029)', () => {
     await resize(891, 891);
 
     expect(rail()?.hidden ?? true).toBe(true);
+  });
+
+  // #3135: loaded at 1280 px and resized to 1024 px in place, the table must end as a fresh 1024 px load draws it, its
+  // rail measured again. The box narrows first; ngx-datatable recomputes the columns after it, from a ResizeObserver
+  // of its own, so the table's width is only known once that has run. Until then the box shows the shared spinner.
+  const spinner = () => (fixture.nativeElement as HTMLElement).querySelector('tamu-gisc-dashboard-scroll .loader');
+  const railWidth = () => (rail()?.firstElementChild as HTMLElement | null)?.style.width;
+  /** Well past the time the box waits, after the last resize, for the table to settle. */
+  const recomputed = async () => {
+    await new Promise((resolve) => setTimeout(resolve, 600));
+    fixture.detectChanges();
+  };
+
+  it('measures the rail again once a resized table has recomputed its columns, and drops it when the table fits again (#3135)', async () => {
+    // Loaded at 1280 px: the table fits.
+    await resize(867, 867);
+    expect(rail()?.hidden).toBe(true);
+
+    // Resized to 1024 px: the box is narrower at once, the columns at their narrowest only after.
+    await resize(669, 867);
+    layOut(box(), 669, 799);
+    await recomputed();
+
+    expect(rail()?.hidden).toBe(false);
+    expect(railWidth()).toBe('799px');
+
+    // And back to 1280 px: no rail where none is needed.
+    await resize(867, 867);
+    await recomputed();
+
+    expect(rail()?.hidden).toBe(true);
+  });
+
+  it('shows the shared spinner while a resized table recomputes, and takes it away once the rail is measured (#3135)', async () => {
+    await resize(867, 867);
+    expect(spinner()).toBeNull();
+
+    await resize(669, 867);
+    expect(spinner()).not.toBeNull();
+
+    layOut(box(), 669, 799);
+    await recomputed();
+
+    expect(spinner()).toBeNull();
+    expect(railWidth()).toBe('799px');
   });
 });
 
