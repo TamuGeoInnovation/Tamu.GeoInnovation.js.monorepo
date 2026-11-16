@@ -10,6 +10,7 @@ import {
   CHECK_IN_CODE_MESSAGE,
   CHECK_IN_MAX_ACCURACY,
   CHECK_IN_ZONE_EVENT_MODE,
+  checkInOpensAt,
   checkInWindow,
   checkInZoneMessage,
   checksInByCode,
@@ -260,17 +261,10 @@ function assertCheckInOpen(event: Event, now: Date = new Date()) {
   }
 
   if (now < window.opens) {
-    throw new ForbiddenException(`Check-in for this session opens when it starts, at ${centralTime(window.opens)}.`);
+    throw new ForbiddenException(`Check-in for this session opens when it starts, ${checkInOpensAt(window.opens, now)}.`);
   }
 
   if (now > window.closes) {
     throw new ForbiddenException('Check-in for this session has closed.');
   }
-}
-
-/**
- * A time of day in Central time, such as `4:00 PM`.
- */
-function centralTime(at: Date): string {
-  return new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', hour: 'numeric', minute: '2-digit' }).format(at);
 }

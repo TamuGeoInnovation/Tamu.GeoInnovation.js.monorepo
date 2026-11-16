@@ -41,6 +41,22 @@ application's login can read and write data but cannot change tables.
 Never set `migrationsRun` so the API migrates at startup. Production runs two copies of the API, and
 both would try at once.
 
+### Before any deploy: what is in the image
+
+An image carries **every** pull request merged since the one running, not only the one being deployed. So before
+anyone gives or runs a deploy command for `gisday-nest` or `gisday-angular`:
+
+1. **List what the image adds**: `git log --oneline <running sha>..<new sha>`. The running sha is the image tag in
+   `kubectl -n gisday get deployment gisday-nest -o custom-columns=IMAGE:.spec.template.spec.containers[0].image`.
+2. **Look for migrations**: `git diff --name-only <running sha> <new sha> -- apps/gisday-nest/src/database/migrations`.
+3. **If any appear**, stop: the migration's `migrate-prod-<issue>.ps1` runs first, dry run then `-Apply`, on both
+   namespaces, and only then the image. Say so with the deploy commands.
+
+On 15 November 2026 this was skipped. The QR check-in fix (PR 3080) was deployed as `sha-d4da1b8`, which also carried
+PR 3079 (#3048), merged minutes earlier with a new column `event_broadcast.placeGuid`. Its migration had not run, so from
+about 3:40 to 3:46 PM Central every session with a broadcast answered 500 and the admin's session form came up blank,
+until `migrate-prod-3048.ps1 -Apply` was run. The deploy itself was right; nobody had asked what else was in it (#3096).
+
 A fix to records, not to the schema, takes the same route as a reviewed SQL script.
 
 ## Changing production data
