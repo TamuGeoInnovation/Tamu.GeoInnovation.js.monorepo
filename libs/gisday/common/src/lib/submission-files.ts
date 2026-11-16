@@ -27,6 +27,29 @@ export interface SubmissionFileDto {
 }
 
 /**
+ * A session a speaker presents, as their edit link lists it (#3093): when and where, and its slides, if any. A session
+ * has one set of slides, under the same rules as a submission's files; uploading again replaces it.
+ */
+export interface SpeakerSessionDto {
+  guid: string;
+  name: string;
+  /** The day, as an ISO date-time from the season day, or null when none is set. */
+  date: string | null;
+  startTime: string | null;
+  endTime: string | null;
+  /** The building and room, or null. */
+  place: string | null;
+  file: SubmissionFileDto | null;
+}
+
+/** A session's slides, as the admins' list of a season's sessions reads them (#3093). */
+export interface SessionSlidesDto {
+  /** The session's guid. */
+  event: string;
+  file: SubmissionFileDto;
+}
+
+/**
  * Why a file may not be attached, in words for the student, or null when it may. `alreadyAttached` is how many files the
  * submission holds before this one.
  */

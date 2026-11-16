@@ -817,6 +817,13 @@ export class Asset extends GuidIdentity {
   // Relation<>: Submission is declared further down this file, and a plain type would be read before it exists.
   @ManyToOne(() => Submission, (s) => s.files, { nullable: true, onDelete: 'CASCADE' })
   public submission?: Relation<Submission>;
+
+  /**
+   * A session's slides, uploaded by one of its speakers from their edit link (#3093), kept as a submission's files are.
+   * Seen by the admins only. Deleted with its session.
+   */
+  @ManyToOne(() => Event, { nullable: true, onDelete: 'CASCADE' })
+  public event?: Relation<Event>;
 }
 
 /**
