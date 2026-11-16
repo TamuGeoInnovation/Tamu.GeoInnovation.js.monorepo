@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle and listening.
+- **Batch 66 (gisday: #3105, admins remove a session's slide files)**: started 9:09 PM Central, 15 November, branch `feat/3105-remove-session-files`.
 
 ## Finished
 - **Batch 65 (gisday: #2894)** (report `home/reports/2026-11-15-65.md`): branch ready, `feat/2894-vgi-dashboard` on the fork at `c4a9bef0a`, no PR. VGI submissions dashboard on the shared dashboard pieces, scored by the leaderboard's own `scoreSubmissions`; `read:competitions`, nothing new for Auth0. Red first; full check exit 0. Screenshots to the lab. No questions.
