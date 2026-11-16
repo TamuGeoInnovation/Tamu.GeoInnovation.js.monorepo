@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle and listening.
+- **Batch 64 (gisday: #2582, VGI Form Designer feedback)**: started 7:53 PM Central, 15 November, branch `fix/2582-designer-feedback`.
 
 ## Finished
 - **Batch 63 (gisday: #3074)** (report `home/reports/2026-11-15-63.md`): branch ready, `fix/3074-image-upload-rule` on the fork at `779724db6`, no PR. Five image pickers on one shared `UploadImagePicker`; the rule gains the API's 5 MB. Red first; check exit 0. Screenshots to the lab. No questions.
