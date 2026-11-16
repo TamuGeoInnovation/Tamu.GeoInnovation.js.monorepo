@@ -1,14 +1,19 @@
 @if (editable()) {
 <!-- Always shown, not only as the picker's placeholder, which goes while a file uploads and once the limit is reached (#2938). -->
-<p class="files-limits">PowerPoint (.ppt, .pptx) or PDF · up to {{ limit }} each · up to {{ rules.maxFiles }} files</p>
+<p class="files-limits">PowerPoint (.ppt, .pptx) or PDF · up to {{ limit }} each · up to {{ max() }} files</p>
 } @if (files(); as files) { @if (files.length === 0 && !uploading()) {
-<p class="files-empty">No files attached yet.</p>
+<p class="files-empty">{{ emptyLabel() }}</p>
 } @else {
 <ul class="files">
   @for (file of files; track file.guid) {
   <li class="file">
+    @if (downloadable) {
     <button type="button" class="inline-link file-name" [disabled]="busy() === file.guid" (click)="download(file)">{{ file.name }}</button>
-    <span class="file-detail">{{ size(file.size) }} · {{ file.uploaded | date: 'MMM d, h:mm a' }}</span>
+    } @else {
+    <span class="file-name">{{ file.name }}</span>
+    }
+    <!-- Who uploaded it, where the list is several people's: a session's slides on its admin page (#3093). -->
+    <span class="file-detail">@if (file.uploadedBy) {<span class="file-by">{{ file.uploadedBy }}</span> · }{{ size(file.size) }} · {{ file.uploaded | date: 'MMM d, h:mm a' }}</span>
     @if (editable()) {
     <button type="button" class="inline-link danger" [disabled]="busy() === file.guid" (click)="remove(file)">Remove</button>
     }
@@ -21,9 +26,9 @@
   </li>
   }
 </ul>
-} @if (editable() && !uploading() && files.length < rules.maxFiles) {
+} @if (editable() && !uploading() && files.length < max()) {
 <!-- The shared picker, wearing the site's .button, so it reads as something to press rather than a line of text (#2938). -->
-<tamu-gisc-file class="button snug" [accept]="rules.accept" (fileSelected)="upload($event)">Attach a file</tamu-gisc-file>
+<tamu-gisc-file class="button snug" [accept]="rules.accept" (fileSelected)="upload($event)">{{ pickLabel() }}</tamu-gisc-file>
 } @if (problem(); as problem) {
 <p class="files-problem" role="alert">{{ problem }}</p>
 } } @else {
