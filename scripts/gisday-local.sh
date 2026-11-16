@@ -198,6 +198,8 @@ SQL
     else
       echo "Then open $LOCAL_SITE (or http://localhost:4201)"
     fi
+    # auth0-spa-js runs only on a secure page, which http://gisday.local.test is not unless the browser is told so.
+    echo "To sign in at $LOCAL_SITE without a consent screen, the browser must treat it as secure: docs/gisday-local.md#signing-in"
     # Read only: the hosts file is the machine's own, and is never changed from here.
     # A line counts when, before any comment, it gives 127.0.0.1 and then the name among its host names.
     if ! awk -v h="$LOCAL_HOST" '{ sub(/#.*/, "") } $1 == "127.0.0.1" { for (i = 2; i <= NF; i++) if (tolower($i) == h) found = 1 }

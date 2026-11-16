@@ -115,6 +115,9 @@ for args in "" "--static" "--site ucgis"; do
   check "web $args says to open http://gisday.local.test:4201" 'grep -q "Then open http://gisday.local.test:4201 " <<<"$said"'
   check "web $args still offers http://localhost:4201" 'grep -q "or http://localhost:4201" <<<"$said"'
   check "web $args says nothing about the hosts file when it has the name" '! grep -q "is not in" <<<"$said"'
+  # auth0-spa-js runs only on a secure page, and http://gisday.local.test is not one unless the browser is told (#3136).
+  check "web $args says the browser must treat gisday.local.test as secure" \
+    'grep -q "the browser must treat it as secure: docs/gisday-local.md#signing-in" <<<"$said"'
   # shellcheck disable=SC2086
   said="$(web_says "$bin/hosts-without" $args)"
   check "web $args says when the hosts file does not point gisday.local.test at 127.0.0.1" \

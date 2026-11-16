@@ -54,9 +54,9 @@ scripts/gisday-local.sh api                     # builds gisday-nest (under a mi
 scripts/gisday-local.sh web                     # first compile takes several minutes
 ```
 
-Then open <http://gisday.local.test:4201>, after adding it to the hosts file
-([Signing in](#sign-in-at-gisdaylocaltest-not-localhost) says why and how); <http://localhost:4201> works too, but
-signing in there always stops at a consent screen. `status` lists the containers; `stop` removes them and keeps the
+Then open <http://gisday.local.test:4201>, after adding it to the hosts file and telling the browser to treat it as
+secure ([Signing in](#sign-in-at-gisdaylocaltest-not-localhost) says why and how); <http://localhost:4201> works too,
+but signing in there always stops at a consent screen. `status` lists the containers; `stop` removes them and keeps the
 database volume, so the restore is needed only once.
 
 ### Another organization's site
@@ -245,6 +245,20 @@ administrator:
 ```text
 127.0.0.1 gisday.local.test
 ```
+
+**The browser also has to treat that address as secure.** The sign-in library (`auth0-spa-js`) needs
+`crypto.subtle`, which a browser gives only to a secure page: `https`, or `localhost` and `127.0.0.1`. At plain
+`http://gisday.local.test:4201` the page stays empty of its menus and the console says `auth0-spa-js must run on a
+secure origin` (checked on 16 November 2026, #3136). In Chrome or Edge, open `chrome://flags` (`edge://flags`), set
+**Insecure origins treated as secure** to `http://gisday.local.test:4201`, enable it and relaunch. Playwright does the
+same with full Chromium, which honours the flag where its default headless shell does not:
+
+```js
+chromium.launch({ channel: 'chromium', args: ['--unsafely-treat-insecure-origin-as-secure=http://gisday.local.test:4201'] });
+```
+
+So set up, a sign-in there through the login form and a second page opened in the same browser both reached
+`/admin/dashboards/rsvps` with no consent screen (16 November 2026).
 
 Nothing else changes: the `web` step serves the same site at both addresses (its dev server allows the name in the
 `local` configuration's `allowedHosts`, and nginx and `gisday-site` answer to any name), the page returns from sign-in
