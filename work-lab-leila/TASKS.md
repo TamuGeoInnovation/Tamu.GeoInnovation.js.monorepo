@@ -8844,3 +8844,11 @@ does**. A code batch: branch `fix/3135-dashboard-resize` from the latest `develo
   options and a recommendation, and stop.
 
 **Report 111, answered (the director):** 1(a), both wording points, on the branch (`25f405b29`); your images are in PR 3156.
+
+## Report 112, answered; batch 112b (gisday: #3154, retake one image) - **after the batch you are in**
+
+**1(a), done on the branch** (`7c31f3417`): the page says "You are signed in as <name>" (Auth0's name, else the email),
+its tab says "Already signed in | <site>", and its message now reads "There is nothing more to sign in or sign up for. To
+use another account, log out first." **Do not change the code.** Retake `after-signed-in.png` as in batch 112, signed in
+as the test admin, and say what the page and the tab say. One commit on the branch, fetched and rebased, pushed (no force).
+Report "images pushed: <sha>".
