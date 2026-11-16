@@ -22,7 +22,6 @@ import { NgClass, AsyncPipe } from '@angular/common';
 import { HasRolesPipe } from '@tamu-gisc/common/ngx/auth';
 import { SeasonLinkPipe } from '../../pipes/season-link/season-link.pipe';
 import { GISDAY_SITE, SiteHasPipe } from '../../site/site';
-import { clearApiCache } from '../../utils/clear-api-cache';
 import { LockupComponent } from '@tamu-gisc/ui-kits/ngx/branding';
 import { SignInService } from '../../site/sign-in';
 
@@ -117,16 +116,8 @@ export class HeaderComponent implements OnInit {
     this.signIn.start();
   }
 
-  public async logout() {
-    const url = window.location.origin;
-
-    // Before leaving, so the next person on this browser cannot be handed this session's API answers.
-    await clearApiCache();
-
-    this.as.logout({
-      logoutParams: {
-        returnTo: url
-      }
-    });
+  /** Logout: the shared log-out (#3154), which `/logout` starts too; it clears the API's cached answers first. */
+  public logout(): Promise<void> {
+    return this.signIn.logOut();
   }
 }
