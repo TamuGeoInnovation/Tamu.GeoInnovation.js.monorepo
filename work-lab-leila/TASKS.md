@@ -8590,3 +8590,16 @@ your local tenant (its result). A before is optional: locally the old search may
 Auth0's v3 behaviour; if it spins, capture it. To `docs/screenshots/3116-user-search/`, with an image table in
 `docs/releases/unreleased/3116-user-search.md`. One commit, fetched and rebased, pushed (no force). Report "images
 pushed: <sha>".
+
+## Batch 100 (gisday: #3105's screenshots, Low; 15 November 2026, about 10:00 PM Central) - **after 99**
+
+[#3105](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3105), built by the home machine:
+branch `feat/3105-remove-session-files` on the fork at `a06bc7f83` (`.pr-body.md` last; leave it). **Do not change the
+code.** As the local test admin, 1280 px, on a session with slides on its admin page (upload a made-up PDF through an
+edit link first): before (`development`, no Remove) and after (a Remove on each file); the question asked on the page;
+the list after a file is removed. Remove only your own made-up file, and undo everything as in report 87b. To
+`docs/screenshots/3105-remove-session-files/`, with the image table in `3105-remove-session-files.md`. One commit,
+fetched and rebased, pushed (no force). Report "images pushed: <sha>".
+
+> **Batch 97 (#3114, the designed email) moves to the home machine**, to run beside your queue. Do not start it. Your
+> order is now: 90, 98, 99, 96, 100.
