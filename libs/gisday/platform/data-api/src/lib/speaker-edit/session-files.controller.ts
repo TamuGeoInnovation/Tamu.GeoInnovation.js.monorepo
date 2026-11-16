@@ -85,4 +85,13 @@ export class SessionFilesController {
   public download(@Param('guid', ParseUUIDPipe) guid: string, @Param('file', ParseUUIDPipe) file: string) {
     return this.files.download(guid, file);
   }
+
+  /** Removes any speaker's file from a session, one whose speaker is no longer listed included (#3105). */
+  @Permissions(['update:events'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Delete('event/:guid/:file')
+  @HttpCode(204)
+  public removeFromEvent(@Param('guid', ParseUUIDPipe) guid: string, @Param('file', ParseUUIDPipe) file: string) {
+    return this.files.remove(null, guid, file);
+  }
 }

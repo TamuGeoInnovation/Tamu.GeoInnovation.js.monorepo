@@ -63,6 +63,11 @@ export class SubmissionFilesComponent implements OnInit {
   /** What a fourth file is refused with, before "Remove one before adding another": a submission's words by default. */
   public readonly limitMessage = input<string | undefined>(undefined);
   public readonly pickLabel = input('Attach a file');
+  /**
+   * Offers a Remove on each file that first asks, on the page, naming the file and who uploaded it, without the picker:
+   * the admins' list of a session's slides, whose files are other people's (#3105).
+   */
+  public readonly askBeforeRemoving = input(false);
   public readonly emptyLabel = input('No files attached yet.');
 
   public readonly rules = SUBMISSION_FILE_RULES;
@@ -73,6 +78,8 @@ export class SubmissionFilesComponent implements OnInit {
   public readonly uploading = signal<{ name: string; percent: number } | null>(null);
   public readonly problem = signal<string | null>(null);
   public readonly busy = signal<string | null>(null);
+  /** The file whose removal is being asked about. */
+  public readonly asking = signal<string | null>(null);
 
   private readonly picker = viewChild(FileComponent);
 
@@ -152,7 +159,17 @@ export class SubmissionFilesComponent implements OnInit {
       });
   }
 
+  /** Removes the file at once, or, asking first, asks on the page; the browser's confirm() is not used (#3105). */
+  public askToRemove(file: SubmissionFileDto): void {
+    if (this.askBeforeRemoving()) {
+      this.asking.set(file.guid);
+    } else {
+      this.remove(file);
+    }
+  }
+
   public remove(file: SubmissionFileDto): void {
+    this.asking.set(null);
     this.busy.set(file.guid);
 
     this.from()

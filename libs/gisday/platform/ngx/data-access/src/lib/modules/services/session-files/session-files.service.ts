@@ -41,6 +41,11 @@ export class SessionFilesService {
     return this.http.get<Array<SubmissionFileDto>>(`${this.resource}/event/${eventGuid}`);
   }
 
+  /** Removes any speaker's file from a session, for its admin page (#3105). */
+  public removeFromEvent(eventGuid: string, fileGuid: string) {
+    return this.http.delete<void>(`${this.resource}/event/${eventGuid}/${fileGuid}`);
+  }
+
   /** One file's contents, to save under its own name. */
   public download(eventGuid: string, fileGuid: string) {
     return this.http.get(`${this.resource}/event/${eventGuid}/${fileGuid}`, { responseType: 'blob' });

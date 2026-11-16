@@ -122,8 +122,8 @@
     </div>
 
     <div class="form-section-body">
-      <p class="form-input-description">Uploaded by the session's speakers from their profile edit links, up to three files each, labelled with who uploaded them. Only admins, and the speaker who uploaded a file, see them.</p>
-      <tamu-gisc-submission-files [source]="slides" emptyLabel="No slides uploaded yet."></tamu-gisc-submission-files>
+      <p class="form-input-description">Uploaded by the session's speakers from their profile edit links, up to three files each, labelled with who uploaded them. Only admins, and the speaker who uploaded a file, see them. Admins can remove any of them, one whose speaker is no longer listed included.</p>
+      <tamu-gisc-submission-files [source]="slides" [askBeforeRemoving]="true" emptyLabel="No slides uploaded yet."></tamu-gisc-submission-files>
     </div>
   </div>
   }
