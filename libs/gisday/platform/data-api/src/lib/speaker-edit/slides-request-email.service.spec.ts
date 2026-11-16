@@ -28,7 +28,9 @@ describe('SlidesRequestEmailService', () => {
     startTime: '13:00:00 GMT-0600 (Central Standard Time)',
     endTime: '14:15:00 GMT-0600 (Central Standard Time)',
     location: { building: 'MSC', room: '2300' },
-    speakers: [avery, blair, noAddress]
+    speakers: [avery, blair, noAddress],
+    // The season's days, for the email's design on Texas A&M's site (#3126).
+    season: { days: ['16', '17', '18', '19', '20'].map((d) => ({ date: `2026-11-${d}T06:00:00.000Z` })) }
   };
 
   let sent: Array<{ to: string; subject: string; text: string; html: string; from: string; replyTo?: string }>;
@@ -75,8 +77,11 @@ describe('SlidesRequestEmailService', () => {
     expect(group.kind).toBe(SLIDES_REQUEST_EMAIL_KIND);
     expect(group.count).toBe(2);
     expect(group.subject).toContain('Made-up hybrid session');
-    expect(group.template).toContain('Thursday, November 19, 2026, 1:00 to 2:15 PM Central');
-    expect(group.template).toContain('MSC 2300');
+    // Texas A&M's site: when and where are in the design's details box, said once, not in the text too (#3126).
+    expect(group.template).not.toContain('Thursday, November 19, 2026, 1:00 to 2:15 PM Central');
+    expect(group.design?.session).toEqual(
+      expect.objectContaining({ when: 'Thursday, November 19, 2026, 1:00 to 2:15 PM Central', where: 'MSC 2300, and online' })
+    );
     expect(group.template).toContain(SESSION_FILES_RULE);
     expect(group.example).toEqual(
       expect.objectContaining({
@@ -114,6 +119,32 @@ describe('SlidesRequestEmailService', () => {
     expect(toAvery.subject).toBe('Your slides for Texas A&M GIS Day: Made-up hybrid session');
     expect(toAvery.html).toContain('<strong>Made-up hybrid session</strong>');
     expect(toAvery.text).not.toMatch(/\{[a-z ]+\}/);
+  });
+
+  /**
+   * #3126: on gisday.tamu.edu it wears the Texas A&M GIS Day design, as the session details email does (#3114), with the
+   * season's dates and the session in its details box; elsewhere it stays plain, with when and where in its text.
+   */
+  it("sends Texas A&M's speakers the designed email, each with their own link", async () => {
+    await service.send('e-1', 'gisday.tamu.edu');
+    const mail = sent.find((m) => m.to === 'avery@example.com');
+
+    expect(mail.html).toContain('GIS DAY(S)');
+    expect(mail.html).toContain('November 16–20, 2026');
+    expect(mail.html).toContain('<b>Where:</b> MSC 2300');
+    expect(mail.html).toContain('LINK-OF-sp-av');
+    expect(mail.html).not.toContain('LINK-OF-sp-bl');
+  });
+
+  it('keeps a site without the design plain, with when and where in its text', async () => {
+    const [group] = (await service.preview('e-1', 'gisday.ucgis.org')).groups;
+
+    expect(group.template).toContain('**When:** Thursday, November 19, 2026, 1:00 to 2:15 PM Central');
+    expect(group.template).toContain('**Where:** MSC 2300');
+
+    await service.send('e-1', 'gisday.ucgis.org');
+
+    expect(sent.find((m) => m.to === 'avery@example.com').html).not.toContain('GIS DAY(S)');
   });
 
   it('sends it as edited', async () => {
