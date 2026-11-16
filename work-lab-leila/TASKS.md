@@ -8825,3 +8825,20 @@ gisday.tamu.edu; and **after** as txgisday.org, to show it unchanged, `after-sli
 slide toggle as gisday.tamu.edu, after, `after-toggle-tamu.png` (a submission's classification is one). Say whether
 anything else on the pages you open is still blue. To `docs/screenshots/3143-maroon-links/`, plus
 `docs/releases/unreleased/3143-maroon-links.md`, on the branch. Report "images pushed: <sha>".
+
+## Batch 114 (gisday: #3135, the dashboard table recomputes on a resize, with a spinner; Low; 16 November 2026, from `work (gisday)`) - **after 113, before 107**
+
+[#3135](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3135), from your reports 104 and 105:
+loaded at 1280 px and resized to 1024 px in place, Admin, Dashboards' main table is cut at its box with no rail. The
+maintainer wants it to recompute its columns and #3029's rail on a resize, **with a loading spinner of some kind while it
+does**. A code batch: branch `fix/3135-dashboard-resize` from the latest `development`.
+
+- **Find the cause first, in the browser, and say what it was**: whether ngx-datatable's own recalculation runs on the
+  resize (`DatatableComponent.recalculate()`, reachable as `table` in `dashboard-table.component.ts`), and whether
+  `DashboardScrollComponent`'s `ResizeObserver` (`dashboard-scroll.component.ts`) sees the change and calls `measure()`.
+- **Reuse** for the spinner: look in `libs/ui-kits/ngx/**` for a shared loading indicator and say where you looked; no
+  purpose-built CSS.
+- A spec red first (a resize that changes the box's width ends with the rail measured again and the spinner gone), then
+  green; before/after screenshots of the resize case; a release note; the bug-fix check with each project you edit and
+  `gisday-angular`. Report "branch ready". If the cause turns out not to be fixable cheaply, report what you found with
+  options and a recommendation, and stop.
