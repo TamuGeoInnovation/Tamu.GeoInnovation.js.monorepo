@@ -8698,3 +8698,22 @@ fetched and rebased, pushed (no force). Report "images pushed: <sha>".
 **Report 105, question 1 (the maintainer, 16 November 2026):** 1(a), with a loading spinner while the table recomputes.
 Filed as [#3135](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3135) (Bug, Low), for
 after GIS Day; not queued. Question 2 (the consent screen) is still with him: keep to one page per sign-in.
+
+## Batch 107 (gisday: #3136, the local stack signs in from `gisday.local.test`, so the dev tenant can skip consent; 16 November 2026, from `work (gisday)`) - **after 106**
+
+**Report 105, question 2 (the maintainer, 16 November 2026):** 1(a). Auth0 never skips consent for `localhost`, so:
+[#3136](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3136) has the whole of it. Branch
+`chore/3136-local-consent` from the latest `development`:
+
+- `scripts/gisday-auth0-dev.ps1`: `gisday.dev.api` gets `allow_skipping_userconsent: true`; "GIS Day (local
+  development)" accepts `http://gisday.local.test:4201` beside `http://localhost:4201` (callbacks, logout URLs, web
+  origins). **Do not run it**: it needs the tenant's machine-to-machine secret, and the maintainer runs it.
+- `scripts/gisday-local.sh` and the dev server answer at `http://gisday.local.test:4201` (the Angular dev server's
+  allowed hosts; the site proxy), `localhost:4201` still working.
+- `docs/gisday-local.md`, Signing in: the hosts-file line (`127.0.0.1 gisday.local.test`), which address to open, and why
+  (consent is never skipped on localhost).
+- A test where one fits (the script's settings, if it has a test file; otherwise say so).
+
+**Do not edit this machine's hosts file**: the maintainer adds the line. Until he has run the script and added it, keep to
+one page per sign-in and never accept a consent screen. The check for the projects you touch. Report "branch ready", and
+say what the maintainer must run, in order.
