@@ -8406,3 +8406,14 @@ sessions, an upload done, the admin's view); a release note that names the migra
 
 **Decided (the director):** 1(a), keep the in-memory guard for GIS Day; (b) is filed as #3098 (Low, after GIS Day). 2(a),
 leave the Speakers page's single action. I am opening #3092's PR. Go on with 87.
+
+## Batch 88 (gisday: #3100, "Send as" in the email composer; 15 November 2026, from `work (gisday)`) (High) - **after 87**
+
+[#3100](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3100), as its "Decided" says. Branch `feat/3100-send-as` from the latest `development` (with #3092's PR 3099 if
+merged; say which). A "Send as" box in `ReviewEmailModalComponent`, shown in the preview; the API takes the choice on
+every send route that uses the composer and **checks it**: the admin's own address from their token, the site's
+`MAILROOM_FROM`, or one listed in a new `MAILROOM_SENDERS` (comma-separated, tamu.edu only); anything else is refused
+with a reason. Replies go to the chosen sender. Tests red first, including a refused address and a non-tamu.edu one; the
+full check; screenshots (the box, the preview showing the sender); a release note; the new setting documented in
+kubernetes-config's `6. GIS Day/README.md` table on its own branch, **no cluster change**. **Send no real email**: the
+real-relay test is the maintainer's, after deploy. Report "branch ready".
