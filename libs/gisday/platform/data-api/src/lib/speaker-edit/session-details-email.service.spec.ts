@@ -186,3 +186,150 @@ describe('SessionDetailsEmailService', () => {
     expect(sent).toEqual([]);
   });
 });
+
+/** #3104: which of the session's speakers get it, and one email to them all together or a copy each. */
+describe('SessionDetailsEmailService, choosing speakers', () => {
+  const sharmin = { guid: 'sp-sh', firstName: 'Sharmin', lastName: 'Example', email: 'sharmin@example.com' };
+  const colby = { guid: 'sp-co', firstName: 'Colby', lastName: 'Sample', email: ' colby@example.com ' };
+  const cara = { guid: 'sp-ca', firstName: 'Cara', lastName: 'Test', email: 'cara@example.com' };
+  const noAddress = { guid: 'sp-nd', firstName: 'Dee', lastName: 'Fox', email: '' };
+  const session = {
+    guid: 'e-2',
+    name: 'Made-up hybrid session',
+    mode: 'hybrid',
+    day: null,
+    location: null,
+    broadcast: { publicUrl: 'https://zoom.example/j/9' },
+    speakers: [sharmin, colby, cara, noAddress]
+  };
+  const together = 'Howdy {first name},\n\nSee you at {site}.';
+
+  let sent: Array<{ to: string; subject: string; text: string }>;
+  let service: SessionDetailsEmailService;
+
+  beforeEach(() => {
+    sent = [];
+    service = new SessionDetailsEmailService(
+      { findOne: jest.fn(async ({ where }) => (where.guid === session.guid ? session : null)) } as never,
+      { sendMessage: jest.fn(async (m) => sent.push(m)) } as never
+    );
+  });
+
+  it('lists each speaker it can reach, with their address, for the tick boxes', async () => {
+    const preview = await service.preview('e-2', 'gisday.tamu.edu');
+
+    expect(preview.recipients).toEqual([
+      { guid: 'sp-sh', name: 'Sharmin Example', firstName: 'Sharmin', email: 'sharmin@example.com' },
+      { guid: 'sp-co', name: 'Colby Sample', firstName: 'Colby', email: 'colby@example.com' },
+      { guid: 'sp-ca', name: 'Cara Test', firstName: 'Cara', email: 'cara@example.com' }
+    ]);
+    // The session details email may go together: nothing in it is one speaker's own.
+    expect(preview.copyEachReason).toBeUndefined();
+    expect(preview.noAddress).toEqual(['Dee Fox']);
+  });
+
+  it('sends one email with every chosen speaker on To, greeting them all by first name', async () => {
+    const result = await service.send(
+      'e-2',
+      'gisday.tamu.edu',
+      { subject: 'Your {site} session', template: together },
+      undefined,
+      { speakers: ['sp-sh', 'sp-co'], together: true }
+    );
+
+    expect(sent).toHaveLength(1);
+    expect(sent[0].to).toBe('sharmin@example.com, colby@example.com');
+    expect(sent[0].text).toBe('Howdy Sharmin and Colby,\n\nSee you at Texas A&M GIS Day.');
+    expect(result).toEqual({ sent: ['Sharmin Example and Colby Sample'], skipped: [] });
+  });
+
+  it('names three or more as "A, B and C"', async () => {
+    await service.send('e-2', 'gisday.tamu.edu', { subject: 'S', template: together }, undefined, {
+      speakers: ['sp-sh', 'sp-co', 'sp-ca'],
+      together: true
+    });
+
+    expect(sent).toHaveLength(1);
+    expect(sent[0].to).toBe('sharmin@example.com, colby@example.com, cara@example.com');
+    expect(sent[0].text).toContain('Howdy Sharmin, Colby and Cara,');
+  });
+
+  it('sends a copy each to the chosen speakers only, and nothing to those not chosen', async () => {
+    const result = await service.send('e-2', 'gisday.tamu.edu', { subject: 'S', template: together }, undefined, {
+      speakers: ['sp-sh', 'sp-ca']
+    });
+
+    expect(sent.map((m) => m.to).sort()).toEqual(['cara@example.com', 'sharmin@example.com']);
+    expect(sent.find((m) => m.to === 'cara@example.com').text).toContain('Howdy Cara,');
+    expect(result.sent.sort()).toEqual(['Cara Test', 'Sharmin Example']);
+    // Only those chosen: the one with no address was not, so is not reported either.
+    expect(result.skipped).toEqual([]);
+  });
+
+  it('sends one chosen speaker their own copy, together or not', async () => {
+    await service.send('e-2', 'gisday.tamu.edu', { subject: 'S', template: together }, undefined, {
+      speakers: ['sp-co'],
+      together: true
+    });
+
+    expect(sent).toHaveLength(1);
+    expect(sent[0].to).toBe('colby@example.com');
+    expect(sent[0].text).toContain('Howdy Colby,');
+  });
+
+  it("ignores a chosen id that is not one of the session's speakers, and refuses a choice of no one", async () => {
+    await service.send('e-2', 'gisday.tamu.edu', undefined, undefined, {
+      speakers: ['sp-sh', 'someone-else'],
+      together: true
+    });
+
+    expect(sent.map((m) => m.to)).toEqual(['sharmin@example.com']);
+
+    await expect(service.send('e-2', 'gisday.tamu.edu', undefined, undefined, { speakers: [] })).rejects.toThrow(
+      BadRequestException
+    );
+    await expect(
+      service.send('e-2', 'gisday.tamu.edu', undefined, undefined, { speakers: 'sp-sh' as never })
+    ).rejects.toThrow(BadRequestException);
+    expect(sent).toHaveLength(1);
+  });
+
+  it(`counts a together send once, for its whole group, within ${REPEAT_SEND_MINUTES} minutes`, async () => {
+    const choice = { speakers: ['sp-sh', 'sp-co', 'sp-ca'], together: true };
+    const [first, again] = await Promise.all([
+      service.send('e-2', 'gisday.tamu.edu', undefined, undefined, choice),
+      service.send('e-2', 'gisday.tamu.edu', undefined, undefined, choice)
+    ]);
+
+    // One email, not three, and the repeat skipped as one, naming the group, rather than three times.
+    expect(sent).toHaveLength(1);
+    expect([...first.sent, ...again.sent]).toEqual(['Sharmin Example, Colby Sample and Cara Test']);
+    expect([...first.skipped, ...again.skipped]).toEqual([
+      {
+        name: 'Sharmin Example, Colby Sample and Cara Test',
+        reason: `already emailed this session's details in the last ${REPEAT_SEND_MINUTES} minutes`
+      }
+    ]);
+
+    // Each of the group was emailed, so a copy each to one of them is a repeat too.
+    const copy = await service.send('e-2', 'gisday.tamu.edu', undefined, undefined, { speakers: ['sp-co'] });
+
+    expect(copy.sent).toEqual([]);
+    expect(sent).toHaveLength(1);
+  });
+
+  it('lets a together email that failed be sent again at once', async () => {
+    const contact = { sendMessage: jest.fn().mockRejectedValueOnce(new Error('mailroom down')).mockResolvedValue({}) };
+    const failing = new SessionDetailsEmailService({ findOne: jest.fn(async () => session) } as never, contact as never);
+    const choice = { speakers: ['sp-sh', 'sp-co'], together: true };
+
+    expect(await failing.send('e-2', 'gisday.tamu.edu', undefined, undefined, choice)).toEqual({
+      sent: [],
+      skipped: [{ name: 'Sharmin Example and Colby Sample', reason: 'the email could not be sent' }]
+    });
+    expect((await failing.send('e-2', 'gisday.tamu.edu', undefined, undefined, choice)).sent).toEqual([
+      'Sharmin Example and Colby Sample'
+    ]);
+    expect(contact.sendMessage).toHaveBeenCalledTimes(2);
+  });
+});

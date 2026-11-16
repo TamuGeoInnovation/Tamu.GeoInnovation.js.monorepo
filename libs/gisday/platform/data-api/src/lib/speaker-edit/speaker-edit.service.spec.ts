@@ -185,6 +185,16 @@ describe('SpeakerEditService', () => {
       expect(sent).toEqual([]);
     });
 
+    // #3104: the window lists them to tick, and offers only a copy each, saying why.
+    it('lists the speakers it can reach to tick, and offers only a copy each, as each has their own link', async () => {
+      const preview = await service.previewLinks(['speaker-ana', 'speaker-ben'], 'gisday.tamu.edu');
+
+      expect(preview.recipients).toEqual([
+        { guid: 'speaker-ana', name: 'Ana Ruiz', firstName: 'Ana', email: 'ana@example.edu' }
+      ]);
+      expect(preview.copyEachReason).toMatch(/own link/);
+    });
+
     it("sends the subject and text as edited, with each speaker's own link filled in", async () => {
       await service.sendLinks(['speaker-ana'], 'gisday.tamu.edu', {
         subject: 'Your profile, {first name}',
@@ -591,6 +601,22 @@ describe('SpeakerEditService.sendLinksForSubmissions (#2958)', () => {
   it('refuses an empty list', async () => {
     await expect(service.sendLinksForSubmissions([])).rejects.toThrow(BadRequestException);
     expect(sent).toEqual([]);
+  });
+
+  // #3104: only the speakers ticked in the window, each their own copy; one not ticked gets nothing.
+  it('sends only to the speakers ticked, when the window names them', async () => {
+    const preview = await service.previewLinksForSubmissions([S1, S2], 'gisday.tamu.edu');
+
+    expect(preview.recipients.map((r) => r.guid)).toEqual(['sp-ana', 'sp-cy']);
+
+    const result = await service.sendLinksForSubmissions([S1, S2], 'gisday.tamu.edu', undefined, undefined, ['sp-cy']);
+
+    expect(result.sent).toEqual(['Cy Diaz']);
+    expect(sent.map((m) => m.to)).toEqual(['cy@tamu.edu']);
+    await expect(service.sendLinksForSubmissions([S1, S2], 'gisday.tamu.edu', undefined, undefined, [])).rejects.toThrow(
+      BadRequestException
+    );
+    expect(sent).toHaveLength(1);
   });
 
   it('previews the email for the matched speakers, each once, and sends it as edited (#3023)', async () => {

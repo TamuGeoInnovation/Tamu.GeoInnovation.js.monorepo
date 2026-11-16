@@ -11,3 +11,4 @@ export * from './lib/participant-emails';
 export * from './lib/email-markdown';
 export * from './lib/upload-images';
 export * from './lib/email-sender';
+export * from './lib/email-recipients';
