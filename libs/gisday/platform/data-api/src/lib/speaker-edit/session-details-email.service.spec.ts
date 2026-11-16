@@ -65,7 +65,9 @@ describe('SessionDetailsEmailService', () => {
     expect(group.kind).toBe(SESSION_DETAILS_EMAIL_KIND);
     expect(group.count).toBe(2);
     expect(group.subject).toContain('WORKSHOP: Mapping floods');
-    expect(group.template).toContain('Thursday, November 19, 2026, 1:00 to 2:15 PM Central');
+    // Texas A&M's site: when and where are in the design's details box, said once, not in the text too (#3114).
+    expect(group.template).not.toContain('Thursday, November 19, 2026, 1:00 to 2:15 PM Central');
+    expect(group.design?.session?.when).toBe('Thursday, November 19, 2026, 1:00 to 2:15 PM Central');
     expect(group.template).toContain('https://zoom.example/j/123');
     expect(group.template).toContain('https://gisday.tamu.edu/sessions/details/e-1');
     expect(group.example).toEqual(

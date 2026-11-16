@@ -7,6 +7,7 @@ import {
   SESSION_DETAILS_EMAIL_KIND,
   fillProfileEmail,
   gisdaySite,
+  hasEmailDesign,
   joinNames,
   sessionDetailsEmailProblem,
   sessionDetailsEmailSubject,
@@ -98,7 +99,7 @@ export class SessionDetailsEmailService {
           label: 'Session details',
           count: reachable.length,
           subject: sessionDetailsEmailSubject(session),
-          template: sessionDetailsEmailTemplate(session, site.address),
+          template: sessionDetailsEmailTemplate(session, site.address, hasEmailDesign(site)),
           // What the window needs to show the whole email as it will arrive (#3114).
           design: sessionEmailDesign(site.name, seasonDaysOf(session.season), sessionEmailDetails(session)),
           example: {
@@ -140,7 +141,7 @@ export class SessionDetailsEmailService {
     const site = gisdaySite(process.env.GISDAY_SITE, host);
     const approved = email ?? {
       subject: sessionDetailsEmailSubject(session),
-      template: sessionDetailsEmailTemplate(session, site.address)
+      template: sessionDetailsEmailTemplate(session, site.address, hasEmailDesign(site))
     };
     const { reachable, noAddress } = speakersOf(session);
     const from = sender ?? siteSender(site.name);
