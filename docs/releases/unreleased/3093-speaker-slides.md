@@ -22,7 +22,7 @@ no account and no sign-in, as competition finalists send their files.
 
 **Before deploying:** the database needs the migration `AddSessionFiles1794786922753` (a nullable `assets.eventGuid`
 with a foreign key to `events`), run on production by `6. GIS Day/migrations/migrate-prod-3093.ps1` in
-kubernetes-config, which needs `AddBroadcastPlace1794772810966` (#3048) first.
+kubernetes-config, which needs `AddBroadcastPlace1794772810966` ([#3048](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3048)) first.
 
 ([#3093](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3093))
 
