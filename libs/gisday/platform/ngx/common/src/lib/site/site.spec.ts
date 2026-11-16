@@ -1,3 +1,6 @@
+import { existsSync, readFileSync } from 'fs';
+import { join } from 'path';
+
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router, UrlTree } from '@angular/router';
 
@@ -195,6 +198,26 @@ describe('siteHead', () => {
     expect(result).toContain('<!-- /site head -->');
     expect(result).toContain('<base href="/" />');
     expect(withSiteHead(result, GISDAY_SITES.txgisday)).toBe(withSiteHead(page, GISDAY_SITES.txgisday));
+  });
+
+  it("names each site's tab icon, so the page has it before the app runs (#2084)", () => {
+    expect(siteHead(GISDAY_SITES.ucgis)).toContain('<link rel="icon" href="assets/images/sites/ucgis/favicon.png" />');
+    expect(siteHead(GISDAY_SITES.txgisday)).toContain('<link rel="icon" href="favicon.ico" />');
+  });
+
+  /**
+   * #2084: gisday.tamu.edu's tab icon was the box logo's SVG, whose wide margin made it smaller than AggieMap's. It is
+   * now AggieMap's own icon, from the one copy in libs/assets that both apps serve, not a second copy.
+   */
+  it("gives gisday.tamu.edu AggieMap's own tab icon, from the one shared copy", () => {
+    const root = join(__dirname, '../../../../../../../..');
+    const icon = GISDAY_SITES.tamu.favicon;
+
+    expect(siteHead(GISDAY_SITES.tamu)).toContain(`<link rel="icon" href="${icon}" />`);
+    expect(icon).toBe('assets/images/logo/TAM-favicon.ico');
+    expect(existsSync(join(root, 'libs', icon))).toBe(true);
+    expect(readFileSync(join(root, 'apps/aggiemap-angular/src/index.html'), 'utf8')).toContain(`href="${icon}"`);
+    expect(existsSync(join(root, 'apps/aggiemap-angular/src/favicon.ico'))).toBe(false);
   });
 
   it('refuses a page without the markers rather than leaving it as it was', () => {
