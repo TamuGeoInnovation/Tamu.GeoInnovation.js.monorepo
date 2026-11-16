@@ -8726,3 +8726,8 @@ say what the maintainer must run, in order.
 > the one the local site uses; the script must never touch that tenant, and should print the tenant and client it is
 > changing before it changes anything. After applying, have it read the application and the API back and say whether
 > each setting is as intended.
+
+> **Batch 107, the tenant is done (about 6:43 AM Central, 16 November 2026, from the director):** the maintainer set the Auth0
+> half by hand in `txgisday-dev`, exactly as the correction above lists. Your script change must set the same values, so
+> a rerun keeps them; **do not run it.** He is adding the hosts line on this machine in person. Do not edit the hosts
+> file yourself, and do not try a sign-in at `gisday.local.test` until your branch makes the stack answer there.
