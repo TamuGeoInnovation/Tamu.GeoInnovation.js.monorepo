@@ -8882,3 +8882,12 @@ the hamburger menu open, Account tapped - **before** (`development`) `before-acc
 `after-account-menu.png`, and after, Admin tapped, the admin page it opens, `after-admin-page.png`. To
 `docs/screenshots/3162-phone-menu-admin/`, plus `docs/releases/unreleased/3162-phone-menu-admin.md` with its *What to test
 on dev* row, on the branch. Report "images pushed: <sha>".
+
+## Batch 116 (gisday: #3125, a dashboard's people table keeps its headings in view; Low; 16 November 2026, from `work (gisday)`) - **now**
+
+[#3125](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3125), from your report 104: an opened
+row's people box, now capped at the window's height (#3120), scrolls up and down inside itself; its column headings should
+stay in view as it does. A code batch: branch `fix/3125-people-headings` from the latest `development` (it has #3135's
+fix, PR 3159). Reuse first: say where you looked (the dashboard-scroll component and its stylesheet, `libs/sass`).
+A spec red first where one can show it, else say why not; before/after screenshots (the 705-person VGI feature type,
+scrolled down); a release note; the bug-fix check. Report "branch ready".
