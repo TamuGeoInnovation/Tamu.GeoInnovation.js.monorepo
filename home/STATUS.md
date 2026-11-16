@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle and listening since 7:15 PM Central, 15 November. **#3098 parked** (committed locally, not pushed; kubernetes-config script committed locally, never run).
+- **#3098 (session details sends shared by every API copy)**: resumed 7:20 PM Central, 15 November, from the parked commit on `fix/3098-shared-repeat-guard`; bringing it up to date with development. For after GIS Day.
 
 ## Finished
 - **#2574 brought up to date (batch 25, redone)** (report `home/reports/2026-11-15-25-update.md`): branch ready, `fix/2574-gisday-admin-users` on the fork at `9b4b91ec9`, no PR. Development merged; two new callers fixed; full check exit 0 (11 projects). One question.
