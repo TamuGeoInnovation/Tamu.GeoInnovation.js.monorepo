@@ -20,6 +20,8 @@ import { SpeakerEditController } from './speaker-edit.controller';
 import { SpeakerEditService } from './speaker-edit.service';
 import { SessionDetailsEmailController } from './session-details-email.controller';
 import { SessionDetailsEmailService } from './session-details-email.service';
+import { SlidesRequestEmailController } from './slides-request-email.controller';
+import { SlidesRequestEmailService } from './slides-request-email.service';
 import { SessionFilesController } from './session-files.controller';
 import { SessionFilesService } from './session-files.service';
 import { SpeakerEditLinkGuard } from './speaker-edit-link.guard';
@@ -41,11 +43,12 @@ import { AssetsService } from '../assets/assets.service';
     SpeakerModule
   ],
   // The session details email (#3092) sits beside the profile email: both email speakers, behind the same permission.
-  // A session's slides (#3093) are reached through the same edit link.
-  controllers: [SpeakerEditController, SessionDetailsEmailController, SessionFilesController],
+  // A session's slides (#3093) are reached through the same edit link, which the Ask for slides email (#3113) sends.
+  controllers: [SpeakerEditController, SessionDetailsEmailController, SlidesRequestEmailController, SessionFilesController],
   providers: [
     SpeakerEditService,
     SessionDetailsEmailService,
+    SlidesRequestEmailService,
     ContactService,
     EmailSenderService,
     SeasonService,

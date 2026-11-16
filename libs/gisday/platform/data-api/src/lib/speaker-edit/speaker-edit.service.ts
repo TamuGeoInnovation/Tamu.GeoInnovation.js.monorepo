@@ -536,11 +536,15 @@ export class SpeakerEditService {
     return link;
   }
 
-  private async emailLink(speaker: Speaker, host?: string, email?: ProfileEmail, sender?: EmailSender) {
+  /**
+   * A new link of the speaker's own to their presenter page, on the site `host` names, for an email to carry: the one
+   * kind of link a speaker has (#2936), whether the profile email or the Ask for slides email sends it (#3113). Only its
+   * hash is stored; the link itself is in the email alone.
+   */
+  public async newLink(speaker: Pick<Speaker, 'guid' | 'email'>, host?: string): Promise<{ url: string; expires: Date }> {
     const token = randomBytes(32).toString('base64url');
     const expires = linkExpiry();
     const site = gisdaySite(process.env.GISDAY_SITE, host);
-    const url = `${site.address}/presenters/edit/${token}`;
 
     await this.links.save(
       this.links.create({
@@ -550,6 +554,13 @@ export class SpeakerEditService {
         sentTo: speaker.email
       })
     );
+
+    return { url: `${site.address}/presenters/edit/${token}`, expires };
+  }
+
+  private async emailLink(speaker: Speaker, host?: string, email?: ProfileEmail, sender?: EmailSender) {
+    const site = gisdaySite(process.env.GISDAY_SITE, host);
+    const { url, expires } = await this.newLink(speaker, host);
 
     // The text the admin approved (#3023), or the email as it has always been; either way this speaker's own link.
     const { subject, text } = fillProfileEmail(
@@ -579,8 +590,8 @@ export class SpeakerEditService {
   }
 }
 
-/** When a link made now stops working. */
-function linkExpiry(): Date {
+/** When a link made now stops working: what a preview says of the link each speaker will get (#3113). */
+export function linkExpiry(): Date {
   return new Date(Date.now() + SPEAKER_EDIT_LINK_DAYS * 24 * 60 * 60 * 1000);
 }
 

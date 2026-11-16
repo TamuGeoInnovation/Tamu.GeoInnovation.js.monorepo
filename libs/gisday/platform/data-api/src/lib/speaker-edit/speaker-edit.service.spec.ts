@@ -121,6 +121,20 @@ describe('SpeakerEditService', () => {
     jest.clearAllMocks();
   });
 
+  // #3113: the Ask for slides email carries the same link as the profile email, made here, never a second kind.
+  it('makes a speaker a link of their own for another email, stored only by its hash, that opens their edit page', async () => {
+    const { url, expires } = await service.newLink(ana as never, 'gisday.tamu.edu');
+    const token = /\/presenters\/edit\/([A-Za-z0-9_-]{43})$/.exec(url)[1];
+
+    expect(url.startsWith('https://gisday.tamu.edu/presenters/edit/')).toBe(true);
+    expect(links).toHaveLength(1);
+    expect(links[0]).toEqual(expect.objectContaining({ speaker: { guid: 'speaker-ana' }, tokenHash: hashOf(token) }));
+    expect(JSON.stringify(links)).not.toContain(token);
+    expect(expires.getTime()).toBeGreaterThan(Date.now());
+    expect((await service.forLink(token)).firstName).toBe('Ana');
+    expect(sent).toEqual([]);
+  });
+
   it("emails each speaker their own link on the site's address, and skips one with no email", async () => {
     const result = await service.sendLinks(['speaker-ana', 'speaker-ben'], 'gisday.tamu.edu');
 

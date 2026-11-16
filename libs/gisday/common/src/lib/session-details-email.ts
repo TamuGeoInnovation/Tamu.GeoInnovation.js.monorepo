@@ -79,19 +79,38 @@ export function sessionDetailsEmailTemplate(session: SessionDetailsSession, addr
 }
 
 /**
+ * When a session is, as its speakers' emails say it: its day and time in Central, "Thursday, November 19, 2026, 1:00 to
+ * 2:15 PM Central", or "To be announced". The session details email (#3092) and the Ask for slides email (#3113) both.
+ */
+export function sessionWhen(session: SessionDetailsSession): string {
+  const day = sessionDay(session, 'long');
+  const hours = sessionHours(session);
+
+  return day && hours ? `${day}, ${hours} Central` : day || 'To be announced';
+}
+
+/** Where a session is, as its speakers' emails say it: its building and room, "and online" when broadcast, or online. */
+export function sessionWhere(session: SessionDetailsSession): string {
+  const room = sessionPlace(session);
+
+  return session.mode === 'virtual'
+    ? 'Online'
+    : room
+      ? isOnline(session)
+        ? `${room}, and online`
+        : room
+      : 'To be announced';
+}
+
+/**
  * The session as the email's text and its design's details box say it (#3114): its name, its day and time in Central,
  * its building and room or online, and its broadcast's link when it is online and has one.
  */
 export function sessionEmailDetails(session: SessionDetailsSession): EmailSessionDetails {
-  const day = sessionDay(session, 'long');
-  const hours = sessionHours(session);
-  const room = sessionPlace(session);
-
   return {
     name: (session.name ?? '').trim() || 'Your session',
-    when: day && hours ? `${day}, ${hours} Central` : day || 'To be announced',
-    where:
-      session.mode === 'virtual' ? 'Online' : room ? (isOnline(session) ? `${room}, and online` : room) : 'To be announced',
+    when: sessionWhen(session),
+    where: sessionWhere(session),
     online: isOnline(session) ? session.broadcast?.publicUrl?.trim() || null : null
   };
 }

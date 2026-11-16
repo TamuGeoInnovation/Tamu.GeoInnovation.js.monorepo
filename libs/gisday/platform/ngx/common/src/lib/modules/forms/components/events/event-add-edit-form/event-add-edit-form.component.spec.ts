@@ -212,7 +212,8 @@ describe('EventAddEditFormComponent, the Broadcast drop-down', () => {
 
 /**
  * #3092: the session's email actions are one "Email these speakers" menu, Profile email and Session details, rather than
- * buttons side by side. Session details opens the same window as the profile email, prefilled from the session.
+ * buttons side by side. Session details opens the same window as the profile email, prefilled from the session. #3113
+ * adds Ask for slides, in the same window.
  */
 describe('EventAddEditFormComponent, the Email these speakers menu', () => {
   const event = {
@@ -232,15 +233,24 @@ describe('EventAddEditFormComponent, the Email these speakers menu', () => {
       preview: jest.fn(() => of({ groups: [] })),
       send: jest.fn(() => of({ sent: [], skipped: [] })),
       previewSessionDetails: jest.fn(() => of({ groups: [] })),
-      sendSessionDetails: jest.fn(() => of({ sent: ['Ana Abe'], skipped: [] }))
+      sendSessionDetails: jest.fn(() => of({ sent: ['Ana Abe'], skipped: [] })),
+      previewSlidesRequest: jest.fn(() => of({ groups: [] })),
+      sendSlidesRequest: jest.fn(() => of({ sent: ['Bo Bo'], skipped: [] }))
+    };
+    // What the window gives back for each email, as the admin left it: the slides request with one speaker ticked, and
+    // together asked for, which it never offers (#3113).
+    const results: Record<string, object> = {
+      'Send profile email': { profile: 'Hi {edit link}', 'profile:subject': 'Profile' },
+      'Send slides request': {
+        'slides-request': 'Upload: {edit link}',
+        'slides-request:subject': 'Slides',
+        ':recipients': 'sp-2',
+        ':together': 'true'
+      }
     };
     const modals = {
       open: jest.fn((_component: unknown, options: { data: { verb: string } }) =>
-        of(
-          closesWith && options.data.verb === 'Send profile email'
-            ? { profile: 'Hi {edit link}', 'profile:subject': 'Profile' }
-            : closesWith
-        )
+        of(closesWith && results[options.data.verb] ? results[options.data.verb] : closesWith)
       )
     };
     const toasts = { toast: jest.fn() };
@@ -281,7 +291,7 @@ describe('EventAddEditFormComponent, the Email these speakers menu', () => {
     return { page, fixture, speakerEdits, modals, toasts, choose };
   }
 
-  it('shows one Email these speakers menu with Profile email and Session details, and no separate email buttons', () => {
+  it('shows one Email these speakers menu with Profile email, Session details and Ask for slides, and no separate email buttons', () => {
     const { page, fixture } = render();
     const toolbar = page.querySelector('.form-section-actions');
 
@@ -296,8 +306,29 @@ describe('EventAddEditFormComponent, the Email these speakers menu', () => {
 
     expect(Array.from(toolbar.querySelectorAll('[role="menuitem"]')).map((i) => i.textContent.trim())).toEqual([
       'Profile email',
-      'Session details'
+      'Session details',
+      'Ask for slides'
     ]);
+  });
+
+  it('asks for slides in the same window, editable, then sends it for this session to the speakers ticked, a copy each', () => {
+    const { speakerEdits, modals, toasts, choose } = render();
+
+    choose('Ask for slides');
+
+    expect(modals.open).toHaveBeenCalledWith(
+      ReviewEmailModalComponent,
+      expect.objectContaining({ data: expect.objectContaining({ verb: 'Send slides request', editableSubject: true }) })
+    );
+    expect(speakerEdits.previewSlidesRequest).toHaveBeenCalledWith('event');
+    expect(speakerEdits.sendSlidesRequest).toHaveBeenCalledWith('event', {
+      subject: 'Slides',
+      template: 'Upload: {edit link}',
+      speakers: ['sp-2']
+    });
+    expect(speakerEdits.sendSessionDetails).not.toHaveBeenCalled();
+    expect(speakerEdits.send).not.toHaveBeenCalled();
+    expect(toasts.toast).toHaveBeenCalledWith(expect.objectContaining({ title: 'Slides requested' }));
   });
 
   it('sends the profile email from the menu, as the button did', () => {

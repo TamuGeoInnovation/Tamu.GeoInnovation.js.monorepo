@@ -25,6 +25,7 @@ import { Event, Speaker } from '../entities/all.entity';
 import { ContactService } from '../contact/contact.service';
 import { EmailSender, siteSender } from '../contact/email-sender.service';
 import { EMAIL_LANES, inParallel } from '../_base/in-parallel';
+import { RecentSends } from '../_base/recent-sends';
 import {
   ProfileEmail,
   ProfileEmailPreview,
@@ -62,14 +63,12 @@ export interface SpeakerChoice {
  * The admin ticks which speakers get it, and sends one email to all of them together or a copy each (#3104). Together,
  * every one is on To and `{first name}` names them all; the repeat guard counts it once, for its whole group.
  *
- * The repeat guard is kept by this API process, as nothing else records these emails: a repeat that reaches the same
- * process is caught, one that reaches another pod is not. The profile email's guard reads its links table, which every
- * pod shares.
+ * The repeat guard is kept by this API process, as nothing else records these emails (`RecentSends`).
  */
 @Injectable()
 export class SessionDetailsEmailService {
-  /** When each speaker was last sent each session's details, by `<session>:<speaker>`, in milliseconds. */
-  private readonly lastSent = new Map<string, number>();
+  /** When each speaker was last sent each session's details, by `<session>:<speaker>`. */
+  private readonly lastSent = new RecentSends(REPEAT_SEND_MINUTES);
 
   constructor(
     @InjectRepository(Event) private readonly events: Repository<Event>,
@@ -167,19 +166,16 @@ export class SessionDetailsEmailService {
       // A together email is one email, so it is named, sent, skipped or failed once, for its whole group (#3104).
       const name = joinNames(group.map(fullName));
       const keys = group.map((speaker) => `${session.guid}:${speaker.guid}`);
-      const now = Date.now();
 
-      // Recorded before the email goes, with nothing awaited between the check and the record, so two sends racing in
-      // this process skip each other's speakers. A group is a repeat if any of it was sent these details just now.
-      if (keys.some((key) => now - (this.lastSent.get(key) ?? -Infinity) <= REPEAT_SEND_MINUTES * 60 * 1000)) {
+      // Recorded before the email goes, so two sends racing in this process skip each other's speakers. A group is a
+      // repeat if any of it was sent these details just now.
+      if (!this.lastSent.claim(keys)) {
         part.skipped.push({
           name,
           reason: `already emailed this session's details in the last ${REPEAT_SEND_MINUTES} minutes`
         });
         return part;
       }
-
-      keys.forEach((key) => this.lastSent.set(key, now));
 
       try {
         const values = sessionDetailsEmailValues(group[0], site);
@@ -204,7 +200,7 @@ export class SessionDetailsEmailService {
         part.sent.push(name);
       } catch (err) {
         // Not sent, so not a repeat: the admin may try again at once.
-        keys.forEach((key) => this.lastSent.delete(key));
+        this.lastSent.release(keys);
         Logger.error(
           `Could not email session ${session.guid}'s details to speaker(s) ${group.map((s) => s.guid).join(', ')}: ${
             err.message
@@ -219,44 +215,41 @@ export class SessionDetailsEmailService {
 
     result.sent.push(...parts.flatMap((p) => p.sent));
     result.skipped.push(...parts.flatMap((p) => p.skipped));
-    this.forgetOld();
+    this.lastSent.forgetOld();
 
     return result;
   }
 
   /** The session, with what its email reads: its day, room, broadcast and speakers. */
-  private async sessionOf(eventGuid: string): Promise<Event> {
-    if (typeof eventGuid !== 'string' || !eventGuid.trim()) {
-      throw new BadRequestException('No session was named.');
-    }
-
-    const session = await this.events.findOne({
-      where: { guid: eventGuid },
-      // The season's days for the email's design on Texas A&M's site (#3114).
-      relations: { day: true, location: true, broadcast: true, speakers: true, season: { days: true } }
-    });
-
-    if (!session) {
-      throw new NotFoundException('That session does not exist.');
-    }
-
-    return session;
-  }
-
-  /** Drops records older than the guard, so the map holds only the last few minutes' sends. */
-  private forgetOld() {
-    const since = Date.now() - REPEAT_SEND_MINUTES * 60 * 1000;
-
-    for (const [key, at] of this.lastSent) {
-      if (at < since) {
-        this.lastSent.delete(key);
-      }
-    }
+  private sessionOf(eventGuid: string): Promise<Event> {
+    return sessionForEmail(this.events, eventGuid);
   }
 }
 
+/**
+ * The session a speaker email is about, with what its emails read: its day, room, broadcast and speakers. The session
+ * details email (#3092) and the Ask for slides email (#3113) both.
+ */
+export async function sessionForEmail(events: Repository<Event>, eventGuid: string): Promise<Event> {
+  if (typeof eventGuid !== 'string' || !eventGuid.trim()) {
+    throw new BadRequestException('No session was named.');
+  }
+
+  const session = await events.findOne({
+    where: { guid: eventGuid },
+    // The season's days for the email's design on Texas A&M's site (#3114).
+    relations: { day: true, location: true, broadcast: true, speakers: true, season: { days: true } }
+  });
+
+  if (!session) {
+    throw new NotFoundException('That session does not exist.');
+  }
+
+  return session;
+}
+
 /** The session's speakers with an address to email, and those with none. */
-function speakersOf(session: Event): { reachable: Array<Speaker>; noAddress: Array<Speaker> } {
+export function speakersOf(session: Event): { reachable: Array<Speaker>; noAddress: Array<Speaker> } {
   const speakers = session.speakers ?? [];
 
   return {

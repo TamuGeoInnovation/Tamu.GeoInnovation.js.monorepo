@@ -32,6 +32,7 @@ import {
   SessionFilesService,
   sendEditLinksToast,
   sendSessionDetailsToast,
+  sendSlidesRequestToast,
   TagService,
   BroadcastService
 } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -55,7 +56,11 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 import { GISDAY_SITE } from '../../../../../site/site';
 import { injectBackToList } from '../../../admin-details-page';
-import { sendProfileEmail, sendSessionDetailsEmail } from '../../../../modals/review-email-modal/profile-email';
+import {
+  sendProfileEmail,
+  sendSessionDetailsEmail,
+  sendSlidesRequestEmail
+} from '../../../../modals/review-email-modal/profile-email';
 import { FilesSource, SubmissionFilesComponent } from '../../../../submission-files/submission-files.component';
 
 @Component({
@@ -110,7 +115,9 @@ export class EventAddEditFormComponent implements OnInit {
   /** What the Speakers section's Email these speakers menu offers (#3092). */
   public readonly speakerEmails: ReadonlyArray<ActionMenuItem> = [
     { id: 'profile', label: 'Profile email' },
-    { id: 'session-details', label: 'Session details' }
+    { id: 'session-details', label: 'Session details' },
+    // Each speaker's own link to upload their slides for this session (#3113).
+    { id: 'slides-request', label: 'Ask for slides' }
   ];
 
   public form: UntypedFormGroup;
@@ -369,6 +376,8 @@ export class EventAddEditFormComponent implements OnInit {
   public emailSpeakers(choice: string) {
     if (choice === 'session-details') {
       this.emailSessionDetails();
+    } else if (choice === 'slides-request') {
+      this.emailSlidesRequest();
     } else {
       this.emailSpeakersEditLinks();
     }
@@ -393,6 +402,27 @@ export class EventAddEditFormComponent implements OnInit {
         next: (result) => this.ns.toast(sendSessionDetailsToast(result)),
         error: () =>
           this.ns.toast({ id: 'session-details-email', title: 'Session details not sent', message: 'Please try again.' })
+      });
+  }
+
+  /**
+   * Asks the session's saved speakers for their slides (#3113): the session's name, day, time and room, what they may
+   * upload, and each speaker's own link to upload them, a copy each, read and edited first in the same window.
+   */
+  public emailSlidesRequest() {
+    this.entity$
+      .pipe(
+        take(1),
+        switchMap((event) =>
+          sendSlidesRequestEmail(this.modals, this.speakerEdits.previewSlidesRequest(event.guid), (email) =>
+            this.speakerEdits.sendSlidesRequest(event.guid, email)
+          )
+        )
+      )
+      .subscribe({
+        next: (result) => this.ns.toast(sendSlidesRequestToast(result)),
+        error: () =>
+          this.ns.toast({ id: 'slides-request-email', title: 'Slides request not sent', message: 'Please try again.' })
       });
   }
 
