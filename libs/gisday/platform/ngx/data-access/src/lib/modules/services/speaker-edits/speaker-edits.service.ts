@@ -51,7 +51,10 @@ export interface ProfileEmail {
   sender?: string;
   /** The speakers ticked in the window (#3104), by id; every one the page named when not given. */
   speakers?: Array<string>;
-  /** One email to all of them together rather than a copy each (#3104); only the session details email offers it. */
+  /**
+   * One email to all of them together rather than a copy each (#3104); only the session details email offers it, never the
+   * profile email or the Ask for slides email (#3113), each carrying its speaker's own link.
+   */
   together?: boolean;
 }
 
@@ -93,12 +96,36 @@ export function sendEditLinksToast(result: SendEditLinksResult): { id: string; t
  * why (no email address, sent in the last few minutes, or a mail failure).
  */
 export function sendSessionDetailsToast(result: SendEditLinksResult): { id: string; title: string; message: string } {
+  return sessionEmailToast(result, {
+    id: 'session-details-email',
+    sent: 'Session details sent',
+    notSent: 'Some session details emails were not sent'
+  });
+}
+
+/**
+ * The toast an admin sees after asking a session's speakers for their slides (#3113): who was asked, and who was not and
+ * why (no email address, asked in the last few minutes, or a mail failure).
+ */
+export function sendSlidesRequestToast(result: SendEditLinksResult): { id: string; title: string; message: string } {
+  return sessionEmailToast(result, {
+    id: 'slides-request-email',
+    sent: 'Slides requested',
+    notSent: 'Some slides requests were not sent'
+  });
+}
+
+/** A session email's toast, with its own id and titles: who got it, and who did not and why. */
+function sessionEmailToast(
+  result: SendEditLinksResult,
+  toast: { id: string; sent: string; notSent: string }
+): { id: string; title: string; message: string } {
   const sent = result.sent.length === 1 ? `Sent to ${result.sent[0]}.` : `Sent to ${result.sent.length} speakers.`;
   const skipped = result.skipped.map((s) => `${s.name}: ${s.reason}`).join('; ');
 
   return {
-    id: 'session-details-email',
-    title: skipped ? 'Some session details emails were not sent' : 'Session details sent',
+    id: toast.id,
+    title: skipped ? toast.notSent : toast.sent,
     message: [result.sent.length ? sent : 'None were sent.', skipped ? `Not sent - ${skipped}.` : '']
       .filter(Boolean)
       .join(' ')
@@ -159,6 +186,19 @@ export class SpeakerEditsService {
    */
   public sendSessionDetails(eventGuid: string, email?: ProfileEmail) {
     return this.http.post<SendEditLinksResult>(`${this.sessionEmails}/details`, { event: eventGuid, ...(email ?? {}) });
+  }
+
+  /** The Ask for slides email for the session's speakers, prefilled from the session, to read and edit first (#3113). */
+  public previewSlidesRequest(eventGuid: string) {
+    return this.http.post<ReviewEmailPreview>(`${this.sessionEmails}/slides/preview`, { event: eventGuid });
+  }
+
+  /**
+   * Asks the session's speakers for their slides, in the subject and text the admin approved (#3113): those ticked, a copy
+   * each with their own link.
+   */
+  public sendSlidesRequest(eventGuid: string, email?: ProfileEmail) {
+    return this.http.post<SendEditLinksResult>(`${this.sessionEmails}/slides`, { event: eventGuid, ...(email ?? {}) });
   }
 
   /** A speaker asking for their own link by email address. */

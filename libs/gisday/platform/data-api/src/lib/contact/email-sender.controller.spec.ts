@@ -9,6 +9,8 @@ import { SpeakerEditController } from '../speaker-edit/speaker-edit.controller';
 import { SpeakerEditService } from '../speaker-edit/speaker-edit.service';
 import { SessionDetailsEmailController } from '../speaker-edit/session-details-email.controller';
 import { SessionDetailsEmailService } from '../speaker-edit/session-details-email.service';
+import { SlidesRequestEmailController } from '../speaker-edit/slides-request-email.controller';
+import { SlidesRequestEmailService } from '../speaker-edit/slides-request-email.service';
 import { UserSubmissionController } from '../user-submission/user-submission.controller';
 import { UserSubmissionProvider } from '../user-submission/user-submission.provider';
 import { SubmissionFilesService } from '../user-submission/submission-files.service';
@@ -28,6 +30,7 @@ describe('Send as, on every route that uses the email composer', () => {
 
   const speakerEdits = { sendLinks: jest.fn(), sendLinksForSubmissions: jest.fn() };
   const sessionEmails = { send: jest.fn() };
+  const slidesRequests = { send: jest.fn() };
   const submissions = { reviewUserSubmissions: jest.fn(), remindUserSubmissions: jest.fn() };
 
   /** Each route the composer sends through, with a body it accepts, and the service call that does the sending. */
@@ -39,6 +42,8 @@ describe('Send as, on every route that uses the email composer', () => {
       sends: speakerEdits.sendLinksForSubmissions
     },
     { path: 'session-emails/details', body: { event: 'e-1' }, sends: sessionEmails.send },
+    // The Ask for slides email (#3113).
+    { path: 'session-emails/slides', body: { event: 'e-1' }, sends: slidesRequests.send },
     {
       path: 'user-submissions/review',
       body: { submissions: ['s-1'], acceptance: true },
@@ -70,10 +75,17 @@ describe('Send as, on every route that uses the email composer', () => {
     }
 
     const module = await Test.createTestingModule({
-      controllers: [EmailSenderController, SpeakerEditController, SessionDetailsEmailController, UserSubmissionController],
+      controllers: [
+        EmailSenderController,
+        SpeakerEditController,
+        SessionDetailsEmailController,
+        SlidesRequestEmailController,
+        UserSubmissionController
+      ],
       providers: [
         { provide: SpeakerEditService, useValue: speakerEdits },
         { provide: SessionDetailsEmailService, useValue: sessionEmails },
+        { provide: SlidesRequestEmailService, useValue: slidesRequests },
         { provide: UserSubmissionProvider, useValue: submissions },
         { provide: SubmissionFilesService, useValue: {} },
         ...EMAIL_SENDER_TEST_PROVIDERS

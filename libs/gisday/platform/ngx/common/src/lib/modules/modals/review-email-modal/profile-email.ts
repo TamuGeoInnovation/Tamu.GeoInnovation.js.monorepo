@@ -6,6 +6,8 @@ import {
   PROFILE_EMAIL_PLACEHOLDERS,
   SESSION_DETAILS_EMAIL_KIND,
   SESSION_DETAILS_EMAIL_PLACEHOLDERS,
+  SLIDES_REQUEST_EMAIL_KIND,
+  SLIDES_REQUEST_EMAIL_PLACEHOLDERS,
   withoutRecipients
 } from '@tamu-gisc/gisday/common';
 import { ProfileEmail, ReviewEmailPreview } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -97,6 +99,28 @@ export function sendSessionDetailsEmail<R>(
   return sendEditableEmail(
     modals,
     { verb: 'Send session details', kind: SESSION_DETAILS_EMAIL_KIND, placeholders: SESSION_DETAILS_EMAIL_PLACEHOLDERS },
+    preview,
+    send
+  );
+}
+
+/**
+ * Asks a session's speakers for their slides (#3113), prefilled from the session, in the same window: to the speakers
+ * ticked, always a copy each, as each carries that speaker's own link to upload them (decided 1A).
+ */
+export function sendSlidesRequestEmail<R>(
+  modals: ModalService,
+  preview: Observable<ReviewEmailPreview>,
+  send: (email: ProfileEmail) => Observable<R>
+): Observable<R> {
+  return sendEditableEmail(
+    modals,
+    {
+      verb: 'Send slides request',
+      kind: SLIDES_REQUEST_EMAIL_KIND,
+      placeholders: SLIDES_REQUEST_EMAIL_PLACEHOLDERS,
+      copyEachOnly: true
+    },
     preview,
     send
   );

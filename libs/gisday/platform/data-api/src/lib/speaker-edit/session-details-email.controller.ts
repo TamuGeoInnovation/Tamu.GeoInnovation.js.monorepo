@@ -44,7 +44,7 @@ export class SessionDetailsEmailController {
 }
 
 /** The edited email in a send's body, or undefined when the admin sent neither part: the email as prefilled. */
-function emailOf(body: Partial<SessionDetailsEmail> | undefined): SessionDetailsEmail | undefined {
+export function emailOf(body: Partial<SessionDetailsEmail> | undefined): SessionDetailsEmail | undefined {
   return body?.subject === undefined && body?.template === undefined
     ? undefined
     : { subject: body.subject, template: body.template };

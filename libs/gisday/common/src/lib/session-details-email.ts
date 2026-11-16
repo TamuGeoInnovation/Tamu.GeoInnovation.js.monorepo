@@ -56,12 +56,8 @@ export function sessionDetailsEmailSubject(session: SessionDetailsSession): stri
  */
 export function sessionDetailsEmailTemplate(session: SessionDetailsSession, address: string): string {
   const name = (session.name ?? '').trim() || 'your session';
-  const day = sessionDay(session, 'long');
-  const hours = sessionHours(session);
-  const when = day && hours ? `${day}, ${hours} Central` : day || 'To be announced';
-  const room = sessionPlace(session);
-  const where =
-    session.mode === 'virtual' ? 'Online' : room ? (isOnline(session) ? `${room}, and online` : room) : 'To be announced';
+  const when = sessionWhen(session);
+  const where = sessionWhere(session);
   const requirements = (session.requirements ?? '').trim();
 
   return [
@@ -78,6 +74,30 @@ export function sessionDetailsEmailTemplate(session: SessionDetailsSession, addr
   ]
     .filter(Boolean)
     .join('\n\n');
+}
+
+/**
+ * When a session is, as its speakers' emails say it: its day and time in Central, "Thursday, November 19, 2026, 1:00 to
+ * 2:15 PM Central", or "To be announced". The session details email (#3092) and the Ask for slides email (#3113) both.
+ */
+export function sessionWhen(session: SessionDetailsSession): string {
+  const day = sessionDay(session, 'long');
+  const hours = sessionHours(session);
+
+  return day && hours ? `${day}, ${hours} Central` : day || 'To be announced';
+}
+
+/** Where a session is, as its speakers' emails say it: its building and room, "and online" when broadcast, or online. */
+export function sessionWhere(session: SessionDetailsSession): string {
+  const room = sessionPlace(session);
+
+  return session.mode === 'virtual'
+    ? 'Online'
+    : room
+      ? isOnline(session)
+        ? `${room}, and online`
+        : room
+      : 'To be announced';
 }
 
 /** A hybrid or virtual session's broadcast, as its page's Online Broadcast panel shows it (#3055). */

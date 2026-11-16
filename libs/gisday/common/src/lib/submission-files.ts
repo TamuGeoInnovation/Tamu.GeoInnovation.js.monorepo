@@ -35,6 +35,14 @@ export interface SubmissionFileDto {
 export const SESSION_FILES_LIMIT = `You can upload up to ${SUBMISSION_FILE_RULES.maxFiles} files for each session.`;
 
 /**
+ * What a speaker may upload for a session, in words, as the Ask for slides email says it (#3113): made from the rule the
+ * upload is checked against, so the email cannot promise what the upload refuses.
+ */
+export const SESSION_FILES_RULE = `PowerPoint or PDF files (${SUBMISSION_FILE_RULES.extensions.join(', ')}), up to ${megabytes(
+  SUBMISSION_FILE_RULES.maxBytes
+)} each. ${SESSION_FILES_LIMIT}`;
+
+/**
  * A session a speaker presents, as their edit link lists it (#3093): when and where, and the slides that speaker has
  * uploaded for it. Each speaker of a session uploads their own, up to three files under a submission's rules, and sees
  * only their own.

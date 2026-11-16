@@ -163,13 +163,15 @@ export class SpeakerEditController {
 /**
  * Refuses a profile email asked to go to its speakers together (#3104). Each copy carries that speaker's own link to edit
  * their profile, so one email to several would hand each of them the others' links. The window never offers it; this
- * stops a request that asks anyway, before anything is sent.
+ * stops a request that asks anyway, before anything is sent. `why` says it for another email that carries the same link,
+ * the Ask for slides email (#3113).
  */
-function refuseTogether(body: { together?: unknown } | undefined): void {
+export function refuseTogether(
+  body: { together?: unknown } | undefined,
+  why = "The profile email carries each speaker's own link to edit their profile, so it is sent as a copy each, never together."
+): void {
   if (body?.together) {
-    throw new BadRequestException(
-      "The profile email carries each speaker's own link to edit their profile, so it is sent as a copy each, never together."
-    );
+    throw new BadRequestException(why);
   }
 }
 

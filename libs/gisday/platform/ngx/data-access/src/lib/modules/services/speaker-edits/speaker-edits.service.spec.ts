@@ -5,7 +5,12 @@ import { firstValueFrom } from 'rxjs';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
-import { SpeakerEditsService, sendEditLinksToast, sendSessionDetailsToast } from './speaker-edits.service';
+import {
+  SpeakerEditsService,
+  sendEditLinksToast,
+  sendSessionDetailsToast,
+  sendSlidesRequestToast
+} from './speaker-edits.service';
 
 /** #2958: profile emails for the selected submissions' people, in one request. */
 describe('SpeakerEditsService.sendForSubmissions()', () => {
@@ -200,6 +205,83 @@ describe('sendSessionDetailsToast', () => {
       id: 'session-details-email',
       title: 'Some session details emails were not sent',
       message: 'Sent to 2 speakers. Not sent - Dee Fox: no email address on their record.'
+    });
+  });
+});
+
+/** #3113: the Ask for slides email's routes, beside the session details email's. */
+describe('SpeakerEditsService, the Ask for slides email', () => {
+  let service: SpeakerEditsService;
+  let http: HttpTestingController;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: EnvironmentService, useValue: { value: () => 'api' } }
+      ]
+    });
+
+    service = TestBed.inject(SpeakerEditsService);
+    http = TestBed.inject(HttpTestingController);
+  });
+
+  afterEach(() => http.verify());
+
+  it('previews it for the session', async () => {
+    const preview = firstValueFrom(service.previewSlidesRequest('e-1'));
+    const request = http.expectOne('api/session-emails/slides/preview');
+
+    expect(request.request.method).toBe('POST');
+    expect(request.request.body).toEqual({ event: 'e-1' });
+
+    request.flush({ groups: [] });
+
+    await expect(preview).resolves.toEqual({ groups: [] });
+  });
+
+  it('sends it as edited, to the speakers ticked, as the sender chosen', async () => {
+    const result = firstValueFrom(
+      service.sendSlidesRequest('e-1', {
+        subject: 'S',
+        template: 'T {edit link}',
+        sender: 'jadmin@tamu.edu',
+        speakers: ['sp-2']
+      })
+    );
+    const request = http.expectOne('api/session-emails/slides');
+
+    expect(request.request.body).toEqual({
+      event: 'e-1',
+      subject: 'S',
+      template: 'T {edit link}',
+      sender: 'jadmin@tamu.edu',
+      speakers: ['sp-2']
+    });
+
+    request.flush({ sent: ['Blair Sample'], skipped: [] });
+
+    await expect(result).resolves.toEqual({ sent: ['Blair Sample'], skipped: [] });
+  });
+});
+
+describe('sendSlidesRequestToast', () => {
+  it('says who was asked, and who was not and why', () => {
+    expect(sendSlidesRequestToast({ sent: ['Avery Example'], skipped: [] })).toEqual({
+      id: 'slides-request-email',
+      title: 'Slides requested',
+      message: 'Sent to Avery Example.'
+    });
+    expect(
+      sendSlidesRequestToast({
+        sent: [],
+        skipped: [{ name: 'Blair Sample', reason: "already asked for this session's slides in the last 10 minutes" }]
+      })
+    ).toEqual({
+      id: 'slides-request-email',
+      title: 'Some slides requests were not sent',
+      message: "None were sent. Not sent - Blair Sample: already asked for this session's slides in the last 10 minutes."
     });
   });
 });
