@@ -54,6 +54,11 @@
       } @if ('checkIns' | siteHas) {
       <p tamuGiscTileLink location="/account/checkins">Checkins</p>
       }
+      <!-- The admin pages, for the roles the desktop Account menu offers them to (#3162); inside this submenu, not a tile of
+      its own, which would be a block deeper than the menu projects (#2884). -->
+      @if ((userRoles$ | async) | hasRoles : [appRoles.ADMIN, appRoles.MANAGER, appRoles.ORGANIZER]) {
+      <p tamuGiscTileLink location="/admin">Admin</p>
+      }
       <p (click)="logout()" tabindex="0" role="button" (keydown.enter)="logout()" (keydown.space)="logout(); $event.preventDefault()">Logout</p>
     </tamu-gisc-tile-submenu>
   </tamu-gisc-tile>
