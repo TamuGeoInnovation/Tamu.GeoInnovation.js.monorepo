@@ -19,7 +19,6 @@
         },
         "tsConfig": "apps/aggiemap-angular/tsconfig.app.json",
         "assets": [
-          "apps/aggiemap-angular/src/favicon.ico",
           "apps/aggiemap-angular/src/assets",
           "apps/aggiemap-angular/src/Dockerfile",
           "apps/aggiemap-angular/src/.dockerignore",
