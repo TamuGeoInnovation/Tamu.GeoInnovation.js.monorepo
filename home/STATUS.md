@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle and listening.
+- **Batch 61 (gisday: #1840, link previews name each site)**: started 7:30 PM Central, 15 November, branch `fix/1840-site-link-previews`.
 
 ## Finished
 - **Batch 60 (gisday: #3098)** (report `home/reports/2026-11-15-60.md`): branch ready, `fix/3098-shared-repeat-guard` on the fork at `68776b3fe`, no PR. Shared table, record then check; migration proven; check exit 0. kubernetes-config `feat/3098-session-details-sends` `4fd401d` **not pushed** (push refused here). No questions.
