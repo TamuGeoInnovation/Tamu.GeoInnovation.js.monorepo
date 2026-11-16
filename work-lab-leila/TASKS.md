@@ -8629,3 +8629,10 @@ commit, fetched and rebased, pushed (no force). Report "images pushed: <sha>".
 > **Batch 96 (#3113), also:** the designed email (#3114) wraps every site email through `siteEmailHtml` in
 > `libs/gisday/common/src/lib/site-email.ts`. If #3114 has merged when you build #3113, send the slides request through
 > `siteEmailHtml` with `sessionEmailDesign`; if not, say so in your report, and whichever merges second wires it.
+
+## Batch 102 (gisday: #2894, retake one image again) - **after 96, before 100**
+
+Report 98-99's question: decided (a). The home machine made a nested scroll box show its own scrollbar, with no rail:
+`feat/2894-vgi-dashboard` on the fork at `8def7c3d4` (`.pr-body.md` last; leave it). **Do not change the code.** Retake
+`after-feature-type-open.png` at 1280 px so the people table's scrollbar shows under it; say whether it does and the outer
+table keeps its rail. One commit, fetched and rebased, pushed (no force). Report "images pushed: <sha>".
