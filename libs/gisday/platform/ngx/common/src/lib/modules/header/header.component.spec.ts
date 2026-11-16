@@ -210,3 +210,57 @@ describe('HeaderComponent phone menu', () => {
     expect(tiles).not.toContain('Account');
   });
 });
+
+/**
+ * #3162. On a phone, the menu's Account card had no way to the admin pages, which the desktop Account menu offers to
+ * admins, managers and organizers: an admin on a phone had to type /admin.
+ */
+describe('HeaderComponent phone menu, Admin', () => {
+  function accountItemsFor(roles: Array<string>) {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      imports: [HeaderComponent],
+      providers: [
+        provideNoopAnimations(),
+        { provide: GISDAY_SITE, useValue: gisdaySite('tamu') },
+        { provide: AuthService, useValue: { isAuthenticated$: of(true), userRoles$: of(roles) } },
+        { provide: ModalService, useValue: {} },
+        { provide: SeasonService, useValue: { viewedSeason$: of(null), viewedYear$: of(null) } },
+        { provide: PlaceService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+        { provide: Router, useValue: { url: '/sessions', events: of() } },
+        { provide: ActivatedRoute, useValue: {} }
+      ]
+    });
+
+    const fixture = TestBed.createComponent(HeaderComponent);
+    fixture.detectChanges();
+    fixture.componentInstance.mobileNavToggle.next(true);
+    fixture.detectChanges();
+
+    const root = fixture.nativeElement as HTMLElement;
+    const account = Array.from(root.querySelectorAll<HTMLElement>('tamu-gisc-tile-navigation tamu-gisc-tile')).find(
+      (tile) => tile.querySelector('tamu-gisc-tile-title')?.textContent.trim() === 'Account'
+    );
+
+    account.click();
+    fixture.detectChanges();
+
+    return Array.from(root.querySelectorAll('tamu-gisc-tile-navigation [tamuGiscTileLink], tamu-gisc-tile-navigation p')).map(
+      (p) => p.textContent.trim()
+    );
+  }
+
+  it.each(['GIS Day Admin', 'GIS Day Manager', 'GIS Day Organizer'])('lists Admin under Account for a %s', (role) => {
+    const items = accountItemsFor([role]);
+
+    expect(items).toContain('Profile');
+    expect(items).toContain('Admin');
+  });
+
+  it('does not list Admin for a visitor without those roles', () => {
+    const items = accountItemsFor([]);
+
+    expect(items).toContain('Profile');
+    expect(items).not.toContain('Admin');
+  });
+});
