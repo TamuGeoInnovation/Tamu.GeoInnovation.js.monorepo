@@ -19,9 +19,11 @@
 
   // No taller than the window, less room for the opened row's heading above it and the dashboard table's rail below
   // (#3120), so it scrolls up and down inside itself and its own sideways scrollbar is in view whenever the box is. The
-  // page's header scrolls away, so it needs no room. A most, not a height: a few people make a box only as tall as they are.
+  // page's header scrolls away, so it needs no room. 8rem holds the row's name and "Export as CSV" above (about 90 px
+  // at 1280 px) and the rail (14 px): with the name at the top of the window, the whole box and its scrollbar are in
+  // view. A most, not a height: a few people make a box only as tall as they are.
   &.dashboard-scroll-capped {
-    max-height: calc(100vh - 6rem);
+    max-height: calc(100vh - 8rem);
     overflow-y: auto;
   }
 }
