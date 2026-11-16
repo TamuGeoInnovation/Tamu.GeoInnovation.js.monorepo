@@ -18,3 +18,11 @@ Admin, Dashboards has a **VGI submissions** dashboard, beside RSVPs and Check-in
 - **A chart of submissions over time**, as the RSVP chart has, with a second line for the type opened.
 
 It needs the permission organizers already have to read every submission, so no account needs anything new.
+
+| Before | After |
+| --- | --- |
+| ![The admin Dashboards menu on txgisday.org: RSVPs, Check-ins, User accounts, Speaker badges](../screenshots/2894-vgi-dashboard/before-dashboards-menu.png) | ![The same menu with VGI submissions after Check-ins](../screenshots/2894-vgi-dashboard/after-dashboards-menu-txgisday.png) |
+| | ![On gisday.ucgis.org, which has no competition, the menu has no VGI submissions](../screenshots/2894-vgi-dashboard/after-dashboards-menu-ucgis.png) |
+| | ![The VGI submissions dashboard for 2025 in a local copy: 1223 submissions of 3 feature types, the chart of submissions by day, and a row per type with a total row](../screenshots/2894-vgi-dashboard/after-dashboard.png) |
+| | ![Unknown Art Piece opened to its 705 submitters, names and emails hidden](../screenshots/2894-vgi-dashboard/after-feature-type-open.png) |
+| | ![The 2026 season, which has no VGI competition in the local copy: 0 submissions, nothing to chart](../screenshots/2894-vgi-dashboard/after-dashboard-2026.png) |
