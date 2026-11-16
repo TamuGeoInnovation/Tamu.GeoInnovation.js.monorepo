@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **#3098 (session details sends shared by every API copy)**: resumed 7:20 PM Central, 15 November, from the parked commit on `fix/3098-shared-repeat-guard`; bringing it up to date with development. For after GIS Day.
+- Nothing. Idle and listening.
 
 ## Finished
+- **Batch 60 (gisday: #3098)** (report `home/reports/2026-11-15-60.md`): branch ready, `fix/3098-shared-repeat-guard` on the fork at `68776b3fe`, no PR. Shared table, record then check; migration proven; check exit 0. kubernetes-config `feat/3098-session-details-sends` `4fd401d` **not pushed** (push refused here). No questions.
 - **#2574 brought up to date (batch 25, redone)** (report `home/reports/2026-11-15-25-update.md`): branch ready, `fix/2574-gisday-admin-users` on the fork at `9b4b91ec9`, no PR. Development merged; two new callers fixed; full check exit 0 (11 projects). One question.
 - **Batch 59 (gisday: #3102)** (report `home/reports/2026-11-15-59.md`): branch ready, `fix/3102-scrub-coverage` at `25e15c95c`. A check comparing scrub.sql with every entity column found 39 unnamed; all classified; script proven end to end in a throwaway SQL Server. No questions.
 - **Batch 58 (gisday)** (report `home/reports/2026-11-15-58.md`): #3038 and #3029 already done elsewhere (PRs 3071, 3072); #3039 by the director (PR 3040). Branches ready: `test/3101-route-permissions` `dee6d2403`, `fix/3083-edit-decision-message` `6d5e1ed7c`. Stalled 9:40 AM to 6:26 PM at a question to the maintainer (my mistake). No questions.
