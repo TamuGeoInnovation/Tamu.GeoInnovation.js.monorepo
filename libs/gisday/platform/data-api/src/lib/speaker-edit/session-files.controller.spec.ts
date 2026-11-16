@@ -19,9 +19,10 @@ import { SpeakerEditLinkGuard } from './speaker-edit-link.guard';
 import { SpeakerEditService } from './speaker-edit.service';
 
 /**
- * #3093: speakers upload their sessions' slides from their edit link, with no account, and only the admins see them.
+ * #3093: speakers upload their sessions' slides from their edit link, with no account: each speaker their own, up to
+ * three files a session, seen and removed by that speaker only; the admins see every speaker's, labelled with who.
  * Nest's real routing, Multer and `PermissionsGuard` run, with a folder standing in for APP_DATA, so a test sees a file
- * kept, replaced, refused and removed as the API would. Only the link's lookup and the sign-in are replaced.
+ * kept, refused and removed as the API would. Only the link's lookup and the sign-in are replaced.
  */
 describe('SessionFilesController (#3093)', () => {
   const TOKEN = 'a'.repeat(43);
@@ -43,6 +44,9 @@ describe('SessionFilesController (#3093)', () => {
   const speakers: Record<string, unknown> = {
     'speaker-1': {
       guid: 'speaker-1',
+      // Made-up people.
+      firstName: 'Avery',
+      lastName: 'Example',
       season: { guid: SEASON },
       events: [
         {
@@ -64,7 +68,17 @@ describe('SessionFilesController (#3093)', () => {
         { guid: LAST_YEAR, name: 'An old session', season: { guid: 'last-season' } }
       ]
     },
-    'speaker-2': { guid: 'speaker-2', season: { guid: SEASON }, events: [{ guid: NOT_MINE, name: 'Not yours' }] }
+    // A second speaker on the first speaker's session, and on one of their own.
+    'speaker-2': {
+      guid: 'speaker-2',
+      firstName: 'Blair',
+      lastName: 'Sample',
+      season: { guid: SEASON },
+      events: [
+        { guid: NOT_MINE, name: 'Not yours' },
+        { guid: MINE, name: 'Mapping Texas watersheds', season: { guid: SEASON } }
+      ]
+    }
   };
 
   /** The link's own check, as the edit page has it: a token of the right shape that is on record, or not found. */
@@ -89,17 +103,35 @@ describe('SessionFilesController (#3093)', () => {
     delete: jest.fn(async (guids: Array<string>) => {
       rows = rows.filter((r) => !guids.includes(r.guid));
     }),
-    find: jest.fn(async ({ where }) => {
-      const events = where.event?.guid instanceof FindOperator ? (where.event.guid.value as Array<string>) : null;
+    find: jest.fn(async ({ where, relations }) => {
+      const events =
+        where.event?.guid instanceof FindOperator
+          ? (where.event.guid.value as Array<string>)
+          : typeof where.event?.guid === 'string'
+            ? [where.event.guid]
+            : null;
       const season = where.event?.season?.guid;
+      const uploader = where.uploadedBy?.guid;
 
       return rows
         .filter((r) => r.type === where.type)
+        .filter((r) => (where.guid ? r.guid === where.guid : true))
         .filter((r) => (events ? events.includes(r.event.guid) : true))
         .filter((r) => (season ? seasonOf(r.event.guid) === season : true))
-        .map((r) => ({ ...r }));
+        .filter((r) => (uploader ? r.uploadedBy?.guid === uploader : true))
+        .map((r) => ({
+          ...r,
+          // The speaker's record, when it is asked for, as the join reads it.
+          ...(relations?.uploadedBy && r.uploadedBy ? { uploadedBy: speakerRecord(r.uploadedBy.guid) } : {})
+        }));
     })
   };
+
+  function speakerRecord(guid: string) {
+    const speaker = speakers[guid] as { firstName: string; lastName: string } | undefined;
+
+    return speaker ? { guid, firstName: speaker.firstName, lastName: speaker.lastName } : null;
+  }
 
   function seasonOf(eventGuid: string): string | undefined {
     return Object.values(speakers)
@@ -119,6 +151,13 @@ describe('SessionFilesController (#3093)', () => {
   }
 
   const sessions = (token: string) => fetch(`${url}/session-files/link/${token}`);
+  const remove = (token: string, event: string, file: string) =>
+    fetch(`${url}/session-files/link/${token}/${event}/${file}`, { method: 'DELETE' });
+  /** The names of the files a speaker's link lists on one of their sessions. */
+  const filesOf = async (token: string, event: string) =>
+    ((await (await sessions(token)).json()) as Array<{ guid: string; files: Array<{ name: string }> }>)
+      .find((s) => s.guid === event)
+      .files.map((f) => f.name);
   const kept = () =>
     existsSync(join(appData, 'sessions')) ? readdirSync(join(appData, 'sessions'), { recursive: true }) : [];
   const leftUploading = () => (existsSync(uploadingDirectory()) ? readdirSync(uploadingDirectory()) : []);
@@ -169,6 +208,8 @@ describe('SessionFilesController (#3093)', () => {
   });
 
   afterEach(async () => {
+    // A download's kept-alive connection otherwise holds close() for 3 s, counted against the test that made it.
+    app.getHttpServer().closeAllConnections();
     await app.close();
     rmSync(appData, { recursive: true, force: true });
     process.env.APP_DATA = previousAppData;
@@ -190,7 +231,7 @@ describe('SessionFilesController (#3093)', () => {
         startTime: '09:30',
         endTime: '10:15',
         place: 'Eller O&M 1003',
-        file: null
+        files: []
       });
     });
 
@@ -207,37 +248,69 @@ describe('SessionFilesController (#3093)', () => {
       expect(response.status).toBe(201);
       expect(await response.json()).toEqual(expect.objectContaining({ name: 'Café watersheds.pptx', size: 2048 }));
       expect(rows).toHaveLength(1);
-      expect(rows[0]).toEqual(expect.objectContaining({ type: SESSION_FILE_TYPE, event: { guid: MINE } }));
+      expect(rows[0]).toEqual(
+        expect.objectContaining({ type: SESSION_FILE_TYPE, event: { guid: MINE }, uploadedBy: { guid: 'speaker-1' } })
+      );
       expect(rows[0].path).toBe(`sessions/${MINE}/${rows[0].guid}.pptx`);
       expect(existsSync(join(appData, rows[0].path))).toBe(true);
       expect(leftUploading()).toEqual([]);
 
       const listed = await (await sessions(TOKEN)).json();
 
-      expect(listed[0].file).toEqual(expect.objectContaining({ name: 'Café watersheds.pptx', size: 2048 }));
-      expect(listed[1].file).toBeNull();
+      expect(listed[0].files).toEqual([expect.objectContaining({ name: 'Café watersheds.pptx', size: 2048 })]);
+      expect(listed[1].files).toEqual([]);
     });
 
-    it('replaces the slides with the next upload, removing the file before', async () => {
-      await upload(TOKEN, MINE, 'draft.pdf');
-      const first = rows[0];
+    it('keeps up to three files a session, each beside the others, and refuses a fourth with the reason', async () => {
+      for (const name of ['deck.pptx', 'deck.pdf', 'handout.pdf']) {
+        expect((await upload(TOKEN, MINE, name)).status).toBe(201);
+      }
 
-      expect((await upload(TOKEN, MINE, 'final.pdf', 4096)).status).toBe(201);
+      const fourth = await upload(TOKEN, MINE, 'extra.pdf');
+
+      expect(fourth.status).toBe(400);
+      expect((await fourth.json()).message).toBe(
+        'You can upload up to 3 files for each session. Remove one before adding another.'
+      );
+      expect(await filesOf(TOKEN, MINE)).toEqual(['deck.pptx', 'deck.pdf', 'handout.pdf']);
+      expect(kept().filter((f) => /\.(pdf|pptx)$/.test(String(f)))).toHaveLength(3);
+      expect(leftUploading()).toEqual([]);
+    });
+
+    it('removes one file, by its id, and leaves the others', async () => {
+      await upload(TOKEN, MINE, 'draft.pdf');
+      await upload(TOKEN, MINE, 'final.pdf');
+      const [draft] = rows;
+
+      expect((await remove(TOKEN, MINE, draft.guid)).status).toBe(204);
 
       expect(rows.map((r) => r.name)).toEqual(['final.pdf']);
-      expect(existsSync(join(appData, first.path))).toBe(false);
-      expect(kept().filter((f) => String(f).endsWith('.pdf'))).toHaveLength(1);
+      expect(existsSync(join(appData, draft.path))).toBe(false);
+      expect((await remove(TOKEN, MINE, draft.guid)).status).toBe(404);
     });
 
-    it('removes the slides', async () => {
-      await upload(TOKEN, MINE, 'deck.pdf');
-      const path = rows[0].path;
+    it("counts only the speaker's own files: another speaker on the session has three of their own", async () => {
+      for (const name of ['a.pdf', 'b.pdf', 'c.pdf']) {
+        expect((await upload(OTHER_TOKEN, MINE, name)).status).toBe(201);
+      }
 
-      expect((await fetch(`${url}/session-files/link/${TOKEN}/${MINE}`, { method: 'DELETE' })).status).toBe(204);
+      expect((await upload(TOKEN, MINE, 'mine.pdf')).status).toBe(201);
+      expect(rows).toHaveLength(4);
+    });
 
-      expect(rows).toEqual([]);
-      expect(existsSync(join(appData, path))).toBe(false);
-      expect((await fetch(`${url}/session-files/link/${TOKEN}/${MINE}`, { method: 'DELETE' })).status).toBe(404);
+    it("lists each speaker only their own files, and another speaker's file cannot be removed (404)", async () => {
+      await upload(TOKEN, MINE, 'mine.pdf');
+      await upload(OTHER_TOKEN, MINE, 'theirs.pdf');
+      const theirs = rows.find((r) => r.name === 'theirs.pdf');
+
+      expect(await filesOf(TOKEN, MINE)).toEqual(['mine.pdf']);
+      expect(await filesOf(OTHER_TOKEN, MINE)).toEqual(['theirs.pdf']);
+
+      const response = await remove(TOKEN, MINE, theirs.guid);
+
+      expect(response.status).toBe(404);
+      expect(rows.map((r) => r.name)).toEqual(['mine.pdf', 'theirs.pdf']);
+      expect(existsSync(join(appData, theirs.path))).toBe(true);
     });
 
     it("touches only the speaker's own sessions: another's, or last season's, reads as not found, and nothing is kept", async () => {
@@ -249,7 +322,7 @@ describe('SessionFilesController (#3093)', () => {
 
       await upload(OTHER_TOKEN, NOT_MINE, 'theirs.pdf');
 
-      expect((await fetch(`${url}/session-files/link/${TOKEN}/${NOT_MINE}`, { method: 'DELETE' })).status).toBe(404);
+      expect((await remove(TOKEN, NOT_MINE, rows[0].guid)).status).toBe(404);
       expect(rows.map((r) => r.name)).toEqual(['theirs.pdf']);
       expect(leftUploading()).toEqual([]);
     });
@@ -278,12 +351,14 @@ describe('SessionFilesController (#3093)', () => {
       expect(leftUploading()).toEqual([]);
     });
 
+    // 100 MB and a byte, built and sent to a real local server: 0.4 s alone, but 5.7 s under the full check's load, past
+    // Jest's 5 s default, so 30 s, as the repository's other large uploads have.
     it('cuts off a file over the size limit, as a submission file is', async () => {
       const response = await upload(TOKEN, MINE, 'huge.pdf', SUBMISSION_FILE_RULES.maxBytes + 1);
 
       expect(response.status).toBe(413);
       expect(rows).toEqual([]);
-    });
+    }, 30_000);
 
     it('offers the speaker no download, and no admin route through a link', async () => {
       await upload(TOKEN, MINE, 'deck.pdf');
@@ -295,6 +370,18 @@ describe('SessionFilesController (#3093)', () => {
   describe('the admins', () => {
     beforeEach(async () => {
       await upload(TOKEN, MINE, 'Watersheds.pdf', 3000);
+    });
+
+    it("lists every speaker's files on a session, each labelled with who uploaded it", async () => {
+      await upload(OTHER_TOKEN, MINE, 'Their deck.pptx');
+      as(['update:events']);
+
+      const files = await (await fetch(`${url}/session-files/event/${MINE}`)).json();
+
+      expect(files).toEqual([
+        expect.objectContaining({ name: 'Watersheds.pdf', uploadedBy: 'Avery Example' }),
+        expect.objectContaining({ name: 'Their deck.pptx', uploadedBy: 'Blair Sample' })
+      ]);
     });
 
     it("lists a session's slides and downloads the original under its own name", async () => {

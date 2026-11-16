@@ -820,10 +820,19 @@ export class Asset extends GuidIdentity {
 
   /**
    * A session's slides, uploaded by one of its speakers from their edit link (#3093), kept as a submission's files are.
-   * Seen by the admins only. Deleted with its session.
+   * Seen by the admins, and by the speaker who uploaded them. Deleted with its session.
    */
   @ManyToOne(() => Event, { nullable: true, onDelete: 'CASCADE' })
   public event?: Relation<Event>;
+
+  /**
+   * The speaker who uploaded a session's slides (#3093): each speaker sees and removes only their own, up to three a
+   * session, and the admins see who uploaded each. Not `speaker`, which is the speaker's photo: everything that reads a
+   * speaker's `images` (the public speaker list, the avatar, a season's copy, a photo's replacement) would take the
+   * slides for photos. Kept, with no uploader, if the speaker is deleted.
+   */
+  @ManyToOne(() => Speaker, { nullable: true, onDelete: 'SET NULL' })
+  public uploadedBy?: Relation<Speaker>;
 }
 
 /**

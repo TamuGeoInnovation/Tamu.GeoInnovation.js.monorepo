@@ -23,7 +23,7 @@ import {
   SpeakerClassBannerComponent,
   SubmissionFilesComponent
 } from '@tamu-gisc/gisday/platform/ngx/common';
-import { SpeakerSessionDto } from '@tamu-gisc/gisday/common';
+import { SESSION_FILES_LIMIT, SpeakerSessionDto } from '@tamu-gisc/gisday/common';
 
 /**
  * A speaker editing their own presenter profile through the link emailed to them (#2936), with no account. Without a
@@ -56,9 +56,12 @@ export class PeopleEditComponent implements OnInit {
   private readonly sessionFiles = inject(SessionFilesService);
   private readonly destroyRef = inject(DestroyRef);
 
+  /** What a fourth file on a session is refused with (#3093). */
+  public readonly sessionFilesLimit = SESSION_FILES_LIMIT;
+
   /**
-   * The sessions the speaker presents this season (#3093), each with its slides as a source for the shared files list:
-   * uploaded, replaced and removed through the link, kept at once with no review. Null until listed.
+   * The sessions the speaker presents this season (#3093), each with the speaker's own slides as a source for the shared
+   * files list: up to three, uploaded and removed through the link, kept at once with no review. Null until listed.
    */
   public readonly sessions = signal<Array<{ session: SpeakerSessionDto; slides: FilesSource }> | null>(null);
 
@@ -227,9 +230,9 @@ export class PeopleEditComponent implements OnInit {
             sessions.map((session) => ({
               session,
               slides: {
-                list: () => of(session.file ? [session.file] : []),
+                list: () => of(session.files),
                 add: (file: File) => this.sessionFiles.upload(token, session.guid, file),
-                remove: () => this.sessionFiles.remove(token, session.guid)
+                remove: (fileGuid: string) => this.sessionFiles.remove(token, session.guid, fileGuid)
               }
             }))
           ),

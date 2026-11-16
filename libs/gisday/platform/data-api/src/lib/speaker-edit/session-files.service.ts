@@ -2,7 +2,13 @@ import { BadRequestException, Injectable, NotFoundException, StreamableFile } fr
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 
-import { SessionSlidesDto, SpeakerSessionDto, SubmissionFileDto, submissionFileProblem } from '@tamu-gisc/gisday/common';
+import {
+  SESSION_FILES_LIMIT,
+  SessionSlidesDto,
+  SpeakerSessionDto,
+  SubmissionFileDto,
+  submissionFileProblem
+} from '@tamu-gisc/gisday/common';
 
 import { Asset, Event, Speaker, SpeakerEditLink } from '../entities/all.entity';
 import { AssetsService } from '../assets/assets.service';
@@ -12,12 +18,13 @@ import { discardUpload, fileDownload, fileDto, storeUpload } from '../user-submi
 export const SESSION_FILE_TYPE = 'session-file';
 
 /**
- * The slides of the sessions speakers present (#3093), uploaded from the speaker's edit link with no account, and seen
- * by the admins only.
+ * The slides of the sessions speakers present (#3093), uploaded from the speaker's edit link with no account.
  *
- * A speaker reaches only the sessions of their own speaker record, found from their link, never from an id the browser
- * sends: a session that is not theirs reads as not found. A session has one set of slides; an upload is kept at once,
- * with no approval, and replaces the one before. The files are received, checked and kept as a submission's are
+ * Each speaker of a session uploads their own, up to three files, and sees and removes only their own: a file is kept
+ * with its session and the speaker who uploaded it (`uploadedBy`). A speaker reaches only the sessions of their own
+ * speaker record, found from their link, never from an id the browser sends: a session that is not theirs, or a file
+ * that is not theirs, reads as not found. An upload is kept at once, with no approval. The admins see every speaker's
+ * files, each labelled with who uploaded it. The files are received, checked and kept as a submission's are
  * (`SUBMISSION_FILE_UPLOAD`, `submissionFileProblem`, `storeUpload`), under `sessions/<session>` in APP_DATA.
  */
 @Injectable()
@@ -28,23 +35,26 @@ export class SessionFilesService {
     private readonly assetsService: AssetsService
   ) {}
 
-  /** The sessions the link's speaker presents in their season, in the order of the day, each with its slides. */
+  /** The sessions the link's speaker presents in their season, in the order of the day, each with that speaker's files. */
   public async forLink(link: SpeakerEditLink): Promise<Array<SpeakerSessionDto>> {
     const sessions = await this.sessionsOf(link);
-    const files = await this.filesOf(sessions.map((s) => s.guid));
+    const files = await this.filesOf(
+      sessions.map((s) => s.guid),
+      link
+    );
 
     return Promise.all(
-      sessions.map(async (session) => {
-        const file = files.find((f) => f.event?.guid === session.guid);
-
-        return { ...sessionOf(session), file: file ? await fileDto(file) : null };
-      })
+      sessions.map(async (session) => ({
+        ...sessionOf(session),
+        files: await Promise.all(files.filter((f) => f.event?.guid === session.guid).map((f) => fileDto(f)))
+      }))
     );
   }
 
   /**
-   * Keeps an upload, already written to disk by Multer, as the session's slides, replacing any before it. The file is
-   * moved into the session's folder, or removed if the session is not the speaker's or the file breaks the rules.
+   * Keeps an upload, already written to disk by Multer, as one of the speaker's files for the session, beside any they
+   * have there: up to three, counted per speaker. The file is moved into the session's folder, or removed if the session
+   * is not the speaker's, the file breaks the rules, or the speaker already has three.
    */
   public async upload(link: SpeakerEditLink, eventGuid: string, upload: Express.Multer.File): Promise<SubmissionFileDto> {
     try {
@@ -53,14 +63,13 @@ export class SessionFilesService {
       }
 
       const session = await this.sessionFor(link, eventGuid);
-      // One set of slides, replaced by the next: nothing already kept counts against it.
-      const problem = submissionFileProblem(upload.originalname, upload.size, 0);
+      const own = await this.filesOf([session.guid], link);
+      const problem = submissionFileProblem(upload.originalname, upload.size, own.length, SESSION_FILES_LIMIT);
 
       if (problem) {
         throw new BadRequestException(problem);
       }
 
-      const previous = await this.filesOf([session.guid]);
       const { guid, path } = await storeUpload(upload, `sessions/${session.guid}`);
       const saved = await this.assets.save(
         this.assets.create({
@@ -68,11 +77,10 @@ export class SessionFilesService {
           name: upload.originalname,
           path,
           type: SESSION_FILE_TYPE,
-          event: { guid: session.guid } as Event
+          event: { guid: session.guid } as Event,
+          uploadedBy: { guid: link.speaker.guid } as Speaker
         })
       );
-
-      await this.discard(previous);
 
       return fileDto(saved);
     } finally {
@@ -80,21 +88,27 @@ export class SessionFilesService {
     }
   }
 
-  /** Removes the session's slides. */
-  public async remove(link: SpeakerEditLink, eventGuid: string): Promise<void> {
+  /** Removes one of the speaker's own files from the session. Another speaker's file, or none, reads as not found. */
+  public async remove(link: SpeakerEditLink, eventGuid: string, fileGuid: string): Promise<void> {
     const session = await this.sessionFor(link, eventGuid);
-    const files = await this.filesOf([session.guid]);
+    const file = (await this.filesOf([session.guid], link)).find((f) => f.guid === fileGuid);
 
-    if (files.length === 0) {
-      throw new NotFoundException('No slides are uploaded for this session.');
+    if (!file) {
+      throw new NotFoundException('File not found.');
     }
 
-    await this.discard(files);
+    await this.discard([file]);
   }
 
-  /** A session's slides, for its admin page. */
+  /** Every speaker's files for a session, oldest first, each labelled with who uploaded it, for its admin page. */
   public async forEvent(eventGuid: string): Promise<Array<SubmissionFileDto>> {
-    return Promise.all((await this.filesOf([eventGuid])).map((file) => fileDto(file)));
+    const files = await this.assets.find({
+      where: { type: SESSION_FILE_TYPE, event: { guid: eventGuid } },
+      relations: { event: true, uploadedBy: true },
+      order: { created: 'ASC' }
+    });
+
+    return Promise.all(files.map(async (file) => ({ ...(await fileDto(file)), uploadedBy: uploaderOf(file) })));
   }
 
   /** One of a session's files, under the name it was uploaded with. */
@@ -108,11 +122,15 @@ export class SessionFilesService {
     return fileDownload(file, 'SessionFilesService');
   }
 
-  /** The slides of every session of a season that has some, for the admins' list of sessions with and without. */
+  /**
+   * Every file of a season's sessions, oldest first, for the admins' list of sessions with and without slides: a
+   * session has slides when any of its speakers has uploaded one.
+   */
   public async forSeason(seasonGuid: string): Promise<Array<SessionSlidesDto>> {
     const files = await this.assets.find({
       where: { type: SESSION_FILE_TYPE, event: { season: { guid: seasonGuid } } },
-      relations: { event: true }
+      relations: { event: true },
+      order: { created: 'ASC' }
     });
 
     return Promise.all(files.map(async (file) => ({ event: file.event.guid, file: await fileDto(file) })));
@@ -142,13 +160,18 @@ export class SessionFilesService {
     return session;
   }
 
-  private async filesOf(eventGuids: Array<string>): Promise<Array<Asset>> {
+  /** The sessions' files, oldest first: only those the link's speaker uploaded, when a link is given. */
+  private async filesOf(eventGuids: Array<string>, link?: SpeakerEditLink): Promise<Array<Asset>> {
     if (eventGuids.length === 0) {
       return [];
     }
 
     return this.assets.find({
-      where: { type: SESSION_FILE_TYPE, event: { guid: In(eventGuids) } },
+      where: {
+        type: SESSION_FILE_TYPE,
+        event: { guid: In(eventGuids) },
+        ...(link ? { uploadedBy: { guid: link.speaker.guid } } : {})
+      },
       relations: { event: true },
       order: { created: 'ASC' }
     });
@@ -165,8 +188,15 @@ export class SessionFilesService {
   }
 }
 
+/** Who uploaded a session's file, for the admins: the speaker's name, or that their record has since been deleted. */
+function uploaderOf(file: Asset): string {
+  const name = [file.uploadedBy?.firstName, file.uploadedBy?.lastName].filter(Boolean).join(' ');
+
+  return name || 'A speaker no longer listed';
+}
+
 /** A session as the edit page lists it. */
-function sessionOf(event: Event): Omit<SpeakerSessionDto, 'file'> {
+function sessionOf(event: Event): Omit<SpeakerSessionDto, 'files'> {
   const place = [event.location?.building, event.location?.room].filter(Boolean).join(' ');
 
   return {

@@ -39,8 +39,8 @@ export interface FilesSource {
  * uses it editable, before and after review, since finalists send their slides after being accepted; the admins' review
  * page uses it to download.
  *
- * With a `source`, the same list for other files kept under the same rules (#3093): a speaker's slides on their edit
- * link, and the admins' downloads of them on the session's page. With `max` 1, the picker replaces the file there.
+ * With a `source`, the same list for other files kept under the same rules (#3093): a speaker's own slides for a
+ * session on their edit link, and every speaker's on the session's admin page, each labelled with who uploaded it.
  */
 @Component({
   selector: 'tamu-gisc-submission-files',
@@ -58,8 +58,10 @@ export class SubmissionFilesComponent implements OnInit {
   public readonly submissionGuid = input<string>();
   public readonly source = input<FilesSource | null>(null);
   public readonly editable = input(false);
-  /** How many files the list holds. At 1, the picker replaces the file there. */
+  /** How many files the list holds. */
   public readonly max = input<number>(SUBMISSION_FILE_RULES.maxFiles);
+  /** What a fourth file is refused with, before "Remove one before adding another": a submission's words by default. */
+  public readonly limitMessage = input<string | undefined>(undefined);
   public readonly pickLabel = input('Attach a file');
   public readonly emptyLabel = input('No files attached yet.');
 
@@ -87,17 +89,12 @@ export class SubmissionFilesComponent implements OnInit {
     return typeof this.from().download === 'function';
   }
 
-  /** Whether choosing a file replaces the one there, rather than adding another. */
-  public get replaces(): boolean {
-    return this.max() === 1;
-  }
-
   public upload(file: File | undefined): void {
     if (!file) {
       return;
     }
 
-    const problem = submissionFileProblem(file.name, file.size, this.replaces ? 0 : (this.files()?.length ?? 0));
+    const problem = submissionFileProblem(file.name, file.size, this.files()?.length ?? 0, this.limitMessage());
 
     if (problem) {
       this.problem.set(problem);
@@ -116,7 +113,7 @@ export class SubmissionFilesComponent implements OnInit {
           if (event.type === HttpEventType.UploadProgress && event.total) {
             this.uploading.set({ name: file.name, percent: Math.round((100 * event.loaded) / event.total) });
           } else if (event.type === HttpEventType.Response && event.body) {
-            this.files.update((files) => (this.replaces ? [event.body] : [...(files ?? []), event.body]));
+            this.files.update((files) => [...(files ?? []), event.body]);
           }
         },
         error: (err) => {

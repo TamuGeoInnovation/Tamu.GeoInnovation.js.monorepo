@@ -116,8 +116,8 @@ describe('PeopleEditComponent photo (#2956)', () => {
 });
 
 /**
- * #3093. Under the profile, the speaker's link lists each session they present this season, with its slides: upload,
- * what is uploaded now, replace and remove, all through the link, with no account.
+ * #3093. Under the profile, the speaker's link lists each session they present this season, with their own slides for
+ * it: up to three files, each with its own Remove, uploaded and removed through the link, with no account.
  */
 describe('PeopleEditComponent, Your sessions (#3093)', () => {
   // Invented sessions; nobody real.
@@ -128,9 +128,9 @@ describe('PeopleEditComponent, Your sessions (#3093)', () => {
     startTime: '09:30:00 GMT-0600 (Central Standard Time)',
     endTime: '10:15:00 GMT-0600 (Central Standard Time)',
     place: 'Example Hall 101',
-    file: { guid: 'f-1', name: 'watersheds.pdf', size: 2_200_000, uploaded: '2026-11-15T18:00:00.000Z' }
+    files: [{ guid: 'f-1', name: 'watersheds.pdf', size: 2_200_000, uploaded: '2026-11-15T18:00:00.000Z' }]
   };
-  const lightning = { ...watersheds, guid: 's-2', name: 'Lightning Talks', place: null, file: null };
+  const lightning = { ...watersheds, guid: 's-2', name: 'Lightning Talks', place: null, files: [] };
 
   let files: { forLink: jest.Mock; upload: jest.Mock; remove: jest.Mock };
 
@@ -177,22 +177,87 @@ describe('PeopleEditComponent, Your sessions (#3093)', () => {
     );
   });
 
-  it('shows what is uploaded now, with Replace and Remove, and offers an upload where there is none', async () => {
+  it('shows what the speaker has uploaded, each with Remove, an upload beside them, and an upload where there is none', async () => {
     const { sessionBlocks } = await open();
     const [first, second] = sessionBlocks();
 
     expect(first.querySelector('.file-name').textContent.trim()).toBe('watersheds.pdf');
     expect(first.querySelector('.file-detail').textContent).toContain('2.1 MB');
-    expect(first.querySelector('tamu-gisc-file').textContent).toContain('Replace');
+    expect(first.querySelector('tamu-gisc-file').textContent).toContain('Upload slides');
+    expect(first.querySelector('.files-limits').textContent).toContain('up to 3 files');
     expect(first.textContent).toContain('Remove');
-    // Seen by the GIS Day team only: no download for the speaker.
+    // Seen by the GIS Day team and the speaker who uploaded them: no download for the speaker.
     expect(first.querySelector('button.file-name')).toBeNull();
 
     expect(second.querySelector('.files-empty').textContent.trim()).toBe('No slides uploaded yet.');
     expect(second.querySelector('tamu-gisc-file').textContent).toContain('Upload slides');
   });
 
-  it('uploads, replaces and removes through the link, for that session', async () => {
+  it('holds up to three files a session, each with its own Remove, and offers no fourth', async () => {
+    const three = ['deck.pptx', 'deck.pdf', 'handout.pdf'].map((name, n) => ({
+      guid: `f-${n}`,
+      name,
+      size: 1024,
+      uploaded: '2026-11-15T18:00:00.000Z'
+    }));
+    const { sessionBlocks } = await open([{ ...watersheds, files: three }]);
+    const [block] = sessionBlocks();
+
+    expect([...block.querySelectorAll('.file-name')].map((e) => e.textContent.trim())).toEqual([
+      'deck.pptx',
+      'deck.pdf',
+      'handout.pdf'
+    ]);
+    expect([...block.querySelectorAll('button.danger')].map((e) => e.textContent.trim())).toEqual([
+      'Remove',
+      'Remove',
+      'Remove'
+    ]);
+    expect(block.querySelector('tamu-gisc-file')).toBeNull();
+  });
+
+  it('refuses a fourth file before sending it, with the reason', async () => {
+    const three = [1, 2, 3].map((n) => ({ guid: `f-${n}`, name: `${n}.pdf`, size: 10, uploaded: '2026-11-15T18:00:00Z' }));
+    const { fixture, sessionBlocks } = await open([{ ...watersheds, files: three }]);
+    const [list] = fixture.debugElement.queryAll((d) => d.name === 'tamu-gisc-submission-files');
+
+    list.componentInstance.upload(new File(['x'], 'extra.pdf'));
+    fixture.detectChanges();
+
+    expect(files.upload).not.toHaveBeenCalled();
+    expect(sessionBlocks()[0].querySelector('[role=alert]').textContent).toBe(
+      'You can upload up to 3 files for each session. Remove one before adding another.'
+    );
+  });
+
+  it('adds an upload beside the files there, and removes one file by its id, through the link', async () => {
+    const { fixture, sessionBlocks } = await open();
+    const lists = fixture.debugElement.queryAll((d) => d.name === 'tamu-gisc-submission-files');
+    const [watersheds] = lists.map((d) => d.componentInstance);
+    files.upload.mockReturnValue(
+      of({
+        type: HttpEventType.Response,
+        body: { guid: 'f-2', name: 'talk.pptx', size: 10, uploaded: '2026-11-15T19:00:00Z' }
+      })
+    );
+
+    watersheds.upload(new File(['x'], 'talk.pptx'));
+    fixture.detectChanges();
+
+    expect(files.upload).toHaveBeenCalledWith('a-link', 's-1', expect.any(File));
+    expect([...sessionBlocks()[0].querySelectorAll('.file-name')].map((e) => e.textContent.trim())).toEqual([
+      'watersheds.pdf',
+      'talk.pptx'
+    ]);
+
+    watersheds.remove(watersheds.files()[0]);
+    fixture.detectChanges();
+
+    expect(files.remove).toHaveBeenCalledWith('a-link', 's-1', 'f-1');
+    expect([...sessionBlocks()[0].querySelectorAll('.file-name')].map((e) => e.textContent.trim())).toEqual(['talk.pptx']);
+  });
+
+  it('uploads and removes through the link, for that session', async () => {
     const { fixture, sessionBlocks } = await open();
     const lists = fixture.debugElement.queryAll((d) => d.name === 'tamu-gisc-submission-files');
     const [watersheds, lightningTalks] = lists.map((d) => d.componentInstance);
@@ -208,7 +273,7 @@ describe('PeopleEditComponent, Your sessions (#3093)', () => {
     fixture.detectChanges();
 
     expect(files.upload).toHaveBeenCalledWith('a-link', 's-2', expect.any(File));
-    expect(files.remove).toHaveBeenCalledWith('a-link', 's-1');
+    expect(files.remove).toHaveBeenCalledWith('a-link', 's-1', 'f-1');
     expect(sessionBlocks()[1].querySelector('.file-name').textContent.trim()).toBe('talk.pptx');
     expect(sessionBlocks()[0].querySelector('.files-empty')).not.toBeNull();
   });

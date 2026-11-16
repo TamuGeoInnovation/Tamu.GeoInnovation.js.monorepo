@@ -350,11 +350,33 @@ function speakersToolbar(): string {
 }
 
 /**
- * #3093. A session's slides, uploaded by its speakers from their edit links, on the session's admin page: listed with
- * a download for each, and nothing there to change them.
+ * #3093. A session's slides, uploaded by its speakers from their edit links, on the session's admin page: every
+ * speaker's, each labelled with who uploaded it, listed with a download for each, and nothing there to change them.
  */
 describe('EventAddEditFormComponent, the Slides section (#3093)', () => {
-  const deck = { guid: 'f-1', name: 'Example watersheds.pptx', size: 3_300_000, uploaded: '2026-11-15T18:00:00.000Z' };
+  // Made-up speakers.
+  const deck = {
+    guid: 'f-1',
+    name: 'Example watersheds.pptx',
+    size: 3_300_000,
+    uploaded: '2026-11-15T18:00:00.000Z',
+    uploadedBy: 'Avery Example'
+  };
+  const theirs = { ...deck, guid: 'f-2', name: 'Lightning.pdf', size: 1024, uploadedBy: 'Blair Sample' };
+
+  it("lists every speaker's files, each labelled with who uploaded it", () => {
+    const { page } = render('edit', [deck, theirs]);
+
+    const files = [...page.querySelectorAll('.file')].map((f) => [
+      f.querySelector('.file-name').textContent.trim(),
+      f.querySelector('.file-detail').textContent.replace(/\s+/g, ' ').trim()
+    ]);
+
+    expect(files).toEqual([
+      ['Example watersheds.pptx', expect.stringMatching(/^Avery Example · 3\.1 MB · Nov 15/)],
+      ['Lightning.pdf', expect.stringMatching(/^Blair Sample · 1 KB · Nov 15/)]
+    ]);
+  });
 
   function render(type: 'create' | 'edit', files: Array<object> = [deck]) {
     const sessionFiles = { forEvent: jest.fn(() => of(files)), download: jest.fn(() => of(new Blob(['x']))) };

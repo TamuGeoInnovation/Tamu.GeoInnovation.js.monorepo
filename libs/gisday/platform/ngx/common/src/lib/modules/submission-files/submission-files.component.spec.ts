@@ -88,18 +88,21 @@ describe('SubmissionFilesComponent', () => {
     expect(element.querySelector('tamu-gisc-file')).toBeNull();
   });
 
-  /** #3093. The same list for a session's slides: one file, which the next upload replaces, and no download for a speaker. */
+  /**
+   * #3093. The same list for a session's slides: a speaker's own, up to three, with no download for them, and every
+   * speaker's for the admins, each labelled with who uploaded it.
+   */
   describe('with a source of its own (#3093)', () => {
     let source: { list: jest.Mock; add: jest.Mock; remove: jest.Mock };
 
-    function renderSource(files = [deck]) {
+    function renderSource(files: Array<object> = [deck]) {
       source = { list: jest.fn(() => of(files)), add: jest.fn(), remove: jest.fn(() => of(undefined)) };
       TestBed.configureTestingModule({ providers: [{ provide: UserSubmissionsService, useValue: service }] });
 
       const fixture = TestBed.createComponent(SubmissionFilesComponent);
       fixture.componentRef.setInput('source', source);
       fixture.componentRef.setInput('editable', true);
-      fixture.componentRef.setInput('max', 1);
+      fixture.componentRef.setInput('limitMessage', 'You can upload up to 3 files for each session.');
       fixture.componentRef.setInput('pickLabel', 'Upload slides');
       fixture.componentRef.setInput('emptyLabel', 'No slides uploaded yet.');
       fixture.detectChanges();
@@ -128,22 +131,54 @@ describe('SubmissionFilesComponent', () => {
 
       expect(element.querySelector('.files-empty').textContent.trim()).toBe('No slides uploaded yet.');
       expect(element.querySelector('tamu-gisc-file').textContent).toContain('Upload slides');
-      expect(element.querySelector('.files-limits').textContent).toContain('uploading again replaces it');
+      expect(element.querySelector('.files-limits').textContent).toContain('up to 3 files');
     });
 
-    it('offers Replace and Remove when there is one, and a replacement takes its place', () => {
+    it('adds an upload beside the file there, with Remove on each', () => {
       const { fixture, element } = renderSource();
       const final = { guid: 'f9', name: 'final.pdf', size: 2048, uploaded: '2026-11-15T18:00:00.000Z' };
       source.add.mockReturnValue(of({ type: HttpEventType.Response, body: final }));
 
-      expect(element.querySelector('tamu-gisc-file').textContent).toContain('Replace');
-      expect(element.textContent).toContain('Remove');
+      expect(element.querySelector('tamu-gisc-file').textContent).toContain('Upload slides');
 
       fixture.componentInstance.upload(new File(['x'], 'final.pdf'));
       fixture.detectChanges();
 
       expect(source.add).toHaveBeenCalledWith(expect.any(File));
-      expect([...element.querySelectorAll('.file-name')].map((e) => e.textContent.trim())).toEqual(['final.pdf']);
+      expect([...element.querySelectorAll('.file-name')].map((e) => e.textContent.trim())).toEqual([
+        'Texas Watersheds.pptx',
+        'final.pdf'
+      ]);
+      expect(element.querySelectorAll('button.danger')).toHaveLength(2);
+    });
+
+    it('refuses a fourth file before sending it, in the words it is given', () => {
+      const three = [1, 2, 3].map((n) => ({ ...deck, guid: `f${n}`, name: `deck ${n}.pdf` }));
+      const { fixture, element } = renderSource(three);
+
+      fixture.componentInstance.upload(new File(['x'], 'extra.pdf'));
+      fixture.detectChanges();
+
+      expect(source.add).not.toHaveBeenCalled();
+      expect(element.querySelector('[role=alert]').textContent).toBe(
+        'You can upload up to 3 files for each session. Remove one before adding another.'
+      );
+    });
+
+    it('labels each file with who uploaded it, where the source says', () => {
+      const { element } = renderSource([
+        { ...deck, uploadedBy: 'Avery Example' },
+        { ...deck, guid: 'f2', name: 'theirs.pdf', uploadedBy: 'Blair Sample' }
+      ]);
+
+      expect([...element.querySelectorAll('.file-by')].map((e) => e.textContent.trim())).toEqual([
+        'Avery Example',
+        'Blair Sample'
+      ]);
+    });
+
+    it('labels nothing on a list whose files carry no uploader', () => {
+      expect(renderSource().element.querySelector('.file-by')).toBeNull();
     });
 
     it('removes through the source', () => {

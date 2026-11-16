@@ -14,12 +14,12 @@ export class SessionFilesService {
   private readonly http = inject(HttpClient);
   private readonly resource = inject(EnvironmentService).value('api_url') + '/session-files';
 
-  /** The sessions the link's speaker presents this season, each with its slides. */
+  /** The sessions the link's speaker presents this season, each with the files that speaker uploaded. */
   public forLink(token: string) {
     return this.http.get<Array<SpeakerSessionDto>>(this.link(token));
   }
 
-  /** Uploads, or replaces, a session's slides, reporting the upload's progress as it goes. */
+  /** Adds a file to the speaker's slides for a session, up to three, reporting the upload's progress as it goes. */
   public upload(token: string, eventGuid: string, file: File): Observable<HttpEvent<SubmissionFileDto>> {
     const body = new FormData();
 
@@ -31,11 +31,12 @@ export class SessionFilesService {
     });
   }
 
-  public remove(token: string, eventGuid: string) {
-    return this.http.delete<void>(`${this.link(token)}/${eventGuid}`);
+  /** Removes one of the speaker's own files. */
+  public remove(token: string, eventGuid: string, fileGuid: string) {
+    return this.http.delete<void>(`${this.link(token)}/${eventGuid}/${fileGuid}`);
   }
 
-  /** A session's slides, for its admin page. */
+  /** Every speaker's files for a session, each with who uploaded it, for its admin page. */
   public forEvent(eventGuid: string) {
     return this.http.get<Array<SubmissionFileDto>>(`${this.resource}/event/${eventGuid}`);
   }

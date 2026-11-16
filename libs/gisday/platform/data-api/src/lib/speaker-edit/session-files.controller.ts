@@ -28,7 +28,7 @@ import { SpeakerEditLinkGuard, SpeakerLinkRequest } from './speaker-edit-link.gu
 export class SessionFilesController {
   constructor(private readonly files: SessionFilesService) {}
 
-  /** The speaker's sessions this season, each with its slides. */
+  /** The speaker's sessions this season, each with the files that speaker uploaded for it. */
   @UseGuards(SpeakerEditLinkGuard)
   @Get('link/:token')
   public forLink(@Request() req: SpeakerLinkRequest) {
@@ -36,9 +36,9 @@ export class SessionFilesController {
   }
 
   /**
-   * Uploads, or replaces, a session's slides: received as a submission's file is. The session is not checked by a pipe,
-   * which runs after the file is written and would leave it behind; the service refuses one that is not the speaker's
-   * and removes the file.
+   * Adds a file to the speaker's own slides for a session, up to three: received as a submission's file is. The session
+   * is not checked by a pipe, which runs after the file is written and would leave it behind; the service refuses one
+   * that is not the speaker's, or a fourth file, and removes the file.
    */
   @UseGuards(SpeakerEditLinkGuard)
   @Post('link/:token/:event')
@@ -51,11 +51,16 @@ export class SessionFilesController {
     return this.files.upload(req.speakerEditLink, event, file);
   }
 
+  /** Removes one of the speaker's own files; another speaker's reads as not found. */
   @UseGuards(SpeakerEditLinkGuard)
-  @Delete('link/:token/:event')
+  @Delete('link/:token/:event/:file')
   @HttpCode(204)
-  public remove(@Param('event', ParseUUIDPipe) event: string, @Request() req: SpeakerLinkRequest) {
-    return this.files.remove(req.speakerEditLink, event);
+  public remove(
+    @Param('event', ParseUUIDPipe) event: string,
+    @Param('file', ParseUUIDPipe) file: string,
+    @Request() req: SpeakerLinkRequest
+  ) {
+    return this.files.remove(req.speakerEditLink, event, file);
   }
 
   /** Which of a season's sessions have slides, for the admins' list. */
@@ -66,7 +71,7 @@ export class SessionFilesController {
     return this.files.forSeason(guid);
   }
 
-  /** A session's slides, for its admin page. */
+  /** Every speaker's files for a session, each labelled with who uploaded it, for its admin page. */
   @Permissions(['update:events'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Get('event/:guid')

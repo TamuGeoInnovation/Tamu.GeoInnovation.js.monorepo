@@ -24,11 +24,20 @@ export interface SubmissionFileDto {
   /** Bytes, or null when the file is listed but missing from disk. */
   size: number | null;
   uploaded: string | Date;
+  /**
+   * Who uploaded it, where a list holds several people's files: the speaker's name on a session's slides, for the admins
+   * (#3093). Left out of a submission's files, which are one student's.
+   */
+  uploadedBy?: string;
 }
 
+/** Why a speaker may not add a fourth file to a session (#3093): each speaker uploads their own, up to three. */
+export const SESSION_FILES_LIMIT = `You can upload up to ${SUBMISSION_FILE_RULES.maxFiles} files for each session.`;
+
 /**
- * A session a speaker presents, as their edit link lists it (#3093): when and where, and its slides, if any. A session
- * has one set of slides, under the same rules as a submission's files; uploading again replaces it.
+ * A session a speaker presents, as their edit link lists it (#3093): when and where, and the slides that speaker has
+ * uploaded for it. Each speaker of a session uploads their own, up to three files under a submission's rules, and sees
+ * only their own.
  */
 export interface SpeakerSessionDto {
   guid: string;
@@ -39,10 +48,11 @@ export interface SpeakerSessionDto {
   endTime: string | null;
   /** The building and room, or null. */
   place: string | null;
-  file: SubmissionFileDto | null;
+  /** The files this speaker uploaded, oldest first; none is []. */
+  files: Array<SubmissionFileDto>;
 }
 
-/** A session's slides, as the admins' list of a season's sessions reads them (#3093). */
+/** One file of a session's slides, as the admins' list of a season's sessions reads them (#3093). */
 export interface SessionSlidesDto {
   /** The session's guid. */
   event: string;
@@ -51,9 +61,15 @@ export interface SessionSlidesDto {
 
 /**
  * Why a file may not be attached, in words for the student, or null when it may. `alreadyAttached` is how many files the
- * submission holds before this one.
+ * submission holds before this one; `limit` says the limit to someone who has reached it, a submission's by default, or
+ * `SESSION_FILES_LIMIT` for a speaker's slides.
  */
-export function submissionFileProblem(fileName: string, bytes: number, alreadyAttached: number): string | null {
+export function submissionFileProblem(
+  fileName: string,
+  bytes: number,
+  alreadyAttached: number,
+  limit = `A submission can have up to ${SUBMISSION_FILE_RULES.maxFiles} files.`
+): string | null {
   const extension = extensionOf(fileName);
 
   if (!SUBMISSION_FILE_RULES.extensions.includes(extension)) {
@@ -69,7 +85,7 @@ export function submissionFileProblem(fileName: string, bytes: number, alreadyAt
   }
 
   if (alreadyAttached >= SUBMISSION_FILE_RULES.maxFiles) {
-    return `A submission can have up to ${SUBMISSION_FILE_RULES.maxFiles} files. Remove one before adding another.`;
+    return `${limit} Remove one before adding another.`;
   }
 
   return null;
