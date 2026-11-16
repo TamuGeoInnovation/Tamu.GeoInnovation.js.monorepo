@@ -8872,3 +8872,13 @@ pushed (no force). Report "images pushed: <sha>".
 (1(a) of 107-again: as it is; CI runs on the merge). Report 107: 1(a), keep `gisday.local.test` with the flag; a
 `*.localhost` name is one try after GIS Day. 2(a), yes: more than one page per sign-in at `gisday.local.test` with the
 flag, still never accepting a consent screen. The maintainer's rerun of the Auth0 script waits for PR 3160 to merge.
+
+## Batch 115 (gisday: #3162's screenshots; 16 November 2026, from `work (gisday)`) - **now**
+
+[#3162](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3162): the phone menu's Account card
+lists **Admin** for admins, managers and organizers. **Do not change the code.** Branch `fix/3162-phone-menu-admin` on the
+fork (it appears when its check passes). As gisday.tamu.edu at a phone's width (390 × 844), signed in as the test admin:
+the hamburger menu open, Account tapped - **before** (`development`) `before-account-menu.png`, **after** (the branch)
+`after-account-menu.png`, and after, Admin tapped, the admin page it opens, `after-admin-page.png`. To
+`docs/screenshots/3162-phone-menu-admin/`, plus `docs/releases/unreleased/3162-phone-menu-admin.md` with its *What to test
+on dev* row, on the branch. Report "images pushed: <sha>".
