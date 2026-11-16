@@ -130,7 +130,7 @@ describe('SlidesRequestEmailService', () => {
     const mail = sent.find((m) => m.to === 'avery@example.com');
 
     expect(mail.html).toContain('GIS DAY(S)');
-    expect(mail.html).toContain('November 16–20, 2026');
+    expect(mail.html).toContain('November 16â€“20, 2026');
     expect(mail.html).toContain('<b>Where:</b> MSC 2300');
     expect(mail.html).toContain('LINK-OF-sp-av');
     expect(mail.html).not.toContain('LINK-OF-sp-bl');
