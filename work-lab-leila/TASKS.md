@@ -8494,3 +8494,13 @@ force). Report "images pushed: <sha>".
 **Decided (the director):** the image tables for #3083 and #2574 are added by the director, not home (done, on their
 branches). #2574's cut-off note: the search image stands in, and the note is checked on production (already a row in
 *What to test on dev*). PRs: #1765 is PR 3109, #2574 is PR 3106, #3083's opens after its check. Carry on with 92, then 88.
+
+## Batch 93 (gisday: #3074's screenshots, Low; 15 November 2026, from `work (gisday)`) - **after 92, before 88 resumes**
+
+[#3074](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3074), built by the home machine:
+branch `fix/3074-image-upload-rule` on the fork at `779724db6` (`.pr-body.md` last; leave it). **Do not change the code.**
+As the local test admin, 1280 px, before (`development`) and after (the branch), each after choosing an SVG file: the
+Organization, Place and Speaker edit forms, and a presenter's edit link (390 px for that one). Before: previewed, no
+message; after: "The logo/photo must be a JPEG or PNG image." under the picker, preview unchanged. Save nothing. To
+`docs/screenshots/3074-image-upload-rule/`, and add the image table to the release note `3074-image-upload-rule.md`. One
+commit, fetched and rebased first, pushed (no force). Report "images pushed: <sha>".
