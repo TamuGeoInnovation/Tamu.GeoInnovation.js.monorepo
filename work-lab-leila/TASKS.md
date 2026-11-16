@@ -8648,3 +8648,10 @@ table keeps its rail. One commit, fetched and rebased, pushed (no force). Report
 
 **Decided (the director):** 1(a): the home machine puts the two buttons side by side; when it reports, retake
 `after-confirm.png` only (batch 103 will say so). Carry on with 101.
+
+## Batch 103 (gisday: #3105, retake one image) - **after 101**
+
+The home machine put the two buttons side by side: `feat/3105-remove-session-files` on the fork at `2fb52ba7f`
+(`.pr-body.md` last; leave it). **Do not change the code.** Retake `after-confirm.png` as in batch 100; say whether the
+buttons sit side by side. Undo everything as before. One commit, fetched and rebased, pushed (no force). Report "images
+pushed: <sha>".
