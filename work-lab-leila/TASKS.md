@@ -8457,3 +8457,17 @@ greeting naming them all; the repeat guard counts a together send once. Also lea
 broadcast line with no value). In the shared composer where it fits, so the profile email can use it later. Branch from
 the latest `development` (with #3100's "Send as" if merged; say which). Tests red first; the check; screenshots (the
 ticks and the choice, the together preview); a release note. **Send no real email.** Report "branch ready".
+
+## Batch 91 (gisday: screenshots for #1765 and #2574; 15 November 2026, about 7:20 PM Central, from `work (gisday)`) - **after 89, before 88 resumes**
+
+Two branches whose builders cannot sign in as a local admin or capture the site. **Do not change their code.**
+1. **#1765**, branch `fix/1765-page-not-found` on the fork (latest commit), from `development`: `/no-such-page` at 1280
+   px, the whole first screen, before (`development`: the blank page at `/`) and after (the Sorry page, "We couldn't find
+   that page.", with its two links). To `docs/screenshots/1765-page-not-found/before.png` and `after.png` (the release
+   note already links those names).
+2. **#2574**, branch `fix/2574-gisday-admin-users` on the fork, once the home machine reports it ready (check the
+   branch's latest commit says so in its message or the home report `home/reports/`; if not ready, do 1 and say so):
+   Admin → Users as the local test admin, 1280 px, after only: the list with its cut-off note (if your local tenant has
+   fewer than 1,000 users, say so and capture the search instead), and a search result.
+One commit per branch, `docs(screenshots): #<n>'s before and after`, fetched and rebased first, pushed (no force).
+Report "images pushed" with each sha.
