@@ -8417,3 +8417,18 @@ with a reason. Replies go to the chosen sender. Tests red first, including a ref
 full check; screenshots (the box, the preview showing the sender); a release note; the new setting documented in
 kubernetes-config's `6. GIS Day/README.md` table on its own branch, **no cluster change**. **Send no real email**: the
 real-relay test is the maintainer's, after deploy. Report "branch ready".
+
+## Batch 87b (gisday: #3093 changes, URGENT, out tonight; 15 November 2026, about 6:45 PM Central, from `work (gisday)`) (Urgent) - **pause 88 at a safe point, do this, then go back to 88**
+
+**Decided (the maintainer) on report 87: 1A, 2A, 3B.** It goes out **tonight**.
+- **1A:** each speaker uploads their own slides, **up to 3 files per session per speaker**, each with its own Remove; a
+  speaker sees and can remove **only their own** files (an `Asset` already has a `speaker` relation: set it with the
+  `event`, and scope the edit-link routes to the link's speaker). Admins see every speaker's files on the session page,
+  each labelled with who uploaded it. If this needs no column beyond `eventGuid`, the migration is unchanged; if it
+  does, regenerate it and update `migrate-prod-3093.ps1` to match (never run).
+- **2A:** no deadline; leave it out.
+- Your question 2 (`scrub.sql`): the director files it as its own issue.
+Start from **`fork/feat/3093-speaker-slides`** as it is now: the director merged `development` into it (with #3092's
+squash, conflicts resolved, `.pr-body.md` removed; the PR body is with the director). Tests red first for the new rules
+(a third... fourth file refused; another speaker's file not listed or removable); the full check; replace the screenshots
+that change; update the release note. Push to the same branch (no force). Report "branch ready" with the sha.
