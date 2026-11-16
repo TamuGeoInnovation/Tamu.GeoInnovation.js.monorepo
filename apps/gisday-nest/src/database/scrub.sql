@@ -17,7 +17,7 @@ DECLARE @target sysname = N'gisday-scrubbed';
 -- `updated` and `created` are kept everywhere and are not listed.
 DECLARE @kept TABLE (tbl sysname, cols nvarchar(max));
 INSERT @kept VALUES
-  (N'assets', N'guid,type,organizationGuid,speakerGuid,sponsorGuid,placesGuid,submissionGuid'),
+  (N'assets', N'guid,type,organizationGuid,speakerGuid,sponsorGuid,placesGuid,submissionGuid,eventGuid,uploadedByGuid'),
   (N'checkins', N'guid,eventGuid,outsideSessionTime'),
   (N'classes', N'guid,title,code,seasonGuid,number,section'),
   (N'course_credits', N'guid,eventGuid,classGuid'),
