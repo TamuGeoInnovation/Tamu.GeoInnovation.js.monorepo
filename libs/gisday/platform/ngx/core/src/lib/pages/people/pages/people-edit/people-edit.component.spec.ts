@@ -106,4 +106,33 @@ describe('PeopleEditComponent photo (#2956)', () => {
     expect(preview()?.querySelector('.material-icons')?.textContent?.trim()).toBe('person');
     expect(banner()).toBeNull();
   });
+
+  /**
+   * #3074. The presenter's own page reads the shared upload rule (#2937, #3009), as the admin forms do, and refuses in
+   * the API's words; it had its own check and its own wording.
+   */
+  describe('choosing a photo', () => {
+    const alert = (root: HTMLElement) => root.querySelector('[role="alert"]')?.textContent?.trim();
+
+    it("refuses an SVG in the API's words, and keeps no photo", async () => {
+      const { fixture, root } = await open();
+
+      fixture.componentInstance.choosePhoto(new File(['<svg/>'], 'me.svg', { type: 'image/svg+xml' }));
+      fixture.detectChanges();
+
+      expect(alert(root)).toBe('The photo must be a JPEG or PNG image.');
+      expect(fixture.componentInstance.photo()).toBeNull();
+    });
+
+    it('refuses a photo over 5 MB, and keeps no photo', async () => {
+      const { fixture, root } = await open();
+      const big = new File([new Uint8Array(5 * 1024 * 1024 + 1)], 'me.png', { type: 'image/png' });
+
+      fixture.componentInstance.choosePhoto(big);
+      fixture.detectChanges();
+
+      expect(alert(root)).toBe('The photo must be 5 MB or smaller.');
+      expect(fixture.componentInstance.photo()).toBeNull();
+    });
+  });
 });
