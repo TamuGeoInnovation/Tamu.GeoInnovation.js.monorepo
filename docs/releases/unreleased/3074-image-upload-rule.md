@@ -8,7 +8,7 @@ testOnDev: |
 ### GIS Day: every image picker refuses what the server would, as soon as a file is chosen
 
 The sponsor form's logo picker already refused a file the server would refuse as soon as it was chosen, in the server's
-words (#3009). The organization, place and speaker forms and a presenter's own edit page each had their own copy of
+words ([#3009](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3009)). The organization, place and speaker forms and a presenter's own edit page each had their own copy of
 the allowed types, or none, so an SVG was taken, previewed, and only refused on save. Every picker now uses one shared
 rule: JPEG or PNG, up to 5 MB, refused at once with the same message
 ([#3074](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3074)).

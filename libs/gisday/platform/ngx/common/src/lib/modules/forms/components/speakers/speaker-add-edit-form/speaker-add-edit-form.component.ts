@@ -73,7 +73,7 @@ export class SpeakerAddEditFormComponent implements OnInit {
   public form: UntypedFormGroup;
 
   /** The photo picker, on the shared upload rule (#3074). */
-  public readonly photo = new UploadImagePicker('The photo');
+  public readonly photoPicker = new UploadImagePicker('The photo');
 
   public ngOnInit() {
     this.form = this.fb.group({
