@@ -8643,3 +8643,8 @@ table keeps its rail. One commit, fetched and rebased, pushed (no force). Report
 `development` (your own commits, cherry-picked) and opens it. **Don't push to `feat/3113-ask-for-slides` meanwhile.**
 2(a): keep the per-process guard; #3098's shared table now covers the slides email too (noted on the issue). Carry on:
 102, 100, 101.
+
+## Report 100, answered
+
+**Decided (the director):** 1(a): the home machine puts the two buttons side by side; when it reports, retake
+`after-confirm.png` only (batch 103 will say so). Carry on with 101.
