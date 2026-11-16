@@ -8504,3 +8504,13 @@ Organization, Place and Speaker edit forms, and a presenter's edit link (390 px 
 message; after: "The logo/photo must be a JPEG or PNG image." under the picker, preview unchanged. Save nothing. To
 `docs/screenshots/3074-image-upload-rule/`, and add the image table to the release note `3074-image-upload-rule.md`. One
 commit, fetched and rebased first, pushed (no force). Report "images pushed: <sha>".
+
+## Batch 94 (gisday: #2582's screenshots, Low; 15 November 2026, from `work (gisday)`) - **after 93, before 88 resumes**
+
+[#2582](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2582), built by the home machine:
+branch `fix/2582-designer-feedback` on the fork at `5b6a35de0` (`.pr-body.md` last; leave it). **Do not change the code.**
+As the local test admin, 1280 px, Admin, VGI Competition, Form Designer, before (`development`) and after (the branch):
+Fetch Schema with this site's `/assets/competitions/2026-monument-trail.json` (after: "Found N fields"), and with another
+site's address (after: "Couldn't load that address…"); after only, the moment it is fetching if you can catch it. Save
+nothing. To `docs/screenshots/2582-designer-feedback/`, with the image table added to the release note
+`2582-designer-feedback.md`. One commit, fetched and rebased first, pushed (no force). Report "images pushed: <sha>".
