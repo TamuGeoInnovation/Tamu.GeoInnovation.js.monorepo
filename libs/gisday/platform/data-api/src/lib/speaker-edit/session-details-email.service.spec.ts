@@ -80,6 +80,13 @@ describe('SessionDetailsEmailService', () => {
     expect(preview.noAddress).toEqual(['Dee Fox']);
   });
 
+  it('keeps when and where in the text on a site without the design, where nothing else says them (#3114)', async () => {
+    const [group] = (await service.preview('e-1', 'gisday.ucgis.org')).groups;
+
+    expect(group.template).toContain('**When:** Thursday, November 19, 2026, 1:00 to 2:15 PM Central');
+    expect(group.template).toContain('**Where:**');
+  });
+
   it('sends each speaker with an address their own copy, as edited, from the site, as Markdown and HTML', async () => {
     const result = await service.send('e-1', 'gisday.tamu.edu', {
       subject: 'About {site}',
