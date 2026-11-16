@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **#2574 (High, Admin > Users 500)**: started 7:01 PM Central, 15 November, branch `fix/2574-users-past-1000`. **#3098 parked** (committed locally, not pushed; kubernetes-config script committed locally, never run).
+- Nothing. Idle and listening since 7:15 PM Central, 15 November. **#3098 parked** (committed locally, not pushed; kubernetes-config script committed locally, never run).
 
 ## Finished
+- **#2574 brought up to date (batch 25, redone)** (report `home/reports/2026-11-15-25-update.md`): branch ready, `fix/2574-gisday-admin-users` on the fork at `9b4b91ec9`, no PR. Development merged; two new callers fixed; full check exit 0 (11 projects). One question.
 - **Batch 59 (gisday: #3102)** (report `home/reports/2026-11-15-59.md`): branch ready, `fix/3102-scrub-coverage` at `25e15c95c`. A check comparing scrub.sql with every entity column found 39 unnamed; all classified; script proven end to end in a throwaway SQL Server. No questions.
 - **Batch 58 (gisday)** (report `home/reports/2026-11-15-58.md`): #3038 and #3029 already done elsewhere (PRs 3071, 3072); #3039 by the director (PR 3040). Branches ready: `test/3101-route-permissions` `dee6d2403`, `fix/3083-edit-decision-message` `6d5e1ed7c`. Stalled 9:40 AM to 6:26 PM at a question to the maintainer (my mistake). No questions.
 - **Batch 55 (gisday: #3026, #3024)** (report `home/reports/2026-11-15-55.md`): both branches ready: `fix/3026-submissions-table-fit` `a4ef225fe` and `fix/3024-unread-by-site` `39f2cb518` (the API applies the site filter; the browser filter is gone). Red first; checks exit 0. No questions.
