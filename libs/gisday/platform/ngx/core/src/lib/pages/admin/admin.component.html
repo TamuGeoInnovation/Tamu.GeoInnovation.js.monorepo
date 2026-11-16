@@ -20,6 +20,12 @@
           <li>
             <a [routerLink]="['./dashboards/check-ins']" queryParamsHandling="merge" routerLinkActive="active">Check-ins</a>
           </li>
+          <!-- The VGI competition's own dashboard (#2894), only where the site runs the competition. -->
+          @if ('competitions' | siteHas) {
+          <li>
+            <a [routerLink]="['./dashboards/vgi-submissions']" queryParamsHandling="merge" routerLinkActive="active">VGI submissions</a>
+          </li>
+          }
           <li>
             <a [routerLink]="['./dashboards/accounts']" queryParamsHandling="merge" routerLinkActive="active">User accounts</a>
           </li>

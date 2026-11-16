@@ -9,8 +9,11 @@ import { downloadFile } from '@tamu-gisc/common/utils/ui';
 
 import type { DashboardTableColumn } from '../dashboard-table/dashboard-table.component';
 
-/** A person as every dashboard lists them: their profile, and when they did what the dashboard counts. */
-export type DashboardPerson = RsvpDashboardPerson;
+/**
+ * A person as every dashboard lists them: their profile, when they did what the dashboard counts, and any counts of
+ * their own, such as a VGI submitter's submissions (#2894).
+ */
+export type DashboardPerson = RsvpDashboardPerson & { counts?: Record<string, number> };
 
 export interface DashboardPeopleGroup {
   type: RsvpPersonType;
@@ -29,8 +32,15 @@ export function groupPeople(people: Array<DashboardPerson>): Array<DashboardPeop
   })).filter((group) => group.people.length > 0);
 }
 
-/** People as a CSV, one row each, grouped as the page shows them; `dateLabel` heads the column of when they did it. */
-export function peopleCsv(people: Array<DashboardPerson>, dateLabel: string): string {
+/**
+ * People as a CSV, one row each, grouped as the page shows them; `dateLabel` heads the column of when they did it, after
+ * any `countColumns`.
+ */
+export function peopleCsv(
+  people: Array<DashboardPerson>,
+  dateLabel: string,
+  countColumns: Array<DashboardTableColumn> = []
+): string {
   const columns = [
     'Last name',
     'First name',
@@ -40,6 +50,7 @@ export function peopleCsv(people: Array<DashboardPerson>, dateLabel: string): st
     'Position',
     'Department / field of study',
     'University / employer',
+    ...countColumns.map((c) => c.label),
     dateLabel
   ];
   const rows = groupPeople(people).flatMap((group) =>
@@ -52,6 +63,7 @@ export function peopleCsv(people: Array<DashboardPerson>, dateLabel: string): st
       Position: p.position ?? '',
       'Department / field of study': p.department ?? '',
       'University / employer': p.organization ?? '',
+      ...Object.fromEntries(countColumns.map((c) => [c.label, p.counts?.[c.key] ?? 0])),
       [dateLabel]: p.created
     }))
   );
@@ -94,6 +106,8 @@ export class DashboardPeopleComponent {
   /** The heading of the column of when each person did what is counted, such as "RSVP'd". */
   public readonly dateLabel = input('When');
   public readonly emptyText = input('Nobody yet.');
+  /** Counts of each person's own, shown before the date, such as a submitter's submissions (#2894). */
+  public readonly countColumns = input<Array<DashboardTableColumn>>([]);
 
   public readonly groups = computed(() => groupPeople(this.people() ?? []));
   public readonly isStudent = isStudent;
@@ -102,7 +116,7 @@ export class DashboardPeopleComponent {
     const people = this.people();
 
     if (people) {
-      downloadFile(peopleCsv(people, this.dateLabel()), `${this.fileName()}.csv`, 'text/csv');
+      downloadFile(peopleCsv(people, this.dateLabel(), this.countColumns()), `${this.fileName()}.csv`, 'text/csv');
     }
   }
 }

@@ -33,6 +33,11 @@ export interface DashboardTableRow {
 export interface DashboardTableColumn {
   key: string;
   label: string;
+  /**
+   * The total row's figure, when the column's counts do not add up: a person counted in two rows is one person (#2894).
+   * Without it, the column's sum.
+   */
+  total?: number;
 }
 
 /**
@@ -140,6 +145,10 @@ export class DashboardTableComponent {
   public readonly compareNames = compareNames;
   public readonly compareTimes = compareTimes;
   public readonly sum = (cells: Array<number>) => cells.reduce((total, n) => total + (Number(n) || 0), 0);
+  /** Each count column's total: its own, or its sum. Made once per set of columns, so the table is not redrawn. */
+  public readonly summaries = computed(
+    () => new Map(this.columns().map((c) => [c.key, c.total === undefined ? this.sum : () => c.total]))
+  );
   public readonly totalName = () => this.totalLabel();
   public readonly blank = () => '';
 

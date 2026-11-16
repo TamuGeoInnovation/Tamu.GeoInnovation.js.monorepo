@@ -19,6 +19,9 @@
       <th>{{ isStudent(group.type) ? 'Classification' : 'Position' }}</th>
       <th>{{ isStudent(group.type) ? 'Field of study' : 'Department' }}</th>
       <th>{{ isStudent(group.type) ? 'University' : 'Employer' }}</th>
+      @for (column of countColumns(); track column.key) {
+      <th>{{ column.label }}</th>
+      }
       <th>{{ dateLabel() }}</th>
     </tr>
   </thead>
@@ -30,6 +33,9 @@
       <td>{{ isStudent(group.type) ? person.classification : person.position }}</td>
       <td>{{ person.department }}</td>
       <td>{{ person.organization }}</td>
+      @for (column of countColumns(); track column.key) {
+      <td>{{ person.counts?.[column.key] ?? 0 }}</td>
+      }
       <td>{{ person.created | date: 'MMM d, h:mm a' }}</td>
     </tr>
     }
