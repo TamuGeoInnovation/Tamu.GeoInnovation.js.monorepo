@@ -8814,3 +8814,14 @@ FAQ page coming back, `before-signed-in.png`; **after** (the branch): the "You'r
 `after-signed-in.png`. **Do not click Log out** unless it is the run's last step; if you do, say so. To
 `docs/screenshots/3154-already-signed-in/`, plus `docs/releases/unreleased/3154-already-signed-in.md` with its *What to
 test on dev* row, on the branch. Report "images pushed: <sha>".
+
+## Batch 113 (gisday: #3143's screenshots, Low; 16 November 2026, from `work (gisday)`) - **after 112, before 107**
+
+[#3143](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3143): gisday.tamu.edu's inline links
+(a session's slide files) and slide toggles turn maroon. **Do not change the code.** Branch `fix/3143-maroon-links` on the
+fork. 1280 px, signed in as the test admin, a made-up session with one made-up slide file: Admin, Events, the session,
+Slides - **before** (`development`) `before-slides-tamu.png`, **after** (the branch) `after-slides-tamu.png`, both as
+gisday.tamu.edu; and **after** as txgisday.org, to show it unchanged, `after-slides-txgisday.png`; plus any page with a
+slide toggle as gisday.tamu.edu, after, `after-toggle-tamu.png` (a submission's classification is one). Say whether
+anything else on the pages you open is still blue. To `docs/screenshots/3143-maroon-links/`, plus
+`docs/releases/unreleased/3143-maroon-links.md`, on the branch. Report "images pushed: <sha>".
