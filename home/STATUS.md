@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch 60 (gisday: #3098)**, session details email repeat guard in a shared table; started 6:51 PM Central, 15 November.
+- **#2574 (High, Admin > Users 500)**: started 7:01 PM Central, 15 November, branch `fix/2574-users-past-1000`. **#3098 parked** (committed locally, not pushed; kubernetes-config script committed locally, never run).
 
 ## Finished
 - **Batch 59 (gisday: #3102)** (report `home/reports/2026-11-15-59.md`): branch ready, `fix/3102-scrub-coverage` at `25e15c95c`. A check comparing scrub.sql with every entity column found 39 unnamed; all classified; script proven end to end in a throwaway SQL Server. No questions.
