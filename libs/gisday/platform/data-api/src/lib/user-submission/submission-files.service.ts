@@ -54,7 +54,7 @@ export class SubmissionFilesService {
   public async list(submissionGuid: string, user: OwnershipUser): Promise<Array<SubmissionFileDto>> {
     const submission = await this.submissionFor(submissionGuid, user, 'read:competitions');
 
-    return Promise.all((submission.files ?? []).sort(byUploaded).map((file) => this.toDto(file)));
+    return Promise.all((submission.files ?? []).sort(byUploaded).map((file) => fileDto(file)));
   }
 
   /**
@@ -77,23 +77,14 @@ export class SubmissionFilesService {
         throw new BadRequestException(problem);
       }
 
-      const guid = crypto.randomUUID();
-      const folder = `submissions/${submission.guid}`;
-      const path = `${folder}/${guid}${extensionOf(upload.originalname)}`;
-
-      await mkdir(join(`${process.env.APP_DATA}`, folder), { recursive: true });
-      await rename(upload.path, join(`${process.env.APP_DATA}`, path));
-
+      const { guid, path } = await storeUpload(upload, `submissions/${submission.guid}`);
       const saved = await this.assets.save(
         this.assets.create({ guid, name: upload.originalname, path, type: SUBMISSION_FILE_TYPE, submission })
       );
 
-      return this.toDto(saved);
+      return fileDto(saved);
     } finally {
-      // Gone once moved; still there if anything above refused it.
-      if (upload?.path) {
-        await unlink(upload.path).catch(() => undefined);
-      }
+      await discardUpload(upload);
     }
   }
 
@@ -111,22 +102,7 @@ export class SubmissionFilesService {
   /** One file, under the name it was uploaded with. */
   public async download(submissionGuid: string, fileGuid: string, user: OwnershipUser): Promise<StreamableFile> {
     const submission = await this.submissionFor(submissionGuid, user, 'read:competitions');
-    const file = this.fileOf(submission, fileGuid);
-    const onDisk = join(`${process.env.APP_DATA}`, file.path);
-    const size = await stat(onDisk)
-      .then((s) => s.size)
-      .catch(() => null);
-
-    if (size === null) {
-      Logger.error(`Submission file ${onDisk} is listed but missing from disk.`, 'SubmissionFilesService');
-      throw new NotFoundException(`${file.name} is missing from the server.`);
-    }
-
-    return new StreamableFile(createReadStream(onDisk), {
-      type: contentTypeOf(file.name),
-      length: size,
-      disposition: attachment(file.name)
-    });
+    return fileDownload(this.fileOf(submission, fileGuid), 'SubmissionFilesService');
   }
 
   /**
@@ -211,14 +187,55 @@ export class SubmissionFilesService {
 
     return file;
   }
+}
 
-  private async toDto(file: Asset): Promise<SubmissionFileDto> {
-    const size = await stat(join(`${process.env.APP_DATA}`, file.path))
-      .then((s) => s.size)
-      .catch(() => null);
+/**
+ * Keeps an upload Multer has written to the uploading folder: moved, under a new guid and its own extension, into
+ * `folder` under APP_DATA. The submissions' files (#2933) and the session speakers' slides (#3093) are kept this way.
+ */
+export async function storeUpload(upload: Express.Multer.File, folder: string): Promise<{ guid: string; path: string }> {
+  const guid = crypto.randomUUID();
+  const path = `${folder}/${guid}${extensionOf(upload.originalname)}`;
 
-    return { guid: file.guid, name: file.name, size, uploaded: file.created };
+  await mkdir(join(`${process.env.APP_DATA}`, folder), { recursive: true });
+  await rename(upload.path, join(`${process.env.APP_DATA}`, path));
+
+  return { guid, path };
+}
+
+/** Removes what is left of an upload: nothing once `storeUpload` has moved it, the whole file if it was refused. */
+export async function discardUpload(upload: Express.Multer.File | undefined): Promise<void> {
+  if (upload?.path) {
+    await unlink(upload.path).catch(() => undefined);
   }
+}
+
+/** A kept file as the API lists it: its name, its size on disk (null when missing) and when it came. */
+export async function fileDto(file: Asset): Promise<SubmissionFileDto> {
+  const size = await stat(join(`${process.env.APP_DATA}`, file.path))
+    .then((s) => s.size)
+    .catch(() => null);
+
+  return { guid: file.guid, name: file.name, size, uploaded: file.created };
+}
+
+/** One kept file, streamed under the name it was uploaded with; not found, and logged, when it is missing from disk. */
+export async function fileDownload(file: Asset, context: string): Promise<StreamableFile> {
+  const onDisk = join(`${process.env.APP_DATA}`, file.path);
+  const size = await stat(onDisk)
+    .then((s) => s.size)
+    .catch(() => null);
+
+  if (size === null) {
+    Logger.error(`File ${onDisk} is listed but missing from disk.`, context);
+    throw new NotFoundException(`${file.name} is missing from the server.`);
+  }
+
+  return new StreamableFile(createReadStream(onDisk), {
+    type: contentTypeOf(file.name),
+    length: size,
+    disposition: attachment(file.name)
+  });
 }
 
 /**

@@ -150,6 +150,21 @@ describe('SpeakerEditService', () => {
     expect(sent[0].text).toContain('https://gisday.tamu.edu/presenters/edit/');
   });
 
+  // #3100: the sender the admin chose in the window, as the controller checked it, is the From, and replies go to it.
+  it('sends as the sender chosen, with replies to it, and from the site when none was chosen', async () => {
+    const chosen = { from: '"Jo Admin (Texas A&M GIS Day)" <jadmin@tamu.edu>', replyTo: 'jadmin@tamu.edu' };
+    const previousFrom = process.env.MAILROOM_FROM;
+    process.env.MAILROOM_FROM = 'TxGIS Day <gisday@example.edu>';
+
+    await service.sendLinks(['speaker-ana'], 'gisday.tamu.edu', undefined, chosen);
+    links = [];
+    await service.sendLinks(['speaker-ana'], 'gisday.tamu.edu');
+
+    process.env.MAILROOM_FROM = previousFrom;
+    expect(sent[0]).toEqual(expect.objectContaining(chosen));
+    expect(sent[1]).toEqual(expect.objectContaining({ from: '"Texas A&M GIS Day" <gisday@example.edu>' }));
+  });
+
   /**
    * #3023: the email is shown and editable before it goes, as the acceptance emails are: one group, today's subject and
    * text as the default, and an example for the first speaker with a stand-in for the link, never a real one.
@@ -590,6 +605,16 @@ describe('SpeakerEditService.sendLinksForSubmissions (#2958)', () => {
     });
 
     expect(sent.map((m) => m.text.split(':')[0])).toEqual(['Hi Ana', 'Hi Cy']);
+  });
+
+  // #3100: the finalists' profile email goes as the sender the admin chose, to every one of them.
+  it('sends as the sender chosen, with replies to it', async () => {
+    const chosen = { from: '"Jo Admin (TxGIS Day)" <jadmin@tamu.edu>', replyTo: 'jadmin@tamu.edu' };
+
+    await service.sendLinksForSubmissions([S1, S2], 'gisday.tamu.edu', undefined, chosen);
+
+    expect(sent).toHaveLength(2);
+    expect(sent).toEqual([expect.objectContaining(chosen), expect.objectContaining(chosen)]);
   });
 
   // #3044: the text may use Markdown; it goes as HTML beside the plain text, and HTML typed into it is not obeyed.

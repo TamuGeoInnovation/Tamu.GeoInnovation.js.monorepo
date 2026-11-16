@@ -59,7 +59,7 @@ describe('EventDetailComponent check-in', () => {
       roles = [],
       anyTime = false,
       sessionCheckIns = () => of([] as Array<Record<string, unknown>>),
-      users = () => of([] as Array<Record<string, unknown>>),
+      users = () => of({ users: [] as Array<Record<string, unknown>>, truncated: false }),
       broadcast = undefined
     }: {
       query?: Record<string, string>;
@@ -452,10 +452,13 @@ describe('EventDetailComponent check-in', () => {
               { accountGuid: 'auth0|unknown', created: '2026-11-18T22:10:00Z', outsideSessionTime: false }
             ]),
           users: () =>
-            of([
-              { user_info: { id: 'auth0|late', name: 'Reveille Late', email: 'late@tamu.edu' } },
-              { user_info: { id: 'auth0|ontime', email: 'ontime@tamu.edu' } }
-            ])
+            of({
+              users: [
+                { user_info: { id: 'auth0|late', name: 'Reveille Late', email: 'late@tamu.edu' } },
+                { user_info: { id: 'auth0|ontime', email: 'ontime@tamu.edu' } }
+              ],
+              truncated: false
+            })
         })
       );
 

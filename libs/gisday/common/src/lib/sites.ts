@@ -128,7 +128,8 @@ export const GISDAY_SITES = {
     logo: 'assets/images/logo/TAM-LogoBox.svg',
     banner: 'assets/images/logo/TAM-LogoBox.svg',
     owner: 'GeoInnovation Service Center',
-    favicon: 'assets/images/logo/TAM-LogoBox.svg',
+    // AggieMap's own tab icon, which fills the tab; the box logo's SVG has a wide margin and looked smaller (#2084).
+    favicon: 'assets/images/logo/favicon.ico',
     address: 'https://gisday.tamu.edu',
     description:
       'Three days of workshops and programs celebrating geospatial technology dedicated to students and faculty as they educate, innovate, and collaborate.',
@@ -247,7 +248,7 @@ export function placesShownOn<T extends { guid?: string; name?: string; visibili
 }
 
 /**
- * The tags at the top of a site's page that link previews and search engines read (#2649). They never run the app,
+ * The tags at the top of a site's page that link previews and search engines read (#2649), and its tab icon (#2084). They never run the app,
  * so the page each site serves has to carry its own name, description and image from the start; the app only changes
  * them once it runs in a browser.
  */
@@ -258,6 +259,7 @@ export function siteHead(site: GisdaySite): string {
 
   return [
     `<title>${text(site.name)}</title>`,
+    `<link rel="icon" href="${text(site.favicon)}" />`,
     `<meta name="description" content="${text(site.description)}" />`,
     `<meta property="og:site_name" content="${text(site.name)}" />`,
     `<meta property="og:title" content="${text(site.name)}" />`,
