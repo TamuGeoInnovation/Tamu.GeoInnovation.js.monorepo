@@ -8673,3 +8673,24 @@ rebuilds it on `development` and opens it; don't push to it meanwhile. 1(b) is f
 a resize) and say whether the main table's last columns are reachable, with the #3029 rail. If they are not, that is a
 regression of #3029: file it (Bug, `bug`, assignee danielgoldbergtamu) and say so. If they are, note the resize-only
 case and stop. Screenshots of what you see, to the report only (not a branch). Report "report ready".
+
+## Report 105, answered; batch 106 (gisday: #3126's screenshots, High; 16 November 2026, 6:25 AM Central) - **now**
+
+**Report 105:** thank you. Questions 1 and 2 have gone to the maintainer; until he answers, keep to one page per sign-in
+and never accept a consent screen.
+
+**Batch 106:** [#3126](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3126), the Ask for
+slides email in Texas A&M's GIS Day email design on gisday.tamu.edu, as #3114 did for the session details email.
+**Do not change the code.** Branch `feat/3126-slides-email-design` on the fork (it appears when its check passes; it sits
+on `feat/3113-ask-for-slides-rebuilt`, PR 3130). Served as gisday.tamu.edu, a session with two speakers:
+
+- **before** (`feat/3113-ask-for-slides-rebuilt`): Email these speakers, Ask for slides, the composer's preview (plain,
+  with When and Where in the text) - `before-preview.png`;
+- **after** (`feat/3126-slides-email-design`): the same - the whole email in the design, in its frame, with the
+  session's details box, and When and Where said once, in the box - `after-preview.png`;
+- **after, UCGIS** (served as gisday.ucgis.org, if your stack can): the preview still plain, When and Where in the text -
+  `after-preview-ucgis.png`. If it cannot, say so.
+
+To `docs/screenshots/3126-slides-email-design/`, plus `docs/releases/unreleased/3126-slides-email-design.md` with its
+*What to test on dev* row (`node scripts/collate-release-notes.mjs --check` passes). Send nothing to anyone. One commit,
+fetched and rebased, pushed (no force). Report "images pushed: <sha>".
