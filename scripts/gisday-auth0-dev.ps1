@@ -7,10 +7,18 @@
   (hidden), then creates or updates, each only if missing or different:
 
     - API "GIS Day API (development)", identifier gisday.dev.api, with role-based access on and the
-      permissions added to the access token: the 50 permissions the GIS Day API checks.
+      permissions added to the access token: the 50 permissions the GIS Day API checks. Users may skip
+      the consent screen for it (#3136).
     - The six roles the site knows. GIS Day Admin gets every permission; the others start empty.
     - Application "GIS Day (local development)", a single-page app that returns to http://localhost:4201
-      and its /callback page.
+      and http://gisday.local.test:4201, and their /callback pages. Auth0 never skips consent for a page
+      on localhost, so the second name is the one that signs in without it (#3136); localhost still
+      works, with the consent screen.
+
+  Before changing anything it says which tenant and which application it is about to change, and it
+  refuses any tenant but txgisday-dev: the geoservices tenant has an application with the same name.
+  After the changes it reads the application and the API back and says, setting by setting, whether
+  each is as intended. It never prints the client secret or the Management API token.
     - Action "Add GIS Day roles to tokens" on post-login: puts the user's roles in the
       geoservices.prod/roles claim, the name the site reads.
     - Test user claude-test-admin@txgisday-dev.test with the GIS Day Admin role and a generated password.
@@ -30,10 +38,15 @@
 param([switch]$AskAgain)
 
 $ErrorActionPreference = 'Stop'
-$Domain = 'txgisday-dev.us.auth0.com'
+# The only tenant this script may change. Every request is checked against it (Assert-DevTenant).
+$DevTenant = 'txgisday-dev.us.auth0.com'
+$Domain = $DevTenant
 $Audience = 'gisday.dev.api'
 $RolesClaim = 'geoservices.prod/roles'
+# The addresses the local site is opened at (docs/gisday-local.md). localhost first: Auth0 never skips
+# consent there, so gisday.local.test (127.0.0.1 in the hosts file) is the one to sign in from (#3136).
 $LocalSite = 'http://localhost:4201'
+$LocalSites = @($LocalSite, 'http://gisday.local.test:4201')
 $TestEmail = 'claude-test-admin@txgisday-dev.test'
 # Everything it writes goes outside the repository, beside the other local settings.
 $Here = if ($env:GISDAY_LOCAL_DIR) { $env:GISDAY_LOCAL_DIR } else { 'C:\TAMU\gisday-local' }
@@ -60,6 +73,13 @@ $Permissions = @(
 # libs/gisday/platform/ngx/common/src/lib/roles/gisday.roles.ts
 $Roles = @('GIS Day Admin','GIS Day Manager','GIS Day Organizer','GIS Day Professor','GIS Day Presenter','GIS Day Student')
 
+# Stops the script unless $value is the development tenant's host. The geoservices tenant has an application
+# named "GIS Day (local development)" too, with a different client id, and it must never be changed (#3136).
+function Assert-DevTenant($value, $what) {
+  if ($value -ne $DevTenant) { throw "Refusing to continue: $what is '$value', not $DevTenant. This script changes only the development tenant." }
+}
+Assert-DevTenant $Domain 'the tenant'
+
 Say ("{0}  setting up {1}" -f (Get-Date -Format 'yyyy-MM-dd HH:mm:ss'), $Domain)
 
 # The credentials this script wrote last time, if any: the same file the local API reads them from.
@@ -67,6 +87,8 @@ $saved = @{}
 if (Test-Path $EnvFile) {
   foreach ($line in Get-Content $EnvFile) { if ($line -match '^([A-Z0-9_]+)=(.*)$') { $saved[$Matches[1]] = $Matches[2] } }
 }
+# A settings file naming another tenant means its credentials are that tenant's: stop before using them.
+foreach ($key in 'AUTH0_DOMAIN','AUTH0_MANAGEMENT_DOMAIN') { if ($saved[$key]) { Assert-DevTenant $saved[$key] "$key in $EnvFile" } }
 if (-not $AskAgain -and $saved['AUTH0_MANAGEMENT_CLIENT'] -and $saved['AUTH0_MANAGEMENT_SECRET']) {
   $ClientId = $saved['AUTH0_MANAGEMENT_CLIENT']
   $ClientSecret = $saved['AUTH0_MANAGEMENT_SECRET']
@@ -80,10 +102,16 @@ if (-not $AskAgain -and $saved['AUTH0_MANAGEMENT_CLIENT'] -and $saved['AUTH0_MAN
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 $tokenBody = @{ grant_type = 'client_credentials'; client_id = $ClientId; client_secret = $ClientSecret; audience = "https://$Domain/api/v2/" } | ConvertTo-Json
 $Token = (Invoke-RestMethod -Method Post -Uri "https://$Domain/oauth/token" -ContentType 'application/json' -Body $tokenBody).access_token
+# The token says which tenant issued it. Its claims are read here and never printed, nor is the token.
+$claimsPart = $Token.Split('.')[1].Replace('-', '+').Replace('_', '/')
+switch ($claimsPart.Length % 4) { 2 { $claimsPart += '==' } 3 { $claimsPart += '=' } }
+$tokenClaims = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($claimsPart)) | ConvertFrom-Json
+Assert-DevTenant (([Uri]$tokenClaims.iss).Host) "the Management API token's issuer"
 Say 'Signed in to the Management API.'
 
 function Api($method, $path, $body) {
   $req = @{ Method = $method; Uri = "https://$Domain/api/v2/$path"; Headers = @{ Authorization = "Bearer $Token" }; ContentType = 'application/json' }
+  Assert-DevTenant (([Uri]$req.Uri).Host) "the host of $method $path"
   if ($null -ne $body) { $req.Body = (ConvertTo-Json $body -Depth 10) }
   # A new tenant allows only a few Management API calls a second, and answers 429 past that
   # (20 October 2026). Every call is spaced out, and a 429 waits and tries again, up to eight times.
@@ -107,10 +135,27 @@ function Api($method, $path, $body) {
   }
 }
 
+# 0. What is about to change, before anything does ----------------------------------------------------
+$appName = 'GIS Day (local development)'
+$api = @(Api Get 'resource-servers?per_page=100' $null) | Where-Object { $_.identifier -eq $Audience }
+$app = @(@(Api Get 'clients?per_page=100&fields=client_id,name' $null) | Where-Object { $_.name -eq $appName })
+if ($app.Count -gt 1) { throw "Refusing to continue: $Domain has $($app.Count) applications named '$appName'. Delete the extra ones in the dashboard first." }
+$app = if ($app.Count -eq 1) { $app[0] } else { $null }
+# The client id the local site signs in with (environment.local.ts); public, as every browser is sent it.
+$siteEnv = Join-Path $PSScriptRoot '..\apps\gisday-angular\src\environments\environment.local.ts'
+$siteClientId = if (Test-Path $siteEnv) { (Select-String -Path $siteEnv -Pattern "client_id: '([^']+)'" | Select-Object -First 1).Matches.Groups[1].Value } else { $null }
+Say "Tenant:      $Domain"
+Say ("API:         {0}" -f $(if ($api) { "$Audience (exists; will be updated)" } else { "$Audience (missing; will be created)" }))
+Say ("Application: {0}" -f $(if ($app) { "'$appName', client id $($app.client_id) (exists; will be updated)" } else { "'$appName' (missing; will be created)" }))
+if ($app -and $siteClientId -and $app.client_id -ne $siteClientId) {
+  Say "  Note: environment.local.ts signs in with client id $siteClientId, not this one; the site will not sign in until they match."
+}
+
 # 1. The API ----------------------------------------------------------------------------------------
 $scopes = @($Permissions | ForEach-Object { @{ value = $_; description = $_ } })
-$api = @(Api Get 'resource-servers?per_page=100' $null) | Where-Object { $_.identifier -eq $Audience }
-$apiSettings = @{ name = 'GIS Day API (development)'; scopes = $scopes; enforce_policies = $true; token_dialect = 'access_token_authz'; allow_offline_access = $true }
+# allow_skipping_userconsent: a first-party application need not ask a user to consent to this API (#3136). Auth0 still
+# asks on a page served from localhost or 127.0.0.1, which is why the site is also opened at gisday.local.test.
+$apiSettings = @{ name = 'GIS Day API (development)'; scopes = $scopes; enforce_policies = $true; token_dialect = 'access_token_authz'; allow_offline_access = $true; allow_skipping_userconsent = $true }
 if ($api) {
   $null = Api Patch "resource-servers/$($api.id)" $apiSettings
   Say "API $Audience updated."
@@ -137,12 +182,12 @@ $null = Api Post "roles/$($roleIds['GIS Day Admin'])/permissions" $grant
 Say "GIS Day Admin holds all $($Permissions.Count) permissions."
 
 # 3. The local site's application ---------------------------------------------------------------------
-$appName = 'GIS Day (local development)'
-$app = @(Api Get 'clients?per_page=100&fields=client_id,name' $null) | Where-Object { $_.name -eq $appName }
+# The site returns from sign-in to /callback on its own origin (environment.local.ts) and from sign-out to its root.
+# localhost keeps the bare address it always had as a callback; gisday.local.test has only /callback (#3136).
+$Callbacks = @($LocalSite, "$LocalSite/callback") + @($LocalSites | Where-Object { $_ -ne $LocalSite } | ForEach-Object { "$_/callback" })
 $appSettings = @{
   name = $appName; app_type = 'spa'; token_endpoint_auth_method = 'none'; oidc_conformant = $true
-  # The site returns from sign-in to /callback (environment.local.ts) and from sign-out to its root.
-  callbacks = @($LocalSite, "$LocalSite/callback"); allowed_logout_urls = @($LocalSite); web_origins = @($LocalSite); allowed_origins = @($LocalSite)
+  callbacks = $Callbacks; allowed_logout_urls = $LocalSites; web_origins = $LocalSites; allowed_origins = $LocalSites
   grant_types = @('authorization_code','refresh_token','implicit')
   refresh_token = @{ rotation_type = 'rotating'; expiration_type = 'expiring' }
 }
@@ -208,12 +253,44 @@ AUTH0_MANAGEMENT_DISABLED=false
 AUTH0_MANAGEMENT_DOMAIN=$Domain
 AUTH0_MANAGEMENT_CLIENT=$ClientId
 AUTH0_MANAGEMENT_SECRET=$ClientSecret
-# Test admin for signed-in checks on http://localhost:4201
+# Test admin for signed-in checks on http://gisday.local.test:4201 (no consent screen; #3136) or http://localhost:4201
 TEST_ADMIN_EMAIL=$TestEmail
 TEST_ADMIN_PASSWORD=$Password
 "@ | Set-Content -Path $EnvFile -Encoding ascii
 
+# 7. Read back what the site's sign-in depends on --------------------------------------------------------
+# Named fields only, so no secret is fetched; values are compared as sets, as Auth0 keeps no order that matters.
 Say ''
+Say 'Read back from the tenant:'
+$wrong = 0
+function Check($what, $have, $want) {
+  $h = (@($have | Where-Object { $null -ne $_ } | ForEach-Object { "$_" }) | Sort-Object -Unique) -join ', '
+  $w = (@($want | ForEach-Object { "$_" }) | Sort-Object -Unique) -join ', '
+  if ($h -eq $w) { Say "  as intended  $what = $h" }
+  else { Say "  NOT AS INTENDED  $what = $h; wanted $w"; $script:wrong++ }
+}
+$appNow = Api Get "clients/$($SpaClientId)?fields=name,client_id,app_type,is_first_party,callbacks,allowed_logout_urls,web_origins,allowed_origins&include_fields=true" $null
+Say "  Application '$($appNow.name)', client id $($appNow.client_id):"
+Check 'app_type' $appNow.app_type 'spa'
+# Auth0 lets a user skip consent only in a first-party application; one created through the Management API is.
+Check 'is_first_party' $appNow.is_first_party $true
+Check 'Allowed Callback URLs' $appNow.callbacks $Callbacks
+Check 'Allowed Logout URLs' $appNow.allowed_logout_urls $LocalSites
+Check 'Allowed Web Origins' $appNow.web_origins $LocalSites
+Check 'Allowed Origins (CORS)' $appNow.allowed_origins $LocalSites
+$apiNow = Api Get "resource-servers/$($api.id)" $null
+Say "  API $($apiNow.identifier):"
+Check 'allow_skipping_userconsent' $apiNow.allow_skipping_userconsent $true
+Check 'enforce_policies (role-based access)' $apiNow.enforce_policies $true
+Check 'token_dialect' $apiNow.token_dialect 'access_token_authz'
+$have = (@($apiNow.scopes | ForEach-Object { $_.value }) | Sort-Object -Unique) -join ','
+if ($have -eq (($Permissions | Sort-Object -Unique) -join ',')) { Say "  as intended  permissions = the $($Permissions.Count) the GIS Day API checks" }
+else { Say "  NOT AS INTENDED  permissions = $have"; $wrong++ }
+
+Say ''
+if ($wrong -gt 0) { Say "$wrong setting(s) are NOT as intended; see above." }
+else { Say 'Every setting read back is as intended.' }
 Say "DONE. Site application client ID: $SpaClientId (public)."
 Say "Settings, including secrets, written to $EnvFile."
 Say "Report: $Report"
+if ($wrong -gt 0) { exit 1 }
