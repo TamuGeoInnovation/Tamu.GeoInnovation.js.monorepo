@@ -5,6 +5,11 @@ import { Component, DestroyRef, ElementRef, afterNextRender, inject, signal, vie
  * bottom of the window while any of the box is in view (#3029). A dashboard's table can be 60 rows long, and the box's
  * own scrollbar is at its bottom, out of sight. Moved here from the dashboard table, so its people's tables, which grew
  * count columns on the VGI dashboard (#2894), scroll the same way.
+ *
+ * A box inside another (an opened row's people inside the dashboard's table) has no rail, and shows its own scrollbar:
+ * a sticky rail sticks to the nearest box that scrolls, here the outer one, so it was never in view, and a box with a rail
+ * hides its own scrollbar, which left nothing showing the people could be scrolled (#2894, the lab's retake). Making the
+ * rail stick to the window instead is not possible from inside a scrolling box, so the inner box keeps the plain rule.
  */
 @Component({
   selector: 'tamu-gisc-dashboard-scroll',
@@ -18,6 +23,7 @@ export class DashboardScrollComponent {
    */
   public readonly overflow = signal<number | null>(null);
   private readonly box = viewChild.required<ElementRef<HTMLElement>>('box');
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly rail = viewChild.required<ElementRef<HTMLElement>>('rail');
 
   constructor() {
@@ -41,7 +47,16 @@ export class DashboardScrollComponent {
   public measure() {
     const { scrollWidth, clientWidth } = this.box().nativeElement;
 
-    this.overflow.set(scrollWidth > clientWidth ? scrollWidth : null);
+    // Nested, the box keeps its own scrollbar, never a rail.
+    this.overflow.set(scrollWidth > clientWidth && !this.nested() ? scrollWidth : null);
+  }
+
+  /**
+   * Whether the box is inside another dashboard scroll box, read from the page: an opened row is drawn from the page's
+   * own template, so the outer box is not its parent to Angular's injector.
+   */
+  public nested(): boolean {
+    return !!this.host.nativeElement.parentElement?.closest('tamu-gisc-dashboard-scroll');
   }
 
   /** Keeps the rail where the box is scrolled to, and the box where the rail is. */
