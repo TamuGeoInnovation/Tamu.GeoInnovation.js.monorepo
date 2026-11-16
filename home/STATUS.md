@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch 64 (gisday: #2582, VGI Form Designer feedback)**: started 7:53 PM Central, 15 November, branch `fix/2582-designer-feedback`.
+- Nothing. Idle and listening.
 
 ## Finished
+- **Batch 64 (gisday: #2582)** (report `home/reports/2026-11-15-64.md`): branch ready, `fix/2582-designer-feedback` on the fork at `5b6a35de0`, no PR. Fetching, failure and success messages; Save feedback and instructions too, so the issue can close. Red first; check exit 0. Screenshots to the lab. No questions.
 - **Batch 63 (gisday: #3074)** (report `home/reports/2026-11-15-63.md`): branch ready, `fix/3074-image-upload-rule` on the fork at `779724db6`, no PR. Five image pickers on one shared `UploadImagePicker`; the rule gains the API's 5 MB. Red first; check exit 0. Screenshots to the lab. No questions.
 - **Batch 62 (gisday: #2084)** (report `home/reports/2026-11-15-62.md`): branch ready, `fix/2084-tamu-tab-icon` on the fork at `9685c2aa3`, no PR. AggieMap's favicon moved to libs/assets and shared, still served at /favicon.ico; each site's page names its icon. Red first; check exit 0. Screenshots to the lab. No questions.
 - **Batch 61 (gisday: #1840)** (report `home/reports/2026-11-15-61.md`): no branch, already fixed by #2652 and live since `prod-2026-11-11`; all three sites' previews checked live. Two questions (close #1840).
