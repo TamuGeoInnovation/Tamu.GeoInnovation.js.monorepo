@@ -2,6 +2,21 @@
 
 :host {
   display: block;
+  position: relative;
+}
+
+// While a resized box's content is laid out again (#3135): the box veiled, and the site's own spinner (.loader, in the
+// app's styles) over it, kept in view near the top of the window however far down a 60-row table the reader is.
+.dashboard-scroll-settling {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.dashboard-scroll-settling-spinner {
+  position: sticky;
+  top: 30vh;
 }
 
 // Content wider than the box scrolls in it, not the page.
