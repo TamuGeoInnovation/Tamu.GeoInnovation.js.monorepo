@@ -1,5 +1,6 @@
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+import { of, throwError } from 'rxjs';
 
 import { UserService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
@@ -15,7 +16,10 @@ describe('UserListComponent', () => {
   let getUsers: jest.Mock;
 
   function open() {
-    TestBed.configureTestingModule({ imports: [UserListComponent], providers: [{ provide: UserService, useValue: { getUsers } }] });
+    TestBed.configureTestingModule({
+      imports: [UserListComponent],
+      providers: [{ provide: UserService, useValue: { getUsers } }]
+    });
 
     const fixture = TestBed.createComponent(UserListComponent);
     fixture.detectChanges();
@@ -56,6 +60,38 @@ describe('UserListComponent', () => {
     expect(getUsers).toHaveBeenLastCalledWith('zoe');
     expect(text(fixture)).toContain('zoe@example.edu');
     expect(text(fixture)).not.toContain('Showing the first 1,000 users');
+  }));
+
+  // #3116: Auth0 needs 3 characters for a wildcard search; "zh" went to the API, was refused, and the page spun for ever.
+  it('asks for 3 letters before searching, and sends nothing shorter', fakeAsync(() => {
+    const fixture = open();
+    tick(400);
+    getUsers.mockClear();
+
+    fixture.componentInstance.search.setValue('zh');
+    tick(400);
+    fixture.detectChanges();
+
+    expect(getUsers).not.toHaveBeenCalled();
+    expect(text(fixture)).toContain('Type at least 3 letters of a name or email to search.');
+    expect((fixture.nativeElement as HTMLElement).querySelector('.loader')).toBeNull();
+  }));
+
+  it('says why a search was refused, instead of spinning', fakeAsync(() => {
+    const fixture = open();
+    tick(400);
+    getUsers.mockReturnValue(
+      throwError(
+        () => new HttpErrorResponse({ status: 400, error: { statusCode: 400, message: 'The search was not valid.' } })
+      )
+    );
+
+    fixture.componentInstance.search.setValue('zhang');
+    tick(400);
+    fixture.detectChanges();
+
+    expect(text(fixture)).toContain('The search was not valid.');
+    expect((fixture.nativeElement as HTMLElement).querySelector('.loader')).toBeNull();
   }));
 
   it('says when no user matches', fakeAsync(() => {
