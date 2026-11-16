@@ -12,7 +12,9 @@ describe('the footer, its links', () => {
   const links = siteLinksIn(footer);
 
   it('gives the My Account links to read', () => {
-    expect(links).toEqual(expect.arrayContaining(['/account/details', '/account/classes']));
+    // "Registered Sessions" went to the public Sessions list; it is the visitor's own check-ins now (the maintainer).
+    expect(links).toEqual(expect.arrayContaining(['/account/details', '/account/classes', '/account/checkins']));
+    expect(links).not.toContain('/sessions');
   });
 
   it.each(links)('leads %s to a page the site has', (link) => {
