@@ -311,6 +311,27 @@ describe('EventAddEditFormComponent, the Email these speakers menu', () => {
     ]);
   });
 
+  // #3147: a panel, a social or lunch has no slides, so nobody on it is asked for any.
+  it('offers no Ask for slides while No slides for this session is ticked, and offers it again once unticked', () => {
+    const { page, fixture } = render();
+    const items = () => {
+      page.querySelector<HTMLButtonElement>('tamu-gisc-action-menu button[aria-haspopup="menu"]').click();
+      fixture.detectChanges();
+      const labels = Array.from(page.querySelectorAll('[role="menuitem"]')).map((i) => i.textContent.trim());
+      page.querySelector<HTMLButtonElement>('tamu-gisc-action-menu button[aria-haspopup="menu"]').click();
+      fixture.detectChanges();
+      return labels;
+    };
+
+    fixture.componentInstance.form.get('noSlides').setValue(true);
+    fixture.detectChanges();
+    expect(items()).toEqual(['Profile email', 'Session details']);
+
+    fixture.componentInstance.form.get('noSlides').setValue(false);
+    fixture.detectChanges();
+    expect(items()).toEqual(['Profile email', 'Session details', 'Ask for slides']);
+  });
+
   it('asks for slides in the same window, editable, then sends it for this session to the speakers ticked, a copy each', () => {
     const { speakerEdits, modals, toasts, choose } = render();
 

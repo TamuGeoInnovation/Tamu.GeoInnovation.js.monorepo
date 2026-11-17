@@ -222,6 +222,21 @@ describe('PeopleEditComponent, Your sessions (#3093)', () => {
     expect(second.querySelector('tamu-gisc-file').textContent).toContain('Upload slides');
   });
 
+  // #3147: a session with no slides offers no upload, and says why.
+  it('offers no upload for a session with no slides, and says none are needed', async () => {
+    const panel = { ...lightning, guid: 's-3', name: 'A Made-up Panel', noSlides: true };
+    const { root, sessionBlocks } = await open([watersheds, panel]);
+
+    expect(sessionBlocks()).toHaveLength(1);
+    expect(sessionBlocks()[0].textContent).toContain('Mapping Example Watersheds');
+
+    const blocks = [...root.querySelectorAll('.form-collection.column')] as Array<HTMLElement>;
+    const panelBlock = blocks.find((b) => b.textContent.includes('A Made-up Panel'));
+
+    expect(panelBlock.querySelector('tamu-gisc-file')).toBeNull();
+    expect(panelBlock.textContent).toContain('No slides are needed for this session.');
+  });
+
   it('holds up to three files a session, each with its own Remove, and offers no fourth', async () => {
     const three = ['deck.pptx', 'deck.pdf', 'handout.pdf'].map((name, n) => ({
       guid: `f-${n}`,

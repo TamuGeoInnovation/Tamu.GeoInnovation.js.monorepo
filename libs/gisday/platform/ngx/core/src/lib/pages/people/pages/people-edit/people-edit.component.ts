@@ -24,7 +24,7 @@ import {
   SubmissionFilesComponent,
   UploadImagePicker
 } from '@tamu-gisc/gisday/platform/ngx/common';
-import { SESSION_FILES_LIMIT, SpeakerSessionDto } from '@tamu-gisc/gisday/common';
+import { NO_SLIDES_FOR_SESSION, SESSION_FILES_LIMIT, SpeakerSessionDto } from '@tamu-gisc/gisday/common';
 
 /**
  * A speaker editing their own presenter profile through the link emailed to them (#2936), with no account. Without a
@@ -59,6 +59,8 @@ export class PeopleEditComponent implements OnInit {
 
   /** What a fourth file on a session is refused with (#3093). */
   public readonly sessionFilesLimit = SESSION_FILES_LIMIT;
+  /** What a session with no slides (#3147) says in place of its upload. */
+  public readonly noSlides = NO_SLIDES_FOR_SESSION;
 
   /**
    * The sessions the speaker presents this season (#3093), each with the speaker's own slides as a source for the shared

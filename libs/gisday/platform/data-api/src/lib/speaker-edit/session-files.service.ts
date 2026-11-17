@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 
 import {
+  NO_SLIDES_FOR_SESSION,
   SESSION_FILES_LIMIT,
   SessionSlidesDto,
   SpeakerSessionDto,
@@ -63,6 +64,12 @@ export class SessionFilesService {
       }
 
       const session = await this.sessionFor(link, eventGuid);
+
+      // A session with no slides (#3147) takes none.
+      if (session.noSlides) {
+        throw new BadRequestException(NO_SLIDES_FOR_SESSION);
+      }
+
       const own = await this.filesOf([session.guid], link);
       const problem = submissionFileProblem(upload.originalname, upload.size, own.length, SESSION_FILES_LIMIT);
 
@@ -209,7 +216,8 @@ function sessionOf(event: Event): Omit<SpeakerSessionDto, 'files'> {
     date: event.day?.date ? new Date(event.day.date).toISOString() : null,
     startTime: event.startTime ?? null,
     endTime: event.endTime ?? null,
-    place: place || null
+    place: place || null,
+    noSlides: !!event.noSlides
   };
 }
 

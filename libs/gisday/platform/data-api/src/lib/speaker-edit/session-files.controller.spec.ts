@@ -32,6 +32,7 @@ describe('SessionFilesController (#3093)', () => {
   const MINE_TOO = '22222222-2222-4222-8222-222222222222';
   const NOT_MINE = '33333333-3333-4333-8333-333333333333';
   const LAST_YEAR = '44444444-4444-4444-8444-444444444444';
+  const PANEL = '55555555-5555-4555-8555-555555555555';
 
   let app: INestApplication;
   let url: string;
@@ -65,7 +66,16 @@ describe('SessionFilesController (#3093)', () => {
           location: { building: 'Eller O&M', room: '1003' },
           season: { guid: SEASON }
         },
-        { guid: LAST_YEAR, name: 'An old session', season: { guid: 'last-season' } }
+        { guid: LAST_YEAR, name: 'An old session', season: { guid: 'last-season' } },
+        // A session with no slides (#3147).
+        {
+          guid: PANEL,
+          name: 'A made-up panel',
+          startTime: '11:00',
+          day: day('2026-11-20T06:00:00Z'),
+          season: { guid: SEASON },
+          noSlides: true
+        }
       ]
     },
     // A second speaker on the first speaker's session, and on one of their own.
@@ -223,7 +233,7 @@ describe('SessionFilesController (#3093)', () => {
 
       const listed = await response.json();
 
-      expect(listed.map((s) => s.guid)).toEqual([MINE, MINE_TOO]);
+      expect(listed.map((s) => s.guid)).toEqual([MINE, MINE_TOO, PANEL]);
       expect(listed[0]).toEqual({
         guid: MINE,
         name: 'Mapping Texas watersheds',
@@ -231,8 +241,24 @@ describe('SessionFilesController (#3093)', () => {
         startTime: '09:30',
         endTime: '10:15',
         place: 'Eller O&M 1003',
-        files: []
+        files: [],
+        noSlides: false
       });
+    });
+
+    // #3147: a panel, a social or lunch has no slides, so its speakers cannot upload any.
+    it('says which sessions have no slides, and refuses an upload to one, keeping nothing', async () => {
+      const listed = await (await sessions(TOKEN)).json();
+
+      expect(listed.find((s) => s.guid === PANEL).noSlides).toBe(true);
+
+      const response = await upload(TOKEN, PANEL, 'deck.pptx');
+
+      expect(response.status).toBe(400);
+      expect((await response.json()).message).toBe('No slides are needed for this session.');
+      expect(rows).toEqual([]);
+      expect(kept()).toEqual([]);
+      expect(leftUploading()).toEqual([]);
     });
 
     it('refuses a link that does not work, in the edit page’s own words, before reading anything', async () => {

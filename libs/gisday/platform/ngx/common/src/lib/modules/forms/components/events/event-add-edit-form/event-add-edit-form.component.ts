@@ -120,6 +120,16 @@ export class EventAddEditFormComponent implements OnInit {
     { id: 'slides-request', label: 'Ask for slides' }
   ];
 
+  /** The same menu for a session with no slides (#3147): nobody is asked for any. */
+  private readonly speakerEmailsWithoutSlides: ReadonlyArray<ActionMenuItem> = this.speakerEmails.filter(
+    (item) => item.id !== 'slides-request'
+  );
+
+  /** What the Email these speakers menu offers now: without Ask for slides while No slides is ticked (#3147). */
+  public speakerEmailItems(): ReadonlyArray<ActionMenuItem> {
+    return this.form?.get('noSlides')?.value ? this.speakerEmailsWithoutSlides : this.speakerEmails;
+  }
+
   public form: UntypedFormGroup;
 
   public entity$: Observable<Partial<Event>>;
@@ -223,6 +233,8 @@ export class EventAddEditFormComponent implements OnInit {
       isAcceptingRsvps: [true],
       isBringYourOwnDevice: [false],
       checkInAnyTime: [false],
+      // A panel, a social, lunch (#3147): its speakers are not asked for slides.
+      noSlides: [false],
       requirements: [null],
       broadcast: [null],
       location: [null],

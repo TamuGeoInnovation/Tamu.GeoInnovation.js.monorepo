@@ -446,6 +446,13 @@ export class Event extends GuidIdentity {
   @Column({ nullable: false, default: false })
   public checkInAnyTime: boolean;
 
+  /**
+   * The session has no slides (#3147): a panel, a social, lunch. Its speakers are not asked for slides, and cannot upload
+   * any for it.
+   */
+  @Column({ nullable: false, default: false })
+  public noSlides: boolean;
+
   @Column({ nullable: true })
   public mode: string;
 
