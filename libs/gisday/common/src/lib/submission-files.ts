@@ -125,7 +125,7 @@ export function megabytes(bytes: number): string {
 /** A name safe for a zip's folder or file (#2933, #3174): no characters Windows refuses, one space between words, at most 80. */
 export function zipSafe(text: string | null | undefined, fallback: string): string {
   const cleaned = (text ?? '')
-    .replace(/[\/:*?"<>|\r\n\t]+/g, ' ')
+    .replace(/[\\/:*?"<>|\r\n\t]+/g, ' ')
     .replace(/\s+/g, ' ')
     .trim()
     .slice(0, 80);

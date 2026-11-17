@@ -445,7 +445,8 @@ describe('SessionFilesController (#3093)', () => {
 
       expect(names).toEqual([
         'Avery Example/Watersheds.pdf',
-        'Avery Example/watersheds (2).PDF',
+        // The second of one name is numbered, as the season's zip numbers it (uniqueName).
+        'Avery Example/watersheds (2).pdf',
         'Blair Sample/Their deck.pptx'
       ]);
       expect((await zip.file('Blair Sample/Their deck.pptx').async('nodebuffer')).length).toBe(20);

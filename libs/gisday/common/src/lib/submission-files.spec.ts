@@ -4,6 +4,8 @@ import { slidesZipName, zipSafe } from './submission-files';
 describe('zip names', () => {
   it('keeps a name Windows can save: no slashes, colons or quotes, one space between words', () => {
     expect(zipSafe('Floods: a/b  "study"\n', 'x')).toBe('Floods a b study');
+    // A backslash too, which Windows reads as a folder.
+    expect(zipSafe('Rivers\\Lakes', 'x')).toBe('Rivers Lakes');
   });
 
   it('falls back when nothing is left, and cuts a long name at 80', () => {

@@ -213,7 +213,7 @@ describe('SubmissionFilesComponent', () => {
     const second = { ...deck, guid: 'f2', name: 'Lightning.pdf' };
     const zip = new Blob(['zip']);
 
-    function renderZippable(files: Array<object>, downloadAll: jest.Mock | undefined = jest.fn(() => of(zip))) {
+    function renderZippable(files: Array<object>, downloadAll: jest.Mock | null = jest.fn(() => of(zip))) {
       TestBed.configureTestingModule({ providers: [{ provide: UserSubmissionsService, useValue: service }] });
 
       const fixture = TestBed.createComponent(SubmissionFilesComponent);
@@ -222,7 +222,8 @@ describe('SubmissionFilesComponent', () => {
         add: jest.fn(),
         remove: jest.fn(),
         download: jest.fn(),
-        downloadAll,
+        // null: a source that cannot zip, so it has no downloadAll at all.
+        ...(downloadAll ? { downloadAll } : {}),
         downloadAllName: () => 'Panel - slides.zip'
       });
       fixture.detectChanges();
@@ -248,7 +249,7 @@ describe('SubmissionFilesComponent', () => {
     it('offers no zip for one file, or where the source cannot make one', () => {
       expect(renderZippable([deck]).element.querySelector('.files-all')).toBeNull();
       TestBed.resetTestingModule();
-      expect(renderZippable([deck, second], undefined).element.querySelector('.files-all')).toBeNull();
+      expect(renderZippable([deck, second], null).element.querySelector('.files-all')).toBeNull();
     });
 
     it('says so when the zip cannot be made', () => {
