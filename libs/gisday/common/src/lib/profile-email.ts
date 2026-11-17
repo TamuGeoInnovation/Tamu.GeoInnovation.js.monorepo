@@ -103,6 +103,15 @@ export function fillProfileEmail(email: { subject: string; template: string }, v
  * the text must keep `{edit link}`, or the speaker would get no way in.
  */
 export function profileEmailProblem(email: unknown): string | null {
+  return personalLinkEmailProblem(email, '{edit link}');
+}
+
+/**
+ * Why an edited email carrying each speaker's own link may not be sent, or null when it may: a subject and a text, each
+ * of a sensible size, and the text must keep `placeholder`, where the link goes. The profile email's rule (#3023), and
+ * the Ask to judge email's with its own link (#3183).
+ */
+export function personalLinkEmailProblem(email: unknown, placeholder: string): string | null {
   const { subject, template } = (email ?? {}) as { subject?: unknown; template?: unknown };
 
   if (typeof subject !== 'string' || !subject.trim() || subject.length > MAX_SUBJECT) {
@@ -113,5 +122,5 @@ export function profileEmailProblem(email: unknown): string | null {
     return `The email must be text, up to ${MAX_TEMPLATE} characters.`;
   }
 
-  return template.includes('{edit link}') ? null : 'The email must keep {edit link}, where each speaker’s own link goes.';
+  return template.includes(placeholder) ? null : `The email must keep ${placeholder}, where each speaker’s own link goes.`;
 }
