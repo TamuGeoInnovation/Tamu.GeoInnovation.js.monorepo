@@ -9079,3 +9079,20 @@ and a quote; the other scores one.
 - Check at 1280 px that nothing is cut off, and that the page itself doesn't scroll sideways.
 - To `docs/screenshots/3193-judge-breakdown/`, plus `docs/releases/unreleased/3193-judge-breakdown.md` with its *What
   to test on dev* row, on the branch. Report "images pushed: <sha>".
+
+## Batch 127 (gisday: #3191, the level boxes once more, **High**; 17 November 2026, from `work (gisday)`) - **after 126**
+
+Your report 125's items 1, 3 and 4 are fixed in `917b94421` on `feat/3191-rubric-boxes` (fork):
+- fixed counts, 4 across from 1024 px, 2 from 500 px, else 1;
+- the gap under the score box;
+- the level names bold.
+
+Item 2 (the page 15 px past 768 px in a desktop browser) predates #3191 and is left. **Do not change the code;** use batch
+125's set-up and safety.
+
+- **Re-take, replacing the old files:**
+  - `after-levels.png` at 1280 px;
+  - `after-levels-tablet.png` at 768 px (2 across);
+  - `after-levels-phone.png` at 390 px.
+- Check that `scrollWidth <= innerWidth` at 390 and 360 px.
+- Say, per item, whether it's fixed. Push as a fast-forward from `917b94421`, and report "images pushed: <sha>".
