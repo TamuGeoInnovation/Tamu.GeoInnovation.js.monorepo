@@ -384,7 +384,7 @@ export function everyScoreTable(results: JudgingResultsDto): { fields: Array<str
         row.presenters.join('; '),
         line.name,
         ...line.scores.map(blank),
-        line.scored ? line.total : NOT_SCORED_YET,
+        line.total ?? NOT_SCORED_YET,
         line.comment ?? ''
       ])
     )
