@@ -9023,3 +9023,20 @@ safety as batch 122: migrations run, then reverted; no email; made-up people onl
 
 Say, item by item against report 122's six, whether each is now fixed, with the image. Anything still wrong, or new,
 goes under **Seen on the page**. Push as a fast-forward from `e9ede76b7` and report "images pushed: <sha>".
+
+## Batch 124 (gisday: #3183, the Judging results page once more, **High**; 17 November 2026, from `work (gisday)`)
+
+Your report 123's two remaining items on Admin → Judging results are fixed in `437c43c40` on `feat/3183-judging` (fork):
+- the table now has the width of all its columns;
+- the toolbar stays on one row, with Competition at least 18rem wide.
+
+**Do not change the code.** The same made-up set-up and safety as batch 123.
+
+- **Re-take `after-results.png`** (1280 px), with one entry unscored. Scroll the table's box to its right end and save
+  that as **`after-results-scrolled.png`**:
+  - the last criterion column must show;
+  - say the box's `scrollWidth` and `clientWidth`;
+  - check that the page itself does not scroll sideways.
+- **The toolbar:** Competition shows "Graduate poster competition" whole, and Season's label overlaps nothing.
+- Only this page. Push as a fast-forward from `437c43c40`, and report "images pushed: <sha>", saying whether both items are
+  fixed.
