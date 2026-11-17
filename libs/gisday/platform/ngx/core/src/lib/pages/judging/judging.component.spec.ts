@@ -142,6 +142,22 @@ describe('JudgingComponent (#3183)', () => {
     expect(aquifers.querySelector('dd')?.textContent).toBe('Crystal clear.');
   });
 
+  // #3200: a judge in one competition need not scroll past the other; each starts closed, and opens on its heading.
+  it('shows each competition collapsed, with its name and progress as the heading to open it by', async () => {
+    const { root, card, component } = await open();
+    const section = root.querySelector<HTMLDetailsElement>('details.competition');
+    const heading = section?.querySelector(':scope > summary');
+
+    expect(root.querySelectorAll('details.competition')).toHaveLength(1);
+    expect(section?.open).toBe(false);
+    expect(heading?.querySelector('h2')?.textContent).toContain('Graduate poster competition');
+    expect(heading?.querySelector('.progress')?.textContent?.trim()).toBe(
+      component.scoredLine(judgePage().competitions[0])
+    );
+    // Its entries are inside it, so closed they are hidden, and their forms keep what was typed.
+    expect(section?.contains(card('Aquifers') as Node)).toBe(true);
+  });
+
   it('shows what the judge saved before, and how many entries they have scored', async () => {
     const { root, card, component } = await open();
 

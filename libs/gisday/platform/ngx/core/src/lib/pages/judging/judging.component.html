@@ -16,9 +16,12 @@
       <p class="form-input-description">{{ j.firstName }} {{ j.lastName }}, thank you for judging. Give each criterion a score and choose <strong>Save</strong> on each entry. You can change your scores until judging closes. Only the GIS Day team sees them. This link works until {{ j.expires | date: 'EEEE, MMMM d' : '-0600' }}.</p>
 
       @for (competition of j.competitions; track competition.competition) {
-      <div class="competition">
-        <h2>{{ competition.label }}</h2>
-        <p class="progress bold">{{ scoredLine(competition) }}</p>
+      <!-- Collapsed to start, opened on its heading, so a judge in one competition need not scroll past another (#3200). -->
+      <details class="competition">
+        <summary>
+          <h2>{{ competition.label }}</h2>
+          <p class="progress bold">{{ scoredLine(competition) }}</p>
+        </summary>
 
         @if (competition.closed) {
         <div class="info-block notice">
@@ -85,7 +88,7 @@
           </div>
         </form>
         } }
-      </div>
+      </details>
       } @empty {
       <p>You are not judging any competition at the moment.</p>
       } } @else {

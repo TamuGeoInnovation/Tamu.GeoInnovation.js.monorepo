@@ -34,6 +34,25 @@
   margin-top: 2rem;
 }
 
+// A competition's heading opens and closes it (#3200): the whole heading is the tap target, with the browser's own marker
+// beside the name.
+.competition > summary {
+  cursor: pointer;
+  padding: 0.5rem 0;
+
+  h2 {
+    display: inline;
+  }
+
+  .progress {
+    margin: 0.25rem 0 0;
+  }
+}
+
+.competition[open] > summary {
+  margin-bottom: 1rem;
+}
+
 .submission {
   margin-bottom: 1.5rem;
 }
