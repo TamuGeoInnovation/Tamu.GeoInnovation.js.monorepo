@@ -79,6 +79,17 @@ export class SessionFilesController {
     return this.files.forEvent(guid);
   }
 
+  /**
+   * Every speaker's slides for a session as one zip, a folder per speaker (#3174). Declared before `event/:guid/:file`,
+   * which would otherwise take `files.zip` for a file's id and refuse it.
+   */
+  @Permissions(['update:events'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Get('event/:guid/files.zip')
+  public zip(@Param('guid', ParseUUIDPipe) guid: string) {
+    return this.files.zipForEvent(guid);
+  }
+
   @Permissions(['update:events'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Get('event/:guid/:file')

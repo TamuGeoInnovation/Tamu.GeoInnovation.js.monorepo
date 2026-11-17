@@ -6,6 +6,7 @@ import { ExecutionContext, INestApplication, NotFoundException } from '@nestjs/c
 import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { FindOperator } from 'typeorm';
+import JSZip from 'jszip';
 
 import { JwtGuard } from '@tamu-gisc/common/nest/auth';
 import { SUBMISSION_FILE_RULES, submissionFileProblem } from '@tamu-gisc/gisday/common';
@@ -399,6 +400,44 @@ describe('SessionFilesController (#3093)', () => {
       expect((await download.arrayBuffer()).byteLength).toBe(3000);
     });
 
+    /** #3174: every speaker's slides for a session at once, rather than one file at a time. */
+    it("downloads every speaker's slides as one zip, a folder per speaker, keeping two files of one name apart", async () => {
+      await upload(TOKEN, MINE, 'watersheds.PDF', 10);
+      await upload(OTHER_TOKEN, MINE, 'Their deck.pptx', 20);
+      // Another session's slides are not in it.
+      await upload(TOKEN, MINE_TOO, 'Lightning.pdf');
+      as(['update:events']);
+
+      const response = await fetch(`${url}/session-files/event/${MINE}/files.zip`);
+
+      expect(response.status).toBe(200);
+      expect(response.headers.get('content-type')).toBe('application/zip');
+      expect(response.headers.get('content-disposition')).toContain('slides.zip');
+
+      const zip = await JSZip.loadAsync(await response.arrayBuffer());
+      const names = Object.keys(zip.files).filter((n) => !zip.files[n].dir);
+
+      expect(names).toEqual([
+        'Avery Example/Watersheds.pdf',
+        'Avery Example/watersheds (2).PDF',
+        'Blair Sample/Their deck.pptx'
+      ]);
+      expect((await zip.file('Blair Sample/Their deck.pptx').async('nodebuffer')).length).toBe(20);
+    });
+
+    it('says so when a session has no slides to zip, and leaves out a file missing from disk', async () => {
+      as(['update:events']);
+
+      expect((await fetch(`${url}/session-files/event/${MINE_TOO}/files.zip`)).status).toBe(404);
+
+      await upload(OTHER_TOKEN, MINE, 'Gone.pdf');
+      rmSync(join(appData, rows.find((r) => r.name === 'Gone.pdf').path));
+
+      const zip = await JSZip.loadAsync(await (await fetch(`${url}/session-files/event/${MINE}/files.zip`)).arrayBuffer());
+
+      expect(Object.keys(zip.files).filter((n) => !zip.files[n].dir)).toEqual(['Avery Example/Watersheds.pdf']);
+    });
+
     it('lists which of a season’s sessions have slides', async () => {
       as(['update:events']);
 
@@ -413,7 +452,7 @@ describe('SessionFilesController (#3093)', () => {
       for (const held of [null, [], ['read:competitions', 'update:speakers']]) {
         as(held);
 
-        for (const path of [`event/${MINE}`, `event/${MINE}/${guid}`, `season/${SEASON}`]) {
+        for (const path of [`event/${MINE}`, `event/${MINE}/${guid}`, `event/${MINE}/files.zip`, `season/${SEASON}`]) {
           expect((await fetch(`${url}/session-files/${path}`)).status).toBe(403);
         }
 

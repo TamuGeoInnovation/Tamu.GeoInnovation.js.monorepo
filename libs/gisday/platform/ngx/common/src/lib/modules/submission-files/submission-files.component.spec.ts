@@ -3,8 +3,14 @@ import { HttpErrorResponse, HttpEventType } from '@angular/common/http';
 import { of, throwError } from 'rxjs';
 
 import { UserSubmissionsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { downloadFile } from '@tamu-gisc/common/utils/ui';
 
 import { SubmissionFilesComponent } from './submission-files.component';
+
+jest.mock('@tamu-gisc/common/utils/ui', () => ({
+  ...jest.requireActual('@tamu-gisc/common/utils/ui'),
+  downloadFile: jest.fn()
+}));
 
 /** The files a student attaches to their submission, and an admin downloads (#2933). */
 describe('SubmissionFilesComponent', () => {
@@ -199,6 +205,64 @@ describe('SubmissionFilesComponent', () => {
 
       expect(source.add).not.toHaveBeenCalled();
       expect(element.querySelector('[role=alert]').textContent).toContain('notes.docx is not a PowerPoint or PDF file');
+    });
+  });
+
+  /** #3174: a session's slides, every speaker's, downloaded at once on its admin page. */
+  describe('Download all (#3174)', () => {
+    const second = { ...deck, guid: 'f2', name: 'Lightning.pdf' };
+    const zip = new Blob(['zip']);
+
+    function renderZippable(files: Array<object>, downloadAll: jest.Mock | undefined = jest.fn(() => of(zip))) {
+      TestBed.configureTestingModule({ providers: [{ provide: UserSubmissionsService, useValue: service }] });
+
+      const fixture = TestBed.createComponent(SubmissionFilesComponent);
+      fixture.componentRef.setInput('source', {
+        list: () => of(files),
+        add: jest.fn(),
+        remove: jest.fn(),
+        download: jest.fn(),
+        downloadAll,
+        downloadAllName: () => 'Panel - slides.zip'
+      });
+      fixture.detectChanges();
+
+      return { fixture, element: fixture.nativeElement as HTMLElement, downloadAll };
+    }
+
+    beforeEach(() => (downloadFile as jest.Mock).mockClear());
+
+    it('offers every file as one zip once there are two, saved under the name the source gives', () => {
+      const { fixture, element, downloadAll } = renderZippable([deck, second]);
+      const button = element.querySelector<HTMLButtonElement>('button.files-all');
+
+      expect(button.textContent.trim()).toBe('Download all 2 files');
+
+      button.click();
+      fixture.detectChanges();
+
+      expect(downloadAll).toHaveBeenCalled();
+      expect(downloadFile).toHaveBeenCalledWith(zip, 'Panel - slides.zip', 'application/zip');
+    });
+
+    it('offers no zip for one file, or where the source cannot make one', () => {
+      expect(renderZippable([deck]).element.querySelector('.files-all')).toBeNull();
+      TestBed.resetTestingModule();
+      expect(renderZippable([deck, second], undefined).element.querySelector('.files-all')).toBeNull();
+    });
+
+    it('says so when the zip cannot be made', () => {
+      // A download asks for a blob, so the API's refusal arrives as one, with no message to read.
+      const { fixture, element } = renderZippable(
+        [deck, second],
+        jest.fn(() => throwError(() => new HttpErrorResponse({ status: 404, error: new Blob(['{}']) })))
+      );
+
+      element.querySelector<HTMLButtonElement>('button.files-all').click();
+      fixture.detectChanges();
+
+      expect(downloadFile).not.toHaveBeenCalled();
+      expect(element.querySelector('[role=alert]').textContent).toContain('The files could not be downloaded together.');
     });
   });
 });

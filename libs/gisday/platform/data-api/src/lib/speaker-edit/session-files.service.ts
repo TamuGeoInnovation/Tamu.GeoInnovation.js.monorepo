@@ -7,12 +7,14 @@ import {
   SessionSlidesDto,
   SpeakerSessionDto,
   SubmissionFileDto,
-  submissionFileProblem
+  slidesZipName,
+  submissionFileProblem,
+  zipSafe
 } from '@tamu-gisc/gisday/common';
 
 import { Asset, Event, Speaker, SpeakerEditLink } from '../entities/all.entity';
 import { AssetsService } from '../assets/assets.service';
-import { discardUpload, fileDownload, fileDto, storeUpload } from '../user-submission/submission-files.service';
+import { discardUpload, fileDownload, fileDto, storeUpload, zipOfFiles } from '../user-submission/submission-files.service';
 
 /** The asset `type` of a session's slides. */
 export const SESSION_FILE_TYPE = 'session-file';
@@ -124,6 +126,37 @@ export class SessionFilesService {
     }
 
     return fileDownload(file, 'SessionFilesService');
+  }
+
+  /**
+   * Every speaker's slides for a session as one zip (#3174), a folder per speaker, named as the list labels them, for its
+   * admin page. Not found when no speaker has uploaded any.
+   */
+  public async zipForEvent(eventGuid: string): Promise<StreamableFile> {
+    const files = await this.assets.find({
+      where: { type: SESSION_FILE_TYPE, event: { guid: eventGuid } },
+      relations: { event: true, uploadedBy: true },
+      order: { created: 'ASC' }
+    });
+
+    if (files.length === 0) {
+      throw new NotFoundException('No slides have been uploaded for this session yet.');
+    }
+
+    const bySpeaker = new Map<string, Array<Asset>>();
+
+    for (const file of files) {
+      const folder = zipSafe(uploaderOf(file), 'A speaker');
+
+      bySpeaker.set(folder, [...(bySpeaker.get(folder) ?? []), file]);
+    }
+
+    return zipOfFiles(
+      [...bySpeaker].map(([folder, own]) => ({ folder, files: own })),
+      slidesZipName(files[0].event?.name),
+      'SessionFilesService',
+      "This session's slides are missing from the server."
+    );
   }
 
   /**
