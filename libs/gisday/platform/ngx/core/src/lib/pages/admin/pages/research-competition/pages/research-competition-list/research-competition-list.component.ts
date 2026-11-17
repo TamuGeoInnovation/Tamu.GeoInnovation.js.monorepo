@@ -190,19 +190,19 @@ export function filesToZip(
   ticked: ReadonlyArray<string>,
   rows: ReadonlyArray<{ guid?: string }>,
   total: number
-): { guids: Array<string> | null; label: string } {
+): { guids: Array<string> | null; label: string; name: string } {
   const showing = rows.map((r) => r.guid).filter((g): g is string => !!g);
   const picked = showing.filter((g) => ticked.includes(g));
 
   if (picked.length > 0) {
-    return { guids: picked, label: `Download files (${picked.length} ticked)` };
+    return { guids: picked, label: `Download files (${picked.length} ticked)`, name: `${picked.length}-ticked` };
   }
 
   if (showing.length < total) {
-    return { guids: showing, label: `Download files (${showing.length} shown)` };
+    return { guids: showing, label: `Download files (${showing.length} shown)`, name: `${showing.length}-shown` };
   }
 
-  return { guids: null, label: 'Download all files' };
+  return { guids: null, label: 'Download all files', name: '' };
 }
 
 /** The table's narrowest: every column at its narrowest. */
@@ -260,7 +260,7 @@ export class ResearchCompetitionListComponent extends BaseAdminListComponent<Sub
   }>;
 
   /** Which submissions the download takes, and its button's words (#3174). */
-  public zipScope$: Observable<{ guids: Array<string> | null; label: string }>;
+  public zipScope$: Observable<{ guids: Array<string> | null; label: string; name: string }>;
 
   private readonly reviewStatus = new SubmissionReviewStatusPipe();
 
@@ -323,13 +323,14 @@ export class ResearchCompetitionListComponent extends BaseAdminListComponent<Sub
         switchMap(([season, scope]) =>
           this.entityService
             .getSeasonFilesZip(season.guid, scope.guids ?? undefined)
-            .pipe(map((zip) => ({ zip, year: season.year, count: scope.guids?.length })))
+            .pipe(map((zip) => ({ zip, year: season.year, name: scope.name })))
         )
       )
       .subscribe({
-        next: ({ zip, year, count }) => {
+        next: ({ zip, year, name }) => {
           this.zipping.set(false);
-          downloadFile(zip, `gisday-${year}-submission-files${count ? `-${count}` : ''}.zip`, 'application/zip');
+          // Says which: two different downloads of the same count saved under one name (lab, batch 120).
+          downloadFile(zip, `gisday-${year}-submission-files${name ? `-${name}` : ''}.zip`, 'application/zip');
         },
         error: (err) => {
           this.zipping.set(false);

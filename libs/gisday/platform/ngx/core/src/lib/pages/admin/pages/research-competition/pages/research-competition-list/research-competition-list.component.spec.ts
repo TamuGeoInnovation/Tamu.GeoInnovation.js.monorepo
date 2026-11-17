@@ -575,14 +575,22 @@ describe('filesToZip', () => {
   const rows = [{ guid: 's1' }, { guid: 's2' }, { guid: 's3' }];
 
   it('takes the ticked rows that are showing, in the order shown', () => {
-    expect(filesToZip(['s3', 's1', 'hidden'], rows, 5)).toEqual({ guids: ['s1', 's3'], label: 'Download files (2 ticked)' });
+    expect(filesToZip(['s3', 's1', 'hidden'], rows, 5)).toEqual({
+      guids: ['s1', 's3'],
+      label: 'Download files (2 ticked)',
+      name: '2-ticked'
+    });
   });
 
   it('takes the rows the filters show when none is ticked', () => {
-    expect(filesToZip([], rows, 5)).toEqual({ guids: ['s1', 's2', 's3'], label: 'Download files (3 shown)' });
+    expect(filesToZip([], rows, 5)).toEqual({
+      guids: ['s1', 's2', 's3'],
+      label: 'Download files (3 shown)',
+      name: '3-shown'
+    });
   });
 
   it('takes the whole season, as before, when nothing narrows it', () => {
-    expect(filesToZip(['hidden'], rows, 3)).toEqual({ guids: null, label: 'Download all files' });
+    expect(filesToZip(['hidden'], rows, 3)).toEqual({ guids: null, label: 'Download all files', name: '' });
   });
 });
