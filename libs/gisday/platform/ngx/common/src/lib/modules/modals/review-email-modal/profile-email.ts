@@ -140,7 +140,7 @@ export function sendJudgingEmail<R>(
   return sendEditableEmail(
     modals,
     {
-      verb: 'Send judging links',
+      verb: 'Send judging emails',
       kind: JUDGING_EMAIL_KIND,
       placeholders: JUDGING_EMAIL_PLACEHOLDERS,
       copyEachOnly: true

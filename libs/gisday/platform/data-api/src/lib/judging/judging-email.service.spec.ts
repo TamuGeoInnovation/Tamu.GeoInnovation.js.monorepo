@@ -70,6 +70,9 @@ describe('JudgingEmailService (#3183)', () => {
     expect(group.subject).toBe('Judging the graduate poster competition at {site}');
     expect(group.template).toContain('**Made-up poster session**');
     expect(group.example.values['{judging link}']).toBe(JUDGING_LINK_PREVIEW);
+    // A judge's header, not a presenter's: "YOUR JUDGING", not "YOUR SESSION".
+    expect(group.design.label).toBe('Your judging');
+    expect(group.design.why).toMatch(/because you are judging at/);
     expect(preview.recipients.map((r) => r.guid)).toEqual(['sp-da', 'sp-em']);
     expect(log.withSends).toHaveBeenCalledWith(expect.any(Array), JUDGING_EMAIL_KIND, 'e-1');
     expect(preview.copyEachReason).toBe(JUDGING_COPY_EACH);

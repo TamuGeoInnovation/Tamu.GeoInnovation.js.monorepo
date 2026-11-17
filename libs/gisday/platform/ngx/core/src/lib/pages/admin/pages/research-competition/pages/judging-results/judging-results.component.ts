@@ -50,6 +50,11 @@ export class JudgingResultsComponent {
     });
   }
 
+  /** A column as wide as its heading, whole: a judge's name or a criterion's, at the table's heading size. */
+  public columnWidth(heading: string): number {
+    return Math.max(110, Math.ceil(heading.length * 8.5) + 32);
+  }
+
   public chooseCompetition(value: unknown): void {
     if (typeof value === 'string' && value) {
       this.competition.set(value);

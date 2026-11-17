@@ -88,6 +88,30 @@ describe('JudgingResultsComponent (#3183)', () => {
     expect(first).toEqual(['1', 'RiversAvery Example', '1', '18', '18', '', '18']);
   });
 
+  // An entry no judge has scored says so in its row, and in the file its rank and average are blank, with 0 judges.
+  it('marks an entry no judge has scored as Not scored yet, on the page and in the CSV', async () => {
+    const { root } = await open();
+    const second = Array.from(
+      root.querySelectorAll('datatable-body-row')[1]?.querySelectorAll('datatable-body-cell') ?? []
+    ).map((c) => c.textContent?.replace(/\s+/g, ' ').trim());
+
+    expect(second.slice(0, 4)).toEqual(['', 'Aquifers', '0', 'Not scored yet']);
+    expect(root.querySelectorAll('.not-scored')).toHaveLength(1);
+
+    const [, , unscored] = judgingResultsCsv(results()).split('\r\n');
+    const [rank, title, , judges, average] = unscored.split(',');
+
+    expect([rank, title, judges, average]).toEqual(['', 'Aquifers', '0', '']);
+  });
+
+  it('gives each judge and criterion column room for its whole heading, so the table scrolls rather than cuts it', async () => {
+    const { component } = await open();
+
+    expect(component.columnWidth('Dana Judge')).toBe(117);
+    expect(component.columnWidth('Al')).toBe(110);
+    expect(component.columnWidth('Geographic Understanding & Accuracy (of 20)')).toBeGreaterThan(350);
+  });
+
   it('reads another competition when one is chosen', async () => {
     const { judging, component } = await open();
 

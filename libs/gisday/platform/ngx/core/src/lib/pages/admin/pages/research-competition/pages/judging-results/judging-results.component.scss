@@ -6,9 +6,19 @@
   --datatable-height: auto;
 
   overflow-x: auto;
+  max-width: 100%;
 
   ::ng-deep .datatable-body-cell-label {
     white-space: normal;
     overflow-wrap: break-word;
+  }
+}
+
+// The toolbar's boxes keep their own width, wrapping onto a second line rather than cutting off a competition's name.
+.form-section-actions {
+  flex-wrap: wrap;
+
+  tamu-gisc-select {
+    flex: 0 0 auto;
   }
 }

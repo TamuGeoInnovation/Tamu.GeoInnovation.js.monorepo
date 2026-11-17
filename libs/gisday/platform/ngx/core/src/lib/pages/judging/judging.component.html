@@ -41,16 +41,17 @@
               @if (submission.presenters.length) {
               <p class="presenters">{{ submission.presenters.join(', ') }}</p>
               } @if (submission.abstract) {
-              <details>
+              <details class="trailer-1">
                 <summary>Abstract</summary>
                 <p class="abstract">{{ submission.abstract }}</p>
               </details>
               } @for (criterion of rubric.criteria; track criterion.guid) {
-              <div class="criterion">
-                <p class="bold">{{ criterion.name }} <span class="out-of">(0 to {{ criterion.maxPoints }})</span></p>
+              <!-- One under the other, on a phone as on a computer: the criterion, its score, its levels (#3183). -->
+              <div class="criterion form-collection column">
+                <p class="bold trailer-1">{{ criterion.name }} <span class="out-of">(0 to {{ criterion.maxPoints }})</span></p>
                 <tamu-gisc-textbox [formControlName]="criterion.guid" type="number" [placeholder]="'Score out of ' + criterion.maxPoints" [floatLabel]="true"></tamu-gisc-textbox>
                 @if (criterion.levels.length) {
-                <details>
+                <details class="leader-1">
                   <summary>Levels</summary>
                   <dl>
                     @for (level of criterion.levels; track level.label) {

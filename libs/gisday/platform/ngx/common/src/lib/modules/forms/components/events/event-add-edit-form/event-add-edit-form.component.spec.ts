@@ -259,7 +259,7 @@ describe('EventAddEditFormComponent, the Email these speakers menu', () => {
         ':together': 'true'
       },
       // #3183: the Ask to judge email, one judge ticked, together asked for, which it never offers either.
-      'Send judging links': {
+      'Send judging emails': {
         judging: 'Score here: {judging link}',
         'judging:subject': 'Judging',
         ':recipients': 'sp-2',
@@ -403,7 +403,7 @@ describe('EventAddEditFormComponent, the Email these speakers menu', () => {
 
     expect(modals.open).toHaveBeenCalledWith(
       ReviewEmailModalComponent,
-      expect.objectContaining({ data: expect.objectContaining({ verb: 'Send judging links', editableSubject: true }) })
+      expect.objectContaining({ data: expect.objectContaining({ verb: 'Send judging emails', editableSubject: true }) })
     );
     expect(speakerEdits.previewJudging).toHaveBeenCalledWith('event');
     expect(speakerEdits.sendJudging).toHaveBeenCalledWith('event', {

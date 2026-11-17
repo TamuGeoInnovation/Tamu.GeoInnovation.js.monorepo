@@ -38,9 +38,10 @@
       <p>{{ results.rows.length }} accepted {{ results.rows.length === 1 ? 'entry' : 'entries' }}, highest average first.</p>
 
       @if (results.rows.length) {
-      <!-- ngx-datatable, as the submissions list uses it; a column for each judge and each criterion. -->
+      <!-- ngx-datatable, as the submissions list uses it; a column for each judge and each criterion, each as wide as its
+           heading, so the table scrolls sideways in its own box rather than cutting them off. -->
       <div class="datatable-container">
-        <ngx-datatable class="material" [rows]="results.rows" [columnMode]="'force'" [headerHeight]="50" [rowHeight]="'auto'" [footerHeight]="0" [scrollbarV]="false" [scrollbarH]="true" [reorderable]="false">
+        <ngx-datatable class="material" [rows]="results.rows" [columnMode]="'standard'" [headerHeight]="50" [rowHeight]="'auto'" [footerHeight]="0" [scrollbarV]="false" [reorderable]="false">
           <ngx-datatable-column name="Rank" [sortable]="false" [width]="60">
             <ng-template let-row="row" let-rowIndex="rowIndex" ngx-datatable-cell-template>{{ row.average === null ? '' : rowIndex + 1 }}</ng-template>
           </ngx-datatable-column>
@@ -51,13 +52,20 @@
             </ng-template>
           </ngx-datatable-column>
           <ngx-datatable-column name="Judges" prop="judged" [width]="80"></ngx-datatable-column>
-          <ngx-datatable-column name="Average" prop="average" [width]="90"></ngx-datatable-column>
+          <!-- An entry no judge has scored says so, rather than an empty cell that is easy to miss. -->
+          <ngx-datatable-column name="Average" prop="average" [width]="130">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              @if (row.judged === 0) {
+              <em class="not-scored">Not scored yet</em>
+              } @else { {{ row.average }} }
+            </ng-template>
+          </ngx-datatable-column>
           @for (judge of results.judges; track judge.guid) {
-          <ngx-datatable-column [name]="judge.name" [sortable]="false" [width]="110">
+          <ngx-datatable-column [name]="judge.name" [sortable]="false" [width]="columnWidth(judge.name)">
             <ng-template let-row="row" ngx-datatable-cell-template>{{ row.totals[judge.guid] ?? '' }}</ng-template>
           </ngx-datatable-column>
           } @for (criterion of results.rubric?.criteria ?? []; track criterion.guid) {
-          <ngx-datatable-column [name]="criterion.name + ' (of ' + criterion.maxPoints + ')'" [sortable]="false" [width]="140">
+          <ngx-datatable-column [name]="criterion.name + ' (of ' + criterion.maxPoints + ')'" [sortable]="false" [width]="columnWidth(criterion.name + ' (of ' + criterion.maxPoints + ')')">
             <ng-template let-row="row" ngx-datatable-cell-template>{{ row.criteria[criterion.guid] ?? '' }}</ng-template>
           </ngx-datatable-column>
           }

@@ -11,12 +11,12 @@ import {
   gisdaySite,
   hasEmailDesign,
   isJudgedCompetition,
+  judgingEmailDesign,
   judgingEmailProblem,
   judgingEmailSubject,
   judgingEmailTemplate,
   judgingEmailValues,
   seasonDaysOf,
-  sessionEmailDesign,
   sessionEmailDetails,
   siteEmailHtml
 } from '@tamu-gisc/gisday/common';
@@ -94,7 +94,7 @@ export class JudgingEmailService {
           count: reachable.length,
           subject: judgingEmailSubject(competition),
           template: judgingEmailTemplate(session, competition, hasEmailDesign(site)),
-          design: sessionEmailDesign(site.name, seasonDaysOf(session.season), sessionEmailDetails(session)),
+          design: judgingEmailDesign(site.name, seasonDaysOf(session.season), sessionEmailDetails(session)),
           example: {
             title: fullName(first),
             to: first.email.trim(),
@@ -139,7 +139,7 @@ export class JudgingEmailService {
     const reachable = judges.filter((j) => looksLikeEmail(j.email));
     const noAddress = judges.filter((j) => !looksLikeEmail(j.email));
     const from = sender ?? siteSender(site.name);
-    const design = sessionEmailDesign(site.name, seasonDaysOf(session.season), sessionEmailDetails(session));
+    const design = judgingEmailDesign(site.name, seasonDaysOf(session.season), sessionEmailDetails(session));
     const chosen = ticked ? reachable.filter((s) => ticked.includes(s.guid)) : reachable;
 
     if (ticked && chosen.length === 0) {

@@ -26,27 +26,35 @@
           <tamu-gisc-textbox formControlName="name" placeholder="Name" type="text" [floatLabel]="true"></tamu-gisc-textbox>
         </div>
         <div class="form-collection column">
-          <tamu-gisc-textbox formControlName="description" placeholder="Description" type="textarea" [rows]="3" [floatLabel]="true"></tamu-gisc-textbox>
+          <tamu-gisc-textbox formControlName="description" placeholder="Description" type="textarea" [rows]="6" [floatLabel]="true"></tamu-gisc-textbox>
         </div>
 
-        <div formArrayName="criteria">
+        <!-- Each criterion a section of the shared form layout, as the admin forms lay theirs out: every box a
+             form-collection, so the flex layout carries down to it, its fields side by side and stacked on a phone. -->
+        <div class="form-collection column" formArrayName="criteria">
           @for (criterion of form.controls.criteria.controls; track criterion; let i = $index) {
-          <fieldset class="criterion" [formGroupName]="i">
-            <legend>Criterion {{ i + 1 }}</legend>
-            <div class="form-collection row">
-              <tamu-gisc-textbox formControlName="name" placeholder="Criterion" type="text" [floatLabel]="true"></tamu-gisc-textbox>
-              <tamu-gisc-textbox formControlName="maxPoints" placeholder="Points" type="number" [floatLabel]="true"></tamu-gisc-textbox>
+          <div class="form-section criterion" [formGroupName]="i">
+            <div class="form-section-toolbar">
+              <div class="form-section-title">Criterion {{ i + 1 }}</div>
             </div>
-            <div formArrayName="levels">
-              @for (level of criterion.controls.levels.controls; track level; let l = $index) {
-              <div class="form-collection row" [formGroupName]="l">
-                <tamu-gisc-textbox formControlName="label" placeholder="Level" type="text" [floatLabel]="true"></tamu-gisc-textbox>
-                <tamu-gisc-textbox formControlName="description" placeholder="What work at this level looks like" type="textarea" [rows]="2" [floatLabel]="true"></tamu-gisc-textbox>
+            <div class="form-section-body">
+              <div class="form-collection row stack-narrow">
+                <tamu-gisc-textbox formControlName="name" placeholder="Criterion" type="text" [floatLabel]="true"></tamu-gisc-textbox>
+                <tamu-gisc-textbox formControlName="maxPoints" placeholder="Points" type="number" [floatLabel]="true"></tamu-gisc-textbox>
               </div>
-              }
+              <div class="form-collection column" formArrayName="levels">
+                @for (level of criterion.controls.levels.controls; track level; let l = $index) {
+                <div class="form-collection row stack-narrow" [formGroupName]="l">
+                  <tamu-gisc-textbox formControlName="label" placeholder="Level" type="text" [floatLabel]="true"></tamu-gisc-textbox>
+                  <tamu-gisc-textbox formControlName="description" placeholder="What work at this level looks like" type="textarea" [rows]="3" [floatLabel]="true"></tamu-gisc-textbox>
+                </div>
+                }
+              </div>
+              <div class="form-collection row">
+                <tamu-gisc-button type="button" look="danger" value="Remove criterion" (click)="removeCriterion(form, i)"></tamu-gisc-button>
+              </div>
             </div>
-            <tamu-gisc-button type="button" look="danger" value="Remove criterion" (click)="removeCriterion(form, i)"></tamu-gisc-button>
-          </fieldset>
+          </div>
           }
         </div>
 

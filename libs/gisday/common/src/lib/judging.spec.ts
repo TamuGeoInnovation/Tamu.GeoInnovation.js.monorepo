@@ -18,6 +18,8 @@ import {
   judgingEmailValues,
   judgingResults,
   judgingResultsTable,
+  judgingEmailDesign,
+  sessionEmailDesign,
   scoredLine
 } from '../index';
 
@@ -225,6 +227,18 @@ describe('Judging the research competitions (#3183)', () => {
     it('refuses an edited email that drops the judging link', () => {
       expect(judgingEmailProblem({ subject: 'S', template: 'Score here: {judging link}' })).toBeNull();
       expect(judgingEmailProblem({ subject: 'S', template: 'Score here: {edit link}' })).toMatch(/\{judging link\}/);
+    });
+
+    it("wears a judge's header in Texas A&M's design, not a presenter's", () => {
+      const details = { name: 'Made-up poster session', when: 'Thursday', where: 'MSC 2300' };
+
+      expect(judgingEmailDesign('Texas A&M GIS Day', [], details)).toEqual(
+        expect.objectContaining({ label: 'Your judging', session: details })
+      );
+      expect(judgingEmailDesign('Texas A&M GIS Day', [], details).why).toBe(
+        'You are getting this email because you are judging at Texas A&M GIS Day.'
+      );
+      expect(sessionEmailDesign('Texas A&M GIS Day', [], details).label).toBe('Your session');
     });
 
     it('is previewed with a stand-in, never a real link', () => {
