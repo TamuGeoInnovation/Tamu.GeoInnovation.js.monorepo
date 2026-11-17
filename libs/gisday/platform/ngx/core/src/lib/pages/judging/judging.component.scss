@@ -1,0 +1,17 @@
+// Layout only (#3183): the site's own form, info-block and button styles do the rest.
+.judging {
+  flex: 1 1 100%;
+  min-width: 0;
+}
+
+.competition + .competition {
+  margin-top: 2rem;
+}
+
+.submission {
+  margin-bottom: 1.5rem;
+}
+
+.criterion {
+  margin-bottom: 1rem;
+}

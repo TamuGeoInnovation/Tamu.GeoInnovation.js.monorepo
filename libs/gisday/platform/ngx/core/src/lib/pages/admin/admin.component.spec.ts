@@ -87,4 +87,28 @@ describe('AdminComponent', () => {
     expect(dashboards).toContain('RSVPs');
     expect(dashboards).not.toContain('VGI submissions');
   });
+
+  // #3183: judging the research competitions has its two pages under Research Competitions, where the site runs them.
+  it('lists Submissions, Rubrics and Judging results under Research Competitions', () => {
+    const root = open(false).nativeElement as HTMLElement;
+    const item = Array.from(menu(root)?.querySelectorAll(':scope > li') ?? []).find((li) =>
+      li.querySelector(':scope > a')?.textContent?.includes('Research Competitions')
+    );
+    const links = Array.from(item?.querySelectorAll('.sidebar_sublevel a') ?? []);
+
+    expect(links.map((a) => a.textContent?.trim())).toEqual(['Submissions', 'Rubrics', 'Judging results']);
+    expect(links.map((a) => a.getAttribute('href'))).toEqual([
+      expect.stringContaining('/research-competition'),
+      expect.stringContaining('/research-competition/rubrics'),
+      expect.stringContaining('/research-competition/judging')
+    ]);
+  });
+
+  it('has no judging pages on a site without the research competitions', () => {
+    const root = open(false, 'ucgis').nativeElement as HTMLElement;
+    const links = Array.from(root.querySelectorAll('.sidebar_sublevel a')).map((a) => a.textContent?.trim());
+
+    expect(links).not.toContain('Rubrics');
+    expect(links).not.toContain('Judging results');
+  });
 });

@@ -88,6 +88,18 @@
       @if ('competitions' | siteHas) {
       <li>
         <a [routerLink]="['./research-competition']" queryParamsHandling="merge" routerLinkActive="active"><span class="material-icons">co_present</span> Research Competitions</a>
+        <ul class="sidebar_sublevel">
+          <li>
+            <a [routerLink]="['./research-competition']" queryParamsHandling="merge" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Submissions</a>
+          </li>
+          <!-- Judging the research competitions (#3183). -->
+          <li>
+            <a [routerLink]="['./research-competition/rubrics']" routerLinkActive="active">Rubrics</a>
+          </li>
+          <li>
+            <a [routerLink]="['./research-competition/judging']" routerLinkActive="active">Judging results</a>
+          </li>
+        </ul>
       </li>
 
       <li>

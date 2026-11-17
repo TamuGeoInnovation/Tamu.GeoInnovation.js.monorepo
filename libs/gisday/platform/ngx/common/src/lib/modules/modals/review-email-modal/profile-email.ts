@@ -2,6 +2,8 @@ import { Observable, filter, map, switchMap } from 'rxjs';
 
 import {
   EMAIL_SENDER_KEY,
+  JUDGING_EMAIL_KIND,
+  JUDGING_EMAIL_PLACEHOLDERS,
   PROFILE_EMAIL_KIND,
   PROFILE_EMAIL_PLACEHOLDERS,
   SESSION_DETAILS_EMAIL_KIND,
@@ -119,6 +121,28 @@ export function sendSlidesRequestEmail<R>(
       verb: 'Send slides request',
       kind: SLIDES_REQUEST_EMAIL_KIND,
       placeholders: SLIDES_REQUEST_EMAIL_PLACEHOLDERS,
+      copyEachOnly: true
+    },
+    preview,
+    send
+  );
+}
+
+/**
+ * Asks a session's judges to judge its competition (#3183), prefilled from the session, in the same window: to the judges
+ * ticked, always a copy each, as each carries that judge's own judging link.
+ */
+export function sendJudgingEmail<R>(
+  modals: ModalService,
+  preview: Observable<ReviewEmailPreview>,
+  send: (email: ProfileEmail) => Observable<R>
+): Observable<R> {
+  return sendEditableEmail(
+    modals,
+    {
+      verb: 'Send judging links',
+      kind: JUDGING_EMAIL_KIND,
+      placeholders: JUDGING_EMAIL_PLACEHOLDERS,
       copyEachOnly: true
     },
     preview,

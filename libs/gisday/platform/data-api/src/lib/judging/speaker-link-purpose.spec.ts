@@ -42,7 +42,12 @@ describe('Speaker links have a purpose (#3183)', () => {
       { tokenHash: hashOf(JUDGING), purpose: 'judging', expires: later, speaker: { guid: 'sp-av' } as never },
       // A link made before purposes were kept: a profile link, as the column's default makes it.
       { tokenHash: hashOf(OLD), expires: later, speaker: { guid: 'sp-bl' } as never },
-      { tokenHash: hashOf(EXPIRED), purpose: 'judging', expires: new Date(Date.now() - 1000), speaker: { guid: 'sp-av' } as never }
+      {
+        tokenHash: hashOf(EXPIRED),
+        purpose: 'judging',
+        expires: new Date(Date.now() - 1000),
+        speaker: { guid: 'sp-av' } as never
+      }
     ];
     service = new SpeakerEditService(
       linkRepo as never,

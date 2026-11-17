@@ -204,7 +204,10 @@ describe('Judging the research competitions (#3183)', () => {
 
     it("fills in as each judge gets it, with their own link and no edit link's", () => {
       const { subject, text } = fillProfileEmail(
-        { subject: judgingEmailSubject('undergraduate-presentation'), template: judgingEmailTemplate(session, 'undergraduate-presentation') },
+        {
+          subject: judgingEmailSubject('undergraduate-presentation'),
+          template: judgingEmailTemplate(session, 'undergraduate-presentation')
+        },
         judgingEmailValues(
           { firstName: 'Dana' },
           { name: 'Texas A&M GIS Day', address: 'https://gisday.tamu.edu' },

@@ -1,0 +1,71 @@
+<!-- A competition's judging results (#3183): each judge's totals, the averages, and each judge's progress. -->
+<div class="form">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">Judging results</div>
+      <div class="form-section-actions">
+        @if (results()) {
+        <!-- The toolbar's own action style, as the submissions list's Download all files. -->
+        <a class="post-1" tabindex="0" role="button" (click)="download()" (keydown.enter)="download()">Download CSV</a>
+        }
+        <tamu-gisc-select class="post-1" placeholder="Competition" [floatLabel]="false" [data]="competitions" displayTemplate="name" valueTemplate="value" [value]="competition()" (changed)="chooseCompetition($event)"></tamu-gisc-select>
+        <tamu-gisc-select class="post-1" placeholder="Season" [floatLabel]="false" [data]="choice.seasons()" displayTemplate="year" valueTemplate="guid" [value]="choice.season()?.guid" (changed)="choice.choose($any($event))"></tamu-gisc-select>
+      </div>
+    </div>
+
+    <div class="form-section-body">
+      @if (problem(); as problem) {
+      <div class="info-block warning" role="alert">
+        <p>{{ problem }}</p>
+      </div>
+      } @else if (results(); as results) { @if (!results.rubric) {
+      <div class="info-block warning">
+        <p>This season has no rubric for this competition yet. Start one on the Rubrics page.</p>
+      </div>
+      }
+
+      <p class="bold">Judges</p>
+      @if (results.judges.length) {
+      <ul class="judges">
+        @for (judge of results.judges; track judge.guid) {
+        <li>{{ judge.name }}: {{ judge.scored }} scored, {{ judge.toScore }} to score</li>
+        }
+      </ul>
+      } @else {
+      <p>No session judges this competition yet. Choose a session's judged competition and its judges on the session's page.</p>
+      }
+
+      <p>{{ results.rows.length }} accepted {{ results.rows.length === 1 ? 'entry' : 'entries' }}, highest average first.</p>
+
+      @if (results.rows.length) {
+      <!-- ngx-datatable, as the submissions list uses it; a column for each judge and each criterion. -->
+      <div class="datatable-container">
+        <ngx-datatable class="material" [rows]="results.rows" [columnMode]="'force'" [headerHeight]="50" [rowHeight]="'auto'" [footerHeight]="0" [scrollbarV]="false" [scrollbarH]="true" [reorderable]="false">
+          <ngx-datatable-column name="Rank" [sortable]="false" [width]="60">
+            <ng-template let-row="row" let-rowIndex="rowIndex" ngx-datatable-cell-template>{{ row.average === null ? '' : rowIndex + 1 }}</ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Title" prop="title" [width]="220">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <div class="bold">{{ row.title }}</div>
+              <div>{{ row.presenters.join(', ') }}</div>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Judges" prop="judged" [width]="80"></ngx-datatable-column>
+          <ngx-datatable-column name="Average" prop="average" [width]="90"></ngx-datatable-column>
+          @for (judge of results.judges; track judge.guid) {
+          <ngx-datatable-column [name]="judge.name" [sortable]="false" [width]="110">
+            <ng-template let-row="row" ngx-datatable-cell-template>{{ row.totals[judge.guid] ?? '' }}</ng-template>
+          </ngx-datatable-column>
+          } @for (criterion of results.rubric?.criteria ?? []; track criterion.guid) {
+          <ngx-datatable-column [name]="criterion.name + ' (of ' + criterion.maxPoints + ')'" [sortable]="false" [width]="140">
+            <ng-template let-row="row" ngx-datatable-cell-template>{{ row.criteria[criterion.guid] ?? '' }}</ng-template>
+          </ngx-datatable-column>
+          }
+        </ngx-datatable>
+      </div>
+      } } @else {
+      <div class="loader"></div>
+      }
+    </div>
+  </div>
+</div>

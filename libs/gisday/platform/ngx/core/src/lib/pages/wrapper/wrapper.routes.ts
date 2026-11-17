@@ -52,6 +52,12 @@ export const wrapperRoutes: Routes = [
         loadChildren: () => import('../competitions/competitions.routes').then((m) => m.competitionsRoutes)
       },
       {
+        // A judge's page, from the judging link emailed to them, with no account (#3183).
+        path: 'judging',
+        canActivate: [siteFeatureGuard('competitions')],
+        loadChildren: () => import('../judging/judging.routes').then((m) => m.judgingRoutes)
+      },
+      {
         path: 'contact',
         loadChildren: () => import('../contact/contact.routes').then((m) => m.contactRoutes)
       },

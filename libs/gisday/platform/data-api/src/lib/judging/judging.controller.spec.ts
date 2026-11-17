@@ -50,8 +50,9 @@ class Table<T extends { guid?: string }> {
   constructor(private readonly join: (row: T, relations?: Record<string, unknown>) => unknown = (row) => row) {}
 
   public create = (x: Partial<T>) => ({ ...x }) as T;
-  public find = jest.fn(async ({ where, relations }: { where?: Record<string, unknown>; relations?: Record<string, unknown> } = {}) =>
-    this.rows.filter((r) => !where || matches(r, where)).map((r) => structuredClone(this.join(r, relations)) as T)
+  public find = jest.fn(
+    async ({ where, relations }: { where?: Record<string, unknown>; relations?: Record<string, unknown> } = {}) =>
+      this.rows.filter((r) => !where || matches(r, where)).map((r) => structuredClone(this.join(r, relations)) as T)
   );
   public findOne = jest.fn(async (options: { where: Record<string, unknown>; relations?: Record<string, unknown> }) => {
     return (await this.find(options))[0] ?? null;
@@ -140,7 +141,8 @@ describe('Judging (#3183)', () => {
       ...(body === undefined ? {} : { body: JSON.stringify(body) })
     });
   /** The poster rubric's criteria, as saved. */
-  const posterCriteria = () => criteria.rows.filter((c) => c.rubric.guid === 'r-poster').sort((a, b) => a.position - b.position);
+  const posterCriteria = () =>
+    criteria.rows.filter((c) => c.rubric.guid === 'r-poster').sort((a, b) => a.position - b.position);
   /** Full marks less one on every poster criterion. */
   const goodScores = () => Object.fromEntries(posterCriteria().map((c) => [c.guid, c.maxPoints - 1]));
 
@@ -200,7 +202,12 @@ describe('Judging (#3183)', () => {
 
       rubrics.rows.push({ ...rubric, guid: `r-${type}`, season: { guid: SEASON } } as unknown as Rubric);
       list.forEach((c, position) =>
-        criteria.rows.push({ ...c, guid: `${type}-c${position}`, position, rubric: { guid: `r-${type}` } } as RubricCriterion)
+        criteria.rows.push({
+          ...c,
+          guid: `${type}-c${position}`,
+          position,
+          rubric: { guid: `r-${type}` }
+        } as RubricCriterion)
       );
     }
 
@@ -220,14 +227,26 @@ describe('Judging (#3183)', () => {
           provide: SpeakerEditService,
           // The speaker links' own check, over the links table.
           useFactory: () =>
-            new SpeakerEditService(links as never, {} as never, {} as never, {} as never, {} as never, {} as never, {} as never, {} as never)
+            new SpeakerEditService(
+              links as never,
+              {} as never,
+              {} as never,
+              {} as never,
+              {} as never,
+              {} as never,
+              {} as never,
+              {} as never
+            )
         },
         { provide: getRepositoryToken(Event), useValue: events },
         { provide: getRepositoryToken(Submission), useValue: submissions },
         { provide: getRepositoryToken(Assessment), useValue: assessments },
         { provide: getRepositoryToken(Speaker), useValue: speakers },
         { provide: getRepositoryToken(Rubric), useValue: Object.assign(rubrics, { manager }) },
-        { provide: getRepositoryToken(Season), useValue: { findOne: async ({ where }) => (where.guid === SEASON ? { guid: SEASON } : null) } }
+        {
+          provide: getRepositoryToken(Season),
+          useValue: { findOne: async ({ where }) => (where.guid === SEASON ? { guid: SEASON } : null) }
+        }
       ]
     })
       .overrideGuard(JwtGuard)
@@ -317,7 +336,12 @@ describe('Judging (#3183)', () => {
       expect(saved.comment).toBe('Clear maps.');
       expect(assessments.rows).toHaveLength(1);
       expect(assessments.rows[0]).toEqual(
-        expect.objectContaining({ judge: { guid: dana.guid }, submission: { guid: RIVERS }, eventGuid: 'e-posters', total: 93 })
+        expect.objectContaining({
+          judge: { guid: dana.guid },
+          submission: { guid: RIVERS },
+          eventGuid: 'e-posters',
+          total: 93
+        })
       );
 
       const body: JudgePageDto = await jsonOf(await page(JUDGE_LINK));
@@ -501,7 +525,11 @@ describe('Judging (#3183)', () => {
         { criteria: [{ name: 'A', maxPoints: 0, levels: [] }] },
         "Criterion 1's points must be a whole number from 1 to 1000."
       ],
-      ['a criterion with no name', { criteria: [{ name: ' ', maxPoints: 5, levels: [] }] }, 'Criterion 1 needs a name, up to 255 characters.']
+      [
+        'a criterion with no name',
+        { criteria: [{ name: ' ', maxPoints: 5, levels: [] }] },
+        'Criterion 1 needs a name, up to 255 characters.'
+      ]
     ])('refuse a rubric with %s', async (_, change, message) => {
       permissions = ['update:competitions'];
 

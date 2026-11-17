@@ -115,6 +115,18 @@ export function sendSlidesRequestToast(result: SendEditLinksResult): { id: strin
   });
 }
 
+/**
+ * The toast an admin sees after asking a session's judges to judge (#3183): who was asked, and who was not and why (no
+ * email address, asked in the last few minutes, or a mail failure).
+ */
+export function sendJudgingToast(result: SendEditLinksResult): { id: string; title: string; message: string } {
+  return sessionEmailToast(result, {
+    id: 'judging-email',
+    sent: 'Judges asked',
+    notSent: 'Some judges were not asked'
+  });
+}
+
 /** A session email's toast, with its own id and titles: who got it, and who did not and why. */
 function sessionEmailToast(
   result: SendEditLinksResult,
@@ -199,6 +211,19 @@ export class SpeakerEditsService {
    */
   public sendSlidesRequest(eventGuid: string, email?: ProfileEmail) {
     return this.http.post<SendEditLinksResult>(`${this.sessionEmails}/slides`, { event: eventGuid, ...(email ?? {}) });
+  }
+
+  /** The Ask to judge email for the session's judges, prefilled from the session and its competition (#3183). */
+  public previewJudging(eventGuid: string) {
+    return this.http.post<ReviewEmailPreview>(`${this.sessionEmails}/judging/preview`, { event: eventGuid });
+  }
+
+  /**
+   * Asks the session's judges to judge, in the subject and text the admin approved (#3183): those ticked, a copy each with
+   * their own judging link.
+   */
+  public sendJudging(eventGuid: string, email?: ProfileEmail) {
+    return this.http.post<SendEditLinksResult>(`${this.sessionEmails}/judging`, { event: eventGuid, ...(email ?? {}) });
   }
 
   /** A speaker asking for their own link by email address. */

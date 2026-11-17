@@ -8,6 +8,7 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import {
   SpeakerEditsService,
   sendEditLinksToast,
+  sendJudgingToast,
   sendSessionDetailsToast,
   sendSlidesRequestToast
 } from './speaker-edits.service';
@@ -282,6 +283,62 @@ describe('sendSlidesRequestToast', () => {
       id: 'slides-request-email',
       title: 'Some slides requests were not sent',
       message: "None were sent. Not sent - Blair Sample: already asked for this session's slides in the last 10 minutes."
+    });
+  });
+});
+
+/** #3183: the Ask to judge email's routes, beside the other session emails'. */
+describe('SpeakerEditsService, the Ask to judge email', () => {
+  let service: SpeakerEditsService;
+  let http: HttpTestingController;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: EnvironmentService, useValue: { value: () => 'api' } }
+      ]
+    });
+
+    service = TestBed.inject(SpeakerEditsService);
+    http = TestBed.inject(HttpTestingController);
+  });
+
+  afterEach(() => http.verify());
+
+  it('previews it for the session, and sends it as edited to the judges ticked', async () => {
+    const preview = firstValueFrom(service.previewJudging('e-1'));
+    const previewRequest = http.expectOne('api/session-emails/judging/preview');
+
+    expect(previewRequest.request.body).toEqual({ event: 'e-1' });
+    previewRequest.flush({ groups: [] });
+    await expect(preview).resolves.toEqual({ groups: [] });
+
+    const result = firstValueFrom(
+      service.sendJudging('e-1', { subject: 'S', template: 'T {judging link}', speakers: ['sp-2'] })
+    );
+    const request = http.expectOne('api/session-emails/judging');
+
+    expect(request.request.body).toEqual({ event: 'e-1', subject: 'S', template: 'T {judging link}', speakers: ['sp-2'] });
+    request.flush({ sent: ['Dana Judge'], skipped: [] });
+    await expect(result).resolves.toEqual({ sent: ['Dana Judge'], skipped: [] });
+  });
+});
+
+describe('sendJudgingToast (#3183)', () => {
+  it('says who was asked, and who was not and why', () => {
+    expect(sendJudgingToast({ sent: ['Dana Judge'], skipped: [] })).toEqual({
+      id: 'judging-email',
+      title: 'Judges asked',
+      message: 'Sent to Dana Judge.'
+    });
+    expect(
+      sendJudgingToast({ sent: [], skipped: [{ name: 'Emery Judge', reason: 'the email could not be sent' }] })
+    ).toEqual({
+      id: 'judging-email',
+      title: 'Some judges were not asked',
+      message: 'None were sent. Not sent - Emery Judge: the email could not be sent.'
     });
   });
 });

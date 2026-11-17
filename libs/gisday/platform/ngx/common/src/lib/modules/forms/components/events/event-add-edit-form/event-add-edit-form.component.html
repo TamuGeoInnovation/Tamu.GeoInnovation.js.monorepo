@@ -116,6 +116,42 @@
     </div>
   </div>
 
+  @if (judgingOn) {
+  <!-- Judging the research competitions (#3183): the competition this session's judges score, which of its speakers judge,
+       and whether judging is closed. Each judge is sent their own judging link by Ask to judge in Email these speakers. -->
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-title">Judging</div>
+    </div>
+
+    <div class="form-section-body">
+      <div class="form-collection column">
+        <tamu-gisc-select formControlName="judgedCompetition" [data]="judgedCompetitionDict" placeholder="Judged competition" [displayTemplate]="'name'" [valueTemplate]="'value'"></tamu-gisc-select>
+      </div>
+
+      @if (form.get('judgedCompetition')?.value) {
+      <div class="form-collection column judges">
+        <p class="bold">Judges</p>
+        @if (type() === 'edit' && (eventSpeakers$ | async)?.length > 0) {
+        <p class="form-input-description">The session's speakers who score its competition. Save, then choose <strong>Ask to judge</strong> in Email these speakers to send each their own judging link.</p>
+        <tamu-gisc-checkbox-group referenceId="guid" formControlName="judges">
+          @for (speaker of eventSpeakers$ | async; track speaker.guid) {
+          <tamu-gisc-checkbox [data]="speaker" [label]="speaker.firstName + ' ' + speaker.lastName"></tamu-gisc-checkbox>
+          }
+        </tamu-gisc-checkbox-group>
+        } @else {
+        <p class="form-input-description">Save the session with its speakers first; its judges are chosen from them.</p>
+        }
+      </div>
+
+      <div class="form-collection column">
+        <tamu-gisc-checkbox formControlName="judgingClosed" label="Judging closed" description="Its judges can see their scores but can no longer change them." [data]=""> </tamu-gisc-checkbox>
+      </div>
+      }
+    </div>
+  </div>
+  }
+
   @if (slides(); as slides) {
   <!-- The session's slides (#3093): every speaker's, each labelled with who uploaded it, uploaded from their edit links and kept at once. -->
   <div class="form-section">
