@@ -39,7 +39,7 @@ import {
   BroadcastService
 } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { JUDGED_COMPETITIONS, siteHas, siteListsPlace } from '@tamu-gisc/gisday/common';
+import { JUDGED_COMPETITIONS, siteHas, siteListsPlace, slidesZipName } from '@tamu-gisc/gisday/common';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { ActionMenuComponent, ActionMenuItem } from '@tamu-gisc/ui-kits/ngx/layout';
 import { serverMessage } from '../../../../../utils/server-message';
@@ -387,6 +387,9 @@ export class EventAddEditFormComponent implements OnInit {
           this.slides.set({
             list: () => this.sessionFiles.forEvent(guid),
             download: (file) => this.sessionFiles.download(guid, file),
+            // Every speaker's at once, a folder each, named for the session (#3174).
+            downloadAll: () => this.sessionFiles.zip(guid),
+            downloadAllName: () => slidesZipName(this.form.getRawValue().name),
             add: () => EMPTY,
             // Any speaker's, asked about on the page first (#3105).
             remove: (file) => this.sessionFiles.removeFromEvent(guid, file)

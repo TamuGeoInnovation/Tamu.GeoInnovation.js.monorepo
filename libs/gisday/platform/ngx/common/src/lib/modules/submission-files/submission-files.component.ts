@@ -31,6 +31,12 @@ export interface FilesSource {
   remove(fileGuid: string): Observable<unknown>;
   /** Left out where the files are not downloaded from: a speaker sees their slides' name, size and date only. */
   download?(fileGuid: string): Observable<Blob>;
+  /**
+   * Every file in the list as one zip (#3174), offered as Download all once there are two or more, saved as
+   * `downloadAllName()`: a session's slides on its admin page.
+   */
+  downloadAll?(): Observable<Blob>;
+  downloadAllName?(): string;
 }
 
 /**
@@ -159,6 +165,37 @@ export class SubmissionFilesComponent implements OnInit {
       });
   }
 
+  /** Whether Download all is offered: the source can zip its files, and there are at least two (#3174). */
+  public get zippable(): boolean {
+    return typeof this.from().downloadAll === 'function' && (this.files()?.length ?? 0) >= 2;
+  }
+
+  /** Every file as one zip, saved under the source's name for it (#3174). */
+  public downloadAll(): void {
+    const source = this.from();
+
+    if (!source.downloadAll) {
+      return;
+    }
+
+    this.busy.set(ALL);
+    this.problem.set(null);
+
+    source
+      .downloadAll()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (zip) => {
+          this.busy.set(null);
+          downloadFile(zip, source.downloadAllName?.() ?? 'files.zip', 'application/zip');
+        },
+        error: (err) => {
+          this.busy.set(null);
+          this.problem.set(messageOf(err, 'The files could not be downloaded together.'));
+        }
+      });
+  }
+
   /** Removes the file at once, or, asking first, asks on the page; the browser's confirm() is not used (#3105). */
   public askToRemove(file: SubmissionFileDto): void {
     if (this.askBeforeRemoving()) {
@@ -205,6 +242,9 @@ export class SubmissionFilesComponent implements OnInit {
       });
   }
 }
+
+/** What `busy` holds while every file is being zipped (#3174): not a file's guid. */
+const ALL = 'all';
 
 /** A submission's files (#2933), as a source. */
 function submissionFiles(submissions: UserSubmissionsService, guid: string): FilesSource {

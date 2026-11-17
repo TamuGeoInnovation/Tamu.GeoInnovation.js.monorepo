@@ -51,6 +51,11 @@ export class SessionFilesService {
     return this.http.get(`${this.resource}/event/${eventGuid}/${fileGuid}`, { responseType: 'blob' });
   }
 
+  /** Every speaker's slides for a session as one zip, a folder per speaker (#3174). */
+  public zip(eventGuid: string) {
+    return this.http.get(`${this.resource}/event/${eventGuid}/files.zip`, { responseType: 'blob' });
+  }
+
   /** The slides of a season's sessions that have some, for the admins' list. */
   public forSeason(seasonGuid: string) {
     return this.http.get<Array<SessionSlidesDto>>(`${this.resource}/season/${seasonGuid}`);

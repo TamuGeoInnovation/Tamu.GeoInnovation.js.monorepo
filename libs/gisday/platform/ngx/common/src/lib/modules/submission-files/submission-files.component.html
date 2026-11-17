@@ -36,6 +36,9 @@
   </li>
   }
 </ul>
+} @if (zippable) {
+<!-- Every file as one zip (#3174), in the site's shared button, beside the list it downloads. -->
+<button type="button" class="button secondary snug files-all" [disabled]="busy() === 'all'" (click)="downloadAll()">{{ busy() === 'all' ? 'Preparing zip…' : 'Download all ' + files.length + ' files' }}</button>
 } @if (editable() && !uploading() && files.length < max()) {
 <!-- The shared picker, wearing the site's .button, so it reads as something to press rather than a line of text (#2938). -->
 <tamu-gisc-file class="button snug" [accept]="rules.accept" (fileSelected)="upload($event)">{{ pickLabel() }}</tamu-gisc-file>
