@@ -8959,3 +8959,20 @@ speakers and submissions only, with made-up small PDF/PPTX files.
   - nothing ticked, one filter narrowing the list: **Download files (N shown)**, `after-submissions-filtered.png`.
 - To `docs/screenshots/3174-zips/`, plus `docs/releases/unreleased/3174-zips.md` with its *What to test on dev* row, on
   the branch. Report "images pushed: <sha>".
+
+## Batch 121 (gisday: #3177's screenshots, **Urgent**; 16 November 2026, from `work (gisday)`) - **before 120**
+
+[#3177](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3177), PR 3178: saving a speaker in
+the admin with a photo over 8,000 pixels a side failed with "Error updating speaker: 413", however small the file. The
+branch shrinks the photo in the browser before sending it. **Do not change the code.** Branch `fix/3177-photo-pixels` on
+the fork (`512533f2e`). No migration. A made-up speaker only.
+
+- **The photo:** make one yourself, a JPEG of 9,000 x 6,000 pixels and under 5 MB (a flat colour or a gradient compresses
+  small). Say its size in bytes and pixels.
+- **Before** (`development`): edit the made-up speaker, choose it, press Update: the toast "Error updating speaker: 413",
+  `before-413.png`.
+- **After** (the branch): the same, Update saves; then the speaker's edit page again showing the photo,
+  `after-saved.png`. Say the stored file's pixel size (it should be 1,600 on its longest side) and type (JPEG).
+- To `docs/screenshots/3177-photo-pixels/`, and add the two images to `docs/releases/unreleased/3177-photo-pixels.md`
+  (a table as in `3147-no-slides.md`), on the branch. `collate-release-notes.mjs --check` must pass. Report "images
+  pushed: <sha>".
