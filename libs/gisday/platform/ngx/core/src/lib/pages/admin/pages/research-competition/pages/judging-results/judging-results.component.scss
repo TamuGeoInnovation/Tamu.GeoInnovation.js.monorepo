@@ -20,3 +20,30 @@
 .competition-choice {
   min-width: 18rem;
 }
+
+// A row opens its breakdown (#3193).
+.datatable-container ::ng-deep .datatable-body .datatable-row-wrapper {
+  cursor: pointer;
+}
+
+// An entry's breakdown under its row: layout only, a line per judge.
+.breakdown {
+  padding: 0.5rem 1rem 1rem;
+  cursor: default;
+
+  table {
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    padding: 0.25rem 0.75rem;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .comment {
+    min-width: 16rem;
+    white-space: pre-wrap;
+  }
+}

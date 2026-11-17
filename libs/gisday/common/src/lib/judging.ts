@@ -195,6 +195,19 @@ export interface JudgingResultRow {
   average: number | null;
   /** Each criterion's mean score, by the criterion's id, to two places, or null when none has scored it. */
   criteria: Record<string, number | null>;
+  /**
+   * Each judge's own scores for it, by the judge's id (#3193): a score per criterion, by the criterion's id, their total
+   * and their comment, or null when they have not scored it. For the admins' breakdown of one entry; never on a judge's
+   * page.
+   */
+  assessments: Record<string, JudgeScores | null>;
+}
+
+/** One judge's scores for one entry, as the admins' breakdown shows them (#3193). */
+export interface JudgeScores {
+  scores: Record<string, number>;
+  total: number;
+  comment: string | null;
 }
 
 /** A competition's results: the rubric's criteria, each judge's progress, and a row per accepted submission. */
@@ -213,7 +226,13 @@ export interface JudgingResultsInput {
   rubricName: string | null;
   submissions: ReadonlyArray<{ guid: string; title: string; presenters: Array<string> }>;
   judges: ReadonlyArray<{ guid: string; name: string }>;
-  assessments: ReadonlyArray<{ judge: string; submission: string; scores: Record<string, number>; total: number }>;
+  assessments: ReadonlyArray<{
+    judge: string;
+    submission: string;
+    scores: Record<string, number>;
+    total: number;
+    comment?: string | null;
+  }>;
 }
 
 const twoPlaces = (n: number) => Math.round(n * 100) / 100;
@@ -251,6 +270,13 @@ export function judgingResults(input: JudgingResultsInput): JudgingResultsDto {
           c.guid,
           mean(mine.map((a) => a.scores?.[c.guid]).filter((v): v is number => typeof v === 'number'))
         ])
+      ),
+      assessments: Object.fromEntries(
+        judges.map((j) => {
+          const a = mine.find((m) => m.judge === j.guid);
+
+          return [j.guid, a ? { scores: a.scores ?? {}, total: a.total, comment: a.comment ?? null } : null];
+        })
       )
     };
   });
@@ -300,6 +326,68 @@ export function judgingResultsTable(results: JudgingResultsDto): {
       ...results.judges.map((j) => blank(row.totals[j.guid] ?? null)),
       ...criteria.map((c) => blank(row.criteria[c.guid] ?? null))
     ])
+  };
+}
+
+/** One judge's line of an entry's breakdown (#3193): their score on each criterion, in the rubric's order, and the rest. */
+export interface JudgeBreakdownLine {
+  guid: string;
+  name: string;
+  scored: boolean;
+  /** Each criterion's score, in the rubric's order, or null when not scored. */
+  scores: Array<number | null>;
+  total: number | null;
+  comment: string | null;
+}
+
+/** What a judge who has not scored an entry is shown as, in the breakdown and the Every score file. */
+export const NOT_SCORED_YET = 'Not scored yet';
+
+/**
+ * One entry's breakdown (#3193, decided 17 November 2026): a line per judge of the competition, with their score on each
+ * criterion in the rubric's order, their total and their comment, or not scored yet.
+ */
+export function judgeBreakdown(
+  results: Pick<JudgingResultsDto, 'judges' | 'rubric'>,
+  row: Pick<JudgingResultRow, 'assessments'>
+): Array<JudgeBreakdownLine> {
+  const criteria = results.rubric?.criteria ?? [];
+
+  return results.judges.map((judge) => {
+    const a = row.assessments?.[judge.guid] ?? null;
+
+    return {
+      guid: judge.guid,
+      name: judge.name,
+      scored: a !== null,
+      scores: criteria.map((c) => (a && typeof a.scores?.[c.guid] === 'number' ? a.scores[c.guid] : null)),
+      total: a?.total ?? null,
+      comment: a?.comment ?? null
+    };
+  });
+}
+
+/**
+ * Every score as a table for a CSV file (#3193): a row per judge per entry, scored or not, in the results' order, with
+ * the entry, the judge, each criterion's score in the rubric's order, the total and the comment. A judge who has not
+ * scored the entry has no scores, and "Not scored yet" for a total.
+ */
+export function everyScoreTable(results: JudgingResultsDto): { fields: Array<string>; data: Array<Array<string | number>> } {
+  const criteria = results.rubric?.criteria ?? [];
+  const blank = (n: number | null) => (n === null ? '' : n);
+
+  return {
+    fields: ['Title', 'Presenters', 'Judge', ...criteria.map((c) => `${c.name} (of ${c.maxPoints})`), 'Total', 'Comment'],
+    data: results.rows.flatMap((row) =>
+      judgeBreakdown(results, row).map((line) => [
+        row.title,
+        row.presenters.join('; '),
+        line.name,
+        ...line.scores.map(blank),
+        line.scored ? line.total : NOT_SCORED_YET,
+        line.comment ?? ''
+      ])
+    )
   };
 }
 
