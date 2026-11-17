@@ -29,13 +29,25 @@
 
 // A criterion's levels as boxes side by side, as the rubric's own table lays them out (#3191): four across on a wide
 // screen, two on a narrow one, one per row on a phone, each box as wide as the others and never wider than the card.
+// Fixed counts rather than auto-fit, which laid out three and one alone at 768 px (lab, batch 125).
 .levels {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: 0.5rem;
-  margin: 0;
+  // Only the sides and the bottom: the top is the shared leader-1's, a gap under the score box.
+  margin-right: 0;
+  margin-bottom: 0;
+  margin-left: 0;
   padding: 0;
   list-style: none;
+
+  @media (min-width: 500px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 
 .level {
@@ -49,8 +61,10 @@
   }
 }
 
+// The page's own .bold does not reach a paragraph inside the card (lab, batch 125), so the level's name is set here.
 .level .level-label {
   margin-bottom: 0.25rem;
+  font-weight: 600;
 }
 
 .competition + .competition {
