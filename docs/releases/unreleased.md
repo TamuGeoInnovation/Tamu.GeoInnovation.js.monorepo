@@ -58,11 +58,12 @@ Updated at every GIS Day rollout, as step 4 of
 
 | | |
 | --- | --- |
-| Image, `gisday-nest` and `gisday-angular`, both namespaces (`gisday`, `gisday-ucgis`) | `sha-178bc5f` |
-| Its last commit | `178bc5f6d`, PR 3178 ([#3177](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3177), a speaker photo is shrunk before it is sent), with PRs 3175 ([#3167](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3167), every speaker email recorded) and 3176 ([#3147](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3147), no slides for a session) |
-| Rolled out | 16 November 2026, about 9:35 PM Central, by the maintainer, after both migrations; checked against the cluster in both namespaces |
-| The image before it | `gisday`: `sha-e6476e1` (about 9:05 PM, PRs 3172 and 3173, the masked leaderboard); `gisday-ucgis`: `sha-4a7d7ad`. These are the rollback targets; the migrations only add, so they can stay |
-| The last migration in it | `AddEventNoSlides` (`1794872844152`), after `AddSpeakerEmailSends` (`1794872052671`): both applied with `-Apply -NoBackup` on both databases at 9:26 and 9:27 PM, reports in kubernetes-config `6. GIS Day/migrations/` |
+| Image, `gisday-nest` and `gisday-angular`, both namespaces (`gisday`, `gisday-ucgis`) | `sha-05ee195` |
+| Its last commit | `05ee19571`, PR 3184 (#3177's screenshots), with PR 3185 ([#3174](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3174), a session's slides and the competition submissions picked, each as one zip) |
+| Rolled out | 17 November 2026, about 12:10 AM Central, by the maintainer; checked against the cluster in both namespaces |
+| The image before it | `sha-178bc5f` (16 November, about 9:35 PM Central: PRs 3175, 3176 and 3178, after the AddSpeakerEmailSends and AddEventNoSlides migrations), the rollback target |
+| The last migration in it | `AddEventNoSlides` (`1794872844152`); none since `178bc5f` |
+| Next, built when it merges | #3183 (judging) needs `AddJudging1794887961505` first: `migrate-prod-3183.ps1` in kubernetes-config |
 
 The cluster is the final word:
 `kubectl -n gisday get deployment gisday-nest gisday-angular -o custom-columns=NAME:.metadata.name,IMAGE:.spec.template.spec.containers[0].image`,
