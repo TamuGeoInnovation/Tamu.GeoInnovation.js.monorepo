@@ -60,6 +60,8 @@ import { AssetsService } from '../assets/assets.service';
     AssetsService,
     // What each speaker was sent (#3167), written by every send above and read by their previews.
     EmailSendLog
-  ]
+  ],
+  // For judging (#3183): its links are speakers' links, and its email is one more speaker email.
+  exports: [SpeakerEditService, EmailSendLog, ContactService, EmailSenderService]
 })
 export class SpeakerEditModule {}

@@ -504,6 +504,26 @@ export class Event extends GuidIdentity {
     name: 'event_sponsors'
   })
   public sponsors?: Sponsor[];
+
+  /**
+   * The research competition the session's judges score (#3183): `graduate-poster`, `undergraduate-poster`,
+   * `graduate-presentation` or `undergraduate-presentation` (`JUDGED_COMPETITIONS` in `@tamu-gisc/gisday/common`), or
+   * null for a session that judges none.
+   */
+  @Column({ type: 'nvarchar', length: 50, nullable: true })
+  public judgedCompetition?: string | null;
+
+  /** Whether the admins have closed judging for the session (#3183): its judges can no longer change their scores. */
+  @Column({ nullable: false, default: false })
+  public judgingClosed: boolean;
+
+  /**
+   * The session's speakers who judge its competition (#3183), each sent their own judging link. Never more than its
+   * speakers: the API refuses a judge who is not one. Not loaded unless asked for, so the public pages do not list them.
+   */
+  @ManyToMany(() => Speaker)
+  @JoinTable({ name: 'event_judges' })
+  public judges?: Speaker[];
 }
 
 @Entity({
@@ -862,7 +882,17 @@ export class SpeakerEditLink extends GuidIdentity {
   /** The address the link was emailed to. */
   @Column({ nullable: true })
   public sentTo: string;
+
+  /**
+   * What the link opens (#3183): `profile`, the speaker's presenter page and their sessions' slides, or `judging`, the
+   * competition they judge. Each link's own routes accept only their own purpose, so neither opens the other's page.
+   */
+  @Column({ type: 'nvarchar', length: 20, nullable: false, default: 'profile' })
+  public purpose: SpeakerLinkPurpose;
 }
+
+/** What a speaker's link opens (#3183). */
+export type SpeakerLinkPurpose = 'profile' | 'judging';
 
 /**
  * One email the site sent one speaker (#3167): which email, about which session, when, to which address and from whom.
@@ -1116,6 +1146,85 @@ export class Submission extends GuidIdentity {
   public files?: Asset[];
 }
 
+/**
+ * The rubric judges score a season's competition against (#3183): one per season for posters and one for research
+ * presentations, graduate and undergraduate alike. Its criteria are rows of their own, so a judge's score for a criterion
+ * is kept by the criterion's id. It goes with its season.
+ */
+@Entity({ name: 'rubrics' })
+@Unique(['season', 'competitionType'])
+export class Rubric extends GuidIdentity {
+  @ManyToOne(() => Season, { nullable: false, onDelete: 'CASCADE' })
+  public season: Relation<Season>;
+
+  /** `poster` or `presentation`: `RUBRIC_COMPETITION_TYPES` in `@tamu-gisc/gisday/common`. */
+  @Column({ type: 'nvarchar', length: 20, nullable: false })
+  public competitionType: string;
+
+  @Column({ nullable: false })
+  public name: string;
+
+  @Column({ nullable: true, length: 'MAX' })
+  public description: string | null;
+
+  @OneToMany(() => RubricCriterion, (criterion) => criterion.rubric)
+  public criteria?: Array<RubricCriterion>;
+}
+
+/** One criterion of a rubric (#3183): what is judged, the most it scores, and the levels of work it describes. */
+@Entity({ name: 'rubric_criteria' })
+export class RubricCriterion extends GuidIdentity {
+  @ManyToOne(() => Rubric, (rubric) => rubric.criteria, { nullable: false, onDelete: 'CASCADE' })
+  public rubric: Relation<Rubric>;
+
+  /** Its place in the rubric, from 0. */
+  @Column({ type: 'int', nullable: false })
+  public position: number;
+
+  @Column({ nullable: false })
+  public name: string;
+
+  @Column({ type: 'int', nullable: false })
+  public maxPoints: number;
+
+  /** Each level of work, best first: its label ("Excellent (A)") and what work at that level looks like. */
+  @Column({ type: 'simple-json', nullable: false })
+  public levels: Array<{ label: string; description: string }>;
+}
+
+/**
+ * One judge's scores for one submission (#3183): a score per criterion of the rubric, by the criterion's id, their total,
+ * worked out by the API, and a comment. A judge has one per submission, which they change until judging closes. It goes
+ * with the judge or the submission; the session is its id, as the email record keeps it, and the rubric is kept if it is
+ * deleted, without it.
+ */
+@Entity({ name: 'assessments' })
+@Unique(['judge', 'submission'])
+export class Assessment extends GuidIdentity {
+  @ManyToOne(() => Speaker, { nullable: false, onDelete: 'CASCADE' })
+  public judge: Relation<Speaker>;
+
+  @ManyToOne(() => Submission, { nullable: false, onDelete: 'CASCADE' })
+  public submission: Relation<Submission>;
+
+  /** The session the judge scored it for. */
+  @Column({ type: 'nvarchar', length: 36, nullable: false })
+  public eventGuid: string;
+
+  @ManyToOne(() => Rubric, { nullable: true, onDelete: 'SET NULL' })
+  public rubric?: Relation<Rubric> | null;
+
+  /** Each criterion's score, by the criterion's id. */
+  @Column({ type: 'simple-json', nullable: false })
+  public scores: Record<string, number>;
+
+  @Column({ type: 'int', nullable: false })
+  public total: number;
+
+  @Column({ nullable: true, length: 'MAX' })
+  public comment: string | null;
+}
+
 @Entity({
   name: 'Signage_Categories'
 })
@@ -1347,7 +1456,11 @@ export const GISDAY_ENTITIES = [
   Submission,
   University,
   Asset,
-  PlaceLink
+  PlaceLink,
+  // Judging the research competitions (#3183).
+  Rubric,
+  RubricCriterion,
+  Assessment
 ];
 
 export interface IGeoJsonFeature {

@@ -1,10 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
-import { firstValueFrom, of } from 'rxjs';
+import { NEVER, firstValueFrom, of } from 'rxjs';
 
 import {
   BroadcastService,
   EventService,
+  JudgingService,
   LocationService,
   SeasonService,
   SpeakerEditsService,
@@ -19,6 +20,11 @@ import { GISDAY_SITES, GisdaySite } from '@tamu-gisc/gisday/common';
 import { GISDAY_SITE } from '../../../../../site/site';
 import { EventAddEditFormComponent } from './event-add-edit-form.component';
 import { ReviewEmailModalComponent } from '../../../../modals/review-email-modal/review-email-modal.component';
+
+/** The judging routes as the form reads them (#3183): a session with no judging yet. */
+function judgingService(judging: object = { judgedCompetition: null, judgingClosed: false, judges: [] }) {
+  return { eventJudging: jest.fn(() => of(judging)) };
+}
 
 /**
  * #2706. "Is accepting RSVPs?" starts ticked on a new event, as the database column's default is, so an event made in the
@@ -46,6 +52,7 @@ describe('EventAddEditFormComponent', () => {
         { provide: NotificationService, useValue: { toast: jest.fn() } },
         { provide: SpeakerEditsService, useValue: speakerEdits },
         { provide: SessionFilesService, useValue: { forEvent: () => of([]) } },
+        { provide: JudgingService, useValue: judgingService() },
         { provide: ModalService, useValue: modals }
       ]
     });
@@ -134,6 +141,7 @@ describe('EventAddEditFormComponent, the profile email', () => {
         { provide: NotificationService, useValue: { toast: jest.fn() } },
         { provide: SpeakerEditsService, useValue: speakerEdits },
         { provide: SessionFilesService, useValue: { forEvent: () => of([]) } },
+        { provide: JudgingService, useValue: judgingService() },
         { provide: ModalService, useValue: modals }
       ]
     });
@@ -183,6 +191,7 @@ describe('EventAddEditFormComponent, the Broadcast drop-down', () => {
         { provide: NotificationService, useValue: { toast: jest.fn() } },
         { provide: SpeakerEditsService, useValue: {} },
         { provide: SessionFilesService, useValue: { forEvent: () => of([]) } },
+        { provide: JudgingService, useValue: judgingService() },
         { provide: ModalService, useValue: {} }
       ]
     });
@@ -235,7 +244,9 @@ describe('EventAddEditFormComponent, the Email these speakers menu', () => {
       previewSessionDetails: jest.fn(() => of({ groups: [] })),
       sendSessionDetails: jest.fn(() => of({ sent: ['Ana Abe'], skipped: [] })),
       previewSlidesRequest: jest.fn(() => of({ groups: [] })),
-      sendSlidesRequest: jest.fn(() => of({ sent: ['Bo Bo'], skipped: [] }))
+      sendSlidesRequest: jest.fn(() => of({ sent: ['Bo Bo'], skipped: [] })),
+      previewJudging: jest.fn(() => of({ groups: [] })),
+      sendJudging: jest.fn(() => of({ sent: ['Bo Bo'], skipped: [] }))
     };
     // What the window gives back for each email, as the admin left it: the slides request with one speaker ticked, and
     // together asked for, which it never offers (#3113).
@@ -244,6 +255,13 @@ describe('EventAddEditFormComponent, the Email these speakers menu', () => {
       'Send slides request': {
         'slides-request': 'Upload: {edit link}',
         'slides-request:subject': 'Slides',
+        ':recipients': 'sp-2',
+        ':together': 'true'
+      },
+      // #3183: the Ask to judge email, one judge ticked, together asked for, which it never offers either.
+      'Send judging emails': {
+        judging: 'Score here: {judging link}',
+        'judging:subject': 'Judging',
         ':recipients': 'sp-2',
         ':together': 'true'
       }
@@ -268,6 +286,7 @@ describe('EventAddEditFormComponent, the Email these speakers menu', () => {
         { provide: NotificationService, useValue: toasts },
         { provide: SpeakerEditsService, useValue: speakerEdits },
         { provide: SessionFilesService, useValue: { forEvent: () => of([]) } },
+        { provide: JudgingService, useValue: judgingService() },
         { provide: ModalService, useValue: modals }
       ]
     });
@@ -350,6 +369,50 @@ describe('EventAddEditFormComponent, the Email these speakers menu', () => {
     expect(speakerEdits.sendSessionDetails).not.toHaveBeenCalled();
     expect(speakerEdits.send).not.toHaveBeenCalled();
     expect(toasts.toast).toHaveBeenCalledWith(expect.objectContaining({ title: 'Slides requested' }));
+  });
+
+  // #3183: Ask to judge goes to the session's judges, so it is offered only once the session judges a competition.
+  it('offers Ask to judge only while a judged competition is chosen', () => {
+    const { page, fixture } = render();
+    const items = () => {
+      page.querySelector<HTMLButtonElement>('tamu-gisc-action-menu button[aria-haspopup="menu"]').click();
+      fixture.detectChanges();
+      const labels = Array.from(page.querySelectorAll('[role="menuitem"]')).map((i) => i.textContent.trim());
+      page.querySelector<HTMLButtonElement>('tamu-gisc-action-menu button[aria-haspopup="menu"]').click();
+      fixture.detectChanges();
+      return labels;
+    };
+
+    expect(items()).not.toContain('Ask to judge');
+
+    fixture.componentInstance.form.get('judgedCompetition').setValue('graduate-poster');
+    fixture.detectChanges();
+    expect(items()).toEqual(['Profile email', 'Session details', 'Ask for slides', 'Ask to judge']);
+
+    fixture.componentInstance.form.get('judgedCompetition').setValue('');
+    fixture.detectChanges();
+    expect(items()).not.toContain('Ask to judge');
+  });
+
+  it("asks the session's judges in the same window, editable, then sends it to the judges ticked, a copy each", () => {
+    const { fixture, speakerEdits, modals, toasts, choose } = render();
+
+    fixture.componentInstance.form.get('judgedCompetition').setValue('graduate-poster');
+    fixture.detectChanges();
+    choose('Ask to judge');
+
+    expect(modals.open).toHaveBeenCalledWith(
+      ReviewEmailModalComponent,
+      expect.objectContaining({ data: expect.objectContaining({ verb: 'Send judging emails', editableSubject: true }) })
+    );
+    expect(speakerEdits.previewJudging).toHaveBeenCalledWith('event');
+    expect(speakerEdits.sendJudging).toHaveBeenCalledWith('event', {
+      subject: 'Judging',
+      template: 'Score here: {judging link}',
+      speakers: ['sp-2']
+    });
+    expect(speakerEdits.sendSlidesRequest).not.toHaveBeenCalled();
+    expect(toasts.toast).toHaveBeenCalledWith(expect.objectContaining({ title: 'Judges asked' }));
   });
 
   it('sends the profile email from the menu, as the button did', () => {
@@ -450,6 +513,7 @@ describe('EventAddEditFormComponent, the Slides section (#3093)', () => {
         { provide: NotificationService, useValue: { toast: jest.fn() } },
         { provide: SpeakerEditsService, useValue: {} },
         { provide: SessionFilesService, useValue: sessionFiles },
+        { provide: JudgingService, useValue: judgingService() },
         { provide: ModalService, useValue: {} }
       ]
     });
@@ -550,4 +614,128 @@ function slidesSection(): string {
   const end = html.indexOf('<div class="form-section">', html.indexOf('<div class="form-section-title">Slides</div>'));
 
   return html.slice(start, end);
+}
+
+/**
+ * #3183. A session's judging on its admin page: the competition its judges score, which of its speakers judge, and
+ * whether judging is closed, saved with the session.
+ */
+describe('EventAddEditFormComponent, the Judging section (#3183)', () => {
+  // Made-up speakers.
+  const event = {
+    guid: 'event',
+    name: 'Graduate posters',
+    judgedCompetition: 'graduate-poster',
+    judgingClosed: false,
+    speakers: [
+      { guid: 'sp-1', firstName: 'Ana', lastName: 'Abe' },
+      { guid: 'sp-2', firstName: 'Bo', lastName: 'Bo' }
+    ],
+    tags: []
+  };
+
+  function render(options: { judging?: object; site?: string; type?: 'create' | 'edit' } = {}) {
+    const judging =
+      (options.judging as { eventJudging: jest.Mock }) ??
+      judgingService({ judgedCompetition: 'graduate-poster', judgingClosed: false, judges: ['sp-2'] });
+
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter([]),
+        { provide: ActivatedRoute, useValue: { params: of({ guid: 'event' }) } },
+        { provide: SeasonService, useValue: { activeSeason$: of({ guid: 'season', days: [] }) } },
+        { provide: SpeakerService, useValue: { getEntitiesForActiveSeason: () => of(event.speakers) } },
+        { provide: TagService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+        { provide: LocationService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+        { provide: BroadcastService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+        { provide: EventService, useValue: { getEntity: () => of(event) } },
+        { provide: NotificationService, useValue: { toast: jest.fn() } },
+        { provide: SpeakerEditsService, useValue: {} },
+        { provide: SessionFilesService, useValue: { forEvent: () => of([]) } },
+        { provide: JudgingService, useValue: judging },
+        { provide: ModalService, useValue: {} },
+        ...(options.site ? [{ provide: GISDAY_SITE, useValue: GISDAY_SITES[options.site] as GisdaySite }] : [])
+      ]
+    });
+    // Only the Judging section, as the page draws it.
+    TestBed.overrideTemplate(EventAddEditFormComponent, judgingSection());
+
+    const fixture = TestBed.createComponent(EventAddEditFormComponent);
+    fixture.componentRef.setInput('type', options.type ?? 'edit');
+    fixture.detectChanges();
+
+    return { fixture, page: fixture.nativeElement as HTMLElement, judging, form: fixture.componentInstance };
+  }
+
+  it("shows the session's competition, and a box for each of its speakers with its judges ticked", () => {
+    const { page, form, judging } = render();
+
+    expect(judging.eventJudging).toHaveBeenCalledWith('event');
+    expect(form.form.get('judgedCompetition').value).toBe('graduate-poster');
+    expect(form.form.get('judges').value).toEqual(['sp-2']);
+    expect(page.textContent).toContain('Judges');
+    // Each box's icon names whether it is ticked: Bo Bo is the judge.
+    expect([...page.querySelectorAll('.judges tamu-gisc-checkbox')].map((c) => c.textContent.trim())).toEqual([
+      'check_box_outline_blankAna Abe',
+      'check_boxBo Bo'
+    ]);
+    expect(page.textContent).toContain('Judging closed');
+  });
+
+  it('offers the four competitions and none', () => {
+    expect(render().form.judgedCompetitionDict.map((c) => c.value)).toEqual([
+      '',
+      'graduate-poster',
+      'undergraduate-poster',
+      'graduate-presentation',
+      'undergraduate-presentation'
+    ]);
+  });
+
+  it('asks for no judges until a competition is chosen', () => {
+    const { page, fixture, form } = render();
+
+    form.form.get('judgedCompetition').setValue('');
+    fixture.detectChanges();
+
+    expect(page.querySelector('.judges')).toBeNull();
+    expect(page.textContent).not.toContain('Judging closed');
+  });
+
+  it("saves the judges among the session's speakers only", () => {
+    const { form } = render();
+
+    form.form.patchValue({ judges: ['sp-2', 'sp-gone'], judgingClosed: true });
+
+    expect(form.payload()).toEqual(
+      expect.objectContaining({ judgedCompetition: 'graduate-poster', judgingClosed: true, judges: ['sp-2'] })
+    );
+  });
+
+  it('leaves the judges out of a save until they have been read, so it does not clear them', () => {
+    const { form } = render({ judging: { eventJudging: jest.fn(() => NEVER) } });
+
+    expect(form.payload()).not.toHaveProperty('judges');
+  });
+
+  it('is not on a site that runs no research competitions', () => {
+    const { page, judging, form } = render({ site: 'ucgis' });
+
+    expect(form.judgingOn).toBe(false);
+    expect(page.textContent).not.toContain('Judging');
+    expect(judging.eventJudging).not.toHaveBeenCalled();
+  });
+});
+
+/** The Judging section from the page's own template. */
+function judgingSection(): string {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { readFileSync } = require('fs');
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { join } = require('path');
+  const html: string = readFileSync(join(__dirname, 'event-add-edit-form.component.html'), 'utf8');
+  const start = html.indexOf('@if (judgingOn) {');
+  const end = html.indexOf('@if (slides(); as slides) {');
+
+  return `<form [formGroup]="form">${html.slice(start, end)}</form>`;
 }

@@ -1,0 +1,39 @@
+// Layout only (#3183): the site's own form, info-block, button and spacing styles do the rest.
+
+// The page fits a phone, 360 px and up, with nothing running off its right edge: the column takes the width it is given,
+// never its content's, and long words wrap.
+.judging {
+  flex: 1 1 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-wrap: anywhere;
+}
+
+// Every box in a card is a flex or grid child, so each is let shrink below its content's width.
+.judging form,
+.judging .form-section,
+.judging .form-section-toolbar,
+.judging .form-section-title,
+.judging .form-section-body,
+.judging .form-collection,
+.judging details,
+.judging tamu-gisc-textbox,
+.judging tamu-gisc-button {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+// A level's description under its name, at the card's full width.
+.judging dd {
+  margin-left: 0;
+}
+
+.competition + .competition {
+  margin-top: 2rem;
+}
+
+.submission {
+  margin-bottom: 1.5rem;
+}

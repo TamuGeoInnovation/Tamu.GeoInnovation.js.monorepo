@@ -17,6 +17,7 @@ export * from './lib/modules/services/user/user.service';
 export * from './lib/modules/services/user-submissions/user-submissions.service';
 export * from './lib/modules/services/speaker-edits/speaker-edits.service';
 export * from './lib/modules/services/session-files/session-files.service';
+export * from './lib/modules/services/judging/judging.service';
 export * from './lib/modules/services/signage/signage.service';
 export * from './lib/modules/services/season/season.service';
 export * from './lib/modules/services/organization/organization.service';

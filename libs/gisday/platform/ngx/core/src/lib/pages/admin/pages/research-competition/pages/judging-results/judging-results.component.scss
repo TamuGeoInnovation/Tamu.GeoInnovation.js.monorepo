@@ -1,0 +1,22 @@
+@import 'libs/sass/components/datatable';
+
+// Layout only (#3183): a column for each judge and each criterion scrolls in its own box, not the page, as the submissions
+// list's table does.
+.datatable-container {
+  --datatable-height: auto;
+
+  overflow-x: auto;
+  max-width: 100%;
+
+  ::ng-deep .datatable-body-cell-label {
+    white-space: normal;
+    overflow-wrap: break-word;
+  }
+}
+
+// The Competition box is wide enough for the longest name, "Undergraduate presentation competition", in the toolbar's
+// row as the submissions list's Season box is. Wrapping the row stacked the boxes and put Season's label over it (lab,
+// batch 123).
+.competition-choice {
+  min-width: 18rem;
+}

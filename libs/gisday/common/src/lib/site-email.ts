@@ -44,6 +44,19 @@ export function sessionEmailDesign(siteName: string, days: Array<string>, sessio
   return { label: 'Your session', days, session, why: presenting(siteName) };
 }
 
+/**
+ * The Ask to judge email's design (#3183): the session in its details box, under a label for a judge rather than a
+ * presenter, and why they are getting it.
+ */
+export function judgingEmailDesign(siteName: string, days: Array<string>, session: EmailSessionDetails): EmailDesign {
+  return {
+    label: 'Your judging',
+    days,
+    session,
+    why: `You are getting this email because you are judging at ${siteName}.`
+  };
+}
+
 /** The competition's review, finalist and reminder emails' design (#3114). */
 export function reviewEmailDesign(siteName: string, days: Array<string>): EmailDesign {
   return {

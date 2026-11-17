@@ -38,6 +38,14 @@ export class EventController {
     });
   }
 
+  /** A session's judging (#3183) for its admin form: its competition, whether closed, and its judges by id. */
+  @Permissions(['update:events'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Get(':guid/judging')
+  public async getJudging(@Param('guid') guid: string) {
+    return this.provider.getJudging(guid);
+  }
+
   @Get(':guid/rsvps')
   public async getNumberOfRsvps(@Param() params) {
     return this.provider.getNumberOfRsvps(params.guid);

@@ -89,9 +89,10 @@
   <p>Nothing is sent until you choose Send. Each person gets their own copy, with these filled in: {{ placeholders }}. The text may use Markdown: **bold**, *italic*, [link text](https://...) and lists starting with - .</p>
   } @for (group of preview.groups; track group.kind) { @let shown = exampleOf(group);
   <section class="review-email__group">
-    <h3>{{ group.label }} ({{ count(group) }})</h3>
+    <!-- Room above each box for its label, which floats up out of it: it met the heading and the box above (#3183). -->
+    <h3 class="trailer-1">{{ group.label }} ({{ count(group) }})</h3>
     @if (editableSubject) {
-    <tamu-gisc-textbox [formControl]="form.controls[group.kind + ':subject']" [placeholder]="'Subject'" [floatLabel]="true"></tamu-gisc-textbox>
+    <tamu-gisc-textbox class="trailer-1" [formControl]="form.controls[group.kind + ':subject']" [placeholder]="'Subject'" [floatLabel]="true"></tamu-gisc-textbox>
     } @else {
     <p class="review-email__meta"><strong>Subject:</strong> {{ group.subject }}</p>
     }

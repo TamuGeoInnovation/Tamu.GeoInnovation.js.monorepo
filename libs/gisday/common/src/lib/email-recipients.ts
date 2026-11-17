@@ -49,7 +49,9 @@ export interface EmailSends {
 export const EMAIL_KIND_LABELS: Readonly<Record<string, string>> = Object.freeze({
   profile: 'the presenter profile email',
   'session-details': 'a session details email',
-  'slides-request': 'an Ask for slides email'
+  'slides-request': 'an Ask for slides email',
+  // Each judge's own judging link (#3183).
+  judging: 'an Ask to judge email'
 });
 
 /** A time as the record of sends shows it: "Nov 16, 4:05 PM", in US Central, where GIS Day is. */

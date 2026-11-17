@@ -17,6 +17,8 @@ DECLARE @target sysname = N'gisday-scrubbed';
 -- `updated` and `created` are kept everywhere and are not listed.
 DECLARE @kept TABLE (tbl sysname, cols nvarchar(max));
 INSERT @kept VALUES
+  -- A judge's scores for a submission (#3183): who, which, and the numbers. The comment goes below.
+  (N'assessments', N'guid,judgeGuid,submissionGuid,eventGuid,rubricGuid,scores,total'),
   (N'assets', N'guid,type,organizationGuid,speakerGuid,sponsorGuid,placesGuid,submissionGuid,eventGuid,uploadedByGuid'),
   (N'checkins', N'guid,eventGuid,outsideSessionTime'),
   (N'classes', N'guid,title,code,seasonGuid,number,section'),
@@ -27,10 +29,12 @@ INSERT @kept VALUES
   (N'event_location', N'guid,room,building,capacity,link,placeGuid,streetAddressOverride,seasonGuid,checkInZone'),
   (N'event_rating_questions', N'guid,userEditable,type,text,options,seasonGuid'),
   (N'event_rating_responses', N'guid,eventGuid,questionGuid'),
+  -- Which of a session's speakers judge its competition (#3183).
+  (N'event_judges', N'eventsGuid,speakersGuid'),
   (N'event_speakers', N'eventsGuid,speakersGuid'),
   (N'event_sponsors', N'eventsGuid,sponsorsGuid'),
   (N'event_tags', N'eventsGuid,tagsGuid'),
-  (N'events', N'guid,active,startTime,endTime,observedAttendeeStart,observedAttendeeEnd,capacity,resources,requiresRsvp,qrCode,mode,eventType,presentationType,isAcceptingRsvps,isBringYourOwnDevice,requirements,dayGuid,broadcastGuid,locationGuid,seasonGuid,checkInAnyTime,noSlides'),
+  (N'events', N'guid,active,startTime,endTime,observedAttendeeStart,observedAttendeeEnd,capacity,resources,requiresRsvp,qrCode,mode,eventType,presentationType,isAcceptingRsvps,isBringYourOwnDevice,requirements,dayGuid,broadcastGuid,locationGuid,seasonGuid,checkInAnyTime,noSlides,judgedCompetition,judgingClosed'),
   (N'initial_survey_questions', N'guid,questionText,questionOptions,questionTypeGuid'),
   (N'initial_survey_responses', N'guid,seasonGuid,questionGuid'),
   (N'organizations', N'guid,seasonGuid,acronym'),
@@ -38,13 +42,16 @@ INSERT @kept VALUES
   (N'places', N'guid,name,address,city,state,zip,website,seasonGuid,visibilitySettings'),
   (N'question_types', N'guid,type'),
   (N'rsvp_types', N'guid,type'),
+  -- The rubrics judges score against (#3183): the competition organizer's text, about the work, not about anyone.
+  (N'rubrics', N'guid,seasonGuid,competitionType,name,description'),
+  (N'rubric_criteria', N'guid,rubricGuid,position,name,maxPoints,levels'),
   (N'seasons', N'guid,year,active,posterSubmissionsCloseAt,posterFilesCloseAt,presentationSubmissionsCloseAt,presentationFilesCloseAt,paperSubmissionsCloseAt,paperFilesCloseAt,cartographySubmissionsCloseAt,cartographyFilesCloseAt'),
   (N'season_competitions', N'guid,competitionType,seasonGuid'),
   (N'seasons_days', N'guid,date,seasonGuid'),
   (N'speaker_roles', N'guid,name'),
   (N'speakers', N'guid,isActive,seasonGuid,organizationGuid,universityGuid,isOrganizer,badgePrintedAt'),
   -- A speaker's own link to edit their profile (#2936): which speaker, and until when. The token and the address go below.
-  (N'speaker_edit_links', N'guid,speakerGuid,expires'),
+  (N'speaker_edit_links', N'guid,speakerGuid,expires,purpose'),
   -- Which email each speaker was sent, about which session, and when (#3167). The addresses go below.
   (N'speaker_email_sends', N'guid,speakerGuid,kind,eventGuid'),
   -- What a speaker proposed (#2936): whose, and where it stands. What they wrote goes below, as the speaker's own does.
@@ -151,6 +158,8 @@ INSERT @scrubbed VALUES
   -- The address each email went to, and who it was from: an admin's own name and address (#3167).
   (N'speaker_email_sends', N'sentTo', N'N''speaker-'' + LOWER(LEFT(speakerGuid, 8)) + N''@example.org'''),
   (N'speaker_email_sends', N'sentFrom', N'N''GIS Day <gisday@example.org>'''),
+  -- What a judge wrote about a student's work (#3183): free text, which can name anyone. The scores are kept above.
+  (N'assessments', N'comment', N'N''The comment is removed from this copy.'''),
 
   (N'organizations', N'contactFirstName', N'N''Contact'''),
   (N'organizations', N'contactLastName', N'N''Person'''),

@@ -1,0 +1,94 @@
+<!-- The rubrics judges score against (#3183), one per season for posters and one for research presentations. -->
+<div class="form">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">Rubrics</div>
+      <div class="form-section-actions">
+        <tamu-gisc-select class="post-1" placeholder="Season" [floatLabel]="false" [data]="choice.seasons()" displayTemplate="year" valueTemplate="guid" [value]="choice.season()?.guid" (changed)="choice.choose($any($event))"></tamu-gisc-select>
+      </div>
+    </div>
+
+    <div class="form-section-body">
+      <p class="form-input-description">Judges score each accepted entry against its competition's rubric. Graduate and undergraduate share one. A criterion you keep keeps the scores judges gave it.</p>
+    </div>
+  </div>
+
+  @if (panels(); as panels) { @for (panel of panels; track panel.type) {
+  <div class="form-section rubric">
+    <div class="form-section-toolbar">
+      <div class="form-section-title">{{ panel.label }}</div>
+    </div>
+
+    <div class="form-section-body">
+      @if (panel.form; as form) {
+      <form [formGroup]="form" (ngSubmit)="save(panel)">
+        <div class="form-collection column">
+          <tamu-gisc-textbox formControlName="name" placeholder="Name" type="text" [floatLabel]="true"></tamu-gisc-textbox>
+        </div>
+        <div class="form-collection column">
+          <tamu-gisc-textbox formControlName="description" placeholder="Description" type="textarea" [rows]="6" [floatLabel]="true"></tamu-gisc-textbox>
+        </div>
+
+        <!-- Each criterion a section of the shared form layout, as the admin forms lay theirs out: every box a
+             form-collection, so the flex layout carries down to it, its fields side by side and stacked on a phone. -->
+        <div class="form-collection column" formArrayName="criteria">
+          @for (criterion of form.controls.criteria.controls; track criterion; let i = $index) {
+          <div class="form-section criterion" [formGroupName]="i">
+            <div class="form-section-toolbar">
+              <div class="form-section-title">Criterion {{ i + 1 }}</div>
+            </div>
+            <div class="form-section-body">
+              <div class="form-collection row stack-narrow">
+                <tamu-gisc-textbox formControlName="name" placeholder="Criterion" type="text" [floatLabel]="true"></tamu-gisc-textbox>
+                <tamu-gisc-textbox formControlName="maxPoints" placeholder="Points" type="number" [floatLabel]="true"></tamu-gisc-textbox>
+              </div>
+              <div class="form-collection column" formArrayName="levels">
+                @for (level of criterion.controls.levels.controls; track level; let l = $index) {
+                <div class="form-collection row stack-narrow" [formGroupName]="l">
+                  <tamu-gisc-textbox formControlName="label" placeholder="Level" type="text" [floatLabel]="true"></tamu-gisc-textbox>
+                  <tamu-gisc-textbox formControlName="description" placeholder="What work at this level looks like" type="textarea" [rows]="3" [floatLabel]="true"></tamu-gisc-textbox>
+                </div>
+                }
+              </div>
+              <div class="form-collection row">
+                <tamu-gisc-button type="button" look="danger" value="Remove criterion" (click)="removeCriterion(form, i)"></tamu-gisc-button>
+              </div>
+            </div>
+          </div>
+          }
+        </div>
+
+        <p class="bold total">Total: {{ total(form) }} points</p>
+
+        @if (status()[panel.type]; as state) { @if (state.problem) {
+        <div class="info-block warning" role="alert">
+          <p>{{ state.problem }}</p>
+        </div>
+        } @else if (state.saved) {
+        <div class="info-block success">
+          <p>Saved.</p>
+        </div>
+        } }
+
+        <div class="form-collection row">
+          <tamu-gisc-button type="button" look="secondary" value="Add criterion" (click)="addCriterion(form)"></tamu-gisc-button>
+          <tamu-gisc-button type="submit" value="Save rubric"></tamu-gisc-button>
+        </div>
+      </form>
+      } @else {
+      <p>This season has no {{ panel.label.toLowerCase() }} yet.</p>
+      @if (status()[panel.type]?.problem; as problem) {
+      <div class="info-block warning" role="alert">
+        <p>{{ problem }}</p>
+      </div>
+      }
+      <div class="form-collection row">
+        <tamu-gisc-button type="button" value="Start from the standard rubric" (click)="startFromStandard(panel.type)"></tamu-gisc-button>
+      </div>
+      }
+    </div>
+  </div>
+  } } @else {
+  <div class="loader"></div>
+  }
+</div>

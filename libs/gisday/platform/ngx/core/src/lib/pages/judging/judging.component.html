@@ -1,0 +1,97 @@
+<!-- A judge's own page (#3183), from the link emailed to them: one column, for a phone in the room. -->
+<section>
+  <div class="container12">
+    <!-- One child, so container12 does not set the heading beside the cards as a column of its own. -->
+    <div class="judging">
+      <h1 class="trailer-1">Judging</h1>
+      @if (!token() || invalid()) {
+      <div class="info-block warning">
+        @if (invalid()) {
+        <p>This link has expired or is not valid. Ask the GIS Day team for a new one.</p>
+        } @else {
+        <p>This page opens from the link in your judging email.</p>
+        }
+      </div>
+      } @else if (judge(); as j) {
+      <p class="form-input-description">{{ j.firstName }} {{ j.lastName }}, thank you for judging. Give each criterion a score and choose <strong>Save</strong> on each entry. You can change your scores until judging closes. Only the GIS Day team sees them. This link works until {{ j.expires | date: 'EEEE, MMMM d' : '-0600' }}.</p>
+
+      @for (competition of j.competitions; track competition.competition) {
+      <div class="competition">
+        <h2>{{ competition.label }}</h2>
+        <p class="progress bold">{{ scoredLine(competition) }}</p>
+
+        @if (competition.closed) {
+        <div class="info-block notice">
+          <p>Judging is closed for this competition. Your scores are shown, but can no longer be changed.</p>
+        </div>
+        } @if (!competition.rubric) {
+        <div class="info-block warning">
+          <p>The rubric for this competition is not ready yet. Please check back later.</p>
+        </div>
+        } @else if (competition.submissions.length === 0) {
+        <p>There are no entries in this competition yet.</p>
+        } @if (competition.rubric; as rubric) { @for (submission of competition.submissions; track submission.guid) {
+        <form class="form submission" [formGroup]="formFor(submission)" (ngSubmit)="save(competition, submission)">
+          <div class="form-section">
+            <div class="form-section-toolbar">
+              <div class="form-section-title">{{ submission.title }}</div>
+            </div>
+
+            <div class="form-section-body">
+              @if (submission.presenters.length) {
+              <p class="presenters">{{ submission.presenters.join(', ') }}</p>
+              } @if (submission.abstract) {
+              <details class="trailer-1">
+                <summary>Abstract</summary>
+                <p class="abstract">{{ submission.abstract }}</p>
+              </details>
+              } @for (criterion of rubric.criteria; track criterion.guid) {
+              <!-- One under the other, on a phone as on a computer: the criterion, its score, its levels (#3183). -->
+              <div class="criterion form-collection column">
+                <p class="bold trailer-1">{{ criterion.name }} <span class="out-of">(0 to {{ criterion.maxPoints }})</span></p>
+                <tamu-gisc-textbox [formControlName]="criterion.guid" type="number" [placeholder]="'Score out of ' + criterion.maxPoints" [floatLabel]="true"></tamu-gisc-textbox>
+                @if (criterion.levels.length) {
+                <details class="leader-1">
+                  <summary>Levels</summary>
+                  <dl>
+                    @for (level of criterion.levels; track level.label) {
+                    <dt>{{ level.label }}</dt>
+                    <dd>{{ level.description }}</dd>
+                    }
+                  </dl>
+                </details>
+                }
+              </div>
+              }
+
+              <div class="form-collection column">
+                <tamu-gisc-textbox formControlName="comment" type="textarea" [rows]="3" placeholder="Comment (optional)" [floatLabel]="true"></tamu-gisc-textbox>
+              </div>
+
+              @if (saves()[submission.guid]; as state) { @if (state.problem) {
+              <div class="info-block warning" role="alert">
+                <p>{{ state.problem }}</p>
+              </div>
+              } @else if (state.saved) {
+              <p class="saved">Saved, {{ submission.assessment?.total }} of {{ rubricTotal(rubric) }} points.</p>
+              } } @else if (submission.assessment; as assessment) {
+              <p class="saved">Scored {{ assessment.total }} of {{ rubricTotal(rubric) }} points.</p>
+              } @if (!competition.closed) {
+              <div class="form-collection row">
+                <tamu-gisc-button type="submit" [value]="saves()[submission.guid]?.saving ? 'Saving…' : 'Save'" [disabled]="!!saves()[submission.guid]?.saving"></tamu-gisc-button>
+              </div>
+              }
+            </div>
+          </div>
+        </form>
+        } }
+      </div>
+      } @empty {
+      <p>You are not judging any competition at the moment.</p>
+      } } @else {
+      <!-- The site's loader while the link loads. -->
+      <div class="loader"></div>
+      }
+    </div>
+  </div>
+</section>
