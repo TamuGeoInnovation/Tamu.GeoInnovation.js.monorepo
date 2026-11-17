@@ -8940,3 +8940,22 @@ speakers only.
   `after-presenter-page.png`.
 - To `docs/screenshots/3147-no-slides/`, plus `docs/releases/unreleased/3147-no-slides.md` with its *What to test on dev*
   row, on the branch. Report "images pushed: <sha>".
+
+## Batch 120 (gisday: #3174's screenshots, Medium; 16 November 2026, from `work (gisday)`)
+
+[#3174](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3174): a session's slides download as
+one zip, and the competition submissions' download takes only the ticked rows (or, with none ticked, the rows the filters
+show). **Do not change the code.** Branch `feat/3174-zips` on the fork (`4d10db4d6`). No migration. Made-up sessions,
+speakers and submissions only, with made-up small PDF/PPTX files.
+
+- **Before** (`development`):
+  - a session with two speakers who have each uploaded one file: its Slides section, `before-session-slides.png`;
+  - Student Competition Submissions with two rows ticked: the toolbar's **Download all files**, `before-submissions.png`.
+- **After** (the branch):
+  - the same Slides section, now with **Download all 2 files**, `after-session-slides.png`; press it and open the zip:
+    say the folders and file names inside (one folder per speaker);
+  - the same two rows ticked: the toolbar says **Download files (2 ticked)**, `after-submissions-ticked.png`; download
+    it and say what the zip holds (only those two submissions' folders);
+  - nothing ticked, one filter narrowing the list: **Download files (N shown)**, `after-submissions-filtered.png`.
+- To `docs/screenshots/3174-zips/`, plus `docs/releases/unreleased/3174-zips.md` with its *What to test on dev* row, on
+  the branch. Report "images pushed: <sha>".
