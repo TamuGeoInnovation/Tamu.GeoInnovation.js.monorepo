@@ -51,24 +51,25 @@
                 <table>
                   <thead>
                     <tr>
+                      <!-- Total and comment first, so they are in view without scrolling past every criterion (lab, batch 126). -->
                       <th>Judge</th>
+                      <th>Total</th>
+                      <th>Comment</th>
                       @for (criterion of results.rubric?.criteria ?? []; track criterion.guid) {
                       <th>{{ criterion.name }} (of {{ criterion.maxPoints }})</th>
                       }
-                      <th>Total</th>
-                      <th>Comment</th>
                     </tr>
                   </thead>
                   <tbody>
                     @for (line of breakdown(results, row); track line.guid) {
                     <tr>
                       <th class="bold">{{ line.name }}</th>
-                      @if (line.scored) { @for (score of line.scores; track $index) {
-                      <td>{{ score ?? '' }}</td>
-                      }
+                      @if (line.scored) {
                       <td class="bold">{{ line.total }}</td>
                       <td class="comment">{{ line.comment ?? '' }}</td>
-                      } @else {
+                      @for (score of line.scores; track $index) {
+                      <td>{{ score ?? '' }}</td>
+                      } } @else {
                       <td class="not-scored" [attr.colspan]="line.scores.length + 2"><em>{{ notScoredYet }}</em></td>
                       }
                     </tr>

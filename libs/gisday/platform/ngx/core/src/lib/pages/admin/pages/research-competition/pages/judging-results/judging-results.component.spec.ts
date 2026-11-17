@@ -91,12 +91,13 @@ describe('JudgingResultsComponent, each judge on an entry (#3193)', () => {
     expect(component.opened()).toBe('s-1');
     expect(Array.from(root.querySelectorAll('.breakdown thead th')).map((th) => th.textContent?.trim())).toEqual([
       'Judge',
-      'Clarity (of 20)',
       'Total',
-      'Comment'
+      'Comment',
+      'Clarity (of 20)'
     ]);
+    // Total and comment come first, so they are in view without scrolling past every criterion (lab, batch 126).
     expect(lines()).toEqual([
-      ['Dana Judge', '18', '18', 'Clear, "careful" work.'],
+      ['Dana Judge', '18', 'Clear, "careful" work.', '18'],
       ['Emery Judge', 'Not scored yet']
     ]);
   });
