@@ -58,13 +58,12 @@ Updated at every GIS Day rollout, as step 4 of
 
 | | |
 | --- | --- |
-| Image, `gisday-nest` and `gisday-angular`, namespace `gisday` | `sha-e6476e1` |
-| Image, namespace `gisday-ucgis` | `sha-4a7d7ad`: the 16 November evening rollout was `gisday` only; not checked against the cluster since |
-| Its last commit | `e6476e175`, PR 3173 ([#3168](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3168), the VGI leaderboard names participants by a masked email, for everyone), with PR 3172 ([#3169](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3169), the Monument Trail page's button to the leaderboard) |
-| Rolled out | 16 November 2026, about 9:05 PM Central, by the maintainer; the masked leaderboard checked on gisday.tamu.edu |
-| The image before it | `sha-4a7d7ad` (16 November, about 5:20 PM Central), the rollback target |
-| The last migration in it | `AddSessionFiles` (`1794786922753`); none since `592e5f5` |
-| Built, not deployed | `sha-de9d85b` (PRs 3175, 3176) needs `AddSpeakerEmailSends` and `AddEventNoSlides` run first: `migrate-prod-3167.ps1` and `migrate-prod-3147.ps1` in kubernetes-config |
+| Image, `gisday-nest` and `gisday-angular`, both namespaces (`gisday`, `gisday-ucgis`) | `sha-05ee195` |
+| Its last commit | `05ee19571`, PR 3184 (#3177's screenshots), with PR 3185 ([#3174](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3174), a session's slides and the competition submissions picked, each as one zip) |
+| Rolled out | 17 November 2026, about 12:10 AM Central, by the maintainer; checked against the cluster in both namespaces |
+| The image before it | `sha-178bc5f` (16 November, about 9:35 PM Central: PRs 3175, 3176 and 3178, after the AddSpeakerEmailSends and AddEventNoSlides migrations), the rollback target |
+| The last migration in it | `AddEventNoSlides` (`1794872844152`); none since `178bc5f` |
+| Next, built when it merges | #3183 (judging) needs `AddJudging1794887961505` first: `migrate-prod-3183.ps1` in kubernetes-config |
 
 The cluster is the final word:
 `kubectl -n gisday get deployment gisday-nest gisday-angular -o custom-columns=NAME:.metadata.name,IMAGE:.spec.template.spec.containers[0].image`,
