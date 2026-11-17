@@ -638,3 +638,109 @@ describe('ReviewEmailModalComponent, choosing speakers', () => {
     });
   });
 });
+
+/** #3167: the maintainer could not tell who was already sent an email. Made-up speakers only. */
+describe('ReviewEmailModalComponent, who was sent it before', () => {
+  const recipients = [
+    {
+      guid: 'sp-ca',
+      name: 'Cara Test',
+      firstName: 'Cara',
+      email: 'cara@example.com',
+      sends: { thisEmail: [], others: [{ kind: 'profile', at: '2026-11-15T20:10:00.000Z' }] }
+    },
+    {
+      guid: 'sp-sh',
+      name: 'Sharmin Example',
+      firstName: 'Sharmin',
+      email: 'sharmin@example.com',
+      // 4:05 PM Central, 16 November 2026.
+      sends: { thisEmail: ['2026-11-16T22:05:00.000Z'], others: [] }
+    },
+    { guid: 'sp-co', name: 'Colby Sample', firstName: 'Colby', email: 'colby@example.com', sends: { thisEmail: [], others: [] } }
+  ];
+
+  function open() {
+    TestBed.configureTestingModule({
+      imports: [ReviewEmailModalComponent],
+      providers: [
+        {
+          provide: MODAL_DATA,
+          useValue: {
+            verb: 'Send session details',
+            editableSubject: true,
+            preview: of({
+              groups: [
+                {
+                  kind: 'session-details',
+                  label: 'Session details',
+                  count: 3,
+                  subject: 'Your session',
+                  template: 'Howdy {first name}',
+                  example: { title: 'Sharmin Example', to: 'sharmin@example.com', cc: '', values: { '{first name}': 'Sharmin' } }
+                }
+              ],
+              recipients
+            })
+          }
+        },
+        { provide: ModalRefService, useValue: { close: jest.fn() } },
+        NO_SENDERS
+      ]
+    });
+
+    const fixture = TestBed.createComponent(ReviewEmailModalComponent);
+    fixture.detectChanges();
+
+    const page = fixture.nativeElement as HTMLElement;
+    const rows = () =>
+      [...page.querySelectorAll('.review-email__recipients tamu-gisc-checkbox-group tamu-gisc-checkbox')].map((b) => [
+        b.querySelector('label').textContent.trim(),
+        b.querySelector('.description').textContent.trim()
+      ]);
+
+    return { fixture, page, rows };
+  }
+
+  it("says under each speaker whether and when they were sent it, and how many were not", () => {
+    const { page, rows } = open();
+
+    expect(rows()).toEqual([
+      ['Sharmin Example', 'sharmin@example.com · Sent once, last Nov 16, 4:05 PM'],
+      ['Colby Sample', 'colby@example.com · Not sent yet'],
+      ['Cara Test', 'cara@example.com · Not sent yet']
+    ]);
+    expect(page.querySelector('.review-email__sent-choices').textContent.replace(/\s+/g, ' ')).toContain(
+      '2 of 3 have not been sent this email yet.'
+    );
+  });
+
+  it('ticks only those not sent it yet', () => {
+    const { fixture, page } = open();
+
+    (page.querySelector('.review-email__tick-not-sent input') as HTMLInputElement).click();
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.chosen.value).toEqual(['sp-co', 'sp-ca']);
+  });
+
+  it('lists those not sent it first when asked', () => {
+    const { fixture, rows } = open();
+
+    fixture.componentInstance.notSentFirst.setValue(true);
+    fixture.detectChanges();
+
+    expect(rows().map(([name]) => name)).toEqual(['Colby Sample', 'Cara Test', 'Sharmin Example']);
+  });
+
+  it('lists every email each was sent, with its date', () => {
+    const { page } = open();
+    const items = [...page.querySelectorAll('.review-email__history li')].map((li) => li.textContent.replace(/\s+/g, ' ').trim());
+
+    expect(items).toEqual([
+      'Sharmin Example: Nov 16, 4:05 PM: this email',
+      'Colby Sample: nothing yet',
+      'Cara Test: Nov 15, 2:10 PM: the presenter profile email'
+    ]);
+  });
+});
