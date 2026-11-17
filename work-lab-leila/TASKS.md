@@ -9002,3 +9002,24 @@ submissions only; **send no email** (preview only).
 - Anything that looks wrong, odd or hard to use goes under **Seen on the page** in your report, with the image.
 - To `docs/screenshots/3183-judging/`, plus `docs/releases/unreleased/3183-judging.md` with its *What to test on dev*
   row, on the branch. Report "images pushed: <sha>".
+
+## Batch 123 (gisday: #3183's screenshots again, after its layout fixes, **High**; 16 November 2026, from `work (gisday)`)
+
+Your report 122's six "Seen on the page" items are fixed in `e9ede76b7` on `feat/3183-judging` (fork). The branch also
+merged `development`: it now has #3174 and #3177. **Do not change the code.** The same made-up set-up and the same
+safety as batch 122: migrations run, then reverted; no email; made-up people only.
+
+**Re-take, under the same names, replacing the old files:**
+- `after-judge-page-phone.png`, at 390 px, and also a new `after-judge-page-phone-360.png` at 360 px:
+  - nothing may run off the right edge;
+  - Save must be reachable;
+  - check by script that `document.documentElement.scrollWidth <= innerWidth` and say the numbers.
+- `after-judge-page.png`, `after-judge-saved.png` and `after-judging-closed.png`: the labels must no longer crowd.
+- `after-results.png`, with one entry left unscored. It must show "Not scored yet". The table scrolls in its own box,
+  and the names and the Competition select are not cut off.
+- `after-rubrics.png`: the fields sit side by side, and their labels don't overlap.
+- `after-ask-to-judge-preview.png` and `-end.png`: Subject is clear of the count. The title is "Send judging emails". The
+  header reads YOUR JUDGING.
+
+Say, item by item against report 122's six, whether each is now fixed, with the image. Anything still wrong, or new,
+goes under **Seen on the page**. Push as a fast-forward from `e9ede76b7` and report "images pushed: <sha>".
