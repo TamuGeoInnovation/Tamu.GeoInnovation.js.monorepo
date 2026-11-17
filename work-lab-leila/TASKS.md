@@ -9058,3 +9058,24 @@ same made-up set-up and safety as batch 124, with the standard presentation rubr
   - check by script that `scrollWidth <= innerWidth` at 390 and 360 px, and give the numbers.
 - To `docs/screenshots/3191-rubric-boxes/`, plus `docs/releases/unreleased/3191-rubric-boxes.md` with its *What to
   test on dev* row, on the branch. Report "images pushed: <sha>".
+
+## Batch 126 (gisday: #3193's screenshots, **High**; 17 November 2026, from `work (gisday)`) - **after 125**
+
+[#3193](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3193): on Admin → Judging results,
+clicking an entry's row opens its breakdown: a line per judge with their score on each criterion, their total and their
+comment, or "Not scored yet". A second download, **Every score**, gives a CSV with a row per judge per entry.
+**Do not change the code.**
+
+Branch `feat/3193-judge-breakdown` on the fork (`7998e8805`). It needs AddJudging (`migrate run`; revert after). Use the
+same made-up set-up and safety as batch 124: two made-up judges; one scores two entries, with a comment containing a comma
+and a quote; the other scores one.
+
+- **Before** (`development`): Judging results with the toolbar, `before-results.png`.
+- **After** (the branch):
+  - the toolbar with **Every score**, `after-toolbar.png`;
+  - an entry's breakdown open (both judges), `after-breakdown.png`;
+  - one with a judge "Not scored yet", `after-breakdown-unscored.png`.
+- Download **Every score** and say what it holds, row by row, with the comment's escaping.
+- Check at 1280 px that nothing is cut off, and that the page itself doesn't scroll sideways.
+- To `docs/screenshots/3193-judge-breakdown/`, plus `docs/releases/unreleased/3193-judge-breakdown.md` with its *What
+  to test on dev* row, on the branch. Report "images pushed: <sha>".
