@@ -31,7 +31,7 @@ import {
 } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { GISDayRoles, sortSpeakersByAffiliation } from '@tamu-gisc/gisday/platform/ngx/common';
+import { GISDayRoles, sortSpeakersByName } from '@tamu-gisc/gisday/platform/ngx/common';
 import { NgIf, NgFor, AsyncPipe, DatePipe } from '@angular/common';
 import { AccordionComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 import { AccordionHeaderComponent } from '@tamu-gisc/ui-kits/ngx/layout';
@@ -191,7 +191,8 @@ export class EventDetailComponent implements OnInit, OnDestroy {
     );
 
     // Grouped by company, then by name, so the people from one company sit together (#1769).
-    this.presenters$ = this.event$.pipe(map((event) => sortSpeakersByAffiliation(event?.speakers)));
+    // By last name, then first name, A to Z, not grouped by company (#3196, which replaced #1769's grouping).
+    this.presenters$ = this.event$.pipe(map((event) => sortSpeakersByName(event?.speakers)));
 
     this.isPastSeason$ = this.event$.pipe(
       switchMap((event) => this.seasonService.isPastSeasonDay(event?.day?.guid)),
