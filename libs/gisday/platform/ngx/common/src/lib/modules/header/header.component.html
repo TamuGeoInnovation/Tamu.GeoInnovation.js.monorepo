@@ -38,9 +38,10 @@
   </tamu-gisc-tile>
 
   @if ((loggedIn$ | async) === false) {
-  <tamu-gisc-tile>
+  <!-- A tap anywhere on the tile logs in, not only on its title (#3198); the keys stay on the title, which takes the focus. -->
+  <tamu-gisc-tile (click)="login()">
     <tamu-gisc-tile-icon><div class="material-icons">login</div></tamu-gisc-tile-icon>
-    <tamu-gisc-tile-title tabindex="0" role="button" (click)="login()" (keydown.enter)="login()" (keydown.space)="login(); $event.preventDefault()">Login</tamu-gisc-tile-title>
+    <tamu-gisc-tile-title tabindex="0" role="button" (keydown.enter)="login()" (keydown.space)="login(); $event.preventDefault()">Login</tamu-gisc-tile-title>
   </tamu-gisc-tile>
   } @else if ((loggedIn$ | async) === true) {
   <!-- One block, not @else { @if }: the menu projects only tamu-gisc-tile, and a tile two blocks deep is dropped (#2884). -->
