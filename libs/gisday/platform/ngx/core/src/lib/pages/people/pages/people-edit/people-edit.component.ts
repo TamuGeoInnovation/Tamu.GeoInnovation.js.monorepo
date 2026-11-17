@@ -4,7 +4,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AsyncPipe, DatePipe } from '@angular/common';
-import { combineLatest, map, of, shareReplay, startWith } from 'rxjs';
+import { combineLatest, from, map, of, shareReplay, startWith, switchMap } from 'rxjs';
 
 import {
   SessionFilesService,
@@ -88,7 +88,7 @@ export class PeopleEditComponent implements OnInit {
   public readonly problem = signal<string | null>(null);
 
   /** The photo picker, on the shared upload rule (#3074). */
-  public readonly photoPicker = new UploadImagePicker('The photo');
+  public readonly photoPicker = new UploadImagePicker('The photo', { shrink: true });
   /** The answer to a request for a link. */
   public readonly requested = signal<string | null>(null);
 
@@ -161,9 +161,14 @@ export class PeopleEditComponent implements OnInit {
     this.sending.set(true);
     this.problem.set(null);
 
-    this.edits
-      .propose(token, this.form.getRawValue(), this.photo())
-      .pipe(takeUntilDestroyed(this.destroyRef))
+    // The photo shrunk as it is sent (#3177), as the admin's speaker form sends one.
+    const photo = this.photo();
+
+    from(photo ? this.photoPicker.ready(photo) : Promise.resolve(null))
+      .pipe(
+        switchMap((ready) => this.edits.propose(token, this.form.getRawValue(), ready)),
+        takeUntilDestroyed(this.destroyRef)
+      )
       .subscribe({
         next: () => {
           this.sending.set(false);
