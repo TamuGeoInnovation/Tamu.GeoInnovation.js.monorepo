@@ -9118,3 +9118,34 @@ itself must not scroll sideways. The CSV is unchanged; no need to download it ag
 Re-take, replacing the old files: `after-levels.png` (1280), `after-levels-tablet.png` (768), `after-levels-phone.png`
 (390). Give a criterion name's and a level name's computed weight. Push as a fast-forward from `a0afb8cc8`, and report
 "images pushed (3191): <sha>".
+
+## Batch 129 (gisday: screenshots for #3200 (**Urgent**), #3196 and #3197 (High); 17 November 2026, from `work (gisday)`)
+
+Three branches on the fork, each from `development` at `052e92f85`. **Do not change the code.** Made-up people only, at
+example.com; the same safety as batch 128 (no email, every email route blocked by name, judging links by SQL with only
+hashes stored, migrations run then reverted, every made-up row removed and `cmp` of the snapshots). **Do #3200 first.**
+
+**1. #3200, `feat/3200-collapse-competitions` (`a88962014`), needs AddJudging.** A judge's page now shows each
+competition closed, with its name and scored count as the heading; tapping it opens it. Set up one made-up judge in **two**
+competitions (graduate and undergraduate), with a rubric and an entry or two in each.
+- **Before** (`development`): the judge's page with both competitions open, `before-judge-page.png` (1280).
+- **After:** `after-collapsed.png` (both closed), `after-one-open.png` (one opened), and `after-collapsed-phone.png` (390).
+- Check that a score typed into an entry, then its competition closed and reopened, is still in the box; and that
+  `scrollWidth <= innerWidth` at 390.
+- To `docs/screenshots/3200-collapse-competitions/`; add the images to `docs/releases/unreleased/3200-collapse-competitions.md`
+  as before/after rows. Push as a fast-forward and report "images pushed (3200): <sha>".
+
+**2. #3196, `feat/3196-presenters-last-name` (`47d3367f9`).** A session's Presenters are now by last name, A to Z, no
+longer grouped by company. Set up one made-up session with four or five made-up presenters from two or three made-up
+companies, named so the two orders differ.
+- **Before** (`development`) and **after:** the session page's Presenters, `before-presenters.png` and
+  `after-presenters.png` (1280). Say both orders, name by name.
+- To `docs/screenshots/3196-presenters-last-name/`, plus `docs/releases/unreleased/3196-presenters-last-name.md` with its
+  *What to test on dev* row (the branch has none yet). Report "images pushed (3196): <sha>".
+
+**3. #3197, `feat/3197-qr-at-top` (`656139983`).** For organizers, a session's **Check-in QR Code** is now the first thing
+under its title. Signed in as the test admin:
+- **Before** (`development`) and **after:** the top of a made-up session's page, `before-top.png` and `after-top.png`
+  (1280), and `after-top-phone.png` (390). Also the page signed out, `after-signed-out.png`, which must show no QR section.
+- To `docs/screenshots/3197-qr-at-top/`; add them to `docs/releases/unreleased/3197-qr-at-top.md`. Report
+  "images pushed (3197): <sha>".
