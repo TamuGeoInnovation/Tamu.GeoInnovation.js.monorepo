@@ -20,5 +20,5 @@ standard research presentation rubric, at 1280 px unless it says otherwise.
 | --- | --- |
 | Before: a criterion with its Levels opened, one under another | ![A made-up presentation entry's first criterion, Geographic Understanding and Content Accuracy, 0 to 20, with Levels opened: Excellent, Proficient, Developing and Needs Improvement, each with its description, one under another](../screenshots/3191-rubric-boxes/before-levels.png) |
 | After: the same criterion, its four levels as boxes side by side | ![The same criterion with its four levels as four boxes in a row under the score box, each with its label and description](../screenshots/3191-rubric-boxes/after-levels.png) |
-| After: at 768 px, a tablet's width | ![The same criterion at 768 px: three level boxes in the first row and Needs Improvement in a second](../screenshots/3191-rubric-boxes/after-levels-tablet.png) |
+| After: at 768 px, a tablet's width | ![The same criterion at 768 px: two level boxes in each of two rows, Excellent and Proficient above Developing and Needs Improvement](../screenshots/3191-rubric-boxes/after-levels-tablet.png) |
 | After: at 390 px, a phone's width, one box per row | ![The same criterion at 390 px: the four level boxes one under another, each the card's full width](../screenshots/3191-rubric-boxes/after-levels-phone.png) |
