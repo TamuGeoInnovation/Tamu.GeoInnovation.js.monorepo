@@ -22,7 +22,8 @@ import {
   closedMessage,
   extensionOf,
   isDeadlineCompetition,
-  submissionFileProblem
+  submissionFileProblem,
+  zipSafe
 } from '@tamu-gisc/gisday/common';
 
 import { Asset, Submission } from '../entities/all.entity';
@@ -107,10 +108,10 @@ export class SubmissionFilesService {
 
   /**
    * Every file of a season's submissions as one zip, a folder per submission: its type, its title and the start of its
-   * guid, so two submissions with one title stay apart. Files are stored, not compressed: PowerPoint and PDF are already
-   * compressed, and storing streams them through without holding them in memory.
+   * guid, so two submissions with one title stay apart. With `only`, just those submissions of the season: the rows the
+   * admin ticked, or the ones the filters show (#3174). A guid that is not one of the season's is ignored.
    */
-  public async zipForSeason(seasonGuid: string, user: OwnershipUser): Promise<StreamableFile> {
+  public async zipForSeason(seasonGuid: string, user: OwnershipUser, only?: ReadonlyArray<string>): Promise<StreamableFile> {
     if (!isOwnerOrPermitted(user, '', 'read:competitions')) {
       throw new ForbiddenException();
     }
@@ -119,49 +120,25 @@ export class SubmissionFilesService {
       where: { season: { guid: seasonGuid } },
       relations: { files: true, season: true }
     });
-    const withFiles = submissions.filter((s) => s.files?.length);
+    const picked = only?.length ? submissions.filter((s) => only.includes(s.guid)) : submissions;
+    const withFiles = picked.filter((s) => s.files?.length);
 
     if (withFiles.length === 0) {
-      throw new NotFoundException('No submission in this season has a file attached.');
-    }
-
-    const zip = new JSZip();
-    let added = 0;
-
-    for (const submission of withFiles) {
-      const folder = zip.folder(submissionFolder(submission));
-      const used = new Set<string>();
-
-      for (const file of submission.files.sort(byUploaded)) {
-        const onDisk = join(`${process.env.APP_DATA}`, file.path);
-        const exists = await stat(onDisk)
-          .then(() => true)
-          .catch(() => false);
-
-        if (!exists) {
-          Logger.error(
-            `Submission file ${onDisk} is listed but missing from disk; left out of the zip.`,
-            'SubmissionFilesService'
-          );
-          continue;
-        }
-
-        folder.file(uniqueName(file.name, used), createReadStream(onDisk), { binary: true });
-        added++;
-      }
-    }
-
-    if (added === 0) {
-      throw new NotFoundException('The files listed for this season are missing from the server.');
+      throw new NotFoundException(
+        only?.length
+          ? 'None of the submissions picked has a file attached.'
+          : 'No submission in this season has a file attached.'
+      );
     }
 
     const year = withFiles[0].season?.year ?? 'season';
-    const stream = zip.generateNodeStream({ type: 'nodebuffer', streamFiles: true, compression: 'STORE' }) as Readable;
 
-    return new StreamableFile(stream, {
-      type: 'application/zip',
-      disposition: attachment(`gisday-${year}-submission-files.zip`)
-    });
+    return zipOfFiles(
+      withFiles.map((submission) => ({ folder: submissionFolder(submission), files: submission.files })),
+      only?.length ? `gisday-${year}-submission-files-${withFiles.length}.zip` : `gisday-${year}-submission-files.zip`,
+      'SubmissionFilesService',
+      `The files listed for ${only?.length ? 'these submissions' : 'this season'} are missing from the server.`
+    );
   }
 
   /**
@@ -239,6 +216,50 @@ export async function fileDownload(file: Asset, context: string): Promise<Stream
 }
 
 /**
+ * Kept files as one zip, a folder each, under the names they were uploaded with: the season's submissions (#2933) and a
+ * session's slides (#3174). Files are stored, not compressed: PowerPoint and PDF are already compressed, and storing streams
+ * them through without holding them in memory. A file missing from disk is logged and left out; not found, with
+ * `allMissing`, when every one is.
+ */
+export async function zipOfFiles(
+  folders: ReadonlyArray<{ folder: string; files: ReadonlyArray<Asset> }>,
+  name: string,
+  context: string,
+  allMissing: string
+): Promise<StreamableFile> {
+  const zip = new JSZip();
+  let added = 0;
+
+  for (const { folder, files } of folders) {
+    const into = zip.folder(folder);
+    const used = new Set<string>();
+
+    for (const file of [...files].sort(byUploaded)) {
+      const onDisk = join(`${process.env.APP_DATA}`, file.path);
+      const exists = await stat(onDisk)
+        .then(() => true)
+        .catch(() => false);
+
+      if (!exists) {
+        Logger.error(`File ${onDisk} is listed but missing from disk; left out of the zip.`, context);
+        continue;
+      }
+
+      into.file(uniqueName(file.name, used), createReadStream(onDisk), { binary: true });
+      added++;
+    }
+  }
+
+  if (added === 0) {
+    throw new NotFoundException(allMissing);
+  }
+
+  const stream = zip.generateNodeStream({ type: 'nodebuffer', streamFiles: true, compression: 'STORE' }) as Readable;
+
+  return new StreamableFile(stream, { type: 'application/zip', disposition: attachment(name) });
+}
+
+/**
  * Refuses a student's upload or removal once their competition's files have closed (#2934). The admins, who may update
  * the competitions, are not held to it.
  */
@@ -260,13 +281,7 @@ function byUploaded(a: Asset, b: Asset): number {
 
 /** A folder name for a submission inside the zip: "presentation - Texas Watersheds - 1a2b3c4d". */
 export function submissionFolder(submission: Pick<Submission, 'guid' | 'title' | 'submissionType'>): string {
-  const title = (submission.title ?? 'Untitled')
-    .replace(/[\\/:*?"<>|\r\n\t]+/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim()
-    .slice(0, 80);
-
-  return `${submission.submissionType ?? 'submission'} - ${title} - ${submission.guid.slice(0, 8)}`;
+  return `${submission.submissionType ?? 'submission'} - ${zipSafe(submission.title, 'Untitled')} - ${submission.guid.slice(0, 8)}`;
 }
 
 /** The name itself, or "name (2).ext" when the folder already has one by that name. */

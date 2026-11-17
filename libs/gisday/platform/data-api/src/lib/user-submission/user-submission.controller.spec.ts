@@ -3,7 +3,7 @@ import { Test } from '@nestjs/testing';
 
 import { JwtGuard } from '@tamu-gisc/common/nest/auth';
 
-import { UserSubmissionController } from './user-submission.controller';
+import { UserSubmissionController, guidList } from './user-submission.controller';
 import { UserSubmissionProvider } from './user-submission.provider';
 import { SubmissionFilesService } from './submission-files.service';
 import { EMAIL_SENDER_TEST_PROVIDERS } from '../contact/email-sender.testing';
@@ -222,5 +222,24 @@ describe('UserSubmissionController POST /user-submissions/remind', () => {
       'gisday.tamu.edu'
     );
     expect(updateUserSubmission).not.toHaveBeenCalled();
+  });
+});
+
+/** #3174: the submissions a season's zip is narrowed to, from `?submissions=`. */
+describe('guidList', () => {
+  const a = '11111111-2222-4333-8444-555555555555';
+  const b = '99999999-8888-4777-8666-555555555555';
+
+  it('reads a comma-separated list, spaces and empty entries aside', () => {
+    expect(guidList(` ${a}, ${b},`)).toEqual([a, b]);
+  });
+
+  it('is nothing when nothing is named, so the whole season is zipped', () => {
+    expect(guidList(undefined)).toBeUndefined();
+    expect(guidList('')).toBeUndefined();
+  });
+
+  it('refuses a list with anything but ids in it', () => {
+    expect(() => guidList(`${a},../../etc`)).toThrow(/comma-separated list of ids/);
   });
 });

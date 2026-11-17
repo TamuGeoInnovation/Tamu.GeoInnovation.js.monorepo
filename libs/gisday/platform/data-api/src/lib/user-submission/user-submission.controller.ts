@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -16,6 +17,7 @@ import {
   UseInterceptors
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { isUUID } from 'class-validator';
 
 import { JwtGuard, PermissionsGuard, Permissions } from '@tamu-gisc/common/nest/auth';
 
@@ -46,12 +48,19 @@ export class UserSubmissionController {
     return this.provider.getPosters(seasonGuid);
   }
 
-  // Every file of a season's submissions as one zip, for the admins (#2933).
+  /**
+   * Every file of a season's submissions as one zip, for the admins (#2933). With `?submissions=<guid>,<guid>`, only those
+   * of the season: the rows ticked, or those the filters show (#3174).
+   */
   @Permissions(['read:competitions'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Get('season/:guid/files.zip')
-  public getSeasonFiles(@Param('guid', ParseUUIDPipe) seasonGuid: string, @Request() req) {
-    return this.files.zipForSeason(seasonGuid, req.user);
+  public getSeasonFiles(
+    @Param('guid', ParseUUIDPipe) seasonGuid: string,
+    @Request() req,
+    @Query('submissions') submissions?: string
+  ) {
+    return this.files.zipForSeason(seasonGuid, req.user, guidList(submissions));
   }
 
   /**
@@ -215,4 +224,18 @@ export class UserSubmissionController {
   public deleteEntity(@Req() req, @Param('guid') guid: string) {
     return this.provider.deleteUserSubmission(guid, req.user.sub, req.user.permissions);
   }
+}
+
+/** A comma-separated list of guids from a query string, every one checked: a malformed one is refused, not ignored. */
+export function guidList(text: string | undefined): Array<string> | undefined {
+  const guids = (text ?? '')
+    .split(',')
+    .map((g) => g.trim())
+    .filter(Boolean);
+
+  if (guids.some((g) => !isUUID(g))) {
+    throw new BadRequestException('submissions must be a comma-separated list of ids.');
+  }
+
+  return guids.length ? guids : undefined;
 }

@@ -201,8 +201,10 @@ export class UserSubmissionsService extends BaseService<Submission> {
     return this.http1.get(`${this.resource}/${submissionGuid}/files/${fileGuid}`, { responseType: 'blob' });
   }
 
-  /** Every file of a season's submissions as one zip, for the admins. */
-  public getSeasonFilesZip(seasonGuid: string) {
-    return this.http1.get(`${this.resource}/season/${seasonGuid}/files.zip`, { responseType: 'blob' });
+  /** Every file of a season's submissions as one zip, for the admins; with `submissions`, only those (#3174). */
+  public getSeasonFilesZip(seasonGuid: string, submissions?: ReadonlyArray<string>) {
+    const only = submissions?.length ? `?submissions=${submissions.map(encodeURIComponent).join(',')}` : '';
+
+    return this.http1.get(`${this.resource}/season/${seasonGuid}/files.zip${only}`, { responseType: 'blob' });
   }
 }

@@ -121,3 +121,19 @@ export function megabytes(bytes: number): string {
 
   return `${mb < 10 ? mb.toFixed(1).replace(/\.0$/, '') : Math.round(mb)} MB`;
 }
+
+/** A name safe for a zip's folder or file (#2933, #3174): no characters Windows refuses, one space between words, at most 80. */
+export function zipSafe(text: string | null | undefined, fallback: string): string {
+  const cleaned = (text ?? '')
+    .replace(/[\\/:*?"<>|\r\n\t]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 80);
+
+  return cleaned || fallback;
+}
+
+/** What a session's slides are saved as when downloaded together (#3174): "Panel on floods - slides.zip". */
+export function slidesZipName(sessionName: string | null | undefined): string {
+  return `${zipSafe(sessionName, 'session')} - slides.zip`;
+}
