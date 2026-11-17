@@ -61,10 +61,14 @@
   }
 }
 
-// The page's own .bold does not reach a paragraph inside the card (lab, batch 125), so the level's name is set here.
+// The site's .bold does not reach a paragraph inside a card: the form's own paragraph weight outranks it, so a criterion's
+// name and a level's name drew at normal weight (lab, batches 125 and 127). Every bold paragraph on the page is set here.
+.judging p.bold {
+  font-weight: 600;
+}
+
 .level .level-label {
   margin-bottom: 0.25rem;
-  font-weight: 600;
 }
 
 .competition + .competition {
