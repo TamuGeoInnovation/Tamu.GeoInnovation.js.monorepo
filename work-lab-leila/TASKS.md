@@ -9096,3 +9096,25 @@ Item 2 (the page 15 px past 768 px in a desktop browser) predates #3191 and is l
   - `after-levels-phone.png` at 390 px.
 - Check that `scrollWidth <= innerWidth` at 390 and 360 px.
 - Say, per item, whether it's fixed. Push as a fast-forward from `917b94421`, and report "images pushed: <sha>".
+
+## Batch 128 (gisday: #3193 and #3191, the after images once more, **High**; 17 November 2026, from `work (gisday)`)
+
+Both branches have fixes for what your reports 126 and 127 saw. **Do not change the code;** use batch 126's set-up and
+safety for #3193, and batch 127's for #3191.
+
+**#3193, `feat/3193-judge-breakdown` (fork, `366320bff`):** report 126's two items are fixed:
+- the toolbar's links now keep their gap ("Download CSV" and "Every score" apart);
+- a breakdown is as wide as the visible box, not the whole table, with **Judge, Total, Comment** first and the criteria
+  after, scrolling in its own box if they need more.
+
+Re-take, replacing the old files: `after-toolbar.png`, `after-breakdown.png`, `after-breakdown-unscored.png` (1280 px).
+Give the breakdown's width against the box's `clientWidth`, and say whether the comment shows without scrolling. The page
+itself must not scroll sideways. The CSV is unchanged; no need to download it again. Push as a fast-forward from
+`366320bff`, and report "images pushed (3193): <sha>".
+
+**#3191, `feat/3191-rubric-boxes` (fork, `a0afb8cc8`):** report 127's first item is fixed: the criterion names are bold
+(every `p.bold` on the page is weight 600). The 768 px side margin is left as it is; it predates #3191.
+
+Re-take, replacing the old files: `after-levels.png` (1280), `after-levels-tablet.png` (768), `after-levels-phone.png`
+(390). Give a criterion name's and a level name's computed weight. Push as a fast-forward from `a0afb8cc8`, and report
+"images pushed (3191): <sha>".
