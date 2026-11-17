@@ -359,6 +359,19 @@ describe('EventDetailComponent check-in', () => {
       expect(text()).toContain('instead of sharing their location, if their phone will not give it');
     });
 
+    // #3197: the code is the first thing on the page under the title, so an organizer in front of a room need not scroll.
+    it('puts the code at the top of the page, under the title and before the time and place', () => {
+      const { page } = open('hybrid', undefined, undefined, organizer);
+      const heading = Array.from(page().querySelectorAll('h3')).find((h) => h.textContent?.trim() === 'Check-in QR Code');
+      const timeAndPlace = page().querySelector('#timeAndPlace');
+      const title = page().querySelector('h1.session-title');
+
+      expect(heading).toBeDefined();
+      expect(timeAndPlace).not.toBeNull();
+      expect(title?.compareDocumentPosition(heading as Node) ?? 0).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+      expect(heading?.compareDocumentPosition(timeAndPlace as Node) ?? 0).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    });
+
     it('offers no code to an attendee', () => {
       const { button } = open('hybrid');
 
