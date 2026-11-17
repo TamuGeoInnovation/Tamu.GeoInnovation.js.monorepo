@@ -8976,3 +8976,29 @@ the fork (`512533f2e`). No migration. A made-up speaker only.
 - To `docs/screenshots/3177-photo-pixels/`, and add the two images to `docs/releases/unreleased/3177-photo-pixels.md`
   (a table as in `3147-no-slides.md`), on the branch. `collate-release-notes.mjs --check` must pass. Report "images
   pushed: <sha>".
+
+## Batch 122 (gisday: #3183's screenshots, **High**; 16 November 2026, from `work (gisday)`) - **after 121**
+
+[#3183](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3183): judges score the research
+competitions in the site against rubrics, from an emailed judging link. Read the issue's second comment for the design.
+**Do not change the code.** Branch `feat/3183-judging` on the fork (`c96b7f420`). It has a migration,
+`AddJudging1794887961505`: `migrate run` before the after images, revert it after. Made-up speakers, students and
+submissions only; **send no email** (preview only).
+
+- **Before** (`development`): a competition session's admin form, `before-session-form.png`; the admin menu's Research
+  Competitions entries, `before-admin-menu.png`.
+- **After** (the branch), for a made-up season with a few made-up accepted graduate posters:
+  - Admin → Research Competitions → **Rubrics**: Start from the standard rubric for posters, then the rubric shown,
+    `after-rubrics.png`.
+  - The poster session's form: Judging section with Judged competition = Graduate posters and two made-up judges ticked,
+    `after-session-judging.png`; Email these speakers open, showing **Ask to judge**, `after-menu.png`; its preview window,
+    `after-ask-to-judge-preview.png` (do not send).
+  - The judge's page at `/judging/<token>` (make a `purpose = 'judging'` link by hand in the local db, as batch 119 made an
+    edit link): a submission card with its criteria and levels, at 1280 px `after-judge-page.png` and at phone width
+    (390 px) `after-judge-page-phone.png`; score one submission fully and Save, `after-judge-saved.png`.
+  - A second judge scores the same submission; Admin → **Judging results** for Graduate posters,
+    `after-results.png`. Download the CSV and say what it holds.
+  - Tick Judging closed and reload the judge's page: read-only with its note, `after-judging-closed.png`.
+- Anything that looks wrong, odd or hard to use goes under **Seen on the page** in your report, with the image.
+- To `docs/screenshots/3183-judging/`, plus `docs/releases/unreleased/3183-judging.md` with its *What to test on dev*
+  row, on the branch. Report "images pushed: <sha>".
