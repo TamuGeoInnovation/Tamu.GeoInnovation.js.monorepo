@@ -58,12 +58,11 @@ Updated at every GIS Day rollout, as step 4 of
 
 | | |
 | --- | --- |
-| Image, `gisday-nest` and `gisday-angular`, both namespaces (`gisday`, `gisday-ucgis`) | `sha-05ee195` |
-| Its last commit | `05ee19571`, PR 3184 (#3177's screenshots), with PR 3185 ([#3174](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3174), a session's slides and the competition submissions picked, each as one zip) |
-| Rolled out | 17 November 2026, about 12:10 AM Central, by the maintainer; checked against the cluster in both namespaces |
-| The image before it | `sha-178bc5f` (16 November, about 9:35 PM Central: PRs 3175, 3176 and 3178, after the AddSpeakerEmailSends and AddEventNoSlides migrations), the rollback target |
-| The last migration in it | `AddEventNoSlides` (`1794872844152`); none since `178bc5f` |
-| Next, built when it merges | #3183 (judging) needs `AddJudging1794887961505` first: `migrate-prod-3183.ps1` in kubernetes-config |
+| Image, `gisday-nest` and `gisday-angular`, both namespaces (`gisday`, `gisday-ucgis`) | `sha-81f4414` |
+| Its last commit | `81f4414`, PR 3186 ([#3183](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3183), judges score the research competitions in the site against rubrics, from an emailed judging link) |
+| Rolled out | 17 November 2026, about 12:45 AM Central, by the maintainer, after the migration; checked against the cluster in both namespaces |
+| The image before it | `sha-05ee195` (17 November, about 12:10 AM Central: PR 3185, #3174's zips), the rollback target; the migration only adds, so it can stay |
+| The last migration in it | `AddJudging` (`1794887961505`): applied with `-Apply -NoBackup` on both databases at 12:39 AM, after a clean dry run; reports in kubernetes-config `6. GIS Day/migrations/` |
 
 The cluster is the final word:
 `kubectl -n gisday get deployment gisday-nest gisday-angular -o custom-columns=NAME:.metadata.name,IMAGE:.spec.template.spec.containers[0].image`,
