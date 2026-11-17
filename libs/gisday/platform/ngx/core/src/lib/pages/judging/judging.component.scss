@@ -1,3 +1,5 @@
+@import 'libs/gisday/sass/variables';
+
 // Layout only (#3183): the site's own form, info-block, button and spacing styles do the rest.
 
 // The page fits a phone, 360 px and up, with nothing running off its right edge: the column takes the width it is given,
@@ -25,9 +27,30 @@
   box-sizing: border-box;
 }
 
-// A level's description under its name, at the card's full width.
-.judging dd {
-  margin-left: 0;
+// A criterion's levels as boxes side by side, as the rubric's own table lays them out (#3191): four across on a wide
+// screen, two on a narrow one, one per row on a phone, each box as wide as the others and never wider than the card.
+.levels {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.level {
+  min-width: 0;
+  padding: 0.5rem 0.75rem;
+  border: 1pt solid $lightened-inactive-color;
+  border-radius: 4px;
+
+  p {
+    margin: 0;
+  }
+}
+
+.level .level-label {
+  margin-bottom: 0.25rem;
 }
 
 .competition + .competition {
