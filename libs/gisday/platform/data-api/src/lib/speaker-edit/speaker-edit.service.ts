@@ -28,7 +28,7 @@ import { senderAs } from '../_base/site-of-request';
 import { EmailSender, siteSender } from '../contact/email-sender.service';
 import { EMAIL_LANES, inParallel } from '../_base/in-parallel';
 
-import { Speaker, SpeakerEdit, SpeakerEditLink, Submission, University } from '../entities/all.entity';
+import { Speaker, SpeakerEdit, SpeakerEditLink, SpeakerLinkPurpose, Submission, University } from '../entities/all.entity';
 import { refuseUnsafeImage } from '../assets/image-upload';
 import { SpeakerProvider } from '../speaker/speaker.provider';
 import { ContactService } from '../contact/contact.service';
@@ -302,7 +302,12 @@ export class SpeakerEditService {
       // pod is caught too. Each link is recorded before its email goes, so two runs racing skip each other's.
       const since = new Date(Date.now() - REPEAT_SEND_MINUTES * 60 * 1000);
 
-      if ((await this.links.count({ where: { speaker: { guid: speaker.guid }, created: MoreThan(since) } })) > 0) {
+      // Only their profile links: a judging link sent a minute ago (#3183) is another email.
+      if (
+        (await this.links.count({
+          where: { speaker: { guid: speaker.guid }, created: MoreThan(since), purpose: 'profile' }
+        })) > 0
+      ) {
         part.skipped.push({ name, reason: `already emailed a link in the last ${REPEAT_SEND_MINUTES} minutes` });
         return part;
       }
@@ -347,7 +352,9 @@ export class SpeakerEditService {
     }
 
     const since = new Date(Date.now() - REQUEST_COOLDOWN_MINUTES * 60 * 1000);
-    const recent = await this.links.count({ where: { speaker: { guid: speaker.guid }, created: MoreThan(since) } });
+    const recent = await this.links.count({
+      where: { speaker: { guid: speaker.guid }, created: MoreThan(since), purpose: 'profile' }
+    });
 
     if (recent > 0) {
       return;
@@ -526,16 +533,19 @@ export class SpeakerEditService {
   }
 
   /**
-   * The link a token belongs to, if it is one and still works. Every failure reads the same. The one check of a speaker's
-   * link: the profile edit uses it, and so does `SpeakerEditLinkGuard`, before a session's slides are touched (#3093).
+   * The link a token belongs to, if it is one, still works, and opens `purpose`. Every failure reads the same. The one
+   * check of a speaker's link: the profile edit uses it, and so does `SpeakerEditLinkGuard`, before a session's slides are
+   * touched (#3093), each for a `profile` link; a judge's routes ask for a `judging` link (#3183). So a judging link never
+   * opens a profile, nor a profile link the judging page.
    */
-  public async linkFor(token: string): Promise<SpeakerEditLink> {
+  public async linkFor(token: string, purpose: SpeakerLinkPurpose = 'profile'): Promise<SpeakerEditLink> {
     const link =
       typeof token === 'string' && /^[A-Za-z0-9_-]{43}$/.test(token)
         ? await this.links.findOne({ where: { tokenHash: hashOf(token) }, relations: { speaker: true } })
         : null;
 
-    if (!link || new Date(link.expires).getTime() <= Date.now()) {
+    // A link from before purposes were kept is a profile link, as the column's default says.
+    if (!link || (link.purpose ?? 'profile') !== purpose || new Date(link.expires).getTime() <= Date.now()) {
       throw new NotFoundException('This link has expired or is not valid. Ask for a new one.');
     }
 
@@ -543,11 +553,15 @@ export class SpeakerEditService {
   }
 
   /**
-   * A new link of the speaker's own to their presenter page, on the site `host` names, for an email to carry: the one
-   * kind of link a speaker has (#2936), whether the profile email or the Ask for slides email sends it (#3113). Only its
-   * hash is stored; the link itself is in the email alone.
+   * A new link of the speaker's own, on the site `host` names, for an email to carry: to their presenter page (#2936),
+   * whether the profile email or the Ask for slides email sends it (#3113), or with `purpose` `judging`, to the
+   * competition they judge (#3183). Only its hash is stored; the link itself is in the email alone.
    */
-  public async newLink(speaker: Pick<Speaker, 'guid' | 'email'>, host?: string): Promise<{ url: string; expires: Date }> {
+  public async newLink(
+    speaker: Pick<Speaker, 'guid' | 'email'>,
+    host?: string,
+    purpose: SpeakerLinkPurpose = 'profile'
+  ): Promise<{ url: string; expires: Date }> {
     const token = randomBytes(32).toString('base64url');
     const expires = linkExpiry();
     const site = gisdaySite(process.env.GISDAY_SITE, host);
@@ -557,11 +571,12 @@ export class SpeakerEditService {
         speaker: { guid: speaker.guid } as Speaker,
         tokenHash: hashOf(token),
         expires,
-        sentTo: speaker.email
+        sentTo: speaker.email,
+        purpose
       })
     );
 
-    return { url: `${site.address}/presenters/edit/${token}`, expires };
+    return { url: `${site.address}${purpose === 'judging' ? '/judging/' : '/presenters/edit/'}${token}`, expires };
   }
 
   private async emailLink(speaker: Speaker, host?: string, email?: ProfileEmail, sender?: EmailSender) {

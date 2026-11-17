@@ -212,6 +212,74 @@ describe('EventProvider', () => {
       // An empty list is a deliberate "remove them all", distinct from omitting the field.
       expect((eventRepo.create as jest.Mock).mock.calls[0][0].tags).toEqual([]);
     });
+
+    // #3183: a session's judging is saved with it: its competition, whether closed, and its judges, among its speakers.
+    describe('its judging (#3183)', () => {
+      beforeEach(() => {
+        jest.spyOn(eventRepo, 'findOne').mockResolvedValue({ ...existing } as Event);
+        jest.spyOn(speakerRepo, 'create').mockImplementation((s) => s as never);
+        jest.spyOn(eventRepo, 'create').mockReturnValue({ save: jest.fn() } as never);
+      });
+
+      const save = (fields: Record<string, unknown>) =>
+        provider.updateEvent('e-1', { tags: [], speakers: ['s-1', 's-2'], ...fields } as unknown as UpdateEventDto);
+      const passed = () => (eventRepo.create as jest.Mock).mock.calls[0][0];
+
+      it('saves the judged competition, judging closed, and the judges among its speakers', async () => {
+        await save({ judgedCompetition: 'graduate-poster', judgingClosed: true, judges: ['s-2'] });
+
+        expect(passed()).toEqual(
+          expect.objectContaining({ judgedCompetition: 'graduate-poster', judgingClosed: true, judges: [{ guid: 's-2' }] })
+        );
+      });
+
+      it('clears the competition when none is chosen', async () => {
+        await save({ judgedCompetition: '' });
+
+        expect(passed().judgedCompetition).toBeNull();
+      });
+
+      it("refuses a judge who is not one of the session's speakers, and saves nothing", async () => {
+        await expect(save({ judges: ['s-1', 's-9'] })).rejects.toThrow(
+          new BadRequestException("A judge must be one of the session's speakers.")
+        );
+        expect(eventRepo.create).not.toHaveBeenCalled();
+      });
+
+      it('refuses a competition no session can judge', async () => {
+        await expect(save({ judgedCompetition: 'graduate-paper' })).rejects.toThrow(BadRequestException);
+      });
+
+      it('leaves the judges as they were when none are sent', async () => {
+        await save({ judgedCompetition: 'graduate-poster' });
+
+        expect(passed()).not.toHaveProperty('judges');
+      });
+    });
+  });
+
+  describe('.getJudging() (#3183)', () => {
+    it("gives the session's competition, whether closed, and its judges by id", async () => {
+      jest.spyOn(eventRepo, 'findOne').mockResolvedValue({
+        guid: 'e-1',
+        judgedCompetition: 'undergraduate-poster',
+        judgingClosed: false,
+        judges: [{ guid: 's-2', email: 'a-judge@example.org' }]
+      } as unknown as Event);
+
+      await expect(provider.getJudging('e-1')).resolves.toEqual({
+        judgedCompetition: 'undergraduate-poster',
+        judgingClosed: false,
+        judges: ['s-2']
+      });
+      expect((eventRepo.findOne as jest.Mock).mock.calls[0][0].relations).toEqual({ judges: true });
+    });
+
+    it('throws NotFound when the event does not exist', async () => {
+      jest.spyOn(eventRepo, 'findOne').mockResolvedValue(null);
+
+      await expect(provider.getJudging('missing')).rejects.toThrow(NotFoundException);
+    });
   });
 
   /**
