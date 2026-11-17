@@ -9040,3 +9040,21 @@ Your report 123's two remaining items on Admin → Judging results are fixed in 
 - **The toolbar:** Competition shows "Graduate poster competition" whole, and Season's label overlaps nothing.
 - Only this page. Push as a fast-forward from `437c43c40`, and report "images pushed: <sha>", saying whether both items are
   fixed.
+
+## Batch 125 (gisday: #3191's screenshots, **High**; 17 November 2026, from `work (gisday)`)
+
+[#3191](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3191): on the judging page, each
+criterion's four levels now show as boxes side by side, like the rubric PDF. They are always shown, with no Levels toggle:
+four across on a wide screen, two on a narrow one, one per row on a phone. **Do not change the code.**
+
+Branch `feat/3191-rubric-boxes` on the fork (`e5d09af84`). It needs AddJudging (`migrate run`; revert after). Use the
+same made-up set-up and safety as batch 124, with the standard presentation rubric.
+
+- **Before** (`development`): one criterion with its Levels open, `before-levels.png`.
+- **After** (the branch):
+  - `after-levels.png` at 1280 px (four across);
+  - `after-levels-tablet.png` at 768 px;
+  - `after-levels-phone.png` at 390 px (one per row);
+  - check by script that `scrollWidth <= innerWidth` at 390 and 360 px, and give the numbers.
+- To `docs/screenshots/3191-rubric-boxes/`, plus `docs/releases/unreleased/3191-rubric-boxes.md` with its *What to
+  test on dev* row, on the branch. Report "images pushed: <sha>".
