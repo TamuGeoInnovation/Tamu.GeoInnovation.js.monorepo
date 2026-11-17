@@ -112,6 +112,22 @@ describe('JudgingResultsComponent (#3183)', () => {
     expect(component.columnWidth('Geographic Understanding & Accuracy (of 20)')).toBeGreaterThan(350);
   });
 
+  // The lab (batch 123): ngx-datatable clips past its own width, so its box never scrolled and the criterion columns
+  // could not be reached. The table is now as wide as all its columns, so its box scrolls.
+  it('draws the table as wide as all its columns, so its box scrolls to the last one', async () => {
+    const { root, component } = await open();
+    const table = root.querySelector<HTMLElement>('ngx-datatable');
+    // Rank 60 + Title 220 + Judges 80 + Average 130, then a column for each judge and the criterion.
+    const expected =
+      490 +
+      component.columnWidth('Dana Judge') +
+      component.columnWidth('Emery Judge') +
+      component.columnWidth('Clarity (of 20)');
+
+    expect(component.tableWidth(results())).toBe(expected);
+    expect(table?.style.minWidth).toBe(`${expected}px`);
+  });
+
   it('reads another competition when one is chosen', async () => {
     const { judging, component } = await open();
 

@@ -22,6 +22,9 @@ export function judgingResultsCsv(results: JudgingResultsDto): string {
  * first, with each judge's total, how many judged it, the average of their totals and each criterion's average
  * (decided 6A); each judge's progress; and the same as a CSV file.
  */
+/** The fixed columns' widths, in pixels: the table's columns and its whole width both read them. */
+export const RESULTS_COLUMN_WIDTHS = { rank: 60, title: 220, judges: 80, average: 130 } as const;
+
 @Component({
   selector: 'tamu-gisc-judging-results',
   templateUrl: './judging-results.component.html',
@@ -37,6 +40,7 @@ export class JudgingResultsComponent {
   public readonly competitions = JUDGED_COMPETITIONS.map((row) => ({ name: row.label, value: row.competition }));
   public readonly competition = signal<string>(JUDGED_COMPETITIONS[0].competition);
   public readonly results = signal<JudgingResultsDto | null>(null);
+  public readonly widths = RESULTS_COLUMN_WIDTHS;
   public readonly problem = signal<string | null>(null);
 
   constructor() {
@@ -53,6 +57,26 @@ export class JudgingResultsComponent {
   /** A column as wide as its heading, whole: a judge's name or a criterion's, at the table's heading size. */
   public columnWidth(heading: string): number {
     return Math.max(110, Math.ceil(heading.length * 8.5) + 32);
+  }
+
+  /**
+   * The table's whole width: every column at its own width added up. Set on the table, as the submissions list sets its
+   * narrowest (#3026), so the table is wider than its box and the box scrolls; ngx-datatable clips anything past its own
+   * width, so without it the criterion columns could not be reached (lab, batch 123).
+   */
+  public tableWidth(results: Pick<JudgingResultsDto, 'judges' | 'rubric'>): number {
+    const fixed =
+      RESULTS_COLUMN_WIDTHS.rank +
+      RESULTS_COLUMN_WIDTHS.title +
+      RESULTS_COLUMN_WIDTHS.judges +
+      RESULTS_COLUMN_WIDTHS.average;
+    const judges = results.judges.reduce((sum, judge) => sum + this.columnWidth(judge.name), 0);
+    const criteria = (results.rubric?.criteria ?? []).reduce(
+      (sum, criterion) => sum + this.columnWidth(`${criterion.name} (of ${criterion.maxPoints})`),
+      0
+    );
+
+    return fixed + judges + criteria;
   }
 
   public chooseCompetition(value: unknown): void {

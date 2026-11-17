@@ -14,11 +14,9 @@
   }
 }
 
-// The toolbar's boxes keep their own width, wrapping onto a second line rather than cutting off a competition's name.
-.form-section-actions {
-  flex-wrap: wrap;
-
-  tamu-gisc-select {
-    flex: 0 0 auto;
-  }
+// The Competition box is wide enough for the longest name, "Undergraduate presentation competition", in the toolbar's
+// row as the submissions list's Season box is. Wrapping the row stacked the boxes and put Season's label over it (lab,
+// batch 123).
+.competition-choice {
+  min-width: 18rem;
 }

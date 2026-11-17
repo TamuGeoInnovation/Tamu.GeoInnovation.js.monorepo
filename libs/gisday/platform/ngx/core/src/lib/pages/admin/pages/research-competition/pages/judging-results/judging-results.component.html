@@ -8,7 +8,7 @@
         <!-- The toolbar's own action style, as the submissions list's Download all files. -->
         <a class="post-1" tabindex="0" role="button" (click)="download()" (keydown.enter)="download()">Download CSV</a>
         }
-        <tamu-gisc-select class="post-1" placeholder="Competition" [floatLabel]="false" [data]="competitions" displayTemplate="name" valueTemplate="value" [value]="competition()" (changed)="chooseCompetition($event)"></tamu-gisc-select>
+        <tamu-gisc-select class="post-1 competition-choice" placeholder="Competition" [floatLabel]="false" [data]="competitions" displayTemplate="name" valueTemplate="value" [value]="competition()" (changed)="chooseCompetition($event)"></tamu-gisc-select>
         <tamu-gisc-select class="post-1" placeholder="Season" [floatLabel]="false" [data]="choice.seasons()" displayTemplate="year" valueTemplate="guid" [value]="choice.season()?.guid" (changed)="choice.choose($any($event))"></tamu-gisc-select>
       </div>
     </div>
@@ -41,19 +41,19 @@
       <!-- ngx-datatable, as the submissions list uses it; a column for each judge and each criterion, each as wide as its
            heading, so the table scrolls sideways in its own box rather than cutting them off. -->
       <div class="datatable-container">
-        <ngx-datatable class="material" [rows]="results.rows" [columnMode]="'standard'" [headerHeight]="50" [rowHeight]="'auto'" [footerHeight]="0" [scrollbarV]="false" [reorderable]="false">
-          <ngx-datatable-column name="Rank" [sortable]="false" [width]="60">
+        <ngx-datatable class="material" [style.min-width.px]="tableWidth(results)" [rows]="results.rows" [columnMode]="'standard'" [headerHeight]="50" [rowHeight]="'auto'" [footerHeight]="0" [scrollbarV]="false" [reorderable]="false">
+          <ngx-datatable-column name="Rank" [sortable]="false" [width]="widths.rank">
             <ng-template let-row="row" let-rowIndex="rowIndex" ngx-datatable-cell-template>{{ row.average === null ? '' : rowIndex + 1 }}</ng-template>
           </ngx-datatable-column>
-          <ngx-datatable-column name="Title" prop="title" [width]="220">
+          <ngx-datatable-column name="Title" prop="title" [width]="widths.title">
             <ng-template let-row="row" ngx-datatable-cell-template>
               <div class="bold">{{ row.title }}</div>
               <div>{{ row.presenters.join(', ') }}</div>
             </ng-template>
           </ngx-datatable-column>
-          <ngx-datatable-column name="Judges" prop="judged" [width]="80"></ngx-datatable-column>
+          <ngx-datatable-column name="Judges" prop="judged" [width]="widths.judges"></ngx-datatable-column>
           <!-- An entry no judge has scored says so, rather than an empty cell that is easy to miss. -->
-          <ngx-datatable-column name="Average" prop="average" [width]="130">
+          <ngx-datatable-column name="Average" prop="average" [width]="widths.average">
             <ng-template let-row="row" ngx-datatable-cell-template>
               @if (row.judged === 0) {
               <em class="not-scored">Not scored yet</em>
