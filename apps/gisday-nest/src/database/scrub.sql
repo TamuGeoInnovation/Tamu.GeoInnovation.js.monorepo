@@ -30,7 +30,7 @@ INSERT @kept VALUES
   (N'event_speakers', N'eventsGuid,speakersGuid'),
   (N'event_sponsors', N'eventsGuid,sponsorsGuid'),
   (N'event_tags', N'eventsGuid,tagsGuid'),
-  (N'events', N'guid,active,startTime,endTime,observedAttendeeStart,observedAttendeeEnd,capacity,resources,requiresRsvp,qrCode,mode,eventType,presentationType,isAcceptingRsvps,isBringYourOwnDevice,requirements,dayGuid,broadcastGuid,locationGuid,seasonGuid,checkInAnyTime'),
+  (N'events', N'guid,active,startTime,endTime,observedAttendeeStart,observedAttendeeEnd,capacity,resources,requiresRsvp,qrCode,mode,eventType,presentationType,isAcceptingRsvps,isBringYourOwnDevice,requirements,dayGuid,broadcastGuid,locationGuid,seasonGuid,checkInAnyTime,noSlides'),
   (N'initial_survey_questions', N'guid,questionText,questionOptions,questionTypeGuid'),
   (N'initial_survey_responses', N'guid,seasonGuid,questionGuid'),
   (N'organizations', N'guid,seasonGuid,acronym'),
@@ -45,6 +45,8 @@ INSERT @kept VALUES
   (N'speakers', N'guid,isActive,seasonGuid,organizationGuid,universityGuid,isOrganizer,badgePrintedAt'),
   -- A speaker's own link to edit their profile (#2936): which speaker, and until when. The token and the address go below.
   (N'speaker_edit_links', N'guid,speakerGuid,expires'),
+  -- Which email each speaker was sent, about which session, and when (#3167). The addresses go below.
+  (N'speaker_email_sends', N'guid,speakerGuid,kind,eventGuid'),
   -- What a speaker proposed (#2936): whose, and where it stands. What they wrote goes below, as the speaker's own does.
   (N'speaker_edits', N'guid,speakerGuid,universityGuid,status,reviewedAt'),
   (N'sponsors', N'guid,name,website,sponsorshipLevel,seasonGuid,description,active,logoSize'),
@@ -146,6 +148,9 @@ INSERT @scrubbed VALUES
   -- holds; and the address it went to is made up.
   (N'speaker_edit_links', N'tokenHash', N'LOWER(CONVERT(char(64), HASHBYTES(''SHA2_256'', CONVERT(nvarchar(36), NEWID())), 2))'),
   (N'speaker_edit_links', N'sentTo', N'N''speaker-'' + LOWER(LEFT(guid, 8)) + N''@example.org'''),
+  -- The address each email went to, and who it was from: an admin's own name and address (#3167).
+  (N'speaker_email_sends', N'sentTo', N'N''speaker-'' + LOWER(LEFT(speakerGuid, 8)) + N''@example.org'''),
+  (N'speaker_email_sends', N'sentFrom', N'N''GIS Day <gisday@example.org>'''),
 
   (N'organizations', N'contactFirstName', N'N''Contact'''),
   (N'organizations', N'contactLastName', N'N''Person'''),

@@ -1,8 +1,8 @@
-import { provideHttpClient } from '@angular/common/http';
+import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 import {
   AssetsService,
@@ -13,8 +13,15 @@ import {
 } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { FileComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { shrinkImage } from '@tamu-gisc/common/utils/ui';
 
 import { SpeakerAddEditFormComponent } from './speaker-add-edit-form.component';
+
+// The browser's redraw, which jsdom cannot do: a photo comes back as a small JPEG, as `shrinkImage` makes one (#3177).
+jest.mock('@tamu-gisc/common/utils/ui', () => ({
+  ...jest.requireActual('@tamu-gisc/common/utils/ui'),
+  shrinkImage: jest.fn(async (file: File) => new File(['small'], file.name.replace(/\.[^.]*$/, '') + '.jpg', { type: 'image/jpeg' }))
+}));
 
 describe('SpeakerAddEditFormComponent', () => {
   // A new speaker has no photograph, and the form drew an image with no source: a broken image and its alt text (#2422).
@@ -246,6 +253,97 @@ describe('SpeakerAddEditFormComponent', () => {
 
       expect(alert(fixture)).toBeUndefined();
       expect(fixture.componentInstance.form.getRawValue().file).toBe(png);
+    });
+  });
+
+  /**
+   * #3177: a 745 KB photo saved from the admin failed with 413. The API refuses an image over 8,000 pixels a side or 40
+   * megapixels whatever its file size, and the form sent the photo as chosen. It now sends it shrunk, as a JPEG at most
+   * 1,600 pixels a side, and a refusal shows the API's reason rather than only its status.
+   */
+  describe('saving a photo (#3177)', () => {
+    let speakers: { getEntity: jest.Mock; insertSpeakerInfo: jest.Mock; updateSpeakerInfo: jest.Mock };
+    let toast: jest.Mock;
+
+    async function openToSave(): Promise<ComponentFixture<SpeakerAddEditFormComponent>> {
+      URL.createObjectURL = jest.fn(() => 'blob:chosen-photo');
+      speakers = {
+        getEntity: jest.fn(() => of({})),
+        insertSpeakerInfo: jest.fn(() => of({})),
+        updateSpeakerInfo: jest.fn(() => of({}))
+      };
+      toast = jest.fn();
+      TestBed.configureTestingModule({
+        providers: [
+          provideRouter([]),
+          provideHttpClient(),
+          { provide: SpeakerService, useValue: speakers },
+          { provide: AssetsService, useValue: { getAssetUrl: (path: string) => of(`assets/uploads/${path}`) } },
+          { provide: UniversityService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+          { provide: OrganizationService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+          { provide: SeasonService, useValue: { activeSeason$: of({ guid: 'season' }) } },
+          { provide: NotificationService, useValue: { toast } }
+        ]
+      });
+
+      const fixture = TestBed.createComponent(SpeakerAddEditFormComponent);
+      fixture.componentRef.setInput('type', 'create');
+      fixture.detectChanges();
+
+      return fixture;
+    }
+
+    const photo = new File([new Uint8Array(745 * 1024)], 'portrait.png', { type: 'image/png' });
+    const sent = (call: jest.Mock) => (call.mock.calls[0].at(-1) as FormData).get('file') as File;
+
+    it('sends the chosen photo shrunk, not as it was chosen', async () => {
+      const fixture = await openToSave();
+
+      fixture.componentInstance.form.patchValue({ file: photo });
+      fixture.componentInstance.handleSubmission();
+      await fixture.whenStable();
+
+      expect(shrinkImage).toHaveBeenCalledWith(photo, { maxDimension: 1600 });
+      expect(sent(speakers.insertSpeakerInfo).name).toBe('portrait.jpg');
+      expect(sent(speakers.insertSpeakerInfo).type).toBe('image/jpeg');
+    });
+
+    it('sends the photo shrunk on Update too', async () => {
+      const fixture = await openToSave();
+
+      fixture.componentRef.setInput('type', 'edit');
+      fixture.componentInstance.form.patchValue({ guid: 'sp-1', file: photo });
+      fixture.componentInstance.handleSubmission();
+      await fixture.whenStable();
+
+      expect(speakers.updateSpeakerInfo.mock.calls[0][0]).toBe('sp-1');
+      expect(sent(speakers.updateSpeakerInfo).name).toBe('portrait.jpg');
+    });
+
+    it("says why the API refused it, in the API's words", async () => {
+      const fixture = await openToSave();
+      const message = 'The photo is too large in pixels: 9000 x 6000. The most is 8000 a side and 40 megapixels.';
+
+      speakers.updateSpeakerInfo.mockReturnValue(
+        throwError(() => new HttpErrorResponse({ status: 413, error: { statusCode: 413, message } }))
+      );
+      fixture.componentRef.setInput('type', 'edit');
+      fixture.componentInstance.form.patchValue({ guid: 'sp-1', file: photo });
+      fixture.componentInstance.handleSubmission();
+      await fixture.whenStable();
+
+      expect(toast).toHaveBeenCalledWith(expect.objectContaining({ id: 'speaker-update-failed', message }));
+    });
+
+    it('sends no file when no photo was chosen', async () => {
+      const fixture = await openToSave();
+
+      fixture.componentRef.setInput('type', 'edit');
+      fixture.componentInstance.form.patchValue({ guid: 'sp-1' });
+      fixture.componentInstance.handleSubmission();
+      await fixture.whenStable();
+
+      expect(sent(speakers.updateSpeakerInfo)).toBeNull();
     });
   });
 });

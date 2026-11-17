@@ -18,9 +18,13 @@ import {
   fillReviewEmail,
   hasEmailDesign,
   joinNames,
+  notSentFirst,
+  sendsDetail,
+  sendsLine,
   siteEmailHtml,
   togetherFirstNames,
-  togetherTo
+  togetherTo,
+  wasSent
 } from '@tamu-gisc/gisday/common';
 import { ContactService, ReviewEmailPreview } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import {
@@ -120,6 +124,9 @@ export class ReviewEmailModalComponent implements OnInit {
   /** The two as signals, so the window, which is checked only when told, redraws as they change. */
   private readonly chosenNow = toSignal(this.chosen.valueChanges, { initialValue: this.chosen.value });
   private readonly howNow = toSignal(this.how.valueChanges, { initialValue: this.how.value });
+  /** Whether those not yet sent this email are listed first (#3167); by last name alone to start. */
+  public readonly notSentFirst = new FormControl<boolean>(false, { nonNullable: true });
+  private readonly notSentFirstNow = toSignal(this.notSentFirst.valueChanges, { initialValue: false });
   public readonly howOptions: Array<{ value: How; label: string }> = [
     { value: 'together', label: 'One email to all of them together' },
     { value: 'each', label: 'A copy each' }
@@ -182,6 +189,43 @@ export class ReviewEmailModalComponent implements OnInit {
   /** Select all (#3142): with everyone ticked, unticks everyone; otherwise ticks everyone, in the order listed. */
   public toggleAll(): void {
     this.chosen.setValue(this.allTicked() ? [] : (this.preview()?.recipients ?? []).map((r) => r.guid));
+  }
+
+  /**
+   * The speakers as listed (#3167): by last name, or with those not yet sent this email first when chosen, each part by
+   * last name.
+   */
+  public listed(): Array<EmailRecipient> {
+    const recipients = this.preview()?.recipients ?? [];
+
+    return this.notSentFirstNow() ? notSentFirst(recipients) : recipients;
+  }
+
+  /** Whether the API said what each speaker was sent before (#3167), so the window can show it and choose by it. */
+  public knowsSends(): boolean {
+    return (this.preview()?.recipients ?? []).some((r) => !!r.sends);
+  }
+
+  /** How many listed were never sent this email (#3167). */
+  public notYetSentCount(): number {
+    return (this.preview()?.recipients ?? []).filter((r) => !wasSent(r)).length;
+  }
+
+  /** Ticks only those never sent this email (#3167), and none of those who were. */
+  public tickNotYetSent(): void {
+    this.chosen.setValue(this.listed().filter((r) => !wasSent(r)).map((r) => r.guid));
+  }
+
+  /** A speaker's line under their name: their address, and whether and when they were sent this email (#3167). */
+  public descriptionOf(recipient: EmailRecipient): string {
+    const line = sendsLine(recipient);
+
+    return line ? `${recipient.email} · ${line}` : recipient.email;
+  }
+
+  /** Every email a speaker was sent, newest first (#3167), for the list of who was sent what. */
+  public historyOf(recipient: EmailRecipient): Array<string> {
+    return sendsDetail(recipient);
   }
 
   /** Whether to offer together or a copy each: more than one ticked, and nothing to stop it going together (#3104). */

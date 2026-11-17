@@ -9,6 +9,7 @@ import {
   Speaker,
   SpeakerEdit,
   SpeakerEditLink,
+  SpeakerEmailSend,
   Submission,
   University
 } from '../entities/all.entity';
@@ -25,12 +26,14 @@ import { SlidesRequestEmailService } from './slides-request-email.service';
 import { SessionFilesController } from './session-files.controller';
 import { SessionFilesService } from './session-files.service';
 import { SpeakerEditLinkGuard } from './speaker-edit-link.guard';
+import { EmailSendLog } from './email-send-log';
 import { AssetsService } from '../assets/assets.service';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       SpeakerEditLink,
+      SpeakerEmailSend,
       SpeakerEdit,
       Speaker,
       Season,
@@ -54,7 +57,9 @@ import { AssetsService } from '../assets/assets.service';
     SeasonService,
     SessionFilesService,
     SpeakerEditLinkGuard,
-    AssetsService
+    AssetsService,
+    // What each speaker was sent (#3167), written by every send above and read by their previews.
+    EmailSendLog
   ]
 })
 export class SpeakerEditModule {}

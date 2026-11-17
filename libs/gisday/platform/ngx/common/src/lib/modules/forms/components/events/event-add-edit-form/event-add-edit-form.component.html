@@ -79,6 +79,8 @@
         <tamu-gisc-checkbox formControlName="isAcceptingRsvps" label="Is accepting RSVPs?" [data]=""> </tamu-gisc-checkbox>
         <tamu-gisc-checkbox formControlName="isBringYourOwnDevice" label="Is bring your own device?" [data]=""> </tamu-gisc-checkbox>
         <tamu-gisc-checkbox formControlName="checkInAnyTime" label="Check-in open at any time?" [data]=""> </tamu-gisc-checkbox>
+        <!-- A session with no slides (#3147): its speakers are not asked for any, and cannot upload them. -->
+        <tamu-gisc-checkbox formControlName="noSlides" label="No slides for this session" description="Its speakers are not asked for slides and cannot upload any." [data]=""> </tamu-gisc-checkbox>
       </div>
     </div>
   </div>
@@ -89,7 +91,7 @@
       @if (type() === 'edit' && (eventSpeakers$ | async)?.length > 0) {
       <!-- The emails to everyone on this session, in one menu (#3092): each their own profile link (#2936), and the session's details. -->
       <div class="form-section-actions">
-        <tamu-gisc-action-menu label="Email these speakers" icon="forward_to_inbox" triggerClass="__form-action" align="end" [items]="speakerEmails" (chosen)="emailSpeakers($event)"></tamu-gisc-action-menu>
+        <tamu-gisc-action-menu label="Email these speakers" icon="forward_to_inbox" triggerClass="__form-action" align="end" [items]="speakerEmailItems()" (chosen)="emailSpeakers($event)"></tamu-gisc-action-menu>
       </div>
       }
     </div>
@@ -122,6 +124,9 @@
     </div>
 
     <div class="form-section-body">
+      @if (form.get('noSlides')?.value) {
+      <p class="form-input-description"><strong>No slides for this session:</strong> its speakers are not asked for slides and cannot upload any.</p>
+      }
       <p class="form-input-description">Uploaded by the session's speakers from their profile edit links, up to three files each, labelled with who uploaded them. Only admins, and the speaker who uploaded a file, see them. Admins can remove any of them, one whose speaker is no longer listed included.</p>
       <tamu-gisc-submission-files [source]="slides" [askBeforeRemoving]="true" emptyLabel="No slides uploaded yet."></tamu-gisc-submission-files>
     </div>

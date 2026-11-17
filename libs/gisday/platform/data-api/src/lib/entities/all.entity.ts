@@ -446,6 +446,13 @@ export class Event extends GuidIdentity {
   @Column({ nullable: false, default: false })
   public checkInAnyTime: boolean;
 
+  /**
+   * The session has no slides (#3147): a panel, a social, lunch. Its speakers are not asked for slides, and cannot upload
+   * any for it.
+   */
+  @Column({ nullable: false, default: false })
+  public noSlides: boolean;
+
   @Column({ nullable: true })
   public mode: string;
 
@@ -855,6 +862,35 @@ export class SpeakerEditLink extends GuidIdentity {
   /** The address the link was emailed to. */
   @Column({ nullable: true })
   public sentTo: string;
+}
+
+/**
+ * One email the site sent one speaker (#3167): which email, about which session, when, to which address and from whom.
+ * The admin pages read these to show how many times, and when, each person was sent each email, and to tick only those
+ * not yet sent one. A "together" email is one row per speaker on it. Kept with the speaker, and gone with them.
+ *
+ * The session is its id, not a relation: a session deleted later leaves the record of what was sent.
+ */
+@Entity({ name: 'speaker_email_sends' })
+export class SpeakerEmailSend extends GuidIdentity {
+  @ManyToOne(() => Speaker, { nullable: false, onDelete: 'CASCADE' })
+  public speaker: Relation<Speaker>;
+
+  /** Which email: `PROFILE_EMAIL_KIND`, `SESSION_DETAILS_EMAIL_KIND`, `SLIDES_REQUEST_EMAIL_KIND`. */
+  @Column({ length: 50 })
+  public kind: string;
+
+  /** The session it was about, for a session's emails; none for the profile email. */
+  @Column({ nullable: true, length: 36 })
+  public eventGuid: string | null;
+
+  /** The address it was sent to. */
+  @Column({ nullable: true })
+  public sentTo: string | null;
+
+  /** Who it was from, as the From line said. */
+  @Column({ nullable: true })
+  public sentFrom: string | null;
 }
 
 /**
@@ -1300,6 +1336,7 @@ export const GISDAY_ENTITIES = [
   Speaker,
   SpeakerRole,
   SpeakerEditLink,
+  SpeakerEmailSend,
   SpeakerEdit,
   SubmissionType,
   Sponsor,

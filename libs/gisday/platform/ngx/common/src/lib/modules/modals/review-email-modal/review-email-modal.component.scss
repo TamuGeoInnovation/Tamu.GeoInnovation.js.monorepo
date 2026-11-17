@@ -53,3 +53,19 @@ tamu-gisc-select {
   height: 32rem;
   border: 1px solid #ddd;
 }
+
+// Who was sent it before (#3167): the count, the button and the order, one under another.
+.review-email__sent-choices {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.review-email__history {
+  margin: 0.5rem 0 1rem;
+
+  ul {
+    margin: 0.5rem 0 0;
+  }
+}

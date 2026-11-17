@@ -1,8 +1,9 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, Optional } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import {
+  NO_SLIDES_FOR_SESSION,
   PROFILE_EDIT_LINK_PREVIEW,
   SLIDES_REQUEST_COPY_EACH,
   SLIDES_REQUEST_EMAIL_KIND,
@@ -24,6 +25,7 @@ import { ContactService } from '../contact/contact.service';
 import { EmailSender, siteSender } from '../contact/email-sender.service';
 import { EMAIL_LANES, inParallel } from '../_base/in-parallel';
 import { RecentSends } from '../_base/recent-sends';
+import { EmailSendLog } from './email-send-log';
 import {
   SessionDetailsEmail,
   SessionDetailsEmailPreview,
@@ -60,7 +62,9 @@ export class SlidesRequestEmailService {
   constructor(
     @InjectRepository(Event) private readonly events: Repository<Event>,
     private readonly contact: ContactService,
-    private readonly speakerEdits: SpeakerEditService
+    private readonly speakerEdits: SpeakerEditService,
+    /** The record of what each speaker was sent (#3167). */
+    @Optional() private readonly sendLog?: EmailSendLog
   ) {}
 
   /**
@@ -69,7 +73,7 @@ export class SlidesRequestEmailService {
    * each, and who has no address. No link is made and nothing is sent.
    */
   public async preview(eventGuid: string, host?: string): Promise<SessionDetailsEmailPreview> {
-    const session = await sessionForEmail(this.events, eventGuid);
+    const session = await slidesSession(this.events, eventGuid);
     const site = gisdaySite(process.env.GISDAY_SITE, host);
     const { reachable, noAddress } = speakersOf(session);
 
@@ -97,7 +101,10 @@ export class SlidesRequestEmailService {
           }
         }
       ],
-      recipients: reachable.map(recipientOf),
+      // Each with when they were asked for this session's slides before (#3167).
+      recipients: this.sendLog
+        ? await this.sendLog.withSends(reachable.map(recipientOf), SLIDES_REQUEST_EMAIL_KIND, session.guid)
+        : reachable.map(recipientOf),
       // A copy each only: one email to several would give each the others' links.
       copyEachReason: SLIDES_REQUEST_COPY_EACH,
       noAddress: noAddress.map(fullName)
@@ -125,7 +132,7 @@ export class SlidesRequestEmailService {
     }
 
     const ticked = chosenSpeakers(speakers);
-    const session = await sessionForEmail(this.events, eventGuid);
+    const session = await slidesSession(this.events, eventGuid);
     const site = gisdaySite(process.env.GISDAY_SITE, host);
     const approved = email ?? {
       subject: slidesRequestEmailSubject(session),
@@ -179,6 +186,8 @@ export class SlidesRequestEmailService {
           true
         );
         part.sent.push(name);
+        // Recorded once it has gone (#3167).
+        await this.sendLog?.record([speaker], SLIDES_REQUEST_EMAIL_KIND, session.guid, from.from);
       } catch (err) {
         // Not sent, so not a repeat: the admin may try again at once.
         this.lastSent.release(keys);
@@ -198,4 +207,18 @@ export class SlidesRequestEmailService {
 
     return result;
   }
+}
+
+/**
+ * The session, for its Ask for slides email, unless it has no slides (#3147): then nobody is asked for any, whether the
+ * admin's page offers the email or not.
+ */
+async function slidesSession(events: Repository<Event>, eventGuid: string): Promise<Event> {
+  const session = await sessionForEmail(events, eventGuid);
+
+  if (session.noSlides) {
+    throw new BadRequestException(`${NO_SLIDES_FOR_SESSION} Its speakers are not asked for any.`);
+  }
+
+  return session;
 }

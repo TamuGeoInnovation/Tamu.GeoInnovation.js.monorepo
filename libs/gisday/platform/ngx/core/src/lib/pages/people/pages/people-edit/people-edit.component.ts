@@ -4,7 +4,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AsyncPipe, DatePipe } from '@angular/common';
-import { combineLatest, map, of, shareReplay, startWith } from 'rxjs';
+import { combineLatest, from, map, of, shareReplay, startWith, switchMap } from 'rxjs';
 
 import {
   SessionFilesService,
@@ -24,7 +24,7 @@ import {
   SubmissionFilesComponent,
   UploadImagePicker
 } from '@tamu-gisc/gisday/platform/ngx/common';
-import { SESSION_FILES_LIMIT, SpeakerSessionDto } from '@tamu-gisc/gisday/common';
+import { NO_SLIDES_FOR_SESSION, SESSION_FILES_LIMIT, SpeakerSessionDto } from '@tamu-gisc/gisday/common';
 
 /**
  * A speaker editing their own presenter profile through the link emailed to them (#2936), with no account. Without a
@@ -59,6 +59,8 @@ export class PeopleEditComponent implements OnInit {
 
   /** What a fourth file on a session is refused with (#3093). */
   public readonly sessionFilesLimit = SESSION_FILES_LIMIT;
+  /** What a session with no slides (#3147) says in place of its upload. */
+  public readonly noSlides = NO_SLIDES_FOR_SESSION;
 
   /**
    * The sessions the speaker presents this season (#3093), each with the speaker's own slides as a source for the shared
@@ -86,7 +88,7 @@ export class PeopleEditComponent implements OnInit {
   public readonly problem = signal<string | null>(null);
 
   /** The photo picker, on the shared upload rule (#3074). */
-  public readonly photoPicker = new UploadImagePicker('The photo');
+  public readonly photoPicker = new UploadImagePicker('The photo', { shrink: true });
   /** The answer to a request for a link. */
   public readonly requested = signal<string | null>(null);
 
@@ -159,9 +161,14 @@ export class PeopleEditComponent implements OnInit {
     this.sending.set(true);
     this.problem.set(null);
 
-    this.edits
-      .propose(token, this.form.getRawValue(), this.photo())
-      .pipe(takeUntilDestroyed(this.destroyRef))
+    // The photo shrunk as it is sent (#3177), as the admin's speaker form sends one.
+    const photo = this.photo();
+
+    from(photo ? this.photoPicker.ready(photo) : Promise.resolve(null))
+      .pipe(
+        switchMap((ready) => this.edits.propose(token, this.form.getRawValue(), ready)),
+        takeUntilDestroyed(this.destroyRef)
+      )
       .subscribe({
         next: () => {
           this.sending.set(false);

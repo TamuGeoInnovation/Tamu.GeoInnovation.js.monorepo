@@ -58,7 +58,12 @@ export interface SpeakerSessionDto {
   place: string | null;
   /** The files this speaker uploaded, oldest first; none is []. */
   files: Array<SubmissionFileDto>;
+  /** The session has no slides (#3147), so the speaker is not asked for any and cannot upload them. */
+  noSlides: boolean;
 }
+
+/** Why a session with no slides (#3147) takes none, as the speaker's page and the API both say it. */
+export const NO_SLIDES_FOR_SESSION = 'No slides are needed for this session.';
 
 /** One file of a session's slides, as the admins' list of a season's sessions reads them (#3093). */
 export interface SessionSlidesDto {

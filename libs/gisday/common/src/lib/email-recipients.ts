@@ -31,6 +31,85 @@ export interface EmailRecipient {
 
   /** The address it is sent to. */
   email: string;
+
+  /** What they were sent before (#3167), when the API keeps a record of it. */
+  sends?: EmailSends;
+}
+
+/**
+ * What one speaker was sent before (#3167), as a preview lists it: when they were sent the email about to be sent (that
+ * email, and for a session's email that session), newest first, and every other email they were sent. Times are ISO.
+ */
+export interface EmailSends {
+  thisEmail: Array<string>;
+  others: Array<{ kind: string; at: string }>;
+}
+
+/** What each speaker email is called where the record of sends is shown (#3167), by its kind. */
+export const EMAIL_KIND_LABELS: Readonly<Record<string, string>> = Object.freeze({
+  profile: 'the presenter profile email',
+  'session-details': 'a session details email',
+  'slides-request': 'an Ask for slides email'
+});
+
+/** A time as the record of sends shows it: "Nov 16, 4:05 PM", in US Central, where GIS Day is. */
+export function sentAt(iso: string): string {
+  return new Date(iso).toLocaleString('en-US', {
+    timeZone: 'America/Chicago',
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit'
+  });
+}
+
+/** Whether a speaker was ever sent the email about to be sent (#3167). */
+export function wasSent(recipient: { sends?: EmailSends }): boolean {
+  return (recipient.sends?.thisEmail.length ?? 0) > 0;
+}
+
+/**
+ * The line under a speaker's name saying whether they were sent this email (#3167): "Not sent yet", or "Sent 2 times,
+ * last Nov 16, 4:05 PM". Empty when the API gave no record.
+ */
+export function sendsLine(recipient: { sends?: EmailSends }): string {
+  const sends = recipient.sends;
+
+  if (!sends) {
+    return '';
+  }
+
+  const n = sends.thisEmail.length;
+
+  if (n === 0) {
+    return 'Not sent yet';
+  }
+
+  return `Sent ${n === 1 ? 'once' : `${n} times`}, last ${sentAt(sends.thisEmail[0])}`;
+}
+
+/**
+ * Every time a speaker was sent this email and any other (#3167), newest first, for the list a speaker's line opens:
+ * "Nov 16, 4:05 PM: this email", "Nov 15, 2:10 PM: the presenter profile email".
+ */
+export function sendsDetail(recipient: { sends?: EmailSends }): Array<string> {
+  const sends = recipient.sends;
+
+  if (!sends) {
+    return [];
+  }
+
+  return [
+    ...sends.thisEmail.map((at) => ({ at, what: 'this email' })),
+    ...sends.others.map((o) => ({ at: o.at, what: EMAIL_KIND_LABELS[o.kind] ?? o.kind }))
+  ]
+    .sort((a, b) => b.at.localeCompare(a.at))
+    .map((s) => `${sentAt(s.at)}: ${s.what}`);
+}
+
+/** The speakers with those not yet sent this email first (#3167), each part keeping the order it was given. */
+export function notSentFirst<T extends { sends?: EmailSends }>(recipients: ReadonlyArray<T>): Array<T> {
+  return [...recipients.filter((r) => !wasSent(r)), ...recipients.filter((r) => wasSent(r))];
 }
 
 /** The value `{first name}` takes when a speaker's record has none, as in every speaker email. */
