@@ -193,8 +193,33 @@ describe('HeaderComponent phone menu', () => {
 
     const root = fixture.nativeElement as HTMLElement;
 
-    return Array.from(root.querySelectorAll('tamu-gisc-tile-navigation tamu-gisc-tile-title')).map((t) => t.textContent.trim());
+    return Array.from(root.querySelectorAll('tamu-gisc-tile-navigation tamu-gisc-tile-title')).map((t) =>
+      t.textContent.trim()
+    );
   }
+
+  // #3198: a tap anywhere on the Login tile, its icon included, signs in, not only a tap on the word.
+  it('signs in on a tap on the icon of the Login tile, and once on a tap on its title', () => {
+    menuFor(false);
+
+    const fixture = TestBed.createComponent(HeaderComponent);
+    const login = jest.spyOn(fixture.componentInstance, 'login').mockImplementation(() => undefined);
+
+    fixture.detectChanges();
+    fixture.componentInstance.mobileNavToggle.next(true);
+    fixture.detectChanges();
+
+    const root = fixture.nativeElement as HTMLElement;
+    const tile = Array.from(root.querySelectorAll<HTMLElement>('tamu-gisc-tile-navigation tamu-gisc-tile')).find(
+      (t) => t.querySelector('tamu-gisc-tile-title')?.textContent.trim() === 'Login'
+    );
+
+    tile?.querySelector<HTMLElement>('tamu-gisc-tile-icon .material-icons')?.click();
+    expect(login).toHaveBeenCalledTimes(1);
+
+    tile?.querySelector<HTMLElement>('tamu-gisc-tile-title')?.click();
+    expect(login).toHaveBeenCalledTimes(2);
+  });
 
   it('shows the Account card to a signed-in visitor, and no Login', () => {
     const tiles = menuFor(true);
@@ -245,9 +270,9 @@ describe('HeaderComponent phone menu, Admin', () => {
     account.click();
     fixture.detectChanges();
 
-    return Array.from(root.querySelectorAll('tamu-gisc-tile-navigation [tamuGiscTileLink], tamu-gisc-tile-navigation p')).map(
-      (p) => p.textContent.trim()
-    );
+    return Array.from(
+      root.querySelectorAll('tamu-gisc-tile-navigation [tamuGiscTileLink], tamu-gisc-tile-navigation p')
+    ).map((p) => p.textContent.trim());
   }
 
   it.each(['GIS Day Admin', 'GIS Day Manager', 'GIS Day Organizer'])('lists Admin under Account for a %s', (role) => {

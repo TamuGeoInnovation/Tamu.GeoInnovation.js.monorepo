@@ -22,6 +22,19 @@ export class TileLinkDirective {
 
   @HostListener('click', ['$event.target'])
   protected _click(target: HTMLElement) {
+    this.follow(target);
+  }
+
+  /** True when a node is the link's element or inside it: its own click handler has already followed it. */
+  public contains(node: Node | null): boolean {
+    return node !== null && (this.el.nativeElement as HTMLElement).contains(node);
+  }
+
+  /**
+   * Goes to the link's location and says so. Its tile calls it for a tap anywhere else on the tile, so the whole box is
+   * the tap target, not only the words the link sits on (#3198).
+   */
+  public follow(target: HTMLElement = this.el.nativeElement) {
     const lt = this.testLocation(this.location());
 
     if (lt === LocationType.EXTERNAL) {
