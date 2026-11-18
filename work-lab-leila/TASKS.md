@@ -9203,3 +9203,30 @@ change the code.** Batch 130's set-up and safety.
   can't, say so and skip it.
 - To `docs/screenshots/3205-copy-field-width/`; add before/after rows to `docs/releases/unreleased/3205-copy-field-width.md`.
   Push as a fast-forward from `111708f5f`, and report "images pushed (3205): <sha>".
+
+## Batch 133 (gisday: #3200's after images on the tab fix, **Urgent**; 18 November 2026, 6:40 AM Central, from `work (gisday)`) - **start now**
+
+**Decided:** report 131's question 1 is **(b)**, and it's on the branch. Report 132's question 1 is **(a)**: the director files
+the presenter-card issue, so don't file it. Both reports are right; sorry for the five-hour wait on them.
+
+`feat/3200-collapse-competitions` (fork) is now **`ae63c3abb`**, a fast-forward from your `5755cf829`:
+- `tamu-gisc-tabs` imports its own styles (`libs/sass/modules/tabs`), with no view encapsulation;
+- geoservices' global import of them is removed;
+- the chosen tab's underline reads `--tabs-active-color`, which GIS Day sets to `--gisday-primary`;
+- the judge page's tabs are `class="competitions row"`;
+- the repeated `h2` inside each tab is gone;
+- an opened entry's form has padding.
+
+**Do not change the code.** Batch 131's set-up, data and safety.
+
+- **Re-take the four after images under the same names,** replacing yours from 131 (they're wrong now). The before image
+  stays. Then look at `after-tabs.png` yourself and say:
+  - whether the tabs read as tabs, with the chosen one underlined in the site's colour;
+  - whether each competition's name now shows once;
+  - whether the opened form is indented.
+- `scrollWidth <= innerWidth` at 390 and 360, on both tabs, with an entry open.
+- **Geoservices, if it can run without disturbing GIS Day's stack:** the interactive address-processing result (`tamu-gisc-tabs`
+  in `address-processing-basic`) before (`5755cf829`) and after, at 1280: `geoservices-tabs-before.png`,
+  `geoservices-tabs-after.png`, and whether they look the same. If it can't run, say so and skip it.
+- Update the rows in `docs/releases/unreleased/3200-collapse-competitions.md` if the alt text changes. Push as a fast-forward
+  from `ae63c3abb`, and report "images pushed (3200): <sha>".
