@@ -9167,3 +9167,22 @@ At `origin/development` (`7244af9dd`), signed in as the test admin, at 390 px in
 3. The same at 360 px, and the page **signed out** at 390, for comparison: just `scrollWidth`.
 
 Report the numbers; no images needed. Report "diagnosis ready (3205)".
+
+## Batch 131 (gisday: #3200's after images again, now tabs, **Urgent**; 18 November 2026, from `work (gisday)`) - **before 130 if 130 has not started**
+
+[#3200](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3200) changed: the maintainer asked
+for tabs instead of collapsing the competitions. `feat/3200-collapse-competitions` (fork, `348cdef74`) now has:
+- a tab per competition (the shared `tamu-gisc-tabs`), the first open;
+- in each, every entry a closed `details.entry`, its heading the title, authors and the judge's score or "Not scored yet";
+- entries in order by the **first author's last name**.
+
+Your batch 129 after images are removed from the branch; `before-judge-page.png` stays. **Do not change the code.** Batch
+129's set-up and safety, but give the graduate competition **three** made-up entries whose first authors' last names are
+out of order by title (e.g. "Aquifers" by a Young, "Basins" by an Adams, "Coasts" by a Moore), one of them scored.
+
+- **After**, replacing nothing old: `after-tabs.png` (1280: the tabs, the first open, its entries closed), `after-entry-open.png`
+  (one entry opened), `after-other-tab.png` (the second tab chosen), `after-tabs-phone.png` (390).
+- Say the entries' order, name by name, and check that a score typed into an entry is still there after switching tabs
+  and back, and after closing and reopening the entry. `scrollWidth <= innerWidth` at 390 and 360.
+- Add the after rows to `docs/releases/unreleased/3200-collapse-competitions.md`. Push as a fast-forward from
+  `348cdef74`, and report "images pushed (3200): <sha>".
