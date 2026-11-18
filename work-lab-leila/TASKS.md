@@ -9186,3 +9186,20 @@ out of order by title (e.g. "Aquifers" by a Young, "Basins" by an Adams, "Coasts
   and back, and after closing and reopening the entry. `scrollWidth <= innerWidth` at 390 and 360.
 - Add the after rows to `docs/releases/unreleased/3200-collapse-competitions.md`. Push as a fast-forward from
   `348cdef74`, and report "images pushed (3200): <sha>".
+
+## Batch 132 (gisday: #3205's screenshots, the copy field fix, **High**; 18 November 2026, from `work (gisday)`) - **after 131**
+
+Your report 130 found it; the fix is in `fix/3205-copy-field-width` (fork, `111708f5f`): `.copy-text` in the shared
+`tamu-gisc-copy-field` now has `flex: 1 1 0; width: 0; min-width: 0; text-overflow: ellipsis`, your second row. **Do not
+change the code.** Batch 130's set-up and safety.
+
+- **Before** (`development`) and **after:** a session's page signed in as the test admin, at 390 px, with its QR code
+  showing: `before-phone.png`, `after-phone.png`; and `after-phone-360.png`. Give `scrollWidth` against `innerWidth` at
+  390 and 360, and say whether the link ends in "…" and whether Copy still copies the whole link (read the clipboard, or
+  the copied text the field shows).
+- **At 1280:** `after-desktop.png`, and say whether the copy field looks as before (`before-desktop.png`).
+- **AggieMap**, if its dev server can run on your machine without disturbing GIS Day's stack: one building popup's copy
+  fields at 390 and 1280, before and after (`aggiemap-before.png`, `aggiemap-after.png`), since the field is shared. If it
+  can't, say so and skip it.
+- To `docs/screenshots/3205-copy-field-width/`; add before/after rows to `docs/releases/unreleased/3205-copy-field-width.md`.
+  Push as a fast-forward from `111708f5f`, and report "images pushed (3205): <sha>".
