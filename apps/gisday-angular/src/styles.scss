@@ -21,6 +21,8 @@
   // tamu-gisc-button, so every button on a site is one colour (#2946).
   --gisday-action: rgba(85, 138, 216, 1);
   --gisday-action-hover: #{darken(rgba(85, 138, 216, 1), 10%)};
+  // The shared tabs' chosen tab, as on a judge's page (#3200).
+  --tabs-active-color: var(--gisday-primary);
 
   // Texas A&M's site, at gisday.tamu.edu, wears the university's maroon, as AggieMap does (#2012). main.ts adds
   // the class from the site's brand.

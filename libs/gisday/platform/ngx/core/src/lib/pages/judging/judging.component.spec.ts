@@ -121,7 +121,7 @@ describe('JudgingComponent (#3183)', () => {
   it('shows a card per entry with its title, presenters and abstract, and a score box per criterion with its levels', async () => {
     const { root, card } = await open();
 
-    expect(root.querySelector('h2')?.textContent).toContain('Graduate poster competition');
+    expect(root.querySelector('.tab.active')?.textContent).toContain('Graduate poster competition');
     expect(Array.from(root.querySelectorAll('.entry-title')).map((t) => t.textContent?.trim())).toEqual([
       'Aquifers',
       'Rivers'

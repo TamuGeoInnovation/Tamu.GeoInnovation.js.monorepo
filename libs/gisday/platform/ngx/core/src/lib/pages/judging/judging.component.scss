@@ -99,8 +99,10 @@
     border-bottom: 1pt solid $lightened-inactive-color;
   }
 
+  // The opened form is indented as its heading is (lab, batch 131).
   .submission {
     margin-bottom: 0;
+    padding: 0.75rem 1rem 1rem;
   }
 }
 

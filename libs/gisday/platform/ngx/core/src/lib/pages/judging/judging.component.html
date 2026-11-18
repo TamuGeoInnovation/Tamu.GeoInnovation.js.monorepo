@@ -17,11 +17,11 @@
 
       @if (j.competitions.length) {
       <!-- A tab per competition, the first open, so a judge in one need not scroll past another (#3200, decided 1A). -->
-      <tamu-gisc-tabs class="competitions">
+      <tamu-gisc-tabs class="competitions row">
         @for (competition of j.competitions; track competition.competition) {
         <tamu-gisc-tab [label]="competition.label">
+          <!-- The tab names the competition, so it has no heading of its own (lab, batch 131). -->
           <div class="competition">
-            <h2>{{ competition.label }}</h2>
             <p class="progress bold">{{ scoredLine(competition) }}</p>
 
             @if (competition.closed) {

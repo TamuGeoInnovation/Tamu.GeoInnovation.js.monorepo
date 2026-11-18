@@ -1,6 +1,7 @@
 .tab-container,
 tamu-gisc-tabs {
-  $border: 2pt solid $active-color;
+  // A site can set the chosen tab's colour; GIS Day sets its own (apps/gisday-angular/src/styles.scss, #3200).
+  $border: 2pt solid var(--tabs-active-color, #{$active-color});
 
   // Tab component always uses flex layout, regardless of direction
   // or fill modes
