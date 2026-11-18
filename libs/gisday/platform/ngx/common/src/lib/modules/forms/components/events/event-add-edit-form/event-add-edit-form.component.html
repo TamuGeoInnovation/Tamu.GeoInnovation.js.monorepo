@@ -78,6 +78,9 @@
         <tamu-gisc-checkbox formControlName="requiresRsvp" type="text" label="Requires RSVP?" [data]=""> </tamu-gisc-checkbox>
         <tamu-gisc-checkbox formControlName="isAcceptingRsvps" label="Is accepting RSVPs?" [data]=""> </tamu-gisc-checkbox>
         <tamu-gisc-checkbox formControlName="isBringYourOwnDevice" label="Is bring your own device?" [data]=""> </tamu-gisc-checkbox>
+        <!-- Each session's check-in window (#3209): from this many minutes before it starts until this many after it ends. -->
+        <tamu-gisc-textbox formControlName="checkInMinutesBefore" type="number" placeholder="Check-in opens, minutes before the start" [floatLabel]="true"></tamu-gisc-textbox>
+        <tamu-gisc-textbox formControlName="checkInMinutesAfter" type="number" placeholder="Check-in closes, minutes after the end" [floatLabel]="true"></tamu-gisc-textbox>
         <tamu-gisc-checkbox formControlName="checkInAnyTime" label="Check-in open at any time?" [data]=""> </tamu-gisc-checkbox>
         <!-- A session with no slides (#3147): its speakers are not asked for any, and cannot upload them. -->
         <tamu-gisc-checkbox formControlName="noSlides" label="No slides for this session" description="Its speakers are not asked for slides and cannot upload any." [data]=""> </tamu-gisc-checkbox>
@@ -150,9 +153,7 @@
       }
     </div>
   </div>
-  }
-
-  @if (slides(); as slides) {
+  } @if (slides(); as slides) {
   <!-- The session's slides (#3093): every speaker's, each labelled with who uploaded it, uploaded from their edit links and kept at once. -->
   <div class="form-section">
     <div class="form-section-toolbar">

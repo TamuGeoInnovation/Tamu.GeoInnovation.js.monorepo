@@ -439,8 +439,20 @@ export class Event extends GuidIdentity {
   public checkInCode?: string;
 
   /**
-   * Whether attendees may check in at any time, not only from the session's start until 15 minutes
-   * after its end (#2635). Every other rule still applies: the zone, the QR code. A check-in outside the
+   * Minutes before the session's start that attendees may check in (#3209). 5 unless an organizer changes it.
+   */
+  @Column({ nullable: false, default: 5 })
+  public checkInMinutesBefore: number;
+
+  /**
+   * Minutes after the session's end that attendees may still check in (#3209). 10 unless an organizer changes it.
+   */
+  @Column({ nullable: false, default: 10 })
+  public checkInMinutesAfter: number;
+
+  /**
+   * Whether attendees may check in at any time, not only in its check-in window (`checkInMinutesBefore` and
+   * `checkInMinutesAfter`) (#2635). Every other rule still applies: the zone, the QR code. A check-in outside the
    * session's time is marked `outsideSessionTime`.
    */
   @Column({ nullable: false, default: false })

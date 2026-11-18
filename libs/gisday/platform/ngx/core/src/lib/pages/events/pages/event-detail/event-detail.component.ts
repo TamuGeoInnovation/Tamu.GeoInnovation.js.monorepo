@@ -260,13 +260,13 @@ export class EventDetailComponent implements OnInit, OnDestroy {
         });
       });
 
-    // Check-in is open from the session's start until 15 minutes after its end: the same rule the API
-    // applies (#1795), from libs/gisday/common. A time that cannot be read (#1772) means the session is
-    // never live, rather than an error. A session open at any time (#2635) is always live and never over,
-    // as the API accepts it at any time.
+    // Check-in is open from the session's own minutes before its start until its minutes after its end, by default 5
+    // and 10 (#3209): the same rule the API applies (#1795), from libs/gisday/common. A time that cannot be read (#1772)
+    // means the session is never live, rather than an error. A session open at any time (#2635) is always live and
+    // never over, as the API accepts it at any time.
     const parsedDates = this.event$.pipe(
       map((event) => {
-        const window = checkInWindow(event?.day?.date, event?.startTime, event?.endTime);
+        const window = checkInWindow(event?.day?.date, event?.startTime, event?.endTime, event);
 
         return {
           start: window?.opens ?? null,

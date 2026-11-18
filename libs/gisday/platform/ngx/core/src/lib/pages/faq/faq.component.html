@@ -67,8 +67,8 @@
           </p>
           <div>
             <!-- As the session page does it (#1766, #2560, #3081, #3088): a complete profile first, then the visitor's location
-            in person or the session's QR code. Open from the session's start until 15 minutes after its end (#3152). -->
-            <p>You can check in to a session on the {{ site.name }} website while it is underway, and until 15 minutes after it ends. Some sessions allow check-in at any time. Follow these steps:</p>
+            in person or the session's QR code. Open from shortly before the session until shortly after, by default 5 and 10 minutes, set per session (#3152, #3209). -->
+            <p>You can check in to a session on the {{ site.name }} website from shortly before it starts until shortly after it ends: usually from 5 minutes before it starts until 10 minutes after it ends. Some sessions allow check-in at any time. Follow these steps:</p>
 
             <ul class="numbered">
               <li><a [routerLink]="['/signup']">Create an account</a> on the {{ site.name }} website, and make sure that you are <a [routerLink]="['/login']">logged into your account</a>.</li>
@@ -91,7 +91,7 @@
               <li><a [routerLink]="['/signup']">Create an account</a> on the {{ site.name }} website.</li>
               <li>Make sure that you are <a [routerLink]="['/login']">logged into your account</a> on the {{ site.name }} website.</li>
               <li><a [routerLink]="['/account/classes']">Open the Classes page</a> (from the Account menu, choose Profile, then Classes in the page's left menu) and select all of the classes that you want to notify professors for.</li>
-              <li>While the session is underway, or until 15 minutes after it ends, follow the <a [routerLink]="['/faq']" fragment="website-checkin">check-in instructions</a> to check in.</li>
+              <li>From 5 minutes before the session starts until 10 minutes after it ends, follow the <a [routerLink]="['/faq']" fragment="website-checkin">check-in instructions</a> to check in.</li>
             </ul>
           </div>
         </div>

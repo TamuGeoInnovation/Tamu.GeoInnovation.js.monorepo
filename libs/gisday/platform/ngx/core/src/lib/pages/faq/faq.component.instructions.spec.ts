@@ -51,7 +51,8 @@ describe('FaqComponent, its instructions', () => {
     expect(checkIn).toContain('location');
     expect(checkIn).toContain('QR code');
     expect(checkIn).toContain('hybrid or online');
-    expect(checkIn).toContain('15 minutes after');
+    expect(checkIn).toContain('10 minutes after');
+    expect(checkIn).toContain('5 minutes before');
   });
 
   it('sends people to Classes, not My Classes, for certifying attendance', () => {
@@ -69,8 +70,6 @@ describe('FaqComponent, its instructions', () => {
   });
 
   it('says the competitions are open only to current Texas A&M students', () => {
-    expect(render(GISDAY_SITES.tamu).answer('competition-eligibility')).toContain(
-      'open only to current Texas A&M students'
-    );
+    expect(render(GISDAY_SITES.tamu).answer('competition-eligibility')).toContain('open only to current Texas A&M students');
   });
 });
