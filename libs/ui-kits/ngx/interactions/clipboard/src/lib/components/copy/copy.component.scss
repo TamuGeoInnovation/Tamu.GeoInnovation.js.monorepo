@@ -27,5 +27,12 @@
   max-width: 80%;
   white-space: nowrap;
   overflow: hidden;
+  // As wide as the room beside Copy, never the value's own width (#3205): one unbreakable value, a 124-character check-in
+  // link, otherwise sized the field to 976 px and pushed a whole session page off a phone's left edge. A long value ends in
+  // an ellipsis; Copy still copies all of it.
+  flex: 1 1 0;
+  width: 0;
+  min-width: 0;
+  text-overflow: ellipsis;
   @include transition(color 0.3s);
 }
