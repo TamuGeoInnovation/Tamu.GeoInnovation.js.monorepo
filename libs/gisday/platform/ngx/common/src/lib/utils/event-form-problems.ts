@@ -52,7 +52,7 @@ export function eventFormProblems(value: EventFormValue): Array<string> {
     problems.push('Give the event an abstract.');
   }
 
-  const choices: Array<[keyof EventFormValue, string]> = [
+  const choices: Array<['mode' | 'eventType' | 'presentationType' | 'location', string]> = [
     ['mode', 'a mode'],
     ['eventType', 'an event type'],
     ['presentationType', 'a presentation type'],
