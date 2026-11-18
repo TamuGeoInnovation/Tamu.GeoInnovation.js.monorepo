@@ -58,10 +58,10 @@ Updated at every GIS Day rollout, as step 4 of
 
 | | |
 | --- | --- |
-| Image, `gisday-nest` and `gisday-angular`, both namespaces (`gisday`, `gisday-ucgis`) | `sha-81f4414` |
-| Its last commit | `81f4414`, PR 3186 ([#3183](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3183), judges score the research competitions in the site against rubrics, from an emailed judging link) |
-| Rolled out | 17 November 2026, about 12:45 AM Central, by the maintainer, after the migration; checked against the cluster in both namespaces |
-| The image before it | `sha-05ee195` (17 November, about 12:10 AM Central: PR 3185, #3174's zips), the rollback target; the migration only adds, so it can stay |
+| Image, `gisday-nest` and `gisday-angular`, both namespaces (`gisday`, `gisday-ucgis`) | `sha-7244af9` |
+| Its last commit | `7244af9`, PR 3199 ([#3198](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3198), a tap anywhere on a phone menu tile follows it). It also carries PR 3194 ([#3191](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3191), a criterion's levels as boxes on the judging page) and PR 3195 ([#3193](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3193), each judge's scores on an entry and the Every score CSV) |
+| Rolled out | 18 November 2026, about 12:05 AM Central, by the maintainer: the API, then the site, in both namespaces; checked against the cluster (all four deployments on `sha-7244af9`), and the live site's bundles carry the level boxes and Every score |
+| The images before it | the API `sha-052e92f` (17 November, about 1:05 AM Central: PR 3192, [#3190](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3190), the CORS methods that let a judge save, an API-only rollout) and the site `sha-81f4414`: the rollback targets. No migration came between them |
 | The last migration in it | `AddJudging` (`1794887961505`): applied with `-Apply -NoBackup` on both databases at 12:39 AM, after a clean dry run; reports in kubernetes-config `6. GIS Day/migrations/` |
 
 The cluster is the final word:
