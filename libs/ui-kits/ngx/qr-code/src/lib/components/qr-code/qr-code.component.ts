@@ -61,6 +61,11 @@ export class QrCodeComponent {
    */
   public readonly isFullscreen = signal(false);
 
+  /**
+   * Whether the code fills the window rather than the screen, where the browser has no full screen for it (#3211).
+   */
+  private fillingWindow = false;
+
   public readonly modules = computed(() => qrModules(this.text(), this.logo() ? 'H' : 'M'));
 
   /**
@@ -96,21 +101,79 @@ export class QrCodeComponent {
     link.click();
   }
 
+  /**
+   * The browser's full screen, through the standard API or Safari's prefixed one, which is all an iPad before iPadOS 16.4
+   * has (#3211). Where there is neither, as on an iPhone, or the browser refuses, the code fills the window instead: the
+   * same layout, fixed to the viewport, with the browser's own bars still showing.
+   */
   public enterFullscreen() {
-    this.host.nativeElement.requestFullscreen?.()?.catch(() => undefined);
+    const host = this.host.nativeElement as WebkitElement;
+    const request = host.requestFullscreen ?? host.webkitRequestFullscreen;
+
+    if (!request) {
+      this.fillWindow();
+
+      return;
+    }
+
+    try {
+      // Safari's prefixed request returns nothing; the standard one a promise.
+      Promise.resolve(request.call(host)).catch(() => this.fillWindow());
+    } catch {
+      this.fillWindow();
+    }
   }
 
   public exitFullscreen() {
-    if (document.fullscreenElement) {
-      document.exitFullscreen?.()?.catch(() => undefined);
+    if (this.fillingWindow) {
+      this.fillingWindow = false;
+      this.isFullscreen.set(false);
+
+      return;
+    }
+
+    const doc = document as WebkitDocument;
+
+    if (doc.fullscreenElement) {
+      doc.exitFullscreen?.()?.catch(() => undefined);
+    } else if (doc.webkitFullscreenElement) {
+      doc.webkitExitFullscreen?.();
     }
   }
 
   @HostListener('document:fullscreenchange')
+  @HostListener('document:webkitfullscreenchange')
   public onFullscreenChange() {
-    this.isFullscreen.set(document.fullscreenElement === this.host.nativeElement);
+    if (this.fillingWindow) {
+      return;
+    }
+
+    const doc = document as WebkitDocument;
+
+    this.isFullscreen.set((doc.fullscreenElement ?? doc.webkitFullscreenElement) === this.host.nativeElement);
+  }
+
+  /**
+   * The browser leaves its own full screen on Escape; the window-filling view is left the same way.
+   */
+  @HostListener('document:keydown.escape')
+  public onEscape() {
+    if (this.fillingWindow) {
+      this.exitFullscreen();
+    }
+  }
+
+  private fillWindow() {
+    this.fillingWindow = true;
+    this.isFullscreen.set(true);
   }
 }
+
+/**
+ * Safari's prefixed Fullscreen API, all an iPad before iPadOS 16.4 has for an element (#3211).
+ */
+type WebkitElement = HTMLElement & { webkitRequestFullscreen?: () => void };
+type WebkitDocument = Document & { webkitFullscreenElement?: Element | null; webkitExitFullscreen?: () => void };
 
 /**
  * The code's modules, `true` for dark, with the four-module quiet zone the standard asks for so a
