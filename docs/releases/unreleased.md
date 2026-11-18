@@ -58,11 +58,11 @@ Updated at every GIS Day rollout, as step 4 of
 
 | | |
 | --- | --- |
-| Image, both namespaces (`gisday`, `gisday-ucgis`) | the site `gisday-angular` on `sha-3514bd5`; the API `gisday-nest` on `sha-7244af9` |
-| The site's last commit | `3514bd5`, PR 3201 ([#3200](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3200), a judge's page has a tab per competition, each entry collapsed, by first author). It also carries PR 3202 ([#3196](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3196), a session's presenters by last name), PR 3203 ([#3197](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3197), the Check-in QR code at the top of a session's page) and PR 3207 ([#3205](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3205), a long value in the shared copy field fits its box, so a session's page fits a phone) |
-| Rolled out | 18 November 2026, about 7:45 AM Central, by the maintainer: the site only, in both namespaces, since nothing since `7244af9` changes the API or the database; checked against the cluster (both sites on `sha-3514bd5`, both APIs on `sha-7244af9`), and the live site carries the tabs' `--tabs-active-color` and the copy field's ellipsis |
-| The images before it | the site `sha-7244af9` (18 November, about 12:05 AM Central: #3191, #3193 and #3198): the rollback target. The API did not change |
-| The last migration in it | `AddJudging` (`1794887961505`), unchanged: no migration came after `7244af9` |
+| Image, `gisday-nest` and `gisday-angular`, both namespaces (`gisday`, `gisday-ucgis`) | `sha-f4fd0d1` |
+| Its last commit | `f4fd0d1`, PR 3210 ([#3209](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3209), each session sets its own check-in window, by default 5 minutes before its start to 10 after its end) |
+| Rolled out | 18 November 2026, about 12:42 PM Central, by the maintainer: the migration, then the API, then the site, in both namespaces; checked against the cluster (all four deployments on `sha-f4fd0d1`), and `txgisday.org/api/seasons/active` returns `checkInMinutesBefore` 5 and `checkInMinutesAfter` 10 on all 65 of its sessions |
+| The images before it | the site `sha-3514bd5` (18 November, about 7:45 AM Central, a site-only rollout: [#3196](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3196), [#3197](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3197), [#3200](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3200) and [#3205](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3205)) and the API `sha-7244af9`: the rollback targets. Both work with the new columns, which they ignore |
+| The last migration in it | `AddCheckInMinutes` (`1794967200000`): two columns on `events` with defaults, applied with `-Apply -NoBackup` on both databases at 12:40 PM, after a clean dry run (332 and 75 sessions, all on 5 and 10); reports in kubernetes-config `6. GIS Day/migrations/` |
 
 The cluster is the final word:
 `kubectl -n gisday get deployment gisday-nest gisday-angular -o custom-columns=NAME:.metadata.name,IMAGE:.spec.template.spec.containers[0].image`,
