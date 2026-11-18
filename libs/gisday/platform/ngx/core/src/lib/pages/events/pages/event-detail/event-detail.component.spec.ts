@@ -2,11 +2,12 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
 import { Angulartics2 } from 'angulartics2';
-import { of, throwError } from 'rxjs';
+import { firstValueFrom, of, throwError } from 'rxjs';
 
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import {
+  AssetsService,
   CheckinService,
   EventService,
   RsvpService,
@@ -60,7 +61,8 @@ describe('EventDetailComponent check-in', () => {
       anyTime = false,
       sessionCheckIns = () => of([] as Array<Record<string, unknown>>),
       users = () => of({ users: [] as Array<Record<string, unknown>>, truncated: false }),
-      broadcast = undefined
+      broadcast = undefined,
+      speakers = []
     }: {
       query?: Record<string, string>;
       loggedIn?: boolean;
@@ -69,6 +71,7 @@ describe('EventDetailComponent check-in', () => {
       sessionCheckIns?: () => ReturnType<typeof of>;
       users?: () => ReturnType<typeof of>;
       broadcast?: Record<string, string>;
+      speakers?: Array<Record<string, unknown>>;
     } = {}
   ) {
     let checkedIn = false;
@@ -90,7 +93,7 @@ describe('EventDetailComponent check-in', () => {
       mode,
       ...schedule,
       checkInAnyTime: anyTime,
-      speakers: [],
+      speakers,
       location: { building: 'TAMU Rudder Plaza', checkInZone: zone },
       broadcast
     };
@@ -129,6 +132,8 @@ describe('EventDetailComponent check-in', () => {
           }
         },
         { provide: NotificationService, useValue: { toast: jest.fn() } },
+        // A presenter card's photograph (#3196).
+        { provide: AssetsService, useValue: { getAssetUrl: () => of(null) } },
         // The QR code's copyable link counts copies.
         { provide: Angulartics2, useValue: { eventTrack: { next: jest.fn() } } }
       ]
@@ -172,6 +177,7 @@ describe('EventDetailComponent check-in', () => {
       getCheckInCode,
       getCheckinsForEvent,
       login,
+      component: f.componentInstance,
       detectChanges: () => f.detectChanges()
     };
   }
@@ -509,6 +515,32 @@ describe('EventDetailComponent check-in', () => {
 
       expect(page().querySelector('table.floating-table')).toBeNull();
       expect(getCheckinsForEvent).not.toHaveBeenCalled();
+    });
+  });
+  /**
+   * #3196: a session's presenters are listed by last name, then first name, A to Z, and not grouped by company. Every
+   * person here is made up.
+   */
+  describe('the presenters', () => {
+    it('lists them by last name, then first name, whatever their company', async () => {
+      const { component } = open('in-person', undefined, undefined, {
+        speakers: [
+          { guid: 's-1', firstName: 'Avery', lastName: 'Example', organization: { name: 'Zeta Mapping' } },
+          { guid: 's-2', firstName: 'Jordan', lastName: 'Sample', organization: { name: 'Alpha Surveys' } },
+          { guid: 's-3', firstName: 'Casey', lastName: 'Bramble' },
+          { guid: 's-4', firstName: 'Blake', lastName: 'example', organization: { name: 'Alpha Surveys' } },
+          { guid: 's-5', firstName: 'Robin', lastName: 'Álvarez', affiliation: 'A made-up county' }
+        ]
+      });
+      const presenters = await firstValueFrom(component.presenters$);
+
+      expect(presenters.map((p) => `${p.firstName} ${p.lastName}`)).toEqual([
+        'Robin Álvarez',
+        'Casey Bramble',
+        'Avery Example',
+        'Blake example',
+        'Jordan Sample'
+      ]);
     });
   });
 });
