@@ -64,4 +64,16 @@ describe('eventFormProblems', () => {
       'Choose an event location.'
     ]);
   });
+
+  // #3209: each session's check-in window.
+  it('accepts check-in minutes as the number box holds them', () => {
+    expect(eventFormProblems({ ...complete, checkInMinutesBefore: '5', checkInMinutesAfter: 0 })).toEqual([]);
+  });
+
+  it('refuses check-in minutes that are not a whole number from 0 to a day', () => {
+    expect(eventFormProblems({ ...complete, checkInMinutesBefore: '', checkInMinutesAfter: '-10' })).toEqual([
+      'Check-in opens must be a whole number of minutes from 0 to 1440.',
+      'Check-in closes must be a whole number of minutes from 0 to 1440.'
+    ]);
+  });
 });

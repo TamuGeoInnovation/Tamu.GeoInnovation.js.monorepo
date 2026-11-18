@@ -39,7 +39,14 @@ import {
   BroadcastService
 } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { JUDGED_COMPETITIONS, siteHas, siteListsPlace, slidesZipName } from '@tamu-gisc/gisday/common';
+import {
+  CHECK_IN_MINUTES_AFTER,
+  CHECK_IN_MINUTES_BEFORE,
+  JUDGED_COMPETITIONS,
+  siteHas,
+  siteListsPlace,
+  slidesZipName
+} from '@tamu-gisc/gisday/common';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { ActionMenuComponent, ActionMenuItem } from '@tamu-gisc/ui-kits/ngx/layout';
 import { serverMessage } from '../../../../../utils/server-message';
@@ -256,6 +263,9 @@ export class EventAddEditFormComponent implements OnInit {
       // Ticked, as the database column's default is, so a new event accepts RSVPs unless the organizer unticks it (#2706).
       isAcceptingRsvps: [true],
       isBringYourOwnDevice: [false],
+      // The session's check-in window around its time (#3209), the database's defaults for a new session.
+      checkInMinutesBefore: [CHECK_IN_MINUTES_BEFORE],
+      checkInMinutesAfter: [CHECK_IN_MINUTES_AFTER],
       checkInAnyTime: [false],
       // A panel, a social, lunch (#3147): its speakers are not asked for slides.
       noSlides: [false],
@@ -636,7 +646,13 @@ export class EventAddEditFormComponent implements OnInit {
    * save leaves them as they were (#3183).
    */
   public payload() {
-    const { judges, ...rawValue } = this.form.getRawValue();
+    const { judges, ...value } = this.form.getRawValue();
+    // A number box holds text; the columns are whole numbers (#3209). The form refuses anything else before saving.
+    const rawValue = {
+      ...value,
+      checkInMinutesBefore: Number(value.checkInMinutesBefore),
+      checkInMinutesAfter: Number(value.checkInMinutesAfter)
+    };
     const speakers: Array<string> = rawValue.speakers ?? [];
 
     return this.judgesLoaded

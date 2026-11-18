@@ -6,6 +6,7 @@ import { firstValueFrom, of, throwError } from 'rxjs';
 
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { CheckInMinutes } from '@tamu-gisc/gisday/common';
 import {
   AssetsService,
   CheckinService,
@@ -47,7 +48,7 @@ describe('EventDetailComponent check-in', () => {
   function open(
     mode = 'in-person',
     insert = () => of({ guid: 'c-new' }),
-    schedule: { day: { guid: string; date: Date }; startTime: string; endTime: string } = {
+    schedule: { day: { guid: string; date: Date }; startTime: string; endTime: string } & CheckInMinutes = {
       day: { guid: 'd-1', date: new Date() },
       startTime: '00:00:00',
       endTime: '23:59:59'
@@ -387,7 +388,7 @@ describe('EventDetailComponent check-in', () => {
 
   /**
    * #1795: the page shows the Check In button in the window the API accepts check-ins in, from one
-   * rule in libs/gisday/common: from the start until 15 minutes after the end, the day in Central time.
+   * rule in libs/gisday/common: from the start until 10 minutes after the end, the day in Central time.
    */
   describe('when the button shows', () => {
     // As the API tests: 18 November 2026, 4:00 to 5:00 PM Central, as the admin form stores them.
@@ -405,8 +406,8 @@ describe('EventDetailComponent check-in', () => {
 
     // #3077: an attendee who scans early is told when to come back, rather than only "at the start".
     it.each([
-      ['earlier that day', '2026-11-18T15:00:00Z', 'Check-in opens at 4:00 PM.'],
-      ['the day before', '2026-11-17T22:30:00Z', 'Check-in opens on Wednesday, November 18 at 4:00 PM.']
+      ['earlier that day', '2026-11-18T15:00:00Z', 'Check-in opens at 3:55 PM.'],
+      ['the day before', '2026-11-17T22:30:00Z', 'Check-in opens on Wednesday, November 18 at 3:55 PM.']
     ])('before it opens, %s, says when it opens, and does not check in from the QR code', (_, now, message) => {
       jest.useFakeTimers({ now: new Date(now), doNotFake: ['nextTick', 'setImmediate', 'queueMicrotask'] });
 
@@ -417,10 +418,10 @@ describe('EventDetailComponent check-in', () => {
     });
 
     it.each([
-      ['a minute before the start', '2026-11-18T21:59:00Z', false],
-      ['at the start', '2026-11-18T22:00:00Z', true],
-      ['15 minutes after the end', '2026-11-18T23:15:00Z', true],
-      ['16 minutes after the end', '2026-11-18T23:16:00Z', false]
+      ['6 minutes before the start', '2026-11-18T21:54:00Z', false],
+      ['5 minutes before the start', '2026-11-18T21:55:00Z', true],
+      ['10 minutes after the end', '2026-11-18T23:10:00Z', true],
+      ['11 minutes after the end', '2026-11-18T23:11:00Z', false]
     ])('%s: %s', (_, now, shown) => {
       jest.useFakeTimers({ now: new Date(now), doNotFake: ['nextTick', 'setImmediate', 'queueMicrotask'] });
 
@@ -429,11 +430,25 @@ describe('EventDetailComponent check-in', () => {
       expect(hasButton(text)).toBe(shown);
     });
 
+    // #3209: a session that sets its own window shows the button in that window.
+    it.each([
+      ['a minute before the start', '2026-11-18T21:59:00Z', false],
+      ['at the start', '2026-11-18T22:00:00Z', true],
+      ['30 minutes after the end', '2026-11-18T23:30:00Z', true],
+      ['31 minutes after the end', '2026-11-18T23:31:00Z', false]
+    ])('with its own minutes, %s: %s', (_, now, shown) => {
+      jest.useFakeTimers({ now: new Date(now), doNotFake: ['nextTick', 'setImmediate', 'queueMicrotask'] });
+
+      const { text } = open('in-person', undefined, { ...session, checkInMinutesBefore: 0, checkInMinutesAfter: 30 });
+
+      expect(hasButton(text)).toBe(shown);
+    });
+
     // #2635: a session open at any time shows the button before, during and after its time.
     it.each([
       ['the day before', '2026-11-17T22:30:00Z'],
-      ['a minute before the start', '2026-11-18T21:59:00Z'],
-      ['16 minutes after the end', '2026-11-18T23:16:00Z'],
+      ['6 minutes before the start', '2026-11-18T21:54:00Z'],
+      ['11 minutes after the end', '2026-11-18T23:11:00Z'],
       ['a week later', '2026-11-25T22:30:00Z']
     ])('open at any time, %s: shown', (_, now) => {
       jest.useFakeTimers({ now: new Date(now), doNotFake: ['nextTick', 'setImmediate', 'queueMicrotask'] });

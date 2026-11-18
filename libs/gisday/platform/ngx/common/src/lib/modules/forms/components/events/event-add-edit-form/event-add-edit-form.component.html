@@ -28,6 +28,11 @@
         </div>
       </div>
       }
+      <!-- Each session's check-in window (#3209), beside its times: from this many minutes before it starts until this many after it ends. -->
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="checkInMinutesBefore" type="number" placeholder="Check-in opens, minutes before the start" [floatLabel]="true"></tamu-gisc-textbox>
+        <tamu-gisc-textbox formControlName="checkInMinutesAfter" type="number" placeholder="Check-in closes, minutes after the end" [floatLabel]="true"></tamu-gisc-textbox>
+      </div>
     </div>
   </div>
 
@@ -150,9 +155,7 @@
       }
     </div>
   </div>
-  }
-
-  @if (slides(); as slides) {
+  } @if (slides(); as slides) {
   <!-- The session's slides (#3093): every speaker's, each labelled with who uploaded it, uploaded from their edit links and kept at once. -->
   <div class="form-section">
     <div class="form-section-toolbar">
