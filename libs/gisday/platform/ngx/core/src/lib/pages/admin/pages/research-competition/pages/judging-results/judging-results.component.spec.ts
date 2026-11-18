@@ -4,7 +4,7 @@ import { of } from 'rxjs';
 import { JudgingService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { JudgingResultsDto } from '@tamu-gisc/gisday/common';
 
-import { JudgingResultsComponent, judgingResultsCsv } from './judging-results.component';
+import { JudgingResultsComponent, everyScoreCsv, judgingResultsCsv } from './judging-results.component';
 
 /** A competition's results, made up: two judges, two entries, one not judged yet. */
 const results = (): JudgingResultsDto => ({
@@ -23,7 +23,9 @@ const results = (): JudgingResultsDto => ({
       totals: { 'j-1': 18, 'j-2': null },
       judged: 1,
       average: 18,
-      criteria: { 'c-1': 18 }
+      criteria: { 'c-1': 18 },
+      // A made-up judge's comment, with a comma and quotes, as a comment may have.
+      assessments: { 'j-1': { scores: { 'c-1': 18 }, total: 18, comment: 'Clear, "careful" work.' }, 'j-2': null }
     },
     {
       guid: 's-2',
@@ -32,9 +34,116 @@ const results = (): JudgingResultsDto => ({
       totals: { 'j-1': null, 'j-2': null },
       judged: 0,
       average: null,
-      criteria: { 'c-1': null }
+      criteria: { 'c-1': null },
+      assessments: { 'j-1': null, 'j-2': null }
     }
   ]
+});
+
+/** #3193: an entry's breakdown, a line per judge, and every score as a CSV file. */
+describe('JudgingResultsComponent, each judge on an entry (#3193)', () => {
+  async function open() {
+    TestBed.configureTestingModule({
+      imports: [JudgingResultsComponent],
+      providers: [
+        { provide: JudgingService, useValue: { results: jest.fn(() => of(results())) } },
+        {
+          provide: SeasonService,
+          useValue: {
+            activeSeason$: of({ guid: 'season-2026', year: 2026 }),
+            seasons$: of([{ guid: 'season-2026', year: 2026 }])
+          }
+        }
+      ]
+    });
+
+    const fixture = TestBed.createComponent(JudgingResultsComponent);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const root = fixture.nativeElement as HTMLElement;
+    const lines = () =>
+      Array.from(root.querySelectorAll('.breakdown tbody tr')).map((tr) =>
+        Array.from(tr.querySelectorAll('th, td')).map((c) => c.textContent?.replace(/\s+/g, ' ').trim())
+      );
+    const openRow = async (title: string) => {
+      const cell = Array.from(root.querySelectorAll<HTMLElement>('datatable-body-cell')).find((c) =>
+        c.textContent?.includes(title)
+      );
+
+      cell.click();
+      fixture.detectChanges();
+      await fixture.whenStable();
+      fixture.detectChanges();
+    };
+
+    return { fixture, root, lines, openRow, component: fixture.componentInstance };
+  }
+
+  it("opens an entry's breakdown on a click: each judge's score on each criterion, their total and comment", async () => {
+    const { root, lines, openRow, component } = await open();
+
+    expect(root.querySelector('.breakdown')).toBeNull();
+
+    await openRow('Rivers');
+
+    expect(component.opened()).toBe('s-1');
+    expect(Array.from(root.querySelectorAll('.breakdown thead th')).map((th) => th.textContent?.trim())).toEqual([
+      'Judge',
+      'Total',
+      'Comment',
+      'Clarity (of 20)'
+    ]);
+    // Total and comment come first, so they are in view without scrolling past every criterion (lab, batch 126).
+    expect(lines()).toEqual([
+      ['Dana Judge', '18', 'Clear, "careful" work.', '18'],
+      ['Emery Judge', 'Not scored yet']
+    ]);
+  });
+
+  it('shows a judge who has not scored the entry as Not scored yet', async () => {
+    const { lines, openRow } = await open();
+
+    await openRow('Aquifers');
+
+    expect(lines()).toEqual([
+      ['Dana Judge', 'Not scored yet'],
+      ['Emery Judge', 'Not scored yet']
+    ]);
+  });
+
+  it('closes the breakdown on a second click, and opens only one at a time', async () => {
+    const { component, openRow } = await open();
+
+    await openRow('Rivers');
+    await openRow('Aquifers');
+    expect(component.opened()).toBe('s-2');
+
+    await openRow('Aquifers');
+    expect(component.opened()).toBeNull();
+  });
+
+  it('gives every score as a CSV, a row per judge per entry, its comment escaped', () => {
+    const csv = everyScoreCsv(results()).split('\r\n');
+
+    expect(csv).toEqual([
+      'Title,Presenters,Judge,Clarity (of 20),Total,Comment',
+      'Rivers,Avery Example,Dana Judge,18,18,"Clear, ""careful"" work."',
+      'Rivers,Avery Example,Emery Judge,,Not scored yet,',
+      'Aquifers,,Dana Judge,,Not scored yet,',
+      'Aquifers,,Emery Judge,,Not scored yet,'
+    ]);
+  });
+
+  it('offers the Every score download beside the results CSV', async () => {
+    const { root } = await open();
+
+    expect(Array.from(root.querySelectorAll('.form-section-actions a')).map((a) => a.textContent?.trim())).toEqual([
+      'Download CSV',
+      'Every score'
+    ]);
+  });
 });
 
 /** #3183: the admins' Judging results page. */

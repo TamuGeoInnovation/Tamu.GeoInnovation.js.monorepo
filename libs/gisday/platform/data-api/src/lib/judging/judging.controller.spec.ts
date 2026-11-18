@@ -460,6 +460,38 @@ describe('Judging (#3183)', () => {
       expect(JSON.stringify(body)).not.toContain('@');
     });
 
+    // #3193: each entry's breakdown, a judge's own score on each criterion and their comment, for the admins only.
+    it("give each judge's own scores and comment on each entry, and null for a judge who has not scored it", async () => {
+      await score(JUDGE_LINK, RIVERS, { scores: goodScores(), comment: 'Clear maps, "careful" sources.' });
+      permissions = ['read:competitions'];
+
+      const body: JudgingResultsDto = await jsonOf(await results());
+      const rivers = body.rows.find((r) => r.title === 'Rivers');
+
+      expect(rivers.assessments[dana.guid]).toEqual({
+        scores: goodScores(),
+        total: 93,
+        comment: 'Clear maps, "careful" sources.'
+      });
+      expect(rivers.assessments[emery.guid]).toBeNull();
+
+      // Still refused to anyone who may not read the competitions, the comments with them.
+      permissions = ['update:events'];
+      const refused = await results();
+
+      expect(refused.status).toBe(403);
+      expect(await refused.text()).not.toContain('careful');
+    });
+
+    it("leave a judge's own page as it was: their own scores only, never another judge's comment", async () => {
+      await score(OTHER_JUDGE_LINK, RIVERS, { scores: goodScores(), comment: 'Emery’s private view.' });
+
+      const mine = await (await page(JUDGE_LINK)).text();
+
+      expect(mine).not.toContain('Emery’s private view.');
+      expect(mine).not.toContain('assessments');
+    });
+
     it('refuse a competition no session can judge', async () => {
       permissions = ['read:competitions'];
 
