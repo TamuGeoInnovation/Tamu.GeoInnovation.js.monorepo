@@ -103,9 +103,10 @@ describe('JudgingComponent (#3183)', () => {
     fixture.detectChanges();
 
     const root = fixture.nativeElement as HTMLElement;
+    // An entry: its section, closed or open, with its heading and its form (#3200).
     const card = (title: string) =>
-      Array.from(root.querySelectorAll<HTMLFormElement>('form.submission')).find((f) =>
-        f.querySelector('.form-section-title')?.textContent?.includes(title)
+      Array.from(root.querySelectorAll<HTMLDetailsElement>('details.entry')).find((d) =>
+        d.querySelector(':scope > summary .entry-title')?.textContent?.includes(title)
       );
     const save = async (title: string) => {
       card(title).querySelector<HTMLInputElement>('input[type="submit"]').click();
@@ -120,8 +121,8 @@ describe('JudgingComponent (#3183)', () => {
   it('shows a card per entry with its title, presenters and abstract, and a score box per criterion with its levels', async () => {
     const { root, card } = await open();
 
-    expect(root.querySelector('h2')?.textContent).toContain('Graduate poster competition');
-    expect(Array.from(root.querySelectorAll('.form-section-title')).map((t) => t.textContent?.trim())).toEqual([
+    expect(root.querySelector('.tab.active')?.textContent).toContain('Graduate poster competition');
+    expect(Array.from(root.querySelectorAll('.entry-title')).map((t) => t.textContent?.trim())).toEqual([
       'Aquifers',
       'Rivers'
     ]);
@@ -148,6 +149,94 @@ describe('JudgingComponent (#3183)', () => {
       ['Excellent (A)', 'Crystal clear.'],
       ['Needs Improvement (D/F)', expect.any(String)]
     ]);
+  });
+
+  /** #3200: a tab per competition, the first open; each entry closed to its heading; entries by first author's last name. */
+  describe('tabs and entries (#3200)', () => {
+    /** The same judge in two competitions: the graduate one as above, and a made-up undergraduate one. */
+    function twoCompetitions(): JudgePageDto {
+      const page = judgePage();
+      const [graduate] = page.competitions;
+
+      page.competitions.push({
+        ...graduate,
+        competition: 'undergraduate-poster',
+        label: 'Undergraduate poster competition',
+        submissions: [{ ...graduate.submissions[0], guid: 's-9', title: 'Wetlands', presenters: ['Drew Sample'] }]
+      });
+
+      return page;
+    }
+
+    const tabs = (root: HTMLElement) =>
+      Array.from(root.querySelectorAll<HTMLElement>('tamu-gisc-tabs .tab')).map((t) => ({
+        label: t.textContent?.trim(),
+        selected: t.getAttribute('aria-selected')
+      }));
+
+    it('shows a tab per competition with the first open, and switches on a click, keeping what was typed', async () => {
+      const { root, fixture, card, component } = await open({ page: twoCompetitions() });
+
+      expect(tabs(root)).toEqual([
+        { label: 'Graduate poster competition', selected: 'true' },
+        { label: 'Undergraduate poster competition', selected: 'false' }
+      ]);
+      expect(card('Aquifers')).toBeDefined();
+      expect(card('Wetlands')).toBeUndefined();
+
+      component.formFor(judgePage().competitions[0].submissions[0]).patchValue({ 'c-1': '17' });
+      root.querySelectorAll<HTMLElement>('tamu-gisc-tabs .tab')[1].click();
+      fixture.detectChanges();
+
+      expect(tabs(root).map((t) => t.selected)).toEqual(['false', 'true']);
+      expect(card('Wetlands')).toBeDefined();
+      expect(card('Aquifers')).toBeUndefined();
+
+      root.querySelectorAll<HTMLElement>('tamu-gisc-tabs .tab')[0].click();
+      fixture.detectChanges();
+
+      expect(component.formFor(judgePage().competitions[0].submissions[0]).getRawValue()['c-1']).toBe('17');
+    });
+
+    it("shows each entry closed, its heading the title, the authors and the judge's score or Not scored yet", async () => {
+      const { root, card } = await open();
+
+      expect(Array.from(root.querySelectorAll<HTMLDetailsElement>('details.entry')).map((d) => d.open)).toEqual([
+        false,
+        false
+      ]);
+
+      const heading = (title: string) =>
+        Array.from(card(title)?.querySelector(':scope > summary')?.querySelectorAll('p') ?? []).map((p) =>
+          p.textContent?.trim()
+        );
+
+      expect(heading('Aquifers')).toEqual(['Aquifers', 'Avery Example, Blair Sample', 'Not scored yet']);
+      expect(heading('Rivers')).toEqual(['Rivers', 'Casey Test', 'Scored 15 of 30']);
+      // The form is inside the entry, so closed it is hidden.
+      expect(card('Aquifers')?.querySelector('form.submission')).not.toBeNull();
+    });
+
+    it("lists the entries by their first author's last name, an entry with no authors last", async () => {
+      const page = judgePage();
+      const [one] = page.competitions[0].submissions;
+
+      page.competitions[0].submissions = [
+        { ...one, guid: 'a', title: 'Zebra', presenters: ['Morgan Young', 'Avery Adams'] },
+        { ...one, guid: 'b', title: 'No one', presenters: [] },
+        { ...one, guid: 'c', title: 'Ice', presenters: ['Jordan Álvarez'] },
+        { ...one, guid: 'd', title: 'Hills', presenters: ['casey baker'] }
+      ];
+
+      const { root } = await open({ page });
+
+      expect(Array.from(root.querySelectorAll('.entry-title')).map((t) => t.textContent?.trim())).toEqual([
+        'Ice',
+        'Hills',
+        'Zebra',
+        'No one'
+      ]);
+    });
   });
 
   it('shows what the judge saved before, and how many entries they have scored', async () => {

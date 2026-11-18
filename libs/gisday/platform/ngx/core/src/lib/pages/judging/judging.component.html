@@ -15,79 +15,91 @@
       } @else if (judge(); as j) {
       <p class="form-input-description">{{ j.firstName }} {{ j.lastName }}, thank you for judging. Give each criterion a score and choose <strong>Save</strong> on each entry. You can change your scores until judging closes. Only the GIS Day team sees them. This link works until {{ j.expires | date: 'EEEE, MMMM d' : '-0600' }}.</p>
 
-      @for (competition of j.competitions; track competition.competition) {
-      <div class="competition">
-        <h2>{{ competition.label }}</h2>
-        <p class="progress bold">{{ scoredLine(competition) }}</p>
+      @if (j.competitions.length) {
+      <!-- A tab per competition, the first open, so a judge in one need not scroll past another (#3200, decided 1A). -->
+      <tamu-gisc-tabs class="competitions row">
+        @for (competition of j.competitions; track competition.competition) {
+        <tamu-gisc-tab [label]="competition.label">
+          <!-- The tab names the competition, so it has no heading of its own (lab, batch 131). -->
+          <div class="competition">
+            <p class="progress bold">{{ scoredLine(competition) }}</p>
 
-        @if (competition.closed) {
-        <div class="info-block notice">
-          <p>Judging is closed for this competition. Your scores are shown, but can no longer be changed.</p>
-        </div>
-        } @if (!competition.rubric) {
-        <div class="info-block warning">
-          <p>The rubric for this competition is not ready yet. Please check back later.</p>
-        </div>
-        } @else if (competition.submissions.length === 0) {
-        <p>There are no entries in this competition yet.</p>
-        } @if (competition.rubric; as rubric) { @for (submission of competition.submissions; track submission.guid) {
-        <form class="form submission" [formGroup]="formFor(submission)" (ngSubmit)="save(competition, submission)">
-          <div class="form-section">
-            <div class="form-section-toolbar">
-              <div class="form-section-title">{{ submission.title }}</div>
+            @if (competition.closed) {
+            <div class="info-block notice">
+              <p>Judging is closed for this competition. Your scores are shown, but can no longer be changed.</p>
             </div>
-
-            <div class="form-section-body">
-              @if (submission.presenters.length) {
-              <p class="presenters">{{ submission.presenters.join(', ') }}</p>
-              } @if (submission.abstract) {
-              <details class="trailer-1">
-                <summary>Abstract</summary>
-                <p class="abstract">{{ submission.abstract }}</p>
-              </details>
-              } @for (criterion of rubric.criteria; track criterion.guid) {
-              <!-- One under the other, on a phone as on a computer: the criterion, its score, its levels (#3183). -->
-              <div class="criterion form-collection column">
-                <p class="bold trailer-1">{{ criterion.name }} <span class="out-of">(0 to {{ criterion.maxPoints }})</span></p>
-                <tamu-gisc-textbox [formControlName]="criterion.guid" type="number" [placeholder]="'Score out of ' + criterion.maxPoints" [floatLabel]="true"></tamu-gisc-textbox>
-                @if (criterion.levels.length) {
-                <!-- The levels as boxes side by side, as the rubric's own table lays them out, always shown (#3191). No box
-                     is lit for the score: the rubric does not say which scores belong to which level. -->
-                <ul class="levels leader-1" [attr.aria-label]="'Levels for ' + criterion.name">
-                  @for (level of criterion.levels; track level.label) {
-                  <li class="level">
-                    <p class="bold level-label">{{ level.label }}</p>
-                    <p class="level-description">{{ level.description }}</p>
-                  </li>
-                  }
-                </ul>
+            } @if (!competition.rubric) {
+            <div class="info-block warning">
+              <p>The rubric for this competition is not ready yet. Please check back later.</p>
+            </div>
+            } @else if (competition.submissions.length === 0) {
+            <p>There are no entries in this competition yet.</p>
+            } @if (competition.rubric; as rubric) {
+            <!-- By the first author's last name (#3200), each entry closed to its title, authors and score until opened. -->
+            @for (submission of competition.submissions; track submission.guid) {
+            <details class="entry">
+              <summary>
+                <p class="entry-title bold">{{ submission.title }}</p>
+                @if (submission.presenters.length) {
+                <p class="presenters">{{ submission.presenters.join(', ') }}</p>
                 }
-              </div>
-              }
+                <p class="entry-status">{{ submission.assessment ? 'Scored ' + submission.assessment.total + ' of ' + rubricTotal(rubric) : 'Not scored yet' }}</p>
+              </summary>
+              <form class="form submission" [formGroup]="formFor(submission)" (ngSubmit)="save(competition, submission)">
+                <div class="form-section">
+                  <div class="form-section-body">
+                    @if (submission.abstract) {
+                    <details class="trailer-1">
+                      <summary>Abstract</summary>
+                      <p class="abstract">{{ submission.abstract }}</p>
+                    </details>
+                    } @for (criterion of rubric.criteria; track criterion.guid) {
+                    <!-- One under the other, on a phone as on a computer: the criterion, its score, its levels (#3183). -->
+                    <div class="criterion form-collection column">
+                      <p class="bold trailer-1">{{ criterion.name }} <span class="out-of">(0 to {{ criterion.maxPoints }})</span></p>
+                      <tamu-gisc-textbox [formControlName]="criterion.guid" type="number" [placeholder]="'Score out of ' + criterion.maxPoints" [floatLabel]="true"></tamu-gisc-textbox>
+                      @if (criterion.levels.length) {
+                      <!-- The levels as boxes side by side, as the rubric's own table lays them out, always shown (#3191). No box
+                     is lit for the score: the rubric does not say which scores belong to which level. -->
+                      <ul class="levels leader-1" [attr.aria-label]="'Levels for ' + criterion.name">
+                        @for (level of criterion.levels; track level.label) {
+                        <li class="level">
+                          <p class="bold level-label">{{ level.label }}</p>
+                          <p class="level-description">{{ level.description }}</p>
+                        </li>
+                        }
+                      </ul>
+                      }
+                    </div>
+                    }
 
-              <div class="form-collection column">
-                <tamu-gisc-textbox formControlName="comment" type="textarea" [rows]="3" placeholder="Comment (optional)" [floatLabel]="true"></tamu-gisc-textbox>
-              </div>
+                    <div class="form-collection column">
+                      <tamu-gisc-textbox formControlName="comment" type="textarea" [rows]="3" placeholder="Comment (optional)" [floatLabel]="true"></tamu-gisc-textbox>
+                    </div>
 
-              @if (saves()[submission.guid]; as state) { @if (state.problem) {
-              <div class="info-block warning" role="alert">
-                <p>{{ state.problem }}</p>
-              </div>
-              } @else if (state.saved) {
-              <p class="saved">Saved, {{ submission.assessment?.total }} of {{ rubricTotal(rubric) }} points.</p>
-              } } @else if (submission.assessment; as assessment) {
-              <p class="saved">Scored {{ assessment.total }} of {{ rubricTotal(rubric) }} points.</p>
-              } @if (!competition.closed) {
-              <div class="form-collection row">
-                <tamu-gisc-button type="submit" [value]="saves()[submission.guid]?.saving ? 'Saving…' : 'Save'" [disabled]="!!saves()[submission.guid]?.saving"></tamu-gisc-button>
-              </div>
-              }
-            </div>
+                    @if (saves()[submission.guid]; as state) { @if (state.problem) {
+                    <div class="info-block warning" role="alert">
+                      <p>{{ state.problem }}</p>
+                    </div>
+                    } @else if (state.saved) {
+                    <p class="saved">Saved, {{ submission.assessment?.total }} of {{ rubricTotal(rubric) }} points.</p>
+                    } } @else if (submission.assessment; as assessment) {
+                    <p class="saved">Scored {{ assessment.total }} of {{ rubricTotal(rubric) }} points.</p>
+                    } @if (!competition.closed) {
+                    <div class="form-collection row">
+                      <tamu-gisc-button type="submit" [value]="saves()[submission.guid]?.saving ? 'Saving…' : 'Save'" [disabled]="!!saves()[submission.guid]?.saving"></tamu-gisc-button>
+                    </div>
+                    }
+                  </div>
+                </div>
+              </form>
+            </details>
+            } }
           </div>
-        </form>
-        } }
-      </div>
-      } @empty {
+        </tamu-gisc-tab>
+        }
+      </tamu-gisc-tabs>
+      } @else {
       <p>You are not judging any competition at the moment.</p>
       } } @else {
       <!-- The site's loader while the link loads. -->

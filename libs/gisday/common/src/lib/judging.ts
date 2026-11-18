@@ -1,3 +1,4 @@
+import { lastNameOf } from './names';
 import { personalLinkEmailProblem, profileEmailValues } from './profile-email';
 import { RubricCriterionValue, RubricValue } from './rubrics';
 import { SessionDetailsSession, sessionWhen, sessionWhere } from './session-details-email';
@@ -460,4 +461,29 @@ export function judgingEmailValues(
 /** Why an edited email may not be sent, or null when it may: the text must keep `{judging link}`. */
 export function judgingEmailProblem(email: unknown): string | null {
   return personalLinkEmailProblem(email, JUDGING_LINK_PLACEHOLDER);
+}
+
+/**
+ * Entries in order by their first author's last name, then that author's whole name, then title, ignoring case and
+ * accents; an entry with no authors comes last. A judge's page lists them so (#3200). A new list: the one given is left
+ * as it was.
+ */
+export function byFirstAuthor<T extends { title: string; presenters: ReadonlyArray<string> }>(
+  entries: ReadonlyArray<T> | null | undefined
+): Array<T> {
+  const compare = (a: string, b: string) => a.localeCompare(b, 'en', { sensitivity: 'base' });
+  const first = (e: T) => (e.presenters?.[0] ?? '').trim();
+
+  return [...(entries ?? [])].sort((a, b) => {
+    const fa = first(a);
+    const fb = first(b);
+
+    if (!fa || !fb) {
+      if (fa !== fb) {
+        return fa ? -1 : 1;
+      }
+    }
+
+    return compare(lastNameOf(fa), lastNameOf(fb)) || compare(fa, fb) || compare(a.title ?? '', b.title ?? '');
+  });
 }

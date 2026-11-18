@@ -6,6 +6,7 @@ import { DatePipe } from '@angular/common';
 
 import { JudgingService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { ButtonComponent, TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { TabComponent, TabsComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 import { serverMessage } from '@tamu-gisc/gisday/platform/ngx/common';
 import {
   ASSESSMENT_COMMENT_LIMIT,
@@ -13,6 +14,7 @@ import {
   JudgePageDto,
   JudgeSubmissionDto,
   assessmentProblem,
+  byFirstAuthor,
   rubricTotal,
   scoredLine
 } from '@tamu-gisc/gisday/common';
@@ -35,7 +37,7 @@ interface SaveState {
   templateUrl: './judging.component.html',
   styleUrls: ['./judging.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, DatePipe, ButtonComponent, TextboxComponent]
+  imports: [ReactiveFormsModule, DatePipe, ButtonComponent, TextboxComponent, TabsComponent, TabComponent]
 })
 export class JudgingComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
@@ -133,7 +135,13 @@ export class JudgingComponent implements OnInit {
       .forLink(token)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (page) => {
+        next: (loaded) => {
+          // Each competition's entries by their first author's last name (#3200).
+          const page: JudgePageDto = {
+            ...loaded,
+            competitions: loaded.competitions.map((c) => ({ ...c, submissions: byFirstAuthor(c.submissions) }))
+          };
+
           this.forms = new Map(
             page.competitions.flatMap((competition) =>
               competition.submissions.map((submission) => [submission.guid, formOf(competition, submission)] as const)
