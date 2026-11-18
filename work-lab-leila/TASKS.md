@@ -9149,3 +9149,21 @@ under its title. Signed in as the test admin:
   (1280), and `after-top-phone.png` (390). Also the page signed out, `after-signed-out.png`, which must show no QR section.
 - To `docs/screenshots/3197-qr-at-top/`; add them to `docs/releases/unreleased/3197-qr-at-top.md`. Report
   "images pushed (3197): <sha>".
+
+## Batch 130 (gisday: #3205, find what makes a session page 927 px wide on a phone, **High**; 18 November 2026, from `work (gisday)`)
+
+[#3205](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3205): your report 129 found a session's
+page, signed in as the test admin at 390 px, laid out 927 px wide (`scrollWidth` 683), cut off on the left. **A diagnosis
+only: do not change the code, and push nothing.** Same made-up set-up and safety as batch 129's #3197 (a made-up session,
+its check-in code set by SQL, no email, made-up rows removed and `cmp` of the snapshots).
+
+At `origin/development` (`7244af9dd`), signed in as the test admin, at 390 px in a phone viewport:
+1. **Find the culprit.** By script, list every element whose `getBoundingClientRect().width` is over 390, or whose right edge
+   is past 390 or left edge below 0. Give the deepest few (tag, classes, id, width, left, right) and their computed
+   `width`, `min-width`, `white-space` and `display`, and the chain of ancestors from the deepest one up to `.column10`.
+2. **Try it without each organizer section**, by hiding one at a time in the page with `display: none` from the console,
+   in this order: the Check-in QR Code section, the copy-field (`tamu-gisc-copy-field`), the Attendance form, the
+   Check-ins table. Say after each whether `scrollWidth` falls to 390.
+3. The same at 360 px, and the page **signed out** at 390, for comparison: just `scrollWidth`.
+
+Report the numbers; no images needed. Report "diagnosis ready (3205)".
