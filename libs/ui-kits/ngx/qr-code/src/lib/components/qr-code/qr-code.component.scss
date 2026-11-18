@@ -24,6 +24,8 @@
 :host(.is-fullscreen) {
   position: fixed;
   inset: 0;
+  // A caller's spacing class, such as `trailer-1` on the session page, would otherwise shrink the box by its margin.
+  margin: 0;
   box-sizing: border-box;
   justify-content: center;
   align-items: center;

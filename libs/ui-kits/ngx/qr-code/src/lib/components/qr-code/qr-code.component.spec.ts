@@ -227,6 +227,41 @@ describe('QrCodeComponent', () => {
       });
     });
 
+    // Seen in a Chromium pane: the prefixed request was declined with no promise and no error.
+    it('fills the window when a request goes nowhere, and the browser full screen still wins if it comes late', () => {
+      vi.useFakeTimers();
+
+      try {
+        requestFullscreen.mockReturnValue(undefined);
+        fixture.componentRef.setInput('fullscreen', true);
+        fixture.detectChanges();
+
+        press('Full screen');
+        expect(fixture.componentInstance.isFullscreen()).toBe(false);
+
+        vi.advanceTimersByTime(1000);
+        fixture.detectChanges();
+        expect(fixture.componentInstance.isFullscreen()).toBe(true);
+
+        setFullscreenElement(fixture.nativeElement);
+        press('Exit full screen');
+        expect(exitFullscreen).toHaveBeenCalledTimes(1);
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    it('fills the window when the browser reports it could not go full screen', () => {
+      fixture.componentRef.setInput('fullscreen', true);
+      fixture.detectChanges();
+
+      press('Full screen');
+      document.dispatchEvent(new Event('webkitfullscreenerror'));
+      fixture.detectChanges();
+
+      expect(fixture.componentInstance.isFullscreen()).toBe(true);
+    });
+
     it('fills the window instead when the browser refuses full screen', async () => {
       requestFullscreen.mockRejectedValue(new TypeError('not allowed'));
       fixture.componentRef.setInput('fullscreen', true);

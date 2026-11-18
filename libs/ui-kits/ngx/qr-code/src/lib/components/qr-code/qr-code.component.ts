@@ -66,6 +66,11 @@ export class QrCodeComponent {
    */
   private fillingWindow = false;
 
+  /**
+   * The wait after asking for full screen before filling the window instead.
+   */
+  private fallback: ReturnType<typeof setTimeout> | undefined;
+
   public readonly modules = computed(() => qrModules(this.text(), this.logo() ? 'H' : 'M'));
 
   /**
@@ -121,7 +126,18 @@ export class QrCodeComponent {
       Promise.resolve(request.call(host)).catch(() => this.fillWindow());
     } catch {
       this.fillWindow();
+
+      return;
     }
+
+    // A prefixed request the browser declines can fail without a word: no promise, and no error event in every browser.
+    // So a request that has not filled the screen in a moment fills the window instead.
+    clearTimeout(this.fallback);
+    this.fallback = setTimeout(() => {
+      if (!this.isFullscreen()) {
+        this.fillWindow();
+      }
+    }, FULLSCREEN_FALLBACK_MS);
   }
 
   public exitFullscreen() {
@@ -144,13 +160,23 @@ export class QrCodeComponent {
   @HostListener('document:fullscreenchange')
   @HostListener('document:webkitfullscreenchange')
   public onFullscreenChange() {
-    if (this.fillingWindow) {
-      return;
-    }
-
     const doc = document as WebkitDocument;
 
-    this.isFullscreen.set((doc.fullscreenElement ?? doc.webkitFullscreenElement) === this.host.nativeElement);
+    // The browser's own full screen wins, even when it arrives after the window was filled.
+    if ((doc.fullscreenElement ?? doc.webkitFullscreenElement) === this.host.nativeElement) {
+      this.fillingWindow = false;
+      this.isFullscreen.set(true);
+    } else if (!this.fillingWindow) {
+      this.isFullscreen.set(false);
+    }
+  }
+
+  @HostListener('document:fullscreenerror')
+  @HostListener('document:webkitfullscreenerror')
+  public onFullscreenError() {
+    if (!this.isFullscreen()) {
+      this.fillWindow();
+    }
   }
 
   /**
@@ -168,6 +194,12 @@ export class QrCodeComponent {
     this.isFullscreen.set(true);
   }
 }
+
+/**
+ * How long a request for full screen may take before the code fills the window instead (#3211). Long enough for a
+ * browser that is going to grant it, short enough that a presenter does not press again.
+ */
+const FULLSCREEN_FALLBACK_MS = 1000;
 
 /**
  * Safari's prefixed Fullscreen API, all an iPad before iPadOS 16.4 has for an element (#3211).
