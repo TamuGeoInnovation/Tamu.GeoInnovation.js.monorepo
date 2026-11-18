@@ -204,7 +204,9 @@ export class JudgingService {
         judge: a.judge?.guid,
         submission: a.submission?.guid,
         scores: a.scores ?? {},
-        total: a.total
+        total: a.total,
+        // For the admins' breakdown of an entry (#3193); this route is theirs alone.
+        comment: a.comment ?? null
       }))
     });
   }

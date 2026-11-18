@@ -135,11 +135,19 @@ describe('JudgingComponent (#3183)', () => {
       'Design (0 to 10)'
     ]);
     expect(aquifers.querySelectorAll('input[type="number"]')).toHaveLength(2);
-    expect(Array.from(aquifers.querySelectorAll('dt')).map((d) => d.textContent)).toEqual([
-      'Excellent (A)',
-      'Needs Improvement (D/F)'
+    // #3191: each criterion's levels as boxes side by side, like the rubric's table, always shown: no Levels toggle.
+    const firstCriterion = aquifers.querySelector('.criterion');
+
+    expect(firstCriterion?.querySelector('details')).toBeNull();
+    expect(
+      Array.from(firstCriterion?.querySelectorAll('.levels > .level') ?? []).map((box) => [
+        box.querySelector('.level-label')?.textContent,
+        box.querySelector('.level-description')?.textContent
+      ])
+    ).toEqual([
+      ['Excellent (A)', 'Crystal clear.'],
+      ['Needs Improvement (D/F)', expect.any(String)]
     ]);
-    expect(aquifers.querySelector('dd')?.textContent).toBe('Crystal clear.');
   });
 
   it('shows what the judge saved before, and how many entries they have scored', async () => {
