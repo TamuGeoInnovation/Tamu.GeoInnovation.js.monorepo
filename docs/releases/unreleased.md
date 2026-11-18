@@ -58,11 +58,11 @@ Updated at every GIS Day rollout, as step 4 of
 
 | | |
 | --- | --- |
-| Image, `gisday-nest` and `gisday-angular`, both namespaces (`gisday`, `gisday-ucgis`) | `sha-7244af9` |
-| Its last commit | `7244af9`, PR 3199 ([#3198](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3198), a tap anywhere on a phone menu tile follows it). It also carries PR 3194 ([#3191](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3191), a criterion's levels as boxes on the judging page) and PR 3195 ([#3193](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3193), each judge's scores on an entry and the Every score CSV) |
-| Rolled out | 18 November 2026, about 12:05 AM Central, by the maintainer: the API, then the site, in both namespaces; checked against the cluster (all four deployments on `sha-7244af9`), and the live site's bundles carry the level boxes and Every score |
-| The images before it | the API `sha-052e92f` (17 November, about 1:05 AM Central: PR 3192, [#3190](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3190), the CORS methods that let a judge save, an API-only rollout) and the site `sha-81f4414`: the rollback targets. No migration came between them |
-| The last migration in it | `AddJudging` (`1794887961505`): applied with `-Apply -NoBackup` on both databases at 12:39 AM, after a clean dry run; reports in kubernetes-config `6. GIS Day/migrations/` |
+| Image, both namespaces (`gisday`, `gisday-ucgis`) | the site `gisday-angular` on `sha-3514bd5`; the API `gisday-nest` on `sha-7244af9` |
+| The site's last commit | `3514bd5`, PR 3201 ([#3200](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3200), a judge's page has a tab per competition, each entry collapsed, by first author). It also carries PR 3202 ([#3196](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3196), a session's presenters by last name), PR 3203 ([#3197](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3197), the Check-in QR code at the top of a session's page) and PR 3207 ([#3205](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3205), a long value in the shared copy field fits its box, so a session's page fits a phone) |
+| Rolled out | 18 November 2026, about 7:45 AM Central, by the maintainer: the site only, in both namespaces, since nothing since `7244af9` changes the API or the database; checked against the cluster (both sites on `sha-3514bd5`, both APIs on `sha-7244af9`), and the live site carries the tabs' `--tabs-active-color` and the copy field's ellipsis |
+| The images before it | the site `sha-7244af9` (18 November, about 12:05 AM Central: #3191, #3193 and #3198): the rollback target. The API did not change |
+| The last migration in it | `AddJudging` (`1794887961505`), unchanged: no migration came after `7244af9` |
 
 The cluster is the final word:
 `kubectl -n gisday get deployment gisday-nest gisday-angular -o custom-columns=NAME:.metadata.name,IMAGE:.spec.template.spec.containers[0].image`,
