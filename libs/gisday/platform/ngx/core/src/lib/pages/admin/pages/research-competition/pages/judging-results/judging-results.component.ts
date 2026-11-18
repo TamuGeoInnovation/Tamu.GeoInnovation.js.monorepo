@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { DatatableComponent, NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 import * as Papa from 'papaparse';
 
@@ -8,13 +8,30 @@ import { JudgingService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { downloadFile } from '@tamu-gisc/common/utils/ui';
 import { serverMessage } from '@tamu-gisc/gisday/platform/ngx/common';
-import { JUDGED_COMPETITIONS, JudgingResultsDto, judgingResultsTable } from '@tamu-gisc/gisday/common';
+import {
+  JUDGED_COMPETITIONS,
+  JudgeBreakdownLine,
+  JudgingResultRow,
+  JudgingResultsDto,
+  NOT_SCORED_YET,
+  everyScoreTable,
+  judgeBreakdown,
+  judgingResultsTable
+} from '@tamu-gisc/gisday/common';
 
 import { seasonChoice } from '../../components/season-choice';
 
 /** A competition's results as a CSV file, as the page shows them. */
 export function judgingResultsCsv(results: JudgingResultsDto): string {
   return Papa.unparse(judgingResultsTable(results));
+}
+
+/**
+ * Every score as a CSV file (#3193): a row per judge per entry. Papa's writer quotes a comment with a comma, a quote or a
+ * line break in it, as it does the results' file.
+ */
+export function everyScoreCsv(results: JudgingResultsDto): string {
+  return Papa.unparse(everyScoreTable(results));
 }
 
 /**
@@ -42,6 +59,10 @@ export class JudgingResultsComponent {
   public readonly results = signal<JudgingResultsDto | null>(null);
   public readonly widths = RESULTS_COLUMN_WIDTHS;
   public readonly problem = signal<string | null>(null);
+  public readonly notScoredYet = NOT_SCORED_YET;
+  /** The entry whose breakdown is open (#3193), by its id, or null. */
+  public readonly opened = signal<string | null>(null);
+  private readonly table = viewChild(DatatableComponent);
 
   constructor() {
     effect(() => {
@@ -85,6 +106,49 @@ export class JudgingResultsComponent {
     }
   }
 
+  /** One entry's breakdown: a line per judge, with their score on each criterion, their total and comment (#3193). */
+  public breakdown(results: JudgingResultsDto, row: JudgingResultRow): Array<JudgeBreakdownLine> {
+    return judgeBreakdown(results, row);
+  }
+
+  /** A click on a row, or Enter or Space on it, opens its breakdown, as the dashboards' tables open theirs. */
+  public onActivate(event: { type: string; row: JudgingResultRow; event: Event }): void {
+    const key = event.event instanceof KeyboardEvent ? event.event.key : null;
+
+    if (event.type === 'click' || key === 'Enter' || key === ' ') {
+      this.toggle(event.row);
+    }
+  }
+
+  /** Opens an entry's breakdown, closing any other, or closes it if it is open. */
+  public toggle(row: JudgingResultRow): void {
+    const detail = this.table()?.rowDetail;
+    const closing = this.opened() === row.guid;
+
+    detail?.collapseAllRows();
+
+    if (closing) {
+      this.opened.set(null);
+    } else {
+      detail?.toggleExpandRow(row);
+      this.opened.set(row.guid);
+    }
+  }
+
+  /** Every score, a row per judge per entry, as a CSV file (#3193). */
+  public downloadEveryScore(): void {
+    const results = this.results();
+    const year = this.choice.season()?.year;
+
+    if (results) {
+      downloadFile(
+        everyScoreCsv(results),
+        `judging-${results.competition}-every-score${year ? `-${year}` : ''}.csv`,
+        'text/csv'
+      );
+    }
+  }
+
   public download(): void {
     const results = this.results();
     const year = this.choice.season()?.year;
@@ -96,6 +160,7 @@ export class JudgingResultsComponent {
 
   private load(season: string, competition: string): void {
     this.results.set(null);
+    this.opened.set(null);
     this.problem.set(null);
     this.judging
       .results(season, competition)

@@ -1,3 +1,5 @@
+@import 'libs/gisday/sass/variables';
+
 // Layout only (#3183): the site's own form, info-block, button and spacing styles do the rest.
 
 // The page fits a phone, 360 px and up, with nothing running off its right edge: the column takes the width it is given,
@@ -25,9 +27,48 @@
   box-sizing: border-box;
 }
 
-// A level's description under its name, at the card's full width.
-.judging dd {
+// A criterion's levels as boxes side by side, as the rubric's own table lays them out (#3191): four across on a wide
+// screen, two on a narrow one, one per row on a phone, each box as wide as the others and never wider than the card.
+// Fixed counts rather than auto-fit, which laid out three and one alone at 768 px (lab, batch 125).
+.levels {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.5rem;
+  // Only the sides and the bottom: the top is the shared leader-1's, a gap under the score box.
+  margin-right: 0;
+  margin-bottom: 0;
   margin-left: 0;
+  padding: 0;
+  list-style: none;
+
+  @media (min-width: 500px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.level {
+  min-width: 0;
+  padding: 0.5rem 0.75rem;
+  border: 1pt solid $lightened-inactive-color;
+  border-radius: 4px;
+
+  p {
+    margin: 0;
+  }
+}
+
+// The site's .bold does not reach a paragraph inside a card: the form's own paragraph weight outranks it, so a criterion's
+// name and a level's name drew at normal weight (lab, batches 125 and 127). Every bold paragraph on the page is set here.
+.judging p.bold {
+  font-weight: 600;
+}
+
+.level .level-label {
+  margin-bottom: 0.25rem;
 }
 
 .competition + .competition {

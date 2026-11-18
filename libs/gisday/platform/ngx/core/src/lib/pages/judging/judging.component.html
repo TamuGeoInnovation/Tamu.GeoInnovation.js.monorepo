@@ -54,15 +54,16 @@
                 <p class="bold trailer-1">{{ criterion.name }} <span class="out-of">(0 to {{ criterion.maxPoints }})</span></p>
                 <tamu-gisc-textbox [formControlName]="criterion.guid" type="number" [placeholder]="'Score out of ' + criterion.maxPoints" [floatLabel]="true"></tamu-gisc-textbox>
                 @if (criterion.levels.length) {
-                <details class="leader-1">
-                  <summary>Levels</summary>
-                  <dl>
-                    @for (level of criterion.levels; track level.label) {
-                    <dt>{{ level.label }}</dt>
-                    <dd>{{ level.description }}</dd>
-                    }
-                  </dl>
-                </details>
+                <!-- The levels as boxes side by side, as the rubric's own table lays them out, always shown (#3191). No box
+                     is lit for the score: the rubric does not say which scores belong to which level. -->
+                <ul class="levels leader-1" [attr.aria-label]="'Levels for ' + criterion.name">
+                  @for (level of criterion.levels; track level.label) {
+                  <li class="level">
+                    <p class="bold level-label">{{ level.label }}</p>
+                    <p class="level-description">{{ level.description }}</p>
+                  </li>
+                  }
+                </ul>
                 }
               </div>
               }

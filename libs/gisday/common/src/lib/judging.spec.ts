@@ -18,6 +18,8 @@ import {
   judgingEmailValues,
   judgingResults,
   judgingResultsTable,
+  everyScoreTable,
+  judgeBreakdown,
   judgingEmailDesign,
   sessionEmailDesign,
   scoredLine
@@ -146,6 +148,40 @@ describe('Judging the research competitions (#3183)', () => {
       });
 
       expect(results.rows[0].average).toBe(10.33);
+    });
+
+    // #3193: one entry's line per judge, and every score as a table.
+    it("breaks one entry down by judge: each criterion in the rubric's order, the total and the comment", () => {
+      const results = judgingResults({
+        ...input,
+        assessments: input.assessments.map((a) =>
+          a.judge === 'j-1' && a.submission === 's-1' ? { ...a, comment: 'Good.' } : a
+        )
+      });
+      const rivers = results.rows.find((r) => r.guid === 's-1');
+
+      expect(judgeBreakdown(results, rivers)).toEqual([
+        { guid: 'j-1', name: 'Dana Judge', scored: true, scores: [10, 5], total: 15, comment: 'Good.' },
+        { guid: 'j-2', name: 'Emery Judge', scored: true, scores: [15, 10], total: 25, comment: null },
+        { guid: 'j-9', name: 'A former judge', scored: false, scores: [null, null], total: null, comment: null }
+      ]);
+    });
+
+    it('gives every score, a row per judge per entry, scored or not', () => {
+      const table = everyScoreTable(judgingResults(input));
+
+      expect(table.fields).toEqual([
+        'Title',
+        'Presenters',
+        'Judge',
+        'Clarity (of 20)',
+        'Design (of 10)',
+        'Total',
+        'Comment'
+      ]);
+      expect(table.data).toHaveLength(3 * 3);
+      expect(table.data[0]).toEqual(['Aquifers', 'Blair Sample; Casey Test', 'Dana Judge', 20, 9, 29, '']);
+      expect(table.data[1]).toEqual(['Aquifers', 'Blair Sample; Casey Test', 'Emery Judge', '', '', 'Not scored yet', '']);
     });
 
     it('is a table for a CSV file, as the page shows it', () => {
