@@ -71,33 +71,37 @@
   margin-bottom: 0.25rem;
 }
 
-// Closed competitions sit close together, one heading under the other; an open one keeps its room from the next (lab,
-// batch 129, saw a large gap between two closed headings).
-.competition + .competition {
-  margin-top: 0.5rem;
+.competitions {
+  margin-top: 1rem;
 }
 
-.competition[open] + .competition {
-  margin-top: 2rem;
-}
+// An entry closed to its title, authors and score, opened on that heading to score it (#3200). The whole heading is the
+// tap target, with the browser's own marker beside the title.
+.entry {
+  margin-bottom: 0.75rem;
+  border: 1pt solid $lightened-inactive-color;
+  border-radius: 4px;
 
-// A competition's heading opens and closes it (#3200): the whole heading is the tap target, with the browser's own marker
-// beside the name.
-.competition > summary {
-  cursor: pointer;
-  padding: 0.5rem 0;
+  & > summary {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
 
-  h2 {
-    display: inline;
+    p {
+      margin: 0;
+    }
+
+    .entry-title {
+      display: inline;
+    }
   }
 
-  .progress {
-    margin: 0.25rem 0 0;
+  &[open] > summary {
+    border-bottom: 1pt solid $lightened-inactive-color;
   }
-}
 
-.competition[open] > summary {
-  margin-bottom: 1rem;
+  .submission {
+    margin-bottom: 0;
+  }
 }
 
 .submission {
