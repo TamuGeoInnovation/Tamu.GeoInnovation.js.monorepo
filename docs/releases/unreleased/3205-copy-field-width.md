@@ -15,3 +15,17 @@ only the room it is given, and a value too long for it ends in "…"; **Copy** s
 
 The copy field is shared, so AggieMap's and the event maps' popups get the same: their values look as before, and one too
 long for its box now ends in "…" instead of being cut off mid-letter.
+
+A made-up session's page, signed in as the local test admin, with its check-in QR code shown:
+
+| Width | Before | After |
+| --- | --- | --- |
+| Phone, 390 pixels | ![The page laid out 683 px wide and cut off on the left: the title, the text and the code are missing their left side](../screenshots/3205-copy-field-width/before-phone.png) | ![The page fits the phone: title, text and the whole code, with the check-in link ending in "…" beside Copy](../screenshots/3205-copy-field-width/after-phone.png) |
+| Desktop, 1280 pixels | ![The check-in link cut off mid-character at the edge of its box](../screenshots/3205-copy-field-width/before-desktop.png) | ![The same field, the same width, its link ending in "…"](../screenshots/3205-copy-field-width/after-desktop.png) |
+| Phone, 360 pixels | Cut off on the left, as at 390 | ![The page at 360 px, with the code and its link ending in "…"](../screenshots/3205-copy-field-width/after-phone-360.png) |
+
+AggieMap's building popup (Sterling C. Evans Library), on a local dev server, at 390 pixels as a phone and at 1280:
+
+| Before | After |
+| --- | --- |
+| ![The popup's share link and Copy, at 390 and at 1280](../screenshots/3205-copy-field-width/aggiemap-before.png) | ![The same popup, its copy field looking the same at both widths](../screenshots/3205-copy-field-width/aggiemap-after.png) |
