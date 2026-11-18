@@ -9230,3 +9230,23 @@ the presenter-card issue, so don't file it. Both reports are right; sorry for th
   `geoservices-tabs-after.png`, and whether they look the same. If it can't run, say so and skip it.
 - Update the rows in `docs/releases/unreleased/3200-collapse-competitions.md` if the alt text changes. Push as a fast-forward
   from `ae63c3abb`, and report "images pushed (3200): <sha>".
+
+## Batch 134 (gisday: #3200's phone images on the overflow fix, **Urgent**; 18 November 2026, from `work (gisday)`) - **start now**
+
+**Decided:** report 133's question 1 is **(a)**, and question 2 is **(a)**. Both are on the branch. Report 133 is right.
+
+`feat/3200-collapse-competitions` (fork) is now **`e19ccc90b`**, a fast-forward from your `4404789ca`:
+- `tamu-gisc-tabs` is `max-width: 100%; min-width: 0`;
+- its `.tabs` row is `max-width: 100%; overflow-x: auto`, so long tabs scroll in their own row;
+- geoservices' global import of the tab styles is restored.
+
+**Do not change the code.** Batch 133's set-up, data and safety.
+
+- **Re-take** `after-tabs-phone.png` at 390. Add `after-tabs-phone-360.png` at 360, and `after-tabs-phone-scrolled.png` at 390 with the tab row
+  scrolled so the second tab shows.
+- Re-take `after-tabs.png` at 1280 **only if** it now looks different from yours. Say whether it does.
+- Give `scrollWidth` against `innerWidth` at 390 and 360, on both tabs, with an entry open. Say:
+  - whether the second tab can be reached and chosen on a phone, by scrolling its row and tapping it;
+  - whether the chosen tab's underline still shows.
+- Fix the phone row's alt text in `3200-collapse-competitions.md`, and add the new rows. Push as a fast-forward, and report
+  "images pushed (3200): <sha>".
