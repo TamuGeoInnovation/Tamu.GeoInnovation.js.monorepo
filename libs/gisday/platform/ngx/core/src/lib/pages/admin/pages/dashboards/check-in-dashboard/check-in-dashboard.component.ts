@@ -6,6 +6,7 @@ import { CheckinService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { LineChartComponent } from '@tamu-gisc/ui-kits/ngx/charts';
 
+import { SeasonComparisonComponent } from '../shared/season-comparison/season-comparison.component';
 import { dashboardRows, EventDashboardComponent } from '../shared/event-dashboard/event-dashboard.component';
 import { DashboardPeopleComponent, PERSON_TYPE_COLUMNS } from '../shared/dashboard-people/dashboard-people.component';
 import { DashboardRowDetailDirective, DashboardTableComponent } from '../shared/dashboard-table/dashboard-table.component';
@@ -22,6 +23,7 @@ import { DashboardRowDetailDirective, DashboardTableComponent } from '../shared/
   imports: [
     SelectComponent,
     LineChartComponent,
+    SeasonComparisonComponent,
     DashboardTableComponent,
     DashboardRowDetailDirective,
     DashboardPeopleComponent,
@@ -31,6 +33,7 @@ import { DashboardRowDetailDirective, DashboardTableComponent } from '../shared/
 export class CheckInDashboardComponent extends EventDashboardComponent<CheckInDashboard, CheckIn> {
   protected readonly entityService = inject(CheckinService);
   protected readonly filePrefix = 'gisday-check-ins';
+  protected readonly comparedNoun = 'check-ins';
 
   /** Each event's RSVPs in the column after its check-ins, then the person types. */
   public override readonly columns = [{ key: 'rsvps', label: 'RSVPs' }, ...PERSON_TYPE_COLUMNS];

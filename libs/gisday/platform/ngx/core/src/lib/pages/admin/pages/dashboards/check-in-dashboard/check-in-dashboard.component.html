@@ -14,8 +14,11 @@
       <p class="dashboard-summary"><strong>{{ totals().total }}</strong> {{ totals().total === 1 ? 'check-in' : 'check-ins' }} at {{ view.events.length }} {{ view.events.length === 1 ? 'event' : 'events' }}. @if (view.unreadAccounts > 0) { {{ view.unreadAccounts }} {{ view.unreadAccounts === 1 ? 'account' : 'accounts' }} could not be read and {{ view.unreadAccounts === 1 ? 'is' : 'are' }} counted as Not given. }</p>
 
       <h3 class="dashboard-heading">Check-ins over time</h3>
-      <p class="dashboard-note">The running total at the end of each day, in Central time, with each day's check-ins beneath and the GIS Day week shaded. Hover for a day's numbers; drag across the chart to zoom in, and double-click to see it all again. {{ expandedEvent() ? 'The second line is the event opened below.' : 'Open an event below to add its own line.' }}</p>
-      <tamu-gisc-line-chart [series]="series()" [bars]="daily()" [bands]="bands()" [steps]="true" unit="check-ins" label="Check-ins over time, as a running total by day, with each day's check-ins"></tamu-gisc-line-chart>
+      <p class="dashboard-note">The running total at the end of each day, in Central time, with each day's check-ins beneath and the GIS Day week shaded. Hover for a day's numbers; drag across the chart to zoom in, and double-click to see it all again. Press a year to draw it beside this one, lined up on the Monday of each year's GIS Day week: the axis then counts days from it. {{ expandedEvent() ? 'The second line is the event opened below.' : 'Open an event below to add its own line.' }}</p>
+      @if (comparison(); as compared) {
+      <tamu-gisc-season-comparison [comparison]="compared"></tamu-gisc-season-comparison>
+      }
+      <tamu-gisc-line-chart [series]="chart().series" [anchor]="chart().anchor" [bars]="daily()" [bands]="bands()" [steps]="true" unit="check-ins" label="Check-ins over time, as a running total by day, with each day's check-ins"></tamu-gisc-line-chart>
 
       <h3 class="dashboard-heading">By event</h3>
       @if (view.events.length > 0) {

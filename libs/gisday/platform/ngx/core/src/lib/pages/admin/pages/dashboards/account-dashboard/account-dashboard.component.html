@@ -23,8 +23,11 @@
       </p>
 
       <h3 class="dashboard-heading">Accounts over time</h3>
-      <p class="dashboard-note">The running total at the end of each day, in Central time, with each day's new accounts beneath. Hover for a day's numbers; drag across the chart to zoom in, and double-click to see it all again.</p>
-      <tamu-gisc-line-chart [series]="chart().series" [bars]="chart().daily" [steps]="true" unit="accounts" label="Accounts with a GIS Day profile over time, as a running total by day, with each day's new accounts"></tamu-gisc-line-chart>
+      <p class="dashboard-note">The running total at the end of each day, in Central time, with each day's new accounts beneath. Hover for a day's numbers; drag across the chart to zoom in, and double-click to see it all again. Press a year to draw it beside this one, lined up on the Monday of each year's GIS Day week: the axis then counts days from it.</p>
+      @if (comparison(); as compared) {
+      <tamu-gisc-season-comparison [comparison]="compared"></tamu-gisc-season-comparison>
+      }
+      <tamu-gisc-line-chart [series]="compared().series" [anchor]="compared().anchor" [bars]="chart().daily" [steps]="true" unit="accounts" label="Accounts with a GIS Day profile over time, as a running total by day, with each day's new accounts"></tamu-gisc-line-chart>
 
       <h3 class="dashboard-heading">By university or employer</h3>
       @if (view.rows.length > 0) {

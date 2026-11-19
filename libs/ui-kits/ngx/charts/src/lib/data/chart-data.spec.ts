@@ -1,4 +1,16 @@
-import { bandOfDays, countsByDay, dayIn, everyDay, runningTotalByDay, withColors } from './chart-data';
+import {
+  alignToAnchor,
+  anchorTicks,
+  bandOfDays,
+  countsByDay,
+  dayIn,
+  daysFrom,
+  everyDay,
+  relativeDayLabel,
+  runningTotalByDay,
+  weekAnchor,
+  withColors
+} from './chart-data';
 
 const times = [
   '2026-11-03T15:00:00Z',
@@ -83,5 +95,84 @@ describe('dayIn()', () => {
   it('gives the calendar day in the time zone asked for', () => {
     expect(dayIn(new Date('2026-11-04T05:30:00Z'), 'America/Chicago')).toBe('2026-11-03');
     expect(dayIn(new Date('2026-11-04T05:30:00Z'), 'UTC')).toBe('2026-11-04');
+  });
+});
+
+describe('weekAnchor() (#3215)', () => {
+  it("gives the Monday of the week holding the days, in Central time", () => {
+    // GIS Day week 2025: Monday 17 to Friday 21 November.
+    expect(weekAnchor(['2025-11-17T15:00:00Z', '2025-11-19T15:00:00Z', '2025-11-21T15:00:00Z'])).toEqual(new Date('2025-11-17T00:00:00Z'));
+  });
+
+  it('gives the Monday even when the week has no Monday in it', () => {
+    expect(weekAnchor(['2024-11-19T15:00:00Z', '2024-11-20T15:00:00Z'])).toEqual(new Date('2024-11-18T00:00:00Z'));
+  });
+
+  it("takes the week holding most of the days, not a stray day before or after it, as 2023's list has", () => {
+    const days = ['2023-11-10', '2023-11-12', '2023-11-14', '2023-11-15', '2023-11-16', '2023-11-17', '2023-11-30'].map(
+      (d) => `${d}T18:00:00Z`
+    );
+
+    expect(weekAnchor(days)).toEqual(new Date('2023-11-13T00:00:00Z'));
+  });
+
+  it('counts a Sunday in the week that started the Monday before', () => {
+    expect(weekAnchor(['2026-11-22T18:00:00Z'])).toEqual(new Date('2026-11-16T00:00:00Z'));
+  });
+
+  it('gives no anchor for no days', () => {
+    expect(weekAnchor([])).toBeNull();
+  });
+});
+
+describe('alignToAnchor() (#3215)', () => {
+  const day = (d: string) => new Date(`${d}T00:00:00Z`);
+
+  it("puts two seasons' GIS Day weeks at the same x, though they fall on different dates", () => {
+    const anchor2025 = weekAnchor(['2025-11-17T15:00:00Z']) as Date;
+    const anchor2026 = weekAnchor(['2026-11-16T15:00:00Z']) as Date;
+    const lastYear = { label: '2025', points: [{ x: day('2025-11-07'), y: 3 }, { x: day('2025-11-17'), y: 9 }] };
+
+    const aligned = alignToAnchor(lastYear, anchor2025, anchor2026);
+
+    // The first day of 2025's GIS Day week is drawn on the first day of 2026's, and ten days before it ten days before.
+    expect(aligned.points).toEqual([
+      { x: day('2026-11-06'), y: 3 },
+      { x: day('2026-11-16'), y: 9 }
+    ]);
+    expect(daysFrom(anchor2026, aligned.points[1].x)).toBe(0);
+    expect(daysFrom(anchor2026, aligned.points[0].x)).toBe(daysFrom(anchor2025, lastYear.points[0].x));
+    // How far it moved, so its hover can give each point's own date.
+    expect(aligned.shiftDays).toBe(364);
+  });
+
+  it('leaves out the points from `until` on', () => {
+    const series = { label: '2025', points: [{ x: day('2025-11-20'), y: 1 }, { x: day('2025-11-24'), y: 2 }] };
+
+    expect(alignToAnchor(series, day('2025-11-17'), day('2026-11-16'), day('2025-11-24')).points).toEqual([{ x: day('2026-11-19'), y: 1 }]);
+  });
+});
+
+describe('relativeDayLabel() (#3215)', () => {
+  it('reads a day before the anchor with a minus sign, after it with a plus, and the anchor as 0', () => {
+    expect([-7, 0, 3].map(relativeDayLabel)).toEqual(['−7', '0', '+3']);
+  });
+});
+
+describe('anchorTicks() (#3215)', () => {
+  const anchor = new Date('2026-11-16T00:00:00Z');
+  const at = (days: number) => anchor.getTime() + days * 24 * 60 * 60 * 1000;
+  const labels = (ticks: Array<number>) => ticks.map((t) => daysFrom(anchor, new Date(t)));
+
+  it('counts whole weeks out from the anchor on a wide chart, the anchor among them', () => {
+    expect(labels(anchorTicks(anchor, at(-42), at(7), 1000))).toEqual([-42, -35, -28, -21, -14, -7, 0, 7]);
+  });
+
+  it("keeps the anchor on a phone's narrow chart, two weeks apart, rather than -35, -21, -7 (lab report 136)", () => {
+    expect(labels(anchorTicks(anchor, at(-42), at(7), 300))).toEqual([-42, -28, -14, 0]);
+  });
+
+  it('counts single days on a short span, such as one week of check-ins', () => {
+    expect(labels(anchorTicks(anchor, at(0), at(7), 800))).toEqual([0, 1, 2, 3, 4, 5, 6, 7]);
   });
 });

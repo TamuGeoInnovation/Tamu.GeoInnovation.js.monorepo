@@ -1,4 +1,4 @@
-import { everyDay, LineChartOptions } from '../../data/chart-data';
+import { anchorTicks, daysFrom, everyDay, LineChartOptions, relativeDayLabel } from '../../data/chart-data';
 
 /**
  * Draws the chart into `host` with amCharts 5 and resolves to what disposes of it. amCharts is imported here, and this
@@ -72,6 +72,32 @@ export async function drawLineChart(host: HTMLElement, options: LineChartOptions
     }
   }
 
+  // Counted from an anchor (#3215), the axis reads in days before and after it, and its hover in that day too, since
+  // the lines of other seasons fall on other dates. Its own grid and labels are replaced by ticks counted out from the
+  // anchor, so 0 is always one of them: amCharts groups weeks from its own starting point, which on a narrow chart
+  // labelled -35, -21, -7 and left the anchor bare (lab report 136).
+  const anchor = options.anchor;
+
+  if (anchor) {
+    const renderer = xAxis.get('renderer');
+    renderer.labels.template.set('forceHidden', true);
+    renderer.grid.template.set('forceHidden', true);
+
+    for (const tick of anchorTicks(anchor, Math.min(...times), Math.max(...times), host.clientWidth || 600)) {
+      const range = xAxis.createAxisRange(xAxis.makeDataItem({ value: tick }));
+      range.get('grid')?.setAll({ forceHidden: false, strokeOpacity: 0.08, location: 0 });
+      range.get('label')?.setAll({ forceHidden: false, text: relativeDayLabel(daysFrom(anchor, new Date(tick))), location: 0, fill: text });
+    }
+
+    xAxis.getTooltipText = (position: number) => {
+      const day = new Date(xAxis.positionToDate(position).getTime());
+      day.setUTCHours(0, 0, 0, 0);
+      const n = daysFrom(anchor, day);
+
+      return n === 0 ? 'Day 0' : `${relativeDayLabel(n)} ${Math.abs(n) === 1 ? 'day' : 'days'}`;
+    };
+  }
+
   const yAxis = chart.yAxes.push(
     am5xy.ValueAxis.new(root, {
       min: 0,
@@ -86,7 +112,8 @@ export async function drawLineChart(host: HTMLElement, options: LineChartOptions
     range.get('axisFill')?.setAll({ visible: true, fill: am5.color('#500000'), fillOpacity: 0.07 });
     range.get('grid')?.set('forceHidden', true);
     // Right-aligned to the band's end, which is often the chart's right edge: an event still to come.
-    range.get('label')?.setAll({ text: band.label, inside: true, location: 1, centerX: am5.p100, centerY: am5.p100, dx: -4, dy: -6, fill: text, fillOpacity: 0.75 });
+    // forceHidden: false, since the anchor's ticks hide the axis's own labels, which a range's label is made from.
+    range.get('label')?.setAll({ forceHidden: false, text: band.label, inside: true, location: 1, centerX: am5.p100, centerY: am5.p100, dx: -4, dy: -6, fill: text, fillOpacity: 0.75 });
   }
 
   const lines = options.series.map((s) => {
@@ -99,13 +126,17 @@ export async function drawLineChart(host: HTMLElement, options: LineChartOptions
       valueYField: 'y',
       stroke: color,
       fill: color,
-      tooltip: am5.Tooltip.new(root, { labelText: `{name}: [bold]{valueY}[/] ${options.unit}` })
+      // Counted from an anchor, each line's own date, since each season's falls on a different one.
+      tooltip: am5.Tooltip.new(root, { labelText: `{name}: [bold]{valueY}[/] ${options.unit}${anchor ? ' ({when})' : ''}` })
     };
     const line = chart.series.push(options.steps ? am5xy.StepLineSeries.new(root, settings) : am5xy.LineSeries.new(root, settings));
     line.strokes.template.set('strokeWidth', 2);
     line.fills.template.setAll({ visible: true, fillOpacity: 0.08 });
     // Every day has a value, so hovering a day nobody RSVP'd still reads the total.
-    line.data.setAll((options.steps ? everyDay(s.points, 'hold') : s.points).map((p) => ({ x: p.x.getTime(), y: p.y })));
+    const shift = (s.shiftDays ?? 0) * DAY;
+    line.data.setAll(
+      (options.steps ? everyDay(s.points, 'hold') : s.points).map((p) => ({ x: p.x.getTime(), y: p.y, when: dayText(p.x.getTime() - shift) }))
+    );
 
     return line;
   });
@@ -152,6 +183,11 @@ export async function drawLineChart(host: HTMLElement, options: LineChartOptions
   }
 
   return () => root.dispose();
+}
+
+/** A day at midnight UTC as its calendar day, with its year: "Mon, Nov 17, 2025". */
+export function dayText(time: number): string {
+  return new Intl.DateTimeFormat('en-US', { timeZone: 'UTC', weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' }).format(new Date(time));
 }
 
 /** `rgb(r, g, b)` as `#rrggbb`, or null if it is not one. */

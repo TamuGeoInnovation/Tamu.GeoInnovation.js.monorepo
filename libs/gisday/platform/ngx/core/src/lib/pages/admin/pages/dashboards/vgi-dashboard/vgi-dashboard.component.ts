@@ -8,6 +8,7 @@ import { SubmissionService } from '@tamu-gisc/gisday/competitions/ngx/data-acces
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { LineChartComponent } from '@tamu-gisc/ui-kits/ngx/charts';
 
+import { SeasonComparisonComponent } from '../shared/season-comparison/season-comparison.component';
 import { EventDashboardComponent } from '../shared/event-dashboard/event-dashboard.component';
 import { DashboardPeopleComponent } from '../shared/dashboard-people/dashboard-people.component';
 import {
@@ -35,6 +36,7 @@ export const VGI_SUBMITTER_COLUMNS: Array<DashboardTableColumn> = [
   imports: [
     SelectComponent,
     LineChartComponent,
+    SeasonComparisonComponent,
     DashboardTableComponent,
     DashboardRowDetailDirective,
     DashboardPeopleComponent,
@@ -46,6 +48,7 @@ export class VgiDashboardComponent extends EventDashboardComponent<VgiDashboard,
   protected readonly entityService = inject(SeasonService);
   private readonly submissions = inject(SubmissionService);
   protected readonly filePrefix = 'gisday-vgi-submissions';
+  protected readonly comparedNoun = 'submissions';
   protected override readonly seriesLabels = { all: 'All types', one: 'This type' };
 
   public readonly submitterColumns = VGI_SUBMITTER_COLUMNS;
