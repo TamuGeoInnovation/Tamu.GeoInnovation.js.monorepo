@@ -9334,3 +9334,34 @@ weekly at 1280. The band's label is kept on.
   5. with 2025 switched off, whether the axis is back on dates, as `after-rsvps-one-year.png` shows;
   6. `scrollWidth <= innerWidth` at 390 and 360.
 - Update the alt text, run `--check`, and push as a fast-forward from `ce0ca0a5b`. Report "images pushed (3215): <sha>".
+
+## Batch 138 (gisday: #3220's before and after images, an Edit session button on a session's page, **Medium**; 19 November 2026, from `work (gisday)`) - **start now**
+
+[#3220](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3220): on a session's public page
+(`/sessions/<guid>`), a signed-in GIS Day **admin, manager or organizer** now sees an **Edit session** button at the right
+of the session's title, which opens `/admin/events/edit/<guid>`. Nobody else sees it.
+
+`feat/3220-edit-session-button` (fork, **`ced9d0ec3`**), from `development` at `94f8de385`. **Do not change the code.**
+Made-up people only, at example.com. Batch 128's safety: no email, every email route blocked by name, every made-up row
+removed afterwards and `cmp` of the snapshots. A made-up session in the scratch database is enough; reuse batch 135's
+if it is still there.
+
+**Before**, on `development` (`94f8de385`), signed in as an organizer:
+- `before-organizer.png`: a session's page, at 1280, from the top of the page down to the time and place.
+
+**After**, on `ced9d0ec3`:
+- `after-organizer.png`: the same page, at 1280. The button sits at the right of the title.
+- `after-edit-form.png`: the page the button opens, the session's edit form.
+- `after-attendee.png`: the same session's page, signed in **without** an admin role, at 1280: no button.
+- `after-organizer-phone.png`: the organizer's page at 390.
+
+**Say:**
+1. Where the button is at 1280, and at 390 (beside the title, or wrapped under it), and whether a long session title
+   still reads well beside it. Try a made-up title of about 70 characters.
+2. The edit form's address after pressing it.
+3. `scrollWidth <= innerWidth` at 390 and 360.
+
+Put the images in `docs/screenshots/3220-edit-session-button/`. Add a **Before | After** table to
+`docs/releases/unreleased/3220-edit-session-button.md`, like `3215-compare-seasons.md`'s, with every after image. Run
+`node scripts/collate-release-notes.mjs --check`. Push as a fast-forward from `ced9d0ec3`, and report
+"images pushed (3220): <sha>".
