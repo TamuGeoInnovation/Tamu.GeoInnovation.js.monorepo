@@ -9391,3 +9391,42 @@ Same safety, data and sign-in as batch 138.
 Update the table in `docs/releases/unreleased/3220-edit-session-button.md` (add the long-title row), run
 `node scripts/collate-release-notes.mjs --check`, push as a fast-forward from `e6169b830`, and report
 "images pushed (3220): <sha>".
+
+## Batch 140 (gisday: #3221's before and after images, collapsing each day on the Sessions page, **Medium**; 19 November 2026, from `work (gisday)`) - **after 139**
+
+[#3221](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3221): on the Sessions page each day's
+heading now opens and closes it (the shared accordion, with a plain look). On the **current** year's page a day **before
+today in Central time** starts collapsed, its heading reading its date and "· N sessions"; today and later days start open.
+A search opens every day it finds something in. The Day 1, Day 2 links open the day they jump to. A **past** year's page
+opens every day.
+
+`feat/3221-collapse-days` (fork, **`0c5d201d6`**), from `development` at `94f8de385`. **Do not change the code.** Same safety as batch
+138. Signed out is enough; no sign-in is needed.
+
+**Data (made up, scratch database only):** the current season with four GIS Day days, two before today and two from today
+on (for example the 17th, 18th, 19th and 20th of November 2026), a few made-up sessions on each, and a past season (2025)
+with two days and sessions, so `/2025/sessions` has something to show.
+
+**Before**, on `development` (`94f8de385`):
+- `before-sessions.png`: `/sessions`, at 1280, from the top through the first two days.
+
+**After**, on `0c5d201d6`:
+- `after-sessions.png`: the same, at 1280: the two past days collapsed with their counts, today open.
+- `after-opened.png`: a past day opened by pressing its heading.
+- `after-search.png`: a search that matches a session on a past day: that day open.
+- `after-past-year.png`: `/2025/sessions`: every day open.
+- `after-sessions-phone.png`: `/sessions` at 390.
+
+**Say:**
+1. Which days start collapsed, and today's date in Central time as the machine read it.
+2. That Tab reaches each day's heading, Enter and Space open and close it, and what `aria-expanded` reads.
+3. Whether pressing **Day 1** at the top opens a collapsed Day 1 and scrolls to it.
+4. Anything else on the page that moved compared with the before image: the heading's size, the session rows' spacing.
+5. **AggieMap, if it is quick:** the shared accordion's `expanded` binding now follows changes, which AggieMap's trip
+   planner bus stops list relies on. On the local AggieMap dev server, or skip it and say so: in the trip planner with a bus
+   route, does pressing "N Stops" now open the stops list? Did it on `development`?
+6. `scrollWidth <= innerWidth` at 390 and 360.
+
+Put the images in `docs/screenshots/3221-collapse-days/`, add a **Before | After** table to
+`docs/releases/unreleased/3221-collapse-days.md`, run `node scripts/collate-release-notes.mjs --check`, push as a
+fast-forward from `0c5d201d6`, and report "images pushed (3221): <sha>".
