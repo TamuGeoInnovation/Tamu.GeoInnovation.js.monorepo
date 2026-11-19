@@ -9294,3 +9294,24 @@ Put the images in `docs/screenshots/3215-compare-seasons/`. Add a **Before | Aft
 `docs/releases/unreleased/3215-compare-seasons.md`, like `3209-checkin-window.md`'s, with every after image. Run
 `node scripts/collate-release-notes.mjs --check`. Push as a fast-forward from `4c722b87e`, and report
 "images pushed (3215): <sha>".
+
+## Batch 136 (gisday: #3215's after images on the fixes from report 135, **Medium**; 19 November 2026, from `work (gisday)`) - **start now**
+
+Report 135 is right, and the way you set up the data (a scratch database, dropped afterwards) was the right call. Use the
+same set-up and safety again.
+
+`feat/3215-compare-seasons` (fork) is now **`ab38fa907`**, a fast-forward from your `18af45cfa`. It fixes your points 1 to 3:
+- the band keeps its own label ("GIS Day week") with two years shown, rather than "0";
+- counted from GIS Day week, the grid stays on whole weeks, so at 390 the axis reads in weeks (−28, −14, 0), not −46 and −15;
+- an earlier year's line holds its total to the Sunday ending its GIS Day week (+6), rather than stopping at its last record.
+
+**Do not change the code.**
+- **Re-take under the same names:** `after-rsvps.png`, `after-rsvps-hover.png`, `after-check-ins.png` and
+  `after-rsvps-phone.png`. `before-rsvps.png` and `after-rsvps-one-year.png` stay.
+- **Say:**
+  1. what the band's label reads with two years shown, and with one;
+  2. the axis labels at 390 and at 1280;
+  3. where 2025's line ends on the RSVPs and Check-ins charts;
+  4. `scrollWidth <= innerWidth` at 390 and 360.
+- Update the alt text in `3215-compare-seasons.md` where it changes. Run `--check`. Push as a fast-forward from
+  `ab38fa907`, and report "images pushed (3215): <sha>".
