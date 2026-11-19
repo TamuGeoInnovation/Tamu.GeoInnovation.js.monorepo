@@ -61,6 +61,16 @@ export class QrCodeComponent {
    */
   public readonly isFullscreen = signal(false);
 
+  /**
+   * Whether the code fills the window rather than the screen, where the browser has no full screen for it (#3211).
+   */
+  private fillingWindow = false;
+
+  /**
+   * The wait after asking for full screen before filling the window instead.
+   */
+  private fallback: ReturnType<typeof setTimeout> | undefined;
+
   public readonly modules = computed(() => qrModules(this.text(), this.logo() ? 'H' : 'M'));
 
   /**
@@ -96,21 +106,106 @@ export class QrCodeComponent {
     link.click();
   }
 
+  /**
+   * The browser's full screen, through the standard API or Safari's prefixed one, which is all an iPad before iPadOS 16.4
+   * has (#3211). Where there is neither, as on an iPhone, or the browser refuses, the code fills the window instead: the
+   * same layout, fixed to the viewport, with the browser's own bars still showing.
+   */
   public enterFullscreen() {
-    this.host.nativeElement.requestFullscreen?.()?.catch(() => undefined);
+    const host = this.host.nativeElement as WebkitElement;
+    const request = host.requestFullscreen ?? host.webkitRequestFullscreen;
+
+    if (!request) {
+      this.fillWindow();
+
+      return;
+    }
+
+    try {
+      // Safari's prefixed request returns nothing; the standard one a promise.
+      Promise.resolve(request.call(host)).catch(() => this.fillWindow());
+    } catch {
+      this.fillWindow();
+
+      return;
+    }
+
+    // A prefixed request the browser declines can fail without a word: no promise, and no error event in every browser.
+    // So a request that has not filled the screen in a moment fills the window instead.
+    clearTimeout(this.fallback);
+    this.fallback = setTimeout(() => {
+      if (!this.isFullscreen()) {
+        this.fillWindow();
+      }
+    }, FULLSCREEN_FALLBACK_MS);
   }
 
   public exitFullscreen() {
-    if (document.fullscreenElement) {
-      document.exitFullscreen?.()?.catch(() => undefined);
+    if (this.fillingWindow) {
+      this.fillingWindow = false;
+      this.isFullscreen.set(false);
+
+      return;
+    }
+
+    const doc = document as WebkitDocument;
+
+    if (doc.fullscreenElement) {
+      doc.exitFullscreen?.()?.catch(() => undefined);
+    } else if (doc.webkitFullscreenElement) {
+      doc.webkitExitFullscreen?.();
     }
   }
 
   @HostListener('document:fullscreenchange')
+  @HostListener('document:webkitfullscreenchange')
   public onFullscreenChange() {
-    this.isFullscreen.set(document.fullscreenElement === this.host.nativeElement);
+    const doc = document as WebkitDocument;
+
+    // The browser's own full screen wins, even when it arrives after the window was filled.
+    if ((doc.fullscreenElement ?? doc.webkitFullscreenElement) === this.host.nativeElement) {
+      this.fillingWindow = false;
+      this.isFullscreen.set(true);
+    } else if (!this.fillingWindow) {
+      this.isFullscreen.set(false);
+    }
+  }
+
+  @HostListener('document:fullscreenerror')
+  @HostListener('document:webkitfullscreenerror')
+  public onFullscreenError() {
+    if (!this.isFullscreen()) {
+      this.fillWindow();
+    }
+  }
+
+  /**
+   * The browser leaves its own full screen on Escape; the window-filling view is left the same way.
+   */
+  @HostListener('document:keydown.escape')
+  public onEscape() {
+    if (this.fillingWindow) {
+      this.exitFullscreen();
+    }
+  }
+
+  private fillWindow() {
+    this.fillingWindow = true;
+    this.isFullscreen.set(true);
   }
 }
+
+/**
+ * How long a request for full screen may take before the code fills the window instead (#3211). Long enough for a
+ * browser that is going to grant it, short enough that a presenter does not press again.
+ */
+const FULLSCREEN_FALLBACK_MS = 1000;
+
+/**
+ * Safari's prefixed Fullscreen API, all an iPad before iPadOS 16.4 has for an element (#3211).
+ */
+type WebkitElement = HTMLElement & { webkitRequestFullscreen?: () => void };
+type WebkitDocument = Document & { webkitFullscreenElement?: Element | null; webkitExitFullscreen?: () => void };
 
 /**
  * The code's modules, `true` for dark, with the four-module quiet zone the standard asks for so a

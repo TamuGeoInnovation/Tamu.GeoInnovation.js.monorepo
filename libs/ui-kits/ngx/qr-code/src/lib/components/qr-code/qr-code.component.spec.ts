@@ -167,6 +167,113 @@ describe('QrCodeComponent', () => {
 
       expect(fixture.componentInstance.isFullscreen()).toBe(false);
     });
+
+    /**
+     * #3211: Safari on an iPad before iPadOS 16.4 has only the prefixed API, and on an iPhone no element full screen at
+     * all, so the button did nothing on either.
+     */
+    describe('on a browser without the standard API', () => {
+      const host = () => fixture.nativeElement as HTMLElement & { webkitRequestFullscreen?: () => void };
+
+      beforeEach(() => {
+        delete (host() as Partial<HTMLElement>).requestFullscreen;
+        Object.defineProperty(document, 'exitFullscreen', { value: undefined, configurable: true });
+        fixture.componentRef.setInput('fullscreen', true);
+        fixture.detectChanges();
+      });
+
+      afterEach(() => {
+        Object.defineProperty(document, 'webkitFullscreenElement', { value: null, configurable: true });
+        Object.defineProperty(document, 'webkitExitFullscreen', { value: undefined, configurable: true });
+      });
+
+      it("uses Safari's prefixed API where that is all there is, and follows it", () => {
+        const webkitExitFullscreen = vi.fn();
+        host().webkitRequestFullscreen = vi.fn();
+        Object.defineProperty(document, 'webkitExitFullscreen', { value: webkitExitFullscreen, configurable: true });
+
+        press('Full screen');
+        expect(host().webkitRequestFullscreen).toHaveBeenCalledTimes(1);
+
+        Object.defineProperty(document, 'webkitFullscreenElement', { value: host(), configurable: true });
+        document.dispatchEvent(new Event('webkitfullscreenchange'));
+        fixture.detectChanges();
+        expect(buttons()).toEqual(['Exit full screen']);
+
+        press('Exit full screen');
+        expect(webkitExitFullscreen).toHaveBeenCalledTimes(1);
+      });
+
+      it('fills the window with the code where the browser has no element full screen, and Exit leaves it', () => {
+        press('Full screen');
+
+        expect(fixture.componentInstance.isFullscreen()).toBe(true);
+        expect(host().classList).toContain('is-fullscreen');
+        expect(fixture.nativeElement.textContent).toContain('Scan to check in');
+
+        press('Exit full screen');
+
+        expect(fixture.componentInstance.isFullscreen()).toBe(false);
+        expect(buttons()).toEqual(['Full screen']);
+      });
+
+      it('leaves the window-filling view on Escape', () => {
+        press('Full screen');
+
+        document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+        fixture.detectChanges();
+
+        expect(fixture.componentInstance.isFullscreen()).toBe(false);
+      });
+    });
+
+    // Seen in a Chromium pane: the prefixed request was declined with no promise and no error.
+    it('fills the window when a request goes nowhere, and the browser full screen still wins if it comes late', () => {
+      vi.useFakeTimers();
+
+      try {
+        requestFullscreen.mockReturnValue(undefined);
+        fixture.componentRef.setInput('fullscreen', true);
+        fixture.detectChanges();
+
+        press('Full screen');
+        expect(fixture.componentInstance.isFullscreen()).toBe(false);
+
+        vi.advanceTimersByTime(1000);
+        fixture.detectChanges();
+        expect(fixture.componentInstance.isFullscreen()).toBe(true);
+
+        setFullscreenElement(fixture.nativeElement);
+        press('Exit full screen');
+        expect(exitFullscreen).toHaveBeenCalledTimes(1);
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    it('fills the window when the browser reports it could not go full screen', () => {
+      fixture.componentRef.setInput('fullscreen', true);
+      fixture.detectChanges();
+
+      press('Full screen');
+      document.dispatchEvent(new Event('webkitfullscreenerror'));
+      fixture.detectChanges();
+
+      expect(fixture.componentInstance.isFullscreen()).toBe(true);
+    });
+
+    it('fills the window instead when the browser refuses full screen', async () => {
+      requestFullscreen.mockRejectedValue(new TypeError('not allowed'));
+      fixture.componentRef.setInput('fullscreen', true);
+      fixture.detectChanges();
+
+      press('Full screen');
+      await Promise.resolve();
+      await Promise.resolve();
+      fixture.detectChanges();
+
+      expect(fixture.componentInstance.isFullscreen()).toBe(true);
+    });
   });
 });
 
