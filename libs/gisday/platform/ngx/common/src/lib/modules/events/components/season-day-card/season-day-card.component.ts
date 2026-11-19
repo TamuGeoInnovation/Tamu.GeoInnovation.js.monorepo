@@ -4,11 +4,16 @@ import {
   OnInit,
   SimpleChanges,
   ChangeDetectionStrategy,
+  DestroyRef,
   computed,
   inject,
   input,
-  output
+  linkedSignal,
+  output,
+  signal
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable, ReplaySubject, combineLatest, map, shareReplay, tap } from 'rxjs';
 
 import { SeasonDay, SimplifiedEvent } from '@tamu-gisc/gisday/platform/data-api';
@@ -16,16 +21,20 @@ import { SeasonDayService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { EventRowComponent } from '../event-row/event-row.component';
 import { matchesText, sessionSearchFields } from '../../../../utils/search-text';
 import { AsyncPipe, DatePipe } from '@angular/common';
+import { dayHasPassed } from '@tamu-gisc/gisday/common';
+import { AccordionComponent, AccordionContentComponent, AccordionHeaderComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 
 @Component({
   selector: 'tamu-gisc-season-day-card',
   templateUrl: './season-day-card.component.html',
   styleUrls: ['./season-day-card.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [EventRowComponent, AsyncPipe, DatePipe]
+  imports: [EventRowComponent, AsyncPipe, DatePipe, AccordionComponent, AccordionHeaderComponent, AccordionContentComponent]
 })
 export class SeasonDayCardComponent implements OnInit, OnChanges {
   private readonly sd = inject(SeasonDayService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
 
   public readonly seasonDay = input<Partial<SeasonDay>>(undefined);
 
@@ -63,7 +72,34 @@ export class SeasonDayCardComponent implements OnInit, OnChanges {
    */
   public readonly canRegister = input<boolean>(true);
 
-  public readonly register = output<string>();
+  /**
+   * Whether a day that has passed starts collapsed (#3221): true on the current year's page. A past year's days have
+   * all passed, and are shown open.
+   */
+  public readonly collapsePassed = input<boolean>(false);
+
+  /** Whether the visitor opened (true) or closed (false) the day themselves, or null while they have not. */
+  private readonly _chosen = signal<boolean | null>(null);
+
+  /**
+   * Whether the day is open, as decided on #3221: open while a search is in use (a day it finds nothing in is left out
+   * altogether); otherwise as the visitor left it; otherwise collapsed if it has passed and `collapsePassed` is set.
+   */
+  private readonly _open = computed(() => {
+    if (this.searching()) {
+      return true;
+    }
+
+    return this._chosen() ?? !(this.collapsePassed() && dayHasPassed(this.seasonDay()?.date));
+  });
+
+  /** The accordion's state: it follows `_open`, and the header opening or closing it. */
+  public readonly expanded = linkedSignal(() => this._open());
+
+  /** The day's id, which the page's Day 1, Day 2 links jump to. */
+  public readonly anchor = computed(() => `day${this.index() + 1}`);
+
+    public readonly register = output<string>();
 
   public readonly unregister = output<string>();
 
@@ -97,6 +133,13 @@ export class SeasonDayCardComponent implements OnInit, OnChanges {
   private _activeRsvpsForDay: ReplaySubject<Array<string>> = new ReplaySubject<Array<string>>();
 
   public ngOnInit(): void {
+    // The page's Day 1, Day 2 links open the day they jump to (#3221).
+    this.route.fragment.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((fragment) => {
+      if (fragment === this.anchor()) {
+        this.choose(true);
+      }
+    });
+
     this.events$ = this.sd.getDayEvents(this.seasonDay().guid).pipe(shareReplay());
 
     // The events are combined rather than taken withLatestFrom: the template now reads this list before the events have
@@ -173,6 +216,12 @@ export class SeasonDayCardComponent implements OnInit, OnChanges {
     if (changes.rsvps && changes.rsvps.currentValue !== null) {
       this._activeRsvpsForDay.next(changes.rsvps.currentValue);
     }
+  }
+
+  /** The visitor opened or closed the day. */
+  public choose(open: boolean) {
+    this._chosen.set(open);
+    this.expanded.set(open);
   }
 
   public handoff(event: SimplifiedEvent, newState: boolean) {

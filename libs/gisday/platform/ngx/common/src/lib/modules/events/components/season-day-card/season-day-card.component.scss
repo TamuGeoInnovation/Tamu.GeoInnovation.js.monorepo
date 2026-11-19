@@ -1,0 +1,27 @@
+
+// #3221: on a phone the date and a collapsed day's count each stay whole, the count wrapping under the date.
+.day-date {
+  white-space: nowrap;
+}
+
+// #3221: a collapsed day's count of sessions, quieter than its date.
+.day-count {
+  font-weight: 400;
+  opacity: 0.75;
+  // "· 3 sessions" wraps as one piece on a phone, not "· 3" and "sessions" on two lines.
+  white-space: nowrap;
+}
+
+// #3221: the accordion is the day's card, and its own :host margin (1rem above and below) would win over the site's
+// .card; keep the card's spacing between days.
+.card {
+  margin-top: 0;
+  margin-bottom: 2em;
+}
+
+// #3221: a collapsed day is its heading alone, without the rule and space the site puts under an open day's heading.
+.collapsed h2 {
+  padding-bottom: 0;
+  margin-bottom: 0;
+  border-bottom: none;
+}

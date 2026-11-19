@@ -17,3 +17,16 @@
   font-size: 1rem;
   color: #616161;
 }
+
+// #3221: a header that is already a heading keeps its own size, weight and colour, with no bar.
+:host(.plain) .title-container {
+  padding: 0;
+  background: none;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+:host(:focus-visible) {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
