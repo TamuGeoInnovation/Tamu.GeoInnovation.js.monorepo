@@ -196,6 +196,22 @@ export function sessionTime(day: Date | string | undefined | null, time: string 
 }
 
 /**
+ * Whether a GIS Day day is over at `now`: its calendar date in Central time is before today's there (#3221). Today has
+ * not passed. The Sessions page collapses the days that have. A day that is missing or cannot be read has not passed.
+ */
+export function dayHasPassed(day: Date | string | undefined | null, now: Date = new Date()): boolean {
+  const date = day ? new Date(day) : null;
+
+  if (!date || isNaN(date.getTime())) {
+    return false;
+  }
+
+  const key = ({ year, month, day }: { year: number; month: number; day: number }) => year * 10000 + month * 100 + day;
+
+  return key(centralParts(date)) < key(centralParts(now));
+}
+
+/**
  * Whether check-in to a session is open at `now`. See `checkInWindow`.
  */
 export function isCheckInOpen(

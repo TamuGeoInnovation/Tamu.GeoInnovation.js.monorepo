@@ -40,7 +40,7 @@
           <tamu-gisc-linked-search [control]="search" placeholder="Search by name, building, room or presenter" copyLabel="Copy a link to these sessions"></tamu-gisc-linked-search>
         </div>
         } @if (sessionPlaces$ | async; as sessionPlaces) { @for (day of season?.days; track day; let i = $index) {
-        <tamu-gisc-season-day-card [seasonDay]="day" [index]="i" [tags]="activeTagFilters$ | async" [organizations]="activeOrgFilters$ | async" [onlyFrom]="sessionPlaces.only" [search]="searchText()" [rsvps]="rsvps$ | async" [canRegister]="(isPastSeason$ | async) === false" (register)="registerEvent($event)" (unregister)="unregisterEvent($event)" (matches)="dayMatched(day.guid, $event)"></tamu-gisc-season-day-card>
+        <tamu-gisc-season-day-card [seasonDay]="day" [index]="i" [tags]="activeTagFilters$ | async" [organizations]="activeOrgFilters$ | async" [onlyFrom]="sessionPlaces.only" [search]="searchText()" [rsvps]="rsvps$ | async" [canRegister]="(isPastSeason$ | async) === false" [collapsePassed]="(isPastSeason$ | async) === false" (register)="registerEvent($event)" (unregister)="unregisterEvent($event)" (matches)="dayMatched(day.guid, $event)"></tamu-gisc-season-day-card>
         } @empty {
         <p>No sessions have been announced yet. Please check back later!</p>
         } @if (noSessionsMatch(season?.days)) {

@@ -10,9 +10,9 @@ export class AccordionService {
   public state: Observable<IAccordionModel> = this._state.asObservable();
 
   /**
-   *  Updates the accordion component state, by object spreading (New -> Old).
+   *  Updates the accordion component state, by object spreading (New -> Old). Only the keys given change.
    */
-  public update(settings: IAccordionModel) {
+  public update(settings: Partial<IAccordionModel>) {
     this._state.next({ ...this._state.getValue(), ...settings });
   }
 
