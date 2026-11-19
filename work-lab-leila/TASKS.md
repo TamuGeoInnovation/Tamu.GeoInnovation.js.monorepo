@@ -9315,3 +9315,22 @@ same set-up and safety again.
   4. `scrollWidth <= innerWidth` at 390 and 360.
 - Update the alt text in `3215-compare-seasons.md` where it changes. Run `--check`. Push as a fast-forward from
   `ab38fa907`, and report "images pushed (3215): <sha>".
+
+## Batch 137 (gisday: #3215's axis images once more, **Medium**; 19 November 2026, from `work (gisday)`) - **start now**
+
+Report 136 is right. `feat/3215-compare-seasons` (fork) is now **`ce0ca0a5b`**, a fast-forward from your `f11f4dd1e`. It fixes
+your point 1: comparing years, the chart draws its own ticks counted out from day 0, so 0 is always labelled. They are a
+day, one week, two weeks, four or eight apart, whichever leaves 55 px between them. Expect −42, −28, −14, 0 at 390 and
+weekly at 1280. The band's label is kept on.
+
+**Do not change the code.** Batch 136's set-up, data and safety.
+- **Re-take** `after-rsvps.png`, `after-rsvps-phone.png` and `after-check-ins.png` under the same names. Re-take
+  `after-rsvps-hover.png` **only if** the axis or its hover text changed.
+- **Say:**
+  1. the axis labels at 1280, 390 and 360 on RSVPs, and at 1280 on Check-ins;
+  2. whether the band still reads "GIS Day week";
+  3. whether the grid lines sit on the ticks;
+  4. whether hovering still gives "−14 days" and each year's own date;
+  5. with 2025 switched off, whether the axis is back on dates, as `after-rsvps-one-year.png` shows;
+  6. `scrollWidth <= innerWidth` at 390 and 360.
+- Update the alt text, run `--check`, and push as a fast-forward from `ce0ca0a5b`. Report "images pushed (3215): <sha>".
