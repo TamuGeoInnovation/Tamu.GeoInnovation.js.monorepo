@@ -16,3 +16,11 @@ every year. An earlier year's line runs from its first record to the end of its 
 year's total that day with its own date. A year whose records could not be read, that has none, or that has no GIS Day
 week days set has its button greyed out, saying why. With only the selected season shown, the chart is as it was.
 ([#3215](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3215))
+
+| Before | After |
+| --- | --- |
+| ![The RSVPs dashboard for 2026: one line, the running total of a made-up season's RSVPs, on dates from Oct 19 to the GIS Day week of Nov 16](../screenshots/3215-compare-seasons/before-rsvps.png) | ![The RSVPs dashboard for 2026 with a row of year buttons, 2026 and 2025 pressed and 2024 greyed out, and two lines with a legend, 2026 in maroon and 2025 in orange, on an axis counting days from the Monday of GIS Day week, from −42 to 0](../screenshots/3215-compare-seasons/after-rsvps.png) |
+| | ![The same chart hovered two weeks before GIS Day week: 2025's tooltip, 22 RSVPs on Mon, Nov 3, 2025, and 2026's, 10 RSVPs on Mon, Nov 2, 2026, above −14 days](../screenshots/3215-compare-seasons/after-rsvps-hover.png) |
+| | ![The same chart with 2025 switched off: one line again, on dates from Oct 19 to the GIS Day week of Nov 16, as before](../screenshots/3215-compare-seasons/after-rsvps-one-year.png) |
+| | ![The Check-ins dashboard for 2026 with the same year buttons, and 2026's and 2025's check-ins during each GIS Day week, on days 0 to +3](../screenshots/3215-compare-seasons/after-check-ins.png) |
+| | ![The RSVPs dashboard on a phone, 390 pixels wide: the year buttons in one row above the two years' lines and their legend, nothing past the right edge](../screenshots/3215-compare-seasons/after-rsvps-phone.png) |
