@@ -15,7 +15,7 @@ where every day has passed, every day starts open. Nothing is remembered between
 
 The day's heading uses the site's shared accordion, which now opens and closes when a page tells it to after it is
 first drawn, and whose header is a button that works from the keyboard. AggieMap's bus stops list in the trip planner
-binds the same setting, so it now opens with its toggle as that code intended.
+binds that same setting to its toggle, so it should now follow it; that has not yet been checked in AggieMap itself.
 ([#3221](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3221))
 
 | Before | After |
