@@ -11,3 +11,10 @@ Getting from a session's public page to its edit form meant going to Admin → S
 list. A signed-in GIS Day admin, manager or organizer, the roles the admin area lets in, now sees an **Edit session**
 button beside the session's title, which opens its edit form. Nobody else sees it.
 ([#3220](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3220))
+
+| Before | After |
+| --- | --- |
+| ![A made-up session's page signed in as a GIS Day admin: its title at the left, then the check-in QR code section and the time and place, with no Edit session button](../screenshots/3220-edit-session-button/before-organizer.png) | ![The same page signed in as a GIS Day admin: an Edit Session button on the title's row, the title moved in from the left edge](../screenshots/3220-edit-session-button/after-organizer.png) |
+| | ![The page the button opens: the made-up session's edit form under Admin → Events, Update Event, its day, times, check-in minutes, name and abstract](../screenshots/3220-edit-session-button/after-edit-form.png) |
+| | ![The same session's page signed out: no Edit session button and no check-in QR code, the title centred](../screenshots/3220-edit-session-button/after-signed-out.png) |
+| | ![The same page on a phone, 390 pixels wide, signed in as a GIS Day admin: the Edit Session button under the title, nothing past the right edge](../screenshots/3220-edit-session-button/after-organizer-phone.png) |
