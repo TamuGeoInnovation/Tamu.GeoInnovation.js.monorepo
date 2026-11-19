@@ -1,3 +1,13 @@
+// #3220: the title and an organizer's Edit session button share a row (the shared align-center and justify-between),
+// apart, and the button keeps its own width rather than the global .button's flex: 1.
+.session-heading {
+  gap: 1rem;
+}
+
+.session-edit {
+  flex: none;
+}
+
 .event-type {
   text-transform: capitalize;
 }

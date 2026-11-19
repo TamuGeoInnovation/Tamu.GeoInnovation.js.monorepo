@@ -329,8 +329,11 @@ describe('EventDetailComponent check-in', () => {
       }
     );
 
-    it('is not shown to an attendee, or to a visitor who is not signed in', () => {
+    it('is not shown to an attendee', () => {
       expect(editLink(open('in-person').page)).toBeUndefined();
+    });
+
+    it('is not shown to a visitor who is not signed in', () => {
       expect(editLink(open('in-person', undefined, undefined, { loggedIn: false }).page)).toBeUndefined();
     });
   });
