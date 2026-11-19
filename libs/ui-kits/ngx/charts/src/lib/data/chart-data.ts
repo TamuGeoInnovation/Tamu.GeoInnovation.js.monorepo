@@ -172,3 +172,22 @@ export function alignToAnchor(series: ChartSeries, from: Date, to: Date, until: 
     shiftDays: (series.shiftDays ?? 0) + shift
   };
 }
+
+/**
+ * Where an axis counted from `anchor` puts its ticks (#3215): whole steps out from the anchor in both directions, so the
+ * anchor itself is always one, between `min` and `max` (times). The step is the shortest of a day, a week, two weeks,
+ * four or eight that leaves `minGap` pixels between ticks across `width`.
+ */
+export function anchorTicks(anchor: Date, min: number, max: number, width: number, minGap = 55): Array<number> {
+  const span = Math.max(max - min, DAY);
+  const pxPerDay = width / (span / DAY);
+  const step = ([1, 7, 14, 28, 56].find((days) => days * pxPerDay >= minGap) ?? 56) * DAY;
+  const first = anchor.getTime() + Math.ceil((min - anchor.getTime()) / step) * step;
+  const ticks: Array<number> = [];
+
+  for (let t = first; t <= max; t += step) {
+    ticks.push(t);
+  }
+
+  return ticks;
+}

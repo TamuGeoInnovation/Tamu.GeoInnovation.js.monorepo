@@ -1,5 +1,6 @@
 import {
   alignToAnchor,
+  anchorTicks,
   bandOfDays,
   countsByDay,
   dayIn,
@@ -155,5 +156,23 @@ describe('alignToAnchor() (#3215)', () => {
 describe('relativeDayLabel() (#3215)', () => {
   it('reads a day before the anchor with a minus sign, after it with a plus, and the anchor as 0', () => {
     expect([-7, 0, 3].map(relativeDayLabel)).toEqual(['−7', '0', '+3']);
+  });
+});
+
+describe('anchorTicks() (#3215)', () => {
+  const anchor = new Date('2026-11-16T00:00:00Z');
+  const at = (days: number) => anchor.getTime() + days * 24 * 60 * 60 * 1000;
+  const labels = (ticks: Array<number>) => ticks.map((t) => daysFrom(anchor, new Date(t)));
+
+  it('counts whole weeks out from the anchor on a wide chart, the anchor among them', () => {
+    expect(labels(anchorTicks(anchor, at(-42), at(7), 1000))).toEqual([-42, -35, -28, -21, -14, -7, 0, 7]);
+  });
+
+  it("keeps the anchor on a phone's narrow chart, two weeks apart, rather than -35, -21, -7 (lab report 136)", () => {
+    expect(labels(anchorTicks(anchor, at(-42), at(7), 300))).toEqual([-42, -28, -14, 0]);
+  });
+
+  it('counts single days on a short span, such as one week of check-ins', () => {
+    expect(labels(anchorTicks(anchor, at(0), at(7), 800))).toEqual([0, 1, 2, 3, 4, 5, 6, 7]);
   });
 });
