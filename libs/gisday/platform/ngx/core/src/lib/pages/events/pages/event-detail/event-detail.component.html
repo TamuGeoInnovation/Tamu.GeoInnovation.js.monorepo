@@ -1,7 +1,12 @@
 <section *ngIf="(event$ | async) as event">
   <div>
-    <div class="container12 leader-3 flex flex-row">
-      <h1 class="session-title">{{event.name}}</h1>
+    <div class="container12 leader-3">
+      <!-- An inner row: .container12's clearfix :before and :after would count as flex items and push the title in (lab report 138). -->
+      <div class="flex flex-row wrap align-center justify-between session-heading">
+        <h1 class="session-title">{{event.name}}</h1>
+        <!-- #3220: the session's edit form, for the roles the admin area lets in, without going through Admin → Sessions. -->
+        <a *ngIf="isModerator$ | async" class="button snug secondary session-edit" [routerLink]="['/admin/events/edit', event.guid]">Edit session</a>
+      </div>
     </div>
     <div class="container12" *ngIf="event">
       <div class="column10">

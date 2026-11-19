@@ -312,6 +312,32 @@ describe('EventDetailComponent check-in', () => {
   /**
    * #2560: an organizer shows the QR code from the session's page, to put on the presenter's slides.
    */
+  // #3220: an organizer reading a session's page can get to its edit form from there, not only from Admin → Sessions.
+  describe('the Edit session button', () => {
+    const editLink = (page: () => HTMLElement) =>
+      Array.from(page().querySelectorAll<HTMLAnchorElement>('a')).find((a) => a.textContent?.trim() === 'Edit session');
+
+    it.each(['GIS Day Admin', 'GIS Day Manager', 'GIS Day Organizer'])(
+      "takes a %s to the session's edit form, from the top of the page",
+      (role) => {
+        const { page } = open('in-person', undefined, undefined, { roles: [role] });
+        const link = editLink(page);
+        const timeAndPlace = page().querySelector('#timeAndPlace');
+
+        expect(link?.getAttribute('href')).toBe('/admin/events/edit/e-1');
+        expect(link?.compareDocumentPosition(timeAndPlace as Node) ?? 0).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+      }
+    );
+
+    it('is not shown to an attendee', () => {
+      expect(editLink(open('in-person').page)).toBeUndefined();
+    });
+
+    it('is not shown to a visitor who is not signed in', () => {
+      expect(editLink(open('in-person', undefined, undefined, { loggedIn: false }).page)).toBeUndefined();
+    });
+  });
+
   describe('the check-in QR code, for organizers', () => {
     const organizer = { roles: ['GIS Day Organizer'] };
 
