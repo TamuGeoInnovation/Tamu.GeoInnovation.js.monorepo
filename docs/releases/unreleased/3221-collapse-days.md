@@ -17,3 +17,11 @@ The day's heading uses the site's shared accordion, which now opens and closes w
 first drawn, and whose header is a button that works from the keyboard. AggieMap's bus stops list in the trip planner
 binds the same setting, so it now opens with its toggle as that code intended.
 ([#3221](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3221))
+
+| Before | After |
+| --- | --- |
+| ![The Sessions page on Thursday 19 November with a made-up season of four GIS Day days, the 17th to the 20th: every day open, each listing its three made-up sessions](../screenshots/3221-collapse-days/before-sessions.png) | ![The same page: Tuesday 17 and Wednesday 18, already passed, each collapsed to one line reading its date and "· 3 sessions" with a plus at the right; Thursday 19, today, and Friday 20 open, with a minus](../screenshots/3221-collapse-days/after-sessions.png) |
+| | ![Tuesday 17 opened by pressing its heading: its three sessions listed, its count gone and its mark a minus; Wednesday 18 still collapsed](../screenshots/3221-collapse-days/after-opened.png) |
+| | ![A search for "drone": every day open, the two past days included, each listing only its drone imagery session](../screenshots/3221-collapse-days/after-search.png) |
+| | ![The 2025 Sessions page, a past year whose days have all passed: both days open](../screenshots/3221-collapse-days/after-past-year.png) |
+| | ![The Sessions page on a phone, 390 pixels wide: each collapsed day's date on one line with "· 3 sessions" under it and the plus at the right, today and tomorrow open, nothing past the right edge](../screenshots/3221-collapse-days/after-sessions-phone.png) |
