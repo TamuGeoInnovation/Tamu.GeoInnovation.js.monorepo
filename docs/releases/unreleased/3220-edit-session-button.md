@@ -14,7 +14,8 @@ button beside the session's title, which opens its edit form. Nobody else sees i
 
 | Before | After |
 | --- | --- |
-| ![A made-up session's page signed in as a GIS Day admin: its title at the left, then the check-in QR code section and the time and place, with no Edit session button](../screenshots/3220-edit-session-button/before-organizer.png) | ![The same page signed in as a GIS Day admin: an Edit Session button on the title's row, the title moved in from the left edge](../screenshots/3220-edit-session-button/after-organizer.png) |
+| ![A made-up session's page signed in as a GIS Day admin: its title at the left, then the check-in QR code section and the time and place, with no Edit session button](../screenshots/3220-edit-session-button/before-organizer.png) | ![The same page signed in as a GIS Day admin: the title at the left as before, and an Edit Session button at the right of its row](../screenshots/3220-edit-session-button/after-organizer.png) |
+| | ![A made-up session with a title of 73 characters, signed in as a GIS Day admin: the title on two lines at the left, and the Edit Session button beside it at the right](../screenshots/3220-edit-session-button/after-organizer-long.png) |
 | | ![The page the button opens: the made-up session's edit form under Admin → Events, Update Event, its day, times, check-in minutes, name and abstract](../screenshots/3220-edit-session-button/after-edit-form.png) |
-| | ![The same session's page signed out: no Edit session button and no check-in QR code, the title centred](../screenshots/3220-edit-session-button/after-signed-out.png) |
+| | ![The same session's page signed out: no Edit Session button and no check-in QR code, the title at the left as before](../screenshots/3220-edit-session-button/after-signed-out.png) |
 | | ![The same page on a phone, 390 pixels wide, signed in as a GIS Day admin: the Edit Session button under the title, nothing past the right edge](../screenshots/3220-edit-session-button/after-organizer-phone.png) |
