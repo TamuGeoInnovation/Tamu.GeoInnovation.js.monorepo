@@ -9250,3 +9250,47 @@ the presenter-card issue, so don't file it. Both reports are right; sorry for th
   - whether the chosen tab's underline still shows.
 - Fix the phone row's alt text in `3200-collapse-competitions.md`, and add the new rows. Push as a fast-forward, and report
   "images pushed (3200): <sha>".
+
+## Batch 135 (gisday: #3215's before and after images, compare seasons on the dashboards, **Medium**; 19 November 2026, from `work (gisday)`) - **start now**
+
+[#3215](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3215): the four admin dashboard charts
+(RSVPs, Check-ins, VGI submissions, User accounts) get a row of **year buttons** above the chart. Each chart opens with the
+selected season **and the year before it**. An earlier year's line is moved so the **Monday of its GIS Day week** lands on
+the selected year's Monday, and ends with its own GIS Day week. The x-axis then counts days from that Monday ("−14", "0",
+"+3"), and hovering a line gives that year's total and its own date. With only the selected year shown, the chart is as
+before, on dates.
+
+`feat/3215-compare-seasons` (fork, **`4c722b87e`**), from `development` at `f4fd0d124`. **Do not change the code.**
+Made-up people only, at example.com. Batch 128's safety: no email, every email route blocked by name, every made-up row
+removed afterwards and `cmp` of the snapshots.
+
+**Data (made up, local database only):**
+- Two seasons with GIS Day week days set: **2026**, 16–20 November, and **2025**, 17–21 November. Add a **2024** with no
+  days, so its button is greyed out.
+- A few events in each season on those days.
+- RSVPs over the weeks before each week, so the lines differ in shape. For example, 2025: 30 RSVPs, from 6 weeks before
+  to the Wednesday. 2026: 45 RSVPs, from 4 weeks before to the Tuesday.
+- Check-ins on a few events in each season, during its week.
+
+**Before**, on `development` (`f4fd0d124`):
+- `before-rsvps.png`: Admin → Dashboards → RSVPs, season 2026, at 1280.
+
+**After**, on `4c722b87e`:
+- `after-rsvps.png`: the same page, at 1280. It opens with 2026 and 2025 and a legend.
+- `after-rsvps-hover.png`: the same, hovering a day before the week, so both years' tooltips with their dates show.
+- `after-rsvps-one-year.png`: with 2025 switched off, so it's back on dates.
+- `after-check-ins.png`: the Check-ins page, at 1280.
+- `after-rsvps-phone.png`: the RSVPs page, at 390.
+
+**Say:**
+1. Whether each year's GIS Day week Monday sits at "0". Hover the 2025 line at 0 and give the date it shows (it should be
+   Mon, Nov 17, 2025).
+2. What the 2024 button says, from its `title`.
+3. Whether VGI submissions and User accounts show the buttons. Accounts reads the development Auth0 tenant, so say if
+   it can't be read locally, and don't work around it.
+4. `scrollWidth <= innerWidth` at 390 and 360 on the RSVPs page.
+
+Put the images in `docs/screenshots/3215-compare-seasons/`. Add a **Before | After** table to
+`docs/releases/unreleased/3215-compare-seasons.md`, like `3209-checkin-window.md`'s, with every after image. Run
+`node scripts/collate-release-notes.mjs --check`. Push as a fast-forward from `4c722b87e`, and report
+"images pushed (3215): <sha>".
