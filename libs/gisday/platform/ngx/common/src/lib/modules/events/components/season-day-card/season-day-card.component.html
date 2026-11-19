@@ -11,9 +11,8 @@ the card itself, so its heading is the card's own child and takes the site's .ca
       visitor further west (#2708). -0600 is CST, which GIS Day always falls in, in November. -->
       <span>
         <span class="day-date">{{seasonDay().date | date : 'EEEE, MMMM d' : '-0600'}}</span>
-        @if (!expanded() && shown) {
-        <span class="day-count"> · {{ shown.length }} {{ shown.length === 1 ? 'session' : 'sessions' }}</span>
-        }
+        <!-- The space between (&ngsp;, which Angular keeps) is outside both, so the line can break there on a phone. -->
+        @if (!expanded() && shown) {&ngsp;<span class="day-count">· {{ shown.length }} {{ shown.length === 1 ? 'session' : 'sessions' }}</span> }
       </span>
     </tamu-gisc-accordion-header>
   </h2>
