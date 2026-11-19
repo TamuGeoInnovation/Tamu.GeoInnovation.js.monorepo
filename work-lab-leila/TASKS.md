@@ -9365,3 +9365,29 @@ Put the images in `docs/screenshots/3220-edit-session-button/`. Add a **Before |
 `docs/releases/unreleased/3220-edit-session-button.md`, like `3215-compare-seasons.md`'s, with every after image. Run
 `node scripts/collate-release-notes.mjs --check`. Push as a fast-forward from `ced9d0ec3`, and report
 "images pushed (3220): <sha>".
+
+## Batch 139 (gisday: #3220's after images on the title fix from report 138, **Medium**; 19 November 2026, from `work (gisday)`) - **start now**
+
+**Decided** on report 138: question 1 **(a)**, fixed on the branch; question 2 **(a)**, keep the signed-out image.
+
+`feat/3220-edit-session-button` (fork, **`e6169b830`**), a fast-forward from your `784e313b7`. **Do not change the code.** The row
+is now an inner element inside `.container12`, so its clearfix pseudo-elements are no longer flex items; the title takes the
+row's room, so the button should stay **beside even the 73-character title** at 1280 and wrap under the title on a phone.
+The label reads "Edit Session" from the global `.button`'s `text-transform`, as every button does; leave it.
+
+Same safety, data and sign-in as batch 138.
+
+**Re-take**, replacing yours:
+- `after-organizer.png` at 1280, short title.
+- `after-organizer-long.png` (new) at 1280, the 73-character title.
+- `after-signed-out.png` at 1280.
+- `after-organizer-phone.png` at 390.
+
+**Say:**
+1. The title's left edge (x) in all three 1280 views, against `before-organizer.png`'s 70. It should match, signed out too.
+2. Where the button sits at 1280 with each title, and at 390 and 360.
+3. `scrollWidth <= innerWidth` at 390 and 360.
+
+Update the table in `docs/releases/unreleased/3220-edit-session-button.md` (add the long-title row), run
+`node scripts/collate-release-notes.mjs --check`, push as a fast-forward from `e6169b830`, and report
+"images pushed (3220): <sha>".
