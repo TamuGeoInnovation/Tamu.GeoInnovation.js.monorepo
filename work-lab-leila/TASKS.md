@@ -9392,7 +9392,7 @@ Update the table in `docs/releases/unreleased/3220-edit-session-button.md` (add 
 `node scripts/collate-release-notes.mjs --check`, push as a fast-forward from `e6169b830`, and report
 "images pushed (3220): <sha>".
 
-## Batch 140 (gisday: #3221's before and after images, collapsing each day on the Sessions page, **Medium**; 19 November 2026, from `work (gisday)`) - **after 139**
+## Batch 140 (gisday: #3221's before and after images, collapsing each day on the Sessions page, **Medium**; 19 November 2026, from `work (gisday)`) - **CANCELLED, do not run** (11:25 AM Central: the director took these images itself, at the maintainer's request)
 
 [#3221](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3221): on the Sessions page each day's
 heading now opens and closes it (the shared accordion, with a plain look). On the **current** year's page a day **before
