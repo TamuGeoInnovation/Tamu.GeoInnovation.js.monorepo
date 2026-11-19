@@ -3,6 +3,8 @@
 .day-count {
   font-weight: 400;
   opacity: 0.75;
+  // "· 3 sessions" wraps as one piece on a phone, not "· 3" and "sessions" on two lines.
+  white-space: nowrap;
 }
 
 // #3221: the accordion is the day's card, and its own :host margin (1rem above and below) would win over the site's
