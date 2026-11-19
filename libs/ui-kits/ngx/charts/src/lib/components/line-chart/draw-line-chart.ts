@@ -1,4 +1,4 @@
-import { everyDay, LineChartOptions } from '../../data/chart-data';
+import { daysFrom, everyDay, LineChartOptions, relativeDayLabel } from '../../data/chart-data';
 
 /**
  * Draws the chart into `host` with amCharts 5 and resolves to what disposes of it. amCharts is imported here, and this
@@ -72,6 +72,26 @@ export async function drawLineChart(host: HTMLElement, options: LineChartOptions
     }
   }
 
+  // Counted from an anchor (#3215), the axis reads in days before and after it, and its hover in that day too, since
+  // the lines of other seasons fall on other dates. A week's grid starts on a Monday, as the anchor does.
+  const anchor = options.anchor;
+
+  if (anchor) {
+    xAxis.get('renderer').labels.template.adapters.add('text', (text, target) => {
+      const value = target.dataItem?.get('value' as never) as number | undefined;
+
+      return value === undefined ? text : relativeDayLabel(daysFrom(anchor, new Date(value)));
+    });
+
+    xAxis.getTooltipText = (position: number) => {
+      const day = new Date(xAxis.positionToDate(position).getTime());
+      day.setUTCHours(0, 0, 0, 0);
+      const n = daysFrom(anchor, day);
+
+      return n === 0 ? 'Day 0' : `${relativeDayLabel(n)} ${Math.abs(n) === 1 ? 'day' : 'days'}`;
+    };
+  }
+
   const yAxis = chart.yAxes.push(
     am5xy.ValueAxis.new(root, {
       min: 0,
@@ -99,13 +119,17 @@ export async function drawLineChart(host: HTMLElement, options: LineChartOptions
       valueYField: 'y',
       stroke: color,
       fill: color,
-      tooltip: am5.Tooltip.new(root, { labelText: `{name}: [bold]{valueY}[/] ${options.unit}` })
+      // Counted from an anchor, each line's own date, since each season's falls on a different one.
+      tooltip: am5.Tooltip.new(root, { labelText: `{name}: [bold]{valueY}[/] ${options.unit}${anchor ? ' ({when})' : ''}` })
     };
     const line = chart.series.push(options.steps ? am5xy.StepLineSeries.new(root, settings) : am5xy.LineSeries.new(root, settings));
     line.strokes.template.set('strokeWidth', 2);
     line.fills.template.setAll({ visible: true, fillOpacity: 0.08 });
     // Every day has a value, so hovering a day nobody RSVP'd still reads the total.
-    line.data.setAll((options.steps ? everyDay(s.points, 'hold') : s.points).map((p) => ({ x: p.x.getTime(), y: p.y })));
+    const shift = (s.shiftDays ?? 0) * DAY;
+    line.data.setAll(
+      (options.steps ? everyDay(s.points, 'hold') : s.points).map((p) => ({ x: p.x.getTime(), y: p.y, when: dayText(p.x.getTime() - shift) }))
+    );
 
     return line;
   });
@@ -152,6 +176,11 @@ export async function drawLineChart(host: HTMLElement, options: LineChartOptions
   }
 
   return () => root.dispose();
+}
+
+/** A day at midnight UTC as its calendar day, with its year: "Mon, Nov 17, 2025". */
+export function dayText(time: number): string {
+  return new Intl.DateTimeFormat('en-US', { timeZone: 'UTC', weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' }).format(new Date(time));
 }
 
 /** `rgb(r, g, b)` as `#rrggbb`, or null if it is not one. */

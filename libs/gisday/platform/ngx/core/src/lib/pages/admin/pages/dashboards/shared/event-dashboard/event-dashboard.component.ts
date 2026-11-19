@@ -1,6 +1,6 @@
 import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Observable, catchError, filter, of, switchMap, tap } from 'rxjs';
+import { Observable, catchError, filter, map, of, switchMap, tap } from 'rxjs';
 
 import { readRefusal } from '@tamu-gisc/gisday/platform/ngx/common';
 
@@ -11,6 +11,7 @@ import { fileNamePart } from '@tamu-gisc/common/utils/ui';
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
 import { PERSON_TYPE_COLUMNS } from '../dashboard-people/dashboard-people.component';
 import { DashboardTableColumn, DashboardTableRow } from '../dashboard-table/dashboard-table.component';
+import { SeasonComparison } from '../season-comparison/season-comparison';
 
 /**
  * One row of an event dashboard: an event (RSVPs, check-ins), or anything counted like one, such as a VGI feature type
@@ -122,6 +123,11 @@ export abstract class EventDashboardComponent<D extends DashboardData, E extends
 
   /** The chart's line of every row, and its name for an opened row with no name. */
   protected readonly seriesLabels = { all: 'All events', one: 'This event' };
+  /** What the chart counts, for a year button that cannot be pressed: "2023 has no RSVPs." */
+  protected abstract readonly comparedNoun: string;
+
+  /** The earlier seasons beside this one on the chart (#3215), once the page knows its seasons. */
+  public readonly comparison = signal<SeasonComparison | null>(null);
 
   /** The season's dashboard, null while it loads, and `failed` if it could not be read. */
   public readonly dashboard = signal<D | null>(null);
@@ -142,6 +148,8 @@ export abstract class EventDashboardComponent<D extends DashboardData, E extends
 
     return dashboard ? dashboardSeries(dashboard, this.expandedEvent(), this.seriesLabels) : [];
   });
+  /** The chart's lines with the compared seasons', and the day its axis counts from when there are any. */
+  public readonly chart = computed(() => this.comparison()?.compare(this.series()) ?? { series: this.series(), anchor: null });
   public readonly daily = computed(() => {
     const dashboard = this.dashboard();
 
@@ -155,6 +163,16 @@ export abstract class EventDashboardComponent<D extends DashboardData, E extends
 
   public override ngOnInit(): void {
     super.ngOnInit();
+
+    this.comparison.set(
+      new SeasonComparison(
+        (guid) => this.seasonDashboard(guid).pipe(map((d) => d.made.map((m) => m.created))),
+        this.seasons$,
+        this.selectedSeason$,
+        this.destroyRef,
+        this.comparedNoun
+      )
+    );
 
     this.selectedSeason$
       .pipe(

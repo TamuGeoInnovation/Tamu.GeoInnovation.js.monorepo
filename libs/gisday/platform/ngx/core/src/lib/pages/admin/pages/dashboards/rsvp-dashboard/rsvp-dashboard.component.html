@@ -20,10 +20,13 @@
 
       <h3 class="dashboard-heading">RSVPs over time</h3>
       <p class="dashboard-note">
-        The running total at the end of each day, in Central time, with each day's new RSVPs beneath and the GIS Day week shaded. Hover for a day's numbers; drag across the chart to zoom in, and double-click to see it all again.
+        The running total at the end of each day, in Central time, with each day's new RSVPs beneath and the GIS Day week shaded. Hover for a day's numbers; drag across the chart to zoom in, and double-click to see it all again. Press a year to draw it beside this one, lined up on the Monday of each year's GIS Day week: the axis then counts days from it.
         {{ expandedEvent() ? 'The second line is the event opened below.' : 'Open an event below to add its own line.' }}
       </p>
-      <tamu-gisc-line-chart [series]="series()" [bars]="daily()" [bands]="bands()" [steps]="true" unit="RSVPs" label="RSVPs over time, as a running total by day, with each day's new RSVPs"></tamu-gisc-line-chart>
+      @if (comparison(); as compared) {
+      <tamu-gisc-season-comparison [comparison]="compared"></tamu-gisc-season-comparison>
+      }
+      <tamu-gisc-line-chart [series]="chart().series" [anchor]="chart().anchor" [bars]="daily()" [bands]="bands()" [steps]="true" unit="RSVPs" label="RSVPs over time, as a running total by day, with each day's new RSVPs"></tamu-gisc-line-chart>
 
       <h3 class="dashboard-heading">By event</h3>
       @if (view.events.length > 0) {
