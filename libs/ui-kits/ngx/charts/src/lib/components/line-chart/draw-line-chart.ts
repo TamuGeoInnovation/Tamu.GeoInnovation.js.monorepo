@@ -54,11 +54,20 @@ export async function drawLineChart(host: HTMLElement, options: LineChartOptions
       max: Math.max(...times),
       strictMinMax: true,
       baseInterval: { timeUnit: 'day', count: 1 },
-      gridIntervals: [
-        { timeUnit: 'day', count: 1 },
-        { timeUnit: 'week', count: 1 },
-        { timeUnit: 'month', count: 1 }
-      ],
+      // Counted from an anchor, which is a Monday, the grid stays on whole weeks, so it reads -14, -7, 0 rather than the
+      // first of each month (-46, -15) when the chart is narrow (#3215).
+      gridIntervals: options.anchor
+        ? [
+            { timeUnit: 'day', count: 1 },
+            { timeUnit: 'week', count: 1 },
+            { timeUnit: 'week', count: 2 },
+            { timeUnit: 'week', count: 4 }
+          ]
+        : [
+            { timeUnit: 'day', count: 1 },
+            { timeUnit: 'week', count: 1 },
+            { timeUnit: 'month', count: 1 }
+          ],
       renderer: am5xy.AxisRendererX.new(root, { minGridDistance: 55 }),
       tooltip: am5.Tooltip.new(root, {}),
       tooltipDateFormat: 'EEE, MMM d'
@@ -75,9 +84,15 @@ export async function drawLineChart(host: HTMLElement, options: LineChartOptions
   // Counted from an anchor (#3215), the axis reads in days before and after it, and its hover in that day too, since
   // the lines of other seasons fall on other dates. A week's grid starts on a Monday, as the anchor does.
   const anchor = options.anchor;
+  // The bands' own labels, such as "GIS Day week", which the anchor's day numbers must leave alone.
+  const bandLabels = new Set<unknown>();
 
   if (anchor) {
     xAxis.get('renderer').labels.template.adapters.add('text', (text, target) => {
+      if (bandLabels.has(target)) {
+        return text;
+      }
+
       const value = target.dataItem?.get('value' as never) as number | undefined;
 
       return value === undefined ? text : relativeDayLabel(daysFrom(anchor, new Date(value)));
@@ -107,6 +122,7 @@ export async function drawLineChart(host: HTMLElement, options: LineChartOptions
     range.get('grid')?.set('forceHidden', true);
     // Right-aligned to the band's end, which is often the chart's right edge: an event still to come.
     range.get('label')?.setAll({ text: band.label, inside: true, location: 1, centerX: am5.p100, centerY: am5.p100, dx: -4, dy: -6, fill: text, fillOpacity: 0.75 });
+    bandLabels.add(range.get('label'));
   }
 
   const lines = options.series.map((s) => {

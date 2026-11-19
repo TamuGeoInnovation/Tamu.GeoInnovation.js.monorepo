@@ -5,7 +5,7 @@ import { BehaviorSubject, Observable, Subject, of, throwError } from 'rxjs';
 import type { Season } from '@tamu-gisc/gisday/platform/data-api';
 import { daysFrom } from '@tamu-gisc/ui-kits/ngx/charts';
 
-import { comparableSeasons, compareSeasons, previousSeason, SeasonComparison, seasonButtons } from './season-comparison';
+import { comparableSeasons, compareSeasons, previousSeason, SeasonComparison, seasonButtons, throughWeek } from './season-comparison';
 
 /** A made-up season with GIS Day week on the days given. */
 const season = (guid: string, year: number, days: Array<string>) =>
@@ -49,9 +49,11 @@ describe('compareSeasons() (#3215)', () => {
 
     expect(anchor).toEqual(day('2026-11-16'));
     expect(series.map((s) => s.label)).toEqual(['2026', '2025']);
+    // It runs to the Sunday ending its week, holding its total, rather than stopping at its last record (lab report 135).
     expect(series[1].points.map((p) => [daysFrom(anchor as Date, p.x), p.y])).toEqual([
       [-10, 1],
-      [0, 2]
+      [0, 2],
+      [6, 2]
     ]);
   });
 
@@ -60,6 +62,29 @@ describe('compareSeasons() (#3215)', () => {
 
     expect(compareSeasons(c2026, lines, [{ season: c2025, made: [] }]).anchor).toBeNull();
     expect(compareSeasons(c2023, lines, [{ season: c2025, made: ['2025-11-17T18:00:00Z'] }]).anchor).toBeNull();
+  });
+});
+
+describe('throughWeek() (#3215)', () => {
+  const monday = day('2025-11-17');
+
+  it("holds the total to the week's Sunday, and leaves out what comes after it", () => {
+    const points = [
+      { x: day('2025-11-10'), y: 3 },
+      { x: day('2025-11-18'), y: 5 },
+      { x: day('2025-11-25'), y: 9 }
+    ];
+
+    expect(throughWeek(points, monday)).toEqual([
+      { x: day('2025-11-10'), y: 3 },
+      { x: day('2025-11-18'), y: 5 },
+      { x: day('2025-11-23'), y: 5 }
+    ]);
+  });
+
+  it('adds nothing to a line that already reaches the Sunday, or to no points', () => {
+    expect(throughWeek([{ x: day('2025-11-23'), y: 4 }], monday)).toEqual([{ x: day('2025-11-23'), y: 4 }]);
+    expect(throughWeek([], monday)).toEqual([]);
   });
 });
 

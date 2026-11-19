@@ -3,7 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Observable, combineLatest, filter } from 'rxjs';
 
 import type { Season } from '@tamu-gisc/gisday/platform/data-api';
-import { alignToAnchor, ChartSeries, runningTotalByDay, weekAnchor } from '@tamu-gisc/ui-kits/ngx/charts';
+import { alignToAnchor, ChartPoint, ChartSeries, runningTotalByDay, weekAnchor } from '@tamu-gisc/ui-kits/ngx/charts';
 
 /** A season the chart can compare: its year, and the Monday of its GIS Day week, or null with no days set. */
 export interface ComparableSeason {
@@ -28,7 +28,8 @@ export interface SeasonButton {
 /** The colours of the compared years, after the selected season's maroon and an opened row's blue. */
 export const COMPARED_COLORS = ['#d95f02', '#707373', '#1b9e77', '#7570b3', '#e7298a', '#66a61e'];
 
-const WEEK = 7 * 24 * 60 * 60 * 1000;
+const DAY = 24 * 60 * 60 * 1000;
+const WEEK = 7 * DAY;
 
 /** Each season with its GIS Day week's Monday, newest first. */
 export function comparableSeasons(seasons: Array<Partial<Season>>): Array<ComparableSeason> {
@@ -69,15 +70,31 @@ export function compareSeasons(
       ...rest.map((line) => ({ ...line, color: line.color ?? '#2c7fb8' })),
       ...drawn.map(({ season, made }, i) =>
         alignToAnchor(
-          { label: `${season.year}`, points: runningTotalByDay(made), color: COMPARED_COLORS[i % COMPARED_COLORS.length] },
+          {
+            label: `${season.year}`,
+            points: throughWeek(runningTotalByDay(made), season.anchor),
+            color: COMPARED_COLORS[i % COMPARED_COLORS.length]
+          },
           season.anchor,
-          anchor,
-          new Date(season.anchor.getTime() + WEEK)
+          anchor
         )
       )
     ],
     anchor
   };
+}
+
+/**
+ * A running total up to the end of the GIS Day week starting `anchor`, as decided on #3215: the days after its Sunday
+ * left out, and its total held to that Sunday, so an earlier year's line runs to the end of its week rather than
+ * stopping at its last record.
+ */
+export function throughWeek(points: Array<ChartPoint>, anchor: Date): Array<ChartPoint> {
+  const sunday = anchor.getTime() + WEEK - DAY;
+  const kept = points.filter((p) => p.x.getTime() <= sunday);
+  const last = kept[kept.length - 1];
+
+  return last && last.x.getTime() < sunday ? [...kept, { x: new Date(sunday), y: last.y }] : kept;
 }
 
 /** Each season's button, newest first. */
