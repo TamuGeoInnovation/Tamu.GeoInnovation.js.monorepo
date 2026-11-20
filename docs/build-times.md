@@ -322,6 +322,8 @@ every layer, so its duration says as much about the GIS services as about this c
 
 | Date | Machine | Environment | Result | Elapsed |
 | --- | --- | --- | --- | ---: |
+| 10 Nov 2026 | work-lab-leila | dev, `main-YHEYN3RL.js` (`3254b114e`), release scope, 6 workers, **#2822 branch** (the 3D test skips a basemap 3D refuses), started about 1:01 AM Central | 1,000 passed, 14 failed, 70 skipped, of 1,084; the 3D test passed in 1.5 min | **27 min 1 s** |
+| 9-10 Nov 2026 | work-lab-leila | dev, `main-YHEYN3RL.js` (`3254b114e`), release scope, 6 workers, `development`, started 10:54 PM Central | 999 passed, 15 failed, 70 skipped, of 1,084; the 3D test timed out at 15.0, 15.5 and 15.0 min | 1.2 h (Playwright's figure) |
 | 10 Oct 2026 | home | local dev server, #1453 branch (`inject()` throughout), release scope, 6 workers, about 2:12 PM to 2:38 PM Central | 430 passed, 1 failed (build banner, local only), 30 skipped | **26.1 min** |
 | 9 Oct 2026 | home | production, `build-banner.spec.ts` only, from a worktree with no `node_modules` (#1459): first run installing the three packages into the volume / packages already there / a brand-new volume | 1 passed each time | 19 s / 14 s / 16 s |
 | 8 Oct 2026 | home | **production**, `a4e04a7b` (build 20261008.15: the standalone work, #1571, #1579, #1580), release scope, 6 workers, 4:07:46 PM to 4:27:25 PM Central; cleared the 8 October release, tagged `dev-` and `prod-2026-10-08` | 397 passed, 0 failed, 0 flaky, 24 skipped, of 421 | **19 min 39 s** |
@@ -397,6 +399,21 @@ before. At 6 workers its 4 CPUs were saturated (load about 35), every test slowe
 timed out before passing, and the run took 8 min 56 s. A workstation run at 6 workers is the
 measurement still to take. In a full release check the bus tests share the workers with everything
 else, so what matters there is that none of them is 8 minutes long.
+
+### A click that cannot land, waited on for 45 minutes (#2822)
+
+The release tier on dev took 1.2 hours on 9 November, and 45 minutes of it was one test. The 3D test
+clicked every campus basemap while in 3D, including one the gallery disables there (a State Plane
+vector basemap a scene cannot draw), and Playwright waited the whole 15-minute test timeout for the
+button to enable, then twice more on retry. The test now skips a basemap marked unavailable, asserts
+the mark, and gives each click 30 seconds.
+
+Measured on one workstation, the same build on dev, release scope at 6 workers, back to back in the
+night with nothing else running: **1.2 hours to 27 minutes.** The 3D test itself went from three
+15-minute timeouts to a 1.5-minute pass. Both runs had the same 14 other failures, test for test, so the
+difference is the test, not the environment. The rule this is an instance of: a
+click on something that may be disabled gets its own short timeout, or a failure costs the whole test
+budget.
 
 ## Page load
 
