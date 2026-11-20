@@ -4,6 +4,7 @@ import { Connections } from '../../../libs/aggiemap/ngx/common/src/lib/connectio
 
 import { expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
+import { gisHostFor, smokeBaseUrl } from './gis-hosts';
 
 /**
  * A parking-space map loads only the spaces it draws (#1897).
@@ -22,18 +23,20 @@ import { blockAnalytics } from './analytics';
 
 const PROBE_GLOBAL = '__tamuGiscMapProbe';
 
-// Both layers are on the transportation GIS host, which is the same for every environment (see
-// getDefaultGisHosts() in connections.ts).
+// Both layers as this environment's application reads them: development reads Transportation's development services
+// since #2667, so a spec asking production's would look up a space the application never drew (#2821).
+const connections = Connections(gisHostFor(smokeBaseUrl()));
+
 const MAPS = [
   {
     route: '/parking/accessible-parking',
     layerId: 'Accessible Parking Space',
-    url: `${Connections.accessibleParkingUrl}/0`
+    url: `${connections.accessibleParkingUrl}/0`
   },
   {
     route: '/parking/motorcycle-parking',
     layerId: 'motorcycle-parking-space',
-    url: `${Connections.motorcycleParkingUrl}/0`
+    url: `${connections.motorcycleParkingUrl}/0`
   }
 ];
 
