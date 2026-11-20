@@ -10,6 +10,8 @@ export * from './lib/components/tooltip/components/tooltip-trigger/tooltip-trigg
 
 export * from './lib/components/action-menu/action-menu.component';
 
+export * from './lib/components/details-panel/details-panel.component';
+
 export * from './lib/components/accordion/services/accordion.service';
 
 export * from './lib/abstracts/abstract-sliding-drawer/abstract-sliding-drawer.component';

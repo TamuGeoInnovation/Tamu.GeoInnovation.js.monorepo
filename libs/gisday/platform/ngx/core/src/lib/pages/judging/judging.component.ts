@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgTemplateOutlet } from '@angular/common';
 
 import { JudgingService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { ButtonComponent, TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
-import { TabComponent, TabsComponent } from '@tamu-gisc/ui-kits/ngx/layout';
-import { serverMessage } from '@tamu-gisc/gisday/platform/ngx/common';
+import { DetailsPanelComponent, TabComponent, TabsComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { matchesText, serverMessage } from '@tamu-gisc/gisday/platform/ngx/common';
 import {
   ASSESSMENT_COMMENT_LIMIT,
   JudgeCompetitionDto,
@@ -26,18 +26,54 @@ interface SaveState {
   problem?: string;
 }
 
+/** An entry with the competition it is in, its tab, and where it is in that competition's list. */
+export interface JudgeEntry {
+  competition: JudgeCompetitionDto;
+  submission: JudgeSubmissionDto;
+  tab: number;
+  position: number;
+  of: number;
+}
+
+/** How many matches the search box lists under itself (#3230). */
+export const JUDGE_MATCHES_SHOWN = 8;
+
 /**
- * A judge's page (#3183), reached from the judging link emailed to them, with no account. Each competition they judge, a
- * card per accepted submission (its title, presenters and abstract), a score per criterion of the rubric with the levels
- * it describes, a comment, and Save. They can change their scores until the admins close judging; then the page shows
- * them, read-only. Judges use it on their phones in the room, so it is one column.
+ * The entries a judge's search finds, by title or by author (#3230, decided 2A), in every competition they judge (3A), in
+ * the order of the page's tabs and lists. Nothing for an empty search.
+ */
+export function judgeMatches(entries: Array<JudgeEntry>, search: string): Array<JudgeEntry> {
+  if (!search.trim()) {
+    return [];
+  }
+
+  return entries.filter((e) => matchesText([e.submission.title, ...(e.submission.presenters ?? [])], search));
+}
+
+/**
+ * A judge's page (#3183), reached from the judging link emailed to them, with no account. A tab per competition they
+ * judge, each listing its accepted entries (#3200). An entry opens in a details panel over the list (#3230): its title,
+ * presenters and abstract, a score per criterion of the rubric with the levels it describes, a comment, and Save, with
+ * Previous and Next to the entries beside it. A search box above the list, and on the panel, finds an entry by its title or
+ * an author. Escape closes the panel, asking first when its scores have changed and are not saved. Judges can change
+ * their scores until the admins close judging; then the page shows them, read-only. Judges use it on their phones in the
+ * room, so it is one column, and the panel is the whole screen.
  */
 @Component({
   selector: 'tamu-gisc-judging',
   templateUrl: './judging.component.html',
   styleUrls: ['./judging.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, DatePipe, ButtonComponent, TextboxComponent, TabsComponent, TabComponent]
+  imports: [
+    ReactiveFormsModule,
+    DatePipe,
+    NgTemplateOutlet,
+    ButtonComponent,
+    TextboxComponent,
+    TabsComponent,
+    TabComponent,
+    DetailsPanelComponent
+  ]
 })
 export class JudgingComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
@@ -55,6 +91,37 @@ export class JudgingComponent implements OnInit {
   public readonly invalid = computed(() => this.page() === 'invalid');
   /** Each submission's save, by its id. */
   public readonly saves = signal<Record<string, SaveState>>({});
+
+  /** Every entry on the page, competition by competition, as the tabs list them. */
+  public readonly entries = computed<Array<JudgeEntry>>(() =>
+    (this.judge()?.competitions ?? []).flatMap((competition, tab) =>
+      competition.submissions.map((submission, position) => ({
+        competition,
+        submission,
+        tab,
+        position,
+        of: competition.submissions.length
+      }))
+    )
+  );
+
+  /** The open tab. */
+  public readonly tab = signal(0);
+
+  /** The entry open in the details panel, by its id, or null with the panel closed. */
+  public readonly openGuid = signal<string | null>(null);
+  public readonly opened = computed(() => this.entries().find((e) => e.submission.guid === this.openGuid()) ?? null);
+
+  /** The search box, on the page and on the panel (#3230). */
+  public readonly search = new FormControl('', { nonNullable: true });
+  private readonly searchText = toSignal(this.search.valueChanges, { initialValue: '' });
+  public readonly matches = computed(() => judgeMatches(this.entries(), this.searchText()));
+  public readonly matchesShown = computed(() => this.matches().slice(0, JUDGE_MATCHES_SHOWN));
+  /** Whether the search's matches are listed: while the box has focus, until one is chosen or Escape. */
+  public readonly matchesOpen = signal(false);
+
+  /** What the judge asked for while the open entry's scores were changed and not saved, waiting on their answer (5B). */
+  public readonly leaving = signal<(() => void) | null>(null);
 
   public readonly commentLimit = ASSESSMENT_COMMENT_LIMIT;
   public readonly scoredLine = scoredLine;
@@ -78,6 +145,98 @@ export class JudgingComponent implements OnInit {
   /** The scores and comment of one submission, for its card. */
   public formFor(submission: JudgeSubmissionDto): FormGroup {
     return this.forms.get(submission.guid);
+  }
+
+  /** Whether an entry's scores or comment have changed since they were last saved, or loaded. */
+  public unsaved(submission: JudgeSubmissionDto): boolean {
+    return Boolean(this.formFor(submission)?.dirty);
+  }
+
+  /** Opens an entry in the details panel, from its row or from a search match, on its competition's tab. */
+  public open(entry: JudgeEntry): void {
+    this.leaveOpened(() => {
+      this.tab.set(entry.tab);
+      this.openGuid.set(entry.submission.guid);
+      this.closeMatches();
+      this.search.setValue('');
+    });
+  }
+
+  /** Opens an entry from its row in a tab's list. */
+  public openRow(submission: JudgeSubmissionDto): void {
+    const entry = this.entries().find((e) => e.submission.guid === submission.guid);
+
+    if (entry) {
+      this.open(entry);
+    }
+  }
+
+  /** The entry before or after the open one in its competition's list (6B). */
+  public neighbour(step: -1 | 1): JudgeEntry | null {
+    const opened = this.opened();
+
+    return opened ? (this.entries().find((e) => e.tab === opened.tab && e.position === opened.position + step) ?? null) : null;
+  }
+
+  public step(step: -1 | 1): void {
+    const next = this.neighbour(step);
+
+    if (next) {
+      this.open(next);
+    }
+  }
+
+  /** Closes the details panel, asking first if its scores are not saved. */
+  public close(): void {
+    this.leaveOpened(() => this.openGuid.set(null));
+  }
+
+  /** Escape, or a click on the page behind the panel: answers Stay to the question if it is asked, or closes the panel. */
+  public closeRequested(): void {
+    if (this.leaving()) {
+      this.leaving.set(null);
+    } else {
+      this.close();
+    }
+  }
+
+  /** Leave without saving: the entry's scores go back to what was saved, and the judge goes where they asked. */
+  public discard(): void {
+    const opened = this.opened();
+    const then = this.leaving();
+
+    if (opened) {
+      this.forms.set(opened.submission.guid, formOf(opened.competition, opened.submission));
+      this.setSave(opened.submission.guid, undefined);
+    }
+
+    this.leaving.set(null);
+    then?.();
+  }
+
+  public stay(): void {
+    this.leaving.set(null);
+  }
+
+  /** Escape in the search box closes its matches, and only that, while they are listed. */
+  public searchEscape(event: Event): void {
+    if (this.matchesOpen()) {
+      this.closeMatches();
+      event.preventDefault();
+    }
+  }
+
+  public closeMatches(): void {
+    this.matchesOpen.set(false);
+  }
+
+  /** Closes the matches when focus leaves the box and its matches, as a click elsewhere does. */
+  public searchBlur(event: FocusEvent): void {
+    const box = event.currentTarget as HTMLElement;
+
+    if (!box.contains(event.relatedTarget as Node)) {
+      this.closeMatches();
+    }
   }
 
   /** Saves a judge's scores for one submission, checked first as the API checks them. */
@@ -105,6 +264,8 @@ export class JudgingComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (assessment) => {
+          // What was sent is what is saved now: nothing to ask about on leaving it (#3230).
+          form.markAsPristine();
           this.setSave(submission.guid, { saved: assessment.updated });
           // The page's own copy, so the progress line counts it.
           this.page.update((page) =>
@@ -124,8 +285,30 @@ export class JudgingComponent implements OnInit {
       });
   }
 
-  private setSave(guid: string, state: SaveState): void {
-    this.saves.update((saves) => ({ ...saves, [guid]: state }));
+  /** Does `then` at once, or, if the open entry's scores are changed and not saved, asks first (#3230, decided 5B). */
+  private leaveOpened(then: () => void): void {
+    const opened = this.opened();
+
+    if (opened && !opened.competition.closed && this.unsaved(opened.submission)) {
+      this.leaving.set(() => then);
+      return;
+    }
+
+    then();
+  }
+
+  private setSave(guid: string, state: SaveState | undefined): void {
+    this.saves.update((saves) => {
+      const next = { ...saves };
+
+      if (state) {
+        next[guid] = state;
+      } else {
+        delete next[guid];
+      }
+
+      return next;
+    });
   }
 
   private load(token: string): void {
