@@ -113,6 +113,8 @@
 // The search box, above the list and on the panel, its matches under it as on a presenter's page (#2923, #3230).
 .judge-search {
   position: relative;
+  // Its own layer, above the competition tabs under it, which are positioned and drew through its matches.
+  z-index: 2;
   max-width: 32rem;
   margin-bottom: 1rem;
 
@@ -131,9 +133,11 @@
   gap: 0.5rem;
   align-items: flex-start;
 
+  // The search takes the row, Close at its right end.
   .judge-search {
     flex: 1 1 auto;
     min-width: 0;
+    max-width: none;
     margin-bottom: 0.5rem;
   }
 
