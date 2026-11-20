@@ -290,7 +290,7 @@ export class JudgingComponent implements OnInit {
     const opened = this.opened();
 
     if (opened && !opened.competition.closed && this.unsaved(opened.submission)) {
-      this.leaving.set(() => then);
+      this.leaving.set(then);
       return;
     }
 
