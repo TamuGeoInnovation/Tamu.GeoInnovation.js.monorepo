@@ -1,4 +1,6 @@
 @import 'libs/gisday/sass/variables';
+// The search's matches over the page, under the box, as on a presenter's page (#2923, #3230).
+@import 'libs/sass/components/search-results';
 
 // Layout only (#3183): the site's own form, info-block, button and spacing styles do the rest.
 
@@ -114,25 +116,30 @@
   max-width: 32rem;
   margin-bottom: 1rem;
 
-  .match {
-    width: 100%;
-    padding: 0;
-    border: none;
-    background: none;
-    color: inherit;
-    font: inherit;
-    text-align: left;
-    cursor: pointer;
-  }
-
   .match-detail {
     opacity: 0.75;
   }
 }
 
-// The panel's bar: the search, then Previous, where the entry is, Next and Close in one row that wraps on a phone.
+// The panel's bar (#3230): the search and Close in one row, then Previous, where the entry is and Next, in one row on a
+// phone as on a computer.
 .panel-bar {
   margin-bottom: 1rem;
+}
+
+.panel-top {
+  gap: 0.5rem;
+  align-items: flex-start;
+
+  .judge-search {
+    flex: 1 1 auto;
+    min-width: 0;
+    margin-bottom: 0.5rem;
+  }
+
+  .button {
+    flex: none;
+  }
 }
 
 .panel-nav {
@@ -140,10 +147,6 @@
 
   .button {
     flex: none;
-  }
-
-  .panel-close {
-    margin-left: auto;
   }
 }
 

@@ -70,13 +70,15 @@
 <!-- One entry, over the list: the whole screen on a phone (#3230, decided 1B). Escape closes it. -->
 <tamu-gisc-details-panel class="judging-panel" [label]="entry.submission.title" (closeRequested)="closeRequested()">
   <div class="panel-bar">
-    <ng-container [ngTemplateOutlet]="searchBox" [ngTemplateOutletContext]="{ inPanel: true }"></ng-container>
+    <div class="flex flex-row panel-top">
+      <ng-container [ngTemplateOutlet]="searchBox" [ngTemplateOutletContext]="{ inPanel: true }"></ng-container>
+      <button type="button" class="button snug panel-close" (click)="close()">Close</button>
+    </div>
 
-    <div class="flex flex-row wrap align-center panel-nav">
+    <div class="flex flex-row align-center panel-nav">
       <button type="button" class="button secondary snug" [disabled]="!neighbour(-1)" (click)="step(-1)">Previous</button>
       <span class="panel-position">{{ entry.position + 1 }} of {{ entry.of }}</span>
       <button type="button" class="button secondary snug" [disabled]="!neighbour(1)" (click)="step(1)">Next</button>
-      <button type="button" class="button snug panel-close" (click)="close()">Close</button>
     </div>
   </div>
 
