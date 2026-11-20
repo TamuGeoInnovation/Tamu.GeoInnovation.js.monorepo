@@ -772,9 +772,9 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
 export const FootballParkingConfiguration: EventConfiguration = {
   id: 'gameday-parking',
   name: 'Football',
-  applicationName: 'Football Transportation',
+  applicationName: 'Football Gameday Transportation Map',
   shortApplicationName: 'Football',
-  introductionText: 'Get the best transportation and parking information for game days.',
+  introductionText: 'Plan your trip to campus for football gameday.',
   // 2026 home schedule (7 home dates at Kyle Field), per the SEC-released schedule:
   // 9/5 Missouri State, 9/12 Arizona State, 9/19 Kentucky, 10/3 Arkansas, 10/17 The Citadel,
   // 11/14 Tennessee, 11/27 Texas (Black Friday). https://12thman.com/news/2025/12/11/2026-texas-am-football-schedule-announced
@@ -800,9 +800,9 @@ export const FootballParkingConfiguration: EventConfiguration = {
   },
   toast: {
     id: 'gameday-parking-notification',
-    title: 'Football Transportation Map Available',
+    title: 'Football Gameday Transportation Map Available',
     message:
-      'Attending the game? Click me to open the Football Transportation Map to get the best parking and transportation options for game day!',
+      'Attending the game? Click me to open the Football Gameday Transportation Map to get the best parking and transportation options for game day!',
     imgUrl: './assets/images/icons/sports/Football.png',
     imgAltText: 'Football Icon',
     acknowledge: true,
@@ -1042,8 +1042,9 @@ export const FootballParkingEvent: AggiemapCustomMapConfiguration = {
   type: 'special-event',
   discover: {
     id: FootballParkingConfiguration.id,
-    name: FootballParkingConfiguration.name,
-    description: 'Transportation and parking information for football game days.',
+    // The listing's own title (#445); the configuration's short name still reads "Click here for Football details".
+    name: 'Football Gameday Transportation Map',
+    description: 'Plan your trip to campus for football gameday.',
     source: 'internal',
     type: 'event',
     mapType: 'athletics',

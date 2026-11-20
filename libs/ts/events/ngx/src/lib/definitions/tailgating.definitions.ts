@@ -270,7 +270,7 @@ const TailgatingSearchSources: SearchSource[] = [
 
 export const TailgatingConfiguration: EventConfiguration = {
   id: 'tailgating',
-  // Sorts directly under "Football" in the alphabetical Athletics Events list.
+  // Sorts directly under "Football Gameday Transportation Map" in the alphabetical Athletics Events list.
   name: 'Football Tailgating',
   applicationName: 'Football Tailgating Map',
   shortApplicationName: 'Tailgating',
