@@ -1,0 +1,84 @@
+.shade-summary {
+  margin: 0.75rem 0.5rem 0.25rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 4px;
+  background: #eef2f8;
+  font-size: 0.85rem;
+  line-height: 1.35;
+
+  p {
+    margin: 0.3rem 0;
+  }
+
+  .sun {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: #424242;
+
+    .material-icons {
+      font-size: 1.1rem;
+      color: #f9a825;
+    }
+  }
+
+  .share {
+    .bar {
+      height: 0.5rem;
+      border-radius: 0.25rem;
+      background: #ffe082;
+      overflow: hidden;
+    }
+
+    .fill {
+      height: 100%;
+      background: #1e325a;
+    }
+  }
+
+  .indoors.closed .material-icons {
+    color: #757575;
+  }
+
+  .indoors {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: #424242;
+
+    .material-icons {
+      font-size: 1.1rem;
+      color: #500000;
+    }
+  }
+
+  .legend {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: #424242;
+
+    .swatch {
+      width: 0.9rem;
+      height: 0.9rem;
+      border-radius: 2px;
+      background: rgba(20, 40, 110, 0.45);
+      border: 1px solid rgba(20, 40, 110, 0.8);
+
+      &.indoor {
+        margin-left: 0.6rem;
+        background: rgba(80, 0, 0, 0.3);
+        border-color: rgba(80, 0, 0, 0.85);
+      }
+    }
+  }
+
+  .compare {
+    color: #424242;
+  }
+
+  .basis {
+    color: #757575;
+    font-size: 0.75rem;
+  }
+}

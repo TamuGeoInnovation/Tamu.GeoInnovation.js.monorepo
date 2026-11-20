@@ -9,12 +9,13 @@ import { TripPlannerService } from '../../../../services/trip-planner.service';
 import { TripResult } from '../../../../core/trip-planner-core';
 import { TripPlannerDirectionsActionsComponent } from '../../../trip-planner-directions-actions/containers/base/base.component';
 import { TripPlannerModeSwitchComponent } from '../../../trip-planner-mode-switch/containers/base/base.component';
+import { TripPlannerShadeSummaryComponent } from '../../../trip-planner-shade-summary/trip-planner-shade-summary.component';
 
 @Component({
   selector: 'tamu-gisc-trip-planner-directions',
   templateUrl: './base.component.html',
   styleUrls: ['./base.component.scss'],
-  imports: [TripPlannerDirectionsActionsComponent, TripPlannerModeSwitchComponent]
+  imports: [TripPlannerDirectionsActionsComponent, TripPlannerModeSwitchComponent, TripPlannerShadeSummaryComponent]
 })
 export class TripPlannerDirectionsComponent implements OnInit, OnDestroy {
   private router = inject(Router);

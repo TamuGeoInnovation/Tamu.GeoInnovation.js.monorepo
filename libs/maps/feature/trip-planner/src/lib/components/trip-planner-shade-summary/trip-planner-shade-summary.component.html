@@ -1,0 +1,52 @@
+@if (summary(); as s) {
+<section class="shade-summary" aria-label="Shade on this walk">
+  @if (s.sunDown) {
+  <p class="sun">
+    <span class="material-icons" aria-hidden="true">dark_mode</span>
+    The sun is down at {{ s.when | date: 'shortTime' }}, so the whole walk is out of the sun. This is the quickest walk.
+  </p>
+  } @else {
+  <p class="sun">
+    <span class="material-icons" aria-hidden="true">wb_sunny</span>
+    Sun at {{ s.when | date: 'MMM d, h:mm a' }}: {{ s.sun.altitude | number: '1.0-0' }}° up, in the {{ sunFrom() }}
+  </p>
+
+  <div class="share" role="img" [attr.aria-label]="(s.share | percent) + ' of this walk is in shade'">
+    <div class="bar"><div class="fill" [style.width.%]="s.share * 100"></div></div>
+    <p><strong>{{ s.share | percent }}</strong> of this walk is in shade</p>
+  </div>
+
+  @if (s.indoors.length > 0 && s.buildingsOpen) {
+  <p class="indoors">
+    <span class="material-icons" aria-hidden="true">meeting_room</span>
+    Cuts through {{ indoorList() }}: {{ indoorMetres() | number: '1.0-0' }} m indoors, out of the sun and the heat.
+  </p>
+  } @else if (s.indoors.length > 0) {
+  <p class="indoors closed">
+    <span class="material-icons" aria-hidden="true">no_meeting_room</span>
+    Passes through {{ indoorList() }}, which may be locked at this time. Buildings are only preferred on weekdays, 7 AM to 9 PM.
+  </p>
+  }
+
+  <p class="compare">
+    The quickest walk is {{ s.quickest.minutes | number: '1.0-0' }} min with {{ s.quickest.share | percent }} in shade.
+    @if (extraMinutes() > 0) {
+    This one takes about {{ extraMinutes() }} min more.
+    } @else {
+    This one takes no longer.
+    }
+  </p>
+
+  <p class="legend">
+    <span class="swatch" aria-hidden="true"></span> Shade at that time
+    @if (s.buildingsOpen) {
+    <span class="swatch indoor" aria-hidden="true"></span> Buildings to cut through
+    }
+  </p>
+
+  <p class="basis">
+    Shadows from {{ buildingCount() | number }} buildings ({{ s.buildings.model | number }} with 3D model heights from 2019, {{ s.buildings.floors + s.buildings.default | number }} estimated from floors) and {{ treeCount() | number }} trees ({{ s.trees.estimated | number }} with estimated height).
+  </p>
+  }
+</section>
+}

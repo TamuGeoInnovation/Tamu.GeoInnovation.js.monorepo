@@ -30,8 +30,8 @@ describe('travel modes of a routing network', () => {
       .filter((mode) => offeredTravelMode(PUBLISHED, mode));
 
     // Walking, accessible walking, driving with a pass, bus, bike, and visitor driving. Accessible driving and the
-    // accessible bus have no mode on this network.
-    expect(offered).toEqual([1, 2, 3, 5, 7, 8]);
+    // accessible bus have no mode on this network. 9 and 10 are shaded walking, solved on the Walk modes again.
+    expect(offered).toEqual([1, 2, 3, 5, 7, 8, 9, 10]);
     expect(offeredTravelMode(PUBLISHED, 4)).toBe(false);
     expect(offeredTravelMode(PUBLISHED, 6)).toBe(false);
   });

@@ -50,6 +50,10 @@ import { SettingsService, SettingsInitializationConfig } from '@tamu-gisc/common
 import { TripPlannerConnection, TripPlannerConnectionService } from './trip-planner-connection.service';
 import { TripPlannerNetworkTravelMode, networkTravelModeFor, offeredTravelMode } from './trip-planner-travel-modes';
 import { lastStretch, lastStretchFinishText, routeEndVertex } from './trip-planner-last-stretch';
+import { ShadeService } from './transportation/walk/shade.service';
+import { ShadeSummary, summarizeShade } from './transportation/walk/shade-casters';
+import { LonLat } from '@tamu-gisc/common/utils/geometry';
+import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import {
   TripResult,
@@ -83,6 +87,8 @@ export class TripPlannerService implements OnDestroy {
   private parkingService = inject(ParkingService);
   private settings = inject(SettingsService);
   private environment = inject(EnvironmentService);
+  private shadeService = inject(ShadeService);
+  private testing = inject(TestingService);
 
   private settingsConfig: SettingsInitializationConfig = {
     storage: {
@@ -135,6 +141,10 @@ export class TripPlannerService implements OnDestroy {
       polygon_barriers: {
         value: false
       },
+      // Prefer shaded paths when walking, for the sun at the trip's time (shade-aware walking prototype).
+      shade: {
+        value: false
+      },
       requested_time: {
         value: undefined
       },
@@ -165,9 +175,30 @@ export class TripPlannerService implements OnDestroy {
         determinants: {
           accessible: true
         }
+      },
+      // The shade-aware walking prototype: the same network modes, solved with the shadows at the trip's time as
+      // cheaper ground (`solveShaded`).
+      {
+        displayName: 'Shaded',
+        mode: 9,
+        directions_verb: 'Walk',
+        directions_icon: 'directions_walk',
+        determinants: {
+          shade: true
+        }
+      },
+      {
+        displayName: 'Shaded Accessible',
+        mode: 10,
+        directions_verb: 'Walk',
+        directions_icon: 'directions_walk',
+        determinants: {
+          accessible: true,
+          shade: true
+        }
       }
     ],
-    constraints: ['accessible']
+    constraints: ['accessible', 'shade']
   };
 
   public readonly rule_drive: TripPlannerRule = {
@@ -811,7 +842,92 @@ export class TripPlannerService implements OnDestroy {
 
     solveParams.travelMode = networkMode;
 
+    // Development only, as the switch that offers it is: a shared link with a shaded mode solves the plain walk on
+    // production, without reading the buildings and trees.
+    if (SHADED_WALK_MODES.includes(parseInt(params.travelMode?.id, 10)) && this.testing.isTesting) {
+      return this.solveShaded(solveParams);
+    }
+
     return this._Modules.route.solve(this.connection.url(), solveParams);
+  }
+
+  /**
+   * Solves a walk that prefers shade, for the sun at the trip's time (shade-aware walking prototype).
+   *
+   * The quickest walk is solved first: its pace converts the shaded walk's length back to real minutes, its
+   * surroundings say which buildings and trees to read, and its shade is what the directions compare against. Then
+   * the shadows are joined into one scaled-cost polygon barrier, inside which the network counts time at half its
+   * value, and the walk is solved again. The network reports the discounted time for the second walk, so each step's
+   * time is put back from its length.
+   *
+   * After sunset, or if the shaded solve fails, the quickest walk is used, still with its summary.
+   */
+  private async solveShaded(solveParams: esri.RouteParameters): Promise<ShadedSolveResult> {
+    const url = this.connection.url();
+    const quickest: ShadedSolveResult = await this._Modules.route.solve(url, solveParams);
+    const quickestDirections = quickest.routeResults[0].directions;
+    const quickestPaths = directionPaths(quickestDirections);
+    const minutesPerMile = quickestDirections.totalTime / quickestDirections.totalLength;
+
+    const requested = this._TravelOptions.getValue().requested_time;
+    const when = requested != null ? new Date(requested) : new Date();
+
+    const scene = await this.shadeService.scene(ShadeService.around(quickestPaths.flat()), when);
+    const barrier = await this.shadeService.barrier(scene, quickestPaths);
+
+    let chosen = quickest;
+
+    if (barrier) {
+      const shadedParams = solveParams.clone();
+
+      shadedParams.polygonBarriers = new this._Modules.FeatureSet({ features: barrier.graphics });
+
+      try {
+        chosen = await this._Modules.route.solve(url, shadedParams);
+
+        const directions = chosen.routeResults[0].directions;
+
+        directions.features.forEach((feature) => {
+          feature.attributes.time = feature.attributes.length * minutesPerMile;
+        });
+        directions.totalTime = directions.totalLength * minutesPerMile;
+        directions.totalDriveTime = directions.totalTime;
+      } catch (error) {
+        console.warn('The shaded walk could not be solved; using the quickest walk.', error);
+
+        chosen = quickest;
+      }
+    }
+
+    const chosenDirections = chosen.routeResults[0].directions;
+
+    chosen.shade = summarizeShade(
+      scene,
+      directionPaths(chosenDirections),
+      chosenDirections.totalTime,
+      quickestPaths,
+      quickestDirections.totalTime
+    );
+    chosen.shadePolygon = barrier?.polygon;
+    chosen.indoorPolygon = barrier?.indoor;
+
+    console.info('Shaded walk', {
+      when: when.toString(),
+      sun: scene.sun,
+      shadowRings: scene.rings.length,
+      barrierVertices: barrier?.vertices,
+      buildingsOpen: barrier?.buildingsOpen,
+      indoorFactor: barrier?.indoorFactor,
+      indoors: chosen.shade.indoors,
+      shadedSolved: chosen !== quickest,
+      buildings: scene.buildings,
+      trees: scene.trees,
+      share: chosen.shade.share,
+      quickest: chosen.shade.quickest,
+      minutes: chosen.shade.minutes
+    });
+
+    return chosen;
   }
 
   /**
@@ -1320,8 +1436,11 @@ export class TripPlannerService implements OnDestroy {
 
             return {
               result: {
-                routeResults: results as Array<esri.RouteResult>
-              },
+                routeResults: results as Array<esri.RouteResult>,
+                shade: (flattened[0]?.result as ShadedSolveResult)?.shade,
+                shadePolygon: (flattened[0]?.result as ShadedSolveResult)?.shadePolygon,
+                indoorPolygon: (flattened[0]?.result as ShadedSolveResult)?.indoorPolygon
+              } as ShadedSolveResult,
               trip: flattened[0].trip
             };
           } else {
@@ -1522,7 +1641,10 @@ export class TripPlannerService implements OnDestroy {
                 isFulfilled: true,
                 modeSwitches: modeSwitches,
                 timeMode: timeMode,
-                requestedTime: requestedTime
+                requestedTime: requestedTime,
+                shade: (res.result as ShadedSolveResult).shade,
+                shadePolygon: (res.result as ShadedSolveResult).shadePolygon,
+                indoorPolygon: (res.result as ShadedSolveResult).indoorPolygon
               })
             );
 
@@ -1998,6 +2120,8 @@ export class TripPlannerService implements OnDestroy {
           // Add all graphics generated from the route segments.
           layer.addMany(graphicCollection);
 
+          this.drawShade(result, layer, GraphicsLayer, Graphic);
+
           this.computeZoomLevel(graphicCollection).then((zoom) => {
             this._view.goTo(
               {
@@ -2069,6 +2193,58 @@ export class TripPlannerService implements OnDestroy {
     if (layer) {
       layer.removeAll();
     }
+
+    (<esri.GraphicsLayer>this._map.findLayerById(SHADE_LAYER_ID))?.removeAll();
+  }
+
+  /**
+   * Draws a shaded walk's shadows under its route, in the layer just below the route's (shade-aware walking
+   * prototype). Any other walk clears them.
+   */
+  private drawShade(
+    result: TripResult,
+    routeLayer: esri.GraphicsLayer,
+    GraphicsLayer: typeof esri.GraphicsLayer,
+    Graphic: typeof esri.Graphic
+  ): void {
+    let layer = <esri.GraphicsLayer>this._map.findLayerById(SHADE_LAYER_ID);
+
+    if (!layer) {
+      layer = new GraphicsLayer({ id: SHADE_LAYER_ID, title: 'Shade', listMode: 'hide' });
+
+      this._map.add(layer, Math.max(0, this._map.layers.indexOf(routeLayer)));
+    }
+
+    layer.removeAll();
+
+    if (result.shadePolygon && this._view.type === '2d') {
+      layer.add(
+        new Graphic({
+          geometry: result.shadePolygon,
+          symbol: {
+            type: 'simple-fill',
+            color: [20, 40, 110, 0.45],
+            outline: { color: [20, 40, 110, 0.8], width: 0.75 }
+          } as esri.GraphicProperties['symbol'],
+          attributes: { shade: true }
+        })
+      );
+    }
+
+    if (result.indoorPolygon && this._view.type === '2d') {
+      layer.add(
+        new Graphic({
+          geometry: result.indoorPolygon,
+          symbol: {
+            type: 'simple-fill',
+            color: [80, 0, 0, 0.3],
+            outline: { color: [80, 0, 0, 0.85], width: 1 }
+          } as esri.GraphicProperties['symbol'],
+          attributes: { indoors: true }
+        })
+      );
+    }
+
   }
 
   /**
@@ -2866,6 +3042,15 @@ export interface TripResultProperties {
   timeMode?: TimeModeOption;
 
   requestedTime?: Date;
+
+  /** For a shaded walk: how much of it is shaded, against the quickest walk (shade-aware walking prototype). */
+  shade?: ShadeSummary;
+
+  /** For a shaded walk: the shadows it was solved with, drawn under the route. */
+  shadePolygon?: esri.Polygon;
+
+  /** For a shaded walk while buildings are likely open: the buildings it preferred, drawn as indoor shade. */
+  indoorPolygon?: esri.Polygon;
 }
 
 /**
@@ -2966,6 +3151,7 @@ export interface TripPlannerRuleMode {
     accessible?: boolean;
     parking_pass?: boolean;
     bike_share?: boolean;
+    shade?: boolean;
   };
 
   /**
@@ -2998,6 +3184,8 @@ export interface TravelOptions {
 
   polygon_barriers?: boolean;
 
+  shade?: boolean;
+
   a_b_networks?: boolean;
 
   bike_share?: boolean;
@@ -3025,6 +3213,24 @@ interface TripPlannerModules {
   networkService: esri.networkService;
   Stop: typeof esri.Stop;
   Collection: CollectionConstructor;
+}
+
+/** The planner's modes that walk preferring shade: Walk and Walk_ADA, solved by `solveShaded`. */
+const SHADED_WALK_MODES = [9, 10];
+
+/** The layer a shaded walk's shadows are drawn in. */
+const SHADE_LAYER_ID = 'route-shade-layer';
+
+/** A route solve's result, with the shade summary and shadows of a shaded walk. */
+type ShadedSolveResult = esri.RouteSolveResult & {
+  shade?: ShadeSummary;
+  shadePolygon?: esri.Polygon;
+  indoorPolygon?: esri.Polygon;
+};
+
+/** The lines a route's directions draw, as `[longitude, latitude]` paths. */
+function directionPaths(directions: esri.DirectionsFeatureSet): Array<Array<LonLat>> {
+  return directions.features.flatMap((feature) => ((feature.geometry as esri.Polyline)?.paths ?? []) as LonLat[][]);
 }
 
 interface SuccessTripResultWithOriginalTaskParams {
