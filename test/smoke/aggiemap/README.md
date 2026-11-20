@@ -8,7 +8,7 @@ unpublished - no commit, no build, no signal.
 It found the Gameday Parking bike layers drawing the wrong data (#1036) within its first run.
 
 See #1034 for the full plan. Companion tool: [`tools/builder-inventory`](../../../tools/builder-inventory/README.md),
-which covers the eleven maps that cannot be reached by URL.
+which covers the maps that cannot be reached by URL.
 
 ## What it checks
 
