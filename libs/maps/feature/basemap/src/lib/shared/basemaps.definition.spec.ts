@@ -104,6 +104,49 @@ describe('campus basemap', () => {
     expect(production.flatMap(urlsOf).some((url) => url.includes('Hosted/VTBase4/'))).toBe(false);
   });
 
+  it('opens every environment on the November 2026 cache, and keeps the construction hatch with it (#3225)', () => {
+    // The maintainer's decision, 23 November 2026: the November cache is the selected default on development and on
+    // production, going out with the next production release. So it is `aggiemapBasemap()` on both, and it carries
+    // `aggie_basemap` - the id every saved campus choice is matched against (`basemapForSavedId`).
+    const exported = definitions as unknown as Record<string, unknown>;
+    const resolve = exported['aggiemapBasemap'] as (isTesting: boolean) => Basemap & { id: string; title: string };
+
+    for (const isTesting of [false, true]) {
+      const open = resolve(isTesting);
+
+      expect(urlsOf(open).some((url) => url.includes('Hosted/VTBase4/VectorTileServer'))).toBe(true);
+      expect(open.id).toBe('aggie_basemap');
+      expect(open.title).toBe('Aggieland');
+    }
+
+    // The hatch is the point of this test. VTBase4 publishes ONE construction style layer, a black line, where
+    // VTBase3 published a fill with the rasterized pink pattern and an outline. Taking VTBase4 as published would
+    // therefore drop the orange grid the maintainer settled on 27 October (#2532, #2459) from every map on both
+    // environments - a visible production change riding inside a basemap swap, which is how #2536 happened.
+    const open = resolve(false);
+    const tiles = open.baseLayers.find((layer) => (layer.url ?? '').includes('VTBase4')) as Record<string, unknown>;
+    const construction = open.baseLayers.find((layer) => layer['type'] === 'FeatureLayer') as Record<string, unknown>;
+
+    expect(tiles['hiddenStyleLayers']).toEqual(['Campus Structures/Currently Under Construction']);
+    expect(construction).toBeDefined();
+    expect(construction['renderer']).toBe(CONSTRUCTION_HATCH_RENDERER);
+    expect(construction['definitionExpression']).toBe("type = 'CONSTRUCTION'");
+  });
+
+  it('dates the October cache it replaces, and keeps it on development only (#3225)', () => {
+    const exported = definitions as unknown as Record<string, unknown>;
+    const gallery = exported['aggiemapGalleryBasemaps'] as (isTesting: boolean) => Array<Basemap & { id: string; title: string }>;
+
+    const october = gallery(true).find((basemap) => basemap.title === 'Aggieland vector, October 2026');
+
+    expect(october).toBeDefined();
+    expect(october?.id).toBe('aggie_basemap_vector_2026_10');
+    expect(urlsOf(october as Basemap).some((url) => url.includes('Hosted/VTBase3/VectorTileServer'))).toBe(true);
+
+    // Production offers the November cache alone, so it must not reach for the October tiles any more.
+    expect(gallery(false).flatMap(urlsOf).some((url) => url.includes('Hosted/VTBase3/VectorTileServer'))).toBe(false);
+  });
+
   it('turns every id the gallery can save back into a basemap (#1726)', () => {
     const exported = definitions as unknown as Record<string, unknown>;
     const forSavedId = exported['basemapForSavedId'] as (id: string, isTesting: boolean) => Basemap | string;
