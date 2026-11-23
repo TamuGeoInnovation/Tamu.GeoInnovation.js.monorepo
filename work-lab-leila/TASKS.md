@@ -80,6 +80,13 @@
 > emails) on `feat/3044-email-markdown` when it appears on the fork: the window's preview with **bold** text, and an
 > email as it arrives if you can show one locally without sending to anyone real. Report each "branch ready" as you go.
 
+
+## PAUSED (23 November 2026, about 4:50 PM Central, the maintainer): run no new batch
+
+A student is using this machine. Finish anything already running, report it, and then take nothing from this file until
+the maintainer says otherwise; the director will write it here when he does. Every batch below is either reported or
+withdrawn. See `DIRECTOR.md`, "`work-lab-leila` is unreliable".
+
 ## Batch 198 (security: check seven Dependabot pull requests; 23 November 2026, 9:40 AM Central, from `work (security)`) (Low) - **WITHDRAWN, do not run** (10:05 AM Central: the director checked all seven itself; CI was green on each)
 
 The maintainer is away and asked for these to be checked without him. Nothing to push, no branches on the fork, no pull

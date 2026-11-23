@@ -76,6 +76,12 @@ having nothing to say.
 
 ## `work-lab-leila` is unreliable from 9 November 2026 (the maintainer, about 3:00 PM Central)
 
+**Again from 23 November 2026, about 4:50 PM Central: paused, no new batches until the maintainer says so.** A student is
+using the machine. His words: "let the lab finish what it is doing, then no more work until I say so. It may already be
+unavailable. If you have been waiting for it to respond longer than you anticipated, abort the work there and start it
+over elsewhere." Its last batches (194 to 198) were all reported before this, so nothing was left on it. Its work goes
+to `home` and `laptop` instead.
+
 **Somebody is sitting at that machine and its processes may be killed without warning.** The maintainer's words:
 "It will be unreliable."
 
