@@ -771,12 +771,12 @@ describe('ReviewEmailModalComponent, a preview that fails', () => {
     const page = open(
       new HttpErrorResponse({
         status: 400,
-        error: { statusCode: 400, message: 'This session has no speakers to email', error: 'Bad Request' }
+        error: { statusCode: 400, message: 'This session has no judges. Tick its judges and save it first.', error: 'Bad Request' }
       })
     );
 
     expect(page).toContain('The email could not be loaded, so nothing was sent.');
-    expect(page).toContain('This session has no speakers to email');
+    expect(page).toContain('This session has no judges. Tick its judges and save it first.');
     expect(page).not.toContain('Please try again');
   });
 

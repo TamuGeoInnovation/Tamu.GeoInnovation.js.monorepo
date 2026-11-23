@@ -38,6 +38,7 @@ import {
 import { MODAL_DATA, ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 
 import { GISDAY_SITE } from '../../../site/site';
+import { serverMessage } from '../../../utils/server-message';
 
 /** What the window is opened with: the decision, and the email each kind of submission would get. */
 export interface ReviewEmailModalData {
@@ -110,7 +111,11 @@ export class ReviewEmailModalComponent implements OnInit {
   public readonly sendWords = this.data.verb ? 'Send' : `${this.verb} and send`;
   public readonly note = this.data.note ?? '';
   public readonly preview = signal<ReviewEmailPreview | null>(null);
-  public readonly failed = signal(false);
+  /**
+   * What to say when the email could not be loaded, after "nothing was sent", else null: the API's own reason for a refusal
+   * (a 4xx, such as a session with no speakers), as the other admin pages give it, or to try again (#3189).
+   */
+  public readonly failed = signal<string | null>(null);
   public readonly form = new FormGroup<Record<string, FormControl<string>>>({});
   /** The form's key for the "Send as" box (#3100). */
   public readonly senderKey = EMAIL_SENDER_KEY;
@@ -163,7 +168,7 @@ export class ReviewEmailModalComponent implements OnInit {
         this.how.setValue(preview.copyEachReason ? 'each' : 'together');
         this.preview.set(preview);
       },
-      error: () => this.failed.set(true)
+      error: (err) => this.failed.set(serverMessage(err, 'Please try again.'))
     });
   }
 

@@ -120,7 +120,7 @@
     <tamu-gisc-button [value]="sendWords + ' ' + total(preview) + (total(preview) === 1 ? ' email' : ' emails')" fit="relaxed" [disabled]="listsRecipients() && !ticked().length" (click)="send()"></tamu-gisc-button>
   </div>
   } @else if (failed()) {
-  <p>The email could not be loaded, so nothing was sent. Please try again.</p>
+  <p>The email could not be loaded, so nothing was sent. {{ failed() }}</p>
   <div class="review-email__footer">
     <tamu-gisc-button value="Close" fit="relaxed" (click)="cancel()"></tamu-gisc-button>
   </div>
