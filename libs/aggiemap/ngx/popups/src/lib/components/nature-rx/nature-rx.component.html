@@ -5,8 +5,9 @@
 <div class="popup-section"></div>
 
 <div class="popup-section">
-  @if (data?.attributes?.location) {
-  <p class="trailer-1">{{ data.attributes.location }}</p>
+  <!-- The space's own name, the service's Area Name, as the GIS team asked (#3223); it showed Campus Location. -->
+  @if (data?.attributes?.area_name) {
+  <p class="trailer-1">{{ data.attributes.area_name }}</p>
   }
 
   <div [innerHTML]="$safeNavigationMigration(data?.attributes?.description) | markdownParse" class="trailer-2"></div>
