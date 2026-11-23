@@ -24,7 +24,7 @@ Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
 ## Setup (batch 1)
 
-Progress (12:58 PM Central): audit done; GIS Day API and site building; Playwright image pulling. Next update by 1:15 PM Central.
+Progress (12:49 PM Central): the maintainer did his three steps (hosts entry, auth0-dev.local.env copied from work, `.wslconfig` 24 GB, WSL restarted); all verified. Docker now has 23.5 GB, so `CHECK_MEMORY`/`CHECK_PARALLEL` are removed and checks use the defaults (batch 2's 15.4 GB note is out of date). GIS Day restarting so the API reads the Auth0 file; Playwright image pulled. (The 12:58 stamp on the previous push was wrong; it was about 12:46.) Next update by 1:10 PM Central.
 
 | Item | State | Whose |
 | --- | --- | --- |
@@ -45,13 +45,13 @@ Progress (12:58 PM Central): audit done; GIS Day API and site building; Playwrig
 | Bug-fix check `gisday-angular,gisday-nest` | to do | mine |
 
 ## Running now
-- **Batch 1 (gisday: complete setup)**, started 12:43 PM Central. Next update by 1:15 PM Central.
+- **Batch 1 (gisday: complete setup)**, started 12:43 PM Central. Next update by 1:10 PM Central.
 
 ## Finished
 - Nothing yet.
 
 ## Queued
-- Nothing.
+- Batch 2 (aggiemap: #3223, #3225), after batch 1.
 
 ## Findings
 - None yet.
