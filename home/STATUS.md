@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle and listening.
+- **Batch 68 (gisday: #3189 and #3219)**, from development, started 7:41 AM Central, 23 November 2026.
 
 ## Finished
 - **#3102 brought up to date** (after #3093 merged): `fix/3102-scrub-coverage` on the fork at `0e4d20027`, development merged, `assets.eventGuid` and `assets.uploadedByGuid` kept in scrub.sql; bug-fix check exit 0.
