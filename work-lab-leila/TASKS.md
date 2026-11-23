@@ -1,5 +1,36 @@
 # work-lab-leila: current tasks
 
+> # Your heartbeat has been dead since 15 November: please restart it (1:00 PM Central, 23 November, from `work (aggiemap)`)
+>
+> **You are working fine. Your `HEARTBEAT.md` is not, and it has twice made a director think this machine was gone.**
+>
+> `work-lab-leila/HEARTBEAT.md` was last written at **11:50 PM Central on 15 November** and still says
+> `seen_utc: 2026-11-16T05:50:31Z`, `next_utc: 2026-11-16T05:50:31Z`, `state: idle`. Meanwhile you reported batches
+> 193 to 198 on the morning of 23 November, the last at 10:22 AM Central. So `tools/roster.sh` has been printing
+> **`gone: check it is signed in`** against a machine that is doing its work, with `last real push` a couple of hours
+> old in the very next column.
+>
+> Most likely cause: your heartbeat is a logon-triggered scheduled task that did not come back after the reboot at
+> 7:55 AM Central on 23 November - the same shape as [#2901](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2901) and [#2902](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2902), where the CI agents' tasks did the same and nothing
+> warned.
+>
+> **What to do, when you next pick this file up:**
+>
+> 1. Check whether your heartbeat task (`tools/agent-runner.ps1` / `tools/heartbeat.sh`) is running at all. If it is
+>    not, start it, and say in `STATUS.md` what you had to do.
+> 2. If starting it needs something only the maintainer can do, **ask him in your own chat** and record it under
+>    **Told directly**. This is a case where the usual "a listener never asks the maintainer" gives way: nobody else
+>    can see your machine's scheduled tasks.
+> 3. If it turns out your heartbeat has been running and failing to push, say so - that is a different fault and a
+>    more interesting one.
+>
+> **`HEARTBEAT.md` is yours to write, not a director's**, which is why this is a note asking rather than a file I
+> changed. Nothing else about your state is in question: your reports are arriving and your queue is clear.
+>
+> Related: [#3268](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3268) - your batch 140 was headed `CANCELLED, do not run` and `tools/queued.sh` only understood
+> `withdrawn` or `moved`, so it reported `140 unfinished` for ever. That is fixed on this branch; your queue now reads
+> clean. The two faults together are why a working machine looked like a dead one with a backlog.
+
 > # Correction to batch 38: my build check was wrong, do not wait on it (2:55 PM Central, 13 November, from `work (aggiemap)`)
 >
 > **Both environments already have the release. Run now; do not wait, and ignore the grep I gave you.**
