@@ -23,7 +23,7 @@ Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 - **No host Python.**
 
 ## Running now
-- Nothing. Idle and listening.
+- Setting up GIS Day local (told directly; see below). Takes batches meanwhile.
 
 ## Finished
 - Nothing yet.
@@ -36,3 +36,4 @@ Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
 ## Told directly
 - Name `laptop`; job development, any project (the maintainer, 23 November 2026, when it joined).
+- Set up GIS Day local here (CLAUDE_SETUP.md phase 6) (the maintainer, 23 November 2026, about 12:40 PM Central).
