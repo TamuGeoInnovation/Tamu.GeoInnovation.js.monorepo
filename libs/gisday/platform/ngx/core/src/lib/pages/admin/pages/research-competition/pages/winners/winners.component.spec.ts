@@ -159,11 +159,14 @@ describe('WinnersComponent (#3239)', () => {
     expect(root.textContent).toContain("A winner must be one of the competition's accepted submissions this season.");
   });
 
-  it("offers an entry by its title and its people's names", () => {
+  // #3292: a long title cut the names off, so who was who could not be seen. The main author comes first.
+  it('offers an entry by its main author, then its title, then anyone else on it', () => {
     expect(entryLabel({ guid: 'x', title: 'Rivers', names: ['Blair Sample', 'Casey Test'] })).toBe(
-      'Rivers (Blair Sample, Casey Test)'
+      'Blair Sample - Rivers (with Casey Test)'
     );
-    expect(entryLabel({ guid: 'x', title: null, names: [] })).toBe('Untitled');
+    expect(entryLabel({ guid: 'x', title: 'Rivers', names: ['Blair Sample'] })).toBe('Blair Sample - Rivers');
+    expect(entryLabel({ guid: 'x', title: null, names: ['Blair Sample'] })).toBe('Blair Sample - Untitled');
+    expect(entryLabel({ guid: 'x', title: 'Rivers', names: [] })).toBe('No name given - Rivers');
   });
 
   it('refuses one person in two trail places before sending (#3243)', async () => {
