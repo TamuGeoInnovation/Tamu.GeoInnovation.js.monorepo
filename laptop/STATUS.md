@@ -32,7 +32,8 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch 3 (aggiemap: #3279)**, started 4:43 PM Central. Next update by 5:05 PM Central.
+- **Batch 3 (aggiemap: #3279)**, started 4:43 PM Central. Next update by 5:30 PM Central.
+  Progress (4:52 PM): VTBase still answers 499 Token Required (4:43 PM). Before image: dialog shown on development, the only token-required answer is Hosted/VTBase. Red first: 3 new assertions failed as intended. Fix committed on `fix/3279-september-cache`, check running. A local throwaway merge with PR 3282 is ready for #3225's smoke run; note: 3282 and this branch conflict in three files.
 
 ## Finished
 - **Batch 2 (aggiemap: #3223, #3225)** (report `laptop/reports/2026-11-23-2.md`): both branches are ready on the fork with `.pr-body.md`; no pull requests opened.
