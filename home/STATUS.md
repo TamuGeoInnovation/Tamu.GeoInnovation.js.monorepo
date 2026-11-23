@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch 71 (gisday: #3243, trail challenge winners)**, from `feat/3239-homepage-winners`, started 9:04 AM Central, 23 November 2026. Batch 72 (#3244) next.
+- **Batch 72 (gisday: #3244, VGI submission counts)**, from development, started 9:19 AM Central, 23 November 2026.
 
 ## Finished
+- **Batch 71 (gisday: #3243)** (report `home/reports/2026-11-23-71.md`): branch ready, `feat/3243-trail-winners` on the fork at `08c7f9d16`, on top of #3239's branch, no PR. Trail picker in the leaderboard's order with names and points; homepage names them. Red first; full check exit 0. No questions.
 - **Batch 70 (gisday: #3239's migration script)** (report `home/reports/2026-11-23-70.md`): script ready, kubernetes-config `feat/3239-season-winners-migration` at `8ad70ba` in `C:/TAMU/kc-3239`, **not pushed**, not run. Copied from migrate-prod-3183; needs AddCheckInMinutes first. Parses; no dry run possible (kubectl and Windows credentials). No questions.
 - **Batch 69 (gisday: #3239)** (report `home/reports/2026-11-23-69.md`): branch ready, `feat/3239-homepage-winners` on the fork at `178fb3e79`, no PR. Winners page under Research Competitions, a `season_winners` table (migration proven up and down), a public read shown from the day after the season's last day, the homepage section on gisday.tamu.edu only. Trail: model only, no picker. Red first; full check exit 0. Two questions.
 - **Batch 68 (gisday: #3189 and #3219)** (report `home/reports/2026-11-23-68.md`): both branch ready on the fork, no PRs. `fix/3189-email-preview-reason` at `c76e51530` (the email window gives the API's reason for a 4xx); `fix/3219-checked-in-heading` at `f3bcdceee` (total column 70 px, three soft hyphens, a measured heading check). Both red first; bug-fix checks exit 0. Screenshots to the lab. No questions.
