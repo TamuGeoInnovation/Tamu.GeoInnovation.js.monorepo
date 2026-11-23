@@ -1,5 +1,45 @@
 # Laptop: current tasks
 
+## Batch 4 (aggiemap: Remote Campus Rebranding, #3161; 23 November 2026, 6:25 PM Central, from `work (aggiemap)`) (High) - **after 3**
+
+From the GIS/Transportation team (`chelseycooke`), and High at the maintainer's word. Texas A&M has new naming
+conventions for its Washington DC, McAllen and Galveston locations, and the maps still use the old ones.
+
+**Don't touch:** `libs/maps/feature/basemap` and `test/smoke/aggiemap/development-only.ts` - they are batch 3's, and
+the director is changing them again for pull request 3282 straight after. Branch from the latest `development`.
+
+### A. #3161 - the three remote campus maps and the Campus Maps landing page
+
+The issue lists every string. Take them from the issue, not from this file, in case it is edited:
+<https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3161>
+
+In short: on `/all-maps`, DC's and McAllen's descriptions change (Galveston's does not); and each of the three maps'
+**sidebar title** changes - "Washington DC Campus", "Galveston Campus", "McAllen Campus".
+
+1. **Find every place each name is written before changing any of them.** The definitions are
+   `libs/ts/events/ngx/src/lib/definitions/campus/dc-bush-school.definitions.ts`, `galveston.definitions.ts` and
+   `mcallen.definitions.ts`, and the landing page's entries are elsewhere - but a name like "DC / Bush School"
+   also appears in layer titles, two spec files (`campus-overlay.spec.ts`, `campus-thumbnails.spec.ts`) and
+   possibly in search sources. **Report the full list in your report before deciding what to change.** The issue
+   asks for the sidebar title and the landing-page description only; a layer called "DC / Bush School Basemap" is a
+   different string and changing it is not obviously wanted. **Where you are unsure, change the two the issue names
+   and list the rest as a question** rather than sweeping.
+2. **Do not change route paths or ids.** `/campus/dc-bush-school/map/d` and the layer ids stay as they are: they are
+   in shared links and in saved settings. This is a wording change only. Say so in the pull request body.
+3. **Red first.** A unit assertion on each map's configured title, failing before the change.
+4. **Before and after images** for all three maps' sidebars and for `/all-maps`, into
+   `docs/screenshots/3161-remote-campus-names/`. Six captures at least. The dev server is fine for these.
+5. **Check:** `scripts/check-in-volume.sh <branch> ts-events-ngx,aggiemap-angular` and whatever else your change
+   touches. Defaults are fine.
+6. Release entry with its *What to test on dev* row, naming all four pages.
+
+**One thing to flag, not to solve:** the issue opens by saying the university is "introducing updated logos and
+naming conventions", but every item it lists is text. If new logo files are meant to come with this, nobody has sent
+any. Say in your report that you did not change any logo and that none was supplied.
+
+Branch on the fork with `.pr-body.md` as the last commit. **No pull request** - that is the director's.
+
+
 ## Batch 4 (gisday: #3244's counts table on a phone, re-checked after its fix; 23 November 2026, about 5:05 PM Central, from `work (gisday)`) (Medium) - **after 3**
 
 The lab is paused (see `DIRECTOR.md`), so this comes to you. It is small: one fix to confirm and two images to replace.
