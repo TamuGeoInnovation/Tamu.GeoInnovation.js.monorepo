@@ -47,6 +47,8 @@ INSERT @kept VALUES
   (N'rubric_criteria', N'guid,rubricGuid,position,name,maxPoints,levels'),
   (N'seasons', N'guid,year,active,posterSubmissionsCloseAt,posterFilesCloseAt,presentationSubmissionsCloseAt,presentationFilesCloseAt,paperSubmissionsCloseAt,paperFilesCloseAt,cartographySubmissionsCloseAt,cartographyFilesCloseAt'),
   (N'season_competitions', N'guid,competitionType,seasonGuid'),
+  -- A season's winners (#3239): which submission won which place; the names shown are the submission's.
+  (N'season_winners', N'guid,seasonGuid,competition,place,submissionGuid'),
   (N'seasons_days', N'guid,date,seasonGuid'),
   (N'speaker_roles', N'guid,name'),
   (N'speakers', N'guid,isActive,seasonGuid,organizationGuid,universityGuid,isOrganizer,badgePrintedAt'),
@@ -88,6 +90,8 @@ DECLARE @account nvarchar(max) =
 INSERT @scrubbed VALUES
   (N'checkins', N'accountGuid', @account),
   (N'initial_survey_responses', N'accountGuid', @account),
+  -- A trail challenge winner, by account (#3239).
+  (N'season_winners', N'accountGuid', @account),
   (N'speakers', N'accountGuid', @account),
   (N'submissions', N'accountGuid', @account),
   (N'user_classes', N'accountGuid', @account),

@@ -14,6 +14,7 @@ export * from './lib/speaker/speaker.module';
 export * from './lib/speaker-edit/speaker-edit.module';
 // Judging the research competitions (#3183)
 export * from './lib/judging/judging.module';
+export * from './lib/season-winner/season-winner.module';
 export * from './lib/speaker-role/speaker-role.module';
 export * from './lib/sponsor/sponsor.module';
 export * from './lib/submission-type/submission-type.module';
