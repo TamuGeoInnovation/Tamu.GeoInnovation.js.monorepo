@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle and listening.
+- **Batch 75 (gisday: #3260)**, since 12:41 PM Central, 23 November: one shared repeat-guard table for every email, from the latest `development`.
 
 ## Finished
 - **Batch 73 (gisday: #3098 up to date)** (report `home/reports/2026-11-23-73.md`): branch ready, `fix/3098-shared-repeat-guard` on the fork at `8bd32004d`, no PR. Migration regenerated as `AddSessionDetailsSends1795448491167` (no `sentBy`), proven; guard ported onto together sends; a race bug found and fixed; full check exit 0. kc-3098 untouched. One question.
