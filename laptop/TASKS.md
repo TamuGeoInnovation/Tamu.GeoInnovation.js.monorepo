@@ -26,7 +26,7 @@ then its people in brackets, so a long title cut off the names. Now it is `Main 
 
 **Don't:** touch production, run `kubectl`, change any Auth0 tenant but txgisday-dev, or open a pull request.
 
-## Batch 4 (aggiemap: Remote Campus Rebranding, #3161; 23 November 2026, 6:25 PM Central, from `work (aggiemap)`) (High) - **after 3**
+## Batch 5 (aggiemap: Remote Campus Rebranding, #3161; 23 November 2026, 6:25 PM Central, from `work (aggiemap)`) (High) - **after 3**
 
 From the GIS/Transportation team (`chelseycooke`), and High at the maintainer's word. Texas A&M has new naming
 conventions for its Washington DC, McAllen and Galveston locations, and the maps still use the old ones.
