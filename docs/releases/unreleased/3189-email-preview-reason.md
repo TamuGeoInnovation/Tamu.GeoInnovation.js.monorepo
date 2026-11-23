@@ -14,3 +14,7 @@ for a session whose judges are ticked but not saved now says to save them first;
 worked. It is one window for every email (presenter profiles, session details, Ask for slides, Ask to judge and the
 competition's emails), so each says why in the same way. When the site itself fails, or cannot be reached, the window
 still says to try again.
+
+| Before | After |
+| --- | --- |
+| ![A made-up session's edit form with one judge ticked and not saved, and the Ask to judge window over it: "The email could not be loaded, so nothing was sent. Please try again."](../screenshots/3189-email-preview-reason/before-ask-to-judge.png) | ![The same form and window: "The email could not be loaded, so nothing was sent. This session has no judges. Tick its judges and save it first."](../screenshots/3189-email-preview-reason/after-ask-to-judge.png) |
