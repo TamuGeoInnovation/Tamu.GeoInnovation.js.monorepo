@@ -1,5 +1,19 @@
 # Home machine: current tasks
 
+## Batch 75 (gisday: #3260, one shared table for every email's repeat guard; 23 November 2026, from `work (gisday)`) (Low) - **do this now**
+
+[#3260](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3260), the follow-up you found in report 73.
+#3098 is merged (PR 3261) and **on production since about 12:35 PM Central today**, with `session_details_sends` created by
+`migrate-prod-3098.ps1` on both databases. So that table and its migration are now history: **do not edit
+`AddSessionDetailsSends1795448491167`**. Branch from the latest `development`. A new migration, dated after it, creates one
+table for every email's repeat guard, keyed by the email's kind, session and recipient, copies any `session_details_sends`
+rows into it, and drops `session_details_sends` (its `down()` restores it). The **Ask to judge** and **Ask for slides**
+emails stop using in-memory `RecentSends` and use the same helper as the session details email, with the same race
+handling you proved for #3098 (two racing sends: exactly one goes). Red first against the unfixed code where a test can
+show it; prove the migration up, down and up again in your throwaway SQL Server; full check; push; "branch ready", with
+the new migration's name and its exact `up()` and `down()` statements so the director can write its production script.
+**Leave kubernetes-config alone.** Drop any `.pr-body.md` commit; put its text in the report.
+
 ## Batch 74 (gisday: #3208, presenter cards on a 360 px phone; 23 November 2026, from `work (gisday)`) (Medium) - **do this now**, before 73
 
 [#3208](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3208), taken over from the director.
