@@ -976,6 +976,25 @@ export class SpeakerEdit extends GuidIdentity {
   public reviewedBy: string | null;
 }
 
+/**
+ * The repeat guard of a session's speaker emails (#3098, #3260): one row a speaker was sent one email about one session,
+ * claimed before the email goes, with when (`created`). Every copy of the API reads these (`RepeatGuard`), so a send
+ * repeated within `REPEAT_SEND_MINUTES` is caught whichever copy it reaches. Who it was from, and to which address, is
+ * the send record's (`SpeakerEmailSend`, #3167), which is written once the email has gone.
+ */
+@Entity({ name: 'speaker_email_claims' })
+export class SpeakerEmailClaim extends GuidIdentity {
+  /** Which email: `SESSION_DETAILS_EMAIL_KIND`, `SLIDES_REQUEST_EMAIL_KIND`, `JUDGING_EMAIL_KIND`. */
+  @Column({ length: 50 })
+  public kind: string;
+
+  @ManyToOne(() => Event, { nullable: false, onDelete: 'CASCADE' })
+  public session: Relation<Event>;
+
+  @ManyToOne(() => Speaker, { nullable: false, onDelete: 'CASCADE' })
+  public speaker: Relation<Speaker>;
+}
+
 @Entity({
   name: 'checkins'
 })
@@ -1237,6 +1256,35 @@ export class Assessment extends GuidIdentity {
   public comment: string | null;
 }
 
+/**
+ * One place a season's competition was won in (#3239): 1st, 2nd or 3rd of a judged competition, by a submission, picked
+ * on the admins' Winners page and shown on gisday.tamu.edu's homepage once the season's GIS Day is over. The name and
+ * title shown are the submission's, read when shown, so nothing is copied. A trail challenge (VGI) winner is a person,
+ * kept by account (`accountGuid`), which has no picker yet. It goes with its season or its submission.
+ */
+@Entity({ name: 'season_winners' })
+@Unique(['season', 'competition', 'place'])
+export class SeasonWinner extends GuidIdentity {
+  @ManyToOne(() => Season, { nullable: false, onDelete: 'CASCADE' })
+  public season: Relation<Season>;
+
+  /** A judged competition, as `JUDGED_COMPETITIONS` names them, or `trail`: `WINNER_COMPETITIONS` in `@tamu-gisc/gisday/common`. */
+  @Column({ type: 'nvarchar', length: 40, nullable: false })
+  public competition: string;
+
+  /** 1, 2 or 3. */
+  @Column({ type: 'int', nullable: false })
+  public place: number;
+
+  /** The winning submission, for a judged competition. */
+  @ManyToOne(() => Submission, { nullable: true, onDelete: 'CASCADE' })
+  public submission?: Relation<Submission> | null;
+
+  /** The winner's account, for the trail challenge, whose winners are people rather than submissions. */
+  @Column({ type: 'nvarchar', length: 255, nullable: true })
+  public accountGuid?: string | null;
+}
+
 @Entity({
   name: 'Signage_Categories'
 })
@@ -1459,6 +1507,7 @@ export const GISDAY_ENTITIES = [
   SpeakerEditLink,
   SpeakerEmailSend,
   SpeakerEdit,
+  SpeakerEmailClaim,
   SubmissionType,
   Sponsor,
   Tag,
@@ -1472,7 +1521,9 @@ export const GISDAY_ENTITIES = [
   // Judging the research competitions (#3183).
   Rubric,
   RubricCriterion,
-  Assessment
+  Assessment,
+  // A season's winners, on the homepage (#3239).
+  SeasonWinner
 ];
 
 export interface IGeoJsonFeature {

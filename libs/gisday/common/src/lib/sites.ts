@@ -25,7 +25,9 @@ export type GisdayFeature =
   | 'pastYears'
   | 'tamu'
   | 'tamuLinks'
-  | 'homeLinks';
+  | 'homeLinks'
+  // The research competitions' winners on the homepage, on gisday.tamu.edu, where they ran (#3239).
+  | 'winners';
 
 /**
  * One deployment of the GIS Day site: its name, its images, and the features it leaves out.
@@ -118,7 +120,7 @@ export const GISDAY_SITES = {
     description:
       'Three days of workshops and programs celebrating geospatial technology dedicated to students and faculty as they educate, innovate, and collaborate.',
     preview: 'assets/images/sites/txgisday/preview.png',
-    off: [],
+    off: ['winners'],
     contact: 'gis@tamu.edu'
   },
   // gisday.tamu.edu, Texas A&M's own GIS Day, in the university's brand (#2012). It is served by txgisday.org's
@@ -155,7 +157,7 @@ export const GISDAY_SITES = {
     description:
       'Workshops, demonstrations, and programs from UCGIS member universities, celebrating the advancement of geospatial technology.',
     preview: 'assets/images/sites/ucgis/preview.png',
-    off: ['competitions', 'faq', 'sponsors', 'classes', 'checkIns', 'pastYears', 'tamu', 'tamuLinks'],
+    off: ['competitions', 'faq', 'sponsors', 'classes', 'checkIns', 'pastYears', 'tamu', 'tamuLinks', 'winners'],
     // Its deployment names it by key; the address is here too so the site's server can give link previews this
     // site's page (#2649).
     hosts: ['gisday.ucgis.org'],

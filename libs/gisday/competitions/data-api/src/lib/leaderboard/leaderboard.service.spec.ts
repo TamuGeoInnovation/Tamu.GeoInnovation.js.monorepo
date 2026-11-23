@@ -65,6 +65,23 @@ describe('LeaderboardService', () => {
     expect(ALREADY_SUBMITTED_POINTS).toBe(1);
   });
 
+  // #3243: the Winners page offers the trail challenge's places in this order, by account, with these points.
+  it("ranks a GIS Day season's submitters by account, highest first, as the board does", async () => {
+    submissions = [submission('ann', monument), submission('bob', north(5)), submission('bob', north(40))];
+
+    expect(await service.rankedForSeason('s-1')).toEqual([
+      { account: 'auth0|bob', points: ALREADY_SUBMITTED_POINTS + NEW_FIND_POINTS },
+      { account: 'auth0|ann', points: NEW_FIND_POINTS }
+    ]);
+    expect(findCompetitionSeason).toHaveBeenCalledWith(expect.objectContaining({ where: { season: { guid: 's-1' } } }));
+  });
+
+  it('ranks no one for a season with no competition', async () => {
+    findCompetitionSeason.mockResolvedValueOnce(null);
+
+    expect(await service.rankedForSeason('s-1')).toEqual([]);
+  });
+
   it('scores 1 when the first submitter submits the same thing again', async () => {
     submissions = [submission('ann', monument), submission('ann', north(3))];
 

@@ -75,11 +75,12 @@ export function peopleCsv(
 /**
  * A column per person type, for a dashboard's table. "Undergraduate" carries a soft hyphen, shown only if the word must
  * break: Chrome does not hyphenate a word that starts with a capital, so in a narrow column it was cut to "Undergradu".
- * The types' own labels have none, because they also go into CSV files.
+ * "classification" is wider than a count column too, and carries one rather than relying on the browser's dictionary
+ * (#3219). The types' own labels have none, because they also go into CSV files.
  */
 export const PERSON_TYPE_COLUMNS: Array<DashboardTableColumn> = RSVP_PERSON_TYPES.map(({ type, label }) => ({
   key: type,
-  label: label.replace('Undergraduate', 'Under\u00adgraduate')
+  label: label.replace('Undergraduate', 'Under\u00adgraduate').replace('classification', 'classi\u00adfication')
 }));
 
 /**

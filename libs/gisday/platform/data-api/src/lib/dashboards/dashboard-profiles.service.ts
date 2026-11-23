@@ -6,6 +6,17 @@ import { Repository } from 'typeorm';
 import { Auth0UserProfile, ManagementService } from '@tamu-gisc/common/nest/auth';
 
 import { Organization, University } from '../entities/all.entity';
+import { personOf } from '../user-rsvp/dto/rsvp-dashboard.dto';
+
+/**
+ * A person's name as the dashboards show it, from their profile, or null when it has none (#3243): the homepage names the
+ * trail challenge's winners with it, and the Winners page its submitters.
+ */
+export function profileName(profile: Auth0UserProfile | null | undefined): string | null {
+  const { firstName, lastName } = personOf(profile, new Date(), new Map());
+
+  return [firstName, lastName].filter(Boolean).join(' ') || null;
+}
 
 /** How long a profile, once read, is used again rather than read again. */
 export const PROFILE_KEPT_MS = 5 * 60 * 1000;

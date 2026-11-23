@@ -792,12 +792,18 @@ files on the `work-mailbox` branch of `TamuGeoInnovation`, which is never merged
 
 - **The home session writes the batch** into `work/TASKS.md`. Its header holds the rules, and each task names
   the issue to report on, the exact commit or how to find it, the commands, and what follows: tag or not.
-- **The maintainer starts the work session with one line:**
+- **The maintainer starts a session on any machine with one line**, adding its name and job for a new one:
 
   ```
-  Pull TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo, check out the work-mailbox branch, and do what work/TASKS.md says.
+  Pull TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo, check out the work-mailbox branch, and do what DIRECTOR.md says.
   ```
 
+- **`DIRECTOR.md` is on the `work-mailbox` branch, not on `development`.** The rules for every machine - who
+  directs, the machines and their folders, how to join, how batches and reports work - live there and nowhere
+  else, because that branch is never merged. A fresh clone starts on `development`, where the file does not
+  exist, so a new session that looks before switching branches concludes the instructions are missing (#3262).
+  Fetch the branch first (`git fetch origin work-mailbox`, then `git switch work-mailbox`, or read it in place
+  with `git show origin/work-mailbox:DIRECTOR.md`) and do what it says.
 - **A machine that is new to the branch announces itself before anything else.** `DIRECTOR.md` opens with
   how: work out your name, create `<name>/TASKS.md`, `<name>/STATUS.md` and `<name>/reports/`, push them as
   `<name>: joined`, and only then listen. **Push first, even if you were given work in the same breath** -
