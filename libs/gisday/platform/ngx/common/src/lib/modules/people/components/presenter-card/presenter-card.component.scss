@@ -1,13 +1,24 @@
 @use 'libs/sass/mixins';
 @use 'libs/gisday/sass/variables';
 
+// The card takes the width it is given, up to 25rem (#3208). Fixed at 25rem, with its padding on top, it drew 364 px
+// wide, and a session's page on a 360 px phone was 11 px wider than the screen. The host carries the width so it can
+// shrink inside the flex rows a session's page and the session form lay the cards out in.
+:host {
+  display: block;
+  width: 25rem;
+  max-width: 100%;
+  min-width: 0;
+}
+
 .presenter-item,
 .session-item {
   @include mixins.flexbox();
   @include mixins.flex-direction(row);
   @include mixins.align-items(center);
   padding: 0.5rem;
-  width: 25rem;
+  width: 100%;
+  box-sizing: border-box;
   position: relative;
 
   .presenter-actions {
@@ -35,6 +46,8 @@
   tamu-gisc-speaker-avatar {
     width: 3.75rem;
     height: 3.75rem;
+    // Its own size whatever the card's width: the name beside it wraps instead.
+    flex-shrink: 0;
     position: relative;
     border-radius: 50%;
     overflow: hidden;
@@ -43,6 +56,9 @@
 
   .details {
     margin-left: 1rem;
+    // A long name or organization wraps rather than pushing the card wider than its width.
+    min-width: 0;
+    overflow-wrap: anywhere;
 
     .name {
       font-weight: 600;
