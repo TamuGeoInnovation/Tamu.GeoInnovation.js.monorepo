@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle and listening.
+- **Batch 77 (gisday: #2627, #2572, #1836)**, since 5:39 PM Central, 23 November, from development `16a9b70bc`. (Batch 61 was finished on 15 November; home was idle, so 77 starts now.)
 
 ## Finished
 - **Batch 76 (gisday: #3260 keeps `session_details_sends`)** (report `home/reports/2026-11-23-76.md`): branch ready, `fix/3260-shared-email-guard` on the fork at `1d1c94178`, no PR. The migration only adds now; `down()` drops only the new table; scrub skips the old one. Proven up, down, up; bug-fix check exit 0. Follow-up #3269 filed, no priority, no labels. No questions.
