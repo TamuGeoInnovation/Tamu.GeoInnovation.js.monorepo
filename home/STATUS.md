@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch 68 (gisday: #3189 and #3219)**, from development, started 7:41 AM Central, 23 November 2026.
+- Nothing. Idle and listening.
 
 ## Finished
+- **Batch 68 (gisday: #3189 and #3219)** (report `home/reports/2026-11-23-68.md`): both branch ready on the fork, no PRs. `fix/3189-email-preview-reason` at `c76e51530` (the email window gives the API's reason for a 4xx); `fix/3219-checked-in-heading` at `f3bcdceee` (total column 70 px, three soft hyphens, a measured heading check). Both red first; bug-fix checks exit 0. Screenshots to the lab. No questions.
 - **#3102 brought up to date** (after #3093 merged): `fix/3102-scrub-coverage` on the fork at `0e4d20027`, development merged, `assets.eventGuid` and `assets.uploadedByGuid` kept in scrub.sql; bug-fix check exit 0.
 - **Batch 67 (gisday: #3114)** (report `home/reports/2026-11-15-67.md`): branch ready, `feat/3114-tamu-email-design` at `7b6ce3ff4`, no PR. Every email gisday.tamu.edu sends to a person wears the GIS Day design from one `siteEmailHtml`; others plain; composer shows the whole email. Full check exit 0. One question (#3113's wiring).
 - **Batch 66 (gisday: #3105) and a #2894 fix** (report `home/reports/2026-11-15-66.md`): #2894 pushed at `8def7c3d4` (people tables scroll in the shared box, a nested box shows its own scrollbar; headings whole). #3105 branch ready, `feat/3105-remove-session-files` at `2fb52ba7f`, no PR: admins remove any speaker's session file, asked on the page; one delete. Checks exit 0. Screenshots to the lab. No questions.
