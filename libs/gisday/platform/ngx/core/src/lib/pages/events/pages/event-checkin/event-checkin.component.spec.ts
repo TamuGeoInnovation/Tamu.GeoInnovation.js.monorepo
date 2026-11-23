@@ -154,6 +154,29 @@ describe('EventCheckinComponent', () => {
     expect(text()).toContain('This link has no check-in code.');
   });
 
+  // #2572: the page takes the code out of the address before Analytics sees it, and keeps it for this page.
+  it('checks in with the code the page kept when it took it out of the address', () => {
+    history.replaceState(null, '', '/sessions/e-1/checkin');
+    sessionStorage.setItem('gisday-checkin-code:/sessions/e-1/checkin', 'code-2');
+
+    const { text, insertUserCheckin } = open({ code: null });
+
+    expect(insertUserCheckin).toHaveBeenCalledWith('e-1', undefined, 'code-2');
+    expect(text()).toContain("You're checked in");
+    history.replaceState(null, '', '/');
+  });
+
+  it('does not use a code kept for another session', () => {
+    history.replaceState(null, '', '/sessions/e-1/checkin');
+    sessionStorage.setItem('gisday-checkin-code:/sessions/e-2/checkin', 'code-2');
+
+    const { text, insertUserCheckin } = open({ code: null });
+
+    expect(insertUserCheckin).not.toHaveBeenCalled();
+    expect(text()).toContain('This link has no check-in code.');
+    history.replaceState(null, '', '/');
+  });
+
   it('says so when the session cannot be found', () => {
     const { text, insertUserCheckin } = open({ event: () => throwError(() => new HttpErrorResponse({ status: 404 })) });
 
