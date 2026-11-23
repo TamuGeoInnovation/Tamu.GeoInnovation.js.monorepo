@@ -78,6 +78,7 @@ describe('campus basemap', () => {
     expect(dev[0]).toEqual(resolve(true));
     expect(dev.map((basemap) => basemap.title)).toEqual([
       'Aggieland',
+      'Aggieland vector, November 2026',
       'Aggieland vector, September 2026',
       'Aggieland raster, October 2026',
       'Aggieland raster, June 2026',
@@ -95,9 +96,12 @@ describe('campus basemap', () => {
     expect(currentRaster).toBeDefined();
     expect(urlsOf(currentRaster as Basemap)).toEqual(urlsOf(definitions.AggiemapRasterBasemap as unknown as Basemap));
 
-    // Both vector caches are offered, so the new one can be compared with the one it replaces.
+    // Every vector cache is offered, so a new one can be compared with the one it would replace. The November 2026
+    // cache (#3225) is development's alone until the maintainer moves it (#1229).
     expect(urlsOf(dev[0]).some((url) => url.includes('Hosted/VTBase3/VectorTileServer'))).toBe(true);
-    expect(urlsOf(dev[1]).some((url) => url.includes('Hosted/VTBase/VectorTileServer'))).toBe(true);
+    expect(urlsOf(dev[1]).some((url) => url.includes('Hosted/VTBase4/VectorTileServer'))).toBe(true);
+    expect(urlsOf(dev[2]).some((url) => url.includes('Hosted/VTBase/VectorTileServer'))).toBe(true);
+    expect(production.flatMap(urlsOf).some((url) => url.includes('Hosted/VTBase4/'))).toBe(false);
   });
 
   it('turns every id the gallery can save back into a basemap (#1726)', () => {
