@@ -351,7 +351,7 @@ each with its own README:
 - **[`test/smoke/aggiemap`](test/smoke/aggiemap/README.md)** loads every map in a deployed
   environment and verifies each layer resolves and returns data. Runs daily against dev and
   production, and on demand.
-- **[`tools/builder-inventory`](tools/builder-inventory/README.md)** covers the eleven maps that
+- **[`tools/builder-inventory`](tools/builder-inventory/README.md)** covers the maps that
   cannot be reached by URL, because they require choices in a builder first. It records where every
   combination lands, including a shareable link that reaches each destination directly.
 
