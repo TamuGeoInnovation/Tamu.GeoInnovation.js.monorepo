@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle and listening.
+- **Batch 69 (gisday: #3239, homepage winners)**, from development, started 8:15 AM Central, 23 November 2026.
 
 ## Finished
 - **Batch 68 (gisday: #3189 and #3219)** (report `home/reports/2026-11-23-68.md`): both branch ready on the fork, no PRs. `fix/3189-email-preview-reason` at `c76e51530` (the email window gives the API's reason for a 4xx); `fix/3219-checked-in-heading` at `f3bcdceee` (total column 70 px, three soft hyphens, a measured heading check). Both red first; bug-fix checks exit 0. Screenshots to the lab. No questions.
