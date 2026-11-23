@@ -32,13 +32,15 @@ export interface DashboardTableColumn {
  * The narrowest each kind of column may be, in pixels (#3006), small enough that the check-in dashboard's ten columns
  * fit the 879 px a 1280 px screen gives the table beside the admin menu. At 88 px a count column, they did not, and the
  * last columns, and an opened event's Export as CSV and times, were cut off with no way to scroll to them. A count
- * column's narrowest still holds its heading's longest word, "academia" (66 px), inside its narrower padding.
+ * column's narrowest still holds its heading's longest word, "academia" (66 px), inside its narrower padding, and the
+ * total column's holds "Checked" (58 px) and "missions" (60 px) with room to spare: at 66 px it had 0.1 px, and
+ * "Checked in" was cut to "Checkec / in" (#3219). The name column gave the 4 px, so the table is no wider.
  *
  * Each column also grows in proportion to its narrowest (its `flexGrow` is the same number), so wherever the table fits,
  * no column is ever below its narrowest. ngx-datatable's flex mode does not give back the width a column held at its
  * minimum takes from the others, so a column whose share falls below its minimum leaves the table wider than its box.
  */
-export const DASHBOARD_TABLE_WIDTHS = { name: 192, when: 88, total: 66, count: 75 } as const;
+export const DASHBOARD_TABLE_WIDTHS = { name: 188, when: 88, total: 70, count: 75 } as const;
 
 /**
  * The table's narrowest: every column at its narrowest. The table is never drawn narrower, so in less space it scrolls

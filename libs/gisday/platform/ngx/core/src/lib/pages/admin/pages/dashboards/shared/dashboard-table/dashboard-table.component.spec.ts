@@ -3,9 +3,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
 
+import { PERSON_TYPE_COLUMNS } from '../dashboard-people/dashboard-people.component';
+import { VGI_COLUMNS } from '../../vgi-dashboard/vgi-dashboard.component';
 import {
   compareNames,
   compareTimes,
+  DASHBOARD_TABLE_WIDTHS,
   DashboardRowDetailDirective,
   DashboardTableComponent,
   DashboardTableRow,
@@ -346,4 +349,78 @@ describe('compareNames() and compareTimes()', () => {
       null
     ]);
   });
+});
+
+/**
+ * #3219: at 1280 px the Check-ins dashboard's "Checked in" heading was cut inside its first word ("Checkec / in"). A
+ * column is drawn at its narrowest whenever the table is wider than its box, so each word of a count or total column's
+ * heading must fit inside that column's narrowest less its padding. A heading may break between words, and at a soft
+ * hyphen ("Under­graduate"), so those are the pieces measured.
+ *
+ * A unit test cannot draw text, so the widths are measured: Chrome on gisday.tamu.edu, 23 November 2026, Open Sans at
+ * 14 px, as the headings are drawn. "Checked" (57.9 px) had 0.1 px to spare in its 58 and was cut, so each word needs a
+ * pixel more than its own width. A word that is not listed fails the check until it is measured.
+ */
+describe("DashboardTableComponent headings (#3219)", () => {
+  const WORD_WIDTHS: Record<string, number> = {
+    Total: 33.9,
+    Checked: 57.9,
+    in: 12.7,
+    'Sub-': 30.5,
+    missions: 59.5,
+    RSVPs: 41.3,
+    'Under-': 47.3,
+    graduate: 61.3,
+    Graduate: 63.9,
+    'Student,': 57.3,
+    'classi-': 41.5,
+    fication: 50.7,
+    not: 22.9,
+    given: 36.1,
+    Faculty: 47.9,
+    '&': 10.5,
+    academia: 65.4,
+    Industry: 56.5,
+    Not: 24.9,
+    New: 30.2,
+    finds: 33.6,
+    Repeats: 54.5,
+    People: 46.5,
+    'Un-': 24.2,
+    verified: 51.2,
+    Verified: 52.5,
+    'Dis-': 26.1,
+    carded: 47
+  };
+  /** A count or total heading's padding, 0.25rem each side (the table's stylesheet). */
+  const PADDING = 8;
+  const SPARE = 1;
+
+  /** The pieces a heading may be broken into: its words, and each word's parts at a soft hyphen, with the hyphen. */
+  function pieces(heading: string): Array<string> {
+    return heading.split(/\s+/).flatMap((word) => {
+      const parts = word.split('­');
+
+      return parts.map((part, i) => (i < parts.length - 1 ? `${part}-` : part));
+    });
+  }
+
+  /** Each piece that does not fit, with its width: none, for a heading that breaks only between words. */
+  function tooWide(heading: string, narrowest: number): Array<string> {
+    return pieces(heading)
+      .filter((piece) => !(piece in WORD_WIDTHS) || WORD_WIDTHS[piece] + SPARE > narrowest - PADDING)
+      .map((piece) => `${piece} (${WORD_WIDTHS[piece] ?? 'not measured'})`);
+  }
+
+  // The total column's headings, from each dashboard's page: the default, Check-ins and the VGI dashboard.
+  it.each(['Total', 'Checked in', 'Sub­missions'])('keeps the total heading %j whole at its narrowest', (heading) => {
+    expect(tooWide(heading, DASHBOARD_TABLE_WIDTHS.total)).toEqual([]);
+  });
+
+  it.each([{ key: 'rsvps', label: 'RSVPs' }, ...PERSON_TYPE_COLUMNS, ...VGI_COLUMNS].map((column) => column.label))(
+    'keeps the count heading %j whole at its narrowest',
+    (heading) => {
+      expect(tooWide(heading, DASHBOARD_TABLE_WIDTHS.count)).toEqual([]);
+    }
+  );
 });

@@ -61,3 +61,4 @@ export * from './lib/check-in/dto/check-in-dashboard.dto';
 export * from './lib/dashboards/dashboard-profiles.service';
 export * from './lib/user-info/dto/account-dashboard.dto';
 export * from './lib/season-day/dto/simplified-season-day.dto';
+export * from './lib/impact-report/impact-report';

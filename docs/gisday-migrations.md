@@ -75,7 +75,9 @@ unless given `-Apply`.
 **A new change to production data is a new script in that folder, built on that helper**, not a new way
 of connecting. When the rules for what to change belong in this repository, as the UCGIS member list
 does (`UCGIS_MEMBER_INSTITUTIONS`), the script asks this repository's code for the plan rather than
-keeping a second copy of the rules: `add-ucgis-members.ts --plan=<file>` (#2730).
+keeping a second copy of the rules: `add-ucgis-members.ts --plan=<file>` (#2730). A report counted by
+rules kept here works the same way: `impact-report.ps1` reads the rows, and `impact-report.ts` counts them by
+`IMPACT_DEFINITIONS` (#3238).
 
 ## Running against dev or production
 
