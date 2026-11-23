@@ -976,6 +976,21 @@ export class SpeakerEdit extends GuidIdentity {
   public reviewedBy: string | null;
 }
 
+/**
+ * The session details email's repeat guard (#3092, #3098): one row a speaker was sent one session's details, recorded
+ * before the email goes, with when (`created`). Every copy of the API reads these, so a send repeated within
+ * `REPEAT_SEND_MINUTES` is caught whichever copy it reaches. Who it was from, and to which address, is the send record's
+ * (`SpeakerEmailSend`, #3167), which is written once the email has gone.
+ */
+@Entity({ name: 'session_details_sends' })
+export class SessionDetailsSend extends GuidIdentity {
+  @ManyToOne(() => Event, { nullable: false, onDelete: 'CASCADE' })
+  public session: Relation<Event>;
+
+  @ManyToOne(() => Speaker, { nullable: false, onDelete: 'CASCADE' })
+  public speaker: Relation<Speaker>;
+}
+
 @Entity({
   name: 'checkins'
 })
@@ -1488,6 +1503,7 @@ export const GISDAY_ENTITIES = [
   SpeakerEditLink,
   SpeakerEmailSend,
   SpeakerEdit,
+  SessionDetailsSend,
   SubmissionType,
   Sponsor,
   Tag,

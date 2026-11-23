@@ -2,11 +2,14 @@ import { FindOperator } from 'typeorm';
 
 /**
  * A table in memory for the API's specs, with the repository calls the routes make, so a spec can go through Nest's real
- * routing, guards and pipes without a database. Moved here from the judging spec (#3183) for the winners' (#3239). Not
- * exported from the library: only specs import it.
+ * routing, guards and pipes without a database. Moved here from the judging spec (#3183) for the winners' (#3239), and
+ * used by the session details email's shared repeat guard (#3098). Not exported from the library: only specs import it.
  */
 
-/** Whether a row matches a typeorm `where`, as far as these routes ask: equality, `In`, `Not(In)`, and nested relations. */
+/**
+ * Whether a row matches a typeorm `where`, as far as these routes ask: equality, `In`, `Not(In)`, `MoreThan` and nested
+ * relations.
+ */
 export function matches(row: unknown, where: Record<string, unknown>): boolean {
   return Object.entries(where).every(([key, wanted]) => {
     const value = (row as Record<string, unknown>)?.[key];
@@ -14,6 +17,10 @@ export function matches(row: unknown, where: Record<string, unknown>): boolean {
     if (wanted instanceof FindOperator) {
       if (wanted.type === 'not') {
         return !matches(row, { [key]: wanted.value });
+      }
+
+      if (wanted.type === 'moreThan') {
+        return new Date(value as Date).getTime() > new Date(wanted.value as Date).getTime();
       }
 
       return (wanted.value as Array<unknown>).includes(value);
@@ -46,7 +53,13 @@ export class Table<T extends { guid?: string }> {
   };
   public save = async (x: T | Array<T>) => {
     const all = (Array.isArray(x) ? x : [x]).map((one) => {
-      const row = { ...one, guid: one.guid ?? crypto.randomUUID(), updated: new Date() } as T;
+      // `created` as the database sets it, from `Date.now`, so a spec can move the clock.
+      const row = {
+        created: new Date(Date.now()),
+        ...one,
+        guid: one.guid ?? crypto.randomUUID(),
+        updated: new Date(Date.now())
+      } as T;
       this.rows = [...this.rows.filter((r) => r.guid !== row.guid), row];
       return row;
     });

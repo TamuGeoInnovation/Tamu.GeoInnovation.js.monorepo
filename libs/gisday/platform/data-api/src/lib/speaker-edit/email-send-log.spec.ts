@@ -7,6 +7,8 @@ import {
 import { EmailSendLog } from './email-send-log';
 import { SpeakerEditModule } from './speaker-edit.module';
 import { SpeakerEditService } from './speaker-edit.service';
+import { Table } from '../_base/memory-table';
+import { SessionDetailsSend } from '../entities/all.entity';
 import { SessionDetailsEmailService } from './session-details-email.service';
 import { SlidesRequestEmailService } from './slides-request-email.service';
 
@@ -191,7 +193,7 @@ describe('every speaker email records what it sent, and its preview shows it (#3
   });
 
   it("records a session's details sent together once for each speaker on it, about that session", async () => {
-    const service = new SessionDetailsEmailService(events as never, contact() as never, log);
+    const service = new SessionDetailsEmailService(events as never, new Table<SessionDetailsSend>() as never, contact() as never, log);
 
     await service.send('e-1', 'gisday.tamu.edu', undefined, undefined, { speakers: ['sp-av', 'sp-bl'], together: true });
 
@@ -238,6 +240,7 @@ describe('every speaker email records what it sent, and its preview shows it (#3
   it('records nothing for an email that could not be sent', async () => {
     const failing = new SessionDetailsEmailService(
       events as never,
+      new Table<SessionDetailsSend>() as never,
       { sendMessage: jest.fn(async () => Promise.reject(new Error('the mail server is away'))) } as never,
       log
     );

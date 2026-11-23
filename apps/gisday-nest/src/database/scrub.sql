@@ -47,6 +47,8 @@ INSERT @kept VALUES
   (N'rubric_criteria', N'guid,rubricGuid,position,name,maxPoints,levels'),
   (N'seasons', N'guid,year,active,posterSubmissionsCloseAt,posterFilesCloseAt,presentationSubmissionsCloseAt,presentationFilesCloseAt,paperSubmissionsCloseAt,paperFilesCloseAt,cartographySubmissionsCloseAt,cartographyFilesCloseAt'),
   (N'season_competitions', N'guid,competitionType,seasonGuid'),
+  -- The session details email's repeat guard (#3098): which speaker was sent which session's details, and when.
+  (N'session_details_sends', N'guid,sessionGuid,speakerGuid'),
   -- A season's winners (#3239): which submission won which place; the names shown are the submission's.
   (N'season_winners', N'guid,seasonGuid,competition,place,submissionGuid'),
   (N'seasons_days', N'guid,date,seasonGuid'),

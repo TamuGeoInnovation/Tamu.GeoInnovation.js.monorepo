@@ -9,6 +9,7 @@ import {
   Speaker,
   SpeakerEdit,
   SpeakerEditLink,
+  SessionDetailsSend,
   SpeakerEmailSend,
   Submission,
   University
@@ -34,6 +35,7 @@ import { AssetsService } from '../assets/assets.service';
     TypeOrmModule.forFeature([
       SpeakerEditLink,
       SpeakerEmailSend,
+      SessionDetailsSend,
       SpeakerEdit,
       Speaker,
       Season,
