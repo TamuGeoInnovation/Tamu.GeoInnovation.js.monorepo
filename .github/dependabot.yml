@@ -79,6 +79,10 @@ updates:
       - dependency-name: '@types/node'
         update-types:
           - version-update:semver-major
+      # amCharts stays at the version @arcgis/core depends on (~5.18.0 for 5.1.27), so the RSVP chart and ArcGIS share one
+      # copy (libs/ui-kits/ngx/charts/README.md). A newer one installs a second copy under @arcgis/core (PR 3277). Move it
+      # by hand, with an @arcgis/core upgrade that changes the version it depends on (#3288).
+      - dependency-name: '@amcharts/amcharts5'
 
   # The four API images (node:24.22.1 and node:24.22.1-alpine), in one pull request.
   - package-ecosystem: docker
