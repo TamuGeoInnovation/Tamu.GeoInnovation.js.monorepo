@@ -44,8 +44,8 @@
   {
     "map": "main",
     "layer": "nature-rx-layer",
-    "title": "Nature Rx",
-    "reason": "unreviewed (#1523)"
+    "title": "Nature Spaces",
+    "reason": "The GIS team asked for Nature Spaces (#3223); the service still calls its layer NatureRx Spaces. Remove this entry once they rename it there."
   },
   {
     "map": "main",

@@ -95,3 +95,24 @@ function usable(point: DoorPoint | undefined): point is DoorPoint {
     isFinite(point.longitude)
   );
 }
+
+/**
+ * Runs a refinement of a trip's stops and then lets the trip go on, whatever the refinement did (#2851).
+ *
+ * Moving each end of a trip to its building's nearest door decides *where* a trip starts and ends. It must not be
+ * able to decide *whether* it starts at all - but it was: `setStops` waited on the lookup with no `catch`, so a
+ * rejection meant the stops were never set and nothing was ever drawn, with no error in the console, the panel or
+ * the map. A visitor saw a trip planner that did nothing, and there was nothing for anybody to read afterwards.
+ *
+ * The lookup asks two services over the network, so rejecting is an ordinary thing for it to do on a bad day.
+ *
+ * Resolves either way. The error is handed to `report` rather than rethrown, because the caller's next step - set
+ * the stops and draw them - has to happen in both cases.
+ */
+export async function refineStops(refinement: Promise<unknown>, report: (error: unknown) => void): Promise<void> {
+  try {
+    await refinement;
+  } catch (error) {
+    report(error);
+  }
+}

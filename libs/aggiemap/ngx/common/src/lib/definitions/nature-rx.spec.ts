@@ -21,7 +21,7 @@ describe('Nature Rx (#2630)', () => {
     const layer = LayerSources.find((source) => source.id === Definitions.NATURE_RX.layerId);
 
     expect(layer).toBeDefined();
-    expect(layer.title).toBe('Nature Rx');
+    expect(layer.title).toBe('Nature Spaces');
     expect(layer.url).toBe(NATURE_RX);
     expect(layer.listMode).toBe('show');
     expect(layer.visible).toBe(false);
