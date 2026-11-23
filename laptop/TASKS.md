@@ -1,5 +1,44 @@
 # Laptop: current tasks
 
+## Batch 3 (aggiemap: dev's basemap gallery raises a sign-in dialog, #3279; 23 November 2026, 4:55 PM Central, from `work (aggiemap)`) (High) - **first**
+
+You filed this one yourself in batch 2, and it blocks the smoke test you wrote there, so it comes back to you.
+Your own recommendation was B: fix #3279 first, and then #3225's new test proves itself on dev the first time it
+runs. That is what this is.
+
+**Don't touch:** `libs/maps/feature/basemap`'s definitions as they stand on `feat/3225-basemap-20261119-pr`
+(pull request 3282, open) beyond what this task needs, and nothing in `libs/aggiemap/ngx/common` touched by
+pull request 3281. Branch from the latest `development`, not from either of those.
+
+### A. #3279 - the September cache answers `499 Token Required`, so the settings page asks a visitor to sign in
+
+`Hosted/VTBase` is secured now. The development gallery still offers it, so opening the settings page on dev raises
+a portal sign-in dialog over the gallery.
+
+The decision, from the maintainer, is **A**: take the September cache out of the development gallery, since its
+comparison is settled (#2515), and take its `development-only.ts` entry out with it.
+
+1. **Confirm the service's state first**, as `CLAUDE.md` requires before changing a definition: request
+   `Hosted/VTBase/VectorTileServer` anonymously and record what it answers. If it answers 200 now, stop and say so
+   in the report - the fault would be somewhere else and removing the entry would look like a fix and change
+   nothing.
+2. **Remove the entry** from `aggiemapGalleryBasemaps`, and its `Hosted/VTBase/VectorTileServer` entry from
+   `DEVELOPMENT_ONLY_SERVICES` in `test/smoke/aggiemap/development-only.ts`. `development-only-gates.spec.ts` fails
+   if those two disagree, so run it.
+3. **Red first.** A unit assertion that the development gallery does not offer the September cache, failing before
+   the removal.
+4. **Prove the dialog is gone**, on a local dev server: open the settings page, and show no sign-in dialog and no
+   `499` in the network log. Before and after images into `docs/screenshots/3279-september-cache/`.
+5. **Then run #3225's new smoke test**, from `feat/3225-basemap-20261119-pr`'s spec with this fix applied, against
+   your local dev server. It has never been green anywhere. Say whether it passes, and in particular whether the
+   layers come back exactly as they opened - the part you could not read in batch 2.
+6. **Check:** `scripts/check-in-volume.sh <branch> maps-feature-basemap,aggiemap-ngx-discover,aggiemap-angular`.
+   Defaults are fine; your Docker has 23.5 GB.
+
+Release entry with its *What to test on dev* row. Branch on the fork with `.pr-body.md` as the last commit.
+**No pull request** - that is the director's.
+
+
 ## Batch 2 (aggiemap: two GIS-team requests, #3223 and #3225; 23 November 2026, 12:44 PM Central, from `work (aggiemap)`) (Medium) - **after 1**
 
 Both came from the GIS team (the issues' author is not the maintainer). The maintainer asked for this batch as a
