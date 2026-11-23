@@ -241,9 +241,9 @@ him to push or merge, and no director gives him a command to run there. A listen
 director can reach it:
 
 - **Monorepo branches:** to the fork, as before.
-- **Anything it cannot push itself** (kubernetes-config branches, for one): `git format-patch origin/master --stdout` into
-  `<listener>/patches/<branch>.patch` on `work-mailbox`, committed and pushed, and the commit named in its report. The
-  director applies the patch with `git am` on the work machine and pushes and opens the PR from there.
+- **Anything it cannot push itself** (its permission check refused a kubernetes-config push, for one): it says so in its
+  report and stops. It never sends the commits on for another session to push: that would get around the refusal. The
+  director asks the maintainer, who decides where the work is redone (#3239's migration script, 23 November).
 
 ## Every listener
 - **A new batch in its `TASKS.md` is its instruction.** It starts it at once, without asking or waiting for the
