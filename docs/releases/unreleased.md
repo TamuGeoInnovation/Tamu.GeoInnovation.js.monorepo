@@ -58,13 +58,12 @@ Updated at every GIS Day rollout, as step 4 of
 
 | | |
 | --- | --- |
-| Images, both namespaces (`gisday`, `gisday-ucgis`) | The site `gisday-angular:sha-fa3b8bc`; the API `gisday-nest:sha-f4fd0d1` |
-| The site's last commit | `fa3b8bc`, PR 3231 ([#3230](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3230), the judge's page searches its entries, and each opens in a details panel that Escape closes) |
-| The site rolled out | 23 November 2026, about 8:20 AM Central, by the maintainer, in both namespaces: site only, with no API change and no migration since `f4fd0d1`. Checked against the cluster: both sites on `sha-fa3b8bc`, both APIs on `sha-f4fd0d1` |
-| The site before it | `sha-7a735e8` (20 November, about 7:30 AM Central, site only: PR 3224, [#3221](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3221), each day on the Sessions page collapses): the site's rollback target |
-| The API rolled out | `sha-f4fd0d1`, 18 November 2026, about 12:42 PM Central, by the maintainer: the migration, then the API, then the site, in both namespaces. PR 3210 ([#3209](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3209), each session sets its own check-in window, by default 5 minutes before its start to 10 after its end); `txgisday.org/api/seasons/active` returned `checkInMinutesBefore` 5 and `checkInMinutesAfter` 10 on all 65 of its sessions |
-| The API before it | `sha-7244af9`: the API's rollback target. It works with the new columns, which it ignores |
-| The last migration in it | `AddCheckInMinutes` (`1794967200000`): two columns on `events` with defaults, applied with `-Apply -NoBackup` on both databases at 12:40 PM, after a clean dry run (332 and 75 sessions, all on 5 and 10); reports in kubernetes-config `6. GIS Day/migrations/` |
+| Images, both namespaces (`gisday`, `gisday-ucgis`) | The site and the API both `sha-eff3713` (`gisday-angular`, `gisday-nest`) |
+| The last commit | `eff3713`, PR 3247 ([#3239](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3239), a Winners section on gisday.tamu.edu's homepage, picked on an admin Winners page). It also carries PR 3245 ([#3189](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3189), the email window gives the API's reason), PR 3246 ([#3219](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3219), dashboard headings break only between words) and PR 3240 ([#3238](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3238), the impact report code, which the API never runs) |
+| Rolled out | 23 November 2026, about 9:40 AM Central, by the maintainer: the migration, then the API, then the site, in both namespaces. Checked against the cluster: both sites and both APIs on `sha-eff3713` |
+| The site before it | `sha-fa3b8bc` (23 November, about 8:20 AM Central, site only: PR 3231, [#3230](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3230), the judge's page search and details panel): the site's rollback target |
+| The API before it | `sha-f4fd0d1` (18 November, with `AddCheckInMinutes`): the API's rollback target. It ignores the new table |
+| The last migration in it | `AddSeasonWinners` (`1795444106838`): the `season_winners` table, applied with `migrate-prod-3239.ps1 -Apply -NoBackup` on both databases at 9:36 AM, after a clean dry run at 9:32 AM; reports in kubernetes-config `6. GIS Day/migrations/` |
 
 The cluster is the final word:
 `kubectl -n gisday get deployment gisday-nest gisday-angular -o custom-columns=NAME:.metadata.name,IMAGE:.spec.template.spec.containers[0].image`,
