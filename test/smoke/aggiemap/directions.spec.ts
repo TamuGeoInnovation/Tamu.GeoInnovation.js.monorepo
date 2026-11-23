@@ -34,18 +34,22 @@ interface PopupCase {
   shows: RegExp;
 }
 
+const MANIFEST = JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf8')) as MapManifest;
+
 /**
- * Blinn, the bus stop opened by `?busstop=`, by its id in this environment's bus service, which global setup asks the
- * service for: the ids are not the same on every environment (#2636). `not-found` makes the test fail saying so.
+ * Blinn, the bus stop opened by `?busstop=`, and Lot 043 on the AVP Parking map, by their ids in this environment's
+ * services, which global setup asks the services for: the ids are not the same on every environment (#2636, #2821).
+ * `not-found` makes the test fail saying so.
  */
-const BUS_STOP = (JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf8')) as MapManifest).busStop ?? 'not-found';
+const BUS_STOP = MANIFEST.busStop ?? 'not-found';
+const AVP_LOT = `/parking/avp-parking/map?feature=AVP-parking-lots:${MANIFEST.avpLot ?? 'not-found'}`;
 
 const POPUP_CASES: PopupCase[] = [
   { name: 'building', path: '/map?bldg=0468', shows: /Sterling C\. Evans Library/ },
   { name: 'parking lot', path: '/map?lot=100b', shows: /Lot 100b/i },
   { name: 'point of interest', path: '/map?poi=1', shows: /Bonfire Memorial/ },
   { name: 'bus stop', path: `/map?busstop=${BUS_STOP}`, shows: /Blinn/ },
-  { name: 'event map feature', path: '/parking/avp-parking/map?feature=AVP-parking-lots:26135', shows: /Lot 043/ },
+  { name: 'event map feature', path: AVP_LOT, shows: /Lot 043/ },
   // A tent, so a visitor can walk to it on game day (#2639).
   { name: 'tailgate tent', path: '/events/tailgating/map?tent=O62', shows: /Tent O62/ }
 ];
@@ -138,11 +142,7 @@ test.describe('the trip planner is offered at its address', () => {
  */
 const PHONE_TRIP_CASES = [
   { name: 'a building', path: '/map?bldg=0468', trip: /\/map\/m\/trip/ },
-  {
-    name: 'an event map feature',
-    path: '/parking/avp-parking/map?feature=AVP-parking-lots:26135',
-    trip: /\/parking\/avp-parking\/map\/m\/trip/
-  },
+  { name: 'an event map feature', path: AVP_LOT, trip: /\/parking\/avp-parking\/map\/m\/trip/ },
   { name: 'a tailgate tent', path: '/events/tailgating/map?tent=O62', trip: /\/events\/tailgating\/map\/m\/trip/ }
 ];
 
