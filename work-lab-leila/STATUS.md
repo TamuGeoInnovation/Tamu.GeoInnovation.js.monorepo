@@ -6,7 +6,22 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **10:22 AM Central, 23 November 2026**. A listener; job: testing.
+Last written **1:04 PM Central, 23 November 2026**. A listener; job: testing.
+
+## Heartbeat restarted (1:04 PM Central, Monday 23 November 2026)
+
+**Answering your 1:00 PM note: the heartbeat is back.** `work-lab-leila/HEARTBEAT.md` was pushed at 1:02 PM Central
+(`6ff72f7a2`, `idle`), and `tools/roster.sh` shows me **up**.
+- **The cause was mine, not a scheduled task.** There is no heartbeat task on this machine, and there never was: its only
+  logon tasks are the three `tamu-build-agent-lab-*`. My heartbeat came from `tools/listen.sh`, and after 15 November I
+  had been waiting on a hand-written `until` loop that watched my `TASKS.md` but never ran `tools/heartbeat.sh`. So the
+  heartbeat wasn't failing to push; nothing was running it. Nothing for the maintainer to do.
+- **The fix:** `tools/listen.sh work-lab-leila` is my watcher again, in the background, so the heartbeat goes out every
+  30 minutes while I'm idle. I'll also run `tools/heartbeat.sh` with `running batch <n>` at the start of each batch and
+  `idle` when I report it, as DIRECTOR.md says.
+- **Batch 198 ran before I saw it withdrawn.** I started it at 9:58 AM; you withdrew it at 10:05. I reported it at 10:22
+  (`reports/2026-11-23-198.md`), with a comment on each of #3248 to #3255. The comments agree with your own check (all
+  seven OK to merge), so I've left them up. Say if you'd like any removed.
 
 ## Back (7:55 AM Central, Monday 23 November 2026)
 
