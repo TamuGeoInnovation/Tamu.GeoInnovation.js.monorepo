@@ -49,6 +49,47 @@
 > emails) on `feat/3044-email-markdown` when it appears on the fork: the window's preview with **bold** text, and an
 > email as it arrives if you can show one locally without sending to anyone real. Report each "branch ready" as you go.
 
+## Batch 198 (security: check seven Dependabot pull requests; 23 November 2026, 9:40 AM Central, from `work (security)`) (Low) - **after 194**
+
+The maintainer is away and asked for these to be checked without him. Nothing to push, no branches on the fork, no pull
+requests. **Post each result as a comment on its tracking issue** (not on the pull request), then one report,
+`work-lab-leila/reports/2026-11-23-198.md`, with the table at the end. Dependabot rewrites its branches: never push to them.
+
+| PR | Issue | What | Changes the lock |
+| --- | --- | --- | --- |
+| 2779 | #3248 | nx group, 24.0.2 to 24.0.6 (9 packages) | yes |
+| 3128 | #3249 | nestjs group (7) | yes |
+| 3132 | #3250 | `@esri/calcite-components` 5.2.0 to 5.2.1 | yes |
+| 3233 | #3252 | lint group (5): eslint 10.15.0, prettier 3.10.1, typescript-eslint 8.72.2 | yes |
+| 3235 | #3254 | everything-else group (23) | yes |
+| 3134 | #3251 | `docker/login-action` 4.7.0 to 4.8.0 | no |
+| 3236 | #3255 | api-images group (4 Dockerfiles) | no |
+
+**Skip PR 3234 (angular group).** It cannot install: it leaves `@angular/animations` at 22.2.4, whose peer is
+`@angular/core` 22.2.4 exactly, so `npm ci` stops with `ERESOLVE`. The director is replacing it with a pull request of its own.
+
+For **each of the five lock changes**, in the order above, each on its own (they all conflict in the lock, so check each
+against today's `development`, not on top of each other):
+
+1. `git fetch origin development pull/<PR>/head:check/<PR>`, then in a worktree on `check/<PR>`: `git merge --no-edit
+   origin/development`. If the lock conflicts, stop for that one and say so; do not regenerate it.
+2. `scripts/check-in-volume.sh check/<PR>` (the full affected check; it runs a clean `npm ci` because the lock changed). Record
+   the `Exit N` line from its log, never the backgrounded shell's code.
+3. **The lock diff against `origin/development`:** every package whose version changed. Only the named packages and their
+   own dependencies may move; name anything else. For every new version, its publish date from `npm view <name> time
+   --json`, and flag any **less than 7 days old** on 23 November (newer than 16 November).
+4. `npm audit --package-lock-only` counts (critical, high, moderate, low) before (development) and after. For **2779 (Nx)**
+   also say whether Nx's own `minimatch` is still 10.2.5 (#2697 accepts it until an Nx release moves).
+5. The comment: exit code, the lock diff (named packages and anything else that moved), any version under 7 days old,
+   audit before and after, and "OK to merge" or what blocks it.
+
+**3134 (an Action):** read the release notes from 4.7.0 to 4.8.0 and say whether anything in `.github/workflows` that uses
+`docker/login-action` needs changing. **3236 (images):** for each Dockerfile it changes, pull the new base image and run
+`node --version` (or the image's own version command), and say whether the tag is at least 7 days old.
+
+Order among these: 2779, 3128, 3132, 3233, 3235, then 3134 and 3236. About two hours, most of it the checks. If something
+fails, say why in the comment and go on to the next one.
+
 ## Batch 197 (gisday: images for #3244, counts on the VGI Submissions page; 23 November 2026, from `work (gisday)`) (Medium) - **after 196, before 194**
 
 Home's `feat/3244-vgi-submission-counts` (a2c92cbb6) is on the fork. Seed a made-up VGI season with submissions in three
