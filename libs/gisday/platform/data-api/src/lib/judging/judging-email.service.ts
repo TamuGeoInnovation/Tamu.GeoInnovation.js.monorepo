@@ -25,8 +25,8 @@ import { Event, Speaker } from '../entities/all.entity';
 import { ContactService } from '../contact/contact.service';
 import { EmailSender, siteSender } from '../contact/email-sender.service';
 import { EMAIL_LANES, inParallel } from '../_base/in-parallel';
-import { RecentSends } from '../_base/recent-sends';
 import { EmailSendLog } from '../speaker-edit/email-send-log';
+import { RepeatGuard } from '../speaker-edit/repeat-guard';
 import {
   SessionDetailsEmail,
   SessionDetailsEmailPreview,
@@ -58,11 +58,9 @@ export type JudgingEmail = SessionDetailsEmail;
  */
 @Injectable()
 export class JudgingEmailService {
-  /** When each judge was last asked for each session, by `<session>:<speaker>`. */
-  private readonly lastSent = new RecentSends(REPEAT_SEND_MINUTES);
-
   constructor(
     @InjectRepository(Event) private readonly events: Repository<Event>,
+    private readonly repeats: RepeatGuard,
     private readonly contact: ContactService,
     private readonly speakerEdits: SpeakerEditService,
     /** The record of what each speaker was sent (#3167). */
@@ -154,9 +152,12 @@ export class JudgingEmailService {
     const parts = await inParallel(chosen, EMAIL_LANES, async (judge) => {
       const part: SendResult = { sent: [], skipped: [] };
       const name = fullName(judge);
-      const keys = [`${session.guid}:${judge.guid}`];
 
-      if (!this.lastSent.claim(keys)) {
+      // Claimed before the link is made and the email goes, in the table every copy of the API shares (#3260), so two sends
+      // racing, in one copy or in two, skip each other's.
+      const claimed = await this.repeats.claim(JUDGING_EMAIL_KIND, session.guid, [judge]);
+
+      if (!claimed) {
         part.skipped.push({
           name,
           reason: `already asked to judge this session in the last ${REPEAT_SEND_MINUTES} minutes`
@@ -182,7 +183,7 @@ export class JudgingEmailService {
         part.sent.push(name);
         await this.sendLog?.record([judge], JUDGING_EMAIL_KIND, session.guid, from.from);
       } catch (err) {
-        this.lastSent.release(keys);
+        await this.repeats.release(claimed);
         Logger.error(
           `Could not ask speaker ${judge.guid} to judge session ${session.guid}: ${err.message}`,
           'JudgingEmailService'
@@ -195,7 +196,6 @@ export class JudgingEmailService {
 
     result.sent.push(...parts.flatMap((p) => p.sent));
     result.skipped.push(...parts.flatMap((p) => p.skipped));
-    this.lastSent.forgetOld();
 
     return result;
   }

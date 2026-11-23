@@ -47,8 +47,6 @@ INSERT @kept VALUES
   (N'rubric_criteria', N'guid,rubricGuid,position,name,maxPoints,levels'),
   (N'seasons', N'guid,year,active,posterSubmissionsCloseAt,posterFilesCloseAt,presentationSubmissionsCloseAt,presentationFilesCloseAt,paperSubmissionsCloseAt,paperFilesCloseAt,cartographySubmissionsCloseAt,cartographyFilesCloseAt'),
   (N'season_competitions', N'guid,competitionType,seasonGuid'),
-  -- The session details email's repeat guard (#3098): which speaker was sent which session's details, and when.
-  (N'session_details_sends', N'guid,sessionGuid,speakerGuid'),
   -- A season's winners (#3239): which submission won which place; the names shown are the submission's.
   (N'season_winners', N'guid,seasonGuid,competition,place,submissionGuid'),
   (N'seasons_days', N'guid,date,seasonGuid'),
@@ -56,6 +54,8 @@ INSERT @kept VALUES
   (N'speakers', N'guid,isActive,seasonGuid,organizationGuid,universityGuid,isOrganizer,badgePrintedAt'),
   -- A speaker's own link to edit their profile (#2936): which speaker, and until when. The token and the address go below.
   (N'speaker_edit_links', N'guid,speakerGuid,expires,purpose'),
+  -- The speaker emails' repeat guard (#3098, #3260): which speaker was sent which email about which session, and when.
+  (N'speaker_email_claims', N'guid,kind,sessionGuid,speakerGuid'),
   -- Which email each speaker was sent, about which session, and when (#3167). The addresses go below.
   (N'speaker_email_sends', N'guid,speakerGuid,kind,eventGuid'),
   -- What a speaker proposed (#2936): whose, and where it stands. What they wrote goes below, as the speaker's own does.
@@ -77,9 +77,10 @@ INSERT @kept VALUES
   (N'vgi_submissions_media', N'guid,fieldName,submissionGuid');
 
 -- Tables that are not copied: the migrations record is written when the new database is built, and
--- the other three exist only in production and are not used by the code.
+-- the other three exist only in production and are not used by the code. `session_details_sends` (#3098) is no
+-- longer read either: speaker_email_claims took over its rows (#3260), and a later migration drops it (#3269).
 DECLARE @skipped TABLE (tbl sysname);
-INSERT @skipped VALUES (N'typeorm_migrations'), (N'organization_links'), (N'speaker_images'), (N'sysdiagrams');
+INSERT @skipped VALUES (N'typeorm_migrations'), (N'organization_links'), (N'speaker_images'), (N'sysdiagrams'), (N'session_details_sends');
 
 -- What each personal column becomes. `{c}` is the column; a NULL stays NULL unless the rule says otherwise.
 DECLARE @scrubbed TABLE (tbl sysname, col sysname, expr nvarchar(max));
