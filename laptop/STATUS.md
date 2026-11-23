@@ -24,28 +24,28 @@ Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
 ## Setup (batch 1)
 
-Progress (12:49 PM Central): the maintainer did his three steps (hosts entry, auth0-dev.local.env copied from work, `.wslconfig` 24 GB, WSL restarted); all verified. Docker now has 23.5 GB, so `CHECK_MEMORY`/`CHECK_PARALLEL` are removed and checks use the defaults (batch 2's 15.4 GB note is out of date). GIS Day restarting so the API reads the Auth0 file; Playwright image pulled. (The 12:58 stamp on the previous push was wrong; it was about 12:46.) Next update by 1:10 PM Central.
+Progress (12:56 PM Central): GIS Day local signed in as the txgisday-dev test admin at gisday.local.test, no consent screen, /admin/events shown (exit 0). Bug-fix check gisday-angular,gisday-nest running; smoke specs after it. Next update by 1:45 PM Central.
 
 | Item | State | Whose |
 | --- | --- | --- |
 | CLAUDE_SETUP.md phases 0-5 (Docker, gh, fork, install, check, dev server) | done this morning; check exit 0 on `eff3713a3` | mine |
 | `tamu-js-dev-nm` from the current lock, node 24.22.1; `aggiemap-dev` starts clean (200 in 165 s) | done; paused now so GIS Day has the memory | mine |
 | GIS Day local: settings file, `db`, `restore` (with migrations) | done | mine |
-| GIS Day local: `api`, `web` | building | mine |
-| `auth0-dev.local.env` (txgisday-dev only) | missing | the maintainer's |
-| `127.0.0.1 gisday.local.test` in the hosts file (admin) | missing | the maintainer's |
-| Signed-in check on txgisday-dev as the made-up test admin | waits on the two above | mine |
-| Playwright image `v1.64.1-noble` | pulling | mine |
+| GIS Day local: `api`, `web` | done; API 200 in 20 s, site 200 in about 4 min | mine |
+| `auth0-dev.local.env` (txgisday-dev only) | done: copied from work by the maintainer (2A) | the maintainer, done |
+| `127.0.0.1 gisday.local.test` in the hosts file (admin) | done | the maintainer, done |
+| Signed-in check on txgisday-dev as the made-up test admin | exit 0: signed in at gisday.local.test, no consent screen, /admin/events shown | mine, done |
+| Playwright image `v1.64.1-noble` | pulled, 3.6 GB | mine, done |
 | One AggieMap smoke spec on dev, one GIS Day smoke spec | to do | mine |
 | kubernetes-config | cloned over HTTPS at `C:\TAMU\kubernetes-config` on `master`; push permission yes. No SSH key needed | mine, done |
-| Docker memory | 15.4 GB of 31.5 GB (WSL's default half). `.wslconfig` `memory=24GB` would raise it | the maintainer's decision |
-| `CHECK_MEMORY=12g`, `CHECK_PARALLEL=6` (user variables) until then | done | mine |
+| Docker memory | 23.5 GB: the maintainer wrote `.wslconfig` `memory=24GB` (3A) and restarted WSL | the maintainer, done |
+| `CHECK_MEMORY`, `CHECK_PARALLEL` | set to 12g and 6 while Docker had 15.4 GB, removed at 23.5 GB: checks use the defaults (16g, 8) | mine, done |
 | `BUILD_TIMES_MACHINE=laptop` (user variable) | done | mine |
 | Host Python | none; nothing in the batch needs it | - |
 | Bug-fix check `gisday-angular,gisday-nest` | to do | mine |
 
 ## Running now
-- **Batch 1 (gisday: complete setup)**, started 12:43 PM Central. Next update by 1:10 PM Central.
+- **Batch 1 (gisday: complete setup)**, started 12:43 PM Central. Next update by 1:45 PM Central.
 
 ## Finished
 - Nothing yet.
