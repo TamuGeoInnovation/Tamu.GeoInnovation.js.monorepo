@@ -33,7 +33,7 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 
 ## Running now
 - **Batch 3 (aggiemap: #3279)**, started 4:43 PM Central. Next update by 5:30 PM Central.
-  Progress (4:52 PM): VTBase still answers 499 Token Required (4:43 PM). Before image: dialog shown on development, the only token-required answer is Hosted/VTBase. Red first: 3 new assertions failed as intended. Fix committed on `fix/3279-september-cache`, check running. A local throwaway merge with PR 3282 is ready for #3225's smoke run; note: 3282 and this branch conflict in three files.
+  Progress (4:58 PM): #3279 check: lint, test, build for 3 projects and the smoke tsc all pass; the script exits 1 only at `npm audit signatures`, twice: the registry answers this machine `OK` (text/plain) for oxc-parser@0.156.0's attestations, where CI verified them at 4:40 PM. After image next, then #3225's smoke test on the merge.
 
 ## Finished
 - **Batch 2 (aggiemap: #3223, #3225)** (report `laptop/reports/2026-11-23-2.md`): both branches are ready on the fork with `.pr-body.md`; no pull requests opened.
