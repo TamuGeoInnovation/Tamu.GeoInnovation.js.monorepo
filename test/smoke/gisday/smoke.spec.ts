@@ -98,50 +98,39 @@ test('the page a link preview reads names this site and has its image', async ({
 
 /**
  * #3208. A session's Presenters cards were a fixed 350 px wide, so on a 360 px phone the session's page was 11 px wider
- * than the screen and scrolled sideways. It opens sessions with speakers in turn until one shows its presenters, and checks the
- * page is no wider than the phone.
+ * than the screen and scrolled sideways. The Sessions and Presenters pages open an entry by script, with no link to
+ * follow, and neither list the API gives them names a session's speakers; a session's own details do. So this asks the
+ * API for the active season's sessions, opens the first whose details list a speaker, and checks the page is no wider
+ * than the phone. Read only.
  */
 test.describe('on a 360 px phone', () => {
   test.use({ viewport: { width: 360, height: 780 } });
 
-  test("a session's page with presenters fits the screen", async ({ page }) => {
-    // The Sessions and Presenters pages open a session or presenter by script, with no link to follow, so the sessions
-    // come from the API answer the Sessions page reads (`events/by-day`): any of them listing speakers.
-    const answer = page.waitForResponse((r) => r.url().includes('/events/by-day') && r.ok(), { timeout: 30000 });
-    await page.goto('/sessions');
-    const sessions: Array<string> = [];
-    const walk = (value: unknown) => {
-      if (Array.isArray(value)) {
-        value.forEach(walk);
-      } else if (value && typeof value === 'object') {
-        const o = value as { guid?: string; speakers?: Array<unknown> };
-        if (o.guid && Array.isArray(o.speakers) && o.speakers.length > 0) {
-          sessions.push(o.guid);
-        }
-        Object.values(o).forEach(walk);
+  test("a session's page with presenters fits the screen", async ({ page, request, baseURL }) => {
+    const api = new URL('/api/', baseURL).toString();
+    const sessions = (await (await request.get(`${api}events/season/active`)).json()) as Array<{ guid: string }>;
+    let withPresenters: string | undefined;
+
+    for (const { guid } of sessions.slice(0, 30)) {
+      const details = (await (await request.get(`${api}events/${guid}`)).json()) as { speakers?: Array<unknown> };
+
+      if (details.speakers?.length) {
+        withPresenters = guid;
+        break;
       }
-    };
-    walk(await (await answer).json());
-    const links = [...new Set(sessions)].slice(0, 20).map((guid) => `/sessions/details/${guid}`);
-
-    for (const link of links) {
-      await page.goto(link);
-
-      const card = page.locator('tamu-gisc-presenter-card').first();
-
-      try {
-        await card.waitFor({ state: 'visible', timeout: 10000 });
-      } catch {
-        continue;
-      }
-
-      const width = await page.evaluate(() => ({ page: document.documentElement.scrollWidth, screen: window.innerWidth }));
-
-      expect(width.page, `${link}: the page is ${width.page} px wide on a ${width.screen} px screen`).toBeLessThanOrEqual(width.screen);
-
-      return;
     }
 
-    test.skip(true, `None of the first ${links.length} sessions has presenters`);
+    test.skip(!withPresenters, `None of the first ${Math.min(sessions.length, 30)} sessions has presenters`);
+
+    const link = `/sessions/details/${withPresenters}`;
+
+    await page.goto(link);
+    await expect(page.locator('tamu-gisc-presenter-card').first()).toBeVisible();
+
+    const width = await page.evaluate(() => ({ page: document.documentElement.scrollWidth, screen: window.innerWidth }));
+
+    expect(width.page, `${link}: the page is ${width.page} px wide on a ${width.screen} px screen`).toBeLessThanOrEqual(
+      width.screen
+    );
   });
 });
