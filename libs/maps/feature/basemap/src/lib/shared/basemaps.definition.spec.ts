@@ -78,7 +78,6 @@ describe('campus basemap', () => {
     expect(dev[0]).toEqual(resolve(true));
     expect(dev.map((basemap) => basemap.title)).toEqual([
       'Aggieland',
-      'Aggieland vector, September 2026',
       'Aggieland raster, October 2026',
       'Aggieland raster, June 2026',
       'Aggieland raster, May 2026'
@@ -95,9 +94,19 @@ describe('campus basemap', () => {
     expect(currentRaster).toBeDefined();
     expect(urlsOf(currentRaster as Basemap)).toEqual(urlsOf(definitions.AggiemapRasterBasemap as unknown as Basemap));
 
-    // Both vector caches are offered, so the new one can be compared with the one it replaces.
     expect(urlsOf(dev[0]).some((url) => url.includes('Hosted/VTBase3/VectorTileServer'))).toBe(true);
-    expect(urlsOf(dev[1]).some((url) => url.includes('Hosted/VTBase/VectorTileServer'))).toBe(true);
+
+    // The September cache is not offered (#3279). Its service now answers 499 Token Required, so offering it made the
+    // settings page raise a portal sign-in dialog over the gallery; its comparison with October's was settled by #2515.
+    expect(dev.flatMap(urlsOf).some((url) => url.includes('Hosted/VTBase/'))).toBe(false);
+  });
+
+  it('turns a September vector choice saved before #3279 into the campus basemap', () => {
+    const exported = definitions as unknown as Record<string, unknown>;
+    const forSavedId = exported['basemapForSavedId'] as (id: string, isTesting: boolean) => Basemap | string;
+    const resolve = exported['aggiemapBasemap'] as (isTesting: boolean) => Basemap;
+
+    expect(forSavedId('aggie_basemap_vector_2026_09', true)).toEqual(resolve(true));
   });
 
   it('turns every id the gallery can save back into a basemap (#1726)', () => {
@@ -267,7 +276,7 @@ describe('the vector basemap draws its buildings under construction itself (#245
 /**
  * The vector basemap is production's default (#2515), so the smoke suite's list of services production must never request
  * cannot list it any more: that list fails the production run when a listed service is requested (#1229). The September
- * cache, still development-only, stays on it.
+ * cache came off it with the gallery entry (#3279): nothing requests that service any more.
  */
 describe('the smoke suite allows production the vector basemap (#2515)', () => {
   const developmentOnly = fs.readFileSync(path.join(REPO_ROOT, 'test', 'smoke', 'aggiemap', 'development-only.ts'), 'utf8');
@@ -276,7 +285,7 @@ describe('the smoke suite allows production the vector basemap (#2515)', () => {
     expect(developmentOnly).not.toContain(`'${VECTOR_SERVICE}'`);
   });
 
-  it('still lists the September vector cache', () => {
-    expect(developmentOnly).toContain("'Hosted/VTBase/VectorTileServer'");
+  it('no longer lists the September vector cache, which nothing requests (#3279)', () => {
+    expect(developmentOnly).not.toContain("'Hosted/VTBase/VectorTileServer'");
   });
 });
