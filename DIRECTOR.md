@@ -244,6 +244,8 @@ director can reach it:
 - **Anything it cannot push itself** (its permission check refused a kubernetes-config push, for one): it says so in its
   report and stops. It never sends the commits on for another session to push: that would get around the refusal. The
   director asks the maintainer, who decides where the work is redone (#3239's migration script, 23 November).
+- **Kubernetes-config work goes to the work machine** (the maintainer's 2A, 23 November): the home machine cannot push there,
+  and he cannot reach it, so a director never gives home a kubernetes-config script. Home does monorepo work.
 
 ## Every listener
 - **A new batch in its `TASKS.md` is its instruction.** It starts it at once, without asking or waiting for the
