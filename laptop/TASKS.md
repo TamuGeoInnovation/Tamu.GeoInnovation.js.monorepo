@@ -1,5 +1,31 @@
 # Laptop: current tasks
 
+## Batch 6 (gisday: before and after images for #3292, the Winners page's dropdowns; 23 November 2026, about 6:35 PM Central, from `work (gisday)`) (Medium) - **right after the gisday batch 4, while its GIS Day stack is still up**
+
+There are two batches numbered 4 above (one `aggiemap:`, one `gisday:`), written by two directors at once; this one is
+6 so it cannot collide again. It is short: about fifteen minutes on the stack you already have up.
+
+**The branch:** `feat/3292-winners-author-first` on the fork, at `173c194f3`, one change: `entryLabel` in
+`libs/gisday/platform/ngx/core/src/lib/pages/admin/pages/research-competition/pages/winners/winners.component.ts`.
+On the admin Winners page (Admin, Research Competition, Winners) each place's dropdown offered an entry as its title,
+then its people in brackets, so a long title cut off the names. Now it is `Main Author - Title (with Others)`.
+
+1. **Data, made up only:** a season with accepted research submissions in at least two competitions. Give one a long
+   title (60+ characters) and two or three made-up people, so the cut-off shows. **No email:** block non-GETs except
+   what seeding needs, as batch 197 in `work-lab-leila/reports/` describes.
+2. **Before**, from the branch's merge-base (`git merge-base HEAD origin/development`): open a competition's 1st place
+   dropdown at 1280 px, and capture it open (`before-winners-dropdown.png`).
+3. **After**, from `173c194f3`: the same view (`after-winners-dropdown.png`), and the same at 390 px
+   (`after-winners-dropdown-phone.png`).
+4. **Commit** the images to `docs/screenshots/3292-winners-author-first/` and add
+   `docs/releases/unreleased/3292-winners-author-first.md`, copying an existing entry's front matter (for example
+   `3244-vgi-submission-counts.md`): a Before | After table, and a *What to test on dev* row saying it cannot be checked on dev
+   (no GIS Day dev site, #1525) and that it is checked on production by opening the Winners page. Run
+   `node scripts/collate-release-notes.mjs --check` in Docker, then push to the fork, fast-forward only.
+5. **Report** `laptop/reports/2026-11-23-6.md`, first line "images pushed (3292): <sha>".
+
+**Don't:** touch production, run `kubectl`, change any Auth0 tenant but txgisday-dev, or open a pull request.
+
 ## Batch 4 (aggiemap: Remote Campus Rebranding, #3161; 23 November 2026, 6:25 PM Central, from `work (aggiemap)`) (High) - **after 3**
 
 From the GIS/Transportation team (`chelseycooke`), and High at the maintainer's word. Texas A&M has new naming
