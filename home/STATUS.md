@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle and listening. Batch 73 (#3098) waits for #3239 to merge.
+- **Batch 74 (gisday: #3208, presenter cards at 360 px)**, from the director's WIP `67b17fb5f`, started 9:25 AM Central, 23 November 2026. Batch 73 waits for PR 3247.
 
 ## Finished
 - **Batch 72 (gisday: #3244)** (report `home/reports/2026-11-23-72.md`): branch ready, `feat/3244-vgi-submission-counts` on the fork at `a2c92cbb6`, no PR. Counts table above the list, plain markup (the shared table would be an import cycle). Red first; check exit 0. No questions.
