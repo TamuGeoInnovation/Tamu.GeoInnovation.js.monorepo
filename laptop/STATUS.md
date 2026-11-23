@@ -5,7 +5,7 @@
 
 Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
-Last batch done: 2
+Last batch done: 3
 
 ## What this is
 
@@ -29,13 +29,18 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **No host Python.**
 - **Pushing to kubernetes-config is not yet proven by an actual push.** The API reports push permission.
 - **The AggieMap dev server and GIS Day local share 23.5 GB.** Run one at a time beside a check.
+- **`npm audit signatures` fails from here** since about 4:55 PM Central on 23 November: the registry answers this machine `OK` for `oxc-parser@0.156.0`'s attestations, where CI verified them at 4:40 PM. Every check here exits 1 at that step until it is resolved, so read the step that failed, not only `Exit` (batch 3's report, Question 1).
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch 3 (aggiemap: #3279)**, started 4:43 PM Central. Next update by 5:50 PM Central.
-  Progress (5:07 PM): #3279 proven on a local server: no sign-in dialog, no token-required answer, September gone from the gallery; before and after images taken, release entry written. The check exits 1 only at `npm audit signatures` (registry answers this machine OK for oxc-parser@0.156.0's attestations). Now: #3225's smoke test on the local merge with PR 3282 (first try timed out in global setup on the dev server's cold start; rerunning warm).
+- **Batch 4 (gisday: #3244 counts table on a phone)**, started 5:10 PM Central. Next update by 5:30 PM Central.
 
 ## Finished
+- **Batch 3 (aggiemap: #3279)** (report `laptop/reports/2026-11-23-3.md`): branch ready, `fix/3279-september-cache` on the fork at `61196417b`, no PR.
+  - **Fix:** the September cache is out of the gallery and the smoke list. Red first. The dialog is gone on a local server.
+  - **#3225's smoke test is green for the first time**, on a local merge with PR 3282: 1 passed, layers back exactly.
+  - **Check:** exit 1 from `npm audit signatures` only. Nx targets and the smoke tsc all pass.
+  - **Conflicts with PR 3282** in three files. **Two questions.**
 - **Batch 2 (aggiemap: #3223, #3225)** (report `laptop/reports/2026-11-23-2.md`): both branches are ready on the fork with `.pr-body.md`; no pull requests opened.
   - **#3223:** `fix/3223-nature-spaces` at `6677e94a2`. Check exit 0. Red first.
   - **#3225:** `feat/3225-basemap-20261119` at `be4f1c367`. Check exit 0. Red first.
@@ -49,7 +54,7 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
   - **One question.**
 
 ## Queued
-- Batch 4 (gisday: #3244 counts table on a phone), after batch 3.
+- Nothing.
 
 ## Findings
 - `work/tools/gisday-release-check.cjs` clicks Auth0's Accept by itself. A read-only sign-in check would suit machines that only need to prove sign-in.
