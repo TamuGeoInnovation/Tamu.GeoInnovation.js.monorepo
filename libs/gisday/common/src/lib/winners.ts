@@ -101,7 +101,7 @@ export function winnerChoicesProblem(choices: unknown): string | null {
     const place = `${choice.competition}:${choice.place}`;
 
     if (places.has(place)) {
-      return `${placeLabel(choice.place)} place was sent twice for one competition.`;
+      return `${placeLabel(choice.place as number)} place was sent twice for one competition.`;
     }
 
     places.add(place);
