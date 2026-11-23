@@ -1,60 +1,52 @@
 # Laptop: status
 
-- **Agent:** Claude Code (desktop app), the chat "js.monorepo - Laptop - GIS Day", the only listener on this machine
+- **Agent:** Claude Code (desktop app), the chat "js.monorepo - Laptop - GIS Day"; the only listener on this machine
 - **Machine:** laptop
 
 Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
+Last batch done: 1
+
 ## What this is
 
-- **Job:** development, any project (the maintainer, 23 November 2026): branches for GIS Day, AggieMap or security, whichever director sends them.
-- **Set up today** from `CLAUDE_SETUP.md`, phases 0 to 5. Not yet set up: GIS Day local (phase 6).
-- **Docker:** yes. Docker Desktop, 14 CPUs and about 15.4 GB for containers. Smaller than the lab (24 CPUs, 64 GB), so the full affected check's `-m 16g` is at this machine's limit.
-- **`fork` remote:** yes, `danielgoldbergtamu`, over HTTPS. Branches go there.
-- **`gh`:** yes, signed in, with the `project` scope. Admin on the main repository.
-- **Checks:** `scripts/check-in-volume.sh development aggiemap-angular` exit 0 on `eff3713a3`.
-- **Dev server:** `aggiemap-dev` on port 4200, serving the main checkout.
-- **Remote Control:** on, for this chat and new chats on this machine.
+**Job:** development, any project (the maintainer, 23 November 2026). It takes branches for GIS Day, AggieMap or security
+from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md`.
 
-**Cannot do yet:**
-- **Signed-in GIS Day checks or screenshots.** There is no `C:/TAMU/gisday-local/auth0-dev.local.env` here.
-- **Full screenshot sets.** Those stay on `work`.
-- **No SSH key**, so no kubernetes-config pushes over SSH. Pushing there over HTTPS has not been tried.
+| Can do | Detail |
+| --- | --- |
+| Docker | 14 CPUs and **23.5 GB** (`.wslconfig` `memory=24GB`, of 31.5 GB) |
+| Checks | `scripts/check-in-volume.sh` at its defaults (`-m 16g`, `--parallel=8`); exit 0 for `aggiemap-angular` and for `gisday-angular,gisday-nest` |
+| Git and GitHub | `fork` = `danielgoldbergtamu` and `origin`, both HTTPS; `gh` signed in, with `project`; admin on the main repository. Opening pull requests is still the director's |
+| AggieMap dev server | `aggiemap-dev` on 4200 from `tamu-js-dev-nm` (node 24.22.1, current lock) |
+| GIS Day local, signed in | `scripts/gisday-local.sh` end to end; `auth0-dev.local.env` for **txgisday-dev** only; hosts has `gisday.local.test`. Sign in at `http://gisday.local.test:4201` (no consent screen) with Chromium's `--unsafely-treat-insecure-origin-as-secure` |
+| Smoke | Playwright `v1.64.1-noble` pulled; AggieMap `run-local.sh` works (dev); GIS Day spec runs (locally; no GIS Day dev site, #1525) |
+| kubernetes-config | clone at `C:\TAMU\kubernetes-config` on `master` (HTTPS). Its work still goes to `work` |
+| `BUILD_TIMES_MACHINE` | `laptop` |
+
+**Cannot:**
+- **Full screenshot sets.** These stay on `work`.
+- **GIS Day smoke on dev.** No GIS Day dev site exists yet (#1525).
 - **No host Python.**
-
-## Setup (batch 1)
-
-Progress (12:56 PM Central): GIS Day local signed in as the txgisday-dev test admin at gisday.local.test, no consent screen, /admin/events shown (exit 0). Bug-fix check gisday-angular,gisday-nest running; smoke specs after it. Next update by 1:45 PM Central.
-
-| Item | State | Whose |
-| --- | --- | --- |
-| CLAUDE_SETUP.md phases 0-5 (Docker, gh, fork, install, check, dev server) | done this morning; check exit 0 on `eff3713a3` | mine |
-| `tamu-js-dev-nm` from the current lock, node 24.22.1; `aggiemap-dev` starts clean (200 in 165 s) | done; paused now so GIS Day has the memory | mine |
-| GIS Day local: settings file, `db`, `restore` (with migrations) | done | mine |
-| GIS Day local: `api`, `web` | done; API 200 in 20 s, site 200 in about 4 min | mine |
-| `auth0-dev.local.env` (txgisday-dev only) | done: copied from work by the maintainer (2A) | the maintainer, done |
-| `127.0.0.1 gisday.local.test` in the hosts file (admin) | done | the maintainer, done |
-| Signed-in check on txgisday-dev as the made-up test admin | exit 0: signed in at gisday.local.test, no consent screen, /admin/events shown | mine, done |
-| Playwright image `v1.64.1-noble` | pulled, 3.6 GB | mine, done |
-| One AggieMap smoke spec on dev, one GIS Day smoke spec | to do | mine |
-| kubernetes-config | cloned over HTTPS at `C:\TAMU\kubernetes-config` on `master`; push permission yes. No SSH key needed | mine, done |
-| Docker memory | 23.5 GB: the maintainer wrote `.wslconfig` `memory=24GB` (3A) and restarted WSL | the maintainer, done |
-| `CHECK_MEMORY`, `CHECK_PARALLEL` | set to 12g and 6 while Docker had 15.4 GB, removed at 23.5 GB: checks use the defaults (16g, 8) | mine, done |
-| `BUILD_TIMES_MACHINE=laptop` (user variable) | done | mine |
-| Host Python | none; nothing in the batch needs it | - |
-| Bug-fix check `gisday-angular,gisday-nest` | to do | mine |
+- **Pushing to kubernetes-config is not yet proven by an actual push.** The API reports push permission.
+- **The AggieMap dev server and GIS Day local share 23.5 GB.** Run one at a time beside a check.
 
 ## Running now
-- **Batch 1 (gisday: complete setup)**, started 12:43 PM Central. Next update by 1:45 PM Central.
+- **Batch 2 (aggiemap: #3223, #3225)**, started 1:15 PM Central. Next update by 1:30 PM Central.
 
 ## Finished
-- Nothing yet.
+- **Batch 1 (gisday: complete setup)** (report `laptop/reports/2026-11-23-1.md`): set up for any development batch. Proofs:
+  - **Bug-fix check:** `gisday-angular,gisday-nest`, exit 0.
+  - **Signed in on txgisday-dev:** exit 0.
+  - **AggieMap `legend.spec.ts` on dev:** exit 1, failing on dev's data, not setup. Filed #3271.
+  - **GIS Day smoke, run locally:** 3 of 4 passed. The link-preview test can only pass on a deployed site.
+  - **One question.**
 
 ## Queued
-- Batch 2 (aggiemap: #3223, #3225), after batch 1.
+- Nothing.
 
 ## Findings
-- None yet.
+- `work/tools/gisday-release-check.cjs` clicks Auth0's Accept by itself. A read-only sign-in check would suit machines that only need to prove sign-in.
+- After a dev server starts, the first browser request waits minutes for Vite's dependency bundling, with no log line when it finishes. A check run right after it needs a longer first timeout.
 
 ## Told directly
 - Name `laptop`; job development, any project (the maintainer, 23 November 2026, when it joined).
