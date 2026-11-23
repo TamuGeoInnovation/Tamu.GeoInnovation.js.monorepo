@@ -1,5 +1,34 @@
 # Laptop: current tasks
 
+## Batch 4 (gisday: #3244's counts table on a phone, re-checked after its fix; 23 November 2026, about 5:05 PM Central, from `work (gisday)`) (Medium) - **after 3**
+
+The lab is paused (see `DIRECTOR.md`), so this comes to you. It is small: one fix to confirm and two images to replace.
+
+**The branch:** `feat/3244-vgi-submission-counts` on the fork, at `f458eb400`. Work on it in place, fast-forward
+only, no force, and don't merge `development` into it (the director does that when opening the pull request).
+
+**What changed:** the lab's batch 197 (`work-lab-leila/reports/2026-11-23-197.md`, read it first: it has the made-up
+data and how it seeded it) found the VGI Submissions page 429 px wide on a 390 px phone, with the new "Submissions by
+category" table's Discarded column cut off. `f458eb400` gives that table the shared `floating-table` class, which the
+admin layout (`admin.component.scss`) makes 100% wide and lets wrap, as every other admin table.
+
+1. **Run GIS Day locally from `f458eb400`**, signed in as the test admin, with made-up data only: a VGI season with
+   categories and a handful of submissions in each status, as batch 197 describes. Its seed is not on the branch;
+   recreate it with made-up names (`Made-up bench` and the like). **No email**: block every non-GET as batch 197 did.
+2. **Measure** at 360, 390 and 1280 px: the page's `scrollWidth` against the screen, and whether every column of the
+   counts table is visible. Record the numbers in a table.
+3. **If it fits at 360 and 390:** replace `docs/screenshots/3244-vgi-submission-counts/after-submissions-phone.png`
+   (390) and `after-submissions.png` (1280) with new captures, keep the other three, update their alt text and the
+   release note's Before | After table if it describes the overflow, run
+   `node scripts/collate-release-notes.mjs --check` (in Docker), commit, and push to the fork.
+4. **If it still does not fit:** change nothing, and say in the report by how much, with the page and table widths, and
+   what you would do instead (for example a box that scrolls sideways around the table). Don't push a fix of your own
+   without saying so in the report.
+5. **Report** `laptop/reports/2026-11-23-4.md`: the measurements, the pushed sha, and "images pushed (3244): <sha>"
+   on its first line.
+
+**Don't:** touch production, run `kubectl`, change any Auth0 tenant but txgisday-dev, or open a pull request.
+
 ## Batch 3 (aggiemap: dev's basemap gallery raises a sign-in dialog, #3279; 23 November 2026, 4:55 PM Central, from `work (aggiemap)`) (High) - **first**
 
 You filed this one yourself in batch 2, and it blocks the smoke test you wrote there, so it comes back to you.
