@@ -49,7 +49,7 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
   - **One question.**
 
 ## Queued
-- Nothing.
+- Batch 4 (gisday: #3244 counts table on a phone), after batch 3.
 
 ## Findings
 - `work/tools/gisday-release-check.cjs` clicks Auth0's Accept by itself. A read-only sign-in check would suit machines that only need to prove sign-in.
