@@ -102,9 +102,17 @@ test('the page a link preview reads names this site and has its image', async ({
  * season's were. This asks the API for the most recent past season and where its sessions were held, then checks that
  * year's page offers at least one of those organizations, and only those. Read only.
  */
-test("a past year's Sessions page offers the organizations its sessions were held at", async ({ page, request, baseURL }) => {
+test("a past year's Sessions page offers the organizations its sessions were held at", async ({
+  page,
+  request,
+  baseURL
+}) => {
   const api = new URL('/api/', baseURL).toString();
-  const seasons = (await (await request.get(`${api}seasons`)).json()) as Array<{ guid: string; year: number; active: boolean }>;
+  const seasons = (await (await request.get(`${api}seasons`)).json()) as Array<{
+    guid: string;
+    year: number;
+    active: boolean;
+  }>;
   const current = seasons.find((season) => season.active)?.year ?? Infinity;
   const past = seasons.filter((season) => season.year < current).sort((a, b) => b.year - a.year)[0];
 
@@ -130,7 +138,10 @@ test("a past year's Sessions page offers the organizations its sessions were hel
 
   const names = (await offered.allInnerTexts()).map((name) => name.trim());
 
-  expect(names.filter((name) => !hosts.has(name)), `${past.year}: offered but held no session`).toEqual([]);
+  expect(
+    names.filter((name) => !hosts.has(name)),
+    `${past.year}: offered but held no session`
+  ).toEqual([]);
 });
 
 /**
