@@ -44,7 +44,9 @@ pull request 3281. Branch from the latest `development`, not from either of thos
 `Hosted/VTBase` is secured now. The development gallery still offers it, so opening the settings page on dev raises
 a portal sign-in dialog over the gallery.
 
-The approach is **A**, your own recommendation, taken by the director while the maintainer is asked: take the September cache out of the development gallery, since its
+**Decided by the maintainer, 23 November 2026, 5:20 PM Central:** remove it, which was your own recommendation (A).
+He also decided **not** to ask the GIS team why `VTBase` was secured: it is retired, and the removal is the whole
+answer. So do not file a data fault for it and do not wait on them. Take the September cache out of the development gallery, since its
 comparison is settled (#2515), and take its `development-only.ts` entry out with it.
 
 1. **Confirm the service's state first**, as `CLAUDE.md` requires before changing a definition: request
