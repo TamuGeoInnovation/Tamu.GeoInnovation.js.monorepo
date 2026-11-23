@@ -1,5 +1,14 @@
 # Home machine: current tasks
 
+## Batch 70 (gisday: #3239's production migration script; 23 November 2026, from `work (gisday)`) (Medium) - **do this now**
+
+Your report 69's question 1, decided by the director: yes. Write `6. GIS Day/migrations/migrate-prod-3239.ps1` in
+kubernetes-config, modelled on the latest `migrate-prod-*.ps1` there (dry run by default, `-Apply`, the backup step, both
+namespaces, a report file), for `1795444106838-AddSeasonWinners`. Put it on a kubernetes-config branch
+`feat/3239-season-winners-migration` and commit it. **Don't push it, and don't run it against production:** the
+maintainer pushes it and runs it. Run its dry run against your throwaway SQL Server if the script allows a connection
+string. Report "script ready" with the commit. Question 2 (the trail picker) is now #3243.
+
 ## Batch 69 (gisday: #3239, a Winners section on the homepage; 23 November 2026, from `work (gisday)`) (Medium) - **do this now**
 
 [#3239](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3239). The maintainer's decisions

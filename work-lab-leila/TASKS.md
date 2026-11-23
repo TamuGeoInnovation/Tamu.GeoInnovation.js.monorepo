@@ -49,6 +49,21 @@
 > emails) on `feat/3044-email-markdown` when it appears on the fork: the window's preview with **bold** text, and an
 > email as it arrives if you can show one locally without sending to anyone real. Report each "branch ready" as you go.
 
+## Batch 195 (gisday: before and after images for #3239, the homepage Winners section; 23 November 2026, from `work (gisday)`) (Medium) - **after 193, before 194**
+
+Home's branch `feat/3239-homepage-winners` (178fb3e79) is on the fork. On your local stack:
+
+1. **Before**, from `development`: gisday.tamu.edu's homepage (its host or site setting, as you have it locally) at 1280 and
+   390 px, and the Research Competitions admin menu.
+2. **After**, from the branch, with its migration run on your local database: seed made-up accepted submissions, pick
+   winners on the new Winners admin page, then the homepage at 1280 and 390 px with the Winners section; the admin page;
+   and txgisday.org's homepage showing **no** Winners section.
+3. The season's last day must have passed for the section to show; set the local season's days to dates in the past if
+   needed, and say what you changed.
+
+Commit the images to `docs/screenshots/3239-homepage-winners/` on the branch, link them from its release note, push, and
+report "images pushed". Made-up people only. About an hour.
+
 ## Batch 194 (gisday: the "before" images for #3208, presenter cards on a 360 px phone; 23 November 2026, from `work (gisday)`) (Medium) - **after 193**
 
 [#3208](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3208). The director is writing the
