@@ -49,6 +49,21 @@
 > emails) on `feat/3044-email-markdown` when it appears on the fork: the window's preview with **bold** text, and an
 > email as it arrives if you can show one locally without sending to anyone real. Report each "branch ready" as you go.
 
+## Batch 193 (gisday: before and after images for #3189 and #3219, home's batch 68; 23 November 2026, from `work (gisday)`) (Low) - **when either branch appears on the fork**
+
+Home is building both fixes (its batch 68). Take the **before** images now, from `development`, so they exist before
+the fix does; take the **after** images from each branch once it is on the fork. Write them to
+`docs/screenshots/<slug>/` on that branch and push to it. Made-up people only: no real name or email in any image.
+
+1. **#3189**, `fix/3189-email-preview-reason`: Admin → a session with judges ticked but **not saved** → Ask to judge.
+   Before: "The email could not be loaded, so nothing was sent. Please try again." After: the API's own reason ("This
+   session has no judges. Tick its judges and save it first."). Do not send any email.
+2. **#3219**, `fix/3219-checked-in-heading`: Admin → Dashboards → Check-ins, at 1280 and at 390 px wide. Before:
+   "Checkec / in". After: "Checked in" in whole words. Look at the other dashboards' headings in the after build too,
+   since the fix may be in the shared table.
+
+Report "images pushed: <branch>" for each. About 45 minutes once a branch is there.
+
 ## Batch 71 (gisday: screenshots for the finalists' profile email, #3043/#3045/#3046/#3044; 15 November 2026, from `work (gisday)`) (**Urgent**) - **as soon as `feat/profile-email-finalists` appears on the fork, before anything else**
 
 **It is on the fork now (the director built it, 15 November, about 12:15 PM): pause what you are doing and take these first.** It covers #3043, #3045 and #3046; Markdown (#3044) comes in a second PR, so skip the Markdown capture. The maintainer is holding the finalists' profile emails until it ships. Watch the fork

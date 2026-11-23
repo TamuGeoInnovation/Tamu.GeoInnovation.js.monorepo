@@ -1,5 +1,25 @@
 # Home machine: current tasks
 
+## Batch 68 (gisday: #3189 and #3219, two small fixes; 23 November 2026, from `work (gisday)`) (Low) - **do this now**
+
+Two issues, **two branches, two reports in one file**. Each red first, then green; the bug-fix check
+(`scripts/check-in-volume.sh <branch> <projects it edits>,gisday-angular`); a release note each. Push to the fork and
+report "branch ready". Questions go to the director in your report, never to the maintainer.
+
+1. **[#3189](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3189)**, branch
+   `fix/3189-email-preview-reason`: when the shared review-email window's preview fails with a 4xx, it shows the API's
+   own message (`serverMessage`, as the other admin pages do); a 5xx or a network error keeps the generic line. It is
+   one window for every email (profile, session details, Ask for slides, Ask to judge, competition emails), so fix it
+   once there. Specs: a 400 with a message shows it; a 500 shows the generic line.
+2. **[#3219](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3219)**, branch
+   `fix/3219-checked-in-heading`: the Check-ins dashboard's "Checked in" heading breaks mid-word at 1280 px. Fix it in
+   the shared `tamu-gisc-dashboard-table` if the cause is there (every dashboard uses it), not in one dashboard. A
+   check that no heading breaks inside a word, if the shared table can have one.
+
+Both are visible changes: the lab takes the before and after images (its batch 193), and the director opens the PRs
+once they are pushed. About an hour.
+
+
 ## Batch 50 (gisday: #3006, an admin dashboard for event check-ins, modelled on the RSVPs dashboard; 15 November 2026, from `work (gisday)`) (Medium) - **do this now**
 
 [#3006](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3006). The issue has what is wanted.
