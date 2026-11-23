@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch 73 (gisday: #3098 brought up to date)**, after #3239 merged (eff3713a3).
+- Nothing. Idle and listening.
 
 ## Finished
+- **Batch 73 (gisday: #3098 up to date)** (report `home/reports/2026-11-23-73.md`): branch ready, `fix/3098-shared-repeat-guard` on the fork at `8bd32004d`, no PR. Migration regenerated as `AddSessionDetailsSends1795448491167` (no `sentBy`), proven; guard ported onto together sends; a race bug found and fixed; full check exit 0. kc-3098 untouched. One question.
 - **Batch 74 (gisday: #3208)** (report `home/reports/2026-11-23-74.md`): branch ready, `fix/3208-presenter-card-width` on the fork at `696e5ea8d`, no PR. Smoke test finds a session with presenters through the API; red on production (371 on 360). Card fills its width up to 25rem. Check exit 0. Not run green locally.
 - **Batch 72 (gisday: #3244)** (report `home/reports/2026-11-23-72.md`): branch ready, `feat/3244-vgi-submission-counts` on the fork at `a2c92cbb6`, no PR. Counts table above the list, plain markup (the shared table would be an import cycle). Red first; check exit 0. No questions.
 - **Batch 71 (gisday: #3243)** (report `home/reports/2026-11-23-71.md`): branch ready, `feat/3243-trail-winners` on the fork at `08c7f9d16`, on top of #3239's branch, no PR. Trail picker in the leaderboard's order with names and points; homepage names them. Red first; full check exit 0. No questions.
