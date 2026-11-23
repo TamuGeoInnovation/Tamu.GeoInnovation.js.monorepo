@@ -29,6 +29,7 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **No host Python.**
 - **Pushing to kubernetes-config is not yet proven by an actual push.** The API reports push permission.
 - **The AggieMap dev server and GIS Day local share 23.5 GB.** Run one at a time beside a check.
+- **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
 - Nothing. Idle and listening.
