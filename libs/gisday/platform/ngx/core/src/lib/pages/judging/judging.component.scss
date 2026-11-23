@@ -1,4 +1,6 @@
 @import 'libs/gisday/sass/variables';
+// The search's matches over the page, under the box, as on a presenter's page (#2923, #3230).
+@import 'libs/sass/components/search-results';
 
 // Layout only (#3183): the site's own form, info-block, button and spacing styles do the rest.
 
@@ -75,37 +77,119 @@
   margin-top: 1rem;
 }
 
-// An entry closed to its title, authors and score, opened on that heading to score it (#3200). The whole heading is the
-// tap target, with the browser's own marker beside the title.
+// Each entry a row the judge opens in the details panel (#3230): its title, authors and score, the whole row the tap target.
+.entries {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
 .entry {
-  margin-bottom: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0 0 0.75rem;
+  padding: 0.75rem 1rem;
   border: 1pt solid $lightened-inactive-color;
   border-radius: 4px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
 
-  & > summary {
-    padding: 0.75rem 1rem;
-    cursor: pointer;
-
-    p {
-      margin: 0;
-    }
-
-    .entry-title {
-      display: inline;
-    }
+  &:hover,
+  &:focus-visible {
+    border-color: currentColor;
   }
 
-  &[open] > summary {
-    border-bottom: 1pt solid $lightened-inactive-color;
-  }
-
-  // The opened form is indented as its heading is (lab, batch 131).
-  .submission {
-    margin-bottom: 0;
-    padding: 0.75rem 1rem 1rem;
+  .entry-title {
+    font-weight: 600;
   }
 }
 
-.submission {
-  margin-bottom: 1.5rem;
+// The search box, above the list and on the panel, its matches under it as on a presenter's page (#2923, #3230).
+.judge-search {
+  position: relative;
+  // Its own layer, above the competition tabs under it, which are positioned and drew through its matches.
+  z-index: 2;
+  max-width: 32rem;
+  margin-bottom: 1rem;
+
+  .match-detail {
+    opacity: 0.75;
+  }
+}
+
+// The panel's bar (#3230): the search and Close in one row, then Previous, where the entry is and Next, in one row on a
+// phone as on a computer.
+.panel-bar {
+  margin-bottom: 1rem;
+}
+
+.panel-top {
+  gap: 0.5rem;
+  align-items: flex-start;
+
+  // The search takes the row, Close at its right end.
+  .judge-search {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: none;
+    margin-bottom: 0.5rem;
+  }
+
+  .button {
+    flex: none;
+  }
+}
+
+.panel-nav {
+  gap: 0.5rem;
+
+  .button {
+    flex: none;
+  }
+}
+
+.panel-position {
+  opacity: 0.75;
+}
+
+.panel-competition {
+  margin: 0;
+  opacity: 0.75;
+}
+
+.panel-title {
+  margin: 0.25rem 0;
+}
+
+.leave-ask {
+  margin-bottom: 1rem;
+
+  .leave-ask-actions {
+    gap: 0.5rem;
+  }
+}
+
+.judging-panel .submission {
+  margin-bottom: 0;
+}
+
+.judging-panel form,
+.judging-panel .form-section,
+.judging-panel .form-section-body,
+.judging-panel .form-collection,
+.judging-panel tamu-gisc-textbox,
+.judging-panel tamu-gisc-button {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.judging-panel p.bold {
+  font-weight: 600;
 }
