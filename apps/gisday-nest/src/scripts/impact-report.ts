@@ -29,7 +29,7 @@ import { impactAccountWindows, impactCsv, impactReport, ImpactReport, ImpactRows
 
 const arg = (name: string) => process.argv.find((a) => a.startsWith(`--${name}=`))?.slice(name.length + 3);
 const list = (value: string | undefined) => (value ? value.split(',').map((v) => v.trim()).filter(Boolean) : []);
-const read = <T>(file: string): T => JSON.parse(readFileSync(file, 'utf8').replace(/^﻿/, ''));
+const read = <T>(file: string): T => JSON.parse(readFileSync(file, 'utf8').trimStart());
 
 function main() {
   if (process.argv.includes('--windows')) {
