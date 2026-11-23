@@ -13,8 +13,10 @@
 # Older headings are history nobody closed out, which tools/board.sh calls "ended".
 #   queued      no "<name>: ... batch <n> ..." commit at all
 #   unfinished  a commit names it, but none says it is done
-# "done" is matched as tools/board.sh matches it. "withdrawn" or "moved" in the heading, or a note saying "batch(es) ... <n> ...
-# withdrawn/moved", drops it.
+# "done" is matched as tools/board.sh matches it. "withdrawn", "cancelled" or "moved" in the heading, or a note saying
+# "batch(es) ... <n> ... withdrawn/cancelled/moved", drops it. "cancelled" is matched because directors write it: on
+# 19 November a batch headed "CANCELLED, do not run" went on being reported as outstanding, and on 23 November that
+# made a working machine look like it had a backlog (#3268).
 set -u
 name=${1:?name}; days=${2:-7}
 tasks=$(git show "origin/work-mailbox:$name/TASKS.md" 2>/dev/null | tr -d '\r') || exit 0
@@ -22,8 +24,8 @@ mine=$(git log --format=%s origin/work-mailbox 2>/dev/null | grep -E "^$name: " 
 cutoff=$(date -u -d "-$days days" +%s)
 printf '%s\n' "$tasks" | grep -E '^## Batch [0-9]+' | while IFS= read -r h; do
   n=$(printf '%s' "$h" | sed -E 's/^## Batch ([0-9]+).*/\1/')
-  printf '%s' "$h" | grep -qiE 'withdrawn|moved' && continue
-  printf '%s\n' "$tasks" | grep -qiE "batch(es)? ([0-9]+ (and|,) )*$n\b[^.]*(withdrawn|moved)" && continue
+  printf '%s' "$h" | grep -qiE 'withdrawn|cancelled|canceled|moved' && continue
+  printf '%s\n' "$tasks" | grep -qiE "batch(es)? ([0-9]+ (and|,) )*$n\b[^.]*(withdrawn|cancelled|canceled|moved)" && continue
   d=$(printf '%s' "$h" | grep -oE '[0-9]{1,2} (January|February|March|April|May|June|July|August|September|October|November|December) [0-9]{4}' | head -1)
   [ -n "$d" ] || continue
   t=$(date -u -d "$d" +%s 2>/dev/null) || continue
