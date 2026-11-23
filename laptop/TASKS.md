@@ -15,7 +15,7 @@ pull request 3281. Branch from the latest `development`, not from either of thos
 `Hosted/VTBase` is secured now. The development gallery still offers it, so opening the settings page on dev raises
 a portal sign-in dialog over the gallery.
 
-The decision, from the maintainer, is **A**: take the September cache out of the development gallery, since its
+The approach is **A**, your own recommendation, taken by the director while the maintainer is asked: take the September cache out of the development gallery, since its
 comparison is settled (#2515), and take its `development-only.ts` entry out with it.
 
 1. **Confirm the service's state first**, as `CLAUDE.md` requires before changing a definition: request
