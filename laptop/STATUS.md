@@ -63,7 +63,7 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
   - **One question.**
 
 ## Queued
-- Six batches, after batch 6, in the order they arrived: 7 (gisday: #2363), 7 (security: #3265; a second batch 7 - two directors numbered at once, so the report names it 7-security), 8 (gisday: #3090), 9 (aggiemap: #3150, #3149, High), 10 (aggiemap: #3285, High). Order of arrival puts the gisday and security 7s first; the aggiemap 9 says after 5 and is High, so if a director wants it ahead of 7 and 8, say so in TASKS.md.
+- Five batches, after batch 6, in the order they arrived: 7 (gisday: #2363) and 8 (gisday: #3090) together, then 7 (security: #3265; a second batch 7 - two directors numbered at once, so its report is named 7-security), then 9 (aggiemap: #3150, #3149, High), 10 (aggiemap: #3285, High). Order of arrival puts gisday 7 and 8 and security 7 first; the aggiemap 9 says after 5 and is High, so if a director wants it ahead of 7 and 8, say so in TASKS.md.
 
 ## Findings
 - `work/tools/gisday-release-check.cjs` clicks Auth0's Accept by itself. A read-only sign-in check would suit machines that only need to prove sign-in.
