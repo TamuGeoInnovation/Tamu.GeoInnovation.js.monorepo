@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle and listening.
+- **Batch 70 (gisday: #3239's production migration script)**, started 8:47 AM Central, 23 November 2026.
 
 ## Finished
 - **Batch 69 (gisday: #3239)** (report `home/reports/2026-11-23-69.md`): branch ready, `feat/3239-homepage-winners` on the fork at `178fb3e79`, no PR. Winners page under Research Competitions, a `season_winners` table (migration proven up and down), a public read shown from the day after the season's last day, the homepage section on gisday.tamu.edu only. Trail: model only, no picker. Red first; full check exit 0. Two questions.
