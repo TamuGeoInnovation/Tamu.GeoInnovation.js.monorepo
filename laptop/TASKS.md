@@ -16,6 +16,45 @@
 > maintainer's decision this evening - so do not touch `basemaps.definition.ts` or `development-only.ts` again.
 
 
+## Batch 8 (gisday: #3090, preview a submission's uploaded files in the admin; 23 November 2026, about 7:00 PM Central, from `work (gisday)`) (Low) - **after 7**
+
+[#3090](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3090), decided by the maintainer on 16 November and held until after GIS Day, which is now over. Read the
+issue and both comments first. Branch `feat/3090-submission-file-preview` from the latest `development`.
+
+1. **PDFs and images preview as they are**: an admin-only API route serves a submission's file inline
+   (`Content-Disposition: inline`, the right `Content-Type`), and the admin submission view shows it with next and
+   previous between that submission's files. Reuse the admin's existing submission page and `libs/ui-kits/ngx/**`
+   before building anything (CLAUDE.md, "Reuse before building").
+2. **PowerPoint is converted to PDF on the server for the preview**, keeping the original `.pptx` for download.
+   LibreOffice headless, in the API's image or a small container beside it. **Before building that half, measure and
+   report** what it does to the `gisday-nest` image (size before and after) and how long one conversion of a made-up
+   10-slide deck takes; if the image grows by more than about 300 MB, stop after step 1 and ask in the report which way
+   to go, with your recommendation.
+3. **Tests, red first** where one can show it: a non-admin is refused the route; a file of another submission cannot be
+   reached through it.
+4. **Images** of the preview with a made-up PDF and a made-up deck, at 1280 px, in
+   `docs/screenshots/3090-submission-file-preview/`, and a release-note entry in `docs/releases/unreleased/` (copy an
+   existing GIS Day entry's front matter). Full check (`scripts/check-in-volume.sh`, affected); push to the fork; "branch
+   ready" with the PR body text in `laptop/reports/2026-11-23-8.md`. If the API's image changes, say exactly what the
+   deploy needs (kubernetes-config is the director's).
+
+Made-up files and people only; no email; never production; txgisday-dev is the only Auth0 tenant you may touch.
+
+## Batch 7 (gisday: #2363, run the GIS Day provider specs on the query-checking data source; 23 November 2026, about 7:00 PM Central, from `work (gisday)`) (Medium) - **after 6 and the aggiemap batches ahead of it**
+
+[#2363](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2363). Most GIS Day provider specs mock their repositories, so a query typeorm itself would refuse still
+passes CI; that is how #2356 reached production. `libs/gisday/platform/data-api/src/lib/_base/query-checking-data-source.ts`
+(PR 2360) fixes that with no database, and two specs use it so far.
+
+Branch `test/2363-query-checking-provider-specs` from the latest `development`. Do what the issue's To do says, for
+`libs/gisday/platform/data-api` and `libs/gisday/competitions/data-api`: put every provider spec that mocks `find`,
+`findOne`, `count` or the like on the query-checking repository, at least for each method that builds a `where` or
+`relations` from loaded entities, keeping their assertions. **Any query typeorm refuses is a bug: file it as its own
+issue (Bug, `bug`, assignee `danielgoldbergtamu`; the director sets Priority and the project), fix it on its own branch
+with its spec, and list it in the report.** Check with `scripts/check-in-volume.sh <branch>
+gisday-platform-data-api,gisday-competitions-data-api,gisday-nest`; push to the fork; "branch ready" with the PR body
+text in `laptop/reports/2026-11-23-7.md`, and how many specs moved, by file. No visible change.
+
 ## Batch 6 (gisday: before and after images for #3292, the Winners page's dropdowns; 23 November 2026, about 6:35 PM Central, from `work (gisday)`) (Medium) - **right after the gisday batch 4, while its GIS Day stack is still up**
 
 There are two batches numbered 4 above (one `aggiemap:`, one `gisday:`), written by two directors at once; this one is
