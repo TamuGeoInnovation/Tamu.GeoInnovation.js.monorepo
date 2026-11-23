@@ -9,7 +9,7 @@ import {
   Speaker,
   SpeakerEdit,
   SpeakerEditLink,
-  SessionDetailsSend,
+  SpeakerEmailClaim,
   SpeakerEmailSend,
   Submission,
   University
@@ -28,6 +28,7 @@ import { SessionFilesController } from './session-files.controller';
 import { SessionFilesService } from './session-files.service';
 import { SpeakerEditLinkGuard } from './speaker-edit-link.guard';
 import { EmailSendLog } from './email-send-log';
+import { RepeatGuard } from './repeat-guard';
 import { AssetsService } from '../assets/assets.service';
 
 @Module({
@@ -35,7 +36,7 @@ import { AssetsService } from '../assets/assets.service';
     TypeOrmModule.forFeature([
       SpeakerEditLink,
       SpeakerEmailSend,
-      SessionDetailsSend,
+      SpeakerEmailClaim,
       SpeakerEdit,
       Speaker,
       Season,
@@ -61,9 +62,11 @@ import { AssetsService } from '../assets/assets.service';
     SpeakerEditLinkGuard,
     AssetsService,
     // What each speaker was sent (#3167), written by every send above and read by their previews.
-    EmailSendLog
+    EmailSendLog,
+    // Each speaker email once within a few minutes, whichever copy of the API a repeat reaches (#3260).
+    RepeatGuard
   ],
   // For judging (#3183): its links are speakers' links, and its email is one more speaker email.
-  exports: [SpeakerEditService, EmailSendLog, ContactService, EmailSenderService]
+  exports: [SpeakerEditService, EmailSendLog, RepeatGuard, ContactService, EmailSenderService]
 })
 export class SpeakerEditModule {}

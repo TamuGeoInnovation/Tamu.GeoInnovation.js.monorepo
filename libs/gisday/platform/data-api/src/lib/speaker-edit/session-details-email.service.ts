@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, Logger, NotFoundException, Optional } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { MoreThan, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 import {
   FIRST_NAME_PLACEHOLDER,
@@ -21,11 +21,12 @@ import {
   togetherTo
 } from '@tamu-gisc/gisday/common';
 
-import { Event, SessionDetailsSend, Speaker } from '../entities/all.entity';
+import { Event, Speaker } from '../entities/all.entity';
 import { ContactService } from '../contact/contact.service';
 import { EmailSender, siteSender } from '../contact/email-sender.service';
 import { EMAIL_LANES, inParallel } from '../_base/in-parallel';
 import { EmailSendLog } from './email-send-log';
+import { RepeatGuard } from './repeat-guard';
 import {
   ProfileEmail,
   ProfileEmailPreview,
@@ -63,15 +64,14 @@ export interface SpeakerChoice {
  * The admin ticks which speakers get it, and sends one email to all of them together or a copy each (#3104). Together,
  * every one is on To and `{first name}` names them all; the repeat guard counts it once, for its whole group.
  *
- * Each send is recorded in `session_details_sends` before it goes (#3098), and every copy of the API shares that table,
- * so a repeat is caught whichever copy it reaches. Until then the guard was kept in each copy's memory, and production
- * runs two.
+ * Each send is claimed before it goes, in the table every copy of the API shares (`RepeatGuard`, #3098), so a repeat is
+ * caught whichever copy it reaches.
  */
 @Injectable()
 export class SessionDetailsEmailService {
   constructor(
     @InjectRepository(Event) private readonly events: Repository<Event>,
-    @InjectRepository(SessionDetailsSend) private readonly sends: Repository<SessionDetailsSend>,
+    private readonly repeats: RepeatGuard,
     private readonly contact: ContactService,
     /** The record of what each speaker was sent (#3167). */
     @Optional() private readonly sendLog?: EmailSendLog
@@ -172,7 +172,7 @@ export class SessionDetailsEmailService {
       const name = joinNames(group.map(fullName));
       // Recorded before the email goes, in the table every copy of the API shares (#3098), so two sends racing, in one
       // copy or in two, skip each other's speakers. A group is a repeat if any of it was sent these details just now.
-      const claimed = await this.claim(session, group);
+      const claimed = await this.repeats.claim(SESSION_DETAILS_EMAIL_KIND, session.guid, group);
 
       if (!claimed) {
         part.skipped.push({
@@ -207,7 +207,7 @@ export class SessionDetailsEmailService {
         await this.sendLog?.record(group, SESSION_DETAILS_EMAIL_KIND, session.guid, from.from);
       } catch (err) {
         // Not sent, so not a repeat: the admin may try again at once.
-        await this.release(claimed);
+        await this.repeats.release(claimed);
         Logger.error(
           `Could not email session ${session.guid}'s details to speaker(s) ${group.map((s) => s.guid).join(', ')}: ${
             err.message
@@ -230,57 +230,6 @@ export class SessionDetailsEmailService {
   private sessionOf(eventGuid: string): Promise<Event> {
     return sessionForEmail(this.events, eventGuid);
   }
-
-  /**
-   * Records `group` as sent this session's details now, then checks (#3098): the claim stands only if each of its rows is
-   * the earliest for its speaker in the last `REPEAT_SEND_MINUTES`. Two sends racing each record theirs and then agree
-   * which came first, so exactly one goes. Answers the rows, or null, having removed them, for a repeat.
-   *
-   * Every row of one claim has the claim's time and an id starting with the claim's, so two claims are ordered the same
-   * way for every speaker they share. With an id of their own, two together emails sent at the same instant each lost
-   * on a different speaker, and neither went.
-   */
-  private async claim(session: Event, group: Array<Speaker>): Promise<Array<SessionDetailsSend> | null> {
-    const claim = crypto.randomUUID();
-    const created = new Date(Date.now());
-    const records = await this.sends.save(
-      group.map((speaker, i) =>
-        this.sends.create({
-          guid: `${claim}-${i}`,
-          created,
-          session: { guid: session.guid },
-          speaker: { guid: speaker.guid }
-        })
-      )
-    );
-    const since = new Date(Date.now() - REPEAT_SEND_MINUTES * 60 * 1000);
-
-    for (const record of records) {
-      const recent = await this.sends.find({
-        where: { session: { guid: session.guid }, speaker: { guid: record.speaker.guid }, created: MoreThan(since) }
-      });
-
-      if (firstOf([...recent, record]).guid !== record.guid) {
-        await this.release(records);
-
-        return null;
-      }
-    }
-
-    return records;
-  }
-
-  /** Removes a claim, for an email that was a repeat or could not be sent: not sent, so the admin may try again at once. */
-  private async release(records: Array<SessionDetailsSend>): Promise<void> {
-    await this.sends.delete(records.map((record) => record.guid));
-  }
-}
-
-/** The earliest of some sends: by when, then by guid, so every copy of the API picks the same one. */
-function firstOf(sends: Array<Pick<SessionDetailsSend, 'guid' | 'created'>>): Pick<SessionDetailsSend, 'guid' | 'created'> {
-  return [...sends].sort(
-    (a, b) => new Date(a.created).getTime() - new Date(b.created).getTime() || a.guid.localeCompare(b.guid)
-  )[0];
 }
 
 /**
