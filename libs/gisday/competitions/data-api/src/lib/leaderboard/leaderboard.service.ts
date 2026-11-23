@@ -255,6 +255,23 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
     return submissions.map((submission) => ({ submission, points: scored.get(submission) ?? null }));
   }
 
+  /**
+   * Each participant of a GIS Day season's competition by account, with their points, in the leaderboard's order, highest
+   * first; none when the season has no competition. The Winners page offers them for the trail challenge's places (#3243).
+   */
+  public async rankedForSeason(seasonGuid: string): Promise<Array<{ account: string; points: number }>> {
+    const competitionSeason = await this.compSeasonRepo.findOne({
+      where: { season: { guid: seasonGuid } },
+      relations: { form: true, season: true }
+    });
+
+    if (!competitionSeason) {
+      return [];
+    }
+
+    return (await this.calculateLeaderboard(competitionSeason)).map(({ guid, points }) => ({ account: guid, points }));
+  }
+
   /** Each participant's points, highest first: their submissions' scores summed (`scoreSubmissions`). */
   private async calculateLeaderboard(
     competitionSeason: CompetitionSeason

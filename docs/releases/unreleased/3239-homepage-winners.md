@@ -17,7 +17,7 @@ Admins pick the winners on a new **Winners** page under Research Competitions, f
 Nothing is typed: each name and title is read from the entry itself whenever the homepage is shown, so a correction to
 an entry shows on the homepage too. Next year's winners are picked the same way, with no change to the site.
 
-The page has a place for the trail challenge's winners, who are people rather than entries; they can't be picked yet.
+The trail challenge's winners are picked on the same page ([#3243](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3243)).
 txgisday.org and the UCGIS site don't show winners, since the competitions ran on gisday.tamu.edu.
 
 This adds a table, `season_winners`, whose migration runs before the release reaches production.

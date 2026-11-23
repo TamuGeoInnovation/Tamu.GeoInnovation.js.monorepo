@@ -88,6 +88,12 @@ describe('LandingComponent winners (#3239)', () => {
         competition: 'undergraduate-presentation',
         label: 'Undergraduate presentation competition',
         winners: [{ place: 1, names: ['Drew Person'], title: 'A talk' }]
+      },
+      // #3243: a trail challenge winner is a person, with no title.
+      {
+        competition: 'trail',
+        label: 'Trail challenge',
+        winners: [{ place: 1, names: ['Riley Walker'], title: null }]
       }
     ]
   };
@@ -120,12 +126,14 @@ describe('LandingComponent winners (#3239)', () => {
     expect(section.querySelector('h1').textContent).toContain('2026 Competition Winners');
     expect(Array.from(section.querySelectorAll('h3')).map((h) => h.textContent.trim())).toEqual([
       'Graduate poster competition',
-      'Undergraduate presentation competition'
+      'Undergraduate presentation competition',
+      'Trail challenge'
     ]);
     expect(Array.from(section.querySelectorAll('.winner')).map((p) => p.textContent.replace(/\s+/g, ' ').trim())).toEqual([
       '1st Avery Example, Blair Sample Rivers',
       '2nd Casey Test Aquifers',
-      '1st Drew Person A talk'
+      '1st Drew Person A talk',
+      '1st Riley Walker'
     ]);
   });
 

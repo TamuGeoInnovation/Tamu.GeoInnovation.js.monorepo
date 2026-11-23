@@ -35,8 +35,15 @@
     <div class="form-section-toolbar">
       <div class="form-section-title">Trail challenge</div>
     </div>
+    <!-- Its winners are people (#3243): the season's submitters, in the leaderboard's order, with their points. -->
     <div class="form-section-body">
-      <p>Its winners are people rather than entries, and are not picked here yet.</p>
+      @if (trail()?.entries?.length) { @for (place of places; track place) {
+      <div class="form-collection column">
+        <tamu-gisc-select [placeholder]="placeLabel(place) + ' place'" [floatLabel]="false" [data]="options().get(trailKey)" displayTemplate="name" valueTemplate="value" [value]="picked(trailKey, place)" (changed)="pick(trailKey, place, $event)"></tamu-gisc-select>
+      </div>
+      } } @else {
+      <p>No one has a submission that counts this season.</p>
+      }
     </div>
   </div>
   }

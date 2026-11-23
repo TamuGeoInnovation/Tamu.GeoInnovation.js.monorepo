@@ -5,10 +5,11 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { JwtGuard } from '@tamu-gisc/common/nest/auth';
 import { SeasonWinnersAdminDto } from '@tamu-gisc/gisday/common';
 
+import { DashboardProfilesService } from '../dashboards/dashboard-profiles.service';
 import { Season, SeasonWinner, Submission } from '../entities/all.entity';
 import { Table } from '../_base/memory-table';
 import { SeasonWinnerController } from './season-winner.controller';
-import { NOT_AN_ENTRY_MESSAGE, SeasonWinnerService } from './season-winner.service';
+import { NOT_AN_ENTRY_MESSAGE, NOT_A_SUBMITTER_MESSAGE, SeasonWinnerService } from './season-winner.service';
 
 /**
  * #3239: a season's winners through Nest's real routing, guards and pipes, with the tables in memory. The admins pick 1st,
@@ -25,6 +26,7 @@ describe('Season winners (#3239)', () => {
   const OTHER_SEASON = '66666666-6666-4666-8666-666666666666';
 
   let app: INestApplication;
+  let service: SeasonWinnerService;
   let url: string;
   let permissions: Array<string> | null;
   let seasons: Table<Season>;
@@ -97,7 +99,22 @@ describe('Season winners (#3239)', () => {
         SeasonWinnerService,
         { provide: getRepositoryToken(SeasonWinner), useValue: Object.assign(winners, { manager }) },
         { provide: getRepositoryToken(Season), useValue: seasons },
-        { provide: getRepositoryToken(Submission), useValue: submissions }
+        { provide: getRepositoryToken(Submission), useValue: submissions },
+        {
+          // Made-up profiles (#3243): one trail winner has a name, another none.
+          provide: DashboardProfilesService,
+          useValue: {
+            profilesOf: async (accounts: Array<string>) =>
+              new Map(
+                accounts.map((a) => [
+                  a,
+                  a === 'auth0|walker'
+                    ? { user_info: { given_name: 'Riley', family_name: 'Walker', email: 'riley@example.org' } }
+                    : null
+                ])
+              )
+          }
+        }
       ]
     })
       .overrideGuard(JwtGuard)
@@ -114,6 +131,7 @@ describe('Season winners (#3239)', () => {
       .compile();
 
     app = module.createNestApplication();
+    service = module.get(SeasonWinnerService);
     await app.listen(0);
     url = await app.getUrl();
   });
@@ -230,7 +248,8 @@ describe('Season winners (#3239)', () => {
           place: 1,
           submission: { guid: UNDERGRAD_TALK }
         },
-        { guid: 'w4', season: { guid: SEASON }, competition: 'trail', place: 1, accountGuid: 'auth0|walker' }
+        { guid: 'w4', season: { guid: SEASON }, competition: 'trail', place: 1, accountGuid: 'auth0|walker' },
+        { guid: 'w5', season: { guid: SEASON }, competition: 'trail', place: 2, accountGuid: 'auth0|nameless' }
       ] as Array<SeasonWinner>;
     });
 
@@ -253,6 +272,13 @@ describe('Season winners (#3239)', () => {
             competition: 'undergraduate-presentation',
             label: 'Undergraduate presentation competition',
             winners: [{ place: 1, names: ['Avery Example', 'Blair Sample'], title: 'A talk' }]
+          },
+          // #3243: a trail challenge winner named from their profile, with no title and nothing else from it; one whose
+          // profile has no name is left out.
+          {
+            competition: 'trail',
+            label: 'Trail challenge',
+            winners: [{ place: 1, names: ['Riley Walker'], title: null }]
           }
         ]
       });
@@ -268,6 +294,58 @@ describe('Season winners (#3239)', () => {
       winners.rows = [];
 
       expect(await (await send('GET', '/season-winners')).text()).toBe('');
+    });
+  });
+
+  /** #3243: the trail challenge's places, kept by account, saved through the competitions' picker. */
+  describe("the trail challenge's places", () => {
+    const submitters = new Set(['auth0|walker', 'auth0|hiker', 'auth0|runner']);
+
+    it('saves the places picked, replacing those it had, and leaves the research places alone', async () => {
+      winners.rows = [
+        { guid: 'w1', season: { guid: SEASON }, competition: 'graduate-poster', place: 1, submission: { guid: RIVERS } },
+        { guid: 'old', season: { guid: SEASON }, competition: 'trail', place: 1, accountGuid: 'auth0|runner' }
+      ] as Array<SeasonWinner>;
+
+      const saved = await service.saveTrail(
+        SEASON,
+        {
+          winners: [
+            { place: 2, account: 'auth0|hiker' },
+            { place: 1, account: 'auth0|walker' },
+            { place: 3, account: null }
+          ]
+        },
+        submitters
+      );
+
+      expect(saved).toEqual([
+        { place: 1, account: 'auth0|walker' },
+        { place: 2, account: 'auth0|hiker' }
+      ]);
+      expect(winners.rows.map((r) => r.competition).sort()).toEqual(['graduate-poster', 'trail', 'trail']);
+    });
+
+    it("refuses someone who isn't one of the season's submitters", async () => {
+      await expect(
+        service.saveTrail(SEASON, { winners: [{ place: 1, account: 'auth0|stranger' }] }, submitters)
+      ).rejects.toThrow(NOT_A_SUBMITTER_MESSAGE);
+      expect(winners.rows).toEqual([]);
+    });
+
+    it('refuses one person in two places', async () => {
+      await expect(
+        service.saveTrail(
+          SEASON,
+          {
+            winners: [
+              { place: 1, account: 'auth0|walker' },
+              { place: 2, account: 'auth0|walker' }
+            ]
+          },
+          submitters
+        )
+      ).rejects.toThrow('A person can win only one place.');
     });
   });
 });

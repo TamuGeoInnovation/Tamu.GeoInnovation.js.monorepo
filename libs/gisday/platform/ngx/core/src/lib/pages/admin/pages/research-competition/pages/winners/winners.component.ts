@@ -1,15 +1,21 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { forkJoin } from 'rxjs';
 
 import { SeasonWinnersService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { ButtonComponent, SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { serverMessage } from '@tamu-gisc/gisday/platform/ngx/common';
 import {
   SeasonWinnersAdminDto,
+  TRAIL_COMPETITION,
+  TrailChoice,
+  TrailEntryDto,
+  TrailWinnersAdminDto,
   WINNER_PLACES,
   WinnerChoice,
   WinnerEntryDto,
   placeLabel,
+  trailChoicesProblem,
   winnerChoicesProblem
 } from '@tamu-gisc/gisday/common';
 
@@ -22,12 +28,18 @@ export function entryLabel(entry: WinnerEntryDto): string {
   return [entry.title || 'Untitled', names && `(${names})`].filter(Boolean).join(' ');
 }
 
+/** How a trail challenge submitter is offered (#3243): their name, then their points, as the leaderboard gives them. */
+export function trailEntryLabel(entry: TrailEntryDto): string {
+  return `${entry.name || 'No name given'} (${entry.points} ${entry.points === 1 ? 'point' : 'points'})`;
+}
+
 const keyOf = (competition: string, place: number) => `${competition}:${place}`;
 
 /**
  * A season's winners (#3239, decided 1A): 1st, 2nd and 3rd of each research competition, picked from the season's
  * accepted entries, for gisday.tamu.edu's homepage. Nothing is typed, so no name is written anywhere but in the
- * submission. The trail challenge's winners are people, not entries, and are not picked here yet.
+ * submission. The trail challenge's are people, picked from the season's submitters in the leaderboard's order, each
+ * with their name and points (#3243).
  */
 @Component({
   selector: 'tamu-gisc-winners',
@@ -43,18 +55,21 @@ export class WinnersComponent {
   public readonly places = WINNER_PLACES;
   public readonly placeLabel = placeLabel;
   public readonly page = signal<SeasonWinnersAdminDto | null>(null);
+  /** The trail challenge's submitters and places (#3243). */
+  public readonly trail = signal<TrailWinnersAdminDto | null>(null);
+  public readonly trailKey = TRAIL_COMPETITION;
   /** The entry picked for each place, by `competition:place`. */
   public readonly picks = signal<Record<string, string | null>>({});
   public readonly status = signal<{ problem?: string; saved?: boolean } | null>(null);
   /** Each competition's entries as its boxes offer them, one list each, so a box keeps its options as it redraws. */
   public readonly options = computed(
     () =>
-      new Map(
-        (this.page()?.competitions ?? []).map((c) => [
-          c.competition,
-          c.entries.map((e) => ({ name: entryLabel(e), value: e.guid }))
-        ])
-      )
+      new Map([
+        ...(this.page()?.competitions ?? []).map(
+          (c) => [c.competition, c.entries.map((e) => ({ name: entryLabel(e), value: e.guid }))] as const
+        ),
+        [TRAIL_COMPETITION, (this.trail()?.entries ?? []).map((e) => ({ name: trailEntryLabel(e), value: e.account }))]
+      ])
   );
 
   constructor() {
@@ -86,10 +101,17 @@ export class WinnersComponent {
     );
   }
 
+  /** The trail challenge's three places, those not picked sent empty (#3243). */
+  public trailChoices(): Array<TrailChoice> {
+    return this.places.map((place) => ({ place, account: this.picked(TRAIL_COMPETITION, place) ?? null }));
+  }
+
+  /** Saves the research competitions' places, then the trail challenge's, each replacing what it had. */
   public save(): void {
     const season = this.choice.season();
     const winners = this.choices();
-    const problem = winnerChoicesProblem(winners);
+    const trail = this.trailChoices();
+    const problem = winnerChoicesProblem(winners) ?? trailChoicesProblem(trail);
 
     if (!season) {
       return;
@@ -100,12 +122,11 @@ export class WinnersComponent {
       return;
     }
 
-    this.winners
-      .save(season.guid, winners)
+    forkJoin([this.winners.save(season.guid, winners), this.winners.saveTrail(season.guid, trail)])
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (page) => {
-          this.show(page);
+        next: ([page, saved]) => {
+          this.show(page, saved);
           this.status.set({ saved: true });
         },
         error: (err) => this.status.set({ problem: serverMessage(err, 'The winners were not saved.') })
@@ -114,18 +135,24 @@ export class WinnersComponent {
 
   private load(season: string): void {
     this.page.set(null);
+    this.trail.set(null);
     this.status.set(null);
-    this.winners
-      .forSeason(season)
+    forkJoin([this.winners.forSeason(season), this.winners.trail(season)])
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (page) => this.show(page),
+        next: ([page, trail]) => this.show(page, trail),
         error: (err) => this.status.set({ problem: serverMessage(err, 'The winners could not be loaded.') })
       });
   }
 
-  private show(page: SeasonWinnersAdminDto): void {
-    this.picks.set(Object.fromEntries(page.winners.map((w) => [keyOf(w.competition, w.place), w.submission])));
+  private show(page: SeasonWinnersAdminDto, trail: TrailWinnersAdminDto): void {
+    this.picks.set(
+      Object.fromEntries([
+        ...page.winners.map((w) => [keyOf(w.competition, w.place), w.submission]),
+        ...trail.winners.map((w) => [keyOf(TRAIL_COMPETITION, w.place), w.account])
+      ])
+    );
+    this.trail.set(trail);
     this.page.set(page);
   }
 }

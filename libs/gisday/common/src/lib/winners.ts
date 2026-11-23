@@ -5,8 +5,8 @@ import { JUDGED_COMPETITIONS, isJudgedCompetition } from './judging';
  * A season's winners (#3239): 1st, 2nd and 3rd of each research competition, picked by the admins from that season's
  * accepted submissions, and shown on the homepage of gisday.tamu.edu from the day after the season's last GIS Day day
  * until the next season is active. A winner is a submission, so the name and title shown are read from it when shown and
- * nothing is copied or typed. The trail challenge (VGI) has a place on the page and a place in the table, as an account
- * rather than a submission, but no picker yet.
+ * nothing is copied or typed. The trail challenge's (VGI) winners are people, picked from the season's submitters in the
+ * leaderboard's order and kept by account, so their names are read from their profiles when shown (#3243).
  *
  * One set of rules, read by the API, which enforces them, and by the site, which shows them.
  */
@@ -63,6 +63,25 @@ export interface SeasonWinnersAdminDto {
   winners: Array<WinnerChoice>;
 }
 
+/** A trail challenge submitter an admin can pick (#3243): their account, name and points, in the leaderboard's order. */
+export interface TrailEntryDto {
+  account: string;
+  name: string | null;
+  points: number;
+}
+
+/** One trail challenge place as the admins pick it: the account in it, or null for none. */
+export interface TrailChoice {
+  place: number;
+  account: string | null;
+}
+
+/** What the Winners page reads for the trail challenge: the season's submitters, ranked, and the places picked. */
+export interface TrailWinnersAdminDto {
+  entries: Array<TrailEntryDto>;
+  winners: Array<TrailChoice>;
+}
+
 /**
  * Whether a season's winners are shown at `now`: once every one of its days has passed in Central time, so from the day
  * after its last. A season with no days is never over. Until then the homepage is still about the event to come. The
@@ -114,6 +133,45 @@ export function winnerChoicesProblem(choices: unknown): string | null {
       }
 
       submissions.add(entry);
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Why the trail challenge places an admin sent cannot be saved, or null when they can (#3243): each 1st, 2nd or 3rd at
+ * most once, and a person at most one place. Whether each account submitted that season is checked by the API.
+ */
+export function trailChoicesProblem(choices: unknown): string | null {
+  if (!Array.isArray(choices)) {
+    return 'Send the places as a list.';
+  }
+
+  const places = new Set<number>();
+  const accounts = new Set<string>();
+
+  for (const choice of choices as Array<Partial<TrailChoice>>) {
+    if (!choice || !WINNER_PLACES.includes(choice.place as WinnerPlace)) {
+      return 'Each place must be 1st, 2nd or 3rd.';
+    }
+
+    if (choice.account !== null && typeof choice.account !== 'string') {
+      return 'Each place must name a person, or none.';
+    }
+
+    if (places.has(choice.place as number)) {
+      return `${placeLabel(choice.place as number)} place was sent twice.`;
+    }
+
+    places.add(choice.place as number);
+
+    if (choice.account) {
+      if (accounts.has(choice.account)) {
+        return 'A person can win only one place.';
+      }
+
+      accounts.add(choice.account);
     }
   }
 
