@@ -5,7 +5,7 @@
 There are two batches numbered 4 above (one `aggiemap:`, one `gisday:`), written by two directors at once; this one is
 6 so it cannot collide again. It is short: about fifteen minutes on the stack you already have up.
 
-**The branch:** `feat/3292-winners-author-first` on the fork, at `173c194f3`, one change: `entryLabel` in
+**The branch:** `feat/3292-winners-author-first` on the fork, at `8d6b53ef8` (`173c194f3` plus an older test updated to the new labels), one change: `entryLabel` in
 `libs/gisday/platform/ngx/core/src/lib/pages/admin/pages/research-competition/pages/winners/winners.component.ts`.
 On the admin Winners page (Admin, Research Competition, Winners) each place's dropdown offered an entry as its title,
 then its people in brackets, so a long title cut off the names. Now it is `Main Author - Title (with Others)`.
@@ -15,7 +15,7 @@ then its people in brackets, so a long title cut off the names. Now it is `Main 
    what seeding needs, as batch 197 in `work-lab-leila/reports/` describes.
 2. **Before**, from the branch's merge-base (`git merge-base HEAD origin/development`): open a competition's 1st place
    dropdown at 1280 px, and capture it open (`before-winners-dropdown.png`).
-3. **After**, from `173c194f3`: the same view (`after-winners-dropdown.png`), and the same at 390 px
+3. **After**, from `8d6b53ef8`: the same view (`after-winners-dropdown.png`), and the same at 390 px
    (`after-winners-dropdown-phone.png`).
 4. **Commit** the images to `docs/screenshots/3292-winners-author-first/` and add
    `docs/releases/unreleased/3292-winners-author-first.md`, copying an existing entry's front matter (for example
