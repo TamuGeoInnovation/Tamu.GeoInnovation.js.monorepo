@@ -55,6 +55,23 @@ with its spec, and list it in the report.** Check with `scripts/check-in-volume.
 gisday-platform-data-api,gisday-competitions-data-api,gisday-nest`; push to the fork; "branch ready" with the PR body
 text in `laptop/reports/2026-11-23-7.md`, and how many specs moved, by file. No visible change.
 
+## Batch 7 (security: #3265, the basemap source-scan test that overruns its 5 s limit; 23 November 2026, about 7:00 PM Central, from `work (security)`) (Low) - **after 6**
+
+`libs/maps/feature/basemap/src/lib/shared/basemaps.definition.spec.ts`, "is used only by views that let the basemap
+decide the spatial reference", failed two full checks today at 9.5 s and 5.9 s while the machine was busy, and passed
+alone. #3265 has the cause: `sources()` walks every `.ts` under `libs/` and `apps/` on each call, and that test reads each
+file twice.
+
+- Branch `fix/3265-basemap-source-scan` from current `origin/development`, pushed to `fork`.
+- Red first: show the test overrunning under load (for example the project's test alongside a full check, or with Vitest's
+  `--testTimeout` lowered), and record the time.
+- Fix: walk the tree once per spec file (a lazily cached `sources()`), read each file once and test both patterns on the
+  same string. Keep every assertion as it is. Only if it is still near the limit, an explicit timeout with a comment
+  saying why.
+- Green: the same load as the red run, with the time; then `scripts/check-in-volume.sh <branch> maps-feature-basemap`.
+- No PR (the director opens it). Draft `.pr-body.md` text in the report, built from `.github/pull_request_template.md`,
+  `Closes #3265`, label `no-visible-change`. Report `laptop/reports/2026-11-23-7.md`, then "branch ready".
+
 ## Batch 6 (gisday: before and after images for #3292, the Winners page's dropdowns; 23 November 2026, about 6:35 PM Central, from `work (gisday)`) (Medium) - **right after the gisday batch 4, while its GIS Day stack is still up**
 
 There are two batches numbered 4 above (one `aggiemap:`, one `gisday:`), written by two directors at once; this one is

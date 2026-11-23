@@ -31,6 +31,36 @@ If one of them turns out not to be what its issue says (the CLAUDE.md "ask the s
 2026 form's `nameAttribute` in the code and the seed before changing anything), stop on that one, say why, and go on to
 the next.
 
+## Batch 77 (security: Dependabot PR 3295, the everything-else group, #3254; 23 November 2026, about 7:00 PM Central, from `work (security)`) (Low) - **do this now**
+
+Check PR 3295 as CLAUDE.md says for a Dependabot pull request. **Do not push to its branch, comment on it or merge it.**
+
+- Branch: `dependabot/npm_and_yarn/development/everything-else-62bdc10cd6` on `origin`. `git fetch origin` first; if it is
+  not on current `origin/development`, make a local branch of `origin/development` with it merged and check that instead,
+  and say so.
+- `scripts/check-in-volume.sh <branch>` (affected, defaults). Read the log's own `Exit N`. `npm audit signatures` may fail
+  on npm's registry fault (its attestation endpoint has answered plain `OK` for `oxc-parser@0.156.0` since about 5 PM
+  Central): if it does, quote the error line and report every other step on its own.
+- Lock diff against `origin/development`: only the 18 named packages and their own dependencies may move, nothing may go
+  back a version, no new `hasInstallScript`. `@amcharts/amcharts5` must not appear (#3288 ignores it).
+- Every new version at least 7 days old (publish dates from the registry).
+- Report `home/reports/2026-11-23-77.md` with the results, and post the same results as a comment on #3254 (not on the PR).
+
+## Batch 78 (security: Dependabot PR 3296, jsdom 30.1.3 to 31.0.1, a major, #3297; 23 November 2026, from `work (security)`) (Medium) - **after 77**
+
+A major: the maintainer decides, from your findings. **Do not push to its branch, comment on it or merge it.**
+
+- Branch `dependabot/npm_and_yarn/development/jsdom-31.0.1` on `origin`; the same base rule as 77.
+- Read jsdom's 31.0.0 release notes (its GitHub releases or `Changelog.md`): list every breaking change, the Node versions
+  it supports (we run Node 24.22.3), and anything about canvas, `ResizeObserver`, `matchMedia` or navigation.
+- Find where this repository uses jsdom: the `jsdom` dependents in the lock (`jest-environment-jsdom`, Vitest
+  `environment: 'jsdom'` in project configs, anything else), and which of them actually resolve to the new 31.0.1 rather
+  than a nested copy of their own.
+- `scripts/check-in-volume.sh <branch> all` (every project, since the test environment is shared), Exit line read; the
+  same registry note as 77.
+- Report `home/reports/2026-11-23-78.md`: the breaking changes against our usage, the check result, and a recommendation
+  (merge, hold, or what change it needs) with options under **Questions for the director**. Post a short summary on #3297.
+
 ## Batch 76 (gisday: #3260, keep `session_details_sends` until a later release; 23 November 2026, from `work (gisday)`) (Low) - **do this now**
 
 Batch 75 is good; one change before its PR. `AddSpeakerEmailClaims1795459774518` drops `session_details_sends`, so
