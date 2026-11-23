@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle and listening.
+- **Batch 71 (gisday: #3243, trail challenge winners)**, from `feat/3239-homepage-winners`, started 9:04 AM Central, 23 November 2026. Batch 72 (#3244) next.
 
 ## Finished
 - **Batch 70 (gisday: #3239's migration script)** (report `home/reports/2026-11-23-70.md`): script ready, kubernetes-config `feat/3239-season-winners-migration` at `8ad70ba` in `C:/TAMU/kc-3239`, **not pushed**, not run. Copied from migrate-prod-3183; needs AddCheckInMinutes first. Parses; no dry run possible (kubectl and Windows credentials). No questions.
