@@ -93,7 +93,7 @@ describe('WinnersComponent (#3239)', () => {
     ]);
     expect(sections[0].querySelectorAll('tamu-gisc-select')).toHaveLength(3);
     expect(Array.from(sections[0].querySelectorAll('option')).map((o) => o.textContent.trim())).toEqual(
-      expect.arrayContaining(['1st place', 'Aquifers (Avery Example)', 'Rivers (Blair Sample, Casey Test)'])
+      expect.arrayContaining(['1st place', 'Avery Example - Aquifers', 'Blair Sample - Rivers (with Casey Test)'])
     );
     expect(sections[1].textContent).toContain('No accepted entries this season.');
     expect(root.textContent).toContain('Trail challenge');
