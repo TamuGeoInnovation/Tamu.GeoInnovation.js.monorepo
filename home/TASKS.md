@@ -1,5 +1,19 @@
 # Home machine: current tasks
 
+## Batch 76 (gisday: #3260, keep `session_details_sends` until a later release; 23 November 2026, from `work (gisday)`) (Low) - **do this now**
+
+Batch 75 is good; one change before its PR. `AddSpeakerEmailClaims1795459774518` drops `session_details_sends`, so
+production's API (`sha-0ed1449`) breaks the moment the migration runs, and **rolling the API back to `sha-0ed1449` after
+the deploy would break it again** unless someone runs `down()` on production too. Expand, then contract:
+
+- `up()`: create `speaker_email_claims` and its two FKs and copy the `session_details_sends` rows in, as now, but **do not
+  drop `session_details_sends`**. `down()`: drop `speaker_email_claims` only (its FKs first). The entity
+  `SessionDetailsSend` can go from the code; the table simply stays, unused by the new API.
+- File a follow-up issue (Task, `gisday`/`database` labels as fit, no priority): drop `session_details_sends` in a later
+  migration, once the release carrying #3260 has been on production a while and no rollback to `sha-0ed1449` is wanted.
+- Prove up, down, up again; nothing left to generate; bug-fix check on the projects you edit; push; "branch ready" with
+  the new `up()`/`down()` SQL in the report and the PR body's migration paragraph corrected.
+
 ## Batch 75 (gisday: #3260, one shared table for every email's repeat guard; 23 November 2026, from `work (gisday)`) (Low) - **do this now**
 
 [#3260](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3260), the follow-up you found in report 73.
