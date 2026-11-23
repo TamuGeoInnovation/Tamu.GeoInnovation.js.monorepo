@@ -17,14 +17,17 @@ import {
   DashboardTableComponent
 } from '../shared/dashboard-table/dashboard-table.component';
 
-/** The dashboard table's count columns, beside each feature type's total. */
+/**
+ * The dashboard table's count columns, beside each feature type's total. "Unverified" and "Discarded" are wider than a
+ * count column at its narrowest, so each carries a soft hyphen, shown only if it must break (#3219).
+ */
 export const VGI_COLUMNS: Array<DashboardTableColumn> = [
   { key: 'newFinds', label: 'New finds' },
   { key: 'repeats', label: 'Repeats' },
   { key: 'people', label: 'People' },
-  { key: 'unverified', label: 'Unverified' },
+  { key: 'unverified', label: 'Un\u00adverified' },
   { key: 'verified', label: 'Verified' },
-  { key: 'discarded', label: 'Discarded' }
+  { key: 'discarded', label: 'Dis\u00adcarded' }
 ];
 
 /** A submitter's own counts, in an opened row and its CSV. */
