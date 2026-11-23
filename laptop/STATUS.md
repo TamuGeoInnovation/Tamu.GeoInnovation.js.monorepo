@@ -22,8 +22,30 @@ Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 - **No SSH key**, so no kubernetes-config pushes over SSH. Pushing there over HTTPS has not been tried.
 - **No host Python.**
 
+## Setup (batch 1)
+
+Progress (12:58 PM Central): audit done; GIS Day API and site building; Playwright image pulling. Next update by 1:15 PM Central.
+
+| Item | State | Whose |
+| --- | --- | --- |
+| CLAUDE_SETUP.md phases 0-5 (Docker, gh, fork, install, check, dev server) | done this morning; check exit 0 on `eff3713a3` | mine |
+| `tamu-js-dev-nm` from the current lock, node 24.22.1; `aggiemap-dev` starts clean (200 in 165 s) | done; paused now so GIS Day has the memory | mine |
+| GIS Day local: settings file, `db`, `restore` (with migrations) | done | mine |
+| GIS Day local: `api`, `web` | building | mine |
+| `auth0-dev.local.env` (txgisday-dev only) | missing | the maintainer's |
+| `127.0.0.1 gisday.local.test` in the hosts file (admin) | missing | the maintainer's |
+| Signed-in check on txgisday-dev as the made-up test admin | waits on the two above | mine |
+| Playwright image `v1.64.1-noble` | pulling | mine |
+| One AggieMap smoke spec on dev, one GIS Day smoke spec | to do | mine |
+| kubernetes-config | cloned over HTTPS at `C:\TAMU\kubernetes-config` on `master`; push permission yes. No SSH key needed | mine, done |
+| Docker memory | 15.4 GB of 31.5 GB (WSL's default half). `.wslconfig` `memory=24GB` would raise it | the maintainer's decision |
+| `CHECK_MEMORY=12g`, `CHECK_PARALLEL=6` (user variables) until then | done | mine |
+| `BUILD_TIMES_MACHINE=laptop` (user variable) | done | mine |
+| Host Python | none; nothing in the batch needs it | - |
+| Bug-fix check `gisday-angular,gisday-nest` | to do | mine |
+
 ## Running now
-- **Batch 1 (gisday: complete setup)**, started 12:43 PM Central. Next update by 1:13 PM Central.
+- **Batch 1 (gisday: complete setup)**, started 12:43 PM Central. Next update by 1:15 PM Central.
 
 ## Finished
 - Nothing yet.
