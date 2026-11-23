@@ -31,8 +31,8 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **The AggieMap dev server and GIS Day local share 23.5 GB.** Run one at a time beside a check.
 
 ## Running now
-- **Batch 2 (aggiemap: #3223, #3225)**, started 1:15 PM Central. Next update by 1:50 PM Central.
-  Progress (1:28 PM): #3223 - service queried (`area_name` "Area Name" on 36 of 36), the popup drawn is `NatureRxPopupComponent` (proven in the browser), the layer loads on dev today with no errors; red-first spec failed as intended (`expected 'West Campus' to be 'West Campus Spaces'`); fix committed on `fix/3223-nature-spaces`, bug-fix check running. #3225 next.
+- **Batch 2 (aggiemap: #3223, #3225)**, started 1:15 PM Central. Next update by 2:10 PM Central.
+  Progress (1:43 PM): #3223 check exit 0 (4 projects, default 16g/8). #3225: portal item answers (VTBase4, public, same tiling as VTBase3, no construction sprite); red-first unit spec failed as intended; definition and development-only entry committed on `feat/3225-basemap-20261119`, before image taken, check running. Next: after images for both, release notes, .pr-body.md, push.
 
 ## Finished
 - **Batch 1 (gisday: complete setup)** (report `laptop/reports/2026-11-23-1.md`): set up for any development batch. Proofs:
