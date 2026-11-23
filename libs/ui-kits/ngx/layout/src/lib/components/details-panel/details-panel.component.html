@@ -1,0 +1,5 @@
+<!-- The dimmed page: a click on it is a close, as Escape is. Not a control of its own: the panel's Close button is. -->
+<div class="details-panel-backdrop" aria-hidden="true" (click)="closeRequested.emit()"></div>
+<div #panel class="details-panel" role="dialog" aria-modal="true" [attr.aria-label]="label()" tabindex="-1">
+  <ng-content></ng-content>
+</div>

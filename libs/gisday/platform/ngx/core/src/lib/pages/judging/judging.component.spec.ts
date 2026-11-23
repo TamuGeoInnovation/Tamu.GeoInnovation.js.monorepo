@@ -63,8 +63,8 @@ function judgePage(closed = false): JudgePageDto {
 }
 
 /**
- * #3183: a judge's page, from their emailed judging link. A card per entry, a score per criterion with its levels, Save,
- * and how many are scored; read-only once judging closes.
+ * #3183: a judge's page, from their emailed judging link. A row per entry; an entry opens in a details panel (#3230) with
+ * a score per criterion and its levels, Save, and how many are scored; read-only once judging closes.
  */
 describe('JudgingComponent (#3183)', () => {
   async function open(options: { page?: JudgePageDto | 'invalid'; assess?: jest.Mock; token?: string | null } = {}) {
@@ -103,23 +103,39 @@ describe('JudgingComponent (#3183)', () => {
     fixture.detectChanges();
 
     const root = fixture.nativeElement as HTMLElement;
-    // An entry: its section, closed or open, with its heading and its form (#3200).
-    const card = (title: string) =>
-      Array.from(root.querySelectorAll<HTMLDetailsElement>('details.entry')).find((d) =>
-        d.querySelector(':scope > summary .entry-title')?.textContent?.includes(title)
-      );
-    const save = async (title: string) => {
-      card(title).querySelector<HTMLInputElement>('input[type="submit"]').click();
+    const settle = async () => {
       fixture.detectChanges();
       await fixture.whenStable();
       fixture.detectChanges();
     };
+    // An entry's row in its tab's list (#3200), which opens it in the details panel (#3230).
+    const row = (title: string) =>
+      Array.from(root.querySelectorAll<HTMLButtonElement>('button.entry')).find((b) =>
+        b.querySelector('.entry-title')?.textContent?.includes(title)
+      );
+    const panel = () => root.querySelector<HTMLElement>('tamu-gisc-details-panel');
+    const openEntry = async (title: string) => {
+      row(title).click();
+      await settle();
 
-    return { fixture, root, judging, card, save, component: fixture.componentInstance };
+      return panel();
+    };
+    const save = async () => {
+      panel().querySelector<HTMLInputElement>('input[type="submit"]').click();
+      await settle();
+    };
+    const press = async (key: string, target: EventTarget = document) => {
+      target.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true }));
+      await settle();
+    };
+    const button = (text: string) =>
+      Array.from(panel()?.querySelectorAll<HTMLButtonElement>('button') ?? []).find((b) => b.textContent?.trim() === text);
+
+    return { fixture, root, judging, row, panel, openEntry, save, press, button, settle, component: fixture.componentInstance };
   }
 
-  it('shows a card per entry with its title, presenters and abstract, and a score box per criterion with its levels', async () => {
-    const { root, card } = await open();
+  it('opens an entry in a panel with its title, presenters and abstract, and a score box per criterion with its levels', async () => {
+    const { root, openEntry } = await open();
 
     expect(root.querySelector('.tab.active')?.textContent).toContain('Graduate poster competition');
     expect(Array.from(root.querySelectorAll('.entry-title')).map((t) => t.textContent?.trim())).toEqual([
@@ -127,8 +143,10 @@ describe('JudgingComponent (#3183)', () => {
       'Rivers'
     ]);
 
-    const aquifers = card('Aquifers');
+    const aquifers = await openEntry('Aquifers');
 
+    expect(aquifers.querySelector('[role="dialog"]')?.getAttribute('aria-label')).toBe('Aquifers');
+    expect(aquifers.querySelector('.panel-title')?.textContent).toBe('Aquifers');
     expect(aquifers.querySelector('.presenters')?.textContent).toBe('Avery Example, Blair Sample');
     expect(aquifers.textContent).toContain('About aquifers.');
     expect(Array.from(aquifers.querySelectorAll('.criterion > p')).map((p) => p.textContent?.trim())).toEqual([
@@ -151,70 +169,42 @@ describe('JudgingComponent (#3183)', () => {
     ]);
   });
 
-  /** #3200: a tab per competition, the first open; each entry closed to its heading; entries by first author's last name. */
+  /** #3200: a tab per competition, the first open; each entry a row; entries by first author's last name. */
   describe('tabs and entries (#3200)', () => {
-    /** The same judge in two competitions: the graduate one as above, and a made-up undergraduate one. */
-    function twoCompetitions(): JudgePageDto {
-      const page = judgePage();
-      const [graduate] = page.competitions;
-
-      page.competitions.push({
-        ...graduate,
-        competition: 'undergraduate-poster',
-        label: 'Undergraduate poster competition',
-        submissions: [{ ...graduate.submissions[0], guid: 's-9', title: 'Wetlands', presenters: ['Drew Sample'] }]
-      });
-
-      return page;
-    }
-
     const tabs = (root: HTMLElement) =>
       Array.from(root.querySelectorAll<HTMLElement>('tamu-gisc-tabs .tab')).map((t) => ({
         label: t.textContent?.trim(),
         selected: t.getAttribute('aria-selected')
       }));
 
-    it('shows a tab per competition with the first open, and switches on a click, keeping what was typed', async () => {
-      const { root, fixture, card, component } = await open({ page: twoCompetitions() });
+    it('shows a tab per competition with the first open, and switches on a click', async () => {
+      const { root, fixture, row } = await open({ page: twoCompetitions() });
 
       expect(tabs(root)).toEqual([
         { label: 'Graduate poster competition', selected: 'true' },
         { label: 'Undergraduate poster competition', selected: 'false' }
       ]);
-      expect(card('Aquifers')).toBeDefined();
-      expect(card('Wetlands')).toBeUndefined();
+      expect(row('Aquifers')).toBeDefined();
+      expect(row('Wetlands')).toBeUndefined();
 
-      component.formFor(judgePage().competitions[0].submissions[0]).patchValue({ 'c-1': '17' });
       root.querySelectorAll<HTMLElement>('tamu-gisc-tabs .tab')[1].click();
       fixture.detectChanges();
 
       expect(tabs(root).map((t) => t.selected)).toEqual(['false', 'true']);
-      expect(card('Wetlands')).toBeDefined();
-      expect(card('Aquifers')).toBeUndefined();
-
-      root.querySelectorAll<HTMLElement>('tamu-gisc-tabs .tab')[0].click();
-      fixture.detectChanges();
-
-      expect(component.formFor(judgePage().competitions[0].submissions[0]).getRawValue()['c-1']).toBe('17');
+      expect(row('Wetlands')).toBeDefined();
+      expect(row('Aquifers')).toBeUndefined();
     });
 
-    it("shows each entry closed, its heading the title, the authors and the judge's score or Not scored yet", async () => {
-      const { root, card } = await open();
+    it("shows each entry as a row: its title, the authors and the judge's score or Not scored yet", async () => {
+      const { root, row } = await open();
 
-      expect(Array.from(root.querySelectorAll<HTMLDetailsElement>('details.entry')).map((d) => d.open)).toEqual([
-        false,
-        false
-      ]);
+      const parts = (title: string) =>
+        Array.from(row(title)?.querySelectorAll(':scope > span') ?? []).map((p) => p.textContent?.trim());
 
-      const heading = (title: string) =>
-        Array.from(card(title)?.querySelector(':scope > summary')?.querySelectorAll('p') ?? []).map((p) =>
-          p.textContent?.trim()
-        );
-
-      expect(heading('Aquifers')).toEqual(['Aquifers', 'Avery Example, Blair Sample', 'Not scored yet']);
-      expect(heading('Rivers')).toEqual(['Rivers', 'Casey Test', 'Scored 15 of 30']);
-      // The form is inside the entry, so closed it is hidden.
-      expect(card('Aquifers')?.querySelector('form.submission')).not.toBeNull();
+      expect(parts('Aquifers')).toEqual(['Aquifers', 'Avery Example, Blair Sample', 'Not scored yet']);
+      expect(parts('Rivers')).toEqual(['Rivers', 'Casey Test', 'Scored 15 of 30']);
+      // The form is in the panel, not the list.
+      expect(root.querySelector('form.submission')).toBeNull();
     });
 
     it("lists the entries by their first author's last name, an entry with no authors last", async () => {
@@ -239,8 +229,166 @@ describe('JudgingComponent (#3183)', () => {
     });
   });
 
+  /** #3230: a search box on the page and on the panel; each entry in its own panel; Escape closes it. */
+  describe('the search and the details panel (#3230)', () => {
+    const type = async (box: HTMLElement, text: string, settle: () => Promise<void>) => {
+      const input = box.querySelector<HTMLInputElement>('.judge-search input');
+
+      input.dispatchEvent(new FocusEvent('focusin', { bubbles: true }));
+      input.value = text;
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      await settle();
+
+      return Array.from(box.querySelectorAll<HTMLButtonElement>('.judge-search .match'));
+    };
+    const text = (e: Element) => e.textContent?.replace(/\s+/g, ' ').trim();
+
+    it('finds an entry by its title or an author in every competition, and opens it on its tab, clearing the search', async () => {
+      const { root, settle, panel, component } = await open({ page: twoCompetitions() });
+
+      expect((await type(root, 'blair', settle)).map(text)).toEqual([
+        'Aquifers | Avery Example, Blair Sample · Graduate poster competition'
+      ]);
+      expect((await type(root, 'wetl', settle)).map(text)).toEqual([
+        'Wetlands | Drew Sample · Undergraduate poster competition'
+      ]);
+      // Not by the abstract (decided 2A).
+      expect(await type(root, 'about aquifers', settle)).toEqual([]);
+      expect(root.querySelector('.judge-search .category-name')?.textContent).toContain('No entries match');
+
+      (await type(root, 'wetl', settle))[0].click();
+      await settle();
+
+      expect(panel()?.querySelector('.panel-title')?.textContent).toBe('Wetlands');
+      expect(panel()?.querySelector('.panel-competition')?.textContent).toBe('Undergraduate poster competition');
+      expect(component.tab()).toBe(1);
+      expect(component.search.value).toBe('');
+    });
+
+    it('has the search on the panel too, to go straight to another entry', async () => {
+      const { openEntry, settle, panel } = await open();
+
+      const opened = await openEntry('Aquifers');
+      (await type(opened, 'casey', settle))[0].click();
+      await settle();
+
+      expect(panel()?.querySelector('.panel-title')?.textContent).toBe('Rivers');
+    });
+
+    it('moves to the entry before or after with Previous and Next, saying where it is', async () => {
+      const { openEntry, button, panel, settle } = await open();
+
+      await openEntry('Aquifers');
+
+      expect(panel().querySelector('.panel-position')?.textContent).toBe('1 of 2');
+      expect(button('Previous')?.disabled).toBe(true);
+
+      button('Next').click();
+      await settle();
+
+      expect(panel().querySelector('.panel-title')?.textContent).toBe('Rivers');
+      expect(panel().querySelector('.panel-position')?.textContent).toBe('2 of 2');
+      expect(button('Next')?.disabled).toBe(true);
+
+      button('Previous').click();
+      await settle();
+
+      expect(panel().querySelector('.panel-title')?.textContent).toBe('Aquifers');
+    });
+
+    it('closes on Escape, on Close, and on a click beside it', async () => {
+      const { openEntry, press, panel, button, settle } = await open();
+
+      await openEntry('Aquifers');
+      await press('Escape');
+      expect(panel()).toBeNull();
+
+      await openEntry('Aquifers');
+      button('Close').click();
+      await settle();
+      expect(panel()).toBeNull();
+
+      await openEntry('Aquifers');
+      panel().querySelector<HTMLElement>('.details-panel-backdrop').click();
+      await settle();
+      expect(panel()).toBeNull();
+    });
+
+    it("closes only the search's matches on Escape in the search box while they are listed", async () => {
+      const { openEntry, press, panel, settle } = await open();
+
+      const opened = await openEntry('Aquifers');
+      await type(opened, 'casey', settle);
+      await press('Escape', opened.querySelector('.judge-search input'));
+
+      expect(panel()).not.toBeNull();
+      expect(opened.querySelector('.judge-search .search-results-container')).toBeNull();
+
+      await press('Escape');
+
+      expect(panel()).toBeNull();
+    });
+
+    it('asks before leaving scores that are changed and not saved, and keeps them on Stay (decided 5B)', async () => {
+      const { openEntry, press, panel, button, settle, component } = await open();
+
+      await openEntry('Aquifers');
+      const form = component.formFor(judgePage().competitions[0].submissions[0]);
+      form.patchValue({ 'c-1': '17' });
+      form.markAsDirty();
+
+      await press('Escape');
+
+      expect(panel()?.querySelector('.leave-ask')?.textContent).toContain('not saved');
+
+      button('Stay').click();
+      await settle();
+
+      expect(panel()?.querySelector('.leave-ask')).toBeNull();
+      expect(form.getRawValue()['c-1']).toBe('17');
+
+      // Next asks too; Escape on the question is Stay.
+      button('Next').click();
+      await settle();
+      expect(panel()?.querySelector('.leave-ask')).not.toBeNull();
+      await press('Escape');
+      expect(panel()?.querySelector('.leave-ask')).toBeNull();
+      expect(panel()?.querySelector('.panel-title')?.textContent).toBe('Aquifers');
+    });
+
+    it('puts the saved scores back on Leave without saving, and goes where the judge asked', async () => {
+      const { openEntry, press, panel, button, settle, component } = await open();
+
+      await openEntry('Rivers');
+      const rivers = judgePage().competitions[0].submissions[1];
+      component.formFor(rivers).patchValue({ 'c-1': '1' });
+      component.formFor(rivers).markAsDirty();
+
+      await press('Escape');
+      button('Leave without saving').click();
+      await settle();
+
+      expect(panel()).toBeNull();
+      expect(component.formFor(rivers).getRawValue()['c-1']).toBe('10');
+      expect(component.unsaved(rivers)).toBe(false);
+    });
+
+    it('does not ask once the scores are saved', async () => {
+      const { openEntry, press, panel, save, component } = await open();
+
+      await openEntry('Aquifers');
+      const form = component.formFor(judgePage().competitions[0].submissions[0]);
+      form.patchValue({ 'c-1': '18', 'c-2': '7' });
+      form.markAsDirty();
+      await save();
+      await press('Escape');
+
+      expect(panel()).toBeNull();
+    });
+  });
+
   it('shows what the judge saved before, and how many entries they have scored', async () => {
-    const { root, card, component } = await open();
+    const { root, openEntry, component } = await open();
 
     expect(root.querySelector('.progress')?.textContent).toBe('1 of 2 scored');
     expect(component.formFor(judgePage().competitions[0].submissions[1]).getRawValue()).toEqual({
@@ -248,28 +396,30 @@ describe('JudgingComponent (#3183)', () => {
       'c-2': '5',
       comment: 'Good.'
     });
-    expect(card('Rivers').querySelector('.saved')?.textContent).toContain('Scored 15 of 30 points');
+    expect((await openEntry('Rivers')).querySelector('.saved')?.textContent).toContain('Scored 15 of 30 points');
   });
 
   it('saves the scores as numbers with the comment, and counts the entry as scored', async () => {
-    const { root, card, save, judging, component } = await open();
+    const { root, openEntry, panel, save, judging, component } = await open();
 
+    await openEntry('Aquifers');
     component.formFor(judgePage().competitions[0].submissions[0]).patchValue({ 'c-1': '18', 'c-2': '7', comment: 'Clear.' });
-    await save('Aquifers');
+    await save();
 
     expect(judging.assess).toHaveBeenCalledWith('a-link', 's-1', { scores: { 'c-1': 18, 'c-2': 7 }, comment: 'Clear.' });
-    expect(card('Aquifers').querySelector('.saved')?.textContent).toContain('Saved, 25 of 30 points');
+    expect(panel().querySelector('.saved')?.textContent).toContain('Saved, 25 of 30 points');
     expect(root.querySelector('.progress')?.textContent).toBe('2 of 2 scored');
   });
 
   it('refuses a score above the criterion’s points before sending anything', async () => {
-    const { card, save, judging, component } = await open();
+    const { openEntry, panel, save, judging, component } = await open();
 
+    await openEntry('Aquifers');
     component.formFor(judgePage().competitions[0].submissions[0]).patchValue({ 'c-1': '21', 'c-2': '7' });
-    await save('Aquifers');
+    await save();
 
     expect(judging.assess).not.toHaveBeenCalled();
-    expect(card('Aquifers').querySelector('[role="alert"]')?.textContent).toContain(
+    expect(panel().querySelector('.submission [role="alert"]')?.textContent).toContain(
       'Clarity is scored as a whole number from 0 to 20.'
     );
   });
@@ -278,22 +428,24 @@ describe('JudgingComponent (#3183)', () => {
     const refused = jest.fn(() =>
       throwError(() => new HttpErrorResponse({ status: 403, error: { message: JUDGING_CLOSED_MESSAGE } }))
     );
-    const { card, save, component } = await open({ assess: refused });
+    const { openEntry, panel, save, component } = await open({ assess: refused });
 
+    await openEntry('Aquifers');
     component.formFor(judgePage().competitions[0].submissions[0]).patchValue({ 'c-1': '1', 'c-2': '1' });
-    await save('Aquifers');
+    await save();
 
-    expect(card('Aquifers').querySelector('[role="alert"]')?.textContent).toContain(JUDGING_CLOSED_MESSAGE);
+    expect(panel().querySelector('.submission [role="alert"]')?.textContent).toContain(JUDGING_CLOSED_MESSAGE);
   });
 
   it('is read-only once judging is closed, and says so', async () => {
-    const { root, card } = await open({ page: judgePage(true) });
+    const { root, openEntry } = await open({ page: judgePage(true) });
 
     expect(root.textContent).toContain('Judging is closed for this competition');
-    expect(card('Rivers').querySelector('input[type="submit"]')).toBeNull();
-    expect(
-      Array.from(card('Rivers').querySelectorAll<HTMLInputElement>('input[type="number"]')).every((i) => i.disabled)
-    ).toBe(true);
+
+    const rivers = await openEntry('Rivers');
+
+    expect(rivers.querySelector('input[type="submit"]')).toBeNull();
+    expect(Array.from(rivers.querySelectorAll<HTMLInputElement>('input[type="number"]')).every((i) => i.disabled)).toBe(true);
   });
 
   it('says when the link does not work, or there is none', async () => {
@@ -307,3 +459,18 @@ describe('JudgingComponent (#3183)', () => {
     expect(none.judging.forLink).not.toHaveBeenCalled();
   });
 });
+
+/** The same judge in two competitions: the graduate one as above, and a made-up undergraduate one. */
+function twoCompetitions(): JudgePageDto {
+  const page = judgePage();
+  const [graduate] = page.competitions;
+
+  page.competitions.push({
+    ...graduate,
+    competition: 'undergraduate-poster',
+    label: 'Undergraduate poster competition',
+    submissions: [{ ...graduate.submissions[0], guid: 's-9', title: 'Wetlands', presenters: ['Drew Sample'] }]
+  });
+
+  return page;
+}
