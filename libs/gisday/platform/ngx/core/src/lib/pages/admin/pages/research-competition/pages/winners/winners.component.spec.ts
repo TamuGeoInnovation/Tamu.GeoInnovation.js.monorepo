@@ -3,9 +3,19 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { of, throwError } from 'rxjs';
 
 import { SeasonService, SeasonWinnersService } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { SeasonWinnersAdminDto, WinnerChoice } from '@tamu-gisc/gisday/common';
+import { SeasonWinnersAdminDto, TrailChoice, TrailWinnersAdminDto, WinnerChoice } from '@tamu-gisc/gisday/common';
 
-import { WinnersComponent, entryLabel } from './winners.component';
+import { WinnersComponent, entryLabel, trailEntryLabel } from './winners.component';
+
+/** The season's trail challenge submitters in the leaderboard's order, one place picked (#3243). Made up. */
+const trailPage = (): TrailWinnersAdminDto => ({
+  entries: [
+    { account: 'auth0|walker', name: 'Riley Walker', points: 14 },
+    { account: 'auth0|hiker', name: 'Quinn Hiker', points: 9 },
+    { account: 'auth0|nameless', name: null, points: 1 }
+  ],
+  winners: [{ place: 1, account: 'auth0|walker' }]
+});
 
 /** A season with two graduate posters and one undergraduate talk accepted, and one place picked. Made up. */
 const page = (): SeasonWinnersAdminDto => ({
@@ -35,6 +45,8 @@ describe('WinnersComponent (#3239)', () => {
     const winners = {
       forSeason: jest.fn(() => of(page())),
       save: jest.fn((_season: string, _winners: Array<WinnerChoice>) => of(page())),
+      trail: jest.fn(() => of(trailPage())),
+      saveTrail: jest.fn((_season: string, _winners: Array<TrailChoice>) => of(trailPage())),
       ...service
     };
 
@@ -85,6 +97,17 @@ describe('WinnersComponent (#3239)', () => {
     );
     expect(sections[1].textContent).toContain('No accepted entries this season.');
     expect(root.textContent).toContain('Trail challenge');
+    // #3243: the trail challenge's three places, from its submitters in the leaderboard's order.
+    const trail = Array.from(root.querySelectorAll('.form-section')).find((s) =>
+      s.querySelector('.form-section-title')?.textContent.includes('Trail challenge')
+    );
+
+    expect(trail.querySelectorAll('tamu-gisc-select')).toHaveLength(3);
+    expect(
+      Array.from(trail.querySelector('tamu-gisc-select').querySelectorAll('option'))
+        .slice(1)
+        .map((o) => o.textContent.trim())
+    ).toEqual(['Riley Walker (14 points)', 'Quinn Hiker (9 points)', 'No name given (1 point)']);
   });
 
   it('starts from the places already picked, and saves every place, those not picked empty', async () => {
@@ -106,6 +129,12 @@ describe('WinnersComponent (#3239)', () => {
       { competition: 'undergraduate-presentation', place: 1, submission: 'talk' }
     ]);
     expect(root.textContent).toContain('Saved.');
+    // The trail challenge's places go with them, those not picked empty (#3243).
+    expect(winners.saveTrail).toHaveBeenCalledWith('season-2026', [
+      { place: 1, account: 'auth0|walker' },
+      { place: 2, account: null },
+      { place: 3, account: null }
+    ]);
   });
 
   it('refuses one entry in two places before sending', async () => {
@@ -135,5 +164,21 @@ describe('WinnersComponent (#3239)', () => {
       'Rivers (Blair Sample, Casey Test)'
     );
     expect(entryLabel({ guid: 'x', title: null, names: [] })).toBe('Untitled');
+  });
+
+  it('refuses one person in two trail places before sending (#3243)', async () => {
+    const { component, winners, save, root } = await open();
+
+    component.pick('trail', 2, 'auth0|walker');
+    await save();
+
+    expect(winners.save).not.toHaveBeenCalled();
+    expect(winners.saveTrail).not.toHaveBeenCalled();
+    expect(root.textContent).toContain('A person can win only one place.');
+  });
+
+  it('offers a submitter by name and points (#3243)', () => {
+    expect(trailEntryLabel({ account: 'a', name: 'Riley Walker', points: 14 })).toBe('Riley Walker (14 points)');
+    expect(trailEntryLabel({ account: 'a', name: null, points: 1 })).toBe('No name given (1 point)');
   });
 });

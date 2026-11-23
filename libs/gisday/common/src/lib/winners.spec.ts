@@ -1,4 +1,4 @@
-import { WINNER_COMPETITIONS, placeLabel, winnerChoicesProblem, winnersShown } from './winners';
+import { WINNER_COMPETITIONS, placeLabel, trailChoicesProblem, winnerChoicesProblem, winnersShown } from './winners';
 
 /** #3239: a season's winners, as the API enforces them and the homepage shows them. Made-up entries only. */
 describe('winners', () => {
@@ -66,6 +66,36 @@ describe('winners', () => {
 
     it('refuses anything that is not a list', () => {
       expect(winnerChoicesProblem({})).toBe('Send the places as a list.');
+    });
+  });
+
+  /** #3243: the trail challenge's places, by account. */
+  describe('trailChoicesProblem', () => {
+    it('accepts three places, and a place left empty', () => {
+      expect(
+        trailChoicesProblem([
+          { place: 1, account: 'a' },
+          { place: 2, account: 'b' },
+          { place: 3, account: null }
+        ])
+      ).toBeNull();
+    });
+
+    it('refuses a place outside 1st to 3rd, a place sent twice, and one person in two places', () => {
+      expect(trailChoicesProblem([{ place: 4, account: 'a' }])).toBe('Each place must be 1st, 2nd or 3rd.');
+      expect(
+        trailChoicesProblem([
+          { place: 1, account: 'a' },
+          { place: 1, account: 'b' }
+        ])
+      ).toBe('1st place was sent twice.');
+      expect(
+        trailChoicesProblem([
+          { place: 1, account: 'a' },
+          { place: 2, account: 'a' }
+        ])
+      ).toBe('A person can win only one place.');
+      expect(trailChoicesProblem('a')).toBe('Send the places as a list.');
     });
   });
 });
