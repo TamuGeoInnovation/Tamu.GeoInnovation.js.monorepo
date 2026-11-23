@@ -234,6 +234,17 @@ conflicts once the one below merges.
   A listener may still take single or targeted captures for a pull request; what it must not take is a **full
   set** keyed to a release.
 
+## Nothing waits on a machine the maintainer cannot reach (23 November 2026, the maintainer)
+
+**The maintainer cannot reach the home machine** (or any listener he is not sitting at), so no result may wait there for
+him to push or merge, and no director gives him a command to run there. A listener pushes what it makes where the
+director can reach it:
+
+- **Monorepo branches:** to the fork, as before.
+- **Anything it cannot push itself** (kubernetes-config branches, for one): `git format-patch origin/master --stdout` into
+  `<listener>/patches/<branch>.patch` on `work-mailbox`, committed and pushed, and the commit named in its report. The
+  director applies the patch with `git am` on the work machine and pushes and opens the PR from there.
+
 ## Every listener
 - **A new batch in its `TASKS.md` is its instruction.** It starts it at once, without asking or waiting for the
   maintainer. "Wait for instructions" means: start nothing that is not in a batch. It never means waiting for him
