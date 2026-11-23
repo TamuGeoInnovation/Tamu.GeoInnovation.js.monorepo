@@ -17,3 +17,4 @@ export * from './lib/email-recipients';
 export * from './lib/names';
 export * from './lib/rubrics';
 export * from './lib/judging';
+export * from './lib/winners';
