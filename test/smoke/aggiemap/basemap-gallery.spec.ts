@@ -131,6 +131,8 @@ test.describe('basemap gallery', () => {
       return;
     }
 
+    await expect(choice, `${host} does not offer ${title} in the basemap gallery`).toHaveCount(1, { timeout: 30_000 });
+
     const marked = page.locator('.basemap.active .basemap-title');
     const openedOn = ((await marked.textContent()) ?? '').trim();
     const openedWith = await basemapLayers(page);
