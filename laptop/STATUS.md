@@ -33,7 +33,7 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- Nothing. Idle and listening.
+- **Batch 5 (aggiemap: #3161 remote campus names)**, started 5:29 PM Central. Next update by 5:50 PM Central.
 
 ## Finished
 - **Batch 4 (gisday: #3244 counts table on a phone)** (report `laptop/reports/2026-11-23-4.md`): **it still does not fit.**
@@ -58,7 +58,7 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
   - **One question.**
 
 ## Queued
-- Nothing.
+- Batch 6 (gisday: #3292 Winners images), after batch 5. It asked to run while batch 4's GIS Day stack was up, but that stack was already stopped when it arrived (5:29 PM), and batch 5 arrived first, so it runs next in order of arrival.
 
 ## Findings
 - `work/tools/gisday-release-check.cjs` clicks Auth0's Accept by itself. A read-only sign-in check would suit machines that only need to prove sign-in.
