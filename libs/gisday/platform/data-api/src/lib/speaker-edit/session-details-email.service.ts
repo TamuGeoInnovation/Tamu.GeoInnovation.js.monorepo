@@ -235,10 +235,23 @@ export class SessionDetailsEmailService {
    * Records `group` as sent this session's details now, then checks (#3098): the claim stands only if each of its rows is
    * the earliest for its speaker in the last `REPEAT_SEND_MINUTES`. Two sends racing each record theirs and then agree
    * which came first, so exactly one goes. Answers the rows, or null, having removed them, for a repeat.
+   *
+   * Every row of one claim has the claim's time and an id starting with the claim's, so two claims are ordered the same
+   * way for every speaker they share. With an id of their own, two together emails sent at the same instant each lost
+   * on a different speaker, and neither went.
    */
   private async claim(session: Event, group: Array<Speaker>): Promise<Array<SessionDetailsSend> | null> {
+    const claim = crypto.randomUUID();
+    const created = new Date(Date.now());
     const records = await this.sends.save(
-      group.map((speaker) => this.sends.create({ session: { guid: session.guid }, speaker: { guid: speaker.guid } }))
+      group.map((speaker, i) =>
+        this.sends.create({
+          guid: `${claim}-${i}`,
+          created,
+          session: { guid: session.guid },
+          speaker: { guid: speaker.guid }
+        })
+      )
     );
     const since = new Date(Date.now() - REPEAT_SEND_MINUTES * 60 * 1000);
 
