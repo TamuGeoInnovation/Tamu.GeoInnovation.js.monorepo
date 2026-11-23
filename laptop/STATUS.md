@@ -5,7 +5,7 @@
 
 Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
-Last batch done: 3
+Last batch done: 4
 
 ## What this is
 
@@ -33,10 +33,13 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch 4 (gisday: #3244 counts table on a phone)**, started 5:10 PM Central. Next update by 5:55 PM Central.
-  Progress (5:17 PM): a scratch database `gisday-b4-scratch` from the scrubbed copy, migrated; the active 2026 season had no VGI season, so a made-up form and VGI season were added with 17 made-up submissions (7 verified, 7 unverified, 3 discarded, as batch 197). The usual database is untouched. API (on the scratch database) and site starting from `f458eb400`; measurements next.
+- Nothing. Idle and listening.
 
 ## Finished
+- **Batch 4 (gisday: #3244 counts table on a phone)** (report `laptop/reports/2026-11-23-4.md`): **it still does not fit.**
+  - **Widths:** 428 px on a 360 px phone and 429 px on a 390 px phone, the same as before the fix. The counts table needs 377 px because its cells are single words. It fits at 1280.
+  - **Images pushed: none.** Nothing was changed or pushed; the branch is still at `f458eb400`.
+  - **Recommended:** the shared `DashboardScrollComponent`, moved to a shared library. **One question.**
 - **Batch 3 (aggiemap: #3279)** (report `laptop/reports/2026-11-23-3.md`): branch ready, `fix/3279-september-cache` on the fork at `61196417b`, no PR.
   - **Fix:** the September cache is out of the gallery and the smoke list. Red first. The dialog is gone on a local server.
   - **#3225's smoke test is green for the first time**, on a local merge with PR 3282: 1 passed, layers back exactly.
