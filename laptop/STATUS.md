@@ -5,7 +5,7 @@
 
 Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
-Last batch done: 1
+Last batch done: 2
 
 ## What this is
 
@@ -31,10 +31,14 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **The AggieMap dev server and GIS Day local share 23.5 GB.** Run one at a time beside a check.
 
 ## Running now
-- **Batch 2 (aggiemap: #3223, #3225)**, started 1:15 PM Central. Next update by 3:05 PM Central.
-  Progress (2:38 PM): #3223 branch ready on the fork. #3225: found and filed #3279 (dev's gallery raises a portal sign-in dialog: Hosted/VTBase, the September basemap, now answers 499 Token Required); it blocks the new switch test on dev. Switch proven by script with the dialog cancelled: 23 VTBase4 requests, all 200, marked, and back. After images taken; final check running, then .pr-body.md and push. Filed earlier: #3271.
+- Nothing. Idle and listening.
 
 ## Finished
+- **Batch 2 (aggiemap: #3223, #3225)** (report `laptop/reports/2026-11-23-2.md`): both branches are ready on the fork with `.pr-body.md`; no pull requests opened.
+  - **#3223:** `fix/3223-nature-spaces` at `6677e94a2`. Check exit 0. Red first.
+  - **#3225:** `feat/3225-basemap-20261119` at `be4f1c367`. Check exit 0. Red first.
+  - **#3279 filed** (dev's gallery raises a portal sign-in dialog). It blocks #3225's new smoke test on dev.
+  - Nothing failed because of setup. **Three questions.**
 - **Batch 1 (gisday: complete setup)** (report `laptop/reports/2026-11-23-1.md`): set up for any development batch. Proofs:
   - **Bug-fix check:** `gisday-angular,gisday-nest`, exit 0.
   - **Signed in on txgisday-dev:** exit 0.
@@ -48,6 +52,8 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 ## Findings
 - `work/tools/gisday-release-check.cjs` clicks Auth0's Accept by itself. A read-only sign-in check would suit machines that only need to prove sign-in.
 - After a dev server starts, the first browser request waits minutes for Vite's dependency bundling, with no log line when it finishes. A check run right after it needs a longer first timeout.
+- The existing gallery smoke test ("choosing a basemap changes the map") is probably blocked on dev by #3279 as well. It was not run on its own, so this is not confirmed.
+- One dev server serves one checkout. Before and after captures for a branch mean restarting `aggiemap-dev` on its worktree, about 2 minutes plus the first-load bundling. The same `tamu-js-dev-nm` volume serves any checkout with the same lock.
 
 ## Told directly
 - Name `laptop`; job development, any project (the maintainer, 23 November 2026, when it joined).
