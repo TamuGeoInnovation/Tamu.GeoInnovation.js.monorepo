@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle and listening.
+- **Batch 76 (gisday: #3260 keeps `session_details_sends`)**, since 12:59 PM Central, 23 November, on `fix/3260-shared-email-guard`.
 
 ## Finished
 - **Batch 75 (gisday: #3260)** (report `home/reports/2026-11-23-75.md`): branch ready, `fix/3260-shared-email-guard` on the fork at `d15d4767a`, no PR. One `speaker_email_claims` table and `RepeatGuard` for all three session emails; `RecentSends` gone. Migration `AddSpeakerEmailClaims1795459774518` copies and drops `session_details_sends`, proven up, down, up. Red first; full check exit 0. No questions.
