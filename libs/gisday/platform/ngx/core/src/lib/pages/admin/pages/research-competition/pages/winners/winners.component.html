@@ -1,0 +1,61 @@
+<!-- A season's winners (#3239): 1st, 2nd and 3rd of each research competition, for gisday.tamu.edu's homepage. -->
+<div class="form">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">Winners</div>
+      <div class="form-section-actions">
+        <tamu-gisc-select class="post-1" placeholder="Season" [floatLabel]="false" [data]="choice.seasons()" displayTemplate="year" valueTemplate="guid" [value]="choice.season()?.guid" (changed)="choice.choose($any($event))"></tamu-gisc-select>
+      </div>
+    </div>
+
+    <div class="form-section-body">
+      <p class="form-input-description">Pick 1st, 2nd and 3rd of each competition from its accepted entries. gisday.tamu.edu's homepage shows them, each with its title and its people's names as the entry has them, from the day after the season's last day until the next season is active.</p>
+    </div>
+  </div>
+
+  @if (page(); as page) { @for (competition of page.competitions; track competition.competition) {
+  <div class="form-section winners-competition">
+    <div class="form-section-toolbar">
+      <div class="form-section-title">{{ competition.label }}</div>
+    </div>
+
+    <div class="form-section-body">
+      @if (competition.entries.length) { @for (place of places; track place) {
+      <div class="form-collection column">
+        <tamu-gisc-select [placeholder]="placeLabel(place) + ' place'" [floatLabel]="false" [data]="options().get(competition.competition)" displayTemplate="name" valueTemplate="value" [value]="picked(competition.competition, place)" (changed)="pick(competition.competition, place, $event)"></tamu-gisc-select>
+      </div>
+      } } @else {
+      <p>No accepted entries this season.</p>
+      }
+    </div>
+  </div>
+  }
+
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-title">Trail challenge</div>
+    </div>
+    <div class="form-section-body">
+      <p>Its winners are people rather than entries, and are not picked here yet.</p>
+    </div>
+  </div>
+  }
+
+  <div class="form-section">
+    <div class="form-section-body">
+      @if (status(); as state) { @if (state.problem) {
+      <div class="info-block warning" role="alert">
+        <p>{{ state.problem }}</p>
+      </div>
+      } @else if (state.saved) {
+      <div class="info-block success">
+        <p>Saved.</p>
+      </div>
+      } } @if (page()) {
+      <div class="form-collection row">
+        <tamu-gisc-button type="button" value="Save winners" (click)="save()"></tamu-gisc-button>
+      </div>
+      }
+    </div>
+  </div>
+</div>

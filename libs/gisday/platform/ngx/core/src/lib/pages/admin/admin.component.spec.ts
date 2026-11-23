@@ -88,19 +88,21 @@ describe('AdminComponent', () => {
     expect(dashboards).not.toContain('VGI submissions');
   });
 
-  // #3183: judging the research competitions has its two pages under Research Competitions, where the site runs them.
-  it('lists Submissions, Rubrics and Judging results under Research Competitions', () => {
+  // #3183: judging the research competitions has its two pages under Research Competitions, where the site runs them,
+  // and their winners theirs (#3239).
+  it('lists Submissions, Rubrics, Judging results and Winners under Research Competitions', () => {
     const root = open(false).nativeElement as HTMLElement;
     const item = Array.from(menu(root)?.querySelectorAll(':scope > li') ?? []).find((li) =>
       li.querySelector(':scope > a')?.textContent?.includes('Research Competitions')
     );
     const links = Array.from(item?.querySelectorAll('.sidebar_sublevel a') ?? []);
 
-    expect(links.map((a) => a.textContent?.trim())).toEqual(['Submissions', 'Rubrics', 'Judging results']);
+    expect(links.map((a) => a.textContent?.trim())).toEqual(['Submissions', 'Rubrics', 'Judging results', 'Winners']);
     expect(links.map((a) => a.getAttribute('href'))).toEqual([
       expect.stringContaining('/research-competition'),
       expect.stringContaining('/research-competition/rubrics'),
-      expect.stringContaining('/research-competition/judging')
+      expect.stringContaining('/research-competition/judging'),
+      expect.stringContaining('/research-competition/winners')
     ]);
   });
 
