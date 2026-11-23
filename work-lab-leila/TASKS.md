@@ -49,6 +49,15 @@
 > emails) on `feat/3044-email-markdown` when it appears on the fork: the window's preview with **bold** text, and an
 > email as it arrives if you can show one locally without sending to anyone real. Report each "branch ready" as you go.
 
+## Batch 197 (gisday: images for #3244, counts on the VGI Submissions page; 23 November 2026, from `work (gisday)`) (Medium) - **after 196, before 194**
+
+Home's `feat/3244-vgi-submission-counts` (a2c92cbb6) is on the fork. Seed a made-up VGI season with submissions in three
+or four categories and a mix of verified, unverified and discarded. Admin → VGI Competition → Submissions at 1280 and
+390 px: **before** from `development` (no counts), **after** from the branch (the "Submissions by category" table with
+its Total row), and after once more with **Needs a look** pressed, to show the table does not change. Commit to
+`docs/screenshots/3244-vgi-submission-counts/`, link them from its release note, push, report "images pushed". Made-up
+people only. About 30 minutes.
+
 ## Batch 196 (gisday: images for #3243, the trail challenge's winners; 23 November 2026, from `work (gisday)`) (**High**) - **after 195, before 194**
 
 Home's `feat/3243-trail-winners` (08c7f9d16) is on the fork, built on `feat/3239-homepage-winners`. On your local stack,

@@ -1,5 +1,18 @@
 # Home machine: current tasks
 
+## Batch 74 (gisday: #3208, presenter cards on a 360 px phone; 23 November 2026, from `work (gisday)`) (Medium) - **do this now**, before 73
+
+[#3208](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3208), taken over from the director.
+Branch `fix/3208-presenter-card-width` on the fork (67b17fb5f) has a **WIP smoke test** in `test/smoke/gisday/smoke.spec.ts`
+that never got red for the right reason: on production the Sessions and Presenters pages open their entries by script,
+with no links, and waiting for `events/by-day` timed out. Make the regression test work, red on the unfixed code for
+the stated reason (the page wider than 360 px). Prove it against your local stack, which you can seed with a session
+that has presenters, or as a component test if a layout check can be made there. Then the fix:
+`libs/gisday/platform/ngx/common/src/lib/modules/people/components/presenter-card/presenter-card.component.scss`, the
+card fills the width it is given up to 25rem (for example `:host { display: block; width: 25rem; max-width: 100%;
+min-width: 0 }` and `.presenter-item { width: 100%; box-sizing: border-box }`). Also check the event edit form, which uses
+the same card. The lab has your before images (batch 194). Bug-fix check; a release note; push; "branch ready".
+
 ## Batch 73 (gisday: bring #3098 up to date, its migration after #3239's; 23 November 2026, from `work (gisday)`) (Medium) - **after 72; start only once #3239's PR has merged** (`git log origin/development` shows it)
 
 Your `fix/3098-shared-repeat-guard` (68776b3fe, 15 November) never got its PR. Since then `AddJudging`, `AddCheckInMinutes`
