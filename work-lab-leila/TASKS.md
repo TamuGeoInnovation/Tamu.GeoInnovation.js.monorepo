@@ -49,7 +49,7 @@
 > emails) on `feat/3044-email-markdown` when it appears on the fork: the window's preview with **bold** text, and an
 > email as it arrives if you can show one locally without sending to anyone real. Report each "branch ready" as you go.
 
-## Batch 198 (security: check seven Dependabot pull requests; 23 November 2026, 9:40 AM Central, from `work (security)`) (Low) - **after 194**
+## Batch 198 (security: check seven Dependabot pull requests; 23 November 2026, 9:40 AM Central, from `work (security)`) (Low) - **WITHDRAWN, do not run** (10:05 AM Central: the director checked all seven itself; CI was green on each)
 
 The maintainer is away and asked for these to be checked without him. Nothing to push, no branches on the fork, no pull
 requests. **Post each result as a comment on its tracking issue** (not on the pull request), then one report,
