@@ -82,8 +82,8 @@ describe('the impact report (#3238)', () => {
 
     // a@ (twice), b@, the organizer with no email, c@.
     expect(report.speakers.speakers).toBe(4);
-    // Acme Mapping, Example University (no organization), Survey Co.
-    expect(report.speakers.organizations).toBe(3);
+    // Acme Mapping and Survey Co: the organizer names a university only.
+    expect(report.speakers.organizations).toBe(2);
     expect(report.speakers.topOrganizations[0]).toEqual({ rank: 1, name: 'Acme Mapping', count: 2 });
   });
 
@@ -98,15 +98,15 @@ describe('the impact report (#3238)', () => {
     expect(report.alternatives['checkIns'].find((a) => a.key === 'during-not-organizers-each-once').value).toBe(1);
   });
 
-  it('splits research presentations and posters by level, cartography counted as a poster', () => {
+  it('counts accepted research presentations and posters by level, cartography counted as a poster', () => {
     const report = impactReport(rows());
 
-    expect(report.researchPresentations).toEqual({ total: 2, undergraduate: 1, graduate: 1 });
+    expect(report.researchPresentations).toEqual({ total: 1, undergraduate: 1, graduate: 0 });
     expect(report.researchPosters).toEqual({ total: 2, undergraduate: 1, graduate: 1 });
   });
 
-  it('counts trail submissions not discarded, and the students who made them', () => {
-    expect(impactReport(rows()).trail).toEqual({ submissions: 3, students: 1, competitors: 2 });
+  it('counts every trail submission, and the students who made them', () => {
+    expect(impactReport(rows()).trail).toEqual({ submissions: 4, students: 1, competitors: 3 });
   });
 
   it('counts active sessions by GIS Day day', () => {

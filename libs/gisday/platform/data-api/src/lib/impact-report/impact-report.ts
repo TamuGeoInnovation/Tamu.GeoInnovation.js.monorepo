@@ -151,17 +151,21 @@ export const REPORTED_2025 = {
 
 /**
  * The definition each measure is counted by: a key of that measure's alternatives. Change one here, never in a single
- * season's run, so every season stays comparable. The first run against 2025 shows which alternatives reproduce the
- * 2025 report; these are set from it.
+ * season's run, so every season stays comparable.
+ *
+ * Set from the first production run, 23 November 2026 (#3238). No definition reproduced the 2025 report's number for any
+ * measure but the trail's person count, so each is the closest that reads plainly: every speaker on a session, each
+ * once; the organizations they name; every check-in; accepted research presentations, and accepted posters with the
+ * cartography entries; every trail submission. What 2025 reported, and why it differs, is on #3238.
  */
 export const IMPACT_DEFINITIONS = {
   participants: 'last-gisday-to-this-gisday',
   speakers: 'by-email',
-  organizations: 'organizations-and-universities',
+  organizations: 'organizations',
   checkIns: 'all',
-  researchPresentations: 'all',
-  researchPosters: 'posters-and-cartography',
-  trail: 'not-discarded'
+  researchPresentations: 'all-accepted',
+  researchPosters: 'posters-and-cartography-accepted',
+  trail: 'all'
 } as const;
 
 /** How many organizations and sessions the top lists name. */
@@ -411,7 +415,7 @@ export function impactReport(rows: ImpactRows): ImpactReport {
       participants: participants.definition,
       speakers: speakers.definition,
       organizations: organizations.definition,
-      topOrganizations: `The ${IMPACT_TOP} organizations with the most counted speakers (a speaker with none, by university)`,
+      topOrganizations: `The ${IMPACT_TOP} organizations with the most counted speakers`,
       checkIns: checkIns.definition,
       topSessions: `The ${IMPACT_TOP} sessions with the most counted check-ins`,
       researchPresentations: presentations.definition,
@@ -420,7 +424,7 @@ export function impactReport(rows: ImpactRows): ImpactReport {
       sessions: 'Active sessions (shown on the site), by the GIS Day day they are on'
     },
     participants: participants.value as ImpactReport['participants'],
-    speakers: { speakers: speakers.value as number, organizations: organizations.value as number, topOrganizations: impactTop(people.map(groupOf)) },
+    speakers: { speakers: speakers.value as number, organizations: organizations.value as number, topOrganizations: impactTop(people.map((s) => s.organization ?? '')) },
     checkIns: { total: checkIns.value as number, topSessions: impactTop((checkIns.rows as Array<ImpactCheckInRow>).map((c) => c.sessionTitle)) },
     researchPresentations: presentations.value as ImpactReport['researchPresentations'],
     researchPosters: posters.value as ImpactReport['researchPosters'],
