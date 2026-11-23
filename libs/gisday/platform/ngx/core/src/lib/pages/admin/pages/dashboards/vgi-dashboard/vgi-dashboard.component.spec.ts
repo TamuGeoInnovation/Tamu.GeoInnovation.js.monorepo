@@ -136,9 +136,9 @@ describe('VgiDashboardComponent (#2894)', () => {
       'New finds',
       'Repeats',
       'People',
-      'Unverified',
+      'Un\u00adverified',
       'Verified',
-      'Discarded'
+      'Dis\u00adcarded'
     ]);
     expect(rows(root).map((r) => r.slice(1))).toEqual([
       ['3', '1', '1', '3', '1', '1', '1'],
