@@ -1,5 +1,36 @@
 # Home machine: current tasks
 
+## Batch 77 (gisday: three GIS Day bugs, #2627, #2572 and #1836; 23 November 2026, about 6:55 PM Central, from `work (gisday)`) (Medium) - **after the batch you are running now (61, #1840)**
+
+The lab is paused (see `DIRECTOR.md`), so GIS Day's code work comes to you and the laptop. Three bugs, each its own
+branch from the latest `development`, in this order. For each: read the issue, a test proven red against the unfixed
+code, the fix, `scripts/check-in-volume.sh <branch> <projects it edits>,<the app>` (read its `Exit` line; a
+`npm audit signatures` FETCH_ERROR from the registry is a known flake this afternoon, so say so if it is the only
+failure), push to the fork, and say "branch ready: <name>" per branch in the report, with the PR body text. Drop any
+`.pr-body.md` commit. Made-up data only, no email, never production, leave kubernetes-config alone.
+
+1. **[#2627](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2627): Monuments and memorial markers reach ArcGIS Online without their name.** The fix is in the
+   issue: `toFeature` in `vgi-arcgis-publisher.service.ts` publishes the form's name answer for every type, finding the
+   question from the `nameAttribute` any option declares. Scoring, automatic review and the Designer are unchanged; a
+   test that a monument's name is in the feature, red first. No visible change on the site, so the PR takes
+   `no-visible-change`; say in the report what would show it on the ArcGIS layer.
+2. **[#2572](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2572): the session check-in code stays in the page address.** The fix is in the issue: read
+   `?checkin=` once, keep it for the check-in, then remove it with `replaceUrl: true` **before** the page view is sent
+   (check the order against how angulartics2 fires). A test that the code still checks the user in and the address no
+   longer carries it, red first. No visible change beyond the address bar; say in the report whether a before/after of
+   the address is worth capturing.
+3. **[#1836](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1836): past years' Sessions pages have an empty Organizations filter.** It was deferred until after
+   GIS Day, which is now over. The fix is in the issue: a migration that ticks **Sessions Filter** on each past season's
+   organizations that hosted at least one of its events, leaving the current season alone; `down()` removes only what it
+   added (so it must record what it ticked). Prove up, down and up in your throwaway SQL Server, with made-up seasons.
+   Give the migration's name and its exact `up()` and `down()` SQL in the report, because the director writes the
+   production script from it. This one is visible (a past season's filter lists organizations again); say what made-up
+   data shows it, and the director will have the images taken.
+
+If one of them turns out not to be what its issue says (the CLAUDE.md "ask the service" rule applies to #2627: check a
+2026 form's `nameAttribute` in the code and the seed before changing anything), stop on that one, say why, and go on to
+the next.
+
 ## Batch 76 (gisday: #3260, keep `session_details_sends` until a later release; 23 November 2026, from `work (gisday)`) (Low) - **do this now**
 
 Batch 75 is good; one change before its PR. `AddSpeakerEmailClaims1795459774518` drops `session_details_sends`, so
