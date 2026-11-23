@@ -1,6 +1,6 @@
 # Who directs
 
-**Directors: AggieMap - work, its AggieMap chat (the maintainer moved it back at 3:35 PM Central, 26 October 2026; `home (aggiemap)` held it from 25 October 5:25 PM and queued batch 152, so it should stop writing `work-lab-leila/TASKS.md` for AggieMap); GIS Day - work, its GIS Day chat (taken back at 9:58 AM Central, Monday 26 October 2026, at the maintainer's word; home is a listener; see Handover (gisday)); security and vulnerability work (#2112, #2118, #1146's security parts, Dependabot, CodeQL and secret-scanning alerts, committed secrets) - work, the chat titled "js.monorepo - Security - CSA 305 Desktop"** (maintainer, 23 October 2026). All three run on the work machine; each writes only its own batches and asks him only about its own, so a listener's batch heading (`gisday:`, `aggiemap:`, `security:`) says which chat wrote it and where its questions go. `package.json` and `package-lock.json` are shared: a chat says so before changing either, and security bumps are the security chat's.
+**Directors: AggieMap - work, its AggieMap chat (the maintainer moved it back at 3:35 PM Central, 26 October 2026; `home (aggiemap)` held it from 25 October 5:25 PM and queued batch 152, so it should stop writing `work-lab-leila/TASKS.md` for AggieMap); GIS Day - work, its GIS Day chat (taken back at 9:58 AM Central, Monday 26 October 2026, at the maintainer's word; home is a listener; see Handover (gisday), save point 23 November); security and vulnerability work (#2112, #2118, #1146's security parts, Dependabot, CodeQL and secret-scanning alerts, committed secrets) - work, the chat titled "js.monorepo - Security - CSA 305 Desktop"** (maintainer, 23 October 2026). All three run on the work machine; each writes only its own batches and asks him only about its own, so a listener's batch heading (`gisday:`, `aggiemap:`, `security:`) says which chat wrote it and where its questions go. `package.json` and `package-lock.json` are shared: a chat says so before changing either, and security bumps are the security chat's.
 
 Each of the maintainer's machines runs a Claude Code session on this branch. **Each application has exactly one director at a
 time; every other session listens.** The maintainer talks to the directors; the two are kept apart so that each chat's context
@@ -563,6 +563,41 @@ layers and reported two columns as missing on production that were present. The 
 checks each filter against its own layer, which is why it can be sent to the GIS team.
 
 ## Handover (gisday)
+
+### Save point: Monday 23 November 2026, about 8:40 AM Central (the GIS Day director on `work`, before a reboot)
+
+**Production, both namespaces:** site `gisday-angular:sha-fa3b8bc` (PR 3231, #3230, rolled out about 8:20 AM today), API
+`gisday-nest:sha-f4fd0d1`. Site rollback target `sha-7a735e8`. PR 3242 (#3241) updates the production table.
+
+**PRs open, all the maintainer's to merge once CI is green:**
+- **PR 3240 (#3238, Medium):** the impact report. The counting and its definitions are in
+  `libs/gisday/platform/data-api/src/lib/impact-report/`, and the script is `apps/gisday-nest/src/scripts/impact-report.ts`.
+  Full check exit 0 on `fed682112`. Worktree `C:\TAMU\wt-3238`.
+- **kubernetes-config PR 162:** `6. GIS Day/data/impact-report.ps1`, the read-only runner. Worktree `C:\TAMU\kc-3238`.
+  The maintainer ran it twice today. The second run's output, counts only, is in
+  `C:\TAMU\kc-3238\6. GIS Day\data\impact-report\` (untracked: the two JSON files and two CSVs). The comparison with
+  2025's report is on #3238.
+- **PR 3242 (#3241, Low):** the production table names `sha-fa3b8bc`. Check exit 0.
+
+**In flight:**
+- **#3208 (Medium, the director):** the presenter cards are 350 px wide, so a session's page is 11 px too wide on a
+  360 px phone. Branch `fix/3208-presenter-card-width` (worktree `C:\TAMU\wt-vgi-counts`; the folder was first made for
+  the VGI counts). It holds a WIP smoke test in `test/smoke/gisday/smoke.spec.ts`, which is **not yet red for the right
+  reason**. The Sessions and Presenters pages open their entries by script, with no links, and waiting for the
+  `events/by-day` answer timed out on production. Next, find the API call the Sessions page really makes. The fix
+  itself is planned: `presenter-card.component.scss`, `:host { display: block; width: 25rem; max-width: 100%;
+  min-width: 0 }` and `.presenter-item { width: 100%; box-sizing: border-box }`.
+- **Home, batch 69:** #3239 (Medium), a Winners section on the homepage. The decisions are on the issue: an admin picker
+  from the season's submissions, a new table, gisday.tamu.edu only, made-up names only.
+- **Home, batch 68, done:** `fix/3189-email-preview-reason` (c76e51530) and `fix/3219-checked-in-heading` (f3bcdceee),
+  both on the fork. The PRs open after the lab's images.
+- **The lab:** batch 193 (#3189 and #3219 images), then 194 (#3208 before and after images).
+- **#3227 (AggieMap bus stops on dev):** handed to the AggieMap chat.
+- **Closed today:** #3237 (Escape on the full-screen QR code; it already worked).
+- **Still open:** the VGI submission counts (Dan said 1B, 2A, 3A, 4A; the issue isn't filed yet). The VGI dashboard
+  `/admin/dashboards/vgi` already shows a total and an "All types" row, so ask Dan whether that is enough before
+  building.
+- Dan's own items: clear his test score of 34; set up the real judges, rubrics and Ask to judge.
 
 **26 October, 9:58 AM Central: the maintainer made `work` (its GIS Day chat) the GIS Day director again.** Home is a listener.
 The handover below, written for home on 25 October, is what work picks up from.
