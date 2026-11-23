@@ -1,3 +1,20 @@
+// #3220: the title and an organizer's Edit session button share a row (the shared align-center and justify-between),
+// apart, and the button keeps its own width rather than the global .button's flex: 1.
+.session-heading {
+  gap: 1rem;
+
+  // The title takes the row's space and wraps within it, so the button stays beside even a long title; below about
+  // 20rem of room, as on a phone, the button wraps under the title instead.
+  .session-title {
+    flex: 1 1 20rem;
+    min-width: 0;
+  }
+}
+
+.session-edit {
+  flex: none;
+}
+
 .event-type {
   text-transform: capitalize;
 }

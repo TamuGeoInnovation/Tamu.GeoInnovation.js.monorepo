@@ -1,0 +1,7 @@
+// The tabs carry their own styles (#3200). They used to be only in libs/sass/modules/tabs, which only the geoservices
+// site imported, so on GIS Day a judge's competition tabs drew as plain lines of text with nothing marking the chosen
+// one. The component has no view encapsulation (tabs.component.ts) because those rules select the host element and
+// the tabs inside it.
+@import 'libs/sass/variables';
+@import 'libs/sass/mixins';
+@import 'libs/sass/modules/tabs';

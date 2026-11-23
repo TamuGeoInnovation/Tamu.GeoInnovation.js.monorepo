@@ -32,8 +32,7 @@ describe('the Visit Maps tiles', () => {
   it('lists its categories in the order the maintainer set', () => {
     expect(tiles().map((tile) => tile.label)).toEqual([
       'Anniversary',
-      'Parking',
-      'Transportation',
+      'Parking & Transportation',
       'Athletics Events',
       'Campus Events',
       'Operations',
@@ -42,13 +41,20 @@ describe('the Visit Maps tiles', () => {
     ]);
   });
 
-  it('puts Transportation between Parking and Athletics Events', () => {
+  it('puts Parking & Transportation between Anniversary and Athletics Events', () => {
     const labels = tiles().map((tile) => tile.label);
 
     // Stated as a relationship as well as a position, so the intent survives a tile being added
-    // elsewhere in the row: the next person sees which neighbours matter.
-    expect(labels.indexOf('Transportation')).toBe(labels.indexOf('Parking') + 1);
-    expect(labels.indexOf('Athletics Events')).toBe(labels.indexOf('Transportation') + 1);
+    // elsewhere in the row: the next person sees which neighbours matter. Transportation had its
+    // own tile here until #2895 folded it into this one.
+    expect(labels.indexOf('Parking & Transportation')).toBe(labels.indexOf('Anniversary') + 1);
+    expect(labels.indexOf('Athletics Events')).toBe(labels.indexOf('Parking & Transportation') + 1);
+  });
+
+  // #2895: one tile for both kinds of map, so a visitor who wants a bus or a scooter is not sent
+  // looking for a Transportation tile that no longer exists.
+  it('has no separate Transportation tile', () => {
+    expect(tiles().map((tile) => tile.label)).not.toContain('Transportation');
   });
 
   it('gives every tile a route that All Maps serves', () => {

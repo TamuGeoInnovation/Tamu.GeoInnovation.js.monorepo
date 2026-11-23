@@ -25,3 +25,6 @@ export * from './lib/components/esri-map/esri-map.component';
 
 // Our compass, placed in a map's slot beside Esri's zoom and locate (#1853, #1949).
 export * from './lib/components/map-compass/map-compass.component';
+
+// A polygon drawn, seen and changed on a map, its corners in and out as latitudes and longitudes (#3078).
+export * from './lib/components/polygon-editor/polygon-editor.component';

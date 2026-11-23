@@ -25,10 +25,10 @@ describe('development-only maps', () => {
   // when both were on `development` (#2769).
   const onProduction = servicesReadOnProduction();
 
-  it('include the Micromobility draft (#2712), the NCAA Volleyball map (#2713) and Sustainable Transportation (#2742)', () => {
-    expect(developmentOnly.map((definition) => definition.configuration?.id)).toEqual(
-      expect.arrayContaining(['micromobility', 'ncaa-volleyball', 'sustainable-transportation'])
-    );
+  // Micromobility and Sustainable Transportation were here until #2895 sent both to production, so the NCAA
+  // Volleyball map is the only one left: it waits until Texas A&M is announced as a host on 29 November.
+  it('are the NCAA Volleyball map (#2713) and nothing else', () => {
+    expect(developmentOnly.map((definition) => definition.configuration?.id)).toEqual(['ncaa-volleyball']);
   });
 
   it('have every service listed in DEVELOPMENT_ONLY_SERVICES, unless production reads it for another map', () => {

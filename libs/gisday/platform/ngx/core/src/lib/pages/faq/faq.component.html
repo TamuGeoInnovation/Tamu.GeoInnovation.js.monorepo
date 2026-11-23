@@ -15,23 +15,23 @@
             <ng-container *ngTemplateOutlet="copyLink; context: { $implicit: 'account-identity' }"></ng-container>
           </p>
           <div>
-            <p>No. The TxGIS Day website is completely separate from Texas A&M's Howdy system. If you have never signed up before on the TxGIS Day website, you should <a [routerLink]="['/signup']">create an account.</a></p>
+            <p>No. The {{ site.name }} website is completely separate from Texas A&M's Howdy system. If you have never signed up before on the {{ site.name }} website, you should <a [routerLink]="['/signup']">create an account.</a></p>
           </div>
         </div>
 
         <div class="trailer-2 faq-item" id="event-cost">
           <p class="flex flex-row justify-between align-center" (click)="onFaqItemClick($event)" tabindex="0" role="button" (keydown.enter)="onFaqItemClick($event)" (keydown.space)="onFaqItemClick($event); $event.preventDefault()">
-            <span>Are all of the TxGIS Day events free?</span>
+            <span>Are all of the {{ site.name }} events free?</span>
             <ng-container *ngTemplateOutlet="copyLink; context: { $implicit: 'event-cost' }"></ng-container>
           </p>
           <div>
-            <p>Yes. There is no cost to attend any of the TxGIS Day events.</p>
+            <p>Yes. There is no cost to attend any of the {{ site.name }} events.</p>
           </div>
         </div>
 
         <div class="trailer-2 faq-item" id="event-eligibility">
           <p class="flex flex-row justify-between align-center" (click)="onFaqItemClick($event)" tabindex="0" role="button" (keydown.enter)="onFaqItemClick($event)" (keydown.space)="onFaqItemClick($event); $event.preventDefault()">
-            <span>I am not a student, faculty, or staff member at a university or college - can I come to TxGIS Day?</span>
+            <span>I am not a student, faculty, or staff member at a university or college - can I come to {{ site.name }}?</span>
             <ng-container *ngTemplateOutlet="copyLink; context: { $implicit: 'event-eligibility' }"></ng-container>
           </p>
           <div>
@@ -45,7 +45,7 @@
             <ng-container *ngTemplateOutlet="copyLink; context: { $implicit: 'event-cost-2' }"></ng-container>
           </p>
           <div>
-            <p>Yes. Even if you are not a faculty, staff, or student at a college or university, all TxGIS Day events are free.</p>
+            <p>Yes. Even if you are not a faculty, staff, or student at a college or university, all {{ site.name }} events are free.</p>
           </div>
         </div>
 
@@ -55,54 +55,55 @@
             <ng-container *ngTemplateOutlet="copyLink; context: { $implicit: 'competition-eligibility' }"></ng-container>
           </p>
           <div>
-            <ul>
-              <li>The presentation and poster competitions are only open to public (for some prizes) and to TAMU graduate and undergraduate students (for other prizes).</li>
-              <li>The mapping competition is open to everyone who would like to submit data (for some prizes) and to TAMU graduate and undergraduate students (for other prizes).</li>
-            </ul>
+            <!-- The maintainer, 16 November 2026 (#3152). -->
+            <p>The {{ site.name }} competitions are open only to current Texas A&M students, graduate and undergraduate.</p>
           </div>
         </div>
 
         <div class="trailer-2 faq-item" id="website-checkin">
           <p class="flex flex-row justify-between align-center" (click)="onFaqItemClick($event)" tabindex="0" role="button" (keydown.enter)="onFaqItemClick($event)" (keydown.space)="onFaqItemClick($event); $event.preventDefault()">
-            <span>How do I check-in using the TxGIS Day Website?</span>
+            <span>How do I check in using the {{ site.name }} website?</span>
             <ng-container *ngTemplateOutlet="copyLink; context: { $implicit: 'website-checkin' }"></ng-container>
           </p>
           <div>
-            <p>You can complete the check-in process for any event using the TxGIS Day website while that event is on-going. Follow these simple steps:</p>
+            <!-- As the session page does it (#1766, #2560, #3081, #3088): a complete profile first, then the visitor's location
+            in person or the session's QR code. Open from shortly before the session until shortly after, by default 5 and 10 minutes, set per session (#3152, #3209). -->
+            <p>You can check in to a session on the {{ site.name }} website from shortly before it starts until shortly after it ends: usually from 5 minutes before it starts until 10 minutes after it ends. Some sessions allow check-in at any time. Follow these steps:</p>
 
             <ul class="numbered">
-              <li><a [routerLink]="['/signup']">Create an account</a> on the TxGIS Day Website.</li>
-              <li>Ensure that you are <a [routerLink]="['/login']">logged into your account</a> on the TxGIS Day Website.</li>
-              <li><a [routerLink]="['/sessions']">Find the event you are attending</a> and click on it to open its details page.</li>
-              <li>While the event is underway, click on the Check-in button that is visible on the event details page. This will only work during the time period of the event.</li>
+              <li><a [routerLink]="['/signup']">Create an account</a> on the {{ site.name }} website, and make sure that you are <a [routerLink]="['/login']">logged into your account</a>.</li>
+              <li>Complete your <a [routerLink]="['/account/details']">Profile</a>. You cannot check in until it is complete.</li>
+              <li><a [routerLink]="['/sessions']">Find the session you are attending</a> and open its details page.</li>
+              <li>For an <strong>in-person</strong> session, click <strong>Checkin</strong> on the session's page and allow your phone or computer to share your location: you need to be at the session's building. If your phone will not share its location, scan the session's QR code, shown on the screen in the room, instead.</li>
+              <li>For a <strong>hybrid or online</strong> session, scan the session's QR code, shown on the presenter's slides or shared screen, with your phone. The page it opens checks you in and says so.</li>
             </ul>
           </div>
         </div>
 
         <div class="trailer-2 faq-item" id="attendance-certification-website">
           <p class="flex flex-row justify-between align-center" (click)="onFaqItemClick($event)" tabindex="0" role="button" (keydown.enter)="onFaqItemClick($event)" (keydown.space)="onFaqItemClick($event); $event.preventDefault()">
-            <span>How do I certify my attendance using the GIS Day Website?</span>
+            <span>How do I certify my attendance using the {{ site.name }} website?</span>
             <ng-container *ngTemplateOutlet="copyLink; context: { $implicit: 'attendance-certification-website' }"></ng-container>
           </p>
           <div>
-            <p>You can certify your attendance at any of the TxGIS Day events using the TxGIS Day website. Follow these simple steps:</p>
+            <p>You can certify your attendance at any of the {{ site.name }} events using the {{ site.name }} website. Follow these steps:</p>
             <ul class="numbered">
-              <li><a [routerLink]="['/signup']">Create an account</a> on the TxGIS Day Website.</li>
-              <li>Make sure that you are <a [routerLink]="['/login']">logged into your account</a> on the TxGIS Day Website.</li>
-              <li><a [routerLink]="['/account/my-classes']">Open the My Classes menu item on the TxGIS Day website</a> and select all of the classes that you want to notify professors for.</li>
-              <li>While the event is underway, follow the <a [routerLink]="['/faq']" fragment="website-checkin">check-in instructions</a> to check-in at the event.</li>
+              <li><a [routerLink]="['/signup']">Create an account</a> on the {{ site.name }} website.</li>
+              <li>Make sure that you are <a [routerLink]="['/login']">logged into your account</a> on the {{ site.name }} website.</li>
+              <li><a [routerLink]="['/account/classes']">Open the Classes page</a> (from the Account menu, choose Profile, then Classes in the page's left menu) and select all of the classes that you want to notify professors for.</li>
+              <li>From 5 minutes before the session starts until 10 minutes after it ends, follow the <a [routerLink]="['/faq']" fragment="website-checkin">check-in instructions</a> to check in.</li>
             </ul>
           </div>
         </div>
 
         <div class="trailer-2 faq-item" id="mobile-app">
           <p class="flex flex-row justify-between align-center" (click)="onFaqItemClick($event)" tabindex="0" role="button" (keydown.enter)="onFaqItemClick($event)" (keydown.space)="onFaqItemClick($event); $event.preventDefault()">
-            <span>Is there a TxGIS Day App for Android or iOS?</span>
+            <span>Is there a {{ site.name }} app for Android or iOS?</span>
             <ng-container *ngTemplateOutlet="copyLink; context: { $implicit: 'mobile-app' }"></ng-container>
           </p>
           <div>
-            <p>There are no longer apps for TxGIS Day in the Google Play or Apple App stores. They are no longer needed, since all functions of the site work on mobile devices, including the check-in process and the data collection competition.</p>
-            <p>If you have previously installed a version of the TxGIS Day app for Android or iOS, you can safely uninstall it.</p>
+            <p>There are no longer apps for GIS Day in the Google Play or Apple App stores. They are no longer needed, since all functions of the site work on mobile devices, including the check-in process and the data collection competition.</p>
+            <p>If you have previously installed a version of the GIS Day app for Android or iOS, you can safely uninstall it.</p>
           </div>
         </div>
 
@@ -112,12 +113,12 @@
             <ng-container *ngTemplateOutlet="copyLink; context: { $implicit: 'zoom-link' }"></ng-container>
           </p>
           <div>
-            <p>The Zoom information for each session is available on each event's details page. Follow these simple steps:</p>
+            <p>The Zoom information for each online or hybrid session is on its details page. Follow these steps:</p>
             <ul class="numbered">
-              <li><a [routerLink]="['/signup']">Create an account</a> on the TxGIS Day website.</li>
-              <li>Make sure that you are <a [routerLink]="['/login']">logged into your account</a> on the TxGIS Day website.</li>
-              <li><a [routerLink]="['/sessions']">Find the event you want to attend</a> and click on it to open its details page.</li>
-              <li>Click on the Online Zoom Meeting Info drop down menu where you will find the Zoom meeting link and associated meeting details.</li>
+              <li><a [routerLink]="['/signup']">Create an account</a> on the {{ site.name }} website.</li>
+              <li>Make sure that you are <a [routerLink]="['/login']">logged into your account</a> on the {{ site.name }} website.</li>
+              <li><a [routerLink]="['/sessions']">Find the session you want to attend</a> and open its details page.</li>
+              <li>Open the <strong>Online Broadcast</strong> section, where you will find the Zoom link and its meeting details. It shows them only when you are logged in.</li>
             </ul>
           </div>
         </div>
@@ -128,13 +129,13 @@
             <ng-container *ngTemplateOutlet="copyLink; context: { $implicit: 'event-videos' }"></ng-container>
           </p>
           <div>
-            <p>Some videos will be available at the <a href="https://www.youtube.com/channel/UC6YUiZwc91mc7dKss2Lv3zA/featured">TxGIS Day YouTube channel.</a></p>
+            <p>Some videos will be available at the <a href="https://www.youtube.com/channel/UC6YUiZwc91mc7dKss2Lv3zA/featured">GIS Day YouTube channel.</a></p>
           </div>
         </div>
 
         <div class="trailer-3 faq-item" id="additional-information">
           <p>Additional Information</p>
-          <p>For any questions regarding the TxGIS Day, please use our <a [routerLink]="['/contact']">Contact Form</a> to send a message to the TxGIS Day committee.</p>
+          <p>For any questions regarding {{ site.name }}, please use our <a [routerLink]="['/contact']">Contact Form</a> to send a message to the {{ site.name }} committee.</p>
         </div>
       </div>
     </div>

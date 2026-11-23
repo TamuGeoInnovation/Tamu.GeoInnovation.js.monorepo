@@ -1,0 +1,38 @@
+@use 'libs/gisday/sass/variables' as vars;
+@use 'libs/gisday/sass/class-banner' as banner;
+
+.photo-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1rem;
+}
+
+// The box the admin speaker form draws, at the size of a presenter's card (#2956).
+.speaker-photo {
+  @include banner.class-banner-photo();
+}
+
+.bio-preview {
+  padding: 1rem;
+  border: 1px solid vars.$accent-grey;
+  border-radius: 7pt;
+}
+
+.problem {
+  color: vars.$aggie-accent-red;
+}
+
+// The shared picker wearing the site's .button, as on a submission's Presentation files (#2938).
+tamu-gisc-file.button {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+  // .button grows to fill its row; beside the photo it is its own size.
+  flex: 0 0 auto;
+}
+
+.profile-edit {
+  flex: 1 1 100%;
+  min-width: 0;
+}

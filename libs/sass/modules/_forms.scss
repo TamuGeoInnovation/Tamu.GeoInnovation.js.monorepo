@@ -77,6 +77,26 @@ form,
           margin-right: 0;
         }
       }
+
+      // A row whose items stack, one above the next, on a phone, such as the GIS Day venue form's
+      // check-in zone corners and its map (#3078).
+      &.stack-narrow {
+        @media only screen and (max-width: 767px) {
+          @include mixins.flex-direction(column);
+          // Full width each, whatever the row aligns its items to side by side.
+          @include mixins.align-items(stretch);
+
+          & > * {
+            flex: none;
+            margin-right: 0;
+            margin-left: 0;
+          }
+
+          & > * + * {
+            margin-top: 1rem;
+          }
+        }
+      }
     }
 
     &.column {
@@ -120,6 +140,12 @@ form,
 
         a {
           @extend .__form-action;
+
+          // The action style's margin: 0 outranked a link's own spacing class, so two links ran together, as
+          // "Download CSVEvery score" (#3193, lab batch 126). A link that asks for space now gets it.
+          &.post-1 {
+            margin-right: 1rem;
+          }
         }
       }
 

@@ -1,9 +1,17 @@
-import { HttpException, Injectable, InternalServerErrorException, Logger, UnprocessableEntityException } from '@nestjs/common';
+import {
+  HttpException,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  NotFoundException,
+  UnprocessableEntityException
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, In, Repository } from 'typeorm';
 
 import { EventBroadcast } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
+import { byName } from '../_base/natural-order';
 import { SeasonService } from '../season/season.service';
 
 @Injectable()
@@ -12,13 +20,40 @@ export class EventBroadcastService extends BaseProvider<EventBroadcast> {
     super(eb);
   }
 
+  /**
+   * The sessions that use a broadcast (#3032), for its admin page: each with its day and place, so the page can order them
+   * and list only its site's. Hidden sessions too, which is why the route is for admins.
+   */
+  public async getSessions(guid: string) {
+    const broadcast = await this.eb.findOne({
+      where: { guid },
+      relations: { events: { day: true, location: { place: true } } }
+    });
+
+    if (!broadcast) {
+      throw new NotFoundException('Broadcast not found.');
+    }
+
+    return broadcast.events ?? [];
+  }
+
+  /**
+   * Every read of a list of broadcasts is in natural order by name (#3047): case ignored and numbers as numbers, which
+   * the database's ORDER BY cannot do ("Zoom 10" before "Zoom 2"). Sorted here, once, so Admin > Broadcasts and every
+   * Broadcast drop-down (an event's, which reads the active season's) agree.
+   *
+   * Each with its place (#3048), by which each site lists only its own organizations' broadcasts.
+   */
   public getEntities() {
     try {
-      return this.eb.find({
-        order: {
-          name: 'ASC'
-        }
-      });
+      return this.eb
+        .find({
+          relations: { place: true },
+          order: {
+            name: 'ASC'
+          }
+        })
+        .then(byName);
     } catch (err) {
       // An HttpException carries a deliberate status. Re-wrapping it below turned intended
       // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
@@ -32,14 +67,17 @@ export class EventBroadcastService extends BaseProvider<EventBroadcast> {
 
   public getBroadcastsForSeason(seasonGuid: string) {
     try {
-      return this.eb.find({
-        where: {
-          season: { guid: seasonGuid }
-        },
-        order: {
-          name: 'ASC'
-        }
-      });
+      return this.eb
+        .find({
+          relations: { place: true },
+          where: {
+            season: { guid: seasonGuid }
+          },
+          order: {
+            name: 'ASC'
+          }
+        })
+        .then(byName);
     } catch (err) {
       // An HttpException carries a deliberate status. Re-wrapping it below turned intended
       // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
@@ -55,14 +93,17 @@ export class EventBroadcastService extends BaseProvider<EventBroadcast> {
     const season = await this.ss.findOneActive();
 
     try {
-      return this.eb.find({
-        where: {
-          season: { guid: season.guid }
-        },
-        order: {
-          name: 'ASC'
-        }
-      });
+      return this.eb
+        .find({
+          relations: { place: true },
+          where: {
+            season: { guid: season.guid }
+          },
+          order: {
+            name: 'ASC'
+          }
+        })
+        .then(byName);
     } catch (err) {
       // An HttpException carries a deliberate status. Re-wrapping it below turned intended
       // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
@@ -101,11 +142,11 @@ export class EventBroadcastService extends BaseProvider<EventBroadcast> {
       try {
         return Promise.all(newEntities);
       } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
+        // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+        // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+        if (err instanceof HttpException) {
+          throw err;
+        }
 
         throw new InternalServerErrorException(err);
       }

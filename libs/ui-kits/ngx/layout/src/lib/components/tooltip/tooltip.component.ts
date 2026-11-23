@@ -98,6 +98,19 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
     }
   }
 
+  /**
+   * Escape closes an open tooltip, as it does a drop-down: the date-time picker opens in one. The Escape is claimed, so
+   * a page that gives Escape a meaning of its own (an admin details page going back to its list, #2942) leaves it
+   * alone. One something inside already used, as the time list does to close itself, is left to it.
+   */
+  @HostListener('document:keydown.escape', ['$event'])
+  public closeOnEscape(event: KeyboardEvent) {
+    if (this.isVisible() && !event.defaultPrevented) {
+      event.preventDefault();
+      this.isVisible.set(false);
+    }
+  }
+
   public ngOnInit() {
     // Set debounce time otherwise there will be two changes in the change detection cycle.
     this.containerPosition = combineLatest([this._container.pipe(debounceTime(0))]).pipe(

@@ -1,5 +1,7 @@
 export * from './lib/modules/modals/entity-actions-modals/entity-copy-modal/entity-copy-modal.component';
 export * from './lib/modules/modals/entity-actions-modals/entity-delete-modal/entity-delete-modal.component';
+export * from './lib/modules/modals/review-email-modal/review-email-modal.component';
+export * from './lib/modules/modals/review-email-modal/profile-email';
 
 export * from './lib/pipes/asset-url/asset-url.pipe';
 export * from './lib/pipes/order-by/order-by.pipe';
@@ -15,6 +17,10 @@ export * from './lib/utils/sponsor-logo-size';
 export * from './lib/utils/events-by-day';
 export * from './lib/utils/event-form-problems';
 export * from './lib/utils/speakers';
+export * from './lib/utils/search-text';
+export * from './lib/utils/upload-image-picker';
+export * from './lib/utils/submission-deadline-notice';
+export * from './lib/utils/server-message';
 
 // Enums
 export * from './lib/enums/submission-review-status.enum';
@@ -23,6 +29,7 @@ export * from './lib/enums/place-visibility-options.enum';
 
 // Roles
 export * from './lib/roles/gisday.roles';
+export * from './lib/modules/forms/admin-details-page';
 export * from './lib/modules/forms/components/broadcasts/broadcast-add-edit-form/broadcast-add-edit-form.component';
 export * from './lib/modules/forms/components/classes/class-add-edit-form/class-add-edit-form.component';
 export * from './lib/modules/forms/components/events/event-add-edit-form/event-add-edit-form.component';
@@ -47,3 +54,7 @@ export * from './lib/modules/forms/components/user-submissions/user-submission-a
 
 // The site this deployment is (#1835)
 export * from './lib/site/site';
+export * from './lib/site/sign-in';
+export * from './lib/modules/submission-files/submission-files.component';
+export * from './lib/modules/search/linked-search/linked-search.component';
+export * from './lib/modules/sessions-using/sessions-using.component';

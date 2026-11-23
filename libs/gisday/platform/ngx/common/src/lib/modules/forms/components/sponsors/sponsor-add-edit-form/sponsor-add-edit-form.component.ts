@@ -1,12 +1,14 @@
 import { Component, OnInit, inject, input } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Observable, filter, map, of, shareReplay, switchMap, take } from 'rxjs';
 
 import { Sponsor, Season } from '@tamu-gisc/gisday/platform/data-api';
 import { AssetsService, SeasonService, SponsorService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { serverMessage } from '../../../../../utils/server-message';
+import { UploadImagePicker } from '../../../../../utils/upload-image-picker';
 
 import { formToFormData } from '../../../../../utils/form-to-form-data';
 import { SPONSOR_LOGO_SIZES } from '../../../../../utils/sponsor-logo-size';
@@ -18,17 +20,29 @@ import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
 import { ImagePreviewComponent } from '../../../../images/components/image-preview/image-preview.component';
 import { uploadPreviewUrl } from '../../../../images/upload-preview-url';
+import { injectBackToList } from '../../../admin-details-page';
 
 @Component({
   selector: 'tamu-gisc-sponsor-add-edit-form',
   templateUrl: './sponsor-add-edit-form.component.html',
   styleUrls: ['./sponsor-add-edit-form.component.scss'],
-  imports: [ImagePreviewComponent, FormsModule, ReactiveFormsModule, TextboxComponent, SelectComponent, FileComponent, ButtonComponent, CheckboxComponent, AsyncPipe]
+  imports: [
+    ImagePreviewComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    TextboxComponent,
+    SelectComponent,
+    FileComponent,
+    ButtonComponent,
+    CheckboxComponent,
+    AsyncPipe
+  ]
 })
 export class SponsorAddEditFormComponent implements OnInit {
   private readonly fb = inject(UntypedFormBuilder);
   private readonly at = inject(ActivatedRoute);
-  private readonly rt = inject(Router);
+  /** Leaves for the list once a save, create or delete has worked: the one the page was opened from (#2965). */
+  private readonly backToList = injectBackToList('/admin/sponsors');
   private readonly as = inject(AssetsService);
   private readonly sss = inject(SponsorService);
   private readonly ss = inject(SeasonService);
@@ -41,6 +55,9 @@ export class SponsorAddEditFormComponent implements OnInit {
   public activeSeasons$: Observable<Partial<Season>>;
   public logoUrl$: Observable<SafeUrl | string | null>;
   public form: UntypedFormGroup;
+
+  /** The logo picker, on the shared upload rule (#3009, #3074). */
+  public readonly logo = new UploadImagePicker('The logo');
 
   public logoSizesDict = SPONSOR_LOGO_SIZES;
 
@@ -92,7 +109,6 @@ export class SponsorAddEditFormComponent implements OnInit {
       shareReplay()
     );
 
-
     // The chosen logo, else the saved one, else nothing (#2569); drawn by tamu-gisc-image-preview, never a broken image.
     this.logoUrl$ = uploadPreviewUrl(
       (this.entity$ ?? of(null)).pipe(
@@ -139,7 +155,7 @@ export class SponsorAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'sponsor-delete-failed',
           title: 'Delete Sponsor',
-          message: `Error deleting sponsor: ${err.status}`
+          message: serverMessage(err, `Error deleting sponsor: ${err.status}`)
         });
       }
     });
@@ -163,7 +179,7 @@ export class SponsorAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'sponsor-update-failed',
           title: 'Update Sponsor',
-          message: `Error updating sponsor: ${err.status}`
+          message: serverMessage(err, `Error updating sponsor: ${err.status}`)
         });
       }
     });
@@ -186,14 +202,14 @@ export class SponsorAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'sponsor-create-failed',
           title: 'Create Sponsor',
-          message: `Error creating sponsor: ${err.status}`
+          message: serverMessage(err, `Error creating sponsor: ${err.status}`)
         });
       }
     });
   }
 
   private _navigateBack() {
-    this.rt.navigate(['/admin/sponsors']);
+    this.backToList();
   }
 
   /**

@@ -56,6 +56,18 @@ export class SpeakerController {
     return this.provider.getSpeakersForActiveSeasonInEvents(true);
   }
 
+  /**
+   * Every speaker in a season's sessions, with or without a photo or bio, for the Speaker badges dashboard (#2995): each
+   * presenter needs a badge, and the public list below keeps only those with both, which left out the new competition
+   * finalists until they uploaded a photo.
+   */
+  @Permissions(['update:speakers'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Get('participating/season/:guid/all')
+  public async getAllParticipatingSpeakersForSeason(@Param('guid') seasonGuid: string) {
+    return this.provider.getSpeakersForSeasonInEvents(seasonGuid, false);
+  }
+
   @UseGuards(JwtGuard)
   @AllowAny()
   @Get('participating/season/:guid')
@@ -75,6 +87,22 @@ export class SpeakerController {
   @Get()
   public async getEntities() {
     return this.provider.getPresenters();
+  }
+
+  /** Marks speakers' badges printed, each with what its badge said (#2908). */
+  @Permissions(['update:speakers'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Post('badges/printed')
+  public async markBadgesPrinted(@Body('badges') badges: Array<{ guid: string; text: string }>) {
+    return this.provider.markBadgesPrinted(badges);
+  }
+
+  /** Clears speakers' printed mark (#2908). */
+  @Permissions(['update:speakers'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Post('badges/not-printed')
+  public async clearBadgesPrinted(@Body('guids') guids: Array<string>) {
+    return this.provider.clearBadgesPrinted(guids);
   }
 
   @Permissions(['create:speakers'])

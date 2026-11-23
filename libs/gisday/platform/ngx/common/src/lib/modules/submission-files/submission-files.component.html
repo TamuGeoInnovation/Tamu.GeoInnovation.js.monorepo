@@ -1,0 +1,49 @@
+@if (editable()) {
+<!-- Always shown, not only as the picker's placeholder, which goes while a file uploads and once the limit is reached (#2938). -->
+<p class="files-limits">PowerPoint (.ppt, .pptx) or PDF · up to {{ limit }} each · up to {{ max() }} files</p>
+} @if (files(); as files) { @if (files.length === 0 && !uploading()) {
+<p class="files-empty">{{ emptyLabel() }}</p>
+} @else {
+<ul class="files">
+  @for (file of files; track file.guid) {
+  <li class="file">
+    @if (downloadable) {
+    <button type="button" class="inline-link file-name" [disabled]="busy() === file.guid" (click)="download(file)">{{ file.name }}</button>
+    } @else {
+    <span class="file-name">{{ file.name }}</span>
+    }
+    <!-- Who uploaded it, where the list is several people's: a session's slides on its admin page (#3093). -->
+    <span class="file-detail">@if (file.uploadedBy) {<span class="file-by">{{ file.uploadedBy }}</span> · }{{ size(file.size) }} · {{ file.uploaded | date: 'MMM d, h:mm a' }}</span>
+    @if (editable() || askBeforeRemoving()) {
+    <button type="button" class="inline-link danger" [disabled]="busy() === file.guid || asking() === file.guid" (click)="askToRemove(file)">Remove</button>
+    } @if (asking() === file.guid) {
+    <!-- Asked on the page, not in the browser's confirm(), as the speaker badges ask (#2908, #3105). -->
+    <div class="info-block context file-confirm" role="alert">
+      <p>Remove <strong>{{ file.name }}</strong>@if (file.uploadedBy) {, uploaded by {{ file.uploadedBy }}}? It cannot be undone.</p>
+      <!-- Side by side in the site's shared button row (libs/sass/_dom_flexbox.scss), as other button rows use it. -->
+      <div class="flex flex-row wrap align-center file-confirm-actions">
+        <button class="button primary" type="button" (click)="remove(file)">Remove the file</button>
+        <button class="button secondary" type="button" (click)="asking.set(null)">Keep it</button>
+      </div>
+    </div>
+    }
+  </li>
+  } @if (uploading(); as upload) {
+  <li class="file">
+    <span class="file-name">{{ upload.name }}</span>
+    <progress max="100" [value]="upload.percent"></progress>
+    <span class="file-detail">{{ upload.percent }}%</span>
+  </li>
+  }
+</ul>
+} @if (zippable) {
+<!-- Every file as one zip (#3174), in the site's shared button, beside the list it downloads. -->
+<button type="button" class="button secondary snug files-all" [disabled]="busy() === 'all'" (click)="downloadAll()">{{ busy() === 'all' ? 'Preparing zip…' : 'Download all ' + files.length + ' files' }}</button>
+} @if (editable() && !uploading() && files.length < max()) {
+<!-- The shared picker, wearing the site's .button, so it reads as something to press rather than a line of text (#2938). -->
+<tamu-gisc-file class="button snug" [accept]="rules.accept" (fileSelected)="upload($event)">{{ pickLabel() }}</tamu-gisc-file>
+} @if (problem(); as problem) {
+<p class="files-problem" role="alert">{{ problem }}</p>
+} } @else {
+<div class="loader"></div>
+}

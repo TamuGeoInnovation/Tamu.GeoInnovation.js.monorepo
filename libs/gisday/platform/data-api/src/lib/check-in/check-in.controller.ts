@@ -14,12 +14,34 @@ import {
 } from '@nestjs/common';
 
 import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
+import { siteHost } from '../_base/site-of-request';
 
 import { CheckInProvider } from './check-in.provider';
+import { CheckInDashboardProvider } from './check-in-dashboard.provider';
 
 @Controller('check-ins')
 export class CheckInController {
-  constructor(private readonly provider: CheckInProvider) {}
+  constructor(
+    private readonly provider: CheckInProvider,
+    private readonly dashboard: CheckInDashboardProvider
+  ) {}
+
+  /** The admin check-in dashboard (#3006): each of a season's events, its check-ins by person type and its RSVPs. Counts only, no names. */
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Permissions(['read:checkins'])
+  @Get('dashboard/season/:guid')
+  public async getDashboardForSeason(@Param('guid') guid: string, @Req() req) {
+    // From the admin's site, which lists only its own sessions (#3024).
+    return this.dashboard.getSeason(guid, siteHost(req?.headers));
+  }
+
+  /** Who checked in at one event, and when, for the dashboard's expanded row and its CSV (#3006). */
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Permissions(['read:checkins'])
+  @Get('dashboard/event/:guid')
+  public async getDashboardForEvent(@Param('guid') guid: string) {
+    return this.dashboard.getEvent(guid);
+  }
 
   @UseGuards(JwtGuard)
   @Get('user/event/:eventGuid')
@@ -75,14 +97,14 @@ export class CheckInController {
       throw new BadRequestException('Event guid is missing');
     }
 
-    // An in-person event needs the attendee's position (#1766), and a hybrid or virtual one the code in
-    // its QR code (#2560); the provider checks both.
+    // An in-person event needs the attendee's position (#1766) or its QR code's code (#3077), and a hybrid or
+    // virtual one the code (#2560); the provider checks both.
     return this.provider.insertUserCheckin(eventGuid, req.user.sub, { latitude, longitude, accuracy }, code);
   }
 
   /**
-   * The code in a hybrid or virtual session's check-in QR code (#2560), for an organizer to put on the
-   * presenter's slides. The same permission as adding a check-in by hand, since the code checks people in.
+   * The code in a session's check-in QR code (#2560; every session since #3077), for an organizer to put on
+   * the presenter's slides or the room's screen. The same permission as adding a check-in by hand, since the code checks people in.
    */
   @UseGuards(JwtGuard, PermissionsGuard)
   @Permissions(['create:checkins'])

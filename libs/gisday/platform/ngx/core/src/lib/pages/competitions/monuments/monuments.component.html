@@ -9,11 +9,12 @@
   <div class="container12 flex flex-row">
     <div class="column8">
       <div class="trailer-4">
+        <!-- The standings, at the top of the page so they can be brought up and shown to a room without scrolling (#3169). -->
+        <a class="button trailer-1" href="/app/leaderboard">View the leaderboard</a>
+
         <p>The TxGIS Day Organizing Committee is excited to invite participants to participate in this year's VGI competition by documenting the monuments and memorial plaques on Texas A&M's campus!</p>
 
-        <p>
-          Monuments and campus memorials are an essential part of creating a compelling atmosphere at Texas A&M and across universities worldwide, providing opportunities for thoughtful reflection and enriching the spirit and culture of the University.
-        </p>
+        <p>Monuments and campus memorials are an essential part of creating a compelling atmosphere at Texas A&M and across universities worldwide, providing opportunities for thoughtful reflection and enriching the spirit and culture of the University.</p>
 
         <p>The challenge aims to survey and document monuments and memorial plaques across campus to help:</p>
 
@@ -150,9 +151,7 @@
           </li>
         </ul>
 
-        <p>
-          <strong>*</strong>&nbsp; Prizes provided courtesy of the Texas A&amp;M Office of the University Architect.
-        </p>
+        <p><strong>*</strong>&nbsp; Prizes provided courtesy of the Texas A&amp;M Office of the University Architect.</p>
       </div>
 
       <div class="trailer-4" id="eligibility">
@@ -183,17 +182,19 @@
 
         <p>Submissions count until 11:00 AM Central on Friday, November 20.</p>
 
-        <p>The final winners will be announced at the lunch session on Friday, November 20.</p>
+        <!-- The awards session the maintainer added on 14 November 2026 (#2985). -->
+        <p>The final winners will be announced on Friday, November 20, 1:00 to 1:30 PM, at <a [routerLink]="['/sessions/details', 'a1def55f-e79e-4d69-b1b6-9520e6157a81']">AWARDS: Student VGI Competition Winner Announcements</a>, on the TAMU East Quad, between OMB and Langford.</p>
 
         <p>Prizes are provided courtesy of the Texas A&amp;M Office of the University Architect.</p>
 
         <p>Participants do not need to be present at the Awards Ceremony to be selected as a winner.</p>
       </div>
 
-      <!-- The two ways in, in the order the steps above give them: the survey first, then the form (#2559). -->
+      <!-- The two ways in, in the order the steps above give them: the survey first, then the form (#2559); then the standings (#3169). -->
       <div class="competition-actions trailer-4">
         <a class="button leader-1 trailer-1" href="https://forms.gle/GvVWuBc51PKniyPFA" target="_blank" rel="noopener">Take the pre-competition survey</a>
         <a class="button leader-1 trailer-1" href="/app/submission">Open the submission form</a>
+        <a class="button leader-1 trailer-1" href="/app/leaderboard">View the leaderboard</a>
       </div>
 
       <div class="fine-print card content-block all">

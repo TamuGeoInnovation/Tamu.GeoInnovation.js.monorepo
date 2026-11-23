@@ -1,3 +1,5 @@
+import { randomBytes } from 'crypto';
+
 import {
   HttpException,
   Injectable,
@@ -5,17 +7,17 @@ import {
   NotFoundException,
   InternalServerErrorException,
   Logger,
-  BadRequestException,
-  PayloadTooLargeException
+  BadRequestException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, DeleteResult, In, Repository } from 'typeorm';
 
-import { IMAGE_SIZE_LIMITS, exceedsImageSizeLimits, fitImage, readImageSize } from '@tamu-gisc/common/node/images';
+import { fitImage } from '@tamu-gisc/common/node/images';
 
 import { Speaker, EntityRelationsLUT, University, Organization, Event, Asset, Season } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
 import { AssetsService } from '../assets/assets.service';
+import { refuseUnsafeImage } from '../assets/image-upload';
 import { SeasonService } from '../season/season.service';
 import { SPEAKER_PHOTO_FIT } from './speaker-photo';
 
@@ -270,8 +272,9 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
       isActive: (speaker.isActive as unknown as string) === 'true' // form data coerces boolean to string
     });
 
-    if (file?.buffer) {
-      this._refuseUnsafeImage(file);
+    // Checked before the speaker is saved, so a refused photo leaves no speaker behind.
+    if (file) {
+      refuseUnsafeImage(file, 'The photo');
     }
 
     if (speakerEnt) {
@@ -302,6 +305,44 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
     }
   }
 
+  /**
+   * Marks these speakers' badges printed, now, each with what its badge said, so the badges page can tell when one
+   * has changed since (#2908). Answers how many were marked; a guid that is no speaker is left out.
+   */
+  public async markBadgesPrinted(badges: Array<{ guid: string; text: string }>): Promise<{ marked: number }> {
+    const wanted = (badges ?? []).filter((b) => typeof b?.guid === 'string' && b.guid && typeof b.text === 'string');
+
+    if (wanted.length === 0) {
+      throw new BadRequestException('No badges to mark printed.');
+    }
+
+    const now = new Date();
+    let marked = 0;
+
+    for (const badge of wanted) {
+      const result = await this.speakerRepo.update(
+        { guid: badge.guid },
+        { badgePrintedAt: now, badgePrintedText: badge.text.slice(0, 1000) }
+      );
+      marked += result.affected ?? 0;
+    }
+
+    return { marked };
+  }
+
+  /** Clears these speakers' printed mark, so their badges show as not printed again (#2908). */
+  public async clearBadgesPrinted(guids: Array<string>): Promise<{ cleared: number }> {
+    const wanted = (guids ?? []).filter((g) => typeof g === 'string' && g);
+
+    if (wanted.length === 0) {
+      throw new BadRequestException('No badges to mark not printed.');
+    }
+
+    const result = await this.speakerRepo.update({ guid: In(wanted) }, { badgePrintedAt: null, badgePrintedText: null });
+
+    return { cleared: result.affected ?? 0 };
+  }
+
   public async copySpeakersIntoSeason(seasonGuid: string, existingEntityGuids: Array<string>) {
     const season = await this.seasonService.findOne({
       where: {
@@ -328,6 +369,9 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
       delete entity.guid;
       delete entity.created;
       delete entity.updated;
+      // A badge printed for one season is not printed for the next (#2908).
+      entity.badgePrintedAt = null;
+      entity.badgePrintedText = null;
 
       if (entity.images?.length > 0) {
         entity.images = entity.images.map((image) => {
@@ -519,38 +563,61 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
 
   private async _saveImage(file, guid: string) {
     // Stored at the size the site shows it, not as uploaded: photos of 1 MB and more made Presenters download 9 MB for
-    // 255 px cards (#2352). The file keeps its name; a PNG with no transparency may be stored as the smaller JPEG (#2426), and
-    // anything not a JPEG or PNG is kept as it is.
-    if (file?.buffer) {
-      this._refuseUnsafeImage(file);
+    // 255 px cards (#2352). Only a JPEG or PNG gets this far, named for its content (#2937); after that the file keeps its
+    // name, though a PNG with no transparency may be stored as the smaller JPEG (#2426).
+    file = refuseUnsafeImage(file, 'The photo');
 
-      const fitted = await fitImage(file.buffer, SPEAKER_PHOTO_FIT);
+    const fitted = await fitImage(file.buffer, SPEAKER_PHOTO_FIT);
 
-      file = { ...file, buffer: fitted.buffer, size: fitted.buffer.length };
-    }
+    file = { ...file, buffer: fitted.buffer, size: fitted.buffer.length };
 
+    // A token of its own in every name (#3091): uploads are served as immutable for a year, so a photo saved under the last
+    // one's name (two uploads of headshot.jpg) would go on showing the old photo in every browser that had seen it.
     return this.assetService.saveAsset(this._resourcePath, file, 'speaker-image', {
-      prefix: `${guid}-`
+      prefix: `${guid}-${randomBytes(4).toString('hex')}-`
     });
   }
 
   /**
-   * Refuses a photo before anything decodes or stores it. The upload limit caps the file, not the image it decodes to: a few KB
-   * can declare 50,000 x 50,000 pixels and make the decoder allocate 10 GB, which takes the API down (#2352). Its size is read
-   * from the header alone. Anything that is not a PNG, JPEG, GIF or WebP is refused too, SVG included, which can carry script.
+   * Applies changes a speaker proposed through their edit link, once an admin approves them (#2936): only the bio,
+   * affiliation and social links, and the photo if one came. Unlike `updateWithInfo`, nothing else is read from the
+   * input, so the speaker's other fields (active, organizer) stay as they are.
    */
-  private _refuseUnsafeImage(file: { buffer: Buffer }) {
-    const size = readImageSize(file.buffer);
+  public async applySelfEdit(
+    guid: string,
+    fields: {
+      description?: string | null;
+      affiliation?: string | null;
+      socialMedia?: string | null;
+      graduationYear?: string | null;
+      university?: { guid: string } | null;
+    },
+    photo?: { buffer: Buffer; originalname: string; mimetype?: string; size?: number }
+  ) {
+    const existing = await this.speakerRepo.findOne({
+      where: { guid },
+      relations: EntityRelationsLUT.getRelation('speaker')
+    });
 
-    if (!size) {
-      throw new BadRequestException('The photo must be a PNG, JPEG, GIF or WebP image.');
+    if (!existing) {
+      throw new NotFoundException('Speaker not found.');
     }
 
-    if (exceedsImageSizeLimits(size)) {
-      throw new PayloadTooLargeException(
-        `The photo is too large in pixels: ${size.width} x ${size.height}. The most is ${IMAGE_SIZE_LIMITS.maxSide} a side and ${IMAGE_SIZE_LIMITS.maxPixels / 1_000_000} megapixels.`
-      );
+    const image = photo ? await this._saveImage(photo, guid) : undefined;
+    const changes: Partial<Speaker> = {};
+
+    for (const key of ['description', 'affiliation', 'socialMedia', 'graduationYear'] as const) {
+      if (fields[key] !== undefined && fields[key] !== null) {
+        changes[key] = fields[key];
+      }
     }
+
+    // A university is a choice from the season's list, by guid (#2953).
+    if (fields.university?.guid) {
+      changes.university = { guid: fields.university.guid } as Speaker['university'];
+    }
+
+    return this.speakerRepo.save({ ...existing, ...changes, ...(image ? { images: [image] } : {}) });
   }
 }
 

@@ -1,7 +1,8 @@
 import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { GISDAY_SITE, SiteHasPipe, ImagePreviewComponent } from '@tamu-gisc/gisday/platform/ngx/common';
-import { Observable, filter, map, mergeMap, shareReplay, startWith, toArray } from 'rxjs';
+import { Observable, filter, map, shareReplay, startWith } from 'rxjs';
+import { placesShownOn } from '@tamu-gisc/gisday/common';
 
 import { ActiveSeasonDto, Place, SeasonDay, Speaker } from '@tamu-gisc/gisday/platform/data-api';
 import { PlaceService, SeasonService, SpeakerService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -54,9 +55,7 @@ export class AboutComponent implements OnInit {
   public ngOnInit(): void {
     this.activeSeason$ = this.seasonService.getActiveSeason().pipe(shareReplay());
     this.organizations$ = this.placeServices.getEntitiesForActiveSeason().pipe(
-      mergeMap((places) => places),
-      filter((place) => place?.visibilitySettings && place.visibilitySettings.includes(PlaceVisibilityOptions.OrgPage)),
-      toArray(),
+      map((places) => placesShownOn(this.site, places, PlaceVisibilityOptions.OrgPage)),
       shareReplay(1)
     );
     this.organizingMembers$ = this.speakerService.getOrganizingEntitiesForActiveSeason().pipe(shareReplay());

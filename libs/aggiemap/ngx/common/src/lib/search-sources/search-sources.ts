@@ -278,7 +278,7 @@ export function SearchSources(
     // that - a space is as likely to be looked for as "hammocks" or "disc golf" as by its own name.
     NATURE_RX_EXACT: {
       source: 'nature-rx-exact',
-      name: 'Nature Rx',
+      name: 'Nature Spaces',
       url: definitions.NATURE_RX.url,
       queryParams: {
         ...searchQueryParams,
@@ -296,7 +296,7 @@ export function SearchSources(
     },
     NATURE_RX: {
       source: 'nature-rx',
-      name: 'Nature Rx',
+      name: 'Nature Spaces',
       url: definitions.NATURE_RX.url,
       queryParams: {
         ...containsSearch(['area_name', 'key_words'])

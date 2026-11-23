@@ -19,4 +19,10 @@ export interface SimplifiedEvent extends Omit<Partial<Event>, 'organizations' | 
    * today; declaring it is what makes the return type honest.
    */
   affiliations?: Array<string>;
+
+  /**
+   * The full names of the event's speakers, so the public Sessions list can be searched by presenter (#2944). Names
+   * only: the speakers themselves are not sent.
+   */
+  presenters?: Array<string>;
 }

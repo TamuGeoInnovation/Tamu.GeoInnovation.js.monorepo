@@ -5,6 +5,7 @@ import { LocationService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { EventLocation } from '@tamu-gisc/gisday/platform/data-api';
 
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
+import { AdminSearchComponent } from '../../../base-admin-list/admin-search.component';
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
@@ -15,9 +16,12 @@ import { GISDAY_SITE } from '@tamu-gisc/gisday/platform/ngx/common';
   selector: 'tamu-gisc-event-location-list',
   templateUrl: './event-location-list.component.html',
   styleUrls: ['./event-location-list.component.scss'],
-  imports: [SelectComponent, RouterLink, RouterLinkActive, CheckboxComponent, AsyncPipe, ExistsPipe]
+  imports: [SelectComponent, RouterLink, RouterLinkActive, CheckboxComponent, AsyncPipe, ExistsPipe, AdminSearchComponent]
 })
 export class EventLocationListComponent extends BaseAdminListComponent<EventLocation> {
+  /** The search (#2914) looks in the columns this page shows. */
+  protected override readonly searchFields = (c: Partial<EventLocation>) => [c.building, c.room, c.place?.name];
+
   /** Its name and contact address, as each GIS Day site has its own (#2077). */
   public readonly site = inject(GISDAY_SITE);
 

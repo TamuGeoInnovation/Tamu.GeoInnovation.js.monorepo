@@ -55,3 +55,22 @@
     }
   }
 }
+
+// The search box, as wide as on the Presenters page (#2859), its matches in the shared search results panel over
+// the page (#2923), placed against the box.
+@import 'libs/sass/components/search-results';
+
+.presenter-search {
+  display: flex;
+  justify-content: center;
+}
+
+.presenter-search-box {
+  position: relative;
+  width: 100%;
+  max-width: 32rem;
+}
+
+.presenter-search-where {
+  opacity: 0.75;
+}

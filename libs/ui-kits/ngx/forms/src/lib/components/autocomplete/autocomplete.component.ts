@@ -1,4 +1,15 @@
-import { Component, ChangeDetectionStrategy, TemplateRef, OnInit, OnDestroy, contentChild, input, output } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  ElementRef,
+  TemplateRef,
+  OnInit,
+  OnDestroy,
+  contentChild,
+  inject,
+  input,
+  output
+} from '@angular/core';
 import { Subscription } from 'rxjs';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Observable, of } from 'rxjs';
@@ -15,6 +26,8 @@ import { NgTemplateOutlet, AsyncPipe } from '@angular/common';
   imports: [TextboxComponent, FormsModule, ReactiveFormsModule, KeyboardNavigationDirective, NgTemplateOutlet, AsyncPipe]
 })
 export class AutocompleteComponent<T> implements OnInit, OnDestroy {
+  private host = inject<ElementRef<HTMLElement>>(ElementRef);
+
   /**
    * Controls whether results are visible. Kept separate so the selected text can remain in the input while closing the list.
    */
@@ -124,8 +137,9 @@ export class AutocompleteComponent<T> implements OnInit, OnDestroy {
           return;
         }
 
-        // show results whenever the control has a value
-        this.showResults = !!v;
+        // Show results for text being typed here. Text set from outside, as a form writing a saved value, does not
+        // open the list: the field's textbox reports every value written to it as a change (#2867).
+        this.showResults = !!v && this.host.nativeElement.contains(document.activeElement);
       });
 
       this._subs$.add(sub);

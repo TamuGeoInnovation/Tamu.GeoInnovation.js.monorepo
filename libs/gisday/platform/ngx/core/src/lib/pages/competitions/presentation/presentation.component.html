@@ -47,7 +47,6 @@
           <h2 class="trailer-1">Prizes</h2>
           <p>Great prizes will be awarded to three winners.</p>
 
-
           <ul>
             <li>1st Place $250</li>
             <li>2nd Place $150</li>
@@ -80,27 +79,21 @@
 
         <div class="trailer-4" id="five">
           <h2 class="trailer-1">Presentation Competition Session</h2>
-          <p>All finalists will be required to deliver a 10 minute oral presentation, with a few additional minutes for questions.</p>
+          <!-- Each session as the database has it (#3011): these were typed in here and went stale when the sessions moved. -->
+          <p>Each finalist has 5 minutes in all, questions included: about 4 minutes to present and 1 for questions. You will be cut off when your time is up.</p>
 
-          <p>Undergraduate student presentation competition session details:</p>
-          <ul>
-            <li>Date: Tuesday November 17th, 2026</li>
-            <li>Time: 2:00 - 3:00 PM</li>
-            <li>Location: TAMU Memorial Student Center Gates Ballroom 2400</li>
-          </ul>
+          <p>Undergraduate student presentation competition session:</p>
+          <tamu-gisc-competition-session kind="undergraduate"></tamu-gisc-competition-session>
 
-          <p>Graduate student presentation competition session details:</p>
-          <ul>
-            <li>Date: Tuesday November 17th, 2026</li>
-            <li>Time: 3:00 - 4:00 PM</li>
-            <li>Location: TAMU Memorial Student Center Bethancourt Ballroom 2300</li>
-          </ul>
+          <p>Graduate student presentation competition session:</p>
+          <tamu-gisc-competition-session kind="graduate"></tamu-gisc-competition-session>
         </div>
 
         <div class="trailer-4" id="six">
           <h2 class="trailer-1">First Place Award Announcement</h2>
 
-          <p>Winners will be announced on Wednesday, November 18th at the TxGIS Day lunch that day.</p>
+          <p>Winners will be announced at the awards session:</p>
+          <tamu-gisc-competition-session kind="awards"></tamu-gisc-competition-session>
         </div>
 
         <div class="trailer-4" id="seven">
@@ -118,7 +111,8 @@
         <div class="trailer-4" id="eight">
           <h2 class="trailer-1">Presentation Guidelines</h2>
           <ul>
-            <li>10 minute oral presentation, with ~2-3 minutes for questions</li>
+            <li>5 minutes in all, questions included: about 4 minutes to present and 1 for questions</li>
+            <li>Plan on one slide per minute: about 4 slides fits your time</li>
             <li>Powerpoint encouraged</li>
             <li>Presentation should include introduction, objectives, approach, results, discussion, and conclusions (or their equivalents)</li>
             <li>Only individuals and/or teams selected as finalists will present in the competition session</li>
@@ -148,6 +142,10 @@
             <li>Abstract Submissions may not to exceed 10MB.</li>
             <li>Winners do not have to be present to win but maintain the responsibility of collecting any prizes that are won in the contest.</li>
             <li>Winners will be responsible for any government taxes.</li>
+            <!-- The maintainer's rule, 15 November 2026 (#3015); the date is the season's own presentation file deadline. -->
+            <li>
+              <strong>Finalists must upload their final presentation slides through the site by {{ slidesDue() ?? 'the final presentation submission deadline' }}, or they will be removed from the competition.</strong>
+            </li>
             <li>Only individuals and/or teams selected as finalists will present in the competition session.</li>
             <li>Prizes - 1st, 2nd and 3rd place prizes will be awarded.</li>
             <li>Only one (1) prize can be awarded per entry (even if an entry has multiple authors, only one prize is awarded).</li>

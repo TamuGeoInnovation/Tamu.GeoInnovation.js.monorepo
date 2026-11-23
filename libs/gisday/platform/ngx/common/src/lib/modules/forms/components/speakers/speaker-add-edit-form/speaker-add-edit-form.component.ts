@@ -1,8 +1,22 @@
 import { Component, OnInit, inject, input } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, combineLatest, distinctUntilChanged, filter, map, merge, of, race, shareReplay, startWith, switchMap, take } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import {
+  Observable,
+  combineLatest,
+  distinctUntilChanged,
+  filter,
+  from,
+  map,
+  merge,
+  of,
+  race,
+  shareReplay,
+  startWith,
+  switchMap,
+  take
+} from 'rxjs';
 
 import { Organization, Speaker, University } from '@tamu-gisc/gisday/platform/data-api';
 import {
@@ -15,6 +29,9 @@ import {
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { formToFormData } from '../../../../../utils/form-to-form-data';
+import { UploadImagePicker } from '../../../../../utils/upload-image-picker';
+import { serverMessage } from '../../../../../utils/server-message';
+import { classBannerSpeaker } from '../../../../../utils/speakers';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { FileComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -23,6 +40,7 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
 import { SpeakerClassBannerComponent } from '../../../../people/components/speaker-class-banner/speaker-class-banner.component';
 import { ImagePreviewComponent } from '../../../../images/components/image-preview/image-preview.component';
+import { injectBackToList } from '../../../admin-details-page';
 
 @Component({
   selector: 'tamu-gisc-speaker-add-edit-form',
@@ -43,7 +61,8 @@ import { ImagePreviewComponent } from '../../../../images/components/image-previ
 })
 export class SpeakerAddEditFormComponent implements OnInit {
   private readonly fb = inject(UntypedFormBuilder);
-  private readonly rt = inject(Router);
+  /** Leaves for the list once a save, create or delete has worked: the one the page was opened from (#2965). */
+  private readonly backToList = injectBackToList('/admin/speakers');
   private readonly at = inject(ActivatedRoute);
   private readonly ss = inject(SpeakerService);
   private readonly as = inject(AssetsService);
@@ -67,6 +86,9 @@ export class SpeakerAddEditFormComponent implements OnInit {
   public bannerSpeaker$: Observable<Partial<Speaker>>;
 
   public form: UntypedFormGroup;
+
+  /** The photo picker, on the shared upload rule (#3074). */
+  public readonly photoPicker = new UploadImagePicker('The photo', { shrink: true });
 
   public ngOnInit() {
     this.form = this.fb.group({
@@ -94,15 +116,7 @@ export class SpeakerAddEditFormComponent implements OnInit {
     this.bannerSpeaker$ = combineLatest([
       this.form.valueChanges.pipe(startWith(this.form.getRawValue())),
       this.universities$.pipe(startWith([] as Array<Partial<University>>))
-    ]).pipe(
-      map(
-        ([value, universities]) =>
-          ({
-            university: (universities ?? []).find((university) => university.guid === value.university) ?? null,
-            graduationYear: value.graduationYear ?? ''
-          }) as Partial<Speaker>
-      )
-    );
+    ]).pipe(map(([value, universities]) => classBannerSpeaker(value.university, value.graduationYear, universities)));
 
     this.entity$ = this.at.params.pipe(
       map((params) => params.guid),
@@ -171,51 +185,74 @@ export class SpeakerAddEditFormComponent implements OnInit {
     }
   }
 
+  /**
+   * The form as it is sent, with the photo shrunk (#3177): sent as chosen, a photo over 8,000 pixels a side or 40
+   * megapixels was refused with 413 however few bytes it was.
+   */
+  private _formData(): Observable<FormData> {
+    const data = formToFormData(this.form);
+    const photo = data.get('file');
+
+    if (!(photo instanceof File)) {
+      return of(data);
+    }
+
+    return from(this.photoPicker.ready(photo)).pipe(
+      map((ready) => {
+        data.set('file', ready, ready.name);
+        return data;
+      })
+    );
+  }
+
   private _createEntity() {
-    const formData = formToFormData(this.form);
+    this._formData()
+      .pipe(switchMap((formData) => this.ss.insertSpeakerInfo(formData)))
+      .subscribe({
+        next: () => {
+          this.ns.toast({
+            id: 'speaker-create-success',
+            title: 'Create Speaker',
+            message: `Speaker was successfully created.`
+          });
 
-    this.ss.insertSpeakerInfo(formData).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'speaker-create-success',
-          title: 'Create Speaker',
-          message: `Speaker was successfully created.`
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'speaker-create-failed',
-          title: 'Create Speaker',
-          message: `Error creating speaker: ${err.status}`
-        });
-      }
-    });
+          this._navigateBack();
+        },
+        error: (err) => {
+          this.ns.toast({
+            id: 'speaker-create-failed',
+            title: 'Create Speaker',
+            // The API's reason, such as a photo too large in pixels (#3177), not only its status.
+            message: serverMessage(err, `Error creating speaker: ${err.status}`)
+          });
+        }
+      });
   }
 
   private _updateEntity() {
     const formValue = this.form.getRawValue();
-    const data = formToFormData(this.form);
 
-    this.ss.updateSpeakerInfo(formValue.guid, data).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'speaker-update-success',
-          title: 'Update Speaker',
-          message: `Speaker was successfully updated.`
-        });
+    this._formData()
+      .pipe(switchMap((data) => this.ss.updateSpeakerInfo(formValue.guid, data)))
+      .subscribe({
+        next: () => {
+          this.ns.toast({
+            id: 'speaker-update-success',
+            title: 'Update Speaker',
+            message: `Speaker was successfully updated.`
+          });
 
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'speaker-update-failed',
-          title: 'Update Speaker',
-          message: `Error updating speaker: ${err.status}`
-        });
-      }
-    });
+          this._navigateBack();
+        },
+        error: (err) => {
+          this.ns.toast({
+            id: 'speaker-update-failed',
+            title: 'Update Speaker',
+            // The API's reason, such as a photo too large in pixels (#3177), not only its status.
+            message: serverMessage(err, `Error updating speaker: ${err.status}`)
+          });
+        }
+      });
   }
 
   public deleteEntity() {
@@ -240,6 +277,6 @@ export class SpeakerAddEditFormComponent implements OnInit {
   }
 
   private _navigateBack() {
-    this.rt.navigate(['/admin/speakers']);
+    this.backToList();
   }
 }

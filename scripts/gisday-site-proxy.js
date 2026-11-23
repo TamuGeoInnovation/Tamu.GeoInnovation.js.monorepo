@@ -2,15 +2,20 @@
 // --site <key>`. A deployed container replaces ___ANGULAR_SITE___ in the app's scripts when it starts;
 // this does the same to every script the dev server sends, so the page runs as that site.
 //
-//   node gisday-site-proxy.js <site> <dev-server host> <dev-server port> <listen port>
+// It also tells the API which site the page is on (#3050). The API chooses a site's sessions and emails by the request's
+// host (siteHost: the Origin, then x-forwarded-host, then Host), and a page calling its own address sends no Origin on a
+// GET, so without this the API saw localhost and answered as txgisday.org. Every request passed on carries
+// x-forwarded-host: <site host>, as a request to the real site does through its ingress.
+//
+//   node gisday-site-proxy.js <site> <dev-server host> <dev-server port> <listen port> [<site host>]
 const http = require('http');
 const net = require('net');
 
-const [site, host, port, listen] = process.argv.slice(2);
+const [site, host, port, listen, siteHost] = process.argv.slice(2);
 
 http
   .createServer((req, res) => {
-    const headers = { ...req.headers, 'accept-encoding': 'identity' };
+    const headers = { ...req.headers, 'accept-encoding': 'identity', ...(siteHost && { 'x-forwarded-host': siteHost }) };
     const up = http.request({ host, port, path: req.url, method: req.method, headers }, (r) => {
       if (!/javascript/.test(r.headers['content-type'] || '')) {
         res.writeHead(r.statusCode, r.headers);
@@ -42,4 +47,4 @@ http
     });
     up.on('error', () => socket.destroy());
   })
-  .listen(listen, () => console.log(`serving ${host}:${port} as ${site} on ${listen}`));
+  .listen(listen, () => console.log(`serving ${host}:${port} as ${site}${siteHost ? ` (${siteHost})` : ''} on ${listen}`));

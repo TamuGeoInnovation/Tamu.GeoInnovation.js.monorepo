@@ -13,30 +13,6 @@
   },
   {
     "map": "main",
-    "layer": "bike-dismount-zones-layer",
-    "title": "Dismount Zones",
-    "reason": "unreviewed (#1523)"
-  },
-  {
-    "map": "main",
-    "layer": "bike-fix-stations-layer",
-    "title": "Bike Fix Stations",
-    "reason": "unreviewed (#1523)"
-  },
-  {
-    "map": "main",
-    "layer": "bike-lanes-layer",
-    "title": "Campus Bike Lanes",
-    "reason": "unreviewed (#1523)"
-  },
-  {
-    "map": "main",
-    "layer": "bike-racks-map-layer",
-    "title": "Bike Racks",
-    "reason": "unreviewed (#1523)"
-  },
-  {
-    "map": "main",
     "layer": "bonfire-layer",
     "title": "Bonfire Memorial",
     "reason": "unreviewed (#1523)"
@@ -45,12 +21,6 @@
     "map": "main",
     "layer": "buildings-layer",
     "title": "Buildings",
-    "reason": "unreviewed (#1523)"
-  },
-  {
-    "map": "main",
-    "layer": "city-bike-lanes-routes-layer",
-    "title": "City Bike Lanes and Routes",
     "reason": "unreviewed (#1523)"
   },
   {
@@ -67,12 +37,6 @@
   },
   {
     "map": "main",
-    "layer": "ev-charge-stations-layer",
-    "title": "EV Charge Stations (Main + RELLIS)",
-    "reason": "unreviewed (#1523)"
-  },
-  {
-    "map": "main",
     "layer": "lactation-rooms-layer",
     "title": "Lactation Rooms",
     "reason": "unreviewed (#1523)"
@@ -80,8 +44,8 @@
   {
     "map": "main",
     "layer": "nature-rx-layer",
-    "title": "Nature Rx",
-    "reason": "unreviewed (#1523)"
+    "title": "Nature Spaces",
+    "reason": "The GIS team asked for Nature Spaces (#3223); the service still calls its layer NatureRx Spaces. Remove this entry once they rename it there."
   },
   {
     "map": "main",

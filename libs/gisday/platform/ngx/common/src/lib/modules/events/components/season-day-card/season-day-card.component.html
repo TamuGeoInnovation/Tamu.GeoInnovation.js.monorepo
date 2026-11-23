@@ -1,19 +1,36 @@
-<div [id]="'day' + (this.index() + 1)" class="card">
-  <!-- In Central time, as the page's times are: a day arrives as midnight Central, which is the evening before for a
-  visitor further west (#2708). -0600 is CST, which GIS Day always falls in, in November. -->
-  <h2>{{seasonDay().date | date : 'EEEE, MMMM d' : '-0600'}}</h2>
+@let shown = filteredEvents$ | async;
 
-  @if ((events$ | async)?.length > 0) { @if ((filteredEvents$ | async)?.length > 0) { @for (event of filteredEvents$ | async; track event) {
-  <div>
-    <tamu-gisc-event-row [event]="event" [day]="seasonDay()" (rowToggle)="handoff(event, $event)" [rsvps]="rsvpsForDay$ | async" [canRegister]="canRegister()"></tamu-gisc-event-row>
-  </div>
-  } } @else {
-  <div class="row">
-    <p>No matching events for filter criteria.</p>
-  </div>
-  } } @else {
-  <div class="row">
-    <p>No events scheduled for this day.</p>
-  </div>
-  }
-</div>
+<!-- While the page's search is in use, a day it finds none of is left out altogether (#2944). -->
+@if (!searching() || shown?.length > 0) {
+<!-- Each day opens and closes (#3221); a day that has passed starts closed on the current year's page. The accordion is
+the card itself, so its heading is the card's own child and takes the site's .card > h2 styles, as it did before. -->
+<tamu-gisc-accordion [id]="anchor()" class="card" [class.collapsed]="!expanded()" [expanded]="expanded()" (expandedChange)="choose($event)">
+  <h2>
+    <tamu-gisc-accordion-header look="plain">
+      <!-- In Central time, as the page's times are: a day arrives as midnight Central, which is the evening before for a
+      visitor further west (#2708). -0600 is CST, which GIS Day always falls in, in November. -->
+      <span>
+        <span class="day-date">{{seasonDay().date | date : 'EEEE, MMMM d' : '-0600'}}</span>
+        <!-- The space between (&ngsp;, which Angular keeps) is outside both, so the line can break there on a phone. -->
+        @if (!expanded() && shown) {&ngsp;<span class="day-count">· {{ shown.length }} {{ shown.length === 1 ? 'session' : 'sessions' }}</span> }
+      </span>
+    </tamu-gisc-accordion-header>
+  </h2>
+
+  <tamu-gisc-accordion-content look="plain">
+    @if ((events$ | async)?.length > 0) { @if (shown?.length > 0) { @for (event of shown; track event) {
+    <div>
+      <tamu-gisc-event-row [event]="event" [day]="seasonDay()" (rowToggle)="handoff(event, $event)" [rsvps]="rsvpsForDay$ | async" [canRegister]="canRegister()"></tamu-gisc-event-row>
+    </div>
+    } } @else {
+    <div class="row">
+      <p>No matching events for filter criteria.</p>
+    </div>
+    } } @else {
+    <div class="row">
+      <p>No events scheduled for this day.</p>
+    </div>
+    }
+  </tamu-gisc-accordion-content>
+</tamu-gisc-accordion>
+}

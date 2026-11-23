@@ -95,4 +95,23 @@ describe('AutocompleteComponent', () => {
     expect(fixture.nativeElement.querySelector('.autocomplete-item')).toBeNull();
     expect(host.selected).toBeUndefined();
   });
+
+  // #2942: an Escape that closes the open list is the list's, so a page that gives Escape a meaning of its own (an
+  // admin details page going back to its list) leaves it alone. The page knows by the Escape being claimed.
+  it('closes its open list on Escape typed in the input, and claims the Escape', () => {
+    const input: HTMLInputElement = fixture.nativeElement.querySelector('input');
+
+    input.focus();
+    host.control.setValue('Kick');
+    host.options.next([{ name: 'Kickoff at Kyle' }]);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.autocomplete-item')).toBeTruthy();
+
+    const escape = new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true });
+    input.dispatchEvent(escape);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.autocomplete-item')).toBeNull();
+    expect(escape.defaultPrevented).toBe(true);
+  });
 });

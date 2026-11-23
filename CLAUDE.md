@@ -75,7 +75,7 @@ for each target the projects that target's own workflow excludes (lint from `lin
 steps outside Nx, today `npx tsc -p test/smoke/aggiemap` (#2286), writes a log, and exits with the
 check's exit code, which fails if any target or step failed. A `lint.yml` step it cannot run as CI does
 stops it before it starts. `bash scripts/check-in-volume.test.sh` tests how it reads those lists and
-steps, and `bash scripts/run-times.test.sh` the run-time files it writes. **It checks only what is committed**; uncommitted edits are not seen. `all` in place
+steps, and `bash scripts/run-times.test.sh` the run-time files it writes (both from Git Bash, as above). **It checks only what is committed**; uncommitted edits are not seen. `all` in place
 of `affected` checks every project. Run `git fetch origin` first if `origin/development` is old.
 
 **Not one app you picked — every affected app.** Building only the app you were working in is what the
@@ -114,7 +114,7 @@ On a smaller machine, set `CHECK_MEMORY` (default `16g`) and `CHECK_PARALLEL` (d
 and `test/smoke/aggiemap/run-local.sh` print the elapsed time of every run. With `BUILD_TIMES_RECORD=1`
 they also write a small file into [`docs/build-times/runs/`](docs/build-times/runs) in the checkout they
 were run from: the start in US Central, the machine, what ran, the result and the elapsed time (#1593).
-Commit those files with the work they measure; `bash scripts/run-times-report.sh` prints them as one
+Commit those files with the work they measure; `bash scripts/run-times-report.sh`, from Git Bash, prints them as one
 table. `BUILD_TIMES_MACHINE` names the machine (e.g. `home`, `office`); the hostname is never used,
 because this repository is public.
 
@@ -351,7 +351,7 @@ each with its own README:
 - **[`test/smoke/aggiemap`](test/smoke/aggiemap/README.md)** loads every map in a deployed
   environment and verifies each layer resolves and returns data. Runs daily against dev and
   production, and on demand.
-- **[`tools/builder-inventory`](tools/builder-inventory/README.md)** covers the eleven maps that
+- **[`tools/builder-inventory`](tools/builder-inventory/README.md)** covers the maps that
   cannot be reached by URL, because they require choices in a builder first. It records where every
   combination lands, including a shareable link that reaches each destination directly.
 
@@ -549,8 +549,7 @@ which is what makes "we shipped what we tested" a fact rather than an assumption
 **Overriding that refusal needs a reason, which goes into the tag:** `--force '<why>'`. The tag then
 says `(FORCED)` in its first line and carries the reason. A forced tag used to be indistinguishable
 from one that passed, so on 22 October the release record said production carried `61161ce1b` when the
-tag was on `36b962a04`, and nothing in the repository contradicted it. `bash scripts/tag-build.test.sh`
-covers this. See #2098.
+tag was on `36b962a04`, and nothing in the repository contradicted it. `bash scripts/tag-build.test.sh`, from Git Bash, covers this. See #2098.
 
 **Link every issue and pull request, with full URLs, and end each release file with a table of all
 of them.** GitHub only auto-links `#1122` inside issue and pull request comments — in a file under
@@ -575,6 +574,21 @@ however good it was. See #1056.
 
 File the issue as soon as the work is identified, including work noticed while doing something else —
 that is the case most likely to be skipped.
+
+**An issue closes when its work merges to `development`, not when a release carries it to production.**
+`Closes #<issue>` in the pull request body does that by itself, which is the rule above; this is why that
+is right rather than something to work around. The maintainer's words, 13 November 2026: *"We close things
+in development, not in prod."*
+
+It comes up whenever an issue is written as a request for production — #2864 was "Micromobility Map for
+Prod", and when it merged, its production address still redirected to the main map. Holding such an issue
+open until the deploy leaves the project board and the funding record lagging the work by however long a
+release takes, and the question gets decided differently each time it is asked.
+
+**What a deployment is tracked by instead:** the `dev-*` and `prod-*` tags record which commit reached
+which environment (#1145), and the release notes say what a release contains. An issue answers whether the
+work is done; a tag answers where it is. So a closing comment is the place to say what is true for a
+reader — merged, on dev, not yet on production, and the address that will start working when it is.
 
 **Fill in every field on the issue and the pull request, not only the title and body.** A field left
 empty drops the work out of the project board and the funding record just as surely as a missing
@@ -634,6 +648,22 @@ gh project item-edit --id "$item" --project-id <project node id> --field-id <sta
 **Anything with a visible result carries before/after screenshots**, in the issue and the pull
 request. Do not wait to be asked. A CI check enforces this; the escape hatch is the
 `no-visible-change` label, which is a deliberate act and stays visible afterwards.
+
+**A pull request with a visible result opens once its screenshots are on the branch, so CI runs once.**
+On 15 November 2026 most open GIS Day pull requests were red for the same two avoidable reasons, and each
+cost a second CI run: a pull request opened before its images existed fails "Has before/after images"
+until they are pushed, and one stacked on another conflicts as soon as the one underneath merges. So:
+
+- **Push the branch, take the before/after screenshots on it, merge the latest `development` in, then
+  open the pull request.** When the machine that built the change cannot sign in to take them, another
+  takes them on the branch first; the pull request still waits. A change with no visible result opens at
+  once.
+- **Stack a pull request on another only when both are needed soon.** When the one underneath merges,
+  merge `development` into the one on top at once, before its screenshots are taken, so it rebuilds
+  once. Read the pre-push check's result after that merge: on 15 November a clean-looking merge declared
+  two functions twice and failed to compile.
+
+The maintainer's decision (#3039). The mailbox's `DIRECTOR.md` says the same for the machines.
 
 **Build the pull request body from [`.github/pull_request_template.md`](.github/pull_request_template.md),
 with every section filled in.** `gh pr create --body-file` *replaces* the template rather than
@@ -761,12 +791,18 @@ files on the `work-mailbox` branch of `TamuGeoInnovation`, which is never merged
 
 - **The home session writes the batch** into `work/TASKS.md`. Its header holds the rules, and each task names
   the issue to report on, the exact commit or how to find it, the commands, and what follows: tag or not.
-- **The maintainer starts the work session with one line:**
+- **The maintainer starts a session on any machine with one line**, adding its name and job for a new one:
 
   ```
-  Pull TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo, check out the work-mailbox branch, and do what work/TASKS.md says.
+  Pull TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo, check out the work-mailbox branch, and do what DIRECTOR.md says.
   ```
 
+- **`DIRECTOR.md` is on the `work-mailbox` branch, not on `development`.** The rules for every machine - who
+  directs, the machines and their folders, how to join, how batches and reports work - live there and nowhere
+  else, because that branch is never merged. A fresh clone starts on `development`, where the file does not
+  exist, so a new session that looks before switching branches concludes the instructions are missing (#3262).
+  Fetch the branch first (`git fetch origin work-mailbox`, then `git switch work-mailbox`, or read it in place
+  with `git show origin/work-mailbox:DIRECTOR.md`) and do what it says.
 - **A machine that is new to the branch announces itself before anything else.** `DIRECTOR.md` opens with
   how: work out your name, create `<name>/TASKS.md`, `<name>/STATUS.md` and `<name>/reports/`, push them as
   `<name>: joined`, and only then listen. **Push first, even if you were given work in the same breath** -
@@ -805,3 +841,17 @@ when its task says so, and no other branches or tags. It opens no pull requests 
   not an unreachable host. Check in a browser before reporting it as down.
 - Layers returning 404 on a hostname containing `dev` come from the development GIS server
   missing services that exist on production. `localhost` uses the production GIS server.
+- **`Permission denied (publickey)` from a bash script run in PowerShell is the wrong bash, not a bad
+  key.** `C:\Windows\System32\bash.exe` is WSL's, and System32 comes early in `PATH`, so a bare
+  `bash scripts/<name>.sh` typed into PowerShell runs inside WSL, whose `~/.ssh` is empty. Every script
+  here that reaches a remote dies at its first fetch. Call Git Bash by its full path -
+  `& "C:\Program Files\Git\bin\bash.exe" scripts/<name>.sh` - or run it from a Git Bash window, where
+  a bare `bash` is already the right one.
+
+  **The tell appears once and then never again**: the first run asks whether github.com's authenticity
+  can be established, which a machine whose `known_hosts` already has github.com cannot do. After that
+  WSL writes its own `known_hosts` and all that is left is `Permission denied (publickey)`, which reads
+  exactly like an expired key. It is not: check with `ssh -T git@github.com` **from Git Bash** before
+  touching anything on GitHub. Setting `$env:HOME` does not help, because a Windows path does not reach
+  into WSL's filesystem, and it fails the same way elevated or not. On 23 November 2026 this cost three
+  attempts and two wrong diagnoses before anyone asked which `bash` was answering (#3273).

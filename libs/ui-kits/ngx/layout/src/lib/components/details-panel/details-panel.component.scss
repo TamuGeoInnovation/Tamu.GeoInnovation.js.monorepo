@@ -1,0 +1,37 @@
+// #3230: over the page, above the site's header. On a phone, the whole screen; from 768 px, a panel on the right with the
+// page dimmed beside it.
+:host {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.details-panel-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.details-panel {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 1rem;
+  background: #ffffff;
+  overflow-wrap: anywhere;
+
+  &:focus {
+    outline: none;
+  }
+
+  @media (min-width: 768px) {
+    width: min(48rem, 90vw);
+    padding: 1.5rem 2rem;
+    box-shadow: -0.25rem 0 1rem rgba(0, 0, 0, 0.25);
+  }
+}

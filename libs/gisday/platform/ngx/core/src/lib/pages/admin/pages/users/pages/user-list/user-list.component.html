@@ -5,10 +5,15 @@
     </div>
 
     <div class="form-section-body">
-      @if ((users$ | async) !== null) { @if ((users$ | async)?.length > 0) {
-      <div>
-        <p>Displaying <strong>{{(users$ | async).length}}</strong> users.</p>
-      </div>
+      <!-- The shared admin search box (#2914), asking the API, which searches every Auth0 user (#2574). -->
+      <tamu-gisc-admin-search [control]="search" placeholder="Search by name or email" one="user" many="users" [counts]="counts$ | async"></tamu-gisc-admin-search>
+
+      @if (users$ | async; as list) { @if (list.note) {
+      <p>{{ list.note }}</p>
+      } @else { @if (list.truncated) {
+      <!-- Auth0 lists no more than the first 1,000 users; a search reaches the rest (#2574). -->
+      <p class="users-truncated">Showing the first 1,000 users. Search by name or email to find anyone else.</p>
+      } @if (list.users.length > 0) {
       <table class="floating-table">
         <thead>
           <tr>
@@ -18,7 +23,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (user of (users$ | async); track user) {
+          @for (user of list.users; track user.user_info.id) {
           <tr>
             <td>{{user?.user_info?.name}}</td>
             <td>{{user?.user_info?.email}}</td>
@@ -27,9 +32,11 @@
           }
         </tbody>
       </table>
+      } @else if (search.value.trim()) {
+      <p>No users match "{{ search.value }}".</p>
       } @else {
       <p>There are no users yet.</p>
-      } } @else {
+      } } } @else {
       <div class="loader"></div>
       }
     </div>

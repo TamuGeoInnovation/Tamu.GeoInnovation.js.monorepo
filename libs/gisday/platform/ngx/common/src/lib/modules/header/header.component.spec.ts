@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, Subject } from 'rxjs';
 
@@ -160,5 +161,131 @@ describe('HeaderComponent logout and the cached API answers', () => {
     await header.logout();
 
     expect(order).toEqual(['deleted ngsw:/:1:data:api:cache', 'signed out']);
+  });
+});
+
+/**
+ * #2884. The phone menu shows the Account card to a signed-in visitor, and Login to one who is not. The menu projects
+ * only `tamu-gisc-tile` elements, and a tile nested two control-flow blocks deep (`@else { @if }`) was dropped without
+ * an error, so signed-in visitors had no way to their account on a phone.
+ */
+describe('HeaderComponent phone menu', () => {
+  function menuFor(signedIn: boolean) {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      imports: [HeaderComponent],
+      providers: [
+        provideNoopAnimations(),
+        { provide: GISDAY_SITE, useValue: gisdaySite('txgisday') },
+        { provide: AuthService, useValue: { isAuthenticated$: of(signedIn), userRoles$: of([]) } },
+        { provide: ModalService, useValue: {} },
+        { provide: SeasonService, useValue: { viewedSeason$: of(null), viewedYear$: of(null) } },
+        { provide: PlaceService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+        { provide: Router, useValue: { url: '/sessions', events: of() } },
+        { provide: ActivatedRoute, useValue: {} }
+      ]
+    });
+
+    const fixture = TestBed.createComponent(HeaderComponent);
+    fixture.detectChanges();
+    fixture.componentInstance.mobileNavToggle.next(true);
+    fixture.detectChanges();
+
+    const root = fixture.nativeElement as HTMLElement;
+
+    return Array.from(root.querySelectorAll('tamu-gisc-tile-navigation tamu-gisc-tile-title')).map((t) =>
+      t.textContent.trim()
+    );
+  }
+
+  // #3198: a tap anywhere on the Login tile, its icon included, signs in, not only a tap on the word.
+  it('signs in on a tap on the icon of the Login tile, and once on a tap on its title', () => {
+    menuFor(false);
+
+    const fixture = TestBed.createComponent(HeaderComponent);
+    const login = jest.spyOn(fixture.componentInstance, 'login').mockImplementation(() => undefined);
+
+    fixture.detectChanges();
+    fixture.componentInstance.mobileNavToggle.next(true);
+    fixture.detectChanges();
+
+    const root = fixture.nativeElement as HTMLElement;
+    const tile = Array.from(root.querySelectorAll<HTMLElement>('tamu-gisc-tile-navigation tamu-gisc-tile')).find(
+      (t) => t.querySelector('tamu-gisc-tile-title')?.textContent.trim() === 'Login'
+    );
+
+    tile?.querySelector<HTMLElement>('tamu-gisc-tile-icon .material-icons')?.click();
+    expect(login).toHaveBeenCalledTimes(1);
+
+    tile?.querySelector<HTMLElement>('tamu-gisc-tile-title')?.click();
+    expect(login).toHaveBeenCalledTimes(2);
+  });
+
+  it('shows the Account card to a signed-in visitor, and no Login', () => {
+    const tiles = menuFor(true);
+
+    expect(tiles).toContain('Account');
+    expect(tiles).not.toContain('Login');
+  });
+
+  it('shows Login to a visitor who is not signed in, and no Account', () => {
+    const tiles = menuFor(false);
+
+    expect(tiles).toContain('Login');
+    expect(tiles).not.toContain('Account');
+  });
+});
+
+/**
+ * #3162. On a phone, the menu's Account card had no way to the admin pages, which the desktop Account menu offers to
+ * admins, managers and organizers: an admin on a phone had to type /admin.
+ */
+describe('HeaderComponent phone menu, Admin', () => {
+  function accountItemsFor(roles: Array<string>) {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      imports: [HeaderComponent],
+      providers: [
+        provideNoopAnimations(),
+        { provide: GISDAY_SITE, useValue: gisdaySite('tamu') },
+        { provide: AuthService, useValue: { isAuthenticated$: of(true), userRoles$: of(roles) } },
+        { provide: ModalService, useValue: {} },
+        { provide: SeasonService, useValue: { viewedSeason$: of(null), viewedYear$: of(null) } },
+        { provide: PlaceService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+        { provide: Router, useValue: { url: '/sessions', events: of() } },
+        { provide: ActivatedRoute, useValue: {} }
+      ]
+    });
+
+    const fixture = TestBed.createComponent(HeaderComponent);
+    fixture.detectChanges();
+    fixture.componentInstance.mobileNavToggle.next(true);
+    fixture.detectChanges();
+
+    const root = fixture.nativeElement as HTMLElement;
+    const account = Array.from(root.querySelectorAll<HTMLElement>('tamu-gisc-tile-navigation tamu-gisc-tile')).find(
+      (tile) => tile.querySelector('tamu-gisc-tile-title')?.textContent.trim() === 'Account'
+    );
+
+    account.click();
+    fixture.detectChanges();
+
+    return Array.from(
+      root.querySelectorAll('tamu-gisc-tile-navigation [tamuGiscTileLink], tamu-gisc-tile-navigation p')
+    ).map((p) => p.textContent.trim());
+  }
+
+  it.each(['GIS Day Admin', 'GIS Day Manager', 'GIS Day Organizer'])('lists Admin under Account for a %s', (role) => {
+    const items = accountItemsFor([role]);
+
+    expect(items).toContain('Profile');
+    expect(items).toContain('Admin');
+  });
+
+  it('does not list Admin for a visitor without those roles', () => {
+    const items = accountItemsFor([]);
+
+    expect(items).toContain('Profile');
+    expect(items).not.toContain('Admin');
   });
 });

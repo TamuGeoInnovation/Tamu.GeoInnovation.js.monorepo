@@ -394,9 +394,18 @@ local stack first ([`docs/gisday-local.md`](../gisday-local.md)). The smoke suit
    [`tools/visual-baselines`](../../tools/visual-baselines/README.md#gis-day) explains. The images stay
    on the machine that took them.
 
-**Not settled yet.** `scripts/tag-build.sh prod` refuses a commit with no `dev-*` tag, which GIS Day
-cannot have until it has a dev site, so the 12 October release carries no `prod-*` tag. Its entries
-are still in [`unreleased.md`](unreleased.md) with AggieMap's. Both wait on [#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525).
+**Its notes are its own**, in [`gisday-unreleased.md`](gisday-unreleased.md), and collect there until a GIS
+Day release takes them. They used to go into [`unreleased.md`](unreleased.md) with AggieMap's, which meant an
+AggieMap release collated them into its own dated notes and described GIS Day work as though it had shipped
+them; the 10 November release was where that was finally noticed, in the finished document
+([#2833](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2833)). A GIS Day change
+writes its entry file to [`unreleased/`](unreleased/README.md) as any change does; what differs is which file
+it is collated into.
+
+**Still not settled.** `scripts/tag-build.sh prod` refuses a commit with no `dev-*` tag, which GIS Day
+cannot have until it has a dev site, so the 12 October release carries no `prod-*` tag and no dated notes
+file. Which commit GIS Day production runs is recorded only as a pinned `sha-` tag in the private cluster
+configuration repository. Both wait on [#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525).
 
 ## What belongs here
 

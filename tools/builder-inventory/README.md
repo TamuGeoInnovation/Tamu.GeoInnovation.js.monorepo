@@ -1,8 +1,12 @@
 # Builder destination inventory
 
-Eleven AggieMap maps cannot be reached by URL. `/events/:eventId` redirects to
+Some AggieMap maps cannot be reached by URL. `/events/:eventId` redirects to
 `builder/accommodations`, and `/events/:eventId/map` redirects straight back until a selection has
 been made - so the smoke suite has nothing to test on them and times out.
+
+How many there are is not written down here, because it changes: the run prints it
+(`13 of 83 maps are builder-gated`) and `builder-inventory.generated.json` is the record. A count kept
+by hand in prose is the same fault as a date kept by hand in a recording (#2823).
 
 Each of those maps does offer a **share URL** once it loads, which encodes the chosen settings. This
 tool walks every combination of every builder and records where each one lands, so those share URLs

@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 
 import { GISDAY_ENTITIES } from '../entities/all.entity';
+import { GISDAY_SUBSCRIBERS } from '../entities/timestamps';
 
 /**
  * For specs: the API's real entities on a SQL Server data source that never connects. Its repositories build the real SQL
@@ -26,7 +27,9 @@ export async function queryCheckingDataSource(extraEntities: Array<EntityTarget<
   const dataSource = new DataSource({
     type: 'mssql',
     host: 'localhost',
-    entities: [...GISDAY_ENTITIES, ...extraEntities] as never
+    entities: [...GISDAY_ENTITIES, ...extraEntities] as never,
+    // As the API registers them, so a spec sees the SQL the API sends (#2926).
+    subscribers: GISDAY_SUBSCRIBERS
   });
 
   // initialize() would connect. The metadata is all the query builder needs, and building it is what initialize does next.
@@ -75,10 +78,10 @@ export function recordWrites(
   dataSource.createQueryRunner = () => {
     const runner = {
       connection: dataSource,
+      dataSource,
       data: {},
       isReleased: false,
       isTransactionActive: false,
-      broadcaster: { broadcast: async () => undefined },
       connect: async () => undefined,
       release: async () => undefined,
       startTransaction: async () => ((runner.isTransactionActive = true), undefined),
@@ -90,6 +93,11 @@ export function recordWrites(
       )
     } as unknown as QueryRunner & { isTransactionActive: boolean; manager: EntityManager };
 
+    // TypeORM's own broadcaster, so the data source's subscribers run as they do in the API (#2926). It is taken from a
+    // query runner the driver builds, which does not connect until asked to; typeorm does not export the class itself.
+    const { broadcaster } = dataSource.driver.createQueryRunner('master');
+    const Broadcaster = broadcaster.constructor as new (runner: QueryRunner) => typeof broadcaster;
+    (runner as unknown as { broadcaster: typeof broadcaster }).broadcaster = new Broadcaster(runner);
     runner.manager = dataSource.createEntityManager(runner);
     runner.manager.find = (async (entity: EntityTarget<ObjectLiteral>) =>
       rows.find(([e]) => e === entity)?.[1] ?? []) as EntityManager['find'];

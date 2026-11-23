@@ -11,6 +11,6 @@ import { SeasonService } from '../season/season.service';
   imports: [TypeOrmModule.forFeature([Speaker, University, Event, Asset, Season, SeasonDay, Organization])],
   controllers: [SpeakerController],
   providers: [SpeakerProvider, AssetsService, SeasonService],
-  exports: []
+  exports: [SpeakerProvider]
 })
 export class SpeakerModule {}

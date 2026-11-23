@@ -1,7 +1,5 @@
 import { Routes } from '@angular/router';
 
-import { developmentOnlyRoute } from '@tamu-gisc/dev-tools/application-testing';
-
 import { AllMapsComponent } from './components/all-maps/all-maps.component';
 import { ParkingMapsComponent } from './components/parking-maps/parking-maps.component';
 import { EventMapsComponent } from './components/event-maps/event-maps.component';
@@ -13,8 +11,18 @@ export const discoverRoutes: Routes = [
     component: AllMapsComponent
   },
   {
-    path: 'parking',
+    path: 'parking-transportation',
     component: ParkingMapsComponent
+  },
+  {
+    // The section's address until #2910, when it was renamed to match what the page lists: buses and
+    // transportation above parking, since #2895. It is kept rather than retired because it has been the
+    // parking listing's address for years and is linked from outside this repository - the same reason
+    // `/parking/<id>` still reaches a map now addressed `/transportation/<id>` (#2767).
+    // `discover.routes.spec.ts` holds it open, so removing it fails a test rather than a visitor's link.
+    path: 'parking',
+    redirectTo: 'parking-transportation',
+    pathMatch: 'full'
   },
   {
     path: 'campus-events',
@@ -28,19 +36,6 @@ export const discoverRoutes: Routes = [
         { id: 'spring', heading: 'Spring' },
         { id: 'summer', heading: 'Summer' }
       ]
-    }
-  },
-  {
-    path: 'transportation',
-    component: EventMapsComponent,
-    // Development-only, as its tile is, until the maintainer says otherwise (#2788). Every map it lists is
-    // development-only, so on production it would be a reachable, empty category.
-    canActivate: [developmentOnlyRoute],
-    data: {
-      developmentOnly: 'every map it lists is development-only (#2788)',
-      mapType: 'transportation',
-      title: 'Transportation',
-      intro: 'Browse maps for getting around campus: micromobility, bus routes and sustainable transportation.'
     }
   },
   {

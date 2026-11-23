@@ -5,6 +5,7 @@ import { firstValueFrom } from 'rxjs';
 import { SiteCopyFile, SiteCopyKind, SiteCopyPlan } from '@tamu-gisc/gisday/platform/data-api';
 import { SeasonService, SiteCopyService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { ButtonComponent, FileComponent, SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { downloadFile } from '@tamu-gisc/common/utils/ui';
 
 /** How each kind of record reads in the plan. */
 const KIND_NAMES: Record<SiteCopyKind, string> = {
@@ -61,13 +62,11 @@ export class SiteCopyComponent {
 
     await this.run('export', 'Gathering the season and what its events bring…', async () => {
       const file = await firstValueFrom(this.copy.export(season));
-      const url = URL.createObjectURL(new Blob([JSON.stringify(file, null, 2)], { type: 'application/json' }));
-      const link = document.createElement('a');
-
-      link.href = url;
-      link.download = `gisday-${file.year}-from-${new URL(file.source).hostname}.json`;
-      link.click();
-      URL.revokeObjectURL(url);
+      downloadFile(
+        JSON.stringify(file, null, 2),
+        `gisday-${file.year}-from-${new URL(file.source).hostname}.json`,
+        'application/json'
+      );
     });
   }
 

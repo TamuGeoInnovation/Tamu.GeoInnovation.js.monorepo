@@ -1,1 +1,13 @@
 <tamu-gisc-tag-add-edit-form type="edit"></tamu-gisc-tag-add-edit-form>
+
+<!-- The sessions that have this tag (#3033), by the list a broadcast's page uses (#3032). -->
+<div class="form">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">Sessions with this tag</div>
+    </div>
+    <div class="form-section-body">
+      <tamu-gisc-sessions-using [sessions]="sessions$ | async" one="session has this tag" many="sessions have this tag" none="No sessions have this tag."></tamu-gisc-sessions-using>
+    </div>
+  </div>
+</div>
