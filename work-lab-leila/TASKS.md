@@ -49,6 +49,21 @@
 > emails) on `feat/3044-email-markdown` when it appears on the fork: the window's preview with **bold** text, and an
 > email as it arrives if you can show one locally without sending to anyone real. Report each "branch ready" as you go.
 
+## Batch 196 (gisday: images for #3243, the trail challenge's winners; 23 November 2026, from `work (gisday)`) (**High**) - **after 195, before 194**
+
+Home's `feat/3243-trail-winners` (08c7f9d16) is on the fork, built on `feat/3239-homepage-winners`. On your local stack,
+with the branch's migration (#3239's) run: seed a made-up VGI season with three or four made-up submitters and
+submissions, so the leaderboard ranks them.
+
+1. **Before:** the Winners admin page and the homepage's Winners section from `feat/3239-homepage-winners` (your batch
+   195 images may already show them; reuse them if so).
+2. **After**, from `feat/3243-trail-winners`: the Winners page's Trail challenge section listing the submitters as
+   "Name (N points)" in leaderboard order, with 1st to 3rd picked; then the homepage's Trail challenge block (place and
+   name only) at 1280 and 390 px.
+
+Commit to `docs/screenshots/3243-trail-winners/` on the branch, link them from its release note, push, and report
+"images pushed". Made-up people only. About 45 minutes.
+
 ## Batch 195 (gisday: before and after images for #3239, the homepage Winners section; 23 November 2026, from `work (gisday)`) (Medium) - **after 193, before 194**
 
 Home's branch `feat/3239-homepage-winners` (178fb3e79) is on the fork. On your local stack:

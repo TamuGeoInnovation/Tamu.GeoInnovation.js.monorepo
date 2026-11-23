@@ -1,5 +1,15 @@
 # Home machine: current tasks
 
+## Batch 73 (gisday: bring #3098 up to date, its migration after #3239's; 23 November 2026, from `work (gisday)`) (Medium) - **after 72; start only once #3239's PR has merged** (`git log origin/development` shows it)
+
+Your `fix/3098-shared-repeat-guard` (68776b3fe, 15 November) never got its PR. Since then `AddJudging`, `AddCheckInMinutes`
+and, with #3239, `AddSeasonWinners` have merged, and its migration `1794790500971-AddSessionDetailsSends` is dated before
+all of them. Merge the latest `development` into the branch, delete that migration and **generate it again** so it is
+dated after `AddSeasonWinners1795444106838`, prove it run, revert, run in your throwaway SQL Server, run the full check,
+and push. Drop the `.pr-body.md` commit (put its text in your report instead). Report "branch ready" with the new
+migration's name and its exact `up()` statements: the director writes `migrate-prod-3098.ps1` on the work machine (the
+maintainer's 2A: kubernetes-config work is the work machine's), so **leave your kc-3098 branch alone**.
+
 ## Batch 71 (gisday: #3243, the trail challenge's winners on the Winners page; 23 November 2026, from `work (gisday)`) (**High**) - **do this now**
 
 [#3243](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3243). Build it on top of your
