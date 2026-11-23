@@ -33,7 +33,8 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch 5 (aggiemap: #3161 remote campus names)**, started 5:29 PM Central. Next update by 5:50 PM Central.
+- **Batch 5 (aggiemap: #3161 remote campus names)**, started 5:29 PM Central. Next update by 6:15 PM Central.
+  Progress (5:37 PM): every place the three names are written listed (for the report). The sidebar title is `applicationName` (sidebar-reference h1), the landing line is `discover.description`; only those five strings changed, ids and routes untouched. Red first: 4 assertions failed as intended. Before images taken (3 sidebars, /all-maps). Check running; after images next.
 
 ## Finished
 - **Batch 4 (gisday: #3244 counts table on a phone)** (report `laptop/reports/2026-11-23-4.md`): **it still does not fit.**
