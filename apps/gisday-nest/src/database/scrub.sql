@@ -77,9 +77,10 @@ INSERT @kept VALUES
   (N'vgi_submissions_media', N'guid,fieldName,submissionGuid');
 
 -- Tables that are not copied: the migrations record is written when the new database is built, and
--- the other three exist only in production and are not used by the code.
+-- the other three exist only in production and are not used by the code. `session_details_sends` (#3098) is no
+-- longer read either: speaker_email_claims took over its rows (#3260), and a later migration drops it (#3269).
 DECLARE @skipped TABLE (tbl sysname);
-INSERT @skipped VALUES (N'typeorm_migrations'), (N'organization_links'), (N'speaker_images'), (N'sysdiagrams');
+INSERT @skipped VALUES (N'typeorm_migrations'), (N'organization_links'), (N'speaker_images'), (N'sysdiagrams'), (N'session_details_sends');
 
 -- What each personal column becomes. `{c}` is the column; a NULL stays NULL unless the rule says otherwise.
 DECLARE @scrubbed TABLE (tbl sysname, col sysname, expr nvarchar(max));
