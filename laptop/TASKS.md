@@ -1,5 +1,21 @@
 # Laptop: current tasks
 
+> **Decided (the maintainer, 23 November 2026, about 7:00 PM Central), answering your batch 3 Question 1:** your
+> option **A**. A check whose Nx targets all passed and whose only failure is `npm audit signatures` counts as a
+> **pass**. Name the step in your report; never report a bare `Exit 1`, and never report it as a pass without saying
+> which step failed. **No issue is filed** - CI's own `npm audit signatures` passed again on PR 3294 at about 7:00 PM,
+> so there is nothing in the repository to fix.
+>
+> It is **not** your machine's setup, so do not chase it: the home machine sees exactly the same thing at the same
+> minute. That endpoint answers `200 text/plain`, four bytes `OK`, for `oxc-parser@0.156.0` from either machine, while
+> `nx@22.1.0`'s answers proper JSON - one bad object, cached at the CDN edge serving this network. **Do not work
+> around it**: no `--no-audit`, no editing the check script, no `.npmrc` change. See `DIRECTOR.md`.
+>
+> **Your batch 3 Question 2 (merge order): A, as you recommended.** #3279 is pull request 3294, open now. PR 3282 is
+> the director's to update afterwards, with the November basemap becoming the default on dev **and** production - the
+> maintainer's decision this evening - so do not touch `basemaps.definition.ts` or `development-only.ts` again.
+
+
 ## Batch 6 (gisday: before and after images for #3292, the Winners page's dropdowns; 23 November 2026, about 6:35 PM Central, from `work (gisday)`) (Medium) - **right after the gisday batch 4, while its GIS Day stack is still up**
 
 There are two batches numbered 4 above (one `aggiemap:`, one `gisday:`), written by two directors at once; this one is

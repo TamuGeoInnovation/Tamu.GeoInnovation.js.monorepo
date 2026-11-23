@@ -98,6 +98,35 @@ So until he says otherwise:
 exists only in that session - a handover, an unreported branch, a measurement nobody else has. Code already pushed is
 safe; what one session knows and has not written down is not.
 
+## A local check that fails only at `npm audit signatures` is a pass (23 November 2026, the maintainer's 1A)
+
+From **about 4:55 PM Central on 23 November**, every `scripts/check-in-volume.sh` run on the home machine and on
+`laptop` exits **1** at its last step, `npm audit signatures`, with
+`FETCH_ERROR ... invalid json response body at
+https://registry.npmjs.org/-/npm/v1/attestations/oxc-parser@0.156.0`.
+
+**It is not the branch, and it is not this repository.** Asked directly from either machine, that endpoint answers
+**HTTP 200, `Content-Type: text/plain`, a four-byte body `OK`**, where npm expects JSON. `nx@22.1.0`'s attestations
+from the same machine, the same minute, answer proper `application/json`, 14 KB. So it is one package's object, not a
+block on us. `oxc-parser` has been on `development`'s lock since `1c54711f9` (Angular 22.2.6) and no branch here
+changes it.
+
+**GitHub Actions does not see it.** CI's own `npm audit signatures` verified the same lock at 4:40 PM on PR 3282
+(1695 signatures, 457 attestations), and **Lint / Affected passed again on PR 3294 at about 7:00 PM**, while the home
+machine still got the four-byte `OK` at that moment. Two machines here see it; the runners do not. That reads as a
+bad object cached at whichever CDN edge serves this network, not a registry-wide outage.
+
+So, until it clears:
+
+- **A check whose Nx targets all passed and whose only failure is `npm audit signatures` counts as a pass.** Say so in
+  the report, naming the step - never report a bare `Exit 1`, and never report it as a pass without naming it.
+- **This is exactly why the rule is to read the log's own step lines**, not the exit code alone
+  (the rule in this file about reading a check's own step lines). The script's `Exit N` cannot tell you which step failed.
+- **No issue was filed**, at the maintainer's word: CI passes, so there is nothing in this repository to fix. If CI
+  ever fails the same way, that changes and an issue is filed then.
+- **Do not work around it** - no `--no-audit`, no editing the script to skip the step, no touching `.npmrc`. It is a
+  real supply-chain check (#2293) and it will come back by itself.
+
 ## The machines
 
 Each machine has a folder at the top of this branch, named after it, holding its `TASKS.md` (written only by the
