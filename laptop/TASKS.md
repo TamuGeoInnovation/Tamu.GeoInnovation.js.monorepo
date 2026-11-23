@@ -1,5 +1,97 @@
 # Laptop: current tasks
 
+## Batch 2 (aggiemap: two GIS-team requests, #3223 and #3225; 23 November 2026, 12:44 PM Central, from `work (aggiemap)`) (Medium) - **after 1**
+
+Both came from the GIS team (the issues' author is not the maintainer). The maintainer asked for this batch as a
+test of whether this machine can take AggieMap work, so **say in the report what failed because of the work and what
+failed because of setup** - they are different answers and only one is about the issues.
+
+**The rule that governs both tasks, from `CLAUDE.md`: ask the service before you change a definition or a popup
+template.** Four faults in one week looked like a one-word field rename and not one of them was (#657, #1961, #2500,
+#2510). In two of the four, making the obvious change **would have looked like a fix and changed nothing a visitor
+sees**, which is worse than leaving the bug, because the issue gets closed. Both tasks below look like one-word
+changes. Neither is.
+
+### A. #3223 - Nature Rx becomes Nature Spaces, and the sidebar label comes from `Area Name`
+
+Two changes the GIS team wants before this layer goes to production:
+- the title and layer name from "Nature Rx" to "Nature Spaces"
+- the information sidebar's main label from the attribute **`Area Name`**, not `Campus`
+
+Before editing anything:
+
+1. **Query the service.** Confirm a field named `Area Name` exists, and **how many records carry a non-empty value**
+   (116 of 116 is the answer that clears #1961's trap; 0 of 116 is a different issue entirely). **If the field is
+   missing or empty, that is a data fault for the GIS team**: file it, say so in the report, and do not rename to a
+   field that is also empty.
+2. **Confirm the component you are about to edit is the one the layer actually draws.** #1961's field was right all
+   along and the component had been unused since #418. Find the popup component the layer's definition names, and
+   prove it is the one rendering, before changing it.
+3. **Where the title comes from.** Read [`docs/map-layers.md`](../docs/map-layers.md) first. A layer's symbology,
+   title and order come from its service, and overriding any of them in a definition needs a reason written beside
+   it. If the service still publishes "Nature Rx", work out whether the right fix is the service (the GIS team's) or
+   a documented override here, and say which in the report. Do not add an uncommented hard-coded title.
+4. **A layer named `nature-rx-layer` failed to load on dev** when a director checked `dev.aggiemap.tamu.edu` on
+   17 November: `[@arcgis/core/layers/FeatureLayer] #load() Failed to load layer (title: 'Nature Rx',
+   id: 'nature-rx-layer')`. Find out whether that is the known development-GIS-server gap (`CLAUDE.md`, "Things that
+   look broken but are not") or a real fault. **A rename on a layer that does not load changes nothing a visitor
+   sees**, which is exactly the failure mode above.
+5. **Gating.** Nature Rx is not on production. Check what `test/smoke/aggiemap/development-only.ts` says about it -
+   `DEVELOPMENT_ONLY_SERVICES`, `DEVELOPMENT_ONLY_LAYER_SOURCES` - and that
+   `development-only-gates.spec.ts` in `aggiemap-ngx-discover` still passes. Renaming a service the suite watches by
+   its old name will fail that spec, which is the check working.
+6. **Every bug gets a test** (`CLAUDE.md`). If the label was reading the wrong attribute, the test asserts the label
+   comes from `Area Name`, and it fails against the unfixed code first. Prove that, and say so.
+
+### B. #3225 - the new basemap, `TAMU_BaseMap_20261119`
+
+Portal item `8a52e139679145debc6d2bec377ef38d` on the GIS portal, published 19 November and, the GIS team says, ready
+for dev.
+
+1. **It goes on dev only.** The issue asks for production "when you can"; that is the GIS team asking, and
+   **the maintainer decides when anything moves to production** (#1229). Add it gated with `TestingService`, as the
+   dated campus basemaps in `aggiemapGalleryBasemaps` are, and add it to `DEVELOPMENT_ONLY_SERVICES` in
+   `test/smoke/aggiemap/development-only.ts` with the pages that request it, so the suite fails if production ever
+   asks for it. Read "Which gate" in `CLAUDE.md` before choosing: a thing that reads a service is left out of the
+   build; structure is gated at run time.
+2. **Nothing about basemaps is low risk.** #2477/#2536 is the case to read: a basemap **sprite override blanked the
+   whole map on production**, was reverted in a hurry together with an innocent gallery fix, came back a week later,
+   and nothing noticed in between **because no test switched basemaps and switched back**. If you add a basemap, add
+   the check that switches to it and away again.
+3. If the portal item will not load, note that `gis.tamu.edu` has returned **intermittent HTTP 400** on another FCOR
+   basemap item (a director hit it on 13 November). Try more than once and from the container before concluding the
+   item is wrong; if it is the server, that is a finding for the GIS team, not a code change.
+4. Before/after of the gallery with the new entry, same as any visible change.
+
+### How to check on this machine
+
+Your `STATUS.md` says Docker here has about **15.4 GB**, so `scripts/check-in-volume.sh`'s default `-m 16g` is at or
+over this machine's limit. Use the scoped, bug-fix form rather than `affected` - these are small, contained changes:
+
+```bash
+scripts/check-in-volume.sh <branch> <each project you edited>,aggiemap-angular
+```
+
+If a run is killed for memory, set `CHECK_MEMORY=12g` and `CHECK_PARALLEL=4` and say so. **Report the exact values
+you used and the exit code either way**: [#3000](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3000) is open on exactly this - the documented defaults assume an affected set
+that is not always what you get, and a second machine's numbers are what that issue needs. Read the script's own
+`Exit N` line from its log; do not pipe `nx` output into `tail`, `head` or `grep`.
+
+### The rest
+
+- **One branch per issue**, from the latest `development`, pushed to **`fork`** (`danielgoldbergtamu`), never to
+  `TamuGeoInnovation`. Last commit on each is a `.pr-body.md` drafting the pull request body, built from
+  `.github/pull_request_template.md` with every section filled in.
+- **Do not open the pull requests.** The director does that, with the real check results. Do not merge anything, do
+  not push tags, do not touch production, and do not run a non-read `kubectl`.
+- **Screenshots as soon as they are taken**, into `docs/screenshots/<slug>/`, committed with the work. A "before"
+  stops being obtainable the moment the fix is on disk.
+- **Both issues need their fields finished** - the director is setting Type, Project and Status and asking the
+  maintainer for Priority; you do not need to.
+- **File what you find**, as a GitHub issue, the moment it comes up, and list the numbers in your report.
+- Report `laptop/reports/2026-11-23-2.md` and say **"batch 2 done"**, with per-task results, the check command and
+  exit code, and the setup-versus-work split asked for above.
+
 ## Batch 1 (gisday, for every director: make this machine ready for anything; 23 November 2026, from `work (gisday)`) (High) - **do this now**
 
 **The maintainer's instruction (23 November 2026, relayed by the GIS Day director): the laptop is to be set up
