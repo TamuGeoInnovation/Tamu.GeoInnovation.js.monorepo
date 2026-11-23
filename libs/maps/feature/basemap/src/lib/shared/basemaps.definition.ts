@@ -104,6 +104,29 @@ export const AggiemapVectorBasemap: BaseMapProperties = {
 };
 
 /**
+ * The vector tile campus basemap the GIS team published on 19 November 2026 (`TAMU_BaseMap_20261119`, #3225), offered in
+ * the development gallery so it can be compared with the one the map opens on before anyone chooses it for production.
+ * The maintainer decides when it moves (#1229); until then the smoke suite fails if production ever requests it.
+ *
+ * Drawn as published, with none of the current basemap's construction overrides (#2459): this cache's "Currently Under
+ * Construction" style layer is a line, with no pattern fill to hide, so there is nothing yet to correct.
+ */
+export const AggiemapVectorBasemapNovember2026: BaseMapProperties = {
+  baseLayers: [
+    {
+      type: 'VectorTileLayer',
+      url: `https://gis.tamu.edu/arcgis/rest/services/Hosted/VTBase4/VectorTileServer`,
+      listMode: 'hide',
+      visible: true,
+      title: 'Base Map'
+    }
+  ],
+  id: 'aggie_basemap_vector_2026_11',
+  title: 'Aggieland vector, November 2026',
+  thumbnailUrl: CAMPUS_BASEMAP_THUMBNAIL
+};
+
+/**
  * The vector tile basemap development opened on until 26 October 2026, kept so the two can be
  * compared side by side before either becomes production's (#2436).
  *
@@ -224,6 +247,7 @@ export function aggiemapGalleryBasemaps(isTesting: boolean): BaseMapProperties[]
 
   return [
     aggiemapBasemap(),
+    AggiemapVectorBasemapNovember2026,
     AggiemapVectorBasemapSeptember2026,
     aggiemapRasterBasemap(isTesting),
     AggiemapRasterBasemapJune2026,
