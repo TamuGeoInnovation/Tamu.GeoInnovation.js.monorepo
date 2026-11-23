@@ -1,5 +1,83 @@
 # Laptop: current tasks
 
+## Batch 10 (aggiemap: check every map's outbound links, #3285; 23 November 2026, 7:35 PM Central, from `work (aggiemap)`) (High) - **after 9**
+
+Build the check that would have caught #3278, where Transportation Services told us a commencement map's link had
+been landing on a 404. **Read the issue and both of its comments first** - they carry the whole design, and the
+second one is the part that matters most:
+<https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3285>
+
+**The hard part is not finding dead links. It is not crying wolf.** Building this today, a plain status-code check
+was wrong **four different ways** against **one** genuinely dead link: an extensionless path that 404s for a
+non-browser client, a 403 to an unfamiliar user agent, a refusal of Playwright's default identity, and a 403 the
+origin reported as a 404 with an S3 error document as the body. A check that is wrong three times out of twelve gets
+ignored within a fortnight, and then the real failure goes out with the noise.
+
+1. **Follow the seven rules on the issue** (five in the body, two in my comment). In particular: navigate in
+   Playwright with a normal desktop browser user agent and `Accept-Language`; a redirect passes and reports its new
+   location; judge the page body, not the status alone; **403, timeouts, and a 404 whose body is a storage error or
+   an empty document are `inconclusive`, never `failed`**; two strikes before a link fails a run; and an
+   allowed-failures list like `environments.json`'s.
+2. **Red first, and it must be red for the right reason.** `aggie.tamu.edu/graduation` was fixed by PR 3289, so you
+   cannot use it live. Prove the check red against a deliberately dead URL of your own, and **also** prove that each
+   of the four false-failure shapes above comes back `inconclusive` rather than `failed` - that second proof is the
+   one that makes this check worth having. Use the real URLs named on the issue.
+3. **Where it goes:** with the deployed-environment checks in `test/smoke/aggiemap`, not a unit test - it asks the
+   internet a question and its answer changes without a commit. **Not in the `quick` tier.** Its row in
+   `docs/testing.md`, and leave that file's counts alone, the Total included.
+4. **Report what it finds**, per environment, with the final URL for anything that redirected.
+5. **Check:** `scripts/check-in-volume.sh <branch> <the projects you touch>`.
+
+An `Exit 1` whose only failure is `npm audit signatures` is a pass - see the note at the top of this file.
+
+Branch on the fork with `.pr-body.md` last. **No pull request.**
+
+## Batch 9 (aggiemap: two things broken on a phone, #3150 and #3149; 23 November 2026, 7:35 PM Central, from `work (aggiemap)`) (High) - **after 5**
+
+Both were reported by the maintainer using the map on his own phone, and both are High. They are separate issues and
+want **separate branches**, but they share a cause worth knowing before you start either.
+
+**The shared trap: Angular's secondary outlets.** On mobile, panels load into `outlet-2`. A `router.navigate([...],
+{relativeTo: ...})` from a component living in that outlet resolves *inside the outlet*, matches nothing, and fails
+**silently** - no error, no console message, nothing happens. This has bitten this repository before: #2641, whose
+fix is `primaryOutletRoute()` in `base-directions.component.ts`. **Read that first.** If you need it again, the rule
+in CLAUDE.md applies - extend or move the existing helper (`libs/common/utils/routing` is where a second caller would
+look for it), do not write a second copy in another file.
+
+### A. #3150 - tapping a bus route on a phone does nothing
+
+<https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3150>
+
+Start at `bus-route.component.ts` in `libs/aggiemap/ngx/ui/shared/.../transportation/components/bus-route/`, at the
+`selection() === 'route'` branch that calls `this.router.navigate([route.ShortName], {relativeTo: this.rt})`. The
+mobile tree in `map.routes.ts` loads the bus list into `outlet-2`, which is the trap above.
+
+**Prove the fault before fixing it**, on a phone-sized viewport against a local dev server: tap a route, and show
+that the URL does not change and no panel opens. Then prove the fix.
+
+### B. #3149 - routing is unreachable from the phone menu
+
+<https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3149>
+
+Two separate faults, and the issue says which is which. The phone menu
+(`main-mobile-sidebar.component.ts`) has no Directions entry at all; and `omnisearch.component.ts` around line 135
+navigates to `map/d/trip` - **the desktop route, hard-coded inside the mobile library**. Line 187 of the same file
+shows the correct relative form.
+
+**Leave `bus-stop.component.ts`'s `busMapPath = 'map/d/bus'` alone.** That one is deliberate and documented: it is a
+share link, and the guard rewrites `d` to `m`. Changing it would look like a fix and break sharing.
+
+### Both
+
+- **Red first** for each, in its own branch, failing against the unfixed code for the stated reason.
+- **Before and after images at phone width** for each, into `docs/screenshots/<issue>-<slug>/`, and a desktop capture
+  as the control - a thing that looks broken on a phone and is also broken on the desktop is a different bug.
+- Release entry each, with its *What to test on dev* row saying to use a phone or a phone-sized window.
+- **Check** each branch for the projects it touches.
+
+Two branches on the fork, each with its own `.pr-body.md` last. **No pull requests.**
+
+
 > **Decided (the maintainer, 23 November 2026, about 7:00 PM Central), answering your batch 3 Question 1:** your
 > option **A**. A check whose Nx targets all passed and whose only failure is `npm audit signatures` counts as a
 > **pass**. Name the step in your report; never report a bare `Exit 1`, and never report it as a pass without saying
