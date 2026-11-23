@@ -13,6 +13,41 @@
     <p role="status">{{ arcgisResult() }}</p>
     }
   </div>
+  <!-- How many submissions each category has (#3244): every one this season, whichever view is pressed. -->
+  @if (counts$ | async; as counts) {
+  <h2>Submissions by category</h2>
+  <table class="submission-counts trailer-1">
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th>Submissions</th>
+        <th>Verified</th>
+        <th>Needs a look</th>
+        <th>Discarded</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (row of counts.rows; track row.category) {
+      <tr>
+        <td>{{ row.category }}</td>
+        <td>{{ row.submissions }}</td>
+        <td>{{ row.verified }}</td>
+        <td>{{ row.unverified }}</td>
+        <td>{{ row.discarded }}</td>
+      </tr>
+      }
+    </tbody>
+    <tfoot>
+      <tr>
+        <th>{{ counts.total.category }}</th>
+        <th>{{ counts.total.submissions }}</th>
+        <th>{{ counts.total.verified }}</th>
+        <th>{{ counts.total.unverified }}</th>
+        <th>{{ counts.total.discarded }}</th>
+      </tr>
+    </tfoot>
+  </table>
+  }
   <tamu-gisc-submission-review-list
     [submissions$]="submissions$"
     [isAdmin]="true"

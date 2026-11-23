@@ -129,7 +129,13 @@ describe('AdminSubmissionsComponent', () => {
  */
 describe('AdminSubmissionsComponent counts (#3244)', () => {
   const row = (guid: string, questionValue: string, validationStatus: string) =>
-    ({ guid, userGuid: `auth0|${guid}`, questionValue, validationStatus, reviewReasons: [] }) as unknown as SubmissionReviewDto;
+    ({
+      guid,
+      userGuid: `auth0|${guid}`,
+      questionValue,
+      validationStatus,
+      reviewReasons: []
+    }) as unknown as SubmissionReviewDto;
 
   const rows = [
     row('a', 'Plaque', 'verified'),
