@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+import { of, throwError } from 'rxjs';
 
 import { MODAL_DATA, ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 
@@ -742,5 +743,52 @@ describe('ReviewEmailModalComponent, who was sent it before', () => {
       'Colby Sample: nothing yet',
       'Cara Test: Nov 15, 2:10 PM: the presenter profile email'
     ]);
+  });
+});
+
+/**
+ * #3189: a preview the API refuses (a 4xx) says why, in the API's own words, as the other admin pages do since #2966. It
+ * is one window for every email, so this covers them all. A 5xx or no answer keeps the generic line.
+ */
+describe('ReviewEmailModalComponent, a preview that fails', () => {
+  function open(error: HttpErrorResponse) {
+    TestBed.configureTestingModule({
+      imports: [ReviewEmailModalComponent],
+      providers: [
+        { provide: MODAL_DATA, useValue: { verb: 'Send profile email', preview: throwError(() => error) } },
+        { provide: ModalRefService, useValue: { close: jest.fn() } },
+        NO_SENDERS
+      ]
+    });
+
+    const fixture = TestBed.createComponent(ReviewEmailModalComponent);
+    fixture.detectChanges();
+
+    return (fixture.nativeElement as HTMLElement).textContent;
+  }
+
+  it('shows the reason a 4xx gives', () => {
+    const page = open(
+      new HttpErrorResponse({
+        status: 400,
+        error: { statusCode: 400, message: 'This session has no judges. Tick its judges and save it first.', error: 'Bad Request' }
+      })
+    );
+
+    expect(page).toContain('The email could not be loaded, so nothing was sent.');
+    expect(page).toContain('This session has no judges. Tick its judges and save it first.');
+    expect(page).not.toContain('Please try again');
+  });
+
+  it('keeps the generic line for a 500', () => {
+    const page = open(
+      new HttpErrorResponse({
+        status: 500,
+        error: { statusCode: 500, message: 'Internal server error' }
+      })
+    );
+
+    expect(page).toContain('The email could not be loaded, so nothing was sent. Please try again.');
+    expect(page).not.toContain('Internal server error');
   });
 });
