@@ -49,6 +49,21 @@
 > emails) on `feat/3044-email-markdown` when it appears on the fork: the window's preview with **bold** text, and an
 > email as it arrives if you can show one locally without sending to anyone real. Report each "branch ready" as you go.
 
+## Batch 194 (gisday: the "before" images for #3208, presenter cards on a 360 px phone; 23 November 2026, from `work (gisday)`) (Medium) - **after 193**
+
+[#3208](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3208). The director is writing the
+fix on `fix/3208-presenter-card-width`; take the **before** now, from `development` on your local stack, while it is
+still true.
+
+1. A session with at least two presenters (seed made-up ones if your local season has none), at **360 x 780** and at
+   **390 x 844**. Record `document.documentElement.scrollWidth` and `innerWidth` at each, and the width of each
+   `tamu-gisc-presenter-card > .presenter-item`.
+2. The same session's admin edit form (its presenter cards are the same component) at 360.
+3. Save to `C:\TAMU\shots-3208\before\`, and report the numbers. When the branch appears on the fork, take the same
+   images as **after**, commit both sets to `docs/screenshots/3208-presenter-card-width/` on it, and push.
+
+Made-up people only. About 30 minutes, then the after when the branch is there.
+
 ## Batch 193 (gisday: before and after images for #3189 and #3219, home's batch 68; 23 November 2026, from `work (gisday)`) (Low) - **when either branch appears on the fork**
 
 Home is building both fixes (its batch 68). Take the **before** images now, from `development`, so they exist before
