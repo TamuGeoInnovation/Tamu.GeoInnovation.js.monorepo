@@ -13,3 +13,8 @@ narrowest, was a tenth of a pixel wider than the word. That column is now a litt
 name column, so the table is no wider than before. Three other headings that could be cut in a narrow window
 ("classification", "Unverified" and "Discarded") now break with a hyphen instead. A check now measures every dashboard
 heading against its column, so a heading added or renamed later cannot be cut without the check failing.
+
+| Before | After |
+| --- | --- |
+| ![The Check-ins dashboard's table at 1280 pixels: the Checked in heading cut to "Checkec" over "in"](../screenshots/3219-checked-in-heading/before-check-ins-heading.png) | ![The same table: "Checked" over "in", in whole words](../screenshots/3219-checked-in-heading/after-check-ins-heading.png) |
+| ![The same table on a phone, 390 pixels wide, scrolled sideways to the Checked in column: "Checked" over "in"](../screenshots/3219-checked-in-heading/before-check-ins-heading-phone.png) | ![The same on a phone after: "Checked" over "in"](../screenshots/3219-checked-in-heading/after-check-ins-heading-phone.png) |
