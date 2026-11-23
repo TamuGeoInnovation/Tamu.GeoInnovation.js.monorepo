@@ -230,6 +230,19 @@ describe('SlidesRequestEmailService', () => {
     );
   });
 
+  it('asks each speaker once when the repeat reaches the other copy of the API (#3260)', async () => {
+    // Production runs two copies of the API, and a repeated send may reach either.
+    const copy = () => new SlidesRequestEmailService(events as never, contact() as never, links as never);
+    const [first, again] = await Promise.all([
+      copy().send('e-1', 'gisday.tamu.edu'),
+      copy().send('e-1', 'gisday.tamu.edu')
+    ]);
+    const repeats = [...first.skipped, ...again.skipped].filter((s) => /already asked/.test(s.reason));
+
+    expect(sent.map((m) => m.to.trim()).sort()).toEqual(['avery@example.com', 'blair@example.com']);
+    expect(repeats.map((s) => s.name).sort()).toEqual(['Avery Example', 'Blair Sample']);
+  });
+
   it(`asks them again after ${REPEAT_SEND_MINUTES} minutes`, async () => {
     const now = jest.spyOn(Date, 'now');
 

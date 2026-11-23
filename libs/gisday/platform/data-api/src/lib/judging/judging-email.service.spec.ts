@@ -117,6 +117,22 @@ describe('JudgingEmailService (#3183)', () => {
     expect(again.skipped[0].reason).toMatch(/already asked to judge this session/);
   });
 
+  it('asks each judge once when the repeat reaches the other copy of the API (#3260)', async () => {
+    // Production runs two copies of the API, and a repeated send may reach either.
+    const copy = () =>
+      new JudgingEmailService(
+        events as never,
+        { sendMessage: jest.fn(async (m) => sent.push(m)) } as never,
+        links as never,
+        log as never
+      );
+    const [first, again] = await Promise.all([copy().send('e-1', 'example.org'), copy().send('e-1', 'example.org')]);
+    const repeats = [...first.skipped, ...again.skipped].filter((s) => /already asked/.test(s.reason));
+
+    expect(sent.map((m) => m.to.trim()).sort()).toEqual(['dana@example.com', 'emery@example.com']);
+    expect(repeats.map((s) => s.name).sort()).toEqual(['Dana Judge', 'Emery Judge']);
+  });
+
   it('refuses a session that judges no competition, or has no judges, and sends nothing', async () => {
     session.judgedCompetition = null;
     await expect(service.preview('e-1')).rejects.toThrow('This session judges no competition');
