@@ -229,6 +229,113 @@ if (AVAILABLE) {
     console.log(`[smoke] route (#2804): ${await miles.textContent()} miles; ${JSON.stringify(solves)}`);
   });
 
+  /**
+   * A trip whose two ends are both chosen from the search list solves, and is drawn on the map (#2843, #2846).
+   *
+   * The case above gives its stops in the address, and the popup cases only open the planner, so none of them ever
+   * took the one path that moves each building to its nearest door: it runs only when every stop came from search.
+   * On 11 November 2026, the day directions reached production, that path returned no route at all between Eller and
+   * the Memorial Student Center (#2843), and between Eller and Halbouty it solved and listed every turn while the map
+   * stayed empty (#2846). The whole of this file passed against production throughout.
+   *
+   * So the route has to be seen on the map, not only in the panel: a summary is what a check reads, and an empty map is
+   * what the visitor got. The planner draws a route into `route-segments-layer`, which holds nothing but its lines, and
+   * the map probe counts a graphics layer's graphics.
+   *
+   * `known` names the issue a case is red for until its fix ships, so its failure says so. They stay red, rather than
+   * skipped or recorded, because a check that passes while a route is missing is the fault this exists to catch.
+   */
+  const SEARCHED_TRIPS = [
+    {
+      from: { term: 'Eller', result: /^Eller Oceanography/i },
+      to: { term: 'Memorial Student Center', result: /^Memorial Student Center/i },
+      known: '#2843: both ends from search find no route, because the MSC door chosen is off the network (#2845)'
+    },
+    {
+      from: { term: 'Eller', result: /^Eller Oceanography/i },
+      to: { term: 'Halbouty', result: /^Halbouty/i },
+      known: '#2846: a route that solves from two searched ends is not drawn on the map'
+    }
+  ];
+
+  const ROUTE_LAYER = 'route-segments-layer';
+  const DROPDOWN_KNOWN = '#2844: the search list stays open after a result is chosen, covering the other box';
+
+  for (const { from, to, known } of SEARCHED_TRIPS) {
+    test(`a trip from "${from.term}" to "${to.term}", both chosen from search, shows a route on the map (${known.split(':')[0]})`, async ({
+      page
+    }) => {
+      test.setTimeout(180_000);
+      await openMap(page, '/map/d/trip');
+
+      const boxes = page.locator('tamu-gisc-sidebar-trip-planner tamu-gisc-search');
+      await expect(boxes, '/map/d/trip did not show the from and to boxes').toHaveCount(2, { timeout: 30_000 });
+
+      for (const [index, end] of [from, to].entries()) {
+        const box = boxes.nth(index);
+        const input = box.locator('input');
+
+        await input.click();
+        await input.pressSequentially(end.term, { delay: 80 });
+
+        const option = box.locator('.result-item').getByRole('option', { name: end.result });
+        await expect(option.first(), `searching "${end.term}" did not list ${end.result}`).toBeVisible({ timeout: 20_000 });
+        await option.first().click();
+
+        // The list closes once a result is chosen. On 11 November it stayed open over the other box (#2844), so a
+        // click on that box landed on "Current Location". Soft, so the route below is still asked about: then the
+        // list is closed as a visitor would, with Escape.
+        const list = box.getByRole('option');
+        await expect
+          .soft(list.first(), `the list stayed open after choosing "${end.term}" (known: ${DROPDOWN_KNOWN})`)
+          .toBeHidden({ timeout: 5_000 });
+        await page.keyboard.press('Escape');
+        await expect(list.first(), `the list for "${end.term}" did not close on Escape either`).toBeHidden({
+          timeout: 5_000
+        });
+      }
+
+      const trip = `${from.term} to ${to.term}`;
+      const miles = page.locator('.directions-overview-item', { hasText: 'Miles' }).locator('.quantity');
+      const error = page.locator('#direction-feedback p.error');
+
+      // Whichever the planner shows first: a summary, or its "No reasonable route was found!".
+      await expect(miles.or(error).first(), `${trip}: the planner showed neither a route nor an error`).toBeVisible({
+        timeout: 120_000
+      });
+      await expect(error, `${trip}: the planner found no route (known: ${known})`).toHaveCount(0);
+      expect(
+        Number(await miles.textContent()),
+        `${trip}: the route summary shows no distance (known: ${known})`
+      ).toBeGreaterThan(0);
+
+      await expect
+        .poll(
+          async () =>
+            await page.evaluate(
+              async ({ name, layerId }) => {
+                const probe = (
+                  window as unknown as Record<
+                    string,
+                    { snapshot(): Promise<{ layers: Array<{ id: string; graphicTypes: Record<string, number> | null }> }> }
+                  >
+                )[name];
+                const layer = (await probe.snapshot()).layers.find((candidate) => candidate.id === layerId);
+
+                return Object.values(layer?.graphicTypes ?? {}).reduce((sum, count) => sum + count, 0);
+              },
+              { name: PROBE_GLOBAL, layerId: ROUTE_LAYER }
+            ),
+          {
+            message: `${trip}: the panel shows a route of ${await miles.textContent()} miles, and ${ROUTE_LAYER} holds no route on the map (known: ${known})`,
+            timeout: 30_000,
+            intervals: [1_000]
+          }
+        )
+        .toBeGreaterThan(0);
+    });
+  }
+
   test.describe("this environment's routing network", () => {
     const route = `${NETWORK}/Map/NAServer/Route`;
 
