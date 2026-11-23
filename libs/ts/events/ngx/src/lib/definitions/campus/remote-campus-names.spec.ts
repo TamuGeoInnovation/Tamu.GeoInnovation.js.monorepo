@@ -12,10 +12,10 @@ import { McAllenTs } from './mcallen.definitions';
  */
 describe('the remote campus maps are named as Texas A&M now names them (#3161)', () => {
   it.each([
-    [DCBushSchoolTs, 'Washington DC Campus'],
-    [GalvestonTs, 'Galveston Campus'],
-    [McAllenTs, 'McAllen Campus']
-  ])('heads the %# map with "%s" in its sidebar', (map, title) => {
+    ['Washington DC Campus', DCBushSchoolTs],
+    ['Galveston Campus', GalvestonTs],
+    ['McAllen Campus', McAllenTs]
+  ])('heads the map with "%s" in its sidebar', (title, map) => {
     expect(map.configuration.applicationName).toBe(title);
   });
 
