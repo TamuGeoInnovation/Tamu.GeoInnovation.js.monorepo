@@ -5,7 +5,7 @@
 
 Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
-Last batch done: 4
+Last batch done: 5
 
 ## What this is
 
@@ -33,10 +33,14 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch 5 (aggiemap: #3161 remote campus names)**, started 5:29 PM Central. Next update by 6:15 PM Central.
-  Progress (5:37 PM): every place the three names are written listed (for the report). The sidebar title is `applicationName` (sidebar-reference h1), the landing line is `discover.description`; only those five strings changed, ids and routes untouched. Red first: 4 assertions failed as intended. Before images taken (3 sidebars, /all-maps). Check running; after images next.
+- **Batch 6 (gisday: #3292 Winners images)**, started 5:50 PM Central. Next update by 6:15 PM Central.
 
 ## Finished
+- **Batch 5 (aggiemap: #3161 remote campus names)** (report `laptop/reports/2026-11-23-5.md`): branch ready, `fix/3161-remote-campus-names` on the fork at `49cb10736`, no PR.
+  - **Changed:** only the five strings the issue gives: three sidebar headings (`applicationName`) and two Campus Maps descriptions. Ids and routes are untouched, and a test now pins them.
+  - **Red first.** Before and after images for all four pages.
+  - **Check:** a pass under the audit-signatures rule.
+  - **No logo was supplied.** **Three questions.**
 - **Batch 4 (gisday: #3244 counts table on a phone)** (report `laptop/reports/2026-11-23-4.md`): **it still does not fit.**
   - **Widths:** 428 px on a 360 px phone and 429 px on a 390 px phone, the same as before the fix. The counts table needs 377 px because its cells are single words. It fits at 1280.
   - **Images pushed: none.** Nothing was changed or pushed; the branch is still at `f458eb400`.
@@ -59,7 +63,7 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
   - **One question.**
 
 ## Queued
-- Batch 6 (gisday: #3292 Winners images), after batch 5. It asked to run while batch 4's GIS Day stack was up, but that stack was already stopped when it arrived (5:29 PM), and batch 5 arrived first, so it runs next in order of arrival.
+- Nothing.
 
 ## Findings
 - `work/tools/gisday-release-check.cjs` clicks Auth0's Accept by itself. A read-only sign-in check would suit machines that only need to prove sign-in.
