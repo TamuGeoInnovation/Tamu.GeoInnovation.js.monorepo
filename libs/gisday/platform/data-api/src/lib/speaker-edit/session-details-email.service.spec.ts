@@ -3,8 +3,9 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { SESSION_DETAILS_EMAIL_KIND } from '@tamu-gisc/gisday/common';
 
 import { REPEAT_SEND_MINUTES } from './speaker-edit.service';
-import { SessionDetailsSend } from '../entities/all.entity';
+import { SpeakerEmailClaim } from '../entities/all.entity';
 import { Table } from '../_base/memory-table';
+import { RepeatGuard } from './repeat-guard';
 import { SessionDetailsEmailService } from './session-details-email.service';
 
 /**
@@ -13,7 +14,7 @@ import { SessionDetailsEmailService } from './session-details-email.service';
  * `REPEAT_SEND_MINUTES` (#3065).
  */
 /** The table of sends (#3098), as every copy of the API shares it: each copy's service is given the same one. */
-const sendsTable = () => new Table<SessionDetailsSend>();
+const sendsTable = () => new Table<SpeakerEmailClaim>();
 
 describe('SessionDetailsEmailService', () => {
   const ana = { guid: 'sp-ana', firstName: 'Ana', lastName: 'Ruiz', email: ' ana@example.edu ' };
@@ -36,7 +37,7 @@ describe('SessionDetailsEmailService', () => {
 
   let sent: Array<{ to: string; subject: string; text: string; html: string; from: string }>;
   let events: { findOne: jest.Mock };
-  let sends: Table<SessionDetailsSend>;
+  let sends: Table<SpeakerEmailClaim>;
   let contact: { sendMessage: jest.Mock };
   let service: SessionDetailsEmailService;
   let inFlight: number;
@@ -57,7 +58,7 @@ describe('SessionDetailsEmailService', () => {
         sent.push(m);
       })
     };
-    service = new SessionDetailsEmailService(events as never, sends as never, contact as never);
+    service = new SessionDetailsEmailService(events as never, new RepeatGuard(sends as never), contact as never);
   });
 
   it("previews the session's email for its speakers with an address, and names those it cannot reach; nothing is sent", async () => {
@@ -127,11 +128,9 @@ describe('SessionDetailsEmailService', () => {
 
     // Another copy of the service, so the repeat guard (#3065) does not skip the same speakers.
     sent = [];
-    await new SessionDetailsEmailService(
-      events as never,
-      sendsTable() as never,
-      { sendMessage: jest.fn(async (m) => sent.push(m)) } as never
-    ).send('e-1', 'txgisday.org', { subject: 'About {site}', template: 'Hi **{first name}**' });
+    await new SessionDetailsEmailService(events as never, new RepeatGuard(sendsTable() as never), {
+      sendMessage: jest.fn(async (m) => sent.push(m))
+    } as never).send('e-1', 'txgisday.org', { subject: 'About {site}', template: 'Hi **{first name}**' });
 
     expect(sent.find((m) => m.to === 'ana@example.edu').html).not.toContain('GIS DAY(S)');
   });
@@ -205,7 +204,7 @@ describe('SessionDetailsEmailService', () => {
    * copy email everyone again; the sends are now recorded in a table both copies share.
    */
   it('emails no one twice when the repeat reaches the other copy of the API (#3098)', async () => {
-    const otherCopy = new SessionDetailsEmailService(events as never, sends as never, contact as never);
+    const otherCopy = new SessionDetailsEmailService(events as never, new RepeatGuard(sends as never), contact as never);
 
     const [first, again] = await Promise.all([
       service.send('e-1', 'gisday.tamu.edu'),
@@ -245,7 +244,11 @@ describe('SessionDetailsEmailService', () => {
     const failingContact = {
       sendMessage: jest.fn().mockRejectedValueOnce(new Error('mailroom down')).mockResolvedValue({})
     };
-    const failing = new SessionDetailsEmailService(events as never, sendsTable() as never, failingContact as never);
+    const failing = new SessionDetailsEmailService(
+      events as never,
+      new RepeatGuard(sendsTable() as never),
+      failingContact as never
+    );
 
     events.findOne.mockResolvedValue({ ...session, speakers: [ana] });
 
@@ -288,15 +291,15 @@ describe('SessionDetailsEmailService, choosing speakers', () => {
   const together = 'Howdy {first name},\n\nSee you at {site}.';
 
   let sent: Array<{ to: string; subject: string; text: string }>;
-  let sends: Table<SessionDetailsSend>;
+  let sends: Table<SpeakerEmailClaim>;
   let service: SessionDetailsEmailService;
 
   beforeEach(() => {
     sent = [];
-    sends = new Table<SessionDetailsSend>();
+    sends = new Table<SpeakerEmailClaim>();
     service = new SessionDetailsEmailService(
       { findOne: jest.fn(async ({ where }) => (where.guid === session.guid ? session : null)) } as never,
-      sends as never,
+      new RepeatGuard(sends as never),
       { sendMessage: jest.fn(async (m) => sent.push(m)) } as never
     );
   });
@@ -407,7 +410,7 @@ describe('SessionDetailsEmailService, choosing speakers', () => {
   it('emails a together group once when the repeat reaches the other copy of the API (#3098)', async () => {
     const otherCopy = new SessionDetailsEmailService(
       { findOne: jest.fn(async ({ where }) => (where.guid === session.guid ? session : null)) } as never,
-      sends as never,
+      new RepeatGuard(sends as never),
       { sendMessage: jest.fn(async (m) => sent.push(m)) } as never
     );
     const choice = { speakers: ['sp-sh', 'sp-co'], together: true };
@@ -425,7 +428,7 @@ describe('SessionDetailsEmailService, choosing speakers', () => {
     const contact = { sendMessage: jest.fn().mockRejectedValueOnce(new Error('mailroom down')).mockResolvedValue({}) };
     const failing = new SessionDetailsEmailService(
       { findOne: jest.fn(async () => session) } as never,
-      new Table<SessionDetailsSend>() as never,
+      new RepeatGuard(new Table<SpeakerEmailClaim>() as never),
       contact as never
     );
     const choice = { speakers: ['sp-sh', 'sp-co'], together: true };

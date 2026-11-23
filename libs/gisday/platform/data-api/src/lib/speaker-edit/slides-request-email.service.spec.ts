@@ -2,12 +2,16 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 import {
   PROFILE_EDIT_LINK_PREVIEW,
+  SESSION_DETAILS_EMAIL_KIND,
   SESSION_FILES_RULE,
   SLIDES_REQUEST_COPY_EACH,
   SLIDES_REQUEST_EMAIL_KIND
 } from '@tamu-gisc/gisday/common';
 
 import { REPEAT_SEND_MINUTES } from './speaker-edit.service';
+import { Table } from '../_base/memory-table';
+import { SpeakerEmailClaim } from '../entities/all.entity';
+import { RepeatGuard } from './repeat-guard';
 import { SlidesRequestEmailService } from './slides-request-email.service';
 
 /**
@@ -36,6 +40,7 @@ describe('SlidesRequestEmailService', () => {
   let sent: Array<{ to: string; subject: string; text: string; html: string; from: string; replyTo?: string }>;
   let events: { findOne: jest.Mock };
   let links: { newLink: jest.Mock };
+  let claims: Table<SpeakerEmailClaim>;
   let service: SlidesRequestEmailService;
   let inFlight: number;
   let mostInFlight: number;
@@ -62,7 +67,14 @@ describe('SlidesRequestEmailService', () => {
         expires: new Date('2026-11-22T18:00:00Z')
       }))
     };
-    service = new SlidesRequestEmailService(events as never, contact() as never, links as never);
+    // The repeat guard's table, as every copy of the API shares it (#3260).
+    claims = new Table<SpeakerEmailClaim>();
+    service = new SlidesRequestEmailService(
+      events as never,
+      new RepeatGuard(claims as never),
+      contact() as never,
+      links as never
+    );
   });
 
   // #3147: a session marked as having no slides asks nobody for any, whatever page sends it.
@@ -232,7 +244,13 @@ describe('SlidesRequestEmailService', () => {
 
   it('asks each speaker once when the repeat reaches the other copy of the API (#3260)', async () => {
     // Production runs two copies of the API, and a repeated send may reach either.
-    const copy = () => new SlidesRequestEmailService(events as never, contact() as never, links as never);
+    const copy = () =>
+      new SlidesRequestEmailService(
+        events as never,
+        new RepeatGuard(claims as never),
+        contact() as never,
+        links as never
+      );
     const [first, again] = await Promise.all([
       copy().send('e-1', 'gisday.tamu.edu'),
       copy().send('e-1', 'gisday.tamu.edu')
@@ -241,6 +259,13 @@ describe('SlidesRequestEmailService', () => {
 
     expect(sent.map((m) => m.to.trim()).sort()).toEqual(['avery@example.com', 'blair@example.com']);
     expect(repeats.map((s) => s.name).sort()).toEqual(['Avery Example', 'Blair Sample']);
+    expect(claims.rows.map((r) => r.kind)).toEqual([SLIDES_REQUEST_EMAIL_KIND, SLIDES_REQUEST_EMAIL_KIND]);
+  });
+
+  it("asks a speaker just sent the session's details for its slides: each email has its own guard (#3260)", async () => {
+    await claims.save([{ kind: SESSION_DETAILS_EMAIL_KIND, session: { guid: 'e-1' }, speaker: { guid: 'sp-av' } }] as never);
+
+    expect((await service.send('e-1', 'gisday.tamu.edu', undefined, undefined, ['sp-av'])).sent).toEqual(['Avery Example']);
   });
 
   it(`asks them again after ${REPEAT_SEND_MINUTES} minutes`, async () => {
@@ -266,6 +291,7 @@ describe('SlidesRequestEmailService', () => {
   it('lets a speaker whose email failed be asked again at once, and says it failed', async () => {
     const failing = new SlidesRequestEmailService(
       events as never,
+      new RepeatGuard(claims as never),
       { sendMessage: jest.fn().mockRejectedValueOnce(new Error('mail down')).mockResolvedValue({}) } as never,
       links as never
     );

@@ -47,8 +47,6 @@ INSERT @kept VALUES
   (N'rubric_criteria', N'guid,rubricGuid,position,name,maxPoints,levels'),
   (N'seasons', N'guid,year,active,posterSubmissionsCloseAt,posterFilesCloseAt,presentationSubmissionsCloseAt,presentationFilesCloseAt,paperSubmissionsCloseAt,paperFilesCloseAt,cartographySubmissionsCloseAt,cartographyFilesCloseAt'),
   (N'season_competitions', N'guid,competitionType,seasonGuid'),
-  -- The session details email's repeat guard (#3098): which speaker was sent which session's details, and when.
-  (N'session_details_sends', N'guid,sessionGuid,speakerGuid'),
   -- A season's winners (#3239): which submission won which place; the names shown are the submission's.
   (N'season_winners', N'guid,seasonGuid,competition,place,submissionGuid'),
   (N'seasons_days', N'guid,date,seasonGuid'),
@@ -56,6 +54,8 @@ INSERT @kept VALUES
   (N'speakers', N'guid,isActive,seasonGuid,organizationGuid,universityGuid,isOrganizer,badgePrintedAt'),
   -- A speaker's own link to edit their profile (#2936): which speaker, and until when. The token and the address go below.
   (N'speaker_edit_links', N'guid,speakerGuid,expires,purpose'),
+  -- The speaker emails' repeat guard (#3098, #3260): which speaker was sent which email about which session, and when.
+  (N'speaker_email_claims', N'guid,kind,sessionGuid,speakerGuid'),
   -- Which email each speaker was sent, about which session, and when (#3167). The addresses go below.
   (N'speaker_email_sends', N'guid,speakerGuid,kind,eventGuid'),
   -- What a speaker proposed (#2936): whose, and where it stands. What they wrote goes below, as the speaker's own does.

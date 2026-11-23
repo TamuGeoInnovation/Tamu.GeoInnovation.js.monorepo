@@ -977,13 +977,17 @@ export class SpeakerEdit extends GuidIdentity {
 }
 
 /**
- * The session details email's repeat guard (#3092, #3098): one row a speaker was sent one session's details, recorded
- * before the email goes, with when (`created`). Every copy of the API reads these, so a send repeated within
- * `REPEAT_SEND_MINUTES` is caught whichever copy it reaches. Who it was from, and to which address, is the send record's
- * (`SpeakerEmailSend`, #3167), which is written once the email has gone.
+ * The repeat guard of a session's speaker emails (#3098, #3260): one row a speaker was sent one email about one session,
+ * claimed before the email goes, with when (`created`). Every copy of the API reads these (`RepeatGuard`), so a send
+ * repeated within `REPEAT_SEND_MINUTES` is caught whichever copy it reaches. Who it was from, and to which address, is
+ * the send record's (`SpeakerEmailSend`, #3167), which is written once the email has gone.
  */
-@Entity({ name: 'session_details_sends' })
-export class SessionDetailsSend extends GuidIdentity {
+@Entity({ name: 'speaker_email_claims' })
+export class SpeakerEmailClaim extends GuidIdentity {
+  /** Which email: `SESSION_DETAILS_EMAIL_KIND`, `SLIDES_REQUEST_EMAIL_KIND`, `JUDGING_EMAIL_KIND`. */
+  @Column({ length: 50 })
+  public kind: string;
+
   @ManyToOne(() => Event, { nullable: false, onDelete: 'CASCADE' })
   public session: Relation<Event>;
 
@@ -1503,7 +1507,7 @@ export const GISDAY_ENTITIES = [
   SpeakerEditLink,
   SpeakerEmailSend,
   SpeakerEdit,
-  SessionDetailsSend,
+  SpeakerEmailClaim,
   SubmissionType,
   Sponsor,
   Tag,

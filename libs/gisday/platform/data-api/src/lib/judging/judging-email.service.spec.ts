@@ -2,6 +2,9 @@ import { BadRequestException } from '@nestjs/common';
 
 import { JUDGING_COPY_EACH, JUDGING_EMAIL_KIND, JUDGING_LINK_PREVIEW } from '@tamu-gisc/gisday/common';
 
+import { Table } from '../_base/memory-table';
+import { SpeakerEmailClaim } from '../entities/all.entity';
+import { RepeatGuard } from '../speaker-edit/repeat-guard';
 import { JudgingEmailService } from './judging-email.service';
 
 /**
@@ -33,6 +36,7 @@ describe('JudgingEmailService (#3183)', () => {
   let events: { findOne: jest.Mock };
   let links: { newLink: jest.Mock };
   let log: { record: jest.Mock; withSends: jest.Mock };
+  let claims: Table<SpeakerEmailClaim>;
   let service: JudgingEmailService;
 
   beforeEach(() => {
@@ -51,8 +55,11 @@ describe('JudgingEmailService (#3183)', () => {
       }))
     };
     log = { record: jest.fn(async () => undefined), withSends: jest.fn(async (r) => r) };
+    // The repeat guard's table, as every copy of the API shares it (#3260).
+    claims = new Table<SpeakerEmailClaim>();
     service = new JudgingEmailService(
       events as never,
+      new RepeatGuard(claims as never),
       { sendMessage: jest.fn(async (m) => sent.push(m)) } as never,
       links as never,
       log as never
@@ -122,6 +129,7 @@ describe('JudgingEmailService (#3183)', () => {
     const copy = () =>
       new JudgingEmailService(
         events as never,
+        new RepeatGuard(claims as never),
         { sendMessage: jest.fn(async (m) => sent.push(m)) } as never,
         links as never,
         log as never
@@ -131,6 +139,7 @@ describe('JudgingEmailService (#3183)', () => {
 
     expect(sent.map((m) => m.to.trim()).sort()).toEqual(['dana@example.com', 'emery@example.com']);
     expect(repeats.map((s) => s.name).sort()).toEqual(['Dana Judge', 'Emery Judge']);
+    expect(claims.rows.map((r) => r.kind)).toEqual([JUDGING_EMAIL_KIND, JUDGING_EMAIL_KIND]);
   });
 
   it('refuses a session that judges no competition, or has no judges, and sends nothing', async () => {
