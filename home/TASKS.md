@@ -1,5 +1,29 @@
 # Home machine: current tasks
 
+## Batch 69 (gisday: #3239, a Winners section on the homepage; 23 November 2026, from `work (gisday)`) (Medium) - **do this now**
+
+[#3239](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3239). The maintainer's decisions
+are in its comment: an admin page picks 1st, 2nd and 3rd per competition from the season's submissions, stored in the
+database; the homepage shows them on gisday.tamu.edu only, plain text (place, name, title), from the day after the
+season's last day until the next season is active; room for the trail challenge (VGI) winners.
+
+- **Look first:** the judged competitions are `JUDGED_COMPETITIONS` in `libs/gisday/common` (graduate and
+  undergraduate presentation and poster); submissions are `submissions` (`submissionType`, `classificationType`,
+  `participants`); the admin pages are under `libs/gisday/platform/ngx/core/src/lib/pages/admin/pages/research-competition/`;
+  the homepage is `pages/landing`. Which site shows what is `siteHas`/`siteListsSession` in `libs/gisday/common`.
+- **A new table** (`season_winners` or similar: season, competition, place, submission; unique per season,
+  competition and place), with its migration as `docs/gisday-migrations.md` says, proven up and down locally. The
+  winner's name is the submission's first participant (or all, for a group), and its title, read when shown, so
+  nothing is copied. Trail winners need a person, not a submission: leave the model able to hold them, and the page
+  a place for them, but don't build their picker unless it falls out naturally; say which you did.
+- **Admin only** to write (an existing competitions permission; extend `private-fields.interceptor.spec.ts`), public
+  to read, the read returning only place, competition, names and title.
+- Tests red first; **the full check** (an API route and a migration); a release note. **Made-up winners only** in
+  tests, seeds and images: the 2026 winners' real names never go into the repository.
+- Push `feat/3239-homepage-winners` to the fork and report "branch ready". The lab takes the images.
+
+About three hours.
+
 ## Batch 68 (gisday: #3189 and #3219, two small fixes; 23 November 2026, from `work (gisday)`) (Low) - **do this now**
 
 Two issues, **two branches, two reports in one file**. Each red first, then green; the bug-fix check
