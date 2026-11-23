@@ -1,5 +1,26 @@
 # Home machine: current tasks
 
+## Batch 71 (gisday: #3243, the trail challenge's winners on the Winners page; 23 November 2026, from `work (gisday)`) (**High**) - **do this now**
+
+[#3243](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3243). Build it on top of your
+`feat/3239-homepage-winners` (PR not open yet; the lab's images are pushed at 9247d5e5f): branch
+`feat/3243-trail-winners` from that branch's head, so it is one small PR after #3239's. The maintainer says the 2026
+trail winners were already announced: three people submitted and took 1st to 3rd by points. So the picker offers the
+season's VGI submitters **in the leaderboard's order** (`scoreSubmissions`, as the VGI dashboard and leaderboard use),
+each with their name and points from Auth0 (through the dashboards' shared profile lookup), and saves by account. The
+homepage shows place and name. Admin only to write; the public read returns place and name only. Tests red first; the
+full check; a release note; made-up people only. Push and report "branch ready". The lab takes the images.
+
+## Batch 72 (gisday: #3244, counts on the VGI Submissions page; 23 November 2026, from `work (gisday)`) (Medium) - **after 71**
+
+[#3244](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3244); the decisions are in the issue.
+`libs/gisday/competitions/ngx/core/src/lib/pages/admin/pages/submissions/` (it already loads every submission, `all$`,
+each with `questionValue` and `validationStatus`). Reuse the dashboards' shared table
+(`libs/gisday/platform/ngx/core/src/lib/pages/admin/pages/dashboards/shared/dashboard-table/`) if it can live where this
+page can import it; if not, say why and use plain table markup with the site's styles. Branch
+`feat/3244-vgi-submission-counts` from `development`. Tests red first; the check for the projects you edit plus
+`gisday-angular`; a release note. Push and report "branch ready".
+
 ## Batch 70 (gisday: #3239's production migration script; 23 November 2026, from `work (gisday)`) (Medium) - **do this now**
 
 Your report 69's question 1, decided by the director: yes. Write `6. GIS Day/migrations/migrate-prod-3239.ps1` in
