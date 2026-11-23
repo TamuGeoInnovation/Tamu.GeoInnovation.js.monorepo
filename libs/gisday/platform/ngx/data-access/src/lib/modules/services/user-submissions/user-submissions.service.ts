@@ -3,7 +3,14 @@ import { HttpClient, HttpEvent } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { PosterDto, Submission } from '@tamu-gisc/gisday/platform/data-api';
-import { ReminderSkipReason, SubmissionFileDto, reminderSkipSummary } from '@tamu-gisc/gisday/common';
+import {
+  EmailRecipient,
+  ReminderSkipReason,
+  SubmissionFileDto,
+  reminderSkipSummary,
+  withoutSender,
+  EmailDesign
+} from '@tamu-gisc/gisday/common';
 
 import { BaseService } from '../_base/base.service';
 
@@ -15,6 +22,8 @@ export interface ReviewEmailPreview {
     count: number;
     subject: string;
     template: string;
+    /** What the window needs to show the whole email as it will arrive, in Texas A&M's design (#3114). */
+    design?: EmailDesign;
     example: { title: string; to: string; cc: string; values: Record<string, string> };
   }>;
   /** Those that get no email, with why: a final reminder's that already have a file or were not accepted (#3017). */
@@ -23,6 +32,10 @@ export interface ReviewEmailPreview {
   notEmailed?: Array<{ name: string; submission: string }>;
   /** A session's speakers with no email address on their record, by name, who will not be emailed (#3092). */
   noAddress?: Array<string>;
+  /** The speakers it can go to, each with an address, for the window's tick boxes (#3104). */
+  recipients?: Array<EmailRecipient>;
+  /** Why it may only go as a copy each, when it may not go to them together (#3104). */
+  copyEachReason?: string;
 }
 
 /** What sending the final reminder to several submissions did, from the API (#3017). */
@@ -109,14 +122,17 @@ export class UserSubmissionsService extends BaseService<Submission> {
     submissionGuids: Array<string>,
     acceptance: boolean,
     message?: string,
-    /** The email text the reviewer saw and approved, by kind (#2981). */
+    /** The email text the reviewer saw and approved, by kind (#2981), and the sender they chose in it (#3100). */
     templates?: Record<string, string>
   ) {
+    const { sender, texts } = withoutSender(templates);
+
     return this.http1.post<ReviewSubmissionsResult>(`${this.resource}/review`, {
       submissions: submissionGuids,
       acceptance,
       ...(message?.trim() ? { message: message.trim() } : {}),
-      ...(templates ? { templates } : {})
+      ...(templates ? { templates: texts } : {}),
+      ...(sender ? { sender } : {})
     });
   }
 
@@ -137,9 +153,18 @@ export class UserSubmissionsService extends BaseService<Submission> {
     return this.http1.post<ReviewEmailPreview>(`${this.resource}/remind/preview`, { submissions: submissionGuids });
   }
 
-  /** Sends the final reminder to the selected accepted submissions that have no file yet, in the text approved (#3017). */
+  /**
+   * Sends the final reminder to the selected accepted submissions that have no file yet, in the text approved (#3017), as
+   * the sender chosen in the window (#3100).
+   */
   public remind(submissionGuids: Array<string>, templates: Record<string, string>) {
-    return this.http1.post<FinalRemindersResult>(`${this.resource}/remind`, { submissions: submissionGuids, templates });
+    const { sender, texts } = withoutSender(templates);
+
+    return this.http1.post<FinalRemindersResult>(`${this.resource}/remind`, {
+      submissions: submissionGuids,
+      templates: texts,
+      ...(sender ? { sender } : {})
+    });
   }
 
   public getPresentationsForActiveSeason() {
@@ -176,8 +201,10 @@ export class UserSubmissionsService extends BaseService<Submission> {
     return this.http1.get(`${this.resource}/${submissionGuid}/files/${fileGuid}`, { responseType: 'blob' });
   }
 
-  /** Every file of a season's submissions as one zip, for the admins. */
-  public getSeasonFilesZip(seasonGuid: string) {
-    return this.http1.get(`${this.resource}/season/${seasonGuid}/files.zip`, { responseType: 'blob' });
+  /** Every file of a season's submissions as one zip, for the admins; with `submissions`, only those (#3174). */
+  public getSeasonFilesZip(seasonGuid: string, submissions?: ReadonlyArray<string>) {
+    const only = submissions?.length ? `?submissions=${submissions.map(encodeURIComponent).join(',')}` : '';
+
+    return this.http1.get(`${this.resource}/season/${seasonGuid}/files.zip${only}`, { responseType: 'blob' });
   }
 }

@@ -18,6 +18,7 @@ export * from './lib/utils/events-by-day';
 export * from './lib/utils/event-form-problems';
 export * from './lib/utils/speakers';
 export * from './lib/utils/search-text';
+export * from './lib/utils/upload-image-picker';
 export * from './lib/utils/submission-deadline-notice';
 export * from './lib/utils/server-message';
 
@@ -53,6 +54,7 @@ export * from './lib/modules/forms/components/user-submissions/user-submission-a
 
 // The site this deployment is (#1835)
 export * from './lib/site/site';
+export * from './lib/site/sign-in';
 export * from './lib/modules/submission-files/submission-files.component';
 export * from './lib/modules/search/linked-search/linked-search.component';
 export * from './lib/modules/sessions-using/sessions-using.component';

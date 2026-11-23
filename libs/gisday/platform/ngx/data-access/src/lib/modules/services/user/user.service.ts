@@ -5,7 +5,7 @@ import { User } from '@auth0/auth0-angular';
 
 import { GisDayAppMetadata } from '@tamu-gisc/gisday/platform/data-api';
 import type { AccountDashboard, RsvpDashboardPerson } from '@tamu-gisc/gisday/platform/data-api';
-import { Auth0UserProfile } from '@tamu-gisc/common/nest/auth';
+import { Auth0UserList, Auth0UserProfile } from '@tamu-gisc/common/nest/auth';
 
 import { BaseService } from '../_base/base.service';
 
@@ -21,8 +21,9 @@ export class UserService extends BaseService<User> {
     super('users');
   }
 
-  public getUsers() {
-    return this.http1.get<Array<Auth0UserProfile>>(`${this.resource}`);
+  /** The first 1,000 users, or with `search` those whose name or email holds every word of it (#2574). */
+  public getUsers(search?: string) {
+    return this.http1.get<Auth0UserList>(`${this.resource}`, { params: search ? { q: search } : {} });
   }
 
   public getUser(userId: string) {

@@ -54,7 +54,9 @@ scripts/gisday-local.sh api                     # builds gisday-nest (under a mi
 scripts/gisday-local.sh web                     # first compile takes several minutes
 ```
 
-Then open <http://localhost:4201>. `status` lists the containers; `stop` removes them and keeps the
+Then open <http://gisday.local.test:4201>, after adding it to the hosts file and telling the browser to treat it as
+secure ([Signing in](#sign-in-at-gisdaylocaltest-not-localhost) says why and how); <http://localhost:4201> works too,
+but signing in there always stops at a consent screen. `status` lists the containers; `stop` removes them and keeps the
 database volume, so the restore is needed only once.
 
 ### Another organization's site
@@ -203,10 +205,10 @@ production's (#1623). Its accounts are test accounts, and nothing in it can reac
 
 `scripts/gisday-auth0-dev.ps1` builds the tenant and can rebuild it at any time:
 
-- the API `gisday.dev.api`, with every permission the GIS Day API checks;
+- the API `gisday.dev.api`, with every permission the GIS Day API checks, which users may skip consenting to;
 - the six roles the site knows, with GIS Day Admin holding every permission;
-- the application "GIS Day (local development)", which returns only to `http://localhost:4201`, so
-  the port cannot change;
+- the application "GIS Day (local development)", which returns only to `http://gisday.local.test:4201` and
+  `http://localhost:4201`, so the port cannot change;
 - a post-login action that puts a user's roles in the `geoservices.prod/roles` claim the site reads;
 - a test admin, `claude-test-admin@txgisday-dev.test`, with a new password each run.
 
@@ -222,6 +224,46 @@ It writes `auth0-dev.local.env` in `GISDAY_LOCAL_DIR`, outside the repository, w
 development credentials and the test admin's password. Restart the API with `scripts/gisday-local.sh
 api` to use them. A developer who cannot run the script is given that file: it holds development-tenant
 credentials only, never a production secret.
+
+It says which tenant and which application it is about to change before it changes anything, refuses any tenant but
+`txgisday-dev` (the `geoservices` tenant has an application with the same name), and ends by reading the application
+and the API back, saying setting by setting whether each is as intended. It never prints the client secret or its
+token.
+
+### Sign in at gisday.local.test, not localhost
+
+**Open <http://gisday.local.test:4201>, not <http://localhost:4201>, to sign in.** Auth0 never skips its "Authorize
+App" consent screen for a page served from `localhost` or `127.0.0.1`, even with "Allow Skipping User Consent" on for
+the API, so every sign-in at localhost stops at that screen
+([#3136](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3136)). `gisday.local.test` is the
+same site under another name, which the tenant treats as an ordinary address and lets a user sign in to without it.
+`.test` is reserved for testing, so it can never be a real host.
+
+The name has to point at this machine. Add this line to `C:\Windows\System32\drivers\etc\hosts`, editing it as an
+administrator:
+
+```text
+127.0.0.1 gisday.local.test
+```
+
+**The browser also has to treat that address as secure.** The sign-in library (`auth0-spa-js`) needs
+`crypto.subtle`, which a browser gives only to a secure page: `https`, or `localhost` and `127.0.0.1`. At plain
+`http://gisday.local.test:4201` the page stays empty of its menus and the console says `auth0-spa-js must run on a
+secure origin` (checked on 16 November 2026, #3136). In Chrome or Edge, open `chrome://flags` (`edge://flags`), set
+**Insecure origins treated as secure** to `http://gisday.local.test:4201`, enable it and relaunch. Playwright does the
+same with full Chromium, which honours the flag where its default headless shell does not:
+
+```js
+chromium.launch({ channel: 'chromium', args: ['--unsafely-treat-insecure-origin-as-secure=http://gisday.local.test:4201'] });
+```
+
+So set up, a sign-in there through the login form and a second page opened in the same browser both reached
+`/admin/dashboards/rsvps` with no consent screen (16 November 2026).
+
+Nothing else changes: the `web` step serves the same site at both addresses (its dev server allows the name in the
+`local` configuration's `allowedHosts`, and nginx and `gisday-site` answer to any name), the page returns from sign-in
+to its own address, and the API is reached through the page's own address either way. `web` reminds you if the hosts
+file does not have the line; it never edits it. localhost still works, with the consent screen.
 
 ## Things that look broken
 

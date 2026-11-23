@@ -13,7 +13,6 @@ import { Repository } from 'typeorm';
 
 import { isOwnerOrPermitted } from '@tamu-gisc/common/nest/auth';
 import {
-  emailHtml,
   fillReviewEmail,
   gisdaySite,
   GisdaySite,
@@ -28,7 +27,11 @@ import {
   ReviewEmailSession,
   reviewEmailSubject,
   reviewEmailTemplate,
-  reviewEmailValues
+  reviewEmailValues,
+  reviewEmailDesign,
+  seasonDaysOf,
+  siteEmailHtml,
+  EmailDesign
 } from '@tamu-gisc/gisday/common';
 import {
   closedAt,
@@ -46,7 +49,7 @@ import {
   PRESENTATION_SUBMISSION_TYPE
 } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
-import { senderAs } from '../_base/site-of-request';
+import { EmailSender, siteSender } from '../contact/email-sender.service';
 import { EMAIL_LANES, inParallel } from '../_base/in-parallel';
 import { SeasonService } from '../season/season.service';
 import { ContactService } from '../contact/contact.service';
@@ -75,6 +78,8 @@ export interface ReviewEmailPreview {
     count: number;
     subject: string;
     template: string;
+    /** What the window needs to show the whole email as it will arrive, in Texas A&M's design (#3114). */
+    design?: EmailDesign;
     example: { title: string; to: string; cc: string; values: Record<string, string> };
   }>;
   /** Those that get no email, with why: a final reminder's that already have a file or were not accepted (#3017). */
@@ -359,7 +364,13 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
   public async reviewUserSubmissions(
     submissionGuids: Array<string>,
     userGuid: string,
-    review: { acceptance: boolean; message?: string; templates?: Partial<Record<ReviewEmailKind, string>> },
+    review: {
+      acceptance: boolean;
+      message?: string;
+      templates?: Partial<Record<ReviewEmailKind, string>>;
+      /** Who the emails are from, as the reviewer chose and the controller checked (#3100); the site without it. */
+      sender?: EmailSender;
+    },
     requestorPermissions: Array<string> = [],
     host?: string
   ): Promise<ReviewManyResult> {
@@ -388,7 +399,8 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
           { acceptance: review.acceptance, message: review.message } as Partial<Submission>,
           requestorPermissions,
           host,
-          templates
+          templates,
+          review.sender
         );
       } catch (err) {
         Logger.error(`Could not review submission ${guid}: ${err.message}`, 'UserSubmissionProvider');
@@ -469,13 +481,15 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
    */
   public async remindUserSubmissions(
     submissionGuids: Array<string>,
-    reminder: { templates?: Partial<Record<ReviewEmailKind, string>> },
+    reminder: { templates?: Partial<Record<ReviewEmailKind, string>>; sender?: EmailSender },
     requestorPermissions: Array<string> = [],
     host?: string
   ): Promise<RemindManyResult> {
     checkReviewerAndGuids(submissionGuids, requestorPermissions);
 
     const templates = checkedTemplates(reminder?.templates);
+    // Who it is from (#3100), taken here: `reminder` names each submission's own below.
+    const sender = reminder?.sender;
     const site = gisdaySite(process.env.GISDAY_SITE, host);
     const result: RemindManyResult = { sent: [], skipped: [], failed: [] };
 
@@ -485,7 +499,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
 
       const submission = await this.userSubmissionRepo.findOne({
         where: { guid },
-        relations: { season: true, files: true }
+        relations: { season: { days: true }, files: true }
       });
 
       if (!submission) {
@@ -507,7 +521,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
         const recipients = await this._recipientsOf(submission);
         const sessions = await this._sessionsOf(submission.season).catch(() => []);
 
-        await this._sendEmail(submission, kind, site, templates?.[kind], recipients, sessions);
+        await this._sendEmail(submission, kind, site, templates?.[kind], recipients, sessions, sender);
         part.sent.push(title);
       } catch (err) {
         Logger.error(`Error sending a final reminder: ${err.message}`, 'UserSubmissionProvider');
@@ -542,7 +556,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     for (const guid of [...new Set(submissionGuids)]) {
       const submission = await this.userSubmissionRepo.findOne({
         where: { guid },
-        relations: { season: true, files: true }
+        relations: { season: { days: true }, files: true }
       });
 
       if (!submission) {
@@ -573,6 +587,8 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
         count: 1,
         subject: reviewEmailKindSubject(kind, site.name),
         template: reviewEmailTemplate(kind),
+        // What the window needs to show the whole email as it will arrive (#3114).
+        design: reviewEmailDesign(site.name, seasonDaysOf(submission.season)),
         example: {
           title: submission.title ?? '',
           to,
@@ -599,20 +615,28 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     site: GisdaySite,
     template: string | undefined,
     recipients: { to: string; cc: Array<string> },
-    sessions: Array<ReviewEmailSession>
+    sessions: Array<ReviewEmailSession>,
+    /** Who it is from, as the reviewer chose (#3100); the site without it. */
+    sender?: EmailSender
   ) {
     const text = fillReviewEmail(template ?? reviewEmailTemplate(kind), reviewEmailValues(submission, site, sessions));
+    const subject = reviewEmailKindSubject(kind, site.name);
+    const from = sender ?? siteSender(site.name);
 
     return this.contactService.sendMessage(
       {
         to: recipients.to,
         cc: recipients.cc.join(','),
-        subject: reviewEmailKindSubject(kind, site.name),
-        from: senderAs(site.name, process.env.MAILROOM_FROM),
+        subject,
         text,
-        // The Markdown as HTML, beside the plain text (#3044).
-        html: emailHtml(text),
-        replyTo: process.env.MAILROOM_TO
+        // The Markdown as HTML (#3044), in Texas A&M's design on its site (#3114), beside the plain text.
+        html: siteEmailHtml(text, {
+          site,
+          subject,
+          from: from.from,
+          design: reviewEmailDesign(site.name, seasonDaysOf(submission.season))
+        }),
+        ...from
       },
       true
     );
@@ -629,7 +653,9 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     requestorPermissions: Array<string>,
     host?: string,
     /** The texts the reviewer approved, by kind (#2981). */
-    templates?: Partial<Record<ReviewEmailKind, string>>
+    templates?: Partial<Record<ReviewEmailKind, string>>,
+    /** Who its email is from, as the reviewer chose (#3100); the site without it. */
+    sender?: EmailSender
   ) {
     const existingSubmission = await this.userSubmissionRepo.findOne({
       where: {
@@ -712,7 +738,8 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
               gisdaySite(process.env.GISDAY_SITE, host),
               templates?.[kind],
               recipients,
-              sessions
+              sessions,
+              sender
             )
         : null;
 

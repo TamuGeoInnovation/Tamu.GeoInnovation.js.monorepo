@@ -12,14 +12,15 @@ import { Management, ManagementClient } from 'auth0';
 
 export const MANAGEMENT_CONFIG = 'MANAGEMENT_CONFIG';
 
-/** The Management API's default page size, and the most pages getUsers reads (#2320). */
+/** The Management API's default page size (#2320). */
 const USERS_PER_PAGE = 50;
-const USERS_MAX_PAGES = 100;
 /** How many ids getUsersByIds asks for in one search: well inside the query's length limit, and one page of answers. */
 const USERS_BY_ID_AT_ONCE = 50;
 /**
- * The most users the Management API's search pages through for one query (#2892): a query matching more must be split.
- * The `total` it reports is the number matched, so a split can be decided before reading any user.
+ * The most users the Management API pages through for one query (#2892), the list of every user included: it refuses
+ * any page past the first 1,000 with a 400 `invalid_paging`, so getUsers stops there rather than asking (#2574). A
+ * query matching more must be split. The `total` it reports is the number matched, so a split can be decided before
+ * reading any user.
  */
 export const SEARCH_RESULTS_MAX = 1000;
 /** Users a page when reading every one a search matches: the most the Management API gives in one page. */
@@ -161,29 +162,58 @@ export class ManagementService {
   }
 
   /**
-   * Every user, sorted by name: each page in turn, not only the first 50 (#2320). `per_page` is given so that a short
-   * page ends the walk; without it, auth0 7 asks for one more, empty page. Stops at USERS_MAX_PAGES, logged, so a
-   * misbehaving answer cannot loop for ever. The Management API itself pages through only the first 1,000 users.
+   * Every user, sorted by name, or with `search` the users whose name or email holds every word of it: each page in
+   * turn, not only the first 50 (#2320). `per_page` is given so that a short page ends the walk; without it, auth0 7
+   * asks for one more, empty page.
+   *
+   * The Management API pages through only the first 1,000 results and refuses the page after, so the walk stops at
+   * 1,000 and says whether there were more (`truncated`), which only a search can then reach (#2574).
    */
-  public async getUsers(filters?: Auth0UserProfileFilters) {
+  public async getUsers(filters?: Auth0UserProfileFilters, search?: string): Promise<Auth0UserList> {
+    const q = this._searchQuery(search);
     const users: User[] = [];
-    let page = await this.client.users.list({ sort: 'name:1', per_page: USERS_PER_PAGE });
-    let pages = 1;
+    let page = await this.client.users.list({
+      sort: 'name:1',
+      per_page: USERS_PER_PAGE,
+      ...(q ? { q, search_engine: 'v3' as const } : {})
+    });
 
     users.push(...page.data);
 
-    while (page.hasNextPage()) {
-      if (pages >= USERS_MAX_PAGES) {
-        Logger.warn(`Stopped listing users after ${pages} pages (${users.length} users).`, 'ManagementService');
-        break;
-      }
-
+    while (users.length < SEARCH_RESULTS_MAX && page.hasNextPage()) {
       page = await page.getNextPage();
-      pages++;
       users.push(...page.data);
     }
 
-    return users.map((u) => this._composeMetadata(u, filters));
+    const total = page.response.total ?? users.length;
+    const truncated = total > users.length;
+
+    if (truncated) {
+      Logger.warn(
+        `Listed the first ${users.length} of ${total} users: the Management API pages through no more.`,
+        'ManagementService'
+      );
+    }
+
+    return { users: users.map((u) => this._composeMetadata(u, filters)), truncated };
+  }
+
+  /**
+   * A v3 search for users whose name, first name, last name or email starts with every word of `search`, each word
+   * escaped so that Lucene reads it as text. From the start of the word: Auth0's v3 search refuses a leading wildcard
+   * (`name:*zh*`), which made every search fail (#3116). Undefined for a blank search.
+   */
+  private _searchQuery(search?: string): string | undefined {
+    const words = (search ?? '').trim().split(/\s+/).filter(Boolean);
+
+    if (words.length === 0) {
+      return undefined;
+    }
+
+    return words
+      .map((w) => w.replace(/[+\-&|!(){}[\]^"~*?:\\/]/g, '\\$&'))
+      .map((w) => `(name:${w}* OR given_name:${w}* OR family_name:${w}* OR email:${w}*)`)
+      .join(' AND ');
   }
 
   /**
@@ -226,7 +256,10 @@ export class ManagementService {
 
     const mid = middleOf(from, to);
 
-    return (await this.countUsersCreatedBetween(from, mid, query, max)) + (await this.countUsersCreatedBetween(mid, to, query, max));
+    return (
+      (await this.countUsersCreatedBetween(from, mid, query, max)) +
+      (await this.countUsersCreatedBetween(mid, to, query, max))
+    );
   }
 
   /**
@@ -426,6 +459,12 @@ export interface Auth0UserProfile {
     connection: string;
     social: boolean;
   };
+}
+
+/** A list of users, and whether it stops short of every user that matched (#2574). */
+export interface Auth0UserList {
+  users: Auth0UserProfile[];
+  truncated: boolean;
 }
 
 export interface Auth0UserProfileFilters {

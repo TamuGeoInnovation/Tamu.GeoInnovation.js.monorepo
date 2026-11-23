@@ -1,3 +1,6 @@
+import { existsSync, readFileSync } from 'fs';
+import { join } from 'path';
+
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router, UrlTree } from '@angular/router';
 
@@ -24,8 +27,8 @@ describe('gisdaySite', () => {
    * #2071. txgisday.org keeps everything it had, Texas A&M's content included, until it becomes a landing page
    * for every organization's GIS Day site. #2066 had moved that content to gisday.tamu.edu only.
    */
-  it("leaves nothing out on txgisday.org, Texas A&M's content included", () => {
-    expect(gisdaySite('txgisday').off).toEqual([]);
+  it("leaves nothing out on txgisday.org, Texas A&M's content included, but the winners of competitions it did not run", () => {
+    expect(gisdaySite('txgisday').off).toEqual(['winners']);
   });
 
   /**
@@ -59,8 +62,15 @@ describe('gisdaySite', () => {
 
   it("has every other feature on Texas A&M's site and txgisday.org, and neither Texas A&M's content nor its links on UCGIS's", () => {
     expect(gisdaySite('tamu').off).toEqual(['homeLinks']);
-    expect(gisdaySite('txgisday').off).toEqual([]);
+    expect(gisdaySite('txgisday').off).toEqual(['winners']);
     expect(gisdaySite('ucgis').off).toEqual(expect.arrayContaining(['tamu', 'tamuLinks']));
+  });
+
+  /** #3239, decided 2A: the research competitions' winners are shown only on gisday.tamu.edu, where they ran. */
+  it("shows the winners on Texas A&M's site only", () => {
+    expect(gisdaySite('tamu').off).not.toContain('winners');
+    expect(gisdaySite('txgisday').off).toContain('winners');
+    expect(gisdaySite('ucgis').off).toContain('winners');
   });
 });
 
@@ -195,6 +205,35 @@ describe('siteHead', () => {
     expect(result).toContain('<!-- /site head -->');
     expect(result).toContain('<base href="/" />');
     expect(withSiteHead(result, GISDAY_SITES.txgisday)).toBe(withSiteHead(page, GISDAY_SITES.txgisday));
+  });
+
+  it("names each site's tab icon, so the page has it before the app runs (#2084)", () => {
+    expect(siteHead(GISDAY_SITES.ucgis)).toContain('<link rel="icon" href="assets/images/sites/ucgis/favicon.png" />');
+    expect(siteHead(GISDAY_SITES.txgisday)).toContain('<link rel="icon" href="favicon.ico" />');
+  });
+
+  /**
+   * #2084: gisday.tamu.edu's tab icon was the box logo's SVG, whose wide margin made it smaller than AggieMap's. It is
+   * now AggieMap's own icon, from the one copy in libs/assets that both apps serve, not a second copy.
+   */
+  it("gives gisday.tamu.edu AggieMap's own tab icon, from the one shared copy", () => {
+    const root = join(__dirname, '../../../../../../../..');
+    const icon = GISDAY_SITES.tamu.favicon;
+
+    expect(siteHead(GISDAY_SITES.tamu)).toContain(`<link rel="icon" href="${icon}" />`);
+    expect(icon).toBe('assets/images/logo/favicon.ico');
+    expect(existsSync(join(root, 'libs', icon))).toBe(true);
+    expect(existsSync(join(root, 'apps/aggiemap-angular/src/favicon.ico'))).toBe(false);
+  });
+
+  // AggieMap serves the same file at its root, where browsers, bookmarks and old tabs ask for /favicon.ico by convention.
+  it('has AggieMap serve that one copy as /favicon.ico, and name it there', () => {
+    const root = join(__dirname, '../../../../../../../..');
+    const project = JSON.parse(readFileSync(join(root, 'apps/aggiemap-angular/project.json'), 'utf8'));
+    const assets: Array<string | { glob: string; input: string; output: string }> = project.targets.build.options.assets;
+
+    expect(assets).toContainEqual({ glob: 'favicon.ico', input: './libs/assets/images/logo/', output: '/' });
+    expect(readFileSync(join(root, 'apps/aggiemap-angular/src/index.html'), 'utf8')).toContain('href="favicon.ico"');
   });
 
   it('refuses a page without the markers rather than leaving it as it was', () => {

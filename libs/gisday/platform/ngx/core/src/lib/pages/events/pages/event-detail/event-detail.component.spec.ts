@@ -2,11 +2,13 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
 import { Angulartics2 } from 'angulartics2';
-import { of, throwError } from 'rxjs';
+import { firstValueFrom, of, throwError } from 'rxjs';
 
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { CheckInMinutes } from '@tamu-gisc/gisday/common';
 import {
+  AssetsService,
   CheckinService,
   EventService,
   RsvpService,
@@ -46,7 +48,7 @@ describe('EventDetailComponent check-in', () => {
   function open(
     mode = 'in-person',
     insert = () => of({ guid: 'c-new' }),
-    schedule: { day: { guid: string; date: Date }; startTime: string; endTime: string } = {
+    schedule: { day: { guid: string; date: Date }; startTime: string; endTime: string } & CheckInMinutes = {
       day: { guid: 'd-1', date: new Date() },
       startTime: '00:00:00',
       endTime: '23:59:59'
@@ -59,8 +61,9 @@ describe('EventDetailComponent check-in', () => {
       roles = [],
       anyTime = false,
       sessionCheckIns = () => of([] as Array<Record<string, unknown>>),
-      users = () => of([] as Array<Record<string, unknown>>),
-      broadcast = undefined
+      users = () => of({ users: [] as Array<Record<string, unknown>>, truncated: false }),
+      broadcast = undefined,
+      speakers = []
     }: {
       query?: Record<string, string>;
       loggedIn?: boolean;
@@ -69,6 +72,7 @@ describe('EventDetailComponent check-in', () => {
       sessionCheckIns?: () => ReturnType<typeof of>;
       users?: () => ReturnType<typeof of>;
       broadcast?: Record<string, string>;
+      speakers?: Array<Record<string, unknown>>;
     } = {}
   ) {
     let checkedIn = false;
@@ -90,7 +94,7 @@ describe('EventDetailComponent check-in', () => {
       mode,
       ...schedule,
       checkInAnyTime: anyTime,
-      speakers: [],
+      speakers,
       location: { building: 'TAMU Rudder Plaza', checkInZone: zone },
       broadcast
     };
@@ -129,6 +133,8 @@ describe('EventDetailComponent check-in', () => {
           }
         },
         { provide: NotificationService, useValue: { toast: jest.fn() } },
+        // A presenter card's photograph (#3196).
+        { provide: AssetsService, useValue: { getAssetUrl: () => of(null) } },
         // The QR code's copyable link counts copies.
         { provide: Angulartics2, useValue: { eventTrack: { next: jest.fn() } } }
       ]
@@ -172,6 +178,7 @@ describe('EventDetailComponent check-in', () => {
       getCheckInCode,
       getCheckinsForEvent,
       login,
+      component: f.componentInstance,
       detectChanges: () => f.detectChanges()
     };
   }
@@ -305,6 +312,32 @@ describe('EventDetailComponent check-in', () => {
   /**
    * #2560: an organizer shows the QR code from the session's page, to put on the presenter's slides.
    */
+  // #3220: an organizer reading a session's page can get to its edit form from there, not only from Admin → Sessions.
+  describe('the Edit session button', () => {
+    const editLink = (page: () => HTMLElement) =>
+      Array.from(page().querySelectorAll<HTMLAnchorElement>('a')).find((a) => a.textContent?.trim() === 'Edit session');
+
+    it.each(['GIS Day Admin', 'GIS Day Manager', 'GIS Day Organizer'])(
+      "takes a %s to the session's edit form, from the top of the page",
+      (role) => {
+        const { page } = open('in-person', undefined, undefined, { roles: [role] });
+        const link = editLink(page);
+        const timeAndPlace = page().querySelector('#timeAndPlace');
+
+        expect(link?.getAttribute('href')).toBe('/admin/events/edit/e-1');
+        expect(link?.compareDocumentPosition(timeAndPlace as Node) ?? 0).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+      }
+    );
+
+    it('is not shown to an attendee', () => {
+      expect(editLink(open('in-person').page)).toBeUndefined();
+    });
+
+    it('is not shown to a visitor who is not signed in', () => {
+      expect(editLink(open('in-person', undefined, undefined, { loggedIn: false }).page)).toBeUndefined();
+    });
+  });
+
   describe('the check-in QR code, for organizers', () => {
     const organizer = { roles: ['GIS Day Organizer'] };
 
@@ -359,6 +392,19 @@ describe('EventDetailComponent check-in', () => {
       expect(text()).toContain('instead of sharing their location, if their phone will not give it');
     });
 
+    // #3197: the code is the first thing on the page under the title, so an organizer in front of a room need not scroll.
+    it('puts the code at the top of the page, under the title and before the time and place', () => {
+      const { page } = open('hybrid', undefined, undefined, organizer);
+      const heading = Array.from(page().querySelectorAll('h3')).find((h) => h.textContent?.trim() === 'Check-in QR Code');
+      const timeAndPlace = page().querySelector('#timeAndPlace');
+      const title = page().querySelector('h1.session-title');
+
+      expect(heading).toBeDefined();
+      expect(timeAndPlace).not.toBeNull();
+      expect(title?.compareDocumentPosition(heading as Node) ?? 0).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+      expect(heading?.compareDocumentPosition(timeAndPlace as Node) ?? 0).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    });
+
     it('offers no code to an attendee', () => {
       const { button } = open('hybrid');
 
@@ -368,7 +414,7 @@ describe('EventDetailComponent check-in', () => {
 
   /**
    * #1795: the page shows the Check In button in the window the API accepts check-ins in, from one
-   * rule in libs/gisday/common: from the start until 15 minutes after the end, the day in Central time.
+   * rule in libs/gisday/common: from the start until 10 minutes after the end, the day in Central time.
    */
   describe('when the button shows', () => {
     // As the API tests: 18 November 2026, 4:00 to 5:00 PM Central, as the admin form stores them.
@@ -386,8 +432,8 @@ describe('EventDetailComponent check-in', () => {
 
     // #3077: an attendee who scans early is told when to come back, rather than only "at the start".
     it.each([
-      ['earlier that day', '2026-11-18T15:00:00Z', 'Check-in opens at 4:00 PM.'],
-      ['the day before', '2026-11-17T22:30:00Z', 'Check-in opens on Wednesday, November 18 at 4:00 PM.']
+      ['earlier that day', '2026-11-18T15:00:00Z', 'Check-in opens at 3:55 PM.'],
+      ['the day before', '2026-11-17T22:30:00Z', 'Check-in opens on Wednesday, November 18 at 3:55 PM.']
     ])('before it opens, %s, says when it opens, and does not check in from the QR code', (_, now, message) => {
       jest.useFakeTimers({ now: new Date(now), doNotFake: ['nextTick', 'setImmediate', 'queueMicrotask'] });
 
@@ -398,10 +444,10 @@ describe('EventDetailComponent check-in', () => {
     });
 
     it.each([
-      ['a minute before the start', '2026-11-18T21:59:00Z', false],
-      ['at the start', '2026-11-18T22:00:00Z', true],
-      ['15 minutes after the end', '2026-11-18T23:15:00Z', true],
-      ['16 minutes after the end', '2026-11-18T23:16:00Z', false]
+      ['6 minutes before the start', '2026-11-18T21:54:00Z', false],
+      ['5 minutes before the start', '2026-11-18T21:55:00Z', true],
+      ['10 minutes after the end', '2026-11-18T23:10:00Z', true],
+      ['11 minutes after the end', '2026-11-18T23:11:00Z', false]
     ])('%s: %s', (_, now, shown) => {
       jest.useFakeTimers({ now: new Date(now), doNotFake: ['nextTick', 'setImmediate', 'queueMicrotask'] });
 
@@ -410,11 +456,25 @@ describe('EventDetailComponent check-in', () => {
       expect(hasButton(text)).toBe(shown);
     });
 
+    // #3209: a session that sets its own window shows the button in that window.
+    it.each([
+      ['a minute before the start', '2026-11-18T21:59:00Z', false],
+      ['at the start', '2026-11-18T22:00:00Z', true],
+      ['30 minutes after the end', '2026-11-18T23:30:00Z', true],
+      ['31 minutes after the end', '2026-11-18T23:31:00Z', false]
+    ])('with its own minutes, %s: %s', (_, now, shown) => {
+      jest.useFakeTimers({ now: new Date(now), doNotFake: ['nextTick', 'setImmediate', 'queueMicrotask'] });
+
+      const { text } = open('in-person', undefined, { ...session, checkInMinutesBefore: 0, checkInMinutesAfter: 30 });
+
+      expect(hasButton(text)).toBe(shown);
+    });
+
     // #2635: a session open at any time shows the button before, during and after its time.
     it.each([
       ['the day before', '2026-11-17T22:30:00Z'],
-      ['a minute before the start', '2026-11-18T21:59:00Z'],
-      ['16 minutes after the end', '2026-11-18T23:16:00Z'],
+      ['6 minutes before the start', '2026-11-18T21:54:00Z'],
+      ['11 minutes after the end', '2026-11-18T23:11:00Z'],
       ['a week later', '2026-11-25T22:30:00Z']
     ])('open at any time, %s: shown', (_, now) => {
       jest.useFakeTimers({ now: new Date(now), doNotFake: ['nextTick', 'setImmediate', 'queueMicrotask'] });
@@ -452,10 +512,13 @@ describe('EventDetailComponent check-in', () => {
               { accountGuid: 'auth0|unknown', created: '2026-11-18T22:10:00Z', outsideSessionTime: false }
             ]),
           users: () =>
-            of([
-              { user_info: { id: 'auth0|late', name: 'Reveille Late', email: 'late@tamu.edu' } },
-              { user_info: { id: 'auth0|ontime', email: 'ontime@tamu.edu' } }
-            ])
+            of({
+              users: [
+                { user_info: { id: 'auth0|late', name: 'Reveille Late', email: 'late@tamu.edu' } },
+                { user_info: { id: 'auth0|ontime', email: 'ontime@tamu.edu' } }
+              ],
+              truncated: false
+            })
         })
       );
 
@@ -506,6 +569,32 @@ describe('EventDetailComponent check-in', () => {
 
       expect(page().querySelector('table.floating-table')).toBeNull();
       expect(getCheckinsForEvent).not.toHaveBeenCalled();
+    });
+  });
+  /**
+   * #3196: a session's presenters are listed by last name, then first name, A to Z, and not grouped by company. Every
+   * person here is made up.
+   */
+  describe('the presenters', () => {
+    it('lists them by last name, then first name, whatever their company', async () => {
+      const { component } = open('in-person', undefined, undefined, {
+        speakers: [
+          { guid: 's-1', firstName: 'Avery', lastName: 'Example', organization: { name: 'Zeta Mapping' } },
+          { guid: 's-2', firstName: 'Jordan', lastName: 'Sample', organization: { name: 'Alpha Surveys' } },
+          { guid: 's-3', firstName: 'Casey', lastName: 'Bramble' },
+          { guid: 's-4', firstName: 'Blake', lastName: 'example', organization: { name: 'Alpha Surveys' } },
+          { guid: 's-5', firstName: 'Robin', lastName: 'Álvarez', affiliation: 'A made-up county' }
+        ]
+      });
+      const presenters = await firstValueFrom(component.presenters$);
+
+      expect(presenters.map((p) => `${p.firstName} ${p.lastName}`)).toEqual([
+        'Robin Álvarez',
+        'Casey Bramble',
+        'Avery Example',
+        'Blake example',
+        'Jordan Sample'
+      ]);
     });
   });
 });

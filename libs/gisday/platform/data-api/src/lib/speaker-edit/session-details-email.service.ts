@@ -1,29 +1,40 @@
-import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, NotFoundException, Optional } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MoreThan, Repository } from 'typeorm';
 
 import {
+  FIRST_NAME_PLACEHOLDER,
   SESSION_DETAILS_EMAIL_KIND,
-  emailHtml,
   fillProfileEmail,
   gisdaySite,
+  hasEmailDesign,
+  joinNames,
   sessionDetailsEmailProblem,
   sessionDetailsEmailSubject,
   sessionDetailsEmailTemplate,
-  sessionDetailsEmailValues
+  sessionDetailsEmailValues,
+  seasonDaysOf,
+  sessionEmailDesign,
+  sessionEmailDetails,
+  siteEmailHtml,
+  togetherFirstNames,
+  togetherTo
 } from '@tamu-gisc/gisday/common';
 
 import { Event, SessionDetailsSend, Speaker } from '../entities/all.entity';
 import { ContactService } from '../contact/contact.service';
-import { senderAs } from '../_base/site-of-request';
+import { EmailSender, siteSender } from '../contact/email-sender.service';
 import { EMAIL_LANES, inParallel } from '../_base/in-parallel';
+import { EmailSendLog } from './email-send-log';
 import {
   ProfileEmail,
   ProfileEmailPreview,
   REPEAT_SEND_MINUTES,
   SendResult,
+  chosenSpeakers,
   fullName,
-  looksLikeEmail
+  looksLikeEmail,
+  recipientOf
 } from './speaker-edit.service';
 
 /** The session details email as an admin approved it: its subject and text, with their placeholders. */
@@ -35,25 +46,41 @@ export interface SessionDetailsEmailPreview extends ProfileEmailPreview {
   noAddress: Array<string>;
 }
 
+/** Who of the session's speakers it goes to, as ticked in the window, and whether in one email together (#3104). */
+export interface SpeakerChoice {
+  /** The speakers ticked, by id; every one with an address when not given. */
+  speakers?: Array<string>;
+
+  /** One email with every one of them on To, rather than a copy each. */
+  together?: boolean;
+}
+
 /**
  * A session's speakers emailed its details (#3092), from the session's admin page: prefilled from the session, read and
  * edited first in the window the profile email uses, sent several at a time (#3067), and never twice to one speaker for
  * the same session within `REPEAT_SEND_MINUTES` (#3065).
  *
- * Each send is recorded in `session_details_sends` (#3098), which every copy of the API shares, so a repeat is caught
- * whichever copy it reaches. Until then the guard was kept in each copy's memory, and production runs two.
+ * The admin ticks which speakers get it, and sends one email to all of them together or a copy each (#3104). Together,
+ * every one is on To and `{first name}` names them all; the repeat guard counts it once, for its whole group.
+ *
+ * Each send is recorded in `session_details_sends` before it goes (#3098), and every copy of the API shares that table,
+ * so a repeat is caught whichever copy it reaches. Until then the guard was kept in each copy's memory, and production
+ * runs two.
  */
 @Injectable()
 export class SessionDetailsEmailService {
   constructor(
     @InjectRepository(Event) private readonly events: Repository<Event>,
     @InjectRepository(SessionDetailsSend) private readonly sends: Repository<SessionDetailsSend>,
-    private readonly contact: ContactService
+    private readonly contact: ContactService,
+    /** The record of what each speaker was sent (#3167). */
+    @Optional() private readonly sendLog?: EmailSendLog
   ) {}
 
   /**
    * The email the session's speakers would get, for the admin to read and edit first: the text prefilled from the
-   * session, an example for the first speaker with an address, and who has none. Nothing is sent.
+   * session, an example for the first speaker with an address, each of them to tick (#3104), and who has none. Nothing
+   * is sent.
    */
   public async preview(eventGuid: string, host?: string): Promise<SessionDetailsEmailPreview> {
     const session = await this.sessionOf(eventGuid);
@@ -73,7 +100,9 @@ export class SessionDetailsEmailService {
           label: 'Session details',
           count: reachable.length,
           subject: sessionDetailsEmailSubject(session),
-          template: sessionDetailsEmailTemplate(session, site.address),
+          template: sessionDetailsEmailTemplate(session, site.address, hasEmailDesign(site)),
+          // What the window needs to show the whole email as it will arrive (#3114).
+          design: sessionEmailDesign(site.name, seasonDaysOf(session.season), sessionEmailDetails(session)),
           example: {
             title: fullName(first),
             to: first.email.trim(),
@@ -82,52 +111,70 @@ export class SessionDetailsEmailService {
           }
         }
       ],
+      // Nothing in it is one speaker's own, so it may go to them together: no `copyEachReason`. Each with when they were
+      // sent this session's details before (#3167).
+      recipients: this.sendLog
+        ? await this.sendLog.withSends(reachable.map(recipientOf), SESSION_DETAILS_EMAIL_KIND, session.guid)
+        : reachable.map(recipientOf),
       noAddress: noAddress.map(fullName)
     };
   }
 
   /**
-   * Emails each of the session's speakers its details, in the subject and text the admin approved, or as prefilled when
-   * none is given. A speaker with no address, or sent this session's details in the last `REPEAT_SEND_MINUTES`, is
-   * skipped and named with why. `sentBy` is the admin's account id, recorded with each send (#3098).
+   * Emails the session's speakers its details, in the subject and text the admin approved, or as prefilled when none is
+   * given. `choice` is who was ticked and whether together (#3104); without it, every speaker with an address gets a copy
+   * each, and those with none are named as skipped. A speaker, or a together email's group, sent this session's details
+   * in the last `REPEAT_SEND_MINUTES` is skipped and named with why. `sender` is who it is from, as the admin chose and
+   * the controller checked (#3100), or the site.
    */
-  public async send(eventGuid: string, host?: string, email?: SessionDetailsEmail, sentBy?: string): Promise<SendResult> {
+  public async send(
+    eventGuid: string,
+    host?: string,
+    email?: SessionDetailsEmail,
+    sender?: EmailSender,
+    choice?: SpeakerChoice
+  ): Promise<SendResult> {
     const problem = email === undefined ? null : sessionDetailsEmailProblem(email);
 
     if (problem) {
       throw new BadRequestException(problem);
     }
 
+    const ticked = chosenSpeakers(choice?.speakers);
     const session = await this.sessionOf(eventGuid);
     const site = gisdaySite(process.env.GISDAY_SITE, host);
     const approved = email ?? {
       subject: sessionDetailsEmailSubject(session),
-      template: sessionDetailsEmailTemplate(session, site.address)
+      template: sessionDetailsEmailTemplate(session, site.address, hasEmailDesign(site))
     };
     const { reachable, noAddress } = speakersOf(session);
+    const from = sender ?? siteSender(site.name);
+    const design = sessionEmailDesign(site.name, seasonDaysOf(session.season), sessionEmailDetails(session));
+    // Only the session's own speakers, of those ticked: an id from anywhere else is not one of them.
+    const chosen = ticked ? reachable.filter((s) => ticked.includes(s.guid)) : reachable;
+
+    if (ticked && chosen.length === 0) {
+      throw new BadRequestException('None of the speakers chosen is on this session with an email address.');
+    }
+
     const result: SendResult = {
       sent: [],
-      skipped: noAddress.map((s) => ({ name: fullName(s), reason: 'no email address on their record' }))
+      // Those with no address are named when everyone was meant; when the admin ticked, the window already named them.
+      skipped: ticked ? [] : noAddress.map((s) => ({ name: fullName(s), reason: 'no email address on their record' }))
     };
+    // One email to them all together, or one each (#3104). Together with one ticked is that one's own copy.
+    const emails: Array<Array<Speaker>> = choice?.together && chosen.length > 1 ? [chosen] : chosen.map((s) => [s]);
 
     // Several at a time (#3067), as the profile email: one by one, a long send waited long enough to be repeated (#3065).
-    const parts = await inParallel(reachable, EMAIL_LANES, async (speaker) => {
+    const parts = await inParallel(emails, EMAIL_LANES, async (group) => {
       const part: SendResult = { sent: [], skipped: [] };
-      const name = fullName(speaker);
+      // A together email is one email, so it is named, sent, skipped or failed once, for its whole group (#3104).
+      const name = joinNames(group.map(fullName));
+      // Recorded before the email goes, in the table every copy of the API shares (#3098), so two sends racing, in one
+      // copy or in two, skip each other's speakers. A group is a repeat if any of it was sent these details just now.
+      const claimed = await this.claim(session, group);
 
-      // Recorded first, then checked (#3098): this send stands only if it is the earliest for this session and speaker
-      // in the last `REPEAT_SEND_MINUTES`. Two sends racing, in one copy of the API or in two, each record theirs and
-      // then agree which came first, so exactly one goes.
-      const record = await this.sends.save(
-        this.sends.create({ session: { guid: session.guid }, speaker: { guid: speaker.guid }, sentBy: sentBy ?? null })
-      );
-      const since = new Date(Date.now() - REPEAT_SEND_MINUTES * 60 * 1000);
-      const recent = await this.sends.find({
-        where: { session: { guid: session.guid }, speaker: { guid: speaker.guid }, created: MoreThan(since) }
-      });
-
-      if (firstOf([...recent, record]).guid !== record.guid) {
-        await this.sends.delete({ guid: record.guid });
+      if (!claimed) {
         part.skipped.push({
           name,
           reason: `already emailed this session's details in the last ${REPEAT_SEND_MINUTES} minutes`
@@ -136,26 +183,35 @@ export class SessionDetailsEmailService {
       }
 
       try {
-        const { subject, text } = fillProfileEmail(approved, sessionDetailsEmailValues(speaker, site));
+        const values = sessionDetailsEmailValues(group[0], site);
+        const { subject, text } = fillProfileEmail(
+          approved,
+          // Together, `{first name}` names them all: "Sharmin and Colby", "Ana, Ben and Cara".
+          group.length > 1 ? { ...values, [FIRST_NAME_PLACEHOLDER]: togetherFirstNames(group) } : values
+        );
 
         await this.contact.sendMessage(
           {
-            to: speaker.email.trim(),
-            from: senderAs(site.name, process.env.MAILROOM_FROM),
-            replyTo: process.env.MAILROOM_TO,
+            // Together, every one on To, so they see each other and can reply to all.
+            to: togetherTo(group),
+            ...from,
             subject,
             text,
-            // The Markdown as HTML, beside the plain text (#3044).
-            html: emailHtml(text)
+            // The Markdown as HTML (#3044), in Texas A&M's design on its site (#3114), beside the plain text.
+            html: siteEmailHtml(text, { site, subject, from: from.from, design })
           },
           true
         );
         part.sent.push(name);
+        // Recorded once it has gone (#3167): together, once for each speaker on it.
+        await this.sendLog?.record(group, SESSION_DETAILS_EMAIL_KIND, session.guid, from.from);
       } catch (err) {
         // Not sent, so not a repeat: the admin may try again at once.
-        await this.sends.delete({ guid: record.guid });
+        await this.release(claimed);
         Logger.error(
-          `Could not email session ${session.guid}'s details to speaker ${speaker.guid}: ${err.message}`,
+          `Could not email session ${session.guid}'s details to speaker(s) ${group.map((s) => s.guid).join(', ')}: ${
+            err.message
+          }`,
           'SessionDetailsEmailService'
         );
         part.skipped.push({ name, reason: 'the email could not be sent' });
@@ -171,21 +227,39 @@ export class SessionDetailsEmailService {
   }
 
   /** The session, with what its email reads: its day, room, broadcast and speakers. */
-  private async sessionOf(eventGuid: string): Promise<Event> {
-    if (typeof eventGuid !== 'string' || !eventGuid.trim()) {
-      throw new BadRequestException('No session was named.');
+  private sessionOf(eventGuid: string): Promise<Event> {
+    return sessionForEmail(this.events, eventGuid);
+  }
+
+  /**
+   * Records `group` as sent this session's details now, then checks (#3098): the claim stands only if each of its rows is
+   * the earliest for its speaker in the last `REPEAT_SEND_MINUTES`. Two sends racing each record theirs and then agree
+   * which came first, so exactly one goes. Answers the rows, or null, having removed them, for a repeat.
+   */
+  private async claim(session: Event, group: Array<Speaker>): Promise<Array<SessionDetailsSend> | null> {
+    const records = await this.sends.save(
+      group.map((speaker) => this.sends.create({ session: { guid: session.guid }, speaker: { guid: speaker.guid } }))
+    );
+    const since = new Date(Date.now() - REPEAT_SEND_MINUTES * 60 * 1000);
+
+    for (const record of records) {
+      const recent = await this.sends.find({
+        where: { session: { guid: session.guid }, speaker: { guid: record.speaker.guid }, created: MoreThan(since) }
+      });
+
+      if (firstOf([...recent, record]).guid !== record.guid) {
+        await this.release(records);
+
+        return null;
+      }
     }
 
-    const session = await this.events.findOne({
-      where: { guid: eventGuid },
-      relations: { day: true, location: true, broadcast: true, speakers: true }
-    });
+    return records;
+  }
 
-    if (!session) {
-      throw new NotFoundException('That session does not exist.');
-    }
-
-    return session;
+  /** Removes a claim, for an email that was a repeat or could not be sent: not sent, so the admin may try again at once. */
+  private async release(records: Array<SessionDetailsSend>): Promise<void> {
+    await this.sends.delete(records.map((record) => record.guid));
   }
 }
 
@@ -196,8 +270,30 @@ function firstOf(sends: Array<Pick<SessionDetailsSend, 'guid' | 'created'>>): Pi
   )[0];
 }
 
+/**
+ * The session a speaker email is about, with what its emails read: its day, room, broadcast and speakers. The session
+ * details email (#3092) and the Ask for slides email (#3113) both.
+ */
+export async function sessionForEmail(events: Repository<Event>, eventGuid: string): Promise<Event> {
+  if (typeof eventGuid !== 'string' || !eventGuid.trim()) {
+    throw new BadRequestException('No session was named.');
+  }
+
+  const session = await events.findOne({
+    where: { guid: eventGuid },
+    // The season's days for the email's design on Texas A&M's site (#3114).
+    relations: { day: true, location: true, broadcast: true, speakers: true, season: { days: true } }
+  });
+
+  if (!session) {
+    throw new NotFoundException('That session does not exist.');
+  }
+
+  return session;
+}
+
 /** The session's speakers with an address to email, and those with none. */
-function speakersOf(session: Event): { reachable: Array<Speaker>; noAddress: Array<Speaker> } {
+export function speakersOf(session: Event): { reachable: Array<Speaker>; noAddress: Array<Speaker> } {
   const speakers = session.speakers ?? [];
 
   return {

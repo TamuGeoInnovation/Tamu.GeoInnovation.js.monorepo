@@ -439,12 +439,31 @@ export class Event extends GuidIdentity {
   public checkInCode?: string;
 
   /**
-   * Whether attendees may check in at any time, not only from the session's start until 15 minutes
-   * after its end (#2635). Every other rule still applies: the zone, the QR code. A check-in outside the
+   * Minutes before the session's start that attendees may check in (#3209). 5 unless an organizer changes it.
+   */
+  @Column({ nullable: false, default: 5 })
+  public checkInMinutesBefore: number;
+
+  /**
+   * Minutes after the session's end that attendees may still check in (#3209). 10 unless an organizer changes it.
+   */
+  @Column({ nullable: false, default: 10 })
+  public checkInMinutesAfter: number;
+
+  /**
+   * Whether attendees may check in at any time, not only in its check-in window (`checkInMinutesBefore` and
+   * `checkInMinutesAfter`) (#2635). Every other rule still applies: the zone, the QR code. A check-in outside the
    * session's time is marked `outsideSessionTime`.
    */
   @Column({ nullable: false, default: false })
   public checkInAnyTime: boolean;
+
+  /**
+   * The session has no slides (#3147): a panel, a social, lunch. Its speakers are not asked for slides, and cannot upload
+   * any for it.
+   */
+  @Column({ nullable: false, default: false })
+  public noSlides: boolean;
 
   @Column({ nullable: true })
   public mode: string;
@@ -497,6 +516,26 @@ export class Event extends GuidIdentity {
     name: 'event_sponsors'
   })
   public sponsors?: Sponsor[];
+
+  /**
+   * The research competition the session's judges score (#3183): `graduate-poster`, `undergraduate-poster`,
+   * `graduate-presentation` or `undergraduate-presentation` (`JUDGED_COMPETITIONS` in `@tamu-gisc/gisday/common`), or
+   * null for a session that judges none.
+   */
+  @Column({ type: 'nvarchar', length: 50, nullable: true })
+  public judgedCompetition?: string | null;
+
+  /** Whether the admins have closed judging for the session (#3183): its judges can no longer change their scores. */
+  @Column({ nullable: false, default: false })
+  public judgingClosed: boolean;
+
+  /**
+   * The session's speakers who judge its competition (#3183), each sent their own judging link. Never more than its
+   * speakers: the API refuses a judge who is not one. Not loaded unless asked for, so the public pages do not list them.
+   */
+  @ManyToMany(() => Speaker)
+  @JoinTable({ name: 'event_judges' })
+  public judges?: Speaker[];
 }
 
 @Entity({
@@ -817,6 +856,22 @@ export class Asset extends GuidIdentity {
   // Relation<>: Submission is declared further down this file, and a plain type would be read before it exists.
   @ManyToOne(() => Submission, (s) => s.files, { nullable: true, onDelete: 'CASCADE' })
   public submission?: Relation<Submission>;
+
+  /**
+   * A session's slides, uploaded by one of its speakers from their edit link (#3093), kept as a submission's files are.
+   * Seen by the admins, and by the speaker who uploaded them. Deleted with its session.
+   */
+  @ManyToOne(() => Event, { nullable: true, onDelete: 'CASCADE' })
+  public event?: Relation<Event>;
+
+  /**
+   * The speaker who uploaded a session's slides (#3093): each speaker sees and removes only their own, up to three a
+   * session, and the admins see who uploaded each. Not `speaker`, which is the speaker's photo: everything that reads a
+   * speaker's `images` (the public speaker list, the avatar, a season's copy, a photo's replacement) would take the
+   * slides for photos. Kept, with no uploader, if the speaker is deleted.
+   */
+  @ManyToOne(() => Speaker, { nullable: true, onDelete: 'SET NULL' })
+  public uploadedBy?: Relation<Speaker>;
 }
 
 /**
@@ -839,6 +894,45 @@ export class SpeakerEditLink extends GuidIdentity {
   /** The address the link was emailed to. */
   @Column({ nullable: true })
   public sentTo: string;
+
+  /**
+   * What the link opens (#3183): `profile`, the speaker's presenter page and their sessions' slides, or `judging`, the
+   * competition they judge. Each link's own routes accept only their own purpose, so neither opens the other's page.
+   */
+  @Column({ type: 'nvarchar', length: 20, nullable: false, default: 'profile' })
+  public purpose: SpeakerLinkPurpose;
+}
+
+/** What a speaker's link opens (#3183). */
+export type SpeakerLinkPurpose = 'profile' | 'judging';
+
+/**
+ * One email the site sent one speaker (#3167): which email, about which session, when, to which address and from whom.
+ * The admin pages read these to show how many times, and when, each person was sent each email, and to tick only those
+ * not yet sent one. A "together" email is one row per speaker on it. Kept with the speaker, and gone with them.
+ *
+ * The session is its id, not a relation: a session deleted later leaves the record of what was sent.
+ */
+@Entity({ name: 'speaker_email_sends' })
+export class SpeakerEmailSend extends GuidIdentity {
+  @ManyToOne(() => Speaker, { nullable: false, onDelete: 'CASCADE' })
+  public speaker: Relation<Speaker>;
+
+  /** Which email: `PROFILE_EMAIL_KIND`, `SESSION_DETAILS_EMAIL_KIND`, `SLIDES_REQUEST_EMAIL_KIND`. */
+  @Column({ length: 50 })
+  public kind: string;
+
+  /** The session it was about, for a session's emails; none for the profile email. */
+  @Column({ nullable: true, length: 36 })
+  public eventGuid: string | null;
+
+  /** The address it was sent to. */
+  @Column({ nullable: true })
+  public sentTo: string | null;
+
+  /** Who it was from, as the From line said. */
+  @Column({ nullable: true })
+  public sentFrom: string | null;
 }
 
 /**
@@ -883,8 +977,10 @@ export class SpeakerEdit extends GuidIdentity {
 }
 
 /**
- * One speaker sent one session's details (#3092, #3098): which session, which speaker, who sent it and when (`created`).
- * Every copy of the API reads these, so a send repeated within `REPEAT_SEND_MINUTES` is caught whichever copy it reaches.
+ * The session details email's repeat guard (#3092, #3098): one row a speaker was sent one session's details, recorded
+ * before the email goes, with when (`created`). Every copy of the API reads these, so a send repeated within
+ * `REPEAT_SEND_MINUTES` is caught whichever copy it reaches. Who it was from, and to which address, is the send record's
+ * (`SpeakerEmailSend`, #3167), which is written once the email has gone.
  */
 @Entity({ name: 'session_details_sends' })
 export class SessionDetailsSend extends GuidIdentity {
@@ -893,10 +989,6 @@ export class SessionDetailsSend extends GuidIdentity {
 
   @ManyToOne(() => Speaker, { nullable: false, onDelete: 'CASCADE' })
   public speaker: Relation<Speaker>;
-
-  /** The admin's account id, as the API's token gives it. */
-  @Column({ nullable: true })
-  public sentBy: string | null;
 }
 
 @Entity({
@@ -1079,6 +1171,114 @@ export class Submission extends GuidIdentity {
   /** The slides or poster the student attached (#2933). Not loaded unless asked for. */
   @OneToMany(() => Asset, (asset) => asset.submission)
   public files?: Asset[];
+}
+
+/**
+ * The rubric judges score a season's competition against (#3183): one per season for posters and one for research
+ * presentations, graduate and undergraduate alike. Its criteria are rows of their own, so a judge's score for a criterion
+ * is kept by the criterion's id. It goes with its season.
+ */
+@Entity({ name: 'rubrics' })
+@Unique(['season', 'competitionType'])
+export class Rubric extends GuidIdentity {
+  @ManyToOne(() => Season, { nullable: false, onDelete: 'CASCADE' })
+  public season: Relation<Season>;
+
+  /** `poster` or `presentation`: `RUBRIC_COMPETITION_TYPES` in `@tamu-gisc/gisday/common`. */
+  @Column({ type: 'nvarchar', length: 20, nullable: false })
+  public competitionType: string;
+
+  @Column({ nullable: false })
+  public name: string;
+
+  @Column({ nullable: true, length: 'MAX' })
+  public description: string | null;
+
+  @OneToMany(() => RubricCriterion, (criterion) => criterion.rubric)
+  public criteria?: Array<RubricCriterion>;
+}
+
+/** One criterion of a rubric (#3183): what is judged, the most it scores, and the levels of work it describes. */
+@Entity({ name: 'rubric_criteria' })
+export class RubricCriterion extends GuidIdentity {
+  @ManyToOne(() => Rubric, (rubric) => rubric.criteria, { nullable: false, onDelete: 'CASCADE' })
+  public rubric: Relation<Rubric>;
+
+  /** Its place in the rubric, from 0. */
+  @Column({ type: 'int', nullable: false })
+  public position: number;
+
+  @Column({ nullable: false })
+  public name: string;
+
+  @Column({ type: 'int', nullable: false })
+  public maxPoints: number;
+
+  /** Each level of work, best first: its label ("Excellent (A)") and what work at that level looks like. */
+  @Column({ type: 'simple-json', nullable: false })
+  public levels: Array<{ label: string; description: string }>;
+}
+
+/**
+ * One judge's scores for one submission (#3183): a score per criterion of the rubric, by the criterion's id, their total,
+ * worked out by the API, and a comment. A judge has one per submission, which they change until judging closes. It goes
+ * with the judge or the submission; the session is its id, as the email record keeps it, and the rubric is kept if it is
+ * deleted, without it.
+ */
+@Entity({ name: 'assessments' })
+@Unique(['judge', 'submission'])
+export class Assessment extends GuidIdentity {
+  @ManyToOne(() => Speaker, { nullable: false, onDelete: 'CASCADE' })
+  public judge: Relation<Speaker>;
+
+  @ManyToOne(() => Submission, { nullable: false, onDelete: 'CASCADE' })
+  public submission: Relation<Submission>;
+
+  /** The session the judge scored it for. */
+  @Column({ type: 'nvarchar', length: 36, nullable: false })
+  public eventGuid: string;
+
+  @ManyToOne(() => Rubric, { nullable: true, onDelete: 'SET NULL' })
+  public rubric?: Relation<Rubric> | null;
+
+  /** Each criterion's score, by the criterion's id. */
+  @Column({ type: 'simple-json', nullable: false })
+  public scores: Record<string, number>;
+
+  @Column({ type: 'int', nullable: false })
+  public total: number;
+
+  @Column({ nullable: true, length: 'MAX' })
+  public comment: string | null;
+}
+
+/**
+ * One place a season's competition was won in (#3239): 1st, 2nd or 3rd of a judged competition, by a submission, picked
+ * on the admins' Winners page and shown on gisday.tamu.edu's homepage once the season's GIS Day is over. The name and
+ * title shown are the submission's, read when shown, so nothing is copied. A trail challenge (VGI) winner is a person,
+ * kept by account (`accountGuid`), which has no picker yet. It goes with its season or its submission.
+ */
+@Entity({ name: 'season_winners' })
+@Unique(['season', 'competition', 'place'])
+export class SeasonWinner extends GuidIdentity {
+  @ManyToOne(() => Season, { nullable: false, onDelete: 'CASCADE' })
+  public season: Relation<Season>;
+
+  /** A judged competition, as `JUDGED_COMPETITIONS` names them, or `trail`: `WINNER_COMPETITIONS` in `@tamu-gisc/gisday/common`. */
+  @Column({ type: 'nvarchar', length: 40, nullable: false })
+  public competition: string;
+
+  /** 1, 2 or 3. */
+  @Column({ type: 'int', nullable: false })
+  public place: number;
+
+  /** The winning submission, for a judged competition. */
+  @ManyToOne(() => Submission, { nullable: true, onDelete: 'CASCADE' })
+  public submission?: Relation<Submission> | null;
+
+  /** The winner's account, for the trail challenge, whose winners are people rather than submissions. */
+  @Column({ type: 'nvarchar', length: 255, nullable: true })
+  public accountGuid?: string | null;
 }
 
 @Entity({
@@ -1301,6 +1501,7 @@ export const GISDAY_ENTITIES = [
   Speaker,
   SpeakerRole,
   SpeakerEditLink,
+  SpeakerEmailSend,
   SpeakerEdit,
   SessionDetailsSend,
   SubmissionType,
@@ -1312,7 +1513,13 @@ export const GISDAY_ENTITIES = [
   Submission,
   University,
   Asset,
-  PlaceLink
+  PlaceLink,
+  // Judging the research competitions (#3183).
+  Rubric,
+  RubricCriterion,
+  Assessment,
+  // A season's winners, on the homepage (#3239).
+  SeasonWinner
 ];
 
 export interface IGeoJsonFeature {

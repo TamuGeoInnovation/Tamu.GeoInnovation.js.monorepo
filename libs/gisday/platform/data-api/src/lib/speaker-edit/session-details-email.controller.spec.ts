@@ -5,6 +5,7 @@ import { JwtGuard } from '@tamu-gisc/common/nest/auth';
 
 import { SessionDetailsEmailController } from './session-details-email.controller';
 import { SessionDetailsEmailService } from './session-details-email.service';
+import { EMAIL_SENDER_TEST_PROVIDERS } from '../contact/email-sender.testing';
 
 /**
  * #3092: the session details email is sent, and previewed, behind the profile email's own permission, `update:speakers`.
@@ -30,7 +31,7 @@ describe('SessionDetailsEmailController', () => {
 
     const module = await Test.createTestingModule({
       controllers: [SessionDetailsEmailController],
-      providers: [{ provide: SessionDetailsEmailService, useValue: service }]
+      providers: [{ provide: SessionDetailsEmailService, useValue: service }, ...EMAIL_SENDER_TEST_PROVIDERS]
     })
       .overrideGuard(JwtGuard)
       .useValue({
@@ -78,11 +79,62 @@ describe('SessionDetailsEmailController', () => {
 
     expect(response.status).toBe(201);
     expect(await response.json()).toEqual({ sent: ['Ana Ruiz'], skipped: [] });
-    // Who sent it is recorded with the send (#3098).
-    expect(service.send).toHaveBeenCalledWith('e-1', 'gisday.tamu.edu', { subject: 'S', template: 'T' }, 'admin-1');
+    expect(service.send).toHaveBeenCalledWith(
+      'e-1',
+      'gisday.tamu.edu',
+      { subject: 'S', template: 'T' },
+      undefined,
+      undefined
+    );
 
     await post('details', { event: 'e-1' });
 
-    expect(service.send).toHaveBeenLastCalledWith('e-1', 'gisday.tamu.edu', undefined, 'admin-1');
+    // No sender chosen (#3100): the service sends from the site, as before.
+    expect(service.send).toHaveBeenLastCalledWith('e-1', 'gisday.tamu.edu', undefined, undefined, undefined);
+  });
+});
+
+/** #3104: the speakers ticked in the window, and together or a copy each, reach the service as chosen. */
+describe('SessionDetailsEmailController, choosing speakers', () => {
+  let app: INestApplication;
+  let url: string;
+  const service = { send: jest.fn(), preview: jest.fn() };
+
+  beforeEach(async () => {
+    service.send.mockReset().mockResolvedValue({ sent: [], skipped: [] });
+
+    const module = await Test.createTestingModule({
+      controllers: [SessionDetailsEmailController],
+      providers: [{ provide: SessionDetailsEmailService, useValue: service }, ...EMAIL_SENDER_TEST_PROVIDERS]
+    })
+      .overrideGuard(JwtGuard)
+      .useValue({
+        canActivate: (context: ExecutionContext) => {
+          context.switchToHttp().getRequest().user = { sub: 'admin-1', permissions: ['update:speakers'] };
+          return true;
+        }
+      })
+      .compile();
+
+    app = module.createNestApplication({ logger: false });
+    await app.listen(0, '127.0.0.1');
+    url = await app.getUrl();
+  });
+
+  afterEach(async () => {
+    await app.close();
+  });
+
+  it('passes on the speakers chosen and whether together', async () => {
+    await fetch(`${url}/session-emails/details`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Origin: 'https://gisday.tamu.edu' },
+      body: JSON.stringify({ event: 'e-1', subject: 'S', template: 'T', speakers: ['sp-1', 'sp-2'], together: true })
+    });
+
+    expect(service.send).toHaveBeenCalledWith('e-1', 'gisday.tamu.edu', { subject: 'S', template: 'T' }, undefined, {
+      speakers: ['sp-1', 'sp-2'],
+      together: true
+    });
   });
 });

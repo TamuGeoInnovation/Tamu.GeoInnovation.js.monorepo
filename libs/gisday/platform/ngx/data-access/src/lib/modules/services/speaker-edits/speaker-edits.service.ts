@@ -47,6 +47,15 @@ export interface PendingSpeakerEdit {
 export interface ProfileEmail {
   subject: string;
   template: string;
+  /** The address chosen in the window's "Send as" box (#3100); the site's when not given. */
+  sender?: string;
+  /** The speakers ticked in the window (#3104), by id; every one the page named when not given. */
+  speakers?: Array<string>;
+  /**
+   * One email to all of them together rather than a copy each (#3104); only the session details email offers it, never the
+   * profile email or the Ask for slides email (#3113), each carrying its speaker's own link.
+   */
+  together?: boolean;
 }
 
 /** What sending edit links did, from the API. */
@@ -87,12 +96,48 @@ export function sendEditLinksToast(result: SendEditLinksResult): { id: string; t
  * why (no email address, sent in the last few minutes, or a mail failure).
  */
 export function sendSessionDetailsToast(result: SendEditLinksResult): { id: string; title: string; message: string } {
+  return sessionEmailToast(result, {
+    id: 'session-details-email',
+    sent: 'Session details sent',
+    notSent: 'Some session details emails were not sent'
+  });
+}
+
+/**
+ * The toast an admin sees after asking a session's speakers for their slides (#3113): who was asked, and who was not and
+ * why (no email address, asked in the last few minutes, or a mail failure).
+ */
+export function sendSlidesRequestToast(result: SendEditLinksResult): { id: string; title: string; message: string } {
+  return sessionEmailToast(result, {
+    id: 'slides-request-email',
+    sent: 'Slides requested',
+    notSent: 'Some slides requests were not sent'
+  });
+}
+
+/**
+ * The toast an admin sees after asking a session's judges to judge (#3183): who was asked, and who was not and why (no
+ * email address, asked in the last few minutes, or a mail failure).
+ */
+export function sendJudgingToast(result: SendEditLinksResult): { id: string; title: string; message: string } {
+  return sessionEmailToast(result, {
+    id: 'judging-email',
+    sent: 'Judges asked',
+    notSent: 'Some judges were not asked'
+  });
+}
+
+/** A session email's toast, with its own id and titles: who got it, and who did not and why. */
+function sessionEmailToast(
+  result: SendEditLinksResult,
+  toast: { id: string; sent: string; notSent: string }
+): { id: string; title: string; message: string } {
   const sent = result.sent.length === 1 ? `Sent to ${result.sent[0]}.` : `Sent to ${result.sent.length} speakers.`;
   const skipped = result.skipped.map((s) => `${s.name}: ${s.reason}`).join('; ');
 
   return {
-    id: 'session-details-email',
-    title: skipped ? 'Some session details emails were not sent' : 'Session details sent',
+    id: toast.id,
+    title: skipped ? toast.notSent : toast.sent,
     message: [result.sent.length ? sent : 'None were sent.', skipped ? `Not sent - ${skipped}.` : '']
       .filter(Boolean)
       .join(' ')
@@ -111,7 +156,10 @@ export class SpeakerEditsService {
   /** The session details email's routes (#3092), beside the profile email's on the API. */
   private readonly sessionEmails = this.api + '/session-emails';
 
-  /** Emails each speaker their own link, in the subject and text the admin approved (#3023). */
+  /**
+   * Emails each speaker their own link, in the subject and text the admin approved (#3023): those ticked in the window,
+   * `email.speakers`, when it names them (#3104).
+   */
   public send(speakerGuids: Array<string>, email?: ProfileEmail) {
     return this.http.post<SendEditLinksResult>(`${this.resource}/send`, {
       speakers: speakerGuids,
@@ -144,9 +192,38 @@ export class SpeakerEditsService {
     return this.http.post<ReviewEmailPreview>(`${this.sessionEmails}/details/preview`, { event: eventGuid });
   }
 
-  /** Emails the session's speakers its details, in the subject and text the admin approved (#3092). */
+  /**
+   * Emails the session's speakers its details, in the subject and text the admin approved (#3092): those ticked, together
+   * or a copy each, as `email` says (#3104).
+   */
   public sendSessionDetails(eventGuid: string, email?: ProfileEmail) {
     return this.http.post<SendEditLinksResult>(`${this.sessionEmails}/details`, { event: eventGuid, ...(email ?? {}) });
+  }
+
+  /** The Ask for slides email for the session's speakers, prefilled from the session, to read and edit first (#3113). */
+  public previewSlidesRequest(eventGuid: string) {
+    return this.http.post<ReviewEmailPreview>(`${this.sessionEmails}/slides/preview`, { event: eventGuid });
+  }
+
+  /**
+   * Asks the session's speakers for their slides, in the subject and text the admin approved (#3113): those ticked, a copy
+   * each with their own link.
+   */
+  public sendSlidesRequest(eventGuid: string, email?: ProfileEmail) {
+    return this.http.post<SendEditLinksResult>(`${this.sessionEmails}/slides`, { event: eventGuid, ...(email ?? {}) });
+  }
+
+  /** The Ask to judge email for the session's judges, prefilled from the session and its competition (#3183). */
+  public previewJudging(eventGuid: string) {
+    return this.http.post<ReviewEmailPreview>(`${this.sessionEmails}/judging/preview`, { event: eventGuid });
+  }
+
+  /**
+   * Asks the session's judges to judge, in the subject and text the admin approved (#3183): those ticked, a copy each with
+   * their own judging link.
+   */
+  public sendJudging(eventGuid: string, email?: ProfileEmail) {
+    return this.http.post<SendEditLinksResult>(`${this.sessionEmails}/judging`, { event: eventGuid, ...(email ?? {}) });
   }
 
   /** A speaker asking for their own link by email address. */

@@ -1,20 +1,8 @@
-import {
-  Component,
-  DestroyRef,
-  Directive,
-  ElementRef,
-  TemplateRef,
-  afterNextRender,
-  computed,
-  contentChild,
-  inject,
-  input,
-  output,
-  signal,
-  viewChild
-} from '@angular/core';
+import { Component, Directive, TemplateRef, computed, contentChild, input, output, signal, viewChild } from '@angular/core';
 import { DatePipe, NgTemplateOutlet } from '@angular/common';
 import { DatatableComponent, NgxDatatableModule, SortPropDir } from '@swimlane/ngx-datatable';
+
+import { DashboardScrollComponent } from '../dashboard-scroll/dashboard-scroll.component';
 
 /** One row of a dashboard's table: a thing counted (an event, a university, a feature type) and its counts. */
 export interface DashboardTableRow {
@@ -33,19 +21,26 @@ export interface DashboardTableRow {
 export interface DashboardTableColumn {
   key: string;
   label: string;
+  /**
+   * The total row's figure, when the column's counts do not add up: a person counted in two rows is one person (#2894).
+   * Without it, the column's sum.
+   */
+  total?: number;
 }
 
 /**
  * The narrowest each kind of column may be, in pixels (#3006), small enough that the check-in dashboard's ten columns
  * fit the 879 px a 1280 px screen gives the table beside the admin menu. At 88 px a count column, they did not, and the
  * last columns, and an opened event's Export as CSV and times, were cut off with no way to scroll to them. A count
- * column's narrowest still holds its heading's longest word, "academia" (66 px), inside its narrower padding.
+ * column's narrowest still holds its heading's longest word, "academia" (66 px), inside its narrower padding, and the
+ * total column's holds "Checked" (58 px) and "missions" (60 px) with room to spare: at 66 px it had 0.1 px, and
+ * "Checked in" was cut to "Checkec / in" (#3219). The name column gave the 4 px, so the table is no wider.
  *
  * Each column also grows in proportion to its narrowest (its `flexGrow` is the same number), so wherever the table fits,
  * no column is ever below its narrowest. ngx-datatable's flex mode does not give back the width a column held at its
  * minimum takes from the others, so a column whose share falls below its minimum leaves the table wider than its box.
  */
-export const DASHBOARD_TABLE_WIDTHS = { name: 192, when: 88, total: 66, count: 75 } as const;
+export const DASHBOARD_TABLE_WIDTHS = { name: 188, when: 88, total: 70, count: 75 } as const;
 
 /**
  * The table's narrowest: every column at its narrowest. The table is never drawn narrower, so in less space it scrolls
@@ -110,7 +105,7 @@ export function compareTimes(a: string | null, b: string | null): number {
   selector: 'tamu-gisc-dashboard-table',
   templateUrl: './dashboard-table.component.html',
   styleUrls: ['./dashboard-table.component.scss'],
-  imports: [NgxDatatableModule, NgTemplateOutlet, DatePipe]
+  imports: [NgxDatatableModule, NgTemplateOutlet, DatePipe, DashboardScrollComponent]
 })
 export class DashboardTableComponent {
   public readonly rows = input.required<Array<DashboardTableRow>>();
@@ -140,56 +135,12 @@ export class DashboardTableComponent {
   public readonly compareNames = compareNames;
   public readonly compareTimes = compareTimes;
   public readonly sum = (cells: Array<number>) => cells.reduce((total, n) => total + (Number(n) || 0), 0);
+  /** Each count column's total: its own, or its sum. Made once per set of columns, so the table is not redrawn. */
+  public readonly summaries = computed(
+    () => new Map(this.columns().map((c) => [c.key, c.total === undefined ? this.sum : () => c.total]))
+  );
   public readonly totalName = () => this.totalLabel();
   public readonly blank = () => '';
-
-  /**
-   * How wide the table is, in pixels, while it is wider than its box, else null (#3029). The rail under the box is then
-   * drawn that wide and scrolls with it, so the hidden columns can be found and reached without scrolling to the bottom
-   * of a long table, where the box's own scrollbar is.
-   */
-  public readonly overflow = signal<number | null>(null);
-  private readonly box = viewChild.required<ElementRef<HTMLElement>>('box');
-  private readonly rail = viewChild.required<ElementRef<HTMLElement>>('rail');
-
-  constructor() {
-    const destroyRef = inject(DestroyRef);
-
-    // The box changes width with the window, and the table inside it with its columns and an opened row.
-    afterNextRender(() => {
-      if (typeof ResizeObserver === 'undefined') {
-        return;
-      }
-
-      const box = this.box().nativeElement;
-      const observer = new ResizeObserver(() => this.measure());
-
-      observer.observe(box);
-      Array.from(box.children).forEach((child) => observer.observe(child));
-      destroyRef.onDestroy(() => observer.disconnect());
-    });
-  }
-
-  public measure() {
-    const { scrollWidth, clientWidth } = this.box().nativeElement;
-
-    this.overflow.set(scrollWidth > clientWidth ? scrollWidth : null);
-  }
-
-  /** Keeps the rail where the box is scrolled to, and the box where the rail is. */
-  public followBox() {
-    this.align(this.box().nativeElement, this.rail().nativeElement);
-  }
-
-  public followRail() {
-    this.align(this.rail().nativeElement, this.box().nativeElement);
-  }
-
-  private align(from: HTMLElement, to: HTMLElement) {
-    if (to.scrollLeft !== from.scrollLeft) {
-      to.scrollLeft = from.scrollLeft;
-    }
-  }
 
   public onSortsChange(next: Array<SortPropDir>) {
     this.sorts.set(adjustSorts(next, this.sorts(), new Set(['name', 'when'])));

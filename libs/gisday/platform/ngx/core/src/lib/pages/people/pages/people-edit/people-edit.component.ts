@@ -4,17 +4,27 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AsyncPipe, DatePipe } from '@angular/common';
-import { combineLatest, map, shareReplay, startWith } from 'rxjs';
+import { combineLatest, from, map, of, shareReplay, startWith, switchMap } from 'rxjs';
 
-import { SpeakerEditPage, SpeakerEditsService, UniversityService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import {
+  SessionFilesService,
+  SpeakerEditPage,
+  SpeakerEditsService,
+  UniversityService
+} from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { ButtonComponent, FileComponent, SelectComponent, TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
 import {
   classBannerSpeaker,
+  FilesSource,
   ImagePreviewComponent,
+  ParseDateTimeStringsPipe,
   serverMessage,
-  SpeakerClassBannerComponent
+  SpeakerClassBannerComponent,
+  SubmissionFilesComponent,
+  UploadImagePicker
 } from '@tamu-gisc/gisday/platform/ngx/common';
+import { NO_SLIDES_FOR_SESSION, SESSION_FILES_LIMIT, SpeakerSessionDto } from '@tamu-gisc/gisday/common';
 
 /**
  * A speaker editing their own presenter profile through the link emailed to them (#2936), with no account. Without a
@@ -36,13 +46,27 @@ import {
     TextboxComponent,
     MarkdownParsePipe,
     ImagePreviewComponent,
-    SpeakerClassBannerComponent
+    SpeakerClassBannerComponent,
+    SubmissionFilesComponent,
+    ParseDateTimeStringsPipe
   ]
 })
 export class PeopleEditComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly edits = inject(SpeakerEditsService);
+  private readonly sessionFiles = inject(SessionFilesService);
   private readonly destroyRef = inject(DestroyRef);
+
+  /** What a fourth file on a session is refused with (#3093). */
+  public readonly sessionFilesLimit = SESSION_FILES_LIMIT;
+  /** What a session with no slides (#3147) says in place of its upload. */
+  public readonly noSlides = NO_SLIDES_FOR_SESSION;
+
+  /**
+   * The sessions the speaker presents this season (#3093), each with the speaker's own slides as a source for the shared
+   * files list: up to three, uploaded and removed through the link, kept at once with no review. Null until listed.
+   */
+  public readonly sessions = signal<Array<{ session: SpeakerSessionDto; slides: FilesSource }> | null>(null);
 
   /** The season's universities, for a speaker to choose theirs from, as the admin speaker form does (#2953). */
   public readonly universities$ = inject(UniversityService).getEntitiesForActiveSeason().pipe(shareReplay(1));
@@ -62,6 +86,9 @@ export class PeopleEditComponent implements OnInit {
   public readonly sending = signal(false);
   public readonly sent = signal(false);
   public readonly problem = signal<string | null>(null);
+
+  /** The photo picker, on the shared upload rule (#3074). */
+  public readonly photoPicker = new UploadImagePicker('The photo', { shrink: true });
   /** The answer to a request for a link. */
   public readonly requested = signal<string | null>(null);
 
@@ -108,13 +135,9 @@ export class PeopleEditComponent implements OnInit {
   public choosePhoto(file: File | undefined): void {
     this.problem.set(null);
 
-    if (file && !/^image\/(jpeg|png)$/.test(file.type)) {
-      this.problem.set(`${file.name} is not a JPEG or PNG photo.`);
-      return;
-    }
-
-    if (file && file.size > 5 * 1024 * 1024) {
-      this.problem.set(`${file.name} is larger than 5 MB.`);
+    // The shared upload rule (#3074): what the API takes, refused in its words.
+    if (file && !this.photoPicker.choose(file)) {
+      this.problem.set(this.photoPicker.problem());
       return;
     }
 
@@ -138,9 +161,14 @@ export class PeopleEditComponent implements OnInit {
     this.sending.set(true);
     this.problem.set(null);
 
-    this.edits
-      .propose(token, this.form.getRawValue(), this.photo())
-      .pipe(takeUntilDestroyed(this.destroyRef))
+    // The photo shrunk as it is sent (#3177), as the admin's speaker form sends one.
+    const photo = this.photo();
+
+    from(photo ? this.photoPicker.ready(photo) : Promise.resolve(null))
+      .pipe(
+        switchMap((ready) => this.edits.propose(token, this.form.getRawValue(), ready)),
+        takeUntilDestroyed(this.destroyRef)
+      )
       .subscribe({
         next: () => {
           this.sending.set(false);
@@ -192,8 +220,30 @@ export class PeopleEditComponent implements OnInit {
             university: start.university?.guid ?? ''
           });
           this.page.set(page);
+          this.loadSessions(token);
         },
         error: () => this.page.set('invalid')
+      });
+  }
+
+  /** The speaker's sessions and their slides (#3093). A failure leaves the profile as it is, with no sessions shown. */
+  private loadSessions(token: string): void {
+    this.sessionFiles
+      .forLink(token)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (sessions) =>
+          this.sessions.set(
+            sessions.map((session) => ({
+              session,
+              slides: {
+                list: () => of(session.files),
+                add: (file: File) => this.sessionFiles.upload(token, session.guid, file),
+                remove: (fileGuid: string) => this.sessionFiles.remove(token, session.guid, fileGuid)
+              }
+            }))
+          ),
+        error: () => this.sessions.set([])
       });
   }
 }

@@ -1,5 +1,6 @@
-<div class="dashboard-table-frame">
-  <div #box class="datatable-container dashboard-table" [class.dashboard-table-railed]="overflow() !== null" (scroll)="followBox()">
+<!-- Wider than its box on a narrow screen, it scrolls there, with a scrollbar kept in view (#3029). -->
+<tamu-gisc-dashboard-scroll class="dashboard-table-frame">
+  <div class="datatable-container dashboard-table" [style.min-width.px]="minWidth()">
     <ngx-datatable class="material" [style.min-width.px]="minWidth()" [rows]="tableRows()" [columnMode]="'flex'" [headerHeight]="'auto'" [rowHeight]="'auto'" [footerHeight]="0" [scrollbarV]="false" [reorderable]="false" [summaryRow]="true" summaryPosition="bottom" [summaryHeight]="'auto'" [sorts]="sorts()" (sortsChange)="onSortsChange($event)" (activate)="onActivate($event)">
       <ngx-datatable-row-detail [rowHeight]="'auto'">
         <ng-template let-row="row" ngx-datatable-row-detail-template>
@@ -32,11 +33,8 @@
       <ngx-datatable-column [name]="totalHeading()" prop="total" [flexGrow]="widths.total" [minWidth]="widths.total" cellClass="dashboard-table-count bold" headerClass="dashboard-table-count" [summaryFunc]="sum"></ngx-datatable-column>
 
       @for (column of columns(); track column.key) {
-      <ngx-datatable-column [name]="column.label" [prop]="countProp(column.key)" [flexGrow]="widths.count" [minWidth]="widths.count" cellClass="dashboard-table-count" headerClass="dashboard-table-count" [summaryFunc]="sum"></ngx-datatable-column>
+      <ngx-datatable-column [name]="column.label" [prop]="countProp(column.key)" [flexGrow]="widths.count" [minWidth]="widths.count" cellClass="dashboard-table-count" headerClass="dashboard-table-count" [summaryFunc]="summaries().get(column.key)"></ngx-datatable-column>
       }
     </ngx-datatable>
   </div>
-
-  <!-- The box's sideways scrollbar, kept at the bottom of the window while the table is in view (#3029). -->
-  <div #rail class="dashboard-table-rail" aria-hidden="true" [hidden]="overflow() === null" (scroll)="followRail()"><div [style.width.px]="overflow() ?? 0"></div></div>
-</div>
+</tamu-gisc-dashboard-scroll>

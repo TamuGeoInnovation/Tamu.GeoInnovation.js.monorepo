@@ -9,7 +9,15 @@ export interface ChartSeries {
   points: Array<ChartPoint>;
   /** Any CSS colour. Defaults to the next of DEFAULT_SERIES_COLORS. */
   color?: string;
+  /**
+   * How many days later than they happened its points are drawn: set by alignToAnchor, so one season's line can be drawn
+   * on another's days (#3215). The hover text then gives each point's own date.
+   */
+  shiftDays?: number;
 }
+
+/** A series with its colour filled in. */
+export type ColoredSeries = ChartSeries & { color: string };
 
 /** A shaded stretch of time, such as the days an event runs. `to` is the end of the last day shaded. */
 export interface ChartBand {
@@ -23,17 +31,22 @@ export const DEFAULT_SERIES_COLORS = ['#500000', '#2c7fb8', '#d95f02', '#707373'
 
 /** What a chart drawer is given: everything resolved, colours included. */
 export interface LineChartOptions {
-  series: Array<Required<ChartSeries>>;
+  series: Array<ColoredSeries>;
   /** Drawn as pale columns in a short panel under the lines, on their own scale. */
-  bars: Required<ChartSeries> | null;
+  bars: ColoredSeries | null;
   bands: Array<ChartBand>;
   steps: boolean;
   /** What a value is a count of, for the hover text: "RSVPs" reads "1,003 RSVPs". */
   unit: string;
+  /**
+   * The day the x-axis counts from, or null for dates (#3215). When set, the axis reads in days before and after it
+   * ("-7", "0", "+3") rather than dates, for lines of several seasons drawn on one season's days.
+   */
+  anchor: Date | null;
 }
 
 /** The series with each one's colour filled in. */
-export function withColors(series: Array<ChartSeries>): Array<Required<ChartSeries>> {
+export function withColors(series: Array<ChartSeries>): Array<ColoredSeries> {
   return series.map((s, i) => ({ ...s, color: s.color ?? DEFAULT_SERIES_COLORS[i % DEFAULT_SERIES_COLORS.length] }));
 }
 
@@ -104,4 +117,77 @@ export function bandOfDays(times: Array<Date | string>, label: string, timeZone 
   to.setUTCDate(to.getUTCDate() + 1);
 
   return { from: new Date(`${days[0]}T00:00:00Z`), to, label };
+}
+
+const DAY = 24 * 60 * 60 * 1000;
+
+/** Midnight UTC of a YYYY-MM-DD calendar day, as every point is placed. */
+function midnightOf(day: string): Date {
+  return new Date(`${day}T00:00:00Z`);
+}
+
+/**
+ * The day a season's lines are lined up on (#3215): the Monday that starts the calendar week holding most of its
+ * `days`, in `timeZone`, at midnight UTC of that day, or null for no days. Its week rather than its first day, because
+ * a season can list a stray day outside its week (2023 lists 10, 12 and 30 November), and a week's Monday stays the same
+ * weekday every year. With a tie, the earlier week.
+ */
+export function weekAnchor(days: Array<Date | string>, timeZone = 'America/Chicago'): Date | null {
+  const perWeek = new Map<number, number>();
+
+  for (const time of days) {
+    const day = midnightOf(dayIn(new Date(time), timeZone));
+    // getUTCDay() is 0 on Sunday: a Sunday belongs to the week that started the Monday before.
+    const monday = day.getTime() - ((day.getUTCDay() + 6) % 7) * DAY;
+    perWeek.set(monday, (perWeek.get(monday) ?? 0) + 1);
+  }
+
+  const weeks = [...perWeek.entries()].sort(([a, n], [b, m]) => m - n || a - b);
+
+  return weeks.length ? new Date(weeks[0][0]) : null;
+}
+
+/** Whole days from `anchor` to `date`, both at midnight UTC of their days: negative before it. */
+export function daysFrom(anchor: Date, date: Date): number {
+  return Math.round((date.getTime() - anchor.getTime()) / DAY);
+}
+
+/** A day counted from an anchor, as an axis reads it: "-7", "0", "+3", with a true minus sign. */
+export function relativeDayLabel(days: number): string {
+  return days === 0 ? '0' : days < 0 ? `−${-days}` : `+${days}`;
+}
+
+/**
+ * `series` drawn on another season's days (#3215): every point moved by the whole days from its season's anchor `from`
+ * to the other's `to`, so the two anchors fall on the same x. Points from `until` on are left out, when it is given.
+ */
+export function alignToAnchor(series: ChartSeries, from: Date, to: Date, until: Date | null = null): ChartSeries {
+  const shift = daysFrom(from, to);
+
+  return {
+    ...series,
+    points: series.points
+      .filter((p) => !until || p.x.getTime() < until.getTime())
+      .map((p) => ({ x: new Date(p.x.getTime() + shift * DAY), y: p.y })),
+    shiftDays: (series.shiftDays ?? 0) + shift
+  };
+}
+
+/**
+ * Where an axis counted from `anchor` puts its ticks (#3215): whole steps out from the anchor in both directions, so the
+ * anchor itself is always one, between `min` and `max` (times). The step is the shortest of a day, a week, two weeks,
+ * four or eight that leaves `minGap` pixels between ticks across `width`.
+ */
+export function anchorTicks(anchor: Date, min: number, max: number, width: number, minGap = 55): Array<number> {
+  const span = Math.max(max - min, DAY);
+  const pxPerDay = width / (span / DAY);
+  const step = ([1, 7, 14, 28, 56].find((days) => days * pxPerDay >= minGap) ?? 56) * DAY;
+  const first = anchor.getTime() + Math.ceil((min - anchor.getTime()) / step) * step;
+  const ticks: Array<number> = [];
+
+  for (let t = first; t <= max; t += step) {
+    ticks.push(t);
+  }
+
+  return ticks;
 }

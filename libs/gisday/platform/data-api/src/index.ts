@@ -12,6 +12,9 @@ export * from './lib/question-type/question-type.module';
 export * from './lib/rsvp-type/rsvp-type.module';
 export * from './lib/speaker/speaker.module';
 export * from './lib/speaker-edit/speaker-edit.module';
+// Judging the research competitions (#3183)
+export * from './lib/judging/judging.module';
+export * from './lib/season-winner/season-winner.module';
 export * from './lib/speaker-role/speaker-role.module';
 export * from './lib/sponsor/sponsor.module';
 export * from './lib/submission-type/submission-type.module';
@@ -54,5 +57,7 @@ export * from './lib/user-submission/dto/poster.dto';
 export * from './lib/user-submission/dto/submission-submitter.dto';
 export * from './lib/user-rsvp/dto/rsvp-dashboard.dto';
 export * from './lib/check-in/dto/check-in-dashboard.dto';
+export * from './lib/dashboards/dashboard-profiles.service';
 export * from './lib/user-info/dto/account-dashboard.dto';
 export * from './lib/season-day/dto/simplified-season-day.dto';
+export * from './lib/impact-report/impact-report';

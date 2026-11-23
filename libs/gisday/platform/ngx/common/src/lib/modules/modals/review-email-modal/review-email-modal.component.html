@@ -1,7 +1,20 @@
 <div class="review-email">
   <h2 class="review-email__title">{{ verb }}: the email that will be sent</h2>
 
-  @if (preview(); as preview) { @if (note) {
+  @if (preview(); as preview) {
+  <!-- Who it is from (#3100): the admin's own address by default, the site's, or a shared one, as the API allows. -->
+  @if (senders(); as senders) { @if (senders.choices.length) {
+  <div>
+    <tamu-gisc-select [formControl]="form.controls[senderKey]" [data]="senders.choices" [valueTemplate]="'address'" [displayTemplate]="'label'" [placeholder]="'Send as'" [searchable]="true"></tamu-gisc-select>
+    <p class="review-email__meta">Send as: who it is from. Replies go to the address chosen.</p>
+  </div>
+  } @else {
+  <p class="review-email__meta">It will be sent from the site's address.</p>
+  } @for (unavailable of senders.unavailable; track $index) {
+  <p class="review-email__meta">{{ unavailable.reason }}</p>
+  } } @else if (sendersFailed()) {
+  <p class="review-email__meta">Who it can be sent as could not be loaded, so it will be sent from the site's address.</p>
+  } @if (note) {
   <p>{{ note }}</p>
   } @if (preview.notEmailed?.length) {
   <div class="review-email__not-emailed">
@@ -25,33 +38,89 @@
       }
     </ul>
   </div>
-  }
+  } @if (preview.recipients?.length) {
+  <!-- Who gets it (#3104): each speaker ticked to start; together or a copy each, when more than one is ticked. -->
+  <section class="review-email__group review-email__recipients">
+    <h3>Who gets it</h3>
+    <!-- Select all (#3142), outside the group so it is not one of the speakers: ticks everyone, or with all ticked, none. -->
+    <div class="review-email__select-all trailer-1">
+      <tamu-gisc-checkbox label="Select all" name="recipients-select-all" ariaLabel="Select all speakers, or none when all are ticked" [checked]="allTicked()" (changed)="toggleAll()"></tamu-gisc-checkbox>
+    </div>
+    @if (knowsSends()) {
+    <!-- Who was sent it before (#3167): tick only those never sent it, and list them first. -->
+    <div class="review-email__sent-choices trailer-1">
+      <p class="review-email__meta">
+        <strong>{{ notYetSentCount() }} of {{ preview.recipients.length }}</strong> {{ notYetSentCount() === 1 ? 'has' : 'have' }} not been sent this email yet.
+      </p>
+      <tamu-gisc-button class="review-email__tick-not-sent" value="Tick only those not sent it yet" fit="relaxed" look="secondary" [disabled]="notYetSentCount() === 0" (click)="tickNotYetSent()"></tamu-gisc-button>
+      <tamu-gisc-checkbox label="List those not sent it yet first" name="recipients-not-sent-first" [formControl]="notSentFirst"></tamu-gisc-checkbox>
+    </div>
+    }
+    <tamu-gisc-checkbox-group referenceId="guid" [formControl]="chosen">
+      @for (recipient of listed(); track recipient.guid) {
+      <tamu-gisc-checkbox [data]="recipient" [label]="recipient.name" [description]="descriptionOf(recipient)" [name]="'recipient-' + recipient.guid" [ariaLabel]="'Send it to ' + recipient.name"></tamu-gisc-checkbox>
+      }
+    </tamu-gisc-checkbox-group>
+    @if (knowsSends()) {
+    <!-- Every email each was sent, with its date (#3167), for anyone who needs more than the last one. -->
+    <details class="review-email__history">
+      <summary>Every email each was sent</summary>
+      <ul>
+        @for (recipient of listed(); track recipient.guid) { @let history = historyOf(recipient);
+        <li>
+          <strong>{{ recipient.name }}:</strong>
+          @if (history.length) { {{ history.join('; ') }} } @else { nothing yet }
+        </li>
+        }
+      </ul>
+    </details>
+    }
+    @if (offersTogether()) {
+    <tamu-gisc-radio-group [formControl]="how" [options]="howOptions" displayPath="label" valuePath="value"></tamu-gisc-radio-group>
+    } @else if (preview.copyEachReason) {
+    <p class="review-email__meta">{{ preview.copyEachReason }}</p>
+    } @if (!ticked().length) {
+    <p class="review-email__meta"><strong>Tick at least one speaker to send it.</strong></p>
+    }
+  </section>
+  } @if (together()) {
+  <p>Nothing is sent until you choose Send. Everyone ticked gets one email together, all on its To line, with these filled in: {{ placeholders }}; {{ '{' }}first name{{ '}' }} names them all. The text may use Markdown: **bold**, *italic*, [link text](https://...) and lists starting with - .</p>
+  } @else {
   <p>Nothing is sent until you choose Send. Each person gets their own copy, with these filled in: {{ placeholders }}. The text may use Markdown: **bold**, *italic*, [link text](https://...) and lists starting with - .</p>
-
-  @for (group of preview.groups; track group.kind) {
+  } @for (group of preview.groups; track group.kind) { @let shown = exampleOf(group);
   <section class="review-email__group">
-    <h3>{{ group.label }} ({{ group.count }})</h3>
+    <!-- Room above each box for its label, which floats up out of it: it met the heading and the box above (#3183). -->
+    <h3 class="trailer-1">{{ group.label }} ({{ count(group) }})</h3>
     @if (editableSubject) {
-    <tamu-gisc-textbox [formControl]="form.controls[group.kind + ':subject']" [placeholder]="'Subject'" [floatLabel]="true"></tamu-gisc-textbox>
+    <tamu-gisc-textbox class="trailer-1" [formControl]="form.controls[group.kind + ':subject']" [placeholder]="'Subject'" [floatLabel]="true"></tamu-gisc-textbox>
     } @else {
     <p class="review-email__meta"><strong>Subject:</strong> {{ group.subject }}</p>
     }
     <tamu-gisc-textbox [formControl]="form.controls[group.kind]" [type]="'textarea'" [rows]="16" [placeholder]="'Email text'" [floatLabel]="true"></tamu-gisc-textbox>
-    <h4>Preview, as "{{ group.example.title }}" gets it</h4>
-    <p class="review-email__meta"><strong>To:</strong> {{ group.example.to }} @if (group.example.cc) { <strong>Cc:</strong> {{ group.example.cc }} }</p>
-    @if (editableSubject) {
-    <p class="review-email__meta"><strong>Subject:</strong> {{ exampleSubject(group.kind, group.example.values) }}</p>
+    @if (together()) {
+    <h4>Preview of the one email to all of them</h4>
+    } @else {
+    <h4>Preview, as "{{ shown.title }}" gets it</h4>
     }
-    <div class="review-email__preview" [innerHTML]="exampleHtml(group.kind, group.example.values)"></div>
+    <p class="review-email__meta"><strong>From:</strong> {{ chosenSender()?.from ?? "The site's address" }} @if (chosenSender()?.replyTo; as replyTo) { <strong>Replies to:</strong> {{ replyTo }} }</p>
+    <p class="review-email__meta"><strong>To:</strong> {{ shown.to }} @if (shown.cc) { <strong>Cc:</strong> {{ shown.cc }} }</p>
+    @if (editableSubject) {
+    <p class="review-email__meta"><strong>Subject:</strong> {{ exampleSubject(group.kind, shown.values) }}</p>
+    } @if (isDesigned(group)) {
+    <!-- Texas A&M's site: the whole email in its design, as it will arrive (#3114). Sandboxed: shown, never run. -->
+    <iframe class="review-email__frame" sandbox="" title="The email as it will arrive" [srcdoc]="designedHtml(group)"></iframe>
+    } @else {
+    <div class="review-email__preview" [innerHTML]="exampleHtml(group.kind, shown.values)"></div>
+    }
   </section>
   }
 
   <div class="review-email__footer">
     <tamu-gisc-button value="Cancel" fit="relaxed" look="secondary" (click)="cancel()"></tamu-gisc-button>
-    <tamu-gisc-button [value]="sendWords + ' ' + total(preview) + (total(preview) === 1 ? ' email' : ' emails')" fit="relaxed" (click)="send()"></tamu-gisc-button>
+    <tamu-gisc-button [value]="sendWords + ' ' + total(preview) + (total(preview) === 1 ? ' email' : ' emails')" fit="relaxed" [disabled]="listsRecipients() && !ticked().length" (click)="send()"></tamu-gisc-button>
   </div>
   } @else if (failed()) {
-  <p>The email could not be loaded, so nothing was sent. Please try again.</p>
+  <p>The email could not be loaded, so nothing was sent. {{ failed() }}</p>
   <div class="review-email__footer">
     <tamu-gisc-button value="Close" fit="relaxed" (click)="cancel()"></tamu-gisc-button>
   </div>

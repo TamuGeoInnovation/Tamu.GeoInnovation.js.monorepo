@@ -1,13 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
-import { firstValueFrom, of } from 'rxjs';
+import { NEVER, firstValueFrom, of } from 'rxjs';
 
 import {
   BroadcastService,
   EventService,
+  JudgingService,
   LocationService,
   SeasonService,
   SpeakerEditsService,
+  SessionFilesService,
   SpeakerService,
   TagService
 } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -18,6 +20,11 @@ import { GISDAY_SITES, GisdaySite } from '@tamu-gisc/gisday/common';
 import { GISDAY_SITE } from '../../../../../site/site';
 import { EventAddEditFormComponent } from './event-add-edit-form.component';
 import { ReviewEmailModalComponent } from '../../../../modals/review-email-modal/review-email-modal.component';
+
+/** The judging routes as the form reads them (#3183): a session with no judging yet. */
+function judgingService(judging: object = { judgedCompetition: null, judgingClosed: false, judges: [] }) {
+  return { eventJudging: jest.fn(() => of(judging)) };
+}
 
 /**
  * #2706. "Is accepting RSVPs?" starts ticked on a new event, as the database column's default is, so an event made in the
@@ -44,6 +51,8 @@ describe('EventAddEditFormComponent', () => {
         { provide: EventService, useValue: { getEntity: () => of(event) } },
         { provide: NotificationService, useValue: { toast: jest.fn() } },
         { provide: SpeakerEditsService, useValue: speakerEdits },
+        { provide: SessionFilesService, useValue: { forEvent: () => of([]) } },
+        { provide: JudgingService, useValue: judgingService() },
         { provide: ModalService, useValue: modals }
       ]
     });
@@ -131,6 +140,8 @@ describe('EventAddEditFormComponent, the profile email', () => {
         },
         { provide: NotificationService, useValue: { toast: jest.fn() } },
         { provide: SpeakerEditsService, useValue: speakerEdits },
+        { provide: SessionFilesService, useValue: { forEvent: () => of([]) } },
+        { provide: JudgingService, useValue: judgingService() },
         { provide: ModalService, useValue: modals }
       ]
     });
@@ -179,6 +190,8 @@ describe('EventAddEditFormComponent, the Broadcast drop-down', () => {
         { provide: EventService, useValue: { getEntity: () => of(event) } },
         { provide: NotificationService, useValue: { toast: jest.fn() } },
         { provide: SpeakerEditsService, useValue: {} },
+        { provide: SessionFilesService, useValue: { forEvent: () => of([]) } },
+        { provide: JudgingService, useValue: judgingService() },
         { provide: ModalService, useValue: {} }
       ]
     });
@@ -208,7 +221,8 @@ describe('EventAddEditFormComponent, the Broadcast drop-down', () => {
 
 /**
  * #3092: the session's email actions are one "Email these speakers" menu, Profile email and Session details, rather than
- * buttons side by side. Session details opens the same window as the profile email, prefilled from the session.
+ * buttons side by side. Session details opens the same window as the profile email, prefilled from the session. #3113
+ * adds Ask for slides, in the same window.
  */
 describe('EventAddEditFormComponent, the Email these speakers menu', () => {
   const event = {
@@ -228,15 +242,33 @@ describe('EventAddEditFormComponent, the Email these speakers menu', () => {
       preview: jest.fn(() => of({ groups: [] })),
       send: jest.fn(() => of({ sent: [], skipped: [] })),
       previewSessionDetails: jest.fn(() => of({ groups: [] })),
-      sendSessionDetails: jest.fn(() => of({ sent: ['Ana Abe'], skipped: [] }))
+      sendSessionDetails: jest.fn(() => of({ sent: ['Ana Abe'], skipped: [] })),
+      previewSlidesRequest: jest.fn(() => of({ groups: [] })),
+      sendSlidesRequest: jest.fn(() => of({ sent: ['Bo Bo'], skipped: [] })),
+      previewJudging: jest.fn(() => of({ groups: [] })),
+      sendJudging: jest.fn(() => of({ sent: ['Bo Bo'], skipped: [] }))
+    };
+    // What the window gives back for each email, as the admin left it: the slides request with one speaker ticked, and
+    // together asked for, which it never offers (#3113).
+    const results: Record<string, object> = {
+      'Send profile email': { profile: 'Hi {edit link}', 'profile:subject': 'Profile' },
+      'Send slides request': {
+        'slides-request': 'Upload: {edit link}',
+        'slides-request:subject': 'Slides',
+        ':recipients': 'sp-2',
+        ':together': 'true'
+      },
+      // #3183: the Ask to judge email, one judge ticked, together asked for, which it never offers either.
+      'Send judging emails': {
+        judging: 'Score here: {judging link}',
+        'judging:subject': 'Judging',
+        ':recipients': 'sp-2',
+        ':together': 'true'
+      }
     };
     const modals = {
       open: jest.fn((_component: unknown, options: { data: { verb: string } }) =>
-        of(
-          closesWith && options.data.verb === 'Send profile email'
-            ? { profile: 'Hi {edit link}', 'profile:subject': 'Profile' }
-            : closesWith
-        )
+        of(closesWith && results[options.data.verb] ? results[options.data.verb] : closesWith)
       )
     };
     const toasts = { toast: jest.fn() };
@@ -253,6 +285,8 @@ describe('EventAddEditFormComponent, the Email these speakers menu', () => {
         { provide: EventService, useValue: { getEntity: () => of(event) } },
         { provide: NotificationService, useValue: toasts },
         { provide: SpeakerEditsService, useValue: speakerEdits },
+        { provide: SessionFilesService, useValue: { forEvent: () => of([]) } },
+        { provide: JudgingService, useValue: judgingService() },
         { provide: ModalService, useValue: modals }
       ]
     });
@@ -276,7 +310,7 @@ describe('EventAddEditFormComponent, the Email these speakers menu', () => {
     return { page, fixture, speakerEdits, modals, toasts, choose };
   }
 
-  it('shows one Email these speakers menu with Profile email and Session details, and no separate email buttons', () => {
+  it('shows one Email these speakers menu with Profile email, Session details and Ask for slides, and no separate email buttons', () => {
     const { page, fixture } = render();
     const toolbar = page.querySelector('.form-section-actions');
 
@@ -291,8 +325,94 @@ describe('EventAddEditFormComponent, the Email these speakers menu', () => {
 
     expect(Array.from(toolbar.querySelectorAll('[role="menuitem"]')).map((i) => i.textContent.trim())).toEqual([
       'Profile email',
-      'Session details'
+      'Session details',
+      'Ask for slides'
     ]);
+  });
+
+  // #3147: a panel, a social or lunch has no slides, so nobody on it is asked for any.
+  it('offers no Ask for slides while No slides for this session is ticked, and offers it again once unticked', () => {
+    const { page, fixture } = render();
+    const items = () => {
+      page.querySelector<HTMLButtonElement>('tamu-gisc-action-menu button[aria-haspopup="menu"]').click();
+      fixture.detectChanges();
+      const labels = Array.from(page.querySelectorAll('[role="menuitem"]')).map((i) => i.textContent.trim());
+      page.querySelector<HTMLButtonElement>('tamu-gisc-action-menu button[aria-haspopup="menu"]').click();
+      fixture.detectChanges();
+      return labels;
+    };
+
+    fixture.componentInstance.form.get('noSlides').setValue(true);
+    fixture.detectChanges();
+    expect(items()).toEqual(['Profile email', 'Session details']);
+
+    fixture.componentInstance.form.get('noSlides').setValue(false);
+    fixture.detectChanges();
+    expect(items()).toEqual(['Profile email', 'Session details', 'Ask for slides']);
+  });
+
+  it('asks for slides in the same window, editable, then sends it for this session to the speakers ticked, a copy each', () => {
+    const { speakerEdits, modals, toasts, choose } = render();
+
+    choose('Ask for slides');
+
+    expect(modals.open).toHaveBeenCalledWith(
+      ReviewEmailModalComponent,
+      expect.objectContaining({ data: expect.objectContaining({ verb: 'Send slides request', editableSubject: true }) })
+    );
+    expect(speakerEdits.previewSlidesRequest).toHaveBeenCalledWith('event');
+    expect(speakerEdits.sendSlidesRequest).toHaveBeenCalledWith('event', {
+      subject: 'Slides',
+      template: 'Upload: {edit link}',
+      speakers: ['sp-2']
+    });
+    expect(speakerEdits.sendSessionDetails).not.toHaveBeenCalled();
+    expect(speakerEdits.send).not.toHaveBeenCalled();
+    expect(toasts.toast).toHaveBeenCalledWith(expect.objectContaining({ title: 'Slides requested' }));
+  });
+
+  // #3183: Ask to judge goes to the session's judges, so it is offered only once the session judges a competition.
+  it('offers Ask to judge only while a judged competition is chosen', () => {
+    const { page, fixture } = render();
+    const items = () => {
+      page.querySelector<HTMLButtonElement>('tamu-gisc-action-menu button[aria-haspopup="menu"]').click();
+      fixture.detectChanges();
+      const labels = Array.from(page.querySelectorAll('[role="menuitem"]')).map((i) => i.textContent.trim());
+      page.querySelector<HTMLButtonElement>('tamu-gisc-action-menu button[aria-haspopup="menu"]').click();
+      fixture.detectChanges();
+      return labels;
+    };
+
+    expect(items()).not.toContain('Ask to judge');
+
+    fixture.componentInstance.form.get('judgedCompetition').setValue('graduate-poster');
+    fixture.detectChanges();
+    expect(items()).toEqual(['Profile email', 'Session details', 'Ask for slides', 'Ask to judge']);
+
+    fixture.componentInstance.form.get('judgedCompetition').setValue('');
+    fixture.detectChanges();
+    expect(items()).not.toContain('Ask to judge');
+  });
+
+  it("asks the session's judges in the same window, editable, then sends it to the judges ticked, a copy each", () => {
+    const { fixture, speakerEdits, modals, toasts, choose } = render();
+
+    fixture.componentInstance.form.get('judgedCompetition').setValue('graduate-poster');
+    fixture.detectChanges();
+    choose('Ask to judge');
+
+    expect(modals.open).toHaveBeenCalledWith(
+      ReviewEmailModalComponent,
+      expect.objectContaining({ data: expect.objectContaining({ verb: 'Send judging emails', editableSubject: true }) })
+    );
+    expect(speakerEdits.previewJudging).toHaveBeenCalledWith('event');
+    expect(speakerEdits.sendJudging).toHaveBeenCalledWith('event', {
+      subject: 'Judging',
+      template: 'Score here: {judging link}',
+      speakers: ['sp-2']
+    });
+    expect(speakerEdits.sendSlidesRequest).not.toHaveBeenCalled();
+    expect(toasts.toast).toHaveBeenCalledWith(expect.objectContaining({ title: 'Judges asked' }));
   });
 
   it('sends the profile email from the menu, as the button did', () => {
@@ -342,4 +462,280 @@ function speakersToolbar(): string {
   const end = html.indexOf('</div>\n\n    <div class="form-section-body">', start);
 
   return `<div class="form-section-toolbar">${html.slice(start, end)}</div>`;
+}
+
+/**
+ * #3093. A session's slides, uploaded by its speakers from their edit links, on the session's admin page: every
+ * speaker's, each labelled with who uploaded it, listed with a download for each, and nothing there to change them.
+ */
+describe('EventAddEditFormComponent, the Slides section (#3093)', () => {
+  // Made-up speakers.
+  const deck = {
+    guid: 'f-1',
+    name: 'Example watersheds.pptx',
+    size: 3_300_000,
+    uploaded: '2026-11-15T18:00:00.000Z',
+    uploadedBy: 'Avery Example'
+  };
+  const theirs = { ...deck, guid: 'f-2', name: 'Lightning.pdf', size: 1024, uploadedBy: 'Blair Sample' };
+
+  it("lists every speaker's files, each labelled with who uploaded it", () => {
+    const { page } = render('edit', [deck, theirs]);
+
+    const files = [...page.querySelectorAll('.file')].map((f) => [
+      f.querySelector('.file-name').textContent.trim(),
+      f.querySelector('.file-detail').textContent.replace(/\s+/g, ' ').trim()
+    ]);
+
+    expect(files).toEqual([
+      ['Example watersheds.pptx', expect.stringMatching(/^Avery Example · 3\.1 MB · Nov 15/)],
+      ['Lightning.pdf', expect.stringMatching(/^Blair Sample · 1 KB · Nov 15/)]
+    ]);
+  });
+
+  function render(type: 'create' | 'edit', files: Array<object> = [deck]) {
+    const sessionFiles = {
+      forEvent: jest.fn(() => of(files)),
+      download: jest.fn(() => of(new Blob(['x']))),
+      removeFromEvent: jest.fn(() => of(undefined))
+    };
+
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter([]),
+        { provide: ActivatedRoute, useValue: { params: of({ guid: 'event' }) } },
+        { provide: SeasonService, useValue: { activeSeason$: of({ guid: 'season', days: [] }) } },
+        { provide: SpeakerService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+        { provide: TagService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+        { provide: LocationService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+        { provide: BroadcastService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+        { provide: EventService, useValue: { getEntity: () => of({ guid: 'event', speakers: [], tags: [] }) } },
+        { provide: NotificationService, useValue: { toast: jest.fn() } },
+        { provide: SpeakerEditsService, useValue: {} },
+        { provide: SessionFilesService, useValue: sessionFiles },
+        { provide: JudgingService, useValue: judgingService() },
+        { provide: ModalService, useValue: {} }
+      ]
+    });
+    // Only the Slides section, as the page draws it.
+    TestBed.overrideTemplate(EventAddEditFormComponent, slidesSection());
+
+    const fixture = TestBed.createComponent(EventAddEditFormComponent);
+    fixture.componentRef.setInput('type', type);
+    fixture.detectChanges();
+
+    return { page: fixture.nativeElement as HTMLElement, sessionFiles, fixture };
+  }
+
+  it("lists the session's slides with their size and date, each a download", () => {
+    const { page, sessionFiles } = render('edit');
+
+    expect(page.querySelector('.form-section-title').textContent.trim()).toBe('Slides');
+    expect(sessionFiles.forEvent).toHaveBeenCalledWith('event');
+
+    const name = page.querySelector<HTMLButtonElement>('button.file-name');
+
+    expect(name.textContent.trim()).toBe('Example watersheds.pptx');
+    expect(page.querySelector('.file-detail').textContent).toContain('3.1 MB');
+
+    Object.assign(URL, { createObjectURL: jest.fn(() => 'blob:deck'), revokeObjectURL: jest.fn() });
+    name.click();
+
+    expect(sessionFiles.download).toHaveBeenCalledWith('event', 'f-1');
+  });
+
+  it('offers no upload, and says when there are none', () => {
+    const { page } = render('edit', []);
+
+    expect(page.querySelector('.files-empty').textContent.trim()).toBe('No slides uploaded yet.');
+    expect(page.querySelector('tamu-gisc-file')).toBeNull();
+  });
+
+  /**
+   * #3105: the admins can remove any speaker's file, one whose speaker is no longer listed included, after saying so on
+   * the page: the site asks there, never in the browser's own confirm().
+   */
+  describe('removing a file (#3105)', () => {
+    const gone = { ...deck, uploadedBy: 'A speaker no longer listed' };
+    const button = (page: HTMLElement, text: string) =>
+      [...page.querySelectorAll<HTMLButtonElement>('button')].find((b) => b.textContent.trim() === text);
+
+    it('asks on the page first, naming the file and who uploaded it, and removes nothing until told to', () => {
+      const confirm = jest.spyOn(window, 'confirm');
+      const { page, sessionFiles, fixture } = render('edit', [gone]);
+
+      button(page, 'Remove').click();
+      fixture.detectChanges();
+
+      const asked = page.querySelector('[role="alert"]');
+      expect(asked.textContent.replace(/\s+/g, ' ')).toContain(
+        'Remove Example watersheds.pptx, uploaded by A speaker no longer listed? It cannot be undone.'
+      );
+      expect(confirm).not.toHaveBeenCalled();
+      expect(sessionFiles.removeFromEvent).not.toHaveBeenCalled();
+      // Side by side, in the site's shared button row (libs/sass/_dom_flexbox.scss), not one above the other.
+      const row = button(page, 'Remove the file').parentElement;
+      expect(row.classList).toEqual(expect.objectContaining({ value: 'flex flex-row wrap align-center file-confirm-actions' }));
+      expect(button(page, 'Keep it').parentElement).toBe(row);
+
+      button(page, 'Keep it').click();
+      fixture.detectChanges();
+
+      expect(page.querySelector('[role="alert"]')).toBeNull();
+      expect(page.querySelectorAll('.file')).toHaveLength(1);
+    });
+
+    it('removes the file once told to, and takes it off the list', () => {
+      const { page, sessionFiles, fixture } = render('edit', [gone, theirs]);
+
+      button(page, 'Remove').click();
+      fixture.detectChanges();
+      button(page, 'Remove the file').click();
+      fixture.detectChanges();
+
+      expect(sessionFiles.removeFromEvent).toHaveBeenCalledWith('event', 'f-1');
+      expect([...page.querySelectorAll('.file-name')].map((f) => f.textContent.trim())).toEqual(['Lightning.pdf']);
+    });
+  });
+
+  it('has no Slides section on a new event', () => {
+    expect(render('create').page.querySelector('tamu-gisc-submission-files')).toBeNull();
+  });
+});
+
+/** The Slides section from the page's own template. */
+function slidesSection(): string {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { readFileSync } = require('fs');
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { join } = require('path');
+  const html: string = readFileSync(join(__dirname, 'event-add-edit-form.component.html'), 'utf8');
+  const start = html.indexOf('@if (slides(); as slides) {');
+  const end = html.indexOf('<div class="form-section">', html.indexOf('<div class="form-section-title">Slides</div>'));
+
+  return html.slice(start, end);
+}
+
+/**
+ * #3183. A session's judging on its admin page: the competition its judges score, which of its speakers judge, and
+ * whether judging is closed, saved with the session.
+ */
+describe('EventAddEditFormComponent, the Judging section (#3183)', () => {
+  // Made-up speakers.
+  const event = {
+    guid: 'event',
+    name: 'Graduate posters',
+    judgedCompetition: 'graduate-poster',
+    judgingClosed: false,
+    speakers: [
+      { guid: 'sp-1', firstName: 'Ana', lastName: 'Abe' },
+      { guid: 'sp-2', firstName: 'Bo', lastName: 'Bo' }
+    ],
+    tags: []
+  };
+
+  function render(options: { judging?: object; site?: string; type?: 'create' | 'edit' } = {}) {
+    const judging =
+      (options.judging as { eventJudging: jest.Mock }) ??
+      judgingService({ judgedCompetition: 'graduate-poster', judgingClosed: false, judges: ['sp-2'] });
+
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter([]),
+        { provide: ActivatedRoute, useValue: { params: of({ guid: 'event' }) } },
+        { provide: SeasonService, useValue: { activeSeason$: of({ guid: 'season', days: [] }) } },
+        { provide: SpeakerService, useValue: { getEntitiesForActiveSeason: () => of(event.speakers) } },
+        { provide: TagService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+        { provide: LocationService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+        { provide: BroadcastService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+        { provide: EventService, useValue: { getEntity: () => of(event) } },
+        { provide: NotificationService, useValue: { toast: jest.fn() } },
+        { provide: SpeakerEditsService, useValue: {} },
+        { provide: SessionFilesService, useValue: { forEvent: () => of([]) } },
+        { provide: JudgingService, useValue: judging },
+        { provide: ModalService, useValue: {} },
+        ...(options.site ? [{ provide: GISDAY_SITE, useValue: GISDAY_SITES[options.site] as GisdaySite }] : [])
+      ]
+    });
+    // Only the Judging section, as the page draws it.
+    TestBed.overrideTemplate(EventAddEditFormComponent, judgingSection());
+
+    const fixture = TestBed.createComponent(EventAddEditFormComponent);
+    fixture.componentRef.setInput('type', options.type ?? 'edit');
+    fixture.detectChanges();
+
+    return { fixture, page: fixture.nativeElement as HTMLElement, judging, form: fixture.componentInstance };
+  }
+
+  it("shows the session's competition, and a box for each of its speakers with its judges ticked", () => {
+    const { page, form, judging } = render();
+
+    expect(judging.eventJudging).toHaveBeenCalledWith('event');
+    expect(form.form.get('judgedCompetition').value).toBe('graduate-poster');
+    expect(form.form.get('judges').value).toEqual(['sp-2']);
+    expect(page.textContent).toContain('Judges');
+    // Each box's icon names whether it is ticked: Bo Bo is the judge.
+    expect([...page.querySelectorAll('.judges tamu-gisc-checkbox')].map((c) => c.textContent.trim())).toEqual([
+      'check_box_outline_blankAna Abe',
+      'check_boxBo Bo'
+    ]);
+    expect(page.textContent).toContain('Judging closed');
+  });
+
+  it('offers the four competitions and none', () => {
+    expect(render().form.judgedCompetitionDict.map((c) => c.value)).toEqual([
+      '',
+      'graduate-poster',
+      'undergraduate-poster',
+      'graduate-presentation',
+      'undergraduate-presentation'
+    ]);
+  });
+
+  it('asks for no judges until a competition is chosen', () => {
+    const { page, fixture, form } = render();
+
+    form.form.get('judgedCompetition').setValue('');
+    fixture.detectChanges();
+
+    expect(page.querySelector('.judges')).toBeNull();
+    expect(page.textContent).not.toContain('Judging closed');
+  });
+
+  it("saves the judges among the session's speakers only", () => {
+    const { form } = render();
+
+    form.form.patchValue({ judges: ['sp-2', 'sp-gone'], judgingClosed: true });
+
+    expect(form.payload()).toEqual(
+      expect.objectContaining({ judgedCompetition: 'graduate-poster', judgingClosed: true, judges: ['sp-2'] })
+    );
+  });
+
+  it('leaves the judges out of a save until they have been read, so it does not clear them', () => {
+    const { form } = render({ judging: { eventJudging: jest.fn(() => NEVER) } });
+
+    expect(form.payload()).not.toHaveProperty('judges');
+  });
+
+  it('is not on a site that runs no research competitions', () => {
+    const { page, judging, form } = render({ site: 'ucgis' });
+
+    expect(form.judgingOn).toBe(false);
+    expect(page.textContent).not.toContain('Judging');
+    expect(judging.eventJudging).not.toHaveBeenCalled();
+  });
+});
+
+/** The Judging section from the page's own template. */
+function judgingSection(): string {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { readFileSync } = require('fs');
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { join } = require('path');
+  const html: string = readFileSync(join(__dirname, 'event-add-edit-form.component.html'), 'utf8');
+  const start = html.indexOf('@if (judgingOn) {');
+  const end = html.indexOf('@if (slides(); as slides) {');
+
+  return `<form [formGroup]="form">${html.slice(start, end)}</form>`;
 }

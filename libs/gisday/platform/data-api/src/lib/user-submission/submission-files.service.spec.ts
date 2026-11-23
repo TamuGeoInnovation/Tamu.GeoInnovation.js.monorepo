@@ -299,6 +299,46 @@ describe('SubmissionFilesService', () => {
     it('says so when no submission has a file', async () => {
       await expect(service.zipForSeason('season-guid', admin)).rejects.toThrow(/No submission in this season/);
     });
+
+    /** #3174: the files of the submissions the admin picked, ticked or filtered, rather than the whole season's. */
+    describe('only the submissions picked', () => {
+      const other = '99999999-8888-4777-8666-555555555555';
+
+      beforeEach(async () => {
+        await service.add(submission.guid, student, await upload('deck.pdf', 10));
+        const first = { ...submission, files: [...submission.files] };
+
+        submission = { ...submission, guid: other, title: 'Urban Heat', files: [] } as unknown as Submission;
+        await service.add(other, student, await upload('heat.pptx', 20));
+        submissionRepo.find.mockImplementation(async () => [
+          { ...first, season: { year: 2026 } },
+          { ...submission, season: { year: 2026 } }
+        ]);
+      });
+
+      it("zips only those, named for how many, and ignores a guid that is not one of the season's", async () => {
+        const zip = await service.zipForSeason('season-guid', admin, [other, '00000000-0000-4000-8000-000000000000']);
+        const contents = await JSZip.loadAsync(await streamToBuffer(zip.getStream()));
+
+        expect(Object.keys(contents.files).filter((n) => !contents.files[n].dir)).toEqual([
+          'presentation - Urban Heat - 99999999/heat.pptx'
+        ]);
+        expect(zip.getHeaders().disposition).toContain('gisday-2026-submission-files-1.zip');
+      });
+
+      it('takes the whole season when none is named', async () => {
+        const zip = await service.zipForSeason('season-guid', admin, []);
+        const contents = await JSZip.loadAsync(await streamToBuffer(zip.getStream()));
+
+        expect(Object.keys(contents.files).filter((n) => !contents.files[n].dir)).toHaveLength(2);
+      });
+
+      it('says so when none of those picked has a file', async () => {
+        await expect(service.zipForSeason('season-guid', admin, ['00000000-0000-4000-8000-000000000000'])).rejects.toThrow(
+          /None of the submissions picked/
+        );
+      });
+    });
   });
 });
 

@@ -10,6 +10,7 @@ dotenv.config({ quiet: true });
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
+import { CORS_METHODS } from './app/cors-methods';
 
 async function bootstrap() {
   logStartupEnvironment(process.env);
@@ -47,7 +48,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: {
       origin: environment.origins,
-      methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+      methods: [...CORS_METHODS],
       credentials: true
     }
   });

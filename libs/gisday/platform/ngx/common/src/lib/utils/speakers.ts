@@ -56,30 +56,12 @@ function compareByName(a: Partial<Speaker>, b: Partial<Speaker>): number {
 }
 
 /**
- * Orders speakers by last name, then first name: the speakers on an event's edit page (#2940). Missing entries (a
+ * Orders speakers by last name, then first name: the speakers on an event's edit page (#2940) and its public page
+ * (#3196). Missing entries (a
  * speaker no longer in the season's list) are left out. Returns a new array.
  */
 export function sortSpeakersByName<T extends Partial<Speaker>>(
   speakers: Array<T | null | undefined> | null | undefined
 ): Array<T> {
   return (speakers ?? []).filter((s): s is T => Boolean(s)).sort(compareByName);
-}
-
-/**
- * Orders speakers by their affiliation, then by last and first name, so people from the same company
- * sit together (#1769). Speakers with no affiliation come last. Returns a new array.
- */
-export function sortSpeakersByAffiliation<T extends Partial<Speaker>>(speakers: Array<T> | null | undefined): Array<T> {
-  return [...(speakers ?? [])].sort((a, b) => {
-    const affiliationA = speakerAffiliation(a);
-    const affiliationB = speakerAffiliation(b);
-
-    if (affiliationA === '' || affiliationB === '') {
-      if (affiliationA !== affiliationB) {
-        return affiliationA === '' ? 1 : -1;
-      }
-    }
-
-    return compare(affiliationA, affiliationB) || compareByName(a, b);
-  });
 }

@@ -140,6 +140,12 @@ form,
 
         a {
           @extend .__form-action;
+
+          // The action style's margin: 0 outranked a link's own spacing class, so two links ran together, as
+          // "Download CSVEvery score" (#3193, lab batch 126). A link that asks for space now gets it.
+          &.post-1 {
+            margin-right: 1rem;
+          }
         }
       }
 

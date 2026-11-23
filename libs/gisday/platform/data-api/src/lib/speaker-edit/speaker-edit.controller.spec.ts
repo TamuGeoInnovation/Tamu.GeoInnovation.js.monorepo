@@ -5,6 +5,7 @@ import { JwtGuard } from '@tamu-gisc/common/nest/auth';
 
 import { SpeakerEditController } from './speaker-edit.controller';
 import { SpeakerEditService } from './speaker-edit.service';
+import { EMAIL_SENDER_TEST_PROVIDERS } from '../contact/email-sender.testing';
 
 /**
  * #2958: profile emails for the selected submissions' people, from Research Competitions. It reads the submissions'
@@ -30,7 +31,7 @@ describe('SpeakerEditController POST /speaker-edits/send-for-submissions', () =>
 
     const module = await Test.createTestingModule({
       controllers: [SpeakerEditController],
-      providers: [{ provide: SpeakerEditService, useValue: { sendLinksForSubmissions } }]
+      providers: [{ provide: SpeakerEditService, useValue: { sendLinksForSubmissions } }, ...EMAIL_SENDER_TEST_PROVIDERS]
     })
       .overrideGuard(JwtGuard)
       .useValue({
@@ -67,7 +68,13 @@ describe('SpeakerEditController POST /speaker-edits/send-for-submissions', () =>
 
     expect(response.status).toBe(201);
     expect(await response.json()).toEqual({ sent: ['Ana Ruiz'], skipped: [], unmatched: [] });
-    expect(sendLinksForSubmissions).toHaveBeenCalledWith(['sub-1', 'sub-2'], 'gisday.tamu.edu', undefined);
+    expect(sendLinksForSubmissions).toHaveBeenCalledWith(
+      ['sub-1', 'sub-2'],
+      'gisday.tamu.edu',
+      undefined,
+      undefined,
+      undefined
+    );
   });
 });
 
@@ -96,7 +103,7 @@ describe('SpeakerEditController, the profile email read and edited first (#3023)
 
     const module = await Test.createTestingModule({
       controllers: [SpeakerEditController],
-      providers: [{ provide: SpeakerEditService, useValue: service }]
+      providers: [{ provide: SpeakerEditService, useValue: service }, ...EMAIL_SENDER_TEST_PROVIDERS]
     })
       .overrideGuard(JwtGuard)
       .useValue({
@@ -138,9 +145,73 @@ describe('SpeakerEditController, the profile email read and edited first (#3023)
     expect(service.previewLinksForSubmissions).toHaveBeenCalledWith(['sub-1'], 'gisday.tamu.edu');
 
     await post('send', { speakers: ['sp-1'], ...email });
-    expect(service.sendLinks).toHaveBeenCalledWith(['sp-1'], 'gisday.tamu.edu', email);
+    expect(service.sendLinks).toHaveBeenCalledWith(['sp-1'], 'gisday.tamu.edu', email, undefined);
 
     await post('send-for-submissions', { submissions: ['sub-1'], ...email });
-    expect(service.sendLinksForSubmissions).toHaveBeenCalledWith(['sub-1'], 'gisday.tamu.edu', email);
+    expect(service.sendLinksForSubmissions).toHaveBeenCalledWith(['sub-1'], 'gisday.tamu.edu', email, undefined, undefined);
+  });
+});
+
+/**
+ * #3104: the profile email goes to the speakers ticked in the window, and only ever as a copy each: each carries that
+ * speaker's own link to edit their profile, which must not reach anyone else.
+ */
+describe('SpeakerEditController, choosing speakers for the profile email (#3104)', () => {
+  let app: INestApplication;
+  let url: string;
+  const service = { sendLinks: jest.fn(), sendLinksForSubmissions: jest.fn() };
+
+  const post = (path: string, body: object) =>
+    fetch(`${url}/speaker-edits/${path}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Origin: 'https://gisday.tamu.edu' },
+      body: JSON.stringify(body)
+    });
+
+  beforeEach(async () => {
+    Object.values(service).forEach((fn) => fn.mockReset().mockResolvedValue({ sent: [], skipped: [] }));
+
+    const module = await Test.createTestingModule({
+      controllers: [SpeakerEditController],
+      providers: [{ provide: SpeakerEditService, useValue: service }, ...EMAIL_SENDER_TEST_PROVIDERS]
+    })
+      .overrideGuard(JwtGuard)
+      .useValue({
+        canActivate: (context: ExecutionContext) => {
+          context.switchToHttp().getRequest().user = {
+            sub: 'admin-1',
+            permissions: ['update:speakers', 'read:competitions']
+          };
+          return true;
+        }
+      })
+      .compile();
+
+    app = module.createNestApplication({ logger: false });
+    await app.listen(0, '127.0.0.1');
+    url = await app.getUrl();
+  });
+
+  afterEach(async () => {
+    await app.close();
+  });
+
+  it('refuses to send it to them together, from either place, and sends nothing', async () => {
+    const send = await post('send', { speakers: ['sp-1', 'sp-2'], together: true });
+    const forSubmissions = await post('send-for-submissions', { submissions: ['sub-1'], together: true });
+
+    expect(send.status).toBe(400);
+    expect(forSubmissions.status).toBe(400);
+    expect((await send.json()).message).toMatch(/own link/);
+    expect(service.sendLinks).not.toHaveBeenCalled();
+    expect(service.sendLinksForSubmissions).not.toHaveBeenCalled();
+  });
+
+  it("narrows Research Competitions' send to the speakers ticked", async () => {
+    await post('send-for-submissions', { submissions: ['sub-1'], speakers: ['sp-2'] });
+
+    expect(service.sendLinksForSubmissions).toHaveBeenCalledWith(['sub-1'], 'gisday.tamu.edu', undefined, undefined, [
+      'sp-2'
+    ]);
   });
 });

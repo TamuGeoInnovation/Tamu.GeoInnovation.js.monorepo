@@ -323,6 +323,43 @@ describe('UserSubmissionProvider', () => {
       );
     });
 
+    // #3114: on gisday.tamu.edu the review emails wear the Texas A&M GIS Day design, with the season's dates; txgisday.org's
+    // stay plain. The plain text goes beside it either way.
+    it("sends Texas A&M's entrants the designed email, with the season's dates, and txgisday.org's the plain one", async () => {
+      const review = async (host: string) => {
+        (contactService.sendMessage as jest.Mock).mockClear();
+        jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(
+          submission({
+            title: 'Mapping Floods',
+            submissionType: 'poster',
+            participants: [{ name: 'Ana Ruiz', email: 'ana@tamu.edu' }],
+            season: {
+              guid: 'season-2026',
+              days: [{ date: '2026-11-16T06:00:00.000Z' }, { date: '2026-11-20T06:00:00.000Z' }]
+            }
+          })
+        );
+        await provider.updateUserSubmission(
+          'sub-1',
+          'acct-reviewer',
+          { acceptance: true } as Partial<Submission>,
+          REVIEWER_PERMS,
+          host
+        );
+
+        return (contactService.sendMessage as jest.Mock).mock.calls[0][0];
+      };
+
+      const tamu = await review('gisday.tamu.edu');
+
+      expect(tamu.html).toContain('GIS DAY(S)');
+      expect(tamu.html).toContain('November 16–20, 2026');
+      expect(tamu.html).toContain('<p>Howdy Ana,');
+      expect(tamu.text).toContain('Howdy Ana,');
+
+      expect((await review('txgisday.org')).html).not.toContain('GIS DAY(S)');
+    });
+
     // #2957. The finalist email named TxGIS Day on every site and asked for a link rather than the attached files.
     it("sends a finalist on Texas A&M's site the next steps under that site's name and address", async () => {
       const previousFrom = process.env.MAILROOM_FROM;
@@ -735,6 +772,19 @@ describe('UserSubmissionProvider', () => {
       });
     });
 
+    // #3100: each submitter's email goes as the sender the reviewer chose, as the controller checked it.
+    it('emails each as the sender chosen, with replies to it', async () => {
+      const sender = { from: '"Jo Admin (Texas A&M GIS Day)" <jadmin@tamu.edu>', replyTo: 'jadmin@tamu.edu' };
+
+      await provider.reviewUserSubmissions([A, B], 'acct-reviewer', { acceptance: true, sender }, REVIEWER_PERMS);
+
+      expect(sends()).toHaveLength(2);
+      expect(sends().map(([m]) => [m.from, m.replyTo])).toEqual([
+        [sender.from, sender.replyTo],
+        [sender.from, sender.replyTo]
+      ]);
+    });
+
     it('reviews a submission named twice once', async () => {
       await provider.reviewUserSubmissions([A, A], 'acct-reviewer', { acceptance: true }, REVIEWER_PERMS);
 
@@ -915,8 +965,22 @@ describe('UserSubmissionProvider', () => {
       expect(submissionRepo.update).not.toHaveBeenCalled();
       // Its files are asked for: a submission is not loaded with them otherwise.
       expect(submissionRepo.findOne).toHaveBeenCalledWith(
-        expect.objectContaining({ relations: { season: true, files: true } })
+        // With its season's days, for the email's design on Texas A&M's site (#3114).
+        expect.objectContaining({ relations: { season: { days: true }, files: true } })
       );
+    });
+
+    // #3100: as the sender the reviewer chose, as the controller checked it.
+    it('sends each reminder as the sender chosen, with replies to it', async () => {
+      const sender = { from: '"Jo Admin (Texas A&M GIS Day)" <jadmin@tamu.edu>', replyTo: 'jadmin@tamu.edu' };
+
+      await provider.remindUserSubmissions([A, B, C], { sender }, REVIEWER_PERMS, 'gisday.tamu.edu');
+
+      expect(sends()).toHaveLength(2);
+      expect(sends().map(([m]) => [m.from, m.replyTo])).toEqual([
+        [sender.from, sender.replyTo],
+        [sender.from, sender.replyTo]
+      ]);
     });
 
     it('previews exactly the email that is then sent when the text is left as it is', async () => {

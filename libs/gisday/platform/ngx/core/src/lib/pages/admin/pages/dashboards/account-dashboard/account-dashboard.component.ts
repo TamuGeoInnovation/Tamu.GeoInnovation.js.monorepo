@@ -1,7 +1,7 @@
 import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AsyncPipe, DatePipe } from '@angular/common';
-import { catchError, filter, of, switchMap, tap } from 'rxjs';
+import { catchError, filter, map, of, switchMap, tap } from 'rxjs';
 
 import { readRefusal } from '@tamu-gisc/gisday/platform/ngx/common';
 
@@ -12,6 +12,8 @@ import { ChartSeries, countsByDay, LineChartComponent, runningTotalByDay } from 
 import { fileNamePart } from '@tamu-gisc/common/utils/ui';
 
 import { BaseAdminListComponent } from '../../base-admin-list/base-admin-list.component';
+import { SeasonComparison } from '../shared/season-comparison/season-comparison';
+import { SeasonComparisonComponent } from '../shared/season-comparison/season-comparison.component';
 import { DashboardPeopleComponent, PERSON_TYPE_COLUMNS } from '../shared/dashboard-people/dashboard-people.component';
 import {
   DashboardRowDetailDirective,
@@ -48,6 +50,7 @@ export function accountFileName(year: number | null | undefined, rowName: string
   imports: [
     SelectComponent,
     LineChartComponent,
+    SeasonComparisonComponent,
     DashboardTableComponent,
     DashboardRowDetailDirective,
     DashboardPeopleComponent,
@@ -85,6 +88,10 @@ export class AccountDashboardComponent extends BaseAdminListComponent<Season> im
 
     return dashboard ? accountSeries(dashboard) : { series: [], daily: null };
   });
+  /** The earlier seasons beside this one on the chart (#3215), once the page knows its seasons. */
+  public readonly comparison = signal<SeasonComparison | null>(null);
+  /** The chart's line with the compared seasons', and the day its axis counts from when there are any. */
+  public readonly compared = computed(() => this.comparison()?.compare(this.chart().series) ?? { series: this.chart().series, anchor: null });
   /** The window's last day: it ends at the midnight that starts the day after. */
   public readonly lastDay = computed(() => {
     const to = this.dashboard()?.window.to;
@@ -99,6 +106,16 @@ export class AccountDashboardComponent extends BaseAdminListComponent<Season> im
 
   public override ngOnInit(): void {
     super.ngOnInit();
+
+    this.comparison.set(
+      new SeasonComparison(
+        (guid) => this.users.getDashboardForSeason(guid).pipe(map((d) => d.made)),
+        this.seasons$,
+        this.selectedSeason$,
+        this.destroyRef,
+        'accounts'
+      )
+    );
 
     this.selectedSeason$
       .pipe(

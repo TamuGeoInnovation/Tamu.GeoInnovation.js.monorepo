@@ -11,6 +11,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { from, groupBy, mergeMap, toArray } from 'rxjs';
 import { DeepPartial, In, Repository } from 'typeorm';
 
+import { judgedCompetitionProblem } from '@tamu-gisc/gisday/common';
+
 import {
   EntityRelationsLUT,
   Event,
@@ -117,6 +119,15 @@ export class EventProvider extends BaseProvider<Event> {
       newEvent.speakers = existingSpeakers;
       newEvent.tags = existingTags;
 
+      // Its judging (#3183), checked as an update's is: its judges among its speakers.
+      Object.assign(
+        newEvent,
+        judgingOf(
+          event as unknown as UpdateEventDto,
+          existingSpeakers.map((s) => s.guid)
+        )
+      );
+
       const eventEnt = this.eventRepo.create(newEvent);
 
       if (eventEnt) {
@@ -153,10 +164,14 @@ export class EventProvider extends BaseProvider<Event> {
         return this.tagRepo.create({ guid: t });
       });
       const speakers = (event.speakers ?? []).map((t) => this.speakerRepo.create({ guid: t }));
+      // Its judging (#3183): the competition, whether closed, and its judges, who must be among its speakers as sent.
+      const { judges, ...fields } = event;
+      const judging = judgingOf({ ...fields, judges }, event.speakers ?? []);
 
       const newEnt = this.eventRepo.create({
         ...existingEvent,
-        ...event,
+        ...fields,
+        ...judging,
         tags,
         speakers
       });
@@ -173,6 +188,24 @@ export class EventProvider extends BaseProvider<Event> {
       // surfaces on an update.
       throw new UnprocessableEntityException(null, 'Could not update Event');
     }
+  }
+
+  /**
+   * A session's judging (#3183), for its admin form: the competition its judges score, whether judging is closed, and its
+   * judges by id. Its own route, so the public session page never lists the judges.
+   */
+  public async getJudging(guid: string) {
+    const event = await this.eventRepo.findOne({ where: { guid }, relations: { judges: true } });
+
+    if (!event) {
+      throw new NotFoundException();
+    }
+
+    return {
+      judgedCompetition: event.judgedCompetition ?? null,
+      judgingClosed: Boolean(event.judgingClosed),
+      judges: (event.judges ?? []).map((j) => j.guid)
+    };
   }
 
   public async getEntitiesByDay() {
@@ -325,6 +358,9 @@ export class EventProvider extends BaseProvider<Event> {
       delete event.location;
       delete event.courseCredit;
       delete event.sponsors;
+      // A copy is judged afresh (#3183): open, with judges chosen from its own speakers.
+      delete event.judges;
+      delete event.judgingClosed;
       delete event.guid;
       delete event.created;
       delete event.updated;
@@ -349,4 +385,48 @@ export class EventProvider extends BaseProvider<Event> {
       throw new InternalServerErrorException('Could not copy events into season');
     }
   }
+}
+
+/**
+ * The judging fields of a session's save (#3183), checked, as the event to be saved carries them: the competition, none or
+ * one of `JUDGED_COMPETITIONS`; whether judging is closed; and the judges, each among `speakers`, the session's speakers as
+ * saved with it (the API refuses any other). A field not sent is left out, so it stays as it was.
+ */
+export function judgingOf(
+  event: Pick<UpdateEventDto, 'judgedCompetition' | 'judgingClosed' | 'judges'>,
+  speakers: Array<string>
+) {
+  const judging: DeepPartial<Event> = {};
+
+  if (event.judgedCompetition !== undefined) {
+    const problem = judgedCompetitionProblem(event.judgedCompetition);
+
+    if (problem) {
+      throw new BadRequestException(problem);
+    }
+
+    judging.judgedCompetition = event.judgedCompetition || null;
+  }
+
+  if (event.judgingClosed !== undefined) {
+    if (typeof event.judgingClosed !== 'boolean') {
+      throw new BadRequestException('Judging closed is true or false.');
+    }
+
+    judging.judgingClosed = event.judgingClosed;
+  }
+
+  if (event.judges !== undefined) {
+    if (!Array.isArray(event.judges) || event.judges.some((j) => typeof j !== 'string')) {
+      throw new BadRequestException('Name the judges by their ids.');
+    }
+
+    if (event.judges.some((j) => !speakers.includes(j))) {
+      throw new BadRequestException("A judge must be one of the session's speakers.");
+    }
+
+    judging.judges = [...new Set(event.judges)].map((guid) => ({ guid }) as Speaker);
+  }
+
+  return judging;
 }

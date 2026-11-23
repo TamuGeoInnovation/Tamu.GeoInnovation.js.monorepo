@@ -1,0 +1,184 @@
+<!-- A judge's own page (#3183), from the link emailed to them: one column, for a phone in the room. -->
+<section>
+  <div class="container12">
+    <!-- One child, so container12 does not set the heading beside the cards as a column of its own. -->
+    <div class="judging">
+      <h1 class="trailer-1">Judging</h1>
+      @if (!token() || invalid()) {
+      <div class="info-block warning">
+        @if (invalid()) {
+        <p>This link has expired or is not valid. Ask the GIS Day team for a new one.</p>
+        } @else {
+        <p>This page opens from the link in your judging email.</p>
+        }
+      </div>
+      } @else if (judge(); as j) {
+      <p class="form-input-description">{{ j.firstName }} {{ j.lastName }}, thank you for judging. Open an entry, give each criterion a score and choose <strong>Save</strong>. You can change your scores until judging closes. Only the GIS Day team sees them. This link works until {{ j.expires | date: 'EEEE, MMMM d' : '-0600' }}.</p>
+
+      @if (j.competitions.length) {
+      <ng-container [ngTemplateOutlet]="searchBox" [ngTemplateOutletContext]="{ inPanel: false }"></ng-container>
+
+      <!-- A tab per competition, the first open, so a judge in one need not scroll past another (#3200, decided 1A). -->
+      <tamu-gisc-tabs class="competitions row" [(toggleIndex)]="tab">
+        @for (competition of j.competitions; track competition.competition) {
+        <tamu-gisc-tab [label]="competition.label">
+          <!-- The tab names the competition, so it has no heading of its own (lab, batch 131). -->
+          <div class="competition">
+            <p class="progress bold">{{ scoredLine(competition) }}</p>
+
+            @if (competition.closed) {
+            <div class="info-block notice">
+              <p>Judging is closed for this competition. Your scores are shown, but can no longer be changed.</p>
+            </div>
+            } @if (!competition.rubric) {
+            <div class="info-block warning">
+              <p>The rubric for this competition is not ready yet. Please check back later.</p>
+            </div>
+            } @else if (competition.submissions.length === 0) {
+            <p>There are no entries in this competition yet.</p>
+            } @if (competition.rubric; as rubric) {
+            <!-- By the first author's last name (#3200). Each row opens its entry in the details panel (#3230). -->
+            <ul class="entries">
+              @for (submission of competition.submissions; track submission.guid) {
+              <li>
+                <button type="button" class="entry" (click)="openRow(submission)">
+                  <span class="entry-title bold">{{ submission.title }}</span>
+                  @if (submission.presenters.length) {
+                  <span class="presenters">{{ submission.presenters.join(', ') }}</span>
+                  }
+                  <span class="entry-status">{{ submission.assessment ? 'Scored ' + submission.assessment.total + ' of ' + rubricTotal(rubric) : 'Not scored yet' }}</span>
+                </button>
+              </li>
+              }
+            </ul>
+            }
+          </div>
+        </tamu-gisc-tab>
+        }
+      </tamu-gisc-tabs>
+      } @else {
+      <p>You are not judging any competition at the moment.</p>
+      } } @else {
+      <!-- The site's loader while the link loads. -->
+      <div class="loader"></div>
+      }
+    </div>
+  </div>
+</section>
+
+@if (opened(); as entry) {
+<!-- One entry, over the list: the whole screen on a phone (#3230, decided 1B). Escape closes it. -->
+<tamu-gisc-details-panel class="judging-panel" [label]="entry.submission.title" (closeRequested)="closeRequested()">
+  <div class="panel-bar">
+    <div class="flex flex-row panel-top">
+      <ng-container [ngTemplateOutlet]="searchBox" [ngTemplateOutletContext]="{ inPanel: true }"></ng-container>
+      <button type="button" class="button snug panel-close" (click)="close()">Close</button>
+    </div>
+
+    <div class="flex flex-row align-center panel-nav">
+      <button type="button" class="button secondary snug" [disabled]="!neighbour(-1)" (click)="step(-1)">Previous</button>
+      <span class="panel-position">{{ entry.position + 1 }} of {{ entry.of }}</span>
+      <button type="button" class="button secondary snug" [disabled]="!neighbour(1)" (click)="step(1)">Next</button>
+    </div>
+  </div>
+
+  @if (leaving()) {
+  <!-- Asked on the page, not in the browser's confirm(), as the site asks elsewhere (#3105); decided 5B on #3230. -->
+  <div class="info-block context leave-ask" role="alert">
+    <p>Your scores for this entry have changed and are not saved. Leave without saving them?</p>
+    <div class="flex flex-row wrap align-center leave-ask-actions">
+      <button class="button primary" type="button" (click)="discard()">Leave without saving</button>
+      <button class="button secondary" type="button" (click)="stay()">Stay</button>
+    </div>
+  </div>
+  }
+
+  <p class="panel-competition">{{ entry.competition.label }}</p>
+  <h2 class="panel-title">{{ entry.submission.title }}</h2>
+  @if (entry.submission.presenters.length) {
+  <p class="presenters">{{ entry.submission.presenters.join(', ') }}</p>
+  } @if (entry.competition.closed) {
+  <div class="info-block notice">
+    <p>Judging is closed for this competition. Your scores are shown, but can no longer be changed.</p>
+  </div>
+  } @if (entry.competition.rubric; as rubric) {
+  <form class="form submission" [formGroup]="formFor(entry.submission)" (ngSubmit)="save(entry.competition, entry.submission)">
+    <div class="form-section">
+      <div class="form-section-body">
+        @if (entry.submission.abstract) {
+        <details class="trailer-1">
+          <summary>Abstract</summary>
+          <p class="abstract">{{ entry.submission.abstract }}</p>
+        </details>
+        } @for (criterion of rubric.criteria; track criterion.guid) {
+        <!-- One under the other, on a phone as on a computer: the criterion, its score, its levels (#3183). -->
+        <div class="criterion form-collection column">
+          <p class="bold trailer-1">{{ criterion.name }} <span class="out-of">(0 to {{ criterion.maxPoints }})</span></p>
+          <tamu-gisc-textbox [formControlName]="criterion.guid" type="number" [placeholder]="'Score out of ' + criterion.maxPoints" [floatLabel]="true"></tamu-gisc-textbox>
+          @if (criterion.levels.length) {
+          <!-- The levels as boxes side by side, as the rubric's own table lays them out, always shown (#3191). No box
+               is lit for the score: the rubric does not say which scores belong to which level. -->
+          <ul class="levels leader-1" [attr.aria-label]="'Levels for ' + criterion.name">
+            @for (level of criterion.levels; track level.label) {
+            <li class="level">
+              <p class="bold level-label">{{ level.label }}</p>
+              <p class="level-description">{{ level.description }}</p>
+            </li>
+            }
+          </ul>
+          }
+        </div>
+        }
+
+        <div class="form-collection column">
+          <tamu-gisc-textbox formControlName="comment" type="textarea" [rows]="3" placeholder="Comment (optional)" [floatLabel]="true"></tamu-gisc-textbox>
+        </div>
+
+        @if (saves()[entry.submission.guid]; as state) { @if (state.problem) {
+        <div class="info-block warning" role="alert">
+          <p>{{ state.problem }}</p>
+        </div>
+        } @else if (state.saved) {
+        <p class="saved">Saved, {{ entry.submission.assessment?.total }} of {{ rubricTotal(rubric) }} points.</p>
+        } } @else if (entry.submission.assessment; as assessment) {
+        <p class="saved">Scored {{ assessment.total }} of {{ rubricTotal(rubric) }} points.</p>
+        } @if (!entry.competition.closed) {
+        <div class="form-collection row">
+          <tamu-gisc-button type="submit" [value]="saves()[entry.submission.guid]?.saving ? 'Saving…' : 'Save'" [disabled]="!!saves()[entry.submission.guid]?.saving"></tamu-gisc-button>
+        </div>
+        }
+      </div>
+    </div>
+  </form>
+  }
+</tamu-gisc-details-panel>
+}
+
+<!-- The search, above the list and on the panel (#3230): an entry by its title or an author, in every competition. Its
+     matches open under the box in the site's shared search results panel, as the presenter search's do (#2923). -->
+<ng-template #searchBox let-inPanel="inPanel">
+  <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -- Not a control: it hears Escape and focus leaving from the box and the buttons inside it. -->
+  <div class="judge-search" (keydown.escape)="searchEscape($event)" (focusin)="matchesOpen.set(true)" (input)="matchesOpen.set(true)" (focusout)="searchBlur($event)">
+    <tamu-gisc-textbox type="text" placeholder="Find an entry by title or author" [formControl]="search" [clearable]="true" clearLabel="Clear the search"></tamu-gisc-textbox>
+    @if (matchesOpen() && search.value.trim() && inPanel === !!opened()) {
+    <div class="search-results-container" role="listbox" aria-label="Entries">
+      <div class="result-categories">
+        <div class="result-category">
+          @if (matches().length > 0) {
+          <p class="category-name">{{ matches().length }} {{ matches().length === 1 ? 'entry' : 'entries' }}@if (matches().length > matchesShown().length) {, the first {{ matchesShown().length }}}</p>
+          @for (match of matchesShown(); track match.submission.guid) {
+          <div class="result-item" role="option" aria-selected="false">
+            <button type="button" class="match" (click)="open(match)">
+              {{ match.submission.title }}
+              <span class="match-detail"> | {{ match.submission.presenters.join(', ') }}@if ((judge()?.competitions?.length ?? 0) > 1) { · {{ match.competition.label }}}</span>
+            </button>
+          </div>
+          } } @else {
+          <p class="category-name">No entries match "{{ search.value }}".</p>
+          }
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+</ng-template>

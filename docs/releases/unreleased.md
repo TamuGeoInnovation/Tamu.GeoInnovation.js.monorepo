@@ -50,6 +50,26 @@ Nothing in this section has merged into a release yet. It exists because
 read rather than reconstructed. The 30 October section below it is kept as a record and is **out of date**; read
 this one.
 
+### GIS Day on production
+
+Updated at every GIS Day rollout, as step 4 of
+[Before any deploy](../gisday-migrations.md#before-any-deploy-what-is-in-the-image)
+([#3139](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3139)).
+
+| | |
+| --- | --- |
+| Images, both namespaces (`gisday`, `gisday-ucgis`) | The site `gisday-angular:sha-fa3b8bc`; the API `gisday-nest:sha-f4fd0d1` |
+| The site's last commit | `fa3b8bc`, PR 3231 ([#3230](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3230), the judge's page searches its entries, and each opens in a details panel that Escape closes) |
+| The site rolled out | 23 November 2026, about 8:20 AM Central, by the maintainer, in both namespaces: site only, with no API change and no migration since `f4fd0d1`. Checked against the cluster: both sites on `sha-fa3b8bc`, both APIs on `sha-f4fd0d1` |
+| The site before it | `sha-7a735e8` (20 November, about 7:30 AM Central, site only: PR 3224, [#3221](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3221), each day on the Sessions page collapses): the site's rollback target |
+| The API rolled out | `sha-f4fd0d1`, 18 November 2026, about 12:42 PM Central, by the maintainer: the migration, then the API, then the site, in both namespaces. PR 3210 ([#3209](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3209), each session sets its own check-in window, by default 5 minutes before its start to 10 after its end); `txgisday.org/api/seasons/active` returned `checkInMinutesBefore` 5 and `checkInMinutesAfter` 10 on all 65 of its sessions |
+| The API before it | `sha-7244af9`: the API's rollback target. It works with the new columns, which it ignores |
+| The last migration in it | `AddCheckInMinutes` (`1794967200000`): two columns on `events` with defaults, applied with `-Apply -NoBackup` on both databases at 12:40 PM, after a clean dry run (332 and 75 sessions, all on 5 and 10); reports in kubernetes-config `6. GIS Day/migrations/` |
+
+The cluster is the final word:
+`kubectl -n gisday get deployment gisday-nest gisday-angular -o custom-columns=NAME:.metadata.name,IMAGE:.spec.template.spec.containers[0].image`,
+and the same with `-n gisday-ucgis`. If it disagrees with this table, the table is out of date: correct it.
+
 ### AggieMap on 10 November, 2:00 AM Central: what another machine most needs to know
 
 **Dev is cleared, the notes are cut, and the promotion is the only step left.** `3254b114e` is tagged **`dev-2026-11-10`** and was cleared

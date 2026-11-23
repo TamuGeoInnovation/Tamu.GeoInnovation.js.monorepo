@@ -294,7 +294,7 @@ describe('CheckInProvider', () => {
   });
 
   /**
-   * #1795: an attendee checks in only from a session's start until 15 minutes after its end, the
+   * #1795: an attendee checks in only from 5 minutes before a session starts until 10 minutes after it ends, the
    * window the session page shows the button in. Organizers adding a check-in are exempt.
    */
   describe('.insertUserCheckin() and when check-in is open', () => {
@@ -330,17 +330,19 @@ describe('CheckInProvider', () => {
       at('2026-11-17T22:30:00Z'); // 4:30 PM Central the day before
 
       await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(
-        new ForbiddenException('Check-in for this session opens when it starts, on Wednesday, November 18 at 4:00 PM.')
+        new ForbiddenException(
+          'Check-in for this session opens 5 minutes before it starts, on Wednesday, November 18 at 3:55 PM.'
+        )
       );
       expect(save).not.toHaveBeenCalled();
     });
 
-    it('refuses an attendee a minute early, and says when it opens', async () => {
+    it('refuses an attendee 6 minutes early, and says when it opens', async () => {
       withSession();
-      at('2026-11-18T21:59:00Z'); // 3:59 PM Central
+      at('2026-11-18T21:54:00Z'); // 3:54 PM Central
 
       await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(
-        new ForbiddenException('Check-in for this session opens when it starts, at 4:00 PM.')
+        new ForbiddenException('Check-in for this session opens 5 minutes before it starts, at 3:55 PM.')
       );
       expect(save).not.toHaveBeenCalled();
     });
@@ -352,28 +354,42 @@ describe('CheckInProvider', () => {
       await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(ForbiddenException);
     });
 
-    it('checks in an attendee from the moment the session starts', async () => {
+    it('checks in an attendee from 5 minutes before the session starts', async () => {
       withSession();
-      at('2026-11-18T22:00:00Z'); // 4:00 PM Central
+      at('2026-11-18T21:55:00Z'); // 3:55 PM Central
 
       await expect(provider.insertUserCheckin('e-1', 'acct-1')).resolves.toEqual({ guid: 'c-new' });
     });
 
-    it('checks in an attendee up to 15 minutes after the session ends', async () => {
+    it('checks in an attendee up to 10 minutes after the session ends', async () => {
       withSession();
-      at('2026-11-18T23:15:00Z'); // 5:15 PM Central
+      at('2026-11-18T23:10:00Z'); // 5:10 PM Central
 
       await expect(provider.insertUserCheckin('e-1', 'acct-1')).resolves.toEqual({ guid: 'c-new' });
     });
 
     it('refuses an attendee after that, and says check-in has closed', async () => {
       withSession();
-      at('2026-11-18T23:16:00Z');
+      at('2026-11-18T23:11:00Z');
 
       await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(
         new ForbiddenException('Check-in for this session has closed.')
       );
       expect(save).not.toHaveBeenCalled();
+    });
+
+    // #3209: a session sets its own window.
+    it("keeps to the session's own minutes, and says when it opens", async () => {
+      withSession({ checkInMinutesBefore: 0, checkInMinutesAfter: 30 });
+      at('2026-11-18T21:59:00Z'); // 3:59 PM Central
+
+      await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(
+        new ForbiddenException('Check-in for this session opens when it starts, at 4:00 PM.')
+      );
+
+      at('2026-11-18T23:30:00Z'); // 5:30 PM Central
+
+      await expect(provider.insertUserCheckin('e-1', 'acct-1')).resolves.toEqual({ guid: 'c-new' });
     });
 
     it('refuses an attendee to a session whose time is not set or cannot be read, as the page shows no button', async () => {
@@ -400,7 +416,7 @@ describe('CheckInProvider', () => {
         }
       });
 
-      await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(/opens when it starts/);
+      await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(/opens 5 minutes before it starts/);
     });
 
     it('lets an organizer add a check-in at any time', async () => {
@@ -455,8 +471,8 @@ describe('CheckInProvider', () => {
 
     it.each([
       ['the day before', '2026-11-17T22:30:00Z'],
-      ['a minute before the start', '2026-11-18T21:59:00Z'],
-      ['16 minutes after the end', '2026-11-18T23:16:00Z'],
+      ['6 minutes before the start', '2026-11-18T21:54:00Z'],
+      ['11 minutes after the end', '2026-11-18T23:11:00Z'],
       ['a week later', '2026-11-25T22:30:00Z']
     ])('checks in an attendee %s, and marks it outside the session time', async (_, now) => {
       withSession();
@@ -467,8 +483,8 @@ describe('CheckInProvider', () => {
     });
 
     it.each([
-      ['at the start', '2026-11-18T22:00:00Z'],
-      ['15 minutes after the end', '2026-11-18T23:15:00Z']
+      ['5 minutes before the start', '2026-11-18T21:55:00Z'],
+      ['10 minutes after the end', '2026-11-18T23:10:00Z']
     ])('does not mark a check-in %s, inside the session time', async (_, now) => {
       withSession();
       at(now);
@@ -516,9 +532,9 @@ describe('CheckInProvider', () => {
 
     it('still refuses an attendee outside the time when the session is not open at any time', async () => {
       withSession({ checkInAnyTime: false });
-      at('2026-11-18T21:59:00Z');
+      at('2026-11-18T21:54:00Z');
 
-      await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(/opens when it starts/);
+      await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(/opens 5 minutes before it starts/);
       expect(save).not.toHaveBeenCalled();
     });
 
@@ -619,9 +635,9 @@ describe('CheckInProvider', () => {
 
       try {
         await expect(provider.insertUserCheckin('e-1', 'acct-1', undefined, 'code-1')).rejects.toThrow(
-          /opens when it starts/
+          /opens 5 minutes before it starts/
         );
-        await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(/opens when it starts/);
+        await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(/opens 5 minutes before it starts/);
       } finally {
         jest.useRealTimers();
       }

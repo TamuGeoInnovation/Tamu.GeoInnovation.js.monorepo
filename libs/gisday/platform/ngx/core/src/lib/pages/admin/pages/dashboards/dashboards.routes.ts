@@ -4,6 +4,7 @@ import { RsvpDashboardComponent } from './rsvp-dashboard/rsvp-dashboard.componen
 import { AccountDashboardComponent } from './account-dashboard/account-dashboard.component';
 import { SpeakerBadgesComponent } from './speaker-badges/speaker-badges.component';
 import { CheckInDashboardComponent } from './check-in-dashboard/check-in-dashboard.component';
+import { VgiDashboardComponent } from './vgi-dashboard/vgi-dashboard.component';
 
 /** The admin dashboards (#2878). Each is a child here and an entry under Dashboards in the admin menu. */
 export const dashboardsRoutes: Routes = [
@@ -14,6 +15,10 @@ export const dashboardsRoutes: Routes = [
   {
     path: 'check-ins',
     component: CheckInDashboardComponent
+  },
+  {
+    path: 'vgi-submissions',
+    component: VgiDashboardComponent
   },
   {
     path: 'accounts',

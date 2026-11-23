@@ -2,6 +2,7 @@ import { BadRequestException, PayloadTooLargeException } from '@nestjs/common';
 
 import { declaredJpeg, declaredPng } from '@tamu-gisc/common/node/images';
 
+import { DEFAULT_UPLOAD_LIMITS } from '@tamu-gisc/common/nest/services';
 import { UPLOAD_IMAGE_RULES } from '@tamu-gisc/gisday/common';
 
 import { UPLOAD_IMAGE_FORMATS, refuseUnsafeImage } from './image-upload';
@@ -33,6 +34,11 @@ describe('refuseUnsafeImage (#2937)', () => {
   it('takes the formats the site offers, from the one shared definition', () => {
     expect(UPLOAD_IMAGE_FORMATS).toBe(UPLOAD_IMAGE_RULES.formats);
     expect(UPLOAD_IMAGE_RULES.accept).toBe('image/jpeg,image/png');
+  });
+
+  // #3074: the site refuses an image over the size the upload itself is cut off at, before it is sent.
+  it('caps images at the size the upload limit does', () => {
+    expect((UPLOAD_IMAGE_RULES as { maxBytes?: number }).maxBytes).toBe(DEFAULT_UPLOAD_LIMITS.fileSize);
   });
 
   it('refuses a file with no content at all', () => {

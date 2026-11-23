@@ -60,6 +60,18 @@ describe('UserSubmissionAddEditFormComponent, on Texas A&M site', () => {
     expect(page.textContent).not.toContain('TxGIS Day');
   });
 
+  // #3144: finalists were not finding it below the whole form, so it comes first, above the form's own sections.
+  it('puts Presentation files first on an existing submission, above the form, and leaves it off a new one', () => {
+    const titles = (type: 'create' | 'edit') =>
+      [...(render(type).nativeElement as HTMLElement).querySelectorAll('.form-section-title')].map((t) =>
+        t.textContent.trim()
+      );
+
+    expect(titles('edit')).toEqual(['Presentation files', 'Modify Student Competition Submission']);
+    TestBed.resetTestingModule();
+    expect(titles('create')).toEqual(['Student Competition Submission']);
+  });
+
   it('names its own site in the message after submitting', () => {
     const fixture = render('create');
 

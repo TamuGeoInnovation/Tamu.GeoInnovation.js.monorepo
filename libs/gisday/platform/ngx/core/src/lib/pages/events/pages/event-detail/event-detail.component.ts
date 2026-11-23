@@ -31,7 +31,7 @@ import {
 } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { GISDayRoles, sortSpeakersByAffiliation } from '@tamu-gisc/gisday/platform/ngx/common';
+import { GISDayRoles, sortSpeakersByName } from '@tamu-gisc/gisday/platform/ngx/common';
 import { NgIf, NgFor, AsyncPipe, DatePipe } from '@angular/common';
 import { AccordionComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 import { AccordionHeaderComponent } from '@tamu-gisc/ui-kits/ngx/layout';
@@ -191,7 +191,8 @@ export class EventDetailComponent implements OnInit, OnDestroy {
     );
 
     // Grouped by company, then by name, so the people from one company sit together (#1769).
-    this.presenters$ = this.event$.pipe(map((event) => sortSpeakersByAffiliation(event?.speakers)));
+    // By last name, then first name, A to Z, not grouped by company (#3196, which replaced #1769's grouping).
+    this.presenters$ = this.event$.pipe(map((event) => sortSpeakersByName(event?.speakers)));
 
     this.isPastSeason$ = this.event$.pipe(
       switchMap((event) => this.seasonService.isPastSeasonDay(event?.day?.guid)),
@@ -259,13 +260,13 @@ export class EventDetailComponent implements OnInit, OnDestroy {
         });
       });
 
-    // Check-in is open from the session's start until 15 minutes after its end: the same rule the API
-    // applies (#1795), from libs/gisday/common. A time that cannot be read (#1772) means the session is
-    // never live, rather than an error. A session open at any time (#2635) is always live and never over,
-    // as the API accepts it at any time.
+    // Check-in is open from the session's own minutes before its start until its minutes after its end, by default 5
+    // and 10 (#3209): the same rule the API applies (#1795), from libs/gisday/common. A time that cannot be read (#1772)
+    // means the session is never live, rather than an error. A session open at any time (#2635) is always live and
+    // never over, as the API accepts it at any time.
     const parsedDates = this.event$.pipe(
       map((event) => {
-        const window = checkInWindow(event?.day?.date, event?.startTime, event?.endTime);
+        const window = checkInWindow(event?.day?.date, event?.startTime, event?.endTime, event);
 
         return {
           start: window?.opens ?? null,
@@ -331,7 +332,10 @@ export class EventDetailComponent implements OnInit, OnDestroy {
       switchMap((event) =>
         forkJoin([
           this.checkinService.getCheckinsForEvent(event.guid),
-          this.us.getUsers().pipe(catchError(() => of([])))
+          this.us.getUsers().pipe(
+            map((list) => list.users),
+            catchError(() => of([]))
+          )
         ]).pipe(
           map(([checkIns, users]) => ({ rows: sessionCheckInRows(checkIns, users) })),
           catchError((err) =>

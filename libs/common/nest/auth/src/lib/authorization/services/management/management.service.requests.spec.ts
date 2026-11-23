@@ -86,6 +86,8 @@ describe('ManagementService, against a stand-in for the Management API', () => {
 
       // As the API answers: sorted by name when asked, a page of `per_page` (50 by default) at `page`, and with
       // include_totals the page in an envelope with where it starts and how many there are; without it, a bare array.
+      // A search (`q`) keeps the users whose name or email holds every `*term*` it names. Like the API, it refuses any
+      // page that reaches past the first 1,000 results, with the body the tenant sends (#2574).
       if (url.pathname === '/api/v2/users' && request.method === 'GET') {
         const q = url.searchParams.get('q') ?? '';
         // A search by when the account was made, as getUsersCreatedBetween sends it:
@@ -93,6 +95,12 @@ describe('ManagementService, against a stand-in for the Management API', () => {
         const range = /^created_at:\[(\S+) TO (\S+)\}/.exec(q);
         // A search by id, as getUsersByIds sends it: user_id:("a" OR "b").
         const ids = [...q.matchAll(/"([^"]*)"/g)].map((m) => m[1]);
+        // A search by name or email, as getUsers sends it (#2574, #3116): (name:word* OR given_name:word* OR ...) for each
+        // word, escaped, matching from the start of a word, as Auth0's v3 search does. A leading wildcard (name:*word*)
+        // matches nothing here, as Auth0 refuses it.
+        const terms = [...q.matchAll(/\bname:((?:\\.|[^*\\\s])+)\*/g)].map((m) =>
+          m[1].replace(/\\(.)/g, '$1').toLowerCase()
+        );
         const all = Object.values(users)
           .filter((u) => {
             if (!q) {
@@ -101,9 +109,22 @@ describe('ManagementService, against a stand-in for the Management API', () => {
 
             if (range) {
               const made = String(u['created_at']);
-              const gisday = !q.includes('_exists_:app_metadata.gisday') || Boolean((u['app_metadata'] as Record<string, unknown>)?.['gisday']);
+              const gisday =
+                !q.includes('_exists_:app_metadata.gisday') ||
+                Boolean((u['app_metadata'] as Record<string, unknown>)?.['gisday']);
 
               return made >= range[1] && made < range[2] && gisday;
+            }
+
+            if (terms.length > 0) {
+              return terms.every((t) =>
+                [u['name'], u['given_name'], u['family_name'], u['email']].some((v) =>
+                  String(v ?? '')
+                    .toLowerCase()
+                    .split(/\s+/)
+                    .some((word) => word.startsWith(t))
+                )
+              );
             }
 
             return ids.includes(String(u['user_id']));
@@ -117,6 +138,17 @@ describe('ManagementService, against a stand-in for the Management API', () => {
           );
         const perPage = Number(url.searchParams.get('per_page') ?? 50);
         const start = Number(url.searchParams.get('page') ?? 0) * perPage;
+
+        if (start + perPage > 1000) {
+          return json(400, {
+            statusCode: 400,
+            error: 'Bad Request',
+            message:
+              'You can only page through the first 1000 records. See https://auth0.com/docs/users/search/v3/view-search-results-by-page#limitation',
+            errorCode: 'invalid_paging'
+          });
+        }
+
         const page = all.slice(start, start + perPage);
 
         return url.searchParams.get('include_totals') === 'true'
@@ -271,13 +303,14 @@ describe('ManagementService, against a stand-in for the Management API', () => {
     });
 
     it('lists all 51 users, not only the first 50', async () => {
-      const profiles = await new ManagementService(credentials).getUsers();
+      const { users: profiles, truncated } = await new ManagementService(credentials).getUsers();
 
       expect(profiles).toHaveLength(51);
+      expect(truncated).toBe(false);
     });
 
     it('keeps them sorted by name, across pages', async () => {
-      const names = (await new ManagementService(credentials).getUsers()).map((p) => p.user_info.name);
+      const names = (await new ManagementService(credentials).getUsers()).users.map((p) => p.user_info.name);
 
       expect(names[0]).toBe('User 00');
       expect(names.at(-1)).toBe('User 50');
@@ -290,19 +323,86 @@ describe('ManagementService, against a stand-in for the Management API', () => {
       expect(apiRequests().map((r) => r.query['page'])).toEqual(['0', '1']);
       expect(apiRequests().every((r) => r.query['sort'] === 'name:1' && r.query['per_page'] === '50')).toBe(true);
     });
+  });
 
-    it('stops at 100 pages, and says so, however many pages the API offers', async () => {
+  describe('getUsers, with more users than the API will page through (#2574)', () => {
+    // 1,050 users: 21 pages of 50. The API refuses page 21 (index 20), as it refuses anything past the first 1,000.
+    // `User 1040 Zed` sorts after the first 1,000, so only a search can find it.
+    beforeEach(() => {
       users = Object.fromEntries(
-        Array.from({ length: 6000 }, (_, i) => [`auth0|${i}`, { user_id: `auth0|${i}`, name: `User ${i}` }])
+        Array.from({ length: 1050 }, (_, i) => {
+          const id = `auth0|${i}`;
+          const name = i === 1040 ? 'User 1040 Zed' : `User ${String(i).padStart(4, '0')}`;
+          return [id, { user_id: id, name, email: `user${i}@example.edu` }];
+        })
       );
+    });
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    it('returns the first 1,000, says the list is cut off, and does not fail', async () => {
       const warn = vi.spyOn(Logger, 'warn').mockImplementation(() => undefined);
 
-      const profiles = await new ManagementService(credentials).getUsers();
+      const { users: profiles, truncated } = await new ManagementService(credentials).getUsers();
 
-      expect(apiRequests()).toHaveLength(100);
-      expect(profiles).toHaveLength(5000);
-      expect(warn).toHaveBeenCalledWith('Stopped listing users after 100 pages (5000 users).', 'ManagementService');
-      warn.mockRestore();
+      expect(profiles).toHaveLength(1000);
+      expect(truncated).toBe(true);
+      expect(warn).toHaveBeenCalledWith(
+        'Listed the first 1000 of 1050 users: the Management API pages through no more.',
+        'ManagementService'
+      );
+    });
+
+    it('stops before the page the API refuses', async () => {
+      vi.spyOn(Logger, 'warn').mockImplementation(() => undefined);
+
+      await new ManagementService(credentials).getUsers();
+
+      expect(apiRequests().map((r) => r.query['page'])).toEqual(Array.from({ length: 20 }, (_, i) => String(i)));
+    });
+
+    it('finds by search a user past the first 1,000', async () => {
+      const { users: profiles, truncated } = await new ManagementService(credentials).getUsers(undefined, 'zed');
+
+      expect(profiles.map((p) => p.user_info.name)).toEqual(['User 1040 Zed']);
+      expect(truncated).toBe(false);
+    });
+
+    it("asks Auth0's v3 user search for a name or email holding every word, sorted by name", async () => {
+      await new ManagementService(credentials).getUsers(undefined, '  Zed  user1040 ');
+
+      expect(apiRequests()[0].query).toEqual({
+        sort: 'name:1',
+        page: '0',
+        per_page: '50',
+        include_totals: 'true',
+        // #3116: from the start of each word. Auth0's v3 search refuses a leading wildcard (name:*Zed*), so every search
+        // failed and Admin > Users spun for ever.
+        q:
+          '(name:Zed* OR given_name:Zed* OR family_name:Zed* OR email:Zed*) AND ' +
+          '(name:user1040* OR given_name:user1040* OR family_name:user1040* OR email:user1040*)',
+        search_engine: 'v3'
+      });
+    });
+
+    it('escapes what Lucene would read as syntax, and puts no wildcard before a word', async () => {
+      await new ManagementService(credentials).getUsers(undefined, 'a+b:c*(d)"e\\');
+
+      const escaped = String.raw`a\+b\:c\*\(d\)\"e\\`;
+      const q = apiRequests()[0].query['q'];
+
+      expect(q).toBe(`(name:${escaped}* OR given_name:${escaped}* OR family_name:${escaped}* OR email:${escaped}*)`);
+      expect(q).not.toMatch(/:\*/);
+    });
+
+    it('treats a blank search as no search', async () => {
+      vi.spyOn(Logger, 'warn').mockImplementation(() => undefined);
+
+      await new ManagementService(credentials).getUsers(undefined, '   ');
+
+      expect(apiRequests()[0].query['q']).toBeUndefined();
     });
   });
 
@@ -321,11 +421,11 @@ describe('ManagementService, against a stand-in for the Management API', () => {
     it('maps every user on the page', async () => {
       const profiles = await new ManagementService(credentials).getUsers({ app_metadata: 'gisday', user_metadata: '*' });
 
-      expect(profiles.map((p) => [p.user_info.id, p.user_info.connection, p.user_info.social])).toEqual([
+      expect(profiles.users.map((p) => [p.user_info.id, p.user_info.connection, p.user_info.social])).toEqual([
         ['auth0|1', 'auth0', false],
         ['google-oauth2|2', 'google-oauth2', true]
       ]);
-      expect(profiles[0].app_metadata).toEqual({ gisday: { checkins: 3 } });
+      expect(profiles.users[0].app_metadata).toEqual({ gisday: { checkins: 3 } });
     });
   });
 
@@ -348,7 +448,12 @@ describe('ManagementService, against a stand-in for the Management API', () => {
         };
       }
 
-      users['auth0|old'] = { user_id: 'auth0|old', name: 'Old', created_at: '2024-01-01T00:00:00.000Z', app_metadata: { gisday: {} } };
+      users['auth0|old'] = {
+        user_id: 'auth0|old',
+        name: 'Old',
+        created_at: '2024-01-01T00:00:00.000Z',
+        app_metadata: { gisday: {} }
+      };
     });
 
     const searches = () => apiRequests().map((r) => r.query['q']);
@@ -356,16 +461,33 @@ describe('ManagementService, against a stand-in for the Management API', () => {
     it('asks for the accounts made in the window, with ISO times and an end it does not include', async () => {
       await new ManagementService(credentials).getUsersCreatedBetween(from, to, '_exists_:app_metadata.gisday');
 
-      expect(searches()[0]).toBe('created_at:[2025-11-21T06:00:00.000Z TO 2026-11-21T06:00:00.000Z} AND _exists_:app_metadata.gisday');
+      expect(searches()[0]).toBe(
+        'created_at:[2025-11-21T06:00:00.000Z TO 2026-11-21T06:00:00.000Z} AND _exists_:app_metadata.gisday'
+      );
     });
 
     it('returns each account with a GIS Day profile in the window, oldest first, with when it was made', async () => {
-      const found = await new ManagementService(credentials).getUsersCreatedBetween(from, to, '_exists_:app_metadata.gisday', {
-        app_metadata: 'gisday',
-        user_metadata: []
-      });
+      const found = await new ManagementService(credentials).getUsersCreatedBetween(
+        from,
+        to,
+        '_exists_:app_metadata.gisday',
+        {
+          app_metadata: 'gisday',
+          user_metadata: []
+        }
+      );
 
-      expect(found.map((f) => f.profile.user_info.id)).toEqual(['auth0|0', 'auth0|1', 'auth0|3', 'auth0|4', 'auth0|5', 'auth0|6', 'auth0|7', 'auth0|8', 'auth0|9']);
+      expect(found.map((f) => f.profile.user_info.id)).toEqual([
+        'auth0|0',
+        'auth0|1',
+        'auth0|3',
+        'auth0|4',
+        'auth0|5',
+        'auth0|6',
+        'auth0|7',
+        'auth0|8',
+        'auth0|9'
+      ]);
       expect(found[0].created).toBe('2025-12-15T00:00:00.000Z');
       expect(found[0].profile.app_metadata).toEqual({ gisday: { attendeeType: 'student' } });
     });

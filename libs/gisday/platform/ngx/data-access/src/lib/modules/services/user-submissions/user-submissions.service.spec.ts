@@ -38,6 +38,20 @@ describe('UserSubmissionsService.review()', () => {
 
     await expect(result).resolves.toEqual({ reviewed: ['A', 'B'], failed: [] });
   });
+
+  // #3100: the sender chosen in the window comes back beside the texts, and goes to the API on its own, to be checked.
+  it('sends the sender chosen in the window as `sender`, not as a text', () => {
+    service.review(['a'], true, undefined, { poster: 'Hi', ':sender': 'jadmin@tamu.edu' }).subscribe();
+    const request = http.expectOne('api/user-submissions/review');
+
+    expect(request.request.body).toEqual({
+      submissions: ['a'],
+      acceptance: true,
+      templates: { poster: 'Hi' },
+      sender: 'jadmin@tamu.edu'
+    });
+    request.flush({ reviewed: [], failed: [] });
+  });
 });
 
 /** #2958: the result says how many were done and lists any that failed, by title. */
@@ -106,6 +120,19 @@ describe('UserSubmissionsService, the final reminder', () => {
     const send = http.expectOne({ method: 'POST', url: 'api/user-submissions/remind' });
 
     expect(send.request.body).toEqual({ submissions: ['a', 'b'], templates: { 'poster-reminder': 'Hi' } });
+    send.flush({ sent: [], skipped: [], failed: [] });
+  });
+
+  // #3100: the sender chosen in the window goes to the API as `sender`, to be checked there.
+  it('sends the sender chosen in the window as `sender`, not as a text', () => {
+    service.remind(['a'], { 'poster-reminder': 'Hi', ':sender': 'jadmin@tamu.edu' }).subscribe();
+    const send = http.expectOne({ method: 'POST', url: 'api/user-submissions/remind' });
+
+    expect(send.request.body).toEqual({
+      submissions: ['a'],
+      templates: { 'poster-reminder': 'Hi' },
+      sender: 'jadmin@tamu.edu'
+    });
     send.flush({ sent: [], skipped: [], failed: [] });
   });
 });

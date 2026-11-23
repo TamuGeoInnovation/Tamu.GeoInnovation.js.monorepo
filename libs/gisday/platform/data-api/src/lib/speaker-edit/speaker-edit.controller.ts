@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -20,6 +21,7 @@ import { DEFAULT_UPLOAD_LIMITS } from '@tamu-gisc/common/nest/services';
 
 import { ProfileEmail, SpeakerEditFields, SpeakerEditService } from './speaker-edit.service';
 import { siteHost } from '../_base/site-of-request';
+import { EmailSenderService } from '../contact/email-sender.service';
 
 // Where it lived first; kept so its importers need not change.
 export { siteHost };
@@ -31,14 +33,28 @@ export { siteHost };
  */
 @Controller('speaker-edits')
 export class SpeakerEditController {
-  constructor(private readonly service: SpeakerEditService) {}
+  constructor(
+    private readonly service: SpeakerEditService,
+    private readonly senders: EmailSenderService
+  ) {}
 
-  /** Emails each named speaker their own link, in the subject and text the admin approved, if given (#3023). */
+  /**
+   * Emails each named speaker their own link, in the subject and text the admin approved, if given (#3023), as the
+   * sender they chose, checked first (#3100).
+   */
   @Permissions(['update:speakers'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Post('send')
-  public send(@Body() body: { speakers: Array<string> } & Partial<ProfileEmail>, @Request() req) {
-    return this.service.sendLinks(body?.speakers, siteHost(req?.headers), emailOf(body));
+  public async send(
+    @Body() body: { speakers: Array<string>; sender?: string; together?: unknown } & Partial<ProfileEmail>,
+    @Request() req
+  ) {
+    refuseTogether(body);
+
+    const host = siteHost(req?.headers);
+    const sender = await this.senders.resolve(req?.user, body?.sender, host);
+
+    return this.service.sendLinks(body?.speakers, host, emailOf(body), sender);
   }
 
   /** The email `send` would send, for the admin to read and edit first (#3023). Nothing is sent. */
@@ -56,8 +72,24 @@ export class SpeakerEditController {
   @Permissions(['update:speakers', 'read:competitions'], 'all')
   @UseGuards(JwtGuard, PermissionsGuard)
   @Post('send-for-submissions')
-  public sendForSubmissions(@Body() body: { submissions: Array<string> } & Partial<ProfileEmail>, @Request() req) {
-    return this.service.sendLinksForSubmissions(body?.submissions, siteHost(req?.headers), emailOf(body));
+  public async sendForSubmissions(
+    @Body()
+    body: {
+      submissions: Array<string>;
+      sender?: string;
+      speakers?: Array<string>;
+      together?: unknown;
+    } & Partial<ProfileEmail>,
+    @Request() req
+  ) {
+    refuseTogether(body);
+
+    const host = siteHost(req?.headers);
+    // The sender they chose, checked before anything is sent (#3100).
+    const sender = await this.senders.resolve(req?.user, body?.sender, host);
+
+    // Only the speakers ticked in the window, when it names them (#3104).
+    return this.service.sendLinksForSubmissions(body?.submissions, host, emailOf(body), sender, body?.speakers);
   }
 
   /** The email `send-for-submissions` would send, for the admin to read and edit first (#3023). Nothing is sent. */
@@ -125,6 +157,21 @@ export class SpeakerEditController {
     @UploadedFile() photo?: Express.Multer.File
   ) {
     return this.service.propose(token, body, photo);
+  }
+}
+
+/**
+ * Refuses a profile email asked to go to its speakers together (#3104). Each copy carries that speaker's own link to edit
+ * their profile, so one email to several would hand each of them the others' links. The window never offers it; this
+ * stops a request that asks anyway, before anything is sent. `why` says it for another email that carries the same link,
+ * the Ask for slides email (#3113).
+ */
+export function refuseTogether(
+  body: { together?: unknown } | undefined,
+  why = "The profile email carries each speaker's own link to edit their profile, so it is sent as a copy each, never together."
+): void {
+  if (body?.together) {
+    throw new BadRequestException(why);
   }
 }
 

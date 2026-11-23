@@ -121,6 +121,20 @@ describe('SpeakerEditService', () => {
     jest.clearAllMocks();
   });
 
+  // #3113: the Ask for slides email carries the same link as the profile email, made here, never a second kind.
+  it('makes a speaker a link of their own for another email, stored only by its hash, that opens their edit page', async () => {
+    const { url, expires } = await service.newLink(ana as never, 'gisday.tamu.edu');
+    const token = /\/presenters\/edit\/([A-Za-z0-9_-]{43})$/.exec(url)[1];
+
+    expect(url.startsWith('https://gisday.tamu.edu/presenters/edit/')).toBe(true);
+    expect(links).toHaveLength(1);
+    expect(links[0]).toEqual(expect.objectContaining({ speaker: { guid: 'speaker-ana' }, tokenHash: hashOf(token) }));
+    expect(JSON.stringify(links)).not.toContain(token);
+    expect(expires.getTime()).toBeGreaterThan(Date.now());
+    expect((await service.forLink(token)).firstName).toBe('Ana');
+    expect(sent).toEqual([]);
+  });
+
   it("emails each speaker their own link on the site's address, and skips one with no email", async () => {
     const result = await service.sendLinks(['speaker-ana', 'speaker-ben'], 'gisday.tamu.edu');
 
@@ -150,6 +164,21 @@ describe('SpeakerEditService', () => {
     expect(sent[0].text).toContain('https://gisday.tamu.edu/presenters/edit/');
   });
 
+  // #3100: the sender the admin chose in the window, as the controller checked it, is the From, and replies go to it.
+  it('sends as the sender chosen, with replies to it, and from the site when none was chosen', async () => {
+    const chosen = { from: '"Jo Admin (Texas A&M GIS Day)" <jadmin@tamu.edu>', replyTo: 'jadmin@tamu.edu' };
+    const previousFrom = process.env.MAILROOM_FROM;
+    process.env.MAILROOM_FROM = 'TxGIS Day <gisday@example.edu>';
+
+    await service.sendLinks(['speaker-ana'], 'gisday.tamu.edu', undefined, chosen);
+    links = [];
+    await service.sendLinks(['speaker-ana'], 'gisday.tamu.edu');
+
+    process.env.MAILROOM_FROM = previousFrom;
+    expect(sent[0]).toEqual(expect.objectContaining(chosen));
+    expect(sent[1]).toEqual(expect.objectContaining({ from: '"Texas A&M GIS Day" <gisday@example.edu>' }));
+  });
+
   /**
    * #3023: the email is shown and editable before it goes, as the acceptance emails are: one group, today's subject and
    * text as the default, and an example for the first speaker with a stand-in for the link, never a real one.
@@ -168,6 +197,16 @@ describe('SpeakerEditService', () => {
       expect(JSON.stringify(preview)).not.toContain('/presenters/edit/');
       expect(links).toEqual([]);
       expect(sent).toEqual([]);
+    });
+
+    // #3104: the window lists them to tick, and offers only a copy each, saying why.
+    it('lists the speakers it can reach to tick, and offers only a copy each, as each has their own link', async () => {
+      const preview = await service.previewLinks(['speaker-ana', 'speaker-ben'], 'gisday.tamu.edu');
+
+      expect(preview.recipients).toEqual([
+        { guid: 'speaker-ana', name: 'Ana Ruiz', firstName: 'Ana', email: 'ana@example.edu' }
+      ]);
+      expect(preview.copyEachReason).toMatch(/own link/);
     });
 
     it("sends the subject and text as edited, with each speaker's own link filled in", async () => {
@@ -466,7 +505,14 @@ describe('SpeakerEditService.sendLinksForSubmissions (#2958)', () => {
   const S3 = '7c3f5e4a-2d6b-4e8c-9a0f-9b8c7d6e5f43';
   const S4 = '8d4a6f5b-3e7c-4f9d-8b1a-0c9d8e7f6a54';
   const speakers = [
-    { guid: 'sp-ana', firstName: 'Ana', lastName: 'Ruiz', email: ' Ana.Ruiz@TAMU.edu ', season: { guid: S2026 } },
+    {
+      guid: 'sp-ana',
+      firstName: 'Ana',
+      lastName: 'Ruiz',
+      email: ' Ana.Ruiz@TAMU.edu ',
+      // The season's days, for the email's design on Texas A&M's site (#3114).
+      season: { guid: S2026, days: [{ date: '2026-11-16T06:00:00.000Z' }, { date: '2026-11-20T06:00:00.000Z' }] }
+    },
     { guid: 'sp-cy', firstName: 'Cy', lastName: 'Diaz', email: 'cy@tamu.edu', season: { guid: S2026 } },
     { guid: 'sp-eve', firstName: 'Eve', lastName: 'Kim', email: 'eve@tamu.edu', season: { guid: S2026 } },
     { guid: 'sp-fay', firstName: 'Fay', lastName: 'Ng', email: 'fay@tamu.edu', season: { guid: S2026 } },
@@ -578,6 +624,22 @@ describe('SpeakerEditService.sendLinksForSubmissions (#2958)', () => {
     expect(sent).toEqual([]);
   });
 
+  // #3104: only the speakers ticked in the window, each their own copy; one not ticked gets nothing.
+  it('sends only to the speakers ticked, when the window names them', async () => {
+    const preview = await service.previewLinksForSubmissions([S1, S2], 'gisday.tamu.edu');
+
+    expect(preview.recipients.map((r) => r.guid)).toEqual(['sp-ana', 'sp-cy']);
+
+    const result = await service.sendLinksForSubmissions([S1, S2], 'gisday.tamu.edu', undefined, undefined, ['sp-cy']);
+
+    expect(result.sent).toEqual(['Cy Diaz']);
+    expect(sent.map((m) => m.to)).toEqual(['cy@tamu.edu']);
+    await expect(service.sendLinksForSubmissions([S1, S2], 'gisday.tamu.edu', undefined, undefined, [])).rejects.toThrow(
+      BadRequestException
+    );
+    expect(sent).toHaveLength(1);
+  });
+
   it('previews the email for the matched speakers, each once, and sends it as edited (#3023)', async () => {
     const preview = await service.previewLinksForSubmissions([S1, S2], 'gisday.tamu.edu');
 
@@ -590,6 +652,36 @@ describe('SpeakerEditService.sendLinksForSubmissions (#2958)', () => {
     });
 
     expect(sent.map((m) => m.text.split(':')[0])).toEqual(['Hi Ana', 'Hi Cy']);
+  });
+
+  // #3100: the finalists' profile email goes as the sender the admin chose, to every one of them.
+  it('sends as the sender chosen, with replies to it', async () => {
+    const chosen = { from: '"Jo Admin (TxGIS Day)" <jadmin@tamu.edu>', replyTo: 'jadmin@tamu.edu' };
+
+    await service.sendLinksForSubmissions([S1, S2], 'gisday.tamu.edu', undefined, chosen);
+
+    expect(sent).toHaveLength(2);
+    expect(sent).toEqual([expect.objectContaining(chosen), expect.objectContaining(chosen)]);
+  });
+
+  // #3114: on gisday.tamu.edu the profile email wears the Texas A&M GIS Day design, with its season's dates and the
+  // sender's sign-off; txgisday.org's stays plain.
+  it("sends Texas A&M's finalists the designed email, and txgisday.org's the plain one", async () => {
+    const chosen = { from: '"Jo Admin (Texas A&M GIS Day)" <jadmin@tamu.edu>', replyTo: 'jadmin@tamu.edu' };
+
+    await service.sendLinksForSubmissions([S1], 'gisday.tamu.edu', undefined, chosen);
+    const [designed] = sent as unknown as Array<{ text: string; html: string }>;
+
+    expect(designed.html).toContain('GIS DAY(S)');
+    expect(designed.html).toContain('November 16–20, 2026');
+    expect(designed.html).toContain('href="mailto:jadmin@tamu.edu"');
+    expect(designed.html).toContain('href="https://gisday.tamu.edu/presenters/edit/');
+    expect(designed.text).toContain('https://gisday.tamu.edu/presenters/edit/');
+
+    sent.length = 0;
+    await service.sendLinksForSubmissions([S1], 'txgisday.org');
+
+    expect((sent as unknown as Array<{ html: string }>)[0].html).not.toContain('GIS DAY(S)');
   });
 
   // #3044: the text may use Markdown; it goes as HTML beside the plain text, and HTML typed into it is not obeyed.

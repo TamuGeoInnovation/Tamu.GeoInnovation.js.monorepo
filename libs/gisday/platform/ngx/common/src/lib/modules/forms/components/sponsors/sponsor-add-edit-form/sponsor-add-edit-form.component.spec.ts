@@ -229,6 +229,16 @@ describe('SponsorAddEditFormComponent', () => {
       expect(fixture.componentInstance.form.getRawValue().file).toBeFalsy();
     });
 
+    // #3074: and anything over the 5 MB the upload is cut off at.
+    it('refuses a logo over 5 MB as soon as it is chosen', () => {
+      const { fixture, choose, alert } = open();
+
+      choose(new File([new Uint8Array(5 * 1024 * 1024 + 1)], 'logo.png', { type: 'image/png' }));
+
+      expect(alert()).toBe('The logo must be 5 MB or smaller.');
+      expect(fixture.componentInstance.form.getRawValue().file).toBeFalsy();
+    });
+
     it('takes a PNG, and clears the refusal', () => {
       const { fixture, choose, alert } = open();
       const png = new File(['png'], 'logo.png', { type: 'image/png' });

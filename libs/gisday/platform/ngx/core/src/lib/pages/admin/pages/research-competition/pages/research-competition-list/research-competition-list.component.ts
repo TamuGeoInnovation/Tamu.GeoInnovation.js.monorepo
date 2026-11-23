@@ -181,6 +181,30 @@ export const SUBMISSION_TABLE_WIDTHS = {
   status: 136
 } as const;
 
+/**
+ * Which submissions' files the download takes (#3174), and what its button says: the ticked rows that are showing; with
+ * none ticked, the rows the filters show; with no filter narrowing them either, the whole season (`guids` null), as
+ * before (#2933).
+ */
+export function filesToZip(
+  ticked: ReadonlyArray<string>,
+  rows: ReadonlyArray<{ guid?: string }>,
+  total: number
+): { guids: Array<string> | null; label: string; name: string } {
+  const showing = rows.map((r) => r.guid).filter((g): g is string => !!g);
+  const picked = showing.filter((g) => ticked.includes(g));
+
+  if (picked.length > 0) {
+    return { guids: picked, label: `Download files (${picked.length} ticked)`, name: `${picked.length}-ticked` };
+  }
+
+  if (showing.length < total) {
+    return { guids: showing, label: `Download files (${showing.length} shown)`, name: `${showing.length}-shown` };
+  }
+
+  return { guids: null, label: 'Download all files', name: '' };
+}
+
 /** The table's narrowest: every column at its narrowest. */
 export const SUBMISSION_TABLE_MIN_WIDTH = Object.values(SUBMISSION_TABLE_WIDTHS).reduce((sum, width) => sum + width, 0);
 
@@ -235,6 +259,9 @@ export class ResearchCompetitionListComponent extends BaseAdminListComponent<Sub
     typeOptions: Array<{ type: string; label: string }>;
   }>;
 
+  /** Which submissions the download takes, and its button's words (#3174). */
+  public zipScope$: Observable<{ guids: Array<string> | null; label: string; name: string }>;
+
   private readonly reviewStatus = new SubmissionReviewStatusPipe();
 
   /** Its two filters are kept with the search, so the list comes back from a review as it was left (#2942). */
@@ -272,35 +299,43 @@ export class ResearchCompetitionListComponent extends BaseAdminListComponent<Sub
       }),
       shareReplay(1)
     );
+
+    this.zipScope$ = combineLatest([this.selectedRows$, this.view$]).pipe(
+      map(([ticked, view]) => filesToZip(ticked ?? [], view.rows, view.total))
+    );
   }
 
   /** Whether the season's zip is being fetched, and why it could not be, if it could not (#2933). */
   public readonly zipping = signal(false);
   public readonly zipProblem = signal<string | null>(null);
 
-  /** Every file the season's submissions have, as one zip, a folder per submission (#2933). */
+  /**
+   * The files of the submissions picked (#3174), the ticked or the filtered, or of the whole season (#2933), as one zip, a
+   * folder per submission.
+   */
   public downloadAllFiles() {
     this.zipping.set(true);
     this.zipProblem.set(null);
 
-    this.selectedSeason$
+    combineLatest([this.selectedSeason$, this.zipScope$])
       .pipe(
         take(1),
-        switchMap((season) =>
-          this.entityService.getSeasonFilesZip(season.guid).pipe(map((zip) => ({ zip, year: season.year })))
+        switchMap(([season, scope]) =>
+          this.entityService
+            .getSeasonFilesZip(season.guid, scope.guids ?? undefined)
+            .pipe(map((zip) => ({ zip, year: season.year, name: scope.name })))
         )
       )
       .subscribe({
-        next: ({ zip, year }) => {
+        next: ({ zip, year, name }) => {
           this.zipping.set(false);
-          downloadFile(zip, `gisday-${year}-submission-files.zip`, 'application/zip');
+          // Says which: two different downloads of the same count saved under one name (lab, batch 120).
+          downloadFile(zip, `gisday-${year}-submission-files${name ? `-${name}` : ''}.zip`, 'application/zip');
         },
         error: (err) => {
           this.zipping.set(false);
           this.zipProblem.set(
-            err?.status === 404
-              ? 'No submission in this season has a file attached yet.'
-              : 'The files could not be downloaded.'
+            err?.status === 404 ? 'None of these submissions has a file attached yet.' : 'The files could not be downloaded.'
           );
         }
       });

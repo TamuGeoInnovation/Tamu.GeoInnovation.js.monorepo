@@ -11,6 +11,7 @@ import {
   CHECK_IN_MAX_ACCURACY,
   CHECK_IN_ZONE_EVENT_MODE,
   checkInOpensAt,
+  checkInOpensRelative,
   checkInWindow,
   checkInZoneMessage,
   checksInByCode,
@@ -254,14 +255,16 @@ function sameCode(given: unknown, stored: string | undefined | null): boolean {
  * Refuses a check-in outside the session's check-in window (#1795).
  */
 function assertCheckInOpen(event: Event, now: Date = new Date()) {
-  const window = checkInWindow(event.day?.date, event.startTime, event.endTime);
+  const window = checkInWindow(event.day?.date, event.startTime, event.endTime, event);
 
   if (!window) {
     throw new ForbiddenException('Check-in is not open for this session: its time is not set.');
   }
 
   if (now < window.opens) {
-    throw new ForbiddenException(`Check-in for this session opens when it starts, ${checkInOpensAt(window.opens, now)}.`);
+    throw new ForbiddenException(
+      `Check-in for this session opens ${checkInOpensRelative(event)}, ${checkInOpensAt(window.opens, now)}.`
+    );
   }
 
   if (now > window.closes) {

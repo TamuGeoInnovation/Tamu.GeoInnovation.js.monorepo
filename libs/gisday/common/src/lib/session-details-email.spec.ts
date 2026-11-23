@@ -40,6 +40,17 @@ describe('the session details email', () => {
     expect(text).toContain(`${address}/sessions/details/e-1`);
   });
 
+  // #3114: on Texas A&M's site the design's details box already says when and where, so the text does not say it again.
+  it('leaves when and where to the details box when the email is in the design, and keeps the session page', () => {
+    const text = sessionDetailsEmailTemplate(hybrid, address, true);
+
+    expect(text).not.toContain('**When:**');
+    expect(text).not.toContain('**Where:**');
+    expect(text).not.toContain('1:00 to 2:15 PM Central');
+    expect(text).toContain(`${address}/sessions/details/e-1`);
+    expect(text).toContain('**Joining online:**');
+  });
+
   it('gives a hybrid or virtual session its Zoom link and dial-in, as the session page shows them', () => {
     for (const mode of ['hybrid', 'virtual']) {
       const text = sessionDetailsEmailTemplate({ ...hybrid, mode }, address);
@@ -58,17 +69,30 @@ describe('the session details email', () => {
     expect(text).not.toContain('2300 A&B');
   });
 
-  it('gives an in-person session no online details, and a broadcast with no phone number "None"', () => {
+  it('gives an in-person session no online details', () => {
     const inPerson = sessionDetailsEmailTemplate({ ...hybrid, mode: 'in-person' }, address);
-    const noPhone = sessionDetailsEmailTemplate(
-      { ...hybrid, broadcast: { publicUrl: 'https://zoom.example/j/1' } },
-      address
-    );
 
     expect(inPerson).not.toContain('zoom.example');
     expect(inPerson).not.toContain('Dial-in');
-    expect(noPhone).toContain('Dial-in number:** None');
-    expect(noPhone).not.toContain('Meeting ID');
+  });
+
+  // #3104: "Dial-in number: None" was written into the email; a broadcast line with no value is left out instead.
+  it('leaves out every broadcast line with no value, the dial-in number included, and keeps the link', () => {
+    for (const empty of [null, undefined, '', '   ']) {
+      const text = sessionDetailsEmailTemplate(
+        {
+          ...hybrid,
+          broadcast: { publicUrl: 'https://zoom.example/j/1', password: empty, phoneNumber: empty, meetingId: empty }
+        },
+        address
+      );
+
+      expect(text).toContain('**Joining online:**\n\n- **Link:** https://zoom.example/j/1\n\n**Check-in:**');
+      expect(text).not.toContain('None');
+      expect(text).not.toContain('Dial-in');
+      expect(text).not.toContain('Password');
+      expect(text).not.toContain('Meeting ID');
+    }
   });
 
   it('says when a hybrid session has no broadcast yet, rather than leaving the link out silently', () => {

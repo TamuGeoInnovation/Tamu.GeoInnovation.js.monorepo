@@ -1,30 +1,44 @@
 import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Observable, catchError, filter, of, switchMap, tap } from 'rxjs';
+import { Observable, catchError, filter, map, of, switchMap, tap } from 'rxjs';
 
 import { readRefusal } from '@tamu-gisc/gisday/platform/ngx/common';
 
-import { RSVP_PERSON_TYPES, RsvpPersonTypeCounts } from '@tamu-gisc/gisday/common';
-import type {
-  GuidIdentity,
-  RsvpDashboard,
-  RsvpDashboardEvent,
-  RsvpDashboardPerson
-} from '@tamu-gisc/gisday/platform/data-api';
+import type { GuidIdentity, RsvpDashboardPerson } from '@tamu-gisc/gisday/platform/data-api';
 import { bandOfDays, ChartBand, ChartSeries, countsByDay, dayIn, runningTotalByDay } from '@tamu-gisc/ui-kits/ngx/charts';
 import { fileNamePart } from '@tamu-gisc/common/utils/ui';
 
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
 import { PERSON_TYPE_COLUMNS } from '../dashboard-people/dashboard-people.component';
-import { DashboardTableRow } from '../dashboard-table/dashboard-table.component';
+import { DashboardTableColumn, DashboardTableRow } from '../dashboard-table/dashboard-table.component';
+import { SeasonComparison } from '../season-comparison/season-comparison';
 
-/** Every type's count summed over `events`, and the total, for the table's last row. */
-export function dashboardTotals(events: Array<RsvpDashboardEvent>): { total: number; counts: RsvpPersonTypeCounts } {
-  const counts = Object.fromEntries(RSVP_PERSON_TYPES.map(({ type }) => [type, 0])) as RsvpPersonTypeCounts;
+/**
+ * One row of an event dashboard: an event (RSVPs, check-ins), or anything counted like one, such as a VGI feature type
+ * (#2894), which has no time or place.
+ */
+export interface DashboardItem {
+  guid: string;
+  name: string | null;
+  starts: string | null;
+  location?: string | null;
+  total: number;
+  counts: Record<string, number>;
+}
+
+/** What an event dashboard draws: its rows, and when each record counted was made, by the row it counts in. */
+export interface DashboardData {
+  events: Array<DashboardItem>;
+  made: Array<{ event: string; created: string }>;
+}
+
+/** Each count summed over `events`, and the total, for the table's last row. */
+export function dashboardTotals(events: Array<DashboardItem>): { total: number; counts: Record<string, number> } {
+  const counts: Record<string, number> = {};
 
   for (const event of events) {
-    for (const { type } of RSVP_PERSON_TYPES) {
-      counts[type] += event.counts[type];
+    for (const [key, n] of Object.entries(event.counts)) {
+      counts[key] = (counts[key] ?? 0) + n;
     }
   }
 
@@ -32,7 +46,7 @@ export function dashboardTotals(events: Array<RsvpDashboardEvent>): { total: num
 }
 
 /** The table's rows: each event, its venue under its name, its start in its own column, and its counts by type. */
-export function dashboardRows(events: Array<RsvpDashboardEvent>): Array<DashboardTableRow> {
+export function dashboardRows(events: Array<DashboardItem>): Array<DashboardTableRow> {
   return events.map((e) => ({
     key: e.guid,
     name: e.name ?? 'Untitled event',
@@ -44,7 +58,7 @@ export function dashboardRows(events: Array<RsvpDashboardEvent>): Array<Dashboar
 }
 
 /** An event's CSV file name: its name and day, as <prefix>-<name>-<day>. */
-export function dashboardFileName(prefix: string, event: RsvpDashboardEvent): string {
+export function dashboardFileName(prefix: string, event: DashboardItem): string {
   const name = [fileNamePart(event.name ?? 'event'), event.starts ? dayIn(new Date(event.starts), 'America/Chicago') : null]
     .filter(Boolean)
     .join('-');
@@ -53,14 +67,18 @@ export function dashboardFileName(prefix: string, event: RsvpDashboardEvent): st
 }
 
 /** The chart's lines: every event's records as a running total by day, and the expanded event's own, if one is. */
-export function dashboardSeries(dashboard: RsvpDashboard, expanded: RsvpDashboardEvent | null): Array<ChartSeries> {
+export function dashboardSeries(
+  dashboard: DashboardData,
+  expanded: DashboardItem | null,
+  labels = { all: 'All events', one: 'This event' }
+): Array<ChartSeries> {
   const series: Array<ChartSeries> = [
-    { label: 'All events', points: runningTotalByDay(dashboard.made.map((m) => m.created)) }
+    { label: labels.all, points: runningTotalByDay(dashboard.made.map((m) => m.created)) }
   ];
 
   if (expanded) {
     series.push({
-      label: expanded.name ?? 'This event',
+      label: expanded.name ?? labels.one,
       points: runningTotalByDay(dashboard.made.filter((m) => m.event === expanded.guid).map((m) => m.created))
     });
   }
@@ -69,12 +87,12 @@ export function dashboardSeries(dashboard: RsvpDashboard, expanded: RsvpDashboar
 }
 
 /** The columns under the chart: how many records every event gained each day (#2886). */
-export function dashboardDaily(dashboard: RsvpDashboard): ChartSeries {
+export function dashboardDaily(dashboard: DashboardData): ChartSeries {
   return { label: 'New that day', points: countsByDay(dashboard.made.map((m) => m.created)) };
 }
 
 /** The days the season's events run, shaded on the chart. */
-export function dashboardBands(dashboard: RsvpDashboard): Array<ChartBand> {
+export function dashboardBands(dashboard: DashboardData): Array<ChartBand> {
   const band = bandOfDays(
     dashboard.events.map((e) => e.starts).filter((s): s is string => Boolean(s)),
     'GIS Day week'
@@ -90,7 +108,7 @@ export function dashboardBands(dashboard: RsvpDashboard): Array<ChartBand> {
  * table, people and chart are shared components.
  */
 @Component({ selector: 'tamu-gisc-event-dashboard', template: '', standalone: false })
-export abstract class EventDashboardComponent<D extends RsvpDashboard, E extends GuidIdentity>
+export abstract class EventDashboardComponent<D extends DashboardData, E extends GuidIdentity>
   extends BaseAdminListComponent<E>
   implements OnInit
 {
@@ -101,7 +119,15 @@ export abstract class EventDashboardComponent<D extends RsvpDashboard, E extends
   protected abstract seasonDashboard(seasonGuid: string): Observable<D>;
   protected abstract eventPeople(eventGuid: string): Observable<Array<RsvpDashboardPerson>>;
 
-  public readonly columns = PERSON_TYPE_COLUMNS;
+  public readonly columns: Array<DashboardTableColumn> = PERSON_TYPE_COLUMNS;
+
+  /** The chart's line of every row, and its name for an opened row with no name. */
+  protected readonly seriesLabels = { all: 'All events', one: 'This event' };
+  /** What the chart counts, for a year button that cannot be pressed: "2023 has no RSVPs." */
+  protected abstract readonly comparedNoun: string;
+
+  /** The earlier seasons beside this one on the chart (#3215), once the page knows its seasons. */
+  public readonly comparison = signal<SeasonComparison | null>(null);
 
   /** The season's dashboard, null while it loads, and `failed` if it could not be read. */
   public readonly dashboard = signal<D | null>(null);
@@ -120,8 +146,10 @@ export abstract class EventDashboardComponent<D extends RsvpDashboard, E extends
   public readonly series = computed(() => {
     const dashboard = this.dashboard();
 
-    return dashboard ? dashboardSeries(dashboard, this.expandedEvent()) : [];
+    return dashboard ? dashboardSeries(dashboard, this.expandedEvent(), this.seriesLabels) : [];
   });
+  /** The chart's lines with the compared seasons', and the day its axis counts from when there are any. */
+  public readonly chart = computed(() => this.comparison()?.compare(this.series()) ?? { series: this.series(), anchor: null });
   public readonly daily = computed(() => {
     const dashboard = this.dashboard();
 
@@ -135,6 +163,16 @@ export abstract class EventDashboardComponent<D extends RsvpDashboard, E extends
 
   public override ngOnInit(): void {
     super.ngOnInit();
+
+    this.comparison.set(
+      new SeasonComparison(
+        (guid) => this.seasonDashboard(guid).pipe(map((d) => d.made.map((m) => m.created))),
+        this.seasons$,
+        this.selectedSeason$,
+        this.destroyRef,
+        this.comparedNoun
+      )
+    );
 
     this.selectedSeason$
       .pipe(

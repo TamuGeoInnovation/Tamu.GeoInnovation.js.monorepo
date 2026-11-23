@@ -70,7 +70,7 @@ describe('EventViewComponent search', () => {
         provideRouter([]),
         {
           provide: ActivatedRoute,
-          useValue: { snapshot: { queryParamMap: convertToParamMap(searched ? { search: searched } : {}) }, queryParams: of({}) }
+          useValue: { snapshot: { queryParamMap: convertToParamMap(searched ? { search: searched } : {}) }, queryParams: of({}), fragment: of(null) }
         },
         {
           provide: SeasonService,

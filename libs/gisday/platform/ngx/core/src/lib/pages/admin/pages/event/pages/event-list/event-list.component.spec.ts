@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 
-import { EventService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { EventService, SeasonService, SessionFilesService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { GISDAY_SITES } from '@tamu-gisc/gisday/common';
@@ -37,7 +37,8 @@ describe('EventListComponent', () => {
         { provide: SeasonService, useValue: { seasons$: of([]), activeSeason$: of(null) } },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
         { provide: ModalService, useValue: {} },
-        { provide: NotificationService, useValue: { toast: jest.fn() } }
+        { provide: NotificationService, useValue: { toast: jest.fn() } },
+        { provide: SessionFilesService, useValue: { forSeason: () => of([]) } }
       ]
     });
 
@@ -51,7 +52,9 @@ describe('EventListComponent', () => {
 
   // #2943. Each day is headed as the public Sessions page heads it, with its day of the week, in Central time.
   it('heads each day with its day of the week, as the Sessions page does', () => {
-    const { page } = open([{ guid: 'e-1', name: 'Workshop', active: true, day: { guid: 'd-1', date: '2026-11-16T06:00:00.000Z' } }]);
+    const { page } = open([
+      { guid: 'e-1', name: 'Workshop', active: true, day: { guid: 'd-1', date: '2026-11-16T06:00:00.000Z' } }
+    ]);
 
     expect(page.querySelector('.card h2').textContent.trim()).toBe('Monday, November 16');
   });
@@ -62,7 +65,10 @@ describe('EventListComponent', () => {
 
     expect(boxes).toHaveLength(2);
     // The shared checkbox shows its state as an icon.
-    expect(boxes.map((b) => b.querySelector('.icon-container i')?.textContent?.trim())).toEqual(['check_box', 'check_box_outline_blank']);
+    expect(boxes.map((b) => b.querySelector('.icon-container i')?.textContent?.trim())).toEqual([
+      'check_box',
+      'check_box_outline_blank'
+    ]);
   });
 
   it('switches one event from the list, without opening it', async () => {
@@ -122,7 +128,10 @@ describe('EventListComponent on gisday.tamu.edu', () => {
     guid,
     name,
     active: true,
-    location: { building: 'B', place: { guid: place, name: place === 'tamu' ? 'Texas A&M University GIS Day(s)' : 'Texas State University GIS Day' } }
+    location: {
+      building: 'B',
+      place: { guid: place, name: place === 'tamu' ? 'Texas A&M University GIS Day(s)' : 'Texas State University GIS Day' }
+    }
   });
   const events = [at('e-tamu', 'Keynote', 'tamu'), at('e-txst', 'Coffee & Networking', 'txst')];
 
@@ -134,12 +143,17 @@ describe('EventListComponent on gisday.tamu.edu', () => {
         { provide: GISDAY_SITE, useValue: site },
         {
           provide: EventService,
-          useValue: { getEntities: () => of(events), getEntitiesForActiveSeason: () => of(events), getEntitiesForSeason: () => of(events) }
+          useValue: {
+            getEntities: () => of(events),
+            getEntitiesForActiveSeason: () => of(events),
+            getEntitiesForSeason: () => of(events)
+          }
         },
         { provide: SeasonService, useValue: { seasons$: of([]), activeSeason$: of(null) } },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
         { provide: ModalService, useValue: {} },
-        { provide: NotificationService, useValue: { toast: jest.fn() } }
+        { provide: NotificationService, useValue: { toast: jest.fn() } },
+        { provide: SessionFilesService, useValue: { forSeason: () => of([]) } }
       ]
     });
 
@@ -149,7 +163,9 @@ describe('EventListComponent on gisday.tamu.edu', () => {
     const names = () => {
       fixture.detectChanges();
 
-      return [...(fixture.nativeElement as HTMLElement).querySelectorAll('tr.selectable')].map((row) => row.textContent.trim());
+      return [...(fixture.nativeElement as HTMLElement).querySelectorAll('tr.selectable')].map((row) =>
+        row.textContent.trim()
+      );
     };
 
     return { fixture, names };
@@ -180,12 +196,17 @@ describe('EventListComponent on gisday.tamu.edu', () => {
         { provide: GISDAY_SITE, useValue: GISDAY_SITES.tamu },
         {
           provide: EventService,
-          useValue: { getEntities: () => of([events[1]]), getEntitiesForActiveSeason: () => of([events[1]]), getEntitiesForSeason: () => of([events[1]]) }
+          useValue: {
+            getEntities: () => of([events[1]]),
+            getEntitiesForActiveSeason: () => of([events[1]]),
+            getEntitiesForSeason: () => of([events[1]])
+          }
         },
         { provide: SeasonService, useValue: { seasons$: of([]), activeSeason$: of(null) } },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
         { provide: ModalService, useValue: {} },
-        { provide: NotificationService, useValue: { toast: jest.fn() } }
+        { provide: NotificationService, useValue: { toast: jest.fn() } },
+        { provide: SessionFilesService, useValue: { forSeason: () => of([]) } }
       ]
     });
 
@@ -221,12 +242,17 @@ describe('EventListComponent, the sessions with no tags', () => {
         { provide: GISDAY_SITE, useValue: GISDAY_SITES.txgisday },
         {
           provide: EventService,
-          useValue: { getEntities: () => of(events), getEntitiesForActiveSeason: () => of(events), getEntitiesForSeason: () => of(events) }
+          useValue: {
+            getEntities: () => of(events),
+            getEntitiesForActiveSeason: () => of(events),
+            getEntitiesForSeason: () => of(events)
+          }
         },
         { provide: SeasonService, useValue: { seasons$: of([]), activeSeason$: of(null) } },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
         { provide: ModalService, useValue: {} },
-        { provide: NotificationService, useValue: { toast: jest.fn() } }
+        { provide: NotificationService, useValue: { toast: jest.fn() } },
+        { provide: SessionFilesService, useValue: { forSeason: () => of([]) } }
       ]
     });
 
@@ -236,7 +262,9 @@ describe('EventListComponent, the sessions with no tags', () => {
     const names = () => {
       fixture.detectChanges();
 
-      return [...(fixture.nativeElement as HTMLElement).querySelectorAll('tr.selectable')].map((row) => row.textContent.trim());
+      return [...(fixture.nativeElement as HTMLElement).querySelectorAll('tr.selectable')].map((row) =>
+        row.textContent.trim()
+      );
     };
 
     return { fixture, names };
@@ -257,5 +285,88 @@ describe('EventListComponent, the sessions with no tags', () => {
     fixture.componentInstance.tagged.setValue('');
 
     expect(names()).toHaveLength(3);
+  });
+});
+
+/**
+ * #3093: the season's sessions with and without slides, uploaded by their speakers from their edit links. The Slides
+ * column says which have them and when; "Only sessions with no slides" lists those still to come, as the tags filter does.
+ */
+describe('EventListComponent, the sessions with and without slides (#3093)', () => {
+  const events = [
+    { guid: 'e-slides', name: 'Keynote', active: true },
+    { guid: 'e-none', name: 'Mapathon', active: true }
+  ];
+  const season = { guid: 'season-2026', year: 2026 };
+
+  function open() {
+    const sessionFiles = {
+      forSeason: jest.fn(() =>
+        of([
+          { event: 'e-slides', file: { guid: 'f-1', name: 'keynote.pdf', size: 10, uploaded: '2026-11-15T18:00:00.000Z' } }
+        ])
+      )
+    };
+
+    TestBed.configureTestingModule({
+      imports: [EventListComponent],
+      providers: [
+        provideRouter([]),
+        { provide: GISDAY_SITE, useValue: GISDAY_SITES.txgisday },
+        {
+          provide: EventService,
+          useValue: {
+            getEntities: () => of(events),
+            getEntitiesForActiveSeason: () => of(events),
+            getEntitiesForSeason: () => of(events)
+          }
+        },
+        { provide: SeasonService, useValue: { seasons$: of([season]), activeSeason$: of(season) } },
+        { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
+        { provide: ModalService, useValue: {} },
+        { provide: NotificationService, useValue: { toast: jest.fn() } },
+        { provide: SessionFilesService, useValue: sessionFiles }
+      ]
+    });
+
+    const fixture = TestBed.createComponent(EventListComponent);
+    fixture.detectChanges();
+
+    const rows = () => {
+      fixture.detectChanges();
+
+      return [...(fixture.nativeElement as HTMLElement).querySelectorAll('tr.selectable')].map((row) => ({
+        name: row.querySelectorAll('td')[1].textContent.trim(),
+        slides: row.querySelector('td.event-slides')?.textContent.trim(),
+        title: row.querySelector('td.event-slides span')?.getAttribute('title') ?? null
+      }));
+    };
+
+    return { fixture, rows, sessionFiles };
+  }
+
+  it("shows each session's slides for the selected season: when, with the file's name, or None", () => {
+    const { fixture, rows, sessionFiles } = open();
+
+    expect(sessionFiles.forSeason).toHaveBeenCalledWith('season-2026');
+    expect((fixture.nativeElement as HTMLElement).querySelector('thead').textContent).toContain('Slides');
+    expect(rows()).toEqual([
+      { name: 'Keynote', slides: 'Nov 15', title: 'keynote.pdf' },
+      { name: 'Mapathon', slides: 'None', title: null }
+    ]);
+  });
+
+  it('offers "Only sessions with no slides", which lists the sessions still without, and every one again when unticked', () => {
+    const { fixture, rows } = open();
+
+    expect((fixture.nativeElement as HTMLElement).textContent).toContain('Only sessions with no slides');
+
+    fixture.componentInstance.withSlides.setValue('none');
+
+    expect(rows().map((r) => r.name)).toEqual(['Mapathon']);
+
+    fixture.componentInstance.withSlides.setValue('');
+
+    expect(rows().map((r) => r.name)).toEqual(['Keynote', 'Mapathon']);
   });
 });

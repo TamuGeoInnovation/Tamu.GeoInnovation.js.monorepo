@@ -6,9 +6,10 @@ import { SubmissionModule } from '../lib/submission/submission.module';
 import { SeasonModule } from '../lib/season/season.module';
 import { FormModule } from '../lib/form/form.module';
 import { ExportModule } from '../lib/export/export.module';
+import { VgiDashboardModule } from '../lib/dashboard/vgi-dashboard.module';
 
 @Module({
-  imports: [LeaderboardModule, MapModule, SubmissionModule, SeasonModule, FormModule, ExportModule],
+  imports: [LeaderboardModule, MapModule, SubmissionModule, SeasonModule, FormModule, ExportModule, VgiDashboardModule],
   controllers: [],
   exports: [LeaderboardModule, MapModule, SubmissionModule, SeasonModule, FormModule, ExportModule]
 })

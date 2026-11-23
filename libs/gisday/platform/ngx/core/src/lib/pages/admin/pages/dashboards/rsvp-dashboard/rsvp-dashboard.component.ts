@@ -6,6 +6,7 @@ import { RsvpService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { LineChartComponent } from '@tamu-gisc/ui-kits/ngx/charts';
 
+import { SeasonComparisonComponent } from '../shared/season-comparison/season-comparison.component';
 import { EventDashboardComponent } from '../shared/event-dashboard/event-dashboard.component';
 import { DashboardPeopleComponent } from '../shared/dashboard-people/dashboard-people.component';
 import { DashboardRowDetailDirective, DashboardTableComponent } from '../shared/dashboard-table/dashboard-table.component';
@@ -18,11 +19,20 @@ import { DashboardRowDetailDirective, DashboardTableComponent } from '../shared/
   selector: 'tamu-gisc-rsvp-dashboard',
   templateUrl: './rsvp-dashboard.component.html',
   styleUrls: ['./rsvp-dashboard.component.scss'],
-  imports: [SelectComponent, LineChartComponent, DashboardTableComponent, DashboardRowDetailDirective, DashboardPeopleComponent, AsyncPipe]
+  imports: [
+    SelectComponent,
+    LineChartComponent,
+    SeasonComparisonComponent,
+    DashboardTableComponent,
+    DashboardRowDetailDirective,
+    DashboardPeopleComponent,
+    AsyncPipe
+  ]
 })
 export class RsvpDashboardComponent extends EventDashboardComponent<RsvpDashboard, UserRsvp> {
   protected readonly entityService = inject(RsvpService);
   protected readonly filePrefix = 'gisday-rsvps';
+  protected readonly comparedNoun = 'RSVPs';
 
   protected seasonDashboard(seasonGuid: string) {
     return this.entityService.getDashboardForSeason(seasonGuid);

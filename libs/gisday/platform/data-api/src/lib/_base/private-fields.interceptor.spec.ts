@@ -13,6 +13,7 @@ import { EventBroadcastController } from '../event-broadcast/event-broadcast.con
 import { EventProvider } from '../event/event.provider';
 import { OrganizationController } from '../organization/organization.controller';
 import { OrganizationService } from '../organization/organization.service';
+import { SeasonWinnerController } from '../season-winner/season-winner.controller';
 import { SpeakerController } from '../speaker/speaker.controller';
 import { SpeakerProvider } from '../speaker/speaker.provider';
 import { SponsorController } from '../sponsor/sponsor.controller';
@@ -440,5 +441,28 @@ describe('broadcasts', () => {
     const [b] = withoutPrivateFields([broadcast()], ['update:event-broadcasts']);
 
     expect(b.presenterUrl).toBe('https://example.com/presenter');
+  });
+});
+
+/**
+ * #3239. A season's winners: the homepage's read is public and gives only place, names and title (the winners' spec
+ * checks what it holds); the Winners page's read, which lists every accepted entry, is for whoever may see the
+ * competitions, and picking the places for whoever may review them.
+ */
+describe('season winners', () => {
+  const route = (name: keyof SeasonWinnerController) => SeasonWinnerController.prototype[name];
+
+  it("leaves the homepage's read open, with no guard", () => {
+    expect(Reflect.getMetadata(GUARDS_METADATA, route('shown'))).toBeUndefined();
+    expect(Reflect.getMetadata('Permissions', route('shown'))).toBeUndefined();
+  });
+
+  it.each([
+    ['forSeason', 'read:competitions'],
+    ['save', 'update:competitions']
+  ] as const)('keeps %s behind a token and %s', (name, permission) => {
+    expect(Reflect.getMetadata(GUARDS_METADATA, route(name))).toEqual(expect.arrayContaining([JwtGuard, PermissionsGuard]));
+    expect(Reflect.getMetadata('Permissions', route(name))[0]).toEqual([permission]);
+    expect(Reflect.getMetadata('AllowAny', route(name))).toBeUndefined();
   });
 });

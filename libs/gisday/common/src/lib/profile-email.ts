@@ -24,6 +24,13 @@ export const PROFILE_EMAIL_PLACEHOLDERS = Object.freeze([
  */
 export const PROFILE_EDIT_LINK_PREVIEW = '(their own edit link, added when it is sent)';
 
+/**
+ * Why the profile email is only ever sent as a copy each (#3104), as the window says beside its tick boxes: each speaker's
+ * link opens their own profile to anyone who has it, so one email to several would let each edit the others'.
+ */
+export const PROFILE_EMAIL_COPY_EACH =
+  'Each speaker gets their own copy: it carries their own link to edit their profile, which no one else should have.';
+
 /** The longest subject and text an admin may send. */
 const MAX_SUBJECT = 200;
 const MAX_TEMPLATE = 20000;
@@ -96,6 +103,15 @@ export function fillProfileEmail(email: { subject: string; template: string }, v
  * the text must keep `{edit link}`, or the speaker would get no way in.
  */
 export function profileEmailProblem(email: unknown): string | null {
+  return personalLinkEmailProblem(email, '{edit link}');
+}
+
+/**
+ * Why an edited email carrying each speaker's own link may not be sent, or null when it may: a subject and a text, each
+ * of a sensible size, and the text must keep `placeholder`, where the link goes. The profile email's rule (#3023), and
+ * the Ask to judge email's with its own link (#3183).
+ */
+export function personalLinkEmailProblem(email: unknown, placeholder: string): string | null {
   const { subject, template } = (email ?? {}) as { subject?: unknown; template?: unknown };
 
   if (typeof subject !== 'string' || !subject.trim() || subject.length > MAX_SUBJECT) {
@@ -106,5 +122,5 @@ export function profileEmailProblem(email: unknown): string | null {
     return `The email must be text, up to ${MAX_TEMPLATE} characters.`;
   }
 
-  return template.includes('{edit link}') ? null : 'The email must keep {edit link}, where each speaker’s own link goes.';
+  return template.includes(placeholder) ? null : `The email must keep ${placeholder}, where each speaker’s own link goes.`;
 }

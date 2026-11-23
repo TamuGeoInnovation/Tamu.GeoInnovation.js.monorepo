@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -16,6 +17,7 @@ import {
   UseInterceptors
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { isUUID } from 'class-validator';
 
 import { JwtGuard, PermissionsGuard, Permissions } from '@tamu-gisc/common/nest/auth';
 
@@ -23,13 +25,15 @@ import { Submission } from '../entities/all.entity';
 import { UserSubmissionProvider } from './user-submission.provider';
 import { siteHost } from '../_base/site-of-request';
 import { SubmissionFilesService } from './submission-files.service';
+import { EmailSenderService } from '../contact/email-sender.service';
 import { SUBMISSION_FILE_UPLOAD } from './submission-file-upload';
 
 @Controller('user-submissions')
 export class UserSubmissionController {
   constructor(
     private readonly provider: UserSubmissionProvider,
-    private readonly files: SubmissionFilesService
+    private readonly files: SubmissionFilesService,
+    private readonly senders: EmailSenderService
   ) {}
 
   @UseGuards(JwtGuard)
@@ -44,33 +48,50 @@ export class UserSubmissionController {
     return this.provider.getPosters(seasonGuid);
   }
 
-  // Every file of a season's submissions as one zip, for the admins (#2933).
+  /**
+   * Every file of a season's submissions as one zip, for the admins (#2933). With `?submissions=<guid>,<guid>`, only those
+   * of the season: the rows ticked, or those the filters show (#3174).
+   */
   @Permissions(['read:competitions'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Get('season/:guid/files.zip')
-  public getSeasonFiles(@Param('guid', ParseUUIDPipe) seasonGuid: string, @Request() req) {
-    return this.files.zipForSeason(seasonGuid, req.user);
+  public getSeasonFiles(
+    @Param('guid', ParseUUIDPipe) seasonGuid: string,
+    @Request() req,
+    @Query('submissions') submissions?: string
+  ) {
+    return this.files.zipForSeason(seasonGuid, req.user, guidList(submissions));
   }
 
   /**
    * Approves or rejects the named submissions at once, for Research Competitions' selected rows (#2958): each is reviewed
-   * and emailed as Submit Review does one, from the reviewer's site. Body: `{ submissions: [guid], acceptance, message? }`.
+   * and emailed as Submit Review does one, from the reviewer's site, as the sender they chose, checked before anything is
+   * decided (#3100). Body: `{ submissions: [guid], acceptance, message?, templates?, sender? }`.
    */
   @Permissions(['update:competitions'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Post('review')
-  public reviewMany(
+  public async reviewMany(
     @Body()
-    body: { submissions: Array<string>; acceptance: boolean; message?: string; templates?: Record<string, string> },
+    body: {
+      submissions: Array<string>;
+      acceptance: boolean;
+      message?: string;
+      templates?: Record<string, string>;
+      sender?: string;
+    },
     @Request() req
   ) {
+    const host = siteHost(req.headers);
+    const sender = await this.senders.resolve(req.user, body?.sender, host);
+
     return this.provider.reviewUserSubmissions(
       body?.submissions,
       req.user.sub,
       // `templates`: the email text the reviewer saw and approved, by kind (#2981).
-      { acceptance: body?.acceptance, message: body?.message, templates: body?.templates },
+      { acceptance: body?.acceptance, message: body?.message, templates: body?.templates, sender },
       req.user.permissions,
-      siteHost(req.headers)
+      host
     );
   }
 
@@ -92,17 +113,23 @@ export class UserSubmissionController {
 
   /**
    * Sends the final reminder to the named submissions that have no file yet (#3017), in the text the reviewer approved.
-   * Body: `{ submissions: [guid], templates? }`.
+   * Body: `{ submissions: [guid], templates?, sender? }`, the sender checked before anything is sent (#3100).
    */
   @Permissions(['update:competitions'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Post('remind')
-  public remindMany(@Body() body: { submissions: Array<string>; templates?: Record<string, string> }, @Request() req) {
+  public async remindMany(
+    @Body() body: { submissions: Array<string>; templates?: Record<string, string>; sender?: string },
+    @Request() req
+  ) {
+    const host = siteHost(req.headers);
+    const sender = await this.senders.resolve(req.user, body?.sender, host);
+
     return this.provider.remindUserSubmissions(
       body?.submissions,
-      { templates: body?.templates },
+      { templates: body?.templates, sender },
       req.user.permissions,
-      siteHost(req.headers)
+      host
     );
   }
 
@@ -197,4 +224,18 @@ export class UserSubmissionController {
   public deleteEntity(@Req() req, @Param('guid') guid: string) {
     return this.provider.deleteUserSubmission(guid, req.user.sub, req.user.permissions);
   }
+}
+
+/** A comma-separated list of guids from a query string, every one checked: a malformed one is refused, not ignored. */
+export function guidList(text: string | undefined): Array<string> | undefined {
+  const guids = (text ?? '')
+    .split(',')
+    .map((g) => g.trim())
+    .filter(Boolean);
+
+  if (guids.some((g) => !isUUID(g))) {
+    throw new BadRequestException('submissions must be a comma-separated list of ids.');
+  }
+
+  return guids.length ? guids : undefined;
 }

@@ -2,31 +2,38 @@ import { createHash, randomBytes } from 'crypto';
 import { mkdir, readFile, unlink, writeFile } from 'fs/promises';
 import { join } from 'path';
 
-import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, NotFoundException, Optional } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, MoreThan, Repository } from 'typeorm';
 
 import {
+  EmailRecipient,
   PROFILE_EDIT_LINK_PREVIEW,
+  PROFILE_EMAIL_COPY_EACH,
   PROFILE_EMAIL_KIND,
-  emailHtml,
   fillProfileEmail,
   gisdaySite,
   participantEmails,
   profileEmailProblem,
   profileEmailSubject,
   profileEmailTemplate,
-  profileEmailValues
+  profileEmailValues,
+  profileEmailDesign,
+  seasonDaysOf,
+  siteEmailHtml,
+  EmailDesign
 } from '@tamu-gisc/gisday/common';
 
 import { senderAs } from '../_base/site-of-request';
+import { EmailSender, siteSender } from '../contact/email-sender.service';
 import { EMAIL_LANES, inParallel } from '../_base/in-parallel';
 
-import { Speaker, SpeakerEdit, SpeakerEditLink, Submission, University } from '../entities/all.entity';
+import { Speaker, SpeakerEdit, SpeakerEditLink, SpeakerLinkPurpose, Submission, University } from '../entities/all.entity';
 import { refuseUnsafeImage } from '../assets/image-upload';
 import { SpeakerProvider } from '../speaker/speaker.provider';
 import { ContactService } from '../contact/contact.service';
 import { SeasonService } from '../season/season.service';
+import { EmailSendLog } from './email-send-log';
 
 /** How long an edit link works. Long enough for a speaker to come back to it; short enough that an old email is dead. */
 /** How long after a speaker is emailed their link an admin's send skips them, so a repeated request emails no one twice (#3065). */
@@ -76,11 +83,20 @@ export interface ProfileEmailPreview {
     count: number;
     subject: string;
     template: string;
+    /** What the window needs to show the whole email as it will arrive, in Texas A&M's design (#3114). */
+    design?: EmailDesign;
     example: { title: string; to: string; cc: string; values: Record<string, string> };
   }>;
   /** The people on the named submissions with no speaker record, who will not be emailed (#3046). */
   notEmailed?: Array<{ name: string; submission: string }>;
+  /** The speakers it can go to, each with an address, for the window's tick boxes (#3104). */
+  recipients?: Array<EmailRecipient>;
+  /** Why it may only go as a copy each, when it may not go to them together (#3104): the profile email's own links. */
+  copyEachReason?: string;
 }
+
+/** A speaker as the profile email reads them: with their season's days, for the email's design (#3114). */
+const SPEAKER_WITH_DAYS = { season: { days: true } } as const;
 
 /** Sending links for competition submissions' people (#2958): also who has no speaker record, with their submission. */
 export interface SendForSubmissionsResult extends SendResult {
@@ -109,7 +125,9 @@ export class SpeakerEditService {
     private readonly speakerProvider: SpeakerProvider,
     private readonly contact: ContactService,
     private readonly seasons: SeasonService,
-    @InjectRepository(Submission) private readonly submissions: Repository<Submission>
+    @InjectRepository(Submission) private readonly submissions: Repository<Submission>,
+    /** The record of what each speaker was sent (#3167). */
+    @Optional() private readonly sendLog?: EmailSendLog
   ) {}
 
   /**
@@ -122,12 +140,19 @@ export class SpeakerEditService {
     submissionGuids: Array<string>,
     host?: string,
     /** The subject and text the admin approved (#3023); without it, the email as it has always been. */
-    email?: ProfileEmail
+    email?: ProfileEmail,
+    /** Who it is from, as the admin chose and the controller checked (#3100); the site without it. */
+    sender?: EmailSender,
+    /** The speakers ticked in the window (#3104), of those matched; every one matched without it. */
+    speakers?: Array<string>
   ): Promise<SendForSubmissionsResult> {
     checkEmail(email);
 
-    const { matched, unmatched } = await this.speakersOfSubmissions(submissionGuids);
-    const sent = matched.length ? await this.sendLinks(matched, host, email) : { sent: [], skipped: [] };
+    const chosen = chosenSpeakers(speakers);
+    const found = await this.speakersOfSubmissions(submissionGuids);
+    const { unmatched } = found;
+    const matched = chosen ? found.matched.filter((guid) => chosen.includes(guid)) : found.matched;
+    const sent = matched.length ? await this.sendLinks(matched, host, email, sender) : { sent: [], skipped: [] };
 
     return { ...sent, unmatched };
   }
@@ -150,8 +175,8 @@ export class SpeakerEditService {
       throw new BadRequestException('No speakers were named.');
     }
 
-    const speakers = (await this.speakers.find({ where: { guid: In(speakerGuids) } })).filter((s) =>
-      looksLikeEmail(s.email)
+    const speakers = (await this.speakers.find({ where: { guid: In(speakerGuids) }, relations: SPEAKER_WITH_DAYS })).filter(
+      (s) => looksLikeEmail(s.email)
     );
 
     if (speakers.length === 0) {
@@ -169,6 +194,8 @@ export class SpeakerEditService {
           count: speakers.length,
           subject: profileEmailSubject(),
           template: profileEmailTemplate(),
+          // What the window needs to show the whole email as it will arrive (#3114).
+          design: profileEmailDesign(site.name, seasonDaysOf(first.season)),
           example: {
             title: fullName(first),
             to: first.email.trim(),
@@ -176,7 +203,13 @@ export class SpeakerEditService {
             values: profileEmailValues(first, site, PROFILE_EDIT_LINK_PREVIEW, linkExpiry())
           }
         }
-      ]
+      ],
+      // Each to tick (#3104), and a copy each only: one email to several would give each the others' edit links. Each
+      // with when they were sent it before (#3167).
+      recipients: this.sendLog
+        ? await this.sendLog.withSends(speakers.map(recipientOf), PROFILE_EMAIL_KIND, null)
+        : speakers.map(recipientOf),
+      copyEachReason: PROFILE_EMAIL_COPY_EACH
     };
   }
 
@@ -234,9 +267,15 @@ export class SpeakerEditService {
 
   /**
    * Emails each named speaker their own link (an admin's action). `host` is the address the admin is on; `email` the
-   * subject and text the admin approved (#3023), checked before any link is made.
+   * subject and text the admin approved (#3023), checked before any link is made; `sender` who it is from, as the admin
+   * chose and the controller checked (#3100), or the site.
    */
-  public async sendLinks(speakerGuids: Array<string>, host?: string, email?: ProfileEmail): Promise<SendResult> {
+  public async sendLinks(
+    speakerGuids: Array<string>,
+    host?: string,
+    email?: ProfileEmail,
+    sender?: EmailSender
+  ): Promise<SendResult> {
     checkEmail(email);
 
     const result: SendResult = { sent: [], skipped: [] };
@@ -245,7 +284,7 @@ export class SpeakerEditService {
       throw new BadRequestException('No speakers were named.');
     }
 
-    const speakers = await this.speakers.find({ where: { guid: In(speakerGuids) } });
+    const speakers = await this.speakers.find({ where: { guid: In(speakerGuids) }, relations: SPEAKER_WITH_DAYS });
 
     // Several at a time (#3067): one by one, 48 emails took long enough for the request to be repeated (#3065).
     const parts = await inParallel(speakers, EMAIL_LANES, async (speaker) => {
@@ -263,13 +302,18 @@ export class SpeakerEditService {
       // pod is caught too. Each link is recorded before its email goes, so two runs racing skip each other's.
       const since = new Date(Date.now() - REPEAT_SEND_MINUTES * 60 * 1000);
 
-      if ((await this.links.count({ where: { speaker: { guid: speaker.guid }, created: MoreThan(since) } })) > 0) {
+      // Only their profile links: a judging link sent a minute ago (#3183) is another email.
+      if (
+        (await this.links.count({
+          where: { speaker: { guid: speaker.guid }, created: MoreThan(since), purpose: 'profile' }
+        })) > 0
+      ) {
         part.skipped.push({ name, reason: `already emailed a link in the last ${REPEAT_SEND_MINUTES} minutes` });
         return part;
       }
 
       try {
-        await this.emailLink(speaker, host, email);
+        await this.emailLink(speaker, host, email, sender);
         part.sent.push(name);
       } catch (err) {
         Logger.error(`Could not email an edit link to speaker ${speaker.guid}: ${err.message}`, 'SpeakerEditService');
@@ -300,7 +344,7 @@ export class SpeakerEditService {
       return;
     }
 
-    const candidates = await this.speakers.find({ where: { season: { guid: season.guid } } });
+    const candidates = await this.speakers.find({ where: { season: { guid: season.guid } }, relations: SPEAKER_WITH_DAYS });
     const speaker = candidates.find((s) => s.email?.trim().toLowerCase() === email.trim().toLowerCase());
 
     if (!speaker) {
@@ -308,7 +352,9 @@ export class SpeakerEditService {
     }
 
     const since = new Date(Date.now() - REQUEST_COOLDOWN_MINUTES * 60 * 1000);
-    const recent = await this.links.count({ where: { speaker: { guid: speaker.guid }, created: MoreThan(since) } });
+    const recent = await this.links.count({
+      where: { speaker: { guid: speaker.guid }, created: MoreThan(since), purpose: 'profile' }
+    });
 
     if (recent > 0) {
       return;
@@ -486,34 +532,56 @@ export class SpeakerEditService {
     return edit;
   }
 
-  /** The link a token belongs to, if it is one and still works. Every failure reads the same. */
-  private async linkFor(token: string): Promise<SpeakerEditLink> {
+  /**
+   * The link a token belongs to, if it is one, still works, and opens `purpose`. Every failure reads the same. The one
+   * check of a speaker's link: the profile edit uses it, and so does `SpeakerEditLinkGuard`, before a session's slides are
+   * touched (#3093), each for a `profile` link; a judge's routes ask for a `judging` link (#3183). So a judging link never
+   * opens a profile, nor a profile link the judging page.
+   */
+  public async linkFor(token: string, purpose: SpeakerLinkPurpose = 'profile'): Promise<SpeakerEditLink> {
     const link =
       typeof token === 'string' && /^[A-Za-z0-9_-]{43}$/.test(token)
         ? await this.links.findOne({ where: { tokenHash: hashOf(token) }, relations: { speaker: true } })
         : null;
 
-    if (!link || new Date(link.expires).getTime() <= Date.now()) {
+    // A link from before purposes were kept is a profile link, as the column's default says.
+    if (!link || (link.purpose ?? 'profile') !== purpose || new Date(link.expires).getTime() <= Date.now()) {
       throw new NotFoundException('This link has expired or is not valid. Ask for a new one.');
     }
 
     return link;
   }
 
-  private async emailLink(speaker: Speaker, host?: string, email?: ProfileEmail) {
+  /**
+   * A new link of the speaker's own, on the site `host` names, for an email to carry: to their presenter page (#2936),
+   * whether the profile email or the Ask for slides email sends it (#3113), or with `purpose` `judging`, to the
+   * competition they judge (#3183). Only its hash is stored; the link itself is in the email alone.
+   */
+  public async newLink(
+    speaker: Pick<Speaker, 'guid' | 'email'>,
+    host?: string,
+    purpose: SpeakerLinkPurpose = 'profile'
+  ): Promise<{ url: string; expires: Date }> {
     const token = randomBytes(32).toString('base64url');
     const expires = linkExpiry();
     const site = gisdaySite(process.env.GISDAY_SITE, host);
-    const url = `${site.address}/presenters/edit/${token}`;
 
     await this.links.save(
       this.links.create({
         speaker: { guid: speaker.guid } as Speaker,
         tokenHash: hashOf(token),
         expires,
-        sentTo: speaker.email
+        sentTo: speaker.email,
+        purpose
       })
     );
+
+    return { url: `${site.address}${purpose === 'judging' ? '/judging/' : '/presenters/edit/'}${token}`, expires };
+  }
+
+  private async emailLink(speaker: Speaker, host?: string, email?: ProfileEmail, sender?: EmailSender) {
+    const site = gisdaySite(process.env.GISDAY_SITE, host);
+    const { url, expires } = await this.newLink(speaker, host);
 
     // The text the admin approved (#3023), or the email as it has always been; either way this speaker's own link.
     const { subject, text } = fillProfileEmail(
@@ -521,23 +589,33 @@ export class SpeakerEditService {
       profileEmailValues(speaker, site, url, expires)
     );
 
+    // As the admin chose (#3100), or from the site, as a speaker asking for their own link is.
+    const from = sender ?? siteSender(site.name);
+
     await this.contact.sendMessage(
       {
         to: speaker.email.trim(),
-        from: senderAs(site.name, process.env.MAILROOM_FROM),
-        replyTo: process.env.MAILROOM_TO,
+        ...from,
         subject,
         text,
-        // The Markdown as HTML, beside the plain text (#3044).
-        html: emailHtml(text)
+        // The Markdown as HTML (#3044), in Texas A&M's design on its site (#3114), beside the plain text.
+        html: siteEmailHtml(text, {
+          site,
+          subject,
+          from: from.from,
+          design: profileEmailDesign(site.name, seasonDaysOf(speaker.season))
+        })
       },
       true
     );
+
+    // Recorded once it has gone (#3167), whoever sent it: an admin, or the speaker asking for their own link.
+    await this.sendLog?.record([speaker], PROFILE_EMAIL_KIND, null, from.from);
   }
 }
 
-/** When a link made now stops working. */
-function linkExpiry(): Date {
+/** When a link made now stops working: what a preview says of the link each speaker will get (#3113). */
+export function linkExpiry(): Date {
   return new Date(Date.now() + SPEAKER_EDIT_LINK_DAYS * 24 * 60 * 60 * 1000);
 }
 
@@ -624,6 +702,31 @@ function profileOf(
 /** A speaker's name as the results and previews give it. */
 export function fullName(s: Pick<Speaker, 'firstName' | 'lastName'>): string {
   return `${s.firstName ?? ''} ${s.lastName ?? ''}`.replace(/\s+/g, ' ').trim();
+}
+
+/** A speaker with an address as a speaker email's preview lists them, for the window's tick boxes (#3104). */
+export function recipientOf(s: Pick<Speaker, 'guid' | 'firstName' | 'lastName' | 'email'>): EmailRecipient {
+  return { guid: s.guid, name: fullName(s), firstName: s.firstName?.trim() ?? '', email: s.email.trim() };
+}
+
+/**
+ * The speakers ticked in the window, as a send names them (#3104), or undefined when it names none: everyone, as before.
+ * A list of no one, or anything but ids, is refused, so a send can never quietly go to everyone instead.
+ */
+export function chosenSpeakers(speakers: unknown): Array<string> | undefined {
+  if (speakers === undefined || speakers === null) {
+    return undefined;
+  }
+
+  if (!Array.isArray(speakers) || speakers.some((s) => typeof s !== 'string')) {
+    throw new BadRequestException('Name the speakers chosen by their ids.');
+  }
+
+  if (speakers.length === 0) {
+    throw new BadRequestException('No speakers were chosen.');
+  }
+
+  return speakers;
 }
 
 /** Whether a record's email address could be sent to. */

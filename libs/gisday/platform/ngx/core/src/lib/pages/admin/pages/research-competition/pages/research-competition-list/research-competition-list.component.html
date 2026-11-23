@@ -6,9 +6,9 @@
     <div class="form-section-toolbar">
       <div class="form-section-name">Student Competition Submissions</div>
       <div class="form-section-actions">
-        <!-- Every attached file, a folder per submission (#2933). -->
+        <!-- Every attached file, a folder per submission (#2933): of the ticked rows, else of those the filters show (#3174). -->
         <!-- The toolbar's own action style (libs/sass/modules/_forms.scss), as the other admin toolbars' actions. -->
-        <a class="post-1" tabindex="0" role="button" [attr.aria-disabled]="zipping()" (click)="zipping() || downloadAllFiles()" (keydown.enter)="zipping() || downloadAllFiles()">{{ zipping() ? 'Preparing zip…' : 'Download all files' }}</a>
+        <a class="post-1" tabindex="0" role="button" [attr.aria-disabled]="zipping()" (click)="zipping() || downloadAllFiles()" (keydown.enter)="zipping() || downloadAllFiles()">{{ zipping() ? 'Preparing zip…' : (zipScope$ | async)?.label }}</a>
         <tamu-gisc-select class="post-1" placeholder="Season" [floatLabel]="false" [data]="seasons$ | async" displayTemplate="year" valueTemplate="guid" [value]="$safeNavigationMigration((selectedSeason$ | async)?.guid)" (changed)="setSeason($event)"></tamu-gisc-select>
       </div>
     </div>

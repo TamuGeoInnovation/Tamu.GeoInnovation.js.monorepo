@@ -1,4 +1,4 @@
-import { Component, AfterContentInit, HostBinding, ChangeDetectionStrategy, input, contentChildren } from '@angular/core';
+import { Component, AfterContentInit, HostBinding, ChangeDetectionStrategy, ViewEncapsulation, input, contentChildren } from '@angular/core';
 
 import { AbstractContentReplacerComponent } from '../../abstracts/abstract-content-swap/abstract-content-replacer.component';
 import { TabComponent } from './tab/tab.component';
@@ -9,6 +9,8 @@ import { NgClass, NgTemplateOutlet } from '@angular/common';
   templateUrl: './tabs.component.html',
   styleUrls: ['./tabs.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
+  // Its styles select the host and the tabs inside it, so they are not scoped to the template (#3200).
+  encapsulation: ViewEncapsulation.None,
   imports: [NgClass, NgTemplateOutlet]
 })
 export class TabsComponent extends AbstractContentReplacerComponent implements AfterContentInit {

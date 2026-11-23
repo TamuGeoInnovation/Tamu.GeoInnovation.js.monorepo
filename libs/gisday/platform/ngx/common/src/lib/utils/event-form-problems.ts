@@ -1,3 +1,5 @@
+import { checkInMinutesProblem } from '@tamu-gisc/gisday/common';
+
 /**
  * The least an event needs before the admin form will save it (#1773), as the form holds it: the day's
  * guid, times stored as `toTimeString()` text, and the select values.
@@ -12,6 +14,8 @@ export interface EventFormValue {
   eventType?: string | null;
   presentationType?: string | null;
   location?: string | null;
+  checkInMinutesBefore?: number | string | null;
+  checkInMinutesAfter?: number | string | null;
 }
 
 /**
@@ -48,7 +52,7 @@ export function eventFormProblems(value: EventFormValue): Array<string> {
     problems.push('Give the event an abstract.');
   }
 
-  const choices: Array<[keyof EventFormValue, string]> = [
+  const choices: Array<['mode' | 'eventType' | 'presentationType' | 'location', string]> = [
     ['mode', 'a mode'],
     ['eventType', 'an event type'],
     ['presentationType', 'a presentation type'],
@@ -58,6 +62,18 @@ export function eventFormProblems(value: EventFormValue): Array<string> {
   for (const [field, label] of choices) {
     if (isBlank(value?.[field])) {
       problems.push(`Choose ${label}.`);
+    }
+  }
+
+  // The check-in window (#3209), when the value carries it, as the form always does.
+  for (const [field, label] of [
+    ['checkInMinutesBefore', 'Check-in opens'],
+    ['checkInMinutesAfter', 'Check-in closes']
+  ] as const) {
+    const problem = field in (value ?? {}) ? checkInMinutesProblem(value[field], label) : null;
+
+    if (problem) {
+      problems.push(problem);
     }
   }
 

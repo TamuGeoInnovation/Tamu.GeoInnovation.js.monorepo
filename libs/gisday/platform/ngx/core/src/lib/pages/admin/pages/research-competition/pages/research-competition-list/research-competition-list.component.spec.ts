@@ -17,7 +17,12 @@ import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { ReviewEmailModalComponent } from '@tamu-gisc/gisday/platform/ngx/common';
-import { ResearchCompetitionListComponent, withData, profileEmailNote } from './research-competition-list.component';
+import {
+  ResearchCompetitionListComponent,
+  filesToZip,
+  withData,
+  profileEmailNote
+} from './research-competition-list.component';
 
 /** #2817: a filter offers All and only the choices the season's submissions have. */
 describe('withData', () => {
@@ -180,6 +185,14 @@ describe('ResearchCompetitionListComponent actions on the selected submissions',
 
     return { service, speakerEdits, modals, toasts, click, page, fixture };
   }
+
+  // #3174: the download takes the ticked submissions, and its button says so.
+  it('downloads the files of the ticked submissions, and says how many', () => {
+    const { page } = open(false);
+    const download = [...page.querySelectorAll('.form-section-actions a[role=button]')].map((a) => a.textContent.trim());
+
+    expect(download).toContain('Download files (2 ticked)');
+  });
 
   it('offers Approve, Reject and the Email menu beside Delete', () => {
     const { click } = open(false);
@@ -556,3 +569,28 @@ function chooseSelectedAction(page: HTMLElement, detectChanges: () => void, labe
   item.click();
   detectChanges();
 }
+
+/** #3174: which submissions' files the download takes. */
+describe('filesToZip', () => {
+  const rows = [{ guid: 's1' }, { guid: 's2' }, { guid: 's3' }];
+
+  it('takes the ticked rows that are showing, in the order shown', () => {
+    expect(filesToZip(['s3', 's1', 'hidden'], rows, 5)).toEqual({
+      guids: ['s1', 's3'],
+      label: 'Download files (2 ticked)',
+      name: '2-ticked'
+    });
+  });
+
+  it('takes the rows the filters show when none is ticked', () => {
+    expect(filesToZip([], rows, 5)).toEqual({
+      guids: ['s1', 's2', 's3'],
+      label: 'Download files (3 shown)',
+      name: '3-shown'
+    });
+  });
+
+  it('takes the whole season, as before, when nothing narrows it', () => {
+    expect(filesToZip(['hidden'], rows, 3)).toEqual({ guids: null, label: 'Download all files', name: '' });
+  });
+});

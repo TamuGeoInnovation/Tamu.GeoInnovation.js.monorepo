@@ -1,9 +1,13 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddSessionDetailsSends1794790500971 implements MigrationInterface {
-  // Each session details email sent (#3098): which session, which speaker, who sent it and when, so every copy of the
-  // API catches a repeated send. Empty when created; a session's or a speaker's rows go with it.
-  name = 'AddSessionDetailsSends1794790500971';
+/**
+ * Adds `session_details_sends`, the session details email's repeat guard (#3098): a row for each speaker sent a
+ * session's details, recorded before the email goes, so every copy of the API catches a repeated send. Empty when
+ * created; a session's or a speaker's rows go with it. It only adds, so the API before this change keeps working once
+ * it has run. Dated after AddSeasonWinners1795444106838 (#3239), which production has.
+ */
+export class AddSessionDetailsSends1795448491167 implements MigrationInterface {
+  name = 'AddSessionDetailsSends1795448491167';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
@@ -11,7 +15,6 @@ export class AddSessionDetailsSends1794790500971 implements MigrationInterface {
                 "updated" datetimeoffset NOT NULL CONSTRAINT "DF_df0bb95f29152b8dd357d125b27" DEFAULT SYSDATETIMEOFFSET(),
                 "created" datetimeoffset NOT NULL CONSTRAINT "DF_943b3a37c009cda7bcb0bbf810f" DEFAULT SYSDATETIMEOFFSET(),
                 "guid" nvarchar(255) NOT NULL,
-                "sentBy" nvarchar(255),
                 "sessionGuid" nvarchar(255) NOT NULL,
                 "speakerGuid" nvarchar(255) NOT NULL,
                 CONSTRAINT "PK_ffb81a6d7a7527885d8c4e0eb0d" PRIMARY KEY ("guid")
