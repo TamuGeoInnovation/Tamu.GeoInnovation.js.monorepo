@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle, listening.
+- **Batch g100 (gisday: #3379, then #3329)**, since about 1:50 AM Central, 24 November.
 
 ## Finished
 - **Batch g99 (gisday: #3324)** (report `home/reports/2026-11-24-g99.md`): branch ready, `refactor/3324-season-scoped-provider` at `3bfc2f2ae`. rethrowHttp for the 62 pasted catch blocks; SeasonScopedProvider for all ten providers; the shared copy for five, with both guards and an awaited save (broadcasts gain both). The five cloning copies are left; one question. Red first, check exit 0. Finished 1:34 AM Central.
