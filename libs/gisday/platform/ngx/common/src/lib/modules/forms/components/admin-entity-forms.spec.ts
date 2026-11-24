@@ -152,7 +152,8 @@ const eventUpdates = (f: Form) => (f as unknown as { _updateEntity(): void })._u
 
 /**
  * What the other five admin forms say (#3382), pinned the same way: after each action, worked, refused, and refused
- * with the API's own reason.
+ * with the API's own reason. Pinned on the first PR's code, and now in its one way: titles in title case (season,
+ * event), and the API's reason shown by every form (place and speaker showed only the status on a delete).
  */
 describe.each([
   { name: 'sponsor', page: SponsorAddEditFormComponent, acts: submitted },
@@ -200,7 +201,7 @@ const SAID_TOO: Record<string, Record<string, Array<Toast>>> = {
     notUpdated: [{ id: 'place-update-failed', title: 'Update Place', message: 'Error updating place: 500' }],
     deleted: [{ id: 'place-delete-success', title: 'Delete Place', message: 'Place was successfully deleted.' }],
     notDeleted: [{ id: 'place-delete-failed', title: 'Delete Place', message: 'Error deleting place: 500' }],
-    notDeletedWithReason: [{ id: 'place-delete-failed', title: 'Delete Place', message: 'Error deleting place: 422' }]
+    notDeletedWithReason: [{ id: 'place-delete-failed', title: 'Delete Place', message: 'A made-up reason.' }]
   },
   speaker: {
     created: [{ id: 'speaker-create-success', title: 'Create Speaker', message: 'Speaker was successfully created.' }],
@@ -209,23 +210,23 @@ const SAID_TOO: Record<string, Record<string, Array<Toast>>> = {
     notUpdated: [{ id: 'speaker-update-failed', title: 'Update Speaker', message: 'Error updating speaker: 500' }],
     deleted: [{ id: 'speaker-delete-success', title: 'Delete Speaker', message: 'Speaker was successfully deleted.' }],
     notDeleted: [{ id: 'speaker-delete-failed', title: 'Delete Speaker', message: 'Error deleting speaker: 500' }],
-    notDeletedWithReason: [{ id: 'speaker-delete-failed', title: 'Delete Speaker', message: 'Error deleting speaker: 422' }]
+    notDeletedWithReason: [{ id: 'speaker-delete-failed', title: 'Delete Speaker', message: 'A made-up reason.' }]
   },
   season: {
-    updated: [{ id: 'season-update-success', title: 'Update season', message: 'Season was successfully updated.' }],
-    notUpdated: [{ id: 'season-update-failed', title: 'Update season', message: 'Error updating season: 500' }],
-    deleted: [{ id: 'season-delete-success', title: 'Delete season', message: 'Season was successfully deleted.' }],
-    notDeleted: [{ id: 'season-delete-failed', title: 'Delete season', message: 'Error deleting season: 500' }],
-    notDeletedWithReason: [{ id: 'season-delete-failed', title: 'Delete season', message: 'A made-up reason.' }]
+    updated: [{ id: 'season-update-success', title: 'Update Season', message: 'Season was successfully updated.' }],
+    notUpdated: [{ id: 'season-update-failed', title: 'Update Season', message: 'Error updating season: 500' }],
+    deleted: [{ id: 'season-delete-success', title: 'Delete Season', message: 'Season was successfully deleted.' }],
+    notDeleted: [{ id: 'season-delete-failed', title: 'Delete Season', message: 'Error deleting season: 500' }],
+    notDeletedWithReason: [{ id: 'season-delete-failed', title: 'Delete Season', message: 'A made-up reason.' }]
   },
   event: {
-    created: [{ id: 'event-create-success', title: 'Create event', message: 'Event was successfully created.' }],
-    notCreated: [{ id: 'event-create-failed', title: 'Create event', message: 'Error creating event: 500' }],
+    created: [{ id: 'event-create-success', title: 'Create Event', message: 'Event was successfully created.' }],
+    notCreated: [{ id: 'event-create-failed', title: 'Create Event', message: 'Error creating event: 500' }],
     updated: [{ id: 'event-update-success', title: 'Update Event', message: 'Event was successfully updated.' }],
     notUpdated: [{ id: 'event-update-failed', title: 'Update Event', message: 'Error updating event: 500' }],
-    deleted: [{ id: 'event-delete-success', title: 'Delete event', message: 'Event was successfully deleted.' }],
-    notDeleted: [{ id: 'event-delete-failed', title: 'Delete event', message: 'Error deleting event: 500' }],
-    notDeletedWithReason: [{ id: 'event-delete-failed', title: 'Delete event', message: 'A made-up reason.' }]
+    deleted: [{ id: 'event-delete-success', title: 'Delete Event', message: 'Event was successfully deleted.' }],
+    notDeleted: [{ id: 'event-delete-failed', title: 'Delete Event', message: 'Error deleting event: 500' }],
+    notDeletedWithReason: [{ id: 'event-delete-failed', title: 'Delete Event', message: 'A made-up reason.' }]
   }
 };
 
