@@ -13,8 +13,8 @@ import { Auth0UserProfile, ManagementService } from '@tamu-gisc/common/nest/auth
 
 import { Class, CheckIn } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
-import { naturalOrder } from '../_base/natural-order';
 import { SeasonService } from '../season/season.service';
+import { naturalOrder } from '@tamu-gisc/gisday/common';
 
 @Injectable()
 export class ClassProvider extends BaseProvider<Class> {

@@ -1,4 +1,4 @@
-import { lastNameOf } from './names';
+import { lastNameOf, naturalOrder } from './names';
 
 /**
  * Which of an email's speakers get it, and whether together or a copy each (#3104). Every speaker email the composer sends
@@ -148,7 +148,7 @@ export function togetherTo(recipients: ReadonlyArray<{ email: string }>): string
 export function alphabetical<T extends { name: string; firstName?: string | null }>(
   recipients: ReadonlyArray<T> | null | undefined
 ): Array<T> {
-  const compare = (a: string, b: string) => a.localeCompare(b, 'en', { sensitivity: 'base' });
+  const compare = naturalOrder.compare;
 
   return [...(recipients ?? [])].sort(
     (a, b) =>

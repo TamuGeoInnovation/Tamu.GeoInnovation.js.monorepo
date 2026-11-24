@@ -2,20 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 
-import {
-  JUDGED_COMPETITIONS,
-  SeasonWinnersAdminDto,
-  SeasonWinnersDto,
-  TRAIL_COMPETITION,
-  TrailChoice,
-  WINNER_COMPETITIONS,
-  WinnerChoice,
-  WinnerDto,
-  judgedCompetitionOf,
-  trailChoicesProblem,
-  winnerChoicesProblem,
-  winnersShown
-} from '@tamu-gisc/gisday/common';
+import { JUDGED_COMPETITIONS, judgedCompetitionOf, naturalOrder, SeasonWinnersAdminDto, SeasonWinnersDto, TRAIL_COMPETITION, TrailChoice, trailChoicesProblem, WINNER_COMPETITIONS, WinnerChoice, winnerChoicesProblem, WinnerDto, winnersShown } from '@tamu-gisc/gisday/common';
 
 import { DashboardProfilesService, profileName } from '../dashboards/dashboard-profiles.service';
 import { Season, SeasonWinner, Submission } from '../entities/all.entity';
@@ -94,7 +81,7 @@ export class SeasonWinnerService {
         label,
         entries: accepted
           .filter((s) => judgedCompetitionOf(s) === competition)
-          .sort((a, b) => (a.title ?? '').localeCompare(b.title ?? '', 'en', { sensitivity: 'base' }))
+          .sort((a, b) => naturalOrder.compare(a.title ?? '', b.title ?? ''))
           .map((s) => ({ guid: s.guid, title: s.title ?? null, names: presentersOf(s) }))
       })),
       winners: rows

@@ -11,8 +11,8 @@ import { DeleteResult, In, Repository } from 'typeorm';
 
 import { EventBroadcast } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
-import { byName } from '../_base/natural-order';
 import { SeasonService } from '../season/season.service';
+import { byName } from '@tamu-gisc/gisday/common';
 
 @Injectable()
 export class EventBroadcastService extends BaseProvider<EventBroadcast> {
