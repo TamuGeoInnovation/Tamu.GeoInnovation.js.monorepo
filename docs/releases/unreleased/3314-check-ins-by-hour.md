@@ -18,7 +18,7 @@ Like the rest of the dashboard, it counts only the events the site lists. Check-
 
 | | Before | After |
 | --- | --- | --- |
-| The charts, at 1280 | ![Check-ins over time: a running total by day, and nothing by the hour](../screenshots/3314-check-ins-by-hour/before-check-ins-charts.png) | ![Check-ins over time, then the start of the new Check-ins by hour heading](../screenshots/3314-check-ins-by-hour/after-check-ins-charts.png) |
+| The charts, at 1280 | ![Check-ins over time: a running total by day, and nothing by the hour](../screenshots/3314-check-ins-by-hour/before-check-ins-charts.png) | ![Check-ins over time as before, and Check-ins by hour under it](../screenshots/3314-check-ins-by-hour/after-check-ins-charts.png) |
 | Check-ins by hour, at 1280 | | ![Check-ins by hour across 16 to 20 November, peaking each day around midday](../screenshots/3314-check-ins-by-hour/after-check-ins-by-hour.png) |
 | With an event opened | | ![The same chart with the opened event's own line beside All events](../screenshots/3314-check-ins-by-hour/after-check-ins-by-hour-event.png) |
 | At 390 | | ![Check-ins by hour on a phone, the page no wider than the screen](../screenshots/3314-check-ins-by-hour/after-check-ins-by-hour-phone.png) |
