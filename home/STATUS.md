@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle and listening.
+- **Batch 86 (gisday: the rest of #3019)**, since 8:20 PM Central, 23 November, from development `9dc2a31fc` (PR 3310 merged).
 
 ## Finished
 - **Batch 85 (gisday: PR 3304's E2E)** (report `home/reports/2026-11-23-85-gisday.md`): `fix/2088-api-on-own-address` fast-forward to `29bd6b205`. Cause: with the token list the page's own /api, the E2E's unconfigured build asked Auth0's placeholder host for a token before every API call, so none was sent. Fix: no token while Auth0 is unfilled. Whole GIS Day E2E 47 passed; check green apart from the audit FETCH_ERROR.
