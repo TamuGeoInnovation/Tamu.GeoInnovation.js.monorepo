@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle, listening.
+- **Batch a8 (aggiemap: tidy.sh report and the full check on PR 3407)**, from `fork/chore/3400-disk-guard-and-tidy`, worktree `C:/TAMU/wt-3400`, since 11:13 AM Central.
 
 ## Finished
 - **Batch g105 (gisday: #3412)** (report `home/reports/2026-11-24-g105.md`): `fix/3412-awards-sentence` on the fork at `36904e5db`; red 3 of 3 on development, check exit 0 (`gisday-platform-ngx-core,gisday-angular`, CHECK_PARALLEL=1); the sentence now sits inside the session element on Posters and Presentation. 11:00 to 11:12 AM Central.
