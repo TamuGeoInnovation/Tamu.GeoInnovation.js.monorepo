@@ -1,5 +1,6 @@
 ---
 issue: 3006
+app: gisday
 title: "GIS Day admin: a Check-ins dashboard, each event's check-ins by person type beside its RSVPs"
 testOnDev: |
   | GIS Day admin: the check-in dashboard ([#3006](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3006)) | Not on dev: GIS Day has no dev site. After release, sign in as an admin and open [Dashboards > Check-ins on txgisday.org](https://txgisday.org/admin/dashboards/check-ins), then open an event and export its CSV | Each event's check-ins counted by person type, with an **RSVPs** column beside them and a total row that matches the summary line; a chart of check-ins by day; an opened event lists who checked in and when, and its CSV has one row per person. In a window 1280 px wide, every column, Export as CSV and the times are in view, on this page and on RSVPs; in a narrower one the table scrolls sideways in its own box, never the page. On [gisday.tamu.edu](https://gisday.tamu.edu/admin/dashboards/check-ins) only Texas A&M's sessions are listed. If it says the check-ins could not be read, the admin role is missing the `read:checkins` permission |

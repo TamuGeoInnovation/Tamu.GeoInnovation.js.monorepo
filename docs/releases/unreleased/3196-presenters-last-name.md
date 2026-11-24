@@ -1,5 +1,6 @@
 ---
 issue: 3196
+app: gisday
 title: "GIS Day: a session's presenters are listed by last name, not grouped by company"
 testOnDev: |
   | GIS Day: a session's presenters by last name ([#3196](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3196)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release, open a session with presenters from more than one organization under Sessions on [gisday.tamu.edu](https://gisday.tamu.edu) | Its Presenters are in order of last name, then first name, A to Z, read left to right and then down, whatever organization each is from. Before, the people from one organization sat together |

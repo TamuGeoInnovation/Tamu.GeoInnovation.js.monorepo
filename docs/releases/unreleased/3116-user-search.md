@@ -1,5 +1,6 @@
 ---
 issue: 3116
+app: gisday
 title: "Admin, Users' search finds people instead of spinning"
 testOnDev: |
   | Admin, Users' search ([#3116](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3116)) | Not on dev: GIS Day has no dev site. After release, signed in as an admin, [Admin, Users](https://gisday.tamu.edu/admin/users) | Typing "zh" asks for 3 letters; "zhe" or "zhang" lists Zhe Zhang; the start of an email address finds its owner; a search never spins for ever |

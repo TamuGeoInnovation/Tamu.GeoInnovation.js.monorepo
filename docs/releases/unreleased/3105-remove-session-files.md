@@ -1,5 +1,6 @@
 ---
 issue: 3105
+app: gisday
 title: Admins can remove a session's slide files, including those of a speaker no longer listed
 testOnDev: |
   | GIS Day admin: a session's Slides ([#3105](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3105)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release, as an admin: Admin, Events, a session with slides | Each file in Slides has a Remove. It asks on the page, naming the file and who uploaded it, with Remove the file and Keep it; Keep it leaves the file. Remove the file takes it off the list, and the speaker no longer sees it on their edit link |

@@ -1,5 +1,6 @@
 ---
 issue: 3093
+app: gisday
 title: "GIS Day: speakers upload their sessions' slides from their edit link, and admins see them"
 testOnDev: |
   | GIS Day: speakers upload their slides from their edit link ([#3093](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3093)) | Not on dev: GIS Day has no dev site. After release, open two test speakers' edit links for the same session (from a profile or session details email), then as an admin that session under [Events](https://txgisday.org/admin/events) | Under the profile, **Your sessions** lists each session the speaker presents this season with its day, time and room. **Upload slides** takes a PDF or PowerPoint up to 100 MB and shows its name, size and time at once, beside any already there, up to three files a session, each with its own **Remove**; with three, there is no upload. The second speaker sees none of the first's files and uploads their own. A .docx is refused in words. The session's admin page has a **Slides** section listing every speaker's files, each with who uploaded it, whose file name downloads the original; the Events list has a **Slides** column (the upload date, or None) and **Only sessions with no slides** |

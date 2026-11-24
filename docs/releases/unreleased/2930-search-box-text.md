@@ -1,5 +1,6 @@
 ---
 issue: 2930
+app: gisday
 title: "GIS Day: search box text centred, in the site's font"
 testOnDev: |
   | GIS Day: search box text ([#2930](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2930)) | Not on dev: GIS Day has no dev site. After release, open [Presenters searched for Texas A&M Forest Service](https://gisday.tamu.edu/presenters?search=Texas%20A%26M%20Forest%20Service) | The typed text is in the same font as the rest of the page and level with Copy link and the x; an empty box shows its placeholder on the same line |

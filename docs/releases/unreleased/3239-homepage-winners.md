@@ -1,5 +1,6 @@
 ---
 issue: 3239
+app: gisday
 title: The research competitions' winners on gisday.tamu.edu's homepage
 testOnDev: |
   | GIS Day: competition winners ([#3239](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3239)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release and the `season_winners` migration, as an admin on gisday.tamu.edu: Research Competitions, Winners; pick 1st, 2nd and 3rd of each competition and Save winners; then open the homepage | The Winners page lists each competition's accepted entries this season, by title with their people's names, and keeps what was saved when reopened. The homepage shows a "2026 Competition Winners" section with each competition's places in order, each with names and title. txgisday.org and UCGIS's homepages show no such section |

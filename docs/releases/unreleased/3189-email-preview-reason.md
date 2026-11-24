@@ -1,5 +1,6 @@
 ---
 issue: 3189
+app: gisday
 title: The email window says why an email could not be loaded
 testOnDev: |
   | GIS Day: the email window's reason ([#3189](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3189)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release, as an admin: tick a session's judges without saving, then choose Ask to judge | The window says "The email could not be loaded, so nothing was sent. This session has no judges. Tick its judges and save it first.", not "Please try again" |

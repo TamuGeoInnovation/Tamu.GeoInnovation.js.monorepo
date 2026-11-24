@@ -1,5 +1,6 @@
 ---
 issue: 3200
+app: gisday
 title: "GIS Day: a judge's page has a tab per competition, and each entry collapsed, by first author"
 testOnDev: |
   | GIS Day: a judge's competitions as tabs, entries collapsed ([#3200](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3200)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release, open a judge's judging link (`/judging/<link>`) on [gisday.tamu.edu](https://gisday.tamu.edu), for a judge in both the undergraduate and the graduate competition | A tab for each competition, the first one open; clicking the other switches to it. In each, every entry shows only its title, authors and the judge's score (or Not scored yet), in order by the first author's last name; tapping one opens its rubric. A score typed in one tab is still there after switching away and back |

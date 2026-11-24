@@ -1,5 +1,6 @@
 ---
 issue: 3077
+app: gisday
 title: "Scanning a session's QR code checks the attendee in, at every session"
 testOnDev: |
   | Scanning a session's QR code checks the attendee in ([#3077](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3077)) | Not on dev: GIS Day has no dev site. After release, as an admin tick "Check-in open at any time?" on one hybrid and one in-person session, press "Show check-in QR code" on each, and scan it with a phone; once signed out (a private window) | Signed in, the page says "Your attendance has been registered" with no button to press; signed out, it offers SIGN IN and comes back checked in; the in-person session's code checks in without asking for the phone's location. Untick the box afterwards |

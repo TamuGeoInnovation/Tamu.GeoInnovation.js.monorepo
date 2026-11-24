@@ -1,5 +1,6 @@
 ---
 issue: 2914
+app: gisday
 title: "GIS Day admin: a search box and a count on each admin list page"
 testOnDev: |
   | GIS Day admin: search on the list pages ([#2914](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2914)) | Not on dev: GIS Day has no dev site. After release, sign in as an admin on gisday.tamu.edu and open Classes, Events, Venues, Affiliations, Organizations, Speakers, Sponsors, Users and Universities | Each opens with a search box and how many it lists; typing narrows the table to rows whose shown columns match, ignoring case and accents, and says "Showing N of M"; a search that matches nothing says so; selecting rows after searching selects only those shown |

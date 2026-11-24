@@ -1,5 +1,6 @@
 ---
 issue: 3043
+app: gisday
 title: "GIS Day admin: the finalists' profile email reaches co-authors, starts from the maintainer's text, and names who it can't reach"
 testOnDev: |
   | GIS Day admin: the finalists' profile email ([#3043](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3043), [#3045](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3045), [#3046](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3046)) | Not on dev: GIS Day has no dev site. After release, as an admin: [Research Competitions](https://txgisday.org/admin/research-competition), select a group submission whose co-authors share one email box, **Send profile email**, then **Cancel** | The count includes each co-author who has a presenter record, including one entered by NetID; the text starts "One of the best ways for you to get a full-time or internship position..." and ends "- The Texas A&M GIS Day Team"; anyone on the submissions with no presenter record is listed by name and submission before anything is sent |

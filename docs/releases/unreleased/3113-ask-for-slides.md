@@ -1,5 +1,6 @@
 ---
 issue: 3113
+app: gisday
 title: "GIS Day admin: ask a session's speakers for their slides"
 testOnDev: |
   | GIS Day admin: Ask for slides, a session's third speaker email ([#3113](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3113)) | Not on dev: GIS Day has no dev site. After release, as an admin, open a session with two or more speakers under [Events](https://txgisday.org/admin/events), then Email these speakers, Ask for slides | The menu has three items: Profile email, Session details, Ask for slides. The window lists the speakers with tick boxes, offers no "together", and says each speaker gets their own copy because it carries their own link to upload their slides. The text names the session, its day and time in Central and its room, says what may be uploaded (PowerPoint or PDF, up to 100 MB each, up to 3 files for each session), and the preview shows "(their own edit link, added when it is sent)" where the link goes. Cancel sends nothing |

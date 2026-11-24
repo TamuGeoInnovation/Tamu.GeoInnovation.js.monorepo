@@ -1,5 +1,6 @@
 ---
 issue: 3104
+app: gisday
 title: "GIS Day admin: choose which speakers get an email, together or a copy each"
 testOnDev: |
   | GIS Day admin: which speakers get an email, together or a copy each ([#3104](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3104)) | Not on dev: GIS Day has no dev site. After release, as an admin, open a hybrid session with two or more speakers under [Events](https://txgisday.org/admin/events), then Email these speakers, Session details; then Email these speakers, Profile email | Session details: **Who gets it** lists every speaker with an address, all ticked, with **One email to all of them together** chosen; the preview's **To:** has every address and the greeting names them all ("Howdy Ana and Ben,"), and the button says **Send 1 email**. **A copy each** shows the first ticked speaker and one email each; unticking a speaker leaves them out. A broadcast with no dial-in number has no "Dial-in number" line. Profile email: the same tick boxes, no together choice, and a line saying each speaker gets their own copy because it carries their own edit link. Cancel sends nothing |

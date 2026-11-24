@@ -1,5 +1,6 @@
 ---
 issue: 2963
+app: gisday
 title: "GIS Day: one clear button for every search box, and one on the Sessions search"
 testOnDev: |
   | GIS Day: clear a search with the box's x ([#2963](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2963)) | Not on dev: GIS Day has no dev site. After release, type in the search on [gisday.tamu.edu/sessions](https://gisday.tamu.edu/sessions), [gisday.tamu.edu/presenters](https://gisday.tamu.edu/presenters) and a presenter's own page; press Tab from the box to reach the x, then Enter. The shared textbox is also on [dev.aggiemap.tamu.edu/directory](https://dev.aggiemap.tamu.edu/directory) | An x appears in each box once it holds text and empties it, listing everything again, with the cursor back in the box; the Presenters page still has Copy link beside it. AggieMap's directory filter has no x and looks as it did |

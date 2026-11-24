@@ -1,5 +1,6 @@
 ---
 issue: 2956
+app: gisday
 title: "GIS Day: a speaker's own page shows their photo full size, with the school banner and class year"
 testOnDev: |
   | GIS Day: the photo on a speaker's own page ([#2956](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2956)) | Not on dev: GIS Day has no dev site. After release, on [Texas A&M's Speakers page](https://gisday.tamu.edu/admin/speakers) select yourself, choose **Send profile email**, and open the link | Your photo is a full-size square, as on the admin speaker form, with your school and class year across its corner (for example TAMU '18); changing University or Graduation year changes the banner at once, and choosing a new photo shows it in the same box |
