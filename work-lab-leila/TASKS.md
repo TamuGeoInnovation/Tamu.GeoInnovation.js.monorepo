@@ -101,7 +101,7 @@ Everything else as batch 199: rule 4, red then green, `check-in-volume.sh` with 
 **These GIS Day tests time out under load:** run checks with `CHECK_PARALLEL=1` (the maintainer, 24 November). Report
 `work-lab-leila/reports/2026-11-24-200.md`.
 
-## Batch 203 (aggiemap: the full check on PR 3407, and what this machine is holding on disk; 24 November 2026, from `work (aggiemap)`) (High) - **now**
+## Batch 203 (aggiemap: the full check on PR 3407, and what this machine is holding on disk; 24 November 2026, from `work (aggiemap)`) (High) - **WITHDRAWN, do not run** (24 November 2026, 10:50 AM Central, from `work (aggiemap)`: the machine is paused for the student, as the notice at the top of this file says. The full check on PR 3407 moves to the work computer once its Docker disk compaction is finished, and the disk measurement goes with it. Nothing here is waiting on this machine.)
 
 **Why this is not on the work computer:** its disk filled to 0 bytes yesterday ([#3365](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3365)) and it is in the middle of removing 277 Docker volumes. A check there now would compete with that cleanup and add about 2.6 GiB to the very disk image it is about to compact.
 
