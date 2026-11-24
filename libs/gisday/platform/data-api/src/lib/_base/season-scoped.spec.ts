@@ -17,7 +17,7 @@ import { UniversityProvider } from '../university/university.provider';
  */
 
 /** A provider made bare, with `seasons` as its season service under whichever name it reads it by. */
-function bare<T>(type: { prototype: T }, seasons: object, repo: object = {}): T {
+function bare<T extends object>(type: { prototype: T }, seasons: object, repo: object = {}): T {
   return Object.assign(Object.create(type.prototype), {
     seasonService: seasons,
     seasonProvider: seasons,
