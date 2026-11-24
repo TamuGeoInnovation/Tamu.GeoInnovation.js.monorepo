@@ -20,6 +20,7 @@
 //   $button-foreground: #fafafa;
 //   @import 'libs/sass/components/button';
 //   @include button-anchors;
+@import 'libs/sass/variables';
 
 $button-background: #0079c1 !default;
 $button-foreground: #ffffff !default;
@@ -90,7 +91,7 @@ $button-letter-spacing: null !default;
 
       &.active {
         background: #eeeeee;
-        color: #500000;
+        color: $aggie-maroon;
       }
 
       &:hover {
