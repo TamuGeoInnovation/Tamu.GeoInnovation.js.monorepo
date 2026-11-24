@@ -1,5 +1,23 @@
 # Home machine: current tasks
 
+## Batch g99 (gisday: #3324, one season-scoped base provider; 24 November 2026, about 5:15 AM Central, from `work (gisday)`) (Low) - **now**
+
+[#3324](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3324): ten providers each write `forSeason`, `forActiveSeason` and `copyIntoSeason`, and one catch block is pasted
+63 times across 17 files. Fixes have reached one copy each (tag's null guard, class's `[]` guard, event-location's missing
+`await`). Rule 4 first: confirm the copies on today's `development` and list where they already differ.
+
+- Branch `refactor/3324-season-scoped-provider` from the latest `development`. `SeasonScopedProvider<T>` in
+  `platform/data-api/src/lib/_base` beside `BaseProvider`, with the three methods, and one `rethrowHttp(err, ctx)`. The ten
+  providers extend it.
+- **The differences are the point.** Where one copy has a guard the others lack, the shared method has it, and a test shows the
+  others now get it too (red first, against one provider that lacked it). The unreachable `throw 422 'No active season found.'`
+  goes: `SeasonService.findOneActive()` throws 404 first; pin that status with a test before removing it.
+- The query-checking specs from #2363 (and #3313's shared helpers, PR 3372, not merged yet: build on `development` and say
+  which spec files will conflict) should keep passing unchanged; any you have to edit, say why.
+- Check: `gisday-platform-data-api,gisday-nest`. No visible change. Overnight rules: no package.json or lock changes. Push to the
+  fork; "branch ready: refactor/3324-season-scoped-provider" with the PR body in `home/reports/2026-11-24-g99.md`. It is sized
+  L: if it grows well past three hours, push what is proven, stop, and report what remains.
+
 ## Batch g98 (gisday: #3323, one Central-time module; 24 November 2026, about 4:30 AM Central, from `work (gisday)`) (Low) - **now**
 
 [#3323](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3323): `'America/Chicago'` is hard-coded in about ten files, and the calendar-day logic exists three times
