@@ -1,5 +1,17 @@
 # Laptop: current tasks
 
+## Batch g16 (gisday: before and after images for #441, the admin Speakers list's Sessions column; 24 November 2026, about 12:50 AM Central, from `work (gisday)`) (Medium) - **after g14, before g15; on your signed-in stack**
+
+`feat/441-speaker-sessions` on the fork, at `463ef05c8`, is PR 3344; its admin images need a sign-in, which only you have.
+Fast-forward only; don't merge `development` into it. With made-up data (a season with a few made-up speakers: one in two
+sessions, one in one hidden session, one in none):
+1. **Before**, from the merge-base: Admin, Speakers at 1280 px. **After**, from `463ef05c8`: the same list (the Sessions
+   column), and the list with "Only speakers in no session" ticked; then the after list at 390.
+2. Commit them to `docs/screenshots/441-speaker-sessions/`, add a Before | After table to
+   `docs/releases/unreleased/441-speaker-sessions.md` (and drop its "screenshots to follow" line), run
+   `collate-release-notes.mjs --check` in Docker, push, and report `laptop/reports/2026-11-24-g16.md` with
+   "images pushed (441): <sha>" first. Overnight rules: no package.json or lock changes; never production; txgisday-dev only.
+
 ## Batch s8 (security: #1550, drop `baseUrl` and the last `ignoreDeprecations` from the tsconfigs; 23 November 2026, about 9:10 PM Central, from `work (security)`) (Low) - **WITHDRAWN, moved to work (the security director itself, on the shortest queue)** (rule 3 of *Working unsupervised overnight*: home and laptop are each about eight deep). Do not run it.
 
 [#1550](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1550): `"ignoreDeprecations": "6.0"` stops working
