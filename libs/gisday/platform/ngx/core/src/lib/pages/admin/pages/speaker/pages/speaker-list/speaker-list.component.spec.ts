@@ -57,3 +57,51 @@ describe('SpeakerListComponent, the profile email', () => {
     expect(toasts.toast).not.toHaveBeenCalled();
   });
 });
+
+/**
+ * #3370: at 390 px the list was 566 px wide, so the page scrolled sideways, and the season select was squeezed to a
+ * sliver beside the heading. The table now scrolls in the admin dashboards' own box, whose specs show it scrolls content
+ * wider than itself, so the page does not; and the toolbar's actions wrap onto a second line rather than squeezing.
+ */
+describe('SpeakerListComponent on a phone (#3370)', () => {
+  async function open() {
+    const speakers = [{ guid: 'sp-1', firstName: 'Ana', lastName: 'Ruiz', email: 'ana@example.edu' }];
+
+    TestBed.configureTestingModule({
+      imports: [SpeakerListComponent],
+      providers: [
+        provideRouter([]),
+        { provide: SpeakerService, useValue: { getEntitiesForActiveSeason: () => of(speakers), getEntitiesForSeason: () => of(speakers), getEntities: () => of(speakers) } },
+        { provide: SpeakerEditsService, useValue: {} },
+        { provide: SeasonService, useValue: { seasons$: of([]), activeSeason$: of(null) } },
+        { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
+        { provide: ModalService, useValue: {} },
+        { provide: NotificationService, useValue: {} }
+      ]
+    });
+
+    const fixture = TestBed.createComponent(SpeakerListComponent);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    return fixture.nativeElement as HTMLElement;
+  }
+
+  it('puts the table in the shared scroll box, so on a phone the table scrolls and the page does not', async () => {
+    const root = await open();
+    const table = root.querySelector('table.floating-table');
+
+    expect(table).not.toBeNull();
+    expect(table.closest('tamu-gisc-dashboard-scroll')).not.toBeNull();
+    // Inside the box's own element that scrolls sideways, not beside it.
+    expect(table.parentElement.classList).toContain('dashboard-scroll');
+  });
+
+  it("lets the toolbar's actions wrap, so the season select keeps its width beside the heading", async () => {
+    const root = await open();
+    const actions = root.querySelector('.form-section-toolbar .form-section-actions');
+
+    expect(Array.from(actions.classList)).toEqual(expect.arrayContaining(['flex', 'flex-row', 'wrap']));
+  });
+});
