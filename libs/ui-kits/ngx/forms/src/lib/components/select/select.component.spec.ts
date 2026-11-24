@@ -134,6 +134,15 @@ describe('SelectComponent, searchable', () => {
     expect(component.search.value).toBe('University of Texas at Austin');
   });
 
+  // #2867: the Edit Speaker page opened both lists on load, over the fields below them.
+  it('keeps its list closed when the form writes a saved value, with nothing touched', () => {
+    component.writeValue('b');
+    fixture.detectChanges();
+
+    expect(component.search.value).toBe('Texas A&M University');
+    expect(fixture.nativeElement.querySelector('.autocomplete-results')).toBeNull();
+  });
+
   it('offers every option again while the text is still the chosen label', () => {
     component.writeValue('a');
     fixture.detectChanges();

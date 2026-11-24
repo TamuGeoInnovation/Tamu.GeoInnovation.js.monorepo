@@ -1,5 +1,6 @@
 // Entities
 export * from './lib/entities/all.entity';
+export * from './lib/entities/timestamps';
 export * from './lib/_base/private-fields.interceptor';
 
 // Modules
@@ -10,6 +11,11 @@ export * from './lib/initial-survey/initial-survey.module';
 export * from './lib/question-type/question-type.module';
 export * from './lib/rsvp-type/rsvp-type.module';
 export * from './lib/speaker/speaker.module';
+export * from './lib/speaker-edit/speaker-edit.module';
+// Judging the research competitions (#3183)
+export * from './lib/judging/judging.module';
+export * from './lib/season-winner/season-winner.module';
+export * from './lib/season-winner/season-winner.service';
 export * from './lib/speaker-role/speaker-role.module';
 export * from './lib/sponsor/sponsor.module';
 export * from './lib/submission-type/submission-type.module';
@@ -29,12 +35,15 @@ export * from './lib/event-broadcast/event-broadcast.module';
 export * from './lib/event-location/event-location.module';
 export * from './lib/place/place.module';
 export * from './lib/assets/assets.module';
+// The one check every GIS Day image upload uses, the competitions' photographs included (#2937, #2967)
+export * from './lib/assets/image-upload';
 export * from './lib/contact/contact.module';
 
 // Providers
 export * from './lib/_base/base-provider';
 // For specs that check the queries typeorm builds, here and in the competitions library (#2424)
 export * from './lib/_base/query-checking-data-source';
+export * from './lib/_base/deadlock-retry';
 export * from './lib/class/class.provider';
 export * from './lib/user-info/user-info.provider';
 export * from './lib/speaker/speaker-photo';
@@ -47,4 +56,9 @@ export * from './lib/event/dto/event-active.dto';
 export * from './lib/season/dto/active-season.dto';
 export * from './lib/user-submission/dto/poster.dto';
 export * from './lib/user-submission/dto/submission-submitter.dto';
+export * from './lib/user-rsvp/dto/rsvp-dashboard.dto';
+export * from './lib/check-in/dto/check-in-dashboard.dto';
+export * from './lib/dashboards/dashboard-profiles.service';
+export * from './lib/user-info/dto/account-dashboard.dto';
 export * from './lib/season-day/dto/simplified-season-day.dto';
+export * from './lib/impact-report/impact-report';

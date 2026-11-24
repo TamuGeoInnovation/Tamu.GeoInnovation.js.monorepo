@@ -14,3 +14,10 @@
     @include transition(max-height 0.2s);
   }
 }
+
+// #3221: content that is already laid out, such as a GIS Day day's session rows, keeps its own spacing and size.
+:host(.plain) .content-container {
+  padding: 0;
+  font-size: inherit;
+  font-weight: inherit;
+}

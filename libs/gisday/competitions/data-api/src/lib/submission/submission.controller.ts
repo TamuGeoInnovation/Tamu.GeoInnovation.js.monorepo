@@ -23,6 +23,7 @@ import { Duplex } from 'stream';
 import { isUUID } from 'class-validator';
 
 import { isOwnerOrPermitted, JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
+import { refuseUnsafeImage } from '@tamu-gisc/gisday/platform/data-api';
 
 import { CompetitionSubmission, SubmissionMedia } from '../entities/all.entities';
 
@@ -202,7 +203,10 @@ export class SubmissionController {
       season: season
     };
 
-    const entityFiles = (files ?? []).map((file) => {
+    // Checked as every GIS Day image upload is, by content: a JPEG or PNG within the pixel limits, stored as the type it is
+    // rather than the one the sender named (#2937, #2967). Before anything is saved, so a refused photograph keeps nothing.
+    const entityFiles = (files ?? []).map((upload) => {
+      const file = refuseUnsafeImage(upload, 'A photograph');
       const _file: DeepPartial<SubmissionMedia> = {
         blob: file.buffer,
         mimeType: file.mimetype,

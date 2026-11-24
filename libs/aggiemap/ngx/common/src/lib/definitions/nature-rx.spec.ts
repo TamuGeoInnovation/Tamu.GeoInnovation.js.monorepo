@@ -21,7 +21,7 @@ describe('Nature Rx (#2630)', () => {
     const layer = LayerSources.find((source) => source.id === Definitions.NATURE_RX.layerId);
 
     expect(layer).toBeDefined();
-    expect(layer.title).toBe('Nature Rx');
+    expect(layer.title).toBe('Nature Spaces');
     expect(layer.url).toBe(NATURE_RX);
     expect(layer.listMode).toBe('show');
     expect(layer.visible).toBe(false);
@@ -85,9 +85,10 @@ describe('Nature Rx is development-only (#2673)', () => {
   });
 
   // The gate is a list, so the thing most likely to go wrong is the list losing an entry rather than the
-  // mechanism breaking. Every entry is a deliberate act with its own issue: Micromobility joined it for #2739.
-  it('is held back with the issue that holds it, and only Micromobility besides', () => {
-    expect(DEVELOPMENT_ONLY_LAYER_SOURCES.map((source) => source.definition)).toEqual(['NATURE_RX', 'MICROMOBILITY']);
+  // mechanism breaking. Every entry is a deliberate act with its own issue. Micromobility joined it for #2739 and
+  // left in #2895, when its map went to production and came off the main map, so Nature Rx is alone again.
+  it('is held back with the issue that holds it, and is the only one', () => {
+    expect(DEVELOPMENT_ONLY_LAYER_SOURCES.map((source) => source.definition)).toEqual(['NATURE_RX']);
     expect(DEVELOPMENT_ONLY_LAYER_SOURCES[0].reason).toContain('#2673');
     expect(developmentOnlySearchSources()).toEqual(['NATURE_RX', 'NATURE_RX_EXACT']);
   });

@@ -6,7 +6,9 @@
     @if ((options$ | async)?.length > 0) {
     <div class="row-item">
       @for (item of (options$ | async); track item) {
-      <ng-container [ngTemplateOutlet]="rowTemplate()" [ngTemplateOutletContext]="{$implicit: item}"></ng-container>
+      <div class="select-list-row" tabindex="0" role="option" [attr.aria-selected]="false" (click)="choose(item)" (keydown.enter)="choose(item)" (keydown.space)="choose(item); $event.preventDefault()">
+        <ng-container [ngTemplateOutlet]="rowTemplate()" [ngTemplateOutletContext]="{$implicit: item}"></ng-container>
+      </div>
       }
     </div>
     } @else {

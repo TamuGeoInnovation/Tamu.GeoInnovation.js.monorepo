@@ -1,8 +1,14 @@
 <div class="form">
+  <!-- Which research competitions the season chosen below runs (#2948) and when each closes (#2934, #2962): one panel (#3037). -->
+  <tamu-gisc-competition-settings class="form-section" [season]="selectedSeason$ | async"></tamu-gisc-competition-settings>
+
   <div class="form-section">
     <div class="form-section-toolbar">
       <div class="form-section-name">Student Competition Submissions</div>
       <div class="form-section-actions">
+        <!-- Every attached file, a folder per submission (#2933): of the ticked rows, else of those the filters show (#3174). -->
+        <!-- The toolbar's own action style (libs/sass/modules/_forms.scss), as the other admin toolbars' actions. -->
+        <a class="post-1" tabindex="0" role="button" [attr.aria-disabled]="zipping()" (click)="zipping() || downloadAllFiles()" (keydown.enter)="zipping() || downloadAllFiles()">{{ zipping() ? 'Preparing zip…' : (zipScope$ | async)?.label }}</a>
         <tamu-gisc-select class="post-1" placeholder="Season" [floatLabel]="false" [data]="seasons$ | async" displayTemplate="year" valueTemplate="guid" [value]="$safeNavigationMigration((selectedSeason$ | async)?.guid)" (changed)="setSeason($event)"></tamu-gisc-select>
       </div>
     </div>
@@ -21,13 +27,18 @@
         </div>
       </div>
 
+      @if (zipProblem(); as problem) {
+      <p class="clr-md-red-500" role="alert">{{problem}}</p>
+      }
+
       <p>Showing <strong>{{view.rows.length}}</strong> of {{view.total}} submissions.</p>
 
       @if (view.rows.length > 0) {
       <!-- ngx-datatable, as the VGI review list uses it: a click on a heading sorts by it (#2808). -->
       <div class="datatable-container">
-        <ngx-datatable class="material" [rows]="view.rows" [columnMode]="'force'" [headerHeight]="50" [rowHeight]="'auto'" [footerHeight]="0" [scrollbarV]="false" [reorderable]="false" [sorts]="[{ prop: 'created', dir: 'desc' }]" (activate)="onActivate($event)">
-          <ngx-datatable-column prop="select" name="" [width]="45" [maxWidth]="45" [sortable]="false" [resizeable]="false">
+        <ngx-datatable class="material" [style.min-width.px]="minWidth" [rows]="view.rows" [columnMode]="'flex'" [headerHeight]="50" [rowHeight]="'auto'" [footerHeight]="0" [scrollbarV]="false" [reorderable]="false" [sorts]="[{ prop: 'created', dir: 'desc' }]" (activate)="onActivate($event)">
+          <!-- Room for the checkbox and the cell's padding, so it does not cover the title beside it (#3026). -->
+          <ngx-datatable-column prop="select" name="" [width]="widths.select" [minWidth]="widths.select" [canAutoResize]="false" [sortable]="false" [resizeable]="false">
             <ng-template ngx-datatable-header-template>
               <tamu-gisc-checkbox label="" (changed)="toggleAllRows(view.rows)" [checked]="(selectedRows$ | async)?.length === view.rows.length"></tamu-gisc-checkbox>
             </ng-template>
@@ -36,14 +47,14 @@
             </ng-template>
           </ngx-datatable-column>
 
-          <ngx-datatable-column name="Name" prop="title" [width]="160"></ngx-datatable-column>
+          <ngx-datatable-column name="Name" prop="title" [flexGrow]="widths.name" [minWidth]="widths.name"></ngx-datatable-column>
 
-          <ngx-datatable-column name="Submitted" prop="created" [width]="100">
+          <ngx-datatable-column name="Submitted" prop="created" [flexGrow]="widths.submitted" [minWidth]="widths.submitted">
             <ng-template let-row="row" ngx-datatable-cell-template>{{row.created | date: 'MMM d, h:mm a'}}</ng-template>
           </ngx-datatable-column>
 
           <!-- Sorted by last name. -->
-          <ngx-datatable-column name="Submitted by" prop="submitter.lastName" [width]="170">
+          <ngx-datatable-column name="Submitted by" prop="submitter.lastName" [flexGrow]="widths.submittedBy" [minWidth]="widths.submittedBy">
             <ng-template let-row="row" ngx-datatable-cell-template>
               @if (row.submitter; as person) {
               <div class="bold">{{person.firstName}} {{person.lastName}}</div>
@@ -55,21 +66,29 @@
           </ngx-datatable-column>
 
           <!-- The submitter's field of study, or department for anyone but a student (#2799). -->
-          <ngx-datatable-column name="Department / major" prop="submitter.department" [width]="160"></ngx-datatable-column>
+          <ngx-datatable-column name="Department / major" prop="submitter.department" [flexGrow]="widths.department" [minWidth]="widths.department"></ngx-datatable-column>
 
-          <ngx-datatable-column name="Type" prop="submissionType" [width]="125">
+          <ngx-datatable-column name="Type" prop="submissionType" [flexGrow]="widths.type" [minWidth]="widths.type" cellClass="whole-value">
             <ng-template let-row="row" ngx-datatable-cell-template>{{row.submissionType | titlecase}}</ng-template>
           </ngx-datatable-column>
 
-          <ngx-datatable-column name="Format" prop="format" [width]="115">
+          <ngx-datatable-column name="Format" prop="format" [flexGrow]="widths.format" [minWidth]="widths.format" cellClass="whole-value">
             <ng-template let-row="row" ngx-datatable-cell-template>{{row.format | titlecase}}</ng-template>
           </ngx-datatable-column>
 
-          <ngx-datatable-column name="Classification" prop="classificationType" [width]="165">
+          <ngx-datatable-column name="Classification" prop="classificationType" [flexGrow]="widths.classification" [minWidth]="widths.classification" cellClass="whole-value">
             <ng-template let-row="row" ngx-datatable-cell-template>{{row.classificationType | titlecase}}</ng-template>
           </ngx-datatable-column>
 
-          <ngx-datatable-column name="Status" prop="reviewStatus" [width]="110">
+          <!-- Whether the final presentation or poster is uploaded (#3017): any file counts, as files have no kind. It
+               replaced the Files count, which crowded it at 1280 px (#3026); the review page lists the files. -->
+          <ngx-datatable-column name="Final file" prop="finalFile" [flexGrow]="widths.finalFile" [minWidth]="widths.finalFile" cellClass="whole-value">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <span [ngClass]="{'clr-md-red-500': row.finalFile === 'Missing'}">{{row.finalFile}}</span>
+            </ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column name="Status" prop="reviewStatus" [flexGrow]="widths.status" [minWidth]="widths.status" cellClass="whole-value">
             <ng-template let-row="row" ngx-datatable-cell-template>
               <span class="bold" [ngClass]="{'clr-md-amber-800': row.reviewStatus === SubmissionReviewStatus.InReview, 'clr-md-green-600': row.reviewStatus === SubmissionReviewStatus.Accepted, 'clr-md-red-500': row.reviewStatus === SubmissionReviewStatus.Rejected}">{{row.reviewStatus}}</span>
             </ng-template>
@@ -80,12 +99,21 @@
       <p>No submissions match these filters.</p>
       } @else {
       <p>There are no student competition submissions for the selected season.</p>
-      } } @if ((selectedRows$ | async)?.length > 0) {
+      } } @else {
+      <!-- The site's loader while the season's submissions load, rather than a blank page (#2924). -->
+      <div class="loader"></div>
+      } @if ((selectedRows$ | async)?.length > 0) {
       <div class="selected-action-container info-block context">
         <div>
           <p><strong>{{(selectedRows$ | async).length}} selected</strong></p>
         </div>
         <div class="selected-actions">
+          <!-- Each reviewed and emailed as Submit Review does one, after the page asks (#2958). -->
+          <p class="selected-action" (click)="reviewSelected(true)" tabindex="0" role="button" (keydown.enter)="reviewSelected(true)" (keydown.space)="reviewSelected(true); $event.preventDefault()">Approve <span class="material-icons action">check_circle</span></p>
+          <p class="selected-action" (click)="reviewSelected(false)" tabindex="0" role="button" (keydown.enter)="reviewSelected(false)" (keydown.space)="reviewSelected(false); $event.preventDefault()">Reject <span class="material-icons action">cancel</span></p>
+          <!-- The emails to the selection, in one menu (#3092): each person's own profile link, as the Speakers list sends it
+          (#2936, #2958), and the last warning to finalists with no final file, by the review's email window (#3017). -->
+          <tamu-gisc-action-menu label="Email" icon="forward_to_inbox" triggerClass="selected-action" opens="up" [items]="selectionEmails" (chosen)="emailSelection($event)"></tamu-gisc-action-menu>
           <p class="selected-action caution" (click)="promptDeleteModal('Submission')" tabindex="0" role="button" (keydown.enter)="promptDeleteModal('Submission')" (keydown.space)="promptDeleteModal('Submission'); $event.preventDefault()">Delete <span class="material-icons action">delete_forever</span></p>
         </div>
       </div>

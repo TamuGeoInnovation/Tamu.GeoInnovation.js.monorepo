@@ -15,6 +15,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppComponent } from './app/app.component';
 import { gisdaySite } from '@tamu-gisc/gisday/common';
 import { GISDAY_SITE, siteFeatureGuard } from '@tamu-gisc/gisday/platform/ngx/common';
+import { provideNewVersionReload } from '@tamu-gisc/common/ngx/router';
 
 const routes: Routes = [
   {
@@ -94,6 +95,9 @@ bootstrapApplication(AppComponent, {
       FormsModule,
       ReactiveFormsModule
     ),
+    // A tab left open across a deploy moves to the deployed build: a missing chunk reloads once, and a newer version
+    // reloads, or offers to when the page has unsaved changes (#2945). It asks the service worker registered above.
+    provideNewVersionReload(),
     Title,
     {
       provide: GISDAY_SITE,

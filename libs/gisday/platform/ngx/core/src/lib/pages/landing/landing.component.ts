@@ -1,22 +1,11 @@
 import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import {
-  distinctUntilChanged,
-  filter,
-  interval,
-  map,
-  mergeMap,
-  NEVER,
-  Observable,
-  pipe,
-  shareReplay,
-  startWith,
-  Subscription,
-  switchMap,
-  toArray
+  catchError, distinctUntilChanged, filter, interval, map, NEVER, Observable, of, pipe, shareReplay, startWith, Subscription, switchMap
 } from 'rxjs';
+import { SeasonWinnersDto, placeLabel, placesShownOn, siteHas } from '@tamu-gisc/gisday/common';
 
-import { PlaceService, SeasonService, SponsorService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { PlaceService, SeasonService, SeasonWinnersService, SponsorService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { ActiveSeasonDto, Place, SeasonDay, Sponsor } from '@tamu-gisc/gisday/platform/data-api';
 import { PlaceVisibilityOptions, ImagePreviewComponent } from '@tamu-gisc/gisday/platform/ngx/common';
 import { RouterLink } from '@angular/router';
@@ -50,6 +39,7 @@ export class LandingComponent implements OnInit {
   private readonly seasonService = inject(SeasonService);
   private readonly sponsorService = inject(SponsorService);
   private readonly placeService = inject(PlaceService);
+  private readonly winnersService = inject(SeasonWinnersService);
 
   public readonly site = inject(GISDAY_SITE);
   private title = this.site.name;
@@ -73,6 +63,15 @@ export class LandingComponent implements OnInit {
   public sponsors$: Observable<Array<Partial<Sponsor>>>;
   public organizations$: Observable<Array<Partial<Place>>>;
 
+  /**
+   * The research competitions' winners (#3239), on gisday.tamu.edu only (decided 2A), once the season's GIS Day is over:
+   * the API answers with nothing before then. A failed read shows no section rather than an error on the homepage.
+   */
+  public readonly winners$: Observable<SeasonWinnersDto | null> = siteHas(this.site, 'winners')
+    ? this.winnersService.shown().pipe(catchError(() => of(null)))
+    : of(null);
+  public readonly placeLabel = placeLabel;
+
   public ngOnInit() {
     this.titleService.setTitle(this.title);
 
@@ -80,9 +79,7 @@ export class LandingComponent implements OnInit {
     // Sponsors switched off for the season are kept in the admin pages but not shown (#1962).
     this.sponsors$ = this.sponsorService.getEntitiesForActiveSeason().pipe(map(activeSponsors), shareReplay());
     this.organizations$ = this.placeService.getEntitiesForActiveSeason().pipe(
-      mergeMap((places) => places),
-      filter((place) => place?.visibilitySettings && place.visibilitySettings.includes(PlaceVisibilityOptions.OrgPage)),
-      toArray(),
+      map((places) => placesShownOn(this.site, places, PlaceVisibilityOptions.OrgPage)),
       shareReplay()
     );
 

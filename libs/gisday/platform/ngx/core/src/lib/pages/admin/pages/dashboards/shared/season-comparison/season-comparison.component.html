@@ -1,0 +1,19 @@
+@let buttons = comparison().buttons();
+@if (buttons.length > 1) {
+<div class="flex flex-row wrap season-comparison" role="group" aria-label="Seasons to compare on the chart">
+  <span class="season-comparison-label">Compare</span>
+  @for (button of buttons; track button.guid) {
+  <button
+    type="button"
+    class="button"
+    [class.secondary]="!button.pressed"
+    [attr.aria-pressed]="button.pressed"
+    [disabled]="button.disabledBecause !== null && !button.pressed"
+    [attr.title]="button.disabledBecause"
+    (click)="comparison().toggle(button.guid)"
+  >
+    {{ button.year }}@if (button.loading) {<span class="season-comparison-loading" aria-label="loading">…</span>}
+  </button>
+  }
+</div>
+}

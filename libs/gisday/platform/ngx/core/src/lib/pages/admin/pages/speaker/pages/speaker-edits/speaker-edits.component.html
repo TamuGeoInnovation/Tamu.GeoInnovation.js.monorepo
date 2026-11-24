@@ -1,0 +1,72 @@
+<div class="form">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">Speaker edits to review</div>
+      <div class="form-section-actions">
+        <a routerLink="..">Back to speakers</a>
+      </div>
+    </div>
+
+    <div class="form-section-body">
+      <p class="form-input-description">Changes speakers sent through their edit links. Nothing here is on the site until it is approved; rejecting leaves their profile as it is.</p>
+
+      @if (pending(); as list) { @if (list.length === 0) {
+      <p>No edits are waiting for review.</p>
+      } @for (edit of list; track edit.guid) {
+      <div class="info-block context edit">
+        <div class="edit-heading">
+          <h3>{{ edit.speaker.firstName }} {{ edit.speaker.lastName }}</h3>
+          <span class="sent">Sent {{ edit.sent | date: 'MMM d, h:mm a' }}</span>
+        </div>
+
+        <table class="floating-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Now</th>
+              <th>Proposed</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (edit.photo) {
+            <tr class="changed">
+              <td>Photo</td>
+              <td>
+                @if (edit.currentPhoto) {
+                <img class="photo" [src]="'assets/uploads/' + edit.currentPhoto" alt="The photo now" />
+                } @else { None }
+              </td>
+              <td>
+                @if (photos()[edit.guid]; as url) {
+                <img class="photo" [src]="url" alt="The proposed photo" />
+                } @else {
+                <span>Loading…</span>
+                }
+              </td>
+            </tr>
+            } @for (field of fields; track field.key) {
+            <tr [class.changed]="changed(edit, field.key)">
+              <td>{{ field.label }}</td>
+              @if (field.key === 'description') {
+              <td><div class="markdown-content" [innerHTML]="edit.current.description | markdownParse"></div></td>
+              <td><div class="markdown-content" [innerHTML]="edit.proposed.description | markdownParse"></div></td>
+              } @else {
+              <td>{{ text(edit.current, field.key) }}</td>
+              <td>{{ text(edit.proposed, field.key) }}</td>
+              }
+            </tr>
+            }
+          </tbody>
+        </table>
+
+        <div class="form-collection row">
+          <tamu-gisc-button look="danger" value="Reject" [disabled]="busy() === edit.guid" (go)="decide(edit, 'reject')"></tamu-gisc-button>
+          <tamu-gisc-button look="success" value="Approve" [disabled]="busy() === edit.guid" (go)="decide(edit, 'approve')"></tamu-gisc-button>
+        </div>
+      </div>
+      } } @else {
+      <div class="loader"></div>
+      }
+    </div>
+  </div>
+</div>

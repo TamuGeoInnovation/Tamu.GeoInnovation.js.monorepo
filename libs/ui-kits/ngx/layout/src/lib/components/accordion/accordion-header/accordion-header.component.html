@@ -2,9 +2,9 @@
   <ng-content></ng-content>
   <div>
     @switch ((state | async)?.expanded) { @case (true) {
-    <div class="material-icons">remove</div>
+    <div class="material-icons" aria-hidden="true">remove</div>
     } @default {
-    <div class="material-icons">add</div>
+    <div class="material-icons" aria-hidden="true">add</div>
     } }
   </div>
 </div>

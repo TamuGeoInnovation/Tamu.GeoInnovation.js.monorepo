@@ -58,6 +58,25 @@
     </div>
   </div>
 
+  <!-- The research competitions' winners (#3239): on gisday.tamu.edu once the season's GIS Day is over, in plain text,
+       each place with its people's names and its entry's title, as the entry has them. -->
+  @if (winners$ | async; as winners) {
+  <div id="winners" class="medium-partition">
+    <h1>{{ winners.year }} Competition Winners</h1>
+    <div class="red-line medium"></div>
+    <div class="container12 flex flex-row justify-center wrap">
+      @for (competition of winners.competitions; track competition.competition) {
+      <div class="column6 winners-competition">
+        <h3>{{ competition.label }}</h3>
+        @for (winner of competition.winners; track winner.place) {
+        <p class="winner"><span class="bold">{{ placeLabel(winner.place) }}</span> {{ winner.names.join(', ') }} @if (winner.title) {<br />{{ winner.title }}}</p>
+        }
+      </div>
+      }
+    </div>
+  </div>
+  }
+
   <div id="activities" class="large-partition flex flex-column">
     <div class="bg-img"></div>
     <h1 class="trailer-3">The GIS Day Experience</h1>

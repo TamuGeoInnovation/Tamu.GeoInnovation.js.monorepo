@@ -1,20 +1,18 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 
 import { getApplicationRoute } from '../components/discover.utils';
-import { EventMapsComponent } from '../components/event-maps/event-maps.component';
-import { discoverRoutes } from '../discover.routes';
+import { ParkingMapsComponent } from '../components/parking-maps/parking-maps.component';
 import { DiscoveryService } from '../services/discovery/discovery.service';
 import { MainMapDiscoverApplications } from './main-map-discover-applications';
 
 /**
- * The bus map is the main map with the bus panel open (#2743): a route of the main map, `/map/d/bus`, listed in the
- * Transportation section, rather than a definition that would restate the main map's layers.
+ * The bus map is the main map with the bus panel open (#2743): a route of the main map, `/map/d/bus`, listed with the
+ * transportation maps, rather than a definition that would restate the main map's layers.
  */
 describe('the bus map (#2743)', () => {
   const bus = MainMapDiscoverApplications.find((app) => app.id === 'bus-routes');
@@ -31,25 +29,26 @@ describe('the bus map (#2743)', () => {
     expect(listed.configuration).toBeUndefined();
   });
 
-  // Development-only, as the Bus Routes panel is, until the maintainer moves bus routes to production (#1229).
-  it('is not among the maps listed on production', () => {
-    expect(new DiscoveryService().getVisibleInternalDiscoverApplications().map((app) => app.id)).not.toContain('bus-routes');
+  // Hidden from production until #2895. The Bus Routes panel itself moved there on 9 November (#2789), which left its
+  // listing hidden for no reason of its own, so it is listed everywhere now.
+  it('is among the maps listed on production', () => {
+    expect(new DiscoveryService().getVisibleInternalDiscoverApplications().map((app) => app.id)).toContain('bus-routes');
   });
 
-  describe('on the Transportation page', () => {
-    const transportation = discoverRoutes.find((route) => route.path === 'transportation');
-
+  /**
+   * It was listed on the Transportation page until #2895 folded that section into Parking & Transportation. The page
+   * is `ParkingMapsComponent` now, which builds its two sections from `mapTypes` rather than from route data, so the
+   * test reads the rendered links as a visitor would rather than asserting the grouping directly.
+   */
+  describe('on the Parking & Transportation page', () => {
     async function entries(isTesting: boolean): Promise<Array<{ text: string; href: string | null }>> {
       await TestBed.configureTestingModule({
-        imports: [RouterTestingModule, EventMapsComponent],
-        providers: [
-          { provide: ActivatedRoute, useValue: { snapshot: { data: transportation.data } } },
-          { provide: TestingService, useValue: { isTesting, get: () => of(isTesting) } }
-        ],
+        imports: [RouterTestingModule, ParkingMapsComponent],
+        providers: [{ provide: TestingService, useValue: { isTesting, get: () => of(isTesting) } }],
         schemas: [NO_ERRORS_SCHEMA]
       }).compileComponents();
 
-      const fixture = TestBed.createComponent(EventMapsComponent);
+      const fixture = TestBed.createComponent(ParkingMapsComponent);
 
       fixture.detectChanges();
 
@@ -65,8 +64,16 @@ describe('the bus map (#2743)', () => {
       expect(await entries(true)).toContainEqual(expect.objectContaining({ href: '/map/d/bus' }));
     });
 
-    it('is not listed where they are off', async () => {
-      expect((await entries(false)).map((entry) => entry.href)).not.toContain('/map/d/bus');
+    // The change #2895 makes: it is there on production too, not only where development features are on.
+    it('is listed where they are off, linking to the bus panel', async () => {
+      expect(await entries(false)).toContainEqual(expect.objectContaining({ href: '/map/d/bus' }));
+    });
+
+    it('lists the other two transportation maps beside it', async () => {
+      const hrefs = (await entries(false)).map((entry) => entry.href);
+
+      expect(hrefs).toContain('/transportation/micromobility');
+      expect(hrefs).toContain('/transportation/sustainable-transportation');
     });
   });
 });

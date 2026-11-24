@@ -1,6 +1,7 @@
 .tab-container,
 tamu-gisc-tabs {
-  $border: 2pt solid $active-color;
+  // A site can set the chosen tab's colour; GIS Day sets its own (apps/gisday-angular/src/styles.scss, #3200).
+  $border: 2pt solid var(--tabs-active-color, #{$active-color});
 
   // Tab component always uses flex layout, regardless of direction
   // or fill modes
@@ -10,11 +11,17 @@ tamu-gisc-tabs {
   @include flex-direction(column);
   margin: 1rem 0;
 
+  // Never wider than the space it is given: tabs too long for a phone scroll sideways in their own row, not the page (#3200).
+  max-width: 100%;
+  min-width: 0;
+
   // Base styles for tabs, regardless of direction or fill mode
   .tabs {
     // Inherit flexbox display from parent.
     display: inherit;
     position: relative;
+    max-width: 100%;
+    overflow-x: auto;
 
     &::before {
       content: '';

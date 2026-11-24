@@ -12,7 +12,7 @@ This replaces the arrangement the README called **"not settled yet"**: GIS Day e
 them. The 10 November release was the first where somebody noticed the mix in the finished document rather than
 in the process.
 
-**23 changes**, merged into `development` between 4 and 10 November 2026 and present in `3254b114e`. Being in
+**37 changes**, merged into `development` between 4 and 13 November 2026 and present in `68d7b974c`. Being in
 that commit does not mean being live: a GIS Day build is a separate image, promoted separately.
 
 **What is deployed is not recorded here.** The GIS Day release path records it as a pinned `sha-` tag in the
@@ -366,6 +366,241 @@ Nothing has merged since the 30 October release.
 
 ---
 
+### GIS Day Presenters: search by name or organization, and listed by last name
+
+The Presenters page showed every presenter, 77 this year, in order of first name, with no way to find one person or
+everyone from one organization except scrolling. A search box above the cards now narrows them to the presenters
+whose first name, last name or organization contains what is typed, in any case and ignoring accents, and says how
+many it is showing. The cards are in order of last name, as a printed program would list them.
+([#2859](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2859),
+[#2860](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2860))
+
+| Presenters | Before | After |
+| --- | --- | --- |
+| Desktop, 1440 pixels wide | ![By first name, no search](../screenshots/2859-presenters-search-sort/before.png) | ![A search box, by last name (local test data, whose photos are not on that machine)](../screenshots/2859-presenters-search-sort/after.png) |
+
+### GIS Day: presenter photos load as they come into view
+
+The Presenters page asked for every presenter's photo the moment it opened, 76 of them and 8.6 MB on
+11 November 2026, before any could be seen. A photo is now loaded as its card nears the screen, so the page draws
+without waiting for photos further down. The same photo component is used wherever a presenter appears, so their
+own pages and session pages gain it too. The largest stored photos are resized separately, on production.
+([#2861](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2861))
+
+### Edit Speaker's university and organization lists stay closed until used
+
+On the GIS Day admin's Edit Speaker page, the University and Organization lists opened as soon as the page
+loaded, with nothing touched, and lay over each other and over Affiliation, Is organizer and Delete Speaker.
+
+Both are the shared searchable select (#2656), which fills its text field with the saved item's name. That
+field reports every value written to it as a change, and the autocomplete inside opened its list on any change.
+It now opens the list for a change only while someone is typing in it, so a saved value leaves it closed.
+Focusing the field still opens the whole list, as before.
+
+This is the shared autocomplete, so it covers every searchable select, and AggieMap's All Maps search, which
+only opens on typing already. ([#2867](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2867))
+
+| Before | After | After, University clicked |
+| --- | --- | --- |
+| ![Both lists open on load, over the fields below](../screenshots/edit-speaker-lists/before.png) | ![Both fields show the saved names, lists closed](../screenshots/edit-speaker-lists/after.png) | ![The University list open over the fields below](../screenshots/edit-speaker-lists/after-focused.png) |
+
+### GIS Day: the Presenters search finds a university, by name or abbreviation
+
+The search on the Presenters page found a presenter by name or organization. It now also finds them by their
+university, by its full name or its abbreviation, so `TAMU` lists everyone from Texas A&M, including those who now
+work elsewhere. On the local site, `TAMU` found none of its 13 presenters before and 5 after.
+([#2869](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2869))
+
+| Before | After |
+| --- | --- |
+| ![Searching TAMU finds no presenters](../screenshots/presenters-university-count/search-before.png) | ![Searching TAMU finds 5 of 13 presenters](../screenshots/presenters-university-count/search-after.png) |
+
+### GIS Day: the Presenters page says how many presenters are listed, under the list
+
+Under the last card, the Presenters page now says how many presenters there are, and while a search is typed, how
+many of them it shows. The count above the list, under the search box, stays as it was. ([#2870](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2870))
+
+| Before | After |
+| --- | --- |
+| ![The bottom of the list, with no count](../screenshots/presenters-university-count/count-before.png) | ![13 presenters, under the list](../screenshots/presenters-university-count/count-after.png) |
+
+### GIS Day admin: the event form's speaker search closes once a speaker is added
+
+On the admin's event pages, clicking a speaker in the Speakers search added them but left the results open over the
+rest of the form. The list stays open while anything in it has focus, and the speaker just clicked kept it. Choosing a
+speaker now adds them, clears the search and closes the list. Enter and Space still choose a speaker from the
+keyboard. ([#2871](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2871))
+
+| Before | After |
+| --- | --- |
+| ![The results still open after clicking Andrew Shensky](../screenshots/event-speaker-search/before.png) | ![Andrew Shensky added under a closed, empty search](../screenshots/event-speaker-search/after.png) |
+
+### GIS Day admin: Create Class adds several sections at once
+
+A class with several sections used to be entered once for each. Create Class's section field now takes a list,
+separated by commas (`501, 502, 503`), and adds one class for each section, with the same code, number, name and
+professor. The form says how under the field. If a section cannot be added, for example because it already exists,
+the page names it, leaves it in the field to correct, and stays open; the others are kept. A single section works as
+before, and Edit Class still edits one. ([#2872](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2872))
+
+| Before | After |
+| --- | --- |
+| ![Create Class with one Course Section field](../screenshots/class-sections/before.png) | ![Course Section(s), with three sections and how to enter them](../screenshots/class-sections/after.png) |
+
+### GIS Day admin: a Dashboards section, starting with RSVPs per event by person type, over time
+
+The admin menu opens with a new **Dashboards** section. Its first dashboard, **RSVPs**, shows for the selected season:
+
+- **RSVPs over time**: the running total at the end of each day, in Central time. Opening an event adds that event's
+  own line.
+- **By event**: each event, in the order they happen, with its number of RSVPs split by person type, and a total row.
+  The types come from what each person chose on My Details: **Undergraduate** and **Graduate** students (read from
+  the classification they typed; a student whose classification reads as neither is counted as *Student,
+  classification not given*), **Faculty & academia**, **Industry**, and **Not given** for an account that never
+  completed its profile.
+- **An event, opened**: who RSVP'd, under their type's heading, with their email, classification or position,
+  department or field of study, and university or employer, and an **Export as CSV** of the same.
+
+Names and emails are read only when an event is opened, and only by an admin with the `read:rsvps` permission.
+([#2878](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2878))
+
+| Before | After |
+| --- | --- |
+| ![The admin menu, with no dashboards](../screenshots/rsvp-dashboard/menu-before.png) | ![Dashboards first in the admin menu, with RSVPs under it](../screenshots/rsvp-dashboard/menu-after.png) |
+
+![The RSVP dashboard: the chart of RSVPs over time and each event's RSVPs by person type](../screenshots/rsvp-dashboard/dashboard-after.png)
+
+![The chart with an event opened: its own line beside every event's](../screenshots/rsvp-dashboard/chart-expanded-after.png)
+
+![An event opened: its people under their types, with names, emails and employers masked here](../screenshots/rsvp-dashboard/dashboard-expanded-after.png)
+
+### GIS Day: signed-in visitors get the Account card in the phone menu again
+
+On a phone, a signed-in visitor who opened the menu found no **Account** card, and so had no way to their profile,
+classes, check-ins or Logout. The card is back on every GIS Day site. It had been missing since the Angular 20 upgrade
+of 5 October 2026, whose conversion of the templates left the card nested where the menu does not look for it.
+([#2884](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2884))
+
+| Before | After |
+| --- | --- |
+| ![The phone menu signed in, with no Account card](../screenshots/mobile-account-tile/phone-menu-before.png) | ![The phone menu signed in, with an Account card after About](../screenshots/mobile-account-tile/phone-menu-after.png) |
+
+![The Account card opened: Profile, Classes, Checkins and Logout](../screenshots/mobile-account-tile/phone-account-submenu-after.png)
+
+### GIS Day admin: the RSVP chart redrawn, readable at any width, with each day's numbers on hover
+
+The **RSVPs over time** chart on the RSVP dashboard is drawn again, with amCharts. The first version scaled with the
+page, so on a wide screen it stood about 600 px tall, with text and dots several times the page's size, a scale running
+to 1,500 for a total of 1,071, and no numbers anywhere.
+
+Now the chart is a fixed 320 px tall, at the page's own text size, and its scale ends just above the total.
+- **Hovering** any day shows that day's total and how many RSVPs it gained.
+- **Columns under the line** show each day's new RSVPs, so the days that drove sign-ups stand out.
+- **The GIS Day week is shaded.**
+- **Dragging across the chart** zooms into a stretch of time, and a double-click shows it all again.
+- **Opening an event** adds its own line and a legend, as before.
+
+([#2886](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2886))
+
+| Before | After |
+| --- | --- |
+| ![The old chart at 1920 px wide: tall, with large text and a dot on every day](../screenshots/rsvp-chart/chart-1920-before.png) | ![The new chart at 1920 px wide: 320 px tall, columns of new RSVPs beneath, GIS Day week shaded](../screenshots/rsvp-chart/chart-1920-after.png) |
+
+![Hovering a day: its total and its new RSVPs](../screenshots/rsvp-chart/chart-hover-after.png)
+
+![An event opened: its own line and a legend](../screenshots/rsvp-chart/chart-event-after.png)
+
+![Zoomed into October by dragging across the chart](../screenshots/rsvp-chart/chart-zoomed-after.png)
+
+### GIS Day admin: sort the RSVP dashboard's table by any column
+
+On the RSVP dashboard, a click on any heading of the **By event** table sorts the table by it, and a second click
+reverses it; an arrow on the heading shows which. Counts sort highest first, **Event** A to Z, and the event's start,
+now in its own **When** column, earliest first, which brings back the date order. The **All events** row stays at the
+bottom, and an opened event's people stay under its row.
+([#2891](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2891))
+
+The table and its list of people are now shared pieces, which the coming dashboards for user accounts, check-ins and
+VGI submissions will use.
+
+| Before | After, sorted by Industry |
+| --- | --- |
+| ![The RSVP table, in date order, with no way to sort it](../screenshots/dashboard-table-sort/table-before.png) | ![The RSVP table sorted by Industry, highest first, with the arrow on that heading](../screenshots/dashboard-table-sort/table-sorted-industry-after.png) |
+
+![An event opened under its row, sorted, with names, emails and employers masked here](../screenshots/dashboard-table-sort/table-opened-after.png)
+
+### GIS Day admin: a User accounts dashboard, by university or employer and person type
+
+The admin's **Dashboards** section has a second dashboard, **User accounts**. For the selected season it counts the
+accounts with a GIS Day profile made between the previous GIS Day and the end of this one, and shows:
+
+- **A summary**: how many, and how many accounts the sign-in service made in the same time, with or without a profile.
+  The sign-in service is shared with other sites, so the difference is at most the GIS Day sign-ups that never
+  finished a profile.
+- **Accounts over time**: the running total by day, with each day's new accounts beneath.
+- **By university or employer**: a row each, counted by person type, with a total row, sortable by any heading. A row
+  opens to its people, with an **Export as CSV**.
+
+Accounts are read from Auth0 by when they were made, in slices small enough that none is cut off at the 1,000 a search
+returns. ([#2892](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2892))
+
+The charts on both dashboards now end at the end of their last day, which they had cut off.
+
+| Before | After |
+| --- | --- |
+| ![The Dashboards menu with RSVPs only](../screenshots/accounts-dashboard/menu-before.png) | ![The Dashboards menu with User accounts under RSVPs](../screenshots/accounts-dashboard/menu-after.png) |
+
+![The User accounts dashboard](../screenshots/accounts-dashboard/dashboard-after.png)
+
+![A university opened to its people, with names, emails and employers masked here](../screenshots/accounts-dashboard/dashboard-opened-after.png)
+
+### GIS Day admin: a Speaker badges dashboard, to print name badges from
+
+The admin's **Dashboards** section has a **Speaker badges** page: the season's presenters, as the Presenters page lists
+them, in a table to copy into the software that prints name badges.
+
+- **Columns:** First name, Last name, Company / organization, Email, Former student year.
+  - **Company / organization** is the speaker's organization or affiliation, as the site shows it, else their
+    university.
+  - **Former student year** is a Texas A&M former student's class year, written as the site writes it after their name
+    ('14). It is blank for anyone else.
+- **A search** above the table narrows it by name, company or organization, or email, ignoring case and accents, as
+  the Presenters page's search does.
+- **Every heading sorts** the table, and **Export as CSV** downloads what the table shows, in its order.
+
+([#2899](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2899))
+
+| Before | After |
+| --- | --- |
+| ![The Dashboards menu with RSVPs only](../screenshots/speaker-badges/menu-before.png) | ![The Dashboards menu with Speaker badges under RSVPs](../screenshots/speaker-badges/menu-after.png) |
+
+![The Speaker badges table, with emails masked here](../screenshots/speaker-badges/badges-after.png)
+
+![Searching for "texas", sorted by company](../screenshots/speaker-badges/badges-search-after.png)
+
+### GIS Day admin: Speaker badges records which badges are printed, and shows only the ones still to print
+
+The **Speaker badges** page now remembers which badges have been printed, so that as presenters are added only the
+new ones are shown and exported.
+
+- **It opens on Not printed yet.** A **Show** choice switches to Printed or All.
+- **Mark these N as printed** marks exactly the rows shown, after asking on the page. Export and print first; the
+  mark is only made when you say the badges have printed.
+- **A Printed column** gives the date each badge was marked. A speaker whose badge would now say something else (their
+  name, organization or class year has changed) is flagged **Changed since printed**, to be reprinted.
+- **Not printed** on a row puts that badge back on the list, to undo a mistake or to reprint it.
+
+A badge printed one year starts unprinted the next. Whether a badge is printed is seen only by admins who can edit
+speakers. ([#2908](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2908))
+
+| Before | After |
+| --- | --- |
+| ![Speaker badges, with no record of printing](../screenshots/badges-printed/badges-before.png) | ![Speaker badges opening on Not printed yet](../screenshots/badges-printed/not-printed-after.png) |
+
+![Mark these as printed asks first](../screenshots/badges-printed/confirm-after.png)
+
+![The printed badges, with their dates and one flagged as changed since printed](../screenshots/badges-printed/printed-after.png)
+
 ## What to check, and where
 
 Each row was written by the change that made it. GIS Day has no dev site, so every link is a live site:
@@ -399,6 +634,20 @@ check on the local stack before a promotion, and on these pages after one.
 
 ---
 
+| GIS Day Presenters: search, and last-name order ([#2859](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2859), [#2860](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2860)) | Not on dev: GIS Day has no dev site. After release, open [Presenters on gisday.tamu.edu](https://gisday.tamu.edu/presenters) | The cards run A to Z by last name. Type part of a first name, a last name or an organization (for example "Esri") in the search box: only matching presenters stay, with "Showing N of M presenters" |
+| GIS Day: presenter photos load as they come into view ([#2861](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2861)) | Not on dev: GIS Day has no dev site. After release, open [Presenters on gisday.tamu.edu](https://gisday.tamu.edu/presenters) with the browser's network panel open | The first cards' photos load at once; the rest load as you scroll down to them. Every photo still appears |
+| Edit Speaker's university and organization lists stay closed until used ([#2867](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2867)) | GIS Day has no dev site; check on production after the rollout: [gisday.tamu.edu/admin/speakers](https://gisday.tamu.edu/admin/speakers), open any speaker with a university and an organization | Both fields show the saved name with no list open; clicking into University opens its list over the fields below, and typing narrows it |
+| GIS Day: the Presenters search finds a university ([#2869](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2869)) | Not on dev: GIS Day has no dev site. After release, open [Presenters on gisday.tamu.edu](https://gisday.tamu.edu/presenters) and search for `TAMU`, then `Texas A&M University` | Both find the presenters from Texas A&M, including those whose organization is somewhere else |
+| GIS Day: the presenter count under the list ([#2870](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2870)) | Not on dev: GIS Day has no dev site. After release, open [Presenters on gisday.tamu.edu](https://gisday.tamu.edu/presenters), scroll to the bottom, then type a search | Under the cards it says how many presenters there are; with a search, "Showing N of M presenters", matching the cards shown |
+| GIS Day admin: the speaker search closes once a speaker is added ([#2871](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2871)) | Not on dev: GIS Day has no dev site. After release, open any event at [gisday.tamu.edu/admin/events](https://gisday.tamu.edu/admin/events), type part of a name under Speakers and click a speaker | The speaker is added under the search box, the search is cleared and the results close; clicking the box opens them again |
+| GIS Day admin: Create Class adds several sections at once ([#2872](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2872)) | Not on dev: GIS Day has no dev site. After release, open [gisday.tamu.edu/admin/classes/add](https://gisday.tamu.edu/admin/classes/add), fill in a class and type sections such as `501, 502` | The form says how to list sections; Create adds one class per section, each in the class list. A section that already exists is named and left in the field |
+| GIS Day admin: the RSVP dashboard ([#2878](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2878)) | Not on dev: GIS Day has no dev site. After release, sign in as an admin and open [Dashboards > RSVPs on gisday.tamu.edu](https://gisday.tamu.edu/admin/dashboards/rsvps), then open an event and export its CSV | Each event's RSVPs, counted by person type, with a total row that matches the summary line; a chart of the running total by day; an opened event lists its people under their types, adds its own line to the chart, and its CSV has one row per person. If it says the RSVPs could not be read, the admin role is missing the `read:rsvps` permission |
+| GIS Day: the Account card in the phone menu ([#2884](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2884)) | Not on dev: GIS Day has no dev site. After release, on a phone (or a browser narrower than the menu), sign in on [gisday.tamu.edu](https://gisday.tamu.edu), then open the menu | An **Account** card after About, opening Profile, Classes, Checkins and Logout; Profile opens My Details. Signed out, the card is **Login** instead |
+| GIS Day admin: the RSVP chart redrawn ([#2886](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2886)) | Not on dev: GIS Day has no dev site. After release, sign in as an admin and open [Dashboards > RSVPs on gisday.tamu.edu](https://gisday.tamu.edu/admin/dashboards/rsvps) on a wide screen | The chart about 320 px tall, with text the page's size; the scale ending just above the total; hovering a day shows its total and its new RSVPs; each day's new RSVPs as columns beneath; GIS Day week shaded; dragging across zooms in, and double-click shows it all; opening an event adds its line and a legend |
+| GIS Day admin: sort the RSVP table ([#2891](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2891)) | Not on dev: GIS Day has no dev site. After release, sign in as an admin and open [Dashboards > RSVPs on gisday.tamu.edu](https://gisday.tamu.edu/admin/dashboards/rsvps) | Clicking a heading sorts the table by it and again reverses it, with an arrow on that heading; a count sorts highest first, Event A to Z, When earliest first; the All events row stays at the bottom; an opened event's people stay under its row |
+| GIS Day admin: the User accounts dashboard ([#2892](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2892)) | Not on dev: GIS Day has no dev site. After release, sign in as an admin and open [Dashboards > User accounts on gisday.tamu.edu](https://gisday.tamu.edu/admin/dashboards/accounts) | The summary gives the accounts with a GIS Day profile made from the day after last year's GIS Day to the end of this one, and every account the sign-in service made then; the chart shows them over time; the table counts them by university or employer and person type, sorts by any heading, and a row opens to its people with a CSV. Needs the `read:users` permission |
+| GIS Day admin: Speaker badges ([#2899](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2899)) | Not on dev: GIS Day has no dev site. After release, sign in as an admin and open [Dashboards > Speaker badges on gisday.tamu.edu](https://gisday.tamu.edu/admin/dashboards/speaker-badges) | Every presenter the Presenters page lists, with First name, Last name, Company / organization, Email and Former student year; a search narrows it on all but the year; any heading sorts it; Export as CSV downloads what is shown, in that order |
+| GIS Day admin: printed badges ([#2908](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2908)) | Not on dev: GIS Day has no dev site. After release, and after the migration, sign in as an admin and open [Dashboards > Speaker badges on gisday.tamu.edu](https://gisday.tamu.edu/admin/dashboards/speaker-badges) | It opens on Not printed yet; Mark these N as printed asks first, then they leave the list; Show > Printed lists them with the date; a speaker changed since is flagged; Not printed puts one back |
 ## The pull requests
 
 | Pull request | What it changed | Issue |
@@ -430,3 +679,16 @@ check on the local stack before a promotion, and on these pages after one.
 | [PR 2811](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2811) | fix(gisday-angular): Admin tables use the screen's width instead of scrolling sideways | [#2806](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2806) |
 | [PR 2814](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2814) | feat(gisday-angular): Filter, count and sort the admin submissions list | [#2807](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2807), [#2808](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2808) |
 | [PR 2818](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2818) | feat(gisday-angular): Submissions filters offer only the season's choices, and department has its own column | [#2817](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2817) |
+| [PR 2862](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2862) | feat(gisday-angular): Search the Presenters page, and list presenters by last name | [#2859](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2859) |
+| [PR 2863](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2863) | fix(gisday-angular): Presenter photos load as they come into view | [#2861](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2861) |
+| [PR 2868](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2868) | fix(ui-kits-ngx-forms): Edit Speaker's university and organization lists stay closed until used | [#2867](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2867) |
+| [PR 2873](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2873) | feat(gisday-angular): Presenters search finds a university by name or abbreviation, and the count shows under the list | [#2869](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2869) |
+| [PR 2874](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2874) | fix(ui-kits-ngx-forms): The event form's speaker search closes once a speaker is added | [#2871](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2871) |
+| [PR 2875](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2875) | feat(gisday-angular): Create Class adds one class per section from a list of sections | [#2872](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2872) |
+| [PR 2880](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2880) | feat(gisday-angular): A Dashboards section in the admin, starting with RSVPs per event by person type, over time | [#2878](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2878) |
+| [PR 2885](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2885) | fix(gisday-angular): Signed-in visitors get the Account card in the phone menu again | [#2884](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2884) |
+| [PR 2888](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2888) | feat(gisday-angular): Draw the RSVP chart with amCharts, at a readable size, with each day's numbers on hover | [#2886](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2886) |
+| [PR 2896](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2896) | feat(gisday-angular): Sort the RSVP dashboard's table by any column, on a shared dashboard table | [#2891](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2891) |
+| [PR 2907](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2907) | feat(gisday-angular): A User accounts dashboard, by university or employer and person type | [#2892](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2892) |
+| [PR 2900](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2900) | feat(gisday-angular): A Speaker badges dashboard, with a search, sortable columns and a CSV for printing name badges | [#2899](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2899) |
+| [PR 2909](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2909) | feat(gisday-angular): Record which speaker badges are printed, and show only the ones that are not | [#2908](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2908) |

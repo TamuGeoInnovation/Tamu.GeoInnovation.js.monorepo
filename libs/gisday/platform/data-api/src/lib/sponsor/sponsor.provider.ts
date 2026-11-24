@@ -12,6 +12,7 @@ import { DeleteResult, In, Repository } from 'typeorm';
 import { Asset, Sponsor, SponsorLogoSize } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
 import { AssetsService } from '../assets/assets.service';
+import { refuseUnsafeImage } from '../assets/image-upload';
 import { SeasonService } from '../season/season.service';
 @Injectable()
 export class SponsorProvider extends BaseProvider<Sponsor> {
@@ -139,6 +140,9 @@ export class SponsorProvider extends BaseProvider<Sponsor> {
   }
 
   public async createSponsor(sponsor: Partial<Sponsor>, file?: Express.Multer.File) {
+    // Checked before anything is saved, so a refused logo leaves nothing behind (#2937).
+    file = file ? refuseUnsafeImage(file, 'The logo') : file;
+
     const sponsorEnt = this.sponsorRepo.create({
       ...withLogoSize(withActiveFlag(sponsor))
     });
@@ -172,6 +176,9 @@ export class SponsorProvider extends BaseProvider<Sponsor> {
   }
 
   public async updateSponsor(guid: string, incoming: Partial<Sponsor>, file?: Express.Multer.File) {
+    // Checked before anything is saved, so a refused logo leaves nothing behind (#2937).
+    file = file ? refuseUnsafeImage(file, 'The logo') : file;
+
     delete incoming.guid;
     incoming = withLogoSize(withActiveFlag(incoming));
 

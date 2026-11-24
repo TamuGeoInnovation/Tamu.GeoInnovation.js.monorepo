@@ -1,11 +1,4 @@
-import {
-  AfterContentInit,
-  Component,
-  HostListener,
-  OnDestroy,
-  inject,
-  contentChild
-} from '@angular/core';
+import { AfterContentInit, Component, HostListener, OnDestroy, inject, contentChild } from '@angular/core';
 import { outputToObservable } from '@angular/core/rxjs-interop';
 import { Subject, takeUntil } from 'rxjs';
 
@@ -35,9 +28,11 @@ export class TileComponent implements AfterContentInit, OnDestroy {
   // to subscribe to its click event and toggle the menu.
   public readonly link = contentChild(TileLinkDirective);
 
-  @HostListener('click')
-  protected _tileClick() {
+  @HostListener('click', ['$event'])
+  protected _tileClick(event?: Event) {
     const submenu = this.submenu();
+    const link = this.link();
+
     if (submenu) {
       this.service.updateSubmenu({
         template: submenu.template,
@@ -45,6 +40,9 @@ export class TileComponent implements AfterContentInit, OnDestroy {
       });
 
       this.service.toggleSubmenu(true);
+    } else if (link && !link.contains((event?.target as Node) ?? null)) {
+      // A tap on the tile's icon or padding follows its link, as a tap on its title does (#3198).
+      link.follow();
     }
   }
 

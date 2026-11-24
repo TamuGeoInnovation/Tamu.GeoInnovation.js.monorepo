@@ -30,8 +30,15 @@ updates:
     # everything-else takes minor and patch only, so each other major arrives as a pull request of its own.
     groups:
       angular:
+        # The CLI's own packages are released with @angular/* and pin each other exactly, so they go in this group too:
+        # in "everything-else" they arrived a pull request apart and the lock nested a second copy of each (#3253).
+        # @angular/animations is deprecated on npm, so Dependabot never updates it, and every Angular update fails `npm ci`
+        # on its exact peer until it is removed (#2278): move it by hand in the same pull request until then.
         patterns:
           - '@angular/*'
+          - '@angular-devkit/*'
+          - '@schematics/angular'
+          - ng-packagr
           - '@angular-eslint/*'
           - angular-eslint
       nx:
@@ -72,6 +79,10 @@ updates:
       - dependency-name: '@types/node'
         update-types:
           - version-update:semver-major
+      # amCharts stays at the version @arcgis/core depends on (~5.18.0 for 5.1.27), so the RSVP chart and ArcGIS share one
+      # copy (libs/ui-kits/ngx/charts/README.md). A newer one installs a second copy under @arcgis/core (PR 3277). Move it
+      # by hand, with an @arcgis/core upgrade that changes the version it depends on (#3288).
+      - dependency-name: '@amcharts/amcharts5'
 
   # The four API images (node:24.22.1 and node:24.22.1-alpine), in one pull request.
   - package-ecosystem: docker

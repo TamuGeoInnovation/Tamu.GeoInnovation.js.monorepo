@@ -1,0 +1,195 @@
+@import 'libs/gisday/sass/variables';
+// The search's matches over the page, under the box, as on a presenter's page (#2923, #3230).
+@import 'libs/sass/components/search-results';
+
+// Layout only (#3183): the site's own form, info-block, button and spacing styles do the rest.
+
+// The page fits a phone, 360 px and up, with nothing running off its right edge: the column takes the width it is given,
+// never its content's, and long words wrap.
+.judging {
+  flex: 1 1 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-wrap: anywhere;
+}
+
+// Every box in a card is a flex or grid child, so each is let shrink below its content's width.
+.judging form,
+.judging .form-section,
+.judging .form-section-toolbar,
+.judging .form-section-title,
+.judging .form-section-body,
+.judging .form-collection,
+.judging details,
+.judging tamu-gisc-textbox,
+.judging tamu-gisc-button {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+// A criterion's levels as boxes side by side, as the rubric's own table lays them out (#3191): four across on a wide
+// screen, two on a narrow one, one per row on a phone, each box as wide as the others and never wider than the card.
+// Fixed counts rather than auto-fit, which laid out three and one alone at 768 px (lab, batch 125).
+.levels {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.5rem;
+  // Only the sides and the bottom: the top is the shared leader-1's, a gap under the score box.
+  margin-right: 0;
+  margin-bottom: 0;
+  margin-left: 0;
+  padding: 0;
+  list-style: none;
+
+  @media (min-width: 500px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.level {
+  min-width: 0;
+  padding: 0.5rem 0.75rem;
+  border: 1pt solid $lightened-inactive-color;
+  border-radius: 4px;
+
+  p {
+    margin: 0;
+  }
+}
+
+// The site's .bold does not reach a paragraph inside a card: the form's own paragraph weight outranks it, so a criterion's
+// name and a level's name drew at normal weight (lab, batches 125 and 127). Every bold paragraph on the page is set here.
+.judging p.bold {
+  font-weight: 600;
+}
+
+.level .level-label {
+  margin-bottom: 0.25rem;
+}
+
+.competitions {
+  margin-top: 1rem;
+}
+
+// Each entry a row the judge opens in the details panel (#3230): its title, authors and score, the whole row the tap target.
+.entries {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.entry {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0 0 0.75rem;
+  padding: 0.75rem 1rem;
+  border: 1pt solid $lightened-inactive-color;
+  border-radius: 4px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    border-color: currentColor;
+  }
+
+  .entry-title {
+    font-weight: 600;
+  }
+}
+
+// The search box, above the list and on the panel, its matches under it as on a presenter's page (#2923, #3230).
+.judge-search {
+  position: relative;
+  // Its own layer, above the competition tabs under it, which are positioned and drew through its matches.
+  z-index: 2;
+  max-width: 32rem;
+  margin-bottom: 1rem;
+
+  .match-detail {
+    opacity: 0.75;
+  }
+}
+
+// The panel's bar (#3230): the search and Close in one row, then Previous, where the entry is and Next, in one row on a
+// phone as on a computer.
+.panel-bar {
+  margin-bottom: 1rem;
+}
+
+.panel-top {
+  gap: 0.5rem;
+  align-items: flex-start;
+
+  // The search takes the row, Close at its right end.
+  .judge-search {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: none;
+    margin-bottom: 0.5rem;
+  }
+
+  .button {
+    flex: none;
+  }
+}
+
+.panel-nav {
+  gap: 0.5rem;
+
+  .button {
+    flex: none;
+  }
+}
+
+.panel-position {
+  opacity: 0.75;
+}
+
+.panel-competition {
+  margin: 0;
+  opacity: 0.75;
+}
+
+.panel-title {
+  margin: 0.25rem 0;
+}
+
+.leave-ask {
+  margin-bottom: 1rem;
+
+  .leave-ask-actions {
+    gap: 0.5rem;
+  }
+}
+
+.judging-panel .submission {
+  margin-bottom: 0;
+}
+
+.judging-panel form,
+.judging-panel .form-section,
+.judging-panel .form-section-body,
+.judging-panel .form-collection,
+.judging-panel tamu-gisc-textbox,
+.judging-panel tamu-gisc-button {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.judging-panel p.bold {
+  font-weight: 600;
+}

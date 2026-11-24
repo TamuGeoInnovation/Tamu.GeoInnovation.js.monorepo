@@ -14,8 +14,17 @@ import { MapColumnsComponent } from '../map-columns/map-columns.component';
 import { FooterComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 
 /**
- * Parking Maps page. Renders the parking maps grouped into the General / Business / Permit columns
- * from the comp, with placeholder accordion content below.
+ * The Parking & Transportation page.
+ *
+ * Two sections since #2895: the transportation maps first, then the parking maps in the General /
+ * Business / Permit columns from the comp. Transportation had its own All Maps tile and page until
+ * then; one section listing both was the maintainer's decision of 13 November 2026, because a third
+ * top-level tile for three maps read as more than it was.
+ *
+ * The two sections are built from `mapTypes`, not from `type`: a map's `type` is still `parking`
+ * where it always was, and `mapTypes` is what decides where it is listed - and, through
+ * `mapSegment()`, what its address is. So the maps in the top section are at `/transportation/<id>`
+ * and the ones below at `/parking/<id>`, from one page, with no special-casing here (#2767).
  */
 @Component({
   selector: 'tamu-gisc-aggiemap-parking-maps',
@@ -25,6 +34,9 @@ import { FooterComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 })
 export class ParkingMapsComponent implements OnInit {
   private readonly discoveryService = inject(DiscoveryService);
+
+  /** The transportation maps: Bus Routes, Micromobility and Sustainable Transportation. */
+  public transportationColumns: MapColumnGroup[] = [];
 
   public columns: MapColumnGroup[] = [];
 
@@ -36,12 +48,18 @@ export class ParkingMapsComponent implements OnInit {
   ];
 
   public ngOnInit(): void {
-    const applications = sortApplicationsByName(
-      this.discoveryService
-        .getVisibleInternalDiscoverApplications()
-        .filter((app) => app.mapTypes.includes('parking') && app.id !== 'ts-main-parking')
+    const applications = this.discoveryService.getVisibleInternalDiscoverApplications();
+
+    this.transportationColumns = buildMapColumnGroups(
+      sortApplicationsByName(applications.filter((app) => app.mapTypes.includes('transportation')))
     );
 
-    this.columns = buildMapColumnGroups(applications, this.columnDefinitions, (app) => app.columnKey ?? app.parkingCategory);
+    this.columns = buildMapColumnGroups(
+      sortApplicationsByName(
+        applications.filter((app) => app.mapTypes.includes('parking') && app.id !== 'ts-main-parking')
+      ),
+      this.columnDefinitions,
+      (app) => app.columnKey ?? app.parkingCategory
+    );
   }
 }

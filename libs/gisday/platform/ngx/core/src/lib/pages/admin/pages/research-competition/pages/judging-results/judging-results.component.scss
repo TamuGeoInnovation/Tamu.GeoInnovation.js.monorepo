@@ -1,0 +1,57 @@
+@import 'libs/sass/components/datatable';
+
+// Layout only (#3183): a column for each judge and each criterion scrolls in its own box, not the page, as the submissions
+// list's table does.
+.datatable-container {
+  --datatable-height: auto;
+
+  // The box's own width, for an entry's breakdown to be no wider than what shows (lab, batch 126).
+  container-type: inline-size;
+
+  overflow-x: auto;
+  max-width: 100%;
+
+  ::ng-deep .datatable-body-cell-label {
+    white-space: normal;
+    overflow-wrap: break-word;
+  }
+}
+
+// The Competition box is wide enough for the longest name, "Undergraduate presentation competition", in the toolbar's
+// row as the submissions list's Season box is. Wrapping the row stacked the boxes and put Season's label over it (lab,
+// batch 123).
+.competition-choice {
+  min-width: 18rem;
+}
+
+// A row opens its breakdown (#3193).
+.datatable-container ::ng-deep .datatable-body .datatable-row-wrapper {
+  cursor: pointer;
+}
+
+// An entry's breakdown under its row: layout only, a line per judge.
+.breakdown {
+  // As wide as the visible box, not the whole results table, scrolling in its own box if its criteria need more: at the
+  // table's width its comments began 2,800 px in, off-screen (lab, batch 126).
+  box-sizing: border-box;
+  max-width: 100cqw;
+  overflow-x: auto;
+  padding: 0.5rem 1rem 1rem;
+  cursor: default;
+
+  table {
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    padding: 0.25rem 0.75rem;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .comment {
+    min-width: 16rem;
+    white-space: pre-wrap;
+  }
+}

@@ -24,7 +24,9 @@ export class LeaderboardController {
   @UseGuards(JwtGuard, PermissionsGuard)
   @Get('active/admin')
   public getLeaderBoardForActiveSeasonWithIdentities() {
-    return this.service.getLeaderBoardItemsForActiveSeason(true);
+    // The same board as everyone's: participants are named by their masked email, admins included, so the board can be
+    // shown to a room (#3168). Kept so the admin pages that ask for it keep working.
+    return this.service.getLeaderBoardItemsForActiveSeason();
   }
 
   @UseGuards(JwtGuard)

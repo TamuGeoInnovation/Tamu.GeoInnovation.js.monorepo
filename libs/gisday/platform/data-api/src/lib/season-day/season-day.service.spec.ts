@@ -80,6 +80,30 @@ describe('SeasonDayService', () => {
       expect(simplified.affiliations).toEqual(['o-1']);
     });
 
+    /**
+     * #2944. The public Sessions list is searched by a presenter's name, so each session carries its presenters'
+     * names: only the names, which the Presenters page shows already, never a speaker's email or account.
+     */
+    it("sends the names of the event's presenters, and nothing else of them", async () => {
+      jest.spyOn(dayRepo, 'findOne').mockResolvedValue({
+        guid: 'd-1',
+        events: [
+          event({
+            speakers: [
+              { guid: 's-1', firstName: 'José', lastName: 'Ortiz', email: 'private@example.com', organization: null },
+              { guid: 's-2', firstName: 'Ana', lastName: null, organization: null },
+              { guid: 's-3', firstName: null, lastName: null, organization: null }
+            ]
+          })
+        ]
+      } as unknown as SeasonDay);
+
+      const [simplified] = await service.getDayEvents('d-1');
+
+      expect(simplified.presenters).toEqual(['José Ortiz', 'Ana']);
+      expect(JSON.stringify(simplified)).not.toContain('private@example.com');
+    });
+
     it('excludes inactive events', async () => {
       jest.spyOn(dayRepo, 'findOne').mockResolvedValue({
         guid: 'd-1',

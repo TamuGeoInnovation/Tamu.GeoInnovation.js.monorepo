@@ -1,0 +1,38 @@
+<div class="form">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">Check-ins</div>
+      <div class="form-section-actions">
+        <tamu-gisc-select class="post-1" placeholder="Season" [floatLabel]="false" [data]="seasons$ | async" displayTemplate="year" valueTemplate="guid" [value]="(selectedSeason$ | async)?.guid" (changed)="setSeason($event)"></tamu-gisc-select>
+      </div>
+    </div>
+
+    <div class="form-section-body">
+      @if (failed()) {
+      <p class="error">{{ refusal() ?? 'The check-ins could not be read. Try again in a moment.' }}</p>
+      } @else if (dashboard(); as view) {
+      <p class="dashboard-summary"><strong>{{ totals().total }}</strong> {{ totals().total === 1 ? 'check-in' : 'check-ins' }} at {{ view.events.length }} {{ view.events.length === 1 ? 'event' : 'events' }}. @if (view.unreadAccounts > 0) { {{ view.unreadAccounts }} {{ view.unreadAccounts === 1 ? 'account' : 'accounts' }} could not be read and {{ view.unreadAccounts === 1 ? 'is' : 'are' }} counted as Not given. }</p>
+
+      <h3 class="dashboard-heading">Check-ins over time</h3>
+      <p class="dashboard-note">The running total at the end of each day, in Central time, with each day's check-ins beneath and the GIS Day week shaded. Hover for a day's numbers; drag across the chart to zoom in, and double-click to see it all again. Press a year to draw it beside this one, lined up on the Monday of each year's GIS Day week: the axis then counts days from it. {{ expandedEvent() ? 'The second line is the event opened below.' : 'Open an event below to add its own line.' }}</p>
+      @if (comparison(); as compared) {
+      <tamu-gisc-season-comparison [comparison]="compared"></tamu-gisc-season-comparison>
+      }
+      <tamu-gisc-line-chart [series]="chart().series" [anchor]="chart().anchor" [bars]="daily()" [bands]="bands()" [steps]="true" unit="check-ins" label="Check-ins over time, as a running total by day, with each day's check-ins"></tamu-gisc-line-chart>
+
+      <h3 class="dashboard-heading">By event</h3>
+      @if (view.events.length > 0) {
+      <p class="dashboard-note">Each event's check-ins, with how many RSVP'd beside them. Click a heading to sort by it, and again to reverse it. Click an event to see who checked in.</p>
+      <tamu-gisc-dashboard-table [rows]="rows()" [columns]="columns" nameLabel="Event" totalHeading="Checked in" totalLabel="All events" (toggled)="toggle($event)">
+        <ng-template tamuGiscDashboardRowDetail>
+          <tamu-gisc-dashboard-people [people]="people()" [failed]="peopleFailed()" [fileName]="fileName()" dateLabel="Checked in" emptyText="Nobody has checked in at this event yet."></tamu-gisc-dashboard-people>
+        </ng-template>
+      </tamu-gisc-dashboard-table>
+      } @else {
+      <p>The selected season has no events.</p>
+      } } @else {
+      <p>Reading the check-ins...</p>
+      }
+    </div>
+  </div>
+</div>

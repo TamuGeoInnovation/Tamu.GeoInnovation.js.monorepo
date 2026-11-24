@@ -25,11 +25,9 @@ export class UserInfoProvider extends BaseProvider<UserInfo> {
     super(userInfoRepo);
   }
 
-  public async getUsers() {
-    return this.ms.getUsers({
-      app_metadata: 'gisday',
-      user_metadata: ['occupation', 'education']
-    });
+  /** The first 1,000 users, or those whose name or email holds every word of `search` (#2574). */
+  public async getUsers(search?: string) {
+    return this.ms.getUsers({ app_metadata: 'gisday', user_metadata: ['occupation', 'education'] }, search);
   }
 
   public async getUser(userGuid: string) {

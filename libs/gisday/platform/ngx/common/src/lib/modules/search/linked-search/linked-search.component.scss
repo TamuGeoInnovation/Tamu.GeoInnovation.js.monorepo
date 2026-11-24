@@ -1,0 +1,18 @@
+@import 'libs/sass/mixins';
+
+:host {
+  display: block;
+}
+
+tamu-gisc-textbox {
+  width: 100%;
+}
+
+// The Copy in the box is the shared copy field's Copy (#2923).
+@import 'libs/sass/components/copy-button';
+
+.search-actions {
+  @include flexbox();
+  @include align-items(center);
+  white-space: nowrap;
+}

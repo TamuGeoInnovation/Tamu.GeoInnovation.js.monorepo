@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, viewChild } from '@angular/core';
 import { UserClass } from '@tamu-gisc/gisday/platform/data-api';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable, forkJoin, of, switchMap, tap } from 'rxjs';
@@ -7,22 +7,31 @@ import * as Papa from 'papaparse';
 
 import { ClassService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { ClassAddEditFormComponent } from '@tamu-gisc/gisday/platform/ngx/common';
+import { downloadFile } from '@tamu-gisc/common/utils/ui';
+import { ClassAddEditFormComponent, provideAdminDetailsPage } from '@tamu-gisc/gisday/platform/ngx/common';
 import { AsyncPipe, DatePipe } from '@angular/common';
+
+import { BaseAdminDetailsPageComponent } from '../../../base-admin-details-page/base-admin-details-page.component';
 
 @Component({
   selector: 'tamu-gisc-class-edit',
   templateUrl: './class-edit.component.html',
   styleUrls: ['./class-edit.component.scss'],
-  imports: [ClassAddEditFormComponent, AsyncPipe, DatePipe]
+  imports: [ClassAddEditFormComponent, AsyncPipe, DatePipe],
+  providers: [provideAdminDetailsPage(() => ClassEditComponent)]
 })
-export class ClassEditComponent implements OnInit {
+export class ClassEditComponent extends BaseAdminDetailsPageComponent implements OnInit {
   private readonly at = inject(ActivatedRoute);
   private readonly cs = inject(ClassService);
   private readonly ns = inject(NotificationService);
+  private readonly editor = viewChild(ClassAddEditFormComponent);
 
   public students$: Observable<Array<Partial<UserClass>>>;
   public isExporting$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+
+  protected override detailsForm() {
+    return this.editor()?.form;
+  }
 
   public ngOnInit(): void {
     this.students$ = this.cs.getClassStudents(this.at.snapshot.params.guid);
@@ -45,20 +54,11 @@ export class ClassEditComponent implements OnInit {
         next: ([csv, cl]) => {
           const unparsed = Papa.unparse(csv || 'No data', { header: true });
 
-          const blob = new Blob([unparsed], { type: 'text/csv' });
-          const url = window.URL.createObjectURL(blob);
-
-          const a = document.createElement('a');
           const fileName = `${cl.code}-${cl.number}${cl?.section ? '-' + cl?.section : ''}-${cl.professorName
             .toLowerCase()
             .split(' ')
             .join('_')}_gisday_attendance.csv`;
-          a.setAttribute('hidden', '');
-          a.setAttribute('href', url);
-          a.setAttribute('download', fileName);
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
+          downloadFile(unparsed, fileName, 'text/csv');
 
           this.isExporting$.next(false);
 

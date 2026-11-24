@@ -1,6 +1,5 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { catchError, concatMap, from, map, of, toArray } from 'rxjs';
 
 import { Repository } from 'typeorm';
 
@@ -65,10 +64,37 @@ interface LeaderboardCache {
   timestamp: number;
 }
 
+/**
+ * How long a participant's name on the board is kept before Auth0 is asked again (#3168). Every view of the board names
+ * every participant, and an email rarely changes during a competition.
+ */
+const IDENTITY_TTL = 60 * 60 * 1000;
+
+/**
+ * An email as the leaderboard shows it (#3168): the first few letters, then `****@` and the domain, so
+ * `jsmith2026@tamu.edu` reads `jsm****@tamu.edu`. At most three letters, and fewer for a short name, so at least two stay
+ * hidden; always four asterisks, so the length is not given away either. Anything that is not an email shows as `****`.
+ */
+export function maskEmail(email: string): string {
+  const at = email?.lastIndexOf('@') ?? -1;
+
+  if (at < 1) {
+    return '****';
+  }
+
+  const local = email.slice(0, at);
+  const shown = Math.min(3, Math.max(1, local.length - 2));
+
+  return `${local.slice(0, shown)}****${email.slice(at)}`;
+}
+
 @Injectable()
 export class LeaderboardService extends BaseService<CompetitionSubmission> {
   private leaderboardCache: Map<string, LeaderboardCache> = new Map();
   private readonly CACHE_TTL = 60000; // 60 seconds in milliseconds
+  // Each participant's masked email, by user guid, until when it is kept (#3168). A lookup that failed is kept as
+  // `undefined` for as long as the board itself is, so an account Auth0 cannot find is not asked for on every view.
+  private identityCache: Map<string, { identity: string | undefined; expires: number }> = new Map();
 
   constructor(
     @InjectRepository(CompetitionSubmission) private submissionRepo: Repository<CompetitionSubmission>,
@@ -81,7 +107,11 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
     super(submissionRepo);
   }
 
-  public async getLeaderBoardItemsForActiveSeason(resolveIdentities?: boolean) {
+  /**
+   * The active season's leaderboard, each participant named by their masked email (`maskEmail`). Everyone sees the same
+   * board, admins included, so it can be shown to a room or shared without giving anyone's email away (#3168).
+   */
+  public async getLeaderBoardItemsForActiveSeason() {
     const activeSeason = await this.seasonRepo.findOne({ where: { active: true } });
 
     if (!activeSeason) {
@@ -103,11 +133,7 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
     const now = Date.now();
 
     if (cached && now - cached.timestamp < this.CACHE_TTL) {
-      // Return cached data
-      if (resolveIdentities) {
-        return this.resolveIdentities(cached.data);
-      }
-      return cached.data;
+      return this.resolveIdentities(cached.data);
     }
 
     // Calculate leaderboard with point system
@@ -119,11 +145,7 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
       timestamp: now
     });
 
-    if (resolveIdentities) {
-      return this.resolveIdentities(leaderboardData);
-    }
-
-    return leaderboardData;
+    return this.resolveIdentities(leaderboardData);
   }
 
   /**
@@ -139,7 +161,7 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
       throw new NotFoundException('No competition season found.');
     }
 
-    return this.calculateLeaderboard(competitionSeason);
+    return this.resolveIdentities(await this.calculateLeaderboard(competitionSeason));
   }
 
   /**
@@ -158,10 +180,14 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
    *
    * Whatever the names, a participant's own earlier submission of the same type within the type's distance
    * makes theirs a repeat, so nobody scores twice at one plaque by typing its name differently.
+   *
+   * Returns every submission of the season, oldest first, with its points, or null for one that does not count
+   * (discarded, or outside the scoring window). The leaderboard sums them; the VGI dashboard counts its new finds and
+   * repeats from them (#2894), so both score alike.
    */
-  private async calculateLeaderboard(
+  public async scoreSubmissions(
     competitionSeason: CompetitionSeason
-  ): Promise<Array<{ identity: string; guid: string; points: number }>> {
+  ): Promise<Array<{ submission: CompetitionSubmission; points: number | null }>> {
     const typeQuestion = competitionSeason.form?.model?.find((q) => q.isDiscriminator === true);
     const typeAttribute = typeQuestion?.attribute;
     const settingsFor = (type: unknown): ICompetitionSeasonFormOption | undefined =>
@@ -180,7 +206,7 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
     const { finds: earlierFinds } = await previousSeasonFinds(this.compSeasonRepo, this.submissionRepo, competitionSeason);
     const newFinds: Array<{ location: { latitude: number; longitude: number }; type: unknown; name: unknown }> = [];
     const submittedBy = new Map<string, Array<{ location: { latitude: number; longitude: number }; type: unknown }>>();
-    const userPointsMap = new Map<string, number>();
+    const scored = new Map<CompetitionSubmission, number>();
 
     // Only submissions made inside the season's scoring window count, and the rest are not earlier finds
     // either (#2474).
@@ -223,7 +249,39 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
         submittedBy.set(submission.userGuid, [...(submittedBy.get(submission.userGuid) ?? []), { location, type }]);
       }
 
-      userPointsMap.set(submission.userGuid, (userPointsMap.get(submission.userGuid) || 0) + points);
+      scored.set(submission, points);
+    }
+
+    return submissions.map((submission) => ({ submission, points: scored.get(submission) ?? null }));
+  }
+
+  /**
+   * Each participant of a GIS Day season's competition by account, with their points, in the leaderboard's order, highest
+   * first; none when the season has no competition. The Winners page offers them for the trail challenge's places (#3243).
+   */
+  public async rankedForSeason(seasonGuid: string): Promise<Array<{ account: string; points: number }>> {
+    const competitionSeason = await this.compSeasonRepo.findOne({
+      where: { season: { guid: seasonGuid } },
+      relations: { form: true, season: true }
+    });
+
+    if (!competitionSeason) {
+      return [];
+    }
+
+    return (await this.calculateLeaderboard(competitionSeason)).map(({ guid, points }) => ({ account: guid, points }));
+  }
+
+  /** Each participant's points, highest first: their submissions' scores summed (`scoreSubmissions`). */
+  private async calculateLeaderboard(
+    competitionSeason: CompetitionSeason
+  ): Promise<Array<{ identity: string; guid: string; points: number }>> {
+    const userPointsMap = new Map<string, number>();
+
+    for (const { submission, points } of await this.scoreSubmissions(competitionSeason)) {
+      if (points !== null) {
+        userPointsMap.set(submission.userGuid, (userPointsMap.get(submission.userGuid) || 0) + points);
+      }
     }
 
     // Convert map to array and sort by points descending
@@ -238,24 +296,42 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
     return leaderboard;
   }
 
+  /**
+   * Names each participant by their masked email (`maskEmail`), looked up in Auth0 at most once an hour each. A participant
+   * Auth0 cannot find keeps the last 4 characters of their user guid, as everyone's identity was before (#3168).
+   */
   private async resolveIdentities(
     leaderboardData: Array<{ identity: string; guid: string; points: number }>
   ): Promise<Array<{ identity: string; guid: string; points: number }>> {
-    const allResolvedUsers = from(leaderboardData).pipe(
-      concatMap((sub) => {
-        return from(this.ms.getUserMetadata(sub.guid, undefined, true)).pipe(
-          map((user) => {
-            return { ...sub, identity: user.user_info.email };
-          }),
-          catchError(() => {
-            return of({ ...sub });
-          })
-        );
-      }),
-      toArray()
-    );
+    const resolved: Array<{ identity: string; guid: string; points: number }> = [];
 
-    return allResolvedUsers.toPromise();
+    for (const row of leaderboardData) {
+      resolved.push({ ...row, identity: (await this.maskedIdentity(row.guid)) ?? row.identity });
+    }
+
+    return resolved;
+  }
+
+  private async maskedIdentity(guid: string): Promise<string | undefined> {
+    const now = Date.now();
+    const cached = this.identityCache.get(guid);
+
+    if (cached && now < cached.expires) {
+      return cached.identity;
+    }
+
+    try {
+      const user = await this.ms.getUserMetadata(guid, undefined, true);
+      const identity = maskEmail(user.user_info.email);
+
+      this.identityCache.set(guid, { identity, expires: now + IDENTITY_TTL });
+
+      return identity;
+    } catch {
+      this.identityCache.set(guid, { identity: undefined, expires: now + this.CACHE_TTL });
+
+      return undefined;
+    }
   }
 }
 

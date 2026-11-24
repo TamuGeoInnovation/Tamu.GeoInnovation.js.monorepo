@@ -43,6 +43,7 @@
       </div>
     </div>
 
+    @if (runs('poster')) {
     <div class="large-partition bg-md-grey-50 flex flex-row justify-center align-center wrap trailer-1">
       <div class="column5">
         <img class="medium" src="/assets/images/graphics/graphic-poster-competition-2.svg" alt="" />
@@ -54,7 +55,7 @@
         <a class="button snug secondary leader-1" [routerLink]="['/competitions/posters']">See Details</a>
       </div>
     </div>
-
+    } @if (runs('presentation')) {
     <div class="large-partition bg-md-grey-50 flex flex-row-reverse justify-center align-center wrap trailer-1">
       <div class="column5">
         <img class="medium" src="/assets/images/graphics/graphic-paper-competition-2.svg" alt="" />
@@ -66,5 +67,6 @@
         <a class="button snug secondary leader-1" [routerLink]="['/competitions/presentation']">See Details</a>
       </div>
     </div>
+    }
   </div>
 </section>

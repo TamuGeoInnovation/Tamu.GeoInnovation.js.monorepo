@@ -1,0 +1,116 @@
+<!-- A competition's judging results (#3183): each judge's totals, the averages, and each judge's progress. -->
+<div class="form">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">Judging results</div>
+      <div class="form-section-actions">
+        @if (results()) {
+        <!-- The toolbar's own action style, as the submissions list's Download all files. -->
+        <a class="post-1" tabindex="0" role="button" (click)="download()" (keydown.enter)="download()">Download CSV</a>
+        <!-- A row per judge per entry, with each criterion and the comment (#3193). -->
+        <a class="post-1" tabindex="0" role="button" (click)="downloadEveryScore()" (keydown.enter)="downloadEveryScore()">Every score</a>
+        }
+        <tamu-gisc-select class="post-1 competition-choice" placeholder="Competition" [floatLabel]="false" [data]="competitions" displayTemplate="name" valueTemplate="value" [value]="competition()" (changed)="chooseCompetition($event)"></tamu-gisc-select>
+        <tamu-gisc-select class="post-1" placeholder="Season" [floatLabel]="false" [data]="choice.seasons()" displayTemplate="year" valueTemplate="guid" [value]="choice.season()?.guid" (changed)="choice.choose($any($event))"></tamu-gisc-select>
+      </div>
+    </div>
+
+    <div class="form-section-body">
+      @if (problem(); as problem) {
+      <div class="info-block warning" role="alert">
+        <p>{{ problem }}</p>
+      </div>
+      } @else if (results(); as results) { @if (!results.rubric) {
+      <div class="info-block warning">
+        <p>This season has no rubric for this competition yet. Start one on the Rubrics page.</p>
+      </div>
+      }
+
+      <p class="bold">Judges</p>
+      @if (results.judges.length) {
+      <ul class="judges">
+        @for (judge of results.judges; track judge.guid) {
+        <li>{{ judge.name }}: {{ judge.scored }} scored, {{ judge.toScore }} to score</li>
+        }
+      </ul>
+      } @else {
+      <p>No session judges this competition yet. Choose a session's judged competition and its judges on the session's page.</p>
+      }
+
+      <p>{{ results.rows.length }} accepted {{ results.rows.length === 1 ? 'entry' : 'entries' }}, highest average first. Choose an entry to see each judge's scores and comment.</p>
+
+      @if (results.rows.length) {
+      <!-- ngx-datatable, as the submissions list uses it; a column for each judge and each criterion, each as wide as its
+           heading, so the table scrolls sideways in its own box rather than cutting them off. -->
+      <div class="datatable-container">
+        <ngx-datatable class="material" [style.min-width.px]="tableWidth(results)" [rows]="results.rows" [columnMode]="'standard'" [headerHeight]="50" [rowHeight]="'auto'" [footerHeight]="0" [scrollbarV]="false" [reorderable]="false" (activate)="onActivate($event)">
+          <!-- An entry's breakdown, under its row, as the dashboards' tables open a row (#3193): a line per judge. -->
+          <ngx-datatable-row-detail [rowHeight]="'auto'">
+            <ng-template let-row="row" ngx-datatable-row-detail-template>
+              <div class="breakdown">
+                <table>
+                  <thead>
+                    <tr>
+                      <!-- Total and comment first, so they are in view without scrolling past every criterion (lab, batch 126). -->
+                      <th>Judge</th>
+                      <th>Total</th>
+                      <th>Comment</th>
+                      @for (criterion of results.rubric?.criteria ?? []; track criterion.guid) {
+                      <th>{{ criterion.name }} (of {{ criterion.maxPoints }})</th>
+                      }
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (line of breakdown(results, row); track line.guid) {
+                    <tr>
+                      <th class="bold">{{ line.name }}</th>
+                      @if (line.scored) {
+                      <td class="bold">{{ line.total }}</td>
+                      <td class="comment">{{ line.comment ?? '' }}</td>
+                      @for (score of line.scores; track $index) {
+                      <td>{{ score ?? '' }}</td>
+                      } } @else {
+                      <td class="not-scored" [attr.colspan]="line.scores.length + 2"><em>{{ notScoredYet }}</em></td>
+                      }
+                    </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </ng-template>
+          </ngx-datatable-row-detail>
+          <ngx-datatable-column name="Rank" [sortable]="false" [width]="widths.rank">
+            <ng-template let-row="row" let-rowIndex="rowIndex" ngx-datatable-cell-template>{{ row.average === null ? '' : rowIndex + 1 }}</ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Title" prop="title" [width]="widths.title">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <div class="bold">{{ row.title }}</div>
+              <div>{{ row.presenters.join(', ') }}</div>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Judges" prop="judged" [width]="widths.judges"></ngx-datatable-column>
+          <!-- An entry no judge has scored says so, rather than an empty cell that is easy to miss. -->
+          <ngx-datatable-column name="Average" prop="average" [width]="widths.average">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              @if (row.judged === 0) {
+              <em class="not-scored">Not scored yet</em>
+              } @else { {{ row.average }} }
+            </ng-template>
+          </ngx-datatable-column>
+          @for (judge of results.judges; track judge.guid) {
+          <ngx-datatable-column [name]="judge.name" [sortable]="false" [width]="columnWidth(judge.name)">
+            <ng-template let-row="row" ngx-datatable-cell-template>{{ row.totals[judge.guid] ?? '' }}</ng-template>
+          </ngx-datatable-column>
+          } @for (criterion of results.rubric?.criteria ?? []; track criterion.guid) {
+          <ngx-datatable-column [name]="criterion.name + ' (of ' + criterion.maxPoints + ')'" [sortable]="false" [width]="columnWidth(criterion.name + ' (of ' + criterion.maxPoints + ')')">
+            <ng-template let-row="row" ngx-datatable-cell-template>{{ row.criteria[criterion.guid] ?? '' }}</ng-template>
+          </ngx-datatable-column>
+          }
+        </ngx-datatable>
+      </div>
+      } } @else {
+      <div class="loader"></div>
+      }
+    </div>
+  </div>
+</div>

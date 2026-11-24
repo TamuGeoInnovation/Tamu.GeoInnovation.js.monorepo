@@ -1,0 +1,9 @@
+// What every dashboard page draws around its shared pieces (#2892): its section headings and the notes under them.
+.dashboard-heading {
+  margin: 1.5rem 0 0.25rem;
+}
+
+.dashboard-note {
+  margin-top: 0;
+  opacity: 0.75;
+}

@@ -28,6 +28,11 @@
         </div>
       </div>
       }
+      <!-- Each session's check-in window (#3209), beside its times: from this many minutes before it starts until this many after it ends. -->
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="checkInMinutesBefore" type="number" placeholder="Check-in opens, minutes before the start" [floatLabel]="true"></tamu-gisc-textbox>
+        <tamu-gisc-textbox formControlName="checkInMinutesAfter" type="number" placeholder="Check-in closes, minutes after the end" [floatLabel]="true"></tamu-gisc-textbox>
+      </div>
     </div>
   </div>
 
@@ -79,6 +84,8 @@
         <tamu-gisc-checkbox formControlName="isAcceptingRsvps" label="Is accepting RSVPs?" [data]=""> </tamu-gisc-checkbox>
         <tamu-gisc-checkbox formControlName="isBringYourOwnDevice" label="Is bring your own device?" [data]=""> </tamu-gisc-checkbox>
         <tamu-gisc-checkbox formControlName="checkInAnyTime" label="Check-in open at any time?" [data]=""> </tamu-gisc-checkbox>
+        <!-- A session with no slides (#3147): its speakers are not asked for any, and cannot upload them. -->
+        <tamu-gisc-checkbox formControlName="noSlides" label="No slides for this session" description="Its speakers are not asked for slides and cannot upload any." [data]=""> </tamu-gisc-checkbox>
       </div>
     </div>
   </div>
@@ -86,14 +93,20 @@
   <div class="form-section">
     <div class="form-section-toolbar">
       <div class="form-section-title">Speakers</div>
+      @if (type() === 'edit' && (eventSpeakers$ | async)?.length > 0) {
+      <!-- The emails to everyone on this session, in one menu (#3092): each their own profile link (#2936), and the session's details. -->
+      <div class="form-section-actions">
+        <tamu-gisc-action-menu label="Email these speakers" icon="forward_to_inbox" triggerClass="__form-action" align="end" [items]="speakerEmailItems()" (chosen)="emailSpeakers($event)"></tamu-gisc-action-menu>
+      </div>
+      }
     </div>
 
     <div class="form-section-body">
       <div class="form-collection column">
         @if ((speakers$ | async)?.length > 0) { @if (speakers$ | async; as speakers) {
-        <tamu-gisc-select-list placeholder="Search speakers..." [options]="speakers" [rowTemplate]="speakerListRowTemplate">
+        <tamu-gisc-select-list placeholder="Search speakers..." [options]="speakers" [rowTemplate]="speakerListRowTemplate" (selected)="patchSpeaker($event)">
           <ng-template #speakerListRowTemplate let-speaker>
-            <tamu-gisc-presenter-card [speaker]="speaker" [linkable]="false" tabindex="0" role="button" (click)="patchSpeaker(speaker)" (keydown.enter)="patchSpeaker(speaker)" (keydown.space)="patchSpeaker(speaker); $event.preventDefault()"></tamu-gisc-presenter-card>
+            <tamu-gisc-presenter-card [speaker]="speaker" [linkable]="false"></tamu-gisc-presenter-card>
           </ng-template>
         </tamu-gisc-select-list>
         <div class="flex flex-row wrap">
@@ -107,6 +120,57 @@
       </div>
     </div>
   </div>
+
+  @if (judgingOn) {
+  <!-- Judging the research competitions (#3183): the competition this session's judges score, which of its speakers judge,
+       and whether judging is closed. Each judge is sent their own judging link by Ask to judge in Email these speakers. -->
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-title">Judging</div>
+    </div>
+
+    <div class="form-section-body">
+      <div class="form-collection column">
+        <tamu-gisc-select formControlName="judgedCompetition" [data]="judgedCompetitionDict" placeholder="Judged competition" [displayTemplate]="'name'" [valueTemplate]="'value'"></tamu-gisc-select>
+      </div>
+
+      @if (form.get('judgedCompetition')?.value) {
+      <div class="form-collection column judges">
+        <p class="bold">Judges</p>
+        @if (type() === 'edit' && (eventSpeakers$ | async)?.length > 0) {
+        <p class="form-input-description">The session's speakers who score its competition. Save, then choose <strong>Ask to judge</strong> in Email these speakers to send each their own judging link.</p>
+        <tamu-gisc-checkbox-group referenceId="guid" formControlName="judges">
+          @for (speaker of eventSpeakers$ | async; track speaker.guid) {
+          <tamu-gisc-checkbox [data]="speaker" [label]="speaker.firstName + ' ' + speaker.lastName"></tamu-gisc-checkbox>
+          }
+        </tamu-gisc-checkbox-group>
+        } @else {
+        <p class="form-input-description">Save the session with its speakers first; its judges are chosen from them.</p>
+        }
+      </div>
+
+      <div class="form-collection column">
+        <tamu-gisc-checkbox formControlName="judgingClosed" label="Judging closed" description="Its judges can see their scores but can no longer change them." [data]=""> </tamu-gisc-checkbox>
+      </div>
+      }
+    </div>
+  </div>
+  } @if (slides(); as slides) {
+  <!-- The session's slides (#3093): every speaker's, each labelled with who uploaded it, uploaded from their edit links and kept at once. -->
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-title">Slides</div>
+    </div>
+
+    <div class="form-section-body">
+      @if (form.get('noSlides')?.value) {
+      <p class="form-input-description"><strong>No slides for this session:</strong> its speakers are not asked for slides and cannot upload any.</p>
+      }
+      <p class="form-input-description">Uploaded by the session's speakers from their profile edit links, up to three files each, labelled with who uploaded them. Only admins, and the speaker who uploaded a file, see them. Admins can remove any of them, one whose speaker is no longer listed included.</p>
+      <tamu-gisc-submission-files [source]="slides" [askBeforeRemoving]="true" emptyLabel="No slides uploaded yet."></tamu-gisc-submission-files>
+    </div>
+  </div>
+  }
 
   <div class="form-section">
     <div class="form-section-toolbar">

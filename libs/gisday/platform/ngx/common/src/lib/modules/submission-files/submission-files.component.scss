@@ -1,0 +1,79 @@
+@use 'libs/gisday/sass/variables' as vars;
+@import 'libs/sass/mixins';
+
+:host {
+  display: block;
+}
+
+.files {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.5rem;
+}
+
+// One line per file: its name (a download), its size and when it came, and Remove.
+.file {
+  @include flexbox();
+  @include flex-wrap(wrap);
+  @include align-items(baseline);
+  gap: 0.25rem 0.75rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid vars.$accent-grey;
+}
+
+// Asking before a file is removed (#3105): a line of its own under the file, its buttons side by side after the question.
+.file-confirm {
+  flex-basis: 100%;
+  margin: 0.25rem 0 0;
+}
+
+.file-confirm-actions {
+  gap: 0.5rem;
+}
+
+// The global .inline-link, on a button: the reset only takes away what a button adds.
+button.inline-link {
+  background: none;
+  border: none;
+  font: inherit;
+  cursor: pointer;
+  padding: 0;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: progress;
+  }
+}
+
+.file-name {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+  text-align: left;
+}
+
+.files-limits {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.file-detail,
+.files-empty {
+  color: vars.$aggie-support-grey;
+}
+
+.danger,
+.files-problem {
+  color: vars.$aggie-accent-red;
+}
+
+// The global .button on the shared picker's host: inline, its paperclip beside its label, and no side margin, so it
+// lines up with the list above it.
+tamu-gisc-file.button {
+  display: inline-flex;
+  align-items: center;
+  margin: 0.5rem 0 0;
+}
+
+progress {
+  flex: 1 1 8rem;
+}

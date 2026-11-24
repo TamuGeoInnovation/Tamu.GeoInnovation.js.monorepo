@@ -1,0 +1,42 @@
+<!-- What a session's QR code opens (#3081): the check-in's status, in words, and a way on to the session. -->
+<div class="checkin-status leader-2 trailer-2" role="status" aria-live="polite">
+  @if (event()?.name) {
+  <p class="trailer-1">{{ event().name }}</p>
+  } @switch (state()) { @case ('checking') {
+  <h1><span class="material-icons" aria-hidden="true">hourglass_top</span> Checking you in…</h1>
+  } @case ('signing-in') {
+  <h1><span class="material-icons" aria-hidden="true">login</span> Taking you to sign in…</h1>
+  <p>Sign in, or create an account, and you will come back here to be checked in.</p>
+  } @case ('signed-out') {
+  <h1 class="error"><span class="material-icons" aria-hidden="true">error</span> You are not checked in yet</h1>
+  <p>Sign in, or create an account, to check in to this session.</p>
+  } @case ('profile') {
+  <h1 class="error"><span class="material-icons" aria-hidden="true">error</span> You are not checked in yet</h1>
+  <p>Complete your <a routerLink="/account/details">profile</a> first, then scan the QR code again.</p>
+  } @case ('done') {
+  <h1 class="success"><span class="material-icons" aria-hidden="true">check_circle</span> You're checked in</h1>
+  <p>Your attendance has been registered. Thank you!</p>
+  } @case ('already') {
+  <h1 class="success"><span class="material-icons" aria-hidden="true">check_circle</span> You're already checked in</h1>
+  <p>Your attendance was registered earlier. Thank you!</p>
+  } @case ('failed') {
+  <h1 class="error"><span class="material-icons" aria-hidden="true">error</span> You are not checked in</h1>
+  <p>{{ reason() }}</p>
+  } @case ('no-code') {
+  <h1 class="error"><span class="material-icons" aria-hidden="true">error</span> You are not checked in</h1>
+  <p>This link has no check-in code. Scan the QR code shown in the session.</p>
+  } @case ('not-found') {
+  <h1 class="error"><span class="material-icons" aria-hidden="true">error</span> You are not checked in</h1>
+  <p>This session could not be found. Scan the QR code shown in the session again.</p>
+  } }
+  <!-- One button per row, spaced with the site's leader-1 (#3089). -->
+  <div class="checkin-actions">
+    @if (state() === 'signed-out') {
+    <div class="leader-1"><tamu-gisc-button fit="snug" value="SIGN IN" (go)="signIn()"></tamu-gisc-button></div>
+    } @if (state() !== 'checking' && state() !== 'signing-in' && state() !== 'not-found') {
+    <div class="leader-1">
+      <tamu-gisc-button fit="snug" [look]="'secondary'" value="Go to the session" [routerLink]="['/sessions/details', guid]"></tamu-gisc-button>
+    </div>
+    }
+  </div>
+</div>

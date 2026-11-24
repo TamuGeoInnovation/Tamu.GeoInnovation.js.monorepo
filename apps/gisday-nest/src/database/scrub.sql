@@ -17,19 +17,24 @@ DECLARE @target sysname = N'gisday-scrubbed';
 -- `updated` and `created` are kept everywhere and are not listed.
 DECLARE @kept TABLE (tbl sysname, cols nvarchar(max));
 INSERT @kept VALUES
-  (N'assets', N'guid,type,organizationGuid,speakerGuid,sponsorGuid,placesGuid'),
-  (N'checkins', N'guid,eventGuid'),
+  -- A judge's scores for a submission (#3183): who, which, and the numbers. The comment goes below.
+  (N'assessments', N'guid,judgeGuid,submissionGuid,eventGuid,rubricGuid,scores,total'),
+  (N'assets', N'guid,type,organizationGuid,speakerGuid,sponsorGuid,placesGuid,submissionGuid,eventGuid,uploadedByGuid'),
+  (N'checkins', N'guid,eventGuid,outsideSessionTime'),
   (N'classes', N'guid,title,code,seasonGuid,number,section'),
   (N'course_credits', N'guid,eventGuid,classGuid'),
-  (N'event_broadcast', N'guid,name,seasonGuid'),
+  (N'event_broadcast', N'guid,name,seasonGuid,placeGuid'),
   (N'event_course_credits', N'eventsGuid,courseCreditsGuid'),
-  (N'event_location', N'guid,room,building,capacity,link,placeGuid,streetAddressOverride,seasonGuid'),
+  -- `checkInZone` is the outline of a building, where check-in is allowed (#1766), not anyone's position.
+  (N'event_location', N'guid,room,building,capacity,link,placeGuid,streetAddressOverride,seasonGuid,checkInZone'),
   (N'event_rating_questions', N'guid,userEditable,type,text,options,seasonGuid'),
   (N'event_rating_responses', N'guid,eventGuid,questionGuid'),
+  -- Which of a session's speakers judge its competition (#3183).
+  (N'event_judges', N'eventsGuid,speakersGuid'),
   (N'event_speakers', N'eventsGuid,speakersGuid'),
   (N'event_sponsors', N'eventsGuid,sponsorsGuid'),
   (N'event_tags', N'eventsGuid,tagsGuid'),
-  (N'events', N'guid,active,startTime,endTime,observedAttendeeStart,observedAttendeeEnd,capacity,resources,requiresRsvp,qrCode,mode,eventType,presentationType,isAcceptingRsvps,isBringYourOwnDevice,requirements,dayGuid,broadcastGuid,locationGuid,seasonGuid'),
+  (N'events', N'guid,active,startTime,endTime,observedAttendeeStart,observedAttendeeEnd,capacity,resources,requiresRsvp,qrCode,mode,eventType,presentationType,isAcceptingRsvps,isBringYourOwnDevice,requirements,dayGuid,broadcastGuid,locationGuid,seasonGuid,checkInMinutesBefore,checkInMinutesAfter,checkInAnyTime,noSlides,judgedCompetition,judgingClosed'),
   (N'initial_survey_questions', N'guid,questionText,questionOptions,questionTypeGuid'),
   (N'initial_survey_responses', N'guid,seasonGuid,questionGuid'),
   (N'organizations', N'guid,seasonGuid,acronym'),
@@ -37,11 +42,25 @@ INSERT @kept VALUES
   (N'places', N'guid,name,address,city,state,zip,website,seasonGuid,visibilitySettings'),
   (N'question_types', N'guid,type'),
   (N'rsvp_types', N'guid,type'),
-  (N'seasons', N'guid,year,active'),
+  -- The rubrics judges score against (#3183): the competition organizer's text, about the work, not about anyone.
+  (N'rubrics', N'guid,seasonGuid,competitionType,name,description'),
+  (N'rubric_criteria', N'guid,rubricGuid,position,name,maxPoints,levels'),
+  (N'seasons', N'guid,year,active,posterSubmissionsCloseAt,posterFilesCloseAt,presentationSubmissionsCloseAt,presentationFilesCloseAt,paperSubmissionsCloseAt,paperFilesCloseAt,cartographySubmissionsCloseAt,cartographyFilesCloseAt'),
+  (N'season_competitions', N'guid,competitionType,seasonGuid'),
+  -- A season's winners (#3239): which submission won which place; the names shown are the submission's.
+  (N'season_winners', N'guid,seasonGuid,competition,place,submissionGuid'),
   (N'seasons_days', N'guid,date,seasonGuid'),
   (N'speaker_roles', N'guid,name'),
-  (N'speakers', N'guid,isActive,seasonGuid,organizationGuid,universityGuid,isOrganizer'),
-  (N'sponsors', N'guid,name,website,sponsorshipLevel,seasonGuid,description'),
+  (N'speakers', N'guid,isActive,seasonGuid,organizationGuid,universityGuid,isOrganizer,badgePrintedAt'),
+  -- A speaker's own link to edit their profile (#2936): which speaker, and until when. The token and the address go below.
+  (N'speaker_edit_links', N'guid,speakerGuid,expires,purpose'),
+  -- The speaker emails' repeat guard (#3098, #3260): which speaker was sent which email about which session, and when.
+  (N'speaker_email_claims', N'guid,kind,sessionGuid,speakerGuid'),
+  -- Which email each speaker was sent, about which session, and when (#3167). The addresses go below.
+  (N'speaker_email_sends', N'guid,speakerGuid,kind,eventGuid'),
+  -- What a speaker proposed (#2936): whose, and where it stands. What they wrote goes below, as the speaker's own does.
+  (N'speaker_edits', N'guid,speakerGuid,universityGuid,status,reviewedAt'),
+  (N'sponsors', N'guid,name,website,sponsorshipLevel,seasonGuid,description,active,logoSize'),
   (N'submission_types', N'guid,type'),
   (N'submissions', N'guid,submissionType,seasonGuid,reviewed,acceptance,format,classificationType'),
   (N'tags', N'guid,name,seasonGuid'),
@@ -50,7 +69,7 @@ INSERT @kept VALUES
   (N'user_info', N'guid,fieldOfStudy,classification,participantType,hasCompletedInitialSurvey'),
   (N'user_rsvps', N'guid,eventGuid,rsvpTypeGuid'),
   (N'vgi_forms', N'guid,source,model'),
-  (N'vgi_seasons', N'guid,allowSubmissions,seasonGuid,formGuid'),
+  (N'vgi_seasons', N'guid,allowSubmissions,seasonGuid,formGuid,scoringOpensAt,scoringClosesAt'),
   -- The competition answers in `value` are choices from a fixed list (checked 11 October 2026), not free text.
   (N'vgi_submissions', N'guid,value,locationGuid,seasonGuid,validationStatusGuid'),
   (N'vgi_submission_validation_status', N'guid,status'),
@@ -58,9 +77,10 @@ INSERT @kept VALUES
   (N'vgi_submissions_media', N'guid,fieldName,submissionGuid');
 
 -- Tables that are not copied: the migrations record is written when the new database is built, and
--- the other three exist only in production and are not used by the code.
+-- the other three exist only in production and are not used by the code. `session_details_sends` (#3098) is no
+-- longer read either: speaker_email_claims took over its rows (#3260), and a later migration drops it (#3269).
 DECLARE @skipped TABLE (tbl sysname);
-INSERT @skipped VALUES (N'typeorm_migrations'), (N'organization_links'), (N'speaker_images'), (N'sysdiagrams');
+INSERT @skipped VALUES (N'typeorm_migrations'), (N'organization_links'), (N'speaker_images'), (N'sysdiagrams'), (N'session_details_sends');
 
 -- What each personal column becomes. `{c}` is the column; a NULL stays NULL unless the rule says otherwise.
 DECLARE @scrubbed TABLE (tbl sysname, col sysname, expr nvarchar(max));
@@ -73,12 +93,15 @@ DECLARE @account nvarchar(max) =
 INSERT @scrubbed VALUES
   (N'checkins', N'accountGuid', @account),
   (N'initial_survey_responses', N'accountGuid', @account),
+  -- A trail challenge winner, by account (#3239).
+  (N'season_winners', N'accountGuid', @account),
   (N'speakers', N'accountGuid', @account),
   (N'submissions', N'accountGuid', @account),
   (N'user_classes', N'accountGuid', @account),
   (N'user_info', N'accountGuid', @account),
   (N'user_rsvps', N'accountGuid', @account),
   (N'vgi_submissions', N'userGuid', @account),
+  (N'speaker_edits', N'reviewedBy', @account),
   (N'vgi_submission_validation_status', N'verifiedBy', @account);
 
 -- Every real person's full name in the database: speakers, contacts, professors and competition entrants. Text that is
@@ -125,6 +148,25 @@ INSERT @scrubbed VALUES
   (N'assets', N'path', N'N''images/placeholder.svg'''),
 
   (N'speakers', N'email', N'N''speaker-'' + LOWER(LEFT(guid, 8)) + N''@example.org'''),
+  -- What was printed on a badge holds the speaker's name (#2908).
+  (N'speakers', N'badgePrintedText', N'NULL'),
+
+  -- What a speaker proposed for their profile (#2936), made up as their own profile is above. The proposed photograph is a
+  -- file on the production site, held for review.
+  (N'speaker_edits', N'description', N'N''A short biography would be here. This one is made up for the local copy.'''),
+  (N'speaker_edits', N'affiliation', N'N''Texas A&M University'''),
+  (N'speaker_edits', N'socialMedia', N'NULL'),
+  (N'speaker_edits', N'graduationYear', N'NULL'),
+  (N'speaker_edits', N'photoPath', N'NULL'),
+  -- A link's token is a password in all but name: no copied link may open a profile, so each hash is of nothing anyone
+  -- holds; and the address it went to is made up.
+  (N'speaker_edit_links', N'tokenHash', N'LOWER(CONVERT(char(64), HASHBYTES(''SHA2_256'', CONVERT(nvarchar(36), NEWID())), 2))'),
+  (N'speaker_edit_links', N'sentTo', N'N''speaker-'' + LOWER(LEFT(guid, 8)) + N''@example.org'''),
+  -- The address each email went to, and who it was from: an admin's own name and address (#3167).
+  (N'speaker_email_sends', N'sentTo', N'N''speaker-'' + LOWER(LEFT(speakerGuid, 8)) + N''@example.org'''),
+  (N'speaker_email_sends', N'sentFrom', N'N''GIS Day <gisday@example.org>'''),
+  -- What a judge wrote about a student's work (#3183): free text, which can name anyone. The scores are kept above.
+  (N'assessments', N'comment', N'N''The comment is removed from this copy.'''),
 
   (N'organizations', N'contactFirstName', N'N''Contact'''),
   (N'organizations', N'contactLastName', N'N''Person'''),
@@ -134,6 +176,9 @@ INSERT @scrubbed VALUES
   (N'sponsors', N'contactEmail', N'N''sponsor-'' + LOWER(LEFT(guid, 8)) + N''@example.org'''),
   (N'sponsors', N'sponsorshipAmount', N'NULL'),
   (N'classes', N'professorName', N'N''Professor '' + UPPER(LEFT(guid, 4))'),
+
+  -- A hybrid or virtual session's check-in code checks people in (#2560): none is copied.
+  (N'events', N'checkInCode', N'NULL'),
 
   -- Meeting links and their passwords.
   (N'event_broadcast', N'password', N'N''000000'''),

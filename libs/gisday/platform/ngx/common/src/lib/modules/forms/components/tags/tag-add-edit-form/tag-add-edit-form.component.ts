@@ -1,13 +1,16 @@
 import { Component, OnInit, inject, input } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Observable, filter, map, switchMap, take } from 'rxjs';
 
 import { Tag } from '@tamu-gisc/gisday/platform/data-api';
 import { SeasonService, TagService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { serverMessage } from '../../../../../utils/server-message';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+
+import { injectBackToList } from '../../../admin-details-page';
 
 @Component({
   selector: 'tamu-gisc-tag-add-edit-form',
@@ -17,7 +20,8 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 })
 export class TagAddEditFormComponent implements OnInit {
   private readonly fb = inject(UntypedFormBuilder);
-  private readonly rt = inject(Router);
+  /** Leaves for the list once a save, create or delete has worked: the one the page was opened from (#2965). */
+  private readonly backToList = injectBackToList('/admin/tags');
   private readonly at = inject(ActivatedRoute);
   private readonly ts = inject(TagService);
   private readonly ns = inject(NotificationService);
@@ -80,7 +84,7 @@ export class TagAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'delete-tag-error',
           title: 'Delete Tag',
-          message: `Error deleting tag: ${err.status}`
+          message: serverMessage(err, `Error deleting tag: ${err.status}`)
         });
       }
     });
@@ -103,7 +107,7 @@ export class TagAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'update-tag-error',
           title: 'Update Tag',
-          message: `Error updating tag: ${err.status}`
+          message: serverMessage(err, `Error updating tag: ${err.status}`)
         });
       }
     });
@@ -126,13 +130,13 @@ export class TagAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'create-tag-error',
           title: 'Create Tag',
-          message: `Error creating tag: ${err.status}`
+          message: serverMessage(err, `Error creating tag: ${err.status}`)
         });
       }
     });
   }
 
   private _navigateBack() {
-    this.rt.navigate(['/admin/tags']);
+    this.backToList();
   }
 }

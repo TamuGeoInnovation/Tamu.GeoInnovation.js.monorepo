@@ -18,6 +18,7 @@ import {
 } from 'rxjs';
 
 import { ActiveSeasonDto, Season } from '@tamu-gisc/gisday/platform/data-api';
+import { SubmissionDeadlines } from '@tamu-gisc/gisday/common';
 
 import { BaseService } from '../_base/base.service';
 import { noSeasonAs } from '../_base/no-season';
@@ -103,11 +104,7 @@ export class SeasonService extends BaseService<Season> {
    * True on any year but the active one, where registering and this year's sponsor information do
    * not apply.
    */
-  public isPastSeason$: Observable<boolean> = combineLatest([
-    this.viewedYear$,
-    this.viewedSeason$,
-    this.activeSeason$
-  ]).pipe(
+  public isPastSeason$: Observable<boolean> = combineLatest([this.viewedYear$, this.viewedSeason$, this.activeSeason$]).pipe(
     map(([year, viewed, active]) => year !== null && viewed?.guid !== active?.guid),
     distinctUntilChanged(),
     shareReplay(1)
@@ -170,6 +167,20 @@ export class SeasonService extends BaseService<Season> {
   public override updateEntity(guid: string, updatedEntity: Partial<Season>) {
     return this.http1
       .patch<Partial<Season>>(`${this.resource}/${guid}`, updatedEntity)
+      .pipe(tap(() => this._signal$.next()));
+  }
+
+  /** Sets when the season's competitions close (#2934, #2962); every page reading a season sees it. */
+  public setSubmissionDeadlines(guid: string, deadlines: SubmissionDeadlines) {
+    return this.http1
+      .patch<SubmissionDeadlines>(`${this.resource}/${guid}/submission-deadlines`, deadlines)
+      .pipe(tap(() => this._signal$.next()));
+  }
+
+  /** Sets which research competitions the season runs (#2948): at least one; every one is stored as no rows. */
+  public setCompetitionTypes(guid: string, competitionTypes: Array<string>) {
+    return this.http1
+      .patch<{ competitionTypes: Array<string> }>(`${this.resource}/${guid}/competition-types`, { competitionTypes })
       .pipe(tap(() => this._signal$.next()));
   }
 
