@@ -1,5 +1,49 @@
 # Home machine: current tasks
 
+## Batch g90 (gisday: #3062, scan GIS Day for one-offs that break reuse-before-building; 23 November 2026, about 10:15 PM Central, from `work (gisday)`) (Low) - **after g89**
+
+[#3062](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3062), read only, **GIS Day's libraries and apps only** (`libs/gisday/**`, `apps/gisday-*`). Look for the tell CLAUDE.md
+names: two pieces of code that would both need changing to fix one bug. A table of what you find (the pieces, where, how alike,
+what one shared piece would be), each with a recommendation; file each real one as its own issue (Task, `enhancement`,
+assignee `danielgoldbergtamu`; the director sets Priority and the project) and list them. Build nothing in this batch.
+Report `home/reports/2026-11-24-g90.md`.
+
+## Batch g89 (gisday: triage the 2022-era GIS Day backlog, #434 to #499; 23 November 2026, about 10:15 PM Central, from `work (gisday)`) (Low) - **after g88**
+
+Fourteen GIS Day issues from 2022 sit open with no status: [#434](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/434), [#435](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/435), [#438](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/438), [#439](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/439), [#440](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/440), [#441](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/441), [#442](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/442), [#464](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/464), [#466](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/466), [#477](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/477), [#493](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/493), [#497](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/497), [#498](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/498), [#499](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/499).
+Much has changed since. For each, read it, check today's code (and, for a public page, production with a browser, read only),
+and put it in one of three rows of a table in your report:
+- **Done already:** what does it now, with the file or PR. The director closes it.
+- **Small and still wanted:** build it, one branch per issue, as above. Keep each to what the issue asks.
+- **Needs the maintainer** (a product choice, or too big for a night): say what the choice is, with options and a
+  recommendation. Don't build it.
+#497 is AggieMap's (Kuma monitoring) and filed in the wrong project: say so, and leave it. The maintainer is asleep and asked for everything to reach a pull request without him. So: decide what you can from the code and the records, choose the conservative option when a choice is needed, and put any real decision in your report as a question with options and a recommendation, then carry on with the rest. Made-up data only, no email, never production, txgisday-dev the only Auth0 tenant, kubernetes-config read-only. Each branch from the latest `development`, red first where a test can show it, the check, a push to the fork, `app: gisday` in any release entry, and "branch ready: <name>" with the PR body text in the report.
+Report `home/reports/2026-11-24-g89.md`.
+
+## Batch g88 (gisday: #2275, GIS Day's analytics provider sends nothing; 23 November 2026, about 10:15 PM Central, from `work (gisday)`) (Medium) - **after g87**
+
+[#2275](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2275): GIS Day loads gtag (GA4), but angulartics2's provider is analytics.js and calls `ga()`, which the page doesn't have, so
+it sends nothing; only gtag's own page view arrives (you found the same in batch 85). **GIS Day only**: AggieMap's half of the issue
+is the AggieMap chat's; leave it, and say so in the PR. Make GIS Day's events reach GA4 through gtag (angulartics2's GA4 provider
+if this version has one, otherwise a small provider on the shared analytics setup in `libs/common/**`, reused rather than written
+inside gisday-angular), without sending a second page view on top of gtag's own, and keep #2572's rule: the check-in code never
+reaches Analytics. A test that an event reaches `gtag`, red first. No visible change. The maintainer is asleep and asked for everything to reach a pull request without him. So: decide what you can from the code and the records, choose the conservative option when a choice is needed, and put any real decision in your report as a question with options and a recommendation, then carry on with the rest. Made-up data only, no email, never production, txgisday-dev the only Auth0 tenant, kubernetes-config read-only. Each branch from the latest `development`, red first where a test can show it, the check, a push to the fork, `app: gisday` in any release entry, and "branch ready: <name>" with the PR body text in the report.
+Report `home/reports/2026-11-24-g88.md`.
+
+## Batch g87 (gisday: #2232 and #1609, retire gisday-competitions-nest and gisday-competitions-angular; 23 November 2026, about 10:15 PM Central, from `work (gisday)`) (Medium) - **after g86**
+
+[#2232](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2232) and [#1609](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1609) are the same job; #2232 has the evidence that nothing deploys or serves either app. Branch
+`chore/2232-retire-gisday-competitions-apps`:
+1. **Check the evidence again first:** no image on ghcr, no deployment, no workflow or Azure pipeline that builds them, nothing
+   in `gisday-angular` or `gisday-nest` importing from either app. If any of that is false, stop and report it.
+2. **Delete** both apps and every reference to them (workspace config, CI lists, the smoke and e2e projects, docs that list them,
+   `.github/dependabot.yml`), keeping the competitions **libraries**, which `gisday-angular` and `gisday-nest` use. Anything only
+   those two apps used goes too, but list each library or dependency you remove and why.
+3. **The full affected check**, then push. The PR closes #2232; say in its body that #1609 is the same work, and close-keyword
+   only #2232 (the director closes #1609 after the merge).
+The maintainer is asleep and asked for everything to reach a pull request without him. So: decide what you can from the code and the records, choose the conservative option when a choice is needed, and put any real decision in your report as a question with options and a recommendation, then carry on with the rest. Made-up data only, no email, never production, txgisday-dev the only Auth0 tenant, kubernetes-config read-only. Each branch from the latest `development`, red first where a test can show it, the check, a push to the fork, `app: gisday` in any release entry, and "branch ready: <name>" with the PR body text in the report.
+Report `home/reports/2026-11-24-g87.md`.
+
 ## Batch 86 (gisday: the rest of #3019, each competition's sessions and finalists date on the season; 23 November 2026, about 9:45 PM Central, from `work (gisday)`) (Low) - **after 85**
 
 **Decided on your report 81 (the maintainer, about 9:40 PM Central):** 6A and 7A. Your date half is PR 3310, now closing

@@ -1,5 +1,24 @@
 # Laptop: current tasks
 
+## Batch g15 (gisday: triage the 2022-era GIS Day backlog that needs a signed-in admin, #521 to #567; 23 November 2026, about 10:15 PM Central, from `work (gisday)`) (Low) - **after g14**
+
+Five GIS Day issues from 2022 sit open with no status, and checking each needs a signed-in admin, which you have:
+[#521](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/521), [#536](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/536), [#541](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/541), [#545](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/545), [#567](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/567). For each, check today's code and your signed-in local stack with made-up data,
+and put it in one row of a table in your report: **done already** (with the file or PR; the director closes it), **small and still
+wanted** (build it, one branch each, with before/after images), or **needs the maintainer** (the choice, options, a recommendation;
+don't build it). #567 (one landing page per organization) is the same goal as #2072 and is a product decision: say so and leave
+it. The maintainer is asleep and asked for everything to reach a pull request without him. So: decide what you can from the code and the records, choose the conservative option when a choice is needed, and put any real decision in your report as a question with options and a recommendation, then carry on with the rest. Made-up data only, no email, never production, txgisday-dev the only Auth0 tenant, kubernetes-config read-only. Each branch from the latest `development`, red first where a test can show it, the check, a push to the fork, `app: gisday` in any release entry, and "branch ready: <name>" with the PR body text in the report.
+Report `laptop/reports/2026-11-24-g15.md`.
+
+## Batch g14 (gisday: #1756, the date and time picker's popup opens off screen at phone width; 23 November 2026, about 10:15 PM Central, from `work (gisday)`) (Medium) - **after 13 (your current GIS Day queue: 8, 11, 12, 13 in that order)**
+
+[#1756](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1756): at 390 px the shared picker's popup (`libs/ui-kits/ngx/forms/src/lib/components/date-time-picker/`) opens off the
+left edge. It's a shared component, so fix it behind its existing interface (no caller changes), and check every GIS Day form
+that uses it still opens its popup in view at 1280 and 390. Red first (the popup's box within the viewport at 390); before/after
+images of one GIS Day admin form at 390 and 1280; the bug-fix check with `ui-kits-ngx-forms` and every app that uses the picker
+(find them). The maintainer is asleep and asked for everything to reach a pull request without him. So: decide what you can from the code and the records, choose the conservative option when a choice is needed, and put any real decision in your report as a question with options and a recommendation, then carry on with the rest. Made-up data only, no email, never production, txgisday-dev the only Auth0 tenant, kubernetes-config read-only. Each branch from the latest `development`, red first where a test can show it, the check, a push to the fork, `app: gisday` in any release entry, and "branch ready: <name>" with the PR body text in the report.
+Report `laptop/reports/2026-11-24-g14.md`.
+
 ## Batch a11 (aggiemap: #3271, a legend entry with no symbol on dev; 23 November 2026, about 8:40 PM Central, from `work (aggiemap)`) (Medium) - **after 10**
 
 **First batch with the new id scheme** (`DIRECTOR.md`, "Batch ids carry their director's letter", the maintainer's 2A tonight):
