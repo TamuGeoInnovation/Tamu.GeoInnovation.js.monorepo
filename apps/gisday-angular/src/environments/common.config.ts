@@ -17,14 +17,25 @@ export const api_url = `${window.location.origin}/api`;
  */
 export const site = '___ANGULAR_SITE___';
 
+/**
+ * Where the signed-in user's access token goes: the API on this address, and nowhere else (#2088), once the build's
+ * Auth0 settings are filled in. A build whose container never filled them in, such as the E2E suite's dev server, asks
+ * for no token: Auth0's interceptor would ask the placeholder host before every API call, and the calls would wait on
+ * it (PR 3304's E2E). The placeholder is matched by its shape, not written out, so the container does not fill it here.
+ */
+export function accessTokenUrls(domain: string, api: string): Array<string> {
+  return /^_{3}\w+_{3}$/.test(domain) ? [] : [api];
+}
+
+const auth0Domain = '___ANGULAR_AUTH0_DOMAIN___';
+
 export const auth0 = {
-  domain: '___ANGULAR_AUTH0_DOMAIN___',
+  domain: auth0Domain,
   client_id: '___ANGULAR_AUTH0_CLIENT_ID___',
   redirect_uri: window.location.origin + '/callback',
   audience: '___ANGULAR_AUTH0_AUDIENCE___',
   roles_claim: '___ANGULAR_AUTH0_ROLES_CLAIM___',
-  /** Where the signed-in user's access token goes: the API on this address, and nowhere else (#2088). */
-  urls: [api_url]
+  urls: accessTokenUrls(auth0Domain, api_url)
 };
 
 export const NotificationEvents: NotificationProperties[] = [
