@@ -46,7 +46,7 @@ INSERT @kept VALUES
   (N'rubrics', N'guid,seasonGuid,competitionType,name,description'),
   (N'rubric_criteria', N'guid,rubricGuid,position,name,maxPoints,levels'),
   (N'seasons', N'guid,year,active,posterSubmissionsCloseAt,posterFilesCloseAt,presentationSubmissionsCloseAt,presentationFilesCloseAt,paperSubmissionsCloseAt,paperFilesCloseAt,cartographySubmissionsCloseAt,cartographyFilesCloseAt'),
-  (N'season_competitions', N'guid,competitionType,seasonGuid'),
+  (N'season_competitions', N'guid,competitionType,seasonGuid,runs,sessionGuid,graduateSessionGuid,awardsSessionGuid,finalistsNotifiedAt'),
   -- A season's winners (#3239): which submission won which place; the names shown are the submission's.
   (N'season_winners', N'guid,seasonGuid,competition,place,submissionGuid'),
   (N'seasons_days', N'guid,date,seasonGuid'),

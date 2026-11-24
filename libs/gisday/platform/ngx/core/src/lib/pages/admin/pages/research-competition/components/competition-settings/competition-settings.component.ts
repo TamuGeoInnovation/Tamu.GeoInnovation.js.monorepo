@@ -1,10 +1,10 @@
 import { Component, computed, effect, inject, input, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { Observable, catchError, forkJoin, map, of } from 'rxjs';
+import { Observable, catchError, forkJoin, map, of, switchMap } from 'rxjs';
 
 import { Season } from '@tamu-gisc/gisday/platform/data-api';
-import { SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { EventService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import {
   DEADLINE_COMPETITION_TABLE,
   DeadlineCompetition,
@@ -12,19 +12,42 @@ import {
   SEASON_COMPETITIONS,
   SUBMISSION_DEADLINE_FIELDS,
   SubmissionDeadlineField,
+  CompetitionSettingsInput,
   asDate,
+  competitionSettings,
+  competitionSettingsProblem,
   competitionTypesProblem,
   deadlineField,
   deadlinesProblem,
   inCentralTime,
   runsCompetition
 } from '@tamu-gisc/gisday/common';
-import { ButtonComponent, CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { ButtonComponent, CheckboxComponent, SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { DateTimePickerComponent } from '@tamu-gisc/ui-kits/ngx/forms/date-time-picker';
 import { AccordionContentDirective, AccordionDirective, AccordionHeaderDirective } from '@tamu-gisc/ui-kits/ngx/layout';
 
 type CompetitionsForm = FormGroup<Record<DeadlineCompetition, FormControl<boolean>>>;
 type DeadlinesForm = FormGroup<Record<SubmissionDeadlineField, FormControl<Date | string | null>>>;
+
+/** One competition's sessions and finalists date (#3019): a session's id, or empty to find it by its name. */
+type SessionsRow = FormGroup<{
+  sessionGuid: FormControl<string>;
+  graduateSessionGuid: FormControl<string>;
+  awardsSessionGuid: FormControl<string>;
+  finalistsNotifiedAt: FormControl<Date | string | null>;
+}>;
+
+/** The empty choice of a session: the pages and emails find it by its `COMPETITION:` or `AWARDS:` name, as before. */
+const BY_NAME = { guid: '', name: 'By its name (COMPETITION: / AWARDS:)' };
+
+function sessionsRow(): SessionsRow {
+  return new FormGroup({
+    sessionGuid: new FormControl('', { nonNullable: true }),
+    graduateSessionGuid: new FormControl('', { nonNullable: true }),
+    awardsSessionGuid: new FormControl('', { nonNullable: true }),
+    finalistsNotifiedAt: new FormControl<Date | string | null>(null)
+  });
+}
 
 /** What one half of a save came to: null when it was saved, or why it was not. */
 type Refusal = string | null;
@@ -65,6 +88,7 @@ function refusal(err: unknown, otherwise: string): string {
     ReactiveFormsModule,
     ButtonComponent,
     CheckboxComponent,
+    SelectComponent,
     DateTimePickerComponent,
     AccordionDirective,
     AccordionHeaderDirective,
@@ -73,6 +97,7 @@ function refusal(err: unknown, otherwise: string): string {
 })
 export class CompetitionSettingsComponent {
   private readonly seasons = inject(SeasonService);
+  private readonly events = inject(EventService);
 
   /** The season whose settings are shown: the one the page's season picker has chosen. */
   public readonly season = input<Partial<Season> | null>(null);
@@ -98,8 +123,40 @@ export class CompetitionSettingsComponent {
       Object.fromEntries(
         SUBMISSION_DEADLINE_FIELDS.map((field) => [field, new FormControl<Date | string | null>(null)])
       ) as Record<SubmissionDeadlineField, FormControl<Date | string | null>>
-    ) as DeadlinesForm
+    ) as DeadlinesForm,
+    sessions: new FormGroup(
+      Object.fromEntries(SEASON_COMPETITIONS.map((competition) => [competition, sessionsRow()])) as Record<
+        DeadlineCompetition,
+        SessionsRow
+      >
+    )
   });
+
+  /**
+   * The season's sessions to choose from (#3019), by name, after the choice to find one by its name. Empty while they
+   * load, or if they cannot be read.
+   */
+  public readonly sessionChoices = toSignal(
+    toObservable(this.season).pipe(
+      switchMap((season) =>
+        season?.guid
+          ? this.events.getEntitiesForSeason(season.guid).pipe(
+              map((events) =>
+                [...events]
+                  .map((event) => ({ guid: event.guid as string, name: event.name ?? 'Untitled session' }))
+                  .sort((a, b) => a.name.localeCompare(b.name))
+              ),
+              catchError(() => of([]))
+            )
+          : of([])
+      ),
+      map((events) => [BY_NAME, ...events])
+    ),
+    { initialValue: [BY_NAME] }
+  );
+
+  /** The competitions whose pages name their sessions (#3011, #3019): a session to choose for each. */
+  public readonly withSessions: ReadonlyArray<DeadlineCompetition> = ['poster', 'presentation'];
 
   /** Whether the panel is open to edit. Set from the season each time one is chosen; the header toggles it. */
   public readonly expanded = signal(true);
@@ -175,7 +232,23 @@ export class CompetitionSettingsComponent {
         SEASON_COMPETITIONS.map((competition) => [competition, runsCompetition(season, competition)])
       ) as Record<DeadlineCompetition, boolean>;
 
-      this.form.reset({ competitions, deadlines });
+      const sessions = Object.fromEntries(
+        SEASON_COMPETITIONS.map((competition) => {
+          const row = competitionSettings(season, competition);
+
+          return [
+            competition,
+            {
+              sessionGuid: row?.sessionGuid ?? '',
+              graduateSessionGuid: row?.graduateSessionGuid ?? '',
+              awardsSessionGuid: row?.awardsSessionGuid ?? '',
+              finalistsNotifiedAt: asDate(row?.finalistsNotifiedAt)
+            }
+          ];
+        })
+      );
+
+      this.form.reset({ competitions, deadlines, sessions });
 
       if (another) {
         this.expanded.set(Object.values(deadlines).every((deadline) => deadline === null));
@@ -190,6 +263,36 @@ export class CompetitionSettingsComponent {
 
     control.setValue(null);
     control.markAsDirty();
+  }
+
+  /** Empties a competition's finalists date: its page then leaves the line out (#3019). */
+  public clearFinalists(competition: DeadlineCompetition): void {
+    const control = this.form.controls.sessions.controls[competition].controls.finalistsNotifiedAt;
+
+    control.setValue(null);
+    control.markAsDirty();
+  }
+
+  /**
+   * The competitions' settings to send (#3019): each that has one, or had one, so emptying a choice is saved and a
+   * competition never given one gets no row.
+   */
+  private settingsToSend(): Array<CompetitionSettingsInput> {
+    const season = this.season();
+
+    return SEASON_COMPETITIONS.flatMap((competitionType) => {
+      const value = this.form.controls.sessions.controls[competitionType].getRawValue();
+      const row: CompetitionSettingsInput = {
+        competitionType,
+        sessionGuid: value.sessionGuid || null,
+        graduateSessionGuid: value.graduateSessionGuid || null,
+        awardsSessionGuid: value.awardsSessionGuid || null,
+        finalistsNotifiedAt: asDate(value.finalistsNotifiedAt)?.toISOString() ?? null
+      };
+      const any = row.sessionGuid || row.graduateSessionGuid || row.awardsSessionGuid || row.finalistsNotifiedAt;
+
+      return any || competitionSettings(season, competitionType) ? [row] : [];
+    });
   }
 
   /** Sends the competitions and the deadlines together, and says which, if either, was refused. */
@@ -208,8 +311,12 @@ export class CompetitionSettingsComponent {
       ])
     );
 
-    // Checked here first, as the API checks them: if either would be refused, neither is sent.
-    const problems = [competitionTypesProblem(chosen), deadlinesProblem(deadlines)].filter((p): p is string => !!p);
+    const settings = this.settingsToSend();
+
+    // Checked here first, as the API checks them: if any would be refused, none is sent.
+    const problems = [competitionTypesProblem(chosen), deadlinesProblem(deadlines), competitionSettingsProblem(settings)].filter(
+      (p): p is string => !!p
+    );
 
     if (problems.length) {
       this.result.set({ saved: false, text: `Nothing was saved. ${problems.join(' ')}` });
@@ -226,13 +333,28 @@ export class CompetitionSettingsComponent {
     this.saving.set(true);
     this.result.set(null);
 
+    // The sessions after the competitions: both write the season's rows of competitions (#3019).
+    const competitionsThenSessions = sent(
+      this.seasons.setCompetitionTypes(season.guid, chosen),
+      'The competitions could not be saved.'
+    ).pipe(
+      switchMap((competitions) =>
+        (settings.length
+          ? sent(this.seasons.setCompetitionSettings(season.guid, settings), 'The sessions could not be saved.')
+          : of(null)
+        ).pipe(map((sessions) => ({ competitions, sessions })))
+      )
+    );
+
     forkJoin([
-      sent(this.seasons.setCompetitionTypes(season.guid, chosen), 'The competitions could not be saved.'),
+      competitionsThenSessions,
       sent(this.seasons.setSubmissionDeadlines(season.guid, deadlines), 'The deadlines could not be saved.')
-    ]).subscribe(([competitions, deadlinesRefused]) => {
+    ]).subscribe(([{ competitions, sessions }, deadlinesRefused]) => {
       this.saving.set(false);
 
-      if (!competitions && !deadlinesRefused) {
+      if (sessions) {
+        this.result.set({ saved: false, text: `The sessions and finalists dates were not saved: ${sessions}` });
+      } else if (!competitions && !deadlinesRefused) {
         // All of it saved: the season read again fills the form from what it now holds.
         this.form.markAsPristine();
         this.result.set({ saved: true, text: 'Competitions and deadlines saved.' });

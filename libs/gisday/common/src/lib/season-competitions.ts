@@ -98,6 +98,46 @@ export function competitionTypesProblem(competitions: unknown): string | null {
   return competitions.length === 0 ? 'A season must run at least one competition.' : null;
 }
 
+/** What the admin page sends for one competition's settings (#3019): its sessions, and when its finalists hear. */
+export interface CompetitionSettingsInput {
+  competitionType: string;
+  sessionGuid?: string | null;
+  graduateSessionGuid?: string | null;
+  awardsSessionGuid?: string | null;
+  finalistsNotifiedAt?: Date | string | null;
+}
+
+/** The sessions a competition's settings name, without the empty ones. */
+export function chosenSessionGuids(settings: ReadonlyArray<CompetitionSettingsInput>): Array<string> {
+  return settings
+    .flatMap((row) => [row.sessionGuid, row.graduateSessionGuid, row.awardsSessionGuid])
+    .filter((guid): guid is string => typeof guid === 'string' && guid.length > 0);
+}
+
+/**
+ * Why a save of competitions' settings may not go ahead, or null when it may: a list, of competitions this knows, each
+ * finalists date a date. Whether each session is one of the season's is the API's to check.
+ */
+export function competitionSettingsProblem(settings: unknown): string | null {
+  if (!Array.isArray(settings)) {
+    return 'The settings must be a list.';
+  }
+
+  for (const row of settings as Array<CompetitionSettingsInput>) {
+    if (!SEASON_COMPETITIONS.includes(row?.competitionType as DeadlineCompetition)) {
+      return `${row?.competitionType} is not a competition.`;
+    }
+
+    const date = row.finalistsNotifiedAt;
+
+    if (date !== null && date !== undefined && date !== '' && !asDate(date)) {
+      return `The ${row.competitionType} finalists date is not a date.`;
+    }
+  }
+
+  return null;
+}
+
 /** The competition's name for a student: "The poster competition is not running this season." */
 export function notRunningMessage(competition: string): string {
   const label =
