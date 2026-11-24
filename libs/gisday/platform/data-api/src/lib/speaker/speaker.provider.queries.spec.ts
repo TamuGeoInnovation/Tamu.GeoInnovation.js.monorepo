@@ -65,6 +65,50 @@ describe('SpeakerProvider queries, built by typeorm', () => {
     await expect(provider.getSpeakersForSeason('s-1')).resolves.toEqual([]);
   });
 
+  /** The SQL of every speaker find a call makes, as typeorm builds it. */
+  function speakerQueries() {
+    const queries: Array<string> = [];
+    const find = speakerRepo.find.bind(speakerRepo);
+    speakerRepo.find = async (options) => (
+      queries.push(
+        speakerRepo
+          .createQueryBuilder()
+          .setFindOptions(options ?? {})
+          .getQuery()
+      ),
+      find(options)
+    );
+
+    return queries;
+  }
+
+  // The public season list (`GET speakers/season/:guid`) must not name a session hidden from the public schedule, so it
+  // does not load a speaker's sessions; only the admin list's own route does (#441).
+  it("lists a season's speakers without their sessions, for the public pages", async () => {
+    const queries = speakerQueries();
+
+    await provider.getSpeakersForSeason('s-1');
+
+    expect(queries).toHaveLength(1);
+    expect(queries[0]).not.toMatch(/"event_speakers"|JOIN "events"/);
+  });
+
+  // The admin Speakers list's own route, behind update:speakers, shows each speaker's sessions that season, so a speaker
+  // copied into a season with no session there can be told from one who speaks (#441, #439).
+  it("lists a season's speakers with the sessions they are in, for the admin list", async () => {
+    const queries = speakerQueries();
+
+    await provider.getSpeakersForSeason('s-1', true);
+    await provider.getSpeakersForActiveSeason(true);
+
+    expect(queries).toHaveLength(2);
+
+    for (const query of queries) {
+      expect(query).toMatch(/JOIN "event_speakers"/);
+      expect(query).toMatch(/JOIN "events"/);
+    }
+  });
+
   it('finds a presenter with their events in day and time order', async () => {
     await expect(provider.getPresenter('sp-1')).resolves.toBeNull();
   });
@@ -151,7 +195,9 @@ describe('SpeakerProvider queries, built by typeorm', () => {
   it("applies a speaker's approved self-edit", async () => {
     answering(speakerRepo, 'findOne', loadedSpeaker());
 
-    await expect(provider.applySelfEdit('sp-1', { description: 'A bio', university: { guid: 'u-1' } })).resolves.toMatchObject({
+    await expect(
+      provider.applySelfEdit('sp-1', { description: 'A bio', university: { guid: 'u-1' } })
+    ).resolves.toMatchObject({
       description: 'A bio'
     });
   });

@@ -64,7 +64,15 @@ export class SpeakerProvider extends SeasonScopedProvider<Speaker> {
     super(speakerRepo);
   }
 
-  public async getSpeakersForSeason(seasonGuid: string) {
+  /**
+   * A season's speakers, by name.
+   *
+   * @param withSessions Also each speaker's sessions, for the admin Speakers list's Sessions column (#441): a speaker
+   * copied into a season is listed in it with or without a session there, and could not be told apart (#439). Only the
+   * route behind `update:speakers` asks for them, because they include sessions hidden from the public schedule. A
+   * speaker belongs to one season, so these are that season's. Added here, not to the lookup table, which other queries share.
+   */
+  public async getSpeakersForSeason(seasonGuid: string, withSessions = false) {
     try {
       return this.find({
         where: {
@@ -72,7 +80,7 @@ export class SpeakerProvider extends SeasonScopedProvider<Speaker> {
             guid: seasonGuid
           }
         },
-        relations: EntityRelationsLUT.getRelation('speaker'),
+        relations: withSessions ? { ...EntityRelationsLUT.speaker, events: true } : EntityRelationsLUT.speaker,
         order: {
           lastName: 'ASC',
           firstName: 'ASC'
@@ -114,8 +122,15 @@ export class SpeakerProvider extends SeasonScopedProvider<Speaker> {
     return presenter;
   }
 
-  public async getSpeakersForActiveSeason() {
-    return this.forActiveSeason();
+  /**
+   * The active season's speakers; with their sessions only when asked, as `getSpeakersForSeason` (#441). Not through
+   * `forActiveSeason`, whose `forSeason` cannot ask for sessions. No 422 for a missing season: `findOneActive` throws its
+   * own 404 (#3324).
+   */
+  public async getSpeakersForActiveSeason(withSessions = false) {
+    const season = await this.seasonService.findOneActive();
+
+    return this.getSpeakersForSeason(season.guid, withSessions);
   }
 
   /**

@@ -297,13 +297,16 @@ describe('the read routes of sponsors, organizations and speakers', () => {
   );
 
   // A read that names a permission is for admins only, on purpose: the Speaker badges dashboard's list of every
-  // presenter, photo or not (#2995).
+  // presenter, photo or not (#2995), and the admin Speakers list's speakers with their sessions, which include sessions
+  // hidden from the public schedule (#441).
   const adminOnly = (r: (typeof reads)[number]) => Reflect.getMetadata('Permissions', r.handler) !== undefined;
   const open = reads.filter((r) => !adminOnly(r));
 
   it('are all found', () => {
-    expect(reads.length).toBe(19);
+    expect(reads.length).toBe(21);
     expect(reads.filter(adminOnly).map((r) => `${r.controller.name}.${r.name}`)).toEqual([
+      'SpeakerController.getActiveEntitiesWithSessions',
+      'SpeakerController.getSpeakersWithSessionsForSeason',
       'SpeakerController.getAllParticipatingSpeakersForSeason'
     ]);
   });
@@ -313,11 +316,15 @@ describe('the read routes of sponsors, organizations and speakers', () => {
     expect(Reflect.getMetadata('AllowAny', r.handler)).toBe('true');
   });
 
-  it('keeps the admin-only read behind its permission', () => {
-    const handler = SpeakerController.prototype.getAllParticipatingSpeakersForSeason;
-
-    expect(Reflect.getMetadata(GUARDS_METADATA, handler)).toEqual(expect.arrayContaining([JwtGuard, PermissionsGuard]));
-    expect(Reflect.getMetadata('Permissions', handler)[0]).toEqual(['update:speakers']);
+  it('keeps the admin-only reads behind their permission', () => {
+    for (const handler of [
+      SpeakerController.prototype.getAllParticipatingSpeakersForSeason,
+      SpeakerController.prototype.getActiveEntitiesWithSessions,
+      SpeakerController.prototype.getSpeakersWithSessionsForSeason
+    ]) {
+      expect(Reflect.getMetadata(GUARDS_METADATA, handler)).toEqual(expect.arrayContaining([JwtGuard, PermissionsGuard]));
+      expect(Reflect.getMetadata('Permissions', handler)[0]).toEqual(['update:speakers']);
+    }
   });
 
   it('answers a request with an expired or bad token as a signed-out one, with no 401', () => {
