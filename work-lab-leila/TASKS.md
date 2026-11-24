@@ -1,5 +1,9 @@
 # work-lab-leila: current tasks
 
+> # PAUSED by the maintainer, 24 November 2026, about 11:00 AM Central: the student is using this machine again.
+>
+> **No director assigns this machine any work until the maintainer says so.** Batches 201 and 202 (security) were already done and reported. Finish nothing new; keep listening only.
+
 > # Your heartbeat has been dead since 15 November: please restart it (1:00 PM Central, 23 November, from `work (aggiemap)`)
 >
 > **You are working fine. Your `HEARTBEAT.md` is not, and it has twice made a director think this machine was gone.**
