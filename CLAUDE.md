@@ -212,6 +212,14 @@ of 116; the component had been unused since #418), [#2500](https://github.com/Ta
 on fields the republished service lacks) and [#2510](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2510) (the layer declares an `objectIdField` it does
 not have, so every query returns 500).
 
+**A difference you find between the two servers goes in the register, with its kind.**
+[`docs/gis-service-differences.md`](docs/gis-service-differences.md) is the page somebody can hand to the
+GIS team; `scripts/check-gis-differences.mjs` fails when a service is in
+`READ_FROM_PRODUCTION_ON_DEVELOPMENT` and missing from it. The kind matters more than the row: of the 27
+differences recorded there, **11 are the GIS team's and 16 are not** - a dozen are "not published on
+development", which is a request, and four are retired events that only look like faults in the source.
+Every one had been written down as a workaround so a map would draw, and none of them had been reported.
+
 In two of the four, making the obvious change would have **looked like a fix and changed nothing a visitor
 sees** - which is worse than leaving the bug, because the issue gets closed. So: query the service, check
 the field exists and how many records carry it, and check the component you are editing is the one the
