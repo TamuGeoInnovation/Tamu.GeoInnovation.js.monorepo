@@ -15,3 +15,11 @@ zip of `submissions.csv`, a row per submission with who sent it, when, where, it
 each of its answers, and a `medias` folder with every submission's photos. It is built while the page waits, as the
 research competition's files are
 ([#545](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/545)).
+
+| | Before | After |
+| --- | --- | --- |
+| Admin, VGI Competition, Submissions | ![The Submissions page with Publish to ArcGIS and no export](../screenshots/545-vgi-export-zip/before-submissions.png) | ![The same page with Download all as a zip beside Publish to ArcGIS](../screenshots/545-vgi-export-zip/after-submissions.png) |
+| The zip it downloads | | ![The zip's listing: submissions.csv and nine photos in medias folders, and the CSV's first rows](../screenshots/545-vgi-export-zip/after-zip-listing.png) |
+
+GIS Day has no dev site, so this was checked on the local site, signed in as the txgisday-dev test admin, with 17
+made-up submissions and nine made-up photos. The zip in the image was downloaded through the button.
