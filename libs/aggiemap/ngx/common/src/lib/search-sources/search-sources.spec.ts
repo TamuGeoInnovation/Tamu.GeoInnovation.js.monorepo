@@ -244,4 +244,31 @@ describe('SearchSources', () => {
     expect(parkingLot?.queryParams?.orderByFields).toBe('aggiemap DESC, cit_code ASC');
     expect(parkingLot?.scoringKeys).toEqual(['attributes.name', 'attributes.fac_code', 'attributes.lotname']);
   });
+
+  it('resolves the garage search against Campus Structures rather than the retired raster basemap', () => {
+    const sources = SearchSources(connections, definitions);
+    const garage = sources.find((source) => source.source === 'parking-garage');
+
+    // The raster basemap was abandoned on 9 November 2026 and this was the last visitor-facing thing reading it
+    // (#3425). Its Garage Parking layer answered 400 on count queries at random and is not maintained.
+    expect(garage?.url).toBe(connections.buildingsUrl);
+    expect(garage?.url).not.toBe(`${connections.basemapUrl}/0`);
+
+    // Campus Structures holds every building on campus, so without this the garage search answers with halls and
+    // offices. `LIKE 'GARAGE%'` rather than `= 'GARAGE'` because a privately operated garage is `GARAGE PVT`, which
+    // is three of the eleven - Century Square's two and Park West's. It also excludes "TEEX ITSI Garage & Offices",
+    // which is `RESEARCH` and which a search on the name alone returns.
+    expect(garage?.queryParams?.fixedWhere).toBe("type LIKE 'GARAGE%'");
+
+    // `bldgabbrev` carries the same codes the retired layer's `Name` did - CCG, SSG, UCG, NSG, SBG, WCG, PRG, PC26,
+    // PC27 - so a `?garage=CCG` link made before this still resolves. Dropping it breaks every shared garage link.
+    expect(garage?.queryParams?.where?.keys).toEqual(['bldgname', 'bldgabbrev', 'number']);
+
+    // The name field moved with the service: lot fields are gone, and reading `LotName` here is what rendered the
+    // popup empty in #1163.
+    expect(garage?.displayTemplate).toBe('{attributes.bldgname}');
+
+    // Garages are not in the parking lots layer, so they keep their own link rather than `?lot=`.
+    expect(garage?.urlQueryParam).toBe('garage');
+  });
 });

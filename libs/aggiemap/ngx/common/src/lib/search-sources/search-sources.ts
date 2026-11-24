@@ -8,6 +8,14 @@ import { IFactoryExcludeOptions } from '../utils/definitionFactory';
 // Search sources used for querying features.
 import { getDefaultGisHost } from '../connections';
 
+/**
+ * The Campus Structures rows that are parking garages: `GARAGE`, and `GARAGE PVT` where it is privately operated.
+ *
+ * Measured against the service on 24 November 2026: it selects all eleven garage rows and excludes "TEEX ITSI Garage
+ * & Offices", which is `RESEARCH` and which a search on the name alone would wrongly return (#3425).
+ */
+const GARAGE_STRUCTURES = "type LIKE 'GARAGE%'";
+
 export function SearchSources(
   connections: IComposedConnections,
   definitions: IComposedIDefinitions,
@@ -195,15 +203,22 @@ export function SearchSources(
     PARKING_GARAGE: {
       source: 'parking-garage',
       name: 'Parking Garage',
-      // Still the old campus basemap: its garage layer has no counterpart in the feature service the rest moved to, so
-      // this waits on the GIS team (`campus-basemap.ts` says what is missing; #2722).
-      url: `${connections.basemapUrl}/0`,
+      // The garages are rows of Campus Structures, marked by `type` - `GARAGE`, or `GARAGE PVT` where the garage is
+      // privately operated - so `fixedWhere` keeps this search to them and off every other building (#3425). The old
+      // raster basemap's Garage Parking layer, which this read until then, is abandoned (`campus-basemap.ts`).
+      //
+      // `bldgabbrev` is why shared links survive: it carries the same codes the old layer's `Name` did - PRG, SSG,
+      // UCG, NSG, CCG, SBG, WCG, PC26 and PC27 - so a `?garage=CCG` link made before this still finds its garage.
+      url: connections.buildingsUrl,
       queryParams: {
-        ...containsSearch(['LotName', 'Name'])
+        ...containsSearch(['bldgname', 'bldgabbrev', 'number']),
+        fixedWhere: GARAGE_STRUCTURES
       },
       featuresLocation: 'features',
-      displayTemplate: '{attributes.LotName}',
-      // Garages carry lot fields, not building ones, so the building popup rendered them empty (#1163).
+      displayTemplate: '{attributes.bldgname}',
+      // Garages used to carry lot fields, not building ones, so the building popup rendered them empty (#1163). They
+      // now carry building fields, and the popup reads those; it stays its own component because a garage still needs
+      // a `?garage=` link rather than the lot layer's `?lot=`.
       popupComponent: Popups.ParkingGaragePopupComponent,
       searchActive: true,
       // Garages are not in the parking lots layer, so they need their own link rather than `?lot=`.
