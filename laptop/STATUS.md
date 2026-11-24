@@ -33,7 +33,7 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch g19 (gisday: #3329 images, then a signed-in triage of #498, #439, #466, #477)**, starting 2:10 AM Central. Next update by 3:00 AM Central.
+- **Batch g19 (gisday: #3329 images, then a signed-in triage of #498, #439, #466, #477)**, started 2:10 AM Central. **Images pushed (3329): `8b513bdaa`** (12 images; before, Rubrics went back to 2026 on a reload). Now (2:35 AM): g20, as asked, then g19's triage, then its report. Next update by 3:30 AM Central.
 
 ## Finished
 - **Batch g17 (gisday: #3370, #3376, #545)** (report `laptop/reports/2026-11-24-g17.md`): three branches ready. `fix/3370-speakers-list-phone` (`5529e65dc`, check exit 0; 566 to 390 px at 390, desktop unchanged), `docs/3376-playwright-image` (`8c9a4bf9b`) and `feat/545-vgi-export-zip` (`85054bddb`; the streamed zip, downloaded through its button; every affected project passed, not in one run). No package changes; Bull stays, unused. No questions.
