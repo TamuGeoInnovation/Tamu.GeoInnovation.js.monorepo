@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch a8 (aggiemap: tidy.sh report and the full check on PR 3407)**, from `fork/chore/3400-disk-guard-and-tidy`, worktree `C:/TAMU/wt-3400`, since 11:13 AM Central.
+- Nothing. Idle, listening.
 
 ## Finished
+- **Batch a8 (aggiemap: disk and PR 3407)** (report `home/reports/2026-11-24-a8.md`): home holds 331 worktrees, 309 tamu-js volumes, an 853.8 GiB Docker image, 82.4 GiB free (65.0 after the check); tidy.sh would remove 238 volumes (~642 GiB) and 175 worktrees (~100 GiB). PR 3407 full check Exit 0 (no Nx tasks, scripts only; header prints free space; no sweep); tidy.test 15/15, check-in-volume.test 28/28. 11:13 to 11:26 AM Central.
 - **Batch g105 (gisday: #3412)** (report `home/reports/2026-11-24-g105.md`): `fix/3412-awards-sentence` on the fork at `36904e5db`; red 3 of 3 on development, check exit 0 (`gisday-platform-ngx-core,gisday-angular`, CHECK_PARALLEL=1); the sentence now sits inside the session element on Posters and Presentation. 11:00 to 11:12 AM Central.
 - **Batch s81 (security: Dependabot PR 3401, #3405)** (report `home/reports/2026-11-24-s81.md`): full check exit 0 with clean `npm ci` (95 projects); lock moves only the two packages and maplibre-gl's own (geojson-vt 6.3.2, kdbush hoisted, zustand 5.1.0 new); GIS Day's competition map and geoservices' highlighting identical to development. Commented on the PR. 7:57 to 8:09 AM Central.
 - **Batch s80 (security: #2282)** (report `home/reports/2026-11-24-s80.md`): branch ready, `chore/2282-remove-angular-animations` at `0cfc9bb21` (drop its last commit, `.pr-body.md`). The lab's unmerged October port, onto today's code; every trigger, both providers, the library and the package gone; lock loses only `@angular/animations`. Full check exit 0 with clean `npm ci`. Before/after videos and 10 ms samples recorded here, the forms' leave included. Two questions. Finished 7:17 AM Central.
