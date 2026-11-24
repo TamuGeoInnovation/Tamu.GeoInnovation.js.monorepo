@@ -433,6 +433,52 @@ tidiness problem: a listener reports `batch 7 done`, and the number cannot say w
 silently matched nothing, which looked exactly like the bug it was meant to fix. Use `grep -iE`. The test asserts no tool
 uses the combination.
 
+## Working unsupervised overnight (23 November 2026, the maintainer's question at about 9:20 PM Central)
+
+The maintainer told all three directors - AggieMap, GIS Day and security - to keep working across `work`, `laptop` and
+`home` while he slept, then asked whether that was a mistake and whether each machine should take one project instead.
+
+**It is not a mistake, and one project per machine would be worse.** A listener already runs one batch at a time and one
+heavy run at a time, so three directors writing to one `TASKS.md` costs nothing in contention: the listener serializes
+them. Partitioning by project would instead strand work, because the projects are not the same size on any given night
+and the machines are not interchangeable - on 23 November `laptop` held the signed-in GIS Day stack that two GIS Day
+batches needed and `home` did not.
+
+What actually breaks when nobody is watching is specific and short. These three rules are the whole of it.
+
+1. **One lock file at a time, and it is security's.** No AggieMap or GIS Day batch touches `package.json` or
+   `package-lock.json` overnight. This is the one interaction here that loses work *silently*: when the lock conflicts,
+   `npm install --package-lock-only` rebuilds it from `package.json` and keeps whatever is already locked, so anything a
+   branch updated only in the lock goes back to the other side's version **and every check still passes, because nothing
+   is broken, only not updated**. On 23 October that quietly undid half of PR 2125 - `axios`, `jws`, `koa`, `node-forge`
+   and the critical `websocket-driver` ([#2112](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112)).
+   Nobody notices that at 3 AM. CLAUDE.md already says security bumps are the security chat's; overnight it is absolute.
+2. **One release or full smoke tier at a time, across all three machines.** The tier that clears a build takes a machine
+   to itself, and two at once is what makes the paint check time out
+   ([#1716](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1716)). A director says in the
+   batch which machine is running one; everyone else uses `one <spec>` or `quick` instead.
+3. **New work goes to the shortest queue, read rather than assumed.** Before writing a batch, run `bash tools/queued.sh`
+   for **all three** machines, not only the one you had in mind. Each director keeping its own listener "two batches
+   ahead" is what produced `laptop` eight deep and `home` with one outstanding on 23 November, with no single director
+   doing anything wrong. Moving a batch still means marking the old one `WITHDRAWN, moved to <name> batch <id>` in the
+   same commit as the new one.
+
+**What is safe and needs no rule:** every director opening pull requests. Azure's required `Monorepo` check does not run
+on the lab - it passed at 6:42 PM Central on 23 November, nearly two hours after the lab was paused - so pull requests
+opened overnight still get their required check and are mergeable in the morning. Two pull requests touching
+`docs/releases/unreleased/` cannot conflict either: that directory exists so each change brings its own file
+([#2037](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2037)).
+
+**Two files still conflict if two of us edit them, so say so in the batch when you must:** `docs/testing.md`'s counts,
+the Total line above all (#2002), and `test/smoke/aggiemap/environments.json`'s allowed-failure lists.
+
+**The lab (`work-lab-leila`) stays paused** until the maintainer says otherwise - a student is using the machine. Do not
+give it a batch and do not count it when deciding whether work is covered.
+
+**Priority on an issue filed overnight:** the rule is to ask the maintainer every time, and he is asleep, so the director
+chooses, writes the choice in the issue, and lists every one it chose in its first report of the morning for him to
+correct. Not asking is worse than guessing here, because an unfiled issue means the work does not exist.
+
 ## Checking in: who is up and can take work (25 October 2026)
 
 The maintainer asked that every machine, and every agent on it, check in regularly, so anyone can see at a glance

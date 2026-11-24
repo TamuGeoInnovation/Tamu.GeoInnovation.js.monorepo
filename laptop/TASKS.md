@@ -138,7 +138,7 @@ data shows it.
 
 Never production; txgisday-dev only; no pull request.
 
-## Batch 10 (aggiemap: check every map's outbound links, #3285; 23 November 2026, 7:35 PM Central, from `work (aggiemap)`) (High) - **after 9**
+## Batch 10 (aggiemap: check every map's outbound links, #3285; 23 November 2026, 7:35 PM Central, from `work (aggiemap)`) (High) - **WITHDRAWN, moved to home batch a1** (23 November 2026, about 9:15 PM Central: you are eight batches deep and home had one batch outstanding, so this went to the machine that can start it tonight. Nothing was lost - you had not started it. Do not run it.)
 
 Build the check that would have caught #3278, where Transportation Services told us a commencement map's link had
 been landing on a 404. **Read the issue and both of its comments first** - they carry the whole design, and the

@@ -1,5 +1,89 @@
 # Home machine: current tasks
 
+## Batch a3 (aggiemap: two reuse jobs, #2601 and #2602; 23 November 2026, about 9:15 PM Central, from `work (aggiemap)`) (Low) - **after a2**
+
+Two issues, **two branches, two pull requests** (one change per pull request, CONTRIBUTING.md). Both are the maintainer's
+standing reuse-before-building rule applied to things already written twice. Read each issue; it names the copies.
+
+- **[#2601](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2601)** - share the red-hatch
+  swatch, `toSvgDataUri` and the arrow line symbol. Branch `chore/2601-share-symbol-helpers`.
+- **[#2602](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2602)** - one markdown popup
+  helper, and one Construction popup and URL shared rather than repeated. Branch `chore/2602-share-popup-helpers`.
+
+**Where a shared piece goes:** the shared library for its kind, exported from its index, not inside the feature that first
+needed it (CLAUDE.md, "Reuse before building"). Change a shared piece behind its existing interface where you can, so its
+callers do not have to change.
+
+**Proof, and this is the part that matters:** `nx test` only compiles what the specs import, so it is not proof.
+`bash scripts/check-in-volume.sh <branch> <each project you edited>,aggiemap-angular` is, and the run must exit 0. A
+change that only moves code should leave every existing test passing without edits to them; if you find yourself editing a
+test to match, say so in the report rather than doing it quietly - that is usually a behaviour change wearing a refactor's
+clothes.
+
+No screenshots: nothing a visitor sees. Name the `no-visible-change` label in each `.pr-body.md`.
+**Roughly 60 to 90 minutes for both.**
+
+## Batch a2 (aggiemap: two mechanical cleanups, #2605 and #2603; 23 November 2026, about 9:15 PM Central, from `work (aggiemap)`) (Low) - **after a1**
+
+Two issues, **two branches, two pull requests**. Both are mechanical and no-visible-change, and both are the kind of thing
+never worth a machine's time until a machine is free - which it is now.
+
+- **[#2605](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2605)** - add an `$aggie-maroon`
+  sass variable; `#500000` is typed 74 times. Branch `chore/2605-aggie-maroon`. The variable goes where the other shared
+  sass lives (`libs/sass/`), not in an app. **Replace every occurrence**, and say in the report how many you changed and
+  whether the count matched 74 - if not, say what the others were (a different maroon, a comment, a test fixture). The
+  rendered colour must not change anywhere, so the diff should be the variable and its uses and nothing else.
+- **[#2603](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2603)** - every AggieMap smoke spec
+  re-declares the map probe name and the wait for it; share them. Branch `test/2603-share-map-probe`. The shared modules in
+  `test/smoke/aggiemap/` are where it goes. Prove it with `npx tsc -p test/smoke/aggiemap` (the typecheck CI runs;
+  Playwright strips types, so nothing else would catch a mistake), and run **one** spec against dev to show the helper
+  works: `test/smoke/aggiemap/run-local.sh development one campus-layers.spec.ts`.
+
+**Do not run a release or full smoke tier tonight** - the work machine is running one against dev and two at once is what
+makes the paint check time out (#1716).
+
+**Roughly 60 minutes for both.**
+
+## Batch a1 (aggiemap: check every map's outbound links, #3285; 23 November 2026, about 9:15 PM Central, from `work (aggiemap)`) (High) - **do this first; moved here from laptop batch 10, which is eight batches deep**
+
+<https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3285>
+
+**Read the whole issue before writing anything.** It holds the state of all 34 outbound links as of 5:40 PM today and,
+more important, the five rules this check has to follow - each of which comes from a wrong answer a naive version gave me
+this afternoon. The short version: a plain status-code check called **three of twelve working links broken**
+(`itaccessibility.tamu.edu`, `em.tamu.edu/emergency-procedures`, `codemaroon.tamu.edu`). Two TAMU sites 404 an
+extensionless path for a non-browser client and serve it to a browser; Code Maroon refuses an unfamiliar user agent. A
+check that cries wolf three times in twelve is worse than no check, because within a fortnight nobody reads it and the one
+real failure goes out with the noise.
+
+So, from the issue, and none of these is optional:
+
+1. **Navigate as a browser does** - the suite is already Playwright, so use a page, not a bare HTTP client.
+2. **A redirect is a pass**, and the final URL is reported, so a move like `transport.tamu.edu/busroutes/` to
+   `aggiespirit.ts.tamu.edu/RouteMap` is visible without being red.
+3. **Judge the page, not only the status.** A 200 serving a "Page Not Found" body is a failure. A 403 or a timeout is
+   **inconclusive, not a failure**: reported separately, never red.
+4. **Two strikes.** A link fails the run only if it fails twice, spaced out. These are other people's websites and one
+   blip must not open a health issue.
+5. **An allowed-failures list** in `test/smoke/aggiemap/environments.json`, like `allowedServiceFailures`, so a link known
+   to be dead and waiting on another team stays visible without turning the suite red.
+
+**Where the links come from:** collect them from the definitions rather than listing them by hand, so a new map's link is
+covered the day it is added. `scheduleUrl` on an `EventConfiguration` is the one that caused this; the issue names the rest
+and where they live.
+
+**Prove it finds the real one.** #3278's dead link is fixed on `development` now, so to show the check works, point it at
+`https://aggie.tamu.edu/graduation` in a test of its own (a fixture, not by re-breaking a definition) and show it red on
+that and green on the live links. A check nobody has seen fail is not known to work.
+
+**Add its row to `docs/testing.md`** - a CI check fails when a smoke spec is missing from that page. **Leave every count on
+that page alone, the Total included**: those counts are a measurement refreshed at each release from a watched run, and
+three pull requests once conflicted on that one line (#2002).
+
+Branch `test/3285-outbound-links`, `.pr-body.md` from `.github/pull_request_template.md` as the last commit, with the
+`no-visible-change` label named in it. **Roughly 90 minutes.** If the design fights you, put what you tried under
+**Questions for the director (aggiemap)** with a recommendation and move to batch a2 - do not wait for an answer.
+
 ## Batch g90 (gisday: #3062, scan GIS Day for one-offs that break reuse-before-building; 23 November 2026, about 10:15 PM Central, from `work (gisday)`) (Low) - **after g89**
 
 [#3062](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3062), read only, **GIS Day's libraries and apps only** (`libs/gisday/**`, `apps/gisday-*`). Look for the tell CLAUDE.md
