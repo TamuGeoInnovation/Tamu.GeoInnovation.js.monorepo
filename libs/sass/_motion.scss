@@ -63,3 +63,192 @@ $motion-easing: cubic-bezier(0.25, 0, 0.25, 1);
     transform: translateY(10%);
   }
 }
+
+// The hamburger button's three bars turning into an X and back (the topBun, patty and bottomBun triggers, #2278):
+// the outer bars turn in 0.3 s, the middle one narrows in 0.2 s after 0.1 s.
+@mixin hamburger-bars($up-class) {
+  .burger__top-bun,
+  .burger__bottom-bun {
+    transition: transform 0.3s ease;
+  }
+
+  .burger__patty {
+    transition: width 0.2s 100ms ease;
+  }
+
+  &.#{$up-class} {
+    .burger__top-bun {
+      transform: rotate3d(0, 0, 1, -135deg) translate3d(-0.45rem, -0.4rem, 0rem);
+    }
+
+    .burger__patty {
+      width: 0rem;
+    }
+
+    .burger__bottom-bun {
+      transform: rotate3d(0, 0, 1, 135deg) translate3d(-2rem, -0.3rem, 0rem);
+    }
+  }
+}
+
+// Content that grows open and shrinks closed by its max-height (the growAnimation trigger, #2278): 0.5 s each way.
+// Use with animate.enter="$entering-class" and animate.leave="$leaving-class".
+@mixin grow($max-height, $entering-class, $leaving-class) {
+  @keyframes grow-#{$max-height}-in {
+    from {
+      max-height: 0;
+    }
+
+    to {
+      max-height: $max-height;
+    }
+  }
+
+  @keyframes grow-#{$max-height}-out {
+    from {
+      max-height: $max-height;
+    }
+
+    to {
+      max-height: 0;
+    }
+  }
+
+  &.#{$entering-class} {
+    animation: grow-#{$max-height}-in 0.5s ease;
+  }
+
+  &.#{$leaving-class} {
+    animation: grow-#{$max-height}-out 0.5s ease forwards;
+  }
+}
+
+// The phone tile menu opening from nothing and closing back to it (baseShowHideAnimation, #2278): 0.3 s in, 0.4 s out.
+@mixin tile-menu($entering-class, $leaving-class) {
+  @keyframes tile-menu-in {
+    from {
+      opacity: 0;
+      transform: scale3d(0, 0, 0);
+      z-index: -100;
+    }
+
+    to {
+      opacity: 1;
+      transform: none;
+      z-index: 10;
+    }
+  }
+
+  @keyframes tile-menu-out {
+    to {
+      opacity: 0;
+      transform: scale3d(0, 0, 0);
+      z-index: -100;
+    }
+  }
+
+  &.#{$entering-class} {
+    animation: tile-menu-in 0.3s ease;
+  }
+
+  &.#{$leaving-class} {
+    animation: tile-menu-out 0.4s ease forwards;
+  }
+}
+
+// The tile menu's tiles, or a tile's submenu, growing in and shrinking out in its place (submenuShowHideAnimation,
+// #2278): 0.3 s in, 0.4 s out.
+@mixin tile-submenu($entering-class, $leaving-class) {
+  @keyframes tile-submenu-in {
+    from {
+      opacity: 0;
+      transform: scale3d(0, 0, 0);
+    }
+
+    to {
+      opacity: 1;
+      transform: scale3d(1, 1, 1);
+    }
+  }
+
+  @keyframes tile-submenu-out {
+    to {
+      opacity: 0;
+      transform: scale3d(0, 0, 0);
+    }
+  }
+
+  &.#{$entering-class} {
+    animation: tile-submenu-in 0.3s ease;
+  }
+
+  &.#{$leaving-class} {
+    animation: tile-submenu-out 0.4s ease forwards;
+  }
+}
+
+// The tiles rising into place one after another as the menu opens (tileStaggerAnimation, #2278): 0.25 s each, the
+// first to move 0.3 s in, the last tile first and each before it 30 ms later. Include on the menu, which carries
+// $staggering-class while it opens; the tiles are projected, so they are reached with ::ng-deep.
+@mixin tile-stagger($staggering-class, $most-tiles: 16) {
+  @keyframes tile-stagger-in {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 50px, 0);
+    }
+
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  &.#{$staggering-class} .tiles ::ng-deep tamu-gisc-tile {
+    animation: tile-stagger-in 0.25s ease both;
+  }
+
+  @for $i from 1 through $most-tiles {
+    &.#{$staggering-class} .tiles ::ng-deep tamu-gisc-tile:nth-last-child(#{$i}) {
+      animation-delay: 0.3s + ($i - 1) * 30ms;
+    }
+  }
+}
+
+// A geoservices request form, or its result, sliding in from above and out to the side (inOutAnimation, #2278):
+// 0.3 s in, 0.25 s out, losing its height as it goes. Global classes, for animate.enter and animate.leave.
+@mixin interactive-form($entering-class, $leaving-class) {
+  @keyframes interactive-form-in {
+    from {
+      transform: translateY(-1rem);
+      opacity: 0;
+    }
+
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes interactive-form-out {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+
+    to {
+      transform: translateX(2.5rem);
+      opacity: 0;
+      height: 0;
+    }
+  }
+
+  .#{$entering-class} {
+    animation: interactive-form-in 0.3s ease-in;
+  }
+
+  .#{$leaving-class} {
+    // So the height can be animated from its natural size.
+    interpolate-size: allow-keywords;
+    animation: interactive-form-out 0.25s ease-out forwards;
+  }
+}

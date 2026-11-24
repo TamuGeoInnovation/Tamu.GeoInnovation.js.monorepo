@@ -16,7 +16,6 @@ import { ViewportScroller } from '@angular/common';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { Angulartics2Module } from 'angulartics2';
 import { withInMemoryScrolling, provideRouter, Routes } from '@angular/router';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app/app.component';
 
 const routes: Routes = [
@@ -58,7 +57,7 @@ bootstrapApplication(AppComponent, {
     // Every component still relies on Zone.js (ChangeDetectionStrategy.Eager); without this,
     // bootstrapApplication runs zoneless since Angular 21 (#1563, #1478).
     provideZoneChangeDetection(),
-    importProvidersFrom(BrowserModule, Angulartics2Module.forRoot(), BrowserAnimationsModule),
+    importProvidersFrom(BrowserModule, Angulartics2Module.forRoot()),
     // The whole app's HttpClient, with the AuthInterceptor below. It used to arrive unannounced with ngx-highlightjs 6's
     // HighlightPlusModule, which imported HttpClientModule; 14's does not.
     provideHttpClient(withInterceptorsFromDi()),
