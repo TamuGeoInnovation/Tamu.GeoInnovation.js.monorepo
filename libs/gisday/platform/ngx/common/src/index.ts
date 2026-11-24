@@ -30,6 +30,7 @@ export * from './lib/enums/place-visibility-options.enum';
 // Roles
 export * from './lib/roles/gisday.roles';
 export * from './lib/modules/forms/admin-details-page';
+export * from './lib/modules/forms/admin-entity-form';
 export * from './lib/modules/forms/components/broadcasts/broadcast-add-edit-form/broadcast-add-edit-form.component';
 export * from './lib/modules/forms/components/classes/class-add-edit-form/class-add-edit-form.component';
 export * from './lib/modules/forms/components/events/event-add-edit-form/event-add-edit-form.component';
