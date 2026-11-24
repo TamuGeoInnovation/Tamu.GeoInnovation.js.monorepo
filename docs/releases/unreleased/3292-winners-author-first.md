@@ -1,5 +1,6 @@
 ---
 issue: 3292
+app: gisday
 title: The Winners page offers each entry by its main author first
 testOnDev: |
   | GIS Day: the Winners page's entries, author first ([#3292](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3292)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release, on production, as an admin: Admin, Research Competition, Winners | Each place's box lists an entry as "Main author - Title (with Others)"; an entry with a long title still shows whose it is, and one with a single person has no "with" |
