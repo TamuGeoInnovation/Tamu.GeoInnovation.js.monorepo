@@ -33,7 +33,7 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch g14 (gisday: #1756, the date picker off screen at phone width)**, starting 11:40 PM Central. Next update by 12:30 AM Central.
+- **Batch g14 (gisday: #1756, the date picker off screen at phone width)**, starting 11:40 PM Central. Still open (no commit names #1756; the tooltip's placement still falls through to left of the trigger). Red first: the 5 phone placements failed (x = -314, -76). Fix committed on `fix/1756-picker-on-screen`; the bug-fix check is running (11:58 PM), then images. Next update by 12:45 AM Central.
 
 ## Finished
 - **Batch 13 (gisday: #3314 check-ins by hour)** (report `laptop/reports/2026-11-23-13.md`): branch ready, `feat/3314-check-ins-by-hour` on the fork at `130797f00`, **stacked on #2893's branch**. The shared line chart gains an `interval` (day or hour) rather than a second chart. Red first (exactly 8 failed). Every affected project passed, though the full check lost five tasks to memory kills and they passed re-run alone. Images at 1280 and 390. No questions.
