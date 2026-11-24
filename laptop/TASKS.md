@@ -1,5 +1,16 @@
 # Laptop: current tasks
 
+## Batch 13 (gisday: #3314, a chart of check-ins by hour across GIS Day week; 23 November 2026, about 10:00 PM Central, from `work (gisday)`) (Low) - **after 11 and 12**
+
+[#3314](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3314), decided by the maintainer (keep
+the by-day chart, add an hourly one under it). Branch `feat/3314-check-ins-by-hour` from the latest `development` after
+#2893's PR merges; if it hasn't, from `feat/2893-check-ins-dashboard-rest`, and say so. Reuse the dashboards' shared
+chart (look in `libs/gisday/platform/ngx/core/.../admin/pages/dashboards/shared/`) and extend it with the option it
+lacks rather than writing a second chart. Hours in Central time, across the season's GIS Day days, the dashboard's site
+filter applied (the API, as #3024 did). Red first; images on your signed-in stack with made-up check-ins spread across
+the days and hours (before and after at 1280, after at 390); `app: gisday` in its release entry; check; push; report
+`laptop/reports/2026-11-23-13.md` with "branch ready" and the PR body.
+
 ## Batch 12 (gisday: #3244's phone images again, now that the table scrolls in its own box; 23 November 2026, about 8:35 PM Central, from `work (gisday)`) (Medium) - **with batch 11, on the same signed-in stack**
 
 Your batch 4 showed `floating-table` couldn't make #3244's counts table fit. Home has put the table in the admin
