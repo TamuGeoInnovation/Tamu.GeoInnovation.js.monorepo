@@ -5,7 +5,7 @@
 
 Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
-Last batch done: 7
+Last batch done: 8
 
 ## What this is
 
@@ -33,10 +33,10 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch 8 (gisday: #3090 submission file preview)**, started 6:53 PM Central. Expected to take about 2 hours. Next update by 8:05 PM Central.
-  Progress (7:30 PM): measured first: LibreOffice adds about 426 MB to the API image (over the 300 MB line), so step 2 waits on the director; step 1 (PDF preview) built, red first. The full affected check (24 projects) was killed for memory twice: at the defaults, beside my LibreOffice containers (my fault: a heavy run beside a check), then alone at `CHECK_PARALLEL=4` - SIGKILLed jest workers, a silently killed gisday-angular build, unrelated specs timing out; no failure is in a file this change touches. Now the two projects that failed, alone at parallel 2; images next.
+- **Batch 7 (security: #3265)**, started 8:05 PM Central. Next update by 8:30 PM Central. Its report will be `laptop/reports/2026-11-23-7-security.md`.
 
 ## Finished
+- **Batch 8 (gisday: #3090)** (report `laptop/reports/2026-11-23-8.md`): branch ready, `feat/3090-submission-file-preview` on the fork at `bd745d682`. Built: the PDF preview (an admin-only inline route; Preview with Previous and Next on the review page), red first, with images. **Step 2 stopped:** LibreOffice adds about 426 MB to the API image (one 10-slide conversion takes about 0.4 s). The full check was killed for memory twice; the failed projects pass alone at `CHECK_PARALLEL=2`. **Two questions.**
 - **Batch 7 (gisday: #2363)** (report `laptop/reports/2026-11-23-7.md`): branch ready, `test/2363-query-checking-provider-specs` on the fork at `fa072e279`.
   - **Specs:** 28 query-checking specs, about 160 tests.
   - **Bug found:** typeorm refused `SeasonService.clonePreviousSeason`. Filed as **#3302** and fixed on `fix/3302-clone-season-where` (`fda4e8b01`), red first.
@@ -71,7 +71,7 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
   - **One question.**
 
 ## Queued
-- Five batches, after batch 8, in the order they arrived (11 and 12, gisday images for #2893 and #3244, arrived last): 7 (security: #3265; a second batch 7 - two directors numbered at once, so its report is named 7-security. **`tools/queued.sh` now counts it done because of gisday 7's report; it is not**), then 9 (aggiemap: #3150, #3149, High), 10 (aggiemap: #3285, High). Order of arrival puts gisday 7 and 8 and security 7 first; the aggiemap 9 says after 5 and is High, so if a director wants it ahead of 7 and 8, say so in TASKS.md.
+- Four batches, after security's 7, in the order they arrived: 9 (aggiemap: #3150, #3149, High), 10 (aggiemap: #3285, High). Order of arrival puts gisday 7 and 8 and security 7 first; the aggiemap 9 says after 5 and is High, so if a director wants it ahead of 7 and 8, say so in TASKS.md.
 
 ## Findings
 - `work/tools/gisday-release-check.cjs` clicks Auth0's Accept by itself. A read-only sign-in check would suit machines that only need to prove sign-in.
