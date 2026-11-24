@@ -1,5 +1,74 @@
 # Laptop: current tasks
 
+## Batch a11 (aggiemap: #3271, a legend entry with no symbol on dev; 23 November 2026, about 8:40 PM Central, from `work (aggiemap)`) (Medium) - **after 10**
+
+**First batch with the new id scheme** (`DIRECTOR.md`, "Batch ids carry their director's letter", the maintainer's 2A tonight):
+the id is the project word's first letter plus that project's own number for this machine, so this is aggiemap's eleventh to
+you. Report it as written - `laptop: batch a11 done`, never `batch 11 done`, because gisday has a batch 11 here too. That
+collision is not hypothetical: your gisday batch 7 and security's batch 7 shared a number, your `finished batch 7` closed
+both in `tools/queued.sh`, and security's #3265 then waited invisibly until you said so in a progress push. Thank you for
+that line; it is the only reason anyone found it. `tools/queued.sh` now judges a shared id per director, and
+`bash tools/queued.test.sh` covers it.
+
+### #3271 - Freshman Student Selectable is in the legend with no symbol
+
+<https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3271>
+
+You found this yourself in batch 1. `legend.spec.ts:311` fails on dev, on all three attempts; the other legend tests in the
+file pass, so the map and the run are fine.
+
+**Two things are already ruled out, so do not spend time on them:**
+
+1. **It is not a stale dev build.** The issue wondered whether dev was behind the #1988 fix. Dev has been serving the
+   13 November build (`dev-2026-11-13`, `68d7b974c`) and 197 commits have merged since, but **none of them touch
+   `libs/maps/feature/legend/`, `libs/maps/feature/layer-list/`, or any Freshman or permit-select definition** - checked with
+   `git diff --stat dev-2026-11-13..origin/development` over those paths, which comes back empty. A dev build is running
+   tonight and it will not change this.
+2. **It is not the spec.** It passed for #1987 and #1988 and still passes for the other maps in the same file.
+
+**So the question is the service, and the rule here is to ask it before changing anything**
+(`CLAUDE.md`, "Ask the service before you change a definition or a popup template"). Four faults in one week looked like a
+field rename and none was; **#2500 is this exact shape** - the portal item's renderers keyed on fields the republished service
+no longer had. A legend entry with no symbol is what that looks like from the outside.
+
+**A. Find out why the symbol is missing, without changing a definition.**
+
+1. Find the layer: the Freshman Selectable Parking map's definitions, and which layer draws
+   **Freshman Student Selectable**. Say which file and which source id.
+2. **Query dev's service for that layer** and record, in the issue:
+   - its `drawingInfo`/renderer: type, the field(s) it keys on, and how many classes or unique values it declares;
+   - whether those fields exist on the layer, and how many of its records carry a non-null value in each (a count, not a
+     guess - the pattern from #1961, where the field was right and filled 116 of 116);
+   - its `objectIdField`, and whether the layer really has it (#2510: a layer declared one it did not have, so every query
+     returned 500).
+3. **Check the portal item too, not only the service.** #2500 was the portal item's renderer, not the service's. If the map
+   reads a portal item id, fetch that item's data and compare its renderer's fields against the service's fields.
+4. **Compare production.** The issue says production was not checked. Query the same layer on production's service and say
+   whether its renderer and fields differ. That single comparison usually names the cause.
+
+**B. Then one of two endings, and not a third.**
+
+- **If the data or the portal item is at fault** - a renderer keyed on a field that is missing or empty - **that is a GIS-team
+  fault, not ours.** File an issue for it with the counts from step A, add the spec to `allowedServiceFailures` (or the right
+  list) in `test/smoke/aggiemap/environments.json` with the issue number beside it so it stays visible, and push the branch.
+  **Do not rename anything to another field, and do not hard-code a symbol.** A hard-coded symbol with no reason beside it is
+  indistinguishable from an oversight, which is how 95 of them accumulated (#1028, #1508), and the fix would look like a fix
+  and change nothing a visitor sees - worse than the bug, because the issue gets closed.
+- **If ours is at fault** - the definition overrides something it should not, or the layer is not the one the map draws - fix
+  it, with the reason written beside any override (`docs/map-layers.md`), and prove `legend.spec.ts` red before and green
+  after. Before and after screenshots of the legend on that page, into
+  `docs/screenshots/3271-freshman-legend-symbol/`, committed as they are taken.
+
+**Either way:** a branch `fix/3271-freshman-legend-symbol` or `test/3271-freshman-legend-symbol` on your fork, a
+`.pr-body.md` from `.github/pull_request_template.md` as the last commit, an entry in `docs/releases/unreleased/` if a visitor
+sees any difference, and the findings on the issue. I open the PR.
+
+**Roughly:** 45 to 75 minutes, most of it reading service responses. If step A's comparison names the cause in ten minutes,
+say so and stop there rather than doing the rest.
+
+**If you are blocked:** put it in the report under **Questions for the director (aggiemap)** with options and a
+recommendation, carry on with the next batch, and do not wait on an answer.
+
 ## Batch 13 (gisday: #3314, a chart of check-ins by hour across GIS Day week; 23 November 2026, about 10:00 PM Central, from `work (gisday)`) (Low) - **after 11 and 12**
 
 [#3314](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3314), decided by the maintainer (keep
