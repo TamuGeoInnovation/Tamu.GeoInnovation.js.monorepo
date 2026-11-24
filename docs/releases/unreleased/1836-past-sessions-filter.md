@@ -1,5 +1,6 @@
 ---
 issue: 1836
+app: gisday
 title: "GIS Day: past years' Sessions pages list their organizations again"
 testOnDev: |
   | GIS Day: past years' Organizations filter ([#1836](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1836)) | Not on dev: GIS Day has no dev site. After release, once the migration has run, open a past year's Sessions page on txgisday.org, for example [2025](https://txgisday.org/seasons/2025/sessions) and [2023](https://txgisday.org/seasons/2023/sessions), and look at **Organizations** beside the sessions | Each lists the organizations that year's sessions were held at, and no longer says "There are no organizations." Ticking one shows only its sessions. This year's filter is unchanged. The smoke test "a past year's Sessions page offers the organizations its sessions were held at" passes |
