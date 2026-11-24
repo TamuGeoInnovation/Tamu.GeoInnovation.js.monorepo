@@ -2,6 +2,7 @@ import { ExecutionContext, INestApplication, RequestMethod } from '@nestjs/commo
 import { GUARDS_METADATA, METHOD_METADATA } from '@nestjs/common/constants';
 import { Reflector } from '@nestjs/core';
 import { Test } from '@nestjs/testing';
+import { of } from 'rxjs';
 import { getMetadataArgsStorage } from 'typeorm';
 
 import { JwtGuard, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
@@ -104,8 +105,8 @@ function keysOf(value: unknown, into = new Set<string>()): Set<string> {
 
 /**
  * Requests go through Nest's real routing and the interceptor, applied to every route as gisday-nest applies it.
- * Only the token check is replaced: `user` is the signed-in caller, or undefined for a signed-out one. The event
- * routes have no guard, so their caller is always signed out, as in production.
+ * Only the token check is replaced: `user` is the signed-in caller, or undefined for a signed-out one. The public
+ * event routes read a caller who is signed in, if any (#3354), so the replaced check sets theirs as for the others.
  */
 describe('PrivateFieldsInterceptor', () => {
   let app: INestApplication;
@@ -119,7 +120,11 @@ describe('PrivateFieldsInterceptor', () => {
         { provide: SponsorProvider, useValue: answering(sponsor) },
         { provide: OrganizationService, useValue: answering(organization) },
         { provide: SpeakerProvider, useValue: answering(speaker) },
-        { provide: EventProvider, useValue: answering(event) }
+        {
+          provide: EventProvider,
+          // By day, as the real one answers: the sessions of each day, which the route now filters by day (#3354).
+          useValue: Object.assign(Object.create(answering(event)), { getEntitiesByDay: async () => of([[event()]]) })
+        }
       ]
     })
       .overrideGuard(JwtGuard)

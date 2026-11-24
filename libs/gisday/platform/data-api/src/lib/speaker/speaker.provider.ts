@@ -18,6 +18,7 @@ import { AssetsService } from '../assets/assets.service';
 import { refuseUnsafeImage } from '../assets/image-upload';
 import { SeasonService } from '../season/season.service';
 import { SPEAKER_PHOTO_FIT } from './speaker-photo';
+import { onSchedule } from '../_base/hidden-sessions';
 import { rethrowHttp } from '../_base/rethrow-http';
 import { SeasonScopedProvider } from '../_base/season-scoped-provider';
 
@@ -97,7 +98,8 @@ export class SpeakerProvider extends SeasonScopedProvider<Speaker> {
     });
 
     if (presenter?.events) {
-      presenter.events = presenter.events.filter((event) => event.active !== false);
+      // Not even to an admin: this is the public page's own route.
+      presenter.events = presenter.events.filter(onSchedule);
     }
 
     return presenter;
