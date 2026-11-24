@@ -2,13 +2,13 @@ import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Location } from '@angular/common';
 import { FormControl } from '@angular/forms';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs';
 import { filter, map, scan, shareReplay, startWith, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 
 import { GuidIdentity, Season } from '@tamu-gisc/gisday/platform/data-api';
-import { BaseService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { BaseService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import {
@@ -16,7 +16,8 @@ import {
   EntityCopyModalComponent,
   EntityDeleteModalComponent,
   EntityDeleteModalResponse,
-  matchesText
+  matchesText,
+  seasonPicker
 } from '@tamu-gisc/gisday/platform/ngx/common';
 
 @Component({
@@ -28,16 +29,15 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
   /** The service for this page's entity. Each page injects its own. */
   protected abstract readonly entityService: BaseService<T>;
 
-  private readonly seasonService = inject(SeasonService);
-  private readonly activatedRoute = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly modalService = inject(ModalService);
   private readonly notificationService = inject(NotificationService);
   private readonly listDestroyRef = inject(DestroyRef);
   private readonly listLocation = inject(Location);
 
-  public seasons$ = this.seasonService.seasons$;
-  public activeSeason$ = this.seasonService.activeSeason$;
+  /** The season shown, from the address (#3329). */
+  private readonly picker = seasonPicker();
+  public seasons$ = this.picker.seasons$;
 
   public $entities: Observable<Array<Partial<T>>>;
   public entitiesForActiveSeasonOrForSeasonGuid$: Observable<Array<Partial<T>>>;
@@ -114,29 +114,10 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
   public ngOnInit(): void {
     this.keepFiltersInHistory();
 
-    this.selectedSeason$ = merge(
-      this.$signal.pipe(map(() => this.activatedRoute.snapshot.queryParams)),
-      this.activatedRoute.queryParams
-    ).pipe(
-      map((params) => params.season),
-      switchMap((seasonGuid) => {
-        return this.seasons$.pipe(
-          map((seasons) => {
-            if (seasonGuid) {
-              return seasons.find((season) => season.guid === seasonGuid);
-            }
-
-            return null;
-          })
-        );
-      }),
-      switchMap((season) => {
-        if (season) {
-          return of(season);
-        } else {
-          return this.activeSeason$.pipe(map((activeSeason) => activeSeason));
-        }
-      }),
+    // Read again after a copy or a delete, so the list is.
+    this.selectedSeason$ = this.$signal.pipe(
+      startWith(true),
+      switchMap(() => this.picker.season$),
       tap((season) => {
         if (season) {
           this._selectRow$.next(null);
@@ -218,12 +199,7 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
   }
 
   public setSeason(seasonGuid: string) {
-    this.router.navigate([], {
-      relativeTo: this.activatedRoute,
-      queryParams: {
-        season: seasonGuid
-      }
-    });
+    this.picker.choose(seasonGuid);
   }
 
   public deleteEntity(entity: Partial<T>) {
