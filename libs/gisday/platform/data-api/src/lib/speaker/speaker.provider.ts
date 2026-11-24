@@ -62,8 +62,13 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
     }
   }
 
+  /**
+   * A presenter as their public page shows them, with their sessions in day and time order. Only the sessions the site
+   * shows: a hidden one (`active` false) is left out, name and all (#3345). Removed after loading rather than filtered in
+   * the query, so a presenter whose every session is hidden is still found.
+   */
   public async getPresenter(guid: string) {
-    return this.speakerRepo.findOne({
+    const presenter = await this.speakerRepo.findOne({
       where: {
         guid: guid
       },
@@ -77,6 +82,12 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
         }
       }
     });
+
+    if (presenter?.events) {
+      presenter.events = presenter.events.filter((event) => event.active !== false);
+    }
+
+    return presenter;
   }
 
   public async getSpeakersForActiveSeason() {

@@ -84,6 +84,22 @@ describe('SpeakerProvider queries, built by typeorm', () => {
     await expect(provider.getPresenter('sp-1')).resolves.toBeNull();
   });
 
+  // #3345: the presenter's page is public, and a hidden session is hidden there too, by name.
+  it("names none of a presenter's hidden sessions", async () => {
+    answering(speakerRepo, 'findOne', {
+      ...loadedSpeaker(),
+      events: [
+        Object.assign(new Event(), { guid: 'e-1', name: 'Made-up Talk', active: true }),
+        Object.assign(new Event(), { guid: 'e-2', name: 'Made-up Hidden Workshop', active: false })
+      ]
+    });
+
+    const presenter = await provider.getPresenter('sp-1');
+
+    expect(presenter.events.map((e) => e.name)).toEqual(['Made-up Talk']);
+    expect(JSON.stringify(presenter)).not.toContain('Made-up Hidden Workshop');
+  });
+
   it("lists the speakers in the active season's events", async () => {
     await expect(provider.getSpeakersForActiveSeasonInEvents(true)).resolves.toEqual([]);
   });
