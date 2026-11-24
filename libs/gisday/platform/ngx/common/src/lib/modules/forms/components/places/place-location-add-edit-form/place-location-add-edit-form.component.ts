@@ -40,8 +40,8 @@ import { adminEntityForm } from '../../../admin-entity-form';
 export class PlaceLocationAddEditFormComponent implements OnInit {
   private readonly fb = inject(UntypedFormBuilder);
   private readonly at = inject(ActivatedRoute);
-  /** Its save and delete, and what they say (#3340, #3382). */
-  private readonly saves = adminEntityForm('Place', '/admin/places');
+  /** Its save and delete, and what they say (#3340, #3382): as an Organization, as the form, its button and the admin menu call a place (#3398). */
+  private readonly saves = adminEntityForm('Organization', '/admin/places');
   private readonly as = inject(AssetsService);
   private readonly ps = inject(PlaceService);
   private readonly sn = inject(DomSanitizer);
