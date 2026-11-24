@@ -16,6 +16,10 @@ From `bdf59f7f9`, with batch 197's made-up data as in your batch 4:
    report `laptop/reports/2026-11-23-12.md` with "images pushed (3244): <sha>" first.
 3. **If it still doesn't fit:** change nothing and report the widths.
 
+
+**Also on batches 11 and 12 (added 9:05 PM Central):** add the line `app: gisday` to the release entry's front matter on each branch
+(`2893-check-ins-dashboard-rest.md`, `3244-vgi-submission-counts.md`) in the same push as the images (#2835, PR 3311).
+
 ## Batch 11 (gisday: before and after images for #2893, the Check-ins dashboard's walk-ins and show-up rate; 23 November 2026, about 8:00 PM Central, from `work (gisday)`) (Medium) - **after 6, before 7 and 8; it needs your signed-in GIS Day stack**
 
 Home built [#2893](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2893) on `feat/2893-check-ins-dashboard-rest` (`2ce9d7419` on the fork) and can't sign in, so the

@@ -1,5 +1,22 @@
 # Home machine: current tasks
 
+## Batch 84 (gisday: `app: gisday` on the open GIS Day branches; 23 November 2026, about 9:05 PM Central, from `work (gisday)`) (Low) - **now**
+
+**Decided on your report 83:** 1A. Your #2835 PR is 3311 and #1843's is 3312. The CLAUDE.md text is in 3311 as its own
+commit, for the maintainer to review. Question 2 (UCGIS's Redis) goes to the maintainer.
+
+Add the one line `app: gisday` to the release entry's front matter on each of these branches, as a fast-forward push to
+the fork, and run `node scripts/collate-release-notes.mjs --check` on each (it passes today without the line; it must
+still pass with it):
+- `fix/2572-checkin-address` (PR 3298)
+- `fix/1836-past-sessions-filter` (PR 3303)
+- `feat/3019-competition-sessions-on-season` (PR 3310)
+- `feat/3292-winners-author-first` (PR 3306)
+
+**Not** `feat/2893-check-ins-dashboard-rest` or `feat/3244-vgi-submission-counts`: the laptop is pushing images to both
+now and adds the line itself. If any of the four has merged by the time you get to it, skip it and say so; the director
+adds it when PR 3311 is brought up to date. A short report, `home/reports/2026-11-23-84-gisday.md`, with each new sha.
+
 ## Batch 83 (gisday: #2835, GIS Day entries out of AggieMap's release notes, then #1843, the checklist for another organization's site; 23 November 2026, about 8:40 PM Central, from `work (gisday)`) (Medium) - **now**
 
 1. **[#2835](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2835).** `collate-release-notes.mjs` writes every entry into AggieMap's `unreleased.md`, so the 10 November
