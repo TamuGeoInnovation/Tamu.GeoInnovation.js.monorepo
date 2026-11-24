@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch g94 (gisday: #3345)**, since 10:30 PM Central, 24 November; then g95.
+- **Batch a6 (aggiemap: #3355, the release tier's 17)**, since about 2:35 AM Central, 24 November (critical path); g95 paused (#3325 committed, check running; #3331 not started).
 
 ## Finished
+- **Batch g94 (gisday: #3345)** (report `home/reports/2026-11-24-g94.md`): branch ready, `fix/3345-presenter-hidden-sessions` at `f59bee5ae`. Hidden sessions left out of `GET /speakers/:guid`; the six public event routes filed as #3354.
 - **Batch a4 (aggiemap: #3338)** (report `home/reports/2026-11-24-a4.md`): branch ready, `fix/3338-aggiemap-page-views` at `6d0e5708b`, test only (A). A route change already sends exactly one page view (property history tracking); the provider fix is held locally on `held/3338-provider-page-views`.
 - **Batch g93 (gisday: #3327)** (report `home/reports/2026-11-24-g93.md`): branch ready, `fix/3327-form-data-false-values` at `eb277293b`. False values sent; sponsor workaround gone; #3340 filed, #3327 retitled. No questions.
 - **Batch g92 (gisday: #3326)** (report `home/reports/2026-11-24-g92.md`): branch ready, `fix/3326-profile-email-repeat-guard` at `443a3fe03`. Profile email's link is its claim (claims.session is NOT NULL, so no migration); sendEach for the three session emails; two test doubles given find/delete. One question.
