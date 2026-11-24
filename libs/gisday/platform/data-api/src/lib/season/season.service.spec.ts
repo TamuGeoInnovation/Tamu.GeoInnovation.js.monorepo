@@ -543,7 +543,7 @@ describe('SeasonService', () => {
       (seasonRepo.manager.transaction as jest.Mock).mockImplementation(async (work) => work(manager));
     });
 
-    it('saves a competition's sessions and finalists date on a row of its own that runs nothing', async () => {
+    it("saves a competition's sessions and finalists date on a row of its own that runs nothing", async () => {
       await service.setCompetitionSettings('season-1', [
         {
           competitionType: 'poster',

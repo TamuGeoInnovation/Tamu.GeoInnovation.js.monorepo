@@ -259,7 +259,7 @@ describe('CompetitionSettingsComponent', () => {
     toggle()?.click();
     fixture.detectChanges();
 
-    const cells = Array.from(page.querySelectorAll('tbody td'));
+    const cells = Array.from(page.querySelectorAll('.deadlines-table:not(.sessions-table) tbody td'));
     expect(cells).toHaveLength(DEADLINE_COMPETITIONS.length * 2);
 
     for (const cell of cells) {
@@ -327,7 +327,7 @@ describe('CompetitionSettingsComponent', () => {
     });
 
     it('sends the chosen sessions and finalists date after the competitions, and nothing for a competition without any', () => {
-      const { fixture, seasons, save } = open(withDeadlines);
+      const { fixture, seasons } = open(withDeadlines);
       const poster = fixture.componentInstance.form.controls.sessions.controls.poster;
 
       poster.patchValue({
@@ -336,7 +336,8 @@ describe('CompetitionSettingsComponent', () => {
         finalistsNotifiedAt: '2026-11-14T18:00:00.000Z'
       });
       poster.markAsDirty();
-      save();
+      // The panel is collapsed for a season with deadlines, so its Save is pressed as the form would.
+      fixture.componentInstance.save();
 
       expect(seasons.setCompetitionSettings).toHaveBeenCalledWith('season-1', [
         {
@@ -357,14 +358,14 @@ describe('CompetitionSettingsComponent', () => {
         ...withDeadlines,
         competitions: [{ competitionType: 'poster', runs: null, sessionGuid: 'e-poster' }]
       } as Partial<Season>;
-      const { fixture, seasons, save } = open(chose);
+      const { fixture, seasons } = open(chose);
       const poster = fixture.componentInstance.form.controls.sessions.controls.poster;
 
       expect(poster.controls.sessionGuid.value).toBe('e-poster');
 
       poster.controls.sessionGuid.setValue('');
       poster.markAsDirty();
-      save();
+      fixture.componentInstance.save();
 
       expect(seasons.setCompetitionSettings).toHaveBeenCalledWith('season-1', [
         expect.objectContaining({ competitionType: 'poster', sessionGuid: null })

@@ -11,8 +11,7 @@ import {
   UserSubmissionsService,
   finalRemindersToast,
   reviewSubmissionsToast,
-  sendEditLinksToast
-} from '@tamu-gisc/gisday/platform/ngx/data-access';
+  sendEditLinksToast, EventService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
@@ -71,6 +70,8 @@ describe('ResearchCompetitionListComponent while loading', () => {
         { provide: UserSubmissionsService, useValue: service },
         { provide: SpeakerEditsService, useValue: {} },
         { provide: SeasonService, useValue: { seasons$: of([]), activeSeason$: of(null) } },
+        // The competition settings panel's sessions to choose from (#3019).
+        { provide: EventService, useValue: { getEntitiesForSeason: () => of([]) } },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
         { provide: ModalService, useValue: {} },
         { provide: NotificationService, useValue: { toast: jest.fn() } }
@@ -168,6 +169,8 @@ describe('ResearchCompetitionListComponent actions on the selected submissions',
         { provide: UserSubmissionsService, useValue: service },
         { provide: SpeakerEditsService, useValue: speakerEdits },
         { provide: SeasonService, useValue: { seasons$: of([]), activeSeason$: of(null) } },
+        // The competition settings panel's sessions to choose from (#3019).
+        { provide: EventService, useValue: { getEntitiesForSeason: () => of([]) } },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
         { provide: ModalService, useValue: modals },
         { provide: NotificationService, useValue: toasts }
@@ -344,6 +347,8 @@ describe('ResearchCompetitionListComponent, the final file and the final reminde
         { provide: UserSubmissionsService, useValue: service },
         { provide: SpeakerEditsService, useValue: {} },
         { provide: SeasonService, useValue: { seasons$: of([]), activeSeason$: of(null) } },
+        // The competition settings panel's sessions to choose from (#3019).
+        { provide: EventService, useValue: { getEntitiesForSeason: () => of([]) } },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
         { provide: ModalService, useValue: modals },
         { provide: NotificationService, useValue: toasts }
