@@ -14,19 +14,26 @@ describe('central time', () => {
   });
 
   it("gives an instant's Central calendar day, either side of the November and March changes", () => {
-    expect(['2026-11-01T04:59:00.000Z', '2026-11-01T05:00:00.000Z', '2026-03-08T05:59:00.000Z', '2026-03-08T06:00:00.000Z'].map(centralDay)).toEqual([
-      '2026-10-31',
-      '2026-11-01',
-      '2026-03-07',
-      '2026-03-08'
-    ]);
+    expect(
+      ['2026-11-01T04:59:00.000Z', '2026-11-01T05:00:00.000Z', '2026-03-08T05:59:00.000Z', '2026-03-08T06:00:00.000Z'].map(
+        centralDay
+      )
+    ).toEqual(['2026-10-31', '2026-11-01', '2026-03-07', '2026-03-08']);
   });
 
   it('gives the instant of a Central wall-clock time, in daylight and standard time alike', () => {
     expect(
-      [centralInstant('2026-11-01'), centralInstant('2026-11-01', '09:00'), centralInstant('2026-03-08'), centralInstant('2026-03-08', '10:00:30')].map(
-        (d) => d.toISOString()
-      )
-    ).toEqual(['2026-11-01T05:00:00.000Z', '2026-11-01T15:00:00.000Z', '2026-03-08T06:00:00.000Z', '2026-03-08T15:00:30.000Z']);
+      [
+        centralInstant('2026-11-01'),
+        centralInstant('2026-11-01', '09:00'),
+        centralInstant('2026-03-08'),
+        centralInstant('2026-03-08', '10:00:30')
+      ].map((d) => d.toISOString())
+    ).toEqual([
+      '2026-11-01T05:00:00.000Z',
+      '2026-11-01T15:00:00.000Z',
+      '2026-03-08T06:00:00.000Z',
+      '2026-03-08T15:00:30.000Z'
+    ]);
   });
 });

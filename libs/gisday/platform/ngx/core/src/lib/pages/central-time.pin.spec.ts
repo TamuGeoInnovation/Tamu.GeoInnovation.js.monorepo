@@ -9,16 +9,21 @@ import { SiteCopyComponent } from './admin/pages/site-copy/site-copy.component';
  * times. The narrow no-break space before AM and PM is compared as a plain space.
  */
 describe("the pages' Central times (#3323)", () => {
-  const INSTANTS = ['2026-10-31T23:30:00.000Z', '2026-11-01T15:00:00.000Z', '2026-03-08T04:30:00.000Z', '2026-03-08T15:00:00.000Z'];
+  const INSTANTS = [
+    '2026-10-31T23:30:00.000Z',
+    '2026-11-01T15:00:00.000Z',
+    '2026-03-08T04:30:00.000Z',
+    '2026-03-08T15:00:00.000Z'
+  ];
   const plain = (text: string) => text.replace(/\u202f/g, ' ');
 
   it("a session's check-ins", () => {
-    expect(sessionCheckInRows(INSTANTS.map((created, i) => ({ guid: `c-${i}`, accountGuid: 'a', created: new Date(created) })) as never, []).map((r) => plain(r.at))).toEqual([
-      'Oct 31, 6:30 PM CDT',
-      'Nov 1, 9:00 AM CST',
-      'Mar 7, 10:30 PM CST',
-      'Mar 8, 10:00 AM CDT'
-    ]);
+    expect(
+      sessionCheckInRows(
+        INSTANTS.map((created, i) => ({ guid: `c-${i}`, accountGuid: 'a', created: new Date(created) })) as never,
+        []
+      ).map((r) => plain(r.at))
+    ).toEqual(['Oct 31, 6:30 PM CDT', 'Nov 1, 9:00 AM CST', 'Mar 7, 10:30 PM CST', 'Mar 8, 10:00 AM CDT']);
   });
 
   it("the site copy's times", () => {

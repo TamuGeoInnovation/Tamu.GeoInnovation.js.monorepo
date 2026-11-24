@@ -42,7 +42,16 @@ import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ParseDateTimeStringsPipe } from '@tamu-gisc/gisday/platform/ngx/common';
 import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
 import { getGeolocation, isLatLonPolygon } from '@tamu-gisc/common/utils/geometry';
-import { CHECK_IN_CODE_MESSAGE, CHECK_IN_CODE_PARAM, CHECK_IN_ZONE_EVENT_MODE, checkInOpensMessage, checkInWindow, checksInByCode, formatCentral, OUTSIDE_SESSION_TIME_LABEL } from '@tamu-gisc/gisday/common';
+import {
+  CHECK_IN_CODE_MESSAGE,
+  CHECK_IN_CODE_PARAM,
+  CHECK_IN_ZONE_EVENT_MODE,
+  checkInOpensMessage,
+  checkInWindow,
+  checksInByCode,
+  formatCentral,
+  OUTSIDE_SESSION_TIME_LABEL
+} from '@tamu-gisc/gisday/common';
 import { SiteHasPipe } from '@tamu-gisc/gisday/platform/ngx/common';
 import { QrCodeComponent } from '@tamu-gisc/ui-kits/ngx/qr-code';
 import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';

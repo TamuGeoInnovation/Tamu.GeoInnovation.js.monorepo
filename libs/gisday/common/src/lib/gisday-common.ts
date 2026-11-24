@@ -275,4 +275,3 @@ function atTime(day: string, time: string): Date | null {
 
   return new Date(wallClock - offsetMs);
 }
-

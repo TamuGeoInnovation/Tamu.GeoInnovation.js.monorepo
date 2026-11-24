@@ -31,18 +31,20 @@ describe('Central time, as each caller in gisday/common prints it (#3323)', () =
 
   it("profileEmailValues' link expiry", () => {
     expect(
-      INSTANTS.map((i) => plain(profileEmailValues({}, { name: 'GIS Day', address: 'https://example.edu' }, 'x', new Date(i))['{link expires}']))
-    ).toEqual([
-      'Saturday, October 31',
-      'Sunday, November 1',
-      'Saturday, March 7',
-      'Sunday, March 8'
-    ]);
+      INSTANTS.map((i) =>
+        plain(
+          profileEmailValues({}, { name: 'GIS Day', address: 'https://example.edu' }, 'x', new Date(i))['{link expires}']
+        )
+      )
+    ).toEqual(['Saturday, October 31', 'Sunday, November 1', 'Saturday, March 7', 'Sunday, March 8']);
   });
 
   it('sessionDay, short and long', () => {
     expect(
-      INSTANTS.flatMap((i) => [plain(sessionDay({ day: { date: i } } as never, 'short')), plain(sessionDay({ day: { date: i } } as never, 'long'))])
+      INSTANTS.flatMap((i) => [
+        plain(sessionDay({ day: { date: i } } as never, 'short')),
+        plain(sessionDay({ day: { date: i } } as never, 'long'))
+      ])
     ).toEqual([
       'Sat, Oct 31',
       'Saturday, October 31, 2026',
@@ -56,21 +58,26 @@ describe('Central time, as each caller in gisday/common prints it (#3323)', () =
   });
 
   it('inCentralTime, full and brief', () => {
-    expect(INSTANTS.flatMap((i) => [plain(inCentralTime(i)), plain(inCentralTime(i, 'No limit', { brief: true }))])).toEqual([
-      'Sat, Oct 31, 2026, 6:30 PM Central',
-      'Sat, Oct 31, 6:30 PM',
-      'Sun, Nov 1, 2026, 9:00 AM Central',
-      'Sun, Nov 1, 9:00 AM',
-      'Sat, Mar 7, 2026, 10:30 PM Central',
-      'Sat, Mar 7, 10:30 PM',
-      'Sun, Mar 8, 2026, 10:00 AM Central',
-      'Sun, Mar 8, 10:00 AM'
-    ]);
+    expect(INSTANTS.flatMap((i) => [plain(inCentralTime(i)), plain(inCentralTime(i, 'No limit', { brief: true }))])).toEqual(
+      [
+        'Sat, Oct 31, 2026, 6:30 PM Central',
+        'Sat, Oct 31, 6:30 PM',
+        'Sun, Nov 1, 2026, 9:00 AM Central',
+        'Sun, Nov 1, 9:00 AM',
+        'Sat, Mar 7, 2026, 10:30 PM Central',
+        'Sat, Mar 7, 10:30 PM',
+        'Sun, Mar 8, 2026, 10:00 AM Central',
+        'Sun, Mar 8, 10:00 AM'
+      ]
+    );
   });
 
   it('checkInOpensAt, the same day and another', () => {
     expect(
-      INSTANTS.flatMap((i) => [plain(checkInOpensAt(new Date(i), new Date(i))), plain(checkInOpensAt(new Date(i), new Date('2026-06-01T15:00:00.000Z')))])
+      INSTANTS.flatMap((i) => [
+        plain(checkInOpensAt(new Date(i), new Date(i))),
+        plain(checkInOpensAt(new Date(i), new Date('2026-06-01T15:00:00.000Z')))
+      ])
     ).toEqual([
       'at 6:30 PM',
       'on Saturday, October 31 at 6:30 PM',
@@ -85,7 +92,11 @@ describe('Central time, as each caller in gisday/common prints it (#3323)', () =
 
   it('sessionTime, on the Central day, with and without a stored offset', () => {
     expect(
-      INSTANTS.flatMap((i) => [sessionTime(i, '16:00:00')?.toISOString(), sessionTime(i, '16:00:00 GMT-0600 (Central Standard Time)')?.toISOString(), sessionTime(i, '00:30')?.toISOString()])
+      INSTANTS.flatMap((i) => [
+        sessionTime(i, '16:00:00')?.toISOString(),
+        sessionTime(i, '16:00:00 GMT-0600 (Central Standard Time)')?.toISOString(),
+        sessionTime(i, '00:30')?.toISOString()
+      ])
     ).toEqual([
       '2026-10-31T21:00:00.000Z',
       '2026-10-31T22:00:00.000Z',
@@ -108,15 +119,6 @@ describe('Central time, as each caller in gisday/common prints it (#3323)', () =
         dayHasPassed(i, new Date(new Date(i).getTime() + 12 * 60 * 60 * 1000)),
         dayHasPassed(i, new Date(new Date(i).getTime() + 60 * 60 * 1000))
       ])
-    ).toEqual([
-      true,
-      false,
-      false,
-      false,
-      true,
-      false,
-      false,
-      false
-    ]);
+    ).toEqual([true, false, false, false, true, false, false, false]);
   });
 });
