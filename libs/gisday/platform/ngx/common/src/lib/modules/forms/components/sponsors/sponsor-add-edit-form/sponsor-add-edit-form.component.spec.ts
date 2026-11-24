@@ -172,6 +172,41 @@ describe('SponsorAddEditFormComponent', () => {
     });
   });
 
+  /** #1962, #3327: switching a sponsor off is saved, so it leaves the public site. */
+  describe('switching a sponsor off', () => {
+    it.each(['create', 'edit'] as const)('sends active as false when a sponsor is saved with it off (%s)', (type) => {
+      const sent: Array<FormData> = [];
+
+      TestBed.configureTestingModule({
+        providers: [
+          provideRouter([]),
+          { provide: ActivatedRoute, useValue: { params: of({ guid: 'sp-1' }) } },
+          {
+            provide: SponsorService,
+            useValue: {
+              getEntity: () => of({ guid: 'sp-1', name: 'Made-up Sponsor', active: true }),
+              createEntityFormData: (data: FormData) => (sent.push(data), of({})),
+              updateEntityFormData: (_guid: string, data: FormData) => (sent.push(data), of({}))
+            }
+          },
+          { provide: AssetsService, useValue: { getAssetUrl: () => of(null) } },
+          { provide: SeasonService, useValue: { activeSeason$: of({ guid: 'season' }) } },
+          { provide: NotificationService, useValue: { toast: jest.fn() } }
+        ]
+      });
+
+      const fixture = TestBed.createComponent(SponsorAddEditFormComponent);
+      fixture.componentRef.setInput('type', type);
+      fixture.detectChanges();
+
+      fixture.componentInstance.form.patchValue({ name: 'Made-up Sponsor', active: false });
+      fixture.componentInstance.handleSubmission();
+
+      expect(sent).toHaveLength(1);
+      expect(sent[0].get('active')).toBe('false');
+    });
+  });
+
   /**
    * #3009. The logo picker takes only what the API takes, a JPEG or PNG (#2937). An SVG used to be taken and previewed,
    * and refused only once the sponsor was saved; it is now refused as soon as it is chosen, in the API's words, and the

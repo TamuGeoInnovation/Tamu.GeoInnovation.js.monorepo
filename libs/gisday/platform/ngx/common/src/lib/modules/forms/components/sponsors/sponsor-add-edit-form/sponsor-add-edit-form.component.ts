@@ -143,26 +143,15 @@ export class SponsorAddEditFormComponent implements OnInit {
 
   private _updateEntity() {
     const rawValue = this.form.getRawValue();
-    const formData = this._formData();
+    // `active` is sent whether on or off (#1962, #3327), so switching a sponsor off is saved.
+    const formData = formToFormData(this.form);
 
     this.saves.save('update', this.sss.updateEntityFormData(rawValue.guid, formData));
   }
 
   private _createEntity() {
-    const formData = this._formData();
-
-    this.saves.save('create', this.sss.createEntityFormData(formData));
-  }
-
-  /**
-   * The form as form data, with `active` always sent. formToFormData leaves out every false value,
-   * which would make switching a sponsor off impossible (#1962).
-   */
-  private _formData() {
     const formData = formToFormData(this.form);
 
-    formData.set('active', String(this.form.getRawValue().active !== false));
-
-    return formData;
+    this.saves.save('create', this.sss.createEntityFormData(formData));
   }
 }
