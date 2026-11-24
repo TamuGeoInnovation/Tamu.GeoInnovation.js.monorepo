@@ -164,6 +164,8 @@ Report `home/reports/2026-11-24-g89.md`.
 
 ## Batch g88 (gisday: #2275, GIS Day's analytics provider sends nothing; 23 November 2026, about 10:15 PM Central, from `work (gisday)`) (Medium) - **after g87**
 
+**Decided on your report g87 (the director, overnight, about 12:05 AM Central):** 1A, #2232 and #1609 closed as done by PR 2446, with your evidence. 2A, #1410 closed as not planned. 3A, the "Also open" lines in `unreleased.md` are left alone.
+
 [#2275](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2275): GIS Day loads gtag (GA4), but angulartics2's provider is analytics.js and calls `ga()`, which the page doesn't have, so
 it sends nothing; only gtag's own page view arrives (you found the same in batch 85). **GIS Day only**: AggieMap's half of the issue
 is the AggieMap chat's; leave it, and say so in the PR. Make GIS Day's events reach GA4 through gtag (angulartics2's GA4 provider
