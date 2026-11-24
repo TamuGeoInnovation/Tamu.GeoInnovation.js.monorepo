@@ -1,5 +1,45 @@
 # Laptop: current tasks
 
+## Batch a12 (aggiemap: the release tier on dev, on a machine doing nothing else; 24 November 2026, 10:20 AM Central, from `work (aggiemap)`) (High) - **now**
+
+**This is the run that decides whether the 24 November build goes to production.** The maintainer asked for it on a machine
+doing nothing but testing, which is why it is here rather than on the work computer: that machine is removing 277 Docker
+volumes and then compacting Docker's disk image, and `CLAUDE.md` records that a release tier competing with other work is
+what makes the paint check time out (#1716).
+
+**Run nothing else while this runs.** No check, no build, no second smoke run. Eight of the failures this is measuring are
+load-sensitive, so anything else on the machine corrupts the only measurement that matters here.
+
+**What to run**
+- A worktree at **`61dc13b89`** - the commit the deployed dev build was made from, so the specs match what is running.
+  Do not use `development`'s head; it has moved since.
+- `test/smoke/aggiemap/run-local.sh development release`. Every map once, about 30 minutes to 1.6 hours.
+- **No `-x`.** Let it run through every test; a stop at the first failure would lose the measurement below.
+- **Read the log's own `Exit N` line** and quote it.
+
+**Do not tag anything.** A `dev-*` tag is the maintainer's decision on these results, not a consequence of them.
+
+**What the report must separate, because this is a measurement and not just a pass or fail**
+
+The 23 November release tier exited 1 with 18 failures, 7 flaky, 71 skipped, 982 passed. Ten of those eighteen have since
+been fixed and merged, and four were proven on dev this morning. **Eight were not touched**, and they are the point of this
+run - they fail under the load a release tier creates, and nobody has measured them on a quiet machine:
+
+- `basemap-requests` - a load's queries counted ([#3364](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3364))
+- the Lot 100g popups
+- the layer-order checks ([#3369](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3369)); the 23 November table said four and there were five - the eighteenth
+
+For every failure, say: **which test, how many of its retries failed, and whether it failed on a quiet machine or only under
+load.** A test that passes on retry is flaky; one that fails every retry is real. That distinction is the whole reason this
+run is being done on an idle machine, and it decides whether these eight are known flakiness to tag through or timing work
+to do first.
+
+Also report anything that failed which is **not** in that list of eight - that would be a regression from this morning's
+eleven merges and matters more than any of the above.
+
+**Don't touch:** production, any tag, any pull request, `development`. Report
+`laptop/reports/2026-11-24-a12.md`, then say "report ready: <file>".
+
 ## Batch g23 (gisday: merge conflicts on eight PRs, and two lint failures; 24 November 2026, from `work (gisday)`) (Medium) - **WITHDRAWN: the work machine is doing these itself (the maintainer, 24 November). Do not start it. g24 still stands.**
 
 The maintainer merged fifteen PRs this morning; these eight now conflict with `development`. For each, in its own worktree on the fork
@@ -172,7 +212,7 @@ images of one GIS Day admin form at 390 and 1280; the bug-fix check with `ui-kit
 (find them). The maintainer is asleep and asked for everything to reach a pull request without him. So: decide what you can from the code and the records, choose the conservative option when a choice is needed, and put any real decision in your report as a question with options and a recommendation, then carry on with the rest. Made-up data only, no email, never production, txgisday-dev the only Auth0 tenant, kubernetes-config read-only. Each branch from the latest `development`, red first where a test can show it, the check, a push to the fork, `app: gisday` in any release entry, and "branch ready: <name>" with the PR body text in the report.
 Report `laptop/reports/2026-11-24-g14.md`.
 
-## Batch a11 (aggiemap: #3271, a legend entry with no symbol on dev; 23 November 2026, about 8:40 PM Central, from `work (aggiemap)`) (Medium) - **HELD, do not start** (23 November 2026, about 11:30 PM Central, written by `home` at the aggiemap director's request because its machine cannot write to the repository, #3365: the cause is very likely not a service fault. `home`'s batch a6 found that dev splits three parking services by category where production has one layer each, and that `READ_FROM_PRODUCTION_ON_DEVELOPMENT` fixes the empty filters it causes - #3358 - which will very likely clear this legend too. That can only be proven on dev once a build carrying #3358 is deployed, because a local server reads production's services. So this waits for that deploy rather than spending a night querying services. The investigation below stands if the deploy does not clear it; read #3358 first either way.)
+## Batch a11 (aggiemap: #3271, a legend entry with no symbol on dev; 23 November 2026, about 8:40 PM Central, from `work (aggiemap)`) (Medium) - **WITHDRAWN, do not run** (24 November 2026, 10:20 AM Central: the hold was right and the cause was #3358. A dev build carrying it was deployed this morning, and on it `legend.spec.ts:311` - "Freshman Selectable Parking: each layer in the legend shows its symbols" - passes on dev, 1 passed in 2.1m. The whole of `map-layers.spec.ts` also passes, 80 of 82 with no failures, including `/parking/permit-select-freshman`. So there is no service fault to investigate: #3271 is fixed and closed by #3358. The investigation below is kept only as the record of what was going to be done.)
 
 **First batch with the new id scheme** (`DIRECTOR.md`, "Batch ids carry their director's letter", the maintainer's 2A tonight):
 the id is the project word's first letter plus that project's own number for this machine, so this is aggiemap's eleventh to
