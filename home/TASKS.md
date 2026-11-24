@@ -1,5 +1,26 @@
 # Home machine: current tasks
 
+## Batch g95 (gisday: #3325 and #3331, two small shared pieces from the one-off scan; 24 November 2026, about 1:15 AM Central, from `work (gisday)`) (Low) - **after g94**
+
+Two branches, each behind its existing callers' interfaces, output unchanged:
+1. [#3325](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3325): one `CompetitionSeasonService.findActive(relations?)` in `competitions/data-api`, replacing the six
+   lookups the issue lists. Keep each caller's current status and message unless they disagree, in which case use the
+   most common one and list the change in the PR. Branch `refactor/3325-active-competition-season`.
+2. [#3331](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3331): `naturalOrder` and `byName` move to `libs/gisday/common/src/lib/names.ts`, exported, and the ten sorts the
+   issue lists use them. Where a sort's options differ today (`numeric`, locale), pick the one `naturalOrder` uses and say in the
+   PR which lists change order and how (with a made-up example). Branch `refactor/3331-one-name-order`.
+Overnight rules: no `package.json` or lock changes; no release or full tier; made-up data; never production. Rule 4: these were filed tonight from code, each side read; confirm on today's `development` before building and say so. Branch from the latest `development`, red first, the check (at `CHECK_PARALLEL=4` or lower for a large affected set, #3000), push, "branch ready" with the PR body. Report `home/reports/2026-11-24-g95.md`.
+
+## Batch g94 (gisday: #3345, a presenter's public details route names their hidden sessions; 24 November 2026, about 1:15 AM Central, from `work (gisday)`) (Low) - **after g92**
+
+[#3345](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3345): `GET /speakers/:guid` (`getPresenter`, public) loads every event the speaker is in, inactive (hidden) ones
+included. Load or return only active events there, with a test that a hidden session's name is not in the response, red first.
+Check every other public route that returns a speaker or event with its relations for the same thing, and list what you find
+(fix only #3345's route here; file any other as its own issue, Bug, `bug`, Priority Low written in the issue as chosen
+overnight). Branch `fix/3345-presenter-hidden-sessions`. PR 3344 (#441) added guarded `speakers/sessions/season/...` routes in
+the same controller; branch from `development` anyway and say in the PR that the two touch the same file. Overnight rules: no `package.json` or lock changes; no release or full tier; made-up data; never production. Rule 4: these were filed tonight from code, each side read; confirm on today's `development` before building and say so. Branch from the latest `development`, red first, the check (at `CHECK_PARALLEL=4` or lower for a large affected set, #3000), push, "branch ready" with the PR body.
+Report `home/reports/2026-11-24-g94.md`.
+
 ## Batch a5 (aggiemap: a three-month-old TEMP pointing development at production, #2617; 23 November 2026, about 10:25 PM Central, from `work (aggiemap)`) (Low) - **after a4**
 
 <https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2617>
