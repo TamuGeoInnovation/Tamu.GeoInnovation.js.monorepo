@@ -1,5 +1,23 @@
 # Home machine: current tasks
 
+## Batch 86 (gisday: the rest of #3019, each competition's sessions and finalists date on the season; 23 November 2026, about 9:45 PM Central, from `work (gisday)`) (Low) - **after 85**
+
+**Decided on your report 81 (the maintainer, about 9:40 PM Central):** 6A and 7A. Your date half is PR 3310, now closing
+its own issue #3309, so [#3019](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3019) is what this closes.
+
+Branch `feat/3019-competition-sessions-chosen` from the latest `development` (after PR 3310 merges, if it has; otherwise
+from `feat/3019-competition-sessions-on-season`, and say so).
+1. **Sessions (6A):** columns on `season_competitions` (#2948's table) for each competition's session and awards session
+   (and, for Presentation, its two levels' sessions), chosen in Admin, Seasons from that season's sessions. The pages
+   and the acceptance emails (#2985) use the chosen session, falling back to the `COMPETITION:`/`AWARDS:` naming when
+   none is chosen, so nothing changes for 2026.
+2. **Finalists date (7A):** `finalistsNotifiedAt` per competition on the same table, shown on its page in Central time
+   when set; the line is dropped when it isn't.
+3. One migration for both, proven up, down and up in your throwaway SQL Server, with its exact `up()` and `down()` SQL in the
+   report for the production script. Red first; images of Admin, Seasons only if you can take them without a password
+   (otherwise the laptop will), and of the public pages; full check; push; "branch ready" with the PR body in
+   `home/reports/2026-11-23-86-gisday.md`. Add `app: gisday` to its release entry.
+
 ## Batch 85 (gisday: PR 3304's E2E failure, #2088; 23 November 2026, about 9:20 PM Central, from `work (gisday)`) (High) - **before 84**
 
 CI's GIS Day E2E (`Playwright`, run 45301383192) failed on PR 3304 (`fix/2088-api-on-own-address`, `f147bfca2`): both
