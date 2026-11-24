@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch 81 (gisday: #3019)**, since 7:22 PM Central, 23 November.
+- Nothing. Idle and listening.
 
 ## Finished
+- **Batch 81 (gisday: #3019)** (report `home/reports/2026-11-23-81.md`): branch ready, `feat/3019-competition-sessions-on-season` on the fork at `fae860835`, no PR. Presentation and Posters take their day from the competition sessions and **Due** from the season's deadline; red first; check passes (only the audit FETCH_ERROR); before/after images at 1280 and 390 from a made-up 2027 season. Proposal: session columns on `season_competitions`, naming convention as fallback. Two questions for the maintainer.
 - **Batch 80 (gisday: #2893, #2430)** (report `home/reports/2026-11-23-80-gisday.md`): both branch ready on the fork, no PRs. `feat/2893-check-ins-dashboard-rest` at `2ce9d7419`: #3006 lacked walk-ins, the show-up rate and the outside-time mark, now built; the hourly chart is a question. `feat/2430-review-limits-per-season` at `26090518e`: a type's `review` limits in the form, 2026's by default; no Designer change (it doesn't show sameThingMetres). Both red first; checks pass (only the audit FETCH_ERROR). Admin images need a sign-in: director. Two questions.
 - **Batch 79 (gisday: #2088)** (report `home/reports/2026-11-23-79.md`): branch ready, `fix/2088-api-on-own-address` on the fork at `f147bfca2`, no PR. The site calls `${origin}/api` and sends the token only there; local proxies serve `/api/`. Red first; check passes (only the audit FETCH_ERROR). Proven on localhost:4201 and gisday.local.test:4201 with ORIGINS empty: all API calls same-origin. Not signed in (needs a password). kubernetes-config: two variables unused, ORIGINS left until live. Two questions.
 - **Batch 78 (gisday: #1836's images)** (report `home/reports/2026-11-23-78-gisday.md`): images pushed (1836): `e2e9b9cbe`, fast-forward from `98a4dff11`. Before and after at 1280, after at 390 with Filters open, from a throwaway local stack with made-up data; release note table and PR body updated; collate --check clean. No questions.
