@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch 77 (gisday: #2627, #2572, #1836)**, since 5:39 PM Central, 23 November, from development `16a9b70bc`. (Batch 61 was finished on 15 November; home was idle, so 77 starts now.)
+- Nothing. Idle and listening.
 
 ## Finished
+- **Batch 77 (gisday: #2627, #2572, #1836)** (report `home/reports/2026-11-23-77.md`): #2627 not done, already fixed by PR 2629 (#2628) and live since `prod-2026-11-11`. `fix/2572-checkin-address` at `90c8a72e6` and `fix/1836-past-sessions-filter` at `98a4dff11` branch ready on the fork, no PRs. #2572: index.html takes the code out before gtag config (angulartics2 sends nothing here). #1836: migration `TickPastSessionsFilters1795477533912`, proven up, down, up; exact SQL in the report. Both red first; checks pass with only the `npm audit signatures` FETCH_ERROR. Two questions.
 - **Batch 76 (gisday: #3260 keeps `session_details_sends`)** (report `home/reports/2026-11-23-76.md`): branch ready, `fix/3260-shared-email-guard` on the fork at `1d1c94178`, no PR. The migration only adds now; `down()` drops only the new table; scrub skips the old one. Proven up, down, up; bug-fix check exit 0. Follow-up #3269 filed, no priority, no labels. No questions.
 - **Batch 75 (gisday: #3260)** (report `home/reports/2026-11-23-75.md`): branch ready, `fix/3260-shared-email-guard` on the fork at `d15d4767a`, no PR. One `speaker_email_claims` table and `RepeatGuard` for all three session emails; `RecentSends` gone. Migration `AddSpeakerEmailClaims1795459774518` copies and drops `session_details_sends`, proven up, down, up. Red first; full check exit 0. No questions.
 - **Batch 73 (gisday: #3098 up to date)** (report `home/reports/2026-11-23-73.md`): branch ready, `fix/3098-shared-repeat-guard` on the fork at `8bd32004d`, no PR. Migration regenerated as `AddSessionDetailsSends1795448491167` (no `sentBy`), proven; guard ported onto together sends; a race bug found and fixed; full check exit 0. kc-3098 untouched. One question.
