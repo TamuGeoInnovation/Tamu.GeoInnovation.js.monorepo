@@ -4,7 +4,12 @@ import { SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
 
 export { metadata } from '@tamu-gisc/common/ngx/environment';
 
-export const api_url = '___ANGULAR_API_URL___';
+/**
+ * The API, on the address the page was opened on (#2088). Every GIS Day address's ingress sends `/api/` to the same API,
+ * so a call from any address is same-origin: a new address needs no entry in the API's `ORIGINS`. It used to be one
+ * fixed address for every site, `ANGULAR_API_URL`, and each other address worked only while it was listed (#2087).
+ */
+export const api_url = `${window.location.origin}/api`;
 
 /**
  * Which GIS Day site this deployment is, a key of `GISDAY_SITES` in `@tamu-gisc/gisday/common` (#1835).
@@ -18,7 +23,8 @@ export const auth0 = {
   redirect_uri: window.location.origin + '/callback',
   audience: '___ANGULAR_AUTH0_AUDIENCE___',
   roles_claim: '___ANGULAR_AUTH0_ROLES_CLAIM___',
-  urls: ['___ANGULAR_AUTH0_URLS___']
+  /** Where the signed-in user's access token goes: the API on this address, and nowhere else (#2088). */
+  urls: [api_url]
 };
 
 export const NotificationEvents: NotificationProperties[] = [
