@@ -33,7 +33,7 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- Nothing. Listening. The GIS Day stack is up on the scratch database, now at `development`'s schema. The stack helper lives in `C:/TAMU/laptop-tools/`, outside the scratchpad.
+- **Batch a12 (aggiemap: the release tier on dev, at `61dc13b89`, on a quiet machine)**, started 10:40 AM Central. Nothing else runs until it finishes (30 minutes to 1.6 hours).
 
 ## Finished
 - **Batch g24 (gisday: images for 3387, 3349, 3367)** (report `laptop/reports/2026-11-24-g24.md`): **images pushed (3387): `3d2400c4c`; (3367): `7587ed1fc`**. **3349 has no visible change** (an unticked box stayed off before too); label it `no-visible-change`. Unblocked by the maintainer's go-ahead. No questions.
