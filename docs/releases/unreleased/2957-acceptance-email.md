@@ -1,5 +1,6 @@
 ---
 issue: 2957
+app: gisday
 title: "GIS Day: the finalist acceptance email names the site it came from and gives the next steps"
 testOnDev: |
   | GIS Day: the acceptance email ([#2957](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2957)) | Not on dev: GIS Day has no dev site. After release, on [Texas A&M's Research Competitions](https://gisday.tamu.edu/admin/research-competition), accept a test submission of your own | The email comes from Texas A&M GIS Day, says your submission has been accepted, and lists three steps: attach your slides or poster under Presentation files, complete your presenter profile from the separate email, and check gisday.tamu.edu/sessions |

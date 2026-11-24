@@ -1,5 +1,6 @@
 ---
 issue: 3098
+app: gisday
 title: 'GIS Day admin: a repeated session details email is caught whichever copy of the API it reaches'
 testOnDev: |
   | GIS Day admin: the session details email's repeat guard ([#3098](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3098)) | Not on dev: GIS Day has no dev site. After release, as an admin open a session with speakers and send its details email, then send it again within ten minutes | The second send emails no one, and each speaker is listed as "already emailed this session's details in the last 10 minutes". Production runs two copies of the API, so try it several times: it must never send twice |

@@ -1,5 +1,6 @@
 ---
 issue: 2958
+app: gisday
 title: "GIS Day: approve, reject and send profile emails to the selected submissions at once"
 testOnDev: |
   | GIS Day: Approve, Reject and Send profile email for the selected submissions ([#2958](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2958)) | Not on dev: GIS Day has no dev site. After release, on [Texas A&M's Research Competitions](https://gisday.tamu.edu/admin/research-competition), select a test submission of your own | Approve, Reject and Send profile email appear beside Delete; each asks first, saying how many will be emailed; Cancel sends nothing. Approving marks it Accepted and the toast says so, and your inbox gets the acceptance email. Send profile email lists anyone on the submission with no speaker record |

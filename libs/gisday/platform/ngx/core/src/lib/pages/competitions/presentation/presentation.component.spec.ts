@@ -4,7 +4,13 @@ import { of } from 'rxjs';
 
 import { SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
-import { provideCompetitionSessions } from '../competition-session/competition-session.testing';
+import { ReviewEmailSession } from '@tamu-gisc/gisday/common';
+
+import {
+  COMPETITION_SESSIONS,
+  COMPETITION_SESSIONS_2027,
+  provideCompetitionSessions
+} from '../competition-session/competition-session.testing';
 import { PresentationComponent } from './presentation.component';
 
 /**
@@ -12,11 +18,17 @@ import { PresentationComponent } from './presentation.component';
  * and finalists hear on Saturday, November 14.
  */
 describe('PresentationComponent', () => {
-  function text(season: object = { presentationFilesCloseAt: '2026-11-16T18:00:00.000Z' }) {
+  /** 2026's deadlines, as production's season has them. */
+  const SEASON_2026 = {
+    presentationSubmissionsCloseAt: '2026-11-13T23:00:00.000Z',
+    presentationFilesCloseAt: '2026-11-16T18:00:00.000Z'
+  };
+
+  function text(season: object = SEASON_2026, sessions: Array<ReviewEmailSession> = COMPETITION_SESSIONS) {
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
-        provideCompetitionSessions(),
+        provideCompetitionSessions(of(sessions)),
         { provide: SeasonService, useValue: { activeSeason$: of(season) } }
       ]
     });
@@ -27,11 +39,28 @@ describe('PresentationComponent', () => {
     return (fixture.nativeElement as HTMLElement).textContent;
   }
 
-  it('gives Friday, November 13 as the deadline and Saturday, November 14 for finalists', () => {
+  it("gives the season's deadline, Friday, November 13, and Saturday, November 14 for finalists", () => {
     const rendered = text();
 
-    expect(rendered).toContain('Friday November 13th, 2026');
+    expect(rendered).toContain('Due: Fri, Nov 13, 2026, 5:00 PM Central');
     expect(rendered).toContain('notified on Saturday November 14th, 2026');
+  });
+
+  // #3019: the page's day and deadline were typed in for 2026, and would have been wrong the next year.
+  it('takes its day from the competition sessions and its deadline from the season, whatever the year', () => {
+    const rendered = text({ presentationSubmissionsCloseAt: '2027-11-12T23:00:00.000Z' }, COMPETITION_SESSIONS_2027);
+
+    expect(rendered).toContain('Tuesday, November 16, 2027');
+    expect(rendered).toContain('Due: Fri, Nov 12, 2027, 5:00 PM Central');
+    expect(rendered).not.toContain('November 17th, 2026');
+    expect(rendered).not.toContain('November 13th, 2026');
+  });
+
+  it('says the deadline is to be announced, and gives no day, when the season has neither', () => {
+    const rendered = text({}, []);
+
+    expect(rendered).toContain('Due: to be announced');
+    expect(rendered).not.toContain('November 17th, 2026');
   });
 
   it('no longer gives the old deadline', () => {

@@ -1,5 +1,6 @@
 ---
 issue: 2887
+app: gisday
 title: "GIS Day admin: an event opened to edit shows its tags ticked, so ticking them again no longer removes them"
 testOnDev: |
   | GIS Day admin: an event's tags when it is edited ([#2887](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2887)) | Not on dev: GIS Day has no dev site. After release, sign in as an admin, open [Admin > Events on gisday.tamu.edu](https://gisday.tamu.edu/admin/events), click an event that has a tag, change nothing and press Update, then open it again | The event's tags are ticked each time it is opened from the list, and still on the event after Update. Ticking another tag adds it beside them; unticking one removes only that one |

@@ -1,5 +1,6 @@
 ---
 issue: 3083
+app: gisday
 title: "GIS Day admin: a speaker-edit decision that fails says why"
 testOnDev: |
   | GIS Day admin: why a speaker-edit decision failed ([#3083](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3083)) | Not on dev: GIS Day has no dev site. After release, as an admin open Admin > Speakers > edits with a pending edit open in two tabs; approve it in one, then approve it in the other | The second says "Could not save the decision" with "That edit is not waiting for review.", not "Please try again." An account without update:speakers is told which permission it lacks |

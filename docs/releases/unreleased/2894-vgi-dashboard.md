@@ -1,5 +1,6 @@
 ---
 issue: 2894
+app: gisday
 title: A VGI submissions dashboard
 testOnDev: |
   | GIS Day admin: Dashboards, VGI submissions ([#2894](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2894)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release, as an admin on txgisday.org or gisday.tamu.edu: Admin, Dashboards, VGI submissions, the 2026 season | A row per feature type on the season's form, with its submissions, new finds and repeats (adding up to the leaderboard's points: 2 a new find, 1 a repeat), people, and review statuses, and a total row that counts each person once. Clicking a type lists who submitted it, with their counts, and Export as CSV downloads them. The chart shows submissions by day. Not in the menu on gisday.ucgis.org, which has no competition |

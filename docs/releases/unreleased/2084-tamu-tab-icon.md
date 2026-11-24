@@ -1,5 +1,6 @@
 ---
 issue: 2084
+app: gisday
 title: Texas A&M GIS Day's tab icon is AggieMap's, the same size
 testOnDev: |
   | GIS Day: Texas A&M site's tab icon ([#2084](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2084)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). AggieMap on dev: [dev.aggiemap.tamu.edu](https://dev.aggiemap.tamu.edu); after release, [gisday.tamu.edu](https://gisday.tamu.edu) beside [aggiemap.tamu.edu](https://aggiemap.tamu.edu) | AggieMap's tab icon is unchanged. gisday.tamu.edu's is the same icon, the same size, not the smaller box logo. txgisday.org's and gisday.ucgis.org's are unchanged. In gisday.tamu.edu's page source (before the app runs), the `<link rel="icon">` names `assets/images/logo/favicon.ico` and the title is Texas A&M GIS Day's; this cannot be seen locally. `https://aggiemap.tamu.edu/favicon.ico` still answers |

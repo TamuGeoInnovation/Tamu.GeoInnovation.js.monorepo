@@ -1,5 +1,6 @@
 ---
 issue: 3015
+app: gisday
 title: "GIS Day: The presentation competition rules say final slides are due by the file deadline, or the finalist is removed"
 testOnDev: |
   | GIS Day: slides upload rule ([#3015](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3015)) | Not on dev: GIS Day has no dev site. After release, open [Presentation](https://gisday.tamu.edu/competitions/presentation), Competition Rules | A bold rule: finalists must upload their final presentation slides through the site by Mon, Nov 16, 2026, 12:00 PM Central (the season's presentation file deadline in Admin, Research Competitions), or they will be removed from the competition. Change that deadline and the date on the page follows |

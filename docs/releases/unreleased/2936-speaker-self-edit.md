@@ -1,5 +1,6 @@
 ---
 issue: 2936
+app: gisday
 title: "GIS Day: speakers update their own presenter profile through an emailed link, approved by an admin"
 testOnDev: |
   | GIS Day: speakers edit their own profile ([#2936](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2936)) | Not on dev: GIS Day has no dev site. After release, on [Speakers](https://txgisday.org/admin/speakers) select yourself and choose **Email edit links**; open the link from the email, change your bio and send it; then open **Edits to review** | The link opens your profile with no sign-in; a `javascript:` link is refused; the edit waits under **Edits to review**, Now beside Proposed, and appears on your public presenter page only after **Approve** |

@@ -1,5 +1,6 @@
 ---
 issue: 3221
+app: gisday
 title: "GIS Day: Each day on the Sessions page collapses, and the days already passed start collapsed"
 testOnDev: |
   | GIS Day: collapse each day on the Sessions page ([#3221](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3221)) | Not on dev: GIS Day has no dev site. On production, open Sessions during or after GIS Day week | A day before today (Central time) starts collapsed, its heading reading its date and "· N sessions"; today and later days start open; pressing a day's heading, or Enter or Space on it, opens and closes it; a search opens every day it finds something in; the Day 1, Day 2 links open the day they jump to; a past year's Sessions page (e.g. /2025/sessions) opens every day |

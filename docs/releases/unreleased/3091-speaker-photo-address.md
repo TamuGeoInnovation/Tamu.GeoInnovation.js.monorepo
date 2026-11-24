@@ -1,5 +1,6 @@
 ---
 issue: 3091
+app: gisday
 title: "A new speaker photo shows at once, instead of the old one"
 testOnDev: |
   | A new speaker photo shows at once ([#3091](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3091)) | Not on dev: GIS Day has no dev site. After release, send yourself a profile link, upload a new photo through it, approve it, and open Presenters in the same browser without clearing anything | The new photo shows on Presenters, the admin speaker page and the next edit review's "Now", with no reload |

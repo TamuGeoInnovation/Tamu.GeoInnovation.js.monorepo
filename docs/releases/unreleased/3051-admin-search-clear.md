@@ -1,5 +1,6 @@
 ---
 issue: 3051
+app: gisday
 title: "GIS Day: every admin search box has the X that clears it"
 testOnDev: |
   | GIS Day: the X that clears every admin search box ([#3051](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3051)) | Not on dev: GIS Day has no dev site. After release, as an admin open [Speakers](https://txgisday.org/admin/speakers) and [Speaker badges](https://txgisday.org/admin/dashboards/speaker-badges) | Type in the search box: an X shows at its right. Click it: the box empties, the count goes back to the whole list (e.g. "773 speakers."), and every row is listed again. The same on Classes, Events, Venues, Organizations, Sponsors, Universities and Users. On Speaker badges the X sits inside the box, beside the text, and the box keeps its height |

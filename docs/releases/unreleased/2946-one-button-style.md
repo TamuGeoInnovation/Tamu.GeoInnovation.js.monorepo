@@ -1,5 +1,6 @@
 ---
 issue: 2946
+app: gisday
 title: "GIS Day: every button on a site is the site's colour, maroon on Texas A&M's"
 testOnDev: |
   | GIS Day: one button colour per site ([#2946](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2946)) | Not on dev: GIS Day has no dev site. After release, [gisday.tamu.edu/presenters/edit](https://gisday.tamu.edu/presenters/edit) and [txgisday.org/presenters/edit](https://txgisday.org/presenters/edit). The shared button also appears on [dev.aggiemap.tamu.edu](https://dev.aggiemap.tamu.edu) (its notices and prompts) | **Email me a link** is maroon on Texas A&M's site and blue on txgisday.org, the same colour as the site's other buttons; AggieMap's and GeoServices' buttons are the blue they were |
