@@ -25,13 +25,23 @@ const DEFINITION = path.join('libs', 'maps', 'feature', 'basemap', 'src', 'lib',
 // basemap and development does, not which cache it is.
 const VECTOR_SERVICE = 'Hosted/VTBase3/VectorTileServer';
 
-/** Every TypeScript source file in libs/ and apps/, specs excluded, relative to the repository root. */
-function sources(): string[] {
-  return ['libs', 'apps'].flatMap((root) =>
+let scanned: Array<{ file: string; text: string }> | undefined;
+
+/**
+ * Every TypeScript source file in libs/ and apps/, specs excluded, relative to the repository root, with its text.
+ *
+ * Walked and read once per spec file (#3265). Each of the two tests that scan the sources used to walk the whole tree
+ * and read its 1,400 or so files again, and a busy machine took the first of them past its 5 s limit.
+ */
+function sources(): Array<{ file: string; text: string }> {
+  scanned ??= ['libs', 'apps'].flatMap((root) =>
     (fs.readdirSync(path.join(REPO_ROOT, root), { recursive: true }) as string[])
       .filter((file) => file.endsWith('.ts') && !file.endsWith('.spec.ts'))
       .map((file) => path.join(root, file))
+      .map((file) => ({ file, text: fs.readFileSync(path.join(REPO_ROOT, file), 'utf8') }))
   );
+
+  return scanned;
 }
 
 /** Only what this test reads of a basemap definition. */
@@ -42,6 +52,12 @@ interface Basemap {
 const urlsOf = (basemap: Basemap) => basemap.baseLayers.map((layer) => layer.url ?? '');
 
 describe('campus basemap', () => {
+  // The source scan below reads every file under libs/ and apps/, once (#3265). It is done here, with its own time, so
+  // the tests that use it time their assertions rather than the disk: on a busy machine, or through a mounted folder,
+  // the walk alone has taken from 6 s to over a minute.
+  beforeAll(() => {
+    sources();
+  }, 180_000);
   it('resolves to the vector tiles on production and on dev (#2515)', () => {
     const resolve = (definitions as unknown as Record<string, unknown>)['aggiemapBasemap'] as
       ((isTesting: boolean) => Basemap) | undefined;
@@ -195,10 +211,11 @@ describe('campus basemap', () => {
     const offenders = sources()
       // The definition file is where the resolver lives, and the raster basemap declares its own
       // Web Mercator reference there, correctly.
-      .filter((file) => path.normalize(file) !== DEFINITION)
+      .filter(({ file }) => path.normalize(file) !== DEFINITION)
       // Either way in: the resolver itself, or a saved choice turned back into a basemap (#1726).
-      .filter((file) => /aggiemapBasemap\(|basemapForSavedId\(/.test(fs.readFileSync(path.join(REPO_ROOT, file), 'utf8')))
-      .filter((file) => /spatialReference:\s*\{[^}]*wkid:\s*\d+/.test(fs.readFileSync(path.join(REPO_ROOT, file), 'utf8')));
+      .filter(({ text }) => /aggiemapBasemap\(|basemapForSavedId\(/.test(text))
+      .filter(({ text }) => /spatialReference:\s*\{[^}]*wkid:\s*\d+/.test(text))
+      .map(({ file }) => file);
 
     expect(offenders).toEqual([]);
   });
@@ -212,16 +229,14 @@ describe('campus basemap', () => {
     const MAPLIBRE = path.normalize('libs/maps/mapbox/');
 
     const offenders = sources()
-      .filter((file) => path.normalize(file) !== DEFINITION && path.normalize(file) !== DECLARED)
-      .filter((file) => {
-        const text = fs.readFileSync(path.join(REPO_ROOT, file), 'utf8');
-
-        return (
+      .filter(({ file }) => path.normalize(file) !== DEFINITION && path.normalize(file) !== DECLARED)
+      .filter(
+        ({ file, text }) =>
           (!path.normalize(file).startsWith(MAPLIBRE) &&
             (text.includes(VECTOR_SERVICE) || /\bTAMU_CAMPUS_VECTOR_BASEMAP_URL\b/.test(text))) ||
           /\b(AggiemapBasemap|AggiemapVectorBasemap|AggiemapRasterBasemap\w*)\b/.test(text)
-        );
-      });
+      )
+      .map(({ file }) => file);
 
     expect(offenders).toEqual([]);
   });
