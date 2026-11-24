@@ -81,6 +81,9 @@ export function competitionDays(
 /**
  * A competition's session as the database has it (#3011): its name linked to its page, day, time and room. The pages
  * used to type these in, and went stale when a session moved.
+ *
+ * A page's sentence leading into the session goes inside the element, and shows only with a session to name: on its
+ * own it ended in a colon and nothing when none was found (#3412).
  */
 @Component({
   selector: 'tamu-gisc-competition-session',

@@ -88,18 +88,21 @@
           <!-- Each session as the database has it (#3011): these were typed in here and went stale when the sessions moved. -->
           <p>Each finalist has 5 minutes in all, questions included: about 4 minutes to present and 1 for questions. You will be cut off when your time is up.</p>
 
-          <p>Undergraduate student presentation competition session:</p>
-          <tamu-gisc-competition-session kind="undergraduate" [season]="season()"></tamu-gisc-competition-session>
+          <tamu-gisc-competition-session kind="undergraduate" [season]="season()">
+            <p>Undergraduate student presentation competition session:</p>
+          </tamu-gisc-competition-session>
 
-          <p>Graduate student presentation competition session:</p>
-          <tamu-gisc-competition-session kind="graduate" [season]="season()"></tamu-gisc-competition-session>
+          <tamu-gisc-competition-session kind="graduate" [season]="season()">
+            <p>Graduate student presentation competition session:</p>
+          </tamu-gisc-competition-session>
         </div>
 
         <div class="trailer-4" id="six">
           <h2 class="trailer-1">First Place Award Announcement</h2>
 
-          <p>Winners will be announced at the awards session:</p>
-          <tamu-gisc-competition-session kind="awards" competition="presentation" [season]="season()"></tamu-gisc-competition-session>
+          <tamu-gisc-competition-session kind="awards" competition="presentation" [season]="season()">
+            <p>Winners will be announced at the awards session:</p>
+          </tamu-gisc-competition-session>
         </div>
 
         <div class="trailer-4" id="seven">
