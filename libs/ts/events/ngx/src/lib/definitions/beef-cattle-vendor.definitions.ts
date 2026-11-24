@@ -7,6 +7,7 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 import { EventPopups } from '../modules/popups/popups';
+import { RED_HATCH_LEGEND } from './common.definitions';
 
 export enum BEEF_CATTLE_LAYERS {
   ZONES = 'beef-cattle-zones',
@@ -33,11 +34,6 @@ const routesNative = {
 const alertNative = {
   outFields: ['*']
 } as unknown as NonNullable<FeatureLayerSourceProperties['native']>;
-
-// The No Parking Zones layer uses a backward-diagonal red hatch fill, which the ArcGIS legend does
-// not emit a swatch for. Supply an explicit matching red-hatch swatch so the legend entry has an icon.
-const NO_PARKING_LEGEND_SWATCH =
-  'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMiIgaGVpZ2h0PSIyMiI+PGRlZnM+PHBhdHRlcm4gaWQ9InAiIHdpZHRoPSI1IiBoZWlnaHQ9IjUiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxsaW5lIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSI1IiBzdHJva2U9IiNlNjAwMDAiIHN0cm9rZS13aWR0aD0iMS4yIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB4PSIwLjUiIHk9IjAuNSIgd2lkdGg9IjIxIiBoZWlnaHQ9IjIxIiBmaWxsPSJ1cmwoI3ApIiBzdHJva2U9IiNlNjAwMDAiIHN0cm9rZS13aWR0aD0iMSIvPjwvc3ZnPg==';
 
 export const BeefCattleColdLayerSources: LayerSource[] = [
   // NOTE: this array's order does not determine z-order - map draw order is driven by the order of
@@ -70,12 +66,8 @@ export const BeefCattleColdLayerSources: LayerSource[] = [
       name: 'No Parking',
       description: { field: 'description' }
     },
-    legend: {
-      mode: 'custom-src',
-      src: NO_PARKING_LEGEND_SWATCH,
-      width: 22,
-      height: 22
-    },
+    // A red hatch, which ArcGIS draws no legend swatch for.
+    legend: RED_HATCH_LEGEND,
     native: {
       outFields: ['*']
     }

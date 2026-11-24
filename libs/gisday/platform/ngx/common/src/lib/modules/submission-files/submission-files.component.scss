@@ -77,3 +77,21 @@ tamu-gisc-file.button {
 progress {
   flex: 1 1 8rem;
 }
+
+// A PDF shown under the list (#3090): its name and the buttons that page through the PDFs, then the browser's own viewer,
+// as wide as the list and most of the window high, so a poster can be read without opening it elsewhere.
+.file-preview {
+  margin: 0.75rem 0;
+}
+
+.file-preview-actions {
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.file-preview-frame {
+  display: block;
+  width: 100%;
+  height: 75vh;
+  border: 1px solid vars.$accent-grey;
+}

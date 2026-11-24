@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import { expect, test } from './fixtures';
 import { MANIFEST_PATH, MapManifest } from './global-setup';
 import { blockAnalytics } from './analytics';
+import { PROBE_GLOBAL } from './map-probe';
 
 /**
  * A satellite campus map loads only its own campus (#1910).
@@ -20,8 +21,6 @@ import { blockAnalytics } from './analytics';
  * A campus's own layers are named after it (`galveston-buildings-layer`, `dc-bush-school-property-layer`),
  * so the map's id from its route says which they are, and a campus added later is checked unchanged.
  */
-
-const PROBE_GLOBAL = '__tamuGiscMapProbe';
 
 /** Probe layer types a basemap is made of. ArcGIS's own basemap layers carry no campus prefix. */
 const BASEMAP_TYPES = ['tile', 'vector-tile'];

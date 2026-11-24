@@ -9,10 +9,54 @@
   </div>
   <div class="flex flex-row wrap align-center views trailer-1">
     <button type="button" class="button secondary" [disabled]="publishing()" (click)="publishToArcgis()">Publish to ArcGIS</button>
+    <!-- Every submission, its answers and its photos as one zip, for the project's partners (#545). -->
+    <button type="button" class="button secondary" [disabled]="exporting()" (click)="downloadExport()">{{ exporting() ? 'Preparing the zip…' : 'Download all as a zip' }}</button>
     @if (arcgisResult()) {
     <p role="status">{{ arcgisResult() }}</p>
     }
+    @if (exportProblem()) {
+    <p role="alert">{{ exportProblem() }}</p>
+    }
   </div>
+  <!-- How many submissions each category has (#3244): every one this season, whichever view is pressed. floating-table,
+       as every admin table, and in the admin dashboards' scroll box: its headings are single words, so on a phone it is
+       wider than the page's column and scrolls in its own box rather than the page. -->
+  @if (counts$ | async; as counts) {
+  <h2>Submissions by category</h2>
+  <tamu-gisc-dashboard-scroll class="trailer-1">
+    <table class="floating-table submission-counts">
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Submissions</th>
+          <th>Verified</th>
+          <th>Needs a look</th>
+          <th>Discarded</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of counts.rows; track row.category) {
+        <tr>
+          <td>{{ row.category }}</td>
+          <td>{{ row.submissions }}</td>
+          <td>{{ row.verified }}</td>
+          <td>{{ row.unverified }}</td>
+          <td>{{ row.discarded }}</td>
+        </tr>
+        }
+      </tbody>
+      <tfoot>
+        <tr>
+          <th>{{ counts.total.category }}</th>
+          <th>{{ counts.total.submissions }}</th>
+          <th>{{ counts.total.verified }}</th>
+          <th>{{ counts.total.unverified }}</th>
+          <th>{{ counts.total.discarded }}</th>
+        </tr>
+      </tfoot>
+    </table>
+  </tamu-gisc-dashboard-scroll>
+  }
   <tamu-gisc-submission-review-list
     [submissions$]="submissions$"
     [isAdmin]="true"

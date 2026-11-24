@@ -50,10 +50,11 @@ Node runs in Docker here, so Playwright runs in a container and the dev server r
 `127.0.0.1`:
 
 ```bash
+PW_IMAGE="mcr.microsoft.com/playwright:v$(sed -n 's/.*"@playwright\/test": *"[^0-9]*\([0-9][0-9.]*\)".*/\1/p' package.json)-noble"
 docker run --rm --network container:aggiemap-dev \
   -v "C:\TAMU\Tamu.GeoInnovation.js.monorepo:/work" -w /work \
   -e AGGIEMAP_SMOKE_BASE_URL=http://127.0.0.1:4200 \
-  mcr.microsoft.com/playwright:v1.64.1-noble \
+  "$PW_IMAGE" \
   npx playwright test --config=tools/builder-inventory/playwright.config.ts
 ```
 
@@ -72,7 +73,7 @@ Sharing the network namespace satisfies both without touching the API's allowlis
 | Variable | Default | Purpose |
 | --- | --- | --- |
 | `AGGIEMAP_SMOKE_BASE_URL` | `https://aggiemap.tamu.edu` | environment to walk |
-| `BUILDER_INVENTORY_ONLY` | - | comma-separated routes, for iterating on one builder. **It rewrites the output from only what it walked, deleting every other map's recordings** - 363 destinations down to 2, exit 0, no warning. Do not use it in a checkout whose baseline you intend to commit until #2824 is fixed |
+| `BUILDER_INVENTORY_ONLY` | - | comma-separated routes, for iterating on one builder. Their recordings are replaced and every other map's are kept, and the run says how many it kept (#2824). It refuses an output captured against another environment |
 | `BUILDER_INVENTORY_CONCURRENCY` | `4` | concurrent walks; each holds a browser context and an Esri map |
 | `BUILDER_INVENTORY_MAX` | `600` | per-map safety cap on destinations |
 

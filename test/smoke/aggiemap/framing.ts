@@ -4,6 +4,7 @@ import * as path from 'path';
 import { Page } from '@playwright/test';
 
 import type { MapManifest } from './global-setup';
+import { PROBE_GLOBAL } from './map-probe';
 
 /**
  * Where a map opens: its zoom and `[longitude, latitude]` center, read from a loaded page.
@@ -15,8 +16,6 @@ export interface Framing {
   zoom: number;
   center: [number, number];
 }
-
-const PROBE_GLOBAL = '__tamuGiscMapProbe';
 
 const INVENTORY_PATH = path.join(
   __dirname,

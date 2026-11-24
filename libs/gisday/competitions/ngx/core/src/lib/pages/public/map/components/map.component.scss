@@ -1,3 +1,4 @@
+@import 'libs/sass/variables';
 @import 'libs/sass/mixins';
 
 :host {
@@ -40,9 +41,9 @@
   }
 
   .mine {
-    background: #500000;
+    background: $aggie-maroon;
     border: 1.5px solid #ffffff;
-    box-shadow: 0 0 0 1px #500000;
+    box-shadow: 0 0 0 1px $aggie-maroon;
   }
 
   .others {
@@ -50,6 +51,6 @@
   }
 
   .found {
-    border: 2px solid #500000;
+    border: 2px solid $aggie-maroon;
   }
 }

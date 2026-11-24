@@ -1,4 +1,5 @@
 import { fillReviewEmail } from './review-email';
+import { formatCentral } from './central-time';
 
 /**
  * The email that brings a speaker their own link to edit their presenter profile (#2936), as a template the admin reads
@@ -84,12 +85,7 @@ export function profileEmailValues(
     '{site}': site.name,
     '{site address}': site.address,
     '{edit link}': link,
-    '{link expires}': expires.toLocaleDateString('en-US', {
-      timeZone: 'America/Chicago',
-      weekday: 'long',
-      month: 'long',
-      day: 'numeric'
-    })
+    '{link expires}': formatCentral(expires, { weekday: 'long', month: 'long', day: 'numeric' })
   };
 }
 

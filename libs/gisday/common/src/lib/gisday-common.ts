@@ -1,3 +1,4 @@
+import { centralDay, centralInstant, formatCentral } from './central-time';
 export enum COMPETITION_VALIDATION_STATUS {
   unverified = 'unverified',
   verified = 'verified',
@@ -51,6 +52,13 @@ export function checksInByCode(mode: string | undefined | null): boolean {
  * The query parameter the QR code's link puts the code in: `/sessions/details/<guid>?checkin=<code>`.
  */
 export const CHECK_IN_CODE_PARAM = 'checkin';
+
+/**
+ * Where the page keeps a check-in code it took out of the address, followed by that address's path (#2572), so Analytics
+ * and the browser's history never have it. gisday-angular's `index.html` writes it, before the app starts, under this
+ * same name.
+ */
+export const CHECK_IN_CODE_KEPT = 'gisday-checkin-code:';
 
 /**
  * What an attendee checking in to a QR session without its code, or with another session's, is told.
@@ -125,11 +133,6 @@ function readMinutes(value: unknown): number | null {
 }
 
 /**
- * The time zone GIS Day's days belong to: a session's day is the calendar date there.
- */
-const GISDAY_TIME_ZONE = 'America/Chicago';
-
-/**
  * When check-in to a session opens and closes: from `before` minutes before its start until `after` minutes after its
  * end, by default 5 and 10, each set per session (#1795, #3209). The session page shows the Check In button in this
  * window, and the API refuses an attendee's check-in outside it, so the two cannot disagree. Organizers adding a
@@ -192,7 +195,7 @@ export function sessionTime(day: Date | string | undefined | null, time: string 
     return null;
   }
 
-  return atTime(centralParts(date), time);
+  return atTime(centralDay(date), time);
 }
 
 /**
@@ -206,9 +209,7 @@ export function dayHasPassed(day: Date | string | undefined | null, now: Date = 
     return false;
   }
 
-  const key = ({ year, month, day }: { year: number; month: number; day: number }) => year * 10000 + month * 100 + day;
-
-  return key(centralParts(date)) < key(centralParts(now));
+  return centralDay(date) < centralDay(now);
 }
 
 /**
@@ -236,45 +237,21 @@ export function checkInOpensMessage(opens: Date, now: Date = new Date()): string
  * November 18 at 2:00 PM". The page's message and the API's refusal both say it this way (#3077, #3089).
  */
 export function checkInOpensAt(opens: Date, now: Date = new Date()): string {
-  const time = new Intl.DateTimeFormat('en-US', { timeZone: GISDAY_TIME_ZONE, hour: 'numeric', minute: '2-digit' }).format(
-    opens
-  );
-  const a = centralParts(opens);
-  const b = centralParts(now);
+  const time = formatCentral(opens, { hour: 'numeric', minute: '2-digit' });
 
-  if (a.year === b.year && a.month === b.month && a.day === b.day) {
+  if (centralDay(opens) === centralDay(now)) {
     return `at ${time}`;
   }
 
-  const day = new Intl.DateTimeFormat('en-US', {
-    timeZone: GISDAY_TIME_ZONE,
-    weekday: 'long',
-    month: 'long',
-    day: 'numeric'
-  }).format(opens);
+  const day = formatCentral(opens, { weekday: 'long', month: 'long', day: 'numeric' });
 
   return `on ${day} at ${time}`;
 }
 
 /**
- * The year, month and day of an instant in Central time.
+ * The instant a stored time (`HH:mm[:ss][ GMT±hhmm ...]`) falls on a Central calendar day (YYYY-MM-DD).
  */
-function centralParts(date: Date): { year: number; month: number; day: number } {
-  const parts = new Intl.DateTimeFormat('en-US', {
-    timeZone: GISDAY_TIME_ZONE,
-    year: 'numeric',
-    month: 'numeric',
-    day: 'numeric'
-  }).formatToParts(date);
-  const part = (type: string) => Number(parts.find((p) => p.type === type)?.value);
-
-  return { year: part('year'), month: part('month'), day: part('day') };
-}
-
-/**
- * The instant a stored time (`HH:mm[:ss][ GMT±hhmm ...]`) falls on a Central calendar day.
- */
-function atTime(day: { year: number; month: number; day: number }, time: string): Date | null {
+function atTime(day: string, time: string): Date | null {
   const parts = /^(\d{1,2}):(\d{2})(?::(\d{2}))?(?:\s*GMT([+-])(\d{2})(\d{2}))?/.exec(time.trim());
 
   if (!parts) {
@@ -282,35 +259,19 @@ function atTime(day: { year: number; month: number; day: number }, time: string)
   }
 
   const [, hours, minutes, seconds, sign, offsetHours, offsetMinutes] = parts;
-  const wallClock = Date.UTC(day.year, day.month - 1, day.day, Number(hours), Number(minutes), Number(seconds ?? 0));
 
   if (Number(hours) > 23 || Number(minutes) > 59) {
     return null;
   }
 
-  // With a stored offset, the wall-clock time is in that offset; without one, in Central time.
-  const offsetMs = sign
-    ? (sign === '-' ? -1 : 1) * (Number(offsetHours) * 60 + Number(offsetMinutes)) * 60000
-    : centralOffsetMs(new Date(wallClock));
+  if (!sign) {
+    return centralInstant(day, `${hours}:${minutes}:${seconds ?? '00'}`);
+  }
+
+  // With a stored offset, the wall-clock time is in that offset.
+  const [year, month, date] = day.split('-').map(Number);
+  const wallClock = Date.UTC(year, month - 1, date, Number(hours), Number(minutes), Number(seconds ?? 0));
+  const offsetMs = (sign === '-' ? -1 : 1) * (Number(offsetHours) * 60 + Number(offsetMinutes)) * 60000;
 
   return new Date(wallClock - offsetMs);
-}
-
-/**
- * Central time's offset from UTC, in milliseconds, near an instant: -6 h in winter, -5 h in summer.
- */
-function centralOffsetMs(near: Date): number {
-  const p = new Intl.DateTimeFormat('en-US', {
-    timeZone: GISDAY_TIME_ZONE,
-    hourCycle: 'h23',
-    year: 'numeric',
-    month: 'numeric',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric'
-  }).formatToParts(near);
-  const part = (type: string) => Number(p.find((x) => x.type === type)?.value);
-  const asUtc = Date.UTC(part('year'), part('month') - 1, part('day'), part('hour'), part('minute'));
-
-  return asUtc - Math.floor(near.getTime() / 60000) * 60000;
 }
