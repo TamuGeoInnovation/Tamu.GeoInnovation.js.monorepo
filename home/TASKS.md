@@ -1,6 +1,6 @@
 # Home machine: current tasks
 
-## Batch s79 (security: #2122, remove the dependencies nothing uses, found with knip; 23 November 2026, about 9:10 PM Central, from `work (security)`) (Low) - **after your GIS Day and AggieMap batches**
+## Batch s79 (security: #2122, remove the dependencies nothing uses, found with knip; 23 November 2026, about 9:10 PM Central, from `work (security)`) (Low) - **WITHDRAWN, moved to work (the security director itself, on the shortest queue)** (rule 3 of *Working unsupervised overnight*: home and laptop are each about eight deep). Do not run it.
 
 [#2122](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2122): every unused package is more surface for the
 next advisory. knip is already configured with each project's entry points (PR 2389), and three removal rounds have merged

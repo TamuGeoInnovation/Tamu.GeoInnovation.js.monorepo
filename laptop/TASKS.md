@@ -1,6 +1,6 @@
 # Laptop: current tasks
 
-## Batch s8 (security: #1550, drop `baseUrl` and the last `ignoreDeprecations` from the tsconfigs; 23 November 2026, about 9:10 PM Central, from `work (security)`) (Low) - **after your other batches, including s7 (#3265)**
+## Batch s8 (security: #1550, drop `baseUrl` and the last `ignoreDeprecations` from the tsconfigs; 23 November 2026, about 9:10 PM Central, from `work (security)`) (Low) - **WITHDRAWN, moved to work (the security director itself, on the shortest queue)** (rule 3 of *Working unsupervised overnight*: home and laptop are each about eight deep). Do not run it.
 
 [#1550](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1550): `"ignoreDeprecations": "6.0"` stops working
 in TypeScript 7, and it is there only to keep `baseUrl`. Read the issue first: it says where the two remaining uses are and why
