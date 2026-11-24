@@ -24,9 +24,8 @@ import {
 import { Event, Speaker } from '../entities/all.entity';
 import { ContactService } from '../contact/contact.service';
 import { EmailSender, siteSender } from '../contact/email-sender.service';
-import { EMAIL_LANES, inParallel } from '../_base/in-parallel';
 import { EmailSendLog } from '../speaker-edit/email-send-log';
-import { RepeatGuard } from '../speaker-edit/repeat-guard';
+import { RepeatGuard, sendEach } from '../speaker-edit/repeat-guard';
 import {
   SessionDetailsEmail,
   SessionDetailsEmailPreview,
@@ -149,53 +148,40 @@ export class JudgingEmailService {
       skipped: ticked ? [] : noAddress.map((s) => ({ name: fullName(s), reason: 'no email address on their record' }))
     };
 
-    const parts = await inParallel(chosen, EMAIL_LANES, async (judge) => {
-      const part: SendResult = { sent: [], skipped: [] };
-      const name = fullName(judge);
+    // Each claimed before the link is made and the email goes, in the table every copy of the API shares (#3260), so two
+    // sends racing, in one copy or in two, skip each other's.
+    const each = await sendEach(
+      this.repeats,
+      chosen.map((j) => [j]),
+      {
+        kind: JUDGING_EMAIL_KIND,
+        sessionGuid: session.guid,
+        name: ([judge]) => fullName(judge),
+        repeated: 'already asked to judge this session',
+        send: async ([judge]) => {
+          // Their own judging link, which opens only the judging page (#3183).
+          const { url, expires } = await this.speakerEdits.newLink(judge, host, 'judging');
+          const { subject, text } = fillProfileEmail(approved, judgingEmailValues(judge, site, url, expires));
 
-      // Claimed before the link is made and the email goes, in the table every copy of the API shares (#3260), so two sends
-      // racing, in one copy or in two, skip each other's.
-      const claimed = await this.repeats.claim(JUDGING_EMAIL_KIND, session.guid, [judge]);
-
-      if (!claimed) {
-        part.skipped.push({
-          name,
-          reason: `already asked to judge this session in the last ${REPEAT_SEND_MINUTES} minutes`
-        });
-        return part;
+          await this.contact.sendMessage(
+            {
+              to: judge.email.trim(),
+              ...from,
+              subject,
+              text,
+              html: siteEmailHtml(text, { site, subject, from: from.from, design })
+            },
+            true
+          );
+        },
+        sent: (group) => this.sendLog?.record(group, JUDGING_EMAIL_KIND, session.guid, from.from),
+        failed: ([judge], err) =>
+          Logger.error(`Could not ask speaker ${judge.guid} to judge session ${session.guid}: ${err.message}`, 'JudgingEmailService')
       }
+    );
 
-      try {
-        // Their own judging link, which opens only the judging page (#3183).
-        const { url, expires } = await this.speakerEdits.newLink(judge, host, 'judging');
-        const { subject, text } = fillProfileEmail(approved, judgingEmailValues(judge, site, url, expires));
-
-        await this.contact.sendMessage(
-          {
-            to: judge.email.trim(),
-            ...from,
-            subject,
-            text,
-            html: siteEmailHtml(text, { site, subject, from: from.from, design })
-          },
-          true
-        );
-        part.sent.push(name);
-        await this.sendLog?.record([judge], JUDGING_EMAIL_KIND, session.guid, from.from);
-      } catch (err) {
-        await this.repeats.release(claimed);
-        Logger.error(
-          `Could not ask speaker ${judge.guid} to judge session ${session.guid}: ${err.message}`,
-          'JudgingEmailService'
-        );
-        part.skipped.push({ name, reason: 'the email could not be sent' });
-      }
-
-      return part;
-    });
-
-    result.sent.push(...parts.flatMap((p) => p.sent));
-    result.skipped.push(...parts.flatMap((p) => p.skipped));
+    result.sent.push(...each.sent);
+    result.skipped.push(...each.skipped);
 
     return result;
   }
