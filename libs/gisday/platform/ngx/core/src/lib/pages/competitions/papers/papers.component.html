@@ -99,9 +99,11 @@
         <div class="trailer-4" id="six">
           <h2 class="trailer-1">First Place Award Announcement</h2>
 
-          <p>Winners will be announced at the awards session:</p>
-          <!-- The awards session as the database has it, as the other competition pages name it (#3011, #3321). -->
-          <tamu-gisc-competition-session kind="awards" [season]="season()"></tamu-gisc-competition-session>
+          <!-- The awards session as the database has it, as the other competition pages name it (#3011, #3321); its sentence
+          inside, so it shows only with a session to name (#3412). -->
+          <tamu-gisc-competition-session kind="awards" [season]="season()">
+            <p>Winners will be announced at the awards session:</p>
+          </tamu-gisc-competition-session>
         </div>
 
         <div class="trailer-4" id="seven">
