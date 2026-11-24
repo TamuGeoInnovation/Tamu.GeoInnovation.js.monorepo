@@ -119,11 +119,17 @@ const SAID: Record<string, Record<string, Array<Toast>>> = {
     notDeleted: [{ id: 'tag-delete-failed', title: 'Delete Tag', message: 'Error deleting tag: 500' }]
   },
   university: {
-    created: [{ id: 'university-create-success', title: 'Create University', message: 'University was successfully created.' }],
+    created: [
+      { id: 'university-create-success', title: 'Create University', message: 'University was successfully created.' }
+    ],
     notCreated: [{ id: 'university-create-failed', title: 'Create University', message: 'Error creating university: 500' }],
-    updated: [{ id: 'university-update-success', title: 'Update University', message: 'University was successfully updated.' }],
+    updated: [
+      { id: 'university-update-success', title: 'Update University', message: 'University was successfully updated.' }
+    ],
     notUpdated: [{ id: 'university-update-failed', title: 'Update University', message: 'Error updating university: 500' }],
-    deleted: [{ id: 'university-delete-success', title: 'Delete University', message: 'University was successfully deleted.' }],
+    deleted: [
+      { id: 'university-delete-success', title: 'Delete University', message: 'University was successfully deleted.' }
+    ],
     notDeleted: [{ id: 'university-delete-failed', title: 'Delete University', message: 'Error deleting university: 500' }]
   },
   broadcast: {
@@ -135,20 +141,56 @@ const SAID: Record<string, Record<string, Array<Toast>>> = {
     notDeleted: [{ id: 'broadcast-delete-failed', title: 'Delete Broadcast', message: 'Error deleting broadcast: 500' }]
   },
   'event location': {
-    created: [{ id: 'event-location-create-success', title: 'Create Event Location', message: 'Event location was successfully created.' }],
-    notCreated: [{ id: 'event-location-create-failed', title: 'Create Event Location', message: 'Error creating event location: 500' }],
-    updated: [{ id: 'event-location-update-success', title: 'Update Event Location', message: 'Event location was successfully updated.' }],
-    notUpdated: [{ id: 'event-location-update-failed', title: 'Update Event Location', message: 'Error updating event location: 500' }],
-    deleted: [{ id: 'event-location-delete-success', title: 'Delete Event Location', message: 'Event location was successfully deleted.' }],
-    notDeleted: [{ id: 'event-location-delete-failed', title: 'Delete Event Location', message: 'Error deleting event location: 500' }]
+    created: [
+      {
+        id: 'event-location-create-success',
+        title: 'Create Event Location',
+        message: 'Event location was successfully created.'
+      }
+    ],
+    notCreated: [
+      { id: 'event-location-create-failed', title: 'Create Event Location', message: 'Error creating event location: 500' }
+    ],
+    updated: [
+      {
+        id: 'event-location-update-success',
+        title: 'Update Event Location',
+        message: 'Event location was successfully updated.'
+      }
+    ],
+    notUpdated: [
+      { id: 'event-location-update-failed', title: 'Update Event Location', message: 'Error updating event location: 500' }
+    ],
+    deleted: [
+      {
+        id: 'event-location-delete-success',
+        title: 'Delete Event Location',
+        message: 'Event location was successfully deleted.'
+      }
+    ],
+    notDeleted: [
+      { id: 'event-location-delete-failed', title: 'Delete Event Location', message: 'Error deleting event location: 500' }
+    ]
   },
   organization: {
-    created: [{ id: 'organization-create-success', title: 'Create Organization', message: 'Organization was successfully created.' }],
-    notCreated: [{ id: 'organization-create-failed', title: 'Create Organization', message: 'Error creating organization: 500' }],
-    updated: [{ id: 'organization-update-success', title: 'Update Organization', message: 'Organization was successfully updated.' }],
-    notUpdated: [{ id: 'organization-update-failed', title: 'Update Organization', message: 'Error updating organization: 500' }],
-    deleted: [{ id: 'organization-delete-success', title: 'Delete Organization', message: 'Organization was successfully deleted.' }],
-    notDeleted: [{ id: 'organization-delete-failed', title: 'Delete Organization', message: 'Error deleting organization: 500' }]
+    created: [
+      { id: 'organization-create-success', title: 'Create Organization', message: 'Organization was successfully created.' }
+    ],
+    notCreated: [
+      { id: 'organization-create-failed', title: 'Create Organization', message: 'Error creating organization: 500' }
+    ],
+    updated: [
+      { id: 'organization-update-success', title: 'Update Organization', message: 'Organization was successfully updated.' }
+    ],
+    notUpdated: [
+      { id: 'organization-update-failed', title: 'Update Organization', message: 'Error updating organization: 500' }
+    ],
+    deleted: [
+      { id: 'organization-delete-success', title: 'Delete Organization', message: 'Organization was successfully deleted.' }
+    ],
+    notDeleted: [
+      { id: 'organization-delete-failed', title: 'Delete Organization', message: 'Error deleting organization: 500' }
+    ]
   },
   class: {
     created: [{ id: 'class-create-success', title: 'Create Class', message: 'Class was successfully created.' }],
