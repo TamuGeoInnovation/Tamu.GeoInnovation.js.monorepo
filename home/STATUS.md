@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle, listening.
+- **Batch g103 (gisday: #3321, the Papers page's dates)**, since about 2:28 AM Central, 24 November.
 
 ## Finished
 - **Batch g102 (gisday: #3382)** (report `home/reports/2026-11-24-g102.md`): branch ready, `refactor/3382-admin-entity-form-2` at `e95677be1`, stacked on the first #3340 branch; its PR waits for the laptop's images. All five forms fit; pins 11/11 before and after; check exit 0. No questions. Finished 2:24 AM Central.
