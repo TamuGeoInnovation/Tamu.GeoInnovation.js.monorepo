@@ -40,6 +40,11 @@ export class EventDashboard<T extends EventRecord> {
    * records (#3024).
    */
   public async getSeason(seasonGuid: string, host?: string): Promise<RsvpDashboard> {
+    return (await this.season(seasonGuid, host)).dashboard;
+  }
+
+  /** `getSeason`'s dashboard, with the records it counted, for a dashboard that counts more from them (#2893). */
+  protected async season(seasonGuid: string, host?: string): Promise<{ dashboard: RsvpDashboard; records: Array<T> }> {
     const site = gisdaySite(process.env.GISDAY_SITE, host);
     const events = (
       await this.eventRepo.find({
@@ -71,7 +76,7 @@ export class EventDashboard<T extends EventRecord> {
       }
     }
 
-    return {
+    const dashboard = {
       events: events
         .map((e) => ({
           guid: e.guid,
@@ -86,6 +91,8 @@ export class EventDashboard<T extends EventRecord> {
       made: records.map((r) => ({ event: r.event.guid, created: new Date(r.created).toISOString() })),
       unreadAccounts: [...new Set(records.map((r) => r.accountGuid))].filter((a) => profiles.get(a) === null).length
     };
+
+    return { dashboard, records };
   }
 
   /** The people behind one event's records, oldest first, each with when their record was made. */
@@ -103,6 +110,11 @@ export class EventDashboard<T extends EventRecord> {
     const profiles = await this.people.profilesOf(records.map((r) => r.accountGuid));
     const organizations = await this.people.organizationNames();
 
-    return records.map((r) => personOf(profiles.get(r.accountGuid), r.created, organizations));
+    return records.map((r) => this.person(r, personOf(profiles.get(r.accountGuid), r.created, organizations)));
+  }
+
+  /** One person in an event's list, from their record: as `personOf` makes them, or with more from the record. */
+  protected person(_record: T, person: RsvpDashboardPerson): RsvpDashboardPerson {
+    return person;
   }
 }

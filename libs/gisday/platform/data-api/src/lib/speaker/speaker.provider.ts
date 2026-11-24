@@ -1,7 +1,6 @@
 import { randomBytes } from 'crypto';
 
 import {
-  HttpException,
   Injectable,
   UnprocessableEntityException,
   NotFoundException,
@@ -15,14 +14,25 @@ import { DeepPartial, DeleteResult, In, Repository } from 'typeorm';
 import { fitImage } from '@tamu-gisc/common/node/images';
 
 import { Speaker, EntityRelationsLUT, University, Organization, Event, Asset, Season } from '../entities/all.entity';
-import { BaseProvider } from '../_base/base-provider';
 import { AssetsService } from '../assets/assets.service';
 import { refuseUnsafeImage } from '../assets/image-upload';
 import { SeasonService } from '../season/season.service';
 import { SPEAKER_PHOTO_FIT } from './speaker-photo';
+import { rethrowHttp } from '../_base/rethrow-http';
+import { SeasonScopedProvider } from '../_base/season-scoped-provider';
 
 @Injectable()
-export class SpeakerProvider extends BaseProvider<Speaker> {
+export class SpeakerProvider extends SeasonScopedProvider<Speaker> {
+  protected get seasons() {
+    return this.seasonService;
+  }
+
+  protected readonly recordsName = 'speakers';
+
+  protected forSeason(seasonGuid: string) {
+    return this.getSpeakersForSeason(seasonGuid);
+  }
+
   private _resourcePath = `images/speakers`;
 
   constructor(
@@ -59,19 +69,19 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
         }
       });
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      Logger.error(err.message, 'SpeakerProvider');
-      throw new InternalServerErrorException('Could not find speakers for season.');
+      rethrowHttp(err, new InternalServerErrorException('Could not find speakers for season.'), () =>
+        Logger.error(err.message, 'SpeakerProvider')
+      );
     }
   }
 
+  /**
+   * A presenter as their public page shows them, with their sessions in day and time order. Only the sessions the site
+   * shows: a hidden one (`active` false) is left out, name and all (#3345). Removed after loading rather than filtered in
+   * the query, so a presenter whose every session is hidden is still found.
+   */
   public async getPresenter(guid: string) {
-    return this.speakerRepo.findOne({
+    const presenter = await this.speakerRepo.findOne({
       where: {
         guid: guid
       },
@@ -85,15 +95,21 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
         }
       }
     });
+
+    if (presenter?.events) {
+      presenter.events = presenter.events.filter((event) => event.active !== false);
+    }
+
+    return presenter;
   }
 
-  /** The active season's speakers; with their sessions only when asked, as `getSpeakersForSeason` (#441). */
+  /**
+   * The active season's speakers; with their sessions only when asked, as `getSpeakersForSeason` (#441). Not through
+   * `forActiveSeason`, whose `forSeason` cannot ask for sessions. No 422 for a missing season: `findOneActive` throws its
+   * own 404 (#3324).
+   */
   public async getSpeakersForActiveSeason(withSessions = false) {
     const season = await this.seasonService.findOneActive();
-
-    if (!season) {
-      throw new UnprocessableEntityException('No active season found.');
-    }
 
     return this.getSpeakersForSeason(season.guid, withSessions);
   }
@@ -245,14 +261,9 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
         try {
           speakerImage = await this._saveImage(file, guid);
         } catch (err) {
-          // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-          // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-          if (err instanceof HttpException) {
-            throw err;
-          }
-
-          Logger.error(err.message, 'SpeakerProvider');
-          throw new InternalServerErrorException('Could not save speaker image');
+          rethrowHttp(err, new InternalServerErrorException('Could not save speaker image'), () =>
+            Logger.error(err.message, 'SpeakerProvider')
+          );
         }
       }
 
@@ -297,14 +308,9 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
 
           return savedEntity.save();
         } catch (err) {
-          // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-          // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-          if (err instanceof HttpException) {
-            throw err;
-          }
-
-          Logger.error(err.message, 'SpeakerProvider');
-          throw new InternalServerErrorException('Could not save speaker image');
+          rethrowHttp(err, new InternalServerErrorException('Could not save speaker image'), () =>
+            Logger.error(err.message, 'SpeakerProvider')
+          );
         }
       } else {
         return savedEntity;
@@ -401,13 +407,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
     try {
       return Promise.all(newEntities.map((entity) => entity.save()));
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      throw new InternalServerErrorException('Could not copy speakers into season.');
+      rethrowHttp(err, new InternalServerErrorException('Could not copy speakers into season.'));
     }
   }
 
@@ -523,13 +523,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
         newSpeakers: savedSpeakerEntities
       };
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      throw new InternalServerErrorException(err.message);
+      rethrowHttp(err, new InternalServerErrorException(err.message));
     }
   }
 
@@ -559,14 +553,9 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
 
       return result;
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      Logger.error(err.message, 'SpeakerProvider.deleteEntities');
-      throw new InternalServerErrorException('Could not delete entities');
+      rethrowHttp(err, new InternalServerErrorException('Could not delete entities'), () =>
+        Logger.error(err.message, 'SpeakerProvider.deleteEntities')
+      );
     }
   }
 

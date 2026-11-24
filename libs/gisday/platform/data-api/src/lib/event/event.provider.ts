@@ -1,6 +1,5 @@
 import {
   BadRequestException,
-  HttpException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -24,13 +23,24 @@ import {
   Tag,
   UserRsvp
 } from '../entities/all.entity';
-import { BaseProvider } from '../_base/base-provider';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { EventAttendanceDto } from './dto/event-attendance.dto';
 import { SeasonService } from '../season/season.service';
+import { rethrowHttp } from '../_base/rethrow-http';
+import { SeasonScopedProvider } from '../_base/season-scoped-provider';
 
 @Injectable()
-export class EventProvider extends BaseProvider<Event> {
+export class EventProvider extends SeasonScopedProvider<Event> {
+  protected get seasons() {
+    return this.seasonProvider;
+  }
+
+  protected readonly recordsName = 'sessions';
+
+  protected forSeason(seasonGuid: string) {
+    return this.getEventsForSeason(seasonGuid);
+  }
+
   constructor(
     @InjectRepository(Event) public eventRepo: Repository<Event>,
     @InjectRepository(EventLocation) private eventLocationRepo: Repository<EventLocation>,
@@ -46,19 +56,7 @@ export class EventProvider extends BaseProvider<Event> {
   }
 
   public async getEventsForActiveSeason() {
-    const season = await this.seasonProvider.findOneActive();
-
-    try {
-      return this.getEventsForSeason(season.guid);
-    } catch (error) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (error instanceof HttpException) {
-        throw error;
-      }
-
-      throw new InternalServerErrorException('Could not get events for active season.');
-    }
+    return this.forActiveSeason();
   }
 
   public async getEventsForSeason(seasonGuid: string) {
@@ -134,13 +132,7 @@ export class EventProvider extends BaseProvider<Event> {
         return eventEnt.save();
       }
     } catch (error) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (error instanceof HttpException) {
-        throw error;
-      }
-
-      throw new UnprocessableEntityException(null, 'Could not insert new Event');
+      rethrowHttp(error, new UnprocessableEntityException(null, 'Could not insert new Event'));
     }
   }
 
@@ -178,15 +170,9 @@ export class EventProvider extends BaseProvider<Event> {
 
       return newEnt.save();
     } catch (error) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (error instanceof HttpException) {
-        throw error;
-      }
-
       // Was "Could not insert new Event" -- copy-pasted from insertEvent, and misleading when it
       // surfaces on an update.
-      throw new UnprocessableEntityException(null, 'Could not update Event');
+      rethrowHttp(error, new UnprocessableEntityException(null, 'Could not update Event'));
     }
   }
 
@@ -376,13 +362,7 @@ export class EventProvider extends BaseProvider<Event> {
     try {
       return Promise.all(newEvents);
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      throw new InternalServerErrorException('Could not copy events into season');
+      rethrowHttp(err, new InternalServerErrorException('Could not copy events into season'));
     }
   }
 }

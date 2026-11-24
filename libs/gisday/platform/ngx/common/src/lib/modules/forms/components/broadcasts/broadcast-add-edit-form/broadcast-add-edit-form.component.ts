@@ -6,13 +6,12 @@ import { Observable, filter, map, switchMap, take } from 'rxjs';
 import { EventBroadcast, Place } from '@tamu-gisc/gisday/platform/data-api';
 import { BroadcastService, PlaceService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { serverMessage } from '../../../../../utils/server-message';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
 
-import { injectBackToList } from '../../../admin-details-page';
+import { adminEntityForm } from '../../../admin-entity-form';
 
 @Component({
   selector: 'tamu-gisc-broadcast-add-edit-form',
@@ -22,8 +21,8 @@ import { injectBackToList } from '../../../admin-details-page';
 })
 export class BroadcastAddEditFormComponent implements OnInit {
   private readonly fb = inject(UntypedFormBuilder);
-  /** Leaves for the list once a save, create or delete has worked: the one the page was opened from (#2965). */
-  private readonly backToList = injectBackToList('/admin/broadcasts');
+  /** Its save and delete, and what they say (#3340). */
+  private readonly saves = adminEntityForm('Broadcast', '/admin/broadcasts');
   private readonly at = inject(ActivatedRoute);
   private readonly bs = inject(BroadcastService);
   private readonly ps = inject(PlaceService);
@@ -83,24 +82,7 @@ export class BroadcastAddEditFormComponent implements OnInit {
   }
 
   public deleteEntity() {
-    this.bs.deleteEntity(this.form.getRawValue().guid).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'delete-broadcast-success',
-          title: 'Delete Broadcast',
-          message: 'Broadcast deleted successfully.'
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'delete-broadcast-error',
-          title: 'Delete Broadcast',
-          message: serverMessage(err, `Error deleting broadcast: ${err.status}`)
-        });
-      }
-    });
+    this.saves.save('delete', this.bs.deleteEntity(this.form.getRawValue().guid));
   }
 
   private _updateEntity() {
@@ -110,24 +92,7 @@ export class BroadcastAddEditFormComponent implements OnInit {
       return;
     }
 
-    this.bs.updateEntity(rawValue.guid, rawValue).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'update-broadcast-success',
-          title: 'Update Broadcast',
-          message: 'Broadcast updated successfully.'
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'update-broadcast-error',
-          title: 'Update Broadcast',
-          message: serverMessage(err, `Error updating broadcast: ${err.status}`)
-        });
-      }
-    });
+    this.saves.save('update', this.bs.updateEntity(rawValue.guid, rawValue));
   }
 
   private _createEntity() {
@@ -137,24 +102,7 @@ export class BroadcastAddEditFormComponent implements OnInit {
       return;
     }
 
-    this.bs.createEntity(rawValue).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'create-broadcast-success',
-          title: 'Create Broadcast',
-          message: 'Broadcast created successfully.'
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'create-broadcast-error',
-          title: 'Create Broadcast',
-          message: serverMessage(err, `Error creating broadcast: ${err.status}`)
-        });
-      }
-    });
+    this.saves.save('create', this.bs.createEntity(rawValue));
   }
 
   /** The form's value, or `undefined`, with a message, when it has no organization (#3048), as a venue's form does (#443). */
@@ -171,9 +119,5 @@ export class BroadcastAddEditFormComponent implements OnInit {
     }
 
     return this.form.getRawValue();
-  }
-
-  private _navigateBack() {
-    this.backToList();
   }
 }

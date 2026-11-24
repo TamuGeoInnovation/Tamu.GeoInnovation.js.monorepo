@@ -2,6 +2,7 @@ import { Page } from '@playwright/test';
 
 import { expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
+import { PROBE_GLOBAL } from './map-probe';
 
 /**
  * The dining kiosk draws its dining locations (#1392).
@@ -24,8 +25,6 @@ import { blockAnalytics } from './analytics';
  * Opened by direct link rather than discovered: All Maps lists kiosk maps on development only, and
  * production serves this map by link, so `global-setup.ts` never finds it there.
  */
-
-const PROBE_GLOBAL = '__tamuGiscMapProbe';
 
 const KIOSK_ROUTE = '/kiosk/dining/map';
 const DINING_LAYER_ID = 'dining-locations-layer';

@@ -112,3 +112,50 @@ export function countQueryProblem(response: { ok: boolean; status: number; body:
 
   return null;
 }
+
+/** The GIS server's own refusals of a count, which it gives about one count query in a hundred, at random (#2616). */
+const COUNT_REFUSAL = /Unable to complete operation|Error performing query operation/i;
+
+/**
+ * Asks `layer` for its count, `where=1=1`, and asks once more, two seconds later, when the server refuses it or does
+ * not answer within 30 seconds (#2616).
+ *
+ * Refusals come at random layers, about one count in a hundred, as HTTP 200 with the error in the body: measured on
+ * 23 November 2026 as 7 of 638 counts across the campus basemap's 58 layers, no layer twice. Checks that ask dozens of
+ * counts failed most nights on that alone, two of the release tier's 18 failures on 23 November among them (#3355). The
+ * same night a count of layer 19 simply went unanswered for 30 seconds, and answered at once when asked again. A layer
+ * that is really broken refuses, or does not answer, twice, and is still reported.
+ */
+export async function askCount(
+  request: Pick<APIRequestContext, 'get'>,
+  layer: string,
+  pause = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+): Promise<{ ok: boolean; status: number; body: unknown }> {
+  for (let attempt = 1; ; attempt++) {
+    let response: Awaited<ReturnType<APIRequestContext['get']>>;
+
+    try {
+      response = await request.get(`${layer}/query`, {
+        params: { where: '1=1', returnCountOnly: 'true', f: 'json' },
+        timeout: 30_000,
+        failOnStatusCode: false
+      });
+    } catch (error) {
+      if (attempt >= 2 || !/Timeout/i.test(String((error as Error)?.message ?? error))) {
+        throw error;
+      }
+
+      await pause(2_000);
+      continue;
+    }
+
+    const answer = { ok: response.ok(), status: response.status(), body: await response.json().catch(() => null) };
+    const message = (answer.body as { error?: { message?: string } } | null)?.error?.message ?? '';
+
+    if (attempt >= 2 || !COUNT_REFUSAL.test(message)) {
+      return answer;
+    }
+
+    await pause(2_000);
+  }
+}

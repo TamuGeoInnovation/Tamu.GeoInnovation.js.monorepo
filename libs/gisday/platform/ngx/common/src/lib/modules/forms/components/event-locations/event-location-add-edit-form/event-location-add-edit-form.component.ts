@@ -7,7 +7,6 @@ import { Observable, filter, map, startWith, switchMap, take } from 'rxjs';
 import { EventLocation, Place } from '@tamu-gisc/gisday/platform/data-api';
 import { LocationService, PlaceService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { serverMessage } from '../../../../../utils/server-message';
 import { LatLon, formatLatLonLines, isLatLonPolygon, parseLatLonLines } from '@tamu-gisc/common/utils/geometry';
 import { CHECK_IN_MAX_ACCURACY } from '@tamu-gisc/gisday/common';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -16,7 +15,7 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
 import { PolygonEditorComponent } from '@tamu-gisc/maps/esri';
 
-import { injectBackToList } from '../../../admin-details-page';
+import { adminEntityForm } from '../../../admin-entity-form';
 
 @Component({
   selector: 'tamu-gisc-event-location-add-edit-form',
@@ -34,8 +33,8 @@ import { injectBackToList } from '../../../admin-details-page';
 })
 export class EventLocationAddEditFormComponent implements OnInit {
   private readonly fb = inject(UntypedFormBuilder);
-  /** Leaves for the list once a save, create or delete has worked: the one the page was opened from (#2965). */
-  private readonly backToList = injectBackToList('/admin/event-locations');
+  /** Its save and delete, and what they say (#3340). */
+  private readonly saves = adminEntityForm('Event Location', '/admin/event-locations');
   private readonly at = inject(ActivatedRoute);
   private readonly els = inject(LocationService);
   private readonly ps = inject(PlaceService);
@@ -131,24 +130,7 @@ export class EventLocationAddEditFormComponent implements OnInit {
   }
 
   public deleteEntity() {
-    this.els.deleteEntity(this.form.getRawValue().guid).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'delete-event-location-success',
-          title: 'Delete Event Location',
-          message: 'Event location deleted successfully.'
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'delete-event-location-error',
-          title: 'Delete Event Location',
-          message: serverMessage(err, `Error deleting event location: ${err.status}`)
-        });
-      }
-    });
+    this.saves.save('delete', this.els.deleteEntity(this.form.getRawValue().guid));
   }
 
   private _updateEntity() {
@@ -158,24 +140,7 @@ export class EventLocationAddEditFormComponent implements OnInit {
       return;
     }
 
-    this.els.updateEntity(rawValue.guid, rawValue).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'update-event-location-success',
-          title: 'Update Event Location',
-          message: 'Event location updated successfully.'
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'update-event-location-error',
-          title: 'Update Event Location',
-          message: serverMessage(err, `Error updating event location: ${err.status}`)
-        });
-      }
-    });
+    this.saves.save('update', this.els.updateEntity(rawValue.guid, rawValue));
   }
 
   private _createEntity() {
@@ -185,24 +150,7 @@ export class EventLocationAddEditFormComponent implements OnInit {
       return;
     }
 
-    this.els.createEntity(rawValue).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'create-event-location-success',
-          title: 'Create Event Location',
-          message: 'Event location created successfully.'
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'create-event-location-error',
-          title: 'Create Event Location',
-          message: serverMessage(err, `Error creating event location: ${err.status}`)
-        });
-      }
-    });
+    this.saves.save('create', this.els.createEntity(rawValue));
   }
 
   /**
@@ -237,9 +185,5 @@ export class EventLocationAddEditFormComponent implements OnInit {
     }
 
     return { ...value, checkInZone: corners.length > 0 ? corners : null };
-  }
-
-  private _navigateBack() {
-    this.backToList();
   }
 }

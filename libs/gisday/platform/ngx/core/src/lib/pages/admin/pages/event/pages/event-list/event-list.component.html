@@ -10,6 +10,8 @@
 
     <div class="form-section-body">
       <tamu-gisc-admin-search [control]="search" placeholder="Search by name, building or room" one="event" many="events" [counts]="searchCounts$ | async"></tamu-gisc-admin-search>
+      <!-- One organization's sessions, by its venues (#434). -->
+      <tamu-gisc-select class="post-1" placeholder="Organization" [floatLabel]="false" [data]="organizationChoices$ | async" displayTemplate="name" valueTemplate="guid" [value]="organization.value" (changed)="organization.setValue($event)"></tamu-gisc-select>
       @if (site.sessionsFrom) {
       <!-- This site lists only its own organization's sessions; the database holds every organization's (#2986). -->
       <tamu-gisc-checkbox label="Show every organization's sessions" (changed)="organizations.setValue($event ? 'all' : '')" [checked]="organizations.value === 'all'"></tamu-gisc-checkbox>

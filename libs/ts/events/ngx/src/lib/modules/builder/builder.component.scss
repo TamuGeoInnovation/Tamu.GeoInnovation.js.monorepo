@@ -1,3 +1,4 @@
+@import 'libs/sass/variables';
 @import 'libs/sass/mixins';
 
 ::ng-deep {
@@ -14,7 +15,7 @@
 
 :host {
   display: block;
-  background: #500000;
+  background: $aggie-maroon;
   color: #eeeeee;
   padding: 2rem 0;
   -webkit-box-sizing: border-box;
