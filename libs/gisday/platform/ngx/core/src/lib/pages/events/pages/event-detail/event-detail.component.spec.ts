@@ -598,3 +598,71 @@ describe('EventDetailComponent check-in', () => {
     });
   });
 });
+
+/**
+ * #3396. A session hidden from the public answers 404 to a visitor (#3354), and its page drew nothing at all. It now shows
+ * the site's own not-found page, the catch-all's "We couldn't find that page.", with the address left as it was.
+ */
+describe('EventDetailComponent, a session the visitor may not see (#3396)', () => {
+  function open(answer: () => ReturnType<typeof throwError>) {
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter([]),
+        {
+          provide: ActivatedRoute,
+          useValue: { params: of({ guid: 'e-hidden' }), queryParamMap: of(convertToParamMap({})) }
+        },
+        {
+          provide: AuthService,
+          useValue: { isAuthenticated$: of(false), userRoles$: of([]), user$: of(null), login: jest.fn() }
+        },
+        {
+          provide: UserService,
+          useValue: { getUserMetadata: () => of(null), getUsers: () => of({ users: [], truncated: false }) }
+        },
+        {
+          provide: EventService,
+          useValue: { getEvent: answer, getEventAttendance: () => of({}), updateEventAttendance: () => of({}) }
+        },
+        { provide: SeasonService, useValue: { isPastSeasonDay: () => of(false) } },
+        { provide: RsvpService, useValue: { getUserRsvpForEvent: () => throwError(() => new Error('none')) } },
+        {
+          provide: CheckinService,
+          useValue: {
+            getUserCheckinForEvent: () => throwError(() => new Error('none')),
+            insertUserCheckin: jest.fn(),
+            getCheckInCode: jest.fn(),
+            getCheckinsForEvent: jest.fn()
+          }
+        },
+        { provide: NotificationService, useValue: { toast: jest.fn() } },
+        { provide: AssetsService, useValue: { getAssetUrl: () => of(null) } },
+        { provide: Angulartics2, useValue: { eventTrack: { next: jest.fn() } } }
+      ]
+    });
+
+    const navigateByUrl = jest.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
+    const f = TestBed.createComponent(EventDetailComponent);
+    f.detectChanges();
+
+    return { f, navigateByUrl };
+  }
+
+  it("shows the site's not-found page, keeping the address, when the session is not found", () => {
+    const { f, navigateByUrl } = open(() =>
+      throwError(() => new HttpErrorResponse({ status: 404, statusText: 'Not Found' }))
+    );
+
+    expect(navigateByUrl).toHaveBeenCalledWith('/not-found', { skipLocationChange: true });
+    f.destroy();
+  });
+
+  it('stays on the page for any other failure, as before', () => {
+    const { f, navigateByUrl } = open(() =>
+      throwError(() => new HttpErrorResponse({ status: 500, statusText: 'Server Error' }))
+    );
+
+    expect(navigateByUrl).not.toHaveBeenCalled();
+    f.destroy();
+  });
+});
