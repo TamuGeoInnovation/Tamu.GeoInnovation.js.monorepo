@@ -44,7 +44,10 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
             guid: seasonGuid
           }
         },
-        relations: EntityRelationsLUT.getRelation('speaker'),
+        // With their sessions, for the admin Speakers list's Sessions column (#441): a speaker copied into a season is
+        // listed in it with or without a session there, and could not be told apart (#439). A speaker belongs to one
+        // season, so these are that season's. Added here, not to the lookup table, which other queries share.
+        relations: { ...EntityRelationsLUT.speaker, events: true },
         order: {
           lastName: 'ASC',
           firstName: 'ASC'

@@ -7,6 +7,7 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { sendProfileEmail } from '@tamu-gisc/gisday/platform/ngx/common';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { switchMap, take } from 'rxjs';
+import { FormControl } from '@angular/forms';
 
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
 import { AdminSearchComponent } from '../../../base-admin-list/admin-search.component';
@@ -33,6 +34,28 @@ export class SpeakerListComponent extends BaseAdminListComponent<Speaker> {
   private readonly speakerEdits = inject(SpeakerEditsService);
   private readonly toasts = inject(NotificationService);
   private readonly modals = inject(ModalService);
+
+  /**
+   * 'none' lists only the speakers in no session this season (#441), as the Events list's "no tags" box does (#3034). A
+   * speaker copied into a season is listed in it whether or not they speak in it, which read as a broken season filter (#439).
+   */
+  public readonly inSessions = new FormControl('', { nonNullable: true });
+
+  protected override listFilters(): Record<string, FormControl<string>> {
+    return { ...super.listFilters(), sessions: this.inSessions };
+  }
+
+  protected override keepEntity(speaker: Partial<Speaker>): boolean {
+    return this.inSessions.value !== 'none' || !speaker.events?.length;
+  }
+
+  /** The speaker's sessions this season, by name, for the Sessions column (#441). Empty for a speaker in none. */
+  public sessionNames(speaker: Partial<Speaker>): string {
+    return (speaker.events ?? [])
+      .map((event) => event.name)
+      .filter((name) => !!name)
+      .join(', ');
+  }
 
   /** Emails each selected speaker their own link to edit their profile (#2936), the email read and edited first (#3023). */
   public emailEditLinks() {
