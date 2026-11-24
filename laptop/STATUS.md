@@ -33,8 +33,8 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch 7 (gisday: #2363)**, started 6:17 PM Central. Expected to take about 2 hours. Next update by 6:50 PM Central.
-  Progress (6:18 PM): 38 spec files in the two libraries mock their repositories: about 30 providers, roughly 250 repository reads. Three agents in this session are writing `*.queries.spec.ts` files for disjoint sets of providers (large platform providers; the rest of platform; competitions), on branch `test/2363-query-checking-provider-specs`. Any query typeorm refuses is marked `it.fails`, then filed and fixed on its own branch.
+- **Batch 7 (gisday: #2363)**, started 6:17 PM Central. Expected to take about 2 hours. Next update by 7:15 PM Central.
+  Progress (6:42 PM): 28 query-checking specs written and committed (23 platform, 5 competitions; about 160 tests, all passing). typeorm refused one query: SeasonService.clonePreviousSeason, filed as #3302 and fixed on `fix/3302-clone-season-where` (red first; check a pass under the audit rule; on the fork). The test branch's own check is running.
 
 ## Finished
 - **Batch 6 (gisday: #3292 Winners images)** (report `laptop/reports/2026-11-23-6.md`): **images pushed (3292): `d9f17420f`**, a fast-forward.
