@@ -9,6 +9,7 @@ import { ReviewEmailSession } from '@tamu-gisc/gisday/common';
 import {
   COMPETITION_SESSIONS,
   COMPETITION_SESSIONS_2027,
+  COMPETITION_SESSIONS_UNNAMED_AWARDS,
   provideCompetitionSessions
 } from '../competition-session/competition-session.testing';
 import { PresentationComponent } from './presentation.component';
@@ -136,5 +137,25 @@ describe('PresentationComponent', () => {
     expect(text({})).toContain(
       'by the final presentation submission deadline, or they will be removed from the competition.'
     );
+  });
+
+  // #3412: with no awards session found, the sentence leading into it ended in a colon and nothing.
+  it('leaves the awards sentence out when it finds no awards session', () => {
+    const rendered = text(SEASON_2026, COMPETITION_SESSIONS_UNNAMED_AWARDS);
+
+    expect(rendered).not.toContain('announced at the awards session:');
+    expect(rendered).toContain('on the schedule');
+  });
+
+  it('leads into the awards session when it finds one', () => {
+    expect(text()).toContain('Winners will be announced at the awards session:');
+  });
+
+  // #3412: the same for the two competition sessions.
+  it('leaves out the sentence leading into a competition session it does not find', () => {
+    const rendered = text(SEASON_2026, COMPETITION_SESSIONS.filter((s) => s.guid !== 'u'));
+
+    expect(rendered).not.toContain('Undergraduate student presentation competition session:');
+    expect(rendered).toContain('Graduate student presentation competition session:');
   });
 });
