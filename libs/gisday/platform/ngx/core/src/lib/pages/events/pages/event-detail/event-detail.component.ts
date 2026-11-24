@@ -42,15 +42,7 @@ import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ParseDateTimeStringsPipe } from '@tamu-gisc/gisday/platform/ngx/common';
 import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
 import { getGeolocation, isLatLonPolygon } from '@tamu-gisc/common/utils/geometry';
-import {
-  CHECK_IN_CODE_MESSAGE,
-  CHECK_IN_CODE_PARAM,
-  CHECK_IN_ZONE_EVENT_MODE,
-  checkInOpensMessage,
-  checkInWindow,
-  checksInByCode,
-  OUTSIDE_SESSION_TIME_LABEL
-} from '@tamu-gisc/gisday/common';
+import { CHECK_IN_CODE_MESSAGE, CHECK_IN_CODE_PARAM, CHECK_IN_ZONE_EVENT_MODE, checkInOpensMessage, checkInWindow, checksInByCode, formatCentral, OUTSIDE_SESSION_TIME_LABEL } from '@tamu-gisc/gisday/common';
 import { SiteHasPipe } from '@tamu-gisc/gisday/platform/ngx/common';
 import { QrCodeComponent } from '@tamu-gisc/ui-kits/ngx/qr-code';
 import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
@@ -578,20 +570,19 @@ export function sessionCheckInRows(
     return {
       who: user?.name || user?.email || c.accountGuid,
       email: user?.name && user?.email ? user.email : undefined,
-      at: c.created ? CENTRAL_TIME.format(new Date(c.created)) : '',
+      at: c.created ? formatCentral(c.created, CENTRAL_TIME) : '',
       outsideSessionTime: c.outsideSessionTime === true
     };
   });
 }
 
-const CENTRAL_TIME = new Intl.DateTimeFormat('en-US', {
-  timeZone: 'America/Chicago',
+const CENTRAL_TIME: Omit<Intl.DateTimeFormatOptions, 'timeZone'> = {
   month: 'short',
   day: 'numeric',
   hour: 'numeric',
   minute: '2-digit',
   timeZoneName: 'short'
-});
+};
 
 /**
  * What to tell an attendee whose check-in did not work: the API's reason, such as being outside the
