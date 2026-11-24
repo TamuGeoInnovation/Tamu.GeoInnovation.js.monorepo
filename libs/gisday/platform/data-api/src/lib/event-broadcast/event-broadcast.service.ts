@@ -8,7 +8,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, In, Repository } from 'typeorm';
 
 import { EventBroadcast } from '../entities/all.entity';
-import { byName } from '../_base/natural-order';
+import { byName } from '@tamu-gisc/gisday/common';
+
 import { SeasonService } from '../season/season.service';
 import { rethrowHttp } from '../_base/rethrow-http';
 import { SeasonScopedProvider } from '../_base/season-scoped-provider';

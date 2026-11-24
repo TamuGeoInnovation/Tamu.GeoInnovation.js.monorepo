@@ -20,6 +20,12 @@
       }
       <tamu-gisc-line-chart [series]="chart().series" [anchor]="chart().anchor" [bars]="daily()" [bands]="bands()" [steps]="true" [unit]="words.chartUnit" [label]="words.chartLabel"></tamu-gisc-line-chart>
 
+      @if (words.hourly; as byHour) {
+      <h3 class="dashboard-heading">{{ byHour.heading }}</h3>
+      <p class="dashboard-note">{{ byHour.note }} {{ expandedEvent() ? words.chartSecondLine : words.chartOpenOne }}</p>
+      <tamu-gisc-line-chart [series]="hourly()" [steps]="true" interval="hour" [unit]="words.chartUnit" [label]="byHour.label"></tamu-gisc-line-chart>
+      }
+
       <h3 class="dashboard-heading">{{ words.byHeading }}</h3>
       @if (view.events.length > 0) {
       <p class="dashboard-note">{{ words.tableNote }}</p>

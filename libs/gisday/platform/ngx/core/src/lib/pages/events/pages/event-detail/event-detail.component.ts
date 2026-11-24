@@ -4,6 +4,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   catchError,
+  EMPTY,
   filter,
   finalize,
   forkJoin,
@@ -187,7 +188,22 @@ export class EventDetailComponent implements OnInit, OnDestroy {
 
     this.event$ = this.route.params.pipe(
       map((params) => params['guid']),
-      switchMap((eventGuid) => this.eventService.getEvent(eventGuid)),
+      switchMap((eventGuid) =>
+        this.eventService.getEvent(eventGuid).pipe(
+          catchError((err) => {
+            // A session the visitor may not see, such as one hidden from the public (#3354), answers 404, and the page
+            // drew nothing (#3396). It shows the site's own not-found page instead: an address no route knows reaches the
+            // catch-all, with the address in the browser left as it was. Anything else fails as before.
+            if (err instanceof HttpErrorResponse && err.status === 404) {
+              this.router.navigateByUrl('/not-found', { skipLocationChange: true });
+
+              return EMPTY;
+            }
+
+            throw err;
+          })
+        )
+      ),
       shareReplay()
     );
 

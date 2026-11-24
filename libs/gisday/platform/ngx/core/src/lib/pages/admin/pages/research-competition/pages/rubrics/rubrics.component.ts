@@ -4,7 +4,7 @@ import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular
 
 import { JudgingService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { ButtonComponent, SelectComponent, TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
-import { serverMessage } from '@tamu-gisc/gisday/platform/ngx/common';
+import { seasonPicker, serverMessage } from '@tamu-gisc/gisday/platform/ngx/common';
 import {
   DEFAULT_RUBRICS,
   RUBRIC_COMPETITION_TYPES,
@@ -15,8 +15,6 @@ import {
   rubricProblem,
   rubricTotal
 } from '@tamu-gisc/gisday/common';
-
-import { seasonChoice } from '../../components/season-choice';
 
 type LevelForm = FormGroup<{ label: FormControl<string>; description: FormControl<string> }>;
 type CriterionForm = FormGroup<{
@@ -107,7 +105,7 @@ export class RubricsComponent {
   private readonly judging = inject(JudgingService);
   private readonly destroyRef = inject(DestroyRef);
 
-  public readonly choice = seasonChoice();
+  public readonly choice = seasonPicker();
   public readonly panels = signal<Array<RubricPanel> | null>(null);
   /** What happened to the last save or start, by competition type. */
   public readonly status = signal<Record<string, { problem?: string; saved?: boolean }>>({});

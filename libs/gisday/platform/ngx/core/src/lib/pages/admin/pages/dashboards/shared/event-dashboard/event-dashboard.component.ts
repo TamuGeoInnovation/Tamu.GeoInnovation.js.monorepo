@@ -3,13 +3,20 @@ import { GISDAY_TIME_ZONE } from '@tamu-gisc/gisday/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Observable, catchError, filter, map, of, switchMap, tap } from 'rxjs';
 
-import { readRefusal } from '@tamu-gisc/gisday/platform/ngx/common';
+import { readRefusal, seasonPicker } from '@tamu-gisc/gisday/platform/ngx/common';
 
-import type { GuidIdentity, RsvpDashboardPerson } from '@tamu-gisc/gisday/platform/data-api';
-import { bandOfDays, ChartBand, ChartSeries, countsByDay, dayIn, runningTotalByDay } from '@tamu-gisc/ui-kits/ngx/charts';
+import type { RsvpDashboardPerson } from '@tamu-gisc/gisday/platform/data-api';
+import {
+  bandOfDays,
+  ChartBand,
+  ChartSeries,
+  countsByDay,
+  countsByHourOver,
+  dayIn,
+  runningTotalByDay
+} from '@tamu-gisc/ui-kits/ngx/charts';
 import { fileNamePart } from '@tamu-gisc/common/utils/ui';
 
-import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
 import { PERSON_TYPE_COLUMNS } from '../dashboard-people/dashboard-people.component';
 import { DashboardTableColumn, DashboardTableRow } from '../dashboard-table/dashboard-table.component';
 import { SeasonComparison } from '../season-comparison/season-comparison';
@@ -57,6 +64,11 @@ export interface DashboardWords {
   dateLabel: string;
   emptyText: string;
   noEvents: string;
+  /**
+   * A second chart, by the hour across the days the season's events run (#3314), for a dashboard whose records all fall
+   * in one week. Left out, the page has none.
+   */
+  hourly?: { heading: string; note: string; label: string };
 }
 
 /**
@@ -132,6 +144,39 @@ export function dashboardSeries(
   return series;
 }
 
+/**
+ * A second chart's lines (#3314): how many records were made in each hour of the days the season's events run, in
+ * Central time, and the expanded event's own, if one is. Records made on other days are left out.
+ */
+export function dashboardHourly(
+  dashboard: DashboardData,
+  expanded: DashboardItem | null,
+  labels = { all: 'All events', one: 'This event' }
+): Array<ChartSeries> {
+  const days = dashboard.events.map((e) => e.starts).filter((s): s is string => Boolean(s));
+  const series: Array<ChartSeries> = [
+    {
+      label: labels.all,
+      points: countsByHourOver(
+        dashboard.made.map((m) => m.created),
+        days
+      )
+    }
+  ];
+
+  if (expanded) {
+    series.push({
+      label: expanded.name ?? labels.one,
+      points: countsByHourOver(
+        dashboard.made.filter((m) => m.event === expanded.guid).map((m) => m.created),
+        days
+      )
+    });
+  }
+
+  return series;
+}
+
 /** The columns under the chart: how many records every event gained each day (#2886). */
 export function dashboardDaily(dashboard: DashboardData): ChartSeries {
   return { label: 'New that day', points: countsByDay(dashboard.made.map((m) => m.created)) };
@@ -154,10 +199,12 @@ export function dashboardBands(dashboard: DashboardData): Array<ChartBand> {
  * table, people and chart are shared components.
  */
 @Component({ selector: 'tamu-gisc-event-dashboard', template: '', standalone: false })
-export abstract class EventDashboardComponent<D extends DashboardData, E extends GuidIdentity>
-  extends BaseAdminListComponent<E>
-  implements OnInit
-{
+export abstract class EventDashboardComponent<D extends DashboardData> implements OnInit {
+  /** The season shown, from the address (#3329). */
+  private readonly picker = seasonPicker();
+  public readonly seasons$ = this.picker.seasons$;
+  public readonly selectedSeason$ = this.picker.season$;
+
   private readonly destroyRef = inject(DestroyRef);
 
   /** The start of each event's CSV file name, such as gisday-rsvps. */
@@ -170,6 +217,8 @@ export abstract class EventDashboardComponent<D extends DashboardData, E extends
   public tableColumns: () => Array<DashboardTableColumn> = () => this.columns;
   /** Count columns for an opened row's people, beside their details; none unless a dashboard has some. */
   public readonly countColumns: Array<DashboardTableColumn> = [];
+  /** The hourly chart's lines, when `words.hourly` asks for that chart (#3314); none unless a dashboard has them. */
+  public readonly hourly: () => Array<ChartSeries> = () => [];
 
   /** The dashboard's words, which the shared template reads (#3330). */
   public abstract readonly words: DashboardWords;
@@ -216,9 +265,11 @@ export abstract class EventDashboardComponent<D extends DashboardData, E extends
     return dashboard ? dashboardBands(dashboard) : [];
   });
 
-  public override ngOnInit(): void {
-    super.ngOnInit();
+  public setSeason(seasonGuid: string) {
+    this.picker.choose(seasonGuid);
+  }
 
+  public ngOnInit(): void {
     this.comparison.set(
       new SeasonComparison(
         (guid) => this.seasonDashboard(guid).pipe(map((d) => d.made.map((m) => m.created))),

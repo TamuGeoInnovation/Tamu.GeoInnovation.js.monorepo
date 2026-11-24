@@ -1,4 +1,5 @@
 import { Speaker, University } from '@tamu-gisc/gisday/platform/data-api';
+import { naturalOrder } from '@tamu-gisc/gisday/common';
 
 /**
  * A graduation year written as a class year: `'2014'` is `'14`, `'22'` is `'22`, and a record holding
@@ -45,7 +46,7 @@ export function speakerAffiliation(speaker: Partial<Speaker> | null | undefined)
   return speaker?.organization?.name?.trim() || speaker?.affiliation?.trim() || '';
 }
 
-const compare = (a: string, b: string) => a.localeCompare(b, undefined, { sensitivity: 'base' });
+const compare = naturalOrder.compare;
 
 /** Last name, then first name, ignoring case and accents: the order a list of people is read in. */
 function compareByName(a: Partial<Speaker>, b: Partial<Speaker>): number {

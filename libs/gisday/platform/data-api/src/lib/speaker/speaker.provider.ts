@@ -18,8 +18,9 @@ import { AssetsService } from '../assets/assets.service';
 import { refuseUnsafeImage } from '../assets/image-upload';
 import { SeasonService } from '../season/season.service';
 import { SPEAKER_PHOTO_FIT } from './speaker-photo';
+import { onSchedule } from '../_base/hidden-sessions';
 import { rethrowHttp } from '../_base/rethrow-http';
-import { SeasonScopedProvider } from '../_base/season-scoped-provider';
+import { SeasonScopedProvider, withoutIdentity } from '../_base/season-scoped-provider';
 
 @Injectable()
 export class SpeakerProvider extends SeasonScopedProvider<Speaker> {
@@ -31,6 +32,23 @@ export class SpeakerProvider extends SeasonScopedProvider<Speaker> {
 
   protected forSeason(seasonGuid: string) {
     return this.getSpeakersForSeason(seasonGuid);
+  }
+
+  protected override readonly copyRelations = { images: true };
+
+  protected override copyOf(record: Speaker, season: Season) {
+    // Images are held by one speaker, so the copy has its own; a badge printed for one season is not printed for the
+    // next (#2908).
+    const copy = super.copyOf(record, season) as DeepPartial<Speaker>;
+
+    copy.badgePrintedAt = null;
+    copy.badgePrintedText = null;
+
+    if (record.images) {
+      copy.images = record.images.map(withoutIdentity);
+    }
+
+    return copy;
   }
 
   private _resourcePath = `images/speakers`;
@@ -46,7 +64,15 @@ export class SpeakerProvider extends SeasonScopedProvider<Speaker> {
     super(speakerRepo);
   }
 
-  public async getSpeakersForSeason(seasonGuid: string) {
+  /**
+   * A season's speakers, by name.
+   *
+   * @param withSessions Also each speaker's sessions, for the admin Speakers list's Sessions column (#441): a speaker
+   * copied into a season is listed in it with or without a session there, and could not be told apart (#439). Only the
+   * route behind `update:speakers` asks for them, because they include sessions hidden from the public schedule. A
+   * speaker belongs to one season, so these are that season's. Added here, not to the lookup table, which other queries share.
+   */
+  public async getSpeakersForSeason(seasonGuid: string, withSessions = false) {
     try {
       return this.find({
         where: {
@@ -54,7 +80,7 @@ export class SpeakerProvider extends SeasonScopedProvider<Speaker> {
             guid: seasonGuid
           }
         },
-        relations: EntityRelationsLUT.getRelation('speaker'),
+        relations: withSessions ? { ...EntityRelationsLUT.speaker, events: true } : EntityRelationsLUT.speaker,
         order: {
           lastName: 'ASC',
           firstName: 'ASC'
@@ -89,14 +115,22 @@ export class SpeakerProvider extends SeasonScopedProvider<Speaker> {
     });
 
     if (presenter?.events) {
-      presenter.events = presenter.events.filter((event) => event.active !== false);
+      // Not even to an admin: this is the public page's own route.
+      presenter.events = presenter.events.filter(onSchedule);
     }
 
     return presenter;
   }
 
-  public async getSpeakersForActiveSeason() {
-    return this.forActiveSeason();
+  /**
+   * The active season's speakers; with their sessions only when asked, as `getSpeakersForSeason` (#441). Not through
+   * `forActiveSeason`, whose `forSeason` cannot ask for sessions. No 422 for a missing season: `findOneActive` throws its
+   * own 404 (#3324).
+   */
+  public async getSpeakersForActiveSeason(withSessions = false) {
+    const season = await this.seasonService.findOneActive();
+
+    return this.getSpeakersForSeason(season.guid, withSessions);
   }
 
   /**
@@ -344,56 +378,7 @@ export class SpeakerProvider extends SeasonScopedProvider<Speaker> {
   }
 
   public async copySpeakersIntoSeason(seasonGuid: string, existingEntityGuids: Array<string>) {
-    const season = await this.seasonService.findOne({
-      where: {
-        guid: seasonGuid
-      }
-    });
-
-    if (!season) {
-      throw new UnprocessableEntityException('Could not find season.');
-    }
-
-    const existingSpeakers = await this.speakerRepo.find({
-      where: {
-        guid: In(existingEntityGuids)
-      },
-      relations: { images: true }
-    });
-
-    if (!existingSpeakers || existingSpeakers.length === 0) {
-      throw new UnprocessableEntityException('Could not find speakers.');
-    }
-
-    const newEntities = existingSpeakers.map((entity) => {
-      delete entity.guid;
-      delete entity.created;
-      delete entity.updated;
-      // A badge printed for one season is not printed for the next (#2908).
-      entity.badgePrintedAt = null;
-      entity.badgePrintedText = null;
-
-      if (entity.images?.length > 0) {
-        entity.images = entity.images.map((image) => {
-          delete image.guid;
-          delete image.created;
-          delete image.updated;
-
-          return image;
-        });
-      }
-
-      return this.speakerRepo.create({
-        ...entity,
-        season
-      });
-    });
-
-    try {
-      return Promise.all(newEntities.map((entity) => entity.save()));
-    } catch (err) {
-      rethrowHttp(err, new InternalServerErrorException('Could not copy speakers into season.'));
-    }
+    return this.copyIntoSeason(seasonGuid, existingEntityGuids);
   }
 
   public async insertBulk(speakers: OldFormatSpeaker[]) {

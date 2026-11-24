@@ -21,7 +21,16 @@ describe('SpeakerListComponent, the profile email', () => {
       imports: [SpeakerListComponent],
       providers: [
         provideRouter([]),
-        { provide: SpeakerService, useValue: { getEntitiesForActiveSeason: () => of(speakers), getEntitiesForSeason: () => of(speakers), getEntities: () => of(speakers) } },
+        {
+          provide: SpeakerService,
+          useValue: {
+            getEntitiesForActiveSeason: () => of(speakers),
+            getEntitiesForSeason: () => of(speakers),
+            getEntitiesWithSessionsForActiveSeason: () => of(speakers),
+            getEntitiesWithSessionsForSeason: () => of(speakers),
+            getEntities: () => of(speakers)
+          }
+        },
         { provide: SpeakerEditsService, useValue: speakerEdits },
         { provide: SeasonService, useValue: { seasons$: of([]), activeSeason$: of(null) } },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
@@ -59,6 +68,94 @@ describe('SpeakerListComponent, the profile email', () => {
 });
 
 /**
+ * #441: the Sessions column, each speaker's sessions in the selected season, and "Only speakers in no session" (#439): a
+ * speaker copied into a season is listed in it whether or not they speak in it, and could not be told apart from one who does.
+ */
+describe('SpeakerListComponent, the sessions each speaker is in (#441)', () => {
+  const speakers = [
+    {
+      guid: 'sp-1',
+      firstName: 'Ana',
+      lastName: 'Ruiz',
+      events: [
+        { guid: 'e-1', name: 'Mapathon' },
+        { guid: 'e-2', name: 'Drone flights' }
+      ]
+    },
+    { guid: 'sp-2', firstName: 'Ben', lastName: 'Ortiz', events: [] }
+  ];
+  const withoutSessions = speakers.map((speaker) => ({ ...speaker, events: undefined }));
+
+  function open() {
+    TestBed.configureTestingModule({
+      imports: [SpeakerListComponent],
+      providers: [
+        provideRouter([]),
+        // The public season list has no sessions (#441): only the admin list's own route, behind update:speakers, has them.
+        {
+          provide: SpeakerService,
+          useValue: {
+            getEntitiesForActiveSeason: () => of(withoutSessions),
+            getEntitiesForSeason: () => of(withoutSessions),
+            getEntitiesWithSessionsForActiveSeason: () => of(speakers),
+            getEntitiesWithSessionsForSeason: () => of(speakers),
+            getEntities: () => of(withoutSessions)
+          }
+        },
+        { provide: SpeakerEditsService, useValue: {} },
+        { provide: SeasonService, useValue: { seasons$: of([]), activeSeason$: of(null) } },
+        { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
+        { provide: ModalService, useValue: {} },
+        { provide: NotificationService, useValue: { toast: jest.fn() } }
+      ]
+    });
+
+    const fixture = TestBed.createComponent(SpeakerListComponent);
+    fixture.detectChanges();
+
+    const element = fixture.nativeElement as HTMLElement;
+    const rows = () => {
+      fixture.detectChanges();
+
+      return Array.from(element.querySelectorAll('tbody tr')).map((row) => row.textContent ?? '');
+    };
+    const noSessionBox = () =>
+      Array.from(element.querySelectorAll('tamu-gisc-checkbox')).find((box) =>
+        box.textContent?.includes('Only speakers in no session')
+      );
+
+    return { fixture, rows, noSessionBox };
+  }
+
+  it("shows each speaker's sessions, and None for a speaker in no session", () => {
+    const { rows } = open();
+
+    const ana = rows().find((row) => row.includes('Ana'));
+    const ben = rows().find((row) => row.includes('Ben'));
+
+    expect(ana).toContain('Mapathon');
+    expect(ana).toContain('Drone flights');
+    expect(ben).toContain('None');
+  });
+
+  it('offers "Only speakers in no session", which leaves only the speaker in none, and every one again when unticked', () => {
+    const { rows, noSessionBox } = open();
+
+    expect(rows()).toHaveLength(2);
+    expect(noSessionBox()).toBeTruthy();
+
+    (noSessionBox()?.querySelector('input') as HTMLInputElement).click();
+
+    expect(rows()).toHaveLength(1);
+    expect(rows()[0]).toContain('Ben');
+
+    (noSessionBox()?.querySelector('input') as HTMLInputElement).click();
+
+    expect(rows()).toHaveLength(2);
+  });
+});
+
+/**
  * #3370: at 390 px the list was 566 px wide, so the page scrolled sideways, and the season select was squeezed to a
  * sliver beside the heading. The table now scrolls in the admin dashboards' own box, whose specs show it scrolls content
  * wider than itself, so the page does not; and the toolbar wraps, putting the actions under the heading rather than
@@ -72,12 +169,21 @@ describe('SpeakerListComponent on a phone (#3370)', () => {
       imports: [SpeakerListComponent],
       providers: [
         provideRouter([]),
-        { provide: SpeakerService, useValue: { getEntitiesForActiveSeason: () => of(speakers), getEntitiesForSeason: () => of(speakers), getEntities: () => of(speakers) } },
+        {
+          provide: SpeakerService,
+          useValue: {
+            getEntitiesForActiveSeason: () => of(speakers),
+            getEntitiesForSeason: () => of(speakers),
+            getEntitiesWithSessionsForActiveSeason: () => of(speakers),
+            getEntitiesWithSessionsForSeason: () => of(speakers),
+            getEntities: () => of(speakers)
+          }
+        },
         { provide: SpeakerEditsService, useValue: {} },
         { provide: SeasonService, useValue: { seasons$: of([]), activeSeason$: of(null) } },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
         { provide: ModalService, useValue: {} },
-        { provide: NotificationService, useValue: {} }
+        { provide: NotificationService, useValue: { toast: jest.fn() } }
       ]
     });
 

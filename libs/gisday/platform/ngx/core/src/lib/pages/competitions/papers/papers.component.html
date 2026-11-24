@@ -2,7 +2,6 @@
   <div class="container12 small-partition">
     <div class="column12">
       <h1 class="trailer-1">Presentation Competition</h1>
-      <p class="sub-section-heading">Tuesday, November 17</p>
     </div>
   </div>
 
@@ -65,9 +64,9 @@
         <div class="trailer-4" id="two">
           <h2 class="trailer-1">Registration and Abstract Submission</h2>
           <ul>
-            <li>Date: November 9, 2020</li>
-            <li>Time: Midnight</li>
-            <li>Location: Online</li>
+            <!-- The season's paper deadline, the one the site enforces (#3321), as the Posters page gives its own. -->
+            <li>Due: {{ submissionsDue() ?? 'to be announced' }}</li>
+            <li>Location: <a [routerLink]="'/account/submissions'">Online submission</a></li>
           </ul>
         </div>
 
@@ -79,8 +78,11 @@
         <div class="trailer-4" id="four">
           <h2 class="trailer-1">Finalist Selection</h2>
           <ul>
-            <li>Finalists will be notified on November 16, 2020</li>
-            <li>Finalists will be expected to present an oral presentation at the Presentation Competition Session (Tuesday, November 17th)</li>
+            <!-- When finalists hear is the season's, set in Admin for the Paper competition (#3321); without it, no line. -->
+            @if (finalistsNotified()) {
+            <li>Finalists will be notified on {{ finalistsNotified() }}</li>
+            }
+            <li>Finalists will be expected to present an oral presentation at the Presentation Competition Session</li>
             <li>Only finalists will be allowed to present at the Presentation Competition Session</li>
           </ul>
         </div>
@@ -89,16 +91,17 @@
           <h2 class="trailer-1">Presentation Competition Session</h2>
           <p>All finalists will be required to deliver an oral presentation.</p>
           <ul>
-            <li>Date: November 17, 2020</li>
-            <li>Time: 2:15pm - 3:45pm</li>
-            <li>Location: MSC, 2406B</li>
+            <!-- 2020's day, time and room were here (#3321); the Paper competition has no session to choose in Admin. -->
+            <li>Date, time and place: to be announced</li>
           </ul>
         </div>
 
         <div class="trailer-4" id="six">
           <h2 class="trailer-1">First Place Award Announcement</h2>
 
-          <p>Winners will be announced on Wednesday, November 18 at the GIS Industry Panel &amp; Lunch &amp; Awards session.</p>
+          <p>Winners will be announced at the awards session:</p>
+          <!-- The awards session as the database has it, as the other competition pages name it (#3011, #3321). -->
+          <tamu-gisc-competition-session kind="awards" [season]="season()"></tamu-gisc-competition-session>
         </div>
 
         <div class="trailer-4" id="seven">
