@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch 80 (gisday: #2893 against #3006, then #2430)**, since 7:00 PM Central, 23 November; batch 81 (#3019) after it.
+- **Batch 81 (gisday: #3019)**, since 7:22 PM Central, 23 November.
 
 ## Finished
+- **Batch 80 (gisday: #2893, #2430)** (report `home/reports/2026-11-23-80-gisday.md`): both branch ready on the fork, no PRs. `feat/2893-check-ins-dashboard-rest` at `2ce9d7419`: #3006 lacked walk-ins, the show-up rate and the outside-time mark, now built; the hourly chart is a question. `feat/2430-review-limits-per-season` at `26090518e`: a type's `review` limits in the form, 2026's by default; no Designer change (it doesn't show sameThingMetres). Both red first; checks pass (only the audit FETCH_ERROR). Admin images need a sign-in: director. Two questions.
 - **Batch 79 (gisday: #2088)** (report `home/reports/2026-11-23-79.md`): branch ready, `fix/2088-api-on-own-address` on the fork at `f147bfca2`, no PR. The site calls `${origin}/api` and sends the token only there; local proxies serve `/api/`. Red first; check passes (only the audit FETCH_ERROR). Proven on localhost:4201 and gisday.local.test:4201 with ORIGINS empty: all API calls same-origin. Not signed in (needs a password). kubernetes-config: two variables unused, ORIGINS left until live. Two questions.
 - **Batch 78 (gisday: #1836's images)** (report `home/reports/2026-11-23-78-gisday.md`): images pushed (1836): `e2e9b9cbe`, fast-forward from `98a4dff11`. Before and after at 1280, after at 390 with Filters open, from a throwaway local stack with made-up data; release note table and PR body updated; collate --check clean. No questions.
 - **Batch 78 (security: jsdom 31.0.1, PR 3296)** (report `home/reports/2026-11-23-78.md`, summary on #3297): full check `all` on the PR merged into development (clean merge): every Nx target passes, only `npm audit signatures` FETCH_ERROR. Vitest gets 31.0.1 (63 projects); Jest keeps its nested 26.1.0. No breaking change touches our use. Recommend merge. Two questions.
