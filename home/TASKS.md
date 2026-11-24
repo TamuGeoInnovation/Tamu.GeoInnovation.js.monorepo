@@ -1,5 +1,24 @@
 # Home machine: current tasks
 
+## Batch s80 (security: #2282, geoservices and GIS Day off `@angular/animations`, and the package removed; 24 November 2026, about 9:30 AM Central, from `work (security)`) (Low) - **now**
+
+**Decided by the maintainer this morning: a listener does this, with recordings.** [#2282](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2282)
+is the last part of #2278. Read its body to the end; the lab's report `work/reports/2026-10-23-96.md` on this branch recorded the before.
+- Rule 4 first: on today's `development`, list every remaining `@angular/animations` import and trigger. Report the list.
+- Branch `chore/2282-remove-angular-animations` from the latest `development`. Move each remaining trigger (the geoservices hamburger,
+  the phone tile menu and its staggers, the header's growing rows, GIS Day's interactive forms) to CSS transitions or `animate.enter` /
+  `animate.leave`, **reusing whatever #2278's earlier parts already put in the shared libraries**; no per-component copies, no
+  purpose-built CSS where `libs/sass` has it.
+- Then remove every app's animations provider, `libs/ui-kits/ngx/animations`, and `@angular/animations` from `package.json`.
+  **This batch alone may change `package.json` and `package-lock.json`, for that one package**:
+  `npm install --package-lock-only --ignore-scripts`, and the lock diff must show only `@angular/animations` leaving.
+- **Recordings, before and after, of each moved trigger** (Playwright video or a frame sequence against the dev server, phone width for
+  the tile menu), saved to `docs/screenshots/2282-animations/` as they are taken. If this machine cannot record, say so and list the
+  routes and widths for the laptop instead; do not stop the code for it.
+- Full check, not a scoped one (it removes a package): `scripts/check-in-volume.sh chore/2282-remove-angular-animations`, plus the
+  clean `npm ci` it runs. Push to the fork; "branch ready" with the PR body (from the template) in `.pr-body.md`. The director opens it.
+Report `home/reports/2026-11-24-s80.md`.
+
 ## Batch g104 (gisday: code-only triage of #434, #435, #438, #493, #499 and #1038; 24 November 2026, about 8:30 AM Central, from `work (gisday)`) (Low) - **now**
 
 **Your g103 question 1 goes to the maintainer** (your A is the recommendation). `feat/3321-papers-dates` is held until he answers:
