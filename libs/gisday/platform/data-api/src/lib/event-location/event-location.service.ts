@@ -1,13 +1,34 @@
-import { HttpException, Injectable, InternalServerErrorException, Logger, UnprocessableEntityException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, In, Repository, SelectQueryBuilder } from 'typeorm';
+import { DeleteResult, In, Repository, SelectQueryBuilder, DeepPartial } from 'typeorm';
 
-import { EventLocation } from '../entities/all.entity';
-import { BaseProvider } from '../_base/base-provider';
+import { EventLocation, Season } from '../entities/all.entity';
 import { SeasonService } from '../season/season.service';
+import { rethrowHttp } from '../_base/rethrow-http';
+import { SeasonScopedProvider } from '../_base/season-scoped-provider';
 
 @Injectable()
-export class EventLocationService extends BaseProvider<EventLocation> {
+export class EventLocationService extends SeasonScopedProvider<EventLocation> {
+  protected get seasons() {
+    return this.seasonService;
+  }
+
+  protected readonly recordsName = 'locations';
+
+  protected forSeason(seasonGuid: string) {
+    return this.getEventLocationsForSeason(seasonGuid);
+  }
+
+  protected override copyOf(record: EventLocation, season: Season) {
+    // A copy is the location, not its place or its sessions: as the location's own copy did.
+    const copy = super.copyOf(record, season) as DeepPartial<EventLocation> & { place?: unknown; events?: unknown };
+
+    delete copy.place;
+    delete copy.events;
+
+    return copy;
+  }
+
   constructor(
     @InjectRepository(EventLocation) private esRepo: Repository<EventLocation>,
     private readonly seasonService: SeasonService
@@ -36,34 +57,12 @@ export class EventLocationService extends BaseProvider<EventLocation> {
 
       return qq.getMany();
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      throw new InternalServerErrorException(err);
+      rethrowHttp(err, new InternalServerErrorException(err));
     }
   }
 
   public async getEventLocationsForActiveSeason() {
-    try {
-      const season = await this.seasonService.findOneActive();
-
-      if (!season) {
-        throw new UnprocessableEntityException('No active season found');
-      }
-
-      return this.getEventLocationsForSeason(season.guid);
-    } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      throw new InternalServerErrorException(err);
-    }
+    return this.forActiveSeason();
   }
 
   public getEntities() {
@@ -74,58 +73,12 @@ export class EventLocationService extends BaseProvider<EventLocation> {
 
       return qq.getMany();
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      throw new InternalServerErrorException(err);
+      rethrowHttp(err, new InternalServerErrorException(err));
     }
   }
 
   public async copyEventLocationsIntoSeason(seasonGuid: string, existingEntityGuids: Array<string>) {
-    try {
-      const season = await this.seasonService.findOne({ where: { guid: seasonGuid } });
-
-      if (!season) {
-        throw new UnprocessableEntityException('Season not found');
-      }
-
-      const existingEntities = await this.esRepo.find({
-        where: {
-          guid: In(existingEntityGuids)
-        }
-      });
-
-      if (!existingEntities || existingEntities.length === 0) {
-        throw new UnprocessableEntityException('No existing entities found');
-      }
-
-      const newEntities = existingEntities.map((entity) => {
-        delete entity.guid;
-        delete entity.season;
-        delete entity.place;
-        delete entity.events;
-        delete entity.created;
-        delete entity.updated;
-
-        return this.esRepo.create({
-          ...entity,
-          season: season
-        });
-      });
-
-      return this.esRepo.save(newEntities);
-    } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      throw new InternalServerErrorException(err);
-    }
+    return this.copyIntoSeason(seasonGuid, existingEntityGuids);
   }
 
   private applyDefaultOrdering(query: SelectQueryBuilder<EventLocation>) {
@@ -156,14 +109,7 @@ export class EventLocationService extends BaseProvider<EventLocation> {
         return transactionalEntityManager.delete(EventLocation, guids);
       });
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      Logger.error(err.message, 'EventLocationService.deleteEntities');
-      throw new InternalServerErrorException('Could not delete entities');
+      rethrowHttp(err, new InternalServerErrorException('Could not delete entities'), () => Logger.error(err.message, 'EventLocationService.deleteEntities'));
     }
   }
 }

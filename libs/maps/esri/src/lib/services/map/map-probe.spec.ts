@@ -19,7 +19,7 @@ vi.mock('@arcgis/core/geometry/SpatialReference.js', () => ({ __esModule: true, 
  */
 describe('map probe', () => {
   it('keeps the global name the smoke suite hardcodes', () => {
-    // Duplicated in test/smoke/aggiemap/maps.spec.ts -- change both together.
+    // Duplicated in test/smoke/aggiemap/map-probe.ts, once for the smoke suite (#2603) -- change both together.
     expect(MAP_PROBE_GLOBAL).toBe('__tamuGiscMapProbe');
   });
 

@@ -7,6 +7,7 @@ import { Connections } from '../../../libs/aggiemap/ngx/common/src/lib/connectio
 import { expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
 import { gisHostFor, smokeBaseUrl } from './gis-hosts';
+import { PROBE_GLOBAL, waitForMapReady } from './map-probe';
 
 /**
  * A `?lot=` link opens the lot on a parking map, whether its service names its fields by table or not
@@ -35,13 +36,11 @@ import { gisHostFor, smokeBaseUrl } from './gis-hosts';
  */
 const connections = Connections(gisHostFor(smokeBaseUrl()));
 
-const PROBE_GLOBAL = '__tamuGiscMapProbe';
 const POPUP = 'tamu-gisc-feature-popup .popup';
 const SELECTION_LAYER_ID = 'selection-layer';
 
 /** How long the main map's lot search is held back to show #1969. */
 const LATE_SERVICE_MS = 6_000;
-
 
 interface LotLink {
   /** Which map, and which group of the issue's audit it stands for. */
@@ -99,16 +98,7 @@ async function openedPopup(page: Page, path: string): Promise<OpenedPopup> {
   await blockAnalytics(page);
   await page.goto(path);
 
-  await expect
-    .poll(
-      async () =>
-        await page.evaluate(
-          (name) => (window as unknown as Record<string, { ready?: boolean }>)[name]?.ready === true,
-          PROBE_GLOBAL
-        ),
-      { message: `the map on ${path} never finished loading`, timeout: 90_000, intervals: [1_000] }
-    )
-    .toBe(true);
+  await waitForMapReady(page, `the map on ${path} never finished loading`);
 
   const popup = page.locator(POPUP);
   await expect(popup, `${path} opened nothing`).not.toHaveClass(/hidden/, { timeout: 30_000 });

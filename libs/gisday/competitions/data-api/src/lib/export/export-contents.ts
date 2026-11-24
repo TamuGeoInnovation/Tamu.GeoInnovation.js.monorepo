@@ -1,5 +1,5 @@
 import { Repository } from 'typeorm';
-import * as Papa from 'papaparse';
+import { toCsv } from '@tamu-gisc/common/utils/ui';
 
 import { CompetitionSubmission, SubmissionMedia } from '../entities/all.entities';
 
@@ -80,7 +80,10 @@ export function exportRow(
   };
 }
 
-/** `submissions.csv`, from the rows. */
+/**
+ * `submissions.csv`, from the rows, through the shared `toCsv`, which escapes formulas (#3332). The header is the first
+ * row's keys, as papaparse's own header was.
+ */
 export function exportCsv(rows: Array<Record<string, unknown>>): string {
-  return Papa.unparse(rows, { header: true });
+  return toCsv(Object.keys(rows[0] ?? {}), rows);
 }

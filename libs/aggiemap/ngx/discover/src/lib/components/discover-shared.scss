@@ -3,6 +3,8 @@
 
 // Wide, left-aligned page shell. Replaces the centered 1140px `container12`/`column9` grid so the
 // catalog content starts near a ~48px left gutter with open whitespace to the right.
+@import 'libs/sass/variables';
+
 .maps-page-shell {
   width: 100%;
   max-width: 1440px;
@@ -19,7 +21,7 @@
 .visit-maps-section,
 .maps-list-section {
   h2 {
-    color: #500000;
+    color: $aggie-maroon;
     margin-bottom: 0.5rem;
     font-size: 1.5rem;
     font-weight: 600;
@@ -78,7 +80,7 @@
   // destination on desktop and a relative "go back" on a phone, and those want different targets.
   & > p.breadcrumb-back {
     display: block;
-    color: #500000;
+    color: $aggie-maroon;
 
     // The global breadcrumb styles put a '>' after every crumb but the last. This one is now the
     // last one visible, and the separator would dangle.
@@ -140,7 +142,7 @@
 
     &:hover,
     &:focus {
-      border-color: #500000;
+      border-color: $aggie-maroon;
     }
   }
 
@@ -176,7 +178,7 @@
   box-shadow: none;
 
   &:hover {
-    border-color: #500000;
+    border-color: $aggie-maroon;
     box-shadow: none;
   }
 }
@@ -208,7 +210,7 @@
 }
 
 .event-rank {
-  background: #500000;
+  background: $aggie-maroon;
   color: white;
   width: 2rem;
   height: 2rem;
@@ -258,7 +260,7 @@
 }
 
 .map-link {
-  color: #500000;
+  color: $aggie-maroon;
   text-decoration: none;
   font-weight: 600;
 
@@ -294,7 +296,7 @@
 
   &:hover,
   &:focus {
-    color: #500000;
+    color: $aggie-maroon;
   }
 }
 
@@ -416,7 +418,7 @@
 
   &:hover .map-entry-thumbnail,
   &:focus-visible .map-entry-thumbnail {
-    border-color: #500000;
+    border-color: $aggie-maroon;
   }
 }
 

@@ -24,6 +24,7 @@ import { COMPETITION_VALIDATION_STATUS } from '@tamu-gisc/gisday/common';
 
 import { AUTOMATIC_REVIEWER, automaticReviewReasons, COULD_NOT_REVIEW, ReviewedSubmission } from './automatic-review';
 import { VgiArcgisPublisher } from '../arcgis/vgi-arcgis-publisher.service';
+import { activeCompetitionSeason } from '../season/active-season';
 
 @Injectable()
 export class SubmissionService extends BaseService<CompetitionSubmission> {
@@ -143,12 +144,7 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
    * admin after an outage or once publishing is switched on (#2433), and answers at once (#2434 review).
    */
   public async publishActiveSeasonToArcgis() {
-    const season = await this.seasonRepo.findOne({ where: { active: true } });
-    const compSeason = season ? await this.compSeasonRepo.findOne({ where: { season: { guid: season.guid } } }) : null;
-
-    if (!compSeason) {
-      throw new NotFoundException('No active competition season.');
-    }
+    const compSeason = await activeCompetitionSeason(this.seasonRepo, this.compSeasonRepo);
 
     return this.arcgis.publishSeasonInBackground(compSeason.guid);
   }
@@ -197,28 +193,28 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
     }
   }
 
-  public async getUserSubmissions(dto: GetUserSubmissionsDto): Promise<SubmissionReviewDto[]> {
-    // Get the season to fetch
-    let season: Season;
-    if (dto.seasonGuid) {
-      season = await this.seasonRepo.findOne({ where: { guid: dto.seasonGuid } });
-    } else {
-      season = await this.seasonRepo.findOne({ where: { active: true } });
-    }
+  /** The competition season of the GIS Day season `seasonGuid`, with its form, or a 404 saying which is missing. */
+  private async compSeasonOf(seasonGuid: string): Promise<CompetitionSeason> {
+    const season = await this.seasonRepo.findOne({ where: { guid: seasonGuid } });
 
     if (!season) {
       throw new NotFoundException('Season not found');
     }
 
-    // Get competition season with form
-    const compSeason = await this.compSeasonRepo.findOne({
-      where: { season: { guid: season.guid } },
-      relations: { form: true }
-    });
+    const compSeason = await this.compSeasonRepo.findOne({ where: { season: { guid: season.guid } }, relations: { form: true } });
 
     if (!compSeason) {
       throw new NotFoundException('Competition season not found');
     }
+
+    return compSeason;
+  }
+
+  public async getUserSubmissions(dto: GetUserSubmissionsDto): Promise<SubmissionReviewDto[]> {
+    // The season asked for, or the active one, with its form.
+    const compSeason = dto.seasonGuid
+      ? await this.compSeasonOf(dto.seasonGuid)
+      : await activeCompetitionSeason(this.seasonRepo, this.compSeasonRepo, { form: true });
 
     // Get all user submissions for the season
     const submissions = await this.submissionRepo.find({
@@ -233,27 +229,20 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
   }
 
   public async getAdminSubmissions(dto: GetAdminSubmissionsDto): Promise<SubmissionReviewDto[]> {
-    // Get the season to fetch
-    let season: Season;
-    if (dto.seasonGuid) {
-      season = await this.seasonRepo.findOne({ where: { guid: dto.seasonGuid } });
-    } else {
-      season = await this.seasonRepo.findOne({ where: { active: true } });
-    }
+    // The season asked for, or the active one, with its form; no submissions, rather than an error, if there is none.
+    const compSeason = await (
+      dto.seasonGuid
+        ? this.compSeasonOf(dto.seasonGuid)
+        : activeCompetitionSeason(this.seasonRepo, this.compSeasonRepo, { form: true })
+    ).catch((err) => {
+      if (err instanceof NotFoundException) {
+        return null;
+      }
 
-    if (!season) {
-      // Return empty array instead of throwing error when no season is found
-      return [];
-    }
-
-    // Get competition season with form
-    const compSeason = await this.compSeasonRepo.findOne({
-      where: { season: { guid: season.guid } },
-      relations: { form: true }
+      throw err;
     });
 
     if (!compSeason) {
-      // Return empty array if competition season doesn't exist
       return [];
     }
 

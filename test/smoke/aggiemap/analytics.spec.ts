@@ -1,6 +1,6 @@
 import { expect, test } from './fixtures';
 import { APP_ROOT } from './global-setup';
-import { isAnalyticsRequest } from './analytics';
+import { Ga4Event, ga4Events, isAnalyticsRequest } from './analytics';
 import { smokeBaseUrl } from './gis-hosts';
 
 /**
@@ -112,6 +112,59 @@ test.describe('analytics', () => {
         timeout: 45_000
       })
       .toBeGreaterThan(0);
+  });
+
+  /**
+   * A route change is a page view, counted once (#3338). AggieMap is one page to the browser, so moving from one of its
+   * pages to another is a page view only if something reports it. Today that is the GA4 property's own history tracking
+   * (enhanced measurement), measured on 24 November 2026 on dev and production: angulartics2's gtag provider sends page
+   * views only to the ids it is configured with, and AggieMap configures none.
+   *
+   * **Exactly one**, not "at least one". It fails at zero, if the property's history tracking is turned off with nothing
+   * in its place, and at two, if the application starts sending page views while the property still does: a doubled
+   * count looks plausible where a missing one does not.
+   */
+  test("a route change is reported as exactly one page view, to this site's property", async ({ page }) => {
+    const tagIds: Array<string | null> = [];
+    const events: Array<Ga4Event> = [];
+
+    page.on('request', (request) => {
+      const url = request.url();
+
+      if (url.includes('googletagmanager.com/gtag/js')) {
+        tagIds.push(new URL(url).searchParams.get('id'));
+      }
+
+      if (isAnalyticsRequest(url) && url.includes('/collect')) {
+        events.push(...ga4Events(url, request.postData()));
+      }
+    });
+
+    await page.goto('/about');
+    await expect(page.locator(APP_ROOT)).not.toBeEmpty();
+    await expect.poll(() => tagIds.length, { message: 'no gtag.js request was made', timeout: 30_000 }).toBeGreaterThan(0);
+
+    // An in-app link, so the router changes the page and the browser does not load it.
+    await page.locator('a[href="/directory"]').first().click();
+    await expect(page).toHaveURL(/\/directory$/);
+
+    const views = () => events.filter((e) => e.name === 'page_view' && (e.location ?? '').includes('/directory'));
+
+    await expect
+      .poll(() => views().length, {
+        message: 'moving from /about to /directory in the application sent no page view',
+        timeout: 30_000
+      })
+      .toBeGreaterThan(0);
+
+    // A second page view for the same move arrives within a few seconds when there is one.
+    await page.waitForTimeout(10_000);
+
+    expect(
+      views().map((e) => e.location),
+      'moving from /about to /directory must be one page view, not one per source'
+    ).toHaveLength(1);
+    expect(views()[0].property, "the page view went to another property than this site's tag").toBe(tagIds[0]);
   });
 
   /**

@@ -6,8 +6,6 @@ import { Observable, filter, map, of, shareReplay, switchMap, take } from 'rxjs'
 
 import { Organization, Season } from '@tamu-gisc/gisday/platform/data-api';
 import { AssetsService, OrganizationService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { serverMessage } from '../../../../../utils/server-message';
 
 import { formToFormData } from '../../../../../utils/form-to-form-data';
 import { UploadImagePicker } from '../../../../../utils/upload-image-picker';
@@ -17,7 +15,7 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
 import { ImagePreviewComponent } from '../../../../images/components/image-preview/image-preview.component';
 import { uploadPreviewUrl } from '../../../../images/upload-preview-url';
-import { injectBackToList } from '../../../admin-details-page';
+import { adminEntityForm } from '../../../admin-entity-form';
 
 @Component({
   selector: 'tamu-gisc-organization-add-edit-form',
@@ -36,13 +34,12 @@ import { injectBackToList } from '../../../admin-details-page';
 export class OrganizationAddEditFormComponent implements OnInit {
   private readonly fb = inject(UntypedFormBuilder);
   private readonly at = inject(ActivatedRoute);
-  /** Leaves for the list once a save, create or delete has worked: the one the page was opened from (#2965). */
-  private readonly backToList = injectBackToList('/admin/organizations');
+  /** Its save and delete, and what they say (#3340). */
+  private readonly saves = adminEntityForm('Organization', '/admin/organizations');
   private readonly as = inject(AssetsService);
   private readonly os = inject(OrganizationService);
   private readonly ss = inject(SeasonService);
   private readonly sn = inject(DomSanitizer);
-  private readonly ns = inject(NotificationService);
 
   public readonly type = input<'create' | 'edit'>(undefined);
 
@@ -109,74 +106,19 @@ export class OrganizationAddEditFormComponent implements OnInit {
   }
 
   public deleteEntity() {
-    this.os.deleteEntity(this.form.getRawValue().guid).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'org-delete-success',
-          title: 'Delete organization',
-          message: `Organization was successfully deleted.`
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'org-delete-failed',
-          title: 'Delete organization',
-          message: serverMessage(err, `Error deleting organization: ${err.status}`)
-        });
-      }
-    });
+    this.saves.save('delete', this.os.deleteEntity(this.form.getRawValue().guid));
   }
 
   private _updateEntity() {
     const rawValue = this.form.getRawValue();
     const formData = formToFormData(this.form);
 
-    this.os.updateEntityFormData(rawValue.guid, formData).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'org-update-success',
-          title: 'Update organization',
-          message: `Organization was successfully updated.`
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'org-update-failed',
-          title: 'Update organization',
-          message: serverMessage(err, `Error updating organization: ${err.status}`)
-        });
-      }
-    });
+    this.saves.save('update', this.os.updateEntityFormData(rawValue.guid, formData));
   }
 
   private _createEntity() {
     const formData = formToFormData(this.form);
 
-    this.os.createEntityFormData(formData).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'org-create-success',
-          title: 'Create organization',
-          message: `Organization was successfully created.`
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'org-create-failed',
-          title: 'Create organization',
-          message: serverMessage(err, `Error creating organization: ${err.status}`)
-        });
-      }
-    });
-  }
-
-  private _navigateBack() {
-    this.backToList();
+    this.saves.save('create', this.os.createEntityFormData(formData));
   }
 }

@@ -1,20 +1,22 @@
 import { Component, computed, input } from '@angular/core';
 import { DatePipe } from '@angular/common';
 
-import * as Papa from 'papaparse';
-
 import { RSVP_PERSON_TYPES, RsvpPersonType } from '@tamu-gisc/gisday/common';
 import type { RsvpDashboardPerson } from '@tamu-gisc/gisday/platform/data-api';
-import { downloadFile } from '@tamu-gisc/common/utils/ui';
+import { downloadFile, toCsv } from '@tamu-gisc/common/utils/ui';
 
 import type { DashboardTableColumn } from '../dashboard-table/dashboard-table.component';
 import { DashboardScrollComponent } from '../dashboard-scroll/dashboard-scroll.component';
 
 /**
  * A person as every dashboard lists them: their profile, when they did what the dashboard counts, and any counts of
- * their own, such as a VGI submitter's submissions (#2894).
+ * their own, such as a VGI submitter's submissions (#2894). A check-in made outside its session's time is marked
+ * (#2893, #2635); a dashboard whose people carry no mark shows no column for it.
  */
-export type DashboardPerson = RsvpDashboardPerson & { counts?: Record<string, number> };
+export type DashboardPerson = RsvpDashboardPerson & { counts?: Record<string, number>; outsideSessionTime?: boolean };
+
+/** The CSV's column for the mark, after the date. */
+const OUTSIDE_COLUMN = 'Outside session time';
 
 export interface DashboardPeopleGroup {
   type: RsvpPersonType;
@@ -52,7 +54,8 @@ export function peopleCsv(
     'Department / field of study',
     'University / employer',
     ...countColumns.map((c) => c.label),
-    dateLabel
+    dateLabel,
+    ...(people.some((p) => p.outsideSessionTime !== undefined) ? [OUTSIDE_COLUMN] : [])
   ];
   const rows = groupPeople(people).flatMap((group) =>
     group.people.map((p) => ({
@@ -65,11 +68,12 @@ export function peopleCsv(
       'Department / field of study': p.department ?? '',
       'University / employer': p.organization ?? '',
       ...Object.fromEntries(countColumns.map((c) => [c.label, p.counts?.[c.key] ?? 0])),
-      [dateLabel]: p.created
+      [dateLabel]: p.created,
+      [OUTSIDE_COLUMN]: p.outsideSessionTime ? 'yes' : ''
     }))
   );
 
-  return Papa.unparse(rows, { columns });
+  return toCsv(columns, rows);
 }
 
 /**
