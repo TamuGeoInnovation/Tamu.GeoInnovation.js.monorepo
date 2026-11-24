@@ -33,7 +33,7 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch 13 (gisday: #3314, check-ins by hour)**, started 10:38 PM Central, on the signed-in GIS Day stack (kept up from batches 11 and 12, scratch database `gisday-b11-scratch`). Branch from `development` if #2893 has merged, else from `feat/2893-check-ins-dashboard-rest`. Next update by 11:30 PM Central.
+- **Batch 13 (gisday: #3314, check-ins by hour)**, started 10:38 PM Central. Branched from `feat/2893-check-ins-dashboard-rest` (#2893 has not merged). Red first (8 new tests failed as intended), built, images taken. Now (11:10 PM): re-running the projects the full check lost to memory kills, alone. Next update by 11:45 PM Central.
 
 ## Finished
 - **Batch 11 (gisday: #2893 images)** (report `laptop/reports/2026-11-23-11.md`): **images pushed (2893): `bd9fde1b7`**, a fast-forward. Five images (before and after at 1280, an opened event, after at 390), the release entry's table and `app: gisday`. Counts match the made-up seed; the outside-time mark shows once after, never before. No questions.
