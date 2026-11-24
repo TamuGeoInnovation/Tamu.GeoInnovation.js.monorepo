@@ -11,6 +11,9 @@
     <button type="button" class="inline-link file-name" [disabled]="busy() === file.guid" (click)="download(file)">{{ file.name }}</button>
     } @else {
     <span class="file-name">{{ file.name }}</span>
+    } @if (canPreview(file)) {
+    <!-- Shown under the list, for the admins looking through a submission's files (#3090). -->
+    <button type="button" class="inline-link file-preview-link" [disabled]="busy() === file.guid" (click)="preview(file)">Preview</button>
     }
     <!-- Who uploaded it, where the list is several people's: a session's slides on its admin page (#3093). -->
     <span class="file-detail">@if (file.uploadedBy) {<span class="file-by">{{ file.uploadedBy }}</span> · }{{ size(file.size) }} · {{ file.uploaded | date: 'MMM d, h:mm a' }}</span>
@@ -36,6 +39,19 @@
   </li>
   }
 </ul>
+} @if (previewing(); as shown) {
+<!-- One PDF at a time, drawn by the browser's own viewer, with Previous and Next between the submission's PDFs (#3090). -->
+<div class="file-preview">
+  <div class="flex flex-row wrap align-center file-preview-actions">
+    <strong class="file-preview-name">{{ shown.file.name }}</strong>
+    @if (previewFiles().length > 1) {
+    <button class="button secondary snug" type="button" (click)="step(-1)">Previous</button>
+    <button class="button secondary snug" type="button" (click)="step(1)">Next</button>
+    }
+    <button class="button secondary snug" type="button" (click)="closePreview()">Close</button>
+  </div>
+  <iframe class="file-preview-frame" [src]="shown.url" [title]="'Preview of ' + shown.file.name"></iframe>
+</div>
 } @if (zippable) {
 <!-- Every file as one zip (#3174), in the site's shared button, beside the list it downloads. -->
 <button type="button" class="button secondary snug files-all" [disabled]="busy() === 'all'" (click)="downloadAll()">{{ busy() === 'all' ? 'Preparing zip…' : 'Download all ' + files.length + ' files' }}</button>
