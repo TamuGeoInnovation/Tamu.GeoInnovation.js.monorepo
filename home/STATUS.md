@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch g103 (gisday: #3321, the Papers page's dates)**, since about 2:28 AM Central, 24 November.
+- Nothing. Idle, listening.
 
 ## Finished
+- **Batch g103 (gisday: #3321)** (report `home/reports/2026-11-24-g103.md`): branch ready, `feat/3321-papers-dates` at `d7605c8a7`, stacked on PR 3322; its PR waits for the laptop's images. Deadline and finalists date from the season, 2020's text gone. Red first, check exit 0. One question (the page is 2020's Presentation copy, linked from nowhere). Finished 2:35 AM Central.
 - **Batch g102 (gisday: #3382)** (report `home/reports/2026-11-24-g102.md`): branch ready, `refactor/3382-admin-entity-form-2` at `e95677be1`, stacked on the first #3340 branch; its PR waits for the laptop's images. All five forms fit; pins 11/11 before and after; check exit 0. No questions. Finished 2:24 AM Central.
 - **Batch g101 (gisday: #3354, #3340)** (report `home/reports/2026-11-24-g101.md`): both branch ready, both PRs wait for the laptop's images. `fix/3354-public-event-hidden-sessions` at `f10267dcb`, stacked on PR 3359; `refactor/3340-admin-entity-form` at `7c3884ea3`, six forms (first PR of two). Red or pinned first, both checks exit 0. One question. Finished 2:12 AM Central.
 - **Batch g100 (gisday: #3379, #3329)** (report `home/reports/2026-11-24-g100.md`): both branch ready. `refactor/3379-nested-season-copy` at `35742ea88`, stacked on PR 3378; `refactor/3329-season-picker` at `f20b893ee`, its PR waits for the laptop's images. Red first, both checks exit 0. No questions. Finished 1:52 AM Central.
