@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 
-import type { RsvpDashboard, UserRsvp } from '@tamu-gisc/gisday/platform/data-api';
+import type { RsvpDashboard } from '@tamu-gisc/gisday/platform/data-api';
 import { RsvpService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { LineChartComponent } from '@tamu-gisc/ui-kits/ngx/charts';
@@ -29,7 +29,7 @@ import { DashboardRowDetailDirective, DashboardTableComponent } from '../shared/
     AsyncPipe
   ]
 })
-export class RsvpDashboardComponent extends EventDashboardComponent<RsvpDashboard, UserRsvp> {
+export class RsvpDashboardComponent extends EventDashboardComponent<RsvpDashboard> {
   protected readonly entityService = inject(RsvpService);
   protected readonly filePrefix = 'gisday-rsvps';
   protected readonly comparedNoun = 'RSVPs';

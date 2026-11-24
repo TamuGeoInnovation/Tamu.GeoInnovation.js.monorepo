@@ -20,7 +20,7 @@ import { SeasonService } from '../season/season.service';
 import { SPEAKER_PHOTO_FIT } from './speaker-photo';
 import { onSchedule } from '../_base/hidden-sessions';
 import { rethrowHttp } from '../_base/rethrow-http';
-import { SeasonScopedProvider } from '../_base/season-scoped-provider';
+import { SeasonScopedProvider, withoutIdentity } from '../_base/season-scoped-provider';
 
 @Injectable()
 export class SpeakerProvider extends SeasonScopedProvider<Speaker> {
@@ -32,6 +32,23 @@ export class SpeakerProvider extends SeasonScopedProvider<Speaker> {
 
   protected forSeason(seasonGuid: string) {
     return this.getSpeakersForSeason(seasonGuid);
+  }
+
+  protected override readonly copyRelations = { images: true };
+
+  protected override copyOf(record: Speaker, season: Season) {
+    // Images are held by one speaker, so the copy has its own; a badge printed for one season is not printed for the
+    // next (#2908).
+    const copy = super.copyOf(record, season) as DeepPartial<Speaker>;
+
+    copy.badgePrintedAt = null;
+    copy.badgePrintedText = null;
+
+    if (record.images) {
+      copy.images = record.images.map(withoutIdentity);
+    }
+
+    return copy;
   }
 
   private _resourcePath = `images/speakers`;
@@ -346,56 +363,7 @@ export class SpeakerProvider extends SeasonScopedProvider<Speaker> {
   }
 
   public async copySpeakersIntoSeason(seasonGuid: string, existingEntityGuids: Array<string>) {
-    const season = await this.seasonService.findOne({
-      where: {
-        guid: seasonGuid
-      }
-    });
-
-    if (!season) {
-      throw new UnprocessableEntityException('Could not find season.');
-    }
-
-    const existingSpeakers = await this.speakerRepo.find({
-      where: {
-        guid: In(existingEntityGuids)
-      },
-      relations: { images: true }
-    });
-
-    if (!existingSpeakers || existingSpeakers.length === 0) {
-      throw new UnprocessableEntityException('Could not find speakers.');
-    }
-
-    const newEntities = existingSpeakers.map((entity) => {
-      delete entity.guid;
-      delete entity.created;
-      delete entity.updated;
-      // A badge printed for one season is not printed for the next (#2908).
-      entity.badgePrintedAt = null;
-      entity.badgePrintedText = null;
-
-      if (entity.images?.length > 0) {
-        entity.images = entity.images.map((image) => {
-          delete image.guid;
-          delete image.created;
-          delete image.updated;
-
-          return image;
-        });
-      }
-
-      return this.speakerRepo.create({
-        ...entity,
-        season
-      });
-    });
-
-    try {
-      return Promise.all(newEntities.map((entity) => entity.save()));
-    } catch (err) {
-      rethrowHttp(err, new InternalServerErrorException('Could not copy speakers into season.'));
-    }
+    return this.copyIntoSeason(seasonGuid, existingEntityGuids);
   }
 
   public async insertBulk(speakers: OldFormatSpeaker[]) {

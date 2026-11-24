@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { of, throwError } from 'rxjs';
 
@@ -53,6 +54,8 @@ describe('WinnersComponent (#3239)', () => {
     TestBed.configureTestingModule({
       imports: [WinnersComponent],
       providers: [
+        // The season is picked from the address (#3329).
+        provideRouter([]),
         { provide: SeasonWinnersService, useValue: winners },
         {
           provide: SeasonService,

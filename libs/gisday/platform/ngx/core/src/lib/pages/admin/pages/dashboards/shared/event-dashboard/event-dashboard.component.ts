@@ -3,13 +3,12 @@ import { GISDAY_TIME_ZONE } from '@tamu-gisc/gisday/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Observable, catchError, filter, map, of, switchMap, tap } from 'rxjs';
 
-import { readRefusal } from '@tamu-gisc/gisday/platform/ngx/common';
+import { readRefusal, seasonPicker } from '@tamu-gisc/gisday/platform/ngx/common';
 
-import type { GuidIdentity, RsvpDashboardPerson } from '@tamu-gisc/gisday/platform/data-api';
+import type { RsvpDashboardPerson } from '@tamu-gisc/gisday/platform/data-api';
 import { bandOfDays, ChartBand, ChartSeries, countsByDay, dayIn, runningTotalByDay } from '@tamu-gisc/ui-kits/ngx/charts';
 import { fileNamePart } from '@tamu-gisc/common/utils/ui';
 
-import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
 import { PERSON_TYPE_COLUMNS } from '../dashboard-people/dashboard-people.component';
 import { DashboardTableColumn, DashboardTableRow } from '../dashboard-table/dashboard-table.component';
 import { SeasonComparison } from '../season-comparison/season-comparison';
@@ -154,10 +153,12 @@ export function dashboardBands(dashboard: DashboardData): Array<ChartBand> {
  * table, people and chart are shared components.
  */
 @Component({ selector: 'tamu-gisc-event-dashboard', template: '', standalone: false })
-export abstract class EventDashboardComponent<D extends DashboardData, E extends GuidIdentity>
-  extends BaseAdminListComponent<E>
-  implements OnInit
-{
+export abstract class EventDashboardComponent<D extends DashboardData> implements OnInit {
+  /** The season shown, from the address (#3329). */
+  private readonly picker = seasonPicker();
+  public readonly seasons$ = this.picker.seasons$;
+  public readonly selectedSeason$ = this.picker.season$;
+
   private readonly destroyRef = inject(DestroyRef);
 
   /** The start of each event's CSV file name, such as gisday-rsvps. */
@@ -216,9 +217,11 @@ export abstract class EventDashboardComponent<D extends DashboardData, E extends
     return dashboard ? dashboardBands(dashboard) : [];
   });
 
-  public override ngOnInit(): void {
-    super.ngOnInit();
+  public setSeason(seasonGuid: string) {
+    this.picker.choose(seasonGuid);
+  }
 
+  public ngOnInit(): void {
     this.comparison.set(
       new SeasonComparison(
         (guid) => this.seasonDashboard(guid).pipe(map((d) => d.made.map((m) => m.created))),
