@@ -1,5 +1,6 @@
 ---
 issue: 2912
+app: gisday
 title: "GIS Day admin: a printed badge says Printed, with Undo, and its row no longer scrolls"
 testOnDev: |
   | GIS Day admin: printed badge wording ([#2912](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2912)) | Not on dev: GIS Day has no dev site. After release, open [Dashboards > Speaker badges on gisday.tamu.edu](https://gisday.tamu.edu/admin/dashboards/speaker-badges) and Show All | Each printed badge reads "Printed" with its date and an Undo link, never "Not printed"; no row has its own scroll bar |

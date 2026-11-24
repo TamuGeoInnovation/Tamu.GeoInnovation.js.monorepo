@@ -1,5 +1,6 @@
 ---
 issue: 3191
+app: gisday
 title: "GIS Day: the judging page shows a criterion's four levels as boxes side by side, like the rubric"
 testOnDev: |
   | GIS Day: the judging page's levels as boxes ([#3191](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3191)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release, on [gisday.tamu.edu](https://gisday.tamu.edu), open a judge's judging link (`/judging/<link>`, from an Ask to judge email to a judge) on a computer, then on a phone | Under each criterion's score box, its four levels (Excellent, Proficient, Developing, Needs Improvement) are shown as boxes, with no Levels toggle to open: four across on a computer, one per row on a phone, and nothing runs off the right edge of the phone's screen |

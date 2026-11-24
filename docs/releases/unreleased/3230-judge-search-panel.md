@@ -1,5 +1,6 @@
 ---
 issue: 3230
+app: gisday
 title: "GIS Day: The judge's page searches entries, and scores each in its own details panel that Escape closes"
 testOnDev: |
   | GIS Day: search and a details panel on the judge's page ([#3230](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3230)) | Not on dev: GIS Day has no dev site. On production, a judge's page from a judging link (`/judging/<link>`), on a computer and on a phone | A search box above the list finds an entry by its title or an author, in every competition, naming the competition; choosing one opens it in a panel over the list, the whole screen on a phone, with the search box at its top; Previous and Next go to the entries beside it; Escape, Close or a click beside it closes the panel; changing a score and then leaving without Save asks first, Stay keeping the scores and Leave without saving putting back the saved ones |

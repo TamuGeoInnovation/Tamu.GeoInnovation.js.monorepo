@@ -1,5 +1,6 @@
 ---
 issue: 3193
+app: gisday
 title: "GIS Day: Judging results break an entry down by judge, and give every score as a CSV"
 testOnDev: |
   | GIS Day: each judge's scores on an entry ([#3193](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3193)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release, as an admin on [gisday.tamu.edu](https://gisday.tamu.edu/admin/research-competition/judging), open Research Competitions, Judging results, choose a competition with scores, click an entry's row, then click another, then choose Every score | Clicking a row opens a line per judge under it: their total, their comment and their score on each criterion, or Not scored yet for a judge who has not scored it; clicking another row closes the first, and clicking the open one closes it. Every score downloads a CSV with a row per judge per entry, the criteria, the total (or Not scored yet) and the comment, a comment with a comma or quotes kept whole in one cell when opened in Excel |

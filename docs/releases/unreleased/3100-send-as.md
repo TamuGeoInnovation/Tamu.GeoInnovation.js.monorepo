@@ -1,5 +1,6 @@
 ---
 issue: 3100
+app: gisday
 title: "GIS Day admin: choose who an email is sent as, your own address by default"
 testOnDev: |
   | GIS Day admin: Send as in the email window ([#3100](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3100)) | Not on dev: GIS Day has no dev site. After release, as an admin signed in with a tamu.edu account, select one submission under [Research Competitions](https://txgisday.org/admin/research-competition) and choose Email, then Profile email | The window opens with a **Send as** box at the top, your own address chosen, then the site's address and any shared addresses in `MAILROOM_SENDERS`. The preview shows **From:** your name with the site's in brackets and your address, and **Replies to:** your address; choosing another address changes both. Cancel sends nothing. Before any real email goes out as a person, send one test email to the maintainer and read its headers for SPF, DKIM and DMARC passes |

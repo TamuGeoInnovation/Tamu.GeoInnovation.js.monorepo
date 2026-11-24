@@ -1,5 +1,6 @@
 ---
 issue: 3074
+app: gisday
 title: Every GIS Day image picker refuses what the server would, as soon as a file is chosen
 testOnDev: |
   | GIS Day admin and the presenter's edit page: image pickers ([#3074](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3074)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release, as an admin: Admin, Organizations, Places, Speakers and Sponsors, each one's edit form; and a presenter's edit link | Choosing an SVG, or an image over 5 MB, says "The logo (or photo) must be a JPEG or PNG image." or "... must be 5 MB or smaller." at once, and the form keeps the image it had. A JPEG or PNG is taken and previewed as before |

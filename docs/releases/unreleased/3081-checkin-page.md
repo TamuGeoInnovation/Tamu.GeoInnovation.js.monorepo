@@ -1,5 +1,6 @@
 ---
 issue: 3081
+app: gisday
 title: "A session's QR code opens a check-in page that says whether you are checked in"
 testOnDev: |
   | A session's QR code opens a check-in page ([#3081](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3081)) | Not on dev: GIS Day has no dev site. After release, as an admin tick "Check-in open at any time?" on one session, press "Show check-in QR code" on its page, and scan the code with a phone, signed in and then signed out | Signed in: a page saying "You're checked in", and "You're already checked in" on a second scan, each with "Go to the session"; signed out: straight to sign-in, then back to the page, checked in; a session not yet open: "You are not checked in" with when it opens. Untick the box afterwards |

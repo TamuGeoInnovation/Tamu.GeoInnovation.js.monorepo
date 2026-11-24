@@ -1,5 +1,6 @@
 ---
 issue: 2024
+app: gisday
 title: "GIS Day: the footer's My Account links go to the account's own pages"
 testOnDev: |
   | GIS Day: footer My Account links ([#2024](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2024)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release, sign in on [gisday.tamu.edu](https://gisday.tamu.edu), scroll to the footer and follow each link under **My Account** | The column lists My Check-ins, My Classes and Profile Details. My Check-ins opens `/account/checkins`, My Classes `/account/classes` and Profile Details `/account/details`, each the account's own page; none says "We couldn't find that page", and Registered Sessions is gone |

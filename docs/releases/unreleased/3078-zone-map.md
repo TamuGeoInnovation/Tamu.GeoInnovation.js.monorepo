@@ -1,5 +1,6 @@
 ---
 issue: 3078
+app: gisday
 title: "GIS Day: a venue's check-in zone is drawn and seen on a map"
 testOnDev: |
   | A venue's check-in zone is drawn and seen on a map ([#3078](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3078)) | Not on dev: GIS Day has no dev site. After release, as an admin open [Admin > Venues](https://txgisday.org/admin/event-locations) on txgisday.org and open a venue with Check-In Zone Corners, then one without | A map sits beside the corners box (under it on a phone). A venue with corners shows its zone on the map as the page opens; one without opens on campus. **Draw**, then a click on each corner and a double-click on the last, writes the corners into the box; dragging a corner rewrites its line; **Clear** empties the box; corners typed into the box appear on the map. Leave without saving (Escape asks first) unless the zone is meant to change |

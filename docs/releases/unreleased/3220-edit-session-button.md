@@ -1,5 +1,6 @@
 ---
 issue: 3220
+app: gisday
 title: "GIS Day: An Edit session button on a session's page, for organizers"
 testOnDev: |
   | GIS Day: Edit session button on a session's page ([#3220](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3220)) | Not on dev: GIS Day has no dev site. On production, signed in as a GIS Day admin, manager or organizer, open any session from Sessions | An **Edit Session** button at the right of the session's title opens that session's edit form under Admin → Sessions; signed out, or signed in without one of those roles, there is no button |

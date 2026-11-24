@@ -1,5 +1,6 @@
 ---
 issue: 2934
+app: gisday
 title: "GIS Day: poster and presentation submissions close at a deadline an admin sets"
 testOnDev: |
   | GIS Day: submission deadlines ([#2934](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2934)) | Not on dev: GIS Day has no dev site. After release, as an admin open [Research Competitions](https://txgisday.org/admin/research-competition), set a poster deadline a few minutes ahead and save; then, signed in, open [a new submission](https://txgisday.org/account/submissions/add) and choose Poster | Before the deadline the form says when the poster competition closes; after it, it says it closed and when (in Central time) and offers no Submit, an existing poster submission can no longer be changed, and its files can still be attached until the files deadline. Clear the deadlines afterwards to reopen |

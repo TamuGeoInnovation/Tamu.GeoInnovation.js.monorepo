@@ -1,5 +1,6 @@
 ---
 issue: 3169
+app: gisday
 title: "GIS Day: The Monument Trail page has a button to the leaderboard"
 testOnDev: |
   | GIS Day: a leaderboard button on the competition page ([#3169](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3169)) | Not on dev: GIS Day has no dev site. After release, open [txgisday.org/competitions/monuments](https://txgisday.org/competitions/monuments) | A **View the leaderboard** button above the first paragraph, and another after **Open the submission form** at the bottom; each opens the leaderboard, asking to sign in first if you are not |

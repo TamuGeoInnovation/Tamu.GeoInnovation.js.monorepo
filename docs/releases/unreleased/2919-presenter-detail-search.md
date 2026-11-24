@@ -1,5 +1,6 @@
 ---
 issue: 2919
+app: gisday
 title: "GIS Day: the presenter search box on each presenter's page"
 testOnDev: |
   | GIS Day: search from a presenter's page ([#2919](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2919)) | Not on dev: GIS Day has no dev site. After release, open any presenter from [Presenters on gisday.tamu.edu](https://gisday.tamu.edu/presenters) and type in the box above them | The other presenters that match are listed under the box, searched as the Presenters page searches; choosing one opens their page; with more than ten matches, "See all matches on the Presenters page" opens the list already searched |

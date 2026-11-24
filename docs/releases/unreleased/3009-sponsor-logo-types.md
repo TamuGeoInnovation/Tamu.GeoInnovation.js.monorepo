@@ -1,5 +1,6 @@
 ---
 issue: 3009
+app: gisday
 title: "GIS Day: the sponsor form refuses a logo that is not a JPEG or PNG as soon as it is chosen"
 testOnDev: |
   | GIS Day: the sponsor form's logo picker takes only JPEG and PNG ([#3009](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3009)) | Not on dev: GIS Day has no dev site. After release, signed in as an admin, open Admin > Sponsors and a sponsor | Click Select Logo Image: the chooser offers JPEG and PNG files. Switch it to all files and pick an SVG or GIF: "The logo must be a JPEG or PNG image." appears under the picker, no file is shown as chosen and the preview keeps the saved logo. Press Escape and leave without saving |

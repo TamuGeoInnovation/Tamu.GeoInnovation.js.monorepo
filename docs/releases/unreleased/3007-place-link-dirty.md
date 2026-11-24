@@ -1,5 +1,6 @@
 ---
 issue: 3007
+app: gisday
 title: "GIS Day: editing only an organization's link counts as a change, so Escape asks before leaving"
 testOnDev: |
   | GIS Day: editing only an organization's link counts as a change ([#3007](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3007)) | Not on dev: GIS Day has no dev site. After release, signed in as an admin, open Admin > Organizations and an organization with a link | Change only the link's URL or label, then press Escape: "Leave without saving?" appears. Choose Keep editing or Leave without saving; nothing is saved. Open an organization and press Escape without editing: it leaves without asking |

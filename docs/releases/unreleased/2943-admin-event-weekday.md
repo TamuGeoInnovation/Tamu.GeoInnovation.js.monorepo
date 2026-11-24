@@ -1,5 +1,6 @@
 ---
 issue: 2943
+app: gisday
 title: "GIS Day: the admin Events list heads each day with its day of the week"
 testOnDev: |
   | GIS Day: weekday on admin Events headings ([#2943](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2943)) | Not on dev: GIS Day has no dev site. After release, open [Events](https://txgisday.org/admin/events) | Each day reads as on the public Sessions page, for example "Monday, November 16", not "November 16" |

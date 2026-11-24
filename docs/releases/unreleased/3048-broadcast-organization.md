@@ -1,5 +1,6 @@
 ---
 issue: 3048
+app: gisday
 title: "GIS Day: a broadcast belongs to an organization, so each site lists only its own Zooms"
 testOnDev: |
   | GIS Day: a broadcast belongs to an organization ([#3048](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3048)) | Not on dev: GIS Day has no dev site. After release (the migration, the API, the site, then the data script), as an admin open [Admin > Broadcasts](https://gisday.tamu.edu/admin/broadcasts) on gisday.tamu.edu | Texas A&M's four Zooms, and any broadcast with no organization yet, with an **Organization** column; TTU 1-3, Main UT, Main Texas DSHS and the others are gone until **Show every organization's broadcasts** is ticked. Open a broadcast: **Select organization** is its first field, set, and saving one without it is refused. An event's **Broadcast** drop-down lists the same Zooms, plus the event's own whoever's it is. On [txgisday.org's Admin > Broadcasts](https://txgisday.org/admin/broadcasts) every organization's broadcast is listed, with no switch |

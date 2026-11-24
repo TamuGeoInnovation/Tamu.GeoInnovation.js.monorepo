@@ -1,5 +1,6 @@
 ---
 issue: 3209
+app: gisday
 title: "GIS Day: Check-in opens 5 minutes before a session and closes 10 minutes after, and each session can change it"
 testOnDev: |
   | GIS Day: each session's check-in window ([#3209](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3209)) | Not on dev: GIS Day has no dev site. After the migration `AddCheckInMinutes` and the new API, open a session in Admin → Events, then its public page on [txgisday.org](https://txgisday.org/sessions) | The edit form has **Check-in opens, minutes before the start** (5) and **Check-in closes, minutes after the end** (10) beside the times; the session's Check In button appears 5 minutes before it starts and goes 10 minutes after it ends; change either, save, and the button follows; the FAQ's check-in answer says 5 minutes before and 10 minutes after |

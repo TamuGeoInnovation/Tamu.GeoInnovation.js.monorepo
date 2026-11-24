@@ -1,5 +1,6 @@
 ---
 issue: 3125
+app: gisday
 title: "GIS Day: a dashboard's people table keeps its column headings in view as it scrolls"
 testOnDev: |
   | GIS Day: people table headings stay in view ([#3125](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3125)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release, sign in as an admin on [gisday.tamu.edu](https://gisday.tamu.edu/admin/dashboards/vgi-submissions), open Admin, Dashboards, VGI submissions, choose season 2025, open **Unknown Art Piece**, and scroll down inside the box of people under it | The column headings (Name, Email, Position and the rest) stay at the top of the box as the people scroll under them, on a white band the rows do not show through. The same on RSVPs, Check-ins and Accounts with a row opened |

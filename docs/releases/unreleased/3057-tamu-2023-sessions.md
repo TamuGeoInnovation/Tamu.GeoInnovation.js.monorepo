@@ -1,5 +1,6 @@
 ---
 issue: 3057
+app: gisday
 title: "gisday.tamu.edu lists 2023's Texas A&M sessions"
 testOnDev: |
   | gisday.tamu.edu lists 2023's Texas A&M sessions ([#3057](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3057)) | Not on dev: GIS Day has no dev site. After release, as an admin open [Admin > Events](https://gisday.tamu.edu/admin/events) on gisday.tamu.edu and choose the 2023 season, with "Show every organization's sessions" left off | 2023 lists Texas A&M's 20 sessions (Sunday 12 to Tuesday 14 November, at the Memorial Student Center and the three socials) instead of none; other organizations' 2023 sessions stay hidden until the box is ticked; 2024 to 2026 are unchanged |

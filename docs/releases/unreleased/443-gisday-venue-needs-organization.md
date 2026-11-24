@@ -1,5 +1,6 @@
 ---
 issue: 443
+app: gisday
 title: A GIS Day venue cannot be saved without its hosting organization
 testOnDev: |
   | A venue needs its hosting organization ([#443](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/443)) | GIS Day dev site, as an admin: Admin > Venues > Add | The hosting organization is the first field; Create without one says "Select the venue's hosting organization" and saves nothing |

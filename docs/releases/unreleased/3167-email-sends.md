@@ -1,5 +1,6 @@
 ---
 issue: 3167
+app: gisday
 title: "GIS Day admin: every email sent to a speaker is recorded, and Who gets it says who was already sent it"
 testOnDev: |
   | GIS Day: Who gets it says who was already sent the email ([#3167](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3167)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release (and its migration, AddSpeakerEmailSends), as an admin on [gisday.tamu.edu](https://gisday.tamu.edu/admin/events), open a session with several speakers, then Email these speakers, Session details (and Ask for slides) | Under each speaker in Who gets it: their address, then "Not sent yet" or "Sent once/N times, last <date, time>" (US Central). Above them, how many have not been sent it, "Tick only those not sent it yet" (unticks those who were) and "List those not sent it yet first". "Every email each was sent" opens a list of each speaker's emails with dates, including the profile email. Nothing was sent before the release, so every speaker starts as "Not sent yet". Close the window with Cancel: nothing is sent |

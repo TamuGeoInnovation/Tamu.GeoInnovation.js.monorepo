@@ -1,5 +1,6 @@
 ---
 issue: 3147
+app: gisday
 title: "GIS Day admin: a session can be marked No slides, so its speakers are not asked for any"
 testOnDev: |
   | GIS Day: No slides for this session ([#3147](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3147)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release (and its migration, AddEventNoSlides), as an admin on [gisday.tamu.edu](https://gisday.tamu.edu/admin/events), open a session with speakers that has no slides (a panel, a social) | Below the session's checkboxes, "No slides for this session", unticked on every session until someone ticks it. Tick it and save: Email these speakers offers Profile email and Session details, and no Ask for slides, and the Slides section says no slides are expected. On that session's speaker's presenter page (from their profile email's link), the session says "No slides are needed for this session." with no upload. Every other session still offers Ask for slides and the upload |

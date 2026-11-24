@@ -1,5 +1,6 @@
 ---
 issue: 2926
+app: gisday
 title: "GIS Day: recorded times are right, rather than five or six hours early"
 testOnDev: |
   | GIS Day: recorded times ([#2926](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2926)) | Not on dev: GIS Day has no dev site. After the migration and release, open [Research Competitions on gisday.tamu.edu](https://gisday.tamu.edu/admin/research-competition) signed in as an admin | The submissions made at the 5:00 PM deadline on 13 November show as about 5:00 PM, not 11:00 AM; the RSVP dashboard's times of day move the same way; something submitted or RSVPed now shows the time it was done |

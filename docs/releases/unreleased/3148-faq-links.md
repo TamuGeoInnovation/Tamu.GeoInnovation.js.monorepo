@@ -1,5 +1,6 @@
 ---
 issue: 3148
+app: gisday
 title: "GIS Day: the FAQ page's sign-up, login and classes links lead where they say"
 testOnDev: |
   | GIS Day: the FAQ page's links ([#3148](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3148)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release, signed out, on [gisday.tamu.edu/faq](https://gisday.tamu.edu/faq): open a question and click a "Create an account" link, then a "logged into your account" link, then "Open the My Classes menu item" | Each sign-up and log-in link goes to the sign-in page, not to "We couldn't find that page" or an empty page, and after signing in comes back to the FAQ page. The My Classes link goes to sign in, then to Account, Classes |

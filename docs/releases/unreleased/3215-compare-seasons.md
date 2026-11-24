@@ -1,5 +1,6 @@
 ---
 issue: 3215
+app: gisday
 title: "GIS Day: The dashboards' charts compare seasons, lined up on GIS Day week"
 testOnDev: |
   | GIS Day: compare seasons on the dashboards' charts ([#3215](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3215)) | Not on dev: GIS Day has no dev site. On production, Admin → Dashboards → RSVPs, Check-ins, VGI submissions and User accounts | Each chart opens with the selected season and the year before it, in two colours with a legend, and the axis counts days from the Monday of GIS Day week ("−14", "0", "+3"); a row of year buttons above the chart adds or removes each year; hovering gives each year's total with its own date; a year with no records, or with no GIS Day week days set, has its button greyed out, saying why |
