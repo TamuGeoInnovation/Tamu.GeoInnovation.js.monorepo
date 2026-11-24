@@ -1,4 +1,4 @@
-import { DEADLINE_COMPETITIONS, DEADLINE_COMPETITION_TABLE, DeadlineCompetition } from './submission-deadlines';
+import { DEADLINE_COMPETITIONS, DEADLINE_COMPETITION_TABLE, DeadlineCompetition, asDate } from './submission-deadlines';
 
 /**
  * Which research competitions a season runs (#2948). An admin turns each on or off on the competitions' admin page, and
@@ -13,14 +13,49 @@ import { DEADLINE_COMPETITIONS, DEADLINE_COMPETITION_TABLE, DeadlineCompetition 
 /** Every research competition, in the admin page's order: those `DEADLINE_COMPETITION_TABLE` names. */
 export const SEASON_COMPETITIONS: ReadonlyArray<DeadlineCompetition> = DEADLINE_COMPETITIONS;
 
-/** What a season holds: a row for each competition it runs, or none for every one. */
-export interface SeasonCompetitions {
-  competitions?: ReadonlyArray<{ competitionType: string }> | null;
+/**
+ * One of a season's rows of `season_competitions`: that it runs the competition, and the competition's settings for the
+ * season (#3019): its sessions, and when its finalists hear.
+ */
+export interface CompetitionSettingsRow {
+  competitionType: string;
+  /**
+   * Whether the row says the season runs the competition: true, or missing on a row from before #3019, as #2948's rows
+   * always meant. Empty (null) on a row that holds only the competition's settings, so a season that runs every
+   * competition can hold settings for one.
+   */
+  runs?: boolean | null;
+  /** The competition's session, chosen in Admin: the poster session, or the undergraduate presentation session. */
+  sessionGuid?: string | null;
+  /** The graduate presentation session. */
+  graduateSessionGuid?: string | null;
+  /** The session its winners are announced at. */
+  awardsSessionGuid?: string | null;
+  /** When its finalists hear (7A): shown on the competition's page when set. */
+  finalistsNotifiedAt?: Date | string | null;
 }
 
-/** The competitions a season runs, in the admin page's order. */
+/** What a season holds: a row for each competition it runs, or none for every one, and rows of settings (#3019). */
+export interface SeasonCompetitions {
+  competitions?: ReadonlyArray<CompetitionSettingsRow> | null;
+}
+
+/** A competition's row in a season, with its settings, or null when it has none (#3019). */
+export function competitionSettings(
+  season: SeasonCompetitions | null | undefined,
+  competition: string
+): CompetitionSettingsRow | null {
+  return (season?.competitions ?? []).find((row) => row.competitionType === competition) ?? null;
+}
+
+/** When a competition's finalists hear (#3019, 7A), or null when the season has not set it. */
+export function finalistsNotifiedAt(season: SeasonCompetitions | null | undefined, competition: string): Date | null {
+  return asDate(competitionSettings(season, competition)?.finalistsNotifiedAt);
+}
+
+/** The competitions a season runs, in the admin page's order. A row of settings only (`runs` empty) runs nothing. */
 export function seasonCompetitions(season: SeasonCompetitions | null | undefined): ReadonlyArray<DeadlineCompetition> {
-  const named = (season?.competitions ?? []).map((row) => row.competitionType);
+  const named = (season?.competitions ?? []).filter((row) => row.runs !== null).map((row) => row.competitionType);
 
   if (named.length === 0) {
     return SEASON_COMPETITIONS;
