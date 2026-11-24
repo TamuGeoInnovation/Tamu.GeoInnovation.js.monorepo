@@ -19,7 +19,6 @@ import {
   judgingResultsTable
 } from '@tamu-gisc/gisday/common';
 
-
 /** A competition's results as a CSV file, as the page shows them. */
 export function judgingResultsCsv(results: JudgingResultsDto): string {
   return Papa.unparse(judgingResultsTable(results));

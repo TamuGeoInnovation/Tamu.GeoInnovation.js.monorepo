@@ -19,7 +19,6 @@ import {
   winnerChoicesProblem
 } from '@tamu-gisc/gisday/common';
 
-
 /**
  * How an entry is offered: its main author, then its title, then anyone else on it (#3292). The title came first, and a
  * long one cut the names off, so who was who could not be seen. The main author is the first of the submission's

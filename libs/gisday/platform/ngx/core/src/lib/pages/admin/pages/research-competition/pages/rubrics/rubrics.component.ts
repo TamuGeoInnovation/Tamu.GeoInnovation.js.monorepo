@@ -16,7 +16,6 @@ import {
   rubricTotal
 } from '@tamu-gisc/gisday/common';
 
-
 type LevelForm = FormGroup<{ label: FormControl<string>; description: FormControl<string> }>;
 type CriterionForm = FormGroup<{
   guid: FormControl<string | null>;
