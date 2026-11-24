@@ -3,15 +3,14 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { catchError, filter, map, of, switchMap, tap } from 'rxjs';
 
-import { readRefusal } from '@tamu-gisc/gisday/platform/ngx/common';
+import { readRefusal, seasonPicker } from '@tamu-gisc/gisday/platform/ngx/common';
 
-import type { AccountDashboard, RsvpDashboardPerson, Season } from '@tamu-gisc/gisday/platform/data-api';
-import { SeasonService, UserService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import type { AccountDashboard, RsvpDashboardPerson } from '@tamu-gisc/gisday/platform/data-api';
+import { UserService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ChartSeries, countsByDay, LineChartComponent, runningTotalByDay } from '@tamu-gisc/ui-kits/ngx/charts';
 import { fileNamePart } from '@tamu-gisc/common/utils/ui';
 
-import { BaseAdminListComponent } from '../../base-admin-list/base-admin-list.component';
 import { SeasonComparison } from '../shared/season-comparison/season-comparison';
 import { SeasonComparisonComponent } from '../shared/season-comparison/season-comparison.component';
 import { DashboardPeopleComponent, PERSON_TYPE_COLUMNS } from '../shared/dashboard-people/dashboard-people.component';
@@ -58,9 +57,12 @@ export function accountFileName(year: number | null | undefined, rowName: string
     DatePipe
   ]
 })
-export class AccountDashboardComponent extends BaseAdminListComponent<Season> implements OnInit {
-  // Accounts are not a GIS Day entity: the base class is here for its season selector, which is all this page lists by.
-  protected readonly entityService = inject(SeasonService);
+export class AccountDashboardComponent implements OnInit {
+  /** The season shown, from the address (#3329). */
+  private readonly picker = seasonPicker();
+  public readonly seasons$ = this.picker.seasons$;
+  public readonly selectedSeason$ = this.picker.season$;
+
   private readonly users = inject(UserService);
   private readonly destroyRef = inject(DestroyRef);
 
@@ -104,9 +106,11 @@ export class AccountDashboardComponent extends BaseAdminListComponent<Season> im
     return accountFileName(this.season()?.year, row?.name ?? 'accounts');
   });
 
-  public override ngOnInit(): void {
-    super.ngOnInit();
+  public setSeason(seasonGuid: string) {
+    this.picker.choose(seasonGuid);
+  }
 
+  public ngOnInit(): void {
     this.comparison.set(
       new SeasonComparison(
         (guid) => this.users.getDashboardForSeason(guid).pipe(map((d) => d.made)),

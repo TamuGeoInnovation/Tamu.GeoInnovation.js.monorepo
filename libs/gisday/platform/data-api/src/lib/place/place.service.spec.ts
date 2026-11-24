@@ -293,6 +293,9 @@ describe('PlaceService', () => {
     const withManager = (manager: Record<string, jest.Mock>) => {
       (placeRepo.manager.transaction as jest.Mock).mockImplementation((cb) => cb(manager));
     };
+    // The manager's finds by entity, each with no rows unless given: the places, their broadcasts (#3397) and their
+    // event locations are read in turn, so answering by call order broke when a read was added.
+    const findsOf = (rows: Map<unknown, Array<unknown>>) => jest.fn().mockImplementation(async (entity) => rows.get(entity) ?? []);
 
     it('accepts a comma-separated string and an array alike', async () => {
       const manager = {
@@ -312,7 +315,7 @@ describe('PlaceService', () => {
     it('detaches event locations from the place before deleting it', async () => {
       const location = { guid: 'el-1', place: { guid: 'p-1' } } as EventLocation;
       const manager = {
-        find: jest.fn().mockResolvedValueOnce([]).mockResolvedValueOnce([location]),
+        find: findsOf(new Map([[EventLocation, [location]]])),
         delete: jest.fn().mockResolvedValue({ affected: 1 }),
         save: jest.fn().mockResolvedValue([location])
       };
@@ -327,7 +330,7 @@ describe('PlaceService', () => {
     it('removes logo assets belonging to the places being deleted', async () => {
       const logo = { guid: 'a-1' } as Asset;
       const manager = {
-        find: jest.fn().mockResolvedValueOnce([{ guid: 'p-1', logos: [logo] }]).mockResolvedValueOnce([]),
+        find: findsOf(new Map([[Place, [{ guid: 'p-1', logos: [logo] }]]])),
         delete: jest.fn().mockResolvedValue({ affected: 1 }),
         save: jest.fn()
       };

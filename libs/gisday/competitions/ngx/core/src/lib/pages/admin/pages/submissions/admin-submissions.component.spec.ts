@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { firstValueFrom, of } from 'rxjs';
+import { firstValueFrom, of, throwError } from 'rxjs';
 
 import { LeaderboardService, SubmissionService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
 import { SubmissionReviewDto } from '@tamu-gisc/gisday/competitions/data-api/types';
@@ -29,7 +29,8 @@ describe('AdminSubmissionsComponent', () => {
   beforeEach(async () => {
     mockSubmissionService = {
       getAdminSubmissions: jest.fn().mockReturnValue(of(rows)),
-      publishToArcgis: jest.fn().mockReturnValue(of({ queued: 5 }))
+      publishToArcgis: jest.fn().mockReturnValue(of({ queued: 5 })),
+      getSeasonExportZip: jest.fn().mockReturnValue(of(new Blob(['zip'])))
     } as unknown as jest.Mocked<SubmissionService>;
 
     // Ann leads; Bob and Dan tie for second; Eve is fourth.
@@ -119,5 +120,42 @@ describe('AdminSubmissionsComponent', () => {
     component.publishToArcgis();
 
     expect(component.arcgisResult()).toBe('Publishing to ArcGIS Online is not set up on this server.');
+  });
+
+  // #545: every submission, its answers and its photos, as one zip the admins can hand to the project's partners.
+  describe('the export (#545)', () => {
+    const button = () =>
+      Array.from((fixture.nativeElement as HTMLElement).querySelectorAll('button')).find((b) =>
+        b.textContent.includes('Download all as a zip')
+      );
+
+    beforeEach(() => {
+      (URL as unknown as { createObjectURL: unknown }).createObjectURL = jest.fn(() => 'blob:made-up');
+      (URL as unknown as { revokeObjectURL: unknown }).revokeObjectURL = jest.fn();
+    });
+
+    it("downloads the season's submissions as one zip from a button beside Publish to ArcGIS", () => {
+      const clicks = jest.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => undefined);
+      fixture.detectChanges();
+
+      button().click();
+      fixture.detectChanges();
+
+      expect(mockSubmissionService.getSeasonExportZip).toHaveBeenCalled();
+      expect(clicks).toHaveBeenCalled();
+      expect(component.exportProblem()).toBeNull();
+      clicks.mockRestore();
+    });
+
+    it('says when there is nothing to export, rather than saving an empty file', () => {
+      mockSubmissionService.getSeasonExportZip.mockReturnValue(throwError(() => ({ status: 404 })) as never);
+      fixture.detectChanges();
+
+      button().click();
+      fixture.detectChanges();
+
+      expect(component.exportProblem()).toBe('This season has no VGI submissions to export.');
+      expect((fixture.nativeElement as HTMLElement).textContent).toContain('This season has no VGI submissions to export.');
+    });
   });
 });

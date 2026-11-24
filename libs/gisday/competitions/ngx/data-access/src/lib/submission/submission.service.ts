@@ -94,6 +94,16 @@ export class SubmissionService {
     return this.http.get<SubmissionReviewDto[]>(`${this.resource}/admin`, { params });
   }
 
+  /**
+   * The season's VGI submissions as one zip (#545): `submissions.csv` and each submission's photos, for the project's
+   * partners. The active season unless `seasonGuid` names another.
+   */
+  public getSeasonExportZip(seasonGuid?: string) {
+    const params = seasonGuid ? { seasonGuid } : {};
+
+    return this.http.get(`${this.env.value('api_url')}/competitions/export/zip`, { params, responseType: 'blob' });
+  }
+
   public getSubmissionImages(submissionGuid: string) {
     return this.http.get<SubmissionMediaDto[]>(`${this.resource}/${submissionGuid}/images`);
   }

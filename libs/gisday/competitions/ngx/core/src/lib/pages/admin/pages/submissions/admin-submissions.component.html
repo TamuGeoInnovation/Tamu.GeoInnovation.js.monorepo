@@ -9,8 +9,13 @@
   </div>
   <div class="flex flex-row wrap align-center views trailer-1">
     <button type="button" class="button secondary" [disabled]="publishing()" (click)="publishToArcgis()">Publish to ArcGIS</button>
+    <!-- Every submission, its answers and its photos as one zip, for the project's partners (#545). -->
+    <button type="button" class="button secondary" [disabled]="exporting()" (click)="downloadExport()">{{ exporting() ? 'Preparing the zip…' : 'Download all as a zip' }}</button>
     @if (arcgisResult()) {
     <p role="status">{{ arcgisResult() }}</p>
+    }
+    @if (exportProblem()) {
+    <p role="alert">{{ exportProblem() }}</p>
     }
   </div>
   <tamu-gisc-submission-review-list
