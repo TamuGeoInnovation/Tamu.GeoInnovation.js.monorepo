@@ -1,5 +1,15 @@
 # Laptop: current tasks
 
+## Batch g21 (gisday: images for #3382; 24 November 2026, about 8:00 AM Central, from `work (gisday)`) (Low) - **right after g20, before g19's triage**
+
+Home's `refactor/3382-admin-entity-form-2` at `e95677be1` (stacked on `refactor/3340-admin-entity-form`; use the branch tip). As g20's
+second item, the same rules, including saving and deleting made-up records in your local scratch database to raise toasts. Before is
+`7c3884ea3` (the first #3340 branch, its base), after is `e95677be1`:
+- the season form's and the event form's toast titles (now title case);
+- a place refusal and a speaker's refused delete (now showing the API's reason).
+Slug `3382-admin-entity-form-2`, release entry `app: gisday`; "images pushed (3382): <sha>" in `laptop/reports/2026-11-24-g21.md` with
+the PR's image table.
+
 ## Batch g20 (gisday: images for #3354 and #3340; 24 November 2026, about 7:30 AM Central, from `work (gisday)`) (Low) - **after g19's images for #3329, before g19's triage**
 
 Two of home's branches wait on your images for their pull requests. Fast-forward only, no `development` merged in; each adds its
