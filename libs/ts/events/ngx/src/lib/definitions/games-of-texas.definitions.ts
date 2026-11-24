@@ -9,6 +9,7 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 import { EventPopups } from '../modules/popups/popups';
+import { RED_HATCH_LEGEND } from './common.definitions';
 
 // Flat display map (no builder/sessions). The published service is four feature layers, drawn
 // points-on-top: Points of Interest (0), Routes (1), Road Closures (2), Parking (3).
@@ -20,17 +21,6 @@ export enum GAMES_OF_TEXAS_LAYERS {
 }
 
 const gamesOfTexasUrl = Connections.gamesOfTexasUrl;
-
-const toSvgDataUri = (svg: string): string => `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
-
-// Road Closures are an esriSFSBackwardDiagonal red hatch. ArcGIS emits no legend swatch for hatch
-// fills, so supply a hand-built red-hatch SVG for the legend icon (the on-map fill is left to the
-// service renderer, which draws the hatch correctly).
-const ROAD_CLOSED_LEGEND_SVG =
-  "<svg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 22 22'>" +
-  "<defs><pattern id='h' width='5' height='5' patternUnits='userSpaceOnUse' patternTransform='rotate(45)'>" +
-  "<line x1='0' y1='0' x2='0' y2='5' stroke='#E60000' stroke-width='1.5'/></pattern></defs>" +
-  "<rect x='0.5' y='0.5' width='21' height='21' fill='url(#h)' stroke='#E60000' stroke-width='1'/></svg>";
 
 const popup = (name: string, description: string) => ({
   popupComponent: EventPopups.MarkdownPopupComponent,
@@ -69,12 +59,8 @@ export const GamesOfTexasColdLayerSources: LayerSource[] = [
     visible: true,
     listMode: 'show',
     ...popup('name', 'description'),
-    legend: {
-      mode: 'custom-src',
-      src: toSvgDataUri(ROAD_CLOSED_LEGEND_SVG),
-      width: 22,
-      height: 22
-    },
+    // A red hatch, which ArcGIS draws no legend swatch for.
+    legend: RED_HATCH_LEGEND,
     native: {
       outFields: ['*']
     }
