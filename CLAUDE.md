@@ -110,6 +110,22 @@ an hour before. The script keeps the Nx cache in the volume, so an unchanged tas
 with `-m 16g` and `--parallel=8` (peak memory measured: 10.4 GB). Do not add `--skip-nx-cache`.
 On a smaller machine, set `CHECK_MEMORY` (default `16g`) and `CHECK_PARALLEL` (default `8`) to lower them (#2498).
 
+**A volume and a worktree both last until the branch merges, and nothing used to remove either.** That is
+how the work computer reached **0 bytes free of 1,907 GB** on 24 November 2026: 460 worktrees at 589 MiB
+(about 271 GB) and 323 `tamu-js-*` volumes at 2.7 GiB (about 853 GB, inside the WSL2 disk image). No check
+of any kind could run on it. **A check sweeps before it runs.** Below `CHECK_SWEEP_FREE_GB` (60 GiB) `scripts/check-in-volume.sh` runs
+`scripts/tidy.sh --yes` first - removing worktrees whose pull request has merged and `tamu-js-<issue>`
+volumes whose issue is closed - and only then refuses, below `CHECK_MIN_FREE_GB` (20 GiB). The watermark is
+well above the threshold on purpose: a sweep that waits until a check is already blocked has waited too
+long, and a guard on its own only turns an outage into a chore that nobody does. `bash scripts/tidy.sh`
+reports without removing anything, on any machine. **Removing a volume frees space inside the Docker disk image, which never shrinks on its own.** Every check
+adds about 2.6 GiB to that file for good, which is how it reached 975 GB unnoticed. Every sweep now prints
+its size and, past `TIDY_IMAGE_MAX_GB` (300 GiB), the four steps that reclaim it: stop Docker Desktop,
+`wsl --shutdown`, compact `docker_data.vhdx` with `diskpart` as Administrator, start Docker Desktop.
+**Compacting is never automatic**, because stopping Docker kills any check another session on the same
+machine is running, and a check killed mid-write leaves the stale Vite cache and Nx task record that hang
+the next start in somebody else's checkout (#2650, #3406).
+
 **Record how long something takes when you are measuring it, not otherwise.** `scripts/check-in-volume.sh`
 and `test/smoke/aggiemap/run-local.sh` print the elapsed time of every run. With `BUILD_TIMES_RECORD=1`
 they also write a small file into [`docs/build-times/runs/`](docs/build-times/runs) in the checkout they
@@ -692,6 +708,11 @@ window where a reviewer needs to see it. Check the link resolves before posting:
 curl -s -o /dev/null -w "%{http_code}" "<raw url>"
 ```
 
+**Tidying the worktree is part of opening the pull request.** A worktree is about 589 MiB, and on
+24 November 2026 three sessions made 28 of them in one evening and removed none. Once the pull request is
+open the branch is pushed, so the folder is residue: remove it with `git worktree remove`, or sweep the
+merged ones later with `bash scripts/tidy.sh --yes` (#3400).
+
 **Write every capture to `docs/screenshots/<slug>/` as soon as it is taken, not when it is needed.**
 A "before" image stops being obtainable the moment the fix is on disk: recovering one means stashing
 the change, waiting for a rebuild, re-capturing, then restoring — ten minutes to get back something
@@ -838,6 +859,10 @@ when its task says so, and no other branches or tags. It opens no pull requests 
 
 ## Things that look broken but are not
 
+- `scripts/check-in-volume.sh` exiting **125**, or `docker volume ls` not answering at all, is a full
+  disk, not a broken branch. Docker returns 125 for a container it cannot create, which reads exactly like
+  a failing check. The script now refuses first and says so; if you meet 125 anyway, look at free space
+  before the diff (#3365).
 - A map canvas blank for 20 to 40 seconds is Esri still drawing.
 - `curl` returning `000` for a `*.tamu.edu` host is usually Git Bash's outdated CA bundle,
   not an unreachable host. Check in a browser before reporting it as down.
