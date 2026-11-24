@@ -1,5 +1,6 @@
 ---
 issue: 2572
+app: gisday
 title: "GIS Day: a session's check-in code no longer stays in the page address"
 testOnDev: |
   | GIS Day: the check-in code leaves the address ([#2572](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2572)) | Not on dev: GIS Day has no dev site. After release, during a hybrid or virtual session's check-in window, scan its QR code on a phone (or open the link it holds) while signed in; then once more signed out, and sign in when asked | The page says you are checked in, and the address bar shows `/sessions/<id>/checkin` with no `?checkin=`. Going back does not return to an address with the code. Signed out, sign-in comes back to the page and it still checks you in |
