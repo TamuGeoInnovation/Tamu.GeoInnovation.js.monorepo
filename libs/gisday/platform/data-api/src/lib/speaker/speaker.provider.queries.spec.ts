@@ -80,6 +80,22 @@ describe('SpeakerProvider queries, built by typeorm', () => {
     await expect(provider.getSpeakersForSeason('s-1')).resolves.toEqual([]);
   });
 
+  // The admin Speakers list shows each speaker's sessions that season, so a speaker copied into a season with no session
+  // there can be told from one who speaks (#441, #439). A speaker belongs to one season, so their events are that season's.
+  it("lists a season's speakers with the sessions they are in", async () => {
+    const queries: Array<string> = [];
+    const find = speakerRepo.find.bind(speakerRepo);
+    speakerRepo.find = async (options) => (
+      queries.push(speakerRepo.createQueryBuilder().setFindOptions(options ?? {}).getQuery()), find(options)
+    );
+
+    await provider.getSpeakersForSeason('s-1');
+
+    expect(queries).toHaveLength(1);
+    expect(queries[0]).toMatch(/JOIN "event_speakers"/);
+    expect(queries[0]).toMatch(/JOIN "events"/);
+  });
+
   it('finds a presenter with their events in day and time order', async () => {
     await expect(provider.getPresenter('sp-1')).resolves.toBeNull();
   });

@@ -57,3 +57,80 @@ describe('SpeakerListComponent, the profile email', () => {
     expect(toasts.toast).not.toHaveBeenCalled();
   });
 });
+
+/**
+ * #441: the Sessions column, each speaker's sessions in the selected season, and "Only speakers in no session" (#439): a
+ * speaker copied into a season is listed in it whether or not they speak in it, and could not be told apart from one who does.
+ */
+describe('SpeakerListComponent, the sessions each speaker is in (#441)', () => {
+  const speakers = [
+    {
+      guid: 'sp-1',
+      firstName: 'Ana',
+      lastName: 'Ruiz',
+      events: [
+        { guid: 'e-1', name: 'Mapathon' },
+        { guid: 'e-2', name: 'Drone flights' }
+      ]
+    },
+    { guid: 'sp-2', firstName: 'Ben', lastName: 'Ortiz', events: [] }
+  ];
+
+  function open() {
+    TestBed.configureTestingModule({
+      imports: [SpeakerListComponent],
+      providers: [
+        provideRouter([]),
+        { provide: SpeakerService, useValue: { getEntitiesForActiveSeason: () => of(speakers), getEntitiesForSeason: () => of(speakers), getEntities: () => of(speakers) } },
+        { provide: SpeakerEditsService, useValue: {} },
+        { provide: SeasonService, useValue: { seasons$: of([]), activeSeason$: of(null) } },
+        { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
+        { provide: ModalService, useValue: {} },
+        { provide: NotificationService, useValue: { toast: jest.fn() } }
+      ]
+    });
+
+    const fixture = TestBed.createComponent(SpeakerListComponent);
+    fixture.detectChanges();
+
+    const element = fixture.nativeElement as HTMLElement;
+    const rows = () => {
+      fixture.detectChanges();
+
+      return Array.from(element.querySelectorAll('tbody tr')).map((row) => row.textContent ?? '');
+    };
+    const noSessionBox = () =>
+      Array.from(element.querySelectorAll('tamu-gisc-checkbox')).find((box) =>
+        box.textContent?.includes('Only speakers in no session')
+      );
+
+    return { fixture, rows, noSessionBox };
+  }
+
+  it("shows each speaker's sessions, and None for a speaker in no session", () => {
+    const { rows } = open();
+
+    const ana = rows().find((row) => row.includes('Ana'));
+    const ben = rows().find((row) => row.includes('Ben'));
+
+    expect(ana).toContain('Mapathon');
+    expect(ana).toContain('Drone flights');
+    expect(ben).toContain('None');
+  });
+
+  it('offers "Only speakers in no session", which leaves only the speaker in none, and every one again when unticked', () => {
+    const { rows, noSessionBox } = open();
+
+    expect(rows()).toHaveLength(2);
+    expect(noSessionBox()).toBeTruthy();
+
+    (noSessionBox()?.querySelector('input') as HTMLInputElement).click();
+
+    expect(rows()).toHaveLength(1);
+    expect(rows()[0]).toContain('Ben');
+
+    (noSessionBox()?.querySelector('input') as HTMLInputElement).click();
+
+    expect(rows()).toHaveLength(2);
+  });
+});
