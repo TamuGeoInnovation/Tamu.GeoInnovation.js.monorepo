@@ -1,5 +1,29 @@
 # Laptop: current tasks
 
+## Batch g17 (gisday: #3370, #3376, then #545's export built the streamed way; 24 November 2026, about 3:45 AM Central, from `work (gisday)`) (Low) - **now**
+
+Three pieces, in this order, each its own branch from the latest `development`. Overnight rules hold: **no package.json or
+lock changes** (so Bull and its packages stay, even where nothing uses them any more: say so in the report), made-up data
+only, no email, never production, txgisday-dev the only Auth0 tenant, kubernetes-config read-only.
+
+1. **[#3370](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3370), the admin Speakers list wider than a phone** (you filed it; Priority set Low). Use the shared
+   `DashboardScrollComponent` that #3244 moved to ngx-common, the way the dashboards do; don't write list-specific CSS. Fix the
+   season select being squeezed beside the heading too, with the shared layout pieces. Red first if a test can show it (a
+   page-width check at 390 like #3244's); before and after at 390 and 1280, signed in. If PR 3344 (#441) changes the same
+   template, build on `development` anyway and say in the report which file will conflict.
+2. **[#3376](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3376), the READMEs naming Playwright v1.64.1** (you found it; filed, Low). The fix the issue
+   gives: say how the image is derived, or name the current one, so the next bump doesn't leave them behind. Docs only,
+   `no-visible-change`; no check beyond `git diff --check` is needed, but say what you ran.
+3. **[#545](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/545), the VGI export, your option B** (the maintainer hasn't answered; the director chose your
+   recommendation to build, and he decides at the PR). Build the zip in the request and stream it, as #3185 does for slides
+   and competition submissions, reusing that code rather than copying it; add the button to Admin > VGI Competition >
+   Submissions. Leave #650's queue routes in place but unused, and list what could be removed once packages may change.
+   Red first (the route's test), images of the button and a downloaded zip's listing (made-up submissions), check exit 0.
+   If it grows past about two hours, stop at the report with what you found.
+
+For each: push to the fork, "branch ready: <name>" with the PR body (from the template) in your report
+`laptop/reports/2026-11-24-g17.md`, `app: gisday` in any release entry.
+
 ## Batch g16 (gisday: before and after images for #441, the admin Speakers list's Sessions column; 24 November 2026, about 12:50 AM Central, from `work (gisday)`) (Medium) - **after g14, before g15; on your signed-in stack**
 
 `feat/441-speaker-sessions` on the fork, at `463ef05c8`, is PR 3344; its admin images need a sign-in, which only you have.
