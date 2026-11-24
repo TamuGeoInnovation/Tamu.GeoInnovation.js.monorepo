@@ -444,7 +444,7 @@ them. Partitioning by project would instead strand work, because the projects ar
 and the machines are not interchangeable - on 23 November `laptop` held the signed-in GIS Day stack that two GIS Day
 batches needed and `home` did not.
 
-What actually breaks when nobody is watching is specific and short. These three rules are the whole of it.
+What actually breaks when nobody is watching is specific and short. These four rules are the whole of it.
 
 1. **One lock file at a time, and it is security's.** No AggieMap or GIS Day batch touches `package.json` or
    `package-lock.json` overnight. This is the one interaction here that loses work *silently*: when the lock conflicts,
@@ -462,6 +462,29 @@ What actually breaks when nobody is watching is specific and short. These three 
    ahead" is what produced `laptop` eight deep and `home` with one outstanding on 23 November, with no single director
    doing anything wrong. Moving a batch still means marking the old one `WITHDRAWN, moved to <name> batch <id>` in the
    same commit as the new one.
+
+4. **Prove an old issue is still open before building anything for it, and say in the batch what you checked.** There are
+   258 open AggieMap issues and 359 in all, many of them months old, and the board cannot tell you which have quietly been
+   handled. On 23 November, in one evening: [#2838](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2838)
+   (a batch id collision) was fixed by that evening's own work; [#3268](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3268)
+   had been fixed at 12:58 PM the same day and left open; the `docs/2828-work-in-flight-10-november` branch was superseded
+   in full by PR 2840, and the 19 lines it still had of its own were all *wrong*; and a director recorded a branch for
+   #2758 that had never existed. Three open issues also carry a project status of **Done** (#2719, #2716, #2672).
+
+   The check is a minute's work and it is specific. Before writing or taking a batch for an issue filed more than a few
+   days ago:
+
+   - **Read the issue's own thread to the end**, not only its body. The comment saying it was handled is usually there.
+   - **Look for the change on `development`**: `git log origin/development --grep=<issue>`, and for mailbox tooling,
+     `git log origin/work-mailbox -- tools/<file>`. Never `git log --all --grep` in a big checkout here - it segfaults.
+   - **Check whether a sibling issue replaced it.** CLAUDE.md's own reuse section records #2581 making game-day refresh one
+     switch and #2591 sweeping up the rest, which is the shape that leaves an older issue describing work nobody will do.
+   - **Then look at the code or the service**, not the issue's description of it. "Ask the service before you change a
+     definition" is the same rule: four faults in one week read as a field rename and none was.
+
+   **If it is already done, close it with the commit that did it and say so in your report; do not build it again.** If it
+   is partly done, say which part in the issue before starting. A batch that rebuilds finished work costs twice: the
+   machine's night, and the reviewer's morning spent working out why a pull request changes nothing.
 
 **What is safe and needs no rule:** every director opening pull requests. Azure's required `Monorepo` check does not run
 on the lab - it passed at 6:42 PM Central on 23 November, nearly two hours after the lab was paused - so pull requests
