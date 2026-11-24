@@ -35,13 +35,30 @@ export class CheckInDashboardComponent extends EventDashboardComponent<CheckInDa
   protected readonly filePrefix = 'gisday-check-ins';
   protected readonly comparedNoun = 'check-ins';
 
-  /** Each event's RSVPs in the column after its check-ins, then the person types. */
-  public override readonly columns = [{ key: 'rsvps', label: 'RSVPs' }, ...PERSON_TYPE_COLUMNS];
+  /**
+   * After its check-ins, each event's RSVPs, its walk-ins (check-ins with no RSVP), and the share of its RSVPs that showed
+   * up (#2893), then the person types.
+   */
+  public override readonly columns = [
+    { key: 'rsvps', label: 'RSVPs' },
+    { key: 'walkIns', label: 'Walk-ins' },
+    { key: 'showedUp', label: 'Showed up', percentOf: 'rsvps' },
+    ...PERSON_TYPE_COLUMNS
+  ];
 
   public override readonly rows = computed(() => {
     const events = this.dashboard()?.events ?? [];
 
-    return dashboardRows(events).map((row, i) => ({ ...row, counts: { rsvps: events[i].rsvps, ...row.counts } }));
+    return dashboardRows(events).map((row, i) => ({
+      ...row,
+      counts: {
+        rsvps: events[i].rsvps,
+        walkIns: events[i].walkIns,
+        // Those who RSVP'd and checked in: every check-in but the walk-ins.
+        showedUp: events[i].total - events[i].walkIns,
+        ...row.counts
+      }
+    }));
   });
 
   protected seasonDashboard(seasonGuid: string) {

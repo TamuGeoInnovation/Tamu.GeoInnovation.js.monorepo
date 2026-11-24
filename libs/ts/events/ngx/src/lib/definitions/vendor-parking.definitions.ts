@@ -7,8 +7,7 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
-import { EventPopups } from '../modules/popups/popups';
-import { lotFill } from './common.definitions';
+import { lotFill, markdownPopup } from './common.definitions';
 
 export enum VENDOR_PARKING_LAYERS {
   VENDOR_PARKING_LOTS = 'vendor-parking-lots',
@@ -34,16 +33,10 @@ export const VendorParkingDefinitions = {
   }
 };
 
-const popupData = {
-  name: {
-    field: 'GIS.TS.ParkingLots.Name',
-    collapsed: true
-  },
-  description: {
-    field: 'GIS.TS.Lot_Notes.VendorN',
-    collapsed: true
-  }
-};
+const popup = markdownPopup(
+  { field: 'GIS.TS.ParkingLots.Name', collapsed: true },
+  { field: 'GIS.TS.Lot_Notes.VendorN', collapsed: true }
+);
 
 // Why the lots are two layers, each with its own renderer (#1991, as Business Parking's #1981): the
 // service's renderer keys on `GIS.TS.Lot_Use.Vendor_Lot` and `GIS.TS.ParkingLots.LotType`, but the
@@ -65,8 +58,7 @@ export const VendorParkingColdLayerSources: LayerSource[] = [
     url: VendorParkingDefinitions.VENDOR_PARKING_LOTS.url,
     visible: true,
     listMode: 'show',
-    popupComponent: EventPopups.MarkdownPopupComponent,
-    popupData,
+    ...popup,
     native: {
       outFields: ['*'],
       definitionExpression: `"GIS.TS.Lot_Use.Vendor_Lot" = 1 AND "GIS.TS.ParkingLots.LotType" IN ('Street', 'Surface')`,
@@ -81,8 +73,7 @@ export const VendorParkingColdLayerSources: LayerSource[] = [
     url: VendorParkingDefinitions.VENDOR_PLUS_ONLY_LOTS.url,
     visible: true,
     listMode: 'show',
-    popupComponent: EventPopups.MarkdownPopupComponent,
-    popupData,
+    ...popup,
     native: {
       outFields: ['*'],
       definitionExpression: `"GIS.TS.Lot_Use.Vendor_Lot" = 1 AND "GIS.TS.ParkingLots.LotType" IN ('Garage Visitor')`,

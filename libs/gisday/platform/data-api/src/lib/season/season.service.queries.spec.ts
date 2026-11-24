@@ -1,54 +1,12 @@
 import { DataSource, Repository } from 'typeorm';
 
 import { Season, SeasonDay } from '../entities/all.entity';
-import { queryCheckingDataSource, queryCheckingRepository, recordWrites } from '../_base/query-checking-data-source';
+import { answering, buildingTransactionFinds, loadedSeason, queryCheckingDataSource, queryCheckingRepository, recordWrites } from '../_base/query-checking-data-source';
 import { SeasonService } from './season.service';
 
 // The service's queries as typeorm builds them, with the real entities. season.service.spec.ts mocks the repositories, so
 // it cannot see a query typeorm itself refuses, such as a loaded season (whose deadlines are null until an admin sets them)
 // passed whole as a where value (#2363).
-
-/** Builds the query as the query-checking repository does, then answers with `value`, as a database holding it would. */
-function answering<T extends object>(repo: Repository<T>, method: 'find' | 'findOne', value: unknown) {
-  const build = repo[method].bind(repo) as (options?: unknown) => Promise<unknown>;
-  (repo as unknown as Record<string, unknown>)[method] = async (options?: unknown) => (await build(options), value);
-}
-
-/** Makes the finds of every transaction's manager build their query too, before answering from `recordWrites`' rows. */
-function buildingTransactionFinds(dataSource: DataSource) {
-  const make = dataSource.createQueryRunner.bind(dataSource);
-
-  dataSource.createQueryRunner = ((...args: Array<unknown>) => {
-    const runner = make(...(args as []));
-    const answer = runner.manager.find.bind(runner.manager);
-
-    runner.manager.find = (async (entity: never, options?: never) => (
-      runner.manager.createQueryBuilder(entity, 'e').setFindOptions(options ?? {}).getQuery(), answer(entity, options)
-    )) as typeof runner.manager.find;
-
-    return runner;
-  }) as typeof dataSource.createQueryRunner;
-}
-
-/** A season as the API loads it: the deadlines nobody has set come back null, and its competitions come with it. */
-const loadedSeason = (overrides: Partial<Season> = {}) =>
-  Object.assign(new Season(), {
-    guid: 's-1',
-    year: 2026,
-    active: true,
-    created: new Date('2026-01-05T15:00:00.123Z'),
-    updated: new Date('2026-01-05T15:00:00.123Z'),
-    posterSubmissionsCloseAt: null,
-    posterFilesCloseAt: null,
-    presentationSubmissionsCloseAt: null,
-    presentationFilesCloseAt: null,
-    paperSubmissionsCloseAt: null,
-    paperFilesCloseAt: null,
-    cartographySubmissionsCloseAt: null,
-    cartographyFilesCloseAt: null,
-    competitions: [],
-    ...overrides
-  });
 
 const loadedDay = () =>
   Object.assign(new SeasonDay(), { guid: 'd-1', date: new Date('2026-11-18T06:00:00.000Z'), events: [] });

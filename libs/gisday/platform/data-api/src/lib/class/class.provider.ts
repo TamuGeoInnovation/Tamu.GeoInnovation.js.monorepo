@@ -1,23 +1,37 @@
-import {
-  ConflictException,
-  HttpException,
-  Injectable,
-  InternalServerErrorException,
-  UnprocessableEntityException
-} from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeepPartial, FindOptionsWhere, In, IsNull, Repository } from 'typeorm';
+import { DeepPartial, FindOptionsWhere, IsNull, Repository } from 'typeorm';
 import { catchError, concatMap, from, map, of, toArray } from 'rxjs';
 
 import { Auth0UserProfile, ManagementService } from '@tamu-gisc/common/nest/auth';
 
-import { Class, CheckIn } from '../entities/all.entity';
-import { BaseProvider } from '../_base/base-provider';
-import { SeasonService } from '../season/season.service';
 import { naturalOrder } from '@tamu-gisc/gisday/common';
 
+import { Class, CheckIn, Season } from '../entities/all.entity';
+import { SeasonService } from '../season/season.service';
+import { SeasonScopedProvider } from '../_base/season-scoped-provider';
+
 @Injectable()
-export class ClassProvider extends BaseProvider<Class> {
+export class ClassProvider extends SeasonScopedProvider<Class> {
+  protected get seasons() {
+    return this.seasonService;
+  }
+
+  protected readonly recordsName = 'classes';
+
+  protected forSeason(seasonGuid: string) {
+    return this.getClassesForSeason(seasonGuid);
+  }
+
+  protected override copyOf(record: Class, season: Season) {
+    // A copy is the class, not its students (#3324): as the class provider's own copy did.
+    const copy = super.copyOf(record, season) as DeepPartial<Class> & { students?: unknown };
+
+    delete copy.students;
+
+    return copy;
+  }
+
   constructor(
     @InjectRepository(Class) private classRepo: Repository<Class>,
     @InjectRepository(CheckIn) private readonly checkinRepo: Repository<CheckIn>,
@@ -43,13 +57,7 @@ export class ClassProvider extends BaseProvider<Class> {
   }
 
   public async getClassesForActiveSeason() {
-    const season = await this.seasonService.findOneActive();
-
-    if (!season) {
-      throw new UnprocessableEntityException('No active season found.');
-    }
-
-    return this.getClassesForSeason(season.guid);
+    return this.forActiveSeason();
   }
 
   /**
@@ -88,57 +96,7 @@ export class ClassProvider extends BaseProvider<Class> {
   }
 
   public async copyClassesIntoSeason(seasonGuid: string, existingEntityGuids: Array<string>) {
-    const season = await this.seasonService.findOne({
-      where: {
-        guid: seasonGuid
-      }
-    });
-
-    if (!season) {
-      throw new UnprocessableEntityException('Season not found.');
-    }
-
-    const classes = await this.classRepo.find({
-      where: {
-        guid: In(existingEntityGuids)
-      }
-    });
-
-    // Was `if (!classes)` with an "Events not found" message copy-pasted from elsewhere. `find`
-    // resolves to an array and never null, so the guard never fired and copying guids that match
-    // nothing answered 200 with an empty list.
-    if (!classes || classes.length === 0) {
-      throw new UnprocessableEntityException('Classes not found.');
-    }
-
-    const newClasses = classes.map((c) => {
-      delete c.guid;
-      delete c.season;
-      delete c.students;
-      delete c.created;
-      delete c.updated;
-
-      const newClass = this.classRepo.create({
-        ...c,
-        season: {
-          guid: season.guid
-        }
-      });
-
-      return newClass.save();
-    });
-
-    try {
-      return Promise.all(newClasses);
-    } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      throw new InternalServerErrorException('Could not copy classes into season');
-    }
+    return this.copyIntoSeason(seasonGuid, existingEntityGuids);
   }
 
   public async getClassStudents(classGuid: string) {

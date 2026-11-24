@@ -243,3 +243,70 @@ describe('guidList', () => {
     expect(() => guidList(`${a},../../etc`)).toThrow(/comma-separated list of ids/);
   });
 });
+
+/**
+ * #3090: a submission's file previewed in the admin, an admin's route only. The download route lets a submission's owner
+ * read their own files; the preview does not, so a student who owns the submission is refused like anyone without
+ * read:competitions. Nest's real routing and `PermissionsGuard` run; only the token check is replaced.
+ */
+describe('UserSubmissionController GET /user-submissions/:guid/files/:file/preview', () => {
+  const SUBMISSION = '11111111-2222-4333-8444-555555555555';
+  const FILE = '99999999-8888-4777-8666-555555555555';
+
+  let app: INestApplication;
+  let url: string;
+  let user: { sub: string; permissions: Array<string> };
+  const preview = jest.fn();
+
+  beforeEach(async () => {
+    preview.mockReset().mockResolvedValue({ seen: true });
+
+    const module = await Test.createTestingModule({
+      controllers: [UserSubmissionController],
+      providers: [
+        { provide: UserSubmissionProvider, useValue: {} },
+        { provide: SubmissionFilesService, useValue: { preview } },
+        ...EMAIL_SENDER_TEST_PROVIDERS
+      ]
+    })
+      .overrideGuard(JwtGuard)
+      .useValue({
+        canActivate: (context: ExecutionContext) => {
+          context.switchToHttp().getRequest().user = user;
+          return true;
+        }
+      })
+      .compile();
+
+    app = module.createNestApplication({ logger: false });
+    await app.listen(0, '127.0.0.1');
+    url = await app.getUrl();
+  });
+
+  afterEach(async () => {
+    await app.close();
+  });
+
+  const get = () => fetch(`${url}/user-submissions/${SUBMISSION}/files/${FILE}/preview`);
+
+  it("refuses the submission's own student, who may still download it", async () => {
+    user = { sub: 'auth0|owner', permissions: [] };
+
+    expect((await get()).status).toBe(403);
+    expect(preview).not.toHaveBeenCalled();
+  });
+
+  it('refuses an admin without read:competitions', async () => {
+    user = { sub: 'auth0|admin', permissions: ['update:events'] };
+
+    expect((await get()).status).toBe(403);
+    expect(preview).not.toHaveBeenCalled();
+  });
+
+  it('previews for an admin who may read the competitions, that submission and that file only', async () => {
+    user = { sub: 'auth0|admin', permissions: ['read:competitions'] };
+
+    expect((await get()).status).toBe(200);
+    expect(preview).toHaveBeenCalledWith(SUBMISSION, FILE, user);
+  });
+});

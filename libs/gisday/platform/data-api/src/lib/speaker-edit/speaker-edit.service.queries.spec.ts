@@ -1,16 +1,7 @@
 import { DataSource, Repository } from 'typeorm';
 
-import {
-  Event,
-  Organization,
-  Season,
-  Speaker,
-  SpeakerEdit,
-  SpeakerEditLink,
-  Submission,
-  University
-} from '../entities/all.entity';
-import { queryCheckingDataSource, queryCheckingRepository, recordWrites } from '../_base/query-checking-data-source';
+import { Event, Organization, Speaker, SpeakerEdit, SpeakerEditLink, Submission, University } from '../entities/all.entity';
+import { answering, loadedSeason, queryCheckingDataSource, queryCheckingRepository, recordWrites } from '../_base/query-checking-data-source';
 import { AssetsService } from '../assets/assets.service';
 import { ContactService } from '../contact/contact.service';
 import { SeasonService } from '../season/season.service';
@@ -20,23 +11,6 @@ import { SpeakerEditService } from './speaker-edit.service';
 // The service's queries as typeorm builds them, with the real entities. speaker-edit.service.spec.ts mocks the
 // repositories, so it cannot see a query typeorm itself refuses, such as a loaded row with a null column passed as a where
 // value (#2363). Emails go to a stub; only the queries around them are checked.
-
-/** Builds the query as the query-checking repository does, then answers with `value`, as a database holding it would. */
-function answering<T extends object>(repo: Repository<T>, method: 'find' | 'findOne', value: unknown) {
-  const build = repo[method].bind(repo) as (options?: unknown) => Promise<unknown>;
-  (repo as unknown as Record<string, unknown>)[method] = async (options?: unknown) => (await build(options), value);
-}
-
-/** A season as the API loads it: the deadlines nobody has set come back null. */
-const loadedSeason = () =>
-  Object.assign(new Season(), {
-    guid: 's-1',
-    year: 2026,
-    active: true,
-    posterSubmissionsCloseAt: null,
-    competitions: [],
-    days: []
-  });
 
 /** A speaker as the API loads them: most columns are optional and come back null. */
 const loadedSpeaker = () =>
@@ -54,7 +28,7 @@ const loadedSpeaker = () =>
     images: [],
     organization: null,
     university: null,
-    season: loadedSeason()
+    season: loadedSeason({ days: [] })
   });
 
 /** A link's token: 43 characters of base64url, as `newLink` makes them. */
@@ -99,7 +73,7 @@ describe('SpeakerEditService queries, built by typeorm', () => {
     recordWrites(dataSource);
 
     const repo = <T extends object>(entity: new () => T) => queryCheckingRepository(dataSource, entity);
-    const seasons = { findOneActive: async () => loadedSeason() } as unknown as SeasonService;
+    const seasons = { findOneActive: async () => loadedSeason({ days: [] }) } as unknown as SeasonService;
     const contact = { sendMessage: async () => undefined } as unknown as ContactService;
 
     links = repo(SpeakerEditLink);
@@ -128,7 +102,7 @@ describe('SpeakerEditService queries, built by typeorm', () => {
       abstract: null,
       link: null,
       participants: [{ name: 'Ana', email: 'ana@example.com' }],
-      season: loadedSeason()
+      season: loadedSeason({ days: [] })
     });
 
   it("emails the speakers of competition submissions their links, matched by the submission's season", async () => {
