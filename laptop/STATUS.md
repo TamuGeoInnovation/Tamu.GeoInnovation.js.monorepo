@@ -5,7 +5,7 @@
 
 Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
-Last batch done: g19
+Last batch done: g24
 
 ## What this is
 
@@ -33,9 +33,10 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch g24 (gisday: images for PRs 3387, 3349, 3367): blocked, waiting for the maintainer** (8:05 AM Central). The session's scratchpad was cleared this morning, taking the helper that started the GIS Day API on the scratch database (`gisday-b11-scratch`, made-up data only). Rebuilding it needs the API's database password passed from `C:/TAMU/gisday-local/local-db.env`, as `scripts/gisday-local.sh api` does, and this session's permission check refused that step. I have not worked around it. The repo's own `gisday-local.sh api` would start the API on the usual local database (the scrubbed copy), not the scratch one, so it does not meet g24's made-up-records rule. Nothing of g24 is started; the database container and the scratch database are intact.
+- Nothing. Listening. The GIS Day stack is up on the scratch database, now at `development`'s schema. The stack helper lives in `C:/TAMU/laptop-tools/`, outside the scratchpad.
 
 ## Finished
+- **Batch g24 (gisday: images for 3387, 3349, 3367)** (report `laptop/reports/2026-11-24-g24.md`): **images pushed (3387): `3d2400c4c`; (3367): `7587ed1fc`**. **3349 has no visible change** (an unticked box stayed off before too); label it `no-visible-change`. Unblocked by the maintainer's go-ahead. No questions.
 - **Batch g23: withdrawn while I was on it** (the work machine does the merges). **One merge is on the fork: `feat/3314-check-ins-by-hour` (PR 3375) at `5b059e806`**, development merged in, one conflict resolved, bug-fix check exit 0. Nothing else was pushed. My six other merges are set aside, not pushed, and still in this machine's reflog if wanted: 3360 `fdaba73f5`, 3380 `89f3e9ed0`, 3367 `cdc84dfd0`, 3390 `131bf4f03`, 3391 `2a8494f3b`, 3392 `03af646cb`. 3373 and 3380's lint failures are `npm audit signatures` FETCH_ERROR (the registry answered "OK"), so a re-run is the fix. Told the GIS Day director by session message (delivery not confirmed).
 - **Batch g19 (gisday: #3329 images, triage of #498, #439, #466, #477)** (report `laptop/reports/2026-11-24-g19.md`): **images pushed (3329): `8b513bdaa`**. Triage: #498 done (a made-up speaker shaped the same way deletes cleanly; #2381), #439 done by PR 3344, #466 done (one height, 109 px; #2094), #477 done (Presenting At; #532). No questions.
 - **Batch g22 (gisday: #434 images)** (report `laptop/reports/2026-11-24-g22.md`): **images pushed (434): `4b2238e9e`**, a fast-forward. The Organization choice lists the made-up North GIS Day's two sessions alone. Noticed: the choice is not kept in the address. No questions.
