@@ -77,8 +77,8 @@ INSERT @kept VALUES
   (N'vgi_submissions_media', N'guid,fieldName,submissionGuid');
 
 -- Tables that are not copied: the migrations record is written when the new database is built, and
--- the other three exist only in production and are not used by the code. `session_details_sends` (#3098) is no
--- longer read either: speaker_email_claims took over its rows (#3260), and a later migration drops it (#3269).
+-- the other three exist only in production and are not used by the code. `session_details_sends` (#3098) was
+-- dropped by DropSessionDetailsSends (#3269); it stays listed for a copy of production taken before that ran.
 -- `sessions_filter_backfill` is what #1836's migration ticked, for its down(): organizations' ids and settings, no
 -- people, and the API never reads it. The list stays on one line: scrub-coverage.spec.ts reads it.
 DECLARE @skipped TABLE (tbl sysname);
