@@ -123,12 +123,24 @@ describe("Transportation's services on a development build (#2653)", () => {
   });
 
   it("reads production's TS_Events services from the development server's TS folder", () => {
-    expect(production.businessParkingUrl).toBe(
-      'https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/BusinessParking/MapServer'
+    expect(production.maintenanceParkingUrl).toBe(
+      'https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/MaintenanceParking/MapServer'
     );
-    expect(development.businessParkingUrl).toBe(
-      'https://gis.dev.tamu.edu/arcgis/rest/services/TS/BusinessParking/MapServer'
+    expect(development.maintenanceParkingUrl).toBe(
+      'https://gis.dev.tamu.edu/arcgis/rest/services/TS/MaintenanceParking/MapServer'
     );
+  });
+
+  /**
+   * The development server publishes these three split by category, one layer each, where production has one layer that
+   * the definitions filter into two; so on development one of each map's two lot layers selected nothing (#3358).
+   */
+  it('reads business, contractor and Freshman Selectable parking from production on a development build', () => {
+    expect([development.businessParkingUrl, development.contractorParkingUrl, development.freshmanParkingUrl]).toEqual([
+      'https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/BusinessParking/MapServer',
+      'https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/ContractorParking/MapServer',
+      'https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/FreshmanSelectableParking/MapServer'
+    ]);
   });
 
   /**
