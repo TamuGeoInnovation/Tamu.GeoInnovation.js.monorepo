@@ -31,12 +31,22 @@ describe('fileNamePart()', () => {
 
 describe('toCsv()', () => {
   it('writes the header and rows, from arrays or from objects keyed by the columns, as Papa always has', () => {
-    expect(toCsv(['a', 'b'], [[1, 'x, y'], ['say "hi"', null]])).toBe('a,b\r\n1,"x, y"\r\n"say ""hi""",');
+    expect(
+      toCsv(
+        ['a', 'b'],
+        [
+          [1, 'x, y'],
+          ['say "hi"', null]
+        ]
+      )
+    ).toBe('a,b\r\n1,"x, y"\r\n"say ""hi""",');
     expect(toCsv(['b', 'a'], [{ a: 1, b: 2 }])).toBe('b,a\r\n2,1');
   });
 
   it('writes a cell that starts like a formula as text (#3332)', () => {
-    expect(toCsv(['n'], [['=1+1'], ['+1'], ['-1'], ['@A1'], ['\tx']])).toBe(`n\r\n"'=1+1"\r\n"'+1"\r\n"'-1"\r\n"'@A1"\r\n"'\tx"`);
+    expect(toCsv(['n'], [['=1+1'], ['+1'], ['-1'], ['@A1'], ['\tx']])).toBe(
+      `n\r\n"'=1+1"\r\n"'+1"\r\n"'-1"\r\n"'@A1"\r\n"'\tx"`
+    );
   });
 
   it('leaves a negative number a number', () => {
