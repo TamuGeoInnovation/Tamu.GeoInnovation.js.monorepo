@@ -1,5 +1,6 @@
 ---
 issue: 3044
+app: gisday
 title: "GIS Day admin: The editable emails take Markdown, so they can be sent with bold text, links and lists"
 testOnDev: |
   | GIS Day admin: Markdown in the editable emails ([#3044](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3044)) | Not on dev: GIS Day has no dev site. After release, as an admin: Research Competitions, select a test submission of your own, **Send profile email** (or Approve, or Send final reminder) | In the text, write `**bold**`, `*italic*`, `[a link](https://gisday.tamu.edu)` or a line starting with `- `. The preview below shows it formatted, as the email will arrive. Typed HTML such as `<b>` shows as written and is not obeyed. Send to yourself only: the email arrives with the same formatting, and a plain-text copy for clients that want one |

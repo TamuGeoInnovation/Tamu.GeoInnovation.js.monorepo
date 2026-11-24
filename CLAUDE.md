@@ -75,7 +75,7 @@ for each target the projects that target's own workflow excludes (lint from `lin
 steps outside Nx, today `npx tsc -p test/smoke/aggiemap` (#2286), writes a log, and exits with the
 check's exit code, which fails if any target or step failed. A `lint.yml` step it cannot run as CI does
 stops it before it starts. `bash scripts/check-in-volume.test.sh` tests how it reads those lists and
-steps, and `bash scripts/run-times.test.sh` the run-time files it writes. **It checks only what is committed**; uncommitted edits are not seen. `all` in place
+steps, and `bash scripts/run-times.test.sh` the run-time files it writes (both from Git Bash, as above). **It checks only what is committed**; uncommitted edits are not seen. `all` in place
 of `affected` checks every project. Run `git fetch origin` first if `origin/development` is old.
 
 **Not one app you picked — every affected app.** Building only the app you were working in is what the
@@ -114,7 +114,7 @@ On a smaller machine, set `CHECK_MEMORY` (default `16g`) and `CHECK_PARALLEL` (d
 and `test/smoke/aggiemap/run-local.sh` print the elapsed time of every run. With `BUILD_TIMES_RECORD=1`
 they also write a small file into [`docs/build-times/runs/`](docs/build-times/runs) in the checkout they
 were run from: the start in US Central, the machine, what ran, the result and the elapsed time (#1593).
-Commit those files with the work they measure; `bash scripts/run-times-report.sh` prints them as one
+Commit those files with the work they measure; `bash scripts/run-times-report.sh`, from Git Bash, prints them as one
 table. `BUILD_TIMES_MACHINE` names the machine (e.g. `home`, `office`); the hostname is never used,
 because this repository is public.
 
@@ -351,7 +351,7 @@ each with its own README:
 - **[`test/smoke/aggiemap`](test/smoke/aggiemap/README.md)** loads every map in a deployed
   environment and verifies each layer resolves and returns data. Runs daily against dev and
   production, and on demand.
-- **[`tools/builder-inventory`](tools/builder-inventory/README.md)** covers the eleven maps that
+- **[`tools/builder-inventory`](tools/builder-inventory/README.md)** covers the maps that
   cannot be reached by URL, because they require choices in a builder first. It records where every
   combination lands, including a shareable link that reaches each destination directly.
 
@@ -525,7 +525,9 @@ move into the dated notes (#1360).
 **`node scripts/collate-release-notes.mjs --check`** validates every entry — the front matter, the
 file name against its `issue`, and that each image path resolves. Run it before a release; a broken
 image in the notes is otherwise found by a reader, after the release. `--write` gathers the entries
-into `unreleased.md` as part of cutting a release.
+into `unreleased.md` as part of cutting a release, except a GIS Day entry (`app: gisday` in its front
+matter), which goes into `gisday-unreleased.md`; `--check` fails an entry that links a GIS Day site
+without saying so (#2835). `bash scripts/collate-release-notes.test.sh` tests it.
 
 `docs/releases/unreleased.md` still holds everything written before this, and is left alone: the
 collation adds to it rather than replacing it.
@@ -549,8 +551,7 @@ which is what makes "we shipped what we tested" a fact rather than an assumption
 **Overriding that refusal needs a reason, which goes into the tag:** `--force '<why>'`. The tag then
 says `(FORCED)` in its first line and carries the reason. A forced tag used to be indistinguishable
 from one that passed, so on 22 October the release record said production carried `61161ce1b` when the
-tag was on `36b962a04`, and nothing in the repository contradicted it. `bash scripts/tag-build.test.sh`
-covers this. See #2098.
+tag was on `36b962a04`, and nothing in the repository contradicted it. `bash scripts/tag-build.test.sh`, from Git Bash, covers this. See #2098.
 
 **Link every issue and pull request, with full URLs, and end each release file with a table of all
 of them.** GitHub only auto-links `#1122` inside issue and pull request comments — in a file under
@@ -792,12 +793,18 @@ files on the `work-mailbox` branch of `TamuGeoInnovation`, which is never merged
 
 - **The home session writes the batch** into `work/TASKS.md`. Its header holds the rules, and each task names
   the issue to report on, the exact commit or how to find it, the commands, and what follows: tag or not.
-- **The maintainer starts the work session with one line:**
+- **The maintainer starts a session on any machine with one line**, adding its name and job for a new one:
 
   ```
-  Pull TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo, check out the work-mailbox branch, and do what work/TASKS.md says.
+  Pull TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo, check out the work-mailbox branch, and do what DIRECTOR.md says.
   ```
 
+- **`DIRECTOR.md` is on the `work-mailbox` branch, not on `development`.** The rules for every machine - who
+  directs, the machines and their folders, how to join, how batches and reports work - live there and nowhere
+  else, because that branch is never merged. A fresh clone starts on `development`, where the file does not
+  exist, so a new session that looks before switching branches concludes the instructions are missing (#3262).
+  Fetch the branch first (`git fetch origin work-mailbox`, then `git switch work-mailbox`, or read it in place
+  with `git show origin/work-mailbox:DIRECTOR.md`) and do what it says.
 - **A machine that is new to the branch announces itself before anything else.** `DIRECTOR.md` opens with
   how: work out your name, create `<name>/TASKS.md`, `<name>/STATUS.md` and `<name>/reports/`, push them as
   `<name>: joined`, and only then listen. **Push first, even if you were given work in the same breath** -
@@ -836,3 +843,17 @@ when its task says so, and no other branches or tags. It opens no pull requests 
   not an unreachable host. Check in a browser before reporting it as down.
 - Layers returning 404 on a hostname containing `dev` come from the development GIS server
   missing services that exist on production. `localhost` uses the production GIS server.
+- **`Permission denied (publickey)` from a bash script run in PowerShell is the wrong bash, not a bad
+  key.** `C:\Windows\System32\bash.exe` is WSL's, and System32 comes early in `PATH`, so a bare
+  `bash scripts/<name>.sh` typed into PowerShell runs inside WSL, whose `~/.ssh` is empty. Every script
+  here that reaches a remote dies at its first fetch. Call Git Bash by its full path -
+  `& "C:\Program Files\Git\bin\bash.exe" scripts/<name>.sh` - or run it from a Git Bash window, where
+  a bare `bash` is already the right one.
+
+  **The tell appears once and then never again**: the first run asks whether github.com's authenticity
+  can be established, which a machine whose `known_hosts` already has github.com cannot do. After that
+  WSL writes its own `known_hosts` and all that is left is `Permission denied (publickey)`, which reads
+  exactly like an expired key. It is not: check with `ssh -T git@github.com` **from Git Bash** before
+  touching anything on GitHub. Setting `$env:HOME` does not help, because a Windows path does not reach
+  into WSL's filesystem, and it fails the same way elevated or not. On 23 November 2026 this cost three
+  attempts and two wrong diagnoses before anyone asked which `bash` was answering (#3273).

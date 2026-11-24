@@ -6,8 +6,10 @@ import * as path from 'path';
 import { Connections } from '../../../libs/aggiemap/ngx/common/src/lib/connections';
 import { expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
+import { developmentSectionsVisible } from './development-only';
 import { gisHostFor, smokeBaseUrl } from './gis-hosts';
 import { MANIFEST_PATH, MapManifest } from './global-setup';
+import { waitForMapReady } from './map-probe';
 
 /**
  * Every search source the main map defines is exercised, each by the route a visitor uses to reach it
@@ -39,7 +41,7 @@ import { MANIFEST_PATH, MapManifest } from './global-setup';
  * Add a source by adding a row. The guard fails if `search-sources.ts` gains a source with none.
  */
 
-type SourceCase =
+type SourceCase = (
   | {
       kind: 'typed';
       /** The heading the results list shows for this source. */
@@ -62,9 +64,19 @@ type SourceCase =
       /** The layer's name, so an address that now points at another layer fails. */
       layerName: RegExp;
     }
-  | { kind: 'not-on-main-map'; usedBy: string };
+  | { kind: 'not-on-main-map'; usedBy: string }
+) & {
+  /**
+   * The issue keeping this source off production. A production build leaves it out of the bundle
+   * (`development-only-sources.ts`), so its case runs only where development-only work is shown.
+   */
+  developmentOnly?: string;
+};
 
 const BASE_URL = smokeBaseUrl();
+
+/** Whether this environment shows development-only work, from `environments.json`. */
+const DEVELOPMENT_ONLY_SHOWN = developmentSectionsVisible();
 
 /** The app picks its GIS host from its own hostname, as services.spec.ts mirrors. */
 const GIS_HOST = gisHostFor(BASE_URL);
@@ -111,6 +123,18 @@ const SOURCE_CASES: Record<string, SourceCase> = {
     result: 'Bonfire Memorial',
     popupShows: /Bonfire Memorial/
   },
+  // Nature Rx reads production's own service on every environment (#2630), so its ids are the same everywhere. The site
+  // calls it Nature Spaces, and its popup names the space, since #3223 (#3368).
+  'nature-rx': {
+    kind: 'typed',
+    category: 'Nature Spaces',
+    term: 'Hensel',
+    result: 'Hensel Park',
+    popupShows: /Hensel Park/,
+    shareQuery: '?naturerx=4',
+    developmentOnly: '#2673'
+  },
+  'nature-rx-exact': { kind: 'deep-link', query: '?naturerx=4', popupShows: /Hensel Park/, developmentOnly: '#2673' },
   'building-exact': { kind: 'deep-link', query: '?bldg=0468', popupShows: /Sterling C\. Evans Library/ },
   'building-exact-abbr': { kind: 'deep-link', query: '?BldgAbbrv=WCBA', popupShows: /Wehner Building/ },
   'points-of-interest-exact': { kind: 'deep-link', query: '?poi=1', popupShows: /Bonfire Memorial/ },
@@ -287,7 +311,6 @@ function allowedFailures(): Record<string, string> {
 
 const ALLOWED = allowedFailures();
 
-const PROBE_GLOBAL = '__tamuGiscMapProbe';
 const POPUP = 'tamu-gisc-feature-popup .popup';
 
 /** Opens the main map and waits until its layers have loaded, so a query is not racing the map. */
@@ -295,16 +318,7 @@ async function openMainMap(page: Page, query = ''): Promise<void> {
   await blockAnalytics(page);
   await page.goto(`/map${query}`);
 
-  await expect
-    .poll(
-      async () =>
-        await page.evaluate(
-          (name) => (window as unknown as Record<string, { ready?: boolean }>)[name]?.ready === true,
-          PROBE_GLOBAL
-        ),
-      { message: `the main map never finished loading`, timeout: 90_000, intervals: [1_000] }
-    )
-    .toBe(true);
+  await waitForMapReady(page, `the main map never finished loading`);
 }
 
 function escapeRegExp(text: string): string {
@@ -455,6 +469,13 @@ test.describe('search sources on the main map', () => {
 
   for (const [source, sourceCase] of Object.entries(SOURCE_CASES)) {
     const known = ALLOWED[source];
+
+    if (sourceCase.developmentOnly && !DEVELOPMENT_ONLY_SHOWN) {
+      test(`${source}: not offered here`, () => {
+        test.skip(true, `development-only (${sourceCase.developmentOnly}): a production build leaves it out`);
+      });
+      continue;
+    }
 
     if (sourceCase.kind === 'typed') {
       const { category, term, result, popupShows, shareQuery } = sourceCase;

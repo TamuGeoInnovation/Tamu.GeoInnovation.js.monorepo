@@ -46,12 +46,16 @@ INSERT @kept VALUES
   (N'rubrics', N'guid,seasonGuid,competitionType,name,description'),
   (N'rubric_criteria', N'guid,rubricGuid,position,name,maxPoints,levels'),
   (N'seasons', N'guid,year,active,posterSubmissionsCloseAt,posterFilesCloseAt,presentationSubmissionsCloseAt,presentationFilesCloseAt,paperSubmissionsCloseAt,paperFilesCloseAt,cartographySubmissionsCloseAt,cartographyFilesCloseAt'),
-  (N'season_competitions', N'guid,competitionType,seasonGuid'),
+  (N'season_competitions', N'guid,competitionType,seasonGuid,runs,sessionGuid,graduateSessionGuid,awardsSessionGuid,finalistsNotifiedAt'),
+  -- A season's winners (#3239): which submission won which place; the names shown are the submission's.
+  (N'season_winners', N'guid,seasonGuid,competition,place,submissionGuid'),
   (N'seasons_days', N'guid,date,seasonGuid'),
   (N'speaker_roles', N'guid,name'),
   (N'speakers', N'guid,isActive,seasonGuid,organizationGuid,universityGuid,isOrganizer,badgePrintedAt'),
   -- A speaker's own link to edit their profile (#2936): which speaker, and until when. The token and the address go below.
   (N'speaker_edit_links', N'guid,speakerGuid,expires,purpose'),
+  -- The speaker emails' repeat guard (#3098, #3260): which speaker was sent which email about which session, and when.
+  (N'speaker_email_claims', N'guid,kind,sessionGuid,speakerGuid'),
   -- Which email each speaker was sent, about which session, and when (#3167). The addresses go below.
   (N'speaker_email_sends', N'guid,speakerGuid,kind,eventGuid'),
   -- What a speaker proposed (#2936): whose, and where it stands. What they wrote goes below, as the speaker's own does.
@@ -73,9 +77,12 @@ INSERT @kept VALUES
   (N'vgi_submissions_media', N'guid,fieldName,submissionGuid');
 
 -- Tables that are not copied: the migrations record is written when the new database is built, and
--- the other three exist only in production and are not used by the code.
+-- the other three exist only in production and are not used by the code. `session_details_sends` (#3098) was
+-- dropped by DropSessionDetailsSends (#3269); it stays listed for a copy of production taken before that ran.
+-- `sessions_filter_backfill` is what #1836's migration ticked, for its down(): organizations' ids and settings, no
+-- people, and the API never reads it. The list stays on one line: scrub-coverage.spec.ts reads it.
 DECLARE @skipped TABLE (tbl sysname);
-INSERT @skipped VALUES (N'typeorm_migrations'), (N'organization_links'), (N'speaker_images'), (N'sysdiagrams');
+INSERT @skipped VALUES (N'typeorm_migrations'), (N'organization_links'), (N'speaker_images'), (N'sysdiagrams'), (N'session_details_sends'), (N'sessions_filter_backfill');
 
 -- What each personal column becomes. `{c}` is the column; a NULL stays NULL unless the rule says otherwise.
 DECLARE @scrubbed TABLE (tbl sysname, col sysname, expr nvarchar(max));
@@ -88,6 +95,8 @@ DECLARE @account nvarchar(max) =
 INSERT @scrubbed VALUES
   (N'checkins', N'accountGuid', @account),
   (N'initial_survey_responses', N'accountGuid', @account),
+  -- A trail challenge winner, by account (#3239).
+  (N'season_winners', N'accountGuid', @account),
   (N'speakers', N'accountGuid', @account),
   (N'submissions', N'accountGuid', @account),
   (N'user_classes', N'accountGuid', @account),

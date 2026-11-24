@@ -135,7 +135,9 @@ export function MainMapDefinitions(connections: IComposedConnections): IComposed
     NATURE_RX: {
       id: 'nature-rx',
       layerId: MAIN_MAP_LAYERS.NATURE_RX,
-      name: 'Nature Rx',
+      // The GIS team's name for it (#3223). The service still calls the layer "NatureRx Spaces", so this is an
+      // override, declared in layer-title-overrides.json; drop both once the service is renamed (docs/map-layers.md).
+      name: 'Nature Spaces',
       url: connections.natureRxUrl,
       popupComponent: Popups.NatureRxPopupComponent
     },
@@ -325,7 +327,7 @@ export function MainMapLayerSources(
       }
     },
     // Nature Rx (#2630). Off by default and listed, as Points of Interest is: a visitor turns it on
-    // from Layers. Its symbology, title and order are the service's own (docs/map-layers.md).
+    // from Layers. Its symbology and order are the service's own; its title is not, see the definition (#3223).
     {
       type: 'feature',
       id: definitions.NATURE_RX.layerId,

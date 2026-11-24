@@ -23,9 +23,8 @@ import {
 import { Event } from '../entities/all.entity';
 import { ContactService } from '../contact/contact.service';
 import { EmailSender, siteSender } from '../contact/email-sender.service';
-import { EMAIL_LANES, inParallel } from '../_base/in-parallel';
-import { RecentSends } from '../_base/recent-sends';
 import { EmailSendLog } from './email-send-log';
+import { RepeatGuard, sendEach } from './repeat-guard';
 import {
   SessionDetailsEmail,
   SessionDetailsEmailPreview,
@@ -56,11 +55,9 @@ export type SlidesRequestEmail = SessionDetailsEmail;
  */
 @Injectable()
 export class SlidesRequestEmailService {
-  /** When each speaker was last asked for each session's slides, by `<session>:<speaker>`. */
-  private readonly lastSent = new RecentSends(REPEAT_SEND_MINUTES);
-
   constructor(
     @InjectRepository(Event) private readonly events: Repository<Event>,
+    private readonly repeats: RepeatGuard,
     private readonly contact: ContactService,
     private readonly speakerEdits: SpeakerEditService,
     /** The record of what each speaker was sent (#3167). */
@@ -154,56 +151,45 @@ export class SlidesRequestEmailService {
       skipped: ticked ? [] : noAddress.map((s) => ({ name: fullName(s), reason: 'no email address on their record' }))
     };
 
-    // Several at a time (#3067), a copy each.
-    const parts = await inParallel(chosen, EMAIL_LANES, async (speaker) => {
-      const part: SendResult = { sent: [], skipped: [] };
-      const name = fullName(speaker);
-      const keys = [`${session.guid}:${speaker.guid}`];
+    // Several at a time (#3067), a copy each, each claimed before the link is made and the email goes, in the table every
+    // copy of the API shares (#3260), so two sends racing, in one copy or in two, skip each other's.
+    const each = await sendEach(
+      this.repeats,
+      chosen.map((s) => [s]),
+      {
+        kind: SLIDES_REQUEST_EMAIL_KIND,
+        sessionGuid: session.guid,
+        name: ([speaker]) => fullName(speaker),
+        repeated: "already asked for this session's slides",
+        send: async ([speaker]) => {
+          // Their own link, the profile email's kind: only they may upload through it.
+          const { url, expires } = await this.speakerEdits.newLink(speaker, host);
+          const { subject, text } = fillProfileEmail(approved, profileEmailValues(speaker, site, url, expires));
 
-      // Recorded before the link is made and the email goes, so two sends racing in this process skip each other's.
-      if (!this.lastSent.claim(keys)) {
-        part.skipped.push({
-          name,
-          reason: `already asked for this session's slides in the last ${REPEAT_SEND_MINUTES} minutes`
-        });
-        return part;
-      }
-
-      try {
-        // Their own link, the profile email's kind: only they may upload through it.
-        const { url, expires } = await this.speakerEdits.newLink(speaker, host);
-        const { subject, text } = fillProfileEmail(approved, profileEmailValues(speaker, site, url, expires));
-
-        await this.contact.sendMessage(
-          {
-            to: speaker.email.trim(),
-            ...from,
-            subject,
-            text,
-            // The Markdown as HTML (#3044), in Texas A&M's design on its site (#3126), beside the plain text.
-            html: siteEmailHtml(text, { site, subject, from: from.from, design })
-          },
-          true
-        );
-        part.sent.push(name);
+          await this.contact.sendMessage(
+            {
+              to: speaker.email.trim(),
+              ...from,
+              subject,
+              text,
+              // The Markdown as HTML (#3044), in Texas A&M's design on its site (#3126), beside the plain text.
+              html: siteEmailHtml(text, { site, subject, from: from.from, design })
+            },
+            true
+          );
+        },
         // Recorded once it has gone (#3167).
-        await this.sendLog?.record([speaker], SLIDES_REQUEST_EMAIL_KIND, session.guid, from.from);
-      } catch (err) {
-        // Not sent, so not a repeat: the admin may try again at once.
-        this.lastSent.release(keys);
-        Logger.error(
-          `Could not ask speaker ${speaker.guid} for session ${session.guid}'s slides: ${err.message}`,
-          'SlidesRequestEmailService'
-        );
-        part.skipped.push({ name, reason: 'the email could not be sent' });
+        sent: (group) => this.sendLog?.record(group, SLIDES_REQUEST_EMAIL_KIND, session.guid, from.from),
+        failed: ([speaker], err) =>
+          Logger.error(
+            `Could not ask speaker ${speaker.guid} for session ${session.guid}'s slides: ${err.message}`,
+            'SlidesRequestEmailService'
+          )
       }
+    );
 
-      return part;
-    });
-
-    result.sent.push(...parts.flatMap((p) => p.sent));
-    result.skipped.push(...parts.flatMap((p) => p.skipped));
-    this.lastSent.forgetOld();
+    result.sent.push(...each.sent);
+    result.skipped.push(...each.skipped);
 
     return result;
   }

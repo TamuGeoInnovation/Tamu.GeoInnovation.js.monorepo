@@ -1,5 +1,6 @@
 ---
 issue: 2933
+app: gisday
 title: "GIS Day: students attach their presentation files to their submission, and admins download them"
 testOnDev: |
   | GIS Day: presentation files on submissions ([#2933](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2933)) | Not on dev: GIS Day has no dev site. After release, sign in on [txgisday.org](https://txgisday.org/account/submissions), open one of your poster or presentation submissions, and attach a PDF under **Presentation files**; then, as an admin, open [Research Competitions](https://txgisday.org/admin/research-competition) | The file is listed with its size and can be downloaded and removed; a Word file is refused with a message. The admin list's **Files** column counts it, the submission's review page lists it with a download, and **Download all files** saves a zip with a folder per submission |

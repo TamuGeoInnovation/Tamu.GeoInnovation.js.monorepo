@@ -34,7 +34,7 @@ describe('ClassProvider', () => {
         ClassProvider,
         {
           provide: getRepositoryToken(Class),
-          useValue: { find: jest.fn(), findOne: jest.fn(), create: jest.fn(), createQueryBuilder: jest.fn() }
+          useValue: { find: jest.fn(), findOne: jest.fn(), create: jest.fn(), save: jest.fn(), createQueryBuilder: jest.fn() }
         },
         { provide: getRepositoryToken(CheckIn), useValue: { createQueryBuilder: jest.fn() } },
         { provide: ManagementService, useValue: { getUserMetadata: jest.fn() } },
@@ -239,9 +239,8 @@ describe('ClassProvider', () => {
 
       jest.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
       jest.spyOn(classRepo, 'find').mockResolvedValue([source]);
-      jest
-        .spyOn(classRepo, 'create')
-        .mockImplementation((c) => ({ ...(c as object), save: jest.fn().mockResolvedValue(c) }) as never);
+      jest.spyOn(classRepo, 'create').mockImplementation((c) => c as never);
+      jest.spyOn(classRepo, 'save').mockImplementation((c) => Promise.resolve(c as never));
 
       await provider.copyClassesIntoSeason('season-2', ['c-1']);
 

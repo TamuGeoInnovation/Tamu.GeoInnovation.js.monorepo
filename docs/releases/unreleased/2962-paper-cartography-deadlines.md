@@ -1,5 +1,6 @@
 ---
 issue: 2962
+app: gisday
 title: "GIS Day: paper and cartography submissions close at a deadline too, as posters and presentations do"
 testOnDev: |
   | GIS Day: paper and cartography deadlines ([#2962](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2962)) | Not on dev: GIS Day has no dev site. After release, as an admin open [Research Competitions](https://txgisday.org/admin/research-competition) | Submission deadlines lists four competitions, each with its two dates: Poster, Presentation, Paper and Cartography. Set a paper deadline a few minutes ahead and save; signed in, [a new submission](https://txgisday.org/account/submissions/add) of type Paper says when the paper competition closes, and after it says it closed and offers no Submit. Poster and presentation are unchanged. Clear the paper deadline afterwards to reopen |

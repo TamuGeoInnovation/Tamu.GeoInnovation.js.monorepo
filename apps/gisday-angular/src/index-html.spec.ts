@@ -12,7 +12,14 @@ describe('index.html, Google Analytics', () => {
   /** Runs the page's inline scripts as the container would leave them, with `G_TAG` filled in or not. */
   function load(gTag: string | null) {
     document.head.innerHTML = '';
-    delete (window as unknown as { dataLayer?: unknown }).dataLayer;
+    // The address each command was queued from, as Google reads it when it sends the page view (#2572).
+    const queuedFrom: Array<string> = [];
+    (window as unknown as { dataLayer?: unknown }).dataLayer = Object.assign([], {
+      push(this: Array<IArguments>, ...items: Array<IArguments>) {
+        items.forEach(() => queuedFrom.push(location.href));
+        return Array.prototype.push.apply(this, items);
+      }
+    });
 
     const page = gTag === null ? html : html.split('___G_TAG___').join(gTag);
     const scripts = Array.from(new DOMParser().parseFromString(page, 'text/html').querySelectorAll('script'));
@@ -27,7 +34,8 @@ describe('index.html, Google Analytics', () => {
 
     return {
       requests: [...loadedByAddress, ...added].filter((src) => src?.includes('googletagmanager')),
-      configured: dataLayer.filter((a) => a[0] === 'config').map((a) => a[1])
+      configured: dataLayer.filter((a) => a[0] === 'config').map((a) => a[1]),
+      configuredFrom: dataLayer.map((a, i) => (a[0] === 'config' ? queuedFrom[i] : undefined)).filter(Boolean)
     };
   }
 
@@ -43,6 +51,43 @@ describe('index.html, Google Analytics', () => {
 
     expect(requests).toEqual([]);
     expect(configured).toEqual([]);
+  });
+
+  // #2572: a session's QR code opens its check-in page with the code in the address. Analytics, the browser's history and
+  // any link copied from the address bar need not have it.
+  describe("a session's check-in code", () => {
+    afterEach(() => {
+      sessionStorage.clear();
+      history.replaceState(null, '', '/');
+    });
+
+    it('is out of the address before Analytics is configured, the rest of the address kept', () => {
+      history.replaceState(null, '', '/sessions/e-1/checkin?checkin=code-1&utm_source=slides#top');
+
+      const { configured, configuredFrom } = load('G-ABC123');
+
+      expect(configured).toEqual(['G-ABC123']);
+      expect(configuredFrom).toEqual(['http://localhost/sessions/e-1/checkin?utm_source=slides#top']);
+      expect(location.href).toBe('http://localhost/sessions/e-1/checkin?utm_source=slides#top');
+    });
+
+    it('is kept for the check-in page, by its address', () => {
+      history.replaceState(null, '', '/sessions/e-1/checkin?checkin=code-1');
+
+      load(null);
+
+      expect(location.href).toBe('http://localhost/sessions/e-1/checkin');
+      expect(sessionStorage.getItem('gisday-checkin-code:/sessions/e-1/checkin')).toBe('code-1');
+    });
+
+    it('leaves an address without one as it was', () => {
+      history.replaceState(null, '', '/sessions?day=2');
+
+      load('G-ABC123');
+
+      expect(location.href).toBe('http://localhost/sessions?day=2');
+      expect(sessionStorage.length).toBe(0);
+    });
   });
 
   it('still defines gtag, so anything that calls it does not fail', () => {

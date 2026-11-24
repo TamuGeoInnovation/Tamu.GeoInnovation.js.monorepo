@@ -1,10 +1,11 @@
-import { HttpException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { BaseProvider } from '../_base/base-provider';
 import { SeasonDay } from '../entities/all.entity';
 import { SimplifiedEvent } from '../event/dto/simplified-event.dto';
+import { rethrowHttp } from '../_base/rethrow-http';
 
 @Injectable()
 export class SeasonDayService extends BaseProvider<SeasonDay> {
@@ -53,14 +54,7 @@ export class SeasonDayService extends BaseProvider<SeasonDay> {
         throw new NotFoundException();
       }
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      Logger.error(err.message, 'SeasonDayService');
-      throw new InternalServerErrorException();
+      rethrowHttp(err, new InternalServerErrorException(), () => Logger.error(err.message, 'SeasonDayService'));
     }
   }
 }

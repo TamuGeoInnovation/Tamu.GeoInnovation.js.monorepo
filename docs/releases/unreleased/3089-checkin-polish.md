@@ -1,5 +1,6 @@
 ---
 issue: 3089
+app: gisday
 title: "The QR check-in page says it once, names the day check-in opens, and spaces its buttons"
 testOnDev: |
   | The QR check-in page says it once, names the day, spaces its buttons ([#3089](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3089)) | Not on dev: GIS Day has no dev site. After release, scan a session's QR code: signed in; the day before a session; and signed out after cancelling sign-in once | Checked in: only the page says so, with no pop-up in the corner; the day before: "opens when it starts, on <weekday>, <month> <day> at <time>"; signed out: SIGN IN above Go to the session, with space between |

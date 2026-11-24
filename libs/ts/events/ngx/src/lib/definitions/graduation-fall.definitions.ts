@@ -6,7 +6,10 @@ import {
 import { GRADUATION_LAYERS, GraduationColdLayerSources } from './graduation.definitions';
 
 // Fall 2026, from the registrar's own schedule (#2754):
-// aggie.tamu.edu/graduation-and-beyond/commencement-details/graduation-schedule.html
+// graduation.tamu.edu/ceremony-information/schedule/index.html
+//
+// The host moved: the aggie.tamu.edu path this used to cite is retired, and so was the link every
+// commencement map showed visitors (#3278). Aggie One Stop answers both with its Page Not Found.
 //
 // These were left on December 2025 for eleven months. Nothing caught it: the labels carry no year,
 // and 17 December really was a Wednesday in 2025, so the builder read as correct. The dates are
@@ -24,7 +27,7 @@ export const GraduationConfiguration: EventConfiguration = {
   shortApplicationName: 'Fall Commencement Map',
   introductionText: 'Get the best transportation and parking information for the fall commencement ceremonies.',
   eventDates: GRADUATION_DATES.map(({ eventDate }) => eventDate),
-  scheduleUrl: 'https://aggie.tamu.edu/graduation',
+  scheduleUrl: 'https://graduation.tamu.edu/ceremony-information/index.html',
   mapCenter: [-96.34458, 30.60629],
   zoom: 16
 };

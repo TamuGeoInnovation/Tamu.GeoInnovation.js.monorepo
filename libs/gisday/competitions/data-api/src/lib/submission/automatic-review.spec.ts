@@ -155,6 +155,61 @@ describe('automaticReviewReasons', () => {
     expect(automaticReviewReasons(submission(), slow, form)).toEqual([]);
   });
 
+  // #2430: a season's form can set the review's limits on a type, beside its scoring settings. Without them, 2026's.
+  describe("with the limits a season's form sets", () => {
+    /** The 2026 form, with `review` set on the plaque type. */
+    const formWith = (review: Record<string, unknown>) =>
+      form.map((q) =>
+        q.isDiscriminator
+          ? { ...q, options: q.options.map((o) => (o.value === 'tree_bench_plaque' ? { ...o, review } : o)) }
+          : q
+      );
+    // Three earlier ones in the last 50 seconds, each at its own spot.
+    const quick = Array.from({ length: 3 }, (_, i) =>
+      submission({ created: secondsBefore(50 - i * 10), location: { ...north(100 * (i + 1)), accuracy: 5 } })
+    );
+    // A made-up area south of Rudder Plaza, which is not in it.
+    const elsewhere = [
+      {
+        name: 'South of campus',
+        corners: [
+          { latitude: 30.6, longitude: -96.345 },
+          { latitude: 30.61, longitude: -96.345 },
+          { latitude: 30.61, longitude: -96.335 },
+          { latitude: 30.6, longitude: -96.335 }
+        ]
+      }
+    ];
+
+    it('refuses an accuracy that passes today, when the season asks for a closer one', () => {
+      expect(automaticReviewReasons(submission(), [], form)).toEqual([]);
+      expect(automaticReviewReasons(submission(), [], formWith({ maxAccuracyMetres: 3 }))).toEqual([
+        'Location accurate only to 5 m'
+      ]);
+    });
+
+    it('refuses a pace that passes today, when the season allows fewer in less time', () => {
+      expect(automaticReviewReasons(submission(), quick, form)).toEqual([]);
+      expect(automaticReviewReasons(submission(), quick, formWith({ paceSubmissions: 4, paceSeconds: 60 }))).toEqual([
+        '4 submissions in 1 minute'
+      ]);
+    });
+
+    it("refuses a place that passes today, when the season's area is elsewhere", () => {
+      expect(automaticReviewReasons(submission(), [], formWith({ areas: elsewhere }))).toEqual([
+        "Not in the season's area: South of campus"
+      ]);
+    });
+
+    it('keeps every other limit at its default, and other types at theirs', () => {
+      const stricter = formWith({ maxAccuracyMetres: 3 });
+      const monument = submission({ value: { memorial_type: 'monument' } });
+
+      expect(automaticReviewReasons(submission(), quick, stricter)).toEqual(['Location accurate only to 5 m']);
+      expect(automaticReviewReasons(monument, [], stricter)).toEqual([]);
+    });
+  });
+
   it('lists every reason that applies', () => {
     expect(
       automaticReviewReasons(

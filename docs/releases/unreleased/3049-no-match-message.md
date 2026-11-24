@@ -1,5 +1,6 @@
 ---
 issue: 3049
+app: gisday
 title: Admin Events says no sessions match the search or filters, rather than that the season has none
 testOnDev: |
   | GIS Day Admin › Events: a search or filter that hides every session ([#3049](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3049)) | Not on dev: GIS Day has no dev site. After release, open Admin › Events on [gisday.tamu.edu](https://gisday.tamu.edu/admin/events) | Type something no session has: it says "No sessions match the search or filters." with a button that clears them and brings the list back. A season with no sessions still says "There are no events for the selected season." |

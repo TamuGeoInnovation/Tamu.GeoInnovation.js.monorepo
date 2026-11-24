@@ -1,7 +1,6 @@
 import { ExecutionContext, INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { FindOperator } from 'typeorm';
 
 import { JwtGuard } from '@tamu-gisc/common/nest/auth';
 import {
@@ -15,66 +14,11 @@ import {
 
 import { Assessment, Event, Rubric, RubricCriterion, Season, Speaker, Submission } from '../entities/all.entity';
 import { SpeakerEditService, hashOf } from '../speaker-edit/speaker-edit.service';
+import { Table } from '../_base/memory-table';
 import { JudgeLinkGuard } from './judge-link.guard';
 import { JudgingController, RubricController } from './judging.controller';
 import { JudgingService } from './judging.service';
 import { RubricService } from './rubric.service';
-
-/** Whether a row matches a typeorm `where`, as far as these routes ask: equality, `In`, `Not(In)`, and nested relations. */
-function matches(row: unknown, where: Record<string, unknown>): boolean {
-  return Object.entries(where).every(([key, wanted]) => {
-    const value = (row as Record<string, unknown>)?.[key];
-
-    if (wanted instanceof FindOperator) {
-      if (wanted.type === 'not') {
-        return !matches(row, { [key]: wanted.value });
-      }
-
-      return (wanted.value as Array<unknown>).includes(value);
-    }
-
-    if (wanted !== null && typeof wanted === 'object') {
-      return Array.isArray(value)
-        ? value.some((v) => matches(v, wanted as Record<string, unknown>))
-        : matches(value, wanted as Record<string, unknown>);
-    }
-
-    return value === wanted;
-  });
-}
-
-/** A table in memory, with the repository calls these routes make. */
-class Table<T extends { guid?: string }> {
-  public rows: Array<T> = [];
-
-  constructor(private readonly join: (row: T, relations?: Record<string, unknown>) => unknown = (row) => row) {}
-
-  public create = (x: Partial<T>) => ({ ...x }) as T;
-  public find = jest.fn(
-    async ({ where, relations }: { where?: Record<string, unknown>; relations?: Record<string, unknown> } = {}) =>
-      this.rows.filter((r) => !where || matches(r, where)).map((r) => structuredClone(this.join(r, relations)) as T)
-  );
-  public findOne = jest.fn(async (options: { where: Record<string, unknown>; relations?: Record<string, unknown> }) => {
-    return (await this.find(options))[0] ?? null;
-  });
-  public save = jest.fn(async (x: T | Array<T>) => {
-    const all = (Array.isArray(x) ? x : [x]).map((one) => {
-      const row = { ...one, guid: one.guid ?? crypto.randomUUID(), updated: new Date() } as T;
-      this.rows = [...this.rows.filter((r) => r.guid !== row.guid), row];
-      return row;
-    });
-
-    return Array.isArray(x) ? all : all[0];
-  });
-  public update = jest.fn(async (guid: string, fields: Partial<T>) => {
-    this.rows = this.rows.map((r) => (r.guid === guid ? { ...r, ...fields } : r));
-  });
-  public delete = jest.fn(async (where: string | Record<string, unknown>) => {
-    const before = this.rows.length;
-    this.rows = this.rows.filter((r) => !(typeof where === 'string' ? r.guid === where : matches(r, where)));
-    return { affected: before - this.rows.length };
-  });
-}
 
 /**
  * #3183: judging the research competitions through Nest's real routing, guards and pipes, with the tables in memory.

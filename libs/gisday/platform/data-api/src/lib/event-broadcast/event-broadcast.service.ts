@@ -1,21 +1,30 @@
 import {
-  HttpException,
   Injectable,
   InternalServerErrorException,
   Logger,
-  NotFoundException,
-  UnprocessableEntityException
+  NotFoundException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, In, Repository } from 'typeorm';
 
 import { EventBroadcast } from '../entities/all.entity';
-import { BaseProvider } from '../_base/base-provider';
 import { byName } from '../_base/natural-order';
 import { SeasonService } from '../season/season.service';
+import { rethrowHttp } from '../_base/rethrow-http';
+import { SeasonScopedProvider } from '../_base/season-scoped-provider';
 
 @Injectable()
-export class EventBroadcastService extends BaseProvider<EventBroadcast> {
+export class EventBroadcastService extends SeasonScopedProvider<EventBroadcast> {
+  protected get seasons() {
+    return this.ss;
+  }
+
+  protected readonly recordsName = 'broadcasts';
+
+  protected forSeason(seasonGuid: string) {
+    return this.getBroadcastsForSeason(seasonGuid);
+  }
+
   constructor(@InjectRepository(EventBroadcast) private eb: Repository<EventBroadcast>, private readonly ss: SeasonService) {
     super(eb);
   }
@@ -55,13 +64,7 @@ export class EventBroadcastService extends BaseProvider<EventBroadcast> {
         })
         .then(byName);
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      throw new InternalServerErrorException(err);
+      rethrowHttp(err, new InternalServerErrorException(err));
     }
   }
 
@@ -79,86 +82,16 @@ export class EventBroadcastService extends BaseProvider<EventBroadcast> {
         })
         .then(byName);
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      throw new InternalServerErrorException(err);
+      rethrowHttp(err, new InternalServerErrorException(err));
     }
   }
 
   public async getBroadcastsForActiveSeason() {
-    const season = await this.ss.findOneActive();
-
-    try {
-      return this.eb
-        .find({
-          relations: { place: true },
-          where: {
-            season: { guid: season.guid }
-          },
-          order: {
-            name: 'ASC'
-          }
-        })
-        .then(byName);
-    } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      throw new InternalServerErrorException(err);
-    }
+    return this.forActiveSeason();
   }
 
   public async copyBroadcastsIntoSeason(seasonGuid: string, existingEntityGuids: Array<string>) {
-    try {
-      const existingEntities = await this.eb.find({
-        where: {
-          guid: In(existingEntityGuids)
-        }
-      });
-
-      const newEntities = existingEntities.map((entity) => {
-        delete entity.guid;
-        delete entity.season;
-        delete entity.created;
-        delete entity.updated;
-
-        return this.eb
-          .create({
-            ...entity,
-            season: {
-              guid: seasonGuid
-            }
-          })
-          .save();
-      });
-
-      try {
-        return Promise.all(newEntities);
-      } catch (err) {
-        // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-        // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-        if (err instanceof HttpException) {
-          throw err;
-        }
-
-        throw new InternalServerErrorException(err);
-      }
-    } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      throw new UnprocessableEntityException(err);
-    }
+    return this.copyIntoSeason(seasonGuid, existingEntityGuids);
   }
 
   public override deleteEntities(oneOrMoreEntityGuids: Array<string> | string): Promise<DeleteResult> {
@@ -185,14 +118,7 @@ export class EventBroadcastService extends BaseProvider<EventBroadcast> {
         return transactionalEntityManager.delete(EventBroadcast, guids);
       });
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      Logger.error(err.message, 'EventBroadcastService.deleteEntities');
-      throw new InternalServerErrorException('Could not delete entities');
+      rethrowHttp(err, new InternalServerErrorException('Could not delete entities'), () => Logger.error(err.message, 'EventBroadcastService.deleteEntities'));
     }
   }
 }

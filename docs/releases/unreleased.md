@@ -58,13 +58,12 @@ Updated at every GIS Day rollout, as step 4 of
 
 | | |
 | --- | --- |
-| Images, both namespaces (`gisday`, `gisday-ucgis`) | The site `gisday-angular:sha-fa3b8bc`; the API `gisday-nest:sha-f4fd0d1` |
-| The site's last commit | `fa3b8bc`, PR 3231 ([#3230](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3230), the judge's page searches its entries, and each opens in a details panel that Escape closes) |
-| The site rolled out | 23 November 2026, about 8:20 AM Central, by the maintainer, in both namespaces: site only, with no API change and no migration since `f4fd0d1`. Checked against the cluster: both sites on `sha-fa3b8bc`, both APIs on `sha-f4fd0d1` |
-| The site before it | `sha-7a735e8` (20 November, about 7:30 AM Central, site only: PR 3224, [#3221](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3221), each day on the Sessions page collapses): the site's rollback target |
-| The API rolled out | `sha-f4fd0d1`, 18 November 2026, about 12:42 PM Central, by the maintainer: the migration, then the API, then the site, in both namespaces. PR 3210 ([#3209](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3209), each session sets its own check-in window, by default 5 minutes before its start to 10 after its end); `txgisday.org/api/seasons/active` returned `checkInMinutesBefore` 5 and `checkInMinutesAfter` 10 on all 65 of its sessions |
-| The API before it | `sha-7244af9`: the API's rollback target. It works with the new columns, which it ignores |
-| The last migration in it | `AddCheckInMinutes` (`1794967200000`): two columns on `events` with defaults, applied with `-Apply -NoBackup` on both databases at 12:40 PM, after a clean dry run (332 and 75 sessions, all on 5 and 10); reports in kubernetes-config `6. GIS Day/migrations/` |
+| Images, both namespaces (`gisday`, `gisday-ucgis`) | The site and the API both `sha-35bcf80` (`gisday-angular`, `gisday-nest`) |
+| The last commit | `35bcf80`, PR 3311 ([#2835](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2835), the release notes collate each entry into its own application's notes). It carries the evening's GIS Day work: PR 3304 ([#2088](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2088), each address calls the API on its own address), PR 3298 ([#2572](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2572), the check-in code leaves the page address), PR 3306 ([#3292](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3292), the Winners dropdowns show the main author first), PR 3310 ([#3309](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3309), the competition pages take their dates from the season), PR 3303 ([#1836](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1836), past years' Sessions pages offer their organizations), PR 3307 ([#3302](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3302), creating the next season no longer fails on an unset deadline), PR 3305 ([#2430](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2430), a season's form sets the automatic review's limits), PR 3308 ([#2363](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2363), tests only), PR 3312 ([#1843](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1843), docs only) and PR 3293 (this table's previous update) |
+| Rolled out | 23 November 2026, about 8:51 PM Central, by the maintainer: the migration, then the API, then the site, in both namespaces. Checked against the cluster: both sites and both APIs on `sha-35bcf80`; the three sites and `/api/seasons/active` on txgisday.org, gisday.tamu.edu, tamu.txgisday.org and gisday.ucgis.org answer 200; signed in, an admin page shows its data on txgisday.org and gisday.tamu.edu ([#2088](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2088)'s check) |
+| The site before it | `sha-6258350` (23 November, about 5:15 PM Central): the site's rollback target. It still needs `ANGULAR_API_URL` and `ANGULAR_AUTH0_URLS`, so they stay in kubernetes-config until no rollback to it is wanted |
+| The API before it | `sha-083a162` (23 November, about 4:30 PM Central): the API's rollback target. It ignores `sessions_filter_backfill` |
+| The last migration in it | `TickPastSessionsFilters` (`1795477533912`): ticks Sessions Filter on each past season's organizations that hosted one of its sessions (29 on `gisday-nest-eh`: 8 in 2023, 10 in 2024, 11 in 2025; none on `gisday-ucgis`, which has only 2026), recording each in `sessions_filter_backfill` (dropped later, [#3300](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3300)). Applied with `migrate-prod-1836.ps1 -Apply -NoBackup` on both databases at 8:48 PM, after a clean dry run at 8:47; reports in kubernetes-config `6. GIS Day/migrations/` |
 
 The cluster is the final word:
 `kubectl -n gisday get deployment gisday-nest gisday-angular -o custom-columns=NAME:.metadata.name,IMAGE:.spec.template.spec.containers[0].image`,
@@ -72,7 +71,7 @@ and the same with `-n gisday-ucgis`. If it disagrees with this table, the table 
 
 ### AggieMap on 10 November, 2:00 AM Central: what another machine most needs to know
 
-**Dev is cleared, the notes are cut, and the promotion is the only step left.** `3254b114e` is tagged **`dev-2026-11-10`** and was cleared
+**Dev is cleared, the notes have merged, and the promotion is waiting on the team.** `3254b114e` is tagged **`dev-2026-11-10`** and was cleared
 by the release tier on the lab machine: **999 passed, 15 failed, 70 skipped**, about 1.2 hours. Every one of the
 15 was traced, and **none of them is in the build** - they are faults in the suite itself, now filed as
 [#2776](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2776),
@@ -126,13 +125,12 @@ so one may appear before the deploy.
 | [PR 2825](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2825) | [#2821](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2821), closing [#2777](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2777) with it | Specs take their fixtures from the environment under test |
 | [PR 2826](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2826) | [#2776](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2776) | The tailgating kiosk check reads its layers from the application |
 | [PR 2827](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2827) | [#2823](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2823) | Recorded builder destinations match the choices their builders offer |
-| [PR 2829](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2829) | [#2828](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2828) | This section, and the header that said production had taken a release it never took |
 | [PR 2830](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2830) | [#2822](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2822) | The 3D test stops waiting 45 minutes on a click that cannot land: **the release tier goes from 1.2 hours to 27 minutes** |
 | [PR 2831](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2831) | [#2824](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2824) | A restricted builder walk keeps every other map's recordings instead of deleting them |
 | [PR 2832](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2832) | [#2797](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2797) | Nature Rx's two search sources get their cases, development only |
 
-**None of these is in the 10 November release**; all are post-release by the maintainer's instruction. Three of
-them constrain each other, and none of the three is visible from the diffs:
+**None of these is in the 10 November release**; all are post-release by the maintainer's instruction. Two of
+them constrain each other, and neither constraint is visible from the diffs:
 
 1. **PR 2827 merges after the production promotion, not before.** It regenerates
    `tools/builder-inventory`'s recorded links, and graduation's now name December 2026. The smoke suite reads
@@ -142,11 +140,42 @@ them constrain each other, and none of the three is visible from the diffs:
 2. **PR 2827 and PR 2831 conflict on one line** of `tools/builder-inventory/README.md`. Whichever merges second
    keeps **2831's** row: 2827 adds a warning about `BUILDER_INVENTORY_ONLY` that exists only until 2831 fixes the
    flag.
-3. **The release-notes pull request builds on PR 2829**, because both edit `docs/releases/unreleased.md`. 2829
-   merges first, or the notes take its changes with them.
-
 **PR 2832 closes [#2797](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2797) on
 merge.** If the issue should stay open until the production release run confirms the fix, merge it after that run.
+
+### What the promotion is actually waiting on
+
+**The notes have merged and the team has them.** The release notes for this build are
+[10 November 2026](2026-11-10.md), merged in
+[PR 2837](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2837) at 11:46 AM Central, and
+the maintainer has sent that page to the team **to confirm the release should go out**. So the promotion is
+blocked on people rather than on a check: there is nothing technical outstanding, and nobody should promote,
+re-run a tier or re-cut the notes expecting to unblock it.
+
+Two pull requests got there first and are already merged, so do not wait for them:
+[PR 2829](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2829) (this section) and
+[PR 2834](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2834) (the notes themselves).
+
+**The notes are split by application, and that split is new.** `2026-11-10.md` is AggieMap's alone and leads with
+the three changes a visitor meets: the vector basemap as the only source of lots and buildings, bus routes on, and
+routing on. GIS Day's 23 entries from the same commit range are in
+[GIS Day, unreleased](gisday-unreleased.md), collecting until a GIS Day release takes them - being in
+`3254b114e` is not being deployed, and what GIS Day production runs is the pinned `sha-` tag in the private
+cluster repository. The mixing was found by the maintainer in the finished document after it had been shared
+([#2836](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2836)); `collate-release-notes.mjs`
+still writes every entry into AggieMap's file, so a GIS Day entry has to be moved by hand until
+[#2835](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2835) lands.
+
+**If you hand anyone a release-notes link, check what it points at.** An earlier shared link was pinned to a
+commit from before the split and showed GIS Day mixed in. Pin to a commit you have read, or use `development`
+once the notes have merged.
+
+**`tools/queued.sh` cannot be trusted to list what is waiting for a listener**
+([#2838](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2838)). Batch numbers are
+reused across the aggiemap, security and gisday tracks, and it matches on the number alone, so an October commit
+saying `finished batch 35` hides a batch 35 written in November entirely. Two batches were assigned on 10
+November and the queue showed neither of them as queued. Read the listener's `TASKS.md` itself, and say which
+track a progress line is about.
 
 ### Two traps found on 10 November
 

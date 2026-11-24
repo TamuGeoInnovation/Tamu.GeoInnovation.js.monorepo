@@ -1,5 +1,6 @@
 ---
 issue: 3037
+app: gisday
 title: "GIS Day: one Competition settings panel on Research Competitions, for which competitions run and their deadlines, with one Save"
 testOnDev: |
   | GIS Day: one Competition settings panel, one Save ([#3037](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3037)) | Not on dev: GIS Day has no dev site. After release, as an admin open [Research Competitions](https://txgisday.org/admin/research-competition) | Above the submissions there is one box, Competition settings for this year, with "Edit" and a line naming the competitions the season runs and their deadlines. Click it: the competitions' boxes, then a row of deadlines for each one ticked (untick one and its row goes), and one Save. Save says "Competitions and deadlines saved." and the panel stays open. With every box unticked, Save says nothing was saved and why. There is no longer a separate Competitions section or Save competitions / Save deadlines button |

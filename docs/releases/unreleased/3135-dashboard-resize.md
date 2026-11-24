@@ -1,5 +1,6 @@
 ---
 issue: 3135
+app: gisday
 title: "GIS Day: a dashboard's table reaches its last columns at any width, and shows a spinner while it fits a resized window"
 testOnDev: |
   | GIS Day: dashboard tables at a resized width ([#3135](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3135)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release, sign in as an admin on [gisday.tamu.edu](https://gisday.tamu.edu/admin/dashboards/check-ins), open Admin, Dashboards, Check-ins (then RSVPs), choose season 2025, and with the window about 1280 px wide narrow it to about 1024 px | While the window changes width, a spinner shows over the By event table for a moment, then goes. At 1024 px a scrollbar is pinned under the table at the bottom of the window, and scrolling it to its end shows the last column, **Not given**, whole. Widened back to 1280 px, RSVPs has no scrollbar under its table |

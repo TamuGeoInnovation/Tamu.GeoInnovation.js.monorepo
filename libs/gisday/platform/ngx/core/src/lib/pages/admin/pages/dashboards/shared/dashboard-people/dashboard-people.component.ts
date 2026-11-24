@@ -1,20 +1,22 @@
 import { Component, computed, input } from '@angular/core';
 import { DatePipe } from '@angular/common';
 
-import * as Papa from 'papaparse';
-
 import { RSVP_PERSON_TYPES, RsvpPersonType } from '@tamu-gisc/gisday/common';
 import type { RsvpDashboardPerson } from '@tamu-gisc/gisday/platform/data-api';
-import { downloadFile } from '@tamu-gisc/common/utils/ui';
+import { downloadFile, toCsv } from '@tamu-gisc/common/utils/ui';
 import { DashboardScrollComponent } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import type { DashboardTableColumn } from '../dashboard-table/dashboard-table.component';
 
 /**
  * A person as every dashboard lists them: their profile, when they did what the dashboard counts, and any counts of
- * their own, such as a VGI submitter's submissions (#2894).
+ * their own, such as a VGI submitter's submissions (#2894). A check-in made outside its session's time is marked
+ * (#2893, #2635); a dashboard whose people carry no mark shows no column for it.
  */
-export type DashboardPerson = RsvpDashboardPerson & { counts?: Record<string, number> };
+export type DashboardPerson = RsvpDashboardPerson & { counts?: Record<string, number>; outsideSessionTime?: boolean };
+
+/** The CSV's column for the mark, after the date. */
+const OUTSIDE_COLUMN = 'Outside session time';
 
 export interface DashboardPeopleGroup {
   type: RsvpPersonType;
@@ -52,7 +54,8 @@ export function peopleCsv(
     'Department / field of study',
     'University / employer',
     ...countColumns.map((c) => c.label),
-    dateLabel
+    dateLabel,
+    ...(people.some((p) => p.outsideSessionTime !== undefined) ? [OUTSIDE_COLUMN] : [])
   ];
   const rows = groupPeople(people).flatMap((group) =>
     group.people.map((p) => ({
@@ -65,21 +68,23 @@ export function peopleCsv(
       'Department / field of study': p.department ?? '',
       'University / employer': p.organization ?? '',
       ...Object.fromEntries(countColumns.map((c) => [c.label, p.counts?.[c.key] ?? 0])),
-      [dateLabel]: p.created
+      [dateLabel]: p.created,
+      [OUTSIDE_COLUMN]: p.outsideSessionTime ? 'yes' : ''
     }))
   );
 
-  return Papa.unparse(rows, { columns });
+  return toCsv(columns, rows);
 }
 
 /**
  * A column per person type, for a dashboard's table. "Undergraduate" carries a soft hyphen, shown only if the word must
  * break: Chrome does not hyphenate a word that starts with a capital, so in a narrow column it was cut to "Undergradu".
- * The types' own labels have none, because they also go into CSV files.
+ * "classification" is wider than a count column too, and carries one rather than relying on the browser's dictionary
+ * (#3219). The types' own labels have none, because they also go into CSV files.
  */
 export const PERSON_TYPE_COLUMNS: Array<DashboardTableColumn> = RSVP_PERSON_TYPES.map(({ type, label }) => ({
   key: type,
-  label: label.replace('Undergraduate', 'Under\u00adgraduate')
+  label: label.replace('Undergraduate', 'Under\u00adgraduate').replace('classification', 'classi\u00adfication')
 }));
 
 /**

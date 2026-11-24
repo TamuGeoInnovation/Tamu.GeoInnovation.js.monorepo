@@ -4,6 +4,12 @@
   display: block;
 }
 
+// A check-in made outside its session's time, under its time (#2893): as the table's note under an event's name.
+.dashboard-person-outside {
+  font-size: 0.9rem;
+  opacity: 0.75;
+}
+
 .dashboard-people-actions {
   display: flex;
   justify-content: flex-end;

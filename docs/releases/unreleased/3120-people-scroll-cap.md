@@ -1,5 +1,6 @@
 ---
 issue: 3120
+app: gisday
 title: A long people list keeps its sideways scrollbar in view
 testOnDev: |
   | GIS Day admin: an opened dashboard row's people ([#3120](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3120)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release, as an admin on txgisday.org: Admin, Dashboards, VGI submissions, the 2025 season, open Unknown Art Piece; on gisday.tamu.edu, RSVPs and Check-ins for 2025, open the largest event | The people sit in a box no taller than the window, which scrolls up and down inside itself; with the row's name at the top of the window the whole box is in view, and on VGI its sideways scrollbar is at the bottom of the box, not 38,000 px down the page. A short list is only as tall as its people. At 1280 px an RSVP or check-in list has no sideways scrollbar, as before |

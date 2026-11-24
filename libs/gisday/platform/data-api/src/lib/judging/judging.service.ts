@@ -29,8 +29,11 @@ export interface AssessmentBody {
   comment?: unknown;
 }
 
-/** The names of a submission's people, as a judge and the results see them: never their addresses. */
-function presentersOf(submission: Submission): Array<string> {
+/**
+ * The names of a submission's people, as a judge, the results and the homepage's winners (#3239) see them: never their
+ * addresses.
+ */
+export function presentersOf(submission: Submission): Array<string> {
   return (submission.participants ?? []).map((p) => p?.name?.trim()).filter((name): name is string => Boolean(name));
 }
 

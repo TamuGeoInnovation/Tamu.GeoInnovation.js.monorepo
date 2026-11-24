@@ -1,5 +1,6 @@
 ---
 issue: 2921
+app: gisday
 title: "GIS Day: link to the Presenters page already searched, with a Copy link button"
 testOnDev: |
   | GIS Day: a link to Presenters already searched ([#2921](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2921)) | Not on dev: GIS Day has no dev site. After release, open [Presenters on gisday.tamu.edu](https://gisday.tamu.edu/presenters) and type a company's name | The address shows `?search=` with it; a Copy link button beside the box copies the whole link and says Copied; opening that link shows only those presenters; Back leaves the page rather than stepping through each letter typed |

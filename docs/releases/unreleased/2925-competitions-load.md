@@ -1,5 +1,6 @@
 ---
 issue: 2925
+app: gisday
 title: "GIS Day: the Research Competitions admin page loads faster"
 testOnDev: |
   | GIS Day: Research Competitions loads faster ([#2925](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2925)) | Not on dev: GIS Day has no dev site. After release, open [Research Competitions on gisday.tamu.edu](https://gisday.tamu.edu/admin/research-competition) signed in as an admin | The list appears in a second or two rather than after a long white wait, and every row still shows who submitted it, with their email and department |

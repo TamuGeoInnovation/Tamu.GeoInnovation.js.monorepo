@@ -1,5 +1,6 @@
 ---
 issue: 3047
+app: gisday
 title: "GIS Day: broadcasts are listed by name, with numbers in order, on Admin > Broadcasts and in every Broadcast drop-down"
 testOnDev: |
   | GIS Day: broadcasts listed by name, numbers in order ([#3047](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3047)) | Not on dev: GIS Day has no dev site. After release, as an admin open [Broadcasts](https://txgisday.org/admin/broadcasts), then an event's edit page from [Events](https://txgisday.org/admin/events) | Broadcasts are in alphabetical order, case ignored, with numbers in order ("Zoom 2" before "Zoom 10"). An event's Broadcast drop-down lists them in the same order |

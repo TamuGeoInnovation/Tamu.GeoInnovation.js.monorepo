@@ -1,5 +1,4 @@
 import {
-  HttpException,
   BadRequestException,
   ForbiddenException,
   Injectable,
@@ -13,6 +12,7 @@ import { isOwnerOrPermitted } from '@tamu-gisc/common/nest/auth';
 
 import { Class, UserClass } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
+import { rethrowHttp } from '../_base/rethrow-http';
 
 @Injectable()
 export class UserClassProvider extends BaseProvider<UserClass> {
@@ -59,13 +59,7 @@ export class UserClassProvider extends BaseProvider<UserClass> {
       // never ran.
       return await this.userClassRepo.save(created);
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      throw new InternalServerErrorException('Could not save user class registration');
+      rethrowHttp(err, new InternalServerErrorException('Could not save user class registration'));
     }
   }
 
@@ -98,13 +92,7 @@ export class UserClassProvider extends BaseProvider<UserClass> {
     try {
       return await this.userClassRepo.delete(foundClass.guid);
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      throw new InternalServerErrorException('Could not delete user class registration');
+      rethrowHttp(err, new InternalServerErrorException('Could not delete user class registration'));
     }
   }
 }

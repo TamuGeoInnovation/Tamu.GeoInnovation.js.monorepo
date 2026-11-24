@@ -27,8 +27,8 @@ describe('gisdaySite', () => {
    * #2071. txgisday.org keeps everything it had, Texas A&M's content included, until it becomes a landing page
    * for every organization's GIS Day site. #2066 had moved that content to gisday.tamu.edu only.
    */
-  it("leaves nothing out on txgisday.org, Texas A&M's content included", () => {
-    expect(gisdaySite('txgisday').off).toEqual([]);
+  it("leaves nothing out on txgisday.org, Texas A&M's content included, but the winners of competitions it did not run", () => {
+    expect(gisdaySite('txgisday').off).toEqual(['winners']);
   });
 
   /**
@@ -62,8 +62,15 @@ describe('gisdaySite', () => {
 
   it("has every other feature on Texas A&M's site and txgisday.org, and neither Texas A&M's content nor its links on UCGIS's", () => {
     expect(gisdaySite('tamu').off).toEqual(['homeLinks']);
-    expect(gisdaySite('txgisday').off).toEqual([]);
+    expect(gisdaySite('txgisday').off).toEqual(['winners']);
     expect(gisdaySite('ucgis').off).toEqual(expect.arrayContaining(['tamu', 'tamuLinks']));
+  });
+
+  /** #3239, decided 2A: the research competitions' winners are shown only on gisday.tamu.edu, where they ran. */
+  it("shows the winners on Texas A&M's site only", () => {
+    expect(gisdaySite('tamu').off).not.toContain('winners');
+    expect(gisdaySite('txgisday').off).toContain('winners');
+    expect(gisdaySite('ucgis').off).toContain('winners');
   });
 });
 

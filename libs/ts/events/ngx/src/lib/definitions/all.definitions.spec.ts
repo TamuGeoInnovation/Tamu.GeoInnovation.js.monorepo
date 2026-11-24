@@ -100,4 +100,43 @@ describe('Event maps on production', () => {
 
     expect(stranded, 'these maps are due again soon, or a year has passed, and neither is reflected').toEqual([]);
   });
+
+  it('points no schedule link at the retired commencement host (#3278)', () => {
+    // Transportation Services reported that Fall Commencement's "Click here for Fall Commencement
+    // Ceremony details" link lands on a 404. It pointed at `aggie.tamu.edu/graduation`, which Aggie
+    // One Stop now answers with its own Page Not Found - and the same dead URL was the `scheduleUrl`
+    // of all three commencement maps, fall, spring and summer, because the value was written out
+    // three times.
+    //
+    // Nothing here could have caught it. A `scheduleUrl` is configuration rather than a service, so
+    // the map loads, draws, and passes the smoke suite with a dead link in it; the only signal was a
+    // visitor clicking it. #2754 was the same shape, with dates.
+    //
+    // This checks one thing only, and cheaply: that no map points at a host we know is retired. It
+    // cannot tell whether a live host still serves the path - that needs a request, and it is #3285.
+    const RETIRED_HOSTS = ['aggie.tamu.edu'];
+
+    const retired = EventDefinitions.flatMap((definition) => {
+      const configuration = definition.configuration;
+
+      if (!configuration?.scheduleUrl) {
+        return [];
+      }
+
+      // The interface allows an array, and Tennis uses one. Compare the host itself rather than
+      // matching text: `aggiemap.tamu.edu` contains `aggie.tamu.edu` as a substring.
+      return [configuration.scheduleUrl]
+        .flat()
+        .filter((url) => {
+          try {
+            return RETIRED_HOSTS.includes(new URL(url).hostname);
+          } catch {
+            return false;
+          }
+        })
+        .map((url) => `${configuration.id}: ${url}`);
+    });
+
+    expect(retired, 'these schedule links point at a host that no longer serves them').toEqual([]);
+  });
 });

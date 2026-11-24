@@ -1,5 +1,6 @@
 ---
 issue: 2969
+app: gisday
 title: "GIS Day: Submission deadlines on Research Competitions is a compact panel, collapsed to one line once deadlines are set"
 testOnDev: |
   | GIS Day: Submission deadlines panel ([#2969](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2969)) | Not on dev: GIS Day has no dev site. After release, as an admin open [Research Competitions](https://txgisday.org/admin/research-competition) | With this season's deadlines set, Submission deadlines is one line: each competition's dates in Central time, and the submissions list right below it. Click the line (or Tab to it and press Enter) and it opens to a table, one row per competition, each date with its Central time under it and a small Clear, and Save deadlines at the end on the right. Both date columns and every Clear fit without scrolling sideways, on a 1280 or 1024 px wide window. Click the line again and it closes. A season with no deadlines opens with the panel open |

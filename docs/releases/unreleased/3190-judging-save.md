@@ -1,5 +1,6 @@
 ---
 issue: 3190
+app: gisday
 title: "GIS Day: a judge's scores and a rubric's changes save"
 testOnDev: |
   | GIS Day: judging saves ([#3190](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3190)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release, on [gisday.tamu.edu](https://gisday.tamu.edu), open a judging link, score an entry and press Save; then edit a rubric under Admin → Research Competitions → Rubrics and save it | Both save: "Saved, N of 100 points." on the judging page, and the rubric keeps the change after a reload. Before, both failed, the judge's with "Your scores were not saved. Please try again." |

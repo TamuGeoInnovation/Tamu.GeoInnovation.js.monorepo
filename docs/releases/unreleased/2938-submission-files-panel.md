@@ -1,5 +1,6 @@
 ---
 issue: 2938
+app: gisday
 title: "GIS Day: Presentation files stand out on a student's submission, with a button to attach"
 testOnDev: |
   | GIS Day: Presentation files in a box ([#2938](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2938)) | Not on dev: GIS Day has no dev site. After release, open one of your poster or presentation submissions on [txgisday.org](https://txgisday.org/account/submissions) | **Presentation files** is a blue box above **Withdraw Submission** and **Update**, which are now the last thing on the page; the limits are a line of their own, and **Attach a file** is a button |

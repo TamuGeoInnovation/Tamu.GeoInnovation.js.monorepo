@@ -1,5 +1,6 @@
 ---
 issue: 2923
+app: gisday
 title: "GIS Day: a presenter's search opens over the page; Copy link and a clear sit inside the search box"
 testOnDev: |
   | GIS Day: presenter search panel, and Copy link and clear in the box ([#2923](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2923)) | Not on dev: GIS Day has no dev site. After release, open any presenter from [Presenters on gisday.tamu.edu](https://gisday.tamu.edu/presenters), then open [Presenters searched for geography](https://gisday.tamu.edu/presenters?search=geography) | On a presenter's page: the box sits under the heading with room before the bio; typing opens the matches over the page without moving it; Escape or a click elsewhere closes them; the x clears the box. On Presenters: Copy link and an x sit inside the box at its right end, Copy link says Copied! and copies the whole link, and the x clears a search the page was opened with |

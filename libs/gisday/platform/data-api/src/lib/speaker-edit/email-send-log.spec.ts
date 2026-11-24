@@ -7,6 +7,9 @@ import {
 import { EmailSendLog } from './email-send-log';
 import { SpeakerEditModule } from './speaker-edit.module';
 import { SpeakerEditService } from './speaker-edit.service';
+import { Table } from '../_base/memory-table';
+import { SpeakerEmailClaim } from '../entities/all.entity';
+import { RepeatGuard } from './repeat-guard';
 import { SessionDetailsEmailService } from './session-details-email.service';
 import { SlidesRequestEmailService } from './slides-request-email.service';
 
@@ -149,7 +152,10 @@ describe('every speaker email records what it sent, and its preview shows it (#3
       {
         create: (x) => x,
         save: jest.fn(async (x) => links.push({ ...x, created: new Date() })),
-        count: jest.fn(async () => 0)
+        count: jest.fn(async () => 0),
+        // No other profile link of the last few minutes, so each send's own link stands (#3326).
+        find: jest.fn(async () => []),
+        delete: jest.fn()
       } as never,
       {} as never,
       {
@@ -191,7 +197,7 @@ describe('every speaker email records what it sent, and its preview shows it (#3
   });
 
   it("records a session's details sent together once for each speaker on it, about that session", async () => {
-    const service = new SessionDetailsEmailService(events as never, contact() as never, log);
+    const service = new SessionDetailsEmailService(events as never, new RepeatGuard(new Table<SpeakerEmailClaim>() as never), contact() as never, log);
 
     await service.send('e-1', 'gisday.tamu.edu', undefined, undefined, { speakers: ['sp-av', 'sp-bl'], together: true });
 
@@ -219,7 +225,7 @@ describe('every speaker email records what it sent, and its preview shows it (#3
         expires: new Date('2026-11-22T18:00:00Z')
       }))
     };
-    const service = new SlidesRequestEmailService(events as never, contact() as never, links as never, log);
+    const service = new SlidesRequestEmailService(events as never, new RepeatGuard(new Table<SpeakerEmailClaim>() as never), contact() as never, links as never, log);
 
     await service.send('e-1', 'gisday.tamu.edu', undefined, undefined, ['sp-bl']);
 
@@ -238,6 +244,7 @@ describe('every speaker email records what it sent, and its preview shows it (#3
   it('records nothing for an email that could not be sent', async () => {
     const failing = new SessionDetailsEmailService(
       events as never,
+      new RepeatGuard(new Table<SpeakerEmailClaim>() as never),
       { sendMessage: jest.fn(async () => Promise.reject(new Error('the mail server is away'))) } as never,
       log
     );

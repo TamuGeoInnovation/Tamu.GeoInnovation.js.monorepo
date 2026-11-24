@@ -1,4 +1,5 @@
 import { lastNameOf } from './names';
+import { formatCentral } from './central-time';
 
 /**
  * Which of an email's speakers get it, and whether together or a copy each (#3104). Every speaker email the composer sends
@@ -58,13 +59,7 @@ export const EMAIL_KIND_LABELS: Readonly<Record<string, string>> = Object.freeze
 
 /** A time as the record of sends shows it: "Nov 16, 4:05 PM", in US Central, where GIS Day is. */
 export function sentAt(iso: string): string {
-  return new Date(iso).toLocaleString('en-US', {
-    timeZone: 'America/Chicago',
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit'
-  });
+  return formatCentral(iso, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
 }
 
 /** Whether a speaker was ever sent the email about to be sent (#3167). */

@@ -24,9 +24,8 @@ import {
 import { Event, Speaker } from '../entities/all.entity';
 import { ContactService } from '../contact/contact.service';
 import { EmailSender, siteSender } from '../contact/email-sender.service';
-import { EMAIL_LANES, inParallel } from '../_base/in-parallel';
-import { RecentSends } from '../_base/recent-sends';
 import { EmailSendLog } from './email-send-log';
+import { RepeatGuard, sendEach } from './repeat-guard';
 import {
   ProfileEmail,
   ProfileEmailPreview,
@@ -64,15 +63,14 @@ export interface SpeakerChoice {
  * The admin ticks which speakers get it, and sends one email to all of them together or a copy each (#3104). Together,
  * every one is on To and `{first name}` names them all; the repeat guard counts it once, for its whole group.
  *
- * The repeat guard is kept by this API process, as nothing else records these emails (`RecentSends`).
+ * Each send is claimed before it goes, in the table every copy of the API shares (`RepeatGuard`, #3098), so a repeat is
+ * caught whichever copy it reaches.
  */
 @Injectable()
 export class SessionDetailsEmailService {
-  /** When each speaker was last sent each session's details, by `<session>:<speaker>`. */
-  private readonly lastSent = new RecentSends(REPEAT_SEND_MINUTES);
-
   constructor(
     @InjectRepository(Event) private readonly events: Repository<Event>,
+    private readonly repeats: RepeatGuard,
     private readonly contact: ContactService,
     /** The record of what each speaker was sent (#3167). */
     @Optional() private readonly sendLog?: EmailSendLog
@@ -167,23 +165,15 @@ export class SessionDetailsEmailService {
     const emails: Array<Array<Speaker>> = choice?.together && chosen.length > 1 ? [chosen] : chosen.map((s) => [s]);
 
     // Several at a time (#3067), as the profile email: one by one, a long send waited long enough to be repeated (#3065).
-    const parts = await inParallel(emails, EMAIL_LANES, async (group) => {
-      const part: SendResult = { sent: [], skipped: [] };
+    // Each is claimed before it goes, in the table every copy of the API shares (#3098), so two sends racing, in one copy
+    // or in two, skip each other's speakers. A group is a repeat if any of it was sent these details just now.
+    const each = await sendEach(this.repeats, emails, {
+      kind: SESSION_DETAILS_EMAIL_KIND,
+      sessionGuid: session.guid,
       // A together email is one email, so it is named, sent, skipped or failed once, for its whole group (#3104).
-      const name = joinNames(group.map(fullName));
-      const keys = group.map((speaker) => `${session.guid}:${speaker.guid}`);
-
-      // Recorded before the email goes, so two sends racing in this process skip each other's speakers. A group is a
-      // repeat if any of it was sent these details just now.
-      if (!this.lastSent.claim(keys)) {
-        part.skipped.push({
-          name,
-          reason: `already emailed this session's details in the last ${REPEAT_SEND_MINUTES} minutes`
-        });
-        return part;
-      }
-
-      try {
+      name: (group) => joinNames(group.map(fullName)),
+      repeated: "already emailed this session's details",
+      send: async (group) => {
         const values = sessionDetailsEmailValues(group[0], site);
         const { subject, text } = fillProfileEmail(
           approved,
@@ -203,27 +193,20 @@ export class SessionDetailsEmailService {
           },
           true
         );
-        part.sent.push(name);
-        // Recorded once it has gone (#3167): together, once for each speaker on it.
-        await this.sendLog?.record(group, SESSION_DETAILS_EMAIL_KIND, session.guid, from.from);
-      } catch (err) {
-        // Not sent, so not a repeat: the admin may try again at once.
-        this.lastSent.release(keys);
+      },
+      // Recorded once it has gone (#3167): together, once for each speaker on it.
+      sent: (group) => this.sendLog?.record(group, SESSION_DETAILS_EMAIL_KIND, session.guid, from.from),
+      failed: (group, err) =>
         Logger.error(
           `Could not email session ${session.guid}'s details to speaker(s) ${group.map((s) => s.guid).join(', ')}: ${
             err.message
           }`,
           'SessionDetailsEmailService'
-        );
-        part.skipped.push({ name, reason: 'the email could not be sent' });
-      }
-
-      return part;
+        )
     });
 
-    result.sent.push(...parts.flatMap((p) => p.sent));
-    result.skipped.push(...parts.flatMap((p) => p.skipped));
-    this.lastSent.forgetOld();
+    result.sent.push(...each.sent);
+    result.skipped.push(...each.skipped);
 
     return result;
   }

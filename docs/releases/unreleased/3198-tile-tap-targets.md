@@ -1,5 +1,6 @@
 ---
 issue: 3198
+app: gisday
 title: "GIS Day: a tap anywhere on a phone menu tile follows it, not only on its title"
 testOnDev: |
   | GIS Day: the phone menu's tiles are tappable as whole boxes ([#3198](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3198)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release, on [gisday.tamu.edu](https://gisday.tamu.edu) on a phone, open the menu (the three lines at the top) and tap a tile's icon, or the white space around its words, on Sessions, Presenters, Competitions and Login | Each tap goes where the tile says, as a tap on its words does, and the menu closes; Login signs in. Before, only a tap on the words did anything |

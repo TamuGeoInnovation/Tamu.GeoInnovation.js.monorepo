@@ -59,10 +59,16 @@ describe('peopleCsv()', () => {
 });
 
 describe('PERSON_TYPE_COLUMNS', () => {
-  it('heads a column per type, in order, with a soft hyphen in Undergraduate only', () => {
+  it('heads a column per type, in order, with a soft hyphen in Undergraduate and classification only (#3219)', () => {
     expect(PERSON_TYPE_COLUMNS.map((c) => c.key)).toEqual(['undergraduate', 'graduate', 'student', 'academia', 'industry', 'not-given']);
-    expect(PERSON_TYPE_COLUMNS[0].label).toBe('Under\u00adgraduate');
-    expect(PERSON_TYPE_COLUMNS.slice(1).every((c) => !c.label.includes('\u00ad'))).toBe(true);
+    expect(PERSON_TYPE_COLUMNS.map((c) => c.label)).toEqual([
+      'Under\u00adgraduate',
+      'Graduate',
+      'Student, classi\u00adfication not given',
+      'Faculty & academia',
+      'Industry',
+      'Not given'
+    ]);
   });
 });
 

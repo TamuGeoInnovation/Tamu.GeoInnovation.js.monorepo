@@ -97,6 +97,67 @@ test.describe('basemap gallery', () => {
   });
 
   /**
+   * Every environment opens on the November 2026 campus basemap, and leaving it brings the map back whole
+   * (#3225, #3299).
+   *
+   * A basemap change once blanked the whole map on production, and nothing noticed for a week because no test
+   * switched a campus basemap away and back (#2477, #2536). This is that test. It was written when the November
+   * cache was a development-only gallery entry; now that it is what every map opens on, on dev and on production,
+   * it checks the thing that matters instead: the map opens drawn from `VTBase4`'s own service, and switching away
+   * and back returns exactly the layers it opened with.
+   *
+   * It runs on every environment, which the earlier development-only version could not, so production is covered by
+   * the check whose absence let #2536 run for a week.
+   */
+  test('the map opens on the November 2026 campus basemap, and leaving it brings back the map', async ({ page }) => {
+    test.setTimeout(240_000);
+    await blockAnalytics(page);
+
+    const asked: string[] = [];
+
+    page.on('request', (request) => {
+      if (request.url().includes('/Hosted/VTBase4/')) asked.push(request.url());
+    });
+
+    await page.goto(MAP);
+    await expect
+      .poll(() => basemapLayers(page), { message: `${MAP} never finished loading`, timeout: 90_000, intervals: [1_000] })
+      .not.toBeNull();
+
+    const marked = page.locator('.basemap.active .basemap-title');
+    const openedOn = ((await marked.textContent()) ?? '').trim();
+    const openedWith = await basemapLayers(page);
+
+    // The campus basemap kept its plain name when the cache behind it changed, so the title says nothing about
+    // which cache is drawing. The service asked for tiles is what does.
+    expect(openedOn, `${MAP} does not open on the campus basemap`).toBe('Aggieland');
+    expect(
+      asked.length,
+      `${MAP} opened without asking Hosted/VTBase4 for anything, so it is drawing an older campus basemap`
+    ).toBeGreaterThan(0);
+
+    // Nothing may reach for the cache it replaced (#3299).
+    const old = asked.filter((url) => url.includes('/Hosted/VTBase3/'));
+
+    expect(old, `${MAP} still requests the October 2026 cache`).toEqual([]);
+
+    // Away and back. `CHOICES[0]` is one of ArcGIS's own basemaps, offered on every environment.
+    const away = CHOICES[0];
+
+    await page.locator('.basemap', { has: page.locator('.basemap-title', { hasText: away }) }).first().click();
+    await expect(marked, `choosing ${away} did not mark it as the one showing`).toHaveText(away, { timeout: 60_000 });
+    await expect
+      .poll(async () => (await basemapLayers(page)) ?? '', { message: `${away} did not replace ${openedWith}`, timeout: 60_000 })
+      .not.toBe(openedWith ?? '');
+
+    await page.locator('.basemap', { has: page.locator('.basemap-title', { hasText: openedOn }) }).first().click();
+    await expect(marked, `coming back to ${openedOn} did not mark it`).toHaveText(openedOn, { timeout: 60_000 });
+    await expect
+      .poll(() => basemapLayers(page), { message: `leaving ${away} did not bring back ${openedWith}`, timeout: 60_000 })
+      .toBe(openedWith);
+  });
+
+  /**
    * Aerial Imagery asks Nearmap for its latest imagery as one short GET, and is answered with an image
    * (#1997).
    *
