@@ -1,5 +1,24 @@
 # Home machine: current tasks
 
+## Batch g101 (gisday: #3354, then #3340; 24 November 2026, about 6:45 AM Central, from `work (gisday)`) (Low) - **now**
+
+Your g100 branches: #3379 is PR 3380; #3329 waits for the laptop's images (its g19), then the director opens it.
+
+1. **[#3354](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3354), the public event routes return hidden sessions** (found in #3345). Rule 4 first. Branch
+   `fix/3354-public-event-hidden-sessions` from the latest `development`. Reuse #3345's filter (PR from
+   `fix/3345-presenter-hidden-sessions`; if it has not merged, take its helper by building on it and say "stacked on PR <n>"),
+   so the public routes and the presenter route hide sessions one way. Admin routes keep seeing everything: a test shows that too.
+   Red first; check `gisday-platform-data-api,gisday-nest`; no visible change unless a public page drew a hidden session, in which
+   case say so and the laptop takes images.
+2. **[#3340](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3340), one AdminEntityForm** for the eleven admin add/edit forms' save, delete and toasts. Branch
+   `refactor/3340-admin-entity-form` from the latest `development` (or on #3327's branch if it has not merged and you need its
+   `formToFormData`; say so). Pin first, as for #3330 and #3328: each form's toast text and ids, captured on today's code, then the
+   refactor. Where the forms disagreed, keep the majority's wording and list the changed ones. Visible only if a toast's text
+   changes: if so, say which, and the laptop takes images. Check `gisday-platform-ngx-common,gisday-platform-ngx-core,gisday-angular`.
+   If it grows well past three hours, push what is proven and stop.
+
+Overnight rules: no package.json or lock changes. Push to the fork; one report `home/reports/2026-11-24-g101.md` with the PR bodies.
+
 ## Batch g100 (gisday: #3379, then #3329; 24 November 2026, about 6:00 AM Central, from `work (gisday)`) (Low) - **now**
 
 **Decided:** your g99 question 1, **A**. Filed as [#3379](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3379) (Low). Your g99 branch is PR 3378.
