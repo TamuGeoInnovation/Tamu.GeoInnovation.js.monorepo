@@ -1,5 +1,6 @@
 ---
 issue: 3019
+app: gisday
 title: "GIS Day: the Presentation and Poster competition pages take their day and deadline from the season"
 testOnDev: |
   | GIS Day: competition pages' dates ([#3019](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3019)) | Not on dev: GIS Day has no dev site. After release, open [Presentation Competition](https://txgisday.org/competitions/presentation) and [Poster Competition](https://txgisday.org/competitions/posters) | The day under each heading is the competition session's own day (Tuesday, November 17, 2026), and **Due** gives the season's submission deadline (Fri, Nov 13, 2026, 5:00 PM Central). In Admin, Seasons, change the poster deadline, and the Posters page's **Due** follows |
