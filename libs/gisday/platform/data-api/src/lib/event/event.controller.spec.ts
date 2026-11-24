@@ -83,13 +83,17 @@ describe('EventController, hidden sessions (#3354)', () => {
   const routes = EventController.prototype as unknown as Record<string, object>;
 
   // Without the guard there is no signed-in account to read, so an admin would be treated as anyone.
-  it.each(['getEvents', 'getEventsForActiveSeason', 'getEventsForSeason', 'getEntitiesByDay', 'getDetails', 'getEntityWithRelations'])(
-    '%s reads the account, if any, from the sign-in',
-    (method) => {
-      const guards = Reflect.getMetadata(GUARDS_METADATA, routes[method]) ?? [];
+  it.each([
+    'getEvents',
+    'getEventsForActiveSeason',
+    'getEventsForSeason',
+    'getEntitiesByDay',
+    'getDetails',
+    'getEntityWithRelations'
+  ])('%s reads the account, if any, from the sign-in', (method) => {
+    const guards = Reflect.getMetadata(GUARDS_METADATA, routes[method]) ?? [];
 
-      expect(guards).toContain(JwtGuard);
-      expect(Reflect.getMetadata('AllowAny', routes[method])).toBe('true');
-    }
-  );
+    expect(guards).toContain(JwtGuard);
+    expect(Reflect.getMetadata('AllowAny', routes[method])).toBe('true');
+  });
 });

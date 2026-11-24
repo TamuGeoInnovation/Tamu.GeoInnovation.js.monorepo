@@ -71,9 +71,7 @@ export class EventController {
   public async getEntitiesByDay(@Req() req) {
     const days: Observable<Array<Array<Event>>> = await this.provider.getEntitiesByDay();
 
-    return days.pipe(
-      map((byDay) => byDay.map((day) => sessionsShownTo(day, req.user)).filter((day) => day.length > 0))
-    );
+    return days.pipe(map((byDay) => byDay.map((day) => sessionsShownTo(day, req.user)).filter((day) => day.length > 0)));
   }
 
   @UseGuards(JwtGuard)
