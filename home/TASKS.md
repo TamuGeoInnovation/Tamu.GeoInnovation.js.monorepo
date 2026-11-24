@@ -1,5 +1,61 @@
 # Home machine: current tasks
 
+## Batch a5 (aggiemap: a three-month-old TEMP pointing development at production, #2617; 23 November 2026, about 10:25 PM Central, from `work (aggiemap)`) (Low) - **after a4**
+
+<https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2617>
+
+Read the issue, and **check it is still true before you change anything** (DIRECTOR.md, overnight rule 4): find the TEMP,
+read what it does now, and say in the report whether the condition it was waiting for has been met. If the services it
+points at are published on development now, the TEMP goes; if they are not, the right change may be a comment with the
+issue number and a date rather than a deletion. Either way the report says which, and why.
+
+Branch `docs/2617-transportation-temp` or `fix/2617-transportation-temp` as the finding dictates. If it turns out to be a
+one-line comment, say so and do not inflate it. **Roughly 30 minutes, and it may be ten.**
+
+## Batch a4 (aggiemap: route changes send no page view, #3338; 23 November 2026, about 10:25 PM Central, from `work (aggiemap)`) (Low) - **do this first**
+
+<https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3338>
+
+The GIS Day director filed this for AggieMap tonight, split out of #2275. AggieMap loads gtag and uses angulartics2's gtag
+provider, so its **events** arrive — the smoke suite proves that — but **no page view is sent on a route change**, because
+the provider only reports page views to `settings.gst.trackingIds` and AggieMap configures none. So route changes reach GA4
+only through the snippet's own `config` call and, if it happens to be switched on in the GA4 property, enhanced-measurement
+history tracking.
+
+**The issue leaves a decision open, and here is the one to build**, so you are not waiting on anyone (DIRECTOR.md: a batch
+that needs a decision is written on the director's recommendation and the listener builds it):
+
+> **Configure the provider with a tracking id per environment, and rely on nothing in the GA4 property's own settings.**
+
+Why that and not GA4's history tracking: a tracking id in this repository is configuration we can read, test and change
+with a pull request, and `analytics.spec.ts` already asserts the snippet loads with a real measurement id per environment,
+so the same suite can assert the page view. Enhanced measurement is a setting in a Google property that nobody here can see
+from the code, cannot test, and which silently changes behaviour when someone toggles it. **Not both** — that is how every
+view gets counted twice, which is worse than counting none, because a doubled number looks plausible.
+
+**Reuse GIS Day's setup rather than inventing one.** It is on `fix/2275-gisday-analytics-gtag` / PR 3339: angulartics2 14's
+`Angulartics2GoogleGlobalSiteTag` with virtual page tracking off. Read it first and follow it. If AggieMap genuinely needs
+something different, say what and why in the report rather than diverging quietly — two analytics setups in one repository
+is exactly the shape the reuse rule exists to stop.
+
+**The test is the point of this batch, not the configuration.** Add to `test/smoke/aggiemap/analytics.spec.ts`:
+
+1. A route change sends **exactly one** page view, with the route's address. One, not zero and not two: a test that only
+   asserts "at least one" would pass in the double-counting state this change is most likely to create.
+2. It holds on every environment in `environments.json`, with its own measurement id.
+
+Prove it red first against unmodified code — the "exactly one" assertion should fail at zero today — and say in the report
+what the failure said. Then green.
+
+**Do not touch `package.json` or `package-lock.json`.** angulartics2 14 is already installed; if you find it is not, stop
+and report it, because the lock belongs to the security chat tonight (overnight rule 1).
+
+**UES Operations is out of scope.** The issue notes it still reports to a retired Universal Analytics property; that is its
+own question and not this batch.
+
+Branch `fix/3338-aggiemap-page-views`, `.pr-body.md` from the template as the last commit. Nothing a visitor sees, so name
+the `no-visible-change` label in it. **Roughly 60 minutes.**
+
 ## Batch g93 (gisday: #3327, formToFormData drops every false value; 23 November 2026, about 11:55 PM Central, from `work (gisday)`) (Medium) - **after g92**
 
 [#3327](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3327), filed tonight from the #3062 scan. **Rule 4 first:** confirm on today's `development` that
