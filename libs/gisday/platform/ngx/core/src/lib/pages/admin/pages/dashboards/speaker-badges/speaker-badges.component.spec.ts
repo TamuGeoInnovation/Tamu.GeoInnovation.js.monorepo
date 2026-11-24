@@ -9,7 +9,17 @@ import { SeasonService, SpeakerService } from '@tamu-gisc/gisday/platform/ngx/da
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
-import { badgesCsv, badgesOf, badgeText, matchesBadge, organizationOf, shownBy, sortBadges, SpeakerBadgesComponent } from './speaker-badges.component';
+import {
+  badgesCsv,
+  badgesOf,
+  badgeText,
+  matchesBadge,
+  organizationOf,
+  shownBy,
+  sortBadges,
+  SpeakerBadge,
+  SpeakerBadgesComponent
+} from './speaker-badges.component';
 
 const tamu = { name: 'Texas A&M University', acronym: 'TAMU' };
 const speakers = [
@@ -278,5 +288,43 @@ describe('SpeakerBadgesComponent', () => {
     expect(input.value).toBe('');
     expect(lastNames(root)).toEqual(['Kim', 'lee', 'Young']);
     expect(clearButton()).toBeNull();
+  });
+});
+
+/**
+ * A name typed as `=`, `+`, `-` or `@` became a formula when the export was opened in Excel (#3332). Made-up badges only.
+ */
+describe('badgesCsv() and formulas', () => {
+  const badge = (over: Partial<SpeakerBadge>): SpeakerBadge => ({
+    guid: 'made-up',
+    firstName: 'Ana',
+    lastName: 'Ng',
+    organization: 'Made-up Mapping',
+    email: 'ana@example.com',
+    formerStudentYear: '',
+    printedAt: null,
+    changedSincePrinted: false,
+    ...over
+  });
+
+  it('writes the file as before, byte for byte', () => {
+    expect(
+      badgesCsv([
+        badge({ lastName: 'Ng, Jr.', formerStudentYear: "'11" }),
+        badge({ firstName: 'Bo', lastName: 'Lee', organization: 'Say "hi"', email: '' })
+      ])
+    ).toBe(
+      'First name,Last name,Company / organization,Email,Former student year\r\n' +
+        "Ana,\"Ng, Jr.\",Made-up Mapping,ana@example.com,'11\r\n" +
+        'Bo,Lee,"Say ""hi""",,'
+    );
+  });
+
+  it('writes a cell that starts as a formula as text', () => {
+    const csv = badgesCsv([
+      badge({ firstName: '=HYPERLINK("https://example.com","x")', lastName: '+1', organization: '-2', email: '@SUM(A1)' })
+    ]);
+
+    expect(csv.split('\r\n')[1]).toBe(`"'=HYPERLINK(""https://example.com"",""x"")","'+1","'-2","'@SUM(A1)",`);
   });
 });

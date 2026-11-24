@@ -1,5 +1,7 @@
 //compress:true;
 //RED-----------------------------------------
+@import 'libs/sass/variables';
+
 .bg-md-red-50 {
   background: #ffebee;
 }
@@ -1548,11 +1550,11 @@
 
 //Aggie colors-----------------------------------------
 .clr-aggie-maroon {
-  color: #500000;
+  color: $aggie-maroon;
 }
 
 .bg-aggie-maroon {
-  background: #500000;
+  background: $aggie-maroon;
 }
 
 .clr-aggie-support-black {

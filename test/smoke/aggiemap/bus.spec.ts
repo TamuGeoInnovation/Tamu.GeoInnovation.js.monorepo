@@ -7,6 +7,7 @@ import { blockAnalytics } from './analytics';
 import { readGraphicTypes } from './framing';
 import { BUS_NOTICE, BUS_PANEL, BUS_ROUTE, MANIFEST_PATH, MapManifest } from './global-setup';
 import { smokeBaseUrl } from './gis-hosts';
+import { PROBE_GLOBAL, waitForMapReady } from './map-probe';
 
 /**
  * Every bus route draws its stops, and choosing a route shows them (#1174).
@@ -31,7 +32,6 @@ import { smokeBaseUrl } from './gis-hosts';
  */
 
 const BASE_URL = smokeBaseUrl();
-const PROBE_GLOBAL = '__tamuGiscMapProbe';
 const BUS_LAYER = 'bus-route-layer';
 
 interface EnvironmentSettings {
@@ -73,16 +73,7 @@ async function openBusPanel(page: Page): Promise<Locator> {
   await blockAnalytics(page);
   await page.goto(BUS_PANEL);
 
-  await expect
-    .poll(
-      async () =>
-        await page.evaluate(
-          (name) => (window as unknown as Record<string, { ready?: boolean }>)[name]?.ready === true,
-          PROBE_GLOBAL
-        ),
-      { message: 'the main map never finished loading', timeout: 90_000, intervals: [1_000] }
-    )
-    .toBe(true);
+  await waitForMapReady(page, 'the main map never finished loading');
 
   // A build from before the probe reported graphics cannot show what the bus layer has drawn, and
   // would read as every route drawing nothing. Skipped rather than failed, as maps.spec.ts does for a

@@ -36,11 +36,37 @@ describe('PostersComponent', () => {
     return (fixture.nativeElement as HTMLElement).textContent;
   }
 
-  it("gives the season's deadline, Friday, November 13, and Saturday, November 14 for finalists", () => {
-    const rendered = text();
+  it("gives the season's deadline, Friday, November 13", () => {
+    expect(text()).toContain('Due: Fri, Nov 13, 2026, 5:00 PM Central');
+  });
 
-    expect(rendered).toContain('Due: Fri, Nov 13, 2026, 5:00 PM Central');
-    expect(rendered).toContain('notified on Saturday November 14th, 2026');
+  // #3019, decided 7A: when finalists hear is the season's, set in Admin; without it the line is left out.
+  it('says when finalists hear, from the season', () => {
+    const notified = {
+      ...SEASON_2026,
+      competitions: [{ competitionType: 'poster', runs: null, finalistsNotifiedAt: '2027-11-13T18:00:00.000Z' }]
+    };
+
+    expect(text(notified)).toContain('Finalists will be notified on Sat, Nov 13, 2027, 12:00 PM Central');
+  });
+
+  it('leaves the finalists line out when the season has not set when they hear', () => {
+    expect(text()).not.toContain('Finalists will be notified');
+  });
+
+  // #3019, decided 6A: the session the season chose in Admin, over the one its name points to.
+  it('names the session the season chose, and takes its day from it', () => {
+    const chosen = {
+      ...COMPETITION_SESSIONS.find((s) => s.guid === 'p'),
+      guid: 'chosen',
+      name: 'Poster gallery walk',
+      day: { date: '2026-11-18T06:00:00.000Z' }
+    };
+    const season = { ...SEASON_2026, competitions: [{ competitionType: 'poster', runs: null, sessionGuid: 'chosen' }] };
+    const rendered = text(season, [...COMPETITION_SESSIONS, chosen]);
+
+    expect(rendered).toContain('Poster gallery walk');
+    expect(rendered).toContain('Wednesday, November 18, 2026');
   });
 
   // #3019: the page's day and deadline were typed in for 2026, and would have been wrong the next year.

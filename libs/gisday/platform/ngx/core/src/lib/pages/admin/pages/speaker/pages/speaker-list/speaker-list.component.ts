@@ -10,6 +10,7 @@ import { switchMap, take } from 'rxjs';
 
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
 import { AdminSearchComponent } from '../../../base-admin-list/admin-search.component';
+import { DashboardScrollComponent } from '../../../dashboards/shared/dashboard-scroll/dashboard-scroll.component';
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe, DatePipe } from '@angular/common';
@@ -19,7 +20,16 @@ import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
   selector: 'tamu-gisc-speaker-list',
   templateUrl: './speaker-list.component.html',
   styleUrls: ['./speaker-list.component.scss'],
-  imports: [SelectComponent, RouterLink, CheckboxComponent, AsyncPipe, DatePipe, ExistsPipe, AdminSearchComponent]
+  imports: [
+    SelectComponent,
+    RouterLink,
+    CheckboxComponent,
+    AsyncPipe,
+    DatePipe,
+    ExistsPipe,
+    AdminSearchComponent,
+    DashboardScrollComponent
+  ]
 })
 export class SpeakerListComponent extends BaseAdminListComponent<Speaker> {
   /** The search (#2914) looks in the columns this page shows. */

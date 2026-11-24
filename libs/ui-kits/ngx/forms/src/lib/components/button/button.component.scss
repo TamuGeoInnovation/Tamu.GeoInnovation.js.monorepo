@@ -1,3 +1,4 @@
+@import 'libs/sass/variables';
 @import 'libs/sass/mixins';
 
 // The button's colour is the page's when the page sets one (#2946). A GIS Day site sets `--gisday-action` and
@@ -56,7 +57,7 @@ $accentColor: #424242;
 
     &:hover {
       background: #eeeeee;
-      color: #500000;
+      color: $aggie-maroon;
     }
   }
 

@@ -7,7 +7,7 @@ import { Job } from 'bull';
 import * as path from 'path';
 import * as os from 'os';
 import * as fs from 'fs-extra';
-import * as Papa from 'papaparse';
+import { toCsv } from '@tamu-gisc/common/utils/ui';
 import JSZip from 'jszip';
 import { createWriteStream } from 'fs';
 import { pipeline } from 'stream/promises';
@@ -140,7 +140,8 @@ export class ExportProcessor {
     }
 
     // 3. Generate CSV
-    const csvString = Papa.unparse(csvRows, { header: true });
+    // The header is the first row's keys, as Papa's own header was.
+    const csvString = toCsv(Object.keys(csvRows[0] ?? {}), csvRows);
     const csvPath = path.join(exportDir, 'submissions.csv');
     await fs.writeFile(csvPath, csvString, 'utf8');
 

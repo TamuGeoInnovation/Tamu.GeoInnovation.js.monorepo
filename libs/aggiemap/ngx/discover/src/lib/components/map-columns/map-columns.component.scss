@@ -1,3 +1,4 @@
+@import 'libs/sass/variables';
 @import '../discover-shared';
 
 .parking-columns {
@@ -31,7 +32,7 @@
 }
 
 .parking-column-heading {
-  color: #500000 !important;
+  color: $aggie-maroon !important;
   font-family: 'Open Sans', sans-serif !important;
   font-style: italic !important;
   font-weight: 800 !important;

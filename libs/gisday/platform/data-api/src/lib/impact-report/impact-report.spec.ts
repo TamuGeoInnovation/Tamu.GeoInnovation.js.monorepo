@@ -178,4 +178,13 @@ describe('the impact report (#3238)', () => {
 
     expect(lists).toContain('"Maps, apps and ""data"""');
   });
+
+  it('writes a name that starts as a formula as text (#3332)', () => {
+    const r = rows();
+    r.checkIns = [{ ...r.checkIns[0], sessionTitle: '=1+2' }];
+    const { lists } = impactCsv(impactReport({ ...r, year: 2025 }), impactReport(r));
+
+    expect(lists).toContain(`"'=1+2"`);
+    expect(lists).not.toContain(',=1+2,');
+  });
 });
