@@ -364,11 +364,12 @@ describe('EventProvider', () => {
     const seasonWithDays = () =>
       ({ guid: 'season-2', days: [{ guid: 'd-1' }, { guid: 'd-2' }] }) as unknown as Season;
 
-    it('throws NotFound when the target season does not exist', async () => {
+    // 422, as every other copy refuses a season that does not exist; it was 404 (#3379).
+    it('refuses a target season that does not exist', async () => {
       jest.spyOn(seasonRepo, 'createQueryBuilder').mockReturnValue(queryBuilder(null, 'getOne') as never);
 
       await expect(provider.copyEventsIntoSeason('missing', ['e-1'])).rejects.toThrow(
-        NotFoundException
+        UnprocessableEntityException
       );
     });
 
@@ -396,8 +397,9 @@ describe('EventProvider', () => {
       jest.spyOn(eventRepo, 'find').mockResolvedValue([]);
       const create = jest.spyOn(eventRepo, 'create');
 
+      // 422, as every other copy refuses when nothing is found; it was 404 (#3379).
       await expect(provider.copyEventsIntoSeason('season-2', ['missing'])).rejects.toThrow(
-        NotFoundException
+        UnprocessableEntityException
       );
       expect(create).not.toHaveBeenCalled();
     });

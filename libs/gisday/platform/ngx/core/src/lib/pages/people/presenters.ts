@@ -4,17 +4,19 @@ import { map, Observable, of, shareReplay, switchMap } from 'rxjs';
 import { SeasonService, SpeakerService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { Speaker } from '@tamu-gisc/gisday/platform/data-api';
 import { matchesText } from '@tamu-gisc/gisday/platform/ngx/common';
+import { naturalOrder } from '@tamu-gisc/gisday/common';
 
 /**
  * What the Presenters list and a presenter's own page share (#2919): which presenters there are, their order, and how
  * a search finds them. Moved from the list page unchanged, so both search the same way.
  */
 
-const byName = new Intl.Collator('en', { sensitivity: 'base' });
 
 /** Last name, then first name, without regard to case or accents (#2860). */
 export function compareByLastName(a: Partial<Speaker>, b: Partial<Speaker>): number {
-  return byName.compare(a.lastName ?? '', b.lastName ?? '') || byName.compare(a.firstName ?? '', b.firstName ?? '');
+  return (
+    naturalOrder.compare(a.lastName ?? '', b.lastName ?? '') || naturalOrder.compare(a.firstName ?? '', b.firstName ?? '')
+  );
 }
 
 /**

@@ -1,4 +1,4 @@
-import { NotFoundException } from '@nestjs/common';
+import { UnprocessableEntityException } from '@nestjs/common';
 import { DataSource, DeepPartial, Repository } from 'typeorm';
 
 import { Event, EventBroadcast, EventLocation, Season, Speaker, Sponsor, Tag, UserRsvp } from '../entities/all.entity';
@@ -119,6 +119,7 @@ describe('EventProvider queries, built by typeorm (the rest)', () => {
   });
 
   it('looks up the season, with its days in order, to copy events into', async () => {
-    await expect(provider.copyEventsIntoSeason('s-1', ['e-1'])).rejects.toThrow(NotFoundException);
+    // The query answers no season here, which the copy refuses with 422 (#3379).
+    await expect(provider.copyEventsIntoSeason('s-1', ['e-1'])).rejects.toThrow(UnprocessableEntityException);
   });
 });

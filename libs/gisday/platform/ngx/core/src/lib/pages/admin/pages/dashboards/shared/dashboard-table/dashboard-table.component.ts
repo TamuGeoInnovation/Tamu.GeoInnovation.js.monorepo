@@ -2,6 +2,7 @@ import { Component, Directive, TemplateRef, computed, contentChild, input, outpu
 import { DatePipe, NgTemplateOutlet } from '@angular/common';
 import { DatatableComponent, NgxDatatableModule, SortPropDir } from '@swimlane/ngx-datatable';
 
+import { naturalOrder } from '@tamu-gisc/gisday/common';
 import { DashboardScrollComponent } from '@tamu-gisc/gisday/platform/ngx/common';
 
 /** One row of a dashboard's table: a thing counted (an event, a university, a feature type) and its counts. */
@@ -116,7 +117,7 @@ export function adjustSorts(next: Array<SortPropDir>, previous: Array<SortPropDi
 
 /** Names compared as a reader would, ignoring case; a missing time sorts last. */
 export function compareNames(a: string | null, b: string | null): number {
-  return (a ?? '').localeCompare(b ?? '', undefined, { sensitivity: 'base', numeric: true });
+  return naturalOrder.compare(a ?? '', b ?? '');
 }
 
 export function compareTimes(a: string | null, b: string | null): number {

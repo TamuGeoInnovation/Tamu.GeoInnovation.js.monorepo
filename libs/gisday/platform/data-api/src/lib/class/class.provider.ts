@@ -5,8 +5,9 @@ import { catchError, concatMap, from, map, of, toArray } from 'rxjs';
 
 import { Auth0UserProfile, ManagementService } from '@tamu-gisc/common/nest/auth';
 
+import { naturalOrder } from '@tamu-gisc/gisday/common';
+
 import { Class, CheckIn, Season } from '../entities/all.entity';
-import { naturalOrder } from '../_base/natural-order';
 import { SeasonService } from '../season/season.service';
 import { SeasonScopedProvider } from '../_base/season-scoped-provider';
 

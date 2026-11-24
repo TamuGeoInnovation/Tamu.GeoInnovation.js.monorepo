@@ -12,6 +12,7 @@ import { RadioGroupComponent, SelectComponent, TextboxComponent } from '@tamu-gi
 import { downloadFile, toCsv } from '@tamu-gisc/common/utils/ui';
 
 import { BaseAdminListComponent } from '../../base-admin-list/base-admin-list.component';
+import { naturalOrder } from '@tamu-gisc/gisday/common';
 
 /** A speaker as a badge prints them (#2899), and whether it has been (#2908). */
 export interface SpeakerBadge {
@@ -94,7 +95,7 @@ export function shownBy(badge: SpeakerBadge, show: BadgeShow): boolean {
 
 /** The badges in the table's order: by a column, or by last name then first when none is chosen. */
 export function sortBadges(badges: Array<SpeakerBadge>, sort: BadgeSort): Array<SpeakerBadge> {
-  const compare = (a: unknown, b: unknown) => String(a ?? '').localeCompare(String(b ?? ''), undefined, { sensitivity: 'base', numeric: true });
+  const compare = (a: unknown, b: unknown) => naturalOrder.compare(String(a ?? ''), String(b ?? ''));
 
   return [...badges].sort((a, b) =>
     sort

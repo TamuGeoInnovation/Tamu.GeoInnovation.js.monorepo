@@ -6,14 +6,14 @@ import {
   UnprocessableEntityException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, In, Repository } from 'typeorm';
+import { DeleteResult, In, Repository, DeepPartial } from 'typeorm';
 
-import { Organization, Event, Asset, Speaker } from '../entities/all.entity';
+import { Organization, Event, Asset, Speaker, Season } from '../entities/all.entity';
 import { AssetsService } from '../assets/assets.service';
 import { refuseUnsafeImage } from '../assets/image-upload';
 import { SeasonService } from '../season/season.service';
 import { rethrowHttp } from '../_base/rethrow-http';
-import { SeasonScopedProvider } from '../_base/season-scoped-provider';
+import { SeasonScopedProvider, withoutIdentity } from '../_base/season-scoped-provider';
 
 @Injectable()
 export class OrganizationService extends SeasonScopedProvider<Organization> {
@@ -25,6 +25,19 @@ export class OrganizationService extends SeasonScopedProvider<Organization> {
 
   protected forSeason(seasonGuid: string) {
     return this.getOrganizationsForSeason(seasonGuid);
+  }
+
+  protected override readonly copyRelations = { logos: true };
+
+  protected override copyOf(record: Organization, season: Season) {
+    // A logo is an asset held by one organization, so the copy has its own.
+    const copy = super.copyOf(record, season) as DeepPartial<Organization>;
+
+    if (record.logos) {
+      copy.logos = record.logos.map(withoutIdentity);
+    }
+
+    return copy;
   }
 
   private _resourcePath = `images/organizations`;
@@ -116,53 +129,7 @@ export class OrganizationService extends SeasonScopedProvider<Organization> {
   }
 
   public async copyOrganizationsIntoSeason(seasonGuid: string, entityGuids: Array<string>) {
-    const season = await this.ss.findOne(seasonGuid);
-
-    if (!season) {
-      throw new UnprocessableEntityException('Could not find season.');
-    }
-
-    const entities = await this.find({
-      where: {
-        guid: In(entityGuids)
-      },
-      relations: { logos: true }
-    });
-
-    if (!entities || entities.length === 0) {
-      throw new UnprocessableEntityException('Could not find organizations.');
-    }
-
-    const newEntities = entities.map((entity) => {
-      delete entity.guid;
-      delete entity.created;
-      delete entity.updated;
-
-      // Delete references to logos to prevent the logo from being transferred from one org to another
-      // since the asset entity is a one-to-one relationship
-      if (entity.logos) {
-        entity.logos = entity.logos.map((logo) => {
-          delete logo.guid;
-          delete logo.created;
-          delete logo.updated;
-
-          return logo;
-        });
-      }
-
-      const newEntity = this.orgRepo.create({
-        ...entity,
-        season
-      });
-
-      return newEntity.save();
-    });
-
-    try {
-      return Promise.all(newEntities);
-    } catch (err) {
-      rethrowHttp(err, new InternalServerErrorException('Could not copy organizations into season.'));
-    }
+    return this.copyIntoSeason(seasonGuid, entityGuids);
   }
 
   public async updateOrganization(guid: string, incoming: Partial<Organization>, file?: Express.Multer.File) {
