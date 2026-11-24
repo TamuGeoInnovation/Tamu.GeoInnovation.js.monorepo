@@ -33,7 +33,8 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batches 11 and 12 (gisday: #2893 admin images, #3244 phone images)**, together, on the signed-in GIS Day stack, started 9:37 PM Central. Next update by 10:07 PM Central.
+- **Batches 11 and 12 (gisday: #2893 admin images, #3244 phone images)**, together, on the signed-in GIS Day stack, started 9:37 PM Central. Expected to take about an hour. Next update by 10:20 PM Central.
+  Progress (9:40 PM): one scratch database (`gisday-b11-scratch`): the scrubbed copy's 2026 RSVPs removed, made-up RSVPs and check-ins on three events (a walk-in, an RSVP-elsewhere walk-in, one outside its session's time, one event with none), and batch 4's made-up VGI data. Capturing in turn: #2893 from its merge-base `c0da751d3`, then `2ce9d7419`; then #3244 at `bdf59f7f9`.
 
 ## Finished
 - **Batch 9 (aggiemap: #3150, #3149)** (report `laptop/reports/2026-11-23-9.md`): two branches ready, `fix/3150-bus-route-phone` (`a3f5220c5`) and `fix/3149-phone-directions` (`fa868e398`). Both proven on a phone first, red first, with images; #3149 check exit 0. **Found and filed #3319**: the stop search's back arrow (the issue's "correct" `./trip`) went to the main map; fixed with #3149's link. **Two questions.**
