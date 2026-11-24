@@ -1,5 +1,19 @@
 # Home machine: current tasks
 
+## Batch g106 (gisday: #3412's Papers page, on PR 3415; 24 November 2026, from `work (gisday)`) (Medium) - **now**
+
+**Decided by the maintainer** on g105's question 1: **(a)**, and PR 3387 has now merged. PR 3415 is open from the fork's
+`fix/3412-awards-sentence`; the work machine added two commits on top of yours (`.pr-body.md` removed, `origin/development` merged in),
+so **fetch the fork's branch and build on its tip**; never force-push.
+
+Move the Papers page's awards lead-in inside `<tamu-gisc-competition-session>`, exactly as you did for Posters and Presentation, and
+any other lead-in 3387 added there (the finalists' or the deadline's, if one introduces a session). **Red first:** the same spec as
+the other pages, on Papers, with a season whose awards session is not found. Then `scripts/check-in-volume.sh fix/3412-awards-sentence
+gisday-platform-ngx-core,gisday-angular` with `CHECK_PARALLEL=1`, its `Exit` line, push (a fast-forward). Images: Papers before and
+after at 1280 and 390 into the same `docs/screenshots/3412-awards-sentence/`. **No `.pr-body.md` this time:** put the new image rows
+and the red/green lines in your report, and the work machine edits the PR. Report `home/reports/2026-11-24-g106.md`, "branch ready"
+first.
+
 ## Batch g105 (gisday: #3412, the Papers page's empty awards sentence; 24 November 2026, from `work (gisday)`) (Medium) - **now**
 
 [#3412](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3412): read it to the end. With no awards session
