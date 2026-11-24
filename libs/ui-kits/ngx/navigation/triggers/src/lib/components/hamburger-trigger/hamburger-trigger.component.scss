@@ -1,4 +1,5 @@
 @import 'libs/sass/mixins';
+@import 'libs/sass/motion';
 
 :host {
   position: fixed;
@@ -42,4 +43,9 @@
 
 .burger__bottom-bun {
   @include transform-origin(left center);
+}
+
+:host {
+  // The bars turn into an X while active (the up class).
+  @include hamburger-bars(up);
 }
