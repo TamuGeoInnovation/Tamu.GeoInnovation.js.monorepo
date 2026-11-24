@@ -81,7 +81,7 @@
 > email as it arrives if you can show one locally without sending to anyone real. Report each "branch ready" as you go.
 
 
-## Batch 200 (security: #1457, the unused-components table refreshed; 24 November 2026, from `work (security)`) (Low) - **after 199**
+## Batch 202 (security: #1457, the unused-components table refreshed; 24 November 2026, from `work (security)`) (Low) - **after 201**
 
 [#1457](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1457) (with #2122, merged as PR 3356 today, and #1899). Read all three to the end first, including what was decided to keep.
 - On today's `development`: every project (`nx show projects`) with no importer and no deployment, every exported component, service or
@@ -91,9 +91,9 @@
   every affected app), full check, push, "branch ready" with the PR body from the template. Everything else is a row with options and a
   recommendation for the director; don't delete it.
 - Any `package.json` or lock change: only the removed packages may leave the lock.
-Report `work-lab-leila/reports/2026-11-24-200.md`.
+Report `work-lab-leila/reports/2026-11-24-202.md`.
 
-## Batch 199 (security: #1218, the latest-versions table, and Node 24's newest patch; 24 November 2026, from `work (security)`) (Low) - **now**
+## Batch 201 (security: #1218, the latest-versions table, and Node 24's newest patch; 24 November 2026, from `work (security)`) (Low) - **after the gisday batch 199**
 
 [#1218](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1218). Dependabot now takes every non-major once it is 7 days old, so what is left behind should be majors, held
 packages and anything Dependabot cannot see.
@@ -108,7 +108,7 @@ packages and anything Dependabot cannot see.
 - **Node 24's newest patch:** `node:24.22.1` is pinned in CLAUDE.md, CLAUDE_SETUP.md, the workflows (`node-version`), Dockerfiles,
   scripts and `dependabot.yml`'s comments. If a newer 24.x is at least 7 days old, one branch moving every reference together
   (`git grep -n 24.22.1` to find them; list each file in the PR body), full check. If not, say so.
-Report `work-lab-leila/reports/2026-11-24-199.md`.
+Report `work-lab-leila/reports/2026-11-24-201.md`.
 
 ## Batch 199 (gisday: four follow-ups from this morning's PRs, #3397, #3398, #3396, #3399; 24 November 2026, from `work (gisday)`) (Medium) - **now**
 
