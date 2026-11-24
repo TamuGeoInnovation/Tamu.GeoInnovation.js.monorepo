@@ -47,7 +47,7 @@ describe('PresentationComponent', () => {
   });
 
   // #3019: the page's day and deadline were typed in for 2026, and would have been wrong the next year.
-  it("takes its day from the competition sessions and its deadline from the season, whatever the year", () => {
+  it('takes its day from the competition sessions and its deadline from the season, whatever the year', () => {
     const rendered = text({ presentationSubmissionsCloseAt: '2027-11-12T23:00:00.000Z' }, COMPETITION_SESSIONS_2027);
 
     expect(rendered).toContain('Tuesday, November 16, 2027');
