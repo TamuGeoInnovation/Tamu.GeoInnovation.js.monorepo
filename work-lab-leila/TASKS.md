@@ -81,7 +81,7 @@
 > email as it arrives if you can show one locally without sending to anyone real. Report each "branch ready" as you go.
 
 
-## Batch 200 (gisday: #3398, then #3396 once PR 3392 merges; 24 November 2026, from `work (gisday)`) (Low) - **now**
+## Batch 200 (gisday: #3398, then #3396 once PR 3392 merges; 24 November 2026, from `work (gisday)`) (Low) - **HELD: the student is using this machine again (the maintainer, 24 November). Do not start it; if it is under way, stop at a safe point, push nothing half-done, and report what is done.**
 
 **Decided by the maintainer** on batch 199's questions: 1(a), 2(a), 3(a). #3399 is closed as working as designed. #3397 is PR 3410.
 
