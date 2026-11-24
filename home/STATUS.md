@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch g100 (gisday: #3379, then #3329)**, since about 1:50 AM Central, 24 November.
+- Nothing. Idle, listening.
 
 ## Finished
+- **Batch g100 (gisday: #3379, #3329)** (report `home/reports/2026-11-24-g100.md`): both branch ready. `refactor/3379-nested-season-copy` at `35742ea88`, stacked on PR 3378; `refactor/3329-season-picker` at `f20b893ee`, its PR waits for the laptop's images. Red first, both checks exit 0. No questions. Finished 1:52 AM Central.
 - **Batch g99 (gisday: #3324)** (report `home/reports/2026-11-24-g99.md`): branch ready, `refactor/3324-season-scoped-provider` at `3bfc2f2ae`. rethrowHttp for the 62 pasted catch blocks; SeasonScopedProvider for all ten providers; the shared copy for five, with both guards and an awaited save (broadcasts gain both). The five cloning copies are left; one question. Red first, check exit 0. Finished 1:34 AM Central.
 - **Batch g98 (gisday: #3323)** (report `home/reports/2026-11-24-g98.md`): branch ready, `refactor/3323-central-time` at `f4b3224a1`. One Central-time module; every caller on it; chart library unchanged (it already takes the zone). Pins pass before and after; the narrow space before AM/PM is the one, intended, difference.
 - **Batch g97 (gisday: #3328)** (report `home/reports/2026-11-24-g97.md`): branch ready, `chore/3328-type-pages` at `3075dbb1e`. One type form and one set of type pages on the current admin bases; the old base classes gone. Red first (the four Escape tests); check exit 0. Images are the laptop's.
