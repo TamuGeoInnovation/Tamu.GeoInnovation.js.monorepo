@@ -1,5 +1,20 @@
 # Home machine: current tasks
 
+## Batch g97 (gisday: #3328 as one set of type pages and one shared type form; 24 November 2026, about 3:45 AM Central, from `work (gisday)`) (Low) - **now**
+
+**Decided:** your question 1 on g96, **A**. One set of list, add and edit pages for "types", configured per route by service and
+noun, and one shared type form in `platform/ngx/common/.../forms` (one field, `type`, with the current base's dirty-tracking,
+Escape and "Leave without saving?"). Then delete `BaseAdminAdd`, `BaseAdminDetail`, `BaseAdminView` and their four route files.
+
+- Branch `chore/3328-type-pages` from the latest `development`.
+- **Red first:** Escape and "Leave without saving?" on the RSVP type page, failing on today's code.
+- Pin what the pages show today (titles, column headings, the field's label) before moving them, as you did for #3330, so the
+  move is proven to change nothing else.
+- Check: `scripts/check-in-volume.sh chore/3328-type-pages gisday-platform-ngx-core,gisday-platform-ngx-common,gisday-angular`.
+- No sign-in here, so no images: say so, and the director gives the laptop the images afterwards.
+- Overnight rules: no package.json or lock changes. Push to the fork; "branch ready: chore/3328-type-pages" with the PR body
+  (from the template) in `home/reports/2026-11-24-g97.md`. If it grows well past two hours, stop at the report.
+
 ## Batch g96 (gisday: #3313, #3330 and #3328, three small shared pieces from the one-off scan; 24 November 2026, about 2:30 AM Central, from `work (gisday)`) (Low) - **now**
 
 In this order, each its own branch:
