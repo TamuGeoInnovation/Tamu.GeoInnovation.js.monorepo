@@ -586,7 +586,14 @@ describe('SpeakerEditService.sendLinksForSubmissions (#2958)', () => {
     sent = [];
     service = new SpeakerEditService(
       // No link sent to anyone yet, so the repeat guard (#3065) lets each through.
-      { create: (x) => x, save: jest.fn(async (x) => x), count: jest.fn(async () => 0) } as never,
+      {
+        create: (x) => x,
+        save: jest.fn(async (x) => x),
+        count: jest.fn(async () => 0),
+        // No other profile link of the last few minutes, so each send's own link stands (#3326).
+        find: jest.fn(async () => []),
+        delete: jest.fn()
+      } as never,
       {} as never,
       {
         find: jest.fn(async ({ where }) =>
