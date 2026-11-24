@@ -8,8 +8,7 @@ import {
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
-import { EventPopups } from '../modules/popups/popups';
-import { RED_HATCH_LEGEND } from './common.definitions';
+import { markdownPopup, RED_HATCH_LEGEND } from './common.definitions';
 
 // Flat display map (no builder/sessions). The published service is four feature layers, drawn
 // points-on-top: Points of Interest (0), Routes (1), Road Closures (2), Parking (3).
@@ -21,14 +20,6 @@ export enum GAMES_OF_TEXAS_LAYERS {
 }
 
 const gamesOfTexasUrl = Connections.gamesOfTexasUrl;
-
-const popup = (name: string, description: string) => ({
-  popupComponent: EventPopups.MarkdownPopupComponent,
-  popupData: {
-    name: { field: name },
-    description: { field: description }
-  }
-});
 
 // Routes are directional. Render each type as an arrow-tipped line so the direction of travel reads
 // on the map. Colors match the publishedgreen = preferred route.
@@ -46,7 +37,7 @@ export const GamesOfTexasColdLayerSources: LayerSource[] = [
     url: `${gamesOfTexasUrl}/3`,
     visible: true,
     listMode: 'show',
-    ...popup('name', 'description'),
+    ...markdownPopup('name', 'description'),
     native: {
       outFields: ['*']
     }
@@ -58,7 +49,7 @@ export const GamesOfTexasColdLayerSources: LayerSource[] = [
     url: `${gamesOfTexasUrl}/2`,
     visible: true,
     listMode: 'show',
-    ...popup('name', 'description'),
+    ...markdownPopup('name', 'description'),
     // A red hatch, which ArcGIS draws no legend swatch for.
     legend: RED_HATCH_LEGEND,
     native: {
@@ -72,7 +63,7 @@ export const GamesOfTexasColdLayerSources: LayerSource[] = [
     url: `${gamesOfTexasUrl}/1`,
     visible: true,
     listMode: 'show',
-    ...popup('name', 'description'),
+    ...markdownPopup('name', 'description'),
     native: routesNative
   },
   {
@@ -82,7 +73,7 @@ export const GamesOfTexasColdLayerSources: LayerSource[] = [
     url: `${gamesOfTexasUrl}/0`,
     visible: true,
     listMode: 'show',
-    ...popup('edited', 'description'),
+    ...markdownPopup('edited', 'description'),
     // The published picture-marker icons are pin-shaped (~0.8 ratio) but the renderer forces them
     // into a 25x25 square, which stretches them. Re-render the legend swatches at a matching 0.8
     // ratio (24x30) to remove the distortion.

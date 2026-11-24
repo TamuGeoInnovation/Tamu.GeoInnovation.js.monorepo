@@ -6,8 +6,7 @@ import {
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
-import { EventPopups } from '../modules/popups/popups';
-import { arrowLineSymbol } from './common.definitions';
+import { arrowLineSymbol, markdownPopup } from './common.definitions';
 
 export enum FISH_CAMP_LAYERS {
   ARRIVAL_GROUP = 'fish-camp-arrival-group',
@@ -66,13 +65,7 @@ const lotConversions = [
   { input: FishCampSessionChoices.LOT_40, expression: lotDateFilter[FishCampSessionChoices.LOT_40] }
 ];
 
-const popup = {
-  popupComponent: EventPopups.MarkdownPopupComponent,
-  popupData: {
-    name: { field: 'name' },
-    description: { field: 'description' }
-  }
-};
+const popup = markdownPopup('name', 'description');
 
 // Routes are directional, so render each type with an arrowhead at the end of the line to show the
 // direction of travel. Colors match the published service renderer (green = vehicle, blue = walking).
