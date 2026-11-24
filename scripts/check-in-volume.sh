@@ -139,16 +139,12 @@ log_label() {
   local label count sum
   label="$(printf '%s' "$1" | tr -c 'A-Za-z0-9_.-' '-')"
   if [ "${#label}" -le 60 ]; then
-    printf '%s
-' "$label"
+    printf '%s\n' "$label"
     return
   fi
-  count="$(printf '%s
-' "$1" | tr ',' '
-' | grep -c .)"
+  count="$(printf '%s\n' "$1" | tr ',' '\n' | grep -c .)"
   sum="$(printf '%s' "$1" | cksum | cut -d ' ' -f 1)"
-  printf '%s-and-more-%s-projects-%s
-' "$(printf '%s' "${1%%,*}" | tr -c 'A-Za-z0-9_.-' '-' | cut -c1-40)" "$count" "$sum"
+  printf '%s-of-%s-projects-%s\n' "$(printf '%s' "${1%%,*}" | tr -c 'A-Za-z0-9_.-' '-' | cut -c1-40)" "$count" "$sum"
 }
 
 [ "${BASH_SOURCE[0]}" = "$0" ] || return 0
