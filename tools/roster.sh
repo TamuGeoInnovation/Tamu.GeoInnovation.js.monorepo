@@ -12,6 +12,13 @@
 # working machine is worse than no flag, because it is acted on. So a participant that pushed work inside PUSH_IS_ALIVE_MIN
 # is never called gone or late: the row says the heartbeat task is the thing that stopped, and "takes work" is left as the
 # participant itself declared it.
+#
+# AND THE OTHER WAY ROUND: a heartbeat that says "idle" proves nothing either. copilot-home heartbeated every twenty minutes
+# for 24 days - cycling "running (agent-runner)" to "idle" - having last pushed real work on 30 October, and this printed it
+# as "up", "takes work: yes", with nothing waiting: a healthy idle machine ready for a batch. It was not; its runner was
+# starting, doing nothing and marking itself idle (the #2901/#2902 pattern again). A director reading that row gives it work
+# that is never done. So a participant that has pushed nothing for longer than STALE_WORK_HOURS, while claiming to be up,
+# says so in its Health and does not offer to take work.
 # Late or gone says "check it is signed in" first: on 25 October two chats on home went silent because the session's login
 # had expired ("401 OAuth access token has expired"), with their watchers working.
 set -u
@@ -25,6 +32,9 @@ now=$(date -u +%s)
 # DIRECTOR.md asks a listener to push at least every 60 minutes while a batch is open, so a push inside that window is
 # proof the machine is working whatever its heartbeat says.
 push_is_alive_min=${PUSH_IS_ALIVE_MIN:-60}
+# How long a participant may push nothing at all before "up" stops meaning anything. A day: long enough to cover a quiet
+# night and a weekend's gap, short enough that 24 days of silence can never read as healthy again.
+stale_work_hours=${STALE_WORK_HOURS:-24}
 # Where each participant runs comes from the maintainer's private repository, when gh here can read it; never from this branch.
 private=${PRIVATE_ROSTER_REPO:-danielgoldbergtamu/danielgoldbergtamu-tamu-geography-machine-ip-report}
 addr() { command -v gh >/dev/null 2>&1 && gh api "repos/$private/contents/listeners/$1.md" -H 'Accept: application/vnd.github.raw' 2>/dev/null |
@@ -52,7 +62,17 @@ for d in $(git ls-tree -d --name-only origin/work-mailbox); do
   pushed_recently=no
   [ -n "$w" ] && [ $(( (now - w) / 60 )) -le "$push_is_alive_min" ] && pushed_recently=yes
   acc=$(f accepting)
-  if [ $late -le 0 ]; then
+  # Has it pushed anything at all lately? "up" with weeks of silence is the claim that wasted copilot-home's 24 days.
+  work_is_stale=no
+  { [ -z "$w" ] || [ $(( (now - w) / 3600 )) -ge "$stale_work_hours" ]; } && work_is_stale=yes
+  if [ $late -le 0 ] && [ "$work_is_stale" = yes ]; then
+    if [ -z "$w" ]; then
+      health="heartbeat says up, but it has NEVER pushed work: check its agent actually runs (#2901)"
+    else
+      health="heartbeat says up, but it has pushed NOTHING for $(( (now - w) / 3600 )) h: check its agent actually runs (#2901)"
+    fi
+    acc=no
+  elif [ $late -le 0 ]; then
     health=up
   elif [ "$pushed_recently" = yes ]; then
     # Working, but its heartbeat task is not. Say which one stopped, and do not take work off it.
