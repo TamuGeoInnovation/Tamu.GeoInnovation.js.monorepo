@@ -18,6 +18,39 @@ Images: the Papers page before (merge-base) and after, at 1280 and 390, made-up 
 `.pr-body.md` from the template, with a `Title:` line, as the last commit. No PRs. Nobody but the security chat touches
 `package.json` or the lock. Report `home/reports/2026-11-24-g105.md`, "branch ready: <name>" first.
 
+## Batch a8 (aggiemap: the full check on PR 3407, and what this machine is holding on disk; 24 November 2026, 11:00 AM Central, from `work (aggiemap)`) (Medium) - **after the security and gisday batches already queued**
+
+**Not urgent, and deliberately queued behind what is already here.** Nothing waits on it: PR 3407 is not blocking a release.
+It was going to the lab as batch 203; the lab is paused for the student, so it comes here.
+
+**1. What is this machine holding? (report only, removes nothing.)**
+- Work from a worktree at `fork/chore/3400-disk-guard-and-tidy` - the branch of [PR 3407](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3407). It is not on `development` yet.
+- Run `bash scripts/tidy.sh` with **no arguments**. It only reports. **Do not run `--yes` or `--compact`.**
+- Report its whole output, plus this machine's free disk space and, if it has one, the size of Docker's disk image
+  (`%LOCALAPPDATA%\Docker\wsl\disk\docker_data.vhdx`).
+- **The work computer's numbers, for comparison:** 460 worktrees at 589 MiB each (about 271 GB), 323 `tamu-js-*` volumes at
+  **2,705 MiB each** (about 853 GB), and a Docker disk image of **991.8 GB** - on a 1,907 GB disk that reached **0 bytes
+  free** on 23 November ([#3365](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3365)).
+- The question this answers is the maintainer's: **is the same creep on every machine, or only on that one?** A small number
+  here is as useful an answer as a large one.
+
+**2. The full check on PR 3407's head.**
+- `scripts/check-in-volume.sh chore/3400-disk-guard-and-tidy` (affected). **Read the log's own `Exit N` line** and quote it.
+- **This branch changes the script you are running it with**, which is the point of running it on a machine other than the
+  one it was written on. The check runs the committed copy from the volume's clone, so it exercises the new code. Two things
+  to look for and quote:
+  - The header line should now print free space, e.g. `... parallel 8; 162.8 GiB free; log: ...`.
+  - If this machine has **under 60 GiB free**, the run will **sweep before it starts** - removing worktrees whose pull
+    request has merged and `tamu-js-<issue>` volumes whose issue is closed - and say so. That is the new behaviour and it is
+    correct, but say in the report whether it happened, because it changes what task 1 measured.
+- Also run `bash scripts/tidy.test.sh` (15 cases) and `bash scripts/check-in-volume.test.sh`, and give both counts. Neither
+  needs Docker or the network.
+
+**Don't touch:** `development`, any tag, any pull request, production, or the work computer. Do not run `tidy.sh --yes` here
+in this batch - task 1 is a measurement, and what gets removed is the director's call once the numbers are in.
+
+Report `home/reports/2026-11-24-a8.md`, then say "report ready: <file>".
+
 ## Batch s81 (security: check Dependabot PR 3401, highlight.js 11.12.0 and maplibre-gl 6.19.0, for #3405; 24 November 2026, from `work (security)`) (Low) - **now**
 
 [PR 3401](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3401), tracked by [#3405](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3405). Both minor. Never push to the Dependabot branch.
