@@ -23,14 +23,24 @@ import {
   Tag,
   UserRsvp
 } from '../entities/all.entity';
-import { BaseProvider } from '../_base/base-provider';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { EventAttendanceDto } from './dto/event-attendance.dto';
 import { SeasonService } from '../season/season.service';
 import { rethrowHttp } from '../_base/rethrow-http';
+import { SeasonScopedProvider } from '../_base/season-scoped-provider';
 
 @Injectable()
-export class EventProvider extends BaseProvider<Event> {
+export class EventProvider extends SeasonScopedProvider<Event> {
+  protected get seasons() {
+    return this.seasonProvider;
+  }
+
+  protected readonly recordsName = 'sessions';
+
+  protected forSeason(seasonGuid: string) {
+    return this.getEventsForSeason(seasonGuid);
+  }
+
   constructor(
     @InjectRepository(Event) public eventRepo: Repository<Event>,
     @InjectRepository(EventLocation) private eventLocationRepo: Repository<EventLocation>,
@@ -46,13 +56,7 @@ export class EventProvider extends BaseProvider<Event> {
   }
 
   public async getEventsForActiveSeason() {
-    const season = await this.seasonProvider.findOneActive();
-
-    try {
-      return this.getEventsForSeason(season.guid);
-    } catch (error) {
-      rethrowHttp(error, new InternalServerErrorException('Could not get events for active season.'));
-    }
+    return this.forActiveSeason();
   }
 
   public async getEventsForSeason(seasonGuid: string) {

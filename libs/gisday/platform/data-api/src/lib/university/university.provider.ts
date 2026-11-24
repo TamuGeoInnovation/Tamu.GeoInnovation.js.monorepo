@@ -4,12 +4,22 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, In, Repository } from 'typeorm';
 
 import { Speaker, University } from '../entities/all.entity';
-import { BaseProvider } from '../_base/base-provider';
 import { SeasonService } from '../season/season.service';
 import { rethrowHttp } from '../_base/rethrow-http';
+import { SeasonScopedProvider } from '../_base/season-scoped-provider';
 
 @Injectable()
-export class UniversityProvider extends BaseProvider<University> {
+export class UniversityProvider extends SeasonScopedProvider<University> {
+  protected get seasons() {
+    return this.seasonService;
+  }
+
+  protected readonly recordsName = 'universities';
+
+  protected forSeason(seasonGuid: string) {
+    return this.getEntitiesForSeason(seasonGuid);
+  }
+
   constructor(
     @InjectRepository(University) private universityRepo: Repository<University>,
     private readonly seasonService: SeasonService
@@ -32,54 +42,11 @@ export class UniversityProvider extends BaseProvider<University> {
   }
 
   public async getEntitiesForActiveSeason() {
-    const activeSeason = await this.seasonService.findOneActive();
-
-    if (!activeSeason) {
-      throw new UnprocessableEntityException('No active season found.');
-    }
-
-    return this.getEntitiesForSeason(activeSeason.guid);
+    return this.forActiveSeason();
   }
 
   public async insertUniversitiesIntoSeason(seasonGuid: string, existingEntityGuids: Array<string>) {
-    const season = await this.seasonService.findOne({
-      where: {
-        guid: seasonGuid
-      }
-    });
-
-    if (!season) {
-      throw new UnprocessableEntityException('Season not found.');
-    }
-
-    const entities = await this.find({
-      where: {
-        guid: In(existingEntityGuids)
-      }
-    });
-
-    if (entities?.length === 0) {
-      throw new UnprocessableEntityException('Could not find universities.');
-    }
-
-    const newEntities = entities.map((entity) => {
-      delete entity.guid;
-      delete entity.created;
-      delete entity.updated;
-
-      return this.universityRepo.create({
-        ...entity,
-        season
-      });
-    });
-
-    try {
-      // Returned without awaiting, the promise settles outside this try and the catch below
-      // never ran, so a failed write surfaced as a raw driver error rather than the 422.
-      return await this.universityRepo.save(newEntities);
-    } catch (err) {
-      rethrowHttp(err, new UnprocessableEntityException('Could not insert universities into season.'), () => Logger.error(err.message, 'UniversityProvider'));
-    }
+    return this.copyIntoSeason(seasonGuid, existingEntityGuids);
   }
 
   public override async deleteEntities(oneOrMoreEntityGuids: Array<string> | string): Promise<DeleteResult> {

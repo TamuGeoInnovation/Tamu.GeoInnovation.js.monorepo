@@ -9,14 +9,24 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, In, Repository } from 'typeorm';
 
 import { Asset, EventLocation, Place, PlaceLink } from '../entities/all.entity';
-import { BaseProvider } from '../_base/base-provider';
 import { AssetsService } from '../assets/assets.service';
 import { refuseUnsafeImage } from '../assets/image-upload';
 import { SeasonService } from '../season/season.service';
 import { rethrowHttp } from '../_base/rethrow-http';
+import { SeasonScopedProvider } from '../_base/season-scoped-provider';
 
 @Injectable()
-export class PlaceService extends BaseProvider<Place> {
+export class PlaceService extends SeasonScopedProvider<Place> {
+  protected get seasons() {
+    return this.seasonService;
+  }
+
+  protected readonly recordsName = 'places';
+
+  protected forSeason(seasonGuid: string) {
+    return this.getPlacesForSeason(seasonGuid);
+  }
+
   private _resourcePath = `images/places`;
 
   constructor(
@@ -45,17 +55,7 @@ export class PlaceService extends BaseProvider<Place> {
   }
 
   public async getPlacesForActiveSeason() {
-    try {
-      const season = await this.seasonService.findOneActive();
-
-      if (!season) {
-        throw new UnprocessableEntityException('No active season found.');
-      }
-
-      return this.getPlacesForSeason(season.guid);
-    } catch (err) {
-      rethrowHttp(err, new InternalServerErrorException(), () => Logger.error(`Error retrieving places for active season, ${err.message}`, 'PlaceService'));
-    }
+    return this.forActiveSeason();
   }
 
   public getEntity(guid: string) {

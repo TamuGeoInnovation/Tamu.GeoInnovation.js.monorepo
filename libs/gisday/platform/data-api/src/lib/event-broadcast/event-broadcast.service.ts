@@ -2,20 +2,29 @@ import {
   Injectable,
   InternalServerErrorException,
   Logger,
-  NotFoundException,
-  UnprocessableEntityException
+  NotFoundException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, In, Repository } from 'typeorm';
 
 import { EventBroadcast } from '../entities/all.entity';
-import { BaseProvider } from '../_base/base-provider';
 import { byName } from '../_base/natural-order';
 import { SeasonService } from '../season/season.service';
 import { rethrowHttp } from '../_base/rethrow-http';
+import { SeasonScopedProvider } from '../_base/season-scoped-provider';
 
 @Injectable()
-export class EventBroadcastService extends BaseProvider<EventBroadcast> {
+export class EventBroadcastService extends SeasonScopedProvider<EventBroadcast> {
+  protected get seasons() {
+    return this.ss;
+  }
+
+  protected readonly recordsName = 'broadcasts';
+
+  protected forSeason(seasonGuid: string) {
+    return this.getBroadcastsForSeason(seasonGuid);
+  }
+
   constructor(@InjectRepository(EventBroadcast) private eb: Repository<EventBroadcast>, private readonly ss: SeasonService) {
     super(eb);
   }
@@ -78,57 +87,11 @@ export class EventBroadcastService extends BaseProvider<EventBroadcast> {
   }
 
   public async getBroadcastsForActiveSeason() {
-    const season = await this.ss.findOneActive();
-
-    try {
-      return this.eb
-        .find({
-          relations: { place: true },
-          where: {
-            season: { guid: season.guid }
-          },
-          order: {
-            name: 'ASC'
-          }
-        })
-        .then(byName);
-    } catch (err) {
-      rethrowHttp(err, new InternalServerErrorException(err));
-    }
+    return this.forActiveSeason();
   }
 
   public async copyBroadcastsIntoSeason(seasonGuid: string, existingEntityGuids: Array<string>) {
-    try {
-      const existingEntities = await this.eb.find({
-        where: {
-          guid: In(existingEntityGuids)
-        }
-      });
-
-      const newEntities = existingEntities.map((entity) => {
-        delete entity.guid;
-        delete entity.season;
-        delete entity.created;
-        delete entity.updated;
-
-        return this.eb
-          .create({
-            ...entity,
-            season: {
-              guid: seasonGuid
-            }
-          })
-          .save();
-      });
-
-      try {
-        return Promise.all(newEntities);
-      } catch (err) {
-        rethrowHttp(err, new InternalServerErrorException(err));
-      }
-    } catch (err) {
-      rethrowHttp(err, new UnprocessableEntityException(err));
-    }
+    return this.copyIntoSeason(seasonGuid, existingEntityGuids);
   }
 
   public override deleteEntities(oneOrMoreEntityGuids: Array<string> | string): Promise<DeleteResult> {

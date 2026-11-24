@@ -9,14 +9,24 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, In, Repository } from 'typeorm';
 
 import { Organization, Event, Asset, Speaker } from '../entities/all.entity';
-import { BaseProvider } from '../_base/base-provider';
 import { AssetsService } from '../assets/assets.service';
 import { refuseUnsafeImage } from '../assets/image-upload';
 import { SeasonService } from '../season/season.service';
 import { rethrowHttp } from '../_base/rethrow-http';
+import { SeasonScopedProvider } from '../_base/season-scoped-provider';
 
 @Injectable()
-export class OrganizationService extends BaseProvider<Organization> {
+export class OrganizationService extends SeasonScopedProvider<Organization> {
+  protected get seasons() {
+    return this.ss;
+  }
+
+  protected readonly recordsName = 'organizations';
+
+  protected forSeason(seasonGuid: string) {
+    return this.getOrganizationsForSeason(seasonGuid);
+  }
+
   private _resourcePath = `images/organizations`;
 
   constructor(
@@ -47,17 +57,7 @@ export class OrganizationService extends BaseProvider<Organization> {
   }
 
   public async getOrganizationsForActiveSeason() {
-    const activeSeason = await this.ss.findOneActive();
-
-    if (!activeSeason) {
-      throw new UnprocessableEntityException('No active season found.');
-    }
-
-    try {
-      return this.getOrganizationsForSeason(activeSeason.guid);
-    } catch (err) {
-      rethrowHttp(err, new InternalServerErrorException('Could not find organizations for active season.'), () => Logger.error(err.message, 'OrganizationService'));
-    }
+    return this.forActiveSeason();
   }
 
   public getOrganizations() {

@@ -14,15 +14,25 @@ import { DeepPartial, DeleteResult, In, Repository } from 'typeorm';
 import { fitImage } from '@tamu-gisc/common/node/images';
 
 import { Speaker, EntityRelationsLUT, University, Organization, Event, Asset, Season } from '../entities/all.entity';
-import { BaseProvider } from '../_base/base-provider';
 import { AssetsService } from '../assets/assets.service';
 import { refuseUnsafeImage } from '../assets/image-upload';
 import { SeasonService } from '../season/season.service';
 import { SPEAKER_PHOTO_FIT } from './speaker-photo';
 import { rethrowHttp } from '../_base/rethrow-http';
+import { SeasonScopedProvider } from '../_base/season-scoped-provider';
 
 @Injectable()
-export class SpeakerProvider extends BaseProvider<Speaker> {
+export class SpeakerProvider extends SeasonScopedProvider<Speaker> {
+  protected get seasons() {
+    return this.seasonService;
+  }
+
+  protected readonly recordsName = 'speakers';
+
+  protected forSeason(seasonGuid: string) {
+    return this.getSpeakersForSeason(seasonGuid);
+  }
+
   private _resourcePath = `images/speakers`;
 
   constructor(
@@ -73,13 +83,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
   }
 
   public async getSpeakersForActiveSeason() {
-    const season = await this.seasonService.findOneActive();
-
-    if (!season) {
-      throw new UnprocessableEntityException('No active season found.');
-    }
-
-    return this.getSpeakersForSeason(season.guid);
+    return this.forActiveSeason();
   }
 
   /**

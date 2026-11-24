@@ -9,13 +9,23 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, In, Repository } from 'typeorm';
 
 import { Asset, Sponsor, SponsorLogoSize } from '../entities/all.entity';
-import { BaseProvider } from '../_base/base-provider';
 import { AssetsService } from '../assets/assets.service';
 import { refuseUnsafeImage } from '../assets/image-upload';
 import { SeasonService } from '../season/season.service';
 import { rethrowHttp } from '../_base/rethrow-http';
+import { SeasonScopedProvider } from '../_base/season-scoped-provider';
 @Injectable()
-export class SponsorProvider extends BaseProvider<Sponsor> {
+export class SponsorProvider extends SeasonScopedProvider<Sponsor> {
+  protected get seasons() {
+    return this.seasonService;
+  }
+
+  protected readonly recordsName = 'sponsors';
+
+  protected forSeason(seasonGuid: string) {
+    return this.getSponsorsForSeason(seasonGuid);
+  }
+
   private _resourcePath = `images/sponsors`;
 
   constructor(
@@ -53,17 +63,7 @@ export class SponsorProvider extends BaseProvider<Sponsor> {
   }
 
   public async getSponsorsForActiveSeason() {
-    const activeSeason = await this.seasonService.findOneActive();
-
-    if (!activeSeason) {
-      throw new UnprocessableEntityException('No active season found.');
-    }
-
-    try {
-      return this.getSponsorsForSeason(activeSeason.guid);
-    } catch (err) {
-      rethrowHttp(err, new InternalServerErrorException('Could not find sponsors for active season.'), () => Logger.error(err.message, 'SponsorProvider'));
-    }
+    return this.forActiveSeason();
   }
 
   public async copyEntitiesIntoSeason(seasonGuid: string, existingEntityGuids: Array<string>) {

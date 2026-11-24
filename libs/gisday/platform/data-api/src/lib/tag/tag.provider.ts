@@ -1,14 +1,23 @@
-import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 import { Event, Tag, Season } from '../entities/all.entity';
-import { BaseProvider } from '../_base/base-provider';
 import { SeasonService } from '../season/season.service';
-import { rethrowHttp } from '../_base/rethrow-http';
+import { SeasonScopedProvider } from '../_base/season-scoped-provider';
 
 @Injectable()
-export class TagProvider extends BaseProvider<Tag> {
+export class TagProvider extends SeasonScopedProvider<Tag> {
+  protected get seasons() {
+    return this.seasonService;
+  }
+
+  protected readonly recordsName = 'tags';
+
+  protected forSeason(seasonGuid: string) {
+    return this.getTagsForSeason(seasonGuid);
+  }
+
   constructor(
     @InjectRepository(Tag) private tagRepo: Repository<Tag>,
     private readonly seasonService: SeasonService
@@ -47,13 +56,7 @@ export class TagProvider extends BaseProvider<Tag> {
   }
 
   public async getTagsForActiveSeason() {
-    const activeSeason = await this.seasonService.findOneActive();
-
-    if (!activeSeason) {
-      throw new UnprocessableEntityException('No active season found.');
-    }
-
-    return this.getTagsForSeason(activeSeason.guid);
+    return this.forActiveSeason();
   }
 
   public async getTags() {
@@ -65,45 +68,7 @@ export class TagProvider extends BaseProvider<Tag> {
   }
 
   public async copyTagsIntoSeason(seasonGuid: string, existingGuids: Array<string>) {
-    const season = await this.seasonService.findOne({
-      where: {
-        guid: seasonGuid
-      }
-    });
-
-    // TypeORM 0.3 `findOne` resolves null, not undefined, so this guard never fired: copying
-    // into a season that does not exist fell through and wrote tags with a null season,
-    // leaving orphaned rows attached to no season at all.
-    if (!season) {
-      throw new UnprocessableEntityException('Could not find season.');
-    }
-
-    const entities = await this.tagRepo.find({
-      where: {
-        guid: In(existingGuids)
-      }
-    });
-
-    if (entities?.length === 0) {
-      throw new UnprocessableEntityException('Could not find tags.');
-    }
-
-    const newEntities = entities.map((tag) => {
-      delete tag.guid;
-      delete tag.created;
-      delete tag.updated;
-
-      return this.tagRepo.create({
-        ...tag,
-        season
-      });
-    });
-
-    try {
-      return this.tagRepo.save(newEntities);
-    } catch (err) {
-      rethrowHttp(err, new UnprocessableEntityException('Could not copy tags into season'));
-    }
+    return this.copyIntoSeason(seasonGuid, existingGuids);
   }
 
   public async insertTags(tags: Array<Partial<Tag>>) {
