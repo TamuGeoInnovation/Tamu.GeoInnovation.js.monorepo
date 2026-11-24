@@ -314,9 +314,11 @@ export class CompetitionSettingsComponent {
     const settings = this.settingsToSend();
 
     // Checked here first, as the API checks them: if any would be refused, none is sent.
-    const problems = [competitionTypesProblem(chosen), deadlinesProblem(deadlines), competitionSettingsProblem(settings)].filter(
-      (p): p is string => !!p
-    );
+    const problems = [
+      competitionTypesProblem(chosen),
+      deadlinesProblem(deadlines),
+      competitionSettingsProblem(settings)
+    ].filter((p): p is string => !!p);
 
     if (problems.length) {
       this.result.set({ saved: false, text: `Nothing was saved. ${problems.join(' ')}` });

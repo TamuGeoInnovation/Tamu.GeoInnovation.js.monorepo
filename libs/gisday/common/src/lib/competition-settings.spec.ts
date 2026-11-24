@@ -43,9 +43,9 @@ describe('competition settings', () => {
     expect(seasonCompetitions(season)).toEqual(['poster', 'presentation', 'paper', 'cartography']);
     // A row from before #3019, with no `runs`, still means the season runs that competition.
     expect(seasonCompetitions({ competitions: [{ competitionType: 'poster' }] })).toEqual(['poster']);
-    expect(seasonCompetitions({ competitions: [{ competitionType: 'poster', runs: true }, season.competitions[1]] })).toEqual([
-      'poster'
-    ]);
+    expect(
+      seasonCompetitions({ competitions: [{ competitionType: 'poster', runs: true }, season.competitions[1]] })
+    ).toEqual(['poster']);
   });
 
   it("gives a competition's settings, or none", () => {

@@ -56,7 +56,12 @@ describe('PostersComponent', () => {
 
   // #3019, decided 6A: the session the season chose in Admin, over the one its name points to.
   it('names the session the season chose, and takes its day from it', () => {
-    const chosen = { ...COMPETITION_SESSIONS.find((s) => s.guid === 'p'), guid: 'chosen', name: 'Poster gallery walk', day: { date: '2026-11-18T06:00:00.000Z' } };
+    const chosen = {
+      ...COMPETITION_SESSIONS.find((s) => s.guid === 'p'),
+      guid: 'chosen',
+      name: 'Poster gallery walk',
+      day: { date: '2026-11-18T06:00:00.000Z' }
+    };
     const season = { ...SEASON_2026, competitions: [{ competitionType: 'poster', runs: null, sessionGuid: 'chosen' }] };
     const rendered = text(season, [...COMPETITION_SESSIONS, chosen]);
 

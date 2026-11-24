@@ -2,7 +2,13 @@ import { Component, ChangeDetectionStrategy, computed, inject } from '@angular/c
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 
-import { SeasonCompetitions, SubmissionDeadlines, closesAt, finalistsNotifiedAt, inCentralTime } from '@tamu-gisc/gisday/common';
+import {
+  SeasonCompetitions,
+  SubmissionDeadlines,
+  closesAt,
+  finalistsNotifiedAt,
+  inCentralTime
+} from '@tamu-gisc/gisday/common';
 import { SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 import {
@@ -24,9 +30,7 @@ export class PostersComponent {
   private readonly sessions = toSignal(inject(CompetitionSessionsService).sessions$, { initialValue: null });
 
   /** The poster session's day, for the heading and the finalists (#3019), not typed in for one year. */
-  public readonly day = computed(() =>
-    competitionDays(this.sessions(), ['poster'], this.season() as SeasonCompetitions)
-  );
+  public readonly day = computed(() => competitionDays(this.sessions(), ['poster'], this.season() as SeasonCompetitions));
 
   /** When finalists hear (#3019, 7A): the season's, in Central time, or null to leave the line out. */
   public readonly finalistsNotified = computed(() => {

@@ -11,7 +11,9 @@ import {
   UserSubmissionsService,
   finalRemindersToast,
   reviewSubmissionsToast,
-  sendEditLinksToast, EventService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+  sendEditLinksToast,
+  EventService
+} from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 

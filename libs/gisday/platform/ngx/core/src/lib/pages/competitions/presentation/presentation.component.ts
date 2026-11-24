@@ -2,7 +2,13 @@ import { Component, ChangeDetectionStrategy, computed, inject } from '@angular/c
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 
-import { SeasonCompetitions, SubmissionDeadlines, closesAt, finalistsNotifiedAt, inCentralTime } from '@tamu-gisc/gisday/common';
+import {
+  SeasonCompetitions,
+  SubmissionDeadlines,
+  closesAt,
+  finalistsNotifiedAt,
+  inCentralTime
+} from '@tamu-gisc/gisday/common';
 import { SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 import {
