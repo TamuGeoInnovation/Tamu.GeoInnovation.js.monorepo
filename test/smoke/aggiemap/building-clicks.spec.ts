@@ -10,6 +10,7 @@ import { blockAnalytics } from './analytics';
 import { readFraming, servedRoutes } from './framing';
 import { smokeBaseUrl } from './gis-hosts';
 import { MANIFEST_PATH, MapManifest } from './global-setup';
+import { PROBE_GLOBAL } from './map-probe';
 
 /**
  * Clicking a feature opens the popup for **that** feature, on every map (#2707, #2778).
@@ -107,8 +108,6 @@ const BUILDINGS_LAYER = 'buildings-layer';
  * and the campus basemap's layer 1, which it replaced (#2707), so that a build still reading that is watched too.
  */
 const BUILDINGS_QUERIES = [`${Connections.buildingsUrl}/query`, `${Connections.basemapUrl}/1/query`];
-
-const PROBE_GLOBAL = '__tamuGiscMapProbe';
 
 /** A feature to click, at its centroid in page coordinates, and the centroid on the map. */
 interface Target {

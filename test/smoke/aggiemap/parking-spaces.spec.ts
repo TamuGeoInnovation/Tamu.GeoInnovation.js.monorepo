@@ -5,6 +5,7 @@ import { Connections } from '../../../libs/aggiemap/ngx/common/src/lib/connectio
 import { expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
 import { gisHostFor, smokeBaseUrl } from './gis-hosts';
+import { PROBE_GLOBAL } from './map-probe';
 
 /**
  * A parking-space map loads only the spaces it draws (#1897).
@@ -20,8 +21,6 @@ import { gisHostFor, smokeBaseUrl } from './gis-hosts';
  * So the check follows the service: if its owner starts drawing another type, a filter that leaves
  * that type out fails here rather than hiding it.
  */
-
-const PROBE_GLOBAL = '__tamuGiscMapProbe';
 
 // Both layers as this environment's application reads them: development reads Transportation's development services
 // since #2667, so a spec asking production's would look up a space the application never drew (#2821).

@@ -2,6 +2,7 @@ import { Page } from '@playwright/test';
 
 import { expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
+import { PROBE_GLOBAL } from './map-probe';
 
 /**
  * A link to one feature opens with that feature highlighted, drawn above every other layer (#1805).
@@ -17,8 +18,6 @@ import { blockAnalytics } from './analytics';
  * layer every time. Basemap layers are left out, because a basemap's reference layers are listed
  * after the operational layers.
  */
-
-const PROBE_GLOBAL = '__tamuGiscMapProbe';
 
 const SELECTION_LAYER_ID = 'selection-layer';
 

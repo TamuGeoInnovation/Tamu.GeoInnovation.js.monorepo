@@ -2,6 +2,7 @@ import { Page } from '@playwright/test';
 
 import { expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
+import { waitForMapReady } from './map-probe';
 
 /**
  * Map notices and the event toast that points at them.
@@ -28,7 +29,6 @@ const TIMEZONE = 'America/Chicago';
 
 test.use({ timezoneId: TIMEZONE });
 
-const PROBE_GLOBAL = '__tamuGiscMapProbe';
 const NOTICE = 'tamu-gisc-map-notice';
 
 /** An event whose map carries a notice. The clock above keeps it upcoming. */
@@ -44,16 +44,7 @@ async function openMap(page: Page, path: string): Promise<void> {
   // finish loading. A frozen clock never lets it report ready.
   await page.clock.install({ time: BEFORE_THE_EVENT });
   await page.goto(path);
-  await expect
-    .poll(
-      async () =>
-        await page.evaluate(
-          (n: string) => (window as unknown as Record<string, { ready?: boolean }>)[n]?.ready === true,
-          PROBE_GLOBAL
-        ),
-      { message: `the map on ${path} never finished loading`, timeout: 90_000, intervals: [1_000] }
-    )
-    .toBe(true);
+  await waitForMapReady(page, `the map on ${path} never finished loading`);
 }
 
 test('a map with a notice shows it', async ({ page }) => {
