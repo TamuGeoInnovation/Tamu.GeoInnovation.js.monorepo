@@ -242,6 +242,25 @@ export interface ICompetitionSeasonFormOption {
     values: Array<string | number | boolean>;
     metres: number;
   };
+  /**
+   * The automatic review's limits for a find of this type (#2430), any of them. Without one, its default
+   * (`DEFAULT_REVIEW_LIMITS`, 2026's), so a form that sets none is reviewed as before.
+   */
+  review?: Partial<ReviewLimits>;
+}
+
+/**
+ * What the automatic review accepts without a person looking (#2164, #2430): how accurate a location must be, how many
+ * submissions one participant may make how quickly, and the areas a find must be in.
+ */
+export interface ReviewLimits {
+  /** The worst location accuracy, in metres. */
+  maxAccuracyMetres: number;
+  /** This many submissions, this one included, within `paceSeconds` is too quick. */
+  paceSubmissions: number;
+  paceSeconds: number;
+  /** A find must be inside one of these. */
+  areas: Array<{ name: string; corners: Array<{ latitude: number; longitude: number }> }>;
 }
 
 export const GISDAY_COMPETITIONS_ENTITIES = [
