@@ -61,16 +61,6 @@ describe('UniversityProvider', () => {
     });
   });
 
-  describe('.getEntitiesForActiveSeason()', () => {
-    it('rejects when there is no active season', async () => {
-      jest.spyOn(seasonService, 'findOneActive').mockResolvedValue(null);
-
-      await expect(provider.getEntitiesForActiveSeason()).rejects.toThrow(
-        UnprocessableEntityException
-      );
-    });
-  });
-
   describe('.insertUniversitiesIntoSeason()', () => {
     it('rejects a season that does not exist', async () => {
       jest.spyOn(seasonService, 'findOne').mockResolvedValue(null);

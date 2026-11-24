@@ -14,7 +14,7 @@ describe('EventBroadcastService queries, built by typeorm', () => {
   let statements: Array<{ sql: string; parameters: Array<unknown> }>;
 
   const season = Object.assign(new Season(), { guid: 's-1', year: 2026, active: true, startDate: null, endDate: null });
-  const seasonService = { findOneActive: async () => season } as unknown as SeasonService;
+  const seasonService = { findOne: async () => season, findOneActive: async () => season } as unknown as SeasonService;
 
   // A broadcast as the API loads it: its nullable columns come back null, not undefined.
   const loadedBroadcast = () =>
