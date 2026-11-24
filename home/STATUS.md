@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle and listening.
+- **Batch 82 (gisday: #3244's table in the shared scroll box)**, since 7:35 PM Central, 23 November, on `feat/3244-vgi-submission-counts`.
 
 ## Finished
 - **Batch 81 (gisday: #3019)** (report `home/reports/2026-11-23-81.md`): branch ready, `feat/3019-competition-sessions-on-season` on the fork at `fae860835`, no PR. Presentation and Posters take their day from the competition sessions and **Due** from the season's deadline; red first; check passes (only the audit FETCH_ERROR); before/after images at 1280 and 390 from a made-up 2027 season. Proposal: session columns on `season_competitions`, naming convention as fallback. Two questions for the maintainer.
