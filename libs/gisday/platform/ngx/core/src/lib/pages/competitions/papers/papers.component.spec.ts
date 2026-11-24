@@ -5,7 +5,11 @@ import { of } from 'rxjs';
 
 import { SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
-import { COMPETITION_SESSIONS_2027, provideCompetitionSessions } from '../competition-session/competition-session.testing';
+import {
+  COMPETITION_SESSIONS_2027,
+  COMPETITION_SESSIONS_UNNAMED_AWARDS,
+  provideCompetitionSessions
+} from '../competition-session/competition-session.testing';
 import { PapersComponent } from './papers.component';
 
 /**
@@ -17,11 +21,11 @@ describe('PapersComponent (#3321)', () => {
   /** A made-up 2027 season: the paper deadline, Friday, November 12, 5:00 PM Central. */
   const SEASON_2027 = { paperSubmissionsCloseAt: '2027-11-12T23:00:00.000Z' };
 
-  function text(season: object = SEASON_2027) {
+  function text(season: object = SEASON_2027, sessions = COMPETITION_SESSIONS_2027) {
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
-        provideCompetitionSessions(of(COMPETITION_SESSIONS_2027)),
+        provideCompetitionSessions(of(sessions)),
         { provide: SeasonService, useValue: { activeSeason$: of(season) } }
       ]
     });
@@ -66,5 +70,18 @@ describe('PapersComponent (#3321)', () => {
     expect(rendered).not.toContain('Wednesday, November 18');
     expect(rendered).not.toContain('2:15pm');
     expect(rendered).not.toContain('2406B');
+  });
+
+  // #3412: with no awards session found, the sentence leading into it ended in a colon and nothing, as on Posters and
+  // Presentation before #3415.
+  it('leaves the awards sentence out when it finds no awards session', () => {
+    const rendered = text(SEASON_2027, COMPETITION_SESSIONS_UNNAMED_AWARDS);
+
+    expect(rendered).not.toContain('announced at the awards session:');
+    expect(rendered).toContain('on the schedule');
+  });
+
+  it('leads into the awards session when it finds one', () => {
+    expect(text()).toContain('Winners will be announced at the awards session:');
   });
 });
