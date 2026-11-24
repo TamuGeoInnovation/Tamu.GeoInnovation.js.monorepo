@@ -3,6 +3,7 @@ import {
   anchorTicks,
   bandOfDays,
   countsByDay,
+  countsByHourOver,
   dayIn,
   daysFrom,
   everyDay,
@@ -174,5 +175,44 @@ describe('anchorTicks() (#3215)', () => {
 
   it('counts single days on a short span, such as one week of check-ins', () => {
     expect(labels(anchorTicks(anchor, at(0), at(7), 800))).toEqual([0, 1, 2, 3, 4, 5, 6, 7]);
+  });
+});
+
+describe('countsByHourOver() (#3314)', () => {
+  // Two GIS Day days; in November, Central time is six hours behind UTC.
+  const days = ['2026-11-16T15:00:00Z', '2026-11-17T21:00:00Z'];
+
+  it('counts each hour of the days, in Central time, an hour with none as zero', () => {
+    const points = countsByHourOver(['2026-11-16T15:05:00Z', '2026-11-16T15:40:00Z', '2026-11-17T20:00:00Z'], days);
+
+    expect(points).toHaveLength(48);
+    expect(points[0]).toEqual({ x: new Date('2026-11-16T00:00:00Z'), y: 0 });
+    // 9 AM Central on the 16th, and 2 PM on the 17th, each placed at that hour UTC of its day, as a day is.
+    expect(points[9]).toEqual({ x: new Date('2026-11-16T09:00:00Z'), y: 2 });
+    expect(points[24 + 14]).toEqual({ x: new Date('2026-11-17T14:00:00Z'), y: 1 });
+    expect(points.reduce((sum, p) => sum + p.y, 0)).toBe(3);
+  });
+
+  it('counts 11:30 PM Central in its own day, though it is already the next day in UTC', () => {
+    const points = countsByHourOver(['2026-11-17T05:30:00Z'], days);
+
+    expect(points[23]).toEqual({ x: new Date('2026-11-16T23:00:00Z'), y: 1 });
+  });
+
+  it('leaves out times on other days', () => {
+    const points = countsByHourOver(['2026-11-10T15:00:00Z', '2026-11-18T15:00:00Z', '2026-11-16T15:00:00Z'], days);
+
+    expect(points.reduce((sum, p) => sum + p.y, 0)).toBe(1);
+  });
+
+  it('runs every hour from the first day to the end of the last, a day between them included', () => {
+    const points = countsByHourOver([], ['2026-11-16T15:00:00Z', '2026-11-18T15:00:00Z']);
+
+    expect(points).toHaveLength(72);
+    expect(points[71].x).toEqual(new Date('2026-11-18T23:00:00Z'));
+  });
+
+  it('gives nothing for no days', () => {
+    expect(countsByHourOver(['2026-11-16T15:00:00Z'], [])).toEqual([]);
   });
 });

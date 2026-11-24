@@ -209,9 +209,50 @@ describe('CheckInDashboardComponent (#3006)', () => {
   it('charts check-ins by day', async () => {
     const fixture = open();
     await fixture.whenStable();
+    const byDay = drawn.filter((o) => o.interval !== 'hour').at(-1);
 
-    expect(drawn[drawn.length - 1].unit).toBe('check-ins');
-    expect(drawn[drawn.length - 1].series.map((s) => [s.label, s.points.map((p) => p.y)])).toEqual([['All events', [3, 4]]]);
+    expect(byDay.unit).toBe('check-ins');
+    expect(byDay.series.map((s) => [s.label, s.points.map((p) => p.y)])).toEqual([['All events', [3, 4]]]);
+  });
+
+  // #3314: check-ins happen in one week, so under the by-day chart, a second counts them by the hour across its days.
+  it('charts check-ins by the hour across the days the events run, in Central time, under the by-day chart', async () => {
+    const fixture = open();
+    await settle(fixture);
+    const root = fixture.nativeElement as HTMLElement;
+    const byHour = drawn.filter((o) => o.interval === 'hour').at(-1);
+
+    expect(Array.from(root.querySelectorAll('.dashboard-heading')).map((h) => h.textContent.trim())).toEqual([
+      'Check-ins over time',
+      'Check-ins by hour',
+      'By event'
+    ]);
+    expect(byHour.unit).toBe('check-ins');
+    expect(byHour.bars).toBeNull();
+    // The events run on 18 and 19 November: every hour of both, 9 AM and 2 PM Central on the 18th, 9 AM on the 19th.
+    const [all] = byHour.series;
+    expect(all.label).toBe('All events');
+    expect(all.points).toHaveLength(48);
+    expect(all.points.filter((p) => p.y > 0).map((p) => [p.x.toISOString(), p.y])).toEqual([
+      ['2026-11-18T09:00:00.000Z', 2],
+      ['2026-11-18T14:00:00.000Z', 1],
+      ['2026-11-19T09:00:00.000Z', 1]
+    ]);
+  });
+
+  it("adds the opened event's own line to the hourly chart", async () => {
+    const fixture = open();
+    await settle(fixture);
+    const root = fixture.nativeElement as HTMLElement;
+
+    cellOf(root, 'Workshop').click();
+    await settle(fixture);
+    const byHour = drawn.filter((o) => o.interval === 'hour').at(-1);
+
+    expect(byHour.series.map((s) => [s.label, s.points.reduce((sum, p) => sum + p.y, 0)])).toEqual([
+      ['All events', 4],
+      ['Workshop', 2]
+    ]);
   });
 
   it('opens an event to list who checked in, and when', async () => {
