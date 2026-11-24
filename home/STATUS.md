@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch a2 (aggiemap: #2605, #2603)**, since 9:28 PM Central, 23 November; then a3, g87, g88.
+- **Batch a3 (aggiemap: #2601, #2602)**, since 9:42 PM Central, 23 November; then g87, g88.
 
 ## Finished
+- **Batch a2 (aggiemap: #2605, #2603)** (report `home/reports/2026-11-23-a2.md`): both branch ready on the fork, `.pr-body.md` last, no PRs. `chore/2605-aggie-maroon` at `69b96b0d9`: `$aggie-maroon` in the shared sass, 75 literals in 27 files, compiled CSS identical, affected check exit 0 (40 projects). `test/2603-share-map-probe` at `45cc793bf`: one `PROBE_GLOBAL` and `waitForMapReady`, 18 declarations and 9 waits shared, tsc and two dev specs pass. One question (GIS Day's quoted maroon).
 - **Batch a1 (aggiemap: #3285)** (report `home/reports/2026-11-23-a1.md`): branch ready, `test/3285-outbound-links` on the fork at `72dbd2d26` (`.pr-body.md` last), no PR. 31 outbound links collected from the definitions and the app, judged by #3285's seven rules; the fixture calls aggie.tamu.edu/graduation dead; 42 passed on production. No questions.
 - **Batch 86 (gisday: the rest of #3019)** (report `home/reports/2026-11-23-86-gisday.md`): branch ready, `feat/3019-competition-sessions-chosen` on the fork at `ad9cce65e`, no PR. Sessions (6A) and finalists date (7A) on `season_competitions`, with a `runs` column so settings survive; set in Research Competitions' Competition settings. Migration `AddCompetitionSettings1795487604412` proven up/down/up; exact SQL in the report. Red first; checks pass (memory kills rerun one at a time). Public-page images done; admin images need a sign-in. Two questions.
 - **Batch 85 (gisday: PR 3304's E2E)** (report `home/reports/2026-11-23-85-gisday.md`): `fix/2088-api-on-own-address` fast-forward to `29bd6b205`. Cause: with the token list the page's own /api, the E2E's unconfigured build asked Auth0's placeholder host for a token before every API call, so none was sent. Fix: no token while Auth0 is unfilled. Whole GIS Day E2E 47 passed; check green apart from the audit FETCH_ERROR.
