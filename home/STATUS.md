@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle, listening.
+- **Batch s80 (security: #2282, off `@angular/animations`)**, from 7:00 AM Central, 24 November: rule 4 survey, then `chore/2282-remove-angular-animations`.
 
 ## Finished
 - **Batch g104 (gisday: triage of six)** (report `home/reports/2026-11-24-g104.md`): #438 and #499 done already (close); #434 built, `feat/434-events-organization-filter` at `a0d89eaf6`, red first, check exit 0, PR waits for images; #435 half done (bulk hide, #2105), #493 and #1038 need the maintainer. Three questions. Finished 2:44 AM Central.
