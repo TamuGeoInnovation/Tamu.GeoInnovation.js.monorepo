@@ -1,5 +1,59 @@
 # Home machine: current tasks
 
+## Batch a6 (aggiemap: turn the release tier's 17 remaining failures into issues, #3355; 23 November 2026, about 10:45 PM Central, from `work (aggiemap)`) (High) - **do this first**
+
+<https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3355>
+
+**The 23 November dev build was not cleared.** The release tier exited 1: 18 failed, 7 flaky, 982 passed, 1.6 hours. One
+failure was tonight's #3299 and it is already fixed ([#3350](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3350),
+PR 3352). The other 17 were there before tonight, nobody had classified them, and **they are what holds the release**.
+
+#3355 has the full classification with the evidence. Read it first. Your job is to turn each cluster into something that
+can be acted on, so the tier is made green deliberately rather than by re-running it and hoping.
+
+**Verify before you file. Every one of them.** #3355's classification is mine, from reading a log — not from asking the
+service or opening the page. Overnight rule 4 applies to my analysis as much as to an old issue, and tonight my
+recommendation in a4 was wrong for exactly this reason. Where you disagree with my reading, say so; that is more useful
+than agreement.
+
+**One issue per cluster, not per failing test**, each with: what fails, the evidence you gathered, whether it is ours or
+another team's, and what would make it green. Set the fields as `CLAUDE.md` says, choose a Priority yourself and record
+it in the issue (the maintainer is asleep; list every choice in your report).
+
+In this order, because the first two are the ones most likely to be another team's and so the slowest to resolve:
+
+1. **The October raster basemap's HTTP 400s** (2 failures). `FCOR/TAMU_Basemap_20261008/MapServer` returns 400 "Unable to
+   complete operation" to `where=1=1&returnCountOnly=true` on layers 2 `University Building`, 4 `Trees`, 32 `Field Line`,
+   48 `Sports and Rec Field Area`. **Query the service yourself** and say whether it is all four every time or
+   intermittent, whether other layers in the same service answer, and whether production's copy behaves the same. If it
+   is the service, it is a GIS-team fault: file it, and add the entry to `environments.json` that keeps it visible
+   without turning the suite red.
+2. **The empty filters** (3 failures: business-parking, contractor-parking, permit-select-freshman). For example
+   `Only UB+ Permit Authorized`, whose filter selects none of the 90 features its service holds. Ask the service: do the
+   fields exist, and how many records carry each value? This is the #1961 and #2500 shape, so **do not change a filter to
+   one that is also empty** — if the data is missing, that is the GIS team's.
+3. **The 60-second draw timeouts** (2 failures: Lot 100g on `/events/nsc-parking` and `/events/break-summer`). Open both
+   pages and time them. If they genuinely take over a minute, that is a performance issue worth its own issue with the
+   measurement in it, not a flaky test.
+4. **The `basemap-requests` assumption** (1 failure). 2 of 10 loads of `/map/d` sent **zero** queries to the campus
+   features service, so the check failed on its own premise before measuring anything. Find out whether a load can
+   legitimately send none (caching between loads in one context, or the tile cache alone being enough at that extent). If
+   it can, the check needs to say so rather than fail.
+5. **`layer-order` on `/parking/indoor-track-parking`** (3 failures, all 3 loads). The only `layer-order` failure that did
+   not pass on some load, so the only one that looks real. muster and graduation-spring appear among the flaky.
+6. **Nature Rx search** (2 failures) and **`perspective.spec.ts` 3D buildings** (flaky). Check against the open Nature Rx
+   issues first — these may already be filed, and rule 4 says prove it before building.
+
+**Then say, in one table in your report, which of the 17 would still be red after everything you filed**, and what each
+needs. That table is what the maintainer reads to decide whether the release goes.
+
+**Do not touch `environments.json` without saying so loudly in the report** — the security chat may add a `#3265` entry
+there tonight and PR 3334 already adds `allowedOutboundLinkFailures` to it. If you need an entry, make it its own commit
+so a conflict is a two-line "keep both".
+
+**Do not run a release or full tier.** `one <spec>` against dev is what you need, and the specs are named in #3355.
+**Roughly 2 hours**, and it is fine to report partway with what you have if you reach the end of your night.
+
 ## Batch g95 (gisday: #3325 and #3331, two small shared pieces from the one-off scan; 24 November 2026, about 1:15 AM Central, from `work (gisday)`) (Low) - **after g94**
 
 Two branches, each behind its existing callers' interfaces, output unchanged:
