@@ -1,3 +1,4 @@
+@import 'libs/sass/variables';
 @import 'libs/gisday/sass/variables';
 @import 'libs/sass/mixins';
 @import 'libs/gisday/sass/class-banner';
@@ -2635,7 +2636,7 @@ nav#section-nav a:hover {
     font-size: 3.5rem;
     font-family: $title-font;
     line-height: 1;
-    color: #500000;
+    color: $aggie-maroon;
 
     &.small {
       font-size: 1.75rem;
@@ -2653,7 +2654,7 @@ nav#section-nav a:hover {
 }
 
 .competition-winner {
-  border: 1px solid #500000;
+  border: 1px solid $aggie-maroon;
   border-radius: 5px;
   padding: 1.5rem 1rem;
   margin-bottom: 2rem;
@@ -2711,7 +2712,7 @@ nav#section-nav a:hover {
   .progress-bar {
     height: 2px;
     width: 100%;
-    background: #500000;
+    background: $aggie-maroon;
   }
 }
 
