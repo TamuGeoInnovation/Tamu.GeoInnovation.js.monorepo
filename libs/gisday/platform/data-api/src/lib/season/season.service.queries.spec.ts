@@ -109,12 +109,11 @@ describe('SeasonService queries, built by typeorm', () => {
     await expect(service.getPreviousSeason()).resolves.toBeUndefined();
   });
 
-  // clonePreviousSeason: `const where = { season: last }` (season.service.ts line 228) hands the whole loaded season to
-  // every find that copies its days, broadcasts, classes, tags and the rest. Its deadlines are null until an admin sets
-  // them, and typeorm 1 refuses a null inside a where value while building the first of those finds (the season's days):
-  // "Null value encountered in property 'e__e_season.posterSubmissionsCloseAt' of a where condition. To match with SQL
-  // NULL, the IsNull() operator must be used." Marked failing until the provider is fixed; then it passes, and this fails.
-  it.failing('clones the latest season into the next year', async () => {
+  // clonePreviousSeason used to hand the whole loaded season to every find that copies its days, broadcasts, classes,
+  // tags and the rest. Its deadlines are null until an admin sets them, and typeorm 1 refuses a null inside a where value
+  // ("Null value encountered in property 'e__e_season.posterSubmissionsCloseAt' of a where condition"), so creating the
+  // next season answered 500. This found it (#3302, fixed in PR 3307).
+  it('clones the latest season into the next year', async () => {
     // Not active, so the clone does not first save it; the season it saves goes through the entity's own repository.
     answering(seasonRepo, 'find', [loadedSeason({ active: false })]);
 
