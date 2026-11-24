@@ -144,7 +144,11 @@ describe.each([
 /** A form's own save and delete, by the names it has: the season form has no create, and saves with updateEntity. */
 type Acts = { create?: (f: Form) => void; update: (f: Form) => void; delete: (f: Form) => void };
 
-const submitted: Acts = { create: (f) => f.handleSubmission(), update: (f) => f.handleSubmission(), delete: (f) => f.deleteEntity() };
+const submitted: Acts = {
+  create: (f) => f.handleSubmission(),
+  update: (f) => f.handleSubmission(),
+  delete: (f) => f.deleteEntity()
+};
 
 // The event form sends only a complete event (#1773); its save is reached past that check, which is not what is pinned.
 const eventSaves = (f: Form) => (f as unknown as { _createEntity(): void })._createEntity();
@@ -162,9 +166,16 @@ describe.each([
   {
     name: 'season',
     page: SeasonAddEditFormComponent,
-    acts: { update: (f: Form) => (f as unknown as { updateEntity(): void }).updateEntity(), delete: (f: Form) => f.deleteEntity() }
+    acts: {
+      update: (f: Form) => (f as unknown as { updateEntity(): void }).updateEntity(),
+      delete: (f: Form) => f.deleteEntity()
+    }
   },
-  { name: 'event', page: EventAddEditFormComponent, acts: { create: eventSaves, update: eventUpdates, delete: (f: Form) => f.deleteEntity() } }
+  {
+    name: 'event',
+    page: EventAddEditFormComponent,
+    acts: { create: eventSaves, update: eventUpdates, delete: (f: Form) => f.deleteEntity() }
+  }
 ] as Array<{ name: string; page: Type<Form>; acts: Acts }>)('the $name form says (#3382)', ({ name, page, acts }) => {
   it('after each action, worked, refused and refused with a reason', () => {
     const toasts: Record<string, Array<Toast>> = {};

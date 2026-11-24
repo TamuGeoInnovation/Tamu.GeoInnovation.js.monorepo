@@ -135,5 +135,4 @@ export class SeasonAddEditFormComponent implements OnInit {
 
     this.form.markAllAsTouched();
   }
-
 }

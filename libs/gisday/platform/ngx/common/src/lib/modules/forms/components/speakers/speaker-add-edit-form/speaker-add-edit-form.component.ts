@@ -215,5 +215,4 @@ export class SpeakerAddEditFormComponent implements OnInit {
   public deleteEntity() {
     this.saves.save('delete', this.ss.deleteEntity(this.form.getRawValue().guid));
   }
-
 }
