@@ -278,7 +278,16 @@ export async function zipOfFiles(
     throw new NotFoundException(allMissing);
   }
 
-  const stream = zip.generateNodeStream({ type: 'nodebuffer', streamFiles: true, compression: 'STORE' }) as Readable;
+  return streamedZip(zip, name);
+}
+
+/**
+ * A zip, streamed to the browser as an attachment named `name`: shared by every download built as one (#2933, #3174),
+ * and the VGI export (#545). Stored, not compressed, unless asked: photos, PowerPoint and PDF are already compressed,
+ * and storing streams each entry through as it is.
+ */
+export function streamedZip(zip: JSZip, name: string, compression: 'STORE' | 'DEFLATE' = 'STORE'): StreamableFile {
+  const stream = zip.generateNodeStream({ type: 'nodebuffer', streamFiles: true, compression }) as Readable;
 
   return new StreamableFile(stream, { type: 'application/zip', disposition: attachment(name) });
 }
