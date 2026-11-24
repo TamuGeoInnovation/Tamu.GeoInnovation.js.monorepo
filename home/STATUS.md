@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle, listening.
+- **Batch g104 (gisday: code-only triage of #434, #435, #438, #493, #499, #1038)**, since about 2:40 AM Central, 24 November.
 
 ## Finished
 - **Batch g103 (gisday: #3321)** (report `home/reports/2026-11-24-g103.md`): branch ready, `feat/3321-papers-dates` at `d7605c8a7`, stacked on PR 3322; its PR waits for the laptop's images. Deadline and finalists date from the season, 2020's text gone. Red first, check exit 0. One question (the page is 2020's Presentation copy, linked from nowhere). Finished 2:35 AM Central.
