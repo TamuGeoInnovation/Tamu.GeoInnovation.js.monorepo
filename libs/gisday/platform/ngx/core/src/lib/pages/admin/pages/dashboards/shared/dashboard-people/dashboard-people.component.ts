@@ -1,11 +1,9 @@
 import { Component, computed, input } from '@angular/core';
 import { DatePipe } from '@angular/common';
 
-import * as Papa from 'papaparse';
-
 import { RSVP_PERSON_TYPES, RsvpPersonType } from '@tamu-gisc/gisday/common';
 import type { RsvpDashboardPerson } from '@tamu-gisc/gisday/platform/data-api';
-import { downloadFile } from '@tamu-gisc/common/utils/ui';
+import { downloadFile, toCsv } from '@tamu-gisc/common/utils/ui';
 
 import type { DashboardTableColumn } from '../dashboard-table/dashboard-table.component';
 import { DashboardScrollComponent } from '../dashboard-scroll/dashboard-scroll.component';
@@ -69,7 +67,7 @@ export function peopleCsv(
     }))
   );
 
-  return Papa.unparse(rows, { columns });
+  return toCsv(columns, rows);
 }
 
 /**
