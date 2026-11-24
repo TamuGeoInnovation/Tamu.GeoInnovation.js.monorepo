@@ -106,7 +106,7 @@ Branch `test/3285-outbound-links`, `.pr-body.md` from `.github/pull_request_temp
 `no-visible-change` label named in it. **Roughly 90 minutes.** If the design fights you, put what you tried under
 **Questions for the director (aggiemap)** with a recommendation and move to batch a2 - do not wait for an answer.
 
-## Batch g90 (gisday: #3062, scan GIS Day for one-offs that break reuse-before-building; 23 November 2026, about 10:15 PM Central, from `work (gisday)`) (Low) - **after g89**
+## Batch g90 (gisday: #3062, scan GIS Day for one-offs that break reuse-before-building; 23 November 2026, about 10:15 PM Central, from `work (gisday)`) (Low) - **WITHDRAWN, moved to work (the GIS Day director does it itself), 10:55 PM Central: rule 3 of DIRECTOR.md's overnight section, home is nine deep**
 
 [#3062](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3062), read only, **GIS Day's libraries and apps only** (`libs/gisday/**`, `apps/gisday-*`). Look for the tell CLAUDE.md
 names: two pieces of code that would both need changing to fix one bug. A table of what you find (the pieces, where, how alike,
@@ -114,7 +114,7 @@ what one shared piece would be), each with a recommendation; file each real one 
 assignee `danielgoldbergtamu`; the director sets Priority and the project) and list them. Build nothing in this batch.
 Report `home/reports/2026-11-24-g90.md`.
 
-## Batch g89 (gisday: triage the 2022-era GIS Day backlog, #434 to #499; 23 November 2026, about 10:15 PM Central, from `work (gisday)`) (Low) - **after g88**
+## Batch g89 (gisday: triage the 2022-era GIS Day backlog, #434 to #499; 23 November 2026, about 10:15 PM Central, from `work (gisday)`) (Low) - **WITHDRAWN, moved to work (the GIS Day director does it itself), 10:55 PM Central: rule 3 of DIRECTOR.md's overnight section, home is nine deep**
 
 Fourteen GIS Day issues from 2022 sit open with no status: [#434](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/434), [#435](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/435), [#438](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/438), [#439](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/439), [#440](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/440), [#441](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/441), [#442](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/442), [#464](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/464), [#466](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/466), [#477](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/477), [#493](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/493), [#497](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/497), [#498](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/498), [#499](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/499).
 Much has changed since. For each, read it, check today's code (and, for a public page, production with a browser, read only),
@@ -136,6 +136,8 @@ inside gisday-angular), without sending a second page view on top of gtag's own,
 reaches Analytics. A test that an event reaches `gtag`, red first. No visible change. The maintainer is asleep and asked for everything to reach a pull request without him. So: decide what you can from the code and the records, choose the conservative option when a choice is needed, and put any real decision in your report as a question with options and a recommendation, then carry on with the rest. Made-up data only, no email, never production, txgisday-dev the only Auth0 tenant, kubernetes-config read-only. Each branch from the latest `development`, red first where a test can show it, the check, a push to the fork, `app: gisday` in any release entry, and "branch ready: <name>" with the PR body text in the report.
 Report `home/reports/2026-11-24-g88.md`.
 
+**Overnight rule 1 (DIRECTOR.md, added 10:55 PM Central): do not touch `package.json` or `package-lock.json`.** If a dependency is used only by what this batch removes or replaces, leave it in place and list it in the report; the security chat removes it later.
+
 ## Batch g87 (gisday: #2232 and #1609, retire gisday-competitions-nest and gisday-competitions-angular; 23 November 2026, about 10:15 PM Central, from `work (gisday)`) (Medium) - **after g86**
 
 [#2232](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2232) and [#1609](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1609) are the same job; #2232 has the evidence that nothing deploys or serves either app. Branch
@@ -144,11 +146,13 @@ Report `home/reports/2026-11-24-g88.md`.
    in `gisday-angular` or `gisday-nest` importing from either app. If any of that is false, stop and report it.
 2. **Delete** both apps and every reference to them (workspace config, CI lists, the smoke and e2e projects, docs that list them,
    `.github/dependabot.yml`), keeping the competitions **libraries**, which `gisday-angular` and `gisday-nest` use. Anything only
-   those two apps used goes too, but list each library or dependency you remove and why.
+   those two apps used goes too (libraries, not npm dependencies: see the rule below), listing each and why.
 3. **The full affected check**, then push. The PR closes #2232; say in its body that #1609 is the same work, and close-keyword
    only #2232 (the director closes #1609 after the merge).
 The maintainer is asleep and asked for everything to reach a pull request without him. So: decide what you can from the code and the records, choose the conservative option when a choice is needed, and put any real decision in your report as a question with options and a recommendation, then carry on with the rest. Made-up data only, no email, never production, txgisday-dev the only Auth0 tenant, kubernetes-config read-only. Each branch from the latest `development`, red first where a test can show it, the check, a push to the fork, `app: gisday` in any release entry, and "branch ready: <name>" with the PR body text in the report.
 Report `home/reports/2026-11-24-g87.md`.
+
+**Overnight rule 1 (DIRECTOR.md, added 10:55 PM Central): do not touch `package.json` or `package-lock.json`.** If a dependency is used only by what this batch removes or replaces, leave it in place and list it in the report; the security chat removes it later.
 
 ## Batch 86 (gisday: the rest of #3019, each competition's sessions and finalists date on the season; 23 November 2026, about 9:45 PM Central, from `work (gisday)`) (Low) - **after 85**
 
