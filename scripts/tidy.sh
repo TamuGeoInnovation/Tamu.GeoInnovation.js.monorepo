@@ -97,22 +97,73 @@ fi
 
 worktrees="$(grep -c . "$tmp/worktrees-clean" || true)"
 volumes="$(grep -c . "$tmp/volumes-removable" || true)"
-echo "Removable: $worktrees worktree(s) (about $((worktrees * 589 / 1024)) GiB), $volumes volume(s) (about $((volumes * 27 / 10)) GiB inside the Docker disk image)."
+echo "Removable: $volumes volume(s) (about $((volumes * 27 / 10)) GiB inside the Docker disk image), $worktrees worktree(s) (about $((worktrees * 589 / 1024)) GiB on this disk)."
 
 if [ "$act" != yes ]; then
   echo "Nothing removed. Run '$0 --yes' to remove them."
   exit 0
 fi
 
-while IFS= read -r path; do
-  [ -n "$path" ] || continue
-  git -C "$main" worktree remove --force "$path" && echo "  removed worktree $path"
-done < "$tmp/worktrees-clean"
-git -C "$main" worktree prune
+# Progress, because the slow phases used to be the silent ones. Prints how far through, how long it has
+# taken and roughly how long is left, as scripts/check-in-volume.sh reports its own runs (#3400).
+progress() {
+  local done="$1" total="$2" what="$3" started="$4" elapsed left
+  elapsed=$(( $(date +%s) - started ))
+  left=$(( done > 0 ? elapsed * (total - done) / done : 0 ))
+  printf '  [%d/%d] %s  %dm%02ds elapsed, ~%dm left
+'     "$done" "$total" "$what" "$((elapsed / 60))" "$((elapsed % 60))" "$((left / 60))"
+}
 
-while IFS= read -r volume; do
-  [ -n "$volume" ] || continue
-  docker volume rm "$volume" >/dev/null && echo "  removed volume $volume"
-done < "$tmp/volumes-removable"
+failures=0
+
+# VOLUMES FIRST, deliberately. On 24 November 2026 the worktree phase ran first and 747 GiB of volumes sat
+# behind 12 GiB of worktrees: volumes clear at roughly 6 GiB a minute and worktrees at 0.1, because a
+# worktree is thousands of small files and Windows is slow at exactly that. Biggest win first (#3400).
+if [ "$volumes" -gt 0 ]; then
+  echo "Removing $volumes volume(s). Space is freed INSIDE the Docker disk image; compact it afterwards."
+  started=$(date +%s)
+  n=0
+  while IFS= read -r volume; do
+    [ -n "$volume" ] || continue
+    n=$((n + 1))
+    if docker volume rm "$volume" >/dev/null 2>&1; then
+      progress "$n" "$volumes" "$volume" "$started"
+    else
+      progress "$n" "$volumes" "$volume - COULD NOT REMOVE (in use?)" "$started"
+      failures=$((failures + 1))
+    fi
+  done < "$tmp/volumes-removable"
+fi
+
+if [ "$worktrees" -gt 0 ]; then
+  echo "Removing $worktrees worktree(s)."
+  started=$(date +%s)
+  n=0
+  : > "$tmp/worktree-failures"
+  while IFS= read -r path; do
+    [ -n "$path" ] || continue
+    n=$((n + 1))
+    if git -C "$main" worktree remove --force "$path" 2>"$tmp/err"; then
+      progress "$n" "$worktrees" "$path" "$started"
+    else
+      # Windows refuses a path over 260 characters, and the ArcGIS runtime nests past it by a single
+      # character, so git cannot delete what Windows will not open. Report it rather than scroll past it
+      # (#3400); `git config --system core.longpaths true` is the general cure.
+      progress "$n" "$worktrees" "$path - COULD NOT REMOVE" "$started"
+      printf '%s: %s
+' "$path" "$(tr -d '
+' < "$tmp/err")" >> "$tmp/worktree-failures"
+      failures=$((failures + 1))
+    fi
+  done < "$tmp/worktrees-clean"
+  git -C "$main" worktree prune
+fi
+
+if [ "$failures" -gt 0 ]; then
+  echo
+  echo "$failures could not be removed:"
+  [ -s "$tmp/worktree-failures" ] && sed 's/^/  /' "$tmp/worktree-failures"
+  echo "  A worktree whose longest path is over 260 characters needs 'git config --system core.longpaths true'."
+fi
 
 echo "Done. Removing a volume frees space inside the Docker disk image; compact it to give the space back to C:."
