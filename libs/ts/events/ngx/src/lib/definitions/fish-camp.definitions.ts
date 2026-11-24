@@ -1,14 +1,13 @@
 import { FeatureLayerSourceProperties, LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import esri = __esri;
-
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 import { EventPopups } from '../modules/popups/popups';
+import { arrowLineSymbol } from './common.definitions';
 
 export enum FISH_CAMP_LAYERS {
   ARRIVAL_GROUP = 'fish-camp-arrival-group',
@@ -89,24 +88,13 @@ const routesNative: NonNullable<FeatureLayerSourceProperties['native']> = {
     uniqueValueInfos: [
       {
         value: 'Preferred Vehicle Route',
-        symbol: {
-          type: 'simple-line',
-          color: [0, 115, 76, 255],
-          width: 4,
-          marker: { type: 'line-marker', style: 'arrow', color: [0, 115, 76, 255], placement: 'end' }
-        } as unknown as esri.SimpleLineSymbolProperties
+        symbol: arrowLineSymbol({ color: [0, 115, 76, 255], width: 4 })
       },
       {
         value: 'Preferred Walking Route',
         // Walking routes read as a dashed line (vehicle routes stay solid) to visually
         // distinguish pedestrian travel; keep the end arrowhead to show direction.
-        symbol: {
-          type: 'simple-line',
-          color: [0, 92, 230, 255],
-          width: 3,
-          style: 'dash',
-          marker: { type: 'line-marker', style: 'arrow', color: [0, 92, 230, 255], placement: 'end' }
-        } as unknown as esri.SimpleLineSymbolProperties
+        symbol: arrowLineSymbol({ color: [0, 92, 230, 255], width: 3, style: 'dash' })
       }
     ]
   }
