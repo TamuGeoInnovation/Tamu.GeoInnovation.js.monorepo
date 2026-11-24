@@ -196,4 +196,28 @@ describe('AdminSubmissionsComponent counts (#3244)', () => {
 
     expect(cells()).toEqual(before);
   });
+
+  // On a 360 or 390 px phone the table is 377 px wide at its narrowest, every heading one word, and the page's column
+  // about 330 px: the page scrolled sideways (the laptop's report 4). The table now scrolls in the admin dashboards' own
+  // box, whose specs show it scrolls content wider than itself, so the page does not.
+  it('puts the table in the shared scroll box, so on a phone the table scrolls and the page does not', async () => {
+    TestBed.configureTestingModule({
+      imports: [AdminSubmissionsComponent],
+      providers: [
+        { provide: SubmissionService, useValue: { getAdminSubmissions: () => of(rows), publishToArcgis: jest.fn() } },
+        { provide: LeaderboardService, useValue: { getScoresForActive: () => of([]) } }
+      ]
+    });
+
+    const fixture = TestBed.createComponent(AdminSubmissionsComponent);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const table = (fixture.nativeElement as HTMLElement).querySelector('table.submission-counts');
+
+    expect(table.closest('tamu-gisc-dashboard-scroll')).not.toBeNull();
+    // Inside the box's own element that scrolls sideways, not beside it.
+    expect(table.parentElement.classList).toContain('dashboard-scroll');
+  });
 });
