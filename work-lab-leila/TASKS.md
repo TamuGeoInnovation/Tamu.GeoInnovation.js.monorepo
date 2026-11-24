@@ -81,6 +81,35 @@
 > email as it arrives if you can show one locally without sending to anyone real. Report each "branch ready" as you go.
 
 
+## Batch 200 (security: #1457, the unused-components table refreshed; 24 November 2026, from `work (security)`) (Low) - **after 199**
+
+[#1457](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1457) (with #2122, merged as PR 3356 today, and #1899). Read all three to the end first, including what was decided to keep.
+- On today's `development`: every project (`nx show projects`) with no importer and no deployment, every exported component, service or
+  pipe nothing imports, and every `package.json` dependency nothing imports or runs. One table, each row with the evidence (the search
+  you ran) and whether an earlier decision already covers it.
+- Build a deletion branch only where an issue already records the decision to remove it: one branch per issue, red-free (a build of
+  every affected app), full check, push, "branch ready" with the PR body from the template. Everything else is a row with options and a
+  recommendation for the director; don't delete it.
+- Any `package.json` or lock change: only the removed packages may leave the lock.
+Report `work-lab-leila/reports/2026-11-24-200.md`.
+
+## Batch 199 (security: #1218, the latest-versions table, and Node 24's newest patch; 24 November 2026, from `work (security)`) (Low) - **now**
+
+[#1218](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1218). Dependabot now takes every non-major once it is 7 days old, so what is left behind should be majors, held
+packages and anything Dependabot cannot see.
+- On today's `development`, `npm outdated` (in the volume, not the host). One table: package, ours, wanted, latest, the latest's
+  release date (US Central), at least 7 days old or not, major or not, and why it is behind (held in `.github/dependabot.yml`, a major,
+  a peer that pins it, or none found). Anything non-major, 7 days old and behind with no reason found is a finding: say why Dependabot missed it.
+- For each major that is at least 7 days old: what breaks (changelog read, and a scratch upgrade plus build of the affected projects),
+  and a size: no code change, small, or its own project. **Build a branch only for "no code change" majors**, one branch per package or
+  family, from the latest `development`, full check with a clean `npm ci`, the lock moving only that package and its own dependencies.
+  Push, "branch ready" with the PR body from the template. The rest are rows with options and a recommendation; don't build them.
+  Node and Nx majors stay held, as `dependabot.yml` says.
+- **Node 24's newest patch:** `node:24.22.1` is pinned in CLAUDE.md, CLAUDE_SETUP.md, the workflows (`node-version`), Dockerfiles,
+  scripts and `dependabot.yml`'s comments. If a newer 24.x is at least 7 days old, one branch moving every reference together
+  (`git grep -n 24.22.1` to find them; list each file in the PR body), full check. If not, say so.
+Report `work-lab-leila/reports/2026-11-24-199.md`.
+
 ## Batch 199 (gisday: four follow-ups from this morning's PRs, #3397, #3398, #3396, #3399; 24 November 2026, from `work (gisday)`) (Medium) - **now**
 
 Four small bugs the laptop found while photographing PRs 3392, 3394 and 3395, all now merged. Read each issue to the end first.
