@@ -81,6 +81,36 @@
 > email as it arrives if you can show one locally without sending to anyone real. Report each "branch ready" as you go.
 
 
+## Batch 199 (gisday: four follow-ups from this morning's PRs, #3397, #3398, #3396, #3399; 24 November 2026, from `work (gisday)`) (Medium) - **now**
+
+Four small bugs the laptop found while photographing PRs 3392, 3394 and 3395, all now merged. Read each issue to the end first.
+**Rule 4:** confirm each is still there on today's `development` before building; if one is not, say so and skip it. One branch per
+issue from the latest `development`, in this order:
+
+1. **[#3397](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3397) (Medium)**, `fix/3397-in-use-delete-reason`:
+   deleting a place or a speaker that is still in use answers a bare 500. It should answer a 4xx naming what still uses it, as the other
+   admin entities' deletes do; **reuse whatever they use**, no new pattern. Red first: a provider or queries spec deleting an in-use place
+   and an in-use speaker, expecting the refusal with its reason.
+2. **[#3398](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3398) (Low)**, `fix/3398-place-delete-label`:
+   the place form's delete button says "Delete Organization". Red first: a spec on the button's text.
+3. **[#3396](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3396) (Low)**, `fix/3396-hidden-session-not-found`:
+   signed out, a hidden session's own page is blank. It should show the site's existing not-found message (find it; do not write one).
+   Red first.
+4. **[#3399](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3399) (Low)**, `feat/3399-organization-in-address`:
+   the admin Events list's Organization choice is not kept in the address. Keep it the way the list's other filters are kept (the
+   season picker, `BaseAdminListComponent`'s filters), restored on load. Red first.
+
+For each: prove the test red on unmodified code, then green; `scripts/check-in-volume.sh <branch> <projects it edits>,gisday-angular`,
+read its `Exit` line; push to the fork `danielgoldbergtamu`; never force-push. **Images:** #3397's refused delete with its reason on the
+admin form, #3398's button, #3396's page signed out, and #3399's choice surviving a reload, before (merge-base) and after, at 1280 and
+390, made-up records only in your local scratch database, to `docs/screenshots/<issue>-<slug>/`, with a
+`docs/releases/unreleased/<issue>-<slug>.md` entry and `collate --check`. A `.pr-body.md` draft from `.github/pull_request_template.md`
+as each branch's last commit, every section filled in. No PRs; nothing on GitHub but the push. Nobody but the security chat touches
+`package.json` or the lock.
+
+Report `work-lab-leila/reports/2026-11-24-199.md`: "branch ready: <names>" first, then per branch its commits, the red and green runs,
+the check's exit line and the image table.
+
 ## PAUSED (23 November 2026, about 4:50 PM Central, the maintainer): run no new batch
 
 A student is using this machine. Finish anything already running, report it, and then take nothing from this file until
