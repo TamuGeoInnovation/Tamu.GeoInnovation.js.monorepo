@@ -23,6 +23,7 @@ function bare<T extends object>(type: { prototype: T }, seasons: object, repo: o
     seasonProvider: seasons,
     ss: seasons,
     repo,
+    records: repo,
     eb: repo
   }) as T;
 }
