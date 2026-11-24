@@ -3,15 +3,16 @@ import JSZip from 'jszip';
 
 import { ExportService } from './export.service';
 
-/** The bytes a streamed file sends. */
-async function bytesOf(file: StreamableFile): Promise<Buffer> {
-  const chunks: Array<Buffer> = [];
+/** The bytes a streamed file sends, read by its events: JSZip's node stream is not async-iterable. */
+function bytesOf(file: StreamableFile): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    const chunks: Array<Buffer> = [];
+    const stream = file.getStream();
 
-  for await (const chunk of file.getStream()) {
-    chunks.push(Buffer.from(chunk));
-  }
-
-  return Buffer.concat(chunks);
+    stream.on('data', (chunk) => chunks.push(Buffer.from(chunk)));
+    stream.on('end', () => resolve(Buffer.concat(chunks)));
+    stream.on('error', reject);
+  });
 }
 
 const repo = (answers: Record<string, unknown>) =>
