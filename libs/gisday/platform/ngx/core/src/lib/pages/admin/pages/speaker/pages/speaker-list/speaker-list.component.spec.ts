@@ -21,7 +21,16 @@ describe('SpeakerListComponent, the profile email', () => {
       imports: [SpeakerListComponent],
       providers: [
         provideRouter([]),
-        { provide: SpeakerService, useValue: { getEntitiesForActiveSeason: () => of(speakers), getEntitiesForSeason: () => of(speakers), getEntities: () => of(speakers) } },
+        {
+          provide: SpeakerService,
+          useValue: {
+            getEntitiesForActiveSeason: () => of(speakers),
+            getEntitiesForSeason: () => of(speakers),
+            getEntitiesWithSessionsForActiveSeason: () => of(speakers),
+            getEntitiesWithSessionsForSeason: () => of(speakers),
+            getEntities: () => of(speakers)
+          }
+        },
         { provide: SpeakerEditsService, useValue: speakerEdits },
         { provide: SeasonService, useValue: { seasons$: of([]), activeSeason$: of(null) } },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
@@ -75,13 +84,24 @@ describe('SpeakerListComponent, the sessions each speaker is in (#441)', () => {
     },
     { guid: 'sp-2', firstName: 'Ben', lastName: 'Ortiz', events: [] }
   ];
+  const withoutSessions = speakers.map((speaker) => ({ ...speaker, events: undefined }));
 
   function open() {
     TestBed.configureTestingModule({
       imports: [SpeakerListComponent],
       providers: [
         provideRouter([]),
-        { provide: SpeakerService, useValue: { getEntitiesForActiveSeason: () => of(speakers), getEntitiesForSeason: () => of(speakers), getEntities: () => of(speakers) } },
+        // The public season list has no sessions (#441): only the admin list's own route, behind update:speakers, has them.
+        {
+          provide: SpeakerService,
+          useValue: {
+            getEntitiesForActiveSeason: () => of(withoutSessions),
+            getEntitiesForSeason: () => of(withoutSessions),
+            getEntitiesWithSessionsForActiveSeason: () => of(speakers),
+            getEntitiesWithSessionsForSeason: () => of(speakers),
+            getEntities: () => of(withoutSessions)
+          }
+        },
         { provide: SpeakerEditsService, useValue: {} },
         { provide: SeasonService, useValue: { seasons$: of([]), activeSeason$: of(null) } },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },

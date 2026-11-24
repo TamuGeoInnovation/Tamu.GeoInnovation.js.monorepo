@@ -80,20 +80,26 @@ describe('SpeakerProvider queries, built by typeorm', () => {
     await expect(provider.getSpeakersForSeason('s-1')).resolves.toEqual([]);
   });
 
-  // The admin Speakers list shows each speaker's sessions that season, so a speaker copied into a season with no session
-  // there can be told from one who speaks (#441, #439). A speaker belongs to one season, so their events are that season's.
-  it("lists a season's speakers with the sessions they are in", async () => {
+  /** The SQL of every speaker find a call makes, as typeorm builds it. */
+  function speakerQueries() {
     const queries: Array<string> = [];
     const find = speakerRepo.find.bind(speakerRepo);
     speakerRepo.find = async (options) => (
       queries.push(speakerRepo.createQueryBuilder().setFindOptions(options ?? {}).getQuery()), find(options)
     );
 
+    return queries;
+  }
+
+  // The public season list (`GET speakers/season/:guid`) must not name a session hidden from the public schedule, so it
+  // does not load a speaker's sessions; only the admin list's own route does (#441).
+  it("lists a season's speakers without their sessions, for the public pages", async () => {
+    const queries = speakerQueries();
+
     await provider.getSpeakersForSeason('s-1');
 
     expect(queries).toHaveLength(1);
-    expect(queries[0]).toMatch(/JOIN "event_speakers"/);
-    expect(queries[0]).toMatch(/JOIN "events"/);
+    expect(queries[0]).not.toMatch(/"event_speakers"|JOIN "events"/);
   });
 
   it('finds a presenter with their events in day and time order', async () => {
