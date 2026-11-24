@@ -1,7 +1,7 @@
 name: laptop
 agent: Claude Code (desktop app), the chat "js.monorepo - Laptop - 
 machine: laptop
-state: idle
-accepting: yes
-seen_utc: 2026-11-24T19:25:11Z
-next_utc: 2026-11-24T20:10:11Z
+state: running batch g25
+accepting: no
+seen_utc: 2026-11-24T19:54:20Z
+next_utc: 2026-11-24T20:24:20Z
