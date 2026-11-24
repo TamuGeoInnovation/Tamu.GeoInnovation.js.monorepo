@@ -5,7 +5,7 @@
 
 Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
-Last batch done: 12
+Last batch done: 13
 
 ## What this is
 
@@ -33,9 +33,10 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch 13 (gisday: #3314, check-ins by hour)**, started 10:38 PM Central. Branched from `feat/2893-check-ins-dashboard-rest` (#2893 has not merged). Red first (8 new tests failed as intended), built, images taken. Now (11:10 PM): re-running the projects the full check lost to memory kills, alone. Next update by 11:45 PM Central.
+- **Batch g14 (gisday: #1756, the date picker off screen at phone width)**, starting 11:40 PM Central. Next update by 12:30 AM Central.
 
 ## Finished
+- **Batch 13 (gisday: #3314 check-ins by hour)** (report `laptop/reports/2026-11-23-13.md`): branch ready, `feat/3314-check-ins-by-hour` on the fork at `130797f00`, **stacked on #2893's branch**. The shared line chart gains an `interval` (day or hour) rather than a second chart. Red first (exactly 8 failed). Every affected project passed, though the full check lost five tasks to memory kills and they passed re-run alone. Images at 1280 and 390. No questions.
 - **Batch 11 (gisday: #2893 images)** (report `laptop/reports/2026-11-23-11.md`): **images pushed (2893): `bd9fde1b7`**, a fast-forward. Five images (before and after at 1280, an opened event, after at 390), the release entry's table and `app: gisday`. Counts match the made-up seed; the outside-time mark shows once after, never before. No questions.
 - **Batch 12 (gisday: #3244 phone images)** (report `laptop/reports/2026-11-23-12.md`): **images pushed (3244): `d60ebab0d`**, a fast-forward. The page is 360 and 390 wide at those widths; the table scrolls in its own box.
 - **Batch 9 (aggiemap: #3150, #3149)** (report `laptop/reports/2026-11-23-9.md`): two branches ready, `fix/3150-bus-route-phone` (`a3f5220c5`) and `fix/3149-phone-directions` (`fa868e398`). Both proven on a phone first, red first, with images; #3149 check exit 0. **Found and filed #3319**: the stop search's back arrow (the issue's "correct" `./trip`) went to the main map; fixed with #3149's link. **Two questions.**
@@ -77,7 +78,7 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 
 ## Queued
 - **a11 (aggiemap: #3271) is held**, not started: `work (aggiemap)` (the CSA 305 session) said at about 11:15 PM Central, by a session message because the work computer cannot write to git (disk full, #3365), that #3271 is very likely the dev parking-service split fixed by #3358, provable only once a build with #3358 reaches dev. A fresh batch will replace it.
-- Then, in the order they arrived: g14 (gisday: #1756), g15 (gisday: backlog #521 to #567), g16 (gisday: #441 signed-in images). Batch 10 was withdrawn, moved to home a1.
+- Then, in the order they arrived: g15 (gisday: backlog #521 to #567), g16 (gisday: #441 signed-in images). Batch 10 was withdrawn, moved to home a1.
 
 ## Findings
 - `work/tools/gisday-release-check.cjs` clicks Auth0's Accept by itself. A read-only sign-in check would suit machines that only need to prove sign-in.
