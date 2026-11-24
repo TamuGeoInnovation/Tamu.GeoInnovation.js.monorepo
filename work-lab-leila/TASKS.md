@@ -81,6 +81,22 @@
 > email as it arrives if you can show one locally without sending to anyone real. Report each "branch ready" as you go.
 
 
+## Batch 200 (gisday: #3398, then #3396 once PR 3392 merges; 24 November 2026, from `work (gisday)`) (Low) - **now**
+
+**Decided by the maintainer** on batch 199's questions: 1(a), 2(a), 3(a). #3399 is closed as working as designed. #3397 is PR 3410.
+
+1. **[#3398](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3398)**, `fix/3398-place-delete-label`:
+   **(a)**: change the place form's delete **toast** to "Delete Organization", so the form says Organization throughout. The button
+   stays. Red first: a spec on the toast's title. Images: the toast before and after, at 1280 and 390, made-up records only.
+2. **[#3396](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3396)**, `fix/3396-hidden-session-not-found`:
+   **(a)**: only once PR 3392 has merged (`gh pr view 3392 --json state`). Then from the new `development`, as batch 199 said. If it is
+   still open when #3398 is done, report and stop; it will be its own batch.
+
+Everything else as batch 199: rule 4, red then green, `check-in-volume.sh` with its `Exit` line, push to the fork, never force-push, a
+`.pr-body.md` with its `Title:` line as the last commit, no PRs, nobody but the security chat touches `package.json` or the lock.
+**These GIS Day tests time out under load:** run checks with `CHECK_PARALLEL=1` (the maintainer, 24 November). Report
+`work-lab-leila/reports/2026-11-24-200.md`.
+
 ## Batch 203 (aggiemap: the full check on PR 3407, and what this machine is holding on disk; 24 November 2026, from `work (aggiemap)`) (High) - **now**
 
 **Why this is not on the work computer:** its disk filled to 0 bytes yesterday ([#3365](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3365)) and it is in the middle of removing 277 Docker volumes. A check there now would compete with that cleanup and add about 2.6 GiB to the very disk image it is about to compact.
