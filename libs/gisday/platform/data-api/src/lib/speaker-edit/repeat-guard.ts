@@ -125,7 +125,9 @@ export async function sendEach<S extends { guid: string }>(
  * The earliest of some claims: by when, then by id, so every copy of the API picks the same one. The profile email's
  * links are claimed the same way (#3326).
  */
-export function firstOf(rows: Array<Pick<SpeakerEmailClaim, 'guid' | 'created'>>): Pick<SpeakerEmailClaim, 'guid' | 'created'> {
+export function firstOf(
+  rows: Array<Pick<SpeakerEmailClaim, 'guid' | 'created'>>
+): Pick<SpeakerEmailClaim, 'guid' | 'created'> {
   return [...rows].sort(
     (a, b) => new Date(a.created).getTime() - new Date(b.created).getTime() || a.guid.localeCompare(b.guid)
   )[0];

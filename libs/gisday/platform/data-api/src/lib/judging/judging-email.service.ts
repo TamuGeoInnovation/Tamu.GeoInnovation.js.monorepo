@@ -176,7 +176,10 @@ export class JudgingEmailService {
         },
         sent: (group) => this.sendLog?.record(group, JUDGING_EMAIL_KIND, session.guid, from.from),
         failed: ([judge], err) =>
-          Logger.error(`Could not ask speaker ${judge.guid} to judge session ${session.guid}: ${err.message}`, 'JudgingEmailService')
+          Logger.error(
+            `Could not ask speaker ${judge.guid} to judge session ${session.guid}: ${err.message}`,
+            'JudgingEmailService'
+          )
       }
     );
 
