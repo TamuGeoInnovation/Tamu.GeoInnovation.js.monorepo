@@ -33,8 +33,8 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch 8 (gisday: #3090 submission file preview)**, started 6:53 PM Central. Expected to take about 2 hours. Next update by 7:50 PM Central.
-  Progress (7:19 PM): measured first: LibreOffice adds about 426 MB to the API's runtime image (62.5 to 488.9 MB; Impress alone, +401 MB, crashed), over the 300 MB line, so step 2 stops and the report asks; one made-up 10-slide conversion takes about 0.4 s (1.1 s the first time). Step 1 built: an admin-only inline PDF route (red first, 51 API tests pass) and Preview with Previous/Next on the review page (20 component tests pass). Full affected check running; images with made-up files next.
+- **Batch 8 (gisday: #3090 submission file preview)**, started 6:53 PM Central. Expected to take about 2 hours. Next update by 8:05 PM Central.
+  Progress (7:30 PM): measured first: LibreOffice adds about 426 MB to the API image (over the 300 MB line), so step 2 waits on the director; step 1 (PDF preview) built, red first. The full affected check (24 projects) was killed for memory twice: at the defaults, beside my LibreOffice containers (my fault: a heavy run beside a check), then alone at `CHECK_PARALLEL=4` - SIGKILLed jest workers, a silently killed gisday-angular build, unrelated specs timing out; no failure is in a file this change touches. Now the two projects that failed, alone at parallel 2; images next.
 
 ## Finished
 - **Batch 7 (gisday: #2363)** (report `laptop/reports/2026-11-23-7.md`): branch ready, `test/2363-query-checking-provider-specs` on the fork at `fa072e279`.
