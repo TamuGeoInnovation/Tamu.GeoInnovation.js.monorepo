@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle, listening.
+- **Batch s81 (security: Dependabot PR 3401, #3405)**, from 7:20 AM Central, 24 November: full check on the PR's head.
 
 ## Finished
 - **Batch s80 (security: #2282)** (report `home/reports/2026-11-24-s80.md`): branch ready, `chore/2282-remove-angular-animations` at `0cfc9bb21` (drop its last commit, `.pr-body.md`). The lab's unmerged October port, onto today's code; every trigger, both providers, the library and the package gone; lock loses only `@angular/animations`. Full check exit 0 with clean `npm ci`. Before/after videos and 10 ms samples recorded here, the forms' leave included. Two questions. Finished 7:17 AM Central.
