@@ -1,5 +1,24 @@
 # Home machine: current tasks
 
+## Batch g92 (gisday: #3326, the profile email guards against a repeated send the way the other three speaker emails do; 23 November 2026, about 11:45 PM Central, from `work (gisday)`) (Medium) - **after g91**
+
+[#3326](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3326). The judging, slides-request and session-details emails share near-identical send loops on `RepeatGuard.claim`
+(your #3260); the profile email (`speaker-edit.service.ts` `sendLinks`) still guards by counting recent links, which two API
+copies both pass at once. Make one `sendEach(...)` beside `RepeatGuard` that all four use, behind their existing interfaces, and
+prove the race for the profile email red first (two racing sends, exactly one goes), as you did for #3098. If the profile email
+needs a new claim `kind`, no migration is needed (`kind` is nvarchar); say so. Branch `fix/3326-profile-email-repeat-guard`. Overnight rules (DIRECTOR.md): don't touch `package.json` or `package-lock.json`; no release or full smoke tier. Made-up data only, no email, never production. Branch from the latest `development`, red first, the check, a push to the fork, `app: gisday` in any release entry, and "branch ready: <name>" with the PR body in the report. **Rule 4:** both were filed tonight from a code scan, each side read; still confirm on today's `development` before building and say so.
+Report `home/reports/2026-11-24-g92.md`.
+
+## Batch g91 (gisday: #3332, one CSV writer beside downloadFile that escapes formulas; 23 November 2026, about 11:45 PM Central, from `work (gisday)`) (Medium) - **after g88**
+
+[#3332](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3332). `Papa.unparse` is called in `class-edit`, `dashboard-people`, `speaker-badges`, `judging-results` (twice) and
+`competitions/.../export.processor.ts`, and `impact-report.ts` writes its own CSV; none escapes formulas, so a typed name starting
+`=`, `+`, `-` or `@` becomes a formula in Excel. Add `toCsv(columns, rows)` to `libs/common/utils/ui/src/lib/download.ts`
+(beside `downloadFile`, exported), formula escaping on, and move every caller onto it, output otherwise unchanged (column order,
+headers, line endings: test that one existing export's output is byte-identical apart from an escaped cell). Red first. No visible
+change. Branch `fix/3332-csv-formula-escaping`. Overnight rules (DIRECTOR.md): don't touch `package.json` or `package-lock.json`; no release or full smoke tier. Made-up data only, no email, never production. Branch from the latest `development`, red first, the check, a push to the fork, `app: gisday` in any release entry, and "branch ready: <name>" with the PR body in the report. **Rule 4:** both were filed tonight from a code scan, each side read; still confirm on today's `development` before building and say so.
+Report `home/reports/2026-11-24-g91.md`.
+
 ## Batch s79 (security: #2122, remove the dependencies nothing uses, found with knip; 23 November 2026, about 9:10 PM Central, from `work (security)`) (Low) - **WITHDRAWN, moved to work (the security director itself, on the shortest queue)** (rule 3 of *Working unsupervised overnight*: home and laptop are each about eight deep). Do not run it.
 
 [#2122](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2122): every unused package is more surface for the
