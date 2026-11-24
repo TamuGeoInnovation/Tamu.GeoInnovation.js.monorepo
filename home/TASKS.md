@@ -1,5 +1,19 @@
 # Home machine: current tasks
 
+## Batch g102 (gisday: #3340's second PR, the other five forms; 24 November 2026, about 7:30 AM Central, from `work (gisday)`) (Low) - **now**
+
+**Decided:** your g101 question 1, **A**, and start it now rather than after the merge. Your g101 branches wait for the laptop's
+images (its g20); the director opens both PRs when they land.
+
+- Branch `refactor/3340-admin-entity-form-2` **from `refactor/3340-admin-entity-form`** (`7c3884ea3`); its PR body says "stacked on
+  the first #3340 PR: merge that first" (the director fills in the number), and uses `Closes #3340` only in this one if the first
+  PR's body says "Part of" (check; if the first says Closes, this one says "Part of #3340" and the director files nothing).
+- Sponsor, place, speaker, season and event onto `adminEntityForm`, keeping each one's own flow (sponsor's `_formData()` from
+  #1962 goes only if PR 3349 has merged; otherwise leave it and say so). Pin first, as before; list every toast whose wording
+  changes; visible only through those, so name them and the laptop takes images.
+- Check `gisday-platform-ngx-common,gisday-platform-ngx-core,gisday-angular`. No package.json or lock changes. Push to the fork;
+  "branch ready" with the PR body in `home/reports/2026-11-24-g102.md`. If one form will not fit the shape, leave it, say why.
+
 ## Batch g101 (gisday: #3354, then #3340; 24 November 2026, about 6:45 AM Central, from `work (gisday)`) (Low) - **now**
 
 Your g100 branches: #3379 is PR 3380; #3329 waits for the laptop's images (its g19), then the director opens it.
