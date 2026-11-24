@@ -5,7 +5,7 @@ import { DatatableComponent, NgxDatatableModule } from '@swimlane/ngx-datatable'
 import { JudgingService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { downloadFile, toCsv } from '@tamu-gisc/common/utils/ui';
-import { serverMessage } from '@tamu-gisc/gisday/platform/ngx/common';
+import { seasonPicker, serverMessage } from '@tamu-gisc/gisday/platform/ngx/common';
 import {
   JUDGED_COMPETITIONS,
   JudgeBreakdownLine,
@@ -16,8 +16,6 @@ import {
   judgeBreakdown,
   judgingResultsTable
 } from '@tamu-gisc/gisday/common';
-
-import { seasonChoice } from '../../components/season-choice';
 
 /** A competition's results as a CSV file, as the page shows them. */
 export function judgingResultsCsv(results: JudgingResultsDto): string {
@@ -55,7 +53,7 @@ export class JudgingResultsComponent {
   private readonly judging = inject(JudgingService);
   private readonly destroyRef = inject(DestroyRef);
 
-  public readonly choice = seasonChoice();
+  public readonly choice = seasonPicker();
   public readonly competitions = JUDGED_COMPETITIONS.map((row) => ({ name: row.label, value: row.competition }));
   public readonly competition = signal<string>(JUDGED_COMPETITIONS[0].competition);
   public readonly results = signal<JudgingResultsDto | null>(null);

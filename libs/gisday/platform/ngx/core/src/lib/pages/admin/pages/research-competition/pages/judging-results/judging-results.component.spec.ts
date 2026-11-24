@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 
 import { JudgingService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -46,6 +47,8 @@ describe('JudgingResultsComponent, each judge on an entry (#3193)', () => {
     TestBed.configureTestingModule({
       imports: [JudgingResultsComponent],
       providers: [
+        // The season is picked from the address (#3329).
+        provideRouter([]),
         { provide: JudgingService, useValue: { results: jest.fn(() => of(results())) } },
         {
           provide: SeasonService,
@@ -154,6 +157,8 @@ describe('JudgingResultsComponent (#3183)', () => {
     TestBed.configureTestingModule({
       imports: [JudgingResultsComponent],
       providers: [
+        // The season is picked from the address (#3329).
+        provideRouter([]),
         { provide: JudgingService, useValue: judging },
         {
           provide: SeasonService,

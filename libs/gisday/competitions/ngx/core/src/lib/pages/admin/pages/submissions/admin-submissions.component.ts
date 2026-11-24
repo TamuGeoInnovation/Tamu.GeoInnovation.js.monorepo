@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable, catchError, combineLatest, map, of, shareR
 import { SubmissionReviewDto } from '@tamu-gisc/gisday/competitions/data-api/types';
 import { LeaderboardService, SubmissionService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
 import { COMPETITION_VALIDATION_STATUS } from '@tamu-gisc/gisday/common';
+import { downloadFile } from '@tamu-gisc/common/utils/ui';
 import { DashboardScrollComponent } from '@tamu-gisc/gisday/platform/ngx/common';
 import { SubmissionReviewListComponent } from '../../../shared/submission-review-list/submission-review-list.component';
 
@@ -130,6 +131,34 @@ export class AdminSubmissionsComponent implements OnInit {
 
   public show(view: AdminSubmissionsView): void {
     this.view$.next(view);
+  }
+
+  /** Whether the export's zip is being built, and why it could not be, if it could not (#545). */
+  public readonly exporting = signal(false);
+  public readonly exportProblem = signal<string | null>(null);
+
+  /**
+   * Downloads the season's submissions, their answers and their photos, as one zip (#545), for the project's partners.
+   * The API builds it while the page waits, as the research competition's files are (#3185).
+   */
+  public downloadExport(): void {
+    this.exporting.set(true);
+    this.exportProblem.set(null);
+
+    this.submissionService.getSeasonExportZip().subscribe({
+      next: (zip) => {
+        this.exporting.set(false);
+        downloadFile(zip, 'gisday-vgi-submissions.zip', 'application/zip');
+      },
+      error: (err) => {
+        this.exporting.set(false);
+        this.exportProblem.set(
+          err?.status === 404
+            ? 'This season has no VGI submissions to export.'
+            : 'The export could not be downloaded. Try again.'
+        );
+      }
+    });
   }
 
   /** What the last "Publish to ArcGIS" did, for the page to say (#2433). */

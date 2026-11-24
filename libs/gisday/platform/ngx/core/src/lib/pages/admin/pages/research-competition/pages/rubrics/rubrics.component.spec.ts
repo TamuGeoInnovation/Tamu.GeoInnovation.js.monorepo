@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 
 import { JudgingService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -36,6 +37,8 @@ describe('RubricsComponent (#3183)', () => {
     TestBed.configureTestingModule({
       imports: [RubricsComponent],
       providers: [
+        // The season is picked from the address (#3329).
+        provideRouter([]),
         { provide: JudgingService, useValue: judging },
         {
           provide: SeasonService,

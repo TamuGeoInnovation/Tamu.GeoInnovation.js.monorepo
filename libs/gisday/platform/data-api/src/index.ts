@@ -27,6 +27,8 @@ export * from './lib/university/ucgis-members';
 export * from './lib/user-class/user-class.module';
 export * from './lib/user-rsvp/user-rsvp.module';
 export * from './lib/user-submission/user-submission.module';
+// The shared zip download (#545): the VGI export streams its zip as the competition files do.
+export { streamedZip } from './lib/user-submission/submission-files.service';
 export * from './lib/user-info/user-info.module';
 export * from './lib/season-day/season-day.module';
 export * from './lib/season/season.module';
