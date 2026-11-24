@@ -1,5 +1,22 @@
 # Home machine: current tasks
 
+## Batch g93 (gisday: #3327, formToFormData drops every false value; 23 November 2026, about 11:55 PM Central, from `work (gisday)`) (Medium) - **after g92**
+
+[#3327](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3327), filed tonight from the #3062 scan. **Rule 4 first:** confirm on today's `development` that
+`libs/gisday/platform/ngx/common/**/utils/form-to-form-data.ts` (find it) drops `false`, and find which admin forms send a
+boolean through it (the sponsor form works around it with `_formData()`, #1962). Then:
+1. **The bug only:** `formToFormData` sends `false` (as the API's existing parsing of that form field expects: check how the API
+   reads each boolean it receives as form data, and that a `"false"` string becomes `false` there, not `true`). Red first: a form
+   whose checkbox is turned off sends it. Remove the sponsor form's workaround if it is now redundant, with its own test kept
+   passing.
+2. **Not** the bigger `AdminEntityForm<T>` refactor the issue also describes: say in the report what it would take, and leave it
+   for the maintainer. The PR says `Part of` nothing; it closes #3327 only if the refactor is split out, so instead file the
+   refactor as its own issue (Task, `enhancement`, Low, assignee `danielgoldbergtamu`, and write in it that Priority was chosen
+   overnight by the director), edit #3327's title to the bug alone if you can, and close-keyword #3327.
+Branch `fix/3327-form-data-false-values`. Overnight rules: no `package.json` or lock changes; made-up data; no email; never
+production. Check (the forms' library, `gisday-platform-ngx-core`, `gisday-angular`, and `gisday-platform-data-api` if the API
+side changes), push, "branch ready" with the PR body. Report `home/reports/2026-11-24-g93.md`.
+
 ## Batch g92 (gisday: #3326, the profile email guards against a repeated send the way the other three speaker emails do; 23 November 2026, about 11:45 PM Central, from `work (gisday)`) (Medium) - **after g91**
 
 [#3326](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3326). The judging, slides-request and session-details emails share near-identical send loops on `RepeatGuard.claim`
