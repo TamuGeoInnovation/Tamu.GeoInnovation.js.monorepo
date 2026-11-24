@@ -1,5 +1,21 @@
 # Laptop: current tasks
 
+## Batch g20 (gisday: images for #3354 and #3340; 24 November 2026, about 7:30 AM Central, from `work (gisday)`) (Low) - **after g19's images for #3329, before g19's triage**
+
+Two of home's branches wait on your images for their pull requests. Fast-forward only, no `development` merged in; each adds its
+screenshots and its `docs/releases/unreleased/<issue>-<slug>.md` (`app: gisday`, a Before | After table, a *What to test* row on
+production, since GIS Day has no dev site, #1525), `collate --check`, push, then "images pushed (<issue>): <sha>" first in the report.
+
+1. **#3354**, `fix/3354-public-event-hidden-sessions` at `f10267dcb` (stacked on PR 3359; use the branch tip, which has both). With a
+   made-up hidden session: its public page by direct link, **signed out**, before (merge-base with `development`) and after (now
+   "not found"); and the same page **signed in as the test admin**, after, unchanged. Slug `3354-public-event-hidden-sessions`.
+2. **#3340**, `refactor/3340-admin-entity-form` at `7c3884ea3`. One toast of each changed wording, before and after: the tag form's
+   delete, the university form's save, the organization form's title. **On your local stack you may save and delete made-up records
+   in the scratch database** to raise these toasts; nothing else. Slug `3340-admin-entity-form`.
+
+Overnight rules: no package.json or lock changes; made-up data; no email; never production; txgisday-dev only. One report,
+`laptop/reports/2026-11-24-g20.md`, with each PR's image table.
+
 ## Batch g19 (gisday: images for #3329, then a signed-in triage of #498, #439, #466 and #477; 24 November 2026, about 6:45 AM Central, from `work (gisday)`) (Low) - **after g17's #545**
 
 1. **#3329 images.** Home's `refactor/3329-season-picker` on the fork, at `f20b893ee`. Fast-forward only. With two seasons of made-up
