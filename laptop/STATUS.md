@@ -72,7 +72,7 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
   - **Bug-fix check:** `gisday-angular,gisday-nest`, exit 0.
   - **Signed in on txgisday-dev:** exit 0.
   - **AggieMap `legend.spec.ts` on dev:** exit 1, failing on dev's data, not setup. Filed #3271.
-- Three batches, after batch 9, in the order they arrived: 10 (aggiemap: #3285, High), 11 (gisday: #2893 admin images), 12 (gisday: #3244 phone images, now the table scrolls in its own box).
+- Six batches, after batch 9, in the order they arrived: 11 (gisday: #2893 admin images) and 12 (gisday: #3244 phone images) together, 13 (gisday: #3314 hourly check-ins chart), a11 (aggiemap: #3271), g14 (gisday: #1756), g15 (gisday: backlog #521 to #567). Batch 10 was withdrawn, moved to home a1.
   - **One question.**
 
 ## Queued
