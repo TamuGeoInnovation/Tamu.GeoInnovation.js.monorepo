@@ -38,6 +38,36 @@ export class CompetitionSessionsService {
   );
 }
 
+/** The session of a kind among the season's, found as the acceptance emails find it (#3011), or null. */
+export function sessionOfKind(
+  sessions: Array<ReviewEmailSession> | null,
+  kind: CompetitionSessionKind
+): ReviewEmailSession | null {
+  if (kind === 'awards') {
+    return awardsSession(sessions) ?? null;
+  }
+
+  return (
+    (kind === 'poster'
+      ? competitionSession(sessions, 'poster', null)
+      : competitionSession(sessions, 'presentation', kind)) ?? null
+  );
+}
+
+/**
+ * The day the sessions of these kinds are on, as a page heading gives it: "Tuesday, November 17, 2026", or both days
+ * when they differ. Empty while none is found (#3019).
+ */
+export function competitionDays(sessions: Array<ReviewEmailSession> | null, kinds: Array<CompetitionSessionKind>): string {
+  const days = kinds
+    .map((kind) => sessionOfKind(sessions, kind))
+    .filter((session): session is ReviewEmailSession => Boolean(session))
+    .map((session) => sessionDay(session, 'long'))
+    .filter(Boolean);
+
+  return [...new Set(days)].join(' and ');
+}
+
 /**
  * A competition's session as the database has it (#3011): its name linked to its page, day, time and room. The pages
  * used to type these in, and went stale when a session moved.
@@ -55,18 +85,7 @@ export class CompetitionSessionComponent {
 
   public readonly loaded = computed(() => this.sessions() !== null);
 
-  public readonly session = computed(() => {
-    const sessions = this.sessions();
-    const kind = this.kind();
-
-    if (kind === 'awards') {
-      return awardsSession(sessions);
-    }
-
-    return kind === 'poster'
-      ? competitionSession(sessions, 'poster', null)
-      : competitionSession(sessions, 'presentation', kind);
-  });
+  public readonly session = computed(() => sessionOfKind(this.sessions(), this.kind()));
 
   public readonly day = computed(() => (this.session() ? sessionDay(this.session(), 'long') : ''));
   public readonly time = computed(() => (this.session() ? sessionHours(this.session()) : ''));
