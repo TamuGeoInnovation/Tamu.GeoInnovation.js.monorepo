@@ -5,7 +5,7 @@
 
 Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
-Last batch done: g15
+Last batch done: g16
 
 ## What this is
 
@@ -33,9 +33,10 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch g16 (gisday: #441 signed-in images)**, starting 1:22 AM Central. Next update by 2:00 AM Central.
+- Nothing. Listening (2:08 AM Central). The GIS Day stack is stopped; its scratch database `gisday-b11-scratch` (made-up check-ins, VGI submissions and speakers) is kept for the next signed-in batch. `aggiemap-dev` is stopped; the shared volume now matches `development` (Angular 22.2.6, Playwright 1.65.1).
 
 ## Finished
+- **Batch g16 (gisday: #441 images)** (report `laptop/reports/2026-11-24-g16.md`): **images pushed (441): `f09e30433`**, a fast-forward on PR 3344's branch. Five images: the Sessions column, the no-session box, and 390. **Found and filed #3370**: the Speakers list is wider than a phone, before (566 px) and after (662 px). Priority not set; suggested Low. No questions.
 - **Batch g15 (gisday: backlog #521 to #567)** (report `laptop/reports/2026-11-24-g15.md`): no branches. **Done already:** #521 (by #987) and #536 (by #1784, checked signed in). **Need the maintainer:** #541 (a check-in does not record in-person or online), #545 (the API export from #650 needs Redis, which the cluster does not have) and #567 (with #2072). **Two questions.**
 - **Batch g14 (gisday: #1756 picker off screen on a phone)** (report `laptop/reports/2026-11-24-g14.md`): branch ready, `fix/1756-picker-on-screen` on the fork at `bf75db585`, from the latest `development`. The tooltip now slides a popup onto the screen when no spot around its trigger fits; where one fits, nothing moves. Red first (exactly 5 failed). Signed in, all 17 GIS Day pickers: 12 to 14 off screen at 390 before, 0 after, and 1280 unchanged. Check exit 0. Found: the READMEs still name Playwright `v1.64.1-noble` while `development` installs 1.65.1. No questions.
 - **Batch 13 (gisday: #3314 check-ins by hour)** (report `laptop/reports/2026-11-23-13.md`): branch ready, `feat/3314-check-ins-by-hour` on the fork at `130797f00`, **stacked on #2893's branch**. The shared line chart gains an `interval` (day or hour) rather than a second chart. Red first (exactly 8 failed). Every affected project passed, though the full check lost five tasks to memory kills and they passed re-run alone. Images at 1280 and 390. No questions.
