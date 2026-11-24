@@ -435,7 +435,9 @@ describe("EventListComponent, one organization's sessions (#434)", () => {
     page.organizationChoices$.subscribe((c) => (choices = c));
 
     expect(choices).toEqual([{ guid: '', name: 'Every organization' }, esri, tamu]);
-    expect((fixture.nativeElement as HTMLElement).querySelector('tamu-gisc-select[placeholder="Organization"]')).not.toBeNull();
+    expect(
+      (fixture.nativeElement as HTMLElement).querySelector('tamu-gisc-select[placeholder="Organization"]')
+    ).not.toBeNull();
   });
 
   it("lists only the chosen organization's sessions, and every one again when cleared", () => {
