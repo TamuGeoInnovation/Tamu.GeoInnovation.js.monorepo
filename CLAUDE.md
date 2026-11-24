@@ -525,9 +525,7 @@ move into the dated notes (#1360).
 **`node scripts/collate-release-notes.mjs --check`** validates every entry — the front matter, the
 file name against its `issue`, and that each image path resolves. Run it before a release; a broken
 image in the notes is otherwise found by a reader, after the release. `--write` gathers the entries
-into `unreleased.md` as part of cutting a release, except a GIS Day entry (`app: gisday`), which goes
-into `gisday-unreleased.md`; `--check` fails one that links a GIS Day site without saying (#2835).
-`bash scripts/collate-release-notes.test.sh` tests it.
+into `unreleased.md` as part of cutting a release.
 
 `docs/releases/unreleased.md` still holds everything written before this, and is left alone: the
 collation adds to it rather than replacing it.
