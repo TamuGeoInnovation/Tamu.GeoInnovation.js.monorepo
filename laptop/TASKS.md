@@ -1,5 +1,16 @@
 # Laptop: current tasks
 
+## Batch g18 (gisday: before and after images for #3328, the RSVP-type and submission-type admin pages; 24 November 2026, about 4:30 AM Central, from `work (gisday)`) (Low) - **next, before g17's #545; on your signed-in stack**
+
+Home's `chore/3328-type-pages` on the fork, at `3075dbb1e`, moves both type pages onto the current admin bases. Titles, the Add link
+and the Delete button change, so the pull request waits for images. Fast-forward only; don't merge `development` into it.
+1. With made-up types (two RSVP types, two submission types): **before** from the merge-base and **after** from `3075dbb1e`, at
+   1280, the list, add and edit pages for each, six pages. Add one after at 390 for the RSVP list.
+2. Commit to `docs/screenshots/3328-type-pages/`, add `docs/releases/unreleased/3328-type-pages.md` (`app: gisday`, a Before | After
+   table, its *What to test on dev* row saying it is checked on production in Admin, since GIS Day has no dev site, #1525), run
+   `collate-release-notes.mjs --check` in Docker, push, and report `laptop/reports/2026-11-24-g18.md` with
+   "images pushed (3328): <sha>" first, plus the image table for the PR body. No form saved; made-up data only.
+
 ## Batch g17 (gisday: #3370, #3376, then #545's export built the streamed way; 24 November 2026, about 3:45 AM Central, from `work (gisday)`) (Low) - **now**
 
 Three pieces, in this order, each its own branch from the latest `development`. Overnight rules hold: **no package.json or
