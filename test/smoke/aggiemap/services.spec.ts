@@ -400,6 +400,26 @@ const CAMPUS_URLS: Record<string, string> = (() => {
 /** A basemap block that named no service at all: the shape this file reads has changed under it (#3350). */
 const basemapsWithoutAService: string[] = [];
 
+/**
+ * The basemaps that name no ArcGIS service, and why each one is expected not to.
+ *
+ * A basemap listed here is **not** unchecked by oversight. It is drawn from something that is not an ArcGIS
+ * service at all, so the questions the tests below ask - is the service public, does it answer, does it hold
+ * the layers the map reads - have no meaning for it. The reason is recorded beside each one, because an
+ * exception with no reason beside it is indistinguishable from a basemap that quietly stopped naming its
+ * service, which is the fault #3350 was about. The same argument as a hard-coded symbol with no comment
+ * (#1028).
+ *
+ * The test below checks this list in both directions, so it cannot outlive its reason (#3416).
+ */
+const BASEMAPS_WITHOUT_AN_ARCGIS_SERVICE: Record<string, string> = {
+  NearmapCSBasemap:
+    'Aerial Imagery is a WMSLayer on Nearmap, not an ArcGIS service, so it names neither an ' +
+    '/arcgis/rest/services URL nor a campus constant, and there is no service root to ask about. Nearmap is a ' +
+    'paid third party whose tiles are metered, so this suite deliberately does not call it either: a check ' +
+    'that ran on every map on both environments would spend the quota the maps need.'
+};
+
 /** Every ArcGIS service URL the basemap definitions name, by the constant that names it, in the order each names them. */
 function basemapServices(): Array<[string, string]> {
   const found: Array<[string, string]> = [];
@@ -457,11 +477,23 @@ test.describe('campus basemap services', () => {
     expect(basemapThumbnails.length, 'no thumbnails were read from basemaps.definition.ts').toBeGreaterThan(1);
 
     // A total is not enough, and #3350 is why: the vector basemap's own URL went missing while this still passed,
-    // because the raster one was found and the count stayed above one. Every basemap must name a service of its own.
+    // because the raster one was found and the count stayed above one. Every basemap must name a service of its own,
+    // unless it is one of the few drawn from something that is not an ArcGIS service, with its reason recorded.
     expect(
-      basemapsWithoutAService,
+      basemapsWithoutAService.filter((constant) => !(constant in BASEMAPS_WITHOUT_AN_ARCGIS_SERVICE)),
       'these basemaps name no service this file could read, so nothing below checks them: either they stopped naming ' +
-        'a URL, or they now name it through a constant campus-basemap.ts does not declare'
+        'a URL, or they now name it through a constant campus-basemap.ts does not declare. If one is genuinely not ' +
+        'drawn from an ArcGIS service, add it to BASEMAPS_WITHOUT_AN_ARCGIS_SERVICE with the reason'
+    ).toEqual([]);
+
+    // The other direction, so that list cannot outlive its reason: an entry that now names a service, or has been
+    // renamed or deleted, is a stale exception nobody would notice, and it would hide the next basemap to lose its
+    // URL under a name that is already excused (#3416).
+    expect(
+      Object.keys(BASEMAPS_WITHOUT_AN_ARCGIS_SERVICE).filter((constant) => !basemapsWithoutAService.includes(constant)),
+      'these are listed in BASEMAPS_WITHOUT_AN_ARCGIS_SERVICE as naming no ArcGIS service, and that is no longer ' +
+        'true: each now names one, or has been renamed or removed from basemaps.definition.ts. Take it out of the ' +
+        'list, so the list keeps meaning what it says'
     ).toEqual([]);
   });
 
