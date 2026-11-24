@@ -2,7 +2,23 @@ import { BadRequestException, ForbiddenException, Injectable, NotFoundException 
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 
-import { assessmentProblem, assessmentTotal, isJudgedCompetition, JudgeAssessmentDto, JudgeCompetitionDto, JUDGED_COMPETITIONS, judgedCompetition, JudgedCompetition, judgedCompetitionOf, JudgePageDto, JUDGING_CLOSED_MESSAGE, judgingResults, JudgingResultsDto, naturalOrder, NOT_YOUR_COMPETITION_MESSAGE } from '@tamu-gisc/gisday/common';
+import {
+  assessmentProblem,
+  assessmentTotal,
+  isJudgedCompetition,
+  JudgeAssessmentDto,
+  JudgeCompetitionDto,
+  JUDGED_COMPETITIONS,
+  judgedCompetition,
+  JudgedCompetition,
+  judgedCompetitionOf,
+  JudgePageDto,
+  JUDGING_CLOSED_MESSAGE,
+  judgingResults,
+  JudgingResultsDto,
+  naturalOrder,
+  NOT_YOUR_COMPETITION_MESSAGE
+} from '@tamu-gisc/gisday/common';
 
 import { Assessment, Event, Rubric, Speaker, SpeakerEditLink, Submission } from '../entities/all.entity';
 import { fullName } from '../speaker-edit/speaker-edit.service';

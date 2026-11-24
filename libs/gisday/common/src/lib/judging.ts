@@ -282,10 +282,7 @@ export function judgingResults(input: JudgingResultsInput): JudgingResultsDto {
     };
   });
 
-  rows.sort(
-    (a, b) =>
-      (b.average ?? -1) - (a.average ?? -1) || naturalOrder.compare(a.title ?? '', b.title ?? '')
-  );
+  rows.sort((a, b) => (b.average ?? -1) - (a.average ?? -1) || naturalOrder.compare(a.title ?? '', b.title ?? ''));
 
   return {
     competition: input.competition,
