@@ -78,11 +78,11 @@ describe('ExportService.zipForSeason() (#545)', () => {
 
     expect(file.getHeaders().type).toBe('application/zip');
     expect(file.getHeaders().disposition).toContain('gisday-2026-vgi-submissions.zip');
-    expect(Object.keys(zip.files).filter((name) => !zip.files[name].dir).sort()).toEqual([
-      'medias/sub-1/images/m-1.jpg',
-      'medias/sub-1/images/m-2.png',
-      'submissions.csv'
-    ]);
+    expect(
+      Object.keys(zip.files)
+        .filter((name) => !zip.files[name].dir)
+        .sort()
+    ).toEqual(['medias/sub-1/images/m-1.jpg', 'medias/sub-1/images/m-2.png', 'submissions.csv']);
     expect(await zip.file('medias/sub-1/images/m-1.jpg').async('string')).toBe('jpeg one');
     expect(submissionRepo.find).toHaveBeenCalledWith(expect.objectContaining({ where: { season: { guid: 'comp-2026' } } }));
   });
@@ -92,7 +92,15 @@ describe('ExportService.zipForSeason() (#545)', () => {
     const [header, first, second] = (await zip.file('submissions.csv').async('string')).trim().split(/\r?\n/);
 
     expect(header.split(',')).toEqual(
-      expect.arrayContaining(['submission_guid', 'latitude', 'validation_status', 'image_count', 'image_paths', 'category', 'name'])
+      expect.arrayContaining([
+        'submission_guid',
+        'latitude',
+        'validation_status',
+        'image_count',
+        'image_paths',
+        'category',
+        'name'
+      ])
     );
     expect(first).toContain('sub-1');
     expect(first).toContain('verified');
@@ -111,8 +119,12 @@ describe('ExportService.zipForSeason() (#545)', () => {
     expect(seasons.findOne).toHaveBeenCalledWith({ where: { guid: 'season-2025' } });
   });
 
-  it('says so when the season has no VGI competition, rather than sending an empty zip', async () => {
+  it('says so when the season has no VGI competition or no submissions, rather than sending an empty zip', async () => {
     await expect(service({ competitionSeason: null }).service.zipForSeason()).rejects.toBeInstanceOf(NotFoundException);
     await expect(service({ season: null }).service.zipForSeason()).rejects.toBeInstanceOf(NotFoundException);
+
+    const none = service();
+    (none.submissionRepo.find as jest.Mock).mockResolvedValue([]);
+    await expect(none.service.zipForSeason()).rejects.toBeInstanceOf(NotFoundException);
   });
 });
