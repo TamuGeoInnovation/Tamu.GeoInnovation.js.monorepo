@@ -1,9 +1,9 @@
 <div class="form">
   <div class="form-section">
-    <div class="form-section-toolbar">
+    <!-- On a phone the actions go under the heading, rather than squeezing the season select to a sliver beside it (#3370). -->
+    <div class="form-section-toolbar flex flex-row wrap">
       <div class="form-section-name">Speakers</div>
-      <!-- The actions wrap onto a second line on a phone, rather than squeezing the season select to a sliver (#3370). -->
-      <div class="form-section-actions flex flex-row wrap">
+      <div class="form-section-actions">
         <tamu-gisc-select class="post-1" placeholder="Season" [floatLabel]="false" [data]="seasons$ | async" displayTemplate="year" valueTemplate="guid" [value]="$safeNavigationMigration((selectedSeason$ | async)?.guid)" (changed)="setSeason($event)"></tamu-gisc-select>
 
         <a class="post-1" routerLink="edits">Edits to review <span class="material-icons action">rate_review</span></a>

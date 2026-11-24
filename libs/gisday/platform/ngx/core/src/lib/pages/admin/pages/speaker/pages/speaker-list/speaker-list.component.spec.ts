@@ -61,7 +61,8 @@ describe('SpeakerListComponent, the profile email', () => {
 /**
  * #3370: at 390 px the list was 566 px wide, so the page scrolled sideways, and the season select was squeezed to a
  * sliver beside the heading. The table now scrolls in the admin dashboards' own box, whose specs show it scrolls content
- * wider than itself, so the page does not; and the toolbar's actions wrap onto a second line rather than squeezing.
+ * wider than itself, so the page does not; and the toolbar wraps, putting the actions under the heading rather than
+ * squeezing the select. The actions themselves do not wrap: the select is as wide as its row, and would fill one alone.
  */
 describe('SpeakerListComponent on a phone (#3370)', () => {
   async function open() {
@@ -98,10 +99,10 @@ describe('SpeakerListComponent on a phone (#3370)', () => {
     expect(table.parentElement.classList).toContain('dashboard-scroll');
   });
 
-  it("lets the toolbar's actions wrap, so the season select keeps its width beside the heading", async () => {
+  it('lets the toolbar wrap, so on a phone the season select goes under the heading rather than squeezing beside it', async () => {
     const root = await open();
-    const actions = root.querySelector('.form-section-toolbar .form-section-actions');
+    const toolbar = root.querySelector('.form-section-toolbar');
 
-    expect(Array.from(actions.classList)).toEqual(expect.arrayContaining(['flex', 'flex-row', 'wrap']));
+    expect(Array.from(toolbar.classList)).toEqual(expect.arrayContaining(['flex', 'flex-row', 'wrap']));
   });
 });
