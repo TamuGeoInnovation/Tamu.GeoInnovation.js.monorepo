@@ -33,8 +33,8 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch 9 (aggiemap: #3150, #3149, High)**, started 8:31 PM Central. Next update by 9:20 PM Central.
-  Progress (9:02 PM): #3150 proven on a phone first (tapping route NW0104 left /map/m/bus as it was, no timetable; the desktop control opened it); red-first spec failed on relativeTo; fixed with primaryOutletRoute, moved to @tamu-gisc/common/utils/routing with its own tests; check running. #3149 next.
+- **Batch 9 (aggiemap: #3150, #3149, High)**, started 8:31 PM Central. Next update by 9:50 PM Central.
+  Progress (9:24 PM): #3150 branch ready on the fork (a3f5220c5): phone tap now opens /map/m/bus/NW0104 with its timetable; check a pass under the rule. #3149: Directions added to the phone menu; Angular's router shows the issue's 'correct' ['./trip'] is itself broken - the stop search's back arrow goes to the main map - filed #3319 and fixed with the same link (['../../trip']); red first, green; check and after images running.
 
 ## Finished
 - **Batch 7 (security: #3265)** (report `laptop/reports/2026-11-23-7-security.md`): branch ready, `fix/3265-basemap-source-scan` on the fork at `2ff127da9`.
