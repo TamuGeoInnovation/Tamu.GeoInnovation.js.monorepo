@@ -1,5 +1,14 @@
 # Laptop: current tasks
 
+## Batch g22 (gisday: images for #434, the admin Events list's Organization choice; 24 November 2026, about 9:00 AM Central, from `work (gisday)`) (Low) - **after g21, before g19's triage**
+
+Home's `feat/434-events-organization-filter` at `a0d89eaf6`, from `development`. Fast-forward only. With made-up sessions at two
+made-up organizations: the admin Events list before (merge-base) and after at 1280 (the Organization choice closed, then one
+organization chosen), and after at 390. Commit to `docs/screenshots/434-events-organization-filter/`, add
+`docs/releases/unreleased/434-events-organization-filter.md` (`app: gisday`, Before | After table, *What to test* on production Admin,
+#1525), `collate --check`, push; "images pushed (434): <sha>" first in `laptop/reports/2026-11-24-g22.md`, with the PR's image table.
+Overnight rules as g20; no saves needed.
+
 ## Batch g21 (gisday: images for #3382; 24 November 2026, about 8:00 AM Central, from `work (gisday)`) (Low) - **right after g20, before g19's triage**
 
 Home's `refactor/3382-admin-entity-form-2` at `e95677be1` (stacked on `refactor/3340-admin-entity-form`; use the branch tip). As g20's
