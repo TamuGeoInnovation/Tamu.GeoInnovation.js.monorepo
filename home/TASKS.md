@@ -1,5 +1,18 @@
 # Home machine: current tasks
 
+## Batch 85 (gisday: PR 3304's E2E failure, #2088; 23 November 2026, about 9:20 PM Central, from `work (gisday)`) (High) - **before 84**
+
+CI's GIS Day E2E (`Playwright`, run 45301383192) failed on PR 3304 (`fix/2088-api-on-own-address`, `f147bfca2`): both
+tests in `test/e2e/gisday/presenter-cards.spec.ts` found **0** `tamu-gisc-speaker-card .profile` instead of 4; the other
+45 passed. They route `**/seasons/active` and `**/speakers/participating`, which should match any host, so find out why
+the cards no longer appear with the API at `${window.location.origin}/api` (the dev server's proxy, the e2e web server's
+base URL, a request the routes don't see, or something else). I've rerun it once in case it is a flake; check the
+rerun's result first (`gh run view 45301383192 --repo TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo`).
+
+Reproduce it locally the way `.github/workflows/` runs the GIS Day E2E, fix the cause (not the test, unless the test is
+what is wrong, and then say why), run the whole GIS Day E2E suite plus the check, push fast-forward, and report
+`home/reports/2026-11-23-85-gisday.md` with the sha and the cause.
+
 ## Batch 84 (gisday: `app: gisday` on the open GIS Day branches; 23 November 2026, about 9:05 PM Central, from `work (gisday)`) (Low) - **now**
 
 **Decided on your report 83:** 1A. Your #2835 PR is 3311 and #1843's is 3312. The CLAUDE.md text is in 3311 as its own
