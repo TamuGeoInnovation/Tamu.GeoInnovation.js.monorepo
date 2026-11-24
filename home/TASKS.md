@@ -1,5 +1,33 @@
 # Home machine: current tasks
 
+## For the maintainer, at the home machine (24 November 2026, from `work (aggiemap)`) - **needs Administrator, not the listener's**
+
+`tidy.sh --yes` ran here and freed **106 GiB** (83.3 to 189.2 GiB). Three steps are left that need an elevated
+PowerShell on **this** machine, so they are neither the listener's nor runnable from the work machine. Run them when
+you are next here; nothing is urgent, and 189 GiB is about eleven checks' worth.
+
+**1. The four worktrees that could not be removed** (wt-1220, wt-1276, wt-1277, wt-1278), which failed on
+"Filename too long":
+
+```powershell
+cd "C:\TAMU"; git config --system core.longpaths true
+```
+
+**2. One volume is held by two containers that exited six weeks ago**, `sa10` and `sa11`. The listener left them
+rather than guessing, which was right. Glance at what they were, then:
+
+```powershell
+cd "C:\TAMU"; docker rm sa10 sa11
+```
+
+**3. The compaction, which is the large one: about 640 GiB.** The Docker image here is still **856.3 GiB** because
+compaction was not run. **It stops Docker Desktop**, so `gisday-api`, `gisday-redis`, `gisday-db` and `mssql` on this
+machine go down with it - check the GIS Day chat is not mid-run first. The work machine's compaction on 24 November
+took its image from 991.8 GB to 296.1 GB in about 40 minutes.
+
+**Listener: do not attempt these.** They are recorded here so they are in front of whoever is at this machine, not as
+a batch.
+
 ## Batch a10 (aggiemap: before and after images for #3425, the garage search) (Medium) - **now**
 
 [#3425](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3425) is committed on the fork as
