@@ -2,7 +2,7 @@ import { Component, Directive, TemplateRef, computed, contentChild, input, outpu
 import { DatePipe, NgTemplateOutlet } from '@angular/common';
 import { DatatableComponent, NgxDatatableModule, SortPropDir } from '@swimlane/ngx-datatable';
 
-import { DashboardScrollComponent } from '../dashboard-scroll/dashboard-scroll.component';
+import { DashboardScrollComponent } from '@tamu-gisc/gisday/platform/ngx/common';
 
 /** One row of a dashboard's table: a thing counted (an event, a university, a feature type) and its counts. */
 export interface DashboardTableRow {

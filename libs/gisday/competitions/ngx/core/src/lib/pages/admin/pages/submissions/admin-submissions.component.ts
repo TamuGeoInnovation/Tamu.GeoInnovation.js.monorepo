@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable, catchError, combineLatest, map, of, shareR
 import { SubmissionReviewDto } from '@tamu-gisc/gisday/competitions/data-api/types';
 import { LeaderboardService, SubmissionService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
 import { COMPETITION_VALIDATION_STATUS } from '@tamu-gisc/gisday/common';
+import { DashboardScrollComponent } from '@tamu-gisc/gisday/platform/ngx/common';
 import { SubmissionReviewListComponent } from '../../../shared/submission-review-list/submission-review-list.component';
 
 /**
@@ -81,7 +82,7 @@ export function submissionCounts(submissions: Array<SubmissionReviewDto>): {
   templateUrl: './admin-submissions.component.html',
   styleUrls: ['./admin-submissions.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [SubmissionReviewListComponent, AsyncPipe]
+  imports: [SubmissionReviewListComponent, DashboardScrollComponent, AsyncPipe]
 })
 export class AdminSubmissionsComponent implements OnInit {
   private readonly submissionService = inject(SubmissionService);
