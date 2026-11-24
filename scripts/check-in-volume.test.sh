@@ -129,4 +129,13 @@ expect "CHECK_MIN_FREE_GB sets the threshold" "1" "$?"
 free_space_check /no/such/path/at/all >/dev/null 2>&1
 expect "an unreadable path stops the check rather than passing it" "1" "$?"
 
+# The sweep watermark sits above the refusal threshold, so a machine clears itself while it still has room
+# rather than at the moment a check is blocked (#3400).
+sweep_needed . 1 && r=sweep || r=no
+expect "a disk with room needs no sweep" "no" "$r"
+sweep_needed . 99999999 && r=sweep || r=no
+expect "a disk running low asks for a sweep" "sweep" "$r"
+CHECK_SWEEP_FREE_GB=99999999 sweep_needed . && r=sweep || r=no
+expect "CHECK_SWEEP_FREE_GB sets the watermark" "sweep" "$r"
+
 exit "$failed"

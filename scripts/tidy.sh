@@ -53,15 +53,34 @@ volume_candidates() {
   ' "$volumes"
 }
 
+# Prints the advice for a Docker disk image of <size GiB> against <threshold GiB>, or nothing when it is
+# under. REMOVING A VOLUME NEVER SHRINKS THE IMAGE: the file only grows, every check adding about 2.6 GiB
+# to it for good, and only a compaction gives the space back to C:. That is why 975 GB sat unnoticed for
+# months while the disk filled (#3400). Tested by scripts/tidy.test.sh.
+image_advice() {
+  local size="$1" threshold="${2:-300}"
+  awk -v s="$size" -v t="$threshold" 'BEGIN { exit !(s > t) }' || return 0
+  printf 'The Docker disk image is %s GiB, over the %s GiB threshold, and removing volumes does NOT shrink it.
+' "$size" "$threshold"
+  printf 'To give the space back to C:, with no check running:
+'
+  printf '  1. Stop Docker Desktop   2. wsl --shutdown   3. compact the image with diskpart   4. start Docker Desktop
+'
+  printf 'Run this script with --compact to do it, which refuses while any check container is up (#3406).
+'
+}
+
 # Sourced (by the test): stop here, with only the functions defined.
 [ "${BASH_SOURCE[0]}" = "$0" ] || return 0
 
 set -e
 act=no
+compact=no
 case "${1:-}" in
   --yes) act=yes ;;
+  --compact) act=yes; compact=yes ;;
   '') ;;
-  *) echo "usage: $0 [--yes]" >&2; exit 2 ;;
+  *) echo "usage: $0 [--yes|--compact]" >&2; exit 2 ;;
 esac
 
 tmp="$(mktemp -d)"
@@ -164,6 +183,32 @@ if [ "$failures" -gt 0 ]; then
   echo "$failures could not be removed:"
   [ -s "$tmp/worktree-failures" ] && sed 's/^/  /' "$tmp/worktree-failures"
   echo "  A worktree whose longest path is over 260 characters needs 'git config --system core.longpaths true'."
+fi
+
+# The image is reported on EVERY sweep, so its size cannot quietly become 975 GB again.
+image="${DOCKER_DISK_IMAGE:-$LOCALAPPDATA/Docker/wsl/disk/docker_data.vhdx}"
+if [ -f "$image" ]; then
+  size="$(awk -v b="$(wc -c < "$image")" 'BEGIN { printf "%.0f", b / 1073741824 }')"
+  advice="$(image_advice "$size" "${TIDY_IMAGE_MAX_GB:-300}")"
+  if [ -n "$advice" ]; then
+    echo
+    printf '%s
+' "$advice"
+    if [ "$compact" = yes ]; then
+      # Never while a check is running: stopping Docker kills it, and a check killed mid-write leaves the
+      # stale Vite cache and the Nx task record that hang the NEXT start, in another session's checkout
+      # (#2650, #3406).
+      running="$(docker ps --format '{{.Names}}' 2>/dev/null | grep -v -E '^(mongo|mssql|database)$' || true)"
+      if [ -n "$running" ]; then
+        echo "NOT compacting: these containers are running, and stopping Docker would kill them:" >&2
+        printf '%s
+' "$running" | sed 's/^/  /' >&2
+        exit 1
+      fi
+      echo "Compacting is not done from this script: it needs Administrator. Run the four steps above." >&2
+      exit 1
+    fi
+  fi
 fi
 
 echo "Done. Removing a volume frees space inside the Docker disk image; compact it to give the space back to C:."

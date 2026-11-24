@@ -148,6 +148,16 @@ free_space_check() {
   return 0
 }
 
+# Succeeds when <path> is below the watermark at which a run clears what has already merged BEFORE it
+# starts, so a machine heals itself while there is still room rather than at the moment a check refuses.
+# The watermark (CHECK_SWEEP_FREE_GB, 60 GiB) is deliberately well above the refusal threshold
+# (CHECK_MIN_FREE_GB, 20 GiB): a sweep that only runs once a check is already blocked has waited too long.
+# Tested by scripts/check-in-volume.test.sh.
+sweep_needed() {
+  local path="$1" watermark="${2:-${CHECK_SWEEP_FREE_GB:-60}}"
+  ! free_space_check "$path" "$watermark" >/dev/null 2>&1
+}
+
 # Sourced (by the test): stop here, with only the functions defined.
 [ "${BASH_SOURCE[0]}" = "$0" ] || return 0
 
@@ -279,6 +289,12 @@ export MSYS_NO_PATHCONV=1
 src="$(cd "$main" && pwd -W)"
 
 # Before Docker is touched, so a full disk says so rather than arriving as Docker's exit 125 (#3400).
+# A sweep first, while there is still room: a guard alone only converts an outage into a chore, and a chore
+# nobody is made to do decays exactly as writing the release notes afterwards did (#1132, #3400).
+if sweep_needed "$here"; then
+  echo "Below ${CHECK_SWEEP_FREE_GB:-60} GiB free: clearing worktrees and volumes whose work has merged."
+  "$(dirname "${BASH_SOURCE[0]}")/tidy.sh" --yes || echo "The sweep did not finish; carrying on." >&2
+fi
 free_space_check "$here" || exit 2
 
 started="$(run_times_now)"

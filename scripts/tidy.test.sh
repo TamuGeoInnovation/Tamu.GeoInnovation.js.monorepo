@@ -93,6 +93,23 @@ case "$got" in
   *) check 'an open issue'\''s volume is kept' 'kept' 'kept' ;;
 esac
 
+# The Docker disk image (#3400). Removing volumes never shrinks it, so a sweep has to say so.
+got="$(image_advice 500 300 | head -n 1)"
+case "$got" in
+  *"500 GiB"*"300 GiB"*"does NOT shrink"*) r=yes ;;
+  *) r=no ;;
+esac
+check 'an image over the threshold is reported, with both numbers' 'yes' "$r"
+
+check 'an image under the threshold says nothing' '' "$(image_advice 100 300)"
+check 'an image exactly at the threshold says nothing' '' "$(image_advice 300 300)"
+
+case "$(image_advice 500 300)" in
+  *diskpart*) r=yes ;;
+  *) r=no ;;
+esac
+check 'the advice names how to reclaim the space' 'yes' "$r"
+
 if [ "$failed" -ne 0 ]; then
   printf '\n%d case(s) failed.\n' "$failed" >&2
   exit 1
