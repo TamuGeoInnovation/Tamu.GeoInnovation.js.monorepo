@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, PRIMARY_OUTLET, Router } from '@angular/router';
-import { Subject } from 'rxjs';
+import { Subject, of } from 'rxjs';
 
 import { Angulartics2 } from 'angulartics2';
 
@@ -27,7 +27,11 @@ describe('BusRouteComponent', () => {
       providers: [
         { provide: Router, useValue: { navigate } },
         { provide: ActivatedRoute, useValue: activatedRoute },
-        { provide: BusService, useValue: { toggleMapRoute: vi.fn() } },
+        // No route drawn: the component only reads which routes are on the map.
+        {
+          provide: BusService,
+          useValue: { toggleMapRoute: vi.fn(), busLayerGraphics: of([]), busLayer: of(undefined) }
+        },
         { provide: Angulartics2, useValue: { eventTrack: new Subject() } }
       ]
     }).overrideTemplate(BusRouteComponent, '');

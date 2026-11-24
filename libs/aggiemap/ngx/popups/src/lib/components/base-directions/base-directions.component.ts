@@ -1,10 +1,11 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
-import { Router, ActivatedRoute, PRIMARY_OUTLET } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { Angulartics2 } from 'angulartics2';
 
+import { primaryOutletRoute } from '@tamu-gisc/common/utils/routing';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { TripPlannerService, TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 import { SearchService } from '@tamu-gisc/ui-kits/ngx/search';
@@ -140,19 +141,6 @@ export class BaseDirectionsComponent extends BasePopupComponent implements OnIni
   }
 }
 
-/**
- * The nearest route, from this one up, in the primary outlet: where a trip is a child (#2641).
- *
- * On a desktop the popup renders in the primary outlet, beside `trip`. On a phone it renders in the secondary
- * `outlet-2`, so `trip` relative to the popup's own route was looked for inside that outlet, matched nothing, and
- * "Directions To Here" closed the popup and stayed put, on every map.
- */
-export function primaryOutletRoute(route: ActivatedRoute): ActivatedRoute {
-  let current = route;
-
-  while (current.outlet !== PRIMARY_OUTLET && current.parent) {
-    current = current.parent;
-  }
-
-  return current;
-}
+// `primaryOutletRoute` (#2641) moved to @tamu-gisc/common/utils/routing with its second caller, the bus list (#3150). It is
+// exported here still, so nothing that imported it from this file changes.
+export { primaryOutletRoute };
