@@ -33,7 +33,7 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- Nothing. Listening (2:08 AM Central). The GIS Day stack is stopped; its scratch database `gisday-b11-scratch` (made-up check-ins, VGI submissions and speakers) is kept for the next signed-in batch. `aggiemap-dev` is stopped; the shared volume now matches `development` (Angular 22.2.6, Playwright 1.65.1).
+- **Batch g17 (gisday: #3370, #3376, #545)**, started 12:45 AM Central. #3370 built, red first, its check running; #3376 pushed (`docs/3376-playwright-image`). Next update by 1:45 AM Central.
 
 ## Finished
 - **Batch g16 (gisday: #441 images)** (report `laptop/reports/2026-11-24-g16.md`): **images pushed (441): `f09e30433`**, a fast-forward on PR 3344's branch. Five images: the Sessions column, the no-session box, and 390. **Found and filed #3370**: the Speakers list is wider than a phone, before (566 px) and after (662 px). Priority not set; suggested Low. No questions.
@@ -84,7 +84,7 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - Batch 10 was withdrawn, moved to home a1.
 
 ## Findings
-- **The watcher cannot run while a batch is held** (24 November, 2:10 AM Central). `tools/queued.sh laptop` lists the held a11 as `unfinished`, and `tools/listen.sh` exits at once whenever that list is non-empty ("work waiting for laptop: a11"). So laptop pushes no idle heartbeats until a11 is replaced or marked done. This session's 30-minute backstop still pulls and reads `laptop/TASKS.md`, so new work is still picked up. A held state `queued.sh` can read, or a director's note that ends a11, would fix it; I have not changed either tool.
+- **The watcher cannot run while a batch is held** (24 November, 12:22 AM Central). `tools/queued.sh laptop` lists the held a11 as `unfinished`, and `tools/listen.sh` exits at once whenever that list is non-empty ("work waiting for laptop: a11"). So laptop pushes no idle heartbeats until a11 is replaced or marked done. This session's 30-minute backstop still pulls and reads `laptop/TASKS.md`, so new work is still picked up. A held state `queued.sh` can read, or a director's note that ends a11, would fix it; I have not changed either tool.
 - `work/tools/gisday-release-check.cjs` clicks Auth0's Accept by itself. A read-only sign-in check would suit machines that only need to prove sign-in.
 - After a dev server starts, the first browser request waits minutes for Vite's dependency bundling, with no log line when it finishes. A check run right after it needs a longer first timeout.
 - The existing gallery smoke test ("choosing a basemap changes the map") is probably blocked on dev by #3279 as well. It was not run on its own, so this is not confirmed.
