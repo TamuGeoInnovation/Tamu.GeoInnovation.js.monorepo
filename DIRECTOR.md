@@ -41,6 +41,31 @@ chat's and said so only in its own window; and a `Still there?` was up for one m
   watcher (the background task's id) and says Remote Control is on for the chat. Saying "I am a listener" without both
   is the 23 October failure. Remote Control is what lets the maintainer look in from another machine.
 
+## A listener blocked on a prompt says so (24 November 2026, [#3429](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3429))
+
+`home` stopped reporting at 11:36 AM Central and its `STATUS.md` said *"Nothing. Idle, listening."* It was
+running the whole time, stopped on a permission prompt for `scripts/tidy.sh --yes`, waiting for a click nobody
+knew to make. The AggieMap director read the silence as "not started", queued the quick tier that a production
+release was waiting on into a mailbox nobody was reading, and twice told the maintainer to go start a session
+that was already running.
+
+**Blocked and never-started look identical** from outside: no heartbeat, no commits, and a `STATUS.md` whose
+"Idle, listening" was true when it was written and is not any more. The listener is the only one that can tell
+them apart, so it has to be the one that says.
+
+- **Before you wait on an approval, say you are waiting.** Write `blocked: waiting on approval - <what>` under
+  **Running now** in your `STATUS.md`, push a heartbeat with the same text, *then* wait. `work-lab-leila`
+  already publishes `blocked: paused by the maintainer`, and that reads correctly at a glance; this is the same
+  sentence for a different cause.
+- **Put the time on your state.** "Idle, listening" with no timestamp reads as current four hours later.
+- **A director treats a stale heartbeat as unknown, not as dead.** Say "has not reported since 11:36 AM", not
+  "is not running", and check the heartbeat's **time** rather than the prose in `STATUS.md` - that prose is the
+  least reliable of the three signals, because it is the one that keeps asserting something after it stops
+  being true.
+
+The prompt itself is not the fault. `tidy.sh --yes` removes worktrees and volumes and is worth approving. Only
+the silence is.
+
 ## Read this first: are you in the table below?
 
 **If this session's machine is not a row in [The machines](#the-machines), you are new. Announce yourself
