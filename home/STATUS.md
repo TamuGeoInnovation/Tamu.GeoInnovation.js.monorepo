@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle and listening.
+- **Batch 79 (gisday: #2088, the API on each address's own origin)**, since 6:40 PM Central, 23 November, from development `873f6a098`.
 
 ## Finished
+- **Batch 78 (gisday: #1836's images)** (report `home/reports/2026-11-23-78-gisday.md`): images pushed (1836): `e2e9b9cbe`, fast-forward from `98a4dff11`. Before and after at 1280, after at 390 with Filters open, from a throwaway local stack with made-up data; release note table and PR body updated; collate --check clean. No questions.
 - **Batch 78 (security: jsdom 31.0.1, PR 3296)** (report `home/reports/2026-11-23-78.md`, summary on #3297): full check `all` on the PR merged into development (clean merge): every Nx target passes, only `npm audit signatures` FETCH_ERROR. Vitest gets 31.0.1 (63 projects); Jest keeps its nested 26.1.0. No breaking change touches our use. Recommend merge. Two questions.
 - **Batch 77 (security: Dependabot PR 3295)** (report `home/reports/2026-11-23-77-security.md`, results on #3254): conflicts with development since #3276; on its own base the lock is clean (18 packages and their deps, no downgrade, no install script, no amCharts), all versions 7+ days, all Nx targets pass (one Jest worker SIGKILLed, passed alone). Needs a Dependabot rebase and re-check. Two questions.
 - **Batch 77 (gisday: #2627, #2572, #1836)** (report `home/reports/2026-11-23-77.md`): #2627 not done, already fixed by PR 2629 (#2628) and live since `prod-2026-11-11`. `fix/2572-checkin-address` at `90c8a72e6` and `fix/1836-past-sessions-filter` at `98a4dff11` branch ready on the fork, no PRs. #2572: index.html takes the code out before gtag config (angulartics2 sends nothing here). #1836: migration `TickPastSessionsFilters1795477533912`, proven up, down, up; exact SQL in the report. Both red first; checks pass with only the `npm audit signatures` FETCH_ERROR. Two questions.
