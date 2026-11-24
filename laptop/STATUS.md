@@ -5,7 +5,7 @@
 
 Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
-Last batch done: a12
+Last batch done: g25
 
 ## What this is
 
@@ -33,9 +33,10 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch g25 (gisday: #3424 green run, #3412 Papers)**, started 1:25 PM Central. **Part 1 done** (red Exit 1 on `development`, green Exit 0 on the branch; in the report). **Part 2 waits for PR 3415 to merge** (open at 1:40 PM); I check it at each backstop. Papers has one lead-in to move, the awards sentence.
+- Nothing (since 4:12 PM Central). Listening.
 
 ## Finished
+- **Batch g25 (gisday: #3424, #3412)** (report `laptop/reports/2026-11-24-g25.md`): #3424 red Exit 1 / green Exit 0 against production. **branch ready: `fix/3412-papers-awards-sentence`** (`6bdccb57c`): the Papers awards sentence inside the session component, red first (1 test), check passes but for the registry audit step, images and `.pr-body.md`. No questions.
 - **Batch a12 (aggiemap: release tier on dev, quiet)** (report `laptop/reports/2026-11-24-a12.md`): exit 1, **9 failed, 14 flaky, 1033 passed (1.4h)**. **One regression:** #3352's basemap scraper check fails every time on `NearmapCSBasemap`. Real on a quiet machine: indoor-track layer order (2 of 3 loads) and break-summer's Lot 100g popup. `basemap-requests` passes quiet. The Dining Locations and basemap-service failures are service hiccups (re-runs pass). Nothing tagged.
 - **Batch g24 (gisday: images for 3387, 3349, 3367)** (report `laptop/reports/2026-11-24-g24.md`): **images pushed (3387): `3d2400c4c`; (3367): `7587ed1fc`**. **3349 has no visible change** (an unticked box stayed off before too); label it `no-visible-change`. Unblocked by the maintainer's go-ahead. No questions.
 - **Batch g23: withdrawn while I was on it** (the work machine does the merges). **One merge is on the fork: `feat/3314-check-ins-by-hour` (PR 3375) at `5b059e806`**, development merged in, one conflict resolved, bug-fix check exit 0. Nothing else was pushed. My six other merges are set aside, not pushed, and still in this machine's reflog if wanted: 3360 `fdaba73f5`, 3380 `89f3e9ed0`, 3367 `cdc84dfd0`, 3390 `131bf4f03`, 3391 `2a8494f3b`, 3392 `03af646cb`. 3373 and 3380's lint failures are `npm audit signatures` FETCH_ERROR (the registry answered "OK"), so a re-run is the fix. Told the GIS Day director by session message (delivery not confirmed).
