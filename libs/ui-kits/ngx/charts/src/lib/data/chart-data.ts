@@ -39,11 +39,19 @@ export interface LineChartOptions {
   /** What a value is a count of, for the hover text: "RSVPs" reads "1,003 RSVPs". */
   unit: string;
   /**
+   * What each point stands for (#3314): a calendar day, or one hour of one, each placed at that day and hour in UTC as a
+   * day is placed at its midnight. The axis, its labels and its hover text follow it.
+   */
+  interval: ChartInterval;
+  /**
    * The day the x-axis counts from, or null for dates (#3215). When set, the axis reads in days before and after it
    * ("-7", "0", "+3") rather than dates, for lines of several seasons drawn on one season's days.
    */
   anchor: Date | null;
 }
+
+/** How much time one point stands for: a day, or an hour (#3314). */
+export type ChartInterval = 'day' | 'hour';
 
 /** The series with each one's colour filled in. */
 export function withColors(series: Array<ChartSeries>): Array<ColoredSeries> {
@@ -86,17 +94,21 @@ export function runningTotalByDay(times: Array<Date | string>, timeZone = 'Ameri
  * a day's count).
  */
 export function everyDay(points: Array<ChartPoint>, fill: 'hold' | 'zero'): Array<ChartPoint> {
+  return everyStep(points, fill, 24 * 60 * 60 * 1000);
+}
+
+/** `points`, one every `step` milliseconds from the first to the last, filled as everyDay fills a day (#3314). */
+export function everyStep(points: Array<ChartPoint>, fill: 'hold' | 'zero', step: number): Array<ChartPoint> {
   if (points.length === 0) {
     return [];
   }
 
-  const DAY = 24 * 60 * 60 * 1000;
   const sorted = [...points].sort((a, b) => a.x.getTime() - b.x.getTime());
   const byDay = new Map(sorted.map((p) => [p.x.getTime(), p.y]));
   const out: Array<ChartPoint> = [];
   let last = 0;
 
-  for (let t = sorted[0].x.getTime(); t <= sorted[sorted.length - 1].x.getTime(); t += DAY) {
+  for (let t = sorted[0].x.getTime(); t <= sorted[sorted.length - 1].x.getTime(); t += step) {
     const y = byDay.get(t) ?? (fill === 'hold' ? last : 0);
     out.push({ x: new Date(t), y });
     last = y;
@@ -190,4 +202,53 @@ export function anchorTicks(anchor: Date, min: number, max: number, width: numbe
   }
 
   return ticks;
+}
+
+const HOUR = 60 * 60 * 1000;
+
+/** The calendar day and hour of `date` in `timeZone`, as YYYY-MM-DDTHH, the hour from 00 to 23. */
+export function hourIn(date: Date, timeZone: string): string {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    hourCycle: 'h23'
+  }).formatToParts(date);
+  const part = (type: Intl.DateTimeFormatPartTypes) => parts.find((p) => p.type === type)?.value ?? '00';
+
+  return `${part('year')}-${part('month')}-${part('day')}T${part('hour')}`;
+}
+
+/**
+ * How many of `times` fall in each hour of the calendar days `days` cover, in `timeZone` (#3314): every hour from the
+ * first day's midnight to the end of the last, an hour with none as zero, each placed at that hour UTC of its day, as
+ * countsByDay places a day. Times on other days are left out. Nothing for no days.
+ */
+export function countsByHourOver(
+  times: Array<Date | string>,
+  days: Array<Date | string>,
+  timeZone = 'America/Chicago'
+): Array<ChartPoint> {
+  const band = bandOfDays(days, '', timeZone);
+
+  if (!band) {
+    return [];
+  }
+
+  const perHour = new Map<number, number>();
+
+  for (const time of times) {
+    const hour = new Date(`${hourIn(new Date(time), timeZone)}:00:00Z`).getTime();
+    perHour.set(hour, (perHour.get(hour) ?? 0) + 1);
+  }
+
+  const points: Array<ChartPoint> = [];
+
+  for (let t = band.from.getTime(); t < band.to.getTime(); t += HOUR) {
+    points.push({ x: new Date(t), y: perHour.get(t) ?? 0 });
+  }
+
+  return points;
 }

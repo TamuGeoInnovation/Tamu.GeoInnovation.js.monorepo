@@ -7,7 +7,11 @@ import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { LineChartComponent } from '@tamu-gisc/ui-kits/ngx/charts';
 
 import { SeasonComparisonComponent } from '../shared/season-comparison/season-comparison.component';
-import { dashboardRows, EventDashboardComponent } from '../shared/event-dashboard/event-dashboard.component';
+import {
+  dashboardHourly,
+  dashboardRows,
+  EventDashboardComponent
+} from '../shared/event-dashboard/event-dashboard.component';
 import { DashboardPeopleComponent, PERSON_TYPE_COLUMNS } from '../shared/dashboard-people/dashboard-people.component';
 import { DashboardRowDetailDirective, DashboardTableComponent } from '../shared/dashboard-table/dashboard-table.component';
 
@@ -59,6 +63,16 @@ export class CheckInDashboardComponent extends EventDashboardComponent<CheckInDa
         ...row.counts
       }
     }));
+  });
+
+  /**
+   * Check-ins happen in one week, so under the chart by day, a second counts them by the hour across the days the
+   * season's events run (#3314), with the opened event's own line. The API has already left out other sites' events.
+   */
+  public readonly hourly = computed(() => {
+    const dashboard = this.dashboard();
+
+    return dashboard ? dashboardHourly(dashboard, this.expandedEvent(), this.seriesLabels) : [];
   });
 
   protected seasonDashboard(seasonGuid: string) {

@@ -5,7 +5,15 @@ import { Observable, catchError, filter, map, of, switchMap, tap } from 'rxjs';
 import { readRefusal } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import type { GuidIdentity, RsvpDashboardPerson } from '@tamu-gisc/gisday/platform/data-api';
-import { bandOfDays, ChartBand, ChartSeries, countsByDay, dayIn, runningTotalByDay } from '@tamu-gisc/ui-kits/ngx/charts';
+import {
+  bandOfDays,
+  ChartBand,
+  ChartSeries,
+  countsByDay,
+  countsByHourOver,
+  dayIn,
+  runningTotalByDay
+} from '@tamu-gisc/ui-kits/ngx/charts';
 import { fileNamePart } from '@tamu-gisc/common/utils/ui';
 
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
@@ -80,6 +88,39 @@ export function dashboardSeries(
     series.push({
       label: expanded.name ?? labels.one,
       points: runningTotalByDay(dashboard.made.filter((m) => m.event === expanded.guid).map((m) => m.created))
+    });
+  }
+
+  return series;
+}
+
+/**
+ * A second chart's lines (#3314): how many records were made in each hour of the days the season's events run, in
+ * Central time, and the expanded event's own, if one is. Records made on other days are left out.
+ */
+export function dashboardHourly(
+  dashboard: DashboardData,
+  expanded: DashboardItem | null,
+  labels = { all: 'All events', one: 'This event' }
+): Array<ChartSeries> {
+  const days = dashboard.events.map((e) => e.starts).filter((s): s is string => Boolean(s));
+  const series: Array<ChartSeries> = [
+    {
+      label: labels.all,
+      points: countsByHourOver(
+        dashboard.made.map((m) => m.created),
+        days
+      )
+    }
+  ];
+
+  if (expanded) {
+    series.push({
+      label: expanded.name ?? labels.one,
+      points: countsByHourOver(
+        dashboard.made.filter((m) => m.event === expanded.guid).map((m) => m.created),
+        days
+      )
     });
   }
 

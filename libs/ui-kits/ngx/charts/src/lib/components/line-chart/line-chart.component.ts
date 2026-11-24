@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, ElementRef, computed, effect, inject, input, viewChild } from '@angular/core';
 
-import { ChartBand, ChartSeries, LineChartOptions, withColors } from '../../data/chart-data';
+import { ChartBand, ChartInterval, ChartSeries, LineChartOptions, withColors } from '../../data/chart-data';
 import { LINE_CHART_DRAWER } from './line-chart.drawer';
 
 /**
@@ -33,6 +33,11 @@ export class LineChartComponent {
    * hover text gives its own date. For several seasons drawn on one's days, with alignToAnchor.
    */
   public readonly anchor = input<Date | null>(null);
+  /**
+   * What each point stands for: a day, or an hour of one (#3314), such as check-ins across GIS Day week. The axis is
+   * labelled and hovered in the same.
+   */
+  public readonly interval = input<ChartInterval>('day');
   /** The chart's height in pixels. It does not grow with the page's width. */
   public readonly height = input<number>(320);
 
@@ -48,7 +53,8 @@ export class LineChartComponent {
       bands: this.bands(),
       steps: this.steps(),
       unit: this.unit(),
-      anchor: this.anchor()
+      anchor: this.anchor(),
+      interval: this.interval()
     };
   });
 

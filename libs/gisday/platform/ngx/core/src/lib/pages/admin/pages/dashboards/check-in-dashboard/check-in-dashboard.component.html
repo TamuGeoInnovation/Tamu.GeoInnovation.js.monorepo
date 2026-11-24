@@ -20,6 +20,10 @@
       }
       <tamu-gisc-line-chart [series]="chart().series" [anchor]="chart().anchor" [bars]="daily()" [bands]="bands()" [steps]="true" unit="check-ins" label="Check-ins over time, as a running total by day, with each day's check-ins"></tamu-gisc-line-chart>
 
+      <h3 class="dashboard-heading">Check-ins by hour</h3>
+      <p class="dashboard-note">The check-ins in each hour of the days the season's events run, in Central time. Hover for an hour's number; drag across the chart to zoom in, and double-click to see it all again. {{ expandedEvent() ? 'The second line is the event opened below.' : 'Open an event below to add its own line.' }}</p>
+      <tamu-gisc-line-chart [series]="hourly()" [steps]="true" interval="hour" unit="check-ins" label="Check-ins by hour across the days the season's events run, in Central time"></tamu-gisc-line-chart>
+
       <h3 class="dashboard-heading">By event</h3>
       @if (view.events.length > 0) {
       <p class="dashboard-note">Each event's check-ins, with how many RSVP'd beside them. Click a heading to sort by it, and again to reverse it. Click an event to see who checked in.</p>
