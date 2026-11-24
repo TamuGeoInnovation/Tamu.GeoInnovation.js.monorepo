@@ -119,3 +119,21 @@ export function athleticsDevelopmentSource(source: {
     }
   } as unknown as LayerSource;
 }
+
+/** A popup entry by field name, or by a field reference with its options. */
+type PopupField = string | { field: string; collapsed?: boolean };
+
+/**
+ * The markdown popup most event layers show: a title and a description, each read from a field of the
+ * feature. A string names the field; an object passes the reference as it is, such as `collapsed` for a
+ * field name with dots in it. Fish Camp, T-Camp, Games of Texas, Move-In and Vendor Parking each built
+ * this themselves, under five names (#2602).
+ */
+export function markdownPopup(name: PopupField, description: PopupField) {
+  const entry = (f: PopupField) => (typeof f === 'string' ? { field: f } : f);
+
+  return {
+    popupComponent: EventPopups.MarkdownPopupComponent,
+    popupData: { name: entry(name), description: entry(description) }
+  };
+}
