@@ -1,5 +1,16 @@
 # Home machine: current tasks
 
+## Batch s81 (security: check Dependabot PR 3401, highlight.js 11.12.0 and maplibre-gl 6.19.0, for #3405; 24 November 2026, from `work (security)`) (Low) - **now**
+
+[PR 3401](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3401), tracked by [#3405](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3405). Both minor. Never push to the Dependabot branch.
+- Fetch the PR's head (`git fetch origin pull/3401/head:dependabot-3401`) and run the full check on it:
+  `scripts/check-in-volume.sh dependabot-3401` (it runs the clean `npm ci` because the lock changed). Read its `Exit` line.
+- The lock diff against `development`: only `highlight.js`, `maplibre-gl` and their own dependencies may move. List anything else.
+- `maplibre-gl` draws the vector basemaps: if a dev server is free, load AggieMap's home map and one event map on the PR's code and
+  say whether the basemap draws (no images needed unless something differs).
+- Post the result on PR 3401 as one comment (check exit, lock diff summary, what you looked at), then report
+  `home/reports/2026-11-24-s81.md`. If anything fails, say whether it is this PR's or `development`'s.
+
 ## Batch s80 (security: #2282, geoservices and GIS Day off `@angular/animations`, and the package removed; 24 November 2026, about 9:30 AM Central, from `work (security)`) (Low) - **now**
 
 **Decided by the maintainer this morning: a listener does this, with recordings.** [#2282](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2282)
