@@ -8,7 +8,7 @@ import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { LineChartComponent } from '@tamu-gisc/ui-kits/ngx/charts';
 
 import { SeasonComparisonComponent } from '../shared/season-comparison/season-comparison.component';
-import { EventDashboardComponent } from '../shared/event-dashboard/event-dashboard.component';
+import { DashboardWords, EventDashboardComponent } from '../shared/event-dashboard/event-dashboard.component';
 import { DashboardPeopleComponent } from '../shared/dashboard-people/dashboard-people.component';
 import {
   DashboardRowDetailDirective,
@@ -43,7 +43,7 @@ export const VGI_SUBMITTER_COLUMNS: Array<DashboardTableColumn> = [
  */
 @Component({
   selector: 'tamu-gisc-vgi-dashboard',
-  templateUrl: './vgi-dashboard.component.html',
+  templateUrl: '../shared/event-dashboard/event-dashboard.component.html',
   styleUrls: ['../rsvp-dashboard/rsvp-dashboard.component.scss'],
   imports: [
     SelectComponent,
@@ -63,14 +63,44 @@ export class VgiDashboardComponent extends EventDashboardComponent<VgiDashboard>
   protected readonly comparedNoun = 'submissions';
   protected override readonly seriesLabels = { all: 'All types', one: 'This type' };
 
-  public readonly submitterColumns = VGI_SUBMITTER_COLUMNS;
+  public override readonly countColumns = VGI_SUBMITTER_COLUMNS;
 
   public override readonly columns = VGI_COLUMNS;
 
   /** The columns, the total row counting each person once, whatever types they submitted. */
-  public readonly tableColumns = computed(() =>
+  public override readonly tableColumns = computed(() =>
     this.columns.map((c) => (c.key === 'people' ? { ...c, total: this.dashboard()?.people ?? 0 } : c))
   );
+
+  public readonly words: DashboardWords = {
+    title: 'VGI submissions',
+    readError: 'The submissions could not be read. Try again in a moment.',
+    reading: 'Reading the submissions...',
+    overTime: 'Submissions over time',
+    chartNote:
+      "The running total at the end of each day, in Central time, with each day's submissions beneath. Hover for a day's numbers; drag across the chart to zoom in, and double-click to see it all again. Press a year to draw it beside this one, lined up on the Monday of each year's GIS Day week: the axis then counts days from it.",
+    chartSecondLine: 'The second line is the feature type opened below.',
+    chartOpenOne: 'Open a feature type below to add its own line.',
+    chartUnit: 'submissions',
+    chartLabel: "Submissions over time, as a running total by day, with each day's submissions",
+    byHeading: 'By feature type',
+    tableNote:
+      "Each feature type on the season's form. New finds and repeats are scored as the leaderboard scores them; a discarded submission, or one outside the scoring window, is neither. Click a heading to sort by it, and again to reverse it. Click a feature type to see who submitted it.",
+    nameLabel: 'Feature type',
+    // "Sub-missions", with a soft hyphen: at its narrowest the total column cut the word to "Submissio", and
+    // Chrome does not hyphenate a word starting with a capital.
+    totalHeading: 'Sub\u00admissions',
+    totalLabel: 'All types',
+    dateLabel: 'First submitted',
+    emptyText: 'Nobody has submitted this feature type yet.',
+    noEvents: 'The selected season has no VGI competition form, or its form has no feature types.'
+  };
+
+  public summary(view: VgiDashboard, total: number): string {
+    const types = view.events.length;
+
+    return `${total === 1 ? 'submission' : 'submissions'} of ${types} ${types === 1 ? 'feature type' : 'feature types'}, by ${view.people} ${view.people === 1 ? 'person' : 'people'}.`;
+  }
 
   protected seasonDashboard(seasonGuid: string) {
     return this.submissions.getDashboardForSeason(seasonGuid);
