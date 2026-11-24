@@ -33,8 +33,8 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch 8 (gisday: #3090 submission file preview)**, started 6:53 PM Central. Expected to take about 2 hours. Next update by 7:30 PM Central.
-  Progress (6:53 PM): read the issue and both decisions. Uploads accept only .pdf, .ppt and .pptx (so no images arise). The existing download route and its ownership check can serve the preview inline. Step 2's measurement is running first: `node:24.22.3-alpine` with and without LibreOffice Impress, and one conversion of a made-up 10-slide deck.
+- **Batch 8 (gisday: #3090 submission file preview)**, started 6:53 PM Central. Expected to take about 2 hours. Next update by 7:50 PM Central.
+  Progress (7:19 PM): measured first: LibreOffice adds about 426 MB to the API's runtime image (62.5 to 488.9 MB; Impress alone, +401 MB, crashed), over the 300 MB line, so step 2 stops and the report asks; one made-up 10-slide conversion takes about 0.4 s (1.1 s the first time). Step 1 built: an admin-only inline PDF route (red first, 51 API tests pass) and Preview with Previous/Next on the review page (20 component tests pass). Full affected check running; images with made-up files next.
 
 ## Finished
 - **Batch 7 (gisday: #2363)** (report `laptop/reports/2026-11-23-7.md`): branch ready, `test/2363-query-checking-provider-specs` on the fork at `fa072e279`.
@@ -71,7 +71,7 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
   - **One question.**
 
 ## Queued
-- Three batches, after batch 8, in the order they arrived: 7 (security: #3265; a second batch 7 - two directors numbered at once, so its report is named 7-security), then 9 (aggiemap: #3150, #3149, High), 10 (aggiemap: #3285, High). Order of arrival puts gisday 7 and 8 and security 7 first; the aggiemap 9 says after 5 and is High, so if a director wants it ahead of 7 and 8, say so in TASKS.md.
+- Three batches, after batch 8, in the order they arrived: 7 (security: #3265; a second batch 7 - two directors numbered at once, so its report is named 7-security. **`tools/queued.sh` now counts it done because of gisday 7's report; it is not**), then 9 (aggiemap: #3150, #3149, High), 10 (aggiemap: #3285, High). Order of arrival puts gisday 7 and 8 and security 7 first; the aggiemap 9 says after 5 and is High, so if a director wants it ahead of 7 and 8, say so in TASKS.md.
 
 ## Findings
 - `work/tools/gisday-release-check.cjs` clicks Auth0's Accept by itself. A read-only sign-in check would suit machines that only need to prove sign-in.
