@@ -1,5 +1,19 @@
 # Home machine: current tasks
 
+## Batch g103 (gisday: #3321, the Papers competition page takes its dates from the season; 24 November 2026, about 8:00 AM Central, from `work (gisday)`) (Low) - **now**
+
+Your g102 branch waits for the laptop's images (its g21); the director opens it then.
+
+[#3321](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3321): the Papers page still says 2020's dates. #3309 and #3019 moved Posters and Presentation onto the season; #3019 is
+PR 3322, **not merged**. Rule 4 first.
+- Branch `feat/3321-papers-dates` **from `feat/3019-competition-sessions-chosen`** (PR 3322), the body opening "stacked on PR 3322:
+  merge that first". Reuse exactly what Posters and Presentation use, with no Papers-only copy; if Papers' settings row needs
+  something those two don't, say so rather than adding a migration.
+- Red first (the page's text for a made-up season). Check `gisday-platform-ngx-core,gisday-angular` (plus the API if touched).
+- Public page, visible: the laptop takes the images afterwards, so give it the routes and the made-up season settings it needs.
+Overnight rules: no package.json or lock changes, no migrations. Push; "branch ready" with the PR body in
+`home/reports/2026-11-24-g103.md`.
+
 ## Batch g102 (gisday: #3382, #3340's second PR, the other five forms; 24 November 2026, about 7:30 AM Central, from `work (gisday)`) (Low) - **now**
 
 **Decided:** your g101 question 1, **A**, and start it now rather than after the merge. Your g101 branches wait for the laptop's
