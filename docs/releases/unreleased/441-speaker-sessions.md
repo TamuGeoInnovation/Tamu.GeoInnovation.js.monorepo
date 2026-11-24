@@ -17,4 +17,13 @@ built as the Events list's "Only sessions with no tags" is, which lists the spea
 or removed. The box is kept with the list's other filters when going back to it from a speaker's page.
 ([#441](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/441))
 
-No images yet: the page needs an admin sign-in, and the before and after images are taken on another machine.
+| | Before | After |
+| --- | --- | --- |
+| Admin, Speakers, at 1280 | ![The Speakers list: name, email, affiliation and when updated, with nothing saying who speaks](../screenshots/441-speaker-sessions/before-speakers.png) | ![The same list with a Sessions column: two sessions for the first speaker, one for the second, None for the third](../screenshots/441-speaker-sessions/after-speakers.png) |
+| Only speakers in no session | | ![With the box ticked, only the speaker whose Sessions is None](../screenshots/441-speaker-sessions/after-speakers-no-session.png) |
+| At 390 | ![The list on a phone, wider than the screen](../screenshots/441-speaker-sessions/before-speakers-phone.png) | ![The list on a phone, wider than the screen as before](../screenshots/441-speaker-sessions/after-speakers-phone.png) |
+
+GIS Day has no dev site, so this was checked on the local site, signed in as the txgisday-dev test admin, with three
+made-up speakers: one in two sessions, one in a session hidden from the public schedule, and one in none. On a phone the
+list was already wider than the screen before this change, and the Sessions column widens it further
+([#3370](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3370)).
