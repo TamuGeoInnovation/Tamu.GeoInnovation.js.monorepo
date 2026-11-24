@@ -1,5 +1,55 @@
 # Home machine: current tasks
 
+## Batch a11 (aggiemap: fresh "after" images for #3425, which your own finding invalidated) (Medium) - **now**
+
+Your finding (2) was acted on: the maintainer chose to fix the duplication on this branch rather than file it.
+So the branch has moved and **your two "after" images now show something that is no longer true** - each garage
+appearing twice. That is not a mistake in your capture; the capture is what caused the change.
+
+Branch: `fix/3425-garage-search-off-raster`, now at **`6d2c0f118`** on the fork. Fetch it fresh.
+
+### What changed since you photographed it
+
+- `ba312e64d` - your finding (1): the smoke case typed "Central Campus Garage", which matches nothing now.
+  Fixed, and your space-padding observation became a test: `bldgabbrev` is padded for PC26, PC27 and PW GAR,
+  so without trimming those three links would carry `%20`s and find nothing.
+- `6d2c0f118` - your finding (2): the typed **building** search now excludes garages
+  (`type IS NULL OR type NOT LIKE 'GARAGE%'`), so each garage appears once. The two **exact** sources that
+  resolve `?bldg=` deep links deliberately keep no filter, so a deep link to a garage still works.
+
+### What this batch needs
+
+**Only the two "after" images.** Your "before" pair from `50b125bf5` is still correct and stays as it is.
+
+Re-take, same window size and the same search term you used:
+
+- `after-garage-search.png` - searching `garage`. **Each garage should now appear once.** If the Building and
+  Parking Garage categories still show the same rows, the fix did not work: **stop and say so**, do not
+  photograph around it.
+- `after-garage-popup.png` - Central Campus Parking Garage's popup, which should read its name as before.
+
+Commit over the existing two files in `docs/screenshots/3425-garage-search/`, push to the fork as a
+fast-forward, and say **"branch ready: fix/3425-garage-search-off-raster"**.
+
+### Two checks while you are there, both cheap and both load-bearing
+
+- **A `?bldg=` deep link to a garage still resolves.** This is the half the fix deliberately did not touch, so
+  it is the half most likely to have broken by accident. Pick any garage's building number or abbreviation.
+- **`?garage=CCG` still resolves**, as it did in a10. The de-duplication should not have touched it, and a
+  second reading costs you one page load.
+
+Report `home/reports/2026-11-24-a11.md`, and say what you saw for both checks even when they pass - a pass
+nobody recorded is indistinguishable from a check nobody ran.
+
+### For the record
+
+Your three other findings are filed and credited to this batch's predecessor:
+[#3433](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3433) (a general search
+returns 5 garages of 10, and which five is arbitrary) and
+[#3434](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3434) (row Y316 is
+`type GARAGE` with every identifying field null, so garages count 11 where the campus has 10). Neither is
+this branch's to fix.
+
 ## For the maintainer, at the home machine (24 November 2026, from `work (aggiemap)`) - **needs Administrator, not the listener's**
 
 `tidy.sh --yes` ran here and freed **106 GiB** (83.3 to 189.2 GiB). Three steps are left that need an elevated
