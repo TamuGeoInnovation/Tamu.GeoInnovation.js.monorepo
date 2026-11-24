@@ -33,7 +33,7 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- Nothing. Listening.
+- **Batch g25 (gisday: #3424 green run, #3412 Papers)**, started 1:25 PM Central. **Part 1 done** (red Exit 1 on `development`, green Exit 0 on the branch; in the report). **Part 2 waits for PR 3415 to merge** (open at 1:40 PM); I check it at each backstop. Papers has one lead-in to move, the awards sentence.
 
 ## Finished
 - **Batch a12 (aggiemap: release tier on dev, quiet)** (report `laptop/reports/2026-11-24-a12.md`): exit 1, **9 failed, 14 flaky, 1033 passed (1.4h)**. **One regression:** #3352's basemap scraper check fails every time on `NearmapCSBasemap`. Real on a quiet machine: indoor-track layer order (2 of 3 loads) and break-summer's Lot 100g popup. `basemap-requests` passes quiet. The Dining Locations and basemap-service failures are service hiccups (re-runs pass). Nothing tagged.
