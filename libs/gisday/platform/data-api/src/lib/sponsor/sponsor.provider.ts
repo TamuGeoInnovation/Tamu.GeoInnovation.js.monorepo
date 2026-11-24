@@ -6,14 +6,14 @@ import {
   UnprocessableEntityException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, In, Repository } from 'typeorm';
+import { DeleteResult, In, Repository, DeepPartial } from 'typeorm';
 
-import { Asset, Sponsor, SponsorLogoSize } from '../entities/all.entity';
+import { Asset, Sponsor, SponsorLogoSize, Season } from '../entities/all.entity';
 import { AssetsService } from '../assets/assets.service';
 import { refuseUnsafeImage } from '../assets/image-upload';
 import { SeasonService } from '../season/season.service';
 import { rethrowHttp } from '../_base/rethrow-http';
-import { SeasonScopedProvider } from '../_base/season-scoped-provider';
+import { SeasonScopedProvider, withoutIdentity } from '../_base/season-scoped-provider';
 @Injectable()
 export class SponsorProvider extends SeasonScopedProvider<Sponsor> {
   protected get seasons() {
@@ -24,6 +24,19 @@ export class SponsorProvider extends SeasonScopedProvider<Sponsor> {
 
   protected forSeason(seasonGuid: string) {
     return this.getSponsorsForSeason(seasonGuid);
+  }
+
+  protected override readonly copyRelations = { logos: true };
+
+  protected override copyOf(record: Sponsor, season: Season) {
+    // A logo is an asset held by one sponsor, so the copy has its own.
+    const copy = super.copyOf(record, season) as DeepPartial<Sponsor>;
+
+    if (record.logos) {
+      copy.logos = record.logos.map(withoutIdentity);
+    }
+
+    return copy;
   }
 
   private _resourcePath = `images/sponsors`;
@@ -69,57 +82,7 @@ export class SponsorProvider extends SeasonScopedProvider<Sponsor> {
   }
 
   public async copyEntitiesIntoSeason(seasonGuid: string, existingEntityGuids: Array<string>) {
-    const season = await this.seasonService.findOne({
-      where: {
-        guid: seasonGuid
-      }
-    });
-
-    if (!season) {
-      throw new UnprocessableEntityException('Season does not exist.');
-    }
-
-    const entities = await this.find({
-      where: {
-        guid: In(existingEntityGuids)
-      },
-      relations: { logos: true }
-    });
-
-    if (!entities || entities.length === 0) {
-      throw new UnprocessableEntityException('Could not find sponsors.');
-    }
-
-    const newEntities = entities.map((entity) => {
-      delete entity.guid;
-      delete entity.created;
-      delete entity.updated;
-
-      if (entity.logos?.length > 0) {
-        entity.logos = entity.logos.map((logo) => {
-          delete logo.guid;
-          delete logo.created;
-          delete logo.updated;
-
-          return logo;
-        });
-      }
-
-      const newEntity = this.sponsorRepo.create({
-        ...entity,
-        season: season
-      });
-
-      return newEntity.save();
-    });
-
-    try {
-      return Promise.all(newEntities);
-    } catch (err) {
-      rethrowHttp(err, new InternalServerErrorException('Could not copy sponsors into season.'), () =>
-        Logger.error(err.message, 'SponsorProvider')
-      );
-    }
+    return this.copyIntoSeason(seasonGuid, existingEntityGuids);
   }
 
   public async createSponsor(sponsor: Partial<Sponsor>, file?: Express.Multer.File) {

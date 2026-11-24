@@ -7,6 +7,19 @@ import { BaseProvider } from './base-provider';
 import { rethrowHttp } from './rethrow-http';
 
 /**
+ * A record without its guid and times, as a copy of it is saved: for a record and for the records it holds (#3379).
+ */
+export function withoutIdentity<R extends object>(record: R): R {
+  const copy = { ...record } as Partial<R> & { guid?: unknown; created?: unknown; updated?: unknown };
+
+  delete copy.guid;
+  delete copy.created;
+  delete copy.updated;
+
+  return copy as R;
+}
+
+/**
  * A provider of records that belong to a season (#3324): tags, classes, broadcasts and the rest. Ten providers each
  * wrote their records for the active season and their copy into another season, and fixes reached one copy each: the
  * season-not-found guard, the nothing-found guard, the `await` that lets a failed save be caught. Here they are once.
@@ -42,15 +55,20 @@ export abstract class SeasonScopedProvider<T extends { guid: string; season?: Se
   }
 
   /**
+   * The season copies go into, or nothing if there is none. A provider whose copy needs more of the season (its days)
+   * loads it here, and refuses here what it cannot copy into.
+   */
+  protected copyTarget(seasonGuid: string): Promise<Season | null> {
+    return this.seasons.findOne({ where: { guid: seasonGuid } });
+  }
+
+  /**
    * What a copy of `record` in `season` holds: the record without its id, its times or its season. A provider whose
    * records hold others (logos, students) says what to leave out or copy too.
    */
   protected copyOf(record: T, season: Season): DeepPartial<T> {
-    const copy = { ...record } as Partial<T> & { created?: unknown; updated?: unknown };
+    const copy = withoutIdentity(record) as Partial<T>;
 
-    delete copy.guid;
-    delete copy.created;
-    delete copy.updated;
     delete copy.season;
 
     return { ...copy, season } as DeepPartial<T>;
@@ -61,7 +79,7 @@ export abstract class SeasonScopedProvider<T extends { guid: string; season?: Se
    * exist or none of the records is found, rather than writing records into no season or answering an empty list.
    */
   public async copyIntoSeason(seasonGuid: string, guids: Array<string>): Promise<Array<T>> {
-    const season = await this.seasons.findOne({ where: { guid: seasonGuid } });
+    const season = await this.copyTarget(seasonGuid);
 
     if (!season) {
       throw new UnprocessableEntityException('Season not found.');
