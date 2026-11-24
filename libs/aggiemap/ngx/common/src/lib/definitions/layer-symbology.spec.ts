@@ -36,7 +36,7 @@ describe('main map layer symbology', () => {
       renderer?: { symbol?: { color?: number[]; outline?: { style?: string } } };
     };
 
-    expect(buildings.url).toBe('https://gis.tamu.edu/arcgis/rest/services/Hosted/VTBase3/FeatureServer/0');
+    expect(buildings.url).toBe('https://gis.tamu.edu/arcgis/rest/services/Hosted/VTBase4/FeatureServer/0');
     expect(native.definitionExpression).toBe('number IS NOT NULL');
     expect(native.renderer?.symbol?.color?.[3]).toBeGreaterThan(0);
     expect(native.renderer?.symbol?.color?.[3]).toBeLessThanOrEqual(0.01);

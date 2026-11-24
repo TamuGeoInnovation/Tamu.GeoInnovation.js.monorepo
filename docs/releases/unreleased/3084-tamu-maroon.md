@@ -1,5 +1,6 @@
 ---
 issue: 3084
+app: gisday
 title: "GIS Day: On gisday.tamu.edu, a search box's focus outline and its Copy link are maroon"
 testOnDev: |
   | GIS Day: maroon search boxes on gisday.tamu.edu ([#3084](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3084)) | Not on dev: GIS Day has no dev site. After release, open [gisday.tamu.edu/sessions?search=intel](https://gisday.tamu.edu/sessions?search=intel) and click in the search box, then the same on [txgisday.org/sessions?search=intel](https://txgisday.org/sessions?search=intel) | On gisday.tamu.edu the box's outline and the words Copy link are maroon, as the header's links are; on txgisday.org both stay blue. The Presenters page's search box reads the same way |

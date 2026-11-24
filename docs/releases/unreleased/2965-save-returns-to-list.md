@@ -1,5 +1,6 @@
 ---
 issue: 2965
+app: gisday
 title: "GIS Day: Save, Create and Delete on an admin page go back to the list as it was left"
 testOnDev: |
   | GIS Day: Save, Create and Delete keep the list's season and search ([#2965](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2965)) | Not on dev: GIS Day has no dev site. After release, as an admin open [Universities](https://txgisday.org/admin/universities) | Pick a past season and type in the search, open a university and press **Update** without changing anything: the list comes back on that season with the search still typed, not on the current season with an empty search. The same after **Delete** on a record made to be deleted, and after **Create** from **Add university**. Save never asks "Leave without saving?" |

@@ -1,5 +1,6 @@
 ---
 issue: 3012
+app: gisday
 title: "GIS Day: the closed Submission deadlines panel on Research Competitions reads as a box to open"
 testOnDev: |
   | GIS Day: closed Submission deadlines panel is a box to open ([#3012](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3012)) | Not on dev: GIS Day has no dev site. After release, as an admin open [Research Competitions](https://txgisday.org/admin/research-competition) | With this season's deadlines set, Submission deadlines is a tinted box with a border, apart from the submissions list below it: the chevron, the title and "Set dates" in the link colour, then each competition's dates in grey. Click it and it opens exactly as before (the table of dates, Clear and Save deadlines); click the title again and it closes back to the box |

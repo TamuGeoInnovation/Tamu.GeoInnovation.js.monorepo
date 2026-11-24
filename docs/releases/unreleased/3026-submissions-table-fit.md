@@ -1,5 +1,6 @@
 ---
 issue: 3026
+app: gisday
 title: "GIS Day admin: the Research Competitions table reads whole at 1280 px"
 testOnDev: |
   | GIS Day admin: the submissions table fits ([#3026](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3026)) | Not on dev: GIS Day has no dev site. After release, as an admin open [Research Competitions](https://txgisday.org/admin/research-competition) in a window 1280 px and then 1024 px wide | No Files column beside Final file; Final file, Status, Type, Format and Classification read whole ("Pending Review", "Presentation", "Undergraduate"), never broken mid-word; each row's checkbox and the Name column are in view at the left, the checkbox clear of the title beside it; the table scrolls sideways in its own box to Final file and Status, and the page itself never scrolls sideways; the sorted column shows its arrow |

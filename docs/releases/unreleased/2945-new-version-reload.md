@@ -1,5 +1,6 @@
 ---
 issue: 2945
+app: gisday
 title: "GIS Day: a tab left open across a deploy moves to the new version"
 testOnDev: |
   | GIS Day: a tab open across a deploy ([#2945](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2945)) | Not on dev: GIS Day has no dev site, and the change only shows across two deploys. After the release reaches txgisday.org, keep a tab open on [txgisday.org](https://txgisday.org/) through the next deploy, then click to another page | The page reloads into the new version at the page clicked, instead of going blank or staying on the old one. A page with a changed, unsaved form instead says *A newer version of this site is ready* and reloads only on **Reload now** |

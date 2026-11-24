@@ -1,5 +1,6 @@
 ---
 issue: 3168
+app: gisday
 title: "GIS Day: The VGI leaderboard names participants by a masked email, for everyone"
 testOnDev: |
   | GIS Day: masked emails on the VGI leaderboard ([#3168](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3168)) | Not on dev: GIS Day has no dev site. After release, sign in as an admin and open [the leaderboard](https://txgisday.org/app/leaderboard), then as a student | Each participant reads like `jsm****@tamu.edu`, the same for admins and students; your own row still says **You**; an admin clicking a row still opens that person's finds on the map |

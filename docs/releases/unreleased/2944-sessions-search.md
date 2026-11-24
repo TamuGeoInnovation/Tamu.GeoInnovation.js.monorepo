@@ -1,5 +1,6 @@
 ---
 issue: 2944
+app: gisday
 title: "GIS Day: a search box above the Sessions list"
 testOnDev: |
   | GIS Day: search the Sessions list ([#2944](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2944)) | Not on dev: GIS Day has no dev site. After release, open [gisday.tamu.edu/sessions](https://gisday.tamu.edu/sessions) and type part of a session's name, a building or room (e.g. "gates ballroom"), or a presenter's name; then tick a tag | Only the matching sessions are listed, under their days; a day with none is left out; ticking a tag narrows the matches further; a search that finds nothing says No sessions match |

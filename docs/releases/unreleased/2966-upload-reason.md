@@ -1,5 +1,6 @@
 ---
 issue: 2966
+app: gisday
 title: "GIS Day: a refused save or upload says why, not only its status code"
 testOnDev: |
   | GIS Day: refused saves say why ([#2966](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2966)) | Not on dev: GIS Day has no dev site. After release, as an admin open [Add Sponsor](https://txgisday.org/admin/sponsors/add) | Give the sponsor a name and choose an SVG file as its logo (in the file picker, show all files), then Create. The message says "The logo must be a JPEG or PNG image." instead of "Error creating sponsor: 400", and no sponsor is created. The organization, place and speaker forms say the same for their images |

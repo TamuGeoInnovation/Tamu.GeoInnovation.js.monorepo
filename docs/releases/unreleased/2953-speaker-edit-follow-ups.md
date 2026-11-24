@@ -1,5 +1,6 @@
 ---
 issue: 2953
+app: gisday
 title: "GIS Day: the speaker edit page, after its first live use - the site's own name, full width, university and class year"
 testOnDev: |
   | GIS Day: speaker edit follow-ups ([#2951](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2951), [#2952](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2952), [#2953](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2953)) | Not on dev: GIS Day has no dev site. After release, on [Texas A&M's Speakers page](https://gisday.tamu.edu/admin/speakers) select yourself and choose **Send profile email** | The email comes from Texas A&M GIS Day, says so in its subject and text, and links to gisday.tamu.edu; the page is full width, with University and Graduation year, and shows your organization rather than an Affiliation box |

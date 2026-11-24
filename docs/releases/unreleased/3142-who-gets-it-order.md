@@ -1,5 +1,6 @@
 ---
 issue: 3142
+app: gisday
 title: "GIS Day admin: Who gets it lists speakers alphabetically, with Select all to tick or untick everyone"
 testOnDev: |
   | GIS Day: Who gets it in alphabetical order, with Select all ([#3142](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3142)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release, as an admin on [gisday.tamu.edu](https://gisday.tamu.edu/admin/events), open a session with several speakers, then Email these speakers, Session details (and Ask for slides) | Who gets it lists the speakers alphabetically by last name, with Select all above them, ticked. Select all unticks every speaker and itself; with one speaker ticked, Select all ticks everyone again. Close the window with Cancel: nothing is sent |

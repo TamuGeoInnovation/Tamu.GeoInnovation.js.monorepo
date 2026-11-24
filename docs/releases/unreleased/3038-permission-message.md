@@ -1,5 +1,6 @@
 ---
 issue: 3038
+app: gisday
 title: "GIS Day admin: a dashboard refused for a missing permission names the permission, instead of saying to try again"
 testOnDev: |
   | GIS Day admin: a refused dashboard names the missing permission ([#3038](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3038)) | Not on dev: GIS Day has no dev site. After release, as an admin open [Dashboards > Check-ins on txgisday.org](https://txgisday.org/admin/dashboards/check-ins), then RSVPs and User accounts | Each loads as before. An account without the page's permission (`read:checkins`, `read:rsvps` or `read:users`) is told which one it lacks and to sign out and back in once an administrator adds it in Auth0, not "Try again in a moment"; a failure that is not a refusal still says to try again |

@@ -1,5 +1,9 @@
 import { BaseMapProperties, CONSTRUCTION_HATCH_RENDERER } from '@tamu-gisc/maps/esri';
-import { TAMU_CAMPUS_BASEMAP_URL, TAMU_CAMPUS_STRUCTURES_URL } from '@tamu-gisc/common/datasets/geographic';
+import {
+  TAMU_CAMPUS_BASEMAP_URL,
+  TAMU_CAMPUS_STRUCTURES_URL,
+  TAMU_CAMPUS_VECTOR_BASEMAP_URL
+} from '@tamu-gisc/common/datasets/geographic';
 
 /**
  * The picture of a campus basemap in the basemap panel, shipped with the application (#1730).
@@ -67,7 +71,7 @@ export const AggiemapVectorBasemap: BaseMapProperties = {
   baseLayers: [
     {
       type: 'VectorTileLayer',
-      url: `https://gis.tamu.edu/arcgis/rest/services/Hosted/VTBase3/VectorTileServer`,
+      url: TAMU_CAMPUS_VECTOR_BASEMAP_URL,
       listMode: 'hide',
       visible: true,
       title: 'Base Map',
@@ -75,10 +79,10 @@ export const AggiemapVectorBasemap: BaseMapProperties = {
       // line) are hidden; the layer below draws both instead. The outline has to move with the fill: a layer
       // added to a vector tile basemap can only draw above the whole of it, so the style's outline would sit
       // under the grid and be broken by every line crossing it.
-      hiddenStyleLayers: [
-        'Campus Structures/Currently Under Construction/1',
-        'Campus Structures/Currently Under Construction/0'
-      ]
+      // VTBase4 publishes ONE construction style layer, a black line: the rasterized pink fill VTBase3 carried is
+      // gone, fixed at source. The line is still hidden, because the layer below draws its own outline and a layer
+      // added to a vector tile basemap can only draw above the whole of it (#3225).
+      hiddenStyleLayers: ['Campus Structures/Currently Under Construction']
     },
     // The buildings under construction, drawn over the tiles with the hatch every campus shares
     // (`CONSTRUCTION_HATCH_RENDERER`, #2532). The Construction Zones layer's default Building Projects class is red, so
@@ -98,7 +102,8 @@ export const AggiemapVectorBasemap: BaseMapProperties = {
   ],
   id: 'aggie_basemap',
   // The default on every environment since #2515, so plain "Aggieland", as the raster one was. The cache is
-  // `TAMU_BaseMap_20261026`, published on 26 October 2026 (#2436).
+  // `TAMU_BaseMap_20261119`, published on 19 November 2026 (#3225), which replaced October's outright rather than
+  // being offered beside it: nothing points at VTBase3 any more (#3299).
   title: 'Aggieland',
   thumbnailUrl: CAMPUS_BASEMAP_THUMBNAIL
 };

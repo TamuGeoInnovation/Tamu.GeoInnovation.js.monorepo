@@ -1,5 +1,6 @@
 ---
 issue: 3144
+app: gisday
 title: "GIS Day: a submission's Presentation files come first on its page, where finalists will see them"
 testOnDev: |
   | GIS Day: Presentation files first on a submission ([#3144](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3144)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release, sign in on [gisday.tamu.edu](https://gisday.tamu.edu/account/submissions) with an account that has a submission, and open it under Student Competitions | **Presentation files**, with its box, its deadline line and its Attach A File picker, is the first thing on the page, above Modify Student Competition Submission, without scrolling. New submission shows no Presentation files |

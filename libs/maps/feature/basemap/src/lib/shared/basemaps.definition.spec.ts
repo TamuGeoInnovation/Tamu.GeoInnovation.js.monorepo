@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
+import { TAMU_CAMPUS_STRUCTURES_URL, TAMU_CAMPUS_VECTOR_BASEMAP_URL } from '@tamu-gisc/common/datasets/geographic';
 import { CONSTRUCTION_HATCH_RENDERER } from '@tamu-gisc/maps/esri';
 
 import * as definitions from './basemaps.definition';
@@ -23,15 +24,25 @@ const DEFINITION = path.join('libs', 'maps', 'feature', 'basemap', 'src', 'lib',
 // The vector tile cache development opens on. It moves when a newer one is published (#2436 moved it
 // from VTBase to VTBase3); the point of the test below is that production does not draw a vector
 // basemap and development does, not which cache it is.
-const VECTOR_SERVICE = 'Hosted/VTBase3/VectorTileServer';
+const VECTOR_SERVICE = 'Hosted/VTBase4/VectorTileServer';
 
-/** Every TypeScript source file in libs/ and apps/, specs excluded, relative to the repository root. */
-function sources(): string[] {
-  return ['libs', 'apps'].flatMap((root) =>
+let scanned: Array<{ file: string; text: string }> | undefined;
+
+/**
+ * Every TypeScript source file in libs/ and apps/, specs excluded, relative to the repository root, with its text.
+ *
+ * Walked and read once per spec file (#3265). Each of the two tests that scan the sources used to walk the whole tree
+ * and read its 1,400 or so files again, and a busy machine took the first of them past its 5 s limit.
+ */
+function sources(): Array<{ file: string; text: string }> {
+  scanned ??= ['libs', 'apps'].flatMap((root) =>
     (fs.readdirSync(path.join(REPO_ROOT, root), { recursive: true }) as string[])
       .filter((file) => file.endsWith('.ts') && !file.endsWith('.spec.ts'))
       .map((file) => path.join(root, file))
+      .map((file) => ({ file, text: fs.readFileSync(path.join(REPO_ROOT, file), 'utf8') }))
   );
+
+  return scanned;
 }
 
 /** Only what this test reads of a basemap definition. */
@@ -42,6 +53,12 @@ interface Basemap {
 const urlsOf = (basemap: Basemap) => basemap.baseLayers.map((layer) => layer.url ?? '');
 
 describe('campus basemap', () => {
+  // The source scan below reads every file under libs/ and apps/, once (#3265). It is done here, with its own time, so
+  // the tests that use it time their assertions rather than the disk: on a busy machine, or through a mounted folder,
+  // the walk alone has taken from 6 s to over a minute.
+  beforeAll(() => {
+    sources();
+  }, 180_000);
   it('resolves to the vector tiles on production and on dev (#2515)', () => {
     const resolve = (definitions as unknown as Record<string, unknown>)['aggiemapBasemap'] as
       ((isTesting: boolean) => Basemap) | undefined;
@@ -94,19 +111,57 @@ describe('campus basemap', () => {
     expect(currentRaster).toBeDefined();
     expect(urlsOf(currentRaster as Basemap)).toEqual(urlsOf(definitions.AggiemapRasterBasemap as unknown as Basemap));
 
-    expect(urlsOf(dev[0]).some((url) => url.includes('Hosted/VTBase3/VectorTileServer'))).toBe(true);
-
-    // The September cache is not offered (#3279). Its service now answers 499 Token Required, so offering it made the
-    // settings page raise a portal sign-in dialog over the gallery; its comparison with October's was settled by #2515.
-    expect(dev.flatMap(urlsOf).some((url) => url.includes('Hosted/VTBase/'))).toBe(false);
+    // The campus vector basemap is the November 2026 cache on both environments (#3225, #3299), and no dated vector
+    // entry is offered beside it: nothing here points at VTBase3 any more.
+    expect(urlsOf(dev[0]).some((url) => url.includes('Hosted/VTBase4/VectorTileServer'))).toBe(true);
+    expect(dev.flatMap(urlsOf).some((url) => url.includes('VTBase3'))).toBe(false);
+    expect(production.flatMap(urlsOf).some((url) => url.includes('Hosted/VTBase4/'))).toBe(true);
   });
 
-  it('turns a September vector choice saved before #3279 into the campus basemap', () => {
+  it('opens every environment on the November 2026 cache, and keeps the construction hatch with it (#3225)', () => {
+    // The maintainer's decision, 23 November 2026: the November cache is the selected default on development and on
+    // production, going out with the next production release. So it is `aggiemapBasemap()` on both, and it carries
+    // `aggie_basemap` - the id every saved campus choice is matched against (`basemapForSavedId`).
     const exported = definitions as unknown as Record<string, unknown>;
-    const forSavedId = exported['basemapForSavedId'] as (id: string, isTesting: boolean) => Basemap | string;
-    const resolve = exported['aggiemapBasemap'] as (isTesting: boolean) => Basemap;
+    const resolve = exported['aggiemapBasemap'] as (isTesting: boolean) => Basemap & { id: string; title: string };
 
-    expect(forSavedId('aggie_basemap_vector_2026_09', true)).toEqual(resolve(true));
+    for (const isTesting of [false, true]) {
+      const open = resolve(isTesting);
+
+      expect(urlsOf(open).some((url) => url.includes('Hosted/VTBase4/VectorTileServer'))).toBe(true);
+      expect(open.id).toBe('aggie_basemap');
+      expect(open.title).toBe('Aggieland');
+    }
+
+    // The hatch is the point of this test. VTBase4 publishes ONE construction style layer, a black line, where
+    // VTBase3 published a fill with the rasterized pink pattern and an outline. Taking VTBase4 as published would
+    // therefore drop the orange grid the maintainer settled on 27 October (#2532, #2459) from every map on both
+    // environments - a visible production change riding inside a basemap swap, which is how #2536 happened.
+    const open = resolve(false);
+    const tiles = open.baseLayers.find((layer) => (layer.url ?? '').includes('VTBase4')) as Record<string, unknown>;
+    const construction = open.baseLayers.find((layer) => layer['type'] === 'FeatureLayer') as Record<string, unknown>;
+
+    expect(tiles['hiddenStyleLayers']).toEqual(['Campus Structures/Currently Under Construction']);
+    expect(construction).toBeDefined();
+    expect(construction['renderer']).toBe(CONSTRUCTION_HATCH_RENDERER);
+    expect(construction['definitionExpression']).toBe("type = 'CONSTRUCTION'");
+  });
+
+  it('points nothing at VTBase3, on either environment (#3299)', () => {
+    // The maintainer's decision, 23 November 2026: moving off VTBase3 is part of adding the November cache, not a
+    // follow-up. The two feature services disagree about what is under construction - VTBase3 still has the
+    // Easterwood ARFF Station, and lacks the Golf Performance Center and Last Energy PWR5 - so drawing VTBase4's
+    // tiles while reading VTBase3's features would hatch one finished building and leave two unhatched, with their
+    // own outline hidden. The tiles and their data are one source (#2722).
+    const exported = definitions as unknown as Record<string, unknown>;
+    const gallery = exported['aggiemapGalleryBasemaps'] as (isTesting: boolean) => Array<Basemap>;
+
+    for (const isTesting of [false, true]) {
+      expect(gallery(isTesting).flatMap(urlsOf).filter((url) => url.includes('VTBase3'))).toEqual([]);
+    }
+
+    expect(TAMU_CAMPUS_VECTOR_BASEMAP_URL).toContain('Hosted/VTBase4/VectorTileServer');
+    expect(TAMU_CAMPUS_STRUCTURES_URL).toContain('Hosted/VTBase4/FeatureServer/0');
   });
 
   it('turns every id the gallery can save back into a basemap (#1726)', () => {
@@ -195,10 +250,11 @@ describe('campus basemap', () => {
     const offenders = sources()
       // The definition file is where the resolver lives, and the raster basemap declares its own
       // Web Mercator reference there, correctly.
-      .filter((file) => path.normalize(file) !== DEFINITION)
+      .filter(({ file }) => path.normalize(file) !== DEFINITION)
       // Either way in: the resolver itself, or a saved choice turned back into a basemap (#1726).
-      .filter((file) => /aggiemapBasemap\(|basemapForSavedId\(/.test(fs.readFileSync(path.join(REPO_ROOT, file), 'utf8')))
-      .filter((file) => /spatialReference:\s*\{[^}]*wkid:\s*\d+/.test(fs.readFileSync(path.join(REPO_ROOT, file), 'utf8')));
+      .filter(({ text }) => /aggiemapBasemap\(|basemapForSavedId\(/.test(text))
+      .filter(({ text }) => /spatialReference:\s*\{[^}]*wkid:\s*\d+/.test(text))
+      .map(({ file }) => file);
 
     expect(offenders).toEqual([]);
   });
@@ -212,16 +268,14 @@ describe('campus basemap', () => {
     const MAPLIBRE = path.normalize('libs/maps/mapbox/');
 
     const offenders = sources()
-      .filter((file) => path.normalize(file) !== DEFINITION && path.normalize(file) !== DECLARED)
-      .filter((file) => {
-        const text = fs.readFileSync(path.join(REPO_ROOT, file), 'utf8');
-
-        return (
+      .filter(({ file }) => path.normalize(file) !== DEFINITION && path.normalize(file) !== DECLARED)
+      .filter(
+        ({ file, text }) =>
           (!path.normalize(file).startsWith(MAPLIBRE) &&
             (text.includes(VECTOR_SERVICE) || /\bTAMU_CAMPUS_VECTOR_BASEMAP_URL\b/.test(text))) ||
           /\b(AggiemapBasemap|AggiemapVectorBasemap|AggiemapRasterBasemap\w*)\b/.test(text)
-        );
-      });
+      )
+      .map(({ file }) => file);
 
     expect(offenders).toEqual([]);
   });
@@ -240,11 +294,13 @@ describe('the vector basemap draws its buildings under construction itself (#245
   const tiles = layers.find((layer) => layer['type'] === 'VectorTileLayer');
   const construction = layers.find((layer) => layer['type'] === 'FeatureLayer');
 
-  it("hides the tiles' construction fill and their outline, which a layer above the tiles cannot keep whole", () => {
-    expect(tiles?.['hiddenStyleLayers']).toEqual([
-      'Campus Structures/Currently Under Construction/1',
-      'Campus Structures/Currently Under Construction/0'
-    ]);
+  it("hides the tiles' construction outline, which a layer above the tiles cannot keep whole", () => {
+    // VTBase3 published two style layers here: a fill whose `fill-pattern` was the rasterized pink, and a black
+    // outline. Both were hidden - the fill because it drew as a solid block, the outline because it had to move with
+    // it. VTBase4 publishes ONE, the line: the GIS team fixed the fill at source (#3225). The line is still hidden,
+    // because our renderer draws its own outline and anything added to a vector tile basemap draws above all of it,
+    // so the style's outline would sit under the grid and read as a dashed line.
+    expect(tiles?.['hiddenStyleLayers']).toEqual(['Campus Structures/Currently Under Construction']);
   });
 
   it('draws its own black outline on top of the hatch', () => {
@@ -259,7 +315,7 @@ describe('the vector basemap draws its buildings under construction itself (#245
 
   // The tiles' own feature service since #2722, where the field names are lower case.
   it('draws the buildings under construction from the buildings service, with a CIM hatch', () => {
-    expect(construction?.['url']).toMatch(/\/Hosted\/VTBase3\/FeatureServer\/0$/);
+    expect(construction?.['url']).toMatch(/\/Hosted\/VTBase4\/FeatureServer\/0$/);
     expect(construction?.['definitionExpression']).toBe("type = 'CONSTRUCTION'");
     expect(JSON.stringify(construction?.['renderer'])).toContain('CIMHatchFill');
   });

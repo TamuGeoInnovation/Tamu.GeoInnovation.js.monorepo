@@ -1,5 +1,6 @@
 ---
 issue: 2940
+app: gisday
 title: "GIS Day: an event's speakers on its edit page are in order by last name"
 testOnDev: |
   | GIS Day: an event's speakers by last name ([#2940](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2940)) | Not on dev: GIS Day has no dev site. After release, open an event with several speakers from [Events](https://txgisday.org/admin/events) | Its speakers are listed by last name, then first name, and stay in that order when one is added or removed |

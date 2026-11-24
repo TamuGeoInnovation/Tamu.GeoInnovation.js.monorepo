@@ -1,5 +1,6 @@
 ---
 issue: 2582
+app: gisday
 title: The VGI Form Designer says what Fetch Schema and Save did
 testOnDev: |
   | GIS Day admin: VGI Competition, Form Designer ([#2582](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2582)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release, as an admin on gisday.tamu.edu: Admin, VGI Competition, Form Designer | Fetch Schema with `/assets/competitions/2026-monument-trail.json` says "Fetching the schema…", then "Found N fields: ..." and lists the questions. With `https://txgisday.org/assets/competitions/2026-monument-trail.json` it says it couldn't load that address and to use a file on this site. Save says "The form is saved." |

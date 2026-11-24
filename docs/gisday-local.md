@@ -62,8 +62,9 @@ database volume, so the restore is needed only once.
 ### Another organization's site
 
 The same code serves more than one organization's GIS Day site; each is defined in
-`libs/gisday/common/src/lib/sites.ts` and chosen per deployment by `ANGULAR_SITE` (#1835). To review
-one locally, start the web step with its key:
+`libs/gisday/common/src/lib/sites.ts` and chosen per deployment by `ANGULAR_SITE` (#1835). Adding a
+new one, from that entry to its own address, is [`docs/gisday-sites.md`](gisday-sites.md) (#1843). To
+review one locally, start the web step with its key:
 
 ```bash
 scripts/gisday-local.sh web --site ucgis
@@ -94,7 +95,7 @@ scripts/gisday-local.sh web --static                # or: web --static --site uc
 
 It builds `gisday-angular --configuration local` into `dist/apps/gisday-angular`, then serves that
 folder from `nginx:alpine` as `gisday-dev`, on the same ports as the dev server, with `--site` working
-as above. `scripts/gisday-local-static.conf` sends `/___ANGULAR_API_URL___/...` to `gisday-api`, as
+as above. `scripts/gisday-local-static.conf` sends `/api/...` to `gisday-api`, as
 `proxy.local.json` does for the dev server, so start `api` first: nginx will not start if it cannot
 find `gisday-api`. **Nothing recompiles.** After an edit, run `web --static` again; it rebuilds and
 replaces `gisday-dev` (and `gisday-site`).
@@ -167,17 +168,18 @@ an event's name or abstract. Read the diff of what the site shows before committ
 
 ## How the front end reaches the API
 
-`gisday-angular` is built with placeholder settings (`___ANGULAR_API_URL___` and the
-`___ANGULAR_AUTH0_...___` values) that its production container replaces at start. The dev server
-does no such replacement, so the front end calls `/___ANGULAR_API_URL___/...` literally. The `local`
-serve configuration adds `apps/gisday-angular/proxy.local.json`, which sends those calls to
-`http://gisday-api:3333/api/...`.
+`gisday-angular` calls the API on the address the page was opened on, at `/api/` (#2088), as every
+deployed address does. The `local` serve configuration adds `apps/gisday-angular/proxy.local.json`,
+which sends those calls to `http://gisday-api:3333/api/...`. The `___ANGULAR_AUTH0_...___` settings
+are placeholders its production container replaces at start; a local serve takes the development
+tenant's from `environment.local.ts` instead.
 
 ## What works locally
 
 - Pages load with the restored data (checked 11 October on the office machine: the page, the API
   directly at <http://localhost:3333/api/seasons/active>, and the same call through the dev server's
-  proxy at <http://localhost:4201/___ANGULAR_API_URL___/seasons/active> all answer 200).
+  proxy at <http://localhost:4201/api/seasons/active> all answer 200; the proxy's path was
+  `/___ANGULAR_API_URL___/` until #2088).
 - Sign-in, with an account in the development Auth0 tenant (see [Signing in](#signing-in)).
 
 What does not, yet:

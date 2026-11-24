@@ -1,5 +1,6 @@
 ---
 issue: 3033
+app: gisday
 title: "GIS Day admin: a tag's page lists the sessions that have it"
 testOnDev: |
   | GIS Day admin: a tag's sessions ([#3033](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3033)) | Not on dev: GIS Day has no dev site. After release, as an admin open [Tags](https://txgisday.org/admin/tags) and a tag some sessions have, then one none has | Under the tag's fields, **Sessions with this tag**: the count, then each session's day, time and name in date and time order, each name opening the session's admin page; "No sessions have this tag." for an unused one. On gisday.tamu.edu, only Texas A&M's sessions |

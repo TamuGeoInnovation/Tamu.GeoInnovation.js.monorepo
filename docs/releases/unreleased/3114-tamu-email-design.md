@@ -1,5 +1,6 @@
 ---
 issue: 3114
+app: gisday
 title: Texas A&M GIS Day's emails use the GIS Day email design
 testOnDev: |
   | GIS Day: emails from gisday.tamu.edu ([#3114](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3114)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release, as an admin on gisday.tamu.edu: open Send profile email, Send session details or a review decision, and send one to yourself | The window's preview shows the whole email in the Texas A&M GIS Day design: the maroon bar, GIS DAY(S) with this season's dates and days, the text, the session's details where there is one, and a sign-off from the address chosen in Send as. It arrives looking the same, with a plain-text version for mail apps that show no HTML, and no unsubscribe line. On txgisday.org the same emails stay plain |

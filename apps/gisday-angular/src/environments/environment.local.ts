@@ -23,6 +23,6 @@ export const auth0 = {
   redirect_uri: window.location.origin + '/callback',
   audience: 'gisday.dev.api',
   roles_claim: 'geoservices.prod/roles',
-  // The token goes only to the API, which the dev server's proxy serves under the placeholder path.
+  // The token goes only to the API, on this address, which the dev server's proxy sends on (#2088).
   urls: [api_url]
 };

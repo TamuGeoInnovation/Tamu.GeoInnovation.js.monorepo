@@ -1,5 +1,6 @@
 ---
 issue: 3183
+app: gisday
 title: "GIS Day: judges score the research competitions in the site, against rubrics, from an emailed judging link"
 testOnDev: |
   | GIS Day: judging the research competitions ([#3183](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3183)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release, as an admin on [gisday.tamu.edu](https://gisday.tamu.edu/admin/research-competition/rubrics), open Research Competitions, Rubrics, and choose Start from the standard rubric for posters; then on a poster session's page choose Judged competition and tick its judges, Update, and open Email these speakers, Ask to judge, without sending | The rubric shows seven criteria totalling 100 points. After Update the Judging section keeps the competition and the judges ticked. Ask to judge is in the menu only while a competition is chosen, and its window lists only the judges, a copy each. Research Competitions, Judging results lists the competition's accepted entries and each judge's progress |

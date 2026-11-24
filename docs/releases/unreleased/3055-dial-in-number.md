@@ -1,5 +1,6 @@
 ---
 issue: 3055
+app: gisday
 title: "GIS Day: a session's Online Broadcast panel shows its dial-in number, not its password"
 testOnDev: |
   | GIS Day: the dial-in number on a session's Online Broadcast panel ([#3055](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3055)) | Not on dev: GIS Day has no dev site. After release, signed in, open a hybrid or virtual session on [Sessions](https://txgisday.org/sessions) whose broadcast has a phone number | Open Online Broadcast: "Dial-in number" shows the broadcast's phone number, not the same value as "Password". A broadcast with no phone number says None |

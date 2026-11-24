@@ -58,6 +58,48 @@
         </tbody>
       </table>
 
+      <!-- Each competition's sessions and when its finalists hear (#3019, decided 6A and 7A). -->
+      <p class="bold">Sessions and finalists</p>
+      <p class="form-input-description">The session each competition's page and acceptance email name. Left as "By its name", they find it by its COMPETITION: or AWARDS: name, as before. When finalists hear is shown on the competition's page; empty leaves that line out.</p>
+      <table class="deadlines-table sessions-table" formGroupName="sessions">
+        <thead>
+          <tr>
+            <td></td>
+            <th scope="col">Competition session</th>
+            <th scope="col">Awards session</th>
+            <th scope="col">Finalists notified</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (competition of competitions(); track competition.key) {
+          <tr [formGroupName]="competition.key">
+            <th scope="row">{{ competition.label }}</th>
+            <td>
+              @if (withSessions.includes(competition.key)) {
+              <tamu-gisc-select formControlName="sessionGuid" [data]="sessionChoices()" [valueTemplate]="'guid'" [displayTemplate]="'name'" [placeholder]="competition.key === 'presentation' ? 'Undergraduate session' : 'Session'"></tamu-gisc-select>
+              @if (competition.key === 'presentation') {
+              <tamu-gisc-select class="leader-quarter" formControlName="graduateSessionGuid" [data]="sessionChoices()" [valueTemplate]="'guid'" [displayTemplate]="'name'" [placeholder]="'Graduate session'"></tamu-gisc-select>
+              } }
+            </td>
+            <td>
+              @if (withSessions.includes(competition.key)) {
+              <tamu-gisc-select formControlName="awardsSessionGuid" [data]="sessionChoices()" [valueTemplate]="'guid'" [displayTemplate]="'name'" [placeholder]="'Awards session'"></tamu-gisc-select>
+              }
+            </td>
+            <td>
+              <div class="flex flex-row align-center">
+                <div class="flex flex-column align-start">
+                  <tamu-gisc-date-time-picker formControlName="finalistsNotifiedAt" [maxView]="'year'" [minView]="'minute'" [startView]="'day'"></tamu-gisc-date-time-picker>
+                  <span class="deadline-central">{{ inCentralTime(form.controls.sessions.controls[competition.key].controls.finalistsNotifiedAt.value, 'Not shown') }}</span>
+                </div>
+                <tamu-gisc-button class="pre-1" type="button" fit="snug" size="small" look="secondary" value="Clear" (click)="clearFinalists(competition.key)"></tamu-gisc-button>
+              </div>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+
       <div class="flex flex-row align-center justify-end leader-1">
         @if (result(); as result) {
         <p role="status" class="post-1" [class.clr-md-red-500]="!result.saved" [class.clr-md-green-600]="result.saved">{{ result.text }}</p>

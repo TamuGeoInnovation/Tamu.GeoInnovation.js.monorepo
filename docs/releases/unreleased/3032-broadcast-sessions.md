@@ -1,5 +1,6 @@
 ---
 issue: 3032
+app: gisday
 title: "GIS Day admin: a broadcast's page lists the sessions that use it"
 testOnDev: |
   | GIS Day admin: a broadcast's sessions ([#3032](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3032)) | Not on dev: GIS Day has no dev site. After release, as an admin open [Broadcasts](https://txgisday.org/admin/broadcasts) and a broadcast used by some sessions, then one used by none | Under the broadcast's fields, **Sessions using this broadcast**: the count, then each session's day, time and name in date and time order, each name opening the session's admin page; "No sessions use this broadcast." for an unused one. On gisday.tamu.edu, only Texas A&M's sessions |

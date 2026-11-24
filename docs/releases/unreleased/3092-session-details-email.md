@@ -1,5 +1,6 @@
 ---
 issue: 3092
+app: gisday
 title: "GIS Day admin: a session's speakers get its details by email, and a page's email actions are one menu"
 testOnDev: |
   | GIS Day admin: the session details email, and email actions in one menu ([#3092](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3092)) | Not on dev: GIS Day has no dev site. After release, as an admin, open a hybrid session that has speakers and a broadcast under [Events](https://txgisday.org/admin/events); then [Research Competitions](https://txgisday.org/admin/research-competition) with one submission selected | The session's Speakers section has one **Email these speakers** button; it opens a menu of **Profile email** and **Session details**, and Escape or a click elsewhere closes it. Session details opens the profile email's window with the subject and text filled in from the session: its day and time in Central, its room "and online", the broadcast's link, password, dial-in number and meeting ID, the check-in QR code note and the session's requirements, with a preview for the first speaker. Cancel sends nothing. Research Competitions' bar shows Approve, Reject, **Email** and Delete; Email opens **Profile email** and **Final reminder**, each opening its window as before |

@@ -1,5 +1,6 @@
 ---
 issue: 3219
+app: gisday
 title: Dashboard headings break only between words
 testOnDev: |
   | GIS Day: dashboard headings ([#3219](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3219)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release, as an admin at 1280 px and at 390 px: Admin, Dashboards, Check-ins, then the VGI dashboard | "Checked in" reads as two whole words, not "Checkec / in". No heading is cut inside a word; a long one breaks with a hyphen ("Un-verified", "classi-fication") |
