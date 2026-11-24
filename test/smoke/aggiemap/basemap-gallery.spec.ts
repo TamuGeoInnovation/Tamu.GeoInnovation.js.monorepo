@@ -2,7 +2,6 @@ import { Page } from '@playwright/test';
 
 import { expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
-import { isDevelopmentUrl, smokeBaseUrl } from './gis-hosts';
 
 /**
  * Choosing a basemap in the settings panel changes the map, and the panel marks the one chosen (#1672).
@@ -98,20 +97,22 @@ test.describe('basemap gallery', () => {
   });
 
   /**
-   * The November 2026 campus basemap draws when it is chosen, and the map comes back whole when it is left (#3225).
+   * Every environment opens on the November 2026 campus basemap, and leaving it brings the map back whole
+   * (#3225, #3299).
    *
    * A basemap change once blanked the whole map on production, and nothing noticed for a week because no test
-   * switched to a campus basemap and back (#2477, #2536). So this one does: it chooses the new cache, which must be
-   * fetched from its own service and drawn, then the basemap the map opened on, which must bring back exactly the
-   * layers it opened with. Development only (#1229); on production the gallery must not offer it at all.
+   * switched a campus basemap away and back (#2477, #2536). This is that test. It was written when the November
+   * cache was a development-only gallery entry; now that it is what every map opens on, on dev and on production,
+   * it checks the thing that matters instead: the map opens drawn from `VTBase4`'s own service, and switching away
+   * and back returns exactly the layers it opened with.
+   *
+   * It runs on every environment, which the earlier development-only version could not, so production is covered by
+   * the check whose absence let #2536 run for a week.
    */
-  test('the November 2026 campus basemap draws, and leaving it brings back the map', async ({ page }) => {
+  test('the map opens on the November 2026 campus basemap, and leaving it brings back the map', async ({ page }) => {
     test.setTimeout(240_000);
     await blockAnalytics(page);
 
-    const title = 'Aggieland vector, November 2026';
-    const host = new URL(smokeBaseUrl()).hostname;
-    const development = isDevelopmentUrl(smokeBaseUrl()) || host === 'localhost';
     const asked: string[] = [];
 
     page.on('request', (request) => {
@@ -123,31 +124,36 @@ test.describe('basemap gallery', () => {
       .poll(() => basemapLayers(page), { message: `${MAP} never finished loading`, timeout: 90_000, intervals: [1_000] })
       .not.toBeNull();
 
-    const choice = page.locator('.basemap', { has: page.locator('.basemap-title', { hasText: title }) });
-
-    if (!development) {
-      await expect(choice, `${host} offers ${title}, which is development-only (#1229)`).toHaveCount(0);
-
-      return;
-    }
-
-    await expect(choice, `${host} does not offer ${title} in the basemap gallery`).toHaveCount(1, { timeout: 30_000 });
-
     const marked = page.locator('.basemap.active .basemap-title');
     const openedOn = ((await marked.textContent()) ?? '').trim();
     const openedWith = await basemapLayers(page);
 
-    await choice.first().click();
-    await expect(marked, `choosing ${title} did not mark it as the one showing`).toHaveText(title, { timeout: 60_000 });
+    // The campus basemap kept its plain name when the cache behind it changed, so the title says nothing about
+    // which cache is drawing. The service asked for tiles is what does.
+    expect(openedOn, `${MAP} does not open on the campus basemap`).toBe('Aggieland');
+    expect(
+      asked.length,
+      `${MAP} opened without asking Hosted/VTBase4 for anything, so it is drawing an older campus basemap`
+    ).toBeGreaterThan(0);
+
+    // Nothing may reach for the cache it replaced (#3299).
+    const old = asked.filter((url) => url.includes('/Hosted/VTBase3/'));
+
+    expect(old, `${MAP} still requests the October 2026 cache`).toEqual([]);
+
+    // Away and back. `CHOICES[0]` is one of ArcGIS's own basemaps, offered on every environment.
+    const away = CHOICES[0];
+
+    await page.locator('.basemap', { has: page.locator('.basemap-title', { hasText: away }) }).first().click();
+    await expect(marked, `choosing ${away} did not mark it as the one showing`).toHaveText(away, { timeout: 60_000 });
     await expect
-      .poll(async () => (await basemapLayers(page)) ?? '', { message: `${title} did not replace ${openedWith}`, timeout: 60_000 })
+      .poll(async () => (await basemapLayers(page)) ?? '', { message: `${away} did not replace ${openedWith}`, timeout: 60_000 })
       .not.toBe(openedWith ?? '');
-    await expect.poll(() => asked.length, { message: `${title} never asked its own service for tiles`, timeout: 60_000 }).toBeGreaterThan(0);
 
     await page.locator('.basemap', { has: page.locator('.basemap-title', { hasText: openedOn }) }).first().click();
     await expect(marked, `coming back to ${openedOn} did not mark it`).toHaveText(openedOn, { timeout: 60_000 });
     await expect
-      .poll(() => basemapLayers(page), { message: `leaving ${title} did not bring back ${openedWith}`, timeout: 60_000 })
+      .poll(() => basemapLayers(page), { message: `leaving ${away} did not bring back ${openedWith}`, timeout: 60_000 })
       .toBe(openedWith);
   });
 

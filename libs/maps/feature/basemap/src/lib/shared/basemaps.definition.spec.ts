@@ -279,11 +279,13 @@ describe('the vector basemap draws its buildings under construction itself (#245
   const tiles = layers.find((layer) => layer['type'] === 'VectorTileLayer');
   const construction = layers.find((layer) => layer['type'] === 'FeatureLayer');
 
-  it("hides the tiles' construction fill and their outline, which a layer above the tiles cannot keep whole", () => {
-    expect(tiles?.['hiddenStyleLayers']).toEqual([
-      'Campus Structures/Currently Under Construction/1',
-      'Campus Structures/Currently Under Construction/0'
-    ]);
+  it("hides the tiles' construction outline, which a layer above the tiles cannot keep whole", () => {
+    // VTBase3 published two style layers here: a fill whose `fill-pattern` was the rasterized pink, and a black
+    // outline. Both were hidden - the fill because it drew as a solid block, the outline because it had to move with
+    // it. VTBase4 publishes ONE, the line: the GIS team fixed the fill at source (#3225). The line is still hidden,
+    // because our renderer draws its own outline and anything added to a vector tile basemap draws above all of it,
+    // so the style's outline would sit under the grid and read as a dashed line.
+    expect(tiles?.['hiddenStyleLayers']).toEqual(['Campus Structures/Currently Under Construction']);
   });
 
   it('draws its own black outline on top of the hatch', () => {
