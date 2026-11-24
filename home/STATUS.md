@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch 79 (gisday: #2088, the API on each address's own origin)**, since 6:40 PM Central, 23 November, from development `873f6a098`.
+- Nothing. Idle and listening.
 
 ## Finished
+- **Batch 79 (gisday: #2088)** (report `home/reports/2026-11-23-79.md`): branch ready, `fix/2088-api-on-own-address` on the fork at `f147bfca2`, no PR. The site calls `${origin}/api` and sends the token only there; local proxies serve `/api/`. Red first; check passes (only the audit FETCH_ERROR). Proven on localhost:4201 and gisday.local.test:4201 with ORIGINS empty: all API calls same-origin. Not signed in (needs a password). kubernetes-config: two variables unused, ORIGINS left until live. Two questions.
 - **Batch 78 (gisday: #1836's images)** (report `home/reports/2026-11-23-78-gisday.md`): images pushed (1836): `e2e9b9cbe`, fast-forward from `98a4dff11`. Before and after at 1280, after at 390 with Filters open, from a throwaway local stack with made-up data; release note table and PR body updated; collate --check clean. No questions.
 - **Batch 78 (security: jsdom 31.0.1, PR 3296)** (report `home/reports/2026-11-23-78.md`, summary on #3297): full check `all` on the PR merged into development (clean merge): every Nx target passes, only `npm audit signatures` FETCH_ERROR. Vitest gets 31.0.1 (63 projects); Jest keeps its nested 26.1.0. No breaking change touches our use. Recommend merge. Two questions.
 - **Batch 77 (security: Dependabot PR 3295)** (report `home/reports/2026-11-23-77-security.md`, results on #3254): conflicts with development since #3276; on its own base the lock is clean (18 packages and their deps, no downgrade, no install script, no amCharts), all versions 7+ days, all Nx targets pass (one Jest worker SIGKILLed, passed alone). Needs a Dependabot rebase and re-check. Two questions.
