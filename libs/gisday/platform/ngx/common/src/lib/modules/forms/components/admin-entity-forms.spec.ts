@@ -205,14 +205,27 @@ const SAID_TOO: Record<string, Record<string, Array<Toast>>> = {
     notDeleted: [{ id: 'sponsor-delete-failed', title: 'Delete Sponsor', message: 'Error deleting sponsor: 500' }],
     notDeletedWithReason: [{ id: 'sponsor-delete-failed', title: 'Delete Sponsor', message: 'A made-up reason.' }]
   },
+  // The place form says Organization, as its titles, button and the admin menu do (#3398): its toasts said Place.
   place: {
-    created: [{ id: 'place-create-success', title: 'Create Place', message: 'Place was successfully created.' }],
-    notCreated: [{ id: 'place-create-failed', title: 'Create Place', message: 'Error creating place: 500' }],
-    updated: [{ id: 'place-update-success', title: 'Update Place', message: 'Place was successfully updated.' }],
-    notUpdated: [{ id: 'place-update-failed', title: 'Update Place', message: 'Error updating place: 500' }],
-    deleted: [{ id: 'place-delete-success', title: 'Delete Place', message: 'Place was successfully deleted.' }],
-    notDeleted: [{ id: 'place-delete-failed', title: 'Delete Place', message: 'Error deleting place: 500' }],
-    notDeletedWithReason: [{ id: 'place-delete-failed', title: 'Delete Place', message: 'A made-up reason.' }]
+    created: [
+      { id: 'organization-create-success', title: 'Create Organization', message: 'Organization was successfully created.' }
+    ],
+    notCreated: [
+      { id: 'organization-create-failed', title: 'Create Organization', message: 'Error creating organization: 500' }
+    ],
+    updated: [
+      { id: 'organization-update-success', title: 'Update Organization', message: 'Organization was successfully updated.' }
+    ],
+    notUpdated: [
+      { id: 'organization-update-failed', title: 'Update Organization', message: 'Error updating organization: 500' }
+    ],
+    deleted: [
+      { id: 'organization-delete-success', title: 'Delete Organization', message: 'Organization was successfully deleted.' }
+    ],
+    notDeleted: [
+      { id: 'organization-delete-failed', title: 'Delete Organization', message: 'Error deleting organization: 500' }
+    ],
+    notDeletedWithReason: [{ id: 'organization-delete-failed', title: 'Delete Organization', message: 'A made-up reason.' }]
   },
   speaker: {
     created: [{ id: 'speaker-create-success', title: 'Create Speaker', message: 'Speaker was successfully created.' }],
