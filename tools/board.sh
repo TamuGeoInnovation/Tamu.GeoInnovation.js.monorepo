@@ -4,6 +4,9 @@
 # State comes from the listeners' own commit subjects: "<name>: batch N done" (done), "<name>: started batch N" / "batch N started" /
 # "batch N running" (running), a heading or note saying the batch is withdrawn (withdrawn), otherwise queued. A batch heading should read
 # "## Batch N (<project>: <issue and what>; <date and time> Central, from `<director>`)" (DIRECTOR.md, "Batch headings").
+# A batch id may carry its director's letter (a9, g7, s7; DIRECTOR.md, 23 November 2026) or be a bare number from before them.
+# Unlike tools/queued.sh, this does NOT judge a shared id per director: two live batches with one bare number are each shown as a
+# row, but a bare "batch 77 done" marks both of them done. tools/queued.sh is what says what is really outstanding.
 # Generated, never edited by hand, so it cannot drift from what the listeners actually pushed. PROJECTS.md says who directs what.
 set -u
 keep=${1:-3}
@@ -16,13 +19,13 @@ for d in $(git ls-tree -d --name-only origin/work-mailbox); do
   [ -z "$tasks" ] && continue
   mine=$(printf '%s\n' "$subjects" | grep -E "^$d: " || true)
   # every numbered batch heading, newest first as the files keep them
-  printf '%s\n' "$tasks" | grep -E '^## Batch [0-9]+' | while IFS= read -r h; do
-    n=$(printf '%s' "$h" | sed -E 's/^## Batch ([0-9]+).*/\1/')
-    inner=$(printf '%s' "$h" | sed -nE 's/^## Batch [0-9]+ *\((.*)\).*$/\1/p')
+  printf '%s\n' "$tasks" | grep -E '^## Batch [A-Za-z]*[0-9]+' | while IFS= read -r h; do
+    n=$(printf '%s' "$h" | sed -E 's/^## Batch ([A-Za-z]*[0-9]+).*/\1/')
+    inner=$(printf '%s' "$h" | sed -nE 's/^## Batch [A-Za-z]*[0-9]+ *\((.*)\).*$/\1/p')
     project=$(printf '%s' "$inner" | sed -nE 's/^([^:;]+):.*/\1/p')
     director=$(printf '%s' "$h" | grep -oE 'from `[^`]+`' | sed -E 's/from `([^`]+)`/\1/' | head -1)
-    if printf '%s\n' "$mine" | grep -qiE "(batch $n (done|finished|complete|reported)|finished batch $n\b|batches [0-9 ,and]*\b$n\b[0-9 ,and]* (done|finished))"; then state=done
-    elif printf '%s' "$h" | grep -qi withdrawn || printf '%s\n' "$tasks" | grep -qiE "batch(es)? ([0-9]+ (and|,) )*$n\b[^.]*withdrawn|withdrawn[^.]*batch(es)? ([0-9]+ (and|,) )*$n\b"; then state=withdrawn
+    if printf '%s\n' "$mine" | grep -qiE "(batch $n (done|finished|complete|reported)|finished batch $n\b|batches [A-Za-z0-9 ,]*\b$n\b[A-Za-z0-9 ,]* (done|finished))"; then state=done
+    elif printf '%s' "$h" | grep -qi withdrawn || printf '%s\n' "$tasks" | grep -qiE "batch(es)? ([A-Za-z]*[0-9]+ (and|,) )*$n\b[^.]*withdrawn|withdrawn[^.]*batch(es)? ([A-Za-z]*[0-9]+ (and|,) )*$n\b"; then state=withdrawn
     elif printf '%s\n' "$mine" | grep -qiE "(started batch $n\b|batch $n (started|running)|running batch $n\b)"; then state=running
     else state=queued; fi
     printf '%s\t%s\t%s\t%s\t%s\n' "$d" "$n" "${project:-?}" "${director:-?}" "$state"

@@ -12,7 +12,9 @@ The maintainer's decisions 1A, 2A and 3A:
 
 - **One queue per listener.** A listener keeps one `TASKS.md`. Both directors append batches to it; **neither edits or removes
   the other's**. Every batch heading names its director and application, for example
-  `## Batch 6 (aggiemap: ...)` or `## Batch 7 (gisday: ...)`, and batch numbers are the listener's, in one sequence.
+  `## Batch 6 (aggiemap: ...)` or `## Batch 7 (gisday: ...)`, and batch numbers were the listener's, in one sequence -
+  **replaced on 23 November 2026 by [Batch ids carry their director's letter](#batch-ids-carry-their-directors-letter-23-november-2026)**,
+  because three directors picking "the next unused number" out of one file picked the same one.
 - **The listener runs batches in the order they arrive**, one heavy run at a time ([Nothing heavy beside a run](#nothing-heavy-beside-a-run)),
   and its `STATUS.md` says which director's batch is running.
 - **Questions go back to the director that wrote the batch.** A listener's report puts them under
@@ -383,7 +385,9 @@ is the single answer to "who is doing what where", and a handover is a one-line 
   It does no project work itself. Its start is `coordinator/START.md`.
 - **Project leads** (AggieMap, GIS Day, security, visual testing) do their project's work, write their batches and pull requests, ask the
   coordinator for lab time and lock-queue slots, and send it their questions with options and a recommendation.
-- **Batch headings name project, issue and director**, always: `## Batch N (<project>: #<issue> - <what>; <date, time> Central, from `<director>`)`.
+- **Batch headings name project, issue and director**, always: `` ## Batch <id> (<project>: #<issue> - <what>; <date, time> Central, from `<director>`) ``,
+  where `<id>` is the project's letter and that project's own number for this listener - `a9`, `g7`, `s7`
+  ([Batch ids carry their director's letter](#batch-ids-carry-their-directors-letter-23-november-2026)).
   `tools/board.sh` reads them, with the listeners' own commit subjects, into one board of who is doing what.
 
 ## No machine idle beside work (8 November 2026, the maintainer's 1A-4A)
@@ -396,10 +400,38 @@ Four ways machines sat idle, or work was done twice, in one week, and the rule f
 | The lab was offline six days (31 October to 6 November) and Copilot failed every run for days, and nobody noticed | **Whichever director the maintainer next asks anything runs `bash tools/roster.sh` first** and deals with what it flags, before other work: `gone`, `stuck?`, **`IDLE WITH WORK WAITING`** (wake it: a one-line note in its `TASKS.md`), **`BLOCKED`** (tell the maintainer what the state says) |
 | Copilot showed "idle, takes work" while it exited 1 at every start | **`tools/agent-runner.ps1` counts a non-zero exit as a failure.** After three, the heartbeat says `blocked: <agent> exits <code> at start; see the log <file>`, and the roster shows BLOCKED |
 | Two finished batches were redone on other machines, and a director then waited two days on reports it had missed | **Before moving, re-queuing or chasing a batch, read `bash tools/queued.sh <name>` (or `tools/board.sh`), never the log by eye.** Moving a batch means marking it `WITHDRAWN, moved to <name> batch <n>` in the old file first, in the same commit as the new one |
+| Two directors each wrote a batch 7 into `laptop/TASKS.md`, the listener reported "finished batch 7", and `tools/queued.sh` dropped both - so security's #3265 waited, invisible, until the listener said so in a commit of its own | **Batch ids carry their director's letter** ([below](#batch-ids-carry-their-directors-letter-23-november-2026)), and `tools/queued.sh` judges a shared id only by the reports that name its director |
 
 `tools/queued.sh <name> [days]` lists that listener's batches from the last 7 days that it hasn't reported done: `queued` if nothing
 has named it, `unfinished` if it started. A batch heading needs its date ("8 November 2026") to be counted, as the batch-heading rule
 already asks.
+
+## Batch ids carry their director's letter (23 November 2026)
+
+The maintainer's 2A: **prefix batch numbers by director.** Three directors write one `TASKS.md`, each reading it and taking the next
+unused number, so they take the same one. On 23 November `laptop` held two batch 7s and `home` two 77s and two 78s. That is not a
+tidiness problem: a listener reports `batch 7 done`, and the number cannot say which of two batches is finished.
+
+- **An id is the project word's own first letter, then that project's own number for this listener**: `a9` for aggiemap's ninth
+  batch to that machine, `g7` for GIS Day's seventh, `s7` for security's, `v`, `c` and `w` for visual testing, coordination and
+  workspace. The letter is the first letter of the project word the heading already carries, so there is nothing extra to
+  remember and nothing that can disagree with it.
+- **A director counts only its own batches** for that listener. `a9` and `g9` are different batches and that is fine; nobody writes
+  or says a bare number any more.
+- **The listener reports the id as written**: `laptop: batch a9 done`, never `batch 9 done`.
+- **Numbers already written stay as they are.** A bare number is still a valid id, because every batch before today has one; a
+  director does not renumber a batch, its own or anyone else's, and never one a listener may already be running.
+- **While both kinds are live, `tools/queued.sh` judges a shared id only by the reports that name its director** (`home: security
+  batch 77 done`), lists both batches with their directors, and says `and no report says which` when nothing attributes it. So an
+  unattributed report over-reports one batch rather than losing one. `bash tools/queued.test.sh` covers all of it;
+  `tools/board.sh` reads the letters but does **not** judge per director, so `queued.sh` is what says what is outstanding.
+- **A listener that is given two batches with one number says so** in a progress push, as `laptop` did
+  (`security's batch 7 is still queued though queued.sh drops it`) - which is the only reason anyone noticed.
+
+**`grep -i` together with `-F` aborts in Git Bash** (GNU grep 3.0, exit 134, "core dumped"), and inside a `-q` test or a
+`|| true` it reads as "no match". Either flag alone is fine. The first fix for the above was written with `grep -iF` and
+silently matched nothing, which looked exactly like the bug it was meant to fix. Use `grep -iE`. The test asserts no tool
+uses the combination.
 
 ## Checking in: who is up and can take work (25 October 2026)
 
