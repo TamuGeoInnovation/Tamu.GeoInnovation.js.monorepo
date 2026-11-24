@@ -39,7 +39,8 @@ export class RsvpDashboardComponent extends EventDashboardComponent<RsvpDashboar
     readError: 'The RSVPs could not be read. Try again in a moment.',
     reading: 'Reading the RSVPs...',
     overTime: 'RSVPs over time',
-    chartNote: "The running total at the end of each day, in Central time, with each day's new RSVPs beneath and the GIS Day week shaded. Hover for a day's numbers; drag across the chart to zoom in, and double-click to see it all again. Press a year to draw it beside this one, lined up on the Monday of each year's GIS Day week: the axis then counts days from it.",
+    chartNote:
+      "The running total at the end of each day, in Central time, with each day's new RSVPs beneath and the GIS Day week shaded. Hover for a day's numbers; drag across the chart to zoom in, and double-click to see it all again. Press a year to draw it beside this one, lined up on the Monday of each year's GIS Day week: the axis then counts days from it.",
     chartSecondLine: 'The second line is the event opened below.',
     chartOpenOne: 'Open an event below to add its own line.',
     chartUnit: 'RSVPs',

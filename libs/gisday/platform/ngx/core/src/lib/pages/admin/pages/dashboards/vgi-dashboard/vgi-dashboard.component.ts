@@ -78,13 +78,15 @@ export class VgiDashboardComponent extends EventDashboardComponent<VgiDashboard,
     readError: 'The submissions could not be read. Try again in a moment.',
     reading: 'Reading the submissions...',
     overTime: 'Submissions over time',
-    chartNote: "The running total at the end of each day, in Central time, with each day's submissions beneath. Hover for a day's numbers; drag across the chart to zoom in, and double-click to see it all again. Press a year to draw it beside this one, lined up on the Monday of each year's GIS Day week: the axis then counts days from it.",
+    chartNote:
+      "The running total at the end of each day, in Central time, with each day's submissions beneath. Hover for a day's numbers; drag across the chart to zoom in, and double-click to see it all again. Press a year to draw it beside this one, lined up on the Monday of each year's GIS Day week: the axis then counts days from it.",
     chartSecondLine: 'The second line is the feature type opened below.',
     chartOpenOne: 'Open a feature type below to add its own line.',
     chartUnit: 'submissions',
     chartLabel: "Submissions over time, as a running total by day, with each day's submissions",
     byHeading: 'By feature type',
-    tableNote: "Each feature type on the season's form. New finds and repeats are scored as the leaderboard scores them; a discarded submission, or one outside the scoring window, is neither. Click a heading to sort by it, and again to reverse it. Click a feature type to see who submitted it.",
+    tableNote:
+      "Each feature type on the season's form. New finds and repeats are scored as the leaderboard scores them; a discarded submission, or one outside the scoring window, is neither. Click a heading to sort by it, and again to reverse it. Click a feature type to see who submitted it.",
     nameLabel: 'Feature type',
     // "Sub-missions", with a soft hyphen: at its narrowest the total column cut the word to "Submissio", and
     // Chrome does not hyphenate a word starting with a capital.

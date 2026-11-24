@@ -127,7 +127,8 @@ describe('VgiDashboardComponent (#2894)', () => {
     const fixture = open();
     await settle(fixture);
     const root = fixture.nativeElement as HTMLElement;
-    const words = (selector: string) => Array.from(root.querySelectorAll(selector)).map((e) => e.textContent.replace(/\s+/g, ' ').trim());
+    const words = (selector: string) =>
+      Array.from(root.querySelectorAll(selector)).map((e) => e.textContent.replace(/\s+/g, ' ').trim());
 
     expect([
       ...words('.form-section-name'),
@@ -140,8 +141,8 @@ describe('VgiDashboardComponent (#2894)', () => {
       '4 submissions of 2 feature types, by 3 people.',
       'Submissions over time',
       'By feature type',
-      'The running total at the end of each day, in Central time, with each day\'s submissions beneath. Hover for a day\'s numbers; drag across the chart to zoom in, and double-click to see it all again. Press a year to draw it beside this one, lined up on the Monday of each year\'s GIS Day week: the axis then counts days from it. Open a feature type below to add its own line.',
-      'Each feature type on the season\'s form. New finds and repeats are scored as the leaderboard scores them; a discarded submission, or one outside the scoring window, is neither. Click a heading to sort by it, and again to reverse it. Click a feature type to see who submitted it.',
+      "The running total at the end of each day, in Central time, with each day's submissions beneath. Hover for a day's numbers; drag across the chart to zoom in, and double-click to see it all again. Press a year to draw it beside this one, lined up on the Monday of each year's GIS Day week: the axis then counts days from it. Open a feature type below to add its own line.",
+      "Each feature type on the season's form. New finds and repeats are scored as the leaderboard scores them; a discarded submission, or one outside the scoring window, is neither. Click a heading to sort by it, and again to reverse it. Click a feature type to see who submitted it.",
       'Feature type',
       'Sub\u00admissions',
       'New finds',
