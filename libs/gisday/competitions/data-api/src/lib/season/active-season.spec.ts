@@ -15,7 +15,9 @@ describe('the active season lookups', () => {
   it("finds the active season's competition season, with the relations asked for", async () => {
     const comp = compSeasons({ guid: 'c-1' });
 
-    await expect(activeCompetitionSeason(seasons({ guid: 's-1' }), comp as never, { form: true })).resolves.toEqual({ guid: 'c-1' });
+    await expect(activeCompetitionSeason(seasons({ guid: 's-1' }), comp as never, { form: true })).resolves.toEqual({
+      guid: 'c-1'
+    });
     expect(comp.findOne).toHaveBeenCalledWith({ where: { season: { guid: 's-1' } }, relations: { form: true } });
   });
 

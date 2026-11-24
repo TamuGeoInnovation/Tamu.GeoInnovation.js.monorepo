@@ -116,7 +116,6 @@ export class FormService extends BaseService<CompetitionForm> {
       throw new InternalServerErrorException('Failed to update competition season form.');
     }
   }
-
 }
 
 /**
