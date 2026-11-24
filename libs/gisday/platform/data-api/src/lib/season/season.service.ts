@@ -225,8 +225,10 @@ export class SeasonService extends BaseProvider<Season> {
       // Save it first so we have the guid in subsequent relationships
       const nextSeason = await Season.incrementYear(last).save();
 
+      // By its key, never the whole loaded season (#3302): its deadlines are null until an admin sets them, and typeorm 1
+      // refuses a null anywhere inside a where value.
       const where = {
-        season: last
+        season: { guid: last.guid }
       };
 
       // Clone days, stripping guid, created, updated, and season properties
