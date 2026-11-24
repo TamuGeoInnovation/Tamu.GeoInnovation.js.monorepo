@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch g105 (gisday: #3412, the awards sentence that ends in nothing)**, from `origin/development` `de2bf4e38`, worktree `C:/TAMU/wt-3412`, since 11:00 AM Central.
+- Nothing. Idle, listening.
 
 ## Finished
+- **Batch g105 (gisday: #3412)** (report `home/reports/2026-11-24-g105.md`): `fix/3412-awards-sentence` on the fork at `36904e5db`; red 3 of 3 on development, check exit 0 (`gisday-platform-ngx-core,gisday-angular`, CHECK_PARALLEL=1); the sentence now sits inside the session element on Posters and Presentation. 11:00 to 11:12 AM Central.
 - **Batch s81 (security: Dependabot PR 3401, #3405)** (report `home/reports/2026-11-24-s81.md`): full check exit 0 with clean `npm ci` (95 projects); lock moves only the two packages and maplibre-gl's own (geojson-vt 6.3.2, kdbush hoisted, zustand 5.1.0 new); GIS Day's competition map and geoservices' highlighting identical to development. Commented on the PR. 7:57 to 8:09 AM Central.
 - **Batch s80 (security: #2282)** (report `home/reports/2026-11-24-s80.md`): branch ready, `chore/2282-remove-angular-animations` at `0cfc9bb21` (drop its last commit, `.pr-body.md`). The lab's unmerged October port, onto today's code; every trigger, both providers, the library and the package gone; lock loses only `@angular/animations`. Full check exit 0 with clean `npm ci`. Before/after videos and 10 ms samples recorded here, the forms' leave included. Two questions. Finished 7:17 AM Central.
 - **Batch g104 (gisday: triage of six)** (report `home/reports/2026-11-24-g104.md`): #438 and #499 done already (close); #434 built, `feat/434-events-organization-filter` at `a0d89eaf6`, red first, check exit 0, PR waits for images; #435 half done (bulk hide, #2105), #493 and #1038 need the maintainer. Three questions. Finished 2:44 AM Central.
