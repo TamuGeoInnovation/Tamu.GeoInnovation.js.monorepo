@@ -5,7 +5,7 @@
 
 Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
-Last batch done: 6
+Last batch done: 7
 
 ## What this is
 
@@ -33,10 +33,13 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch 7 (gisday: #2363)**, started 6:17 PM Central. Expected to take about 2 hours. Next update by 7:15 PM Central.
-  Progress (6:42 PM): 28 query-checking specs written and committed (23 platform, 5 competitions; about 160 tests, all passing). typeorm refused one query: SeasonService.clonePreviousSeason, filed as #3302 and fixed on `fix/3302-clone-season-where` (red first; check a pass under the audit rule; on the fork). The test branch's own check is running.
+- **Batch 8 (gisday: #3090 submission file preview)**, started 6:53 PM Central. Expected to take about 2 hours. Next update by 7:15 PM Central.
 
 ## Finished
+- **Batch 7 (gisday: #2363)** (report `laptop/reports/2026-11-23-7.md`): branch ready, `test/2363-query-checking-provider-specs` on the fork at `fa072e279`.
+  - **Specs:** 28 query-checking specs, about 160 tests.
+  - **Bug found:** typeorm refused `SeasonService.clonePreviousSeason`. Filed as **#3302** and fixed on `fix/3302-clone-season-where` (`fda4e8b01`), red first.
+  - **Checks:** both pass under the audit rule. **Merge #3302 first**, then flip one `it.failing`. **One question.**
 - **Batch 6 (gisday: #3292 Winners images)** (report `laptop/reports/2026-11-23-6.md`): **images pushed (3292): `d9f17420f`**, a fast-forward.
   - **Images:** before (merge-base) and after at 1280 and 390, from made-up entries. `collate --check` exit 0.
   - **The main author now leads.** On a long title the co-authors are what gets cut now. **One question.**
@@ -67,7 +70,7 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
   - **One question.**
 
 ## Queued
-- Five batches, after batch 6, in the order they arrived: 7 (gisday: #2363) and 8 (gisday: #3090) together, then 7 (security: #3265; a second batch 7 - two directors numbered at once, so its report is named 7-security), then 9 (aggiemap: #3150, #3149, High), 10 (aggiemap: #3285, High). Order of arrival puts gisday 7 and 8 and security 7 first; the aggiemap 9 says after 5 and is High, so if a director wants it ahead of 7 and 8, say so in TASKS.md.
+- Four batches, after batch 8, in the order they arrived: 7 (security: #3265; a second batch 7 - two directors numbered at once, so its report is named 7-security), then 9 (aggiemap: #3150, #3149, High), 10 (aggiemap: #3285, High). Order of arrival puts gisday 7 and 8 and security 7 first; the aggiemap 9 says after 5 and is High, so if a director wants it ahead of 7 and 8, say so in TASKS.md.
 
 ## Findings
 - `work/tools/gisday-release-check.cjs` clicks Auth0's Accept by itself. A read-only sign-in check would suit machines that only need to prove sign-in.
