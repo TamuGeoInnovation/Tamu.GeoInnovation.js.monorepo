@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch a1 (aggiemap: #3285, outbound link check)**, since 9:20 PM Central, 23 November; then a2, a3 (aggiemap), g87, g88 (gisday).
+- **Batch a2 (aggiemap: #2605, #2603)**, since 9:28 PM Central, 23 November; then a3, g87, g88.
 
 ## Finished
+- **Batch a1 (aggiemap: #3285)** (report `home/reports/2026-11-23-a1.md`): branch ready, `test/3285-outbound-links` on the fork at `72dbd2d26` (`.pr-body.md` last), no PR. 31 outbound links collected from the definitions and the app, judged by #3285's seven rules; the fixture calls aggie.tamu.edu/graduation dead; 42 passed on production. No questions.
 - **Batch 86 (gisday: the rest of #3019)** (report `home/reports/2026-11-23-86-gisday.md`): branch ready, `feat/3019-competition-sessions-chosen` on the fork at `ad9cce65e`, no PR. Sessions (6A) and finalists date (7A) on `season_competitions`, with a `runs` column so settings survive; set in Research Competitions' Competition settings. Migration `AddCompetitionSettings1795487604412` proven up/down/up; exact SQL in the report. Red first; checks pass (memory kills rerun one at a time). Public-page images done; admin images need a sign-in. Two questions.
 - **Batch 85 (gisday: PR 3304's E2E)** (report `home/reports/2026-11-23-85-gisday.md`): `fix/2088-api-on-own-address` fast-forward to `29bd6b205`. Cause: with the token list the page's own /api, the E2E's unconfigured build asked Auth0's placeholder host for a token before every API call, so none was sent. Fix: no token while Auth0 is unfilled. Whole GIS Day E2E 47 passed; check green apart from the audit FETCH_ERROR.
 - **Batch 83 (gisday: #2835, #1843)** (report `home/reports/2026-11-23-83-gisday.md`): both branch ready on the fork, no PRs. `fix/2835-collate-routes-by-app` at `5035893c2` (development merged; 120 GIS Day entries given `app: gisday`; dry --write routes 3 to AggieMap, 120 to GIS Day; CLAUDE.md hunk left to the maintainer). `docs/1843-gisday-sites` at `44e145f41` (the checklist from UCGIS records, six steps unconfirmed incl. Redis). Two questions.
