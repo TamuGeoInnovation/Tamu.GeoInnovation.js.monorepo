@@ -118,9 +118,18 @@ test.describe('2D and 3D', () => {
         };
       });
 
+    /**
+     * The 2D view's scale. Its zoom is counted in the basemap's own levels, and a vector tile basemap
+     * counts one fewer than a raster one at the same scale (VTBase3's level 16 is the raster's 17,
+     * 1:4,514), so after a change of basemap only the scale says whether the map zoomed (#2822).
+     */
+    const scale2d = () =>
+      page.evaluate(() => (document.querySelector('arcgis-map') as unknown as { view?: { scale?: number } } | null)?.view?.scale ?? null);
+
     const toggle = page.locator(TOGGLE).first();
     const flat = await framed('as loaded');
-    const campus = (await page.locator('.basemap-title').allTextContents()).filter((title) => title.startsWith('Aggieland'));
+    const flatScale = await scale2d();
+    const campus =(await page.locator('.basemap-title').allTextContents()).filter((title) => title.startsWith('Aggieland'));
 
     expect(campus.length, 'the basemap panel offers no campus basemap to check').toBeGreaterThan(0);
 
@@ -145,11 +154,24 @@ test.describe('2D and 3D', () => {
     await expect(toggle).toHaveText('3D', { timeout: 60_000 });
     await expectAGlobe(`3D from ${campus[0]}`);
 
-    // Each of the others, chosen while still in 3D.
+    // Each of the others, chosen while still in 3D. One the scene cannot draw is marked unavailable and
+    // ignores a click (#1740, the test below), so it is not chosen but its mark is asserted: waiting for
+    // that button to enable took 45 minutes of a release run on dev, three timeouts of 15 (#2822). A click
+    // that cannot land now fails in seconds.
+    let chosenLast = campus[0];
+
     for (const title of campus.slice(1)) {
-      await page.locator('.basemap', { hasText: title }).first().click();
+      const item = page.locator('.basemap', { hasText: title }).first();
+
+      if ((await item.getAttribute('aria-disabled')) === 'true') {
+        await expect(item, `${title} is refused in 3D without being shown as unavailable`).toHaveClass(/unavailable/);
+        continue;
+      }
+
+      await item.click({ timeout: 30_000 });
       await page.waitForTimeout(3_000);
       await expectAGlobe(`3D after choosing ${title}`);
+      chosenLast = title;
     }
 
     // Back to 2D: the same place, at the same zoom, on the basemap chosen last.
@@ -161,8 +183,12 @@ test.describe('2D and 3D', () => {
     expect(metresBetween(flat.center, back.center), `coming back to 2D left the map at ${back.center}`).toBeLessThan(
       BACK_IN_2D_WITHIN_M
     );
-    expect(back.zoom, 'coming back to 2D changed the zoom').toBe(flat.zoom);
-    await expect(page.locator('.basemap.active .basemap-title')).toHaveText(campus[campus.length - 1], { timeout: 60_000 });
+    expect(flatScale, `${MAP} has no 2D scale to read`).not.toBeNull();
+    expect(
+      Math.abs((await scale2d())! / flatScale! - 1),
+      `coming back to 2D on ${chosenLast} changed the scale from 1:${Math.round(flatScale!)}`
+    ).toBeLessThan(0.01);
+    await expect(page.locator('.basemap.active .basemap-title')).toHaveText(chosenLast, { timeout: 60_000 });
   });
 
   /**

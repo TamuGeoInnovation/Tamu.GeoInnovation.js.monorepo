@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
+import { TAMU_CAMPUS_STRUCTURES_URL, TAMU_CAMPUS_VECTOR_BASEMAP_URL } from '@tamu-gisc/common/datasets/geographic';
 import { CONSTRUCTION_HATCH_RENDERER } from '@tamu-gisc/maps/esri';
 
 import * as definitions from './basemaps.definition';
@@ -23,7 +24,7 @@ const DEFINITION = path.join('libs', 'maps', 'feature', 'basemap', 'src', 'lib',
 // The vector tile cache development opens on. It moves when a newer one is published (#2436 moved it
 // from VTBase to VTBase3); the point of the test below is that production does not draw a vector
 // basemap and development does, not which cache it is.
-const VECTOR_SERVICE = 'Hosted/VTBase3/VectorTileServer';
+const VECTOR_SERVICE = 'Hosted/VTBase4/VectorTileServer';
 
 /** Every TypeScript source file in libs/ and apps/, specs excluded, relative to the repository root. */
 function sources(): string[] {
@@ -78,8 +79,6 @@ describe('campus basemap', () => {
     expect(dev[0]).toEqual(resolve(true));
     expect(dev.map((basemap) => basemap.title)).toEqual([
       'Aggieland',
-      'Aggieland vector, November 2026',
-      'Aggieland vector, September 2026',
       'Aggieland raster, October 2026',
       'Aggieland raster, June 2026',
       'Aggieland raster, May 2026'
@@ -96,12 +95,11 @@ describe('campus basemap', () => {
     expect(currentRaster).toBeDefined();
     expect(urlsOf(currentRaster as Basemap)).toEqual(urlsOf(definitions.AggiemapRasterBasemap as unknown as Basemap));
 
-    // Every vector cache is offered, so a new one can be compared with the one it would replace. The November 2026
-    // cache (#3225) is development's alone until the maintainer moves it (#1229).
-    expect(urlsOf(dev[0]).some((url) => url.includes('Hosted/VTBase3/VectorTileServer'))).toBe(true);
-    expect(urlsOf(dev[1]).some((url) => url.includes('Hosted/VTBase4/VectorTileServer'))).toBe(true);
-    expect(urlsOf(dev[2]).some((url) => url.includes('Hosted/VTBase/VectorTileServer'))).toBe(true);
-    expect(production.flatMap(urlsOf).some((url) => url.includes('Hosted/VTBase4/'))).toBe(false);
+    // The campus vector basemap is the November 2026 cache on both environments (#3225, #3299), and no dated vector
+    // entry is offered beside it: nothing here points at VTBase3 any more.
+    expect(urlsOf(dev[0]).some((url) => url.includes('Hosted/VTBase4/VectorTileServer'))).toBe(true);
+    expect(dev.flatMap(urlsOf).some((url) => url.includes('VTBase3'))).toBe(false);
+    expect(production.flatMap(urlsOf).some((url) => url.includes('Hosted/VTBase4/'))).toBe(true);
   });
 
   it('opens every environment on the November 2026 cache, and keeps the construction hatch with it (#3225)', () => {
@@ -133,18 +131,21 @@ describe('campus basemap', () => {
     expect(construction['definitionExpression']).toBe("type = 'CONSTRUCTION'");
   });
 
-  it('dates the October cache it replaces, and keeps it on development only (#3225)', () => {
+  it('points nothing at VTBase3, on either environment (#3299)', () => {
+    // The maintainer's decision, 23 November 2026: moving off VTBase3 is part of adding the November cache, not a
+    // follow-up. The two feature services disagree about what is under construction - VTBase3 still has the
+    // Easterwood ARFF Station, and lacks the Golf Performance Center and Last Energy PWR5 - so drawing VTBase4's
+    // tiles while reading VTBase3's features would hatch one finished building and leave two unhatched, with their
+    // own outline hidden. The tiles and their data are one source (#2722).
     const exported = definitions as unknown as Record<string, unknown>;
-    const gallery = exported['aggiemapGalleryBasemaps'] as (isTesting: boolean) => Array<Basemap & { id: string; title: string }>;
+    const gallery = exported['aggiemapGalleryBasemaps'] as (isTesting: boolean) => Array<Basemap>;
 
-    const october = gallery(true).find((basemap) => basemap.title === 'Aggieland vector, October 2026');
+    for (const isTesting of [false, true]) {
+      expect(gallery(isTesting).flatMap(urlsOf).filter((url) => url.includes('VTBase3'))).toEqual([]);
+    }
 
-    expect(october).toBeDefined();
-    expect(october?.id).toBe('aggie_basemap_vector_2026_10');
-    expect(urlsOf(october as Basemap).some((url) => url.includes('Hosted/VTBase3/VectorTileServer'))).toBe(true);
-
-    // Production offers the November cache alone, so it must not reach for the October tiles any more.
-    expect(gallery(false).flatMap(urlsOf).some((url) => url.includes('Hosted/VTBase3/VectorTileServer'))).toBe(false);
+    expect(TAMU_CAMPUS_VECTOR_BASEMAP_URL).toContain('Hosted/VTBase4/VectorTileServer');
+    expect(TAMU_CAMPUS_STRUCTURES_URL).toContain('Hosted/VTBase4/FeatureServer/0');
   });
 
   it('turns every id the gallery can save back into a basemap (#1726)', () => {
@@ -297,7 +298,7 @@ describe('the vector basemap draws its buildings under construction itself (#245
 
   // The tiles' own feature service since #2722, where the field names are lower case.
   it('draws the buildings under construction from the buildings service, with a CIM hatch', () => {
-    expect(construction?.['url']).toMatch(/\/Hosted\/VTBase3\/FeatureServer\/0$/);
+    expect(construction?.['url']).toMatch(/\/Hosted\/VTBase4\/FeatureServer\/0$/);
     expect(construction?.['definitionExpression']).toBe("type = 'CONSTRUCTION'");
     expect(JSON.stringify(construction?.['renderer'])).toContain('CIMHatchFill');
   });
@@ -314,7 +315,7 @@ describe('the vector basemap draws its buildings under construction itself (#245
 /**
  * The vector basemap is production's default (#2515), so the smoke suite's list of services production must never request
  * cannot list it any more: that list fails the production run when a listed service is requested (#1229). The September
- * cache, still development-only, stays on it.
+ * cache came off it with the gallery entry (#3279): nothing requests that service any more.
  */
 describe('the smoke suite allows production the vector basemap (#2515)', () => {
   const developmentOnly = fs.readFileSync(path.join(REPO_ROOT, 'test', 'smoke', 'aggiemap', 'development-only.ts'), 'utf8');
@@ -323,7 +324,7 @@ describe('the smoke suite allows production the vector basemap (#2515)', () => {
     expect(developmentOnly).not.toContain(`'${VECTOR_SERVICE}'`);
   });
 
-  it('still lists the September vector cache', () => {
-    expect(developmentOnly).toContain("'Hosted/VTBase/VectorTileServer'");
+  it('no longer lists the September vector cache, which nothing requests (#3279)', () => {
+    expect(developmentOnly).not.toContain("'Hosted/VTBase/VectorTileServer'");
   });
 });

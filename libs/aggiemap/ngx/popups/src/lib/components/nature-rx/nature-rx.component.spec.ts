@@ -96,6 +96,16 @@ describe('NatureRxPopupComponent', () => {
     expect(popup.textContent).not.toContain('Features');
   });
 
+  /**
+   * #3223. The GIS team asked for the space's own name, the service's `Area Name` (`area_name`), as the line under
+   * the photograph. It showed `location` ("Campus Location"), so every space on one part of campus read the same.
+   */
+  it('names the space by its Area Name on the line under the photograph, not by its campus location', () => {
+    const label = render(WEST_CAMPUS_SPACES).querySelectorAll('.popup-section')[1]?.querySelector('p');
+
+    expect(label?.textContent?.trim()).toBe('West Campus Spaces');
+  });
+
   it('still lists exactly what amenitiesOf gives, so the line and #2630 rule cannot drift apart', () => {
     const popup = render(WEST_CAMPUS_SPACES);
 

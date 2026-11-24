@@ -95,3 +95,42 @@ test('the page a link preview reads names this site and has its image', async ({
   expect(picture.status(), `${image}`).toBe(200);
   expect(picture.headers()['content-type']).toContain('image/');
 });
+
+/**
+ * #3208. A session's Presenters cards were a fixed 350 px wide, so on a 360 px phone the session's page was 11 px wider
+ * than the screen and scrolled sideways. The Sessions and Presenters pages open an entry by script, with no link to
+ * follow, and neither list the API gives them names a session's speakers; a session's own details do. So this asks the
+ * API for the active season's sessions, opens the first whose details list a speaker, and checks the page is no wider
+ * than the phone. Read only.
+ */
+test.describe('on a 360 px phone', () => {
+  test.use({ viewport: { width: 360, height: 780 } });
+
+  test("a session's page with presenters fits the screen", async ({ page, request, baseURL }) => {
+    const api = new URL('/api/', baseURL).toString();
+    const sessions = (await (await request.get(`${api}events/season/active`)).json()) as Array<{ guid: string }>;
+    let withPresenters: string | undefined;
+
+    for (const { guid } of sessions.slice(0, 30)) {
+      const details = (await (await request.get(`${api}events/${guid}`)).json()) as { speakers?: Array<unknown> };
+
+      if (details.speakers?.length) {
+        withPresenters = guid;
+        break;
+      }
+    }
+
+    test.skip(!withPresenters, `None of the first ${Math.min(sessions.length, 30)} sessions has presenters`);
+
+    const link = `/sessions/details/${withPresenters}`;
+
+    await page.goto(link);
+    await expect(page.locator('tamu-gisc-presenter-card').first()).toBeVisible();
+
+    const width = await page.evaluate(() => ({ page: document.documentElement.scrollWidth, screen: window.innerWidth }));
+
+    expect(width.page, `${link}: the page is ${width.page} px wide on a ${width.screen} px screen`).toBeLessThanOrEqual(
+      width.screen
+    );
+  });
+});

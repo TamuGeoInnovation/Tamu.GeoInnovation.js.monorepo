@@ -73,6 +73,12 @@ export interface MapManifest {
    * (#2636). `null` if the service did not answer with exactly one such stop.
    */
   busStop: number | null;
+  /**
+   * Lot 043 on the AVP Parking map, by its id in this environment's AnyValidPermitParking service, for a
+   * `?feature=AVP-parking-lots:<id>` link. Found here for the same reason as `busStop`: production numbers it 26135 and
+   * development 34694 (#2821). `null` if the service did not answer with exactly one such lot.
+   */
+  avpLot: number | null;
 }
 
 /** The main map's bus panel, and what it renders: a route per bus, or a notice where none are offered. */
@@ -157,14 +163,21 @@ export default async function globalSetup(): Promise<void> {
     const skipped = [...maps].filter(isRetired);
 
     const busRoutes = await discoverBusRoutes(page, baseUrl);
-    const busStop = await discoverBusStop(page, baseUrl);
+    const connections = Connections(gisHostFor(baseUrl));
+    const busStop = await discoverObjectId(
+      page,
+      `${connections.busRoutesUrl}/0`,
+      "stopname = 'Blinn' AND route = '47' AND stopnum = 15"
+    );
+    const avpLot = await discoverObjectId(page, `${connections.avpParkingUrl}/0`, "GIS.TS.ParkingLots.LotName = 'Lot 043'");
 
     const manifest: MapManifest = {
       baseUrl,
       discoveredAt: new Date().toISOString(),
       maps: [...maps].filter((href) => !isRetired(href)).sort(),
       busRoutes,
-      busStop
+      busStop,
+      avpLot
     };
 
     fs.writeFileSync(MANIFEST_PATH, `${JSON.stringify(manifest, null, 2)}\n`);
@@ -173,7 +186,8 @@ export default async function globalSetup(): Promise<void> {
       `[smoke] discovered ${manifest.maps.length} maps on ${baseUrl}` +
         (skipped.length > 0 ? `; skipped ${skipped.length} retired: ${skipped.join(', ')}` : '') +
         (busRoutes === null ? '; could not read the bus panel' : `; ${busRoutes.length} bus routes`) +
-        (busStop === null ? '; could not find the bus stop to link to' : `; bus stop ${busStop}`)
+        (busStop === null ? '; could not find the bus stop to link to' : `; bus stop ${busStop}`) +
+        (avpLot === null ? '; could not find the AVP lot to link to' : `; AVP lot ${avpLot}`)
     );
   } finally {
     await browser.close();
@@ -181,24 +195,31 @@ export default async function globalSetup(): Promise<void> {
 }
 
 /**
- * Blinn's id, the 15th stop of route 47, in the bus service this environment reads. Asked of the service by what the
- * stop is, because its id is not the same on every environment: development's view numbers its stops from 1 and
- * production's from 4214, and a republished view numbers them again (#2636). Not required, as the bus panel is not.
+ * The object id of the one feature `where` selects, in a layer this environment reads. A spec that links to a feature by
+ * its id takes it from here, asked of the service by what the feature is, because an id is a fact about one server:
+ * development's bus view numbers its stops from 1 and production's from 4214 (#2636), and the two AnyValidPermit
+ * services number the same lots differently (#2821). `null` unless exactly one feature answers; a spec given `null` fails
+ * saying so. Not required, as a discovery page is not.
+ *
+ * Asked up to three times, because an answer that is an error says nothing about the feature, and some of these services
+ * fail queries at random (#1951).
  */
-async function discoverBusStop(page: Page, baseUrl: string): Promise<number | null> {
-  const where = "stopname = 'Blinn' AND route = '47' AND stopnum = 15";
-  const url = `${Connections(gisHostFor(baseUrl)).busRoutesUrl}/0/query?f=json&outFields=objectid&returnGeometry=false&where=${encodeURIComponent(where)}`;
+async function discoverObjectId(page: Page, layerUrl: string, where: string): Promise<number | null> {
+  const url = `${layerUrl}/query?f=json&returnIdsOnly=true&where=${encodeURIComponent(where)}`;
 
-  try {
-    const answer = await (await page.request.get(url)).json();
-    const ids: unknown[] = (answer.features ?? []).map(
-      (feature: { attributes?: { objectid?: unknown } }) => feature.attributes?.objectid
-    );
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      const ids: unknown = (await (await page.request.get(url)).json()).objectIds;
 
-    return ids.length === 1 && typeof ids[0] === 'number' ? ids[0] : null;
-  } catch {
-    return null;
+      if (Array.isArray(ids)) {
+        return ids.length === 1 && typeof ids[0] === 'number' ? ids[0] : null;
+      }
+    } catch {
+      // Not an answer; ask again.
+    }
   }
+
+  return null;
 }
 
 /**

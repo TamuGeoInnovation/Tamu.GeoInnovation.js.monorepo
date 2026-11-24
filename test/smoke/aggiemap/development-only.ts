@@ -120,22 +120,8 @@ export const DEVELOPMENT_ONLY_SERVICES: Record<
   string,
   { reason: string; pages: string[]; developmentGisServer?: true; runTimeGate?: string }
 > = {
-  // The September cache, still offered in the development gallery so it can be compared with the October one
-  // (#2436), which became production's default with #2515 and is no longer listed here. No page requests it until a visitor picks it, so it lists no pages: the check that
-  // production never requests it still applies, and the dev side is covered by the gallery's own spec.
-  'Hosted/VTBase/VectorTileServer': {
-    reason: '#1229, #2436: the previous vector tile campus basemap, kept for comparison',
-    pages: [],
-    runTimeGate: 'aggiemapGalleryBasemaps(isTesting) in libs/maps/feature/basemap/src/lib/shared/basemaps.definition.ts'
-  },
-  // The November 2026 cache (TAMU_BaseMap_20261119), offered in the development gallery for comparison until the
-  // maintainer moves it (#3225). As above, no page requests it until a visitor picks it, so it lists no pages;
-  // basemap-gallery.spec.ts switches to it and back on development, and checks production does not offer it.
-  'Hosted/VTBase4/VectorTileServer': {
-    reason: '#1229, #3225: the November 2026 vector tile campus basemap, on development until the maintainer moves it',
-    pages: [],
-    runTimeGate: 'aggiemapGalleryBasemaps(isTesting) in libs/maps/feature/basemap/src/lib/shared/basemaps.definition.ts'
-  },
+  // The September vector cache (`Hosted/VTBase`) was listed here while the development gallery offered it. It came off
+  // both with #3279, when its service was secured; nothing requests it now.
   // The Code Maroon emergency feed, proxied through this origin. Production must never request it:
   // the proof of concept is not something to show the public, and an emergency alert drawn by an
   // unfinished feature is a worse failure than most. #1289. The application shell polls it, so every
