@@ -1,5 +1,41 @@
 # Home machine: current tasks
 
+## Batch 81 (gisday: #3019, the competition pages stop carrying this year's dates and session names; 23 November 2026, about 7:50 PM Central, from `work (gisday)`) (Low) - **after 80**
+
+[#3019](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3019). Read the issue in full. The presentation and poster pages type 2026's dates into their text, and find
+their sessions by a naming convention (`COMPETITION:`, `AWARDS:`) an admin can't see. Branch
+`feat/3019-competition-sessions-on-season` from the latest `development`.
+
+1. **Propose first, in the report, before building:** which dates come from the season's existing settings (#2934), and
+   how the season names each competition's sessions (a choice in Admin, with the naming convention as the fallback so
+   nothing breaks this year). Then build the smaller half that needs no new decision: every date on those pages read from
+   the season's settings, red first, with before/after images of both pages at 1280 and 390 (public pages, made-up data).
+2. **The session choice** waits for the maintainer: put it in the report as a question with options and your recommendation.
+
+Check, push, "branch ready" with the PR body text in `home/reports/2026-11-23-81.md`.
+
+## Batch 80 (gisday: #2893 against what #3006 shipped, then #2430; 23 November 2026, about 7:50 PM Central, from `work (gisday)`) (Medium) - **now**
+
+**Decided on your report 79:** both questions go to the maintainer; the director writes the answers here. PR 3304 is open.
+
+1. **[#2893](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2893), read only first.** It specifies a Check-ins dashboard (decided 13 November, 5A: check-ins by hour across
+   GIS Day week; a row per event with RSVPs, check-ins, show-up rate, walk-ins, check-ins by person type and a total; a row
+   opens to the people, marking check-ins outside the session's time, with a CSV export). [#3006](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3006), your own
+   batch 50, shipped a Check-ins dashboard and is closed. Compare what is on `development` with #2893's list, item by
+   item, in a table. If everything is there, recommend closing #2893 as done by #3006. If items are missing, recommend
+   building them, and build them on `feat/2893-check-ins-dashboard-rest`, red first, with images of the admin page taken
+   on your local build only if you can sign in without a password (if you can't, say so; the director will have them
+   taken).
+2. **[#2430](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2430):** move the automatic review's limits (accuracy 15 m, 10 submissions in 120 s, the two campus
+   rectangles, in `automatic-review.ts`) into the season's form JSON, beside `sameThingMetres` and `nameAttribute`, with
+   today's values as the defaults so a form without them behaves exactly as now. Red first (a season with a stricter
+   limit refuses what today's accepts). Show the setting in the Designer only if the Designer already shows
+   `sameThingMetres`; otherwise the form file is enough, and say so. Branch `feat/2430-review-limits-per-season`;
+   check; push; "branch ready" with the PR body text.
+
+Report `home/reports/2026-11-23-80-gisday.md` (a `-gisday` suffix, because the security chat also numbers its batches
+here).
+
 ## Batch 79 (gisday: #2088, each GIS Day address calls the API on its own address; 23 November 2026, about 7:15 PM Central, from `work (gisday)`) (Medium) - **after 78**
 
 [#2088](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2088). Read the issue: the site's API address is absolute (`https://txgisday.org/api`), so every other
