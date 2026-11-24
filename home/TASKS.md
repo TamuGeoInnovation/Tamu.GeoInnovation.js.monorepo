@@ -1,5 +1,90 @@
 # Home machine: current tasks
 
+## Batch a9 (aggiemap: the quick tier on dev for today's second release, #3161; 24 November 2026, about 2:00 PM Central, from `work (aggiemap)`) (**High**) - **now, ahead of anything else aggiemap**
+
+**A production release goes out today once this passes**, so this is the only thing between the build and the deploy. The work
+machine cannot run it: it is running the `release` tier against **production** for this morning's release, and two Playwright
+containers on one machine is what makes layer-order and popup checks fail for reasons that are not real (the laptop's a12 report,
+23 November).
+
+### What shipped, and why the tier is small
+
+The build is **`50b125bf5`**. Twenty commits since `dev-2026-11-24` (`61dc13b89`), and **exactly one of them changes anything an
+AggieMap visitor sees**: [#3161](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3161) via
+[PR 3422](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3422), the remote campuses' new names. The other
+nineteen are GIS Day, docs, the smoke suite and workspace.
+
+Two of those nineteen matter to **you**, because the suite runs from the checkout rather than from the build:
+
+- [PR 3423](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3423) fixes
+  [#3416](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3416), so `NearmapCSBasemap` **no longer fails**
+  `services.spec.ts`. If you still see that failure, your worktree is not at `50b125bf5`. That is the tell, and it is worth checking
+  before you report anything.
+- [PR 3421](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3421) adds `node scripts/check-gis-differences.mjs`
+  as a `lint.yml` step. It does not affect this run; it will appear in any check you run from now on.
+
+### 1. First, prove dev is actually serving the new build
+
+**Do not start the tier until this is true.** A tier against the previous build passes and means nothing, which is the same trap as
+running specs from a stale checkout.
+
+Open `https://dev.aggiemap.tamu.edu/campus/dc-bush-school/map/d` and read the sidebar heading:
+
+| It says | What that means |
+| --- | --- |
+| **Washington DC Campus** | The new build is live. Go to step 2. |
+| `Aggie Map - DC / Bush School` | The deploy has not landed. **Wait and look again**; do not run the tier, and do not report a pass. |
+
+That heading is `applicationName`, rendered as the sidebar's `<h1>`, and it is the one visible thing this build changes - which makes
+it an exact deployment signal. On production right now it still reads `Aggie Map - DC / Bush School`, confirmed at 1:50 PM Central.
+
+### 2. The quick tier
+
+From a worktree at **`50b125bf5`**, on a machine doing nothing else:
+
+```
+test/smoke/aggiemap/run-local.sh development quick
+```
+
+No `-x`: let it run through, so one failure does not hide the rest. **Say what it prints as its set** before the first test starts -
+the quick tier chooses from what changed since the last `dev-*` tag, and with #3161 being the only visible change, the set should
+name the campus maps. If it names something unexpected, or cannot map a changed file to a test, put that in the report: that is a
+finding about the tier, not noise.
+
+### 3. The three campus pages by eye, at 1280
+
+The tier does not check these strings, so this is the only thing that does. On **dev**:
+
+| Page | The sidebar heading must read |
+| --- | --- |
+| `/campus/dc-bush-school/map/d` | **Washington DC Campus** |
+| `/campus/galveston/map/d` | **Galveston Campus** |
+| `/campus/mcallen/map/d` | **McAllen Campus** |
+
+And on `https://dev.aggiemap.tamu.edu/all-maps`, the three descriptions:
+
+| Card | Must read |
+| --- | --- |
+| DC / Bush School | Map of the Texas A&M University at Washington, DC campus. |
+| McAllen | Map of the Texas A&M University at McAllen campus. |
+| Galveston | Map of the Texas A&M University at Galveston campus. (**unchanged** - it was already right) |
+
+The card **names** stay `DC / Bush School`, `Galveston` and `McAllen`. Only the descriptions changed. If a name changed, that is a
+fault: say so loudly, because two specs pin the card order by those names.
+
+No screenshots needed - the pull request already carries before and after for all four pages.
+
+### 4. Reporting
+
+`home/reports/2026-11-24-a9.md`, and say **"work report ready: home/reports/2026-11-24-a9.md"**.
+
+Lead with the one line the release waits on: **pass or fail, and whether the three campus pages read correctly.** Then the counts
+(passed, failed, flaky, skipped, duration), the set the tier chose, and every failure with your reading of it - real, timing, or a
+service having a bad hour. **Re-run any failure alone before calling it real**, as a12 did; that is what separated the two genuine
+faults from the noise this morning.
+
+Nothing is tagged, no pull request is opened, and production is not touched. The tag and the deploy are the maintainer's.
+
 ## Batch g106 (gisday: #3412's Papers page, on PR 3415; 24 November 2026, from `work (gisday)`) (Medium) - **WITHDRAWN (about 1:20 PM Central): PR 3415 merges as it is and the laptop does Papers as batch g25. Do not start it.**
 
 **Decided by the maintainer** on g105's question 1: **(a)**, and PR 3387 has now merged. PR 3415 is open from the fork's
