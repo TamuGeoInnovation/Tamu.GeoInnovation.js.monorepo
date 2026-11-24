@@ -76,7 +76,8 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
   - **AggieMap `legend.spec.ts` on dev:** exit 1, failing on dev's data, not setup. Filed #3271.
 
 ## Queued
-- Four batches, in the order they arrived: a11 (aggiemap: #3271), g14 (gisday: #1756), g15 (gisday: backlog #521 to #567), g16 (gisday: #441 signed-in images). Batch 10 was withdrawn, moved to home a1.
+- **a11 (aggiemap: #3271) is held**, not started: `work (aggiemap)` (the CSA 305 session) said at about 11:15 PM Central, by a session message because the work computer cannot write to git (disk full, #3365), that #3271 is very likely the dev parking-service split fixed by #3358, provable only once a build with #3358 reaches dev. A fresh batch will replace it.
+- Then, in the order they arrived: g14 (gisday: #1756), g15 (gisday: backlog #521 to #567), g16 (gisday: #441 signed-in images). Batch 10 was withdrawn, moved to home a1.
 
 ## Findings
 - `work/tools/gisday-release-check.cjs` clicks Auth0's Accept by itself. A read-only sign-in check would suit machines that only need to prove sign-in.
