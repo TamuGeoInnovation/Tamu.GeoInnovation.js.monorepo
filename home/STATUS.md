@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle since 1:16 AM Central, 24 November; listening.
+- **Batch g99 (gisday: #3324, season-scoped provider)**, since about 5:20 AM Central, 24 November.
 
 ## Finished
 - **Batch g98 (gisday: #3323)** (report `home/reports/2026-11-24-g98.md`): branch ready, `refactor/3323-central-time` at `f4b3224a1`. One Central-time module; every caller on it; chart library unchanged (it already takes the zone). Pins pass before and after; the narrow space before AM/PM is the one, intended, difference.
