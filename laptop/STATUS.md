@@ -5,7 +5,7 @@
 
 Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
-Last batch done: g17
+Last batch done: g20
 
 ## What this is
 
@@ -33,9 +33,10 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch g19 (gisday: #3329 images, then a signed-in triage of #498, #439, #466, #477)**, started 2:10 AM Central. **Images pushed (3329): `8b513bdaa`** (12 images; before, Rubrics went back to 2026 on a reload). Now (2:35 AM): g20, as asked, then g19's triage, then its report. Next update by 3:30 AM Central.
+- **Batch g19 (gisday: #3329 images, then a signed-in triage of #498, #439, #466, #477)**, started 2:10 AM Central. **Images pushed (3329): `8b513bdaa`** (12 images; before, Rubrics went back to 2026 on a reload). Then g20 (done) and g21, before g19's triage and its report. Next update by 3:30 AM Central.
 
 ## Finished
+- **Batch g20 (gisday: #3354 and #3340 images)** (report `laptop/reports/2026-11-24-g20.md`): **images pushed (3354): `81fb42bbc`; (3340): `c75411969`**, both fast-forwards. #3354: a made-up hidden session, signed out, went from shown (200) to not shown (404); signed in, unchanged. Signed out, the page is now blank rather than "not found" (noted for home). #3340: the three toasts raised for real on made-up records. No questions.
 - **Batch g17 (gisday: #3370, #3376, #545)** (report `laptop/reports/2026-11-24-g17.md`): three branches ready. `fix/3370-speakers-list-phone` (`5529e65dc`, check exit 0; 566 to 390 px at 390, desktop unchanged), `docs/3376-playwright-image` (`8c9a4bf9b`) and `feat/545-vgi-export-zip` (`85054bddb`; the streamed zip, downloaded through its button; every affected project passed, not in one run). No package changes; Bull stays, unused. No questions.
 - **Batch g18 (gisday: #3328 images; now in PR 3381)** (report `laptop/reports/2026-11-24-g18.md`): **images pushed (3328): `9e5354bab`**, a fast-forward. 13 images: list, add and edit for each type, before and after, and the RSVP list at 390. No questions.
 - **Batch g16 (gisday: #441 images)** (report `laptop/reports/2026-11-24-g16.md`): **images pushed (441): `f09e30433`**, a fast-forward on PR 3344's branch. Five images: the Sessions column, the no-session box, and 390. **Found and filed #3370**: the Speakers list is wider than a phone, before (566 px) and after (662 px). Priority not set; suggested Low. No questions.
