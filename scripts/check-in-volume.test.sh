@@ -111,4 +111,22 @@ expect "a CHECK_PARALLEL that is not a number is refused, saying so" \
 CHECK_PARALLEL=0 check_limits >/dev/null 2>&1
 expect "a CHECK_PARALLEL of 0 is refused" "1" "$?"
 
+# The free-space guard (#3400). A check that cannot run must say so itself, rather than arriving as
+# Docker's exit 125, which reads as a failing branch.
+free_space_check . 1 >/dev/null 2>&1
+expect "a disk with room lets the check start" "0" "$?"
+free_space_check . 99999999 >/dev/null 2>&1
+expect "a disk without room stops the check" "1" "$?"
+msg="$(free_space_check . 99999999 2>&1 >/dev/null)"
+case "$msg" in *"GiB free"*) r=yes ;; *) r=no ;; esac
+expect "the refusal names the free space" "yes" "$r"
+case "$msg" in *"99999999 GiB"*) r=yes ;; *) r=no ;; esac
+expect "the refusal names what the check needs" "yes" "$r"
+case "$msg" in *"tidy.sh"*) r=yes ;; *) r=no ;; esac
+expect "the refusal says what to do about it" "yes" "$r"
+CHECK_MIN_FREE_GB=99999999 free_space_check . >/dev/null 2>&1
+expect "CHECK_MIN_FREE_GB sets the threshold" "1" "$?"
+free_space_check /no/such/path/at/all >/dev/null 2>&1
+expect "an unreadable path stops the check rather than passing it" "1" "$?"
+
 exit "$failed"

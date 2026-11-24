@@ -129,6 +129,25 @@ check_limits() {
   printf '%s %s\n' "$memory" "$parallel"
 }
 
+# Succeeds when <path>'s filesystem has at least <needed> GiB free, and otherwise prints why and fails. A
+# check needs room for its volume - a clone of the repository plus about 1,690 packages, measured at 2.7 GiB
+# on 24 November 2026 - and for the Nx cache and build output it writes, so the default is 20 GiB
+# (CHECK_MIN_FREE_GB). Why this is not left to Docker: a container it cannot create exits 125, and a full
+# disk makes its API stop answering at all, so a check that NEVER RAN is indistinguishable from a branch
+# that fails. On 24 November 2026 three sessions each spent time working out whether their branch was broken
+# when the real answer was 0 bytes free of 1,907 GB (#3365, #3400). Tested by scripts/check-in-volume.test.sh.
+free_space_check() {
+  local path="$1" needed="${2:-${CHECK_MIN_FREE_GB:-20}}" free
+  free="$(df -Pk "$path" 2>/dev/null | awk 'NR == 2 { printf "%.1f", $4 / 1024 / 1024 }')"
+  [ -n "$free" ] || { echo "Cannot read the free space on $path, so the check is not starting." >&2; return 1; }
+  if awk -v f="$free" -v n="$needed" 'BEGIN { exit !(f < n) }'; then
+    echo "$path has $free GiB free; this check needs about $needed GiB, so it is not starting." >&2
+    echo "Remove what has already merged with 'bash scripts/tidy.sh --yes', or set CHECK_MIN_FREE_GB." >&2
+    return 1
+  fi
+  return 0
+}
+
 # Sourced (by the test): stop here, with only the functions defined.
 [ "${BASH_SOURCE[0]}" = "$0" ] || return 0
 
@@ -259,9 +278,12 @@ exit "$code"
 export MSYS_NO_PATHCONV=1
 src="$(cd "$main" && pwd -W)"
 
+# Before Docker is touched, so a full disk says so rather than arriving as Docker's exit 125 (#3400).
+free_space_check "$here" || exit 2
+
 started="$(run_times_now)"
 SECONDS=0
-echo "Checking $branch ($mode) in volume $volume, memory $memory, parallel $parallel; log: $log"
+echo "Checking $branch ($mode) in volume $volume, memory $memory, parallel $parallel; $(df -Pk "$here" | awk 'NR == 2 { printf "%.1f GiB free", $4 / 1024 / 1024 }'); log: $log"
 for ((i = 0; i < ${#runs[@]}; i += 2)); do echo "  ${runs[i]}: excluding [${runs[i+1]}]"; done
 [ -z "$extra" ] || printf '%s\n' "$extra" | sed 's/^/  lint.yml: /'
 set +e
