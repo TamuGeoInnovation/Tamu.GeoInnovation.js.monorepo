@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **blocked: waiting on the director - batch a10's branch `fix/3425-garage-search-off-raster` (`7c1ad1d90`) is not on the fork or on TamuGeoInnovation** (4:52 PM Central). Nothing started; listening.
+- **Batch a10 (aggiemap: #3425 garage search images)**, from `fork/fix/3425-garage-search-off-raster` `7c1ad1d90` (before from `50b125bf5`), worktree `C:/TAMU/wt-3425`, since 4:53 PM Central.
 
 ## Finished
 - **Batch a8 (aggiemap: disk and PR 3407)** (report `home/reports/2026-11-24-a8.md`): home holds 331 worktrees, 309 tamu-js volumes, an 853.8 GiB Docker image, 82.4 GiB free (65.0 after the check); tidy.sh would remove 238 volumes (~642 GiB) and 175 worktrees (~100 GiB). PR 3407 full check Exit 0 (no Nx tasks, scripts only; header prints free space; no sweep); tidy.test 15/15, check-in-volume.test 28/28. 11:13 to 11:26 AM Central.
