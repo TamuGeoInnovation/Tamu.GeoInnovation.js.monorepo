@@ -44,13 +44,16 @@ describe('PresentationComponent', () => {
   });
 
   // #3019, decided 7A: when finalists hear is the season's, set in Admin; without it the line is left out.
-  it('says when finalists hear, from the season, and leaves the line out when it is not set', () => {
+  it('says when finalists hear, from the season', () => {
     const notified = {
       ...SEASON_2026,
       competitions: [{ competitionType: 'presentation', runs: null, finalistsNotifiedAt: '2027-11-13T18:00:00.000Z' }]
     };
 
     expect(text(notified)).toContain('Finalists will be notified on Sat, Nov 13, 2027, 12:00 PM Central');
+  });
+
+  it('leaves the finalists line out when the season has not set when they hear', () => {
     expect(text()).not.toContain('Finalists will be notified');
   });
 

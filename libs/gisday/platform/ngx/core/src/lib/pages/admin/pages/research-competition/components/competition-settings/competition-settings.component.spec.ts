@@ -304,7 +304,9 @@ describe('CompetitionSettingsComponent', () => {
     const { fixture, page, toggle } = open({ guid: 'season-1', year: 2026 } as Partial<Season>);
 
     expect(toggle()?.getAttribute('aria-expanded')).toBe('true');
-    expect(page.querySelectorAll('tamu-gisc-date-time-picker')).toHaveLength(DEADLINE_COMPETITIONS.length * 2);
+    expect(page.querySelectorAll('.deadlines-table:not(.sessions-table) tamu-gisc-date-time-picker')).toHaveLength(
+      DEADLINE_COMPETITIONS.length * 2
+    );
 
     toggle()?.click();
     fixture.detectChanges();
