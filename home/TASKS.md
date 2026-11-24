@@ -1,6 +1,60 @@
 # Home machine: current tasks
 
-## Batch a9 (aggiemap: the quick tier on dev for today's second release, #3161; 24 November 2026, about 2:00 PM Central, from `work (aggiemap)`) (**High**) - **now, ahead of anything else aggiemap**
+## Batch a10 (aggiemap: before and after images for #3425, the garage search) (Medium) - **now**
+
+[#3425](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3425) is committed on the fork as
+`fix/3425-garage-search-off-raster` (`7c1ad1d90`). It has a visible result and **no pull request yet**, because one opens
+once its screenshots are on the branch so CI runs once. **This batch is the only thing it waits on.**
+
+### What changed, so you know what you are photographing
+
+The garage search read the retired raster basemap's Garage Parking layer. It now reads Campus Structures on the vector
+basemap's feature service, filtered to `type LIKE 'GARAGE%'`. **The displayed names change**, because the two services
+name the same garages differently:
+
+| Searching | Before | After |
+| --- | --- | --- |
+| `garage` | Southside Garage, Central Campus Garage, Northside Garage, ... | Southside **Parking** Garage, Central Campus **Parking** Garage, ... |
+
+That rename is the visible change. It is Facilities' published naming and is deliberate - not something to flag as a
+fault.
+
+### 1. Before, on `development`
+
+A local dev server at the merge-base (`50b125bf5` or today's `development`, say which you used). Search **`garage`** in
+the main map's search box and photograph the **results list** with its entries readable. Then open **Central Campus
+Garage** from the results and photograph its **popup**.
+
+Two images: `before-garage-search.png`, `before-garage-popup.png`.
+
+### 2. After, on the branch
+
+The same two, same window size, same search term, from `fix/3425-garage-search-off-raster`:
+`after-garage-search.png`, `after-garage-popup.png`.
+
+**The popup is the one that matters.** Garages used to carry lot fields and now carry building fields; reading the wrong
+one is what rendered the popup empty in
+[#1163](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1163). The "after" popup must show
+the garage's **name**, not an empty heading. If it is empty, **stop and report that** - do not work around it.
+
+### 3. Two things to check while you are there, and report either way
+
+- **A shared link still resolves.** Open `?garage=CCG` on the branch - it must find Central Campus Parking Garage.
+  `bldgabbrev` carries the old codes, which is what this relies on; if it fails, the migration is wrong.
+- **The search returns garages only.** No halls, no offices. "TEEX ITSI Garage & Offices" must **not** appear: it is
+  `type = 'RESEARCH'`, and a search on the name alone returns it.
+
+### 4. Pushing and reporting
+
+Commit both pairs to `docs/screenshots/3425-garage-search/` on that branch and push to the fork (a fast-forward; never
+force-push). Say **"branch ready: fix/3425-garage-search-off-raster"**.
+
+Report `home/reports/2026-11-24-a10.md`: the image paths, which commit the "before" came from, the two checks above with
+their results, and anything that looked wrong. **No pull request** - the director opens it.
+
+## Batch a9 (aggiemap: the quick tier on dev for today's second release, #3161; 24 November 2026, about 2:00 PM Central, from `work (aggiemap)`) (**High**) - **WITHDRAWN (about 4:15 PM Central): the work machine ran it instead. Do not start it.**
+
+It was queued here at 2:00 PM and this machine was stopped on a permission prompt for `tidy.sh --yes`, which nobody could see ([#3429](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3429)). The release could not wait, so the work machine ran the tier once its production run had finished: **365 passed, 0 failed, 0 flaky, 28 skipped in 4.8 minutes** against dev at `50b125bf5`, and the notes have merged. Nothing is owed here. The original batch text is left below as the record.
 
 **A production release goes out today once this passes**, so this is the only thing between the build and the deploy. The work
 machine cannot run it: it is running the `release` tier against **production** for this morning's release, and two Playwright
