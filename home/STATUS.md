@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle since 11:15 PM Central, 23 November (reports dated 24 November use UTC, as their batches named them); listening.
+- **Batch a7 (aggiemap: the deterministic four of #3355: #3368, #3358, #2701, #2616)**, since about 11:35 PM Central, 23 November, on the AggieMap director's yes; then g96.
 
 ## Finished
 - **Batch a6 (aggiemap: #3355)** (report `home/reports/2026-11-24-a6.md`): every cluster verified and filed: #3358, #3364, #3368, #3369 new; #2616 and #2701 commented. 7 red every run, 2 likely, 7 flaky under load; all fixes ours. Disagreements with #3355 listed (Nature Rx is tonight's build). One question.
