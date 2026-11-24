@@ -9,6 +9,7 @@ import { blockAnalytics } from './analytics';
 import { developmentSectionsVisible } from './development-only';
 import { gisHostFor, smokeBaseUrl } from './gis-hosts';
 import { MANIFEST_PATH, MapManifest } from './global-setup';
+import { waitForMapReady } from './map-probe';
 
 /**
  * Every search source the main map defines is exercised, each by the route a visitor uses to reach it
@@ -122,17 +123,18 @@ const SOURCE_CASES: Record<string, SourceCase> = {
     result: 'Bonfire Memorial',
     popupShows: /Bonfire Memorial/
   },
-  // Nature Rx reads production's own service on every environment (#2630), so its ids are the same everywhere.
+  // Nature Rx reads production's own service on every environment (#2630), so its ids are the same everywhere. The site
+  // calls it Nature Spaces, and its popup names the space, since #3223 (#3368).
   'nature-rx': {
     kind: 'typed',
-    category: 'Nature Rx',
+    category: 'Nature Spaces',
     term: 'Hensel',
     result: 'Hensel Park',
-    popupShows: /North Main/,
+    popupShows: /Hensel Park/,
     shareQuery: '?naturerx=4',
     developmentOnly: '#2673'
   },
-  'nature-rx-exact': { kind: 'deep-link', query: '?naturerx=4', popupShows: /North Main/, developmentOnly: '#2673' },
+  'nature-rx-exact': { kind: 'deep-link', query: '?naturerx=4', popupShows: /Hensel Park/, developmentOnly: '#2673' },
   'building-exact': { kind: 'deep-link', query: '?bldg=0468', popupShows: /Sterling C\. Evans Library/ },
   'building-exact-abbr': { kind: 'deep-link', query: '?BldgAbbrv=WCBA', popupShows: /Wehner Building/ },
   'points-of-interest-exact': { kind: 'deep-link', query: '?poi=1', popupShows: /Bonfire Memorial/ },
@@ -309,7 +311,6 @@ function allowedFailures(): Record<string, string> {
 
 const ALLOWED = allowedFailures();
 
-const PROBE_GLOBAL = '__tamuGiscMapProbe';
 const POPUP = 'tamu-gisc-feature-popup .popup';
 
 /** Opens the main map and waits until its layers have loaded, so a query is not racing the map. */
@@ -317,16 +318,7 @@ async function openMainMap(page: Page, query = ''): Promise<void> {
   await blockAnalytics(page);
   await page.goto(`/map${query}`);
 
-  await expect
-    .poll(
-      async () =>
-        await page.evaluate(
-          (name) => (window as unknown as Record<string, { ready?: boolean }>)[name]?.ready === true,
-          PROBE_GLOBAL
-        ),
-      { message: `the main map never finished loading`, timeout: 90_000, intervals: [1_000] }
-    )
-    .toBe(true);
+  await waitForMapReady(page, `the main map never finished loading`);
 }
 
 function escapeRegExp(text: string): string {

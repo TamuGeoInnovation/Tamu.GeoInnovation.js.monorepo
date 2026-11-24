@@ -1,7 +1,7 @@
 import { DataSource, EntityTarget, ObjectLiteral } from 'typeorm';
 
 import { Event, EventLocation, Season, Speaker } from '../entities/all.entity';
-import { queryCheckingDataSource, recordWrites } from '../_base/query-checking-data-source';
+import { loadedSeason, queryCheckingDataSource, recordWrites } from '../_base/query-checking-data-source';
 import { SiteCopyFile } from './site-copy.format';
 import { SiteCopyService } from './site-copy.service';
 
@@ -9,10 +9,6 @@ import { SiteCopyService } from './site-copy.service';
 // so it cannot see a query typeorm itself refuses (#2363). This service reads through the data source's own manager, whose
 // queries run on a query runner: `recordWrites` takes them, so each is built by typeorm and finds nothing, unless a test
 // answers a find with rows below.
-
-/** A season as the API loads it: the deadlines nobody has set come back null. */
-const loadedSeason = () =>
-  Object.assign(new Season(), { guid: 's-1', year: 2026, active: true, posterSubmissionsCloseAt: null, competitions: [] });
 
 /** Makes the manager's finds answer with `rows` for an entity, after typeorm has built and run their query. */
 function answering(dataSource: DataSource, rows: Array<[EntityTarget<ObjectLiteral>, Array<ObjectLiteral>]>) {

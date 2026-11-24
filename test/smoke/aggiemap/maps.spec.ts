@@ -8,6 +8,7 @@ import { directionsAvailable, directionsEntryPoints } from './directions';
 import { describePaint, waitForPaint } from './paint';
 import { isDevelopmentUrl } from './gis-hosts';
 import { describeTitles, judgeTitles } from './layer-titles';
+import { PROBE_GLOBAL, waitForMapReady } from './map-probe';
 
 /**
  * Behaviours 1 and 2 of #1034, for every map the target environment lists.
@@ -60,10 +61,8 @@ const ALLOWED_LAYER_FAILURES = (process.env.AGGIEMAP_SMOKE_ALLOWED_LAYER_FAILURE
  * Importing the library barrel would pull the Angular dependency graph into this process, which
  * does not load outside a bundler.
  *
- * The global's name below is therefore duplicated from `MAP_PROBE_GLOBAL` in
- * `libs/maps/esri/src/lib/services/map/map-probe.ts`. `map-probe.spec.ts` pins that constant to
- * this literal, so renaming it there fails a unit test that points back here rather than silently
- * turning every map test red.
+ * The global's name is therefore duplicated from `MAP_PROBE_GLOBAL`, once for the suite, in `map-probe.ts`
+ * beside this spec (#2603), which says why.
  */
 interface ProbeLayer {
   id: string;
@@ -97,8 +96,6 @@ interface ProbeSnapshot {
 
   layers: ProbeLayer[];
 }
-
-const PROBE_GLOBAL = '__tamuGiscMapProbe';
 
 const manifest: MapManifest = JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf8'));
 
@@ -233,16 +230,7 @@ for (const { mapPath, loadPath, title, borrowedFrom } of cases) {
 
     // Behaviour 2: the map itself comes up. Esri needs tens of seconds on a cold load, hence the
     // long poll rather than the default expect timeout.
-    await expect
-      .poll(async () => await page.evaluate(
-          (name) => (window as unknown as Record<string, { ready?: boolean }>)[name]?.ready === true,
-          PROBE_GLOBAL
-        ), {
-        message: `the layers on ${mapPath} never finished loading`,
-        timeout: 90_000,
-        intervals: [1_000]
-      })
-      .toBe(true);
+    await waitForMapReady(page, `the layers on ${mapPath} never finished loading`);
 
     const snapshot: ProbeSnapshot = await page.evaluate(
       async (name) =>

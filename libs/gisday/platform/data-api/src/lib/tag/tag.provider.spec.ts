@@ -72,12 +72,6 @@ describe('TagProvider', () => {
   });
 
   describe('.getTagsForActiveSeason()', () => {
-    it('rejects when there is no active season', async () => {
-      jest.spyOn(seasonService, 'findOneActive').mockResolvedValue(null);
-
-      await expect(provider.getTagsForActiveSeason()).rejects.toThrow(UnprocessableEntityException);
-    });
-
     it('scopes the lookup to the active season', async () => {
       jest.spyOn(seasonService, 'findOneActive').mockResolvedValue({ guid: 'season-active' } as never);
       jest.spyOn(tagRepo, 'find').mockResolvedValue([]);

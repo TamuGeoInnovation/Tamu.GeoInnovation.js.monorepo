@@ -1,6 +1,7 @@
 <div class="form">
   <div class="form-section">
-    <div class="form-section-toolbar">
+    <!-- On a phone the actions go under the heading, rather than squeezing the season select to a sliver beside it (#3370). -->
+    <div class="form-section-toolbar flex flex-row wrap">
       <div class="form-section-name">Speakers</div>
       <div class="form-section-actions">
         <tamu-gisc-select class="post-1" placeholder="Season" [floatLabel]="false" [data]="seasons$ | async" displayTemplate="year" valueTemplate="guid" [value]="$safeNavigationMigration((selectedSeason$ | async)?.guid)" (changed)="setSeason($event)"></tamu-gisc-select>
@@ -14,6 +15,8 @@
       <tamu-gisc-admin-search [control]="search" placeholder="Search by name, email or organization" one="speaker" many="speakers" [counts]="searchCounts$ | async"></tamu-gisc-admin-search>
 
       @if (entitiesForActiveSeasonOrForSeasonGuid$ | async; as entities) { @if (entities?.length > 0) {
+      <!-- Wider than a phone, the table scrolls in its own box, as the dashboards' do, and the page does not (#3370). -->
+      <tamu-gisc-dashboard-scroll>
       <table class="floating-table">
         <thead>
           <tr>
@@ -38,6 +41,7 @@
           }
         </tbody>
       </table>
+      </tamu-gisc-dashboard-scroll>
       } @else if (search.value.trim()) {
       <p>No speakers match "{{ search.value }}".</p>
       } @else {

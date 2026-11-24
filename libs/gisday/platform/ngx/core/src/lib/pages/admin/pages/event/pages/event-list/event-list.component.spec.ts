@@ -370,3 +370,91 @@ describe('EventListComponent, the sessions with and without slides (#3093)', () 
     expect(rows().map((r) => r.name)).toEqual(['Keynote', 'Mapathon']);
   });
 });
+
+/**
+ * #434: on txgisday.org the Events list holds every organization's sessions, a long list to find one organization's in.
+ * An Organization choice lists only the sessions at that organization's venues, and is put back with the other filters.
+ * Red on today's code.
+ */
+describe("EventListComponent, one organization's sessions (#434)", () => {
+  const esri = { guid: 'p-esri', name: 'Esri' };
+  const tamu = { guid: 'p-tamu', name: 'Texas A&M University' };
+  const events = [
+    { guid: 'e-1', name: 'Map clinic', active: true, location: { building: 'ILSB', place: tamu } },
+    { guid: 'e-2', name: 'Imagery workshop', active: true, location: { building: 'Online', place: esri } },
+    { guid: 'e-3', name: 'Campus walk', active: true, location: { building: 'MSC', place: tamu } },
+    { guid: 'e-4', name: 'Unplaced talk', active: true }
+  ];
+
+  /** The page as this test reads it: its Organization choice and the choices it offers. */
+  type Page = {
+    organization: { setValue(value: string): void; value: string };
+    organizationChoices$: import('rxjs').Observable<Array<{ guid: string; name: string }>>;
+    clearFilters(): void;
+  };
+
+  function open() {
+    TestBed.configureTestingModule({
+      imports: [EventListComponent],
+      providers: [
+        provideRouter([]),
+        { provide: GISDAY_SITE, useValue: GISDAY_SITES.txgisday },
+        {
+          provide: EventService,
+          useValue: {
+            getEntities: () => of(events),
+            getEntitiesForActiveSeason: () => of(events),
+            getEntitiesForSeason: () => of(events)
+          }
+        },
+        { provide: SeasonService, useValue: { seasons$: of([]), activeSeason$: of(null) } },
+        { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
+        { provide: ModalService, useValue: {} },
+        { provide: NotificationService, useValue: { toast: jest.fn() } },
+        { provide: SessionFilesService, useValue: { forSeason: () => of([]) } }
+      ]
+    });
+
+    const fixture = TestBed.createComponent(EventListComponent);
+    fixture.detectChanges();
+
+    const names = () => {
+      fixture.detectChanges();
+
+      return [...(fixture.nativeElement as HTMLElement).querySelectorAll('tr.selectable')].map((row) =>
+        row.textContent.trim()
+      );
+    };
+
+    return { fixture, names, page: fixture.componentInstance as unknown as Page };
+  }
+
+  it("offers the organizations of the season's sessions, by name, after every organization", async () => {
+    const { fixture, page } = open();
+    let choices: Array<{ guid: string; name: string }> = [];
+    page.organizationChoices$.subscribe((c) => (choices = c));
+
+    expect(choices).toEqual([{ guid: '', name: 'Every organization' }, esri, tamu]);
+    expect(
+      (fixture.nativeElement as HTMLElement).querySelector('tamu-gisc-select[placeholder="Organization"]')
+    ).not.toBeNull();
+  });
+
+  it("lists only the chosen organization's sessions, and every one again when cleared", () => {
+    const { names, page } = open();
+
+    expect(names()).toHaveLength(4);
+
+    page.organization.setValue('p-tamu');
+
+    expect(names().join('|')).toContain('Map clinic');
+    expect(names().join('|')).toContain('Campus walk');
+    expect(names().join('|')).not.toContain('Imagery workshop');
+    expect(names().join('|')).not.toContain('Unplaced talk');
+
+    page.clearFilters();
+
+    expect(page.organization.value).toBe('');
+    expect(names()).toHaveLength(4);
+  });
+});

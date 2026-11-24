@@ -1,7 +1,7 @@
 import { Component, computed, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { sessionTime, siteListsSession } from '@tamu-gisc/gisday/common';
+import { formatCentral, sessionTime, siteListsSession } from '@tamu-gisc/gisday/common';
 import type { Event } from '@tamu-gisc/gisday/platform/data-api';
 
 import { GISDAY_SITE } from '../../site/site';
@@ -14,13 +14,8 @@ interface SessionUsing {
   time: string;
 }
 
-const DAY = new Intl.DateTimeFormat('en-US', {
-  timeZone: 'America/Chicago',
-  weekday: 'short',
-  month: 'short',
-  day: 'numeric'
-});
-const TIME = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', hour: 'numeric', minute: '2-digit' });
+const DAY: Omit<Intl.DateTimeFormatOptions, 'timeZone'> = { weekday: 'short', month: 'short', day: 'numeric' };
+const TIME: Omit<Intl.DateTimeFormatOptions, 'timeZone'> = { hour: 'numeric', minute: '2-digit' };
 
 /**
  * The sessions that use what an admin page edits (#3032, #3033): a broadcast's, a tag's. Each session's day, time and
@@ -58,8 +53,8 @@ export class SessionsUsingComponent {
       .map(({ session, at }) => ({
         guid: session.guid,
         name: session.name ?? 'Untitled session',
-        day: at ? DAY.format(at) : 'No day set',
-        time: at ? TIME.format(at) : ''
+        day: at ? formatCentral(at, DAY) : 'No day set',
+        time: at ? formatCentral(at, TIME) : ''
       }));
   });
 }

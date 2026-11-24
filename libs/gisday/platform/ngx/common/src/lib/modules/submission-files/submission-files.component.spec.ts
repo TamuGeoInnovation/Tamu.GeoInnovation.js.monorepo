@@ -267,3 +267,73 @@ describe('SubmissionFilesComponent', () => {
     });
   });
 });
+
+/** An admin looking through a submission's files in the page (#3090): its PDFs preview; a PowerPoint is downloaded. */
+describe('SubmissionFilesComponent preview', () => {
+  const GUID = '11111111-2222-4333-8444-555555555555';
+  const deck = { guid: 'f1', name: 'Made-up deck.pptx', size: 1, uploaded: '2026-11-14T18:00:00.000Z' };
+  const poster = { guid: 'f2', name: 'Made-up poster.pdf', size: 1, uploaded: '2026-11-14T18:01:00.000Z' };
+  const handout = { guid: 'f3', name: 'Made-up handout.pdf', size: 1, uploaded: '2026-11-14T18:02:00.000Z' };
+
+  let getFilePreview: jest.Mock;
+
+  function render(previewable: boolean) {
+    getFilePreview = jest.fn(() => of(new Blob(['%PDF-1.4'], { type: 'application/pdf' })));
+    TestBed.configureTestingModule({
+      providers: [
+        {
+          provide: UserSubmissionsService,
+          useValue: { getFiles: jest.fn(() => of([deck, poster, handout])), getFileContents: jest.fn(), getFilePreview }
+        }
+      ]
+    });
+
+    const fixture = TestBed.createComponent(SubmissionFilesComponent);
+    fixture.componentRef.setInput('submissionGuid', GUID);
+    fixture.componentRef.setInput('previewable', previewable);
+    fixture.detectChanges();
+
+    return { fixture, element: fixture.nativeElement as HTMLElement };
+  }
+
+  beforeEach(() => {
+    // jsdom has no object URLs.
+    Object.assign(URL, { createObjectURL: jest.fn(() => 'blob:made-up'), revokeObjectURL: jest.fn() });
+  });
+
+  it('offers Preview on each PDF only, and only where the list is previewable', () => {
+    expect(render(false).element.querySelectorAll('.file-preview-link')).toHaveLength(0);
+
+    TestBed.resetTestingModule();
+    const { element } = render(true);
+    const offered = Array.from(element.querySelectorAll('.file'))
+      .filter((row) => row.querySelector('.file-preview-link'))
+      .map((row) => row.querySelector('.file-name')?.textContent?.trim());
+
+    expect(offered).toEqual(['Made-up poster.pdf', 'Made-up handout.pdf']);
+  });
+
+  it('shows a PDF under the list, and pages through the PDFs, wrapping round', () => {
+    const { fixture, element } = render(true);
+
+    fixture.componentInstance.preview(poster);
+    fixture.detectChanges();
+
+    expect(getFilePreview).toHaveBeenLastCalledWith(GUID, 'f2');
+    expect(element.querySelector('.file-preview-name')?.textContent).toBe('Made-up poster.pdf');
+    expect(element.querySelector('iframe.file-preview-frame')).not.toBeNull();
+
+    fixture.componentInstance.step(1);
+    fixture.detectChanges();
+    expect(element.querySelector('.file-preview-name')?.textContent).toBe('Made-up handout.pdf');
+
+    fixture.componentInstance.step(1);
+    fixture.detectChanges();
+    expect(element.querySelector('.file-preview-name')?.textContent).toBe('Made-up poster.pdf');
+
+    fixture.componentInstance.closePreview();
+    fixture.detectChanges();
+    expect(element.querySelector('.file-preview')).toBeNull();
+    expect(URL.revokeObjectURL).toHaveBeenCalled();
+  });
+});

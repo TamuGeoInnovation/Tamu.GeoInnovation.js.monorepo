@@ -4,6 +4,7 @@ import {
   DestroyRef,
   Injector,
   OnInit,
+  computed,
   inject,
   input,
   signal,
@@ -12,9 +13,16 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse, HttpEvent, HttpEventType } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Observable } from 'rxjs';
 
-import { SUBMISSION_FILE_RULES, SubmissionFileDto, megabytes, submissionFileProblem } from '@tamu-gisc/gisday/common';
+import {
+  SUBMISSION_FILE_RULES,
+  SubmissionFileDto,
+  extensionOf,
+  megabytes,
+  submissionFileProblem
+} from '@tamu-gisc/gisday/common';
 import { UserSubmissionsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { downloadFile } from '@tamu-gisc/common/utils/ui';
 import { FileComponent } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -37,6 +45,8 @@ export interface FilesSource {
    */
   downloadAll?(): Observable<Blob>;
   downloadAllName?(): string;
+  /** A PDF to show in the page (#3090): a submission's files, for the admins reviewing it. */
+  preview?(fileGuid: string): Observable<Blob>;
 }
 
 /**
@@ -75,6 +85,11 @@ export class SubmissionFilesComponent implements OnInit {
    */
   public readonly askBeforeRemoving = input(false);
   public readonly emptyLabel = input('No files attached yet.');
+  /**
+   * Offers a Preview on each PDF that shows it under the list, with Previous and Next between them, so the admins
+   * reviewing a submission can look through its files without downloading each (#3090). A PowerPoint is downloaded.
+   */
+  public readonly previewable = input(false);
 
   public readonly rules = SUBMISSION_FILE_RULES;
   public readonly limit = megabytes(SUBMISSION_FILE_RULES.maxBytes);
@@ -86,10 +101,21 @@ export class SubmissionFilesComponent implements OnInit {
   public readonly busy = signal<string | null>(null);
   /** The file whose removal is being asked about. */
   public readonly asking = signal<string | null>(null);
+  /** The PDF being shown (#3090), and the page-local address it is drawn from. */
+  public readonly previewing = signal<{ file: SubmissionFileDto; url: SafeResourceUrl } | null>(null);
+  /** The files that preview: the PDFs, in the list's order. */
+  public readonly previewFiles = computed(() =>
+    (this.files() ?? []).filter((file) => extensionOf(file.name) === '.pdf')
+  );
+
+  private readonly sanitizer = inject(DomSanitizer);
+  /** The object URL behind `previewing`, let go when another is shown, the preview is closed or the list goes. */
+  private shownUrl: string | null = null;
 
   private readonly picker = viewChild(FileComponent);
 
   public ngOnInit(): void {
+    this.destroyRef.onDestroy(() => this.release());
     this.load();
   }
 
@@ -100,6 +126,67 @@ export class SubmissionFilesComponent implements OnInit {
   /** Whether the files can be downloaded from here. */
   public get downloadable(): boolean {
     return typeof this.from().download === 'function';
+  }
+
+  /** Whether `file` is offered a Preview: the list is previewable, its source can preview, and it is a PDF (#3090). */
+  public canPreview(file: SubmissionFileDto): boolean {
+    return this.previewable() && typeof this.from().preview === 'function' && extensionOf(file.name) === '.pdf';
+  }
+
+  /**
+   * Shows `file` under the list (#3090). It is fetched with the admin's sign-in and drawn from a page-local address,
+   * since a frame cannot send the sign-in itself; the browser's own PDF viewer draws it.
+   */
+  public preview(file: SubmissionFileDto): void {
+    const source = this.from();
+
+    if (!source.preview) {
+      return;
+    }
+
+    this.busy.set(file.guid);
+    this.problem.set(null);
+
+    source
+      .preview(file.guid)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (pdf) => {
+          this.busy.set(null);
+          this.release();
+          this.shownUrl = URL.createObjectURL(new Blob([pdf], { type: 'application/pdf' }));
+          this.previewing.set({ file, url: this.sanitizer.bypassSecurityTrustResourceUrl(this.shownUrl) });
+        },
+        error: (err) => {
+          this.busy.set(null);
+          this.problem.set(messageOf(err, `${file.name} could not be previewed.`));
+        }
+      });
+  }
+
+  /** The PDF before (-1) or after (1) the one shown, wrapping round, so the admins can page through them (#3090). */
+  public step(by: -1 | 1): void {
+    const shown = this.previewing();
+    const pdfs = this.previewFiles();
+    const at = pdfs.findIndex((file) => file.guid === shown?.file.guid);
+
+    if (at < 0 || pdfs.length < 2) {
+      return;
+    }
+
+    this.preview(pdfs[(at + by + pdfs.length) % pdfs.length]);
+  }
+
+  public closePreview(): void {
+    this.release();
+    this.previewing.set(null);
+  }
+
+  private release(): void {
+    if (this.shownUrl) {
+      URL.revokeObjectURL(this.shownUrl);
+      this.shownUrl = null;
+    }
   }
 
   public upload(file: File | undefined): void {
@@ -252,7 +339,8 @@ function submissionFiles(submissions: UserSubmissionsService, guid: string): Fil
     list: () => submissions.getFiles(guid),
     add: (file) => submissions.addFile(guid, file),
     remove: (fileGuid) => submissions.deleteFile(guid, fileGuid),
-    download: (fileGuid) => submissions.getFileContents(guid, fileGuid)
+    download: (fileGuid) => submissions.getFileContents(guid, fileGuid),
+    preview: (fileGuid) => submissions.getFilePreview(guid, fileGuid)
   };
 }
 

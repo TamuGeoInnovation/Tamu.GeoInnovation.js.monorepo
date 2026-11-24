@@ -240,13 +240,17 @@ The commands below are what the script runs, for reference or for running withou
 Docker here, so Playwright runs in a container. They take the packages from the `tamu-js-smoke-nm`
 volume, so run the script once first; or drop that mount to use the checkout's own install.
 
+Each command names the Playwright image from the installed `@playwright/test` in `package.json`, as `run-local.sh` does,
+so it stays right when Playwright is upgraded: a browser from another version is not the one the library expects (#3376).
+
 **Against dev or production:**
 
 ```bash
+PW_IMAGE="mcr.microsoft.com/playwright:v$(sed -n 's/.*"@playwright\/test": *"[^0-9]*\([0-9][0-9.]*\)".*/\1/p' package.json)-noble"
 docker run --rm -v "$PWD:/work" -v tamu-js-smoke-nm:/work/node_modules -w /work \
   -e AGGIEMAP_SMOKE_BASE_URL=https://dev.aggiemap.tamu.edu \
   -e AGGIEMAP_EXPECTED_GTAG_ID=G-71VY0QZS5P \
-  mcr.microsoft.com/playwright:v1.64.1-noble \
+  "$PW_IMAGE" \
   npx playwright test --config=playwright.aggiemap-smoke.config.ts
 ```
 
@@ -258,10 +262,11 @@ On Windows, prefix with `MSYS_NO_PATHCONV=1` and give the mount as a Windows pat
 reaches it on `localhost`. The script's `local` environment does this for you:
 
 ```bash
+PW_IMAGE="mcr.microsoft.com/playwright:v$(sed -n 's/.*"@playwright\/test": *"[^0-9]*\([0-9][0-9.]*\)".*/\1/p' package.json)-noble"
 docker run --rm --network container:aggiemap-dev -v "$PWD:/work" -v tamu-js-smoke-nm:/work/node_modules -w /work \
   -e AGGIEMAP_SMOKE_BASE_URL=http://localhost:4200 \
   -e AGGIEMAP_SMOKE_ALLOWED_LAYER_FAILURES="Dining Locations" \
-  mcr.microsoft.com/playwright:v1.64.1-noble \
+  "$PW_IMAGE" \
   npx playwright test --config=playwright.aggiemap-smoke.config.ts
 ```
 
