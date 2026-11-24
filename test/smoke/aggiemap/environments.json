@@ -1,6 +1,7 @@
 {
   "development": {
     "baseUrl": "https://dev.aggiemap.tamu.edu",
+    "allowedOutboundLinkFailures": {},
     "allowedEmptyFilters": {
       "/parking/move-in": {
         "Bike Registration": "#2612: not a fault - Type = 'Bike' finds the service's two bike registration points, but neither is in Northside, so the Northside choice's area filter empties the layer"
@@ -66,6 +67,7 @@
   },
   "production": {
     "baseUrl": "https://aggiemap.tamu.edu",
+    "allowedOutboundLinkFailures": {},
     "allowedEmptyFilters": {
       "/parking/move-in": {
         "Bike Registration": "#2612: not a fault - Type = 'Bike' finds the service's two bike registration points, but neither is in Northside, so the Northside choice's area filter empties the layer"
