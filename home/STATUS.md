@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle, listening.
+- **Batch g101 (gisday: #3354, then #3340)**, since about 1:55 AM Central, 24 November.
 
 ## Finished
 - **Batch g100 (gisday: #3379, #3329)** (report `home/reports/2026-11-24-g100.md`): both branch ready. `refactor/3379-nested-season-copy` at `35742ea88`, stacked on PR 3378; `refactor/3329-season-picker` at `f20b893ee`, its PR waits for the laptop's images. Red first, both checks exit 0. No questions. Finished 1:52 AM Central.
