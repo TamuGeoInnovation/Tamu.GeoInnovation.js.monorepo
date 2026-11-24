@@ -104,33 +104,6 @@ export const AggiemapVectorBasemap: BaseMapProperties = {
 };
 
 /**
- * The vector tile basemap development opened on until 26 October 2026, kept so the two can be
- * compared side by side before either becomes production's (#2436).
- *
- * The newer cache is the one the map opens on; this one stays in the gallery under its own id, the
- * way a replaced raster version does. It goes when the comparison is settled.
- *
- * Its under-construction buildings are wrong too, and differently: this cache has no construction
- * sprite at all, and paints them with a solid `fill-color` of the authored pink. So the sprite
- * override above would have nothing to replace here. It is left alone deliberately - this cache is on
- * its way out, and a second override on something being deleted is a cost with no return (#2459).
- */
-export const AggiemapVectorBasemapSeptember2026: BaseMapProperties = {
-  baseLayers: [
-    {
-      type: 'VectorTileLayer',
-      url: `https://gis.tamu.edu/arcgis/rest/services/Hosted/VTBase/VectorTileServer`,
-      listMode: 'hide',
-      visible: true,
-      title: 'Base Map'
-    }
-  ],
-  id: 'aggie_basemap_vector_2026_09',
-  title: 'Aggieland vector, September 2026',
-  thumbnailUrl: CAMPUS_BASEMAP_THUMBNAIL
-};
-
-/**
  * The deepest scale every campus basemap a view can show has tiles for: level 21, 1:282 (#1577).
  *
  * `TAMU_Basemap_20261008`'s tiling scheme lists 24 levels, down to 1:70, but its cache stops at level 21
@@ -215,7 +188,10 @@ export const AggiemapRasterBasemapMay2026: BaseMapProperties = {
  * The first entry is the one the map opens on, and is always `aggiemapBasemap()`.
  *
  * When a version is republished, raster or vector, date the current one here and add the one it
- * replaces, so the two can be compared before one is chosen (#2436).
+ * replaces, so the two can be compared before one is chosen (#2436). Take a version out once its comparison is
+ * settled, and at once if its service stops answering anonymously: the September 2026 vector cache stayed after its
+ * comparison was settled by #2515, its service was then secured, and the settings page asked every visitor on
+ * development to sign in to the portal (#3279). A saved choice of a version taken out falls back to the campus basemap.
  */
 export function aggiemapGalleryBasemaps(isTesting: boolean): BaseMapProperties[] {
   if (!isTesting) {
@@ -224,7 +200,6 @@ export function aggiemapGalleryBasemaps(isTesting: boolean): BaseMapProperties[]
 
   return [
     aggiemapBasemap(),
-    AggiemapVectorBasemapSeptember2026,
     aggiemapRasterBasemap(isTesting),
     AggiemapRasterBasemapJune2026,
     AggiemapRasterBasemapMay2026
