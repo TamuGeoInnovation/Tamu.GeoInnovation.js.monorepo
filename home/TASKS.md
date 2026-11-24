@@ -1,5 +1,23 @@
 # Home machine: current tasks
 
+## Batch g105 (gisday: #3412, the Papers page's empty awards sentence; 24 November 2026, from `work (gisday)`) (Medium) - **now**
+
+[#3412](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3412): read it to the end. With no awards session
+found (none chosen for the competition, #3019, and no `AWARDS:` session naming poster or presentation), the Papers page prints
+"Winners will be announced at the awards session:" with nothing after. **Rule 4 first** on today's `development` (PR 3387, the
+Papers page's dates, may or may not have merged; build on `development` either way, and say which you saw).
+
+Branch `fix/3412-awards-sentence` from the latest `development`. **Red first:** a spec on the Papers page whose season has only
+"AWARDS: Winner Announcements" and none chosen: no sentence ending in a colon. The fix leaves the sentence out when there is no
+session, **as the page already does for the finalists line with no date**; reuse that, no new pattern. `awardsSession()`'s name
+match stays the fallback. Then `scripts/check-in-volume.sh fix/3412-awards-sentence <projects it edits>,gisday-angular` with
+`CHECK_PARALLEL=1` (these GIS Day tests time out under load), read its `Exit` line, push to the fork, never force-push.
+
+Images: the Papers page before (merge-base) and after, at 1280 and 390, made-up seasons only, to
+`docs/screenshots/3412-awards-sentence/`, with `docs/releases/unreleased/3412-awards-sentence.md` and `collate --check`. A
+`.pr-body.md` from the template, with a `Title:` line, as the last commit. No PRs. Nobody but the security chat touches
+`package.json` or the lock. Report `home/reports/2026-11-24-g105.md`, "branch ready: <name>" first.
+
 ## Batch s81 (security: check Dependabot PR 3401, highlight.js 11.12.0 and maplibre-gl 6.19.0, for #3405; 24 November 2026, from `work (security)`) (Low) - **now**
 
 [PR 3401](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3401), tracked by [#3405](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3405). Both minor. Never push to the Dependabot branch.
