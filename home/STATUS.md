@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch s81 (security: Dependabot PR 3401, #3405)**, from 7:20 AM Central, 24 November: full check on the PR's head.
+- Nothing. Idle, listening.
 
 ## Finished
+- **Batch s81 (security: Dependabot PR 3401, #3405)** (report `home/reports/2026-11-24-s81.md`): full check exit 0 with clean `npm ci` (95 projects); lock moves only the two packages and maplibre-gl's own (geojson-vt 6.3.2, kdbush hoisted, zustand 5.1.0 new); GIS Day's competition map and geoservices' highlighting identical to development. Commented on the PR. 7:57 to 8:09 AM Central.
 - **Batch s80 (security: #2282)** (report `home/reports/2026-11-24-s80.md`): branch ready, `chore/2282-remove-angular-animations` at `0cfc9bb21` (drop its last commit, `.pr-body.md`). The lab's unmerged October port, onto today's code; every trigger, both providers, the library and the package gone; lock loses only `@angular/animations`. Full check exit 0 with clean `npm ci`. Before/after videos and 10 ms samples recorded here, the forms' leave included. Two questions. Finished 7:17 AM Central.
 - **Batch g104 (gisday: triage of six)** (report `home/reports/2026-11-24-g104.md`): #438 and #499 done already (close); #434 built, `feat/434-events-organization-filter` at `a0d89eaf6`, red first, check exit 0, PR waits for images; #435 half done (bulk hide, #2105), #493 and #1038 need the maintainer. Three questions. Finished 2:44 AM Central.
 - **Batch g103 (gisday: #3321)** (report `home/reports/2026-11-24-g103.md`): branch ready, `feat/3321-papers-dates` at `d7605c8a7`, stacked on PR 3322; its PR waits for the laptop's images. Deadline and finalists date from the season, 2020's text gone. Red first, check exit 0. One question (the page is 2020's Presentation copy, linked from nowhere). Finished 2:35 AM Central.
