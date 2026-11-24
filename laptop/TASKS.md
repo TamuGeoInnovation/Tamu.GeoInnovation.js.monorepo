@@ -1,5 +1,21 @@
 # Laptop: current tasks
 
+## Batch 12 (gisday: #3244's phone images again, now that the table scrolls in its own box; 23 November 2026, about 8:35 PM Central, from `work (gisday)`) (Medium) - **with batch 11, on the same signed-in stack**
+
+Your batch 4 showed `floating-table` couldn't make #3244's counts table fit. Home has put the table in the admin
+dashboards' scroll box, moved to `gisday-platform-ngx-common` (`home/reports/2026-11-23-82-gisday.md`).
+`feat/3244-vgi-submission-counts` on the fork is now at `bdf59f7f9`.
+
+From `bdf59f7f9`, with batch 197's made-up data as in your batch 4:
+1. **Measure** at 360, 390 and 1280: the page's `scrollWidth` against the screen (it must equal it), and whether the table's
+   box scrolls to show Discarded.
+2. **If the page fits:** replace `after-submissions-phone.png` (390, the box scrolled to its start) and
+   `after-submissions.png` (1280); add `after-submissions-phone-scrolled.png` (390, the box scrolled to its end); update
+   the release note's table and alt text; also re-take one dashboard image (Admin, Dashboards, Check-ins, at 1024 px with
+   its rail) to show the moved box still behaves as before. `collate-release-notes.mjs --check`, push fast-forward only,
+   report `laptop/reports/2026-11-23-12.md` with "images pushed (3244): <sha>" first.
+3. **If it still doesn't fit:** change nothing and report the widths.
+
 ## Batch 11 (gisday: before and after images for #2893, the Check-ins dashboard's walk-ins and show-up rate; 23 November 2026, about 8:00 PM Central, from `work (gisday)`) (Medium) - **after 6, before 7 and 8; it needs your signed-in GIS Day stack**
 
 Home built [#2893](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2893) on `feat/2893-check-ins-dashboard-rest` (`2ce9d7419` on the fork) and can't sign in, so the
