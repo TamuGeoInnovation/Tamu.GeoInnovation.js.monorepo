@@ -1,5 +1,25 @@
 # Home machine: current tasks
 
+## Batch 83 (gisday: #2835, GIS Day entries out of AggieMap's release notes, then #1843, the checklist for another organization's site; 23 November 2026, about 8:40 PM Central, from `work (gisday)`) (Medium) - **now**
+
+1. **[#2835](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2835).** `collate-release-notes.mjs` writes every entry into AggieMap's `unreleased.md`, so the 10 November
+   notes carried 23 GIS Day entries. The lab pushed `fix/2835-collate-routes-by-app` to the fork at `5cbd566c6` on
+   11 November, and no PR was ever opened. Read its diff and the lab's report for it (`work-lab-leila/reports/`, search
+   for 2835). Bring it up to date: merge the latest `development` into it (a lot of GIS Day entries have landed since;
+   check each lands in `gisday-unreleased.md` and each AggieMap one in `unreleased.md`, with `--check` and a dry
+   `--write` in a scratch copy, never committed), fix what has rotted, run `bash` on any script test it has, check
+   (the script's own tests, plus `collate-release-notes.mjs --check`), push, "branch ready" with the PR body.
+2. **[#1843](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1843).** Write `docs/gisday-sites.md`, the checklist for adding another organization's GIS Day site,
+   from what was actually done for UCGIS (#1837 and its deployment comment, `libs/gisday/common/src/lib/sites.ts`,
+   `docs/gisday-local.md`, `docs/gisday-migrations.md`, the GIS Day sections of `docs/releases/README.md`, and #2088,
+   PR 3304, which removes the need to add each address to `ORIGINS`). Where a step is in kubernetes-config, name the
+   folder and file but don't copy anything from it that is a secret or an internal address; this repository is public.
+   Mark any step you can't confirm from a record as "unconfirmed" rather than guessing. Link it from CLAUDE.md's
+   "Where things are written down" table only if the table's rule allows a new row (it says ten places, each with one
+   job); otherwise from `docs/gisday-local.md`, and say which. Branch `docs/1843-gisday-sites`, push, "branch ready".
+
+Report `home/reports/2026-11-23-83-gisday.md`.
+
 ## Batch 82 (gisday: #3244's counts table scrolls in its own box on a phone, by sharing the dashboards' scroll box; 23 November 2026, about 8:15 PM Central, from `work (gisday)`) (Medium) - **after 81**
 
 [#3244](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3244), on `feat/3244-vgi-submission-counts` (the fork, at `f458eb400`; fast-forward only, don't merge
