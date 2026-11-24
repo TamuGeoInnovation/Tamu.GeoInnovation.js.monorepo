@@ -2,6 +2,7 @@
 @import 'libs/sass/1140';
 
 @import 'libs/sass/mixins';
+@import 'libs/sass/motion';
 @import 'libs/sass/dom_flexbox';
 @import 'libs/sass/spacing';
 
@@ -1046,3 +1047,6 @@ tamu-gisc-tooltip {
     padding: 0.5rem;
   }
 }
+
+// The interactive request forms and their results slide in and out (animate.enter/leave in their templates, #2278).
+@include interactive-form(geoservices-form-entering, geoservices-form-leaving);
