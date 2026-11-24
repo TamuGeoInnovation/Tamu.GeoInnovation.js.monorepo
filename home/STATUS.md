@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle and listening.
+- **Batch a1 (aggiemap: #3285, outbound link check)**, since 9:20 PM Central, 23 November; then a2, a3 (aggiemap), g87, g88 (gisday).
 
 ## Finished
 - **Batch 86 (gisday: the rest of #3019)** (report `home/reports/2026-11-23-86-gisday.md`): branch ready, `feat/3019-competition-sessions-chosen` on the fork at `ad9cce65e`, no PR. Sessions (6A) and finalists date (7A) on `season_competitions`, with a `runs` column so settings survive; set in Research Competitions' Competition settings. Migration `AddCompetitionSettings1795487604412` proven up/down/up; exact SQL in the report. Red first; checks pass (memory kills rerun one at a time). Public-page images done; admin images need a sign-in. Two questions.
