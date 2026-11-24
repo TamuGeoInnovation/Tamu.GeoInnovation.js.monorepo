@@ -1,6 +1,6 @@
 # Home machine: current tasks
 
-## Batch g106 (gisday: #3412's Papers page, on PR 3415; 24 November 2026, from `work (gisday)`) (Medium) - **now**
+## Batch g106 (gisday: #3412's Papers page, on PR 3415; 24 November 2026, from `work (gisday)`) (Medium) - **WITHDRAWN (about 1:20 PM Central): PR 3415 merges as it is and the laptop does Papers as batch g25. Do not start it.**
 
 **Decided by the maintainer** on g105's question 1: **(a)**, and PR 3387 has now merged. PR 3415 is open from the fork's
 `fix/3412-awards-sentence`; the work machine added two commits on top of yours (`.pr-body.md` removed, `origin/development` merged in),
