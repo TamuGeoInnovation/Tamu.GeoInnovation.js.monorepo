@@ -16,6 +16,20 @@ import { getDefaultGisHost } from '../connections';
  */
 const GARAGE_STRUCTURES = "type LIKE 'GARAGE%'";
 
+/**
+ * The Campus Structures rows that are not parking garages, for the typed building search.
+ *
+ * The garages became rows of this layer in #3425, so the building search started answering with them too and
+ * every garage appeared twice in the results - once under Building and once under Parking Garage, the same
+ * row from the same layer. They are a garage's results, so the building search gives them up.
+ *
+ * `type IS NULL OR` is not redundant. `NULL NOT LIKE 'GARAGE%'` is NULL rather than true, so the shorter
+ * clause would silently drop every row whose `type` is unset - a building that disappears from search with
+ * nothing to show it had gone. Measured 24 November 2026: 1,987 rows, 11 garages, 0 with a null `type`, and
+ * both forms return the same 1,976. The guard costs nothing today and covers the day that changes.
+ */
+const NOT_A_GARAGE = "type IS NULL OR type NOT LIKE 'GARAGE%'";
+
 export function SearchSources(
   connections: IComposedConnections,
   definitions: IComposedIDefinitions,
@@ -30,6 +44,10 @@ export function SearchSources(
       url: connections.buildingsUrl,
       queryParams: {
         ...containsSearch(['number', 'bldgabbrev', 'bldgname']),
+        // Garages are rows of this layer too, and they have their own source and their own popup (#3425).
+        // Only the typed search gives them up: the two exact sources below resolve deep links, and a
+        // `?bldg=` link made to a garage has to keep working.
+        fixedWhere: NOT_A_GARAGE,
         scoringWhere: {
           keys: ['bldgname', 'bldgabbrev'],
           operators: ['LIKE', 'LIKE'],

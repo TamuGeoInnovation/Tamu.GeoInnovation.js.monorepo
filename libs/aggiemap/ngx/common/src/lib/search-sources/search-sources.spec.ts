@@ -271,4 +271,24 @@ describe('SearchSources', () => {
     // Garages are not in the parking lots layer, so they keep their own link rather than `?lot=`.
     expect(garage?.urlQueryParam).toBe('garage');
   });
+
+  it('keeps garages out of the typed building search, but not out of the deep-link sources', () => {
+    const sources = SearchSources(connections, definitions);
+    const typed = sources.find((source) => source.source === 'building');
+    const byNumber = sources.find((source) => source.source === 'building-exact');
+    const byAbbreviation = sources.find((source) => source.source === 'building-exact-abbr');
+
+    // The garages became rows of Campus Structures in #3425, so without this every garage appears twice in the
+    // results - once under Building and once under Parking Garage, the same row from the same layer.
+    expect(typed?.queryParams?.fixedWhere).toBe("type IS NULL OR type NOT LIKE 'GARAGE%'");
+
+    // `NULL NOT LIKE 'GARAGE%'` is NULL, not true, so the shorter clause drops every row with an unset `type`.
+    // There are none today, which is exactly why a regression here would be invisible.
+    expect(typed?.queryParams?.fixedWhere).toContain('type IS NULL OR');
+
+    // The exact sources resolve deep links, and a `?bldg=` link made to a garage has to keep working, so they
+    // deliberately do not carry the filter. Adding it here would break those links silently.
+    expect(byNumber?.queryParams?.fixedWhere).toBeUndefined();
+    expect(byAbbreviation?.queryParams?.fixedWhere).toBeUndefined();
+  });
 });
