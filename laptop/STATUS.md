@@ -5,7 +5,7 @@
 
 Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
-Last batch done: g18
+Last batch done: g17
 
 ## What this is
 
@@ -33,10 +33,11 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch g17 (gisday: #3370, #3376, #545)**, started 12:45 AM Central. #3370 pushed (`fix/3370-speakers-list-phone`, `5529e65dc`, check exit 0); #3376 pushed (`docs/3376-playwright-image`, `8c9a4bf9b`). g18 done in between. Now (1:35 AM): #545, the streamed VGI export. Next update by 2:30 AM Central.
+- **Batch g19 (gisday: #3329 images, then a signed-in triage of #498, #439, #466, #477)**, starting 2:10 AM Central. Next update by 3:00 AM Central.
 
 ## Finished
-- **Batch g18 (gisday: #3328 images)** (report `laptop/reports/2026-11-24-g18.md`): **images pushed (3328): `9e5354bab`**, a fast-forward. 13 images: list, add and edit for each type, before and after, and the RSVP list at 390. No questions.
+- **Batch g17 (gisday: #3370, #3376, #545)** (report `laptop/reports/2026-11-24-g17.md`): three branches ready. `fix/3370-speakers-list-phone` (`5529e65dc`, check exit 0; 566 to 390 px at 390, desktop unchanged), `docs/3376-playwright-image` (`8c9a4bf9b`) and `feat/545-vgi-export-zip` (`85054bddb`; the streamed zip, downloaded through its button; every affected project passed, not in one run). No package changes; Bull stays, unused. No questions.
+- **Batch g18 (gisday: #3328 images; now in PR 3381)** (report `laptop/reports/2026-11-24-g18.md`): **images pushed (3328): `9e5354bab`**, a fast-forward. 13 images: list, add and edit for each type, before and after, and the RSVP list at 390. No questions.
 - **Batch g16 (gisday: #441 images)** (report `laptop/reports/2026-11-24-g16.md`): **images pushed (441): `f09e30433`**, a fast-forward on PR 3344's branch. Five images: the Sessions column, the no-session box, and 390. **Found and filed #3370**: the Speakers list is wider than a phone, before (566 px) and after (662 px). Priority not set; suggested Low. No questions.
 - **Batch g15 (gisday: backlog #521 to #567)** (report `laptop/reports/2026-11-24-g15.md`): no branches. **Done already:** #521 (by #987) and #536 (by #1784, checked signed in). **Need the maintainer:** #541 (a check-in does not record in-person or online), #545 (the API export from #650 needs Redis, which the cluster does not have) and #567 (with #2072). **Two questions.**
 - **Batch g14 (gisday: #1756 picker off screen on a phone)** (report `laptop/reports/2026-11-24-g14.md`): branch ready, `fix/1756-picker-on-screen` on the fork at `bf75db585`, from the latest `development`. The tooltip now slides a popup onto the screen when no spot around its trigger fits; where one fits, nothing moves. Red first (exactly 5 failed). Signed in, all 17 GIS Day pickers: 12 to 14 off screen at 390 before, 0 after, and 1280 unchanged. Check exit 0. Found: the READMEs still name Playwright `v1.64.1-noble` while `development` installs 1.65.1. No questions.
@@ -85,6 +86,7 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - Batch 10 was withdrawn, moved to home a1.
 
 ## Findings
+- **Full checks here lose the same three projects to memory kills** (24 November): `gisday-angular:build-app`, `gisday-competitions-data-api:test` and `gisday-platform-data-api:test`, even with nothing else running at `CHECK_PARALLEL=4` and 16 GB. They pass run alone with `CHECK_PARALLEL=1`. A full check here is two runs.
 - **The watcher cannot run while a batch is held** (24 November, 12:22 AM Central). `tools/queued.sh laptop` lists the held a11 as `unfinished`, and `tools/listen.sh` exits at once whenever that list is non-empty ("work waiting for laptop: a11"). So laptop pushes no idle heartbeats until a11 is replaced or marked done. This session's 30-minute backstop still pulls and reads `laptop/TASKS.md`, so new work is still picked up. A held state `queued.sh` can read, or a director's note that ends a11, would fix it; I have not changed either tool.
 - `work/tools/gisday-release-check.cjs` clicks Auth0's Accept by itself. A read-only sign-in check would suit machines that only need to prove sign-in.
 - After a dev server starts, the first browser request waits minutes for Vite's dependency bundling, with no log line when it finishes. A check run right after it needs a longer first timeout.
