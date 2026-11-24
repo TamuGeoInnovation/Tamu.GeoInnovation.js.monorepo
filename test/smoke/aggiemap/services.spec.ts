@@ -7,6 +7,7 @@ import * as path from 'path';
 import { Connections } from '../../../libs/aggiemap/ngx/common/src/lib/connections';
 
 import { retiredConnections } from './retired';
+import { askCount } from './service-layers';
 import { gisHostFor, smokeBaseUrl } from './gis-hosts';
 
 /**
@@ -250,9 +251,8 @@ async function holdingsOf(request: import('@playwright/test').APIRequestContext,
     return `not a feature layer (${metadata.type ?? 'no type'})`;
   }
 
-  const count = await (
-    await request.get(`${layer}/query`, { params: { where: '1=1', returnCountOnly: 'true', f: 'json' }, timeout: 30_000 })
-  ).json();
+  // Asked again once when the server refuses it at random (#2616).
+  const count = ((await askCount(request, layer)).body ?? {}) as { count?: unknown; error?: { message?: string } };
 
   if (count.error || typeof count.count !== 'number') {
     return `its features could not be counted: ${count.error?.message ?? 'no count'}`;
@@ -368,30 +368,61 @@ const BASEMAP_DEFINITION = fs.readFileSync(
 );
 
 /**
- * The current campus raster basemap's URL. The definitions name it through this constant rather than
- * writing it out (#1700), so it is read from where it is declared.
+ * Every campus service URL `campus-basemap.ts` declares, by its constant's name. The basemap definitions name these
+ * through the constants rather than writing them out (#1700), so they are read from where they are declared.
+ *
+ * Read as a map rather than one constant at a time, because knowing one name is how this went quiet: it knew
+ * `TAMU_CAMPUS_BASEMAP_URL` and #3299 moved the vector basemap's tiles to `TAMU_CAMPUS_VECTOR_BASEMAP_URL` beside it,
+ * so the basemap every map opens on had no service here at all and the view-limit check below could not run (#3350).
+ * The two built from another with a template literal are expanded, so `${TAMU_CAMPUS_FEATURES_URL}/0` resolves too.
  */
-const CAMPUS_BASEMAP_URL = fs
-  .readFileSync(
+const CAMPUS_URLS: Record<string, string> = (() => {
+  const source = fs.readFileSync(
     path.join(__dirname, '..', '..', '..', 'libs', 'common', 'datasets', 'geographic', 'src', 'lib', 'campus', 'campus-basemap.ts'),
     'utf8'
-  )
-  .match(/TAMU_CAMPUS_BASEMAP_URL = '([^']+)'/)?.[1];
+  );
+  const urls: Record<string, string> = {};
 
-/** Every ArcGIS service URL the basemap definitions name, by the constant that names it. */
+  for (const [, name, url] of source.matchAll(/export const (TAMU_CAMPUS\w*) = '([^']+)'/g)) {
+    urls[name] = url;
+  }
+
+  // `export const TAMU_CAMPUS_STRUCTURES_URL = `${TAMU_CAMPUS_FEATURES_URL}/0`;`
+  for (const [, name, base, suffix] of source.matchAll(/export const (TAMU_CAMPUS\w*) = `\$\{(\w+)\}([^`]*)`/g)) {
+    if (urls[base] !== undefined) {
+      urls[name] = `${urls[base]}${suffix}`;
+    }
+  }
+
+  return urls;
+})();
+
+/** A basemap block that named no service at all: the shape this file reads has changed under it (#3350). */
+const basemapsWithoutAService: string[] = [];
+
+/** Every ArcGIS service URL the basemap definitions name, by the constant that names it, in the order each names them. */
 function basemapServices(): Array<[string, string]> {
   const found: Array<[string, string]> = [];
 
   // A basemap is declared as `BaseMapProperties`, or as `BaseMapProperties & { id: string }` when it is typed with its id.
   for (const match of BASEMAP_DEFINITION.matchAll(/export const (\w+): BaseMapProperties(?: & \{[^}]*\})? = \{([\s\S]*?)\n\};/g)) {
     const [, constant, block] = match;
+    let namedOne = false;
 
-    for (const url of block.matchAll(/https:\/\/[^'"`\s]+\/arcgis\/rest\/services\/[^'"`\s]+/g)) {
-      found.push([constant, url[0]]);
+    // Literal URLs and campus constants together, in the order the block writes them, because the view-limit test takes
+    // the FIRST service a basemap names as its tile cache. AggiemapVectorBasemap names its cache first and the campus
+    // structures layer second, for the construction hatch; out of order, a FeatureServer would be asked for a maxScale.
+    for (const [token] of block.matchAll(/https:\/\/[^'"`\s]+\/arcgis\/rest\/services\/[^'"`\s]+|TAMU_CAMPUS\w*/g)) {
+      const url = token.startsWith('http') ? token : CAMPUS_URLS[token];
+
+      if (url !== undefined) {
+        found.push([constant, url]);
+        namedOne = true;
+      }
     }
 
-    if (CAMPUS_BASEMAP_URL && block.includes('TAMU_CAMPUS_BASEMAP_URL')) {
-      found.push([constant, CAMPUS_BASEMAP_URL]);
+    if (!namedOne) {
+      basemapsWithoutAService.push(constant);
     }
   }
 
@@ -424,6 +455,14 @@ test.describe('campus basemap services', () => {
     // As above: guards against the regex or the file's shape changing and emptying this quietly.
     expect(basemapRoots.length, 'no service URLs were read from basemaps.definition.ts').toBeGreaterThan(1);
     expect(basemapThumbnails.length, 'no thumbnails were read from basemaps.definition.ts').toBeGreaterThan(1);
+
+    // A total is not enough, and #3350 is why: the vector basemap's own URL went missing while this still passed,
+    // because the raster one was found and the count stayed above one. Every basemap must name a service of its own.
+    expect(
+      basemapsWithoutAService,
+      'these basemaps name no service this file could read, so nothing below checks them: either they stopped naming ' +
+        'a URL, or they now name it through a constant campus-basemap.ts does not declare'
+    ).toEqual([]);
   });
 
   for (const [root, constant] of basemapRoots) {

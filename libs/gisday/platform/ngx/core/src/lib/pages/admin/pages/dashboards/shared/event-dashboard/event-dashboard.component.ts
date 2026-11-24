@@ -41,6 +41,56 @@ export interface DashboardData {
   made: Array<{ event: string; created: string }>;
 }
 
+/**
+ * What one dashboard calls its records, its rows and its people, for the template the RSVP, check-in and VGI dashboards
+ * share (#3330). They used to be three templates, two of them the same but for these words.
+ */
+export interface DashboardWords {
+  /** The page's title, such as "RSVPs". */
+  title: string;
+  readError: string;
+  reading: string;
+  overTime: string;
+  /** The note under the chart's heading, before what it says about an opened row. */
+  chartNote: string;
+  chartSecondLine: string;
+  chartOpenOne: string;
+  chartUnit: string;
+  chartLabel: string;
+  byHeading: string;
+  tableNote: string;
+  nameLabel: string;
+  totalHeading: string;
+  totalLabel: string;
+  dateLabel: string;
+  emptyText: string;
+  noEvents: string;
+  /**
+   * A second chart, by the hour across the days the season's events run (#3314), for a dashboard whose records all fall
+   * in one week. Left out, the page has none.
+   */
+  hourly?: { heading: string; note: string; label: string };
+}
+
+/**
+ * The summary after its total for a dashboard of events: "RSVPs for 2 events.", and how many accounts could not be read
+ * when any could not (#3330).
+ */
+export function eventsSummary(
+  total: number,
+  events: number,
+  unreadAccounts: number,
+  noun: { one: string; many: string },
+  preposition: string
+): string {
+  const unread =
+    unreadAccounts > 0
+      ? ` ${unreadAccounts} ${unreadAccounts === 1 ? 'account' : 'accounts'} could not be read and ${unreadAccounts === 1 ? 'is' : 'are'} counted as Not given.`
+      : '';
+
+  return `${total === 1 ? noun.one : noun.many} ${preposition} ${events} ${events === 1 ? 'event' : 'events'}.${unread}`;
+}
+
 /** Each count summed over `events`, and the total, for the table's last row. */
 export function dashboardTotals(events: Array<DashboardItem>): { total: number; counts: Record<string, number> } {
   const counts: Record<string, number> = {};
@@ -162,6 +212,17 @@ export abstract class EventDashboardComponent<D extends DashboardData, E extends
   protected abstract eventPeople(eventGuid: string): Observable<Array<RsvpDashboardPerson>>;
 
   public readonly columns: Array<DashboardTableColumn> = PERSON_TYPE_COLUMNS;
+  /** The table's columns as drawn: `columns`, unless a dashboard adds totals of its own to them. */
+  public tableColumns: () => Array<DashboardTableColumn> = () => this.columns;
+  /** Count columns for an opened row's people, beside their details; none unless a dashboard has some. */
+  public readonly countColumns: Array<DashboardTableColumn> = [];
+  /** The hourly chart's lines, when `words.hourly` asks for that chart (#3314); none unless a dashboard has them. */
+  public readonly hourly: () => Array<ChartSeries> = () => [];
+
+  /** The dashboard's words, which the shared template reads (#3330). */
+  public abstract readonly words: DashboardWords;
+  /** The summary sentence after its total, which is shown in bold before it. */
+  public abstract summary(view: D, total: number): string;
 
   /** The chart's line of every row, and its name for an opened row with no name. */
   protected readonly seriesLabels = { all: 'All events', one: 'This event' };

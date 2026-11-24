@@ -1,5 +1,4 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { style, transition, trigger, animate } from '@angular/animations';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UntypedFormGroup } from '@angular/forms';
 import {
@@ -23,19 +22,9 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 @Component({
   selector: 'tamu-gisc-base-interactive-geoprocessing',
+  // The forms and results slide in and out with animate.enter and animate.leave in each template, styled once by
+  // libs/sass/motion's interactive-form in the geoservices app's stylesheet (#2278).
   template: '',
-  animations: [
-    trigger('inOutAnimation', [
-      transition(':enter', [
-        style({ transform: 'translateY(-1rem)', opacity: 0 }),
-        animate('.3s ease-in', style({ transform: 'translateY(0)', opacity: 1 }))
-      ]),
-      transition(':leave', [
-        style({ transform: 'translateX(0)', opacity: 1 }),
-        animate('.25s ease-out', style({ transform: 'translateX(2.5rem)', opacity: 0, height: 0 }))
-      ])
-    ])
-  ],
   standalone: false
 })
 export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamType> implements OnInit {

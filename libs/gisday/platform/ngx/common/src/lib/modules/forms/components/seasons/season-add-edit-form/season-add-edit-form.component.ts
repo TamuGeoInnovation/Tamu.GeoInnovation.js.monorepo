@@ -13,14 +13,12 @@ import { Observable, filter, map, shareReplay, switchMap, take } from 'rxjs';
 
 import { Season, SeasonDay } from '@tamu-gisc/gisday/platform/data-api';
 import { SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { serverMessage } from '../../../../../utils/server-message';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { SeasonsDayTileComponent } from '../seasons-day-tile/seasons-day-tile.component';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
-import { injectBackToList } from '../../../admin-details-page';
+import { adminEntityForm } from '../../../admin-entity-form';
 
 @Component({
   selector: 'tamu-gisc-season-add-edit-form',
@@ -32,9 +30,8 @@ export class SeasonAddEditFormComponent implements OnInit {
   private fb = inject(UntypedFormBuilder);
   private at = inject(ActivatedRoute);
   private ss = inject(SeasonService);
-  /** Leaves for the list once a save, create or delete has worked: the one the page was opened from (#2965). */
-  private readonly backToList = injectBackToList('/admin/seasons');
-  private readonly ns = inject(NotificationService);
+  /** Its save and delete, and what they say (#3340, #3382). */
+  private readonly saves = adminEntityForm('Season', '/admin/seasons');
 
   public readonly type = input<'create' | 'edit'>(undefined);
 
@@ -125,24 +122,7 @@ export class SeasonAddEditFormComponent implements OnInit {
   public updateEntity() {
     const formValue = this.form.getRawValue();
 
-    this.ss.updateEntity(formValue.guid, formValue).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'season-update-success',
-          title: 'Update season',
-          message: `Season was successfully updated.`
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'season-update-failed',
-          title: 'Update season',
-          message: serverMessage(err, `Error updating season: ${err.status}`)
-        });
-      }
-    });
+    this.saves.save('update', this.ss.updateEntity(formValue.guid, formValue));
   }
 
   /**
@@ -151,29 +131,8 @@ export class SeasonAddEditFormComponent implements OnInit {
   public deleteEntity() {
     const formValue = this.form.getRawValue();
 
-    this.ss.deleteEntity(formValue.guid).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'season-delete-success',
-          title: 'Delete season',
-          message: `Season was successfully deleted.`
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'season-delete-failed',
-          title: 'Delete season',
-          message: serverMessage(err, `Error deleting season: ${err.status}`)
-        });
-      }
-    });
+    this.saves.save('delete', this.ss.deleteEntity(formValue.guid));
 
     this.form.markAllAsTouched();
-  }
-
-  private _navigateBack() {
-    this.backToList();
   }
 }

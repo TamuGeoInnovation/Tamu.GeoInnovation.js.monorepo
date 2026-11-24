@@ -1,6 +1,8 @@
 // Positioning for an alert that sits over the map. The buttons inside use the established global
 // `.button` / `.button.maroon` classes and the shared `tamu-gisc-button`, so only the box itself is
 // defined here.
+@import 'libs/sass/variables';
+
 .code-maroon {
   position: fixed;
   // Clear of the map's own controls at the top, and wide enough to be read at a glance from across a
@@ -15,7 +17,7 @@
   padding: 1.25rem 1.5rem;
   border-radius: 8px;
   // Maroon, heavier than any other surface on the map, so it cannot read as ordinary chrome.
-  background: #500000;
+  background: $aggie-maroon;
   color: #ffffff;
   box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.35);
 }
@@ -128,7 +130,7 @@
     &.maroon {
       background: #ffffff;
       border-color: #ffffff;
-      color: #500000;
+      color: $aggie-maroon;
 
       &:hover,
       &:focus-visible {

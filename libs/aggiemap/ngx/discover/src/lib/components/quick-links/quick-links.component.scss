@@ -1,4 +1,6 @@
 // Concise supporting navigation block - inset from the left, narrow and short (not a major section).
+@import 'libs/sass/variables';
+
 .related-links-box {
   margin: 2.5rem 0 0;
   max-width: 42rem;
@@ -42,7 +44,7 @@
   display: inline-flex;
   align-items: baseline;
   gap: 0.5rem;
-  color: #500000;
+  color: $aggie-maroon;
   font-weight: 700;
   font-size: 1rem;
   text-decoration: none;
