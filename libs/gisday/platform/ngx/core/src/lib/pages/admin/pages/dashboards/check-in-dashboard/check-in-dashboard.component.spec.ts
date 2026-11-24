@@ -238,15 +238,25 @@ describe('CheckInDashboardComponent (#3006)', () => {
     cellOf(root, 'Workshop').click();
     await settle(fixture);
 
-    const marks = Array.from(root.querySelectorAll('tamu-gisc-dashboard-people tbody tr')).map((tr) =>
+    // Listed by last name, as every dashboard's people are.
+    const marks = Array.from(root.querySelectorAll('tamu-gisc-dashboard-people tbody tr')).map((tr) => [
+      tr.querySelector('td').textContent.trim(),
       tr.querySelector('.dashboard-person-outside')?.textContent?.trim() ?? null
-    );
-    expect(marks).toEqual(["Outside the session's time", null]);
+    ]);
+    expect(marks).toEqual([
+      ['Bo Diaz', null],
+      ['Ana Lee', "Outside the session's time"]
+    ]);
 
-    const [header, ana, bo] = peopleCsv(people, 'Checked in', []).split(/\r?\n/);
+    const [header, ...lines] = peopleCsv(people, 'Checked in', []).split(/\r?\n/);
+    const lastOf = (email: string) =>
+      lines
+        .find((l) => l.includes(email))
+        .split(',')
+        .slice(-1)[0];
     expect(header.split(',').slice(-1)).toEqual(['Outside session time']);
-    expect(ana.split(',').slice(-1)).toEqual(['yes']);
-    expect(bo.split(',').slice(-1)).toEqual(['']);
+    expect(lastOf('ana@example.edu')).toBe('yes');
+    expect(lastOf('bo@example.edu')).toBe('');
   });
 
   it('says the check-ins could not be read rather than showing an empty dashboard', () => {
