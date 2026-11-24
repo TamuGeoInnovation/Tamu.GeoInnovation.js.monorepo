@@ -129,7 +129,11 @@ export function buildingTransactionFinds(dataSource: DataSource): void {
     const answer = runner.manager.find.bind(runner.manager);
 
     runner.manager.find = (async (entity: never, options?: never) => (
-      runner.manager.createQueryBuilder(entity, 'e').setFindOptions(options ?? {}).getQuery(), answer(entity, options)
+      runner.manager
+        .createQueryBuilder(entity, 'e')
+        .setFindOptions(options ?? {})
+        .getQuery(),
+      answer(entity, options)
     )) as typeof runner.manager.find;
 
     return runner;
