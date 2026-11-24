@@ -4,7 +4,7 @@ import { forkJoin } from 'rxjs';
 
 import { SeasonWinnersService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { ButtonComponent, SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
-import { serverMessage } from '@tamu-gisc/gisday/platform/ngx/common';
+import { seasonPicker, serverMessage } from '@tamu-gisc/gisday/platform/ngx/common';
 import {
   SeasonWinnersAdminDto,
   TRAIL_COMPETITION,
@@ -19,7 +19,6 @@ import {
   winnerChoicesProblem
 } from '@tamu-gisc/gisday/common';
 
-import { seasonChoice } from '../../components/season-choice';
 
 /**
  * How an entry is offered: its main author, then its title, then anyone else on it (#3292). The title came first, and a
@@ -56,7 +55,7 @@ export class WinnersComponent {
   private readonly winners = inject(SeasonWinnersService);
   private readonly destroyRef = inject(DestroyRef);
 
-  public readonly choice = seasonChoice();
+  public readonly choice = seasonPicker();
   public readonly places = WINNER_PLACES;
   public readonly placeLabel = placeLabel;
   public readonly page = signal<SeasonWinnersAdminDto | null>(null);

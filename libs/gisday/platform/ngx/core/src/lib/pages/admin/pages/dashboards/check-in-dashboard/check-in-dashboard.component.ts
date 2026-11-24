@@ -1,7 +1,7 @@
 import { Component, computed, inject } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 
-import type { CheckIn, CheckInDashboard } from '@tamu-gisc/gisday/platform/data-api';
+import type { CheckInDashboard } from '@tamu-gisc/gisday/platform/data-api';
 import { CheckinService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { LineChartComponent } from '@tamu-gisc/ui-kits/ngx/charts';
@@ -30,7 +30,7 @@ import { DashboardRowDetailDirective, DashboardTableComponent } from '../shared/
     AsyncPipe
   ]
 })
-export class CheckInDashboardComponent extends EventDashboardComponent<CheckInDashboard, CheckIn> {
+export class CheckInDashboardComponent extends EventDashboardComponent<CheckInDashboard> {
   protected readonly entityService = inject(CheckinService);
   protected readonly filePrefix = 'gisday-check-ins';
   protected readonly comparedNoun = 'check-ins';

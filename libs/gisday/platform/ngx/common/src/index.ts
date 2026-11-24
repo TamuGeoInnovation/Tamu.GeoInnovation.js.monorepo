@@ -21,6 +21,7 @@ export * from './lib/utils/search-text';
 export * from './lib/utils/upload-image-picker';
 export * from './lib/utils/submission-deadline-notice';
 export * from './lib/utils/server-message';
+export * from './lib/utils/season-picker';
 
 // Enums
 export * from './lib/enums/submission-review-status.enum';

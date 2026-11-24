@@ -1,7 +1,6 @@
 import { Component, computed, inject } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 
-import type { Season } from '@tamu-gisc/gisday/platform/data-api';
 import type { VgiDashboard } from '@tamu-gisc/gisday/competitions/data-api/types';
 import { SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { SubmissionService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
@@ -56,7 +55,7 @@ export const VGI_SUBMITTER_COLUMNS: Array<DashboardTableColumn> = [
     AsyncPipe
   ]
 })
-export class VgiDashboardComponent extends EventDashboardComponent<VgiDashboard, Season> {
+export class VgiDashboardComponent extends EventDashboardComponent<VgiDashboard> {
   // Submissions are not a GIS Day entity: the base class is here for its season selector, as on the accounts dashboard.
   protected readonly entityService = inject(SeasonService);
   private readonly submissions = inject(SubmissionService);
