@@ -172,7 +172,12 @@ describe('copying records with nested records into a season (#3379)', () => {
     },
     {
       name: 'SponsorProvider',
-      record: () => ({ guid: 'sn-1', ...stamps, name: 'Made-up sponsor', logos: [{ guid: 'a-4', ...stamps, path: 'l.png' }] }),
+      record: () => ({
+        guid: 'sn-1',
+        ...stamps,
+        name: 'Made-up sponsor',
+        logos: [{ guid: 'a-4', ...stamps, path: 'l.png' }]
+      }),
       copy: (repo, seasons = { findOne: async () => season }) =>
         bare(SponsorProvider, seasons, repo).copyEntitiesIntoSeason('s-2027', ['sn-1']),
       copied: { name: 'Made-up sponsor', logos: [{ path: 'l.png' }], season }
@@ -199,23 +204,24 @@ describe('copying records with nested records into a season (#3379)', () => {
 
   const eventCase = cases.find((c) => c.name === 'EventProvider');
 
-  it.each(cases)('$name copies the record and its nested records without their identity', async ({ record, copy, copied }) => {
-    const repo = holding([record()]);
+  it.each(cases)(
+    '$name copies the record and its nested records without their identity',
+    async ({ record, copy, copied }) => {
+      const repo = holding([record()]);
 
-    await copy(repo);
+      await copy(repo);
 
-    expect(repo.create).toHaveBeenCalledTimes(1);
-    const passed = repo.create.mock.calls[0][0];
-    expect(passed).toEqual(copied);
-    expect(passed.guid).toBeUndefined();
-  });
+      expect(repo.create).toHaveBeenCalledTimes(1);
+      const passed = repo.create.mock.calls[0][0];
+      expect(passed).toEqual(copied);
+      expect(passed.guid).toBeUndefined();
+    }
+  );
 
   // None of the five awaited its saves, so a failed save escaped as the driver's error rather than the copy's own
   // answer. Red on today's code.
   it.each(cases)('$name answers a failed save with 422', async ({ record, copy }) => {
-    await expect(copy(holding([record()], new Error('duplicate key')))).rejects.toBeInstanceOf(
-      UnprocessableEntityException
-    );
+    await expect(copy(holding([record()], new Error('duplicate key')))).rejects.toBeInstanceOf(UnprocessableEntityException);
   });
 
   it.each(cases)('$name refuses with 422 when none of the records is found', async ({ copy }) => {
