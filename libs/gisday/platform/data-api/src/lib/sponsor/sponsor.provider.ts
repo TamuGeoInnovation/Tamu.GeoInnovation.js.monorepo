@@ -58,7 +58,9 @@ export class SponsorProvider extends SeasonScopedProvider<Sponsor> {
         }
       });
     } catch (err) {
-      rethrowHttp(err, new InternalServerErrorException('Could not find sponsors for season.'), () => Logger.error(err.message, 'SponsorProvider'));
+      rethrowHttp(err, new InternalServerErrorException('Could not find sponsors for season.'), () =>
+        Logger.error(err.message, 'SponsorProvider')
+      );
     }
   }
 
@@ -114,7 +116,9 @@ export class SponsorProvider extends SeasonScopedProvider<Sponsor> {
     try {
       return Promise.all(newEntities);
     } catch (err) {
-      rethrowHttp(err, new InternalServerErrorException('Could not copy sponsors into season.'), () => Logger.error(err.message, 'SponsorProvider'));
+      rethrowHttp(err, new InternalServerErrorException('Could not copy sponsors into season.'), () =>
+        Logger.error(err.message, 'SponsorProvider')
+      );
     }
   }
 
@@ -137,7 +141,9 @@ export class SponsorProvider extends SeasonScopedProvider<Sponsor> {
 
           return savedEntity.save();
         } catch (err) {
-          rethrowHttp(err, new InternalServerErrorException('Could not save sponsor logo.'), () => Logger.error(err.message, 'SponsorProvider'));
+          rethrowHttp(err, new InternalServerErrorException('Could not save sponsor logo.'), () =>
+            Logger.error(err.message, 'SponsorProvider')
+          );
         }
       } else {
         return savedEntity;
@@ -168,7 +174,9 @@ export class SponsorProvider extends SeasonScopedProvider<Sponsor> {
         try {
           logoImage = await this._saveImage(file);
         } catch (err) {
-          rethrowHttp(err, new InternalServerErrorException('Could not save sponsor logo.'), () => Logger.error(err.message, 'SponsorProvider'));
+          rethrowHttp(err, new InternalServerErrorException('Could not save sponsor logo.'), () =>
+            Logger.error(err.message, 'SponsorProvider')
+          );
         }
       }
 
@@ -214,7 +222,9 @@ export class SponsorProvider extends SeasonScopedProvider<Sponsor> {
 
       return result;
     } catch (err) {
-      rethrowHttp(err, new InternalServerErrorException('Could not delete entities.'), () => Logger.error(err.message, 'SponsorProvider.deleteEntities'));
+      rethrowHttp(err, new InternalServerErrorException('Could not delete entities.'), () =>
+        Logger.error(err.message, 'SponsorProvider.deleteEntities')
+      );
     }
   }
 

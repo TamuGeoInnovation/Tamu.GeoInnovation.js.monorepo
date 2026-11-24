@@ -53,10 +53,16 @@ describe('copying records into a season (#3324)', () => {
   // neither, so it wrote broadcasts into a season that did not exist, and answered an empty list for guids that
   // matched nothing. Red on today's code.
   it('refuses to copy broadcasts into a season that does not exist', async () => {
-    const repo = { find: jest.fn(async () => [{ guid: 'b-1', name: 'Made-up broadcast' }]), create: jest.fn((x) => ({ ...x, save: async () => x })), save: jest.fn(async (x) => x) };
+    const repo = {
+      find: jest.fn(async () => [{ guid: 'b-1', name: 'Made-up broadcast' }]),
+      create: jest.fn((x) => ({ ...x, save: async () => x })),
+      save: jest.fn(async (x) => x)
+    };
     const service = bare(EventBroadcastService, { findOne: async () => null }, repo);
 
-    await expect(service.copyBroadcastsIntoSeason('no-such-season', ['b-1'])).rejects.toBeInstanceOf(UnprocessableEntityException);
+    await expect(service.copyBroadcastsIntoSeason('no-such-season', ['b-1'])).rejects.toBeInstanceOf(
+      UnprocessableEntityException
+    );
     expect(repo.save).not.toHaveBeenCalled();
   });
 
@@ -64,6 +70,8 @@ describe('copying records into a season (#3324)', () => {
     const repo = { find: jest.fn(async () => []), create: jest.fn((x) => x), save: jest.fn(async (x) => x) };
     const service = bare(EventBroadcastService, { findOne: async () => ({ guid: 's-2027' }) }, repo);
 
-    await expect(service.copyBroadcastsIntoSeason('s-2027', ['no-such-broadcast'])).rejects.toBeInstanceOf(UnprocessableEntityException);
+    await expect(service.copyBroadcastsIntoSeason('s-2027', ['no-such-broadcast'])).rejects.toBeInstanceOf(
+      UnprocessableEntityException
+    );
   });
 });

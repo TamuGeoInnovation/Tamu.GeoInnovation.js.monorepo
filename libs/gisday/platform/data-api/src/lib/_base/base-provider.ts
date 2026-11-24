@@ -1,8 +1,4 @@
-import {
-  InternalServerErrorException,
-  NotFoundException,
-  UnprocessableEntityException
-} from '@nestjs/common';
+import { InternalServerErrorException, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 
 import { Repository, DeepPartial, FindOneOptions, FindManyOptions } from 'typeorm';
 import { rethrowHttp } from './rethrow-http';

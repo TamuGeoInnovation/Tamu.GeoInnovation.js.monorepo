@@ -61,7 +61,9 @@ export class SpeakerProvider extends SeasonScopedProvider<Speaker> {
         }
       });
     } catch (err) {
-      rethrowHttp(err, new InternalServerErrorException('Could not find speakers for season.'), () => Logger.error(err.message, 'SpeakerProvider'));
+      rethrowHttp(err, new InternalServerErrorException('Could not find speakers for season.'), () =>
+        Logger.error(err.message, 'SpeakerProvider')
+      );
     }
   }
 
@@ -233,7 +235,9 @@ export class SpeakerProvider extends SeasonScopedProvider<Speaker> {
         try {
           speakerImage = await this._saveImage(file, guid);
         } catch (err) {
-          rethrowHttp(err, new InternalServerErrorException('Could not save speaker image'), () => Logger.error(err.message, 'SpeakerProvider'));
+          rethrowHttp(err, new InternalServerErrorException('Could not save speaker image'), () =>
+            Logger.error(err.message, 'SpeakerProvider')
+          );
         }
       }
 
@@ -278,7 +282,9 @@ export class SpeakerProvider extends SeasonScopedProvider<Speaker> {
 
           return savedEntity.save();
         } catch (err) {
-          rethrowHttp(err, new InternalServerErrorException('Could not save speaker image'), () => Logger.error(err.message, 'SpeakerProvider'));
+          rethrowHttp(err, new InternalServerErrorException('Could not save speaker image'), () =>
+            Logger.error(err.message, 'SpeakerProvider')
+          );
         }
       } else {
         return savedEntity;
@@ -521,7 +527,9 @@ export class SpeakerProvider extends SeasonScopedProvider<Speaker> {
 
       return result;
     } catch (err) {
-      rethrowHttp(err, new InternalServerErrorException('Could not delete entities'), () => Logger.error(err.message, 'SpeakerProvider.deleteEntities'));
+      rethrowHttp(err, new InternalServerErrorException('Could not delete entities'), () =>
+        Logger.error(err.message, 'SpeakerProvider.deleteEntities')
+      );
     }
   }
 

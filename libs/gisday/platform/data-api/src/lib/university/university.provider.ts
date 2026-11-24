@@ -73,7 +73,9 @@ export class UniversityProvider extends SeasonScopedProvider<University> {
         return transactionalEntityManager.delete(University, guids);
       });
     } catch (err) {
-      rethrowHttp(err, new UnprocessableEntityException('Could not delete universities.'), () => Logger.error(err.message, 'UniversityProvider.deleteEntities'));
+      rethrowHttp(err, new UnprocessableEntityException('Could not delete universities.'), () =>
+        Logger.error(err.message, 'UniversityProvider.deleteEntities')
+      );
     }
   }
 }

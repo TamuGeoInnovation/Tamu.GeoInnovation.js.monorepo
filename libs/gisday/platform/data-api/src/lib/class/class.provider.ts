@@ -1,7 +1,4 @@
-import {
-  ConflictException,
-  Injectable
-} from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, FindOptionsWhere, IsNull, Repository } from 'typeorm';
 import { catchError, concatMap, from, map, of, toArray } from 'rxjs';
