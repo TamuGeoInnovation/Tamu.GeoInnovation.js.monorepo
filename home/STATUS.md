@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle, listening.
+- **Batch g105 (gisday: #3412, the awards sentence that ends in nothing)**, from `origin/development` `de2bf4e38`, worktree `C:/TAMU/wt-3412`, since 11:00 AM Central.
 
 ## Finished
 - **Batch s81 (security: Dependabot PR 3401, #3405)** (report `home/reports/2026-11-24-s81.md`): full check exit 0 with clean `npm ci` (95 projects); lock moves only the two packages and maplibre-gl's own (geojson-vt 6.3.2, kdbush hoisted, zustand 5.1.0 new); GIS Day's competition map and geoservices' highlighting identical to development. Commented on the PR. 7:57 to 8:09 AM Central.
