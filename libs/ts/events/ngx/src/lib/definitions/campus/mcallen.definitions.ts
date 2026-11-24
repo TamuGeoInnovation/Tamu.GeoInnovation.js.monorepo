@@ -80,7 +80,7 @@ export const McAllenSearchSources: SearchSource[] = [
 export const McAllenConfiguration: EventConfiguration = {
   id: 'mcallen',
   name: 'McAllen',
-  applicationName: 'Aggie Map - McAllen',
+  applicationName: 'McAllen Campus',
   shortApplicationName: 'McAllen',
   introductionText: 'Map of the Texas A&M Higher Education Center at McAllen campus.',
   eventDates: [],
@@ -112,7 +112,7 @@ export const McAllenTs: AggiemapCustomMapConfiguration = {
   discover: {
     id: McAllenConfiguration.id,
     name: McAllenConfiguration.name,
-    description: 'Map of the Texas A&M Higher Education Center at McAllen campus.',
+    description: 'Map of the Texas A&M University at McAllen campus.',
     source: 'internal',
     type: 'satellite-campus',
     mapType: 'satellite-campus',
