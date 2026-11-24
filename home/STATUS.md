@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle since 10:29 PM Central, 24 November; listening.
+- **Batch g94 (gisday: #3345)**, since 10:30 PM Central, 24 November; then g95.
 
 ## Finished
 - **Batch a4 (aggiemap: #3338)** (report `home/reports/2026-11-24-a4.md`): branch ready, `fix/3338-aggiemap-page-views` at `6d0e5708b`, test only (A). A route change already sends exactly one page view (property history tracking); the provider fix is held locally on `held/3338-provider-page-views`.
