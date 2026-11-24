@@ -36,7 +36,15 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
     super(speakerRepo);
   }
 
-  public async getSpeakersForSeason(seasonGuid: string) {
+  /**
+   * A season's speakers, by name.
+   *
+   * @param withSessions Also each speaker's sessions, for the admin Speakers list's Sessions column (#441): a speaker
+   * copied into a season is listed in it with or without a session there, and could not be told apart (#439). Only the
+   * route behind `update:speakers` asks for them, because they include sessions hidden from the public schedule. A
+   * speaker belongs to one season, so these are that season's. Added here, not to the lookup table, which other queries share.
+   */
+  public async getSpeakersForSeason(seasonGuid: string, withSessions = false) {
     try {
       return this.find({
         where: {
@@ -44,10 +52,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
             guid: seasonGuid
           }
         },
-        // With their sessions, for the admin Speakers list's Sessions column (#441): a speaker copied into a season is
-        // listed in it with or without a session there, and could not be told apart (#439). A speaker belongs to one
-        // season, so these are that season's. Added here, not to the lookup table, which other queries share.
-        relations: { ...EntityRelationsLUT.speaker, events: true },
+        relations: withSessions ? { ...EntityRelationsLUT.speaker, events: true } : EntityRelationsLUT.speaker,
         order: {
           lastName: 'ASC',
           firstName: 'ASC'
@@ -82,14 +87,15 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
     });
   }
 
-  public async getSpeakersForActiveSeason() {
+  /** The active season's speakers; with their sessions only when asked, as `getSpeakersForSeason` (#441). */
+  public async getSpeakersForActiveSeason(withSessions = false) {
     const season = await this.seasonService.findOneActive();
 
     if (!season) {
       throw new UnprocessableEntityException('No active season found.');
     }
 
-    return this.getSpeakersForSeason(season.guid);
+    return this.getSpeakersForSeason(season.guid, withSessions);
   }
 
   /**

@@ -83,6 +83,17 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
     return !!entity;
   }
 
+  /**
+   * The season's entities the list shows: the selected season's, or the active season's when none is selected. Every
+   * page reads the entity's season lists, unless it needs a fuller one from a route of its own, as Speakers does for
+   * each speaker's sessions (#441).
+   */
+  protected listForSeason(seasonGuid: string | null): Observable<Array<Partial<T>>> {
+    return seasonGuid
+      ? this.entityService.getEntitiesForSeason(seasonGuid)
+      : this.entityService.getEntitiesForActiveSeason();
+  }
+
   private keepFiltersInHistory() {
     const filters = this.listFilters();
     const kept = (this.listLocation.getState() as { adminList?: Record<string, unknown> } | null)?.adminList ?? {};
@@ -152,9 +163,7 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
     // A conditional, not iif: iif builds both branches at once, so with no season (a new site) it read
     // season.guid on null and the list was blank (#2076).
     const seasonEntities$ = this.selectedSeason$.pipe(
-      switchMap((season) =>
-        season ? this.entityService.getEntitiesForSeason(season.guid) : this.entityService.getEntitiesForActiveSeason()
-      ),
+      switchMap((season) => this.listForSeason(season ? season.guid : null)),
       shareReplay()
     );
     const filters = Object.values(this.listFilters()).map((control) => control.valueChanges.pipe(startWith(control.value)));
@@ -173,7 +182,9 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
 
     this.entitiesForActiveSeasonOrForSeasonGuid$ = searched$.pipe(map(({ shown }) => shown));
     this.searchCounts$ = searched$.pipe(map(({ all, shown }) => ({ shown: shown?.length ?? 0, total: all?.length ?? 0 })));
-    this.emptyBecause$ = searched$.pipe(map(({ listed, shown }) => (shown?.length ? null : listed?.length ? 'hidden' : 'none')));
+    this.emptyBecause$ = searched$.pipe(
+      map(({ listed, shown }) => (shown?.length ? null : listed?.length ? 'hidden' : 'none'))
+    );
     this.filtersInUse$ = searched$.pipe(map(({ inUse }) => inUse));
 
     // A row the search hides cannot stay selected, or an action on "the selected rows" would act on rows not shown.

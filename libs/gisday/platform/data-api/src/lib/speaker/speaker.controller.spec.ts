@@ -18,7 +18,12 @@ describe('SpeakerController, the speakers with their sessions (#441)', () => {
 
   /** As the provider answers: a speaker's sessions only when asked for them. */
   const speakers = (withSessions?: boolean) => [
-    { guid: 'sp-1', firstName: 'Ana', lastName: 'Ruiz', ...(withSessions ? { events: [{ guid: 'e-1', name: 'Hidden session' }] } : {}) }
+    {
+      guid: 'sp-1',
+      firstName: 'Ana',
+      lastName: 'Ruiz',
+      ...(withSessions ? { events: [{ guid: 'e-1', name: 'Hidden session' }] } : {})
+    }
   ];
   const provider = {
     getSpeakersForSeason: jest.fn(async (_guid: string, withSessions?: boolean) => speakers(withSessions)),
@@ -77,7 +82,9 @@ describe('SpeakerController, the speakers with their sessions (#441)', () => {
 
     const forSeason = await get('sessions/season/s-1');
     expect(forSeason.status).toBe(200);
-    expect(await forSeason.json()).toEqual([expect.objectContaining({ guid: 'sp-1', events: [{ guid: 'e-1', name: 'Hidden session' }] })]);
+    expect(await forSeason.json()).toEqual([
+      expect.objectContaining({ guid: 'sp-1', events: [{ guid: 'e-1', name: 'Hidden session' }] })
+    ]);
     expect(provider.getSpeakersForSeason).toHaveBeenCalledWith('s-1', true);
 
     const forActive = await get('sessions/season/active');

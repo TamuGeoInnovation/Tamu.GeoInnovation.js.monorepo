@@ -53,6 +53,19 @@ export class SpeakerService extends BaseService<Speaker> {
     return this.http1.post<{ cleared: number }>(`${this.resource}/badges/not-printed`, { guids });
   }
 
+  /**
+   * A season's speakers with each one's sessions, for the admin Speakers list (#441). Behind `update:speakers`, because
+   * the sessions include those hidden from the public schedule; `getEntitiesForSeason` is the public list, without them.
+   */
+  public getEntitiesWithSessionsForSeason(seasonGuid: string) {
+    return this.http1.get<Array<Partial<Speaker>>>(`${this.resource}/sessions/season/${seasonGuid}`);
+  }
+
+  /** The active season's speakers with each one's sessions, or none on a site with no season yet (#441, #2076). */
+  public getEntitiesWithSessionsForActiveSeason() {
+    return this.http1.get<Array<Partial<Speaker>>>(`${this.resource}/sessions/season/active`).pipe(noSeasonAs([]));
+  }
+
   public getActivePresenters() {
     return this.http1.get<Array<Partial<Speaker>>>(`${this.resource}/season/active`);
   }

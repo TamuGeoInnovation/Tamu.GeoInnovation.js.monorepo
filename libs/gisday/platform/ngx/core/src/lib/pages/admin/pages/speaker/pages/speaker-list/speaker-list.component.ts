@@ -6,7 +6,7 @@ import { SpeakerEditsService, SpeakerService, sendEditLinksToast } from '@tamu-g
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { sendProfileEmail } from '@tamu-gisc/gisday/platform/ngx/common';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
-import { switchMap, take } from 'rxjs';
+import { Observable, switchMap, take } from 'rxjs';
 import { FormControl } from '@angular/forms';
 
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
@@ -47,6 +47,16 @@ export class SpeakerListComponent extends BaseAdminListComponent<Speaker> {
 
   protected override keepEntity(speaker: Partial<Speaker>): boolean {
     return this.inSessions.value !== 'none' || !speaker.events?.length;
+  }
+
+  /**
+   * The speakers with each one's sessions (#441), from the speakers' own route behind `update:speakers`: the public season
+   * list leaves the sessions out, as they include those hidden from the public schedule.
+   */
+  protected override listForSeason(seasonGuid: string | null): Observable<Array<Partial<Speaker>>> {
+    return seasonGuid
+      ? this.entityService.getEntitiesWithSessionsForSeason(seasonGuid)
+      : this.entityService.getEntitiesWithSessionsForActiveSeason();
   }
 
   /** The speaker's sessions this season, by name, for the Sessions column (#441). Empty for a speaker in none. */
