@@ -23,8 +23,9 @@ portal item's symbology (#1497) and every override, not what a definition file a
 3. Collect every map, in the Playwright container, from the repository root:
 
    ```bash
+   PW_IMAGE="mcr.microsoft.com/playwright:v$(sed -n 's/.*"@playwright\/test": *"[^0-9]*\([0-9][0-9.]*\)".*/\1/p' package.json)-noble"
    cp tools/layer-symbology/collect.js collect.tmp.js
-   MSYS_NO_PATHCONV=1 docker run --rm --network host -v "$PWD:/work" -v tamu-js-smoke-nm:/work/node_modules -w /work mcr.microsoft.com/playwright:v1.64.1-noble node collect.tmp.js http://localhost:4200 test/smoke/aggiemap/map-manifest.generated.json symbology-collected.json
+   MSYS_NO_PATHCONV=1 docker run --rm --network host -v "$PWD:/work" -v tamu-js-smoke-nm:/work/node_modules -w /work "$PW_IMAGE" node collect.tmp.js http://localhost:4200 test/smoke/aggiemap/map-manifest.generated.json symbology-collected.json
    rm collect.tmp.js
    ```
 

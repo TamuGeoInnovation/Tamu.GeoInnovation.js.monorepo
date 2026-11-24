@@ -2,7 +2,13 @@ import { Component, ChangeDetectionStrategy, computed, inject } from '@angular/c
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 
-import { SubmissionDeadlines, closesAt, inCentralTime } from '@tamu-gisc/gisday/common';
+import {
+  SeasonCompetitions,
+  SubmissionDeadlines,
+  closesAt,
+  finalistsNotifiedAt,
+  inCentralTime
+} from '@tamu-gisc/gisday/common';
 import { SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 import {
@@ -19,11 +25,19 @@ import {
   imports: [RouterLink, CompetitionSessionComponent]
 })
 export class PostersComponent {
-  private readonly season = toSignal(inject(SeasonService).activeSeason$, { initialValue: null });
+  /** The active season: its deadlines, and the sessions and finalists date it chose (#3019). */
+  public readonly season = toSignal(inject(SeasonService).activeSeason$, { initialValue: null });
   private readonly sessions = toSignal(inject(CompetitionSessionsService).sessions$, { initialValue: null });
 
   /** The poster session's day, for the heading and the finalists (#3019), not typed in for one year. */
-  public readonly day = computed(() => competitionDays(this.sessions(), ['poster']));
+  public readonly day = computed(() => competitionDays(this.sessions(), ['poster'], this.season() as SeasonCompetitions));
+
+  /** When finalists hear (#3019, 7A): the season's, in Central time, or null to leave the line out. */
+  public readonly finalistsNotified = computed(() => {
+    const at = finalistsNotifiedAt(this.season() as SeasonCompetitions, 'poster');
+
+    return at ? inCentralTime(at) : null;
+  });
 
   /** When posters are due: the season's poster submission deadline (#2934, #3019), in Central time. */
   public readonly submissionsDue = computed(() => {

@@ -5,6 +5,7 @@ import { Observable, catchError, map, of, shareReplay } from 'rxjs';
 
 import {
   ReviewEmailSession,
+  SeasonCompetitions,
   awardsSession,
   competitionSession,
   sessionDay,
@@ -38,19 +39,24 @@ export class CompetitionSessionsService {
   );
 }
 
-/** The session of a kind among the season's, found as the acceptance emails find it (#3011), or null. */
+/**
+ * The session of a kind among the season's, found as the acceptance emails find it (#3011): the one the season chose
+ * in Admin (#3019), else by its name. Awards are a competition's own when `competition` names it.
+ */
 export function sessionOfKind(
   sessions: Array<ReviewEmailSession> | null,
-  kind: CompetitionSessionKind
+  kind: CompetitionSessionKind,
+  season?: SeasonCompetitions | null,
+  competition?: 'poster' | 'presentation'
 ): ReviewEmailSession | null {
   if (kind === 'awards') {
-    return awardsSession(sessions) ?? null;
+    return awardsSession(sessions, season, competition) ?? null;
   }
 
   return (
     (kind === 'poster'
-      ? competitionSession(sessions, 'poster', null)
-      : competitionSession(sessions, 'presentation', kind)) ?? null
+      ? competitionSession(sessions, 'poster', null, season)
+      : competitionSession(sessions, 'presentation', kind, season)) ?? null
   );
 }
 
@@ -58,9 +64,13 @@ export function sessionOfKind(
  * The day the sessions of these kinds are on, as a page heading gives it: "Tuesday, November 17, 2026", or both days
  * when they differ. Empty while none is found (#3019).
  */
-export function competitionDays(sessions: Array<ReviewEmailSession> | null, kinds: Array<CompetitionSessionKind>): string {
+export function competitionDays(
+  sessions: Array<ReviewEmailSession> | null,
+  kinds: Array<CompetitionSessionKind>,
+  season?: SeasonCompetitions | null
+): string {
   const days = kinds
-    .map((kind) => sessionOfKind(sessions, kind))
+    .map((kind) => sessionOfKind(sessions, kind, season))
     .filter((session): session is ReviewEmailSession => Boolean(session))
     .map((session) => sessionDay(session, 'long'))
     .filter(Boolean);
@@ -85,7 +95,12 @@ export class CompetitionSessionComponent {
 
   public readonly loaded = computed(() => this.sessions() !== null);
 
-  public readonly session = computed(() => sessionOfKind(this.sessions(), this.kind()));
+  /** The season, for the sessions it chose (#3019); without it, the sessions are found by name. */
+  public readonly season = input<SeasonCompetitions | null>(null);
+  /** Whose awards session, on a competition's page (#3019). */
+  public readonly competition = input<'poster' | 'presentation' | undefined>(undefined);
+
+  public readonly session = computed(() => sessionOfKind(this.sessions(), this.kind(), this.season(), this.competition()));
 
   public readonly day = computed(() => (this.session() ? sessionDay(this.session(), 'long') : ''));
   public readonly time = computed(() => (this.session() ? sessionHours(this.session()) : ''));

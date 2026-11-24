@@ -24,9 +24,8 @@ import {
 import { Event, Speaker } from '../entities/all.entity';
 import { ContactService } from '../contact/contact.service';
 import { EmailSender, siteSender } from '../contact/email-sender.service';
-import { EMAIL_LANES, inParallel } from '../_base/in-parallel';
 import { EmailSendLog } from './email-send-log';
-import { RepeatGuard } from './repeat-guard';
+import { RepeatGuard, sendEach } from './repeat-guard';
 import {
   ProfileEmail,
   ProfileEmailPreview,
@@ -166,23 +165,15 @@ export class SessionDetailsEmailService {
     const emails: Array<Array<Speaker>> = choice?.together && chosen.length > 1 ? [chosen] : chosen.map((s) => [s]);
 
     // Several at a time (#3067), as the profile email: one by one, a long send waited long enough to be repeated (#3065).
-    const parts = await inParallel(emails, EMAIL_LANES, async (group) => {
-      const part: SendResult = { sent: [], skipped: [] };
+    // Each is claimed before it goes, in the table every copy of the API shares (#3098), so two sends racing, in one copy
+    // or in two, skip each other's speakers. A group is a repeat if any of it was sent these details just now.
+    const each = await sendEach(this.repeats, emails, {
+      kind: SESSION_DETAILS_EMAIL_KIND,
+      sessionGuid: session.guid,
       // A together email is one email, so it is named, sent, skipped or failed once, for its whole group (#3104).
-      const name = joinNames(group.map(fullName));
-      // Recorded before the email goes, in the table every copy of the API shares (#3098), so two sends racing, in one
-      // copy or in two, skip each other's speakers. A group is a repeat if any of it was sent these details just now.
-      const claimed = await this.repeats.claim(SESSION_DETAILS_EMAIL_KIND, session.guid, group);
-
-      if (!claimed) {
-        part.skipped.push({
-          name,
-          reason: `already emailed this session's details in the last ${REPEAT_SEND_MINUTES} minutes`
-        });
-        return part;
-      }
-
-      try {
+      name: (group) => joinNames(group.map(fullName)),
+      repeated: "already emailed this session's details",
+      send: async (group) => {
         const values = sessionDetailsEmailValues(group[0], site);
         const { subject, text } = fillProfileEmail(
           approved,
@@ -202,26 +193,20 @@ export class SessionDetailsEmailService {
           },
           true
         );
-        part.sent.push(name);
-        // Recorded once it has gone (#3167): together, once for each speaker on it.
-        await this.sendLog?.record(group, SESSION_DETAILS_EMAIL_KIND, session.guid, from.from);
-      } catch (err) {
-        // Not sent, so not a repeat: the admin may try again at once.
-        await this.repeats.release(claimed);
+      },
+      // Recorded once it has gone (#3167): together, once for each speaker on it.
+      sent: (group) => this.sendLog?.record(group, SESSION_DETAILS_EMAIL_KIND, session.guid, from.from),
+      failed: (group, err) =>
         Logger.error(
           `Could not email session ${session.guid}'s details to speaker(s) ${group.map((s) => s.guid).join(', ')}: ${
             err.message
           }`,
           'SessionDetailsEmailService'
-        );
-        part.skipped.push({ name, reason: 'the email could not be sent' });
-      }
-
-      return part;
+        )
     });
 
-    result.sent.push(...parts.flatMap((p) => p.sent));
-    result.skipped.push(...parts.flatMap((p) => p.skipped));
+    result.sent.push(...each.sent);
+    result.skipped.push(...each.skipped);
 
     return result;
   }

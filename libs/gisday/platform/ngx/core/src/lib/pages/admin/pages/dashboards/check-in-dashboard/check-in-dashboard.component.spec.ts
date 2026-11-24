@@ -5,6 +5,8 @@ import { of, throwError } from 'rxjs';
 
 import { gisdaySite } from '@tamu-gisc/gisday/common';
 import type { CheckInDashboard, RsvpDashboardPerson } from '@tamu-gisc/gisday/platform/data-api';
+
+import { peopleCsv } from '../shared/dashboard-people/dashboard-people.component';
 import { CheckinService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { GISDAY_SITE } from '@tamu-gisc/gisday/platform/ngx/common';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
@@ -26,7 +28,8 @@ const counts = (c: Partial<CheckInDashboard['events'][0]['counts']>) => ({
 const TAMU = { guid: 'p-tamu', name: 'Texas A&M University GIS Day(s)' };
 const OTHER = { guid: 'p-other', name: 'Another university' };
 
-const dashboard: CheckInDashboard = {
+// Each event's walk-ins (#2893) are cast in, beside the fields the type has.
+const dashboard = {
   events: [
     {
       guid: 'e-1',
@@ -36,6 +39,7 @@ const dashboard: CheckInDashboard = {
       place: TAMU,
       total: 2,
       rsvps: 5,
+      walkIns: 1,
       counts: counts({ undergraduate: 1, industry: 1 })
     },
     {
@@ -46,6 +50,7 @@ const dashboard: CheckInDashboard = {
       place: null,
       total: 1,
       rsvps: 0,
+      walkIns: 1,
       counts: counts({ academia: 1 })
     },
     {
@@ -56,6 +61,7 @@ const dashboard: CheckInDashboard = {
       place: OTHER,
       total: 4,
       rsvps: 4,
+      walkIns: 0,
       counts: counts({ graduate: 4 })
     }
   ],
@@ -66,7 +72,7 @@ const dashboard: CheckInDashboard = {
     { event: 'e-3', created: '2026-11-19T15:01:00Z' }
   ],
   unreadAccounts: 0
-};
+} as CheckInDashboard;
 
 const people: Array<RsvpDashboardPerson> = [
   {
@@ -78,8 +84,22 @@ const people: Array<RsvpDashboardPerson> = [
     department: null,
     position: null,
     organization: null,
-    created: '2026-11-18T15:05:00.000Z'
-  }
+    created: '2026-11-18T15:05:00.000Z',
+    // Checked in before the session's window (#2893, #2635).
+    outsideSessionTime: true
+  } as RsvpDashboardPerson,
+  {
+    firstName: 'Bo',
+    lastName: 'Diaz',
+    email: 'bo@example.edu',
+    type: 'undergraduate',
+    classification: 'Senior',
+    department: null,
+    position: null,
+    organization: null,
+    created: '2026-11-18T15:10:00.000Z',
+    outsideSessionTime: false
+  } as RsvpDashboardPerson
 ];
 
 describe('CheckInDashboardComponent (#3006)', () => {
@@ -151,7 +171,7 @@ describe('CheckInDashboardComponent (#3006)', () => {
 
     expect(checkIns.getDashboardForSeason).toHaveBeenCalledWith('s-1');
     expect(root.querySelector('.dashboard-summary').textContent).toContain('7 check-ins at 3 events');
-    expect(headings(root).slice(0, 5)).toEqual(['Event', 'When', 'Checked in', 'RSVPs', 'Under­graduate']);
+    expect(headings(root).slice(0, 4)).toEqual(['Event', 'When', 'Checked in', 'RSVPs']);
     expect(names(root)).toEqual(['Workshop', 'Keynote', 'Elsewhere']);
     expect(rows(root).map((r) => r.slice(2, 4))).toEqual([
       ['2', '5'],
@@ -163,6 +183,27 @@ describe('CheckInDashboardComponent (#3006)', () => {
         .map((td) => td.textContent.trim())
         .slice(0, 4)
     ).toEqual(['All events', '', '7', '9']);
+  });
+
+  // #2893: beside the RSVPs, the check-ins with no RSVP, and the share of the RSVPs who checked in.
+  it("shows each event's walk-ins and how many of its RSVPs showed up, with the whole season's in the total row", async () => {
+    const fixture = open();
+    await settle(fixture);
+    const root = fixture.nativeElement as HTMLElement;
+
+    expect(headings(root).slice(2, 7)).toEqual(['Checked in', 'RSVPs', 'Walk-ins', 'Showed up', 'Under­graduate']);
+    // Workshop: 2 checked in, 1 of them a walk-in, so 1 of its 5 RSVPs showed up. Keynote had no RSVPs to show up.
+    expect(rows(root).map((r) => r.slice(2, 6))).toEqual([
+      ['2', '5', '1', '20%'],
+      ['1', '0', '1', '–'],
+      ['4', '4', '0', '100%']
+    ]);
+    // 7 check-ins, 2 of them walk-ins: 5 of the 9 RSVPs showed up.
+    expect(
+      Array.from(root.querySelectorAll('datatable-summary-row .datatable-body-cell'))
+        .map((td) => td.textContent.trim())
+        .slice(2, 6)
+    ).toEqual(['7', '9', '2', '56%']);
   });
 
   it('charts check-ins by day', async () => {
@@ -186,6 +227,36 @@ describe('CheckInDashboardComponent (#3006)', () => {
     expect(Array.from(list.querySelectorAll('th')).map((th) => th.textContent.trim())).toContain('Checked in');
     expect(list.textContent).toContain('ana@example.edu');
     expect(fixture.componentInstance.fileName()).toBe('gisday-check-ins-workshop-2026-11-18');
+  });
+
+  // #2893, #2635: a check-in made outside the session's time is marked in the list and in its CSV.
+  it("marks who checked in outside the session's time, on the page and in the CSV", async () => {
+    const fixture = open();
+    await settle(fixture);
+    const root = fixture.nativeElement as HTMLElement;
+
+    cellOf(root, 'Workshop').click();
+    await settle(fixture);
+
+    // Listed by last name, as every dashboard's people are.
+    const marks = Array.from(root.querySelectorAll('tamu-gisc-dashboard-people tbody tr')).map((tr) => [
+      tr.querySelector('td').textContent.trim(),
+      tr.querySelector('.dashboard-person-outside')?.textContent?.trim() ?? null
+    ]);
+    expect(marks).toEqual([
+      ['Bo Diaz', null],
+      ['Ana Lee', "Outside the session's time"]
+    ]);
+
+    const [header, ...lines] = peopleCsv(people, 'Checked in', []).split(/\r?\n/);
+    const lastOf = (email: string) =>
+      lines
+        .find((l) => l.includes(email))
+        .split(',')
+        .slice(-1)[0];
+    expect(header.split(',').slice(-1)).toEqual(['Outside session time']);
+    expect(lastOf('ana@example.edu')).toBe('yes');
+    expect(lastOf('bo@example.edu')).toBe('');
   });
 
   it('says the check-ins could not be read rather than showing an empty dashboard', () => {

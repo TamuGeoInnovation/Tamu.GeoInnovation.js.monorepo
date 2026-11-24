@@ -9,6 +9,7 @@ import { blockAnalytics } from './analytics';
 import { developmentSectionsVisible } from './development-only';
 import { gisHostFor, smokeBaseUrl } from './gis-hosts';
 import { MANIFEST_PATH, MapManifest } from './global-setup';
+import { waitForMapReady } from './map-probe';
 
 /**
  * Every search source the main map defines is exercised, each by the route a visitor uses to reach it
@@ -309,7 +310,6 @@ function allowedFailures(): Record<string, string> {
 
 const ALLOWED = allowedFailures();
 
-const PROBE_GLOBAL = '__tamuGiscMapProbe';
 const POPUP = 'tamu-gisc-feature-popup .popup';
 
 /** Opens the main map and waits until its layers have loaded, so a query is not racing the map. */
@@ -317,16 +317,7 @@ async function openMainMap(page: Page, query = ''): Promise<void> {
   await blockAnalytics(page);
   await page.goto(`/map${query}`);
 
-  await expect
-    .poll(
-      async () =>
-        await page.evaluate(
-          (name) => (window as unknown as Record<string, { ready?: boolean }>)[name]?.ready === true,
-          PROBE_GLOBAL
-        ),
-      { message: `the main map never finished loading`, timeout: 90_000, intervals: [1_000] }
-    )
-    .toBe(true);
+  await waitForMapReady(page, `the main map never finished loading`);
 }
 
 function escapeRegExp(text: string): string {

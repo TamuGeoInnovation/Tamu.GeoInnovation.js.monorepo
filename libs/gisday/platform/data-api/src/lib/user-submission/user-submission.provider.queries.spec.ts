@@ -1,7 +1,7 @@
 import { DataSource, Repository } from 'typeorm';
 
 import { Asset, Event, Season, SeasonDay, Submission, SubmissionType } from '../entities/all.entity';
-import { queryCheckingDataSource, queryCheckingRepository, recordWrites } from '../_base/query-checking-data-source';
+import { answering, loadedSeason, queryCheckingDataSource, queryCheckingRepository, recordWrites } from '../_base/query-checking-data-source';
 import { AssetsService } from '../assets/assets.service';
 import { ContactService } from '../contact/contact.service';
 import { DashboardProfilesService } from '../dashboards/dashboard-profiles.service';
@@ -12,32 +12,8 @@ import { UserSubmissionProvider } from './user-submission.provider';
 // repositories, so it cannot see a query typeorm itself refuses, such as a loaded row with a null column passed as a where
 // value (#2363). Its season lookups go through a real SeasonService on the same repositories; emails go to a stub.
 
-/** Builds the query as the query-checking repository does, then answers with `value`, as a database holding it would. */
-function answering<T extends object>(repo: Repository<T>, method: 'find' | 'findOne', value: unknown) {
-  const build = repo[method].bind(repo) as (options?: unknown) => Promise<unknown>;
-  (repo as unknown as Record<string, unknown>)[method] = async (options?: unknown) => (await build(options), value);
-}
-
 const REVIEWER = ['update:competitions', 'read:competitions', 'delete:competitions'];
 const GUID = '00000000-0000-4000-8000-000000000001';
-
-/** A season as the API loads it: the deadlines nobody has set come back null, and none of its days yet. */
-const loadedSeason = () =>
-  Object.assign(new Season(), {
-    guid: 's-1',
-    year: 2026,
-    active: true,
-    posterSubmissionsCloseAt: null,
-    posterFilesCloseAt: null,
-    presentationSubmissionsCloseAt: null,
-    presentationFilesCloseAt: null,
-    paperSubmissionsCloseAt: null,
-    paperFilesCloseAt: null,
-    cartographySubmissionsCloseAt: null,
-    cartographyFilesCloseAt: null,
-    competitions: [],
-    days: []
-  });
 
 /** A submission as the API loads it: what the entrant left blank comes back null. */
 const loadedSubmission = (overrides: Partial<Submission> = {}) =>
@@ -56,7 +32,7 @@ const loadedSubmission = (overrides: Partial<Submission> = {}) =>
     classificationType: null,
     created: new Date('2026-10-01T15:00:00.123Z'),
     updated: new Date('2026-10-01T15:00:00.123Z'),
-    season: loadedSeason(),
+    season: loadedSeason({ days: [] }),
     files: [],
     ...overrides
   });
@@ -79,7 +55,7 @@ describe('UserSubmissionProvider queries, built by typeorm', () => {
 
     submissions = repo(Submission);
     seasons = repo(Season);
-    answering(seasons, 'findOne', loadedSeason());
+    answering(seasons, 'findOne', loadedSeason({ days: [] }));
 
     provider = new UserSubmissionProvider(
       submissions,

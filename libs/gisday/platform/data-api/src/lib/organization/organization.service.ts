@@ -1,5 +1,4 @@
 import {
-  HttpException,
   Injectable,
   InternalServerErrorException,
   Logger,
@@ -10,13 +9,24 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, In, Repository } from 'typeorm';
 
 import { Organization, Event, Asset, Speaker } from '../entities/all.entity';
-import { BaseProvider } from '../_base/base-provider';
 import { AssetsService } from '../assets/assets.service';
 import { refuseUnsafeImage } from '../assets/image-upload';
 import { SeasonService } from '../season/season.service';
+import { rethrowHttp } from '../_base/rethrow-http';
+import { SeasonScopedProvider } from '../_base/season-scoped-provider';
 
 @Injectable()
-export class OrganizationService extends BaseProvider<Organization> {
+export class OrganizationService extends SeasonScopedProvider<Organization> {
+  protected get seasons() {
+    return this.ss;
+  }
+
+  protected readonly recordsName = 'organizations';
+
+  protected forSeason(seasonGuid: string) {
+    return this.getOrganizationsForSeason(seasonGuid);
+  }
+
   private _resourcePath = `images/organizations`;
 
   constructor(
@@ -42,36 +52,12 @@ export class OrganizationService extends BaseProvider<Organization> {
         }
       });
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      Logger.error(err.message, 'OrganizationService');
-      throw new InternalServerErrorException('Could not find organizations for season.');
+      rethrowHttp(err, new InternalServerErrorException('Could not find organizations for season.'), () => Logger.error(err.message, 'OrganizationService'));
     }
   }
 
   public async getOrganizationsForActiveSeason() {
-    const activeSeason = await this.ss.findOneActive();
-
-    if (!activeSeason) {
-      throw new UnprocessableEntityException('No active season found.');
-    }
-
-    try {
-      return this.getOrganizationsForSeason(activeSeason.guid);
-    } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      Logger.error(err.message, 'OrganizationService');
-      throw new InternalServerErrorException('Could not find organizations for active season.');
-    }
+    return this.forActiveSeason();
   }
 
   public getOrganizations() {
@@ -83,14 +69,7 @@ export class OrganizationService extends BaseProvider<Organization> {
         }
       });
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      Logger.error(err.message, 'OrganizationService');
-      throw new InternalServerErrorException('Could not find organizations.');
+      rethrowHttp(err, new InternalServerErrorException('Could not find organizations.'), () => Logger.error(err.message, 'OrganizationService'));
     }
   }
 
@@ -103,14 +82,7 @@ export class OrganizationService extends BaseProvider<Organization> {
         relations: { season: true, logos: true }
       });
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      Logger.error(err.message, 'OrganizationService');
-      throw new InternalServerErrorException('Could not find organization.');
+      rethrowHttp(err, new InternalServerErrorException('Could not find organization.'), () => Logger.error(err.message, 'OrganizationService'));
     }
   }
 
@@ -133,14 +105,7 @@ export class OrganizationService extends BaseProvider<Organization> {
 
           return savedEntity.save();
         } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-          Logger.error(err.message, 'OrganizationService');
-          throw new InternalServerErrorException('Could not save organization logo.');
+      rethrowHttp(err, new InternalServerErrorException('Could not save organization logo.'), () => Logger.error(err.message, 'OrganizationService'));
         }
       } else {
         return savedEntity;
@@ -196,13 +161,7 @@ export class OrganizationService extends BaseProvider<Organization> {
     try {
       return Promise.all(newEntities);
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      throw new InternalServerErrorException('Could not copy organizations into season.');
+      rethrowHttp(err, new InternalServerErrorException('Could not copy organizations into season.'));
     }
   }
 
@@ -226,14 +185,7 @@ export class OrganizationService extends BaseProvider<Organization> {
         try {
           logoImage = await this._saveImage(file);
         } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-          Logger.error(err.message, 'OrganizationService');
-          throw new InternalServerErrorException('Could not save organization logo.');
+      rethrowHttp(err, new InternalServerErrorException('Could not save organization logo.'), () => Logger.error(err.message, 'OrganizationService'));
         }
       }
 
@@ -319,14 +271,7 @@ export class OrganizationService extends BaseProvider<Organization> {
 
       return result;
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      Logger.error(err.message, 'OrganizationService.deleteEntities');
-      throw new InternalServerErrorException('Could not delete entities');
+      rethrowHttp(err, new InternalServerErrorException('Could not delete entities'), () => Logger.error(err.message, 'OrganizationService.deleteEntities'));
     }
   }
 

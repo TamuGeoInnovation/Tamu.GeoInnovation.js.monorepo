@@ -8,6 +8,7 @@ import { expect, HEAVY, test } from './fixtures';
 import { blockAnalytics } from './analytics';
 import { waitForSettledFraming } from './framing';
 import { smokeBaseUrl } from './gis-hosts';
+import { PROBE_GLOBAL, waitForMapReady } from './map-probe';
 
 /**
  * Clicking a feature on a map opens its popup, and the popup shows that feature's data (#1117).
@@ -103,23 +104,12 @@ async function clickPoint(page: Page, clickAt: PopupCase['clickAt'], width: numb
   }, clickAt);
 }
 
-const PROBE_GLOBAL = '__tamuGiscMapProbe';
-
 /** Opens a map and waits until its layers have loaded and it has finished drawing. */
 async function openMap(page: Page, mapPath: string): Promise<void> {
   await blockAnalytics(page);
   await page.goto(mapPath);
 
-  await expect
-    .poll(
-      async () =>
-        await page.evaluate(
-          (name) => (window as unknown as Record<string, { ready?: boolean }>)[name]?.ready === true,
-          PROBE_GLOBAL
-        ),
-      { message: `the map on ${mapPath} never finished loading`, timeout: 90_000, intervals: [1_000] }
-    )
-    .toBe(true);
+  await waitForMapReady(page, `the map on ${mapPath} never finished loading`);
 
   // A click before the view has drawn can land on nothing, which would read as a broken popup.
   await expect

@@ -1,6 +1,8 @@
-import { LayerSource } from '@tamu-gisc/common/types';
+import { LayerLegendOverride, LayerSource } from '@tamu-gisc/common/types';
 
 import { EventPopups } from '../modules/popups/popups';
+
+import esri = __esri;
 
 type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
 type FeatureRenderer = NonNullable<NonNullable<FeatureNative>['renderer']>;
@@ -22,29 +24,52 @@ export function lotFill(label: string, color: [number, number, number, number]):
   } as FeatureRenderer;
 }
 
+/** An SVG as a data URI, for a legend swatch drawn in the definition. */
+export const toSvgDataUri = (svg: string): string => `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+
+/**
+ * The legend swatch for a red backward-diagonal hatch fill (`esriSFSBackwardDiagonal`, #e60000), which
+ * ArcGIS emits no legend swatch for. The on-map fill stays the service's. Beef Cattle's No Parking Zones and
+ * the Road Closures of Fire School and Games of Texas use it (#2601); each carried its own copy, and Games of
+ * Texas's had drifted to a heavier stroke.
+ */
+export const RED_HATCH_LEGEND: LayerLegendOverride = {
+  mode: 'custom-src',
+  src: toSvgDataUri(
+    "<svg xmlns='http://www.w3.org/2000/svg' width='22' height='22'>" +
+      "<defs><pattern id='p' width='5' height='5' patternUnits='userSpaceOnUse' patternTransform='rotate(45)'>" +
+      "<line x1='0' y1='0' x2='0' y2='5' stroke='#e60000' stroke-width='1.2'/></pattern></defs>" +
+      "<rect x='0.5' y='0.5' width='21' height='21' fill='url(#p)' stroke='#e60000' stroke-width='1'/></svg>"
+  ),
+  width: 22,
+  height: 22
+};
+
+export type ArrowLineSymbol = { type: 'simple-line' } & esri.SimpleLineSymbolProperties;
+
+/**
+ * A line with an arrowhead where it ends, so a route shows its direction of travel. Every route drawn in a
+ * definition is made with this (#2601).
+ */
+export function arrowLineSymbol(options: {
+  color: esri.SimpleLineSymbolProperties['color'];
+  width: number;
+  style?: esri.SimpleLineSymbolProperties['style'];
+}): ArrowLineSymbol {
+  const { color, width, style } = options;
+
+  return {
+    type: 'simple-line',
+    color,
+    width,
+    ...(style ? { style } : {}),
+    marker: { type: 'line-marker', style: 'arrow', color, placement: 'end' }
+  };
+}
+
 export const commonSymbols = {
-  GREEN_ARROW: {
-    type: 'simple-line',
-    color: 'rgb(56, 168, 0)',
-    width: 2,
-    marker: {
-      type: 'line-marker',
-      style: 'arrow',
-      color: 'rgb(56, 168, 0)',
-      placement: 'end'
-    }
-  },
-  RED_ARROW: {
-    type: 'simple-line',
-    color: 'rgb(230, 0, 0)',
-    width: 2,
-    marker: {
-      type: 'line-marker',
-      style: 'arrow',
-      color: 'rgb(230, 0, 0)',
-      placement: 'end'
-    }
-  }
+  GREEN_ARROW: arrowLineSymbol({ color: 'rgb(56, 168, 0)', width: 2 }),
+  RED_ARROW: arrowLineSymbol({ color: 'rgb(230, 0, 0)', width: 2 })
 };
 
 /**

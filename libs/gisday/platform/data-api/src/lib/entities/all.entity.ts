@@ -242,9 +242,11 @@ export class Season extends GuidIdentity {
 }
 
 /**
- * A research competition a season runs (#2948): one row per season and competition. A row of its own, rather than a list
- * on the season, so that a setting for one season's competition can be added here as a column. A season with none runs
- * every competition.
+ * A research competition in a season (#2948): one row per season and competition. A row of its own, rather than a list
+ * on the season, so that a setting for one season's competition can be added here as a column. A season with no row
+ * that `runs` runs every competition. The competition's settings for the season (#3019) are columns here too, so a row
+ * may hold only settings (`runs` empty) in a season that runs every competition. `CompetitionSettingsRow` in
+ * `@tamu-gisc/gisday/common` reads them.
  */
 @Entity({ name: 'season_competitions' })
 @Unique(['season', 'competitionType'])
@@ -255,6 +257,33 @@ export class SeasonCompetition extends GuidIdentity {
   /** `poster`, `presentation`, `paper` or `cartography`: `DEADLINE_COMPETITIONS` in `@tamu-gisc/gisday/common`. */
   @Column({ type: 'nvarchar', length: 50, nullable: false })
   public competitionType: string;
+
+  /**
+   * True when the season runs the competition, as every row meant before #3019; empty on a row that holds only settings.
+   * Written by `SeasonService.setCompetitionTypes`.
+   */
+  @Column({ type: 'bit', nullable: true, default: true })
+  public runs?: boolean | null;
+
+  /**
+   * The competition's session, chosen in Admin (#3019): the poster session, or the undergraduate presentation session.
+   * An event's id, without a foreign key: SQL Server allows one cascading key between two tables, and a session that no
+   * longer exists falls back to the `COMPETITION:` names, as an unchosen one does.
+   */
+  @Column({ type: 'nvarchar', length: 255, nullable: true })
+  public sessionGuid?: string | null;
+
+  /** The graduate presentation session (#3019). An event's id, as `sessionGuid`. */
+  @Column({ type: 'nvarchar', length: 255, nullable: true })
+  public graduateSessionGuid?: string | null;
+
+  /** The session the competition's winners are announced at (#3019). An event's id, as `sessionGuid`. */
+  @Column({ type: 'nvarchar', length: 255, nullable: true })
+  public awardsSessionGuid?: string | null;
+
+  /** When the competition's finalists hear (#3019, 7A): on its page when set, and the line left out when not. */
+  @Column({ type: 'datetimeoffset', nullable: true })
+  public finalistsNotifiedAt?: Date | null;
 }
 
 @Entity({ name: 'seasons_days' })

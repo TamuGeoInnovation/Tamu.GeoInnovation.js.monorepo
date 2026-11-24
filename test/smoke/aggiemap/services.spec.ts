@@ -7,6 +7,7 @@ import * as path from 'path';
 import { Connections } from '../../../libs/aggiemap/ngx/common/src/lib/connections';
 
 import { retiredConnections } from './retired';
+import { askCount } from './service-layers';
 import { gisHostFor, smokeBaseUrl } from './gis-hosts';
 
 /**
@@ -250,9 +251,8 @@ async function holdingsOf(request: import('@playwright/test').APIRequestContext,
     return `not a feature layer (${metadata.type ?? 'no type'})`;
   }
 
-  const count = await (
-    await request.get(`${layer}/query`, { params: { where: '1=1', returnCountOnly: 'true', f: 'json' }, timeout: 30_000 })
-  ).json();
+  // Asked again once when the server refuses it at random (#2616).
+  const count = ((await askCount(request, layer)).body ?? {}) as { count?: unknown; error?: { message?: string } };
 
   if (count.error || typeof count.count !== 'number') {
     return `its features could not be counted: ${count.error?.message ?? 'no count'}`;

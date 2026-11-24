@@ -50,6 +50,8 @@ export * from './lib/modules/people/components/speaker-card/speaker-card.compone
 export * from './lib/modules/people/components/speaker-class-banner/speaker-class-banner.component';
 export * from './lib/modules/forms/components/sponsors/sponsor-add-edit-form/sponsor-add-edit-form.component';
 export * from './lib/modules/forms/components/tags/tag-add-edit-form/tag-add-edit-form.component';
+export * from './lib/modules/forms/components/types/type-page';
+export * from './lib/modules/forms/components/types/type-add-edit-form/type-add-edit-form.component';
 export * from './lib/modules/forms/components/universities/university-add-edit-form/university-add-edit-form.component';
 export * from './lib/modules/forms/components/user-submissions/user-submission-add-edit-form/user-submission-add-edit-form.component';
 
