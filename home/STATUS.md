@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle and listening.
+- **Batch 80 (gisday: #2893 against #3006, then #2430)**, since 7:00 PM Central, 23 November; batch 81 (#3019) after it.
 
 ## Finished
 - **Batch 79 (gisday: #2088)** (report `home/reports/2026-11-23-79.md`): branch ready, `fix/2088-api-on-own-address` on the fork at `f147bfca2`, no PR. The site calls `${origin}/api` and sends the token only there; local proxies serve `/api/`. Red first; check passes (only the audit FETCH_ERROR). Proven on localhost:4201 and gisday.local.test:4201 with ORIGINS empty: all API calls same-origin. Not signed in (needs a password). kubernetes-config: two variables unused, ORIGINS left until live. Two questions.
