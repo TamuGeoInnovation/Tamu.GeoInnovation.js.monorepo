@@ -10,7 +10,11 @@ import { formToFormData } from './form-to-form-data';
 describe('formToFormData()', () => {
   it('sends a checkbox that is off as false, and one that is on as true', () => {
     const data = formToFormData(
-      new FormGroup({ name: new FormControl('Made-up Speaker'), isOrganizer: new FormControl(false), isActive: new FormControl(true) })
+      new FormGroup({
+        name: new FormControl('Made-up Speaker'),
+        isOrganizer: new FormControl(false),
+        isActive: new FormControl(true)
+      })
     );
 
     expect(data.get('isOrganizer')).toBe('false');
