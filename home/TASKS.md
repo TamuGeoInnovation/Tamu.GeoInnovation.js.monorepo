@@ -1,5 +1,37 @@
 # Home machine: current tasks
 
+## Batch 79 (gisday: #2088, each GIS Day address calls the API on its own address; 23 November 2026, about 7:15 PM Central, from `work (gisday)`) (Medium) - **after 78**
+
+[#2088](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2088). Read the issue: the site's API address is absolute (`https://txgisday.org/api`), so every other
+address makes cross-origin calls that work only if it is in gisday-nest's `ORIGINS` (#2087). Branch
+`fix/2088-api-on-own-address` from the latest `development`.
+
+1. **Check first, and report before changing it:** how `ANGULAR_API_URL` reaches the site (build time or run time, and
+   where; the kubernetes-config side is the director's, so read it only if you have a clone, and never push to it); the
+   Auth0 HTTP interceptor's `allowedList` (a token must still be attached on every address, or signed-in calls lose it);
+   every place the site builds an absolute API or upload URL.
+2. **The change:** the site derives its API address from the address it is opened on (or uses `/api`), with the
+   interceptor's list matching. Tests, red first: a signed-in call on a second address carries the token; a call goes to
+   the same origin it was opened on.
+3. **Prove it locally** with `scripts/gisday-local.sh` on two addresses (`gisday.local.test` and one more in your hosts
+   file), signed in on txgisday-dev: an admin page loads its data on both, and the browser shows no cross-origin call.
+4. Check, push to the fork, "branch ready" with the PR body text in `home/reports/2026-11-23-79.md`. Say exactly what the
+   deploy needs in kubernetes-config (an environment value changed or removed, `ORIGINS` left as it is until the new
+   site is live everywhere) so the director can write it.
+
+## Batch 78 (gisday: #1836's before and after images; 23 November 2026, about 7:15 PM Central, from `work (gisday)`) (Medium) - **now**
+
+Your #1836 branch, `fix/1836-past-sessions-filter` (`98a4dff11`), needs its images; the lab is paused. The page is
+public, so no sign-in is needed. On a local build with the made-up data your report describes (a past season with an
+organization that hosts one of its sessions): `/seasons/<year>/sessions` at 1280 px, its Organizations filter open,
+**before** the migration ("There are no organizations.") and **after** it (the organization listed), and the after at
+390 px. Save them in `docs/screenshots/1836-past-sessions-filter/`, link them in its release note's Before | After
+table and in the PR body text, run `node scripts/collate-release-notes.mjs --check` in Docker, push to the fork
+fast-forward only, and report `home/reports/2026-11-23-78.md` with "images pushed (1836): <sha>" on its first line and
+the updated PR body.
+
+**Decided on your report 77:** questions 1 and 2 go to the maintainer now; the director will write the answers here.
+
 ## Batch 77 (gisday: three GIS Day bugs, #2627, #2572 and #1836; 23 November 2026, about 6:55 PM Central, from `work (gisday)`) (Medium) - **after the batch you are running now (61, #1840)**
 
 The lab is paused (see `DIRECTOR.md`), so GIS Day's code work comes to you and the laptop. Three bugs, each its own
