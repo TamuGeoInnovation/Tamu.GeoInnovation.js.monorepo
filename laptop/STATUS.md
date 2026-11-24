@@ -5,7 +5,7 @@
 
 Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
-Last batch done: 5
+Last batch done: 6
 
 ## What this is
 
@@ -33,10 +33,12 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch 6 (gisday: #3292 Winners images)**, started 5:50 PM Central. Next update by 6:45 PM Central.
-  Progress (6:08 PM): scratch database `gisday-b6-scratch` with 5 made-up accepted entries in two competitions (one title 92 characters, 3 people); 2026 had none. Before taken from the merge-base `6258350e3`: the picked label needs 899 px in an 879 px box, so the third name is cut. Serving `8d6b53ef8` for the after images.
+- **Batch 7 (gisday: #2363)**, started 6:17 PM Central. Next update by 6:40 PM Central.
 
 ## Finished
+- **Batch 6 (gisday: #3292 Winners images)** (report `laptop/reports/2026-11-23-6.md`): **images pushed (3292): `d9f17420f`**, a fast-forward.
+  - **Images:** before (merge-base) and after at 1280 and 390, from made-up entries. `collate --check` exit 0.
+  - **The main author now leads.** On a long title the co-authors are what gets cut now. **One question.**
 - **Batch 5 (aggiemap: #3161 remote campus names)** (report `laptop/reports/2026-11-23-5.md`): branch ready, `fix/3161-remote-campus-names` on the fork at `49cb10736`, no PR.
   - **Changed:** only the five strings the issue gives: three sidebar headings (`applicationName`) and two Campus Maps descriptions. Ids and routes are untouched, and a test now pins them.
   - **Red first.** Before and after images for all four pages.
