@@ -1,5 +1,24 @@
 # Laptop: current tasks
 
+## Batch 11 (gisday: before and after images for #2893, the Check-ins dashboard's walk-ins and show-up rate; 23 November 2026, about 8:00 PM Central, from `work (gisday)`) (Medium) - **after 6, before 7 and 8; it needs your signed-in GIS Day stack**
+
+Home built [#2893](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2893) on `feat/2893-check-ins-dashboard-rest` (`2ce9d7419` on the fork) and can't sign in, so the
+admin images are yours. Read `home/reports/2026-11-23-80-gisday.md`, section 1, first: what changed, and what made-up
+data shows it.
+
+1. **Made-up data:** a season with a few events, made-up accounts that RSVP to some and check in to some, at least one
+   walk-in (checked in with no RSVP) and one check-in outside its session's time. No email: block non-GETs except what
+   seeding needs.
+2. **Before**, from the branch's merge-base: Admin, Dashboards, Check-ins at 1280 px, and one event's row opened.
+   **After**, from `2ce9d7419`: the same two views (the new walk-ins and show-up rate columns, and the outside-time mark
+   on the opened row), and the table at 390 px.
+3. Commit to `docs/screenshots/2893-check-ins-dashboard-rest/`, add the Before | After table to its release note (home's
+   branch has the entry, or copy one), `collate-release-notes.mjs --check` in Docker, push to the fork fast-forward only,
+   report `laptop/reports/2026-11-23-11.md` with "images pushed (2893): <sha>" first and the PR body from home's report,
+   updated with the images.
+
+Never production; txgisday-dev only; no pull request.
+
 ## Batch 10 (aggiemap: check every map's outbound links, #3285; 23 November 2026, 7:35 PM Central, from `work (aggiemap)`) (High) - **after 9**
 
 Build the check that would have caught #3278, where Transportation Services told us a commencement map's link had
