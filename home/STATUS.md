@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch a10 (aggiemap: #3425 garage search images)**, from `fork/fix/3425-garage-search-off-raster` `7c1ad1d90` (before from `50b125bf5`), worktree `C:/TAMU/wt-3425`, since 4:53 PM Central.
+- Nothing. Idle, listening.
 
 ## Finished
+- **Batch a10 (aggiemap: #3425 images)** (report `home/reports/2026-11-24-a10.md`): images on `fix/3425-garage-search-off-raster` at `118c4def0`; popup shows the name; all nine `?garage=` codes resolve; garages only, no TEEX. Found: the smoke `parking-garage` case will fail after (its term matches 0 rows). 4:53 to 5:04 PM Central.
 - **Batch a8 (aggiemap: disk and PR 3407)** (report `home/reports/2026-11-24-a8.md`): home holds 331 worktrees, 309 tamu-js volumes, an 853.8 GiB Docker image, 82.4 GiB free (65.0 after the check); tidy.sh would remove 238 volumes (~642 GiB) and 175 worktrees (~100 GiB). PR 3407 full check Exit 0 (no Nx tasks, scripts only; header prints free space; no sweep); tidy.test 15/15, check-in-volume.test 28/28. 11:13 to 11:26 AM Central.
 - **Batch g105 (gisday: #3412)** (report `home/reports/2026-11-24-g105.md`): `fix/3412-awards-sentence` on the fork at `36904e5db`; red 3 of 3 on development, check exit 0 (`gisday-platform-ngx-core,gisday-angular`, CHECK_PARALLEL=1); the sentence now sits inside the session element on Posters and Presentation. 11:00 to 11:12 AM Central.
 - **Batch s81 (security: Dependabot PR 3401, #3405)** (report `home/reports/2026-11-24-s81.md`): full check exit 0 with clean `npm ci` (95 projects); lock moves only the two packages and maplibre-gl's own (geojson-vt 6.3.2, kdbush hoisted, zustand 5.1.0 new); GIS Day's competition map and geoservices' highlighting identical to development. Commented on the PR. 7:57 to 8:09 AM Central.
