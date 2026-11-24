@@ -77,7 +77,10 @@
       <div class="trailer-4" id="five">
         <h2 class="trailer-1">Finalist Selection</h2>
         <ul>
-          <li>Finalists will be notified on Saturday November 14th, 2026</li>
+          <!-- When finalists hear is the season's, set in Admin (#3019); without it, no line. -->
+          @if (finalistsNotified()) {
+          <li>Finalists will be notified on {{ finalistsNotified() }}</li>
+          }
           <li>Finalists will be expected to print and bring their poster for display during the Poster Competition Session@if (day()) { ({{ day() }})}.</li>
           <li>Only finalists will be allowed to show their posters at the Poster Competition Session</li>
         </ul>
@@ -86,7 +89,7 @@
       <div class="trailer-4" id="six">
         <h2 class="trailer-1">Poster Competition Session</h2>
         <!-- The session as the database has it (#3011): this was typed in here and went stale when it moved. -->
-        <tamu-gisc-competition-session kind="poster"></tamu-gisc-competition-session>
+        <tamu-gisc-competition-session kind="poster" [season]="season()"></tamu-gisc-competition-session>
         <ul>
           <li>Finalists must be present during the poster session in order to be considered for awards.</li>
         </ul>
@@ -96,7 +99,7 @@
         <h2 class="trailer-1">Awards Announcement</h2>
 
         <p>Winners will be announced at the awards session:</p>
-        <tamu-gisc-competition-session kind="awards"></tamu-gisc-competition-session>
+        <tamu-gisc-competition-session kind="awards" competition="poster" [season]="season()"></tamu-gisc-competition-session>
       </div>
 
       <div class="trailer-4" id="eight">

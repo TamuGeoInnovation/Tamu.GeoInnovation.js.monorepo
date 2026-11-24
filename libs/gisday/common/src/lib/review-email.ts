@@ -1,3 +1,4 @@
+import { competitionSettings, SeasonCompetitions } from './season-competitions';
 import { closesAt, inCentralTime, SubmissionDeadlines } from './submission-deadlines';
 
 /**
@@ -237,7 +238,8 @@ export interface ReviewEmailSubmission {
   submissionType?: string | null;
   classificationType?: string | null;
   participants?: Array<{ name?: string | null }> | null;
-  season?: Partial<SubmissionDeadlines> | null;
+  /** Its deadlines, and the sessions it chose for each competition (#3019). */
+  season?: (Partial<SubmissionDeadlines> & SeasonCompetitions) | null;
 }
 
 /**
@@ -307,14 +309,29 @@ export function sessionLine(session: ReviewEmailSession, address: string): strin
 }
 
 /**
- * The finalist's own competition session among the season's (#2985), by the names the program gives them: a
- * `COMPETITION:` session naming posters, or for a presentation the one naming its level (undergraduate or graduate).
+ * The finalist's own competition session among the season's (#2985): the one the season chose for the competition in
+ * Admin (#3019), or else by the names the program gives them, a `COMPETITION:` session naming posters, or for a
+ * presentation the one naming its level (undergraduate or graduate). A chosen session no longer among the season's
+ * falls back to the names too.
  */
 export function competitionSession<T extends ReviewEmailSession>(
   sessions: Array<T> | null | undefined,
   submissionType: unknown,
-  classificationType: unknown
+  classificationType: unknown,
+  season?: SeasonCompetitions | null
 ): T | null {
+  const settings =
+    submissionType === 'poster' || submissionType === 'presentation' ? competitionSettings(season, submissionType) : null;
+  const chosenGuid =
+    submissionType === 'presentation' && classificationType !== 'undergraduate'
+      ? settings?.graduateSessionGuid
+      : settings?.sessionGuid;
+  const chosen = chosenGuid ? (sessions ?? []).find((s) => s.guid === chosenGuid) : undefined;
+
+  if (chosen) {
+    return chosen;
+  }
+
   const competitions = (sessions ?? []).filter((s) => /^\s*competition\s*:/i.test(s.name ?? ''));
   const named = (word: RegExp) => competitions.find((s) => word.test(s.name ?? '')) ?? null;
 
@@ -331,8 +348,25 @@ export function competitionSession<T extends ReviewEmailSession>(
     : (competitions.find((s) => /graduate/i.test(s.name ?? '') && !/undergraduate/i.test(s.name ?? '')) ?? null);
 }
 
-/** The season's awards session for the poster and presentation competitions (#2985): an `AWARDS:` session naming either. */
-export function awardsSession<T extends ReviewEmailSession>(sessions: Array<T> | null | undefined): T | null {
+/**
+ * The season's awards session for the poster and presentation competitions (#2985): the one the season chose for the
+ * competition (#3019), or for either when no competition is named, else an `AWARDS:` session naming either.
+ */
+export function awardsSession<T extends ReviewEmailSession>(
+  sessions: Array<T> | null | undefined,
+  season?: SeasonCompetitions | null,
+  competition?: 'poster' | 'presentation'
+): T | null {
+  const chosenGuid = competition
+    ? competitionSettings(season, competition)?.awardsSessionGuid
+    : (competitionSettings(season, 'presentation')?.awardsSessionGuid ??
+      competitionSettings(season, 'poster')?.awardsSessionGuid);
+  const chosen = chosenGuid ? (sessions ?? []).find((s) => s.guid === chosenGuid) : undefined;
+
+  if (chosen) {
+    return chosen;
+  }
+
   return (
     (sessions ?? []).find((s) => /^\s*awards\s*:/i.test(s.name ?? '') && /poster|presentation/i.test(s.name ?? '')) ?? null
   );
@@ -355,11 +389,17 @@ export function reviewEmailValues(
     '{site}': site.name,
     '{site address}': site.address,
     '{your session}': ((own) => (own ? sessionLine(own, site.address) : `see ${site.address}/sessions`))(
-      competitionSession(sessions, submission.submissionType, submission.classificationType)
+      competitionSession(sessions, submission.submissionType, submission.classificationType, submission.season)
     ),
     '{awards session}': ((awards) =>
       awards ? sessionLine(awards, site.address) : `the awards session; see ${site.address}/sessions`)(
-      awardsSession(sessions)
+      awardsSession(
+        sessions,
+        submission.season,
+        submission.submissionType === 'poster' || submission.submissionType === 'presentation'
+          ? submission.submissionType
+          : undefined
+      )
     ),
     '{notes}': submission.message?.trim() ? `Additional notes: ${submission.message.trim()}` : ''
   };
