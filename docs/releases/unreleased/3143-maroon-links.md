@@ -1,5 +1,6 @@
 ---
 issue: 3143
+app: gisday
 title: "GIS Day: gisday.tamu.edu's inline links and slide toggles are maroon, not txgisday's blue"
 testOnDev: |
   | GIS Day: maroon inline links and slide toggles on gisday.tamu.edu ([#3143](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3143)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release, sign in as an admin on [gisday.tamu.edu](https://gisday.tamu.edu/admin/events) and open a session that has slides, then Account, Student Competitions, New submission | On gisday.tamu.edu, a session's **Slides** file names are maroon beside **Remove**, not light blue, the selected option of the **Undergraduate / Graduate** and **Individual / Group** toggles is maroon with a dark maroon edge, and the chosen competition type's radio tick is maroon. On txgisday.org all of them are blue as before |

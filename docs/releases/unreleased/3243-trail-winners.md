@@ -1,5 +1,6 @@
 ---
 issue: 3243
+app: gisday
 title: The trail challenge's winners on gisday.tamu.edu's homepage
 testOnDev: |
   | GIS Day: trail challenge winners ([#3243](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3243)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release, as an admin on gisday.tamu.edu: Research Competitions, Winners; in Trail challenge, pick 1st, 2nd and 3rd and Save winners; then open the homepage | Trail challenge offers the season's submitters in the leaderboard's order, each with their name and points, and keeps what was saved. The homepage's winners section shows a Trail challenge block with each place and the winner's name |

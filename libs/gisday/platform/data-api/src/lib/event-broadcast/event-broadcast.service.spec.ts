@@ -1,4 +1,4 @@
-import { InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 
@@ -30,7 +30,7 @@ describe('EventBroadcastService', () => {
             manager: { transaction: jest.fn() }
           }
         },
-        { provide: SeasonService, useValue: { findOneActive: jest.fn() } }
+        { provide: SeasonService, useValue: { findOne: jest.fn(), findOneActive: jest.fn() } }
       ]
     }).compile();
 
@@ -131,10 +131,10 @@ describe('EventBroadcastService', () => {
         season: { guid: 'season-1' }
       } as unknown as EventBroadcast;
 
+      jest.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
       jest.spyOn(broadcastRepo, 'find').mockResolvedValue([source]);
-      jest
-        .spyOn(broadcastRepo, 'create')
-        .mockImplementation((e) => ({ ...(e as object), save: jest.fn().mockResolvedValue(e) }) as never);
+      jest.spyOn(broadcastRepo, 'create').mockImplementation((e) => e as never);
+      jest.spyOn(broadcastRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
 
       await service.copyBroadcastsIntoSeason('season-2', ['b-1']);
 
@@ -150,9 +150,9 @@ describe('EventBroadcastService', () => {
         { guid: 'b-1', name: 'Zoom' },
         { guid: 'b-2', name: 'Teams' }
       ] as EventBroadcast[]);
-      jest
-        .spyOn(broadcastRepo, 'create')
-        .mockImplementation((e) => ({ ...(e as object), save: jest.fn().mockResolvedValue(e) }) as never);
+      jest.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
+      jest.spyOn(broadcastRepo, 'create').mockImplementation((e) => e as never);
+      jest.spyOn(broadcastRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
 
       const copied = await service.copyBroadcastsIntoSeason('season-2', ['b-1', 'b-2']);
 
@@ -161,19 +161,14 @@ describe('EventBroadcastService', () => {
     });
 
     /**
-     * Documents current behaviour rather than endorsing it.
-     *
-     * A failed lookup is wrapped as 422 by the outer catch, not 500 -- so a database outage is
-     * reported to the client as "you sent something unprocessable". The nested inner try around
-     * `return Promise.all(...)` is separately unreachable: nothing inside it is awaited, so a
-     * rejection escapes after the block has already exited.
+     * A failed lookup was wrapped as 422, so a database outage reached the client as "you sent something
+     * unprocessable". Since the shared copy (#3324) it is not caught at all, and Nest answers it 500.
      */
-    it('reports a lookup failure as 422 rather than 500', async () => {
+    it('lets a lookup failure through rather than calling it the request\'s fault', async () => {
+      jest.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
       jest.spyOn(broadcastRepo, 'find').mockRejectedValue(new Error('connection lost'));
 
-      await expect(service.copyBroadcastsIntoSeason('season-2', ['b-1'])).rejects.not.toThrow(
-        InternalServerErrorException
-      );
+      await expect(service.copyBroadcastsIntoSeason('season-2', ['b-1'])).rejects.toThrow('connection lost');
     });
   });
 

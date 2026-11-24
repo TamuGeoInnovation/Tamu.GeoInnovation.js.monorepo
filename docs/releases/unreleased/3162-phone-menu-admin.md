@@ -1,5 +1,6 @@
 ---
 issue: 3162
+app: gisday
 title: "GIS Day: the phone menu's Account tile has Admin, for admins, managers and organizers, as on desktop"
 testOnDev: |
   | GIS Day: Admin in the phone menu's Account tile ([#3162](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3162)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release, on a phone (or a window under 768 pixels wide), sign in on [gisday.tamu.edu](https://gisday.tamu.edu) with an admin, manager or organizer account, open the menu and tap Account | **Admin** is listed between Checkins and Logout, and tapping it opens the admin pages (Seasons). Signed in with an account that has none of those roles, Account lists Profile, Classes, Checkins and Logout, with no Admin |

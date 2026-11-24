@@ -30,6 +30,7 @@ export * from './lib/enums/place-visibility-options.enum';
 // Roles
 export * from './lib/roles/gisday.roles';
 export * from './lib/modules/forms/admin-details-page';
+export * from './lib/modules/forms/admin-entity-form';
 export * from './lib/modules/forms/components/broadcasts/broadcast-add-edit-form/broadcast-add-edit-form.component';
 export * from './lib/modules/forms/components/classes/class-add-edit-form/class-add-edit-form.component';
 export * from './lib/modules/forms/components/events/event-add-edit-form/event-add-edit-form.component';
@@ -49,6 +50,8 @@ export * from './lib/modules/people/components/speaker-card/speaker-card.compone
 export * from './lib/modules/people/components/speaker-class-banner/speaker-class-banner.component';
 export * from './lib/modules/forms/components/sponsors/sponsor-add-edit-form/sponsor-add-edit-form.component';
 export * from './lib/modules/forms/components/tags/tag-add-edit-form/tag-add-edit-form.component';
+export * from './lib/modules/forms/components/types/type-page';
+export * from './lib/modules/forms/components/types/type-add-edit-form/type-add-edit-form.component';
 export * from './lib/modules/forms/components/universities/university-add-edit-form/university-add-edit-form.component';
 export * from './lib/modules/forms/components/user-submissions/user-submission-add-edit-form/user-submission-add-edit-form.component';
 

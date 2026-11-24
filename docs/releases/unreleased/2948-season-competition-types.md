@@ -1,5 +1,6 @@
 ---
 issue: 2948
+app: gisday
 title: "GIS Day: admins choose which research competitions a season runs, and the submission form offers only those"
 testOnDev: |
   | GIS Day: the competitions a season runs ([#2948](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2948)) | Not on dev: GIS Day has no dev site. After release, as an admin open [Research Competitions](https://txgisday.org/admin/research-competition) | A **Competitions** section above the deadlines has four boxes, all ticked: Poster, Presentation, Paper and Cartography. Untick Paper and Cartography and save; the deadlines then list only Poster and Presentation, and, signed in, [a new submission](https://txgisday.org/account/submissions/add) offers only Poster and Presentation. A submission already made as Paper still opens, keeps its type, and is still listed for admins. Unticking every box is refused |

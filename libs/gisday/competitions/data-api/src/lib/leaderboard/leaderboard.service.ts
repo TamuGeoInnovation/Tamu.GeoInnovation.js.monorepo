@@ -17,6 +17,7 @@ import {
 } from '../entities/all.entities';
 import { BaseService } from '../_base/base.service';
 import { COMPETITION_VALIDATION_STATUS } from '@tamu-gisc/gisday/common';
+import { activeCompetitionSeason } from '../season/active-season';
 
 /**
  * Points for a submission of something nobody had submitted before in the season (#1781).
@@ -112,20 +113,10 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
    * board, admins included, so it can be shown to a room or shared without giving anyone's email away (#3168).
    */
   public async getLeaderBoardItemsForActiveSeason() {
-    const activeSeason = await this.seasonRepo.findOne({ where: { active: true } });
-
-    if (!activeSeason) {
-      throw new NotFoundException('No active season found.');
-    }
-
-    const competitionSeason = await this.compSeasonRepo.findOne({
-      where: { season: { guid: activeSeason.guid } },
-      relations: { form: true, season: true }
+    const competitionSeason = await activeCompetitionSeason(this.seasonRepo, this.compSeasonRepo, {
+      form: true,
+      season: true
     });
-
-    if (!competitionSeason) {
-      throw new NotFoundException('No competition season found.');
-    }
 
     // Check cache
     const cacheKey = competitionSeason.guid;

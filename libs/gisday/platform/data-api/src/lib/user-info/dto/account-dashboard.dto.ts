@@ -1,4 +1,4 @@
-import { emptyCounts, RsvpPersonTypeCounts } from '@tamu-gisc/gisday/common';
+import { centralDay, centralInstant, emptyCounts, RsvpPersonTypeCounts } from '@tamu-gisc/gisday/common';
 
 import type { RsvpDashboardPerson } from '../../user-rsvp/dto/rsvp-dashboard.dto';
 
@@ -31,23 +31,14 @@ export interface AccountDashboard {
   made: Array<string>;
 }
 
-const CENTRAL = 'America/Chicago';
 export const NOT_GIVEN_KEY = 'not-given';
 
-/** The calendar day of `date` in Central time, as YYYY-MM-DD. */
-export function centralDay(date: Date | string): string {
-  return new Intl.DateTimeFormat('en-CA', { timeZone: CENTRAL, year: 'numeric', month: '2-digit', day: '2-digit' }).format(
-    new Date(date)
-  );
-}
+/** The calendar day of `date` in Central time, as YYYY-MM-DD: gisday/common's (#3323). */
+export { centralDay };
 
-/** Midnight at the start of `day` (YYYY-MM-DD) in Central time, in standard time and daylight time alike. */
+/** Midnight at the start of `day` (YYYY-MM-DD) in Central time, in standard time and daylight time alike (#3323). */
 export function centralMidnight(day: string): Date {
-  // Midnight in standard time; if the zone is in daylight time that day, that is 1 AM, so step back an hour.
-  const guess = new Date(`${day}T06:00:00.000Z`);
-  const hour = Number(new Intl.DateTimeFormat('en-US', { timeZone: CENTRAL, hour: '2-digit', hourCycle: 'h23' }).format(guess));
-
-  return new Date(guess.getTime() - hour * 60 * 60 * 1000);
+  return centralInstant(day);
 }
 
 /** The day after `day` (YYYY-MM-DD). */

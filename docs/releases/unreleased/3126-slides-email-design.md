@@ -1,5 +1,6 @@
 ---
 issue: 3126
+app: gisday
 title: "GIS Day admin: Ask for slides uses Texas A&M's GIS Day email design on gisday.tamu.edu"
 testOnDev: |
   | GIS Day: Ask for slides from gisday.tamu.edu ([#3126](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3126)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release, as an admin on [gisday.tamu.edu](https://gisday.tamu.edu/admin/events), open a session with speakers, then Email these speakers, Ask for slides | The window's preview shows the whole email in the Texas A&M GIS Day design: the maroon bar, YOUR SESSION over GIS DAY(S) with this season's dates and days, the text, and the session's name, When and Where in a details box. When and Where are said once, in the box, not also in the text. On txgisday.org and the UCGIS site the same email stays plain, with When and Where in the text |

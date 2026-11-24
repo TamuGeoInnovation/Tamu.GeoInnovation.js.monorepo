@@ -1,5 +1,6 @@
 ---
 issue: 3208
+app: gisday
 title: A session's page fits a 360 px phone
 testOnDev: |
   | GIS Day: presenter cards on a phone ([#3208](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3208)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release, on a 360 px wide phone (or the browser's device view at 360 px): open a session with presenters; then, as an admin, edit a session's presenters | The session's page doesn't scroll sideways, and each presenter card fits the screen with its name beside the picture. On a wider screen the cards are a little narrower than before, as their padding is now inside their width. The session form's presenter cards fit too |

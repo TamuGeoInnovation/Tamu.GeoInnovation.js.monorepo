@@ -1,5 +1,6 @@
 ---
 issue: 2942
+app: gisday
 title: "GIS Day admin: Escape on a details page goes back to its list"
 testOnDev: |
   | GIS Day admin: Escape on a details page goes back to its list ([#2942](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2942)) | Not on dev: GIS Day has no dev site. After release, at [gisday.tamu.edu/admin/events](https://gisday.tamu.edu/admin/events) choose last year's season, search, open an event and press Escape; open it again, change its name and press Escape; open the speaker search on it and press Escape | Escape goes back to the list with the same season and search. With the name changed it first asks "Leave without saving?" in the page: Keep editing stays with the change, Leave without saving goes back with nothing saved. In the open speaker search, Escape only closes the search |

@@ -1,5 +1,6 @@
 ---
 issue: 3011
+app: gisday
 title: "GIS Day: The presentation and poster competition pages give each session's day, time and room from the sessions themselves"
 testOnDev: |
   | GIS Day: competition session times ([#3011](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3011)) | Not on dev: GIS Day has no dev site. After release, open [Presentation](https://gisday.tamu.edu/competitions/presentation) and [Posters](https://gisday.tamu.edu/competitions/posters) | Under Presentation Competition Session, each session's name links to its page, with the same date, time and room the [schedule](https://gisday.tamu.edu/sessions) shows (undergraduate 2:00 to 2:40 PM, graduate 2:40 to 4:00 PM, Bethancourt Ballroom 2300 C). The talk is 5 minutes in all, questions included. The poster session and the awards session read the same way. Change a session's time in the admin and the page follows without a release |

@@ -1,5 +1,4 @@
 import {
-  HttpException,
   BadRequestException,
   ConflictException,
   Injectable,
@@ -43,6 +42,7 @@ import {
 } from '@tamu-gisc/gisday/common';
 
 import { ActiveSeasonDto } from './dto/active-season.dto';
+import { rethrowHttp } from '../_base/rethrow-http';
 
 @Injectable()
 export class SeasonService extends BaseProvider<Season> {
@@ -452,13 +452,7 @@ export class SeasonService extends BaseProvider<Season> {
         return latest;
       }
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      throw new UnprocessableEntityException('No previous season found.');
+      rethrowHttp(err, new UnprocessableEntityException('No previous season found.'));
     }
   }
 

@@ -1,5 +1,6 @@
 ---
 issue: 3205
+app: gisday
 title: "GIS Day: a session's page fits a phone again for organizers, with its check-in link shortened to fit"
 testOnDev: |
   | A long value in a copy field fits its box ([#3205](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3205)) | GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)): after release, signed in as an organizer on [gisday.tamu.edu](https://gisday.tamu.edu) on a phone, open a session's page and show its check-in QR code. On dev, open any [AggieMap](https://dev.aggiemap.tamu.edu) building popup and look at its copy fields | On GIS Day, the page fits the phone, nothing cut off on the left, and the check-in link under the code ends in "…", with Copy copying the whole link. On AggieMap, the copy fields look as before; a value too long for its box ends in "…" |

@@ -9,7 +9,6 @@ import { AuthHttpInterceptor, AuthModule } from '@auth0/auth0-angular';
 import { ROLES_CLAIM } from '@tamu-gisc/common/ngx/auth';
 import { Angulartics2Module } from 'angulartics2';
 import { ServiceWorkerModule } from '@angular/service-worker';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes, ExtraOptions } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppComponent } from './app/app.component';
@@ -81,16 +80,13 @@ bootstrapApplication(AppComponent, {
           allowedList: [
             {
               allowAnonymous: true,
-              uriMatcher: (url) => {
-                // Type assertion because the static value is a token replaced at runtime
-                return (environment.auth0.urls as unknown as Array<string>).some((u) => url.startsWith(u));
-              }
+              // The API on the page's own address (#2088).
+              uriMatcher: (url) => environment.auth0.urls.some((u) => url.startsWith(u))
             }
           ]
         }
       }),
       BrowserModule,
-      BrowserAnimationsModule,
       RouterModule.forRoot(routes, routeOptions),
       FormsModule,
       ReactiveFormsModule

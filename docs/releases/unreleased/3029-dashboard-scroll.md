@@ -1,5 +1,6 @@
 ---
 issue: 3029
+app: gisday
 title: "GIS Day admin: the RSVPs and Check-ins tables' sideways scrollbar stays in view on a narrow screen"
 testOnDev: |
   | GIS Day admin: the dashboards' sideways scrollbar in view ([#3029](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3029)) | Not on dev: GIS Day has no dev site. After release, as an admin open [Dashboards > RSVPs on gisday.tamu.edu](https://gisday.tamu.edu/admin/dashboards/rsvps), then Check-ins, in a window about 1024 px wide | As soon as the top of the **By event** table is on screen, a sideways scrollbar is at the bottom of the window; dragging it shows the last columns (Industry, Not given). At the end of the table it sits directly under the total row, and there is only one. The page itself never scrolls sideways. At 1280 px the RSVPs table fits with no scrollbar, as before |

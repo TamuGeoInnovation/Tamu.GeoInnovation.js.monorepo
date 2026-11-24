@@ -1,5 +1,6 @@
 ---
 issue: 3152
+app: gisday
 title: "GIS Day: the FAQ page's instructions match the site: its name, check-in, Classes, Online Broadcast, competitions"
 testOnDev: |
   | GIS Day: the FAQ's instructions match the site ([#3152](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3152)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release, open [gisday.tamu.edu/faq](https://gisday.tamu.edu/faq) signed out and open each question | No answer says "TxGIS Day": they name Texas A&M GIS Day. Check-in asks for a complete Profile, then location in person or the session's QR code online, open until 15 minutes after the session ends. Certifying attendance points to the Classes page, the Zoom answer to Online Broadcast, and the competitions are open only to current Texas A&M students. On [txgisday.org/faq](https://txgisday.org/faq) the answers say TxGIS Day |

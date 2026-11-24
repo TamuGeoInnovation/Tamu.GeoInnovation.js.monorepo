@@ -1,5 +1,6 @@
 import { competitionSettings, SeasonCompetitions } from './season-competitions';
 import { closesAt, inCentralTime, SubmissionDeadlines } from './submission-deadlines';
+import { formatCentral } from './central-time';
 
 /**
  * The email a student gets when their competition submission is reviewed (#2957, #2980), as a template the reviewer sees
@@ -279,12 +280,12 @@ export function sessionDay(session: ReviewEmailSession, style: 'short' | 'long' 
     return '';
   }
 
-  return new Intl.DateTimeFormat(
-    'en-US',
+  return formatCentral(
+    date,
     style === 'short'
-      ? { timeZone: 'America/Chicago', weekday: 'short', month: 'short', day: 'numeric' }
-      : { timeZone: 'America/Chicago', weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }
-  ).format(date);
+      ? { weekday: 'short', month: 'short', day: 'numeric' }
+      : { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }
+  );
 }
 
 /** A session's times (#3011): "1:00 to 1:15 PM", or "11:30 AM to 1:00 PM" across noon. */

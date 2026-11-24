@@ -5,7 +5,7 @@ import * as path from 'path';
 import { Connections } from '../../../libs/aggiemap/ngx/common/src/lib/connections';
 
 import { retiredConnections } from './retired';
-import { countQueryProblem, metadataProblems, serviceLayers } from './service-layers';
+import { askCount, countQueryProblem, metadataProblems, serviceLayers } from './service-layers';
 import type { LayerMetadata, MetadataProblem } from './service-layers';
 import { gisHostFor, smokeBaseUrl } from './gis-hosts';
 
@@ -116,16 +116,8 @@ test.describe(`a service describes itself consistently (${GIS_HOST})`, () => {
 
         const label = `"${entry.metadata.name ?? entry.id}"`;
         const problems = metadataProblems(entry.metadata);
-        const response = await request.get(`${entry.url}/query`, {
-          params: { where: '1=1', returnCountOnly: 'true', f: 'json' },
-          timeout: 30_000,
-          failOnStatusCode: false
-        });
-        const count = countQueryProblem({
-          ok: response.ok(),
-          status: response.status(),
-          body: await response.json().catch(() => null)
-        });
+        // Asked again once when the server refuses it at random (#2616).
+        const count = countQueryProblem(await askCount(request, entry.url));
 
         for (const problem of count ? [...problems, count] : problems) {
           found.push({ ...problem, key: `${name}/${entry.id}/${problem.check}`, layer: label });
@@ -156,4 +148,75 @@ test.describe(`a service describes itself consistently (${GIS_HOST})`, () => {
       ).toEqual([]);
     });
   }
+});
+
+/**
+ * The count is asked again once when the server refuses it, which it does at random about one count in a hundred (#2616).
+ * No network: a fake server that refuses as the GIS server does.
+ */
+test.describe('askCount', () => {
+  const refusal = { error: { code: 400, message: 'Unable to complete operation.', details: [] } };
+  const server = (...answers: Array<unknown>) => {
+    const asked: Array<string> = [];
+
+    return {
+      asked,
+      get: async (url: string) => {
+        asked.push(url);
+        const body = answers.shift();
+
+        return { ok: () => true, status: () => 200, json: async () => body };
+      }
+    } as unknown as Parameters<typeof askCount>[0] & { asked: Array<string> };
+  };
+
+  test('asks again once after a refusal, and takes the second answer', async () => {
+    const fake = server(refusal, { count: 61 });
+    const answer = await askCount(fake, 'https://gis.example/MapServer/48', async () => undefined);
+
+    expect(answer.body).toEqual({ count: 61 });
+    expect(countQueryProblem(answer)).toBeNull();
+    expect(fake.asked).toHaveLength(2);
+  });
+
+  test('reports a layer that refuses twice', async () => {
+    const fake = server(refusal, refusal);
+    const answer = await askCount(fake, 'https://gis.example/MapServer/48', async () => undefined);
+
+    expect(countQueryProblem(answer)?.message).toContain('Unable to complete operation');
+    expect(fake.asked).toHaveLength(2);
+  });
+
+  test('asks again once when the count goes unanswered, and still fails on a second timeout', async () => {
+    let asked = 0;
+    const slowOnce = {
+      get: async () => {
+        asked++;
+
+        if (asked === 1) {
+          throw new Error('apiRequestContext.get: Timeout 30000ms exceeded.');
+        }
+
+        return { ok: () => true, status: () => 200, json: async () => ({ count: 7 }) };
+      }
+    } as unknown as Parameters<typeof askCount>[0];
+
+    expect((await askCount(slowOnce, 'https://gis.example/MapServer/19', async () => undefined)).body).toEqual({ count: 7 });
+    expect(asked).toBe(2);
+
+    const slowAlways = {
+      get: async () => {
+        throw new Error('apiRequestContext.get: Timeout 30000ms exceeded.');
+      }
+    } as unknown as Parameters<typeof askCount>[0];
+
+    await expect(askCount(slowAlways, 'https://gis.example/MapServer/19', async () => undefined)).rejects.toThrow(/Timeout/);
+  });
+
+  test('does not ask again for any other answer', async () => {
+    const fake = server({ error: { code: 400, message: "Invalid or missing input parameters." } });
+
+    await askCount(fake, 'https://gis.example/MapServer/2', async () => undefined);
+    expect(fake.asked).toHaveLength(1);
+  });
 });

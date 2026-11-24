@@ -8,6 +8,7 @@ import { expect, HEAVY, test } from './fixtures';
 import { blockAnalytics } from './analytics';
 import { waitForSettledFraming } from './framing';
 import { smokeBaseUrl } from './gis-hosts';
+import { PROBE_GLOBAL, waitForMapReady } from './map-probe';
 
 /**
  * Clicking a feature on a map opens its popup, and the popup shows that feature's data (#1117).
@@ -103,23 +104,12 @@ async function clickPoint(page: Page, clickAt: PopupCase['clickAt'], width: numb
   }, clickAt);
 }
 
-const PROBE_GLOBAL = '__tamuGiscMapProbe';
-
 /** Opens a map and waits until its layers have loaded and it has finished drawing. */
 async function openMap(page: Page, mapPath: string): Promise<void> {
   await blockAnalytics(page);
   await page.goto(mapPath);
 
-  await expect
-    .poll(
-      async () =>
-        await page.evaluate(
-          (name) => (window as unknown as Record<string, { ready?: boolean }>)[name]?.ready === true,
-          PROBE_GLOBAL
-        ),
-      { message: `the map on ${mapPath} never finished loading`, timeout: 90_000, intervals: [1_000] }
-    )
-    .toBe(true);
+  await waitForMapReady(page, `the map on ${mapPath} never finished loading`);
 
   // A click before the view has drawn can land on nothing, which would read as a broken popup.
   await expect
@@ -254,18 +244,21 @@ test.describe('popup', () => {
    * is, which is how OnPush fails on a component whose data arrives outside its inputs (#1669), keeps
    * showing the feature it opened on while every check of a single popup passes.
    *
-   * A link to a building opens with its popup, zoomed to that building, so its neighbours are always in
-   * the same place on screen: Harrington to its left and Peterson below to the right, at the suite's
-   * viewport. If the link's framing changes, the first click names the building it expected.
+   * A link to a building opens with its popup, zoomed to that building. Its neighbours are clicked where they are on the
+   * ground, not at a fixed place on screen (#2701): the link opens at zoom 19, about 190 by 110 metres, and the fixed
+   * points this used to click for Harrington and Peterson landed on Evans Library's own 0468.1 instead. Each point is
+   * one measured on 23 November 2026 as at least 4 metres inside its building's footprint in the campus features
+   * service (`TAMU_CAMPUS_FEATURES_URL`, layer 0), and within 80 metres of Evans, so both are on screen at that zoom.
+   * Neither is east of Evans: the popup covers the right of the map.
    */
   test(`/map/d?bldg=0468: clicking one building after another shows each one's popup in turn`, HEAVY, async ({ page }) => {
     test.setTimeout(180_000);
 
     const mapPath = '/map/d?bldg=0468';
     const popup = page.locator('tamu-gisc-feature-popup .popup');
-    const clicks: Array<{ clickAt: { x: number; y: number }; shows: RegExp; feature: string }> = [
-      { clickAt: { x: 0.117, y: 0.375 }, shows: /Harrington Education Center/, feature: 'Harrington' },
-      { clickAt: { x: 0.602, y: 0.819 }, shows: /Peterson Building/, feature: 'Peterson' }
+    const clicks: Array<{ clickAt: PopupCase['clickAt']; shows: RegExp; feature: string }> = [
+      { clickAt: { longitude: -96.338844, latitude: 30.616325 }, shows: /Peterson Building/, feature: 'Peterson' },
+      { clickAt: { longitude: -96.339746, latitude: 30.616333 }, shows: /Cushing Memorial Library/, feature: 'Cushing' }
     ];
 
     await openMap(page, mapPath);
@@ -280,7 +273,29 @@ test.describe('popup', () => {
     let showing = /Sterling C\. Evans Library/;
 
     for (const { clickAt, shows, feature } of clicks) {
-      await page.mouse.click(box!.x + box!.width * clickAt.x, box!.y + box!.height * clickAt.y);
+      const at = await clickPoint(page, clickAt, box!.width, box!.height);
+
+      expect(
+        at.x >= 0 && at.x <= box!.width && at.y >= 0 && at.y <= box!.height,
+        `${feature} is not on screen when ${mapPath} opens, so the link's framing has changed (#2701)`
+      ).toBe(true);
+      // The campus's event notices slide in over the map, open their event when clicked, and leave by themselves: on
+      // 23 November 2026 one covered a building to click (a football game that week) and took the page to the game's
+      // builder (#2701). So the click waits until nothing is on top of the map where it lands.
+      await expect
+        .poll(
+          () =>
+            page.evaluate(
+              ({ x, y }) => document.elementFromPoint(x, y)?.closest('.esri-view-surface, arcgis-map') !== null,
+              { x: box!.x + at.x, y: box!.y + at.y }
+            ),
+          {
+            message: `something on top of the map still covers ${feature} on ${mapPath}, so a click there would not reach it`,
+            timeout: 30_000
+          }
+        )
+        .toBe(true);
+      await page.mouse.click(box!.x + at.x, box!.y + at.y);
 
       await expect(popup, `clicking ${feature} on ${mapPath} did not show its popup`).toContainText(shows, {
         timeout: 15_000

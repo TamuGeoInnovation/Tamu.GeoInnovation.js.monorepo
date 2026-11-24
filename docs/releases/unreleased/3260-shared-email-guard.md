@@ -1,5 +1,6 @@
 ---
 issue: 3260
+app: gisday
 title: 'GIS Day admin: a repeated Ask to judge or Ask for slides email is caught whichever copy of the API it reaches'
 testOnDev: |
   | GIS Day admin: one repeat guard for every session email ([#3260](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3260)) | Not on dev: GIS Day has no dev site. After release, as an admin open a judged session with judges and send its Ask to judge email twice within ten minutes; then do the same with Ask for slides on a session with speakers | The second send emails no one, and each person is listed as "already asked ... in the last 10 minutes". Production runs two copies of the API, so try it several times: it must never send twice. Sending a speaker the session details just after asking them for slides still goes: each email has its own guard |

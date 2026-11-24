@@ -1,5 +1,6 @@
 ---
 issue: 3211
+app: gisday
 title: "GIS Day: The check-in QR code's Full screen works on an iPad"
 testOnDev: |
   | GIS Day: QR code full screen on an iPad ([#3211](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3211)) | Not on dev: GIS Day has no dev site. After release, sign in as an organizer on an iPad, open a session's page on [txgisday.org](https://txgisday.org/sessions), show its check-in QR code and press **Full screen** | The code fills the screen, or on an iPad that has no full screen for a page, the whole window, white with its caption under it; **Exit full screen** brings the page back. Also try an iPhone and a laptop |
