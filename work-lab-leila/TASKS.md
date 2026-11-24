@@ -81,6 +81,29 @@
 > email as it arrives if you can show one locally without sending to anyone real. Report each "branch ready" as you go.
 
 
+## Batch 203 (aggiemap: the full check on PR 3407, and what this machine is holding on disk; 24 November 2026, from `work (aggiemap)`) (High) - **now**
+
+**Why this is not on the work computer:** its disk filled to 0 bytes yesterday ([#3365](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3365)) and it is in the middle of removing 277 Docker volumes. A check there now would compete with that cleanup and add about 2.6 GiB to the very disk image it is about to compact.
+
+**Do them in this order; 2 depends on 1 only in that 1 tells us whether 2 can run at all.**
+
+**1. What is this machine holding? (report only, removes nothing.)**
+- Work from a worktree at `fork/chore/3400-disk-guard-and-tidy` (the branch of [PR 3407](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3407)); it is not on `development` yet.
+- Run `bash scripts/tidy.sh` with **no arguments**. It only reports. **Do not run `--yes` or `--compact`.**
+- Report: its whole output, plus free space on this machine's disk and the size of `docker_data.vhdx` if this machine has one. The work computer's numbers for comparison: 460 worktrees at 589 MiB, 323 volumes at 2,705 MiB each, and a 991 GB Docker disk image.
+- This is the measurement behind [#3400](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3400): whether the same creep is on every machine or only that one.
+
+**2. The full check on PR 3407's head.**
+- `scripts/check-in-volume.sh chore/3400-disk-guard-and-tidy` (affected). **Read the log's own `Exit N` line** and report it verbatim.
+- **What makes this one awkward, and why it needs saying in the report:** this branch *changes the script you are running it with*. The check runs the committed copy from the volume's clone, so it exercises the new code. Two things to look for and quote:
+  - The header line should now print free space, e.g. `... parallel 8; 162.8 GiB free; log: ...`.
+  - If this machine has under 60 GiB free, the run will **sweep before it starts** - removing worktrees whose pull request has merged and `tamu-js-<issue>` volumes whose issue is closed - and say so. That is the new behaviour and it is fine, but say in the report whether it happened, because it changes what task 1 measured.
+- Also run `bash scripts/tidy.test.sh` (15 cases) and `bash scripts/check-in-volume.test.sh`, and give both counts. They need no Docker and no network.
+
+**Don't touch:** `development`, any tag, any pull request, and the work computer. Do not run `tidy.sh --yes` on this machine in this batch - task 1 is a measurement and the director decides what gets removed.
+
+Report `work-lab-leila/reports/2026-11-24-203.md`, then say "report ready: <file>".
+
 ## Batch 202 (security: #1457, the unused-components table refreshed; 24 November 2026, from `work (security)`) (Low) - **after 201**
 
 [#1457](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1457) (with #2122, merged as PR 3356 today, and #1899). Read all three to the end first, including what was decided to keep.
