@@ -5,7 +5,7 @@
 
 Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
-Last batch done: 8
+Last batch done: 9
 
 ## What this is
 
@@ -33,10 +33,10 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch 9 (aggiemap: #3150, #3149, High)**, started 8:31 PM Central. Next update by 9:50 PM Central.
-  Progress (9:24 PM): #3150 branch ready on the fork (a3f5220c5): phone tap now opens /map/m/bus/NW0104 with its timetable; check a pass under the rule. #3149: Directions added to the phone menu; Angular's router shows the issue's 'correct' ['./trip'] is itself broken - the stop search's back arrow goes to the main map - filed #3319 and fixed with the same link (['../../trip']); red first, green; check and after images running.
+- **Batches 11 and 12 (gisday: #2893 admin images, #3244 phone images)**, together, on the signed-in GIS Day stack, started 9:37 PM Central. Next update by 10:07 PM Central.
 
 ## Finished
+- **Batch 9 (aggiemap: #3150, #3149)** (report `laptop/reports/2026-11-23-9.md`): two branches ready, `fix/3150-bus-route-phone` (`a3f5220c5`) and `fix/3149-phone-directions` (`fa868e398`). Both proven on a phone first, red first, with images; #3149 check exit 0. **Found and filed #3319**: the stop search's back arrow (the issue's "correct" `./trip`) went to the main map; fixed with #3149's link. **Two questions.**
 - **Batch 7 (security: #3265)** (report `laptop/reports/2026-11-23-7-security.md`): branch ready, `fix/3265-basemap-source-scan` on the fork at `2ff127da9`.
   - **Fix:** the source scan runs once, in the describe's `beforeAll`. Assertions unchanged.
   - **Timing:** same load both ways (a mounted checkout). Before: 85.7 s and 83.5 s, both timed out. After: 9 ms and 10 ms, 17 passed.
@@ -72,7 +72,7 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
   - **Bug-fix check:** `gisday-angular,gisday-nest`, exit 0.
   - **Signed in on txgisday-dev:** exit 0.
   - **AggieMap `legend.spec.ts` on dev:** exit 1, failing on dev's data, not setup. Filed #3271.
-- Six batches, after batch 9, in the order they arrived: 11 (gisday: #2893 admin images) and 12 (gisday: #3244 phone images) together, 13 (gisday: #3314 hourly check-ins chart), a11 (aggiemap: #3271), g14 (gisday: #1756), g15 (gisday: backlog #521 to #567). Batch 10 was withdrawn, moved to home a1.
+- Four batches, after 11 and 12, in the order they arrived: 13 (gisday: #3314 hourly check-ins chart), a11 (aggiemap: #3271), g14 (gisday: #1756), g15 (gisday: backlog #521 to #567). Batch 10 was withdrawn, moved to home a1.
   - **One question.**
 
 ## Queued
