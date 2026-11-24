@@ -1,5 +1,25 @@
 # Home machine: current tasks
 
+## Batch g100 (gisday: #3379, then #3329; 24 November 2026, about 6:00 AM Central, from `work (gisday)`) (Low) - **now**
+
+**Decided:** your g99 question 1, **A**. Filed as [#3379](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3379) (Low). Your g99 branch is PR 3378.
+
+1. **[#3379](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3379), the five providers that clone nested records.** Branch `refactor/3379-nested-season-copy` **from your
+   g99 branch** (`refactor/3324-season-scoped-provider`, PR 3378, not merged); say so at the top of the PR body, as "stacked on
+   PR 3378: merge that first". One shape (the shared copy plus a per-provider hook for the nested part, or better if you find
+   it), the five moved onto it, with the shared guards and 422s; red first where a copy lacked a guard. The same pin-and-differences
+   table as g99. Check `gisday-platform-data-api,gisday-nest`. If the design is not clear from the code, stop at the report with
+   options and a recommendation rather than guessing.
+2. **[#3329](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3329), one season picker.** From the latest `development`, branch `refactor/3329-season-picker`. Rule 4 first.
+   A `SeasonPicker` in `platform/ngx/common` that keeps the season in the address (`?season=`), used by `BaseAdminListComponent`,
+   the research-competition pages that use `seasonChoice()` (Rubrics, Judging results, Winners), and the account and VGI
+   dashboards, which then stop extending the list base just for it. Keep what a new site with no season does (#2076). Pin the
+   behaviour first (the address after choosing, a reload keeping the choice, no season). It is visible on admin pages, so no
+   PR until the laptop's images: report "branch ready" and the director queues them.
+
+Overnight rules: no package.json or lock changes. Push to the fork; one report, `home/reports/2026-11-24-g100.md`, with both PR
+bodies.
+
 ## Batch g99 (gisday: #3324, one season-scoped base provider; 24 November 2026, about 5:15 AM Central, from `work (gisday)`) (Low) - **now**
 
 [#3324](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3324): ten providers each write `forSeason`, `forActiveSeason` and `copyIntoSeason`, and one catch block is pasted
