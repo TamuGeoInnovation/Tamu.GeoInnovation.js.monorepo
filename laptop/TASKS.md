@@ -1,5 +1,22 @@
 # Laptop: current tasks
 
+## Batch g19 (gisday: images for #3329, then a signed-in triage of #498, #439, #466 and #477; 24 November 2026, about 6:45 AM Central, from `work (gisday)`) (Low) - **after g17's #545**
+
+1. **#3329 images.** Home's `refactor/3329-season-picker` on the fork, at `f20b893ee`. Fast-forward only. With two seasons of made-up
+   data: Rubrics, one admin list (Tags, say) and the account dashboard, each before (merge-base) and after, at 1280: after choosing
+   the older season, and after a reload (the judging pages' season now survives it). Commit to `docs/screenshots/3329-season-picker/`,
+   add `docs/releases/unreleased/3329-season-picker.md` (`app: gisday`, Before | After table, *What to test* row on production
+   Admin as GIS Day has no dev site, #1525), `collate --check`, push, and report "images pushed (3329): <sha>" first, with the
+   table for the PR body.
+2. **Triage, as g15:** [#498](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/498) (a speaker that cannot be deleted), [#439](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/439) (admin Speakers' season filter), [#466](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/466) (speaker panels' heights),
+   [#477](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/477) (a presenter's sessions on their details page; #3345 and #441 may have done it). One row each: done already (with
+   the PR), small and still wanted (build it, a branch each, red first, images), or needs the maintainer (options and a
+   recommendation). #498 names a production speaker: reproduce it with a made-up speaker shaped the same way (sessions, links),
+   never with the real one, and put no real names in the report.
+
+Overnight rules: no package.json or lock changes; made-up data; no email; never production; txgisday-dev only. Report
+`laptop/reports/2026-11-24-g19.md`.
+
 ## Batch g18 (gisday: before and after images for #3328, the RSVP-type and submission-type admin pages; 24 November 2026, about 4:30 AM Central, from `work (gisday)`) (Low) - **next, before g17's #545; on your signed-in stack**
 
 Home's `chore/3328-type-pages` on the fork, at `3075dbb1e`, moves both type pages onto the current admin bases. Titles, the Add link
