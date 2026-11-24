@@ -1,22 +1,18 @@
 # Unreleased
 
-Since `68d7b974c`, the **13 November 2026** release.
+Nothing yet. The five AggieMap entries of the last cycle moved into
+[24 November 2026](2026-11-24.md), and the period's 139 GIS Day entries into
+[GIS Day, unreleased](gisday-unreleased.md).
 
-**The latest release notes are [13 November 2026](2026-11-13.md)**, built from `68d7b974c` and on production. It
-was promoted at the marketing team's request **before the release tier ran**, and it carries no tag until the
-suite reports - that file records both, and is updated with the run's result.
-
-Before it: [11 November 2026 (second release)](2026-11-11-2.md) from `94348414a`, whose notes were written on the
-13th after the fact, because the release shipped without them and its entries were still sitting in `unreleased/`.
-Then [10 November 2026](2026-11-10.md) from `3254b114e`, promoted as `prod-2026-11-11`, which also put
-[30 October](2026-10-30.md)'s **215 pull requests** in front of visitors for the first time; production ran
-`36b962a04` from 22 October until then. The release before 30 October is
-[21 October 2026](2026-10-21.md), from `61161ce1b`.
+**The latest release notes are [24 November 2026](2026-11-24.md)**, built from `61dc13b89`. Before it:
+[13 November 2026](2026-11-13.md) from `68d7b974c`, promoted at the marketing team's request **before its
+release tier ran**; then [11 November 2026 (second release)](2026-11-11-2.md) from `94348414a`, whose notes
+were written on the 13th after the fact, and [10 November 2026](2026-11-10.md) from `3254b114e`, promoted as
+`prod-2026-11-11`.
 
 **This file is AggieMap's.** GIS Day is released on its own path and its changes collect in
-[GIS Day, unreleased](gisday-unreleased.md), not here - 27 of the same commit range's pull requests were GIS
-Day's. They used to go in this file with AggieMap's, which is how the 10 November notes came to describe GIS
-Day work as part of an AggieMap release. See [Releasing GIS Day](README.md#releasing-gis-day).
+[GIS Day, unreleased](gisday-unreleased.md), not here - 180 of the last cycle's 236 pull requests were GIS
+Day's. See [Releasing GIS Day](README.md#releasing-gis-day).
 
 This file collects what merges from here until the next release. **A pull request with a user-visible
 result adds its own file to [`unreleased/`](unreleased/README.md), in that pull request**, with its
@@ -28,9 +24,7 @@ the files are collated here at release ([#2037](https://github.com/TamuGeoInnova
 
 ## Summary
 
-Nothing yet. The two AggieMap entries moved into [13 November 2026](2026-11-13.md), the two already on
-production since 11 November into [11 November 2026 (second release)](2026-11-11-2.md), and the period's 14 GIS
-Day entries into [GIS Day, unreleased](gisday-unreleased.md).
+Nothing yet.
 
 ## What to test on dev
 
@@ -39,9 +33,77 @@ Day entries into [GIS Day, unreleased](gisday-unreleased.md).
 production. A pull request with a visible result adds its own row; at release, the rows move into the
 dated notes as what was tested, and this table empties.
 
-**Nothing waiting:** the rows moved into the [13 November notes](2026-11-13.md) and the [11 November notes](2026-11-11-2.md).
+**Nothing waiting:** the rows moved into the [24 November notes](2026-11-24.md).
 
 ---
+
+## Work in flight - 24 November
+
+**Read this section, not the ones below it.** They are kept as a record and are out of date.
+
+### AggieMap on 24 November, midday Central: what another machine most needs to know
+
+- **The 24 November build is on dev and cleared, not on production.** `61dc13b89` is on dev; production still
+  runs `68d7b974c` (`prod-2026-11-13`). The `release` tier ran against dev on a quiet machine and reported
+  **9 failed, 14 flaky, 71 skipped, 1033 passed in 1.4 h**, against 18 failed and 982 passed on the 23rd. The
+  numbers and the reading of every failure are in [24 November 2026](2026-11-24.md). The `dev-*` tag, the
+  promotion and the `prod-*` tag are the maintainer's.
+- **The tier cannot come back green until [#3416](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3416) is fixed.** #3352's basemap scraper check
+  flags `NearmapCSBasemap`, whose URL is a literal address rather than a campus constant. It fails in under
+  20 ms on every run, load or no load. **It is a fault in the check and visitors see nothing**, but while it
+  stands, a genuinely clean release is indistinguishable from a red one. Fix it before the next release tier.
+- **Two failures are real on a quiet machine and both predate this release**, failing identically as "never
+  finished drawing": indoor-track-parking's layer order on 2 of 3 loads
+  ([#3369](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3369)) and break-summer's Lot 100g popup. Timing work, not
+  flakiness to retry through.
+- **`basemap-requests` ([#3364](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3364)) is load-only and now answered.** It passed on its
+  first try with nothing else on the machine. It measures the machine, not the campus features service.
+- **Two services had a bad hour during the run, neither of them ours.** The dining API was unreachable now
+  and then across the 1.4 hours and passed 9 of 9 when re-run alone; **production's** basemap service answers
+  `400` to count queries on three layers at random and refuses records past its 2,000 limit.
+
+### The release cadence is the open decision
+
+[#3411](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3411) carries the maintainer's goal of a branch that is always safe to deploy, and what was
+decided on 24 November: `main` becomes a promotion branch moved only by `scripts/tag-build.sh prod`, `master`
+is deleted, and **the cadence shortens**. That last part matters most. 236 commits in one release is why the
+tier had eighteen failures to triage a day earlier; twenty commits usually passes, and when it does not, the
+cause is obvious. "Always deployable" is nearly free at twenty commits and nearly impossible at 236. What the
+cadence should be is the maintainer's call; the measurement to watch is failures per release tier.
+
+### The disk, which stopped two machines on 23 and 24 November
+
+An overnight outage on the work machine was Docker filling the disk: **365 worktrees of merged branches** and
+**277 volumes for closed issues**, with `docker_data.vhdx` at **991.8 GB**. Removing them and compacting the
+disk took it to **296.1 GB** and returned about **696 GB**. Nothing was lost.
+
+- **[`scripts/tidy.sh`](../../scripts/tidy.sh) and the check's own guard are now in ([#3400](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3400), [PR 3407](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3407)).**
+  `scripts/check-in-volume.sh` refuses to start below 20 GiB free and sweeps merged worktrees and closed-issue
+  volumes when it is below 60, so this cannot build up silently again. `bash scripts/tidy.sh` reports;
+  `--yes` removes; `--compact` reclaims the image, and refuses while anything but a database container runs.
+- **Every machine has the same creep.** The home machine was measured at 82.4 GiB free with an 853.8 GiB
+  image, 331 worktrees and 309 volumes - about two and a half checks from the refusal. Run `tidy.sh` there
+  before giving it a batch.
+- **A worktree whose longest path exceeds 260 characters cannot be removed** without `core.longpaths`;
+  `tidy.sh` names each one it could not remove rather than stopping. The main checkout and any `*-nm` volume
+  are never candidates, which is tested.
+
+### What needs the GIS team rather than us
+
+[`docs/gis-service-differences.md`](../gis-service-differences.md) now classifies all 27 development-to-production
+service differences: **11 are the GIS team's** (4 schema divergences, 3 broken or empty, 4 permissions) and 16
+are not (12 unpublished on development, 4 retired events). `scripts/check-gis-differences.mjs` fails when a
+workaround is added to `connections.ts` without its row, so the list cannot go quiet again. Its branch,
+`docs/3402-gis-service-differences` ([#3402](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3402)), is pushed and waiting on its full check and
+a pull request. The remaining half of that issue is the roughly 23 GIS-related `allowed*Failures` in
+`environments.json`, none of which is classified yet.
+
+### What each machine is working on
+
+The machines exchange work on the `work-mailbox` branch; `DIRECTOR.md` there has the rules, and
+`tools/roster.sh` prints who is listening. As of 24 November midday: **the lab machine is paused** - a student
+is using it, and no director may queue work there until the maintainer lifts it. The laptop is idle after the
+release tier and GIS Day's image work. The home machine is clearing its disk.
 
 ## Work in flight - 10 November
 
