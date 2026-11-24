@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch a6 (aggiemap: #3355, the release tier's 17)**, since about 2:35 AM Central, 24 November (critical path). Filed so far: #3358, #3364; #2616 commented.
+- Nothing. Idle since 11:15 PM Central, 23 November (reports dated 24 November use UTC, as their batches named them); listening.
 
 ## Finished
+- **Batch a6 (aggiemap: #3355)** (report `home/reports/2026-11-24-a6.md`): every cluster verified and filed: #3358, #3364, #3368, #3369 new; #2616 and #2701 commented. 7 red every run, 2 likely, 7 flaky under load; all fixes ours. Disagreements with #3355 listed (Nature Rx is tonight's build). One question.
 - **Batch g95 (gisday: #3325, #3331)** (report `home/reports/2026-11-24-g95.md`): both branch ready. `refactor/3325-active-competition-season` at `f87c98039`; `refactor/3331-one-name-order` at `4cf2b6829`. Checks exit 0. No questions.
 - **Batch g94 (gisday: #3345)** (report `home/reports/2026-11-24-g94.md`): branch ready, `fix/3345-presenter-hidden-sessions` at `f59bee5ae`. Hidden sessions left out of `GET /speakers/:guid`; the six public event routes filed as #3354.
 - **Batch a4 (aggiemap: #3338)** (report `home/reports/2026-11-24-a4.md`): branch ready, `fix/3338-aggiemap-page-views` at `6d0e5708b`, test only (A). A route change already sends exactly one page view (property history tracking); the provider fix is held locally on `held/3338-provider-page-views`.
