@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle since 12:38 AM Central, 24 November; listening.
+- **Batch g97 (gisday: #3328, type pages)**, since about 3:50 AM Central, 24 November.
 
 ## Finished
 - **Batch g96 (gisday: #3313, #3330; #3328 not started)** (report `home/reports/2026-11-24-g96.md`): `test/3313-shared-query-spec-helpers` at `614dff616` and `refactor/3330-one-dashboard-template` at `1fc17499a`, both checks exit 0. #3328 is a small feature, not a move: one question.
