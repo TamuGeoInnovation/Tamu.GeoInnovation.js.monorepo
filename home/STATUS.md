@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch g98 (gisday: #3323, Central time)**, since about 4:35 AM Central, 24 November.
+- Nothing. Idle since 1:16 AM Central, 24 November; listening.
 
 ## Finished
+- **Batch g98 (gisday: #3323)** (report `home/reports/2026-11-24-g98.md`): branch ready, `refactor/3323-central-time` at `f4b3224a1`. One Central-time module; every caller on it; chart library unchanged (it already takes the zone). Pins pass before and after; the narrow space before AM/PM is the one, intended, difference.
 - **Batch g97 (gisday: #3328)** (report `home/reports/2026-11-24-g97.md`): branch ready, `chore/3328-type-pages` at `3075dbb1e`. One type form and one set of type pages on the current admin bases; the old base classes gone. Red first (the four Escape tests); check exit 0. Images are the laptop's.
 - **Batch g96 (gisday: #3313, #3330; #3328 not started)** (report `home/reports/2026-11-24-g96.md`): `test/3313-shared-query-spec-helpers` at `614dff616` and `refactor/3330-one-dashboard-template` at `1fc17499a`, both checks exit 0. #3328 is a small feature, not a move: one question.
 - **Batch a7 (aggiemap: the deterministic four of #3355)** (report `home/reports/2026-11-24-a7.md`): four branches ready. #3368 and #2701 proven on dev (and production for #2701); #3358 proven by unit test, likely on dev after deploy (#3271 likely too); #2616 proven for counts, a paging flake remains. One question.
