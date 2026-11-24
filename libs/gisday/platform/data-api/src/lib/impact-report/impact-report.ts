@@ -1,3 +1,5 @@
+import { toCsv } from '@tamu-gisc/common/utils/ui';
+
 /**
  * The GIS Day impact report's counts (#3238): one season's numbers, by definitions kept here so every season is counted
  * the same way and two seasons compare.
@@ -479,11 +481,8 @@ function impactMeasures(report: ImpactReport): Array<[string, number]> {
   return measures;
 }
 
-const csvCell = (value: string | number | null | undefined) => {
-  const text = value === null || value === undefined ? '' : `${value}`;
-  return /[",\r\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
-};
-const csv = (rows: Array<Array<string | number | null | undefined>>) => rows.map((r) => r.map(csvCell).join(',')).join('\r\n') + '\r\n';
+/** The report's rows as a CSV file: the first row is the header, and the file ends with a line break, as it always has. */
+const csv = ([header, ...rows]: Array<Array<string | number | null | undefined>>) => toCsv(header as Array<string>, rows) + '\r\n';
 
 /**
  * Two seasons compared (#3238): `measures`, one row per measure with the earlier and later season's numbers, the

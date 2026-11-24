@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -10,6 +10,7 @@ import { COMPETITION_VALIDATION_STATUS } from '@tamu-gisc/gisday/common';
 import { CompetitionSeason, CompetitionSubmission, ICompetitionSeasonFormOption } from '../entities/all.entities';
 import { BaseService } from '../_base/base.service';
 import { previousSeasonFinds } from '../leaderboard/leaderboard.service';
+import { activeCompetitionSeason } from '../season/active-season';
 
 @Injectable()
 export class MapService extends BaseService<CompetitionSubmission> {
@@ -53,7 +54,7 @@ export class MapService extends BaseService<CompetitionSubmission> {
   }
 
   public async getLocationsForActiveSeason(format: ResponseFormat) {
-    const competitionSeason = await this._getActiveCompetitionSeason();
+    const competitionSeason = await activeCompetitionSeason(this.seasonRepo, this.compSeasonRepo);
 
     return this.getLocationsForSeasonId(competitionSeason.guid, format);
   }
@@ -71,7 +72,7 @@ export class MapService extends BaseService<CompetitionSubmission> {
    * so a row of plaques a few metres apart does not chain into one.
    */
   public async getAlreadyFoundForActiveSeason(format: ResponseFormat = 'json') {
-    const competitionSeason = await this._getActiveCompetitionSeason({ form: true, season: true });
+    const competitionSeason = await activeCompetitionSeason(this.seasonRepo, this.compSeasonRepo, { form: true, season: true });
     const typeQuestion = competitionSeason.form?.model?.find((q) => q.isDiscriminator === true);
     const { year, finds } = await previousSeasonFinds(this.compSeasonRepo, this.submissionRepo, competitionSeason);
 
@@ -114,29 +115,11 @@ export class MapService extends BaseService<CompetitionSubmission> {
   }
 
   public async getUserLocationsForActiveSeason(userGuid: string, format: ResponseFormat) {
-    const competitionSeason = await this._getActiveCompetitionSeason();
+    const competitionSeason = await activeCompetitionSeason(this.seasonRepo, this.compSeasonRepo);
 
     return this.getLocationsForUserSeason(competitionSeason.guid, userGuid, format);
   }
 
-  private async _getActiveCompetitionSeason(relations?: { form?: boolean; season?: boolean }) {
-    const activeSeason = await this.seasonRepo.findOne({ where: { active: true } });
-
-    if (!activeSeason) {
-      throw new NotFoundException('No active season found.');
-    }
-
-    const competitionSeason = await this.compSeasonRepo.findOne({
-      where: { season: { guid: activeSeason.guid } },
-      relations
-    });
-
-    if (!competitionSeason) {
-      throw new NotFoundException('No competition season found.');
-    }
-
-    return competitionSeason;
-  }
 
   private _formatSubmissionsCollection(format: ResponseFormat, submissions: CompetitionSubmission[]) {
     if (format === 'geojson') {

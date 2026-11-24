@@ -201,6 +201,11 @@ export class UserSubmissionsService extends BaseService<Submission> {
     return this.http1.get(`${this.resource}/${submissionGuid}/files/${fileGuid}`, { responseType: 'blob' });
   }
 
+  /** One file to show in the page, for an admin (#3090): a PDF; anything else is refused, and downloaded instead. */
+  public getFilePreview(submissionGuid: string, fileGuid: string) {
+    return this.http1.get(`${this.resource}/${submissionGuid}/files/${fileGuid}/preview`, { responseType: 'blob' });
+  }
+
   /** Every file of a season's submissions as one zip, for the admins; with `submissions`, only those (#3174). */
   public getSeasonFilesZip(seasonGuid: string, submissions?: ReadonlyArray<string>) {
     const only = submissions?.length ? `?submissions=${submissions.map(encodeURIComponent).join(',')}` : '';

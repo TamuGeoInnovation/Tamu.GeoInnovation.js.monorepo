@@ -5,6 +5,7 @@ import { expect, HEAVY, test } from './fixtures';
 import { APP_ROOT } from './global-setup';
 import { blockAnalytics } from './analytics';
 import { smokeBaseUrl } from './gis-hosts';
+import { PROBE_GLOBAL } from './map-probe';
 
 /**
  * The campus features service answers the main map's feature queries (#2702, #2722).
@@ -38,8 +39,6 @@ const MIN_QUERIES_PER_LOAD = 10;
 
 /** The window each load is made in, which decides how many queries it sends (see below). */
 const VIEWPORT = { width: 1280, height: 950 };
-
-const PROBE_GLOBAL = '__tamuGiscMapProbe';
 
 interface Load {
   queries: number;

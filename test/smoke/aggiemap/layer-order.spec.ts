@@ -4,6 +4,7 @@ import * as path from 'path';
 import { expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
 import { isDevelopmentUrl, smokeBaseUrl } from './gis-hosts';
+import { PROBE_GLOBAL } from './map-probe';
 
 /**
  * A layer its definition orders above another is drawn above it (#2059).
@@ -25,8 +26,6 @@ import { isDevelopmentUrl, smokeBaseUrl } from './gis-hosts';
  * from `declared-layers.generated.json`, which a unit test in `ts-events-ngx` keeps equal to the definitions,
  * so the skip ends by itself once the development version has both layers.
  */
-
-const PROBE_GLOBAL = '__tamuGiscMapProbe';
 
 /** Whether this environment reads the development GIS server, and so draws a map's development version. */
 const DEVELOPMENT_GIS = isDevelopmentUrl(smokeBaseUrl());

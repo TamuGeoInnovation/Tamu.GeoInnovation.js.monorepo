@@ -1,4 +1,5 @@
 import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { GISDAY_TIME_ZONE } from '@tamu-gisc/gisday/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Observable, catchError, filter, map, of, switchMap, tap } from 'rxjs';
 
@@ -58,7 +59,7 @@ export function dashboardRows(events: Array<DashboardItem>): Array<DashboardTabl
 
 /** An event's CSV file name: its name and day, as <prefix>-<name>-<day>. */
 export function dashboardFileName(prefix: string, event: DashboardItem): string {
-  const name = [fileNamePart(event.name ?? 'event'), event.starts ? dayIn(new Date(event.starts), 'America/Chicago') : null]
+  const name = [fileNamePart(event.name ?? 'event'), event.starts ? dayIn(new Date(event.starts), GISDAY_TIME_ZONE) : null]
     .filter(Boolean)
     .join('-');
 

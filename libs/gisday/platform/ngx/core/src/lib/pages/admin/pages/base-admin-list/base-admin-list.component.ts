@@ -44,6 +44,8 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
   public $signal: Subject<boolean> = new Subject();
 
   public selectedSeason$: Observable<Partial<Season>>;
+  /** The selected season's records before the page's filters and search, for a filter that offers what they hold (#434). */
+  protected listed$: Observable<Array<Partial<T>>>;
   public selectedRows$: Observable<Array<string>>;
 
   private _selectRow$: Subject<string | Array<string>> = new Subject();
@@ -132,14 +134,14 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
 
     // A conditional, not iif: iif builds both branches at once, so with no season (a new site) it read
     // season.guid on null and the list was blank (#2076).
-    const seasonEntities$ = this.selectedSeason$.pipe(
+    this.listed$ = this.selectedSeason$.pipe(
       switchMap((season) =>
         season ? this.entityService.getEntitiesForSeason(season.guid) : this.entityService.getEntitiesForActiveSeason()
       ),
       shareReplay()
     );
     const filters = Object.values(this.listFilters()).map((control) => control.valueChanges.pipe(startWith(control.value)));
-    const searched$ = combineLatest([seasonEntities$, ...filters]).pipe(
+    const searched$ = combineLatest([this.listed$, ...filters]).pipe(
       map(([listed]) => {
         const all = listed ? (listed as Array<Partial<T>>).filter((entity) => this.keepEntity(entity)) : listed;
         const fields = this.searchFields;

@@ -118,7 +118,7 @@ a {
 }
 
 a {
-  color: #500000;
+  color: $aggie-maroon;
   text-decoration: underline;
   font-size: inherit;
   font-weight: 500;
@@ -129,19 +129,19 @@ a {
 }
 
 a:link {
-  color: #500000;
+  color: $aggie-maroon;
   text-decoration: underline;
 }
 
 a:visited {
-  color: #500000;
+  color: $aggie-maroon;
   text-decoration: underline;
 }
 
 a:hover,
 a:active,
 a:focus {
-  color: #500000;
+  color: $aggie-maroon;
 }
 
 a:visited {
@@ -400,12 +400,12 @@ input[type='email'] {
       display: inline-block;
       width: auto;
       padding: 0.75rem 1rem;
-      background: #500000;
+      background: $aggie-maroon;
       color: #f5f5f5;
       cursor: pointer;
 
       &:focus {
-        background: lighten(#500000, 5%);
+        background: lighten($aggie-maroon, 5%);
       }
     }
   }
@@ -554,7 +554,7 @@ input[type='email'] {
   width: 100%;
   top: 0;
   left: 0;
-  background: #500000;
+  background: $aggie-maroon;
   z-index: 9999;
   opacity: 1;
   text-align: center;
@@ -800,7 +800,7 @@ $button-hover: #005e95;
   min-height: 3.3rem;
   padding: 0 2.75rem;
 
-  background: #500000;
+  background: $aggie-maroon;
   color: #ffffff;
   border-radius: 0;
   text-transform: uppercase;

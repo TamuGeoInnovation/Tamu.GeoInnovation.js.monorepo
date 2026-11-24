@@ -2,6 +2,7 @@ import { Page } from '@playwright/test';
 
 import { expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
+import { PROBE_GLOBAL } from './map-probe';
 
 /**
  * One map's settings are never used on another (#1397).
@@ -21,8 +22,6 @@ import { blockAnalytics } from './analytics';
  *
  * Add a map by adding a route.
  */
-
-const PROBE_GLOBAL = '__tamuGiscMapProbe';
 
 /** Maps that set `defaultLayerOverrides`, opened at a route that needs no builder choices. */
 const ROUTES = ['/kiosk/dining/map', '/parking/break-summer/map/d', '/events/ring-day/map/d?event-day=day1'];

@@ -3,7 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { MoreThan, Repository } from 'typeorm';
 
 import { SpeakerEmailClaim } from '../entities/all.entity';
-import { REPEAT_SEND_MINUTES } from './speaker-edit.service';
+import { EMAIL_LANES, inParallel } from '../_base/in-parallel';
+import { REPEAT_SEND_MINUTES, SendResult } from './speaker-edit.service';
 
 /**
  * The repeat guard of a session's speaker emails (#3065, #3098, #3260): the session details, Ask for slides and Ask to
@@ -66,8 +67,67 @@ export class RepeatGuard {
   }
 }
 
-/** The earliest of some claims: by when, then by id, so every copy of the API picks the same one. */
-function firstOf(rows: Array<Pick<SpeakerEmailClaim, 'guid' | 'created'>>): Pick<SpeakerEmailClaim, 'guid' | 'created'> {
+/** How one of a session's speaker emails is sent, for `sendEach`. */
+export interface EachEmail<S extends { guid: string }> {
+  /** Which email, for its claims. */
+  kind: string;
+  sessionGuid: string;
+  /** Who an email went to, as the result names it: one speaker, or a together email's group (#3104). */
+  name: (group: Array<S>) => string;
+  /** Why a repeat was skipped: "already ... in the last N minutes" is added after it. */
+  repeated: string;
+  /** Sends the email to the group. */
+  send: (group: Array<S>) => Promise<void>;
+  /** What is done once it has gone: the send record (#3167). */
+  sent?: (group: Array<S>) => Promise<void>;
+  /** Logs an email that could not be sent. */
+  failed: (group: Array<S>, err: Error) => void;
+}
+
+/**
+ * Sends each of `emails` (a group of speakers, one email each) several at a time (#3067), each claimed before it goes
+ * so a repeat is skipped (#3098, #3260), and released if it could not be sent so the admin may try again at once. The
+ * session details, Ask for slides and Ask to judge emails each wrote this loop out themselves (#3326).
+ */
+export async function sendEach<S extends { guid: string }>(
+  repeats: Pick<RepeatGuard, 'claim' | 'release'>,
+  emails: Array<Array<S>>,
+  how: EachEmail<S>
+): Promise<SendResult> {
+  const parts = await inParallel(emails, EMAIL_LANES, async (group) => {
+    const part: SendResult = { sent: [], skipped: [] };
+    const name = how.name(group);
+    const claimed = await repeats.claim(how.kind, how.sessionGuid, group);
+
+    if (!claimed) {
+      part.skipped.push({ name, reason: `${how.repeated} in the last ${REPEAT_SEND_MINUTES} minutes` });
+      return part;
+    }
+
+    try {
+      await how.send(group);
+      part.sent.push(name);
+      await how.sent?.(group);
+    } catch (err) {
+      // Not sent, so not a repeat: the admin may try again at once.
+      await repeats.release(claimed);
+      how.failed(group, err);
+      part.skipped.push({ name, reason: 'the email could not be sent' });
+    }
+
+    return part;
+  });
+
+  return { sent: parts.flatMap((p) => p.sent), skipped: parts.flatMap((p) => p.skipped) };
+}
+
+/**
+ * The earliest of some claims: by when, then by id, so every copy of the API picks the same one. The profile email's
+ * links are claimed the same way (#3326).
+ */
+export function firstOf(
+  rows: Array<Pick<SpeakerEmailClaim, 'guid' | 'created'>>
+): Pick<SpeakerEmailClaim, 'guid' | 'created'> {
   return [...rows].sort(
     (a, b) => new Date(a.created).getTime() - new Date(b.created).getTime() || a.guid.localeCompare(b.guid)
   )[0];

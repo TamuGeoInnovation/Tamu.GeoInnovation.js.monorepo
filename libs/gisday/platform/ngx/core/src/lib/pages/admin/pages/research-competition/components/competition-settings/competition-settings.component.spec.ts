@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 
 import { Season } from '@tamu-gisc/gisday/platform/data-api';
-import { SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { EventService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { DEADLINE_COMPETITIONS } from '@tamu-gisc/gisday/common';
 
 import { CompetitionSettingsComponent } from './competition-settings.component';
@@ -28,12 +28,25 @@ describe('CompetitionSettingsComponent', () => {
   function open(season: Partial<Season> | null, saves: { competitions?: () => unknown; deadlines?: () => unknown } = {}) {
     const seasons = {
       setSubmissionDeadlines: jest.fn(saves.deadlines ?? (() => of({}))),
-      setCompetitionTypes: jest.fn(saves.competitions ?? (() => of({})))
+      setCompetitionTypes: jest.fn(saves.competitions ?? (() => of({}))),
+      setCompetitionSettings: jest.fn(() => of({ saved: 1 }))
+    };
+    // The season's sessions to choose from (#3019).
+    const events = {
+      getEntitiesForSeason: jest.fn(() =>
+        of([
+          { guid: 'e-poster', name: 'Poster gallery walk' },
+          { guid: 'e-awards', name: 'Closing ceremony' }
+        ])
+      )
     };
 
     TestBed.configureTestingModule({
       imports: [CompetitionSettingsComponent],
-      providers: [{ provide: SeasonService, useValue: seasons }]
+      providers: [
+        { provide: SeasonService, useValue: seasons },
+        { provide: EventService, useValue: events }
+      ]
     });
 
     const fixture = TestBed.createComponent(CompetitionSettingsComponent);
@@ -46,7 +59,8 @@ describe('CompetitionSettingsComponent', () => {
     const checkbox = (label: string) => checkboxes().find((c) => c.querySelector('label')?.textContent?.trim() === label);
     const isChecked = (label: string) =>
       checkbox(label)?.querySelector('.material-icons')?.textContent?.trim() === 'check_box';
-    const rows = () => Array.from(page.querySelectorAll('tbody tr'));
+    // The deadlines' rows; the sessions have a table of their own (#3019).
+    const rows = () => Array.from(page.querySelectorAll('.deadlines-table:not(.sessions-table) tbody tr'));
     const status = () => page.querySelector('[role="status"]')?.textContent?.trim();
     const save = () => {
       page.querySelector('form')?.dispatchEvent(new Event('submit'));
@@ -245,7 +259,7 @@ describe('CompetitionSettingsComponent', () => {
     toggle()?.click();
     fixture.detectChanges();
 
-    const cells = Array.from(page.querySelectorAll('tbody td'));
+    const cells = Array.from(page.querySelectorAll('.deadlines-table:not(.sessions-table) tbody td'));
     expect(cells).toHaveLength(DEADLINE_COMPETITIONS.length * 2);
 
     for (const cell of cells) {
@@ -290,7 +304,9 @@ describe('CompetitionSettingsComponent', () => {
     const { fixture, page, toggle } = open({ guid: 'season-1', year: 2026 } as Partial<Season>);
 
     expect(toggle()?.getAttribute('aria-expanded')).toBe('true');
-    expect(page.querySelectorAll('tamu-gisc-date-time-picker')).toHaveLength(DEADLINE_COMPETITIONS.length * 2);
+    expect(page.querySelectorAll('.deadlines-table:not(.sessions-table) tamu-gisc-date-time-picker')).toHaveLength(
+      DEADLINE_COMPETITIONS.length * 2
+    );
 
     toggle()?.click();
     fixture.detectChanges();
@@ -298,5 +314,64 @@ describe('CompetitionSettingsComponent', () => {
     expect(page.querySelector('.settings-summary')?.textContent?.trim()).toBe(
       'Poster, presentation, paper and cartography competitions. No deadlines set: each is open.'
     );
+  });
+
+  // #3019, decided 6A and 7A: each competition's sessions and its finalists date, chosen here and saved with the rest.
+  describe('sessions and finalists', () => {
+    it("offers the season's sessions, after the choice to find one by its name", () => {
+      const { fixture } = open(withDeadlines);
+
+      expect(fixture.componentInstance.sessionChoices().map((c) => c.name)).toEqual([
+        'By its name (COMPETITION: / AWARDS:)',
+        'Closing ceremony',
+        'Poster gallery walk'
+      ]);
+    });
+
+    it('sends the chosen sessions and finalists date after the competitions, and nothing for a competition without any', () => {
+      const { fixture, seasons } = open(withDeadlines);
+      const poster = fixture.componentInstance.form.controls.sessions.controls.poster;
+
+      poster.patchValue({
+        sessionGuid: 'e-poster',
+        awardsSessionGuid: 'e-awards',
+        finalistsNotifiedAt: '2026-11-14T18:00:00.000Z'
+      });
+      poster.markAsDirty();
+      // The panel is collapsed for a season with deadlines, so its Save is pressed as the form would.
+      fixture.componentInstance.save();
+
+      expect(seasons.setCompetitionSettings).toHaveBeenCalledWith('season-1', [
+        {
+          competitionType: 'poster',
+          sessionGuid: 'e-poster',
+          graduateSessionGuid: null,
+          awardsSessionGuid: 'e-awards',
+          finalistsNotifiedAt: '2026-11-14T18:00:00.000Z'
+        }
+      ]);
+      expect(seasons.setCompetitionTypes.mock.invocationCallOrder[0]).toBeLessThan(
+        seasons.setCompetitionSettings.mock.invocationCallOrder[0]
+      );
+    });
+
+    it("fills in what the season chose, and sends a competition's emptied choice so it is saved", () => {
+      const chose: Partial<Season> = {
+        ...withDeadlines,
+        competitions: [{ competitionType: 'poster', runs: null, sessionGuid: 'e-poster' }]
+      } as Partial<Season>;
+      const { fixture, seasons } = open(chose);
+      const poster = fixture.componentInstance.form.controls.sessions.controls.poster;
+
+      expect(poster.controls.sessionGuid.value).toBe('e-poster');
+
+      poster.controls.sessionGuid.setValue('');
+      poster.markAsDirty();
+      fixture.componentInstance.save();
+
+      expect(seasons.setCompetitionSettings).toHaveBeenCalledWith('season-1', [
+        expect.objectContaining({ competitionType: 'poster', sessionGuid: null })
+      ]);
+    });
   });
 });
