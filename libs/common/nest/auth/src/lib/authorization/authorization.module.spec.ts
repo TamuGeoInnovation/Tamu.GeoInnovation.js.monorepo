@@ -11,12 +11,12 @@ describe('AuthorizationModule.forRoot (#1794)', () => {
   };
 
   let logged: string;
-  let spy: jest.SpyInstance;
+  let spy: ReturnType<typeof vi.spyOn>;
   const before = process.env.LOGGING;
 
   beforeEach(() => {
     logged = '';
-    spy = jest.spyOn(console, 'log').mockImplementation((...args: Array<unknown>) => {
+    spy = vi.spyOn(console, 'log').mockImplementation((...args: Array<unknown>) => {
       logged += JSON.stringify(args);
     });
     process.env.LOGGING = 'true';
