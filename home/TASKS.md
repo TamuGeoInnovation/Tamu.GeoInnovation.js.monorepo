@@ -30,7 +30,7 @@ table and in the PR body text, run `node scripts/collate-release-notes.mjs --che
 fast-forward only, and report `home/reports/2026-11-23-78.md` with "images pushed (1836): <sha>" on its first line and
 the updated PR body.
 
-**Decided on your report 77:** questions 1 and 2 go to the maintainer now; the director will write the answers here.
+**Decided on your report 77 (the maintainer, about 7:20 PM Central):** 1A, #2627 closed as a duplicate of #2628. 2A, the follow-up to drop `sessions_filter_backfill` is #3300 (Task, Low, Todo); nothing for you to do on it now.
 
 ## Batch 77 (gisday: three GIS Day bugs, #2627, #2572 and #1836; 23 November 2026, about 6:55 PM Central, from `work (gisday)`) (Medium) - **after the batch you are running now (61, #1840)**
 
