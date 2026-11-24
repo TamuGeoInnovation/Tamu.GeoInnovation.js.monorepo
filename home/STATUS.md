@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle, listening.
+- **Batch a11 (aggiemap: #3425 after images again)**, from `fork/fix/3425-garage-search-off-raster` `6d2c0f118`, worktree `C:/TAMU/wt-3425`, since 5:33 PM Central.
 
 ## Finished
 - **Batch a10 (aggiemap: #3425 images)** (report `home/reports/2026-11-24-a10.md`): images on `fix/3425-garage-search-off-raster` at `118c4def0`; popup shows the name; all nine `?garage=` codes resolve; garages only, no TEEX. Found: the smoke `parking-garage` case will fail after (its term matches 0 rows). 4:53 to 5:04 PM Central.
