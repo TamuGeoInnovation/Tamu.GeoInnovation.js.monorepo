@@ -84,6 +84,7 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - Batch 10 was withdrawn, moved to home a1.
 
 ## Findings
+- **The watcher cannot run while a batch is held** (24 November, 2:10 AM Central). `tools/queued.sh laptop` lists the held a11 as `unfinished`, and `tools/listen.sh` exits at once whenever that list is non-empty ("work waiting for laptop: a11"). So laptop pushes no idle heartbeats until a11 is replaced or marked done. This session's 30-minute backstop still pulls and reads `laptop/TASKS.md`, so new work is still picked up. A held state `queued.sh` can read, or a director's note that ends a11, would fix it; I have not changed either tool.
 - `work/tools/gisday-release-check.cjs` clicks Auth0's Accept by itself. A read-only sign-in check would suit machines that only need to prove sign-in.
 - After a dev server starts, the first browser request waits minutes for Vite's dependency bundling, with no log line when it finishes. A check run right after it needs a longer first timeout.
 - The existing gallery smoke test ("choosing a basemap changes the map") is probably blocked on dev by #3279 as well. It was not run on its own, so this is not confirmed.
