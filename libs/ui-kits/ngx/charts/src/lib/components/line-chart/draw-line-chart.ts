@@ -84,19 +84,30 @@ export async function drawLineChart(host: HTMLElement, options: LineChartOptions
     }
   }
 
-  // By the hour, an hour reads "9 AM", and the first of each day its day.
+  // By the hour, an hour reads "9 AM", and each midnight its day, short enough for a phone's day-wide grid: the hover
+  // gives the weekday. Each label starts at its gridline rather than centring on it, since a day's first label is the
+  // chart's left edge, and the label at the right edge, the end of the last day, is left out: both were cut in half.
   if (hourly) {
     const formats = xAxis.get('dateFormats');
     const changes = xAxis.get('periodChangeDateFormats');
 
     if (formats) {
       formats['hour'] = 'h a';
-      formats['day'] = 'EEE, MMM d';
+      formats['day'] = 'MMM d';
     }
 
     if (changes) {
-      changes['hour'] = 'EEE, MMM d';
+      changes['hour'] = 'MMM d';
     }
+
+    const end = Math.max(...times);
+    const labels = xAxis.get('renderer').labels.template;
+    labels.setAll({ location: 0, centerX: 0, dx: 2 });
+    labels.adapters.add('forceHidden', (hidden, label) => {
+      const value = label.dataItem?.get('value' as never) as number | undefined;
+
+      return hidden || (value !== undefined && value >= end);
+    });
   }
 
   // Counted from an anchor (#3215), the axis reads in days before and after it, and its hover in that day too, since
