@@ -111,4 +111,16 @@ expect "a CHECK_PARALLEL that is not a number is refused, saying so" \
 CHECK_PARALLEL=0 check_limits >/dev/null 2>&1
 expect "a CHECK_PARALLEL of 0 is refused" "1" "$?"
 
+
+# The log's name, from the mode (#1855). Built from every project in a bug fix's list, fifteen names passed the length
+# Windows allows and the check died with "File name too long" before running anything.
+expect "affected names its log affected" "affected" "$(log_label affected)"
+expect "a short project list names its log as before" "gisday-nest-gisday-angular" "$(log_label gisday-nest,gisday-angular)"
+long="$(printf 'gisday-platform-ngx-common-%s,' 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)gisday-angular"
+expect "a long project list's name is at most 80 characters" "yes" "$([ "${#long}" -gt 80 ] && [ "$(log_label "$long" | wc -c)" -le 81 ] && echo yes || echo no)"
+expect "and still names its first project" "yes" "$(case "$(log_label "$long")" in gisday-platform-ngx-common-1-*) echo yes ;; *) echo no ;; esac)"
+expect "and says how many there are" "yes" "$(case "$(log_label "$long")" in *16-projects*) echo yes ;; *) echo no ;; esac)"
+other="${long%,gisday-angular},gisday-nest"
+expect "two long lists that differ get different names" "yes" "$([ "$(log_label "$long")" != "$(log_label "$other")" ] && echo yes || echo no)"
+
 exit "$failed"
