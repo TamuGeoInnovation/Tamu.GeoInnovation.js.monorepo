@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle, listening.
+- **Batch g102 (gisday: #3382, the other five admin forms)**, since about 2:15 AM Central, 24 November.
 
 ## Finished
 - **Batch g101 (gisday: #3354, #3340)** (report `home/reports/2026-11-24-g101.md`): both branch ready, both PRs wait for the laptop's images. `fix/3354-public-event-hidden-sessions` at `f10267dcb`, stacked on PR 3359; `refactor/3340-admin-entity-form` at `7c3884ea3`, six forms (first PR of two). Red or pinned first, both checks exit 0. One question. Finished 2:12 AM Central.
