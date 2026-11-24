@@ -457,11 +457,18 @@ What actually breaks when nobody is watching is specific and short. These four r
    to itself, and two at once is what makes the paint check time out
    ([#1716](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1716)). A director says in the
    batch which machine is running one; everyone else uses `one <spec>` or `quick` instead.
-3. **New work goes to the shortest queue, read rather than assumed.** Before writing a batch, run `bash tools/queued.sh`
-   for **all three** machines, not only the one you had in mind. Each director keeping its own listener "two batches
-   ahead" is what produced `laptop` eight deep and `home` with one outstanding on 23 November, with no single director
-   doing anything wrong. Moving a batch still means marking the old one `WITHDRAWN, moved to <name> batch <id>` in the
-   same commit as the new one.
+3. **New work goes to the shortest LISTENER queue, read rather than assumed.** Before writing a batch, run
+   `bash tools/queued.sh` for every listener, not only the one you had in mind. Each director keeping its own listener
+   "two batches ahead" is what produced `laptop` eight deep and `home` with one outstanding on 23 November, with no
+   single director doing anything wrong. Moving a batch still means marking the old one
+   `WITHDRAWN, moved to <name> batch <id>` in the same commit as the new one.
+
+   **`work` is not one of those queues.** It is where all three director chats run, it is not listening (see the listener
+   table), and on any night one of us is likely running a tier or a check on it. An empty `work` queue is not spare
+   capacity, and work moved there is work taken off a machine that could have started it now. The first reading of this
+   rule on 23 November sent two listeners' batches to `work`, which then had to wait 45 minutes for a release tier to
+   finish - the wording's fault, not the reader's. A director doing a job itself is still fine when the job needs this
+   machine; what is not fine is treating `work` as the idle machine.
 
 4. **Prove an old issue is still open before building anything for it, and say in the batch what you checked.** There are
    258 open AggieMap issues and 359 in all, many of them months old, and the board cannot tell you which have quietly been
