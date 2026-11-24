@@ -32,14 +32,14 @@ or deployment, only the entry's `hosts`, an ingress rule and Auth0's allowed add
 In [`libs/gisday/common/src/lib/sites.ts`](../libs/gisday/common/src/lib/sites.ts), add an entry to `GISDAY_SITES`
 under a short key (UCGIS's is `ucgis`). The `GisdaySite` interface documents each field; the ones every site sets:
 
-| Field | What it is | UCGIS |
-| --- | --- | --- |
-| `name` | In the header, on the homepage and in the tab | `UCGIS GIS Day` |
-| `logo`, `banner`, `favicon` | Images, relative to the front end's root | `assets/images/sites/ucgis/...` |
-| `owner` | The footer's copyright line | University Consortium for Geographic Information Science |
-| `address` | The site's own address, which link previews name ([#2649](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2649)) | `https://gisday.ucgis.org` |
-| `description`, `preview` | A link preview's sentence and its 1200 × 630 image (#2649) | |
-| `off` | The features it leaves out (`GisdayFeature`) | `competitions`, `faq`, `sponsors`, `classes`, `checkIns`, `pastYears`, `tamu`, `tamuLinks` |
+| Field                       | What it is                                                                                                                                  | UCGIS                                                                                      |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `name`                      | In the header, on the homepage and in the tab                                                                                               | `UCGIS GIS Day`                                                                            |
+| `logo`, `banner`, `favicon` | Images, relative to the front end's root                                                                                                    | `assets/images/sites/ucgis/...`                                                            |
+| `owner`                     | The footer's copyright line                                                                                                                 | University Consortium for Geographic Information Science                                   |
+| `address`                   | The site's own address, which link previews name ([#2649](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2649)) | `https://gisday.ucgis.org`                                                                 |
+| `description`, `preview`    | A link preview's sentence and its 1200 × 630 image (#2649)                                                                                  |                                                                                            |
+| `off`                       | The features it leaves out (`GisdayFeature`)                                                                                                | `competitions`, `faq`, `sponsors`, `classes`, `checkIns`, `pastYears`, `tamu`, `tamuLinks` |
 
 And where they apply: `contact` (who people write to, [#2077](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2077)),
 `signInWith` and `signInNote` (sign in straight through the organization's own Auth0 connection, as UCGIS does with
@@ -90,19 +90,19 @@ In kubernetes-config, `6. GIS Day/ucgis/04-create-database.ps1` and `04-database
 kubernetes-config's `6. GIS Day/ucgis/` is the whole of UCGIS's deployment, one file a step, applied in order. A new
 site copies the folder under its own name and changes what each file marks as UCGIS's:
 
-| File | What it does |
-| --- | --- |
-| `01-namespace.yaml` | The site's own namespace, so its names cannot clash with or reach the other sites' |
-| `02-copy-ghcr-secret.ps1` | Copies the registry pull secret into the namespace, so it can pull the images |
-| `03-volume.yaml` | Its own uploads volume (ReadWriteMany, so both copies of the site and of the API can use it) |
-| `04-create-database.ps1`, `04-database-schema.sql` | Step 2 |
-| `05-create-api-secret.ps1` | The API's secret settings (the database login and the rest); the script writes names only, never values |
-| `06-api.configmap.yaml` | The API's other settings, txgisday.org's except where marked: `GISDAY_SITE`, `ORIGINS`, `MAILROOM_TO` |
-| `07-site.configmap.yaml` | The website's settings, filled into the image when it starts: `ANGULAR_SITE`, the Auth0 application, no `G_TAG` until it has an Analytics property ([#2657](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2657)) |
-| `08-api.deployment.yaml` | The API, the same image as txgisday.org's, run as the `node` user |
-| `09-site.deployment.yaml` | The website, the same image, with its rollback target written beside the tag |
-| `10-certificate.yaml` | The address's certificate from Let's Encrypt, which succeeds only once the address's DNS reaches the cluster |
-| `11-ingress.yaml` | The address: `/api/` to the API, everything else to the website |
+| File                                               | What it does                                                                                                                                                                                                                                  |
+| -------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `01-namespace.yaml`                                | The site's own namespace, so its names cannot clash with or reach the other sites'                                                                                                                                                            |
+| `02-copy-ghcr-secret.ps1`                          | Copies the registry pull secret into the namespace, so it can pull the images                                                                                                                                                                 |
+| `03-volume.yaml`                                   | Its own uploads volume (ReadWriteMany, so both copies of the site and of the API can use it)                                                                                                                                                  |
+| `04-create-database.ps1`, `04-database-schema.sql` | Step 2                                                                                                                                                                                                                                        |
+| `05-create-api-secret.ps1`                         | The API's secret settings (the database login and the rest); the script writes names only, never values                                                                                                                                       |
+| `06-api.configmap.yaml`                            | The API's other settings, txgisday.org's except where marked: `GISDAY_SITE`, `ORIGINS`, `MAILROOM_TO`                                                                                                                                         |
+| `07-site.configmap.yaml`                           | The website's settings, filled into the image when it starts: `ANGULAR_SITE`, the Auth0 application, no `G_TAG` until it has an Analytics property ([#2657](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2657)) |
+| `08-api.deployment.yaml`                           | The API, the same image as txgisday.org's, run as the `node` user                                                                                                                                                                             |
+| `09-site.deployment.yaml`                          | The website, the same image, with its rollback target written beside the tag                                                                                                                                                                  |
+| `10-certificate.yaml`                              | The address's certificate from Let's Encrypt, which succeeds only once the address's DNS reaches the cluster                                                                                                                                  |
+| `11-ingress.yaml`                                  | The address: `/api/` to the API, everything else to the website                                                                                                                                                                               |
 
 **`ORIGINS`.** Each site's API lists the addresses whose pages may call it. Once
 [#2088](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2088) (PR 3304) is deployed, every
