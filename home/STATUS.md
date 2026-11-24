@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch s80 (security: #2282, off `@angular/animations`)**, from 7:00 AM Central, 24 November: rule 4 survey, then `chore/2282-remove-angular-animations`.
+- Nothing. Idle, listening.
 
 ## Finished
+- **Batch s80 (security: #2282)** (report `home/reports/2026-11-24-s80.md`): branch ready, `chore/2282-remove-angular-animations` at `0cfc9bb21` (drop its last commit, `.pr-body.md`). The lab's unmerged October port, onto today's code; every trigger, both providers, the library and the package gone; lock loses only `@angular/animations`. Full check exit 0 with clean `npm ci`. Before/after videos and 10 ms samples recorded here, the forms' leave included. Two questions. Finished 7:17 AM Central.
 - **Batch g104 (gisday: triage of six)** (report `home/reports/2026-11-24-g104.md`): #438 and #499 done already (close); #434 built, `feat/434-events-organization-filter` at `a0d89eaf6`, red first, check exit 0, PR waits for images; #435 half done (bulk hide, #2105), #493 and #1038 need the maintainer. Three questions. Finished 2:44 AM Central.
 - **Batch g103 (gisday: #3321)** (report `home/reports/2026-11-24-g103.md`): branch ready, `feat/3321-papers-dates` at `d7605c8a7`, stacked on PR 3322; its PR waits for the laptop's images. Deadline and finalists date from the season, 2020's text gone. Red first, check exit 0. One question (the page is 2020's Presentation copy, linked from nowhere). Finished 2:35 AM Central.
 - **Batch g102 (gisday: #3382)** (report `home/reports/2026-11-24-g102.md`): branch ready, `refactor/3382-admin-entity-form-2` at `e95677be1`, stacked on the first #3340 branch; its PR waits for the laptop's images. All five forms fit; pins 11/11 before and after; check exit 0. No questions. Finished 2:24 AM Central.
