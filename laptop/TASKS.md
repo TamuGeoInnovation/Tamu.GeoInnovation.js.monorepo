@@ -1,5 +1,22 @@
 # Laptop: current tasks
 
+## Batch s8 (security: #1550, drop `baseUrl` and the last `ignoreDeprecations` from the tsconfigs; 23 November 2026, about 9:10 PM Central, from `work (security)`) (Low) - **after your other batches, including s7 (#3265)**
+
+[#1550](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1550): `"ignoreDeprecations": "6.0"` stops working
+in TypeScript 7, and it is there only to keep `baseUrl`. Read the issue first: it says where the two remaining uses are and why
+`paths` breaks without `baseUrl` (TS5090), and the fix it proposes (each `paths` entry written relative, `./libs/...`).
+
+- Branch `chore/1550-drop-baseurl` from the latest `development`. Make the change the issue describes, in
+  `tsconfig.base.json` and the other place it names, and nothing else; if a project's own tsconfig sets `baseUrl` too, list it.
+- Prove it: `npx tsc --showConfig` on one app and one library resolves the same `paths` as before; then the **full**
+  check, `scripts/check-in-volume.sh <branch>` (every project's build, lint and test read these paths), Exit line read; and
+  Jest's `moduleNameMapper` or Vitest's aliases, if either is derived from `paths`, still resolve (a test run proves it).
+- No visible change: say so in the PR body and use the `no-visible-change` label in the text you give me.
+- The maintainer is asleep and asked for everything to reach a pull request without him. Push to the fork and say
+  "branch ready: chore/1550-drop-baseurl", with the PR body (from the template) in your report
+  `laptop/reports/2026-11-24-s8.md`, naming this as "security batch s8". If it turns out larger than the issue says (more
+  than a handful of files, or anything Nx generates), stop at the report with what you found and a recommendation.
+
 ## Batch g15 (gisday: triage the 2022-era GIS Day backlog that needs a signed-in admin, #521 to #567; 23 November 2026, about 10:15 PM Central, from `work (gisday)`) (Low) - **after g14**
 
 Five GIS Day issues from 2022 sit open with no status, and checking each needs a signed-in admin, which you have:

@@ -1,5 +1,27 @@
 # Home machine: current tasks
 
+## Batch s79 (security: #2122, remove the dependencies nothing uses, found with knip; 23 November 2026, about 9:10 PM Central, from `work (security)`) (Low) - **after your GIS Day and AggieMap batches**
+
+[#2122](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2122): every unused package is more surface for the
+next advisory. knip is already configured with each project's entry points (PR 2389), and three removal rounds have merged
+(2156, 2386, 2400). This is the next round, against today's `development`, which took this week's Dependabot updates.
+
+- Branch `chore/2122-unused-dependencies` from the latest `development`. Run knip as configured (its `dependencies` and
+  `unlisted` reports; files are out of scope tonight) and list what it calls unused in the root `package.json`.
+- **Remove only what you can prove.** Read issue #2122's last comment first: `@eslint/js` looked unused and lint failed in 101
+  projects without it. So for each candidate grep the repository *and* `node_modules` for a `require`/`import` of it, check
+  `allowScripts`, and keep anything a tool loads by name (Nx plugins, ESLint configs, Jest and Vitest environments,
+  Playwright, Angular builders). If in doubt, keep it and list it in the report as a question.
+- `npm install --package-lock-only --ignore-scripts`, then the **full** check, `scripts/check-in-volume.sh <branch>`, with a
+  clean `npm ci` (the lock changes, so the script does it), and read its own `Exit` line. If a removal fails it, put that one
+  back, record why on #2122, and run again.
+- Compare the lock with `development`'s: only removals, and no other package's version may move. `npm audit --package-lock-only`
+  before and after, both in the report.
+- The maintainer is asleep and asked for everything to reach a pull request without him. Push to the fork and say
+  "branch ready: chore/2122-unused-dependencies", with the PR body (from the template) in your report
+  `home/reports/2026-11-24-s79.md`, naming this as "security batch s79". Questions go under **Questions for the director**,
+  with options and a recommendation; do not stop on them.
+
 ## Batch a3 (aggiemap: two reuse jobs, #2601 and #2602; 23 November 2026, about 9:15 PM Central, from `work (aggiemap)`) (Low) - **after a2**
 
 Two issues, **two branches, two pull requests** (one change per pull request, CONTRIBUTING.md). Both are the maintainer's
