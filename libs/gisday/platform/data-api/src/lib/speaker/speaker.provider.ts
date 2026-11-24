@@ -20,6 +20,7 @@ import { AssetsService } from '../assets/assets.service';
 import { refuseUnsafeImage } from '../assets/image-upload';
 import { SeasonService } from '../season/season.service';
 import { SPEAKER_PHOTO_FIT } from './speaker-photo';
+import { onSchedule } from '../_base/hidden-sessions';
 
 @Injectable()
 export class SpeakerProvider extends BaseProvider<Speaker> {
@@ -84,7 +85,8 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
     });
 
     if (presenter?.events) {
-      presenter.events = presenter.events.filter((event) => event.active !== false);
+      // Not even to an admin: this is the public page's own route.
+      presenter.events = presenter.events.filter(onSchedule);
     }
 
     return presenter;

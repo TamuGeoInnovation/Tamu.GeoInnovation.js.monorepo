@@ -1,5 +1,6 @@
 import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
+import { map, Observable } from 'rxjs';
 
 import { AllowAny, JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 
@@ -8,19 +9,26 @@ import { EventProvider } from './event.provider';
 import { EventAttendanceDto } from './dto/event-attendance.dto';
 import { EventActiveDto } from './dto/event-active.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
+import { sessionShownTo, sessionsShownTo } from '../_base/hidden-sessions';
 
 @Controller('events')
 export class EventController {
   constructor(private readonly provider: EventProvider) {}
 
+  // Signed in or not: an admin's account sees hidden sessions, anyone else does not (#3354).
+  @UseGuards(JwtGuard)
+  @AllowAny()
   @Get('season/active')
-  public async getEventsForActiveSeason() {
-    return this.provider.getEventsForActiveSeason();
+  public async getEventsForActiveSeason(@Req() req) {
+    return sessionsShownTo(await this.provider.getEventsForActiveSeason(), req.user);
   }
 
+  // Signed in or not: an admin's account sees hidden sessions, anyone else does not (#3354).
+  @UseGuards(JwtGuard)
+  @AllowAny()
   @Get('season/:guid')
-  public async getEventsForSeason(@Param('guid') seasonGuid: string) {
-    return this.provider.getEventsForSeason(seasonGuid);
+  public async getEventsForSeason(@Param('guid') seasonGuid: string, @Req() req) {
+    return sessionsShownTo(await this.provider.getEventsForSeason(seasonGuid), req.user);
   }
 
   @Get(':guid/attendance')
@@ -28,14 +36,19 @@ export class EventController {
     return this.provider.getEventAttendance(guid);
   }
 
+  // Signed in or not: an admin's account sees hidden sessions, anyone else does not (#3354).
+  @UseGuards(JwtGuard)
+  @AllowAny()
   @Get(':guid/event')
-  public async getEntityWithRelations(@Param('guid') guid) {
-    return this.provider.findOne({
+  public async getEntityWithRelations(@Param('guid') guid, @Req() req) {
+    const event = await this.provider.findOne({
       where: {
         guid: guid
       },
       relations: EntityRelationsLUT.getRelation('event')
     });
+
+    return sessionShownTo(event, req.user);
   }
 
   /** A session's judging (#3183) for its admin form: its competition, whether closed, and its judges by id. */
@@ -51,21 +64,32 @@ export class EventController {
     return this.provider.getNumberOfRsvps(params.guid);
   }
 
+  // Signed in or not: an admin's account sees hidden sessions, anyone else does not (#3354).
+  @UseGuards(JwtGuard)
+  @AllowAny()
   @Get('by-day')
-  public async getEntitiesByDay() {
-    return this.provider.getEntitiesByDay();
+  public async getEntitiesByDay(@Req() req) {
+    const days: Observable<Array<Array<Event>>> = await this.provider.getEntitiesByDay();
+
+    return days.pipe(
+      map((byDay) => byDay.map((day) => sessionsShownTo(day, req.user)).filter((day) => day.length > 0))
+    );
   }
 
   @UseGuards(JwtGuard)
   @AllowAny()
   @Get(':guid')
   public async getDetails(@Req() req, @Param('guid') guid) {
-    return this.provider.getEventDetails(guid, req.user?.sub !== undefined);
+    // Hidden from anyone but an admin, whose session edit page reads it (#3354).
+    return sessionShownTo(await this.provider.getEventDetails(guid, req.user?.sub !== undefined), req.user);
   }
 
+  // Signed in or not: an admin's account sees hidden sessions, anyone else does not (#3354).
+  @UseGuards(JwtGuard)
+  @AllowAny()
   @Get()
-  public async getEvents() {
-    return this.provider.getEvents();
+  public async getEvents(@Req() req) {
+    return sessionsShownTo(await this.provider.getEvents(), req.user);
   }
 
   @Permissions(['create:events'])
