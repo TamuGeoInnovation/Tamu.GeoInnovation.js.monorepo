@@ -1,6 +1,6 @@
 # Laptop: current tasks
 
-## Batch g23 (gisday: merge conflicts on eight PRs, and two lint failures; 24 November 2026, from `work (gisday)`) (Medium) - **now**
+## Batch g23 (gisday: merge conflicts on eight PRs, and two lint failures; 24 November 2026, from `work (gisday)`) (Medium) - **WITHDRAWN: the work machine is doing these itself (the maintainer, 24 November). Do not start it. g24 still stands.**
 
 The maintainer merged fifteen PRs this morning; these eight now conflict with `development`. For each, in its own worktree on the fork
 branch: `git fetch origin`, **merge** the latest `origin/development` into it (never rebase, never force-push), resolve, then
