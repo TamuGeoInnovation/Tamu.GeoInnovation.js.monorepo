@@ -1,5 +1,22 @@
 # Home machine: current tasks
 
+## Batch g96 (gisday: #3313, #3330 and #3328, three small shared pieces from the one-off scan; 24 November 2026, about 2:30 AM Central, from `work (gisday)`) (Low) - **now**
+
+In this order, each its own branch:
+1. [#3313](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3313): the query-spec helpers (`answering`, `loadedSeason`, `buildingTransactionFinds`, `buildSeasons`, and the two
+   the issue names) move into `libs/gisday/platform/data-api/src/lib/_base/query-checking-data-source.ts` or a `query-testing.ts`
+   beside it, exported; every spec imports them; `loadedSeason` gets every Season deadline column once. Tests only, so no red
+   step: say so. Branch `test/3313-shared-query-spec-helpers`.
+2. [#3330](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3330): the RSVP, check-in and VGI dashboards share one template on `shared/event-dashboard`, with inputs for their
+   nouns; the rendered pages unchanged (a test per dashboard that its headings and labels are as today, passing before and after).
+   Branch `refactor/3330-one-dashboard-template`.
+3. [#3328](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3328): RSVP types and submission types move onto `BaseAdminListComponent` / `BaseAdminDetailsPageComponent`, and the
+   three old base classes and their route files go. Red first: Escape and "Leave without saving?" on the RSVP type page. These
+   are admin pages, so the images are the laptop's afterwards; say what made-up data shows them.
+   Branch `refactor/3328-type-pages-on-current-admin`.
+
+Overnight rules: no `package.json` or lock changes; no release or full tier; made-up data; never production. Rule 4: filed tonight from code, each side read; confirm on today's `development` first and say so. One branch each from the latest `development`, behind existing interfaces, red first where a test can show it, the check (`CHECK_PARALLEL=4` or lower for a large set, #3000), push, "branch ready" with each PR body. The work machine's C: is full (#3365); nothing changes for you. Report `home/reports/2026-11-24-g96.md`.
+
 ## Batch a6 (aggiemap: turn the release tier's 17 remaining failures into issues, #3355; 23 November 2026, about 10:45 PM Central, from `work (aggiemap)`) (High) - **do this first**
 
 <https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3355>
