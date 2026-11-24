@@ -5,7 +5,7 @@
 
 Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
-Last batch done: 9
+Last batch done: 12
 
 ## What this is
 
@@ -33,10 +33,11 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batches 11 and 12 (gisday: #2893 admin images, #3244 phone images)**, together, on the signed-in GIS Day stack, started 9:37 PM Central. Expected to take about an hour. Next update by 10:20 PM Central.
-  Progress (9:40 PM): one scratch database (`gisday-b11-scratch`): the scrubbed copy's 2026 RSVPs removed, made-up RSVPs and check-ins on three events (a walk-in, an RSVP-elsewhere walk-in, one outside its session's time, one event with none), and batch 4's made-up VGI data. Capturing in turn: #2893 from its merge-base `c0da751d3`, then `2ce9d7419`; then #3244 at `bdf59f7f9`.
+- **Batch 13 (gisday: #3314, check-ins by hour)**, started 10:38 PM Central, on the signed-in GIS Day stack (kept up from batches 11 and 12, scratch database `gisday-b11-scratch`). Branch from `development` if #2893 has merged, else from `feat/2893-check-ins-dashboard-rest`. Next update by 11:30 PM Central.
 
 ## Finished
+- **Batch 11 (gisday: #2893 images)** (report `laptop/reports/2026-11-23-11.md`): **images pushed (2893): `bd9fde1b7`**, a fast-forward. Five images (before and after at 1280, an opened event, after at 390), the release entry's table and `app: gisday`. Counts match the made-up seed; the outside-time mark shows once after, never before. No questions.
+- **Batch 12 (gisday: #3244 phone images)** (report `laptop/reports/2026-11-23-12.md`): **images pushed (3244): `d60ebab0d`**, a fast-forward. The page is 360 and 390 wide at those widths; the table scrolls in its own box.
 - **Batch 9 (aggiemap: #3150, #3149)** (report `laptop/reports/2026-11-23-9.md`): two branches ready, `fix/3150-bus-route-phone` (`a3f5220c5`) and `fix/3149-phone-directions` (`fa868e398`). Both proven on a phone first, red first, with images; #3149 check exit 0. **Found and filed #3319**: the stop search's back arrow (the issue's "correct" `./trip`) went to the main map; fixed with #3149's link. **Two questions.**
 - **Batch 7 (security: #3265)** (report `laptop/reports/2026-11-23-7-security.md`): branch ready, `fix/3265-basemap-source-scan` on the fork at `2ff127da9`.
   - **Fix:** the source scan runs once, in the describe's `beforeAll`. Assertions unchanged.
@@ -73,11 +74,9 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
   - **Bug-fix check:** `gisday-angular,gisday-nest`, exit 0.
   - **Signed in on txgisday-dev:** exit 0.
   - **AggieMap `legend.spec.ts` on dev:** exit 1, failing on dev's data, not setup. Filed #3271.
-- Four batches, after 11 and 12, in the order they arrived: 13 (gisday: #3314 hourly check-ins chart), a11 (aggiemap: #3271), g14 (gisday: #1756), g15 (gisday: backlog #521 to #567). Batch 10 was withdrawn, moved to home a1.
-  - **One question.**
 
 ## Queued
-- Four batches, after security's 7, in the order they arrived: 9 (aggiemap: #3150, #3149, High), 10 (aggiemap: #3285, High). Order of arrival puts gisday 7 and 8 and security 7 first; the aggiemap 9 says after 5 and is High, so if a director wants it ahead of 7 and 8, say so in TASKS.md.
+- Four batches, in the order they arrived: a11 (aggiemap: #3271), g14 (gisday: #1756), g15 (gisday: backlog #521 to #567), g16 (gisday: #441 signed-in images). Batch 10 was withdrawn, moved to home a1.
 
 ## Findings
 - `work/tools/gisday-release-check.cjs` clicks Auth0's Accept by itself. A read-only sign-in check would suit machines that only need to prove sign-in.
