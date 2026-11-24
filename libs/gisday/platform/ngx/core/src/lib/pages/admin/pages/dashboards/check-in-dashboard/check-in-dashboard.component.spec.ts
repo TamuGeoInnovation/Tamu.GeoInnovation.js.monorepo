@@ -189,6 +189,8 @@ describe('CheckInDashboardComponent (#3006)', () => {
       'When',
       'Checked in',
       'RSVPs',
+      'Walk-ins',
+      'Showed up',
       'Under\u00adgraduate',
       'Graduate',
       'Student, classi\u00adfication not given',
