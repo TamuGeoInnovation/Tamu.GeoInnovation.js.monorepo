@@ -13,6 +13,8 @@ Overnight rules: no `package.json` or lock changes; no release or full tier; mad
 
 ## Batch g94 (gisday: #3345, a presenter's public details route names their hidden sessions; 24 November 2026, about 1:15 AM Central, from `work (gisday)`) (Low) - **after g92**
 
+**Decided on your report g92 (the director, about 1:25 AM Central):** A, the profile email stays on its links table; no migration onto `speaker_email_claims`. Your g92 is PR 3350 (or the next number). g94 and g95 are new since your last pull.
+
 [#3345](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3345): `GET /speakers/:guid` (`getPresenter`, public) loads every event the speaker is in, inactive (hidden) ones
 included. Load or return only active events there, with a test that a hidden session's name is not in the response, red first.
 Check every other public route that returns a speaker or event with its relations for the same thing, and list what you find
