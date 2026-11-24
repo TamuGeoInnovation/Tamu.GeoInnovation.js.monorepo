@@ -1,4 +1,4 @@
-<div [@inOutAnimation]>
+<div animate.enter="geoservices-form-entering" animate.leave="geoservices-form-leaving">
   <form [formGroup]="form" (submit)="processInteractiveQuery()">
     <div class="form-section">
       <div class="form-section-toolbar">
@@ -29,7 +29,7 @@
 </div>
 
 @if ((result | async) !== null && (resultError | async) === false;) { @if (result | async; as res) {
-<div [@inOutAnimation] class="leader-3">
+<div animate.enter="geoservices-form-entering" animate.leave="geoservices-form-leaving" class="leader-3">
   <h2 class="section-header">Results</h2>
   <tamu-gisc-accordion [expanded]="true">
     <tamu-gisc-accordion-header>Transaction Details</tamu-gisc-accordion-header>
