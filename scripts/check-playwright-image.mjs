@@ -15,6 +15,13 @@
  * the READMEs that hard-code a Playwright image version, is its own small pull request"). This is so that
  * the next bump says so itself, in the pull request that makes it wrong, rather than a week later.
  *
+ * It also fails when `package-lock.json` declares BOTH `@playwright/test` and `playwright` at versions that disagree.
+ * Playwright refuses to run when its runner and its browsers come from different releases, and nothing else here would
+ * notice: the image name is built from `@playwright/test` alone, so a `playwright` left a release behind by a bump of one
+ * and not the other produces the same "Please update docker image as well" failure from the other direction. #2122 made
+ * `playwright` a direct dependency on 23 November 2026, which is what opened that door - before it, npm kept the two in
+ * step as a dependency of the other.
+ *
  * Run from the repository root:
  *
  *   node scripts/check-playwright-image.mjs
@@ -35,13 +42,13 @@ const SKIP = /\.(png|jpg|jpeg|gif|webp|ico|pdf|zip|woff2?|ttf|eot|mp4|svg)$/i;
 /** Directories with nothing hand-written in them, and far too much of it to read. */
 const SKIP_DIRS = new Set(['.git', 'node_modules', 'dist', 'coverage', 'tmp', '.nx', '.angular', 'test-results']);
 
-function lockedVersion() {
+function lockedVersions() {
   const lock = JSON.parse(readFileSync('package-lock.json', 'utf8'));
   const entry = lock.packages?.['node_modules/@playwright/test'];
   if (!entry?.version) {
     throw new Error('package-lock.json does not record a version for @playwright/test');
   }
-  return entry.version;
+  return { test: entry.version, runner: lock.packages?.['node_modules/playwright']?.version };
 }
 
 /**
@@ -64,8 +71,21 @@ function textFiles(dir = '.') {
   return out;
 }
 
-const want = lockedVersion();
+const { test: want, runner } = lockedVersions();
 const wrong = [];
+
+// The runner and the browsers have to come from one release. npm kept them in step while `playwright` was only a
+// dependency of `@playwright/test`; now that it is declared directly (#2122), a bump of one and not the other is a
+// one-line lock diff that every other check passes.
+if (runner && runner !== want) {
+  console.log(
+    `::error file=package-lock.json::@playwright/test is v${want} but playwright is v${runner}. Playwright will not ` +
+      `run with its runner and browsers from different releases, and the image name is built from @playwright/test ` +
+      `alone, so nothing else here would notice. Bring both to the same version.`
+  );
+  console.log(`\npackage-lock.json: @playwright/test v${want}, playwright v${runner} - these must match.`);
+  process.exit(1);
+}
 
 for (const file of textFiles()) {
   if (SKIP.test(file)) continue;
@@ -86,7 +106,10 @@ for (const file of textFiles()) {
 }
 
 if (wrong.length === 0) {
-  console.log(`Every hard-coded Playwright image names v${want}, as package-lock.json does.`);
+  console.log(
+    `Every hard-coded Playwright image names v${want}, as package-lock.json does` +
+      `${runner ? `, and playwright agrees` : ''}.`
+  );
   process.exit(0);
 }
 

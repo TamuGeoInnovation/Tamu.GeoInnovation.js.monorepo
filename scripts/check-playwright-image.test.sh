@@ -25,9 +25,12 @@ no() { fail=$((fail+1)); printf 'FAIL  %s\n       %s\n' "$1" "$2"; }
 img() { printf 'mcr.microsoft.com/playwright:v%s-%s' "$1" "${2:-noble}"; }
 NOW=1.65.1; OLD=1.64.1; OLDER=1.63.0; ANCIENT=1.0.0
 
-build() { # build <case> <lock version, or - for a lock without playwright>
+build() { # build <case> <@playwright/test version, or - for a lock without it> [playwright version]
   d=$tmp/$1; mkdir -p "$d"
   if [ "$2" = "-" ]; then printf '{"packages":{}}\n' > "$d/package-lock.json"
+  elif [ -n "${3:-}" ]; then
+    printf '{"packages":{"node_modules/@playwright/test":{"version":"%s"},"node_modules/playwright":{"version":"%s"}}}\n' \
+      "$2" "$3" > "$d/package-lock.json"
   else printf '{"packages":{"node_modules/@playwright/test":{"version":"%s"}}}\n' "$2" > "$d/package-lock.json"; fi
   echo "$d"
 }
@@ -82,6 +85,23 @@ if [ $rc -ne 0 ] && [ "$(printf '%s\n' "$out" | grep -c '^::error')" = 2 ]; then
   ok "every stale reference is reported, not only the first"
 else
   no "every stale reference is reported, not only the first" "exit $rc: $out"
+fi
+
+d=$(build siblings_agree "$NOW" "$NOW")
+printf '%s\n' "$(img "$NOW")" > "$d/README.md"
+out=$(run "$d"); rc=$?
+[ $rc -eq 0 ] && ok "playwright declared directly at the same version passes" ||
+  no "playwright declared directly at the same version passes" "exit $rc: $out"
+
+# #2122 made playwright a direct dependency, so a bump of one and not the other is now possible.
+d=$(build siblings_drift "$NOW" "$OLD")
+printf '%s\n' "$(img "$NOW")" > "$d/README.md"
+out=$(run "$d"); rc=$?
+if [ $rc -ne 0 ] && printf '%s' "$out" | grep -q 'package-lock.json' &&
+   printf '%s' "$out" | grep -q "v$NOW" && printf '%s' "$out" | grep -q "v$OLD"; then
+  ok "playwright and @playwright/test at different versions fails, naming both"
+else
+  no "playwright and @playwright/test at different versions fails, naming both" "exit $rc: $out"
 fi
 
 out=$( cd "$repo" && node "$check" 2>&1 ); rc=$?
