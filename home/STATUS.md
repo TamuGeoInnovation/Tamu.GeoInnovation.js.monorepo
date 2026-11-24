@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch a11 (aggiemap: #3425 after images again)**, from `fork/fix/3425-garage-search-off-raster` `6d2c0f118`, worktree `C:/TAMU/wt-3425`, since 5:33 PM Central.
+- Nothing. Idle, listening.
 
 ## Finished
+- **Batch a11 (aggiemap: #3425 after images again)** (report `home/reports/2026-11-24-a11.md`): search image re-taken at `6d2c0f118`, each garage once; `?garage=CCG`, `?bldg=0469`, `?BldgAbbrv=CCG` all open Central Campus Parking Garage; check exit 0 (3 projects). Fork at `8d51106c8`. 5:33 to 5:38 PM Central.
 - **Batch a10 (aggiemap: #3425 images)** (report `home/reports/2026-11-24-a10.md`): images on `fix/3425-garage-search-off-raster` at `118c4def0`; popup shows the name; all nine `?garage=` codes resolve; garages only, no TEEX. Found: the smoke `parking-garage` case will fail after (its term matches 0 rows). 4:53 to 5:04 PM Central.
 - **Batch a8 (aggiemap: disk and PR 3407)** (report `home/reports/2026-11-24-a8.md`): home holds 331 worktrees, 309 tamu-js volumes, an 853.8 GiB Docker image, 82.4 GiB free (65.0 after the check); tidy.sh would remove 238 volumes (~642 GiB) and 175 worktrees (~100 GiB). PR 3407 full check Exit 0 (no Nx tasks, scripts only; header prints free space; no sweep); tidy.test 15/15, check-in-volume.test 28/28. 11:13 to 11:26 AM Central.
 - **Batch g105 (gisday: #3412)** (report `home/reports/2026-11-24-g105.md`): `fix/3412-awards-sentence` on the fork at `36904e5db`; red 3 of 3 on development, check exit 0 (`gisday-platform-ngx-core,gisday-angular`, CHECK_PARALLEL=1); the sentence now sits inside the session element on Posters and Presentation. 11:00 to 11:12 AM Central.
