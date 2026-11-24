@@ -1,6 +1,6 @@
 <div class="card">
   @if ((result | async) === null || (resultError | async) === true) {
-  <div [@inOutAnimation]>
+  <div animate.enter="geoservices-form-entering" animate.leave="geoservices-form-leaving">
     <form [formGroup]="form" (submit)="processInteractiveQuery()">
       <div class="form-section">
         <div class="form-section-toolbar">
@@ -32,7 +32,7 @@
     </form>
   </div>
   } @else { @if (result | async; as res) {
-  <div [@inOutAnimation]>
+  <div animate.enter="geoservices-form-entering" animate.leave="geoservices-form-leaving">
     <tamu-gisc-basic-summary-blurb [keyFragment]="'census_intersect'" (navigateFull)="navigateToAdvanced(res)"></tamu-gisc-basic-summary-blurb>
     <tamu-gisc-census-intersection-result-tabs [censusRecords]="$safeNavigationMigration((result | async)?.data?.results)"></tamu-gisc-census-intersection-result-tabs>
     <div class="flex flex-row">
