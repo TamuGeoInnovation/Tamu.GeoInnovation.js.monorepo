@@ -29,6 +29,95 @@ stack first ([`docs/gisday-local.md`](../gisday-local.md)). That makes the check
 
 ## Summary
 
+### GIS Day: The admin Speakers list shows each speaker's sessions, and the speakers in none
+
+The admin Speakers list did not say which sessions a speaker was in, so an admin could not see who was speaking in
+the selected season. Speakers copied into a season are listed in it whether or not they have a session there, which
+made the season filter look broken: a speaker who did not speak that year still appeared in its list
+([#439](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/439)). The list now has a
+**Sessions** column naming each speaker's sessions that season, or "None", and an **Only speakers in no session** box,
+built as the Events list's "Only sessions with no tags" is, which lists the speakers with none so they can be given one
+or removed. The box is kept with the list's other filters when going back to it from a speaker's page.
+([#441](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/441))
+
+| | Before | After |
+| --- | --- | --- |
+| Admin, Speakers, at 1280 | ![The Speakers list: name, email, affiliation and when updated, with nothing saying who speaks](../screenshots/441-speaker-sessions/before-speakers.png) | ![The same list with a Sessions column: two sessions for the first speaker, one for the second, None for the third](../screenshots/441-speaker-sessions/after-speakers.png) |
+| Only speakers in no session | | ![With the box ticked, only the speaker whose Sessions is None](../screenshots/441-speaker-sessions/after-speakers-no-session.png) |
+| At 390 | ![The list on a phone, wider than the screen](../screenshots/441-speaker-sessions/before-speakers-phone.png) | ![The list on a phone, wider than the screen as before](../screenshots/441-speaker-sessions/after-speakers-phone.png) |
+
+GIS Day has no dev site, so this was checked on the local site, signed in as the txgisday-dev test admin, with three
+made-up speakers: one in two sessions, one in a session hidden from the public schedule, and one in none. On a phone the
+list was already wider than the screen before this change, and the Sessions column widens it further
+([#3370](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3370)).
+
+### GIS Day: Counts by category on the VGI Submissions page
+
+The VGI competition's Submissions page now shows how many submissions there are in each category, and in all
+([#3244](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3244)). A table above the list has
+a row per category (the form's category question, as the list shows it) and a Total row, each with how many were made,
+verified, need a look or were discarded. On a phone the table scrolls sideways in its own box, as the admin dashboards' tables do, so
+the page itself stays the width of the screen. It counts every submission of the season, so the totals stay the same whichever
+of All, Needs a look and Top finishers is pressed. There is no download; the counts are on the page only.
+
+| Before | After |
+| --- | --- |
+| ![The VGI Competition Submissions page at 1280 pixels: the All, Needs a look and Top finishers buttons, then the list of 17 made-up submissions, with no counts](../screenshots/3244-vgi-submission-counts/before-submissions.png) | ![The same page with Submissions by category above the list: Made-up Bench 7 (4 verified, 2 needs a look, 1 discarded), Made-up Sign 4 (1, 1, 2), Made-up Tree 5 (2, 3, 0), No category 1 (0, 1, 0), and Total 17 (7, 7, 3)](../screenshots/3244-vgi-submission-counts/after-submissions.png) |
+| | ![The same page with Needs a look pressed: the table unchanged, and the list down to the 7 submissions that need a look](../screenshots/3244-vgi-submission-counts/after-submissions-needs-a-look.png) |
+| ![The page on a phone, 390 pixels wide, with no counts](../screenshots/3244-vgi-submission-counts/before-submissions-phone.png) | ![The same on a phone: the table in its own box, scrolled to its start, Category to Needs a look; the page 390 pixels wide](../screenshots/3244-vgi-submission-counts/after-submissions-phone.png) |
+| | ![The same box scrolled to its end: Verified, Needs a look and Discarded, the page still 390 pixels wide](../screenshots/3244-vgi-submission-counts/after-submissions-phone-scrolled.png) |
+| | ![Admin, Dashboards, Check-ins at 1024 pixels: its table in the same scroll box, moved to the shared library, behaving as before](../screenshots/3244-vgi-submission-counts/after-check-ins-dashboard-1024.png) |
+
+### GIS Day admin: the Check-ins dashboard charts check-ins by the hour across GIS Day week
+
+Check-ins happen only during GIS Day week, so the Check-ins dashboard's chart by day shows a few steps and little else.
+Under it, a second chart now counts check-ins in **each hour of the days the season's events run**, in Central time, so
+the busy sessions of each day stand out. Opening an event in the table adds that event's own line, as on the chart by
+day. The chart by day, and its comparison with earlier years, are unchanged
+([#3314](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3314)).
+
+Like the rest of the dashboard, it counts only the events the site lists. Check-ins made on any other day are left out.
+
+| | Before | After |
+| --- | --- | --- |
+| The charts, at 1280 | ![Check-ins over time: a running total by day, and nothing by the hour](../screenshots/3314-check-ins-by-hour/before-check-ins-charts.png) | ![Check-ins over time as before, and Check-ins by hour under it](../screenshots/3314-check-ins-by-hour/after-check-ins-charts.png) |
+| Check-ins by hour, at 1280 | | ![Check-ins by hour across 16 to 20 November, peaking each day around midday](../screenshots/3314-check-ins-by-hour/after-check-ins-by-hour.png) |
+| With an event opened | | ![The same chart with the opened event's own line beside All events](../screenshots/3314-check-ins-by-hour/after-check-ins-by-hour-event.png) |
+| At 390 | | ![Check-ins by hour on a phone, the page no wider than the screen](../screenshots/3314-check-ins-by-hour/after-check-ins-by-hour-phone.png) |
+
+GIS Day has no dev site, so this was checked on the local site, signed in as the txgisday-dev test admin, with made-up
+check-ins spread across the week.
+
+### GIS Day: a session hidden from the public says it was not found, instead of a blank page
+
+Since sessions hidden from the schedule stopped being shown to the public by their link
+([#3354](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3354)), opening one signed out drew a
+blank page ([#3396](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3396)). It now shows the
+site's own not-found page, "We couldn't find that page.", with links to the Home page and Sessions, as any address the
+site does not know does. The address in the browser stays as it was, and nothing of the session is shown.
+
+| Before | After |
+| --- | --- |
+| ![A made-up hidden session's link, signed out: the site's header and footer with nothing between them](../screenshots/3396-hidden-session-not-found/before-hidden-session.png) | ![The same link: "Sorry. We couldn't find that page." with links to the Home page and Sessions](../screenshots/3396-hidden-session-not-found/after-hidden-session.png) |
+| ![The same on a phone, 390 pixels wide: a blank page under the header](../screenshots/3396-hidden-session-not-found/before-hidden-session-phone.png) | ![The same on a phone: "We couldn't find that page."](../screenshots/3396-hidden-session-not-found/after-hidden-session-phone.png) |
+
+The images were taken locally, signed out, on a made-up session hidden from the public.
+
+### GIS Day admin: the organization form's messages say Organization, as the form does
+
+The admin calls these records organizations: the menu, the form's Create Organization and Update Organization titles,
+and its Delete Organization button. Its messages were the one place that said Place, for example "Delete Place" over
+"Error deleting place: 500"
+([#3398](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3398)). They now say Organization:
+"Delete Organization", "Organization was successfully deleted." The button is unchanged.
+
+| Before | After |
+| --- | --- |
+| ![The organization form after a refused Delete Organization: the message titled "Delete Place", "Error deleting place: 500"](../screenshots/3398-place-delete-label/before-delete-toast.png) | ![The same: the message titled "Delete Organization", "Error deleting organization: 500"](../screenshots/3398-place-delete-label/after-delete-toast.png) |
+| ![The same on a phone, 390 pixels wide: "Delete Place"](../screenshots/3398-place-delete-label/before-delete-toast-phone.png) | ![The same on a phone: "Delete Organization"](../screenshots/3398-place-delete-label/after-delete-toast-phone.png) |
+
+The images were taken locally on made-up records, with a delete the database refused, so nothing was deleted.
+
 ### GIS Day admin: show one organization's sessions on the Events list
 
 Several GIS Days share the site, and the admin Events list showed every organization's sessions together. It now has an
@@ -3089,6 +3178,11 @@ check on the local stack before a promotion, and on these pages after one.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| GIS Day: each speaker's sessions on the admin Speakers list ([#441](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/441), [#439](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/439)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release, on production, as an admin: Admin, Speakers | A Sessions column lists each speaker's sessions in the selected season, or "None"; ticking "Only speakers in no session" leaves only the "None" rows, and unticking it shows every speaker again |
+| GIS Day: VGI submission counts ([#3244](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3244)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release, as an admin: Admin, VGI Competition, Submissions | Above the list, "Submissions by category" has a row per category and a Total, with Submissions, Verified, Needs a look and Discarded. Pressing Needs a look or Top finishers changes the list but not the counts |
+| GIS Day admin: check-ins by hour ([#3314](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3314)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release, as an admin open Admin > Dashboards > Check-ins for 2026 | Under **Check-ins over time**, a second chart, **Check-ins by hour**, runs from midnight on the first day of the season's events to the end of the last, in Central time. Hovering an hour gives its check-ins; opening an event below adds its own line |
+| GIS Day: a hidden session's link, signed out ([#3396](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3396)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release, on production: an admin copies the link to a session hidden from the schedule, then opens it in a private window, signed out | The page says "Sorry. We couldn't find that page." with links to the Home page and Sessions, as any address the site does not know does, and the address stays as it was; nothing of the session is shown. Signed in as an admin, the same link shows the session |
+| GIS Day admin: the organization form's messages ([#3398](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3398)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release, as an admin on production: open an organization (Admin, then Organizations) and choose Update | The message's title reads "Update Organization" and says the organization was updated, not "Update Place"; Delete Organization's message reads "Delete Organization" the same way |
 | GIS Day admin: the Events list's Organization choice ([#434](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/434)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release, check on production as an admin: Admin, Events, then choose an organization in **Organization** | Only that organization's sessions are listed, by their venues, and **Every organization** lists them all again |
 | A venue needs its hosting organization ([#443](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/443)) | GIS Day dev site, as an admin: Admin > Venues > Add | The hosting organization is the first field; Create without one says "Select the venue's hosting organization" and saves nothing |
 | A new competition submission starts from a button ([#451](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/451)) | GIS Day dev site, signed in: Account > Submissions | A **New submission** button under "Submit your work for TX GIS Day's yearly student competitions"; it opens the submission form. The small text link in the section's top right is gone |

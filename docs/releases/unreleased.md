@@ -1,18 +1,19 @@
 # Unreleased
 
-Nothing yet. The five AggieMap entries of the last cycle moved into
-[24 November 2026](2026-11-24.md), and the period's 139 GIS Day entries into
+Nothing yet. The one AggieMap entry of this cycle moved into
+[24 November 2026 (second release)](2026-11-24-2.md), and the period's five GIS Day entries into
 [GIS Day, unreleased](gisday-unreleased.md).
 
-**The latest release notes are [24 November 2026](2026-11-24.md)**, built from `61dc13b89`. Before it:
-[13 November 2026](2026-11-13.md) from `68d7b974c`, promoted at the marketing team's request **before its
-release tier ran**; then [11 November 2026 (second release)](2026-11-11-2.md) from `94348414a`, whose notes
-were written on the 13th after the fact, and [10 November 2026](2026-11-10.md) from `3254b114e`, promoted as
-`prod-2026-11-11`.
+**The latest release notes are [24 November 2026 (second release)](2026-11-24-2.md)**, built from
+`50b125bf5`, carrying the remote campuses' new names. Earlier the same day,
+[24 November 2026](2026-11-24.md) from `61dc13b89` carried three weeks of work and was cleared by the
+`release` tier. Before those: [13 November 2026](2026-11-13.md) from `68d7b974c`, promoted at the marketing
+team's request **before its release tier ran**; [11 November 2026 (second release)](2026-11-11-2.md) from
+`94348414a`; and [10 November 2026](2026-11-10.md) from `3254b114e`.
 
 **This file is AggieMap's.** GIS Day is released on its own path and its changes collect in
-[GIS Day, unreleased](gisday-unreleased.md), not here - 180 of the last cycle's 236 pull requests were GIS
-Day's. See [Releasing GIS Day](README.md#releasing-gis-day).
+[GIS Day, unreleased](gisday-unreleased.md), not here - 15 of this cycle's 20 pull requests were GIS Day's,
+and 180 of the cycle before it. See [Releasing GIS Day](README.md#releasing-gis-day).
 
 This file collects what merges from here until the next release. **A pull request with a user-visible
 result adds its own file to [`unreleased/`](unreleased/README.md), in that pull request**, with its
@@ -33,7 +34,7 @@ Nothing yet.
 production. A pull request with a visible result adds its own row; at release, the rows move into the
 dated notes as what was tested, and this table empties.
 
-**Nothing waiting:** the rows moved into the [24 November notes](2026-11-24.md).
+**Nothing waiting:** the rows moved into the [second 24 November notes](2026-11-24-2.md).
 
 ---
 
@@ -43,8 +44,11 @@ dated notes as what was tested, and this table empties.
 
 ### AggieMap on 24 November, midday Central: what another machine most needs to know
 
-- **The 24 November build is on dev and cleared, not on production.** `61dc13b89` is on dev; production still
-  runs `68d7b974c` (`prod-2026-11-13`). The `release` tier ran against dev on a quiet machine and reported
+- **Two releases went out on 24 November.** `61dc13b89` carried three weeks of work and was cleared by the
+  `release` tier; `50b125bf5` followed the same afternoon with the remote campuses' new names
+  ([#3161](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3161)), cleared by a
+  `quick` tier - a departure from the rule that `quick` never clears production, recorded and argued in
+  [the second release's notes](2026-11-24-2.md). The paragraph below describes the first of the two. The `release` tier ran against dev on a quiet machine and reported
   **9 failed, 14 flaky, 71 skipped, 1033 passed in 1.4 h**, against 18 failed and 982 passed on the 23rd. The
   numbers and the reading of every failure are in [24 November 2026](2026-11-24.md). The `dev-*` tag, the
   promotion and the `prod-*` tag are the maintainer's.
