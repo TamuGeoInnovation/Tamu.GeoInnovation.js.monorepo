@@ -1,11 +1,11 @@
 import {
-  HttpException,
   InternalServerErrorException,
   NotFoundException,
   UnprocessableEntityException
 } from '@nestjs/common';
 
 import { Repository, DeepPartial, FindOneOptions, FindManyOptions } from 'typeorm';
+import { rethrowHttp } from './rethrow-http';
 
 export abstract class BaseProvider<T extends { guid: string }> {
   constructor(private readonly repo: Repository<T>) {}
@@ -107,13 +107,7 @@ export abstract class BaseProvider<T extends { guid: string }> {
       // this block and the catch was unreachable.
       return await this.repo.delete(guids);
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      throw new InternalServerErrorException('Could not delete entities');
+      rethrowHttp(err, new InternalServerErrorException('Could not delete entities'));
     }
   }
 

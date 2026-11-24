@@ -1,4 +1,4 @@
-import { HttpException, Injectable, Logger, UnprocessableEntityException } from '@nestjs/common';
+import { Injectable, Logger, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { DeleteResult, In, Repository } from 'typeorm';
@@ -6,6 +6,7 @@ import { DeleteResult, In, Repository } from 'typeorm';
 import { Speaker, University } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
 import { SeasonService } from '../season/season.service';
+import { rethrowHttp } from '../_base/rethrow-http';
 
 @Injectable()
 export class UniversityProvider extends BaseProvider<University> {
@@ -77,14 +78,7 @@ export class UniversityProvider extends BaseProvider<University> {
       // never ran, so a failed write surfaced as a raw driver error rather than the 422.
       return await this.universityRepo.save(newEntities);
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      Logger.error(err.message, 'UniversityProvider');
-      throw new UnprocessableEntityException('Could not insert universities into season.');
+      rethrowHttp(err, new UnprocessableEntityException('Could not insert universities into season.'), () => Logger.error(err.message, 'UniversityProvider'));
     }
   }
 
@@ -112,14 +106,7 @@ export class UniversityProvider extends BaseProvider<University> {
         return transactionalEntityManager.delete(University, guids);
       });
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      Logger.error(err.message, 'UniversityProvider.deleteEntities');
-      throw new UnprocessableEntityException('Could not delete universities.');
+      rethrowHttp(err, new UnprocessableEntityException('Could not delete universities.'), () => Logger.error(err.message, 'UniversityProvider.deleteEntities'));
     }
   }
 }

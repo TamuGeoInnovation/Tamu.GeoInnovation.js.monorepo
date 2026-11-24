@@ -1,5 +1,4 @@
 import {
-  HttpException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -11,6 +10,7 @@ import { Repository } from 'typeorm';
 
 import { UserRsvp, Event, RsvpType } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
+import { rethrowHttp } from '../_base/rethrow-http';
 
 @Injectable()
 export class UserRsvpProvider extends BaseProvider<UserRsvp> {
@@ -76,13 +76,7 @@ export class UserRsvpProvider extends BaseProvider<UserRsvp> {
 
       return this.userRsvpRepo.save(newUserRsvp);
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      throw new InternalServerErrorException(`Error creating RSVP. ${err}`);
+      rethrowHttp(err, new InternalServerErrorException(`Error creating RSVP. ${err}`));
     }
   }
 

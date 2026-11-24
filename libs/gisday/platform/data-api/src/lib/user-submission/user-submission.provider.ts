@@ -1,7 +1,6 @@
 import {
   BadRequestException,
   ForbiddenException,
-  HttpException,
   Injectable,
   InternalServerErrorException,
   Logger,
@@ -57,6 +56,7 @@ import { PosterDto } from './dto/poster.dto';
 import { SubmissionWithSubmitter, submitterOf } from './dto/submission-submitter.dto';
 import { DashboardProfilesService } from '../dashboards/dashboard-profiles.service';
 import { AssetsService } from '../assets/assets.service';
+import { rethrowHttp } from '../_base/rethrow-http';
 
 /** A submission's id, as the database makes them. */
 const GUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -176,13 +176,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
 
       return await this.withSubmitters(submissions);
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      throw new InternalServerErrorException('Could not retrieve user submissions.');
+      rethrowHttp(err, new InternalServerErrorException('Could not retrieve user submissions.'));
     }
   }
 
@@ -269,13 +263,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
         }
       });
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      throw new InternalServerErrorException('Could not retrieve user submissions.');
+      rethrowHttp(err, new InternalServerErrorException('Could not retrieve user submissions.'));
     }
   }
 
@@ -321,13 +309,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     try {
       return this.userSubmissionRepo.save(userSubmission);
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      throw new InternalServerErrorException('Could not insert user submission.');
+      rethrowHttp(err, new InternalServerErrorException('Could not insert user submission.'));
     }
   }
 
@@ -745,13 +727,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
 
       return { updated, submission: existingSubmission, sendReviewEmail };
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      throw new InternalServerErrorException('Could not update user submission.');
+      rethrowHttp(err, new InternalServerErrorException('Could not update user submission.'));
     }
   }
 
@@ -807,13 +783,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
 
       return deleted;
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      throw new InternalServerErrorException('Could not delete user submission.');
+      rethrowHttp(err, new InternalServerErrorException('Could not delete user submission.'));
     }
   }
 

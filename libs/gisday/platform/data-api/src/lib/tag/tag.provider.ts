@@ -1,10 +1,11 @@
-import { HttpException, Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 
 import { Event, Tag, Season } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
 import { SeasonService } from '../season/season.service';
+import { rethrowHttp } from '../_base/rethrow-http';
 
 @Injectable()
 export class TagProvider extends BaseProvider<Tag> {
@@ -101,13 +102,7 @@ export class TagProvider extends BaseProvider<Tag> {
     try {
       return this.tagRepo.save(newEntities);
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      throw new UnprocessableEntityException('Could not copy tags into season');
+      rethrowHttp(err, new UnprocessableEntityException('Could not copy tags into season'));
     }
   }
 

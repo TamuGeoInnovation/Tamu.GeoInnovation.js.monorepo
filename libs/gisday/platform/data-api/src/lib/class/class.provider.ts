@@ -1,6 +1,5 @@
 import {
   ConflictException,
-  HttpException,
   Injectable,
   InternalServerErrorException,
   UnprocessableEntityException
@@ -15,6 +14,7 @@ import { Class, CheckIn } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
 import { naturalOrder } from '../_base/natural-order';
 import { SeasonService } from '../season/season.service';
+import { rethrowHttp } from '../_base/rethrow-http';
 
 @Injectable()
 export class ClassProvider extends BaseProvider<Class> {
@@ -131,13 +131,7 @@ export class ClassProvider extends BaseProvider<Class> {
     try {
       return Promise.all(newClasses);
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      throw new InternalServerErrorException('Could not copy classes into season');
+      rethrowHttp(err, new InternalServerErrorException('Could not copy classes into season'));
     }
   }
 

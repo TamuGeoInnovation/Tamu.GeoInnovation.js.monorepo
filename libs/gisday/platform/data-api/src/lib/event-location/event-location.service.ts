@@ -1,10 +1,11 @@
-import { HttpException, Injectable, InternalServerErrorException, Logger, UnprocessableEntityException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, In, Repository, SelectQueryBuilder } from 'typeorm';
 
 import { EventLocation } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
 import { SeasonService } from '../season/season.service';
+import { rethrowHttp } from '../_base/rethrow-http';
 
 @Injectable()
 export class EventLocationService extends BaseProvider<EventLocation> {
@@ -36,13 +37,7 @@ export class EventLocationService extends BaseProvider<EventLocation> {
 
       return qq.getMany();
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      throw new InternalServerErrorException(err);
+      rethrowHttp(err, new InternalServerErrorException(err));
     }
   }
 
@@ -56,13 +51,7 @@ export class EventLocationService extends BaseProvider<EventLocation> {
 
       return this.getEventLocationsForSeason(season.guid);
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      throw new InternalServerErrorException(err);
+      rethrowHttp(err, new InternalServerErrorException(err));
     }
   }
 
@@ -74,13 +63,7 @@ export class EventLocationService extends BaseProvider<EventLocation> {
 
       return qq.getMany();
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      throw new InternalServerErrorException(err);
+      rethrowHttp(err, new InternalServerErrorException(err));
     }
   }
 
@@ -118,13 +101,7 @@ export class EventLocationService extends BaseProvider<EventLocation> {
 
       return this.esRepo.save(newEntities);
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      throw new InternalServerErrorException(err);
+      rethrowHttp(err, new InternalServerErrorException(err));
     }
   }
 
@@ -156,14 +133,7 @@ export class EventLocationService extends BaseProvider<EventLocation> {
         return transactionalEntityManager.delete(EventLocation, guids);
       });
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      Logger.error(err.message, 'EventLocationService.deleteEntities');
-      throw new InternalServerErrorException('Could not delete entities');
+      rethrowHttp(err, new InternalServerErrorException('Could not delete entities'), () => Logger.error(err.message, 'EventLocationService.deleteEntities'));
     }
   }
 }
