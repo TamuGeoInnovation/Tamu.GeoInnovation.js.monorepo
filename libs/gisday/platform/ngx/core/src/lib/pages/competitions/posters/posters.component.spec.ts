@@ -9,6 +9,7 @@ import { SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import {
   COMPETITION_SESSIONS,
   COMPETITION_SESSIONS_2027,
+  COMPETITION_SESSIONS_UNNAMED_AWARDS,
   provideCompetitionSessions
 } from '../competition-session/competition-session.testing';
 import { PostersComponent } from './posters.component';
@@ -113,5 +114,17 @@ describe('PostersComponent', () => {
     expect(rendered).toContain('Bethancourt Ballroom 2300 C');
     expect(rendered).toContain('Time: 1:00 to 1:15 PM');
     expect(rendered).not.toContain('Gates Ballroom 2400');
+  });
+
+  // #3412: with no awards session found, the sentence leading into it ended in a colon and nothing.
+  it('leaves the awards sentence out when it finds no awards session', () => {
+    const rendered = text(SEASON_2026, COMPETITION_SESSIONS_UNNAMED_AWARDS);
+
+    expect(rendered).not.toContain('announced at the awards session:');
+    expect(rendered).toContain('on the schedule');
+  });
+
+  it('leads into the awards session when it finds one', () => {
+    expect(text()).toContain('Winners will be announced at the awards session:');
   });
 });
