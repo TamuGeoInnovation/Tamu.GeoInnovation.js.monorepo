@@ -164,6 +164,42 @@ describe('CheckInDashboardComponent (#3006)', () => {
     };
   });
 
+  // #3330: the dashboards share one template; each says what it always has.
+  it('shows its title, summary, headings, notes and table headings as it always has', async () => {
+    const fixture = open();
+    await settle(fixture);
+    const root = fixture.nativeElement as HTMLElement;
+    const words = (selector: string) =>
+      Array.from(root.querySelectorAll(selector)).map((e) => e.textContent.replace(/\s+/g, ' ').trim());
+
+    expect([
+      ...words('.form-section-name'),
+      ...words('.dashboard-summary'),
+      ...words('h3.dashboard-heading'),
+      ...words('.dashboard-note'),
+      ...words('datatable-header-cell')
+    ]).toEqual([
+      'Check-ins',
+      '7 check-ins at 3 events.',
+      'Check-ins over time',
+      'By event',
+      "The running total at the end of each day, in Central time, with each day's check-ins beneath and the GIS Day week shaded. Hover for a day's numbers; drag across the chart to zoom in, and double-click to see it all again. Press a year to draw it beside this one, lined up on the Monday of each year's GIS Day week: the axis then counts days from it. Open an event below to add its own line.",
+      "Each event's check-ins, with how many RSVP'd beside them. Click a heading to sort by it, and again to reverse it. Click an event to see who checked in.",
+      'Event',
+      'When',
+      'Checked in',
+      'RSVPs',
+      'Walk-ins',
+      'Showed up',
+      'Under\u00adgraduate',
+      'Graduate',
+      'Student, classi\u00adfication not given',
+      'Faculty & academia',
+      'Industry',
+      'Not given'
+    ]);
+  });
+
   it("shows each event's check-ins by type, with its RSVPs beside them, and a total row", async () => {
     const fixture = open();
     await settle(fixture);

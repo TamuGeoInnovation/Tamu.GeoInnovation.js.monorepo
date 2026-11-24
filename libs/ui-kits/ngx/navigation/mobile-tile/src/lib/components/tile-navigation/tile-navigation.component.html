@@ -1,11 +1,12 @@
 @if (visible | async) {
-<div @baseShowHideAnimation @tileStaggerAnimation class="menu-host">
+<div class="menu-host" animate.enter="menu-entering" animate.leave="menu-leaving" [class.staggering]="staggering()" (animationend)="tileEntered($event)">
   @if ((service.submenuActive | async) === false) {
-  <div class="tiles" @submenuShowHideAnimation>
+  <!-- No entrance of its own while the menu opens: then the tiles stagger in instead. -->
+  <div class="tiles" [animate.enter]="staggering() ? '' : 'submenu-entering'" animate.leave="submenu-leaving">
     <ng-content select="tamu-gisc-tile"></ng-content>
   </div>
   } @if (service.submenuActive | async) {
-  <tamu-gisc-tile-submenu-container @submenuShowHideAnimation></tamu-gisc-tile-submenu-container>
+  <tamu-gisc-tile-submenu-container animate.enter="submenu-entering" animate.leave="submenu-leaving"></tamu-gisc-tile-submenu-container>
   }
 </div>
 }
