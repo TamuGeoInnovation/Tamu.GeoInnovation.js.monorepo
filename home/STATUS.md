@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch a4 (aggiemap: #3338)**, test only (decided A), check running since 10:26 PM Central, 24 November.
+- Nothing. Idle since 10:29 PM Central, 24 November; listening.
 
 ## Finished
+- **Batch a4 (aggiemap: #3338)** (report `home/reports/2026-11-24-a4.md`): branch ready, `fix/3338-aggiemap-page-views` at `6d0e5708b`, test only (A). A route change already sends exactly one page view (property history tracking); the provider fix is held locally on `held/3338-provider-page-views`.
 - **Batch g93 (gisday: #3327)** (report `home/reports/2026-11-24-g93.md`): branch ready, `fix/3327-form-data-false-values` at `eb277293b`. False values sent; sponsor workaround gone; #3340 filed, #3327 retitled. No questions.
 - **Batch g92 (gisday: #3326)** (report `home/reports/2026-11-24-g92.md`): branch ready, `fix/3326-profile-email-repeat-guard` at `443a3fe03`. Profile email's link is its claim (claims.session is NOT NULL, so no migration); sendEach for the three session emails; two test doubles given find/delete. One question.
 - **Batch a5 (aggiemap: #2617)** (report `home/reports/2026-11-24-a5.md`): no change; PR 2667 removed the TEMP on 6 November.
