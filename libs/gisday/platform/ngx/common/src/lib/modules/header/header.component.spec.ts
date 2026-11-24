@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, Subject } from 'rxjs';
 
@@ -175,7 +174,6 @@ describe('HeaderComponent phone menu', () => {
     TestBed.configureTestingModule({
       imports: [HeaderComponent],
       providers: [
-        provideNoopAnimations(),
         { provide: GISDAY_SITE, useValue: gisdaySite('txgisday') },
         { provide: AuthService, useValue: { isAuthenticated$: of(signedIn), userRoles$: of([]) } },
         { provide: ModalService, useValue: {} },
@@ -246,7 +244,6 @@ describe('HeaderComponent phone menu, Admin', () => {
     TestBed.configureTestingModule({
       imports: [HeaderComponent],
       providers: [
-        provideNoopAnimations(),
         { provide: GISDAY_SITE, useValue: gisdaySite('tamu') },
         { provide: AuthService, useValue: { isAuthenticated$: of(true), userRoles$: of(roles) } },
         { provide: ModalService, useValue: {} },

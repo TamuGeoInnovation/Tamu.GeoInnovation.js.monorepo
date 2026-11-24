@@ -6,8 +6,6 @@ import { Observable, filter, map, of, shareReplay, switchMap, take } from 'rxjs'
 
 import { Sponsor, Season } from '@tamu-gisc/gisday/platform/data-api';
 import { AssetsService, SeasonService, SponsorService } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { serverMessage } from '../../../../../utils/server-message';
 import { UploadImagePicker } from '../../../../../utils/upload-image-picker';
 
 import { formToFormData } from '../../../../../utils/form-to-form-data';
@@ -20,7 +18,7 @@ import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
 import { ImagePreviewComponent } from '../../../../images/components/image-preview/image-preview.component';
 import { uploadPreviewUrl } from '../../../../images/upload-preview-url';
-import { injectBackToList } from '../../../admin-details-page';
+import { adminEntityForm } from '../../../admin-entity-form';
 
 @Component({
   selector: 'tamu-gisc-sponsor-add-edit-form',
@@ -41,13 +39,12 @@ import { injectBackToList } from '../../../admin-details-page';
 export class SponsorAddEditFormComponent implements OnInit {
   private readonly fb = inject(UntypedFormBuilder);
   private readonly at = inject(ActivatedRoute);
-  /** Leaves for the list once a save, create or delete has worked: the one the page was opened from (#2965). */
-  private readonly backToList = injectBackToList('/admin/sponsors');
+  /** Its save and delete, and what they say (#3340, #3382). */
+  private readonly saves = adminEntityForm('Sponsor', '/admin/sponsors');
   private readonly as = inject(AssetsService);
   private readonly sss = inject(SponsorService);
   private readonly ss = inject(SeasonService);
   private readonly sn = inject(DomSanitizer);
-  private readonly ns = inject(NotificationService);
 
   public readonly type = input<'create' | 'edit'>(undefined);
 
@@ -141,75 +138,20 @@ export class SponsorAddEditFormComponent implements OnInit {
   }
 
   public deleteEntity() {
-    this.sss.deleteEntity(this.form.getRawValue().guid).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'sponsor-delete-success',
-          title: 'Delete Sponsor',
-          message: `Sponsor was successfully deleted.`
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'sponsor-delete-failed',
-          title: 'Delete Sponsor',
-          message: serverMessage(err, `Error deleting sponsor: ${err.status}`)
-        });
-      }
-    });
+    this.saves.save('delete', this.sss.deleteEntity(this.form.getRawValue().guid));
   }
 
   private _updateEntity() {
     const rawValue = this.form.getRawValue();
     const formData = this._formData();
 
-    this.sss.updateEntityFormData(rawValue.guid, formData).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'sponsor-update-success',
-          title: 'Update Sponsor',
-          message: `Sponsor was successfully updated.`
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'sponsor-update-failed',
-          title: 'Update Sponsor',
-          message: serverMessage(err, `Error updating sponsor: ${err.status}`)
-        });
-      }
-    });
+    this.saves.save('update', this.sss.updateEntityFormData(rawValue.guid, formData));
   }
 
   private _createEntity() {
     const formData = this._formData();
 
-    this.sss.createEntityFormData(formData).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'sponsor-create-success',
-          title: 'Create Sponsor',
-          message: `Sponsor was successfully created.`
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'sponsor-create-failed',
-          title: 'Create Sponsor',
-          message: serverMessage(err, `Error creating sponsor: ${err.status}`)
-        });
-      }
-    });
-  }
-
-  private _navigateBack() {
-    this.backToList();
+    this.saves.save('create', this.sss.createEntityFormData(formData));
   }
 
   /**
