@@ -6,7 +6,15 @@ import { Observable, catchError, filter, map, of, switchMap, tap } from 'rxjs';
 import { readRefusal, seasonPicker } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import type { RsvpDashboardPerson } from '@tamu-gisc/gisday/platform/data-api';
-import { bandOfDays, ChartBand, ChartSeries, countsByDay, dayIn, runningTotalByDay } from '@tamu-gisc/ui-kits/ngx/charts';
+import {
+  bandOfDays,
+  ChartBand,
+  ChartSeries,
+  countsByDay,
+  countsByHourOver,
+  dayIn,
+  runningTotalByDay
+} from '@tamu-gisc/ui-kits/ngx/charts';
 import { fileNamePart } from '@tamu-gisc/common/utils/ui';
 
 import { PERSON_TYPE_COLUMNS } from '../dashboard-people/dashboard-people.component';
@@ -56,6 +64,11 @@ export interface DashboardWords {
   dateLabel: string;
   emptyText: string;
   noEvents: string;
+  /**
+   * A second chart, by the hour across the days the season's events run (#3314), for a dashboard whose records all fall
+   * in one week. Left out, the page has none.
+   */
+  hourly?: { heading: string; note: string; label: string };
 }
 
 /**
@@ -131,6 +144,39 @@ export function dashboardSeries(
   return series;
 }
 
+/**
+ * A second chart's lines (#3314): how many records were made in each hour of the days the season's events run, in
+ * Central time, and the expanded event's own, if one is. Records made on other days are left out.
+ */
+export function dashboardHourly(
+  dashboard: DashboardData,
+  expanded: DashboardItem | null,
+  labels = { all: 'All events', one: 'This event' }
+): Array<ChartSeries> {
+  const days = dashboard.events.map((e) => e.starts).filter((s): s is string => Boolean(s));
+  const series: Array<ChartSeries> = [
+    {
+      label: labels.all,
+      points: countsByHourOver(
+        dashboard.made.map((m) => m.created),
+        days
+      )
+    }
+  ];
+
+  if (expanded) {
+    series.push({
+      label: expanded.name ?? labels.one,
+      points: countsByHourOver(
+        dashboard.made.filter((m) => m.event === expanded.guid).map((m) => m.created),
+        days
+      )
+    });
+  }
+
+  return series;
+}
+
 /** The columns under the chart: how many records every event gained each day (#2886). */
 export function dashboardDaily(dashboard: DashboardData): ChartSeries {
   return { label: 'New that day', points: countsByDay(dashboard.made.map((m) => m.created)) };
@@ -171,6 +217,8 @@ export abstract class EventDashboardComponent<D extends DashboardData> implement
   public tableColumns: () => Array<DashboardTableColumn> = () => this.columns;
   /** Count columns for an opened row's people, beside their details; none unless a dashboard has some. */
   public readonly countColumns: Array<DashboardTableColumn> = [];
+  /** The hourly chart's lines, when `words.hourly` asks for that chart (#3314); none unless a dashboard has them. */
+  public readonly hourly: () => Array<ChartSeries> = () => [];
 
   /** The dashboard's words, which the shared template reads (#3330). */
   public abstract readonly words: DashboardWords;

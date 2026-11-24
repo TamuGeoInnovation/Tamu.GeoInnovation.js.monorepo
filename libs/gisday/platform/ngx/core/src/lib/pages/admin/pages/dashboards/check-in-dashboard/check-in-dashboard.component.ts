@@ -8,6 +8,7 @@ import { LineChartComponent } from '@tamu-gisc/ui-kits/ngx/charts';
 
 import { SeasonComparisonComponent } from '../shared/season-comparison/season-comparison.component';
 import {
+  dashboardHourly,
   dashboardRows,
   DashboardWords,
   EventDashboardComponent,
@@ -85,12 +86,27 @@ export class CheckInDashboardComponent extends EventDashboardComponent<CheckInDa
     totalLabel: 'All events',
     dateLabel: 'Checked in',
     emptyText: 'Nobody has checked in at this event yet.',
-    noEvents: 'The selected season has no events.'
+    noEvents: 'The selected season has no events.',
+    hourly: {
+      heading: 'Check-ins by hour',
+      note: "The check-ins in each hour of the days the season's events run, in Central time. Hover for an hour's number; drag across the chart to zoom in, and double-click to see it all again.",
+      label: "Check-ins by hour across the days the season's events run, in Central time"
+    }
   };
 
   public summary(view: CheckInDashboard, total: number): string {
     return eventsSummary(total, view.events.length, view.unreadAccounts, { one: 'check-in', many: 'check-ins' }, 'at');
   }
+
+  /**
+   * Check-ins happen in one week, so under the chart by day, a second counts them by the hour across the days the
+   * season's events run (#3314), with the opened event's own line. The API has already left out other sites' events.
+   */
+  public override readonly hourly = computed(() => {
+    const dashboard = this.dashboard();
+
+    return dashboard ? dashboardHourly(dashboard, this.expandedEvent(), this.seriesLabels) : [];
+  });
 
   protected seasonDashboard(seasonGuid: string) {
     return this.entityService.getDashboardForSeason(seasonGuid);
