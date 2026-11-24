@@ -98,7 +98,7 @@ function said<F extends Form>(
     providers: [
       provideRouter([]),
       { provide: NotificationService, useValue: { toast } },
-      { provide: GISDAY_SITE, useValue: { name: 'A made-up site' } },
+      { provide: GISDAY_SITE, useValue: { name: 'A made-up site', off: [] } },
       ...SERVICES.map((service) => ({ provide: service, useValue: stub(answer) }))
     ]
   });
