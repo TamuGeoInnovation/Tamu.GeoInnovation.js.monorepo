@@ -63,8 +63,9 @@ function symlinkNgCLItoNxCLI() {
 
 try {
   symlinkNgCLItoNxCLI();
-  require('@nrwl/cli/lib/decorate-cli').decorateCli();
-  output.log({ title: 'Angular CLI has been decorated to enable computation caching.' });
+  // This used to call @nrwl/cli's decorateCli() as well. That package went with Nx 16 and is not installed, so the call
+  // threw on every install and printed "did not complete successfully" while the symlink above had worked (#2122).
+  output.log({ title: 'Angular CLI has been decorated: ng runs nx.' });
 } catch (e) {
   output.error({ title: 'Decoration of the Angular CLI did not complete successfully' });
 }
