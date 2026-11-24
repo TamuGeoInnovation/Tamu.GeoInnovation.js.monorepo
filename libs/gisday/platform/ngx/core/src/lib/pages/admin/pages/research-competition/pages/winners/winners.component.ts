@@ -21,11 +21,16 @@ import {
 
 import { seasonChoice } from '../../components/season-choice';
 
-/** How an entry is offered: its title, then its people. */
+/**
+ * How an entry is offered: its main author, then its title, then anyone else on it (#3292). The title came first, and a
+ * long one cut the names off, so who was who could not be seen. The main author is the first of the submission's
+ * people, in the order the API gives them (`presentersOf`).
+ */
 export function entryLabel(entry: WinnerEntryDto): string {
-  const names = entry.names.join(', ');
+  const [author, ...others] = entry.names;
+  const label = `${author || 'No name given'} - ${entry.title || 'Untitled'}`;
 
-  return [entry.title || 'Untitled', names && `(${names})`].filter(Boolean).join(' ');
+  return others.length ? `${label} (with ${others.join(', ')})` : label;
 }
 
 /** How a trail challenge submitter is offered (#3243): their name, then their points, as the leaderboard gives them. */
