@@ -141,13 +141,12 @@ describe('PlaceService', () => {
       );
     });
 
-    it('still wraps a genuine database failure as 500', async () => {
+    // Let through, as the shared copy does every lookup failure (#3379); Nest answers it 500 as before.
+    it('lets a genuine database failure through, not as a refusal', async () => {
       jest.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
       jest.spyOn(placeRepo, 'find').mockRejectedValue(new Error('connection lost'));
 
-      await expect(service.copyPlacesIntoSeason('season-2', ['p-1'])).rejects.toThrow(
-        InternalServerErrorException
-      );
+      await expect(service.copyPlacesIntoSeason('season-2', ['p-1'])).rejects.toThrow('connection lost');
     });
   });
 
