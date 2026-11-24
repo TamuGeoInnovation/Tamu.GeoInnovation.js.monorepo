@@ -1,5 +1,23 @@
 # Home machine: current tasks
 
+## Batch g98 (gisday: #3323, one Central-time module; 24 November 2026, about 4:30 AM Central, from `work (gisday)`) (Low) - **now**
+
+[#3323](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3323): `'America/Chicago'` is hard-coded in about ten files, and the calendar-day logic exists three times
+with two daylight-saving calculations. Rule 4 first: confirm the copies on today's `development` and list them in the report.
+
+- Branch `refactor/3323-central-time` from the latest `development`. Export `GISDAY_TIME_ZONE`, `centralDay()`,
+  `centralInstant()` and `formatCentral(date, style)` from `libs/gisday/common/src/lib/central-time.ts`, and use them everywhere
+  the issue lists. The narrow no-break space before AM/PM is replaced in one place, for every caller.
+- **Pin first:** tests capturing what each caller prints today, including a date either side of the November and March
+  changes, passing on today's code alone (as `pin/3330` did), then on the refactor. If a caller printed something different
+  from the others, that difference is a finding: keep the majority's form, and say in the report and PR body which caller
+  changed and how.
+- `libs/ui-kits/ngx/charts`' `dayIn` is a shared chart library, not GIS Day: leave it unless it can take the zone as an input
+  without changing AggieMap, and say which.
+- Check: every project you edit plus `gisday-angular,gisday-nest`. Overnight rules: no package.json or lock changes. Push to
+  the fork; "branch ready: refactor/3323-central-time" with the PR body in `home/reports/2026-11-24-g98.md`. If it grows
+  well past two hours, stop at the report.
+
 ## Batch g97 (gisday: #3328 as one set of type pages and one shared type form; 24 November 2026, about 3:45 AM Central, from `work (gisday)`) (Low) - **now**
 
 **Decided:** your question 1 on g96, **A**. One set of list, add and edit pages for "types", configured per route by service and
