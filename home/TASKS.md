@@ -1,5 +1,21 @@
 # Home machine: current tasks
 
+## Batch g104 (gisday: code-only triage of #434, #435, #438, #493, #499 and #1038; 24 November 2026, about 8:30 AM Central, from `work (gisday)`) (Low) - **now**
+
+**Your g103 question 1 goes to the maintainer** (your A is the recommendation). `feat/3321-papers-dates` is held until he answers:
+no images, no PR yet.
+
+Six older GIS Day issues with no status. For each, rule 4 on today's `development` and one row in a table in your report:
+**done already** (the PR or commit; the director closes it), **small and still wanted** (build it, one branch each from the latest
+`development`, red first, check; if it is visible, say what the laptop should capture and stop short of the PR), or **needs the
+maintainer** (options and a recommendation; don't build).
+- [#434](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/434) organization filter on the admin Events page; [#435](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/435) bulk actions on the admin Events page;
+  [#438](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/438) the admin Users view paged or tabled; [#499](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/499) hide an organization from the Sessions filter;
+  [#493](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/493) the art challenge page's winner text (editorial: needs the maintainer unless the text is in the issue);
+  [#1038](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1038) development reporting into production's Google Analytics property (read the issue to the end; it may need only a deployment value, which is the work machine's, not code).
+- Reuse before building: the shared list base, filters and `DashboardScrollComponent`; no purpose-built CSS.
+Overnight rules: no package.json or lock changes, no migrations. Report `home/reports/2026-11-24-g104.md`, PR bodies for anything built.
+
 ## Batch g103 (gisday: #3321, the Papers competition page takes its dates from the season; 24 November 2026, about 8:00 AM Central, from `work (gisday)`) (Low) - **now**
 
 Your g102 branch waits for the laptop's images (its g21); the director opens it then.
