@@ -30,6 +30,9 @@ function management(): ManagementService {
 
 const checkIn = (account: string, event: string, created: string) =>
   ({ accountGuid: account, event: { guid: event }, created: new Date(created) }) as CheckIn;
+/** What #2893 adds to an event's row and a person, read without the types that do not have them yet. */
+const walkInsOf = (event: object) => (event as { walkIns?: number }).walkIns;
+const outsideOf = (person: object) => (person as { outsideSessionTime?: boolean }).outsideSessionTime;
 const rsvp = (account: string, event: string) =>
   ({ accountGuid: account, event: { guid: event }, created: new Date() }) as UserRsvp;
 
@@ -110,6 +113,31 @@ describe('CheckInDashboardProvider (#3006)', () => {
       expect(dashboard.events[0].counts).toMatchObject({ undergraduate: 1, industry: 1, 'not-given': 0 });
     });
 
+    it("counts each event's walk-ins: check-ins by someone who had not RSVP'd to it (#2893)", async () => {
+      const dashboard = await provider.getSeason('s-1');
+
+      // e-1: the undergraduate RSVP'd and checked in; Sam checked in without one.
+      expect(dashboard.events.map((e) => [e.name, walkInsOf(e)])).toEqual([
+        ['Workshop', 1],
+        ['Nobody came', 0]
+      ]);
+    });
+
+    it("counts an RSVP to another event as no RSVP to this one, and reads each RSVP's account (#2893)", async () => {
+      const asked = jest.spyOn(rsvpRepo, 'find');
+      const findRsvps = rsvpRepo.find;
+      rsvpRepo.find = async (options) => {
+        await findRsvps.call(rsvpRepo, options);
+
+        return [rsvp('auth0|ug', 'e-1'), rsvp('auth0|esri', 'e-2')];
+      };
+
+      const dashboard = await provider.getSeason('s-1');
+
+      expect(walkInsOf(dashboard.events[0])).toBe(1);
+      expect(asked.mock.calls[0][0]).toMatchObject({ select: { accountGuid: true, event: { guid: true } } });
+    });
+
     it("gives each event's place, so the page can list only the site's own sessions (#2986)", async () => {
       const dashboard = await provider.getSeason('s-1');
 
@@ -139,6 +167,16 @@ describe('CheckInDashboardProvider (#3006)', () => {
   });
 
   describe('.getEvent()', () => {
+    it("marks each check-in made outside its session's time (#2893, #2635)", async () => {
+      eventRepo.findOne = async () => ({ guid: 'e-1' }) as Event;
+      checkInRepo.find = async () => [
+        { ...checkIn('auth0|esri', 'e-1', '2026-11-18T13:00:00Z'), outsideSessionTime: true } as CheckIn,
+        { ...checkIn('auth0|ug', 'e-1', '2026-11-18T15:05:00Z'), outsideSessionTime: false } as CheckIn
+      ];
+
+      expect((await provider.getEvent('e-1')).map(outsideOf)).toEqual([true, false]);
+    });
+
     it('answers 404 for an event that does not exist', async () => {
       await expect(provider.getEvent('e-x')).rejects.toThrow(NotFoundException);
     });

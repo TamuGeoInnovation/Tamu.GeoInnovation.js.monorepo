@@ -33,7 +33,9 @@
       <ngx-datatable-column [name]="totalHeading()" prop="total" [flexGrow]="widths.total" [minWidth]="widths.total" cellClass="dashboard-table-count bold" headerClass="dashboard-table-count" [summaryFunc]="sum"></ngx-datatable-column>
 
       @for (column of columns(); track column.key) {
-      <ngx-datatable-column [name]="column.label" [prop]="countProp(column.key)" [flexGrow]="widths.count" [minWidth]="widths.count" cellClass="dashboard-table-count" headerClass="dashboard-table-count" [summaryFunc]="summaries().get(column.key)"></ngx-datatable-column>
+      <ngx-datatable-column [name]="column.label" [prop]="countProp(column.key)" [flexGrow]="widths.count" [minWidth]="widths.count" cellClass="dashboard-table-count" headerClass="dashboard-table-count" [summaryFunc]="summaries().get(column.key)">
+        <ng-template let-value="value" ngx-datatable-cell-template>{{ column.percentOf ? percentCell(value) : value }}</ng-template>
+      </ngx-datatable-column>
       }
     </ngx-datatable>
   </div>

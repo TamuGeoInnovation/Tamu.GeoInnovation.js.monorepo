@@ -1,0 +1,33 @@
+<div class="form">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">{{ page.listTitle }}</div>
+      <div class="form-section-actions">
+        <a routerLink="add">Add {{ page.noun }} <span class="material-icons action">add</span></a>
+      </div>
+    </div>
+
+    <div class="form-section-body">
+      @if ($entities | async; as entities) { @if (entities.length > 0) {
+      <table class="floating-table">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Updated</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (entity of entities; track entity.guid) {
+          <tr class="selectable" [routerLink]="['edit', entity.guid]">
+            <td>{{ entity.type }}</td>
+            <td>{{ entity.updated | date: 'short' }}</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+      } @else {
+      <p>There are no {{ page.noun }}s yet.</p>
+      } }
+    </div>
+  </div>
+</div>

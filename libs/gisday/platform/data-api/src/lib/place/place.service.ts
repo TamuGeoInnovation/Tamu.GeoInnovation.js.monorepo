@@ -1,5 +1,4 @@
 import {
-  HttpException,
   Injectable,
   InternalServerErrorException,
   Logger,
@@ -10,13 +9,24 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, In, Repository } from 'typeorm';
 
 import { Asset, EventLocation, Place, PlaceLink } from '../entities/all.entity';
-import { BaseProvider } from '../_base/base-provider';
 import { AssetsService } from '../assets/assets.service';
 import { refuseUnsafeImage } from '../assets/image-upload';
 import { SeasonService } from '../season/season.service';
+import { rethrowHttp } from '../_base/rethrow-http';
+import { SeasonScopedProvider } from '../_base/season-scoped-provider';
 
 @Injectable()
-export class PlaceService extends BaseProvider<Place> {
+export class PlaceService extends SeasonScopedProvider<Place> {
+  protected get seasons() {
+    return this.seasonService;
+  }
+
+  protected readonly recordsName = 'places';
+
+  protected forSeason(seasonGuid: string) {
+    return this.getPlacesForSeason(seasonGuid);
+  }
+
   private _resourcePath = `images/places`;
 
   constructor(
@@ -40,36 +50,12 @@ export class PlaceService extends BaseProvider<Place> {
         .addOrderBy('links.label', 'ASC')
         .getMany();
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      Logger.error(`Error retrieving places for season, ${err.message}`, 'PlaceService');
-      throw new InternalServerErrorException(err);
+      rethrowHttp(err, new InternalServerErrorException(err), () => Logger.error(`Error retrieving places for season, ${err.message}`, 'PlaceService'));
     }
   }
 
   public async getPlacesForActiveSeason() {
-    try {
-      const season = await this.seasonService.findOneActive();
-
-      if (!season) {
-        throw new UnprocessableEntityException('No active season found.');
-      }
-
-      return this.getPlacesForSeason(season.guid);
-    } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      Logger.error(`Error retrieving places for active season, ${err.message}`, 'PlaceService');
-      throw new InternalServerErrorException();
-    }
+    return this.forActiveSeason();
   }
 
   public getEntity(guid: string) {
@@ -82,14 +68,7 @@ export class PlaceService extends BaseProvider<Place> {
         .where('place.guid = :guid', { guid })
         .getOne();
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      Logger.error(`Error retrieving place, ${err.message}`, 'PlaceService');
-      throw new InternalServerErrorException(err);
+      rethrowHttp(err, new InternalServerErrorException(err), () => Logger.error(`Error retrieving place, ${err.message}`, 'PlaceService'));
     }
   }
 
@@ -103,14 +82,7 @@ export class PlaceService extends BaseProvider<Place> {
         .addOrderBy('links.label', 'ASC')
         .getMany();
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      Logger.error(`Error retrieving places, ${err.message}`, 'PlaceService');
-      throw new InternalServerErrorException(err);
+      rethrowHttp(err, new InternalServerErrorException(err), () => Logger.error(`Error retrieving places, ${err.message}`, 'PlaceService'));
     }
   }
 
@@ -163,14 +135,7 @@ export class PlaceService extends BaseProvider<Place> {
 
       return Promise.all(copied);
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      Logger.error(`Error copying places into season, ${err.message}`, 'PlaceService');
-      throw new InternalServerErrorException(err);
+      rethrowHttp(err, new InternalServerErrorException(err), () => Logger.error(`Error copying places into season, ${err.message}`, 'PlaceService'));
     }
   }
 
@@ -205,27 +170,13 @@ export class PlaceService extends BaseProvider<Place> {
 
           return saved.save();
         } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-          Logger.error(err.message, 'PlaceService');
-          throw new InternalServerErrorException('Could not save place logo.');
+      rethrowHttp(err, new InternalServerErrorException('Could not save place logo.'), () => Logger.error(err.message, 'PlaceService'));
         }
       } else {
         return saved;
       }
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      Logger.error(`Error creating place, ${err.message}`, 'PlaceService');
-      throw new InternalServerErrorException(err);
+      rethrowHttp(err, new InternalServerErrorException(err), () => Logger.error(`Error creating place, ${err.message}`, 'PlaceService'));
     }
   }
 
@@ -271,14 +222,7 @@ export class PlaceService extends BaseProvider<Place> {
         try {
           logoImage = await this._saveImage(file);
         } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-          Logger.error(err.message, 'PlaceService');
-          throw new InternalServerErrorException('Could not save place logo.');
+      rethrowHttp(err, new InternalServerErrorException('Could not save place logo.'), () => Logger.error(err.message, 'PlaceService'));
         }
       }
 
@@ -298,14 +242,7 @@ export class PlaceService extends BaseProvider<Place> {
 
       return updated;
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      Logger.error(`Error updating place, ${err.message}`, 'PlaceService');
-      throw new InternalServerErrorException(err);
+      rethrowHttp(err, new InternalServerErrorException(err), () => Logger.error(`Error updating place, ${err.message}`, 'PlaceService'));
     }
   }
 
@@ -346,14 +283,7 @@ export class PlaceService extends BaseProvider<Place> {
 
       return result;
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      Logger.error(err.message, 'PlaceService.deleteEntities');
-      throw new InternalServerErrorException('Could not delete entities.');
+      rethrowHttp(err, new InternalServerErrorException('Could not delete entities.'), () => Logger.error(err.message, 'PlaceService.deleteEntities'));
     }
   }
 

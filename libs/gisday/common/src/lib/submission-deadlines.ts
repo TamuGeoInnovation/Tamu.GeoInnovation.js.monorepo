@@ -1,3 +1,4 @@
+import { formatCentral } from './central-time';
 /**
  * When each research competition stops taking submissions: poster and presentation (#2934), paper and cartography
  * (#2962). An admin sets them on the season, one pair per competition: when new submissions and edits close, and a
@@ -143,18 +144,14 @@ export function inCentralTime(
     return empty;
   }
 
-  const text = new Intl.DateTimeFormat('en-US', {
-    timeZone: 'America/Chicago',
+  const time = formatCentral(date, {
     weekday: 'short',
     month: 'short',
     day: 'numeric',
     year: brief ? undefined : 'numeric',
     hour: 'numeric',
     minute: '2-digit'
-  }).format(date);
-
-  // Newer ICU puts a narrow no-break space before AM and PM.
-  const time = text.replace(/\u202f/g, ' ');
+  });
 
   return brief ? time : `${time} Central`;
 }
