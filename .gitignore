@@ -88,3 +88,4 @@ test/smoke/aggiemap/map-manifest.generated.json
 .github/instructions/nx.instructions.md
 
 .claude/worktrees
+.claude/settings.local.json
