@@ -79,8 +79,10 @@ INSERT @kept VALUES
 -- Tables that are not copied: the migrations record is written when the new database is built, and
 -- the other three exist only in production and are not used by the code. `session_details_sends` (#3098) is no
 -- longer read either: speaker_email_claims took over its rows (#3260), and a later migration drops it (#3269).
+-- `sessions_filter_backfill` is what #1836's migration ticked, for its down(): organizations' ids and settings, no
+-- people, and the API never reads it. The list stays on one line: scrub-coverage.spec.ts reads it.
 DECLARE @skipped TABLE (tbl sysname);
-INSERT @skipped VALUES (N'typeorm_migrations'), (N'organization_links'), (N'speaker_images'), (N'sysdiagrams'), (N'session_details_sends');
+INSERT @skipped VALUES (N'typeorm_migrations'), (N'organization_links'), (N'speaker_images'), (N'sysdiagrams'), (N'session_details_sends'), (N'sessions_filter_backfill');
 
 -- What each personal column becomes. `{c}` is the column; a NULL stays NULL unless the rule says otherwise.
 DECLARE @scrubbed TABLE (tbl sysname, col sysname, expr nvarchar(max));

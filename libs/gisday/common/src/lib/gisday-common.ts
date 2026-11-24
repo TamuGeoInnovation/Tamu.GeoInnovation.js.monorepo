@@ -53,6 +53,13 @@ export function checksInByCode(mode: string | undefined | null): boolean {
 export const CHECK_IN_CODE_PARAM = 'checkin';
 
 /**
+ * Where the page keeps a check-in code it took out of the address, followed by that address's path (#2572), so Analytics
+ * and the browser's history never have it. gisday-angular's `index.html` writes it, before the app starts, under this
+ * same name.
+ */
+export const CHECK_IN_CODE_KEPT = 'gisday-checkin-code:';
+
+/**
  * What an attendee checking in to a QR session without its code, or with another session's, is told.
  */
 export const CHECK_IN_CODE_MESSAGE = "Check in to this session by scanning the QR code on the presenter's slides.";

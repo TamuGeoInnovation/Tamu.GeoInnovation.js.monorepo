@@ -8,7 +8,7 @@ import { Event } from '@tamu-gisc/gisday/platform/data-api';
 import { CheckinService, EventService, UserService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
-import { CHECK_IN_CODE_PARAM } from '@tamu-gisc/gisday/common';
+import { CHECK_IN_CODE_KEPT, CHECK_IN_CODE_PARAM } from '@tamu-gisc/gisday/common';
 
 /**
  * Where a QR code check-in stands (#3081). Each is the whole page, so an attendee is never left wondering.
@@ -44,7 +44,8 @@ export class EventCheckinComponent implements OnInit {
   public readonly reason = signal<string>(undefined);
 
   public readonly guid = this.route.snapshot.paramMap.get('guid');
-  private readonly code = this.route.snapshot.queryParamMap.get(CHECK_IN_CODE_PARAM) ?? undefined;
+  /** The QR code's code: kept by the page, which takes it out of the address before anything reports it (#2572). */
+  private readonly code = this.route.snapshot.queryParamMap.get(CHECK_IN_CODE_PARAM) ?? keptCode();
 
   public ngOnInit(): void {
     if (!this.code) {
@@ -121,6 +122,18 @@ export class EventCheckinComponent implements OnInit {
   /** Signs in or up, and comes back to this page with its code. */
   public signIn() {
     this.auth.login({ appState: { target: this.router.url } });
+  }
+}
+
+/**
+ * The check-in code the page took out of this page's address, if it did (#2572). Sign-in comes back to the same tab, so it
+ * is still there afterwards.
+ */
+function keptCode(): string | undefined {
+  try {
+    return sessionStorage.getItem(CHECK_IN_CODE_KEPT + location.pathname) ?? undefined;
+  } catch {
+    return undefined;
   }
 }
 

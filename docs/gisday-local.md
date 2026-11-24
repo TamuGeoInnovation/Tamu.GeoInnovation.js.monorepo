@@ -62,8 +62,9 @@ database volume, so the restore is needed only once.
 ### Another organization's site
 
 The same code serves more than one organization's GIS Day site; each is defined in
-`libs/gisday/common/src/lib/sites.ts` and chosen per deployment by `ANGULAR_SITE` (#1835). To review
-one locally, start the web step with its key:
+`libs/gisday/common/src/lib/sites.ts` and chosen per deployment by `ANGULAR_SITE` (#1835). Adding a
+new one, from that entry to its own address, is [`docs/gisday-sites.md`](gisday-sites.md) (#1843). To
+review one locally, start the web step with its key:
 
 ```bash
 scripts/gisday-local.sh web --site ucgis
