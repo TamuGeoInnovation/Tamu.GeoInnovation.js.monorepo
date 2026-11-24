@@ -51,6 +51,12 @@ jobs:
       - name: Check registry signatures
         run: npm audit signatures
 
+      # A README's hand-written `docker run` cannot say which Playwright image to use and stay right: the lock moves and
+      # the README does not. On 23 November 2026 a Playwright bump left six of them naming an image that no longer
+      # exists, and every command a reader copied failed. Under a second (#3301).
+      - name: Check hard-coded Playwright images against the lock
+        run: node scripts/check-playwright-image.mjs
+
       - name: Lint Affected
         env:
           BASE: ${{ inputs.base }}
