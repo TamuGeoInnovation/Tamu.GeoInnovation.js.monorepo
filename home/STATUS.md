@@ -14,9 +14,12 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch g92 (gisday: #3326)**, check running since 10:12 PM Central, 24 November; then g93 (#3327, written, check queued).
+- **Batch a4 (aggiemap: #3338)**, test only (decided A), check running since 10:26 PM Central, 24 November.
 
 ## Finished
+- **Batch g93 (gisday: #3327)** (report `home/reports/2026-11-24-g93.md`): branch ready, `fix/3327-form-data-false-values` at `eb277293b`. False values sent; sponsor workaround gone; #3340 filed, #3327 retitled. No questions.
+- **Batch g92 (gisday: #3326)** (report `home/reports/2026-11-24-g92.md`): branch ready, `fix/3326-profile-email-repeat-guard` at `443a3fe03`. Profile email's link is its claim (claims.session is NOT NULL, so no migration); sendEach for the three session emails; two test doubles given find/delete. One question.
+- **Batch a5 (aggiemap: #2617)** (report `home/reports/2026-11-24-a5.md`): no change; PR 2667 removed the TEMP on 6 November.
 - **Batch g91 (gisday: #3332)** (report `home/reports/2026-11-24-g91.md`): branch ready, `fix/3332-csv-formula-escaping` on the fork at `269434e8f`, no PR. `toCsv` beside `downloadFile` with Papa's formula escaping; all seven writers use it; one export pinned byte for byte. Red first; affected check exit 0 (36 projects). One question.
 - **Batch g88 (gisday: #2275)** (report `home/reports/2026-11-24-g88.md`): branch ready, `fix/2275-gisday-analytics-gtag` on the fork at `8f19a429f`, no PR. angulartics2's own gtag provider in place of analytics.js; no virtual page views. Red first (no call reached gtag), check exit 0. Two questions.
 - **Batch a3 (aggiemap: #2601, #2602)** (report `home/reports/2026-11-23-a3.md`): both branch ready on the fork, `.pr-body.md` last, #2602 stacked on #2601. `chore/2601-share-symbol-helpers` at `605d805d5` (one hatch swatch, data URI and arrow line; Games of Texas's swatch normalised, with images and a release entry). `chore/2602-share-popup-helpers` at `d5c5235ef` (markdownPopup for five maps; Construction's fields shared with Tailgating). Red and pins first; both checks exit 0. One question.
