@@ -4,9 +4,9 @@ import { DatePipe } from '@angular/common';
 import { RSVP_PERSON_TYPES, RsvpPersonType } from '@tamu-gisc/gisday/common';
 import type { RsvpDashboardPerson } from '@tamu-gisc/gisday/platform/data-api';
 import { downloadFile, toCsv } from '@tamu-gisc/common/utils/ui';
+import { DashboardScrollComponent } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import type { DashboardTableColumn } from '../dashboard-table/dashboard-table.component';
-import { DashboardScrollComponent } from '../dashboard-scroll/dashboard-scroll.component';
 
 /**
  * A person as every dashboard lists them: their profile, when they did what the dashboard counts, and any counts of

@@ -37,6 +37,8 @@ export * from './lib/modules/forms/components/classes/class-add-edit-form/class-
 export * from './lib/modules/forms/components/events/event-add-edit-form/event-add-edit-form.component';
 export * from './lib/modules/forms/components/event-locations/event-location-add-edit-form/event-location-add-edit-form.component';
 export * from './lib/modules/footer/footer.component';
+// A box that scrolls a table wider than itself, for the admin dashboards and the VGI submissions' counts (#3029, #3244).
+export * from './lib/modules/dashboard-scroll/dashboard-scroll.component';
 export * from './lib/modules/header/header.component';
 export * from './lib/modules/forms/components/organizations/organization-add-edit-form/organization-add-edit-form.component';
 export * from './lib/modules/forms/components/places/place-location-add-edit-form/place-location-add-edit-form.component';

@@ -4,13 +4,12 @@ import { RouterLink } from '@angular/router';
 import { Speaker } from '@tamu-gisc/gisday/platform/data-api';
 import { SpeakerEditsService, SpeakerService, sendEditLinksToast } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { sendProfileEmail } from '@tamu-gisc/gisday/platform/ngx/common';
+import { DashboardScrollComponent, sendProfileEmail } from '@tamu-gisc/gisday/platform/ngx/common';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { switchMap, take } from 'rxjs';
 
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
 import { AdminSearchComponent } from '../../../base-admin-list/admin-search.component';
-import { DashboardScrollComponent } from '../../../dashboards/shared/dashboard-scroll/dashboard-scroll.component';
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe, DatePipe } from '@angular/common';

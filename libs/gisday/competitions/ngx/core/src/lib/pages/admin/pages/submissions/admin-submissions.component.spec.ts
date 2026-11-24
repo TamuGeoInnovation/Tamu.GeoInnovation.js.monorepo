@@ -4,7 +4,7 @@ import { firstValueFrom, of, throwError } from 'rxjs';
 import { LeaderboardService, SubmissionService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
 import { SubmissionReviewDto } from '@tamu-gisc/gisday/competitions/data-api/types';
 
-import { AdminSubmissionsComponent } from './admin-submissions.component';
+import { AdminSubmissionsComponent, submissionCounts } from './admin-submissions.component';
 
 describe('AdminSubmissionsComponent', () => {
   let component: AdminSubmissionsComponent;
@@ -157,5 +157,105 @@ describe('AdminSubmissionsComponent', () => {
       expect(component.exportProblem()).toBe('This season has no VGI submissions to export.');
       expect((fixture.nativeElement as HTMLElement).textContent).toContain('This season has no VGI submissions to export.');
     });
+  });
+});
+
+/**
+ * #3244, decided by the maintainer: a table above the list, a row per category and a Total row, with how many
+ * submissions, verified, needing a look and discarded. It counts every submission this season, whichever view is
+ * pressed. Made-up submissions only.
+ */
+describe('AdminSubmissionsComponent counts (#3244)', () => {
+  const row = (guid: string, questionValue: string, validationStatus: string) =>
+    ({
+      guid,
+      userGuid: `auth0|${guid}`,
+      questionValue,
+      validationStatus,
+      reviewReasons: []
+    }) as unknown as SubmissionReviewDto;
+
+  const rows = [
+    row('a', 'Plaque', 'verified'),
+    row('b', 'Plaque', 'unverified'),
+    row('c', 'Bench', 'verified'),
+    row('d', 'Plaque', 'discarded'),
+    row('e', '', 'unverified'),
+    row('f', 'Bench', 'verified')
+  ];
+
+  it('counts each category, by name, the uncategorized last, and all of them', () => {
+    expect(submissionCounts(rows)).toEqual({
+      rows: [
+        { category: 'Bench', submissions: 2, verified: 2, unverified: 0, discarded: 0 },
+        { category: 'Plaque', submissions: 3, verified: 1, unverified: 1, discarded: 1 },
+        { category: 'No category', submissions: 1, verified: 0, unverified: 1, discarded: 0 }
+      ],
+      total: { category: 'Total', submissions: 6, verified: 3, unverified: 2, discarded: 1 }
+    });
+  });
+
+  it('shows the table above the list, and keeps its counts whichever view is pressed', async () => {
+    TestBed.configureTestingModule({
+      imports: [AdminSubmissionsComponent],
+      providers: [
+        { provide: SubmissionService, useValue: { getAdminSubmissions: () => of(rows), publishToArcgis: jest.fn() } },
+        { provide: LeaderboardService, useValue: { getScoresForActive: () => of([]) } }
+      ]
+    });
+
+    const fixture = TestBed.createComponent(AdminSubmissionsComponent);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const root = fixture.nativeElement as HTMLElement;
+    const table = () => root.querySelector('table.submission-counts');
+    const cells = () =>
+      Array.from(table().querySelectorAll('tr')).map((tr) =>
+        Array.from(tr.querySelectorAll('th, td')).map((c) => c.textContent.trim())
+      );
+    const before = cells();
+
+    expect(before).toEqual([
+      ['Category', 'Submissions', 'Verified', 'Needs a look', 'Discarded'],
+      ['Bench', '2', '2', '0', '0'],
+      ['Plaque', '3', '1', '1', '1'],
+      ['No category', '1', '0', '1', '0'],
+      ['Total', '6', '3', '2', '1']
+    ]);
+    // Above the list.
+    expect(table().compareDocumentPosition(root.querySelector('tamu-gisc-submission-review-list'))).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING
+    );
+
+    fixture.componentInstance.show('needs-a-look');
+    fixture.detectChanges();
+
+    expect(cells()).toEqual(before);
+  });
+
+  // On a 360 or 390 px phone the table is 377 px wide at its narrowest, every heading one word, and the page's column
+  // about 330 px: the page scrolled sideways (the laptop's report 4). The table now scrolls in the admin dashboards' own
+  // box, whose specs show it scrolls content wider than itself, so the page does not.
+  it('puts the table in the shared scroll box, so on a phone the table scrolls and the page does not', async () => {
+    TestBed.configureTestingModule({
+      imports: [AdminSubmissionsComponent],
+      providers: [
+        { provide: SubmissionService, useValue: { getAdminSubmissions: () => of(rows), publishToArcgis: jest.fn() } },
+        { provide: LeaderboardService, useValue: { getScoresForActive: () => of([]) } }
+      ]
+    });
+
+    const fixture = TestBed.createComponent(AdminSubmissionsComponent);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const table = (fixture.nativeElement as HTMLElement).querySelector('table.submission-counts');
+
+    expect(table.closest('tamu-gisc-dashboard-scroll')).not.toBeNull();
+    // Inside the box's own element that scrolls sideways, not beside it.
+    expect(table.parentElement.classList).toContain('dashboard-scroll');
   });
 });
