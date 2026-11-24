@@ -1,5 +1,27 @@
 # Laptop: current tasks
 
+## Batch g25 (gisday: #3424's green run, then #3412's Papers page; 24 November 2026, about 1:20 PM Central, from `work (gisday)`) (High) - **now**
+
+**Decided by the maintainer:** PR 3415 merges as it is (Posters and Presentation), and the Papers page becomes its own PR from
+you, not home (home has not picked up g106). The release waits on both of these.
+
+**1. [#3424](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3424), the smoke test (first, about 10 minutes).**
+Production's scheduled GIS Day Smoke run fails on *a past year's Sessions page offers the organizations its sessions were held at*,
+because it reads the checkbox's icon ligature as part of each name. The fix is on the fork's `fix/3424-smoke-filter-labels`
+(`846c32a04`, one line, test only). In the Playwright container, against production (read only), with
+`SMOKE_BASE_URL=https://txgisday.org`: `npx playwright test --config=playwright.smoke.config.ts -g "past year"`, **red** from
+`origin/development` first (expect `2025: offered but held no session`), then **green** from the branch. Report both lines and the
+`Exit` codes in `laptop/reports/2026-11-24-g25.md` straight away and say "g25 part 1 done"; the work machine opens the PR. Do not push.
+
+**2. [#3412](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3412), the Papers page.** Once PR 3415 has
+merged (check `gh pr view 3415`), branch `fix/3412-papers-awards-sentence` from the latest `origin/development`. Read 3415's diff:
+it moved the awards lead-in inside `<tamu-gisc-competition-session>` on Posters and Presentation. Do the same on Papers, and for any
+other lead-in that introduces a session there. **Red first:** the same spec 3415 added, on Papers, with a season whose awards
+session is not found; then green. `scripts/check-in-volume.sh fix/3412-papers-awards-sentence gisday-platform-ngx-core,gisday-angular`
+with `CHECK_PARALLEL=1`, its `Exit` line. Images: Papers before and after at 1280 and 390 into
+`docs/screenshots/3412-awards-sentence/` (new file names; keep 3415's), plus a release-notes file `docs/releases/unreleased/3412-papers-awards-sentence.md`.
+Commit, push to the fork, and draft `.pr-body.md` from the template as the last commit. Report in the same file, "branch ready".
+
 ## Batch a12 (aggiemap: the release tier on dev, on a machine doing nothing else; 24 November 2026, 10:20 AM Central, from `work (aggiemap)`) (High) - **now**
 
 **This is the run that decides whether the 24 November build goes to production.** The maintainer asked for it on a machine
