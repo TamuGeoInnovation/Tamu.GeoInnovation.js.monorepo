@@ -153,7 +153,10 @@ describe('PresentationComponent', () => {
 
   // #3412: the same for the two competition sessions.
   it('leaves out the sentence leading into a competition session it does not find', () => {
-    const rendered = text(SEASON_2026, COMPETITION_SESSIONS.filter((s) => s.guid !== 'u'));
+    const rendered = text(
+      SEASON_2026,
+      COMPETITION_SESSIONS.filter((s) => s.guid !== 'u')
+    );
 
     expect(rendered).not.toContain('Undergraduate student presentation competition session:');
     expect(rendered).toContain('Graduate student presentation competition session:');
