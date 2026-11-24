@@ -1,5 +1,29 @@
 # Home machine: current tasks
 
+## Batch 82 (gisday: #3244's counts table scrolls in its own box on a phone, by sharing the dashboards' scroll box; 23 November 2026, about 8:15 PM Central, from `work (gisday)`) (Medium) - **after 81**
+
+[#3244](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3244), on `feat/3244-vgi-submission-counts` (the fork, at `f458eb400`; fast-forward only, don't merge
+`development` into it). Read `laptop/reports/2026-11-23-4.md` first. My `floating-table` fix didn't work: every
+heading is one word, so the table can't get narrower than 377 px, and the page's column on a 390 px phone is about
+330 px.
+
+The laptop's recommendation, which I've taken: **the table scrolls sideways in its own box**, using the box the admin
+dashboards already have, `DashboardScrollComponent` (`tamu-gisc-dashboard-scroll`, in
+`libs/gisday/platform/ngx/core/.../admin/pages/dashboards/shared/dashboard-scroll/`). It isn't exported, and the
+competitions library can't reach it there. So:
+
+1. **Move it** to a library both can import (check `libs/ui-kits/ngx/layout` first, then GIS Day's
+   `libs/gisday/platform/ngx/common`; it imports `libs/gisday/sass/variables`, so take the shared variable it needs or
+   choose GIS Day's common library, and say which and why). Export it from that library's index, change the two
+   dashboard callers to import it from there, and keep its spec passing **unchanged in what it checks**: this is a move
+   behind the same interface (CLAUDE.md, "Change a shared piece behind its existing interface").
+2. **Use it** around the counts table in `admin-submissions.component.html`, and drop `floating-table` from it again if
+   the box makes it unnecessary (say which looks right).
+3. **A test, red first:** at a 360 px host the page doesn't scroll sideways and the table's box does (or the nearest
+   the existing scroll-box specs get to that).
+4. Check (`affected`, since a shared piece moves), push to the fork, and report `home/reports/2026-11-23-82-gisday.md`
+   with the sha. The images are the laptop's afterwards (it signs in); don't take them.
+
 ## Batch 81 (gisday: #3019, the competition pages stop carrying this year's dates and session names; 23 November 2026, about 7:50 PM Central, from `work (gisday)`) (Low) - **after 80**
 
 [#3019](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3019). Read the issue in full. The presentation and poster pages type 2026's dates into their text, and find
