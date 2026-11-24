@@ -1,5 +1,42 @@
 # Laptop: current tasks
 
+## Batch g23 (gisday: merge conflicts on eight PRs, and two lint failures; 24 November 2026, from `work (gisday)`) (Medium) - **now**
+
+The maintainer merged fifteen PRs this morning; these eight now conflict with `development`. For each, in its own worktree on the fork
+branch: `git fetch origin`, **merge** the latest `origin/development` into it (never rebase, never force-push), resolve, then
+`scripts/check-in-volume.sh <branch> <the projects it edits>,gisday-angular` (add `gisday-platform-data-api` for API branches), read
+its `Exit` line, and push to the fork. Keep both sides' intent in every conflict; where they truly disagree, stop on that PR and put
+it under **Questions for the home session**, with options and a recommendation.
+
+| PR | Branch | Note |
+| --- | --- | --- |
+| 3360 | `feat/3244-vgi-submission-counts` | |
+| 3375 | `feat/3314-check-ins-by-hour` | Was stacked on 3361, now merged |
+| 3380 | `refactor/3379-nested-season-copy` | Was stacked on 3378, now merged. **Also fails `Lint / Affected`**: fix it |
+| 3367 | `refactor/3331-one-name-order` | Known conflict with 3378's `class.provider.ts` and `event-broadcast.service.ts` |
+| 3390 | `feat/545-vgi-export-zip` | **Do not touch package.json or the lock** |
+| 3391 | `refactor/3329-season-picker` | |
+| 3392 | `fix/3354-public-event-hidden-sessions` | Was stacked on 3359, now merged |
+| 3344 | `feat/441-speaker-sessions` | **Last**, and only after PR 3388 has merged (it conflicts with 3388's template); if 3388 is still open, report and skip |
+
+**Also, not a conflict:** PR 3373 (`refactor/3330-one-dashboard-template`) fails `Lint / Affected`. Fix it the same way and push.
+
+Report `laptop/reports/2026-11-24-g23.md`: per PR, the merge commit, which files conflicted and how each was resolved, the check's
+exit line, and anything left. Say "conflicts done: <PR numbers>" first.
+
+## Batch g24 (gisday: images for PRs 3387, 3349 and 3367; 24 November 2026, from `work (gisday)`) (Low) - **after g23**
+
+Each fails "Has before/after images". Same rules as g20 (made-up records only, local scratch database, fast-forward only), images to
+`docs/screenshots/<issue>-<slug>/`, a `docs/releases/unreleased/<issue>-<slug>.md` entry, `collate --check`, push, and the PR's
+image table in `laptop/reports/2026-11-24-g24.md`:
+- **3387** (`feat/3321-papers-dates`, #3321): the public `/competitions/papers` page, before (merge-base) and after at 1280 and 390.
+  The season settings it needs are at the end of the PR body's verification section.
+- **3349** (`fix/3327-form-data-false-values`, #3327): an admin form with a checkbox turned off and saved, then reopened: before it
+  comes back on, after it stays off.
+- **3367** (`refactor/3331-one-name-order`, #3331), **after g23's merge on it**: a list whose order this changes (names with numbers,
+  or accented names). If no page's order changes, say so instead, with the pages you compared, and the home session will label it
+  `no-visible-change`.
+
 ## Batch g22 (gisday: images for #434, the admin Events list's Organization choice; 24 November 2026, about 9:00 AM Central, from `work (gisday)`) (Low) - **after g21, before g19's triage**
 
 Home's `feat/434-events-organization-filter` at `a0d89eaf6`, from `development`. Fast-forward only. With made-up sessions at two
