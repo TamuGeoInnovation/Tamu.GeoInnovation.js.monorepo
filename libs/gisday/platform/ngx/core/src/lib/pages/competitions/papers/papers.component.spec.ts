@@ -62,7 +62,8 @@ describe('PapersComponent (#3321)', () => {
 
     expect(rendered).not.toContain('2020');
     expect(rendered).not.toContain('November 17');
-    expect(rendered).not.toContain('November 18');
+    // 2020's awards day; the made-up awards session itself is on Thursday, November 18, 2027.
+    expect(rendered).not.toContain('Wednesday, November 18');
     expect(rendered).not.toContain('2:15pm');
     expect(rendered).not.toContain('2406B');
   });
