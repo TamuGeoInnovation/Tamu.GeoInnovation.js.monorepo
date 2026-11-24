@@ -103,10 +103,16 @@ const SOURCE_CASES: Record<string, SourceCase> = {
   'parking-garage': {
     kind: 'typed',
     category: 'Parking Garage',
-    term: 'Central Campus Garage',
-    result: 'Central Campus Garage',
-    popupShows: /Central Campus Garage/,
-    // Garages are not in the parking lots layer, so a `?lot=` link could not find one (#1163).
+    // Facilities' name, not Transportation's. The garages moved to Campus Structures in #3425 and are named
+    // there with "Parking" in the middle, so the old "Central Campus Garage" matches nothing. The term is the
+    // fragment a visitor types rather than a whole name, which is how this search is actually used and what
+    // keeps this case from breaking on the next rename.
+    term: 'Central Campus',
+    result: 'Central Campus Parking Garage',
+    popupShows: /Central Campus Parking Garage/,
+    // Garages are not in the parking lots layer, so a `?lot=` link could not find one (#1163). The code is
+    // unchanged by #3425: `bldgabbrev` carries what the retired layer's `Name` did, which is what keeps a
+    // link made before that change working.
     shareQuery: '?garage=CCG'
   },
   'parking-lot': {
