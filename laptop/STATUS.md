@@ -33,9 +33,13 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch 7 (security: #3265)**, started 8:05 PM Central. Next update by 8:30 PM Central. Its report will be `laptop/reports/2026-11-23-7-security.md`.
+- **Batch 9 (aggiemap: #3150, #3149, High)**, started 8:31 PM Central. Next update by 8:55 PM Central.
 
 ## Finished
+- **Batch 7 (security: #3265)** (report `laptop/reports/2026-11-23-7-security.md`): branch ready, `fix/3265-basemap-source-scan` on the fork at `2ff127da9`.
+  - **Fix:** the source scan runs once, in the describe's `beforeAll`. Assertions unchanged.
+  - **Timing:** same load both ways (a mounted checkout). Before: 85.7 s and 83.5 s, both timed out. After: 9 ms and 10 ms, 17 passed.
+  - **Check:** a pass under the rule. **One question** (two batches numbered 7).
 - **Batch 8 (gisday: #3090)** (report `laptop/reports/2026-11-23-8.md`): branch ready, `feat/3090-submission-file-preview` on the fork at `bd745d682`. Built: the PDF preview (an admin-only inline route; Preview with Previous and Next on the review page), red first, with images. **Step 2 stopped:** LibreOffice adds about 426 MB to the API image (one 10-slide conversion takes about 0.4 s). The full check was killed for memory twice; the failed projects pass alone at `CHECK_PARALLEL=2`. **Two questions.**
 - **Batch 7 (gisday: #2363)** (report `laptop/reports/2026-11-23-7.md`): branch ready, `test/2363-query-checking-provider-specs` on the fork at `fa072e279`.
   - **Specs:** 28 query-checking specs, about 160 tests.
@@ -67,7 +71,7 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
   - **Bug-fix check:** `gisday-angular,gisday-nest`, exit 0.
   - **Signed in on txgisday-dev:** exit 0.
   - **AggieMap `legend.spec.ts` on dev:** exit 1, failing on dev's data, not setup. Filed #3271.
-  - **GIS Day smoke, run locally:** 3 of 4 passed. The link-preview test can only pass on a deployed site.
+- Three batches, after batch 9, in the order they arrived: 10 (aggiemap: #3285, High), 11 (gisday: #2893 admin images), 12 (gisday: #3244 phone images, now the table scrolls in its own box).
   - **One question.**
 
 ## Queued
