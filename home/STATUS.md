@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle, listening.
+- **Batch a51** (#3551, construction popup dates a day early), since 12:47 PM Central, 25 November. Worktree `wt-a51`.
 
 ## Finished
 - **Batch a48** (report `home/reports/2026-11-25-a48.md`, 12:43 PM Central): #3657, the retired bus API cluster deleted by reachability (−774 lines). Branch `chore/3657-remove-retired-bus-api` at `fd97037ca`; check-in-volume and pre-pr-check both Exit 0. One question.
