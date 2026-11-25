@@ -80,6 +80,21 @@ stops it before it starts. `bash scripts/check-in-volume.test.sh` tests how it r
 build's configuration and the steps, and `bash scripts/run-times.test.sh` the run-time files it writes (both from Git Bash, as above). **It checks only what is committed**; uncommitted edits are not seen. `all` in place
 of `affected` checks every project. Run `git fetch origin` first if `origin/development` is old.
 
+**Before opening a pull request, run this, and open it only when it exits 0, docs-only changes included:**
+
+```bash
+scripts/pre-pr-check.sh <branch> '<title>' .pr-body.md [projects] [--label no-visible-change]
+```
+
+It checks the branch the way its pull request will be checked: the drafted title and body against the same code CI
+runs (the title format, a `Closes #N`, a release-notes entry or the `no-visible-change` label, before/after images for a
+visible change), the scripts' and tools' own test suites when the branch touches them, and then
+`scripts/check-in-volume.sh` (projects as in a bug fix's list, or `affected` without one). Its last line,
+`pre-pr-check: Exit 0`, goes in the pull request body. The maintainer's decision after 24 November 2026, when several
+pull requests opened red for things a local run would have caught: a docs change nobody checked, and a body with no
+closing reference (#3508). It cannot catch a flaky test: one that fails on a pull request that did not touch its project
+gets an issue and a fix that day, proven by running it many times before and after (#3506).
+
 **Not one app you picked — every affected app.** Building only the app you were working in is what the
 advice used to say, and it is not enough: a change to a shared library can break an application you
 have never opened. On 30 September a 969-byte growth in the notification component's stylesheet pushed
