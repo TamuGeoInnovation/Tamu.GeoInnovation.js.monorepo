@@ -203,6 +203,33 @@ The check itself agrees. `scripts/check-in-volume.sh` on those four, `CHECK_PARA
 (117 s) and `2026-11-24T212911-check-lab.csv` (60 s), differ by the first run's clone and `npm ci`, not by
 the runner.
 
+### A GIS Day-wide check at each `--parallel` (#3000)
+
+What a check needs when a change touches the whole of GIS Day. `laptop`, 24 November 2026, from about 8:27 PM to
+11:05 PM Central, with nothing else running in Docker (23.5 GiB and 14 CPUs given to it). Each run was
+`CHECK_PARALLEL=<n> scripts/check-in-volume.sh scratch/3000-measure affected` at the default `CHECK_MEMORY=16g`. The
+scratch branch adds a comment to `libs/gisday/common/src/index.ts`, so `affected` is all eleven GIS Day projects:
+lint, test and build, 26 tasks. The volume's `.nx/cache`, `.nx/workspace-data` and `dist` were deleted before each run,
+and no log shows a task read from a cache. The memory is `docker stats` of the check's container, sampled every 2 s.
+
+| `--parallel` | Result                                                                                                                                                                                  |     Elapsed | Peak memory |
+| -----------: | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------: | ----------: |
+|  8 (default) | **Did not finish.** 6 of 26 tasks done; stopped by hand after 115 min. No task was killed: memory sat at the 16 GiB limit and CPU near 1500 % for the last hour with nothing completing |   > 115 min |    16.0 GiB |
+|            4 | **Exit 1**, 6 memory kills. The script now says so (#3000)                                                                                                                              | 30 min 20 s |    16.0 GiB |
+|            2 | Exit 0                                                                                                                                                                                  |  6 min 20 s |    16.0 GiB |
+|            1 | Exit 0                                                                                                                                                                                  |  6 min 43 s |    12.8 GiB |
+
+What it shows:
+
+- **At the defaults this set never finishes.** Parallel 8 does not fail either, so the memory advice the script now
+  prints cannot fire: it is stuck near the limit, not killed. A GIS Day-wide check that has run past 15 minutes is in
+  this state.
+- **Parallel 1 costs 23 s against parallel 2** and is the only run with headroom (12.8 of 16 GiB); 2 passed while
+  sitting at the limit. Use `CHECK_PARALLEL=1` for a GIS Day-wide check.
+- **The default stays 8.** The wide AggieMap checks measured at 8 peaked at 10.4 GB and run in about 6 minutes (the
+  table above), where parallelism does pay. What is heavy here is the GIS Day set: two Angular apps and two Nest apps
+  building at once.
+
 ## Installs
 
 | Date        | Machine | What ran                                                                           | Approach                                     |         Elapsed |
