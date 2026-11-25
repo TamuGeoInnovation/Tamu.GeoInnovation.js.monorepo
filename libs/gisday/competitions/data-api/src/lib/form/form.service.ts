@@ -96,17 +96,21 @@ export class FormService extends BaseService<CompetitionForm> {
       throw new BadRequestException('No form found for provided guid.');
     }
 
+    const model = form.model;
+
     // Validate that exactly one question is marked as discriminator
-    const discriminatorCount = form.model?.filter((q) => q.isDiscriminator === true).length || 0;
-    if (discriminatorCount !== 1) {
+    if (model?.filter((q) => q.isDiscriminator === true).length !== 1) {
       throw new BadRequestException('Form must have exactly one discriminator question');
     }
 
     const window = scoringWindow(season);
+    // Cannot be undefined: the season was found by this form's guid, and the same query loads the form.
+    const competitionForm = competitionSeason.form!;
 
     try {
-      competitionSeason.form.model = form.model;
-      competitionSeason.form.source = form.source;
+      competitionForm.model = model;
+      // A form sent without its source keeps the one it has, as it did when the missing source was simply not saved.
+      competitionForm.source = form.source ?? competitionForm.source;
       competitionSeason.allowSubmissions = season?.allowSubmissions === true;
       competitionSeason.scoringOpensAt = window.scoringOpensAt;
       competitionSeason.scoringClosesAt = window.scoringClosesAt;
