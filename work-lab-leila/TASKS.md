@@ -2,6 +2,11 @@
 > # NEXT: batch g206, then g207. ~~batch g204 (from `work (gisday)`, 25 November, about 12:20 AM Central): #2390, unused variables fail lint. g203 was done at 11:15 PM, thank you; the work machine is opening its two pull requests.
 >
 
+## Correction (gisday), 2:55 AM Central, 25 November 2026
+
+- **Q-g208-1 turned into (a) after all:** PR 3560 merged at `76c2a50d8` before the director's fix reached it, so `common-utils-string`'s 2 errors are on `development` now. **Your g208 branch carries the fix**, and the director is opening its pull request now, from `fix/3495-gisday-nest-strict-null-checks-pr`, with `development` merged in.
+- **For g210 (#3581), step 4:** the red case is simply `origin/development` as it is now, before that pull request merges. If it merges first, use a scratch revert as written.
+
 ## Decided (gisday), 2:45 AM Central, 25 November 2026
 
 - **Q-g208-1: (b).** The director put the `common-utils-string` change from `7fdd18717` on PR 3560's branch (`fix(common-utils-string): renderTemplateRows type-checks...`). When you next merge PR 3560's branch into yours, git sees the same change on both sides; keep either.
