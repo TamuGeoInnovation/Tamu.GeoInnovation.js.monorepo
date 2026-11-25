@@ -10,7 +10,6 @@ import {
 } from '../interfaces/special-event.interface';
 
 import esri = __esri;
-import { EventPopups } from '../modules/popups/popups';
 
 // The order the map draws its layers in, top first (#2059): `EventService` adds them to the map in the
 // reverse of this order, each above the last. Accessible Parking comes before the lots because both accessible
@@ -19,7 +18,7 @@ import { EventPopups } from '../modules/popups/popups';
 export enum INDOOR_TRACK_PARKING_LAYERS {
   ACCESSIBLE_PARKING = 'indoor-track-parking-accessible-parking',
   PARKING_LOTS = 'indoor-track-parking-lots',
-  BUILDING = 'indoor-track-parking-building',
+  BUILDING = 'indoor-track-parking-building'
 }
 
 const eventUrl = Connections.indoorTrackParkingUrl;
@@ -51,7 +50,6 @@ export const IndoorTrackParkingColdLayerSources: LayerSource[] = [
     id: IndoorTrackParkingDefinitions.ACCESSIBLE_PARKING.id,
     title: IndoorTrackParkingDefinitions.ACCESSIBLE_PARKING.name,
     url: IndoorTrackParkingDefinitions.ACCESSIBLE_PARKING.url,
-    popupComponent: EventPopups.MarkdownPopupComponent,
     visible: true,
     listMode: 'show',
     // Overridden (#1992): the service's renderer, copied from Soccer and Softball's, gives its wheelchair
@@ -70,20 +68,6 @@ export const IndoorTrackParkingColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: IndoorTrackParkingDefinitions.PARKING.id,
     url: IndoorTrackParkingDefinitions.PARKING.url,
-    popupComponent: EventPopups.MarkdownPopupComponent,
-    popupData: {
-      name: {
-        field: 'lotname',
-        collapsed: true
-      },
-      /**
-       * Notes requested from column: IndoorN
-       */
-      description: {
-        field: 'indoorn',
-        collapsed: true
-      }
-    },
     visible: true,
     listMode: 'show',
     native: {
@@ -94,17 +78,12 @@ export const IndoorTrackParkingColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: IndoorTrackParkingDefinitions.BUILDING.id,
     url: IndoorTrackParkingDefinitions.BUILDING.url,
-    popupComponent: EventPopups.MarkdownPopupComponent,
-    popupData: {
-      name: IndoorTrackParkingDefinitions.BUILDING.name,
-      description: '{attributes.sp_sh_notes}'
-    },
     visible: true,
     listMode: 'show',
     native: {
       outFields: ['*']
     }
-  },
+  }
 ];
 
 /**
@@ -127,15 +106,14 @@ const indoorTrackParkingDevelopmentIndex: Record<string, number> = {
   [IndoorTrackParkingDefinitions.PARKING.id]: 2
 };
 
-export const IndoorTrackParking_DevelopmentLayerSources: LayerSource[] =
-  IndoorTrackParkingColdLayerSources.filter(
-    (source) => (source as { id: string }).id in indoorTrackParkingDevelopmentIndex
-  ).map((source) =>
-    athleticsDevelopmentSource({
-      id: (source as { id: string }).id,
-      url: `${eventUrl}/${indoorTrackParkingDevelopmentIndex[(source as { id: string }).id]}`
-    })
-  );
+export const IndoorTrackParking_DevelopmentLayerSources: LayerSource[] = IndoorTrackParkingColdLayerSources.filter(
+  (source) => (source as { id: string }).id in indoorTrackParkingDevelopmentIndex
+).map((source) =>
+  athleticsDevelopmentSource({
+    id: (source as { id: string }).id,
+    url: `${eventUrl}/${indoorTrackParkingDevelopmentIndex[(source as { id: string }).id]}`
+  })
+);
 
 export const IndoorTrackParkingConfiguration: EventConfiguration = {
   id: 'indoor-track-parking',

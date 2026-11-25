@@ -10,11 +10,10 @@ import {
 } from '../interfaces/special-event.interface';
 
 import esri = __esri;
-import { EventPopups } from '../modules/popups/popups';
 
 export enum SOFTBALL_PARKING_LAYERS {
   ACCESSIBLE_PARKING = 'softball-parking-accessible-parking',
-  PARKING_LOTS = 'softball-parking-lots',
+  PARKING_LOTS = 'softball-parking-lots'
 }
 
 const eventUrl = Connections.softballParkingUrl;
@@ -40,7 +39,6 @@ export const SoftballParkingColdLayerSources: LayerSource[] = [
     id: SoftballParkingDefinitions.ACCESSIBLE_PARKING.id,
     title: SoftballParkingDefinitions.ACCESSIBLE_PARKING.name,
     url: SoftballParkingDefinitions.ACCESSIBLE_PARKING.url,
-    popupComponent: EventPopups.MarkdownPopupComponent,
     visible: true,
     listMode: 'show',
     native: {
@@ -52,23 +50,12 @@ export const SoftballParkingColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: SoftballParkingDefinitions.PARKING.id,
     url: SoftballParkingDefinitions.PARKING.url,
-    popupComponent: EventPopups.MarkdownPopupComponent,
-    popupData: {
-      name: {
-        field: 'lotname',
-        collapsed: true
-      },
-      description: {
-        field: 'softballn',
-        collapsed: true
-      }
-    },
     visible: true,
     listMode: 'show',
     native: {
       outFields: ['*']
     }
-  },
+  }
 ];
 
 /**

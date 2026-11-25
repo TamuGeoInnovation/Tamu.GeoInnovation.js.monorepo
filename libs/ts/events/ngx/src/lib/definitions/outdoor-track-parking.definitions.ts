@@ -10,11 +10,10 @@ import {
 } from '../interfaces/special-event.interface';
 
 import esri = __esri;
-import { EventPopups } from '../modules/popups/popups';
 
 export enum OUTDOOR_TRACK_PARKING_LAYERS {
   ACCESSIBLE_PARKING = 'outdoor-track-parking-accessible-parking',
-  PARKING_LOTS = 'outdoor-track-parking-lots',
+  PARKING_LOTS = 'outdoor-track-parking-lots'
 }
 
 const eventUrl = Connections.outdoorTrackParkingUrl;
@@ -40,7 +39,6 @@ export const OutdoorTrackParkingColdLayerSources: LayerSource[] = [
     id: OutdoorTrackParkingDefinitions.ACCESSIBLE_PARKING.id,
     title: OutdoorTrackParkingDefinitions.ACCESSIBLE_PARKING.name,
     url: OutdoorTrackParkingDefinitions.ACCESSIBLE_PARKING.url,
-    popupComponent: EventPopups.MarkdownPopupComponent,
     visible: true,
     listMode: 'show',
     native: {
@@ -52,26 +50,12 @@ export const OutdoorTrackParkingColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: OutdoorTrackParkingDefinitions.PARKING.id,
     url: OutdoorTrackParkingDefinitions.PARKING.url,
-    popupComponent: EventPopups.MarkdownPopupComponent,
-    popupData: {
-      name: {
-        field: 'lotname',
-        collapsed: true
-      },
-      /**
-       * Notes requested from column: OutdoorN
-       */
-      description: {
-        field: 'outdoorn',
-        collapsed: true
-      }
-    },
     visible: true,
     listMode: 'show',
     native: {
       outFields: ['*']
     }
-  },
+  }
 ];
 
 /**

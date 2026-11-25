@@ -8,7 +8,6 @@ import {
 } from '../interfaces/special-event.interface';
 
 import esri = __esri;
-import { EventPopups } from '../modules/popups/popups';
 import { athleticsDevelopmentSource } from './common.definitions';
 
 export enum SOCCER_PARKING_LAYERS {
@@ -39,7 +38,6 @@ export const SoccerParkingColdLayerSources: LayerSource[] = [
     id: SoccerParkingDefinitions.ACCESSIBLE_PARKING.id,
     title: SoccerParkingDefinitions.ACCESSIBLE_PARKING.name,
     url: SoccerParkingDefinitions.ACCESSIBLE_PARKING.url,
-    popupComponent: EventPopups.MarkdownPopupComponent,
     visible: true,
     listMode: 'show',
     native: {
@@ -51,17 +49,6 @@ export const SoccerParkingColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: SoccerParkingDefinitions.PARKING.id,
     url: SoccerParkingDefinitions.PARKING.url,
-    popupComponent: EventPopups.MarkdownPopupComponent,
-    popupData: {
-      name: {
-        field: 'lotname',
-        collapsed: true
-      },
-      description: {
-        field: 'soccern',
-        collapsed: true
-      }
-    },
     visible: true,
     listMode: 'show',
     native: {

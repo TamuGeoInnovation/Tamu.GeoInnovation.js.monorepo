@@ -10,7 +10,6 @@ import {
 } from '../interfaces/special-event.interface';
 
 import esri = __esri;
-import { EventPopups } from '../modules/popups/popups';
 
 type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
 type FeatureRenderer = NonNullable<NonNullable<FeatureNative>['renderer']>;
@@ -42,11 +41,6 @@ export const CrossCountryParkingColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: CrossCountryParkingDefinitions.CROSS_COUNTRY_AREA.id,
     url: CrossCountryParkingDefinitions.CROSS_COUNTRY_AREA.url,
-    popupComponent: EventPopups.MarkdownPopupComponent,
-    popupData: {
-      name: '{attributes.name}',
-      description: '{attributes.description}'
-    },
     visible: true,
     listMode: 'show',
     native: {
@@ -57,17 +51,6 @@ export const CrossCountryParkingColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: CrossCountryParkingDefinitions.PARKING.id,
     url: CrossCountryParkingDefinitions.PARKING.url,
-    popupComponent: EventPopups.MarkdownPopupComponent,
-    popupData: {
-      name: {
-        field: 'lotname',
-        collapsed: true
-      },
-      description: {
-        field: 'xcounn',
-        collapsed: true
-      }
-    },
     visible: true,
     listMode: 'show',
     native: {

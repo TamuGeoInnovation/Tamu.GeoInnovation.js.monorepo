@@ -10,11 +10,10 @@ import {
 } from '../interfaces/special-event.interface';
 
 import esri = __esri;
-import { EventPopups } from '../modules/popups/popups';
 
 export enum SWIMMING_PARKING_LAYERS {
   ACCESSIBLE_PARKING = 'swimming-parking-accessible-parking',
-  PARKING_LOTS = 'swimming-parking-lots',
+  PARKING_LOTS = 'swimming-parking-lots'
 }
 
 const eventUrl = Connections.swimmingParkingUrl;
@@ -40,7 +39,6 @@ export const SwimmingParkingColdLayerSources: LayerSource[] = [
     id: SwimmingParkingDefinitions.ACCESSIBLE_PARKING.id,
     title: SwimmingParkingDefinitions.ACCESSIBLE_PARKING.name,
     url: SwimmingParkingDefinitions.ACCESSIBLE_PARKING.url,
-    popupComponent: EventPopups.MarkdownPopupComponent,
     visible: true,
     listMode: 'show',
     native: {
@@ -52,23 +50,12 @@ export const SwimmingParkingColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: SwimmingParkingDefinitions.PARKING.id,
     url: SwimmingParkingDefinitions.PARKING.url,
-    popupComponent: EventPopups.MarkdownPopupComponent,
-    popupData: {
-      name: {
-        field: 'lotname',
-        collapsed: true
-      },
-      description: {
-        field: 'swimmingn',
-        collapsed: true
-      }
-    },
     visible: true,
     listMode: 'show',
     native: {
       outFields: ['*']
     }
-  } as unknown as LayerSource,
+  } as unknown as LayerSource
 ];
 
 /**
