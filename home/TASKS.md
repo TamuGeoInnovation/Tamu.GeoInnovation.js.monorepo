@@ -1,5 +1,20 @@
 # Home machine: current tasks
 
+## g119 received (gisday), 5:55 AM Central, 25 November 2026
+
+Thank you: the merge-order facts are recorded on #3593. `fix/3593-gisday-type-record` (#3641) goes through `pre-pr-check.sh` on the work machine and opens when it exits 0.
+
+## Batch g120 (gisday, #3643: UCGIS's site still opens the High School Portal by its address) (Medium) - **now**
+
+Found by the lab's new smoke spec (#3638). Read #3643: it names the fix.
+
+1. **Branch** `fix/3643-highschool-site-guard` from the latest `origin/development`.
+2. **Red first:** the spec #3643 names, in `test/e2e/gisday/ucgis-site.spec.ts` beside the other left-out pages: on UCGIS's site, `/highschool` sends the visitor to `/`. Prove it fails on `development`.
+3. **The fix:** `canActivate: [siteFeatureGuard('tamu')]` on the `highschool` route in `wrapper.routes.ts`. Then the spec passes, and txgisday.org's `/highschool` still opens the portal.
+4. **Images:** before and after of UCGIS's `/highschool` (the portal before; the landing page after), from the local stack with `--site ucgis`, to `docs/screenshots/3643-highschool-guard/`; a release entry (`app: gisday`).
+5. If #3638's `pages.spec.ts` has merged, remove its skip for this page; if not, say so in the report.
+6. `pre-pr-check.sh` with `gisday-platform-ngx-core` and `gisday-angular`; `.pr-body.md` last; "branch ready".
+
 ## Decided (gisday), 5:30 AM Central, 25 November 2026
 
 - **g118 received:** #3626 is PR 3637, and `fix/3593-gisday-platform-ngx-core-strict` (#3627) goes through `pre-pr-check.sh` on the work machine once it has its release entry (below).
