@@ -39,7 +39,7 @@ describe('InteractiveModeToggleComponent', () => {
    */
   it('emits modeChange when a different mode is selected', () => {
     fixture.componentRef.setInput('mode', ComponentMode.Basic);
-    const spy = jest.spyOn(component.modeChange, 'emit');
+    const spy = vi.spyOn(component.modeChange, 'emit');
 
     component.toggleMode(ComponentMode.Advanced);
 
@@ -48,7 +48,7 @@ describe('InteractiveModeToggleComponent', () => {
 
   it('does not emit when the selected mode is unchanged', () => {
     fixture.componentRef.setInput('mode', ComponentMode.Basic);
-    const spy = jest.spyOn(component.modeChange, 'emit');
+    const spy = vi.spyOn(component.modeChange, 'emit');
 
     component.toggleMode(ComponentMode.Basic);
 

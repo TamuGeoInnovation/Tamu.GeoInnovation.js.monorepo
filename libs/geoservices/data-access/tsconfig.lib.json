@@ -6,7 +6,6 @@
     "declaration": true,
     "declarationMap": true,
     "inlineSources": true,
-    "types": [],
     "lib": ["dom", "es2022"]
   },
   "angularCompilerOptions": {
@@ -14,6 +13,6 @@
     "strictMetadataEmit": true,
     "enableResourceInlining": true
   },
-  "exclude": ["src/test-setup.ts", "**/*.spec.ts", "**/*.test.ts", "jest.config.ts"],
+  "exclude": ["**/*.spec.ts", "**/*.test.ts"],
   "include": ["**/*.ts"]
 }

@@ -2,7 +2,7 @@ import { Injectable, NotFoundException, StreamableFile } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bull';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Queue } from 'bull';
+import { type Queue } from 'bull';
 
 import * as fs from 'fs/promises';
 import JSZip from 'jszip';
@@ -31,7 +31,7 @@ export class ExportService {
    */
   async zipForSeason(seasonGuid?: string): Promise<StreamableFile> {
     const season = await this.platformSeasonRepo.findOne({ where: seasonGuid ? { guid: seasonGuid } : { active: true } });
-    const competitionSeason = season && (await this.seasonRepo.findOne({ where: { season: { guid: season.guid } } }));
+    const competitionSeason = season ? await this.seasonRepo.findOne({ where: { season: { guid: season.guid } } }) : null;
 
     if (!season || !competitionSeason) {
       throw new NotFoundException('This season has no VGI competition.');

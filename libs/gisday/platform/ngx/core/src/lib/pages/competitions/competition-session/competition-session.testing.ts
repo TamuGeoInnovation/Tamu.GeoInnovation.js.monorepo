@@ -22,7 +22,12 @@ export const COMPETITION_SESSIONS: Array<ReviewEmailSession> = [
 /** The same sessions a year on, on the same weekdays: a made-up 2027 for a page that must not carry 2026 (#3019). */
 export const COMPETITION_SESSIONS_2027: Array<ReviewEmailSession> = COMPETITION_SESSIONS.map((s) => ({
   ...s,
-  day: { date: (s.day?.date ?? '').replace('2026-11-17', '2027-11-16').replace('2026-11-19', '2027-11-18') }
+  // Built by session() below, so each date is its ISO text (#3547).
+  day: {
+    date: String(s.day?.date ?? '')
+      .replace('2026-11-17', '2027-11-16')
+      .replace('2026-11-19', '2027-11-18')
+  }
 }));
 
 /**
