@@ -107,6 +107,10 @@ keys, and its provenance where it has one, in about 15 seconds; it fails on a mi
 October all 1,901 registry packages were signed and 456 had provenance. The one git dependency (`geojson-utils`)
 has no registry signature to check and is not counted.
 
+`lint.yml` runs it through `audit-signatures.mjs`, which tries again, up to three times ten seconds apart, when the
+registry fails to answer (`FETCH_ERROR`, `invalid json response body`: the registry sometimes sends a bare `OK`
+instead of JSON). A missing or invalid signature still fails at once and is never retried (#3439).
+
 ## The tables
 
 "The tables" are three, always shown together, because the maintainer asks for all of them at once: **vulnerabilities**,
