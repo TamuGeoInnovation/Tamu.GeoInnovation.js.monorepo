@@ -663,6 +663,21 @@ leave a field empty silently. Say in your reply which values you chose. See #111
 Both projects' built-in workflows move an item to **Done** when it is closed or its pull request is
 merged, so nothing needs updating after the merge.
 
+**Check a pull request's state at the moment you hand over its merge command, every time.** The maintainer
+merges; a session gives him `gh pr merge` commands. Give one only for a pull request that, checked right
+then, is open, has no conflict and has every check green:
+
+```bash
+gh pr view <n> -R <owner>/<repo> --json state,mergeStateStatus
+gh pr checks <n> -R <owner>/<repo>
+```
+
+Never repeat a merge command from an earlier reply without checking again, in this repository or any other
+(kubernetes-config's pull requests included). A pull request still running CI is reported as not ready,
+with what it waits on, not handed over to be tried. On 24 November 2026 a session gave the maintainer merge
+commands for kubernetes-config PRs 167 and 168 three times over the evening, carried forward from a reading
+taken before he merged them at 3:51 PM, and he had to say they were already merged.
+
 **Only the issue being fixed may follow a closing keyword.** GitHub treats `close`, `closes`, `fix`,
 `fixes`, `resolve` and `resolves` followed by `#N` *anywhere* in the body as "close #N on merge", so a
 sentence like "the next smoke run should close #1096" would close #1096 too. Reword such sentences,
