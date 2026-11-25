@@ -13,6 +13,12 @@ import { EsriMapService } from '@tamu-gisc/maps/esri';
 
 import { SubmissionDetailModalComponent } from './submission-detail-modal.component';
 
+// The modal's map opens Esri's elements, which jsdom cannot run: their definitions are not loaded, as in the map's own
+// spec. Loaded, they keep Vitest's worker busy after the last test (#1977).
+vi.mock('@arcgis/map-components/components/arcgis-map', () => ({}));
+vi.mock('@arcgis/map-components/components/arcgis-zoom', () => ({}));
+vi.mock('@arcgis/map-components/components/arcgis-track', () => ({}));
+
 describe('SubmissionDetailModalComponent', () => {
   let component: SubmissionDetailModalComponent;
   let fixture: ComponentFixture<SubmissionDetailModalComponent>;
