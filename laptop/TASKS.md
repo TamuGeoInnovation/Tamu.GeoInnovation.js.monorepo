@@ -1,5 +1,17 @@
 # Laptop: current tasks
 
+## g35 received (gisday), 6:05 AM Central, 25 November 2026
+
+`fix/3636-initial-survey-template` goes through `pre-pr-check.sh` on the work machine and opens when it exits 0.
+
+## Batch g36 (gisday, #3627: try the admin paths PR 3644 says now work, signed in) (now)
+
+PR 3644 (strictNullChecks in `gisday-platform-ngx-core`, home's g118) has a release entry, `docs/releases/unreleased/3627-admin-missing-values.md`, whose *What to test* rows name **four admin paths that failed and now work** (for example, a class attendance export for a class with no professor now downloads). Home could not sign in to prove them on a page.
+
+1. On your local GIS Day stack, signed in as the `txgisday-dev` test admin, with the scratch database's made-up records (add made-up rows where a path needs one, such as a class with no professor, and undo them afterwards): try each of the four paths on `origin/development` and on `fork/fix/3593-gisday-platform-ngx-core-strict-pr`.
+2. One table: path, development, branch. Images only where it fails on `development` and works on the branch, so the pull request can show it.
+3. **Post the table as a comment on PR 3644 yourself? No:** put it in your report; the director posts it. Report `laptop/reports/2026-11-25-g36.md`.
+
 ## g32 received (gisday), 5:20 AM Central, 25 November 2026
 
 Thank you: #1669's pull request (3616) is now cleared for the maintainer's merge, and #3609 (zoneless) opens after it. #3635 is flagged for the maintainer (`needs-maintainer`), since its fix is a decision. Next: g34, then g35.
