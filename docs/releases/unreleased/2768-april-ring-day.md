@@ -13,8 +13,8 @@ that #899's All Maps overhaul hid it on 5 August 2026 and to ask before listing 
 
 The maintainer confirmed on 8 November 2026 that it should be listed, so it is.
 
-| | Before | After |
-| --- | --- | --- |
+|               | Before                                                                                                   | After                                                                                              |
+| ------------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
 | Campus Events | ![The Spring column without April Ring Day](../screenshots/2768-april-ring-day/before-campus-events.png) | ![April Ring Day in the Spring column](../screenshots/2768-april-ring-day/after-campus-events.png) |
 
 The map itself was always reachable at `/events/april-ring-day`; only the listing was missing, so a shared
