@@ -1,10 +1,4 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  Logger,
-  NotFoundException,
-  UnprocessableEntityException
-} from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, In, Repository, DeepPartial } from 'typeorm';
 
@@ -65,7 +59,9 @@ export class OrganizationService extends SeasonScopedProvider<Organization> {
         }
       });
     } catch (err) {
-      rethrowHttp(err, new InternalServerErrorException('Could not find organizations for season.'), () => Logger.error(err.message, 'OrganizationService'));
+      rethrowHttp(err, new InternalServerErrorException('Could not find organizations for season.'), () =>
+        Logger.error(err.message, 'OrganizationService')
+      );
     }
   }
 
@@ -82,7 +78,9 @@ export class OrganizationService extends SeasonScopedProvider<Organization> {
         }
       });
     } catch (err) {
-      rethrowHttp(err, new InternalServerErrorException('Could not find organizations.'), () => Logger.error(err.message, 'OrganizationService'));
+      rethrowHttp(err, new InternalServerErrorException('Could not find organizations.'), () =>
+        Logger.error(err.message, 'OrganizationService')
+      );
     }
   }
 
@@ -95,7 +93,9 @@ export class OrganizationService extends SeasonScopedProvider<Organization> {
         relations: { season: true, logos: true }
       });
     } catch (err) {
-      rethrowHttp(err, new InternalServerErrorException('Could not find organization.'), () => Logger.error(err.message, 'OrganizationService'));
+      rethrowHttp(err, new InternalServerErrorException('Could not find organization.'), () =>
+        Logger.error(err.message, 'OrganizationService')
+      );
     }
   }
 
@@ -107,24 +107,22 @@ export class OrganizationService extends SeasonScopedProvider<Organization> {
       ...organization
     });
 
-    if (orgEnt) {
-      const savedEntity = await orgEnt.save();
+    const savedEntity = await orgEnt.save();
 
-      if (file != null || file != undefined) {
-        try {
-          const savedLogo = await this._saveImage(file);
+    if (file) {
+      try {
+        const savedLogo = await this._saveImage(file);
 
-          savedEntity.logos = [savedLogo];
+        savedEntity.logos = [savedLogo];
 
-          return savedEntity.save();
-        } catch (err) {
-      rethrowHttp(err, new InternalServerErrorException('Could not save organization logo.'), () => Logger.error(err.message, 'OrganizationService'));
-        }
-      } else {
-        return savedEntity;
+        return savedEntity.save();
+      } catch (err) {
+        rethrowHttp(err, new InternalServerErrorException('Could not save organization logo.'), () =>
+          Logger.error(err.message, 'OrganizationService')
+        );
       }
     } else {
-      throw new UnprocessableEntityException(null, 'Could not create organization.');
+      return savedEntity;
     }
   }
 
@@ -148,15 +146,18 @@ export class OrganizationService extends SeasonScopedProvider<Organization> {
     if (existing) {
       let logoImage;
 
-      if (file != null || file != undefined) {
+      if (file) {
         try {
           logoImage = await this._saveImage(file);
         } catch (err) {
-      rethrowHttp(err, new InternalServerErrorException('Could not save organization logo.'), () => Logger.error(err.message, 'OrganizationService'));
+          rethrowHttp(err, new InternalServerErrorException('Could not save organization logo.'), () =>
+            Logger.error(err.message, 'OrganizationService')
+          );
         }
       }
 
-      const toSave = {
+      // An organization as saved, whose logos may be left out: without a new logo they are, and stay as they are.
+      const toSave: DeepPartial<Organization> = {
         ...existing,
         ...incoming,
         logos: [logoImage]
@@ -213,7 +214,8 @@ export class OrganizationService extends SeasonScopedProvider<Organization> {
           relations: { logos: true }
         });
 
-        logos = orgs.map((org) => org.logos).flat();
+        // `logos` is loaded by this find's `relations`.
+        logos = orgs.flatMap((org) => org.logos!);
 
         await this.assetService.deleteAssets(manager, logos);
 
@@ -238,7 +240,9 @@ export class OrganizationService extends SeasonScopedProvider<Organization> {
 
       return result;
     } catch (err) {
-      rethrowHttp(err, new InternalServerErrorException('Could not delete entities'), () => Logger.error(err.message, 'OrganizationService.deleteEntities'));
+      rethrowHttp(err, new InternalServerErrorException('Could not delete entities'), () =>
+        Logger.error(err.message, 'OrganizationService.deleteEntities')
+      );
     }
   }
 

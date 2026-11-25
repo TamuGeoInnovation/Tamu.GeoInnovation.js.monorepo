@@ -5,6 +5,7 @@ import { expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
 import { Framing, readEsriVersion, servedRoutes, waitForSettledFraming } from './framing';
 import { MANIFEST_PATH, MapManifest } from './global-setup';
+import { PROBE_GLOBAL } from './map-probe';
 
 /**
  * Every map opens where it opens on production (#1380).
@@ -153,14 +154,10 @@ test.describe('every map opens where it does on production', () => {
       // A listed map behind a builder with no recorded destination never creates a view. There is no
       // URL that reaches it; re-running tools/builder-inventory is what covers it.
       const probePresent = await page
-        .waitForFunction(
-          (name) => (window as unknown as Record<string, unknown>)[name] !== undefined,
-          '__tamuGiscMapProbe',
-          {
-            timeout: 30_000,
-            polling: 500
-          }
-        )
+        .waitForFunction((name) => (window as unknown as Record<string, unknown>)[name] !== undefined, PROBE_GLOBAL, {
+          timeout: 30_000,
+          polling: 500
+        })
         .then(() => true)
         .catch(() => false);
 

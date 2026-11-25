@@ -16,8 +16,8 @@ import { ClassAddEditFormComponent, sectionsFrom } from './class-add-edit-form.c
 describe('ClassAddEditFormComponent, creating', () => {
   function create(refuse: Array<string> = []) {
     const created: Array<Partial<Class>> = [];
-    const toast = jest.fn();
-    const navigate = jest.fn();
+    const toast = vi.fn();
+    const navigate = vi.fn();
 
     TestBed.configureTestingModule({
       providers: [
@@ -46,7 +46,13 @@ describe('ClassAddEditFormComponent, creating', () => {
     fixture.detectChanges();
 
     const submit = (section: string) => {
-      fixture.componentInstance.form.patchValue({ code: 'GEOG', number: '476', title: 'GIS', professorName: 'Goldberg', section });
+      fixture.componentInstance.form.patchValue({
+        code: 'GEOG',
+        number: '476',
+        title: 'GIS',
+        professorName: 'Goldberg',
+        section
+      });
       fixture.componentInstance.handleSubmission();
       fixture.detectChanges();
     };
@@ -78,7 +84,9 @@ describe('ClassAddEditFormComponent, creating', () => {
     submit('501, 502, 503');
 
     expect(created.map((c) => c.section)).toEqual(['501', '503']);
-    expect(toast).toHaveBeenCalledWith(expect.objectContaining({ message: expect.stringMatching(/502.*Class already exists/) }));
+    expect(toast).toHaveBeenCalledWith(
+      expect.objectContaining({ message: expect.stringMatching(/502.*Class already exists/) })
+    );
     expect(fixture.componentInstance.form.get('section').value).toBe('502');
     expect(navigate).not.toHaveBeenCalled();
   });

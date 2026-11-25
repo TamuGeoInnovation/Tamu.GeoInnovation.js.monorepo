@@ -2,6 +2,7 @@ import { Page } from '@playwright/test';
 
 import { expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
+import { PROBE_GLOBAL } from './map-probe';
 
 /**
  * Choosing a basemap in the settings panel changes the map, and the panel marks the one chosen (#1672).
@@ -34,23 +35,26 @@ const CONSTRUCTION_HATCH = 'Buildings under construction';
 
 /** The titles of the basemap layers the view is drawing, once the map is ready; null before. */
 async function basemapLayers(page: Page): Promise<string | null> {
-  return await page.evaluate(async ([types, hatch]) => {
-    const probe = (
-      window as unknown as Record<
-        string,
-        { ready?: boolean; snapshot(): Promise<{ layers: Array<{ title: string; type: string }> }> } | undefined
-      >
-    )['__tamuGiscMapProbe'];
+  return await page.evaluate(
+    async ([types, hatch, name]) => {
+      const probe = (
+        window as unknown as Record<
+          string,
+          { ready?: boolean; snapshot(): Promise<{ layers: Array<{ title: string; type: string }> }> } | undefined
+        >
+      )[name];
 
-    if (probe?.ready !== true) {
-      return null;
-    }
+      if (probe?.ready !== true) {
+        return null;
+      }
 
-    return (await probe.snapshot()).layers
-      .filter((layer) => types.includes(layer.type) || layer.title === hatch)
-      .map((layer) => layer.title)
-      .join(', ');
-  }, [BASEMAP_TYPES, CONSTRUCTION_HATCH] as const);
+      return (await probe.snapshot()).layers
+        .filter((layer) => types.includes(layer.type) || layer.title === hatch)
+        .map((layer) => layer.title)
+        .join(', ');
+    },
+    [BASEMAP_TYPES, CONSTRUCTION_HATCH, PROBE_GLOBAL] as const
+  );
 }
 
 test.describe('basemap gallery', () => {
@@ -144,13 +148,22 @@ test.describe('basemap gallery', () => {
     // Away and back. `CHOICES[0]` is one of ArcGIS's own basemaps, offered on every environment.
     const away = CHOICES[0];
 
-    await page.locator('.basemap', { has: page.locator('.basemap-title', { hasText: away }) }).first().click();
+    await page
+      .locator('.basemap', { has: page.locator('.basemap-title', { hasText: away }) })
+      .first()
+      .click();
     await expect(marked, `choosing ${away} did not mark it as the one showing`).toHaveText(away, { timeout: 60_000 });
     await expect
-      .poll(async () => (await basemapLayers(page)) ?? '', { message: `${away} did not replace ${openedWith}`, timeout: 60_000 })
+      .poll(async () => (await basemapLayers(page)) ?? '', {
+        message: `${away} did not replace ${openedWith}`,
+        timeout: 60_000
+      })
       .not.toBe(openedWith ?? '');
 
-    await page.locator('.basemap', { has: page.locator('.basemap-title', { hasText: openedOn }) }).first().click();
+    await page
+      .locator('.basemap', { has: page.locator('.basemap-title', { hasText: openedOn }) })
+      .first()
+      .click();
     await expect(marked, `coming back to ${openedOn} did not mark it`).toHaveText(openedOn, { timeout: 60_000 });
     await expect
       .poll(() => basemapLayers(page), { message: `leaving ${away} did not bring back ${openedWith}`, timeout: 60_000 })
@@ -177,7 +190,10 @@ test.describe('basemap gallery', () => {
       const query = request.method() === 'POST' ? (request.postData() ?? '') : new URL(request.url()).search;
       const params = new URLSearchParams(query);
 
-      if (!request.url().includes('api.nearmap.com') || !/^getmap$/i.test(params.get('request') ?? params.get('REQUEST') ?? '')) {
+      if (
+        !request.url().includes('api.nearmap.com') ||
+        !/^getmap$/i.test(params.get('request') ?? params.get('REQUEST') ?? '')
+      ) {
         return;
       }
 
@@ -196,7 +212,10 @@ test.describe('basemap gallery', () => {
       .poll(() => basemapLayers(page), { message: `${MAP} never finished loading`, timeout: 90_000, intervals: [1_000] })
       .not.toBeNull();
 
-    await page.locator('.basemap', { has: page.locator('.basemap-title', { hasText: 'Aerial Imagery' }) }).first().click();
+    await page
+      .locator('.basemap', { has: page.locator('.basemap-title', { hasText: 'Aerial Imagery' }) })
+      .first()
+      .click();
 
     await expect
       .poll(() => requests.length, { message: 'choosing Aerial Imagery asked Nearmap for no image', timeout: 60_000 })
@@ -210,7 +229,9 @@ test.describe('basemap gallery', () => {
     // The panel's spinner waits for the basemap to draw. It used to wait for the whole map, and on a
     // development host a feature layer could stay updating after the switch, so it never stopped (#1997).
     await expect(
-      page.locator('.basemap', { has: page.locator('.basemap-title', { hasText: 'Aerial Imagery' }) }).locator('.spinning-loader'),
+      page
+        .locator('.basemap', { has: page.locator('.basemap-title', { hasText: 'Aerial Imagery' }) })
+        .locator('.spinning-loader'),
       'the Aerial Imagery spinner should stop once the imagery has drawn'
     ).toHaveCount(0, { timeout: 60_000 });
   });

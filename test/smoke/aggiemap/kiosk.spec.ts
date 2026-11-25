@@ -2,7 +2,7 @@ import { Page } from '@playwright/test';
 
 import { expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
-import { PROBE_GLOBAL } from './map-probe';
+import { PROBE_GLOBAL, ProbeLayer, waitForMapDrawn } from './map-probe';
 
 /**
  * The dining kiosk draws its dining locations (#1392).
@@ -40,16 +40,6 @@ const BASEMAP_TYPES = ['tile', 'vector-tile'];
 
 /** Fresh loads per run. Before the fix, dining drew on none of 11 such loads across dev, production and local. */
 const LOADS = 3;
-
-interface ProbeLayer {
-  id: string;
-  type: string;
-  visible: boolean;
-  loaded: boolean;
-  error: string | null;
-  featureCount: number | null;
-  graphicTypes: Record<string, number> | null;
-}
 
 /** The map's layers, as the probe reports them, or `null` before the map is ready. */
 async function snapshot(page: Page): Promise<ProbeLayer[] | null> {
@@ -128,18 +118,12 @@ const TAILGATING_ROUTE = '/events/tailgating/map';
 
 const SELECTION_LAYER_ID = 'selection-layer';
 
-/** Waits until the map has finished drawing, which is what a screen showing it needs. */
+/**
+ * Waits until the map has finished drawing, which is what a screen showing it needs. Called once `openKiosk` has seen
+ * the map ready, so `ready: false` keeps it the drawing-only wait it always was.
+ */
 async function finishesDrawing(page: Page, link: string): Promise<void> {
-  await expect
-    .poll(
-      async () =>
-        await page.evaluate(
-          (name) => (window as unknown as Record<string, { drawing?: boolean }>)[name]?.drawing === false,
-          PROBE_GLOBAL
-        ),
-      { message: `${link} never finished drawing`, timeout: 90_000, intervals: [1_000] }
-    )
-    .toBe(true);
+  await waitForMapDrawn(page, `${link} never finished drawing`, { ready: false });
 }
 
 /** A map's layers once it has finished drawing, as a visitor opening it would see them. */
@@ -147,27 +131,8 @@ async function drawnLayers(page: Page, link: string): Promise<ProbeLayer[]> {
   await blockAnalytics(page);
   await page.goto(link, { waitUntil: 'domcontentloaded' });
 
-  let layers: ProbeLayer[] | null = null;
-
   // Ready as well as finished drawing: before the probe is ready it reports nothing, and drawing can read as finished.
-  await expect
-    .poll(
-      async () => {
-        layers = await snapshot(page);
-
-        return (
-          layers !== null &&
-          (await page.evaluate(
-            (name) => (window as unknown as Record<string, { drawing?: boolean }>)[name]?.drawing === false,
-            PROBE_GLOBAL
-          ))
-        );
-      },
-      { message: `${link} never finished drawing`, timeout: 120_000, intervals: [1_000] }
-    )
-    .toBe(true);
-
-  return layers ?? [];
+  return await waitForMapDrawn(page, `${link} never finished drawing`, { timeout: 120_000, until: () => true });
 }
 
 /**
