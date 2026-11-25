@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import { expect, test } from './fixtures';
 import { MANIFEST_PATH, MapManifest } from './global-setup';
 import { blockAnalytics } from './analytics';
-import { PROBE_GLOBAL } from './map-probe';
+import { PROBE_GLOBAL, ProbeLayer } from './map-probe';
 
 /**
  * A satellite campus map loads only its own campus (#1910).
@@ -29,11 +29,6 @@ const manifest: MapManifest = JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf8'))
 
 /** The satellite campus maps this environment lists. */
 const campusMaps = manifest.maps.filter((mapPath) => mapPath.startsWith('/campus/'));
-
-interface ProbeLayer {
-  id: string;
-  type: string;
-}
 
 test.describe('satellite campus layers', () => {
   test('the environment lists some campus maps to check', () => {

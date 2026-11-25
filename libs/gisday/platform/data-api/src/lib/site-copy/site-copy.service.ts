@@ -20,7 +20,9 @@ import {
 } from '../entities/all.entity';
 import {
   SITE_COPY_KINDS,
+  CheckedSiteCopyUpload,
   SiteCopyFile,
+  SiteCopyUpload,
   SiteCopyKind,
   SiteCopyKindPlan,
   SiteCopyPlan,
@@ -133,7 +135,7 @@ export class SiteCopyService {
     const records = {} as SiteCopyRecords;
     const guids = (list: Array<SiteCopyRecord>) => list.map((r) => r.guid);
     const linked = (list: Array<SiteCopyRecord>, link: string) => [
-      ...new Set(list.flatMap((r) => [r[link]].flat() as Array<{ guid: string } | null>).filter(Boolean).map((r) => r.guid))
+      ...new Set(list.flatMap((r) => [r[link]].flat() as Array<{ guid: string } | null>).flatMap((r) => (r ? [r.guid] : [])))
     ];
     const byGuid = async (kind: SiteCopyKind, wanted: Array<string>) =>
       wanted.length ? this.find(em, kind, { guid: In(wanted) }) : [];
@@ -190,7 +192,7 @@ export class SiteCopyService {
    * site does not have are added, records it has with different values are updated, by guid. Nothing here
    * is ever deleted. Logos and photos are fetched from the file's source site and written to this one.
    */
-  public async import(file: SiteCopyFile, apply: boolean): Promise<SiteCopyPlan> {
+  public async import(file: SiteCopyUpload | undefined, apply: boolean): Promise<SiteCopyPlan> {
     this.check(file);
 
     const blockers = await this.blockers(file);
@@ -212,12 +214,14 @@ export class SiteCopyService {
     }
 
     const missing = await this.missingFiles(file);
-    const files = go ? { missing: missing.length, ...(await this.copyFiles(file.source, missing)) } : { missing: missing.length, written: 0, failed: [] };
+    const files = go
+      ? { missing: missing.length, ...(await this.copyFiles(file.source, missing)) }
+      : { missing: missing.length, written: 0, failed: [] };
 
     return { applied: go, blockers, warnings, kinds, files };
   }
 
-  private check(file: SiteCopyFile) {
+  private check(file: SiteCopyUpload | undefined): asserts file is CheckedSiteCopyUpload {
     if (file?.format !== 'gisday-site-copy' || file.version !== 1 || !file.records) {
       throw new BadRequestException('This is not a GIS Day site copy file.');
     }
@@ -231,7 +235,7 @@ export class SiteCopyService {
    * A season for the same year that is not the file's would leave this site with two of them, and its
    * events would land on neither cleanly. That is refused; the person decides which to keep.
    */
-  private async blockers(file: SiteCopyFile): Promise<Array<string>> {
+  private async blockers(file: CheckedSiteCopyUpload): Promise<Array<string>> {
     const blockers: Array<string> = [];
 
     for (const season of file.records.seasons ?? []) {
@@ -262,9 +266,7 @@ export class SiteCopyService {
       return plan;
     }
 
-    const existing = new Map(
-      (await this.find(em, kind, { guid: In(incoming.map((r) => r.guid)) })).map((r) => [r.guid, r])
-    );
+    const existing = new Map((await this.find(em, kind, { guid: In(incoming.map((r) => r.guid)) })).map((r) => [r.guid, r]));
 
     for (const record of incoming) {
       const clean = await this.withoutMissingLinks(em, kind, this.clean(em, kind, record), inFile, warnings);
@@ -312,13 +314,15 @@ export class SiteCopyService {
     }
 
     for (const list of rule.lists ?? []) {
-      const kept = [];
+      const kept: Array<{ guid: string }> = [];
 
       for (const value of record[list] as Array<{ guid: string }>) {
         if (await exists(list, value.guid)) {
           kept.push(value);
         } else {
-          warnings.push(`${rule.label(record)} (${kind}): one of its ${list} is not in the file or on this site, so it is left out.`);
+          warnings.push(
+            `${rule.label(record)} (${kind}): one of its ${list} is not in the file or on this site, so it is left out.`
+          );
         }
       }
 
@@ -329,7 +333,7 @@ export class SiteCopyService {
   }
 
   /** The logos and photos in the file that this site does not have on disk, by path. */
-  private async missingFiles(file: SiteCopyFile): Promise<Array<string>> {
+  private async missingFiles(file: CheckedSiteCopyUpload): Promise<Array<string>> {
     const missing: Array<string> = [];
 
     for (const asset of file.records.assets ?? []) {
@@ -415,7 +419,7 @@ export class SiteCopyService {
 
     for (const column of this.columns(em.connection.getMetadata(rule.entity), rule)) {
       const value = row[column];
-      record[column] = value instanceof Date ? value.toISOString() : value ?? null;
+      record[column] = value instanceof Date ? value.toISOString() : (value ?? null);
     }
 
     for (const link of rule.links) {
@@ -423,7 +427,9 @@ export class SiteCopyService {
     }
 
     for (const list of rule.lists ?? []) {
-      record[list] = ((row[list] ?? []) as Array<{ guid: string }>).map((r) => ({ guid: r.guid })).sort((a, b) => a.guid.localeCompare(b.guid));
+      record[list] = ((row[list] ?? []) as Array<{ guid: string }>)
+        .map((r) => ({ guid: r.guid }))
+        .sort((a, b) => a.guid.localeCompare(b.guid));
     }
 
     return record as SiteCopyRecord;
@@ -444,9 +450,9 @@ export class SiteCopyService {
     }
 
     for (const list of rule.lists ?? []) {
-      clean[list] = ((record[list] ?? []) as Array<{ guid: string }>)
-        .filter((r) => r?.guid)
-        .map((r) => ({ guid: r.guid }))
+      // As the file has them: an entry may be empty.
+      clean[list] = ((record[list] ?? []) as Array<{ guid?: string } | null>)
+        .flatMap((r) => (r?.guid ? [{ guid: r.guid }] : []))
         .sort((a, b) => a.guid.localeCompare(b.guid));
     }
 

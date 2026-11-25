@@ -6,6 +6,7 @@ import { isMainMapPanel, MANIFEST_PATH, MapManifest } from './global-setup';
 import { blockAnalytics } from './analytics';
 import { loadBuilderTargets } from './builder-destinations';
 import { isDevelopmentUrl } from './gis-hosts';
+import { PROBE_GLOBAL } from './map-probe';
 
 /**
  * Every map lists, draws and keys the layers its definition says it has (#1986).
@@ -84,8 +85,10 @@ const ALLOWED_LAYER_FAILURES = (process.env.AGGIEMAP_SMOKE_ALLOWED_LAYER_FAILURE
 
 /** By map path and then layer title or id, each with why: one of this environment's lists in environments.json. */
 function perMapEntries(key: 'allowedMapLayerFailures' | 'allowedEmptyFilters'): Record<string, Record<string, string>> {
-  const environments: Record<string, { baseUrl: string } & Partial<Record<typeof key, Record<string, Record<string, string>>>>> =
-    JSON.parse(fs.readFileSync(path.join(__dirname, 'environments.json'), 'utf8'));
+  const environments: Record<
+    string,
+    { baseUrl: string } & Partial<Record<typeof key, Record<string, Record<string, string>>>>
+  > = JSON.parse(fs.readFileSync(path.join(__dirname, 'environments.json'), 'utf8'));
   const normalised = manifest.baseUrl.replace(/\/$/, '');
 
   return Object.values(environments).find((env) => env.baseUrl.replace(/\/$/, '') === normalised)?.[key] ?? {};
@@ -154,9 +157,7 @@ function emptyByDesign(filter: string): boolean {
 
 /** A layer whose filter selects none of the features its service layer holds, where that is not by design (#2530). */
 function filteredToNothing(layer: MapLayer): boolean {
-  return (
-    (layer.filtered?.all ?? 0) > 0 && layer.filtered?.selected === 0 && !emptyByDesign(layer.filtered?.filter ?? '')
-  );
+  return (layer.filtered?.all ?? 0) > 0 && layer.filtered?.selected === 0 && !emptyByDesign(layer.filtered?.filter ?? '');
 }
 
 /** A Layers list item's text is the layer's title, followed by ` - ` and its note where it has one. */
@@ -189,18 +190,20 @@ const builderTargets = loadBuilderTargets(manifest);
  * Not the main map's panels, such as the bus map (#2743): their layers are the main map's, checked here at `/map`, and
  * the panel shows its own content in place of the Layers list this test reads.
  */
-const cases = manifest.maps.filter((mapPath) => !isMainMapPanel(mapPath)).flatMap((mapPath): { mapPath: string; loadPath: string; title: string; borrowedFrom?: string }[] => {
-  const targets = builderTargets.get(mapPath) ?? [];
+const cases = manifest.maps
+  .filter((mapPath) => !isMainMapPanel(mapPath))
+  .flatMap((mapPath): { mapPath: string; loadPath: string; title: string; borrowedFrom?: string }[] => {
+    const targets = builderTargets.get(mapPath) ?? [];
 
-  return targets.length === 0
-    ? [{ mapPath, loadPath: mapPath, title: mapPath }]
-    : targets.map(({ target, label, borrowedFrom }) => ({
-        mapPath,
-        loadPath: target,
-        title: `${mapPath} (${label})`,
-        borrowedFrom
-      }));
-});
+    return targets.length === 0
+      ? [{ mapPath, loadPath: mapPath, title: mapPath }]
+      : targets.map(({ target, label, borrowedFrom }) => ({
+          mapPath,
+          loadPath: target,
+          title: `${mapPath} (${label})`,
+          borrowedFrom
+        }));
+  });
 
 for (const { mapPath, loadPath, title, borrowedFrom } of cases) {
   test(`${title} lists, draws and keys every layer it shows`, HEAVY_MAPS.has(mapPath) ? HEAVY : {}, async ({ page }) => {
@@ -208,20 +211,20 @@ for (const { mapPath, loadPath, title, borrowedFrom } of cases) {
     await blockAnalytics(page);
     await page.goto(loadPath, { waitUntil: 'domcontentloaded' });
 
-    // A builder-gated map never draws until a choice is made, so one with no recorded destination is skipped.
+    // A builder-gated map never draws until a choice is made, so one with no recorded destination is skipped. Its own
+    // wait rather than waitForMapDrawn's (#3473): it also ends on the builder, and a map that never finishes becomes the
+    // diagnostic below rather than a failed poll.
     const settled = await page
       .waitForFunction(
-        () => {
-          const probe = (window as unknown as Record<string, { ready?: boolean; drawing?: boolean } | undefined>)[
-            '__tamuGiscMapProbe'
-          ];
+        (name) => {
+          const probe = (window as unknown as Record<string, { ready?: boolean; drawing?: boolean } | undefined>)[name];
 
           return (
             location.pathname.includes('/builder/') ||
             (probe?.ready === true && probe.drawing === false && document.querySelector('arcgis-map') !== null)
           );
         },
-        null,
+        PROBE_GLOBAL,
         // Maintenance and Service Parking load every parking space on campus, and finished drawing after
         // 134 and 147 seconds with five other maps loading beside them on 20 October.
         { timeout: 240_000, polling: 1_000 }
@@ -235,7 +238,9 @@ for (const { mapPath, loadPath, title, borrowedFrom } of cases) {
         `can be checked. Re-run tools/builder-inventory against this environment.`
     );
     if (borrowedFrom !== undefined) {
-      test.info().annotations.push({ type: 'builder inventory', description: `destination recorded on ${borrowedFrom} (#1134)` });
+      test
+        .info()
+        .annotations.push({ type: 'builder inventory', description: `destination recorded on ${borrowedFrom} (#1134)` });
     }
     // A borrowed destination that does not land here is a difference between environments, not a fault.
     test.skip(
@@ -247,13 +252,11 @@ for (const { mapPath, loadPath, title, borrowedFrom } of cases) {
       `${loadPath} went back to the builder, so its recorded destination no longer reaches the map`
     ).toBe(false);
     if (!settled) {
-      const state = await page.evaluate(() => {
-        const probe = (window as unknown as Record<string, { ready?: boolean; drawing?: boolean } | undefined>)[
-          '__tamuGiscMapProbe'
-        ];
+      const state = await page.evaluate((name) => {
+        const probe = (window as unknown as Record<string, { ready?: boolean; drawing?: boolean } | undefined>)[name];
 
         return `ready=${probe?.ready} drawing=${probe?.drawing} map=${document.querySelector('arcgis-map') !== null}`;
-      });
+      }, PROBE_GLOBAL);
 
       expect(
         settled,
@@ -393,7 +396,7 @@ for (const { mapPath, loadPath, title, borrowedFrom } of cases) {
       { pageSize: PAGE, most: MOST }
     );
 
-    const counted: Record<string, { count: number | null; error: string | null }> = await page.evaluate(async () => {
+    const counted: Record<string, { count: number | null; error: string | null }> = await page.evaluate(async (name) => {
       const probe = (
         window as unknown as Record<
           string,
@@ -403,7 +406,7 @@ for (const { mapPath, loadPath, title, borrowedFrom } of cases) {
             }>;
           }
         >
-      )['__tamuGiscMapProbe'];
+      )[name];
 
       return Object.fromEntries(
         (await probe.snapshot()).layers.map((layer) => [
@@ -411,7 +414,7 @@ for (const { mapPath, loadPath, title, borrowedFrom } of cases) {
           { count: layer.featureCount, error: layer.featureCountError ?? null }
         ])
       );
-    });
+    }, PROBE_GLOBAL);
 
     const featureCounts: Record<string, number | null> = Object.fromEntries(
       Object.entries(counted).map(([id, c]) => [id, c.count])
@@ -428,7 +431,9 @@ for (const { mapPath, loadPath, title, borrowedFrom } of cases) {
             (l.checked === null ? '' : ` drawn=${l.drawn}/${l.checked}`) +
             (l.error ? ` error=${l.error}` : '') +
             (l.queryError ? ` queryError=${l.queryError}` : '') +
-            (l.filtered ? ` filter="${l.filtered.filter}" selects ${l.filtered.selected ?? '?'}/${l.filtered.all ?? '?'}` : '')
+            (l.filtered
+              ? ` filter="${l.filtered.filter}" selects ${l.filtered.selected ?? '?'}/${l.filtered.all ?? '?'}`
+              : '')
         )
         .join('\n')
     });
@@ -441,10 +446,7 @@ for (const { mapPath, loadPath, title, borrowedFrom } of cases) {
     // A failure known on this map is suppressed, not hidden: recorded, and flagged once it stops failing.
     for (const l of layers.filter((layer) => knownOnThisMap(layer) !== undefined)) {
       const failing =
-        l.error !== null ||
-        l.queryError !== null ||
-        counted[l.id]?.error != null ||
-        ((l.checked ?? 0) > 0 && l.drawn === 0);
+        l.error !== null || l.queryError !== null || counted[l.id]?.error != null || ((l.checked ?? 0) > 0 && l.drawn === 0);
 
       test.info().annotations.push({
         type: failing ? 'known failure' : 'known failure passes',
@@ -472,7 +474,9 @@ for (const { mapPath, loadPath, title, borrowedFrom } of cases) {
       const ids =
         loadPath !== mapPath
           ? []
-          : (development ?? definition?.layers ?? layers.filter((l) => l.topLevel && l.listMode !== 'hide').map((l) => l.id));
+          : (development ??
+            definition?.layers ??
+            layers.filter((l) => l.topLevel && l.listMode !== 'hide').map((l) => l.id));
       const missing = ids
         .filter((id) => !ALLOWED_LAYER_FAILURES.includes(id))
         .map((id) => ({ id, layer: layers.find((l) => l.id === id) }))
@@ -493,14 +497,15 @@ for (const { mapPath, loadPath, title, borrowedFrom } of cases) {
       // republished (#2453), with every other check here passing. Not across groups: Move-In lists "No
       // Roadside Parking" under both its streets and its points of interest, two layers by design.
       const repeated = await page.evaluate(() =>
-        Array.from(new Set(Array.from(document.querySelectorAll('tamu-gisc-layer-list-item')).map((i) => i.parentElement)))
-          .flatMap((parent) => {
-            const titles = Array.from(parent?.children ?? [])
-              .filter((child) => child.matches('tamu-gisc-layer-list-item'))
-              .map((child) => child.querySelector(':scope > .layer-item > p')?.textContent?.trim() ?? '');
+        Array.from(
+          new Set(Array.from(document.querySelectorAll('tamu-gisc-layer-list-item')).map((i) => i.parentElement))
+        ).flatMap((parent) => {
+          const titles = Array.from(parent?.children ?? [])
+            .filter((child) => child.matches('tamu-gisc-layer-list-item'))
+            .map((child) => child.querySelector(':scope > .layer-item > p')?.textContent?.trim() ?? '');
 
-            return titles.filter((title, index) => title !== '' && titles.indexOf(title) !== index);
-          })
+          return titles.filter((title, index) => title !== '' && titles.indexOf(title) !== index);
+        })
       );
 
       expect.soft(repeated, `${mapPath}: layers the Layers list shows more than once`).toEqual([]);
@@ -565,9 +570,7 @@ for (const { mapPath, loadPath, title, borrowedFrom } of cases) {
       .filter((l) => !tolerated(l) && counted[l.id]?.error != null)
       .map((l) => `${l.title || l.id}: its features could not be counted (${counted[l.id]?.error})`);
 
-    expect
-      .soft(uncounted, `${mapPath}: layers whose feature count failed, so they may be drawing short`)
-      .toEqual([]);
+    expect.soft(uncounted, `${mapPath}: layers whose feature count failed, so they may be drawing short`).toEqual([]);
 
     // 3. Keyed: every layer on in the Layers list has a legend entry with a symbol in it.
     if ((await page.locator('tamu-gisc-legend').count()) > 0) {

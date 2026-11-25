@@ -25,7 +25,7 @@ export class SessionDetailsEmailController {
   @UseGuards(JwtGuard, PermissionsGuard)
   @Post('details')
   public async send(
-    @Body() body: { event: string; sender?: string } & Partial<SessionDetailsEmail> & SpeakerChoice,
+    @Body() body: ({ event?: string; sender?: string } & Partial<SessionDetailsEmail> & SpeakerChoice) | undefined,
     @Request() req
   ) {
     const host = siteHost(req?.headers);
@@ -47,7 +47,8 @@ export class SessionDetailsEmailController {
 export function emailOf(body: Partial<SessionDetailsEmail> | undefined): SessionDetailsEmail | undefined {
   return body?.subject === undefined && body?.template === undefined
     ? undefined
-    : { subject: body.subject, template: body.template };
+    : // A part not sent is empty, which the service refuses with the same reason as it refused the part missing.
+      { subject: body.subject ?? '', template: body.template ?? '' };
 }
 
 /** Who was ticked, and whether together (#3104), or undefined when the send names neither: everyone, a copy each. */

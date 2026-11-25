@@ -93,26 +93,22 @@ export class SponsorProvider extends SeasonScopedProvider<Sponsor> {
       ...withLogoSize(withActiveFlag(sponsor))
     });
 
-    if (sponsorEnt) {
-      const savedEntity = await sponsorEnt.save();
+    const savedEntity = await sponsorEnt.save();
 
-      if (file != null || file != undefined) {
-        try {
-          const savedLogo = await this._saveImage(file);
+    if (file) {
+      try {
+        const savedLogo = await this._saveImage(file);
 
-          savedEntity.logos = [savedLogo];
+        savedEntity.logos = [savedLogo];
 
-          return savedEntity.save();
-        } catch (err) {
-          rethrowHttp(err, new InternalServerErrorException('Could not save sponsor logo.'), () =>
-            Logger.error(err.message, 'SponsorProvider')
-          );
-        }
-      } else {
-        return savedEntity;
+        return savedEntity.save();
+      } catch (err) {
+        rethrowHttp(err, new InternalServerErrorException('Could not save sponsor logo.'), () =>
+          Logger.error(err.message, 'SponsorProvider')
+        );
       }
     } else {
-      throw new UnprocessableEntityException(null, 'Could not create sponsor.');
+      return savedEntity;
     }
   }
 
@@ -133,7 +129,7 @@ export class SponsorProvider extends SeasonScopedProvider<Sponsor> {
     if (existing) {
       let logoImage;
 
-      if (file != null || file != undefined) {
+      if (file) {
         try {
           logoImage = await this._saveImage(file);
         } catch (err) {
@@ -143,7 +139,8 @@ export class SponsorProvider extends SeasonScopedProvider<Sponsor> {
         }
       }
 
-      const toSave = {
+      // A sponsor as saved, whose logos may be left out: without a new logo they are, and stay as they are.
+      const toSave: DeepPartial<Sponsor> = {
         ...existing,
         ...incoming,
         logos: [logoImage]
@@ -173,7 +170,8 @@ export class SponsorProvider extends SeasonScopedProvider<Sponsor> {
           relations: { logos: true }
         });
 
-        logos = sponsors.map((sponsor) => sponsor.logos).flat();
+        // `logos` is loaded by this find's `relations`.
+        logos = sponsors.flatMap((sponsor) => sponsor.logos!);
 
         await this.assetService.deleteAssets(manager, logos);
 
@@ -201,7 +199,7 @@ export class SponsorProvider extends SeasonScopedProvider<Sponsor> {
  * boolean; anything else is left out, so an update that does not mention it leaves it as it was (#1962).
  */
 export function withActiveFlag<T extends Partial<Sponsor>>(sponsor: T): T {
-  const value = (sponsor as { active?: unknown })?.active;
+  const value = (sponsor as { active?: unknown }).active;
   const copy = { ...sponsor };
 
   if (value === true || value === 'true') {
@@ -225,7 +223,7 @@ const LOGO_SIZES: ReadonlyArray<SponsorLogoSize> = ['small', 'regular', 'large',
 export function withLogoSize<T extends Partial<Sponsor>>(sponsor: T): T {
   const copy = { ...sponsor };
 
-  if (!LOGO_SIZES.includes(copy.logoSize)) {
+  if (copy.logoSize === undefined || !LOGO_SIZES.includes(copy.logoSize)) {
     delete copy.logoSize;
   }
 
