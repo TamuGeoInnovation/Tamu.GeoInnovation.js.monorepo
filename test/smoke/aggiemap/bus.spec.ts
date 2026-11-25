@@ -34,6 +34,16 @@ import { PROBE_GLOBAL, waitForMapReady } from './map-probe';
 const BASE_URL = smokeBaseUrl();
 const BUS_LAYER = 'bus-route-layer';
 
+/**
+ * The bus panel on an event map, which has offered one since #2758. The event maps had a side panel of their own that
+ * never gained Bus Routes; they share the main map's now. Choosing a route there needs the map's own `BusService`,
+ * because the application's draws on the application's map, so this checks the panel draws rather than only appears.
+ *
+ * `/events/tailgating/map` is the event map `development-only.spec.ts` checks the side panel's tabs on, so the two
+ * checks speak about the same map.
+ */
+const EVENT_BUS_PANEL = '/events/tailgating/map/d/bus';
+
 interface EnvironmentSettings {
   baseUrl: string;
   allowedBusRouteFailures?: Record<string, string>;
@@ -68,12 +78,12 @@ async function drawn(page: Page): Promise<Drawn> {
   return { route: types['route'] ?? 0, waypoints: types['waypoints'] ?? 0 };
 }
 
-/** Opens the bus panel and returns its routes, or skips where bus routes are not offered. */
-async function openBusPanel(page: Page): Promise<Locator> {
+/** Opens a bus panel, the main map's unless told otherwise, and returns its routes. */
+async function openBusPanel(page: Page, panel: string = BUS_PANEL): Promise<Locator> {
   await blockAnalytics(page);
-  await page.goto(BUS_PANEL);
+  await page.goto(panel);
 
-  await waitForMapReady(page, 'the main map never finished loading');
+  await waitForMapReady(page, `the map at ${panel} never finished loading`);
 
   // A build from before the probe reported graphics cannot show what the bus layer has drawn, and
   // would read as every route drawing nothing. Skipped rather than failed, as maps.spec.ts does for a
@@ -122,23 +132,29 @@ async function unchoose(page: Page, route: Locator): Promise<void> {
 }
 
 test.describe('bus routes', () => {
-  test('choosing a route expands it, lists its stops and draws them; choosing it again removes them', async ({ page }) => {
-    const routes = await openBusPanel(page);
+  // Both maps, because the event maps' side panel was a separate copy that never gained Bus Routes (#2758), and a tab
+  // that appears and draws nothing is the failure this check exists to catch.
+  for (const panel of [BUS_PANEL, EVENT_BUS_PANEL]) {
+    test(`${panel}: choosing a route expands it, lists its stops and draws them; choosing it again removes them`, async ({
+      page
+    }) => {
+      const routes = await openBusPanel(page, panel);
 
-    // A route whose stops are known to draw, so this checks the interaction rather than #1174's data.
-    const route = routes.filter({ has: page.locator('.route-number', { hasText: /^\s*01\s*$/ }) });
-    await expect(route, 'route 01 is not listed').toHaveCount(1);
+      // A route whose stops are known to draw, so this checks the interaction rather than #1174's data.
+      const route = routes.filter({ has: page.locator('.route-number', { hasText: /^\s*01\s*$/ }) });
+      await expect(route, 'route 01 is not listed').toHaveCount(1);
 
-    const stops = await choose(page, route);
+      const stops = await choose(page, route);
 
-    expect(stops.length, 'route 01 listed no stops').toBeGreaterThan(0);
-    await expect
-      .poll(async () => (await drawn(page)).waypoints, { message: "route 01's stops were not drawn", timeout: 30_000 })
-      .toBeGreaterThan(0);
+      expect(stops.length, 'route 01 listed no stops').toBeGreaterThan(0);
+      await expect
+        .poll(async () => (await drawn(page)).waypoints, { message: "route 01's stops were not drawn", timeout: 30_000 })
+        .toBeGreaterThan(0);
 
-    await unchoose(page, route);
-    await expect(route.locator('.stops-list li'), 'choosing route 01 again did not collapse it').toHaveCount(0);
-  });
+      await unchoose(page, route);
+      await expect(route.locator('.stops-list li'), 'choosing route 01 again did not collapse it').toHaveCount(0);
+    });
+  }
 });
 
 /**

@@ -48,7 +48,9 @@ export const DEVELOPMENT_ONLY_ALL_MAPS_TILES = ['Code Maroon'];
  * - The trip planner's Options offers only accessible routing, which the routing network does not support yet.
  */
 export const DEVELOPMENT_ONLY_PAGES: Record<string, string> = {
-  '/map/d/trip/options': '/map/d/trip'
+  '/map/d/trip/options': '/map/d/trip',
+  // The event maps' copy of the same page, which their own side panel left ungated until it became the main map's (#2758).
+  '/events/tailgating/map/d/trip/options': '/events/tailgating/map/d/trip'
 };
 
 /**

@@ -97,7 +97,8 @@ export class EventLocationService extends SeasonScopedProvider<EventLocation> {
           relations: { events: true }
         });
 
-        const events = locationEvents.map((location) => location.events).flat();
+        // `events` is loaded by this find's `relations`.
+        const events = locationEvents.flatMap((location) => location.events!);
 
         // Remove location from all events
         events.forEach((event) => {
@@ -109,7 +110,9 @@ export class EventLocationService extends SeasonScopedProvider<EventLocation> {
         return transactionalEntityManager.delete(EventLocation, guids);
       });
     } catch (err) {
-      rethrowHttp(err, new InternalServerErrorException('Could not delete entities'), () => Logger.error(err.message, 'EventLocationService.deleteEntities'));
+      rethrowHttp(err, new InternalServerErrorException('Could not delete entities'), () =>
+        Logger.error(err.message, 'EventLocationService.deleteEntities')
+      );
     }
   }
 }

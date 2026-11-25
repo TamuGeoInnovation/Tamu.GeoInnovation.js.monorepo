@@ -30,27 +30,4 @@ export class InitialSurveyProvider extends BaseProvider<InitialSurveyResponse> {
       return this.initialSurveyQuestionRepo.save(question);
     }
   }
-
-  // TODO: Does this still work? -Aaron (1/5/2021)
-  public async insertInitialSurveyResponse(questionGuids: string[], questionGuidsObj: unknown, accountGuid: string) {
-    questionGuids.forEach(async (guid) => {
-      const question = await this.initialSurveyQuestionRepo.findOne({
-        where: {
-          guid: guid
-        }
-      });
-
-      if (questionGuidsObj[guid] !== '' || questionGuidsObj[guid] !== undefined || questionGuidsObj[guid] !== null) {
-        const _response: Partial<InitialSurveyResponse> = {
-          accountGuid: accountGuid,
-          responseValue: questionGuidsObj[guid],
-          question: question
-        };
-
-        const response = await this.initialSurveyRepo.create(_response);
-
-        return response.save();
-      }
-    });
-  }
 }
