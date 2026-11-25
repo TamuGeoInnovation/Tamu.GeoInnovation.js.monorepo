@@ -13,7 +13,7 @@ import {
   JoinTable,
   OneToMany,
   FindOptionsRelations,
-  Relation,
+  type Relation,
   Unique
 } from 'typeorm';
 

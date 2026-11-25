@@ -14,12 +14,12 @@ import {
   UseInterceptors
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Response } from 'express';
+import { type Response } from 'express';
 
 import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 import { DEFAULT_UPLOAD_LIMITS } from '@tamu-gisc/common/nest/services';
 
-import { ProfileEmail, SpeakerEditFields, SpeakerEditService } from './speaker-edit.service';
+import { ProfileEmail, type SpeakerEditFields, SpeakerEditService } from './speaker-edit.service';
 import { siteHost } from '../_base/site-of-request';
 import { EmailSenderService } from '../contact/email-sender.service';
 
