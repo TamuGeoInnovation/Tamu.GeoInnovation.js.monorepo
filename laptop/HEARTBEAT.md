@@ -1,7 +1,7 @@
 name: laptop
 agent: Claude Code (desktop app), the chat "js.monorepo - Laptop - 
 machine: laptop
-state: running batch g29: 3 branches pushed, each check exit 0; found and fixed a slide-toggle error Jest hid (red first); measuring Jest vs Vitest quietly
+state: waiting: g32 needs home's chore/1669-gisday-onpush (not on the fork yet); g27-g31, a13, a14, a25, a28 reported
 accepting: no
-seen_utc: 2026-11-25T07:10:53Z
-next_utc: 2026-11-25T08:10:53Z
+seen_utc: 2026-11-25T08:51:30Z
+next_utc: 2026-11-25T09:51:30Z
