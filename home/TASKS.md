@@ -1,5 +1,62 @@
 # Home machine: current tasks
 
+## Batch a37 (aggiemap: are the old issues still true? A read-only sweep; 25 November 2026, 6:50 AM Central, from `work (aggiemap)`) (Medium) - **now**
+
+**a35 is accepted** - 3654 is open, not a draft, closes #2600, nothing failing. Your dentistry correction is on the issue,
+and I was one of the people repeating the wrong version, so thank you for asking the services instead of me.
+
+**Why this batch, and why it is read-only.** There are **37 open pull requests** and **279 open issues**. I mapped every
+path those 37 touch, and almost every AggieMap library has something in flight: `aggiemap/ngx/popups` has 40 files open,
+`ts/events/ngx` 33, `aggiemap/ngx/ui` 24, the trip planner 16. The obvious follow-ups all now collide with something -
+#2597 is blocked by my PR 3600, #205 by 3640. **So the useful work this morning is not more code, it is finding out which
+of those 279 issues are no longer true.** Four were closed overnight on exactly this basis (#894, #2591, #2596, #2607),
+and #2607 mattered: it described the Fall Commencement map offering December 2025's ceremony days, three weeks before this
+December's ceremonies, and had been silently fixed under another issue. Nothing collides, because nothing is edited.
+
+**The maintainer asked for this directly** when he went to bed: *"some of the issues may be outdated."*
+
+### The twenty to check, oldest first
+
+`71`, `263`, `265`, `387`, `440`, `445`, `464`, `497`, `541`, `542`, `543`, `544`, `546`, `547`, `549`, `550`, `553`,
+`555`, `567`, `699`.
+
+**Already done, do not redo:** #205 and #459 were both checked against `development` overnight and are **still true**
+(#205's `setStorage` is still only called inside `init()`'s `tap`), and #602 is mid-flight as PR 3587. Skip all three.
+
+### What each one needs
+
+**One of four verdicts, each with evidence a reader can re-run:**
+
+1. **Already fixed** - name the commit or the code that does it now. This is the valuable one.
+2. **Moot** - the feature, app or page it is about is gone or retired. Several of these are candidates: #263 and #265 are
+   about `mailroom`, from 2022.
+3. **Still true** - say what you checked and what you found, so the next person does not check again. A one-line "still
+   true" with no evidence is worth nothing and I will ask you to redo it.
+4. **Cannot tell without the maintainer** - a question of intent rather than fact. Say what the question is.
+
+**Evidence means the thing itself, not the issue's description of it:** a `file:line`, a count, a service query. The rule
+that keeps catching people here is CLAUDE.md's *ask the service before you change a definition* - the same applies to
+deciding whether a bug still exists. Two of tonight's four were only decidable by querying a layer, and #2600's own text
+was wrong about dentistry's field names.
+
+**For anything you find already fixed, check whether a test would now catch a regression.** #2607's fix came with one
+(#2759 added a check for a map left on a past season) and that is the part that keeps it fixed. If there is no such test,
+say so - it is a follow-up worth filing.
+
+### Done when
+
+- **Report** `home/reports/2026-11-25-a37.md`: a table of the twenty, one verdict and its evidence each, grouped by
+  verdict with the "already fixed" ones first.
+- **File nothing and close nothing.** Recommend, and I will act on the board - one voice on the issues keeps the record
+  readable, and several of these will need the maintainer's view.
+- **No branch, no pull request, no code change.** If you find a fix worth making, it is a recommendation in the report,
+  not a commit.
+- Questions `Q-a37-<n>`.
+
+**a33 stays held** until PR 3587 merges, and releases itself when it does. If that happens while you are mid-sweep,
+finish the sweep first: a33 has waited since 2:55 AM and another hour costs nothing.
+
+
 ## Batch a35 (aggiemap: #2600, ten satellite campus maps from one builder; 25 November 2026, 6:19 AM Central, from `work (aggiemap)`) (Low) - **now**
 
 **Issue: [#2600](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2600).** Take this now; a33 stays held until PR 3587 merges and will offer itself to you when it does.
