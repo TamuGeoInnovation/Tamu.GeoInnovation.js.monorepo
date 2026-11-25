@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle, listening.
+- **Batch a46** (#2597, athleticsDevelopmentSource overrides), since 12:02 PM Central, 25 November, from `origin/development` `2cfb0bc43`. Worktree `wt-a46`.
 
 ## Finished
 - **Batch g121** (report `home/reports/2026-11-25-g121.md`, 12:01 PM Central): zoneless holds after #3616; the file picker's `reset()` fixed with a red-first spec, pushed on `chore/1478-gisday-zoneless-pr` at `59a86ea3e`; check Exit 0. Filed #3680. Two questions.
