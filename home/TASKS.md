@@ -1,5 +1,64 @@
 # Home machine: current tasks
 
+## Batch a15 (aggiemap: #1082, All Maps scrolls sideways on a phone) (Medium) - **now**
+
+[#1082](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1082). A copy field holding
+an unbreakable URL widens its card past the screen, so All Maps scrolls sideways on a phone. Measured when
+filed: **502px wide in a 375px screen** locally, **583px** on dev.
+
+### 1. First, reproduce it. Do not skip this.
+
+The issue is from September and nobody has re-measured it. Several things have changed since, including a
+shared copy-field component and work on `styles.scss`.
+
+At **375px**, on dev and on a local dev server, measure the document width against the viewport width:
+
+```js
+({ doc: document.documentElement.scrollWidth, view: window.innerWidth })
+```
+
+**If `scrollWidth` is no longer wider than `innerWidth`, stop.** Report the numbers and say it does not
+reproduce - that closes the issue, and it is a better outcome than a fix nobody needed. Four issues tonight
+turned out to have been resolved elsewhere while nobody re-read them.
+
+If it does reproduce, say by how much, and **which element is the widest** - walk the tree and report the
+offender rather than assuming it is the copy field:
+
+```js
+[...document.querySelectorAll('*')].filter((e) => e.scrollWidth > window.innerWidth).slice(0, 5).map((e) => e.className + ' ' + e.scrollWidth)
+```
+
+### 2. The fix, if it reproduces
+
+**Reuse before building.** There is a shared copy-field component and a shared `.button`, spacing utilities
+and a flexbox mixin set; `libs/sass/` and the app's `styles.scss` are the places to look first. A URL that
+cannot break is a job for `overflow-wrap`/`min-width: 0` on something that already exists, not a new rule in
+a component stylesheet.
+
+**Say in your report where you looked**, even if you ended up adding something new. That is the standing rule
+and it is the part most often skipped.
+
+If the widest element turns out not to be the copy field, **fix what you found and say so** - the issue's
+title is a hypothesis from September, not a finding.
+
+### 3. Images
+
+Visible change, so before and after **at 390px**, both showing the whole page width, into
+`docs/screenshots/1082-all-maps-overflow/`. A capture that crops the overflow proves nothing: include the
+horizontal extent, or add the measured numbers beside it.
+
+### 4. Check and report
+
+`scripts/check-in-volume.sh fix/1082-all-maps-overflow <the projects you edit>,aggiemap-angular`. Read its own
+`Exit` line.
+
+Branch `fix/1082-all-maps-overflow` from `development`, push to the fork, **no `.pr-body.md`** - a leftover one
+used to make the worktree un-removable ([#3432](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3432),
+fixed today, and the habit is still worth dropping). Say **"branch ready: fix/1082-all-maps-overflow"**.
+
+Report `home/reports/2026-11-24-a15.md` with the step 1 numbers either way, which element was widest, where
+you looked for something to reuse, and the check's `Exit` line. **No pull request** - that is mine.
+
 ## Batch g112 (common: #274, delete the unused settings-branch reader; 24 November 2026, about 11:00 PM Central, from `work (gisday)`) (Low) - **after g111**
 
 **Decided by the maintainer, Q-g110-1: A.** Delete `getSimpleSettingsBranch` from `common-ngx-settings.service.ts` and the stale Jest mock of it in
