@@ -1,4 +1,8 @@
-import { ActivatedRouteSnapshot } from '@angular/router';
+import type { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
+
+// Angular's PRIMARY_OUTLET. Named here rather than imported, so this library stays types-only towards @angular/router and
+// loads without the Angular compiler, as its own specs do.
+const PRIMARY_OUTLET = 'primary';
 
 /**
  * Returns a string segment array representing the current path route from the app root.
@@ -75,4 +79,22 @@ export function routeSubstitute(list: Array<string>, match: string, substitution
   } else {
     return l;
   }
+}
+
+/**
+ * The nearest route, from this one up, in the primary outlet (#2641, #3150).
+ *
+ * On a phone, AggieMap draws its panels in the secondary `outlet-2`. A navigation relative to a component there is
+ * looked for inside that outlet, matches nothing, and fails without a word: "Directions To Here" closed the popup and
+ * stayed put (#2641), and tapping a bus route did nothing (#3150). Relative to this route, the same navigation finds the
+ * primary outlet's children. On a desktop, where the panels are in the primary outlet, it is the route itself.
+ */
+export function primaryOutletRoute(route: ActivatedRoute): ActivatedRoute {
+  let current = route;
+
+  while (current.outlet !== PRIMARY_OUTLET && current.parent) {
+    current = current.parent;
+  }
+
+  return current;
 }
