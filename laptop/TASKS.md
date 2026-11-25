@@ -1,5 +1,62 @@
 # Laptop: current tasks
 
+## Batch a28 (aggiemap: #2554, delete the athletics popup data that reads as live and is not) (Medium) - **now**
+
+This was queued to `copilot-home`, which the maintainer retired tonight
+([#3348](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3348)), so it has no machine.
+It is yours.
+
+[#2554](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2554):
+`indoor-track-parking.definitions.ts` carries old production popup data - `indoorn`, `sp_sh_notes` - in its Cold
+source array. **Nothing draws it.** The map draws `IndoorTrackParking_DevelopmentLayerSources`, rebuilt through
+`athleticsDevelopmentSource()`; the Cold array is read only for its layer ids.
+
+### Why deleting dead code earns its place here
+
+**It is bait, and it has already cost four investigations.**
+[#2034](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2034) was filed because
+`{attributes.sp_sh_notes}` appeared on screen; the column it names does not exist on that layer, and a reader who
+finds that string in the definitions concludes the definition is the cause. It is not.
+
+Tonight produced two more of the same family, which is why this is worth doing now rather than someday:
+[#3337](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3337)'s second page had a style
+rule selecting an element that does not exist, and
+[#2716](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2716) was investigated twice
+before anyone noticed its fix had already shipped.
+
+### Before you delete anything
+
+**The issue says the same shape is "probably" in the other athletics definitions.** Probably is not a measurement.
+All ten sports moved the same way under
+[#2468](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2468), so **check each one** and
+report which carry dead popup data and which do not. A sweep that assumes ten and finds six has told you something.
+
+**Prove it is dead before removing it, per definition file, not once for all ten.** For each source you delete popup
+data from, show that the map draws the development source instead - the `athleticsDevelopmentSource()` rebuild - and
+that the Cold entry is read only for its id. If any one of them genuinely draws its Cold source, **stop on that one**
+and say so: deleting live popup data would empty a real popup, and the issue's own warning is that this reads as live.
+
+### What must not change
+
+Nothing a visitor sees. The layer **ids** in the Cold arrays stay, because they are what is read. If a capture
+differs at all between before and after, something was not dead.
+
+### Checking and reporting
+
+`scripts/pre-pr-check.sh chore/2554-dead-athletics-popup-data '<title>' .pr-body.md ts-events-ngx,aggiemap-angular
+--label no-visible-change`, its last line in the report and the body.
+
+A smoke run over the athletics maps is the strongest proof available here - `run-local.sh development one
+maps.spec.ts -g "<the sports you touched>"` before and after, same counts - if it fits in your evening. Say either way.
+
+Push to the fork; **no pull request** - mine. Say **"branch ready: chore/2554-dead-athletics-popup-data"**.
+
+`laptop/reports/2026-11-25-a28.md`: the per-sport table, what you deleted, what you left and why, and the check's
+`Exit` line.
+
+**Questions come to me** (`work (aggiemap)`), with options and a recommendation. **Set any issue's Priority yourself**
+now ([#3527](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3527)).
+
 ## Batch g31 (gisday: #980, create a season through the admin page on the local stack; 25 November 2026, about 12:50 AM Central, from `work (gisday)`) (Low) - **after g30**
 
 [#980](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/980) (claimed In Progress): read it to the end. #973 fixed
