@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **6:00 AM Central, 25 November 2026**. A listener; job: testing.
+Last written **6:06 AM Central, 25 November 2026**. A listener; job: testing.
 
 ## g203 is done, not unstarted (12:07 AM Central, Wednesday 25 November 2026)
 
@@ -140,10 +140,11 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 ## Running now
 
-**Batch g222** (gisday: #3635, RSVP and submission type routes, branch only, held for the maintainer), started 6:00 AM Central, 25 November.
+Nothing. Idle since 6:06 AM Central, 25 November; listening.
 
 ## Finished
 
+- **Batch g222 (gisday): #3635, RSVP and submission type routes, option A, held** (6:00 to 6:06 AM, 25 November). **branch ready:** `fix/3635-rsvp-submission-type-routes` (`9b12e8f6d`), `pre-pr-check.sh` `Exit 0`, no PR (decision pending). Red (501) then green, 8 new specs; unsigned writes 401 locally; screenshots for the laptop. Q-g222-1, Q-g222-2. Report `reports/2026-11-25-g222.md`.
 - **Batch g221 (gisday): #3646, type-check `test/smoke/gisday` in CI** (5:52 to 5:56 AM, 25 November), stacked on g220. **branch ready:** `ci/3646-gisday-smoke-tsc` (`67b923d5d`), `pre-pr-check.sh` `Exit 0`. Proven red (TS2322, check Exit 2), then green; `check-in-volume.test.sh` 51 of 51. Report `reports/2026-11-25-g221.md`.
 - **Batch g220 (gisday): #3638, the GIS Day smoke suite reaches every public page** (5:25 to 5:44 AM, 25 November). **branch ready:** `test/3638-gisday-smoke-every-page` (`887511eaf`), `pre-pr-check.sh` `Exit 0`. `pages.spec.ts`, 43 tests: local 49 of 49 with `smoke.spec.ts`, UCGIS 17 passed and 32 skipped, txgisday.org 43 of 43 (one read-only run). One fault filed, #3643 (Medium). Q-g220-1. Report `reports/2026-11-25-g220.md`.
 - **Batch g219 (workspace): #3593, full strict in ui-kits-ngx-forms** (5:05 to 5:20 AM, 25 November), stacked on PR 3608. **branch ready:** `fix/3593-ui-kits-forms-full-strict` (`873b33ac5`, #3633), `pre-pr-check.sh` affected `Exit 0`. Forms' own 34 are 0; modal falls to 16, the 4 of #3628 and the 12 of #3630. Report `reports/2026-11-25-g219.md`.
@@ -704,4 +705,4 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 192 and 191 again (8 November), aggiemap's 31, 30 and 29 (9 November), and aggiemap's 32, 33, 34 and 35 (10 November), 36 and 37 (11 November), 38 (13 November), 39, 40, 41, 42, 46, 43, 44, 49, 50, 47, 48, 51, 52, 53, 54, 55, 56, 57 and 58 (14 November), 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 72, 73, 74, 71, 75, 76, #3044's screenshots, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 87b, 89, 91, 92, 93, 94, 88, 95, 90, 98, 99, 96, 102, 100, 101, 103, 104 and 105 (15 November), 106, 107, 108, 109, 110, 111, 112, 113, 112b, 113b, 114, 115, 116, 117, 118, 119, 120, 121, 122 and 123 (16 November), 124, 125, 126, 127, 128 and 129 (17 November), 130 to 134 (18 November), 135 to 139 (19 November), 193 to 198 (23 November), 199 to 203, g201, a18, g202, a20, g203, a21 and a23 (24 November), a24, a26, g204, g205, g206, g207, g208, g209, g210, g211, g212, a29, g213, a30, g214, g215, g216, g217, g218, g219, g220 and g221 (25 November) (139, 141 to 192 reported; 140 needs the maintainer; 151 not run, see report 137) (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 192 and 191 again (8 November), aggiemap's 31, 30 and 29 (9 November), and aggiemap's 32, 33, 34 and 35 (10 November), 36 and 37 (11 November), 38 (13 November), 39, 40, 41, 42, 46, 43, 44, 49, 50, 47, 48, 51, 52, 53, 54, 55, 56, 57 and 58 (14 November), 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 72, 73, 74, 71, 75, 76, #3044's screenshots, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 87b, 89, 91, 92, 93, 94, 88, 95, 90, 98, 99, 96, 102, 100, 101, 103, 104 and 105 (15 November), 106, 107, 108, 109, 110, 111, 112, 113, 112b, 113b, 114, 115, 116, 117, 118, 119, 120, 121, 122 and 123 (16 November), 124, 125, 126, 127, 128 and 129 (17 November), 130 to 134 (18 November), 135 to 139 (19 November), 193 to 198 (23 November), 199 to 203, g201, a18, g202, a20, g203, a21 and a23 (24 November), a24, a26, g204, g205, g206, g207, g208, g209, g210, g211, g212, a29, g213, a30, g214, g215, g216, g217, g218, g219, g220, g221 and g222 (25 November) (139, 141 to 192 reported; 140 needs the maintainer; 151 not run, see report 137) (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
