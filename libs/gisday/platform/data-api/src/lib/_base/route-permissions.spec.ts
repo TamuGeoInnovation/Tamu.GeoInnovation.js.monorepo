@@ -27,11 +27,16 @@ function controllerFiles(dir: string): Array<string> {
   });
 }
 
-/** Every permission a route of these libraries asks for, with where. */
-function routePermissions(): Array<{ permission: string; route: string }> {
-  return LIBRARIES.flatMap((library) => controllerFiles(join(ROOT, library))).flatMap((file) =>
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    Object.values(require(file) as Record<string, unknown>)
+/**
+ * Every permission a route of these libraries asks for, with where. Each controller is imported rather than required, so
+ * the test runner compiles it, decorators included; Node's own `require` cannot read TypeScript (#1977).
+ */
+async function routePermissions(): Promise<Array<{ permission: string; route: string }>> {
+  const files = LIBRARIES.flatMap((library) => controllerFiles(join(ROOT, library)));
+  const modules = await Promise.all(files.map(async (file) => (await import(file)) as Record<string, unknown>));
+
+  return modules.flatMap((module) =>
+    Object.values(module)
       .filter(
         (value): value is { name: string; prototype: object } =>
           typeof value === 'function' && Reflect.getMetadata(PATH_METADATA, value) !== undefined
@@ -54,14 +59,14 @@ function definedPermissions(): Set<string> {
 }
 
 describe('the permissions the GIS Day API asks for (#3101)', () => {
-  it('finds the routes and the defined permissions', () => {
-    expect(routePermissions().length).toBeGreaterThan(50);
+  it('finds the routes and the defined permissions', async () => {
+    expect((await routePermissions()).length).toBeGreaterThan(50);
     expect(definedPermissions().has('update:speakers')).toBe(true);
   });
 
-  it('asks only for permissions the Auth0 API defines', () => {
+  it('asks only for permissions the Auth0 API defines', async () => {
     const defined = definedPermissions();
-    const undefinedOnes = routePermissions().filter(({ permission }) => !defined.has(permission));
+    const undefinedOnes = (await routePermissions()).filter(({ permission }) => !defined.has(permission));
 
     expect(undefinedOnes).toEqual([]);
   });

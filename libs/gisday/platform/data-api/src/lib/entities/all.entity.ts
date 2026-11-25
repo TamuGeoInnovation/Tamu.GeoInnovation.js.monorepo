@@ -842,8 +842,12 @@ export class Sponsor extends GuidIdentity {
   /**
    * How large the sponsor's logo is drawn on the public Sponsors page, so a logo with small detail
    * can be shown bigger than its neighbours. Existing sponsors are `regular`, the size before (#2638).
+   *
+   * Its type is written out because `SponsorLogoSize` is an alias: only a compiler that checks the whole program, as
+   * `tsc` does, can tell its decorator metadata it is a string, and one that compiles a file at a time writes `Object`,
+   * which TypeORM refuses (#1977). `nvarchar(255)` is what TypeORM made of `String` (AddSponsorLogoSize1793810744009).
    */
-  @Column({ nullable: false, default: 'regular' })
+  @Column({ type: 'nvarchar', length: 255, nullable: false, default: 'regular' })
   public logoSize: SponsorLogoSize;
 
   @ManyToOne(() => Season, (season) => season.sponsors)
@@ -1189,13 +1193,15 @@ export class Submission extends GuidIdentity {
   @Column({ length: 'MAX', nullable: true })
   public message: string;
 
-  @Column({ nullable: true })
+  // These three are written out for the reason `Sponsor.logoSize` is (#1977): an enum or a string is a string to `tsc`,
+  // and `Object` to a compiler that reads one file at a time. `nvarchar(255)` is what InitialSchema1791325939619 made.
+  @Column({ type: 'nvarchar', length: 255, nullable: true })
   public format: PRESENTATION_FORMAT | string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'nvarchar', length: 255, nullable: true })
   public submissionType: PRESENTATION_SUBMISSION_TYPE | string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'nvarchar', length: 255, nullable: true })
   public classificationType: PRESENTATION_STUDENT_TYPE | string;
 
   @ManyToOne(() => Season, (season) => season.submissions, { nullable: true })

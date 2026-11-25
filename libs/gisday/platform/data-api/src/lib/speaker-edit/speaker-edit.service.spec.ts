@@ -260,8 +260,19 @@ describe('SpeakerEditService', () => {
     it('emails no one twice when the same send arrives again within minutes, and says why it skipped them', async () => {
       const email = { subject: 'Profile', template: 'Hi {first name}: {edit link}' };
 
-      await service.sendLinks(['speaker-ana'], 'gisday.tamu.edu', email);
-      const again = await service.sendLinks(['speaker-ana'], 'gisday.tamu.edu', email);
+      // The second send 30 seconds after the first, as it came. Back to back, both links could be made in the same
+      // millisecond, and two links made at once are told apart by their random guids, so the second won half of those
+      // ties and was sent: a test that failed now and then on Jest and often on Vitest, which runs it faster (#1977).
+      vi.useFakeTimers({ toFake: ['Date'] });
+      let again: Awaited<ReturnType<typeof service.sendLinks>>;
+
+      try {
+        await service.sendLinks(['speaker-ana'], 'gisday.tamu.edu', email);
+        vi.setSystemTime(Date.now() + 30_000);
+        again = await service.sendLinks(['speaker-ana'], 'gisday.tamu.edu', email);
+      } finally {
+        vi.useRealTimers();
+      }
 
       expect(sent).toHaveLength(1);
       expect(links).toHaveLength(1);

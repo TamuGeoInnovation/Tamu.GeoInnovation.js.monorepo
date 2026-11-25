@@ -8,11 +8,10 @@
  *
  * Angular projects are compiled by Analog's Vite plugin and get a zoneless TestBed from
  * test/vitest-setup-angular.ts (`{ zone: true }` for one that still needs zone.js); plain TypeScript
- * projects (`{ angular: false }`) skip both. NestJS projects (`{ swc: true }`) are compiled by SWC, which writes
- * the decorator metadata their injection and TypeORM's columns read (#1977).
+ * projects (`{ angular: false }`) skip both. NestJS projects (`{ decoratorMetadata: true }`) get the decorator
+ * metadata their injection and TypeORM's columns read, written as `tsc` writes it for this workspace (#1977).
  */
 import angular from '@analogjs/vite-plugin-angular';
-import swc from 'unplugin-swc';
 import { join, relative } from 'node:path';
 import { defineConfig } from 'vitest/config';
 
@@ -29,15 +28,19 @@ export interface VitestPresetOptions {
    */
   zone?: boolean;
   /**
-   * Compile with SWC rather than Vite's own transform. Default false. For NestJS and TypeORM, which read
-   * `design:type` and `design:paramtypes`: Vite's transform does not write them as TypeScript does (#1977).
+   * Write `design:type` and `design:paramtypes` for decorators, as NestJS and TypeORM need. Default false.
+   *
+   * Vite's transform reads one file at a time, so it cannot see the types `tsc` checks. Two settings close most of
+   * that gap (#1977): legacy decorators with their metadata, which the tsconfig already asks for, and `strictNullChecks`
+   * off, as `strict: false` has it in tsconfig.base.json, so `string | null` is written as `String` rather than
+   * `Object`. What remains, a type alias or an enum unioned with `string`, needs its column's type written out.
    */
-  swc?: boolean;
+  decoratorMetadata?: boolean;
 }
 
 export function vitestConfig(
   projectRoot: string,
-  { angular: isAngular = true, environment = 'jsdom', zone = false, swc: useSwc = false }: VitestPresetOptions = {}
+  { angular: isAngular = true, environment = 'jsdom', zone = false, decoratorMetadata = false }: VitestPresetOptions = {}
 ) {
   const fromRoot = relative(workspaceRoot, projectRoot);
   // Nx sets this for every task, so each project's JUnit file is named after it, as jest-junit's
@@ -48,13 +51,10 @@ export function vitestConfig(
   return defineConfig({
     root: projectRoot,
     cacheDir: join(workspaceRoot, 'node_modules/.vite', fromRoot),
-    plugins: [
-      ...(isAngular ? [angular({ tsconfig: join(projectRoot, 'tsconfig.spec.json') })] : []),
-      // Decorators and their metadata from the project's tsconfig, as ES modules for Vite, as NestJS runs Vitest.
-      ...(useSwc ? [swc.vite({ tsconfigFile: join(projectRoot, 'tsconfig.spec.json'), module: { type: 'es6' } })] : [])
-    ],
-    // SWC compiles TypeScript itself; Vite's own transform would run over its output again.
-    ...(useSwc ? { oxc: false as const } : {}),
+    plugins: isAngular ? [angular({ tsconfig: join(projectRoot, 'tsconfig.spec.json') })] : [],
+    ...(decoratorMetadata
+      ? { oxc: { decorator: { legacy: true, emitDecoratorMetadata: true, strictNullChecks: false } } }
+      : {}),
     // The workspace's `@tamu-gisc/*` paths from tsconfig.base.json, read by Vite itself.
     resolve: { tsconfigPaths: true },
     test: {

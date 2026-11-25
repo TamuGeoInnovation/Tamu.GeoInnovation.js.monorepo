@@ -401,8 +401,17 @@ describe('SessionDetailsEmailService, choosing speakers', () => {
       }
     ]);
 
-    // Each of the group was emailed, so a copy each to one of them is a repeat too.
-    const copy = await service.send('e-2', 'gisday.tamu.edu', undefined, undefined, { speakers: ['sp-co'] });
+    // Each of the group was emailed, so a copy each to one of them is a repeat too. A second later: made in the same
+    // millisecond as the group's, its claim was told apart by a random guid and won half of those ties (#1977).
+    vi.useFakeTimers({ toFake: ['Date'], now: Date.now() + 1_000 });
+
+    let copy: Awaited<ReturnType<typeof service.send>>;
+
+    try {
+      copy = await service.send('e-2', 'gisday.tamu.edu', undefined, undefined, { speakers: ['sp-co'] });
+    } finally {
+      vi.useRealTimers();
+    }
 
     expect(copy.sent).toEqual([]);
     expect(sent).toHaveLength(1);
