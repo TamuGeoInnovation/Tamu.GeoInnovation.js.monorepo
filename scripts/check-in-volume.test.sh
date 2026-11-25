@@ -57,6 +57,15 @@ expect "a workflow with no list excludes nothing" "" "$(excluded_projects "$repo
 excluded_projects "$repo" HEAD test >/dev/null 2>&1
 expect "a missing workflow is an error" "1" "$?"
 
+# #1938, #2067: the build runs in the configuration build.yml builds with, read from it, so the two cannot drift apart.
+# Without it the seven apps whose defaultConfiguration is "" were built with no budgets and no AOT, and CI found what
+# this check let through.
+expect "build uses the configuration this repository's build.yml builds with" "production" \
+  "$(build_configuration "$(cd "$(dirname "$0")/.." && pwd)" HEAD)"
+expect "a build.yml whose build names no configuration gives none" "" "$(build_configuration "$repo" HEAD~1)"
+build_configuration "$repo" HEAD~9 >/dev/null 2>&1
+expect "a missing build.yml is an error" "1" "$?"
+
 # lint.yml's steps outside nx (#2286), in the shape of development on 24 October, plus the forms CI could grow.
 cat >"$repo/.github/workflows/lint.yml" <<'YML'
 jobs:
