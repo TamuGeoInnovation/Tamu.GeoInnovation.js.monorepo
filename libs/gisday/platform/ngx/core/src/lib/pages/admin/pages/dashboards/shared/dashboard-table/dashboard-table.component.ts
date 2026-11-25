@@ -1,9 +1,10 @@
 import { Component, Directive, TemplateRef, computed, contentChild, input, output, signal, viewChild } from '@angular/core';
-import { DatePipe, NgTemplateOutlet } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
 import { DatatableComponent, NgxDatatableModule, SortPropDir } from '@swimlane/ngx-datatable';
 
 import { naturalOrder } from '@tamu-gisc/gisday/common';
 import { DashboardScrollComponent } from '@tamu-gisc/gisday/platform/ngx/common';
+import { CentralDatePipe } from '@tamu-gisc/gisday/platform/ngx/common';
 
 /** One row of a dashboard's table: a thing counted (an event, a university, a feature type) and its counts. */
 export interface DashboardTableRow {
@@ -134,7 +135,7 @@ export function compareTimes(a: string | null, b: string | null): number {
   selector: 'tamu-gisc-dashboard-table',
   templateUrl: './dashboard-table.component.html',
   styleUrls: ['./dashboard-table.component.scss'],
-  imports: [NgxDatatableModule, NgTemplateOutlet, DatePipe, DashboardScrollComponent]
+  imports: [NgxDatatableModule, NgTemplateOutlet, CentralDatePipe, DashboardScrollComponent]
 })
 export class DashboardTableComponent {
   public readonly rows = input.required<Array<DashboardTableRow>>();

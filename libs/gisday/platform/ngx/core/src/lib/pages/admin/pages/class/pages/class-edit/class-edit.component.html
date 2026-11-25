@@ -28,7 +28,7 @@
           @for (attendee of students$ | async; track attendee) {
           <tr>
             <td>{{ attendee.accountGuid }}</td>
-            <td>{{ attendee.created | date: 'medium' }}</td>
+            <td>{{ attendee.created | centralDate: 'medium' }}</td>
           </tr>
           }
         </tbody>

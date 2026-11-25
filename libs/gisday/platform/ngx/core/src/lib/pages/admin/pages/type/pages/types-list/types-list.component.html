@@ -20,7 +20,7 @@
           @for (entity of entities; track entity.guid) {
           <tr class="selectable" [routerLink]="['edit', entity.guid]">
             <td>{{ entity.type }}</td>
-            <td>{{ entity.updated | date: 'short' }}</td>
+            <td>{{ entity.updated | centralDate: 'short' }}</td>
           </tr>
           }
         </tbody>

@@ -14,15 +14,16 @@ import { Observable, ReplaySubject, distinctUntilChanged, map, startWith } from 
 
 import { SeasonDay, SimplifiedEvent } from '@tamu-gisc/gisday/platform/data-api';
 import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
-import { AsyncPipe, DatePipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { ParseDateTimeStringsPipe } from '../../../../pipes/parse-date-time-strings/parse-date-time-strings.pipe';
+import { CentralDatePipe } from '../../../../pipes/central-date/central-date.pipe';
 
 @Component({
   selector: 'tamu-gisc-event-row',
   templateUrl: './event-row.component.html',
   styleUrls: ['./event-row.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [CheckboxComponent, AsyncPipe, DatePipe, ParseDateTimeStringsPipe]
+  imports: [CheckboxComponent, AsyncPipe, CentralDatePipe, ParseDateTimeStringsPipe]
 })
 export class EventRowComponent implements OnChanges, OnInit {
   private readonly rt = inject(Router);

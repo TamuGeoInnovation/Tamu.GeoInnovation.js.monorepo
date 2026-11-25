@@ -64,7 +64,7 @@
               @if (row.printedAt) {
               <!-- A status, then the action that undoes it: "Not printed" here read as the status (#2912). -->
               <div>
-                Printed {{ row.printedAt | date: 'MMM d, h:mm a' }}
+                Printed {{ row.printedAt | centralDate: 'MMM d, h:mm a' }}
                 <a class="badges-undo" title="Mark as not printed" (click)="markNotPrinted(row)" tabindex="0" role="button" (keydown.enter)="markNotPrinted(row)" (keydown.space)="markNotPrinted(row); $event.preventDefault()">Undo</a>
               </div>
               @if (row.changedSincePrinted) {

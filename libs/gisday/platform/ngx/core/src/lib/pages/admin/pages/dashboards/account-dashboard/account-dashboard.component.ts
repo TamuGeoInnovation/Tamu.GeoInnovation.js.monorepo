@@ -1,6 +1,6 @@
 import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AsyncPipe, DatePipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { catchError, filter, map, of, switchMap, tap } from 'rxjs';
 
 import { readRefusal, seasonPicker } from '@tamu-gisc/gisday/platform/ngx/common';
@@ -19,6 +19,7 @@ import {
   DashboardTableComponent,
   DashboardTableRow
 } from '../shared/dashboard-table/dashboard-table.component';
+import { CentralDatePipe } from '@tamu-gisc/gisday/platform/ngx/common';
 
 /** The table's rows: a university or employer each, its accounts counted by person type. */
 export function accountTableRows(dashboard: AccountDashboard): Array<DashboardTableRow> {
@@ -54,7 +55,7 @@ export function accountFileName(year: number | null | undefined, rowName: string
     DashboardRowDetailDirective,
     DashboardPeopleComponent,
     AsyncPipe,
-    DatePipe
+    CentralDatePipe
   ]
 })
 export class AccountDashboardComponent implements OnInit {

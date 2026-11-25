@@ -11,8 +11,8 @@
   <div class="event-time">
     <!-- In Central time, as the page says (#2710). -0600 is CST, which GIS Day always falls in, in November. -->
     @if ((rowDay?.date | parseDateTimeStrings : rowEvent?.startTime) && (rowDay?.date | parseDateTimeStrings : rowEvent?.endTime)) {
-    <span>{{rowDay.date | parseDateTimeStrings : rowEvent.startTime | date: 'h:mm a' : '-0600'}}</span>
-    <span id="detail-time"> - {{rowDay.date | parseDateTimeStrings : rowEvent.endTime | date: 'h:mm a' : '-0600'}}</span>
+    <span>{{rowDay.date | parseDateTimeStrings : rowEvent.startTime | centralDate: 'h:mm a'}}</span>
+    <span id="detail-time"> - {{rowDay.date | parseDateTimeStrings : rowEvent.endTime | centralDate: 'h:mm a'}}</span>
     } @else {
     <span>Time TBD</span>
     }

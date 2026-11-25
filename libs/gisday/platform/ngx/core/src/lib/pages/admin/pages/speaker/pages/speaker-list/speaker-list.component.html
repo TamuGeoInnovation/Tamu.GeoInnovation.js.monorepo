@@ -41,7 +41,7 @@
             <td>{{entity?.organization?.name}}</td>
             <!-- The speaker's sessions this season, or None (#441). -->
             <td class="speaker-sessions">{{ sessionNames(entity) || 'None' }}</td>
-            <td>{{entity.updated | date:'short'}}</td>
+            <td>{{entity.updated | centralDate:'short'}}</td>
           </tr>
           }
         </tbody>

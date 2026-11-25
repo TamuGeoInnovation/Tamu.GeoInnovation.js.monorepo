@@ -14,11 +14,11 @@
       <p class="dashboard-summary">
         <strong>{{ view.accounts }}</strong> {{ view.accounts === 1 ? 'account' : 'accounts' }} with a GIS Day profile, made
         @if (view.window.from) {
-        from {{ view.window.from | date: 'MMM d, y' : '-0600' }}
+        from {{ view.window.from | centralDate: 'MMM d, y' }}
         } @else {
         before
         }
-        to the end of this GIS Day ({{ lastDay() | date: 'MMM d, y' : '-0600' }}).
+        to the end of this GIS Day ({{ lastDay() | centralDate: 'MMM d, y' }}).
         The sign-in service made {{ view.allAccounts }} {{ view.allAccounts === 1 ? 'account' : 'accounts' }} in that time, with or without a profile; it is shared with other sites, so the difference is at most the GIS Day sign-ups that never finished one.
       </p>
 

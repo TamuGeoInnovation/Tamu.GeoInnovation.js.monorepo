@@ -20,16 +20,17 @@ import { SeasonDay, SimplifiedEvent } from '@tamu-gisc/gisday/platform/data-api'
 import { SeasonDayService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { EventRowComponent } from '../event-row/event-row.component';
 import { matchesText, sessionSearchFields } from '../../../../utils/search-text';
-import { AsyncPipe, DatePipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { dayHasPassed } from '@tamu-gisc/gisday/common';
 import { AccordionComponent, AccordionContentComponent, AccordionHeaderComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { CentralDatePipe } from '../../../../pipes/central-date/central-date.pipe';
 
 @Component({
   selector: 'tamu-gisc-season-day-card',
   templateUrl: './season-day-card.component.html',
   styleUrls: ['./season-day-card.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [EventRowComponent, AsyncPipe, DatePipe, AccordionComponent, AccordionHeaderComponent, AccordionContentComponent]
+  imports: [EventRowComponent, AsyncPipe, CentralDatePipe, AccordionComponent, AccordionHeaderComponent, AccordionContentComponent]
 })
 export class SeasonDayCardComponent implements OnInit, OnChanges {
   private readonly sd = inject(SeasonDayService);
