@@ -184,6 +184,24 @@ running, 24 November 2026, finished at 10:43 PM Central.
 As on the four libraries below: a small Angular project, where Vitest's runner is faster and its start-up costs
 more than it saves.
 
+### Unit tests: the events app, dev-tools and geoprocessing, Jest against Vitest (#1479)
+
+Jest is `development` at `66fc4dc2c`; Vitest is `chore/1479-vitest-the-rest` at `e0ac06572`. Each project's test target was run on its own,
+`nx run <project>:test --skip-nx-cache`, each run in a new container, so Jest's transform cache was cold as in CI and the
+pre-push check, inside the check's Docker volume (`tamu-js-1479`: the clone and `node_modules`, no bind mount). The two states
+alternated three times, on the laptop with nothing else running, 25 November 2026, about 1:10 to 1:17 AM Central. The seconds are the
+whole container run, Nx and its start-up included; the runner's own figure (Jest's `Time`, Vitest's `Duration`) is in brackets.
+
+| Project                         | Tests, Jest and Vitest |                        Jest |                      Vitest |
+| ------------------------------- | ---------------------: | --------------------------: | --------------------------: |
+| `ts-events-angular`             |                      0 |                3.7 to 3.8 s |                3.9 to 4.1 s |
+| `dev-tools-application-testing` |                      7 | 6.1 to 6.7 s (2.59 to 2.69) | 5.8 to 6.1 s (0.87 to 1.02) |
+| `dev-tools-responsive`          |                      5 | 4.9 to 5.3 s (1.46 to 1.61) | 5.6 to 5.9 s (0.68 to 0.75) |
+| `geoprocessing-core`            |                      2 | 4.9 to 5.1 s (1.42 to 1.58) | 4.1 to 4.4 s (0.18 to 0.20) |
+| `geoprocessing-v5`              |                      0 |                3.6 to 3.7 s |                3.9 to 4.2 s |
+
+The runner is two to eight times faster on the three projects with specs. Overall, the two Node projects come out ahead with Vitest (`geoprocessing-core` by about 0.8 s, with no Angular plugin to start), `dev-tools-application-testing` roughly even, and `dev-tools-responsive` and the projects with no specs about 0.3 to 0.6 s behind.
+
 ### Unit tests: four GIS Day libraries, Jest against Vitest (#1977)
 
 The `ngx/common` and `ngx/data-access` libraries of the GIS Day platform and competitions. Jest is
@@ -276,6 +294,23 @@ times, on the lab machine with nothing else running, 24 November 2026, finished 
 Vitest pays no Angular start-up, while `ts-jest` type-checked every spec and the code it imports: the cost
 #1479 set out to remove. The check agrees: `lint,test` on the three took 58.7 s on Jest
 (`2026-11-24T222148-check-lab.csv`) and 15.5 s on Vitest.
+
+### Unit tests: the mailroom projects, Jest against Vitest (#1479)
+
+Jest is `development` at `66fc4dc2c`; Vitest is `chore/1479-vitest-mailroom` at `9a8e5756e`. Each project's test target was run on its own,
+`nx run <project>:test --skip-nx-cache`, each run in a new container, so Jest's transform cache was cold as in CI and the
+pre-push check, inside the check's Docker volume (`tamu-js-1479`: the clone and `node_modules`, no bind mount). The two states
+alternated three times, on the laptop with nothing else running, 25 November 2026, about 1:10 to 1:17 AM Central. The seconds are the
+whole container run, Nx and its start-up included; the runner's own figure (Jest's `Time`, Vitest's `Duration`) is in brackets.
+
+| Project                | Tests, Jest and Vitest |         Jest |       Vitest |
+| ---------------------- | ---------------------: | -----------: | -----------: |
+| `mailroom-angular`     |                      0 | 3.5 to 3.6 s | 3.9 to 4.2 s |
+| `mailroom-ngx`         |                      0 | 3.5 to 4.0 s | 3.8 to 4.0 s |
+| `mailroom-data-access` |                      0 | 3.5 to 3.7 s | 3.9 to 4.0 s |
+| `mailroom-common`      |                      0 | 3.5 to 4.0 s | 3.7 to 3.9 s |
+
+None of the four has a spec, so this measures only the runner's start-up: Vitest's, finding no test files, is about 0.3 s slower than Jest's.
 
 ## Installs
 

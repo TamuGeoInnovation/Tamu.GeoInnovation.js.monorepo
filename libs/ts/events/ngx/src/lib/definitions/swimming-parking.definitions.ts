@@ -9,12 +9,11 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
-import esri = __esri;
 import { EventPopups } from '../modules/popups/popups';
 
 export enum SWIMMING_PARKING_LAYERS {
   ACCESSIBLE_PARKING = 'swimming-parking-accessible-parking',
-  PARKING_LOTS = 'swimming-parking-lots',
+  PARKING_LOTS = 'swimming-parking-lots'
 }
 
 const eventUrl = Connections.swimmingParkingUrl;
@@ -68,7 +67,7 @@ export const SwimmingParkingColdLayerSources: LayerSource[] = [
     native: {
       outFields: ['*']
     }
-  } as unknown as LayerSource,
+  } as unknown as LayerSource
 ];
 
 /**

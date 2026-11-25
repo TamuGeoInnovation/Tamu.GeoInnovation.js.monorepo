@@ -31,15 +31,7 @@ import {
   sessionForEmail,
   speakersOf
 } from './session-details-email.service';
-import {
-  REPEAT_SEND_MINUTES,
-  SendResult,
-  SpeakerEditService,
-  chosenSpeakers,
-  fullName,
-  linkExpiry,
-  recipientOf
-} from './speaker-edit.service';
+import { SendResult, SpeakerEditService, chosenSpeakers, fullName, linkExpiry, recipientOf } from './speaker-edit.service';
 
 /** The Ask for slides email as an admin approved it: its subject and text, with their placeholders. */
 export type SlidesRequestEmail = SessionDetailsEmail;

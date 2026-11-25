@@ -22,21 +22,21 @@ export class RouteParamsGuard {
 
   public canActivate(
     route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
+    _state: RouterStateSnapshot
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     return this._performChecks(route);
   }
 
   public canLoad(
-    route: Route,
-    segments: UrlSegment[]
+    _route: Route,
+    _segments: UrlSegment[]
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     return this._performChecks(this.ar.snapshot);
   }
 
   public canActivateChild(
     childRoute: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
+    _state: RouterStateSnapshot
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     return this._performChecks(childRoute);
   }

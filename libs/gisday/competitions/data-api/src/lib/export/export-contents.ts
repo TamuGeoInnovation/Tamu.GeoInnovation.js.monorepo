@@ -20,7 +20,7 @@ export function mimeToExtension(mimeType?: string): string {
     'image/tiff': '.tiff'
   };
 
-  return map[mimeType?.toLowerCase()] || '.bin';
+  return (mimeType && map[mimeType.toLowerCase()]) || '.bin';
 }
 
 /** A competition season's submissions, oldest first, with their locations and statuses but not their photos' bytes. */
@@ -68,7 +68,7 @@ export function exportRow(
   return {
     submission_guid: submission.guid,
     user_guid: submission.userGuid,
-    created: submission.created?.toISOString(),
+    created: submission.created.toISOString(),
     latitude: submission.location?.latitude,
     longitude: submission.location?.longitude,
     accuracy: submission.location?.accuracy,

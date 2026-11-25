@@ -37,7 +37,11 @@ export class SeasonService extends BaseService<CompetitionSeason> {
       const responseValue = response.value;
 
       // For each response, go through the value keys and append them to the accumulated object.
-      Object.entries(responseValue).forEach(([key, value]) => {
+      // The answers are the JSON the app sent, which may be null (#3495); each is tallied by its text, as `in` and an
+      // index read it.
+      Object.entries(responseValue ?? {}).forEach(([key, answer]) => {
+        const value = String(answer);
+
         if (!acc[key]) {
           // Each value key represents a question, and each question has a number of different responses.
           // If the key does not exist in the accumulated value yet, then create an other dictionary inside of it.

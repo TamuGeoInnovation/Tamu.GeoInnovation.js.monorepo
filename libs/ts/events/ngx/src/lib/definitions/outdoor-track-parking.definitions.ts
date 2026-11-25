@@ -9,12 +9,11 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
-import esri = __esri;
 import { EventPopups } from '../modules/popups/popups';
 
 export enum OUTDOOR_TRACK_PARKING_LAYERS {
   ACCESSIBLE_PARKING = 'outdoor-track-parking-accessible-parking',
-  PARKING_LOTS = 'outdoor-track-parking-lots',
+  PARKING_LOTS = 'outdoor-track-parking-lots'
 }
 
 const eventUrl = Connections.outdoorTrackParkingUrl;
@@ -71,7 +70,7 @@ export const OutdoorTrackParkingColdLayerSources: LayerSource[] = [
     native: {
       outFields: ['*']
     }
-  },
+  }
 ];
 
 /**

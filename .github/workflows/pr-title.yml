@@ -11,6 +11,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: read
 
 jobs:
   title:
@@ -31,3 +32,25 @@ jobs:
         env:
           TITLE: ${{ github.event.pull_request.title }}
         run: node .github/scripts/check-pr-title.mjs
+
+  # A pull request's drafted body (`.pr-body.md`) is for the person opening it and never belongs on development. On 24
+  # November one reached it with PR 3561, and every branch drafting its own then conflicted with it (#3572). It is checked
+  # here, on the pull request, and not in lint.yml: listeners commit their draft to their branch on purpose, and
+  # scripts/check-in-volume.sh runs lint.yml's steps on those branches.
+  no-drafted-body:
+    name: No drafted body committed
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: The pull request does not add or change .pr-body.md
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          if gh api --paginate "repos/$REPO/pulls/$PR/files" --jq '.[] | select(.status != "removed") | .filename' | grep -qx '.pr-body.md'; then
+            echo "This pull request adds or changes .pr-body.md, the drafted body. Remove it from the branch:"
+            echo "  git rm .pr-body.md && git commit -m 'chore: Remove the drafted pull request body'"
+            exit 1
+          fi
+          echo "No .pr-body.md in this pull request."

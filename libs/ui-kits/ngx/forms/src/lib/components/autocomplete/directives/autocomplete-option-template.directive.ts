@@ -30,9 +30,9 @@ export class AutocompleteOptionTemplateDirective<T = unknown> {
    * This enables IntelliSense for `let-...` variables.
    */
   public static ngTemplateContextGuard<T>(
-    dir: AutocompleteOptionTemplateDirective<T>,
-    ctx: unknown
-  ): ctx is AutocompleteOptionContext<T> {
+    _dir: AutocompleteOptionTemplateDirective<T>,
+    _ctx: unknown
+  ): _ctx is AutocompleteOptionContext<T> {
     return true;
   }
 }

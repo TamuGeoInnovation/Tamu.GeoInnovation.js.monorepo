@@ -1,4 +1,3 @@
-import { LayerSource } from '@tamu-gisc/common/types';
 import { IFactoryExcludeOptions } from '../utils/definitionFactory';
 import { LayerSources } from './layer-sources';
 import { IComposedConnections } from '../connections';
