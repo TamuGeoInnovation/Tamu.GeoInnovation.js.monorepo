@@ -1,5 +1,28 @@
 # Home machine: current tasks
 
+## Batch g108 (workspace: #1604, then #1025; 24 November 2026, late evening, from `work (gisday)`) (Low) - **after g107**
+
+The maintainer asked for issues to be taken to PRs, checked first that each is not already done. Both were checked against
+`origin/development` tonight; neither has a PR. Two branches, two PRs, "branch ready: <name>" after each.
+
+**1. [#1604](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1604), branch `fix/1604-geoservices-unreachable-api`.**
+The four Geoservices interactive pages under `libs/geoservices/ngx/src/lib/public/pages/services/pages/` (address-processing,
+census-intersection, geocoding, reverse-geocoding) still do `of(err.toRenderableJSON(true))` in their error path, which throws when the API
+is unreachable (an `HttpErrorResponse` has no such method). Read the issue to the end. Render an error the page can show instead, through
+one shared helper rather than four copies (CLAUDE.md, reuse before building). **Red first:** a unit test per page, or one shared spec,
+where the request fails with an `HttpErrorResponse` (status 0) and the page shows the error instead of throwing. Check:
+`scripts/check-in-volume.sh fix/1604-geoservices-unreachable-api <the geoservices lib>,geoservices-angular`. Images: one page before and
+after with the API unreachable, a release entry if it is visible. Push, `.pr-body.md` from the template last.
+
+**2. [#1025](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1025), branch `chore/1025-lf-endings`.** Files are LF
+(CLAUDE.md), except `libs/assets/batch/startup.bat`. Tonight's triage found 7 CRLF files plus 5 mixed (`git ls-files --eol`), among them
+`knip.json`, `.github/workflows/actionlint.yml` and several `*.spec.ts` and campus definition files. Convert exactly those to LF (no
+other change: `git diff --stat --ignore-all-space` must show nothing), then add a step to `lint.yml` as a one-line `run:` (so
+`scripts/check-in-volume.sh` runs it too) that fails on any CRLF file other than `startup.bat`. **Red first:** the new step on
+`origin/development` fails naming the 12; green after. Push, `.pr-body.md` last.
+
+Report `home/reports/2026-11-24-g108.md`.
+
 ## ~~Paused by the maintainer (24 November 2026, evening): home is compacting its Docker disk and is not available until he says so~~ - **OVER. Home is back.**
 
 > The maintainer said the compaction finished and Docker was starting again at about 8:40 PM Central,
