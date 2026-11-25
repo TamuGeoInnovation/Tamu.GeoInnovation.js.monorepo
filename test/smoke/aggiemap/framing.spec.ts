@@ -3,6 +3,7 @@ import * as path from 'path';
 
 import { expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
+import { readBuilderDestinations } from './builder-destinations';
 import { Framing, readEsriVersion, servedRoutes, waitForSettledFraming } from './framing';
 import { MANIFEST_PATH, MapManifest } from './global-setup';
 import { PROBE_GLOBAL } from './map-probe';
@@ -71,6 +72,13 @@ const RELEASE_SCOPE = process.env.AGGIEMAP_SMOKE_FRAMING === 'release' && !UPDAT
 
 /** The routes this run opens: all of them, or one per map for a release check. */
 const checked = RELEASE_SCOPE ? servedRoutes(manifest, { onePerMap: true }) : routes;
+
+/** By route, where a builder destination was recorded, for one recorded on another environment (#1134, #3474). */
+const borrowed = new Map(
+  [...readBuilderDestinations(manifest).byRoute.values()]
+    .flat()
+    .flatMap(({ target, borrowedFrom }) => (borrowedFrom === undefined ? [] : [[target, borrowedFrom] as const]))
+);
 
 function readBaseline(): FramingBaseline | null {
   return fs.existsSync(BASELINE_PATH) ? JSON.parse(fs.readFileSync(BASELINE_PATH, 'utf8')) : null;
@@ -161,9 +169,13 @@ test.describe('every map opens where it does on production', () => {
         .then(() => true)
         .catch(() => false);
 
+      // A destination recorded on another environment that does not reach its map here is skipped for that reason, as
+      // map-layers.spec says, rather than as a map with no destination at all, which it is not (#3474).
       test.skip(
         !probePresent && page.url().includes('/builder/'),
-        `${route} is gated behind a builder with no recorded destination`
+        borrowed.has(route)
+          ? `${route} was recorded on ${borrowed.get(route)} and does not reach the map here; skipped rather than failed (#1134)`
+          : `${route} is gated behind a builder with no recorded destination`
       );
 
       const { framing, settled } = await waitForSettledFraming(page, route);
