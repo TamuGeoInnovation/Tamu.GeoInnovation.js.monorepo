@@ -78,6 +78,26 @@ GIT_COMMITTER_DATE="$(date -u -d '-30 days' +%Y-%m-%dT%H:%M:%SZ)" GIT_AUTHOR_DAT
 "; sync
 check "#3517: an undated heading written before the window is not listed" "" "$(run | grep '^a5 ' || true)"
 
+# #3650: the per-heading work was moved into one pass, so the rules it carried are held here. A note anywhere in the file
+# drops the batches it names, not only one inside their own sections; an id that merely starts the same does not count; an
+# undated heading edited later keeps the date it was written; and a date that does not exist drops its heading, as
+# `date -d` did.
+moved_tasks="# m
+- Batches 30 and 31 were moved to the lab this morning.
+- Batch 123 was withdrawn too.
+## Batch 30 (aggiemap: moved by the note above; $today, from work (aggiemap))
+## Batch 31 (aggiemap: moved by the same note; $today, from work (aggiemap))
+## Batch 12 (aggiemap: shares its first digits with the 123 in the note; $today, from work (aggiemap))
+## Batch 13 (aggiemap: a date that does not exist; 31 November $(date -u +%Y), from work (aggiemap))
+## Batch a40 (aggiemap: an undated heading, edited after it was written) (Low)
+- First version of the body.
+"
+write_tasks "$moved_tasks"; sync
+write_tasks "${moved_tasks/First version/Second version}"; sync
+check "#3650: a note elsewhere in the file drops every batch it names, and only those" \
+  "12 queued
+a40 queued" "$(run | grep -E '^(30|31|12|13|a40) ' || true)"
+
 # Holds (25 November 2026). A batch that says it is waiting on a pull request is not work its listener may take, and the
 # gate opens by itself when the pull request merges. gh is stubbed here, so these cases are offline and exact: PRSTATE says
 # what GitHub would answer, and an empty PRSTATE stands for gh failing.
