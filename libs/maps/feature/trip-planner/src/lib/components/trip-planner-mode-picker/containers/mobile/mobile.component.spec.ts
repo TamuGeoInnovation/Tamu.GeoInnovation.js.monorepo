@@ -23,7 +23,10 @@ describe('TripPlannerModePickerMobileComponent', () => {
         {
           provide: TripPlannerService,
           // Walking, a mode whose rule has an accessible version, so the toggle would be live.
-          useValue: { TravelOptions: new BehaviorSubject({ travel_mode: 1, accessible: false }), verifyRuleAccessibility: () => true }
+          useValue: {
+            TravelOptions: new BehaviorSubject({ travel_mode: 1, accessible: false }),
+            verifyRuleAccessibility: () => true
+          }
         }
       ]
     });
