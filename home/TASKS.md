@@ -17,7 +17,7 @@ with `CHECK_PARALLEL=1`, its `Exit` line. Images: the GIS Day menu open at 390 p
 `docs/releases/unreleased/2588-tile-tap-target.md` with `app: gisday`. Push to the fork; `.pr-body.md` from the template as the
 last commit.
 
-**2. [#3337](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3337) (Low), branch
+**2. WITHDRAWN (about 6:45 PM Central): the laptop has #3337 as batch a13; home does only part 1.** [#3337](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3337) (Low), branch
 `fix/3337-quoted-background` from the latest `origin/development`.** `light-pole.component.scss` and `lighting.component.scss`
 under `libs/gisday/platform/ngx/core/src/lib/pages/competitions/` set `background-color: '#500000'` (a string, which the browser
 discards). Use the shared maroon (look in `libs/sass/` first; #2605 swept `#500000` into a variable - use that one, not a literal).
