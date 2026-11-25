@@ -11,8 +11,8 @@ import {
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { LayerSource } from '@tamu-gisc/common/types';
 import { escapeSqlString } from '@tamu-gisc/common/utils/database';
-import { deepMerge, getPropertyValue } from '@tamu-gisc/common/utils/object';
-import { hasTemplateExpression, TemplateRenderer } from '@tamu-gisc/common/utils/string';
+import { deepMerge } from '@tamu-gisc/common/utils/object';
+import { resolvePopupData } from '@tamu-gisc/maps/feature/popup';
 import { SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
 
 import {
@@ -23,10 +23,6 @@ import {
 import { EventSettingsService } from '../settings/event-settings.service';
 
 import esri = __esri;
-
-type PopupDataDefinition = NonNullable<LayerSource['popupData']>;
-type PopupDataResolutionStrategy = NonNullable<LayerSource['popupDataResolutionStrategy']>;
-type PopupDataEntry = PopupDataDefinition[string];
 
 /** Number of on/off highlight cycles used to flash a configured focus feature on load. */
 const FOCUS_FLASH_PULSES = 3;
@@ -792,14 +788,15 @@ export class EventService {
 
   /**
    * Resolves any layer-configured popupData onto a queried feature so direct-link selections
-   * render the same sidebar content as a real map click.
+   * render the same sidebar content as a real map click: with the popup service's own resolver, not a copy
+   * of it, which drifted (#3536).
    */
   private hydrateFeaturePopupData(feature: esri.Graphic, source: LayerSource): void {
     if (!source.popupData) {
       return;
     }
 
-    const resolvedPopupData = this.resolvePopupData(
+    const resolvedPopupData = resolvePopupData(
       feature,
       source.popupData,
       source.popupDataResolutionStrategy ?? 'independent'
@@ -809,68 +806,5 @@ export class EventService {
       ...feature.attributes,
       ...resolvedPopupData
     };
-  }
-
-  private resolvePopupData(
-    graphic: esri.Graphic,
-    popupData: PopupDataDefinition,
-    strategy: PopupDataResolutionStrategy
-  ): Record<string, unknown> {
-    return Object.entries(popupData).reduce<Record<string, unknown>>((acc, [key, definition]) => {
-      if (acc[key] !== undefined) {
-        return acc;
-      }
-
-      acc[key] = this.resolvePopupDataEntry(graphic, definition, acc, strategy);
-
-      return acc;
-    }, {});
-  }
-
-  private resolvePopupDataEntry(
-    graphic: esri.Graphic,
-    definition: PopupDataEntry,
-    resolvedEntries: Record<string, unknown>,
-    strategy: PopupDataResolutionStrategy
-  ): unknown {
-    if (typeof definition !== 'string') {
-      return getPropertyValue(graphic.attributes, definition.field, definition.collapsed);
-    }
-
-    const lookup = this.getPopupDataLookup(graphic, resolvedEntries, strategy);
-
-    if (hasTemplateExpression(definition)) {
-      return new TemplateRenderer({
-        template: definition,
-        lookup,
-        options:
-          strategy === 'cumulative'
-            ? {
-                nullishReplacement: '',
-                trim: true
-              }
-            : undefined
-      }).render();
-    }
-
-    return getPropertyValue(lookup, definition);
-  }
-
-  private getPopupDataLookup(
-    graphic: esri.Graphic,
-    resolvedEntries: Record<string, unknown>,
-    strategy: PopupDataResolutionStrategy
-  ) {
-    if (strategy === 'cumulative') {
-      return {
-        ...graphic,
-        attributes: {
-          ...(graphic.attributes || {}),
-          ...resolvedEntries
-        }
-      };
-    }
-
-    return graphic;
   }
 }
