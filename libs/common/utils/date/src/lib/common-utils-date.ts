@@ -8,13 +8,14 @@ export function dateForDateTimeString(time: string, baseDate?: Date): Date {
   return date;
 }
 
+/**
+ * A date's time of day on a 12-hour clock, as `hh:mm AM`. Noon is 12 PM and the hour after midnight 12 AM; the hour
+ * was once only reduced above 12, so noon read as 12 AM and a minute past midnight as 00:01 AM (#2643).
+ */
 export function timeStringForDate(date: Date): string {
-  let hours = date.getHours();
-  let ampm = 'AM';
-  if (hours > 12) {
-    hours -= 12;
-    ampm = 'PM';
-  }
+  const hours24 = date.getHours();
+  const ampm = hours24 < 12 ? 'AM' : 'PM';
+  const hours = hours24 % 12 === 0 ? 12 : hours24 % 12;
   const minutes = date.getMinutes().toString().padStart(2, '0');
   return hours.toString().padStart(2, '0') + ':' + minutes + ' ' + ampm;
 }
