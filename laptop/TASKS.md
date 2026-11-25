@@ -1,5 +1,24 @@
 # Laptop: current tasks
 
+## Batch g26 (workspace: #1938 and #2067, the pre-push check builds without CI's production configuration; 24 November 2026, about 3:45 PM Central, from `work (gisday)`) (High) - **after g25**
+
+The maintainer is away and asked for issues to be taken to PRs. Checked at 3:40 PM: `scripts/check-in-volume.sh` on
+`origin/development` never passes `--configuration`, and no PR exists. **#2067 and #1938 are the same fault**; one branch closes both.
+
+Branch `fix/1938-check-production-build` from the latest `origin/development`. Read both issues to the end. `build.yml` builds with
+`--configuration=production`; the script builds with no configuration, so seven apps whose `defaultConfiguration` is `""` are built
+without budgets or AOT. Make the script's **build** target use what `build.yml` uses (read it there, the way the script already
+reads each workflow's exclusions, rather than hard-coding the flag if that is practical), and **check what CI does for projects with
+no `production` configuration** (the Nest apps, libraries) before changing anything: they must behave exactly as in CI.
+
+**Red first, twice:** (1) a case in `scripts/check-in-volume.test.sh` that fails until the script's build matches `build.yml`;
+(2) a real run: on a scratch commit that pushes `gisday-angular` over a budget (e.g. pad `header.component.scss` past 10 kB, as #2066
+did), `scripts/check-in-volume.sh <scratch branch> gisday-angular` must **pass on development's script and fail on yours**. Do not push
+the scratch commit. Then the branch's own check, `scripts/check-in-volume.sh fix/1938-check-production-build gisday-angular,aggiemap-angular`,
+its `Exit` line, `bash scripts/check-in-volume.test.sh`, and update CLAUDE.md's description of the check if it is no longer true.
+Push to the fork, `.pr-body.md` from the template as the last commit (`Closes #1938` and `Closes #2067` on separate lines).
+Report `laptop/reports/2026-11-24-g26.md`, "branch ready".
+
 ## Batch a13 (aggiemap: #3337, two GIS Day competition pages with a quoted colour) (Medium) - **now**
 
 [#3337](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3337). Both files are still
