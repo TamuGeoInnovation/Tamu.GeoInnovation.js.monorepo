@@ -11,18 +11,9 @@ import { EVENT_NOTIFICATION_DEFINITIONS, EventNotificationsService } from './eve
  * October - so the service's "within a day" window closed at 7 PM Central on the event's own day, and an evening event
  * raised no notice. The shared `parseEventDate` and `nextEventDate` read the date as local midnight.
  *
- * The zone is set here, not in the environment: Git Bash's `TZ=America/Chicago` silently means UTC (CLAUDE.md), and a
- * test run in UTC could not see the fault at all.
+ * A run in UTC could not see the fault at all, and Git Bash's `TZ=America/Chicago` silently means UTC (CLAUDE.md), so the
+ * project's vitest.config.mts sets the zone; the first test proves it took.
  */
-const ZONE = process.env.TZ;
-
-beforeAll(() => {
-  process.env.TZ = 'America/Chicago';
-});
-
-afterAll(() => {
-  process.env.TZ = ZONE;
-});
 
 afterEach(() => {
   sessionStorage.clear();
@@ -51,7 +42,12 @@ function raisedAt(instant: string): string[] {
       configuration: {
         id: 'evening-concert',
         eventDates: ['2026-10-02'],
-        toast: { id: 'evening-concert-notification', title: 'Concert', message: 'Concert', acknowledge: true } as NotificationProperties
+        toast: {
+          id: 'evening-concert-notification',
+          title: 'Concert',
+          message: 'Concert',
+          acknowledge: true
+        } as NotificationProperties
       }
     }
   ];
