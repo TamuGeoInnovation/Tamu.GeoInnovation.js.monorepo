@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch g110 (#274)** since 8:38 PM Central: checking it is not already done.
+- **blocked: waiting on the GIS Day director - Q-g110-1** (batch g110, #274): `getSimpleSettingsBranch` has no callers left (#1822 removed the last; only a spec mock remains), so delete it or build the fix anyway? Nothing built yet; worktree `C:/TAMU/wt-274` at `origin/development`.
 
 ## Finished
 - **Batch g109 (workspace: #1340, #2058)** (report `home/reports/2026-11-24-g109.md`): both branch ready. `chore/1340-flex-mixin-prefixes`: prefixes gone, standard declarations identical, home page byte-identical, check Exit 0. `chore/2058-template-a11y-rules`: red 21 findings (Exit 1), all fixed mechanically, green Exit 0. One question, Q-g109-1.
