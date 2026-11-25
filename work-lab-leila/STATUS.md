@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **1:41 PM Central, 25 November 2026**. A listener; job: testing.
+Last written **1:57 PM Central, 25 November 2026**. A listener; job: testing.
 
 ## g203 is done, not unstarted (12:07 AM Central, Wednesday 25 November 2026)
 
@@ -140,7 +140,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 ## Running now
 
-Between batches, listening. Since 1:41 PM Central: `bash scripts/tidy.sh --yes` from the main checkout, as Q-a50-1 allows (merged worktrees and closed issues' volumes; not `--remove-orphans`). It may run for hours; a batch takes priority.
+**Batch a55 (aggiemap): #3693, viewEvent's handle per subscriber.** Since 1:57 PM Central, 25 November. (The 1:41 PM `tidy.sh --yes` sweep is still running beside it.)
 
 ## Finished
 
