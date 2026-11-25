@@ -129,7 +129,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 ## Running now
 
-**Batch a20 reported** at 11:03 PM Central. Next: gisday's g203 (High), then a21 and a23.
+**Batch g203** (workspace, High: #1479, the geoservices and mailroom NestJS projects off Jest), started 11:03 PM Central, 24 November. Then a21 and a23.
 
 ## Finished
 
