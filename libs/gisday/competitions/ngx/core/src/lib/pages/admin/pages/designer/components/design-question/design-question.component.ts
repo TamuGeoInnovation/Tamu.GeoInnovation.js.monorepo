@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, input, output } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AccordionComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 import { AccordionHeaderComponent } from '@tamu-gisc/ui-kits/ngx/layout';
@@ -12,7 +12,6 @@ import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
   selector: 'tamu-gisc-design-question',
   templateUrl: './design-question.component.html',
   styleUrls: ['./design-question.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     AccordionComponent,
     AccordionHeaderComponent,

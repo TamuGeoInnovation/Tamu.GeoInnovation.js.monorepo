@@ -5,6 +5,7 @@ import {
   isLatLonPolygon,
   isWithinPolygon,
   LatLon,
+  parseLatLon,
   parseLatLonLines
 } from './common-utils-geometry';
 
@@ -68,7 +69,10 @@ describe('isWithinPolygon', () => {
 
   describe('distanceToPolygonEdge', () => {
     it('measures from a point outside to the nearest side, in metres', () => {
-      expect(distanceToPolygonEdge({ latitude: north + 20 * metre, longitude: west + 50 * metreEast }, square)).toBeCloseTo(20, 0);
+      expect(distanceToPolygonEdge({ latitude: north + 20 * metre, longitude: west + 50 * metreEast }, square)).toBeCloseTo(
+        20,
+        0
+      );
       expect(distanceToPolygonEdge({ latitude: middle, longitude: east + 40 * metreEast }, square)).toBeCloseTo(40, 0);
     });
 
@@ -79,8 +83,58 @@ describe('isWithinPolygon', () => {
     });
 
     it('measures from a point inside to the nearest side too', () => {
-      expect(distanceToPolygonEdge({ latitude: south + 10 * metre, longitude: (west + east) / 2 }, square)).toBeCloseTo(10, 0);
+      expect(distanceToPolygonEdge({ latitude: south + 10 * metre, longitude: (west + east) / 2 }, square)).toBeCloseTo(
+        10,
+        0
+      );
     });
+  });
+});
+
+describe('parseLatLon', () => {
+  it('reads a latitude and longitude, latitude first', () => {
+    expect(parseLatLon('30.6155, -96.3410')).toEqual({ latitude: 30.6155, longitude: -96.341 });
+  });
+
+  it('reads extra spaces, no space, a space alone and whole numbers', () => {
+    expect(parseLatLon('  30.6155 ,   -96.3410  ')).toEqual({ latitude: 30.6155, longitude: -96.341 });
+    expect(parseLatLon('30.6155,-96.3410')).toEqual({ latitude: 30.6155, longitude: -96.341 });
+    expect(parseLatLon('30.6155 -96.3410')).toEqual({ latitude: 30.6155, longitude: -96.341 });
+    expect(parseLatLon('30, -96')).toEqual({ latitude: 30, longitude: -96 });
+  });
+
+  it('reads the edges of the ranges', () => {
+    expect(parseLatLon('90, 180')).toEqual({ latitude: 90, longitude: 180 });
+    expect(parseLatLon('-90, -180')).toEqual({ latitude: -90, longitude: -180 });
+  });
+
+  it('refuses values out of range', () => {
+    expect(parseLatLon('200, 500')).toBeUndefined();
+    expect(parseLatLon('91, 0')).toBeUndefined();
+    expect(parseLatLon('0, 181')).toBeUndefined();
+  });
+
+  it('refuses a longitude given first rather than swapping it', () => {
+    expect(parseLatLon('-96.3410, 30.6155')).toBeUndefined();
+  });
+
+  it('refuses anything but two values', () => {
+    expect(parseLatLon('30.6')).toBeUndefined();
+    expect(parseLatLon('1,2,3')).toBeUndefined();
+    expect(parseLatLon('30.6,')).toBeUndefined();
+    expect(parseLatLon(', -96.3')).toBeUndefined();
+    expect(parseLatLon('30.6,,-96.3')).toBeUndefined();
+  });
+
+  it('refuses a value that is not wholly a number', () => {
+    expect(parseLatLon('30.6abc, -96.3')).toBeUndefined();
+    expect(parseLatLon('a, b')).toBeUndefined();
+  });
+
+  it('refuses empty and missing text', () => {
+    expect(parseLatLon('')).toBeUndefined();
+    expect(parseLatLon('   ')).toBeUndefined();
+    expect(parseLatLon(undefined)).toBeUndefined();
   });
 });
 
@@ -155,7 +209,8 @@ describe('geolocationPermission', () => {
    */
   const settle = () => new Promise((resolve) => setTimeout(resolve, 0));
 
-  const withPermissions = (permissions: unknown) => Object.defineProperty(navigator, 'permissions', { value: permissions, configurable: true });
+  const withPermissions = (permissions: unknown) =>
+    Object.defineProperty(navigator, 'permissions', { value: permissions, configurable: true });
 
   afterEach(() => {
     delete (navigator as unknown as { permissions?: unknown }).permissions;

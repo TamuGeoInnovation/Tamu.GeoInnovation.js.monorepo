@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { Observable } from 'rxjs';
@@ -19,7 +19,6 @@ import { GISDAY_SITE, SiteHasPipe } from '@tamu-gisc/gisday/platform/ngx/common'
   selector: 'tamu-gisc-initial-survey',
   templateUrl: './initial-survey.component.html',
   styleUrls: ['./initial-survey.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     NgTemplateOutlet,
     FormsModule,

@@ -62,8 +62,8 @@ WebFont.load({
 
 bootstrapApplication(AppComponent, {
   providers: [
-    // Every component still relies on Zone.js (ChangeDetectionStrategy.Eager); without this,
-    // bootstrapApplication runs zoneless since Angular 21 (#1563, #1478).
+    // GIS Day's own components are OnPush (#1669), but some shared ones still rely on Zone.js
+    // (ChangeDetectionStrategy.Eager); without this, bootstrapApplication runs zoneless since Angular 21 (#1563, #1478).
     provideZoneChangeDetection(),
     importProvidersFrom(
       Angulartics2Module.forRoot(GISDAY_ANALYTICS_SETTINGS),

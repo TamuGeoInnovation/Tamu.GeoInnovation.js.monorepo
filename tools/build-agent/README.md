@@ -6,7 +6,7 @@ pipeline's work in 3 to 5 minutes. A hosted agent takes 15 to 25 minutes for one
 
 | File | What it is |
 | --- | --- |
-| `Dockerfile` | Ubuntu 24.04, git, curl, jq, the Azure Pipelines agent (v4) and Node 24.22.1 in the agent's tool cache, where `UseNode@1` finds it instead of downloading it (the job log says *Found tool in cache: node 24.22.1 x64*); downloaded and checksummed at build time. No secrets. |
+| `Dockerfile` | Ubuntu 24.04, git, curl, jq, the Azure Pipelines agent (v4) and Node 24.22.3 in the agent's tool cache, where `UseNode@1` finds it instead of downloading it (the job log says *Found tool in cache: node 24.22.3 x64*); downloaded and checksummed at build time. No secrets. |
 | `start.sh` | The container's entrypoint, adapted from Microsoft's [Run a self-hosted agent in Docker](https://learn.microsoft.com/en-us/azure/devops/pipelines/agents/docker) script: registers the agent, runs **one** job, removes the agent. |
 | `run-agent.ps1` | The supervisor on Windows: reads the saved token (or asks for it), then runs one fresh container per job. |
 | `save-agent-token.ps1` | Windows: asks for the token once and saves it so only this user on this machine can read it (DPAPI). |

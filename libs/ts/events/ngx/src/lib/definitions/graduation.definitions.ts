@@ -1,6 +1,11 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 import esri = __esri;
 import { EventPopups } from '../modules/popups/popups';
 
@@ -117,3 +122,78 @@ export const GraduationColdLayerSources: LayerSource[] = [
     } as unknown as FeatureNative
   }
 ];
+
+/**
+ * One commencement day, as the builder offers it. Each one is written out, because the facts differ legitimately
+ * between seasons: `value` is midnight in College Station, so 05:00Z in May (CDT) and 06:00Z in December (CST), and
+ * the weekday labels are the registrar's. A factory that derived them would have to be right about both (#2599, #2759).
+ */
+export interface GraduationDate {
+  eventDate: string;
+  value: string;
+  label: string;
+}
+
+/**
+ * A commencement map, Fall's or Spring's, from its season and its days (#2599). The two drew the same layers, offered
+ * the same choice and said the same things in their own season's name; each file now holds only its dates, so a new
+ * option or wording is made here once. `move-out.definitions.ts`'s `moveOutPeriod` is the same pattern.
+ */
+export function graduationMap(season: 'Fall' | 'Spring', dates: ReadonlyArray<GraduationDate>) {
+  const key = season.toLowerCase();
+
+  const configuration: EventConfiguration = {
+    id: `graduation-${key}`,
+    name: `${season} Commencement Ceremony`,
+    applicationName: `${season} Commencement Transportation Map`,
+    shortApplicationName: `${season} Commencement Map`,
+    introductionText: `Get the best transportation and parking information for the ${key} commencement ceremonies.`,
+    eventDates: dates.map(({ eventDate }) => eventDate),
+    scheduleUrl: 'https://graduation.tamu.edu/ceremony-information/index.html',
+    mapCenter: [-96.34458, 30.60629],
+    zoom: 16
+  };
+
+  const options: SpecialEventOptions = [
+    {
+      value: 'date',
+      description:
+        'Please select the day of your commencement or commissioning ceremony to provide the most accurate transportation and parking information.',
+      shortDescription: 'Event Day',
+      label: 'Event Day',
+      choices: dates.map(({ value, label }) => ({ value, label })),
+      effects: {
+        layers: [
+          {
+            layerId: GRADUATION_LAYERS.GRADUATION_EVENT_PARKING_LOTS,
+            conversions: dates.map(({ value }) => ({
+              input: value,
+              propOverrides: {
+                visible: true
+              }
+            }))
+          }
+        ]
+      }
+    }
+  ];
+
+  const event: AggiemapCustomMapConfiguration = {
+    type: 'special-event',
+    configuration,
+    options,
+    sources: GraduationColdLayerSources,
+    references: GRADUATION_LAYERS,
+    discover: {
+      id: configuration.id,
+      name: configuration.name,
+      description: `Transportation and parking information for ${key} graduation ceremonies.`,
+      source: 'internal',
+      type: 'event',
+      columnKey: key,
+      keywords: ['graduation', 'commencement', 'parking', 'transportation']
+    }
+  };
+
+  return { configuration, options, event };
+}

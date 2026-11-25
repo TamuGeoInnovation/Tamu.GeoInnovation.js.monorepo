@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Observable, filter, map, mergeMap, of, pipe, shareReplay, switchMap, toArray } from 'rxjs';
 
 import { Sponsor } from '@tamu-gisc/gisday/platform/data-api';
@@ -11,7 +11,6 @@ import { AssetUrlPipe, activeSponsors, sponsorLogoClass } from '@tamu-gisc/gisda
   selector: 'tamu-gisc-sponsors-main',
   templateUrl: './sponsors-main.component.html',
   styleUrls: ['./sponsors-main.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterLink, AsyncPipe, AssetUrlPipe]
 })
 export class SponsorsMainComponent implements OnInit {

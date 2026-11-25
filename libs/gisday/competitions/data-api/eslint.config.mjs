@@ -12,7 +12,7 @@ export default [
     languageOptions: {
       parserOptions: {
         // A file is typed by the first of these that includes it: the library's code by tsconfig.lib.json, which has
-        // strictNullChecks (#3495), and the specs and jest.config.ts by tsconfig.spec.json, which does not.
+        // strictNullChecks (#3495), and the specs by tsconfig.spec.json, which does not.
         project: [
           'libs/gisday/competitions/data-api/tsconfig.lib.json',
           'libs/gisday/competitions/data-api/tsconfig.spec.json'
@@ -29,9 +29,9 @@ export default [
     }
   },
   {
-    // The specs and jest.config.ts are typed without strictNullChecks (tsconfig.spec.json would report 12 errors in the
+    // The specs are typed without strictNullChecks (tsconfig.spec.json would report 12 errors in the
     // specs with it), and the rule cannot tell a condition that can never be false without it.
-    files: ['**/*.spec.ts', 'jest.config.ts'],
+    files: ['**/*.spec.ts'],
     rules: {
       '@typescript-eslint/no-unnecessary-condition': 'off'
     }

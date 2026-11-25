@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { DiscoveryService } from '../../services/discovery/discovery.service';
+import { discoveryServiceStub } from '../../services/discovery/discovery.service.stub';
 import { of } from 'rxjs';
 
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
@@ -23,11 +24,7 @@ describe('EventMapsComponent quick links', () => {
     { name: 'Visitor Parking', type: 'parking', id: 'visitor-parking' }
   ];
 
-  const discoveryStub = {
-    getQuickLinkApplications: () => quickLinkApps,
-    getVisibleInternalDiscoverApplications: () => [],
-    getInternalDiscoverApplications: () => []
-  };
+  const discoveryStub = discoveryServiceStub({ getQuickLinkApplications: () => quickLinkApps });
 
   const render = async (data: Record<string, unknown>): Promise<ComponentFixture<EventMapsComponent>> => {
     await TestBed.configureTestingModule({
@@ -100,11 +97,9 @@ describe('EventMapsComponent development-only maps', () => {
     visible: false
   };
 
-  const discoveryStub = {
-    getQuickLinkApplications: () => [],
-    getVisibleInternalDiscoverApplications: () => [published],
+  const discoveryStub = discoveryServiceStub({
     getInternalDiscoverApplications: () => [published, developmentOnly]
-  };
+  });
 
   const listed = async (isTesting: boolean): Promise<string[]> => {
     await TestBed.configureTestingModule({
@@ -135,12 +130,13 @@ describe('EventMapsComponent development-only maps', () => {
     expect(await listed(false)).toEqual(['Galveston']);
   });
 
-  it('takes its maps from the unfiltered list, so the environment decides and not the list', () => {
+  it('asks for the listing for this environment, not the production-only list', () => {
     // The regression was asking the service for the already-filtered list. Asserted directly because a
-    // component that went back to it would still pass the test above on a development host.
+    // component that went back to it would still pass the test above on a development host. The method it
+    // must call is now `listedApplications(isTesting)`, the one rule every listing page shares (#3470).
     const source = EventMapsComponent.prototype.ngOnInit.toString();
 
-    expect(source).toContain('getInternalDiscoverApplications');
+    expect(source).toContain('listedApplications');
     expect(source).not.toContain('getVisibleInternalDiscoverApplications');
   });
 });

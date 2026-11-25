@@ -135,12 +135,27 @@ fi
 
 # The check this script exists for. Promoting a build that was never tested on dev is the failure
 # worth catching, and it is invisible without this.
-if [ "$env_name" = "prod" ] && [ "$force" != true ]; then
-  if ! git tag --points-at "$sha" | grep -q '^dev-'; then
+forced_past=""
+if [ "$env_name" = "prod" ] && ! git tag --points-at "$sha" | grep -q '^dev-'; then
+  if [ "$force" != true ]; then
     echo "error: $short carries no dev-* tag, so nothing records it having been tested on dev." >&2
     echo "       Tag the dev build first, or pass --force '<reason>' if this is deliberate." >&2
     exit 1
   fi
+  forced_past="the dev-tag check (no dev-* tag)"
+fi
+
+# The same build promoted twice (#1215). A release cut and then abandoned leaves its dev tag as the day's newest, so a
+# later `prod` with no sha resolved to a build already on production and recorded it as a second release. A genuine
+# redeploy of the same build is worth recording, so it is allowed, but it has to say so.
+already=$(git tag --points-at "$sha" | grep '^prod-' | sort -V | paste -sd, - | sed 's/,/, /g' || true)
+if [ "$env_name" = "prod" ] && [ -n "$already" ]; then
+  if [ "$force" != true ]; then
+    echo "error: $short is already released to production as $already." >&2
+    echo "       If this is a deliberate redeploy of the same build, pass --force '<reason>'." >&2
+    exit 1
+  fi
+  forced_past="${forced_past:+$forced_past; }the already-released check (already released to production as $already)"
 fi
 
 # A forced tag says so in its first line, so it is legible as forced in `git tag -n` and in any log
@@ -150,7 +165,7 @@ message=$(printf '%s build, %s%s\n\n%s\n%s' \
   "$([ "$force" = true ] && echo ' (FORCED)' || true)" "$short" "$subject")
 
 if [ "$force" = true ]; then
-  message=$(printf '%s\n\nForced past the dev-tag check. Reason given: %s' "$message" "$force_reason")
+  message=$(printf '%s\n\nForced past %s. Reason given: %s' "$message" "${forced_past:-no check (none failed)}" "$force_reason")
 fi
 
 git tag -a "$tag" "$sha" -m "$message"
