@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **12:07 AM Central, 25 November 2026**. A listener; job: testing.
+Last written **12:12 AM Central, 25 November 2026**. A listener; job: testing.
 
 ## g203 is done, not unstarted (12:07 AM Central, Wednesday 25 November 2026)
 
@@ -140,7 +140,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 ## Running now
 
-**Idle, listening**, as of 12:03 AM Central, 25 November. Every queued batch is reported; the last was a24.
+**Batch a26** (aggiemap, High: #3539, a check that says "deploy a newer build" instead of failing), started 12:12 AM Central, 25 November. Taken before g204 (Medium), which follows it. **My a24 "regression" was wrong:** the tailgating checks merged with their fix (PR 3511) and the deployed builds predate it.
 
 ## Finished
 
