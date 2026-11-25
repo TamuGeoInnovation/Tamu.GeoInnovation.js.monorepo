@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **1:11 AM Central, 25 November 2026**. A listener; job: testing.
+Last written **1:23 AM Central, 25 November 2026**. A listener; job: testing.
 
 ## g203 is done, not unstarted (12:07 AM Central, Wednesday 25 November 2026)
 
@@ -140,7 +140,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 ## Running now
 
-**Batch g206** (gisday, Medium: #3552's before and after images), starting 1:11 AM Central, 25 November.
+**Batch g206** (gisday, Medium: #3552's before and after images), starting 1:11 AM Central, 25 November. **1:23 AM:** images taken: the home page and About read "November 15-19" in Pacific before the fix and "16-20" after (Central unchanged); committed to `fix/3552-central-date-pipe` as `5514f423e` with the release entry. Admin, Seasons not taken: the dev tenant showed its consent screen, not accepted. `pre-pr-check` running.
 
 ## Finished
 
