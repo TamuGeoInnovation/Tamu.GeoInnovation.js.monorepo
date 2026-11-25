@@ -54,8 +54,6 @@ updates:
           - '@esri/*'
       testing:
         patterns:
-          - 'jest*'
-          - '@jest/*'
           - 'vitest*'
           - '@vitest/*'
           - '@playwright/*'

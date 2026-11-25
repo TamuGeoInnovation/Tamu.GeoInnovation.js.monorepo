@@ -10,9 +10,8 @@
     "apps/*/src/database/migrations/*.ts",
     "apps/*/src/database/data-source.ts",
     "libs/**/*.spec.ts",
-    "libs/**/src/test-setup.ts",
-    "{apps,libs}/**/{jest.config.ts,vitest.config.mts,eslint.config.mjs}",
-    "{jest.preset.js,vitest.preset.mts,eslint.config.mjs,serve-dist.js,decorate-angular-cli.js,playwright*.config.ts}",
+    "{apps,libs}/**/{vitest.config.mts,eslint.config.mjs}",
+    "{vitest.preset.mts,eslint.config.mjs,serve-dist.js,decorate-angular-cli.js,playwright*.config.ts}",
     "tools/**/*.{js,mjs,ts}",
     "scripts/**/*.{js,mjs,ts}",
     "test/**/*.ts"
