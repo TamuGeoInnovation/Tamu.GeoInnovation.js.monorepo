@@ -1,5 +1,56 @@
 # work-lab-leila: current tasks
 
+## Batch a24 (aggiemap: #3369, measure the drawing budget under real load - the thing your own a18 asked for) (High) - **now**
+
+Your a18 report found the mechanism and recommended measuring before changing anything (Q-a18-2, option **c**). The
+maintainer's answer is: do that measurement. This is it, and it is the whole batch.
+
+[#3369](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3369): two checks have failed as
+"the map never finished drawing" in every tier for days - break-summer's Lot 100g popup and indoor-track-parking's
+layer order. Your a18 measurement on a **quiet** machine put indoor-track-parking at **16 to 19 seconds**, nowhere
+near its budget, which is exactly why a quiet-machine number cannot tell a budget from a bug.
+
+### What a18 established, so you do not redo it
+
+- `layer-order` and `selection` give **90 s from `domcontentloaded`** for everything.
+- `popup` and `building-clicks` give **90 s to be ready, then a fresh 60 s to finish drawing** - up to 150 s.
+- So a map taking about 100 s **passes the popup checks and fails `layer-order`**, reported as "never finished drawing
+  both layers", which reads like a drawing bug.
+
+### The measurement
+
+**Run the release tier**, which is the load these failures appear under, and record what the two failing checks
+actually take - not whether they pass.
+
+1. `test/smoke/aggiemap/run-local.sh development release`. About thirty minutes; let it run through rather than
+   stopping at the first failure.
+2. From that run, for **break-summer's Lot 100g popup** and **indoor-track-parking's layer order**: the elapsed time of
+   each, and whether each failed. If the suite's report gives per-test durations, use them; if not, say so and take
+   what it does give.
+3. **The same two, run alone against dev immediately afterwards**, as a18 did, so the pair is comparable: loaded
+   against quiet, same machine, same evening.
+
+**What the numbers have to answer:** does the map finish drawing at all under load, and if so, at what time relative to
+the 90 s budget? A map that finishes at 95 s is a budget that is too small. A map that never finishes, however long it
+is given, is a bug in the application or the service, and that is a different issue.
+
+**Report the numbers whichever way they come out.** A measurement that contradicts the budget theory is worth as much
+as one that confirms it, and more than a fix applied on a hunch.
+
+### What not to do
+
+**Do not change a timeout in this batch.** a18's branch deliberately kept every budget as it was, and changing one
+before the measurement is the thing the maintainer declined. If the numbers make the answer obvious, say what you would
+change and why, and it becomes its own small pull request.
+
+### Reporting
+
+No branch unless you find something that needs one. `work-lab-leila/reports/2026-11-25-a24.md`: the release tier's
+result, the two durations loaded, the two quiet, the machine's state during each, and what you conclude.
+
+**Questions come to me** (`work (aggiemap)`), under **Questions for the director (aggiemap)**, with options and a
+recommendation.
+
 ## Batch g203 (workspace: #1479, the remaining NestJS projects off Jest; 25 November 2026, about 11:20 PM Central, from `work (gisday)`) (High) - **now**
 
 g202 received, thank you, and well done on finding SWC's metadata wrong before shipping it. **Q-g202-1: decided (a)**, Vite's own transform with
