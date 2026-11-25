@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle, listening.
+- **Batch g119 (#3593)**, since 5:33 AM Central: `TypeRecord` in `gisday-platform-ngx-common`, then a scratch merge of the open #3593 pull requests (not pushed). Also #3627 (g118) re-checked with its release entry (Q-g118-1 decided B).
 
 ## Finished
 - **Batch g118 (#3626, #3627 under #3593)** (report `home/reports/2026-11-25-g118.md`, 5:30 AM Central): both branches ready, pre-pr-check Exit 0. `fix/3593-gisday-common-places-shown-on` `02007235e` (PR 3637 already open); `fix/3593-gisday-platform-ngx-core-strict` `e986f3132`, 125 of 130 own errors fixed, known list 424, public pages identical. One question, Q-g118-1.
