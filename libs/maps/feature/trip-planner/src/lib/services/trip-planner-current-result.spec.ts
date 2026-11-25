@@ -57,13 +57,9 @@ describe('TripPlannerService, the current trip result', () => {
     service['_TravelOptions'].next({ travel_mode: 1 });
 
     // Three components showing the result at once, as the directions page has.
-    for (const component of [
-      TripPlannerDirectionsComponent,
-      TripPlannerDirectionsComponent,
-      TripPlannerDirectionsActionsComponent
-    ]) {
-      TestBed.createComponent(component).detectChanges();
-    }
+    TestBed.createComponent(TripPlannerDirectionsComponent).detectChanges();
+    TestBed.createComponent(TripPlannerDirectionsComponent).detectChanges();
+    TestBed.createComponent(TripPlannerDirectionsActionsComponent).detectChanges();
 
     drawn.mockClear();
   });
