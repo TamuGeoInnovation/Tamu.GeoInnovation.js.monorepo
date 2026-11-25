@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **3:36 AM Central, 25 November 2026**. A listener; job: testing.
+Last written **3:44 AM Central, 25 November 2026**. A listener; job: testing.
 
 ## g203 is done, not unstarted (12:07 AM Central, Wednesday 25 November 2026)
 
@@ -140,7 +140,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 ## Running now
 
-**Batch a30** (aggiemap: #3487, one current trip result instead of five pipes), started 3:36 AM Central, 25 November. g214, a31 to a33 queued.
+**Batch a30** (aggiemap: #3487, one current trip result instead of five pipes), started 3:36 AM Central, 25 November. g214, a31 to a33 queued. **3:44 AM:** still true (five copies, the drawing tap); currentResult$ on the service, shareReplay'd; the redraw count red first (3 draws with three components) and now 1; pluck gone from the five. `pre-pr-check` (affected) running.
 
 ## Finished
 
