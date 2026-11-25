@@ -1,4 +1,6 @@
-import { Subject } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
+
+import { Angulartics2, EventTrack } from 'angulartics2';
 
 import { stampedEvent, trackEvent } from './track-event';
 
@@ -21,8 +23,9 @@ describe('trackEvent', () => {
     vi.restoreAllMocks();
   });
 
-  function sent(send: (analytics: { eventTrack: Subject<unknown> }) => void) {
-    const analytics = { eventTrack: new Subject<unknown>() };
+  function sent(send: (analytics: Pick<Angulartics2, 'eventTrack'>) => void) {
+    // Angulartics2's own type for it.
+    const analytics = { eventTrack: new ReplaySubject<Partial<EventTrack>>() };
     const events: Array<unknown> = [];
     analytics.eventTrack.subscribe((e) => events.push(e));
     send(analytics);
