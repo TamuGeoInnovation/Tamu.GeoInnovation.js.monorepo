@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch a35 (#2600)**, since 6:23 AM Central: one `satelliteCampus` builder for the ten campus maps, branch `refactor/2600-one-satellite-campus-builder`. a33 held until PR 3587 merges.
+- Nothing. Idle, listening. a33 held until PR 3587 merges.
 
 ## Finished
+- **Batch a35 (#2600)** (report `home/reports/2026-11-25-a35.md`, 6:46 AM Central): PR 3654 open, pre-pr-check Exit 0 on affected. Ten satellite campuses built by `satelliteCampus()` in `campus/`; every resolved definition unchanged (snapshot spec, proven able to fail).
 - **Batch g120 (#3643)** (report `home/reports/2026-11-25-g120.md`, 5:59 AM Central): `fix/3643-highschool-site-guard` `6380831a6` branch ready, pre-pr-check Exit 0. Red then green (UCGIS /highschool to /), txgisday.org portal unchanged; images and release entry. #3638 (PR 3645) not merged, so no skip removed.
 - **Batch g119 (#3641, #3593 measured)** (report `home/reports/2026-11-25-g119.md`, 5:48 AM Central): `fix/3593-gisday-type-record` `0f940630c` branch ready, pre-pr-check Exit 0. Every open #3593 PR merged in scratch (not pushed): `gisday-angular` strict errors 557 to 146; two merge-order facts (forms line off the known list; 3629 + #3627 clash). #3627 re-checked with its release entry, Exit 0 at `29e566214`.
 - **Batch g118 (#3626, #3627 under #3593)** (report `home/reports/2026-11-25-g118.md`, 5:30 AM Central): both branches ready, pre-pr-check Exit 0. `fix/3593-gisday-common-places-shown-on` `02007235e` (PR 3637 already open); `fix/3593-gisday-platform-ngx-core-strict` `e986f3132`, 125 of 130 own errors fixed, known list 424, public pages identical. One question, Q-g118-1.
