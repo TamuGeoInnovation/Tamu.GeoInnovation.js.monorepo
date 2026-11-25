@@ -5,7 +5,7 @@
 
 Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
-Last batch done: a25
+Last batch done: g29
 
 ## What this is
 
@@ -33,10 +33,11 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch g29 (#1479, the remaining non-Nest projects off Jest)**, started 12:45 AM Central.
-- **Next:** g30.
+- **Batch g30 (#1479, remove Jest)**, started 1:35 AM Central.
+- **Next:** g31, then a28.
 
 ## Finished
+- **Batch g29 (workspace: #1479)** (report `laptop/reports/2026-11-25-g29.md`): **branch ready: `chore/1479-vitest-geoservices`** (`91afded39`), **`chore/1479-vitest-mailroom`** (`3616500b2`), **`chore/1479-vitest-the-rest`** (`bcccc901c`); `pre-pr-check.sh` exit 0 each (with the issue filled in). Same tests before and after. Jest hid a slide-toggle error; fixed red first.
 - **Batch a25 (aggiemap: Node 24.22.3, #1218)** (report `laptop/reports/2026-11-25-a25.md`): **branch ready: `chore/1218-node-24.22.3-today`** (`da0daa9dc`), `pre-pr-check.sh` exit 0 (affected, `no-visible-change`), plus two real projects on 24.22.3. No conflicts; 5 newer 24.22.1 pins moved; the dev server reports `v24.22.3`. Filed #3545 (Medium). One question, Q-a25-1.
 - **Batch a14 (aggiemap: #2643, #3464)** (report `laptop/reports/2026-11-25-a14.md`): **nothing left to build**: PR 3537 merged my pushed commits at 12:03 AM. Both tests proven red on the unfixed code (3 and 2 failures). Noon images not taken (merged first); the bus timetable API answered 502.
 - **Batch a13 (aggiemap: #3337)** (report `laptop/reports/2026-11-24-a13.md`): **branch ready: `fix/3337-quoted-background`** (`1f2380f1c`), `pre-pr-check.sh` exit 0. The Light Pole GEOSAT logo was invisible (white on transparent, on white); now on `$aggie-maroon`. Lighting has no `img#geosat`, so its rule was left alone (Q-a13-1). Body beside the report.
