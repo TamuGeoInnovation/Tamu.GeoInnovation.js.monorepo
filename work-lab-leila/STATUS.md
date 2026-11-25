@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **9:27 AM Central, 25 November 2026**. A listener; job: testing.
+Last written **10:41 AM Central, 25 November 2026**. A listener; job: testing.
 
 ## g203 is done, not unstarted (12:07 AM Central, Wednesday 25 November 2026)
 
@@ -664,6 +664,7 @@ Nothing. Idle since 9:27 AM Central, 25 November; listening.
 
 ## Questions for the director (gisday)
 
+- **Q-g222-2 is now #3668** (10:41 AM Central, 25 November): the maintainer told me in chat to file it, worded without the details. Bug, High, GIS Day project, Todo. The list of routes is not on GitHub or in this branch; ask the maintainer for it. A batch to fix it is yours to write.
 1. **Running unattended on the TAMU AI key.** The $20 TAMU AI allowance lasted about 25 minutes on the Claude Code CLI,
    most of it apparently spent on 34 failed auto-mode safety checks. Auto mode's classifier cannot run through the TAMU
    gateway, so an allowlist, or skipping permissions, is the only way to run unattended on that key.
@@ -671,6 +672,7 @@ Nothing. Idle since 9:27 AM Central, 25 November; listening.
 ## Told directly
 - **8:20 AM Central, 24 November: "The student has logged off"; check in with the directors and say I am back and available for work.** Done: the pause is lifted here, the heartbeat says `idle`, and the Back section above says so.
 - **9:18 PM Central, 24 November:** "report to the directors that you are back online." Reported in STATUS and the heartbeat. The pause was not lifted.
+- **10:41 AM Central, 25 November:** "file one issue worded without the details" (Q-g222-2). Done: #3668.
 
 - **8:30 AM Central, 14 November: "start the gisday containers".** Done, after the reboot: `gisday-db` and `gisday-redis`, then `gisday-api`, then `gisday-dev`, with `docker start` (nothing recreated, no settings changed). The API logs "Nest application successfully started"; `/api/seasons` and `/api/season-days` answer 200, and the site on 4201 answers 200. `aggiemap-dev` is still stopped.
 
