@@ -29,8 +29,8 @@
     }
   </div>
   <div class="material-icons-container flex flex-row" id="action-links">
-    <a class="action-link" (click)="reset()"><span class="material-icons-outlined action centered">restart_alt</span>Reset</a>
-    <a class="action-link" (click)="fullResponse()"><span class="material-icons-outlined action centered">receipt_long</span>See all fields</a>
+    <a class="action-link" tabindex="0" role="button" (click)="reset()" (keydown.enter)="reset()" (keydown.space)="reset(); $event.preventDefault()"><span class="material-icons-outlined action centered">restart_alt</span>Reset</a>
+    <a class="action-link" tabindex="0" role="button" (click)="fullResponse()" (keydown.enter)="fullResponse()" (keydown.space)="fullResponse(); $event.preventDefault()"><span class="material-icons-outlined action centered">receipt_long</span>See all fields</a>
   </div>
 </div>
 }

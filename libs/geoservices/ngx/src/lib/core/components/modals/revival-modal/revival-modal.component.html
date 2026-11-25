@@ -23,7 +23,7 @@
 <p class="trailer-1">- The Geoservices Team</p>
 
 <div class="button-container">
-  <div class="button" (click)="dismiss()">Start Exploring</div>
+  <div class="button" tabindex="0" role="button" (click)="dismiss()" (keydown.enter)="dismiss()" (keydown.space)="dismiss(); $event.preventDefault()">Start Exploring</div>
 </div>
 
 <div class="divider"></div>

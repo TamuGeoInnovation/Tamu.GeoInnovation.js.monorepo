@@ -38,7 +38,7 @@ export default [
   {
     files: ['**/*.html'],
     rules: {
-      '@angular-eslint/template/prefer-control-flow': 'off',
+      '@angular-eslint/template/prefer-control-flow': 'off'
     }
   }
 ];
