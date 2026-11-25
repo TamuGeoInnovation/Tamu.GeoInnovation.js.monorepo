@@ -16,6 +16,7 @@ import {
   sidebarTabs
 } from './development-only';
 import { isDevelopmentUrl, smokeBaseUrl } from './gis-hosts';
+import { skipUntilDeployed } from './deployed';
 import { PROBE_GLOBAL, waitForMapReady } from './map-probe';
 
 /**
@@ -44,10 +45,21 @@ async function probeReady(page: Page): Promise<boolean> {
  */
 const SIDE_PANEL_MAPS = ['/map', '/events/tailgating/map'];
 
+/**
+ * The addresses here whose checks came with the change that made them true, and wait for a build carrying it (#3539):
+ * the event map's side panel and its trip options page, both #2758. Each skips, saying "deploy a newer build", only
+ * while the environment's newest tag predates that change.
+ */
+const WAITS_FOR: Record<string, string> = {
+  '/events/tailgating/map': '#2758',
+  '/events/tailgating/map/d/trip/options': '#2758'
+};
+
 test.describe(`development-only sections ${VISIBLE ? 'are offered here' : 'stay off this environment'}`, () => {
   for (const map of SIDE_PANEL_MAPS) {
     for (const section of DEVELOPMENT_ONLY_SECTIONS) {
       test(`${map}: the ${section} tab ${VISIBLE ? 'is offered' : 'is not offered'}`, async ({ page }) => {
+        if (WAITS_FOR[map]) skipUntilDeployed(WAITS_FOR[map]);
         await blockAnalytics(page);
         await page.goto(map);
 
@@ -71,6 +83,7 @@ test.describe('sections on every environment are offered here', () => {
   for (const map of SIDE_PANEL_MAPS) {
     for (const section of SECTIONS_ON_EVERY_ENVIRONMENT) {
       test(`${map}: the ${section} tab is offered`, async ({ page }) => {
+        if (WAITS_FOR[map]) skipUntilDeployed(WAITS_FOR[map]);
         await blockAnalytics(page);
         await page.goto(map);
 
@@ -122,6 +135,7 @@ test.describe(`development-only All Maps tiles ${VISIBLE ? 'are offered here' : 
 test.describe(`development-only pages ${VISIBLE ? 'open here' : 'go to the page above them on this environment'}`, () => {
   for (const [address, above] of Object.entries(DEVELOPMENT_ONLY_PAGES)) {
     test(`${address} ${VISIBLE ? 'opens' : `opens ${above}`}`, async ({ page }) => {
+      if (WAITS_FOR[address]) skipUntilDeployed(WAITS_FOR[address]);
       await blockAnalytics(page);
       await page.goto(address);
 
