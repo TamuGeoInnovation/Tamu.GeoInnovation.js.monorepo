@@ -120,7 +120,11 @@ export class AdminSubmissionsComponent implements OnInit {
 
         if (view === 'top-finishers') {
           return submissions.filter(
-            (s) => top.has(s.userGuid) && s.validationStatus !== COMPETITION_VALIDATION_STATUS.discarded
+            // A submission with no submitter is no one's top finish, as top.has(undefined) already answered (#3614).
+            (s) =>
+              s.userGuid !== undefined &&
+              top.has(s.userGuid) &&
+              s.validationStatus !== COMPETITION_VALIDATION_STATUS.discarded
           );
         }
 

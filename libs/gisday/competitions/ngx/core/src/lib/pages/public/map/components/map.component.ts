@@ -84,7 +84,13 @@ export class MapComponent implements OnInit {
         const url = `${api_url}/competitions/maps/seasons/active/user/${user.sub}?format=geojson`;
 
         return this.http.get<{ features?: Array<{ properties?: { guid?: string } }> }>(url).pipe(
-          map((collection) => ({ url, guids: (collection?.features ?? []).map((f) => f.properties?.guid) })),
+          map((collection) => ({
+            url,
+            // A feature without a guid is left out: it was an undefined in the list, which matches no submission (#3614).
+            guids: (collection?.features ?? [])
+              .map((f) => f.properties?.guid)
+              .filter((guid): guid is string => guid !== undefined)
+          })),
           catchError(() => of(undefined))
         );
       })
