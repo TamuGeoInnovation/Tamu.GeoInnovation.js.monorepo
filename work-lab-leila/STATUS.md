@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **2:37 AM Central, 25 November 2026**. A listener; job: testing.
+Last written **2:42 AM Central, 25 November 2026**. A listener; job: testing.
 
 ## g203 is done, not unstarted (12:07 AM Central, Wednesday 25 November 2026)
 
@@ -140,7 +140,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 ## Running now
 
-**Batch g210** (workspace: #3581, type-check every strict library with its own configuration), started 2:37 AM Central, 25 November. g211 queued after it.
+**Batch g210** (workspace: #3581, type-check every strict library with its own configuration), started 2:37 AM Central, 25 November. g211 queued after it. **2:42 AM:** `scripts/check-strict-libs.mjs` built on check-spec-types' helpers; 18 strict libraries measured, 8 listed, 2 unlisted (common-utils-string's 2 errors); red then green proven. `pre-pr-check` running.
 
 ## Finished
 
