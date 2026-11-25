@@ -1,4 +1,4 @@
-import { Component, forwardRef, ChangeDetectionStrategy, input, model, output } from '@angular/core';
+import { Component, forwardRef, ChangeDetectionStrategy, ChangeDetectorRef, inject, input, model, output } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
@@ -39,6 +39,8 @@ export class FileComponent implements ControlValueAccessor {
   public dataType: string | undefined;
 
   public fileExtension: string | undefined;
+
+  private readonly _changes = inject(ChangeDetectorRef);
 
   public get checked() {
     return this._value();
@@ -110,5 +112,9 @@ export class FileComponent implements ControlValueAccessor {
     this.dataType = undefined;
     this.fileExtension = undefined;
     this.fileSelected.emit(undefined);
+
+    // The template reads the plain fields above, not the value signal, so under zoneless (#1478) a reset called from an
+    // upload's response or a timer would leave the old name on screen. A reset from a click is redrawn either way.
+    this._changes.markForCheck();
   }
 }
