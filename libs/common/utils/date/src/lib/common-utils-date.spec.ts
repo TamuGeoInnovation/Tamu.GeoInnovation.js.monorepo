@@ -66,4 +66,18 @@ describe('timeStringForDate', () => {
     today.setHours(16, 0, 0, 0);
     expect(timeStringForDate(today)).toEqual('04:00 PM');
   });
+
+  // Noon was read as 12 AM and the hour after midnight as 00 AM, so a trip's step at noon said AM (#2643).
+  it.each([
+    [0, 5, '12:05 AM'],
+    [11, 59, '11:59 AM'],
+    [12, 0, '12:00 PM'],
+    [12, 30, '12:30 PM'],
+    [13, 0, '01:00 PM'],
+    [23, 59, '11:59 PM']
+  ])('should read %i:%i as %s', (hours, minutes, expected) => {
+    const today = new Date();
+    today.setHours(hours, minutes, 0, 0);
+    expect(timeStringForDate(today)).toEqual(expected);
+  });
 });
