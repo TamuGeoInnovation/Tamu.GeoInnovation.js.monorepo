@@ -33,7 +33,7 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch g32 (gisday: admin pages for g116)**, started 3:15 AM Central.
+- **Waiting for g32** (admin pages for g116): it starts once home says "branch ready" for `chore/1669-gisday-onpush`. At 3:20 AM Central the fork had no such branch and home no g116 report.
 
 ## Finished
 - **Batch g30 (workspace: #1479, remove Jest)** (report `laptop/reports/2026-11-25-g30.md`): **branch ready: `chore/1479-remove-jest`** (`41d0d96d2`), `pre-pr-check.sh` exit 0 (affected, with the issue filled in). Lock: 219 entries removed, 0 added, 0 changed; clean `npm ci`; 94 projects lint and test, 13 builds. Generators now `vitest-analog` (`vitest` is not a valid value). Q-g30-1.
