@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle, listening.
+- **Batch g120 (#3643)**, since 5:50 AM Central: the High School Portal guard on UCGIS's site, branch `fix/3643-highschool-site-guard`. a33 waits: #602's PR 3587 has not merged.
 
 ## Finished
 - **Batch g119 (#3641, #3593 measured)** (report `home/reports/2026-11-25-g119.md`, 5:48 AM Central): `fix/3593-gisday-type-record` `0f940630c` branch ready, pre-pr-check Exit 0. Every open #3593 PR merged in scratch (not pushed): `gisday-angular` strict errors 557 to 146; two merge-order facts (forms line off the known list; 3629 + #3627 clash). #3627 re-checked with its release entry, Exit 0 at `29e566214`.
