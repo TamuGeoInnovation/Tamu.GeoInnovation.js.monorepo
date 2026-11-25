@@ -657,7 +657,7 @@ reader — merged, on dev, not yet on production, and the address that will star
 
 **Fill in every field on the issue and the pull request, not only the title and body.** A field left
 empty drops the work out of the project board and the funding record just as surely as a missing
-issue does. Where a value is not known and not covered below, **ask the user before filing**; never
+issue does. Where a value is not known and not covered below (Priority is covered: estimate it), **ask the user before filing**; never
 leave a field empty silently. Say in your reply which values you chose. See #1112.
 
 | Issue field | Value |
@@ -665,7 +665,7 @@ leave a field empty silently. Say in your reply which values you chose. See #111
 | Assignee | `danielgoldbergtamu`, unless the user names someone else |
 | Type | Choose: **Bug** (worked, now broken or wrong), **Feature** (new capability), **Task** (docs, CI, tests, cleanup, investigation) |
 | Labels | Matching existing labels, e.g. `bug`, `documentation` |
-| Priority (organization issue field) | **Ask the user every time**: Urgent, High, Medium or Low |
+| Priority (organization issue field) | **Set it from your best estimate, and do not ask** (the maintainer, 25 November 2026): Urgent (production broken now), High (blocks other work, or a visible fault), Medium (a real fault, or a step of planned work), Low (tidying, nice to have). Say which you chose and why; he corrects any he disagrees with |
 | Project | AggieMap work: **Texas A&M Aggiemap**. GIS Day work: **GIS Day Angular + NestJS**. Repo-wide process, docs or CI: **both**. If unclear, ask |
 | Project Status | **Todo** when filed; **In Progress** when work starts |
 
