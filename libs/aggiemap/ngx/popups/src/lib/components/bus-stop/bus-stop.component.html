@@ -8,15 +8,10 @@
   }
 </div>
 <div class="popup-section">
-  <!-- Copy link to this stop -->
-  <tamu-gisc-copy-field [text]="shareUrl"></tamu-gisc-copy-field>
-  <!-- Development-only while routing is unpublished, like every other directions entry point (#1003). -->
-  <div class="button" (tamuGiscActivate)="startDirections('Bus stop ' + (data.attributes.stopname || ''))">Directions To Here</div>
-  <!--
-    The shared `.button` rather than plain text: with the directions button gone this is the
-    popup's only action, and it read as body copy.
-    -->
-  <a class="button" [href]="transportUrl" target="_blank" rel="noopener">View full schedule</a>
+  <!-- The schedule link follows "Directions To Here" as one more action, the shared `.button` rather than plain text. -->
+  <tamu-gisc-popup-footer [shareUrl]="shareUrl" (startDirections)="startDirections('Bus stop ' + (data.attributes.stopname || ''))">
+    <a class="button" [href]="transportUrl" target="_blank" rel="noopener">View full schedule</a>
+  </tamu-gisc-popup-footer>
 </div>
 }
 

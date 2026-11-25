@@ -7,12 +7,12 @@
     "@nx/angular:application": {
       "style": "scss",
       "linter": "eslint",
-      "unitTestRunner": "jest",
+      "unitTestRunner": "vitest-analog",
       "e2eTestRunner": "none"
     },
     "@nx/angular:library": {
       "linter": "eslint",
-      "unitTestRunner": "jest"
+      "unitTestRunner": "vitest-analog"
     },
     "@nx/angular:component": {
       "style": "scss",
@@ -105,29 +105,6 @@
           }
         ],
         "cache": true
-      },
-      {
-        "filter": {
-          "plugin": "@nx/jest/plugin"
-        },
-        "inputs": [
-          "default",
-          "^production",
-          "{workspaceRoot}/jest.preset.js",
-          "{workspaceRoot}/test/polyfills.ts",
-          {
-            "externalDependencies": ["jest", "ts-jest", "jest-preset-angular", "jest-junit"]
-          }
-        ],
-        "configurations": {
-          "ci": {
-            "ci": true,
-            "coverage": true
-          }
-        },
-        "options": {
-          "passWithNoTests": true
-        }
       }
     ]
   },
@@ -139,9 +116,7 @@
       "!{projectRoot}/eslint.config.mjs",
       "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
       "!{projectRoot}/tsconfig.spec.json",
-      "!{projectRoot}/jest.config.[jt]s",
-      "!{projectRoot}/vitest.config.mts",
-      "!{projectRoot}/src/test-setup.[jt]s"
+      "!{projectRoot}/vitest.config.mts"
     ]
   },
   "parallel": 1,
@@ -254,12 +229,6 @@
         "libs/ui-kits/ngx/qr-code/**/*",
         "libs/ui-kits/ngx/search/**/*"
       ]
-    },
-    {
-      "plugin": "@nx/jest/plugin",
-      "options": {
-        "targetName": "test"
-      }
     },
     {
       "plugin": "@nx/webpack/plugin",

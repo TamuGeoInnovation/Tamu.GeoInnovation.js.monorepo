@@ -63,7 +63,9 @@ for (const path of [
   '/competitions/vgi',
   '/app',
   '/seasons/2025/sessions',
-  '/wayback'
+  '/wayback',
+  // Texas A&M's High School Portal, under `tamu` (#3643).
+  '/highschool'
 ]) {
   test(`${path} goes to the homepage on the UCGIS site`, async ({ page }) => {
     await open(page, path);

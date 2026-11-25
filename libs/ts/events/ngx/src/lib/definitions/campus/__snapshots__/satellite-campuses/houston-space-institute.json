@@ -1,0 +1,239 @@
+{
+  "configuration": {
+    "applicationName": "Aggie Map - Houston Space Institute",
+    "buildingPopup": {
+      "abbreviation": "bldgabbr",
+      "address": {
+        "city": "city",
+        "state": "TX",
+        "street": "address",
+        "zip": "zip"
+      },
+      "layerId": "houston-space-institute-property-layer",
+      "number": "number",
+      "title": [
+        "bldgname",
+        "bldgabbr"
+      ]
+    },
+    "eventDates": [],
+    "hideLayerToggle": true,
+    "id": "houston-space-institute",
+    "introductionText": "Map of the Texas A&M University Houston Space Institute campus.",
+    "mapCenter": [
+      -95.100068,
+      29.556426
+    ],
+    "name": "Houston Space Institute",
+    "searchSources": [
+      {
+        "displayTemplate": "{attributes.bldgname} ({attributes.number})",
+        "featuresLocation": "features",
+        "name": "Property",
+        "popupComponent": "[EventPopups.CampusBuildingPopupComponent]",
+        "queryParams": {
+          "f": "json",
+          "outFields": "*",
+          "outSR": 4326,
+          "resultRecordCount": 5,
+          "returnGeometry": true,
+          "scoringWhere": {
+            "keys": [
+              "bldgname",
+              "bldgabbr"
+            ],
+            "operators": [
+              "LIKE",
+              "LIKE"
+            ],
+            "transformations": [
+              "UPPER",
+              "UPPER"
+            ],
+            "wildcards": [
+              "startsWith",
+              "startsWith"
+            ]
+          },
+          "spatialRel": "esriSpatialRelIntersects",
+          "where": {
+            "keys": [
+              "bldgname",
+              "bldgabbr",
+              "number"
+            ],
+            "operators": [
+              "LIKE",
+              "LIKE",
+              "LIKE"
+            ],
+            "transformations": [
+              "UPPER",
+              "UPPER",
+              "UPPER"
+            ],
+            "wildcards": [
+              "includes",
+              "includes",
+              "includes"
+            ]
+          }
+        },
+        "scoringKeys": [
+          "attributes.bldgabbr",
+          "attributes.number",
+          "attributes.bldgname"
+        ],
+        "searchActive": true,
+        "source": "houston-space-institute-property",
+        "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/HSI/FeatureServer/4",
+        "urlQueryParam": "bldg",
+        "urlQueryParamAliases": [
+          "abbrv"
+        ]
+      }
+    ],
+    "shortApplicationName": "Houston Space Institute",
+    "sidebarTabs": [
+      "features"
+    ],
+    "zoom": 17
+  },
+  "discover": {
+    "description": "Map of the Texas A&M University Houston Space Institute campus.",
+    "id": "houston-space-institute",
+    "mapType": "satellite-campus",
+    "name": "Houston Space Institute",
+    "source": "internal",
+    "thumbnail": "./assets/images/campus/houston-space-institute.jpg",
+    "type": "satellite-campus"
+  },
+  "options": [],
+  "references": {
+    "BASEMAP": "houston-space-institute-basemap-layer",
+    "CONSTRUCTION": "houston-space-institute-construction-layer",
+    "PROPERTY": "houston-space-institute-property-layer"
+  },
+  "sources": [
+    {
+      "id": "houston-space-institute-construction-layer",
+      "listMode": "hide",
+      "native": {
+        "labelsVisible": false,
+        "legendEnabled": false,
+        "popupEnabled": false,
+        "renderer": {
+          "symbol": {
+            "data": {
+              "symbol": {
+                "symbolLayers": [
+                  {
+                    "color": [
+                      0,
+                      0,
+                      0,
+                      255
+                    ],
+                    "enable": true,
+                    "type": "CIMSolidStroke",
+                    "width": 1
+                  },
+                  {
+                    "enable": true,
+                    "lineSymbol": {
+                      "symbolLayers": [
+                        {
+                          "color": [
+                            230,
+                            152,
+                            0,
+                            153
+                          ],
+                          "enable": true,
+                          "type": "CIMSolidStroke",
+                          "width": 1.5
+                        }
+                      ],
+                      "type": "CIMLineSymbol"
+                    },
+                    "rotation": 0,
+                    "separation": 12,
+                    "type": "CIMHatchFill"
+                  },
+                  {
+                    "enable": true,
+                    "lineSymbol": {
+                      "symbolLayers": [
+                        {
+                          "color": [
+                            230,
+                            152,
+                            0,
+                            153
+                          ],
+                          "enable": true,
+                          "type": "CIMSolidStroke",
+                          "width": 1.5
+                        }
+                      ],
+                      "type": "CIMLineSymbol"
+                    },
+                    "rotation": 90,
+                    "separation": 12,
+                    "type": "CIMHatchFill"
+                  }
+                ],
+                "type": "CIMPolygonSymbol"
+              },
+              "type": "CIMSymbolReference"
+            },
+            "type": "cim"
+          },
+          "type": "simple"
+        }
+      },
+      "title": "Construction",
+      "type": "feature",
+      "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/HSI/FeatureServer/5",
+      "visible": true
+    },
+    {
+      "essential": true,
+      "hiddenStyleLayers": [
+        "GIS.FCOR.HSI_Construction/1",
+        "GIS.FCOR.HSI_Construction/0"
+      ],
+      "id": "houston-space-institute-basemap-layer",
+      "listMode": "hide",
+      "title": "Houston Space Institute Basemap",
+      "type": "vector-tile",
+      "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/HSI/VectorTileServer",
+      "visible": true
+    },
+    {
+      "essential": true,
+      "id": "houston-space-institute-property-layer",
+      "listMode": "hide",
+      "native": {
+        "elevationInfo": {
+          "mode": "relative-to-ground",
+          "offset": 1
+        },
+        "labelsVisible": false,
+        "legendEnabled": false,
+        "maxScale": 0,
+        "minScale": 100000,
+        "outFields": [
+          "*"
+        ],
+        "popupEnabled": false
+      },
+      "popupComponent": "[EventPopups.CampusBuildingPopupComponent]",
+      "title": "Property",
+      "type": "feature",
+      "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/HSI/FeatureServer/4",
+      "visible": true
+    }
+  ],
+  "type": "general-map"
+}

@@ -2,3 +2,7 @@
   <div class="feature-style-1" tabindex="0">Visitor Parking Kiosk</div>
   <div class="feature-style-2" tabindex="0">Type: {{ data.attributes.Type }}</div>
 </div>
+
+<div class="popup-section">
+  <tamu-gisc-popup-footer [shareUrl]="shareUrl" (startDirections)="startDirections()"></tamu-gisc-popup-footer>
+</div>

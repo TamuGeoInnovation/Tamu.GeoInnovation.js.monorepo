@@ -55,7 +55,7 @@ export class SlideToggleComponent<Option extends object, Value>
     this._findActiveElement(this._value());
   }
 
-  public override onInitialValue(v: Value): void {
+  public override onInitialValue(v: Value | undefined): void {
     this._findActiveElement(v);
   }
 
@@ -65,7 +65,7 @@ export class SlideToggleComponent<Option extends object, Value>
     this._findActiveElement(t);
   }
 
-  private _findActiveElement(plainValue: Value) {
+  private _findActiveElement(plainValue: Value | undefined) {
     const toggleOptions = this.toggleOptions();
     if (plainValue !== null && toggleOptions) {
       const active = toggleOptions.find((option) => {

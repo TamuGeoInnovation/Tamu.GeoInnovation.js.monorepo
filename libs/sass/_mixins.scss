@@ -158,3 +158,23 @@
     outline-offset: $offset;
   }
 }
+
+// A form control's label that sits in its field and floats above it, made smaller, once the field has a value or focus
+// (the `.float` class). The textbox and the select had this block twice, with different offsets (#3482): a fix to one was a
+// fix to half. `$left` and `$top` place it at rest; `$z-index` and `$float-z-index` stack it at rest and floated.
+@mixin floating-label($left, $top, $z-index: 1, $float-z-index: -1) {
+  position: absolute;
+  color: #757575;
+  left: $left;
+  top: $top;
+  pointer-events: none;
+  z-index: $z-index;
+  will-change: transform;
+  @include transition(transform 0.2s, font-size 0.15s);
+
+  &.float {
+    transform: translate3d((0, -1.75rem, 0));
+    font-size: 0.85rem;
+    z-index: $float-z-index;
+  }
+}

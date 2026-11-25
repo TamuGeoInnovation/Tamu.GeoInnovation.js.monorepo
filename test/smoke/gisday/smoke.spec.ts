@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 
+import { gisdaySite, siteHas } from '../../../libs/gisday/common/src/lib/sites';
+
 /** Nx prefix for this workspace is `tamu-gisc`, so the root element is not the CLI default `app-root`. */
 const APP_ROOT = 'tamu-gisc-root';
 
@@ -107,6 +109,11 @@ test("a past year's Sessions page offers the organizations its sessions were hel
   request,
   baseURL
 }) => {
+  // A site without past years' pages (gisday.ucgis.org) sends `/seasons/<year>` home, whatever seasons its API has (#3638).
+  const site = gisdaySite(process.env['SMOKE_SITE'], new URL(baseURL ?? 'https://txgisday.org').hostname);
+
+  test.skip(!siteHas(site, 'pastYears'), "This site has no past years' pages (`pastYears` is off)");
+
   const api = new URL('/api/', baseURL).toString();
   const seasons = (await (await request.get(`${api}seasons`)).json()) as Array<{
     guid: string;
