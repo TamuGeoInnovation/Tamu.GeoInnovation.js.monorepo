@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **10:19 PM Central, 24 November 2026**. A listener; job: testing.
+Last written **10:40 PM Central, 24 November 2026**. A listener; job: testing.
 
 ## Taking work again: batch g201 (9:20 PM Central, Tuesday 24 November 2026)
 
@@ -130,6 +130,8 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 ## Running now
 
 **Batch g202** (gisday, High: #1977, the `data-api` libraries and `gisday-nest` off Jest with SWC), started 10:19 PM Central, 24 November. Then a20. Note: `scripts/pre-pr-check.sh` (#3508) is not on `development` yet, so "branch ready" still rests on `check-in-volume.sh` until it lands.
+
+- 10:40 PM: `chore/1977-gisday-vitest-data-api` is on the fork (`9dd37e2cf`), `check-in-volume.sh` `Exit 0`, the same 1,430 tests, 48.8 s on Jest to 8.7 s on Vitest. **Not with SWC:** SWC wrote the same wrong metadata as Vite, so it is Vite's transform with null checks off, plus four columns given their type; no new dependency. Now `gisday-angular`.
 
 ## Finished
 
