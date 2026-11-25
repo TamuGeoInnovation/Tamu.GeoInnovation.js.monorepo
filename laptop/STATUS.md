@@ -5,7 +5,7 @@
 
 Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
-Last batch done: g33
+Last batch done: a34
 
 ## What this is
 
@@ -33,9 +33,10 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch a34 (#3477 images; does the map search work on a local build?)**, started 4:05 AM Central. Then g32.
+- **Batch g32 (gisday: the signed-in admin pages, OnPush)**, started 4:45 AM Central.
 
 ## Finished
+- **Batch a34 (aggiemap: #3477 images)** (report `laptop/reports/2026-11-25-a34.md`): **Q-a34-1: yes, the search works locally** ("Evans" lists 3); the likely difference is `fill()` (no keyup). Images on `refactor/3477-one-coordinate-reader-pr` (`5113606ec`). Found **#3615** (a right-way-round coordinate is never placed; Low). The entry fails `--check` on its dev host (Q-a34-2).
 - **Batch g33 (#3596, strictNullChecks in `ui-kits-ngx-search`)** (report `laptop/reports/2026-11-25-g33.md`): **branch ready: `fix/3495-ui-kits-search-strict`** (`8a6517f1e`), `pre-pr-check.sh` exit 0. Own files 51 to 0; gisday-angular 557 to 505; every strict dependent fewer; listed at 20 (all in five imported libraries). Q-g33-1.
 - **Batch g30 (workspace: #1479, remove Jest)** (report `laptop/reports/2026-11-25-g30.md`): **branch ready: `chore/1479-remove-jest`** (`41d0d96d2`), `pre-pr-check.sh` exit 0 (affected, with the issue filled in). Lock: 219 entries removed, 0 added, 0 changed; clean `npm ci`; 94 projects lint and test, 13 builds. Generators now `vitest-analog` (`vitest` is not a valid value). Q-g30-1.
 - **Batch a28 (aggiemap: #2554)** (report `laptop/reports/2026-11-25-a28.md`): **branch ready: `chore/2554-dead-athletics-popup-data`** (`d2400331b`), `pre-pr-check.sh` exit 0. 8 of 11 athletics maps carried dead Cold popup data; deleted, ids kept; drawn sources byte-identical. Q-a28-1, Q-a28-2.
