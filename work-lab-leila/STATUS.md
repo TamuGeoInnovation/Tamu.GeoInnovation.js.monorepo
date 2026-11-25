@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **4:41 AM Central, 25 November 2026**. A listener; job: testing.
+Last written **4:45 AM Central, 25 November 2026**. A listener; job: testing.
 
 ## g203 is done, not unstarted (12:07 AM Central, Wednesday 25 November 2026)
 
@@ -140,7 +140,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 ## Running now
 
-Nothing: idle and listening since 4:41 AM Central, 25 November.
+**Batch g218** (workspace: #3593, strictNullChecks in ui-kits-ngx-layout-modal, split by component), started 4:45 AM Central, 25 November.
 
 ## Finished
 
