@@ -5,7 +5,7 @@
 
 Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
-Last batch done: g35
+Last batch done: a31
 
 ## What this is
 
@@ -33,9 +33,10 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch a31 (#3471, one way to walk a results list with the arrow keys)**, started 6:00 AM Central.
+- **Batch g36 (PR 3644's admin paths)**, started 6:50 AM Central.
 
 ## Finished
+- **Batch a31 (aggiemap: #3471)** (report `laptop/reports/2026-11-25-a31.md`): **branch ready: `refactor/3471-one-keyboard-navigation`** (`7394ac33c`), `pre-pr-check.sh` exit 0 (affected). Both map searches (the phone's too, by inheritance) on the shared directive with a new `keyboardNavigationWrap` option; keyboard identical before and after on desktop and phone; spec red on the naive switch. Helpers deleted.
 - **Batch g35 (gisday: #3636)** (report `laptop/reports/2026-11-25-g35.md`): **branch ready: `fix/3636-initial-survey-template`** (`c2bbd197a`), `pre-pr-check.sh` exit 0. `#noFeedback` is an `<ng-template>`: one heading, no console error; red first (both cases). Made-up survey questions render on both builds, so nothing more to file.
 - **Batch g34 (gisday: #3614 images)** (report `laptop/reports/2026-11-25-g34.md`): **images ready: #3614**, on `fix/3593-competitions-ngx-core-strict` (`c06ea148a`); fork raw URLs 200 (main repo 404 until the pull request). Before: no form and `TypeError ... reading 'length'`; after: all three questions, no error. Test question removed; model back to 487.
 - **Batch g32 (gisday: admin pages for #1669, #1478)** (report `laptop/reports/2026-11-25-g32.md`): **no difference** on OnPush or zoneless against development, across 17 admin lists (edit, save, list again) and home's check-first list. Filed two faults already on development: **#3635** (RSVP and submission types answer 501) and **#3636** (initial survey throws). RSVP checkbox, validate and Publish not exercised (said why).
