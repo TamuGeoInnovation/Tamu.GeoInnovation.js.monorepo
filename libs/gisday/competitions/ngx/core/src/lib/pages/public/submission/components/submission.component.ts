@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { CompetitionSeason } from '@tamu-gisc/gisday/competitions/data-api';
@@ -11,7 +11,6 @@ import { RouterLink } from '@angular/router';
   selector: 'tamu-gisc-submission-complete',
   templateUrl: './submission.component.html',
   styleUrls: ['./submission.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [SubmissionComponent_1, AsyncPipe, RouterLink]
 })
 export class SubmissionComponent implements OnInit {

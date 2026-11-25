@@ -6,7 +6,7 @@
 #
 # Machines here have no host node, so run it in the same image as everything else:
 #
-#   MSYS_NO_PATHCONV=1 docker run --rm -v "$PWD:/w" -w /w node:24.22.1 bash scripts/collate-release-notes.test.sh
+#   MSYS_NO_PATHCONV=1 docker run --rm -v "$PWD:/w" -w /w node:24.22.3 bash scripts/collate-release-notes.test.sh
 #
 # The case that matters: a GIS Day entry written without `app: gisday`. On 10 November 2026 the
 # script collated 23 of them into AggieMap's notes, and an AggieMap release read as though it had

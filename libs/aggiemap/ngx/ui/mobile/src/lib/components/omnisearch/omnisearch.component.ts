@@ -5,10 +5,9 @@ import { Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 
 import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
-import { EsriMapService } from '@tamu-gisc/maps/esri';
-import { TripPlannerService, TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
+import { SearchResultSelectionService, TripPlannerService, TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
-import { SearchSelection, AltSearchHelper } from '@tamu-gisc/ui-kits/ngx/search';
+import { SearchSelection } from '@tamu-gisc/ui-kits/ngx/search';
 
 import { SearchMobileComponent } from '@tamu-gisc/ui-kits/ngx/search';
 
@@ -27,7 +26,6 @@ export const TRIP_FROM_STOP_SEARCH = ['../../trip'];
   selector: 'tamu-gisc-omnisearch',
   templateUrl: './omnisearch.component.html',
   styleUrls: ['./omnisearch.component.scss'],
-  providers: [AltSearchHelper],
   imports: [SearchMobileComponent, BackdropComponent, AsyncPipe]
 })
 export class OmnisearchComponent implements OnInit, OnDestroy {
@@ -35,10 +33,9 @@ export class OmnisearchComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private history = inject(RouterHistoryService);
   private location = inject(Location);
-  private mapService = inject(EsriMapService);
   private plannerService = inject(TripPlannerService);
   private dragService = inject(DragService);
-  private helper = inject(AltSearchHelper);
+  private searchSelection = inject(SearchResultSelectionService);
 
   /**
    * Determines the backdrop visibility
@@ -141,15 +138,7 @@ export class OmnisearchComponent implements OnInit, OnDestroy {
 
       this.router.navigate(TRIP_FROM_STOP_SEARCH, { relativeTo: this.route });
     } else {
-      this.helper.handleSearchResultFeatureSelection(selected).subscribe((res) => {
-        const tPoint = TripPoint.from(res);
-
-        this.mapService.selectFeatures({
-          graphics: [tPoint.toEsriGraphic()],
-          shouldShowPopup: true,
-          popupComponent: res.result.breadcrumbs.source.popupComponent
-        });
-      });
+      this.searchSelection.show(selected);
       this.clearFocus();
     }
   }
