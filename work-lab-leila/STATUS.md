@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **11:29 PM Central, 24 November 2026**. A listener; job: testing.
+Last written **11:32 PM Central, 24 November 2026**. A listener; job: testing.
 
 ## Taking work again: batch g201 (9:20 PM Central, Tuesday 24 November 2026)
 
@@ -129,7 +129,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 ## Running now
 
-**Idle, listening**, as of 11:29 PM Central, 24 November. Every queued batch is reported: g201, a18, g202, a20, g203, a21 and a23 tonight.
+**Batch a24** (aggiemap, High: #3369, the drawing budget measured under the release tier), started 11:32 PM Central, 24 November. The release tier against dev runs for about 30 minutes.
 
 ## Finished
 
