@@ -5,6 +5,7 @@ import { expect, test } from './fixtures';
 import { MANIFEST_PATH, MapManifest } from './global-setup';
 import { blockAnalytics } from './analytics';
 import { developmentSectionsVisible } from './development-only';
+import { ProbeLayer, waitForMapDrawn, waitForMapReady } from './map-probe';
 
 /**
  * Every class of page works at phone width (#1331).
@@ -187,6 +188,144 @@ test.describe('on a phone, an event map', () => {
     }
 
     expect(l.y + l.height, 'the locate button should be above the Legend button').toBeLessThanOrEqual(g.y);
-    expect(Math.abs(l.x + l.width / 2 - (g.x + g.width / 2)), 'the locate button should be in the column of Legend').toBeLessThanOrEqual(4);
+    expect(
+      Math.abs(l.x + l.width / 2 - (g.x + g.width / 2)),
+      'the locate button should be in the column of Legend'
+    ).toBeLessThanOrEqual(4);
+  });
+});
+
+/** The layer the map draws a chosen feature into, and how many graphics it holds. */
+const SELECTION_LAYER_ID = 'selection-layer';
+
+function selected(layers: ProbeLayer[]): number {
+  const selection = layers.find((l) => l.id === SELECTION_LAYER_ID);
+
+  return Object.values(selection?.graphicTypes ?? {}).reduce((sum, count) => sum + count, 0);
+}
+
+/**
+ * On a phone, a selection can be cleared: the search box offers a clear control, and using it leaves no selection on
+ * the map and nothing in the box (#3655, for #71).
+ *
+ * #71 has been open since August 2020 and was confirmed on 25 November 2026: the phone's search box never shows its
+ * right-hand (clear) action, because the omnisearch does not give it one, and the phone's popup has no close control,
+ * so nothing on a phone clears a selection. Until #71 is fixed this is an expected failure. Everything up to the
+ * selection is asserted first, so the test is marked as failing only once it has reached what #71 is about; a search
+ * that never answered fails it for real. Playwright fails an expected failure that passes, so the day #71 is fixed the
+ * suite says so, and that pull request removes the mark.
+ */
+test.describe('on a phone, the main map', () => {
+  test.use({ viewport: { width: MOBILE_WIDTH, height: MOBILE_HEIGHT }, isMobile: true, hasTouch: true });
+
+  test('clears a chosen search result from the search box (#71)', async ({ page }) => {
+    test.setTimeout(180_000);
+    await blockAnalytics(page);
+    await page.goto('/map/m', { waitUntil: 'domcontentloaded' });
+
+    const input = page.getByPlaceholder('Tap to begin searching');
+
+    await expect(input, 'the phone map shows no search box').toBeVisible({ timeout: 90_000 });
+    await input.click();
+    await input.pressSequentially('Wehner', { delay: 80 });
+
+    const option = page.locator('.search-results-container').getByRole('option', { name: /^Wehner Building \(1510\)$/i });
+
+    await expect(option, 'searching "Wehner" on the phone did not list the Wehner Building').toBeVisible({
+      timeout: 20_000
+    });
+    await option.dispatchEvent('mousedown');
+
+    await waitForMapDrawn(page, 'choosing the Wehner Building on the phone selected nothing', {
+      until: (layers) => selected(layers) > 0
+    });
+    await expect(input, 'the search box should name the chosen building').not.toHaveValue('');
+
+    // Everything above is the set-up, and has to work. What follows is #71.
+    test.fail(true, '#71: the phone search box offers no way to clear a selection');
+
+    const clear = page.locator('tamu-gisc-search-mobile .action-icons.right');
+
+    await expect(clear, 'the phone search box offers no clear control').toBeVisible({ timeout: 10_000 });
+    await clear.dispatchEvent('mousedown');
+
+    await expect(input, 'clearing left text in the search box').toHaveValue('', { timeout: 10_000 });
+    await waitForMapDrawn(page, 'clearing left the building selected on the map', {
+      timeout: 15_000,
+      until: (layers) => selected(layers) === 0
+    });
+  });
+});
+
+/**
+ * On a short phone screen, the end of the sidebar's layer list can be reached, and the sidebar still closes (#3656,
+ * for #387).
+ *
+ * The height is what matters, not the width: at 375 by 812 the list fits. The panel is `height: 100vh` with no
+ * `overflow-y`, so it does not scroll itself; measured on dev on 25 November 2026, the page scrolls instead (95 px at
+ * 375 by 380), which brings the end of the list into view, and the sidebar then still closes. So in Chromium both
+ * halves of #387 work today, and this asserts what a person needs from them: the end of the list can be reached, and
+ * the sidebar can be closed afterwards. It does not prove a phone's browser does the same; #387 was reported on one.
+ * Closing by tapping beside it is also checked on its own, so a change to the scrolling cannot hide a broken close.
+ */
+test.describe('on a short phone screen, the sidebar', () => {
+  const SHORT = { width: MOBILE_WIDTH, height: 380 };
+
+  /**
+   * Where to tap beside the panel, and where to scroll over it: near the top. On a screen this short, notifications
+   * (an event map's "Map Available", the development build's "View as production") cover the middle and bottom, and a
+   * tap there closes a notification instead of reaching the sidebar.
+   */
+  const BESIDE = { x: SHORT.width - 20, y: 40 };
+  const OVER_LIST = { x: SHORT.width * 0.35, y: 100 };
+
+  test.use({ viewport: SHORT, isMobile: true, hasTouch: true });
+
+  const openLayers = async (page: Page) => {
+    await blockAnalytics(page);
+    await page.goto('/map/m/sidebar/layers', { waitUntil: 'domcontentloaded' });
+
+    const items = page.locator('tamu-gisc-mobile-sidebar tamu-gisc-layer-list-item');
+
+    await expect(items.first(), 'the phone sidebar lists no layers').toBeVisible({ timeout: 90_000 });
+    // As a person would: a tap in the first second, while the map is still starting, does not reach the sidebar.
+    await waitForMapReady(page, 'the map behind the phone sidebar never finished loading');
+
+    return items;
+  };
+
+  test('closes when tapped beside it', async ({ page }) => {
+    test.setTimeout(150_000);
+    await openLayers(page);
+
+    // The backdrop fills the screen beside the panel, which is 75% of its width.
+    await page.mouse.click(BESIDE.x, BESIDE.y);
+    await expect(page, 'tapping beside the sidebar did not close it').not.toHaveURL(/\/sidebar/, { timeout: 15_000 });
+  });
+
+  test('brings the end of its layer list into view, and still closes (#387)', async ({ page }) => {
+    test.setTimeout(150_000);
+
+    const items = await openLayers(page);
+    const last = items.last();
+    const below = async () =>
+      ((await last.boundingBox())?.y ?? 0) + ((await last.boundingBox())?.height ?? 0) - SHORT.height;
+
+    // The set-up: on this screen the list must be longer than the screen, or there is nothing to scroll.
+    expect(await below(), 'the layer list fits this screen, so it cannot show whether it scrolls').toBeGreaterThan(0);
+
+    // A person scrolls the list with a finger over it; a wheel over the panel is the same request to the page.
+    await page.mouse.move(OVER_LIST.x, OVER_LIST.y);
+    for (let i = 0; i < 10; i++) {
+      await page.mouse.wheel(0, 200);
+    }
+    await page.waitForTimeout(1_000);
+
+    expect(await below(), 'the last layer in the list is still below the screen after scrolling').toBeLessThanOrEqual(0);
+
+    await page.mouse.click(BESIDE.x, BESIDE.y);
+    await expect(page, 'after scrolling, tapping beside the sidebar did not close it').not.toHaveURL(/\/sidebar/, {
+      timeout: 15_000
+    });
   });
 });

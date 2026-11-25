@@ -63,6 +63,8 @@ export const wrapperRoutes: Routes = [
       },
       {
         path: 'highschool',
+        // Texas A&M's High School Portal: only on a site with `tamu` (#3643).
+        canActivate: [siteFeatureGuard('tamu')],
         loadChildren: () => import('../highschool/highschool.routes').then((m) => m.highschoolRoutes)
       },
       {

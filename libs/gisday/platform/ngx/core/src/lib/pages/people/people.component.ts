@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { GISDAY_SITE } from '@tamu-gisc/gisday/platform/ngx/common';
 import { RouterLink, RouterOutlet } from '@angular/router';
@@ -7,7 +7,6 @@ import { RouterLink, RouterOutlet } from '@angular/router';
   selector: 'tamu-gisc-people',
   templateUrl: './people.component.html',
   styleUrls: ['./people.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterOutlet, RouterLink]
 })
 export class PeopleComponent {

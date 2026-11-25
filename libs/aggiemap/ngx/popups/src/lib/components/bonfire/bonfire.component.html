@@ -14,5 +14,5 @@
 <div class="popup-section">
   <div [innerHTML]="$safeNavigationMigration(data?.attributes?.Description)  | markdownParse" class="trailer-2"></div>
 
-  <div class="button" (tamuGiscActivate)="startDirections()">Directions To Here</div>
+  <tamu-gisc-popup-footer [shareUrl]="shareUrl" (startDirections)="startDirections()"></tamu-gisc-popup-footer>
 </div>
