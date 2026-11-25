@@ -1,10 +1,11 @@
-import { anchorTicks, daysFrom, everyDay, LineChartOptions, relativeDayLabel } from '../../data/chart-data';
+import { anchorTicks, daysFrom, everyStep, LineChartOptions, relativeDayLabel } from '../../data/chart-data';
 
 /**
  * Draws the chart into `host` with amCharts 5 and resolves to what disposes of it. amCharts is imported here, and this
  * file is itself imported only when a chart is drawn, so a page without a chart does not load it.
  *
- * Every point sits at midnight UTC of its calendar day (see runningTotalByDay), so the chart reads dates in UTC.
+ * Every point sits at midnight UTC of its calendar day (see runningTotalByDay), or at its hour UTC of that day when the
+ * chart is by the hour (see countsByHourOver), so the chart reads dates in UTC.
  */
 export async function drawLineChart(host: HTMLElement, options: LineChartOptions): Promise<() => void> {
   const [am5, am5xy, { default: Animated }] = await Promise.all([
@@ -40,12 +41,15 @@ export async function drawLineChart(host: HTMLElement, options: LineChartOptions
   chart.leftAxesContainer.set('layout', root.verticalLayout);
 
   // The axis spans the data and every band, so a band still to come, such as next week's event, is shown. A point
-  // stands for its whole day, so the data's span ends at the end of its last day, or that day falls off the edge.
+  // stands for its whole day, or its whole hour (#3314), so the data's span ends at the end of its last, or that one
+  // falls off the edge.
   const DAY = 24 * 60 * 60 * 1000;
+  const hourly = options.interval === 'hour';
+  const STEP = hourly ? 60 * 60 * 1000 : DAY;
   const pointTimes = [...options.series.flatMap((s) => s.points), ...(options.bars?.points ?? [])].map((p) => p.x.getTime());
   const times = [
     ...pointTimes,
-    ...(pointTimes.length ? [Math.max(...pointTimes) + DAY] : []),
+    ...(pointTimes.length ? [Math.max(...pointTimes) + STEP] : []),
     ...options.bands.flatMap((b) => [b.from.getTime(), b.to.getTime()])
   ];
   const xAxis = chart.xAxes.push(
@@ -53,15 +57,23 @@ export async function drawLineChart(host: HTMLElement, options: LineChartOptions
       min: Math.min(...times),
       max: Math.max(...times),
       strictMinMax: true,
-      baseInterval: { timeUnit: 'day', count: 1 },
+      baseInterval: { timeUnit: hourly ? 'hour' : 'day', count: 1 },
       gridIntervals: [
+        ...(hourly
+          ? [
+              { timeUnit: 'hour' as const, count: 1 },
+              { timeUnit: 'hour' as const, count: 3 },
+              { timeUnit: 'hour' as const, count: 6 },
+              { timeUnit: 'hour' as const, count: 12 }
+            ]
+          : []),
         { timeUnit: 'day', count: 1 },
         { timeUnit: 'week', count: 1 },
         { timeUnit: 'month', count: 1 }
       ],
       renderer: am5xy.AxisRendererX.new(root, { minGridDistance: 55 }),
       tooltip: am5.Tooltip.new(root, {}),
-      tooltipDateFormat: 'EEE, MMM d'
+      tooltipDateFormat: hourly ? 'EEE, MMM d, h a' : 'EEE, MMM d'
     })
   );
 
@@ -70,6 +82,32 @@ export async function drawLineChart(host: HTMLElement, options: LineChartOptions
       formats['day'] = 'MMM d';
       formats['week'] = 'MMM d';
     }
+  }
+
+  // By the hour, an hour reads "9 AM", and each midnight its day, short enough for a phone's day-wide grid: the hover
+  // gives the weekday. Each label starts at its gridline rather than centring on it, since a day's first label is the
+  // chart's left edge, and the label at the right edge, the end of the last day, is left out: both were cut in half.
+  if (hourly) {
+    const formats = xAxis.get('dateFormats');
+    const changes = xAxis.get('periodChangeDateFormats');
+
+    if (formats) {
+      formats['hour'] = 'h a';
+      formats['day'] = 'MMM d';
+    }
+
+    if (changes) {
+      changes['hour'] = 'MMM d';
+    }
+
+    const end = Math.max(...times);
+    const labels = xAxis.get('renderer').labels.template;
+    labels.setAll({ location: 0, centerX: 0, dx: 2 });
+    labels.adapters.add('forceHidden', (hidden, label) => {
+      const value = label.dataItem?.get('value' as never) as number | undefined;
+
+      return hidden || (value !== undefined && value >= end);
+    });
   }
 
   // Counted from an anchor (#3215), the axis reads in days before and after it, and its hover in that day too, since
@@ -132,10 +170,10 @@ export async function drawLineChart(host: HTMLElement, options: LineChartOptions
     const line = chart.series.push(options.steps ? am5xy.StepLineSeries.new(root, settings) : am5xy.LineSeries.new(root, settings));
     line.strokes.template.set('strokeWidth', 2);
     line.fills.template.setAll({ visible: true, fillOpacity: 0.08 });
-    // Every day has a value, so hovering a day nobody RSVP'd still reads the total.
+    // Every day (or hour) has a value, so hovering a day nobody RSVP'd still reads the total.
     const shift = (s.shiftDays ?? 0) * DAY;
     line.data.setAll(
-      (options.steps ? everyDay(s.points, 'hold') : s.points).map((p) => ({ x: p.x.getTime(), y: p.y, when: dayText(p.x.getTime() - shift) }))
+      (options.steps ? everyStep(s.points, 'hold', STEP) : s.points).map((p) => ({ x: p.x.getTime(), y: p.y, when: dayText(p.x.getTime() - shift) }))
     );
 
     return line;
@@ -168,7 +206,7 @@ export async function drawLineChart(host: HTMLElement, options: LineChartOptions
     );
     // At most 18 px wide: with only a few days to chart, a column would otherwise be as wide as its share of the chart.
     columns.columns.template.setAll({ width: am5.percent(70), maxWidth: 18, fillOpacity: 0.35, strokeOpacity: 0, cornerRadiusTL: 2, cornerRadiusTR: 2 });
-    columns.data.setAll(everyDay(bars.points, 'zero').map((p) => ({ x: p.x.getTime(), y: p.y })));
+    columns.data.setAll(everyStep(bars.points, 'zero', STEP).map((p) => ({ x: p.x.getTime(), y: p.y })));
   }
 
   // Drag across the chart to zoom into a period; the zoom-out button or a double-click shows it all again.

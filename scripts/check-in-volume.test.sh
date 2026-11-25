@@ -57,6 +57,15 @@ expect "a workflow with no list excludes nothing" "" "$(excluded_projects "$repo
 excluded_projects "$repo" HEAD test >/dev/null 2>&1
 expect "a missing workflow is an error" "1" "$?"
 
+# #1938, #2067: the build runs in the configuration build.yml builds with, read from it, so the two cannot drift apart.
+# Without it the seven apps whose defaultConfiguration is "" were built with no budgets and no AOT, and CI found what
+# this check let through.
+expect "build uses the configuration this repository's build.yml builds with" "production" \
+  "$(build_configuration "$(cd "$(dirname "$0")/.." && pwd)" HEAD)"
+expect "a build.yml whose build names no configuration gives none" "" "$(build_configuration "$repo" HEAD~1)"
+build_configuration "$repo" HEAD~9 >/dev/null 2>&1
+expect "a missing build.yml is an error" "1" "$?"
+
 # lint.yml's steps outside nx (#2286), in the shape of development on 24 October, plus the forms CI could grow.
 cat >"$repo/.github/workflows/lint.yml" <<'YML'
 jobs:
@@ -110,5 +119,74 @@ expect "a CHECK_PARALLEL that is not a number is refused, saying so" \
   "CHECK_PARALLEL must be a whole number above zero, not 'lots'." "$(CHECK_PARALLEL=lots check_limits 2>&1 >/dev/null)"
 CHECK_PARALLEL=0 check_limits >/dev/null 2>&1
 expect "a CHECK_PARALLEL of 0 is refused" "1" "$?"
+
+
+# The log's name, from the mode (#1855). Built from every project in a bug fix's list, fifteen names passed the length
+# Windows allows and the check died with "File name too long" before running anything.
+expect "affected names its log affected" "affected" "$(log_label affected)"
+expect "a short project list names its log as before" "gisday-nest-gisday-angular" "$(log_label gisday-nest,gisday-angular)"
+long="$(printf 'gisday-platform-ngx-common-%s,' 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)gisday-angular"
+expect "a long project list's name is at most 80 characters" "yes" "$([ "${#long}" -gt 80 ] && [ "$(log_label "$long" | wc -c)" -le 81 ] && echo yes || echo no)"
+expect "and still names its first project" "yes" "$(case "$(log_label "$long")" in gisday-platform-ngx-common-1-*) echo yes ;; *) echo no ;; esac)"
+expect "and says how many there are" "yes" "$(case "$(log_label "$long")" in *16-projects*) echo yes ;; *) echo no ;; esac)"
+other="${long%,gisday-angular},gisday-nest"
+expect "two long lists that differ get different names" "yes" "$([ "$(log_label "$long")" != "$(log_label "$other")" ] && echo yes || echo no)"
+
+# The free-space guard (#3400). A check that cannot run must say so itself, rather than arriving as
+# Docker's exit 125, which reads as a failing branch.
+free_space_check . 1 >/dev/null 2>&1
+expect "a disk with room lets the check start" "0" "$?"
+free_space_check . 99999999 >/dev/null 2>&1
+expect "a disk without room stops the check" "1" "$?"
+msg="$(free_space_check . 99999999 2>&1 >/dev/null)"
+case "$msg" in *"GiB free"*) r=yes ;; *) r=no ;; esac
+expect "the refusal names the free space" "yes" "$r"
+case "$msg" in *"99999999 GiB"*) r=yes ;; *) r=no ;; esac
+expect "the refusal names what the check needs" "yes" "$r"
+case "$msg" in *"tidy.sh"*) r=yes ;; *) r=no ;; esac
+expect "the refusal says what to do about it" "yes" "$r"
+CHECK_MIN_FREE_GB=99999999 free_space_check . >/dev/null 2>&1
+expect "CHECK_MIN_FREE_GB sets the threshold" "1" "$?"
+free_space_check /no/such/path/at/all >/dev/null 2>&1
+expect "an unreadable path stops the check rather than passing it" "1" "$?"
+
+# The sweep watermark sits above the refusal threshold, so a machine clears itself while it still has room
+# rather than at the moment a check is blocked (#3400).
+sweep_needed . 1 && r=sweep || r=no
+expect "a disk with room needs no sweep" "no" "$r"
+sweep_needed . 99999999 && r=sweep || r=no
+expect "a disk running low asks for a sweep" "sweep" "$r"
+CHECK_SWEEP_FREE_GB=99999999 sweep_needed . && r=sweep || r=no
+expect "CHECK_SWEEP_FREE_GB sets the watermark" "sweep" "$r"
+
+# The container is named after its volume, and a second check in the same volume is refused rather than run on top of
+# the first (#3406). Docker is replaced by a stub that answers from $states and records what it was asked to remove.
+states=""
+removed=""
+docker() {
+  case "$1" in
+    inspect)
+      local s
+      s="$(printf '%s\n' "$states" | awk -v n="${*: -1}" '$1 == n { print $2 }')"
+      [ -n "$s" ] && echo "$s" || return 1
+      ;;
+    rm) removed="$removed ${*: -1}" ;;
+  esac
+}
+container_free check-tamu-js-1 && r=free || r=refused
+expect "no container of that name: the check may start" "free" "$r"
+states="check-tamu-js-1 running"
+msg="$(container_free check-tamu-js-1 2>&1)" && r=free || r=refused
+expect "a running check in that volume refuses a second" "refused" "$r"
+case "$msg" in *"check-tamu-js-1"*"docker ps"*) r=yes ;; *) r=no ;; esac
+expect "and says which container, and how to see it" "yes" "$r"
+states="check-tamu-js-1 exited"
+removed=""
+container_free check-tamu-js-1 && r=free || r=refused
+expect "a stopped leftover does not block the check" "free" "$r"
+expect "and is removed first" " check-tamu-js-1" "$removed"
+unset -f docker
+grep -q -- '--name "$container"' "$(dirname "$0")/check-in-volume.sh" && r=yes || r=no
+expect "the check's docker run is named" "yes" "$r"
 
 exit "$failed"

@@ -64,7 +64,7 @@ import { CheckboxGroupComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 import { GISDAY_SITE } from '../../../../../site/site';
-import { injectBackToList } from '../../../admin-details-page';
+import { adminEntityForm } from '../../../admin-entity-form';
 import {
   sendJudgingEmail,
   sendProfileEmail,
@@ -98,8 +98,8 @@ import { FilesSource, SubmissionFilesComponent } from '../../../../submission-fi
 export class EventAddEditFormComponent implements OnInit {
   private readonly fb = inject(UntypedFormBuilder);
   private readonly at = inject(ActivatedRoute);
-  /** Leaves for the list once a save, create or delete has worked: the one the page was opened from (#2965). */
-  private readonly backToList = injectBackToList('/admin/events');
+  /** Its save and delete, and what they say (#3340, #3382). */
+  private readonly saves = adminEntityForm('Event', '/admin/events');
   private readonly seasonService = inject(SeasonService);
   private readonly speakerService = inject(SpeakerService);
   private readonly tagService = inject(TagService);
@@ -606,7 +606,7 @@ export class EventAddEditFormComponent implements OnInit {
     if (this.problems().length > 0) {
       this.ns.toast({
         id: 'event-incomplete',
-        title: this.type() === 'create' ? 'Create event' : 'Update Event',
+        title: this.type() === 'create' ? 'Create Event' : 'Update Event',
         message: 'The event was not saved. See what is missing above the buttons.'
       });
 
@@ -621,24 +621,7 @@ export class EventAddEditFormComponent implements OnInit {
   }
 
   public deleteEntity() {
-    this.eventService.deleteEntity(this.form.getRawValue().guid).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'event-delete-success',
-          title: 'Delete event',
-          message: `Event was successfully deleted.`
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'event-delete-failed',
-          title: 'Delete event',
-          message: serverMessage(err, `Error deleting event: ${err.status}`)
-        });
-      }
-    });
+    this.saves.save('delete', this.eventService.deleteEntity(this.form.getRawValue().guid));
   }
 
   /**
@@ -663,51 +646,13 @@ export class EventAddEditFormComponent implements OnInit {
   private _updateEntity() {
     const rawValue = this.payload();
 
-    this.eventService.updateEntity(rawValue.guid, rawValue).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'event-update-success',
-          title: 'Update Event',
-          message: `Event was successfully updated.`
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'event-update-failed',
-          title: 'Update Event',
-          message: serverMessage(err, `Error updating event: ${err.status}`)
-        });
-      }
-    });
+    this.saves.save('update', this.eventService.updateEntity(rawValue.guid, rawValue));
   }
 
   private _createEntity() {
     const rawValue = this.payload();
 
-    this.eventService.createEntity(rawValue).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'event-create-success',
-          title: 'Create event',
-          message: `Event was successfully created.`
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'event-create-failed',
-          title: 'Create event',
-          message: serverMessage(err, `Error creating event: ${err.status}`)
-        });
-      }
-    });
-  }
-
-  private _navigateBack() {
-    this.backToList();
+    this.saves.save('create', this.eventService.createEntity(rawValue));
   }
 
   private _defaultTimeFromSelectedEvent$() {

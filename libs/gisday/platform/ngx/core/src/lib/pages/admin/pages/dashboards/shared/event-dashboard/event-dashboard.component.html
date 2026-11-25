@@ -1,0 +1,44 @@
+<div class="form">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">{{ words.title }}</div>
+      <div class="form-section-actions">
+        <tamu-gisc-select class="post-1" placeholder="Season" [floatLabel]="false" [data]="seasons$ | async" displayTemplate="year" valueTemplate="guid" [value]="(selectedSeason$ | async)?.guid" (changed)="setSeason($event)"></tamu-gisc-select>
+      </div>
+    </div>
+
+    <div class="form-section-body">
+      @if (failed()) {
+      <p class="error">{{ refusal() ?? words.readError }}</p>
+      } @else if (dashboard(); as view) {
+      <p class="dashboard-summary"><strong>{{ totals().total }}</strong> {{ summary(view, totals().total) }}</p>
+
+      <h3 class="dashboard-heading">{{ words.overTime }}</h3>
+      <p class="dashboard-note">{{ words.chartNote }} {{ expandedEvent() ? words.chartSecondLine : words.chartOpenOne }}</p>
+      @if (comparison(); as compared) {
+      <tamu-gisc-season-comparison [comparison]="compared"></tamu-gisc-season-comparison>
+      }
+      <tamu-gisc-line-chart [series]="chart().series" [anchor]="chart().anchor" [bars]="daily()" [bands]="bands()" [steps]="true" [unit]="words.chartUnit" [label]="words.chartLabel"></tamu-gisc-line-chart>
+
+      @if (words.hourly; as byHour) {
+      <h3 class="dashboard-heading">{{ byHour.heading }}</h3>
+      <p class="dashboard-note">{{ byHour.note }} {{ expandedEvent() ? words.chartSecondLine : words.chartOpenOne }}</p>
+      <tamu-gisc-line-chart [series]="hourly()" [steps]="true" interval="hour" [unit]="words.chartUnit" [label]="byHour.label"></tamu-gisc-line-chart>
+      }
+
+      <h3 class="dashboard-heading">{{ words.byHeading }}</h3>
+      @if (view.events.length > 0) {
+      <p class="dashboard-note">{{ words.tableNote }}</p>
+      <tamu-gisc-dashboard-table [rows]="rows()" [columns]="tableColumns()" [nameLabel]="words.nameLabel" [totalHeading]="words.totalHeading" [totalLabel]="words.totalLabel" (toggled)="toggle($event)">
+        <ng-template tamuGiscDashboardRowDetail>
+          <tamu-gisc-dashboard-people [people]="people()" [failed]="peopleFailed()" [fileName]="fileName()" [countColumns]="countColumns" [dateLabel]="words.dateLabel" [emptyText]="words.emptyText"></tamu-gisc-dashboard-people>
+        </ng-template>
+      </tamu-gisc-dashboard-table>
+      } @else {
+      <p>{{ words.noEvents }}</p>
+      } } @else {
+      <p>{{ words.reading }}</p>
+      }
+    </div>
+  </div>
+</div>

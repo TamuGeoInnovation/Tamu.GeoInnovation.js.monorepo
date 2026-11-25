@@ -6,7 +6,6 @@ import { Observable, filter, map, of, shareReplay, switchMap, take } from 'rxjs'
 
 import { Place, PlaceLink } from '@tamu-gisc/gisday/platform/data-api';
 import { AssetsService, PlaceService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { formToFormData } from '../../../../../utils/form-to-form-data';
 import { UploadImagePicker } from '../../../../../utils/upload-image-picker';
@@ -20,7 +19,7 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
 import { ImagePreviewComponent } from '../../../../images/components/image-preview/image-preview.component';
 import { uploadPreviewUrl } from '../../../../images/upload-preview-url';
-import { injectBackToList } from '../../../admin-details-page';
+import { adminEntityForm } from '../../../admin-entity-form';
 
 @Component({
   selector: 'tamu-gisc-place-location-add-edit-form',
@@ -41,12 +40,11 @@ import { injectBackToList } from '../../../admin-details-page';
 export class PlaceLocationAddEditFormComponent implements OnInit {
   private readonly fb = inject(UntypedFormBuilder);
   private readonly at = inject(ActivatedRoute);
-  /** Leaves for the list once a save, create or delete has worked: the one the page was opened from (#2965). */
-  private readonly backToList = injectBackToList('/admin/places');
+  /** Its save and delete, and what they say (#3340, #3382): as an Organization, as the form, its button and the admin menu call a place (#3398). */
+  private readonly saves = adminEntityForm('Organization', '/admin/places');
   private readonly as = inject(AssetsService);
   private readonly ps = inject(PlaceService);
   private readonly sn = inject(DomSanitizer);
-  private readonly ns = inject(NotificationService);
   private readonly ss = inject(SeasonService);
 
   public readonly type = input<'create' | 'edit'>(undefined);
@@ -133,24 +131,7 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
   }
 
   public deleteEntity() {
-    this.ps.deleteEntity(this.form.getRawValue().guid).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'place-delete-success',
-          title: 'Delete Place',
-          message: `Place was successfully deleted.`
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'place-delete-failed',
-          title: 'Delete Place',
-          message: `Error deleting place: ${err.status}`
-        });
-      }
-    });
+    this.saves.save('delete', this.ps.deleteEntity(this.form.getRawValue().guid));
   }
 
   public addOrgLink() {
@@ -184,50 +165,13 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
     const rawValue = this.form.getRawValue();
     const formData = formToFormData(this.form, true);
 
-    this.ps.updateEntityFormData(rawValue.guid, formData).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'place-update-success',
-          title: 'Update Place',
-          message: `Place was successfully updated.`
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'place-update-failed',
-          title: 'Update Place',
-          message: `Error updating place: ${err.status}`
-        });
-      }
-    });
+    this.saves.save('update', this.ps.updateEntityFormData(rawValue.guid, formData));
   }
 
   private _createEntity() {
     const formData = formToFormData(this.form, true);
 
-    this.ps.createEntityFormData(formData).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'place-create-success',
-          title: 'Create Place',
-          message: `Place was successfully created.`
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'place-create-failed',
-          title: 'Create Place',
-          message: `Error creating place: ${err.status}`
-        });
-      }
-    });
+    this.saves.save('create', this.ps.createEntityFormData(formData));
   }
 
-  private _navigateBack() {
-    this.backToList();
-  }
 }

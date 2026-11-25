@@ -88,6 +88,8 @@ _Scope_ can be broken down into a few common categories:
 - ci
   - Updates related to ci/cd pipelines
 
+`docs`, `test`, `refactor`, `perf`, `build`, `style` and `revert` are used too. A check (`pr-title.yml`, #1274) fails a pull request whose title does not follow this format, and runs again when the title is edited.
+
 _Project name_ is typically the workspace project name (whether an app or lib). Most Aggiemap-related PR's will use `aggiemap-angular` as the project name. A full list of project names can be found by opening the `workspace.json` file at the root of the repository. Each key represents a project name.
 
 While it should be minimized, it's not uncommon to violate cross-app/lib boundaries in a PR. In these cases, the name of the app/lib that was the reason for the PR shall be used.

@@ -80,7 +80,7 @@ export const GalvestonSearchSources: SearchSource[] = [
 export const GalvestonConfiguration: EventConfiguration = {
   id: 'galveston',
   name: 'Galveston',
-  applicationName: 'Aggie Map - Galveston',
+  applicationName: 'Galveston Campus',
   shortApplicationName: 'Galveston',
   introductionText: 'Map of the Texas A&M University at Galveston campus.',
   eventDates: [],

@@ -7,7 +7,7 @@ import {
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
-import { EventPopups } from '../modules/popups/popups';
+import { markdownPopup } from './common.definitions';
 
 export enum MOVE_IN_LAYERS {
   RESIDENCE_HALL = 'Residence Hall',
@@ -58,33 +58,11 @@ const AREA_VIEW: Record<CampusArea, { center: [number, number]; zoom: number }> 
   'White Creek': { center: [-96.35424, 30.60824], zoom: 17 }
 };
 
-const markdownPopup = {
-  popupComponent: EventPopups.MarkdownPopupComponent
-};
+const poiPopup = markdownPopup('Type', 'note');
 
-const poiPopup = {
-  ...markdownPopup,
-  popupData: {
-    name: { field: 'Type' },
-    description: { field: 'note' }
-  }
-};
+const streetPopup = markdownPopup('Name', 'note');
 
-const streetPopup = {
-  ...markdownPopup,
-  popupData: {
-    name: { field: 'Name' },
-    description: { field: 'note' }
-  }
-};
-
-const lotPopup = {
-  ...markdownPopup,
-  popupData: {
-    name: { field: 'LotName' },
-    description: { field: 'note' }
-  }
-};
+const lotPopup = markdownPopup('LotName', 'note');
 
 // Several POI icons are pin-shaped (natural 32x40, ~0.8 ratio) but the published renderer forces a
 // few of them into a square (Bike/Keys 25x25, No-Roadside-Parking 20x20), which stretches them.

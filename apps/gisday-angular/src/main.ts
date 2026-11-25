@@ -9,10 +9,10 @@ import { AuthHttpInterceptor, AuthModule } from '@auth0/auth0-angular';
 import { ROLES_CLAIM } from '@tamu-gisc/common/ngx/auth';
 import { Angulartics2Module } from 'angulartics2';
 import { ServiceWorkerModule } from '@angular/service-worker';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes, ExtraOptions } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppComponent } from './app/app.component';
+import { GISDAY_ANALYTICS_SETTINGS } from './app/analytics';
 import { gisdaySite } from '@tamu-gisc/gisday/common';
 import { GISDAY_SITE, siteFeatureGuard } from '@tamu-gisc/gisday/platform/ngx/common';
 import { provideNewVersionReload } from '@tamu-gisc/common/ngx/router';
@@ -66,7 +66,7 @@ bootstrapApplication(AppComponent, {
     // bootstrapApplication runs zoneless since Angular 21 (#1563, #1478).
     provideZoneChangeDetection(),
     importProvidersFrom(
-      Angulartics2Module.forRoot(),
+      Angulartics2Module.forRoot(GISDAY_ANALYTICS_SETTINGS),
       ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.environment.production }),
       AuthModule.forRoot({
         domain: environment.auth0.domain,
@@ -88,7 +88,6 @@ bootstrapApplication(AppComponent, {
         }
       }),
       BrowserModule,
-      BrowserAnimationsModule,
       RouterModule.forRoot(routes, routeOptions),
       FormsModule,
       ReactiveFormsModule

@@ -2,12 +2,10 @@ import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, signal,
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DatatableComponent, NgxDatatableModule } from '@swimlane/ngx-datatable';
 
-import * as Papa from 'papaparse';
-
 import { JudgingService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
-import { downloadFile } from '@tamu-gisc/common/utils/ui';
-import { serverMessage } from '@tamu-gisc/gisday/platform/ngx/common';
+import { downloadFile, toCsv } from '@tamu-gisc/common/utils/ui';
+import { seasonPicker, serverMessage } from '@tamu-gisc/gisday/platform/ngx/common';
 import {
   JUDGED_COMPETITIONS,
   JudgeBreakdownLine,
@@ -19,11 +17,11 @@ import {
   judgingResultsTable
 } from '@tamu-gisc/gisday/common';
 
-import { seasonChoice } from '../../components/season-choice';
-
 /** A competition's results as a CSV file, as the page shows them. */
 export function judgingResultsCsv(results: JudgingResultsDto): string {
-  return Papa.unparse(judgingResultsTable(results));
+  const { fields, data } = judgingResultsTable(results);
+
+  return toCsv(fields, data);
 }
 
 /**
@@ -31,7 +29,9 @@ export function judgingResultsCsv(results: JudgingResultsDto): string {
  * line break in it, as it does the results' file.
  */
 export function everyScoreCsv(results: JudgingResultsDto): string {
-  return Papa.unparse(everyScoreTable(results));
+  const { fields, data } = everyScoreTable(results);
+
+  return toCsv(fields, data);
 }
 
 /**
@@ -53,7 +53,7 @@ export class JudgingResultsComponent {
   private readonly judging = inject(JudgingService);
   private readonly destroyRef = inject(DestroyRef);
 
-  public readonly choice = seasonChoice();
+  public readonly choice = seasonPicker();
   public readonly competitions = JUDGED_COMPETITIONS.map((row) => ({ name: row.label, value: row.competition }));
   public readonly competition = signal<string>(JUDGED_COMPETITIONS[0].competition);
   public readonly results = signal<JudgingResultsDto | null>(null);

@@ -1,0 +1,33 @@
+name: Pull request title
+
+# Titles are `type(project-name): Short description` (CONTRIBUTING.md, #1274). The squash merge makes the
+# title the commit's first line on development, so it is the one part of a pull request that stays in the
+# history for good. The rule is the one the repository already follows: 299 of the last 300 merged pull
+# requests matched it on 24 November 2026.
+on:
+  pull_request:
+    # `edited` matters: the fix is editing the title, and without it the check would stay red until a push.
+    types: [opened, edited, reopened, synchronize]
+
+permissions:
+  contents: read
+
+jobs:
+  title:
+    name: Title follows type(project-name)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          sparse-checkout: .github/scripts
+          sparse-checkout-cone-mode: false
+
+      - name: Prove the rule still works
+        run: node .github/scripts/check-pr-title.mjs --self-test
+
+      - name: Check this pull request's title
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: node .github/scripts/check-pr-title.mjs

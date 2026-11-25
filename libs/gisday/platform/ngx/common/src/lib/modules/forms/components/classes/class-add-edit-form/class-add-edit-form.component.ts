@@ -10,7 +10,7 @@ import { serverMessage } from '../../../../../utils/server-message';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
-import { injectBackToList } from '../../../admin-details-page';
+import { adminEntityForm } from '../../../admin-entity-form';
 
 /**
  * The sections typed into Create Class's section field: one, or several separated by commas, semicolons or spaces,
@@ -29,8 +29,8 @@ export function sectionsFrom(text: string): Array<string> {
 export class ClassAddEditFormComponent implements OnInit {
   private readonly fb = inject(UntypedFormBuilder);
   private readonly at = inject(ActivatedRoute);
-  /** Leaves for the list once a save, create or delete has worked: the one the page was opened from (#2965). */
-  private readonly backToList = injectBackToList('/admin/classes');
+  /** Its save and delete, and what they say (#3340). */
+  private readonly saves = adminEntityForm('Class', '/admin/classes');
   private readonly cs = inject(ClassService);
   private readonly ss = inject(SeasonService);
   private readonly ns = inject(NotificationService);
@@ -85,47 +85,13 @@ export class ClassAddEditFormComponent implements OnInit {
   }
 
   public deleteEntity() {
-    this.cs.deleteEntity(this.form.getRawValue().guid).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'class-delete-success',
-          title: 'Delete class',
-          message: `Class was successfully deleted.`
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'class-delete-failed',
-          title: 'Delete class',
-          message: serverMessage(err, `Error deleting class: ${err.status}`)
-        });
-      }
-    });
+    this.saves.save('delete', this.cs.deleteEntity(this.form.getRawValue().guid));
   }
 
   private _updateEntity() {
     const rawValue = this.form.getRawValue();
 
-    this.cs.updateEntity(rawValue.guid, rawValue).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'class-update-success',
-          title: 'Update class',
-          message: `Class was successfully updated.`
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'class-update-failed',
-          title: 'Update class',
-          message: serverMessage(err, `Error updating class: ${err.status}`)
-        });
-      }
-    });
+    this.saves.save('update', this.cs.updateEntity(rawValue.guid, rawValue));
   }
 
   /**
@@ -159,7 +125,7 @@ export class ClassAddEditFormComponent implements OnInit {
         if (failed.length === 0) {
           this.ns.toast({
             id: 'class-create-success',
-            title: 'Create class',
+            title: 'Create Class',
             message: `${created.length} sections of ${course} were successfully created: ${created.join(', ')}.`
           });
 
@@ -171,7 +137,7 @@ export class ClassAddEditFormComponent implements OnInit {
 
         this.ns.toast({
           id: 'class-create-failed',
-          title: 'Create class',
+          title: 'Create Class',
           message:
             (created.length > 0 ? `Created sections ${created.join(', ')}. ` : '') +
             `Not created: ${failed.map((r) => `${r.section} (${r.error})`).join(', ')}. They are left in the form.`
@@ -184,7 +150,7 @@ export class ClassAddEditFormComponent implements OnInit {
       next: () => {
         this.ns.toast({
           id: 'class-create-success',
-          title: 'Create class',
+          title: 'Create Class',
           message: `Class was successfully created.`
         });
 
@@ -193,7 +159,7 @@ export class ClassAddEditFormComponent implements OnInit {
       error: (err) => {
         this.ns.toast({
           id: 'class-create-failed',
-          title: 'Create class',
+          title: 'Create Class',
           message: `Error creating class: ${serverMessage(err, `${err?.status}`)}`
         });
       }
@@ -201,6 +167,6 @@ export class ClassAddEditFormComponent implements OnInit {
   }
 
   private _navigateBack() {
-    this.backToList();
+    this.saves.back();
   }
 }

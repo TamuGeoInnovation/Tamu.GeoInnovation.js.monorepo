@@ -1,7 +1,7 @@
 import { DataSource, Repository } from 'typeorm';
 
-import { Asset, Event, Organization, Season, Speaker } from '../entities/all.entity';
-import { queryCheckingDataSource, queryCheckingRepository, recordWrites } from '../_base/query-checking-data-source';
+import { Asset, Event, Organization, Speaker } from '../entities/all.entity';
+import { answering, buildingTransactionFinds, loadedSeason, queryCheckingDataSource, queryCheckingRepository, recordWrites } from '../_base/query-checking-data-source';
 import { AssetsService } from '../assets/assets.service';
 import { SeasonService } from '../season/season.service';
 import { OrganizationService } from './organization.service';
@@ -9,32 +9,6 @@ import { OrganizationService } from './organization.service';
 // The service's queries as typeorm builds them, with the real entities. organization.service.spec.ts mocks the
 // repositories, so it cannot see a query typeorm itself refuses, such as a loaded row with a null column passed as a where
 // value (#2363).
-
-/** Builds the query as the query-checking repository does, then answers with `value`, as a database holding it would. */
-function answering<T extends object>(repo: Repository<T>, method: 'find' | 'findOne', value: unknown) {
-  const build = repo[method].bind(repo) as (options?: unknown) => Promise<unknown>;
-  (repo as unknown as Record<string, unknown>)[method] = async (options?: unknown) => (await build(options), value);
-}
-
-/** Makes the finds of every transaction's manager build their query too, before answering from `recordWrites`' rows. */
-function buildingTransactionFinds(dataSource: DataSource) {
-  const make = dataSource.createQueryRunner.bind(dataSource);
-
-  dataSource.createQueryRunner = ((...args: Array<unknown>) => {
-    const runner = make(...(args as []));
-    const answer = runner.manager.find.bind(runner.manager);
-
-    runner.manager.find = (async (entity: never, options?: never) => (
-      runner.manager.createQueryBuilder(entity, 'e').setFindOptions(options ?? {}).getQuery(), answer(entity, options)
-    )) as typeof runner.manager.find;
-
-    return runner;
-  }) as typeof dataSource.createQueryRunner;
-}
-
-/** A season as the API loads it: the deadlines nobody has set come back null. */
-const loadedSeason = () =>
-  Object.assign(new Season(), { guid: 's-1', year: 2026, active: true, posterSubmissionsCloseAt: null, competitions: [] });
 
 /** An organization as the API loads it: its contact and text are optional and come back null. */
 const loadedOrganization = () =>

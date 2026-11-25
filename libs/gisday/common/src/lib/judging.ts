@@ -1,4 +1,4 @@
-import { lastNameOf } from './names';
+import { lastNameOf, naturalOrder } from './names';
 import { personalLinkEmailProblem, profileEmailValues } from './profile-email';
 import { RubricCriterionValue, RubricValue } from './rubrics';
 import { SessionDetailsSession, sessionWhen, sessionWhere } from './session-details-email';
@@ -282,10 +282,7 @@ export function judgingResults(input: JudgingResultsInput): JudgingResultsDto {
     };
   });
 
-  rows.sort(
-    (a, b) =>
-      (b.average ?? -1) - (a.average ?? -1) || (a.title ?? '').localeCompare(b.title ?? '', 'en', { sensitivity: 'base' })
-  );
+  rows.sort((a, b) => (b.average ?? -1) - (a.average ?? -1) || naturalOrder.compare(a.title ?? '', b.title ?? ''));
 
   return {
     competition: input.competition,
@@ -471,7 +468,7 @@ export function judgingEmailProblem(email: unknown): string | null {
 export function byFirstAuthor<T extends { title: string; presenters: ReadonlyArray<string> }>(
   entries: ReadonlyArray<T> | null | undefined
 ): Array<T> {
-  const compare = (a: string, b: string) => a.localeCompare(b, 'en', { sensitivity: 'base' });
+  const compare = naturalOrder.compare;
   const first = (e: T) => (e.presenters?.[0] ?? '').trim();
 
   return [...(entries ?? [])].sort((a, b) => {

@@ -46,7 +46,7 @@ INSERT @kept VALUES
   (N'rubrics', N'guid,seasonGuid,competitionType,name,description'),
   (N'rubric_criteria', N'guid,rubricGuid,position,name,maxPoints,levels'),
   (N'seasons', N'guid,year,active,posterSubmissionsCloseAt,posterFilesCloseAt,presentationSubmissionsCloseAt,presentationFilesCloseAt,paperSubmissionsCloseAt,paperFilesCloseAt,cartographySubmissionsCloseAt,cartographyFilesCloseAt'),
-  (N'season_competitions', N'guid,competitionType,seasonGuid'),
+  (N'season_competitions', N'guid,competitionType,seasonGuid,runs,sessionGuid,graduateSessionGuid,awardsSessionGuid,finalistsNotifiedAt'),
   -- A season's winners (#3239): which submission won which place; the names shown are the submission's.
   (N'season_winners', N'guid,seasonGuid,competition,place,submissionGuid'),
   (N'seasons_days', N'guid,date,seasonGuid'),
@@ -77,8 +77,8 @@ INSERT @kept VALUES
   (N'vgi_submissions_media', N'guid,fieldName,submissionGuid');
 
 -- Tables that are not copied: the migrations record is written when the new database is built, and
--- the other three exist only in production and are not used by the code. `session_details_sends` (#3098) is no
--- longer read either: speaker_email_claims took over its rows (#3260), and a later migration drops it (#3269).
+-- the other three exist only in production and are not used by the code. `session_details_sends` (#3098) was
+-- dropped by DropSessionDetailsSends (#3269); it stays listed for a copy of production taken before that ran.
 -- `sessions_filter_backfill` is what #1836's migration ticked, for its down(): organizations' ids and settings, no
 -- people, and the API never reads it. The list stays on one line: scrub-coverage.spec.ts reads it.
 DECLARE @skipped TABLE (tbl sysname);
