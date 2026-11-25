@@ -1,5 +1,72 @@
 # Home machine: current tasks
 
+## Batch a51 (aggiemap: #3551, construction popup dates show a day early; 25 November 2026, 1:10 PM Central, from `work (aggiemap)`) (Medium) - **now**
+
+**a48 is accepted and open as [PR 3686](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3686).**
+**+3 −774, and the closure was the point.** You found three methods reachable only from `annotateBusGraphic` that a
+search outward from `base_url` could never have reached, nine interfaces where I guessed two, and an **import cycle**
+that came out with `TripModeSwitch`. I told you not to trust my seven names, and you were right not to.
+
+**Q-a48-1 is A**, and it is filed as
+**[#3687](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3687)** (Task, Low). I verified
+your reading on your own branch first: the component's whole `ngOnInit` is behind
+`modeSwitch.results.bus != null`, nothing else ever wrote `results.bus`, and it is still rendered at
+`base.component.html:28`. Keeping it out of #3657 was right - that deletion touches no template, and bundling a template
+change in would have made a clean 774-line removal look like a rendering change.
+
+**One correction, and it goes my way this time.** You wrote that the commented `annotateBusGraphic` case is at
+`trip-planner.service.ts:1421-1422`, not 1437. On `development` at `2cfb0bc43` it is at **1436-1437** - I checked. Your
+number is presumably from your working tree after the import came out. It changed nothing: your diff removes exactly
+the right two lines and the symbol is gone from that file on your branch. I mention it only because the report is the
+record, and a line number that does not match the trunk sends the next reader to the wrong place. **It is in your report,
+not in the pull request body**, so nothing needed editing.
+
+### Why this batch
+
+[#3551](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3551) is a visitor-facing date bug,
+and the issue has already done the diagnosis - read it rather than re-deriving it. Construction popups show every date
+**one day early** in Central time: the service stores a calendar date as midnight UTC, and `formatDateValue` in
+`resolve-popup-data.ts` calls `formatDate(date, 'longDate', 'en-US')` with **no zone**, so it formats in the browser's.
+Midnight UTC is 6 PM the previous day in College Station. I confirmed the code is unchanged at `2cfb0bc43`.
+
+**It is the third instance of one fault this week** - #3467 and #2643/#3464 were the first two - and that is what makes
+it worth your time rather than a one-line patch.
+
+### What to do
+
+1. **Try the shared helpers before writing a correction.** `@tamu-gisc/common/utils/date` already has `parseEventDate`
+   and `nextEventDate`, which #3467 adopted *by deleting its own date arithmetic*. Check whether `formatDateValue` can
+   use those, or one added beside them for "a midnight-UTC epoch that means a calendar date", instead of growing a third
+   zone correction of its own. **If a shared helper genuinely does not fit, say why in the report** - that is a finding,
+   and it tells us whether the shared set is missing a case.
+2. **Red first, in Central time.** The spec must run with the zone set - `libs/aggiemap/ngx/core/vitest.config.mts`
+   from #3467 shows how - and must fail on today's code. A date test that passes in UTC and fails for a visitor is how
+   all three of these got shipped. Quote the failure.
+3. **Check the other `format: 'date'` users first**, as the issue says. Today only the Construction map's `startDate`
+   and `endDate` use it; confirm that is still true, because a second user would change the fix.
+4. **This is a visible change**, so it needs **before/after images** and a **release-notes entry**. The issue even
+   supplies a case to photograph: ARFF Station, objectid 35375, which should read *January 1, 2025* and
+   *December 31, 2026* and today reads *December 31, 2024* and *December 30, 2026*. Write both captures to
+   `docs/screenshots/3551-construction-popup-dates/` on the branch, and the entry to
+   `docs/releases/unreleased/3551-<slug>.md` with its *What to test on dev* row. Run
+   `node scripts/collate-release-notes.mjs --check` before you push.
+5. **Take the "before" while it is still true.** Capture it before the fix is on disk; recovering one afterwards means
+   stashing, rebuilding and re-capturing.
+
+### Worth knowing
+
+- **`TZ=America/Chicago` lies in Git Bash** - no tz database, so it silently returns UTC and labels it `GMT`. Set the
+  zone the way #3467's vitest config does, not with an environment variable in a shell.
+- Notices self-dismiss about ten seconds after load, so hover to pause before capturing a popup.
+- `libs/maps/feature/popup` has nothing of mine open in it. PR 3677 touches `aggiemap/ngx/popups`, a different library,
+  and PR 3686 is yours.
+
+**Branch** `fix/3551-construction-popup-dates` from the latest `development`, pushed to the fork. `check-in-volume.sh`,
+then **`pre-pr-check.sh`**, and give me its last line. Body text in the report with a `Title:` line - yours was above
+the fence rather than inside it this time, which worked; either is fine as long as it is there.
+
+**Report** `home/reports/2026-11-25-a51.md`. Questions `Q-a51-<n>`. **Open no pull request.**
+
 ## Batch a48 (aggiemap: #3657, delete the retired bus API cluster - by reachability, not by my list; 25 November 2026, 12:27 PM Central, from `work (aggiemap)`) (Medium) - **now**
 
 **a46 is accepted. Q-a46-1 is A: `popupData` only.** You applied the step 3 rule exactly as written, and the part I
