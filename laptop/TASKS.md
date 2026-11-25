@@ -1,5 +1,14 @@
 # Laptop: current tasks
 
+## Batch g34 (gisday, #3614: before/after images of the competitions designer; 25 November 2026, about 4:25 AM Central, from `work (gisday)`) (Medium) - **after g32**
+
+The lab's `fix/3593-competitions-ngx-core-strict` (#3614, strictNullChecks in `gisday-competitions-ngx-core`) changes how the competitions admin designer renders **a question saved without options**: it used to crash there and now renders. The lab can't sign in (Q-g216-1), and a visible change needs its before and after before its pull request opens.
+
+1. **On your local GIS Day stack**, signed in as the `txgisday-dev` test admin, with the scratch database's made-up records only: make (or find) a competition question saved with no options, in a made-up season. Undo anything you add afterwards.
+2. **Capture the designer** showing that question on `origin/development` (before: whatever it does, a blank, an error, a stuck spinner) and on `fork/fix/3593-competitions-ngx-core-strict` (after). Keep the console error, if there is one, in the report.
+3. **Commit the two images** to `docs/screenshots/3614-designer-no-options/` **on that branch** (`fix/3593-competitions-ngx-core-strict` on the fork; push to it, it's a listener branch), and say each raw URL at the commit returns 200.
+4. Report `laptop/reports/2026-11-25-g34.md`; "images ready: #3614". Nothing on GitHub.
+
 ## Decided (gisday), 4:02 AM Central, 25 November 2026
 
 - **g33 received:** `fix/3495-ui-kits-search-strict` goes through `pre-pr-check.sh` on the work machine and opens when it exits 0.
