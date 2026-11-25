@@ -293,7 +293,7 @@ class DeletingListComponent extends BaseAdminListComponent<GuidIdentity> {
  */
 describe('BaseAdminListComponent delete', () => {
   function open(refuse: boolean) {
-    const toast = jest.fn();
+    const toast = vi.fn();
 
     TestBed.configureTestingModule({
       declarations: [DeletingListComponent],

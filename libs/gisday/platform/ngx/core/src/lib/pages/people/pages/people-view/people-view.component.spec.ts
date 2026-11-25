@@ -1,3 +1,4 @@
+import type { MockInstance } from 'vitest';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router, provideRouter } from '@angular/router';
@@ -73,7 +74,7 @@ describe('PeopleViewComponent link', () => {
     { guid: 'p-1', firstName: 'Mark', lastName: 'Allen', organization: { name: 'Lower Colorado River Authority' } },
     { guid: 'p-2', firstName: 'Ana', lastName: 'Lee', organization: { name: 'Esri' } }
   ];
-  let navigate: jest.SpyInstance;
+  let navigate: MockInstance;
 
   function open(search: string | null = null) {
     TestBed.configureTestingModule({
@@ -87,7 +88,7 @@ describe('PeopleViewComponent link', () => {
       ]
     });
 
-    navigate = jest.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+    navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
     const fixture = TestBed.createComponent(PeopleViewComponent);
     fixture.detectChanges();
 

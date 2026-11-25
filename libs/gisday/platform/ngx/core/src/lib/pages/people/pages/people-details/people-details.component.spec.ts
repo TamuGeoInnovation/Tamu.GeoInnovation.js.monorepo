@@ -41,7 +41,9 @@ describe('PeopleDetailsComponent search (#2919)', () => {
     TestBed.configureTestingModule({
       imports: [PeopleDetailsComponent],
       providers: [
-        provideRouter([]),
+        // Any address is a page, so a presenter link the search follows resolves; under Jest a rejected navigation
+        // went unnoticed, and Vitest reports it as an unhandled error (#1977).
+        provideRouter([{ path: '**', children: [] }]),
         { provide: EnvironmentService, useValue: { value: () => '' } },
         { provide: ActivatedRoute, useValue: { params: of({ guid: 'p-2' }), snapshot: { params: { guid: 'p-2' }, queryParamMap: { get: () => null } } } },
         { provide: SpeakerService, useValue: { getPresenter: () => of(people[1]), getParticipatingPresenters: () => of(list) } },

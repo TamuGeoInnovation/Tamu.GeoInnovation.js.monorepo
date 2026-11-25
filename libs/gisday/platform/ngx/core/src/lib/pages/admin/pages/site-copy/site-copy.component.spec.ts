@@ -24,7 +24,7 @@ const plan = (applied: boolean): SiteCopyPlan => ({
 describe('SiteCopyComponent', () => {
   it('shows "Applying…", disabled, with what it is doing, until the import answers', async () => {
     const applied = new Subject<SiteCopyPlan>();
-    const copy = { import: jest.fn((_: SiteCopyFile, apply: boolean) => (apply ? applied : of(plan(false)))) };
+    const copy = { import: vi.fn((_: SiteCopyFile, apply: boolean) => (apply ? applied : of(plan(false)))) };
 
     TestBed.configureTestingModule({
       imports: [SiteCopyComponent],

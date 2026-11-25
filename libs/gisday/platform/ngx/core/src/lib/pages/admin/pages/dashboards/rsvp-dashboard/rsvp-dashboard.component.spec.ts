@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { of, Subject, throwError } from 'rxjs';
@@ -56,7 +57,7 @@ const people = [
 ];
 
 describe('RsvpDashboardComponent', () => {
-  let rsvps: { getDashboardForSeason: jest.Mock; getDashboardForEvent: jest.Mock };
+  let rsvps: { getDashboardForSeason: Mock; getDashboardForEvent: Mock };
   // amCharts draws on a canvas, which the test's DOM does not have: the chart's drawer is a stand-in that keeps what it is given.
   let drawn: Array<LineChartOptions>;
   const lastChart = () => drawn[drawn.length - 1];
@@ -99,8 +100,8 @@ describe('RsvpDashboardComponent', () => {
   beforeEach(() => {
     drawn = [];
     rsvps = {
-      getDashboardForSeason: jest.fn(() => of(dashboard)),
-      getDashboardForEvent: jest.fn(() => of(people))
+      getDashboardForSeason: vi.fn(() => of(dashboard)),
+      getDashboardForEvent: vi.fn(() => of(people))
     };
   });
 
@@ -209,7 +210,7 @@ describe('RsvpDashboardComponent', () => {
 
   it('says so while the people are being read, and if they cannot be', async () => {
     const pending = new Subject<Array<RsvpDashboardPerson>>();
-    rsvps.getDashboardForEvent = jest.fn(() => pending);
+    rsvps.getDashboardForEvent = vi.fn(() => pending);
     const fixture = open();
     await settle(fixture);
     const root = fixture.nativeElement as HTMLElement;
@@ -224,7 +225,7 @@ describe('RsvpDashboardComponent', () => {
   });
 
   it('says the RSVPs could not be read rather than showing an empty dashboard', () => {
-    rsvps.getDashboardForSeason = jest.fn(() => throwError(() => new Error('403')));
+    rsvps.getDashboardForSeason = vi.fn(() => throwError(() => new Error('403')));
     const root = open().nativeElement as HTMLElement;
 
     expect(root.textContent).toContain('The RSVPs could not be read');

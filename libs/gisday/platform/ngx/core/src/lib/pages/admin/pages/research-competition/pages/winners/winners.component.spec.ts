@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -42,12 +43,12 @@ const page = (): SeasonWinnersAdminDto => ({
 
 /** #3239: the admins' Winners page picks 1st, 2nd and 3rd of each competition from its accepted entries. */
 describe('WinnersComponent (#3239)', () => {
-  async function open(service: Partial<Record<keyof SeasonWinnersService, jest.Mock>> = {}) {
+  async function open(service: Partial<Record<keyof SeasonWinnersService, Mock>> = {}) {
     const winners = {
-      forSeason: jest.fn(() => of(page())),
-      save: jest.fn((_season: string, _winners: Array<WinnerChoice>) => of(page())),
-      trail: jest.fn(() => of(trailPage())),
-      saveTrail: jest.fn((_season: string, _winners: Array<TrailChoice>) => of(trailPage())),
+      forSeason: vi.fn(() => of(page())),
+      save: vi.fn((_season: string, _winners: Array<WinnerChoice>) => of(page())),
+      trail: vi.fn(() => of(trailPage())),
+      saveTrail: vi.fn((_season: string, _winners: Array<TrailChoice>) => of(trailPage())),
       ...service
     };
 
@@ -155,7 +156,7 @@ describe('WinnersComponent (#3239)', () => {
       status: 400,
       error: { statusCode: 400, message: "A winner must be one of the competition's accepted submissions this season." }
     });
-    const { save, root } = await open({ save: jest.fn(() => throwError(() => refused)) });
+    const { save, root } = await open({ save: vi.fn(() => throwError(() => refused)) });
 
     await save();
 

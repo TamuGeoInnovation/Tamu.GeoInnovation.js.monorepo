@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
@@ -11,15 +12,15 @@ import { InstallComponent } from './install.component';
 describe('InstallComponent', () => {
   let ok: (p: unknown) => void;
   let fail: (e: unknown) => void;
-  let clearWatch: jest.Mock;
-  let toast: jest.Mock;
-  let preset: jest.Mock;
+  let clearWatch: Mock;
+  let toast: Mock;
+  let preset: Mock;
   let component: InstallComponent;
 
   beforeEach(() => {
-    clearWatch = jest.fn();
+    clearWatch = vi.fn();
     (navigator as unknown as { geolocation: unknown }).geolocation = {
-      watchPosition: jest.fn((o, f) => {
+      watchPosition: vi.fn((o, f) => {
         ok = o;
         fail = f;
 
@@ -28,8 +29,8 @@ describe('InstallComponent', () => {
       clearWatch
     };
 
-    toast = jest.fn();
-    preset = jest.fn();
+    toast = vi.fn();
+    preset = vi.fn();
     TestBed.configureTestingModule({ providers: [{ provide: NotificationService, useValue: { toast, preset } }] });
     component = TestBed.runInInjectionContext(() => new InstallComponent());
   });

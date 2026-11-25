@@ -1,3 +1,4 @@
+import type { Mocked } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DomSanitizer } from '@angular/platform-browser';
 import { of } from 'rxjs';
@@ -15,12 +16,12 @@ import { SubmissionDetailModalComponent } from './submission-detail-modal.compon
 describe('SubmissionDetailModalComponent', () => {
   let component: SubmissionDetailModalComponent;
   let fixture: ComponentFixture<SubmissionDetailModalComponent>;
-  let mockModalRef: jest.Mocked<ModalRefService>;
-  let mockSubmissionService: jest.Mocked<SubmissionService>;
-  let mockSettingsService: jest.Mocked<SettingsService>;
-  let mockEnvService: jest.Mocked<EnvironmentService>;
-  let mockNotificationService: jest.Mocked<NotificationService>;
-  let mockSanitizer: jest.Mocked<DomSanitizer>;
+  let mockModalRef: Mocked<ModalRefService>;
+  let mockSubmissionService: Mocked<SubmissionService>;
+  let mockSettingsService: Mocked<SettingsService>;
+  let mockEnvService: Mocked<EnvironmentService>;
+  let mockNotificationService: Mocked<NotificationService>;
+  let mockSanitizer: Mocked<DomSanitizer>;
 
   beforeEach(async () => {
     const mockSubmission = {
@@ -38,17 +39,17 @@ describe('SubmissionDetailModalComponent', () => {
     };
 
     mockModalRef = {
-      close: jest.fn()
-    } as unknown as jest.Mocked<ModalRefService>;
+      close: vi.fn()
+    } as unknown as Mocked<ModalRefService>;
 
     mockSubmissionService = {
-      getSubmissionImages: jest.fn().mockReturnValue(of([]))
-    } as unknown as jest.Mocked<SubmissionService>;
+      getSubmissionImages: vi.fn().mockReturnValue(of([]))
+    } as unknown as Mocked<SubmissionService>;
 
-    mockSettingsService = {} as jest.Mocked<SettingsService>;
-    mockEnvService = {} as jest.Mocked<EnvironmentService>;
-    mockNotificationService = {} as jest.Mocked<NotificationService>;
-    mockSanitizer = {} as jest.Mocked<DomSanitizer>;
+    mockSettingsService = {} as Mocked<SettingsService>;
+    mockEnvService = {} as Mocked<EnvironmentService>;
+    mockNotificationService = {} as Mocked<NotificationService>;
+    mockSanitizer = {} as Mocked<DomSanitizer>;
 
     await TestBed.configureTestingModule({
       imports: [SubmissionDetailModalComponent],
@@ -62,9 +63,10 @@ describe('SubmissionDetailModalComponent', () => {
         { provide: DomSanitizer, useValue: mockSanitizer },
         {
           // EsriMapService drags in SearchService -> HttpClient -> ActivatedRoute and more.
-          // The component only reads `store`, so mock it rather than wiring the whole chain.
+          // The component only reads `store`, so mock it rather than wiring the whole chain. Its map asks for
+          // `makeMap`, which jsdom cannot draw: a map that never arrives, rather than a call that rejects unhandled (#1977).
           provide: EsriMapService,
-          useValue: { store: of([]) }
+          useValue: { store: of([]), makeMap: () => new Promise(() => undefined) }
         }
       ]
     }).compileComponents();

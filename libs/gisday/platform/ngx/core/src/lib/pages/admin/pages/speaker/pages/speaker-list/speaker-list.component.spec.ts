@@ -13,9 +13,9 @@ import { SpeakerListComponent } from './speaker-list.component';
 describe('SpeakerListComponent, the profile email', () => {
   function open(confirmed: boolean) {
     const speakers = [{ guid: 'sp-1', firstName: 'Ana', lastName: 'Ruiz' }];
-    const speakerEdits = { preview: jest.fn(() => of({ groups: [] })), send: jest.fn(() => of({ sent: ['Ana Ruiz'], skipped: [] })) };
-    const modals = { open: jest.fn(() => of(confirmed ? { profile: 'Hi {edit link}', 'profile:subject': 'Profile' } : null)) };
-    const toasts = { toast: jest.fn() };
+    const speakerEdits = { preview: vi.fn(() => of({ groups: [] })), send: vi.fn(() => of({ sent: ['Ana Ruiz'], skipped: [] })) };
+    const modals = { open: vi.fn(() => of(confirmed ? { profile: 'Hi {edit link}', 'profile:subject': 'Profile' } : null)) };
+    const toasts = { toast: vi.fn() };
 
     TestBed.configureTestingModule({
       imports: [SpeakerListComponent],
@@ -106,7 +106,7 @@ describe('SpeakerListComponent, the sessions each speaker is in (#441)', () => {
         { provide: SeasonService, useValue: { seasons$: of([]), activeSeason$: of(null) } },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
         { provide: ModalService, useValue: {} },
-        { provide: NotificationService, useValue: { toast: jest.fn() } }
+        { provide: NotificationService, useValue: { toast: vi.fn() } }
       ]
     });
 
@@ -183,7 +183,7 @@ describe('SpeakerListComponent on a phone (#3370)', () => {
         { provide: SeasonService, useValue: { seasons$: of([]), activeSeason$: of(null) } },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
         { provide: ModalService, useValue: {} },
-        { provide: NotificationService, useValue: { toast: jest.fn() } }
+        { provide: NotificationService, useValue: { toast: vi.fn() } }
       ]
     });
 

@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideLocationMocks } from '@angular/common/testing';
@@ -26,12 +27,12 @@ class ElsewhereStubComponent {}
  * Tried on a real page, the tag's edit page, with its real form: every admin details page shares the one piece.
  */
 describe('Escape on an admin details page', () => {
-  let modal: { isOpen: BehaviorSubject<boolean>; open: jest.Mock };
+  let modal: { isOpen: BehaviorSubject<boolean>; open: Mock };
   let answer: Subject<boolean>;
 
   beforeEach(() => {
     answer = new Subject<boolean>();
-    modal = { isOpen: new BehaviorSubject(false), open: jest.fn(() => answer) };
+    modal = { isOpen: new BehaviorSubject(false), open: vi.fn(() => answer) };
 
     TestBed.configureTestingModule({
       providers: [
@@ -48,7 +49,7 @@ describe('Escape on an admin details page', () => {
         provideLocationMocks(),
         { provide: TagService, useValue: { getEntity: () => of({ guid: 't1', name: 'Workshop' }), getSessions: () => of([]) } },
         { provide: SeasonService, useValue: { activeSeason$: of({ guid: 's-2026' }) } },
-        { provide: NotificationService, useValue: { toast: jest.fn() } },
+        { provide: NotificationService, useValue: { toast: vi.fn() } },
         { provide: ModalService, useValue: modal }
       ]
     });

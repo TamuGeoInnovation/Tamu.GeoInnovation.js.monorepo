@@ -119,7 +119,7 @@ describe('SeasonComparison (#3215)', () => {
   }
 
   it('opens beside the year before, reading its records once', () => {
-    const read = jest.fn(() => of(['2025-11-17T18:00:00Z']));
+    const read = vi.fn(() => of(['2025-11-17T18:00:00Z']));
     const { comparison } = make(read);
 
     expect(read).toHaveBeenCalledTimes(1);
@@ -133,7 +133,7 @@ describe('SeasonComparison (#3215)', () => {
   });
 
   it('opens a newly selected season beside the year before it instead', () => {
-    const read = jest.fn(() => of(['2024-11-18T18:00:00Z']));
+    const read = vi.fn(() => of(['2024-11-18T18:00:00Z']));
     const { comparison, selected$ } = make(read);
 
     selected$.next(s2025);

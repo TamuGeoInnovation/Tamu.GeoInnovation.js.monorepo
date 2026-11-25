@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
@@ -104,13 +105,13 @@ describe('sortBadges() and badgesCsv()', () => {
 });
 
 describe('SpeakerBadgesComponent', () => {
-  let service: { getAllParticipatingPresentersForSeason: jest.Mock; markBadgesPrinted: jest.Mock; clearBadgesPrinted: jest.Mock };
+  let service: { getAllParticipatingPresentersForSeason: Mock; markBadgesPrinted: Mock; clearBadgesPrinted: Mock };
 
   async function open(rows: Array<Partial<Speaker>> = speakers) {
     service = {
-      getAllParticipatingPresentersForSeason: jest.fn(() => of(rows)),
-      markBadgesPrinted: jest.fn(() => of({ marked: 1 })),
-      clearBadgesPrinted: jest.fn(() => of({ cleared: 1 }))
+      getAllParticipatingPresentersForSeason: vi.fn(() => of(rows)),
+      markBadgesPrinted: vi.fn(() => of({ marked: 1 })),
+      clearBadgesPrinted: vi.fn(() => of({ cleared: 1 }))
     };
     TestBed.configureTestingModule({
       imports: [SpeakerBadgesComponent],

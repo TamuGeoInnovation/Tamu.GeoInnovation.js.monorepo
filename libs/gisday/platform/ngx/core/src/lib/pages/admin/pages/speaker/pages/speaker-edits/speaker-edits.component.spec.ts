@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
@@ -13,10 +14,10 @@ import { SpeakerEditsComponent } from './speaker-edits.component';
  */
 describe('SpeakerEditsComponent, a decision that fails', () => {
   const edit = { guid: 'edit-1', speaker: { firstName: 'Ana', lastName: 'Ruiz' } } as unknown as PendingSpeakerEdit;
-  let toast: jest.Mock;
+  let toast: Mock;
 
   function decideAgainst(answer: object) {
-    toast = jest.fn();
+    toast = vi.fn();
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),

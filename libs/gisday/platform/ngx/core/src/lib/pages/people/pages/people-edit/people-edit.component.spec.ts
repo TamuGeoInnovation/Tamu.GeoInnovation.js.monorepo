@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
@@ -75,8 +76,8 @@ describe('PeopleEditComponent photo (#2956)', () => {
 
   it('shows a chosen photo in the same preview', async () => {
     const { fixture, preview } = await open();
-    const created = jest.fn(() => 'blob:chosen');
-    Object.assign(URL, { createObjectURL: created, revokeObjectURL: jest.fn() });
+    const created = vi.fn(() => 'blob:chosen');
+    Object.assign(URL, { createObjectURL: created, revokeObjectURL: vi.fn() });
 
     fixture.componentInstance.choosePhoto(new File(['x'], 'me.png', { type: 'image/png' }));
     fixture.detectChanges();
@@ -161,13 +162,13 @@ describe('PeopleEditComponent, Your sessions (#3093)', () => {
   };
   const lightning = { ...watersheds, guid: 's-2', name: 'Lightning Talks', place: null, files: [] };
 
-  let files: { forLink: jest.Mock; upload: jest.Mock; remove: jest.Mock };
+  let files: { forLink: Mock; upload: Mock; remove: Mock };
 
   async function open(sessions: Array<object> | 'fails' = [watersheds, lightning]) {
     files = {
-      forLink: jest.fn(() => (sessions === 'fails' ? throwError(() => new Error('down')) : of(sessions))),
-      upload: jest.fn(),
-      remove: jest.fn(() => of(undefined))
+      forLink: vi.fn(() => (sessions === 'fails' ? throwError(() => new Error('down')) : of(sessions))),
+      upload: vi.fn(),
+      remove: vi.fn(() => of(undefined))
     };
 
     TestBed.configureTestingModule({

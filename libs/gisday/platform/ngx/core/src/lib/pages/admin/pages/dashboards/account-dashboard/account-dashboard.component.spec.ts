@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
@@ -67,7 +68,7 @@ describe('accountFileName()', () => {
 });
 
 describe('AccountDashboardComponent', () => {
-  let users: { getDashboardForSeason: jest.Mock; getDashboardRow: jest.Mock };
+  let users: { getDashboardForSeason: Mock; getDashboardRow: Mock };
   let drawn: Array<LineChartOptions>;
 
   function open() {
@@ -95,8 +96,8 @@ describe('AccountDashboardComponent', () => {
   beforeEach(() => {
     drawn = [];
     users = {
-      getDashboardForSeason: jest.fn(() => of(dashboard)),
-      getDashboardRow: jest.fn(() => of(people))
+      getDashboardForSeason: vi.fn(() => of(dashboard)),
+      getDashboardRow: vi.fn(() => of(people))
     };
   });
 
@@ -149,7 +150,7 @@ describe('AccountDashboardComponent', () => {
   });
 
   it('says the accounts could not be read rather than showing an empty dashboard', async () => {
-    users.getDashboardForSeason = jest.fn(() => throwError(() => new Error('503')));
+    users.getDashboardForSeason = vi.fn(() => throwError(() => new Error('503')));
     const fixture = open();
     await settle(fixture);
 

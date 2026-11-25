@@ -1,3 +1,4 @@
+import type { MockInstance } from 'vitest';
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
@@ -61,7 +62,7 @@ describe('EventViewComponent search', () => {
     ]
   };
 
-  let navigate: jest.SpyInstance;
+  let navigate: MockInstance;
 
   function open(searched: string | null = null) {
     TestBed.configureTestingModule({
@@ -92,7 +93,7 @@ describe('EventViewComponent search', () => {
     });
 
     // The page writes its filters into the address; nothing here needs it to.
-    navigate = jest.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+    navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
     const fixture = TestBed.createComponent(EventViewComponent);
     fixture.detectChanges();
 
