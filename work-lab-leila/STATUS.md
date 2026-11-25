@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **12:48 AM Central, 25 November 2026**. A listener; job: testing.
+Last written **1:01 AM Central, 25 November 2026**. A listener; job: testing.
 
 ## g203 is done, not unstarted (12:07 AM Central, Wednesday 25 November 2026)
 
@@ -140,7 +140,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 ## Running now
 
-**Batch g205** (gisday, Medium: #3547, the GIS Day specs' type errors), started 12:48 AM Central, 25 November.
+**Batch g205** (gisday, Medium: #3547, the GIS Day specs' type errors), started 12:48 AM Central, 25 November. **1:01 AM:** all nine libraries type-check with no errors (334 errors, 101 distinct, before); committed `ed97120b5`. Now running the nine projects' tests on the base and the branch, to compare counts; then `pre-pr-check`.
 
 ## Finished
 
