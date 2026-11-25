@@ -90,27 +90,6 @@
         }
       ]
     },
-    "argentina-vs-honduras-2026": {
-      "name": "Road to 26: Argentina vs. Honduras",
-      "layers": [
-        {
-          "id": "argentina-vs-honduras-shuttle-routes",
-          "url": "https://gis.it.tamu.edu/arcgis/rest/services/TS/Argentina_vs_Honduras26/MapServer/2"
-        },
-        {
-          "id": "argentina-vs-honduras-campus-shuttle-stops",
-          "url": "https://gis.it.tamu.edu/arcgis/rest/services/TS/Argentina_vs_Honduras26/MapServer/1"
-        },
-        {
-          "id": "argentina-vs-honduras-event-parking",
-          "url": "https://gis.it.tamu.edu/arcgis/rest/services/TS/Argentina_vs_Honduras26/MapServer/5"
-        },
-        {
-          "id": "argentina-vs-honduras-parking-and-rideshare",
-          "url": "https://gis.it.tamu.edu/arcgis/rest/services/TS/Argentina_vs_Honduras26/MapServer/4"
-        }
-      ]
-    },
     "avp-parking": {
       "name": "Any Valid Permit (AVP) Parking",
       "layers": [
@@ -759,15 +738,6 @@
         }
       ]
     },
-    "live-at-the-station": {
-      "name": "Live at the Station",
-      "layers": [
-        {
-          "id": "live-at-the-station-parking",
-          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Live_at_the_Station/FeatureServer/0"
-        }
-      ]
-    },
     "maintenance-parking": {
       "name": "Maintenance Parking",
       "layers": [
@@ -1103,27 +1073,6 @@
         }
       ]
     },
-    "savannah-bananas-parking": {
-      "name": "Banana Ball",
-      "layers": [
-        {
-          "id": "savannah-bananas-event-parking",
-          "url": "https://gis.it.tamu.edu/arcgis/rest/services/TS/SavannahBananas/MapServer/5"
-        },
-        {
-          "id": "savannah-bananas-accessible-prepaid-parking",
-          "url": "https://gis.it.tamu.edu/arcgis/rest/services/TS/SavannahBananas/MapServer/4"
-        },
-        {
-          "id": "savannah-bananas-shuttle-routes",
-          "url": "https://gis.it.tamu.edu/arcgis/rest/services/TS/SavannahBananas/MapServer/2"
-        },
-        {
-          "id": "savannah-bananas-shuttle-stops",
-          "url": "https://gis.it.tamu.edu/arcgis/rest/services/TS/SavannahBananas/MapServer/1"
-        }
-      ]
-    },
     "sec-grounds-conference": {
       "name": "SEC Grounds Conference",
       "layers": [
@@ -1189,19 +1138,6 @@
         {
           "id": "softball-parking-lots",
           "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/SoftballParking_view/FeatureServer/1"
-        }
-      ]
-    },
-    "softball-regionals-2025": {
-      "name": "Softball Regionals",
-      "layers": [
-        {
-          "id": "softball-routes",
-          "url": "https://gis.it.tamu.edu/arcgis/rest/services/TS/Softball_Regionals/MapServer/0"
-        },
-        {
-          "id": "softball-locations",
-          "url": "https://gis.it.tamu.edu/arcgis/rest/services/TS/Softball_Regionals/MapServer/1"
         }
       ]
     },
@@ -1379,15 +1315,6 @@
         }
       ]
     },
-    "troubadour-festival-2025": {
-      "name": "Troubadour Festival",
-      "layers": [
-        {
-          "id": "troubadour-parking",
-          "url": "https://gis.it.tamu.edu/arcgis/rest/services/TS/Troubadour_Festival/MapServer/0"
-        }
-      ]
-    },
     "ts-main-parking": {
       "name": "Campus Main Parking",
       "layers": [
@@ -1475,6 +1402,28 @@
       {
         "map": "ncaa-volleyball",
         "reason": "#2713: published on the development GIS server only; it goes to production if Texas A&M hosts (announced 29 November)"
+      }
+    ],
+    "retiredMaps": [
+      {
+        "map": "softball-regionals-2025",
+        "reason": "retired: the event is over, and its map is never shown (#1098)"
+      },
+      {
+        "map": "troubadour-festival-2025",
+        "reason": "retired: the event is over, and its map is never shown (#1098)"
+      },
+      {
+        "map": "savannah-bananas-parking",
+        "reason": "retired: the event is over, and its map is never shown (#1098)"
+      },
+      {
+        "map": "argentina-vs-honduras-2026",
+        "reason": "retired: the event is over, and its map is never shown (#1098)"
+      },
+      {
+        "map": "live-at-the-station",
+        "reason": "retired: the event is over, and its map is never shown (#1098)"
       }
     ],
     "developmentOnlyLayers": []

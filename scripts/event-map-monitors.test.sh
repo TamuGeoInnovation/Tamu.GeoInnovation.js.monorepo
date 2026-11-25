@@ -57,7 +57,11 @@ const fixture = {
     },
     'womens-basketball': { name: "Women's Basketball", layers: [{ id: 'accessible', url: `${WBB}/0` }] }
   },
-  skipped: { developmentOnlyMaps: [{ map: 'ncaa-volleyball', reason: '#2713' }], developmentOnlyLayers: [] }
+  skipped: {
+    developmentOnlyMaps: [{ map: 'ncaa-volleyball', reason: '#2713' }],
+    retiredMaps: [{ map: 'savannah-bananas-parking', reason: 'retired' }],
+    developmentOnlyLayers: []
+  }
 };
 const names = new Map([[`${MBSKT}/0`, 'Basketball Icons'], [`${WBB}/0`, 'Accessible Parking Spaces']]);
 const rows = monitorRows(fixture, names);
@@ -73,6 +77,7 @@ const urls = (map) => generated.maps[map].layers.map((layer) => layer.url);
 out('mens-basketball', urls('mens-basketball'));
 out('womens-basketball', urls('womens-basketball'));
 out('no-development-host', Object.values(generated.maps).flatMap((map) => map.layers).filter((l) => new URL(l.url).hostname.includes('dev')).length);
+out('retired-left-out', ['argentina-vs-honduras-2026', 'savannah-bananas-parking', 'softball-regionals-2025', 'troubadour-festival-2025'].map((id) => [id in generated.maps, generated.skipped.retiredMaps.some((skip) => skip.map === id)]));
 JS
 
 results="$(node_in_docker run.mjs 2>&1)"
@@ -107,11 +112,13 @@ check row '{"map":"mens-basketball","mapName":"Men'"'"'s Basketball","layer":"ga
 check same-url-same-monitor 'true'
 check unique '[["AggieMap: MBskt_view 0 (Basketball Icons)",["mens-basketball"]],["AggieMap: WomensBasketballParking_view 0 (Accessible Parking Spaces)",["mens-basketball","womens-basketball"]]]'
 check no-keyword-row 'null'
-check skipped '["Skipped 1 development-only map(s) and 0 development-only layer(s); a monitor would alert on something correctly absent from production.","  map ncaa-volleyball: #2713"]'
+check skipped '["Skipped 1 development-only map(s), 1 retired map(s) and 0 development-only layer(s); a monitor would alert on something correctly absent from production.","  map ncaa-volleyball: #2713","  map savannah-bananas-parking: retired"]'
 
 check mens-basketball '["https://gis.tamu.edu/arcgis/rest/services/Hosted/MBskt_view/FeatureServer/0","https://gis.tamu.edu/arcgis/rest/services/Hosted/MBskt_view/FeatureServer/1","https://gis.tamu.edu/arcgis/rest/services/Hosted/MBskt_view/FeatureServer/2"]'
 check womens-basketball '["https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/WomensBasketballParking_view/FeatureServer/0","https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/WomensBasketballParking_view/FeatureServer/1"]'
 check no-development-host '0'
+# The four retired maps whose services are stopped (a44): skipped and named, never listed.
+check retired-left-out '[[false,true],[false,true],[false,true],[false,true]]'
 
 # An unknown option is refused rather than ignored, so a typo doesn't print a list that looks right.
 node_in_docker monitors.mjs --offlne >/dev/null 2>&1

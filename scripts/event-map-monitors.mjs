@@ -110,10 +110,11 @@ export function uniqueRows(rows) {
 
 /** What was left out, and why, as lines. */
 export function skippedLines(generated) {
-  const { developmentOnlyMaps, developmentOnlyLayers } = generated.skipped;
+  const { developmentOnlyMaps, retiredMaps = [], developmentOnlyLayers } = generated.skipped;
   return [
-    `Skipped ${developmentOnlyMaps.length} development-only map(s) and ${developmentOnlyLayers.length} development-only layer(s); a monitor would alert on something correctly absent from production.`,
+    `Skipped ${developmentOnlyMaps.length} development-only map(s), ${retiredMaps.length} retired map(s) and ${developmentOnlyLayers.length} development-only layer(s); a monitor would alert on something correctly absent from production.`,
     ...developmentOnlyMaps.map((skip) => `  map ${skip.map}: ${skip.reason}`),
+    ...retiredMaps.map((skip) => `  map ${skip.map}: ${skip.reason}`),
     ...developmentOnlyLayers.map((skip) => `  ${skip.map} / ${skip.layer}: ${skip.reason}`)
   ];
 }

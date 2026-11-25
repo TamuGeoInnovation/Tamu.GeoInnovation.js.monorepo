@@ -25,6 +25,7 @@ import { AggiemapCustomMapConfiguration } from '../interfaces/special-event.inte
  *
  * **Left out, because a monitor would alert on something that is correctly absent:**
  * - every map marked `developmentOnly`;
+ * - every map whose `discover.status` is `retired`: the event is over, and `RetiredEventGuard` never shows its map;
  * - any layer whose service is in `DEVELOPMENT_ONLY_LAYER_SOURCES`;
  * - `developmentSources`, which only a development host draws.
  *
@@ -42,6 +43,7 @@ interface EventMapLayers {
   maps: Record<string, { name: string; layers: MonitoredLayer[] }>;
   skipped: {
     developmentOnlyMaps: Array<{ map: string; reason: string }>;
+    retiredMaps: Array<{ map: string; reason: string }>;
     developmentOnlyLayers: Array<{ map: string; layer: string; reason: string }>;
   };
 }
@@ -74,7 +76,10 @@ function drawnLayers(definition: AggiemapCustomMapConfiguration): MonitoredLayer
 
 function eventMapLayers(definitions: AggiemapCustomMapConfiguration[]): EventMapLayers {
   const excluded = developmentOnlyUrls();
-  const result: EventMapLayers = { maps: {}, skipped: { developmentOnlyMaps: [], developmentOnlyLayers: [] } };
+  const result: EventMapLayers = {
+    maps: {},
+    skipped: { developmentOnlyMaps: [], retiredMaps: [], developmentOnlyLayers: [] }
+  };
 
   for (const definition of definitions) {
     const id = definition.configuration?.id;
@@ -85,6 +90,13 @@ function eventMapLayers(definitions: AggiemapCustomMapConfiguration[]): EventMap
 
     if (definition.developmentOnly) {
       result.skipped.developmentOnlyMaps.push({ map: id, reason: definition.developmentOnly });
+      continue;
+    }
+
+    // An ended event: `RetiredEventGuard` sends a visitor to its `ended` page, never to the map (#1098), and its
+    // services are often stopped. A monitor would be red from the day it was made.
+    if (definition.discover?.status === 'retired') {
+      result.skipped.retiredMaps.push({ map: id, reason: 'retired: the event is over, and its map is never shown (#1098)' });
       continue;
     }
 
@@ -142,6 +154,25 @@ describe('event map monitors (#3674)', () => {
 
     expect(generated.skipped.developmentOnlyMaps.map((skip) => skip.map)).toEqual(developmentOnly);
     expect(developmentOnly.filter((id) => id && id in generated.maps)).toEqual([]);
+  });
+
+  // Savannah Bananas is one of four retired maps whose services are stopped on production: listing them made eleven
+  // monitors that would be red from the day they were made (a44).
+  it('leaves out a retired map, saying why', () => {
+    expect(generated.maps['savannah-bananas-parking']).toBeUndefined();
+    expect(generated.skipped.retiredMaps.map((skip) => skip.map)).toContain('savannah-bananas-parking');
+  });
+
+  it('leaves out every retired map and nothing else', () => {
+    const current = EventDefinitions.filter(
+      (definition) => !definition.developmentOnly && definition.discover?.status !== 'retired'
+    )
+      .filter((definition) => drawnLayers(definition).length)
+      .map((definition) => definition.configuration?.id)
+      .sort();
+
+    expect(Object.keys(generated.maps).sort()).toEqual(current);
+    expect(current).toContain('womens-basketball');
   });
 
   it('match the file the script reads', async () => {
