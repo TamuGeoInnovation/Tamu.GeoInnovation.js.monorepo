@@ -1,5 +1,63 @@
 # work-lab-leila: current tasks
 
+## Batch a20 (aggiemap: #2719, re-measure the fourteen layer-name overrides before deleting any) (Medium) - **after a18**
+
+[#2719](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2719): fourteen layers
+carry a `title` that restates their service's own layer name word for word, so the override is a silent veto
+on every future rename. The Men's Basketball layers were renamed in their service and the map went on showing
+the old names until somebody noticed
+([#1431](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1431)).
+
+### 1. The measurement is the work. Do it before deleting anything.
+
+The list of fourteen was taken on **8 November**. Since then the campus basemap moved to **VTBase4**
+([#3299](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3299)), **Nature Rx became
+Nature Spaces** ([#3223](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3223)),
+development's parking now reads production
+([#3358](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3358)) and the garages
+moved onto Campus Structures ([#3425](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3425)).
+
+**An override is only safe to delete while the service still publishes the name it was measured against.**
+Where a service has been republished, removing the override does not restore the right name - it shows
+whatever the new service says, which nobody has looked at, on a layer a visitor sees.
+
+This is not hypothetical: [#2765](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2765)
+is the same job at a larger scale, its branch is **314 commits behind**, and I flagged it rather than merge it
+for exactly this reason. Do not repeat that here.
+
+So: for each of the fourteen, **query the service and read the layer's own name today**, and compare it to the
+override. Report the three columns - map, layer, override title, service's current name, and whether they
+still agree. `test/smoke/aggiemap/layer-title-overrides.json` has the registry (194 entries); the definitions
+have the URLs.
+
+**Delete only the ones that still agree exactly.** Any that no longer agree stay, and go in the report as a
+finding - a service renamed under us is worth knowing about on its own.
+
+### 2. The check, which is the half that makes it stick
+
+#2719's "done when" asks for a check so an override that merely repeats its service cannot come back quietly.
+That needs the same comparison as step 1, run as a test. If it can read the registry and the services and fail
+on an exact match, that is the check; if it cannot be done without network access in a unit test, say so and
+propose where it belongs (the smoke suite reaches services already).
+
+**Do not invent a second mechanism.** `services.spec.ts` and `service-metadata.spec.ts` already ask services
+about themselves, and `gis-hosts.spec.ts` already scans the suite's own source. Extend one of those.
+
+### 3. Checking and reporting
+
+`scripts/check-in-volume.sh refactor/2719-title-overrides <projects it edits>,aggiemap-angular`, its own `Exit`
+line. Nothing a visitor sees should change - the strings are identical, which is what makes this batch
+separable - so if a title *does* change in a local run, stop: that is a service disagreeing and it belongs in
+the report, not in the branch.
+
+You have no `gh`: push the branch and the report, open nothing. Branch `refactor/2719-title-overrides` from
+the latest `development`. Say **"branch ready: refactor/2719-title-overrides"**.
+
+`work-lab-leila/reports/2026-11-25-a20.md`: the fourteen-row table from step 1, which you deleted, which you
+left and why, and what you concluded about the check.
+
+**Questions come to me** (`work (aggiemap)`), with options and a recommendation.
+
 ## Batch a18 (aggiemap: #3473, one "map finished drawing" wait and one home for the probe name) (Medium) - **now**
 
 Welcome back. This is the biggest of the reuse-scan findings and it wants a machine to itself, which is why it
