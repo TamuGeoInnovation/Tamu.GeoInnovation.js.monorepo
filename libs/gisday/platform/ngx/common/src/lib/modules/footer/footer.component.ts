@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { combineLatest, map, Observable, switchMap } from 'rxjs';
 import { placesShownOn } from '@tamu-gisc/gisday/common';
 
@@ -15,7 +15,6 @@ import { GISDAY_SITE, SiteHasPipe } from '../../site/site';
   selector: 'tamu-gisc-app-footer',
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [SiteHasPipe, RouterLink, AsyncPipe, SeasonLinkPipe]
 })
 export class FooterComponent implements OnInit {
