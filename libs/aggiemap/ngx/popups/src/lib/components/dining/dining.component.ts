@@ -87,7 +87,10 @@ export class DiningPopupComponent extends BaseDirectionsComponent implements OnI
   public get address(): string {
     const attributes = this.data?.attributes ?? {};
     const state = diningStateAbbreviation(attributes['state']);
-    const cityAndState = [attributes['city'], state].map((part) => `${part ?? ''}`.trim()).filter(Boolean).join(', ');
+    const cityAndState = [attributes['city'], state]
+      .map((part) => `${part ?? ''}`.trim())
+      .filter(Boolean)
+      .join(', ');
 
     return [`${attributes['street'] ?? ''}`.trim(), cityAndState].filter(Boolean).join(' ');
   }
