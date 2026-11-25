@@ -22,7 +22,7 @@ describe('SubmissionTypeProvider', () => {
         SubmissionTypeProvider,
         {
           provide: getRepositoryToken(SubmissionType),
-          useValue: { find: jest.fn(), findOne: jest.fn(), create: jest.fn(), save: jest.fn(), delete: jest.fn() }
+          useValue: { find: vi.fn(), findOne: vi.fn(), create: vi.fn(), save: vi.fn(), delete: vi.fn() }
         }
       ]
     }).compile();
@@ -32,7 +32,7 @@ describe('SubmissionTypeProvider', () => {
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('should be defined', () => {
@@ -40,14 +40,14 @@ describe('SubmissionTypeProvider', () => {
   });
 
   it('routes inherited lookups to the SubmissionType repository', async () => {
-    jest.spyOn(repo, 'find').mockResolvedValue([{ guid: 'x-1' }] as never);
+    vi.spyOn(repo, 'find').mockResolvedValue([{ guid: 'x-1' }] as never);
 
     await expect(provider.find({})).resolves.toEqual([{ guid: 'x-1' }]);
     expect(repo.find).toHaveBeenCalled();
   });
 
   it('routes inherited deletes to the SubmissionType repository', async () => {
-    jest.spyOn(repo, 'delete').mockResolvedValue({ affected: 1 } as never);
+    vi.spyOn(repo, 'delete').mockResolvedValue({ affected: 1 } as never);
 
     await provider.deleteEntities(['x-1']);
 

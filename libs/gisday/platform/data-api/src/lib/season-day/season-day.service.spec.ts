@@ -23,10 +23,7 @@ describe('SeasonDayService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        SeasonDayService,
-        { provide: getRepositoryToken(SeasonDay), useValue: { findOne: jest.fn() } }
-      ]
+      providers: [SeasonDayService, { provide: getRepositoryToken(SeasonDay), useValue: { findOne: vi.fn() } }]
     }).compile();
 
     service = module.get<SeasonDayService>(SeasonDayService);
@@ -34,7 +31,7 @@ describe('SeasonDayService', () => {
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('should be defined', () => {
@@ -43,13 +40,13 @@ describe('SeasonDayService', () => {
 
   describe('.getDayEvents()', () => {
     it('throws NotFound when the day does not exist', async () => {
-      jest.spyOn(dayRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(dayRepo, 'findOne').mockResolvedValue(null);
 
       await expect(service.getDayEvents('missing')).rejects.toThrow(NotFoundException);
     });
 
     it('reduces tags, affiliations and places to guid lists', async () => {
-      jest.spyOn(dayRepo, 'findOne').mockResolvedValue({
+      vi.spyOn(dayRepo, 'findOne').mockResolvedValue({
         guid: 'd-1',
         events: [
           event({
@@ -68,7 +65,7 @@ describe('SeasonDayService', () => {
     });
 
     it('drops speakers from the payload once their organizations have been collected', async () => {
-      jest.spyOn(dayRepo, 'findOne').mockResolvedValue({
+      vi.spyOn(dayRepo, 'findOne').mockResolvedValue({
         guid: 'd-1',
         events: [event({ speakers: [{ guid: 's-1', organization: { guid: 'o-1' } }] })]
       } as unknown as SeasonDay);
@@ -85,7 +82,7 @@ describe('SeasonDayService', () => {
      * names: only the names, which the Presenters page shows already, never a speaker's email or account.
      */
     it("sends the names of the event's presenters, and nothing else of them", async () => {
-      jest.spyOn(dayRepo, 'findOne').mockResolvedValue({
+      vi.spyOn(dayRepo, 'findOne').mockResolvedValue({
         guid: 'd-1',
         events: [
           event({
@@ -105,12 +102,9 @@ describe('SeasonDayService', () => {
     });
 
     it('excludes inactive events', async () => {
-      jest.spyOn(dayRepo, 'findOne').mockResolvedValue({
+      vi.spyOn(dayRepo, 'findOne').mockResolvedValue({
         guid: 'd-1',
-        events: [
-          event({ guid: 'e-hidden', active: false }),
-          event({ guid: 'e-shown', active: true })
-        ]
+        events: [event({ guid: 'e-hidden', active: false }), event({ guid: 'e-shown', active: true })]
       } as unknown as SeasonDay);
 
       const simplified = await service.getDayEvents('d-1');
@@ -119,7 +113,7 @@ describe('SeasonDayService', () => {
     });
 
     it('orders events by start time', async () => {
-      jest.spyOn(dayRepo, 'findOne').mockResolvedValue({
+      vi.spyOn(dayRepo, 'findOne').mockResolvedValue({
         guid: 'd-1',
         events: [
           event({ guid: 'e-late', startTime: '15:00' }),
@@ -134,7 +128,7 @@ describe('SeasonDayService', () => {
     });
 
     it('tolerates an event with no tags and no location', async () => {
-      jest.spyOn(dayRepo, 'findOne').mockResolvedValue({
+      vi.spyOn(dayRepo, 'findOne').mockResolvedValue({
         guid: 'd-1',
         events: [event({ tags: undefined, location: null })]
       } as unknown as SeasonDay);
@@ -146,7 +140,7 @@ describe('SeasonDayService', () => {
     });
 
     it('tolerates a location with no place', async () => {
-      jest.spyOn(dayRepo, 'findOne').mockResolvedValue({
+      vi.spyOn(dayRepo, 'findOne').mockResolvedValue({
         guid: 'd-1',
         events: [event({ location: { guid: 'el-1', place: null } })]
       } as unknown as SeasonDay);
@@ -164,7 +158,7 @@ describe('SeasonDayService', () => {
      * recorded rather than left to chance.
      */
     it('skips a speaker whose organization is null', async () => {
-      jest.spyOn(dayRepo, 'findOne').mockResolvedValue({
+      vi.spyOn(dayRepo, 'findOne').mockResolvedValue({
         guid: 'd-1',
         events: [
           event({
@@ -182,13 +176,13 @@ describe('SeasonDayService', () => {
     });
 
     it('wraps a repository failure as 500', async () => {
-      jest.spyOn(dayRepo, 'findOne').mockRejectedValue(new Error('connection lost'));
+      vi.spyOn(dayRepo, 'findOne').mockRejectedValue(new Error('connection lost'));
 
       await expect(service.getDayEvents('d-1')).rejects.toThrow(InternalServerErrorException);
     });
 
     it('lets the NotFound through rather than converting it to 500', async () => {
-      jest.spyOn(dayRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(dayRepo, 'findOne').mockResolvedValue(null);
 
       // The NotFound is raised inside the try; the guard added in #976 is what keeps it a 404.
       await expect(service.getDayEvents('missing')).rejects.not.toThrow(InternalServerErrorException);

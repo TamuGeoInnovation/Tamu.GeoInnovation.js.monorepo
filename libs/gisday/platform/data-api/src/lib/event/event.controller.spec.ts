@@ -27,12 +27,12 @@ describe('EventController, hidden sessions (#3354)', () => {
 
   function controller(): Routes {
     const provider = {
-      getEvents: jest.fn(async () => both()),
-      getEventsForActiveSeason: jest.fn(async () => both()),
-      getEventsForSeason: jest.fn(async () => both()),
-      getEntitiesByDay: jest.fn(async () => of([[{ ...shown }], [{ ...hidden }]])),
-      findOne: jest.fn(async ({ where }) => both().find((e) => e.guid === where.guid) ?? null),
-      getEventDetails: jest.fn(async (guid: string) => both().find((e) => e.guid === guid))
+      getEvents: vi.fn(async () => both()),
+      getEventsForActiveSeason: vi.fn(async () => both()),
+      getEventsForSeason: vi.fn(async () => both()),
+      getEntitiesByDay: vi.fn(async () => of([[{ ...shown }], [{ ...hidden }]])),
+      findOne: vi.fn(async ({ where }) => both().find((e) => e.guid === where.guid) ?? null),
+      getEventDetails: vi.fn(async (guid: string) => both().find((e) => e.guid === guid))
     };
 
     return new EventController(provider as unknown as EventProvider) as unknown as Routes;
