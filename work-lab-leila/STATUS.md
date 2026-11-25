@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **12:38 PM Central, 25 November 2026**. A listener; job: testing.
+Last written **12:44 PM Central, 25 November 2026**. A listener; job: testing.
 
 ## g203 is done, not unstarted (12:07 AM Central, Wednesday 25 November 2026)
 
@@ -140,10 +140,11 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 ## Running now
 
-**Batch a50 (workspace): #3678, the sweep reports what it cannot reclaim.** Since 12:38 PM Central, 25 November.
+Nothing. Idle since 12:44 PM Central, 25 November; listening.
 
 ## Finished
 
+- **Batch a50 (workspace): #3678, the sweep reports what it cannot reclaim** (12:38 to 12:44 PM, 25 November). **branch ready:** `fix/3678-tidy-orphaned-worktrees` (`fabe03b91`). `pre-pr-check: Exit 0 (fix/3678-tidy-orphaned-worktrees): ready to open.` Two kinds with totals; `--remove-orphans` only behind its flag, refusing anything with a `.git`. 58 of 58 tests, red first. Nothing removed. Q-a50-1. Report `reports/2026-11-25-a50.md`.
 - **Batch a47 (aggiemap): retired maps out of #3674's generator** (11:48 to 11:53 AM, 25 November). **branch ready:** `fix/3674-event-map-monitors` (`a1952f65a`). `pre-pr-check: Exit 0 (fix/3674-event-map-monitors): ready to open.` Five retired maps skipped; 218 monitors for 80 maps; every URL now gives a name. `.pr-body.md` untracked; text in the report. Report `reports/2026-11-25-a47.md`.
 - **Batch a44 (aggiemap): #3674, the Kuma monitor list from the event definitions** (11:30 AM to 11:37 AM, 25 November). **branch ready:** `fix/3674-event-map-monitors` (`652132179`), `check-in-volume.sh` affected `Exit 0`. All five known basketball rows match, names included; 230 monitors for 85 maps; 11 layers on four past maps answer "not started". `.pr-body.md` untracked; text in the report. Q-a44-1, Q-a44-2. Report `reports/2026-11-25-a44.md`. (a41 was withdrawn after it had finished.)
 - **Batch g224 (gisday): #3668 on a branch** (10:44 AM to 10:47 AM, 25 November). **branch ready, part done:** `fix/3668-gisday-write-route-guards` (`69283c8a0`), `check-in-volume.sh` `Exit 0`. 2 of 5 routes guarded, red (201) then green; 3 wait on Q-g224-1. Don't open the PR until they are in. Report `reports/2026-11-25-g224.md`.
@@ -713,4 +714,4 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 192 and 191 again (8 November), aggiemap's 31, 30 and 29 (9 November), and aggiemap's 32, 33, 34 and 35 (10 November), 36 and 37 (11 November), 38 (13 November), 39, 40, 41, 42, 46, 43, 44, 49, 50, 47, 48, 51, 52, 53, 54, 55, 56, 57 and 58 (14 November), 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 72, 73, 74, 71, 75, 76, #3044's screenshots, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 87b, 89, 91, 92, 93, 94, 88, 95, 90, 98, 99, 96, 102, 100, 101, 103, 104 and 105 (15 November), 106, 107, 108, 109, 110, 111, 112, 113, 112b, 113b, 114, 115, 116, 117, 118, 119, 120, 121, 122 and 123 (16 November), 124, 125, 126, 127, 128 and 129 (17 November), 130 to 134 (18 November), 135 to 139 (19 November), 193 to 198 (23 November), 199 to 203, g201, a18, g202, a20, g203, a21 and a23 (24 November), a24, a26, g204, g205, g206, g207, g208, g209, g210, g211, g212, a29, g213, a30, g214, g215, g216, g217, g218, g219, g220, g221, g222, g223, a36, a41, g224, a44 and a47 (25 November) (139, 141 to 192 reported; 140 needs the maintainer; 151 not run, see report 137) (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 192 and 191 again (8 November), aggiemap's 31, 30 and 29 (9 November), and aggiemap's 32, 33, 34 and 35 (10 November), 36 and 37 (11 November), 38 (13 November), 39, 40, 41, 42, 46, 43, 44, 49, 50, 47, 48, 51, 52, 53, 54, 55, 56, 57 and 58 (14 November), 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 72, 73, 74, 71, 75, 76, #3044's screenshots, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 87b, 89, 91, 92, 93, 94, 88, 95, 90, 98, 99, 96, 102, 100, 101, 103, 104 and 105 (15 November), 106, 107, 108, 109, 110, 111, 112, 113, 112b, 113b, 114, 115, 116, 117, 118, 119, 120, 121, 122 and 123 (16 November), 124, 125, 126, 127, 128 and 129 (17 November), 130 to 134 (18 November), 135 to 139 (19 November), 193 to 198 (23 November), 199 to 203, g201, a18, g202, a20, g203, a21 and a23 (24 November), a24, a26, g204, g205, g206, g207, g208, g209, g210, g211, g212, a29, g213, a30, g214, g215, g216, g217, g218, g219, g220, g221, g222, g223, a36, a41, g224, a44, a47 and a50 (25 November) (139, 141 to 192 reported; 140 needs the maintainer; 151 not run, see report 137) (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
