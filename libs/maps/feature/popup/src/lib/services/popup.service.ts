@@ -6,7 +6,7 @@ import { HitTestSnapshot, PopupComponentReference } from '@tamu-gisc/maps/esri';
 import { LayerSource } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
-import { hasTemplateExpression, TemplateRenderer } from '@tamu-gisc/common/utils/string';
+import { hasTemplateExpression, renderTemplateRows } from '@tamu-gisc/common/utils/string';
 
 import esri = __esri;
 
@@ -219,7 +219,10 @@ export class PopupService {
     const lookup = this.getPopupDataLookup(graphic, resolvedEntries, strategy);
 
     if (hasTemplateExpression(definition)) {
-      return new TemplateRenderer({
+      // Rows, not one string: a popup description lists its rows separated by newlines, and a row whose value
+      // is empty used to render its label with nothing after it - "Type:" on a layer where the service leaves
+      // `notes` empty, which reads as a fault in the map rather than an absent value (#2816).
+      return renderTemplateRows({
         template: definition,
         lookup,
         options:
@@ -229,7 +232,7 @@ export class PopupService {
                 trim: true
               }
             : undefined
-      }).render();
+      });
     }
 
     return getPropertyValue(lookup, definition);
