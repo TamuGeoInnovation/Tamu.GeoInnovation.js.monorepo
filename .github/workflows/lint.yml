@@ -47,9 +47,10 @@ jobs:
         run: node tools/security-findings/install-scripts.mjs
 
       # Every registry package's signature, and its provenance where it has one, checked against the registry's
-      # keys (#2293). About 15 seconds; fails on a missing or invalid signature.
+      # keys (#2293). About 15 seconds; fails on a missing or invalid signature. Tried again, up to three times, only
+      # when the registry fails to answer (FETCH_ERROR), never for a signature that is wrong (#3439).
       - name: Check registry signatures
-        run: npm audit signatures
+        run: node tools/security-findings/audit-signatures.mjs
 
       # Every difference between the development and production GIS services is recorded in code as a
       # workaround, so nothing used to make anybody report it to the GIS team and about fifty accumulated

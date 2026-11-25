@@ -175,6 +175,21 @@ sweep_needed() {
   ! free_space_check "$path" "$watermark" >/dev/null 2>&1
 }
 
+# The check's container is named after its volume, `check-<volume>`, so `docker ps` alone says which checks are
+# running and on which branch: several sessions share one machine, and an anonymous check container was nearly killed
+# by a cleanup that could not tell whose it was (#3406). Fails, saying so, when a check of that name is already
+# running, because two checks in one volume would overwrite each other's clone and cache. A stopped leftover of that
+# name (a container killed before --rm could remove it) is removed. Tested by scripts/check-in-volume.test.sh.
+container_free() {
+  local name="$1" state
+  state="$(docker inspect -f '{{.State.Status}}' "$name" 2>/dev/null)" || return 0
+  if [ "$state" = running ]; then
+    echo "A check is already running in container $name, in the same volume. Wait for it to finish (docker ps shows it), or, if it is yours, stop it: docker rm -f $name" >&2
+    return 1
+  fi
+  docker rm -f "$name" >/dev/null 2>&1 || true
+}
+
 # Sourced (by the test): stop here, with only the functions defined.
 [ "${BASH_SOURCE[0]}" = "$0" ] || return 0
 
@@ -342,7 +357,9 @@ set +e
 # Every `docker run` is a new machine as far as Nx can tell, so it would refuse the cache the previous
 # check left in the volume ("was not generated on this machine") and fail the run. Only this script's
 # containers ever write that cache, so it is trusted.
-docker run --rm -m "$memory" \
+container="check-$volume"
+container_free "$container" || exit 1
+docker run --rm --name "$container" -m "$memory" \
   -v "$volume:/w" -v "$src:/src:ro" -w /w \
   -e CHECK_MEMORY="$memory" -e CHECK_PARALLEL="$parallel" -e NX_DAEMON=false -e NX_REJECT_UNKNOWN_LOCAL_CACHE=0 -e LINT_STEPS="$extra" node:24.22.1 sh -c "$(declare -f unknown_projects)
 $inner" check "$branch" "$mode" "${runs[@]}" >"$log" 2>&1

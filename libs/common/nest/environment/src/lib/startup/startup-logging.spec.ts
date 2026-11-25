@@ -1,3 +1,6 @@
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { join, resolve } from 'node:path';
+
 import { logStartupEnvironment } from './startup-logging';
 
 describe('logStartupEnvironment', () => {
@@ -22,5 +25,28 @@ describe('logStartupEnvironment', () => {
 
   it('is off when LOGGING is unset', () => {
     expect(run({ TYPEORM_PASSWORD: secret })).toBe('');
+  });
+});
+
+/**
+ * #1518. The helper only helps the apps that call it: geoservices-nest, mailroom-nest and mailroom-helper-nest each
+ * had their own copy of the old block, which printed `process.env` - database passwords and client secrets included -
+ * whenever `LOGGING` was on. No Nest app's `main.ts` may hand `process.env` to a log line.
+ */
+describe("the Nest apps' main.ts", () => {
+  const apps = resolve(__dirname, '../../../../../../../apps');
+  const mains = readdirSync(apps)
+    .filter((app) => app.endsWith('-nest'))
+    .map((app) => join(apps, app, 'src', 'main.ts'))
+    .filter((file) => existsSync(file));
+
+  it('finds the Nest apps', () => {
+    expect(mains.length).toBeGreaterThan(3);
+  });
+
+  it.each(mains)('%s never logs process.env', (file) => {
+    const source = readFileSync(file, 'utf8');
+
+    expect(source).not.toMatch(/console\.\w+\([^)]*\bprocess\.env\s*\)/);
   });
 });

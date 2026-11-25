@@ -10,16 +10,14 @@ import * as dotenv from 'dotenv';
 dotenv.config({ quiet: true });
 
 import { Mailer } from '@tamu-gisc/mailroom/data-api';
+import { logStartupEnvironment } from '@tamu-gisc/common/nest/environment';
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
 
 async function bootstrap() {
-  // Simple check for required environment variables
-  if (environment.logging) {
-    console.log('Logging is enabled');
-    console.log('Environment variables: ', process.env);
-  }
+  // Says only that logging is on: the environment carries secrets, so it is never printed (#1514, #1518).
+  logStartupEnvironment(process.env);
 
   if (
     process.env.TYPEORM_CONNECTION === undefined ||

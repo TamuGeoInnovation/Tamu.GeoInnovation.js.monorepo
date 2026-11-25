@@ -198,8 +198,10 @@ const cases: Array<Case<unknown>> = [
     host: DateTimePickerHostComponent,
     loaded: new Date(2026, 10, 19, 9, 0),
     userChange: (fixture) => {
-      // The native input's change, which the picker's tooltip holds.
-      control(fixture, DateTimePickerComponent).handleInputChange('2026-11-20T10:30');
+      // A date from the calendar, then a time from the list: the picker's two steps since #2583.
+      const picker = control(fixture, DateTimePickerComponent);
+      picker.handleDatePicked(new Date(2026, 10, 20));
+      picker.handleTimePicked(new Date(2026, 10, 20, 10, 30));
     },
     changedTo: new Date(2026, 10, 20, 10, 30)
   } as Case<Date>

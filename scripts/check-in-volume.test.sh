@@ -147,4 +147,34 @@ expect "a disk running low asks for a sweep" "sweep" "$r"
 CHECK_SWEEP_FREE_GB=99999999 sweep_needed . && r=sweep || r=no
 expect "CHECK_SWEEP_FREE_GB sets the watermark" "sweep" "$r"
 
+# The container is named after its volume, and a second check in the same volume is refused rather than run on top of
+# the first (#3406). Docker is replaced by a stub that answers from $states and records what it was asked to remove.
+states=""
+removed=""
+docker() {
+  case "$1" in
+    inspect)
+      local s
+      s="$(printf '%s\n' "$states" | awk -v n="${*: -1}" '$1 == n { print $2 }')"
+      [ -n "$s" ] && echo "$s" || return 1
+      ;;
+    rm) removed="$removed ${*: -1}" ;;
+  esac
+}
+container_free check-tamu-js-1 && r=free || r=refused
+expect "no container of that name: the check may start" "free" "$r"
+states="check-tamu-js-1 running"
+msg="$(container_free check-tamu-js-1 2>&1)" && r=free || r=refused
+expect "a running check in that volume refuses a second" "refused" "$r"
+case "$msg" in *"check-tamu-js-1"*"docker ps"*) r=yes ;; *) r=no ;; esac
+expect "and says which container, and how to see it" "yes" "$r"
+states="check-tamu-js-1 exited"
+removed=""
+container_free check-tamu-js-1 && r=free || r=refused
+expect "a stopped leftover does not block the check" "free" "$r"
+expect "and is removed first" " check-tamu-js-1" "$removed"
+unset -f docker
+grep -q -- '--name "$container"' "$(dirname "$0")/check-in-volume.sh" && r=yes || r=no
+expect "the check's docker run is named" "yes" "$r"
+
 exit "$failed"
