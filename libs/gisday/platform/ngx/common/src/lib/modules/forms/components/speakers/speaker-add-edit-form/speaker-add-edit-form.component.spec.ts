@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
@@ -17,10 +18,16 @@ import { shrinkImage } from '@tamu-gisc/common/utils/ui';
 
 import { SpeakerAddEditFormComponent } from './speaker-add-edit-form.component';
 
+// A save goes back to its list page. Any address is a page here, so that navigation resolves; under Jest a rejected
+// one went unnoticed, and Vitest reports it as an unhandled error (#1977).
+const anyPage = [{ path: '**', children: [] }];
+
 // The browser's redraw, which jsdom cannot do: a photo comes back as a small JPEG, as `shrinkImage` makes one (#3177).
-jest.mock('@tamu-gisc/common/utils/ui', () => ({
-  ...jest.requireActual('@tamu-gisc/common/utils/ui'),
-  shrinkImage: jest.fn(async (file: File) => new File(['small'], file.name.replace(/\.[^.]*$/, '') + '.jpg', { type: 'image/jpeg' }))
+vi.mock('@tamu-gisc/common/utils/ui', async (original) => ({
+  ...(await original<object>()),
+  shrinkImage: vi.fn(
+    async (file: File) => new File(['small'], file.name.replace(/\.[^.]*$/, '') + '.jpg', { type: 'image/jpeg' })
+  )
 }));
 
 describe('SpeakerAddEditFormComponent', () => {
@@ -29,7 +36,7 @@ describe('SpeakerAddEditFormComponent', () => {
     function create() {
       TestBed.configureTestingModule({
         providers: [
-          provideRouter([]),
+          provideRouter(anyPage),
           provideHttpClient(),
           { provide: SpeakerService, useValue: { getEntity: () => of({}) } },
           { provide: AssetsService, useValue: { getAssetUrl: (path: string) => of(`assets/uploads/${path}`) } },
@@ -44,7 +51,8 @@ describe('SpeakerAddEditFormComponent', () => {
       fixture.componentRef.setInput('type', 'create');
       fixture.detectChanges();
 
-      const images = () => Array.from((fixture.nativeElement as HTMLElement).querySelectorAll<HTMLImageElement>('.speaker-photo img'));
+      const images = () =>
+        Array.from((fixture.nativeElement as HTMLElement).querySelectorAll<HTMLImageElement>('.speaker-photo img'));
       const icon = () =>
         (fixture.nativeElement as HTMLElement).querySelector('.speaker-photo .material-icons')?.textContent.trim();
       const choose = (file: File | null) => {
@@ -56,7 +64,7 @@ describe('SpeakerAddEditFormComponent', () => {
     }
 
     beforeEach(() => {
-      URL.createObjectURL = jest.fn(() => 'blob:chosen-photo');
+      URL.createObjectURL = vi.fn(() => 'blob:chosen-photo');
     });
 
     it('draws no image without a source before a photograph is chosen', () => {
@@ -109,7 +117,7 @@ describe('SpeakerAddEditFormComponent', () => {
     function create() {
       TestBed.configureTestingModule({
         providers: [
-          provideRouter([]),
+          provideRouter(anyPage),
           provideHttpClient(),
           { provide: SpeakerService, useValue: { getEntity: () => of({}) } },
           { provide: AssetsService, useValue: { getAssetUrl: () => of(null) } },
@@ -124,7 +132,8 @@ describe('SpeakerAddEditFormComponent', () => {
       fixture.componentRef.setInput('type', 'create');
       fixture.detectChanges();
 
-      const banner = () => (fixture.nativeElement as HTMLElement).querySelector('.speaker-photo .class-banner')?.textContent?.trim() ?? null;
+      const banner = () =>
+        (fixture.nativeElement as HTMLElement).querySelector('.speaker-photo .class-banner')?.textContent?.trim() ?? null;
       const set = (value: object) => {
         fixture.componentInstance.form.patchValue(value);
         fixture.detectChanges();
@@ -136,7 +145,7 @@ describe('SpeakerAddEditFormComponent', () => {
     }
 
     beforeEach(() => {
-      URL.createObjectURL = jest.fn(() => 'blob:chosen-photo');
+      URL.createObjectURL = vi.fn(() => 'blob:chosen-photo');
     });
 
     it('shows the university and class year chosen in the form', () => {
@@ -189,10 +198,10 @@ describe('SpeakerAddEditFormComponent', () => {
   });
 
   async function openForImage(): Promise<ComponentFixture<SpeakerAddEditFormComponent>> {
-    URL.createObjectURL = jest.fn(() => 'blob:chosen-photo');
+    URL.createObjectURL = vi.fn(() => 'blob:chosen-photo');
     TestBed.configureTestingModule({
       providers: [
-        provideRouter([]),
+        provideRouter(anyPage),
         provideHttpClient(),
         { provide: SpeakerService, useValue: { getEntity: () => of({}) } },
         { provide: AssetsService, useValue: { getAssetUrl: (path: string) => of(`assets/uploads/${path}`) } },
@@ -262,20 +271,20 @@ describe('SpeakerAddEditFormComponent', () => {
    * 1,600 pixels a side, and a refusal shows the API's reason rather than only its status.
    */
   describe('saving a photo (#3177)', () => {
-    let speakers: { getEntity: jest.Mock; insertSpeakerInfo: jest.Mock; updateSpeakerInfo: jest.Mock };
-    let toast: jest.Mock;
+    let speakers: { getEntity: Mock; insertSpeakerInfo: Mock; updateSpeakerInfo: Mock };
+    let toast: Mock;
 
     async function openToSave(): Promise<ComponentFixture<SpeakerAddEditFormComponent>> {
-      URL.createObjectURL = jest.fn(() => 'blob:chosen-photo');
+      URL.createObjectURL = vi.fn(() => 'blob:chosen-photo');
       speakers = {
-        getEntity: jest.fn(() => of({})),
-        insertSpeakerInfo: jest.fn(() => of({})),
-        updateSpeakerInfo: jest.fn(() => of({}))
+        getEntity: vi.fn(() => of({})),
+        insertSpeakerInfo: vi.fn(() => of({})),
+        updateSpeakerInfo: vi.fn(() => of({}))
       };
-      toast = jest.fn();
+      toast = vi.fn();
       TestBed.configureTestingModule({
         providers: [
-          provideRouter([]),
+          provideRouter(anyPage),
           provideHttpClient(),
           { provide: SpeakerService, useValue: speakers },
           { provide: AssetsService, useValue: { getAssetUrl: (path: string) => of(`assets/uploads/${path}`) } },
@@ -294,7 +303,7 @@ describe('SpeakerAddEditFormComponent', () => {
     }
 
     const photo = new File([new Uint8Array(745 * 1024)], 'portrait.png', { type: 'image/png' });
-    const sent = (call: jest.Mock) => (call.mock.calls[0].at(-1) as FormData).get('file') as File;
+    const sent = (call: Mock) => (call.mock.calls[0].at(-1) as FormData).get('file') as File;
 
     it('sends the chosen photo shrunk, not as it was chosen', async () => {
       const fixture = await openToSave();
