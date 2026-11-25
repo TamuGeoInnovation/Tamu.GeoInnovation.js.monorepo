@@ -23,7 +23,6 @@ import { AggiemapCustomMapConfiguration } from '../../interfaces/special-event.i
 import { EventDefinitions } from '../../definitions/all.definitions';
 import { BreakSummerParkingTs } from '../../definitions/break-summer.definitions';
 import { AVP_PARKING_LAYERS, AVPParkingColdLayerSources } from '../../definitions/avp-parking.definitions';
-import { INDOOR_TRACK_PARKING_LAYERS, IndoorTrackParkingTs } from '../../definitions/indoor-track-parking.definitions';
 import { EventService } from './event.service';
 
 /** The main map's layers, as the environment provides them to every map. */

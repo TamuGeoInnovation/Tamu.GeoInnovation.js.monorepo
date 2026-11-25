@@ -126,7 +126,11 @@ export class BasemapGalleryService {
       const [reactiveUtils] = (await this.mp.require(['reactiveUtils'])) as [esri.reactiveUtils];
 
       watch?.remove();
-      watch = reactiveUtils.watch(() => instance.map.basemap, () => this.onBasemapChange(instance), { initial: true });
+      watch = reactiveUtils.watch(
+        () => instance.map.basemap,
+        () => this.onBasemapChange(instance),
+        { initial: true }
+      );
     });
   }
 
@@ -195,7 +199,9 @@ export class BasemapGalleryService {
                 baseLayer
                   ?.load()
                   .then(() => {
-                    if (!drawsInAScene((baseLayer as unknown as { spatialReference?: esri.SpatialReference }).spatialReference)) {
+                    if (
+                      !drawsInAScene((baseLayer as unknown as { spatialReference?: esri.SpatialReference }).spatialReference)
+                    ) {
                       this.notForScenes.update((ids) => new Set([...ids, basemap.id]));
                     }
                   })
@@ -322,7 +328,7 @@ export class BasemapGalleryService {
     const raster =
       aggiemapGalleryBasemaps(this.ts.isTesting).find((basemap) => basemap.baseLayers[0].type !== 'VectorTileLayer') ??
       aggiemapRasterBasemap(this.ts.isTesting);
-    const { type, ...layer } = JSON.parse(JSON.stringify(raster.baseLayers[0]));
+    const { type: _type, ...layer } = JSON.parse(JSON.stringify(raster.baseLayers[0]));
 
     return new Basemap({ ...raster, baseLayers: [new TileLayer({ ...layer })] });
   }
@@ -348,7 +354,10 @@ export class BasemapGalleryService {
    * campus vector tiles fails to draw them, and a 2D view moved to another reference once it is
    * showing a map rescales, which brought the map back from 3D a zoom level out.
    */
-  public async basemapForFlat(): Promise<{ basemap: esri.Basemap | undefined; reference: esri.SpatialReference | undefined }> {
+  public async basemapForFlat(): Promise<{
+    basemap: esri.Basemap | undefined;
+    reference: esri.SpatialReference | undefined;
+  }> {
     const instance = await firstValueFrom(this.ms.store);
     const basemap = this.basemapAfterScene ?? instance.map.basemap ?? undefined;
 

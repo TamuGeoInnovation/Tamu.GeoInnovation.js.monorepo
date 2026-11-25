@@ -29,7 +29,6 @@ import { RepeatGuard, sendEach } from './repeat-guard';
 import {
   ProfileEmail,
   ProfileEmailPreview,
-  REPEAT_SEND_MINUTES,
   SendResult,
   chosenSpeakers,
   fullName,

@@ -1,6 +1,6 @@
 import { IComposedConnections } from './connections';
 
-import { MainMapDefinitions, IComposedIDefinitions, IDefinition } from './definitions/main.definitions';
+import { MainMapDefinitions, IComposedIDefinitions } from './definitions/main.definitions';
 
 export type { IDefinition, IComposedIDefinitions } from './definitions/main.definitions';
 

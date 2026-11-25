@@ -94,7 +94,10 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
         await em.insert(CompetitionSubmission, sub);
 
         if (blobs?.length) {
-          await em.insert(SubmissionMedia, blobs.map((b) => em.create(SubmissionMedia, { ...b, submission: sub })));
+          await em.insert(
+            SubmissionMedia,
+            blobs.map((b) => em.create(SubmissionMedia, { ...b, submission: sub }))
+          );
           Logger.log(`Created submission with media attachments.`, 'SubmissionService');
         }
 
@@ -184,7 +187,7 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
           this.arcgis?.publishInBackground(submission.guid);
 
           return submission;
-        } catch (err) {
+        } catch {
           throw new InternalServerErrorException();
         }
       }
@@ -201,7 +204,10 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
       throw new NotFoundException('Season not found');
     }
 
-    const compSeason = await this.compSeasonRepo.findOne({ where: { season: { guid: season.guid } }, relations: { form: true } });
+    const compSeason = await this.compSeasonRepo.findOne({
+      where: { season: { guid: season.guid } },
+      relations: { form: true }
+    });
 
     if (!compSeason) {
       throw new NotFoundException('Competition season not found');
@@ -358,7 +364,7 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
         try {
           const user = await this.ms.getUserMetadata(userGuid, undefined, true);
           identityMap.set(userGuid, user.user_info.email);
-        } catch (error) {
+        } catch {
           // If resolution fails, use last 4 characters of GUID
           identityMap.set(userGuid, userGuid.substring(userGuid.length - 4));
         }

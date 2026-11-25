@@ -7,7 +7,6 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
-import esri = __esri;
 import { EventPopups } from '../modules/popups/popups';
 
 export enum SPIRIT_OF_150_WEEK_LAYERS {

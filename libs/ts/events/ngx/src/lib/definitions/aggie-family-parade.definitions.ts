@@ -7,7 +7,6 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
-import esri = __esri;
 import { EventPopups } from '../modules/popups/popups';
 
 export enum AGGIE_FAMILY_PARADE_LAYERS {

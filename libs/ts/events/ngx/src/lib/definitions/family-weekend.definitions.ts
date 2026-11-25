@@ -7,11 +7,9 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
-import esri = __esri;
 import { EventPopups } from '../modules/popups/popups';
 
 type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
-type FeatureRenderer = NonNullable<NonNullable<FeatureNative>['renderer']>;
 
 export enum FAMILY_WEEKEND_LAYERS {
   FRIDAY_PARKING_LOTS = 'family-weekend-friday-parking-lots',

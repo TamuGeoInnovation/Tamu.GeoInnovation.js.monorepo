@@ -47,7 +47,10 @@ export const MAX_PHOTO_BYTES = 15 * 1024 * 1024;
 
 @Controller('competitions/submissions')
 export class SubmissionController {
-  constructor(private service: SubmissionService, private formService: FormService) {}
+  constructor(
+    private service: SubmissionService,
+    private formService: FormService
+  ) {}
 
   /**
    * The signed-in participant's own submissions, for My VGI Submissions (#1791). Who they are comes
@@ -62,7 +65,11 @@ export class SubmissionController {
 
   @UseGuards(JwtGuard)
   @Get('user/:userGuid')
-  public async getUserSubmissions(@Req() req, @Param('userGuid') userGuid: string, @Query('seasonGuid') seasonGuid?: string) {
+  public async getUserSubmissions(
+    @Req() req,
+    @Param('userGuid') userGuid: string,
+    @Query('seasonGuid') seasonGuid?: string
+  ) {
     assertCanRead(req, userGuid);
 
     return this.service.getUserSubmissions({ userGuid, seasonGuid });
@@ -129,7 +136,7 @@ export class SubmissionController {
       return submission;
     }
 
-    const { verifiedBy, ...status } = submission.validationStatus;
+    const { verifiedBy: _verifiedBy, ...status } = submission.validationStatus;
 
     return { ...submission, validationStatus: status };
   }
