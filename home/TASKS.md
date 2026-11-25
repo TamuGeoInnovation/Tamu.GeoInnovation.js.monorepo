@@ -1,5 +1,27 @@
 # Home machine: current tasks
 
+## Batch g114 (gisday: #3495 and #985, strictNullChecks in the platform API; 25 November 2026, about 12:40 AM Central, from `work (gisday)`) (Medium) - **now**
+
+**Acknowledged:** Q-g113-1 (copilot-home): **Decided: A**, retired in `PROJECTS.md` and its `TASKS.md`; #3348 closed. Drop it.
+
+**Decided by the maintainer (25 November, 1A):** no warning-only rule. #985's warning measured 595 false-positive-heavy findings in this one library
+without `strictNullChecks` (its comment has the table), so the cause is fixed instead, one library at a time. Both issues are claimed In Progress.
+
+Branch `fix/3495-platform-api-strict-null-checks` from the latest `origin/development`:
+1. **Turn on `strictNullChecks` in `libs/gisday/platform/data-api/tsconfig.lib.json` only** (and its `tsconfig.spec.json` if the specs compile with it;
+   say if not). Measured tonight: **162 errors** (`npx tsc -p libs/gisday/platform/data-api/tsconfig.lib.json --noEmit --strictNullChecks`). Some
+   come from files it imports from `gisday-competitions-data-api` and other libraries through the path mappings: fix those **only where the fix is
+   in this library**, and list any that need the other library changed (that is the next batch, not this one).
+2. **Fix each error for what it says**, not with `!` or `as`: a value that can be null is checked, a guard that can never fire is removed (those are
+   #985's bugs), a type that was wrong is corrected. A non-null assertion is allowed only with a comment saying why the value cannot be null there.
+   Count how many of each kind in the report.
+3. **Then make `@typescript-eslint/no-unnecessary-condition` an ERROR** in this library's `eslint.config.mjs` (its `**/*.ts` block), with a comment
+   naming #985 and #3495, and fix what it finds. With `strictNullChecks` on, what it reports should be real; say how many.
+4. Any behaviour that changes (an endpoint that answered 200 with nothing now answers 404, as #982 did) gets a spec, red first, and a line in
+   the PR. Check: `scripts/check-in-volume.sh fix/3495-platform-api-strict-null-checks gisday-platform-data-api,gisday-nest` with
+   `CHECK_PARALLEL=1`. `Closes #985`, `Refs #3495` (the competitions library is still to do). `.pr-body.md` last. Report
+   `home/reports/2026-11-25-g114.md`.
+
 ## Batch a17 (aggiemap: #3468 then #3467, the two live bugs from the reuse scan) (Medium) - **now, after a16**
 
 Both came out of the #3062 reuse scan and are bugs the duplication already causes. Each names its file and
