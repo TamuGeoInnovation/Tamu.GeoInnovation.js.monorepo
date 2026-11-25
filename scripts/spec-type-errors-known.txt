@@ -9,12 +9,4 @@
 254 libs/maps/feature/basemap/tsconfig.spec.json
 141 libs/ui-kits/ngx/layout/modal/tsconfig.spec.json
 97 apps/aggiemap-angular/tsconfig.spec.json
-90 libs/gisday/platform/ngx/core/tsconfig.spec.json
-65 libs/gisday/platform/ngx/common/tsconfig.spec.json
-46 libs/gisday/competitions/ngx/common/tsconfig.spec.json
-44 libs/gisday/competitions/ngx/core/tsconfig.spec.json
-41 libs/gisday/platform/ngx/data-access/tsconfig.spec.json
-41 libs/gisday/competitions/ngx/data-access/tsconfig.spec.json
-4 libs/gisday/common/tsconfig.spec.json
-3 libs/gisday/platform/data-api/tsconfig.spec.json
 1 libs/ui-kits/ngx/qr-code/tsconfig.spec.json

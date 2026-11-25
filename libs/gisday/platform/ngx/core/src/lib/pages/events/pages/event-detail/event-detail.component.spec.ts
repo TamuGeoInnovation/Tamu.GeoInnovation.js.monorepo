@@ -3,7 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
 import { Angulartics2 } from 'angulartics2';
-import { firstValueFrom, of, throwError } from 'rxjs';
+import { firstValueFrom, Observable, of, throwError } from 'rxjs';
 
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
@@ -70,8 +70,8 @@ describe('EventDetailComponent check-in', () => {
       loggedIn?: boolean;
       roles?: Array<string>;
       anyTime?: boolean;
-      sessionCheckIns?: () => ReturnType<typeof of>;
-      users?: () => ReturnType<typeof of>;
+      sessionCheckIns?: () => Observable<unknown>;
+      users?: () => Observable<unknown>;
       broadcast?: Record<string, string>;
       speakers?: Array<Record<string, unknown>>;
     } = {}
@@ -81,7 +81,7 @@ describe('EventDetailComponent check-in', () => {
     const getCheckInCode = vi.fn(() => of({ code: 'code-1' }));
     const login = vi.fn();
     const getCheckinsForEvent = vi.fn(sessionCheckIns);
-    const insertUserCheckin = vi.fn<ReturnType<typeof insert>, [string, unknown?, string?]>(() => {
+    const insertUserCheckin = vi.fn<(code: string, options?: unknown, site?: string) => ReturnType<typeof insert>>(() => {
       const result = insert();
       checkedIn = true;
 
@@ -436,7 +436,10 @@ describe('EventDetailComponent check-in', () => {
       ['earlier that day', '2026-11-18T15:00:00Z', 'Check-in opens at 3:55 PM.'],
       ['the day before', '2026-11-17T22:30:00Z', 'Check-in opens on Wednesday, November 18 at 3:55 PM.']
     ])('before it opens, %s, says when it opens, and does not check in from the QR code', (_, now, message) => {
-      vi.useFakeTimers({ now: new Date(now), doNotFake: ['nextTick', 'setImmediate', 'queueMicrotask'] });
+      vi.useFakeTimers({
+        now: new Date(now),
+        toFake: ['Date', 'setTimeout', 'clearTimeout', 'setInterval', 'clearInterval']
+      });
 
       const { text, insertUserCheckin } = open('hybrid', undefined, session, { query: { checkin: 'code-1' } });
 
@@ -450,7 +453,10 @@ describe('EventDetailComponent check-in', () => {
       ['10 minutes after the end', '2026-11-18T23:10:00Z', true],
       ['11 minutes after the end', '2026-11-18T23:11:00Z', false]
     ])('%s: %s', (_, now, shown) => {
-      vi.useFakeTimers({ now: new Date(now), doNotFake: ['nextTick', 'setImmediate', 'queueMicrotask'] });
+      vi.useFakeTimers({
+        now: new Date(now),
+        toFake: ['Date', 'setTimeout', 'clearTimeout', 'setInterval', 'clearInterval']
+      });
 
       const { text } = open('in-person', undefined, session);
 
@@ -464,7 +470,10 @@ describe('EventDetailComponent check-in', () => {
       ['30 minutes after the end', '2026-11-18T23:30:00Z', true],
       ['31 minutes after the end', '2026-11-18T23:31:00Z', false]
     ])('with its own minutes, %s: %s', (_, now, shown) => {
-      vi.useFakeTimers({ now: new Date(now), doNotFake: ['nextTick', 'setImmediate', 'queueMicrotask'] });
+      vi.useFakeTimers({
+        now: new Date(now),
+        toFake: ['Date', 'setTimeout', 'clearTimeout', 'setInterval', 'clearInterval']
+      });
 
       const { text } = open('in-person', undefined, { ...session, checkInMinutesBefore: 0, checkInMinutesAfter: 30 });
 
@@ -478,7 +487,10 @@ describe('EventDetailComponent check-in', () => {
       ['11 minutes after the end', '2026-11-18T23:11:00Z'],
       ['a week later', '2026-11-25T22:30:00Z']
     ])('open at any time, %s: shown', (_, now) => {
-      vi.useFakeTimers({ now: new Date(now), doNotFake: ['nextTick', 'setImmediate', 'queueMicrotask'] });
+      vi.useFakeTimers({
+        now: new Date(now),
+        toFake: ['Date', 'setTimeout', 'clearTimeout', 'setInterval', 'clearInterval']
+      });
 
       const { text } = open('in-person', undefined, session, { anyTime: true });
 

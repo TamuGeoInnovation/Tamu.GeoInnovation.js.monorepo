@@ -5,7 +5,7 @@ import { of } from 'rxjs';
 import { BroadcastService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { GISDAY_SITES } from '@tamu-gisc/gisday/common';
+import { GISDAY_SITES, type GisdaySite } from '@tamu-gisc/gisday/common';
 import { GISDAY_SITE } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { BroadcastListComponent } from './broadcast-list.component';
@@ -24,7 +24,7 @@ describe('BroadcastListComponent', () => {
     { guid: 'b-none', name: 'Unplaced Zoom', place: null }
   ];
 
-  function open(site = GISDAY_SITES.tamu) {
+  function open(site: GisdaySite = GISDAY_SITES.tamu) {
     TestBed.configureTestingModule({
       imports: [BroadcastListComponent],
       providers: [

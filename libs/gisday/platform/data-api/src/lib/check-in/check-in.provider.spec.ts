@@ -319,7 +319,11 @@ describe('CheckInProvider', () => {
       vi.spyOn(checkInRepo, 'create').mockReturnValue({ save } as never);
     };
 
-    const at = (iso: string) => vi.useFakeTimers({ now: new Date(iso), doNotFake: ['nextTick', 'setImmediate'] });
+    const at = (iso: string) =>
+      vi.useFakeTimers({
+        now: new Date(iso),
+        toFake: ['Date', 'setTimeout', 'clearTimeout', 'setInterval', 'clearInterval']
+      });
 
     afterEach(() => {
       vi.useRealTimers();
@@ -463,7 +467,11 @@ describe('CheckInProvider', () => {
       vi.spyOn(checkInRepo, 'create').mockReturnValue({ save } as never);
     };
 
-    const at = (iso: string) => vi.useFakeTimers({ now: new Date(iso), doNotFake: ['nextTick', 'setImmediate'] });
+    const at = (iso: string) =>
+      vi.useFakeTimers({
+        now: new Date(iso),
+        toFake: ['Date', 'setTimeout', 'clearTimeout', 'setInterval', 'clearInterval']
+      });
     const recorded = () => (checkInRepo.create as Mock).mock.calls[0][0];
 
     afterEach(() => {
@@ -632,7 +640,10 @@ describe('CheckInProvider', () => {
         startTime: '16:00:00 GMT-0600 (Central Standard Time)',
         endTime: '17:00:00 GMT-0600 (Central Standard Time)'
       });
-      vi.useFakeTimers({ now: new Date('2026-11-18T21:00:00Z'), doNotFake: ['nextTick', 'setImmediate'] });
+      vi.useFakeTimers({
+        now: new Date('2026-11-18T21:00:00Z'),
+        toFake: ['Date', 'setTimeout', 'clearTimeout', 'setInterval', 'clearInterval']
+      });
 
       try {
         await expect(provider.insertUserCheckin('e-1', 'acct-1', undefined, 'code-1')).rejects.toThrow(

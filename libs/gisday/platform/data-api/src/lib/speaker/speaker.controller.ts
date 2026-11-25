@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { DeepPartial } from 'typeorm';
+import { type DeepPartial } from 'typeorm';
 
 import { AllowAny, JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 import { DEFAULT_UPLOAD_LIMITS } from '@tamu-gisc/common/nest/services';

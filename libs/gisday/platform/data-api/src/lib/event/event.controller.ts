@@ -1,14 +1,14 @@
 import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
-import { DeepPartial } from 'typeorm';
+import { type DeepPartial } from 'typeorm';
 import { map, Observable } from 'rxjs';
 
 import { AllowAny, JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 
 import { EntityRelationsLUT, Event } from '../entities/all.entity';
 import { EventProvider } from './event.provider';
-import { EventAttendanceDto } from './dto/event-attendance.dto';
-import { EventActiveDto } from './dto/event-active.dto';
-import { UpdateEventDto } from './dto/update-event.dto';
+import { type EventAttendanceDto } from './dto/event-attendance.dto';
+import { type EventActiveDto } from './dto/event-active.dto';
+import { type UpdateEventDto } from './dto/update-event.dto';
 import { sessionShownTo, sessionsShownTo } from '../_base/hidden-sessions';
 
 @Controller('events')
