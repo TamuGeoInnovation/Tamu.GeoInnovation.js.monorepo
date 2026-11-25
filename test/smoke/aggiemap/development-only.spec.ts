@@ -46,41 +46,45 @@ const SIDE_PANEL_MAPS = ['/map', '/events/tailgating/map'];
 
 test.describe(`development-only sections ${VISIBLE ? 'are offered here' : 'stay off this environment'}`, () => {
   for (const map of SIDE_PANEL_MAPS) {
-  for (const section of DEVELOPMENT_ONLY_SECTIONS) {
-    test(`${map}: the ${section} tab ${VISIBLE ? 'is offered' : 'is not offered'}`, async ({ page }) => {
-      await blockAnalytics(page);
-      await page.goto(map);
+    for (const section of DEVELOPMENT_ONLY_SECTIONS) {
+      test(`${map}: the ${section} tab ${VISIBLE ? 'is offered' : 'is not offered'}`, async ({ page }) => {
+        await blockAnalytics(page);
+        await page.goto(map);
 
-      await waitForMapReady(page, `${map} never finished loading`);
+        await waitForMapReady(page, `${map} never finished loading`);
 
-      const count = await sidebarTabs(page, section);
+        const count = await sidebarTabs(page, section);
 
-      expect(
-        count,
-        VISIBLE
-          ? `the ${section} tab should be offered on ${map} here`
-          : `the ${section} tab is offered on ${map}, on an environment that should not have it`
-      ).toBe(VISIBLE ? 1 : 0);
-    });
-  }
+        expect(
+          count,
+          VISIBLE
+            ? `the ${section} tab should be offered on ${map} here`
+            : `the ${section} tab is offered on ${map}, on an environment that should not have it`
+        ).toBe(VISIBLE ? 1 : 0);
+      });
+    }
   }
 });
 
 /** Sections that left development for every environment are offered on every environment (#2789). */
 test.describe('sections on every environment are offered here', () => {
   for (const map of SIDE_PANEL_MAPS) {
-  for (const section of SECTIONS_ON_EVERY_ENVIRONMENT) {
-    test(`${map}: the ${section} tab is offered`, async ({ page }) => {
-      await blockAnalytics(page);
-      await page.goto(map);
+    for (const section of SECTIONS_ON_EVERY_ENVIRONMENT) {
+      test(`${map}: the ${section} tab is offered`, async ({ page }) => {
+        await blockAnalytics(page);
+        await page.goto(map);
 
-      await expect
-        .poll(async () => probeReady(page), { message: `${map} never finished loading`, timeout: 90_000, intervals: [1_000] })
-        .toBe(true);
+        await expect
+          .poll(async () => probeReady(page), {
+            message: `${map} never finished loading`,
+            timeout: 90_000,
+            intervals: [1_000]
+          })
+          .toBe(true);
 
-      expect(await sidebarTabs(page, section), `the ${section} tab is not offered on ${map} here`).toBe(1);
-    });
-  }
+        expect(await sidebarTabs(page, section), `the ${section} tab is not offered on ${map} here`).toBe(1);
+      });
+    }
   }
 });
 
@@ -121,9 +125,7 @@ test.describe(`development-only pages ${VISIBLE ? 'open here' : 'go to the page 
       await blockAnalytics(page);
       await page.goto(address);
 
-      await expect
-        .poll(() => new URL(page.url()).pathname, { timeout: 30_000 })
-        .toBe(VISIBLE ? address : above);
+      await expect.poll(() => new URL(page.url()).pathname, { timeout: 30_000 }).toBe(VISIBLE ? address : above);
     });
   }
 });
@@ -159,9 +161,7 @@ test.describe(`development-only services ${VISIBLE ? 'are used here' : 'are neve
       // that must request none of them.
       await page.goto(path);
 
-      for (const [service, { reason, pages: usedOn, developmentGisServer }] of Object.entries(
-        DEVELOPMENT_ONLY_SERVICES
-      )) {
+      for (const [service, { reason, pages: usedOn, developmentGisServer }] of Object.entries(DEVELOPMENT_ONLY_SERVICES)) {
         if (VISIBLE && !usedOn.includes(path)) {
           continue;
         }
