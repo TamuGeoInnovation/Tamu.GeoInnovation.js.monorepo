@@ -7,6 +7,10 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { BroadcastAddEditFormComponent } from './broadcast-add-edit-form.component';
 
+// A save goes back to its list page. Any address is a page here, so that navigation resolves; under Jest a rejected
+// one went unnoticed, and Vitest reports it as an unhandled error (#1977).
+const anyPage = [{ path: '**', children: [] }];
+
 /**
  * #3048. A broadcast belongs to an organization (a place), set on its admin page as a venue's is (#443), so each site can
  * list only its own organizations' broadcasts.
@@ -20,14 +24,14 @@ describe('BroadcastAddEditFormComponent', () => {
   function create(type: 'create' | 'edit', broadcast?: Subject<object>) {
     const service = {
       getEntity: () => broadcast,
-      createEntity: jest.fn(() => of({})),
-      updateEntity: jest.fn(() => of({}))
+      createEntity: vi.fn(() => of({})),
+      updateEntity: vi.fn(() => of({}))
     };
-    const toast = jest.fn();
+    const toast = vi.fn();
 
     TestBed.configureTestingModule({
       providers: [
-        provideRouter([]),
+        provideRouter(anyPage),
         { provide: ActivatedRoute, useValue: { params: of({ guid: 'zoom' }) } },
         { provide: BroadcastService, useValue: service },
         { provide: PlaceService, useValue: { getEntitiesForActiveSeason: () => of(places) } },

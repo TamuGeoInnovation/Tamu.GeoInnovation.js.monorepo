@@ -4,7 +4,7 @@ import * as path from 'path';
 import { expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
 import { isDevelopmentUrl, smokeBaseUrl } from './gis-hosts';
-import { PROBE_GLOBAL } from './map-probe';
+import { waitForMapDrawn } from './map-probe';
 
 /**
  * A layer its definition orders above another is drawn above it (#2059).
@@ -80,29 +80,10 @@ for (const order of ORDERS) {
       await blockAnalytics(page);
       await page.goto(order.route, { waitUntil: 'domcontentloaded' });
 
-      let ids: string[] = [];
-
-      await expect
-        .poll(
-          async () => {
-            ids = await page.evaluate(async (name) => {
-              const probe = (
-                window as unknown as Record<
-                  string,
-                  { ready?: boolean; drawing?: boolean; snapshot: () => Promise<{ layers: { id: string }[] }> }
-                >
-              )[name];
-
-              return probe?.ready === true && probe.drawing === false
-                ? (await probe.snapshot()).layers.map((layer) => layer.id)
-                : [];
-            }, PROBE_GLOBAL);
-
-            return ids.includes(order.above) && ids.includes(order.below);
-          },
-          { message: `${order.route} never finished drawing both layers`, timeout: 90_000, intervals: [1_000] }
-        )
-        .toBe(true);
+      const drawn = await waitForMapDrawn(page, `${order.route} never finished drawing both layers`, {
+        until: (layers) => layers.some((l) => l.id === order.above) && layers.some((l) => l.id === order.below)
+      });
+      const ids = drawn.map((layer) => layer.id);
 
       expect(
         ids.indexOf(order.above),

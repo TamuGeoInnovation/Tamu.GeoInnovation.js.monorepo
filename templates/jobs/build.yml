@@ -76,6 +76,16 @@ jobs:
         displayName: 'Verify artifact contains applications'
         condition: and(succeeded(), eq(variables['IS_DEPLOYABLE'], 'True'))
 
+      # Dev and production serve these apps from IIS, from this artifact, so the Dockerfile's tokenSubstitute.sh never
+      # runs for them and the build banner printed ___GIT_COMMIT___ (#1306). Stamping here lets a deployed page say
+      # which commit it came from (#1148). Fails if no file carries the banner, rather than shipping placeholders.
+      - bash: |
+          set -e
+          GIT_TAG="$(git tag --points-at HEAD | head -n 1)" \
+            bash scripts/stamp-build.sh dist/apps "$(Build.SourceVersion)" "${{ parameters.buildType }}" "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+        displayName: 'Stamp the build banner'
+        condition: and(succeeded(), eq(variables['IS_DEPLOYABLE'], 'True'))
+
       # Only a deployable branch's build is ever released, so only it publishes an artifact. A pull request build
       # cannot be deployed, and its upload was the longest step of the whole build: 8 to 9 minutes of a 16 to 21
       # minute run, on the lab as on the hosted pool (#2340).

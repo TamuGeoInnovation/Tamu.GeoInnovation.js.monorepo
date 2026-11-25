@@ -41,7 +41,7 @@ export class UserInfoProvider extends BaseProvider<UserInfo> {
     });
   }
 
-  public async updateUserMetadata(guid: string, updatedUserInfo: GisDayAppMetadata) {
+  public async updateUserMetadata(guid: string, updatedUserInfo: GisDayProfileUpdate | undefined) {
     // Before anything below writes a university or organization: without Auth0 management (locally,
     // #1759) the profile cannot be saved, and those rows would be left behind.
     this.ms.assertAvailable();
@@ -151,7 +151,9 @@ export class UserInfoProvider extends BaseProvider<UserInfo> {
 
     updatedUserInfo.app_metadata.gisday.completedProfile = true;
 
-    return this.ms.updateUserMetadata(guid, updatedUserInfo, {
+    // `ManagementService.updateUserMetadata` (@tamu-gisc/common/nest/auth) asks for a whole profile, though it writes only
+    // the metadata the filters name: checked above, the update has both.
+    return this.ms.updateUserMetadata(guid, updatedUserInfo as Auth0UserProfile, {
       app_metadata: 'gisday',
       user_metadata: ['occupation', 'education']
     });
@@ -232,6 +234,12 @@ export interface GisDayAppMetadata extends Auth0UserProfile {
     };
   };
 }
+
+/** A profile update as the browser sends it: any part may be missing, so each is checked before it is saved (#3495). */
+export type GisDayProfileUpdate = {
+  app_metadata?: Partial<GisDayAppMetadata['app_metadata']> | null;
+  user_metadata?: Partial<GisDayAppMetadata['user_metadata']> | null;
+};
 
 export enum ParticipantType {
   Student = 'student',

@@ -12,7 +12,15 @@ import { TileNavigationComponent } from '../tile-navigation/tile-navigation.comp
   selector: 'tamu-gisc-tile',
   templateUrl: './tile.component.html',
   styleUrls: ['./tile.component.scss'],
-  imports: [TileNavigationComponent]
+  imports: [TileNavigationComponent],
+  // The tile itself is the link or button, for the keyboard and screen readers as for a tap (#2588): one tab stop, named
+  // by its title, with Enter (and Space for a submenu) doing what a tap does. A tile with neither stays inert.
+  host: {
+    '[attr.tabindex]': 'submenu() || link() ? 0 : null',
+    '[attr.role]': "submenu() ? 'button' : link() ? 'link' : null",
+    '(keydown.enter)': '_activate($event)',
+    '(keydown.space)': 'submenu() && _activate($event)'
+  }
 })
 export class TileComponent implements AfterContentInit, OnDestroy {
   private service = inject(TileService);
@@ -44,6 +52,11 @@ export class TileComponent implements AfterContentInit, OnDestroy {
       // A tap on the tile's icon or padding follows its link, as a tap on its title does (#3198).
       link.follow();
     }
+  }
+
+  protected _activate(event: Event) {
+    event.preventDefault();
+    this._tileClick(event);
   }
 
   public ngAfterContentInit(): void {

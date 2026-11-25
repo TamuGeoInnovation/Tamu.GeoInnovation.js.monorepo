@@ -111,14 +111,14 @@ export class EventController {
   @Permissions(['update:events'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Patch('active')
-  public async setActive(@Body() body: EventActiveDto) {
+  public async setActive(@Body() body: EventActiveDto | undefined) {
     return this.provider.setActive(body?.guids, body?.active);
   }
 
   @Permissions(['update:events'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Patch(':guid/attendance')
-  public async updateAttendance(@Param('guid') guid, @Body() counts: EventAttendanceDto) {
+  public async updateAttendance(@Param('guid') guid, @Body() counts: EventAttendanceDto | undefined) {
     if (!counts || (counts.observedAttendeeStart === undefined && counts.observedAttendeeEnd === undefined)) {
       throw new BadRequestException('Invalid request body. Missing start and/or end counts.');
     }

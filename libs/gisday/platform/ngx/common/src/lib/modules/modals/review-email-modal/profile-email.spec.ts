@@ -12,7 +12,7 @@ describe('sendEditableEmail, Send as', () => {
     const modals = {
       open: () => of({ profile: 'Hi {edit link}', 'profile:subject': 'Profile', ':sender': 'jadmin@tamu.edu' })
     } as unknown as ModalService;
-    const send = jest.fn((email: object) => of(email));
+    const send = vi.fn((email: object) => of(email));
 
     sendProfileEmail(modals, preview, send).subscribe();
 
@@ -23,7 +23,7 @@ describe('sendEditableEmail, Send as', () => {
     const modals = {
       open: () => of({ 'session-details': 'Hi', 'session-details:subject': 'Your session', ':sender': 'gisday@tamu.edu' })
     } as unknown as ModalService;
-    const send = jest.fn((email: object) => of(email));
+    const send = vi.fn((email: object) => of(email));
 
     sendSessionDetailsEmail(modals, preview, send).subscribe();
 
@@ -34,7 +34,7 @@ describe('sendEditableEmail, Send as', () => {
     const modals = {
       open: () => of({ profile: 'Hi {edit link}', 'profile:subject': 'Profile' })
     } as unknown as ModalService;
-    const send = jest.fn((email: object) => of(email));
+    const send = vi.fn((email: object) => of(email));
 
     sendProfileEmail(modals, preview, send).subscribe();
 
@@ -56,7 +56,7 @@ describe('sendEditableEmail, choosing speakers', () => {
           ':together': 'true'
         })
     } as unknown as ModalService;
-    const send = jest.fn((email: object) => of(email));
+    const send = vi.fn((email: object) => of(email));
 
     sendSessionDetailsEmail(modals, preview, send).subscribe();
 
@@ -67,7 +67,7 @@ describe('sendEditableEmail, choosing speakers', () => {
     const modals = {
       open: () => of({ profile: 'Hi {edit link}', 'profile:subject': 'P', ':recipients': 'sp-2', ':together': 'true' })
     } as unknown as ModalService;
-    const send = jest.fn((email: object) => of(email));
+    const send = vi.fn((email: object) => of(email));
 
     sendProfileEmail(modals, preview, send).subscribe();
 
@@ -83,9 +83,9 @@ describe('sendSlidesRequestEmail', () => {
   const preview = of({ groups: [] });
 
   it('opens the window editable, with the slides request’s own button and placeholders', () => {
-    const open = jest.fn(() => of(null));
+    const open = vi.fn(() => of(null));
 
-    sendSlidesRequestEmail({ open } as unknown as ModalService, preview, jest.fn()).subscribe();
+    sendSlidesRequestEmail({ open } as unknown as ModalService, preview, vi.fn()).subscribe();
 
     expect(open).toHaveBeenCalledWith(
       expect.anything(),
@@ -110,7 +110,7 @@ describe('sendSlidesRequestEmail', () => {
           ':together': 'true'
         })
     } as unknown as ModalService;
-    const send = jest.fn((email: object) => of(email));
+    const send = vi.fn((email: object) => of(email));
 
     sendSlidesRequestEmail(modals, preview, send).subscribe();
 
@@ -123,7 +123,7 @@ describe('sendSlidesRequestEmail', () => {
   });
 
   it('sends nothing when the window is cancelled', () => {
-    const send = jest.fn();
+    const send = vi.fn();
 
     sendSlidesRequestEmail({ open: () => of(null) } as unknown as ModalService, preview, send).subscribe();
 
