@@ -1,11 +1,28 @@
 import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import {
-  catchError, distinctUntilChanged, filter, interval, map, NEVER, Observable, of, pipe, shareReplay, startWith, Subscription, switchMap
+  catchError,
+  distinctUntilChanged,
+  filter,
+  interval,
+  map,
+  NEVER,
+  Observable,
+  of,
+  pipe,
+  shareReplay,
+  startWith,
+  Subscription,
+  switchMap
 } from 'rxjs';
 import { SeasonWinnersDto, placeLabel, placesShownOn, siteHas } from '@tamu-gisc/gisday/common';
 
-import { PlaceService, SeasonService, SeasonWinnersService, SponsorService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import {
+  PlaceService,
+  SeasonService,
+  SeasonWinnersService,
+  SponsorService
+} from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { ActiveSeasonDto, Place, SeasonDay, Sponsor } from '@tamu-gisc/gisday/platform/data-api';
 import { PlaceVisibilityOptions, ImagePreviewComponent } from '@tamu-gisc/gisday/platform/ngx/common';
 import { RouterLink } from '@angular/router';
@@ -128,7 +145,7 @@ export class LandingComponent implements OnInit {
         return interval(1000).pipe(
           startWith(0),
           map(() => {
-            const firstEventDate = new Date(new Date(season?.days[0].date).toDateString() + ' ' + season.firstEventTime);
+            const firstEventDate = new Date(season.days[0].date.toDateString() + ' ' + season.firstEventTime);
 
             return (firstEventDate.getTime() - Date.now()) / 1000;
           }),
