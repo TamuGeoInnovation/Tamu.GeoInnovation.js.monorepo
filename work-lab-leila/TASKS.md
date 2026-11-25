@@ -2,6 +2,31 @@
 > # NEXT: batch g206, then g207. ~~batch g204 (from `work (gisday)`, 25 November, about 12:20 AM Central): #2390, unused variables fail lint. g203 was done at 11:15 PM, thank you; the work machine is opening its two pull requests.
 >
 
+## Decided (gisday), 2:45 AM Central, 25 November 2026
+
+- **Q-g208-1: (b).** The director put the `common-utils-string` change from `7fdd18717` on PR 3560's branch (`fix(common-utils-string): renderTemplateRows type-checks...`). When you next merge PR 3560's branch into yours, git sees the same change on both sides; keep either.
+- **Q-g208-2: (a)**, filed as **#3581** (Medium). It is batch g210 below.
+- **g208's branch:** the director opens its pull request once PR 3560 merges, merging `development` in first.
+
+## Batch g210 (workspace): type-check every strict library with its own configuration (after g209)
+
+**Issue: #3581.** Code job. Read the issue first.
+
+1. **Branch** `ci/3581-strict-lib-typecheck` from the latest `origin/development`.
+2. **Measure first:** every `tsconfig.lib.json` in the workspace whose settings (its own or a base it extends inside its project) include `strict` or `strictNullChecks`. Run `tsc -p <it> --noEmit` on each and put the list in the report: project, errors.
+3. **Build the check** in the shape of `scripts/check-spec-types.mjs`: changed projects only by default, `--all` to measure, and a known-failures list held to its counts, used only if step 2 found failures. One `lint.yml` line, so `scripts/check-in-volume.sh` runs it. Tests in its own `*.test.mjs` like the others, wired wherever `pre-pr-check.sh` runs the scripts' suites.
+4. **Red first:** run it at `development`'s commit before PR 3560 merges (or on a scratch branch that reverts `common-utils-string` to `origin/development`'s copy) and show it fails with `common-utils-string`'s 2 errors. Then green.
+5. `scripts/pre-pr-check.sh` with `--label no-visible-change`; `.pr-body.md` last; "branch ready".
+
+## Batch g211 (gisday, #3495): strictNullChecks in the two GIS Day data-access libraries (after g210)
+
+**Issue: #3495.** Your g208 table says `gisday-platform-ngx-data-access` has 1 error and `gisday-competitions-ngx-data-access` 6, in their own files.
+
+1. **Branch** `fix/3495-gisday-ngx-data-access-strict` from the latest `origin/development`.
+2. Turn on `strictNullChecks` in each library's own `tsconfig.lib.json` (not the app's) and fix their errors: honest types, no `!` without a comment.
+3. The front end still compiles: `gisday-angular` builds in production. These are Angular services, so there is no TypeORM metadata to compare. Show instead that the built `main` bundle is unchanged apart from what the fixes change, or explain the differences.
+4. `scripts/pre-pr-check.sh` with both libraries and `gisday-angular`, `CHECK_PARALLEL=1`, `--label no-visible-change`; `.pr-body.md` last; "branch ready".
+
 ## Batch g208 (gisday): strictNullChecks in the GIS Day API app, and how big the front end is (written 2:05 AM Central, 25 November 2026)
 
 **Issue: #3495.** Code job. Report on the issue and in `reports/`.
