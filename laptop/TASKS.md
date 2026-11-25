@@ -1,5 +1,10 @@
 # Laptop: current tasks
 
+## Decided (gisday), 2:25 AM Central, 25 November 2026
+
+- **Q-g31-1: (a).** #980 is closed as superseded, citing your report; #3571 is what the check found. The director has taken #3571 from your red spec (`4ca4c6e7e`): fix and pull request from the work machine, so nothing more from you on it. (c), deleting `create()`, is not queued.
+- **Next for you, unchanged:** a28 (AggieMap) now, then g30 once 3568 and 3570 merge (3567 has).
+
 ## Batch a28 (aggiemap: #2554, delete the athletics popup data that reads as live and is not) (Medium) - **now**
 
 This was queued to `copilot-home`, which the maintainer retired tonight
