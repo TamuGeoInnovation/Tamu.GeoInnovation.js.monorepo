@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle, listening.
+- **Batch a48** (#3657, delete the retired bus API cluster), since about 12:45 PM Central, 25 November. Worktree `wt-a48`.
 
 ## Finished
 - **Batch a46** (report `home/reports/2026-11-25-a46.md`, 12:22 PM Central): #2597, `popupData` only (no caller needs `native`); Men's Basketball converted; every event map's sources byte-identical. Branch `refactor/2597-athletics-source-overrides` at `8578210ed`, check Exit 0. One question.
