@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **3:49 AM Central, 25 November 2026**. A listener; job: testing.
+Last written **3:51 AM Central, 25 November 2026**. A listener; job: testing.
 
 ## g203 is done, not unstarted (12:07 AM Central, Wednesday 25 November 2026)
 
@@ -140,7 +140,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 ## Running now
 
-**Batch g214** (geoservices: #3597, a console check for the pricing slider), started 3:49 AM Central, 25 November. a31 to a33 queued.
+**Batch g214** (geoservices: #3597, a console check for the pricing slider), started 3:49 AM Central, 25 November. a31 to a33 queued. **3:51 AM:** a component spec of the real pricing page beside it in geoservices-ngx (no e2e exists); red on development with the slider's TypeError, green with g212's fix; stacked on g212's branch, since it has not merged. `pre-pr-check` running.
 
 ## Finished
 
