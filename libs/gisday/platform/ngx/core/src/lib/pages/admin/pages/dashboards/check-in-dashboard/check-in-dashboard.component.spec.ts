@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
@@ -103,7 +104,7 @@ const people: Array<RsvpDashboardPerson> = [
 ];
 
 describe('CheckInDashboardComponent (#3006)', () => {
-  let checkIns: { getDashboardForSeason: jest.Mock; getDashboardForEvent: jest.Mock };
+  let checkIns: { getDashboardForSeason: Mock; getDashboardForEvent: Mock };
   let site: string;
   let drawn: Array<LineChartOptions>;
 
@@ -159,8 +160,8 @@ describe('CheckInDashboardComponent (#3006)', () => {
     drawn = [];
     site = 'txgisday';
     checkIns = {
-      getDashboardForSeason: jest.fn(() => of(dashboard)),
-      getDashboardForEvent: jest.fn(() => of(people))
+      getDashboardForSeason: vi.fn(() => of(dashboard)),
+      getDashboardForEvent: vi.fn(() => of(people))
     };
   });
 
@@ -339,7 +340,7 @@ describe('CheckInDashboardComponent (#3006)', () => {
   });
 
   it('says the check-ins could not be read rather than showing an empty dashboard', () => {
-    checkIns.getDashboardForSeason = jest.fn(() => throwError(() => new Error('403')));
+    checkIns.getDashboardForSeason = vi.fn(() => throwError(() => new Error('403')));
     const root = open().nativeElement as HTMLElement;
 
     expect(root.textContent).toContain('The check-ins could not be read');
@@ -348,7 +349,7 @@ describe('CheckInDashboardComponent (#3006)', () => {
 
   // #3038: a 403 is a missing permission, which trying again can't fix, so the page says which.
   it('names the missing permission on a 403, rather than saying to try again', () => {
-    checkIns.getDashboardForSeason = jest.fn(() =>
+    checkIns.getDashboardForSeason = vi.fn(() =>
       throwError(
         () =>
           new HttpErrorResponse({
@@ -365,7 +366,7 @@ describe('CheckInDashboardComponent (#3006)', () => {
 
   // #3038: an API that names nothing (an older one, or no permissions at all) still says what to do.
   it('says the account lacks a permission on a bare 403', () => {
-    checkIns.getDashboardForSeason = jest.fn(() =>
+    checkIns.getDashboardForSeason = vi.fn(() =>
       throwError(() => new HttpErrorResponse({ status: 403, error: { statusCode: 403, message: 'Forbidden' } }))
     );
     const root = open().nativeElement as HTMLElement;

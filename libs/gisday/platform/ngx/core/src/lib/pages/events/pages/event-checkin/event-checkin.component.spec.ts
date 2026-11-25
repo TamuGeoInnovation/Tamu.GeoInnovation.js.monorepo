@@ -24,8 +24,8 @@ describe('EventCheckinComponent', () => {
     alreadyCheckedIn = false,
     insert = () => of({ guid: 'c-new' }) as Observable<unknown>
   } = {}) {
-    const insertUserCheckin = jest.fn(insert);
-    const login = jest.fn();
+    const insertUserCheckin = vi.fn(insert);
+    const login = vi.fn();
 
     TestBed.configureTestingModule({
       providers: [
@@ -44,7 +44,7 @@ describe('EventCheckinComponent', () => {
           provide: UserService,
           useValue: { getUserMetadata: () => of({ app_metadata: { gisday: { completedProfile: profileComplete } } }) }
         },
-        { provide: EventService, useValue: { getEvent: jest.fn(event) } },
+        { provide: EventService, useValue: { getEvent: vi.fn(event) } },
         {
           provide: CheckinService,
           useValue: {

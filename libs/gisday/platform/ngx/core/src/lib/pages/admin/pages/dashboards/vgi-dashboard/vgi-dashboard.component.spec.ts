@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
@@ -65,7 +66,7 @@ const submitters: Array<VgiSubmitter> = [
  * a chart of submissions over time.
  */
 describe('VgiDashboardComponent (#2894)', () => {
-  let vgi: { getDashboardForSeason: jest.Mock; getDashboardForType: jest.Mock };
+  let vgi: { getDashboardForSeason: Mock; getDashboardForType: Mock };
   let drawn: Array<LineChartOptions>;
 
   function open() {
@@ -116,8 +117,8 @@ describe('VgiDashboardComponent (#2894)', () => {
   beforeEach(() => {
     drawn = [];
     vgi = {
-      getDashboardForSeason: jest.fn(() => of(dashboard)),
-      getDashboardForType: jest.fn(() => of(submitters))
+      getDashboardForSeason: vi.fn(() => of(dashboard)),
+      getDashboardForType: vi.fn(() => of(submitters))
     };
   });
 

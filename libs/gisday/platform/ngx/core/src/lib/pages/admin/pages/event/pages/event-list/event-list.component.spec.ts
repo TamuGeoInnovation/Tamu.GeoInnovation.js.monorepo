@@ -26,7 +26,7 @@ describe('EventListComponent', () => {
       getEntities: () => of(list),
       getEntitiesForActiveSeason: () => of(list),
       getEntitiesForSeason: () => of(list),
-      setActive: jest.fn((guids: Array<string>) => of({ updated: guids.length }))
+      setActive: vi.fn((guids: Array<string>) => of({ updated: guids.length }))
     };
 
     TestBed.configureTestingModule({
@@ -37,7 +37,7 @@ describe('EventListComponent', () => {
         { provide: SeasonService, useValue: { seasons$: of([]), activeSeason$: of(null) } },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
         { provide: ModalService, useValue: {} },
-        { provide: NotificationService, useValue: { toast: jest.fn() } },
+        { provide: NotificationService, useValue: { toast: vi.fn() } },
         { provide: SessionFilesService, useValue: { forSeason: () => of([]) } }
       ]
     });
@@ -152,7 +152,7 @@ describe('EventListComponent on gisday.tamu.edu', () => {
         { provide: SeasonService, useValue: { seasons$: of([]), activeSeason$: of(null) } },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
         { provide: ModalService, useValue: {} },
-        { provide: NotificationService, useValue: { toast: jest.fn() } },
+        { provide: NotificationService, useValue: { toast: vi.fn() } },
         { provide: SessionFilesService, useValue: { forSeason: () => of([]) } }
       ]
     });
@@ -205,7 +205,7 @@ describe('EventListComponent on gisday.tamu.edu', () => {
         { provide: SeasonService, useValue: { seasons$: of([]), activeSeason$: of(null) } },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
         { provide: ModalService, useValue: {} },
-        { provide: NotificationService, useValue: { toast: jest.fn() } },
+        { provide: NotificationService, useValue: { toast: vi.fn() } },
         { provide: SessionFilesService, useValue: { forSeason: () => of([]) } }
       ]
     });
@@ -251,7 +251,7 @@ describe('EventListComponent, the sessions with no tags', () => {
         { provide: SeasonService, useValue: { seasons$: of([]), activeSeason$: of(null) } },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
         { provide: ModalService, useValue: {} },
-        { provide: NotificationService, useValue: { toast: jest.fn() } },
+        { provide: NotificationService, useValue: { toast: vi.fn() } },
         { provide: SessionFilesService, useValue: { forSeason: () => of([]) } }
       ]
     });
@@ -301,7 +301,7 @@ describe('EventListComponent, the sessions with and without slides (#3093)', () 
 
   function open() {
     const sessionFiles = {
-      forSeason: jest.fn(() =>
+      forSeason: vi.fn(() =>
         of([
           { event: 'e-slides', file: { guid: 'f-1', name: 'keynote.pdf', size: 10, uploaded: '2026-11-15T18:00:00.000Z' } }
         ])
@@ -324,7 +324,7 @@ describe('EventListComponent, the sessions with and without slides (#3093)', () 
         { provide: SeasonService, useValue: { seasons$: of([season]), activeSeason$: of(season) } },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
         { provide: ModalService, useValue: {} },
-        { provide: NotificationService, useValue: { toast: jest.fn() } },
+        { provide: NotificationService, useValue: { toast: vi.fn() } },
         { provide: SessionFilesService, useValue: sessionFiles }
       ]
     });
@@ -410,7 +410,7 @@ describe("EventListComponent, one organization's sessions (#434)", () => {
         { provide: SeasonService, useValue: { seasons$: of([]), activeSeason$: of(null) } },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
         { provide: ModalService, useValue: {} },
-        { provide: NotificationService, useValue: { toast: jest.fn() } },
+        { provide: NotificationService, useValue: { toast: vi.fn() } },
         { provide: SessionFilesService, useValue: { forSeason: () => of([]) } }
       ]
     });
