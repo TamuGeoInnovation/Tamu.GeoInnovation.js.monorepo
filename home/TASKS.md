@@ -1,5 +1,60 @@
 # Home machine: current tasks
 
+## Batch a16 (aggiemap: before and after images for #2816, the empty popup row) (Medium) - **now**
+
+[#2816](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2816) is committed on the
+fork as `fix/2816-empty-popup-rows` (`dffd02eec`, with `development` merged in). Code, tests and the
+release-notes entry are done. **The images are the only thing it waits on, and the pull request does not open
+until they are on the branch.**
+
+Giving this to you rather than doing it here because it needs a feature clicked on the map, which you have
+done all evening and which is fiddly to drive from this machine.
+
+### What changed
+
+Clicking a **Dedicated Micromobility Path** on the main map showed a row reading **Type:** with nothing after
+it - the layer's `notes` field is empty on those paths, and the popup printed the label anyway. Rows whose
+value is empty are now left out entirely, label included.
+
+### 1. Before, from `development`
+
+A local dev server at today's `development`. On `/map/d`, turn on **Micromobility** and click a **Dedicated
+Micromobility Path**. Photograph the popup with the **Type:** row visible, close enough to read it.
+
+`before-micromobility-popup.png`.
+
+**If you cannot find a path whose `notes` is empty**, say so and stop - that is a finding, not a failure, and
+it would mean the issue's example no longer holds. The service is Transportation's micromobility service;
+`connections.micromobilityUrl`.
+
+### 2. After, from the branch
+
+The same path, same window size, from `fix/2816-empty-popup-rows`. The **Type:** row should be gone entirely -
+not blank, not a gap. `after-micromobility-popup.png`.
+
+**The rows that do have values must be unchanged.** If anything else disappeared from that popup, stop and
+report it: dropping too much is the one way this change can be wrong, and it is worth hearing before a pull
+request exists.
+
+### 3. One more pair, which is the real test of the shared fix
+
+The same two, for an **AggiePrint** location's popup - it has four rows in one description
+(`Access`, `Building`, `Printer Type`, `Details`). Most should have values.
+
+`before-aggieprint-popup.png` and `after-aggieprint-popup.png`.
+
+This pair is what shows the fix did not break the common case: a popup whose rows all have values must look
+**identical** before and after. If those two images differ at all, that is a bug in my change and I want to
+know.
+
+### 4. Pushing and reporting
+
+Both pairs into `docs/screenshots/2816-empty-popup-rows/`, committed to that branch and pushed to the fork as
+a fast-forward. Say **"branch ready: fix/2816-empty-popup-rows"**.
+
+Report `home/reports/2026-11-24-a16.md`: the image paths, which path and which AggiePrint location you used,
+and whether the AggiePrint pair is identical. **No pull request** - that is mine.
+
 ## Batch g113 (mailbox tools: #3348, copilot-home reports ready and does nothing; 25 November 2026, about midnight Central, from `work (gisday)`) (Medium) - **after g112**
 
 [#3348](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3348) (claimed In Progress): read it to the end. `copilot-home`
