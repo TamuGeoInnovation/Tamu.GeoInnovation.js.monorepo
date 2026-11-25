@@ -1,5 +1,55 @@
 # work-lab-leila: current tasks
 
+## Batch a36 (aggiemap: #2599, Ring Day and Graduation from one factory each; 25 November 2026, 7:05 AM Central, from `work (aggiemap)`) (Low) - **now**
+
+**Issue: [#2599](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2599).** Thank you for a29 and
+a30 - both reports are read, both branches are being opened from this machine now, and **Q-a29-1 is answered (a): leave the
+travel-options event and the eight unstamped ones alone.** Your reasoning is right that routing them through the helper
+would change a payload, and that is a decision about what the analytics record contains, not a refactor. I have put the
+alternative on the issue so it is not lost.
+
+**Two things your a29 report got right that are worth repeating:** you checked the issue's "about thirty" and found 19,
+and you ran the new spec against the *old* component to prove the payload had not changed. That second one is the only
+evidence that actually answers "did this change behaviour", and most reports do not have it.
+
+**This batch is from the #2591 audit, which I closed this morning** - seven of its ten findings are done, and this is one
+of the three that are real and open.
+
+1. **One date-window helper.** `ringDayDateConversions`, `novemberRingDayDateConversions` and `aprilRingDayDateConversions`
+   are the same function in three files, differing only in the constant's name. Put
+   `periodDateConversions(periods, startField, endField)` in `common.definitions.ts`. **That file is yours this morning:**
+   home is working one directory along in `definitions/campus/` for #2600 and has been told explicitly not to touch
+   `common.definitions.ts`, so you will not conflict.
+2. **A factory per family.** One for Ring Day (`october-`, `november-`, `april-ring-day`), one for Graduation
+   (`graduation-fall`, `graduation-spring`), each taking only the facts that differ. **The repository already has the
+   model and the issue names it:** `moveOutPeriod(...)` in `move-out.definitions.ts` builds three periods from one map -
+   follow that rather than inventing a shape.
+3. **Graduation's two popup spellings.** The issue notes `'{attributes.name}'` in one and `'attributes.name'` in the
+   other, and that both resolve. Pick one, say which and why in the report, and **check it against the service** before
+   you do (CLAUDE.md, "Ask the service before you change a definition or a popup template"): a popup field that resolves
+   today is exactly the kind of thing that silently empties.
+4. **Graduation's dates were corrected three weeks ago** and the fall map now offers 11 and 12 December 2026 with the
+   right weekday labels and the right winter offset (`4976aa882`, under #2759). **Do not let a factory undo that**, and
+   do not "tidy" the two files' date constants into one shape that loses a season's facts - the labels and offsets differ
+   legitimately between May and December.
+5. **Prove nothing moved, as you did in a29.** Capture each of the five maps' resolved exports off `development` first,
+   then assert the refactored ones deep-equal them, one file at a time. `campus-thumbnails.spec.ts` and
+   `remote-campus-names.spec.ts` are the pattern for reaching these exports from a spec.
+6. **Not user-visible**, and the issue carries `no-visible-change`. No screenshots and no release-notes entry, so this
+   needs no other machine.
+7. **`scripts/pre-pr-check.sh refactor/2599-ring-day-graduation-factories 'refactor(ts-events-ngx): Ring Day and Graduation are each built from one factory' .pr-body.md affected --label no-visible-change`**,
+   and **read the log's own `Exit N` line**.
+8. **Report** `work-lab-leila/reports/2026-11-25-a36.md`. Questions `Q-a36-<n>`.
+
+**Priority Low, which I set** (it was unset): five places, no live fault - the maintainer's own steer on this audit was
+Low for the findings without one.
+
+**Don't touch:** the eight athletics parking definitions in that same folder (`cross-country-`, `indoor-track-`,
+`outdoor-track-`, `soccer-`, `softball-`, `swimming-`, `tennis-`, `volleyball-parking.definitions.ts`) - they are PR 3600,
+open. And `.pr-body.md` is drafted, never committed: a29 and a30 both committed theirs, which CI's "No drafted body
+committed" check fails, so I had to untrack it on both branches before opening them. Leave it untracked from the start.
+
+
 ## g222 received (gisday), 6:10 AM Central, 25 November 2026
 
 - `fix/3635-rsvp-submission-type-routes` stays a branch until the maintainer decides #3635.

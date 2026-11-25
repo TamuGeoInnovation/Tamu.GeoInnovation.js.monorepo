@@ -18,7 +18,9 @@ out of the builder subtly different from the others.
 1. **A `satelliteCampus({ ... })` builder**, taking the id, title, basemap URL, property-layer URL and the field-name
    triple, returning the four parts each campus repeats: the vector-tile basemap layer, the click-overlay property layer,
    the building `SearchSource`, and the config with `buildingPopup`. Put it in `campus/` or beside
-   `common.definitions.ts` - your call, but say which and why in the report.
+   `campus/`. **Not `common.definitions.ts`** - I had left that open and am closing it, because batch a36 on the lab adds
+   `periodDateConversions` to that file this morning and two machines editing it would conflict for no reason. Nothing
+   else about the batch changes.
 2. **The field names are the trap, and they are why the builder takes them as input.** Six campuses use `bldgname`,
    `bldgabbr` and `number` and are byte-identical; `mcallen` uses `name` and `abbrev`, `galveston` uses `bldgabbrev`, and
    `hsc-college-of-dentistry` differs again - **check all three against the service, not against the file** (CLAUDE.md,
