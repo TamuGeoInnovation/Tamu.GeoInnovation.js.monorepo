@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle, listening. a33 held until PR 3587 merges.
+- **Batch a40**, since 8:38 AM Central: read-only, five `needs-maintainer` issues (#1104, #1146, #1902, #2212, #2612). Nothing filed, closed or commented on. a33 held until PR 3587 merges.
 
 ## Finished
 - **Batch a39 (#3650)** (report `home/reports/2026-11-25-a39.md`, 8:34 AM Central): `tools/queued.sh` committed as `26233546d`; home 56.6 s to 12.0 s, lab 115.0 s to 8.1 s, output byte-identical for six machines over 7, 30 and 365 days; 22 tests unedited plus one.
