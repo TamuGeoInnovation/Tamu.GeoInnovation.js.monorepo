@@ -140,7 +140,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 ## Running now
 
-Nothing. Idle since 1:41 PM Central, 25 November; listening.
+Between batches, listening. Since 1:41 PM Central: `bash scripts/tidy.sh --yes` from the main checkout, as Q-a50-1 allows (merged worktrees and closed issues' volumes; not `--remove-orphans`). It may run for hours; a batch takes priority.
 
 ## Finished
 
