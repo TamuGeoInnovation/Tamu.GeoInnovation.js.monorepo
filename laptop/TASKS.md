@@ -1,5 +1,28 @@
 # Laptop: current tasks
 
+## Batch a31 (aggiemap: #3471, one way to walk a results list with the arrow keys; 25 November 2026, 2:55 AM Central, from `work (aggiemap)`) (Medium) - **after g32**
+
+**Issue: [#3471](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3471).** Code job with real keyboard checks, which is why it is yours rather than the lab's. Two shared ways to arrow through a results list, so a keyboard fix (as in #2535) has to be made twice.
+
+**0. Check the issue is still true before writing anything.** It was filed from a read-only scan at `origin/development` on 24 November and `development` has moved since. Confirm `arrowKeyControl` still has exactly one caller, that `trackFocus` still has none, and that the autocomplete still uses `KeyboardNavigationDirective`. If any of that has changed, **say so and stop** - an issue that is already done gets closed with the evidence, not worked around.
+
+1. **The directive wins.** The search component uses `KeyboardNavigationDirective`; `arrowKeyControl` and `trackFocus` are deleted. The directive already does arrows, Enter, Space, Escape and `aria-controls`, so the aim is that the search loses code rather than gains it.
+2. **This is the risky one in this set** (#2844: focus and closing in the main search were fiddly). So before you change anything, write down what works today, by hand, on a **production** build of `aggiemap-angular` at `origin/development`: desktop and phone, arrow down and up through the results, wrap at each end or not, Enter on a result, Escape, Tab away, and where focus lands each time. That list is your "before", and it cannot be taken afterwards.
+3. **Then the same list on your branch**, and a before/after image pair wherever anything looks or behaves differently. Write every capture to `docs/screenshots/3471-keyboard-navigation/` as you take it.
+4. **A spec for the behaviour you were most afraid of losing**, red against the deleted helper's behaviour if you can arrange it, green after.
+5. **`scripts/pre-pr-check.sh refactor/3471-one-keyboard-navigation 'refactor(ui-kits-ngx-search): The map search uses the shared keyboard navigation directive' .pr-body.md affected`** - no `no-visible-change` label here, because the keyboard behaviour is the change; it needs a release-notes entry in `docs/releases/unreleased/` and the before/after pair. **Read the log's own `Exit N` line.**
+6. **Report** `laptop/reports/2026-11-25-a31.md`: the before list and the after list side by side, what differs, and the check's exit line. Questions `Q-a31-<n>`.
+
+## Batch a32 (aggiemap: #3482 and #3483, two small shared-code jobs; 25 November 2026, 2:55 AM Central, from `work (aggiemap)`) (Low) - **after a31**
+
+Two independent small ones, one branch each, both from the same scan and both Low risk. Same step 0 as a31 on each: confirm the duplication is still there before writing anything.
+
+1. **[#3482](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3482): one floating-label rule.** `textbox.component.scss` and `select.component.scss` hold the same block with different offsets. A `floating-label($left, $top)` mixin in `libs/sass`, both components using it. The labels move, so this one is visible: before/after of a textbox and a select, empty and filled, focused and not. Branch `refactor/3482-one-floating-label`, title `refactor(ui-kits-ngx-forms): One floating-label rule for the textbox and the select`.
+2. **[#3483](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3483): the QR code's Download uses `downloadFile`.** The component builds its own anchor element; `downloadFile` in `libs/common/utils/ui` appends the link, removes it and releases the object URL. `qrPng` produces a Blob (`canvas.toBlob`). **Prove the download still works and the file still opens** - that is the whole point, and a spec cannot tell you the PNG is valid. Branch `refactor/3483-qr-download-file`, title `refactor(ui-kits-ngx-qr-code): The QR code's Download uses the shared downloadFile`.
+3. `pre-pr-check.sh` per branch as in a31, and **report both in one file**, `laptop/reports/2026-11-25-a32.md`. Questions `Q-a32-<n>`.
+
+**Don't touch** (going through `pre-pr-check.sh` on the work machine tonight): `fix/602-1173-popup-footer`, `test/3539-skip-old-builds`, `chore/2554-dead-athletics-popup-data`, `refactor/3477-one-coordinate-reader`, `chore/1218-node-24.22.3-today`.
+
 ## Batch g33 (workspace, #3495: strictNullChecks in `ui-kits-ngx-search`, a shared library the GIS Day front end compiles; 25 November 2026, 3:45 AM Central, from `work (gisday)`) (Medium) - **now, ahead of g32** (g32 waits on home's branch; start it when that is ready, whichever you are on)
 
 g30 received: `chore/1479-remove-jest` goes through `pre-pr-check.sh` on the work machine, with `development` merged in first, and opens when it exits 0.

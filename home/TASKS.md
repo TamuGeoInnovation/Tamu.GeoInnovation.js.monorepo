@@ -1,5 +1,22 @@
 # Home machine: current tasks
 
+## Batch a33 (aggiemap: #3486, one markdown popup pair; 25 November 2026, 2:55 AM Central, from `work (aggiemap)`) (Medium) - **after g116, and only once #602's pull request has merged**
+
+**Issue: [#3486](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3486).** Yours because you have just been inside every one of these templates for a27, and your report says #3486 gets smaller because of it. Do not start it before #602's pull request merges: it touches the same two markdown templates, and the footer you just shared is half of this change.
+
+**0. Re-read the issue against the code first, with a27 merged.** #3486 was written before your footer existed. Say in the report what is left of it: which of the four components still differ, and in what. If the footer has already made them the same line, this may be a much smaller change than the issue describes - or already done, which gets it closed with the evidence.
+
+1. **Four components, two pairs**: AggieMap's `markdown-popup` and `markdown-w-directions-popup` in `libs/aggiemap/ngx/popups`, and the event maps' copies in `libs/ts/events/ngx/src/lib/modules/popups/`. They have drifted three ways: the title comes from `attributes.title` in AggieMap's with-directions copy and `attributes.name` in the others; only the events copies show the copy-link field; only AggieMap's plain copy shows Notes.
+2. **Check which layers set `title` rather than `name` before you choose**, by asking the service, not by reading the definitions (CLAUDE.md, "Ask the service before you change a definition or a popup template"). A title that silently becomes empty on some layer is exactly the fault this kind of change causes, and it looks like a fix in the diff.
+3. **One pair** in `aggiemap/ngx/popups`, exported from its index, with the share-URL behaviour from the overridable base, and the event maps importing it. Related: #2369, #2602.
+4. **Visible**: before/after on an AggieMap markdown popup and an event-map one, on production builds of base and branch, as you did in a27. Images to `docs/screenshots/3486-one-markdown-popup/`, release-notes entry in `docs/releases/unreleased/`.
+5. **`scripts/pre-pr-check.sh refactor/3486-one-markdown-popup 'refactor(aggiemap-ngx-popups): One markdown popup pair, shared by AggieMap and the event maps' .pr-body.md affected`**, and **read the log's own `Exit N` line**.
+6. **Report** `home/reports/2026-11-25-a33.md`. Questions `Q-a33-<n>`.
+
+**On a27, thank you - nothing outstanding.** The branch is first in the work machine's queue: body draft dropped, latest `development` merged in, `pre-pr-check.sh` running now. Your four routed trips and the production-against-production rebuild are what made it openable without another round. Two notes for next time, neither needing an answer: it is worth saying out loud in a report that a build was a production one, because the configuration-less build you caught is the trap CLAUDE.md warns about for GIS Day and not for AggieMap; and the heading that lost a leading space is Prettier joining a line, which is expected now that the format check runs on every changed file.
+
+**Your heartbeat task is 219 minutes stale** while your pushes are 1 minute old - the #2901 pattern, so the machine is fine and nothing is wrong with your work. Restart it when convenient, so `roster.sh` stops reading you as gone.
+
 ## Decided (gisday), 3:20 AM Central, 25 November 2026
 
 - **Q-g116-1: (A).** Code, specs and `pre-pr-check.sh`, with the public pages proved against production builds (development vs your branch), the API mocked as in g105. No sign-in, and leave the GIS Day containers alone. The signed-in admin pages go to the laptop as a follow-on batch. List in your report the admin pages whose components you changed.

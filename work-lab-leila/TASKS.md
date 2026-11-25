@@ -1,4 +1,33 @@
 # work-lab-leila: current tasks
+
+## Batch a29 (aggiemap: #3488, one analytics event helper; 25 November 2026, 2:55 AM Central, from `work (aggiemap)`) (Medium) - **after g212**
+
+**Issue: [#3488](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3488).** Code job, no servers, no sign-in. About thirty copies of the same analytics payload.
+
+**0. Check the issue is still true before writing anything.** It was filed from a read-only scan at `origin/development` on 24 November, and `development` has moved a lot since. Count the hand-built `gstCustom` payloads yourself and list what you found in the report. If the count is far off, or something has already done this, **stop and say so** rather than inventing work: a closed issue with evidence is a good outcome.
+
+1. **One helper** in `libs/common/ngx/**`, exported from its index, named so the next caller finds it (the issue suggests `track(action, category, custom)`; choose the signature that reads well at the call sites you actually have). Look first for one that already exists - `libs/common/ngx/**` is where it would be - and extend it rather than add a second.
+2. **Keep the payload shape byte-for-byte.** The reports built on it depend on `guid`, `date` and the custom keys exactly as they are. That is the whole risk in this change, so it is the thing to prove: a spec that asserts the object the helper produces, field by field, against the shape one of the existing call sites builds today.
+3. **Replace every call site**, AggieMap and the trip planner and the search component and notifications. The issue lists them with line numbers; find the rest with your own search, because the line numbers have moved.
+4. **Specs**: the helper's own, plus one call site's, proving the tracked object is unchanged. Nothing visible changes, so the pull request carries `no-visible-change`.
+5. **`scripts/pre-pr-check.sh chore/3488-one-analytics-helper 'refactor(common-ngx): One helper builds every analytics event' .pr-body.md affected --label no-visible-change`**, and **read the log's own `Exit N` line** rather than the wrapper's. Draft `.pr-body.md` from `.github/pull_request_template.md`, with `Closes #3488` and pre-pr-check's last line, as its own last commit.
+6. **Report** `work-lab-leila/reports/2026-11-25-a29.md`: the count you found, the call sites changed, the helper's signature and why, and the check's exit line. Questions `Q-a29-<n>`.
+
+**Memory: `CHECK_MEMORY` and `CHECK_PARALLEL` at their defaults are fine on your machine** - the work machine is the one that is sharing.
+
+## Batch a30 (aggiemap: #3487, one current trip result instead of five pipes; 25 November 2026, 2:55 AM Central, from `work (aggiemap)`) (Medium) - **after a29**
+
+**Issue: [#3487](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3487).** Code job. Five components run the same pipe, and `getTripResultForTravelMode()` ends in a `tap` that draws the route - so every extra subscriber redraws it.
+
+**0. Same first step as a29**: confirm the five copies are still there at `origin/development` and that the `tap(... drawRoute)` is still in `getTripResultForTravelMode()`. Say what you found.
+
+1. **One `shareReplay`'d current result on `TripPlannerService`**, drawing once. The interface the five components use is what changes; keep the service's existing public members working for anything else that calls them (CLAUDE.md, "Change a shared piece behind its existing interface").
+2. **Prove the redraw count**, because that is the bug hiding inside the duplication: a spec with several subscribers that counts how many times the route is drawn - red on today's code, green after. This is the one measurement that says the change did something.
+3. `pluck` is deprecated; drop it as you go.
+4. **Specs, then `pre-pr-check.sh`** as in a29, branch `refactor/3487-one-trip-result`, title `refactor(maps-feature-trip-planner): One current trip result, drawn once`, `--label no-visible-change`.
+5. **Report** `work-lab-leila/reports/2026-11-25-a30.md`. Questions `Q-a30-<n>`.
+
+**Don't touch** (branches in flight on the work machine, all five going through `pre-pr-check.sh` there tonight): `fix/602-1173-popup-footer`, `test/3539-skip-old-builds`, `chore/2554-dead-athletics-popup-data`, `refactor/3477-one-coordinate-reader`, `chore/1218-node-24.22.3-today`. #3487 and #3488 do not overlap them.
 > # NEXT: batch g206, then g207. ~~batch g204 (from `work (gisday)`, 25 November, about 12:20 AM Central): #2390, unused variables fail lint. g203 was done at 11:15 PM, thank you; the work machine is opening its two pull requests.
 >
 
