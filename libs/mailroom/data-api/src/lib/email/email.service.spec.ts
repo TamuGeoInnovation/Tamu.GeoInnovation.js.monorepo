@@ -17,9 +17,9 @@ describe('EmailService', () => {
         {
           provide: getRepositoryToken(MailroomEmail),
           useValue: {
-            find: jest.fn(),
-            findOne: jest.fn(),
-            remove: jest.fn()
+            find: vi.fn(),
+            findOne: vi.fn(),
+            remove: vi.fn()
           }
         }
       ]
@@ -39,7 +39,7 @@ describe('EmailService', () => {
     describe('.getAllEmails()', () => {
       it('should return an array of MailroomEmail', async () => {
         // Set a mock on the repo's find() method; it'll return an array
-        const spy = jest.spyOn(repo, 'find').mockResolvedValue([]);
+        const spy = vi.spyOn(repo, 'find').mockResolvedValue([]);
 
         // Call service's getAllEmails(); this will actually trigger our mock instead thanks to our spy
         const emails = await service.getAllEmails();
@@ -57,7 +57,7 @@ describe('EmailService', () => {
         };
 
         // Set a mock on repo's findOne(); this will return an instance of MailroomEmail
-        const spy = jest.spyOn(repo, 'findOne').mockResolvedValue(new MailroomEmail());
+        const spy = vi.spyOn(repo, 'findOne').mockResolvedValue(new MailroomEmail());
 
         // Call service's getEmail() method providing any parameters
         const email = await service.getEmail(mockParam.id);
@@ -86,8 +86,8 @@ describe('EmailService', () => {
        * the repository for them to pass.
        */
       it('looks the email up by the id it was given', async () => {
-        const spyFind = jest.spyOn(repo, 'findOne').mockResolvedValue(new MailroomEmail());
-        jest.spyOn(repo, 'remove').mockResolvedValue(new MailroomEmail());
+        const spyFind = vi.spyOn(repo, 'findOne').mockResolvedValue(new MailroomEmail());
+        vi.spyOn(repo, 'remove').mockResolvedValue(new MailroomEmail());
 
         await service.deleteEmail('1');
 
@@ -105,12 +105,12 @@ describe('EmailService', () => {
         const someOtherEmail = Object.assign(new MailroomEmail(), { id: 1 });
 
         // Answer the way a real repository would: only the matching id yields the requested row.
-        jest.spyOn(repo, 'findOne').mockImplementation((options) => {
+        vi.spyOn(repo, 'findOne').mockImplementation((options) => {
           const where = (options as { where: { id: number } }).where;
 
           return Promise.resolve(where?.id === 7 ? requested : someOtherEmail);
         });
-        const spyRemove = jest.spyOn(repo, 'remove').mockResolvedValue(requested);
+        const spyRemove = vi.spyOn(repo, 'remove').mockResolvedValue(requested);
 
         await service.deleteEmail('7');
 
@@ -119,16 +119,16 @@ describe('EmailService', () => {
       });
 
       it('should return a boolean indicating the status of the remove() operation', async () => {
-        jest.spyOn(repo, 'findOne').mockResolvedValue(new MailroomEmail());
-        const spyRemove = jest.spyOn(repo, 'remove').mockResolvedValue(new MailroomEmail());
+        vi.spyOn(repo, 'findOne').mockResolvedValue(new MailroomEmail());
+        const spyRemove = vi.spyOn(repo, 'remove').mockResolvedValue(new MailroomEmail());
 
         await expect(service.deleteEmail('1')).resolves.toBe(true);
         expect(spyRemove).toHaveBeenCalled();
       });
 
       it('reports false and removes nothing when no email has that id', async () => {
-        jest.spyOn(repo, 'findOne').mockResolvedValue(null);
-        const spyRemove = jest.spyOn(repo, 'remove');
+        vi.spyOn(repo, 'findOne').mockResolvedValue(null);
+        const spyRemove = vi.spyOn(repo, 'remove');
 
         // `remove(undefined)` throws, so this used to be a 500 rather than a negative result.
         await expect(service.deleteEmail('404')).resolves.toBe(false);

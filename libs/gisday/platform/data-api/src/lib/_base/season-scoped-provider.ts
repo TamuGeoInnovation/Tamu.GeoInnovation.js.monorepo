@@ -27,7 +27,7 @@ export function withoutIdentity<R extends object>(record: R): R {
  * A provider extending it says how to read a season's records (`forSeason`) and, if a copy holds more or less than the
  * record, what a copy holds (`copyOf`). Its own named methods, which its controller calls, use these.
  */
-export abstract class SeasonScopedProvider<T extends { guid: string; season?: Season }> extends BaseProvider<T> {
+export abstract class SeasonScopedProvider<T extends { guid: string; season?: Season | null }> extends BaseProvider<T> {
   constructor(protected readonly records: Repository<T>) {
     super(records);
   }
@@ -76,9 +76,10 @@ export abstract class SeasonScopedProvider<T extends { guid: string; season?: Se
 
   /**
    * Copies the records with these guids into the season with `seasonGuid`. Refused with 422 when the season does not
-   * exist or none of the records is found, rather than writing records into no season or answering an empty list.
+   * exist or none of the records is found (none named is none found), rather than writing records into no season or
+   * answering an empty list.
    */
-  public async copyIntoSeason(seasonGuid: string, guids: Array<string>): Promise<Array<T>> {
+  public async copyIntoSeason(seasonGuid: string, guids?: Array<string>): Promise<Array<T>> {
     const season = await this.copyTarget(seasonGuid);
 
     if (!season) {
@@ -90,7 +91,7 @@ export abstract class SeasonScopedProvider<T extends { guid: string; season?: Se
       relations: this.copyRelations
     });
 
-    if (!found || found.length === 0) {
+    if (found.length === 0) {
       throw new UnprocessableEntityException(`Could not find ${this.recordsName} to copy.`);
     }
 

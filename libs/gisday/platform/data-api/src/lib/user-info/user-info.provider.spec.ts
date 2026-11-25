@@ -44,22 +44,22 @@ describe('UserInfoProvider', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UserInfoProvider,
-        { provide: getRepositoryToken(UserInfo), useValue: { find: jest.fn(), findOne: jest.fn() } },
+        { provide: getRepositoryToken(UserInfo), useValue: { find: vi.fn(), findOne: vi.fn() } },
         {
           provide: getRepositoryToken(University),
-          useValue: { findOne: jest.fn(), create: jest.fn(), save: jest.fn() }
+          useValue: { findOne: vi.fn(), create: vi.fn(), save: vi.fn() }
         },
         {
           provide: getRepositoryToken(Organization),
-          useValue: { findOne: jest.fn(), create: jest.fn(), save: jest.fn() }
+          useValue: { findOne: vi.fn(), create: vi.fn(), save: vi.fn() }
         },
         {
           provide: ManagementService,
           useValue: {
-            assertAvailable: jest.fn(),
-            getUsers: jest.fn(),
-            getUserMetadata: jest.fn(),
-            updateUserMetadata: jest.fn()
+            assertAvailable: vi.fn(),
+            getUsers: vi.fn(),
+            getUserMetadata: vi.fn(),
+            updateUserMetadata: vi.fn()
           }
         }
       ]
@@ -72,7 +72,7 @@ describe('UserInfoProvider', () => {
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('should be defined', () => {
@@ -81,7 +81,7 @@ describe('UserInfoProvider', () => {
 
   describe('.getUsers()', () => {
     it('asks Auth0 only for the gisday app metadata and the two profile blocks', async () => {
-      jest.spyOn(management, 'getUsers').mockResolvedValue([] as never);
+      vi.spyOn(management, 'getUsers').mockResolvedValue([] as never);
 
       await provider.getUsers();
 
@@ -92,7 +92,7 @@ describe('UserInfoProvider', () => {
     });
 
     it('passes a search on to Auth0 (#2574)', async () => {
-      jest.spyOn(management, 'getUsers').mockResolvedValue({ users: [], truncated: false } as never);
+      vi.spyOn(management, 'getUsers').mockResolvedValue({ users: [], truncated: false } as never);
 
       await provider.getUsers('ada');
 
@@ -105,7 +105,7 @@ describe('UserInfoProvider', () => {
 
   describe('.getUserMetadata()', () => {
     it('scopes the lookup to the requested user', async () => {
-      jest.spyOn(management, 'getUserMetadata').mockResolvedValue({} as never);
+      vi.spyOn(management, 'getUserMetadata').mockResolvedValue({} as never);
 
       await provider.getUserMetadata('auth0|abc');
 
@@ -129,9 +129,9 @@ describe('UserInfoProvider', () => {
         ['no app_metadata', { user_metadata: {} }],
         ['no user_metadata', { app_metadata: { gisday: {} } }]
       ])('rejects a body with %s', async (_label, payload) => {
-        await expect(
-          provider.updateUserMetadata('auth0|abc', payload as unknown as GisDayAppMetadata)
-        ).rejects.toThrow(UnprocessableEntityException);
+        await expect(provider.updateUserMetadata('auth0|abc', payload as unknown as GisDayAppMetadata)).rejects.toThrow(
+          UnprocessableEntityException
+        );
       });
 
       /**
@@ -145,18 +145,14 @@ describe('UserInfoProvider', () => {
       it('answers 422, not a TypeError, when app_metadata has no gisday block', async () => {
         const payload = { app_metadata: {}, user_metadata: {} } as unknown as GisDayAppMetadata;
 
-        await expect(provider.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(
-          UnprocessableEntityException
-        );
+        await expect(provider.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(UnprocessableEntityException);
       });
 
       it('rejects a gisday block with no attendee type', async () => {
         const payload = validPayload(ParticipantType.Student);
         delete (payload.app_metadata.gisday as Partial<{ attendeeType: ParticipantType }>).attendeeType;
 
-        await expect(provider.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(
-          UnprocessableEntityException
-        );
+        await expect(provider.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(UnprocessableEntityException);
       });
 
       /**
@@ -171,9 +167,7 @@ describe('UserInfoProvider', () => {
         const payload = validPayload(ParticipantType.Student);
         payload.app_metadata.gisday.attendeeType = 'staff' as ParticipantType;
 
-        await expect(provider.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(
-          UnprocessableEntityException
-        );
+        await expect(provider.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(UnprocessableEntityException);
         expect(management.updateUserMetadata).not.toHaveBeenCalled();
       });
     });
@@ -189,31 +183,22 @@ describe('UserInfoProvider', () => {
         const payload = validPayload(ParticipantType.Student);
         delete (payload.user_metadata as Partial<{ education: unknown }>).education;
 
-        await expect(provider.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(
-          UnprocessableEntityException
-        );
+        await expect(provider.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(UnprocessableEntityException);
       });
 
-      it.each(['id', 'fieldOfStudy', 'classification'] as const)(
-        'rejects an education block missing %s',
-        async (field) => {
-          const payload = validPayload(ParticipantType.Student);
-          payload.user_metadata.education[field] = '';
+      it.each(['id', 'fieldOfStudy', 'classification'] as const)('rejects an education block missing %s', async (field) => {
+        const payload = validPayload(ParticipantType.Student);
+        payload.user_metadata.education[field] = '';
 
-          await expect(provider.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(
-            UnprocessableEntityException
-          );
-        }
-      );
+        await expect(provider.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(UnprocessableEntityException);
+      });
 
       it('rejects "other" institution with no name supplied', async () => {
         const payload = validPayload(ParticipantType.Student);
         payload.user_metadata.education.institution = 'other';
         payload.user_metadata.education.otherInstitution = '';
 
-        await expect(provider.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(
-          UnprocessableEntityException
-        );
+        await expect(provider.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(UnprocessableEntityException);
       });
 
       it('creates the university and stores its guid rather than the free-text name', async () => {
@@ -221,9 +206,9 @@ describe('UserInfoProvider', () => {
         payload.user_metadata.education.institution = 'other';
         payload.user_metadata.education.otherInstitution = 'Rice University';
 
-        jest.spyOn(universityRepo, 'findOne').mockResolvedValue(null);
-        jest.spyOn(universityRepo, 'create').mockReturnValue({ name: 'Rice University' } as never);
-        jest.spyOn(universityRepo, 'save').mockResolvedValue({ guid: 'uni-new' } as never);
+        vi.spyOn(universityRepo, 'findOne').mockResolvedValue(null);
+        vi.spyOn(universityRepo, 'create').mockReturnValue({ name: 'Rice University' } as never);
+        vi.spyOn(universityRepo, 'save').mockResolvedValue({ guid: 'uni-new' } as never);
 
         await provider.updateUserMetadata('auth0|abc', payload);
 
@@ -235,8 +220,8 @@ describe('UserInfoProvider', () => {
         payload.user_metadata.education.institution = 'other';
         payload.user_metadata.education.otherInstitution = 'Rice University';
 
-        jest.spyOn(universityRepo, 'findOne').mockResolvedValue({ guid: 'uni-existing' } as never);
-        const create = jest.spyOn(universityRepo, 'create');
+        vi.spyOn(universityRepo, 'findOne').mockResolvedValue({ guid: 'uni-existing' } as never);
+        const create = vi.spyOn(universityRepo, 'create');
 
         await provider.updateUserMetadata('auth0|abc', payload);
 
@@ -251,22 +236,15 @@ describe('UserInfoProvider', () => {
         const payload = validPayload(ParticipantType.Academia);
         delete (payload.user_metadata as Partial<{ occupation: unknown }>).occupation;
 
-        await expect(provider.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(
-          UnprocessableEntityException
-        );
+        await expect(provider.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(UnprocessableEntityException);
       });
 
-      it.each(['employer', 'department', 'position'] as const)(
-        'rejects an occupation block missing %s',
-        async (field) => {
-          const payload = validPayload(ParticipantType.Academia);
-          payload.user_metadata.occupation[field] = '';
+      it.each(['employer', 'department', 'position'] as const)('rejects an occupation block missing %s', async (field) => {
+        const payload = validPayload(ParticipantType.Academia);
+        payload.user_metadata.occupation[field] = '';
 
-          await expect(provider.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(
-            UnprocessableEntityException
-          );
-        }
-      );
+        await expect(provider.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(UnprocessableEntityException);
+      });
 
       // Academia shares the occupation block with industry, but an "other" employer is a
       // university rather than an organization.
@@ -275,8 +253,8 @@ describe('UserInfoProvider', () => {
         payload.user_metadata.occupation.employer = 'other';
         payload.user_metadata.occupation.otherEmployer = 'Rice University';
 
-        jest.spyOn(universityRepo, 'findOne').mockResolvedValue({ guid: 'uni-1' } as never);
-        const orgFind = jest.spyOn(organizationRepo, 'findOne');
+        vi.spyOn(universityRepo, 'findOne').mockResolvedValue({ guid: 'uni-1' } as never);
+        const orgFind = vi.spyOn(organizationRepo, 'findOne');
 
         await provider.updateUserMetadata('auth0|abc', payload);
 
@@ -291,9 +269,7 @@ describe('UserInfoProvider', () => {
         const payload = validPayload(ParticipantType.Industry);
         delete (payload.user_metadata as Partial<{ occupation: unknown }>).occupation;
 
-        await expect(provider.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(
-          UnprocessableEntityException
-        );
+        await expect(provider.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(UnprocessableEntityException);
       });
 
       it('resolves an "other" employer against the organization table', async () => {
@@ -301,10 +277,10 @@ describe('UserInfoProvider', () => {
         payload.user_metadata.occupation.employer = 'other';
         payload.user_metadata.occupation.otherEmployer = 'Esri';
 
-        jest.spyOn(organizationRepo, 'findOne').mockResolvedValue(null);
-        jest.spyOn(organizationRepo, 'create').mockReturnValue({ name: 'Esri' } as never);
-        jest.spyOn(organizationRepo, 'save').mockResolvedValue({ guid: 'org-new' } as never);
-        const uniFind = jest.spyOn(universityRepo, 'findOne');
+        vi.spyOn(organizationRepo, 'findOne').mockResolvedValue(null);
+        vi.spyOn(organizationRepo, 'create').mockReturnValue({ name: 'Esri' } as never);
+        vi.spyOn(organizationRepo, 'save').mockResolvedValue({ guid: 'org-new' } as never);
+        const uniFind = vi.spyOn(universityRepo, 'findOne');
 
         await provider.updateUserMetadata('auth0|abc', payload);
 
@@ -331,13 +307,11 @@ describe('UserInfoProvider', () => {
       payload.user_metadata.education.institution = 'other';
       payload.user_metadata.education.otherInstitution = 'Rice University';
 
-      jest.spyOn(universityRepo, 'findOne').mockResolvedValue(null);
-      jest.spyOn(universityRepo, 'create').mockReturnValue({ name: 'Rice University' } as never);
-      const save = jest.spyOn(universityRepo, 'save').mockResolvedValue({ guid: 'uni-new' } as never);
+      vi.spyOn(universityRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(universityRepo, 'create').mockReturnValue({ name: 'Rice University' } as never);
+      const save = vi.spyOn(universityRepo, 'save').mockResolvedValue({ guid: 'uni-new' } as never);
 
-      await expect(withoutManagement.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(
-        ServiceUnavailableException
-      );
+      await expect(withoutManagement.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(ServiceUnavailableException);
       expect(save).not.toHaveBeenCalled();
     });
 

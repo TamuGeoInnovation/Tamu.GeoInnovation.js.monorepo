@@ -1,6 +1,7 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { NotificationProperties } from '@tamu-gisc/common/ngx/ui/notification';
 import { SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
+import type { SidebarTabId } from '@tamu-gisc/aggiemap/ngx/ui/desktop';
 
 export interface EventConfiguration {
   /**
@@ -258,14 +259,14 @@ export interface EventConfiguration {
   brandingIconUrl?: string;
 
   /**
-   * Restricts which sidebar tabs (Features, Directions, Settings) are shown, in addition to
+   * Restricts which side panel tabs (`SIDEBAR_TABS`) are shown, in addition to
    * `hideSidebar`/`hideLayerToggle`. Used for satellite-campus maps, which have no TAMU routing
    * network data for that campus, so "Directions" would otherwise silently attempt (and fail) to
    * route against the main College Station network.
    *
    * When omitted, all tabs are shown as usual.
    */
-  sidebarTabs?: Array<'features' | 'directions' | 'settings'>;
+  sidebarTabs?: SidebarTabId[];
 
   /**
    * Search sources scoped specifically to this map, used instead of the application-wide search

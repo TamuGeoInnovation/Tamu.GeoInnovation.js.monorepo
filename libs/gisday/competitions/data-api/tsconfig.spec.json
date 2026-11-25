@@ -3,7 +3,7 @@
   "compilerOptions": {
     "outDir": "../../../../dist/out-tsc",
     "module": "commonjs",
-    "types": ["jest", "node", "express", "multer"]
+    "types": ["vitest/globals", "node", "express", "multer"]
   },
   "include": [
     "**/*.spec.ts",
@@ -14,7 +14,6 @@
     "**/*.test.js",
     "**/*.spec.jsx",
     "**/*.test.jsx",
-    "**/*.d.ts",
-    "jest.config.ts"
+    "**/*.d.ts"
   ]
 }

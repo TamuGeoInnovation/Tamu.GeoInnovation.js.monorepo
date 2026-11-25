@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, ParseBoolPipe, Post, Query, UseGuards } f
 
 import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 
-import { SiteCopyFile } from './site-copy.format';
+import { SiteCopyUpload } from './site-copy.format';
 import { SiteCopyService } from './site-copy.service';
 
 /**
@@ -40,7 +40,10 @@ export class SiteCopyController {
   )
   @UseGuards(JwtGuard, PermissionsGuard)
   @Post('import')
-  public import(@Body() file: SiteCopyFile, @Query('apply', new ParseBoolPipe({ optional: true })) apply = false) {
+  public import(
+    @Body() file: SiteCopyUpload | undefined,
+    @Query('apply', new ParseBoolPipe({ optional: true })) apply = false
+  ) {
     return this.service.import(file, apply);
   }
 }

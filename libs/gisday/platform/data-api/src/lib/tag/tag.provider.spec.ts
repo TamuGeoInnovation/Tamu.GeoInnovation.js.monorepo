@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { GUARDS_METADATA } from '@nestjs/common/constants';
 
@@ -18,11 +19,11 @@ describe('TagProvider', () => {
   let seasonService: SeasonService;
 
   const queryBuilder = (result: unknown) => {
-    const qb: Record<string, jest.Mock> = {};
+    const qb: Record<string, Mock> = {};
     for (const m of ['where', 'andWhere', 'leftJoin']) {
-      qb[m] = jest.fn(() => qb);
+      qb[m] = vi.fn(() => qb);
     }
-    qb.getOne = jest.fn().mockResolvedValue(result);
+    qb.getOne = vi.fn().mockResolvedValue(result);
     return qb;
   };
 
@@ -33,16 +34,16 @@ describe('TagProvider', () => {
         {
           provide: getRepositoryToken(Tag),
           useValue: {
-            find: jest.fn(),
-            create: jest.fn(),
-            save: jest.fn(),
-            insert: jest.fn(),
-            findOne: jest.fn(),
-            createQueryBuilder: jest.fn(),
-            manager: { find: jest.fn() }
+            find: vi.fn(),
+            create: vi.fn(),
+            save: vi.fn(),
+            insert: vi.fn(),
+            findOne: vi.fn(),
+            createQueryBuilder: vi.fn(),
+            manager: { find: vi.fn() }
           }
         },
-        { provide: SeasonService, useValue: { findOne: jest.fn(), findOneActive: jest.fn() } }
+        { provide: SeasonService, useValue: { findOne: vi.fn(), findOneActive: vi.fn() } }
       ]
     }).compile();
 
@@ -52,7 +53,7 @@ describe('TagProvider', () => {
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('should be defined', () => {
@@ -61,7 +62,7 @@ describe('TagProvider', () => {
 
   describe('.getTagsForSeason()', () => {
     it('scopes to the season and orders by name', async () => {
-      jest.spyOn(tagRepo, 'find').mockResolvedValue([{ guid: 't-1' } as Tag]);
+      vi.spyOn(tagRepo, 'find').mockResolvedValue([{ guid: 't-1' } as Tag]);
 
       await expect(provider.getTagsForSeason('season-1')).resolves.toEqual([{ guid: 't-1' }]);
       expect(tagRepo.find).toHaveBeenCalledWith({
@@ -73,20 +74,18 @@ describe('TagProvider', () => {
 
   describe('.getTagsForActiveSeason()', () => {
     it('scopes the lookup to the active season', async () => {
-      jest.spyOn(seasonService, 'findOneActive').mockResolvedValue({ guid: 'season-active' } as never);
-      jest.spyOn(tagRepo, 'find').mockResolvedValue([]);
+      vi.spyOn(seasonService, 'findOneActive').mockResolvedValue({ guid: 'season-active' } as never);
+      vi.spyOn(tagRepo, 'find').mockResolvedValue([]);
 
       await provider.getTagsForActiveSeason();
 
-      expect(tagRepo.find).toHaveBeenCalledWith(
-        expect.objectContaining({ where: { season: { guid: 'season-active' } } })
-      );
+      expect(tagRepo.find).toHaveBeenCalledWith(expect.objectContaining({ where: { season: { guid: 'season-active' } } }));
     });
   });
 
   describe('.getTags()', () => {
     it('returns every tag ordered by name', async () => {
-      jest.spyOn(tagRepo, 'find').mockResolvedValue([]);
+      vi.spyOn(tagRepo, 'find').mockResolvedValue([]);
 
       await provider.getTags();
 
@@ -104,22 +103,18 @@ describe('TagProvider', () => {
      * still in the table.
      */
     it('refuses to copy into a season that does not exist, rather than writing orphaned tags', async () => {
-      jest.spyOn(seasonService, 'findOne').mockResolvedValue(null);
-      const save = jest.spyOn(tagRepo, 'save');
+      vi.spyOn(seasonService, 'findOne').mockResolvedValue(null);
+      const save = vi.spyOn(tagRepo, 'save');
 
-      await expect(provider.copyTagsIntoSeason('missing', ['t-1'])).rejects.toThrow(
-        UnprocessableEntityException
-      );
+      await expect(provider.copyTagsIntoSeason('missing', ['t-1'])).rejects.toThrow(UnprocessableEntityException);
       expect(save).not.toHaveBeenCalled();
     });
 
     it('rejects when none of the requested tags exist', async () => {
-      jest.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
-      jest.spyOn(tagRepo, 'find').mockResolvedValue([]);
+      vi.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
+      vi.spyOn(tagRepo, 'find').mockResolvedValue([]);
 
-      await expect(provider.copyTagsIntoSeason('season-2', ['t-1'])).rejects.toThrow(
-        UnprocessableEntityException
-      );
+      await expect(provider.copyTagsIntoSeason('season-2', ['t-1'])).rejects.toThrow(UnprocessableEntityException);
     });
 
     it('strips identity from the copy and attaches the target season', async () => {
@@ -131,14 +126,14 @@ describe('TagProvider', () => {
         name: 'Remote Sensing'
       } as unknown as Tag;
 
-      jest.spyOn(seasonService, 'findOne').mockResolvedValue(season as never);
-      jest.spyOn(tagRepo, 'find').mockResolvedValue([source]);
-      jest.spyOn(tagRepo, 'create').mockImplementation((t) => ({ ...(t as object) }) as never);
-      jest.spyOn(tagRepo, 'save').mockImplementation((t) => Promise.resolve(t as never));
+      vi.spyOn(seasonService, 'findOne').mockResolvedValue(season as never);
+      vi.spyOn(tagRepo, 'find').mockResolvedValue([source]);
+      vi.spyOn(tagRepo, 'create').mockImplementation((t) => ({ ...(t as object) }) as never);
+      vi.spyOn(tagRepo, 'save').mockImplementation((t) => Promise.resolve(t as never));
 
       await provider.copyTagsIntoSeason('season-2', ['t-1']);
 
-      const passed = (tagRepo.create as jest.Mock).mock.calls[0][0];
+      const passed = (tagRepo.create as Mock).mock.calls[0][0];
       expect(passed.guid).toBeUndefined();
       expect(passed.season).toBe(season);
       expect(passed.name).toBe('Remote Sensing');
@@ -148,8 +143,8 @@ describe('TagProvider', () => {
   describe('.insertTags()', () => {
     it('creates the entities before inserting them', async () => {
       const created = [{ name: 'LiDAR' }];
-      jest.spyOn(tagRepo, 'create').mockReturnValue(created as never);
-      jest.spyOn(tagRepo, 'insert').mockResolvedValue({} as never);
+      vi.spyOn(tagRepo, 'create').mockReturnValue(created as never);
+      vi.spyOn(tagRepo, 'insert').mockResolvedValue({} as never);
 
       await provider.insertTags([{ name: 'LiDAR' }]);
 
@@ -167,9 +162,9 @@ describe('TagProvider', () => {
      * tag -- it answered 200 with a null body and wrote nothing.
      */
     it('creates the tag when none matches, instead of returning null', async () => {
-      jest.spyOn(tagRepo, 'createQueryBuilder').mockReturnValue(queryBuilder(null) as never);
-      jest.spyOn(tagRepo, 'create').mockReturnValue({ name: 'LiDAR' } as never);
-      jest.spyOn(tagRepo, 'save').mockResolvedValue({ guid: 't-new', name: 'LiDAR' } as never);
+      vi.spyOn(tagRepo, 'createQueryBuilder').mockReturnValue(queryBuilder(null) as never);
+      vi.spyOn(tagRepo, 'create').mockReturnValue({ name: 'LiDAR' } as never);
+      vi.spyOn(tagRepo, 'save').mockResolvedValue({ guid: 't-new', name: 'LiDAR' } as never);
 
       await expect(provider.createTag({ name: 'LiDAR' })).resolves.toEqual({
         guid: 't-new',
@@ -180,8 +175,8 @@ describe('TagProvider', () => {
 
     it('returns the existing tag rather than creating a duplicate', async () => {
       const existing = { guid: 't-1', name: 'LiDAR' } as Tag;
-      jest.spyOn(tagRepo, 'createQueryBuilder').mockReturnValue(queryBuilder(existing) as never);
-      const create = jest.spyOn(tagRepo, 'create');
+      vi.spyOn(tagRepo, 'createQueryBuilder').mockReturnValue(queryBuilder(existing) as never);
+      const create = vi.spyOn(tagRepo, 'create');
 
       await expect(provider.createTag({ name: 'LiDAR' })).resolves.toBe(existing);
       expect(create).not.toHaveBeenCalled();
@@ -189,9 +184,9 @@ describe('TagProvider', () => {
 
     it('narrows the match to the season when one is supplied', async () => {
       const qb = queryBuilder(null);
-      jest.spyOn(tagRepo, 'createQueryBuilder').mockReturnValue(qb as never);
-      jest.spyOn(tagRepo, 'create').mockReturnValue({} as never);
-      jest.spyOn(tagRepo, 'save').mockResolvedValue({} as never);
+      vi.spyOn(tagRepo, 'createQueryBuilder').mockReturnValue(qb as never);
+      vi.spyOn(tagRepo, 'create').mockReturnValue({} as never);
+      vi.spyOn(tagRepo, 'save').mockResolvedValue({} as never);
 
       await provider.createTag({ name: 'LiDAR', season: { guid: 'season-1' } as Season });
 
@@ -203,9 +198,9 @@ describe('TagProvider', () => {
     // nothing and create a duplicate on every call.
     it('does not join the season when the tag has none', async () => {
       const qb = queryBuilder(null);
-      jest.spyOn(tagRepo, 'createQueryBuilder').mockReturnValue(qb as never);
-      jest.spyOn(tagRepo, 'create').mockReturnValue({} as never);
-      jest.spyOn(tagRepo, 'save').mockResolvedValue({} as never);
+      vi.spyOn(tagRepo, 'createQueryBuilder').mockReturnValue(qb as never);
+      vi.spyOn(tagRepo, 'create').mockReturnValue({} as never);
+      vi.spyOn(tagRepo, 'save').mockResolvedValue({} as never);
 
       await provider.createTag({ name: 'LiDAR' });
 
@@ -217,8 +212,8 @@ describe('TagProvider', () => {
   describe('.getSessions()', () => {
     it('gives the sessions that have the tag, each with its day and place, for the admin page', async () => {
       const sessions = [{ guid: 'e-1', name: 'Keynote' }];
-      jest.spyOn(tagRepo, 'findOne').mockResolvedValue({ guid: 't-1' } as Tag);
-      (tagRepo.manager.find as jest.Mock).mockResolvedValue(sessions);
+      vi.spyOn(tagRepo, 'findOne').mockResolvedValue({ guid: 't-1' } as Tag);
+      (tagRepo.manager.find as Mock).mockResolvedValue(sessions);
 
       await expect(provider.getSessions('t-1')).resolves.toEqual(sessions);
       expect(tagRepo.manager.find).toHaveBeenCalledWith(Event, {
@@ -228,7 +223,7 @@ describe('TagProvider', () => {
     });
 
     it('answers 404 for a tag that does not exist', async () => {
-      jest.spyOn(tagRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(tagRepo, 'findOne').mockResolvedValue(null);
 
       await expect(provider.getSessions('t-x')).rejects.toThrow(NotFoundException);
     });

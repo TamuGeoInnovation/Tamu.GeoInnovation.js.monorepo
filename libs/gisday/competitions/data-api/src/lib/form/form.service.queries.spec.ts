@@ -54,12 +54,12 @@ describe('FormService queries, built by typeorm', () => {
     service = new FormService(queryCheckingRepository(dataSource, CompetitionForm), compSeasonRepo, seasonRepo);
 
     // A competition season's save() is a write, through the entity: answered here with the row it would save.
-    jest.spyOn(CompetitionSeason.prototype, 'save').mockImplementation(async function () {
+    vi.spyOn(CompetitionSeason.prototype, 'save').mockImplementation(async function () {
       return this;
     });
   });
 
-  afterEach(() => jest.restoreAllMocks());
+  afterEach(() => vi.restoreAllMocks());
 
   it("reads a season's competition season and form by the season's guid", async () => {
     await expect(service.getSeason('s-2026')).resolves.toBeNull();

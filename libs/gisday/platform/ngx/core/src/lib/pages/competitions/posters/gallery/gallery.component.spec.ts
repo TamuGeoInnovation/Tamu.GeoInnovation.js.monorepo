@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 
@@ -15,7 +16,7 @@ describe('GalleryComponent', () => {
     { guid: 'season-2026', year: 2026 }
   ];
 
-  const render = (getPosters: jest.Mock) => {
+  const render = (getPosters: Mock) => {
     TestBed.configureTestingModule({
       imports: [GalleryComponent],
       providers: [
@@ -32,7 +33,7 @@ describe('GalleryComponent', () => {
   };
 
   it("asks for the active season's posters first and lists them with their authors", () => {
-    const getPosters = jest
+    const getPosters = vi
       .fn()
       .mockReturnValue(
         of([{ title: 'Flood maps', authors: ['A. Aggie', 'B. Bevo'], link: 'https://example.com/flood.pdf', year: 2026 }])
@@ -47,14 +48,14 @@ describe('GalleryComponent', () => {
   });
 
   it('says "No posters yet." for a season with none', () => {
-    const { page } = render(jest.fn().mockReturnValue(of([])));
+    const { page } = render(vi.fn().mockReturnValue(of([])));
 
     expect(page.querySelectorAll('.poster-submission')).toHaveLength(0);
     expect(page.textContent).toContain('No posters yet.');
   });
 
   it('asks for the season chosen in the list', () => {
-    const getPosters = jest.fn().mockReturnValue(of([]));
+    const getPosters = vi.fn().mockReturnValue(of([]));
     const { fixture } = render(getPosters);
 
     fixture.componentInstance.setSeason('season-2025');
@@ -63,7 +64,7 @@ describe('GalleryComponent', () => {
   });
 
   it('says so, rather than "No posters yet.", when the posters cannot be loaded', () => {
-    const { page } = render(jest.fn().mockReturnValue(throwError(() => new Error('down'))));
+    const { page } = render(vi.fn().mockReturnValue(throwError(() => new Error('down'))));
 
     expect(page.textContent).toContain('The posters could not be loaded.');
     expect(page.textContent).not.toContain('No posters yet.');

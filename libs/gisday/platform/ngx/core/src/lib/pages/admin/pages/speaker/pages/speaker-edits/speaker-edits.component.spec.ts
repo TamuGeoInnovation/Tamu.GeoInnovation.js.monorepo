@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
@@ -13,16 +14,20 @@ import { SpeakerEditsComponent } from './speaker-edits.component';
  */
 describe('SpeakerEditsComponent, a decision that fails', () => {
   const edit = { guid: 'edit-1', speaker: { firstName: 'Ana', lastName: 'Ruiz' } } as unknown as PendingSpeakerEdit;
-  let toast: jest.Mock;
+  let toast: Mock;
 
   function decideAgainst(answer: object) {
-    toast = jest.fn();
+    toast = vi.fn();
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
         {
           provide: SpeakerEditsService,
-          useValue: { pending: () => of([]), approve: () => throwError(() => answer), reject: () => throwError(() => answer) }
+          useValue: {
+            pending: () => of([]),
+            approve: () => throwError(() => answer),
+            reject: () => throwError(() => answer)
+          }
         },
         { provide: NotificationService, useValue: { toast } }
       ]
@@ -38,19 +43,26 @@ describe('SpeakerEditsComponent, a decision that fails', () => {
   }
 
   it("says the server's own reason, such as an edit already decided", () => {
-    expect(decideAgainst({ status: 404, error: { statusCode: 404, message: 'That edit is not waiting for review.' } })).toEqual(
+    expect(
+      decideAgainst({ status: 404, error: { statusCode: 404, message: 'That edit is not waiting for review.' } })
+    ).toEqual(
       expect.objectContaining({ title: 'Could not save the decision', message: 'That edit is not waiting for review.' })
     );
   });
 
   it('names the permission the account lacks for a 403, and does not suggest trying again', () => {
-    const shown = decideAgainst({ status: 403, error: { statusCode: 403, message: 'This needs the update:speakers permission.' } });
+    const shown = decideAgainst({
+      status: 403,
+      error: { statusCode: 403, message: 'This needs the update:speakers permission.' }
+    });
 
     expect(shown.message).toContain('update:speakers');
     expect(shown.message).not.toContain('try again');
   });
 
   it('still says to try again when the server failed', () => {
-    expect(decideAgainst({ status: 500, error: { statusCode: 500, message: 'Internal server error' } }).message).toBe('Please try again.');
+    expect(decideAgainst({ status: 500, error: { statusCode: 500, message: 'Internal server error' } }).message).toBe(
+      'Please try again.'
+    );
   });
 });

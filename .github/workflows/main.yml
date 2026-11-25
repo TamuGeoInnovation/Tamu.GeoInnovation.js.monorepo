@@ -9,10 +9,13 @@ on:
 permissions:
   contents: read
 
-# Optional but nice: one active run per branch/PR
+# A pull request's newer push supersedes its older one, so that run is cancelled. A push to a branch is a merge, and
+# each merge's run finishes, with its own group per commit (#3531): cancelling them meant 73 of 99 runs on development
+# were cancelled on 24 November, each one emailing whoever merged, and a merged commit could get no image. (A group
+# with cancel-in-progress off would still cancel all but the newest waiting run, so the group itself is per commit.)
 concurrency:
-  group: qa-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
+  group: qa-${{ github.event.pull_request.number || format('{0}-{1}', github.ref, github.sha) }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   set-base:
@@ -83,3 +86,46 @@ jobs:
       contents: read
       packages: write
     uses: ./.github/workflows/publish.yml
+
+  # A failing run on development opens one issue, labelled development-health, or comments on the open one, and the next
+  # passing run closes it, as the smoke suite's health issues do (#3531). That one place replaces an email per run, which
+  # is what got ignored. A cancelled or skipped run says nothing either way: it has checked nothing.
+  health:
+    name: Development health
+    needs: [lint, test, build, publish]
+    if: always() && github.event_name == 'push' && github.ref == 'refs/heads/development'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      issues: write
+    steps:
+      - name: Open, update or close the development-health issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FAILED: ${{ contains(needs.*.result, 'failure') }}
+          PASSED: ${{ !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled') && !contains(needs.*.result, 'skipped') }}
+          SHA: ${{ github.sha }}
+        run: |
+          run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          short="${SHA:0:9}"
+          existing=$(gh issue list --repo "$GITHUB_REPOSITORY" --label development-health --state open --limit 1 --json number --jq '.[0].number // empty')
+
+          if [ "$FAILED" = "true" ]; then
+            if [ -n "$existing" ]; then
+              gh issue comment "$existing" --repo "$GITHUB_REPOSITORY" --body "Still failing at \`$short\`. [Run]($run_url)"
+            else
+              gh label create --repo "$GITHUB_REPOSITORY" development-health \
+                --description 'The latest run on development is failing' --color 'B60205' 2>/dev/null || true
+              gh issue create --repo "$GITHUB_REPOSITORY" --label development-health \
+                --title "development is failing at $short" \
+                --body "Quabity Assuance failed on \`development\` at \`$short\`. The run says which job and which task.
+
+          A flaky test that fails on code it does not touch gets its own issue and a fix that day (CLAUDE.md, #3506).
+
+          This issue is updated on each failing run and closed automatically when a run on development next passes.
+
+          [Run]($run_url)"
+            fi
+          elif [ "$PASSED" = "true" ] && [ -n "$existing" ]; then
+            gh issue close "$existing" --repo "$GITHUB_REPOSITORY" --comment "Passing again at \`$short\`. [Run]($run_url)"
+          fi

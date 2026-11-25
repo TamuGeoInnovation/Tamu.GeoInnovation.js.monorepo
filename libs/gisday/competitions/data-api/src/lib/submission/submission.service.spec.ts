@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { DeepPartial } from 'typeorm';
 
 import { CompetitionSubmission, SubmissionLocation, SubmissionMedia } from '../entities/all.entities';
@@ -28,9 +29,9 @@ describe('clampAccuracy', () => {
  * would update a row that already has that guid), together with its photographs in one transaction.
  */
 describe('SubmissionService.createCompetitionSubmission', () => {
-  let em: { create: jest.Mock; save: jest.Mock; insert: jest.Mock; find: jest.Mock };
+  let em: { create: Mock; save: Mock; insert: Mock; find: Mock };
   let service: SubmissionService;
-  let publishInBackground: jest.Mock;
+  let publishInBackground: Mock;
 
   const entity: DeepPartial<CompetitionSubmission> = {
     guid: '7f1c5a52-3b0e-4d36-9a55-2f8e8f4c1b6a',
@@ -45,16 +46,16 @@ describe('SubmissionService.createCompetitionSubmission', () => {
 
   beforeEach(() => {
     em = {
-      create: jest.fn((type, values) => Object.assign(new type(), values)),
-      save: jest.fn((value) => Promise.resolve(value)),
-      insert: jest.fn(() => Promise.resolve({})),
+      create: vi.fn((type, values) => Object.assign(new type(), values)),
+      save: vi.fn((value) => Promise.resolve(value)),
+      insert: vi.fn(() => Promise.resolve({})),
       // The participant's earlier submissions, for the automatic review (#2164).
-      find: jest.fn(() => Promise.resolve([]))
+      find: vi.fn(() => Promise.resolve([]))
     };
     // The participant's earlier submissions are read before the save, outside its transaction (#2428 review).
     const submissionRepo = { manager: { transaction: (work) => work(em) }, find: (options) => em.find(options) };
 
-    publishInBackground = jest.fn();
+    publishInBackground = vi.fn();
     service = new SubmissionService(
       submissionRepo as never,
       {} as never,
@@ -215,19 +216,19 @@ describe('SubmissionService.getAdminSubmissions', () => {
       ...overrides
     });
 
-  let find: jest.Mock;
+  let find: Mock;
   let service: SubmissionService;
 
   beforeEach(() => {
-    find = jest.fn();
+    find = vi.fn();
     service = new SubmissionService(
       { find } as never,
       {} as never,
       {} as never,
-      { findOne: jest.fn(() => Promise.resolve({ guid: 'cs-2026', form })) } as never,
-      { findOne: jest.fn(() => Promise.resolve({ guid: 's-2026', active: true })) } as never,
-      { getUserMetadata: jest.fn(() => Promise.reject(new Error('offline'))) } as never,
-      { publishInBackground: jest.fn() } as never
+      { findOne: vi.fn(() => Promise.resolve({ guid: 'cs-2026', form })) } as never,
+      { findOne: vi.fn(() => Promise.resolve({ guid: 's-2026', active: true })) } as never,
+      { getUserMetadata: vi.fn(() => Promise.reject(new Error('offline'))) } as never,
+      { publishInBackground: vi.fn() } as never
     );
   });
 
@@ -273,11 +274,11 @@ describe('SubmissionService.getAdminSubmissions', () => {
  */
 describe('SubmissionService.validateSubmission', () => {
   it("publishes the submission's new status to ArcGIS Online", async () => {
-    const save = jest.fn(() => Promise.resolve());
+    const save = vi.fn(() => Promise.resolve());
     const submission = { guid: 's-1', validationStatus: { status: 'verified', verifiedBy: 'automatic' }, save };
-    const publishInBackground = jest.fn();
+    const publishInBackground = vi.fn();
     const service = new SubmissionService(
-      { findOne: jest.fn(() => Promise.resolve(submission)) } as never,
+      { findOne: vi.fn(() => Promise.resolve(submission)) } as never,
       {} as never,
       {} as never,
       {} as never,

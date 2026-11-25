@@ -1,3 +1,7 @@
+@import 'libs/gisday/sass/variables';
+
+// The GEOSAT logo is white on a transparent background, so on the white page it was invisible: the colour was written
+// as the quoted string '#500000', which is not a colour, and the browser dropped it (#3337).
 img#geosat {
-  background-color: '#500000';
+  background-color: $aggie-maroon;
 }

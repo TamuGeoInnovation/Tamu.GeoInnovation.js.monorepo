@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -67,16 +68,16 @@ function judgePage(closed = false): JudgePageDto {
  * a score per criterion and its levels, Save, and how many are scored; read-only once judging closes.
  */
 describe('JudgingComponent (#3183)', () => {
-  async function open(options: { page?: JudgePageDto | 'invalid'; assess?: jest.Mock; token?: string | null } = {}) {
+  async function open(options: { page?: JudgePageDto | 'invalid'; assess?: Mock; token?: string | null } = {}) {
     const judging = {
-      forLink: jest.fn(() =>
+      forLink: vi.fn(() =>
         options.page === 'invalid'
           ? throwError(() => new HttpErrorResponse({ status: 404 }))
           : of(JSON.parse(JSON.stringify(options.page ?? judgePage())))
       ),
       assess:
         options.assess ??
-        jest.fn((_token: string, _submission: string, a: { scores: Record<string, number>; comment: string }) =>
+        vi.fn((_token: string, _submission: string, a: { scores: Record<string, number>; comment: string }) =>
           of({
             scores: a.scores,
             total: Object.values(a.scores).reduce((x, y) => x + y, 0),
@@ -131,7 +132,19 @@ describe('JudgingComponent (#3183)', () => {
     const button = (text: string) =>
       Array.from(panel()?.querySelectorAll<HTMLButtonElement>('button') ?? []).find((b) => b.textContent?.trim() === text);
 
-    return { fixture, root, judging, row, panel, openEntry, save, press, button, settle, component: fixture.componentInstance };
+    return {
+      fixture,
+      root,
+      judging,
+      row,
+      panel,
+      openEntry,
+      save,
+      press,
+      button,
+      settle,
+      component: fixture.componentInstance
+    };
   }
 
   it('opens an entry in a panel with its title, presenters and abstract, and a score box per criterion with its levels', async () => {
@@ -425,7 +438,7 @@ describe('JudgingComponent (#3183)', () => {
   });
 
   it("shows the API's reason when it refuses the scores", async () => {
-    const refused = jest.fn(() =>
+    const refused = vi.fn(() =>
       throwError(() => new HttpErrorResponse({ status: 403, error: { message: JUDGING_CLOSED_MESSAGE } }))
     );
     const { openEntry, panel, save, component } = await open({ assess: refused });
@@ -445,7 +458,9 @@ describe('JudgingComponent (#3183)', () => {
     const rivers = await openEntry('Rivers');
 
     expect(rivers.querySelector('input[type="submit"]')).toBeNull();
-    expect(Array.from(rivers.querySelectorAll<HTMLInputElement>('input[type="number"]')).every((i) => i.disabled)).toBe(true);
+    expect(Array.from(rivers.querySelectorAll<HTMLInputElement>('input[type="number"]')).every((i) => i.disabled)).toBe(
+      true
+    );
   });
 
   it('says when the link does not work, or there is none', async () => {

@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { NotFoundException, StreamableFile } from '@nestjs/common';
 import JSZip from 'jszip';
 
@@ -16,7 +17,7 @@ function bytesOf(file: StreamableFile): Promise<Buffer> {
 }
 
 const repo = (answers: Record<string, unknown>) =>
-  Object.fromEntries(Object.entries(answers).map(([method, value]) => [method, jest.fn(async () => value)]));
+  Object.fromEntries(Object.entries(answers).map(([method, value]) => [method, vi.fn(async () => value)]));
 
 /**
  * #545: the VGI export built in the request and streamed, as a session's slides and the competition files are (#3185),
@@ -56,7 +57,7 @@ describe('ExportService.zipForSeason() (#545)', () => {
     const competitionSeasons = repo({ findOne: 'competitionSeason' in over ? over.competitionSeason : competitionSeason });
     const submissionRepo = repo({ find: submissions });
     const mediaRepo = {
-      find: jest.fn(async ({ where }) => medias[where.submission.guid] ?? [])
+      find: vi.fn(async ({ where }) => medias[where.submission.guid] ?? [])
     };
 
     return {
@@ -125,7 +126,7 @@ describe('ExportService.zipForSeason() (#545)', () => {
     await expect(service({ season: null }).service.zipForSeason()).rejects.toBeInstanceOf(NotFoundException);
 
     const none = service();
-    (none.submissionRepo.find as jest.Mock).mockResolvedValue([]);
+    (none.submissionRepo.find as Mock).mockResolvedValue([]);
     await expect(none.service.zipForSeason()).rejects.toBeInstanceOf(NotFoundException);
   });
 });

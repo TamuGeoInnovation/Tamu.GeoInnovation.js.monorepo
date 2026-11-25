@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import {
   BadRequestException,
   ConflictException,
@@ -38,18 +39,18 @@ describe('SubmissionController', () => {
 
   beforeEach(() => {
     service = {
-      getUserSubmissions: jest.fn(() => Promise.resolve([])),
-      getSubmissionImages: jest.fn(() => Promise.resolve([])),
-      getSubmissionByGuid: jest.fn((guid) => Promise.resolve(guid === 'missing' ? null : { guid, userGuid: 'auth0|ann' })),
-      getOne: jest.fn(({ where }) =>
+      getUserSubmissions: vi.fn(() => Promise.resolve([])),
+      getSubmissionImages: vi.fn(() => Promise.resolve([])),
+      getSubmissionByGuid: vi.fn((guid) => Promise.resolve(guid === 'missing' ? null : { guid, userGuid: 'auth0|ann' })),
+      getOne: vi.fn(({ where }) =>
         Promise.resolve(where.guid === 'missing' ? null : { guid: where.guid, userGuid: 'auth0|ann', blobs: [] })
       ),
-      getAdminSubmissions: jest.fn(() => Promise.resolve([])),
-      getMany: jest.fn(() => Promise.resolve([])),
-      createCompetitionSubmission: jest.fn((sub) => Promise.resolve(sub)),
-      createOne: jest.fn((sub) => Promise.resolve(sub))
+      getAdminSubmissions: vi.fn(() => Promise.resolve([])),
+      getMany: vi.fn(() => Promise.resolve([])),
+      createCompetitionSubmission: vi.fn((sub) => Promise.resolve(sub)),
+      createOne: vi.fn((sub) => Promise.resolve(sub))
     };
-    formService = { getSeason: jest.fn(() => Promise.resolve({ guid: 'cs-1', allowSubmissions: true })) };
+    formService = { getSeason: vi.fn(() => Promise.resolve({ guid: 'cs-1', allowSubmissions: true })) };
     controller = new SubmissionController(service, formService) as unknown as typeof controller;
   });
 
@@ -274,7 +275,7 @@ describe('SubmissionController', () => {
 describe('SubmissionController upload limits', () => {
   let app: INestApplication;
   let url: string;
-  let createCompetitionSubmission: jest.Mock;
+  let createCompetitionSubmission: Mock;
 
   /** A photograph of `bytes` bytes: a JPEG's header, padded. */
   const jpegOf = (bytes: number) =>
@@ -298,12 +299,12 @@ describe('SubmissionController upload limits', () => {
   };
 
   beforeAll(async () => {
-    createCompetitionSubmission = jest.fn((sub) => Promise.resolve(sub));
+    createCompetitionSubmission = vi.fn((sub) => Promise.resolve(sub));
 
     const moduleRef = await Test.createTestingModule({
       controllers: [SubmissionController],
       providers: [
-        { provide: SubmissionService, useValue: { createCompetitionSubmission, getSubmissionByGuid: jest.fn() } },
+        { provide: SubmissionService, useValue: { createCompetitionSubmission, getSubmissionByGuid: vi.fn() } },
         { provide: FormService, useValue: { getSeason: () => Promise.resolve({ guid: 'cs-1', allowSubmissions: true }) } }
       ]
     })

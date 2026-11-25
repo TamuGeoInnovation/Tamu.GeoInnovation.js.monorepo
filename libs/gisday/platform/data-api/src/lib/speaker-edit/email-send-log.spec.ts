@@ -1,8 +1,4 @@
-import {
-  PROFILE_EMAIL_KIND,
-  SESSION_DETAILS_EMAIL_KIND,
-  SLIDES_REQUEST_EMAIL_KIND
-} from '@tamu-gisc/gisday/common';
+import { PROFILE_EMAIL_KIND, SESSION_DETAILS_EMAIL_KIND, SLIDES_REQUEST_EMAIL_KIND } from '@tamu-gisc/gisday/common';
 
 import { EmailSendLog } from './email-send-log';
 import { SpeakerEditModule } from './speaker-edit.module';
@@ -36,7 +32,7 @@ function sendsTable() {
   return {
     rows,
     create: (x: Omit<Row, 'created'>) => ({ ...x }),
-    save: jest.fn(async (xs: Array<Omit<Row, 'created'>>) => {
+    save: vi.fn(async (xs: Array<Omit<Row, 'created'>>) => {
       for (const x of xs) {
         clock += 1000;
         rows.push({ ...x, created: new Date(clock) });
@@ -44,7 +40,7 @@ function sendsTable() {
 
       return xs;
     }),
-    find: jest.fn(async ({ where }) =>
+    find: vi.fn(async ({ where }) =>
       rows
         .filter((r) => where.speaker.guid._value.includes(r.speaker.guid))
         .sort((a, b) => b.created.getTime() - a.created.getTime())
@@ -135,9 +131,9 @@ describe('every speaker email records what it sent, and its preview shows it (#3
   let table: ReturnType<typeof sendsTable>;
   let log: EmailSendLog;
   let sent: Array<{ to: string }>;
-  const contact = () => ({ sendMessage: jest.fn(async (m) => sent.push(m)) });
+  const contact = () => ({ sendMessage: vi.fn(async (m) => sent.push(m)) });
   const sessions = { 'e-1': sessionNamed('e-1'), 'e-2': sessionNamed('e-2') };
-  const events = { findOne: jest.fn(async ({ where }) => sessions[where.guid] ?? null) };
+  const events = { findOne: vi.fn(async ({ where }) => sessions[where.guid] ?? null) };
 
   beforeEach(() => {
     table = sendsTable();
@@ -151,18 +147,16 @@ describe('every speaker email records what it sent, and its preview shows it (#3
     return new SpeakerEditService(
       {
         create: (x) => x,
-        save: jest.fn(async (x) => links.push({ ...x, created: new Date() })),
-        count: jest.fn(async () => 0),
+        save: vi.fn(async (x) => links.push({ ...x, created: new Date() })),
+        count: vi.fn(async () => 0),
         // No other profile link of the last few minutes, so each send's own link stands (#3326).
-        find: jest.fn(async () => []),
-        delete: jest.fn()
+        find: vi.fn(async () => []),
+        delete: vi.fn()
       } as never,
       {} as never,
       {
-        find: jest.fn(async ({ where }) =>
-          [avery, blair, noAddress]
-            .filter((s) => where.guid._value.includes(s.guid))
-            .map((s) => ({ ...s, season: days }))
+        find: vi.fn(async ({ where }) =>
+          [avery, blair, noAddress].filter((s) => where.guid._value.includes(s.guid)).map((s) => ({ ...s, season: days }))
         )
       } as never,
       {} as never,
@@ -197,7 +191,12 @@ describe('every speaker email records what it sent, and its preview shows it (#3
   });
 
   it("records a session's details sent together once for each speaker on it, about that session", async () => {
-    const service = new SessionDetailsEmailService(events as never, new RepeatGuard(new Table<SpeakerEmailClaim>() as never), contact() as never, log);
+    const service = new SessionDetailsEmailService(
+      events as never,
+      new RepeatGuard(new Table<SpeakerEmailClaim>() as never),
+      contact() as never,
+      log
+    );
 
     await service.send('e-1', 'gisday.tamu.edu', undefined, undefined, { speakers: ['sp-av', 'sp-bl'], together: true });
 
@@ -220,12 +219,18 @@ describe('every speaker email records what it sent, and its preview shows it (#3
 
   it('records each Ask for slides email sent, about that session', async () => {
     const links = {
-      newLink: jest.fn(async (s: { guid: string }) => ({
+      newLink: vi.fn(async (s: { guid: string }) => ({
         url: `https://gisday.tamu.edu/presenters/edit/LINK-OF-${s.guid}`,
         expires: new Date('2026-11-22T18:00:00Z')
       }))
     };
-    const service = new SlidesRequestEmailService(events as never, new RepeatGuard(new Table<SpeakerEmailClaim>() as never), contact() as never, links as never, log);
+    const service = new SlidesRequestEmailService(
+      events as never,
+      new RepeatGuard(new Table<SpeakerEmailClaim>() as never),
+      contact() as never,
+      links as never,
+      log
+    );
 
     await service.send('e-1', 'gisday.tamu.edu', undefined, undefined, ['sp-bl']);
 
@@ -245,7 +250,7 @@ describe('every speaker email records what it sent, and its preview shows it (#3
     const failing = new SessionDetailsEmailService(
       events as never,
       new RepeatGuard(new Table<SpeakerEmailClaim>() as never),
-      { sendMessage: jest.fn(async () => Promise.reject(new Error('the mail server is away'))) } as never,
+      { sendMessage: vi.fn(async () => Promise.reject(new Error('the mail server is away'))) } as never,
       log
     );
 

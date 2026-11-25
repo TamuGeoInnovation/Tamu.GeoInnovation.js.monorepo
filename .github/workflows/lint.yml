@@ -71,6 +71,14 @@ jobs:
           BASE: ${{ inputs.base }}
         run: node scripts/check-format.mjs
 
+      # Spec files are run without their types being checked (vitest transpiles them; builds never use tsconfig.spec.json), so
+      # a spec could be wrong about its types and pass: 3,993 errors in 16 projects on 25 November 2026 (#2263). Each project
+      # the pull request changes has its spec configuration type-checked; the 16 are held to their counts until fixed.
+      - name: Type-check the specs of the changed projects
+        env:
+          BASE: ${{ inputs.base }}
+        run: node scripts/check-spec-types.mjs
+
       - name: Lint Affected
         env:
           BASE: ${{ inputs.base }}

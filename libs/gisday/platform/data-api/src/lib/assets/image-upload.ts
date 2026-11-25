@@ -28,7 +28,7 @@ export function refuseUnsafeImage<T extends { buffer?: Buffer; originalname?: st
   file: T,
   label = 'The image'
 ): T & { originalname: string; mimetype: string } {
-  const size = file?.buffer ? readImageSize(file.buffer) : null;
+  const size = file.buffer ? readImageSize(file.buffer) : null;
 
   if (!size || !UPLOAD_IMAGE_FORMATS.includes(size.format)) {
     throw new BadRequestException(uploadImageRefusal(label));

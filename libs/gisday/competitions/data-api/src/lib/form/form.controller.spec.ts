@@ -11,15 +11,15 @@ describe('FormController, a request with no body', () => {
   let controller: FormController;
 
   beforeEach(() => {
-    const competitionSeason = { guid: 'cs-2026', form: { guid: 'f-1' }, save: jest.fn() };
+    const competitionSeason = { guid: 'cs-2026', form: { guid: 'f-1' }, save: vi.fn() };
 
     const service = new FormService(
-      { create: jest.fn((values) => values) } as never,
+      { create: vi.fn((values) => values) } as never,
       {
-        findOne: jest.fn(({ where }) => Promise.resolve(where.form ? competitionSeason : null)),
-        create: jest.fn()
+        findOne: vi.fn(({ where }) => Promise.resolve(where.form ? competitionSeason : null)),
+        create: vi.fn()
       } as never,
-      { findOne: jest.fn(() => Promise.resolve({ guid: 's-2026', active: true })) } as never
+      { findOne: vi.fn(() => Promise.resolve({ guid: 's-2026', active: true })) } as never
     );
 
     controller = new FormController(service);

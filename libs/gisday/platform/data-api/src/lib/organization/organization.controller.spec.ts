@@ -13,7 +13,7 @@ const UPLOAD_TEST_TIMEOUT_MS = 30000;
 describe('OrganizationController upload limits', () => {
   let app: INestApplication;
   let url: string;
-  const createOrganization = jest.fn();
+  const createOrganization = vi.fn();
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
@@ -40,17 +40,17 @@ describe('OrganizationController upload limits', () => {
     await app?.close();
   });
 
-  it('answers 413 for an organization logo over the shared file-size limit', async () => {
-    const form = new FormData();
-    form.append(
-      'file',
-      new Blob([new Uint8Array(DEFAULT_UPLOAD_LIMITS.fileSize + 1)], { type: 'image/png' }),
-      'logo.png'
-    );
+  it(
+    'answers 413 for an organization logo over the shared file-size limit',
+    async () => {
+      const form = new FormData();
+      form.append('file', new Blob([new Uint8Array(DEFAULT_UPLOAD_LIMITS.fileSize + 1)], { type: 'image/png' }), 'logo.png');
 
-    const response = await fetch(`${url}/organizations`, { method: 'POST', body: form });
+      const response = await fetch(`${url}/organizations`, { method: 'POST', body: form });
 
-    expect(response.status).toBe(413);
-    expect(createOrganization).not.toHaveBeenCalled();
-  }, UPLOAD_TEST_TIMEOUT_MS);
+      expect(response.status).toBe(413);
+      expect(createOrganization).not.toHaveBeenCalled();
+    },
+    UPLOAD_TEST_TIMEOUT_MS
+  );
 });
