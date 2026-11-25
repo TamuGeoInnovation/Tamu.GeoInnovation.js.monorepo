@@ -1,6 +1,6 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, OnDestroy, inject, signal } from '@angular/core';
 import { Subject, ReplaySubject, Observable } from 'rxjs';
-import { filter, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 
 import {
   aggiemapBasemap,
@@ -15,7 +15,7 @@ import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
-import { BetaPromptComponent, AlertModalComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
+import { AlertModalComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 import { ReveilleConsoleLogComponent } from '@tamu-gisc/ui-kits/ngx/branding';
 import { RouterLink, RouterOutlet } from '@angular/router';
 
@@ -71,12 +71,6 @@ export class MapComponent implements OnInit, OnDestroy {
   public ngOnInit() {
     this._connections = this.env.value('Connections');
     this.isDev = this.ts.get('isTesting');
-
-    // TODO: This needs to be updated when settings service is updated to support settings branch get without feature component/module being loaded.
-    // https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/274
-    const preferencesString = localStorage.getItem('user-preferences');
-    const preferencesSettings = preferencesString !== null ? JSON.parse(preferencesString) : { experiments: null };
-    const experimentSettings = preferencesSettings.experiments || {};
 
     this.responsiveService.isMobile.pipe(takeUntil(this._destroy$)).subscribe((value) => {
       this.isMobile.set(value);

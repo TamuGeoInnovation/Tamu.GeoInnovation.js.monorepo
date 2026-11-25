@@ -7,12 +7,13 @@ import { combineLatest, map, Observable, startWith, switchMap } from 'rxjs';
 import { SeasonService, SpeakerService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { Speaker } from '@tamu-gisc/gisday/platform/data-api';
 import { SpeakerAvatarComponent, SpeakerClassBannerComponent } from '@tamu-gisc/gisday/platform/ngx/common';
-import { AsyncPipe, DatePipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { ParseDateTimeStringsPipe } from '@tamu-gisc/gisday/platform/ngx/common';
 import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 import { matchesSearch, presentersForRoute } from '../../presenters';
+import { CentralDatePipe } from '@tamu-gisc/gisday/platform/ngx/common';
 
 /** How many matches the box lists under itself; the rest are a link away, on the Presenters page. */
 export const MATCHES_SHOWN = 10;
@@ -42,7 +43,7 @@ export function otherMatches(
     SpeakerClassBannerComponent,
     RouterLink,
     AsyncPipe,
-    DatePipe,
+    CentralDatePipe,
     ParseDateTimeStringsPipe,
     MarkdownParsePipe,
     TextboxComponent,

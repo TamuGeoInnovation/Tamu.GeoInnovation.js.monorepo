@@ -101,7 +101,7 @@ export class AutocompleteComponent<T> implements OnInit, OnDestroy {
         this._suppressShow = true;
         control.setValue(this.displayWith()(option));
       }
-    } catch (e) {
+    } catch {
       // ignore if control is not set or not writable
     }
 

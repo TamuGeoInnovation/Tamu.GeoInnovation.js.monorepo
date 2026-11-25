@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, injec
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { DatePipe, NgTemplateOutlet } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
 
 import { JudgingService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { ButtonComponent, TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -18,6 +18,7 @@ import {
   rubricTotal,
   scoredLine
 } from '@tamu-gisc/gisday/common';
+import { CentralDatePipe } from '@tamu-gisc/gisday/platform/ngx/common';
 
 /** How a submission's save stands: being sent, sent (when), or refused (why). */
 interface SaveState {
@@ -66,7 +67,7 @@ export function judgeMatches(entries: Array<JudgeEntry>, search: string): Array<
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ReactiveFormsModule,
-    DatePipe,
+    CentralDatePipe,
     NgTemplateOutlet,
     ButtonComponent,
     TextboxComponent,
@@ -175,7 +176,9 @@ export class JudgingComponent implements OnInit {
   public neighbour(step: -1 | 1): JudgeEntry | null {
     const opened = this.opened();
 
-    return opened ? (this.entries().find((e) => e.tab === opened.tab && e.position === opened.position + step) ?? null) : null;
+    return opened
+      ? (this.entries().find((e) => e.tab === opened.tab && e.position === opened.position + step) ?? null)
+      : null;
   }
 
   public step(step: -1 | 1): void {

@@ -7,7 +7,6 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
-import esri = __esri;
 import { EventPopups } from '../modules/popups/popups';
 
 export enum BIG_EVENT_LAYERS {
@@ -23,7 +22,6 @@ export enum BIG_EVENT_MAP_TYPE_OPTIONS {
 }
 
 const eventUrl = Connections.bigEventUrl;
-
 
 const BIG_EVENT_ROAD_CLOSURE_EXPRESSIONS = {
   PRE_KICKOFF: `Notes LIKE '%To Kickoff%'`,

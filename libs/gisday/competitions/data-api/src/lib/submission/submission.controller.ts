@@ -136,7 +136,7 @@ export class SubmissionController {
       return submission;
     }
 
-    const { verifiedBy, ...status } = submission.validationStatus;
+    const { verifiedBy: _verifiedBy, ...status } = submission.validationStatus;
 
     return { ...submission, validationStatus: status };
   }

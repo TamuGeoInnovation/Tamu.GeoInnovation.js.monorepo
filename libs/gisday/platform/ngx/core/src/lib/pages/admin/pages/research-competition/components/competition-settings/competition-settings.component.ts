@@ -226,7 +226,7 @@ export class CompetitionSettingsComponent {
       this.shownGuid = season?.guid ?? null;
 
       const deadlines = Object.fromEntries(
-        SUBMISSION_DEADLINE_FIELDS.map((field) => [field, asDate(season?.[field])])
+        SUBMISSION_DEADLINE_FIELDS.map((field) => [field, season?.[field] ?? null])
       ) as Record<SubmissionDeadlineField, Date | null>;
       const competitions = Object.fromEntries(
         SEASON_COMPETITIONS.map((competition) => [competition, runsCompetition(season, competition)])
@@ -242,7 +242,7 @@ export class CompetitionSettingsComponent {
               sessionGuid: row?.sessionGuid ?? '',
               graduateSessionGuid: row?.graduateSessionGuid ?? '',
               awardsSessionGuid: row?.awardsSessionGuid ?? '',
-              finalistsNotifiedAt: asDate(row?.finalistsNotifiedAt)
+              finalistsNotifiedAt: row?.finalistsNotifiedAt ?? null
             }
           ];
         })

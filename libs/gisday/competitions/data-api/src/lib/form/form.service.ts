@@ -74,7 +74,7 @@ export class FormService extends BaseService<CompetitionForm> {
         });
 
         return compSeason.save();
-      } catch (err) {
+      } catch {
         throw new InternalServerErrorException('Failed to create competition season .');
       }
     } else {
@@ -116,7 +116,7 @@ export class FormService extends BaseService<CompetitionForm> {
       competitionSeason.scoringClosesAt = window.scoringClosesAt;
 
       return competitionSeason.save();
-    } catch (err) {
+    } catch {
       throw new InternalServerErrorException('Failed to update competition season form.');
     }
   }

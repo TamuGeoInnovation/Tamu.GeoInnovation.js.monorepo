@@ -184,7 +184,7 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
           this.arcgis.publishInBackground(submission.guid);
 
           return submission;
-        } catch (err) {
+        } catch {
           throw new InternalServerErrorException();
         }
       }
@@ -361,7 +361,7 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
         try {
           const user = await this.ms.getUserMetadata(userGuid, undefined, true);
           identityMap.set(userGuid, user.user_info.email);
-        } catch (error) {
+        } catch {
           // If resolution fails, use last 4 characters of GUID
           identityMap.set(userGuid, userGuid.substring(userGuid.length - 4));
         }

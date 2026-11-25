@@ -4,14 +4,15 @@ import { Observable, shareReplay } from 'rxjs';
 
 import { CheckinService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { CheckIn } from '@tamu-gisc/gisday/platform/data-api';
-import { AsyncPipe, DatePipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
+import { CentralDatePipe } from '@tamu-gisc/gisday/platform/ngx/common';
 
 @Component({
   selector: 'tamu-gisc-my-checkins',
   templateUrl: './my-checkins.component.html',
   styleUrls: ['./my-checkins.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [AsyncPipe, DatePipe]
+  imports: [AsyncPipe, CentralDatePipe]
 })
 export class MyCheckinsComponent implements OnInit {
   private readonly checkinService = inject(CheckinService);

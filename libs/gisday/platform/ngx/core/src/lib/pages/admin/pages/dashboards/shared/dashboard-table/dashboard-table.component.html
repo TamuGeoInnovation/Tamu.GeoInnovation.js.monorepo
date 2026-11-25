@@ -26,7 +26,7 @@
 
       @if (hasWhen()) {
       <ngx-datatable-column name="When" prop="when" [flexGrow]="widths.when" [minWidth]="widths.when" [comparator]="compareTimes" [summaryFunc]="blank">
-        <ng-template let-row="row" ngx-datatable-cell-template>{{ row.when | date: whenFormat() : '-0600' }}</ng-template>
+        <ng-template let-row="row" ngx-datatable-cell-template>{{ row.when | centralDate: whenFormat() }}</ng-template>
       </ngx-datatable-column>
       }
 

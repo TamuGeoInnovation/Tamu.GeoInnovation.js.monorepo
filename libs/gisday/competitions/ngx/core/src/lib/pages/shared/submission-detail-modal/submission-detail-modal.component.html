@@ -8,7 +8,7 @@
       <div class="form-collection column">
         <div class="info-row">
           <strong>Created:</strong>
-          <span>{{ submission.created | date: 'short' }}</span>
+          <span>{{ submission.created | centralDate: 'short' }}</span>
         </div>
         @if (submission.resolvedIdentity) {
         <div class="info-row">

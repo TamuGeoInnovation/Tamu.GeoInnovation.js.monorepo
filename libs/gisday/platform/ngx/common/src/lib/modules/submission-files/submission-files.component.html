@@ -16,7 +16,7 @@
     <button type="button" class="inline-link file-preview-link" [disabled]="busy() === file.guid" (click)="preview(file)">Preview</button>
     }
     <!-- Who uploaded it, where the list is several people's: a session's slides on its admin page (#3093). -->
-    <span class="file-detail">@if (file.uploadedBy) {<span class="file-by">{{ file.uploadedBy }}</span> · }{{ size(file.size) }} · {{ file.uploaded | date: 'MMM d, h:mm a' }}</span>
+    <span class="file-detail">@if (file.uploadedBy) {<span class="file-by">{{ file.uploadedBy }}</span> · }{{ size(file.size) }} · {{ file.uploaded | centralDate: 'MMM d, h:mm a' }}</span>
     @if (editable() || askBeforeRemoving()) {
     <button type="button" class="inline-link danger" [disabled]="busy() === file.guid || asking() === file.guid" (click)="askToRemove(file)">Remove</button>
     } @if (asking() === file.guid) {
