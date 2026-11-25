@@ -1,5 +1,18 @@
 # work-lab-leila: current tasks
 
+## Decided (gisday), 4:07 AM Central, 25 November 2026
+
+- **g215 received:** `fix/3593-competitions-ngx-common-strict` (#3610) goes through `pre-pr-check.sh` on the work machine and opens when it exits 0.
+- **Q-g215-1: (a)**, as you recommend.
+
+## Batch g216 (gisday, #3593): strictNullChecks in `gisday-competitions-ngx-core` (now)
+
+As g215, for the competitions core library (your g208 table gave 17 errors in its own files and 403 in its configuration). File its sub-issue of **#3593** first, as you did #3601 and #3610. Branch `fix/3593-competitions-ngx-core-strict` from the latest `origin/development`. These are competition pages: anything that renders differently needs before/after images. The known list gets what its configuration still reports from other libraries. `pre-pr-check.sh` with it and `gisday-angular`, `CHECK_PARALLEL=1`; "branch ready" with the new `gisday-angular` count.
+
+## Batch g217 (workspace, #3593): the small shared libraries `ui-kits-ngx-search` still compiles with errors (after g216)
+
+The laptop's g33 report (`laptop/reports/2026-11-25-g33.md`, Q-g33-1, decided (a)) left 20 errors in `ui-kits-ngx-search`'s configuration, all in five other shared libraries. **One branch and one sub-issue of #3593 per library**, in the order the report gives (routing first, then generic geometry), **skipping `common-utils-geometry-esri` until home's a22 (#3477/#3478) has merged**, since that changes it. Shared libraries: interfaces stay as they are, `affected` for the check. Each one also takes `ui-kits-ngx-search`'s count down on the known list (or off it, once it is clean). Stop after three branches and report, so they can be reviewed in small pieces.
+
 ## Decided (gisday), 3:58 AM Central, 25 November 2026
 
 - **Q-g214-1: (a).** The director opens #3597's pull request once #3595's (PR 3608) merges, with `development` merged in, so its diff is just the spec. Next for you: g215.
