@@ -8,7 +8,7 @@ import {
   UnprocessableEntityException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BaseEntity, EntityManager, FindManyOptions, In, Repository } from 'typeorm';
+import { BaseEntity, DeepPartial, EntityManager, FindManyOptions, In, Repository } from 'typeorm';
 
 import { BaseProvider, LookupOneOptions } from '../_base/base-provider';
 import {
@@ -149,34 +149,36 @@ export class SeasonService extends BaseProvider<Season> {
    * Orders a season's days and adds the start time of the earliest active event on its first day.
    */
   private async _withFirstEventTime(season: Season) {
-    const ordered = { ...season, days: this._orderDays(season.days), firstEventTime: null } as ActiveSeasonDto;
+    const days = this._orderDays(season.days);
+    let firstEventTime: string | null = null;
 
-    if (ordered.days.length > 0) {
-      const firstDay = ordered.days[0];
+    if (days.length > 0) {
       const extendedDay = await this.seasonDayRepo.findOne({
         where: {
-          guid: firstDay.guid
+          guid: days[0].guid
         },
         relations: { events: true }
       });
 
-      const activeEventsForDay = extendedDay.events.filter((event) => {
+      // A day deleted between the two reads has no events to start the season with.
+      const activeEventsForDay = (extendedDay?.events ?? []).filter((event) => {
         return event.active;
       });
 
-      if (activeEventsForDay && activeEventsForDay.length > 0) {
+      if (activeEventsForDay.length > 0) {
         const orderedActiveEvents = activeEventsForDay.sort((a, b) => {
           return a.startTime < b.startTime ? -1 : 1;
         });
 
-        ordered.firstEventTime = orderedActiveEvents[0].startTime;
+        firstEventTime = orderedActiveEvents[0].startTime;
       }
     }
 
-    return ordered;
+    // `satisfies`, not a cast to the DTO (whose fields are all optional), so callers keep the season's guid.
+    return { ...season, days, firstEventTime } satisfies ActiveSeasonDto;
   }
 
-  public async create(createSeasonDto?: Partial<Season>) {
+  public async create(createSeasonDto?: DeepPartial<Season>) {
     // If a season is provided, create using params
     if (createSeasonDto && createSeasonDto.year) {
       // If years param is not a number, this will throw a database error
@@ -283,8 +285,9 @@ export class SeasonService extends BaseProvider<Season> {
         (p) => {
           const place = this._stripEntityProperties(p);
 
-          // Clone locations and stripping guid, created, and updated properties
-          place.locations = p.locations.map((l) => {
+          // Clone locations and stripping guid, created, and updated properties. `locations`, `links` and `logos` are
+          // loaded by this find's `relations`, so they are present.
+          place.locations = p.locations!.map((l) => {
             const location = this._stripEntityProperties(l);
 
             return this.seasonRepo.manager.create(EventLocation, {
@@ -301,7 +304,7 @@ export class SeasonService extends BaseProvider<Season> {
           });
 
           // Clone logos and stripping guid, created, and updated properties
-          place.logos = p.logos.map((l) => {
+          place.logos = p.logos!.map((l) => {
             const logo = this._stripEntityProperties(l);
 
             return this.seasonRepo.manager.create(Asset, logo);
@@ -318,7 +321,8 @@ export class SeasonService extends BaseProvider<Season> {
         (o: Organization) => {
           const organization = this._stripEntityProperties(o);
 
-          organization.logos = o.logos.map((l) => {
+          // `logos` is loaded by this find's `relations`.
+          organization.logos = o.logos!.map((l) => {
             const logo = this._stripEntityProperties(l);
 
             return this.seasonRepo.manager.create(Asset, logo);
@@ -335,7 +339,8 @@ export class SeasonService extends BaseProvider<Season> {
       const sponsors = (await manager.find(Sponsor, { where, relations: { logos: true } })).map((s: Sponsor) => {
         const sponsor = this._stripEntityProperties(s);
 
-        sponsor.logos = s.logos.map((l) => {
+        // `logos` is loaded by this find's `relations`.
+        sponsor.logos = s.logos!.map((l) => {
           const logo = this._stripEntityProperties(l);
 
           return this.seasonRepo.manager.create(Asset, logo);
@@ -373,24 +378,27 @@ export class SeasonService extends BaseProvider<Season> {
       ).map((s: Speaker) => {
         const speaker = this._stripEntityProperties(s);
 
-        speaker.organization = orgDict.find(speaker.organization);
         speaker.university = uniDict.find(speaker.university);
 
-        speaker.images = s.images.map((i) => {
+        // `images` is loaded by this find's `relations`.
+        speaker.images = s.images!.map((i) => {
           const image = this._stripEntityProperties(i);
 
           return this.seasonRepo.manager.create(Asset, image);
         });
 
+        // The organization here, where the speaker is built: a speaker with none has none in the copy either.
         return this.seasonRepo.manager.create(Speaker, {
           ...speaker,
+          organization: orgDict.find(speaker.organization),
           season: savedSeason
         });
       });
 
       const savedSpeakers = await manager.save(speakers, { chunk: 25 });
       const savedLocations = nextSeason.places.reduce((acc, place) => {
-        return [...acc, ...place.locations];
+        // Every copied place above was given its `locations`.
+        return [...acc, ...place.locations!];
       }, [] as Array<EventLocation>);
 
       const dayDict = new EntityKeyDictionary(nextSeason.days, this.ENTITY_PK_LUT.seasonDay, (day) => {
@@ -417,14 +425,16 @@ export class SeasonService extends BaseProvider<Season> {
         const event = this._stripEntityProperties(e);
 
         // OOF, YIKES, WOWZERS
-        event.day = dayDict.find(event.day);
-        event.speakers = e.speakers.map((s) => speakerDict.find(s));
-        event.tags = e.tags.map((t) => tagDict.find(t));
+        // `speakers` and `tags` are joined by this query, so they are present (empty when there are none).
+        event.speakers = e.speakers!.map((s) => speakerDict.find(s)).filter((s) => s !== undefined);
+        event.tags = e.tags!.map((t) => tagDict.find(t)).filter((t) => t !== undefined);
         event.broadcast = broadcastDict.find(e.broadcast);
         event.location = locationDict.find(e.location);
 
+        // The day here, where the event is built: an event with none has none in the copy either.
         return this.seasonRepo.manager.create(Event, {
           ...event,
+          day: dayDict.find(event.day),
           season: nextSeason
         });
       });
@@ -457,6 +467,13 @@ export class SeasonService extends BaseProvider<Season> {
   }
 
   public async updateSeason(guid: string, updateSeasonDto: Partial<Season>) {
+    // Looked up first, so a season that does not exist answers 404 before another season is deactivated for it.
+    const existingCurrent = await this.seasonRepo.findOne({ where: { guid }, relations: { days: true } });
+
+    if (!existingCurrent) {
+      throw new NotFoundException();
+    }
+
     const existingActive = await this.seasonRepo.findOne({ where: { active: true } });
 
     // If the incoming has active set to true, and there is an existing active season,
@@ -465,8 +482,6 @@ export class SeasonService extends BaseProvider<Season> {
       existingActive.active = false;
       await this.seasonRepo.save(existingActive);
     }
-
-    const existingCurrent = await this.seasonRepo.findOne({ where: { guid }, relations: { days: true } });
 
     if (updateSeasonDto.days) {
       // For days in updateSeasonDto.days that have a guid, update the existing day date
@@ -497,6 +512,10 @@ export class SeasonService extends BaseProvider<Season> {
             return day.guid === incoming.guid;
           });
 
+          if (!existing) {
+            throw new NotFoundException(`The season has no day ${incoming.guid}.`);
+          }
+
           // If the dates are the same, don't update the day.
 
           if (existing.date === incoming.date) {
@@ -508,7 +527,8 @@ export class SeasonService extends BaseProvider<Season> {
           return existing;
         });
 
-      existingCurrent.active = updateSeasonDto.active;
+      // Left as it is when the update does not say.
+      existingCurrent.active = updateSeasonDto.active ?? existingCurrent.active;
       existingCurrent.days = [...newDays, ...updateDays];
 
       return existingCurrent.save();
@@ -775,10 +795,10 @@ export class SeasonService extends BaseProvider<Season> {
 }
 
 class EntityKeyDictionary<T extends BaseEntity> {
-  private _dict: Map<string, BaseEntity>;
+  private _dict: Map<string, T>;
   private _entities: Array<T>;
   private _entityPkRef: Array<keyof T>;
-  private _primaryKeyFn: (e: T) => string;
+  private _primaryKeyFn?: (e: T) => string;
 
   /**
    * Creates a dictionary of entities, using the primary key as a concatenation of the entity key values and the value
@@ -814,7 +834,8 @@ class EntityKeyDictionary<T extends BaseEntity> {
     return dict;
   }
 
-  public find(entity: T): T {
+  /** The copy matching `entity`, or nothing when there is no entity (an empty relation) or no copy of it. */
+  public find(entity: T | null | undefined): T | undefined {
     if (!entity) {
       return undefined;
     }
@@ -823,7 +844,7 @@ class EntityKeyDictionary<T extends BaseEntity> {
       return this._primaryKeyFn !== undefined ? this._primaryKeyFn(entity) : entity[`${String(k)}`];
     });
 
-    return this._dict.get(key.join('')) as T;
+    return this._dict.get(key.join(''));
   }
 }
 

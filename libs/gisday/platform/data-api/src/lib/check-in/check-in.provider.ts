@@ -64,7 +64,7 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
   public insertUserCheckin(
     eventGuid: string,
     accountGuid: string,
-    position?: LatLon & { accuracy?: number },
+    position?: Partial<LatLon> & { accuracy?: number },
     code?: string
   ) {
     return this.insert(eventGuid, accountGuid, async (event) => {
@@ -91,15 +91,19 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
         return { outsideSessionTime };
       }
 
-      const zone = event.location?.checkInZone;
+      const location = event.location;
+      const zone = location?.checkInZone;
 
-      if (event.mode === CHECK_IN_ZONE_EVENT_MODE && isLatLonPolygon(zone)) {
+      if (location && event.mode === CHECK_IN_ZONE_EVENT_MODE && isLatLonPolygon(zone)) {
+        // Read before `isLatLon` narrows the position to its coordinates.
+        const accuracy = position?.accuracy;
+
         if (!isLatLon(position)) {
           throw new ForbiddenException('Checking in to this event needs your location.');
         }
 
-        if (!isWithinPolygon(position, zone, reach(position.accuracy))) {
-          throw new ForbiddenException(checkInZoneMessage(event.location.building));
+        if (!isWithinPolygon(position, zone, reach(accuracy))) {
+          throw new ForbiddenException(checkInZoneMessage(location.building));
         }
       }
 
@@ -131,7 +135,7 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
    * #3077, so an in-person one has a way in for a phone that cannot give its location. Made the first time it is asked for and the same ever after, so a slide made early still
    * works. Two organizers asking at once get the same code: only the first write lands.
    */
-  public async getCheckInCode(eventGuid: string): Promise<{ code: string }> {
+  public async getCheckInCode(eventGuid: string): Promise<{ code: string | null }> {
     const event = await this.eventRepo.findOne({
       where: { guid: eventGuid },
       select: { guid: true, mode: true, checkInCode: true }
@@ -152,7 +156,12 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
       select: { guid: true, checkInCode: true }
     });
 
-    return { code: saved.checkInCode };
+    // Deleted since it was read above.
+    if (!saved) {
+      throw new NotFoundException('Event could not be found');
+    }
+
+    return { code: saved.checkInCode ?? null };
   }
 
   /**

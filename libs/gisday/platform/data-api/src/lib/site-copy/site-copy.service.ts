@@ -133,7 +133,7 @@ export class SiteCopyService {
     const records = {} as SiteCopyRecords;
     const guids = (list: Array<SiteCopyRecord>) => list.map((r) => r.guid);
     const linked = (list: Array<SiteCopyRecord>, link: string) => [
-      ...new Set(list.flatMap((r) => [r[link]].flat() as Array<{ guid: string } | null>).filter(Boolean).map((r) => r.guid))
+      ...new Set(list.flatMap((r) => [r[link]].flat() as Array<{ guid: string } | null>).flatMap((r) => (r ? [r.guid] : [])))
     ];
     const byGuid = async (kind: SiteCopyKind, wanted: Array<string>) =>
       wanted.length ? this.find(em, kind, { guid: In(wanted) }) : [];
@@ -212,7 +212,9 @@ export class SiteCopyService {
     }
 
     const missing = await this.missingFiles(file);
-    const files = go ? { missing: missing.length, ...(await this.copyFiles(file.source, missing)) } : { missing: missing.length, written: 0, failed: [] };
+    const files = go
+      ? { missing: missing.length, ...(await this.copyFiles(file.source, missing)) }
+      : { missing: missing.length, written: 0, failed: [] };
 
     return { applied: go, blockers, warnings, kinds, files };
   }
@@ -262,9 +264,7 @@ export class SiteCopyService {
       return plan;
     }
 
-    const existing = new Map(
-      (await this.find(em, kind, { guid: In(incoming.map((r) => r.guid)) })).map((r) => [r.guid, r])
-    );
+    const existing = new Map((await this.find(em, kind, { guid: In(incoming.map((r) => r.guid)) })).map((r) => [r.guid, r]));
 
     for (const record of incoming) {
       const clean = await this.withoutMissingLinks(em, kind, this.clean(em, kind, record), inFile, warnings);
@@ -312,13 +312,15 @@ export class SiteCopyService {
     }
 
     for (const list of rule.lists ?? []) {
-      const kept = [];
+      const kept: Array<{ guid: string }> = [];
 
       for (const value of record[list] as Array<{ guid: string }>) {
         if (await exists(list, value.guid)) {
           kept.push(value);
         } else {
-          warnings.push(`${rule.label(record)} (${kind}): one of its ${list} is not in the file or on this site, so it is left out.`);
+          warnings.push(
+            `${rule.label(record)} (${kind}): one of its ${list} is not in the file or on this site, so it is left out.`
+          );
         }
       }
 
@@ -415,7 +417,7 @@ export class SiteCopyService {
 
     for (const column of this.columns(em.connection.getMetadata(rule.entity), rule)) {
       const value = row[column];
-      record[column] = value instanceof Date ? value.toISOString() : value ?? null;
+      record[column] = value instanceof Date ? value.toISOString() : (value ?? null);
     }
 
     for (const link of rule.links) {
@@ -423,7 +425,9 @@ export class SiteCopyService {
     }
 
     for (const list of rule.lists ?? []) {
-      record[list] = ((row[list] ?? []) as Array<{ guid: string }>).map((r) => ({ guid: r.guid })).sort((a, b) => a.guid.localeCompare(b.guid));
+      record[list] = ((row[list] ?? []) as Array<{ guid: string }>)
+        .map((r) => ({ guid: r.guid }))
+        .sort((a, b) => a.guid.localeCompare(b.guid));
     }
 
     return record as SiteCopyRecord;

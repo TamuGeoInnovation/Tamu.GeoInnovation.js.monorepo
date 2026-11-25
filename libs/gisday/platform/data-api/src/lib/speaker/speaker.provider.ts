@@ -156,18 +156,14 @@ export class SpeakerProvider extends SeasonScopedProvider<Speaker> {
     return this._speakersInEvents(season, limitToPopulated);
   }
 
-  private async _speakersInEvents(season: Partial<Season>, limitToPopulated?: boolean) {
-    if (!season) {
-      return [];
-    }
-
+  private async _speakersInEvents(season: Pick<Season, 'days'>, limitToPopulated?: boolean) {
     // The initial value matters. Without it, `reduce` on an empty array throws
     // "Reduce of empty array with no initial value" -- so an active season with no days yet, which
     // is the state a season sits in while it is being set up, answered 500 instead of an empty
     // list. The reduce further down already passes `[]`.
     const eventGuids = season.days
       .map((day) => day.events.map((event) => event.guid))
-      .reduce((acc, curr) => {
+      .reduce<Array<string>>((acc, curr) => {
         return acc.concat(curr);
       }, []);
 
@@ -184,20 +180,20 @@ export class SpeakerProvider extends SeasonScopedProvider<Speaker> {
       }
     });
 
-    // Extract ALL speakers from ALL events
+    // Extract ALL speakers from ALL events. `speakers` and their `images` are loaded by this find's `relations`.
     const eventSpeakers = events
-      .map((event) => event.speakers)
-      .reduce((acc, curr) => {
+      .map((event) => event.speakers!)
+      .reduce<Array<Speaker>>((acc, curr) => {
         return acc.concat(curr);
       }, []);
 
     // Remove duplicates
-    const unique = eventSpeakers.reduce((acc, curr) => {
+    const unique = eventSpeakers.reduce<Array<Speaker>>((acc, curr) => {
       const existing = acc.find((speaker) => speaker.guid === curr.guid);
 
       if (!existing) {
         if (limitToPopulated) {
-          if (curr?.description?.length > 0 && curr?.images?.length > 0) {
+          if (curr.description?.length > 0 && curr.images!.length > 0) {
             return acc.concat(curr);
           }
         } else {
@@ -286,7 +282,8 @@ export class SpeakerProvider extends SeasonScopedProvider<Speaker> {
         }
       }
 
-      const toSave = {
+      // A speaker as saved, whose images may be left out: without a new photo they are, and stay as they are.
+      const toSave: DeepPartial<Speaker> = {
         ...existing,
         ...incoming,
         isOrganizer: (incoming.isOrganizer as unknown as string) === 'true', // form data coerces boolean to string
@@ -421,7 +418,7 @@ export class SpeakerProvider extends SeasonScopedProvider<Speaker> {
         })
         .filter((uni) => uni.name !== '' && uni.name !== null && uni.name !== undefined);
 
-      const uniqueUniversities = universities.reduce((acc, current) => {
+      const uniqueUniversities = universities.reduce<typeof universities>((acc, current) => {
         const x = acc.find((item) => item.name === current.name);
 
         if (!x) {
@@ -512,7 +509,8 @@ export class SpeakerProvider extends SeasonScopedProvider<Speaker> {
           relations: { images: true }
         });
 
-        images = speakers.map((speaker) => speaker.images).flat();
+        // `images` is loaded by this find's `relations`.
+        images = speakers.flatMap((speaker) => speaker.images!);
 
         await this.assetService.deleteAssets(manager, images);
 

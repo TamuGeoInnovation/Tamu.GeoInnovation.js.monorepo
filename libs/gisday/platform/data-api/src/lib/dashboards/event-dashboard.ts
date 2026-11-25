@@ -83,8 +83,9 @@ export class EventDashboard<T extends EventRecord> {
           name: e.name ?? null,
           starts: sessionTime(e.day?.date, e.startTime)?.toISOString() ?? null,
           location: [e.location?.building, e.location?.room].filter(Boolean).join(' ') || null,
-          place: e.location?.place ? { guid: e.location.place.guid, name: e.location.place.name } : null,
-          ...byEvent.get(e.guid)
+          place: e.location?.place ? { guid: e.location.place.guid, name: e.location.place.name ?? null } : null,
+          // Every listed event is counted in `byEvent`; nothing counted is none.
+          ...(byEvent.get(e.guid) ?? { total: 0, counts: emptyCounts() })
         }))
         // In the order they happen; an event with no time last.
         .sort((a, b) => (a.starts ?? '￿').localeCompare(b.starts ?? '￿')),

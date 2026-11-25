@@ -12,7 +12,7 @@ export interface RsvpDashboardEvent {
   starts: string | null;
   location: string | null;
   /** The organization whose session it is, by its location's place: the admin page lists only its site's (#2986, #3006). */
-  place: { guid: string; name: string } | null;
+  place: { guid: string; name: string | null } | null;
   total: number;
   counts: RsvpPersonTypeCounts;
 }
@@ -104,7 +104,7 @@ export function personOf(
 
   const named = Boolean(info?.given_name || info?.family_name);
   const nameOf = (id: string | undefined, other: string | undefined) =>
-    (id && id !== 'other' ? organizations.get(id) ?? null : other || null) ?? null;
+    (id && id !== 'other' ? (organizations.get(id) ?? null) : other || null) ?? null;
 
   return {
     firstName: (named ? info?.given_name : info?.name) || null,

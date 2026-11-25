@@ -1,10 +1,4 @@
-import {
-  ConflictException,
-  Injectable,
-  InternalServerErrorException,
-  Logger,
-  NotFoundException
-} from '@nestjs/common';
+import { ConflictException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, In, Repository, DeepPartial } from 'typeorm';
 
@@ -67,7 +61,9 @@ export class PlaceService extends SeasonScopedProvider<Place> {
         .addOrderBy('links.label', 'ASC')
         .getMany();
     } catch (err) {
-      rethrowHttp(err, new InternalServerErrorException(err), () => Logger.error(`Error retrieving places for season, ${err.message}`, 'PlaceService'));
+      rethrowHttp(err, new InternalServerErrorException(err), () =>
+        Logger.error(`Error retrieving places for season, ${err.message}`, 'PlaceService')
+      );
     }
   }
 
@@ -85,7 +81,9 @@ export class PlaceService extends SeasonScopedProvider<Place> {
         .where('place.guid = :guid', { guid })
         .getOne();
     } catch (err) {
-      rethrowHttp(err, new InternalServerErrorException(err), () => Logger.error(`Error retrieving place, ${err.message}`, 'PlaceService'));
+      rethrowHttp(err, new InternalServerErrorException(err), () =>
+        Logger.error(`Error retrieving place, ${err.message}`, 'PlaceService')
+      );
     }
   }
 
@@ -99,7 +97,9 @@ export class PlaceService extends SeasonScopedProvider<Place> {
         .addOrderBy('links.label', 'ASC')
         .getMany();
     } catch (err) {
-      rethrowHttp(err, new InternalServerErrorException(err), () => Logger.error(`Error retrieving places, ${err.message}`, 'PlaceService'));
+      rethrowHttp(err, new InternalServerErrorException(err), () =>
+        Logger.error(`Error retrieving places, ${err.message}`, 'PlaceService')
+      );
     }
   }
 
@@ -138,13 +138,17 @@ export class PlaceService extends SeasonScopedProvider<Place> {
 
           return saved.save();
         } catch (err) {
-      rethrowHttp(err, new InternalServerErrorException('Could not save place logo.'), () => Logger.error(err.message, 'PlaceService'));
+          rethrowHttp(err, new InternalServerErrorException('Could not save place logo.'), () =>
+            Logger.error(err.message, 'PlaceService')
+          );
         }
       } else {
         return saved;
       }
     } catch (err) {
-      rethrowHttp(err, new InternalServerErrorException(err), () => Logger.error(`Error creating place, ${err.message}`, 'PlaceService'));
+      rethrowHttp(err, new InternalServerErrorException(err), () =>
+        Logger.error(`Error creating place, ${err.message}`, 'PlaceService')
+      );
     }
   }
 
@@ -190,11 +194,14 @@ export class PlaceService extends SeasonScopedProvider<Place> {
         try {
           logoImage = await this._saveImage(file);
         } catch (err) {
-      rethrowHttp(err, new InternalServerErrorException('Could not save place logo.'), () => Logger.error(err.message, 'PlaceService'));
+          rethrowHttp(err, new InternalServerErrorException('Could not save place logo.'), () =>
+            Logger.error(err.message, 'PlaceService')
+          );
         }
       }
 
-      const toSave = {
+      // A place as saved, whose logos may be left out: without a new logo they are, and stay as they are.
+      const toSave: DeepPartial<Place> = {
         ...existing,
         ...place,
         links: links,
@@ -210,7 +217,9 @@ export class PlaceService extends SeasonScopedProvider<Place> {
 
       return updated;
     } catch (err) {
-      rethrowHttp(err, new InternalServerErrorException(err), () => Logger.error(`Error updating place, ${err.message}`, 'PlaceService'));
+      rethrowHttp(err, new InternalServerErrorException(err), () =>
+        Logger.error(`Error updating place, ${err.message}`, 'PlaceService')
+      );
     }
   }
 
@@ -236,7 +245,8 @@ export class PlaceService extends SeasonScopedProvider<Place> {
           throw new ConflictException(inUseByBroadcasts(places, broadcasts));
         }
 
-        logos = places.map((place) => place.logos).flat();
+        // `logos` is loaded by this find's `relations`.
+        logos = places.flatMap((place) => place.logos!);
 
         await this.assetService.deleteAssets(manager, logos);
 
@@ -259,7 +269,9 @@ export class PlaceService extends SeasonScopedProvider<Place> {
 
       return result;
     } catch (err) {
-      rethrowHttp(err, new InternalServerErrorException('Could not delete entities.'), () => Logger.error(err.message, 'PlaceService.deleteEntities'));
+      rethrowHttp(err, new InternalServerErrorException('Could not delete entities.'), () =>
+        Logger.error(err.message, 'PlaceService.deleteEntities')
+      );
     }
   }
 
@@ -284,7 +296,10 @@ export class PlaceService extends SeasonScopedProvider<Place> {
  * Why places cannot be deleted while broadcasts still name them (#3397): the places, how many broadcasts, and which, so
  * the admin form can say what to change first.
  */
-export function inUseByBroadcasts(places: Array<Pick<Place, 'name'>>, broadcasts: Array<Pick<EventBroadcast, 'name'>>): string {
+export function inUseByBroadcasts(
+  places: Array<Pick<Place, 'name'>>,
+  broadcasts: Array<Pick<EventBroadcast, 'name'>>
+): string {
   const placeNames = places.map((place) => place.name || 'This place').join(', ');
   const names = broadcasts
     .map((broadcast) => broadcast.name || 'an unnamed broadcast')

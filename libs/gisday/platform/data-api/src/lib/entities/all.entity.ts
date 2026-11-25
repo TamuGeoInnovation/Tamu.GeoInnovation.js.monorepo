@@ -412,8 +412,9 @@ export class EventLocation extends GuidIdentity {
   @OneToMany(() => Event, (event) => event.location, { nullable: true, cascade: true })
   public events?: Event[];
 
+  // Null when it has none, or its place was deleted.
   @ManyToOne(() => Place, (place) => place.locations, { nullable: true })
-  public place: Place;
+  public place: Place | null;
 
   @ManyToOne(() => Season, (season) => season.event_locations, { nullable: true, onDelete: 'CASCADE' })
   public season?: Season;
@@ -448,7 +449,7 @@ export class Event extends GuidIdentity {
   public capacity: number;
 
   @Column({ nullable: true, length: 'MAX' })
-  public resources: string;
+  public resources: string | null;
 
   @Column({ nullable: true })
   public requiresRsvp: boolean;
@@ -465,7 +466,7 @@ export class Event extends GuidIdentity {
    * organizer asks for the code. Never selected unless asked for, so no event the API returns carries it.
    */
   @Column({ nullable: true, length: 64, select: false })
-  public checkInCode?: string;
+  public checkInCode?: string | null;
 
   /**
    * Minutes before the session's start that attendees may check in (#3209). 5 unless an organizer changes it.
@@ -510,7 +511,7 @@ export class Event extends GuidIdentity {
   public isBringYourOwnDevice: boolean;
 
   @Column({ nullable: true, length: 'MAX' })
-  public requirements: string;
+  public requirements: string | null;
 
   @ManyToOne(() => SeasonDay, (day) => day.events, { onDelete: 'SET NULL', orphanedRowAction: 'nullify' })
   public day: SeasonDay;
@@ -530,11 +531,12 @@ export class Event extends GuidIdentity {
   })
   public tags?: Tag[];
 
+  // Null clears it: when its broadcast or location is deleted, and the broadcast for a visitor who is not signed in.
   @ManyToOne(() => EventBroadcast, (broadcast) => broadcast.events)
-  public broadcast?: EventBroadcast;
+  public broadcast?: EventBroadcast | null;
 
   @ManyToOne(() => EventLocation, (location) => location.events, { nullable: true })
-  public location?: EventLocation;
+  public location?: EventLocation | null;
 
   @ManyToMany(() => CourseCredit)
   @JoinTable({ name: 'event_course_credits' })
@@ -778,11 +780,13 @@ export class Speaker extends GuidIdentity {
   @ManyToOne(() => Season, (season) => season.speakers, { nullable: true })
   public season: Season;
 
+  // Null when the speaker has none, or theirs was deleted.
   @ManyToOne(() => Organization, (o) => o.speakers, { nullable: true })
-  public organization: Organization;
+  public organization: Organization | null;
 
+  // Null when the speaker has none, or theirs was deleted.
   @ManyToOne(() => University, { nullable: true })
-  public university?: University;
+  public university?: University | null;
 
   @OneToMany(() => Asset, (asset) => asset.speaker, { cascade: true, nullable: true })
   public images?: Asset[];
@@ -1187,7 +1191,7 @@ export class Submission extends GuidIdentity {
   public acceptance: boolean;
 
   @Column({ length: 'MAX', nullable: true })
-  public message: string;
+  public message: string | null;
 
   @Column({ nullable: true })
   public format: PRESENTATION_FORMAT | string;

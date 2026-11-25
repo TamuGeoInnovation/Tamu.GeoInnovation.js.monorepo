@@ -177,7 +177,8 @@ export class SessionFilesService {
       order: { created: 'ASC' }
     });
 
-    return Promise.all(files.map(async (file) => ({ event: file.event.guid, file: await fileDto(file) })));
+    // `event` is loaded by this find's `relations`, and every one of these files has one: the find is by its season.
+    return Promise.all(files.map(async (file) => ({ event: file.event!.guid, file: await fileDto(file) })));
   }
 
   /** The sessions of the link's speaker, in their speaker record's season, by day and start time. */

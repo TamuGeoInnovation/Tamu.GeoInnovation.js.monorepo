@@ -151,7 +151,8 @@ export class SubmissionFilesService {
     const year = withFiles[0].season?.year ?? 'season';
 
     return zipOfFiles(
-      withFiles.map((submission) => ({ folder: submissionFolder(submission), files: submission.files })),
+      // Each kept above only with its files.
+      withFiles.map((submission) => ({ folder: submissionFolder(submission), files: submission.files! })),
       only?.length ? `gisday-${year}-submission-files-${withFiles.length}.zip` : `gisday-${year}-submission-files.zip`,
       'SubmissionFilesService',
       `The files listed for ${only?.length ? 'these submissions' : 'this season'} are missing from the server.`
@@ -255,7 +256,8 @@ export async function zipOfFiles(
   let added = 0;
 
   for (const { folder, files } of folders) {
-    const into = zip.folder(folder);
+    // JSZip makes a folder named by a string and returns it, always; its typings allow null for every argument.
+    const into = zip.folder(folder)!;
     const used = new Set<string>();
 
     for (const file of [...files].sort(byUploaded)) {

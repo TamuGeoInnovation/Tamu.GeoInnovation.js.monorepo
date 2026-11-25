@@ -63,7 +63,8 @@ export class JudgingService {
     const competitions: Array<JudgeCompetitionDto> = [];
 
     for (const group of groups) {
-      const row = judgedCompetition(group.competition);
+      // A judged competition always has its row: `judgedCompetition` answers null only for one that is not.
+      const row = judgedCompetition(group.competition)!;
       const rubric = await this.rubrics.rubricFor(group.season, row.type);
       const submissions = await this.acceptedSubmissions(group.season, group.competition);
       const mine = submissions.length
@@ -114,11 +115,12 @@ export class JudgingService {
         ? await this.submissions.findOne({ where: { guid: submissionGuid }, relations: { season: true } })
         : null;
     const competition = submission?.acceptance ? judgedCompetitionOf(submission) : null;
-    const sessions = competition
-      ? (await this.judgeSessions(judgeGuid)).filter(
-          (s) => s.judgedCompetition === competition && s.season?.guid === submission.season?.guid
-        )
-      : [];
+    const sessions =
+      submission && competition
+        ? (await this.judgeSessions(judgeGuid)).filter(
+            (s) => s.judgedCompetition === competition && s.season?.guid === submission.season?.guid
+          )
+        : [];
 
     if (!submission || sessions.length === 0) {
       throw new ForbiddenException(NOT_YOUR_COMPETITION_MESSAGE);
@@ -177,7 +179,8 @@ export class JudgingService {
       throw new BadRequestException('Name the season.');
     }
 
-    const row = judgedCompetition(competition);
+    // Checked above to be a judged competition, which always has its row.
+    const row = judgedCompetition(competition)!;
     const sessions = await this.events.find({
       where: { season: { guid: seasonGuid }, judgedCompetition: competition },
       relations: { judges: true }

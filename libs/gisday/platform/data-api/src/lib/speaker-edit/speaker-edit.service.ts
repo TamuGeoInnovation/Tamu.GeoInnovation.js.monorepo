@@ -378,6 +378,12 @@ export class SpeakerEditService {
       where: { guid: link.speaker.guid },
       relations: { images: true, university: true, organization: true }
     });
+
+    // Deleted since the link was read (deleting a speaker deletes their links too).
+    if (!speaker) {
+      throw new NotFoundException('This link has expired or is not valid. Ask for a new one.');
+    }
+
     const pending = await this.edits.findOne({
       where: { speaker: { guid: speaker.guid }, status: 'pending' },
       relations: { university: true }
@@ -714,11 +720,13 @@ export function cleanFields(fields: SpeakerEditFields = {}): SpeakerEditFields {
 }
 
 /** The fields a speaker can change, as the edit page and the review show them, from a speaker or a proposed edit. */
-function profileOf(
-  p: Pick<Speaker, 'description' | 'affiliation' | 'socialMedia' | 'graduationYear'> & {
-    university?: { guid: string; name?: string } | null;
-  }
-) {
+function profileOf(p: {
+  description: string | null;
+  affiliation: string | null;
+  socialMedia: string | null;
+  graduationYear: string | null;
+  university?: { guid: string; name?: string } | null;
+}) {
   return {
     description: p.description ?? null,
     affiliation: p.affiliation ?? null,

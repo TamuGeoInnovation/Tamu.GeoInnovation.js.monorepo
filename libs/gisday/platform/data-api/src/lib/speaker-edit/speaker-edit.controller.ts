@@ -179,5 +179,6 @@ export function refuseTogether(
 function emailOf(body: Partial<ProfileEmail> | undefined): ProfileEmail | undefined {
   return body?.subject === undefined && body?.template === undefined
     ? undefined
-    : { subject: body.subject, template: body.template };
+    : // A part not sent is empty, which the service refuses with the same reason as it refused the part missing.
+      { subject: body.subject ?? '', template: body.template ?? '' };
 }

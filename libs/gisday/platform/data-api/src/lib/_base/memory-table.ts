@@ -73,7 +73,11 @@ export class Table<T extends { guid?: string }> {
   public delete = async (where: string | Array<string> | Record<string, unknown>) => {
     const before = this.rows.length;
     const gone = (r: T) =>
-      typeof where === 'string' ? r.guid === where : Array.isArray(where) ? where.includes(r.guid) : matches(r, where);
+      typeof where === 'string'
+        ? r.guid === where
+        : Array.isArray(where)
+          ? r.guid !== undefined && where.includes(r.guid)
+          : matches(r, where);
     this.rows = this.rows.filter((r) => !gone(r));
     return { affected: before - this.rows.length };
   };

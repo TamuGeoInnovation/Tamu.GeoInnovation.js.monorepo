@@ -6,16 +6,14 @@ import { rethrowHttp } from './rethrow-http';
 export abstract class BaseProvider<T extends { guid: string }> {
   constructor(private readonly repo: Repository<T>) {}
 
-  public async findOne(guidOrOptions?: LookupOneOptions<T>) {
+  public async findOne(guidOrOptions: LookupOneOptions<T>) {
     const lookupOpts = this._makeLookupOptions(guidOrOptions);
 
     return this.repo.findOne(lookupOpts);
   }
 
   public async find(guidOrOptions?: LookupManyOptions<T>) {
-    const lookupOpts = this._makeLookupOptions(guidOrOptions);
-
-    return this.repo.find(lookupOpts);
+    return this.repo.find(guidOrOptions === undefined ? undefined : this._makeLookupOptions(guidOrOptions));
   }
 
   public async create(entity: DeepPartial<T>) {
@@ -68,7 +66,7 @@ export abstract class BaseProvider<T extends { guid: string }> {
    *
    * Optionally, you can pass a `FindOneOptions` object to specify lookup condition.
    */
-  public async deleteEntity(guidOrOptions?: LookupOneOptions<T> | string) {
+  public async deleteEntity(guidOrOptions: LookupOneOptions<T>) {
     const lookupOpts = this._makeLookupOptions(guidOrOptions);
 
     const entity = await this.repo.findOne(lookupOpts);
@@ -107,7 +105,7 @@ export abstract class BaseProvider<T extends { guid: string }> {
     }
   }
 
-  private _makeLookupOptions(guidOrOptions?: LookupManyOptions<T> | LookupOneOptions<T>) {
+  private _makeLookupOptions(guidOrOptions: LookupManyOptions<T> | LookupOneOptions<T>) {
     let lookupOpts: FindOneOptions<T> | FindManyOptions<T>;
 
     if (typeof guidOrOptions === 'string') {

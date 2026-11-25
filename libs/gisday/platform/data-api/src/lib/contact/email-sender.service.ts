@@ -123,10 +123,9 @@ export class EmailSenderService {
     }
 
     const siteAddress = addressOf(process.env.MAILROOM_FROM);
+    const sender = siteSender(site.name);
 
-    if (siteAddress) {
-      const sender = siteSender(site.name);
-
+    if (siteAddress && sender.from) {
       add({
         kind: 'site',
         address: siteAddress,

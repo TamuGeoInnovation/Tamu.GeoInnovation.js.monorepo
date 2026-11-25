@@ -128,6 +128,11 @@ export class EventProvider extends SeasonScopedProvider<Event> {
       // const broadcastEnt = this.eventBroadcastRepo.create(event.broadcast);
       // const locationEnt = this.eventLocationRepo.create(event.location);
 
+      // Refused as it always was, with a 422, but saying why: typeorm cannot look up speakers or tags it was not given.
+      if (!event.speakers || !event.tags) {
+        throw new UnprocessableEntityException(null, 'An event needs its speakers and its tags, empty for none.');
+      }
+
       const existingSpeakers = await this.speakerRepo.find({
         where: {
           guid: In(event.speakers)

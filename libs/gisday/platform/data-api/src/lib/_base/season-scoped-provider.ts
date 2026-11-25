@@ -76,9 +76,10 @@ export abstract class SeasonScopedProvider<T extends { guid: string; season?: Se
 
   /**
    * Copies the records with these guids into the season with `seasonGuid`. Refused with 422 when the season does not
-   * exist or none of the records is found, rather than writing records into no season or answering an empty list.
+   * exist or none of the records is found (none named is none found), rather than writing records into no season or
+   * answering an empty list.
    */
-  public async copyIntoSeason(seasonGuid: string, guids: Array<string>): Promise<Array<T>> {
+  public async copyIntoSeason(seasonGuid: string, guids?: Array<string>): Promise<Array<T>> {
     const season = await this.copyTarget(seasonGuid);
 
     if (!season) {

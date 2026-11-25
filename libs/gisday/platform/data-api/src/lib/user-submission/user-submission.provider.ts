@@ -208,7 +208,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
    * its authors' emails and student ids, the owner's account and the reviewer's message.
    */
   public async getPosters(seasonGuid?: string): Promise<PosterDto[]> {
-    let season: Partial<Season> | null;
+    let season: Pick<Season, 'guid' | 'year'> | null;
 
     try {
       season = seasonGuid
@@ -584,7 +584,14 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
       });
     }
 
-    return { groups: REVIEW_EMAIL_KINDS.filter((kind) => groups.has(kind)).map((kind) => groups.get(kind)), skipped };
+    return {
+      groups: REVIEW_EMAIL_KINDS.flatMap((kind) => {
+        const group = groups.get(kind);
+
+        return group ? [group] : [];
+      }),
+      skipped
+    };
   }
 
   /**
@@ -695,7 +702,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
 
         existingSubmission.reviewed = true;
         existingSubmission.acceptance = submission.acceptance;
-        existingSubmission.message = submission.message;
+        existingSubmission.message = submission.message ?? null;
         submission.reviewed = true;
         shouldEmail = !repeat;
       }
@@ -712,7 +719,8 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
       const recipients = shouldEmail ? await this._recipientsOf(existingSubmission) : null;
       const sessions = shouldEmail ? await this._sessionsOf(existingSubmission.season).catch(() => []) : [];
       const kind = reviewEmailKind(existingSubmission.acceptance, existingSubmission.submissionType);
-      const sendReviewEmail = shouldEmail
+      // Recipients are read only when it emails.
+      const sendReviewEmail = recipients
         ? async () =>
             this._sendEmail(
               existingSubmission,

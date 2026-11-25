@@ -78,8 +78,8 @@ export interface EachEmail<S extends { guid: string }> {
   repeated: string;
   /** Sends the email to the group. */
   send: (group: Array<S>) => Promise<void>;
-  /** What is done once it has gone: the send record (#3167). */
-  sent?: (group: Array<S>) => Promise<void>;
+  /** What is done once it has gone: the send record (#3167), or nothing where there is no send log. */
+  sent?: (group: Array<S>) => Promise<void> | undefined;
   /** Logs an email that could not be sent. */
   failed: (group: Array<S>, err: Error) => void;
 }

@@ -143,7 +143,8 @@ export class SponsorProvider extends SeasonScopedProvider<Sponsor> {
         }
       }
 
-      const toSave = {
+      // A sponsor as saved, whose logos may be left out: without a new logo they are, and stay as they are.
+      const toSave: DeepPartial<Sponsor> = {
         ...existing,
         ...incoming,
         logos: [logoImage]
@@ -173,7 +174,8 @@ export class SponsorProvider extends SeasonScopedProvider<Sponsor> {
           relations: { logos: true }
         });
 
-        logos = sponsors.map((sponsor) => sponsor.logos).flat();
+        // `logos` is loaded by this find's `relations`.
+        logos = sponsors.flatMap((sponsor) => sponsor.logos!);
 
         await this.assetService.deleteAssets(manager, logos);
 
@@ -225,7 +227,7 @@ const LOGO_SIZES: ReadonlyArray<SponsorLogoSize> = ['small', 'regular', 'large',
 export function withLogoSize<T extends Partial<Sponsor>>(sponsor: T): T {
   const copy = { ...sponsor };
 
-  if (!LOGO_SIZES.includes(copy.logoSize)) {
+  if (copy.logoSize === undefined || !LOGO_SIZES.includes(copy.logoSize)) {
     delete copy.logoSize;
   }
 
