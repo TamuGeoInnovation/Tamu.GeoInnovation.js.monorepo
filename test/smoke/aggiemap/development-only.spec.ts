@@ -46,12 +46,13 @@ async function probeReady(page: Page): Promise<boolean> {
 const SIDE_PANEL_MAPS = ['/map', '/events/tailgating/map'];
 
 /**
- * The addresses here whose checks came with the change that made them true, and wait for a build carrying it (#3539):
- * the event map's side panel and its trip options page, both #2758. Each skips, saying "deploy a newer build", only
- * while the environment's newest tag predates that change.
+ * What came with a change, and waits for a build carrying it (#3539), each skipping as "deploy a newer build" only
+ * while the environment's newest tag predates that change: the sections #2758 gave the event map's side panel, by
+ * `<map> <section>`, and its trip options page, by address. Directions was there before, so it is checked throughout.
  */
 const WAITS_FOR: Record<string, string> = {
-  '/events/tailgating/map': '#2758',
+  '/events/tailgating/map Bus Routes': '#2758',
+  '/events/tailgating/map Experiments': '#2758',
   '/events/tailgating/map/d/trip/options': '#2758'
 };
 
@@ -59,7 +60,7 @@ test.describe(`development-only sections ${VISIBLE ? 'are offered here' : 'stay 
   for (const map of SIDE_PANEL_MAPS) {
     for (const section of DEVELOPMENT_ONLY_SECTIONS) {
       test(`${map}: the ${section} tab ${VISIBLE ? 'is offered' : 'is not offered'}`, async ({ page }) => {
-        if (WAITS_FOR[map]) skipUntilDeployed(WAITS_FOR[map]);
+        if (WAITS_FOR[`${map} ${section}`]) skipUntilDeployed(WAITS_FOR[`${map} ${section}`]);
         await blockAnalytics(page);
         await page.goto(map);
 
@@ -83,7 +84,7 @@ test.describe('sections on every environment are offered here', () => {
   for (const map of SIDE_PANEL_MAPS) {
     for (const section of SECTIONS_ON_EVERY_ENVIRONMENT) {
       test(`${map}: the ${section} tab is offered`, async ({ page }) => {
-        if (WAITS_FOR[map]) skipUntilDeployed(WAITS_FOR[map]);
+        if (WAITS_FOR[`${map} ${section}`]) skipUntilDeployed(WAITS_FOR[`${map} ${section}`]);
         await blockAnalytics(page);
         await page.goto(map);
 
