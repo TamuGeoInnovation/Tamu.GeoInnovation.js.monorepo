@@ -1,5 +1,31 @@
 # work-lab-leila: current tasks
 
+## Batch g202 (gisday: #1977, the GIS Day data-api libraries and gisday-nest off Jest, with SWC; 25 November 2026, about 10:30 PM Central, from `work (gisday)`) (High) - **now**
+
+**Decided by the maintainer (24 November, about 10:25 PM Central), in his words: "do the things to get us off jest".** The whole workspace moves
+to Vitest; no more questions about staying on Jest. Your g201 questions: **Q-g201-1 decided** (the work machine files a step issue per pull
+request and opens them; the core branch is next). **Q-g201-2 decided: compile with SWC.** **Q-g201-3 decided: yes, finish the move.** Drop all three.
+
+**The two `data-api` libraries (`gisday-platform-data-api`, `gisday-competitions-data-api`) and `gisday-nest`**, branch
+`chore/1977-gisday-vitest-data-api` from the latest `origin/development` (fetch first):
+
+1. **SWC writes the decorator metadata TypeORM and NestJS need**, which Vite's default transform does not. Add `unplugin-swc` as a dev dependency
+   and use it in these projects' `vitest.config.mts` (decorators and `decoratorMetadata` on), the way NestJS projects run Vitest. `@swc/core` is
+   already in the repository (1.16.22, an approved install script).
+   - **The dependency rules in CLAUDE.md apply:** the latest `unplugin-swc` that is **at least 7 days old**, pinned; read whether it has an install
+     script (if it does, it must be reviewed into `allowScripts`, and say so in Q-g202-1 instead of approving it yourself); sync the lock with
+     `npm install --package-lock-only --ignore-scripts`; and the check's clean `npm ci` proves it. `package.json` is shared: the security director
+     is told by the work machine, not by you.
+2. **Same tests before and after, per project**, measured as in g201 (before on Jest, after on Vitest), the table in `docs/build-times.md`. A spec
+   that passed only because of Jest gets fixed, never skipped. **Prove the metadata is right**, not just that tests pass: one spec that would fail
+   without it (an entity column whose type comes from the emitted metadata, or a service injected by type) must pass, and say which.
+3. `scripts/check-in-volume.sh chore/1977-gisday-vitest-data-api gisday-platform-data-api,gisday-competitions-data-api,gisday-nest` with
+   `CHECK_PARALLEL=1`, its `Exit` line. `.pr-body.md` from the template last, with `Closes #` left for the work machine to fill.
+
+**Then `gisday-angular`**, branch `chore/1977-gisday-vitest-app`, the same way (it may need no SWC: say).
+
+Questions `Q-g202-<n>`. Report `reports/2026-11-25-g202.md`, "branch ready" per branch.
+
 ## Batch a20 (aggiemap: #2719, re-measure the fourteen layer-name overrides before deleting any) (Medium) - **after a18**
 
 [#2719](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2719): fourteen layers
