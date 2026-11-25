@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle, listening. a33 held until PR 3587 merges.
+- **Batch a38 (#3655, #3656, #3658)**, since 7:08 AM Central: three smoke checks in `mobile.spec.ts` and `perspective.spec.ts`, branch `test/3655-3656-3658-smoke-checks`. a33 held until PR 3587 merges.
 
 ## Finished
 - **Batch a37** (report `home/reports/2026-11-25-a37.md`, 6:57 AM Central): twenty old issues checked, read-only. None fixed or moot; 5 need the maintainer, 15 still true (six of them stale or narrower than written). Three questions, five follow-ups.
