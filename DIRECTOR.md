@@ -338,7 +338,7 @@ director can reach it:
   maintainer in its own chat, even about something it won't do on a relayed instruction; it tells the director that,
   and the director takes it to him and acts on his answer. On 15 November `home` asked him directly about a CLAUDE.md
   change, and he restated the rule: workers send questions to the director, and he answers them there.
-- Files issues **without a priority**; its report suggests one, and the director asks.
+- Files issues **without a priority**; its report suggests one, and the director sets it from its own best estimate (below).
 - Records ideas, possible work and things noticed under **Findings** in its `STATUS.md`. A finding is never a
   request and is never acted on until a batch asks for it; the director reads them and brings any worth doing
   to the maintainer. Batches not reached yet go under **Queued**, never mixed with findings.
@@ -575,9 +575,10 @@ the Total line above all (#2002), and `test/smoke/aggiemap/environments.json`'s 
 **The lab (`work-lab-leila`) stays paused** until the maintainer says otherwise - a student is using the machine. Do not
 give it a batch and do not count it when deciding whether work is covered.
 
-**Priority on an issue filed overnight:** the rule is to ask the maintainer every time, and he is asleep, so the director
-chooses, writes the choice in the issue, and lists every one it chose in its first report of the morning for him to
-correct. Not asking is worse than guessing here, because an unfiled issue means the work does not exist.
+**Priority: set it from your best estimate, and never ask** (the maintainer, 25 November 2026: "please assign a priority
+using your best estimate and don't ask me"; #3527). Urgent: production broken now. High: blocks other work, or a visible
+fault. Medium: a real fault, or a step of planned work. Low: tidying, nice to have. The director that files the issue, or
+that receives a listener's, sets it at once, says which value and why in its reply, and he corrects any he disagrees with.
 
 ## Checking in: who is up and can take work (25 October 2026)
 
