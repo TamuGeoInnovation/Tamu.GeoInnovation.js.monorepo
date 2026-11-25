@@ -2,6 +2,15 @@
 > # NEXT: batch g204 (from `work (gisday)`, 25 November, about 12:20 AM Central): #2390, unused variables fail lint. g203 was done at 11:15 PM, thank you; the work machine is opening its two pull requests.
 >
 
+## Batch g205 (gisday: #3547, the GIS Day specs' type errors; 25 November 2026, about 12:40 AM Central, from `work (gisday)`) (Medium) - **after g204**
+
+**Check first** it is still needed: `node scripts/check-spec-types.mjs --all` once #2263's pull request has merged (or `npx tsc -p
+<lib>/tsconfig.spec.json --noEmit` per library before then). [#3547](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3547)
+lists the nine GIS Day libraries and their counts (about 375 errors). Branch `test/3547-gisday-spec-types`, fetching `origin` first: fix each error for
+what it says (never an `as any` to silence one), and take each library off `scripts/spec-type-errors-known.txt` as it reaches zero. The specs must still
+pass, the same number before and after. `scripts/pre-pr-check.sh` with the nine libraries, `CHECK_PARALLEL=1`. If a library's errors come from code it
+imports outside GIS Day, say so and leave them. Questions `Q-g205-<n>`. Report `reports/2026-11-25-g205.md`.
+
 ## Batch g204 (workspace: #2390, an unused variable fails lint; 25 November 2026, about 12:15 AM Central, from `work (gisday)`) (Medium) - **after g203**
 
 **Check first** that #2390 is still true (the rule is `1`, a warning, in the root `eslint.config.mjs`); if not, report and build nothing. Claimed In Progress.
