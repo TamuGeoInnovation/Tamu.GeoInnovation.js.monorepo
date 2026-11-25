@@ -120,7 +120,9 @@ export class JudgingEmailController {
   @Post('judging')
   public async send(
     @Body()
-    body: { event: string; sender?: string; speakers?: Array<string>; together?: unknown } & Partial<JudgingEmail>,
+    body:
+      | ({ event?: string; sender?: string; speakers?: Array<string>; together?: unknown } & Partial<JudgingEmail>)
+      | undefined,
     @Request() req
   ) {
     refuseTogether(

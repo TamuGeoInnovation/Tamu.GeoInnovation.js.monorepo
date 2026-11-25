@@ -59,7 +59,12 @@ export class SessionFilesService {
    * have there: up to three, counted per speaker. The file is moved into the session's folder, or removed if the session
    * is not the speaker's, the file breaks the rules, or the speaker already has three.
    */
-  public async upload(link: SpeakerEditLink, eventGuid: string, upload: Express.Multer.File): Promise<SubmissionFileDto> {
+  public async upload(
+    link: SpeakerEditLink,
+    eventGuid: string,
+    // Multer leaves it out when no file was sent.
+    upload: Express.Multer.File | undefined
+  ): Promise<SubmissionFileDto> {
     try {
       if (!upload) {
         throw new BadRequestException('No file was sent.');
@@ -177,7 +182,8 @@ export class SessionFilesService {
       order: { created: 'ASC' }
     });
 
-    return Promise.all(files.map(async (file) => ({ event: file.event.guid, file: await fileDto(file) })));
+    // `event` is loaded by this find's `relations`, and every one of these files has one: the find is by its season.
+    return Promise.all(files.map(async (file) => ({ event: file.event!.guid, file: await fileDto(file) })));
   }
 
   /** The sessions of the link's speaker, in their speaker record's season, by day and start time. */
@@ -245,10 +251,11 @@ function sessionOf(event: Event): Omit<SpeakerSessionDto, 'files'> {
 
   return {
     guid: event.guid,
-    name: event.name,
-    date: event.day?.date ? new Date(event.day.date).toISOString() : null,
-    startTime: event.startTime ?? null,
-    endTime: event.endTime ?? null,
+    // `SpeakerSessionDto` has no unnamed session; one with no name has an empty one, as the judging page gives it.
+    name: event.name ?? '',
+    date: event.day ? new Date(event.day.date).toISOString() : null,
+    startTime: event.startTime,
+    endTime: event.endTime,
     place: place || null,
     noSlides: !!event.noSlides
   };
@@ -256,5 +263,5 @@ function sessionOf(event: Event): Omit<SpeakerSessionDto, 'files'> {
 
 /** What sorts a speaker's sessions: the day, then the start time. A session with no day comes last. */
 function order(event: Event): string {
-  return `${event.day?.date ? new Date(event.day.date).toISOString() : '9999'} ${event.startTime ?? ''}`;
+  return `${event.day ? new Date(event.day.date).toISOString() : '9999'} ${event.startTime ?? ''}`;
 }

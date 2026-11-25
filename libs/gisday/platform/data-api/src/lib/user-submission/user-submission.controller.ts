@@ -73,13 +73,15 @@ export class UserSubmissionController {
   @Post('review')
   public async reviewMany(
     @Body()
-    body: {
-      submissions: Array<string>;
-      acceptance: boolean;
-      message?: string;
-      templates?: Record<string, string>;
-      sender?: string;
-    },
+    body:
+      | {
+          submissions?: Array<string>;
+          acceptance?: boolean;
+          message?: string;
+          templates?: Record<string, string>;
+          sender?: string;
+        }
+      | undefined,
     @Request() req
   ) {
     const host = siteHost(req.headers);
@@ -102,7 +104,10 @@ export class UserSubmissionController {
   @Permissions(['update:competitions'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Post('review/preview')
-  public previewReview(@Body() body: { submissions: Array<string>; acceptance: boolean; message?: string }, @Request() req) {
+  public previewReview(
+    @Body() body: { submissions?: Array<string>; acceptance?: boolean; message?: string } | undefined,
+    @Request() req
+  ) {
     return this.provider.previewReview(
       body?.submissions,
       { acceptance: body?.acceptance, message: body?.message },
@@ -119,7 +124,7 @@ export class UserSubmissionController {
   @UseGuards(JwtGuard, PermissionsGuard)
   @Post('remind')
   public async remindMany(
-    @Body() body: { submissions: Array<string>; templates?: Record<string, string>; sender?: string },
+    @Body() body: { submissions?: Array<string>; templates?: Record<string, string>; sender?: string } | undefined,
     @Request() req
   ) {
     const host = siteHost(req.headers);
@@ -137,7 +142,7 @@ export class UserSubmissionController {
   @Permissions(['update:competitions'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Post('remind/preview')
-  public previewReminders(@Body() body: { submissions: Array<string> }, @Request() req) {
+  public previewReminders(@Body() body: { submissions?: Array<string> } | undefined, @Request() req) {
     return this.provider.previewReminders(body?.submissions, req.user.permissions, siteHost(req.headers));
   }
 
@@ -159,7 +164,11 @@ export class UserSubmissionController {
   @Permissions(['read:competitions'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Get(':guid/files/:file/preview')
-  public previewFile(@Param('guid', ParseUUIDPipe) guid: string, @Param('file', ParseUUIDPipe) file: string, @Request() req) {
+  public previewFile(
+    @Param('guid', ParseUUIDPipe) guid: string,
+    @Param('file', ParseUUIDPipe) file: string,
+    @Request() req
+  ) {
     return this.files.preview(guid, file, req.user);
   }
 
@@ -199,7 +208,7 @@ export class UserSubmissionController {
 
   @UseGuards(JwtGuard)
   @Post()
-  public async insertUserSubmission(@Request() req, @Body() submission: Partial<Submission>) {
+  public async insertUserSubmission(@Request() req, @Body() submission: Partial<Submission> | undefined) {
     if (req.user) {
       return this.provider.insertUserSubmission(req.user.sub, submission);
     } else {
@@ -224,7 +233,7 @@ export class UserSubmissionController {
   @Permissions(['delete:competitions'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Delete()
-  public deleteEntities(@Req() req, @Body('guid') guids: string) {
+  public deleteEntities(@Req() req, @Body('guid') guids: string | undefined) {
     return this.provider.deleteUserSubmissions(`${guids ?? ''}`.split(','), req.user.sub, req.user.permissions);
   }
 
