@@ -21,7 +21,8 @@
 set -uo pipefail
 
 environment="${1:-}"
-here="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# C:/... in Git Bash (pwd -W), so Windows git can open it even under MSYS_NO_PATHCONV, which run-local.sh sets for Docker.
+here="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && (pwd -W 2>/dev/null || pwd))"
 registry="${2:-$here/test/smoke/aggiemap/deployed-changes.json}"
 # The repository whose tags are read: this one, unless a test names another.
 repo="${SMOKE_DEPLOYED_REPO:-$here}"
