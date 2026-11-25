@@ -1,5 +1,53 @@
 # Laptop: current tasks
 
+## Batch a42 (aggiemap: which of the 43 open pull requests overlap? 25 November 2026, 8:55 AM Central, from `work (aggiemap)`) (Medium) - **now**
+
+**a31 and a32 are accepted, all three branches, and their pull requests are open: 3663 (#3471), 3664 (#3482), 3665 (#3483).**
+Two things from your reports worth saying back:
+
+- **You found a caller an import search could not see.** `SearchMobileComponent` extends `SearchComponent` and used
+  `keyControl` from its template, so the phone's search was in scope and the issue did not know it. You found it because the
+  **build** failed, not the tests - which is CLAUDE.md's "build to typecheck, don't rely on tests" rule earning its keep.
+- **a32's proof for #3482 is the best kind there is.** Compiling both stylesheets before and after and showing the CSS is
+  byte-identical - 1,545 bytes and 760 - means no label can move, so `no-visible-change` became a fact instead of a
+  judgement. That is how to justify that label, and I have not seen it done that way here before.
+
+### Why this batch
+
+There are **43 open pull requests** into `development` and the maintainer merges them one at a time. Each is green alone, and
+**nobody knows which of them touch the same files**, so he cannot tell which may go in together and which will conflict the
+moment one lands. The lab is proving by real merge whether my eighteen AggieMap ones go in together; **this batch answers the
+cheaper and much broader question for all 43, from file lists and diffs alone.** No Docker and no build, so it will not
+compete with the lab's check - that matters, because two checks cannot share this machine at the defaults.
+
+### What to do
+
+1. **For every open pull request**, get its changed-file list (`gh pr view <n> --json files`). 43 calls; **cache them to
+   disk** so the analysis can be re-run without re-fetching.
+2. **Build the overlap graph:** for each pair sharing at least one file, record the pull requests, the shared files, and
+   whether they touch the same *lines* (`gh pr diff <n>`, comparing hunk ranges). **Two pull requests editing opposite ends
+   of a long file will not conflict, and reporting that as a clash would make the whole report useless** - the line-level
+   distinction is the entire value here.
+3. **Group the result:** which pull requests are isolated (sharing no file with any other, so they can merge in any order at
+   any time), which form clusters, and inside each cluster which pairs actually collide on lines.
+4. **Name the files that appear in the most pull requests at once.** `scripts/strict-lib-errors-known.txt` is one I know of -
+   five GIS Day pull requests edit it, and they have to merge one at a time with a re-count between each. There will be
+   others, and **each one is a merge-order constraint nobody has written down.**
+
+### What the report must answer
+
+- **The isolated set, listed.** These can be merged freely, and it is the most immediately useful output - if it is 30 of the
+  43, the maintainer's morning looks completely different.
+- **Each cluster**, with its real line-level collisions and a suggested order.
+- **The files that force serialisation**, with how many pull requests touch each.
+- **Where a cluster spans AggieMap and GIS Day**, say so plainly rather than proposing an order - those need the two
+  directors to agree, and surfacing it is the job.
+
+**Report** `laptop/reports/2026-11-25-a42.md`. Questions `Q-a42-<n>`. **Read-only on GitHub: no comments, no labels, no
+merges, nothing opened or closed.** No branch and no pull request.
+
+
+
 ## g36 received (gisday), 7:10 AM Central, 25 November 2026
 
 Thank you. Your table is posted on PR 3644, and the survey images are now in its body and its release entry (copied to `docs/screenshots/3627-admin-missing-values/` on the branch), so it no longer carries `no-visible-change`.

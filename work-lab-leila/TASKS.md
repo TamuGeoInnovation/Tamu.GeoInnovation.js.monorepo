@@ -1,5 +1,65 @@
 # work-lab-leila: current tasks
 
+## Batch a41 (aggiemap: do the eighteen AggieMap pull requests actually merge together? 25 November 2026, 8:55 AM Central, from `work (aggiemap)`) (High) - **now**
+
+**a36 is accepted and open as PR 3666.** Thank you for leaving `.pr-body.md` uncommitted and putting its text in the report
+instead - that is exactly right, and it saved the untracking step I had to do on three other branches this morning, each of
+which would otherwise have failed CI's *No drafted body committed* check.
+
+**Why this is High.** There are now **43 open pull requests** into `development`, and the maintainer merges them. Each is
+green on its own. **Nothing anywhere checks whether they are green together**, and CLAUDE.md is explicit that two pull
+requests can each pass CI and still fail when merged - it is step 5 of the cloud-batch process, and nobody has done it for a
+queue this size. The merge queue, not the work, is the bottleneck now, so proving which of these can go in together is worth
+more this morning than any new code. **This is also the one job that cannot be done by reading file lists** - the laptop is
+doing that in parallel on a42, and a real merge is what settles the cases its graph says are close.
+
+### The eighteen
+
+`3587`, `3588`, `3591`, `3598`, `3600`, `3603`, `3606`, `3607`, `3612`, `3624`, `3652`, `3653`, `3654`, `3660`, `3663`,
+`3664`, `3665`, `3666`.
+
+All came from this machine, the laptop or home, so I can speak for every one. The other 25 are GIS Day's and are **not in
+scope** - do not touch them.
+
+### What to do
+
+1. **A scratch branch off `development`** at its current tip (`77a7b8051` unless it has moved - check first). One branch you
+   merge into, not a worktree per pull request.
+2. **Merge all eighteen into it** in ascending number order, taking each pull request's head commit from the fork. **Record
+   every conflict:** which two pull requests, which files, which hunks. **Do not resolve anything** - a conflict is the
+   finding, not a problem to fix. If one conflicts, note it, `git merge --abort`, and carry on with the rest, so the report
+   covers all eighteen instead of stopping at the first.
+3. **If they all merge cleanly, run the full check on the merged branch:**
+   `scripts/check-in-volume.sh <scratch branch> affected`, and **read the log's own `Exit N` line**. This is the step that
+   finds what CI cannot: a type error, a bundle budget or a test that only breaks when two changes meet. Expect a long run -
+   eighteen pull requests touching well over 547 files between them. **Nothing else is using Docker on this machine**, so you
+   have the defaults; do not lower them.
+4. **If some conflict**, merge the largest conflict-free subset, check that instead, and say which were left out and why.
+
+### What the report must answer
+
+**One sentence at the top: can the maintainer merge these eighteen in any order, or not?** Then:
+
+- **The conflicts**, pull request against pull request, with the files - name both sides, not just the file.
+- **A merge order** if one exists that avoids re-work: which may go in any order, and which must go last with a
+  `development` merge first.
+- **The check's own `Exit N` line**, and exactly what was in scope.
+- **Anything that passed alone and failed together.** That is the whole point of the batch and the single most valuable thing
+  it can produce. If the answer is "nothing", say so plainly - that is a real result, and it is what the maintainer needs
+  before a batch merge.
+
+**Three I expect to be close, and want confirmed or denied:** **3652 and 3653** both touch
+`libs/maps/feature/trip-planner` (`bus.service.ts` in 3652; `trip-planner-top`, `-bottom` and `-core` in 3653); **3600, 3654
+and 3666** are all in `libs/ts/events/ngx/src/lib/definitions/` (3600 the eight athletics parking files, 3654 `campus/`, 3666
+Ring Day and Graduation **plus `common.definitions.ts`**); and **3664 and 3660** both reach into `ui-kits`. My path map says
+none of them overlaps file-for-file, but 3666 edits a shared file and a real merge is what settles it.
+
+**Report** `work-lab-leila/reports/2026-11-25-a41.md`. Questions `Q-a41-<n>`. **Open nothing, merge nothing to
+`development`, push no branch to the fork.** This is a measurement: the scratch branch stays local, named in the report so it
+can be re-created.
+
+
+
 ## Batch a36 (aggiemap: #2599, Ring Day and Graduation from one factory each; 25 November 2026, 6:26 AM Central, from `work (aggiemap)`) (Low) - **now**
 
 **Issue: [#2599](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2599).** Thank you for a29 and
