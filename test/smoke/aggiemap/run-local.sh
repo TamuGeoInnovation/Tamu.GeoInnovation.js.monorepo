@@ -131,6 +131,21 @@ if [ "$tier" = quick ]; then
   export AGGIEMAP_SMOKE_CHANGED
 fi
 
+# Which tracked changes the deployed build predates, from the environment's newest dev-* or prod-* tag, so a check
+# that came with one skips as "deploy a newer build" rather than failing as a broken application (#3539). Only for
+# the deployed environments: a local dev server serves this checkout, which has every change in it.
+case "$env_name" in
+  development | production)
+    deployed=$(bash scripts/smoke-deployed.sh "$env_name")
+    AGGIEMAP_SMOKE_DEPLOYED_TAG=$(printf '%s\n' "$deployed" | sed -n 's/^AGGIEMAP_SMOKE_DEPLOYED_TAG=//p')
+    AGGIEMAP_SMOKE_UNDEPLOYED_COMMITS=$(printf '%s\n' "$deployed" | sed -n 's/^AGGIEMAP_SMOKE_UNDEPLOYED_COMMITS=//p')
+    if [ -n "$AGGIEMAP_SMOKE_DEPLOYED_TAG" ]; then
+      export AGGIEMAP_SMOKE_DEPLOYED_TAG AGGIEMAP_SMOKE_UNDEPLOYED_COMMITS
+      echo "Deployed build: $AGGIEMAP_SMOKE_DEPLOYED_TAG; changes it predates: ${AGGIEMAP_SMOKE_UNDEPLOYED_COMMITS:-none}"
+    fi
+    ;;
+esac
+
 echo "Smoke suite: $env_name, $tier tier, $image"
 
 # The output is copied to a file for Playwright's totals, which go into the run's record.
@@ -139,7 +154,7 @@ trap 'rm -f "$output"' EXIT
 set +e
 docker run --rm ${network_args[@]+"${network_args[@]}"} -v "$mount:/work" -v "$volume:/work/node_modules" -w /work \
   -e SMOKE_ENV="$env_name" -e SMOKE_VOLUME="$volume" -e PW_VERSION="$pw_version" -e NPM_CONFIG_UPDATE_NOTIFIER=false -e UPDATE_FRAMING_BASELINE -e AGGIEMAP_SMOKE_TIER -e AGGIEMAP_SMOKE_CHANGED -e AGGIEMAP_SMOKE_BLANK_LOADS \
-  -e AGGIEMAP_SMOKE_BASEMAP_LOADS -e AGGIEMAP_SMOKE_BASEMAP_MAX_FAILED_RATE \
+  -e AGGIEMAP_SMOKE_BASEMAP_LOADS -e AGGIEMAP_SMOKE_BASEMAP_MAX_FAILED_RATE -e AGGIEMAP_SMOKE_DEPLOYED_TAG -e AGGIEMAP_SMOKE_UNDEPLOYED_COMMITS \
   -e AGGIEMAP_SMOKE_FRAMING="${AGGIEMAP_SMOKE_FRAMING:-release}" "$image" \
   node -e '
     const fs = require("fs");

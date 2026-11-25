@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { FormControl } from '@angular/forms';
 import {
@@ -26,7 +26,6 @@ const SEARCH_MIN_LENGTH = 3;
   selector: 'tamu-gisc-user-list',
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [AsyncPipe, AdminSearchComponent]
 })
 export class UserListComponent implements OnInit {

@@ -13,3 +13,7 @@
   <div class="feature-style-2" tabindex="0"><strong>Restroom location(s)</strong>: <span [innerHTML]="data.attributes.Notes"></span></div>
 </div>
 }
+
+<div class="popup-section">
+  <tamu-gisc-popup-footer [shareUrl]="shareUrl" (startDirections)="startDirections()"></tamu-gisc-popup-footer>
+</div>

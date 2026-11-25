@@ -41,7 +41,7 @@ export class CheckboxGroupComponent implements OnInit, ControlValueAccessor {
    * When the 'bob' checkbox is checked, the checkbox group state will update to `['bob']`
    * to represent that in the checkbox group, 'bob' is active.
    */
-  public readonly referenceId = input<string>(undefined);
+  public readonly referenceId = input<string | undefined>(undefined);
 
   // A model rather than an input: the component sets it itself, from its checkboxes and the forms API.
   // eslint-disable-next-line @angular-eslint/no-input-rename

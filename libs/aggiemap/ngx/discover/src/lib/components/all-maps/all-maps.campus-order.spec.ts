@@ -9,6 +9,7 @@ import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 import { LastMapService } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { DiscoveryService } from '../../services/discovery/discovery.service';
+import { discoveryServiceStub } from '../../services/discovery/discovery.service.stub';
 import { AllMapsComponent } from './all-maps.component';
 
 /**
@@ -37,15 +38,11 @@ describe('AllMapsComponent campus map order', () => {
     configuration: { id: name, eventDates: [] }
   }));
 
-  const discoveryStub = {
+  const discoveryStub = discoveryServiceStub({
     getInternalDiscoverApplications: () => campuses,
     getVisibleInternalDiscoverApplications: () => [],
-    getExternalDiscoverApplications: () => [],
-    getAllDiscoverApplications: () => campuses,
-    getKioskDiscoverApplications: () => [],
-    getQuickLinkApplications: () => [],
-    getParkingApplicationsByCategory: () => []
-  };
+    getAllDiscoverApplications: () => campuses
+  });
 
   afterEach(() => TestBed.resetTestingModule());
 
@@ -65,8 +62,8 @@ describe('AllMapsComponent campus map order', () => {
 
     fixture.detectChanges();
 
-    const listed = Array.from((fixture.nativeElement as HTMLElement).querySelectorAll('.campus-tile-label')).map(
-      (label) => (label.textContent ?? '').trim()
+    const listed = Array.from((fixture.nativeElement as HTMLElement).querySelectorAll('.campus-tile-label')).map((label) =>
+      (label.textContent ?? '').trim()
     );
     const alphabetical = [...REGISTRATION_ORDER].sort((a, b) => a.localeCompare(b));
 

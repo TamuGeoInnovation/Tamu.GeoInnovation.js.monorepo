@@ -180,6 +180,20 @@ Further failures add a comment to the same issue rather than opening another, an
 closes it. So the open health issues always describe the present. If the deployed site is too old to
 be checked, the run says so and skips, and does not close an open issue.
 
+**A check that came with a change skips until that change is deployed**
+([#3539](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3539)). A check is
+merged with the fix it proves, and the suite runs against the deployed sites, so for a few hours after
+every merge the two disagree, and the check would fail as though the application were broken. On 24
+November 2026 that read as a live production regression. The deployed page cannot say which commit it
+is, but each build that reaches a site is tagged `dev-*` or `prod-*`, so before the suite runs, both
+`run-local.sh` and the nightly workflow ask git which of the changes listed in
+[`deployed-changes.json`](../test/smoke/aggiemap/deployed-changes.json) the site's newest tag predates.
+A check that waits for one of those skips, saying "deploy a newer build". It skips only on that answer:
+once the tag carries the change, or if there is no tag to compare with, it runs and can fail as before.
+A check waits by calling `skipUntilDeployed('#<issue>')` from
+[`deployed.ts`](../test/smoke/aggiemap/deployed.ts), with the change and its merge commit listed in the
+registry.
+
 **On demand**, the same workflow can be started from GitHub's Actions tab against either environment
 or both, for example straight after a deploy.
 

@@ -137,3 +137,21 @@ export function markdownPopup(name: PopupField, description: PopupField) {
     popupData: { name: entry(name), description: entry(description) }
   };
 }
+
+/** One period of an annual event, as a builder offers it: its choice's value and the days it covers, in order. */
+export interface EventPeriod {
+  value: string;
+  dates: ReadonlyArray<string>;
+}
+
+/**
+ * A date-window filter for each period of an annual event: a feature shows for a period when its own start and end
+ * dates overlap the period's first to last day. The three Ring Day maps each wrote this themselves, under three names
+ * (#2599).
+ */
+export function periodDateConversions(periods: ReadonlyArray<EventPeriod>, startField: string, endField: string) {
+  return periods.map(({ value, dates }) => ({
+    input: value,
+    expression: `${startField} <= date'${dates[dates.length - 1]}' AND ${endField} >= date'${dates[0]}'`
+  }));
+}

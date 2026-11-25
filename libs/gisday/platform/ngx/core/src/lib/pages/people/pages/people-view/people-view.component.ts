@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, combineLatest, map, startWith } from 'rxjs';
@@ -17,7 +17,6 @@ export { compareByLastName, matchesSearch, presenterCount } from '../../presente
   selector: 'tamu-gisc-people-view',
   templateUrl: './people-view.component.html',
   styleUrls: ['./people-view.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [SpeakerCardComponent, LinkedSearchComponent, AsyncPipe]
 })
 export class PeopleViewComponent implements OnInit {

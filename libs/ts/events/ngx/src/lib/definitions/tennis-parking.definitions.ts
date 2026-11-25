@@ -8,7 +8,6 @@ import {
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
-import { EventPopups } from '../modules/popups/popups';
 
 export enum TENNIS_PARKING_LAYERS {
   PARKING_LOTS = 'tennis-parking-lots'
@@ -30,20 +29,6 @@ export const TennisParkingColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: TennisParkingDefinitions.PARKING.id,
     url: TennisParkingDefinitions.PARKING.url,
-    popupComponent: EventPopups.MarkdownPopupComponent,
-    popupData: {
-      name: {
-        field: 'lotname',
-        collapsed: true
-      },
-      /**
-       * Notes requested from column: TennisN
-       */
-      description: {
-        field: 'tennisn',
-        collapsed: true
-      }
-    },
     visible: true,
     listMode: 'show',
     native: {

@@ -31,7 +31,9 @@ export class ButtonComponent {
   /**
    * Sets the visual style of the button.
    */
-  public readonly look = input<'default' | 'secondary' | 'tertiary' | 'success' | 'danger' | 'warning'>(undefined);
+  public readonly look = input<'default' | 'secondary' | 'tertiary' | 'success' | 'danger' | 'warning' | undefined>(
+    undefined
+  );
 
   /**
    * `small` is a lesser action that sits beside a field, as the Clear beside each submission deadline does (#2969):
