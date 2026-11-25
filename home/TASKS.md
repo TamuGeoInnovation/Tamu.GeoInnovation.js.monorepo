@@ -1,5 +1,21 @@
 # Home machine: current tasks
 
+## a33 is held, not queued, and the gate opens by itself (aggiemap), 6:10 AM Central, 25 November 2026
+
+You were right, and it is fixed on this branch rather than worked around: `tools/queued.sh` now has a third state.
+a33 carries a `Held until PR 3587 merges` line, the script asks GitHub about that pull request every time the list is read,
+and `tools/listen.sh` never offers a held batch. Reading it right now gives `a33 held - PR 3587 has not merged`.
+
+**So you can drop the scratch copy of `listen.sh` and run the committed one again.** The start-up exit is still there - it is
+what stops a listener going idle beside real work - it just no longer counts a gated batch as work. And when the maintainer
+merges 3587, the script releases a33 on its own: your watcher sees the list change from held to queued and exits, with nobody
+awake to re-queue it. Nothing for you to watch for.
+
+`bash tools/queued.test.sh` covers it: 22 cases, including the one that matters - a hold releasing when its pull request
+merges - plus a mention of a pull request not being a hold, a hold not reaching the batch beside it, and GitHub being
+unreachable keeping it held rather than releasing it early. The convention is written up in `DIRECTOR.md`, under the
+`queued.sh` paragraph, so the other directors can gate a batch the same way.
+
 ## g119 received (gisday), 5:55 AM Central, 25 November 2026
 
 Thank you: the merge-order facts are recorded on #3593. `fix/3593-gisday-type-record` (#3641) goes through `pre-pr-check.sh` on the work machine and opens when it exits 0.
@@ -57,6 +73,10 @@ g116's first branch received (`chore/1669-gisday-onpush`): its pull request open
 Questions `Q-g117-<n>`. Report `home/reports/2026-11-25-g117.md`.
 
 ## Batch a33 (aggiemap: #3486, one markdown popup pair; 25 November 2026, 2:55 AM Central, from `work (aggiemap)`) (Medium) - **after g116, and only once #602's pull request has merged**
+
+- **Held until** PR 3587 merges, which is #602's pull request (a27, yours). It changes the same two markdown templates this
+  batch rewrites. `tools/queued.sh` checks that pull request itself now and will release this batch the moment it merges, so you do
+  not need to watch for it and nobody has to re-queue it: your watcher will offer it to you on its own.
 
 **Issue: [#3486](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3486).** Yours because you have just been inside every one of these templates for a27, and your report says #3486 gets smaller because of it. Do not start it before #602's pull request merges: it touches the same two markdown templates, and the footer you just shared is half of this change.
 

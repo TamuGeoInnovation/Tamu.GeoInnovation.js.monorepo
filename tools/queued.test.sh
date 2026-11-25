@@ -78,6 +78,51 @@ GIT_COMMITTER_DATE="$(date -u -d '-30 days' +%Y-%m-%dT%H:%M:%SZ)" GIT_AUTHOR_DAT
 "; sync
 check "#3517: an undated heading written before the window is not listed" "" "$(run | grep '^a5 ' || true)"
 
+# Holds (25 November 2026). A batch that says it is waiting on a pull request is not work its listener may take, and the
+# gate opens by itself when the pull request merges. gh is stubbed here, so these cases are offline and exact: PRSTATE says
+# what GitHub would answer, and an empty PRSTATE stands for gh failing.
+mkdir -p "$tmp/bin"
+cat > "$tmp/bin/gh" <<'GH'
+#!/usr/bin/env bash
+# Stands in for: gh pr view <n> -R <repo> --json state --jq .state
+[ -n "${PRSTATE:-}" ] || exit 1
+echo "$PRSTATE"
+GH
+chmod +x "$tmp/bin/gh"
+PATH="$tmp/bin:$PATH"; export PATH
+
+held_tasks="# m
+## Batch a33 (aggiemap: the gated batch; $today, from work (aggiemap))
+- **Held until** PR 3587 merges, because this batch edits what that pull request is changing.
+- Do not touch PR 3591's branch either.
+
+## Batch a34 (aggiemap: its neighbour, which is not gated; $today, from work (aggiemap))
+- Ordinary work. Mentions PR 3587 in passing and is not held by it.
+"
+write_tasks "$held_tasks"; sync
+
+PRSTATE=OPEN check "a hold on an open pull request is held, not queued"   "a33 held - PR 3587 has not merged" "$(PRSTATE=OPEN run | grep '^a33 ')"
+check "the hold belongs to its own batch: its neighbour is still queued"   "a34 queued" "$(PRSTATE=OPEN run | grep '^a34 ')"
+check "a mention of a pull request is not a hold"   "a34 queued" "$(PRSTATE=OPEN run | grep '^a34 ')"
+check "THE POINT: when the pull request merges the gate opens by itself"   "a33 queued" "$(PRSTATE=MERGED run | grep '^a33 ')"
+check "a pull request closed without merging stays held, and says so"   "a33 held - PR 3587 was closed without merging" "$(PRSTATE=CLOSED run | grep '^a33 ')"
+check "gh failing keeps it held rather than releasing it early"   "a33 held - PR 3587: could not ask GitHub" "$(run | grep '^a33 ')"
+
+# What tools/listen.sh does with that list: it drops the held lines and exits only for the rest, so a gated batch alone
+# means no work. Tested through the same contract listen.sh relies on - the state is the second word on the line.
+check "a held batch alone offers a listener nothing" ""   "$(PRSTATE=OPEN run | awk '$2 != "held"' | grep '^a33 ' || true)"
+check "and the batch beside it is still offered" "a34 queued"   "$(PRSTATE=OPEN run | awk '$2 != "held"' | grep '^a34 ')"
+if [ -f "$here/listen.sh" ] && grep -q '\$2 != "held"' "$here/listen.sh"; then
+  ok "tools/listen.sh filters on that same second word"
+else no "tools/listen.sh filters on that same second word" 'awk $2 != "held"' "not found in listen.sh"; fi
+
+# A started batch is reported as started even if it carries a hold: the listener is past the gate, and saying "held" would
+# hide work in progress.
+say 'm: started batch a33'; sync
+PRSTATE=OPEN check "a hold never overrides a report that the batch has started"   "a33 unfinished" "$(PRSTATE=OPEN run | grep '^a33 ')"
+
+write_tasks "$tasks"; sync
+
 # grep -i with -F aborts (exit 134) on GNU grep 3.0 in Git Bash, and in a -q test that reads as "no match".
 # Comments are stripped first, because the warning against it is itself a line saying "grep -iF".
 hits=$(for f in queued.sh board.sh roster.sh listen.sh heartbeat.sh; do

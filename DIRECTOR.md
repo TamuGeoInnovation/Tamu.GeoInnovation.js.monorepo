@@ -470,11 +470,22 @@ Four ways machines sat idle, or work was done twice, in one week, and the rule f
 | The lab was offline six days (31 October to 6 November) and Copilot failed every run for days, and nobody noticed | **Whichever director the maintainer next asks anything runs `bash tools/roster.sh` first** and deals with what it flags, before other work: `gone`, `stuck?`, **`IDLE WITH WORK WAITING`** (wake it: a one-line note in its `TASKS.md`), **`BLOCKED`** (tell the maintainer what the state says) |
 | Copilot showed "idle, takes work" while it exited 1 at every start | **`tools/agent-runner.ps1` counts a non-zero exit as a failure.** After three, the heartbeat says `blocked: <agent> exits <code> at start; see the log <file>`, and the roster shows BLOCKED |
 | Two finished batches were redone on other machines, and a director then waited two days on reports it had missed | **Before moving, re-queuing or chasing a batch, read `bash tools/queued.sh <name>` (or `tools/board.sh`), never the log by eye.** Moving a batch means marking it `WITHDRAWN, moved to <name> batch <n>` in the old file first, in the same commit as the new one |
+| A batch was queued but told not to start until another pull request merged. `tools/queued.sh` called it `queued`, and `tools/listen.sh` exits the moment anything is queued, so every listener restart fired at once and spun on work it had been told to leave alone | **A gated batch carries a line of its own that opens `Held until PR <n> merges`.** `tools/queued.sh` then reports it `held`, checks that pull request on GitHub, and releases it to `queued` by itself the moment it merges - so the gate opens with nobody awake. `tools/listen.sh` never offers a held batch |
 | Two directors each wrote a batch 7 into `laptop/TASKS.md`, the listener reported "finished batch 7", and `tools/queued.sh` dropped both - so security's #3265 waited, invisible, until the listener said so in a commit of its own | **Batch ids carry their director's letter** ([below](#batch-ids-carry-their-directors-letter-23-november-2026)), and `tools/queued.sh` judges a shared id only by the reports that name its director |
 
 `tools/queued.sh <name> [days]` lists that listener's batches from the last 7 days that it hasn't reported done: `queued` if nothing
-has named it, `unfinished` if it started. A batch heading needs its date ("8 November 2026") to be counted, as the batch-heading rule
-already asks.
+has named it, `unfinished` if it started, `held` if it is waiting on a pull request. A batch heading needs its date ("8 November 2026")
+to be counted, as the batch-heading rule already asks.
+
+**Gating a batch on another pull request: give it a line of its own.** Anywhere in the batch, a line that *opens* with
+`Held until PR <n> merges` (or `Hold until`, or `Only once ... PR <n> ...`; a bullet and bold marks before it are fine) makes
+`tools/queued.sh` report that batch `held` instead of `queued`, with the reason in brackets, and `tools/listen.sh` never offers it.
+The pull request is looked up on GitHub each time the list is read, so **the gate opens by itself the moment it merges** - the
+listener picks the batch up on its next check without anybody being awake to release it. The marker has to open the line so that an
+ordinary mention cannot park a machine: "Do not touch PR 3591's branch" is not a hold. Saying it only in the heading's prose, as
+`- **after g116, and only once #602's pull request has merged**` did on 25 November, is a note to a reader and nothing a tool can
+act on. If GitHub cannot be asked, or the pull request was closed without merging, the batch stays held and says which - starting
+work early is the harm this prevents, and a parked machine shows up in `tools/roster.sh` while a wrongly started one does not.
 
 ## Batch ids carry their director's letter (23 November 2026)
 

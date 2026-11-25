@@ -15,6 +15,16 @@
 # Older headings are history nobody closed out, which tools/board.sh calls "ended".
 #   queued      no "<name>: ... batch <id> ..." commit at all
 #   unfinished  a commit names it, but none says it is done
+#   held        nothing has started it and it says it is waiting on a pull request that has not merged
+#
+# A HELD BATCH IS NOT WORK ITS LISTENER CAN TAKE, and saying so is the whole point of the third state. A batch whose own
+# section opens a line with "Held until PR 3587 merges" (or "Hold until", or "Only once ... PR 3587 ...") is checked against
+# GitHub: merged releases it and it goes back to being queued, anything else keeps it held, with the reason in brackets. So a
+# gate opens by itself, with nobody awake to notice - which is what it is for. Before this, a gated batch read as plain
+# queued, and tools/listen.sh exits the moment anything is queued, so every listener restart fired at once and spun on work
+# it had been told not to start (home, 25 November 2026). The check needs `gh`; without it, or with GitHub unreachable, the
+# batch stays held and says it could not ask, because starting work early is the harm this prevents and a parked machine is
+# visible in tools/roster.sh while a wrongly started one is not.
 # "done" is matched as tools/board.sh matches it. "withdrawn", "cancelled" or "moved" in the heading, or a note saying
 # "batch(es) ... <id> ... withdrawn/cancelled/moved", drops it. "cancelled" is matched because directors write it: on
 # 19 November a batch headed "CANCELLED, do not run" went on being reported as outstanding, and on 23 November that
@@ -29,6 +39,35 @@
 # letters are what stops this happening; this is the backstop while batches numbered before them are still live.
 set -u
 name=${1:?name}; days=${2:-7}
+pr_repo=${QUEUED_PR_REPO:-TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo}
+
+# The batch's own section: its heading, and every line to the next "## ". Needed because a hold belongs to one batch, and a
+# whole-file search would let one held batch hold all of them.
+section() { # <id> <director word, may be empty>
+  awk -v id="$1" -v dir="$2" '
+    /^## / { if (inb) exit }
+    /^## Batch / { if (match($0, "^## Batch " id "([^0-9A-Za-z]|$)") && (dir == "" || index($0, dir) > 0)) inb = 1 }
+    inb { print }
+  '
+}
+
+# Empty when the batch is free to run; otherwise why it is held. A marker must OPEN its line (after a bullet, quote or bold
+# marks) so that an ordinary mention cannot park a machine: "Don't touch PR 3587's branch" is not a hold, and is the kind of
+# line every batch has.
+hold_reason() { # reads the section on stdin
+  line=$(grep -nE '^[-*>[:space:]]*\**([Hh]old|[Hh]eld) until|^[-*>[:space:]]*\**[Oo]nly once' | head -1)
+  [ -n "$line" ] || return 0
+  n=$(printf '%s' "$line" | grep -oE '([Pp][Rr]|[Pp]ull [Rr]equest)[[:space:]]*#?[0-9]+' | head -1 | grep -oE '[0-9]+$')
+  if [ -z "$n" ]; then echo "it names no pull request to check"; return 0; fi
+  if ! command -v gh >/dev/null 2>&1; then echo "PR $n: no gh here to ask"; return 0; fi
+  st=$(gh pr view "$n" -R "$pr_repo" --json state --jq .state 2>/dev/null | tr -d '\r' | head -1)
+  case $st in
+    MERGED) return 0 ;;
+    OPEN)   echo "PR $n has not merged" ;;
+    CLOSED) echo "PR $n was closed without merging" ;;
+    *)      echo "PR $n: could not ask GitHub" ;;
+  esac
+}
 tasks=$(git show "origin/work-mailbox:$name/TASKS.md" 2>/dev/null | tr -d '\r') || exit 0
 mine=$(git log --format=%s origin/work-mailbox 2>/dev/null | grep -E "^$name: " || true)
 cutoff=$(date -u -d "-$days days" +%s)
@@ -76,6 +115,7 @@ printf '%s\n' "$live" | while IFS="$(printf '\t')" read -r n p; do
   elif [ -n "$tag" ] && printf '%s\n' "$mine" | grep -qiE "$done_re|$names_re"; then
     echo "$n unfinished$tag, and no report says which"
   else
-    echo "$n queued$tag"
+    why=$(printf '%s\n' "$tasks" | section "$n" "$p" | hold_reason)
+    if [ -n "$why" ]; then echo "$n held$tag - $why"; else echo "$n queued$tag"; fi
   fi
 done
