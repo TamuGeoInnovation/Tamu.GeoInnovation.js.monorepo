@@ -39,7 +39,7 @@ export class SponsorsMainComponent implements OnInit {
           return this.ss.getEntitiesForActiveSeason();
         }
 
-        return season ? this.ss.getEntitiesForSeason(season.guid) : of([]);
+        return season?.guid ? this.ss.getEntitiesForSeason(season.guid) : of([]);
       }),
       // Sponsors switched off for the season are kept in the admin pages but not shown (#1962).
       map(activeSponsors),

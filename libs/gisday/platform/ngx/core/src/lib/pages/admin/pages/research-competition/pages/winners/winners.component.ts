@@ -79,7 +79,7 @@ export class WinnersComponent {
     effect(() => {
       const season = this.choice.season();
 
-      if (season) {
+      if (season?.guid) {
         this.load(season.guid);
       }
     });
@@ -116,7 +116,7 @@ export class WinnersComponent {
     const trail = this.trailChoices();
     const problem = winnerChoicesProblem(winners) ?? trailChoicesProblem(trail);
 
-    if (!season) {
+    if (!season?.guid) {
       return;
     }
 

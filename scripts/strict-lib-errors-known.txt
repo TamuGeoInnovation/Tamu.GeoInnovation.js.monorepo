@@ -10,6 +10,7 @@
 856 libs/ts/events/ngx/tsconfig.lib.json
 809 libs/aggiemap/ngx/discover/tsconfig.lib.json
 702 libs/aggiemap/ngx/common/tsconfig.lib.json
+424 libs/gisday/platform/ngx/core/tsconfig.lib.json # #3627: 5 in its own files, from other libraries' types (3 placesShownOn's in gisday-common, 2 TypeRecord's in gisday-platform-ngx-common); the rest are in the libraries it imports, 110 of them gisday-platform-ngx-common's own until #3611 merges
 269 libs/maps/feature/perspective/tsconfig.lib.json
 266 libs/maps/feature/basemap/tsconfig.lib.json
 87 libs/ui-kits/ngx/layout/modal/tsconfig.lib.json

@@ -5,7 +5,7 @@ import { catchError, filter, map, of, switchMap, tap } from 'rxjs';
 
 import { readRefusal, seasonPicker } from '@tamu-gisc/gisday/platform/ngx/common';
 
-import type { AccountDashboard, RsvpDashboardPerson } from '@tamu-gisc/gisday/platform/data-api';
+import type { AccountDashboard, RsvpDashboardPerson, Season } from '@tamu-gisc/gisday/platform/data-api';
 import { UserService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ChartSeries, countsByDay, LineChartComponent, runningTotalByDay } from '@tamu-gisc/ui-kits/ngx/charts';
@@ -74,7 +74,7 @@ export class AccountDashboardComponent implements OnInit {
   public readonly failed = signal(false);
   /** Why it could not be read, when trying again won't help: a missing permission or an expired sign-in (#3038). */
   public readonly refusal = signal<string | null>(null);
-  private readonly season = signal<{ guid: string; year: number } | null>(null);
+  private readonly season = signal<{ guid: string; year: number | undefined } | null>(null);
 
   /** The row whose people are shown, and them once they are read. */
   public readonly expanded = signal<string | null>(null);
@@ -126,7 +126,7 @@ export class AccountDashboardComponent implements OnInit {
 
     this.selectedSeason$
       .pipe(
-        filter((season) => Boolean(season?.guid)),
+        filter((season): season is Partial<Season> & { guid: string } => Boolean(season?.guid)),
         tap((season) => {
           this.season.set({ guid: season.guid, year: season.year });
           this.dashboard.set(null);

@@ -2,7 +2,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { NgClass, AsyncPipe, TitleCasePipe } from '@angular/common';
-import { combineLatest, EMPTY, filter, map, Observable, shareReplay, startWith, switchMap, take } from 'rxjs';
+import { combineLatest, EMPTY, filter, map, Observable, shareReplay, startWith, switchMap, take, throwError } from 'rxjs';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 import { Submission, SubmissionWithSubmitter } from '@tamu-gisc/gisday/platform/data-api';
@@ -117,6 +117,11 @@ export function profileEmailNote(rows: Array<Partial<Submission>>): string {
   const people = new Set(
     rows.flatMap((row) =>
       (row.participants ?? []).flatMap((p) => {
+        // An entry stored as null names nobody (#3495).
+        if (!p) {
+          return [];
+        }
+
         const emails = participantEmails(p.email);
 
         return emails.length ? emails : [(p.name?.trim() ?? '').toLowerCase()];
@@ -322,9 +327,12 @@ export class ResearchCompetitionListComponent extends BaseAdminListComponent<Sub
       .pipe(
         take(1),
         switchMap(([season, scope]) =>
-          this.entityService
-            .getSeasonFilesZip(season.guid, scope.guids ?? undefined)
-            .pipe(map((zip) => ({ zip, year: season.year, name: scope.name })))
+          // A site with no season yet has no files to download (#2076).
+          season?.guid
+            ? this.entityService
+                .getSeasonFilesZip(season.guid, scope.guids ?? undefined)
+                .pipe(map((zip) => ({ zip, year: season.year, name: scope.name })))
+            : throwError(() => new Error('No season'))
         )
       )
       .subscribe({
@@ -456,11 +464,14 @@ export class ResearchCompetitionListComponent extends BaseAdminListComponent<Sub
   }
 
   /** The selected submissions, in the order they were selected. */
-  private selectedSubmissions(): Observable<Array<SubmissionRow>> {
+  /** The selected rows still in the list, each found by its guid, so each has one. */
+  private selectedSubmissions(): Observable<Array<SubmissionRow & { guid: string }>> {
     return combineLatest([this.selectedRows$, this.view$]).pipe(
       take(1),
       map(([guids, view]) =>
-        guids.map((guid) => view.rows.find((row) => row.guid === guid)).filter((row): row is SubmissionRow => !!row)
+        guids
+          .map((guid) => view.rows.find((row) => row.guid === guid))
+          .filter((row): row is SubmissionRow & { guid: string } => typeof row?.guid === 'string')
       )
     );
   }

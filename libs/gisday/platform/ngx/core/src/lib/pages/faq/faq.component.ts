@@ -41,7 +41,7 @@ export class FaqComponent {
     // The question's own element, not whichever child was clicked: the question now holds its text and a link button.
     const item = (event.currentTarget as HTMLElement).parentElement;
 
-    item.classList.toggle('expanded');
+    item?.classList.toggle('expanded');
   }
 
   /** The address of one question, to share. */

@@ -1,7 +1,7 @@
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
 import { InitialSurveyService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -34,7 +34,7 @@ import { GISDAY_SITE, SiteHasPipe } from '@tamu-gisc/gisday/platform/ngx/common'
     SiteHasPipe
   ]
 })
-export class InitialSurveyComponent implements OnInit, OnDestroy {
+export class InitialSurveyComponent implements OnInit {
   /** Its name and contact address, as each GIS Day site has its own (#2077). */
   public readonly site = inject(GISDAY_SITE);
 
@@ -44,17 +44,11 @@ export class InitialSurveyComponent implements OnInit, OnDestroy {
   public dataGroup: UntypedFormGroup;
   public $tookSurveyAlready: Observable<boolean>;
   public $initalSurveyQuestions: Observable<Array<Partial<IInitialSurveyQuestionResponse>>>;
-  private _$destroy: Subject<boolean> = new Subject();
 
   public ngOnInit() {
     this.dataGroup = this.fb.group({});
     this.$tookSurveyAlready = this.initialSurveyService.seeIfUserTookSurvey();
     this.fetchSurveyQuestions();
-  }
-
-  public ngOnDestroy() {
-    this._$destroy.next(undefined);
-    this._$destroy.complete();
   }
 
   public fetchSurveyQuestions() {
@@ -63,8 +57,11 @@ export class InitialSurveyComponent implements OnInit, OnDestroy {
     ).pipe(
       map((questions) => {
         return questions.map((question) => {
-          if (question.questionType.type === 'multiple-option' || question.questionType.type === 'scale-normal') {
-            const tokens = question.questionOptions.split('|');
+          const type = question.questionType?.type;
+
+          if (type === 'multiple-option' || type === 'scale-normal') {
+            // An option question saved without its options has none to offer, rather than failing the whole survey.
+            const tokens = question.questionOptions?.split('|') ?? [];
             question.options = tokens.map((token) => {
               const value: IMulitpleOptions<string> = {
                 value: token
@@ -77,7 +74,12 @@ export class InitialSurveyComponent implements OnInit, OnDestroy {
       }),
       tap((questions) => {
         questions.forEach((question) => {
-          const questionType = question.questionType.type;
+          // A control is keyed by its question's guid, so a question without one cannot be answered.
+          if (question.guid === undefined) {
+            return;
+          }
+
+          const questionType = question.questionType?.type;
           if (questionType === 'multiple-option') {
             this.dataGroup.addControl(question.guid, this.fb.control([]));
           } else {

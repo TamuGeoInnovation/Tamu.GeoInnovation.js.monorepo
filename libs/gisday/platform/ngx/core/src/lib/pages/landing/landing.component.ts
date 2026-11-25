@@ -65,10 +65,12 @@ export class LandingComponent implements OnInit {
   public daysTill: string;
   public subscription: Subscription;
 
-  public activeSeason$: Observable<ActiveSeasonDto>;
+  /** Null on a site with no season yet (#2076). */
+  public activeSeason$: Observable<ActiveSeasonDto | null>;
   public activeSeasonDays$: Observable<Array<SeasonDay>>;
   public activeSeasonDayCount$: Observable<number>;
-  public dateRange$: Observable<Array<Date>>;
+  /** The first and last days' dates, or null when the season has no days. */
+  public dateRange$: Observable<Array<Date> | null>;
   public dayCountText$: Observable<string>;
 
   public totalSecondsRemaining$: Observable<number>;
@@ -103,9 +105,7 @@ export class LandingComponent implements OnInit {
 
     this.activeSeasonDays$ = this.activeSeason$.pipe(
       map((season) => season?.days),
-      filter((days) => {
-        return days !== undefined;
-      }),
+      filter((days): days is Array<SeasonDay> => days !== undefined),
       shareReplay()
     );
 
@@ -131,22 +131,27 @@ export class LandingComponent implements OnInit {
           return 'Workshops';
         } else if (count === 1) {
           return 'One day of workshops';
-        } else if (count > 1) {
-          return `${numberDictionary[count]} days of workshops`;
         }
+
+        return `${numberDictionary[count]} days of workshops`;
       })
     );
 
     this.totalSecondsRemaining$ = this.activeSeason$.pipe(
       switchMap((season) => {
-        if (season.firstEventTime === null) {
+        const firstDay = season?.days?.[0]?.date;
+
+        // No countdown on a site with no season yet (#2076), or for a season with no session on its first day.
+        if (!season || !firstDay || season.firstEventTime === null) {
           return NEVER;
         }
+
+        const firstEventTime = season.firstEventTime;
 
         return interval(1000).pipe(
           startWith(0),
           map(() => {
-            const firstEventDate = new Date(season.days[0].date.toDateString() + ' ' + season.firstEventTime);
+            const firstEventDate = new Date(firstDay.toDateString() + ' ' + firstEventTime);
 
             return (firstEventDate.getTime() - Date.now()) / 1000;
           }),

@@ -30,6 +30,11 @@ export class SponsorListComponent extends BaseAdminListComponent<Sponsor> {
    * Switches a sponsor on or off for its season without leaving the list (#1962).
    */
   public setActive(sponsor: Partial<Sponsor>, active: boolean) {
+    // A row not yet saved has no guid, and nothing on the server to switch.
+    if (sponsor.guid === undefined) {
+      return;
+    }
+
     const data = new FormData();
     data.set('active', String(active));
 
@@ -40,7 +45,7 @@ export class SponsorListComponent extends BaseAdminListComponent<Sponsor> {
           title: 'Sponsors',
           message: `${sponsor.name} is now ${active ? 'shown on' : 'hidden from'} the Sponsors page.`
         });
-        this.$signal.next(null);
+        this.$signal.next(true);
       },
       error: (err) => {
         this.ns.toast({
@@ -48,7 +53,7 @@ export class SponsorListComponent extends BaseAdminListComponent<Sponsor> {
           title: 'Sponsors',
           message: serverMessage(err, `Could not update ${sponsor.name}: ${err.status}`)
         });
-        this.$signal.next(null);
+        this.$signal.next(true);
       }
     });
   }
