@@ -59,14 +59,22 @@ function definedPermissions(): Set<string> {
 }
 
 describe('the permissions the GIS Day API asks for (#3101)', () => {
+  // It imports every controller in the API, which under Vitest means transforming each one first: about 5 s on a quiet
+  // machine and more on a busy one, past Vitest's 5 s default for a test (Jest's was the same, but its transform was
+  // already cached by then). So the routes are read once, with room to do it, and both tests share them (#1977).
+  let routes: Array<{ permission: string; route: string }>;
+  beforeAll(async () => {
+    routes = await routePermissions();
+  }, 60_000);
+
   it('finds the routes and the defined permissions', async () => {
-    expect((await routePermissions()).length).toBeGreaterThan(50);
+    expect(routes.length).toBeGreaterThan(50);
     expect(definedPermissions().has('update:speakers')).toBe(true);
   });
 
   it('asks only for permissions the Auth0 API defines', async () => {
     const defined = definedPermissions();
-    const undefinedOnes = (await routePermissions()).filter(({ permission }) => !defined.has(permission));
+    const undefinedOnes = routes.filter(({ permission }) => !defined.has(permission));
 
     expect(undefinedOnes).toEqual([]);
   });
