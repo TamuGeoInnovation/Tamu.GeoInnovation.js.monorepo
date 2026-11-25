@@ -33,7 +33,9 @@ describe('InitialSurveyComponent', () => {
     const fixture = TestBed.createComponent(InitialSurveyComponent);
     fixture.detectChanges();
 
-    return Array.from(fixture.nativeElement.querySelectorAll('h1') as NodeListOf<HTMLElement>).map((h) => h.textContent?.trim());
+    return Array.from(fixture.nativeElement.querySelectorAll('h1') as NodeListOf<HTMLElement>).map((h) =>
+      h.textContent?.trim()
+    );
   }
 
   it('shows only the pre-event heading to a visitor who has taken the survey', () => {
