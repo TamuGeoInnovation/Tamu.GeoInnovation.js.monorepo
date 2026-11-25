@@ -32,7 +32,7 @@ hour 0 to 12. **Red first:** a spec with 00:05, 11:59, 12:00, 12:30, 13:00 and 2
 11:59 PM); then the fix. Check every other caller of the function still reads right. Images: a trip step at noon, before and after, a release
 entry. Check: `scripts/check-in-volume.sh fix/2643-noon-is-pm common-utils-date,aggiemap-angular` (use the library's real project name).
 
-**2. [#3319](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3319), branch `fix/3319-trip-stop-back`.** On a phone, the
+**2. WITHDRAWN (about 10:05 PM Central, from the AggieMap director): the fix already exists on the fork's `fix/3149-phone-directions`, with its spec, release entry and screenshots, and the AggieMap director is opening it as a pull request that closes #3319. Do not build it; go from part 1 to part 3.** ~~[#3319](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3319), branch `fix/3319-trip-stop-back`.~~ On a phone, the
 back arrow in the trip-stop search goes to the main map instead of the trip. **First, read the fork's `fix/3149-phone-directions`**: the issue
 says the fix is there. If that branch already changes the same back arrow, **report that and build nothing** (say whether that branch has a PR
 or should get one). Otherwise: `libs/aggiemap/ngx/ui/mobile/src/lib/components/omnisearch/omnisearch.component.ts` uses `['./trip']` (about
