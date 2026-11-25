@@ -5,7 +5,7 @@
 
 Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
-Last batch done: a52
+Last batch done: a57
 
 ## What this is
 
@@ -33,9 +33,10 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch a57 (#3490, the phone's directions on the shared templates)**, started 1:57 PM Central, in `C:/TAMU/wt-3490`.
+Nothing.
 
 ## Finished
+- **Batch a57 (aggiemap: #3490 shared directions templates)** (report `laptop/reports/2026-11-25-a57.md`): **branch ready: `refactor/3490-directions-shared-templates`** (`c0b5361c6`, body last). Phone unchanged (the sheet only shows a found route); `no-visible-change`, Q-a57-1 and Q-a57-2. Check exit 0, pre-pr-check exit 0.
 - **Batch a52 (aggiemap: drive-into-campus case, #3679)** (report `laptop/reports/2026-11-25-a52.md`): **branch ready: `test/3679-drive-into-campus`** (`a955bc61a`, body last). Green on dev and production; its failure shown with a core destination; pre-pr-check exit 0.
 - **Batch a49 (aggiemap: drive-solve smoke check for #3679)** (report `laptop/reports/2026-11-25-a49.md`): **stopped, premise wrong, my a43 error.** Drive reaches all six visitor garages and every public road; only pedestrian-core points fail, by design. Production app: 3 min to the Central Campus Garage. Corrected on #3679 (comment); no branch, no PR. Q-a49-1, Q-a49-2. (Started 12:35 PM Central; an earlier line here said 12:50, which was estimated.)
 - **Batch g40 (gisday: #1478 zoneless, signed in)** (report `laptop/reports/2026-11-25-g40.md`): **nothing stale, 15 of 15 checks**: file picker and Clear, select, radio groups, slide toggles, row selection, the Copy modal open and Cancel, registration, judging tabs. Writes blocked; temporary judge removed. Not covered: reset after a save, scoring in a tab.
