@@ -1,5 +1,19 @@
 # Laptop: current tasks
 
+## Batch g31 (gisday: #980, create a season through the admin page on the local stack; 25 November 2026, about 12:50 AM Central, from `work (gisday)`) (Low) - **after g30**
+
+[#980](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/980) (claimed In Progress): read it to the end. #973 fixed
+`SeasonService.create()` (it answered 409 for every new year, `findOne` returning `null` since TypeORM 0.3) with a unit test, but nobody has created a
+season through the admin page since, because GIS Day was running. It is over now. **Check first** that #980 is not already done some other way (a
+later comment, an e2e, a season created since).
+
+On the **local stack**, signed in through **txgisday-dev only** (`scripts/gisday-local.sh`, `http://gisday.local.test:4201`), from the latest
+`origin/development`: Admin, Seasons, create a season for a year that does not exist (2027). It must succeed, appear in the list **inactive** (the issue
+explains why `active` stays false), and leave the active season as it was. Then try the same year again: that must answer 409, with a message the page
+shows. Images of both into `docs/screenshots/980-season-create/`. **Local data only; nothing on production.** If either step fails, that is a bug: file
+it (Bug, your best-estimate Priority per DIRECTOR.md) with the images, and red-first a spec where one can be written. If both pass, the report says so
+and the work machine closes #980 with your images. Report `laptop/reports/2026-11-25-g31.md`.
+
 ## Batch g30 (workspace: #1479, remove Jest itself; 25 November 2026, about 12:15 AM Central, from `work (gisday)`) (Medium) - **after g29, once g29's and the lab's g203 pull requests have merged**
 
 **Check first** that no project uses Jest any more (`git ls-files '*jest.config*'` empty on `origin/development`); if any does, report which and wait.
