@@ -1,9 +1,4 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  Logger,
-  NotFoundException
-} from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, In, Repository } from 'typeorm';
 
@@ -26,7 +21,10 @@ export class EventBroadcastService extends SeasonScopedProvider<EventBroadcast> 
     return this.getBroadcastsForSeason(seasonGuid);
   }
 
-  constructor(@InjectRepository(EventBroadcast) private eb: Repository<EventBroadcast>, private readonly ss: SeasonService) {
+  constructor(
+    @InjectRepository(EventBroadcast) private eb: Repository<EventBroadcast>,
+    private readonly ss: SeasonService
+  ) {
     super(eb);
   }
 
@@ -107,7 +105,8 @@ export class EventBroadcastService extends SeasonScopedProvider<EventBroadcast> 
           relations: { events: true }
         });
 
-        const events = broadcastEvents.map((broadcast) => broadcast.events).flat();
+        // `events` is loaded by this find's `relations`.
+        const events = broadcastEvents.flatMap((broadcast) => broadcast.events!);
 
         // Remove broadcast from all events
         events.forEach((event) => {
@@ -119,7 +118,9 @@ export class EventBroadcastService extends SeasonScopedProvider<EventBroadcast> 
         return transactionalEntityManager.delete(EventBroadcast, guids);
       });
     } catch (err) {
-      rethrowHttp(err, new InternalServerErrorException('Could not delete entities'), () => Logger.error(err.message, 'EventBroadcastService.deleteEntities'));
+      rethrowHttp(err, new InternalServerErrorException('Could not delete entities'), () =>
+        Logger.error(err.message, 'EventBroadcastService.deleteEntities')
+      );
     }
   }
 }

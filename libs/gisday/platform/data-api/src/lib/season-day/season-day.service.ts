@@ -25,10 +25,12 @@ export class SeasonDayService extends BaseProvider<SeasonDay> {
       if (day) {
         const simplified = day.events.map((e) => {
           const eventTagGuids = e.tags?.map((t) => t.guid) || [];
-          const eventOrgGuids = e.speakers.filter((s) => s.organization !== null).map((s) => s.organization.guid) || [];
+          // `speakers` is loaded by this find's `relations`.
+          const speakers = e.speakers!;
+          const eventOrgGuids = speakers.flatMap((s) => (s.organization ? [s.organization.guid] : []));
           const placeGuids = e.location?.place?.guid ? [e.location.place.guid] : [];
           // Their names only, which the Presenters page shows already, so the Sessions list can be searched by them (#2944).
-          const presenterNames = e.speakers
+          const presenterNames = speakers
             .map((s) => [s.firstName, s.lastName].filter((part) => part?.trim()).join(' '))
             .filter((name) => name.length > 0);
 
@@ -48,7 +50,8 @@ export class SeasonDayService extends BaseProvider<SeasonDay> {
         return simplified
           .filter((e) => e.active)
           .sort((a, b) => {
-            return a.startTime > b.startTime ? 1 : -1;
+            // An event with no start time last, as the dashboards order them.
+            return (a.startTime ?? '￿') > (b.startTime ?? '￿') ? 1 : -1;
           });
       } else {
         throw new NotFoundException();

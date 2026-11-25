@@ -37,3 +37,17 @@ jobs:
           done
           [ "$missing" -eq 0 ] && echo "docs/testing.md names every smoke spec."
           exit "$missing"
+
+      # The map probe's global is named once, in map-probe.ts, as PROBE_GLOBAL (#2603). Six specs still typed it out
+      # after that, and a missed one fails only when the suite next runs against a live site (#3473).
+      - name: Check only map-probe.ts names the map probe
+        shell: bash
+        run: |
+          found=$(grep -rlF '__tamuGiscMapProbe' test/smoke --include='*.ts' | grep -v '^test/smoke/aggiemap/map-probe\.ts$' || true)
+          if [ -n "$found" ]; then
+            while read -r file; do
+              echo "::error file=$file::$file names __tamuGiscMapProbe. Import PROBE_GLOBAL from test/smoke/aggiemap/map-probe.ts instead."
+            done <<< "$found"
+            exit 1
+          fi
+          echo "Only map-probe.ts names the map probe."

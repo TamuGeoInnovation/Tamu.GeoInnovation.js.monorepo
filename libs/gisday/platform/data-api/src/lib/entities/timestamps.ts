@@ -21,7 +21,7 @@ export const TIMESTAMP_COLUMN: ColumnOptions = { type: 'datetimeoffset', default
 @EventSubscriber()
 export class UpdatedTimestampSubscriber implements EntitySubscriberInterface {
   public beforeUpdate(event: UpdateEvent<ObjectLiteral>): void {
-    const column = event.metadata?.updateDateColumn;
+    const column = event.metadata.updateDateColumn;
 
     if (column && event.entity) {
       event.entity[column.propertyName] = new Date();
