@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch a33** (#3486, one markdown popup pair), since 10:43 AM Central, 25 November, from `origin/development` `e0598f7d5` (PR 3587 merged). Worktree `wt-a33`.
+- Nothing. Idle, listening.
 
 ## Finished
+- **Batch a33** (report `home/reports/2026-11-25-a33.md`, 11:25 AM Central): #3486, branch `refactor/3486-one-markdown-popup` on the fork at `addf9b536`, pre-pr-check Exit 0. Filed #3671 and #3673. Two questions.
 - **Batch a40** (report `home/reports/2026-11-25-a40.md`, 8:43 AM Central): five needs-maintainer issues, read-only. Three to send (#2901 in place of #2212, #2612, #1104), three to close (#2212, #1902, #1146). Two questions.
 - **Batch a39 (#3650)** (report `home/reports/2026-11-25-a39.md`, 8:34 AM Central): `tools/queued.sh` committed as `26233546d`; home 56.6 s to 12.0 s, lab 115.0 s to 8.1 s, output byte-identical for six machines over 7, 30 and 365 days; 22 tests unedited plus one.
 - **Batch a38 (#3655, #3656, #3658)** (report `home/reports/2026-11-25-a38.md`, 7:37 AM Central): PR 3660 open, pre-pr-check Exit 0. #71 parked with test.fail(); #387 does not reproduce in Chromium (page scrolls 95 px, sidebar closes), so its check passes; 3D source and offset asserted. Each watched fail. Q-a38-1.
