@@ -1,5 +1,78 @@
 # Home machine: current tasks
 
+## Batch a48 (aggiemap: #3657, delete the retired bus API cluster - by reachability, not by my list; 25 November 2026, 2:35 PM Central, from `work (aggiemap)`) (Medium) - **now**
+
+**a46 is accepted. Q-a46-1 is A: `popupData` only.** You applied the step 3 rule exactly as written, and the part I
+want to name is the part you could have skipped: you went looking for a real caller, found one, converted it, and then
+**declined to add `native` because nothing needed it**. An option nothing uses is speculation, and you reported the
+absence as a result rather than filling it. That is the standard.
+
+Its pull request is being opened now - its check is running as I write this.
+
+I verified the risky part myself rather than taking it on trust, and it is right: `...source.popupData` spreads **after**
+the defaults, so it merges; and there is no `native` parameter at all, so `outFields` and `onlyType` cannot be dropped
+by a caller. The 265-source, 219,531-byte `cmp` is the strongest form that proof could take.
+
+**One thing you found and were right about, with a detail you may want:** Men's Basketball's parking keeps
+`{attributes.name}` with braces while the helper's default is braceless `attributes.name`. You kept the override to stay
+byte-identical, which was correct under the instruction. For your information the two are **functionally equivalent for
+a single field**: `resolve-popup-data.ts` sends a braced value through `renderTemplateRows` and a braceless one through
+`getPropertyValue`, and both resolve to the same attribute. So those braces are not load-bearing. Leave them - changing
+them now would alter the object and make this a visible change needing images - but it is not an oddity to worry about.
+
+### Why this batch
+
+[#3657](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3657) was blocked by PR 3652 until
+this morning. `bus.service.ts` still carries methods against a Transportation Services API that **no longer exists**,
+and its own comment at line 62 says so. Dead code that calls a dead service reads as a working integration: the next
+person to add a bus feature calls one of these and gets a 502 at run time, in a component where nothing suggests why.
+
+### Read this first: the issue's list is wrong, and following it fails the build
+
+I have put the full working on the issue. In short:
+
+- It names three methods. **`busesForRoute` has a live caller** - `toggleBusLocations` at `bus.service.ts:977` - so
+  deleting the three leaves that line uncompilable.
+- **`toggleBusLocations` has no caller anywhere**, so it is dead too, and it is the only thing keeping `busesForRoute`
+  alive.
+- `base_url` has **four** call sites: `waypointsForRoute` (176), `stopsForRoute` (224), `timeTableForRouteOnDate` (276)
+  and `busesForRoute` (623). None has a caller outside the cluster; lines 344 and 528 are inside it.
+- The only two references from outside are both **commented out**: `bus-switch.component.ts:61` and
+  `trip-planner.service.ts:1437`.
+
+### What to do
+
+1. **Delete by reachability, and derive the set yourself.** Start from `base_url` and the two commented-out entry
+   points, take the transitive closure of what becomes unreachable, and remove it. **Do not take my seven names as the
+   answer** - I read the file, I did not compile it, and the closure is what the compiler will agree with. If your set
+   differs from mine, yours is probably right; say where it differs and why.
+2. **The commented-out call sites go too.** A commented call to a method that no longer exists is a worse signpost than
+   none.
+3. **Types and imports left with no user go with them.** `TimetableEntry` and `RouteBus` are the candidates; both have
+   references today, and all of them are inside the cluster.
+4. **What must not change:** `bus-timetable.component.ts` is the live replacement - it lists a route's stops and links
+   out to Transportation Services for the times, it is on production, and `test/smoke/aggiemap/bus.spec.ts` covers it.
+   `BUS_ROUTES_URL` and `serviceUrl` are a **different, live** service and stay. If your closure wants to take anything
+   the bus map actually uses, stop: that means the closure is wrong.
+5. **Say what the search was**, across apps, libraries, templates and tests - the issue asks for this explicitly, and it
+   is what makes a deletion reviewable. A grep that covered only `.ts` would miss a template binding.
+
+### Scope
+
+**`no-visible-change`**, no images, no release-notes entry: nothing a visitor sees changes, because none of this runs.
+The build is the proof here - `nx test` only compiles what the specs import, so a deletion that breaks a file with no
+spec passes the tests and fails the build. Read the check's own `Exit N` line.
+
+`libs/maps/feature/trip-planner` has two other things in flight and **neither touches this file**: my PR 3653
+(`trip-planner-top`, `-bottom`, `-core`) and #1169 on the laptop (`parking.service.ts`). You have `bus.service.ts` to
+yourself.
+
+**Branch** `chore/3657-remove-retired-bus-api` from the latest `development`, pushed to the fork. Pre-push:
+`scripts/check-in-volume.sh <branch> affected`, then **`scripts/pre-pr-check.sh`** - a46 ran `check-in-volume.sh` but
+not `pre-pr-check.sh`, and I need its Exit 0 line to open the pull request (#3508). Body text in the report, with a
+**`Title:`** line at its top - a46's had none and I took the title from your commit subject. **Report**
+`home/reports/2026-11-25-a48.md`. Questions `Q-a48-<n>`. **Open no pull request.**
+
 ## g121 received (gisday), 25 November 2026
 
 - Accepted. **Q-g121-1: (a)**, the laptop has the signed-in half as g40. **Q-g121-2: (a)**, the file-picker fix stays in the #1478 pull request, which I open from `59a86ea3e`.
