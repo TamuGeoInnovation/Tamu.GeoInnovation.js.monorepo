@@ -1,5 +1,20 @@
 # Laptop: current tasks
 
+## Batch g33 (workspace, #3495: strictNullChecks in `ui-kits-ngx-search`, a shared library the GIS Day front end compiles; 25 November 2026, 3:45 AM Central, from `work (gisday)`) (Medium) - **now, ahead of g32** (g32 waits on home's branch; start it when that is ready, whichever you are on)
+
+g30 received: `chore/1479-remove-jest` goes through `pre-pr-check.sh` on the work machine, with `development` merged in first, and opens when it exits 0.
+
+**Why this library:** work-lab-leila measured GIS Day's front end with strictNullChecks on (`work-lab-leila/reports/2026-11-25-g208.md` on this branch): 591 distinct errors, 304 of them in shared libraries it imports, and `ui-kits/ngx/search` has the most, 53. The lab is doing `ui-kits/ngx/forms` (g212), so the two don't overlap.
+
+**A shared library:** AggieMap's map search uses it too. Keep its public interface as it is for its callers (CLAUDE.md, "Change a shared piece behind its existing interface"); if a fix needs a caller changed, stop and ask in the report instead.
+
+1. **Branch** `fix/3495-ui-kits-search-strict` from the latest `origin/development`.
+2. **Measure:** `strictNullChecks` in the library's own configuration (`libs/ui-kits/ngx/search`, its `tsconfig.lib.json` or the project `tsconfig.json`, whichever is its own), and the errors in its own files.
+3. **Fix them:** honest `| null` / `| undefined`, inputs typed as callers pass them, no `!` without a comment saying why it is safe. A behaviour that could change (a default that was `undefined`) gets a spec, red first.
+4. **If `scripts/strict-lib-errors-known.txt` exists on `development` by then** (PR 3585, #3581), the library must check cleanly under `scripts/check-strict-libs.mjs`; say so in the report either way.
+5. `scripts/pre-pr-check.sh` with `affected` (no project list), `--label no-visible-change`. **Your machine only:** the defaults are fine, as nothing else runs checks there. Every app that builds the library must still build in production.
+6. `.pr-body.md` last; "branch ready". Report `laptop/reports/2026-11-25-g33.md`, with the before and after counts for the library and for `gisday-angular`'s configuration. Questions `Q-g33-<n>`.
+
 ## Batch g32 (gisday: the signed-in admin pages for home's g116, OnPush then zoneless; 25 November 2026, 3:25 AM Central, from `work (gisday)`) (Medium) - **after g30, and once home says "branch ready" for `chore/1669-gisday-onpush`**
 
 **Issues: #1669 and #1478.** Test job. Home is removing `ChangeDetectionStrategy.Eager` from about 101 GIS Day components, then turning on zoneless. It proves the public pages against production builds with the API mocked. It cannot sign in, so the signed-in pages are yours (Q-g116-1, decided A).
