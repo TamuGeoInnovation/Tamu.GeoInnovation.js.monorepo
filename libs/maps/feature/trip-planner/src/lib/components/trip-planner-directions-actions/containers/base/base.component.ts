@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
-import { switchMap, takeUntil, pluck } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 
 import { Angulartics2 } from 'angulartics2';
 
@@ -38,11 +38,7 @@ export class TripPlannerDirectionsActionsComponent implements OnInit, OnDestroy 
   private _destroy$: Subject<boolean> = new Subject();
 
   public ngOnInit(): void {
-    this.plannerService.TravelOptions.pipe(
-      pluck('travel_mode'),
-      switchMap(() => this.plannerService.getTripResultForTravelMode()),
-      takeUntil(this._destroy$)
-    ).subscribe((result) => {
+    this.plannerService.currentResult$.pipe(takeUntil(this._destroy$)).subscribe((result) => {
       if (result && result.stops != null) {
         const params = {
           stops: undefined,
