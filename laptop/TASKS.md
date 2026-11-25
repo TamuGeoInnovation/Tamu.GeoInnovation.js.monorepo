@@ -1,5 +1,16 @@
 # Laptop: current tasks
 
+## Batch g32 (gisday: the signed-in admin pages for home's g116, OnPush then zoneless; 25 November 2026, 3:25 AM Central, from `work (gisday)`) (Medium) - **after g30, and once home says "branch ready" for `chore/1669-gisday-onpush`**
+
+**Issues: #1669 and #1478.** Test job. Home is removing `ChangeDetectionStrategy.Eager` from about 101 GIS Day components, then turning on zoneless. It proves the public pages against production builds with the API mocked. It cannot sign in, so the signed-in pages are yours (Q-g116-1, decided A).
+
+1. **On your local GIS Day stack** (`scripts/gisday-local.sh`, the scratch database's made-up records, the `txgisday-dev` test admin; nothing else), build `gisday-angular` twice: at `origin/development`, and at `fork/chore/1669-gisday-onpush`. Then do the same again with `fork/chore/1478-gisday-zoneless` once that branch exists.
+2. **Every admin page you can reach**, signed in, on both builds: the lists (seasons, sessions, presenters, sponsors, places, organizations, competitions, users), each one's add and edit form, and the speaker-edit and email screens. Start with the pages home's g116 report lists as changed.
+   - **For each one:** does it render, and does it **update** after an action without a reload? Choose a filter, open and close a dialog, save a form, and watch a toast or a list refresh. A stale view is the OnPush failure to look for.
+   - **Writes:** only against the scratch database, and undo each one. No email is sent (the local stack's mail goes nowhere; check before sending anything).
+3. **Images** only where something differs: before, after, and a note of what you did.
+4. **Report** one table: page, development, branch, the same or not. File a bug for each difference, against the branch's issue (Priority per DIRECTOR.md). Report `laptop/reports/2026-11-25-g32.md`; questions `Q-g32-<n>`.
+
 ## Decided (gisday), 2:25 AM Central, 25 November 2026
 
 - **Q-g31-1: (a).** #980 is closed as superseded, citing your report; #3571 is what the check found. The director has taken #3571 from your red spec (`4ca4c6e7e`): fix and pull request from the work machine, so nothing more from you on it. (c), deleting `create()`, is not queued.
