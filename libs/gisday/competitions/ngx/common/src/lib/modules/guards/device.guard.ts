@@ -16,23 +16,31 @@ export class DeviceGuard {
     next: ActivatedRouteSnapshot
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     const allowed = this.isDeviceAuthorized(next.data);
+    const options = next.data as IDeviceGuardOptions | undefined;
 
     if (allowed) {
-      if (next.data && (<IDeviceGuardOptions>next.data).devicePassRedirect) {
-        return this.router.parseUrl((<IDeviceGuardOptions>next.data).devicePassRedirect);
+      const passRedirect = options?.devicePassRedirect;
+
+      if (passRedirect) {
+        return this.router.parseUrl(passRedirect);
       } else {
         return allowed;
       }
     } else {
-      if (next.data) {
-        if ((<IDeviceGuardOptions>next.data).deviceIgnoreFailRedirect) {
+      if (options) {
+        const failRedirect = options.deviceFailRedirect;
+
+        if (options.deviceIgnoreFailRedirect) {
           return true;
-        } else if ((<IDeviceGuardOptions>next.data).deviceFailRedirect) {
-          return this.router.parseUrl((<IDeviceGuardOptions>next.data).deviceFailRedirect);
+        } else if (failRedirect) {
+          return this.router.parseUrl(failRedirect);
         } else {
           throw new Error('Device guard returned false for the requested route, and no redirect was provided.');
         }
       }
+
+      // A route with no data at all is refused, as the undefined this used to return was (#3610).
+      return false;
     }
   }
 
@@ -62,6 +70,9 @@ export class DeviceGuard {
 
       return passAllTests;
     }
+
+    // No device modes asked for: not authorized, as the undefined this used to return was taken to be (#3610).
+    return false;
   }
 }
 
