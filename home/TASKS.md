@@ -1,5 +1,33 @@
 # Home machine: current tasks
 
+## Batch g107 (gisday: #2588, a phone menu tile taps only on its word; then #3337, two quoted colours; 24 November 2026, about 3:45 PM Central, from `work (gisday)`) (Medium) - **now**
+
+The maintainer is away and asked for issues to be taken to PRs. Both were checked against `origin/development` at 3:40 PM
+today: neither is fixed and neither has a PR. **Two branches, two PRs**, one after the other; "branch ready: <name>" after each.
+
+**1. [#2588](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2588) (Medium), branch `fix/2588-tile-tap-target`
+from the latest `origin/development`.** Read the issue to the end. The shared mobile tiles (`libs/ui-kits/ngx/navigation/mobile-tile`)
+put `tamuGiscTileLink` on `tamu-gisc-tile-title`, so only the word is a link. Fix it **in the shared tiles**, behind their
+existing interface: the pages that use them (the GIS Day header, `libs/geoservices/ngx` twice) keep their markup unchanged.
+Tapping anywhere on a tile follows its link; the tile is reachable and usable by keyboard with a visible focus; a tile with no link
+(About, which opens a submenu) works as it does now. **Red first:** a unit test where a click on the tile's icon or padding
+navigates; then green. Check: `scripts/check-in-volume.sh fix/2588-tile-tap-target <the ui-kit project>,gisday-angular,geoservices-angular`
+with `CHECK_PARALLEL=1`, its `Exit` line. Images: the GIS Day menu open at 390 px, before and after, showing the tap target
+(a focus ring or an outline is fine), into `docs/screenshots/2588-tile-tap-target/`, and a release-notes file
+`docs/releases/unreleased/2588-tile-tap-target.md` with `app: gisday`. Push to the fork; `.pr-body.md` from the template as the
+last commit.
+
+**2. [#3337](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3337) (Low), branch
+`fix/3337-quoted-background` from the latest `origin/development`.** `light-pole.component.scss` and `lighting.component.scss`
+under `libs/gisday/platform/ngx/core/src/lib/pages/competitions/` set `background-color: '#500000'` (a string, which the browser
+discards). Use the shared maroon (look in `libs/sass/` first; #2605 swept `#500000` into a variable - use that one, not a literal).
+**Before you change anything, check whether either page is still routed and reachable**; if neither is, say so in the report and
+stop: the issue then becomes a deletion question for the maintainer, not a colour fix. Otherwise: a check that fails on a quoted
+colour if one is cheap (say if not), images of the `img#geosat` area before and after, a release-notes file with `app: gisday`,
+the same check-in-volume run for `gisday-platform-ngx-core,gisday-angular`, push, `.pr-body.md` last.
+
+Report `home/reports/2026-11-24-g107.md`, with each branch's red/green lines and `Exit` line.
+
 ## Batch a11 (aggiemap: fresh "after" images for #3425, which your own finding invalidated) (Medium) - **now**
 
 Your finding (2) was acted on: the maintainer chose to fix the duplication on this branch rather than file it.
