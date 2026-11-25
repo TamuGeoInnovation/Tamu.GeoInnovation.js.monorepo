@@ -7,6 +7,7 @@ import { of } from 'rxjs';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 
 import { DiscoveryService } from '../../services/discovery/discovery.service';
+import { discoveryServiceStub } from '../../services/discovery/discovery.service.stub';
 import { LastMapService } from '@tamu-gisc/aggiemap/ngx/common';
 import { AllMapsComponent } from './all-maps.component';
 
@@ -36,15 +37,11 @@ describe('AllMapsComponent upcoming events', () => {
     app('Ring Day', ['2026-10-08', '2026-10-09', '2026-10-10'])
   ];
 
-  const discoveryStub = {
+  const discoveryStub = discoveryServiceStub({
     getInternalDiscoverApplications: () => apps,
     getVisibleInternalDiscoverApplications: () => apps,
-    getExternalDiscoverApplications: () => [],
-    getAllDiscoverApplications: () => apps,
-    getKioskDiscoverApplications: () => [],
-    getQuickLinkApplications: () => [],
-    getParkingApplicationsByCategory: () => []
-  };
+    getAllDiscoverApplications: () => apps
+  });
 
   const renderAt = async (now: Date) => {
     // Only the clock is fake: Vitest's toFake, the other way round from Jest's doNotFake.
