@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch a54** (#3474, one reader of the builder inventory), since 1:22 PM Central, 25 November. Worktree `wt-a54`.
+- Nothing. Idle, listening.
 
 ## Finished
+- **Batch a54** (report `home/reports/2026-11-25-a54.md`, 1:48 PM Central): #3474, one inventory reader; no route or baseline key moves (byte-identical on production). Branch `refactor/3474-one-builder-inventory-reader` at `a2d1246cb`; pre-pr-check Exit 0. One question.
 - **Batch a51** (report `home/reports/2026-11-25-a51.md`, 1:19 PM Central): #3551, construction dates through a new shared `calendarDate`; red in Central time first; before/after captured. Branch `fix/3551-construction-popup-dates` at `36af9b75b`; check-in-volume and pre-pr-check Exit 0.
 - **Batch a48** (report `home/reports/2026-11-25-a48.md`, 12:43 PM Central): #3657, the retired bus API cluster deleted by reachability (−774 lines). Branch `chore/3657-remove-retired-bus-api` at `fd97037ca`; check-in-volume and pre-pr-check both Exit 0. One question.
 - **Batch a46** (report `home/reports/2026-11-25-a46.md`, 12:22 PM Central): #2597, `popupData` only (no caller needs `native`); Men's Basketball converted; every event map's sources byte-identical. Branch `refactor/2597-athletics-source-overrides` at `8578210ed`, check Exit 0. One question.
