@@ -615,11 +615,13 @@ by hand and getting the order wrong.
 **Tag the commit each build comes from.** `scripts/tag-build.sh dev` when a build reaches dev,
 `scripts/tag-build.sh prod` when it is promoted, then `git push origin <tag>`. One build serves both
 environments, so the same commit carries both tags. `prod` refuses a commit with no `dev-*` tag,
-which is what makes "we shipped what we tested" a fact rather than an assumption. Tags go to
-`origin`. See #1145.
+which is what makes "we shipped what we tested" a fact rather than an assumption. It also refuses a
+commit that already carries a `prod-*` tag, naming it, so one build is never recorded as two releases
+(#1215). Tags go to `origin`. See #1145.
 
-**Overriding that refusal needs a reason, which goes into the tag:** `--force '<why>'`. The tag then
-says `(FORCED)` in its first line and carries the reason. A forced tag used to be indistinguishable
+**Overriding either refusal needs a reason, which goes into the tag:** `--force '<why>'`, for example a
+deliberate redeploy of a build already on production. The tag then says `(FORCED)` in its first line and
+carries the reason and which check it went past. A forced tag used to be indistinguishable
 from one that passed, so on 22 October the release record said production carried `61161ce1b` when the
 tag was on `36b962a04`, and nothing in the repository contradicted it. `bash scripts/tag-build.test.sh`, from Git Bash, covers this. See #2098.
 
