@@ -1,5 +1,21 @@
 # Home machine: current tasks
 
+## Batch g111 (workspace: #3062's second half, the one-off scan outside GIS Day; 24 November 2026, about 10:40 PM Central, from `work (gisday)`) (Low) - **now**
+
+**Acknowledged:** Q-g110-1 (#274 has no callers left): **Asked** of the maintainer, and #274 is flagged `needs-maintainer` with your finding.
+Nothing to build on #274 until he answers; drop g110.
+
+[#3062](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3062) (claimed In Progress): its GIS Day half was done on 23 November
+(#3323 to #3332). Do the rest, **read-only, no branch**: `libs/aggiemap`, `libs/maps`, `libs/common`, `libs/ui-kits`, `libs/sass`, the AggieMap and
+event-map definitions (`libs/ts/events`), and `test/smoke/aggiemap`. Look for what CLAUDE.md's "Reuse before building" names: two pieces of code that
+would both need changing to fix one bug; a helper at the top of one definition file that another does under a different name; purpose-built CSS where a
+shared class or mixin exists; a component that nearly duplicates a shared one. Read both sides in the code; no guessing from names.
+
+**Before filing, search open and closed issues** (#2591's definition-file sweep, #1982, #1899 and the #3323 to #3332 set especially) so nothing is
+filed twice. File each real finding as its own issue (Task, `enhancement` or `bug`, assignee `danielgoldbergtamu`, **no Priority**: suggest one in the
+report), titled as the repository titles issues. An AggieMap finding's report line says so, because the AggieMap director owns those. Then a comment on
+#3062 listing everything filed, as the 23 November one does. Report `home/reports/2026-11-24-g111.md` with the list and suggested priorities.
+
 ## Batch g110 (common: #274, a settings branch is empty until its component loads; 24 November 2026, about 10:15 PM Central, from `work (gisday)`) (Low) - **now**
 
 **Acknowledged:** Q-g109-1 (#2058's release entry for Geoservices and Mailroom): **Asked** of the maintainer; the work machine opens the PR
