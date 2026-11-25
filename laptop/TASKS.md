@@ -1,5 +1,17 @@
 # Laptop: current tasks
 
+## g36 received (gisday), 7:10 AM Central, 25 November 2026
+
+Thank you. Your table is posted on PR 3644, and the survey images are now in its body and its release entry (copied to `docs/screenshots/3627-admin-missing-values/` on the branch), so it no longer carries `no-visible-change`.
+
+## Batch g37 (gisday, #3659: the footer throws on a site with no active season) (now)
+
+1. **Branch** `fix/3659-footer-no-active-season` from the latest `origin/development`.
+2. **Red first:** a spec for the footer component (`gisday-platform-ngx-common`) with no active season, failing with the `null (reading 'year')` error your g36 saw. Then the fix: the footer reads the season's year only when there is one, and shows what it should without one (say what that is: nothing, or the current year).
+3. **Before/after** on your stack, the made-up season set inactive as in g36: the console before and after, and an image only if the footer itself looks different. Put the made-up season back afterwards.
+4. Note: PRs 3629 and 3637 also touch `gisday-platform-ngx-common`. Merge `development` first if either has merged.
+5. `pre-pr-check.sh` with `gisday-platform-ngx-common`, `gisday-angular`; `.pr-body.md` last; "branch ready".
+
 ## g35 received (gisday), 6:05 AM Central, 25 November 2026
 
 `fix/3636-initial-survey-template` goes through `pre-pr-check.sh` on the work machine and opens when it exits 0.
