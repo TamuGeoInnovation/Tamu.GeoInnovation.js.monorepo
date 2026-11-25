@@ -214,6 +214,10 @@ is checked by the release tier before production and by the nightly run after it
 
 GIS Day has a smaller smoke check of its own, which loads txgisday.org every six hours.
 
+| Type of check     | Spec files      | Tests | What it catches                                                                                                                                                                                                                                                                                          | Prompted by                                                                                                                                                                                                                               |
+| ----------------- | --------------- | ----: | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Every public page | `pages.spec.ts` |    43 | Every page a visitor reaches without signing in, this year's and last year's, shows what it is for: sessions in the sessions list, a session's title and time, a card for each presenter, sponsors' logos, each competition's page. Read only, and a page the site leaves out is skipped with the reason | [#3638](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3638), for GIS Day's lack of any check that could be re-run ([#1977](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1977)) |
+
 ## The builder inventory
 
 Eleven maps have no direct address: a visitor first chooses options in a _builder_, such as which
