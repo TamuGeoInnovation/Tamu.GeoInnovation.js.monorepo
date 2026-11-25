@@ -123,11 +123,6 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
     return this.getInternalValue();
   }
 
-  /** The value for arithmetic: NaN while there is none, which is what arithmetic on undefined gave (#3495). */
-  private get numericValue(): number {
-    return this.value ?? NaN;
-  }
-
   public override set value(value: number) {
     this.setInternalValue(value);
 
@@ -190,6 +185,11 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
         this.maxDisplay = this.max();
       }
     }
+  }
+
+  /** The value for arithmetic: NaN while there is none, which is what arithmetic on undefined gave (#3495). */
+  private get numericValue(): number {
+    return this.value ?? NaN;
   }
 
   /**
