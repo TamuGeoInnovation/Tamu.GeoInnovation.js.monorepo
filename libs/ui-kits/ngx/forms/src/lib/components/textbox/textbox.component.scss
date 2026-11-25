@@ -50,20 +50,7 @@ textarea {
 }
 
 label {
-  position: absolute;
-  color: #757575;
-  left: 0;
-  top: 0.55rem;
-  pointer-events: none;
-  z-index: 1;
-  will-change: transform;
-  @include transition(transform 0.2s, font-size 0.15s);
-
-  &.float {
-    transform: translate3d((0, -1.75rem, 0));
-    font-size: 0.85rem;
-    z-index: -1;
-  }
+  @include floating-label(0, 0.55rem);
 }
 
 .textbox-control {
