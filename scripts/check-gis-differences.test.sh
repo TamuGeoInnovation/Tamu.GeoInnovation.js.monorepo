@@ -13,8 +13,14 @@ tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
 failed=0
 
+# Node where there is one (CI, and the pre-PR check's container, which has no Docker inside it), otherwise in Docker
+# (these machines have no host Node).
 node_in_docker() {
-  MSYS_NO_PATHCONV=1 docker run --rm -v "$(cd "$tmp" && pwd -W 2>/dev/null || pwd):/t" -w /t node:24.22.1 node "$@"
+  if command -v node >/dev/null 2>&1; then
+    (cd "$tmp" && node "$@")
+  else
+    MSYS_NO_PATHCONV=1 docker run --rm -v "$(cd "$tmp" && pwd -W 2>/dev/null || pwd):/t" -w /t node:24.22.1 node "$@"
+  fi
 }
 
 # The repository has no host node (CLAUDE.md), so the harness runs the module in the same container image
@@ -73,7 +79,9 @@ check "a difference with no row is named" '{"recorded":["alphaUrl","betaUrl","ga
 
 # A value on the following line is how tsParkingLotsUrl and constructionUrl are really written; a key-count
 # that reads only `key: value` lines misses them, and reported 24 entries where there are 27.
-got="$(run_case "$SOURCE" "$COMPLETE" | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>console.log(JSON.parse(s).recorded.length))" 2>/dev/null)"
+# Counted with sed, so the test needs nothing beyond the shell where it runs (it once used Python, which a Node-only
+# container lacks, #3508).
+got="$(run_case "$SOURCE" "$COMPLETE" | sed -E 's/.*"recorded":\[([^]]*)\].*/\1/' | tr ',' '\n' | grep -c .)"
 check "a value on the next line is still one entry" "3" "$got"
 
 # A row whose key has gone from the code is NOT an error: it is the record of a difference that was fixed.
