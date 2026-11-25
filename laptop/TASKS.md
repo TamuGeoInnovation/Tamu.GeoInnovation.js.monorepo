@@ -1,6 +1,6 @@
 # Laptop: current tasks
 
-## Batch g28 (gisday: #1977's Vitest step, the GIS Day libraries off Jest; 24 November 2026, about 10:25 PM Central, from `work (gisday)`) (Medium) - **after a14**
+## Batch g28 (gisday: #1977's Vitest step, the GIS Day libraries off Jest; 24 November 2026, about 10:25 PM Central, from `work (gisday)`) (Medium) - **WITHDRAWN (25 November, about 12:30 AM Central): moved to the lab as g201. Do not start it.**
 
 [#1977](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1977) (and [#1479](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1479)): read both,
 and #1479's last comment, the maintainer's order of 18 October: Vitest **measured before and after**. AggieMap and UES moved in #1948 (8951a6364):
