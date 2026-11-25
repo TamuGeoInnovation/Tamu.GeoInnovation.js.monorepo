@@ -6,6 +6,7 @@ import { ManagementService } from '@tamu-gisc/common/nest/auth';
 import { EmailSenderChoice, EmailSenderChoices, SENDER_DOMAIN, gisdaySite, isSenderDomain } from '@tamu-gisc/gisday/common';
 
 import { senderAs } from '../_base/site-of-request';
+import { Auth0ProfileAsRead } from '../dashboards/dashboard-profiles.service';
 
 /** What a send gives the mailer (#3100): the From recipients see, and where their replies go. */
 export interface EmailSender {
@@ -123,10 +124,9 @@ export class EmailSenderService {
     }
 
     const siteAddress = addressOf(process.env.MAILROOM_FROM);
+    const sender = siteSender(site.name);
 
-    if (siteAddress) {
-      const sender = siteSender(site.name);
-
+    if (siteAddress && sender.from) {
       add({
         kind: 'site',
         address: siteAddress,
@@ -200,10 +200,10 @@ export class EmailSenderService {
 
     if ((!email || !name) && typeof user?.sub === 'string') {
       try {
-        const profile = await this.management.getUserMetadata(user.sub, undefined, true);
+        const profile: Auth0ProfileAsRead = await this.management.getUserMetadata(user.sub, undefined, true);
 
-        email = email ?? (profile?.user_info?.email?.trim() || undefined);
-        name = name ?? (profile?.user_info?.name?.trim() || undefined);
+        email = email ?? (profile.user_info?.email?.trim() || undefined);
+        name = name ?? (profile.user_info?.name?.trim() || undefined);
       } catch {
         // No management credentials (locally, #1759) or no such account: the token's claims are all there is.
       }

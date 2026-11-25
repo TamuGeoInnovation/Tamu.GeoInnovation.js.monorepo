@@ -1,5 +1,5 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, inject } from '@angular/core';
+import { Observable, map } from 'rxjs';
 
 import { Angulartics2 } from 'angulartics2';
 
@@ -12,6 +12,8 @@ import { SidebarComponent } from '@tamu-gisc/common/ngx/ui/sidebar';
 import { SidebarTabComponent } from '@tamu-gisc/common/ngx/ui/sidebar';
 import { PopupComponent } from '@tamu-gisc/maps/feature/popup';
 import { RevealSidebarOnPopupDirective } from '@tamu-gisc/maps/feature/popup';
+
+import { SIDEBAR_OPTIONS, SidebarTab, sidebarTabsFor } from './sidebar-tabs';
 
 @Component({
   selector: 'tamu-gisc-aggiemap-sidebar',
@@ -27,15 +29,15 @@ import { RevealSidebarOnPopupDirective } from '@tamu-gisc/maps/feature/popup';
     AsyncPipe
   ]
 })
-export class AggiemapSidebarComponent implements OnInit {
-  private devTools = inject(TestingService);
+export class AggiemapSidebarComponent {
   private readonly analytics = inject(Angulartics2);
 
-  public isDev: Observable<boolean>;
+  /** What this map changes about its side panel, if anything (`SIDEBAR_OPTIONS`). */
+  public readonly options = inject(SIDEBAR_OPTIONS, { optional: true });
 
-  public ngOnInit() {
-    this.isDev = this.devTools.get('isTesting');
-  }
+  public readonly tabs: Observable<SidebarTab[]> = inject(TestingService)
+    .get('isTesting')
+    .pipe(map((development) => sidebarTabsFor(this.options, development === true)));
 
   public reportSidebarContent(tabTitle: string) {
     const label = {

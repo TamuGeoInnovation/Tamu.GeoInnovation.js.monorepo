@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 import { blockAnalytics } from './analytics';
+import { PROBE_GLOBAL, waitForMapDrawn } from './map-probe';
 
 /**
  * The legend shows what the map draws (#1721).
@@ -174,20 +175,23 @@ test.describe('legend', () => {
 
     /** The layer's visibility as the map holds it, from the map probe; null until the map is ready. */
     const onTheMap = () =>
-      page.evaluate(async (title) => {
-        const probe = (
-          window as unknown as Record<
-            string,
-            { ready?: boolean; snapshot(): Promise<{ layers: Array<{ title: string; visible: boolean }> }> } | undefined
-          >
-        )['__tamuGiscMapProbe'];
+      page.evaluate(
+        async ({ name, title }) => {
+          const probe = (
+            window as unknown as Record<
+              string,
+              { ready?: boolean; snapshot(): Promise<{ layers: Array<{ title: string; visible: boolean }> }> } | undefined
+            >
+          )[name];
 
-        if (probe?.ready !== true) {
-          return null;
-        }
+          if (probe?.ready !== true) {
+            return null;
+          }
 
-        return (await probe.snapshot()).layers.find((layer) => layer.title === title)?.visible ?? null;
-      }, TOGGLE_LAYER);
+          return (await probe.snapshot()).layers.find((layer) => layer.title === title)?.visible ?? null;
+        },
+        { name: PROBE_GLOBAL, title: TOGGLE_LAYER }
+      );
 
     /** The map, the Layers list and the legend all show the layer on, or all show it off. */
     const expectAllShow = async (on: boolean, after: string) => {
@@ -230,17 +234,7 @@ test.describe('legend', () => {
     // Switch layers on once the map has finished, as a visitor would. While layers are still loading,
     // Esri's list keeps changing, and a layer switched on then was listed by the old legend too. The main
     // map took about a minute to finish drawing on a local dev server.
-    await page.waitForFunction(
-      () => {
-        const probe = (window as unknown as Record<string, { ready?: boolean; drawing?: boolean } | undefined>)[
-          '__tamuGiscMapProbe'
-        ];
-
-        return probe?.ready === true && probe.drawing === false;
-      },
-      null,
-      { timeout: 180_000 }
-    );
+    await waitForMapDrawn(page, `${MAIN_MAP} never finished drawing`, { timeout: 180_000 });
 
     for (const title of MAIN_MAP_LAYERS) {
       const exactly = new RegExp(`^\\s*${title}\\s*$`);
@@ -317,13 +311,11 @@ test('Freshman Selectable Parking: each layer in the legend shows its symbols', 
   const entries = page.locator('tamu-gisc-legend tamu-gisc-legend-collection');
 
   await expect(entries.first(), 'the legend listed no layers').toBeVisible({ timeout: 120_000 });
-  await page.waitForFunction(
-    () => (window as unknown as { __tamuGiscMapProbe?: { drawing: boolean } }).__tamuGiscMapProbe?.drawing === false,
-    undefined,
-    {
-      timeout: 120_000
-    }
-  );
+  // Drawing alone, as this wait always was (#3473 is a refactor): the legend listing layers above stands in for ready.
+  await waitForMapDrawn(page, 'the Freshman Selectable Parking map never finished drawing', {
+    timeout: 120_000,
+    ready: false
+  });
 
   for (const entry of await entries.all()) {
     const title = (await entry.locator('.collection-group-title-text').textContent())?.trim();

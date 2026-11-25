@@ -18,7 +18,7 @@ describe('CheckinService', () => {
         provideHttpClient(),
         provideHttpClientTesting(),
         { provide: EnvironmentService, useValue: { value: () => 'api' } },
-        { provide: NotificationService, useValue: { toast: jest.fn() } }
+        { provide: NotificationService, useValue: { toast: vi.fn() } }
       ]
     });
 

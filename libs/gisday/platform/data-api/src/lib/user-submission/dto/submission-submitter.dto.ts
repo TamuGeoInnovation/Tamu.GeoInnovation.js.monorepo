@@ -1,4 +1,4 @@
-import type { Auth0UserProfile } from '@tamu-gisc/common/nest/auth';
+import type { Auth0ProfileAsRead } from '../../dashboards/dashboard-profiles.service';
 
 import type { Submission } from '../../entities/all.entity';
 
@@ -17,11 +17,11 @@ export interface SubmissionSubmitter {
 /** A submission in the admin list: `submitter` is null when the account could not be read. */
 export type SubmissionWithSubmitter = Submission & { submitter: SubmissionSubmitter | null };
 
-export function submitterOf(profile: Auth0UserProfile): SubmissionSubmitter {
-  const info = profile?.user_info;
-  const education = profile?.user_metadata?.education;
-  const occupation = profile?.user_metadata?.occupation;
-  const isStudent = profile?.app_metadata?.gisday?.attendeeType === 'student';
+export function submitterOf(profile: Auth0ProfileAsRead): SubmissionSubmitter {
+  const info = profile.user_info;
+  const education = profile.user_metadata?.education;
+  const occupation = profile.user_metadata?.occupation;
+  const isStudent = profile.app_metadata?.gisday?.attendeeType === 'student';
 
   const department = isStudent
     ? education?.fieldOfStudy || occupation?.department

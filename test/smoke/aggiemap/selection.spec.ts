@@ -2,7 +2,7 @@ import { Page } from '@playwright/test';
 
 import { expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
-import { PROBE_GLOBAL } from './map-probe';
+import { ProbeLayer, waitForMapDrawn } from './map-probe';
 
 /**
  * A link to one feature opens with that feature highlighted, drawn above every other layer (#1805).
@@ -30,41 +30,19 @@ const LOADS = 3;
 /** Links that select one feature, one per kind of link. */
 const LINKS = ['/events/tailgating/map/d?tent=L1', '/events/tailgating/map/d?zone=AP-7'];
 
-interface ProbeLayer {
-  id: string;
-  type: string;
-  graphicTypes: Record<string, number> | null;
-}
-
 /** Opens `link` in this test's fresh browser context and returns its layers, top-most last, once a feature is selected and drawn. */
 async function openSelected(page: Page, link: string): Promise<ProbeLayer[]> {
   await blockAnalytics(page);
   await page.goto(link, { waitUntil: 'domcontentloaded' });
 
-  let layers: ProbeLayer[] = [];
+  // Once it has finished drawing, so the order read is the one on screen.
+  const layers = await waitForMapDrawn(page, `${link} never selected a feature`, {
+    until: (drawn) => {
+      const selection = drawn.find((l) => l.id === SELECTION_LAYER_ID);
 
-  await expect
-    .poll(
-      async () => {
-        layers = await page.evaluate(async (name) => {
-          const probe = (
-            window as unknown as Record<
-              string,
-              { ready?: boolean; drawing?: boolean; snapshot: () => Promise<{ layers: ProbeLayer[] }> }
-            >
-          )[name];
-
-          // Once it has finished drawing, so the order read is the one on screen.
-          return probe?.ready === true && probe.drawing === false ? (await probe.snapshot()).layers : [];
-        }, PROBE_GLOBAL);
-
-        const selection = layers.find((l) => l.id === SELECTION_LAYER_ID);
-
-        return Object.values(selection?.graphicTypes ?? {}).reduce((sum, count) => sum + count, 0);
-      },
-      { message: `${link} never selected a feature`, timeout: 90_000, intervals: [1_000] }
-    )
-    .toBeGreaterThan(0);
+      return Object.values(selection?.graphicTypes ?? {}).reduce((sum, count) => sum + count, 0) > 0;
+    }
+  });
 
   return layers.filter((l) => !BASEMAP_TYPES.includes(l.type));
 }

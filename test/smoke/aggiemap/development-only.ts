@@ -48,7 +48,9 @@ export const DEVELOPMENT_ONLY_ALL_MAPS_TILES = ['Code Maroon'];
  * - The trip planner's Options offers only accessible routing, which the routing network does not support yet.
  */
 export const DEVELOPMENT_ONLY_PAGES: Record<string, string> = {
-  '/map/d/trip/options': '/map/d/trip'
+  '/map/d/trip/options': '/map/d/trip',
+  // The event maps' copy of the same page, which their own side panel left ungated until it became the main map's (#2758).
+  '/events/tailgating/map/d/trip/options': '/events/tailgating/map/d/trip'
 };
 
 /**
@@ -165,8 +167,8 @@ export const DEVELOPMENT_ONLY_SERVICES: Record<
  * listed here and no longer hidden fails too.
  */
 export const LISTINGS_HIDDEN_FROM_PRODUCTION: Record<string, string> = {
-  '/events/april-ring-day': 'hidden by #899 (All Maps overhaul, 5 August 2026) with no reason recorded; ask before listing it',
-  '/events/move-out': '#1691, #1704: hidden while its three dated periods are reviewed, so the page offers one entry per move-out'
+  '/events/move-out':
+    '#1691, #1704: hidden while its three dated periods are reviewed, so the page offers one entry per move-out'
 };
 
 /** Whether the environment under test renders the development variant. */

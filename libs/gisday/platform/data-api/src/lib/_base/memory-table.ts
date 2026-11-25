@@ -12,7 +12,8 @@ import { FindOperator } from 'typeorm';
  */
 export function matches(row: unknown, where: Record<string, unknown>): boolean {
   return Object.entries(where).every(([key, wanted]) => {
-    const value = (row as Record<string, unknown>)?.[key];
+    // A nested relation's row may be missing.
+    const value = (row as Record<string, unknown> | null | undefined)?.[key];
 
     if (wanted instanceof FindOperator) {
       if (wanted.type === 'not') {
@@ -73,7 +74,11 @@ export class Table<T extends { guid?: string }> {
   public delete = async (where: string | Array<string> | Record<string, unknown>) => {
     const before = this.rows.length;
     const gone = (r: T) =>
-      typeof where === 'string' ? r.guid === where : Array.isArray(where) ? where.includes(r.guid) : matches(r, where);
+      typeof where === 'string'
+        ? r.guid === where
+        : Array.isArray(where)
+          ? r.guid !== undefined && where.includes(r.guid)
+          : matches(r, where);
     this.rows = this.rows.filter((r) => !gone(r));
     return { affected: before - this.rows.length };
   };
