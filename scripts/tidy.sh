@@ -42,6 +42,51 @@ worktree_candidates() {
   ' "$porcelain"
 }
 
+# Prints `<path> <commit>` for every DETACHED worktree but the main checkout, one per line (#3438). A worktree made
+# with --detach, which is how a smoke tier is run at a build's exact commit, has no `branch` line in the porcelain,
+# only `detached`, so worktree_candidates can never offer it: 34 of 122 on the work machine on 24 November. Whether
+# one is removable is a question about its commit, not a branch; detached_merged answers it.
+detached_worktrees() {
+  local porcelain="$1"
+  awk '
+    /^worktree / { path = substr($0, 10); is_main = (++seen == 1); head = ""; next }
+    /^HEAD / { head = $2; next }
+    /^detached$/ { if (!is_main && head != "") print path " " head }
+  ' "$porcelain"
+}
+
+# Prints the paths of the detached worktrees in <detached list> (as detached_worktrees prints it) whose commit is
+# already in <base>, so they hold nothing unmerged. <ancestor> is the command that answers "is this commit in
+# <base>?" (`git merge-base --is-ancestor` by default), replaceable so the test needs no repository. A detached
+# worktree on a commit that is not in <base> is kept. Tested by scripts/tidy.test.sh.
+detached_merged() {
+  local list="$1" base="$2" ancestor="${3:-git_is_ancestor}" path commit
+  while read -r path commit; do
+    [ -n "$commit" ] || continue
+    if "$ancestor" "$commit" "$base"; then
+      printf '%s\n' "$path"
+    fi
+  done < "$list"
+}
+
+git_is_ancestor() {
+  git -C "$main" merge-base --is-ancestor "$1" "$2" 2>/dev/null
+}
+
+# Prints the `wt-*` folders in <parent> that <porcelain> does not list, one per line (#3438). Git only knows the
+# worktrees it was told about, so a folder whose registration was pruned, or a worktree of ANOTHER repository
+# (four of six on the work machine were kubernetes-config's), is invisible to every other check here. These are
+# reported, never removed: deciding that a folder is nobody's is a person's call.
+unregistered_folders() {
+  local porcelain="$1" parent="$2" dir
+  for dir in "$parent"/wt-*; do
+    [ -d "$dir" ] || continue
+    if ! awk -v want="$dir" '/^worktree / { p = substr($0, 10); gsub(/\\/, "/", p); if (tolower(p) == tolower(want)) found = 1 } END { exit !found }' "$porcelain"; then
+      printf '%s\n' "$dir"
+    fi
+  done
+}
+
 # True when every uncommitted change in <git status --porcelain output> is an untracked `.pr-body.md`, and
 # there is at least one. That file drafts a pull request body and is deliberately never committed to
 # `development`, so a copy left in a worktree makes it look like someone is working there for ever: on
@@ -168,12 +213,34 @@ gh issue list --repo "$repo" --state closed --limit 4000 --json number --jq '.[]
 git -C "$main" worktree list --porcelain > "$tmp/porcelain"
 worktree_candidates "$tmp/merged" "$tmp/porcelain" > "$tmp/worktrees"
 
+# Detached worktrees: removable when their commit is already in origin/development (#3438). A stale
+# origin/development only makes fewer of them removable, never more.
+detached_worktrees "$tmp/porcelain" > "$tmp/detached"
+if git -C "$main" rev-parse -q --verify origin/development >/dev/null; then
+  detached_merged "$tmp/detached" origin/development >> "$tmp/worktrees"
+fi
+echo "  $(grep -c . "$tmp/detached" || true) detached worktree(s); those whose commit is in origin/development are considered."
+
+# Folders git does not list: named with their size, never removed (#3438).
+unregistered_folders "$tmp/porcelain" "$(dirname "$main")" > "$tmp/unregistered"
+if [ -s "$tmp/unregistered" ]; then
+  echo "  Not worktrees of this repository as far as git knows, so not removed (another repository's, or a pruned registration); check each by hand:"
+  while IFS= read -r dir; do
+    echo "    $dir ($(du -sh "$dir" 2>/dev/null | cut -f1))"
+  done < "$tmp/unregistered"
+fi
+
 # A worktree with uncommitted changes is kept, merged branch or not. On 24 November 2026, 7 of 367
 # candidates were dirty: one held a real edit to a release-notes file and five held only check logs.
 : > "$tmp/worktrees-clean"
 while IFS= read -r path; do
   [ -d "$path" ] || continue
-  status="$(git -C "$path" --no-optional-locks status --porcelain 2>/dev/null)"
+  # A folder git lists but cannot read (its .git file is gone) used to end the whole sweep under `set -e`, with exit
+  # 128 and nothing removed; it is kept and named instead, since what it holds cannot be checked (#3438).
+  if ! status="$(git -C "$path" --no-optional-locks status --porcelain 2>/dev/null)"; then
+    echo "  keeping $path (git cannot read it: its .git is missing or broken; check it by hand)"
+    continue
+  fi
 
   if [ -z "$status" ]; then
     echo "$path" >> "$tmp/worktrees-clean"
