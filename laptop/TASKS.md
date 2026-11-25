@@ -39,6 +39,16 @@ or should get one). Otherwise: `libs/aggiemap/ngx/ui/mobile/src/lib/components/o
 :187) and `map/d/trip` (about :135); one relative link back to the trip. **Red first:** a router test. Images at 390 px, before and after, a
 release entry, and the check for the mobile UI library and `aggiemap-angular`.
 
+**3. [#3464](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3464), branch `fix/3464-midnight-is-am`, stacked on part 1's
+`fix/2643-noon-is-pm`** (added about 11:30 PM Central with the AggieMap director's agreement; claimed In Progress). The same file:
+`dateForDateTimeString` adds 12 for PM but never maps **12 AM** to hour 0, so "12:05 AM" becomes 12:05 PM. Its one caller is the bus service's
+timetable (`bus.service.ts`, about line 306). **Red first:** a spec with `12:05 AM` -> 00:05 and `12:05 PM` -> 12:05, then the parse; say in the
+report whether the bus timetable ever carries a midnight-hour time. Stacked because two branches editing `common-utils-date.ts` apart would
+conflict; **if it turns out bigger than it looks, unstack it onto `development` instead.** When part 1 merges, **merge `development` into this
+branch at once** (before any screenshots) and read the pre-push check after that merge: on 15 November a clean-looking merge of this shape
+declared two functions twice and failed to compile. **Fetch `origin` before each part of a14**, not once at the start: the maintainer is merging
+as pull requests go green, so `development` moves under you.
+
 Report `laptop/reports/2026-11-24-a14.md`.
 
 ## Batch g27 (workspace: #3000, then #1001; 24 November 2026, about 9:15 PM Central, from `work (gisday)`) (Medium) - **now**
