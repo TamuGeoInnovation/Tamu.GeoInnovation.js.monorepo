@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/cor
 import { combineLatest, map, Observable, switchMap } from 'rxjs';
 import { placesShownOn } from '@tamu-gisc/gisday/common';
 
-import { Place, Season } from '@tamu-gisc/gisday/platform/data-api';
+import { ActiveSeasonDto, Place } from '@tamu-gisc/gisday/platform/data-api';
 import { PlaceService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 import { PlaceVisibilityOptions } from '../../enums/place-visibility-options.enum';
@@ -23,7 +23,7 @@ export class FooterComponent implements OnInit {
   private readonly ss = inject(SeasonService);
   private readonly os = inject(PlaceService);
 
-  public activeSeason$: Observable<Partial<Season>>;
+  public activeSeason$: Observable<ActiveSeasonDto | null>;
   public viewedYear$: Observable<number | null>;
   public pastYears$: Observable<Array<number>>;
   public organizations$: Observable<Array<Partial<Place>>>;
@@ -35,12 +35,18 @@ export class FooterComponent implements OnInit {
     this.viewedYear$ = this.ss.viewedYear$;
     this.currentYear = new Date().getFullYear();
     this.pastYears$ = combineLatest([this.ss.seasons$, this.ss.activeSeason$]).pipe(
-      map(([seasons, active]) =>
-        seasons
-          .map((season) => season.year)
-          .filter((year) => year < active.year)
-          .sort((a, b) => b - a)
-      )
+      map(([seasons, active]) => {
+        const current = active?.year;
+
+        // With no active season there is no current year for a year to be before.
+        if (current === undefined) {
+          return [];
+        }
+
+        return seasons
+          .flatMap((season) => (season.year !== undefined && season.year < current ? [season.year] : []))
+          .sort((a, b) => b - a);
+      })
     );
     this.organizations$ = this.ss.activeSeason$.pipe(
       switchMap(() => {

@@ -10,7 +10,7 @@ export function serverMessage(err: unknown, fallback: string): string {
   const response = err as { status?: unknown; error?: unknown } | null | undefined;
   const status = response?.status;
 
-  if (typeof status !== 'number' || status < 400 || status >= 500) {
+  if (!response || typeof status !== 'number' || status < 400 || status >= 500) {
     return fallback;
   }
 

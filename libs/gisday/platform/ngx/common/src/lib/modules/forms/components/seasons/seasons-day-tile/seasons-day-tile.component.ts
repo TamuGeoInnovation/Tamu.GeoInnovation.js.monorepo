@@ -13,7 +13,8 @@ import { DateTimePickerComponent } from '@tamu-gisc/ui-kits/ngx/forms/date-time-
   imports: [DateTimePickerComponent]
 })
 export class SeasonsDayTileComponent {
-  public readonly day = input<Partial<SeasonDay>>(null);
+  /** The day shown, or null for the tile that adds one. */
+  public readonly day = input<Partial<SeasonDay> | null>(null);
 
   /**
    * Determines whether the tile is interactive or not. Interactivity defines its
@@ -46,9 +47,12 @@ export class SeasonsDayTileComponent {
    * Emit event to notify parent to handle updating the emitted day
    */
   public update(event: DateTimePickerChange<Date>) {
-    if (this.interactive() !== false) {
+    const day = this.day();
+
+    // Only a tile with a day has a date to change.
+    if (this.interactive() !== false && day) {
       this.updated.emit({
-        guid: this.day().guid,
+        guid: day.guid,
         date: event.value
       });
     }
@@ -58,10 +62,13 @@ export class SeasonsDayTileComponent {
    * Emit event to notify parent to handle deleting the emitted day
    */
   public delete() {
-    if (this.interactive() !== false) {
+    const day = this.day();
+
+    // Only a tile with a day has one to remove.
+    if (this.interactive() !== false && day) {
       this.deleted.emit({
-        guid: this.day().guid,
-        date: this.day().date
+        guid: day.guid,
+        date: day.date
       });
     }
   }
