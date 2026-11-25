@@ -1,7 +1,7 @@
 name: laptop
 agent: Claude Code (desktop app), the chat "js.monorepo - Laptop - 
 machine: laptop
-state: idle
-accepting: yes
-seen_utc: 2026-11-25T01:30:02Z
-next_utc: 2026-11-25T02:15:02Z
+state: blocked: Docker stopping for disk compaction
+accepting: no
+seen_utc: 2026-11-25T01:52:36Z
+next_utc: 2026-11-25T02:52:37Z
