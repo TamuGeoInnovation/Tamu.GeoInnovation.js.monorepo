@@ -71,11 +71,13 @@ scripts/check-in-volume.sh <branch>
 From Git Bash, in the main checkout or any worktree. It runs `nx affected -t lint,test,build` against
 `origin/development` in a Linux clone of the branch kept in a Docker volume (`tamu-js-<issue>`), skips
 for each target the projects that target's own workflow excludes (lint from `lint.yml`, test from
-`test.yml`, build from `build.yml`, so it lints everything CI lints; #1475), then runs `lint.yml`'s
+`test.yml`, build from `build.yml`, so it lints everything CI lints; #1475), builds in the
+configuration `build.yml` builds with, today `--configuration=production`, so a bundle budget or an AOT
+template error fails it as it fails CI (#1938, #2067), then runs `lint.yml`'s
 steps outside Nx, today `npx tsc -p test/smoke/aggiemap` (#2286), writes a log, and exits with the
 check's exit code, which fails if any target or step failed. A `lint.yml` step it cannot run as CI does
-stops it before it starts. `bash scripts/check-in-volume.test.sh` tests how it reads those lists and
-steps, and `bash scripts/run-times.test.sh` the run-time files it writes (both from Git Bash, as above). **It checks only what is committed**; uncommitted edits are not seen. `all` in place
+stops it before it starts. `bash scripts/check-in-volume.test.sh` tests how it reads those lists, the
+build's configuration and the steps, and `bash scripts/run-times.test.sh` the run-time files it writes (both from Git Bash, as above). **It checks only what is committed**; uncommitted edits are not seen. `all` in place
 of `affected` checks every project. Run `git fetch origin` first if `origin/development` is old.
 
 **Not one app you picked — every affected app.** Building only the app you were working in is what the
@@ -662,6 +664,21 @@ leave a field empty silently. Say in your reply which values you chose. See #111
 
 Both projects' built-in workflows move an item to **Done** when it is closed or its pull request is
 merged, so nothing needs updating after the merge.
+
+**Check a pull request's state at the moment you hand over its merge command, every time.** The maintainer
+merges; a session gives him `gh pr merge` commands. Give one only for a pull request that, checked right
+then, is open, has no conflict and has every check green:
+
+```bash
+gh pr view <n> -R <owner>/<repo> --json state,mergeStateStatus
+gh pr checks <n> -R <owner>/<repo>
+```
+
+Never repeat a merge command from an earlier reply without checking again, in this repository or any other
+(kubernetes-config's pull requests included). A pull request still running CI is reported as not ready,
+with what it waits on, not handed over to be tried. On 24 November 2026 a session gave the maintainer merge
+commands for kubernetes-config PRs 167 and 168 three times over the evening, carried forward from a reading
+taken before he merged them at 3:51 PM, and he had to say they were already merged.
 
 **Only the issue being fixed may follow a closing keyword.** GitHub treats `close`, `closes`, `fix`,
 `fixes`, `resolve` and `resolves` followed by `#N` *anywhere* in the body as "close #N on merge", so a
