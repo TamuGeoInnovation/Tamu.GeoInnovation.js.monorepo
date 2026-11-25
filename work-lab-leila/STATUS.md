@@ -129,7 +129,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 ## Running now
 
-**Batch a18 reported** at 10:19 PM Central. Next: gisday's g202, then aggiemap's a20.
+**Batch g202** (gisday, High: #1977, the `data-api` libraries and `gisday-nest` off Jest with SWC), started 10:19 PM Central, 24 November. Then a20. Note: `scripts/pre-pr-check.sh` (#3508) is not on `development` yet, so "branch ready" still rests on `check-in-volume.sh` until it lands.
 
 ## Finished
 
