@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle, listening. a33 held until PR 3587 merges.
+- **Batch a37**, since 6:50 AM Central: read-only sweep of twenty old AggieMap issues (#71 to #699). Nothing filed, closed or edited. a33 held until PR 3587 merges.
 
 ## Finished
 - **Batch a35 (#2600)** (report `home/reports/2026-11-25-a35.md`, 6:46 AM Central): PR 3654 open, pre-pr-check Exit 0 on affected. Ten satellite campuses built by `satelliteCampus()` in `campus/`; every resolved definition unchanged (snapshot spec, proven able to fail).
