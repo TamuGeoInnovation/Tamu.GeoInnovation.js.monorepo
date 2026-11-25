@@ -37,6 +37,10 @@ import { SponsorAddEditFormComponent } from './sponsors/sponsor-add-edit-form/sp
 import { TagAddEditFormComponent } from './tags/tag-add-edit-form/tag-add-edit-form.component';
 import { UniversityAddEditFormComponent } from './universities/university-add-edit-form/university-add-edit-form.component';
 
+// A save goes back to its list page. Any address is a page here, so that navigation resolves; under Jest a rejected
+// one went unnoticed, and Vitest reports it as an unhandled error (#1977).
+const anyPage = [{ path: '**', children: [] }];
+
 type Toast = { id: string; title: string; message: string };
 type Form = { form: { patchValue(value: object): void }; handleSubmission(): void; deleteEntity(): void; ngOnInit(): void };
 
@@ -89,14 +93,14 @@ function said<F extends Form>(
   answer: () => Observable<unknown>,
   act: (form: F) => void
 ): Array<Toast> {
-  const toast = jest.fn();
+  const toast = vi.fn();
 
   TestBed.resetTestingModule();
   TestBed.overrideComponent(page, { set: { template: '', imports: [] } });
   TestBed.configureTestingModule({
     imports: [page],
     providers: [
-      provideRouter([]),
+      provideRouter(anyPage),
       { provide: NotificationService, useValue: { toast } },
       { provide: GISDAY_SITE, useValue: { name: 'A made-up site', off: [] } },
       ...SERVICES.map((service) => ({ provide: service, useValue: stub(answer) }))

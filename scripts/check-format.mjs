@@ -16,13 +16,23 @@
 import { execFileSync, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
-/** The files changed between `base` and HEAD that still exist: added, copied, modified or renamed. */
+/**
+ * Markdown is not checked (#3503). Prettier pads every Markdown table to equal column widths, and the repository's
+ * Markdown (CLAUDE.md, docs/, the release notes) is written with compact tables by hand: a three-line edit to
+ * CLAUDE.md became a 121-line diff of padding (PR 3502). Code, JSON, YAML and styles are still checked.
+ */
+export function isChecked(file) {
+  return !/\.(md|markdown)$/i.test(file);
+}
+
+/** The files changed between `base` and HEAD that still exist (added, copied, modified or renamed) and are checked. */
 export function changedFiles(base, run = (args) => execFileSync('git', args, { encoding: 'utf8' })) {
   const out = run(['diff', '--name-only', '--diff-filter=ACMR', `${base}...HEAD`]);
   return out
     .split('\n')
     .map((line) => line.trim())
-    .filter(Boolean);
+    .filter(Boolean)
+    .filter(isChecked);
 }
 
 function main() {

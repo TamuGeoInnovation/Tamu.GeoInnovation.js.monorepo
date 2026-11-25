@@ -1,3 +1,5 @@
+import type { Mock } from 'vitest';
+import { webcrypto } from 'node:crypto';
 import { TestBed, fakeAsync, flushMicrotasks, tick } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpEventType } from '@angular/common/http';
@@ -16,20 +18,37 @@ import { SubmissionComponent, submissionFailureMessage, uploadMayBeRetried } fro
  */
 describe('SubmissionComponent', () => {
   let watchers: Array<{ ok: (p: unknown) => void; fail: (e: unknown) => void }>;
-  let toast: jest.Mock;
-  let preset: jest.Mock;
-  let postSubmission: jest.Mock;
+  let toast: Mock;
+  let preset: Mock;
+  let postSubmission: Mock;
 
   const formModel = {
     allowSubmissions: true,
     season: { guid: 'cs-1' },
     form: {
-      model: [{ attribute: 'kind', title: 'Kind', instructions: '', type: 'select', enabled: true, options: [{ name: 'Monument', value: 'monument' }] }]
+      model: [
+        {
+          attribute: 'kind',
+          title: 'Kind',
+          instructions: '',
+          type: 'select',
+          enabled: true,
+          options: [{ name: 'Monument', value: 'monument' }]
+        }
+      ]
     }
   };
 
   const position = (accuracy = 12) => ({
-    coords: { latitude: 30.6122, longitude: -96.3414, accuracy, altitude: null, altitudeAccuracy: null, heading: null, speed: null },
+    coords: {
+      latitude: 30.6122,
+      longitude: -96.3414,
+      accuracy,
+      altitude: null,
+      altitudeAccuracy: null,
+      heading: null,
+      speed: null
+    },
     timestamp: 1
   });
 
@@ -57,26 +76,26 @@ describe('SubmissionComponent', () => {
   beforeEach(() => {
     // jsdom may not have crypto.randomUUID, which a phone's browser does.
     if (typeof globalThis.crypto?.randomUUID !== 'function') {
-      Object.defineProperty(globalThis, 'crypto', { value: jest.requireActual('crypto').webcrypto, configurable: true });
+      Object.defineProperty(globalThis, 'crypto', { value: webcrypto, configurable: true });
     }
 
     watchers = [];
     (navigator as unknown as { geolocation: unknown }).geolocation = {
-      watchPosition: jest.fn((ok, fail) => watchers.push({ ok, fail }) - 1),
-      clearWatch: jest.fn()
+      watchPosition: vi.fn((ok, fail) => watchers.push({ ok, fail }) - 1),
+      clearWatch: vi.fn()
     };
 
-    toast = jest.fn();
-    preset = jest.fn();
-    postSubmission = jest.fn(() => of({ type: HttpEventType.Response }));
+    toast = vi.fn();
+    preset = vi.fn();
+    postSubmission = vi.fn(() => of({ type: HttpEventType.Response }));
 
     TestBed.configureTestingModule({
       imports: [SubmissionComponent],
       providers: [
         { provide: NotificationService, useValue: { toast, preset } },
-        { provide: Angulartics2, useValue: { eventTrack: { next: jest.fn() } } },
+        { provide: Angulartics2, useValue: { eventTrack: { next: vi.fn() } } },
         { provide: SubmissionService, useValue: { postSubmission } },
-        { provide: Router, useValue: { navigate: jest.fn() } },
+        { provide: Router, useValue: { navigate: vi.fn() } },
         { provide: ActivatedRoute, useValue: {} }
       ]
     });
@@ -122,7 +141,9 @@ describe('SubmissionComponent', () => {
     expect(fixture.nativeElement.textContent).toContain("Make sure Location is on in your phone's settings");
 
     fixture.componentInstance.submitResponse();
-    expect(toast).toHaveBeenCalledWith(expect.objectContaining({ message: expect.stringContaining('Make sure Location is on') }));
+    expect(toast).toHaveBeenCalledWith(
+      expect.objectContaining({ message: expect.stringContaining('Make sure Location is on') })
+    );
     expect(postSubmission).not.toHaveBeenCalled();
   });
 
@@ -144,7 +165,9 @@ describe('SubmissionComponent', () => {
 
     expect(() => fixture.componentInstance.submitResponse()).not.toThrow();
     expect(postSubmission).not.toHaveBeenCalled();
-    expect(toast).toHaveBeenCalledWith(expect.objectContaining({ message: expect.stringContaining('still finding your location') }));
+    expect(toast).toHaveBeenCalledWith(
+      expect.objectContaining({ message: expect.stringContaining('still finding your location') })
+    );
   });
 
   it('does not send a submission when location is blocked, and says how to allow it', () => {
@@ -155,7 +178,9 @@ describe('SubmissionComponent', () => {
     fixture.componentInstance.submitResponse();
 
     expect(postSubmission).not.toHaveBeenCalled();
-    expect(toast).toHaveBeenCalledWith(expect.objectContaining({ message: expect.stringContaining('Location access is blocked') }));
+    expect(toast).toHaveBeenCalledWith(
+      expect.objectContaining({ message: expect.stringContaining('Location access is blocked') })
+    );
   });
 
   it('starts looking again when Submit is pressed while blocked, so allowing access then submitting works', async () => {
@@ -185,7 +210,11 @@ describe('SubmissionComponent', () => {
 
     expect(postSubmission).toHaveBeenCalledTimes(1);
     const data: FormData = postSubmission.mock.calls[0][0];
-    expect(JSON.parse(data.get('location') as string)).toMatchObject({ latitude: 30.6122, longitude: -96.3414, accuracy: 8 });
+    expect(JSON.parse(data.get('location') as string)).toMatchObject({
+      latitude: 30.6122,
+      longitude: -96.3414,
+      accuracy: 8
+    });
     expect(data.has('userGuid')).toBe(false);
   });
 
@@ -213,7 +242,9 @@ describe('SubmissionComponent', () => {
     await settle();
     fixture.detectChanges();
 
-    expect(toast).toHaveBeenCalledWith(expect.objectContaining({ message: 'Competition season not found. Press Try Again to resend it.' }));
+    expect(toast).toHaveBeenCalledWith(
+      expect.objectContaining({ message: 'Competition season not found. Press Try Again to resend it.' })
+    );
     expect(fixture.nativeElement.textContent).toContain('Try Again');
     expect(fixture.nativeElement.textContent).not.toContain('Error!');
   });
@@ -224,15 +255,18 @@ describe('SubmissionComponent', () => {
    * location up by itself once it is allowed.
    */
   describe('location permission', () => {
-    let status: { state: PermissionState; addEventListener: jest.Mock; removeEventListener: jest.Mock };
+    let status: { state: PermissionState; addEventListener: Mock; removeEventListener: Mock };
 
     /**
      * Gives the browser a Permissions API that answers `state` for the location, as Safari 16 and
      * later and Chrome do.
      */
     const permission = (state: PermissionState) => {
-      status = { state, addEventListener: jest.fn(), removeEventListener: jest.fn() };
-      Object.defineProperty(navigator, 'permissions', { value: { query: jest.fn(() => Promise.resolve(status)) }, configurable: true });
+      status = { state, addEventListener: vi.fn(), removeEventListener: vi.fn() };
+      Object.defineProperty(navigator, 'permissions', {
+        value: { query: vi.fn(() => Promise.resolve(status)) },
+        configurable: true
+      });
     };
 
     /**
@@ -243,11 +277,11 @@ describe('SubmissionComponent', () => {
       status.addEventListener.mock.calls.filter(([type]) => type === 'change').forEach(([, listener]) => listener());
     };
 
-    const userAgent = (value: string) => jest.spyOn(navigator, 'userAgent', 'get').mockReturnValue(value);
+    const userAgent = (value: string) => vi.spyOn(navigator, 'userAgent', 'get').mockReturnValue(value);
 
     afterEach(() => {
       delete (navigator as unknown as { permissions?: unknown }).permissions;
-      jest.restoreAllMocks();
+      vi.restoreAllMocks();
     });
 
     it('does not ask for the location when the site is already blocked, and says so', async () => {
@@ -401,7 +435,9 @@ describe('SubmissionComponent', () => {
 
       expect(attempts).toBe(4);
       expect(fixture.componentInstance.submissionStatus.getValue()).toBe(-1);
-      expect(toast).toHaveBeenCalledWith(expect.objectContaining({ message: expect.stringContaining('did not reach the server') }));
+      expect(toast).toHaveBeenCalledWith(
+        expect.objectContaining({ message: expect.stringContaining('did not reach the server') })
+      );
 
       tick(60000);
       expect(attempts).toBe(4);
@@ -471,7 +507,7 @@ describe('SubmissionComponent', () => {
 
     beforeEach(() => {
       // jsdom has no object URLs, which the photo's preview is drawn from.
-      URL.createObjectURL = jest.fn(() => 'blob:preview');
+      URL.createObjectURL = vi.fn(() => 'blob:preview');
     });
 
     it.each([
@@ -525,11 +561,15 @@ describe('submissionFailureMessage', () => {
   });
 
   it("passes on the server's reason, joined when it is a list", () => {
-    expect(submissionFailureMessage({ status: 400, error: { message: ['A.', 'B.'] } })).toBe('A. B. Press Try Again to resend it.');
+    expect(submissionFailureMessage({ status: 400, error: { message: ['A.', 'B.'] } })).toBe(
+      'A. B. Press Try Again to resend it.'
+    );
   });
 
   it('has a general message when the server gave none', () => {
-    expect(submissionFailureMessage({ status: 500, error: {} })).toBe('The server could not save it. Press Try Again to resend it.');
+    expect(submissionFailureMessage({ status: 500, error: {} })).toBe(
+      'The server could not save it. Press Try Again to resend it.'
+    );
   });
 });
 
