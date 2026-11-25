@@ -1,5 +1,20 @@
 # work-lab-leila: current tasks
 
+## Decided (gisday), 5:05 AM Central, 25 November 2026
+
+- **g218 received:** both branches (#3628, #3630) go through `pre-pr-check.sh` on the work machine and open as each exits 0.
+- **Q-g218-1: (a)**, as batch g219 below. Not (c): modal keeps its full `strict`.
+
+## Batch g219 (workspace, #3593): full `strict` in `ui-kits-ngx-forms`, so modal comes off the list (now, stacked)
+
+**Stacked on purpose** on `fork/fix/3495-ui-kits-forms-strict-pr` (PR 3608, #3595, green, waiting for the maintainer's merge), since the step needs it and both are wanted soon. Its pull request opens after PR 3608 merges, with `development` merged in.
+
+1. File a sub-issue of **#3593**: `chore(ui-kits-ngx-forms): Full strict in the shared forms library`, Task, `enhancement`, Low, both projects, In Progress.
+2. **Branch** `fix/3593-ui-kits-forms-full-strict` from `fork/fix/3495-ui-kits-forms-strict-pr`.
+3. Turn `strict` on in `ui-kits-ngx-forms`' own configuration and fix the ~30 (mostly implicit `any`), behind its existing interface. Red-first specs for any behaviour change.
+4. **The known list:** modal (`libs/ui-kits/ngx/layout/modal/tsconfig.lib.json`) should come off it; take whatever else `--all` reports for this branch.
+5. `pre-pr-check.sh` (affected), `CHECK_PARALLEL=1`, `--label no-visible-change`; `.pr-body.md` last; "branch ready".
+
 ## Decided (gisday), 4:50 AM Central, 25 November 2026
 
 - **g217 received:** the three branches (#3617, #3618, #3620) go through `pre-pr-check.sh` on the work machine, one at a time, and open as each exits 0.
