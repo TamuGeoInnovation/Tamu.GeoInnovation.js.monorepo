@@ -44,26 +44,31 @@ export function parseConfig(text) {
  * that sets it, following `extends` while it stays inside <projectRoot>.
  */
 export function isStrict(config, projectRoot, read = (p) => readFileSync(join(ROOT, p), 'utf8')) {
+  // As TypeScript merges them: each option from the nearest configuration that sets it, and an explicit
+  // strictNullChecks over strict wherever each is set.
   const seen = new Set();
   let current = config;
+  let strictNullChecks;
+  let strict;
 
   while (current && !seen.has(current)) {
     seen.add(current);
-    const options = parseConfig(read(current)).compilerOptions ?? {};
+    const parsed = parseConfig(read(current));
+    const options = parsed.compilerOptions ?? {};
 
-    if (options.strictNullChecks !== undefined) return options.strictNullChecks === true;
-    if (options.strict !== undefined) return options.strict === true;
+    strictNullChecks ??= options.strictNullChecks;
+    strict ??= options.strict;
 
-    const base = parseConfig(read(current)).extends;
-    if (typeof base !== 'string' || !base.startsWith('.')) return false;
+    const base = parsed.extends;
+    if (typeof base !== 'string' || !base.startsWith('.')) break;
 
     const next = normalize(join(dirname(current), base.endsWith('.json') ? base : `${base}.json`)).replace(/\\/g, '/');
-    if (relative(projectRoot, next).startsWith('..')) return false;
+    if (relative(projectRoot, next).startsWith('..')) break;
 
     current = next;
   }
 
-  return false;
+  return (strictNullChecks ?? strict) === true;
 }
 
 function strictLibConfigOf(root) {
