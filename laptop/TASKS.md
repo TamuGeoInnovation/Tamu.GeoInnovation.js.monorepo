@@ -1,5 +1,36 @@
 # Laptop: current tasks
 
+## Batch g38 (gisday: before/after screenshots for #3635, so its pull request can open; 25 November 2026, 10:45 AM Central, from `work (gisday)`) (Medium) - **now**
+
+**The maintainer chose (A) for #3635**: implement the two routes. The branch is `fix/3635-rsvp-submission-type-routes` on the
+fork (`9b12e8f6d`). It's a visible change, so its pull request waits for your images. You're the machine that can sign in
+locally (txgisday-dev only, as always).
+
+1. **Before**, on `development` (`77a7b8051` or newer): signed in as an admin, Admin > RSVP Types, then Add one. Capture
+   the 501 error toast. Then the same on Admin > Submission Types.
+2. **After**, on the branch: the same two adds, now saved and listed. Also update one on each page and capture it saved.
+   Made-up names only (`Test RSVP type`, `Test submission type`).
+3. Save them as `docs/screenshots/3635-rsvp-submission-types/{before,after}-{rsvp,submission}-type.png` (plus
+   `after-*-update.png`) **on the branch**, and link them from the release entry
+   `docs/releases/unreleased/3635-gisday-rsvp-submission-types.md` (relative `../screenshots/...` paths). Run
+   `node scripts/collate-release-notes.mjs --check`.
+4. Commit on top of the branch, keeping the `.pr-body.md` commit last (rebase it to the top, without force-pushing the
+   fork: push the result as `fix/3635-rsvp-submission-type-routes-img`). Say the commit in your report.
+5. Report `reports/2026-11-25-g38.md`.
+
+## Batch g39 (gisday: #3667, remove the unfinished initial survey; after g38) (Low)
+
+**The maintainer decided on 25 November** to remove the initial survey rather than fix it (#990, now closed). #3667 lists what
+goes: the page and its route, the front-end service, the API folder and its registration, the survey entities and
+`user_info.hasCompletedInitialSurvey`, and `scrub.sql`'s lines for them.
+
+1. Branch `chore/3667-remove-initial-survey` from the latest `development`.
+2. Remove them. **Generate the migration** with the GIS Day migration commands in `docs/gisday-migrations.md` against your
+   local stack, as #3269 did for `session_details_sends`. Read the generated SQL, and run it up and down locally.
+3. `scripts/check-in-volume.sh` on `gisday-platform-data-api,gisday-platform-ngx-core,gisday-platform-ngx-data-access,gisday-nest,gisday-angular`
+   at `CHECK_PARALLEL=1` (a GIS Day-wide check). Read its `Exit` line.
+4. Draft `.pr-body.md` from the template as the last commit (`no-visible-change`: nothing links to the page). Push to the fork.
+5. Report `reports/2026-11-25-g39.md`: the migration's SQL, the up/down result, and the check's exit code.
 ## Batch a42 (aggiemap: which of the 43 open pull requests overlap? 25 November 2026, 8:55 AM Central, from `work (aggiemap)`) (Medium) - **now**
 
 **a31 and a32 are accepted, all three branches, and their pull requests are open: 3663 (#3471), 3664 (#3482), 3665 (#3483).**
