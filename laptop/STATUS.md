@@ -33,7 +33,7 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch a31 (#3471, one way to walk a results list with the arrow keys)**, started 5:45 AM Central.
+- **Batch a31 (#3471, one way to walk a results list with the arrow keys)**, started 5:35 AM Central.
 
 ## Finished
 - **Batch g34 (gisday: #3614 images)** (report `laptop/reports/2026-11-25-g34.md`): **images ready: #3614**, on `fix/3593-competitions-ngx-core-strict` (`c06ea148a`); fork raw URLs 200 (main repo 404 until the pull request). Before: no form and `TypeError ... reading 'length'`; after: all three questions, no error. Test question removed; model back to 487.
