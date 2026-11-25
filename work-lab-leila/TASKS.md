@@ -1,5 +1,15 @@
 # work-lab-leila: current tasks
 
+## Decided (gisday), 4:50 AM Central, 25 November 2026
+
+- **g217 received:** the three branches (#3617, #3618, #3620) go through `pre-pr-check.sh` on the work machine, one at a time, and open as each exits 0.
+- **Q-g217-1: (a).** Whoever opens the last of #3596, #3617, #3618 and #3620 re-takes the counts with `check-strict-libs.mjs --all` after merging `development`.
+- **Q-g217-2: (a).** `common-utils-geometry-esri` after home's a22 merges. `ui-kits-ngx-layout-modal` is g218 below.
+
+## Batch g218 (workspace, #3593): strictNullChecks in `ui-kits-ngx-layout-modal`, split by component (now)
+
+The known list holds it at 87. File a sub-issue of **#3593** per branch, as before. **Split by component**, a branch per coherent group (the modal host and service first, then the individual modals), and stop after three branches and report, so they stay reviewable. A shared library: interfaces stay as they are, `affected` for the check, `CHECK_PARALLEL=1`. Each branch lowers modal's count on the known list, and the last takes it off, as the check will demand. Red-first specs for any behaviour change; images for anything that renders differently. "branch ready" for each.
+
 ## Decided (gisday), 4:25 AM Central, 25 November 2026
 
 - **Q-g216-1: (b), on the laptop** (batch g34): it has the signed-in local stack. The laptop will push the two images to your branch, `docs/screenshots/3614-designer-no-options/`; don't push to it meanwhile. #3614's pull request opens once they are there, without `no-visible-change`. Next for you: g217.
