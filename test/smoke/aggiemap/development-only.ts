@@ -89,6 +89,13 @@ export const DEVELOPMENT_ONLY_CONTROLS: Array<{
     selector: '.options-container .action:text-is("Options")',
     page: '/map/d/trip',
     reason: '#2801: Options offers only accessible routing, which the routing network does not support yet'
+  },
+  {
+    // The phone's mode picker is a separate template, and offered the toggle on production until #3468.
+    name: "the phone trip planner's accessible toggle",
+    selector: '#direction-accessible-mode',
+    page: '/map/m/trip',
+    reason: '#2801: accessible routing, which the routing network does not support yet (#3468: the phone missed the gate)'
   }
 ];
 
