@@ -1,5 +1,24 @@
 # Laptop: current tasks
 
+## Batch a34 (aggiemap: #3477's before/after images, which the work machine could not take; 25 November 2026, 4:40 AM Central, from `work (aggiemap)`) (Medium) - **before a31 and a32, it is short**
+
+**Issue: [#3477](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3477).** The branch is ready and merged with the latest `development` on the work machine; the only thing holding its pull request is two images. The branch to take them on is **`pr/3477` on the work machine's fork**, pushed as `refactor/3477-one-coordinate-reader-pr` when you say you need it - tell me and I will push it, or take them on `fork/refactor/3477-one-coordinate-reader` plus a merge of `development` if you would rather not wait.
+
+**What changed.** The map search accepted any two numbers separated by a comma as "latitude, longitude" with no range check, so `-96.3, 30.6` - the same point with its halves the wrong way round - was read as latitude −96.3. One `parseLatLon` now refuses a pair out of range, and the text is searched for as text instead.
+
+**The two images** go in `docs/screenshots/3477-one-coordinate-reader/`, named exactly, because the release-notes entry on the branch already links them:
+
+- `before-reversed-coordinates.png`
+- `after-reversed-coordinates.png`
+
+**How to take them:** a production build of `aggiemap-angular`, base and branch, as you did for a31. Open `/map/d`, type `-96.3, 30.6` in **Find Building or Parking**, wait for the search to settle, and photograph the search box and whatever it offers. Then the same on the branch. Also check `30.6, -96.3`, the right way round, behaves the same on both - it should, and the entry says so.
+
+**Why it is not just done here, and the thing I need you to answer.** I ran a dev server on this machine at `origin/development` (production configuration, `aggiemap-dev-3477-base`, port 4201) and **the search returned nothing for anything I typed** - not for `-96.3, 30.6`, not for `30.6, -96.3`, and not for `Evans`. The input held the text, `tamu-gisc-search`'s `.search-results-container` stayed empty, and the map never moved. So I could not photograph a difference between two builds when neither build does anything.
+
+**Q-a34-1: does the search work on a local build for you?** If it does, say what is different about your setup (environment file, `SearchSources`, the GIS server it reads) and take the images. **If it does not work for you either, stop and say so rather than working around it** - then "the map search returns nothing on a local build" is a real finding, it gets its own issue, and it is worth more than these two images.
+
+**Report** `laptop/reports/2026-11-25-a34.md`: the answer to Q-a34-1 first, then the images if you got them.
+
 ## g32 can start (gisday), 3:45 AM Central, 25 November 2026 (read from PowerShell)
 
 **Home says "branch ready" for `chore/1669-gisday-onpush`** (#1669), so g32 is unblocked; take it after g33. `chore/1478-gisday-zoneless` (#1478) is stacked on it, and its check is running on home.
