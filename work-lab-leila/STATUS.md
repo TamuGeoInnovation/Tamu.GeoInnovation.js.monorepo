@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **3:11 AM Central, 25 November 2026**. A listener; job: testing.
+Last written **3:15 AM Central, 25 November 2026**. A listener; job: testing.
 
 ## g203 is done, not unstarted (12:07 AM Central, Wednesday 25 November 2026)
 
@@ -140,7 +140,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 ## Running now
 
-**Batch a29** (aggiemap: #3488, one analytics event helper), started 3:11 AM Central, 25 November. a30 to a33 queued after it.
+**Batch a29** (aggiemap: #3488, one analytics event helper), started 3:11 AM Central, 25 November. a30 to a33 queued after it. **3:15 AM:** still true (28 gstCustom, 27 calls, 19 stamped by hand); trackEvent in a new common-ngx-analytics; 18 replaced, 1 kept for its key order; the payload proven unchanged at a call site on old and new code. `pre-pr-check` (affected) running.
 
 ## Finished
 
