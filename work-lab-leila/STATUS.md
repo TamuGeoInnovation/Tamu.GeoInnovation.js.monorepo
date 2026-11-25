@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **2:02 AM Central, 25 November 2026**. A listener; job: testing.
+Last written **2:13 AM Central, 25 November 2026**. A listener; job: testing.
 
 ## g203 is done, not unstarted (12:07 AM Central, Wednesday 25 November 2026)
 
@@ -140,7 +140,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 ## Running now
 
-**Batch g208** (gisday: #3495, strictNullChecks in the GIS Day API app, and the front end's count), started 2:02 AM Central, 25 November. g209 queued after it.
+**Batch g208** (gisday: #3495, strictNullChecks in the GIS Day API app, and the front end's count), started 2:02 AM Central, 25 November. g209 queued after it. **2:13 AM:** gisday-nest compiles with strictNullChecks, 25 errors to 0; 26 nullable string columns named `nvarchar` so TypeORM's metadata is identical; the front end measured (591 distinct errors, 287 in GIS Day's libraries). `pre-pr-check` running.
 
 ## Finished
 
