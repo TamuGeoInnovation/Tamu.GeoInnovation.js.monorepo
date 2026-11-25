@@ -71,6 +71,27 @@ export class DiningPopupComponent extends BaseDirectionsComponent implements OnI
     this._fetchDiningDetails();
   }
 
+  /**
+   * The location's address, with the state as a two-letter abbreviation and no stray punctuation (#954).
+   *
+   * The dining service publishes the state inconsistently. Counted over all 54 locations on 25 November 2026:
+   * `'TX'` 35 times, `'Texas'` 15, `'texas'` 3 and one empty - so the popup read "College Station, TX" for some and
+   * "College Station, texas" for others, with one ending in a bare comma. The template rendered
+   * `attributes.state` straight out.
+   *
+   * Normalised here rather than upstream because the service is not this repository's, and a popup that shows
+   * whatever arrives will read differently again the next time somebody edits a record. Any spelling of Texas
+   * becomes `TX`; anything else is shown as published, because this cannot know what is right for it; and a part
+   * that is missing takes its separator with it.
+   */
+  public get address(): string {
+    const attributes = this.data?.attributes ?? {};
+    const state = diningStateAbbreviation(attributes['state']);
+    const cityAndState = [attributes['city'], state].map((part) => `${part ?? ''}`.trim()).filter(Boolean).join(', ');
+
+    return [`${attributes['street'] ?? ''}`.trim(), cityAndState].filter(Boolean).join(' ');
+  }
+
   public startDirections() {
     super.startDirections(`${this.data.attributes.name}`);
   }
@@ -151,6 +172,17 @@ export class DiningPopupComponent extends BaseDirectionsComponent implements OnI
       message: detailIndex > -1 ? message.slice(detailIndex + 2) : null
     };
   }
+}
+
+/**
+ * `TX` for any spelling of Texas, and whatever was published for anything else (#954).
+ *
+ * Exported so it can be tested without the component, and so a second caller does not write its own.
+ */
+export function diningStateAbbreviation(state: unknown): string {
+  const published = `${state ?? ''}`.trim();
+
+  return /^(tx|texas)$/i.test(published) ? 'TX' : published;
 }
 
 interface IDiningLocationInfo {
