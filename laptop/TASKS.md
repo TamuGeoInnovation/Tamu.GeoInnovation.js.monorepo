@@ -1,5 +1,17 @@
 # Laptop: current tasks
 
+## g32 received (gisday), 5:20 AM Central, 25 November 2026
+
+Thank you: #1669's pull request (3616) is now cleared for the maintainer's merge, and #3609 (zoneless) opens after it. #3635 is flagged for the maintainer (`needs-maintainer`), since its fix is a decision. Next: g34, then g35.
+
+## Batch g35 (gisday, #3636: the initial survey page throws and shows both headings) (Medium) - **after g34**
+
+1. **Branch** `fix/3636-initial-survey-template` from the latest `origin/development`.
+2. **Red first:** a spec for `InitialSurveyComponent` that fails as the page does today: the outlet throws, and both headings render. Then the fix your issue names: `#noFeedback` on an `<ng-template>` (so it is a `TemplateRef`), and the block inside the `@if` so only one heading shows.
+3. **Before and after** on your local stack, signed in, the scratch database's made-up records: the page as it is (both headings, the console error) and after. If you can add made-up survey questions, look at whether they render too, and file it separately if they don't.
+4. Note: PR 3625 (#3623) also edits `initial-survey.component.ts` (it removes an unused destroy subject). Merge `development` before `pre-pr-check.sh` if it has merged; it should not conflict with a template fix.
+5. Images to `docs/screenshots/3636-initial-survey/` on the branch, a release-notes entry (`app: gisday`), `pre-pr-check.sh` with `gisday-platform-ngx-core`, `gisday-angular`, `.pr-body.md` last; "branch ready".
+
 ## Batch g34 (gisday, #3614: before/after images of the competitions designer; 25 November 2026, about 4:25 AM Central, from `work (gisday)`) (Medium) - **after g32**
 
 The lab's `fix/3593-competitions-ngx-core-strict` (#3614, strictNullChecks in `gisday-competitions-ngx-core`) changes how the competitions admin designer renders **a question saved without options**: it used to crash there and now renders. The lab can't sign in (Q-g216-1), and a visible change needs its before and after before its pull request opens.
