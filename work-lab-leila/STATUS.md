@@ -141,6 +141,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 ## Running now
 
 Nothing. Idle since 6:41 AM Central, 25 November; listening.
+
 ## Finished
 
 - **Batch a36 (aggiemap): #2599, Ring Day and Graduation from one factory each** (6:31 to 6:41 AM, 25 November). **branch ready:** `refactor/2599-ring-day-graduation-factories` (`2206970a5`), `pre-pr-check.sh` affected `Exit 0`. 21 exports snapshotted off `development` first, all unchanged. `.pr-body.md` untracked; text in `reports/2026-11-25-a36-pr-body.md`. Q-a36-1. Report `reports/2026-11-25-a36.md`.
