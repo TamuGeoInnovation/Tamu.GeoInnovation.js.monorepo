@@ -1,3 +1,4 @@
+import type { Mocked } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { firstValueFrom, of, throwError } from 'rxjs';
 
@@ -9,8 +10,8 @@ import { AdminSubmissionsComponent, submissionCounts } from './admin-submissions
 describe('AdminSubmissionsComponent', () => {
   let component: AdminSubmissionsComponent;
   let fixture: ComponentFixture<AdminSubmissionsComponent>;
-  let mockSubmissionService: jest.Mocked<SubmissionService>;
-  let mockLeaderboardService: jest.Mocked<LeaderboardService>;
+  let mockSubmissionService: Mocked<SubmissionService>;
+  let mockLeaderboardService: Mocked<LeaderboardService>;
 
   const row = (guid: string, userGuid: string, validationStatus: string, reviewReasons: Array<string> = []) =>
     ({ guid, userGuid, validationStatus, reviewReasons }) as unknown as SubmissionReviewDto;
@@ -28,14 +29,14 @@ describe('AdminSubmissionsComponent', () => {
 
   beforeEach(async () => {
     mockSubmissionService = {
-      getAdminSubmissions: jest.fn().mockReturnValue(of(rows)),
-      publishToArcgis: jest.fn().mockReturnValue(of({ queued: 5 })),
-      getSeasonExportZip: jest.fn().mockReturnValue(of(new Blob(['zip'])))
-    } as unknown as jest.Mocked<SubmissionService>;
+      getAdminSubmissions: vi.fn().mockReturnValue(of(rows)),
+      publishToArcgis: vi.fn().mockReturnValue(of({ queued: 5 })),
+      getSeasonExportZip: vi.fn().mockReturnValue(of(new Blob(['zip'])))
+    } as unknown as Mocked<SubmissionService>;
 
     // Ann leads; Bob and Dan tie for second; Eve is fourth.
     mockLeaderboardService = {
-      getScoresForActive: jest.fn().mockReturnValue(
+      getScoresForActive: vi.fn().mockReturnValue(
         of([
           { guid: 'auth0|ann', identity: 'ann', points: 9 },
           { guid: 'auth0|bob', identity: 'bob', points: 6 },
@@ -43,7 +44,7 @@ describe('AdminSubmissionsComponent', () => {
           { guid: 'auth0|eve', identity: 'eve', points: 2 }
         ])
       )
-    } as unknown as jest.Mocked<LeaderboardService>;
+    } as unknown as Mocked<LeaderboardService>;
 
     await TestBed.configureTestingModule({
       imports: [AdminSubmissionsComponent],
@@ -130,12 +131,12 @@ describe('AdminSubmissionsComponent', () => {
       );
 
     beforeEach(() => {
-      (URL as unknown as { createObjectURL: unknown }).createObjectURL = jest.fn(() => 'blob:made-up');
-      (URL as unknown as { revokeObjectURL: unknown }).revokeObjectURL = jest.fn();
+      (URL as unknown as { createObjectURL: unknown }).createObjectURL = vi.fn(() => 'blob:made-up');
+      (URL as unknown as { revokeObjectURL: unknown }).revokeObjectURL = vi.fn();
     });
 
     it("downloads the season's submissions as one zip from a button beside Publish to ArcGIS", () => {
-      const clicks = jest.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => undefined);
+      const clicks = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => undefined);
       fixture.detectChanges();
 
       button().click();
@@ -199,7 +200,7 @@ describe('AdminSubmissionsComponent counts (#3244)', () => {
     TestBed.configureTestingModule({
       imports: [AdminSubmissionsComponent],
       providers: [
-        { provide: SubmissionService, useValue: { getAdminSubmissions: () => of(rows), publishToArcgis: jest.fn() } },
+        { provide: SubmissionService, useValue: { getAdminSubmissions: () => of(rows), publishToArcgis: vi.fn() } },
         { provide: LeaderboardService, useValue: { getScoresForActive: () => of([]) } }
       ]
     });
@@ -242,7 +243,7 @@ describe('AdminSubmissionsComponent counts (#3244)', () => {
     TestBed.configureTestingModule({
       imports: [AdminSubmissionsComponent],
       providers: [
-        { provide: SubmissionService, useValue: { getAdminSubmissions: () => of(rows), publishToArcgis: jest.fn() } },
+        { provide: SubmissionService, useValue: { getAdminSubmissions: () => of(rows), publishToArcgis: vi.fn() } },
         { provide: LeaderboardService, useValue: { getScoresForActive: () => of([]) } }
       ]
     });

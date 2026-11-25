@@ -76,7 +76,7 @@ describe('ResearchCompetitionListComponent while loading', () => {
         { provide: EventService, useValue: { getEntitiesForSeason: () => of([]) } },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
         { provide: ModalService, useValue: {} },
-        { provide: NotificationService, useValue: { toast: jest.fn() } }
+        { provide: NotificationService, useValue: { toast: vi.fn() } }
       ]
     });
 
@@ -142,27 +142,27 @@ describe('ResearchCompetitionListComponent actions on the selected submissions',
 
   function open(confirmed: boolean) {
     const service = {
-      previewReview: jest.fn(() => of(preview)),
+      previewReview: vi.fn(() => of(preview)),
       getEntitiesForActiveSeason: () => of(rows),
       getEntitiesForSeason: () => of(rows),
       getEntities: () => of(rows),
-      review: jest.fn(() => of({ reviewed: ['Flood maps', 'Campus trees'], failed: [] }))
+      review: vi.fn(() => of({ reviewed: ['Flood maps', 'Campus trees'], failed: [] }))
     };
     const speakerEdits = {
-      previewForSubmissions: jest.fn(() => of(preview)),
-      sendForSubmissions: jest.fn(() =>
+      previewForSubmissions: vi.fn(() => of(preview)),
+      sendForSubmissions: vi.fn(() =>
         of({ sent: ['Ana Ruiz', 'Cy Diaz'], skipped: [], unmatched: [{ name: 'Ben Lee', submission: 'Flood maps' }] })
       )
     };
     // The email window closes with the approved texts, or nothing; the profile email's question with yes or no.
     const modals = {
-      open: jest.fn((component: unknown, options?: { data?: { verb?: string } }) =>
+      open: vi.fn((component: unknown, options?: { data?: { verb?: string } }) =>
         component === ReviewEmailModalComponent
           ? of(confirmed ? (options?.data?.verb === 'Send profile email' ? profileEmail : templates) : null)
           : of(confirmed)
       )
     };
-    const toasts = { toast: jest.fn() };
+    const toasts = { toast: vi.fn() };
 
     TestBed.configureTestingModule({
       imports: [ResearchCompetitionListComponent],
@@ -333,14 +333,14 @@ describe('ResearchCompetitionListComponent, the final file and the final reminde
 
   function open(selected: Array<string>, confirmed = true) {
     const service = {
-      previewReminders: jest.fn(() => of({ groups: [], skipped: [] })),
-      remind: jest.fn(() => of(result)),
+      previewReminders: vi.fn(() => of({ groups: [], skipped: [] })),
+      remind: vi.fn(() => of(result)),
       getEntitiesForActiveSeason: () => of(rows),
       getEntitiesForSeason: () => of(rows),
       getEntities: () => of(rows)
     };
-    const modals = { open: jest.fn(() => of(confirmed ? templates : null)) };
-    const toasts = { toast: jest.fn() };
+    const modals = { open: vi.fn(() => of(confirmed ? templates : null)) };
+    const toasts = { toast: vi.fn() };
 
     TestBed.configureTestingModule({
       imports: [ResearchCompetitionListComponent],

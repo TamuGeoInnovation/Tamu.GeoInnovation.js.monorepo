@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
@@ -31,11 +32,11 @@ describe('EventDetailComponent check-in', () => {
   ];
   const outsideMessage = 'You need to be inside the check-in zone at TAMU Rudder Plaza to check in to this event.';
 
-  let getCurrentPosition: jest.Mock;
+  let getCurrentPosition: Mock;
   let fixture: { destroy: () => void } | undefined;
 
   beforeEach(() => {
-    getCurrentPosition = jest.fn();
+    getCurrentPosition = vi.fn();
     Object.defineProperty(window.navigator, 'geolocation', { value: { getCurrentPosition }, configurable: true });
   });
 
@@ -77,10 +78,10 @@ describe('EventDetailComponent check-in', () => {
   ) {
     let checkedIn = false;
 
-    const getCheckInCode = jest.fn(() => of({ code: 'code-1' }));
-    const login = jest.fn();
-    const getCheckinsForEvent = jest.fn(sessionCheckIns);
-    const insertUserCheckin = jest.fn<ReturnType<typeof insert>, [string, unknown?, string?]>(() => {
+    const getCheckInCode = vi.fn(() => of({ code: 'code-1' }));
+    const login = vi.fn();
+    const getCheckinsForEvent = vi.fn(sessionCheckIns);
+    const insertUserCheckin = vi.fn<ReturnType<typeof insert>, [string, unknown?, string?]>(() => {
       const result = insert();
       checkedIn = true;
 
@@ -132,11 +133,11 @@ describe('EventDetailComponent check-in', () => {
             getCheckinsForEvent
           }
         },
-        { provide: NotificationService, useValue: { toast: jest.fn() } },
+        { provide: NotificationService, useValue: { toast: vi.fn() } },
         // A presenter card's photograph (#3196).
         { provide: AssetsService, useValue: { getAssetUrl: () => of(null) } },
         // The QR code's copyable link counts copies.
-        { provide: Angulartics2, useValue: { eventTrack: { next: jest.fn() } } }
+        { provide: Angulartics2, useValue: { eventTrack: { next: vi.fn() } } }
       ]
     });
 
@@ -371,7 +372,7 @@ describe('EventDetailComponent check-in', () => {
 
     it('offers to show the code full screen, for a presenter sharing their screen', async () => {
       const { page, button, press } = open('virtual', undefined, undefined, organizer);
-      const requestFullscreen = jest.fn().mockResolvedValue(undefined);
+      const requestFullscreen = vi.fn().mockResolvedValue(undefined);
 
       await press('Show check-in QR code');
       (page().querySelector('tamu-gisc-qr-code') as HTMLElement).requestFullscreen = requestFullscreen;
@@ -427,7 +428,7 @@ describe('EventDetailComponent check-in', () => {
     const hasButton = (text: () => string) => text().includes('Check-in to register your attendance');
 
     afterEach(() => {
-      jest.useRealTimers();
+      vi.useRealTimers();
     });
 
     // #3077: an attendee who scans early is told when to come back, rather than only "at the start".
@@ -435,7 +436,7 @@ describe('EventDetailComponent check-in', () => {
       ['earlier that day', '2026-11-18T15:00:00Z', 'Check-in opens at 3:55 PM.'],
       ['the day before', '2026-11-17T22:30:00Z', 'Check-in opens on Wednesday, November 18 at 3:55 PM.']
     ])('before it opens, %s, says when it opens, and does not check in from the QR code', (_, now, message) => {
-      jest.useFakeTimers({ now: new Date(now), doNotFake: ['nextTick', 'setImmediate', 'queueMicrotask'] });
+      vi.useFakeTimers({ now: new Date(now), doNotFake: ['nextTick', 'setImmediate', 'queueMicrotask'] });
 
       const { text, insertUserCheckin } = open('hybrid', undefined, session, { query: { checkin: 'code-1' } });
 
@@ -449,7 +450,7 @@ describe('EventDetailComponent check-in', () => {
       ['10 minutes after the end', '2026-11-18T23:10:00Z', true],
       ['11 minutes after the end', '2026-11-18T23:11:00Z', false]
     ])('%s: %s', (_, now, shown) => {
-      jest.useFakeTimers({ now: new Date(now), doNotFake: ['nextTick', 'setImmediate', 'queueMicrotask'] });
+      vi.useFakeTimers({ now: new Date(now), doNotFake: ['nextTick', 'setImmediate', 'queueMicrotask'] });
 
       const { text } = open('in-person', undefined, session);
 
@@ -463,7 +464,7 @@ describe('EventDetailComponent check-in', () => {
       ['30 minutes after the end', '2026-11-18T23:30:00Z', true],
       ['31 minutes after the end', '2026-11-18T23:31:00Z', false]
     ])('with its own minutes, %s: %s', (_, now, shown) => {
-      jest.useFakeTimers({ now: new Date(now), doNotFake: ['nextTick', 'setImmediate', 'queueMicrotask'] });
+      vi.useFakeTimers({ now: new Date(now), doNotFake: ['nextTick', 'setImmediate', 'queueMicrotask'] });
 
       const { text } = open('in-person', undefined, { ...session, checkInMinutesBefore: 0, checkInMinutesAfter: 30 });
 
@@ -477,7 +478,7 @@ describe('EventDetailComponent check-in', () => {
       ['11 minutes after the end', '2026-11-18T23:11:00Z'],
       ['a week later', '2026-11-25T22:30:00Z']
     ])('open at any time, %s: shown', (_, now) => {
-      jest.useFakeTimers({ now: new Date(now), doNotFake: ['nextTick', 'setImmediate', 'queueMicrotask'] });
+      vi.useFakeTimers({ now: new Date(now), doNotFake: ['nextTick', 'setImmediate', 'queueMicrotask'] });
 
       const { text } = open('in-person', undefined, session, { anyTime: true });
 
@@ -614,7 +615,7 @@ describe('EventDetailComponent, a session the visitor may not see (#3396)', () =
         },
         {
           provide: AuthService,
-          useValue: { isAuthenticated$: of(false), userRoles$: of([]), user$: of(null), login: jest.fn() }
+          useValue: { isAuthenticated$: of(false), userRoles$: of([]), user$: of(null), login: vi.fn() }
         },
         {
           provide: UserService,
@@ -630,18 +631,18 @@ describe('EventDetailComponent, a session the visitor may not see (#3396)', () =
           provide: CheckinService,
           useValue: {
             getUserCheckinForEvent: () => throwError(() => new Error('none')),
-            insertUserCheckin: jest.fn(),
-            getCheckInCode: jest.fn(),
-            getCheckinsForEvent: jest.fn()
+            insertUserCheckin: vi.fn(),
+            getCheckInCode: vi.fn(),
+            getCheckinsForEvent: vi.fn()
           }
         },
-        { provide: NotificationService, useValue: { toast: jest.fn() } },
+        { provide: NotificationService, useValue: { toast: vi.fn() } },
         { provide: AssetsService, useValue: { getAssetUrl: () => of(null) } },
-        { provide: Angulartics2, useValue: { eventTrack: { next: jest.fn() } } }
+        { provide: Angulartics2, useValue: { eventTrack: { next: vi.fn() } } }
       ]
     });
 
-    const navigateByUrl = jest.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
+    const navigateByUrl = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
     const f = TestBed.createComponent(EventDetailComponent);
     f.detectChanges();
 

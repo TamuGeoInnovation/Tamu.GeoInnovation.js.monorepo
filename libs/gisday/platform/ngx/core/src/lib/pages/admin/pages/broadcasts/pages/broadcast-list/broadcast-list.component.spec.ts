@@ -41,7 +41,7 @@ describe('BroadcastListComponent', () => {
         { provide: SeasonService, useValue: { seasons$: of([]), activeSeason$: of(null) } },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
         { provide: ModalService, useValue: {} },
-        { provide: NotificationService, useValue: { toast: jest.fn() } }
+        { provide: NotificationService, useValue: { toast: vi.fn() } }
       ]
     });
 

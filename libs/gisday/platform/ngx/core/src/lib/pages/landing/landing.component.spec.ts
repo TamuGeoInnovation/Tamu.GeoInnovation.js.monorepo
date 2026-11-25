@@ -99,7 +99,7 @@ describe('LandingComponent winners (#3239)', () => {
   };
 
   function render(key: string, answer: SeasonWinnersDto | null) {
-    const shown = jest.fn(() => of(answer));
+    const shown = vi.fn(() => of(answer));
 
     TestBed.configureTestingModule({
       imports: [LandingComponent],

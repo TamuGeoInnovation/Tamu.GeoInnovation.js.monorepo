@@ -171,6 +171,19 @@ of its 33 s in its 161 tests on the loaded run.
 Vitest counts two tests fewer. Jest ran `ui-kits-ngx-layout-code`'s two inside `ui-kits-ngx-layout` as
 well, since that project's directory contains it; Vitest runs them once, in their own project.
 
+### Unit tests: the GIS Day site, Jest against Vitest (#1977)
+
+`gisday-angular`'s 16 tests, measured as below: Jest is `development` at `9d8bf3299`, Vitest is
+`chore/1977-gisday-vitest-app` at `872d8f666`, alternating three times on the lab machine with nothing else
+running, 24 November 2026, finished at 10:43 PM Central.
+
+| Project          | Tests, Jest and Vitest |  Jest, cold |         Jest, warm |             Vitest |
+| ---------------- | ---------------------: | ----------: | -----------------: | -----------------: |
+| `gisday-angular` |                     16 | 3.3 s (1.6) | 1.9 to 2.0 s (0.9) | 3.5 to 3.6 s (0.5) |
+
+As on the four libraries below: a small Angular project, where Vitest's runner is faster and its start-up costs
+more than it saves.
+
 ### Unit tests: four GIS Day libraries, Jest against Vitest (#1977)
 
 The `ngx/common` and `ngx/data-access` libraries of the GIS Day platform and competitions. Jest is
