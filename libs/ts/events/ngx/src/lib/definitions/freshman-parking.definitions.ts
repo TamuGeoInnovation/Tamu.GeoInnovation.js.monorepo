@@ -14,8 +14,6 @@ export enum FRESHMAN_SELECTABLE_LAYERS {
 }
 const eventUrl = Connections.freshmanParkingUrl;
 
-type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
-
 export const FreshmanSelectableDefinitions = {
   RESIDENT_STUDENT_PRIORITY: {
     id: FRESHMAN_SELECTABLE_LAYERS.RESIDENT_STUDENT_PRIORITY,
