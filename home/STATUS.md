@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle, listening.
+- **Batch a54** (#3474, one reader of the builder inventory), since 1:22 PM Central, 25 November. Worktree `wt-a54`.
 
 ## Finished
 - **Batch a51** (report `home/reports/2026-11-25-a51.md`, 1:19 PM Central): #3551, construction dates through a new shared `calendarDate`; red in Central time first; before/after captured. Branch `fix/3551-construction-popup-dates` at `36af9b75b`; check-in-volume and pre-pr-check Exit 0.
