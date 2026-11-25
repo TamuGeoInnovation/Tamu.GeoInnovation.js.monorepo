@@ -20,7 +20,7 @@ import { NgClass } from '@angular/common';
   imports: [NgClass]
 })
 export class RadioGroupComponent<Option extends object, Value> implements ControlValueAccessor {
-  public readonly options = input<Array<Option>>(undefined);
+  public readonly options = input<Array<Option> | undefined>(undefined);
 
   /**
    * INTERNAL USE ONLY. Use `value` getter/setter instead.
@@ -29,7 +29,7 @@ export class RadioGroupComponent<Option extends object, Value> implements Contro
    * Callers set the value through the forms API; none binds `[value]`.
    */
   // eslint-disable-next-line @angular-eslint/no-input-rename
-  public readonly _value = model<Value>(undefined, { alias: 'value' });
+  public readonly _value = model<Value | undefined>(undefined, { alias: 'value' });
 
   public set value(v) {
     this._value.set(v);
@@ -44,15 +44,15 @@ export class RadioGroupComponent<Option extends object, Value> implements Contro
   // A model rather than an input: the forms API sets it.
   public readonly disabled = model(false);
 
-  public readonly displayPath = input<string>(undefined);
+  public readonly displayPath = input<string | undefined>(undefined);
 
-  public readonly valuePath = input<string>(undefined);
+  public readonly valuePath = input<string | undefined>(undefined);
 
   /**
    * Hook that can be used to execute an operation after the first value has been set.
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public onInitialValue(v: Value) {
+  public onInitialValue(v: Value | undefined) {
     return;
   }
 
@@ -80,7 +80,7 @@ export class RadioGroupComponent<Option extends object, Value> implements Contro
     this.value = value;
   }
 
-  public renderTemplate(option: Option, path: string) {
+  public renderTemplate(option: Option, path: string | undefined) {
     if (path) {
       return getPropertyValue(option, path);
     } else {

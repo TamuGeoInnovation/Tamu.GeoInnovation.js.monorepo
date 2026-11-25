@@ -1,4 +1,14 @@
-import { Component, forwardRef, ChangeDetectionStrategy, OnChanges, SimpleChanges, ElementRef, input, model, viewChild } from '@angular/core';
+import {
+  Component,
+  forwardRef,
+  ChangeDetectionStrategy,
+  OnChanges,
+  SimpleChanges,
+  ElementRef,
+  input,
+  model,
+  viewChild
+} from '@angular/core';
 
 import { AbstractValueAccessorFormComponent } from '../../models/abstract-value-accessor-form/abstract-value-accessor-form.component';
 import { NG_VALUE_ACCESSOR, FormsModule } from '@angular/forms';
@@ -26,7 +36,7 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
    */
   public readonly formControlName = input('default');
 
-  public readonly label = input<string>(undefined);
+  public readonly label = input<string | undefined>(undefined);
 
   /**
    * Pins the minimum value of the slider.
@@ -51,7 +61,7 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
    *  If true, the slider will display a marker for each step.
    *
    */
-  public readonly markedSteps = input<boolean>(undefined);
+  public readonly markedSteps = input<boolean | undefined>(undefined);
 
   /**
    * Format the value displayed in the label.
@@ -67,7 +77,7 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
    * mark per date on a timeline, spaced by the time between them. A tick with `mark: false` shows only
    * its label.
    */
-  public readonly ticks = input<RangeTick[]>(undefined);
+  public readonly ticks = input<RangeTick[] | undefined>(undefined);
 
   /**
    * Whether to show the minimum and maximum under the track. Ticks often say the same thing.
@@ -100,7 +110,7 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
    * When using a data map, the control value will be the indexed value of the data map.
    * Developers have the responsibility of extracting the mapped value from the input map.
    */
-  public readonly customDataMap = input<RangeInputDataMap>(undefined);
+  public readonly customDataMap = input<RangeInputDataMap | undefined>(undefined);
 
   public readonly input = viewChild<ElementRef>('rangeElement');
 
@@ -109,16 +119,23 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
   public minDisplay: string | number;
   public maxDisplay: string | number;
 
-  public override get value(): number {
+  public override get value(): number | undefined {
     return this.getInternalValue();
+  }
+
+  /** The value for arithmetic: NaN while there is none, which is what arithmetic on undefined gave (#3495). */
+  private get numericValue(): number {
+    return this.value ?? NaN;
   }
 
   public override set value(value: number) {
     this.setInternalValue(value);
 
-    if (this.showTooltip()) {
+    const liveValue = this.liveValue();
+
+    // The tooltip is drawn with the view, and a form writes its first value before then: reading it unguarded threw (#3495).
+    if (this.showTooltip() && liveValue) {
       const customDataMap = this.customDataMap();
-      const liveValue = this.liveValue();
       if (customDataMap) {
         liveValue.nativeElement.innerText = customDataMap[value].display;
       } else {
@@ -146,7 +163,7 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
       // Set the tooltip position to the center of the slider.
       // This is based on the fact that the slider is broken down into even steps from 0 to max
       // and the tooltip is positioned as a percentage of the slider width minus half the width of the tooltip.
-      liveValue.nativeElement.style.left = `calc(${(this.value / this.max()) * 100}% - ${tooltipOffset}px)`;
+      liveValue.nativeElement.style.left = `calc(${(this.numericValue / this.max()) * 100}% - ${tooltipOffset}px)`;
     }
   }
 
@@ -165,7 +182,7 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
         // When the data map value changes, the maximum value of the slider can potentially be higher than the size
         // of the new data map. This will cause the slider to be out of bounds. To prevent this, we need to
         // set the value to the maximum value of the data map.
-        if (this.value > this.max()) {
+        if (this.numericValue > this.max()) {
           this.value = this.max();
         }
       } else {
@@ -192,7 +209,7 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
    * Before the midpoint, the offset is negative. After the midpoint, the offset is positive.
    */
   private get offsetDirection(): number {
-    const position = this.value / this.max();
+    const position = this.numericValue / this.max();
 
     if (position === 0.5) {
       return 0;
@@ -210,9 +227,9 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
     if (this.offsetDirection === 0) {
       return 0;
     } else if (this.offsetDirection === 1) {
-      return (this.value - this.max() / 2) / (this.max() / 2);
+      return (this.numericValue - this.max() / 2) / (this.max() / 2);
     } else {
-      return (this.max() / 2 - this.value) / (this.max() / 2);
+      return (this.max() / 2 - this.numericValue) / (this.max() / 2);
     }
   }
 }
