@@ -1,5 +1,25 @@
 # Laptop: current tasks
 
+## Batch g29 (workspace: #1479, the remaining Angular and TypeScript projects off Jest; 25 November 2026, about 10:35 PM Central, from `work (gisday)`) (Medium) - **after a14**
+
+**Decided by the maintainer (24 November, about 10:25 PM Central): the whole workspace moves off Jest to Vitest**, in his words "do the things to
+get us off jest". #1479 is claimed In Progress. The lab does GIS Day's (g201, g202). This batch is the rest **that is not NestJS**; the Nest projects
+(`geoservices-nest`, `geoservices-data-api`, `mailroom-nest`, `mailroom-helper-nest`, `mailroom-data-api`) wait for the lab's SWC pattern
+(`unplugin-swc`, g202) and come in a later batch.
+
+**Copy #1948's pattern** (8951a6364), and the lab's for the GIS Day `ngx` libraries (PR 3499: a one-line `vitest.config.mts`, `vitest/globals`,
+`jest.*` to `vi.*`, zone only where a spec uses `fakeAsync`). **Fetch `origin` before each branch.** For each group, one branch:
+
+1. `chore/1479-vitest-geoservices`: `geoservices-angular`, `geoservices-ngx`, `geoservices-data-access`.
+2. `chore/1479-vitest-mailroom`: `mailroom-angular`, `mailroom-ngx`, `mailroom-data-access`, `mailroom-common`.
+3. `chore/1479-vitest-the-rest`: `ts-events-angular`, `dev-tools-application-testing`, `dev-tools-responsive`, `geoprocessing-core`,
+   `geoprocessing-v5` (use each project's real name from its `project.json`).
+
+Each: **the same tests before and after, per project** (a spec that passed only because of Jest gets fixed, never skipped), the before and after
+times in `docs/build-times.md`, then `scripts/check-in-volume.sh <branch> <the projects>` with `CHECK_PARALLEL=1` and its `Exit` line. Once
+`scripts/pre-pr-check.sh` is on `development` (#3508), it replaces that last step. `.pr-body.md` from the template last, `Closes #` left for the work
+machine. Questions `Q-g29-<n>`. Report `laptop/reports/2026-11-25-g29.md`, "branch ready" per branch.
+
 ## Batch g28 (gisday: #1977's Vitest step, the GIS Day libraries off Jest; 24 November 2026, about 10:25 PM Central, from `work (gisday)`) (Medium) - **WITHDRAWN (25 November, about 12:30 AM Central): moved to the lab as g201. Do not start it.**
 
 [#1977](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1977) (and [#1479](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1479)): read both,
