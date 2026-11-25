@@ -1,0 +1,2 @@
+started,machine,tool,ran,exit,summary,seconds,elapsed,setup
+2026-11-24 23:04:56 CST,lab,check,"chore/1479-vitest-geoservices-nest geoservices-nest,geoservices-data-api",0,"lint, test for 2 projects; build for project geoservices-nest",69,0:01:09,"clone 12 s, npm ci 29 s"
