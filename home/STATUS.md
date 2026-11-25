@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle, listening.
+- **Batch g114 (#3495, #985: strictNullChecks in gisday-platform-data-api)** next.
 
 ## Finished
+- **Batch a16 (aggiemap: #2816 images)** (report `home/reports/2026-11-24-a16.md`): stopped at step 1. The micromobility paths moved to their own map (#2895), whose popup has no "Type:" label, and the fix does not reach that popup; all 46 AggiePrint locations have every row filled. Nothing pushed. Q-a16-1.
 - **Batch g113 (#3348, copilot-home)** (report `home/reports/2026-11-25-g113.md`): Copilot refused by policy ("Access denied by policy settings") on every start since 5 November; the runner never said BLOCKED because it is still the 26 October copy. Runner change `d6b1705ae`: three silent runs are BLOCKED, and it restarts when its script changes; red then green with a stub. One question, Q-g113-1 (retire or keep).
 - **Batch g112 (#274 deletion)** (report `home/reports/2026-11-24-g112.md`): branch ready, `chore/274-remove-settings-branch-reader` at `512a7b5c4`; no caller appeared; check Exit 0.
 - **Batch a15 (aggiemap: #1082)** (report `home/reports/2026-11-24-a15.md`): does not reproduce. All Maps is exactly viewport-wide at 375 and 390 on dev and on a local build of development; fixed by #3207 in the shared copy field. Nothing built; recommend closing #1082.
