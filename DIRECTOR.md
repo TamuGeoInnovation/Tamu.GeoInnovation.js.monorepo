@@ -766,6 +766,13 @@ checks each filter against its own layer, which is why it can be sent to the GIS
 
 ## Handover (gisday)
 
+### Save point: Tuesday 24 November 2026, about 8:45 PM Central (the GIS Day release, paused until tomorrow)
+
+- **Ready:** images `sha-41cabe7` for `gisday-angular` and `gisday-nest` (development at 41cabe78e: everything merged through PR 3447, the Papers page). kubernetes-config PRs 167 (`migrate-prod-3269.ps1`) and 168 (`migrate-prod-3019.ps1`) are merged; both scripts are copied to the maintainer's `C:\TAMU\gisday-local`.
+- **Running on production, both namespaces:** `sha-35bcf80` for both deployments. That is the rollback target. The manifests in kubernetes-config still say `sha-80b4769`, so step 7 (record it) is overdue.
+- **Stopped at:** the 3019 dry run. The maintainer's production admin account is locked out (`net use` gives system error 1909), so the database refused the sign-in; nothing was changed. The network and the script are fine (port 1433 answers). He chose to leave the release until tomorrow (1C).
+- **Tomorrow:** the account unlocked, and whatever locked it found. Then the PROD window, the two dry runs (both namespaces each), the reports read, `-Apply` for 3019 then 3269, promote `gisday-nest` then `gisday-angular` to `sha-41cabe7` in both namespaces, the site check, and a kubernetes-config PR pinning `sha-41cabe7` with `sha-35bcf80` as the rollback target.
+
 ### Save point: Monday 23 November 2026, about 8:40 AM Central (the GIS Day director on `work`, before a reboot)
 
 **Production, both namespaces:** site `gisday-angular:sha-fa3b8bc` (PR 3231, #3230, rolled out about 8:20 AM today), API
