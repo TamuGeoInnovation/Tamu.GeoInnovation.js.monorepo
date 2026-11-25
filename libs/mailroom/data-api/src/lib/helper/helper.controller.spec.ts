@@ -27,8 +27,9 @@ describe('HelperController', () => {
 
   /** The forwarded form's fields, one `name="field" value` line each (a file by its name). */
   const forwarded = () =>
-    Array.from(((got as unknown as Mock).mock.calls[0][1].body as FormData).entries(), ([name, value]) =>
-      `name="${name}" ${typeof value === 'string' ? value : value.name}`
+    Array.from(
+      ((got as unknown as Mock).mock.calls[0][1].body as FormData).entries(),
+      ([name, value]) => `name="${name}" ${typeof value === 'string' ? value : value.name}`
     ).join('\n');
 
   const res = { status: () => ({ json: (body: unknown) => body }) };
