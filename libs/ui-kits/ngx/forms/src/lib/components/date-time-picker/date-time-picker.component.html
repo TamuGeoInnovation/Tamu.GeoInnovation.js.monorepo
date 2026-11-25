@@ -7,10 +7,17 @@
     </p>
   </tamu-gisc-tooltip-trigger>
 
-  @if (inputType === 'time') {
-  <input class="date-time-picker-input" [matTimepicker]="timepicker" [value]="timeValue" (valueChange)="handleTimePicked($event)" aria-label="Time" />
-  <mat-timepicker #timepicker [interval]="interval" panelClass="tamu-gisc-date-time-picker-panel" (closed)="close()"></mat-timepicker>
-  } @else {
-  <input class="date-time-picker-input" [type]="inputType" [value]="inputValue" [attr.step]="step" (change)="handleInputChange($any($event.target).value)" />
+  @if (kind !== 'time') {
+  <div class="date-time-picker-field">
+    <input class="date-time-picker-input date-time-picker-date" [matDatepicker]="datepicker" [value]="fieldValue" (dateChange)="handleDatePicked($event.value)" placeholder="MM/DD/YYYY" aria-label="Date" />
+    <mat-datepicker-toggle class="date-time-picker-date-toggle" [for]="datepicker"></mat-datepicker-toggle>
+    <mat-datepicker #datepicker panelClass="tamu-gisc-date-time-picker-panel" (closed)="pickerClosed('date')"></mat-datepicker>
+  </div>
+  } @if (kind !== 'date') {
+  <div class="date-time-picker-field">
+    <input class="date-time-picker-input date-time-picker-time" [matTimepicker]="timepicker" [value]="fieldValue" (valueChange)="handleTimePicked($event)" placeholder="HH:MM AM" aria-label="Time" />
+    <mat-timepicker-toggle class="date-time-picker-time-toggle" [for]="timepicker"></mat-timepicker-toggle>
+    <mat-timepicker #timepicker [interval]="interval" panelClass="tamu-gisc-date-time-picker-panel" (closed)="pickerClosed('time')"></mat-timepicker>
+  </div>
   }
 </tamu-gisc-tooltip>

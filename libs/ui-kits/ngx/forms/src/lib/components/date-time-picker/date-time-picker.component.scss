@@ -16,16 +16,62 @@ tamu-gisc-tooltip-trigger {
   }
 }
 
+// A field and the button that opens its calendar or list of times, side by side.
+.date-time-picker-field {
+  @include flexbox();
+  @include flex-direction(row);
+  @include align-items(center);
+
+  & + .date-time-picker-field {
+    margin-top: 0.5rem;
+  }
+}
+
 .date-time-picker-input {
   width: 100%;
   font: inherit;
   padding: 0.5rem;
   box-sizing: border-box;
 }
-// The list of times is drawn by Angular Material in an overlay at the end of <body>, outside this
-// component, and takes its look from theme values an application would normally set once for all of
-// Material. No application here uses Material for anything else, so the handful the list reads are set
-// on the list's own panel, through Material's override mixins, and it inherits the application's font.
+
+// The calendar and the list of times are drawn by Angular Material in an overlay at the end of <body>,
+// outside this component, and take their look from theme values an application would normally set once
+// for all of Material. No application here uses Material for anything else, so the handful they read are
+// set on their own panels, through Material's override mixins, and they inherit the application's font.
+//
+// The calendar takes its panel class on the calendar itself, inside the box that draws its background, so
+// its values are set on Material's own popup around that box, for a popup that holds this picker's calendar.
+::ng-deep .mat-datepicker-popup:has(.tamu-gisc-date-time-picker-panel) {
+  @include mat.datepicker-overrides(
+    (
+      calendar-container-background-color: #ffffff,
+      calendar-container-text-color: #212121,
+      calendar-container-shape: 4px,
+      calendar-container-elevation-shadow: 0 3px 12px rgba(0, 0, 0, 0.25),
+      calendar-text-font: inherit,
+      calendar-header-text-color: #616161,
+      calendar-header-divider-color: rgba(0, 0, 0, 0.12),
+      calendar-body-label-text-color: #616161,
+      calendar-period-button-text-color: #212121,
+      calendar-period-button-icon-color: #616161,
+      calendar-navigation-button-icon-color: #616161,
+      calendar-date-text-color: #212121,
+      calendar-date-outline-color: transparent,
+      calendar-date-today-outline-color: #1a3f73,
+      calendar-date-hover-state-background-color: rgba(0, 0, 0, 0.06),
+      calendar-date-focus-state-background-color: rgba(0, 0, 0, 0.1),
+      calendar-date-selected-state-background-color: #1a3f73,
+      calendar-date-selected-state-text-color: #ffffff,
+      calendar-date-disabled-state-text-color: rgba(0, 0, 0, 0.38)
+    )
+  );
+
+  // The calendar is a table, and the sites stripe every other row of a table.
+  .mat-calendar-table tr {
+    background: none;
+  }
+}
+
 ::ng-deep .tamu-gisc-date-time-picker-panel {
   @include mat.timepicker-overrides(
     (
