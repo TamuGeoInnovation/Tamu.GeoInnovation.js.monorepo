@@ -1,18 +1,16 @@
 import { Injectable, inject } from '@angular/core';
-import { formatDate } from '@angular/common';
 import { BehaviorSubject, Subject } from 'rxjs';
 
 import { HitTestSnapshot, PopupComponentReference } from '@tamu-gisc/maps/esri';
 import { LayerSource } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { getPropertyValue } from '@tamu-gisc/common/utils/object';
-import { hasTemplateExpression, TemplateRenderer } from '@tamu-gisc/common/utils/string';
+
+import { resolvePopupData } from '../resolve-popup-data';
 
 import esri = __esri;
 
 type PopupDataDefinition = NonNullable<LayerSource['popupData']>;
 type PopupDataResolutionStrategy = NonNullable<LayerSource['popupDataResolutionStrategy']>;
-type PopupDataEntry = PopupDataDefinition[string];
 
 @Injectable({ providedIn: 'root' })
 export class PopupService {
@@ -80,7 +78,7 @@ export class PopupService {
       let resolved;
 
       if (graphicLayer.popupData) {
-        resolved = this.resolvePopupData(
+        resolved = resolvePopupData(
           topGraphic,
           graphicLayer.popupData,
           graphicLayer.popupDataResolutionStrategy ?? 'independent'
@@ -165,92 +163,6 @@ export class PopupService {
 
   public enablePopups() {
     this._suppressed.next(false);
-  }
-
-  private resolvePopupData(
-    graphic: esri.Graphic,
-    popupData: PopupDataDefinition,
-    strategy: PopupDataResolutionStrategy
-  ): Record<string, unknown> {
-    return Object.entries(popupData).reduce<Record<string, unknown>>((acc, [key, definition]) => {
-      if (acc[key] !== undefined) {
-        return acc;
-      }
-
-      acc[key] = this.resolvePopupDataEntry(graphic, definition, acc, strategy);
-
-      return acc;
-    }, {});
-  }
-
-  /**
-   * Renders an epoch-millisecond date value as a long date, matching the `date: 'longDate'`
-   * pipe used by the Angular popup components.
-   *
-   * Values that are nullish or not a valid date are returned untouched, so a missing or
-   * unexpected attribute degrades to its original value rather than rendering "Invalid Date".
-   */
-  private formatDateValue(value: unknown): unknown {
-    if (value === null || value === undefined || value === '') {
-      return value;
-    }
-
-    const date = new Date(value as string | number);
-
-    if (isNaN(date.getTime())) {
-      return value;
-    }
-
-    return formatDate(date, 'longDate', 'en-US');
-  }
-
-  private resolvePopupDataEntry(
-    graphic: esri.Graphic,
-    definition: PopupDataEntry,
-    resolvedEntries: Record<string, unknown>,
-    strategy: PopupDataResolutionStrategy
-  ): unknown {
-    if (typeof definition !== 'string') {
-      const value = getPropertyValue(graphic.attributes, definition.field, definition.collapsed);
-
-      return definition.format === 'date' ? this.formatDateValue(value) : value;
-    }
-
-    const lookup = this.getPopupDataLookup(graphic, resolvedEntries, strategy);
-
-    if (hasTemplateExpression(definition)) {
-      return new TemplateRenderer({
-        template: definition,
-        lookup,
-        options:
-          strategy === 'cumulative'
-            ? {
-                nullishReplacement: '',
-                trim: true
-              }
-            : undefined
-      }).render();
-    }
-
-    return getPropertyValue(lookup, definition);
-  }
-
-  private getPopupDataLookup(
-    graphic: esri.Graphic,
-    resolvedEntries: Record<string, unknown>,
-    strategy: PopupDataResolutionStrategy
-  ) {
-    if (strategy === 'cumulative') {
-      return {
-        ...graphic,
-        attributes: {
-          ...(graphic.attributes || {}),
-          ...resolvedEntries
-        }
-      };
-    }
-
-    return graphic;
   }
 }
 
