@@ -1,0 +1,152 @@
+{
+  "configuration": {
+    "applicationName": "Aggie Map - HSC Corpus Christi",
+    "buildingPopup": {
+      "abbreviation": "bldgabbr",
+      "address": {
+        "city": "city",
+        "state": "TX",
+        "street": "address",
+        "zip": "zip"
+      },
+      "layerId": "hsc-corpus-christi-property-layer",
+      "number": "number",
+      "title": [
+        "bldgname",
+        "bldgabbr"
+      ]
+    },
+    "eventDates": [],
+    "hideLayerToggle": true,
+    "id": "hsc-corpus-christi",
+    "introductionText": "Map of the Texas A&M University Health Science Center Corpus Christi campus.",
+    "mapCenter": [
+      -97.37815,
+      27.723583
+    ],
+    "name": "HSC Corpus Christi",
+    "searchSources": [
+      {
+        "displayTemplate": "{attributes.bldgname} ({attributes.number})",
+        "featuresLocation": "features",
+        "name": "Property",
+        "popupComponent": "[EventPopups.CampusBuildingPopupComponent]",
+        "queryParams": {
+          "f": "json",
+          "outFields": "*",
+          "outSR": 4326,
+          "resultRecordCount": 5,
+          "returnGeometry": true,
+          "scoringWhere": {
+            "keys": [
+              "bldgname",
+              "bldgabbr"
+            ],
+            "operators": [
+              "LIKE",
+              "LIKE"
+            ],
+            "transformations": [
+              "UPPER",
+              "UPPER"
+            ],
+            "wildcards": [
+              "startsWith",
+              "startsWith"
+            ]
+          },
+          "spatialRel": "esriSpatialRelIntersects",
+          "where": {
+            "keys": [
+              "bldgname",
+              "bldgabbr",
+              "number"
+            ],
+            "operators": [
+              "LIKE",
+              "LIKE",
+              "LIKE"
+            ],
+            "transformations": [
+              "UPPER",
+              "UPPER",
+              "UPPER"
+            ],
+            "wildcards": [
+              "includes",
+              "includes",
+              "includes"
+            ]
+          }
+        },
+        "scoringKeys": [
+          "attributes.bldgabbr",
+          "attributes.number",
+          "attributes.bldgname"
+        ],
+        "searchActive": true,
+        "source": "hsc-corpus-christi-property",
+        "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/HSCC/FeatureServer/2",
+        "urlQueryParam": "bldg",
+        "urlQueryParamAliases": [
+          "abbrv"
+        ]
+      }
+    ],
+    "shortApplicationName": "HSC Corpus Christi",
+    "sidebarTabs": [
+      "features"
+    ],
+    "zoom": 18
+  },
+  "discover": {
+    "description": "Map of the Texas A&M University Health Science Center Corpus Christi campus.",
+    "id": "hsc-corpus-christi",
+    "mapType": "satellite-campus",
+    "name": "HSC Corpus Christi",
+    "source": "internal",
+    "thumbnail": "./assets/images/campus/hsc-corpus-christi.jpg",
+    "type": "satellite-campus"
+  },
+  "options": [],
+  "references": {
+    "BASEMAP": "hsc-corpus-christi-basemap-layer",
+    "PROPERTY": "hsc-corpus-christi-property-layer"
+  },
+  "sources": [
+    {
+      "essential": true,
+      "id": "hsc-corpus-christi-basemap-layer",
+      "listMode": "hide",
+      "title": "HSC Corpus Christi Basemap",
+      "type": "vector-tile",
+      "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/HSCC/VectorTileServer",
+      "visible": true
+    },
+    {
+      "essential": true,
+      "id": "hsc-corpus-christi-property-layer",
+      "listMode": "hide",
+      "native": {
+        "elevationInfo": {
+          "mode": "relative-to-ground",
+          "offset": 1
+        },
+        "labelsVisible": false,
+        "legendEnabled": false,
+        "maxScale": 0,
+        "minScale": 100000,
+        "outFields": [
+          "*"
+        ],
+        "popupEnabled": false
+      },
+      "popupComponent": "[EventPopups.CampusBuildingPopupComponent]",
+      "title": "Property",
+      "type": "feature",
+      "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/HSCC/FeatureServer/2",
+      "visible": true
+    }
+  ],
+  "type": "general-map"
+}

@@ -1,8 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { Observable, pipe, fromEventPattern, from } from 'rxjs';
+import { Observable, pipe, from } from 'rxjs';
 import { map, pluck, shareReplay, switchMap } from 'rxjs/operators';
 
-import { EsriMapService, MapServiceInstance, toGeographic } from '@tamu-gisc/maps/esri';
+import { EsriMapService, MapServiceInstance, toGeographic, viewEvent } from '@tamu-gisc/maps/esri';
 
 import { AsyncPipe } from '@angular/common';
 import { ClipboardCopyDirective } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
@@ -38,19 +38,9 @@ export class ClickCoordinatesComponent implements OnInit {
   private $immediateClickHandler() {
     return pipe(
       switchMap((view: MapServiceInstance['view']) => {
-        let immediateClickHandle: esri.Handle;
-
-        const addHandler = (handler) => {
-          immediateClickHandle = view.on('immediate-click', handler);
-        };
-
-        const removeHandler = () => {
-          immediateClickHandle.remove();
-        };
-
         // Projected to latitude and longitude, which a view in a projected reference does not give (#1875).
-        return fromEventPattern(addHandler, removeHandler).pipe(
-          switchMap((event: esri.ViewImmediateClickEvent) => from(toGeographic(event.mapPoint))),
+        return viewEvent<esri.ViewImmediateClickEvent>(view, 'immediate-click').pipe(
+          switchMap((event) => from(toGeographic(event.mapPoint))),
           map(({ latitude, longitude }) => {
             return {
               latitude: latitude.toFixed(5),

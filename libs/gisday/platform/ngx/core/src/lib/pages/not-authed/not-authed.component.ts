@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Injector, inject } from '@angular/core';
+import { Component, Injector, inject } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -18,8 +18,7 @@ import { GISDAY_SITE } from '@tamu-gisc/gisday/platform/ngx/common';
   selector: 'tamu-gisc-not-authed',
   templateUrl: './not-authed.component.html',
   styleUrls: ['./not-authed.component.scss'],
-  imports: [RouterLink, AsyncPipe],
-  changeDetection: ChangeDetectionStrategy.Eager
+  imports: [RouterLink, AsyncPipe]
 })
 export class NotAuthedComponent {
   private readonly data = inject(ActivatedRoute).snapshot.data;

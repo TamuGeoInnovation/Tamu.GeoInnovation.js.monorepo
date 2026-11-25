@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 
@@ -37,7 +37,6 @@ export function otherMatches(
   selector: 'tamu-gisc-people-details',
   templateUrl: './people-details.component.html',
   styleUrls: ['./people-details.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     SpeakerAvatarComponent,
     SpeakerClassBannerComponent,

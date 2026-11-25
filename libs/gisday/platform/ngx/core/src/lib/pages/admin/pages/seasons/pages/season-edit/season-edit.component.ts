@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, viewChild } from '@angular/core';
+import { Component, viewChild } from '@angular/core';
 import { SeasonAddEditFormComponent, provideAdminDetailsPage } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { BaseAdminDetailsPageComponent } from '../../../base-admin-details-page/base-admin-details-page.component';
@@ -7,7 +7,6 @@ import { BaseAdminDetailsPageComponent } from '../../../base-admin-details-page/
   selector: 'tamu-gisc-season-edit',
   templateUrl: './season-edit.component.html',
   styleUrls: ['./season-edit.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [SeasonAddEditFormComponent],
   providers: [provideAdminDetailsPage(() => SeasonEditComponent)]
 })
