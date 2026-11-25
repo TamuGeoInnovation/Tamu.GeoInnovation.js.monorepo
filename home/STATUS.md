@@ -14,7 +14,9 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch g115 part 1** (shared libraries, fixed in `C:/TAMU/wt-3495s`): the affected check and pre-pr-check next. Then a19, a22, g115 part 2.
+- **Batch a19 (#2816 images)**: before taken (the rack popup shows the raw `{attributes.BR_Notes}`); the branch's check is building the after.
+- **Batch g115**: part 1 (`fix/3495-shared-strict-null-checks`, closes #3524) waits on #3518 (a flaky test, fixed on `fix/3518-button-colours-timeout`, pre-pr-check exit 0). Part 2 (competitions) is being fixed in `C:/TAMU/wt-3495c`.
+- Then a22.
 
 ## Finished
 - **Batch a17 (aggiemap: #3468, #3467)** (report `home/reports/2026-11-24-a17.md`): both branch ready. `fix/3468-phone-accessible-routing` `b53d89b82` (confirmed on production; one shared gate; red then green; images; check Exit 0). `fix/3467-event-notice-evening` `2315b1822` (shared date helpers; red in Central then green; the project's specs now run in Central; check Exit 0; no capture possible).
