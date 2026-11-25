@@ -73,7 +73,7 @@ check "a difference with no row is named" '{"recorded":["alphaUrl","betaUrl","ga
 
 # A value on the following line is how tsParkingLotsUrl and constructionUrl are really written; a key-count
 # that reads only `key: value` lines misses them, and reported 24 entries where there are 27.
-got="$(run_case "$SOURCE" "$COMPLETE" | python -c "import sys,json; print(len(json.load(sys.stdin)['recorded']))" 2>/dev/null)"
+got="$(run_case "$SOURCE" "$COMPLETE" | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>console.log(JSON.parse(s).recorded.length))" 2>/dev/null)"
 check "a value on the next line is still one entry" "3" "$got"
 
 # A row whose key has gone from the code is NOT an error: it is the record of a difference that was fixed.
