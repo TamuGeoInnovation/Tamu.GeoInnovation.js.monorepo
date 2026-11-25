@@ -1,5 +1,27 @@
 # Home machine: current tasks
 
+## Batch g109 (workspace: #1340, then #2058; 24 November 2026, about 9:00 PM Central, from `work (gisday)`) (Low) - **now**
+
+Checked against `origin/development` tonight; neither has a PR. Check each again before building (as you did for #1604): if it
+is already done, say so and build nothing. Question ids per DIRECTOR.md (`Q-g109-<n>`). Two branches, two PRs, "branch ready" after each.
+
+**1. [#1340](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1340), branch `chore/1340-flex-mixin-prefixes`.**
+`libs/sass/_mixins.scss` (about lines 46-60) still emits `-webkit-`/`-ms-` flex prefixes that no supported browser needs. Make the
+mixins emit only the standard properties, behind their existing names, so no call site changes. **Prove it changes nothing a visitor
+sees:** build `gisday-angular` and `aggiemap-angular` on development and on the branch and compare the compiled CSS (only prefixed
+declarations may disappear; state the byte saving), plus one before/after screenshot of a page that uses the mixins at 1280. Check
+`scripts/check-in-volume.sh chore/1340-flex-mixin-prefixes gisday-angular,aggiemap-angular` with `CHECK_PARALLEL=1`. A release
+entry is not needed if nothing visible changes; say so in the body and use the `no-visible-change` label.
+
+**2. [#2058](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2058), branch `chore/2058-template-a11y-rules`.**
+The seven template accessibility rules are still switched off in `apps/geoservices-angular`, `apps/mailroom-angular` and their libraries'
+`eslint.config.mjs` (oidc and signage are deleted). Turn them back on there, count the findings, and fix them where the fix is mechanical
+(a label, an `alt`, a key handler beside a click). If a finding needs a design decision, leave that rule off for that project with a
+comment naming the issue, and list it under Q-g109-1. **Red first:** the lint with the rules on, on development, listing the findings;
+green after. Check: the projects whose config you change, plus `geoservices-angular,mailroom-angular`.
+
+Report `home/reports/2026-11-24-g109.md`.
+
 ## Decided (the maintainer, 24 November 2026, about 8:30 PM Central): home's handed-over questions
 
 Acknowledged under the new rule in DIRECTOR.md ("Questions have ids, and an owner"); drop every one of these.
