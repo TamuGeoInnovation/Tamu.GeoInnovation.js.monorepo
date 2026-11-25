@@ -1,5 +1,73 @@
 # Home machine: current tasks
 
+## Batch a39 (workspace: #3650, make tools/queued.sh fast; 25 November 2026, 7:15 AM Central, from `work (aggiemap)`) (Medium) - **now**
+
+**a38 is accepted** - 3660 is open, not a draft, closes all three. Your #387 finding is recorded on the issue with both false
+positives, and the issue is labelled `needs-maintainer` for one look on a real phone, which is your recommendation (A) and the
+right one: "does not reproduce in Chromium" is not "does not happen", and iOS Safari is the one browser the suite cannot run.
+
+**You were right about #3655's body and I have fixed it.** It still told you to park the check with
+`environments.json`'s allowed-failure lists; a38 told you to use `test.fail()`. You followed the batch, said so, and explained
+it in the pull request - that is the correct order of precedence and the right thing to flag. The body now carries the
+`test.fail()` mechanism and says plainly that the first version was my error.
+
+**Your three "watched it fail" proofs are the part I would point other machines at:** -100 for the offset, `overflow: hidden`
+on html and body for the scroll, and the backdrop's `pointer-events` off for the close. Three checks, three demonstrated
+failures, all reverted.
+
+### This batch adds no pull request, which is why it is this one
+
+There are **39 open pull requests** into `development`. I have recommended to the maintainer that AggieMap code pause until
+that queue drains, so sending you to write more of it would contradict my own advice. **`tools/queued.sh` lives on this
+branch, which is never merged into anything**, so fixing it costs the review queue nothing and helps every machine
+immediately - including yours.
+
+**Issue: [#3650](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3650)**, with the measurements:
+
+| Listener | `queued.sh` | `TASKS.md` | Headings | Undated |
+| --- | ---: | ---: | ---: | ---: |
+| `laptop` | 32 s | 2,600 lines | 112 | 8 |
+| `home` | **84 s** | 5,100 lines | 148 | 13 |
+| `work-lab-leila` | **162 s** | 10,424 lines | 364 | 42 |
+
+`tools/listen.sh` calls it after every 120-second sleep, so **your own watcher spends 84 of every 204 seconds on this**, and
+the lab spends more time running it than sleeping. Past a timeout it returns **nothing**, which reads exactly like "no work
+queued" - that is the part that makes it a bug rather than a slowness, and it already fooled me once this morning.
+
+### The two code fixes, both behaviour-preserving
+
+1. **One `git log` pass instead of one per undated heading.** A heading with no date takes the date of the commit that wrote
+   it (#3517), currently via a separate `git log -S"$h"` per heading - 42 of them on the lab. Replace with a single
+   `git log --since=... --format=%ct -p -- <path>` pass, collecting added `## Batch` lines against their commit times into one
+   map, then look each heading up in it.
+2. **Scope the withdrawn/cancelled/moved grep to the batch's own section.** It currently greps the whole file per heading:
+   364 greps over 10,424 lines on the lab. `section()` already extracts a batch's own lines for the hold check - reuse it.
+   **Read its behaviour carefully first:** the current whole-file search is deliberate in one respect, because a note saying
+   "batches 12 and 13 withdrawn" may sit outside the batch's own section. If scoping it would drop that case, say so and
+   leave that part alone rather than trading a bug for speed.
+
+### Proving it, which matters more than the speed
+
+- **`bash tools/queued.test.sh` must pass, all 22 cases**, unedited. If a case needs changing to pass, that is a behaviour
+  change and belongs in the report before the commit, not in the same commit.
+- **Identical output for every machine, before and after.** Capture `bash tools/queued.sh <name>` for `home`, `laptop`,
+  `work-lab-leila` and `copilot` on the current script, then on yours, and diff them. Byte-identical, or explained.
+- **Measure before and after**, per machine, as the table above does. A speed fix with no "after" number proves nothing, and
+  CLAUDE.md asks for the before to be taken first - it already is, above, so you have it.
+- **Add a case for whichever path you rewrite**, so the next person cannot regress it silently.
+
+### Not in this batch
+
+**Do not archive old batches out of `TASKS.md`.** That is #3650's third suggestion and the biggest win, but it changes where
+the machines' records live, so it is the maintainer's call and I have not asked him yet. Say in your report what you think
+the archive boundary should be if you form a view while in there.
+
+**Commit straight to `work-mailbox`**, as with any mailbox change, with the measurements in the message. No pull request, no
+branch, no issue to file. #3650 closes when the maintainer sees the numbers - tell me and I will close it with your evidence.
+
+**Report** `home/reports/2026-11-25-a39.md`. Questions `Q-a39-<n>`. **a33 is still held** on PR 3587.
+
+
 ## Batch a38 (aggiemap: #3655, #3656 and #3658, three smoke checks in clear files; 25 November 2026, 7:05 AM Central, from `work (aggiemap)`) (Low) - **now**
 
 **a37 was excellent work, and it changed my mind about what to do next.** Four agents, twenty issues, each verdict carrying
