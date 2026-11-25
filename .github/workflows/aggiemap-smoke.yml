@@ -177,6 +177,16 @@ jobs:
       - name: Checkout repo
         if: steps.probe.outputs.present == 'true'
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          # The dev-* and prod-* tags, and the history to compare them with, for the next step (#3539).
+          fetch-depth: 0
+
+      # A check merged with the change it checks would fail against a build from before that change, and read as a
+      # broken application. The environment's newest dev-* or prod-* tag is its build, so the suite is told which
+      # tracked changes it predates, and those checks skip as "deploy a newer build" (#3539).
+      - name: Find the changes the deployed build predates
+        if: steps.probe.outputs.present == 'true'
+        run: bash scripts/smoke-deployed.sh "${{ matrix.name }}" >> "$GITHUB_ENV"
 
       - name: Setup Node
         if: steps.probe.outputs.present == 'true'
