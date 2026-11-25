@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 
 import { MapboxMapService } from '@tamu-gisc/maps/mapbox';
 import { SignageService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -11,7 +11,6 @@ import { AccordionContentComponent } from '@tamu-gisc/ui-kits/ngx/layout';
   selector: 'tamu-gisc-signage',
   templateUrl: './signage.component.html',
   styleUrls: ['./signage.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MapboxMapComponent, AccordionComponent, AccordionHeaderComponent, AccordionContentComponent]
 })
 export class SignageComponent implements OnInit {

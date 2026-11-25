@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject, viewChild } from '@angular/core';
+import { Component, inject, viewChild } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { map, switchMap } from 'rxjs';
@@ -16,7 +16,6 @@ import { BaseAdminDetailsPageComponent } from '../../../base-admin-details-page/
   selector: 'tamu-gisc-tags-edit',
   templateUrl: './tags-edit.component.html',
   styleUrls: ['./tags-edit.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [TagAddEditFormComponent, SessionsUsingComponent, AsyncPipe],
   providers: [provideAdminDetailsPage(() => TagsEditComponent)]
 })

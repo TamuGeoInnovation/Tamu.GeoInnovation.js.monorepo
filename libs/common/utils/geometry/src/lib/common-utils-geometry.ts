@@ -121,28 +121,35 @@ export function isLatLon(value: unknown): value is LatLon {
 }
 
 /**
- * Reads corners typed one per line as `latitude, longitude`, as Google Maps copies them.
+ * Reads text typed as `latitude, longitude`, latitude first, as Google Maps copies it. The two values
+ * may be separated by a comma, spaces or both.
+ *
+ * @returns The point, or `undefined` when the text is not exactly two numbers, or they are not a
+ * latitude and longitude in range. A longitude given first is refused, not swapped.
+ */
+export function parseLatLon(text: string): LatLon | undefined {
+  const parts = (text ?? '').trim().split(/\s*,\s*|\s+/);
+
+  if (parts.length !== 2 || parts.some((p) => p.length === 0)) {
+    return undefined;
+  }
+
+  const point = { latitude: Number(parts[0]), longitude: Number(parts[1]) };
+
+  return isLatLon(point) ? point : undefined;
+}
+
+/**
+ * Reads corners typed one per line, each as `parseLatLon` reads it.
  *
  * @returns The corners, an empty list for blank text, or `undefined` when a line is not a
  * latitude and longitude in range.
  */
 export function parseLatLonLines(text: string): Array<LatLon> | undefined {
-  const lines = (text ?? '')
+  const corners = (text ?? '')
     .split(/\r?\n/)
-    .map((l) => l.trim())
-    .filter((l) => l.length > 0);
-
-  const corners = lines.map((line) => {
-    const parts = line.split(/[\s,]+/).filter((p) => p.length > 0);
-
-    if (parts.length !== 2) {
-      return undefined;
-    }
-
-    const corner = { latitude: Number(parts[0]), longitude: Number(parts[1]) };
-
-    return isLatLon(corner) ? corner : undefined;
-  });
+    .filter((l) => l.trim().length > 0)
+    .map((l) => parseLatLon(l));
 
   return corners.every((c) => c !== undefined) ? corners : undefined;
 }
