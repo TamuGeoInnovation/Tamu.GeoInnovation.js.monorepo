@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle, listening. a33 held until PR 3587 merges.
+- **Batch a33** (#3486, one markdown popup pair), since 10:43 AM Central, 25 November, from `origin/development` `e0598f7d5` (PR 3587 merged). Worktree `wt-a33`.
 
 ## Finished
 - **Batch a40** (report `home/reports/2026-11-25-a40.md`, 8:43 AM Central): five needs-maintainer issues, read-only. Three to send (#2901 in place of #2212, #2612, #1104), three to close (#2212, #1902, #1146). Two questions.
