@@ -58,6 +58,11 @@ jobs:
       - name: Check the GIS service differences register
         run: node scripts/check-gis-differences.mjs
 
+      # Files are LF but for one batch file, and with `* -text` in .gitattributes nothing else keeps them so: twelve had
+      # drifted to CRLF or mixed before this step (#1025). A second or so.
+      - name: Check line endings
+        run: node scripts/check-line-endings.mjs
+
       - name: Lint Affected
         env:
           BASE: ${{ inputs.base }}
