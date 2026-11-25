@@ -1,8 +1,10 @@
-import { InternalServerErrorException, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import { BadRequestException, InternalServerErrorException, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { Repository } from 'typeorm';
+
+import { declaredPng } from '@tamu-gisc/common/node/images';
 
 import { AssetsService } from '../assets/assets.service';
 import { Asset, EventLocation, Place, PlaceLink } from '../entities/all.entity';
@@ -139,13 +141,12 @@ describe('PlaceService', () => {
       );
     });
 
-    it('still wraps a genuine database failure as 500', async () => {
+    // Let through, as the shared copy does every lookup failure (#3379); Nest answers it 500 as before.
+    it('lets a genuine database failure through, not as a refusal', async () => {
       jest.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
       jest.spyOn(placeRepo, 'find').mockRejectedValue(new Error('connection lost'));
 
-      await expect(service.copyPlacesIntoSeason('season-2', ['p-1'])).rejects.toThrow(
-        InternalServerErrorException
-      );
+      await expect(service.copyPlacesIntoSeason('season-2', ['p-1'])).rejects.toThrow('connection lost');
     });
   });
 
@@ -229,7 +230,7 @@ describe('PlaceService', () => {
       jest.spyOn(placeRepo, 'save').mockResolvedValue(saved);
       jest.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'a-1' } as never);
 
-      await service.createPlace({ name: 'Alpha' }, { originalname: 'logo.png' } as never);
+      await service.createPlace({ name: 'Alpha' }, { originalname: 'logo.png', buffer: declaredPng(10, 10) } as never);
 
       expect(assetService.saveAsset).toHaveBeenCalledWith(
         'images/places',
@@ -291,6 +292,9 @@ describe('PlaceService', () => {
     const withManager = (manager: Record<string, jest.Mock>) => {
       (placeRepo.manager.transaction as jest.Mock).mockImplementation((cb) => cb(manager));
     };
+    // The manager's finds by entity, each with no rows unless given: the places, their broadcasts (#3397) and their
+    // event locations are read in turn, so answering by call order broke when a read was added.
+    const findsOf = (rows: Map<unknown, Array<unknown>>) => jest.fn().mockImplementation(async (entity) => rows.get(entity) ?? []);
 
     it('accepts a comma-separated string and an array alike', async () => {
       const manager = {
@@ -310,7 +314,7 @@ describe('PlaceService', () => {
     it('detaches event locations from the place before deleting it', async () => {
       const location = { guid: 'el-1', place: { guid: 'p-1' } } as EventLocation;
       const manager = {
-        find: jest.fn().mockResolvedValueOnce([]).mockResolvedValueOnce([location]),
+        find: findsOf(new Map([[EventLocation, [location]]])),
         delete: jest.fn().mockResolvedValue({ affected: 1 }),
         save: jest.fn().mockResolvedValue([location])
       };
@@ -325,7 +329,7 @@ describe('PlaceService', () => {
     it('removes logo assets belonging to the places being deleted', async () => {
       const logo = { guid: 'a-1' } as Asset;
       const manager = {
-        find: jest.fn().mockResolvedValueOnce([{ guid: 'p-1', logos: [logo] }]).mockResolvedValueOnce([]),
+        find: findsOf(new Map([[Place, [{ guid: 'p-1', logos: [logo] }]]])),
         delete: jest.fn().mockResolvedValue({ affected: 1 }),
         save: jest.fn()
       };
@@ -336,6 +340,47 @@ describe('PlaceService', () => {
       // Through AssetsService, which deletes the rows by guid and their files after commit (#2205).
       expect(assetService.deleteAssets).toHaveBeenCalledWith(manager, [logo]);
       expect(assetService.deleteAssetFiles).toHaveBeenCalledWith([logo]);
+    });
+  });
+
+  /**
+   * #2937. A logo is served from the site's own origin, and an SVG can carry script, so only a JPEG or PNG is taken, judged
+   * by its content: an SVG named .png is still an SVG.
+   */
+  describe('logo uploads (#2937)', () => {
+    const svg = Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"/>');
+    const upload = (originalname: string, buffer: Buffer) =>
+      ({ originalname, mimetype: 'image/png', buffer, size: buffer.length }) as Express.Multer.File;
+
+    it.each([
+      ['an SVG', upload('logo.svg', svg)],
+      ['an SVG renamed to .png', upload('logo.png', svg)]
+    ])('refuses %s on create with 400, and creates no place', async (_name, file) => {
+      jest.spyOn(placeRepo, 'create').mockReturnValue({ guid: 'p-new' } as Place);
+
+      await expect(service.createPlace({ name: 'Alpha' }, file)).rejects.toThrow(BadRequestException);
+      expect(placeRepo.save).not.toHaveBeenCalled();
+      expect(assetService.saveAsset).not.toHaveBeenCalled();
+    });
+
+    it('refuses an SVG renamed to .png on update with 400', async () => {
+      jest.spyOn(placeRepo, 'findOne').mockResolvedValue({ guid: 'p-1', logos: [] } as unknown as Place);
+
+      await expect(service.updatePlace('p-1', { name: 'Alpha' }, upload('logo.png', svg))).rejects.toThrow(
+        BadRequestException
+      );
+      expect(assetService.saveAsset).not.toHaveBeenCalled();
+      expect(placeRepo.save).not.toHaveBeenCalled();
+    });
+
+    it('stores a PNG named .svg under a .png name', async () => {
+      jest.spyOn(placeRepo, 'findOne').mockResolvedValue({ guid: 'p-1', logos: [] } as unknown as Place);
+      jest.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'a-2' } as never);
+      jest.spyOn(placeRepo, 'save').mockImplementation((e) => Promise.resolve(e as Place));
+
+      await service.updatePlace('p-1', { name: 'Alpha' }, upload('logo.svg', declaredPng(10, 10)));
+
+      expect((assetService.saveAsset as jest.Mock).mock.calls[0][1].originalname).toBe('logo.png');
     });
   });
 });

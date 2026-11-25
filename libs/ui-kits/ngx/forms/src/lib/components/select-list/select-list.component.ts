@@ -7,8 +7,11 @@ import {
   SimpleChanges,
   TemplateRef,
   ChangeDetectionStrategy,
+  ElementRef,
+  HostListener,
   inject,
-  input
+  input,
+  output
 } from '@angular/core';
 import { FormBuilder, NG_VALUE_ACCESSOR, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BehaviorSubject, debounceTime, map, Observable, shareReplay, startWith } from 'rxjs';
@@ -32,6 +35,7 @@ import { NgTemplateOutlet, AsyncPipe } from '@angular/common';
 export class SelectListComponent<T extends Record<string, unknown>> implements OnInit, OnChanges {
   private readonly fb = inject(FormBuilder);
   private readonly renderer = inject(Renderer2);
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
 
   /**
    * Default placeholder text for the input.
@@ -61,6 +65,11 @@ export class SelectListComponent<T extends Record<string, unknown>> implements O
    */
   public readonly rowTemplate = input<TemplateRef<T>>(undefined);
 
+  /**
+   * The item chosen from the list, by click, Enter or Space.
+   */
+  public readonly selected = output<T>();
+
   public readonly form = this.fb.group({
     search: ['']
   });
@@ -80,6 +89,41 @@ export class SelectListComponent<T extends Record<string, unknown>> implements O
   public ngOnChanges(changes: SimpleChanges): void {
     if (changes?.options?.currentValue) {
       this.initializeOptions(changes.options.currentValue);
+    }
+  }
+
+  /**
+   * Reports the item, clears the search for the next one and moves focus out of the list, which closes it: the list
+   * shows while focus is inside it, and the row just chosen held focus, so the list stayed open over the page (#2871).
+   */
+  public choose(item: T): void {
+    this.selected.emit(item);
+    this.form.controls.search.setValue('');
+
+    const focused = document.activeElement as HTMLElement;
+
+    if (this.host.nativeElement.contains(focused)) {
+      focused.blur();
+    }
+  }
+
+  /**
+   * Escape in the open list closes it, as it does a drop-down: the list shows while focus is inside it, so focus moves
+   * out. The Escape is claimed, so a page that gives Escape a meaning of its own (an admin details page going back to
+   * its list, #2942) leaves it alone.
+   */
+  @HostListener('keydown.escape', ['$event'])
+  public closeOnEscape(event: KeyboardEvent): void {
+    if (this.rowTemplate() === undefined || event.defaultPrevented) {
+      return;
+    }
+
+    event.preventDefault();
+
+    const focused = document.activeElement as HTMLElement;
+
+    if (this.host.nativeElement.contains(focused)) {
+      focused.blur();
     }
   }
 

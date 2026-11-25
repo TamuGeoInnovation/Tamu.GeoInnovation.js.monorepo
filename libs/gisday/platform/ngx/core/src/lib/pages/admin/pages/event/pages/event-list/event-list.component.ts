@@ -1,27 +1,116 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { Observable, firstValueFrom, map } from 'rxjs';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Observable, filter, firstValueFrom, map, switchMap } from 'rxjs';
 import { RouterLink } from '@angular/router';
 
-import { EventService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { EventService, SessionFilesService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { Event } from '@tamu-gisc/gisday/platform/data-api';
 
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
+import { AdminSearchComponent } from '../../../base-admin-list/admin-search.component';
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe, DatePipe } from '@angular/common';
-import { EventDayGroup, ParseDateTimeStringsPipe, groupEventsByDay } from '@tamu-gisc/gisday/platform/ngx/common';
+import {
+  EventDayGroup,
+  ParseDateTimeStringsPipe,
+  groupEventsByDay,
+  sessionSearchFields
+} from '@tamu-gisc/gisday/platform/ngx/common';
 import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { GISDAY_SITE } from '@tamu-gisc/gisday/platform/ngx/common';
+import { SubmissionFileDto, siteListsSession } from '@tamu-gisc/gisday/common';
+import { FormControl } from '@angular/forms';
+
+/**
+ * The organizations whose venues hold these sessions, each once, by name, after every organization (#434): what the
+ * admin Events list offers to show one organization's sessions.
+ */
+export function organizationChoices(events: Array<Partial<Event>> | null): Array<{ guid: string; name: string }> {
+  const places = new Map<string, string>();
+
+  for (const event of events ?? []) {
+    const place = event.location?.place;
+
+    if (place?.guid) {
+      places.set(place.guid, place.name ?? '');
+    }
+  }
+
+  const named = [...places].map(([guid, name]) => ({ guid, name })).sort((a, b) => a.name.localeCompare(b.name));
+
+  return [{ guid: '', name: 'Every organization' }, ...named];
+}
 
 @Component({
   selector: 'tamu-gisc-event-list',
   templateUrl: './event-list.component.html',
   styleUrls: ['./event-list.component.scss'],
-  imports: [SelectComponent, RouterLink, CheckboxComponent, AsyncPipe, DatePipe, ParseDateTimeStringsPipe, ExistsPipe]
+  imports: [
+    SelectComponent,
+    RouterLink,
+    CheckboxComponent,
+    AsyncPipe,
+    DatePipe,
+    ParseDateTimeStringsPipe,
+    ExistsPipe,
+    AdminSearchComponent
+  ]
 })
 export class EventListComponent extends BaseAdminListComponent<Event> implements OnInit {
+  /** The search (#2914) looks in the columns this page shows, as the public Sessions list does (#2944). */
+  protected override readonly searchFields = (c: Partial<Event>) => sessionSearchFields(c);
+
   protected readonly entityService = inject(EventService);
   private readonly notifications = inject(NotificationService);
+  public readonly site = inject(GISDAY_SITE);
+
+  /**
+   * On a site that lists only some organizations' sessions (gisday.tamu.edu), the list starts with those, and this
+   * shows every organization's, as txgisday.org's admins share the database (#2986). 'all' or ''.
+   */
+  public readonly organizations = new FormControl('', { nonNullable: true });
+
+  /** One organization's sessions (#434): the guid of their venues' organization, or '' for every organization's. */
+  public readonly organization = new FormControl('', { nonNullable: true });
+
+  /** The organizations of the season's sessions, by name, after every organization, for that choice (#434). */
+  public organizationChoices$: Observable<Array<{ guid: string; name: string }>>;
+
+  /** 'none' lists only the sessions with no tags, so they can be given some, the list shrinking as they are (#3034). */
+  public readonly tagged = new FormControl('', { nonNullable: true });
+
+  private readonly sessionFiles = inject(SessionFilesService);
+  private readonly destroyRef = inject(DestroyRef);
+
+  /**
+   * The season's sessions with and without slides (#3093): each session's slides, by its guid, for the Slides column,
+   * uploaded by its speakers from their edit links. Null until listed.
+   */
+  public readonly slides = signal<Map<string, SubmissionFileDto> | null>(null);
+
+  /** 'none' lists only the sessions with no slides yet, as the tags filter does (#3093). */
+  public readonly withSlides = new FormControl('', { nonNullable: true });
+
+  protected override listFilters(): Record<string, FormControl<string>> {
+    return {
+      ...super.listFilters(),
+      organizations: this.organizations,
+      organization: this.organization,
+      tagged: this.tagged,
+      slides: this.withSlides
+    };
+  }
+
+  protected override keepEntity(event: Partial<Event>): boolean {
+    return (
+      (this.organizations.value === 'all' || siteListsSession(this.site, event)) &&
+      (!this.organization.value || event.location?.place?.guid === this.organization.value) &&
+      (this.tagged.value !== 'none' || !event.tags?.length) &&
+      (this.withSlides.value !== 'none' || !this.slides()?.has(event.guid))
+    );
+  }
 
   /**
    * The season's events as one table per day, under its date (#1775).
@@ -32,6 +121,19 @@ export class EventListComponent extends BaseAdminListComponent<Event> implements
     super.ngOnInit();
 
     this.eventsByDay$ = this.entitiesForActiveSeasonOrForSeasonGuid$.pipe(map((events) => groupEventsByDay(events)));
+    this.organizationChoices$ = this.listed$.pipe(map((events) => organizationChoices(events)));
+
+    // The selected season's slides (#3093). Once they are in, the filters are read again, so "no slides" is right.
+    this.selectedSeason$
+      .pipe(
+        filter((season) => !!season?.guid),
+        switchMap((season) => this.sessionFiles.forSeason(season.guid)),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe((listed) => {
+        this.slides.set(new Map(listed.map((s) => [s.event, s.file])));
+        this.withSlides.updateValueAndValidity();
+      });
   }
 
   /**

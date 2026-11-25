@@ -46,6 +46,11 @@ export const adminRoutes: Routes = [
         ]
       },
       {
+        // Dashboards (#2878): read-only views of the season, starting with RSVPs.
+        path: 'dashboards',
+        loadChildren: () => import('./pages/dashboards/dashboards.routes').then((m) => m.dashboardsRoutes)
+      },
+      {
         path: 'events',
         loadChildren: () => import('./pages/event/admin-event.routes').then((m) => m.adminEventRoutes)
       },
@@ -59,7 +64,7 @@ export const adminRoutes: Routes = [
       },
       {
         path: 'rsvp-types',
-        loadChildren: () => import('./pages/rsvp-type/admin-rsvp-type.routes').then((m) => m.adminRsvpTypeRoutes)
+        loadChildren: () => import('./pages/type/admin-type.routes').then((m) => m.rsvpTypeRoutes)
       },
       {
         path: 'research-competition',
@@ -85,8 +90,7 @@ export const adminRoutes: Routes = [
       },
       {
         path: 'submission-types',
-        loadChildren: () =>
-          import('./pages/submission-type/admin-submission-type.routes').then((m) => m.adminSubmissionTypeRoutes)
+        loadChildren: () => import('./pages/type/admin-type.routes').then((m) => m.submissionTypeRoutes)
       },
       {
         path: 'tags',

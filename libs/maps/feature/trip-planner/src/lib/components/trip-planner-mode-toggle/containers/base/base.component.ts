@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, OnDestroy, inject, input } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, OnDestroy, inject, input, signal } from '@angular/core';
 import { Observable, from, of, iif, Subject } from 'rxjs';
 import { switchMap, filter, withLatestFrom, map, mergeMap, pluck, takeUntil, shareReplay } from 'rxjs/operators';
 
@@ -64,6 +64,13 @@ export class TripPlannerModeToggleComponent implements OnInit, OnDestroy {
   public active: Observable<boolean>;
 
   public meta_status: Observable<{ allPristine: boolean; toggleHasResult: boolean; isModeRestricted: boolean }>;
+
+  /**
+   * Whether the toggle is disabled: the travel options exclude its mode, or results came back with none for it. A
+   * disabled toggle is greyed, `aria-disabled`, out of the tab order, and a click, Enter or Space does nothing (#2586).
+   * A mode that was asked for and found no route is not disabled: it shows its error, and choosing it says why.
+   */
+  public readonly disabled = signal(false);
 
   /**
    * Numeric representation for the toggle travel mode.
@@ -191,6 +198,10 @@ export class TripPlannerModeToggleComponent implements OnInit, OnDestroy {
       }),
       shareReplay(1)
     );
+
+    this.meta_status.pipe(takeUntil(this.$destroy)).subscribe((meta) => {
+      this.disabled.set(meta.isModeRestricted || (!meta.allPristine && !meta.toggleHasResult));
+    });
   }
 
   public ngOnDestroy() {
@@ -200,8 +211,14 @@ export class TripPlannerModeToggleComponent implements OnInit, OnDestroy {
 
   /**
    * Calculate the travel mode from string reference and update call the trip planner service to update it.
+   *
+   * Does nothing for a disabled toggle: its grey is not what stops a click, Enter or Space (#2586).
    */
   public setTravelMode = () => {
+    if (this.disabled()) {
+      return;
+    }
+
     this.tripPlanner.calculateTravelMode(
       this.activeModes().map((mode) => mode),
       true

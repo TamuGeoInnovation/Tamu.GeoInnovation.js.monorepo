@@ -1,8 +1,10 @@
-import { NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import { BadRequestException, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { Repository } from 'typeorm';
+
+import { declaredPng } from '@tamu-gisc/common/node/images';
 
 import { AssetsService } from '../assets/assets.service';
 import { Asset, Event, Organization, Speaker } from '../entities/all.entity';
@@ -159,7 +161,7 @@ describe('OrganizationService', () => {
       jest.spyOn(orgRepo, 'create').mockReturnValue({ save: create } as never);
       jest.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'asset-1' } as never);
 
-      await service.createOrganization({ name: 'Alpha' }, { originalname: 'logo.png' } as never);
+      await service.createOrganization({ name: 'Alpha' }, { originalname: 'logo.png', buffer: declaredPng(10, 10) } as never);
 
       expect(assetService.saveAsset).toHaveBeenCalledWith(
         'images/organizations',
@@ -246,7 +248,7 @@ describe('OrganizationService', () => {
       jest.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'asset-2' } as never);
       jest.spyOn(orgRepo, 'save').mockImplementation((e) => Promise.resolve(e as Organization));
 
-      await service.updateOrganization('o-1', { name: 'Alpha' }, { originalname: 'logo.png' } as never);
+      await service.updateOrganization('o-1', { name: 'Alpha' }, { originalname: 'logo.png', buffer: declaredPng(10, 10) } as never);
 
       const saved = (orgRepo.save as jest.Mock).mock.calls[0][0];
       expect(saved.logos).toEqual([{ guid: 'asset-2' }]);
@@ -358,6 +360,52 @@ describe('OrganizationService', () => {
       // Through AssetsService, which deletes the rows by guid and their files after commit (#2205).
       expect(assetService.deleteAssets).toHaveBeenCalledWith(manager, [logo]);
       expect(assetService.deleteAssetFiles).toHaveBeenCalledWith([logo]);
+    });
+  });
+
+  /**
+   * #2937. A logo is served from the site's own origin, and an SVG can carry script, so only a JPEG or PNG is taken, judged
+   * by its content: an SVG named .png is still an SVG.
+   */
+  describe('logo uploads (#2937)', () => {
+    const svg = Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"/>');
+    const upload = (originalname: string, buffer: Buffer) =>
+      ({ originalname, mimetype: 'image/png', buffer, size: buffer.length }) as Express.Multer.File;
+
+    it.each([
+      ['an SVG', upload('logo.svg', svg)],
+      ['an SVG renamed to .png', upload('logo.png', svg)]
+    ])('refuses %s on create with 400, and creates no organization', async (_name, file) => {
+      const save = jest.fn().mockResolvedValue({ guid: 'o-new', save: jest.fn() });
+      jest.spyOn(orgRepo, 'create').mockReturnValue({ save } as never);
+
+      await expect(service.createOrganization({ name: 'Alpha' }, file)).rejects.toThrow(BadRequestException);
+      expect(save).not.toHaveBeenCalled();
+      expect(assetService.saveAsset).not.toHaveBeenCalled();
+    });
+
+    it('refuses an SVG renamed to .png on update with 400', async () => {
+      jest
+        .spyOn(orgRepo, 'findOne')
+        .mockResolvedValue({ guid: 'o-1', name: 'Alpha', logos: [] } as unknown as Organization);
+
+      await expect(service.updateOrganization('o-1', { name: 'Alpha' }, upload('logo.png', svg))).rejects.toThrow(
+        BadRequestException
+      );
+      expect(assetService.saveAsset).not.toHaveBeenCalled();
+      expect(orgRepo.save).not.toHaveBeenCalled();
+    });
+
+    it('stores a PNG named .svg under a .png name', async () => {
+      jest
+        .spyOn(orgRepo, 'findOne')
+        .mockResolvedValue({ guid: 'o-1', name: 'Alpha', logos: [] } as unknown as Organization);
+      jest.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'asset-2' } as never);
+      jest.spyOn(orgRepo, 'save').mockImplementation((e) => Promise.resolve(e as Organization));
+
+      await service.updateOrganization('o-1', { name: 'Alpha' }, upload('logo.svg', declaredPng(10, 10)));
+
+      expect((assetService.saveAsset as jest.Mock).mock.calls[0][1].originalname).toBe('logo.png');
     });
   });
 });

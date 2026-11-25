@@ -12,8 +12,8 @@ import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
 import { TripPlannerTopComponent } from './trip-planner-top.component';
 
 /**
- * The phone's trip planner is offered on a development host and the maintenance message everywhere else, as the
- * desktop sidebar's is (#683, #1722).
+ * The phone's trip planner is offered on every environment, as the desktop sidebar's is (#2804). It was
+ * development-only, with a maintenance message elsewhere, while the routing network was not on production (#683).
  */
 describe('TripPlannerTopComponent', () => {
   function render(isTesting: boolean): HTMLElement {
@@ -43,23 +43,18 @@ describe('TripPlannerTopComponent', () => {
 
   afterEach(() => TestBed.resetTestingModule());
 
-  it('offers the from and to boxes and the travel modes on a development host', () => {
-    const element = render(true);
+  it.each([true, false])(
+    'offers the from and to boxes and the travel modes, with development-only features on: %s',
+    (isTesting) => {
+      const element = render(isTesting);
 
-    const boxes = Array.from(element.querySelectorAll<HTMLInputElement>('.points input'));
+      const boxes = Array.from(element.querySelectorAll<HTMLInputElement>('.points input'));
 
-    expect(boxes.length).toBe(2);
-    // A stop not yet chosen has no name: an empty box, not the word "undefined".
-    expect(boxes.map((box) => box.value)).toEqual(['', '']);
-    expect(element.querySelector('tamu-gisc-trip-planner-mode-picker-mobile')).not.toBeNull();
-    expect(element.querySelector('.maintenance-message')).toBeNull();
-  });
-
-  it('shows the maintenance message, and none of the planner, elsewhere', () => {
-    const element = render(false);
-
-    expect(element.querySelector('.maintenance-message')?.textContent).toContain('undergoing maintenance');
-    expect(element.querySelector('.points input')).toBeNull();
-    expect(element.querySelector('tamu-gisc-trip-planner-mode-picker-mobile')).toBeNull();
-  });
+      expect(boxes.length).toBe(2);
+      // A stop not yet chosen has no name: an empty box, not the word "undefined".
+      expect(boxes.map((box) => box.value)).toEqual(['', '']);
+      expect(element.querySelector('tamu-gisc-trip-planner-mode-picker-mobile')).not.toBeNull();
+      expect(element.querySelector('.maintenance-message')).toBeNull();
+    }
+  );
 });

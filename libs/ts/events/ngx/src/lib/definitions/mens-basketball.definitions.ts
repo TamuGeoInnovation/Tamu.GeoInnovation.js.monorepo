@@ -16,15 +16,6 @@ export enum MENS_BASKETBALL_LAYERS {
 
 const eventUrl = Connections.mensBasketballUrl;
 
-type FeatureNativeProps = NonNullable<Extract<LayerSource, { type: 'feature' }>['native']>;
-
-/**
- * `native` for every layer. Staff edit the service on game day - a lot set to Lot Closed, a closure drawn, an Alert
- * icon placed - and each layer polls it every minute (`refreshInterval` is in minutes), so a visitor who already has
- * the map open sees the change without a reload, as on football's lots (#2558, #1587).
- */
-const gameDayNative = (): FeatureNativeProps => ({ outFields: ['*'], refreshInterval: 1 });
-
 export const MensBasketball_Definitions = {
   GATES: {
     id: MENS_BASKETBALL_LAYERS.GATES,
@@ -53,7 +44,7 @@ export const MensBasketball_ColdLayerSources: LayerSource[] = [
     url: MensBasketball_Definitions.GATES.url,
     visible: true,
     listMode: 'show',
-    native: gameDayNative()
+    native: { outFields: ['*'] }
   },
 
   {
@@ -67,7 +58,7 @@ export const MensBasketball_ColdLayerSources: LayerSource[] = [
     },
     visible: true,
     listMode: 'show',
-    native: gameDayNative()
+    native: { outFields: ['*'] }
   },
 
   {
@@ -81,7 +72,7 @@ export const MensBasketball_ColdLayerSources: LayerSource[] = [
     },
     visible: true,
     listMode: 'show',
-    native: gameDayNative()
+    native: { outFields: ['*'] }
   }
 ];
 
@@ -113,7 +104,13 @@ export const MensBasketball_Configuration: EventConfiguration = {
   ],
   scheduleUrl: 'https://12thman.com/sports/mens-basketball/schedule',
   zoom: 16,
-  mapCenter: [-96.34467, 30.60585]
+  mapCenter: [-96.34467, 30.60585],
+  // Staff edit all three layers on game day - a lot set to Lot Closed, a closure drawn, an Alert icon placed - so
+  // all three poll the service (#2558).
+  gameDayRefresh: {
+    enabled: true,
+    layers: [MENS_BASKETBALL_LAYERS.GATES, MENS_BASKETBALL_LAYERS.SYMBOLS, MENS_BASKETBALL_LAYERS.PARKING_LOTS]
+  }
 };
 
 export const MensBasketball_Options: SpecialEventOptions = [];

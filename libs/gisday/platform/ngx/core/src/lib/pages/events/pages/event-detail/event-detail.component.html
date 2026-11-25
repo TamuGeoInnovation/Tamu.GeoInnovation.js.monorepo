@@ -1,14 +1,45 @@
 <section *ngIf="(event$ | async) as event">
   <div>
-    <div class="container12 leader-3 flex flex-row">
-      <h1 class="session-title">{{event.name}}</h1>
+    <div class="container12 leader-3">
+      <!-- An inner row: .container12's clearfix :before and :after would count as flex items and push the title in (lab report 138). -->
+      <div class="flex flex-row wrap align-center justify-between session-heading">
+        <h1 class="session-title">{{event.name}}</h1>
+        <!-- #3220: the session's edit form, for the roles the admin area lets in, without going through Admin → Sessions. -->
+        <a *ngIf="isModerator$ | async" class="button snug secondary session-edit" [routerLink]="['/admin/events/edit', event.guid]">Edit session</a>
+      </div>
     </div>
     <div class="container12" *ngIf="event">
       <div class="column10">
+        <!-- At the top, under the title, for organizers (#3197): the code is shown to a room, and should not be a scroll away. -->
+        <ng-container *ngIf="isModerator$ | async">
+          <!-- #2560: attendees of a hybrid or virtual session check in by scanning this from the presenter's slides; at an
+               in-person one it is the backup for a phone that cannot give its location (#3077). -->
+          <div class="trailer-2" *ngIf="'checkIns' | siteHas">
+            <h3 class="trailer-1">Check-in QR Code</h3>
+
+            <p class="trailer-1" *ngIf="needsCheckInCode(event); else inPersonCodeUse">Attendees of this {{ event.mode }} session check in by scanning this code. Put it on the presenter's slides, or show it full screen on the shared screen. It is the same code every time, and it checks people in only while the session's check-in is open, or at any time if the session is set to allow it.</p>
+            <ng-template #inPersonCodeUse>
+              <p class="trailer-1">Attendees of this in-person session can check in by scanning this code, instead of sharing their location, if their phone will not give it. Show it on the screen in the room. It is the same code every time, and it checks people in only while the session's check-in is open, or at any time if the session is set to allow it.</p>
+            </ng-template>
+
+            <ng-container *ngIf="checkInLink() as link; else checkInCodeNotShown">
+              <tamu-gisc-qr-code class="trailer-1" [text]="link" [label]="'Check-in QR code for ' + event.name" [downloadName]="'check-in-qr-' + event.guid" [fullscreen]="true" [caption]="'Scan to check in to ' + event.name" [color]="checkInCodeColor" [logo]="checkInCodeLogo"></tamu-gisc-qr-code>
+              <tamu-gisc-copy-field [text]="link"></tamu-gisc-copy-field>
+            </ng-container>
+
+            <ng-template #checkInCodeNotShown>
+              <tamu-gisc-button value="Show check-in QR code" look="secondary" fit="snug" (go)="showCheckInCode(event)"></tamu-gisc-button>
+            </ng-template>
+
+            <p class="leader-1 error" *ngIf="checkInCodeFailure()">{{ checkInCodeFailure() }}</p>
+          </div>
+          <div class="border-divider leader-2 trailer-2"></div>
+        </ng-container>
+
         <div id="timeAndPlace" class="trailer-1">
           <ng-container *ngIf="event?.day?.date; else noTime">
             <p>
-              <span>{{$safeNavigationMigration(event?.day?.date) | parseDateTimeStrings : event.startTime | date:'MMM d, y, h:mm a'}} - {{ $safeNavigationMigration(event?.day?.date)| parseDateTimeStrings : event.endTime | date:'h:mm a'}}</span>
+              <span>{{$safeNavigationMigration(event?.day?.date) | parseDateTimeStrings : event.startTime | date:'MMM d, y, h:mm a' : '-0600'}} - {{ $safeNavigationMigration(event?.day?.date)| parseDateTimeStrings : event.endTime | date:'h:mm a' : '-0600'}}</span>
               <span *ngIf="event?.mode" class="event-type"> - {{event.mode}}</span>
             </p>
           </ng-container>
@@ -47,7 +78,7 @@
                 <ng-container *ngIf="event.broadcast as br; else noBroadcastAvailable">
                   <p><strong>Link: </strong> <a [href]="br.publicUrl" target="_blank" rel="noopener noreferrer">{{br.publicUrl}}</a></p>
                   <p><strong>Password:</strong> {{br.password ? br.password : 'None'}}</p>
-                  <p><strong>Dial-in number:</strong> {{br.phoneNumber ? br.password : 'None'}}</p>
+                  <p><strong>Dial-in number:</strong> {{br.phoneNumber ? br.phoneNumber : 'None'}}</p>
                   <p *ngIf="br.meetingId"><strong>Meeting ID:</strong> {{br.meetingId}}</p>
 
                   <div *ngIf="br.details" [innerHTML]="br.details | markdownParse"></div>
@@ -157,8 +188,8 @@
 
                   <ng-template #notCheckedIn>
                     <div *ngIf="eventLive$ | async; else eventNotOngoing">
-                      <!-- A hybrid or virtual session checks in from its QR code's link, which carries the code (#2560). -->
-                      <p *ngIf="needsCheckInCode(event) && !checkInCode(); else checkInButton">{{ checkInCodeMessage }}</p>
+                      <!-- A hybrid or virtual session checks in only from its QR code, on its own check-in page (#2560, #3081). -->
+                      <p *ngIf="needsCheckInCode(event); else checkInButton">{{ checkInCodeMessage }}</p>
 
                       <ng-template #checkInButton>
                         <p class="trailer-1">Check-in to register your attendance for this event.</p>
@@ -173,7 +204,7 @@
 
                 <ng-template #eventNotOngoing>
                   <div>
-                    <p>Checkin will be available at the start of the session.</p>
+                    <p>{{ (checkInOpens$ | async) ?? 'Check-in will open shortly before the session starts.' }}</p>
                   </div>
                 </ng-template>
               </ng-container>
@@ -184,7 +215,9 @@
             </ng-container>
 
             <ng-template #notLoggedInCheckin>
-              <p>You must be logged in to checkin for this event.</p>
+              <!-- Sign-in comes back here with the QR code's check-in code, which then checks in (#3077). -->
+              <p class="trailer-1">Sign in, or create an account, to check in to this session.</p>
+              <tamu-gisc-button fit="snug" [look]="'secondary'" value="SIGN IN" (click)="signIn()"></tamu-gisc-button>
             </ng-template>
           </div>
         </div>
@@ -233,22 +266,38 @@
               </div>
             </div>
 
-            <!-- #2560: attendees of a hybrid or virtual session check in by scanning this from the presenter's slides. -->
-            <div class="trailer-2" *ngIf="needsCheckInCode(event) && ('checkIns' | siteHas)">
-              <h3 class="trailer-1">Check-in QR Code</h3>
+            <!-- #2635: who checked in, and which check-ins were made outside the session's time. -->
+            <div class="trailer-2" *ngIf="'checkIns' | siteHas">
+              <h3 class="trailer-1">Check-ins</h3>
 
-              <p class="trailer-1">Attendees of this {{ event.mode }} session check in by scanning this code. Put it on the presenter's slides, or show it full screen on the shared screen. It is the same code every time, and it checks people in only while the session's check-in is open.</p>
+              <p class="trailer-1" *ngIf="event.checkInAnyTime"><strong>Check-in is open at any time for this session.</strong> Check-ins made outside its time are marked {{ outsideSessionTimeLabel }}.</p>
 
-              <ng-container *ngIf="checkInLink() as link; else checkInCodeNotShown">
-                <tamu-gisc-qr-code class="trailer-1" [text]="link" [label]="'Check-in QR code for ' + event.name" [downloadName]="'check-in-qr-' + event.guid" [fullscreen]="true" [caption]="'Scan to check in to ' + event.name" [color]="checkInCodeColor" [logo]="checkInCodeLogo"></tamu-gisc-qr-code>
-                <tamu-gisc-copy-field [text]="link"></tamu-gisc-copy-field>
+              <ng-container *ngIf="sessionCheckIns$ | async as checkIns">
+                <p class="error" *ngIf="checkIns.failure">{{ checkIns.failure }}</p>
+
+                <ng-container *ngIf="!checkIns.failure">
+                  <table class="floating-table" *ngIf="checkIns.rows.length > 0; else noCheckIns">
+                    <thead>
+                      <tr>
+                        <th>Attendee</th>
+                        <th>Checked in</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let row of checkIns.rows">
+                        <td>{{ row.who }}<span *ngIf="row.email"> ({{ row.email }})</span></td>
+                        <td>{{ row.at }}</td>
+                        <td>
+                          <strong class="warning" *ngIf="row.outsideSessionTime">{{ outsideSessionTimeLabel }}</strong>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <ng-template #noCheckIns><p>Nobody has checked in to this session yet.</p></ng-template>
+                </ng-container>
               </ng-container>
-
-              <ng-template #checkInCodeNotShown>
-                <tamu-gisc-button value="Show check-in QR code" look="secondary" fit="snug" (go)="showCheckInCode(event)"></tamu-gisc-button>
-              </ng-template>
-
-              <p class="leader-1 error" *ngIf="checkInCodeFailure()">{{ checkInCodeFailure() }}</p>
             </div>
           </div>
         </ng-container>

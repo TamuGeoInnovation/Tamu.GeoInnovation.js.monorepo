@@ -29,12 +29,12 @@ export enum CONSTRUCTION_MAP_LAYERS {
  *   service. The legacy FCOR/Construction_2018/MapServer popup workaround is no longer
  *   needed since this service's sublayer 0 already exposes a description field.
  */
-import { getDefaultGisHost, getDefaultGisHosts } from '@tamu-gisc/aggiemap/ngx/common';
+import { Connections, getDefaultGisHost } from '@tamu-gisc/aggiemap/ngx/common';
 import { EventPopups } from '../modules/popups/popups';
 const gisHost = getDefaultGisHost();
-const tsgisHost = getDefaultGisHosts().tsgisHost;
 
-const eventUrl = `https://${tsgisHost}/arcgis/rest/services/Hosted/TSConstruction_Hosted/FeatureServer`;
+// Read from production on every environment until the hosted view is published on the development server (#2653).
+const eventUrl = Connections.constructionUrl.replace(/\/0$/, '');
 
 /**
  * 'cumulative' lets the popup service resolve each entry sequentially, writing each resolved
@@ -43,12 +43,22 @@ const eventUrl = `https://${tsgisHost}/arcgis/rest/services/Hosted/TSConstructio
  */
 const popupDataResolutionStrategy: NonNullable<LayerSource['popupDataResolutionStrategy']> = 'cumulative';
 
-const plannedConstructionPopupData: NonNullable<LayerSource['popupData']> = {
+/**
+ * A construction project's fields, under the names the popups' text reads them by. Tailgating shows the
+ * same projects and reads them through this too (#2602), so a renamed field is changed here once.
+ * Resolve them with the 'cumulative' strategy, so the text after them can read the dates formatted.
+ */
+export const CONSTRUCTION_PROJECT_FIELDS = {
   projectName: { field: 'name', collapsed: true },
   projectNumber: { field: 'number', collapsed: true },
+  projectDescription: { field: 'description', collapsed: true },
   startDate: { field: 'startdate', collapsed: true, format: 'date' },
   endDate: { field: 'enddate', collapsed: true, format: 'date' },
-  owner: { field: 'owner', collapsed: true },
+  owner: { field: 'owner', collapsed: true }
+} satisfies NonNullable<LayerSource['popupData']>;
+
+const plannedConstructionPopupData: NonNullable<LayerSource['popupData']> = {
+  ...CONSTRUCTION_PROJECT_FIELDS,
 
   name: '{attributes.projectName}',
   description:
@@ -61,12 +71,7 @@ const plannedConstructionPopupData: NonNullable<LayerSource['popupData']> = {
 };
 
 const constructionPopupData: NonNullable<LayerSource['popupData']> = {
-  projectName: { field: 'name', collapsed: true },
-  projectNumber: { field: 'number', collapsed: true },
-  projectDescription: { field: 'description', collapsed: true },
-  startDate: { field: 'startdate', collapsed: true, format: 'date' },
-  endDate: { field: 'enddate', collapsed: true, format: 'date' },
-  owner: { field: 'owner', collapsed: true },
+  ...CONSTRUCTION_PROJECT_FIELDS,
 
   name: '{attributes.projectName}',
   description:

@@ -3,7 +3,13 @@ import { Routes } from '@angular/router';
 import { AuthGuard } from '@auth0/auth0-angular';
 
 import { RoleGuard } from '@tamu-gisc/common/ngx/auth';
-import { GISDayRoles, siteFeatureGuard } from '@tamu-gisc/gisday/platform/ngx/common';
+import {
+  ALREADY_SIGNED_IN_PATH,
+  GISDayRoles,
+  logOut,
+  siteFeatureGuard,
+  startSignIn
+} from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { WrapperComponent } from './wrapper.component';
 
@@ -46,6 +52,12 @@ export const wrapperRoutes: Routes = [
         loadChildren: () => import('../competitions/competitions.routes').then((m) => m.competitionsRoutes)
       },
       {
+        // A judge's page, from the judging link emailed to them, with no account (#3183).
+        path: 'judging',
+        canActivate: [siteFeatureGuard('competitions')],
+        loadChildren: () => import('../judging/judging.routes').then((m) => m.judgingRoutes)
+      },
+      {
         path: 'contact',
         loadChildren: () => import('../contact/contact.routes').then((m) => m.contactRoutes)
       },
@@ -72,10 +84,28 @@ export const wrapperRoutes: Routes = [
         canActivate: [AuthGuard],
         loadChildren: () => import('../account/account.routes').then((m) => m.accountRoutes)
       },
-      // Both render nothing inside the wrapper: each used to lazy-load an empty NgModule with no routes
-      // of its own, and an empty `children` is the same route without the module (#1569).
-      { path: 'login', children: [] },
-      { path: 'logout', children: [] },
+      // `/login` and `/signup` start signing in, as the header's Login/Signup does (#3148). The FAQ page links to both;
+      // `/signup` had no route, so it was not found, and `/login` drew an empty page. One Auth0 page does both.
+      { path: 'login', canActivate: [startSignIn], children: [] },
+      { path: 'signup', canActivate: [startSignIn], children: [] },
+      {
+        // Where `/login` and `/signup` send a visitor already signed in (#3154): Auth0 would have sent them straight back,
+        // and the page they were on coming back looked like the link did nothing.
+        path: ALREADY_SIGNED_IN_PATH,
+        data: {
+          title: 'Already signed in',
+          heading: "You're already signed in",
+          showSignedInAs: true,
+          message: 'There is nothing more to sign in or sign up for. To use another account, log out first.',
+          links: [
+            { text: 'Continue to the site', to: '/' },
+            { text: 'Log out', to: '/logout' }
+          ]
+        },
+        loadChildren: () => import('../not-authed/not-authed.routes').then((m) => m.notAuthedRoutes)
+      },
+      // Logs out, as the header's Logout does (#3154); it used to render nothing (#1569).
+      { path: 'logout', canActivate: [logOut], children: [] },
       {
         path: 'forbidden',
         loadChildren: () => import('../not-authed/not-authed.routes').then((m) => m.notAuthedRoutes)
@@ -84,6 +114,19 @@ export const wrapperRoutes: Routes = [
         path: '',
         pathMatch: 'full',
         loadChildren: () => import('../landing/landing.routes').then((m) => m.landingRoutes)
+      },
+      {
+        // Last: an address the site does not know says so inside the site, instead of failing the router, which went
+        // to `/` and drew a blank white page (#1765). The address stays as typed.
+        path: '**',
+        data: {
+          message: "We couldn't find that page.",
+          links: [
+            { text: 'Home page', to: '/' },
+            { text: 'Sessions', to: '/sessions' }
+          ]
+        },
+        loadChildren: () => import('../not-authed/not-authed.routes').then((m) => m.notAuthedRoutes)
       }
     ]
   }

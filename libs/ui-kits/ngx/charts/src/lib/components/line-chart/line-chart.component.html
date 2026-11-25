@@ -1,0 +1,5 @@
+@if (isEmpty()) {
+<p class="line-chart-empty">Nothing to chart yet.</p>
+} @else {
+<div #plot class="line-chart" role="img" [attr.aria-label]="label()" [style.height.px]="height()"></div>
+}

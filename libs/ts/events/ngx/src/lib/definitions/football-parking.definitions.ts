@@ -9,6 +9,7 @@ import {
 
 import esri = __esri;
 import { EventPopups } from '../modules/popups/popups';
+import { arrowLineSymbol } from './common.definitions';
 
 /**
  * Football gameday transportation map.
@@ -202,20 +203,11 @@ const ROUTE_COLORS = {
   pedestrian: 'rgb(0, 92, 230)'
 };
 
-/** A solid line with a direction arrow at its end, used to re-symbolize the flat route layers. */
-const arrowLineSymbol = (color: string, width = 3): esri.SimpleLineSymbolProperties & { type: 'simple-line' } => ({
-  type: 'simple-line',
-  color,
-  width,
-  style: 'solid',
-  marker: { style: 'arrow', color, placement: 'end' }
-});
-
 /** Renderer for a route layer whose features are all a single travel type. */
 const routeRenderer = (color: string) =>
   ({
     type: 'simple',
-    symbol: arrowLineSymbol(color)
+    symbol: arrowLineSymbol({ color, width: 3 })
   }) as unknown as FeatureRenderer;
 
 const createCimHatchPolygonSymbol = (
@@ -399,11 +391,10 @@ const lotLabelingInfo = [
 ] as unknown as FeatureLabelingInfo;
 
 /**
- * `native` for every Football Parking Lots layer (the four vehicle modes and RV). Staff change a lot's
- * class during game day, to Lot Closed for example, by editing the service; polling it every minute
- * redraws the change for visitors who already have the map open, without a reload (#1587).
+ * `native` for every Football Parking Lots layer (the four vehicle modes and RV). They refresh on game day through
+ * the event's `gameDayRefresh`.
  */
-const lotsNative = (): FeatureNativeProps => hiddenNative({ labelingInfo: lotLabelingInfo, refreshInterval: 1 });
+const lotsNative = (): FeatureNativeProps => hiddenNative({ labelingInfo: lotLabelingInfo });
 
 /**
  * The gameday/micromobility/rideshare picture markers are pin-shaped (natural ~60x73, 0.82 ratio) but
@@ -788,6 +779,12 @@ export const FootballParkingConfiguration: EventConfiguration = {
   // scrambled" in #996: the entry map listed Bike Dismount Zones, Bike Veo Geofence, Micromobility
   // Parking Area, while the legend right below it listed the same three the other way round (#1433).
   referenceLayerListOrder: 'source',
+  // Staff change a lot's class during game day, to Lot Closed for example, by editing the service, so the lots of every
+  // vehicle mode and RV poll it (#1587). Nothing else on the map does.
+  gameDayRefresh: {
+    enabled: true,
+    layers: [...VEHICLE_MODES.map((mode) => mode.layers.lots), FOOTBALL_PARKING_LAYERS.FP_RV_PARKING_LOTS]
+  },
   defaultLayerOverrides: {
     'construction_zone-layer': {
       visible: false

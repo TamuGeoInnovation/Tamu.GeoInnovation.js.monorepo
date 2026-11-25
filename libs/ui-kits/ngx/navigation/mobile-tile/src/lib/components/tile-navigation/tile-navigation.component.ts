@@ -1,9 +1,8 @@
-import { Component, OnInit, OnDestroy, inject, output, input } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, output, input, signal } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, skip, takeUntil } from 'rxjs/operators';
 
 import { TileService } from '../../services/tile.service';
-import { baseShowHideAnimation, submenuShowHideAnimation, tileStaggerAnimation } from '../../animations/animations';
 import { TileSubmenuContainerComponent } from '../tile-submenu-container/tile-submenu-container.component';
 import { AsyncPipe } from '@angular/common';
 
@@ -12,7 +11,6 @@ import { AsyncPipe } from '@angular/common';
   templateUrl: './tile-navigation.component.html',
   styleUrls: ['./tile-navigation.component.scss'],
   providers: [TileService],
-  animations: [baseShowHideAnimation, submenuShowHideAnimation, tileStaggerAnimation],
   imports: [TileSubmenuContainerComponent, AsyncPipe]
 })
 export class TileNavigationComponent implements OnInit, OnDestroy {
@@ -48,9 +46,21 @@ export class TileNavigationComponent implements OnInit, OnDestroy {
    */
   public visible = this.service.menuActive.pipe(distinctUntilChanged());
 
+  /**
+   * True while the menu opens, when its tiles rise in one after another (libs/sass/motion's tile-stagger), and false
+   * once the last of them is in place, so tiles shown again on leaving a submenu do not stagger (#2278).
+   */
+  public readonly staggering = signal(false);
+
   private _$destroy: Subject<boolean> = new Subject();
 
   public ngOnInit() {
+    this.visible.pipe(takeUntil(this._$destroy)).subscribe((visible) => {
+      if (visible) {
+        this.staggering.set(true);
+      }
+    });
+
     const toggle = this.toggle();
     if (toggle !== undefined) {
       toggle.pipe(takeUntil(this._$destroy)).subscribe((v) => {
@@ -69,6 +79,15 @@ export class TileNavigationComponent implements OnInit, OnDestroy {
       });
     } else {
       console.warn(`No toggle observable for tile navigation provided.`);
+    }
+  }
+
+  /**
+   * The stagger runs from the last tile to the first, so the first tile's arrival ends it.
+   */
+  public tileEntered(event: AnimationEvent) {
+    if (event.animationName.includes('tile-stagger-in') && (event.target as Element).matches('tamu-gisc-tile:first-child')) {
+      this.staggering.set(false);
     }
   }
 

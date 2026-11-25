@@ -10,8 +10,9 @@
     vertical-align: middle;
     color: #616161;
 
+    // The chosen option's tick, as a site's brand gives it, else this blue (#3143).
     &.active {
-      color: #0079c1;
+      color: var(--radio-active-color, #0079c1);
     }
   }
 

@@ -44,7 +44,6 @@ export const MusterEventColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: MusterEventDefinitions.TRAFFIC_FLOW.id,
-    title: MusterEventDefinitions.TRAFFIC_FLOW.name,
     url: MusterEventDefinitions.TRAFFIC_FLOW.url,
     popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {

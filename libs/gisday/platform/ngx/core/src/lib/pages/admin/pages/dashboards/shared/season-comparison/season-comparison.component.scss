@@ -1,0 +1,18 @@
+// The year buttons above a dashboard's chart (#3215): the shared .button and its secondary variant, in a wrapping row.
+:host {
+  display: block;
+}
+
+.season-comparison {
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+}
+
+.season-comparison-label {
+  opacity: 0.75;
+}
+
+.season-comparison-loading {
+  margin-left: 0.25rem;
+}

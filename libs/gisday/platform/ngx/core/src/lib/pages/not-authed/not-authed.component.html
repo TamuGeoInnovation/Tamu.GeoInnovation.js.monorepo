@@ -1,10 +1,20 @@
 <section>
   <div class="small-partition">
     <div>
-      <h1 class="trailer-1">Sorry</h1>
+      <h1 class="trailer-1">{{ heading }}</h1>
 
       <div class="container12">
-        <p class="sub-section-heading">Either you have not logged in or you lack sufficient rights to view this page.</p>
+        @if (signedInAs$ | async; as who) {
+        <p class="sub-section-heading">You are signed in as {{ who }}.</p>
+        }
+        <p class="sub-section-heading">{{ message }}</p>
+
+        @if (links.length) {
+        <p class="leader-1">
+          @for (link of links; track link.to; let last = $last) {
+          <a [routerLink]="link.to">{{ link.text }}</a>@if (!last) { · } }
+        </p>
+        }
       </div>
     </div>
   </div>

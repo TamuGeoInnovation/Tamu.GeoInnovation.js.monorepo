@@ -17,6 +17,8 @@ describe('SearchSources', () => {
   // the partial fixture assignable without enumerating every unrelated connection.
   const connections = {
     basemapUrl: 'https://example.com/basemap',
+    buildingsUrl: 'https://example.com/buildings/FeatureServer/0',
+    surfaceLotsUrl: 'https://example.com/buildings/FeatureServer/6',
     departmentUrl: 'https://example.com/department',
     bikeRacksUrl: 'https://example.com/bike-racks',
     accessibleUrl: 'https://example.com/accessible',
@@ -40,6 +42,12 @@ describe('SearchSources', () => {
       layerId: 'poi-layer',
       name: 'Points of Interest',
       url: 'https://example.com/poi'
+    },
+    NATURE_RX: {
+      id: 'nature-rx',
+      layerId: 'nature-rx-layer',
+      name: 'Nature Rx',
+      url: 'https://example.com/nature-rx'
     },
     BUILDINGS: {
       id: 'buildings',
@@ -117,7 +125,7 @@ describe('SearchSources', () => {
 
   it('should return all search sources when no options are provided', () => {
     const result = SearchSources(connections, definitions);
-    expect(result.length).toBe(15); // Ensure the number of search sources matches
+    expect(result.length).toBe(17); // Ensure the number of search sources matches
   });
 
   it('should exclude specified search sources', () => {
@@ -125,7 +133,7 @@ describe('SearchSources', () => {
       exclude: ['BUILDING', 'BIKE_RACKS']
     };
     const result = SearchSources(connections, definitions, options);
-    expect(result.length).toBe(13); // Ensure the number of search sources matches after exclusion
+    expect(result.length).toBe(15); // Ensure the number of search sources matches after exclusion
     expect(result.find((source) => source.source === 'building')).toBeUndefined();
     expect(result.find((source) => source.source === 'bike-racks')).toBeUndefined();
   });
@@ -135,7 +143,7 @@ describe('SearchSources', () => {
       exclude: []
     };
     const result = SearchSources(connections, definitions, options);
-    expect(result.length).toBe(15); // Ensure the number of search sources matches
+    expect(result.length).toBe(17); // Ensure the number of search sources matches
   });
 
   it('should return an empty array if all search sources are excluded', () => {
@@ -154,6 +162,8 @@ describe('SearchSources', () => {
         'PARKING_LOT',
         'POINTS_OF_INTEREST_EXACT',
         'POINTS_OF_INTEREST',
+        'NATURE_RX_EXACT',
+        'NATURE_RX',
         'BIKE_RACKS',
         'BUS_STOPS_EXACT'
       ]
@@ -191,11 +201,12 @@ describe('SearchSources', () => {
     const bldgExact = result.find((source) => source.source === 'building-exact');
     const bldgExactAbbr = result.find((source) => source.source === 'building-exact-abbr');
 
-    // `?bldg=1510` style links query the building Number field.
+    // `?bldg=1510` style links query the building's unpadded `number` field, on the buildings service (#2707).
     expect(bldgExact?.urlQueryParam).toBe('bldg');
     expect(bldgExact?.urlQueryParamAliases).toEqual(['Bldg']);
+    expect(bldgExact?.url).toBe(connections.buildingsUrl);
     expect(bldgExact?.queryParams?.where).toEqual({
-      keys: ['Number'],
+      keys: ['number'],
       operators: ['=']
     });
 
@@ -203,7 +214,7 @@ describe('SearchSources', () => {
     expect(bldgExactAbbr?.urlQueryParam).toBe('BldgAbbrv');
     expect(bldgExactAbbr?.urlQueryParamAliases).toEqual(['bldgabbrv', 'BldgAbbr', 'bldgabbr']);
     expect(bldgExactAbbr?.queryParams?.where).toEqual({
-      keys: ['BldgAbbrev'],
+      keys: ['bldgabbrev'],
       operators: ['='],
       transformations: ['UPPER']
     });
@@ -216,10 +227,12 @@ describe('SearchSources', () => {
     expect(parkingLot?.urlQueryParam).toBe('lot');
     expect(parkingLot?.urlQueryParamAliases).toEqual(['Lot']);
 
-    // `?lot=077` (zero-padded, as TS parking map links are) has to match on FAC_CODE; `?lot=77`
-    // matches on Name. Dropping either key makes one of the two link styles unresolvable.
+    // `?lot=077` (zero-padded, as TS parking map links are) has to match on fac_code; `?lot=77`
+    // matches on name. Dropping either key makes one of the two link styles unresolvable. The lots come from the
+    // surface lots service, whose field names are lower case (#2722).
+    expect(parkingLot?.url).toBe(connections.surfaceLotsUrl);
     expect(parkingLot?.queryParams?.where).toEqual({
-      keys: ['LotName', 'Name', 'FAC_CODE'],
+      keys: ['lotname', 'name', 'fac_code'],
       operators: ['LIKE', 'LIKE', 'LIKE'],
       wildcards: ['includes', 'includes', 'includes'],
       transformations: ['UPPER', 'UPPER', 'UPPER']
@@ -228,7 +241,54 @@ describe('SearchSources', () => {
     // Multiple polygons share a lot's name and facility code. Without an explicit ordering the
     // service answers in OBJECTID order and `features[0]` lands on whichever loading, restricted,
     // or visitor sub-area was digitized first - the Lot 77 and Lot 97 deep link defect.
-    expect(parkingLot?.queryParams?.orderByFields).toBe('AggieMap DESC, CIT_CODE ASC');
-    expect(parkingLot?.scoringKeys).toEqual(['attributes.Name', 'attributes.FAC_CODE', 'attributes.LotName']);
+    expect(parkingLot?.queryParams?.orderByFields).toBe('aggiemap DESC, cit_code ASC');
+    expect(parkingLot?.scoringKeys).toEqual(['attributes.name', 'attributes.fac_code', 'attributes.lotname']);
+  });
+
+  it('resolves the garage search against Campus Structures rather than the retired raster basemap', () => {
+    const sources = SearchSources(connections, definitions);
+    const garage = sources.find((source) => source.source === 'parking-garage');
+
+    // The raster basemap was abandoned on 9 November 2026 and this was the last visitor-facing thing reading it
+    // (#3425). Its Garage Parking layer answered 400 on count queries at random and is not maintained.
+    expect(garage?.url).toBe(connections.buildingsUrl);
+    expect(garage?.url).not.toBe(`${connections.basemapUrl}/0`);
+
+    // Campus Structures holds every building on campus, so without this the garage search answers with halls and
+    // offices. `LIKE 'GARAGE%'` rather than `= 'GARAGE'` because a privately operated garage is `GARAGE PVT`, which
+    // is three of the eleven - Century Square's two and Park West's. It also excludes "TEEX ITSI Garage & Offices",
+    // which is `RESEARCH` and which a search on the name alone returns.
+    expect(garage?.queryParams?.fixedWhere).toBe("type LIKE 'GARAGE%'");
+
+    // `bldgabbrev` carries the same codes the retired layer's `Name` did - CCG, SSG, UCG, NSG, SBG, WCG, PRG, PC26,
+    // PC27 - so a `?garage=CCG` link made before this still resolves. Dropping it breaks every shared garage link.
+    expect(garage?.queryParams?.where?.keys).toEqual(['bldgname', 'bldgabbrev', 'number']);
+
+    // The name field moved with the service: lot fields are gone, and reading `LotName` here is what rendered the
+    // popup empty in #1163.
+    expect(garage?.displayTemplate).toBe('{attributes.bldgname}');
+
+    // Garages are not in the parking lots layer, so they keep their own link rather than `?lot=`.
+    expect(garage?.urlQueryParam).toBe('garage');
+  });
+
+  it('keeps garages out of the typed building search, but not out of the deep-link sources', () => {
+    const sources = SearchSources(connections, definitions);
+    const typed = sources.find((source) => source.source === 'building');
+    const byNumber = sources.find((source) => source.source === 'building-exact');
+    const byAbbreviation = sources.find((source) => source.source === 'building-exact-abbr');
+
+    // The garages became rows of Campus Structures in #3425, so without this every garage appears twice in the
+    // results - once under Building and once under Parking Garage, the same row from the same layer.
+    expect(typed?.queryParams?.fixedWhere).toBe("type IS NULL OR type NOT LIKE 'GARAGE%'");
+
+    // `NULL NOT LIKE 'GARAGE%'` is NULL, not true, so the shorter clause drops every row with an unset `type`.
+    // There are none today, which is exactly why a regression here would be invisible.
+    expect(typed?.queryParams?.fixedWhere).toContain('type IS NULL OR');
+
+    // The exact sources resolve deep links, and a `?bldg=` link made to a garage has to keep working, so they
+    // deliberately do not carry the filter. Adding it here would break those links silently.
+    expect(byNumber?.queryParams?.fixedWhere).toBeUndefined();
+    expect(byAbbreviation?.queryParams?.fixedWhere).toBeUndefined();
   });
 });

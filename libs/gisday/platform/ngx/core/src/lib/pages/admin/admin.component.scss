@@ -1,7 +1,21 @@
-// An admin table wider than the screen (speakers' emails, users' ids) scrolls inside the content column
-// instead of making the whole page scroll sideways on a phone (#1998).
+// No admin table scrolls sideways (#2806): each takes the content column's width, and long values (speakers' emails,
+// users' ids, titles) wrap inside their cells instead of widening the table. This replaces the content column's
+// sideways scroll (#1998), which the shared table style's single-line cells needed.
+// The admin pages use the screen's width on a desktop, as every GIS Day page does on a phone (95%, _mobile.scss), so
+// a table with many columns has room for them; the content column takes what the menu leaves.
+.internal > .container12 {
+  width: 95%;
+}
+
+// The menu keeps its width; the content column takes the rest.
+.sidebar {
+  flex: 0 0 auto;
+}
+
 .content {
-  overflow-x: auto;
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
 }
 
 .admin-menu-toggle {
@@ -10,6 +24,17 @@
 }
 
 ::ng-deep {
+  .content table.floating-table {
+    width: 100%;
+
+    // Between words; a single word longer than its cell (an email, an id) breaks only then.
+    td,
+    th {
+      white-space: normal;
+      overflow-wrap: break-word;
+    }
+  }
+
   tamu-gisc-map {
     display: block;
     height: 50vh;

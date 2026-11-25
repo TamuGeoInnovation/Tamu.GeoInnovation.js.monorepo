@@ -1,15 +1,10 @@
-import {
-  BadRequestException,
-  HttpException,
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-  UnprocessableEntityException
-} from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { from, groupBy, mergeMap, toArray } from 'rxjs';
 import { DeepPartial, In, Repository } from 'typeorm';
+
+import { judgedCompetitionProblem } from '@tamu-gisc/gisday/common';
 
 import {
   EntityRelationsLUT,
@@ -22,13 +17,59 @@ import {
   Tag,
   UserRsvp
 } from '../entities/all.entity';
-import { BaseProvider } from '../_base/base-provider';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { EventAttendanceDto } from './dto/event-attendance.dto';
 import { SeasonService } from '../season/season.service';
+import { rethrowHttp } from '../_base/rethrow-http';
+import { SeasonScopedProvider, withoutIdentity } from '../_base/season-scoped-provider';
 
 @Injectable()
-export class EventProvider extends BaseProvider<Event> {
+export class EventProvider extends SeasonScopedProvider<Event> {
+  protected get seasons() {
+    return this.seasonProvider;
+  }
+
+  protected readonly recordsName = 'sessions';
+
+  protected forSeason(seasonGuid: string) {
+    return this.getEventsForSeason(seasonGuid);
+  }
+
+  /** A copy of a session goes on the season's first day, so the season is loaded with its days, by date. */
+  protected override async copyTarget(seasonGuid: string) {
+    const season = await this.seasonRepo
+      .createQueryBuilder('season')
+      .leftJoinAndSelect('season.days', 'day')
+      .where('season.guid = :guid', { guid: seasonGuid })
+      .orderBy('day.date', 'ASC')
+      .getOne();
+
+    if (season && season.days.length === 0) {
+      throw new UnprocessableEntityException('Season has no days.');
+    }
+
+    return season;
+  }
+
+  /**
+   * A copy of a session is the session on the season's first day, without its speakers, broadcast, location, course
+   * credit or sponsors, which belong to the old season. It is judged afresh (#3183): open, with judges chosen from its
+   * own speakers.
+   */
+  protected override copyOf(record: Event, season: Season) {
+    const copy = withoutIdentity(record) as Partial<Event>;
+
+    delete copy.speakers;
+    delete copy.broadcast;
+    delete copy.location;
+    delete copy.courseCredit;
+    delete copy.sponsors;
+    delete copy.judges;
+    delete copy.judgingClosed;
+
+    return { ...copy, day: season.days[0] } as DeepPartial<Event>;
+  }
+
   constructor(
     @InjectRepository(Event) public eventRepo: Repository<Event>,
     @InjectRepository(EventLocation) private eventLocationRepo: Repository<EventLocation>,
@@ -44,19 +85,7 @@ export class EventProvider extends BaseProvider<Event> {
   }
 
   public async getEventsForActiveSeason() {
-    const season = await this.seasonProvider.findOneActive();
-
-    try {
-      return this.getEventsForSeason(season.guid);
-    } catch (error) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (error instanceof HttpException) {
-        throw error;
-      }
-
-      throw new InternalServerErrorException('Could not get events for active season.');
-    }
+    return this.forActiveSeason();
   }
 
   public async getEventsForSeason(seasonGuid: string) {
@@ -65,6 +94,10 @@ export class EventProvider extends BaseProvider<Event> {
         .createQueryBuilder('event')
         .leftJoinAndSelect('event.day', 'eventDay')
         .leftJoinAndSelect('event.location', 'location')
+        // Its place, so a site that lists only some organizations' sessions can tell which are its own (#2986).
+        .leftJoinAndSelect('location.place', 'place')
+        // Its tags, so the admin Events list can find the sessions with none (#3034).
+        .leftJoinAndSelect('event.tags', 'tags')
         .where('event.season = :guid', { guid: seasonGuid })
         .orderBy('eventDay.date', 'ASC')
         .addOrderBy('event.startTime', 'ASC')
@@ -113,19 +146,22 @@ export class EventProvider extends BaseProvider<Event> {
       newEvent.speakers = existingSpeakers;
       newEvent.tags = existingTags;
 
+      // Its judging (#3183), checked as an update's is: its judges among its speakers.
+      Object.assign(
+        newEvent,
+        judgingOf(
+          event as unknown as UpdateEventDto,
+          existingSpeakers.map((s) => s.guid)
+        )
+      );
+
       const eventEnt = this.eventRepo.create(newEvent);
 
       if (eventEnt) {
         return eventEnt.save();
       }
     } catch (error) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (error instanceof HttpException) {
-        throw error;
-      }
-
-      throw new UnprocessableEntityException(null, 'Could not insert new Event');
+      rethrowHttp(error, new UnprocessableEntityException(null, 'Could not insert new Event'));
     }
   }
 
@@ -149,26 +185,42 @@ export class EventProvider extends BaseProvider<Event> {
         return this.tagRepo.create({ guid: t });
       });
       const speakers = (event.speakers ?? []).map((t) => this.speakerRepo.create({ guid: t }));
+      // Its judging (#3183): the competition, whether closed, and its judges, who must be among its speakers as sent.
+      const { judges, ...fields } = event;
+      const judging = judgingOf({ ...fields, judges }, event.speakers ?? []);
 
       const newEnt = this.eventRepo.create({
         ...existingEvent,
-        ...event,
+        ...fields,
+        ...judging,
         tags,
         speakers
       });
 
       return newEnt.save();
     } catch (error) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (error instanceof HttpException) {
-        throw error;
-      }
-
       // Was "Could not insert new Event" -- copy-pasted from insertEvent, and misleading when it
       // surfaces on an update.
-      throw new UnprocessableEntityException(null, 'Could not update Event');
+      rethrowHttp(error, new UnprocessableEntityException(null, 'Could not update Event'));
     }
+  }
+
+  /**
+   * A session's judging (#3183), for its admin form: the competition its judges score, whether judging is closed, and its
+   * judges by id. Its own route, so the public session page never lists the judges.
+   */
+  public async getJudging(guid: string) {
+    const event = await this.eventRepo.findOne({ where: { guid }, relations: { judges: true } });
+
+    if (!event) {
+      throw new NotFoundException();
+    }
+
+    return {
+      judgedCompetition: event.judgedCompetition ?? null,
+      judgingClosed: Boolean(event.judgingClosed),
+      judges: (event.judges ?? []).map((j) => j.guid)
+    };
   }
 
   public async getEntitiesByDay() {
@@ -286,63 +338,50 @@ export class EventProvider extends BaseProvider<Event> {
    * Lookups are performed for the provided season guid and event guids
    */
   public async copyEventsIntoSeason(seasonGuid: string, eventGuids: Array<string>) {
-    // User query builder to get season by guid, getting days relation, and ordering by date
-    const season = await this.seasonRepo
-      .createQueryBuilder('season')
-      .leftJoinAndSelect('season.days', 'day')
-      .where('season.guid = :guid', { guid: seasonGuid })
-      .orderBy('day.date', 'ASC')
-      .getOne();
-
-    if (!season) {
-      throw new NotFoundException();
-    }
-
-    if (season.days.length === 0) {
-      throw new UnprocessableEntityException(null, 'Season has no days');
-    }
-
-    const events = await this.eventRepo.find({
-      where: {
-        guid: In(eventGuids)
-      }
-    });
-
-    // Was `if (!events)`. `find` resolves to an array, never null, so this never fired and copying
-    // guids that match nothing answered 200 with an empty list rather than saying so. Sibling
-    // providers check the length, which is the intent.
-    if (!events || events.length === 0) {
-      throw new NotFoundException();
-    }
-
-    const newEvents = events.map((event) => {
-      delete event.speakers;
-      delete event.broadcast;
-      delete event.location;
-      delete event.courseCredit;
-      delete event.sponsors;
-      delete event.guid;
-      delete event.created;
-      delete event.updated;
-
-      const newEvent = this.eventRepo.create({
-        ...event,
-        day: season.days[0]
-      });
-
-      return newEvent.save();
-    });
-
-    try {
-      return Promise.all(newEvents);
-    } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      throw new InternalServerErrorException('Could not copy events into season');
-    }
+    return this.copyIntoSeason(seasonGuid, eventGuids);
   }
+}
+
+/**
+ * The judging fields of a session's save (#3183), checked, as the event to be saved carries them: the competition, none or
+ * one of `JUDGED_COMPETITIONS`; whether judging is closed; and the judges, each among `speakers`, the session's speakers as
+ * saved with it (the API refuses any other). A field not sent is left out, so it stays as it was.
+ */
+export function judgingOf(
+  event: Pick<UpdateEventDto, 'judgedCompetition' | 'judgingClosed' | 'judges'>,
+  speakers: Array<string>
+) {
+  const judging: DeepPartial<Event> = {};
+
+  if (event.judgedCompetition !== undefined) {
+    const problem = judgedCompetitionProblem(event.judgedCompetition);
+
+    if (problem) {
+      throw new BadRequestException(problem);
+    }
+
+    judging.judgedCompetition = event.judgedCompetition || null;
+  }
+
+  if (event.judgingClosed !== undefined) {
+    if (typeof event.judgingClosed !== 'boolean') {
+      throw new BadRequestException('Judging closed is true or false.');
+    }
+
+    judging.judgingClosed = event.judgingClosed;
+  }
+
+  if (event.judges !== undefined) {
+    if (!Array.isArray(event.judges) || event.judges.some((j) => typeof j !== 'string')) {
+      throw new BadRequestException('Name the judges by their ids.');
+    }
+
+    if (event.judges.some((j) => !speakers.includes(j))) {
+      throw new BadRequestException("A judge must be one of the session's speakers.");
+    }
+
+    judging.judges = [...new Set(event.judges)].map((guid) => ({ guid }) as Speaker);
+  }
+
+  return judging;
 }

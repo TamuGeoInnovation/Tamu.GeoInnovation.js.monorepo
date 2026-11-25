@@ -28,9 +28,15 @@ describe('FileComponent', () => {
     component.writeValue(true);
     expect(component.checked).toBeTruthy();
   });
-  it('should correctly evaluate setDisabledState', () => {
+  // #2964: disabling the picker is not a choice of file. It used to put `true` in as the value and tell the form.
+  it('leaves the value alone when the form disables it, and tells the form nothing', () => {
+    const onChange = vi.fn();
+    component.registerOnChange(onChange);
+
     component.setDisabledState(true);
-    expect(component.checked).toBeTruthy();
+
+    expect(component.checked).toBeFalsy();
+    expect(onChange).not.toHaveBeenCalled();
   });
 
   /**

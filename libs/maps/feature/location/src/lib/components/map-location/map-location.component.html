@@ -1,0 +1,11 @@
+<button
+  type="button"
+  class="map-location"
+  [class.on]="state() === 'on'"
+  [disabled]="state() === 'blocked'"
+  [attr.aria-label]="label[state()]"
+  [title]="label[state()]"
+  (click)="locate()"
+>
+  <i class="material-icons" aria-hidden="true">{{ icon[state()] }}</i>
+</button>

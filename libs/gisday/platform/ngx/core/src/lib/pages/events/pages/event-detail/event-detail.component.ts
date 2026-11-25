@@ -1,12 +1,13 @@
 import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   catchError,
+  EMPTY,
   filter,
   finalize,
+  forkJoin,
   interval,
   map,
   mapTo,
@@ -20,7 +21,8 @@ import {
   takeUntil
 } from 'rxjs';
 
-import { Event, EventAttendanceDto, GisDayAppMetadata, Speaker } from '@tamu-gisc/gisday/platform/data-api';
+import { CheckIn, Event, EventAttendanceDto, GisDayAppMetadata, Speaker } from '@tamu-gisc/gisday/platform/data-api';
+import { Auth0UserProfile } from '@tamu-gisc/common/nest/auth';
 import {
   CheckinService,
   EventService,
@@ -30,7 +32,7 @@ import {
 } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { GISDayRoles, sortSpeakersByAffiliation } from '@tamu-gisc/gisday/platform/ngx/common';
+import { GISDayRoles, sortSpeakersByName } from '@tamu-gisc/gisday/platform/ngx/common';
 import { NgIf, NgFor, AsyncPipe, DatePipe } from '@angular/common';
 import { AccordionComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 import { AccordionHeaderComponent } from '@tamu-gisc/ui-kits/ngx/layout';
@@ -45,8 +47,11 @@ import {
   CHECK_IN_CODE_MESSAGE,
   CHECK_IN_CODE_PARAM,
   CHECK_IN_ZONE_EVENT_MODE,
+  checkInOpensMessage,
   checkInWindow,
-  checksInByCode
+  checksInByCode,
+  formatCentral,
+  OUTSIDE_SESSION_TIME_LABEL
 } from '@tamu-gisc/gisday/common';
 import { SiteHasPipe } from '@tamu-gisc/gisday/platform/ngx/common';
 import { QrCodeComponent } from '@tamu-gisc/ui-kits/ngx/qr-code';
@@ -79,6 +84,7 @@ import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 })
 export class EventDetailComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly auth = inject(AuthService);
   private readonly eventService = inject(EventService);
   private readonly checkinService = inject(CheckinService);
@@ -106,6 +112,18 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   );
   public eventLive$: Observable<boolean>;
   public eventElapsed$: Observable<boolean>;
+
+  /**
+   * When check-in opens, while it has not yet (#3077): "Check-in opens at 2:00 PM.", in Central time.
+   */
+  public checkInOpens$: Observable<string | null>;
+
+  /**
+   * The session's check-ins for admins (#2635), or why they could not be loaded.
+   */
+  public sessionCheckIns$: Observable<{ rows: Array<SessionCheckInRow>; failure?: string }>;
+
+  public readonly outsideSessionTimeLabel = OUTSIDE_SESSION_TIME_LABEL;
   public isPastSeason$: Observable<boolean>;
 
   public attendanceForm: UntypedFormGroup;
@@ -118,15 +136,6 @@ export class EventDetailComponent implements OnInit, OnDestroy {
    * Why the last check-in did not work, shown beside the button.
    */
   public readonly checkInFailure = signal<string>(undefined);
-
-  /**
-   * The code from the session's QR code, which its link carries (#2560). A hybrid or virtual session
-   * offers the Check In button only with it.
-   */
-  public readonly checkInCode = toSignal(
-    this.route.queryParamMap.pipe(map((params) => params.get(CHECK_IN_CODE_PARAM) ?? undefined)),
-    { initialValue: undefined }
-  );
 
   public readonly checkInCodeMessage = CHECK_IN_CODE_MESSAGE;
 
@@ -179,12 +188,28 @@ export class EventDetailComponent implements OnInit, OnDestroy {
 
     this.event$ = this.route.params.pipe(
       map((params) => params['guid']),
-      switchMap((eventGuid) => this.eventService.getEvent(eventGuid)),
+      switchMap((eventGuid) =>
+        this.eventService.getEvent(eventGuid).pipe(
+          catchError((err) => {
+            // A session the visitor may not see, such as one hidden from the public (#3354), answers 404, and the page
+            // drew nothing (#3396). It shows the site's own not-found page instead: an address no route knows reaches the
+            // catch-all, with the address in the browser left as it was. Anything else fails as before.
+            if (err instanceof HttpErrorResponse && err.status === 404) {
+              this.router.navigateByUrl('/not-found', { skipLocationChange: true });
+
+              return EMPTY;
+            }
+
+            throw err;
+          })
+        )
+      ),
       shareReplay()
     );
 
     // Grouped by company, then by name, so the people from one company sit together (#1769).
-    this.presenters$ = this.event$.pipe(map((event) => sortSpeakersByAffiliation(event?.speakers)));
+    // By last name, then first name, A to Z, not grouped by company (#3196, which replaced #1769's grouping).
+    this.presenters$ = this.event$.pipe(map((event) => sortSpeakersByName(event?.speakers)));
 
     this.isPastSeason$ = this.event$.pipe(
       switchMap((event) => this.seasonService.isPastSeasonDay(event?.day?.guid)),
@@ -252,16 +277,18 @@ export class EventDetailComponent implements OnInit, OnDestroy {
         });
       });
 
-    // Check-in is open from the session's start until 15 minutes after its end: the same rule the API
-    // applies (#1795), from libs/gisday/common. A time that cannot be read (#1772) means the session is
-    // never live, rather than an error.
+    // Check-in is open from the session's own minutes before its start until its minutes after its end, by default 5
+    // and 10 (#3209): the same rule the API applies (#1795), from libs/gisday/common. A time that cannot be read (#1772)
+    // means the session is never live, rather than an error. A session open at any time (#2635) is always live and
+    // never over, as the API accepts it at any time.
     const parsedDates = this.event$.pipe(
       map((event) => {
-        const window = checkInWindow(event?.day?.date, event?.startTime, event?.endTime);
+        const window = checkInWindow(event?.day?.date, event?.startTime, event?.endTime, event);
 
         return {
           start: window?.opens ?? null,
-          end: window?.closes ?? null
+          end: window?.closes ?? null,
+          anyTime: event?.checkInAnyTime === true
         };
       }),
       shareReplay()
@@ -273,7 +300,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
           startWith(0),
           map(() => {
             const now = new Date();
-            return startEndTimes.end !== null && now > startEndTimes.end;
+            return !startEndTimes.anyTime && startEndTimes.end !== null && now > startEndTimes.end;
           })
         );
       })
@@ -286,14 +313,60 @@ export class EventDetailComponent implements OnInit, OnDestroy {
           map(() => {
             const now = new Date();
             return (
-              startEndTimes.start !== null &&
-              startEndTimes.end !== null &&
-              now >= startEndTimes.start &&
-              now <= startEndTimes.end
+              startEndTimes.anyTime ||
+              (startEndTimes.start !== null &&
+                startEndTimes.end !== null &&
+                now >= startEndTimes.start &&
+                now <= startEndTimes.end)
             );
           })
         );
       })
+    );
+
+    this.checkInOpens$ = parsedDates.pipe(
+      switchMap((startEndTimes) => {
+        return interval(1000).pipe(
+          startWith(0),
+          map(() => {
+            const now = new Date();
+
+            return !startEndTimes.anyTime && startEndTimes.start !== null && now < startEndTimes.start
+              ? checkInOpensMessage(startEndTimes.start, now)
+              : null;
+          })
+        );
+      })
+    );
+
+    // Admins see the session's check-ins, each marked when made outside its time (#2635). Names come from
+    // the site's users; without them (an account with no `read:users`, or Auth0 not reachable) the
+    // account id stands in. Reloaded with the page's own check-in.
+    this.sessionCheckIns$ = this.isModerator$.pipe(
+      filter((isModerator) => isModerator),
+      switchMap(() => this._refresh$.pipe(startWith(true))),
+      switchMap(() => this.event$.pipe(take(1))),
+      switchMap((event) =>
+        forkJoin([
+          this.checkinService.getCheckinsForEvent(event.guid),
+          this.us.getUsers().pipe(
+            map((list) => list.users),
+            catchError(() => of([]))
+          )
+        ]).pipe(
+          map(([checkIns, users]) => ({ rows: sessionCheckInRows(checkIns, users) })),
+          catchError((err) =>
+            of({
+              rows: [],
+              failure:
+                err instanceof HttpErrorResponse && err.status === 403
+                  ? "Your account cannot see this session's check-ins. It needs the read:checkins permission."
+                  : "This session's check-ins could not be loaded."
+            })
+          )
+        )
+      ),
+      shareReplay()
     );
   }
 
@@ -340,6 +413,14 @@ export class EventDetailComponent implements OnInit, OnDestroy {
       });
   }
 
+  /**
+   * Signs in, or signs up, and comes back to this page with its address as it was, a QR code's check-in code
+   * included (#3077), as the header's Login does.
+   */
+  public signIn() {
+    this.auth.login({ appState: { target: this.router.url } });
+  }
+
   public checkin() {
     this.checkInFailure.set(undefined);
 
@@ -348,13 +429,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
         take(1),
         switchMap((event) =>
           this._checkInPosition(event).pipe(
-            switchMap((position) =>
-              this.checkinService.insertUserCheckin(
-                event.guid,
-                position,
-                this.needsCheckInCode(event) ? this.checkInCode() : undefined
-              )
-            )
+            switchMap((position) => this.checkinService.insertUserCheckin(event.guid, position))
           )
         )
       )
@@ -374,6 +449,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
    * the location is inside the zone.
    */
   public needsCheckInLocation(event: Partial<Event>): boolean {
+    // A phone that cannot give its location checks in with the session's QR code instead, on its own page (#3081).
     return event?.mode === CHECK_IN_ZONE_EVENT_MODE && isLatLonPolygon(event?.location?.checkInZone);
   }
 
@@ -386,14 +462,14 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Shows an organizer the session's check-in QR code, which holds a link to this page with the code.
+   * Shows an organizer the session's check-in QR code, which holds a link to its check-in page with the code (#3081).
    */
   public showCheckInCode(event: Partial<Event>) {
     this.checkInCodeFailure.set(undefined);
 
     this.checkinService.getCheckInCode(event.guid).subscribe({
       next: ({ code }) => {
-        const link = new URL(`/sessions/details/${event.guid}`, window.location.origin);
+        const link = new URL(`/sessions/checkin/${event.guid}`, window.location.origin);
         link.searchParams.set(CHECK_IN_CODE_PARAM, code);
 
         this.checkInLink.set(link.toString());
@@ -491,6 +567,47 @@ export class EventDetailComponent implements OnInit, OnDestroy {
     });
   }
 }
+
+/**
+ * One check-in in the admins' list on a session's page (#2635).
+ */
+export interface SessionCheckInRow {
+  /** The attendee's name, else their email, else their account id. */
+  who: string;
+  email?: string;
+  /** When, in Central time with its zone, such as `Nov 3, 2:15 PM CST`. */
+  at: string;
+  outsideSessionTime: boolean;
+}
+
+/**
+ * The admins' list of a session's check-ins, naming each attendee from the site's users where possible.
+ */
+export function sessionCheckInRows(
+  checkIns: Array<Partial<CheckIn>>,
+  users: Array<Partial<Auth0UserProfile>>
+): Array<SessionCheckInRow> {
+  const byId = new Map((users ?? []).filter((u) => u?.user_info?.id).map((u) => [u.user_info.id, u.user_info]));
+
+  return (checkIns ?? []).map((c) => {
+    const user = byId.get(c.accountGuid);
+
+    return {
+      who: user?.name || user?.email || c.accountGuid,
+      email: user?.name && user?.email ? user.email : undefined,
+      at: c.created ? formatCentral(c.created, CENTRAL_TIME) : '',
+      outsideSessionTime: c.outsideSessionTime === true
+    };
+  });
+}
+
+const CENTRAL_TIME: Omit<Intl.DateTimeFormatOptions, 'timeZone'> = {
+  month: 'short',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: '2-digit',
+  timeZoneName: 'short'
+};
 
 /**
  * What to tell an attendee whose check-in did not work: the API's reason, such as being outside the

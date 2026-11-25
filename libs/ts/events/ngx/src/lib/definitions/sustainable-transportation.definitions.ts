@@ -183,12 +183,18 @@ export const SustainableTransportationTs: AggiemapCustomMapConfiguration = {
   sources: SustainableTransportationColdLayerSources,
   references: SUSTAINABLE_TRANSPORTATION_LAYERS,
   type: 'general-map',
+  // On production since #2895: the maintainer settled #2742's open question on 13 November 2026 and the bike layers
+  // stay. They read production's TS/BikeMap on every environment, which the development GIS server serves only with a
+  // token, so a development build still reads it from production (#2744).
   discover: {
     id: SustainableTransportationConfiguration.id,
     name: SustainableTransportationConfiguration.name,
     description: 'Bike amenities and EV charging locations for Main Campus and the RELLIS Campus.',
     source: 'internal',
     type: 'parking',
+    // In the Transportation section, beside Micromobility (#2742). With `parkingCategory` and no `mapType` it was
+    // listed nowhere, as Micromobility was before #2738, and reachable only by its link.
+    mapType: 'transportation',
     parkingCategory: 'general',
     keywords: [
       'sustainable transportation',

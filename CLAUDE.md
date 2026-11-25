@@ -31,7 +31,7 @@ Ten places, each with one job.
 | [`docs/testing-maps.md`](docs/testing-maps.md) | Which signal to wait for when a test needs a map to be finished, and why `ready` is not the one for a screenshot. |
 | [`docs/build-times.md`](docs/build-times.md) | How long runs and page loads take, so a change meant to speed something up can be shown to have done it: before-and-after comparisons and what they show, and the run files in [`docs/build-times/runs/`](docs/build-times/runs) the scripts write when asked. Measurements, not rules. |
 | [`docs/gisday-local.md`](docs/gisday-local.md) | How to run the whole GIS Day site on one machine with `scripts/gisday-local.sh`: the containers, the settings kept outside the repository, and what works locally and what does not. |
-| [`docs/gisday-migrations.md`](docs/gisday-migrations.md) | How the GIS Day database schema is changed: the migration commands, the process from entity to production, and what has been proven. Read before editing a GIS Day entity. |
+| [`docs/gisday-migrations.md`](docs/gisday-migrations.md) | How the GIS Day database schema is changed: the migration commands, the process from entity to production, and what has been proven. Read before editing a GIS Day entity, **and before changing any production GIS Day data**: it says where the scripts that do that are kept. |
 | [`docs/releases/unreleased.md`](docs/releases/unreleased.md) | Day-to-day state **anyone** picking this up needs: what has merged since the last production release, where it is deployed, what still needs a decision, and work in flight. [`CLAUDE_SETUP.md`](CLAUDE_SETUP.md) sends a new session here first. |
 | The `cloud-mailbox` branch | The cloud session's current batch (`cloud/TASKS.md`) and its reports (`cloud/reports/`). Written by the desktop and cloud sessions; never merged. See [The cloud session](#the-cloud-session). |
 | The `work-mailbox` branch | The work machine's current batch of test runs (`work/TASKS.md`) and its reports (`work/reports/`). Written by the home and work sessions; never merged. See [The work machine](#the-work-machine). |
@@ -75,7 +75,7 @@ for each target the projects that target's own workflow excludes (lint from `lin
 steps outside Nx, today `npx tsc -p test/smoke/aggiemap` (#2286), writes a log, and exits with the
 check's exit code, which fails if any target or step failed. A `lint.yml` step it cannot run as CI does
 stops it before it starts. `bash scripts/check-in-volume.test.sh` tests how it reads those lists and
-steps, and `bash scripts/run-times.test.sh` the run-time files it writes. **It checks only what is committed**; uncommitted edits are not seen. `all` in place
+steps, and `bash scripts/run-times.test.sh` the run-time files it writes (both from Git Bash, as above). **It checks only what is committed**; uncommitted edits are not seen. `all` in place
 of `affected` checks every project. Run `git fetch origin` first if `origin/development` is old.
 
 **Not one app you picked — every affected app.** Building only the app you were working in is what the
@@ -110,11 +110,27 @@ an hour before. The script keeps the Nx cache in the volume, so an unchanged tas
 with `-m 16g` and `--parallel=8` (peak memory measured: 10.4 GB). Do not add `--skip-nx-cache`.
 On a smaller machine, set `CHECK_MEMORY` (default `16g`) and `CHECK_PARALLEL` (default `8`) to lower them (#2498).
 
+**A volume and a worktree both last until the branch merges, and nothing used to remove either.** That is
+how the work computer reached **0 bytes free of 1,907 GB** on 24 November 2026: 460 worktrees at 589 MiB
+(about 271 GB) and 323 `tamu-js-*` volumes at 2.7 GiB (about 853 GB, inside the WSL2 disk image). No check
+of any kind could run on it. **A check sweeps before it runs.** Below `CHECK_SWEEP_FREE_GB` (60 GiB) `scripts/check-in-volume.sh` runs
+`scripts/tidy.sh --yes` first - removing worktrees whose pull request has merged and `tamu-js-<issue>`
+volumes whose issue is closed - and only then refuses, below `CHECK_MIN_FREE_GB` (20 GiB). The watermark is
+well above the threshold on purpose: a sweep that waits until a check is already blocked has waited too
+long, and a guard on its own only turns an outage into a chore that nobody does. `bash scripts/tidy.sh`
+reports without removing anything, on any machine. **Removing a volume frees space inside the Docker disk image, which never shrinks on its own.** Every check
+adds about 2.6 GiB to that file for good, which is how it reached 975 GB unnoticed. Every sweep now prints
+its size and, past `TIDY_IMAGE_MAX_GB` (300 GiB), the four steps that reclaim it: stop Docker Desktop,
+`wsl --shutdown`, compact `docker_data.vhdx` with `diskpart` as Administrator, start Docker Desktop.
+**Compacting is never automatic**, because stopping Docker kills any check another session on the same
+machine is running, and a check killed mid-write leaves the stale Vite cache and Nx task record that hang
+the next start in somebody else's checkout (#2650, #3406).
+
 **Record how long something takes when you are measuring it, not otherwise.** `scripts/check-in-volume.sh`
 and `test/smoke/aggiemap/run-local.sh` print the elapsed time of every run. With `BUILD_TIMES_RECORD=1`
 they also write a small file into [`docs/build-times/runs/`](docs/build-times/runs) in the checkout they
 were run from: the start in US Central, the machine, what ran, the result and the elapsed time (#1593).
-Commit those files with the work they measure; `bash scripts/run-times-report.sh` prints them as one
+Commit those files with the work they measure; `bash scripts/run-times-report.sh`, from Git Bash, prints them as one
 table. `BUILD_TIMES_MACHINE` names the machine (e.g. `home`, `office`); the hostname is never used,
 because this repository is public.
 
@@ -212,6 +228,14 @@ of 116; the component had been unused since #418), [#2500](https://github.com/Ta
 on fields the republished service lacks) and [#2510](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2510) (the layer declares an `objectIdField` it does
 not have, so every query returns 500).
 
+**A difference you find between the two servers goes in the register, with its kind.**
+[`docs/gis-service-differences.md`](docs/gis-service-differences.md) is the page somebody can hand to the
+GIS team; `scripts/check-gis-differences.mjs` fails when a service is in
+`READ_FROM_PRODUCTION_ON_DEVELOPMENT` and missing from it. The kind matters more than the row: of the 27
+differences recorded there, **11 are the GIS team's and 16 are not** - a dozen are "not published on
+development", which is a request, and four are retired events that only look like faults in the source.
+Every one had been written down as a workaround so a map would draw, and none of them had been reported.
+
 In two of the four, making the obvious change would have **looked like a fix and changed nothing a visitor
 sees** - which is worse than leaving the bug, because the issue gets closed. So: query the service, check
 the field exists and how many records carry it, and check the component you are editing is the one the
@@ -268,6 +292,25 @@ page stays blank, with no error anywhere (#1955). And Nx's task records belong i
 print `Waiting for aggiemap-angular:serve in another nx process` and never continue (#1626). Both were already
 documented for the GIS Day dev server and missing from this one, which is the command most likely to be copied
 (#2009).
+
+**That same hang has a second cause, and it is the cheaper one to check first: a stale Vite optimizer cache
+in the volume.** `node_modules/.vite` holds the optimizer's metadata and `node_modules/.vite-temp` is the
+directory it renames into place while writing a new one, so a leftover `.vite-temp` means an optimizer run
+was killed mid-write - which is exactly what `docker rm -f aggiemap-dev` does. The next start then stops at
+`[optimizer] bundling dependencies...` with `UV_THREADPOOL_SIZE=64` already set, which reads as the thread-pool
+problem above and is not. **One volume serves every checkout, so one dev server killed in one worktree breaks
+the next start in all of them.** Clear it and start again, unchanged:
+
+```bash
+MSYS_NO_PATHCONV=1 docker run --rm -v tamu-js-dev-nm:/nm node:24.22.1 sh -c "rm -rf /nm/.vite /nm/.vite-temp"
+```
+
+On 3 November the documented command then worked exactly as written, `--poll=2000` included. On 30 October a
+second machine met the same hang and dropped `--poll` instead, which starts the server and leaves the stale
+cache in the volume for whoever mounts it next. **`docker stop` is not a way out of this**: Nx's serve does
+not exit inside the default ten-second grace, so stop kills it too - measured on 5 November, `docker stop
+aggiemap-dev` on a container up 42 hours exited `137`. Clear the cache whenever the container did not shut
+itself down, which in practice is every time. See #2650.
 
 One volume serves whichever checkout is mounted, so it must match that checkout's lock. Check before
 trusting it: `node_modules/@angular/core/package.json` must show the version the checkout uses. On 4
@@ -332,7 +375,7 @@ each with its own README:
 - **[`test/smoke/aggiemap`](test/smoke/aggiemap/README.md)** loads every map in a deployed
   environment and verifies each layer resolves and returns data. Runs daily against dev and
   production, and on demand.
-- **[`tools/builder-inventory`](tools/builder-inventory/README.md)** covers the eleven maps that
+- **[`tools/builder-inventory`](tools/builder-inventory/README.md)** covers the maps that
   cannot be reached by URL, because they require choices in a builder first. It records where every
   combination lands, including a shareable link that reaches each destination directly.
 
@@ -401,11 +444,22 @@ itself when a later run passes. Say so when reporting a failure, so nobody opens
 ## Before changing code
 
 **Nothing without a production service is visible on production unless explicitly allowed.** A
-layer, basemap or service published only on dev is gated with `TestingService` (`isTesting`), as bus
-routes and the vector tile basemap are. Add it to `DEVELOPMENT_ONLY_SERVICES` in
+layer, basemap or service published only on dev is gated with `TestingService` (`isTesting`), as the basemap
+gallery's dated campus basemaps are (`aggiemapGalleryBasemaps`). Add it to `DEVELOPMENT_ONLY_SERVICES` in
 `test/smoke/aggiemap/development-only.ts`, with the pages that request it, so the smoke suite fails
 if production ever requests it.
-The maintainer decides when it moves to production. See #1229.
+The maintainer decides when it moves to production. See #1229. When a section moves, it goes from
+`DEVELOPMENT_ONLY_SECTIONS` to `SECTIONS_ON_EVERY_ENVIRONMENT` in the same file, as bus routes did on 9 November 2026
+(#2789): taking it out of the first list alone only stops checking it.
+
+**Which gate: a thing that reads a service is left out of the build; structure is gated at run time** (#2753).
+Layer sources and search sources go in `DEVELOPMENT_ONLY_LAYER_SOURCES`, and a map in `developmentOnly`, so a
+production build does not contain them. Routes, tabs, tiles, listings and controls are gated with `TestingService`
+(`visible: false` on a listing, `DevelopmentOnlyMapGuard` on a route), so `?as=production` keeps working.
+`development-only-gates.spec.ts` in `aggiemap-ngx-discover` fails when that and the smoke suite's lists disagree: a
+thing kept off production that no list checks, a service the suite watches that nothing gates, or a map hidden from
+production's listings with neither a check nor a reason in `LISTINGS_HIDDEN_FROM_PRODUCTION`. A gate inside a template
+cannot be listed, so a service gated that way says where in `runTimeGate`, and only the smoke run proves it.
 
 **Reuse before building; build to be reused.** No one-offs: not components, not services, not
 utilities, not styles, not test helpers. This is the maintainer's standing rule for every change, by
@@ -413,7 +467,9 @@ anyone.
 
 - **Look first, and say where you looked.** Components: `libs/ui-kits/ngx/**`. Services, pipes and
   helpers: `libs/common/**`. Map features: `libs/maps/feature/**`. Styles: `libs/sass/` and the app's
-  global `styles.scss`. Smoke-suite helpers: the shared modules in `test/smoke/aggiemap/`. There is a
+  global `styles.scss`. Smoke-suite helpers: the shared modules in `test/smoke/aggiemap/`. **Behaviour
+  shared by more than one event map: `libs/ts/events/ngx/src/lib/definitions/common.definitions.ts`,
+  or the event's own `EventConfiguration` where it is a property of the event.** There is a
   shared copy-field component, a shared `.button` with variants, spacing utilities and a flexbox
   mixin set. Purpose-built CSS is unwanted.
 - **Extend what exists rather than copy it.** If a shared piece nearly fits, add the input, option
@@ -425,6 +481,17 @@ anyone.
 - **Follow the patterns already in the repository**: how definitions declare things (for example,
   the per-choice `mapView` used by the event maps), how modules are wired, how tests are written.
   A new way of doing something the repository already does needs a reason in the pull request.
+- **A behaviour copied between definition files is a one-off too.** This rule reads as being about
+  shared libraries, and a definition file is not a library - which is how **game-day refresh came to
+  be written three times**: `lotsNative()` in football's definitions, a separate `gameDayNative()` in
+  men's basketball, and `athleticsDevelopmentSource`, the shared helper, unable to express a refresh
+  at all. Nobody broke this rule knowingly. Each copy read as reasonable; only the set was wrong, and
+  it surfaced only when a fourth map was asked for the same thing. #2581 made it one switch on
+  `EventConfiguration`; #2591 is the sweep for whatever else reads like this.
+- **The tell: two pieces of code that would both need changing to fix one bug.** That is the fault,
+  and it is worth looking for directly - more than any filename or folder pattern. If you are about
+  to write a small helper at the top of a definition file, search the other definition files for one
+  doing the same job under a different name.
 
 **A layer's symbology, title and order come from its service.** Overriding any of them in a
 definition is a deliberate act that needs a reason written beside it:
@@ -468,6 +535,10 @@ Never write the notes afterwards in a separate pull request: on 28 September tha
 without images when the pull request merged, and meant going back for them after the release reached
 production (#1132).
 
+**CI checks this** (`require-release-notes.yml`, #1264): a pull request that changes what the screenshots
+check counts as user-visible fails *Has a release-notes entry* until it adds a file there, or carries the
+`no-visible-change` label. The same job runs `collate-release-notes.mjs --check` on every entry.
+
 **One file each, rather than editing `unreleased.md`, because two pull requests adding at the same
 line conflict every time.** On 20 October six in one day each had to be resolved by hand, always in
 the same two places, always "keep both" — and a release-notes conflict resolved at speed is how an
@@ -482,7 +553,9 @@ move into the dated notes (#1360).
 **`node scripts/collate-release-notes.mjs --check`** validates every entry — the front matter, the
 file name against its `issue`, and that each image path resolves. Run it before a release; a broken
 image in the notes is otherwise found by a reader, after the release. `--write` gathers the entries
-into `unreleased.md` as part of cutting a release.
+into `unreleased.md` as part of cutting a release, except a GIS Day entry (`app: gisday` in its front
+matter), which goes into `gisday-unreleased.md`; `--check` fails an entry that links a GIS Day site
+without saying so (#2835). `bash scripts/collate-release-notes.test.sh` tests it.
 
 `docs/releases/unreleased.md` still holds everything written before this, and is left alone: the
 collation adds to it rather than replacing it.
@@ -506,8 +579,7 @@ which is what makes "we shipped what we tested" a fact rather than an assumption
 **Overriding that refusal needs a reason, which goes into the tag:** `--force '<why>'`. The tag then
 says `(FORCED)` in its first line and carries the reason. A forced tag used to be indistinguishable
 from one that passed, so on 22 October the release record said production carried `61161ce1b` when the
-tag was on `36b962a04`, and nothing in the repository contradicted it. `bash scripts/tag-build.test.sh`
-covers this. See #2098.
+tag was on `36b962a04`, and nothing in the repository contradicted it. `bash scripts/tag-build.test.sh`, from Git Bash, covers this. See #2098.
 
 **Link every issue and pull request, with full URLs, and end each release file with a table of all
 of them.** GitHub only auto-links `#1122` inside issue and pull request comments — in a file under
@@ -532,6 +604,21 @@ however good it was. See #1056.
 
 File the issue as soon as the work is identified, including work noticed while doing something else —
 that is the case most likely to be skipped.
+
+**An issue closes when its work merges to `development`, not when a release carries it to production.**
+`Closes #<issue>` in the pull request body does that by itself, which is the rule above; this is why that
+is right rather than something to work around. The maintainer's words, 13 November 2026: *"We close things
+in development, not in prod."*
+
+It comes up whenever an issue is written as a request for production — #2864 was "Micromobility Map for
+Prod", and when it merged, its production address still redirected to the main map. Holding such an issue
+open until the deploy leaves the project board and the funding record lagging the work by however long a
+release takes, and the question gets decided differently each time it is asked.
+
+**What a deployment is tracked by instead:** the `dev-*` and `prod-*` tags record which commit reached
+which environment (#1145), and the release notes say what a release contains. An issue answers whether the
+work is done; a tag answers where it is. So a closing comment is the place to say what is true for a
+reader — merged, on dev, not yet on production, and the address that will start working when it is.
 
 **Fill in every field on the issue and the pull request, not only the title and body.** A field left
 empty drops the work out of the project board and the funding record just as surely as a missing
@@ -592,6 +679,22 @@ gh project item-edit --id "$item" --project-id <project node id> --field-id <sta
 request. Do not wait to be asked. A CI check enforces this; the escape hatch is the
 `no-visible-change` label, which is a deliberate act and stays visible afterwards.
 
+**A pull request with a visible result opens once its screenshots are on the branch, so CI runs once.**
+On 15 November 2026 most open GIS Day pull requests were red for the same two avoidable reasons, and each
+cost a second CI run: a pull request opened before its images existed fails "Has before/after images"
+until they are pushed, and one stacked on another conflicts as soon as the one underneath merges. So:
+
+- **Push the branch, take the before/after screenshots on it, merge the latest `development` in, then
+  open the pull request.** When the machine that built the change cannot sign in to take them, another
+  takes them on the branch first; the pull request still waits. A change with no visible result opens at
+  once.
+- **Stack a pull request on another only when both are needed soon.** When the one underneath merges,
+  merge `development` into the one on top at once, before its screenshots are taken, so it rebuilds
+  once. Read the pre-push check's result after that merge: on 15 November a clean-looking merge declared
+  two functions twice and failed to compile.
+
+The maintainer's decision (#3039). The mailbox's `DIRECTOR.md` says the same for the machines.
+
 **Build the pull request body from [`.github/pull_request_template.md`](.github/pull_request_template.md),
 with every section filled in.** `gh pr create --body-file` *replaces* the template rather than
 pre-filling it, so the checklist is never rendered and nothing notices it is gone - which is exactly
@@ -616,6 +719,19 @@ window where a reviewer needs to see it. Check the link resolves before posting:
 ```bash
 curl -s -o /dev/null -w "%{http_code}" "<raw url>"
 ```
+
+**Tidying the worktree is part of opening the pull request.** A worktree is about 589 MiB, and on
+24 November 2026 three sessions made 28 of them in one evening and removed none. Once the pull request is
+open the branch is pushed, so the folder is residue: remove it with `git worktree remove`, or sweep the
+merged ones later with `bash scripts/tidy.sh --yes` (#3400).
+
+**Delete `.pr-body.md` once the pull request is open.** It drafts the body and is deliberately never
+committed to `development`, so a copy left in a worktree is uncommitted work as far as anything can tell -
+and `tidy.sh` keeps a dirty worktree, merged branch or not. On 24 November 2026 that was **68 of the 69
+worktrees** the sweep left on the home machine, every one a merged branch, about 40 GiB no sweep could
+reclaim, all of it held by a file whose job finished the moment the pull request existed (#3432). `tidy.sh`
+now removes a worktree whose *only* change is an untracked `.pr-body.md`, so this is belt and braces rather
+than the only guard - but the file is yours to delete, and the sweep should not have to know about it.
 
 **Write every capture to `docs/screenshots/<slug>/` as soon as it is taken, not when it is needed.**
 A "before" image stops being obtainable the moment the fix is on disk: recovering one means stashing
@@ -718,12 +834,18 @@ files on the `work-mailbox` branch of `TamuGeoInnovation`, which is never merged
 
 - **The home session writes the batch** into `work/TASKS.md`. Its header holds the rules, and each task names
   the issue to report on, the exact commit or how to find it, the commands, and what follows: tag or not.
-- **The maintainer starts the work session with one line:**
+- **The maintainer starts a session on any machine with one line**, adding its name and job for a new one:
 
   ```
-  Pull TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo, check out the work-mailbox branch, and do what work/TASKS.md says.
+  Pull TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo, check out the work-mailbox branch, and do what DIRECTOR.md says.
   ```
 
+- **`DIRECTOR.md` is on the `work-mailbox` branch, not on `development`.** The rules for every machine - who
+  directs, the machines and their folders, how to join, how batches and reports work - live there and nowhere
+  else, because that branch is never merged. A fresh clone starts on `development`, where the file does not
+  exist, so a new session that looks before switching branches concludes the instructions are missing (#3262).
+  Fetch the branch first (`git fetch origin work-mailbox`, then `git switch work-mailbox`, or read it in place
+  with `git show origin/work-mailbox:DIRECTOR.md`) and do what it says.
 - **A machine that is new to the branch announces itself before anything else.** `DIRECTOR.md` opens with
   how: work out your name, create `<name>/TASKS.md`, `<name>/STATUS.md` and `<name>/reports/`, push them as
   `<name>: joined`, and only then listen. **Push first, even if you were given work in the same breath** -
@@ -757,8 +879,26 @@ when its task says so, and no other branches or tags. It opens no pull requests 
 
 ## Things that look broken but are not
 
+- `scripts/check-in-volume.sh` exiting **125**, or `docker volume ls` not answering at all, is a full
+  disk, not a broken branch. Docker returns 125 for a container it cannot create, which reads exactly like
+  a failing check. The script now refuses first and says so; if you meet 125 anyway, look at free space
+  before the diff (#3365).
 - A map canvas blank for 20 to 40 seconds is Esri still drawing.
 - `curl` returning `000` for a `*.tamu.edu` host is usually Git Bash's outdated CA bundle,
   not an unreachable host. Check in a browser before reporting it as down.
 - Layers returning 404 on a hostname containing `dev` come from the development GIS server
   missing services that exist on production. `localhost` uses the production GIS server.
+- **`Permission denied (publickey)` from a bash script run in PowerShell is the wrong bash, not a bad
+  key.** `C:\Windows\System32\bash.exe` is WSL's, and System32 comes early in `PATH`, so a bare
+  `bash scripts/<name>.sh` typed into PowerShell runs inside WSL, whose `~/.ssh` is empty. Every script
+  here that reaches a remote dies at its first fetch. Call Git Bash by its full path -
+  `& "C:\Program Files\Git\bin\bash.exe" scripts/<name>.sh` - or run it from a Git Bash window, where
+  a bare `bash` is already the right one.
+
+  **The tell appears once and then never again**: the first run asks whether github.com's authenticity
+  can be established, which a machine whose `known_hosts` already has github.com cannot do. After that
+  WSL writes its own `known_hosts` and all that is left is `Permission denied (publickey)`, which reads
+  exactly like an expired key. It is not: check with `ssh -T git@github.com` **from Git Bash** before
+  touching anything on GitHub. Setting `$env:HOME` does not help, because a Windows path does not reach
+  into WSL's filesystem, and it fails the same way elevated or not. On 23 November 2026 this cost three
+  attempts and two wrong diagnoses before anyone asked which `bash` was answering (#3273).

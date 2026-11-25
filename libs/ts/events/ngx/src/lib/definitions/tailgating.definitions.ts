@@ -1,12 +1,13 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { SearchSource, containsSearch } from '@tamu-gisc/ui-kits/ngx/search';
-import { getDefaultGisHosts, commonLayerProps } from '@tamu-gisc/aggiemap/ngx/common';
+import { Connections, commonLayerProps } from '@tamu-gisc/aggiemap/ngx/common';
 
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
+import { CONSTRUCTION_PROJECT_FIELDS } from './construction-map.definitions';
 import { FootballParkingConfiguration } from './football-parking.definitions';
 
 import esri = __esri;
@@ -23,6 +24,7 @@ import { EventPopups } from '../modules/popups/popups';
  */
 export enum TAILGATING_LAYERS {
   ZONE_NUMBERS = 'tailgating-zone-numbers',
+  RESTROOMS = 'tailgating-restrooms',
   TENTS = 'tailgating-tents',
   SIMPSON_TENTS = 'tailgating-simpson-tents',
   AGGIE_PARK = 'tailgating-aggie-park',
@@ -42,7 +44,8 @@ const TAILGATE_ZONES_LAYER_INDEX = {
   TENTS: 1,
   SIMPSON_TENTS: 2,
   WEST_CAMPUS: 3,
-  AGGIE_PARK: 4
+  AGGIE_PARK: 4,
+  RESTROOMS: 5
 } as const;
 
 /**
@@ -54,6 +57,11 @@ const tentLayerProps: Partial<typeof commonLayerProps> = { ...commonLayerProps }
 delete tentLayerProps.minScale;
 delete tentLayerProps.maxScale;
 
+/**
+ * A tent's popup offers "Directions To Here" (#2639), which, like every directions button, is shown only
+ * where development-only features are on (#1003). The walking network has only paths, so a trip ends on the
+ * nearest one and the trip planner draws the last stretch across the lawn to the tent.
+ */
 const tentPopupData: LayerSource['popupData'] = {
   name: 'Tent {attributes.tent_id}',
   description: 'attributes.lawn'
@@ -65,9 +73,7 @@ const tentPopupData: LayerSource['popupData'] = {
  * which stays stable when Transportation Services edits a project. Add a number here to show
  * another project.
  */
-const CONSTRUCTION_URL = `https://${
-  getDefaultGisHosts().tsgisHost
-}/arcgis/rest/services/Hosted/TSConstruction_Hosted/FeatureServer/0`;
+const CONSTRUCTION_URL = Connections.constructionUrl;
 
 const TAILGATING_CONSTRUCTION_PROJECTS = [
   '02-3420', // Aplin Center, north of the West Campus Garage
@@ -75,9 +81,7 @@ const TAILGATING_CONSTRUCTION_PROJECTS = [
 ];
 
 const constructionPopupData: NonNullable<LayerSource['popupData']> = {
-  projectName: { field: 'name', collapsed: true },
-  startDate: { field: 'startdate', collapsed: true, format: 'date' },
-  endDate: { field: 'enddate', collapsed: true, format: 'date' },
+  ...CONSTRUCTION_PROJECT_FIELDS,
 
   name: '{attributes.projectName}',
   description: `<strong>Start Date:</strong> {attributes.startDate}<br><strong>End Date:</strong> {attributes.endDate}`
@@ -136,7 +140,7 @@ export const TailgatingColdLayerSources: LayerSource[] = [
     id: TAILGATING_LAYERS.SIMPSON_TENTS,
     title: 'Simpson Drill Field Tents',
     url: `${TAILGATE_ZONES_URL}/${TAILGATE_ZONES_LAYER_INDEX.SIMPSON_TENTS}`,
-    popupComponent: EventPopups.MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     popupData: tentPopupData,
     listMode: 'show',
     visible: true,
@@ -149,8 +153,21 @@ export const TailgatingColdLayerSources: LayerSource[] = [
     id: TAILGATING_LAYERS.TENTS,
     title: 'Aggie Park Tents',
     url: `${TAILGATE_ZONES_URL}/${TAILGATE_ZONES_LAYER_INDEX.TENTS}`,
-    popupComponent: EventPopups.MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     popupData: tentPopupData,
+    listMode: 'show',
+    visible: true,
+    native: {
+      ...tentLayerProps
+    }
+  } as unknown as LayerSource,
+  {
+    // Game-day restrooms, drawn in ArcGIS Pro with the tents and zones. The popup reads `name` and `description`,
+    // and offers "Directions To Here" where directions are on. Their visible range comes from the service.
+    type: 'feature',
+    id: TAILGATING_LAYERS.RESTROOMS,
+    url: `${TAILGATE_ZONES_URL}/${TAILGATE_ZONES_LAYER_INDEX.RESTROOMS}`,
+    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     listMode: 'show',
     visible: true,
     native: {

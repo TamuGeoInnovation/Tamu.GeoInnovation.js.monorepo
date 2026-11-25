@@ -1,0 +1,87 @@
+@import 'libs/sass/components/datatable';
+
+// The table as the admin's other sortable tables draw it (the research competition list, #2808).
+.datatable-container {
+  --datatable-height: auto;
+
+  // Five columns beside the admin menu: on a narrow screen the table scrolls in its own box, not the page.
+  overflow-x: auto;
+
+  ::ng-deep .datatable-body-cell-label {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  // ngx-datatable gives every body cell overflow-y: auto, so a cell a pixel taller than its row grew its own
+  // scroll bar (#2912). Rows are as tall as their content here, so a cell never needs to scroll.
+  ::ng-deep .datatable-body-cell {
+    overflow: visible;
+  }
+}
+
+// The textbox's own display (flex) is kept, so its clear button sits beside the text, not under it (#3051).
+.badges-search {
+  max-width: 32rem;
+  margin-bottom: 0.75rem;
+}
+
+.badges-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+
+  p {
+    margin: 0;
+  }
+}
+
+.badges-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.5rem 2rem;
+
+  .badges-search {
+    flex: 1 1 18rem;
+    margin-bottom: 0;
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+.badges-counts {
+  margin-bottom: 0.25rem;
+}
+
+.badges-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+}
+
+.badges-confirm {
+  margin: 0.75rem 0;
+
+  p {
+    margin-top: 0;
+  }
+}
+
+.badges-confirm-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.badges-changed {
+  font-size: 0.9rem;
+}
+
+.badges-undo {
+  margin-left: 0.5rem;
+  font-size: 0.9rem;
+}

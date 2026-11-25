@@ -116,6 +116,18 @@ export interface EventConfiguration {
   defaultLayerOverrides?: Record<string, Partial<LayerSource>>;
 
   /**
+   * Layers that poll their service every minute, so a visitor with the map open sees a game-day edit - a lot
+   * closed, a closure drawn - without a reload (#2581). ArcGIS refetches only when the service's `lastEditDate`
+   * moves, so the poll costs almost nothing while nobody is editing.
+   *
+   * Declared here, in the event's own definition, so that whether a map refreshes is read where everything
+   * else about it is. `layers` names each layer that refreshes, because a map's layers differ: football polls
+   * only its lots. `enabled: false` keeps the list for when the map's owner wants it on. The settings service
+   * applies it (`EventSettingsService.eventLayerSources`); no layer definition sets `refreshInterval` itself.
+   */
+  gameDayRefresh?: { enabled: boolean; layers: string[] };
+
+  /**
    * Toast notification configuration for the event. If provided, a toast notification will be
    * displayed when the event is active. This uses the same properties as NotificationProperties
    * from the notification service.
@@ -608,6 +620,20 @@ export interface IMapConfigurationBase {
   developmentSources?: Array<LayerSource>;
 
   /**
+   * The issue keeping this whole map off production, when it is not ready for the public (#2712).
+   *
+   * Where development-only features are off (`TestingService.isTesting`), the map is not listed anywhere
+   * and its links go to the main map, so production never requests its services. Those services are
+   * listed in `DEVELOPMENT_ONLY_SERVICES` (test/smoke/aggiemap), so the smoke suite fails if production
+   * ever requests one. The maintainer decides when a map moves to production; then this is removed and the
+   * services come out of that list together (#1229).
+   *
+   * Unlike `discover.visible: false`, which only keeps a map off production's lists and leaves its link
+   * working, this keeps the map itself off.
+   */
+  developmentOnly?: string;
+
+  /**
    * If the map should be discoverable in the Discover application, this property should be set to an object that conforms to the DiscoverMetadata interface.
    */
   discover?: DiscoverMetadata | null;
@@ -630,7 +656,17 @@ export type AggiemapCustomMapConfiguration = ISpecialEventRoot | IGeneralMapRoot
  * Events", parking columns, quick links) - they are only ever surfaced in the dedicated,
  * development-only "Kiosk Maps" section. See `DiscoveryService.getKioskDiscoverApplications`.
  */
-export type DiscoverMapType = 'parking' | 'campus' | 'athletics' | 'operations' | 'satellite-campus' | 'kiosk' | '150';
+export type DiscoverMapType =
+  | 'parking'
+  | 'campus'
+  | 'athletics'
+  | 'operations'
+  | 'satellite-campus'
+  | 'kiosk'
+  | '150'
+  // Getting around campus rather than leaving a car somewhere: micromobility, buses and sustainable
+  // transportation (#2737).
+  | 'transportation';
 
 /**
  * Metadata used to represent a map in the Discover application.

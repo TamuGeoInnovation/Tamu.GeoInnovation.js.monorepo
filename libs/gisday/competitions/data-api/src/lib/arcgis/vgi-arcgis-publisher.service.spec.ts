@@ -11,7 +11,11 @@ describe('VgiArcgisPublisher', () => {
       {
         attribute: 'memorial_type',
         isDiscriminator: true,
-        options: [{ name: 'Tree or bench memorial plaque', value: 'tree_bench_plaque', nameAttribute: 'memorial_name' }]
+        // As in the 2026 form: only the plaque scores by name, but every type is asked for one (#2628).
+        options: [
+          { name: 'Monument', value: 'monument' },
+          { name: 'Tree or bench memorial plaque', value: 'tree_bench_plaque', nameAttribute: 'memorial_name' }
+        ]
       },
       { attribute: 'memorial_name', options: [] }
     ]
@@ -256,6 +260,25 @@ describe('VgiArcgisPublisher', () => {
     await publisher.publish('0b8e2f0e-6a0e-4b8a-9d8a-0f6f3b9e2c11');
 
     expect(JSON.parse(sent('/addFeatures')[0].body.features)[0].attributes.review_status).toBe('unverified');
+  });
+
+  // #2628: the name question's answer is published whatever the type, not only for the type that scores by it.
+  it('publishes the name of a type that does not score by name', async () => {
+    findOne.mockResolvedValue(saved({ value: { memorial_type: 'monument', memorial_name: 'Sul Ross' } }));
+
+    await publisher.publish('0b8e2f0e-6a0e-4b8a-9d8a-0f6f3b9e2c11');
+
+    expect(JSON.parse(sent('/addFeatures')[0].body.features)[0].attributes).toEqual(
+      expect.objectContaining({ memorial_type: 'monument', memorial_name: 'Sul Ross' })
+    );
+  });
+
+  it('publishes no name when none was given', async () => {
+    findOne.mockResolvedValue(saved({ value: { memorial_type: 'monument' } }));
+
+    await publisher.publish('0b8e2f0e-6a0e-4b8a-9d8a-0f6f3b9e2c11');
+
+    expect(JSON.parse(sent('/addFeatures')[0].body.features)[0].attributes.memorial_name).toBeNull();
   });
 
   it('signs in once and reuses the token until it expires', async () => {

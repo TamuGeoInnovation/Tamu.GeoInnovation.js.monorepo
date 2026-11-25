@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
 import { HEAVY } from './test/smoke/aggiemap/fixtures';
+import { smokeBaseUrl } from './test/smoke/aggiemap/gis-hosts';
 import { quickSetFor, routeGrep, ROUTE_SPECS } from './test/smoke/aggiemap/scope';
 
 /**
@@ -80,7 +81,7 @@ export default defineConfig({
   expect: { timeout: 30_000 },
 
   use: {
-    baseURL: process.env.AGGIEMAP_SMOKE_BASE_URL ?? 'https://aggiemap.tamu.edu',
+    baseURL: smokeBaseUrl(),
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     ignoreHTTPSErrors: false

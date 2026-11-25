@@ -40,9 +40,12 @@
             <!-- No photo, or one that fails to load: the person icon, never a broken image (#2422, #2569). -->
             <tamu-gisc-image-preview #photo [src]="speakerPhotoUrl$ | async" alt="Speaker photo preview" fallback="person" fallbackLabel="No photo yet"></tamu-gisc-image-preview>
           </div>
-          <tamu-gisc-file formControlName="file" clearMessage="Undo" accept="image/*">
+          <tamu-gisc-file #picker formControlName="file" clearMessage="Undo" [accept]="photoPicker.accept" (fileSelected)="photoPicker.choose($event, picker)">
             <p class="placeholder">Select Profile Picture</p>
           </tamu-gisc-file>
+          @if (photoPicker.problem(); as problem) {
+          <p class="error" role="alert">{{ problem }}</p>
+          }
         </div>
       </div>
     </div>
@@ -64,7 +67,7 @@
         <tamu-gisc-textbox formControlName="program" placeholder="Program" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
       </div>
       <div class="fom-collection row leader-1">
-        <tamu-gisc-select formControlName="university" [data]="universities$ | async" [displayTemplate]="'name'" [valueTemplate]="'guid'" placeholder="Select University"></tamu-gisc-select>
+        <tamu-gisc-select formControlName="university" [data]="universities$ | async" [displayTemplate]="'name'" [valueTemplate]="'guid'" [searchable]="true" placeholder="Select University"></tamu-gisc-select>
       </div>
     </div>
   </div>
@@ -76,7 +79,7 @@
 
     <div class="form-section-body">
       <div class="form-collection row pad-top">
-        <tamu-gisc-select formControlName="organization" [data]="organizations$ | async" placeholder="Organization" [displayTemplate]="'name'" [valueTemplate]="'guid'"></tamu-gisc-select>
+        <tamu-gisc-select formControlName="organization" [data]="organizations$ | async" placeholder="Organization" [displayTemplate]="'name'" [valueTemplate]="'guid'" [searchable]="true"></tamu-gisc-select>
       </div>
 
       <div class="form-collection row">

@@ -1,10 +1,18 @@
 <form (submit)="getSchema()" [formGroup]="loadSchemaForm">
-  <p class="trailer-1">Enter a URL source that points to a live ESRI REST service layer endpoint to retrieve the configuration and auto-generate a form from its attributes.</p>
+  <!-- What can be read, said plainly (#2582): a form file on this site, as is used now, or a public layer. -->
+  <p class="trailer-1">Enter the address of a form file on this site, such as /assets/competitions/2026-monument-trail.json, or of a public ArcGIS layer. The Designer reads its fields and makes a question of each. A file on another site, or a private layer, cannot be read.</p>
   <div class="row">
-    <tamu-gisc-textbox class="fb-2 form-element" type="text" placeholder="Service Layer URL" [floatLabel]="true" formControlName="source"></tamu-gisc-textbox>
+    <tamu-gisc-textbox class="fb-2 form-element" type="text" placeholder="Form file or layer address" [floatLabel]="true" formControlName="source"></tamu-gisc-textbox>
 
-    <tamu-gisc-button class="fb-1 form-element leader-2" value="Fetch Schema" type="submit"></tamu-gisc-button>
+    <tamu-gisc-button class="fb-1 form-element leader-2" [value]="fetching() ? 'Fetching…' : 'Fetch Schema'" type="submit" [disabled]="fetching()"></tamu-gisc-button>
   </div>
+  @if (fetching()) {
+  <p role="status">Fetching the schema…</p>
+  } @else if (fetchResult()?.found; as found) {
+  <p role="status">{{ found }}</p>
+  } @else if (fetchResult()?.failed; as failed) {
+  <p class="error" role="alert">{{ failed }}</p>
+  }
 </form>
 
 @if (fields().length > 0) {

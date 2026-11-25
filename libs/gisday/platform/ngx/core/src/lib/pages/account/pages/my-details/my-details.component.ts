@@ -19,7 +19,7 @@ import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
-import { GISDAY_SITE } from '@tamu-gisc/gisday/platform/ngx/common';
+import { GISDAY_SITE, serverMessage } from '@tamu-gisc/gisday/platform/ngx/common';
 
 const infoCompletionValidator: ValidatorFn = (control: UntypedFormGroup): { [key: string]: boolean } | null => {
   const type = control.get('app_metadata.gisday.attendeeType');
@@ -240,7 +240,7 @@ export class MyDetailsComponent implements OnInit {
         },
         error: (e) => {
           this.ns.toast({
-            message: 'Error updating user information.',
+            message: serverMessage(e, 'Error updating user information.'),
             id: 'user-info-update-error',
             title: 'Error'
           });

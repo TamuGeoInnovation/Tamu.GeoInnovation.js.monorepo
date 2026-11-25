@@ -1,14 +1,15 @@
 import { Component, OnInit, inject, input } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Observable, filter, map, of, shareReplay, switchMap, take } from 'rxjs';
 
 import { Sponsor, Season } from '@tamu-gisc/gisday/platform/data-api';
 import { AssetsService, SeasonService, SponsorService } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { UploadImagePicker } from '../../../../../utils/upload-image-picker';
 
 import { formToFormData } from '../../../../../utils/form-to-form-data';
+import { SPONSOR_LOGO_SIZES } from '../../../../../utils/sponsor-logo-size';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { FileComponent } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -17,22 +18,33 @@ import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
 import { ImagePreviewComponent } from '../../../../images/components/image-preview/image-preview.component';
 import { uploadPreviewUrl } from '../../../../images/upload-preview-url';
+import { adminEntityForm } from '../../../admin-entity-form';
 
 @Component({
   selector: 'tamu-gisc-sponsor-add-edit-form',
   templateUrl: './sponsor-add-edit-form.component.html',
   styleUrls: ['./sponsor-add-edit-form.component.scss'],
-  imports: [ImagePreviewComponent, FormsModule, ReactiveFormsModule, TextboxComponent, SelectComponent, FileComponent, ButtonComponent, CheckboxComponent, AsyncPipe]
+  imports: [
+    ImagePreviewComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    TextboxComponent,
+    SelectComponent,
+    FileComponent,
+    ButtonComponent,
+    CheckboxComponent,
+    AsyncPipe
+  ]
 })
 export class SponsorAddEditFormComponent implements OnInit {
   private readonly fb = inject(UntypedFormBuilder);
   private readonly at = inject(ActivatedRoute);
-  private readonly rt = inject(Router);
+  /** Its save and delete, and what they say (#3340, #3382). */
+  private readonly saves = adminEntityForm('Sponsor', '/admin/sponsors');
   private readonly as = inject(AssetsService);
   private readonly sss = inject(SponsorService);
   private readonly ss = inject(SeasonService);
   private readonly sn = inject(DomSanitizer);
-  private readonly ns = inject(NotificationService);
 
   public readonly type = input<'create' | 'edit'>(undefined);
 
@@ -40,6 +52,11 @@ export class SponsorAddEditFormComponent implements OnInit {
   public activeSeasons$: Observable<Partial<Season>>;
   public logoUrl$: Observable<SafeUrl | string | null>;
   public form: UntypedFormGroup;
+
+  /** The logo picker, on the shared upload rule (#3009, #3074). */
+  public readonly logo = new UploadImagePicker('The logo');
+
+  public logoSizesDict = SPONSOR_LOGO_SIZES;
 
   public sponsorshipLevelsDict = [
     {
@@ -75,6 +92,7 @@ export class SponsorAddEditFormComponent implements OnInit {
       contactEmail: [null],
       sponsorshipLevel: [null],
       active: [true],
+      logoSize: ['regular'],
       season: [null],
       file: [null]
     });
@@ -87,7 +105,6 @@ export class SponsorAddEditFormComponent implements OnInit {
       switchMap((guid) => this.sss.getEntity(guid)),
       shareReplay()
     );
-
 
     // The chosen logo, else the saved one, else nothing (#2569); drawn by tamu-gisc-image-preview, never a broken image.
     this.logoUrl$ = uploadPreviewUrl(
@@ -121,86 +138,20 @@ export class SponsorAddEditFormComponent implements OnInit {
   }
 
   public deleteEntity() {
-    this.sss.deleteEntity(this.form.getRawValue().guid).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'sponsor-delete-success',
-          title: 'Delete Sponsor',
-          message: `Sponsor was successfully deleted.`
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'sponsor-delete-failed',
-          title: 'Delete Sponsor',
-          message: `Error deleting sponsor: ${err.status}`
-        });
-      }
-    });
+    this.saves.save('delete', this.sss.deleteEntity(this.form.getRawValue().guid));
   }
 
   private _updateEntity() {
     const rawValue = this.form.getRawValue();
-    const formData = this._formData();
+    // `active` is sent whether on or off (#1962, #3327), so switching a sponsor off is saved.
+    const formData = formToFormData(this.form);
 
-    this.sss.updateEntityFormData(rawValue.guid, formData).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'sponsor-update-success',
-          title: 'Update Sponsor',
-          message: `Sponsor was successfully updated.`
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'sponsor-update-failed',
-          title: 'Update Sponsor',
-          message: `Error updating sponsor: ${err.status}`
-        });
-      }
-    });
+    this.saves.save('update', this.sss.updateEntityFormData(rawValue.guid, formData));
   }
 
   private _createEntity() {
-    const formData = this._formData();
-
-    this.sss.createEntityFormData(formData).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'sponsor-create-success',
-          title: 'Create Sponsor',
-          message: `Sponsor was successfully created.`
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'sponsor-create-failed',
-          title: 'Create Sponsor',
-          message: `Error creating sponsor: ${err.status}`
-        });
-      }
-    });
-  }
-
-  private _navigateBack() {
-    this.rt.navigate(['/admin/sponsors']);
-  }
-
-  /**
-   * The form as form data, with `active` always sent. formToFormData leaves out every false value,
-   * which would make switching a sponsor off impossible (#1962).
-   */
-  private _formData() {
     const formData = formToFormData(this.form);
 
-    formData.set('active', String(this.form.getRawValue().active !== false));
-
-    return formData;
+    this.saves.save('create', this.sss.createEntityFormData(formData));
   }
 }

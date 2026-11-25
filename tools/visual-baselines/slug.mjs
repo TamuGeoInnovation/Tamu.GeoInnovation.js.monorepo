@@ -11,3 +11,10 @@ export const slugFor = (route) =>
     .replace(/[^A-Za-z0-9._-]+/g, '-')
     .replace(/-+/g, '-')
     .slice(0, 120) || 'root';
+
+/**
+ * Whether `--only`'s parts pick this route: a part found anywhere in the route, or a part that is the
+ * route's file name exactly. The file name is what a page's "pick" gives (#2841), because a builder
+ * destination's route carries `?`, `&` and `=`, which start-capture.ps1's -Only does not accept.
+ */
+export const matchesOnly = (route, parts) => parts.some((part) => route.includes(part) || slugFor(route) === part);

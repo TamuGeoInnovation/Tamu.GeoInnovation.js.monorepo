@@ -1,4 +1,4 @@
-import { LayerSource } from '@tamu-gisc/common/types';
+import { FeatureLayerSourceProperties, LayerSource } from '@tamu-gisc/common/types';
 import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
 
 import { IComposedConnections } from '../connections';
@@ -10,6 +10,7 @@ export enum MAIN_MAP_LAYERS {
   BUILDINGS = 'buildings-layer',
   CONSTRUCTION = 'construction_zone-layer',
   POINTS_OF_INTEREST = 'poi-layer',
+  NATURE_RX = 'nature-rx-layer',
   BONFIRE = 'bonfire-layer',
   LACTATION_ROOMS = 'lactation-rooms-layer',
   SURFACE_LOTS = 'surface-lots-layer',
@@ -27,7 +28,8 @@ export enum MAIN_MAP_LAYERS {
   CAMPUS_BIKE_LANES = 'bike-lanes-layer',
   BIKE_FIX_STATIONS = 'bike-fix-stations-layer',
   BIKE_RACKS_MAP = 'bike-racks-map-layer',
-  EV_CHARGE_STATIONS = 'ev-charge-stations-layer'
+  EV_CHARGE_STATIONS = 'ev-charge-stations-layer',
+  MICROMOBILITY = 'micromobility-group-layer'
 }
 
 export interface IDefinition {
@@ -42,6 +44,7 @@ export interface IComposedIDefinitions {
   BUILDINGS: IDefinition;
   CONSTRUCTION: IDefinition;
   POINTS_OF_INTEREST: IDefinition;
+  NATURE_RX: IDefinition;
   BONFIRE: IDefinition;
   LACTATION_ROOMS: IDefinition;
   SURFACE_LOTS: IDefinition;
@@ -60,6 +63,7 @@ export interface IComposedIDefinitions {
   BIKE_FIX_STATIONS: IDefinition;
   BIKE_RACKS_MAP: IDefinition;
   EV_CHARGE_STATIONS: IDefinition;
+  MICROMOBILITY: IDefinition;
 }
 
 export const commonLayerProps = {
@@ -70,13 +74,48 @@ export const commonLayerProps = {
   popupEnabled: false
 };
 
+/**
+ * How the Buildings layer is drawn and which rows it holds (#2707). It is shared by every layer that draws the main
+ * campus's buildings from `buildingsUrl` - the main map's, and the Dining kiosk's - so that a change reaches them all.
+ *
+ * **The layer exists to be clicked, not to be seen.** The vector tile basemap already draws every building. This layer
+ * sits over it so that a click on a building finds it with `view.hitTest` and opens its popup, which a vector tile layer
+ * cannot do because it has no features to hit.
+ *
+ * - **Its symbol is an override, and deliberately so** (`docs/map-layers.md`). The service publishes an opaque teal fill
+ *   (`[100, 200, 200, 255]`) with a solid outline, which drawn as published would paint every building a second time,
+ *   in teal, over the basemap's own. A fill at 1% opacity with no outline is invisible to the eye and still drawn, so a
+ *   hit test still finds it. Remove the override only if the service publishes a symbol meant for a click target.
+ * - **This is the second time this fill has been needed.** The same fill was here until #1526 (6 October 2026) removed
+ *   it while making every layer draw as its service publishes it: nothing beside it said why it was there, so taking it
+ *   out looked like tidying. The previous service's own symbol was transparent, so nothing visibly changed then.
+ * - **Only rows with a building number.** The service holds 1,984 rows; 1,003 have a `number`, which reproduces the
+ *   previous service's layer row for row (1,003 rows, measured 9 November 2026). The other 981 are structures with no
+ *   number, name or abbreviation - shelters, mechanical buildings, unnamed research structures - drawn by the basemap,
+ *   and a popup for one would have nothing to show.
+ */
+export const buildingsClickLayerNative: FeatureLayerSourceProperties['native'] = {
+  ...commonLayerProps,
+  legendEnabled: false,
+  definitionExpression: 'number IS NOT NULL',
+  renderer: {
+    type: 'simple',
+    symbol: {
+      type: 'simple-fill',
+      style: 'solid',
+      color: [0, 0, 0, 0.01],
+      outline: { style: 'none', width: 0 }
+    }
+  }
+};
+
 export function MainMapDefinitions(connections: IComposedConnections): IComposedIDefinitions {
   return {
     BUILDINGS: {
       id: 'buildings',
       layerId: MAIN_MAP_LAYERS.BUILDINGS,
       name: 'Buildings',
-      url: `${connections.basemapUrl}/1`,
+      url: connections.buildingsUrl,
       popupComponent: Popups.BuildingPopupComponent
     },
     CONSTRUCTION: {
@@ -92,6 +131,15 @@ export function MainMapDefinitions(connections: IComposedConnections): IComposed
       name: 'Points of Interest',
       url: `${connections.poiUrl}/0`,
       popupComponent: Popups.PoiPopupComponent
+    },
+    NATURE_RX: {
+      id: 'nature-rx',
+      layerId: MAIN_MAP_LAYERS.NATURE_RX,
+      // The GIS team's name for it (#3223). The service still calls the layer "NatureRx Spaces", so this is an
+      // override, declared in layer-title-overrides.json; drop both once the service is renamed (docs/map-layers.md).
+      name: 'Nature Spaces',
+      url: connections.natureRxUrl,
+      popupComponent: Popups.NatureRxPopupComponent
     },
     BONFIRE: {
       id: 'bonfire',
@@ -111,7 +159,7 @@ export function MainMapDefinitions(connections: IComposedConnections): IComposed
       id: 'surface-lots',
       layerId: MAIN_MAP_LAYERS.SURFACE_LOTS,
       name: 'Surface Lots',
-      url: `${connections.basemapUrl}/9`,
+      url: connections.surfaceLotsUrl,
       popupComponent: Popups.ParkingLotPopupComponent
     },
     VISITOR_PARKING: {
@@ -125,7 +173,7 @@ export function MainMapDefinitions(connections: IComposedConnections): IComposed
       id: 'transportation-parking',
       layerId: MAIN_MAP_LAYERS.TRANSPORTATION_PARKING,
       name: 'Transportation Parking',
-      url: `${connections.tsMainUrl}/6`,
+      url: connections.tsParkingLotsUrl,
       popupComponent: Popups.ParkingKioskPopupComponent
     },
     RNS_SPACES: {
@@ -215,6 +263,16 @@ export function MainMapDefinitions(connections: IComposedConnections): IComposed
       name: 'EV Charge Stations (Main + RELLIS)',
       url: `${connections.bikeMapUrl}/0`,
       popupComponent: Popups.MarkdownPopupComponent
+    },
+    // Transportation's micromobility service (#2739), the one its own map draws (#2712). One definition for the group,
+    // whose layerId is the group's id, so the main map lists it as one entry and a production build can leave the whole
+    // group out (`development-only-sources.ts`).
+    MICROMOBILITY: {
+      id: 'micromobility',
+      layerId: MAIN_MAP_LAYERS.MICROMOBILITY,
+      name: 'Micromobility',
+      url: connections.micromobilityUrl,
+      popupComponent: Popups.MarkdownPopupComponent
     }
   };
 }
@@ -236,8 +294,7 @@ export function MainMapLayerSources(
       essential: true,
       layerIndex: 1,
       native: {
-        ...commonLayerProps,
-        legendEnabled: false
+        ...buildingsClickLayerNative
       }
     },
     {
@@ -263,6 +320,20 @@ export function MainMapLayerSources(
       title: definitions.POINTS_OF_INTEREST.name,
       url: definitions.POINTS_OF_INTEREST.url,
       popupComponent: definitions.POINTS_OF_INTEREST.popupComponent,
+      listMode: 'show',
+      visible: false,
+      native: {
+        ...commonLayerProps
+      }
+    },
+    // Nature Rx (#2630). Off by default and listed, as Points of Interest is: a visitor turns it on
+    // from Layers. Its symbology and order are the service's own; its title is not, see the definition (#3223).
+    {
+      type: 'feature',
+      id: definitions.NATURE_RX.layerId,
+      title: definitions.NATURE_RX.name,
+      url: definitions.NATURE_RX.url,
+      popupComponent: definitions.NATURE_RX.popupComponent,
       listMode: 'show',
       visible: false,
       native: {
@@ -395,120 +466,6 @@ export function MainMapLayerSources(
       visible: true,
       native: {
         ...commonLayerProps
-      }
-    },
-    {
-      type: 'group',
-      id: 'sustainable-transportation-group-layer',
-      title: 'Sustainable Transportation',
-      listMode: 'show',
-      visible: false,
-      sources: [
-        {
-          type: 'feature',
-          id: definitions.BIKE_DISMOUNT_ZONES.layerId,
-          title: definitions.BIKE_DISMOUNT_ZONES.name,
-          url: definitions.BIKE_DISMOUNT_ZONES.url,
-          listMode: 'show',
-          visible: true,
-          popupComponent: definitions.BIKE_DISMOUNT_ZONES.popupComponent,
-          popupData: {
-            name: '{attributes.Name}',
-            description: '<strong>Notes</strong>: {attributes.Bike_Notes}'
-          },
-          native: {
-            ...commonLayerProps
-          }
-        },
-        {
-          type: 'feature',
-          id: definitions.CITY_BIKE_LANES_ROUTES.layerId,
-          title: definitions.CITY_BIKE_LANES_ROUTES.name,
-          url: definitions.CITY_BIKE_LANES_ROUTES.url,
-          listMode: 'show',
-          visible: true,
-          popupComponent: definitions.CITY_BIKE_LANES_ROUTES.popupComponent,
-          popupData: {
-            name: '{attributes.Type}',
-            description: '<strong>Location</strong>: {attributes.Loc}'
-          },
-          native: {
-            ...commonLayerProps
-          }
-        },
-        {
-          type: 'feature',
-          id: definitions.CAMPUS_BIKE_LANES.layerId,
-          title: definitions.CAMPUS_BIKE_LANES.name,
-          url: definitions.CAMPUS_BIKE_LANES.url,
-          listMode: 'show',
-          visible: true,
-          popupComponent: definitions.CAMPUS_BIKE_LANES.popupComponent,
-          popupData: {
-            name: '{attributes.Use_}',
-            description: '<strong>Location</strong>: {attributes.Location}'
-          },
-          native: {
-            ...commonLayerProps
-          }
-        },
-        {
-          type: 'feature',
-          id: definitions.BIKE_FIX_STATIONS.layerId,
-          title: definitions.BIKE_FIX_STATIONS.name,
-          url: definitions.BIKE_FIX_STATIONS.url,
-          listMode: 'show',
-          visible: true,
-          popupComponent: definitions.BIKE_FIX_STATIONS.popupComponent,
-          popupData: {
-            name: '{attributes.Bike_Sta_Name}',
-            description: '<strong>Amenities</strong>: {attributes.Bike_Amenities}'
-          },
-          native: {
-            ...commonLayerProps
-          }
-        },
-        {
-          type: 'feature',
-          id: definitions.BIKE_RACKS_MAP.layerId,
-          title: definitions.BIKE_RACKS_MAP.name,
-          url: definitions.BIKE_RACKS_MAP.url,
-          listMode: 'show',
-          visible: true,
-          popupComponent: definitions.BIKE_RACKS_MAP.popupComponent,
-          popupData: {
-            name: '{attributes.Type}',
-            description:
-              '<strong>Total Capacity</strong>: {attributes.Total_Capacity}\n' +
-              '<strong>Notes</strong>: {attributes.BR_Notes}'
-          },
-          native: {
-            ...commonLayerProps
-          }
-        },
-        {
-          type: 'feature',
-          id: definitions.EV_CHARGE_STATIONS.layerId,
-          title: definitions.EV_CHARGE_STATIONS.name,
-          url: definitions.EV_CHARGE_STATIONS.url,
-          listMode: 'show',
-          visible: true,
-          popupComponent: definitions.EV_CHARGE_STATIONS.popupComponent,
-          popupData: {
-            name: '{attributes.EV_ID}',
-            description:
-              '<strong>Network</strong>: {attributes.EV_Network}\n' +
-              '<strong>Charging Level</strong>: {attributes.Ch_Level}\n' +
-              '<strong>Garage Level</strong>: {attributes.Garage_Lvl}\n' +
-              '<strong>Notes</strong>: {attributes.EVCS_Notes}'
-          },
-          native: {
-            ...commonLayerProps
-          }
-        }
-      ],
-      native: {
-        listMode: 'hide-children'
       }
     },
     {

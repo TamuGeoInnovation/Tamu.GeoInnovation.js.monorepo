@@ -1,0 +1,26 @@
+@if (listed(); as sessions) { @if (sessions.length > 0) {
+<p>{{ sessions.length }} {{ sessions.length === 1 ? one() : many() }}.</p>
+<!-- The admin Events list's own table (#1775). -->
+<table class="floating-table">
+  <thead>
+    <tr>
+      <th>Day</th>
+      <th>Time</th>
+      <th>Session</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (session of sessions; track session.guid) {
+    <tr>
+      <td class="nowrap">{{ session.day }}</td>
+      <td class="nowrap">{{ session.time }}</td>
+      <td><a [routerLink]="['/admin/events/edit', session.guid]">{{ session.name }}</a></td>
+    </tr>
+    }
+  </tbody>
+</table>
+} @else {
+<p>{{ none() }}</p>
+} } @else {
+<p>Reading the sessions...</p>
+}

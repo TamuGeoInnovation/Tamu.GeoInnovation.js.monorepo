@@ -20,6 +20,17 @@ export class TagController {
     return this.provider.getTagsForSeason(seasonGuid);
   }
 
+  /**
+   * The sessions that have a tag, for its admin page (#3033). For admins only, as editing the tag is: it lists sessions
+   * hidden from the public schedule too.
+   */
+  @Permissions(['update:tags'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Get(':guid/sessions')
+  public async getSessions(@Param('guid') guid: string) {
+    return this.provider.getSessions(guid);
+  }
+
   @Get(':guid')
   public async getEntity(@Param('guid') guid) {
     return this.provider.findOne({

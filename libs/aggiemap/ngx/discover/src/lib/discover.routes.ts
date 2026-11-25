@@ -11,8 +11,18 @@ export const discoverRoutes: Routes = [
     component: AllMapsComponent
   },
   {
-    path: 'parking',
+    path: 'parking-transportation',
     component: ParkingMapsComponent
+  },
+  {
+    // The section's address until #2910, when it was renamed to match what the page lists: buses and
+    // transportation above parking, since #2895. It is kept rather than retired because it has been the
+    // parking listing's address for years and is linked from outside this repository - the same reason
+    // `/parking/<id>` still reaches a map now addressed `/transportation/<id>` (#2767).
+    // `discover.routes.spec.ts` holds it open, so removing it fails a test rather than a visitor's link.
+    path: 'parking',
+    redirectTo: 'parking-transportation',
+    pathMatch: 'full'
   },
   {
     path: 'campus-events',

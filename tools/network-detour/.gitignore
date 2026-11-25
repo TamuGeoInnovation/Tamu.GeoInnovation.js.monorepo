@@ -1,0 +1,3 @@
+# The per-batch results a run writes as it goes, so an interrupted run resumes. Large (a full run is
+# hundreds of thousands of lines) and only useful on the machine that is running it; run.json is the record.
+runs/*/progress.jsonl

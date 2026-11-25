@@ -1,5 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
-import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
+import { Connections, buildingsClickLayerNative } from '@tamu-gisc/aggiemap/ngx/common';
 
 import {
   AggiemapCustomMapConfiguration,
@@ -7,7 +7,7 @@ import {
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
-import { EventPopups } from '../modules/popups/popups';
+import { markdownPopup } from './common.definitions';
 
 export enum MOVE_IN_LAYERS {
   RESIDENCE_HALL = 'Residence Hall',
@@ -34,7 +34,6 @@ export enum MOVE_IN_LAYERS {
 }
 
 const moveInServiceUrl = Connections.moveInParkingUrl;
-const basemapServiceUrl = Connections.basemapUrl;
 
 const poiUrl = `${moveInServiceUrl}/0`;
 const streetsUrl = `${moveInServiceUrl}/1`;
@@ -59,33 +58,11 @@ const AREA_VIEW: Record<CampusArea, { center: [number, number]; zoom: number }> 
   'White Creek': { center: [-96.35424, 30.60824], zoom: 17 }
 };
 
-const markdownPopup = {
-  popupComponent: EventPopups.MarkdownPopupComponent
-};
+const poiPopup = markdownPopup('Type', 'note');
 
-const poiPopup = {
-  ...markdownPopup,
-  popupData: {
-    name: { field: 'Type' },
-    description: { field: 'note' }
-  }
-};
+const streetPopup = markdownPopup('Name', 'note');
 
-const streetPopup = {
-  ...markdownPopup,
-  popupData: {
-    name: { field: 'Name' },
-    description: { field: 'note' }
-  }
-};
-
-const lotPopup = {
-  ...markdownPopup,
-  popupData: {
-    name: { field: 'LotName' },
-    description: { field: 'note' }
-  }
-};
+const lotPopup = markdownPopup('LotName', 'note');
 
 // Several POI icons are pin-shaped (natural 32x40, ~0.8 ratio) but the published renderer forces a
 // few of them into a square (Bike/Keys 25x25, No-Roadside-Parking 20x20), which stretches them.
@@ -169,13 +146,16 @@ export const MoveInColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: MOVE_IN_LAYERS.RESIDENCE_HALL,
     title: 'Residence Hall',
-    url: `${basemapServiceUrl}/1`,
+    url: Connections.buildingsUrl,
     visible: true,
     listMode: 'show',
     // No base definition expression: the selected-hall effect sets it directly. Keeping it off
     // `native` avoids `generateLayer`'s native-overrides-top-level behavior so the effect applies.
+    // Drawn as the Buildings layer is, nearly invisible, as the previous service's transparent symbol drew it; the
+    // buildings service publishes an opaque teal fill (`buildingsClickLayerNative` says why, #2707, #2722).
     native: {
-      outFields: ['*']
+      outFields: ['*'],
+      renderer: buildingsClickLayerNative?.renderer
     }
   },
   {
@@ -380,13 +360,12 @@ const areaIsolationConversions = MOVE_IN_HALLS.map((hall) => ({
   deconflictingStrategy: ConversionDeconflictingStrategy.APPEND_AND
 }));
 
-// Filter the residence-hall layer to the selected hall's building(s). The basemap building-number
-// field is `Number` (unpadded, present on both the prod and dev GIS hosts); the host-specific
-// `BldgNum`/`Bldg_Number` fields are avoided so this works regardless of which host the basemap
-// resolves to.
+// Filter the residence-hall layer to the selected hall's building(s). The building-number field is
+// `number`, unpadded; the padded `bldgnum`/`bldg_number` fields are avoided, because an exact match on them
+// finds nothing (#2707).
 const hallBuildingConversions = MOVE_IN_HALLS.map((hall) => ({
   input: hall.value,
-  expression: `Number IN (${hall.buildings.map((building) => `'${building}'`).join(', ')})`
+  expression: `number IN (${hall.buildings.map((building) => `'${building}'`).join(', ')})`
 }));
 
 export const MoveInOptions: SpecialEventOptions = [

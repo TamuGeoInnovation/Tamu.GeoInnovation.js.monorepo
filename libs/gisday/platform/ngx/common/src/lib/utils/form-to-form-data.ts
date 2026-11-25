@@ -3,6 +3,9 @@ import { UntypedFormGroup } from '@angular/forms';
 /**
  * Takes a standard Angular FormGroup and will return a FormData object useful
  * for multipart HTTP requests
+ *
+ * A value that is false is sent, as "false" (#3327): a checkbox turned off has to reach the API to be saved. An empty or
+ * missing value is still left out.
  * @param form
  * @returns FormData
  */
@@ -17,7 +20,7 @@ export const formToFormData = (form: UntypedFormGroup, stringifyObjects?: boolea
     keys.forEach((key: string) => {
       if (key.lastIndexOf('_') === 0) return; // Eliminates any "omitted" form controls (if a form control has _ as the beginning character)
 
-      if (formValue[key]) {
+      if (formValue[key] || formValue[key] === false) {
         if (typeof formValue[key] == 'object' && formValue[key] instanceof File === false) {
           if (stringifyObjects) {
             data.append(key, JSON.stringify(formValue[key]));
@@ -28,7 +31,7 @@ export const formToFormData = (form: UntypedFormGroup, stringifyObjects?: boolea
           data.append(key, formValue[key]);
         }
       } else if (childProp) {
-        if (formValue[childProp][key]) {
+        if (formValue[childProp][key] || formValue[childProp][key] === false) {
           if (typeof formValue[key] == 'object') {
             appendValuesToFormData(Object.keys(formValue[key]), key);
           } else {

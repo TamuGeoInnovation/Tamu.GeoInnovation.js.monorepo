@@ -64,9 +64,7 @@ describe('CheckInProvider', () => {
     it('rejects a missing account guid instead of querying', async () => {
       const find = jest.spyOn(checkInRepo, 'find');
 
-      await expect(provider.getCheckinsForUser(undefined)).rejects.toThrow(
-        UnprocessableEntityException
-      );
+      await expect(provider.getCheckinsForUser(undefined)).rejects.toThrow(UnprocessableEntityException);
       await expect(provider.getCheckinsForUser('')).rejects.toThrow(UnprocessableEntityException);
       expect(find).not.toHaveBeenCalled();
     });
@@ -81,16 +79,15 @@ describe('CheckInProvider', () => {
       jest.spyOn(checkInRepo, 'create').mockReturnValue({ save } as never);
 
       await expect(provider.insertUserCheckin('e-1', 'acct-1')).resolves.toEqual({ guid: 'c-new' });
-      expect(checkInRepo.create).toHaveBeenCalledWith({ event, accountGuid: 'acct-1' });
+      // Inside the session's time, so not marked (#2635).
+      expect(checkInRepo.create).toHaveBeenCalledWith({ event, accountGuid: 'acct-1', outsideSessionTime: false });
     });
 
     it('refuses a second check-in for the same attendee and event', async () => {
       jest.spyOn(checkInRepo, 'findOne').mockResolvedValue({ guid: 'c-existing' } as CheckIn);
       const create = jest.spyOn(checkInRepo, 'create');
 
-      await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(
-        UnprocessableEntityException
-      );
+      await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(UnprocessableEntityException);
       expect(create).not.toHaveBeenCalled();
     });
 
@@ -113,9 +110,7 @@ describe('CheckInProvider', () => {
       jest.spyOn(eventRepo, 'findOne').mockResolvedValue(null);
       const create = jest.spyOn(checkInRepo, 'create');
 
-      await expect(provider.insertUserCheckin('missing', 'acct-1')).rejects.toThrow(
-        UnprocessableEntityException
-      );
+      await expect(provider.insertUserCheckin('missing', 'acct-1')).rejects.toThrow(UnprocessableEntityException);
       expect(create).not.toHaveBeenCalled();
     });
   });
@@ -155,9 +150,13 @@ describe('CheckInProvider', () => {
 
     const withEvent = (mode: string, checkInZone: Array<{ latitude: number; longitude: number }> = msc) => {
       jest.spyOn(checkInRepo, 'findOne').mockResolvedValue(null);
-      jest
-        .spyOn(eventRepo, 'findOne')
-        .mockResolvedValue({ guid: 'e-1', mode, ...openNow, checkInCode: 'code-1', location: { building: venue, checkInZone } } as unknown as Event);
+      jest.spyOn(eventRepo, 'findOne').mockResolvedValue({
+        guid: 'e-1',
+        mode,
+        ...openNow,
+        checkInCode: 'code-1',
+        location: { building: venue, checkInZone }
+      } as unknown as Event);
       save = jest.fn().mockResolvedValue({ guid: 'c-new' });
       jest.spyOn(checkInRepo, 'create').mockReturnValue({ save } as never);
     };
@@ -174,7 +173,12 @@ describe('CheckInProvider', () => {
       withEvent('in-person');
 
       await expect(provider.insertUserCheckin('e-1', 'acct-1', middleOfMsc)).resolves.toEqual({ guid: 'c-new' });
-      expect(checkInRepo.create).toHaveBeenCalledWith({ event: expect.anything(), accountGuid: 'acct-1' });
+      // Only whether it was made inside the session's time (#2635); nothing about the position.
+      expect(checkInRepo.create).toHaveBeenCalledWith({
+        event: expect.anything(),
+        accountGuid: 'acct-1',
+        outsideSessionTime: false
+      });
     });
 
     it('checks in an attendee outside the walls whose accuracy circle reaches the zone', async () => {
@@ -202,12 +206,12 @@ describe('CheckInProvider', () => {
     it(`counts no more than ${cap} m of accuracy, so a vague position cannot reach the zone`, async () => {
       withEvent('in-person');
 
-      await expect(
-        provider.insertUserCheckin('e-1', 'acct-1', southOfMsc(cap + 20, 5000))
-      ).rejects.toThrow(ForbiddenException);
-      await expect(
-        provider.insertUserCheckin('e-1', 'acct-1', southOfMsc(cap - 20, 5000))
-      ).resolves.toEqual({ guid: 'c-new' });
+      await expect(provider.insertUserCheckin('e-1', 'acct-1', southOfMsc(cap + 20, 5000))).rejects.toThrow(
+        ForbiddenException
+      );
+      await expect(provider.insertUserCheckin('e-1', 'acct-1', southOfMsc(cap - 20, 5000))).resolves.toEqual({
+        guid: 'c-new'
+      });
     });
 
     it('ignores a nonsense accuracy', async () => {
@@ -215,9 +219,7 @@ describe('CheckInProvider', () => {
       const notANumber = { ...southOfMsc(20), accuracy: '50' as never };
 
       await expect(provider.insertUserCheckin('e-1', 'acct-1', notANumber)).rejects.toThrow(ForbiddenException);
-      await expect(provider.insertUserCheckin('e-1', 'acct-1', southOfMsc(20, -50))).rejects.toThrow(
-        ForbiddenException
-      );
+      await expect(provider.insertUserCheckin('e-1', 'acct-1', southOfMsc(20, -50))).rejects.toThrow(ForbiddenException);
     });
 
     it('refuses an attendee at Kyle Field', async () => {
@@ -292,7 +294,7 @@ describe('CheckInProvider', () => {
   });
 
   /**
-   * #1795: an attendee checks in only from a session's start until 15 minutes after its end, the
+   * #1795: an attendee checks in only from 5 minutes before a session starts until 10 minutes after it ends, the
    * window the session page shows the button in. Organizers adding a check-in are exempt.
    */
   describe('.insertUserCheckin() and when check-in is open', () => {
@@ -322,12 +324,25 @@ describe('CheckInProvider', () => {
       jest.useRealTimers();
     });
 
-    it('refuses an attendee a minute early, and says when it opens', async () => {
+    // #3089: scanned the day before, "opens when it starts, at 4:00 PM" read as if it opened that day.
+    it('names the day when an attendee is refused on an earlier day', async () => {
       withSession();
-      at('2026-11-18T21:59:00Z'); // 3:59 PM Central
+      at('2026-11-17T22:30:00Z'); // 4:30 PM Central the day before
 
       await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(
-        new ForbiddenException('Check-in for this session opens when it starts, at 4:00 PM.')
+        new ForbiddenException(
+          'Check-in for this session opens 5 minutes before it starts, on Wednesday, November 18 at 3:55 PM.'
+        )
+      );
+      expect(save).not.toHaveBeenCalled();
+    });
+
+    it('refuses an attendee 6 minutes early, and says when it opens', async () => {
+      withSession();
+      at('2026-11-18T21:54:00Z'); // 3:54 PM Central
+
+      await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(
+        new ForbiddenException('Check-in for this session opens 5 minutes before it starts, at 3:55 PM.')
       );
       expect(save).not.toHaveBeenCalled();
     });
@@ -339,28 +354,42 @@ describe('CheckInProvider', () => {
       await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(ForbiddenException);
     });
 
-    it('checks in an attendee from the moment the session starts', async () => {
+    it('checks in an attendee from 5 minutes before the session starts', async () => {
       withSession();
-      at('2026-11-18T22:00:00Z'); // 4:00 PM Central
+      at('2026-11-18T21:55:00Z'); // 3:55 PM Central
 
       await expect(provider.insertUserCheckin('e-1', 'acct-1')).resolves.toEqual({ guid: 'c-new' });
     });
 
-    it('checks in an attendee up to 15 minutes after the session ends', async () => {
+    it('checks in an attendee up to 10 minutes after the session ends', async () => {
       withSession();
-      at('2026-11-18T23:15:00Z'); // 5:15 PM Central
+      at('2026-11-18T23:10:00Z'); // 5:10 PM Central
 
       await expect(provider.insertUserCheckin('e-1', 'acct-1')).resolves.toEqual({ guid: 'c-new' });
     });
 
     it('refuses an attendee after that, and says check-in has closed', async () => {
       withSession();
-      at('2026-11-18T23:16:00Z');
+      at('2026-11-18T23:11:00Z');
 
       await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(
         new ForbiddenException('Check-in for this session has closed.')
       );
       expect(save).not.toHaveBeenCalled();
+    });
+
+    // #3209: a session sets its own window.
+    it("keeps to the session's own minutes, and says when it opens", async () => {
+      withSession({ checkInMinutesBefore: 0, checkInMinutesAfter: 30 });
+      at('2026-11-18T21:59:00Z'); // 3:59 PM Central
+
+      await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(
+        new ForbiddenException('Check-in for this session opens when it starts, at 4:00 PM.')
+      );
+
+      at('2026-11-18T23:30:00Z'); // 5:30 PM Central
+
+      await expect(provider.insertUserCheckin('e-1', 'acct-1')).resolves.toEqual({ guid: 'c-new' });
     });
 
     it('refuses an attendee to a session whose time is not set or cannot be read, as the page shows no button', async () => {
@@ -387,7 +416,7 @@ describe('CheckInProvider', () => {
         }
       });
 
-      await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(/opens when it starts/);
+      await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(/opens 5 minutes before it starts/);
     });
 
     it('lets an organizer add a check-in at any time', async () => {
@@ -395,6 +424,136 @@ describe('CheckInProvider', () => {
       at('2026-11-17T12:00:00Z');
 
       await expect(provider.insertAttendeeCheckin('e-1', 'acct-1')).resolves.toEqual({ guid: 'c-new' });
+    });
+  });
+
+  /**
+   * #2635: a session open at any time accepts a check-in outside its time, held to every other rule, and
+   * marks it for admins. Every other session keeps the window (#1795).
+   */
+  describe('.insertUserCheckin() and a session open at any time', () => {
+    // As above: Wednesday 18 November 2026, 4:00 to 5:00 PM Central.
+    const times = {
+      day: { date: new Date('2026-11-18T06:00:00Z') },
+      startTime: '16:00:00 GMT-0600 (Central Standard Time)',
+      endTime: '17:00:00 GMT-0600 (Central Standard Time)'
+    };
+    const msc = [
+      { latitude: 30.61134149709473, longitude: -96.34182507980555 },
+      { latitude: 30.612176343177023, longitude: -96.34258857834743 },
+      { latitude: 30.613240646827258, longitude: -96.340954566882 },
+      { latitude: 30.612430828541257, longitude: -96.34027516032576 }
+    ];
+    const insideMsc = { latitude: 30.6123, longitude: -96.3414, accuracy: 10 };
+    const kyleField = { latitude: 30.6101, longitude: -96.3403, accuracy: 10 };
+
+    let save: jest.Mock;
+
+    const withSession = (overrides: Record<string, unknown> = {}) => {
+      jest.spyOn(checkInRepo, 'findOne').mockResolvedValue(null);
+      jest.spyOn(eventRepo, 'findOne').mockResolvedValue({
+        guid: 'e-1',
+        mode: 'in-person',
+        checkInAnyTime: true,
+        ...times,
+        ...overrides
+      } as unknown as Event);
+      save = jest.fn().mockResolvedValue({ guid: 'c-new' });
+      jest.spyOn(checkInRepo, 'create').mockReturnValue({ save } as never);
+    };
+
+    const at = (iso: string) => jest.useFakeTimers({ now: new Date(iso), doNotFake: ['nextTick', 'setImmediate'] });
+    const recorded = () => (checkInRepo.create as jest.Mock).mock.calls[0][0];
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it.each([
+      ['the day before', '2026-11-17T22:30:00Z'],
+      ['6 minutes before the start', '2026-11-18T21:54:00Z'],
+      ['11 minutes after the end', '2026-11-18T23:11:00Z'],
+      ['a week later', '2026-11-25T22:30:00Z']
+    ])('checks in an attendee %s, and marks it outside the session time', async (_, now) => {
+      withSession();
+      at(now);
+
+      await expect(provider.insertUserCheckin('e-1', 'acct-1')).resolves.toEqual({ guid: 'c-new' });
+      expect(recorded()).toEqual(expect.objectContaining({ accountGuid: 'acct-1', outsideSessionTime: true }));
+    });
+
+    it.each([
+      ['5 minutes before the start', '2026-11-18T21:55:00Z'],
+      ['10 minutes after the end', '2026-11-18T23:10:00Z']
+    ])('does not mark a check-in %s, inside the session time', async (_, now) => {
+      withSession();
+      at(now);
+
+      await provider.insertUserCheckin('e-1', 'acct-1');
+
+      expect(recorded().outsideSessionTime).toBe(false);
+    });
+
+    it('checks in and marks an attendee to a session whose time is not set', async () => {
+      withSession({ day: null });
+      at('2026-11-18T22:30:00Z');
+
+      await provider.insertUserCheckin('e-1', 'acct-1');
+
+      expect(recorded().outsideSessionTime).toBe(true);
+    });
+
+    it('still holds an in-person session to its zone outside the session time', async () => {
+      withSession({ location: { building: 'TAMU Memorial Student Center', checkInZone: msc } });
+      at('2026-11-17T22:30:00Z');
+
+      await expect(provider.insertUserCheckin('e-1', 'acct-1', kyleField)).rejects.toThrow(
+        new ForbiddenException(
+          'You need to be inside the check-in zone at TAMU Memorial Student Center to check in to this event.'
+        )
+      );
+      await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(/needs your location/);
+      expect(save).not.toHaveBeenCalled();
+
+      await expect(provider.insertUserCheckin('e-1', 'acct-1', insideMsc)).resolves.toEqual({ guid: 'c-new' });
+      expect(recorded().outsideSessionTime).toBe(true);
+    });
+
+    it('still holds a hybrid session to its QR code outside the session time', async () => {
+      withSession({ mode: 'hybrid', checkInCode: 'code-1' });
+      at('2026-11-17T22:30:00Z');
+
+      await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(/scanning the QR code/);
+      expect(save).not.toHaveBeenCalled();
+
+      await expect(provider.insertUserCheckin('e-1', 'acct-1', undefined, 'code-1')).resolves.toEqual({ guid: 'c-new' });
+      expect(recorded().outsideSessionTime).toBe(true);
+    });
+
+    it('still refuses an attendee outside the time when the session is not open at any time', async () => {
+      withSession({ checkInAnyTime: false });
+      at('2026-11-18T21:54:00Z');
+
+      await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(/opens 5 minutes before it starts/);
+      expect(save).not.toHaveBeenCalled();
+    });
+
+    it('never marks a check-in an organizer adds', async () => {
+      withSession();
+      at('2026-11-17T22:30:00Z');
+
+      await provider.insertAttendeeCheckin('e-1', 'acct-1');
+
+      expect(recorded()).toEqual({ event: expect.anything(), accountGuid: 'acct-1' });
+    });
+  });
+
+  describe('.getCheckinsForEvent()', () => {
+    it("lists that session's check-ins, newest first", async () => {
+      jest.spyOn(checkInRepo, 'find').mockResolvedValue([{ guid: 'c-1' } as CheckIn]);
+
+      await expect(provider.getCheckinsForEvent('e-1')).resolves.toEqual([{ guid: 'c-1' }]);
+      expect(checkInRepo.find).toHaveBeenCalledWith({ where: { event: { guid: 'e-1' } }, order: { created: 'DESC' } });
     });
   });
 
@@ -476,9 +635,9 @@ describe('CheckInProvider', () => {
 
       try {
         await expect(provider.insertUserCheckin('e-1', 'acct-1', undefined, 'code-1')).rejects.toThrow(
-          /opens when it starts/
+          /opens 5 minutes before it starts/
         );
-        await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(/opens when it starts/);
+        await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(/opens 5 minutes before it starts/);
       } finally {
         jest.useRealTimers();
       }
@@ -488,6 +647,59 @@ describe('CheckInProvider', () => {
       withSession('in-person', null);
 
       await expect(provider.insertUserCheckin('e-1', 'acct-1')).resolves.toEqual({ guid: 'c-new' });
+    });
+
+    /**
+     * #3077: the QR code is the backup at an in-person session, for a phone that cannot give its location.
+     */
+    describe('at an in-person session with a check-in zone', () => {
+      const zone = [
+        { latitude: 30.6, longitude: -96.3 },
+        { latitude: 30.6, longitude: -96.2 },
+        { latitude: 30.5, longitude: -96.2 },
+        { latitude: 30.5, longitude: -96.3 }
+      ];
+
+      const withZone = (checkInCode: string | null = 'code-1') => {
+        jest.spyOn(checkInRepo, 'findOne').mockResolvedValue(null);
+        jest.spyOn(eventRepo, 'findOne').mockResolvedValue({
+          guid: 'e-1',
+          mode: 'in-person',
+          ...openNow,
+          location: { building: 'TAMU Rudder Plaza', checkInZone: zone },
+          checkInCode
+        } as unknown as Event);
+        save = jest.fn().mockResolvedValue({ guid: 'c-new' });
+        jest.spyOn(checkInRepo, 'create').mockReturnValue({ save } as never);
+      };
+
+      it('checks in an attendee with the session’s code and no location', async () => {
+        withZone();
+
+        await expect(provider.insertUserCheckin('e-1', 'acct-1', undefined, 'code-1')).resolves.toEqual({
+          guid: 'c-new'
+        });
+      });
+
+      it('refuses a code that is not the session’s, even from inside the zone', async () => {
+        withZone();
+
+        await expect(
+          provider.insertUserCheckin('e-1', 'acct-1', { latitude: 30.55, longitude: -96.25, accuracy: 5 }, 'code-2')
+        ).rejects.toThrow(ForbiddenException);
+        expect(save).not.toHaveBeenCalled();
+      });
+
+      it('still checks in by location without a code', async () => {
+        withZone();
+
+        await expect(
+          provider.insertUserCheckin('e-1', 'acct-1', { latitude: 30.55, longitude: -96.25, accuracy: 5 })
+        ).resolves.toEqual({ guid: 'c-new' });
+        await expect(provider.insertUserCheckin('e-1', 'acct-1', undefined, '')).rejects.toThrow(
+          'Checking in to this event needs your location.'
+        );
+      });
     });
 
     it('lets an organizer add a check-in to a QR session with no code', async () => {
@@ -539,11 +751,11 @@ describe('CheckInProvider', () => {
       expect(update.mock.calls[0][1].checkInCode).not.toEqual(update.mock.calls[1][1].checkInCode);
     });
 
-    it('refuses an in-person session, which checks in by location', async () => {
-      jest.spyOn(eventRepo, 'findOne').mockResolvedValue({ guid: 'e-1', mode: 'in-person' } as Event);
+    // #3077: every session has one, as the backup for a phone that cannot give its location.
+    it('gives an in-person session its code too', async () => {
+      jest.spyOn(eventRepo, 'findOne').mockResolvedValue({ guid: 'e-1', mode: 'in-person', checkInCode: 'code-1' } as Event);
 
-      await expect(provider.getCheckInCode('e-1')).rejects.toThrow(UnprocessableEntityException);
-      expect(update).not.toHaveBeenCalled();
+      await expect(provider.getCheckInCode('e-1')).resolves.toEqual({ code: 'code-1' });
     });
 
     it('refuses a session that does not exist', async () => {
@@ -568,9 +780,7 @@ describe('CheckInProvider', () => {
     it('throws NotFound when the attendee has not checked in', async () => {
       jest.spyOn(checkInRepo, 'findOne').mockResolvedValue(null);
 
-      await expect(provider.getUserCheckinForEvent('e-1', 'acct-1')).rejects.toThrow(
-        NotFoundException
-      );
+      await expect(provider.getUserCheckinForEvent('e-1', 'acct-1')).rejects.toThrow(NotFoundException);
     });
   });
 });

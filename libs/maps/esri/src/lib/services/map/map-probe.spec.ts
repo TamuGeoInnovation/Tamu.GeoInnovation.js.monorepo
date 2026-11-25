@@ -19,7 +19,7 @@ vi.mock('@arcgis/core/geometry/SpatialReference.js', () => ({ __esModule: true, 
  */
 describe('map probe', () => {
   it('keeps the global name the smoke suite hardcodes', () => {
-    // Duplicated in test/smoke/aggiemap/maps.spec.ts -- change both together.
+    // Duplicated in test/smoke/aggiemap/map-probe.ts, once for the smoke suite (#2603) -- change both together.
     expect(MAP_PROBE_GLOBAL).toBe('__tamuGiscMapProbe');
   });
 
@@ -173,6 +173,78 @@ describe('map probe', () => {
         untyped: 1
       });
       expect(layers.find((layer) => layer.id === 'buildings')?.graphicTypes).toBeNull();
+    });
+
+    /**
+     * The name a layer's service publishes, beside the title the map shows (#2731).
+     *
+     * A layer change was reverted on 8 November 2026 because layers read "Muster view" and "SoccerParking view" -
+     * names made from their services' addresses - and were taken to be named wrongly. They had never loaded. So the
+     * name is reported only for a loaded layer: a layer that did not load has none, which is how a check tells the
+     * two apart.
+     */
+    it("reports a loaded layer's name from its service, and null where there is none (#2731)", async () => {
+      // A basemap's own layer, declared with the basemap and given an id at runtime.
+      const basemapOverlay = {
+        id: '1a1bd590b9f-layer-1',
+        title: 'Buildings under construction',
+        type: 'feature',
+        visible: true,
+        loaded: true,
+        sourceJSON: { name: 'University Building' },
+        queryFeatureCount: () => Promise.resolve(8)
+      };
+
+      registerMapProbe(
+        {
+          map: {
+            allLayers: {
+              toArray: () => [
+                {
+                  id: 'soccer-parking-lots',
+                  title: 'Soccer Event Parking Lots',
+                  type: 'feature',
+                  visible: true,
+                  loaded: true,
+                  sourceJSON: { name: 'Soccer Event Parking Lots' },
+                  queryFeatureCount: () => Promise.resolve(9)
+                },
+                {
+                  id: 'muster-parking',
+                  title: 'Muster view',
+                  type: 'feature',
+                  visible: true,
+                  loaded: false,
+                  loadError: { message: 'Failed to fetch' },
+                  sourceJSON: { name: 'stale' }
+                },
+                { id: 'bus-route-layer', title: 'Bus Routes', type: 'graphics', visible: true, loaded: true },
+                basemapOverlay
+              ]
+            },
+            basemap: { baseLayers: { toArray: () => [basemapOverlay] }, referenceLayers: { toArray: () => [] } }
+          },
+          view: { ready: true }
+        } as unknown as Parameters<typeof registerMapProbe>[0],
+        owner
+      );
+
+      const probe = (
+        window as unknown as Record<
+          string,
+          { snapshot: () => Promise<{ layers: { id: string; serviceName: string | null; basemap: boolean }[] }> }
+        >
+      )[MAP_PROBE_GLOBAL];
+      const layers = (await probe.snapshot()).layers;
+      const of = (id: string) => layers.find((layer) => layer.id === id)?.serviceName;
+
+      expect(of('soccer-parking-lots')).toBe('Soccer Event Parking Lots');
+      // Never loaded, so whatever it holds is not the service's answer.
+      expect(of('muster-parking')).toBeNull();
+      // Nothing behind it to name it.
+      expect(of('bus-route-layer')).toBeNull();
+
+      expect(layers.filter((layer) => layer.basemap).map((layer) => layer.id)).toEqual(['1a1bd590b9f-layer-1']);
     });
 
     /**

@@ -1,13 +1,14 @@
 import { Component, OnInit, inject, input } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Observable, filter, map, switchMap, take } from 'rxjs';
 
 import { Tag } from '@tamu-gisc/gisday/platform/data-api';
 import { SeasonService, TagService } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+
+import { adminEntityForm } from '../../../admin-entity-form';
 
 @Component({
   selector: 'tamu-gisc-tag-add-edit-form',
@@ -17,10 +18,10 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 })
 export class TagAddEditFormComponent implements OnInit {
   private readonly fb = inject(UntypedFormBuilder);
-  private readonly rt = inject(Router);
+  /** Its save and delete, and what they say (#3340). */
+  private readonly saves = adminEntityForm('Tag', '/admin/tags');
   private readonly at = inject(ActivatedRoute);
   private readonly ts = inject(TagService);
-  private readonly ns = inject(NotificationService);
   private readonly ss = inject(SeasonService);
 
   public readonly type = input<'create' | 'edit'>(undefined);
@@ -66,73 +67,18 @@ export class TagAddEditFormComponent implements OnInit {
   }
 
   public deleteEntity() {
-    this.ts.deleteEntity(this.form.getRawValue().guid).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'delete-tag-success',
-          title: 'Delete Tag',
-          message: 'Tag deleted successfully.'
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'delete-tag-error',
-          title: 'Delete Tag',
-          message: `Error deleting tag: ${err.status}`
-        });
-      }
-    });
+    this.saves.save('delete', this.ts.deleteEntity(this.form.getRawValue().guid));
   }
 
   private _updateEntity() {
     const rawValue = this.form.getRawValue();
 
-    this.ts.updateEntity(rawValue.guid, rawValue).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'update-tag-success',
-          title: 'Update Tag',
-          message: 'Tag updated successfully.'
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'update-tag-error',
-          title: 'Update Tag',
-          message: `Error updating tag: ${err.status}`
-        });
-      }
-    });
+    this.saves.save('update', this.ts.updateEntity(rawValue.guid, rawValue));
   }
 
   private _createEntity() {
     const rawValue = this.form.getRawValue();
 
-    this.ts.createEntity(rawValue).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'create-tag-success',
-          title: 'Create Tag',
-          message: 'Tag created successfully.'
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'create-tag-error',
-          title: 'Create Tag',
-          message: `Error creating tag: ${err.status}`
-        });
-      }
-    });
-  }
-
-  private _navigateBack() {
-    this.rt.navigate(['/admin/tags']);
+    this.saves.save('create', this.ts.createEntity(rawValue));
   }
 }

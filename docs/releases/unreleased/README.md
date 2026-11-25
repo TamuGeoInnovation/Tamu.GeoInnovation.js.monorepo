@@ -9,6 +9,22 @@ docs/releases/unreleased/1991-vendor-parking-lots.md
 At release, `node scripts/collate-release-notes.mjs` gathers them into the dated notes and the
 directory empties.
 
+## AggieMap and GIS Day are released separately, and so are their notes
+
+GIS Day ships on its own path ([Releasing GIS Day](../README.md#releasing-gis-day)), so **a GIS Day entry says
+`app: gisday`** in its front matter, and the script collates it into
+[`gisday-unreleased.md`](../gisday-unreleased.md). An entry with no `app:` is AggieMap's and goes into
+`unreleased.md`, as every entry did before.
+
+**`--check` fails a GIS Day-looking entry that does not say which it is**: one that links txgisday.org,
+gisday.tamu.edu or gisday.ucgis.org with no `app:`. The 10 November notes were collated with 23 GIS Day entries
+among AggieMap's, so an AggieMap release read as though it shipped them, and nobody noticed until the finished
+document had been shared ([#2835](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2835)).
+An AggieMap change that links a GIS Day site says `app: aggiemap`.
+
+The check cannot see a GIS Day entry that links none of those sites, such as a change to the VGI layer on ArcGIS
+Online. Its author has to remember `app: gisday`.
+
 ## Why one file each
 
 Entries used to be added to the top of `docs/releases/unreleased.md`, and the *What to test on dev*
@@ -49,6 +65,8 @@ layers in the service's colours.
 
 - **`issue`** orders the collated notes and is checked against the file name.
 - **`title`** is only for the collation summary; the `###` heading in the body is what readers see.
+- **`app`** is the application the change ships in: `gisday` for GIS Day. Leave it out for AggieMap. Any
+  other value needs its own `docs/releases/<app>-unreleased.md`, and `--check` fails until it exists.
 - **`testOnDev`** is the row, or rows, for *What to test on dev*. Omit it only when the change cannot
   be checked on dev, and say why in the entry.
 - **Image paths are relative to `docs/releases/`**, not to this directory - `../screenshots/...` -

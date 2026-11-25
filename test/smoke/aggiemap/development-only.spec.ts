@@ -1,16 +1,22 @@
+import * as fs from 'fs';
+import * as path from 'path';
+
 import { Page } from '@playwright/test';
 
 import { expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
-import { environmentIsDevelopment } from './gis-hosts';
 import {
   DEVELOPMENT_ONLY_CONTROLS,
   DEVELOPMENT_ONLY_ALL_MAPS_TILES,
+  DEVELOPMENT_ONLY_PAGES,
   DEVELOPMENT_ONLY_SECTIONS,
   DEVELOPMENT_ONLY_SERVICES,
+  SECTIONS_ON_EVERY_ENVIRONMENT,
   developmentSectionsVisible,
   sidebarTabs
 } from './development-only';
+import { isDevelopmentUrl, smokeBaseUrl } from './gis-hosts';
+import { PROBE_GLOBAL, waitForMapReady } from './map-probe';
 
 /**
  * Development-only sections stay off production (#1090).
@@ -22,8 +28,7 @@ import {
 
 const VISIBLE = developmentSectionsVisible();
 /** Whether this environment reads the development GIS server, which localhost does not (#2001). */
-const DEVELOPMENT_GIS = environmentIsDevelopment(process.env.AGGIEMAP_SMOKE_BASE_URL ?? 'https://aggiemap.tamu.edu');
-const PROBE_GLOBAL = '__tamuGiscMapProbe';
+const DEVELOPMENT_GIS = isDevelopmentUrl(smokeBaseUrl());
 
 /** Whether the map on the page reports it has loaded. */
 async function probeReady(page: Page): Promise<boolean> {
@@ -39,16 +44,7 @@ test.describe(`development-only sections ${VISIBLE ? 'are offered here' : 'stay 
       await blockAnalytics(page);
       await page.goto('/map');
 
-      await expect
-        .poll(
-          async () =>
-            await page.evaluate(
-              (name) => (window as unknown as Record<string, { ready?: boolean }>)[name]?.ready === true,
-              PROBE_GLOBAL
-            ),
-          { message: 'the main map never finished loading', timeout: 90_000, intervals: [1_000] }
-        )
-        .toBe(true);
+      await waitForMapReady(page, 'the main map never finished loading');
 
       const count = await sidebarTabs(page, section);
 
@@ -58,6 +54,22 @@ test.describe(`development-only sections ${VISIBLE ? 'are offered here' : 'stay 
           ? `the ${section} tab should be offered here`
           : `the ${section} tab is offered on an environment that should not have it`
       ).toBe(VISIBLE ? 1 : 0);
+    });
+  }
+});
+
+/** Sections that left development for every environment are offered on every environment (#2789). */
+test.describe('sections on every environment are offered here', () => {
+  for (const section of SECTIONS_ON_EVERY_ENVIRONMENT) {
+    test(`the ${section} tab is offered`, async ({ page }) => {
+      await blockAnalytics(page);
+      await page.goto('/map');
+
+      await expect
+        .poll(async () => probeReady(page), { message: 'the main map never finished loading', timeout: 90_000, intervals: [1_000] })
+        .toBe(true);
+
+      expect(await sidebarTabs(page, section), `the ${section} tab is not offered here`).toBe(1);
     });
   }
 });
@@ -89,6 +101,20 @@ test.describe(`development-only All Maps tiles ${VISIBLE ? 'are offered here' : 
         ).toBe(VISIBLE ? 1 : 0);
       });
     }
+  }
+});
+
+/** A development-only page opens here, and goes to the page above it on production (#2788, #2801). */
+test.describe(`development-only pages ${VISIBLE ? 'open here' : 'go to the page above them on this environment'}`, () => {
+  for (const [address, above] of Object.entries(DEVELOPMENT_ONLY_PAGES)) {
+    test(`${address} ${VISIBLE ? 'opens' : `opens ${above}`}`, async ({ page }) => {
+      await blockAnalytics(page);
+      await page.goto(address);
+
+      await expect
+        .poll(() => new URL(page.url()).pathname, { timeout: 30_000 })
+        .toBe(VISIBLE ? address : above);
+    });
   }
 });
 
@@ -156,6 +182,51 @@ test.describe(`development-only services ${VISIBLE ? 'are used here' : 'are neve
 });
 
 /**
+ * A development-only map's link opens the main map on production, and the map itself elsewhere (#2742).
+ *
+ * The check above proves a development-only map by its services, which production must never request. That cannot
+ * prove a map whose service production reads for another map - Sustainable Transportation's TS/BikeMap is the main
+ * map's too - so this proves the gate itself, for every map `developmentOnly` marks, from the definitions' own
+ * answer in `declared-layers.generated.json`.
+ */
+test.describe(`development-only maps ${VISIBLE ? 'open' : 'open the main map instead'}`, () => {
+  const declared: Record<string, { developmentOnly?: true; address?: string }> = JSON.parse(
+    fs.readFileSync(path.join(__dirname, 'declared-layers.generated.json'), 'utf8')
+  );
+  const maps = Object.entries(declared)
+    .filter(([, map]) => map.developmentOnly && map.address)
+    .map(([id, map]) => ({ id, address: map.address as string }));
+
+  test('there are some to check', () => {
+    expect(maps.length, 'declared-layers.generated.json marks no map development-only').toBeGreaterThan(0);
+  });
+
+  for (const { id, address } of maps) {
+    test(`${address} ${VISIBLE ? 'opens the map' : 'opens /map'}`, async ({ page }) => {
+      await blockAnalytics(page);
+      await page.goto(address);
+
+      // The main map opens its default sidebar page, so the redirect lands on `/map/d`.
+      await expect
+        .poll(() => new URL(page.url()).pathname, { timeout: 30_000 })
+        .toMatch(VISIBLE ? new RegExp(`^${address}(/|$)`) : /^\/map(\/|$)/);
+    });
+
+    // A map that moved to its section's address still answers at the old one (#2767).
+    if (!address.startsWith('/parking/')) {
+      test(`/parking/${id} ${VISIBLE ? `moves to ${address}` : 'opens /map'}`, async ({ page }) => {
+        await blockAnalytics(page);
+        await page.goto(`/parking/${id}`);
+
+        await expect
+          .poll(() => new URL(page.url()).pathname, { timeout: 30_000 })
+          .toMatch(VISIBLE ? new RegExp(`^${address}(/|$)`) : /^\/map(\/|$)/);
+      });
+    }
+  }
+});
+
+/**
  * Development-only controls drawn on the map stay off production (#1541).
  *
  * The Aerial Imagery date slider is gated on `TestingService.isTesting`, like the Bus Routes tab, and
@@ -199,7 +270,6 @@ test.describe(`development-only map controls ${VISIBLE ? 'are offered here' : 's
     });
   }
 });
-
 
 /**
  * `?as=production` makes a development host behave as production, for the tab (#1722).

@@ -1,6 +1,10 @@
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 
 import { MonumentsComponent } from './monuments.component';
+
+// The winners line links to the awards session's page (#2985).
+beforeEach(() => TestBed.configureTestingModule({ providers: [provideRouter([])] }));
 
 /**
  * #2460. The 2026 VGI competition runs Saturday, November 14 through Friday, November 20; submissions count
@@ -52,11 +56,15 @@ describe('MonumentsComponent ways in', () => {
     return fixture.nativeElement as HTMLElement;
   }
 
-  it('has a button to the pre-competition survey, then one to the submission form, before the information sheet', () => {
+  it('has a button to the pre-competition survey, then the submission form, then the leaderboard, before the information sheet', () => {
     const element = page();
     const buttons = Array.from(element.querySelectorAll<HTMLAnchorElement>('.competition-actions a.button'));
 
-    expect(buttons.map((b) => b.getAttribute('href'))).toEqual(['https://forms.gle/GvVWuBc51PKniyPFA', '/app/submission']);
+    expect(buttons.map((b) => b.getAttribute('href'))).toEqual([
+      'https://forms.gle/GvVWuBc51PKniyPFA',
+      '/app/submission',
+      '/app/leaderboard'
+    ]);
 
     const sheet = element.querySelector('.fine-print');
     expect(buttons[1].compareDocumentPosition(sheet) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
@@ -64,5 +72,24 @@ describe('MonumentsComponent ways in', () => {
 
   it('does not ask anyone to download or install an app', () => {
     expect(page().textContent).not.toMatch(/download and install/i);
+  });
+});
+
+/**
+ * #3169. The leaderboard is a button at the top of the page, before any of its text, so the standings can be brought up and
+ * shown to a room without scrolling or knowing the app's address.
+ */
+describe('MonumentsComponent leaderboard', () => {
+  it('has a button to the leaderboard before the first paragraph', () => {
+    const fixture = TestBed.createComponent(MonumentsComponent);
+    fixture.detectChanges();
+    const element = fixture.nativeElement as HTMLElement;
+
+    const button = element.querySelector<HTMLAnchorElement>('a.button');
+    const firstParagraph = element.querySelector('.column8 p');
+
+    expect(button?.getAttribute('href')).toBe('/app/leaderboard');
+    expect(button?.textContent?.trim()).toBe('View the leaderboard');
+    expect(button.compareDocumentPosition(firstParagraph) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 });

@@ -37,7 +37,9 @@ import * as gju from 'geojson-utils';
 import { LayerSource } from '@tamu-gisc/common/types';
 import { findNearestIndex, isCoordinatePair, getGeolocation } from '@tamu-gisc/common/utils/geometry/generic';
 import { centroidFromPolygonGeometry } from '@tamu-gisc/common/utils/geometry/esri';
-import { minBy, pairwiseOverlap } from '@tamu-gisc/common/utils/collection';
+import { pairwiseOverlap } from '@tamu-gisc/common/utils/collection';
+
+import { DoorPoint, firstRoutableDoor, rankDoorsByDistance, refineStops } from './trip-planner-door-choice';
 import { timeStringForDate } from '@tamu-gisc/common/utils/date';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -47,6 +49,7 @@ import { SearchService, SearchResult, SearchResultItem } from '@tamu-gisc/ui-kit
 import { SettingsService, SettingsInitializationConfig } from '@tamu-gisc/common/ngx/settings';
 import { TripPlannerConnection, TripPlannerConnectionService } from './trip-planner-connection.service';
 import { TripPlannerNetworkTravelMode, networkTravelModeFor, offeredTravelMode } from './trip-planner-travel-modes';
+import { lastStretch, lastStretchFinishText, routeEndVertex } from './trip-planner-last-stretch';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import {
   TripResult,
@@ -55,7 +58,8 @@ import {
   TripPointOriginTransformationsParams,
   TripPointOriginParams,
   TripPointGeometry,
-  TripPointAttributes
+  TripPointAttributes,
+  attributeOf
 } from '../core/trip-planner-core';
 
 import { BusService, TimetableRow } from '../services/transportation/bus/bus.service';
@@ -864,7 +868,12 @@ export class TripPlannerService implements OnDestroy {
       const allNormalized = nStops.every((s) => s.normalized);
 
       if (allNormalized) {
-        this.getNearestDoors(nStops).then(() => {
+        // The door lookup refines where the trip starts and ends; it must never decide whether it happens at all.
+        // It used to: nothing caught a rejection, so the stops were never set and nothing was drawn, silently
+        // (#2851).
+        refineStops(this.getNearestDoors(nStops), (error) => {
+          console.warn('Nearest door lookup failed; using the stops as they are: ', (error as Error)?.message ?? error);
+        }).then(() => {
           // Set the service state value, which notifies all subscribers.
           this.stops = nStops;
 
@@ -1460,15 +1469,23 @@ export class TripPlannerService implements OnDestroy {
               new Date(baseDate.getTime() + features[features.length - 1].attributes.relativeTime * 60 * 1000)
             );
 
+            // When the destination is off the network, the last step says to leave the path for it (#2639).
+            const stretch = lastStretch(
+              routeEndVertex(features),
+              this._Stops.value[this._Stops.value.length - 1].geometry
+            );
+            const finishText = (time: string) =>
+              stretch ? lastStretchFinishText(stretch, lastStopName, time) : `Finish at ${lastStopName} at ${time}`;
+
             // Setting the text on these should update the response directions as `features` are a reference to those.
             if (this._TravelOptions.getValue().time_mode === 'arrive') {
               features[0].attributes.text = `Start at ${firstStopName} at ${lastTime}`;
 
-              features[features.length - 1].attributes.text = `Finish at ${lastStopName} at ${firstTime}`;
+              features[features.length - 1].attributes.text = finishText(firstTime);
             } else {
               features[0].attributes.text = `Start at ${firstStopName} at ${firstTime}`;
 
-              features[features.length - 1].attributes.text = `Finish at ${lastStopName} at ${lastTime}`;
+              features[features.length - 1].attributes.text = finishText(lastTime);
             }
 
             const features_length = features.length;
@@ -1962,6 +1979,26 @@ export class TripPlannerService implements OnDestroy {
 
             graphicCollection.push(graphic);
           });
+
+          // The last stretch, from where the network's route ends to the destination itself, dashed because no
+          // path is known there (#2639). Drawn with the route, so it is zoomed to and cleared with it.
+          const stretch = lastStretch(
+            routeEndVertex(result.result.directions.features),
+            this._Stops.value[this._Stops.value.length - 1]?.geometry
+          );
+
+          if (stretch && this._view.type === '2d') {
+            graphicCollection.push(
+              new Graphic({
+                geometry: new Polyline({
+                  spatialReference: { wkid: 4326 },
+                  paths: [[stretch.from, stretch.to]]
+                }),
+                symbol: { ...routeSymbols.walk_2d, id: 'last-stretch', style: 'dash' } as esri.GraphicProperties['symbol'],
+                attributes: { lastStretchMetres: stretch.metres }
+              })
+            );
+          }
 
           // Add all graphics generated from the route segments.
           layer.addMany(graphicCollection);
@@ -2546,7 +2583,7 @@ export class TripPlannerService implements OnDestroy {
 
     return new Promise((resolve) => {
       try {
-        const buildingNumber = (stop.attributes as TripPointAttributesWithBldgNumber).Bldg_Number;
+        const buildingNumber = attributeOf(stop.attributes, 'Bldg_Number');
         return this.mapService.findLayerOrCreateFromSource(source).then((layer: esri.FeatureLayer): Promise<TripPoint> => {
           return layer
             .queryFeatures({
@@ -2579,39 +2616,26 @@ export class TripPlannerService implements OnDestroy {
             })
             .then((doors) => {
               if (doors.length > 0) {
-                // If doors found, find the one with shortest straight line distance from the provided point
-                const distanceRef = [];
-                const distanceValue = [];
+                // If doors found, choose one by distance and then by whether the network can route from it.
+                void (async () => {
+                  // Nearest first, then the first one the network can actually route from. The nearest door is a
+                  // preference, not a requirement: one door that locates onto a disconnected piece of network used to
+                  // fail the whole trip, in every travel mode, while other doors on the same building worked (#2843).
+                  const ranked = rankDoorsByDistance(
+                    doors,
+                    (door) => door.geometry as unknown as DoorPoint,
+                    relativeTo.geometry as unknown as DoorPoint
+                  );
 
-                this.moduleProvider.require(['Point'], true).then((modules: { Point: typeof esri.Point }) => {
-                  doors.forEach((door) => {
-                    // Point used to calculate euclidean distance between it and the reference point
-                    const currentPoint = new modules.Point({
-                      latitude: door.geometry['latitude'],
-                      longitude: door.geometry['longitude']
-                    });
+                  const ret: esri.Graphic = await firstRoutableDoor(ranked, (door) => this.doorRoutes(door, relativeTo));
 
-                    const relativePoint = new modules.Point({
-                      latitude: relativeTo.geometry.latitude,
-                      longitude: relativeTo.geometry.longitude
-                    });
+                  if (!ret) {
+                    // No door within the limit could be routed from. Leave the stop on the building's own point, which
+                    // routes, rather than moving it somewhere the network cannot use.
+                    resolve(stop);
 
-                    distanceRef.push({
-                      distance: currentPoint.distance(relativePoint),
-                      fid: door.attributes['GIS.FCOR.Bldg_Entrance.FID']
-                    });
-
-                    distanceValue.push(currentPoint.distance(relativePoint));
-                  });
-
-                  // Get the index of the smallest value in the distances array
-                  const min = minBy(distanceRef, (o) => {
-                    return o.distance;
-                  });
-
-                  const ret: esri.Graphic = doors.find((feature) => {
-                    return feature.attributes['GIS.FCOR.Bldg_Entrance.FID'] === min.fid;
-                  });
+                    return;
+                  }
 
                   const transformationDefinition: TripPointOriginTransformationsParams = {
                     type: 'nearest-door',
@@ -2629,7 +2653,7 @@ export class TripPlannerService implements OnDestroy {
                   transformed.geometry.longitude = (<TripPointGeometry>ret.geometry).longitude;
 
                   resolve(transformed);
-                });
+                })();
               } else {
                 resolve(stop);
               }
@@ -2644,6 +2668,38 @@ export class TripPlannerService implements OnDestroy {
         resolve(stop);
       }
     });
+  }
+
+  /**
+   * Whether the routing network can route from this door to the other end of the trip (#2843).
+   *
+   * Asked in the travel mode the visitor is in, so a door is judged by the network they are actually using. Any failure
+   * - an error, a refusal, no route - is "no": the point of asking is to move on to the next door rather than to
+   * diagnose the network.
+   */
+  private async doorRoutes(door: esri.Graphic, relativeTo: TripPoint): Promise<boolean> {
+    const { supportedTravelModes } = await this._Modules.networkService.fetchServiceDescription(this.connection.url());
+
+    const from = {
+      attributes: { name: 'door' },
+      geometry: door.geometry as unknown as TripPointGeometry
+    } as unknown as TripPoint;
+
+    const params = new this._Modules.RouteParameters({
+      outSpatialReference: {
+        wkid: 4326
+      },
+      stops: this.graphicsToStopsCollection([from, relativeTo]),
+      travelMode: {
+        id: this._TravelOptions.value.travel_mode.toString()
+      },
+      returnDirections: false,
+      returnZ: false
+    });
+
+    const result = await this.solveWithNetworkMode(supportedTravelModes, params as esri.RouteParameters);
+
+    return Boolean(result);
   }
 
   private graphicsToStopsCollection(tripPoints: Array<TripPoint>) {
@@ -2960,10 +3016,6 @@ export type TimeModeOption = 'now' | 'leave' | 'arrive';
 
 interface EsriError extends Error {
   details?: esri.EsriErrorDetails;
-}
-
-interface TripPointAttributesWithBldgNumber extends TripPointAttributes {
-  Bldg_Number: string;
 }
 
 interface CollectionConstructor {

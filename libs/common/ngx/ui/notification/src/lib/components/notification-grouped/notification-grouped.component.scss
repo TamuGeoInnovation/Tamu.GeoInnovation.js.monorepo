@@ -1,4 +1,5 @@
 @use 'libs/sass/mixins' as m;
+@use 'libs/sass/variables' as *;
 
 .notification-grouped-wrapper {
   position: fixed;
@@ -37,7 +38,7 @@
     top: 0;
     left: 0;
     height: 2px;
-    background: #500000;
+    background: $aggie-maroon;
   }
 
   .close {
@@ -69,7 +70,7 @@
   // there - the entry below it looks identical. The bar and the label are what make it read as more
   // than "first".
   .grouped-item--high {
-    border-left: 4px solid #500000;
+    border-left: 4px solid $aggie-maroon;
     padding-left: calc(1.25rem - 4px);
     background: #fbf7f7;
   }
@@ -79,7 +80,7 @@
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: #500000;
+    color: $aggie-maroon;
     margin-bottom: 0.15rem;
   }
 
@@ -126,12 +127,12 @@
       transition: all 0.2s ease;
 
       &:hover {
-        color: #500000;
-        border-bottom-color: #500000;
+        color: $aggie-maroon;
+        border-bottom-color: $aggie-maroon;
       }
 
       &:focus {
-        outline: 1px solid #500000;
+        outline: 1px solid $aggie-maroon;
         outline-offset: 2px;
       }
     }
@@ -179,7 +180,7 @@
     border: none;
     border-radius: 50%;
     background: transparent;
-    color: #500000;
+    color: $aggie-maroon;
     cursor: pointer;
 
     &:hover {
@@ -187,7 +188,7 @@
     }
 
     &:focus-visible {
-      outline: 1px solid #500000;
+      outline: 1px solid $aggie-maroon;
       outline-offset: 2px;
     }
 

@@ -1,0 +1,148 @@
+<!-- The presenter page's own column (#2952), so the bio is edited and previewed at the width it is published at. -->
+<section>
+  <div class="container12">
+    <!-- One child, so container12 does not set the heading beside the form as a column of its own. -->
+    <div class="profile-edit">
+      <h1 class="trailer-1">Your presenter profile</h1>
+      @if (!token() || invalid()) {
+      <!-- No link, or one that no longer works: ask for a new one. -->
+      <form class="form" [formGroup]="requestForm" (ngSubmit)="requestLink()">
+        <div class="form-section">
+          <div class="form-section-body">
+            @if (invalid()) {
+            <div class="info-block warning">
+              <p>This link has expired or is not valid. Enter the email address we have for you and we will send a new one.</p>
+            </div>
+            } @else {
+            <p class="form-input-description">Presenting at GIS Day? Enter the email address we have for you, and we will send you a link to update your bio, photo, affiliation and link.</p>
+            }
+            <div class="form-collection row">
+              <tamu-gisc-textbox formControlName="email" placeholder="Email" type="text" [floatLabel]="true"></tamu-gisc-textbox>
+            </div>
+            @if (requested(); as answer) {
+            <div class="info-block notice">
+              <p>{{ answer }}</p>
+            </div>
+            }
+          </div>
+        </div>
+        <div class="form-section">
+          <div class="form-section-body">
+            <div class="form-collection row">
+              <tamu-gisc-button type="submit" value="Email me a link"></tamu-gisc-button>
+            </div>
+          </div>
+        </div>
+      </form>
+      } @else if (sent()) {
+      <div class="info-block success">
+        <p class="bold">Thank you. Your changes have been sent.</p>
+        <p>The GIS Day team reviews each change before it appears on the site. You can use your link again until it expires to change anything you sent.</p>
+      </div>
+      <p class="leader-1"><a routerLink="/presenters">See the presenters</a></p>
+      } @else if (profile(); as p) {
+      <form class="form" [formGroup]="form" (ngSubmit)="submit()">
+        <div class="form-section">
+          <div class="form-section-toolbar">
+            <div class="form-section-title">{{ p.firstName }} {{ p.lastName }}</div>
+          </div>
+          <div class="form-section-body">
+            <p class="form-input-description">Changes are reviewed by the GIS Day team before they appear on the site. This link works until {{ p.expires | date: 'EEEE, MMMM d' : '-0600' }}.</p>
+            @if (p.pending) {
+            <div class="info-block notice">
+              <p>You sent changes on {{ p.pending.sent | date: 'MMMM d, h:mm a' : '-0600' }} that are waiting for review. They are filled in below; sending again replaces them.</p>
+            </div>
+            }
+            <div class="form-collection column">
+              <tamu-gisc-select formControlName="university" [data]="universities$ | async" displayTemplate="name" valueTemplate="guid" [searchable]="true" placeholder="University"></tamu-gisc-select>
+            </div>
+
+            <div class="form-collection column">
+              <tamu-gisc-textbox formControlName="graduationYear" placeholder="Graduation year, for example 2018" type="text" [floatLabel]="true"></tamu-gisc-textbox>
+            </div>
+
+            <!-- A speaker with an organization shows it on the site instead of an affiliation, so it is shown here as it is, for the team to change (#2953). -->
+            @if (p.organization) {
+            <div class="form-collection column">
+              <p class="form-input-description">Organization: <strong>{{ p.organization }}</strong>. To change it, contact the GIS Day team.</p>
+            </div>
+            } @else {
+            <div class="form-collection column">
+              <tamu-gisc-textbox formControlName="affiliation" placeholder="Affiliation (company, agency or university)" type="text" [floatLabel]="true"></tamu-gisc-textbox>
+            </div>
+            }
+
+            <div class="form-collection column">
+              <tamu-gisc-textbox formControlName="socialMedia" placeholder="Link (LinkedIn or a web page), starting with https://" type="text" [floatLabel]="true"></tamu-gisc-textbox>
+            </div>
+
+            <div class="form-collection column">
+              <p class="form-input-description">Bio, up to {{ p.limits.description }} characters. You can use Markdown: **bold**, *italic* and [links](https://example.com).</p>
+              <tamu-gisc-textbox formControlName="description" placeholder="Bio" type="textarea" [rows]="10" [floatLabel]="true"></tamu-gisc-textbox>
+              @if (form.controls.description.value; as bio) {
+              <p class="form-input-description leader-1">How it will look:</p>
+              <div class="bio-preview markdown-content" [innerHTML]="bio | markdownParse"></div>
+              }
+            </div>
+
+            <div class="form-collection column">
+              <p class="form-input-description">Photo: a JPEG or PNG, up to 5 MB. A head-and-shoulders photo works best.</p>
+              <div class="photo-row">
+                <!-- As the admin speaker form shows it, with its components (#2956): full size, with the school banner and class year
+                     following the University and Graduation year above, drawn only over a photo, never over the person icon (#2568). -->
+                <div class="speaker-photo">
+                  @if (preview.showing()) {
+                  <tamu-gisc-speaker-class-banner [speaker]="bannerSpeaker()"></tamu-gisc-speaker-class-banner>
+                  }
+                  <tamu-gisc-image-preview #preview [src]="photoSrc()" [alt]="photoPreview() ? 'The photo you chose' : 'Your current photo'" fallback="person" fallbackLabel="No photo yet"></tamu-gisc-image-preview>
+                </div>
+                <tamu-gisc-file class="button snug" [accept]="photoPicker.accept" (fileSelected)="choosePhoto($event)">Choose a photo</tamu-gisc-file>
+              </div>
+              @if (p.pending?.photo && !photo()) {
+              <p class="form-input-description">You already sent a new photo; it is waiting for review.</p>
+              }
+            </div>
+
+            @if (problem(); as message) {
+            <p class="problem" role="alert">{{ message }}</p>
+            }
+          </div>
+        </div>
+        <div class="form-section">
+          <div class="form-section-body">
+            <div class="form-collection row">
+              <tamu-gisc-button type="submit" [value]="sending() ? 'Sending…' : 'Send for review'" [disabled]="sending()"></tamu-gisc-button>
+            </div>
+          </div>
+        </div>
+      </form>
+      } @else {
+      <div class="loader"></div>
+      } @if (profile() && sessions()?.length > 0) {
+      <!-- Each session the speaker presents, with their own slides for it (#3093): up to three files, kept as soon as chosen, with no review, and seen by the speaker and the GIS Day team only. -->
+      <div class="form leader-2">
+        <div class="form-section">
+          <div class="form-section-toolbar">
+            <div class="form-section-title">Your sessions</div>
+          </div>
+          <div class="form-section-body">
+            <p class="form-input-description">Upload your slides for each session you present, as PDF or PowerPoint files, up to three for each session. They are saved as soon as you choose them, without review. Only you and the GIS Day team can see the files you upload; another speaker on the same session uploads their own.</p>
+            @for (item of sessions(); track item.session.guid) {
+            <div class="form-collection column leader-1">
+              <p class="bold">{{ item.session.name }}</p>
+              <p class="form-input-description">@if (item.session.date) {{{ item.session.date | date: 'EEEE, MMMM d' : '-0600' }}} @else {No day set yet} @if (item.session.date && item.session.startTime) { · {{ item.session.date | parseDateTimeStrings: item.session.startTime | date: 'h:mm a' : '-0600' }}@if (item.session.endTime) {–{{ item.session.date | parseDateTimeStrings: item.session.endTime | date: 'h:mm a' : '-0600' }}} } @if (item.session.place) { · {{ item.session.place }} }</p>
+              @if (item.session.noSlides) {
+              <!-- A session with no slides (#3147): nothing to upload. -->
+              <p class="form-input-description">{{ noSlides }}</p>
+              } @else {
+              <tamu-gisc-submission-files [source]="item.slides" [editable]="true" [limitMessage]="sessionFilesLimit" pickLabel="Upload slides" emptyLabel="No slides uploaded yet."></tamu-gisc-submission-files>
+              }
+            </div>
+            }
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+</section>

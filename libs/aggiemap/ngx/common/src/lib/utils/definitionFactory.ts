@@ -2,8 +2,9 @@ import { LayerSource } from '@tamu-gisc/common/types';
 import { SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
 
 import { actingAsProduction } from '../acting-as-production';
-import { Connections, IComposedConnections } from '../connections';
+import { Connections, IComposedConnections, markReadFromProduction } from '../connections';
 import { Definitions, IComposedIDefinitions } from '../definitions';
+import { developmentOnlyDefinitions, developmentOnlySearchSources } from '../development-only-sources';
 import { LayerSources, ThreeDLayers } from '../layer-sources/layer-sources';
 import { ComposedSearchSourcesKeyMap, SearchSources } from '../search-sources/search-sources';
 
@@ -17,8 +18,24 @@ export function factory(options?: IFactoryOptions): Definitions {
 
   const c = Connections(gisHost);
   const d = Definitions(c);
-  const l = LayerSources(c, d, options?.layerSources);
-  const s = SearchSources(c, d, options?.searchSources);
+
+  // Layers that are not ready for the public are left out of a production build entirely, rather than
+  // hidden in it (#2673). `development-only-sources.ts` holds the list and the reason for each. The local
+  // serve asks for them with `includeDevelopmentOnly`, because that is where the work is done.
+  const excludeDevelopmentOnly = !development && !options?.includeDevelopmentOnly;
+  // Each layer a development build reads from production is marked for the Layers list (#2744).
+  const l = markReadFromProduction(
+    LayerSources(c, d, {
+      exclude: [...(options?.layerSources?.exclude ?? []), ...(excludeDevelopmentOnly ? developmentOnlyDefinitions() : [])]
+    }),
+    gisHost
+  );
+  const s = SearchSources(c, d, {
+    exclude: [
+      ...(options?.searchSources?.exclude ?? []),
+      ...(excludeDevelopmentOnly ? developmentOnlySearchSources() : [])
+    ]
+  });
 
   return {
     Connections: c,
@@ -31,6 +48,13 @@ export function factory(options?: IFactoryOptions): Definitions {
 
 export interface IFactoryOptions {
   environment?: 'dev' | 'prod';
+
+  /**
+   * Keep the layers in `development-only-sources.ts` in a build that otherwise behaves as production
+   * (#2673). The local serve passes it, because that is where an unfinished layer is worked on; the
+   * production build does not, so the public never gets one.
+   */
+  includeDevelopmentOnly?: boolean;
 
   layerSources?: IFactoryExcludeOptions<IComposedIDefinitions>;
 

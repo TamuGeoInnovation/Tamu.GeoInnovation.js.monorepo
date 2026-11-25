@@ -1,7 +1,10 @@
+import { existsSync, readFileSync } from 'fs';
+import { join } from 'path';
+
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router, UrlTree } from '@angular/router';
 
-import { GisdaySite, gisdaySite, siteSessionPlaces } from '@tamu-gisc/gisday/common';
+import { GISDAY_SITES, GisdaySite, gisdaySite, siteHead, siteSessionPlaces, withSiteHead } from '@tamu-gisc/gisday/common';
 
 import { GISDAY_SITE, SiteHasPipe, siteFeatureGuard } from './site';
 
@@ -24,8 +27,8 @@ describe('gisdaySite', () => {
    * #2071. txgisday.org keeps everything it had, Texas A&M's content included, until it becomes a landing page
    * for every organization's GIS Day site. #2066 had moved that content to gisday.tamu.edu only.
    */
-  it("leaves nothing out on txgisday.org, Texas A&M's content included", () => {
-    expect(gisdaySite('txgisday').off).toEqual([]);
+  it("leaves nothing out on txgisday.org, Texas A&M's content included, but the winners of competitions it did not run", () => {
+    expect(gisdaySite('txgisday').off).toEqual(['winners']);
   });
 
   /**
@@ -43,7 +46,7 @@ describe('gisdaySite', () => {
     }
   });
 
-  it("goes by the key at any other address, so a local copy can show any site", () => {
+  it('goes by the key at any other address, so a local copy can show any site', () => {
     expect(gisdaySite('txgisday', 'txgisday.org').name).toBe('TxGIS Day');
     expect(gisdaySite('tamu', 'localhost').name).toBe('Texas A&M GIS Day');
     expect(gisdaySite('ucgis', 'gisday.ucgis.org').name).toBe('UCGIS GIS Day');
@@ -59,8 +62,15 @@ describe('gisdaySite', () => {
 
   it("has every other feature on Texas A&M's site and txgisday.org, and neither Texas A&M's content nor its links on UCGIS's", () => {
     expect(gisdaySite('tamu').off).toEqual(['homeLinks']);
-    expect(gisdaySite('txgisday').off).toEqual([]);
+    expect(gisdaySite('txgisday').off).toEqual(['winners']);
     expect(gisdaySite('ucgis').off).toEqual(expect.arrayContaining(['tamu', 'tamuLinks']));
+  });
+
+  /** #3239, decided 2A: the research competitions' winners are shown only on gisday.tamu.edu, where they ran. */
+  it("shows the winners on Texas A&M's site only", () => {
+    expect(gisdaySite('tamu').off).not.toContain('winners');
+    expect(gisdaySite('txgisday').off).toContain('winners');
+    expect(gisdaySite('ucgis').off).toContain('winners');
   });
 });
 
@@ -77,7 +87,9 @@ describe('siteSessionPlaces', () => {
   });
 
   it('matches the name ignoring case and surrounding spaces', () => {
-    expect(siteSessionPlaces(gisdaySite('tamu'), [{ guid: 'p', name: '  texas a&m university gis day(s) ' }])).toEqual(['p']);
+    expect(siteSessionPlaces(gisdaySite('tamu'), [{ guid: 'p', name: '  texas a&m university gis day(s) ' }])).toEqual([
+      'p'
+    ]);
   });
 
   it('is every place, as null, on txgisday.org and UCGIS', () => {
@@ -88,6 +100,22 @@ describe('siteSessionPlaces', () => {
   it("is none, not every place, when a season has no place by Texas A&M's name", () => {
     expect(siteSessionPlaces(gisdaySite('tamu'), places.slice(1))).toEqual([]);
   });
+
+  /**
+   * #3057. In 2023 Texas A&M's sessions were held under a place named "Texas A&M University", before it became "Texas
+   * A&M University GIS Day(s)", so gisday.tamu.edu hid all 20 of them. Both names are Texas A&M's; Texas A&M
+   * University-Corpus Christi's places, which begin with the same words, are not.
+   */
+  it("is 2023's Texas A&M place too, under its older name, and not Corpus Christi's (#3057)", () => {
+    const places2023 = [
+      { guid: 'tamu-2023', name: 'Texas A&M University' },
+      { guid: 'tamucc-2023', name: 'Texas A&M University Corpus Christi | Conrad Blucher Institute' },
+      { guid: 'tamucc', name: 'Texas A&M University-Corpus Christi' },
+      { guid: 'atx-2023', name: 'ATX GIS Day' }
+    ];
+
+    expect(siteSessionPlaces(gisdaySite('tamu'), places2023)).toEqual(['tamu-2023']);
+  });
 });
 
 describe('SiteHasPipe', () => {
@@ -95,7 +123,17 @@ describe('SiteHasPipe', () => {
     setUp();
     const pipe = TestBed.runInInjectionContext(() => new SiteHasPipe());
 
-    for (const feature of ['competitions', 'faq', 'sponsors', 'classes', 'checkIns', 'pastYears', 'tamu', 'tamuLinks', 'homeLinks'] as const) {
+    for (const feature of [
+      'competitions',
+      'faq',
+      'sponsors',
+      'classes',
+      'checkIns',
+      'pastYears',
+      'tamu',
+      'tamuLinks',
+      'homeLinks'
+    ] as const) {
       expect(pipe.transform(feature)).toBe(true);
     }
   });
@@ -120,5 +158,129 @@ describe('siteFeatureGuard', () => {
     const result = TestBed.runInInjectionContext(() => siteFeatureGuard('faq')(null, null)) as UrlTree;
 
     expect(TestBed.inject(Router).serializeUrl(result)).toBe('/');
+  });
+});
+
+/**
+ * #2649. Link previews never run the app, so each site's page carries its own name, description and image. Every site
+ * once served txgisday.org's, so a UCGIS post about gisday.ucgis.org showed "TxGIS Day".
+ */
+describe('siteHead', () => {
+  const page = [
+    '<head>',
+    '    <!-- site head -->',
+    '    <title>TxGIS Day</title>',
+    '    <!-- /site head -->',
+    '    <base href="/" />',
+    '</head>'
+  ].join('\n');
+
+  it("gives the UCGIS site UCGIS's name, description, address and image", () => {
+    const head = siteHead(GISDAY_SITES.ucgis);
+
+    expect(head).toContain('<title>UCGIS GIS Day</title>');
+    expect(head).toContain('<meta property="og:title" content="UCGIS GIS Day" />');
+    expect(head).toContain('<meta property="og:site_name" content="UCGIS GIS Day" />');
+    expect(head).toContain('<meta property="og:url" content="https://gisday.ucgis.org/" />');
+    expect(head).toContain(
+      '<meta property="og:image" content="https://gisday.ucgis.org/assets/images/sites/ucgis/preview.png" />'
+    );
+    expect(head).toContain(`<meta property="og:description" content="${GISDAY_SITES.ucgis.description}" />`);
+    expect(head).not.toContain('TxGIS');
+  });
+
+  it('escapes what would break an attribute', () => {
+    expect(siteHead(GISDAY_SITES.tamu)).toContain('<title>Texas A&amp;M GIS Day</title>');
+    expect(siteHead({ ...GISDAY_SITES.ucgis, description: 'A "quoted" <word>' })).toContain(
+      'content="A &quot;quoted&quot; &lt;word&gt;"'
+    );
+  });
+
+  it('replaces only what is between the markers, and keeps the markers', () => {
+    const result = withSiteHead(page, GISDAY_SITES.ucgis);
+
+    expect(result).not.toContain('<title>TxGIS Day</title>');
+    expect(result).toContain('<title>UCGIS GIS Day</title>');
+    expect(result).toContain('<!-- site head -->');
+    expect(result).toContain('<!-- /site head -->');
+    expect(result).toContain('<base href="/" />');
+    expect(withSiteHead(result, GISDAY_SITES.txgisday)).toBe(withSiteHead(page, GISDAY_SITES.txgisday));
+  });
+
+  it("names each site's tab icon, so the page has it before the app runs (#2084)", () => {
+    expect(siteHead(GISDAY_SITES.ucgis)).toContain('<link rel="icon" href="assets/images/sites/ucgis/favicon.png" />');
+    expect(siteHead(GISDAY_SITES.txgisday)).toContain('<link rel="icon" href="favicon.ico" />');
+  });
+
+  /**
+   * #2084: gisday.tamu.edu's tab icon was the box logo's SVG, whose wide margin made it smaller than AggieMap's. It is
+   * now AggieMap's own icon, from the one copy in libs/assets that both apps serve, not a second copy.
+   */
+  it("gives gisday.tamu.edu AggieMap's own tab icon, from the one shared copy", () => {
+    const root = join(__dirname, '../../../../../../../..');
+    const icon = GISDAY_SITES.tamu.favicon;
+
+    expect(siteHead(GISDAY_SITES.tamu)).toContain(`<link rel="icon" href="${icon}" />`);
+    expect(icon).toBe('assets/images/logo/favicon.ico');
+    expect(existsSync(join(root, 'libs', icon))).toBe(true);
+    expect(existsSync(join(root, 'apps/aggiemap-angular/src/favicon.ico'))).toBe(false);
+  });
+
+  // AggieMap serves the same file at its root, where browsers, bookmarks and old tabs ask for /favicon.ico by convention.
+  it('has AggieMap serve that one copy as /favicon.ico, and name it there', () => {
+    const root = join(__dirname, '../../../../../../../..');
+    const project = JSON.parse(readFileSync(join(root, 'apps/aggiemap-angular/project.json'), 'utf8'));
+    const assets: Array<string | { glob: string; input: string; output: string }> = project.targets.build.options.assets;
+
+    expect(assets).toContainEqual({ glob: 'favicon.ico', input: './libs/assets/images/logo/', output: '/' });
+    expect(readFileSync(join(root, 'apps/aggiemap-angular/src/index.html'), 'utf8')).toContain('href="favicon.ico"');
+  });
+
+  it('refuses a page without the markers rather than leaving it as it was', () => {
+    expect(() => withSiteHead('<head><title>TxGIS Day</title></head>', GISDAY_SITES.ucgis)).toThrow(/site head/);
+  });
+
+  it('gives every site an address, a description and a preview image', () => {
+    for (const site of Object.values(GISDAY_SITES) as Array<GisdaySite>) {
+      expect(site.address).toMatch(/^https:\/\/[^/]+$/);
+      expect(site.description.length).toBeGreaterThan(20);
+      expect(site.preview).toMatch(/^assets\/images\/sites\/[a-z]+\/preview\.png$/);
+    }
+  });
+
+  it('is the UCGIS site at its own address', () => {
+    expect(gisdaySite(undefined, 'gisday.ucgis.org').name).toBe('UCGIS GIS Day');
+  });
+});
+
+/**
+ * #2575. UCGIS's members, and its organizers, sign in only with their UCGIS Tradewing accounts, so its Sign in goes
+ * straight to that Auth0 connection. txgisday.org and gisday.tamu.edu keep Auth0's page of choices.
+ */
+describe('signInWith', () => {
+  it('sends the UCGIS site straight to the Tradewing connection', () => {
+    expect(gisdaySite('ucgis').signInWith).toBe('tradewing');
+    expect(gisdaySite(undefined, 'gisday.ucgis.org').signInWith).toBe('tradewing');
+  });
+
+  it("leaves txgisday.org and Texas A&M's site on Auth0's page of choices", () => {
+    expect(gisdaySite('txgisday').signInWith).toBeUndefined();
+    expect(gisdaySite(undefined, 'gisday.tamu.edu').signInWith).toBeUndefined();
+  });
+});
+
+/**
+ * #2662. UCGIS's Tradewing page says only "Log in with Tradewing", so the UCGIS site says first whose account it
+ * wants. The other sites sign in on their own Auth0 page and need no note.
+ */
+describe('signInNote', () => {
+  it('tells UCGIS visitors to use their UCGIS account', () => {
+    expect(gisdaySite('ucgis').signInNote?.title).toContain('UCGIS account');
+    expect(gisdaySite(undefined, 'gisday.ucgis.org').signInNote?.message).toContain('Log in with Tradewing');
+  });
+
+  it("gives txgisday.org and Texas A&M's site none", () => {
+    expect(gisdaySite('txgisday').signInNote).toBeUndefined();
+    expect(gisdaySite(undefined, 'gisday.tamu.edu').signInNote).toBeUndefined();
   });
 });

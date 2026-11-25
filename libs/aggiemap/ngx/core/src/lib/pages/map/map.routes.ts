@@ -30,7 +30,7 @@ import {
 import { BasemapGalleryComponent, BasemapGalleryService } from '@tamu-gisc/maps/feature/basemap';
 
 import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
-import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
+import { TestingService, developmentOnlyRoute } from '@tamu-gisc/dev-tools/application-testing';
 import { MapComponent } from './map.component';
 
 export const mapRoutes: Routes = [
@@ -53,7 +53,14 @@ export const mapRoutes: Routes = [
           { path: '', component: SidebarReferenceComponent },
           { path: 'bus', component: SidebarBusListComponent },
           { path: 'trip', component: SidebarTripPlannerComponent },
-          { path: 'trip/options', loadComponent: loadTripPlannerOptionsComponent },
+          {
+            path: 'trip/options',
+            loadComponent: loadTripPlannerOptionsComponent,
+            // Development only, as its link is (#2801): its one option is accessible routing, which the routing network
+            // does not support yet. On production its address goes back to the trip planner.
+            canActivate: [developmentOnlyRoute],
+            data: { developmentOnly: 'accessible routing is not supported by the routing network (#2801)' }
+          },
           { path: 'experiments', component: ExperimentsListComponent },
           { path: 'settings', component: SidebarSettingsComponent }
         ]

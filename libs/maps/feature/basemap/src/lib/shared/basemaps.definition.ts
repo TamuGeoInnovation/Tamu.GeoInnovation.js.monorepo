@@ -1,5 +1,9 @@
 import { BaseMapProperties, CONSTRUCTION_HATCH_RENDERER } from '@tamu-gisc/maps/esri';
-import { TAMU_CAMPUS_BASEMAP_URL } from '@tamu-gisc/common/datasets/geographic';
+import {
+  TAMU_CAMPUS_BASEMAP_URL,
+  TAMU_CAMPUS_STRUCTURES_URL,
+  TAMU_CAMPUS_VECTOR_BASEMAP_URL
+} from '@tamu-gisc/common/datasets/geographic';
 
 /**
  * The picture of a campus basemap in the basemap panel, shipped with the application (#1730).
@@ -16,10 +20,10 @@ import { TAMU_CAMPUS_BASEMAP_URL } from '@tamu-gisc/common/datasets/geographic';
 const CAMPUS_BASEMAP_THUMBNAIL = '/assets/images/basemap_thumbnails/aggieland.png';
 
 /**
- * The campus basemap, as raster tiles. What production shows.
+ * The campus basemap, as raster tiles. What production showed until #2515.
  *
- * The vector tile cache below is not published for production, so production keeps this one until
- * it is (#1229). Resolve the campus basemap with `aggiemapBasemap()`, never by naming either constant.
+ * Its service is abandoned (the maintainer, 9 November 2026), so production's gallery no longer offers it; development
+ * still does, to compare versions. Resolve the campus basemap with `aggiemapBasemap()`, never by naming either constant.
  */
 // Typed with its id, which every saved campus basemap id starts with (basemapForSavedId).
 export const AggiemapRasterBasemap: BaseMapProperties & { id: string } = {
@@ -67,7 +71,7 @@ export const AggiemapVectorBasemap: BaseMapProperties = {
   baseLayers: [
     {
       type: 'VectorTileLayer',
-      url: `https://gis.tamu.edu/arcgis/rest/services/Hosted/VTBase3/VectorTileServer`,
+      url: TAMU_CAMPUS_VECTOR_BASEMAP_URL,
       listMode: 'hide',
       visible: true,
       title: 'Base Map',
@@ -75,20 +79,21 @@ export const AggiemapVectorBasemap: BaseMapProperties = {
       // line) are hidden; the layer below draws both instead. The outline has to move with the fill: a layer
       // added to a vector tile basemap can only draw above the whole of it, so the style's outline would sit
       // under the grid and be broken by every line crossing it.
-      hiddenStyleLayers: [
-        'Campus Structures/Currently Under Construction/1',
-        'Campus Structures/Currently Under Construction/0'
-      ]
+      // VTBase4 publishes ONE construction style layer, a black line: the rasterized pink fill VTBase3 carried is
+      // gone, fixed at source. The line is still hidden, because the layer below draws its own outline and a layer
+      // added to a vector tile basemap can only draw above the whole of it (#3225).
+      hiddenStyleLayers: ['Campus Structures/Currently Under Construction']
     },
     // The buildings under construction, drawn over the tiles with the hatch every campus shares
     // (`CONSTRUCTION_HATCH_RENDERER`, #2532). The Construction Zones layer's default Building Projects class is red, so
     // where a building under construction sits inside one, a red diagonal cross draws over this grid. Part of this
     // basemap, so it shows only where the vector basemap does. The service and the tiles agreed on all eight buildings
-    // on 27 October.
+    // on 27 October. Read from the tiles' own feature service since #2722: the same eight buildings as the old campus
+    // basemap's University Building layer, compared by type, number and name on 9 November 2026.
     {
       type: 'FeatureLayer',
-      url: `${TAMU_CAMPUS_BASEMAP_URL}/2`,
-      definitionExpression: "Type = 'CONSTRUCTION'",
+      url: TAMU_CAMPUS_STRUCTURES_URL,
+      definitionExpression: "type = 'CONSTRUCTION'",
       title: 'Buildings under construction',
       listMode: 'hide',
       popupEnabled: false,
@@ -97,35 +102,9 @@ export const AggiemapVectorBasemap: BaseMapProperties = {
   ],
   id: 'aggie_basemap',
   // The default on every environment since #2515, so plain "Aggieland", as the raster one was. The cache is
-  // `TAMU_BaseMap_20261026`, published on 26 October 2026 (#2436).
+  // `TAMU_BaseMap_20261119`, published on 19 November 2026 (#3225), which replaced October's outright rather than
+  // being offered beside it: nothing points at VTBase3 any more (#3299).
   title: 'Aggieland',
-  thumbnailUrl: CAMPUS_BASEMAP_THUMBNAIL
-};
-
-/**
- * The vector tile basemap development opened on until 26 October 2026, kept so the two can be
- * compared side by side before either becomes production's (#2436).
- *
- * The newer cache is the one the map opens on; this one stays in the gallery under its own id, the
- * way a replaced raster version does. It goes when the comparison is settled.
- *
- * Its under-construction buildings are wrong too, and differently: this cache has no construction
- * sprite at all, and paints them with a solid `fill-color` of the authored pink. So the sprite
- * override above would have nothing to replace here. It is left alone deliberately - this cache is on
- * its way out, and a second override on something being deleted is a cost with no return (#2459).
- */
-export const AggiemapVectorBasemapSeptember2026: BaseMapProperties = {
-  baseLayers: [
-    {
-      type: 'VectorTileLayer',
-      url: `https://gis.tamu.edu/arcgis/rest/services/Hosted/VTBase/VectorTileServer`,
-      listMode: 'hide',
-      visible: true,
-      title: 'Base Map'
-    }
-  ],
-  id: 'aggie_basemap_vector_2026_09',
-  title: 'Aggieland vector, September 2026',
   thumbnailUrl: CAMPUS_BASEMAP_THUMBNAIL
 };
 
@@ -138,8 +117,8 @@ export const AggiemapVectorBasemapSeptember2026: BaseMapProperties = {
  * `constraints.maxScale`, never `0`.
  *
  * The vector basemap, production's default since #2515, caches two levels deeper, to 1:70.5. The limit stays
- * at the raster cache's depth because production still offers the raster basemap and some maps open on it:
- * a view allowed to 1:70.5 would go white there. The vector levels below 1:282 were looked at on 28 October
+ * at the raster cache's depth because a map still opens on the raster basemap on production (Football Tailgating's
+ * `campus-raster`), though the gallery no longer offers it: a view allowed to 1:70.5 would go white there. The vector levels below 1:282 were looked at on 28 October
  * and draw nothing new - the same paths and grass, and the trees shrink to nothing.
  *
  * Set just below level 21's 282.124294 rather than equal to it: at exactly that value the view stopped a
@@ -166,10 +145,10 @@ export function aggiemapBasemap(): BaseMapProperties {
 }
 
 /**
- * The raster campus basemap, for a map that opens on it, and the gallery's way back to it. On development it is the
- * gallery's dated entry, Aggieland raster, October 2026; on production, Aggieland raster. Either way the panel marks it
- * as the one showing. Its id is its own on production too: the vector basemap took `aggie_basemap` with #2515, and the
- * gallery tells basemaps apart by id.
+ * The raster campus basemap, for a map that opens on it. On development it is the gallery's dated entry, Aggieland
+ * raster, October 2026, and the panel marks it as the one showing. On production it is Aggieland raster, which the
+ * gallery no longer offers, so the panel marks nothing while it shows. Its id is its own on production too: the vector
+ * basemap took `aggie_basemap` with #2515, and the gallery tells basemaps apart by id.
  */
 export function aggiemapRasterBasemap(isTesting: boolean): BaseMapProperties {
   return isTesting
@@ -202,9 +181,10 @@ export const AggiemapRasterBasemapMay2026: BaseMapProperties = {
 /**
  * The campus basemaps the gallery offers in this environment (#1582).
  *
- * Production offers two (#2515): the vector basemap it opens on, and the raster one it showed until then. If something
- * is wrong with the vector basemap on production, a single entry would leave a visitor no way out and us no mitigation
- * short of another release; the raster entry is that way out.
+ * Production offers one: the vector basemap it opens on. It also offered the raster one it showed until #2515, as a way
+ * out if something were wrong with the vector basemap, until the maintainer abandoned the raster service on 9 November
+ * 2026: nothing on production is to read it. A raster choice a visitor saved there falls back to the vector basemap
+ * (`basemapForSavedId`).
  *
  * Development opened on the vector tiles and could not show the raster basemap at all, so a new raster cache went to
  * production without anyone having seen it drawn on dev (#1695). Development therefore also offers the raster basemap,
@@ -213,16 +193,18 @@ export const AggiemapRasterBasemapMay2026: BaseMapProperties = {
  * The first entry is the one the map opens on, and is always `aggiemapBasemap()`.
  *
  * When a version is republished, raster or vector, date the current one here and add the one it
- * replaces, so the two can be compared before one is chosen (#2436).
+ * replaces, so the two can be compared before one is chosen (#2436). Take a version out once its comparison is
+ * settled, and at once if its service stops answering anonymously: the September 2026 vector cache stayed after its
+ * comparison was settled by #2515, its service was then secured, and the settings page asked every visitor on
+ * development to sign in to the portal (#3279). A saved choice of a version taken out falls back to the campus basemap.
  */
 export function aggiemapGalleryBasemaps(isTesting: boolean): BaseMapProperties[] {
   if (!isTesting) {
-    return [aggiemapBasemap(), aggiemapRasterBasemap(isTesting)];
+    return [aggiemapBasemap()];
   }
 
   return [
     aggiemapBasemap(),
-    AggiemapVectorBasemapSeptember2026,
     aggiemapRasterBasemap(isTesting),
     AggiemapRasterBasemapJune2026,
     AggiemapRasterBasemapMay2026

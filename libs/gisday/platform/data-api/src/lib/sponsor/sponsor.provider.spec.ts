@@ -1,8 +1,10 @@
-import { InternalServerErrorException, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import { BadRequestException, InternalServerErrorException, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { Repository } from 'typeorm';
+
+import { declaredPng } from '@tamu-gisc/common/node/images';
 
 import { AssetsService } from '../assets/assets.service';
 import { Asset, Sponsor } from '../entities/all.entity';
@@ -129,13 +131,24 @@ describe('SponsorProvider', () => {
       expect(assetService.saveAsset).not.toHaveBeenCalled();
     });
 
+    it('creates a sponsor with the logo size given, and without one that is not a size (#2638)', async () => {
+      jest.spyOn(sponsorRepo, 'create').mockReturnValue({ save: jest.fn().mockResolvedValue({}) } as never);
+
+      await provider.createSponsor({ name: 'Bush School', logoSize: 'large' });
+      await provider.createSponsor({ name: 'Esri', logoSize: '' } as unknown as Partial<Sponsor>);
+
+      const created = (sponsorRepo.create as jest.Mock).mock.calls.map((c) => c[0]);
+      expect(created[0].logoSize).toBe('large');
+      expect('logoSize' in created[1]).toBe(false);
+    });
+
     it('attaches a saved logo and persists a second time when a file is supplied', async () => {
       const saved = { guid: 'sp-new' } as Sponsor & { save: jest.Mock };
       saved.save = jest.fn().mockResolvedValue(saved);
       jest.spyOn(sponsorRepo, 'create').mockReturnValue({ save: jest.fn().mockResolvedValue(saved) } as never);
       jest.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'a-1' } as never);
 
-      await provider.createSponsor({ name: 'Esri' }, { originalname: 'logo.png' } as never);
+      await provider.createSponsor({ name: 'Esri' }, { originalname: 'logo.png', buffer: declaredPng(10, 10) } as never);
 
       expect(assetService.saveAsset).toHaveBeenCalledWith(
         'images/sponsors',
@@ -175,7 +188,7 @@ describe('SponsorProvider', () => {
       jest.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'a-2' } as never);
       jest.spyOn(sponsorRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
 
-      await provider.updateSponsor('sp-1', { name: 'Esri' }, { originalname: 'logo.png' } as never);
+      await provider.updateSponsor('sp-1', { name: 'Esri' }, { originalname: 'logo.png', buffer: declaredPng(10, 10) } as never);
 
       expect((sponsorRepo.save as jest.Mock).mock.calls[0][0].logos).toEqual([{ guid: 'a-2' }]);
     });
@@ -206,6 +219,23 @@ describe('SponsorProvider', () => {
       await provider.updateSponsor('sp-1', { name: 'Esri' });
 
       expect((sponsorRepo.save as jest.Mock).mock.calls[0][0].active).toBe(false);
+    });
+
+    /**
+     * #2638. The size decides a CSS class on the public page, so only the four it draws are kept.
+     */
+    it('keeps a logo size the page draws and leaves out any other', async () => {
+      jest
+        .spyOn(sponsorRepo, 'findOne')
+        .mockResolvedValue({ guid: 'sp-1', logoSize: 'regular', logos: [] } as unknown as Sponsor);
+      jest.spyOn(sponsorRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
+
+      await provider.updateSponsor('sp-1', { logoSize: 'extra-large' });
+      await provider.updateSponsor('sp-1', { logoSize: 'huge' } as unknown as Partial<Sponsor>);
+      await provider.updateSponsor('sp-1', { name: 'Esri' });
+
+      const saved = (sponsorRepo.save as jest.Mock).mock.calls.map((c) => c[0].logoSize);
+      expect(saved).toEqual(['extra-large', 'regular', 'regular']);
     });
 
     it('does not let the caller overwrite the guid', async () => {
@@ -290,6 +320,48 @@ describe('SponsorProvider', () => {
 
       await expect(provider.deleteEntities(['sp-1'])).rejects.toThrow(InternalServerErrorException);
       expect(assetService.deleteAssetFiles).not.toHaveBeenCalled();
+    });
+  });
+
+  /**
+   * #2937. A logo is served from the site's own origin, and an SVG can carry script, so only a JPEG or PNG is taken, judged
+   * by its content: an SVG named .png is still an SVG.
+   */
+  describe('logo uploads (#2937)', () => {
+    const svg = Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"/>');
+    const upload = (originalname: string, buffer: Buffer) =>
+      ({ originalname, mimetype: 'image/png', buffer, size: buffer.length }) as Express.Multer.File;
+
+    it.each([
+      ['an SVG', upload('logo.svg', svg)],
+      ['an SVG renamed to .png', upload('logo.png', svg)]
+    ])('refuses %s on create with 400, and creates no sponsor', async (_name, file) => {
+      const save = jest.fn().mockResolvedValue({ guid: 'sp-new', save: jest.fn() });
+      jest.spyOn(sponsorRepo, 'create').mockReturnValue({ save } as never);
+
+      await expect(provider.createSponsor({ name: 'Esri' }, file)).rejects.toThrow(BadRequestException);
+      expect(save).not.toHaveBeenCalled();
+      expect(assetService.saveAsset).not.toHaveBeenCalled();
+    });
+
+    it('refuses an SVG renamed to .png on update with 400', async () => {
+      jest.spyOn(sponsorRepo, 'findOne').mockResolvedValue({ guid: 'sp-1', logos: [] } as unknown as Sponsor);
+
+      await expect(provider.updateSponsor('sp-1', { name: 'Esri' }, upload('logo.png', svg))).rejects.toThrow(
+        BadRequestException
+      );
+      expect(assetService.saveAsset).not.toHaveBeenCalled();
+      expect(sponsorRepo.save).not.toHaveBeenCalled();
+    });
+
+    it('stores a PNG named .svg under a .png name', async () => {
+      jest.spyOn(sponsorRepo, 'findOne').mockResolvedValue({ guid: 'sp-1', logos: [] } as unknown as Sponsor);
+      jest.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'a-2' } as never);
+      jest.spyOn(sponsorRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
+
+      await provider.updateSponsor('sp-1', { name: 'Esri' }, upload('logo.svg', declaredPng(10, 10)));
+
+      expect((assetService.saveAsset as jest.Mock).mock.calls[0][1].originalname).toBe('logo.png');
     });
   });
 });

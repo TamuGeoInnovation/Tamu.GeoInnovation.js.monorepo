@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
-import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
+import { AllowAny, JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 import { DEFAULT_UPLOAD_LIMITS } from '@tamu-gisc/common/nest/services';
 
 import { OrganizationService } from './organization.service';
@@ -11,26 +11,38 @@ import { Organization } from '../entities/all.entity';
 export class OrganizationController {
   constructor(private readonly orgService: OrganizationService) {}
 
+  // Read by the public pages and the admin pages alike. The token, when there is one, says whether the caller may
+  // see the private fields, which PrivateFieldsInterceptor removes otherwise (contact details, a speaker's email).
+  @UseGuards(JwtGuard)
+  @AllowAny()
   @Get('season/active')
   public getActive() {
     return this.orgService.getOrganizationsForActiveSeason();
   }
 
+  @UseGuards(JwtGuard)
+  @AllowAny()
   @Get('season/:guid')
   public getOrgsForSeason(@Param('guid') guid: string) {
     return this.orgService.getOrganizationsForSeason(guid);
   }
 
+  @UseGuards(JwtGuard)
+  @AllowAny()
   @Get('active-events')
   public activeSeasonOrgs() {
     return this.orgService.getOrgsWithEvents();
   }
 
+  @UseGuards(JwtGuard)
+  @AllowAny()
   @Get(':guid')
   public findOne(@Param('guid') guid: string) {
     return this.orgService.getOrganization(guid);
   }
 
+  @UseGuards(JwtGuard)
+  @AllowAny()
   @Get()
   public findAll() {
     return this.orgService.getOrganizations();

@@ -5,7 +5,7 @@ import { IComposedIDefinitions } from '../definitions';
 import { IFactoryExcludeOptions } from '../utils/definitionFactory';
 import { MainMapLayerSources } from '../definitions/main.definitions';
 
-export { commonLayerProps } from '../definitions/main.definitions';
+export { buildingsClickLayerNative, commonLayerProps } from '../definitions/main.definitions';
 
 // Persistent layer definitions that will be processed by a factory and added to the map.
 export function LayerSources(

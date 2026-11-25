@@ -25,6 +25,8 @@ module.exports = {
       }
     ]
   },
-  transformIgnorePatterns: ['node_modules/(?!(.*.mjs$))'],
+  // marked 18 is ESM-only and ships .js, not .mjs, so Jest must compile it: @tamu-gisc/gisday/common uses it for the
+  // editable emails' Markdown (#3044).
+  transformIgnorePatterns: ['node_modules/(?!(.*.mjs$|marked/))'],
   preset: '../../../../../jest.preset.js'
 };

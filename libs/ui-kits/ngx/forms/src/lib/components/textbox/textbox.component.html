@@ -12,4 +12,8 @@
 
 <div class="textbox-actions">
   <ng-content select=".textbox-actions"></ng-content>
+  <!-- Only when asked for (#2963): a textbox that does not set clearable renders nothing here. -->
+  @if (clearable() && hasText && !disabled()) {
+  <button type="button" class="textbox-clear material-icons" [attr.aria-label]="clearLabel()" [title]="clearLabel()" (click)="clear()">close</button>
+  }
 </div>

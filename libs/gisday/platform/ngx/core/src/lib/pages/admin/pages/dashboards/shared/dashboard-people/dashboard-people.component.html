@@ -1,0 +1,58 @@
+@if (failed()) {
+<p class="error">The people could not be read.</p>
+} @else if (people() === null) {
+<p>Reading the people...</p>
+} @else if (people().length === 0) {
+<p>{{ emptyText() }}</p>
+} @else {
+<div class="dashboard-people-actions">
+  <a (click)="download()" tabindex="0" role="button" (keydown.enter)="download()" (keydown.space)="download(); $event.preventDefault()">Export as CSV <span class="material-icons action">file_download</span></a>
+</div>
+
+<!-- Wider than an opened row on a narrow screen, or with count columns, the tables scroll, as the dashboard's does (#2894).
+  Capped at the window's height, a long list scrolls in its box, with the box's sideways scrollbar in view (#3120). -->
+<tamu-gisc-dashboard-scroll [capped]="true">
+  @for (group of groups(); track group.type) {
+  <h4>{{ group.label }} ({{ group.people.length }})</h4>
+  <table class="dashboard-person-table" [style.min-width.px]="minWidth()">
+    <colgroup>
+      @for (width of widths(); track $index) {
+      <col [style.width.px]="width" />
+      }
+    </colgroup>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>{{ isStudent(group.type) ? 'Classification' : 'Position' }}</th>
+        <th>{{ isStudent(group.type) ? 'Field of study' : 'Department' }}</th>
+        <th>{{ isStudent(group.type) ? 'University' : 'Employer' }}</th>
+        @for (column of countColumns(); track column.key) {
+        <th>{{ column.label }}</th>
+        }
+        <th>{{ dateLabel() }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (person of group.people; track $index) {
+      <tr>
+        <td>{{ person.firstName || person.lastName ? (person.firstName ?? '') + ' ' + (person.lastName ?? '') : 'Account not found' }}</td>
+        <td>{{ person.email }}</td>
+        <td>{{ isStudent(group.type) ? person.classification : person.position }}</td>
+        <td>{{ person.department }}</td>
+        <td>{{ person.organization }}</td>
+        @for (column of countColumns(); track column.key) {
+        <td>{{ person.counts?.[column.key] ?? 0 }}</td>
+        }
+        <td>
+          {{ person.created | date: 'MMM d, h:mm a' }} @if (person.outsideSessionTime) {
+          <div class="dashboard-person-outside">Outside the session's time</div>
+          }
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+  }
+</tamu-gisc-dashboard-scroll>
+}

@@ -1,13 +1,14 @@
 import { Component, OnInit, inject, input } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Observable, filter, map, switchMap, take } from 'rxjs';
 
 import { University } from '@tamu-gisc/gisday/platform/data-api';
 import { SeasonService, UniversityService } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+
+import { adminEntityForm } from '../../../admin-entity-form';
 
 @Component({
   selector: 'tamu-gisc-university-add-edit-form',
@@ -17,10 +18,10 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 })
 export class UniversityAddEditFormComponent implements OnInit {
   private readonly fb = inject(UntypedFormBuilder);
-  private readonly rt = inject(Router);
+  /** Its save and delete, and what they say (#3340). */
+  private readonly saves = adminEntityForm('University', '/admin/universities');
   private readonly at = inject(ActivatedRoute);
   private readonly us = inject(UniversityService);
-  private readonly ns = inject(NotificationService);
   private readonly ss = inject(SeasonService);
 
   public readonly type = input<'create' | 'edit'>(undefined);
@@ -72,73 +73,18 @@ export class UniversityAddEditFormComponent implements OnInit {
   }
 
   public deleteEntity() {
-    this.us.deleteEntity(this.form.getRawValue().guid).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'university-delete',
-          title: 'Delete University',
-          message: `University deleted successfully`
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'university-delete-error',
-          title: 'Delete University',
-          message: `Error deleting university: ${err.status}`
-        });
-      }
-    });
+    this.saves.save('delete', this.us.deleteEntity(this.form.getRawValue().guid));
   }
 
   private _updateEntity() {
     const rawValue = this.form.getRawValue();
 
-    this.us.updateEntity(rawValue.guid, rawValue).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'university-update',
-          title: 'Update University',
-          message: `University updated successfully`
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'university-update-error',
-          title: 'Update University',
-          message: `Error updating university: ${err.status}`
-        });
-      }
-    });
+    this.saves.save('update', this.us.updateEntity(rawValue.guid, rawValue));
   }
 
   private _createEntity() {
     const rawValue = this.form.getRawValue();
 
-    this.us.createEntity(rawValue).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'university-create',
-          title: 'Create University',
-          message: `University created successfully`
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'university-create-error',
-          title: 'Create University',
-          message: `Error creating university: ${err.status}`
-        });
-      }
-    });
-  }
-
-  private _navigateBack() {
-    this.rt.navigate(['/admin/universities']);
+    this.saves.save('create', this.us.createEntity(rawValue));
   }
 }

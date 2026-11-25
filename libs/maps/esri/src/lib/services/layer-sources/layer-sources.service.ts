@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import deepmerge from 'deepmerge';
+import { deepMerge } from '@tamu-gisc/common/utils/object';
 
 import { LayerLegendOverride, LayerSource } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -88,7 +88,7 @@ export class LayerSourcesService {
       const override = overrides[source.id];
 
       if (override) {
-        return deepmerge(source, override);
+        return deepMerge(source, override);
       }
 
       return source;

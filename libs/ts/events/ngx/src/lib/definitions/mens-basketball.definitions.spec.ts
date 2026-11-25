@@ -3,6 +3,7 @@
 // class still undefined.
 import '../services/settings/event-settings.service';
 
+import { EventSettingsService } from '../services/settings/event-settings.service';
 import { MensBasketball_ColdLayerSources, MensBasketball_Definitions } from './mens-basketball.definitions';
 
 /**
@@ -27,13 +28,20 @@ describe("Men's Basketball", () => {
  * layer polls its service every minute, so a visitor with the map open sees the change. All three layers, because
  * all three are what the editor changes: the issue names the icons and the parking, and the closures are the layer
  * the closures are drawn on.
+ *
+ * Read as the map is given them, through the settings service, since #2581 moved the refresh from each layer's
+ * definition to the event's `gameDayRefresh` switch.
  */
 describe("Men's Basketball game-day edits", () => {
+  const subject = Object.create(EventSettingsService.prototype) as EventSettingsService;
+  (subject as unknown as { _settingsSecondaryKey: string })._settingsSecondaryKey = 'mens-basketball';
+  const served = subject.eventLayerSources();
+
   it('declares its three layers', () => {
-    expect(MensBasketball_ColdLayerSources.length).toBe(3);
+    expect(served.length).toBe(3);
   });
 
-  for (const source of MensBasketball_ColdLayerSources) {
+  for (const source of served) {
     it(`${source.id} refreshes every minute`, () => {
       expect((source.native as { refreshInterval?: number } | undefined)?.refreshInterval).toBe(1);
     });

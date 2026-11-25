@@ -1,149 +1,23 @@
-import { LayerSource } from '@tamu-gisc/common/types';
-import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
-
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
+import { GRADUATION_LAYERS, GraduationColdLayerSources } from './graduation.definitions';
 
-import esri = __esri;
-import { EventPopups } from '../modules/popups/popups';
-
-type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
-
-// Drawn in this order, top first (docs/map-layers.md, "Drawing order"), as the map has drawn them: the road closures
-// on top, and the lots at the bottom, whose fill would cover the rest (#2061).
-export enum GRADUATION_LAYERS {
-  GRADUATION_ROAD_CLOSURES = 'graduation-road-closed',
-  GRADUATION_ACCESSIBLE_PARKING = 'graduation-accessible-parking',
-  GRADUATION_TRAFFIC_FLOW = 'graduation-traffic-flow',
-  GRADUATION_EVENT_PARKING_LOTS = 'graduation-event-parking-lots'
-}
-const eventUrl = Connections.graduationParkingUrl;
-
-const GraduationEventDefinitions = {
-  GRADUATION_ACCESSIBLE_PARKING: {
-    id: GRADUATION_LAYERS.GRADUATION_ACCESSIBLE_PARKING,
-    layerId: GRADUATION_LAYERS.GRADUATION_ACCESSIBLE_PARKING,
-    name: 'Accessible Parking',
-    url: `${eventUrl}/0`
-  },
-  GRADUATION_TRAFFIC_FLOW: {
-    id: GRADUATION_LAYERS.GRADUATION_TRAFFIC_FLOW,
-    layerId: GRADUATION_LAYERS.GRADUATION_TRAFFIC_FLOW,
-    name: 'Traffic Flow',
-    url: `${eventUrl}/1`
-  },
-  GRADUATION_EVENT_PARKING_LOTS: {
-    id: GRADUATION_LAYERS.GRADUATION_EVENT_PARKING_LOTS,
-    layerId: GRADUATION_LAYERS.GRADUATION_EVENT_PARKING_LOTS,
-    name: 'Event Parking',
-    url: `${eventUrl}/2`
-  },
-  GRADUATION_ROAD_CLOSURES: {
-    id: GRADUATION_LAYERS.GRADUATION_ROAD_CLOSURES,
-    layerId: GRADUATION_LAYERS.GRADUATION_ROAD_CLOSURES,
-    name: 'Road Closures',
-    url: `${eventUrl}/2`
-  }
-};
-
-const graduationParkingLabelingInfo = [
-  {
-    labelExpressionInfo: {
-      expression: '$feature.name'
-    },
-    maxScale: 0,
-    minScale: 0,
-    useCodedValues: true,
-    symbol: {
-      type: 'text',
-      color: [0, 0, 0, 255],
-      haloColor: [255, 255, 255, 255],
-      haloSize: 1.5,
-      font: {
-        family: 'Open Sans Semibold',
-        size: 10,
-        weight: 'bold'
-      }
-    }
-  }
-] as unknown as esri.LabelClassProperties[];
-
-export const GraduationColdLayerSources: LayerSource[] = [
-  {
-    type: 'feature',
-    id: GraduationEventDefinitions.GRADUATION_ACCESSIBLE_PARKING.id,
-    title: GraduationEventDefinitions.GRADUATION_ACCESSIBLE_PARKING.name,
-    url: GraduationEventDefinitions.GRADUATION_ACCESSIBLE_PARKING.url,
-    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
-    popupData: {
-      name: '{attributes.name}',
-      description: '{attributes.description}'
-    },
-    visible: true,
-    listMode: 'show',
-    native: {
-      outFields: ['*']
-    } as unknown as FeatureNative
-  },
-  {
-    type: 'feature',
-    id: GraduationEventDefinitions.GRADUATION_TRAFFIC_FLOW.id,
-    title: GraduationEventDefinitions.GRADUATION_TRAFFIC_FLOW.name,
-    url: GraduationEventDefinitions.GRADUATION_TRAFFIC_FLOW.url,
-    popupComponent: EventPopups.MarkdownPopupComponent,
-    popupData: {
-      name: '{attributes.name}',
-      description: '{attributes.description}'
-    },
-    visible: true,
-    listMode: 'show',
-    native: {
-      outFields: ['*']
-    } as unknown as FeatureNative
-  },
-  {
-    type: 'feature',
-    id: GraduationEventDefinitions.GRADUATION_EVENT_PARKING_LOTS.id,
-    title: GraduationEventDefinitions.GRADUATION_EVENT_PARKING_LOTS.name,
-    url: GraduationEventDefinitions.GRADUATION_EVENT_PARKING_LOTS.url,
-    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
-    popupData: {
-      name: '{attributes.name}',
-      description: '{attributes.description}'
-    },
-    visible: true,
-    listMode: 'show',
-    native: {
-      outFields: ['*'],
-      definitionExpression: `Type <> 'Closure'`,
-      labelingInfo: graduationParkingLabelingInfo
-    } as unknown as FeatureNative
-  },
-  {
-    type: 'feature',
-    id: GraduationEventDefinitions.GRADUATION_ROAD_CLOSURES.id,
-    title: GraduationEventDefinitions.GRADUATION_ROAD_CLOSURES.name,
-    url: GraduationEventDefinitions.GRADUATION_ROAD_CLOSURES.url,
-    popupComponent: EventPopups.MarkdownPopupComponent,
-    popupData: {
-      name: 'Road Closed',
-      description: '{attributes.description}'
-    },
-    visible: true,
-    listMode: 'show',
-    native: {
-      outFields: ['*'],
-      definitionExpression: `Type = 'Closure'`
-    } as unknown as FeatureNative
-  }
-];
-
+// Fall 2026, from the registrar's own schedule (#2754):
+// graduation.tamu.edu/ceremony-information/schedule/index.html
+//
+// The host moved: the aggie.tamu.edu path this used to cite is retired, and so was the link every
+// commencement map showed visitors (#3278). Aggie One Stop answers both with its Page Not Found.
+//
+// These were left on December 2025 for eleven months. Nothing caught it: the labels carry no year,
+// and 17 December really was a Wednesday in 2025, so the builder read as correct. The dates are
+// configuration rather than a service, so the map went on loading and drawing and the smoke suite
+// went on passing.
 const GRADUATION_DATES = [
-  { eventDate: '2025-12-17', value: '2025-12-17T05:00:00.000Z', label: 'Wednesday, December 17th' },
-  { eventDate: '2025-12-18', value: '2025-12-18T05:00:00.000Z', label: 'Thursday, December 18th' }
+  { eventDate: '2026-12-11', value: '2026-12-11T06:00:00.000Z', label: 'Friday, December 11th' },
+  { eventDate: '2026-12-12', value: '2026-12-12T06:00:00.000Z', label: 'Saturday, December 12th' }
 ] as const;
 
 export const GraduationConfiguration: EventConfiguration = {
@@ -153,7 +27,7 @@ export const GraduationConfiguration: EventConfiguration = {
   shortApplicationName: 'Fall Commencement Map',
   introductionText: 'Get the best transportation and parking information for the fall commencement ceremonies.',
   eventDates: GRADUATION_DATES.map(({ eventDate }) => eventDate),
-  scheduleUrl: 'https://aggie.tamu.edu/graduation',
+  scheduleUrl: 'https://graduation.tamu.edu/ceremony-information/index.html',
   mapCenter: [-96.34458, 30.60629],
   zoom: 16
 };

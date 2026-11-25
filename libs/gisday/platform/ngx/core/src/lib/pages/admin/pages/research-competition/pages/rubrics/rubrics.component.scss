@@ -1,0 +1,5 @@
+// Layout only (#3183): the shared form layout, spacing and button styles do the rest. A criterion's boxes may shrink below
+// their content's width, so a long level description wraps rather than widening the page.
+.criterion tamu-gisc-textbox {
+  min-width: 0;
+}

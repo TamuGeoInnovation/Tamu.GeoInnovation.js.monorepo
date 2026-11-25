@@ -5,7 +5,6 @@
 <div class="popup-section">
   @if (isContentLengthZero === false) {
   <p class="trailer-1" [innerHTML]="$safeNavigationMigration(data.attributes?.description)"></p>
-  } @if (directionsAvailable | async) {
-  <div class="button" (tamuGiscActivate)="startDirections()">Directions To Here</div>
   }
+  <div class="button" (tamuGiscActivate)="startDirections()">Directions To Here</div>
 </div>

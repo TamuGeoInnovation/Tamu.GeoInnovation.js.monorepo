@@ -30,12 +30,18 @@ export function isDevelopmentHostname(hostname: string): boolean {
 }
 
 /**
- * Whether a request URL went to a development host.
+ * Whether a URL's host is a development host: a request a page made, or the environment under test.
  *
  * A URL that will not parse is not a development host: this decides whether to fail a run, and a
  * malformed URL is not evidence of the thing being looked for.
+ *
+ * For the environment under test, a development one is expected to request development hosts, so
+ * nothing is asserted. That is one-directional on purpose. Development legitimately requests
+ * production services - `tsgisHost` is forced to the production host for every environment, and the
+ * campus maps are hard-coded to `gis.tamu.edu` in both - so "development must use only development
+ * hosts" is not true and must not be asserted.
  */
-export function isDevelopmentHostRequest(url: string): boolean {
+export function isDevelopmentUrl(url: string): boolean {
   try {
     return isDevelopmentHostname(new URL(url).hostname);
   } catch {
@@ -43,19 +49,22 @@ export function isDevelopmentHostRequest(url: string): boolean {
   }
 }
 
+/** The GIS host the application picks for an environment, as `getDefaultGisHosts()` does. */
+export function gisHostFor(baseUrl: string): 'gis-dev.it.tamu.edu' | 'gis.it.tamu.edu' {
+  return isDevelopmentUrl(baseUrl) ? 'gis-dev.it.tamu.edu' : 'gis.it.tamu.edu';
+}
+
+const DEFAULT_BASE_URL = 'https://aggiemap.tamu.edu';
+
 /**
- * Whether the environment under test is itself a development one, in which case requests to
- * development hosts are expected and nothing is asserted.
+ * The environment under test: `AGGIEMAP_SMOKE_BASE_URL`, production when unset, without surrounding
+ * space or trailing slashes (#2604).
  *
- * One-directional on purpose. Development legitimately requests production services - `tsgisHost` is
- * forced to the production host for every environment, and the campus maps are hard-coded to
- * `gis.tamu.edu` in both - so "development must use only development hosts" is not true and must not
- * be asserted.
+ * Every spec reads it here and nowhere else, so a trailing slash cannot reach one spec and not another,
+ * and `${baseUrl}/map` and the `environments.json` lookup both work without each caller stripping it.
  */
-export function environmentIsDevelopment(baseUrl: string): boolean {
-  try {
-    return isDevelopmentHostname(new URL(baseUrl).hostname);
-  } catch {
-    return false;
-  }
+export function smokeBaseUrl(env: Record<string, string | undefined> = process.env): string {
+  const given = env.AGGIEMAP_SMOKE_BASE_URL?.trim();
+
+  return (given || DEFAULT_BASE_URL).replace(/\/+$/, '');
 }

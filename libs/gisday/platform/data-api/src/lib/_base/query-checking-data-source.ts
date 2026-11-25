@@ -9,7 +9,8 @@ import {
   Repository
 } from 'typeorm';
 
-import { GISDAY_ENTITIES } from '../entities/all.entity';
+import { GISDAY_ENTITIES, Season } from '../entities/all.entity';
+import { GISDAY_SUBSCRIBERS } from '../entities/timestamps';
 
 /**
  * For specs: the API's real entities on a SQL Server data source that never connects. Its repositories build the real SQL
@@ -26,7 +27,9 @@ export async function queryCheckingDataSource(extraEntities: Array<EntityTarget<
   const dataSource = new DataSource({
     type: 'mssql',
     host: 'localhost',
-    entities: [...GISDAY_ENTITIES, ...extraEntities] as never
+    entities: [...GISDAY_ENTITIES, ...extraEntities] as never,
+    // As the API registers them, so a spec sees the SQL the API sends (#2926).
+    subscribers: GISDAY_SUBSCRIBERS
   });
 
   // initialize() would connect. The metadata is all the query builder needs, and building it is what initialize does next.
@@ -75,10 +78,10 @@ export function recordWrites(
   dataSource.createQueryRunner = () => {
     const runner = {
       connection: dataSource,
+      dataSource,
       data: {},
       isReleased: false,
       isTransactionActive: false,
-      broadcaster: { broadcast: async () => undefined },
       connect: async () => undefined,
       release: async () => undefined,
       startTransaction: async () => ((runner.isTransactionActive = true), undefined),
@@ -90,6 +93,11 @@ export function recordWrites(
       )
     } as unknown as QueryRunner & { isTransactionActive: boolean; manager: EntityManager };
 
+    // TypeORM's own broadcaster, so the data source's subscribers run as they do in the API (#2926). It is taken from a
+    // query runner the driver builds, which does not connect until asked to; typeorm does not export the class itself.
+    const { broadcaster } = dataSource.driver.createQueryRunner('master');
+    const Broadcaster = broadcaster.constructor as new (runner: QueryRunner) => typeof broadcaster;
+    (runner as unknown as { broadcaster: typeof broadcaster }).broadcaster = new Broadcaster(runner);
     runner.manager = dataSource.createEntityManager(runner);
     runner.manager.find = (async (entity: EntityTarget<ObjectLiteral>) =>
       rows.find(([e]) => e === entity)?.[1] ?? []) as EntityManager['find'];
@@ -99,3 +107,59 @@ export function recordWrites(
 
   return { statements };
 }
+
+/**
+ * For the query specs (#3313): makes `repo[method]` build its query as the query-checking repository does, then answer
+ * with `value`, as a database holding it would. Every queries spec carried its own copy of this.
+ */
+export function answering<T extends object>(repo: Repository<T>, method: 'find' | 'findOne', value: unknown): void {
+  const build = repo[method].bind(repo) as (options?: unknown) => Promise<unknown>;
+  (repo as unknown as Record<string, unknown>)[method] = async (options?: unknown) => (await build(options), value);
+}
+
+/**
+ * For the query specs (#3313): makes the finds of every transaction's manager build their query too, before answering
+ * from `recordWrites`' rows.
+ */
+export function buildingTransactionFinds(dataSource: DataSource): void {
+  const make = dataSource.createQueryRunner.bind(dataSource);
+
+  dataSource.createQueryRunner = ((...args: Array<unknown>) => {
+    const runner = make(...(args as []));
+    const answer = runner.manager.find.bind(runner.manager);
+
+    runner.manager.find = (async (entity: never, options?: never) => (
+      runner.manager
+        .createQueryBuilder(entity, 'e')
+        .setFindOptions(options ?? {})
+        .getQuery(),
+      answer(entity, options)
+    )) as typeof runner.manager.find;
+
+    return runner;
+  }) as typeof dataSource.createQueryRunner;
+}
+
+/**
+ * For the query specs (#3313): a season as the API loads it, with every deadline column nobody has set back as null, so
+ * a query built from one sees the nulls typeorm 1 refuses in a where value (#2363). `overrides` adds what a spec needs,
+ * such as its days.
+ */
+export const loadedSeason = (overrides: Partial<Season> = {}): Season =>
+  Object.assign(new Season(), {
+    guid: 's-1',
+    year: 2026,
+    active: true,
+    created: new Date('2026-01-05T15:00:00.123Z'),
+    updated: new Date('2026-01-05T15:00:00.123Z'),
+    posterSubmissionsCloseAt: null,
+    posterFilesCloseAt: null,
+    presentationSubmissionsCloseAt: null,
+    presentationFilesCloseAt: null,
+    paperSubmissionsCloseAt: null,
+    paperFilesCloseAt: null,
+    cartographySubmissionsCloseAt: null,
+    cartographyFilesCloseAt: null,
+    competitions: [],
+    ...overrides
+  });

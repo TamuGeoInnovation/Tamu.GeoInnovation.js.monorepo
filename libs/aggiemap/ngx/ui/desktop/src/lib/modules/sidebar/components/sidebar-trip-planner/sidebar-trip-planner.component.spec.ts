@@ -10,11 +10,11 @@ import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 import { SidebarTripPlannerComponent } from './sidebar-trip-planner.component';
 
 /**
- * The trip planner is offered on a development host and the maintenance message everywhere else.
+ * The trip planner is offered on every environment (#2804).
  *
- * Routing has no production service, so since #683 the planner had been commented out on every host. It is
- * back where `TestingService` says this is a development host, so its components can be tested, and production
- * (or a development host with `?as=production`, #1722) still shows the message.
+ * It was development-only, with a maintenance message elsewhere, while the routing network was published on the
+ * development GIS server only (#683, #1003). With the network on production it is offered everywhere, and the message
+ * is gone; whether development-only features are on must make no difference to it.
  */
 describe('SidebarTripPlannerComponent', () => {
   async function render(isTesting: boolean): Promise<HTMLElement> {
@@ -46,20 +46,25 @@ describe('SidebarTripPlannerComponent', () => {
 
   afterEach(() => TestBed.resetTestingModule());
 
-  it('offers the from and to boxes and the travel modes on a development host', async () => {
-    const element = await render(true);
+  it.each([true, false])(
+    'offers the from and to boxes and the travel modes, with development-only features on: %s',
+    async (isTesting) => {
+      const element = await render(isTesting);
 
-    expect(element.querySelectorAll('tamu-gisc-search').length).toBe(2);
-    expect(element.querySelector('tamu-gisc-trip-planner-mode-picker')).not.toBeNull();
-    expect(element.querySelector('tamu-gisc-trip-planner-directions')).not.toBeNull();
-    expect(element.querySelector('.maintenance-message')).toBeNull();
-  });
+      expect(element.querySelectorAll('tamu-gisc-search').length).toBe(2);
+      expect(element.querySelector('tamu-gisc-trip-planner-mode-picker')).not.toBeNull();
+      expect(element.querySelector('tamu-gisc-trip-planner-directions')).not.toBeNull();
+      expect(element.querySelector('.maintenance-message')).toBeNull();
+    }
+  );
 
-  it('shows the maintenance message, and none of the planner, elsewhere', async () => {
-    const element = await render(false);
+  // A tool for comparing routing networks, with nothing to choose where the application names one (#2804).
+  it.each([
+    [true, 1],
+    [false, 0]
+  ])('offers the network picker only where development-only features are on: %s', async (isTesting, pickers) => {
+    const element = await render(isTesting);
 
-    expect(element.querySelector('.maintenance-message')?.textContent).toContain('undergoing maintenance');
-    expect(element.querySelector('tamu-gisc-search')).toBeNull();
-    expect(element.querySelector('tamu-gisc-trip-planner-mode-picker')).toBeNull();
+    expect(element.querySelectorAll('tamu-gisc-trip-planner-connection-select').length).toBe(pickers);
   });
 });

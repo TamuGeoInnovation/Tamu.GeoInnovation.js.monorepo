@@ -9,7 +9,7 @@ import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 import { TripPlannerConnectionService } from './trip-planner-connection.service';
 
 const ROUTING = 'https://gis.example.edu/arcgis/rest/services/Routing';
-const DEVELOPMENT_ROUTING = 'https://gis-dev.example.edu/arcgis/rest/services/RoutingProPublish';
+const NETWORK = 'https://gis.example.edu/arcgis/rest/services/RoutingProPublish';
 
 const SUPPORTED = [
   { id: '1', name: 'Bike', type: 'AUTOMOBILE' },
@@ -19,9 +19,12 @@ const SUPPORTED = [
 describe('TripPlannerConnectionService', () => {
   let http: HttpTestingController;
   let isTesting: boolean;
+  /** The network the application names, `routingNetworkUrl`; discovery is for an application that names none. */
+  let network: string | undefined;
 
   beforeEach(() => {
     isTesting = false;
+    network = undefined;
 
     TestBed.configureTestingModule({
       providers: [
@@ -29,7 +32,7 @@ describe('TripPlannerConnectionService', () => {
         provideHttpClientTesting(),
         {
           provide: EnvironmentService,
-          useValue: { value: () => ({ routingBaseUrl: ROUTING, developmentRoutingBaseUrl: DEVELOPMENT_ROUTING }) }
+          useValue: { value: () => ({ routingBaseUrl: ROUTING, routingNetworkUrl: network }) }
         },
         { provide: TestingService, useValue: { get isTesting() { return isTesting; } } }
       ]
@@ -77,15 +80,26 @@ describe('TripPlannerConnectionService', () => {
   });
 
   // RoutingProPublish/Map is the network the Transportation GIS team published for #659. It is not under the
-  // dated `Routing/yyyymmdd` names discovery looks for, and is on the development server only.
-  describe('where development-only features are on', () => {
+  // dated `Routing/yyyymmdd` names discovery looks for, so the application names it (#2804).
+  describe('where the application names its network', () => {
     beforeEach(() => {
-      isTesting = true;
+      network = NETWORK;
+    });
+
+    // On production too: development-only features have nothing to do with which network the planner uses (#2804).
+    it.each([true, false])('connects to it, with development-only features on: %s', (testing) => {
+      isTesting = testing;
+
+      const service = TestBed.inject(TripPlannerConnectionService);
+
+      http.expectOne(`${NETWORK}/Map/NAServer/Route?f=json`).flush({ supportedTravelModes: SUPPORTED });
+
+      expect(service.connection().url()).toBe(`${NETWORK}/Map/NAServer/Route`);
     });
 
     it('connects to the published network without discovering anything', async () => {
       const service = TestBed.inject(TripPlannerConnectionService);
-      const route = `${DEVELOPMENT_ROUTING}/Map/NAServer/Route`;
+      const route = `${NETWORK}/Map/NAServer/Route`;
 
       http.expectNone(`${ROUTING}?f=pjson`);
       http.expectOne(`${route}?f=json`).flush({ supportedTravelModes: SUPPORTED });
@@ -99,7 +113,7 @@ describe('TripPlannerConnectionService', () => {
 
       expect(await firstValueFrom(service.supportedTravelModes)).toBeNull();
 
-      http.expectOne(`${DEVELOPMENT_ROUTING}/Map/NAServer/Route?f=json`).flush({ supportedTravelModes: SUPPORTED });
+      http.expectOne(`${NETWORK}/Map/NAServer/Route?f=json`).flush({ supportedTravelModes: SUPPORTED });
 
       expect(await firstValueFrom(service.supportedTravelModes)).toEqual(SUPPORTED);
     });
@@ -108,14 +122,14 @@ describe('TripPlannerConnectionService', () => {
       const service = TestBed.inject(TripPlannerConnectionService);
 
       http
-        .expectOne(`${DEVELOPMENT_ROUTING}/Map/NAServer/Route?f=json`)
+        .expectOne(`${NETWORK}/Map/NAServer/Route?f=json`)
         .flush('down', { status: 503, statusText: 'Service Unavailable' });
 
       expect(await firstValueFrom(service.supportedTravelModes)).toEqual([]);
     });
   });
 
-  it('does not touch the development-only network where development-only features are off', () => {
+  it('discovers, and touches no named network, where the application names none', () => {
     answeredWith([]);
 
     http.expectNone((request) => request.url.includes('RoutingProPublish'));

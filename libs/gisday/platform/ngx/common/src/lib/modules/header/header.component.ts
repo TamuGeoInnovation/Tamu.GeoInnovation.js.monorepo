@@ -1,7 +1,8 @@
 import { Component, HostBinding, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
-import { distinctUntilChanged, filter, map, mergeMap, startWith, tap, toArray } from 'rxjs/operators';
+import { distinctUntilChanged, map, startWith, tap } from 'rxjs/operators';
+import { placesShownOn } from '@tamu-gisc/gisday/common';
 
 import { ActiveSeasonDto, Place } from '@tamu-gisc/gisday/platform/data-api';
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
@@ -22,6 +23,7 @@ import { HasRolesPipe } from '@tamu-gisc/common/ngx/auth';
 import { SeasonLinkPipe } from '../../pipes/season-link/season-link.pipe';
 import { GISDAY_SITE, SiteHasPipe } from '../../site/site';
 import { LockupComponent } from '@tamu-gisc/ui-kits/ngx/branding';
+import { SignInService } from '../../site/sign-in';
 
 @Component({
   selector: 'tamu-gisc-app-header',
@@ -52,6 +54,7 @@ export class HeaderComponent implements OnInit {
   private readonly ps = inject(PlaceService);
   private readonly rt = inject(Router);
   private readonly at = inject(ActivatedRoute);
+  private readonly signIn = inject(SignInService);
 
   public loggedIn$: Observable<boolean>;
   public userRoles$: Observable<Array<string>>;
@@ -82,9 +85,7 @@ export class HeaderComponent implements OnInit {
     this.activeSeason$ = this.ss.viewedSeason$;
     this.viewedYear$ = this.ss.viewedYear$;
     this.places$ = this.ps.getEntitiesForActiveSeason().pipe(
-      mergeMap((places) => places),
-      filter((place) => place?.visibilitySettings && place.visibilitySettings.includes(PlaceVisibilityOptions.Header)),
-      toArray()
+      map((places) => placesShownOn(this.site, places, PlaceVisibilityOptions.Header))
     );
 
     const currUrl = this.rt.events.pipe(
@@ -110,21 +111,13 @@ export class HeaderComponent implements OnInit {
     );
   }
 
+  /** Login/Signup: the shared sign-in (#3148), which `/login` and `/signup` start too, back to this page afterwards. */
   public login() {
-    this.as.login({
-      appState: {
-        target: this.rt.url
-      }
-    });
+    this.signIn.start();
   }
 
-  public logout() {
-    const url = window.location.origin;
-
-    this.as.logout({
-      logoutParams: {
-        returnTo: url
-      }
-    });
+  /** Logout: the shared log-out (#3154), which `/logout` starts too; it clears the API's cached answers first. */
+  public logout(): Promise<void> {
+    return this.signIn.logOut();
   }
 }

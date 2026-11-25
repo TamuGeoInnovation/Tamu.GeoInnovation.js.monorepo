@@ -5,6 +5,7 @@ import { LayerSource } from '@tamu-gisc/common/types';
 
 import { EventDefinitions } from './all.definitions';
 import { AggiemapCustomMapConfiguration } from '../interfaces/special-event.interface';
+import { mapSegment } from '../guards/map-address/map-address.guard';
 
 /**
  * The layers each map's definition says its Layers list shows, for the smoke suite (#1986).
@@ -25,6 +26,9 @@ import { AggiemapCustomMapConfiguration } from '../interfaces/special-event.inte
  *
  * A map with a version published only on the development GIS server (`developmentSources`, #2001) also
  * lists that version's layers, as `developmentLayers`: what it shows where that server is read.
+ *
+ * A development-only map (`developmentOnly`, #2712) says so, as `developmentOnly: true`, with its `address`, so the smoke
+ * suite can check that address opens the main map on production and the map itself elsewhere (#2742, #2767).
  */
 interface DeclaredMap {
   /** Whether the map has a Layers list at all. */
@@ -33,13 +37,23 @@ interface DeclaredMap {
   layers: string[];
   /** The same, where the development GIS server is read, for a map with a development version. */
   developmentLayers?: string[];
+  /** The map is kept off production by `developmentOnly`. */
+  developmentOnly?: true;
+  /** A development-only map's own address, `/<segment>/<id>` as `mapSegment` gives it. */
+  address?: string;
 }
 
 function declared(definition: AggiemapCustomMapConfiguration): DeclaredMap {
   const layers = listed(definition, definition.sources ?? []);
   const development = definition.developmentSources;
 
-  return development ? { ...layers, developmentLayers: listed(definition, development).layers } : layers;
+  return {
+    ...layers,
+    ...(development ? { developmentLayers: listed(definition, development).layers } : {}),
+    ...(definition.developmentOnly && definition.discover && definition.configuration
+      ? { developmentOnly: true as const, address: `/${mapSegment(definition.discover)}/${definition.configuration.id}` }
+      : {})
+  };
 }
 
 function listed(definition: AggiemapCustomMapConfiguration, sources: LayerSource[]): DeclaredMap {

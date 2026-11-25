@@ -1,4 +1,34 @@
-@if (columns().length > 0) {
+@if (columns().length > 0) { @if (isLayoutSplit()) {
+<!--
+  A layout split is one list in a grid that flows across the rows, because that is the order it is
+  read in (#2681). Three separate lists read down the columns instead, which showed the campuses
+  alphabetically down each column and nonsense across each row. One DOM order, correct at every
+  width: on a phone the grid is a single column and this is simply the list.
+  -->
+<ul class="map-entry-list map-entry-list--split">
+  @for (app of splitApplications(); track app) {
+    <li class="map-entry-item">
+      <!--
+              A map that has a picture shows it in place of the glyph, so the listing shows what you are
+              choosing between. This markup used to exist only on the All Maps page, which is a different
+              component - so the Campus Maps page, the page the campus thumbnails were added for, drew a
+              name over an empty area (#1275).
+              -->
+      <a class="map-entry" [class.map-entry--pictured]="app.thumbnail" [routerLink]="getApplicationRoute()(app)">
+        @if (app.thumbnail) {
+        <!-- Name first, above its picture at every width: it is what is being chosen, so it is read and
+              seen first (#2458). -->
+        <span class="map-entry-label">{{ app.name }}</span>
+        <img class="map-entry-thumbnail" [src]="app.thumbnail" [alt]="app.name + ' map'" loading="lazy" />
+        } @else {
+        <span class="map-entry-icon" aria-hidden="true"></span>
+        <span class="map-entry-label">{{ app.name }}</span>
+        }
+      </a>
+    </li>
+  }
+</ul>
+} @else {
 <div class="parking-columns">
   <!--
     `--titled` marks a column that is a real section rather than a layout split. On a phone
@@ -38,6 +68,6 @@
   </div>
   }
 </div>
-} @else {
+} } @else {
 <p class="section-description">{{ noMapsMessage() }}</p>
 }

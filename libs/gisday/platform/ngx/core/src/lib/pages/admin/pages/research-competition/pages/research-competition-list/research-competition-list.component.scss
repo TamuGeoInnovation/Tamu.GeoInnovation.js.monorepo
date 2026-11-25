@@ -1,21 +1,36 @@
-table {
-  table-layout: fixed;
+@import 'libs/gisday/sass/variables';
+@import 'libs/sass/components/datatable';
 
-  .selection-col {
-    width: 2.5rem;
+// The table as the VGI review list draws it (#2808), each row as tall as its stacked submitter and title need.
+.datatable-container {
+  --datatable-height: auto;
+
+  // Ten columns beside the admin menu: where they do not fit at their narrowest, the table scrolls in its own box, not the
+  // page, as the dashboards' table does (#3006, #3026).
+  overflow-x: auto;
+
+  // A row opens the submission.
+  ::ng-deep .datatable-body .datatable-row-wrapper {
+    cursor: pointer;
   }
 
-  .title-col {
-    width: 30%;
+  // Ten columns beside the admin menu: half the shared table's side padding, so short values stay whole.
+  ::ng-deep .datatable-header .datatable-header-cell,
+  ::ng-deep .datatable-body .datatable-body-cell {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
   }
 
-  .title {
+  // A long title or email wraps rather than being cut off.
+  ::ng-deep .datatable-body-cell-label {
+    white-space: normal;
+    overflow-wrap: break-word;
+  }
+
+  // A short value (a type, a format, Uploaded, Accepted) reads whole, in a column wide enough for it (#3026): broken, it
+  // read "Mis/sin/g".
+  ::ng-deep .whole-value .datatable-body-cell-label {
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .status {
-    font-weight: 600;
+    overflow-wrap: normal;
   }
 }

@@ -1,0 +1,23 @@
+@if (medias.length > 0) {
+<tamu-gisc-photo-carousel [photos]="medias"></tamu-gisc-photo-carousel>
+}
+
+<div class="popup-section"></div>
+
+<div class="popup-section">
+  <!-- The space's own name, the service's Area Name, as the GIS team asked (#3223); it showed Campus Location. -->
+  @if (data?.attributes?.area_name) {
+  <p class="trailer-1">{{ data.attributes.area_name }}</p>
+  }
+
+  <div [innerHTML]="$safeNavigationMigration(data?.attributes?.description) | markdownParse" class="trailer-2"></div>
+
+  <!-- One labelled line, as every other popup shows a field (#2717): it was the only popup with a list. -->
+  @if (amenities.length > 0) {
+  <div class="feature-style-2 trailer-2" tabindex="0"><strong>Features</strong>: {{ amenities.join(', ') }}</div>
+  }
+
+  <tamu-gisc-copy-field [text]="shareUrl"></tamu-gisc-copy-field>
+
+  <div class="button" (tamuGiscActivate)="startDirections()">Directions To Here</div>
+</div>

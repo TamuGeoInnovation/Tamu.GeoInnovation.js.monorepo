@@ -2,6 +2,7 @@
 @import 'libs/sass/1140';
 
 @import 'libs/sass/mixins';
+@import 'libs/sass/motion';
 @import 'libs/sass/dom_flexbox';
 @import 'libs/sass/spacing';
 
@@ -24,10 +25,10 @@ $lightened-warning-color: lighten($warning-color, 25%);
 $primary-text-color: #333333;
 
 @import 'libs/sass/modules/forms';
+// Also imported by tamu-gisc-tabs itself (#3200); kept here for the pages that use the plain .tab-container markup.
+@import 'libs/sass/modules/tabs';
 
 @import 'libs/sass/modules/loaders';
-
-@import 'libs/sass/modules/tabs';
 
 html {
   height: 100%;
@@ -1045,3 +1046,6 @@ tamu-gisc-tooltip {
     padding: 0.5rem;
   }
 }
+
+// The interactive request forms and their results slide in and out (animate.enter/leave in their templates, #2278).
+@include interactive-form(geoservices-form-entering, geoservices-form-leaving);

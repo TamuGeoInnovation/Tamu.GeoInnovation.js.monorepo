@@ -36,6 +36,11 @@ export const aggiemapRoutes: Routes = [
     loadChildren: () => import('@tamu-gisc/ts/events/ngx').then((m) => m.tsEventsRoutes)
   },
   {
+    // The maps listed in All Maps' Transportation section (#2767). Their `/parking/<id>` addresses still work, and move here.
+    path: 'transportation',
+    loadChildren: () => import('@tamu-gisc/ts/events/ngx').then((m) => m.tsEventsRoutes)
+  },
+  {
     path: 'operations',
     loadChildren: () => import('@tamu-gisc/ts/events/ngx').then((m) => m.tsEventsRoutes)
   },

@@ -7,13 +7,20 @@
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "types": [
+      "node",
+      "vitest/globals"
+    ]
   },
   "files": [],
   "include": [],
   "references": [
     {
       "path": "./tsconfig.lib.json"
+    },
+    {
+      "path": "./tsconfig.spec.json"
     }
   ]
 }

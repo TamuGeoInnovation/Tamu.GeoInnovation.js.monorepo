@@ -1,6 +1,15 @@
+@import 'libs/sass/variables';
 @import 'libs/sass/mixins';
 
+// The button's colour is the page's when the page sets one (#2946). A GIS Day site sets `--gisday-action` and
+// `--gisday-action-hover` in apps/gisday-angular/src/styles.scss, blue on txgisday.org and maroon on Texas A&M's,
+// so its form buttons match the rest of its buttons. Every other application sets neither, and each fallback is
+// the colour the button always had, so they look as they did.
 $color: rgba(85, 138, 216, 1);
+$action: var(--gisday-action, #{$color});
+$actionHover: var(--gisday-action-hover, #{darken($color, 10%)});
+// A GIS Day site has no pressed colour; its hover colour is the nearest it has.
+$actionActive: var(--gisday-action-hover, #{darken($color, 25%)});
 $dangerColor: #ef5350;
 $sColor: #fafafa;
 
@@ -12,7 +21,7 @@ $accentColor: #424242;
   border-radius: 1.5rem;
   overflow: hidden;
   color: $sColor;
-  background: $color;
+  background: $action;
 
   @include transition(background 0.3s);
 
@@ -31,13 +40,13 @@ $accentColor: #424242;
   }
 
   &.secondary {
-    border: 1.5pt solid $color;
+    border: 1.5pt solid $action;
     background: none;
-    color: $color;
+    color: $action;
 
     &:hover {
       color: $sColor;
-      border-color: darken($color, 10%);
+      border-color: $actionHover;
     }
   }
 
@@ -48,7 +57,7 @@ $accentColor: #424242;
 
     &:hover {
       background: #eeeeee;
-      color: #500000;
+      color: $aggie-maroon;
     }
   }
 
@@ -65,11 +74,17 @@ $accentColor: #424242;
   }
 
   &:hover {
-    background: darken($color, 10%);
+    background: $actionHover;
   }
 
   &:active {
-    background: darken($color, 25%);
+    background: $actionActive;
+  }
+
+  // A lesser action beside a field (#2969). The inner input carries the padding, so it is what gets smaller.
+  &.small input {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.8rem;
   }
 
   &.disabled {

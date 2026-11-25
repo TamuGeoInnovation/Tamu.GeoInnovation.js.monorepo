@@ -1,10 +1,11 @@
-import { HttpException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { BaseProvider } from '../_base/base-provider';
 import { SeasonDay } from '../entities/all.entity';
 import { SimplifiedEvent } from '../event/dto/simplified-event.dto';
+import { rethrowHttp } from '../_base/rethrow-http';
 
 @Injectable()
 export class SeasonDayService extends BaseProvider<SeasonDay> {
@@ -26,16 +27,21 @@ export class SeasonDayService extends BaseProvider<SeasonDay> {
           const eventTagGuids = e.tags?.map((t) => t.guid) || [];
           const eventOrgGuids = e.speakers.filter((s) => s.organization !== null).map((s) => s.organization.guid) || [];
           const placeGuids = e.location?.place?.guid ? [e.location.place.guid] : [];
+          // Their names only, which the Presenters page shows already, so the Sessions list can be searched by them (#2944).
+          const presenterNames = e.speakers
+            .map((s) => [s.firstName, s.lastName].filter((part) => part?.trim()).join(' '))
+            .filter((name) => name.length > 0);
 
-          // Don't send the speakers, they're not needed. They're only needed to
-          // get the participating organizations for an event.
+          // Don't send the speakers themselves, only what is taken from them above: a speaker's email and account
+          // are not for the public list.
           delete e.speakers;
 
           return {
             ...e,
             tags: eventTagGuids,
             affiliations: eventOrgGuids,
-            organizations: placeGuids
+            organizations: placeGuids,
+            presenters: presenterNames
           };
         });
 
@@ -48,14 +54,7 @@ export class SeasonDayService extends BaseProvider<SeasonDay> {
         throw new NotFoundException();
       }
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      Logger.error(err.message, 'SeasonDayService');
-      throw new InternalServerErrorException();
+      rethrowHttp(err, new InternalServerErrorException(), () => Logger.error(err.message, 'SeasonDayService'));
     }
   }
 }

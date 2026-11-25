@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
+import { TAMU_CAMPUS_STRUCTURES_URL, TAMU_CAMPUS_VECTOR_BASEMAP_URL } from '@tamu-gisc/common/datasets/geographic';
 import { CONSTRUCTION_HATCH_RENDERER } from '@tamu-gisc/maps/esri';
 
 import * as definitions from './basemaps.definition';
@@ -23,15 +24,25 @@ const DEFINITION = path.join('libs', 'maps', 'feature', 'basemap', 'src', 'lib',
 // The vector tile cache development opens on. It moves when a newer one is published (#2436 moved it
 // from VTBase to VTBase3); the point of the test below is that production does not draw a vector
 // basemap and development does, not which cache it is.
-const VECTOR_SERVICE = 'Hosted/VTBase3/VectorTileServer';
+const VECTOR_SERVICE = 'Hosted/VTBase4/VectorTileServer';
 
-/** Every TypeScript source file in libs/ and apps/, specs excluded, relative to the repository root. */
-function sources(): string[] {
-  return ['libs', 'apps'].flatMap((root) =>
+let scanned: Array<{ file: string; text: string }> | undefined;
+
+/**
+ * Every TypeScript source file in libs/ and apps/, specs excluded, relative to the repository root, with its text.
+ *
+ * Walked and read once per spec file (#3265). Each of the two tests that scan the sources used to walk the whole tree
+ * and read its 1,400 or so files again, and a busy machine took the first of them past its 5 s limit.
+ */
+function sources(): Array<{ file: string; text: string }> {
+  scanned ??= ['libs', 'apps'].flatMap((root) =>
     (fs.readdirSync(path.join(REPO_ROOT, root), { recursive: true }) as string[])
       .filter((file) => file.endsWith('.ts') && !file.endsWith('.spec.ts'))
       .map((file) => path.join(root, file))
+      .map((file) => ({ file, text: fs.readFileSync(path.join(REPO_ROOT, file), 'utf8') }))
   );
+
+  return scanned;
 }
 
 /** Only what this test reads of a basemap definition. */
@@ -42,6 +53,12 @@ interface Basemap {
 const urlsOf = (basemap: Basemap) => basemap.baseLayers.map((layer) => layer.url ?? '');
 
 describe('campus basemap', () => {
+  // The source scan below reads every file under libs/ and apps/, once (#3265). It is done here, with its own time, so
+  // the tests that use it time their assertions rather than the disk: on a busy machine, or through a mounted folder,
+  // the walk alone has taken from 6 s to over a minute.
+  beforeAll(() => {
+    sources();
+  }, 180_000);
   it('resolves to the vector tiles on production and on dev (#2515)', () => {
     const resolve = (definitions as unknown as Record<string, unknown>)['aggiemapBasemap'] as
       ((isTesting: boolean) => Basemap) | undefined;
@@ -54,7 +71,7 @@ describe('campus basemap', () => {
     expect(urlsOf(resolve(true)).some((url) => url.includes(VECTOR_SERVICE))).toBe(true);
   });
 
-  it('offers production the vector basemap and the raster one, and development every published version (#1582, #2515)', () => {
+  it('offers production the vector basemap alone, and development every published version (#1582, #2515)', () => {
     const gallery = (definitions as unknown as Record<string, unknown>)['aggiemapGalleryBasemaps'] as
       ((isTesting: boolean) => Array<Basemap & { id: string; title: string }>) | undefined;
     const resolve = (definitions as unknown as Record<string, (isTesting: boolean) => Basemap>)['aggiemapBasemap'];
@@ -62,16 +79,15 @@ describe('campus basemap', () => {
     expect(gallery).toBeInstanceOf(Function);
     if (!gallery) return;
 
-    // Production: the vector basemap first, which the map opens on, and the raster one it showed until #2515, so a
-    // visitor who finds the new one harder to read has a way back, and a problem with it can be worked around without a
-    // release. Nothing dated or development-only.
+    // Production: the vector basemap, which the map opens on, and nothing else. The raster one it showed until #2515
+    // was offered as a way back until the maintainer abandoned its service on 9 November 2026: nothing on production is
+    // to read it. Nothing dated or development-only either.
     const production = gallery(false);
 
     expect(production[0]).toEqual(resolve(false));
-    expect(production.map((basemap) => basemap.title)).toEqual(['Aggieland', 'Aggieland raster']);
+    expect(production.map((basemap) => basemap.title)).toEqual(['Aggieland']);
     expect(urlsOf(production[0]).some((url) => url.includes(VECTOR_SERVICE))).toBe(true);
-    expect(urlsOf(production[1])).toEqual(urlsOf(definitions.AggiemapRasterBasemap as unknown as Basemap));
-    expect(new Set(production.map((basemap) => basemap.id)).size).toBe(production.length);
+    expect(production.flatMap(urlsOf)).not.toContain(urlsOf(definitions.AggiemapRasterBasemap as unknown as Basemap)[0]);
 
     const dev = gallery(true);
 
@@ -79,7 +95,6 @@ describe('campus basemap', () => {
     expect(dev[0]).toEqual(resolve(true));
     expect(dev.map((basemap) => basemap.title)).toEqual([
       'Aggieland',
-      'Aggieland vector, September 2026',
       'Aggieland raster, October 2026',
       'Aggieland raster, June 2026',
       'Aggieland raster, May 2026'
@@ -88,17 +103,65 @@ describe('campus basemap', () => {
     // The gallery marks the active basemap, and restores a saved one, by id.
     expect(new Set(dev.map((basemap) => basemap.id)).size).toBe(dev.length);
 
-    // The raster basemap production shows is among them, so it can be seen drawn before a release. It
-    // is found by title rather than by position, so adding a version above it cannot quietly point
-    // this at something else (#2436 added the October vector cache at index 1).
-    const productionRaster = dev.find((basemap) => basemap.title === 'Aggieland raster, October 2026');
+    // The current raster basemap stays on development, for comparing versions. It is found by title rather than by
+    // position, so adding a version above it cannot quietly point this at something else (#2436 added the October
+    // vector cache at index 1).
+    const currentRaster = dev.find((basemap) => basemap.title === 'Aggieland raster, October 2026');
 
-    expect(productionRaster).toBeDefined();
-    expect(urlsOf(productionRaster as Basemap)).toEqual(urlsOf(production[1]));
+    expect(currentRaster).toBeDefined();
+    expect(urlsOf(currentRaster as Basemap)).toEqual(urlsOf(definitions.AggiemapRasterBasemap as unknown as Basemap));
 
-    // Both vector caches are offered, so the new one can be compared with the one it replaces.
-    expect(urlsOf(dev[0]).some((url) => url.includes('Hosted/VTBase3/VectorTileServer'))).toBe(true);
-    expect(urlsOf(dev[1]).some((url) => url.includes('Hosted/VTBase/VectorTileServer'))).toBe(true);
+    // The campus vector basemap is the November 2026 cache on both environments (#3225, #3299), and no dated vector
+    // entry is offered beside it: nothing here points at VTBase3 any more.
+    expect(urlsOf(dev[0]).some((url) => url.includes('Hosted/VTBase4/VectorTileServer'))).toBe(true);
+    expect(dev.flatMap(urlsOf).some((url) => url.includes('VTBase3'))).toBe(false);
+    expect(production.flatMap(urlsOf).some((url) => url.includes('Hosted/VTBase4/'))).toBe(true);
+  });
+
+  it('opens every environment on the November 2026 cache, and keeps the construction hatch with it (#3225)', () => {
+    // The maintainer's decision, 23 November 2026: the November cache is the selected default on development and on
+    // production, going out with the next production release. So it is `aggiemapBasemap()` on both, and it carries
+    // `aggie_basemap` - the id every saved campus choice is matched against (`basemapForSavedId`).
+    const exported = definitions as unknown as Record<string, unknown>;
+    const resolve = exported['aggiemapBasemap'] as (isTesting: boolean) => Basemap & { id: string; title: string };
+
+    for (const isTesting of [false, true]) {
+      const open = resolve(isTesting);
+
+      expect(urlsOf(open).some((url) => url.includes('Hosted/VTBase4/VectorTileServer'))).toBe(true);
+      expect(open.id).toBe('aggie_basemap');
+      expect(open.title).toBe('Aggieland');
+    }
+
+    // The hatch is the point of this test. VTBase4 publishes ONE construction style layer, a black line, where
+    // VTBase3 published a fill with the rasterized pink pattern and an outline. Taking VTBase4 as published would
+    // therefore drop the orange grid the maintainer settled on 27 October (#2532, #2459) from every map on both
+    // environments - a visible production change riding inside a basemap swap, which is how #2536 happened.
+    const open = resolve(false);
+    const tiles = open.baseLayers.find((layer) => (layer.url ?? '').includes('VTBase4')) as Record<string, unknown>;
+    const construction = open.baseLayers.find((layer) => layer['type'] === 'FeatureLayer') as Record<string, unknown>;
+
+    expect(tiles['hiddenStyleLayers']).toEqual(['Campus Structures/Currently Under Construction']);
+    expect(construction).toBeDefined();
+    expect(construction['renderer']).toBe(CONSTRUCTION_HATCH_RENDERER);
+    expect(construction['definitionExpression']).toBe("type = 'CONSTRUCTION'");
+  });
+
+  it('points nothing at VTBase3, on either environment (#3299)', () => {
+    // The maintainer's decision, 23 November 2026: moving off VTBase3 is part of adding the November cache, not a
+    // follow-up. The two feature services disagree about what is under construction - VTBase3 still has the
+    // Easterwood ARFF Station, and lacks the Golf Performance Center and Last Energy PWR5 - so drawing VTBase4's
+    // tiles while reading VTBase3's features would hatch one finished building and leave two unhatched, with their
+    // own outline hidden. The tiles and their data are one source (#2722).
+    const exported = definitions as unknown as Record<string, unknown>;
+    const gallery = exported['aggiemapGalleryBasemaps'] as (isTesting: boolean) => Array<Basemap>;
+
+    for (const isTesting of [false, true]) {
+      expect(gallery(isTesting).flatMap(urlsOf).filter((url) => url.includes('VTBase3'))).toEqual([]);
+    }
+
+    expect(TAMU_CAMPUS_VECTOR_BASEMAP_URL).toContain('Hosted/VTBase4/VectorTileServer');
+    expect(TAMU_CAMPUS_STRUCTURES_URL).toContain('Hosted/VTBase4/FeatureServer/0');
   });
 
   it('turns every id the gallery can save back into a basemap (#1726)', () => {
@@ -135,9 +198,20 @@ describe('campus basemap', () => {
     expect(raster(true).title).toBe('Aggieland raster, October 2026');
     expect(gallery(true)).toContainEqual(raster(true));
 
-    // On production it is the gallery's raster entry, so the panel marks it there too (#2515).
-    expect(gallery(false)).toContainEqual(raster(false));
+    // On production it is not offered, so the panel marks nothing while it shows. It is still the raster basemap.
+    expect(gallery(false)).not.toContainEqual(raster(false));
     expect(urlsOf(raster(false))).toEqual(urlsOf(exported['AggiemapRasterBasemap'] as Basemap));
+  });
+
+  it('turns a raster choice saved on production before it left the gallery into the vector basemap', () => {
+    const exported = definitions as unknown as Record<string, unknown>;
+    const forSavedId = exported['basemapForSavedId'] as (id: string, isTesting: boolean) => Basemap | string;
+    const raster = exported['aggiemapRasterBasemap'] as (isTesting: boolean) => Basemap & { id: string };
+    const resolve = exported['aggiemapBasemap'] as (isTesting: boolean) => Basemap;
+
+    // A visitor who chose Aggieland raster on production has `aggie_basemap_raster` saved. It must open the map on the
+    // campus basemap production offers, not on the abandoned service, and not on a bare id ArcGIS cannot draw.
+    expect(forSavedId(raster(false).id, false)).toEqual(resolve(false));
   });
   it('turns a saved Aerial Imagery choice back into the Nearmap basemap, on every environment (#1692)', () => {
     const exported = definitions as unknown as Record<string, unknown>;
@@ -176,24 +250,32 @@ describe('campus basemap', () => {
     const offenders = sources()
       // The definition file is where the resolver lives, and the raster basemap declares its own
       // Web Mercator reference there, correctly.
-      .filter((file) => path.normalize(file) !== DEFINITION)
+      .filter(({ file }) => path.normalize(file) !== DEFINITION)
       // Either way in: the resolver itself, or a saved choice turned back into a basemap (#1726).
-      .filter((file) => /aggiemapBasemap\(|basemapForSavedId\(/.test(fs.readFileSync(path.join(REPO_ROOT, file), 'utf8')))
-      .filter((file) => /spatialReference:\s*\{[^}]*wkid:\s*\d+/.test(fs.readFileSync(path.join(REPO_ROOT, file), 'utf8')));
+      .filter(({ text }) => /aggiemapBasemap\(|basemapForSavedId\(/.test(text))
+      .filter(({ text }) => /spatialReference:\s*\{[^}]*wkid:\s*\d+/.test(text))
+      .map(({ file }) => file);
 
     expect(offenders).toEqual([]);
   });
 
   it('is never named outside its definition, so every map resolves it by environment', () => {
-    const offenders = sources()
-      .filter((file) => path.normalize(file) !== DEFINITION)
-      .filter((file) => {
-        const text = fs.readFileSync(path.join(REPO_ROOT, file), 'utf8');
+    // Two exceptions, each named. `campus-basemap.ts` declares the service's address once, as the campus services are
+    // declared there. And the GIS Day competition maps (`libs/maps/mapbox`) draw with MapLibre, which cannot take an
+    // ArcGIS basemap definition, so they take the address itself. Anywhere else, the constant names the service as
+    // surely as its address does.
+    const DECLARED = path.normalize('libs/common/datasets/geographic/src/lib/campus/campus-basemap.ts');
+    const MAPLIBRE = path.normalize('libs/maps/mapbox/');
 
-        return (
-          text.includes(VECTOR_SERVICE) || /\b(AggiemapBasemap|AggiemapVectorBasemap|AggiemapRasterBasemap\w*)\b/.test(text)
-        );
-      });
+    const offenders = sources()
+      .filter(({ file }) => path.normalize(file) !== DEFINITION && path.normalize(file) !== DECLARED)
+      .filter(
+        ({ file, text }) =>
+          (!path.normalize(file).startsWith(MAPLIBRE) &&
+            (text.includes(VECTOR_SERVICE) || /\bTAMU_CAMPUS_VECTOR_BASEMAP_URL\b/.test(text))) ||
+          /\b(AggiemapBasemap|AggiemapVectorBasemap|AggiemapRasterBasemap\w*)\b/.test(text)
+      )
+      .map(({ file }) => file);
 
     expect(offenders).toEqual([]);
   });
@@ -212,11 +294,13 @@ describe('the vector basemap draws its buildings under construction itself (#245
   const tiles = layers.find((layer) => layer['type'] === 'VectorTileLayer');
   const construction = layers.find((layer) => layer['type'] === 'FeatureLayer');
 
-  it("hides the tiles' construction fill and their outline, which a layer above the tiles cannot keep whole", () => {
-    expect(tiles?.['hiddenStyleLayers']).toEqual([
-      'Campus Structures/Currently Under Construction/1',
-      'Campus Structures/Currently Under Construction/0'
-    ]);
+  it("hides the tiles' construction outline, which a layer above the tiles cannot keep whole", () => {
+    // VTBase3 published two style layers here: a fill whose `fill-pattern` was the rasterized pink, and a black
+    // outline. Both were hidden - the fill because it drew as a solid block, the outline because it had to move with
+    // it. VTBase4 publishes ONE, the line: the GIS team fixed the fill at source (#3225). The line is still hidden,
+    // because our renderer draws its own outline and anything added to a vector tile basemap draws above all of it,
+    // so the style's outline would sit under the grid and read as a dashed line.
+    expect(tiles?.['hiddenStyleLayers']).toEqual(['Campus Structures/Currently Under Construction']);
   });
 
   it('draws its own black outline on top of the hatch', () => {
@@ -229,9 +313,10 @@ describe('the vector basemap draws its buildings under construction itself (#245
     expect(symbolLayers.slice(1).map((layer) => layer['type'])).toEqual(['CIMHatchFill', 'CIMHatchFill']);
   });
 
+  // The tiles' own feature service since #2722, where the field names are lower case.
   it('draws the buildings under construction from the buildings service, with a CIM hatch', () => {
-    expect(construction?.['url']).toMatch(/\/FCOR\/TAMU_Basemap_\d+\/MapServer\/2$/);
-    expect(construction?.['definitionExpression']).toBe("Type = 'CONSTRUCTION'");
+    expect(construction?.['url']).toMatch(/\/Hosted\/VTBase4\/FeatureServer\/0$/);
+    expect(construction?.['definitionExpression']).toBe("type = 'CONSTRUCTION'");
     expect(JSON.stringify(construction?.['renderer'])).toContain('CIMHatchFill');
   });
 
@@ -247,7 +332,7 @@ describe('the vector basemap draws its buildings under construction itself (#245
 /**
  * The vector basemap is production's default (#2515), so the smoke suite's list of services production must never request
  * cannot list it any more: that list fails the production run when a listed service is requested (#1229). The September
- * cache, still development-only, stays on it.
+ * cache came off it with the gallery entry (#3279): nothing requests that service any more.
  */
 describe('the smoke suite allows production the vector basemap (#2515)', () => {
   const developmentOnly = fs.readFileSync(path.join(REPO_ROOT, 'test', 'smoke', 'aggiemap', 'development-only.ts'), 'utf8');
@@ -256,7 +341,7 @@ describe('the smoke suite allows production the vector basemap (#2515)', () => {
     expect(developmentOnly).not.toContain(`'${VECTOR_SERVICE}'`);
   });
 
-  it('still lists the September vector cache', () => {
-    expect(developmentOnly).toContain("'Hosted/VTBase/VectorTileServer'");
+  it('no longer lists the September vector cache, which nothing requests (#3279)', () => {
+    expect(developmentOnly).not.toContain("'Hosted/VTBase/VectorTileServer'");
   });
 });

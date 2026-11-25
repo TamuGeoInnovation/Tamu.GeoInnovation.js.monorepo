@@ -334,6 +334,13 @@ export type LayerSource = LayerSourceType & {
   listNote?: string;
 
   /**
+   * Why a development build reads this layer from production: the development server cannot serve it to a browser.
+   * The layer list marks the layer with it. Set by aggiemap's `markReadFromProduction`, from the same list its
+   * connections pin by, and only on a development build - never by hand (#2744).
+   */
+  readFromProduction?: string;
+
+  /**
    * Determines whether the layer will be loaded on application load.
    *
    * A layer can be listed as "show" but not load on init. This will enable layer lazy-loading,

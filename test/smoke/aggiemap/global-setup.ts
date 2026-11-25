@@ -5,6 +5,9 @@ import * as path from 'path';
 import { blockAnalytics } from './analytics';
 import { retiredMaps } from './retired';
 import { describeQuickSet, quickSetFor } from './scope';
+import { gisHostFor, smokeBaseUrl } from './gis-hosts';
+// connections.ts loads without the Angular dependency graph (see services.spec.ts).
+import { Connections } from '../../../libs/aggiemap/ngx/common/src/lib/connections';
 
 /**
  * Discovers every map the target environment lists, and writes it to a manifest the spec reads at
@@ -30,7 +33,19 @@ import { describeQuickSet, quickSetFor } from './scope';
  * than failing. `maps.spec.ts` guards that with a coverage floor.
  */
 
-const MAP_ROUTE = /^\/(events|parking|operations|campus|kiosk)\//;
+/**
+ * A map's route. `/map/d/<panel>` is the main map opened on one of its panels and listed as a map of its own, such as
+ * the bus map, `/map/d/bus` (#2743).
+ */
+const MAP_ROUTE = /^\/((events|parking|transportation|operations|campus|kiosk)\/|map\/d\/[a-z-]+$)/;
+
+/**
+ * Whether a listed map is the main map opened on one of its panels, such as the bus map, `/map/d/bus` (#2743). Its layers
+ * are the main map's, which the specs that check layers check once, at `/map`; the panel itself shows something else.
+ */
+export function isMainMapPanel(mapPath: string): boolean {
+  return /^\/map\/d\/[a-z-]+$/.test(mapPath);
+}
 
 /** The discovery pages are reached from All Maps; the main map is not listed on it. */
 const ALL_MAPS = '/all-maps';
@@ -52,6 +67,18 @@ export interface MapManifest {
    * per route (#1473). Empty where bus routes are not offered; `null` if the panel could not be read.
    */
   busRoutes: string[] | null;
+  /**
+   * A bus stop to open by `?busstop=`, by its id in this environment's bus service: Blinn, the 15th stop of route 47.
+   * Found here rather than written into the specs, because each environment's service numbers its stops differently
+   * (#2636). `null` if the service did not answer with exactly one such stop.
+   */
+  busStop: number | null;
+  /**
+   * Lot 043 on the AVP Parking map, by its id in this environment's AnyValidPermitParking service, for a
+   * `?feature=AVP-parking-lots:<id>` link. Found here for the same reason as `busStop`: production numbers it 26135 and
+   * development 34694 (#2821). `null` if the service did not answer with exactly one such lot.
+   */
+  avpLot: number | null;
 }
 
 /** The main map's bus panel, and what it renders: a route per bus, or a notice where none are offered. */
@@ -67,7 +94,7 @@ export default async function globalSetup(): Promise<void> {
     console.log(describeQuickSet(quickSetFor((process.env.AGGIEMAP_SMOKE_CHANGED ?? '').split(',').filter(Boolean))));
   }
 
-  const baseUrl = (process.env.AGGIEMAP_SMOKE_BASE_URL ?? 'https://aggiemap.tamu.edu').replace(/\/$/, '');
+  const baseUrl = smokeBaseUrl();
 
   const browser = await chromium.launch();
   const page = await browser.newPage();
@@ -118,7 +145,7 @@ export default async function globalSetup(): Promise<void> {
       // `maps.spec.ts` catches the case where too many come back empty.
       await gotoAndWaitForLinks(
         detailPage,
-        'a[href^="/events/"], a[href^="/parking/"], a[href^="/operations/"], a[href^="/campus/"], a[href^="/kiosk/"]',
+        'a[href^="/events/"], a[href^="/parking/"], a[href^="/transportation/"], a[href^="/operations/"], a[href^="/campus/"], a[href^="/kiosk/"], a[href^="/map/d/"]',
         false
       );
 
@@ -136,12 +163,21 @@ export default async function globalSetup(): Promise<void> {
     const skipped = [...maps].filter(isRetired);
 
     const busRoutes = await discoverBusRoutes(page, baseUrl);
+    const connections = Connections(gisHostFor(baseUrl));
+    const busStop = await discoverObjectId(
+      page,
+      `${connections.busRoutesUrl}/0`,
+      "stopname = 'Blinn' AND route = '47' AND stopnum = 15"
+    );
+    const avpLot = await discoverObjectId(page, `${connections.avpParkingUrl}/0`, "GIS.TS.ParkingLots.LotName = 'Lot 043'");
 
     const manifest: MapManifest = {
       baseUrl,
       discoveredAt: new Date().toISOString(),
       maps: [...maps].filter((href) => !isRetired(href)).sort(),
-      busRoutes
+      busRoutes,
+      busStop,
+      avpLot
     };
 
     fs.writeFileSync(MANIFEST_PATH, `${JSON.stringify(manifest, null, 2)}\n`);
@@ -149,11 +185,41 @@ export default async function globalSetup(): Promise<void> {
     console.log(
       `[smoke] discovered ${manifest.maps.length} maps on ${baseUrl}` +
         (skipped.length > 0 ? `; skipped ${skipped.length} retired: ${skipped.join(', ')}` : '') +
-        (busRoutes === null ? '; could not read the bus panel' : `; ${busRoutes.length} bus routes`)
+        (busRoutes === null ? '; could not read the bus panel' : `; ${busRoutes.length} bus routes`) +
+        (busStop === null ? '; could not find the bus stop to link to' : `; bus stop ${busStop}`) +
+        (avpLot === null ? '; could not find the AVP lot to link to' : `; AVP lot ${avpLot}`)
     );
   } finally {
     await browser.close();
   }
+}
+
+/**
+ * The object id of the one feature `where` selects, in a layer this environment reads. A spec that links to a feature by
+ * its id takes it from here, asked of the service by what the feature is, because an id is a fact about one server:
+ * development's bus view numbers its stops from 1 and production's from 4214 (#2636), and the two AnyValidPermit
+ * services number the same lots differently (#2821). `null` unless exactly one feature answers; a spec given `null` fails
+ * saying so. Not required, as a discovery page is not.
+ *
+ * Asked up to three times, because an answer that is an error says nothing about the feature, and some of these services
+ * fail queries at random (#1951).
+ */
+async function discoverObjectId(page: Page, layerUrl: string, where: string): Promise<number | null> {
+  const url = `${layerUrl}/query?f=json&returnIdsOnly=true&where=${encodeURIComponent(where)}`;
+
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      const ids: unknown = (await (await page.request.get(url)).json()).objectIds;
+
+      if (Array.isArray(ids)) {
+        return ids.length === 1 && typeof ids[0] === 'number' ? ids[0] : null;
+      }
+    } catch {
+      // Not an answer; ask again.
+    }
+  }
+
+  return null;
 }
 
 /**

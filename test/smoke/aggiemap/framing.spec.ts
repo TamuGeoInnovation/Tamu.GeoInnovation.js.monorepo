@@ -3,7 +3,7 @@ import * as path from 'path';
 
 import { expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
-import { Framing, readEsriVersion, waitForSettledFraming } from './framing';
+import { Framing, readEsriVersion, servedRoutes, waitForSettledFraming } from './framing';
 import { MANIFEST_PATH, MapManifest } from './global-setup';
 
 /**
@@ -46,15 +46,6 @@ import { MANIFEST_PATH, MapManifest } from './global-setup';
 
 const BASELINE_PATH = path.join(__dirname, 'framing-baseline.json');
 const LOCK_PATH = `${BASELINE_PATH}.lock`;
-const INVENTORY_PATH = path.join(
-  __dirname,
-  '..',
-  '..',
-  '..',
-  'tools',
-  'builder-inventory',
-  'builder-inventory.generated.json'
-);
 
 const PRODUCTION = 'https://aggiemap.tamu.edu';
 const UPDATE = process.env.UPDATE_FRAMING_BASELINE === '1';
@@ -70,43 +61,15 @@ interface FramingBaseline {
   routes: Record<string, Framing>;
 }
 
-interface BuilderInventory {
-  maps: { route: string; destinations: { shareTarget: string }[] }[];
-}
-
 const manifest: MapManifest = JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf8'));
 
-// Read regardless of the environment the inventory was captured on: its destinations are root-relative
-// links, and the manifest decides below which of them this environment serves.
-const inventory: BuilderInventory = fs.existsSync(INVENTORY_PATH)
-  ? JSON.parse(fs.readFileSync(INVENTORY_PATH, 'utf8'))
-  : { maps: [] };
-
-const listed = new Set(manifest.maps);
-const builderMaps = new Set(inventory.maps.map((map) => map.route));
-
-const destinationsOf = (map: BuilderInventory['maps'][number]) =>
-  map.destinations.map((destination) => destination.shareTarget);
-
 /** Every route this environment serves, which is what the baseline is compared and refreshed against. */
-const routes = [
-  ...new Set([
-    ...manifest.maps.filter((route) => !builderMaps.has(route)),
-    ...inventory.maps.filter((map) => listed.has(map.route)).flatMap(destinationsOf)
-  ])
-].sort();
+const routes = servedRoutes(manifest, { onePerMap: false });
 
 const RELEASE_SCOPE = process.env.AGGIEMAP_SMOKE_FRAMING === 'release' && !UPDATE;
 
 /** The routes this run opens: all of them, or one per map for a release check. */
-const checked = RELEASE_SCOPE
-  ? [
-      ...new Set([
-        ...manifest.maps.filter((route) => !builderMaps.has(route)),
-        ...inventory.maps.filter((map) => listed.has(map.route)).flatMap((map) => destinationsOf(map).slice(0, 1))
-      ])
-    ].sort()
-  : routes;
+const checked = RELEASE_SCOPE ? servedRoutes(manifest, { onePerMap: true }) : routes;
 
 function readBaseline(): FramingBaseline | null {
   return fs.existsSync(BASELINE_PATH) ? JSON.parse(fs.readFileSync(BASELINE_PATH, 'utf8')) : null;

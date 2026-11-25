@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFile, UseGua
 import { FileInterceptor } from '@nestjs/platform-express';
 import { DeepPartial } from 'typeorm';
 
-import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
+import { AllowAny, JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 import { DEFAULT_UPLOAD_LIMITS } from '@tamu-gisc/common/nest/services';
 
 import { Speaker } from '../entities/all.entity';
@@ -12,49 +12,117 @@ import { SpeakerProvider } from './speaker.provider';
 export class SpeakerController {
   constructor(private readonly provider: SpeakerProvider) {}
 
+  // Read by the public pages and the admin pages alike. The token, when there is one, says whether the caller may
+  // see the private fields, which PrivateFieldsInterceptor removes otherwise (contact details, a speaker's email).
+  @UseGuards(JwtGuard)
+  @AllowAny()
   @Get('season/active')
   public async getActiveEntities() {
     return this.provider.getSpeakersForActiveSeason();
   }
 
+  @UseGuards(JwtGuard)
+  @AllowAny()
   @Get('season/:guid')
   public async getSpeakersForSeason(@Param('guid') seasonGuid) {
     return this.provider.getSpeakersForSeason(seasonGuid);
   }
 
+  /**
+   * The active season's speakers with each one's sessions, for the admin Speakers list (#441). Behind `update:speakers`,
+   * as the badges dashboard's list is, because the sessions include those hidden from the public schedule; the public
+   * `season/active` above leaves them out.
+   */
+  @Permissions(['update:speakers'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Get('sessions/season/active')
+  public async getActiveEntitiesWithSessions() {
+    return this.provider.getSpeakersForActiveSeason(true);
+  }
+
+  /** A season's speakers with each one's sessions, for the admin Speakers list (#441), as the route above. */
+  @Permissions(['update:speakers'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Get('sessions/season/:guid')
+  public async getSpeakersWithSessionsForSeason(@Param('guid') seasonGuid: string) {
+    return this.provider.getSpeakersForSeason(seasonGuid, true);
+  }
+
+  @UseGuards(JwtGuard)
+  @AllowAny()
   @Get('organizers/season/active')
   public async getActiveOrganizers() {
     return this.provider.getOrganizersForActiveSeason();
   }
 
+  @UseGuards(JwtGuard)
+  @AllowAny()
   @Get('organizers/season/:guid')
   public async getOrganizersForSeason(@Param('guid') seasonGuid: string) {
     return this.provider.getOrganizersForSeason(seasonGuid);
   }
 
+  @UseGuards(JwtGuard)
+  @AllowAny()
   @Get('organizers')
   public async getOrganizingEntities() {
     return this.provider.getAllTimeOrganizers();
   }
 
+  @UseGuards(JwtGuard)
+  @AllowAny()
   @Get('participating')
   public async getParticipatingSpeakersForActiveSeason() {
     return this.provider.getSpeakersForActiveSeasonInEvents(true);
   }
 
+  /**
+   * Every speaker in a season's sessions, with or without a photo or bio, for the Speaker badges dashboard (#2995): each
+   * presenter needs a badge, and the public list below keeps only those with both, which left out the new competition
+   * finalists until they uploaded a photo.
+   */
+  @Permissions(['update:speakers'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Get('participating/season/:guid/all')
+  public async getAllParticipatingSpeakersForSeason(@Param('guid') seasonGuid: string) {
+    return this.provider.getSpeakersForSeasonInEvents(seasonGuid, false);
+  }
+
+  @UseGuards(JwtGuard)
+  @AllowAny()
   @Get('participating/season/:guid')
   public async getParticipatingSpeakersForSeason(@Param('guid') seasonGuid: string) {
     return this.provider.getSpeakersForSeasonInEvents(seasonGuid, true);
   }
 
+  @UseGuards(JwtGuard)
+  @AllowAny()
   @Get(':guid')
   public async getEntity(@Param('guid') guid) {
     return this.provider.getPresenter(guid);
   }
 
+  @UseGuards(JwtGuard)
+  @AllowAny()
   @Get()
   public async getEntities() {
     return this.provider.getPresenters();
+  }
+
+  /** Marks speakers' badges printed, each with what its badge said (#2908). */
+  @Permissions(['update:speakers'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Post('badges/printed')
+  public async markBadgesPrinted(@Body('badges') badges: Array<{ guid: string; text: string }>) {
+    return this.provider.markBadgesPrinted(badges);
+  }
+
+  /** Clears speakers' printed mark (#2908). */
+  @Permissions(['update:speakers'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Post('badges/not-printed')
+  public async clearBadgesPrinted(@Body('guids') guids: Array<string>) {
+    return this.provider.clearBadgesPrinted(guids);
   }
 
   @Permissions(['create:speakers'])

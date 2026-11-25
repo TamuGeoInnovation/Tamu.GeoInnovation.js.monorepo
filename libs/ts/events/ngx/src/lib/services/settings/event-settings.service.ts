@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Params } from '@angular/router';
 import { Observable, of } from 'rxjs';
 
-import { readsDevelopmentGisServer } from '@tamu-gisc/aggiemap/ngx/common';
+import { markReadFromProduction, readsDevelopmentGisServer } from '@tamu-gisc/aggiemap/ngx/common';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 import { LayerSource } from '@tamu-gisc/common/types';
@@ -156,7 +156,10 @@ export class EventSettingsService implements EventSettingsQuery {
     const config = this.getEventDefinitionById(this._settingsSecondaryKey);
 
     if (config && config.sources !== null) {
-      const sources = this.developmentSources(config) ?? config.sources;
+      // Each layer a development build reads from production is marked for the Layers list (#2744).
+      const sources = markReadFromProduction(
+        this.gameDayRefreshed(this.developmentSources(config) ?? config.sources, config)
+      );
 
       if (asObservable) {
         return of(sources);
@@ -166,6 +169,24 @@ export class EventSettingsService implements EventSettingsQuery {
     } else {
       throw new Error(`Event layer sources for event ID '${this._settingsSecondaryKey}' not found.`);
     }
+  }
+
+  /**
+   * The event's sources with the layers its `gameDayRefresh` lists set to poll every minute, when it is on (#2581).
+   * Each refreshing source is a copy; every other source is returned as it is.
+   */
+  private gameDayRefreshed(sources: Array<LayerSource>, config: AggiemapCustomMapConfiguration): Array<LayerSource> {
+    const refresh = config.configuration?.gameDayRefresh;
+
+    if (!refresh?.enabled) {
+      return sources;
+    }
+
+    return sources.map((source) =>
+      refresh.layers.includes(source.id)
+        ? ({ ...source, native: { ...(source as { native?: object }).native, refreshInterval: 1 } } as LayerSource)
+        : source
+    );
   }
 
   /**

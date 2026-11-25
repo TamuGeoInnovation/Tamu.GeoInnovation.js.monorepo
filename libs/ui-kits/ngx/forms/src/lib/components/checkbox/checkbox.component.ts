@@ -114,8 +114,12 @@ export class CheckboxComponent implements ControlValueAccessor {
     this._onTouch = fn;
   }
 
+  /**
+   * A value from the form is shown, not reported back to the form or announced on `changed`: a form loaded with a
+   * record would otherwise count as changed the moment it opened (#2964).
+   */
   public writeValue(val) {
-    this.checked = val;
+    this._checked.set(val);
   }
 
   public setDisabledState(disabled?: boolean) {

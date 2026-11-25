@@ -71,7 +71,7 @@ describe('ParkingLotPopupComponent', () => {
   it('should create', () => {
     component.data = {
       attributes: {
-        Name: '100'
+        name: '100'
       }
     } as unknown as __esri.Graphic;
 
@@ -80,11 +80,21 @@ describe('ParkingLotPopupComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should prefer LotName when Name is null for copied share urls', () => {
+  // A lot's fields are lower case: it comes from the surface lots service (#2722). The garage popup shares this
+  // template with `LotName`, which `parking-garage.component.spec.ts` covers.
+  it('shows the lot name', () => {
+    component.data = { attributes: { lotname: 'Lot 077', name: '77' } } as unknown as __esri.Graphic;
+
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('Lot 077');
+  });
+
+  it('should prefer lotname when name is null for copied share urls', () => {
     component.data = {
       attributes: {
-        Name: null,
-        LotName: 'Post Office Lot'
+        name: null,
+        lotname: 'Post Office Lot'
       }
     } as unknown as __esri.Graphic;
 
@@ -93,11 +103,11 @@ describe('ParkingLotPopupComponent', () => {
     expect(component.shareUrl).toBe('http://localhost/?lot=Post Office Lot');
   });
 
-  it('should fall back to Name when LotName is unavailable', () => {
+  it('should fall back to name when lotname is unavailable', () => {
     component.data = {
       attributes: {
-        Name: '100a',
-        LotName: null
+        name: '100a',
+        lotname: null
       }
     } as unknown as __esri.Graphic;
 

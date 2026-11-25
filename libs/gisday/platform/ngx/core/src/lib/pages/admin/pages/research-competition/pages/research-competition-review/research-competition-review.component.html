@@ -30,7 +30,15 @@
           <li>{{participant.name}} @if (participant?.email) { ({{participant.email}}) } @if (participant?.studentId) { ({{participant.studentId}}) }</li>
           }
         </ul>
+        <h5>Files</h5>
+        <!-- The slides or poster the student attached (#2933): a click downloads one. -->
+        <tamu-gisc-submission-files [submissionGuid]="entity.guid" [previewable]="true"></tamu-gisc-submission-files>
       </div>
+    </div>
+    } @else {
+    <!-- The site's loader while the submission loads, rather than a blank section (#2924). -->
+    <div class="form-section-body">
+      <div class="loader"></div>
     </div>
     }
   </div>

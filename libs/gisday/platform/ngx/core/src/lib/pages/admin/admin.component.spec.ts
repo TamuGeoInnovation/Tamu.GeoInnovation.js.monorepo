@@ -19,12 +19,12 @@ class EmptyPageComponent {}
  * version passed a [hidden] check while the menu still showed on a phone.
  */
 describe('AdminComponent', () => {
-  function open(isMobile: boolean) {
+  function open(isMobile: boolean, site = '') {
     TestBed.configureTestingModule({
       imports: [AdminComponent],
       providers: [
         provideRouter([{ path: 'admin/seasons', component: EmptyPageComponent }]),
-        { provide: GISDAY_SITE, useValue: gisdaySite('') },
+        { provide: GISDAY_SITE, useValue: gisdaySite(site) },
         { provide: ResponsiveService, useValue: { isMobile: new BehaviorSubject(isMobile) } }
       ]
     });
@@ -68,5 +68,49 @@ describe('AdminComponent', () => {
     fixture.detectChanges();
 
     expect(menu(root)).toBeNull();
+  });
+
+  it('opens the menu with Dashboards, and the RSVP, Check-ins, VGI submissions, User accounts and Speaker badges dashboards under it (#2878, #3006, #2894, #2892, #2899)', () => {
+    const root = open(false).nativeElement as HTMLElement;
+    const first = menu(root)?.querySelector(':scope > li');
+
+    expect(first?.querySelector(':scope > a')?.textContent?.trim()).toBe('dashboard Dashboards');
+    expect(first?.querySelector(':scope > a')?.getAttribute('href')).toContain('/dashboards');
+    expect(Array.from(first?.querySelectorAll('.sidebar_sublevel a') ?? []).map((a) => a.textContent?.trim())).toEqual(['RSVPs', 'Check-ins', 'VGI submissions', 'User accounts', 'Speaker badges']);
+  });
+
+  // #2894: UCGIS's site has no VGI competition, so no VGI submissions dashboard either.
+  it('leaves the VGI submissions dashboard out on a site without the competition', () => {
+    const root = open(false, 'ucgis').nativeElement as HTMLElement;
+    const dashboards = Array.from(root.querySelectorAll('.sidebar_sublevel a')).map((a) => a.textContent?.trim());
+
+    expect(dashboards).toContain('RSVPs');
+    expect(dashboards).not.toContain('VGI submissions');
+  });
+
+  // #3183: judging the research competitions has its two pages under Research Competitions, where the site runs them,
+  // and their winners theirs (#3239).
+  it('lists Submissions, Rubrics, Judging results and Winners under Research Competitions', () => {
+    const root = open(false).nativeElement as HTMLElement;
+    const item = Array.from(menu(root)?.querySelectorAll(':scope > li') ?? []).find((li) =>
+      li.querySelector(':scope > a')?.textContent?.includes('Research Competitions')
+    );
+    const links = Array.from(item?.querySelectorAll('.sidebar_sublevel a') ?? []);
+
+    expect(links.map((a) => a.textContent?.trim())).toEqual(['Submissions', 'Rubrics', 'Judging results', 'Winners']);
+    expect(links.map((a) => a.getAttribute('href'))).toEqual([
+      expect.stringContaining('/research-competition'),
+      expect.stringContaining('/research-competition/rubrics'),
+      expect.stringContaining('/research-competition/judging'),
+      expect.stringContaining('/research-competition/winners')
+    ]);
+  });
+
+  it('has no judging pages on a site without the research competitions', () => {
+    const root = open(false, 'ucgis').nativeElement as HTMLElement;
+    const links = Array.from(root.querySelectorAll('.sidebar_sublevel a')).map((a) => a.textContent?.trim());
+
+    expect(links).not.toContain('Rubrics');
+    expect(links).not.toContain('Judging results');
   });
 });

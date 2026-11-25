@@ -1,23 +1,13 @@
 import { expect, Page, test } from '@playwright/test';
 
 import { APP_ROOT } from './routes';
+import { asSite } from './site';
 
 /**
  * The UCGIS site, gisday.ucgis.org (#1837): the same app as txgisday.org with `ANGULAR_SITE=ucgis`.
- *
- * The container replaces `___ANGULAR_SITE___` in the app's scripts when it starts. This does the same
- * to every script the dev server sends, so what runs here is what that deployment runs.
  */
-async function asUcgis(page: Page) {
-  await page.route(/\.js(\?.*)?$/, async (route) => {
-    const response = await route.fetch();
-    const body = (await response.text()).replace(/___ANGULAR_SITE___/g, 'ucgis');
-    await route.fulfill({ response, body });
-  });
-}
-
 async function open(page: Page, path: string) {
-  await asUcgis(page);
+  await asSite(page, 'ucgis');
   await page.goto(path, { waitUntil: 'domcontentloaded' });
   await expect(page.locator(APP_ROOT)).toBeAttached();
   await expect(page.locator('header nav')).toBeVisible({ timeout: 15_000 });

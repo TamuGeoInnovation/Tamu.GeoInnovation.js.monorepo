@@ -23,6 +23,22 @@
 
         .datatable-header-cell {
           padding: 12px 8px;
+
+          // The arrow on the column a table is sorted by. ngx-datatable's own icon font is not loaded; these are
+          // Material Icons, which every site using this file has.
+          .sort-btn {
+            font-family: 'Material Icons';
+            font-size: 1rem;
+            margin-left: 0.25rem;
+
+            &.datatable-icon-up::before {
+              content: 'arrow_upward';
+            }
+
+            &.datatable-icon-down::before {
+              content: 'arrow_downward';
+            }
+          }
         }
       }
 

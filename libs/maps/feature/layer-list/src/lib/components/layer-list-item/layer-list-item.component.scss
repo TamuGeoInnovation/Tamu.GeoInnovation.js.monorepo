@@ -68,6 +68,16 @@
     }
   }
 
+  // A layer a development build reads from production (#2744). Small and quiet: it is for whoever is testing on dev.
+  .read-from-production {
+    margin-left: 0.4rem;
+    padding: 0 0.3rem;
+    border: 1px solid currentColor;
+    border-radius: 0.2rem;
+    font-size: 0.7rem;
+    white-space: nowrap;
+  }
+
   // Preserve even spacing between visibility dot and expand arrow if
   // the list item has child layers
   &.has-children {

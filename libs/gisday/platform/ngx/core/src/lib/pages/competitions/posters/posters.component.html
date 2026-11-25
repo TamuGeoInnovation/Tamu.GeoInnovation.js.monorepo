@@ -2,7 +2,10 @@
   <div class="container12 small-partition">
     <div class="column12">
       <h1 class="trailer-1">Poster Competition</h1>
-      <p class="sub-section-heading">Tuesday, November 17th, 2026</p>
+      <!-- The poster session's day, not typed in for one year (#3019). -->
+      @if (day()) {
+      <p class="sub-section-heading">{{ day() }}</p>
+      }
     </div>
   </div>
 
@@ -36,7 +39,6 @@
 
       <div class="trailer-4" id="one">
         <h2 class="trailer-1">Prizes</h2>
-        <p>Prizes for the GIS Poster Competition are being generously provided by the Texas A&amp;M Center for Teaching Excellence, through a <a href="https://cte.tamu.edu/services-and-impact/montague-cte-scholars.html" target="_blank" rel="noopener noreferrer">Montague-CTE Scholar Award</a> won by <a href="https://artsci.tamu.edu/geography/contact/profiles/heng-cai.html" target="_blank" rel="noopener noreferrer">Dr. Heng Cai</a>, Assistant Professor, Texas A&amp;M Department of Geography.</p>
 
         <ul>
           <li>1st prize: $250</li>
@@ -48,8 +50,8 @@
       <div class="trailer-4" id="two">
         <h2 class="trailer-1">Registration and Poster Submission</h2>
         <ul>
-          <li>Due Date: Monday November 9th, 2026</li>
-          <li>Time: 5:00PM Central Time</li>
+          <!-- The season's deadline, the one the site enforces (#3019). -->
+          <li>Due: {{ submissionsDue() ?? 'to be announced' }}</li>
           <li>Location: <a [routerLink]="'/account/submissions'">Online submission</a></li>
         </ul>
       </div>
@@ -75,18 +77,20 @@
       <div class="trailer-4" id="five">
         <h2 class="trailer-1">Finalist Selection</h2>
         <ul>
-          <li>Finalists will be notified on Wednesday November 11th, 2026</li>
-          <li>Finalists will be expected to print and bring their poster for display during the Poster Competition Session (Tuesday November 17th)</li>
+          <!-- When finalists hear is the season's, set in Admin (#3019); without it, no line. -->
+          @if (finalistsNotified()) {
+          <li>Finalists will be notified on {{ finalistsNotified() }}</li>
+          }
+          <li>Finalists will be expected to print and bring their poster for display during the Poster Competition Session@if (day()) { ({{ day() }})}.</li>
           <li>Only finalists will be allowed to show their posters at the Poster Competition Session</li>
         </ul>
       </div>
 
       <div class="trailer-4" id="six">
         <h2 class="trailer-1">Poster Competition Session</h2>
+        <!-- The session as the database has it (#3011): this was typed in here and went stale when it moved. -->
+        <tamu-gisc-competition-session kind="poster" [season]="season()"></tamu-gisc-competition-session>
         <ul>
-          <li>Date: Tuesday November 17th, 2026</li>
-          <li>Time: 4:15-5:15PM</li>
-          <li>Location: In person - TAMU Memorial Student Center, Gates Ballroom 2400</li>
           <li>Finalists must be present during the poster session in order to be considered for awards.</li>
         </ul>
       </div>
@@ -94,7 +98,9 @@
       <div class="trailer-4" id="seven">
         <h2 class="trailer-1">Awards Announcement</h2>
 
-        <p>Winners will be announced on Wednesday, November 18th during the lunch session.</p>
+        <tamu-gisc-competition-session kind="awards" competition="poster" [season]="season()">
+          <p>Winners will be announced at the awards session:</p>
+        </tamu-gisc-competition-session>
       </div>
 
       <div class="trailer-4" id="eight">

@@ -1,15 +1,20 @@
 import { Module } from '@nestjs/common';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BullModule } from '@nestjs/bull';
 
 import {
   GISDAY_ENTITIES,
+  GISDAY_SUBSCRIBERS,
   CheckInModule,
   ClassModule,
   EventModule,
   InitialSurveyModule,
   RsvpTypeModule,
   SpeakerModule,
+  SpeakerEditModule,
+  JudgingModule,
+  SeasonWinnerModule,
   SponsorModule,
   SubmissionTypeModule,
   TagModule,
@@ -28,7 +33,8 @@ import {
   EventLocationModule,
   PlaceModule,
   AssetsModule,
-  ContactModule
+  ContactModule,
+  PrivateFieldsInterceptor
 } from '@tamu-gisc/gisday/platform/data-api';
 import { AuthorizationModule } from '@tamu-gisc/common/nest/auth';
 
@@ -58,7 +64,9 @@ const onlyWith = <T>(feature: GisdayFeature, modules: Array<T>): Array<T> => (si
       dropSchema: ormConfig.dropSchema,
       logging: ormConfig.logging,
       extra: ormConfig.extra,
-      entities: [...GISDAY_ENTITIES, ...GISDAY_COMPETITIONS_ENTITIES]
+      entities: [...GISDAY_ENTITIES, ...GISDAY_COMPETITIONS_ENTITIES],
+      // Stamps `updated` with the real time, not getdate() (#2926).
+      subscribers: GISDAY_SUBSCRIBERS
     }),
     AuthorizationModule.forRoot({
       jwt: {
@@ -76,12 +84,14 @@ const onlyWith = <T>(feature: GisdayFeature, modules: Array<T>): Array<T> => (si
     }),
     ...onlyWith('checkIns', [CheckInModule]),
     ...onlyWith('classes', [ClassModule, UserClassModule]),
-    ...onlyWith('competitions', [UserSubmissionModule, GisdayCompetitionsDataApiModule]),
+    // Judging the research competitions (#3183) is part of them, and so are their winners (#3239).
+    ...onlyWith('competitions', [UserSubmissionModule, GisdayCompetitionsDataApiModule, JudgingModule, SeasonWinnerModule]),
     EventModule,
     InitialSurveyModule,
     QuestionTypeModule,
     RsvpTypeModule,
     SpeakerModule,
+    SpeakerEditModule,
     SpeakerRoleModule,
     SponsorModule,
     SubmissionTypeModule,
@@ -106,6 +116,10 @@ const onlyWith = <T>(feature: GisdayFeature, modules: Array<T>): Array<T> => (si
     })
   ],
   controllers: [],
-  providers: [AppService]
+  providers: [
+    AppService,
+    // Removes contact details and speakers' emails from every response unless the caller may manage them.
+    { provide: APP_INTERCEPTOR, useClass: PrivateFieldsInterceptor }
+  ]
 })
 export class AppModule {}
