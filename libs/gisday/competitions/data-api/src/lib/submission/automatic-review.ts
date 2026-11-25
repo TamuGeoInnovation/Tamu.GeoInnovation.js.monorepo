@@ -60,8 +60,8 @@ export const DEFAULT_REVIEW_LIMITS: ReviewLimits = {
  */
 export interface ReviewedSubmission {
   created: Date;
-  value: Record<string, unknown>;
-  location: { latitude: number | string; longitude: number | string; accuracy?: number | string };
+  value: Record<string, unknown> | null;
+  location: { latitude: number | string; longitude: number | string; accuracy?: number | string } | null;
   /** How many photographs it has. */
   photos: number;
   /** Discarded by a person; it no longer counts against the participant. */
@@ -89,7 +89,7 @@ export function automaticReviewReasons(
   form: Array<Partial<ICompetitionSeasonFormQuestion>>
 ): Array<string> {
   const reasons: Array<string> = [];
-  const typeQuestion = form?.find((q) => q.isDiscriminator === true);
+  const typeQuestion = form.find((q) => q.isDiscriminator === true);
   // The form is stored as the Designer wrote it, so its type question may lack an attribute.
   const typeAttribute = typeQuestion?.attribute;
   const type = typeAttribute ? submission.value?.[typeAttribute] : undefined;
@@ -120,7 +120,7 @@ export function automaticReviewReasons(
       );
     }
 
-    const accuracy = Number(submission.location.accuracy);
+    const accuracy = Number(submission.location?.accuracy);
 
     if (!(accuracy > 0)) {
       reasons.push('Location accuracy not recorded');

@@ -67,13 +67,17 @@ export class ExportService {
       throw new NotFoundException('Season not found.');
     }
 
-    const job = await this.exportQueue.add('export-season', {
-      seasonGuid: dto.seasonGuid
-    }, {
-      attempts: 1,
-      removeOnComplete: { age: 86400 },
-      removeOnFail: { age: 86400 }
-    });
+    const job = await this.exportQueue.add(
+      'export-season',
+      {
+        seasonGuid: dto.seasonGuid
+      },
+      {
+        attempts: 1,
+        removeOnComplete: { age: 86400 },
+        removeOnFail: { age: 86400 }
+      }
+    );
 
     return {
       jobId: String(job.id),

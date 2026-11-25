@@ -55,15 +55,10 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
     blobs?: Array<DeepPartial<SubmissionMedia>>
   ) {
     if (entity.season && entity.location && entity.userGuid && entity.value) {
+      // The location is the JSON the app sent, so either coordinate may be missing or null.
       const truncated: DeepPartial<CompetitionSubmission['location']> = {
-        latitude:
-          entity.location.latitude !== undefined && entity.location.latitude !== null
-            ? parseFloat(entity.location.latitude.toFixed(5))
-            : 0.0,
-        longitude:
-          entity.location.longitude !== undefined && entity.location.longitude !== null
-            ? parseFloat(entity.location.longitude.toFixed(5))
-            : 0.0,
+        latitude: entity.location.latitude != null ? parseFloat(entity.location.latitude.toFixed(5)) : 0.0,
+        longitude: entity.location.longitude != null ? parseFloat(entity.location.longitude.toFixed(5)) : 0.0,
         // What the phone reported, in metres, so reviewers can tell a precise fix from a rough one
         // (#1784). The column holds up to 999.99.
         accuracy: clampAccuracy(entity.location.accuracy),
@@ -94,7 +89,10 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
         await em.insert(CompetitionSubmission, sub);
 
         if (blobs?.length) {
-          await em.insert(SubmissionMedia, blobs.map((b) => em.create(SubmissionMedia, { ...b, submission: sub })));
+          await em.insert(
+            SubmissionMedia,
+            blobs.map((b) => em.create(SubmissionMedia, { ...b, submission: sub }))
+          );
           Logger.log(`Created submission with media attachments.`, 'SubmissionService');
         }
 
@@ -103,7 +101,7 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
 
       // Then to the season's ArcGIS Online layer, without waiting: the upload succeeds whatever ArcGIS
       // Online does (#2433).
-      this.arcgis?.publishInBackground(saved.guid);
+      this.arcgis.publishInBackground(saved.guid);
 
       return saved;
     } else {
@@ -171,7 +169,7 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
         const saved = await submission.save();
 
         // The new status reaches the ArcGIS Online layer too (#2433).
-        this.arcgis?.publishInBackground(submission.guid);
+        this.arcgis.publishInBackground(submission.guid);
 
         return saved;
       } else {
@@ -183,7 +181,7 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
         try {
           submission.validationStatus = validationStatus;
           await submission.save();
-          this.arcgis?.publishInBackground(submission.guid);
+          this.arcgis.publishInBackground(submission.guid);
 
           return submission;
         } catch (err) {
@@ -203,7 +201,10 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
       throw new NotFoundException('Season not found');
     }
 
-    const compSeason = await this.compSeasonRepo.findOne({ where: { season: { guid: season.guid } }, relations: { form: true } });
+    const compSeason = await this.compSeasonRepo.findOne({
+      where: { season: { guid: season.guid } },
+      relations: { form: true }
+    });
 
     if (!compSeason) {
       throw new NotFoundException('Competition season not found');
@@ -310,7 +311,7 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
     submissions: CompetitionSubmission[],
     compSeason: CompetitionSeason
   ): SubmissionReviewDto[] {
-    const discriminatorQuestion = compSeason.form?.model?.find((q) => q.isDiscriminator === true);
+    const discriminatorQuestion = compSeason.form?.model.find((q) => q.isDiscriminator === true);
 
     return submissions.map((submission) => {
       let questionValue = '';

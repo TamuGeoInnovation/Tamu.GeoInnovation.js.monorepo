@@ -68,7 +68,7 @@ export function exportRow(
   return {
     submission_guid: submission.guid,
     user_guid: submission.userGuid,
-    created: submission.created?.toISOString(),
+    created: submission.created.toISOString(),
     latitude: submission.location?.latitude,
     longitude: submission.location?.longitude,
     accuracy: submission.location?.accuracy,

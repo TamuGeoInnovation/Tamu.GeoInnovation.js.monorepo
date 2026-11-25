@@ -35,7 +35,7 @@ describe('SubmissionService.createCompetitionSubmission', () => {
   const entity: DeepPartial<CompetitionSubmission> = {
     guid: '7f1c5a52-3b0e-4d36-9a55-2f8e8f4c1b6a',
     userGuid: 'auth0|ann',
-    value: '{"kind":"monument"}',
+    value: { kind: 'monument' },
     location: { latitude: 30.6, longitude: -96.3 },
     season: { guid: 'cs-1' }
   };
@@ -71,7 +71,10 @@ describe('SubmissionService.createCompetitionSubmission', () => {
 
     expect(inserted(CompetitionSubmission)).toEqual([expect.objectContaining({ guid: entity.guid, userGuid: 'auth0|ann' })]);
     expect(inserted(SubmissionMedia)).toEqual([
-      [expect.objectContaining({ fieldName: 'head1', submission: sub }), expect.objectContaining({ fieldName: 'head2', submission: sub })]
+      [
+        expect.objectContaining({ fieldName: 'head1', submission: sub }),
+        expect.objectContaining({ fieldName: 'head2', submission: sub })
+      ]
     ]);
     expect(em.save.mock.calls.some(([value]) => value instanceof SubmissionLocation)).toBe(true);
     expect(em.save.mock.calls.some(([value]) => value instanceof CompetitionSubmission)).toBe(false);
@@ -86,7 +89,9 @@ describe('SubmissionService.createCompetitionSubmission', () => {
 
   it('when the guid is already saved, fails on the duplicate and inserts no photographs', async () => {
     const duplicate = { driverError: { number: 2627 } };
-    em.insert.mockImplementation((type) => (type === CompetitionSubmission ? Promise.reject(duplicate) : Promise.resolve({})));
+    em.insert.mockImplementation((type) =>
+      type === CompetitionSubmission ? Promise.reject(duplicate) : Promise.resolve({})
+    );
 
     await expect(service.createCompetitionSubmission(entity, blobs)).rejects.toBe(duplicate);
     expect(inserted(SubmissionMedia)).toEqual([]);
@@ -102,7 +107,14 @@ describe('SubmissionService.createCompetitionSubmission', () => {
         {
           attribute: 'memorial_type',
           isDiscriminator: true,
-          options: [{ name: 'Tree or bench memorial plaque', value: 'tree_bench_plaque', sameThingMetres: 10, nameAttribute: 'memorial_name' }]
+          options: [
+            {
+              name: 'Tree or bench memorial plaque',
+              value: 'tree_bench_plaque',
+              sameThingMetres: 10,
+              nameAttribute: 'memorial_name'
+            }
+          ]
         },
         { attribute: 'memorial_name', options: [] }
       ]
@@ -178,7 +190,14 @@ describe('SubmissionService.getAdminSubmissions', () => {
       {
         attribute: 'memorial_type',
         isDiscriminator: true,
-        options: [{ name: 'Tree or bench memorial plaque', value: 'tree_bench_plaque', sameThingMetres: 10, nameAttribute: 'memorial_name' }]
+        options: [
+          {
+            name: 'Tree or bench memorial plaque',
+            value: 'tree_bench_plaque',
+            sameThingMetres: 10,
+            nameAttribute: 'memorial_name'
+          }
+        ]
       },
       { attribute: 'memorial_name', options: [] }
     ]
@@ -222,7 +241,9 @@ describe('SubmissionService.getAdminSubmissions', () => {
     const list = await service.getAdminSubmissions({});
     const byGuid = Object.fromEntries(list.map((s) => [s.guid, s]));
 
-    expect(byGuid['first']).toEqual(expect.objectContaining({ name: 'John Smith', reviewReasons: [], verifiedAutomatically: true }));
+    expect(byGuid['first']).toEqual(
+      expect.objectContaining({ name: 'John Smith', reviewReasons: [], verifiedAutomatically: true })
+    );
     expect(byGuid['again']).toEqual(
       expect.objectContaining({ reviewReasons: ['Already submitted by this participant'], verifiedAutomatically: false })
     );
@@ -237,7 +258,9 @@ describe('SubmissionService.getAdminSubmissions', () => {
   });
 
   it('gives no reasons for a submission a person has already decided on', async () => {
-    find.mockResolvedValue([row('decided', 5, { blobs: [], validationStatus: { status: 'verified', verifiedBy: 'auth0|reviewer' } })]);
+    find.mockResolvedValue([
+      row('decided', 5, { blobs: [], validationStatus: { status: 'verified', verifiedBy: 'auth0|reviewer' } })
+    ]);
 
     const [decided] = await service.getAdminSubmissions({});
 
