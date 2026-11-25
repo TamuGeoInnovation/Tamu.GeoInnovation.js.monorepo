@@ -5,7 +5,7 @@
 
 Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
-Last batch done: a34
+Last batch done: g32
 
 ## What this is
 
@@ -33,9 +33,10 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch g32 (gisday: the signed-in admin pages, OnPush)**, started 4:45 AM Central.
+- **Batch g34 (images for #3614)**, started 5:55 AM Central.
 
 ## Finished
+- **Batch g32 (gisday: admin pages for #1669, #1478)** (report `laptop/reports/2026-11-25-g32.md`): **no difference** on OnPush or zoneless against development, across 17 admin lists (edit, save, list again) and home's check-first list. Filed two faults already on development: **#3635** (RSVP and submission types answer 501) and **#3636** (initial survey throws). RSVP checkbox, validate and Publish not exercised (said why).
 - **Batch a34 (aggiemap: #3477 images)** (report `laptop/reports/2026-11-25-a34.md`): **Q-a34-1: yes, the search works locally** ("Evans" lists 3); the likely difference is `fill()` (no keyup). Images on `refactor/3477-one-coordinate-reader-pr` (`5113606ec`). Found **#3615** (a right-way-round coordinate is never placed; Low). The entry fails `--check` on its dev host (Q-a34-2).
 - **Batch g33 (#3596, strictNullChecks in `ui-kits-ngx-search`)** (report `laptop/reports/2026-11-25-g33.md`): **branch ready: `fix/3495-ui-kits-search-strict`** (`8a6517f1e`), `pre-pr-check.sh` exit 0. Own files 51 to 0; gisday-angular 557 to 505; every strict dependent fewer; listed at 20 (all in five imported libraries). Q-g33-1.
 - **Batch g30 (workspace: #1479, remove Jest)** (report `laptop/reports/2026-11-25-g30.md`): **branch ready: `chore/1479-remove-jest`** (`41d0d96d2`), `pre-pr-check.sh` exit 0 (affected, with the issue filled in). Lock: 219 entries removed, 0 added, 0 changed; clean `npm ci`; 94 projects lint and test, 13 builds. Generators now `vitest-analog` (`vitest` is not a valid value). Q-g30-1.
