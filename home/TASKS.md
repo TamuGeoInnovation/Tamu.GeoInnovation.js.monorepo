@@ -1,6 +1,6 @@
 # Home machine: current tasks
 
-## Batch a35 (aggiemap: #2600, ten satellite campus maps from one builder; 25 November 2026, 6:35 AM Central, from `work (aggiemap)`) (Low) - **now**
+## Batch a35 (aggiemap: #2600, ten satellite campus maps from one builder; 25 November 2026, 6:19 AM Central, from `work (aggiemap)`) (Low) - **now**
 
 **Issue: [#2600](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2600).** Take this now; a33 stays held until PR 3587 merges and will offer itself to you when it does.
 
