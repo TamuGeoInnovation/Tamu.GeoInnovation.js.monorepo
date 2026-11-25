@@ -26,6 +26,10 @@ a recommendation. Push `work-mailbox` with a message starting `copilot-home: bat
 
 ---
 
+## RETIRED (25 November 2026, the maintainer's 2A, #3348)
+
+The Copilot CLI has been refused by organization policy since 5 November 2026. No director gives this listener work; every batch below is withdrawn. Its runner window on the home computer is to be closed by the maintainer.
+
 ## Batch 61 (gisday: #2937, image uploads refuse SVG; 14 November 2026, from `home (gisday)`) (Medium, start now)
 
 **WITHDRAWN (about 1:10 PM Central, 14 November): this machine's agent-runner was failing, so #2937 went back to the lab (its batch 49), at the maintainer's word. Skip it.**
