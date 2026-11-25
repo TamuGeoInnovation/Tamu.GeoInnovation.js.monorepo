@@ -7,6 +7,7 @@ import {
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
+import { CONSTRUCTION_PROJECT_FIELDS } from './construction-map.definitions';
 import { FootballParkingConfiguration } from './football-parking.definitions';
 
 import esri = __esri;
@@ -80,9 +81,7 @@ const TAILGATING_CONSTRUCTION_PROJECTS = [
 ];
 
 const constructionPopupData: NonNullable<LayerSource['popupData']> = {
-  projectName: { field: 'name', collapsed: true },
-  startDate: { field: 'startdate', collapsed: true, format: 'date' },
-  endDate: { field: 'enddate', collapsed: true, format: 'date' },
+  ...CONSTRUCTION_PROJECT_FIELDS,
 
   name: '{attributes.projectName}',
   description: `<strong>Start Date:</strong> {attributes.startDate}<br><strong>End Date:</strong> {attributes.endDate}`

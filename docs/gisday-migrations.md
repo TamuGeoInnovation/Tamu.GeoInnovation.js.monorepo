@@ -41,6 +41,25 @@ application's login can read and write data but cannot change tables.
 Never set `migrationsRun` so the API migrates at startup. Production runs two copies of the API, and
 both would try at once.
 
+### Before any deploy: what is in the image
+
+An image carries **every** pull request merged since the one running, not only the one being deployed. So before
+anyone gives or runs a deploy command for `gisday-nest` or `gisday-angular`:
+
+1. **List what the image adds**: `git log --oneline <running sha>..<new sha>`. The running sha is the image tag in
+   `kubectl -n gisday get deployment gisday-nest -o custom-columns=IMAGE:.spec.template.spec.containers[0].image`.
+2. **Look for migrations**: `git diff --name-only <running sha> <new sha> -- apps/gisday-nest/src/database/migrations`.
+3. **If any appear**, stop: the migration's `migrate-prod-<issue>.ps1` runs first, dry run then `-Apply`, on both
+   namespaces, and only then the image. Say so with the deploy commands.
+4. **Once it has rolled out**, update [GIS Day on production](releases/unreleased.md#gis-day-on-production): the
+   image, its last commit, when (US Central), the image before it and the last migration in it. Nothing else in the
+   repository says what is live, and step 1's "running sha" is read from there by anyone without cluster access (#3139).
+
+On 15 November 2026 this was skipped. The QR check-in fix (PR 3080) was deployed as `sha-d4da1b8`, which also carried
+PR 3079 (#3048), merged minutes earlier with a new column `event_broadcast.placeGuid`. Its migration had not run, so from
+about 3:40 to 3:46 PM Central every session with a broadcast answered 500 and the admin's session form came up blank,
+until `migrate-prod-3048.ps1 -Apply` was run. The deploy itself was right; nobody had asked what else was in it (#3096).
+
 A fix to records, not to the schema, takes the same route as a reviewed SQL script.
 
 ## Changing production data
@@ -56,7 +75,9 @@ unless given `-Apply`.
 **A new change to production data is a new script in that folder, built on that helper**, not a new way
 of connecting. When the rules for what to change belong in this repository, as the UCGIS member list
 does (`UCGIS_MEMBER_INSTITUTIONS`), the script asks this repository's code for the plan rather than
-keeping a second copy of the rules: `add-ucgis-members.ts --plan=<file>` (#2730).
+keeping a second copy of the rules: `add-ucgis-members.ts --plan=<file>` (#2730). A report counted by
+rules kept here works the same way: `impact-report.ps1` reads the rows, and `impact-report.ts` counts them by
+`IMPACT_DEFINITIONS` (#3238).
 
 ## Running against dev or production
 

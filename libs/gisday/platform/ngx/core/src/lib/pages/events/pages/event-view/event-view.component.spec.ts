@@ -1,5 +1,6 @@
-import { TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router, provideRouter } from '@angular/router';
+import { TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 
 import {
@@ -14,6 +15,8 @@ import {
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
+
+import { LinkedSearchComponent } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { EventViewComponent } from './event-view.component';
 
@@ -58,12 +61,17 @@ describe('EventViewComponent search', () => {
     ]
   };
 
-  function open() {
+  let navigate: jest.SpyInstance;
+
+  function open(searched: string | null = null) {
     TestBed.configureTestingModule({
       imports: [EventViewComponent],
       providers: [
         provideRouter([]),
-        { provide: ActivatedRoute, useValue: { snapshot: {}, queryParams: of({}) } },
+        {
+          provide: ActivatedRoute,
+          useValue: { snapshot: { queryParamMap: convertToParamMap(searched ? { search: searched } : {}) }, queryParams: of({}), fragment: of(null) }
+        },
         {
           provide: SeasonService,
           useValue: { seasonForRoute: () => of({ season: { guid: 's-1', days }, year: 2026, isPast: false }) }
@@ -84,7 +92,7 @@ describe('EventViewComponent search', () => {
     });
 
     // The page writes its filters into the address; nothing here needs it to.
-    jest.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+    navigate = jest.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
     const fixture = TestBed.createComponent(EventViewComponent);
     fixture.detectChanges();
 
@@ -146,6 +154,23 @@ describe('EventViewComponent search', () => {
     expect(names(fixture)).toEqual(['Opening keynote']);
   });
 
+  it("clears the search from the shared textbox's x, listing every session again (#2963)", () => {
+    const fixture = open();
+    const clear = () =>
+      root(fixture).querySelector('#default-content tamu-gisc-textbox button[aria-label="Clear the search"]') as HTMLButtonElement;
+
+    expect(clear()).toBeNull();
+    search(fixture, 'mapathon');
+    expect(names(fixture)).toEqual(['Mapathon']);
+
+    clear().click();
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.search.value).toBe('');
+    expect(clear()).toBeNull();
+    expect(names(fixture)).toEqual(['Opening keynote', 'Mapathon', 'Drone flights']);
+  });
+
   it('says no sessions match when none do, and lists them again when the search is cleared', () => {
     const fixture = open();
 
@@ -158,5 +183,43 @@ describe('EventViewComponent search', () => {
 
     expect(root(fixture).querySelector('.no-sessions-match')).toBeNull();
     expect(names(fixture)).toEqual(['Opening keynote', 'Mapathon', 'Drone flights']);
+  });
+
+  /** #3027: the search can be linked to, as the Presenters page's can (#2919, #2921), by the same shared piece. */
+  describe('as a link (#3027)', () => {
+    const copyButton = (fixture: ReturnType<typeof open>) =>
+      root(fixture).querySelector('#default-content tamu-gisc-textbox .copy-button') as HTMLElement;
+
+    it('opens already searched from its address, with the copy button', () => {
+      const fixture = open('rudder');
+
+      expect(fixture.componentInstance.search.value).toBe('rudder');
+      expect(names(fixture)).toEqual(['Opening keynote', 'Drone flights']);
+      expect(copyButton(fixture).textContent).toContain('Copy link');
+    });
+
+    it('shows no copy button with no search', () => {
+      expect(copyButton(open())).toBeNull();
+    });
+
+    it('keeps the address in step with the box, replacing the history entry and keeping the filters', fakeAsync(() => {
+      const fixture = open();
+
+      search(fixture, 'drone');
+      tick(300);
+
+      // Merged, so the Tags and Organizations filters' tags and orgs stay in the address beside it.
+      expect(navigate).toHaveBeenLastCalledWith(
+        [],
+        expect.objectContaining({ queryParams: { search: 'drone' }, replaceUrl: true, queryParamsHandling: 'merge' })
+      );
+    }));
+
+    it('copies the whole link, ready to paste into an email', () => {
+      const fixture = open('drone flights');
+      const linked = fixture.debugElement.query(By.directive(LinkedSearchComponent)).componentInstance as LinkedSearchComponent;
+
+      expect(linked.link()).toBe(`${window.location.origin}/?search=drone%20flights`);
+    });
   });
 });

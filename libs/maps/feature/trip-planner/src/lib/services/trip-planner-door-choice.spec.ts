@@ -1,4 +1,4 @@
-import { DOOR_TRY_LIMIT, firstRoutableDoor, rankDoorsByDistance } from './trip-planner-door-choice';
+import { DOOR_TRY_LIMIT, firstRoutableDoor, rankDoorsByDistance, refineStops } from './trip-planner-door-choice';
 
 /**
  * Choosing which door of a building a trip starts or ends at (#2843).
@@ -104,5 +104,38 @@ describe('firstRoutableDoor', () => {
     const chosen = await firstRoutableDoor(ranked, canRoute);
 
     expect(chosen?.fid).toBe(201);
+  });
+});
+
+/**
+ * The door lookup refines where a trip starts and ends. It must never decide whether the trip happens (#2851).
+ *
+ * `setStops` waited on it with no `catch`, so a rejection meant the stops were never set and nothing was drawn -
+ * silently, with nothing logged anywhere. These hold the continuation open in both cases.
+ */
+describe('refineStops', () => {
+  it('continues when the refinement succeeds, and reports nothing', async () => {
+    const reported: unknown[] = [];
+
+    await refineStops(Promise.resolve('doors found'), (e) => reported.push(e));
+
+    expect(reported).toEqual([]);
+  });
+
+  it('continues when the refinement fails, so the trip is still set and drawn', async () => {
+    const reported: unknown[] = [];
+    const failed = new Error('the entrances service did not answer');
+
+    await expect(refineStops(Promise.reject(failed), (e) => reported.push(e))).resolves.toBeUndefined();
+
+    expect(reported, 'a failure that nobody is told about is how this went unnoticed').toEqual([failed]);
+  });
+
+  it('does not swallow the failure silently when the reporter itself is the only record', async () => {
+    let seen: unknown;
+
+    await refineStops(Promise.reject(new Error('boom')), (e) => (seen = e));
+
+    expect((seen as Error).message).toBe('boom');
   });
 });

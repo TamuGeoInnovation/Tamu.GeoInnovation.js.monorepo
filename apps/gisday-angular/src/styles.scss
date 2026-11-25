@@ -1,3 +1,4 @@
+@import 'libs/sass/variables';
 @import 'libs/gisday/sass/variables';
 @import 'libs/sass/mixins';
 @import 'libs/gisday/sass/class-banner';
@@ -15,10 +16,14 @@
   --gisday-primary-light: #{$gisday-blue-secondary};
   --link-color: var(--gisday-primary-light);
   --support-link-color: rgba(85, 138, 216, 1);
+  // The shared .inline-link below, as a session's slide files and Remove use it (#3143).
+  --inline-link-color: #03a9f4;
   // Buttons, which are a brighter blue than links: read by the global .button below and by the shared form button,
   // tamu-gisc-button, so every button on a site is one colour (#2946).
   --gisday-action: rgba(85, 138, 216, 1);
   --gisday-action-hover: #{darken(rgba(85, 138, 216, 1), 10%)};
+  // The shared tabs' chosen tab, as on a judge's page (#3200).
+  --tabs-active-color: var(--gisday-primary);
 
   // Texas A&M's site, at gisday.tamu.edu, wears the university's maroon, as AggieMap does (#2012). main.ts adds
   // the class from the site's brand.
@@ -28,6 +33,15 @@
     --gisday-action: #{$aggie-maroon};
     // AggieMap's darker maroon.
     --gisday-action-hover: #3d0000;
+    // The shared textbox's focus outline, as on the search boxes, and the shared copy field's Copy link (#3084).
+    --textbox-focus-color: var(--gisday-primary);
+    --copy-button-color: var(--gisday-primary);
+    // The links that named their blue: the inline links, such as a session's slide files, and the slide toggles' (#3143).
+    --support-link-color: var(--gisday-primary);
+    --inline-link-color: var(--gisday-primary);
+    // The shared slide toggle's edge and radio group's tick, on the submission form (the lab's report 113).
+    --toggle-shadow-color: #3d0000;
+    --radio-active-color: var(--gisday-primary);
   }
 }
 
@@ -1216,7 +1230,7 @@ img.jumbo {
 
 .inline-link {
   padding: 0 0.5em;
-  color: #03a9f4;
+  color: var(--inline-link-color);
   display: inline-block;
 }
 
@@ -2622,7 +2636,7 @@ nav#section-nav a:hover {
     font-size: 3.5rem;
     font-family: $title-font;
     line-height: 1;
-    color: #500000;
+    color: $aggie-maroon;
 
     &.small {
       font-size: 1.75rem;
@@ -2640,7 +2654,7 @@ nav#section-nav a:hover {
 }
 
 .competition-winner {
-  border: 1px solid #500000;
+  border: 1px solid $aggie-maroon;
   border-radius: 5px;
   padding: 1.5rem 1rem;
   margin-bottom: 2rem;
@@ -2698,7 +2712,7 @@ nav#section-nav a:hover {
   .progress-bar {
     height: 2px;
     width: 100%;
-    background: #500000;
+    background: $aggie-maroon;
   }
 }
 

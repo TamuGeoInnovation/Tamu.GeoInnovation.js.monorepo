@@ -1,0 +1,77 @@
+@import 'libs/gisday/sass/variables';
+
+:host {
+  display: block;
+  position: relative;
+}
+
+// While a resized box's content is laid out again (#3135): the box veiled, and the site's own spinner (.loader, in the
+// app's styles) over it, kept in view near the top of the window however far down a 60-row table the reader is.
+.dashboard-scroll-settling {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.dashboard-scroll-settling-spinner {
+  position: sticky;
+  top: 30vh;
+}
+
+// Content wider than the box scrolls in it, not the page.
+.dashboard-scroll {
+  overflow-x: auto;
+
+  // While the rail below stands in for it, the box's own scrollbar, at the bottom of a long table, is not drawn twice.
+  &.dashboard-scroll-railed {
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  // No taller than the window, less room for the opened row's heading above it and the dashboard table's rail below
+  // (#3120), so it scrolls up and down inside itself and its own sideways scrollbar is in view whenever the box is. The
+  // page's header scrolls away, so it needs no room. 8rem holds the row's name and "Export as CSV" above (about 90 px
+  // at 1280 px) and the rail (14 px): with the name at the top of the window, the whole box and its scrollbar are in
+  // view. A most, not a height: a few people make a box only as tall as they are.
+  &.dashboard-scroll-capped {
+    max-height: calc(100vh - 8rem);
+    overflow-y: auto;
+  }
+}
+
+// The box's sideways scrollbar, under it and pinned to the bottom of the window while any of the box is in view (#3029):
+// at 1024 px a dashboard's table is wider than its box, and the box's own scrollbar is at the bottom of a table that can
+// be 60 rows long, out of sight. Its side borders match the table's, so the two scroll the same distance. A thumb and
+// track of its own keep it drawn where the system would hide an idle scrollbar.
+.dashboard-scroll-rail {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border: 1pt solid transparent;
+  border-top: 0;
+  border-bottom: 0;
+  background: #fff;
+
+  > div {
+    height: 1px;
+  }
+
+  &::-webkit-scrollbar {
+    height: 12px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $lightened-inactive-color;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.35);
+    border-radius: 6px;
+  }
+}

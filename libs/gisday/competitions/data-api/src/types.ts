@@ -2,6 +2,7 @@
 // Do not import entity classes here to avoid pulling in TypeORM and Node.js modules
 
 export * from './lib/dtos/dtos';
+export * from './lib/dashboard/vgi-dashboard.dto';
 
 // Re-export only the interfaces from entities, not the classes
 export type {

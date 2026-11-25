@@ -17,11 +17,16 @@ import {
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
-import { PlaceVisibilityOptions, SeasonDayCardComponent, SeasonLinkPipe } from '@tamu-gisc/gisday/platform/ngx/common';
+import {
+  LinkedSearchComponent,
+  PlaceVisibilityOptions,
+  SeasonDayCardComponent,
+  SeasonLinkPipe,
+  searchFromAddress
+} from '@tamu-gisc/gisday/platform/ngx/common';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { CheckboxGroupComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
-import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { GISDAY_SITE } from '@tamu-gisc/gisday/platform/ngx/common';
 import { placesShownOn, siteSessionPlaces } from '@tamu-gisc/gisday/common';
 
@@ -37,7 +42,7 @@ import { placesShownOn, siteSessionPlaces } from '@tamu-gisc/gisday/common';
     ReactiveFormsModule,
     CheckboxGroupComponent,
     CheckboxComponent,
-    TextboxComponent,
+    LinkedSearchComponent,
     AsyncPipe,
     SeasonLinkPipe
   ]
@@ -90,8 +95,8 @@ export class EventViewComponent implements OnInit, OnDestroy {
    * The search above the sessions (#2944), by a session's name, building or room, or a presenter's name, as the admin
    * Events list and the Presenters page search. Each day's card narrows its own list by it, alongside the filters.
    */
-  public readonly search = new FormControl('', { nonNullable: true });
-  public readonly searchText = toSignal(this.search.valueChanges, { initialValue: '' });
+  public readonly search = new FormControl(searchFromAddress(this.at), { nonNullable: true });
+  public readonly searchText = toSignal(this.search.valueChanges, { initialValue: this.search.value });
 
   /** How many sessions each day's card shows, by day, as each card reports it. */
   private readonly _dayMatches = signal<Record<string, number>>({});

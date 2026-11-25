@@ -1,12 +1,6 @@
 import { Speaker } from '@tamu-gisc/gisday/platform/data-api';
 
-import {
-  classBannerSpeaker,
-  isAggieFormerStudent,
-  shortClassYear,
-  sortSpeakersByAffiliation,
-  speakerAffiliation
-} from './speakers';
+import { classBannerSpeaker, isAggieFormerStudent, shortClassYear, speakerAffiliation } from './speakers';
 
 const person = (firstName: string, lastName: string, organization?: string, affiliation?: string) =>
   ({ firstName, lastName, organization: organization ? { name: organization } : null, affiliation }) as Partial<Speaker>;
@@ -56,7 +50,9 @@ describe('classBannerSpeaker (#2956)', () => {
 describe('isAggieFormerStudent', () => {
   it('is true for Texas A&M with a class year', () => {
     expect(isAggieFormerStudent({ university: { acronym: 'TAMU' }, graduationYear: '2014' } as Partial<Speaker>)).toBe(true);
-    expect(isAggieFormerStudent({ university: { acronym: ' tamu ' }, graduationYear: '2014' } as Partial<Speaker>)).toBe(true);
+    expect(isAggieFormerStudent({ university: { acronym: ' tamu ' }, graduationYear: '2014' } as Partial<Speaker>)).toBe(
+      true
+    );
   });
 
   it('is false for another university, no university or no year', () => {
@@ -72,40 +68,5 @@ describe('speakerAffiliation', () => {
     expect(speakerAffiliation(person('A', 'B', 'ConocoPhillips', 'ignored'))).toBe('ConocoPhillips');
     expect(speakerAffiliation(person('A', 'B', undefined, ' Lenovo '))).toBe('Lenovo');
     expect(speakerAffiliation(person('A', 'B'))).toBe('');
-  });
-});
-
-describe('sortSpeakersByAffiliation', () => {
-  it('groups people from the same company, then orders them by last and first name', () => {
-    const sorted = sortSpeakersByAffiliation([
-      person('Keith', 'Fraley', 'Pattern Energy'),
-      person('Christian', 'McLellan', 'ConocoPhillips'),
-      person('Alex', 'Malito', 'Pattern Energy'),
-      person('Benjamin', 'Lybrand', 'ConocoPhillips'),
-      person('Ann', 'Lybrand', 'conocophillips')
-    ]);
-
-    expect(sorted.map((s) => `${s.firstName} ${s.lastName}`)).toEqual([
-      'Ann Lybrand',
-      'Benjamin Lybrand',
-      'Christian McLellan',
-      'Keith Fraley',
-      'Alex Malito'
-    ]);
-  });
-
-  it('puts people with no affiliation last', () => {
-    const sorted = sortSpeakersByAffiliation([person('Zed', 'Alone'), person('Amy', 'Zimmer', 'Esri')]);
-
-    expect(sorted.map((s) => s.lastName)).toEqual(['Zimmer', 'Alone']);
-  });
-
-  it('leaves the list it was given untouched', () => {
-    const given = [person('B', 'B', 'Z'), person('A', 'A', 'A')];
-
-    sortSpeakersByAffiliation(given);
-
-    expect(given.map((s) => s.lastName)).toEqual(['B', 'A']);
-    expect(sortSpeakersByAffiliation(null)).toEqual([]);
   });
 });

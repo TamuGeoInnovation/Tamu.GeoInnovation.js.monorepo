@@ -1,5 +1,4 @@
 import {
-  HttpException,
   Injectable,
   InternalServerErrorException,
   NotImplementedException,
@@ -13,6 +12,7 @@ import { AppMetadata, Auth0UserProfile, ManagementService, UserMetadata } from '
 
 import { Organization, University, UserInfo } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
+import { rethrowHttp } from '../_base/rethrow-http';
 
 @Injectable()
 export class UserInfoProvider extends BaseProvider<UserInfo> {
@@ -25,11 +25,9 @@ export class UserInfoProvider extends BaseProvider<UserInfo> {
     super(userInfoRepo);
   }
 
-  public async getUsers() {
-    return this.ms.getUsers({
-      app_metadata: 'gisday',
-      user_metadata: ['occupation', 'education']
-    });
+  /** The first 1,000 users, or those whose name or email holds every word of `search` (#2574). */
+  public async getUsers(search?: string) {
+    return this.ms.getUsers({ app_metadata: 'gisday', user_metadata: ['occupation', 'education'] }, search);
   }
 
   public async getUser(userGuid: string) {
@@ -181,13 +179,7 @@ export class UserInfoProvider extends BaseProvider<UserInfo> {
 
       return institution;
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      throw new InternalServerErrorException('Error resolving university.');
+      rethrowHttp(err, new InternalServerErrorException('Error resolving university.'));
     }
   }
 
@@ -212,13 +204,7 @@ export class UserInfoProvider extends BaseProvider<UserInfo> {
 
       return organization;
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      throw new InternalServerErrorException('Error resolving organization.');
+      rethrowHttp(err, new InternalServerErrorException('Error resolving organization.'));
     }
   }
 }

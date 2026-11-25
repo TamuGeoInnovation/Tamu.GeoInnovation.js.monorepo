@@ -28,6 +28,26 @@ export class SpeakerController {
     return this.provider.getSpeakersForSeason(seasonGuid);
   }
 
+  /**
+   * The active season's speakers with each one's sessions, for the admin Speakers list (#441). Behind `update:speakers`,
+   * as the badges dashboard's list is, because the sessions include those hidden from the public schedule; the public
+   * `season/active` above leaves them out.
+   */
+  @Permissions(['update:speakers'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Get('sessions/season/active')
+  public async getActiveEntitiesWithSessions() {
+    return this.provider.getSpeakersForActiveSeason(true);
+  }
+
+  /** A season's speakers with each one's sessions, for the admin Speakers list (#441), as the route above. */
+  @Permissions(['update:speakers'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Get('sessions/season/:guid')
+  public async getSpeakersWithSessionsForSeason(@Param('guid') seasonGuid: string) {
+    return this.provider.getSpeakersForSeason(seasonGuid, true);
+  }
+
   @UseGuards(JwtGuard)
   @AllowAny()
   @Get('organizers/season/active')
@@ -54,6 +74,18 @@ export class SpeakerController {
   @Get('participating')
   public async getParticipatingSpeakersForActiveSeason() {
     return this.provider.getSpeakersForActiveSeasonInEvents(true);
+  }
+
+  /**
+   * Every speaker in a season's sessions, with or without a photo or bio, for the Speaker badges dashboard (#2995): each
+   * presenter needs a badge, and the public list below keeps only those with both, which left out the new competition
+   * finalists until they uploaded a photo.
+   */
+  @Permissions(['update:speakers'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Get('participating/season/:guid/all')
+  public async getAllParticipatingSpeakersForSeason(@Param('guid') seasonGuid: string) {
+    return this.provider.getSpeakersForSeasonInEvents(seasonGuid, false);
   }
 
   @UseGuards(JwtGuard)

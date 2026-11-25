@@ -10,45 +10,59 @@
 
     <div class="form-section-body">
       <tamu-gisc-admin-search [control]="search" placeholder="Search by name, building or room" one="event" many="events" [counts]="searchCounts$ | async"></tamu-gisc-admin-search>
+      <!-- One organization's sessions, by its venues (#434). -->
+      <tamu-gisc-select class="post-1" placeholder="Organization" [floatLabel]="false" [data]="organizationChoices$ | async" displayTemplate="name" valueTemplate="guid" [value]="organization.value" (changed)="organization.setValue($event)"></tamu-gisc-select>
       @if (site.sessionsFrom) {
       <!-- This site lists only its own organization's sessions; the database holds every organization's (#2986). -->
       <tamu-gisc-checkbox label="Show every organization's sessions" (changed)="organizations.setValue($event ? 'all' : '')" [checked]="organizations.value === 'all'"></tamu-gisc-checkbox>
       }
+      <!-- The sessions with no tags, to give them some (#3034). -->
+      <tamu-gisc-checkbox label="Only sessions with no tags" (changed)="tagged.setValue($event ? 'none' : '')" [checked]="tagged.value === 'none'"></tamu-gisc-checkbox>
+      <!-- The sessions whose speakers have not uploaded slides yet (#3093). -->
+      <tamu-gisc-checkbox label="Only sessions with no slides" (changed)="withSlides.setValue($event ? 'none' : '')" [checked]="withSlides.value === 'none'"></tamu-gisc-checkbox>
 
       @if (eventsByDay$ | async; as days) { @if (days.length > 0) {
       <!-- One table per day, in the same dated card the public Sessions page uses for each day, so the
            rows of one day do not run into the next (#1775). -->
       @for (group of days; track group.key) {
       <div class="card">
-      <h2>@if (group.date) {{{ group.date | date: 'EEEE, MMMM d' : '-0600' }}} @else {No day set}</h2>
-      <table class="floating-table">
-        <thead>
-          <tr>
-            <th><tamu-gisc-checkbox label="" (changed)="toggleAllRows(group.events)" [checked]="allSelected(selectedRows$ | async, group.events)"></tamu-gisc-checkbox></th>
-            <th>Name</th>
-            <th>Location</th>
-            <th class="nowrap">Start Time</th>
-            <th class="nowrap">End Time</th>
-            <th title="On the public schedule">Active</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (entity of group.events; track entity.guid) {
-          <tr class="selectable" [routerLink]="['edit', entity.guid]">
-            <td (click)="$event.stopPropagation()"><tamu-gisc-checkbox label="" (changed)="toggleRow($safeNavigationMigration(entity?.guid))" [checked]="(selectedRows$ | async) | exists: $safeNavigationMigration(entity?.guid)"></tamu-gisc-checkbox></td>
-            <td>{{entity?.name}}</td>
-            <td>{{entity?.location?.building}} {{entity?.location?.room}}</td>
-            <td>{{$safeNavigationMigration(entity?.day?.date) | parseDateTimeStrings: $safeNavigationMigration(entity?.startTime) | date: 'h:mm a'}}</td>
-            <td>{{$safeNavigationMigration(entity?.day?.date) | parseDateTimeStrings: $safeNavigationMigration(entity?.endTime) | date: 'h:mm a'}}</td>
-            <!-- On the public schedule or not, switched here without opening the event (#2092). -->
-            <td class="event-active" (click)="$event.stopPropagation()"><tamu-gisc-checkbox label="" [ariaLabel]="'Show ' + entity?.name + ' on the public schedule'" [checked]="entity?.active !== false" (changed)="setActive([entity.guid], $event)"></tamu-gisc-checkbox></td>
-          </tr>
-          }
-        </tbody>
-      </table>
+        <h2>@if (group.date) {{{ group.date | date: 'EEEE, MMMM d' : '-0600' }}} @else {No day set}</h2>
+        <table class="floating-table">
+          <thead>
+            <tr>
+              <th><tamu-gisc-checkbox label="" (changed)="toggleAllRows(group.events)" [checked]="allSelected(selectedRows$ | async, group.events)"></tamu-gisc-checkbox></th>
+              <th>Name</th>
+              <th>Location</th>
+              <th class="nowrap">Start Time</th>
+              <th class="nowrap">End Time</th>
+              <th title="On the public schedule">Active</th>
+              <th title="Uploaded by the session's speakers; downloaded from the session's page">Slides</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (entity of group.events; track entity.guid) {
+            <tr class="selectable" [routerLink]="['edit', entity.guid]">
+              <td (click)="$event.stopPropagation()"><tamu-gisc-checkbox label="" (changed)="toggleRow($safeNavigationMigration(entity?.guid))" [checked]="(selectedRows$ | async) | exists: $safeNavigationMigration(entity?.guid)"></tamu-gisc-checkbox></td>
+              <td>{{entity?.name}}</td>
+              <td>{{entity?.location?.building}} {{entity?.location?.room}}</td>
+              <td>{{$safeNavigationMigration(entity?.day?.date) | parseDateTimeStrings: $safeNavigationMigration(entity?.startTime) | date: 'h:mm a'}}</td>
+              <td>{{$safeNavigationMigration(entity?.day?.date) | parseDateTimeStrings: $safeNavigationMigration(entity?.endTime) | date: 'h:mm a'}}</td>
+              <!-- On the public schedule or not, switched here without opening the event (#2092). -->
+              <td class="event-active" (click)="$event.stopPropagation()"><tamu-gisc-checkbox label="" [ariaLabel]="'Show ' + entity?.name + ' on the public schedule'" [checked]="entity?.active !== false" (changed)="setActive([entity.guid], $event)"></tamu-gisc-checkbox></td>
+              <!-- Whether the speakers have uploaded slides, and when (#3093); the session's page downloads them. -->
+              <td class="event-slides nowrap">@if (slides()?.get(entity.guid); as file) {<span [title]="file.name">{{ file.uploaded | date: 'MMM d' }}</span>} @else {None}</td>
+            </tr>
+            }
+          </tbody>
+        </table>
       </div>
-      } } @else if (search.value.trim()) {
-      <p>No events match "{{ search.value }}".</p>
+      } } @else if ((emptyBecause$ | async) === 'hidden') {
+      <!-- The season has sessions; the search or a filter hides them all (#3049). -->
+      <p>
+        No sessions match the search or filters. @if (filtersInUse$ | async) {
+        <button type="button" class="button secondary clear-filters" (click)="clearFilters()">Clear the search and filters</button>
+        }
+      </p>
       } @else {
       <p>There are no events for the selected season.</p>
       } @if ((selectedRows$ | async)?.length > 0) {

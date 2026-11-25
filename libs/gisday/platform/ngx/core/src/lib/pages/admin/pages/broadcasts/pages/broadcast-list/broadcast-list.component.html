@@ -10,13 +10,17 @@
     </div>
 
     <div class="form-section-body">
-      @if (entitiesForActiveSeasonOrForSeasonGuid$ | async; as entities) { @if (entities.length > 0) {
+      @if (site.sessionsFrom) {
+      <!-- This site lists only its own organizations' broadcasts; the database holds every organization's (#3048). -->
+      <tamu-gisc-checkbox label="Show every organization's broadcasts" (changed)="organizations.setValue($event ? 'all' : '')" [checked]="organizations.value === 'all'"></tamu-gisc-checkbox>
+      } @if (entitiesForActiveSeasonOrForSeasonGuid$ | async; as entities) { @if (entities.length > 0) {
       <table class="floating-table">
         <thead>
           <tr></tr>
           <tr>
             <th><tamu-gisc-checkbox label="" (changed)="toggleAllRows(entities)" [checked]="(selectedRows$ | async)?.length === entities.length "></tamu-gisc-checkbox></th>
             <th>Name</th>
+            <th>Organization</th>
             <th>Meeting ID</th>
             <th>Updated</th>
           </tr>
@@ -26,12 +30,20 @@
           <tr class="selectable" [routerLink]="['edit', entity.guid]">
             <td (click)="$event.stopPropagation()"><tamu-gisc-checkbox label="" (changed)="toggleRow($safeNavigationMigration(entity?.guid))" [checked]="(selectedRows$ | async) | exists: $safeNavigationMigration(entity?.guid)"></tamu-gisc-checkbox></td>
             <td>{{entity.name}}</td>
+            <td>{{entity.place?.name}}</td>
             <td>{{entity.meetingId}}</td>
             <td>{{entity.updated | date:'short'}}</td>
           </tr>
           }
         </tbody>
       </table>
+      } @else if ((emptyBecause$ | async) === 'hidden') {
+      <!-- The season has broadcasts; the switch hides them all (#3049). -->
+      <p>
+        No broadcasts match the filters. @if (filtersInUse$ | async) {
+        <button type="button" class="button secondary clear-filters" (click)="clearFilters()">Clear the filters</button>
+        }
+      </p>
       } @else {
       <p>There are no broadcasts for the selected season.</p>
       } @if ((selectedRows$ | async)?.length > 0) {

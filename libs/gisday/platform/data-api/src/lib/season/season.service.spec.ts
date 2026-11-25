@@ -6,7 +6,7 @@ import { Repository, getMetadataArgsStorage } from 'typeorm';
 
 import { SUBMISSION_DEADLINE_FIELDS } from '@tamu-gisc/gisday/common';
 
-import { Season, SeasonDay } from '../entities/all.entity';
+import { Season, SeasonCompetition, SeasonDay } from '../entities/all.entity';
 import { SeasonService } from './season.service';
 
 /**
@@ -452,6 +452,138 @@ describe('SeasonService', () => {
           'cartographyFilesCloseAt'
         ])
       );
+    });
+  });
+
+  /** #2948: which research competitions a season runs, set from the competitions' admin page, one row each. */
+  describe('.setCompetitionTypes()', () => {
+    let manager: { find: jest.Mock; delete: jest.Mock; save: jest.Mock; create: jest.Mock };
+    /** The season's rows before the save. */
+    let rows: Array<Partial<SeasonCompetition>>;
+
+    beforeEach(() => {
+      jest.spyOn(seasonRepo, 'findOne').mockResolvedValue({ guid: 'season-1' } as Season);
+      rows = [];
+      manager = {
+        find: jest.fn(async () => rows),
+        delete: jest.fn().mockResolvedValue({ affected: 0 }),
+        save: jest.fn(async (_entity, saved) => saved),
+        create: jest.fn((_entity, row) => row)
+      };
+      (seasonRepo.manager.transaction as jest.Mock).mockImplementation(async (work) => work(manager));
+    });
+
+    it("marks the competitions it runs, in the admin page's order", async () => {
+      await expect(service.setCompetitionTypes('season-1', ['presentation', 'poster'])).resolves.toEqual({
+        competitionTypes: ['poster', 'presentation']
+      });
+      expect(manager.save).toHaveBeenCalledWith(SeasonCompetition, [
+        { season: { guid: 'season-1' }, competitionType: 'poster', runs: true },
+        { season: { guid: 'season-1' }, competitionType: 'presentation', runs: true }
+      ]);
+    });
+
+    // #3019: a competition's settings live on its row, so turning it off, or running every one, keeps them.
+    it("keeps each competition's settings when it is turned off, and drops a row left with nothing", async () => {
+      rows = [
+        { guid: 'r-poster', competitionType: 'poster', runs: true, sessionGuid: 'e-1' },
+        { guid: 'r-paper', competitionType: 'paper', runs: true }
+      ];
+
+      await service.setCompetitionTypes('season-1', ['presentation']);
+
+      expect(manager.delete).toHaveBeenCalledWith(SeasonCompetition, ['r-paper']);
+      expect(manager.save).toHaveBeenCalledWith(SeasonCompetition, [
+        { guid: 'r-poster', competitionType: 'poster', runs: null, sessionGuid: 'e-1' },
+        { season: { guid: 'season-1' }, competitionType: 'presentation', runs: true }
+      ]);
+    });
+
+    it('saves every competition as no row that runs, so a competition added later runs too', async () => {
+      rows = [{ guid: 'r-poster', competitionType: 'poster', runs: true, sessionGuid: 'e-1' }];
+
+      await service.setCompetitionTypes('season-1', ['poster', 'presentation', 'paper', 'cartography']);
+
+      expect(manager.save).toHaveBeenCalledWith(SeasonCompetition, [
+        { guid: 'r-poster', competitionType: 'poster', runs: null, sessionGuid: 'e-1' }
+      ]);
+    });
+
+    it.each([
+      [[], 'A season must run at least one competition.'],
+      [['poster', 'vgi'], 'vgi is not a competition.'],
+      ['poster', 'The competitions must be a list.']
+    ])('refuses %j, and saves nothing', async (competitions, message) => {
+      await expect(service.setCompetitionTypes('season-1', competitions)).rejects.toThrow(new BadRequestException(message));
+      expect(seasonRepo.manager.transaction).not.toHaveBeenCalled();
+    });
+
+    it('answers not found for a season that does not exist', async () => {
+      jest.spyOn(seasonRepo, 'findOne').mockResolvedValue(null);
+
+      await expect(service.setCompetitionTypes('missing', ['poster'])).rejects.toThrow(NotFoundException);
+    });
+  });
+
+  // #3019, decided 6A and 7A: each competition's sessions and its finalists date, on its row.
+  describe('.setCompetitionSettings()', () => {
+    let manager: { find: jest.Mock; save: jest.Mock; create: jest.Mock };
+    let rows: Array<Partial<SeasonCompetition>>;
+    /** The season's own sessions. */
+    const events = [{ guid: 'e-poster' }, { guid: 'e-awards' }];
+
+    beforeEach(() => {
+      jest.spyOn(seasonRepo, 'findOne').mockResolvedValue({ guid: 'season-1' } as Season);
+      rows = [];
+      manager = {
+        find: jest.fn(async (entity) => (entity === SeasonCompetition ? rows : events)),
+        save: jest.fn(async (_entity, saved) => saved),
+        create: jest.fn((_entity, row) => row)
+      };
+      (seasonRepo.manager.transaction as jest.Mock).mockImplementation(async (work) => work(manager));
+    });
+
+    it("saves a competition's sessions and finalists date on a row of its own that runs nothing", async () => {
+      await service.setCompetitionSettings('season-1', [
+        {
+          competitionType: 'poster',
+          sessionGuid: 'e-poster',
+          awardsSessionGuid: 'e-awards',
+          finalistsNotifiedAt: '2027-11-13T18:00:00.000Z'
+        }
+      ]);
+
+      expect(manager.save).toHaveBeenCalledWith(SeasonCompetition, [
+        {
+          season: { guid: 'season-1' },
+          competitionType: 'poster',
+          runs: null,
+          sessionGuid: 'e-poster',
+          graduateSessionGuid: null,
+          awardsSessionGuid: 'e-awards',
+          finalistsNotifiedAt: new Date('2027-11-13T18:00:00.000Z')
+        }
+      ]);
+    });
+
+    it('keeps whether the season runs the competition when its settings change', async () => {
+      rows = [{ guid: 'r-poster', competitionType: 'poster', runs: true }];
+
+      await service.setCompetitionSettings('season-1', [{ competitionType: 'poster', sessionGuid: null }]);
+
+      expect(manager.save).toHaveBeenCalledWith(SeasonCompetition, [
+        expect.objectContaining({ guid: 'r-poster', runs: true, sessionGuid: null })
+      ]);
+    });
+
+    it.each([
+      [[{ competitionType: 'poster', sessionGuid: 'e-elsewhere' }], "e-elsewhere is not one of this season's sessions."],
+      [[{ competitionType: 'vgi' }], 'vgi is not a competition.'],
+      [[{ competitionType: 'poster', finalistsNotifiedAt: 'soon' }], 'The poster finalists date is not a date.'],
+      ['poster', 'The settings must be a list.']
+    ])('refuses %j, and saves nothing', async (settings, message) => {
+      await expect(service.setCompetitionSettings('season-1', settings)).rejects.toThrow(new BadRequestException(message));
+      expect(manager.save).not.toHaveBeenCalled();
     });
   });
 });

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router, provideRouter } from '@angular/router';
+import { ActivatedRoute, provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 
 import { SeasonService, UserSubmissionsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -8,7 +8,7 @@ import { SubmissionFilesComponent } from '@tamu-gisc/gisday/platform/ngx/common'
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
-import { ReviewEmailModalComponent } from '../../components/review-email-modal/review-email-modal.component';
+import { ReviewEmailModalComponent } from '@tamu-gisc/gisday/platform/ngx/common';
 import { ResearchCompetitionReviewComponent } from './research-competition-review.component';
 
 @Component({ selector: 'tamu-gisc-submission-files', template: '' })
@@ -46,21 +46,20 @@ describe('ResearchCompetitionReviewComponent, Submit Review', () => {
     });
 
     const fixture = TestBed.createComponent(ResearchCompetitionReviewComponent);
-    const router = TestBed.inject(Router);
-
-    jest.spyOn(router, 'navigate').mockResolvedValue(true);
-    fixture.detectChanges();
-
     const component = fixture.componentInstance;
+    // Where it goes back to, the list it was opened from, is back-to-list-after-save.spec.ts's business (#2965).
+    const backToList = jest.spyOn(component, 'backToList').mockImplementation(() => undefined);
+
+    fixture.detectChanges();
 
     component.form.patchValue({ acceptance: 'true', message: 'Booth 4.' });
     component.updateSubmission();
 
-    return { service, modals, toasts, router };
+    return { service, modals, toasts, backToList };
   }
 
   it('shows the email first, then decides and sends the text approved', () => {
-    const { service, modals, router } = open(templates);
+    const { service, modals, backToList } = open(templates);
 
     expect(modals.open).toHaveBeenCalledWith(
       ReviewEmailModalComponent,
@@ -69,15 +68,15 @@ describe('ResearchCompetitionReviewComponent, Submit Review', () => {
     expect(service.previewReview).toHaveBeenCalledWith([GUID], true, 'Booth 4.');
     expect(service.review).toHaveBeenCalledWith([GUID], true, 'Booth 4.', templates);
     expect(service.updateEntity).not.toHaveBeenCalled();
-    expect(router.navigate).toHaveBeenCalledWith(['/admin/research-competition']);
+    expect(backToList).toHaveBeenCalledTimes(1);
   });
 
   it('decides nothing and sends nothing when the window is cancelled', () => {
-    const { service, toasts, router } = open(null);
+    const { service, toasts, backToList } = open(null);
 
     expect(service.review).not.toHaveBeenCalled();
     expect(service.updateEntity).not.toHaveBeenCalled();
     expect(toasts.toast).not.toHaveBeenCalled();
-    expect(router.navigate).not.toHaveBeenCalled();
+    expect(backToList).not.toHaveBeenCalled();
   });
 });

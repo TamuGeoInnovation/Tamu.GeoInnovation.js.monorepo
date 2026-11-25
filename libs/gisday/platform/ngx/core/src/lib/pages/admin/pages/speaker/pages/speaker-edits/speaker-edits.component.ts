@@ -5,6 +5,7 @@ import { DatePipe } from '@angular/common';
 import { Observable } from 'rxjs';
 
 import { PendingSpeakerEdit, SpeakerEditFields, SpeakerEditsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { provideAdminDetailsPage, readRefusal, serverMessage } from '@tamu-gisc/gisday/platform/ngx/common';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
@@ -29,7 +30,8 @@ const FIELDS: Array<{ key: keyof SpeakerEditFields; label: string }> = [
   templateUrl: './speaker-edits.component.html',
   styleUrls: ['./speaker-edits.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, DatePipe, ButtonComponent, MarkdownParsePipe]
+  imports: [RouterLink, DatePipe, ButtonComponent, MarkdownParsePipe],
+  providers: [provideAdminDetailsPage(() => SpeakerEditsComponent)]
 })
 export class SpeakerEditsComponent extends BaseAdminDetailsPageComponent implements OnInit, OnDestroy {
   private readonly edits = inject(SpeakerEditsService);
@@ -81,9 +83,15 @@ export class SpeakerEditsComponent extends BaseAdminDetailsPageComponent impleme
               : `${edit.speaker.firstName} ${edit.speaker.lastName}'s profile is unchanged.`
         });
       },
-      error: () => {
+      error: (err) => {
         this.busy.set(null);
-        this.ns.toast({ id: 'speaker-edit-error', title: 'Could not save the decision', message: 'Please try again.' });
+        // Why, as the dashboards say it (#3083, #3038): a missing permission, the server's own reason, or, when the
+        // server failed, to try again.
+        this.ns.toast({
+          id: 'speaker-edit-error',
+          title: 'Could not save the decision',
+          message: readRefusal(err) ?? serverMessage(err, 'Please try again.')
+        });
       }
     });
   }

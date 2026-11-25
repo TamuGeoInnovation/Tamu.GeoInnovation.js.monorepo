@@ -13,9 +13,10 @@
   padding: 0 1rem;
   box-sizing: border-box;
 
+  // A site can give the outline its own colour, as GIS Day's Texas A&M site gives it maroon (#3084).
   &:focus,
   &:focus-within {
-    border-color: #90caf9;
+    border-color: var(--textbox-focus-color, #90caf9);
   }
 }
 
@@ -81,4 +82,14 @@ label {
   // Add clearing space between the input and the text box actions container.
   // This ensures they're not smashed next to each other.
   margin-left: 0.5rem;
+}
+
+// The clear option's x (#2963): a real button, drawn as the bare icon the GIS Day search boxes each had their own
+// copy of, so it looks as theirs did. The browser's own focus ring is kept for keyboard users.
+.textbox-clear {
+  background: none;
+  border: none;
+  padding: 0;
+  color: inherit;
+  cursor: pointer;
 }

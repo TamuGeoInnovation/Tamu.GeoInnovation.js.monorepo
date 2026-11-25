@@ -1,4 +1,4 @@
-import { GISDAY_SITES, placesShownOn, siteListsSession } from './sites';
+import { GISDAY_SITES, placesShownOn, siteListsPlace, siteListsSession } from './sites';
 
 /**
  * #2986. gisday.tamu.edu shares txgisday.org's database. Texas State's place, marked for the header, footer and About,
@@ -43,5 +43,35 @@ describe('siteListsSession', () => {
 
   it("lists every organization's sessions on txgisday.org", () => {
     expect(siteListsSession(GISDAY_SITES.txgisday, at('txst', 'Texas State University GIS Day'))).toBe(true);
+  });
+});
+
+/**
+ * #3048. A broadcast belongs to a place, and gisday.tamu.edu lists only its places' broadcasts, by the same rule as its
+ * sessions: every organization's Zooms were listed there, and one could be picked for a Texas A&M session by mistake.
+ */
+describe('siteListsPlace', () => {
+  const tamu = { guid: 'tamu', name: 'Texas A&M University GIS Day(s)' };
+  const ttu = { guid: 'ttu', name: 'Texas Tech University GIS Day' };
+
+  it("lists Texas A&M's on gisday.tamu.edu, and not another organization's", () => {
+    expect(siteListsPlace(GISDAY_SITES.tamu, tamu)).toBe(true);
+    expect(siteListsPlace(GISDAY_SITES.tamu, ttu)).toBe(false);
+  });
+
+  it('lists one with no place yet, so an admin can find it and give it one', () => {
+    expect(siteListsPlace(GISDAY_SITES.tamu, null)).toBe(true);
+    expect(siteListsPlace(GISDAY_SITES.tamu, undefined)).toBe(true);
+  });
+
+  it("lists every organization's on txgisday.org and UCGIS", () => {
+    expect(siteListsPlace(GISDAY_SITES.txgisday, ttu)).toBe(true);
+    expect(siteListsPlace(GISDAY_SITES.ucgis, ttu)).toBe(true);
+  });
+
+  it("agrees with siteListsSession, which asks it about a session's place", () => {
+    for (const place of [tamu, ttu, null]) {
+      expect(siteListsSession(GISDAY_SITES.tamu, { location: { place } })).toBe(siteListsPlace(GISDAY_SITES.tamu, place));
+    }
   });
 });

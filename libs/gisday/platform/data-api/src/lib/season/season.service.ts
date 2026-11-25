@@ -1,5 +1,4 @@
 import {
-  HttpException,
   BadRequestException,
   ConflictException,
   Injectable,
@@ -25,12 +24,25 @@ import {
   SeasonDay,
   Speaker,
   Sponsor,
+  SeasonCompetition,
   Tag,
   University
 } from '../entities/all.entity';
-import { SUBMISSION_DEADLINE_FIELDS, SubmissionDeadlines, asDate, deadlinesProblem } from '@tamu-gisc/gisday/common';
+import {
+  CompetitionSettingsInput,
+  SEASON_COMPETITIONS,
+  SUBMISSION_DEADLINE_FIELDS,
+  SubmissionDeadlines,
+  asDate,
+  chosenSessionGuids,
+  competitionSettingsProblem,
+  competitionTypesProblem,
+  competitionTypesValue,
+  deadlinesProblem
+} from '@tamu-gisc/gisday/common';
 
 import { ActiveSeasonDto } from './dto/active-season.dto';
+import { rethrowHttp } from '../_base/rethrow-http';
 
 @Injectable()
 export class SeasonService extends BaseProvider<Season> {
@@ -217,8 +229,10 @@ export class SeasonService extends BaseProvider<Season> {
       // Save it first so we have the guid in subsequent relationships
       const nextSeason = await Season.incrementYear(last).save();
 
+      // By its key, never the whole loaded season (#3302): its deadlines are null until an admin sets them, and typeorm 1
+      // refuses a null anywhere inside a where value.
       const where = {
-        season: last
+        season: { guid: last.guid }
       };
 
       // Clone days, stripping guid, created, updated, and season properties
@@ -438,13 +452,7 @@ export class SeasonService extends BaseProvider<Season> {
         return latest;
       }
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      throw new UnprocessableEntityException('No previous season found.');
+      rethrowHttp(err, new UnprocessableEntityException('No previous season found.'));
     }
   }
 
@@ -530,6 +538,115 @@ export class SeasonService extends BaseProvider<Season> {
     await this.seasonRepo.update(guid, values);
 
     return values;
+  }
+
+  /**
+   * Sets which research competitions the season runs (#2948), as the admin page sends them: a list naming at least one.
+   * Each chosen competition's row says it `runs`. Every one is stored as no row that runs, so the season runs whatever is
+   * added later, as a season set before this does. A competition's row also holds its settings (#3019), so a row turned
+   * off keeps them (`runs` empty), and only a row left with nothing is removed.
+   */
+  public async setCompetitionTypes(guid: string, competitions: unknown): Promise<{ competitionTypes: Array<string> }> {
+    const problem = competitionTypesProblem(competitions);
+
+    if (problem) {
+      throw new BadRequestException(problem);
+    }
+
+    const season = await this.seasonRepo.findOne({ where: { guid } });
+
+    if (!season) {
+      throw new NotFoundException('Season not found.');
+    }
+
+    const competitionTypes = competitionTypesValue(competitions as Array<string>);
+
+    await this.seasonRepo.manager.transaction(async (manager) => {
+      const rows = await manager.find(SeasonCompetition, { where: { season: { guid } } });
+      const marked = SEASON_COMPETITIONS.flatMap<Partial<SeasonCompetition>>((competitionType) => {
+        const runs = competitionTypes.includes(competitionType) ? true : null;
+        const row = rows.find((existing) => existing.competitionType === competitionType);
+
+        if (row) {
+          return [{ ...row, runs }];
+        }
+
+        return runs ? [manager.create(SeasonCompetition, { season: { guid }, competitionType, runs })] : [];
+      });
+      const empty = marked.filter((row) => !row.runs && !hasSettings(row));
+
+      if (empty.length > 0) {
+        await manager.delete(
+          SeasonCompetition,
+          empty.map((row) => row.guid)
+        );
+      }
+
+      const kept = marked.filter((row) => !empty.includes(row));
+
+      if (kept.length > 0) {
+        await manager.save(SeasonCompetition, kept);
+      }
+    });
+
+    return { competitionTypes };
+  }
+
+  /**
+   * Sets each listed competition's settings for the season (#3019, decided 6A and 7A): its sessions, chosen from the
+   * season's own, and when its finalists hear. A competition with no row gets one that holds only settings (`runs`
+   * empty), so it changes nothing about which competitions the season runs.
+   */
+  public async setCompetitionSettings(guid: string, settings: unknown): Promise<{ saved: number }> {
+    const problem = competitionSettingsProblem(settings);
+
+    if (problem) {
+      throw new BadRequestException(problem);
+    }
+
+    const season = await this.seasonRepo.findOne({ where: { guid } });
+
+    if (!season) {
+      throw new NotFoundException('Season not found.');
+    }
+
+    const listed = settings as Array<CompetitionSettingsInput>;
+
+    return this.seasonRepo.manager.transaction(async (manager) => {
+      const named = chosenSessionGuids(listed);
+      const own = named.length
+        ? await manager.find(Event, { where: { guid: In(named), season: { guid } }, select: { guid: true } })
+        : [];
+      const elsewhere = named.find((sessionGuid) => !own.some((event) => event.guid === sessionGuid));
+
+      if (elsewhere) {
+        throw new BadRequestException(`${elsewhere} is not one of this season's sessions.`);
+      }
+
+      const rows = await manager.find(SeasonCompetition, { where: { season: { guid } } });
+      const saved = listed.map<Partial<SeasonCompetition>>((input) => {
+        const values = {
+          sessionGuid: input.sessionGuid || null,
+          graduateSessionGuid: input.graduateSessionGuid || null,
+          awardsSessionGuid: input.awardsSessionGuid || null,
+          finalistsNotifiedAt: asDate(input.finalistsNotifiedAt)
+        };
+        const row = rows.find((existing) => existing.competitionType === input.competitionType);
+
+        return row
+          ? { ...row, ...values }
+          : manager.create(SeasonCompetition, {
+              season: { guid },
+              competitionType: input.competitionType,
+              runs: null,
+              ...values
+            });
+      });
+
+      await manager.save(SeasonCompetition, saved);
+
+      return { saved: saved.length };
+    });
   }
 
   public override async deleteEntity(guidOrOptions?: LookupOneOptions<Season>) {
@@ -718,4 +835,9 @@ interface EntityPrimaryKeyMap {
   tag: Array<keyof Tag>;
   eventBroadcast: Array<keyof EventBroadcast>;
   eventLocation: Array<keyof EventLocation>;
+}
+
+/** Whether a competition's row holds any of its settings (#3019), so it is kept when the competition is turned off. */
+function hasSettings(row: Partial<SeasonCompetition>): boolean {
+  return Boolean(row.sessionGuid || row.graduateSessionGuid || row.awardsSessionGuid || row.finalistsNotifiedAt);
 }

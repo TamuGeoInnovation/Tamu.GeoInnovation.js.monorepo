@@ -1,4 +1,6 @@
+import { competitionSettings, SeasonCompetitions } from './season-competitions';
 import { closesAt, inCentralTime, SubmissionDeadlines } from './submission-deadlines';
+import { formatCentral } from './central-time';
 
 /**
  * The email a student gets when their competition submission is reviewed (#2957, #2980), as a template the reviewer sees
@@ -6,8 +8,20 @@ import { closesAt, inCentralTime, SubmissionDeadlines } from './submission-deadl
  * for each submission.
  */
 
-/** Which email a decision sends: a poster finalist's, a presenter's, or a rejection. */
-export type ReviewEmailKind = 'poster' | 'presentation' | 'rejection';
+/**
+ * Which email is sent: on a decision, a poster finalist's, a presenter's, or a rejection; or the final reminder to upload
+ * the final poster or presentation (#3017).
+ */
+export type ReviewEmailKind = 'poster' | 'presentation' | 'rejection' | 'poster-reminder' | 'presentation-reminder';
+
+/** Every kind, in the order a preview lists them. */
+export const REVIEW_EMAIL_KINDS: ReadonlyArray<ReviewEmailKind> = Object.freeze([
+  'poster',
+  'presentation',
+  'rejection',
+  'poster-reminder',
+  'presentation-reminder'
+]);
 
 /** The placeholders a template may use, filled in for each submission. */
 export const REVIEW_EMAIL_PLACEHOLDERS = Object.freeze([
@@ -32,9 +46,63 @@ export function reviewEmailKind(acceptance: boolean, submissionType: unknown): R
   return submissionType === 'poster' ? 'poster' : 'presentation';
 }
 
+/** The final reminder's kind for a submission (#3017): a poster's, or a presentation's. */
+export function reminderEmailKind(submissionType: unknown): ReviewEmailKind {
+  return submissionType === 'poster' ? 'poster-reminder' : 'presentation-reminder';
+}
+
+/**
+ * Whether a submission has its final presentation or poster uploaded (#3017). A submission's files have no kind (#2933)
+ * and its abstract is text, so any file it has is its final one.
+ */
+export function hasFinalFile(submission: { files?: ReadonlyArray<unknown> | null }): boolean {
+  return (submission.files?.length ?? 0) > 0;
+}
+
+/** Why a selected submission gets no final reminder (#3017). */
+export type ReminderSkipReason = 'already has a file' | 'not accepted';
+
+/**
+ * Why a submission gets no final reminder, or null when it gets one (#3017): it was not accepted (rejected, or not yet
+ * reviewed; decided 15 November), or it already has its final file.
+ */
+export function reminderSkipReason(submission: {
+  reviewed?: boolean | null;
+  acceptance?: boolean | null;
+  files?: ReadonlyArray<unknown> | null;
+}): ReminderSkipReason | null {
+  if (!(submission.reviewed && submission.acceptance)) {
+    return 'not accepted';
+  }
+
+  return hasFinalFile(submission) ? 'already has a file' : null;
+}
+
+/** How many were skipped, and why: "1 that already has a file and 2 that were not accepted". */
+export function reminderSkipSummary(skipped: ReadonlyArray<{ reason: ReminderSkipReason }>): string {
+  const count = (reason: ReminderSkipReason) => skipped.filter((s) => s.reason === reason).length;
+  const files = count('already has a file');
+  const unaccepted = count('not accepted');
+
+  return [
+    files ? `${files} that already ${files === 1 ? 'has' : 'have'} a file` : '',
+    unaccepted ? `${unaccepted} that ${unaccepted === 1 ? 'was' : 'were'} not accepted` : ''
+  ]
+    .filter(Boolean)
+    .join(' and ');
+}
+
+const KIND_LABELS: Record<ReviewEmailKind, string> = {
+  poster: 'Accepted posters',
+  presentation: 'Accepted presentations',
+  rejection: 'Rejections',
+  'poster-reminder': 'Final reminders: posters',
+  'presentation-reminder': 'Final reminders: presentations'
+};
+
 /** What each kind is called where the reviewer chooses its text. */
 export function reviewEmailKindLabel(kind: ReviewEmailKind): string {
-  return kind === 'poster' ? 'Accepted posters' : kind === 'presentation' ? 'Accepted presentations' : 'Rejections';
+  return KIND_LABELS[kind];
 }
 
 /** The email's subject, naming the site and the decision. */
@@ -42,8 +110,57 @@ export function reviewEmailSubject(acceptance: boolean, siteName: string): strin
   return acceptance ? `Your ${siteName} submission has been accepted` : `Your ${siteName} submission`;
 }
 
+/** A kind's subject, naming the site: a decision's, or the final reminder's (#3017). */
+export function reviewEmailKindSubject(kind: ReviewEmailKind, siteName: string): string {
+  if (kind === 'poster-reminder' || kind === 'presentation-reminder') {
+    return `Final reminder: upload your final ${kind === 'poster-reminder' ? 'poster' : 'presentation'} for ${siteName}`;
+  }
+
+  return reviewEmailSubject(kind !== 'rejection', siteName);
+}
+
 /** The text each kind starts from, before the reviewer edits it. */
 export function reviewEmailTemplate(kind: ReviewEmailKind): string {
+  if (kind === 'presentation-reminder') {
+    // The maintainer's draft (#3017), with the other emails' sign-off.
+    return `Hi {first name},
+
+This is your final reminder. We don't yet have the final presentation slides for "{title}".
+
+Upload them on {site} at {site address}/account/submissions by {upload deadline}. If your final slides are not uploaded by then, your submission will be removed from the competition and you won't present.
+
+Your session: {your session}
+
+You have 5 minutes in all, questions included: about 4 minutes to present and 1 for questions. Plan on about 4 slides.
+
+Winners are announced at {awards session}.
+
+If you've uploaded them in the last few minutes, thank you, and you can ignore this message.
+
+Best regards,
+The {site} Team`;
+  }
+
+  if (kind === 'poster-reminder') {
+    // The same draft for a poster, with the poster finalist's details (#2980).
+    return `Hi {first name},
+
+This is your final reminder. We don't yet have the final poster for "{title}".
+
+Upload it on {site} at {site address}/account/submissions by {upload deadline}. If your final poster is not uploaded by then, your submission will be removed from the competition and won't be judged.
+
+Your session: {your session}
+
+Print your poster, 36 x 48 inches or smaller, and bring it with you. You, or at least one member of your team, must be at your poster during the competition to be eligible for an award.
+
+Winners are announced at {awards session}.
+
+If you've uploaded it in the last few minutes, thank you, and you can ignore this message.
+
+Best regards,
+The {site} Team`;
+  }
+
   if (kind === 'rejection') {
     return `Howdy {first name},
 
@@ -122,7 +239,8 @@ export interface ReviewEmailSubmission {
   submissionType?: string | null;
   classificationType?: string | null;
   participants?: Array<{ name?: string | null }> | null;
-  season?: Partial<SubmissionDeadlines> | null;
+  /** Its deadlines, and the sessions it chose for each competition (#3019). */
+  season?: (Partial<SubmissionDeadlines> & SeasonCompetitions) | null;
 }
 
 /**
@@ -151,35 +269,70 @@ function clockTime(stored: string | null | undefined): string {
   return `${hours % 12 || 12}:${match[2]} ${hours < 12 ? 'AM' : 'PM'}`;
 }
 
+/**
+ * A session's day in Central time (#3011): "Thu, Nov 19" short, as the emails give it, or "Thursday, November 19, 2026"
+ * long, as the competition pages give it. Empty when the session has no day.
+ */
+export function sessionDay(session: ReviewEmailSession, style: 'short' | 'long' = 'short'): string {
+  const date = session.day?.date ? new Date(session.day.date) : null;
+
+  if (!date || isNaN(date.getTime())) {
+    return '';
+  }
+
+  return formatCentral(
+    date,
+    style === 'short'
+      ? { weekday: 'short', month: 'short', day: 'numeric' }
+      : { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }
+  );
+}
+
+/** A session's times (#3011): "1:00 to 1:15 PM", or "11:30 AM to 1:00 PM" across noon. */
+export function sessionHours(session: ReviewEmailSession): string {
+  const [start, end] = [clockTime(session.startTime), clockTime(session.endTime)];
+
+  return start && end ? `${start.replace(/ (AM|PM)$/, end.endsWith(start.slice(-2)) ? '' : ' $1')} to ${end}` : start;
+}
+
+/** Where a session is (#3011): its building and room. */
+export function sessionPlace(session: ReviewEmailSession): string {
+  return [session.location?.building, session.location?.room].filter((part) => part?.trim()).join(' ');
+}
+
 /** "AWARDS: Winner Announcements, Thu, Nov 19, 1:00 to 1:15 PM, MSC Ballroom 2300 A&B: <link to the session>". */
 export function sessionLine(session: ReviewEmailSession, address: string): string {
-  const date = session.day?.date ? new Date(session.day.date) : null;
-  const day =
-    date && !isNaN(date.getTime())
-      ? new Intl.DateTimeFormat('en-US', {
-          timeZone: 'America/Chicago',
-          weekday: 'short',
-          month: 'short',
-          day: 'numeric'
-        }).format(date)
-      : '';
-  const [start, end] = [clockTime(session.startTime), clockTime(session.endTime)];
-  const when = start && end ? `${start.replace(/ (AM|PM)$/, end.endsWith(start.slice(-2)) ? '' : ' $1')} to ${end}` : start;
-  const where = [session.location?.building, session.location?.room].filter((part) => part?.trim()).join(' ');
-  const parts = [(session.name ?? '').trim(), day, when, where].filter(Boolean).join(', ');
+  const parts = [(session.name ?? '').trim(), sessionDay(session), sessionHours(session), sessionPlace(session)]
+    .filter(Boolean)
+    .join(', ');
 
   return `${parts}: ${address}/sessions/details/${session.guid}`;
 }
 
 /**
- * The finalist's own competition session among the season's (#2985), by the names the program gives them: a
- * `COMPETITION:` session naming posters, or for a presentation the one naming its level (undergraduate or graduate).
+ * The finalist's own competition session among the season's (#2985): the one the season chose for the competition in
+ * Admin (#3019), or else by the names the program gives them, a `COMPETITION:` session naming posters, or for a
+ * presentation the one naming its level (undergraduate or graduate). A chosen session no longer among the season's
+ * falls back to the names too.
  */
 export function competitionSession<T extends ReviewEmailSession>(
   sessions: Array<T> | null | undefined,
   submissionType: unknown,
-  classificationType: unknown
+  classificationType: unknown,
+  season?: SeasonCompetitions | null
 ): T | null {
+  const settings =
+    submissionType === 'poster' || submissionType === 'presentation' ? competitionSettings(season, submissionType) : null;
+  const chosenGuid =
+    submissionType === 'presentation' && classificationType !== 'undergraduate'
+      ? settings?.graduateSessionGuid
+      : settings?.sessionGuid;
+  const chosen = chosenGuid ? (sessions ?? []).find((s) => s.guid === chosenGuid) : undefined;
+
+  if (chosen) {
+    return chosen;
+  }
+
   const competitions = (sessions ?? []).filter((s) => /^\s*competition\s*:/i.test(s.name ?? ''));
   const named = (word: RegExp) => competitions.find((s) => word.test(s.name ?? '')) ?? null;
 
@@ -196,8 +349,25 @@ export function competitionSession<T extends ReviewEmailSession>(
     : (competitions.find((s) => /graduate/i.test(s.name ?? '') && !/undergraduate/i.test(s.name ?? '')) ?? null);
 }
 
-/** The season's awards session for the poster and presentation competitions (#2985): an `AWARDS:` session naming either. */
-export function awardsSession<T extends ReviewEmailSession>(sessions: Array<T> | null | undefined): T | null {
+/**
+ * The season's awards session for the poster and presentation competitions (#2985): the one the season chose for the
+ * competition (#3019), or for either when no competition is named, else an `AWARDS:` session naming either.
+ */
+export function awardsSession<T extends ReviewEmailSession>(
+  sessions: Array<T> | null | undefined,
+  season?: SeasonCompetitions | null,
+  competition?: 'poster' | 'presentation'
+): T | null {
+  const chosenGuid = competition
+    ? competitionSettings(season, competition)?.awardsSessionGuid
+    : (competitionSettings(season, 'presentation')?.awardsSessionGuid ??
+      competitionSettings(season, 'poster')?.awardsSessionGuid);
+  const chosen = chosenGuid ? (sessions ?? []).find((s) => s.guid === chosenGuid) : undefined;
+
+  if (chosen) {
+    return chosen;
+  }
+
   return (
     (sessions ?? []).find((s) => /^\s*awards\s*:/i.test(s.name ?? '') && /poster|presentation/i.test(s.name ?? '')) ?? null
   );
@@ -220,11 +390,17 @@ export function reviewEmailValues(
     '{site}': site.name,
     '{site address}': site.address,
     '{your session}': ((own) => (own ? sessionLine(own, site.address) : `see ${site.address}/sessions`))(
-      competitionSession(sessions, submission.submissionType, submission.classificationType)
+      competitionSession(sessions, submission.submissionType, submission.classificationType, submission.season)
     ),
     '{awards session}': ((awards) =>
       awards ? sessionLine(awards, site.address) : `the awards session; see ${site.address}/sessions`)(
-      awardsSession(sessions)
+      awardsSession(
+        sessions,
+        submission.season,
+        submission.submissionType === 'poster' || submission.submissionType === 'presentation'
+          ? submission.submissionType
+          : undefined
+      )
     ),
     '{notes}': submission.message?.trim() ? `Additional notes: ${submission.message.trim()}` : ''
   };

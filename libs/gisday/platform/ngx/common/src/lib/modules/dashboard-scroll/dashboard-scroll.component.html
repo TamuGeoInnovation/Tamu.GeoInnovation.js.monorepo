@@ -1,0 +1,11 @@
+<div #box class="dashboard-scroll" [class.dashboard-scroll-railed]="overflow() !== null" [class.dashboard-scroll-capped]="capped()" (scroll)="followBox()"><ng-content></ng-content></div>
+
+<!-- The box's sideways scrollbar, kept at the bottom of the window while the box is in view (#3029). -->
+<div #rail class="dashboard-scroll-rail" aria-hidden="true" [hidden]="overflow() === null" (scroll)="followRail()"><div [style.width.px]="overflow() ?? 0"></div></div>
+
+<!-- While a resized box's content is laid out again, the site's spinner over it, until its rail is measured (#3135). -->
+@if (settling()) {
+<div class="dashboard-scroll-settling" role="status" aria-label="Fitting the table to the window">
+  <div class="dashboard-scroll-settling-spinner flex flex-row justify-center"><div class="loader small"></div></div>
+</div>
+}

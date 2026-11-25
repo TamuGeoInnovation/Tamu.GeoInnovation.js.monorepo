@@ -7,8 +7,10 @@ import { RsvpService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { LINE_CHART_DRAWER, LineChartOptions } from '@tamu-gisc/ui-kits/ngx/charts';
+import { gisdaySite } from '@tamu-gisc/gisday/common';
+import { GISDAY_SITE } from '@tamu-gisc/gisday/platform/ngx/common';
 
-import { rsvpBands, RsvpDashboardComponent, rsvpDaily, rsvpFileName, rsvpRows, rsvpSeries, rsvpTotals } from './rsvp-dashboard.component';
+import { RsvpDashboardComponent } from './rsvp-dashboard.component';
 
 const counts = (c: Partial<RsvpDashboard['events'][0]['counts']>) => ({
   undergraduate: 0,
@@ -22,8 +24,8 @@ const counts = (c: Partial<RsvpDashboard['events'][0]['counts']>) => ({
 
 const dashboard: RsvpDashboard = {
   events: [
-    { guid: 'e-1', name: 'Workshop', starts: '2026-11-18T15:00:00.000Z', location: 'ILCB 111', total: 3, counts: counts({ undergraduate: 2, academia: 1 }) },
-    { guid: 'e-2', name: 'Keynote', starts: '2026-11-18T20:00:00.000Z', location: null, total: 1, counts: counts({ industry: 1 }) }
+    { guid: 'e-1', name: 'Workshop', starts: '2026-11-18T15:00:00.000Z', location: 'ILCB 111', place: null, total: 3, counts: counts({ undergraduate: 2, academia: 1 }) },
+    { guid: 'e-2', name: 'Keynote', starts: '2026-11-18T20:00:00.000Z', location: null, place: null, total: 1, counts: counts({ industry: 1 }) }
   ],
   made: [
     { event: 'e-1', created: '2026-11-01T15:00:00Z' },
@@ -53,68 +55,18 @@ const people = [
   person({ firstName: 'Pat', lastName: 'Kim', email: 'pat@example.edu', type: 'academia', position: 'Professor', organization: 'Texas A&M University' })
 ];
 
-describe('rsvpTotals()', () => {
-  it('adds up every event, type by type', () => {
-    expect(rsvpTotals(dashboard.events)).toEqual({ total: 4, counts: counts({ undergraduate: 2, academia: 1, industry: 1 }) });
-  });
-});
-
-describe('rsvpRows()', () => {
-  it("gives the table each event, its venue under its name and its start in its own column", () => {
-    expect(rsvpRows(dashboard.events)[0]).toEqual({
-      key: 'e-1',
-      name: 'Workshop',
-      note: 'ILCB 111',
-      when: '2026-11-18T15:00:00.000Z',
-      total: 3,
-      counts: counts({ undergraduate: 2, academia: 1 })
-    });
-  });
-});
-
-describe('rsvpFileName()', () => {
-  it("names an event's CSV by its name and day, in Central time", () => {
-    expect(rsvpFileName(dashboard.events[0])).toBe('gisday-rsvps-workshop-2026-11-18');
-  });
-});
-
-describe('rsvpSeries()', () => {
-  it("draws every event's running total, and the opened event's own beside it", () => {
-    expect(rsvpSeries(dashboard, null).map((s) => [s.label, s.points.map((p) => p.y)])).toEqual([['All events', [2, 3, 4]]]);
-    expect(rsvpSeries(dashboard, dashboard.events[0]).map((s) => [s.label, s.points.map((p) => p.y)])).toEqual([
-      ['All events', [2, 3, 4]],
-      ['Workshop', [2, 3]]
-    ]);
-  });
-});
-
-describe('rsvpDaily()', () => {
-  it("counts every event's new RSVPs each day", () => {
-    expect(rsvpDaily(dashboard).points.map((p) => p.y)).toEqual([2, 1, 1]);
-  });
-});
-
-describe('rsvpBands()', () => {
-  it("shades the days the season's events run, in Central time", () => {
-    expect(rsvpBands(dashboard)).toEqual([{ from: new Date('2026-11-18T00:00:00Z'), to: new Date('2026-11-19T00:00:00Z'), label: 'GIS Day week' }]);
-  });
-
-  it('shades nothing when no event has a day', () => {
-    expect(rsvpBands({ ...dashboard, events: dashboard.events.map((e) => ({ ...e, starts: null })) })).toEqual([]);
-  });
-});
-
 describe('RsvpDashboardComponent', () => {
   let rsvps: { getDashboardForSeason: jest.Mock; getDashboardForEvent: jest.Mock };
   // amCharts draws on a canvas, which the test's DOM does not have: the chart's drawer is a stand-in that keeps what it is given.
   let drawn: Array<LineChartOptions>;
   const lastChart = () => drawn[drawn.length - 1];
 
-  function open() {
+  function open(site = 'txgisday') {
     TestBed.configureTestingModule({
       imports: [RsvpDashboardComponent],
       providers: [
         provideRouter([]),
+        { provide: GISDAY_SITE, useValue: gisdaySite(site) },
         { provide: RsvpService, useValue: rsvps },
         { provide: SeasonService, useValue: { seasons$: of([{ guid: 's-1', year: 2026 }]), activeSeason$: of({ guid: 's-1', year: 2026 }) } },
         { provide: ModalService, useValue: {} },
@@ -134,6 +86,7 @@ describe('RsvpDashboardComponent', () => {
     Array.from(root.querySelectorAll('datatable-row-wrapper datatable-body-row')).map((tr) =>
       Array.from(tr.querySelectorAll('.datatable-body-cell')).map((td) => td.textContent.trim())
     );
+  const names = (root: HTMLElement) => Array.from(root.querySelectorAll('datatable-row-wrapper .dashboard-table-name .bold')).map((n) => n.textContent.trim());
   const cellOf = (root: HTMLElement, name: string) =>
     Array.from(root.querySelectorAll('datatable-row-wrapper .datatable-body-cell')).find((c) => c.textContent.includes(name)) as HTMLElement;
 
@@ -151,6 +104,38 @@ describe('RsvpDashboardComponent', () => {
     };
   });
 
+  // #3330: the dashboards share one template; each says what it always has.
+  it('shows its title, summary, headings, notes and table headings as it always has', async () => {
+    const fixture = open();
+    await settle(fixture);
+    const root = fixture.nativeElement as HTMLElement;
+    const words = (selector: string) => Array.from(root.querySelectorAll(selector)).map((e) => e.textContent.replace(/\s+/g, ' ').trim());
+
+    expect([
+      ...words('.form-section-name'),
+      ...words('.dashboard-summary'),
+      ...words('h3.dashboard-heading'),
+      ...words('.dashboard-note'),
+      ...words('datatable-header-cell')
+    ]).toEqual([
+      'RSVPs',
+      '4 RSVPs for 2 events.',
+      'RSVPs over time',
+      'By event',
+      'The running total at the end of each day, in Central time, with each day\'s new RSVPs beneath and the GIS Day week shaded. Hover for a day\'s numbers; drag across the chart to zoom in, and double-click to see it all again. Press a year to draw it beside this one, lined up on the Monday of each year\'s GIS Day week: the axis then counts days from it. Open an event below to add its own line.',
+      'Click a heading to sort by it, and again to reverse it. Click an event to see who RSVP\'d.',
+      'Event',
+      'When',
+      'Total',
+      'Under\u00adgraduate',
+      'Graduate',
+      'Student, classi\u00adfication not given',
+      'Faculty & academia',
+      'Industry',
+      'Not given'
+    ]);
+  });
+
   it("reads the active season's dashboard and shows each event's counts, by type, with a total row", async () => {
     const fixture = open();
     await settle(fixture);
@@ -165,7 +150,7 @@ describe('RsvpDashboardComponent', () => {
       // With its soft hyphen, which shows only where the word breaks.
       'Under\u00adgraduate',
       'Graduate',
-      'Student, classification not given',
+      'Student, classi\u00adfication not given',
       'Faculty & academia',
       'Industry',
       'Not given'

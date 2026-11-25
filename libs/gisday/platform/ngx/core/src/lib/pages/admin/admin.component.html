@@ -18,6 +18,15 @@
             <a [routerLink]="['./dashboards/rsvps']" queryParamsHandling="merge" routerLinkActive="active">RSVPs</a>
           </li>
           <li>
+            <a [routerLink]="['./dashboards/check-ins']" queryParamsHandling="merge" routerLinkActive="active">Check-ins</a>
+          </li>
+          <!-- The VGI competition's own dashboard (#2894), only where the site runs the competition. -->
+          @if ('competitions' | siteHas) {
+          <li>
+            <a [routerLink]="['./dashboards/vgi-submissions']" queryParamsHandling="merge" routerLinkActive="active">VGI submissions</a>
+          </li>
+          }
+          <li>
             <a [routerLink]="['./dashboards/accounts']" queryParamsHandling="merge" routerLinkActive="active">User accounts</a>
           </li>
           <li>
@@ -79,6 +88,22 @@
       @if ('competitions' | siteHas) {
       <li>
         <a [routerLink]="['./research-competition']" queryParamsHandling="merge" routerLinkActive="active"><span class="material-icons">co_present</span> Research Competitions</a>
+        <ul class="sidebar_sublevel">
+          <li>
+            <a [routerLink]="['./research-competition']" queryParamsHandling="merge" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Submissions</a>
+          </li>
+          <!-- Judging the research competitions (#3183). -->
+          <li>
+            <a [routerLink]="['./research-competition/rubrics']" routerLinkActive="active">Rubrics</a>
+          </li>
+          <li>
+            <a [routerLink]="['./research-competition/judging']" routerLinkActive="active">Judging results</a>
+          </li>
+          <!-- The season's winners, for gisday.tamu.edu's homepage (#3239). -->
+          <li>
+            <a [routerLink]="['./research-competition/winners']" routerLinkActive="active">Winners</a>
+          </li>
+        </ul>
       </li>
 
       <li>

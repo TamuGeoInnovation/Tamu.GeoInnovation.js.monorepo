@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, ElementRef, computed, effect, inject, input, viewChild } from '@angular/core';
 
-import { ChartBand, ChartSeries, LineChartOptions, withColors } from '../../data/chart-data';
+import { ChartBand, ChartInterval, ChartSeries, LineChartOptions, withColors } from '../../data/chart-data';
 import { LINE_CHART_DRAWER } from './line-chart.drawer';
 
 /**
@@ -28,6 +28,16 @@ export class LineChartComponent {
   public readonly bands = input<Array<ChartBand>>([]);
   /** What a value counts, for the hover text: 'RSVPs' reads "All events: 1,003 RSVPs". */
   public readonly unit = input<string>('');
+  /**
+   * The day the x-axis counts from (#3215): when given, the axis reads in days before and after it, and each line's
+   * hover text gives its own date. For several seasons drawn on one's days, with alignToAnchor.
+   */
+  public readonly anchor = input<Date | null>(null);
+  /**
+   * What each point stands for: a day, or an hour of one (#3314), such as check-ins across GIS Day week. The axis is
+   * labelled and hovered in the same.
+   */
+  public readonly interval = input<ChartInterval>('day');
   /** The chart's height in pixels. It does not grow with the page's width. */
   public readonly height = input<number>(320);
 
@@ -42,7 +52,9 @@ export class LineChartComponent {
       bars: bars ? { ...bars, color: bars.color ?? series[0]?.color ?? '#500000' } : null,
       bands: this.bands(),
       steps: this.steps(),
-      unit: this.unit()
+      unit: this.unit(),
+      anchor: this.anchor(),
+      interval: this.interval()
     };
   });
 

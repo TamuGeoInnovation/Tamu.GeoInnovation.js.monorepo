@@ -1,3 +1,4 @@
+import { formatCentral } from './central-time';
 /**
  * When each research competition stops taking submissions: poster and presentation (#2934), paper and cartography
  * (#2962). An admin sets them on the season, one pair per competition: when new submissions and edits close, and a
@@ -5,8 +6,8 @@
  * rules, read by the API, which enforces them, and by the site, which shows them.
  *
  * The rules are one table, the competitions by the two kinds of deadline. A competition added to
- * `DEADLINE_COMPETITION_TABLE` gets its two fields, its checks and its place in the admin page's Submission deadlines
- * section from here; it needs only its two columns on the season (a test checks they are there) and a migration.
+ * `DEADLINE_COMPETITION_TABLE` gets its two fields, its checks and its place in the admin page's Competition settings
+ * panel (#3037) from here; it needs only its two columns on the season (a test checks they are there) and a migration.
  *
  * A competition closes at its moment: a request made at that moment or later is refused. Reviewers, who hold
  * `update:competitions`, are not held to them; they review after submissions have closed.
@@ -129,25 +130,28 @@ export function asDate(value: unknown): Date | null {
 
 /**
  * A moment as GIS Day's own clock reads it, so everyone sees the Central time whatever their computer is set to
- * (#2474): "Fri, Nov 14, 2026, 5:00 PM Central". `empty` when there is none.
+ * (#2474): "Fri, Nov 14, 2026, 5:00 PM Central". `empty` when there is none. `brief` leaves out the year and the zone,
+ * for a line of several moments that names the zone once: "Fri, Nov 14, 5:00 PM" (#2969).
  */
-export function inCentralTime(value: Date | string | null | undefined, empty = 'No limit'): string {
+export function inCentralTime(
+  value: Date | string | null | undefined,
+  empty = 'No limit',
+  { brief = false }: { brief?: boolean } = {}
+): string {
   const date = asDate(value);
 
   if (!date) {
     return empty;
   }
 
-  const text = new Intl.DateTimeFormat('en-US', {
-    timeZone: 'America/Chicago',
+  const time = formatCentral(date, {
     weekday: 'short',
     month: 'short',
     day: 'numeric',
-    year: 'numeric',
+    year: brief ? undefined : 'numeric',
     hour: 'numeric',
     minute: '2-digit'
-  }).format(date);
+  });
 
-  // Newer ICU puts a narrow no-break space before AM and PM.
-  return `${text.replace(/\u202f/g, ' ')} Central`;
+  return brief ? time : `${time} Central`;
 }

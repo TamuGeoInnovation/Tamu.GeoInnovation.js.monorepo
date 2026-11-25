@@ -1,5 +1,13 @@
+@import 'libs/gisday/sass/variables';
+
 :host {
   display: block;
+}
+
+// A check-in made outside its session's time, under its time (#2893): as the table's note under an event's name.
+.dashboard-person-outside {
+  font-size: 0.9rem;
+  opacity: 0.75;
 }
 
 .dashboard-people-actions {
@@ -7,7 +15,8 @@
   justify-content: flex-end;
 }
 
-// The same column widths in every group, so the groups' columns line up under one another.
+// The same column widths in every group, so the groups' columns line up under one another: each column's share of the
+// width grows from its narrowest (its <col>), and the table is never narrower than all of them (#2894).
 .dashboard-person-table {
   width: 100%;
   margin-bottom: 1rem;
@@ -18,27 +27,28 @@
   td {
     padding: 0.25rem 0.5rem;
     text-align: left;
+  }
+
+  // A long address or name breaks anywhere rather than widening its column.
+  td {
     overflow-wrap: anywhere;
   }
 
-  th:nth-child(1) {
-    width: 18%;
+  // A heading breaks only between words, never inside one ("Submissio" over "ns").
+  th {
+    overflow-wrap: normal;
+    word-break: normal;
   }
 
-  th:nth-child(2) {
-    width: 24%;
-  }
-
-  th:nth-child(3),
-  th:nth-child(4) {
-    width: 14%;
-  }
-
-  th:nth-child(5) {
-    width: 16%;
-  }
-
-  th:nth-child(6) {
-    width: 14%;
+  // In the capped box, which scrolls up and down inside itself (#3120), each table's headings stay at the box's top while
+  // its rows scroll under them, so a reader 300 people down still sees which column is which (#3125). The box is the
+  // nearest element that scrolls, and nothing between it and the table clips. The page's background hides the rows
+  // underneath. Not libs/sass's floating-table, the one other sticky heading: its padding and nowrap cells would
+  // restyle the table.
+  thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: $background;
   }
 }

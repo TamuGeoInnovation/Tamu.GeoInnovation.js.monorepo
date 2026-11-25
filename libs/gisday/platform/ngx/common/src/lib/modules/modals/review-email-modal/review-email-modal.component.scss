@@ -1,0 +1,71 @@
+// Laid out as the shared alert modal is (ui-kits alert-modal), wider and left-aligned for the text of an email (#2988).
+// The modal's body already scrolls, so this does not scroll on its own: two scroll bars side by side read as broken.
+.review-email {
+  width: min(56rem, 85vw);
+  max-width: 100%;
+  text-align: left;
+  padding: 0 0.5rem;
+  box-sizing: border-box;
+}
+
+.review-email__title {
+  margin: 0 0 0.5rem;
+}
+
+.review-email__group {
+  margin-bottom: 1.5rem;
+
+  h3,
+  h4 {
+    text-align: left;
+  }
+}
+
+// The shared textbox sizes to its content unless told otherwise: the email's text is edited across the window's width, and
+// its "Send as" box (#3100) with it.
+tamu-gisc-textbox,
+tamu-gisc-select {
+  width: 100%;
+}
+
+.review-email__meta {
+  margin: 0.25rem 0;
+}
+
+.review-email__preview {
+  // HTML from its Markdown now (#3044), so its own paragraphs and breaks set the spacing.
+  white-space: normal;
+  font-family: inherit;
+  border-left: 3px solid currentColor;
+  padding-left: 0.75rem;
+}
+
+.review-email__footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+// The whole designed email (#3114): its own page inside the window, as tall as most emails, scrolling for the rest.
+.review-email__frame {
+  display: block;
+  width: 100%;
+  height: 32rem;
+  border: 1px solid #ddd;
+}
+
+// Who was sent it before (#3167): the count, the button and the order, one under another.
+.review-email__sent-choices {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.review-email__history {
+  margin: 0.5rem 0 1rem;
+
+  ul {
+    margin: 0.5rem 0 0;
+  }
+}

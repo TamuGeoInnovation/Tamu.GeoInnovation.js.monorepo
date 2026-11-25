@@ -1,12 +1,15 @@
-import { InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { Repository } from 'typeorm';
+import { Repository, getMetadataArgsStorage } from 'typeorm';
 
-import { EventBroadcast } from '../entities/all.entity';
+import { EventBroadcast, Place } from '../entities/all.entity';
 import { SeasonService } from '../season/season.service';
 import { EventBroadcastService } from './event-broadcast.service';
+import { EventBroadcastController } from './event-broadcast.controller';
+import { GUARDS_METADATA } from '@nestjs/common/constants';
+import { JwtGuard, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 
 describe('EventBroadcastService', () => {
   let service: EventBroadcastService;
@@ -21,12 +24,13 @@ describe('EventBroadcastService', () => {
           provide: getRepositoryToken(EventBroadcast),
           useValue: {
             find: jest.fn(),
+            findOne: jest.fn(),
             create: jest.fn(),
             save: jest.fn(),
             manager: { transaction: jest.fn() }
           }
         },
-        { provide: SeasonService, useValue: { findOneActive: jest.fn() } }
+        { provide: SeasonService, useValue: { findOne: jest.fn(), findOneActive: jest.fn() } }
       ]
     }).compile();
 
@@ -48,7 +52,7 @@ describe('EventBroadcastService', () => {
       jest.spyOn(broadcastRepo, 'find').mockResolvedValue([{ guid: 'b-1' } as EventBroadcast]);
 
       await expect(service.getEntities()).resolves.toEqual([{ guid: 'b-1' }]);
-      expect(broadcastRepo.find).toHaveBeenCalledWith({ order: { name: 'ASC' } });
+      expect(broadcastRepo.find).toHaveBeenCalledWith({ relations: { place: true }, order: { name: 'ASC' } });
     });
   });
 
@@ -59,6 +63,7 @@ describe('EventBroadcastService', () => {
       await expect(service.getBroadcastsForSeason('season-1')).resolves.toEqual([{ guid: 'b-1' }]);
       expect(broadcastRepo.find).toHaveBeenCalledWith({
         where: { season: { guid: 'season-1' } },
+        relations: { place: true },
         order: { name: 'ASC' }
       });
     });
@@ -72,6 +77,7 @@ describe('EventBroadcastService', () => {
       await expect(service.getBroadcastsForActiveSeason()).resolves.toEqual([{ guid: 'b-1' }]);
       expect(broadcastRepo.find).toHaveBeenCalledWith({
         where: { season: { guid: 'active' } },
+        relations: { place: true },
         order: { name: 'ASC' }
       });
     });
@@ -88,6 +94,32 @@ describe('EventBroadcastService', () => {
     });
   });
 
+  describe('the order broadcasts are listed in (#3047)', () => {
+    // As the database returns them: the one added last first, numbers compared as text, and mixed case.
+    const unsorted = ['Zoom 4', 'TTU 1', 'TAMU Zoom 10', 'tamu zoom 2', 'TAMU Zoom 1', ' ATX'].map(
+      (name, i) => ({ guid: `b-${i}`, name }) as EventBroadcast
+    );
+    const natural = [' ATX', 'TAMU Zoom 1', 'tamu zoom 2', 'TAMU Zoom 10', 'TTU 1', 'Zoom 4'];
+    const names = (rows: Array<Partial<EventBroadcast>>) => rows.map((row) => row.name);
+
+    beforeEach(() => {
+      jest.spyOn(broadcastRepo, 'find').mockResolvedValue([...unsorted]);
+      jest.spyOn(seasonService, 'findOneActive').mockResolvedValue({ guid: 'active' } as never);
+    });
+
+    it("lists a season's broadcasts by name, ignoring case, with numbers in order", async () => {
+      expect(names(await service.getBroadcastsForSeason('season-1'))).toEqual(natural);
+    });
+
+    it("lists the active season's broadcasts, which every Broadcast drop-down reads, the same way", async () => {
+      expect(names(await service.getBroadcastsForActiveSeason())).toEqual(natural);
+    });
+
+    it('lists every broadcast the same way', async () => {
+      expect(names(await service.getEntities())).toEqual(natural);
+    });
+  });
+
   describe('.copyBroadcastsIntoSeason()', () => {
     it('strips identity and the old season, then attaches the target season', async () => {
       const source = {
@@ -99,10 +131,10 @@ describe('EventBroadcastService', () => {
         season: { guid: 'season-1' }
       } as unknown as EventBroadcast;
 
+      jest.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
       jest.spyOn(broadcastRepo, 'find').mockResolvedValue([source]);
-      jest
-        .spyOn(broadcastRepo, 'create')
-        .mockImplementation((e) => ({ ...(e as object), save: jest.fn().mockResolvedValue(e) }) as never);
+      jest.spyOn(broadcastRepo, 'create').mockImplementation((e) => e as never);
+      jest.spyOn(broadcastRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
 
       await service.copyBroadcastsIntoSeason('season-2', ['b-1']);
 
@@ -118,9 +150,9 @@ describe('EventBroadcastService', () => {
         { guid: 'b-1', name: 'Zoom' },
         { guid: 'b-2', name: 'Teams' }
       ] as EventBroadcast[]);
-      jest
-        .spyOn(broadcastRepo, 'create')
-        .mockImplementation((e) => ({ ...(e as object), save: jest.fn().mockResolvedValue(e) }) as never);
+      jest.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
+      jest.spyOn(broadcastRepo, 'create').mockImplementation((e) => e as never);
+      jest.spyOn(broadcastRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
 
       const copied = await service.copyBroadcastsIntoSeason('season-2', ['b-1', 'b-2']);
 
@@ -129,19 +161,14 @@ describe('EventBroadcastService', () => {
     });
 
     /**
-     * Documents current behaviour rather than endorsing it.
-     *
-     * A failed lookup is wrapped as 422 by the outer catch, not 500 -- so a database outage is
-     * reported to the client as "you sent something unprocessable". The nested inner try around
-     * `return Promise.all(...)` is separately unreachable: nothing inside it is awaited, so a
-     * rejection escapes after the block has already exited.
+     * A failed lookup was wrapped as 422, so a database outage reached the client as "you sent something
+     * unprocessable". Since the shared copy (#3324) it is not caught at all, and Nest answers it 500.
      */
-    it('reports a lookup failure as 422 rather than 500', async () => {
+    it('lets a lookup failure through rather than calling it the request\'s fault', async () => {
+      jest.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
       jest.spyOn(broadcastRepo, 'find').mockRejectedValue(new Error('connection lost'));
 
-      await expect(service.copyBroadcastsIntoSeason('season-2', ['b-1'])).rejects.not.toThrow(
-        InternalServerErrorException
-      );
+      await expect(service.copyBroadcastsIntoSeason('season-2', ['b-1'])).rejects.toThrow('connection lost');
     });
   });
 
@@ -199,5 +226,58 @@ describe('EventBroadcastService', () => {
       expect(first.broadcast).toBeNull();
       expect(second.broadcast).toBeNull();
     });
+  });
+
+  /** #3032: a broadcast's admin page lists the sessions that use it. */
+  describe('.getSessions()', () => {
+    it('gives the sessions that use the broadcast, each with its day and place, for the admin page', async () => {
+      const sessions = [{ guid: 'e-1', name: 'Keynote' }];
+      jest.spyOn(broadcastRepo, 'findOne').mockResolvedValue({ guid: 'b-1', events: sessions } as unknown as EventBroadcast);
+
+      await expect(service.getSessions('b-1')).resolves.toEqual(sessions);
+      expect(broadcastRepo.findOne).toHaveBeenCalledWith({
+        where: { guid: 'b-1' },
+        relations: { events: { day: true, location: { place: true } } }
+      });
+    });
+
+    it('answers 404 for a broadcast that does not exist', async () => {
+      jest.spyOn(broadcastRepo, 'findOne').mockResolvedValue(null);
+
+      await expect(service.getSessions('b-x')).rejects.toThrow(NotFoundException);
+    });
+
+    it('is for admins only: it lists sessions hidden from the public schedule too', () => {
+      const handler = EventBroadcastController.prototype.getSessions;
+
+      expect(Reflect.getMetadata(GUARDS_METADATA, handler)).toEqual(expect.arrayContaining([JwtGuard, PermissionsGuard]));
+      expect(Reflect.getMetadata('Permissions', handler)[0]).toEqual(['update:event-broadcasts']);
+    });
+  });
+});
+
+/**
+ * #3048. A broadcast belongs to an organization (a place), as a venue does, so each site's admin can list only its own
+ * organizations' Zooms. Every read the admin pages make carries it: the lists, which each site filters by it, and one
+ * broadcast, whose page shows and saves it.
+ */
+describe("EventBroadcast's organization", () => {
+  it('is a place, which may be empty until one is set', () => {
+    const relation = getMetadataArgsStorage().relations.find(
+      (r) => r.target === EventBroadcast && r.propertyName === 'place'
+    );
+
+    expect(relation?.relationType).toBe('many-to-one');
+    expect((relation?.type as () => unknown)()).toBe(Place);
+    expect(relation?.options.nullable).toBe(true);
+  });
+
+  it('is read with one broadcast, for its admin page', async () => {
+    const findOne = jest.fn().mockResolvedValue({ guid: 'b-1', place: { guid: 'tamu' } });
+    const controller = new EventBroadcastController({ findOne } as unknown as EventBroadcastService);
+
+    await controller.getEntity('b-1');
+
+    expect(findOne).toHaveBeenCalledWith({ where: { guid: 'b-1' }, relations: { place: true } });
   });
 });

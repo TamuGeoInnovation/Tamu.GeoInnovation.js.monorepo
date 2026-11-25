@@ -239,7 +239,6 @@
         "libs/ts/events/ngx/**/*",
         "libs/ues/common/ngx/**/*",
         "libs/ues/operations/ngx/**/*",
-        "libs/ui-kits/ngx/animations/**/*",
         "libs/ui-kits/ngx/branding/**/*",
         "libs/ui-kits/ngx/forms/**/*",
         "libs/ui-kits/ngx/interactions/clipboard/**/*",

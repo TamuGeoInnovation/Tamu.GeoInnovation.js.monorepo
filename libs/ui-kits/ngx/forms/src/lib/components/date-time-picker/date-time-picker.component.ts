@@ -5,7 +5,8 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { TooltipComponent, TooltipTriggerComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 import { DatePipe } from '@angular/common';
 import { MATERIAL_ANIMATIONS, provideNativeDateAdapter } from '@angular/material/core';
-import { MatTimepicker, MatTimepickerInput } from '@angular/material/timepicker';
+import { MatDatepicker, MatDatepickerInput, MatDatepickerToggle } from '@angular/material/datepicker';
+import { MatTimepicker, MatTimepickerInput, MatTimepickerToggle } from '@angular/material/timepicker';
 
 /**
  * The finest and coarsest units a picker offers, in the vocabulary of the library this component used
@@ -22,12 +23,12 @@ export class DateTimePickerChange<D = Date> {
 }
 
 /**
- * Which native input renders a picker, from the units it offers.
+ * What a picker picks, from the units it offers.
  *
  * A picker whose coarsest unit is the hour picks a time of day; one whose finest unit is the day or
  * coarser picks a date; anything else picks both.
  */
-export function inputTypeFor(minView: DateTimePickerView, maxView: DateTimePickerView): 'time' | 'date' | 'datetime-local' {
+export function pickerKindFor(minView: DateTimePickerView, maxView: DateTimePickerView): 'time' | 'date' | 'date-time' {
   if (maxView === 'hour' || maxView === 'minute') {
     return 'time';
   }
@@ -36,10 +37,8 @@ export function inputTypeFor(minView: DateTimePickerView, maxView: DateTimePicke
     return 'date';
   }
 
-  return 'datetime-local';
+  return 'date-time';
 }
-
-const pad = (n: number) => n.toString().padStart(2, '0');
 
 function startOfToday() {
   const today = new Date();
@@ -53,65 +52,42 @@ export function isValidDate(value: unknown): value is Date {
   return value instanceof Date && !isNaN(value.getTime());
 }
 
-/** A `Date` as a native input's value, in local time. Empty for a missing or invalid value. */
-export function toInputValue(date: Date, type: ReturnType<typeof inputTypeFor>): string {
-  if (!isValidDate(date)) {
-    return '';
+/**
+ * `picked`'s day with `base`'s time of day, in local time. A missing or invalid base (a stored time that could
+ * not be read, #1772) leaves midnight, so the field can still be corrected.
+ */
+export function withDate(base: Date | null, picked: Date): Date {
+  const next = new Date(picked.getFullYear(), picked.getMonth(), picked.getDate());
+
+  if (isValidDate(base)) {
+    next.setHours(base.getHours(), base.getMinutes(), 0, 0);
   }
 
-  const day = `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
-  const time = `${pad(date.getHours())}:${pad(date.getMinutes())}`;
-
-  return type === 'time' ? time : type === 'date' ? day : `${day}T${time}`;
+  return next;
 }
 
 /**
- * A native input's value as a `Date`, in local time. A time keeps `base`'s date, and a date keeps
- * `base`'s time, so picking one half never loses the other. Returns `null` for an empty or invalid value.
+ * `base`'s day with `picked`'s hours and minutes, in local time. A missing or invalid base takes today's date
+ * (#1772): the time picker knows nothing of the date a time belongs to.
  */
-export function fromInputValue(raw: string, type: ReturnType<typeof inputTypeFor>, base: Date): Date | null {
-  // A missing or invalid base (a stored time that could not be read, #1772) would make every choice
-  // invalid too, so the field could never be corrected. Today stands in for it.
-  const result = isValidDate(base) ? new Date(base.getTime()) : startOfToday();
+export function withTime(base: Date | null, picked: Date): Date {
+  const next = isValidDate(base) ? new Date(base.getTime()) : startOfToday();
+  next.setHours(picked.getHours(), picked.getMinutes(), 0, 0);
 
-  if (type === 'time') {
-    const m = /^(\d{2}):(\d{2})/.exec(raw);
-
-    if (!m) {
-      return null;
-    }
-
-    result.setHours(+m[1], +m[2], 0, 0);
-
-    return result;
-  }
-
-  const m = /^(\d{4})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2}))?/.exec(raw);
-
-  if (!m) {
-    return null;
-  }
-
-  result.setFullYear(+m[1], +m[2] - 1, +m[3]);
-
-  if (type === 'datetime-local' && m[4] !== undefined) {
-    result.setHours(+m[4], +m[5], 0, 0);
-  }
-
-  return result;
+  return next;
 }
 
 /**
  * A date and/or time picker, as a form control.
  *
- * Renders the browser's own date or date-time input inside a tooltip. It wrapped
- * `angular-bootstrap-datetimepicker` until #1220: that library has no Ivy release and only worked because
- * `ngcc` rewrote it, which Angular 16 removes. The inputs and the `changed` output are unchanged.
+ * Inside a tooltip, a date is Angular Material's date field with its calendar, and a time is its time field
+ * with the list of times in steps of `minuteStep`. Each can be typed or chosen, and takes effect when it is
+ * complete: when a date or time is chosen, or a typed one is left or entered, never on a single key.
  *
- * A time of day is Angular Material's time picker instead: a field to type in with the list of times,
- * in steps of `minuteStep`, open beside it. The browser's own time input only offers its list after a
- * second click on a small icon, and in some browsers not at all, which left the GIS Day event form with
- * nothing to choose from (#1747).
+ * Until #2583 a date and time was the browser's own `datetime-local` box, which reports a change on every key
+ * once it holds a whole value, and the picker closed on the first: typing "30" into the minutes kept only the
+ * 3, and setting the VGI scoring window took four saves. Before #1220 it wrapped
+ * `angular-bootstrap-datetimepicker`, whose inputs and `changed` output it keeps, so no caller had to change.
  */
 @Component({
   selector: 'tamu-gisc-date-time-picker',
@@ -123,13 +99,23 @@ export function fromInputValue(raw: string, type: ReturnType<typeof inputTypeFor
       useExisting: forwardRef(() => DateTimePickerComponent),
       multi: true
     },
-    // Provided here, not by each application, so that no caller has to change to get the time picker.
+    // Provided here, not by each application, so that no caller has to change to get the pickers.
     provideNativeDateAdapter(),
-    // Without its fade, the list of times leaves the page the moment it closes. With it, the list waits
-    // for an animation to end, and that never happens once the tooltip around it has been taken away.
+    // Without their fade, the calendar and the list of times leave the page the moment they close. With it,
+    // they wait for an animation to end, and that never happens once the tooltip around them has been taken away.
     { provide: MATERIAL_ANIMATIONS, useValue: { animationsDisabled: true } }
   ],
-  imports: [TooltipComponent, TooltipTriggerComponent, DatePipe, MatTimepicker, MatTimepickerInput]
+  imports: [
+    TooltipComponent,
+    TooltipTriggerComponent,
+    DatePipe,
+    MatDatepicker,
+    MatDatepickerInput,
+    MatDatepickerToggle,
+    MatTimepicker,
+    MatTimepickerInput,
+    MatTimepickerToggle
+  ]
 })
 export class DateTimePickerComponent implements ControlValueAccessor, AfterViewInit {
   // Get reference for the tooltip component rendered inside this date time picker component.
@@ -138,29 +124,32 @@ export class DateTimePickerComponent implements ControlValueAccessor, AfterViewI
   // emits a value change.
   private readonly tooltipComponent = viewChild(TooltipComponent);
 
-  // The list of times, when this picker picks a time of day. It exists whether or not the tooltip is
-  // open: what a component is handed to project is created with it, and only shown when projected.
+  // The calendar and the list of times. Each exists whether or not the tooltip is open: what a component is
+  // handed to project is created with it, and only shown when projected.
+  private readonly datepicker = viewChild(MatDatepicker);
   private readonly timepicker = viewChild(MatTimepicker);
 
   private readonly destroyRef = inject(DestroyRef);
 
   public ngAfterViewInit() {
-    // Opening the picker is what the user asked for, so the list of times opens with it, not after a
-    // second click on the field, and goes when it goes. It must not open before then: the list is drawn
-    // beside its field, and until the tooltip is open the field is nowhere on the page.
+    // A picker of one thing opens its calendar or its list of times with it, not after a second click, and
+    // closes it when it goes. It must not open before then: either is drawn beside its field, and until the
+    // tooltip is open the field is nowhere on the page. A picker of both opens neither: which comes first is
+    // the user's choice.
     this.tooltipComponent()
       .tooltipContentVisible.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((visible) => {
-        const timepicker = this.timepicker();
-
-        if (!timepicker) {
-          return;
-        }
+        const kind = this.kind;
 
         if (visible) {
-          timepicker.open();
+          if (kind === 'time') {
+            this.timepicker()?.open();
+          } else if (kind === 'date') {
+            this.datepicker()?.open();
+          }
         } else {
-          timepicker.close();
+          this.datepicker()?.close();
+          this.timepicker()?.close();
         }
       });
   }
@@ -180,7 +169,7 @@ export class DateTimePickerComponent implements ControlValueAccessor, AfterViewI
   public readonly maxView = input<DateTimePickerView>('month');
 
   /**
-   * Accepted for compatibility with existing templates. The native input always opens on its own view.
+   * Accepted for compatibility with existing templates. The calendar always opens on its month.
    */
   public readonly startView = input<DateTimePickerView>('day');
 
@@ -220,19 +209,15 @@ export class DateTimePickerComponent implements ControlValueAccessor, AfterViewI
     this._onTouched();
   }
 
-  public get inputType() {
-    return inputTypeFor(this.minView(), this.maxView());
-  }
-
-  public get inputValue() {
-    return toInputValue(this._value(), this.inputType);
+  public get kind() {
+    return pickerKindFor(this.minView(), this.maxView());
   }
 
   /**
-   * The value as the time picker reads it. The same `Date` between changes: a new object on every read
-   * would look like a new value to the picker each time the view is checked.
+   * The value as the date and time fields read it. The same `Date` between changes: a new object on every read
+   * would look like a new value to them each time the view is checked.
    */
-  public get timeValue() {
+  public get fieldValue() {
     const value = this._value();
 
     return isValidDate(value) ? value : null;
@@ -243,11 +228,6 @@ export class DateTimePickerComponent implements ControlValueAccessor, AfterViewI
     return `${this.minuteStep()}min`;
   }
 
-  /** The native input's step, in seconds. Dates step by day, which is the input's default. */
-  public get step() {
-    return this.inputType === 'date' ? undefined : this.minuteStep() * 60;
-  }
-
   private _onChange = (v) => {
     return v;
   };
@@ -256,35 +236,30 @@ export class DateTimePickerComponent implements ControlValueAccessor, AfterViewI
     return;
   };
 
-  public handleInputChange(raw: string) {
-    const picked = fromInputValue(raw, this.inputType, this._value());
+  /**
+   * A date chosen from the calendar, or typed and then left or entered. It keeps the time already set. An emptied
+   * field clears the value: the form is told, and `changed`, which carries a date, is not emitted.
+   */
+  public handleDatePicked(picked: Date | null) {
+    const current = this.fieldValue;
 
     if (picked === null) {
+      if (current !== null) {
+        this.value = null;
+      }
+
       return;
     }
 
-    this.value = picked;
-
-    this.tooltipComponent().isVisible.set(false);
-
-    this.changed.emit(new DateTimePickerChange(picked));
-  }
-
-  /**
-   * A time chosen from the list or typed into the field. Only its hours and minutes are taken: the
-   * time picker knows nothing of the date this value belongs to.
-   */
-  public handleTimePicked(picked: Date | null) {
-    const value = this._value();
-    const current = isValidDate(value) ? value : null;
-
-    if (!isValidDate(picked) || (current && picked.getHours() === current.getHours() && picked.getMinutes() === current.getMinutes())) {
+    if (!isValidDate(picked)) {
       return;
     }
 
-    // Built on the current value's date, or today's when there is no valid value to build on (#1772).
-    const next = current ? new Date(current.getTime()) : startOfToday();
-    next.setHours(picked.getHours(), picked.getMinutes(), 0, 0);
+    const next = withDate(current, picked);
+
+    if (current && next.getTime() === current.getTime()) {
+      return;
+    }
 
     this.value = next;
 
@@ -292,15 +267,42 @@ export class DateTimePickerComponent implements ControlValueAccessor, AfterViewI
   }
 
   /**
-   * The list of times and the tooltip go together: once the list has closed, on a choice, Enter, Escape
-   * or a click elsewhere, a tooltip holding only the field has nothing left to offer.
+   * A time chosen from the list or typed into the field. Only its hours and minutes are taken: the time picker
+   * knows nothing of the date this value belongs to.
    */
-  public close() {
-    this.tooltipComponent().isVisible.set(false);
+  public handleTimePicked(picked: Date | null) {
+    const current = this.fieldValue;
+
+    if (!isValidDate(picked) || (current && picked.getHours() === current.getHours() && picked.getMinutes() === current.getMinutes())) {
+      return;
+    }
+
+    const next = withTime(current, picked);
+
+    this.value = next;
+
+    this.changed.emit(new DateTimePickerChange(next));
   }
 
+  /**
+   * A picker of one thing goes with its calendar or list: once that has closed, on a choice, Enter, Escape or a
+   * click elsewhere, a tooltip holding only the field has nothing left to offer. A picker of both goes when its
+   * list of times closes, the second of its two steps; after a date it stays, for the time.
+   */
+  public pickerClosed(which: 'date' | 'time') {
+    const kind = this.kind;
+
+    if (kind === which || (kind === 'date-time' && which === 'time')) {
+      this.tooltipComponent().isVisible.set(false);
+    }
+  }
+
+  /**
+   * Shows a value from the form without reporting it back as a change or a touch: a form loaded with a record would
+   * otherwise count as changed the moment it opened (#2964).
+   */
   public writeValue(v) {
-    this.value = v;
+    this._value.set(isValidDate(v) ? new Date(v.getTime()) : null);
   }
 
   public registerOnChange(fn) {

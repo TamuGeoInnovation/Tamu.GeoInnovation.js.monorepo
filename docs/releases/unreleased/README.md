@@ -11,14 +11,19 @@ directory empties.
 
 ## AggieMap and GIS Day are released separately, and so are their notes
 
-The script collates **everything here into `unreleased.md`**, which is AggieMap's. GIS Day ships on its own
-path ([Releasing GIS Day](../README.md#releasing-gis-day)), and its entries belong in
-[`gisday-unreleased.md`](../gisday-unreleased.md) instead.
+GIS Day ships on its own path ([Releasing GIS Day](../README.md#releasing-gis-day)), so **a GIS Day entry says
+`app: gisday`** in its front matter, and the script collates it into
+[`gisday-unreleased.md`](../gisday-unreleased.md). An entry with no `app:` is AggieMap's and goes into
+`unreleased.md`, as every entry did before.
 
-**So a GIS Day entry has to be moved by hand after collating, until the script can route it**
-([#2835](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2835)). If you skip that,
-the GIS Day entries land in an AggieMap release's dated notes and read as though that release shipped them -
-which is exactly what the 10 November notes did until somebody read the finished document.
+**`--check` fails a GIS Day-looking entry that does not say which it is**: one that links txgisday.org,
+gisday.tamu.edu or gisday.ucgis.org with no `app:`. The 10 November notes were collated with 23 GIS Day entries
+among AggieMap's, so an AggieMap release read as though it shipped them, and nobody noticed until the finished
+document had been shared ([#2835](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2835)).
+An AggieMap change that links a GIS Day site says `app: aggiemap`.
+
+The check cannot see a GIS Day entry that links none of those sites, such as a change to the VGI layer on ArcGIS
+Online. Its author has to remember `app: gisday`.
 
 ## Why one file each
 
@@ -60,6 +65,8 @@ layers in the service's colours.
 
 - **`issue`** orders the collated notes and is checked against the file name.
 - **`title`** is only for the collation summary; the `###` heading in the body is what readers see.
+- **`app`** is the application the change ships in: `gisday` for GIS Day. Leave it out for AggieMap. Any
+  other value needs its own `docs/releases/<app>-unreleased.md`, and `--check` fails until it exists.
 - **`testOnDev`** is the row, or rows, for *What to test on dev*. Omit it only when the change cannot
   be checked on dev, and say why in the entry.
 - **Image paths are relative to `docs/releases/`**, not to this directory - `../screenshots/...` -

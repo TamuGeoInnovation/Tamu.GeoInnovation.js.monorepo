@@ -21,6 +21,16 @@
   border-bottom: 1px solid vars.$accent-grey;
 }
 
+// Asking before a file is removed (#3105): a line of its own under the file, its buttons side by side after the question.
+.file-confirm {
+  flex-basis: 100%;
+  margin: 0.25rem 0 0;
+}
+
+.file-confirm-actions {
+  gap: 0.5rem;
+}
+
 // The global .inline-link, on a button: the reset only takes away what a button adds.
 button.inline-link {
   background: none;
@@ -66,4 +76,22 @@ tamu-gisc-file.button {
 
 progress {
   flex: 1 1 8rem;
+}
+
+// A PDF shown under the list (#3090): its name and the buttons that page through the PDFs, then the browser's own viewer,
+// as wide as the list and most of the window high, so a poster can be read without opening it elsewhere.
+.file-preview {
+  margin: 0.75rem 0;
+}
+
+.file-preview-actions {
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.file-preview-frame {
+  display: block;
+  width: 100%;
+  height: 75vh;
+  border: 1px solid vars.$accent-grey;
 }

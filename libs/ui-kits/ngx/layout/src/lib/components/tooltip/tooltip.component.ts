@@ -89,11 +89,16 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
   private _$destroy: Subject<boolean> = new Subject();
 
   /**
-   * Detects if interaction clicks are within the component to reset the visibility
+   * Detects if interaction clicks are within the component to reset the visibility.
+   *
+   * A calendar or a list of times opened from inside the tooltip is drawn by Angular Material in an overlay at
+   * the end of <body>, so a click on it is a click inside the tooltip's own content, not outside it (#2583).
    */
   @HostListener('document:mousedown', ['$event'])
   public clickOutside(event) {
-    if (this.isVisible() && !this.elementRef.nativeElement.contains(event.target)) {
+    const inOverlay = event.target instanceof Element && event.target.closest('.cdk-overlay-container') !== null;
+
+    if (this.isVisible() && !inOverlay && !this.elementRef.nativeElement.contains(event.target)) {
       this.isVisible.set(false);
     }
   }
@@ -146,8 +151,23 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
   /**
    * Performs a search in a clockwise manner around a `reference` to place an `element` relative to it without
    * exceeding the `boundary`.
+   *
+   * When no spot around it fits whole, as for the date-time picker's 20rem popup near either edge of a phone (#1756),
+   * the element goes below the reference, or above it if it does not fit below, slid sideways to stay inside the
+   * boundary. Before, it took the last spot tried, left of the reference, and went off the screen.
    */
   private calculateOffset(reference: PartialDomRect, element: PartialDomRect, boundary: PartialDomRect): IOffsetCoordinates {
+    const BUFFER = 10;
+    const fits = (x: number, y: number) =>
+      y > 0 &&
+      y < boundary.height &&
+      x > 0 &&
+      x < boundary.width &&
+      y + element.height < boundary.height &&
+      x + element.width < boundary.width;
+    // Slid sideways, as little as it takes, to keep the whole element inside the boundary's width.
+    const slide = (x: number) => Math.max(BUFFER, Math.min(x, boundary.width - element.width - BUFFER));
+
     let x, y;
 
     // Dictionary of 4 locations, in a clockwise direction
@@ -161,24 +181,33 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
     // pyl = possible y location
     // pxl = possible x location
     for (const [pyl, pxl] of possibleLocations) {
-      y = this.calculateY(reference, element, pyl, 10);
-      x = this.calculateX(reference, element, pxl, 10);
+      y = this.calculateY(reference, element, pyl, BUFFER);
+      x = this.calculateX(reference, element, pxl, BUFFER);
 
-      // Check if determined coordinates within the boundary extent
-      //
-      // Check if initial offsets (top left of element) are inside the boundary.
-      if (y > 0 && y < boundary.height && x > 0 && x < boundary.width) {
-        // Check if the entire container at those offsets is within the boundary.
-        if (y + element.height < boundary.height && x + element.width < boundary.width) {
-          break;
-        }
+      // The whole element at those offsets is within the boundary.
+      if (fits(x, y)) {
+        return { x, y };
       }
     }
 
-    return {
-      x,
-      y
-    };
+    // Nothing fits whole: below the reference, or above it, slid sideways onto the screen (#1756).
+    x = slide(this.calculateX(reference, element, 'center', BUFFER));
+
+    for (const pole of ['bottom', 'top'] as const) {
+      y = this.calculateY(reference, element, pole, BUFFER);
+
+      if (fits(x, y)) {
+        return { x, y };
+      }
+    }
+
+    // Not even that: below it, kept inside the boundary as far as it can be.
+    y = Math.max(
+      BUFFER,
+      Math.min(this.calculateY(reference, element, 'bottom', BUFFER), boundary.height - element.height - BUFFER)
+    );
+
+    return { x, y };
   }
 
   /**

@@ -96,7 +96,7 @@
                   }
                   <tamu-gisc-image-preview #preview [src]="photoSrc()" [alt]="photoPreview() ? 'The photo you chose' : 'Your current photo'" fallback="person" fallbackLabel="No photo yet"></tamu-gisc-image-preview>
                 </div>
-                <tamu-gisc-file class="button snug" accept="image/jpeg,image/png" (fileSelected)="choosePhoto($event)">Choose a photo</tamu-gisc-file>
+                <tamu-gisc-file class="button snug" [accept]="photoPicker.accept" (fileSelected)="choosePhoto($event)">Choose a photo</tamu-gisc-file>
               </div>
               @if (p.pending?.photo && !photo()) {
               <p class="form-input-description">You already sent a new photo; it is waiting for review.</p>
@@ -118,6 +118,30 @@
       </form>
       } @else {
       <div class="loader"></div>
+      } @if (profile() && sessions()?.length > 0) {
+      <!-- Each session the speaker presents, with their own slides for it (#3093): up to three files, kept as soon as chosen, with no review, and seen by the speaker and the GIS Day team only. -->
+      <div class="form leader-2">
+        <div class="form-section">
+          <div class="form-section-toolbar">
+            <div class="form-section-title">Your sessions</div>
+          </div>
+          <div class="form-section-body">
+            <p class="form-input-description">Upload your slides for each session you present, as PDF or PowerPoint files, up to three for each session. They are saved as soon as you choose them, without review. Only you and the GIS Day team can see the files you upload; another speaker on the same session uploads their own.</p>
+            @for (item of sessions(); track item.session.guid) {
+            <div class="form-collection column leader-1">
+              <p class="bold">{{ item.session.name }}</p>
+              <p class="form-input-description">@if (item.session.date) {{{ item.session.date | date: 'EEEE, MMMM d' : '-0600' }}} @else {No day set yet} @if (item.session.date && item.session.startTime) { · {{ item.session.date | parseDateTimeStrings: item.session.startTime | date: 'h:mm a' : '-0600' }}@if (item.session.endTime) {–{{ item.session.date | parseDateTimeStrings: item.session.endTime | date: 'h:mm a' : '-0600' }}} } @if (item.session.place) { · {{ item.session.place }} }</p>
+              @if (item.session.noSlides) {
+              <!-- A session with no slides (#3147): nothing to upload. -->
+              <p class="form-input-description">{{ noSlides }}</p>
+              } @else {
+              <tamu-gisc-submission-files [source]="item.slides" [editable]="true" [limitMessage]="sessionFilesLimit" pickLabel="Upload slides" emptyLabel="No slides uploaded yet."></tamu-gisc-submission-files>
+              }
+            </div>
+            }
+          </div>
+        </div>
+      </div>
       }
     </div>
   </div>

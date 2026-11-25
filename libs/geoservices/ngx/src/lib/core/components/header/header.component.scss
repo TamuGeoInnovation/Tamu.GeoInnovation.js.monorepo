@@ -1,4 +1,5 @@
 @import 'libs/sass/mixins';
+@import 'libs/sass/motion';
 
 header {
   position: relative;
@@ -163,4 +164,9 @@ nav {
   .no-pointer {
     pointer-events: none !important;
   }
+}
+
+// The submenu rows grow open and shrink closed (animate.enter/leave in the template).
+.row__content {
+  @include grow(250px, growing, shrinking);
 }

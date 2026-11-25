@@ -1,10 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { tap } from 'rxjs';
 
-import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { LatLon } from '@tamu-gisc/common/utils/geometry';
-import { CheckIn } from '@tamu-gisc/gisday/platform/data-api';
+import { CheckIn, CheckInDashboard, CheckInDashboardPerson } from '@tamu-gisc/gisday/platform/data-api';
 
 import { BaseService } from '../_base/base.service';
 
@@ -13,7 +11,6 @@ import { BaseService } from '../_base/base.service';
 })
 export class CheckinService extends BaseService<CheckIn> {
   private http1 = inject(HttpClient);
-  private ns = inject(NotificationService);
 
   public resource: string;
 
@@ -27,6 +24,16 @@ export class CheckinService extends BaseService<CheckIn> {
    */
   public override createEntity(checkin?: Partial<CheckIn> & { userGuid?: string; eventGuid?: string }) {
     return this.http1.post<Partial<CheckIn>>(`${this.resource}/admin`, checkin);
+  }
+
+  /** The admin check-in dashboard for a season: each event's check-ins by person type, and its RSVPs (#3006). */
+  public getDashboardForSeason(seasonGuid: string) {
+    return this.http1.get<CheckInDashboard>(`${this.resource}/dashboard/season/${seasonGuid}`);
+  }
+
+  /** Who checked in at one event, and when, marked when outside the session's time, for the expanded row and its CSV. */
+  public getDashboardForEvent(eventGuid: string) {
+    return this.http1.get<Array<CheckInDashboardPerson>>(`${this.resource}/dashboard/event/${eventGuid}`);
   }
 
   public getUserCheckins() {
@@ -57,25 +64,15 @@ export class CheckinService extends BaseService<CheckIn> {
    * @param code The code from the session's QR code, which a hybrid or virtual session needs (#2560).
    *
    * A failure is passed on as the API sent it, with no message here: the page shows the API's
-   * reason beside the button.
+   * reason beside the button. A success raises no pop-up either: each page says the outcome in its own words (#3089).
    */
   public insertUserCheckin(eventGuid: string, position?: LatLon & { accuracy?: number }, code?: string) {
-    return this.http1
-      .post(`${this.resource}`, {
-        eventGuid: eventGuid,
-        latitude: position?.latitude,
-        longitude: position?.longitude,
-        accuracy: position?.accuracy,
-        code: code
-      })
-      .pipe(
-        tap(() => {
-          this.ns.toast({
-            id: 'checkin-create-success',
-            title: 'Event Check-In',
-            message: `Successfully checked-in for this event.`
-          });
-        })
-      );
+    return this.http1.post(`${this.resource}`, {
+      eventGuid: eventGuid,
+      latitude: position?.latitude,
+      longitude: position?.longitude,
+      accuracy: position?.accuracy,
+      code: code
+    });
   }
 }

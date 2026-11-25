@@ -223,7 +223,6 @@ export const AprilRingDayEvent: AggiemapCustomMapConfiguration = {
     source: 'internal',
     type: 'event',
     columnKey: 'spring',
-    visible: false,
     keywords: ['ring', 'day', 'aggie', 'ring day', 'transportation', 'parking', 'celebration']
   }
 };

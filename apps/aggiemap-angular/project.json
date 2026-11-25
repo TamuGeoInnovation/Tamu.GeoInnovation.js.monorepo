@@ -19,7 +19,11 @@
         },
         "tsConfig": "apps/aggiemap-angular/tsconfig.app.json",
         "assets": [
-          "apps/aggiemap-angular/src/favicon.ico",
+          {
+            "glob": "favicon.ico",
+            "input": "./libs/assets/images/logo/",
+            "output": "/"
+          },
           "apps/aggiemap-angular/src/assets",
           "apps/aggiemap-angular/src/Dockerfile",
           "apps/aggiemap-angular/src/.dockerignore",

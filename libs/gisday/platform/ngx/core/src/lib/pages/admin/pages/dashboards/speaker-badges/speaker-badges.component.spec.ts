@@ -9,7 +9,17 @@ import { SeasonService, SpeakerService } from '@tamu-gisc/gisday/platform/ngx/da
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
-import { badgesCsv, badgesOf, badgeText, matchesBadge, organizationOf, shownBy, sortBadges, SpeakerBadgesComponent } from './speaker-badges.component';
+import {
+  badgesCsv,
+  badgesOf,
+  badgeText,
+  matchesBadge,
+  organizationOf,
+  shownBy,
+  sortBadges,
+  SpeakerBadge,
+  SpeakerBadgesComponent
+} from './speaker-badges.component';
 
 const tamu = { name: 'Texas A&M University', acronym: 'TAMU' };
 const speakers = [
@@ -94,11 +104,11 @@ describe('sortBadges() and badgesCsv()', () => {
 });
 
 describe('SpeakerBadgesComponent', () => {
-  let service: { getParticipatingPresentersForSeason: jest.Mock; markBadgesPrinted: jest.Mock; clearBadgesPrinted: jest.Mock };
+  let service: { getAllParticipatingPresentersForSeason: jest.Mock; markBadgesPrinted: jest.Mock; clearBadgesPrinted: jest.Mock };
 
   async function open(rows: Array<Partial<Speaker>> = speakers) {
     service = {
-      getParticipatingPresentersForSeason: jest.fn(() => of(rows)),
+      getAllParticipatingPresentersForSeason: jest.fn(() => of(rows)),
       markBadgesPrinted: jest.fn(() => of({ marked: 1 })),
       clearBadgesPrinted: jest.fn(() => of({ cleared: 1 }))
     };
@@ -130,11 +140,12 @@ describe('SpeakerBadgesComponent', () => {
   const csvLastNames = (csv: string) => Papa.parse<Record<string, string>>(csv, { header: true }).data.map((r) => r['Last name']);
   const link = (root: HTMLElement, text: string) => Array.from(root.querySelectorAll('a, button')).find((a) => a.textContent.includes(text)) as HTMLElement;
 
-  it("lists the season's presenters, as the Presenters page reads them, under the five headings and Printed", async () => {
+  it("lists the season's presenters, every one, photo or not, under the five headings and Printed", async () => {
     const fixture = await open();
     const root = fixture.nativeElement as HTMLElement;
 
-    expect(service.getParticipatingPresentersForSeason).toHaveBeenCalledWith('s-1');
+    // Every presenter, photo or not: the public list leaves out those with no photo, the new finalists among them (#2995).
+    expect(service.getAllParticipatingPresentersForSeason).toHaveBeenCalledWith('s-1');
     expect(Array.from(root.querySelectorAll('.datatable-header-cell-label')).map((h) => h.textContent.trim())).toEqual([
       'First name',
       'Last name',
@@ -182,7 +193,7 @@ describe('SpeakerBadgesComponent', () => {
       { guid: 'g-lee', text: 'Ana|lee|Texas A&M University|' }
     ]);
     // The badges are read again, to show what is now printed.
-    expect(service.getParticipatingPresentersForSeason).toHaveBeenCalledTimes(2);
+    expect(service.getAllParticipatingPresentersForSeason).toHaveBeenCalledTimes(2);
     expect(root.querySelector('.badges-confirm')).toBeNull();
   });
 
@@ -255,5 +266,65 @@ describe('SpeakerBadgesComponent', () => {
 
     expect(lastNames(root)).toEqual(['lee', 'Kim']);
     expect(csvLastNames(fixture.componentInstance.csv())).toEqual(['lee', 'Kim']);
+  });
+
+  it('has the X that clears the search, and pressing it lists every badge again (#3051)', async () => {
+    const fixture = await open();
+    const root = fixture.nativeElement as HTMLElement;
+    const clearButton = () => root.querySelector('.badges-search button.textbox-clear') as HTMLButtonElement;
+    expect(clearButton()).toBeNull();
+
+    const input = root.querySelector('.badges-search input') as HTMLInputElement;
+    input.value = 'texas';
+    input.dispatchEvent(new Event('input'));
+    await settle(fixture);
+    expect(lastNames(root)).toEqual(['Kim', 'lee']);
+    expect(clearButton()?.getAttribute('aria-label')).toBe('Clear the search');
+
+    clearButton().click();
+    await settle(fixture);
+
+    expect(fixture.componentInstance.search.value).toBe('');
+    expect(input.value).toBe('');
+    expect(lastNames(root)).toEqual(['Kim', 'lee', 'Young']);
+    expect(clearButton()).toBeNull();
+  });
+});
+
+/**
+ * A name typed as `=`, `+`, `-` or `@` became a formula when the export was opened in Excel (#3332). Made-up badges only.
+ */
+describe('badgesCsv() and formulas', () => {
+  const badge = (over: Partial<SpeakerBadge>): SpeakerBadge => ({
+    guid: 'made-up',
+    firstName: 'Ana',
+    lastName: 'Ng',
+    organization: 'Made-up Mapping',
+    email: 'ana@example.com',
+    formerStudentYear: '',
+    printedAt: null,
+    changedSincePrinted: false,
+    ...over
+  });
+
+  it('writes the file as before, byte for byte', () => {
+    expect(
+      badgesCsv([
+        badge({ lastName: 'Ng, Jr.', formerStudentYear: "'11" }),
+        badge({ firstName: 'Bo', lastName: 'Lee', organization: 'Say "hi"', email: '' })
+      ])
+    ).toBe(
+      'First name,Last name,Company / organization,Email,Former student year\r\n' +
+        "Ana,\"Ng, Jr.\",Made-up Mapping,ana@example.com,'11\r\n" +
+        'Bo,Lee,"Say ""hi""",,'
+    );
+  });
+
+  it('writes a cell that starts as a formula as text', () => {
+    const csv = badgesCsv([
+      badge({ firstName: '=HYPERLINK("https://example.com","x")', lastName: '+1', organization: '-2', email: '@SUM(A1)' })
+    ]);
+
+    expect(csv.split('\r\n')[1]).toBe(`"'=HYPERLINK(""https://example.com"",""x"")","'+1","'-2","'@SUM(A1)",`);
   });
 });

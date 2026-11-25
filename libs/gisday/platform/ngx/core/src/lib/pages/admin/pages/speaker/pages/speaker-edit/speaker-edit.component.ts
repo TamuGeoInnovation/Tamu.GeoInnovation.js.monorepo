@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, viewChild } from '@angular/core';
-import { SpeakerAddEditFormComponent } from '@tamu-gisc/gisday/platform/ngx/common';
+import { SpeakerAddEditFormComponent, provideAdminDetailsPage } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { BaseAdminDetailsPageComponent } from '../../../base-admin-details-page/base-admin-details-page.component';
 
@@ -8,7 +8,8 @@ import { BaseAdminDetailsPageComponent } from '../../../base-admin-details-page/
   templateUrl: './speaker-edit.component.html',
   styleUrls: ['./speaker-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [SpeakerAddEditFormComponent]
+  imports: [SpeakerAddEditFormComponent],
+  providers: [provideAdminDetailsPage(() => SpeakerEditComponent)]
 })
 export class SpeakerEditComponent extends BaseAdminDetailsPageComponent {
   private readonly editor = viewChild(SpeakerAddEditFormComponent);

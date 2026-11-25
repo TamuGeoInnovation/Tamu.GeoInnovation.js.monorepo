@@ -1,11 +1,4 @@
-import {
-  AfterContentInit,
-  Component,
-  HostListener,
-  OnDestroy,
-  inject,
-  contentChild
-} from '@angular/core';
+import { AfterContentInit, Component, HostListener, OnDestroy, inject, contentChild } from '@angular/core';
 import { outputToObservable } from '@angular/core/rxjs-interop';
 import { Subject, takeUntil } from 'rxjs';
 
@@ -19,7 +12,15 @@ import { TileNavigationComponent } from '../tile-navigation/tile-navigation.comp
   selector: 'tamu-gisc-tile',
   templateUrl: './tile.component.html',
   styleUrls: ['./tile.component.scss'],
-  imports: [TileNavigationComponent]
+  imports: [TileNavigationComponent],
+  // The tile itself is the link or button, for the keyboard and screen readers as for a tap (#2588): one tab stop, named
+  // by its title, with Enter (and Space for a submenu) doing what a tap does. A tile with neither stays inert.
+  host: {
+    '[attr.tabindex]': 'submenu() || link() ? 0 : null',
+    '[attr.role]': "submenu() ? 'button' : link() ? 'link' : null",
+    '(keydown.enter)': '_activate($event)',
+    '(keydown.space)': 'submenu() && _activate($event)'
+  }
 })
 export class TileComponent implements AfterContentInit, OnDestroy {
   private service = inject(TileService);
@@ -35,9 +36,11 @@ export class TileComponent implements AfterContentInit, OnDestroy {
   // to subscribe to its click event and toggle the menu.
   public readonly link = contentChild(TileLinkDirective);
 
-  @HostListener('click')
-  protected _tileClick() {
+  @HostListener('click', ['$event'])
+  protected _tileClick(event?: Event) {
     const submenu = this.submenu();
+    const link = this.link();
+
     if (submenu) {
       this.service.updateSubmenu({
         template: submenu.template,
@@ -45,7 +48,15 @@ export class TileComponent implements AfterContentInit, OnDestroy {
       });
 
       this.service.toggleSubmenu(true);
+    } else if (link && !link.contains((event?.target as Node) ?? null)) {
+      // A tap on the tile's icon or padding follows its link, as a tap on its title does (#3198).
+      link.follow();
     }
+  }
+
+  protected _activate(event: Event) {
+    event.preventDefault();
+    this._tileClick(event);
   }
 
   public ngAfterContentInit(): void {

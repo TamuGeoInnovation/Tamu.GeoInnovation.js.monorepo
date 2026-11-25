@@ -18,7 +18,7 @@ import {
 } from 'rxjs';
 
 import { ActiveSeasonDto, Season } from '@tamu-gisc/gisday/platform/data-api';
-import { SubmissionDeadlines } from '@tamu-gisc/gisday/common';
+import { SubmissionDeadlines, CompetitionSettingsInput } from '@tamu-gisc/gisday/common';
 
 import { BaseService } from '../_base/base.service';
 import { noSeasonAs } from '../_base/no-season';
@@ -174,6 +174,20 @@ export class SeasonService extends BaseService<Season> {
   public setSubmissionDeadlines(guid: string, deadlines: SubmissionDeadlines) {
     return this.http1
       .patch<SubmissionDeadlines>(`${this.resource}/${guid}/submission-deadlines`, deadlines)
+      .pipe(tap(() => this._signal$.next()));
+  }
+
+  /** Sets which research competitions the season runs (#2948): at least one; every one is stored as no rows. */
+  public setCompetitionTypes(guid: string, competitionTypes: Array<string>) {
+    return this.http1
+      .patch<{ competitionTypes: Array<string> }>(`${this.resource}/${guid}/competition-types`, { competitionTypes })
+      .pipe(tap(() => this._signal$.next()));
+  }
+
+  /** Sets each listed competition's sessions and finalists date for the season (#3019). */
+  public setCompetitionSettings(guid: string, settings: Array<CompetitionSettingsInput>) {
+    return this.http1
+      .patch<{ saved: number }>(`${this.resource}/${guid}/competition-settings`, { settings })
       .pipe(tap(() => this._signal$.next()));
   }
 

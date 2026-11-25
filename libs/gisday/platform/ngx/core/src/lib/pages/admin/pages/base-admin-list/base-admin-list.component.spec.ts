@@ -2,8 +2,9 @@ import { Component } from '@angular/core';
 import { Location } from '@angular/common';
 import { provideLocationMocks } from '@angular/common/testing';
 import { TestBed } from '@angular/core/testing';
+import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { EMPTY, firstValueFrom, of } from 'rxjs';
+import { EMPTY, firstValueFrom, of, throwError } from 'rxjs';
 
 import { BaseService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
@@ -131,6 +132,93 @@ describe('BaseAdminListComponent search', () => {
   });
 });
 
+@Component({ template: '', standalone: false })
+class FilteredListComponent extends SearchedListComponent {
+  /** A filter of the page's own, as the Events list has: 'esri' keeps only Esri. */
+  public readonly only = new FormControl('', { nonNullable: true });
+
+  protected override listFilters(): Record<string, FormControl<string>> {
+    return { ...super.listFilters(), only: this.only };
+  }
+
+  protected override keepEntity(entity: Partial<Named>): boolean {
+    return this.only.value !== 'esri' || entity.name === 'Esri';
+  }
+}
+
+/**
+ * #3049. When the search or a page's filter hid every row, an admin list said the season had none ("There are no events
+ * for the selected season"), which reads as if the season had lost them. The list now tells the two apart, and its
+ * search and filters can be cleared at once.
+ */
+describe('BaseAdminListComponent with nothing shown', () => {
+  function open<C extends BaseAdminListComponent<Named>>(type: new (...args: Array<never>) => C, active: { guid: string } | null) {
+    TestBed.configureTestingModule({
+      declarations: [type],
+      providers: [
+        { provide: SeasonService, useValue: { seasons$: of([]), activeSeason$: of(active) } },
+        { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
+        { provide: Router, useValue: { events: EMPTY } },
+        { provide: ModalService, useValue: {} },
+        { provide: NotificationService, useValue: {} }
+      ]
+    });
+
+    const component = TestBed.createComponent(type).componentInstance;
+    component.ngOnInit();
+
+    return component;
+  }
+
+  const season = { guid: 'season-2026' };
+
+  it('says nothing while it shows rows', async () => {
+    const page = open(FilteredListComponent, season);
+
+    await expect(firstValueFrom(page.emptyBecause$)).resolves.toBeNull();
+    await expect(firstValueFrom(page.filtersInUse$)).resolves.toBe(false);
+  });
+
+  it('tells a search that hides every row from a season with none', async () => {
+    const page = open(FilteredListComponent, season);
+
+    page.search.setValue('no such row');
+
+    await expect(firstValueFrom(page.emptyBecause$)).resolves.toBe('hidden');
+    await expect(firstValueFrom(page.filtersInUse$)).resolves.toBe(true);
+  });
+
+  it("tells a page's own filter, with a search, that hides every row from a season with none", async () => {
+    const page = open(FilteredListComponent, season);
+
+    page.only.setValue('esri');
+    page.search.setValue('texas');
+
+    await expect(firstValueFrom(page.emptyBecause$)).resolves.toBe('hidden');
+  });
+
+  it('says a season with no rows has none', async () => {
+    const page = open(ThingListComponent as unknown as new () => BaseAdminListComponent<Named>, null);
+
+    page.search.setValue('anything');
+
+    await expect(firstValueFrom(page.emptyBecause$)).resolves.toBe('none');
+  });
+
+  it('clears the search and every filter of the page at once', async () => {
+    const page = open(FilteredListComponent, season);
+
+    page.only.setValue('esri');
+    page.search.setValue('texas');
+    page.clearFilters();
+
+    expect(page.search.value).toBe('');
+    expect(page.only.value).toBe('');
+    await expect(firstValueFrom(page.entitiesForActiveSeasonOrForSeasonGuid$)).resolves.toHaveLength(3);
+    await expect(firstValueFrom(page.filtersInUse$)).resolves.toBe(false);
+  });
+});
+
 /**
  * #2942. Escape on a details page goes back to the list it was opened from, as the browser's Back button does. The
  * season is in that list's address; its search is kept in the list's own history entry, so coming back to the entry
@@ -179,5 +267,68 @@ describe('BaseAdminListComponent search, on the way back from a details page', (
     const { component } = open({ navigationId: 3 });
 
     expect(component.search.value).toBe('');
+  });
+});
+
+@Component({ template: '', standalone: false })
+class DeletingListComponent extends BaseAdminListComponent<GuidIdentity> {
+  public reads = 0;
+  public refuse = false;
+
+  protected readonly entityService = {
+    getEntities: () => of([]),
+    getEntitiesForActiveSeason: () => of([]),
+    getEntitiesForSeason: () => {
+      this.reads++;
+
+      return of([{ guid: 'a' }]);
+    },
+    deleteEntities: () => (this.refuse ? throwError(() => ({ status: 404, statusText: 'Not Found' })) : of({}))
+  } as unknown as BaseService<GuidIdentity>;
+}
+
+/**
+ * #2992. Research Competitions' Delete did nothing: the API refused it, and the page said nothing. A delete that works
+ * reads the list again, once, so the row goes.
+ */
+describe('BaseAdminListComponent delete', () => {
+  function open(refuse: boolean) {
+    const toast = jest.fn();
+
+    TestBed.configureTestingModule({
+      declarations: [DeletingListComponent],
+      providers: [
+        { provide: SeasonService, useValue: { seasons$: of([]), activeSeason$: of({ guid: 'season-2026' }) } },
+        { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
+        { provide: Router, useValue: { events: EMPTY } },
+        { provide: ModalService, useValue: { open: () => of({ delete: true, identities: ['a'] }) } },
+        { provide: NotificationService, useValue: { toast } }
+      ]
+    });
+
+    const component = TestBed.createComponent(DeletingListComponent).componentInstance;
+
+    component.refuse = refuse;
+    component.ngOnInit();
+    component.entitiesForActiveSeasonOrForSeasonGuid$.subscribe();
+
+    return { component, toast };
+  }
+
+  it('reads the list again once after a delete, so the row goes', () => {
+    const { component } = open(false);
+    const before = component.reads;
+
+    component.promptDeleteModal('Submission');
+
+    expect(component.reads).toBe(before + 1);
+  });
+
+  it('says so when nothing was deleted', () => {
+    const { component, toast } = open(true);
+
+    component.promptDeleteModal('Submission');
+
+    expect(toast).toHaveBeenCalledWith(expect.objectContaining({ title: 'Submission Not Deleted' }));
   });
 });

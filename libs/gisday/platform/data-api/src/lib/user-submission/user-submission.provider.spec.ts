@@ -323,6 +323,43 @@ describe('UserSubmissionProvider', () => {
       );
     });
 
+    // #3114: on gisday.tamu.edu the review emails wear the Texas A&M GIS Day design, with the season's dates; txgisday.org's
+    // stay plain. The plain text goes beside it either way.
+    it("sends Texas A&M's entrants the designed email, with the season's dates, and txgisday.org's the plain one", async () => {
+      const review = async (host: string) => {
+        (contactService.sendMessage as jest.Mock).mockClear();
+        jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(
+          submission({
+            title: 'Mapping Floods',
+            submissionType: 'poster',
+            participants: [{ name: 'Ana Ruiz', email: 'ana@tamu.edu' }],
+            season: {
+              guid: 'season-2026',
+              days: [{ date: '2026-11-16T06:00:00.000Z' }, { date: '2026-11-20T06:00:00.000Z' }]
+            }
+          })
+        );
+        await provider.updateUserSubmission(
+          'sub-1',
+          'acct-reviewer',
+          { acceptance: true } as Partial<Submission>,
+          REVIEWER_PERMS,
+          host
+        );
+
+        return (contactService.sendMessage as jest.Mock).mock.calls[0][0];
+      };
+
+      const tamu = await review('gisday.tamu.edu');
+
+      expect(tamu.html).toContain('GIS DAY(S)');
+      expect(tamu.html).toContain('November 16–20, 2026');
+      expect(tamu.html).toContain('<p>Howdy Ana,');
+      expect(tamu.text).toContain('Howdy Ana,');
+
+      expect((await review('txgisday.org')).html).not.toContain('GIS DAY(S)');
+    });
+
     // #2957. The finalist email named TxGIS Day on every site and asked for a link rather than the attached files.
     it("sends a finalist on Texas A&M's site the next steps under that site's name and address", async () => {
       const previousFrom = process.env.MAILROOM_FROM;
@@ -358,6 +395,8 @@ describe('UserSubmissionProvider', () => {
       expect(email.text).toContain('under Presentation files');
       expect(email.text).toContain('5. Complete your presenter profile.');
       expect(email.text).toContain('https://gisday.tamu.edu/sessions');
+      // #3044: the same email as HTML, from its Markdown, beside the plain text.
+      expect(email.html).toContain('<p>Howdy Ana,');
       expect(email.text).toContain('Additional notes: Booth 4.');
       expect(email.text).not.toMatch(/TxGIS|txgisday|provide a link/);
     });
@@ -462,15 +501,13 @@ describe('UserSubmissionProvider', () => {
       });
 
       it('sends the links in the email itself, from the season of the submission', async () => {
-        jest
-          .spyOn(submissionRepo, 'findOne')
-          .mockResolvedValue(
-            submission({
-              submissionType: 'poster',
-              season: { guid: 'season-2026' },
-              participants: [{ email: 'a@tamu.edu' }]
-            })
-          );
+        jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(
+          submission({
+            submissionType: 'poster',
+            season: { guid: 'season-2026' },
+            participants: [{ email: 'a@tamu.edu' }]
+          })
+        );
 
         await provider.updateUserSubmission('sub-1', 'r', { acceptance: true }, REVIEWER_PERMS, 'gisday.tamu.edu');
         // A single review sends without waiting, after reading the season's sessions.
@@ -535,6 +572,59 @@ describe('UserSubmissionProvider', () => {
   });
 
   /**
+   * #2990: the review email goes to the submitter's own account address. The typed one had been a test address, or one
+   * no directory knew, and the email went there.
+   */
+  describe('who the review email goes to', () => {
+    const sent = async (participants: Array<{ name: string; email: string }>, accountEmail: string | null) => {
+      (profiles.profilesOf as jest.Mock).mockResolvedValue(
+        new Map([[OWNER, accountEmail ? ({ email: accountEmail } as never) : null]])
+      );
+      jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission({ participants, title: 'T' }));
+
+      await provider.updateUserSubmission('sub-1', 'r', { acceptance: true }, REVIEWER_PERMS, 'gisday.tamu.edu');
+      await new Promise((resolve) => setImmediate(resolve));
+
+      return (contactService.sendMessage as jest.Mock).mock.calls[0][0];
+    };
+
+    it("goes to the account's address, not the address the submitter typed for themselves", async () => {
+      const email = await sent([{ name: 'Dan', email: 'dan@test.com' }], 'daniel@tamu.edu');
+
+      expect(email.to).toBe('daniel@tamu.edu');
+      expect(email.cc).toBe('');
+    });
+
+    it('copies the other members of a group, each once', async () => {
+      const email = await sent(
+        [
+          { name: 'Ana', email: 'ana@agnet.tamu.edu' },
+          { name: 'Ben', email: 'ben@tamu.edu' },
+          { name: 'Ben', email: 'BEN@tamu.edu' },
+          { name: 'Ana', email: 'ana@tamu.edu' }
+        ],
+        'ana@tamu.edu'
+      );
+
+      expect(email.to).toBe('ana@tamu.edu');
+      expect(email.cc).toBe('ben@tamu.edu');
+    });
+
+    it('goes to the typed address when the account has none', async () => {
+      const email = await sent(
+        [
+          { name: 'Ana', email: 'ana@tamu.edu' },
+          { name: 'Ben', email: 'ben@tamu.edu' }
+        ],
+        null
+      );
+
+      expect(email.to).toBe('ana@tamu.edu');
+      expect(email.cc).toBe('ben@tamu.edu');
+    });
+  });
+
+  /**
    * #2958: an admin approves or rejects the selected submissions at once. Each is reviewed exactly as Submit Review
    * reviews one - the decision recorded, the submitter emailed from the reviewer's site - and the result says which were
    * done and which failed, by title.
@@ -568,6 +658,24 @@ describe('UserSubmissionProvider', () => {
         .spyOn(submissionRepo, 'findOne')
         .mockImplementation((async ({ where }: { where: { guid: string } }) =>
           rows[where.guid] ? { ...rows[where.guid], participants: [...rows[where.guid].participants] } : null) as never);
+    });
+
+    // #3067: a bulk send reached the API twice, 30 seconds apart (#3065). The same decision again within minutes is that
+    // repeat, and emails no one a second time; a decision changed, or made long ago, emails as before.
+    it('emails no one again when the same decision repeats within minutes', async () => {
+      rows[A] = { ...rows[A], reviewed: true, acceptance: true, updated: new Date() } as Submission;
+      rows[B] = { ...rows[B], reviewed: true, acceptance: false, updated: new Date() } as Submission;
+
+      try {
+        const result = await provider.reviewUserSubmissions([A, B], 'acct-reviewer', { acceptance: true }, REVIEWER_PERMS);
+
+        expect(result).toEqual({ reviewed: ['Flood maps', 'Campus trees'], failed: [] });
+        // A was already accepted moments ago: no second email. B's decision changed: its email goes.
+        expect(sends().map(([m]) => m.to)).toEqual(['cy@tamu.edu']);
+      } finally {
+        delete (rows[A] as Partial<Submission>).reviewed;
+        delete (rows[B] as Partial<Submission>).reviewed;
+      }
     });
 
     it("reviews and emails each one exactly as a single review does, from the reviewer's site", async () => {
@@ -664,6 +772,19 @@ describe('UserSubmissionProvider', () => {
       });
     });
 
+    // #3100: each submitter's email goes as the sender the reviewer chose, as the controller checked it.
+    it('emails each as the sender chosen, with replies to it', async () => {
+      const sender = { from: '"Jo Admin (Texas A&M GIS Day)" <jadmin@tamu.edu>', replyTo: 'jadmin@tamu.edu' };
+
+      await provider.reviewUserSubmissions([A, B], 'acct-reviewer', { acceptance: true, sender }, REVIEWER_PERMS);
+
+      expect(sends()).toHaveLength(2);
+      expect(sends().map(([m]) => [m.from, m.replyTo])).toEqual([
+        [sender.from, sender.replyTo],
+        [sender.from, sender.replyTo]
+      ]);
+    });
+
     it('reviews a submission named twice once', async () => {
       await provider.reviewUserSubmissions([A, A], 'acct-reviewer', { acceptance: true }, REVIEWER_PERMS);
 
@@ -742,6 +863,179 @@ describe('UserSubmissionProvider', () => {
     });
   });
 
+  /**
+   * #3017: the final reminder to finalists who have not uploaded their final presentation or poster, by the review email's
+   * own path: previewed and edited first, one kind per competition, sent to the same people. A submission that already
+   * has a file, or that was not accepted (rejected, or not yet reviewed), is skipped, and said to be, with why.
+   */
+  describe('the final reminder (#3017)', () => {
+    const A = '0f8c9a52-1b2c-4d3e-8f4a-5b6c7d8e9f01';
+    const B = '1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d';
+    const C = '2b3c4d5e-6f7a-4b8c-9d0e-1f2a3b4c5d6e';
+    const REJECTED = '3c4d5e6f-7a8b-4c9d-8e0f-2a3b4c5d6e7f';
+    const UNREVIEWED = '4d5e6f7a-8b9c-4d0e-9f1a-3b4c5d6e7f8a';
+    const accepted = { reviewed: true, acceptance: true };
+    const rows: Record<string, Submission> = {
+      [A]: submission({
+        guid: A,
+        title: 'Flood maps',
+        submissionType: 'poster',
+        participants: [
+          { name: 'Ana Ruiz', email: 'ana@tamu.edu' },
+          { name: 'Ben Lee', email: 'ben@tamu.edu' }
+        ],
+        files: [],
+        ...accepted
+      }),
+      [B]: submission({
+        guid: B,
+        title: 'Campus trees',
+        submissionType: 'presentation',
+        participants: [{ name: 'Cy Diaz', email: 'cy@tamu.edu' }],
+        files: [{ guid: 'f-1', name: 'slides.pptx' }],
+        ...accepted
+      }),
+      [C]: submission({
+        guid: C,
+        title: 'Bike lanes',
+        submissionType: 'presentation',
+        participants: [{ name: 'Di Park', email: 'di@tamu.edu' }],
+        ...accepted
+      }),
+      [REJECTED]: submission({
+        guid: REJECTED,
+        title: 'Old roads',
+        submissionType: 'poster',
+        participants: [{ name: 'Ed Wu', email: 'ed@tamu.edu' }],
+        reviewed: true,
+        acceptance: false
+      }),
+      [UNREVIEWED]: submission({
+        guid: UNREVIEWED,
+        title: 'Rivers',
+        submissionType: 'presentation',
+        participants: [{ name: 'Fay Ng', email: 'fay@tamu.edu' }]
+      })
+    };
+    const HAS_FILE = { title: 'Campus trees', reason: 'already has a file' };
+    const sends = () => (contactService.sendMessage as jest.Mock).mock.calls;
+
+    beforeEach(() => {
+      jest
+        .spyOn(submissionRepo, 'findOne')
+        .mockImplementation((async ({ where }: { where: { guid: string } }) =>
+          rows[where.guid] ? { ...rows[where.guid], participants: [...rows[where.guid].participants] } : null) as never);
+    });
+
+    it('previews one group per competition, skipping and naming any that already has a file, and sends nothing', async () => {
+      const preview = await provider.previewReminders([A, B, C], REVIEWER_PERMS, 'gisday.tamu.edu');
+
+      expect(preview.groups.map((g) => [g.kind, g.label, g.count])).toEqual([
+        ['poster-reminder', 'Final reminders: posters', 1],
+        ['presentation-reminder', 'Final reminders: presentations', 1]
+      ]);
+      expect(preview.groups[1].subject).toBe('Final reminder: upload your final presentation for Texas A&M GIS Day');
+      expect(preview.groups[0].subject).toBe('Final reminder: upload your final poster for Texas A&M GIS Day');
+      expect(preview.groups[1].template).toContain('This is your final reminder.');
+      expect(preview.groups[1].template).toContain('your submission will be removed from the competition');
+      expect(preview.groups[0].example).toEqual(
+        expect.objectContaining({ title: 'Flood maps', to: 'ana@tamu.edu', cc: 'ben@tamu.edu' })
+      );
+      expect(preview.skipped).toEqual([HAS_FILE]);
+      expect(contactService.sendMessage).not.toHaveBeenCalled();
+      expect(submissionRepo.update).not.toHaveBeenCalled();
+    });
+
+    it('sends the text as edited to each without a file, skips the one with a file, and records nothing', async () => {
+      const result = await provider.remindUserSubmissions(
+        [A, B, C],
+        { templates: { 'presentation-reminder': 'Hi {first name}, "{title}" needs its slides by {upload deadline}.' } },
+        REVIEWER_PERMS,
+        'gisday.tamu.edu'
+      );
+
+      expect(result).toEqual({ sent: ['Flood maps', 'Bike lanes'], skipped: [HAS_FILE], failed: [] });
+      expect(sends().map(([m]) => [m.to, m.subject])).toEqual([
+        ['ana@tamu.edu', 'Final reminder: upload your final poster for Texas A&M GIS Day'],
+        ['di@tamu.edu', 'Final reminder: upload your final presentation for Texas A&M GIS Day']
+      ]);
+      expect(sends()[0][0].cc).toBe('ben@tamu.edu');
+      expect(sends()[0][0].text).toContain('This is your final reminder.');
+      expect(sends()[1][0].text).toMatch(/^Hi Di, "Bike lanes" needs its slides by /);
+      expect(submissionRepo.update).not.toHaveBeenCalled();
+      // Its files are asked for: a submission is not loaded with them otherwise.
+      expect(submissionRepo.findOne).toHaveBeenCalledWith(
+        // With its season's days, for the email's design on Texas A&M's site (#3114).
+        expect.objectContaining({ relations: { season: { days: true }, files: true } })
+      );
+    });
+
+    // #3100: as the sender the reviewer chose, as the controller checked it.
+    it('sends each reminder as the sender chosen, with replies to it', async () => {
+      const sender = { from: '"Jo Admin (Texas A&M GIS Day)" <jadmin@tamu.edu>', replyTo: 'jadmin@tamu.edu' };
+
+      await provider.remindUserSubmissions([A, B, C], { sender }, REVIEWER_PERMS, 'gisday.tamu.edu');
+
+      expect(sends()).toHaveLength(2);
+      expect(sends().map(([m]) => [m.from, m.replyTo])).toEqual([
+        [sender.from, sender.replyTo],
+        [sender.from, sender.replyTo]
+      ]);
+    });
+
+    it('previews exactly the email that is then sent when the text is left as it is', async () => {
+      const preview = await provider.previewReminders([C], REVIEWER_PERMS, 'gisday.tamu.edu');
+      const [group] = preview.groups;
+
+      await provider.remindUserSubmissions(
+        [C],
+        { templates: { [group.kind]: group.template } },
+        REVIEWER_PERMS,
+        'gisday.tamu.edu'
+      );
+
+      expect(sends()[0][0].text).toBe(fillReviewEmail(group.template, group.example.values));
+    });
+
+    it('skips one that was rejected or is not yet reviewed, in the preview and the send, and says why (decided 15 November)', async () => {
+      const preview = await provider.previewReminders([A, REJECTED, UNREVIEWED], REVIEWER_PERMS, 'gisday.tamu.edu');
+
+      expect(preview.groups.map((g) => [g.kind, g.count])).toEqual([['poster-reminder', 1]]);
+      expect(preview.skipped).toEqual([
+        { title: 'Old roads', reason: 'not accepted' },
+        { title: 'Rivers', reason: 'not accepted' }
+      ]);
+
+      const result = await provider.remindUserSubmissions([A, REJECTED, UNREVIEWED], {}, REVIEWER_PERMS, 'gisday.tamu.edu');
+
+      expect(result.sent).toEqual(['Flood maps']);
+      expect(result.skipped).toEqual(preview.skipped);
+      expect(sends().map(([m]) => m.to)).toEqual(['ana@tamu.edu']);
+    });
+
+    it('names one whose email could not be sent, and carries on', async () => {
+      (contactService.sendMessage as jest.Mock).mockRejectedValueOnce(new Error('mailroom unreachable'));
+
+      const result = await provider.remindUserSubmissions([A, C], {}, REVIEWER_PERMS, 'gisday.tamu.edu');
+
+      expect(result).toEqual({
+        sent: ['Bike lanes'],
+        skipped: [],
+        failed: [{ title: 'Flood maps', reason: 'the email could not be sent' }]
+      });
+    });
+
+    it('is for reviewers only, and checks what it is given', async () => {
+      await expect(provider.previewReminders([A], [])).rejects.toThrow(ForbiddenException);
+      await expect(provider.remindUserSubmissions([A], {}, [])).rejects.toThrow(ForbiddenException);
+      await expect(provider.remindUserSubmissions([], {}, REVIEWER_PERMS)).rejects.toThrow(BadRequestException);
+      await expect(provider.remindUserSubmissions(['1; drop'], {}, REVIEWER_PERMS)).rejects.toThrow(BadRequestException);
+      await expect(
+        provider.remindUserSubmissions([A], { templates: { 'poster-reminder': 5 } } as never, REVIEWER_PERMS)
+      ).rejects.toThrow(BadRequestException);
+    });
+  });
+
   describe('.deleteUserSubmission()', () => {
     it('lets the owner delete their own submission', async () => {
       jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission());
@@ -772,6 +1066,32 @@ describe('UserSubmissionProvider', () => {
     });
   });
 
+  // #2992: Research Competitions' Delete sends the selected ids at once, and there was no route for them.
+  describe('.deleteUserSubmissions()', () => {
+    const A = '0f8c9a52-1b2c-4d3e-8f4a-5b6c7d8e9f01';
+    const B = '1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d';
+
+    it('deletes each selected submission, once each', async () => {
+      jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission());
+
+      await expect(provider.deleteUserSubmissions([A, B, A], 'r', ['delete:competitions'])).resolves.toEqual({ deleted: 2 });
+      expect((submissionRepo.delete as jest.Mock).mock.calls.map((c) => c[0])).toEqual([A, B]);
+    });
+
+    it('refuses anyone without delete:competitions, even an owner, and deletes nothing', async () => {
+      await expect(provider.deleteUserSubmissions([A], OWNER, [])).rejects.toThrow(ForbiddenException);
+      expect(submissionRepo.delete).not.toHaveBeenCalled();
+    });
+
+    it('refuses an empty list or an id that is not a submission id, and deletes nothing', async () => {
+      await expect(provider.deleteUserSubmissions([], 'r', ['delete:competitions'])).rejects.toThrow(BadRequestException);
+      await expect(provider.deleteUserSubmissions([A, '1; drop'], 'r', ['delete:competitions'])).rejects.toThrow(
+        BadRequestException
+      );
+      expect(submissionRepo.delete).not.toHaveBeenCalled();
+    });
+  });
+
   describe('.insertUserSubmission()', () => {
     it('stamps the submission with the account that created it', async () => {
       jest.spyOn(submissionRepo, 'create').mockImplementation((s) => s as never);
@@ -794,6 +1114,74 @@ describe('UserSubmissionProvider', () => {
    * #2934: an admin sets when each competition, poster and presentation, stops taking submissions. At that moment new
    * submissions and edits close, refused by the API whatever the page shows. Reviewers are not held to it.
    */
+  /** #2948: a season runs only the research competitions its admins turned on; every one when none is set. */
+  describe("the season's competitions (#2948)", () => {
+    const SEASON = { guid: 'season-2026', year: 2026 };
+
+    function seasonRunning(...types: Array<string>) {
+      const season = { ...SEASON, competitions: types.map((competitionType) => ({ competitionType })) };
+
+      jest.spyOn(seasonService, 'findOne').mockResolvedValue(season as never);
+      jest.spyOn(seasonService, 'findOneActive').mockResolvedValue(season as never);
+
+      return season;
+    }
+
+    beforeEach(() => {
+      jest.spyOn(submissionRepo, 'create').mockImplementation((s) => s as never);
+      jest.spyOn(submissionRepo, 'save').mockImplementation((s) => Promise.resolve(s as never));
+    });
+
+    it('refuses a new submission to a competition the season does not run, and saves nothing', async () => {
+      seasonRunning('poster', 'presentation');
+
+      await expect(
+        provider.insertUserSubmission(OWNER, { submissionType: 'paper', season: SEASON.guid } as never)
+      ).rejects.toThrow(new BadRequestException('The paper competition is not running this season.'));
+      expect(submissionRepo.save).not.toHaveBeenCalled();
+    });
+
+    it('takes a new submission to one it runs', async () => {
+      seasonRunning('poster', 'presentation');
+
+      await provider.insertUserSubmission(OWNER, { submissionType: 'poster', season: SEASON.guid } as never);
+
+      expect(submissionRepo.save).toHaveBeenCalled();
+    });
+
+    it('takes every competition when the season has no rows, as every season did before', async () => {
+      seasonRunning();
+
+      await provider.insertUserSubmission(OWNER, { submissionType: 'cartography', season: SEASON.guid } as never);
+
+      expect(submissionRepo.save).toHaveBeenCalled();
+    });
+
+    it('lets the entrant edit a submission to a competition since turned off', async () => {
+      jest
+        .spyOn(submissionRepo, 'findOne')
+        .mockResolvedValue(submission({ submissionType: 'paper', season: seasonRunning('poster') }));
+
+      await provider.updateUserSubmission('sub-1', OWNER, {
+        title: 'Revised',
+        submissionType: 'paper'
+      } as Partial<Submission>);
+
+      expect(written()).toEqual(expect.objectContaining({ title: 'Revised' }));
+    });
+
+    it('refuses to move a submission into a competition the season does not run', async () => {
+      jest
+        .spyOn(submissionRepo, 'findOne')
+        .mockResolvedValue(submission({ submissionType: 'poster', season: seasonRunning('poster') }));
+
+      await expect(
+        provider.updateUserSubmission('sub-1', OWNER, { submissionType: 'cartography' } as Partial<Submission>)
+      ).rejects.toThrow(BadRequestException);
+      expect(submissionRepo.update).not.toHaveBeenCalled();
+    });
+  });
+
   describe('the submission deadline (#2934)', () => {
     const past = '2026-11-01T17:00:00.000Z';
     const future = '2099-11-01T17:00:00.000Z';

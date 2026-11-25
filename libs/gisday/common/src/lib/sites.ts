@@ -25,7 +25,9 @@ export type GisdayFeature =
   | 'pastYears'
   | 'tamu'
   | 'tamuLinks'
-  | 'homeLinks';
+  | 'homeLinks'
+  // The research competitions' winners on the homepage, on gisday.tamu.edu, where they ran (#3239).
+  | 'winners';
 
 /**
  * One deployment of the GIS Day site: its name, its images, and the features it leaves out.
@@ -118,7 +120,7 @@ export const GISDAY_SITES = {
     description:
       'Three days of workshops and programs celebrating geospatial technology dedicated to students and faculty as they educate, innovate, and collaborate.',
     preview: 'assets/images/sites/txgisday/preview.png',
-    off: [],
+    off: ['winners'],
     contact: 'gis@tamu.edu'
   },
   // gisday.tamu.edu, Texas A&M's own GIS Day, in the university's brand (#2012). It is served by txgisday.org's
@@ -128,7 +130,8 @@ export const GISDAY_SITES = {
     logo: 'assets/images/logo/TAM-LogoBox.svg',
     banner: 'assets/images/logo/TAM-LogoBox.svg',
     owner: 'GeoInnovation Service Center',
-    favicon: 'assets/images/logo/TAM-LogoBox.svg',
+    // AggieMap's own tab icon, which fills the tab; the box logo's SVG has a wide margin and looked smaller (#2084).
+    favicon: 'assets/images/logo/favicon.ico',
     address: 'https://gisday.tamu.edu',
     description:
       'Three days of workshops and programs celebrating geospatial technology dedicated to students and faculty as they educate, innovate, and collaborate.',
@@ -138,8 +141,8 @@ export const GISDAY_SITES = {
     hosts: ['gisday.tamu.edu', 'tamu.txgisday.org'],
     brand: 'tamu',
     // It shares txgisday.org's database, where every organization's sessions can be entered, so it lists only
-    // Texas A&M's (#2142).
-    sessionsFrom: ['Texas A&M University GIS Day(s)']
+    // Texas A&M's (#2142). In 2023 its place was named "Texas A&M University" (#3057).
+    sessionsFrom: ['Texas A&M University GIS Day(s)', 'Texas A&M University']
   },
   // gisday.ucgis.org, for UCGIS member universities (#1837). Its images are UCGIS's own, from its websites; the
   // banner's white surround was made transparent so it sits on the homepage's background.
@@ -154,7 +157,7 @@ export const GISDAY_SITES = {
     description:
       'Workshops, demonstrations, and programs from UCGIS member universities, celebrating the advancement of geospatial technology.',
     preview: 'assets/images/sites/ucgis/preview.png',
-    off: ['competitions', 'faq', 'sponsors', 'classes', 'checkIns', 'pastYears', 'tamu', 'tamuLinks'],
+    off: ['competitions', 'faq', 'sponsors', 'classes', 'checkIns', 'pastYears', 'tamu', 'tamuLinks', 'winners'],
     // Its deployment names it by key; the address is here too so the site's server can give link previews this
     // site's page (#2649).
     hosts: ['gisday.ucgis.org'],
@@ -209,9 +212,19 @@ export function siteSessionPlaces(site: GisdaySite, places: Array<{ guid?: strin
  * Whether a site lists a session, by its location's place (#2986): every session on a site that lists every
  * organization's; on gisday.tamu.edu, Texas A&M's, and any with no place yet, so an admin can still find and place it.
  */
-export function siteListsSession(site: GisdaySite, session: { location?: { place?: { guid?: string; name?: string } | null } | null }): boolean {
-  const place = session?.location?.place;
+export function siteListsSession(
+  site: GisdaySite,
+  session: { location?: { place?: { guid?: string; name?: string } | null } | null }
+): boolean {
+  return siteListsPlace(site, session?.location?.place);
+}
 
+/**
+ * Whether a site lists what belongs to a place: a session, by its venue's place, or a broadcast, by its own (#3048). Every
+ * place's on a site that lists every organization's; on gisday.tamu.edu, Texas A&M's, and anything with no place yet,
+ * so an admin can still find it and give it one.
+ */
+export function siteListsPlace(site: GisdaySite, place: { guid?: string; name?: string } | null | undefined): boolean {
   if (!site.sessionsFrom || !place?.guid) {
     return true;
   }
@@ -237,7 +250,7 @@ export function placesShownOn<T extends { guid?: string; name?: string; visibili
 }
 
 /**
- * The tags at the top of a site's page that link previews and search engines read (#2649). They never run the app,
+ * The tags at the top of a site's page that link previews and search engines read (#2649), and its tab icon (#2084). They never run the app,
  * so the page each site serves has to carry its own name, description and image from the start; the app only changes
  * them once it runs in a browser.
  */
@@ -248,6 +261,7 @@ export function siteHead(site: GisdaySite): string {
 
   return [
     `<title>${text(site.name)}</title>`,
+    `<link rel="icon" href="${text(site.favicon)}" />`,
     `<meta name="description" content="${text(site.description)}" />`,
     `<meta property="og:site_name" content="${text(site.name)}" />`,
     `<meta property="og:title" content="${text(site.name)}" />`,

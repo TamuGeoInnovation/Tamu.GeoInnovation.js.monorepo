@@ -3,12 +3,10 @@ import { UserClass } from '@tamu-gisc/gisday/platform/data-api';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable, forkJoin, of, switchMap, tap } from 'rxjs';
 
-import * as Papa from 'papaparse';
-
 import { ClassService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { downloadFile } from '@tamu-gisc/common/utils/ui';
-import { ClassAddEditFormComponent } from '@tamu-gisc/gisday/platform/ngx/common';
+import { downloadFile, toCsv } from '@tamu-gisc/common/utils/ui';
+import { ClassAddEditFormComponent, provideAdminDetailsPage } from '@tamu-gisc/gisday/platform/ngx/common';
 import { AsyncPipe, DatePipe } from '@angular/common';
 
 import { BaseAdminDetailsPageComponent } from '../../../base-admin-details-page/base-admin-details-page.component';
@@ -17,7 +15,8 @@ import { BaseAdminDetailsPageComponent } from '../../../base-admin-details-page/
   selector: 'tamu-gisc-class-edit',
   templateUrl: './class-edit.component.html',
   styleUrls: ['./class-edit.component.scss'],
-  imports: [ClassAddEditFormComponent, AsyncPipe, DatePipe]
+  imports: [ClassAddEditFormComponent, AsyncPipe, DatePipe],
+  providers: [provideAdminDetailsPage(() => ClassEditComponent)]
 })
 export class ClassEditComponent extends BaseAdminDetailsPageComponent implements OnInit {
   private readonly at = inject(ActivatedRoute);
@@ -51,7 +50,9 @@ export class ClassEditComponent extends BaseAdminDetailsPageComponent implements
       )
       .subscribe({
         next: ([csv, cl]) => {
-          const unparsed = Papa.unparse(csv || 'No data', { header: true });
+          // The header is the first row's keys, as Papa's own header was. An empty roster is an empty file.
+          const rows = (csv as Array<Record<string, unknown>>) ?? [];
+          const unparsed = toCsv(Object.keys(rows[0] ?? {}), rows);
 
           const fileName = `${cl.code}-${cl.number}${cl?.section ? '-' + cl?.section : ''}-${cl.professorName
             .toLowerCase()

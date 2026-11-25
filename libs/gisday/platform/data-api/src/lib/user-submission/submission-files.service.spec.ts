@@ -4,7 +4,12 @@ import { tmpdir } from 'os';
 import { join } from 'path';
 import { Readable } from 'stream';
 
-import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  NotFoundException,
+  UnsupportedMediaTypeException
+} from '@nestjs/common';
 import JSZip from 'jszip';
 
 import { SUBMISSION_FILE_RULES, submissionFileProblem } from '@tamu-gisc/gisday/common';
@@ -176,6 +181,40 @@ describe('SubmissionFilesService', () => {
   });
 
   /**
+   * #3090: an admin previews a submission's file in the page rather than downloading it. A PDF is sent to be shown, not
+   * saved; a PowerPoint has no preview until it can be converted on the server, so it is still downloaded.
+   */
+  describe('preview', () => {
+    it('sends a PDF to be shown in the page, under its own name', async () => {
+      await service.add(submission.guid, student, await upload('Café poster.pdf', 2048));
+
+      const preview = await service.preview(submission.guid, saved[0].guid, admin);
+
+      expect(preview.getHeaders()).toEqual(
+        expect.objectContaining({
+          type: 'application/pdf',
+          length: 2048,
+          disposition: `inline; filename="Caf_ poster.pdf"; filename*=UTF-8''Caf%C3%A9%20poster.pdf`
+        })
+      );
+    });
+
+    it("does not reach a file that is not this submission's, whatever submission it belongs to", async () => {
+      await service.add(submission.guid, student, await upload('deck.pdf'));
+
+      await expect(service.preview(submission.guid, '99999999-8888-4777-8666-555555555555', admin)).rejects.toThrow(
+        NotFoundException
+      );
+    });
+
+    it('has no preview for a PowerPoint yet, so it is downloaded instead', async () => {
+      await service.add(submission.guid, student, await upload('slides.pptx'));
+
+      await expect(service.preview(submission.guid, saved[0].guid, admin)).rejects.toThrow(UnsupportedMediaTypeException);
+    });
+  });
+
+  /**
    * #2934: a competition's files close at their own deadline, set on the season, later than its submissions. A student's
    * upload or removal after it is refused; the admins may still add and remove, and anyone may still read.
    */
@@ -298,6 +337,46 @@ describe('SubmissionFilesService', () => {
 
     it('says so when no submission has a file', async () => {
       await expect(service.zipForSeason('season-guid', admin)).rejects.toThrow(/No submission in this season/);
+    });
+
+    /** #3174: the files of the submissions the admin picked, ticked or filtered, rather than the whole season's. */
+    describe('only the submissions picked', () => {
+      const other = '99999999-8888-4777-8666-555555555555';
+
+      beforeEach(async () => {
+        await service.add(submission.guid, student, await upload('deck.pdf', 10));
+        const first = { ...submission, files: [...submission.files] };
+
+        submission = { ...submission, guid: other, title: 'Urban Heat', files: [] } as unknown as Submission;
+        await service.add(other, student, await upload('heat.pptx', 20));
+        submissionRepo.find.mockImplementation(async () => [
+          { ...first, season: { year: 2026 } },
+          { ...submission, season: { year: 2026 } }
+        ]);
+      });
+
+      it("zips only those, named for how many, and ignores a guid that is not one of the season's", async () => {
+        const zip = await service.zipForSeason('season-guid', admin, [other, '00000000-0000-4000-8000-000000000000']);
+        const contents = await JSZip.loadAsync(await streamToBuffer(zip.getStream()));
+
+        expect(Object.keys(contents.files).filter((n) => !contents.files[n].dir)).toEqual([
+          'presentation - Urban Heat - 99999999/heat.pptx'
+        ]);
+        expect(zip.getHeaders().disposition).toContain('gisday-2026-submission-files-1.zip');
+      });
+
+      it('takes the whole season when none is named', async () => {
+        const zip = await service.zipForSeason('season-guid', admin, []);
+        const contents = await JSZip.loadAsync(await streamToBuffer(zip.getStream()));
+
+        expect(Object.keys(contents.files).filter((n) => !contents.files[n].dir)).toHaveLength(2);
+      });
+
+      it('says so when none of those picked has a file', async () => {
+        await expect(service.zipForSeason('season-guid', admin, ['00000000-0000-4000-8000-000000000000'])).rejects.toThrow(
+          /None of the submissions picked/
+        );
+      });
     });
   });
 });

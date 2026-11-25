@@ -8,6 +8,28 @@ import { IFactoryExcludeOptions } from '../utils/definitionFactory';
 // Search sources used for querying features.
 import { getDefaultGisHost } from '../connections';
 
+/**
+ * The Campus Structures rows that are parking garages: `GARAGE`, and `GARAGE PVT` where it is privately operated.
+ *
+ * Measured against the service on 24 November 2026: it selects all eleven garage rows and excludes "TEEX ITSI Garage
+ * & Offices", which is `RESEARCH` and which a search on the name alone would wrongly return (#3425).
+ */
+const GARAGE_STRUCTURES = "type LIKE 'GARAGE%'";
+
+/**
+ * The Campus Structures rows that are not parking garages, for the typed building search.
+ *
+ * The garages became rows of this layer in #3425, so the building search started answering with them too and
+ * every garage appeared twice in the results - once under Building and once under Parking Garage, the same
+ * row from the same layer. They are a garage's results, so the building search gives them up.
+ *
+ * `type IS NULL OR` is not redundant. `NULL NOT LIKE 'GARAGE%'` is NULL rather than true, so the shorter
+ * clause would silently drop every row whose `type` is unset - a building that disappears from search with
+ * nothing to show it had gone. Measured 24 November 2026: 1,987 rows, 11 garages, 0 with a null `type`, and
+ * both forms return the same 1,976. The guard costs nothing today and covers the day that changes.
+ */
+const NOT_A_GARAGE = "type IS NULL OR type NOT LIKE 'GARAGE%'";
+
 export function SearchSources(
   connections: IComposedConnections,
   definitions: IComposedIDefinitions,
@@ -22,6 +44,10 @@ export function SearchSources(
       url: connections.buildingsUrl,
       queryParams: {
         ...containsSearch(['number', 'bldgabbrev', 'bldgname']),
+        // Garages are rows of this layer too, and they have their own source and their own popup (#3425).
+        // Only the typed search gives them up: the two exact sources below resolve deep links, and a
+        // `?bldg=` link made to a garage has to keep working.
+        fixedWhere: NOT_A_GARAGE,
         scoringWhere: {
           keys: ['bldgname', 'bldgabbrev'],
           operators: ['LIKE', 'LIKE'],
@@ -195,15 +221,22 @@ export function SearchSources(
     PARKING_GARAGE: {
       source: 'parking-garage',
       name: 'Parking Garage',
-      // Still the old campus basemap: its garage layer has no counterpart in the feature service the rest moved to, so
-      // this waits on the GIS team (`campus-basemap.ts` says what is missing; #2722).
-      url: `${connections.basemapUrl}/0`,
+      // The garages are rows of Campus Structures, marked by `type` - `GARAGE`, or `GARAGE PVT` where the garage is
+      // privately operated - so `fixedWhere` keeps this search to them and off every other building (#3425). The old
+      // raster basemap's Garage Parking layer, which this read until then, is abandoned (`campus-basemap.ts`).
+      //
+      // `bldgabbrev` is why shared links survive: it carries the same codes the old layer's `Name` did - PRG, SSG,
+      // UCG, NSG, CCG, SBG, WCG, PC26 and PC27 - so a `?garage=CCG` link made before this still finds its garage.
+      url: connections.buildingsUrl,
       queryParams: {
-        ...containsSearch(['LotName', 'Name'])
+        ...containsSearch(['bldgname', 'bldgabbrev', 'number']),
+        fixedWhere: GARAGE_STRUCTURES
       },
       featuresLocation: 'features',
-      displayTemplate: '{attributes.LotName}',
-      // Garages carry lot fields, not building ones, so the building popup rendered them empty (#1163).
+      displayTemplate: '{attributes.bldgname}',
+      // Garages used to carry lot fields, not building ones, so the building popup rendered them empty (#1163). They
+      // now carry building fields, and the popup reads those; it stays its own component because a garage still needs
+      // a `?garage=` link rather than the lot layer's `?lot=`.
       popupComponent: Popups.ParkingGaragePopupComponent,
       searchActive: true,
       // Garages are not in the parking lots layer, so they need their own link rather than `?lot=`.
@@ -278,7 +311,7 @@ export function SearchSources(
     // that - a space is as likely to be looked for as "hammocks" or "disc golf" as by its own name.
     NATURE_RX_EXACT: {
       source: 'nature-rx-exact',
-      name: 'Nature Rx',
+      name: 'Nature Spaces',
       url: definitions.NATURE_RX.url,
       queryParams: {
         ...searchQueryParams,
@@ -296,7 +329,7 @@ export function SearchSources(
     },
     NATURE_RX: {
       source: 'nature-rx',
-      name: 'Nature Rx',
+      name: 'Nature Spaces',
       url: definitions.NATURE_RX.url,
       queryParams: {
         ...containsSearch(['area_name', 'key_words'])

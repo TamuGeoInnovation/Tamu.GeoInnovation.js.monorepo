@@ -19,8 +19,8 @@
   }
 }
 
+// The textbox's own display (flex) is kept, so its clear button sits beside the text, not under it (#3051).
 .badges-search {
-  display: block;
   max-width: 32rem;
   margin-bottom: 0.75rem;
 }

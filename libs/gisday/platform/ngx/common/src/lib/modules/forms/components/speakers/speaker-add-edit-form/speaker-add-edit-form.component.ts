@@ -1,8 +1,22 @@
 import { Component, OnInit, inject, input } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, combineLatest, distinctUntilChanged, filter, map, merge, of, race, shareReplay, startWith, switchMap, take } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import {
+  Observable,
+  combineLatest,
+  distinctUntilChanged,
+  filter,
+  from,
+  map,
+  merge,
+  of,
+  race,
+  shareReplay,
+  startWith,
+  switchMap,
+  take
+} from 'rxjs';
 
 import { Organization, Speaker, University } from '@tamu-gisc/gisday/platform/data-api';
 import {
@@ -12,9 +26,9 @@ import {
   SpeakerService,
   UniversityService
 } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { formToFormData } from '../../../../../utils/form-to-form-data';
+import { UploadImagePicker } from '../../../../../utils/upload-image-picker';
 import { classBannerSpeaker } from '../../../../../utils/speakers';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { FileComponent } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -24,6 +38,7 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
 import { SpeakerClassBannerComponent } from '../../../../people/components/speaker-class-banner/speaker-class-banner.component';
 import { ImagePreviewComponent } from '../../../../images/components/image-preview/image-preview.component';
+import { adminEntityForm } from '../../../admin-entity-form';
 
 @Component({
   selector: 'tamu-gisc-speaker-add-edit-form',
@@ -44,14 +59,14 @@ import { ImagePreviewComponent } from '../../../../images/components/image-previ
 })
 export class SpeakerAddEditFormComponent implements OnInit {
   private readonly fb = inject(UntypedFormBuilder);
-  private readonly rt = inject(Router);
+  /** Its save and delete, and what they say (#3340, #3382). */
+  private readonly saves = adminEntityForm('Speaker', '/admin/speakers');
   private readonly at = inject(ActivatedRoute);
   private readonly ss = inject(SpeakerService);
   private readonly as = inject(AssetsService);
   private readonly us = inject(UniversityService);
   private readonly os = inject(OrganizationService);
   private readonly sn = inject(DomSanitizer);
-  private readonly ns = inject(NotificationService);
   private readonly sss = inject(SeasonService);
 
   public readonly type = input<'create' | 'edit'>(undefined);
@@ -68,6 +83,9 @@ export class SpeakerAddEditFormComponent implements OnInit {
   public bannerSpeaker$: Observable<Partial<Speaker>>;
 
   public form: UntypedFormGroup;
+
+  /** The photo picker, on the shared upload rule (#3074). */
+  public readonly photoPicker = new UploadImagePicker('The photo', { shrink: true });
 
   public ngOnInit() {
     this.form = this.fb.group({
@@ -146,18 +164,12 @@ export class SpeakerAddEditFormComponent implements OnInit {
 
         // If the entity has a season, remove the season control from the form
         this.form.removeControl('season');
-
-        // Opening the page is not a change (#2942), though each control echoes the value it is given.
-        this.form.markAsPristine();
       });
     } else {
       this.sss.activeSeason$.pipe(take(1)).subscribe((season) => {
         this.form.patchValue({
           season: season.guid
         });
-
-        // Opening the page is not a change (#2942), though each control echoes the value it is given.
-        this.form.markAsPristine();
       });
     }
   }
@@ -170,75 +182,37 @@ export class SpeakerAddEditFormComponent implements OnInit {
     }
   }
 
+  /**
+   * The form as it is sent, with the photo shrunk (#3177): sent as chosen, a photo over 8,000 pixels a side or 40
+   * megapixels was refused with 413 however few bytes it was.
+   */
+  private _formData(): Observable<FormData> {
+    const data = formToFormData(this.form);
+    const photo = data.get('file');
+
+    if (!(photo instanceof File)) {
+      return of(data);
+    }
+
+    return from(this.photoPicker.ready(photo)).pipe(
+      map((ready) => {
+        data.set('file', ready, ready.name);
+        return data;
+      })
+    );
+  }
+
   private _createEntity() {
-    const formData = formToFormData(this.form);
-
-    this.ss.insertSpeakerInfo(formData).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'speaker-create-success',
-          title: 'Create Speaker',
-          message: `Speaker was successfully created.`
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'speaker-create-failed',
-          title: 'Create Speaker',
-          message: `Error creating speaker: ${err.status}`
-        });
-      }
-    });
+    this.saves.save('create', this._formData().pipe(switchMap((formData) => this.ss.insertSpeakerInfo(formData))));
   }
 
   private _updateEntity() {
     const formValue = this.form.getRawValue();
-    const data = formToFormData(this.form);
 
-    this.ss.updateSpeakerInfo(formValue.guid, data).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'speaker-update-success',
-          title: 'Update Speaker',
-          message: `Speaker was successfully updated.`
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'speaker-update-failed',
-          title: 'Update Speaker',
-          message: `Error updating speaker: ${err.status}`
-        });
-      }
-    });
+    this.saves.save('update', this._formData().pipe(switchMap((data) => this.ss.updateSpeakerInfo(formValue.guid, data))));
   }
 
   public deleteEntity() {
-    this.ss.deleteEntity(this.form.getRawValue().guid).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'speaker-delete-success',
-          title: 'Delete Speaker',
-          message: `Speaker was successfully deleted.`
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'speaker-delete-failed',
-          title: 'Delete Speaker',
-          message: `Error deleting speaker: ${err.status}`
-        });
-      }
-    });
-  }
-
-  private _navigateBack() {
-    this.rt.navigate(['/admin/speakers']);
+    this.saves.save('delete', this.ss.deleteEntity(this.form.getRawValue().guid));
   }
 }

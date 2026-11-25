@@ -95,3 +95,91 @@ test('the page a link preview reads names this site and has its image', async ({
   expect(picture.status(), `${image}`).toBe(200);
   expect(picture.headers()['content-type']).toContain('image/');
 });
+
+/**
+ * #1836. A past year's Sessions page said "There are no organizations." under Organizations, although its sessions name
+ * where they were held. Since #1826 the filter lists only the organizations ticked **Sessions Filter**, and no past
+ * season's were. This asks the API for the most recent past season and where its sessions were held, then checks that
+ * year's page offers at least one of those organizations, and only those. Read only.
+ */
+test("a past year's Sessions page offers the organizations its sessions were held at", async ({
+  page,
+  request,
+  baseURL
+}) => {
+  const api = new URL('/api/', baseURL).toString();
+  const seasons = (await (await request.get(`${api}seasons`)).json()) as Array<{
+    guid: string;
+    year: number;
+    active: boolean;
+  }>;
+  const current = seasons.find((season) => season.active)?.year ?? Infinity;
+  const past = seasons.filter((season) => season.year < current).sort((a, b) => b.year - a.year)[0];
+
+  test.skip(!past, 'This site has no past season');
+
+  const sessions = (await (await request.get(`${api}events/season/${past.guid}`)).json()) as Array<{
+    location?: { place?: { name?: string } };
+  }>;
+  const hosts = new Set(sessions.map((session) => session.location?.place?.name).filter(Boolean));
+
+  test.skip(hosts.size === 0, `No ${past.year} session names where it was held`);
+
+  await page.goto(`/seasons/${past.year}/sessions`);
+
+  const filter = page.locator('#organization-filters-container');
+  const offered = filter.locator('tamu-gisc-checkbox');
+
+  const empty = filter.getByText('There are no organizations.');
+
+  // Whichever the filter settles on, once its organizations have loaded.
+  await expect(offered.first().or(empty)).toBeVisible();
+  await expect(empty, `${past.year}'s Organizations filter is empty`).toHaveCount(0);
+
+  // The label alone: a checkbox's own text starts with its icon's ligature ("check_box_outline_blank"), which is no name.
+  const names = (await offered.locator('label').allInnerTexts()).map((name) => name.trim());
+
+  expect(
+    names.filter((name) => !hosts.has(name)),
+    `${past.year}: offered but held no session`
+  ).toEqual([]);
+});
+
+/**
+ * #3208. A session's Presenters cards were a fixed 350 px wide, so on a 360 px phone the session's page was 11 px wider
+ * than the screen and scrolled sideways. The Sessions and Presenters pages open an entry by script, with no link to
+ * follow, and neither list the API gives them names a session's speakers; a session's own details do. So this asks the
+ * API for the active season's sessions, opens the first whose details list a speaker, and checks the page is no wider
+ * than the phone. Read only.
+ */
+test.describe('on a 360 px phone', () => {
+  test.use({ viewport: { width: 360, height: 780 } });
+
+  test("a session's page with presenters fits the screen", async ({ page, request, baseURL }) => {
+    const api = new URL('/api/', baseURL).toString();
+    const sessions = (await (await request.get(`${api}events/season/active`)).json()) as Array<{ guid: string }>;
+    let withPresenters: string | undefined;
+
+    for (const { guid } of sessions.slice(0, 30)) {
+      const details = (await (await request.get(`${api}events/${guid}`)).json()) as { speakers?: Array<unknown> };
+
+      if (details.speakers?.length) {
+        withPresenters = guid;
+        break;
+      }
+    }
+
+    test.skip(!withPresenters, `None of the first ${Math.min(sessions.length, 30)} sessions has presenters`);
+
+    const link = `/sessions/details/${withPresenters}`;
+
+    await page.goto(link);
+    await expect(page.locator('tamu-gisc-presenter-card').first()).toBeVisible();
+
+    const width = await page.evaluate(() => ({ page: document.documentElement.scrollWidth, screen: window.innerWidth }));
+
+    expect(width.page, `${link}: the page is ${width.page} px wide on a ${width.screen} px screen`).toBeLessThanOrEqual(
+      width.screen
+    );
+  });
+});

@@ -9,6 +9,7 @@ import {
 
 import esri = __esri;
 import { EventPopups } from '../modules/popups/popups';
+import { toSvgDataUri } from './common.definitions';
 
 export enum SEC_GROUNDS_LAYERS {
   DAY1_POIS = 'sec-grounds-day1-pois',
@@ -175,7 +176,6 @@ const DAY1_ROUTE_PATTERN_SYMBOL = createOutlinedDashedLineSymbol([0, 100, 0, 255
 // Legend swatches for route layers. ArcGIS CIM symbol swatches are generated at a fixed
 // size that can look misleading in the legend, so we provide hand-crafted SVGs that more
 // clearly represent the actual appearance of each route type.
-const toSvgDataUri = (svg: string): string => `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
 
 const BUS_ROUTE_LEGEND_SVG =
   '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="16" viewBox="0 0 48 16" fill="none"><path d="M2 8H46" stroke="#005CE6" stroke-width="3.5" stroke-linecap="round"/><path d="M11 4.5V11.5L17 8L11 4.5Z" fill="#005CE6"/><path d="M22 4.5V11.5L28 8L22 4.5Z" fill="#005CE6"/><path d="M33 4.5V11.5L39 8L33 4.5Z" fill="#005CE6"/></svg>';

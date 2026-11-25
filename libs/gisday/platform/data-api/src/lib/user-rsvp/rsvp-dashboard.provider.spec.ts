@@ -137,6 +137,34 @@ describe('RsvpDashboardProvider (#2878)', () => {
       expect([...ms.getUsersByIds.mock.calls[0][0]].sort()).toEqual(['auth0|esri', 'auth0|gone', 'auth0|grad', 'auth0|prof', 'auth0|ug']);
     });
 
+    /**
+     * #3024: on gisday.tamu.edu, which shares txgisday.org's database, the dashboard listed only Texas A&M's sessions but
+     * counted every organization's accounts it could not read. The site's sessions are now chosen here, from the
+     * request's site, so the events, the chart and the unread count all cover the same records.
+     */
+    it("lists only the site's own sessions, and counts unread accounts only among their records (#3024)", async () => {
+      const find = eventRepo.find;
+      eventRepo.find = async (options) => {
+        const events = await find.call(eventRepo, options);
+
+        return events.map((e) =>
+          e.guid === 'e-late' ? ({ ...e, location: { place: { guid: 'p-other', name: 'Another university' } } } as Event) : e
+        );
+      };
+
+      const tamu = await provider.getSeason('s-1', 'gisday.tamu.edu');
+
+      expect(tamu.events.map((e) => e.name)).toEqual(['Workshop', 'Nobody yet']);
+      expect(tamu.made.map((m) => m.event)).toEqual(['e-early', 'e-early', 'e-early']);
+      // Only the Keynote's RSVPs came from the account that cannot be read.
+      expect(tamu.unreadAccounts).toBe(0);
+
+      const txgisday = await provider.getSeason('s-1', 'txgisday.org');
+
+      expect(txgisday.events.map((e) => e.name)).toEqual(['Workshop', 'Keynote', 'Nobody yet']);
+      expect(txgisday.unreadAccounts).toBe(1);
+    });
+
     it('counts everyone as Not given when Auth0 cannot be asked, and asks again next time', async () => {
       ms.getUsersByIds.mockRejectedValueOnce(new Error('Auth0 management is not configured on this server.'));
 

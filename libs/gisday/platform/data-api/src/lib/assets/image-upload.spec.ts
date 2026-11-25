@@ -2,7 +2,10 @@ import { BadRequestException, PayloadTooLargeException } from '@nestjs/common';
 
 import { declaredJpeg, declaredPng } from '@tamu-gisc/common/node/images';
 
-import { refuseUnsafeImage } from './image-upload';
+import { DEFAULT_UPLOAD_LIMITS } from '@tamu-gisc/common/nest/services';
+import { UPLOAD_IMAGE_RULES } from '@tamu-gisc/gisday/common';
+
+import { UPLOAD_IMAGE_FORMATS, refuseUnsafeImage } from './image-upload';
 
 describe('refuseUnsafeImage (#2937)', () => {
   const svg = Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"/>');
@@ -25,6 +28,17 @@ describe('refuseUnsafeImage (#2937)', () => {
     expect(() => refuseUnsafeImage({ originalname, buffer }, 'The logo')).toThrow(
       new BadRequestException('The logo must be a JPEG or PNG image.')
     );
+  });
+
+  // #3009: the site's logo picker reads the same rule and words, so it offers and refuses what the API does.
+  it('takes the formats the site offers, from the one shared definition', () => {
+    expect(UPLOAD_IMAGE_FORMATS).toBe(UPLOAD_IMAGE_RULES.formats);
+    expect(UPLOAD_IMAGE_RULES.accept).toBe('image/jpeg,image/png');
+  });
+
+  // #3074: the site refuses an image over the size the upload itself is cut off at, before it is sent.
+  it('caps images at the size the upload limit does', () => {
+    expect((UPLOAD_IMAGE_RULES as { maxBytes?: number }).maxBytes).toBe(DEFAULT_UPLOAD_LIMITS.fileSize);
   });
 
   it('refuses a file with no content at all', () => {

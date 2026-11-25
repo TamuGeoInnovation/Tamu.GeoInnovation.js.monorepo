@@ -399,8 +399,9 @@ Day release takes them. They used to go into [`unreleased.md`](unreleased.md) wi
 AggieMap release collated them into its own dated notes and described GIS Day work as though it had shipped
 them; the 10 November release was where that was finally noticed, in the finished document
 ([#2833](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2833)). A GIS Day change
-writes its entry file to [`unreleased/`](unreleased/README.md) as any change does; what differs is which file
-it is collated into.
+writes its entry file to [`unreleased/`](unreleased/README.md) as any change does, with `app: gisday` in its
+front matter, and the collation puts it in GIS Day's file. `--check` fails an entry that links a GIS Day site
+and does not say which application it is ([#2835](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2835)).
 
 **Still not settled.** `scripts/tag-build.sh prod` refuses a commit with no `dev-*` tag, which GIS Day
 cannot have until it has a dev site, so the 12 October release carries no `prod-*` tag and no dated notes

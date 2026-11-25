@@ -1,1 +1,13 @@
 <tamu-gisc-broadcast-add-edit-form type="edit"></tamu-gisc-broadcast-add-edit-form>
+
+<!-- The sessions that use this broadcast (#3032), in the admin pages' own section. -->
+<div class="form">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">Sessions using this broadcast</div>
+    </div>
+    <div class="form-section-body">
+      <tamu-gisc-sessions-using [sessions]="sessions$ | async" one="session uses this broadcast" many="sessions use this broadcast" none="No sessions use this broadcast."></tamu-gisc-sessions-using>
+    </div>
+  </div>
+</div>

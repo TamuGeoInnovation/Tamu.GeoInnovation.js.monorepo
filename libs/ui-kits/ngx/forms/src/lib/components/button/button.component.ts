@@ -34,6 +34,12 @@ export class ButtonComponent {
   public readonly look = input<'default' | 'secondary' | 'tertiary' | 'success' | 'danger' | 'warning'>(undefined);
 
   /**
+   * `small` is a lesser action that sits beside a field, as the Clear beside each submission deadline does (#2969):
+   * less padding and smaller text. `regular`, the default, is the button as it has always been.
+   */
+  public readonly size = input<'regular' | 'small'>('regular');
+
+  /**
    * Event emitted on inner button trigger.
    *
    * Not required for `reset` or `submit` types.
@@ -57,6 +63,11 @@ export class ButtonComponent {
   @HostBinding('class.relaxed')
   private get _fitRelaxed() {
     return this.fit() === 'relaxed';
+  }
+
+  @HostBinding('class.small')
+  private get _sizeSmall() {
+    return this.size() === 'small';
   }
 
   /**

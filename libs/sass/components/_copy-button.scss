@@ -4,8 +4,9 @@
 // The Copy action of a copy field: its text, and a "Copied!" that floats up when it copies (the clipboard-copy
 // directive sets .copying). It was pasted into AggieMap's, UES Operations' and the event maps' stylesheets, all
 // three the same; it is shared from here since #2923, which also puts it in the GIS Day presenter search box.
+// A site can give it its own colour, as GIS Day's Texas A&M site gives it maroon (#3084).
 .copy-button {
-  color: $main-blue;
+  color: var(--copy-button-color, #{$main-blue});
   padding: 0.8rem 0.75rem;
   font-weight: 600;
   width: initial;
@@ -23,7 +24,7 @@
     @include transform(translateX(-50%) translateY(-50%));
     opacity: 0;
     position: absolute;
-    color: lighten($main-blue, 5%);
+    color: var(--copy-button-color, #{lighten($main-blue, 5%)});
   }
 
   &.copying {

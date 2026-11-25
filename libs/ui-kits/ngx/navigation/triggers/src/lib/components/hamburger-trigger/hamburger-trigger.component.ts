@@ -1,61 +1,10 @@
-import { Component, HostListener, OnChanges, SimpleChanges, input, output } from '@angular/core';
-import { trigger, state, style, transition, animate } from '@angular/animations';
-import { BehaviorSubject, of, Observable } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
-import { AsyncPipe } from '@angular/common';
+import { Component, HostBinding, HostListener, OnChanges, SimpleChanges, input, output } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'tamu-gisc-hamburger-trigger',
   templateUrl: './hamburger-trigger.component.html',
-  styleUrls: ['./hamburger-trigger.component.scss'],
-  animations: [
-    trigger('topBun', [
-      state(
-        'up',
-        style({
-          transform: 'rotate3d(0, 0, 1, -135deg) translate3d(-0.45rem, -0.4rem, 0rem)'
-        })
-      ),
-      state(
-        'down',
-        style({
-          transform: 'none'
-        })
-      ),
-      transition('* <=> *', [animate('.3s ease')])
-    ]),
-    trigger('patty', [
-      state(
-        'up',
-        style({
-          width: '0rem'
-        })
-      ),
-      state(
-        'down',
-        style({
-          width: '*'
-        })
-      ),
-      transition('* <=> *', [animate('.2s 100ms ease')])
-    ]),
-    trigger('bottomBun', [
-      state(
-        'up',
-        style({
-          transform: 'rotate3d(0, 0, 1, 135deg) translate3d(-2.0rem, -0.3rem, 0rem)'
-        })
-      ),
-      state(
-        'down',
-        style({
-          transform: 'none'
-        })
-      ),
-      transition('* <=> *', [animate('.3s ease')])
-    ])
-  ],
-  imports: [AsyncPipe]
+  styleUrls: ['./hamburger-trigger.component.scss']
 })
 export class HamburgerTriggerComponent implements OnChanges {
   /**
@@ -73,8 +22,11 @@ export class HamburgerTriggerComponent implements OnChanges {
   // Internal trigger state
   private _state: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-  // Map trigger state to an animation state
-  public animationState: Observable<string> = this._state.asObservable().pipe(switchMap((s) => of(s ? 'up' : 'down')));
+  // The bars form an X while active: the up class, animated by libs/sass/motion's hamburger-bars (#2278).
+  @HostBinding('class.up')
+  protected get _up() {
+    return this._state.getValue();
+  }
 
   @HostListener('click')
   protected _poke() {

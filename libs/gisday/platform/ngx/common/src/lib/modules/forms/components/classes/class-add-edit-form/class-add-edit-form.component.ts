@@ -1,13 +1,16 @@
 import { Component, OnInit, inject, input } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Observable, catchError, concatMap, filter, from, map, of, shareReplay, switchMap, take, toArray } from 'rxjs';
 
 import { Class, Season, UserClass } from '@tamu-gisc/gisday/platform/data-api';
 import { ClassService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { serverMessage } from '../../../../../utils/server-message';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+
+import { adminEntityForm } from '../../../admin-entity-form';
 
 /**
  * The sections typed into Create Class's section field: one, or several separated by commas, semicolons or spaces,
@@ -26,7 +29,8 @@ export function sectionsFrom(text: string): Array<string> {
 export class ClassAddEditFormComponent implements OnInit {
   private readonly fb = inject(UntypedFormBuilder);
   private readonly at = inject(ActivatedRoute);
-  private readonly rt = inject(Router);
+  /** Its save and delete, and what they say (#3340). */
+  private readonly saves = adminEntityForm('Class', '/admin/classes');
   private readonly cs = inject(ClassService);
   private readonly ss = inject(SeasonService);
   private readonly ns = inject(NotificationService);
@@ -64,16 +68,10 @@ export class ClassAddEditFormComponent implements OnInit {
           ...entity,
           season: entity?.season?.guid
         });
-
-        // Opening the page is not a change (#2942), though each control echoes the value it is given.
-        this.form.markAsPristine();
       });
     } else {
       this.activeSeasons$.pipe(take(1)).subscribe((season) => {
         this.form.patchValue({ season: season.guid });
-
-        // Opening the page is not a change (#2942), though each control echoes the value it is given.
-        this.form.markAsPristine();
       });
     }
   }
@@ -87,47 +85,13 @@ export class ClassAddEditFormComponent implements OnInit {
   }
 
   public deleteEntity() {
-    this.cs.deleteEntity(this.form.getRawValue().guid).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'class-delete-success',
-          title: 'Delete class',
-          message: `Class was successfully deleted.`
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'class-delete-failed',
-          title: 'Delete class',
-          message: `Error deleting class: ${err.status}`
-        });
-      }
-    });
+    this.saves.save('delete', this.cs.deleteEntity(this.form.getRawValue().guid));
   }
 
   private _updateEntity() {
     const rawValue = this.form.getRawValue();
 
-    this.cs.updateEntity(rawValue.guid, rawValue).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'class-update-success',
-          title: 'Update class',
-          message: `Class was successfully updated.`
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'class-update-failed',
-          title: 'Update class',
-          message: `Error updating class: ${err.status}`
-        });
-      }
-    });
+    this.saves.save('update', this.cs.updateEntity(rawValue.guid, rawValue));
   }
 
   /**
@@ -148,7 +112,7 @@ export class ClassAddEditFormComponent implements OnInit {
         concatMap((section) =>
           this.cs.createEntity({ ...rawValue, section }).pipe(
             map(() => ({ section, error: undefined as string })),
-            catchError((err) => of({ section, error: `${err?.error?.message ?? err.status}` }))
+            catchError((err) => of({ section, error: serverMessage(err, `${err?.status}`) }))
           )
         ),
         toArray()
@@ -161,7 +125,7 @@ export class ClassAddEditFormComponent implements OnInit {
         if (failed.length === 0) {
           this.ns.toast({
             id: 'class-create-success',
-            title: 'Create class',
+            title: 'Create Class',
             message: `${created.length} sections of ${course} were successfully created: ${created.join(', ')}.`
           });
 
@@ -173,7 +137,7 @@ export class ClassAddEditFormComponent implements OnInit {
 
         this.ns.toast({
           id: 'class-create-failed',
-          title: 'Create class',
+          title: 'Create Class',
           message:
             (created.length > 0 ? `Created sections ${created.join(', ')}. ` : '') +
             `Not created: ${failed.map((r) => `${r.section} (${r.error})`).join(', ')}. They are left in the form.`
@@ -186,7 +150,7 @@ export class ClassAddEditFormComponent implements OnInit {
       next: () => {
         this.ns.toast({
           id: 'class-create-success',
-          title: 'Create class',
+          title: 'Create Class',
           message: `Class was successfully created.`
         });
 
@@ -195,14 +159,14 @@ export class ClassAddEditFormComponent implements OnInit {
       error: (err) => {
         this.ns.toast({
           id: 'class-create-failed',
-          title: 'Create class',
-          message: `Error creating class: ${err?.error?.message ?? err.status}`
+          title: 'Create Class',
+          message: `Error creating class: ${serverMessage(err, `${err?.status}`)}`
         });
       }
     });
   }
 
   private _navigateBack() {
-    this.rt.navigate(['/admin/classes']);
+    this.saves.back();
   }
 }

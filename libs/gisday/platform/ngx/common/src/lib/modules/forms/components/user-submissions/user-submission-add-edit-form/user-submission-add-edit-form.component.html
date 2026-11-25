@@ -1,4 +1,27 @@
 <form [formGroup]="form" (ngSubmit)="handleSubmission()">
+  <!-- The slides or poster themselves (#2933), in a box, and first on the page (#3144): below the whole form, finalists sent
+  here to upload did not find it. Not a form control, so a reviewed submission, whose form is locked, still takes files:
+  finalists send theirs after being accepted. -->
+  @if (type() === 'edit') { @if (entity$ | async; as submission) {
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-title">Presentation files</div>
+    </div>
+    <div class="form-section-body">
+      <div class="info-block notice">
+        <p class="form-input-description">Attach the file you will present from, so the {{ site.name }} team has it on the day: your slides for a presentation, or your poster as a PDF.</p>
+        <!-- Files close at their own, later deadline (#2934). -->
+        @if (filesNotice(); as notice) { @if (notice.closed) {
+        <p class="form-input-description"><strong>{{ notice.text }}</strong></p>
+        } @else {
+        <p class="form-input-description">{{ notice.text }}</p>
+        } }
+        <tamu-gisc-submission-files [submissionGuid]="submission.guid" [editable]="!filesNotice()?.closed"></tamu-gisc-submission-files>
+      </div>
+    </div>
+  </div>
+  } }
+
   <div class="form-section">
     <div class="form-section-toolbar">
       @if (type() === 'create') {
@@ -11,7 +34,7 @@
     <div class="form-section-body">
       <div class="form-collection column">
         <p class="form-input-description">Select the competition type.</p>
-        <tamu-gisc-radio-group formControlName="submissionType" [options]="submissionTypeOptions" displayPath="label" valuePath="type"></tamu-gisc-radio-group>
+        <tamu-gisc-radio-group formControlName="submissionType" [options]="submissionTypeOptions()" displayPath="label" valuePath="type"></tamu-gisc-radio-group>
       </div>
 
       <!-- When the chosen competition closes, or that it has (#2934). The API refuses a submission or edit after it. -->
@@ -37,7 +60,7 @@
       </div>
 
       <div class="form-collection column">
-        <p class="form-input-description">Indicate whether this is an individual or group submission. For group submissions, only one submission is required. All participants' name, email, and student ID are required to be eligible for a distributed award.</p>
+        <p class="form-input-description">Indicate whether this is an individual or group submission. For group submissions, only one submission is required. Your name and email come from your account. For a group, list your co-authors one per line, and their emails one per line in the same order; every author's name and email are required to be eligible for a distributed award.</p>
 
         <tamu-gisc-slide-toggle formControlName="format" class="trailer-1" [options]="presentationFormatOptions" [displayPath]="'label'" [valuePath]="'format'"></tamu-gisc-slide-toggle>
       </div>
@@ -45,18 +68,19 @@
       <div class="form-collection column">
         @for (author of participants(); track author; let i = $index) {
         <ng-container formArrayName="participants">
+          <!-- The submitter, from their account, not typed (#2990). -->
           <div class="form-collection row" [formGroupName]="i">
-            <tamu-gisc-textbox formControlName="name" placeholder="Full Name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-            <tamu-gisc-textbox formControlName="email" placeholder="Email" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-            <tamu-gisc-textbox formControlName="studentId" placeholder="Student ID" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+            <tamu-gisc-textbox formControlName="name" placeholder="Your name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+            <tamu-gisc-textbox formControlName="email" placeholder="Your email" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
           </div>
         </ng-container>
         }
       </div>
 
-      @if ((selectedPresentationFormat$ | async) === 'group' && !form.disabled) {
-      <div class="flex flex-row justify-end">
-        <p class="form-collection-actions" (click)="addParticipant()" tabindex="0" role="button" (keydown.enter)="addParticipant()" (keydown.space)="addParticipant(); $event.preventDefault()">Add participant <span class="material-icons">add</span></p>
+      @if ((selectedPresentationFormat$ | async) === 'group') {
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="coAuthors" placeholder="Co-authors, one name per line" type="textarea" [rows]="4" [floatLabel]="true"> </tamu-gisc-textbox>
+        <tamu-gisc-textbox formControlName="coAuthorEmails" placeholder="Co-authors' emails, one per line, in the same order" type="textarea" [rows]="4" [floatLabel]="true"> </tamu-gisc-textbox>
       </div>
       }
 
@@ -68,28 +92,7 @@
     </div>
   </div>
 
-  <!-- The slides or poster themselves (#2933), in a box so a finalist looking for where to upload sees it at once, and
-  above the form's buttons, which close the page (#2938). Not a form control, so a reviewed submission, whose form is
-  locked, still takes files: finalists send theirs after being accepted. -->
-  @if (type() === 'edit') { @if (entity$ | async; as submission) {
-  <div class="form-section">
-    <div class="form-section-toolbar">
-      <div class="form-section-title">Presentation files</div>
-    </div>
-    <div class="form-section-body">
-      <div class="info-block notice">
-        <p class="form-input-description">Attach the file you will present from, so the {{ site.name }} team has it on the day: your slides for a presentation, or your poster as a PDF.</p>
-        <!-- Files close at their own, later deadline (#2934). -->
-        @if (filesNotice(); as notice) { @if (notice.closed) {
-        <p class="form-input-description"><strong>{{ notice.text }}</strong></p>
-        } @else {
-        <p class="form-input-description">{{ notice.text }}</p>
-        } }
-        <tamu-gisc-submission-files [submissionGuid]="submission.guid" [editable]="!filesNotice()?.closed"></tamu-gisc-submission-files>
-      </div>
-    </div>
-  </div>
-  } } @if (entity$ | async; as submission) { @if (submission.reviewed === false) {
+  @if (entity$ | async; as submission) { @if (submission.reviewed === false) {
   <div class="form-section">
     <div class="form-section-body">
       <div class="form-collection row">

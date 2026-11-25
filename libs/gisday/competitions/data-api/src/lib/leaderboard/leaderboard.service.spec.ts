@@ -1,6 +1,7 @@
 import { COMPETITION_VALIDATION_STATUS } from '@tamu-gisc/gisday/common';
 
 import { ALREADY_SUBMITTED_POINTS, LeaderboardService, NEW_FIND_POINTS } from './leaderboard.service';
+import { LeaderboardController } from './leaderboard.controller';
 
 describe('LeaderboardService', () => {
   // About 1 metre in degrees of latitude.
@@ -64,10 +65,44 @@ describe('LeaderboardService', () => {
     expect(ALREADY_SUBMITTED_POINTS).toBe(1);
   });
 
+  // #3243: the Winners page offers the trail challenge's places in this order, by account, with these points.
+  it("ranks a GIS Day season's submitters by account, highest first, as the board does", async () => {
+    submissions = [submission('ann', monument), submission('bob', north(5)), submission('bob', north(40))];
+
+    expect(await service.rankedForSeason('s-1')).toEqual([
+      { account: 'auth0|bob', points: ALREADY_SUBMITTED_POINTS + NEW_FIND_POINTS },
+      { account: 'auth0|ann', points: NEW_FIND_POINTS }
+    ]);
+    expect(findCompetitionSeason).toHaveBeenCalledWith(expect.objectContaining({ where: { season: { guid: 's-1' } } }));
+  });
+
+  it('ranks no one for a season with no competition', async () => {
+    findCompetitionSeason.mockResolvedValueOnce(null);
+
+    expect(await service.rankedForSeason('s-1')).toEqual([]);
+  });
+
   it('scores 1 when the first submitter submits the same thing again', async () => {
     submissions = [submission('ann', monument), submission('ann', north(3))];
 
     expect(await scores()).toEqual({ ann: 3 });
+  });
+
+  // #2894: the VGI dashboard reads each submission's score from here, so it counts new finds and repeats as this does.
+  it('gives each submission its own score, and none to one that does not count', async () => {
+    submissions = [
+      submission('ann', monument),
+      submission('bob', north(5)),
+      submission('cat', north(9), 'monument', COMPETITION_VALIDATION_STATUS.discarded)
+    ];
+
+    const scored = await service.scoreSubmissions({ guid: 'cs-1', form } as never);
+
+    expect(scored.map((s) => [s.submission.userGuid, s.points])).toEqual([
+      ['auth0|ann', NEW_FIND_POINTS],
+      ['auth0|bob', ALREADY_SUBMITTED_POINTS],
+      ['auth0|cat', null]
+    ]);
   });
 
   it('compares submissions oldest first, and two made in the same instant in a fixed order', async () => {
@@ -127,7 +162,12 @@ describe('LeaderboardService', () => {
   });
 
   it('ranks people by their total, highest first', async () => {
-    submissions = [submission('ann', monument), submission('bob', north(100)), submission('bob', north(200)), submission('cat', north(2))];
+    submissions = [
+      submission('ann', monument),
+      submission('bob', north(100)),
+      submission('bob', north(200)),
+      submission('cat', north(2))
+    ];
 
     const board = await service.getLeaderBoardItemsForActiveSeason();
 
@@ -298,7 +338,10 @@ describe('LeaderboardService', () => {
     });
 
     it('compares a 2026 plaque with no name by distance alone', async () => {
-      submissions = [find2026('ann', monument, 'tree_bench_plaque', 'John Smith'), find2026('bob', north(6), 'tree_bench_plaque', '')];
+      submissions = [
+        find2026('ann', monument, 'tree_bench_plaque', 'John Smith'),
+        find2026('bob', north(6), 'tree_bench_plaque', '')
+      ];
 
       expect(await scores()).toEqual({ ann: 2, bob: 1 });
     });
@@ -367,7 +410,12 @@ describe('LeaderboardService', () => {
     const ms = (date: Date, offset: number) => new Date(date.getTime() + offset);
 
     beforeEach(() => {
-      findCompetitionSeason.mockResolvedValue({ guid: 'cs-1', form: seasonForm, scoringOpensAt: opens, scoringClosesAt: closes });
+      findCompetitionSeason.mockResolvedValue({
+        guid: 'cs-1',
+        form: seasonForm,
+        scoringOpensAt: opens,
+        scoringClosesAt: closes
+      });
     });
 
     it('counts a submission made at the moment the window opens, and not one a millisecond before', async () => {
@@ -395,13 +443,21 @@ describe('LeaderboardService', () => {
         scoringOpensAt: opens.toISOString(),
         scoringClosesAt: closes.toISOString()
       });
-      submissions = [{ ...at(ms(closes, 1), 'ann'), created: ms(closes, 1).toISOString() }, at(ms(opens, 1), 'bob', north(100))];
+      submissions = [
+        { ...at(ms(closes, 1), 'ann'), created: ms(closes, 1).toISOString() },
+        at(ms(opens, 1), 'bob', north(100))
+      ];
 
       expect(await scores()).toEqual({ bob: 2 });
     });
 
     it('has no limit on a side whose setting is empty, so earlier seasons score as before', async () => {
-      findCompetitionSeason.mockResolvedValue({ guid: 'cs-1', form: seasonForm, scoringOpensAt: null, scoringClosesAt: closes });
+      findCompetitionSeason.mockResolvedValue({
+        guid: 'cs-1',
+        form: seasonForm,
+        scoringOpensAt: null,
+        scoringClosesAt: closes
+      });
       submissions = [at(new Date('2020-01-01T00:00:00Z'), 'ann'), at(closes, 'bob', north(100))];
 
       expect(await scores()).toEqual({ ann: 2 });
@@ -418,5 +474,60 @@ describe('LeaderboardService', () => {
       ['auth0|bob', 3],
       ['auth0|ann', 2]
     ]);
+  });
+
+  // #3168: the board showed admins and managers every participant's full email, which anyone could then see on a projected
+  // or shared screen. Every caller now gets the start of the email, masked, and the server never sends a full one.
+  describe('naming participants', () => {
+    const emails: Record<string, string> = {
+      'auth0|ann': 'jsmith2026@tamu.edu',
+      'auth0|bob': 'bo@tamu.edu',
+      'auth0|cy': 'cy.smith@gmail.com'
+    };
+    let getUserMetadata: jest.Mock;
+
+    beforeEach(() => {
+      getUserMetadata = jest.fn((guid: string) =>
+        emails[guid] ? Promise.resolve({ user_info: { email: emails[guid] } }) : Promise.reject(new Error('not found'))
+      );
+      service = new LeaderboardService(
+        { find } as never,
+        undefined,
+        undefined,
+        { findOne: findCompetitionSeason } as never,
+        { findOne: jest.fn(() => Promise.resolve({ guid: 's-1', active: true })) } as never,
+        { getUserMetadata } as never
+      );
+      submissions = [
+        submission('ann', monument),
+        submission('bob', north(100)),
+        submission('cy', north(200)),
+        submission('dee', north(300))
+      ];
+    });
+
+    const names = (board: Array<{ guid: string; identity: string }>) =>
+      Object.fromEntries(board.map((row) => [row.guid.replace('auth0|', ''), row.identity]));
+
+    const masked = { ann: 'jsm****@tamu.edu', bob: 'b****@tamu.edu', cy: 'cy.****@gmail.com', dee: '|dee'.slice(-4) };
+
+    it.each([
+      ['the leaderboard', () => service.getLeaderBoardItemsForActiveSeason()],
+      ["an admin's leaderboard", () => new LeaderboardController(service).getLeaderBoardForActiveSeasonWithIdentities()],
+      ['a season named by its guid', () => service.getLeaderBoardItemsForSeason('cs-1')]
+    ])('names each participant in %s by the start of their email, masked, and never the whole of it', async (_, board) => {
+      const rows = await board();
+
+      expect(names(rows)).toEqual(masked);
+      expect(JSON.stringify(rows)).not.toMatch(/jsmith2026@|bo@|cy\.smith@/);
+    });
+
+    it('looks each participant up once, not on every view of the board', async () => {
+      await service.getLeaderBoardItemsForActiveSeason();
+      await service.getLeaderBoardItemsForActiveSeason();
+      await new LeaderboardController(service).getLeaderBoardForActiveSeasonWithIdentities();
+
+      expect(getUserMetadata).toHaveBeenCalledTimes(4);
+    });
   });
 });

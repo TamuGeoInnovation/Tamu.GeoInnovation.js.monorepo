@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { firstValueFrom, of } from 'rxjs';
 
 import { SubmissionService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
-import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import { UserSubmissionsComponent } from './user-submissions.component';
@@ -37,8 +36,7 @@ describe('UserSubmissionsComponent', () => {
               throw new Error(`Environment does not contain a '${key}' token.`);
             })
           }
-        },
-        { provide: SettingsService, useValue: { getSimpleSettingsBranch: jest.fn(() => of(undefined)) } }
+        }
       ]
     }).compileComponents();
 

@@ -1,13 +1,13 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { filter, map, Observable, shareReplay, switchMap } from 'rxjs';
 
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { Submission } from '@tamu-gisc/gisday/platform/data-api';
 import { SeasonService, UserSubmissionsService, reviewSubmissionsToast } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
-import { SubmissionFilesComponent } from '@tamu-gisc/gisday/platform/ngx/common';
+import { serverMessage, SubmissionFilesComponent, provideAdminDetailsPage } from '@tamu-gisc/gisday/platform/ngx/common';
 import { SlideToggleComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -18,7 +18,7 @@ import {
   ReviewEmailModalComponent,
   ReviewEmailModalData,
   ReviewEmailModalResult
-} from '../../components/review-email-modal/review-email-modal.component';
+} from '@tamu-gisc/gisday/platform/ngx/common';
 
 @Component({
   selector: 'tamu-gisc-research-competition-review',
@@ -33,11 +33,11 @@ import {
     AsyncPipe,
     TitleCasePipe,
     SubmissionFilesComponent
-  ]
+  ],
+  providers: [provideAdminDetailsPage(() => ResearchCompetitionReviewComponent)]
 })
 export class ResearchCompetitionReviewComponent extends BaseAdminDetailsPageComponent implements OnInit {
   private readonly fb = inject(UntypedFormBuilder);
-  private readonly rt = inject(Router);
   private readonly at = inject(ActivatedRoute);
   private readonly submissionService = inject(UserSubmissionsService);
   private readonly ns = inject(NotificationService);
@@ -79,9 +79,6 @@ export class ResearchCompetitionReviewComponent extends BaseAdminDetailsPageComp
       const acceptance = entity.acceptance.toString();
 
       this.form.patchValue({ guid: entity.guid, acceptance, message: entity.message });
-
-      // Opening the page is not a change (#2942), though each control echoes the value it is given.
-      this.form.markAsPristine();
     });
   }
 
@@ -94,13 +91,13 @@ export class ResearchCompetitionReviewComponent extends BaseAdminDetailsPageComp
           message: 'Submission deleted successfully.'
         });
 
-        this._navigateBack();
+        this.backToList();
       },
       error: (err) => {
         this.ns.toast({
           id: 'delete-submission-error',
           title: 'Delete Submission',
-          message: `Error deleting submission: ${err.status}`
+          message: serverMessage(err, `Error deleting submission: ${err.status}`)
         });
       }
     });
@@ -134,20 +131,16 @@ export class ResearchCompetitionReviewComponent extends BaseAdminDetailsPageComp
           if (result.reviewed.length) {
             // The decision is saved: leaving is not leaving unsaved changes (#2942).
             this.form.markAsPristine();
-            this._navigateBack();
+            this.backToList();
           }
         },
         error: (err) => {
           this.ns.toast({
             id: 'update-submission-error',
             title: 'Update Submission',
-            message: `Error inserting submission review: ${err.status}`
+            message: serverMessage(err, `Error inserting submission review: ${err.status}`)
           });
         }
       });
-  }
-
-  private _navigateBack() {
-    this.rt.navigate(['/admin/research-competition']);
   }
 }

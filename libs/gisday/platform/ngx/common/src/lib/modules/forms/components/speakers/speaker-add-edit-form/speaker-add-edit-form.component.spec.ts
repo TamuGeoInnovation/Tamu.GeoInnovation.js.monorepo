@@ -1,7 +1,9 @@
-import { provideHttpClient } from '@angular/common/http';
-import { TestBed } from '@angular/core/testing';
+import type { Mock } from 'vitest';
+import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 import {
   AssetsService,
@@ -11,8 +13,22 @@ import {
   UniversityService
 } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { FileComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { shrinkImage } from '@tamu-gisc/common/utils/ui';
 
 import { SpeakerAddEditFormComponent } from './speaker-add-edit-form.component';
+
+// A save goes back to its list page. Any address is a page here, so that navigation resolves; under Jest a rejected
+// one went unnoticed, and Vitest reports it as an unhandled error (#1977).
+const anyPage = [{ path: '**', children: [] }];
+
+// The browser's redraw, which jsdom cannot do: a photo comes back as a small JPEG, as `shrinkImage` makes one (#3177).
+vi.mock('@tamu-gisc/common/utils/ui', async (original) => ({
+  ...(await original<object>()),
+  shrinkImage: vi.fn(
+    async (file: File) => new File(['small'], file.name.replace(/\.[^.]*$/, '') + '.jpg', { type: 'image/jpeg' })
+  )
+}));
 
 describe('SpeakerAddEditFormComponent', () => {
   // A new speaker has no photograph, and the form drew an image with no source: a broken image and its alt text (#2422).
@@ -20,7 +36,7 @@ describe('SpeakerAddEditFormComponent', () => {
     function create() {
       TestBed.configureTestingModule({
         providers: [
-          provideRouter([]),
+          provideRouter(anyPage),
           provideHttpClient(),
           { provide: SpeakerService, useValue: { getEntity: () => of({}) } },
           { provide: AssetsService, useValue: { getAssetUrl: (path: string) => of(`assets/uploads/${path}`) } },
@@ -35,7 +51,8 @@ describe('SpeakerAddEditFormComponent', () => {
       fixture.componentRef.setInput('type', 'create');
       fixture.detectChanges();
 
-      const images = () => Array.from((fixture.nativeElement as HTMLElement).querySelectorAll<HTMLImageElement>('.speaker-photo img'));
+      const images = () =>
+        Array.from((fixture.nativeElement as HTMLElement).querySelectorAll<HTMLImageElement>('.speaker-photo img'));
       const icon = () =>
         (fixture.nativeElement as HTMLElement).querySelector('.speaker-photo .material-icons')?.textContent.trim();
       const choose = (file: File | null) => {
@@ -47,7 +64,7 @@ describe('SpeakerAddEditFormComponent', () => {
     }
 
     beforeEach(() => {
-      URL.createObjectURL = jest.fn(() => 'blob:chosen-photo');
+      URL.createObjectURL = vi.fn(() => 'blob:chosen-photo');
     });
 
     it('draws no image without a source before a photograph is chosen', () => {
@@ -100,7 +117,7 @@ describe('SpeakerAddEditFormComponent', () => {
     function create() {
       TestBed.configureTestingModule({
         providers: [
-          provideRouter([]),
+          provideRouter(anyPage),
           provideHttpClient(),
           { provide: SpeakerService, useValue: { getEntity: () => of({}) } },
           { provide: AssetsService, useValue: { getAssetUrl: () => of(null) } },
@@ -115,7 +132,8 @@ describe('SpeakerAddEditFormComponent', () => {
       fixture.componentRef.setInput('type', 'create');
       fixture.detectChanges();
 
-      const banner = () => (fixture.nativeElement as HTMLElement).querySelector('.speaker-photo .class-banner')?.textContent?.trim() ?? null;
+      const banner = () =>
+        (fixture.nativeElement as HTMLElement).querySelector('.speaker-photo .class-banner')?.textContent?.trim() ?? null;
       const set = (value: object) => {
         fixture.componentInstance.form.patchValue(value);
         fixture.detectChanges();
@@ -127,7 +145,7 @@ describe('SpeakerAddEditFormComponent', () => {
     }
 
     beforeEach(() => {
-      URL.createObjectURL = jest.fn(() => 'blob:chosen-photo');
+      URL.createObjectURL = vi.fn(() => 'blob:chosen-photo');
     });
 
     it('shows the university and class year chosen in the form', () => {
@@ -176,6 +194,165 @@ describe('SpeakerAddEditFormComponent', () => {
       set({ file: null });
 
       expect(banner()).toBeNull();
+    });
+  });
+
+  async function openForImage(): Promise<ComponentFixture<SpeakerAddEditFormComponent>> {
+    URL.createObjectURL = vi.fn(() => 'blob:chosen-photo');
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter(anyPage),
+        provideHttpClient(),
+        { provide: SpeakerService, useValue: { getEntity: () => of({}) } },
+        { provide: AssetsService, useValue: { getAssetUrl: (path: string) => of(`assets/uploads/${path}`) } },
+        { provide: UniversityService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+        { provide: OrganizationService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+        { provide: SeasonService, useValue: { activeSeason$: of({ guid: 'season' }) } },
+        { provide: NotificationService, useValue: { toast: () => undefined } }
+      ]
+    });
+
+    const fixture = TestBed.createComponent(SpeakerAddEditFormComponent);
+    fixture.componentRef.setInput('type', 'create');
+    fixture.detectChanges();
+
+    return fixture;
+  }
+
+  /**
+   * #3074. The picker reads the shared upload rule (#2937, #3009), as the sponsor form's does: it offers only JPEG and
+   * PNG up to 5 MB, and refuses anything else as soon as it is chosen, in the API's words, keeping no file.
+   */
+  describe('choosing an image', () => {
+    // jsdom cannot put a file in a file input, so the picker is given the input's change, as the browser gives it.
+    const choose = (fixture: ComponentFixture<{ form: { getRawValue(): { file?: unknown } } }>, file: File) => {
+      fixture.debugElement
+        .query(By.directive(FileComponent))
+        .componentInstance.handleFileChange({ target: { files: [file], value: file.name } });
+      fixture.detectChanges();
+    };
+    const alert = (fixture: ComponentFixture<unknown>) =>
+      (fixture.nativeElement as HTMLElement).querySelector('[role="alert"]')?.textContent?.trim();
+    const svg = new File(['<svg xmlns="http://www.w3.org/2000/svg"/>'], 'image.svg', { type: 'image/svg+xml' });
+
+    it("refuses an SVG as soon as it is chosen, in the API's words, and keeps no file", async () => {
+      const fixture = await openForImage();
+
+      choose(fixture, svg);
+
+      expect(alert(fixture)).toBe('The photo must be a JPEG or PNG image.');
+      expect(fixture.componentInstance.form.getRawValue().file).toBeFalsy();
+    });
+
+    it('refuses an image over 5 MB as soon as it is chosen', async () => {
+      const fixture = await openForImage();
+
+      choose(fixture, new File([new Uint8Array(5 * 1024 * 1024 + 1)], 'big.png', { type: 'image/png' }));
+
+      expect(alert(fixture)).toBe('The photo must be 5 MB or smaller.');
+      expect(fixture.componentInstance.form.getRawValue().file).toBeFalsy();
+    });
+
+    it('takes a PNG, and clears the refusal', async () => {
+      const fixture = await openForImage();
+      const png = new File(['png'], 'image.png', { type: 'image/png' });
+
+      choose(fixture, svg);
+      choose(fixture, png);
+
+      expect(alert(fixture)).toBeUndefined();
+      expect(fixture.componentInstance.form.getRawValue().file).toBe(png);
+    });
+  });
+
+  /**
+   * #3177: a 745 KB photo saved from the admin failed with 413. The API refuses an image over 8,000 pixels a side or 40
+   * megapixels whatever its file size, and the form sent the photo as chosen. It now sends it shrunk, as a JPEG at most
+   * 1,600 pixels a side, and a refusal shows the API's reason rather than only its status.
+   */
+  describe('saving a photo (#3177)', () => {
+    let speakers: { getEntity: Mock; insertSpeakerInfo: Mock; updateSpeakerInfo: Mock };
+    let toast: Mock;
+
+    async function openToSave(): Promise<ComponentFixture<SpeakerAddEditFormComponent>> {
+      URL.createObjectURL = vi.fn(() => 'blob:chosen-photo');
+      speakers = {
+        getEntity: vi.fn(() => of({})),
+        insertSpeakerInfo: vi.fn(() => of({})),
+        updateSpeakerInfo: vi.fn(() => of({}))
+      };
+      toast = vi.fn();
+      TestBed.configureTestingModule({
+        providers: [
+          provideRouter(anyPage),
+          provideHttpClient(),
+          { provide: SpeakerService, useValue: speakers },
+          { provide: AssetsService, useValue: { getAssetUrl: (path: string) => of(`assets/uploads/${path}`) } },
+          { provide: UniversityService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+          { provide: OrganizationService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+          { provide: SeasonService, useValue: { activeSeason$: of({ guid: 'season' }) } },
+          { provide: NotificationService, useValue: { toast } }
+        ]
+      });
+
+      const fixture = TestBed.createComponent(SpeakerAddEditFormComponent);
+      fixture.componentRef.setInput('type', 'create');
+      fixture.detectChanges();
+
+      return fixture;
+    }
+
+    const photo = new File([new Uint8Array(745 * 1024)], 'portrait.png', { type: 'image/png' });
+    const sent = (call: Mock) => (call.mock.calls[0].at(-1) as FormData).get('file') as File;
+
+    it('sends the chosen photo shrunk, not as it was chosen', async () => {
+      const fixture = await openToSave();
+
+      fixture.componentInstance.form.patchValue({ file: photo });
+      fixture.componentInstance.handleSubmission();
+      await fixture.whenStable();
+
+      expect(shrinkImage).toHaveBeenCalledWith(photo, { maxDimension: 1600 });
+      expect(sent(speakers.insertSpeakerInfo).name).toBe('portrait.jpg');
+      expect(sent(speakers.insertSpeakerInfo).type).toBe('image/jpeg');
+    });
+
+    it('sends the photo shrunk on Update too', async () => {
+      const fixture = await openToSave();
+
+      fixture.componentRef.setInput('type', 'edit');
+      fixture.componentInstance.form.patchValue({ guid: 'sp-1', file: photo });
+      fixture.componentInstance.handleSubmission();
+      await fixture.whenStable();
+
+      expect(speakers.updateSpeakerInfo.mock.calls[0][0]).toBe('sp-1');
+      expect(sent(speakers.updateSpeakerInfo).name).toBe('portrait.jpg');
+    });
+
+    it("says why the API refused it, in the API's words", async () => {
+      const fixture = await openToSave();
+      const message = 'The photo is too large in pixels: 9000 x 6000. The most is 8000 a side and 40 megapixels.';
+
+      speakers.updateSpeakerInfo.mockReturnValue(
+        throwError(() => new HttpErrorResponse({ status: 413, error: { statusCode: 413, message } }))
+      );
+      fixture.componentRef.setInput('type', 'edit');
+      fixture.componentInstance.form.patchValue({ guid: 'sp-1', file: photo });
+      fixture.componentInstance.handleSubmission();
+      await fixture.whenStable();
+
+      expect(toast).toHaveBeenCalledWith(expect.objectContaining({ id: 'speaker-update-failed', message }));
+    });
+
+    it('sends no file when no photo was chosen', async () => {
+      const fixture = await openToSave();
+
+      fixture.componentRef.setInput('type', 'edit');
+      fixture.componentInstance.form.patchValue({ guid: 'sp-1' });
+      fixture.componentInstance.handleSubmission();
+      await fixture.whenStable();
+
+      expect(sent(speakers.updateSpeakerInfo)).toBeNull();
     });
   });
 });

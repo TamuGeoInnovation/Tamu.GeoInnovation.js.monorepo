@@ -16,6 +16,7 @@ import {
   sidebarTabs
 } from './development-only';
 import { isDevelopmentUrl, smokeBaseUrl } from './gis-hosts';
+import { PROBE_GLOBAL, waitForMapReady } from './map-probe';
 
 /**
  * Development-only sections stay off production (#1090).
@@ -28,7 +29,6 @@ import { isDevelopmentUrl, smokeBaseUrl } from './gis-hosts';
 const VISIBLE = developmentSectionsVisible();
 /** Whether this environment reads the development GIS server, which localhost does not (#2001). */
 const DEVELOPMENT_GIS = isDevelopmentUrl(smokeBaseUrl());
-const PROBE_GLOBAL = '__tamuGiscMapProbe';
 
 /** Whether the map on the page reports it has loaded. */
 async function probeReady(page: Page): Promise<boolean> {
@@ -51,16 +51,7 @@ test.describe(`development-only sections ${VISIBLE ? 'are offered here' : 'stay 
       await blockAnalytics(page);
       await page.goto(map);
 
-      await expect
-        .poll(
-          async () =>
-            await page.evaluate(
-              (name) => (window as unknown as Record<string, { ready?: boolean }>)[name]?.ready === true,
-              PROBE_GLOBAL
-            ),
-          { message: `${map} never finished loading`, timeout: 90_000, intervals: [1_000] }
-        )
-        .toBe(true);
+      await waitForMapReady(page, `${map} never finished loading`);
 
       const count = await sidebarTabs(page, section);
 
@@ -289,7 +280,6 @@ test.describe(`development-only map controls ${VISIBLE ? 'are offered here' : 's
     });
   }
 });
-
 
 /**
  * `?as=production` makes a development host behave as production, for the tab (#1722).

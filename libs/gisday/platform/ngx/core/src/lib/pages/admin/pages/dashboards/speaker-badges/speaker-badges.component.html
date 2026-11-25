@@ -11,7 +11,8 @@
       @if (view$ | async; as view) {
       <div class="badges-filters">
         <!-- Searches every column but the former student year (#2899), as the Presenters page searches (#2859). -->
-        <tamu-gisc-textbox class="badges-search" type="text" placeholder="Search by name, company or organization, or email" [formControl]="search"></tamu-gisc-textbox>
+        <!-- Its own textbox rather than tamu-gisc-admin-search, whose count line this page's counts below replace; the X as that one has (#3051). -->
+        <tamu-gisc-textbox class="badges-search" type="text" placeholder="Search by name, company or organization, or email" [formControl]="search" [clearable]="true" clearLabel="Clear the search"></tamu-gisc-textbox>
         <div class="badges-show">
           <p class="bold">Show</p>
           <tamu-gisc-radio-group [formControl]="show" [options]="showOptions" displayPath="label" valuePath="value"></tamu-gisc-radio-group>

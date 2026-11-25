@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 
 import { Sponsor } from '@tamu-gisc/gisday/platform/data-api';
 import { SponsorService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { serverMessage } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
 import { AdminSearchComponent } from '../../../base-admin-list/admin-search.component';
@@ -42,7 +43,11 @@ export class SponsorListComponent extends BaseAdminListComponent<Sponsor> {
         this.$signal.next(null);
       },
       error: (err) => {
-        this.ns.toast({ id: 'sponsor-active-failed', title: 'Sponsors', message: `Could not update ${sponsor.name}: ${err.status}` });
+        this.ns.toast({
+          id: 'sponsor-active-failed',
+          title: 'Sponsors',
+          message: serverMessage(err, `Could not update ${sponsor.name}: ${err.status}`)
+        });
         this.$signal.next(null);
       }
     });

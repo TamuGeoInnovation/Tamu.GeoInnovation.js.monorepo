@@ -10,7 +10,7 @@
     <p>{{ ($email | async)?.to }}</p>
     <span id="spanner"></span>
     @if (($email | async); as email) {
-    <span id="delete" class="material-symbols-outlined" title="Delete email" (click)="deleteEmail(email)">delete</span>
+    <span id="delete" class="material-symbols-outlined" title="Delete email" tabindex="0" role="button" (click)="deleteEmail(email)" (keydown.enter)="deleteEmail(email)" (keydown.space)="deleteEmail(email); $event.preventDefault()">delete</span>
     }
   </div>
   <div>
@@ -23,7 +23,7 @@
   <ul class="column-thing">
     @for (attachment of ($email | async)?.attachments; track attachment) {
     <li>
-      <img class="attachment-image" [style.backgroundImage]="'url('+attachmentToImage(attachment)+')'" />
+      <img class="attachment-image" [alt]="'Attachment ' + ($index + 1)" [style.backgroundImage]="'url('+attachmentToImage(attachment)+')'" />
     </li>
     }
   </ul>

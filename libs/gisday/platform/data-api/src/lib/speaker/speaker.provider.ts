@@ -1,5 +1,6 @@
+import { randomBytes } from 'crypto';
+
 import {
-  HttpException,
   Injectable,
   UnprocessableEntityException,
   NotFoundException,
@@ -13,14 +14,43 @@ import { DeepPartial, DeleteResult, In, Repository } from 'typeorm';
 import { fitImage } from '@tamu-gisc/common/node/images';
 
 import { Speaker, EntityRelationsLUT, University, Organization, Event, Asset, Season } from '../entities/all.entity';
-import { BaseProvider } from '../_base/base-provider';
 import { AssetsService } from '../assets/assets.service';
 import { refuseUnsafeImage } from '../assets/image-upload';
 import { SeasonService } from '../season/season.service';
 import { SPEAKER_PHOTO_FIT } from './speaker-photo';
+import { onSchedule } from '../_base/hidden-sessions';
+import { rethrowHttp } from '../_base/rethrow-http';
+import { SeasonScopedProvider, withoutIdentity } from '../_base/season-scoped-provider';
 
 @Injectable()
-export class SpeakerProvider extends BaseProvider<Speaker> {
+export class SpeakerProvider extends SeasonScopedProvider<Speaker> {
+  protected get seasons() {
+    return this.seasonService;
+  }
+
+  protected readonly recordsName = 'speakers';
+
+  protected forSeason(seasonGuid: string) {
+    return this.getSpeakersForSeason(seasonGuid);
+  }
+
+  protected override readonly copyRelations = { images: true };
+
+  protected override copyOf(record: Speaker, season: Season) {
+    // Images are held by one speaker, so the copy has its own; a badge printed for one season is not printed for the
+    // next (#2908).
+    const copy = super.copyOf(record, season) as DeepPartial<Speaker>;
+
+    copy.badgePrintedAt = null;
+    copy.badgePrintedText = null;
+
+    if (record.images) {
+      copy.images = record.images.map(withoutIdentity);
+    }
+
+    return copy;
+  }
+
   private _resourcePath = `images/speakers`;
 
   constructor(
@@ -34,7 +64,15 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
     super(speakerRepo);
   }
 
-  public async getSpeakersForSeason(seasonGuid: string) {
+  /**
+   * A season's speakers, by name.
+   *
+   * @param withSessions Also each speaker's sessions, for the admin Speakers list's Sessions column (#441): a speaker
+   * copied into a season is listed in it with or without a session there, and could not be told apart (#439). Only the
+   * route behind `update:speakers` asks for them, because they include sessions hidden from the public schedule. A
+   * speaker belongs to one season, so these are that season's. Added here, not to the lookup table, which other queries share.
+   */
+  public async getSpeakersForSeason(seasonGuid: string, withSessions = false) {
     try {
       return this.find({
         where: {
@@ -42,26 +80,26 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
             guid: seasonGuid
           }
         },
-        relations: EntityRelationsLUT.getRelation('speaker'),
+        relations: withSessions ? { ...EntityRelationsLUT.speaker, events: true } : EntityRelationsLUT.speaker,
         order: {
           lastName: 'ASC',
           firstName: 'ASC'
         }
       });
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      Logger.error(err.message, 'SpeakerProvider');
-      throw new InternalServerErrorException('Could not find speakers for season.');
+      rethrowHttp(err, new InternalServerErrorException('Could not find speakers for season.'), () =>
+        Logger.error(err.message, 'SpeakerProvider')
+      );
     }
   }
 
+  /**
+   * A presenter as their public page shows them, with their sessions in day and time order. Only the sessions the site
+   * shows: a hidden one (`active` false) is left out, name and all (#3345). Removed after loading rather than filtered in
+   * the query, so a presenter whose every session is hidden is still found.
+   */
   public async getPresenter(guid: string) {
-    return this.speakerRepo.findOne({
+    const presenter = await this.speakerRepo.findOne({
       where: {
         guid: guid
       },
@@ -75,16 +113,24 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
         }
       }
     });
-  }
 
-  public async getSpeakersForActiveSeason() {
-    const season = await this.seasonService.findOneActive();
-
-    if (!season) {
-      throw new UnprocessableEntityException('No active season found.');
+    if (presenter?.events) {
+      // Not even to an admin: this is the public page's own route.
+      presenter.events = presenter.events.filter(onSchedule);
     }
 
-    return this.getSpeakersForSeason(season.guid);
+    return presenter;
+  }
+
+  /**
+   * The active season's speakers; with their sessions only when asked, as `getSpeakersForSeason` (#441). Not through
+   * `forActiveSeason`, whose `forSeason` cannot ask for sessions. No 422 for a missing season: `findOneActive` throws its
+   * own 404 (#3324).
+   */
+  public async getSpeakersForActiveSeason(withSessions = false) {
+    const season = await this.seasonService.findOneActive();
+
+    return this.getSpeakersForSeason(season.guid, withSessions);
   }
 
   /**
@@ -234,14 +280,9 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
         try {
           speakerImage = await this._saveImage(file, guid);
         } catch (err) {
-          // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-          // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-          if (err instanceof HttpException) {
-            throw err;
-          }
-
-          Logger.error(err.message, 'SpeakerProvider');
-          throw new InternalServerErrorException('Could not save speaker image');
+          rethrowHttp(err, new InternalServerErrorException('Could not save speaker image'), () =>
+            Logger.error(err.message, 'SpeakerProvider')
+          );
         }
       }
 
@@ -286,14 +327,9 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
 
           return savedEntity.save();
         } catch (err) {
-          // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-          // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-          if (err instanceof HttpException) {
-            throw err;
-          }
-
-          Logger.error(err.message, 'SpeakerProvider');
-          throw new InternalServerErrorException('Could not save speaker image');
+          rethrowHttp(err, new InternalServerErrorException('Could not save speaker image'), () =>
+            Logger.error(err.message, 'SpeakerProvider')
+          );
         }
       } else {
         return savedEntity;
@@ -342,62 +378,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
   }
 
   public async copySpeakersIntoSeason(seasonGuid: string, existingEntityGuids: Array<string>) {
-    const season = await this.seasonService.findOne({
-      where: {
-        guid: seasonGuid
-      }
-    });
-
-    if (!season) {
-      throw new UnprocessableEntityException('Could not find season.');
-    }
-
-    const existingSpeakers = await this.speakerRepo.find({
-      where: {
-        guid: In(existingEntityGuids)
-      },
-      relations: { images: true }
-    });
-
-    if (!existingSpeakers || existingSpeakers.length === 0) {
-      throw new UnprocessableEntityException('Could not find speakers.');
-    }
-
-    const newEntities = existingSpeakers.map((entity) => {
-      delete entity.guid;
-      delete entity.created;
-      delete entity.updated;
-      // A badge printed for one season is not printed for the next (#2908).
-      entity.badgePrintedAt = null;
-      entity.badgePrintedText = null;
-
-      if (entity.images?.length > 0) {
-        entity.images = entity.images.map((image) => {
-          delete image.guid;
-          delete image.created;
-          delete image.updated;
-
-          return image;
-        });
-      }
-
-      return this.speakerRepo.create({
-        ...entity,
-        season
-      });
-    });
-
-    try {
-      return Promise.all(newEntities.map((entity) => entity.save()));
-    } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      throw new InternalServerErrorException('Could not copy speakers into season.');
-    }
+    return this.copyIntoSeason(seasonGuid, existingEntityGuids);
   }
 
   public async insertBulk(speakers: OldFormatSpeaker[]) {
@@ -512,13 +493,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
         newSpeakers: savedSpeakerEntities
       };
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      throw new InternalServerErrorException(err.message);
+      rethrowHttp(err, new InternalServerErrorException(err.message));
     }
   }
 
@@ -548,14 +523,9 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
 
       return result;
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      Logger.error(err.message, 'SpeakerProvider.deleteEntities');
-      throw new InternalServerErrorException('Could not delete entities');
+      rethrowHttp(err, new InternalServerErrorException('Could not delete entities'), () =>
+        Logger.error(err.message, 'SpeakerProvider.deleteEntities')
+      );
     }
   }
 
@@ -569,8 +539,10 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
 
     file = { ...file, buffer: fitted.buffer, size: fitted.buffer.length };
 
+    // A token of its own in every name (#3091): uploads are served as immutable for a year, so a photo saved under the last
+    // one's name (two uploads of headshot.jpg) would go on showing the old photo in every browser that had seen it.
     return this.assetService.saveAsset(this._resourcePath, file, 'speaker-image', {
-      prefix: `${guid}-`
+      prefix: `${guid}-${randomBytes(4).toString('hex')}-`
     });
   }
 

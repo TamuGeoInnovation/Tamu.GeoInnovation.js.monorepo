@@ -8,7 +8,8 @@ import { NgClass, AsyncPipe } from '@angular/common';
   selector: 'tamu-gisc-accordion-content',
   templateUrl: './accordion-content.component.html',
   styleUrls: ['./accordion-content.component.scss'],
-  imports: [NgClass, AsyncPipe]
+  imports: [NgClass, AsyncPipe],
+  host: { '[class.plain]': "look() === 'plain'" }
 })
 export class AccordionContentComponent implements OnChanges, OnDestroy, AfterViewInit {
   private comm = inject(AccordionService);
@@ -20,6 +21,9 @@ export class AccordionContentComponent implements OnChanges, OnDestroy, AfterVie
   });
 
   public state = this.comm.state;
+
+  /** `plain` leaves the content's own spacing and size as they are, for a list that is already laid out (#3221). */
+  public readonly look = input<'padded' | 'plain'>('padded');
 
   /**
    * If `resize` is set to `true`, this will be set to the mutation observer so that the directive

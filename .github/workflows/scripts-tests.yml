@@ -1,0 +1,41 @@
+name: Scripts Tests
+
+# The scripts under scripts/ carry their own test suites (*.test.sh). They are not Nx projects and,
+# until #3442, no workflow ran them, so a change to check-in-volume.sh, tag-build.sh or the
+# release-notes collation could break its own tests and still merge green. tools/ had the same gap
+# (tools-tests.yml, #2055).
+#
+# Several suites read workflow files (check-in-volume.sh reads lint.yml, test.yml and build.yml) or the
+# smoke suite's environments.json, so a change there runs them too.
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'scripts/**'
+      - '.github/workflows/**'
+      - 'test/smoke/aggiemap/environments.json'
+
+permissions:
+  contents: read
+
+jobs:
+  scripts-test:
+    name: scripts/*.test.sh
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          # tag-build.test.sh and tidy.test.sh make throwaway repositories; a full history keeps any
+          # suite that reads this one's from seeing a shallow clone.
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: '24.22.1'
+
+      # Every suite runs, even after one fails, so a single run says which of them are broken.
+      - name: Run every scripts/*.test.sh
+        run: bash scripts/run-script-tests.sh

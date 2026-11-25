@@ -1,14 +1,14 @@
 import { Component, OnInit, inject, input, signal } from '@angular/core';
 import { AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Observable, filter, map, of, shareReplay, switchMap, take } from 'rxjs';
 
 import { Place, PlaceLink } from '@tamu-gisc/gisday/platform/data-api';
 import { AssetsService, PlaceService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { formToFormData } from '../../../../../utils/form-to-form-data';
+import { UploadImagePicker } from '../../../../../utils/upload-image-picker';
 import { PlaceVisibilityOptions } from '../../../../../enums/place-visibility-options.enum';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { FileComponent } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -19,6 +19,7 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
 import { ImagePreviewComponent } from '../../../../images/components/image-preview/image-preview.component';
 import { uploadPreviewUrl } from '../../../../images/upload-preview-url';
+import { adminEntityForm } from '../../../admin-entity-form';
 
 @Component({
   selector: 'tamu-gisc-place-location-add-edit-form',
@@ -39,16 +40,19 @@ import { uploadPreviewUrl } from '../../../../images/upload-preview-url';
 export class PlaceLocationAddEditFormComponent implements OnInit {
   private readonly fb = inject(UntypedFormBuilder);
   private readonly at = inject(ActivatedRoute);
-  private readonly rt = inject(Router);
+  /** Its save and delete, and what they say (#3340, #3382): as an Organization, as the form, its button and the admin menu call a place (#3398). */
+  private readonly saves = adminEntityForm('Organization', '/admin/places');
   private readonly as = inject(AssetsService);
   private readonly ps = inject(PlaceService);
   private readonly sn = inject(DomSanitizer);
-  private readonly ns = inject(NotificationService);
   private readonly ss = inject(SeasonService);
 
   public readonly type = input<'create' | 'edit'>(undefined);
 
   public form: UntypedFormGroup;
+
+  /** The logo picker, on the shared upload rule (#3074). */
+  public readonly logo = new UploadImagePicker('The logo');
 
   /**
    * The link controls, as a new list whenever a link is added or removed.
@@ -98,9 +102,6 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
 
         // If the entity has a season, remove the season control from the form
         this.form.removeControl('season');
-
-        // Opening the page is not a change (#2942), though each control echoes the value it is given.
-        this.form.markAsPristine();
       });
 
     } else {
@@ -108,9 +109,6 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
         this.form.patchValue({
           season: season.guid
         });
-
-        // Opening the page is not a change (#2942), though each control echoes the value it is given.
-        this.form.markAsPristine();
       });
     }
 
@@ -133,24 +131,7 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
   }
 
   public deleteEntity() {
-    this.ps.deleteEntity(this.form.getRawValue().guid).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'place-delete-success',
-          title: 'Delete Place',
-          message: `Place was successfully deleted.`
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'place-delete-failed',
-          title: 'Delete Place',
-          message: `Error deleting place: ${err.status}`
-        });
-      }
-    });
+    this.saves.save('delete', this.ps.deleteEntity(this.form.getRawValue().guid));
   }
 
   public addOrgLink() {
@@ -184,50 +165,13 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
     const rawValue = this.form.getRawValue();
     const formData = formToFormData(this.form, true);
 
-    this.ps.updateEntityFormData(rawValue.guid, formData).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'place-update-success',
-          title: 'Update Place',
-          message: `Place was successfully updated.`
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'place-update-failed',
-          title: 'Update Place',
-          message: `Error updating place: ${err.status}`
-        });
-      }
-    });
+    this.saves.save('update', this.ps.updateEntityFormData(rawValue.guid, formData));
   }
 
   private _createEntity() {
     const formData = formToFormData(this.form, true);
 
-    this.ps.createEntityFormData(formData).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'place-create-success',
-          title: 'Create Place',
-          message: `Place was successfully created.`
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'place-create-failed',
-          title: 'Create Place',
-          message: `Error creating place: ${err.status}`
-        });
-      }
-    });
+    this.saves.save('create', this.ps.createEntityFormData(formData));
   }
 
-  private _navigateBack() {
-    this.rt.navigate(['/admin/places']);
-  }
 }

@@ -1,18 +1,45 @@
-import { HttpException, Injectable, UnprocessableEntityException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
-import { Tag, Season } from '../entities/all.entity';
-import { BaseProvider } from '../_base/base-provider';
+import { Event, Tag, Season } from '../entities/all.entity';
 import { SeasonService } from '../season/season.service';
+import { SeasonScopedProvider } from '../_base/season-scoped-provider';
 
 @Injectable()
-export class TagProvider extends BaseProvider<Tag> {
+export class TagProvider extends SeasonScopedProvider<Tag> {
+  protected get seasons() {
+    return this.seasonService;
+  }
+
+  protected readonly recordsName = 'tags';
+
+  protected forSeason(seasonGuid: string) {
+    return this.getTagsForSeason(seasonGuid);
+  }
+
   constructor(
     @InjectRepository(Tag) private tagRepo: Repository<Tag>,
     private readonly seasonService: SeasonService
   ) {
     super(tagRepo);
+  }
+
+  /**
+   * The sessions that have a tag (#3033), for its admin page, as a broadcast's (#3032): each with its day and place, so the
+   * page can order them and list only its site's. Hidden sessions too, which is why the route is for admins.
+   */
+  public async getSessions(guid: string) {
+    const tag = await this.tagRepo.findOne({ where: { guid } });
+
+    if (!tag) {
+      throw new NotFoundException('Tag not found.');
+    }
+
+    return this.tagRepo.manager.find(Event, {
+      where: { tags: { guid } },
+      relations: { day: true, location: { place: true } }
+    });
   }
 
   public async getTagsForSeason(seasonGuid: string) {
@@ -29,13 +56,7 @@ export class TagProvider extends BaseProvider<Tag> {
   }
 
   public async getTagsForActiveSeason() {
-    const activeSeason = await this.seasonService.findOneActive();
-
-    if (!activeSeason) {
-      throw new UnprocessableEntityException('No active season found.');
-    }
-
-    return this.getTagsForSeason(activeSeason.guid);
+    return this.forActiveSeason();
   }
 
   public async getTags() {
@@ -47,51 +68,7 @@ export class TagProvider extends BaseProvider<Tag> {
   }
 
   public async copyTagsIntoSeason(seasonGuid: string, existingGuids: Array<string>) {
-    const season = await this.seasonService.findOne({
-      where: {
-        guid: seasonGuid
-      }
-    });
-
-    // TypeORM 0.3 `findOne` resolves null, not undefined, so this guard never fired: copying
-    // into a season that does not exist fell through and wrote tags with a null season,
-    // leaving orphaned rows attached to no season at all.
-    if (!season) {
-      throw new UnprocessableEntityException('Could not find season.');
-    }
-
-    const entities = await this.tagRepo.find({
-      where: {
-        guid: In(existingGuids)
-      }
-    });
-
-    if (entities?.length === 0) {
-      throw new UnprocessableEntityException('Could not find tags.');
-    }
-
-    const newEntities = entities.map((tag) => {
-      delete tag.guid;
-      delete tag.created;
-      delete tag.updated;
-
-      return this.tagRepo.create({
-        ...tag,
-        season
-      });
-    });
-
-    try {
-      return this.tagRepo.save(newEntities);
-    } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      throw new UnprocessableEntityException('Could not copy tags into season');
-    }
+    return this.copyIntoSeason(seasonGuid, existingGuids);
   }
 
   public async insertTags(tags: Array<Partial<Tag>>) {

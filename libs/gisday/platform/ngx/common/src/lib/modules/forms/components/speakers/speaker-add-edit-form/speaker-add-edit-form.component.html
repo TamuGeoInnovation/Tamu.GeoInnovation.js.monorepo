@@ -40,9 +40,12 @@
             <!-- No photo, or one that fails to load: the person icon, never a broken image (#2422, #2569). -->
             <tamu-gisc-image-preview #photo [src]="speakerPhotoUrl$ | async" alt="Speaker photo preview" fallback="person" fallbackLabel="No photo yet"></tamu-gisc-image-preview>
           </div>
-          <tamu-gisc-file formControlName="file" clearMessage="Undo" accept="image/jpeg,image/png">
+          <tamu-gisc-file #picker formControlName="file" clearMessage="Undo" [accept]="photoPicker.accept" (fileSelected)="photoPicker.choose($event, picker)">
             <p class="placeholder">Select Profile Picture</p>
           </tamu-gisc-file>
+          @if (photoPicker.problem(); as problem) {
+          <p class="error" role="alert">{{ problem }}</p>
+          }
         </div>
       </div>
     </div>
