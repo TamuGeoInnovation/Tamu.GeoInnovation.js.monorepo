@@ -33,7 +33,7 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **blocked: Docker stopping for disk compaction** (since 7:52 PM Central, the maintainer). No containers running; nothing starts until he says Docker is back. Stopped at 7:52 PM: `gisday-dev` and `gisday-api` (both on volume `tamu-js-dev-nm`) and `gisday-db` (volume `gisday-db-data`); all three exited 137, killed after their 30 s and 60 s grace periods. SQL Server logged no shutdown, so it will run crash recovery on its next start (local scratch databases only). Next start: clear `tamu-js-dev-nm`'s Vite cache first.
+- Nothing (since 7:55 PM Central). Listening. Docker is back after the compaction (the maintainer, 7:55 PM); volumes `tamu-js-dev-nm` and `gisday-db-data` intact, the Vite cache cleared. The GIS Day containers are stopped, not removed.
 
 ## Finished
 - **Batch g26 (workspace: #1938, #2067)** (report `laptop/reports/2026-11-24-g26.md`): **branch ready: `fix/1938-check-production-build`** (`78580ab68`). The check builds in `build.yml`'s configuration (read, not hard-coded), build alone. Red twice: the test, and an over-budget scratch commit that passed `development`'s script and fails this one. Own check exit 0. No questions.
