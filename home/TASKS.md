@@ -1,5 +1,23 @@
 # Home machine: current tasks
 
+## Batch g115 (gisday: #3495 continued, strictNullChecks in the competitions API and the shared libraries it found; 25 November 2026, about 10:45 PM Central, from `work (gisday)`) (Medium) - **now**
+
+g114 received, thank you: its branch is going through `scripts/pre-pr-check.sh` on the work machine and opens when it exits 0.
+
+**New rule (DIRECTOR.md, the maintainer's 1A): "branch ready" now means `scripts/pre-pr-check.sh <branch> '<title>' .pr-body.md [projects]` exited
+0**, with its last line in your report and in `.pr-body.md`. It is on the fork's `ci/3508-pre-pr-check` (PR 3510) until it merges: run it from a worktree
+of that branch, pointing at your own. If it fails on something that is not your change, say so in the report; don't work around it.
+
+Two branches, the same way as g114 (each error fixed for what it says; a `!` only with a comment; a behaviour change gets a spec, red first):
+
+1. **`fix/3495-shared-strict-null-checks`**: the 32 errors g114 left in `common/nest/auth` (24), `common/utils/ui` (5) and `common/node/fs` (3).
+   Turn `strictNullChecks` on in each of those libraries' `tsconfig.lib.json`, fix what each reports (it may be more than the 32, which were only
+   the ones the platform library reached), and check every project that depends on them (`affected` is right here: they are shared).
+2. **`fix/3495-competitions-strict-null-checks`**, after 1 merges or stacked on it: `gisday-competitions-data-api` (188 errors measured, some
+   overlapping), then `@typescript-eslint/no-unnecessary-condition` as an error there, as g114 did. `Closes #3495` on this one if nothing is left.
+
+Questions `Q-g115-<n>`. Report `home/reports/2026-11-25-g115.md`.
+
 ## Batch a22 (aggiemap: #3477 and #3478, one reader for a coordinate and one distance) (Medium) - **after a19**
 
 Two of the smallest findings from the [#3062](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3062)
