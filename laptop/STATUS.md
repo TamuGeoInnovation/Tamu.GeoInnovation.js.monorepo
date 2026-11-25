@@ -5,7 +5,7 @@
 
 Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
-Last batch done: a28
+Last batch done: g30
 
 ## What this is
 
@@ -33,9 +33,10 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch g30 (#1479, remove Jest)**, started 2:35 AM Central (no `jest.config` left on `development`). `chore/1479-remove-jest` pushed (`294071137`); full affected check at `CHECK_PARALLEL=2` running.
+- **Batch g32 (gisday: admin pages for g116)**, started 3:15 AM Central.
 
 ## Finished
+- **Batch g30 (workspace: #1479, remove Jest)** (report `laptop/reports/2026-11-25-g30.md`): **branch ready: `chore/1479-remove-jest`** (`41d0d96d2`), `pre-pr-check.sh` exit 0 (affected, with the issue filled in). Lock: 219 entries removed, 0 added, 0 changed; clean `npm ci`; 94 projects lint and test, 13 builds. Generators now `vitest-analog` (`vitest` is not a valid value). Q-g30-1.
 - **Batch a28 (aggiemap: #2554)** (report `laptop/reports/2026-11-25-a28.md`): **branch ready: `chore/2554-dead-athletics-popup-data`** (`d2400331b`), `pre-pr-check.sh` exit 0. 8 of 11 athletics maps carried dead Cold popup data; deleted, ids kept; drawn sources byte-identical. Q-a28-1, Q-a28-2.
 - **Batch g31 (gisday: #980)** (report `laptop/reports/2026-11-25-g31.md`): #980 as written cannot be run: Add season calls `clonePreviousSeason`, never the fixed `create()`. Running it found **#3571** (two active seasons when the active one is not the latest), filed Low, red-first spec on `fix/3571-one-active-season` (`4ca4c6e7e`) with images. Local data restored. Q-g31-1.
 - **Batch g29 (workspace: #1479)** (report `laptop/reports/2026-11-25-g29.md`): **branch ready: `chore/1479-vitest-geoservices`** (`91afded39`), **`chore/1479-vitest-mailroom`** (`3616500b2`), **`chore/1479-vitest-the-rest`** (`bcccc901c`); `pre-pr-check.sh` exit 0 each (with the issue filled in). Same tests before and after. Jest hid a slide-toggle error; fixed red first.
