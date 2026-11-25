@@ -97,6 +97,14 @@ jobs:
           BASE: ${{ inputs.base }}
         run: node scripts/check-spec-types.mjs
 
+      # A library with no build target is never compiled with its own tsconfig.lib.json, so a strict one could stop
+      # compiling under its own rules unseen, as common-utils-string did on 25 November 2026 (#3581). Each strict library
+      # the pull request changes is type-checked with it; the 8 that already fail are held to their counts.
+      - name: Type-check the changed strict libraries with their own configuration
+        env:
+          BASE: ${{ inputs.base }}
+        run: node scripts/check-strict-libs.mjs
+
       - name: Lint Affected
         env:
           BASE: ${{ inputs.base }}

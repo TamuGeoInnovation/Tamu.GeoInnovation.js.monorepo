@@ -51,14 +51,17 @@ export function projectRootOf(file, exists = (p) => existsSync(join(ROOT, p))) {
   return null;
 }
 
-/** What a project's result means: 'ok', or a reason to fail. */
-export function judge(config, errors, known) {
+/**
+ * What a project's result means: 'ok', or a reason to fail. <list> names the known-failures file and what is checked, for
+ * scripts/check-strict-libs.mjs, which holds its own list the same way (#3581).
+ */
+export function judge(config, errors, known, list = { file: 'scripts/spec-type-errors-known.txt', what: 'its specs' }) {
   if (!known.has(config)) {
-    return errors === 0 ? 'ok' : `${errors} type error(s) in its specs`;
+    return errors === 0 ? 'ok' : `${errors} type error(s) in ${list.what}`;
   }
   const was = known.get(config);
   if (errors === 0) {
-    return `now type-checks cleanly: take it off scripts/spec-type-errors-known.txt (it had ${was})`;
+    return `now type-checks cleanly: take it off ${list.file} (it had ${was})`;
   }
   if (errors > was) {
     return `${errors} type error(s), up from the ${was} it is listed with`;
@@ -66,7 +69,8 @@ export function judge(config, errors, known) {
   return 'ok';
 }
 
-function errorsIn(config) {
+/** `tsc -p <config> --noEmit`: how many errors, and its output. */
+export function errorsIn(config) {
   const npx = process.platform === 'win32' ? 'npx.cmd' : 'npx';
   const r = spawnSync(npx, ['tsc', '-p', config, '--noEmit'], { cwd: ROOT, encoding: 'utf8', maxBuffer: 256 * 1024 * 1024 });
   const out = `${r.stdout ?? ''}${r.stderr ?? ''}`;
