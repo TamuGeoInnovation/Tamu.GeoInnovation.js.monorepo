@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { BadRequestException, ForbiddenException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -78,7 +79,7 @@ describe('UserSubmissionProvider', () => {
     }) as unknown as Submission;
 
   /** What actually reached the database. */
-  const written = () => (submissionRepo.update as jest.Mock).mock.calls[0][1];
+  const written = () => (submissionRepo.update as Mock).mock.calls[0][1];
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -87,20 +88,20 @@ describe('UserSubmissionProvider', () => {
         {
           provide: getRepositoryToken(Submission),
           useValue: {
-            find: jest.fn(),
-            findOne: jest.fn(),
-            create: jest.fn(),
-            save: jest.fn(),
-            update: jest.fn().mockResolvedValue({ affected: 1 }),
-            delete: jest.fn().mockResolvedValue({ affected: 1 })
+            find: vi.fn(),
+            findOne: vi.fn(),
+            create: vi.fn(),
+            save: vi.fn(),
+            update: vi.fn().mockResolvedValue({ affected: 1 }),
+            delete: vi.fn().mockResolvedValue({ affected: 1 })
           }
         },
-        { provide: getRepositoryToken(SubmissionType), useValue: { find: jest.fn() } },
-        { provide: getRepositoryToken(Event), useValue: { find: jest.fn().mockResolvedValue(SESSIONS) } },
-        { provide: SeasonService, useValue: { findOne: jest.fn(), findOneActive: jest.fn() } },
-        { provide: ContactService, useValue: { sendMessage: jest.fn().mockResolvedValue({}) } },
-        { provide: DashboardProfilesService, useValue: { profilesOf: jest.fn().mockResolvedValue(new Map()) } },
-        { provide: AssetsService, useValue: { deleteAssetFiles: jest.fn().mockResolvedValue(undefined) } }
+        { provide: getRepositoryToken(SubmissionType), useValue: { find: vi.fn() } },
+        { provide: getRepositoryToken(Event), useValue: { find: vi.fn().mockResolvedValue(SESSIONS) } },
+        { provide: SeasonService, useValue: { findOne: vi.fn(), findOneActive: vi.fn() } },
+        { provide: ContactService, useValue: { sendMessage: vi.fn().mockResolvedValue({}) } },
+        { provide: DashboardProfilesService, useValue: { profilesOf: vi.fn().mockResolvedValue(new Map()) } },
+        { provide: AssetsService, useValue: { deleteAssetFiles: vi.fn().mockResolvedValue(undefined) } }
       ]
     }).compile();
 
@@ -112,7 +113,7 @@ describe('UserSubmissionProvider', () => {
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('should be defined', () => {
@@ -138,8 +139,8 @@ describe('UserSubmissionProvider', () => {
       });
 
     it('returns only the title, authors, link and year, never a contact detail', async () => {
-      jest.spyOn(seasonService, 'findOne').mockResolvedValue(SEASON as never);
-      jest.spyOn(submissionRepo, 'find').mockResolvedValue([poster()]);
+      vi.spyOn(seasonService, 'findOne').mockResolvedValue(SEASON as never);
+      vi.spyOn(submissionRepo, 'find').mockResolvedValue([poster()]);
 
       const posters = await provider.getPosters('season-2025');
 
@@ -155,8 +156,8 @@ describe('UserSubmissionProvider', () => {
     });
 
     it('asks only for accepted posters of the season', async () => {
-      jest.spyOn(seasonService, 'findOne').mockResolvedValue(SEASON as never);
-      const find = jest.spyOn(submissionRepo, 'find').mockResolvedValue([]);
+      vi.spyOn(seasonService, 'findOne').mockResolvedValue(SEASON as never);
+      const find = vi.spyOn(submissionRepo, 'find').mockResolvedValue([]);
 
       await provider.getPosters('season-2025');
 
@@ -168,8 +169,8 @@ describe('UserSubmissionProvider', () => {
     });
 
     it('uses the active season when none is named', async () => {
-      jest.spyOn(seasonService, 'findOneActive').mockResolvedValue(SEASON as never);
-      const find = jest.spyOn(submissionRepo, 'find').mockResolvedValue([]);
+      vi.spyOn(seasonService, 'findOneActive').mockResolvedValue(SEASON as never);
+      const find = vi.spyOn(submissionRepo, 'find').mockResolvedValue([]);
 
       await provider.getPosters();
 
@@ -179,8 +180,8 @@ describe('UserSubmissionProvider', () => {
     });
 
     it('returns none for a season that does not exist, or a site with no active season', async () => {
-      jest.spyOn(seasonService, 'findOne').mockResolvedValue(null);
-      jest.spyOn(seasonService, 'findOneActive').mockRejectedValue(new NotFoundException('No active season found.'));
+      vi.spyOn(seasonService, 'findOne').mockResolvedValue(null);
+      vi.spyOn(seasonService, 'findOneActive').mockRejectedValue(new NotFoundException('No active season found.'));
 
       await expect(provider.getPosters('missing')).resolves.toEqual([]);
       await expect(provider.getPosters()).resolves.toEqual([]);
@@ -188,8 +189,8 @@ describe('UserSubmissionProvider', () => {
     });
 
     it('lists a poster with no participants with no authors', async () => {
-      jest.spyOn(seasonService, 'findOne').mockResolvedValue(SEASON as never);
-      jest.spyOn(submissionRepo, 'find').mockResolvedValue([poster({ participants: null })]);
+      vi.spyOn(seasonService, 'findOne').mockResolvedValue(SEASON as never);
+      vi.spyOn(submissionRepo, 'find').mockResolvedValue([poster({ participants: null })]);
 
       await expect(provider.getPosters('season-2025')).resolves.toEqual([expect.objectContaining({ authors: [] })]);
     });
@@ -197,7 +198,7 @@ describe('UserSubmissionProvider', () => {
 
   describe('.getUserPresentation()', () => {
     it('returns the submission to its owner', async () => {
-      jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission());
+      vi.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission());
 
       await expect(provider.getUserPresentation('sub-1', OWNER)).resolves.toEqual(
         expect.objectContaining({ guid: 'sub-1' })
@@ -205,13 +206,13 @@ describe('UserSubmissionProvider', () => {
     });
 
     it('refuses someone else', async () => {
-      jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission());
+      vi.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission());
 
       await expect(provider.getUserPresentation('sub-1', 'acct-other')).rejects.toThrow(UnauthorizedException);
     });
 
     it('allows a reviewer holding read:competitions', async () => {
-      jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission());
+      vi.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission());
 
       await expect(provider.getUserPresentation('sub-1', 'acct-reviewer', ['read:competitions'])).resolves.toEqual(
         expect.objectContaining({ guid: 'sub-1' })
@@ -219,7 +220,7 @@ describe('UserSubmissionProvider', () => {
     });
 
     it('throws NotFound before any ownership check when the submission is missing', async () => {
-      jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(submissionRepo, 'findOne').mockResolvedValue(null);
 
       await expect(provider.getUserPresentation('missing', 'acct-other')).rejects.toThrow(NotFoundException);
     });
@@ -227,7 +228,7 @@ describe('UserSubmissionProvider', () => {
 
   describe('.updateUserSubmission()', () => {
     it('refuses someone who neither owns it nor reviews', async () => {
-      jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission());
+      vi.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission());
 
       await expect(provider.updateUserSubmission('sub-1', 'acct-other', { title: 'Hijacked' })).rejects.toThrow(
         UnauthorizedException
@@ -235,13 +236,13 @@ describe('UserSubmissionProvider', () => {
     });
 
     it('throws NotFound when the submission does not exist', async () => {
-      jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(submissionRepo, 'findOne').mockResolvedValue(null);
 
       await expect(provider.updateUserSubmission('missing', OWNER, {})).rejects.toThrow(NotFoundException);
     });
 
     it('lets the owner edit their own content', async () => {
-      jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission());
+      vi.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission());
 
       await provider.updateUserSubmission('sub-1', OWNER, { title: 'Revised title' });
 
@@ -261,7 +262,7 @@ describe('UserSubmissionProvider', () => {
      * `@Body()` through unfiltered.
      */
     it('does not let an entrant approve their own submission', async () => {
-      jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission());
+      vi.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission());
 
       await provider.updateUserSubmission('sub-1', OWNER, {
         title: 'A paper',
@@ -280,7 +281,7 @@ describe('UserSubmissionProvider', () => {
     });
 
     it('does not let an entrant retarget the row by sending a guid', async () => {
-      jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission());
+      vi.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission());
 
       await provider.updateUserSubmission('sub-1', OWNER, {
         guid: 'someone-elses',
@@ -288,11 +289,11 @@ describe('UserSubmissionProvider', () => {
       } as Partial<Submission>);
 
       expect(written().guid).toBeUndefined();
-      expect((submissionRepo.update as jest.Mock).mock.calls[0][0]).toBe('sub-1');
+      expect((submissionRepo.update as Mock).mock.calls[0][0]).toBe('sub-1');
     });
 
     it('lets a reviewer record an acceptance', async () => {
-      jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission());
+      vi.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission());
 
       await provider.updateUserSubmission(
         'sub-1',
@@ -305,9 +306,9 @@ describe('UserSubmissionProvider', () => {
     });
 
     it('emails the entrant when a reviewer records a decision', async () => {
-      jest
-        .spyOn(submissionRepo, 'findOne')
-        .mockResolvedValue(submission({ participants: [{ email: 'owner@tamu.edu' }, { email: 'coauthor@tamu.edu' }] }));
+      vi.spyOn(submissionRepo, 'findOne').mockResolvedValue(
+        submission({ participants: [{ email: 'owner@tamu.edu' }, { email: 'coauthor@tamu.edu' }] })
+      );
 
       await provider.updateUserSubmission(
         'sub-1',
@@ -327,8 +328,8 @@ describe('UserSubmissionProvider', () => {
     // stay plain. The plain text goes beside it either way.
     it("sends Texas A&M's entrants the designed email, with the season's dates, and txgisday.org's the plain one", async () => {
       const review = async (host: string) => {
-        (contactService.sendMessage as jest.Mock).mockClear();
-        jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(
+        (contactService.sendMessage as Mock).mockClear();
+        vi.spyOn(submissionRepo, 'findOne').mockResolvedValue(
           submission({
             title: 'Mapping Floods',
             submissionType: 'poster',
@@ -347,7 +348,7 @@ describe('UserSubmissionProvider', () => {
           host
         );
 
-        return (contactService.sendMessage as jest.Mock).mock.calls[0][0];
+        return (contactService.sendMessage as Mock).mock.calls[0][0];
       };
 
       const tamu = await review('gisday.tamu.edu');
@@ -364,7 +365,7 @@ describe('UserSubmissionProvider', () => {
     it("sends a finalist on Texas A&M's site the next steps under that site's name and address", async () => {
       const previousFrom = process.env.MAILROOM_FROM;
       process.env.MAILROOM_FROM = 'TxGIS Day <gisday@example.edu>';
-      jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(
+      vi.spyOn(submissionRepo, 'findOne').mockResolvedValue(
         submission({
           title: 'Mapping Floods',
           submissionType: 'poster',
@@ -381,7 +382,7 @@ describe('UserSubmissionProvider', () => {
       );
 
       process.env.MAILROOM_FROM = previousFrom;
-      const [email] = (contactService.sendMessage as jest.Mock).mock.calls[0];
+      const [email] = (contactService.sendMessage as Mock).mock.calls[0];
 
       expect(email.from).toBe('"Texas A&M GIS Day" <gisday@example.edu>');
       expect(email.subject).toBe('Your Texas A&M GIS Day submission has been accepted');
@@ -501,7 +502,7 @@ describe('UserSubmissionProvider', () => {
       });
 
       it('sends the links in the email itself, from the season of the submission', async () => {
-        jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(
+        vi.spyOn(submissionRepo, 'findOne').mockResolvedValue(
           submission({
             submissionType: 'poster',
             season: { guid: 'season-2026' },
@@ -513,7 +514,7 @@ describe('UserSubmissionProvider', () => {
         // A single review sends without waiting, after reading the season's sessions.
         await new Promise((resolve) => setImmediate(resolve));
 
-        const [sent] = (contactService.sendMessage as jest.Mock).mock.calls[0];
+        const [sent] = (contactService.sendMessage as Mock).mock.calls[0];
 
         expect(sent.text).toContain('sessions/details/7b433068-8171-4f42-8159-07332624c084');
         expect(sent.text).toContain('sessions/details/9c73d7f1-3eeb-4294-97a8-5f0a3aea07c2');
@@ -553,7 +554,7 @@ describe('UserSubmissionProvider', () => {
     });
 
     it('does not email when the owner merely edits their own content', async () => {
-      jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission());
+      vi.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission());
 
       await provider.updateUserSubmission('sub-1', OWNER, { title: 'Revised' });
 
@@ -561,8 +562,8 @@ describe('UserSubmissionProvider', () => {
     });
 
     it('still records the decision when the notification email fails', async () => {
-      jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission());
-      jest.spyOn(contactService, 'sendMessage').mockRejectedValue(new Error('mailroom unreachable'));
+      vi.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission());
+      vi.spyOn(contactService, 'sendMessage').mockRejectedValue(new Error('mailroom unreachable'));
 
       // A reviewer's decision must not be lost because the mail server was down.
       await expect(
@@ -577,15 +578,15 @@ describe('UserSubmissionProvider', () => {
    */
   describe('who the review email goes to', () => {
     const sent = async (participants: Array<{ name: string; email: string }>, accountEmail: string | null) => {
-      (profiles.profilesOf as jest.Mock).mockResolvedValue(
+      (profiles.profilesOf as Mock).mockResolvedValue(
         new Map([[OWNER, accountEmail ? ({ email: accountEmail } as never) : null]])
       );
-      jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission({ participants, title: 'T' }));
+      vi.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission({ participants, title: 'T' }));
 
       await provider.updateUserSubmission('sub-1', 'r', { acceptance: true }, REVIEWER_PERMS, 'gisday.tamu.edu');
       await new Promise((resolve) => setImmediate(resolve));
 
-      return (contactService.sendMessage as jest.Mock).mock.calls[0][0];
+      return (contactService.sendMessage as Mock).mock.calls[0][0];
     };
 
     it("goes to the account's address, not the address the submitter typed for themselves", async () => {
@@ -651,13 +652,11 @@ describe('UserSubmissionProvider', () => {
       })
     };
     const decide = (over: Record<string, unknown>) => ({ acceptance: true, message: 'Booth 4.', ...over });
-    const sends = () => (contactService.sendMessage as jest.Mock).mock.calls;
+    const sends = () => (contactService.sendMessage as Mock).mock.calls;
 
     beforeEach(() => {
-      jest
-        .spyOn(submissionRepo, 'findOne')
-        .mockImplementation((async ({ where }: { where: { guid: string } }) =>
-          rows[where.guid] ? { ...rows[where.guid], participants: [...rows[where.guid].participants] } : null) as never);
+      vi.spyOn(submissionRepo, 'findOne').mockImplementation((async ({ where }: { where: { guid: string } }) =>
+        rows[where.guid] ? { ...rows[where.guid], participants: [...rows[where.guid].participants] } : null) as never);
     });
 
     // #3067: a bulk send reached the API twice, 30 seconds apart (#3065). The same decision again within minutes is that
@@ -688,8 +687,8 @@ describe('UserSubmissionProvider', () => {
       );
       const single = { written: written(), email: sends()[0] };
 
-      (submissionRepo.update as jest.Mock).mockClear();
-      (contactService.sendMessage as jest.Mock).mockClear();
+      (submissionRepo.update as Mock).mockClear();
+      (contactService.sendMessage as Mock).mockClear();
 
       const result = await provider.reviewUserSubmissions(
         [A, B],
@@ -700,7 +699,7 @@ describe('UserSubmissionProvider', () => {
       );
 
       expect(result).toEqual({ reviewed: ['Flood maps', 'Campus trees'], failed: [] });
-      expect((submissionRepo.update as jest.Mock).mock.calls.map((c) => c[0])).toEqual([A, B]);
+      expect((submissionRepo.update as Mock).mock.calls.map((c) => c[0])).toEqual([A, B]);
       expect(written()).toEqual(single.written);
       expect(sends()[0]).toEqual(single.email);
 
@@ -762,7 +761,7 @@ describe('UserSubmissionProvider', () => {
     });
 
     it('counts one whose email failed as reviewed, and lists it as not emailed', async () => {
-      (contactService.sendMessage as jest.Mock).mockRejectedValueOnce(new Error('mailroom unreachable'));
+      (contactService.sendMessage as Mock).mockRejectedValueOnce(new Error('mailroom unreachable'));
 
       const result = await provider.reviewUserSubmissions([A, B], 'acct-reviewer', { acceptance: true }, REVIEWER_PERMS);
 
@@ -918,13 +917,11 @@ describe('UserSubmissionProvider', () => {
       })
     };
     const HAS_FILE = { title: 'Campus trees', reason: 'already has a file' };
-    const sends = () => (contactService.sendMessage as jest.Mock).mock.calls;
+    const sends = () => (contactService.sendMessage as Mock).mock.calls;
 
     beforeEach(() => {
-      jest
-        .spyOn(submissionRepo, 'findOne')
-        .mockImplementation((async ({ where }: { where: { guid: string } }) =>
-          rows[where.guid] ? { ...rows[where.guid], participants: [...rows[where.guid].participants] } : null) as never);
+      vi.spyOn(submissionRepo, 'findOne').mockImplementation((async ({ where }: { where: { guid: string } }) =>
+        rows[where.guid] ? { ...rows[where.guid], participants: [...rows[where.guid].participants] } : null) as never);
     });
 
     it('previews one group per competition, skipping and naming any that already has a file, and sends nothing', async () => {
@@ -1014,7 +1011,7 @@ describe('UserSubmissionProvider', () => {
     });
 
     it('names one whose email could not be sent, and carries on', async () => {
-      (contactService.sendMessage as jest.Mock).mockRejectedValueOnce(new Error('mailroom unreachable'));
+      (contactService.sendMessage as Mock).mockRejectedValueOnce(new Error('mailroom unreachable'));
 
       const result = await provider.remindUserSubmissions([A, C], {}, REVIEWER_PERMS, 'gisday.tamu.edu');
 
@@ -1038,21 +1035,21 @@ describe('UserSubmissionProvider', () => {
 
   describe('.deleteUserSubmission()', () => {
     it('lets the owner delete their own submission', async () => {
-      jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission());
+      vi.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission());
 
       await expect(provider.deleteUserSubmission('sub-1', OWNER)).resolves.toEqual({ affected: 1 });
     });
 
     it('refuses someone else', async () => {
-      jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission());
-      const del = jest.spyOn(submissionRepo, 'delete');
+      vi.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission());
+      const del = vi.spyOn(submissionRepo, 'delete');
 
       await expect(provider.deleteUserSubmission('sub-1', 'acct-other')).rejects.toThrow(UnauthorizedException);
       expect(del).not.toHaveBeenCalled();
     });
 
     it('allows a reviewer holding delete:competitions', async () => {
-      jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission());
+      vi.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission());
 
       await expect(provider.deleteUserSubmission('sub-1', 'acct-reviewer', ['delete:competitions'])).resolves.toEqual({
         affected: 1
@@ -1060,7 +1057,7 @@ describe('UserSubmissionProvider', () => {
     });
 
     it('throws NotFound when the submission does not exist', async () => {
-      jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(submissionRepo, 'findOne').mockResolvedValue(null);
 
       await expect(provider.deleteUserSubmission('missing', OWNER)).rejects.toThrow(NotFoundException);
     });
@@ -1072,10 +1069,10 @@ describe('UserSubmissionProvider', () => {
     const B = '1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d';
 
     it('deletes each selected submission, once each', async () => {
-      jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission());
+      vi.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission());
 
       await expect(provider.deleteUserSubmissions([A, B, A], 'r', ['delete:competitions'])).resolves.toEqual({ deleted: 2 });
-      expect((submissionRepo.delete as jest.Mock).mock.calls.map((c) => c[0])).toEqual([A, B]);
+      expect((submissionRepo.delete as Mock).mock.calls.map((c) => c[0])).toEqual([A, B]);
     });
 
     it('refuses anyone without delete:competitions, even an owner, and deletes nothing', async () => {
@@ -1094,8 +1091,8 @@ describe('UserSubmissionProvider', () => {
 
   describe('.insertUserSubmission()', () => {
     it('stamps the submission with the account that created it', async () => {
-      jest.spyOn(submissionRepo, 'create').mockImplementation((s) => s as never);
-      jest.spyOn(submissionRepo, 'save').mockImplementation((s) => Promise.resolve(s as never));
+      vi.spyOn(submissionRepo, 'create').mockImplementation((s) => s as never);
+      vi.spyOn(submissionRepo, 'save').mockImplementation((s) => Promise.resolve(s as never));
 
       await provider.insertUserSubmission(OWNER, { title: 'A paper' });
 
@@ -1121,15 +1118,15 @@ describe('UserSubmissionProvider', () => {
     function seasonRunning(...types: Array<string>) {
       const season = { ...SEASON, competitions: types.map((competitionType) => ({ competitionType })) };
 
-      jest.spyOn(seasonService, 'findOne').mockResolvedValue(season as never);
-      jest.spyOn(seasonService, 'findOneActive').mockResolvedValue(season as never);
+      vi.spyOn(seasonService, 'findOne').mockResolvedValue(season as never);
+      vi.spyOn(seasonService, 'findOneActive').mockResolvedValue(season as never);
 
       return season;
     }
 
     beforeEach(() => {
-      jest.spyOn(submissionRepo, 'create').mockImplementation((s) => s as never);
-      jest.spyOn(submissionRepo, 'save').mockImplementation((s) => Promise.resolve(s as never));
+      vi.spyOn(submissionRepo, 'create').mockImplementation((s) => s as never);
+      vi.spyOn(submissionRepo, 'save').mockImplementation((s) => Promise.resolve(s as never));
     });
 
     it('refuses a new submission to a competition the season does not run, and saves nothing', async () => {
@@ -1158,9 +1155,9 @@ describe('UserSubmissionProvider', () => {
     });
 
     it('lets the entrant edit a submission to a competition since turned off', async () => {
-      jest
-        .spyOn(submissionRepo, 'findOne')
-        .mockResolvedValue(submission({ submissionType: 'paper', season: seasonRunning('poster') }));
+      vi.spyOn(submissionRepo, 'findOne').mockResolvedValue(
+        submission({ submissionType: 'paper', season: seasonRunning('poster') })
+      );
 
       await provider.updateUserSubmission('sub-1', OWNER, {
         title: 'Revised',
@@ -1171,9 +1168,9 @@ describe('UserSubmissionProvider', () => {
     });
 
     it('refuses to move a submission into a competition the season does not run', async () => {
-      jest
-        .spyOn(submissionRepo, 'findOne')
-        .mockResolvedValue(submission({ submissionType: 'poster', season: seasonRunning('poster') }));
+      vi.spyOn(submissionRepo, 'findOne').mockResolvedValue(
+        submission({ submissionType: 'poster', season: seasonRunning('poster') })
+      );
 
       await expect(
         provider.updateUserSubmission('sub-1', OWNER, { submissionType: 'cartography' } as Partial<Submission>)
@@ -1190,15 +1187,15 @@ describe('UserSubmissionProvider', () => {
     function seasonWith(deadlines: Record<string, unknown>) {
       const season = { ...SEASON, ...deadlines };
 
-      jest.spyOn(seasonService, 'findOne').mockResolvedValue(season as never);
-      jest.spyOn(seasonService, 'findOneActive').mockResolvedValue(season as never);
+      vi.spyOn(seasonService, 'findOne').mockResolvedValue(season as never);
+      vi.spyOn(seasonService, 'findOneActive').mockResolvedValue(season as never);
 
       return season;
     }
 
     beforeEach(() => {
-      jest.spyOn(submissionRepo, 'create').mockImplementation((s) => s as never);
-      jest.spyOn(submissionRepo, 'save').mockImplementation((s) => Promise.resolve(s as never));
+      vi.spyOn(submissionRepo, 'create').mockImplementation((s) => s as never);
+      vi.spyOn(submissionRepo, 'save').mockImplementation((s) => Promise.resolve(s as never));
     });
 
     describe('a new submission', () => {
@@ -1247,7 +1244,7 @@ describe('UserSubmissionProvider', () => {
       });
 
       it('is taken on a site with no active season', async () => {
-        jest.spyOn(seasonService, 'findOneActive').mockRejectedValue(new NotFoundException('No active season found.'));
+        vi.spyOn(seasonService, 'findOneActive').mockRejectedValue(new NotFoundException('No active season found.'));
 
         await provider.insertUserSubmission(OWNER, { submissionType: 'poster' } as never);
 
@@ -1265,11 +1262,9 @@ describe('UserSubmissionProvider', () => {
 
     describe('an edit', () => {
       it('is refused to the entrant once their competition has closed', async () => {
-        jest
-          .spyOn(submissionRepo, 'findOne')
-          .mockResolvedValue(
-            submission({ submissionType: 'poster', season: seasonWith({ posterSubmissionsCloseAt: past }) })
-          );
+        vi.spyOn(submissionRepo, 'findOne').mockResolvedValue(
+          submission({ submissionType: 'poster', season: seasonWith({ posterSubmissionsCloseAt: past }) })
+        );
 
         await expect(provider.updateUserSubmission('sub-1', OWNER, { title: 'Revised' })).rejects.toThrow(
           ForbiddenException
@@ -1278,11 +1273,9 @@ describe('UserSubmissionProvider', () => {
       });
 
       it('is refused when it would move the submission into a competition that has closed', async () => {
-        jest
-          .spyOn(submissionRepo, 'findOne')
-          .mockResolvedValue(
-            submission({ submissionType: 'presentation', season: seasonWith({ posterSubmissionsCloseAt: past }) })
-          );
+        vi.spyOn(submissionRepo, 'findOne').mockResolvedValue(
+          submission({ submissionType: 'presentation', season: seasonWith({ posterSubmissionsCloseAt: past }) })
+        );
 
         await expect(
           provider.updateUserSubmission('sub-1', OWNER, { submissionType: 'poster' } as Partial<Submission>)
@@ -1291,11 +1284,9 @@ describe('UserSubmissionProvider', () => {
       });
 
       it('is taken from the entrant before the deadline', async () => {
-        jest
-          .spyOn(submissionRepo, 'findOne')
-          .mockResolvedValue(
-            submission({ submissionType: 'poster', season: seasonWith({ posterSubmissionsCloseAt: future }) })
-          );
+        vi.spyOn(submissionRepo, 'findOne').mockResolvedValue(
+          submission({ submissionType: 'poster', season: seasonWith({ posterSubmissionsCloseAt: future }) })
+        );
 
         await provider.updateUserSubmission('sub-1', OWNER, { title: 'Revised' });
 
@@ -1303,11 +1294,9 @@ describe('UserSubmissionProvider', () => {
       });
 
       it('is taken from a reviewer after it, so submissions can be reviewed once closed', async () => {
-        jest
-          .spyOn(submissionRepo, 'findOne')
-          .mockResolvedValue(
-            submission({ submissionType: 'poster', season: seasonWith({ posterSubmissionsCloseAt: past }) })
-          );
+        vi.spyOn(submissionRepo, 'findOne').mockResolvedValue(
+          submission({ submissionType: 'poster', season: seasonWith({ posterSubmissionsCloseAt: past }) })
+        );
 
         await provider.updateUserSubmission(
           'sub-1',
@@ -1350,9 +1339,9 @@ describe('UserSubmissionProvider', () => {
       });
 
       it('refuses an edit from the entrant once it has closed, and takes one from a reviewer', async () => {
-        jest
-          .spyOn(submissionRepo, 'findOne')
-          .mockResolvedValue(submission({ submissionType: type, season: seasonWith({ [field]: past }) }));
+        vi.spyOn(submissionRepo, 'findOne').mockResolvedValue(
+          submission({ submissionType: type, season: seasonWith({ [field]: past }) })
+        );
 
         await expect(provider.updateUserSubmission('sub-1', OWNER, { title: 'Revised' })).rejects.toThrow(
           ForbiddenException
@@ -1372,15 +1361,15 @@ describe('UserSubmissionProvider', () => {
 
   describe('.getSubmissionsForSeason()', () => {
     it('answers an empty list for a season that does not exist', async () => {
-      jest.spyOn(seasonService, 'findOne').mockResolvedValue(null);
+      vi.spyOn(seasonService, 'findOne').mockResolvedValue(null);
 
       await expect(provider.getSubmissionsForSeason('missing')).resolves.toEqual([]);
     });
 
     it("scopes to the season, with each submission's files for the list to count (#2933)", async () => {
       const season = { guid: 'season-1' };
-      jest.spyOn(seasonService, 'findOne').mockResolvedValue(season as never);
-      jest.spyOn(submissionRepo, 'find').mockResolvedValue([submission()]);
+      vi.spyOn(seasonService, 'findOne').mockResolvedValue(season as never);
+      vi.spyOn(submissionRepo, 'find').mockResolvedValue([submission()]);
 
       await provider.getSubmissionsForSeason('season-1');
 
@@ -1396,12 +1385,12 @@ describe('UserSubmissionProvider', () => {
       });
 
       beforeEach(() => {
-        jest.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-1' } as never);
+        vi.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-1' } as never);
       });
 
       it("gives each submission its submitter's name, email and department", async () => {
-        jest.spyOn(submissionRepo, 'find').mockResolvedValue([submission({ accountGuid: 'student' })]);
-        jest.spyOn(profiles, 'profilesOf').mockResolvedValue(new Map([['student', profile('student') as never]]));
+        vi.spyOn(submissionRepo, 'find').mockResolvedValue([submission({ accountGuid: 'student' })]);
+        vi.spyOn(profiles, 'profilesOf').mockResolvedValue(new Map([['student', profile('student') as never]]));
 
         const [entry] = await provider.getSubmissionsForSeason('season-1');
 
@@ -1415,12 +1404,10 @@ describe('UserSubmissionProvider', () => {
       });
 
       it('takes the department, not the field of study, for anyone but a student', async () => {
-        jest.spyOn(submissionRepo, 'find').mockResolvedValue([submission({ accountGuid: 'faculty' })]);
-        jest
-          .spyOn(profiles, 'profilesOf')
-          .mockResolvedValue(
-            new Map([['faculty', profile('faculty', { app_metadata: { gisday: { attendeeType: 'academia' } } }) as never]])
-          );
+        vi.spyOn(submissionRepo, 'find').mockResolvedValue([submission({ accountGuid: 'faculty' })]);
+        vi.spyOn(profiles, 'profilesOf').mockResolvedValue(
+          new Map([['faculty', profile('faculty', { app_metadata: { gisday: { attendeeType: 'academia' } } }) as never]])
+        );
 
         const [entry] = await provider.getSubmissionsForSeason('season-1');
 
@@ -1428,10 +1415,10 @@ describe('UserSubmissionProvider', () => {
       });
 
       it('shows the display name when the account has no given or family name', async () => {
-        jest.spyOn(submissionRepo, 'find').mockResolvedValue([submission({ accountGuid: 'social' })]);
+        vi.spyOn(submissionRepo, 'find').mockResolvedValue([submission({ accountGuid: 'social' })]);
         const unnamed = profile('social');
         unnamed.user_info = { ...unnamed.user_info, given_name: null, family_name: null };
-        jest.spyOn(profiles, 'profilesOf').mockResolvedValue(new Map([['social', unnamed as never]]));
+        vi.spyOn(profiles, 'profilesOf').mockResolvedValue(new Map([['social', unnamed as never]]));
 
         const [entry] = await provider.getSubmissionsForSeason('season-1');
 
@@ -1439,14 +1426,12 @@ describe('UserSubmissionProvider', () => {
       });
 
       it('reads every submitter in one batch, each account once, not a request per account (#2925)', async () => {
-        jest
-          .spyOn(submissionRepo, 'find')
-          .mockResolvedValue([
-            submission({ guid: 'a', accountGuid: 'student' }),
-            submission({ guid: 'b', accountGuid: 'student' }),
-            submission({ guid: 'c', accountGuid: 'faculty' })
-          ]);
-        jest.spyOn(profiles, 'profilesOf').mockResolvedValue(
+        vi.spyOn(submissionRepo, 'find').mockResolvedValue([
+          submission({ guid: 'a', accountGuid: 'student' }),
+          submission({ guid: 'b', accountGuid: 'student' }),
+          submission({ guid: 'c', accountGuid: 'faculty' })
+        ]);
+        vi.spyOn(profiles, 'profilesOf').mockResolvedValue(
           new Map([
             ['student', profile('student') as never],
             ['faculty', profile('faculty') as never]
@@ -1461,8 +1446,8 @@ describe('UserSubmissionProvider', () => {
       });
 
       it('still lists a submission whose account cannot be read', async () => {
-        jest.spyOn(submissionRepo, 'find').mockResolvedValue([submission({ accountGuid: 'gone' })]);
-        jest.spyOn(profiles, 'profilesOf').mockResolvedValue(new Map([['gone', null]]));
+        vi.spyOn(submissionRepo, 'find').mockResolvedValue([submission({ accountGuid: 'gone' })]);
+        vi.spyOn(profiles, 'profilesOf').mockResolvedValue(new Map([['gone', null]]));
 
         const entries = await provider.getSubmissionsForSeason('season-1');
 
@@ -1474,8 +1459,8 @@ describe('UserSubmissionProvider', () => {
 
   describe('.getUserPresentationsForActiveSeason()', () => {
     it('scopes to both the account and the active season', async () => {
-      jest.spyOn(seasonService, 'findOneActive').mockResolvedValue({ guid: 'active' } as never);
-      jest.spyOn(submissionRepo, 'find').mockResolvedValue([submission()]);
+      vi.spyOn(seasonService, 'findOneActive').mockResolvedValue({ guid: 'active' } as never);
+      vi.spyOn(submissionRepo, 'find').mockResolvedValue([submission()]);
 
       await provider.getUserPresentationsForActiveSeason(OWNER);
 

@@ -8,7 +8,8 @@
  *
  * Angular projects are compiled by Analog's Vite plugin and get a zoneless TestBed from
  * test/vitest-setup-angular.ts (`{ zone: true }` for one that still needs zone.js); plain TypeScript
- * projects (`{ angular: false }`) skip both.
+ * projects (`{ angular: false }`) skip both. NestJS projects (`{ decoratorMetadata: true }`) get the decorator
+ * metadata their injection and TypeORM's columns read, written as `tsc` writes it for this workspace (#1977).
  */
 import angular from '@analogjs/vite-plugin-angular';
 import { join, relative } from 'node:path';
@@ -26,11 +27,20 @@ export interface VitestPresetOptions {
    * test zoneless (#1478). Only for specs that still use `waitForAsync` or `fakeAsync`.
    */
   zone?: boolean;
+  /**
+   * Write `design:type` and `design:paramtypes` for decorators, as NestJS and TypeORM need. Default false.
+   *
+   * Vite's transform reads one file at a time, so it cannot see the types `tsc` checks. Two settings close most of
+   * that gap (#1977): legacy decorators with their metadata, which the tsconfig already asks for, and `strictNullChecks`
+   * off, as `strict: false` has it in tsconfig.base.json, so `string | null` is written as `String` rather than
+   * `Object`. What remains, a type alias or an enum unioned with `string`, needs its column's type written out.
+   */
+  decoratorMetadata?: boolean;
 }
 
 export function vitestConfig(
   projectRoot: string,
-  { angular: isAngular = true, environment = 'jsdom', zone = false }: VitestPresetOptions = {}
+  { angular: isAngular = true, environment = 'jsdom', zone = false, decoratorMetadata = false }: VitestPresetOptions = {}
 ) {
   const fromRoot = relative(workspaceRoot, projectRoot);
   // Nx sets this for every task, so each project's JUnit file is named after it, as jest-junit's
@@ -42,6 +52,9 @@ export function vitestConfig(
     root: projectRoot,
     cacheDir: join(workspaceRoot, 'node_modules/.vite', fromRoot),
     plugins: isAngular ? [angular({ tsconfig: join(projectRoot, 'tsconfig.spec.json') })] : [],
+    ...(decoratorMetadata
+      ? { oxc: { decorator: { legacy: true, emitDecoratorMetadata: true, strictNullChecks: false } } }
+      : {}),
     // The workspace's `@tamu-gisc/*` paths from tsconfig.base.json, read by Vite itself.
     resolve: { tsconfigPaths: true },
     test: {
@@ -58,6 +71,17 @@ export function vitestConfig(
       ],
       // Many projects legitimately have no specs; an empty one is not a failing one.
       passWithNoTests: true,
+      // Vitest's default is 5 s, which for an Angular project is a budget for Analog compiling the component
+      // under test inside `TestBed.configureTestingModule`. Nobody chose it, and it is a statement about how
+      // fast the machine is rather than about the test: a full check runs `--parallel=8`, and on this team three
+      // sessions share one machine, so checks overlap by design. On 24 November 2026 two unrelated specs failed
+      // that way within an hour - `all-maps.campus-order.spec.ts` (#3522), which takes 0.57 s on a quiet machine,
+      // and `button-colours.spec.ts` (#3518), which takes 7.5 s - each on a pull request that touched neither.
+      //
+      // Raising it hides nothing: a test that never finishes still fails, just later. What stops failing is a
+      // test that was only ever slow. A plain TypeScript project keeps the 5 s default, because it compiles no
+      // components and nothing has been seen to need more.
+      ...(isAngular ? { testTimeout: 30_000 } : {}),
       reporters: ['default', 'junit'],
       outputFile: { junit: join(junitDir, `${project}.xml`) },
       coverage: { provider: 'v8', reportsDirectory: join(workspaceRoot, 'coverage', fromRoot) }

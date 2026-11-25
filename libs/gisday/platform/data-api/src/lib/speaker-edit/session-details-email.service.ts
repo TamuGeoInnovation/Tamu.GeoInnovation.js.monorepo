@@ -33,7 +33,7 @@ import {
   SendResult,
   chosenSpeakers,
   fullName,
-  looksLikeEmail,
+  hasEmail,
   recipientOf
 } from './speaker-edit.service';
 
@@ -127,7 +127,7 @@ export class SessionDetailsEmailService {
    * the controller checked (#3100), or the site.
    */
   public async send(
-    eventGuid: string,
+    eventGuid: string | undefined,
     host?: string,
     email?: SessionDetailsEmail,
     sender?: EmailSender,
@@ -162,7 +162,8 @@ export class SessionDetailsEmailService {
       skipped: ticked ? [] : noAddress.map((s) => ({ name: fullName(s), reason: 'no email address on their record' }))
     };
     // One email to them all together, or one each (#3104). Together with one ticked is that one's own copy.
-    const emails: Array<Array<Speaker>> = choice?.together && chosen.length > 1 ? [chosen] : chosen.map((s) => [s]);
+    const emails: Array<Array<Speaker & { email: string }>> =
+      choice?.together && chosen.length > 1 ? [chosen] : chosen.map((s) => [s]);
 
     // Several at a time (#3067), as the profile email: one by one, a long send waited long enough to be repeated (#3065).
     // Each is claimed before it goes, in the table every copy of the API shares (#3098), so two sends racing, in one copy
@@ -212,7 +213,7 @@ export class SessionDetailsEmailService {
   }
 
   /** The session, with what its email reads: its day, room, broadcast and speakers. */
-  private sessionOf(eventGuid: string): Promise<Event> {
+  private sessionOf(eventGuid: string | undefined): Promise<Event> {
     return sessionForEmail(this.events, eventGuid);
   }
 }
@@ -221,7 +222,7 @@ export class SessionDetailsEmailService {
  * The session a speaker email is about, with what its emails read: its day, room, broadcast and speakers. The session
  * details email (#3092) and the Ask for slides email (#3113) both.
  */
-export async function sessionForEmail(events: Repository<Event>, eventGuid: string): Promise<Event> {
+export async function sessionForEmail(events: Repository<Event>, eventGuid: string | undefined): Promise<Event> {
   if (typeof eventGuid !== 'string' || !eventGuid.trim()) {
     throw new BadRequestException('No session was named.');
   }
@@ -240,11 +241,14 @@ export async function sessionForEmail(events: Repository<Event>, eventGuid: stri
 }
 
 /** The session's speakers with an address to email, and those with none. */
-export function speakersOf(session: Event): { reachable: Array<Speaker>; noAddress: Array<Speaker> } {
+export function speakersOf(session: Event): {
+  reachable: Array<Speaker & { email: string }>;
+  noAddress: Array<Speaker>;
+} {
   const speakers = session.speakers ?? [];
 
   return {
-    reachable: speakers.filter((s) => looksLikeEmail(s.email)),
-    noAddress: speakers.filter((s) => !looksLikeEmail(s.email))
+    reachable: speakers.filter(hasEmail),
+    noAddress: speakers.filter((s) => !hasEmail(s))
   };
 }

@@ -54,7 +54,11 @@ function nextDay(day: string): string {
  * season's last day to the end of this season's last day, in Central time. With no previous season, or none with a
  * day, it starts at the beginning; with no day of its own, it ends `now`.
  */
-export function seasonWindow(days: Array<Date | string>, previousDays: Array<Date | string>, now = new Date()): { from: Date | null; to: Date } {
+export function seasonWindow(
+  days: Array<Date | string>,
+  previousDays: Array<Date | string>,
+  now = new Date()
+): { from: Date | null; to: Date } {
   const last = (ds: Array<Date | string>) => ds.map(centralDay).sort().pop();
   const thisLast = last(days);
   const previousLast = last(previousDays);
@@ -83,7 +87,8 @@ export function accountRows(people: Array<RsvpDashboardPerson>): Array<AccountDa
     const key = accountRowKey(person.organization);
     const row = rows.get(key) ?? {
       key,
-      name: key === NOT_GIVEN_KEY ? 'No university or employer given' : person.organization.trim().replace(/\s+/g, ' '),
+      name:
+        key === NOT_GIVEN_KEY ? 'No university or employer given' : (person.organization ?? '').trim().replace(/\s+/g, ' '),
       total: 0,
       counts: emptyCounts()
     };

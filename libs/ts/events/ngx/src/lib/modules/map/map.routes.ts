@@ -1,7 +1,13 @@
+import { inject } from '@angular/core';
 import { Routes } from '@angular/router';
 
 import { ModalComponent, ReportBadRouteComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
-import { SidebarSettingsComponent, SidebarTripPlannerComponent } from '@tamu-gisc/aggiemap/ngx/ui/desktop';
+import {
+  AggiemapSidebarComponent,
+  SIDEBAR_OPTIONS,
+  SidebarOptions,
+  sidebarRoutes
+} from '@tamu-gisc/aggiemap/ngx/ui/desktop';
 import {
   OmnisearchComponent,
   loadTripPlannerBottomComponent,
@@ -15,7 +21,6 @@ import { DesktopGuard, MobileGuard } from '@tamu-gisc/common/utils/device/guards
 
 import { LayerListComponent, LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 
-import { loadTripPlannerOptionsComponent } from '@tamu-gisc/maps/feature/trip-planner';
 import { PopupMobileDeferredComponent } from '@tamu-gisc/maps/feature/popup';
 
 import { BasemapGalleryComponent, BasemapGalleryService } from '@tamu-gisc/maps/feature/basemap';
@@ -24,10 +29,21 @@ import { LegendService } from '@tamu-gisc/maps/feature/legend';
 import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 import { MapComponent } from './map.component';
-import { MoveInOutSidebarComponent } from '../sidebar/sidebar.component';
 import { SidebarReferenceComponent } from '../sidebar/components/sidebar-reference/sidebar-reference.component';
 import { EventLegendComponent } from './components/event-legend/event-legend.component';
 import { SidebarRedirectGuard } from '../../guards/sidebar-redirect/sidebar-redirect.guard';
+import { EventSettingsService } from '../../services/settings/event-settings.service';
+
+/** The main map's side panel, with the tabs and branding this map's definition asks for (#2758). */
+function eventSidebarOptions(): SidebarOptions {
+  const configuration = inject(EventSettingsService).eventConfiguration()?.configuration;
+
+  return {
+    tabs: configuration?.sidebarTabs,
+    brandingIconUrl: configuration?.brandingIconUrl,
+    brandingIconAlt: configuration?.applicationName
+  };
+}
 
 export const mapRoutes: Routes = [
   {
@@ -47,14 +63,10 @@ export const mapRoutes: Routes = [
       },
       {
         path: 'd',
-        component: MoveInOutSidebarComponent,
+        component: AggiemapSidebarComponent,
+        providers: [{ provide: SIDEBAR_OPTIONS, useFactory: eventSidebarOptions }],
         canActivateChild: [DesktopGuard],
-        children: [
-          { path: '', component: SidebarReferenceComponent },
-          { path: 'trip', component: SidebarTripPlannerComponent },
-          { path: 'trip/options', loadComponent: loadTripPlannerOptionsComponent },
-          { path: 'settings', component: SidebarSettingsComponent }
-        ]
+        children: sidebarRoutes(SidebarReferenceComponent)
       },
       {
         path: 'm',

@@ -15,7 +15,7 @@ import {
 } from '@tamu-gisc/maps/esri';
 import { escapeSqlString } from '@tamu-gisc/common/utils/database';
 import { dateForDateTimeString } from '@tamu-gisc/common/utils/date';
-import { relativeDistance } from '@tamu-gisc/common/utils/geometry/generic';
+import { findNearestIndex } from '@tamu-gisc/common/utils/geometry/generic';
 
 import { TripModeSwitch } from '../../trip-planner.service';
 
@@ -195,31 +195,29 @@ export class BusService {
       ),
       this.moduleProvider.require(['Point', 'SpatialReference', 'webMercatorUtils'])
     ]).pipe(
-      switchMap(
-        (argument: [TSWaypoint[], [typeof esri.Point, typeof esri.SpatialReference, esri.webMercatorUtils]]) => {
-          const [waypoints_raw, [Point, SpatialReference, webMercatorUtils]] = argument;
-          const waypoints: Waypoint[] = [];
-          for (const waypoint of waypoints_raw) {
-            waypoints.push({
-              name: waypoint.Name,
-              point: <esri.Point>webMercatorUtils.webMercatorToGeographic(
-                new Point({
-                  y: waypoint.Latitude,
-                  x: waypoint.Longtitude,
-                  spatialReference: SpatialReference.WebMercator
-                })
-              ),
-              stop: waypoint.Stop != null,
-              timed_stop: waypoint.Stop != null ? waypoint.Stop.IsTimePoint : false
-            });
-          }
-          this.waypoint_map.push({
-            short_name: short_name,
-            waypoints: waypoints
+      switchMap((argument: [TSWaypoint[], [typeof esri.Point, typeof esri.SpatialReference, esri.webMercatorUtils]]) => {
+        const [waypoints_raw, [Point, SpatialReference, webMercatorUtils]] = argument;
+        const waypoints: Waypoint[] = [];
+        for (const waypoint of waypoints_raw) {
+          waypoints.push({
+            name: waypoint.Name,
+            point: <esri.Point>webMercatorUtils.webMercatorToGeographic(
+              new Point({
+                y: waypoint.Latitude,
+                x: waypoint.Longtitude,
+                spatialReference: SpatialReference.WebMercator
+              })
+            ),
+            stop: waypoint.Stop != null,
+            timed_stop: waypoint.Stop != null ? waypoint.Stop.IsTimePoint : false
           });
-          return of(waypoints);
         }
-      )
+        this.waypoint_map.push({
+          short_name: short_name,
+          waypoints: waypoints
+        });
+        return of(waypoints);
+      })
     );
   }
 
@@ -245,31 +243,29 @@ export class BusService {
       ),
       this.moduleProvider.require(['Point', 'SpatialReference', 'webMercatorUtils'])
     ]).pipe(
-      switchMap(
-        (argument: [TSStopJson[], [typeof esri.Point, typeof esri.SpatialReference, esri.webMercatorUtils]]) => {
-          const [stops_raw, [Point, SpatialReference, webMercatorUtils]] = argument;
-          const stops: BusStop[] = [];
-          for (const stop of stops_raw) {
-            const stop_name = stop.Name;
-            const point = webMercatorUtils.webMercatorToGeographic(
-              new Point({
-                y: stop.Latitude,
-                x: stop.Longtitude,
-                spatialReference: SpatialReference.WebMercator
-              })
-            );
-            stops.push({
-              name: stop_name,
-              point: <esri.Point>point
-            });
-          }
-          this.stop_map.push({
-            short_name: short_name,
-            stops: stops
+      switchMap((argument: [TSStopJson[], [typeof esri.Point, typeof esri.SpatialReference, esri.webMercatorUtils]]) => {
+        const [stops_raw, [Point, SpatialReference, webMercatorUtils]] = argument;
+        const stops: BusStop[] = [];
+        for (const stop of stops_raw) {
+          const stop_name = stop.Name;
+          const point = webMercatorUtils.webMercatorToGeographic(
+            new Point({
+              y: stop.Latitude,
+              x: stop.Longtitude,
+              spatialReference: SpatialReference.WebMercator
+            })
+          );
+          stops.push({
+            name: stop_name,
+            point: <esri.Point>point
           });
-          return of(stops);
         }
-      )
+        this.stop_map.push({
+          short_name: short_name,
+          stops: stops
+        });
+        return of(stops);
+      })
     );
   }
 
@@ -324,7 +320,7 @@ export class BusService {
       longitude: point[0]
     };
 
-    const distances = relativeDistance(
+    const minIndex = findNearestIndex(
       esriPoint,
       stops.map((s) => {
         return {
@@ -332,10 +328,6 @@ export class BusService {
         };
       })
     );
-
-    const min = Math.min(...distances);
-
-    const minIndex = distances.indexOf(min);
 
     return {
       index: minIndex,
@@ -725,12 +717,7 @@ export class BusService {
           TSRoute[],
           number[][][],
           MapStop[],
-          [
-            typeof esri.Graphic,
-            typeof esri.SimpleLineSymbol,
-            typeof esri.SimpleMarkerSymbol,
-            typeof esri.Polyline
-          ]
+          [typeof esri.Graphic, typeof esri.SimpleLineSymbol, typeof esri.SimpleMarkerSymbol, typeof esri.Polyline]
         ]
       ) => {
         const [routes, paths, stops, [Graphic, SimpleLineSymbol, SimpleMarkerSymbol, Polyline]] = argument;
@@ -992,12 +979,7 @@ export class BusService {
       ]).then(
         (
           result: [
-            [
-              typeof esri.Point,
-              typeof esri.Graphic,
-              typeof esri.FeatureLayer,
-              typeof esri.PictureMarkerSymbol
-            ],
+            [typeof esri.Point, typeof esri.Graphic, typeof esri.FeatureLayer, typeof esri.PictureMarkerSymbol],
             RouteBus[],
             esri.Graphic[]
           ]

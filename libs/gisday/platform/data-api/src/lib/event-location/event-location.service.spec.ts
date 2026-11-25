@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -14,11 +15,11 @@ describe('EventLocationService', () => {
   let seasonService: SeasonService;
 
   const queryBuilder = (result: unknown) => {
-    const qb: Record<string, jest.Mock> = {};
+    const qb: Record<string, Mock> = {};
     for (const m of ['leftJoinAndSelect', 'where', 'orderBy', 'addOrderBy']) {
-      qb[m] = jest.fn(() => qb);
+      qb[m] = vi.fn(() => qb);
     }
-    qb.getMany = jest.fn().mockResolvedValue(result);
+    qb.getMany = vi.fn().mockResolvedValue(result);
     return qb;
   };
 
@@ -29,14 +30,14 @@ describe('EventLocationService', () => {
         {
           provide: getRepositoryToken(EventLocation),
           useValue: {
-            find: jest.fn(),
-            create: jest.fn(),
-            save: jest.fn(),
-            createQueryBuilder: jest.fn(),
-            manager: { transaction: jest.fn() }
+            find: vi.fn(),
+            create: vi.fn(),
+            save: vi.fn(),
+            createQueryBuilder: vi.fn(),
+            manager: { transaction: vi.fn() }
           }
         },
-        { provide: SeasonService, useValue: { findOne: jest.fn(), findOneActive: jest.fn() } }
+        { provide: SeasonService, useValue: { findOne: vi.fn(), findOneActive: vi.fn() } }
       ]
     }).compile();
 
@@ -46,7 +47,7 @@ describe('EventLocationService', () => {
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('should be defined', () => {
@@ -55,9 +56,9 @@ describe('EventLocationService', () => {
 
   describe('.getEventLocationsForSeason()', () => {
     it('scopes to the season and applies the default ordering', async () => {
-      jest.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-1' } as never);
+      vi.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-1' } as never);
       const qb = queryBuilder([{ guid: 'el-1' }]);
-      jest.spyOn(locationRepo, 'createQueryBuilder').mockReturnValue(qb as never);
+      vi.spyOn(locationRepo, 'createQueryBuilder').mockReturnValue(qb as never);
 
       await expect(service.getEventLocationsForSeason('season-1')).resolves.toEqual([{ guid: 'el-1' }]);
       expect(qb.where).toHaveBeenCalledWith('season.guid = :guid', { guid: 'season-1' });
@@ -77,13 +78,11 @@ describe('EventLocationService', () => {
      * rather than a decision.
      */
     it('rejects a season that does not exist rather than returning an empty list', async () => {
-      jest.spyOn(seasonService, 'findOne').mockResolvedValue(null);
+      vi.spyOn(seasonService, 'findOne').mockResolvedValue(null);
       const qb = queryBuilder([]);
-      jest.spyOn(locationRepo, 'createQueryBuilder').mockReturnValue(qb as never);
+      vi.spyOn(locationRepo, 'createQueryBuilder').mockReturnValue(qb as never);
 
-      await expect(service.getEventLocationsForSeason('missing')).rejects.toThrow(
-        UnprocessableEntityException
-      );
+      await expect(service.getEventLocationsForSeason('missing')).rejects.toThrow(UnprocessableEntityException);
       // The query must not run at all for a season that is not there.
       expect(qb.getMany).not.toHaveBeenCalled();
     });
@@ -91,10 +90,10 @@ describe('EventLocationService', () => {
 
   describe('.getEventLocationsForActiveSeason()', () => {
     it('resolves the active season and reads locations against it', async () => {
-      jest.spyOn(seasonService, 'findOneActive').mockResolvedValue({ guid: 'active' } as never);
-      jest.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'active' } as never);
+      vi.spyOn(seasonService, 'findOneActive').mockResolvedValue({ guid: 'active' } as never);
+      vi.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'active' } as never);
       const qb = queryBuilder([{ guid: 'el-1' }]);
-      jest.spyOn(locationRepo, 'createQueryBuilder').mockReturnValue(qb as never);
+      vi.spyOn(locationRepo, 'createQueryBuilder').mockReturnValue(qb as never);
 
       await expect(service.getEventLocationsForActiveSeason()).resolves.toEqual([{ guid: 'el-1' }]);
       expect(qb.where).toHaveBeenCalledWith('season.guid = :guid', { guid: 'active' });
@@ -103,9 +102,7 @@ describe('EventLocationService', () => {
     it('surfaces NotFound when no season is active', async () => {
       // `findOneActive` throws rather than resolving falsy, so the 422 guard below it is
       // unreachable and callers see a 404. Asserting the status they actually get.
-      jest
-        .spyOn(seasonService, 'findOneActive')
-        .mockRejectedValue(new NotFoundException('No active season found.'));
+      vi.spyOn(seasonService, 'findOneActive').mockRejectedValue(new NotFoundException('No active season found.'));
 
       await expect(service.getEventLocationsForActiveSeason()).rejects.toThrow(NotFoundException);
     });
@@ -114,7 +111,7 @@ describe('EventLocationService', () => {
   describe('.getEntities()', () => {
     it('lists locations with their place, ordered', async () => {
       const qb = queryBuilder([{ guid: 'el-1' }]);
-      jest.spyOn(locationRepo, 'createQueryBuilder').mockReturnValue(qb as never);
+      vi.spyOn(locationRepo, 'createQueryBuilder').mockReturnValue(qb as never);
 
       await expect(service.getEntities()).resolves.toEqual([{ guid: 'el-1' }]);
       expect(qb.leftJoinAndSelect).toHaveBeenCalledWith('event-location.place', 'organization');
@@ -124,20 +121,16 @@ describe('EventLocationService', () => {
 
   describe('.copyEventLocationsIntoSeason()', () => {
     it('rejects a season that does not exist', async () => {
-      jest.spyOn(seasonService, 'findOne').mockResolvedValue(null);
+      vi.spyOn(seasonService, 'findOne').mockResolvedValue(null);
 
-      await expect(service.copyEventLocationsIntoSeason('missing', ['el-1'])).rejects.toThrow(
-        UnprocessableEntityException
-      );
+      await expect(service.copyEventLocationsIntoSeason('missing', ['el-1'])).rejects.toThrow(UnprocessableEntityException);
     });
 
     it('rejects when there is nothing to copy', async () => {
-      jest.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
-      jest.spyOn(locationRepo, 'find').mockResolvedValue([]);
+      vi.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
+      vi.spyOn(locationRepo, 'find').mockResolvedValue([]);
 
-      await expect(service.copyEventLocationsIntoSeason('season-2', ['el-1'])).rejects.toThrow(
-        UnprocessableEntityException
-      );
+      await expect(service.copyEventLocationsIntoSeason('season-2', ['el-1'])).rejects.toThrow(UnprocessableEntityException);
     });
 
     it('strips identity and every relation off the copy before saving it', async () => {
@@ -152,14 +145,14 @@ describe('EventLocationService', () => {
         events: [{ guid: 'e-1' }]
       } as unknown as EventLocation;
 
-      jest.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
-      jest.spyOn(locationRepo, 'find').mockResolvedValue([source]);
-      jest.spyOn(locationRepo, 'create').mockImplementation((e) => e as never);
-      jest.spyOn(locationRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
+      vi.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
+      vi.spyOn(locationRepo, 'find').mockResolvedValue([source]);
+      vi.spyOn(locationRepo, 'create').mockImplementation((e) => e as never);
+      vi.spyOn(locationRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
 
       await service.copyEventLocationsIntoSeason('season-2', ['el-1']);
 
-      const passed = (locationRepo.create as jest.Mock).mock.calls[0][0];
+      const passed = (locationRepo.create as Mock).mock.calls[0][0];
       expect(passed.guid).toBeUndefined();
       expect(passed.place).toBeUndefined();
       expect(passed.events).toBeUndefined();
@@ -172,15 +165,15 @@ describe('EventLocationService', () => {
   });
 
   describe('.deleteEntities()', () => {
-    const withManager = (manager: Record<string, jest.Mock>) => {
-      (locationRepo.manager.transaction as jest.Mock).mockImplementation((cb) => cb(manager));
+    const withManager = (manager: Record<string, Mock>) => {
+      (locationRepo.manager.transaction as Mock).mockImplementation((cb) => cb(manager));
     };
 
     it('accepts a comma-separated string and an array alike', async () => {
       const manager = {
-        find: jest.fn().mockResolvedValue([]),
-        save: jest.fn(),
-        delete: jest.fn().mockResolvedValue({ affected: 2 })
+        find: vi.fn().mockResolvedValue([]),
+        save: vi.fn(),
+        delete: vi.fn().mockResolvedValue({ affected: 2 })
       };
       withManager(manager);
 
@@ -194,9 +187,9 @@ describe('EventLocationService', () => {
     it('detaches the location from its events before deleting it', async () => {
       const event = { guid: 'e-1', location: { guid: 'el-1' } };
       const manager = {
-        find: jest.fn().mockResolvedValue([{ guid: 'el-1', events: [event] }]),
-        save: jest.fn().mockResolvedValue([event]),
-        delete: jest.fn().mockResolvedValue({ affected: 1 })
+        find: vi.fn().mockResolvedValue([{ guid: 'el-1', events: [event] }]),
+        save: vi.fn().mockResolvedValue([event]),
+        delete: vi.fn().mockResolvedValue({ affected: 1 })
       };
       withManager(manager);
 

@@ -37,7 +37,7 @@ describe('FaqComponent', () => {
 
   beforeAll(() => {
     // jsdom has no layout, so no scrollIntoView.
-    Element.prototype.scrollIntoView = jest.fn();
+    Element.prototype.scrollIntoView = vi.fn();
   });
 
   it('gives every question its own id', async () => {

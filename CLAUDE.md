@@ -80,6 +80,21 @@ stops it before it starts. `bash scripts/check-in-volume.test.sh` tests how it r
 build's configuration and the steps, and `bash scripts/run-times.test.sh` the run-time files it writes (both from Git Bash, as above). **It checks only what is committed**; uncommitted edits are not seen. `all` in place
 of `affected` checks every project. Run `git fetch origin` first if `origin/development` is old.
 
+**Before opening a pull request, run this, and open it only when it exits 0, docs-only changes included:**
+
+```bash
+scripts/pre-pr-check.sh <branch> '<title>' .pr-body.md [projects] [--label no-visible-change]
+```
+
+It checks the branch the way its pull request will be checked: the drafted title and body against the same code CI
+runs (the title format, a `Closes #N`, a release-notes entry or the `no-visible-change` label, before/after images for a
+visible change), the scripts' and tools' own test suites when the branch touches them, and then
+`scripts/check-in-volume.sh` (projects as in a bug fix's list, or `affected` without one). Its last line,
+`pre-pr-check: Exit 0`, goes in the pull request body. The maintainer's decision after 24 November 2026, when several
+pull requests opened red for things a local run would have caught: a docs change nobody checked, and a body with no
+closing reference (#3508). It cannot catch a flaky test: one that fails on a pull request that did not touch its project
+gets an issue and a fix that day, proven by running it many times before and after (#3506).
+
 **Not one app you picked — every affected app.** Building only the app you were working in is what the
 advice used to say, and it is not enough: a change to a shared library can break an application you
 have never opened. On 30 September a 969-byte growth in the notification component's stylesheet pushed
@@ -111,6 +126,13 @@ On its first real use, a full affected check ran 131 tasks in its first four min
 an hour before. The script keeps the Nx cache in the volume, so an unchanged task replays in about a second, and runs
 with `-m 16g` and `--parallel=8` (peak memory measured: 10.4 GB). Do not add `--skip-nx-cache`.
 On a smaller machine, set `CHECK_MEMORY` (default `16g`) and `CHECK_PARALLEL` (default `8`) to lower them (#2498).
+
+**A check that covers all of GIS Day runs with `CHECK_PARALLEL=1`.** Measured on 24 November 2026 at the default 16 GiB
+([`docs/build-times.md`](docs/build-times.md#a-gis-day-wide-check-at-each---parallel-3000)), the eleven GIS Day projects
+passed in about 6½ minutes at 1 and at 2. At 4 the run was killed for memory, and at the default 8 it had not finished
+after nearly two hours: it sat at the limit, neither failing nor progressing. When the run fails with tasks killed for
+memory, the script says so and names these two settings (#3000). A run stuck at the limit cannot be detected, so a GIS
+Day-wide check still going after 15 minutes is in that state: stop it and run again at 1.
 
 **That 16 GiB is reserved per run, not per project, so two checks cannot share one machine at the defaults.** A run
 scoped to a single project asks Docker for exactly as much as `affected` does; scope changes how long it takes, not what
@@ -642,7 +664,7 @@ reader — merged, on dev, not yet on production, and the address that will star
 
 **Fill in every field on the issue and the pull request, not only the title and body.** A field left
 empty drops the work out of the project board and the funding record just as surely as a missing
-issue does. Where a value is not known and not covered below, **ask the user before filing**; never
+issue does. Where a value is not known and not covered below (Priority is covered: estimate it), **ask the user before filing**; never
 leave a field empty silently. Say in your reply which values you chose. See #1112.
 
 | Issue field | Value |
@@ -650,7 +672,7 @@ leave a field empty silently. Say in your reply which values you chose. See #111
 | Assignee | `danielgoldbergtamu`, unless the user names someone else |
 | Type | Choose: **Bug** (worked, now broken or wrong), **Feature** (new capability), **Task** (docs, CI, tests, cleanup, investigation) |
 | Labels | Matching existing labels, e.g. `bug`, `documentation` |
-| Priority (organization issue field) | **Ask the user every time**: Urgent, High, Medium or Low |
+| Priority (organization issue field) | **Set it from your best estimate, and do not ask** (the maintainer, 25 November 2026): Urgent (production broken now), High (blocks other work, or a visible fault), Medium (a real fault, or a step of planned work), Low (tidying, nice to have). Say which you chose and why; he corrects any he disagrees with |
 | Project | AggieMap work: **Texas A&M Aggiemap**. GIS Day work: **GIS Day Angular + NestJS**. Repo-wide process, docs or CI: **both**. If unclear, ask |
 | Project Status | **Todo** when filed; **In Progress** when work starts |
 

@@ -62,7 +62,7 @@ export class SponsorController {
   @UseGuards(JwtGuard, PermissionsGuard)
   @Post()
   @UseInterceptors(FileInterceptor('file', { limits: { ...DEFAULT_UPLOAD_LIMITS } }))
-  public create(@Body() creteOrgDto?: Partial<Sponsor>, @UploadedFile() file?: Express.Multer.File) {
+  public create(@Body() creteOrgDto: Partial<Sponsor>, @UploadedFile() file?: Express.Multer.File) {
     return this.provider.createSponsor(creteOrgDto, file);
   }
 

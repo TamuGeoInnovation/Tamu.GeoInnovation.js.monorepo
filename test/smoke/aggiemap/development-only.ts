@@ -48,7 +48,9 @@ export const DEVELOPMENT_ONLY_ALL_MAPS_TILES = ['Code Maroon'];
  * - The trip planner's Options offers only accessible routing, which the routing network does not support yet.
  */
 export const DEVELOPMENT_ONLY_PAGES: Record<string, string> = {
-  '/map/d/trip/options': '/map/d/trip'
+  '/map/d/trip/options': '/map/d/trip',
+  // The event maps' copy of the same page, which their own side panel left ungated until it became the main map's (#2758).
+  '/events/tailgating/map/d/trip/options': '/events/tailgating/map/d/trip'
 };
 
 /**
@@ -89,6 +91,13 @@ export const DEVELOPMENT_ONLY_CONTROLS: Array<{
     selector: '.options-container .action:text-is("Options")',
     page: '/map/d/trip',
     reason: '#2801: Options offers only accessible routing, which the routing network does not support yet'
+  },
+  {
+    // The phone's mode picker is a separate template, and offered the toggle on production until #3468.
+    name: "the phone trip planner's accessible toggle",
+    selector: '#direction-accessible-mode',
+    page: '/map/m/trip',
+    reason: '#2801: accessible routing, which the routing network does not support yet (#3468: the phone missed the gate)'
   }
 ];
 

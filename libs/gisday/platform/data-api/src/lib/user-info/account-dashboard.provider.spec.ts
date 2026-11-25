@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { NotFoundException } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 
@@ -10,7 +11,10 @@ import { AccountDashboardProvider, HAS_GISDAY_PROFILE } from './account-dashboar
 
 const account = (id: string, created: string, profile: object): Auth0UserCreated => ({
   created,
-  profile: { user_info: { id, given_name: id, family_name: 'Test', email: `${id}@example.edu` }, ...profile } as unknown as Auth0UserProfile
+  profile: {
+    user_info: { id, given_name: id, family_name: 'Test', email: `${id}@example.edu` },
+    ...profile
+  } as unknown as Auth0UserProfile
 });
 
 const accounts = [
@@ -30,7 +34,7 @@ const accounts = [
 
 describe('AccountDashboardProvider (#2892)', () => {
   let dataSource: DataSource;
-  let ms: { getUsersCreatedBetween: jest.Mock; countUsersCreatedBetween: jest.Mock };
+  let ms: { getUsersCreatedBetween: Mock; countUsersCreatedBetween: Mock };
   let seasonRepo: ReturnType<typeof queryCheckingRepository<Season>>;
   let universityRepo: ReturnType<typeof queryCheckingRepository<University>>;
   let provider: AccountDashboardProvider;
@@ -41,8 +45,8 @@ describe('AccountDashboardProvider (#2892)', () => {
 
   beforeEach(() => {
     ms = {
-      getUsersCreatedBetween: jest.fn(async () => accounts),
-      countUsersCreatedBetween: jest.fn(async () => 5)
+      getUsersCreatedBetween: vi.fn(async () => accounts),
+      countUsersCreatedBetween: vi.fn(async () => 5)
     };
     seasonRepo = queryCheckingRepository(dataSource, Season);
     universityRepo = queryCheckingRepository(dataSource, University);
@@ -59,7 +63,11 @@ describe('AccountDashboardProvider (#2892)', () => {
 
       return (
         where.guid
-          ? { guid: 's-2026', year: 2026, days: [{ date: new Date('2026-11-16T06:00:00Z') }, { date: new Date('2026-11-20T06:00:00Z') }] }
+          ? {
+              guid: 's-2026',
+              year: 2026,
+              days: [{ date: new Date('2026-11-16T06:00:00Z') }, { date: new Date('2026-11-20T06:00:00Z') }]
+            }
           : { guid: 's-2025', year: 2025, days: [{ date: new Date('2025-11-21T06:00:00Z') }] }
       ) as Season;
     };
@@ -73,7 +81,11 @@ describe('AccountDashboardProvider (#2892)', () => {
 
     provider = new AccountDashboardProvider(
       seasonRepo,
-      new DashboardProfilesService(universityRepo, queryCheckingRepository(dataSource, Organization), {} as ManagementService),
+      new DashboardProfilesService(
+        universityRepo,
+        queryCheckingRepository(dataSource, Organization),
+        {} as ManagementService
+      ),
       ms as unknown as ManagementService
     );
   });
@@ -88,7 +100,10 @@ describe('AccountDashboardProvider (#2892)', () => {
       HAS_GISDAY_PROFILE,
       { app_metadata: 'gisday', user_metadata: ['occupation', 'education'] }
     );
-    expect(ms.countUsersCreatedBetween).toHaveBeenCalledWith(new Date('2025-11-22T06:00:00.000Z'), new Date('2026-11-21T06:00:00.000Z'));
+    expect(ms.countUsersCreatedBetween).toHaveBeenCalledWith(
+      new Date('2025-11-22T06:00:00.000Z'),
+      new Date('2026-11-21T06:00:00.000Z')
+    );
     expect(dashboard.accounts).toBe(3);
     expect(dashboard.allAccounts).toBe(5);
   });
@@ -96,7 +111,9 @@ describe('AccountDashboardProvider (#2892)', () => {
   it('counts them by university or employer, by name, and by person type, with when each was made', async () => {
     const dashboard = await provider.getSeason('s-2026');
 
-    expect(dashboard.rows.map((r) => [r.name, r.total, r.counts.undergraduate, r.counts.academia, r.counts.industry])).toEqual([
+    expect(
+      dashboard.rows.map((r) => [r.name, r.total, r.counts.undergraduate, r.counts.academia, r.counts.industry])
+    ).toEqual([
       ['Texas A&M University', 2, 1, 1, 0],
       ['Esri', 1, 0, 0, 1]
     ]);

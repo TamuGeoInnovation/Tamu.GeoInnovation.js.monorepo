@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { COMPETITION_VALIDATION_STATUS } from '@tamu-gisc/gisday/common';
 
 import { ALREADY_SUBMITTED_POINTS, LeaderboardService, NEW_FIND_POINTS } from './leaderboard.service';
@@ -17,8 +18,8 @@ describe('LeaderboardService', () => {
   let submissions: Array<unknown>;
   let seasonForm: unknown;
   let service: LeaderboardService;
-  let find: jest.Mock;
-  let findCompetitionSeason: jest.Mock;
+  let find: Mock;
+  let findCompetitionSeason: Mock;
 
   /**
    * A submission as the database returns it: decimals as text, oldest first.
@@ -44,15 +45,15 @@ describe('LeaderboardService', () => {
   beforeEach(() => {
     submissions = [];
     seasonForm = form;
-    find = jest.fn(() => Promise.resolve(submissions));
-    findCompetitionSeason = jest.fn(() => Promise.resolve({ guid: 'cs-1', form: seasonForm }));
+    find = vi.fn(() => Promise.resolve(submissions));
+    findCompetitionSeason = vi.fn(() => Promise.resolve({ guid: 'cs-1', form: seasonForm }));
 
     service = new LeaderboardService(
       { find } as never,
       undefined,
       undefined,
       { findOne: findCompetitionSeason } as never,
-      { findOne: jest.fn(() => Promise.resolve({ guid: 's-1', active: true })) } as never,
+      { findOne: vi.fn(() => Promise.resolve({ guid: 's-1', active: true })) } as never,
       undefined
     );
   });
@@ -220,7 +221,7 @@ describe('LeaderboardService', () => {
     };
 
     let earlier: Array<unknown>;
-    let findSeasons: jest.Mock;
+    let findSeasons: Mock;
 
     const find2026 = (user: string, location: { latitude: number; longitude: number }, kind: string, name?: string) => ({
       ...submission(user, location),
@@ -233,9 +234,9 @@ describe('LeaderboardService', () => {
 
     beforeEach(() => {
       earlier = [];
-      find = jest.fn((options) => Promise.resolve(options.where.season.guid === 'cs-2025' ? earlier : submissions));
-      findCompetitionSeason = jest.fn(() => Promise.resolve({ guid: 'cs-2026', form: form2026, season: { year: 2026 } }));
-      findSeasons = jest.fn(() =>
+      find = vi.fn((options) => Promise.resolve(options.where.season.guid === 'cs-2025' ? earlier : submissions));
+      findCompetitionSeason = vi.fn(() => Promise.resolve({ guid: 'cs-2026', form: form2026, season: { year: 2026 } }));
+      findSeasons = vi.fn(() =>
         Promise.resolve([
           { guid: 'cs-2024', form: { model: [] }, season: { year: 2024 } },
           { guid: 'cs-2025', form: form2025, season: { year: 2025 } },
@@ -248,7 +249,7 @@ describe('LeaderboardService', () => {
         undefined,
         undefined,
         { findOne: findCompetitionSeason, find: findSeasons } as never,
-        { findOne: jest.fn(() => Promise.resolve({ guid: 's-2026', active: true, year: 2026 })) } as never,
+        { findOne: vi.fn(() => Promise.resolve({ guid: 's-2026', active: true, year: 2026 })) } as never,
         undefined
       );
     });
@@ -484,10 +485,10 @@ describe('LeaderboardService', () => {
       'auth0|bob': 'bo@tamu.edu',
       'auth0|cy': 'cy.smith@gmail.com'
     };
-    let getUserMetadata: jest.Mock;
+    let getUserMetadata: Mock;
 
     beforeEach(() => {
-      getUserMetadata = jest.fn((guid: string) =>
+      getUserMetadata = vi.fn((guid: string) =>
         emails[guid] ? Promise.resolve({ user_info: { email: emails[guid] } }) : Promise.reject(new Error('not found'))
       );
       service = new LeaderboardService(
@@ -495,7 +496,7 @@ describe('LeaderboardService', () => {
         undefined,
         undefined,
         { findOne: findCompetitionSeason } as never,
-        { findOne: jest.fn(() => Promise.resolve({ guid: 's-1', active: true })) } as never,
+        { findOne: vi.fn(() => Promise.resolve({ guid: 's-1', active: true })) } as never,
         { getUserMetadata } as never
       );
       submissions = [

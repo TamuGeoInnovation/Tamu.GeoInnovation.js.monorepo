@@ -21,6 +21,15 @@ export interface SiteCopyFile {
   records: SiteCopyRecords;
 }
 
+/**
+ * A file as an import receives it, before it is checked (#3495): it is whatever was uploaded, so any part may be missing,
+ * and a kind with no records may be left out.
+ */
+export type SiteCopyUpload = Partial<Omit<SiteCopyFile, 'records'>> & { records?: Partial<SiteCopyRecords> };
+
+/** An upload that `SiteCopyService` has checked is a site copy file from a site. */
+export type CheckedSiteCopyUpload = SiteCopyUpload & { source: string; records: Partial<SiteCopyRecords> };
+
 /** One list per kind, in the order an import writes them, so each record's links already exist. */
 export type SiteCopyRecords = Record<SiteCopyKind, Array<SiteCopyRecord>>;
 

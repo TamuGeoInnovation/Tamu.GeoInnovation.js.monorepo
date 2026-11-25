@@ -34,7 +34,7 @@ export class UserRsvpProvider extends BaseProvider<UserRsvp> {
     return existing;
   }
 
-  public async insertUserRsvp(eventGuid: string, rsvpTypeGuid: string, accountGuid: string) {
+  public async insertUserRsvp(eventGuid: string, rsvpTypeGuid: string | null, accountGuid: string) {
     try {
       const event = await this.eventRepo.findOne({
         where: {

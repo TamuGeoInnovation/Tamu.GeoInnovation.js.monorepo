@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { VgiArcgisPublisher } from './vgi-arcgis-publisher.service';
 
 /**
@@ -46,8 +47,8 @@ describe('VgiArcgisPublisher', () => {
   let existing: Array<number>;
   let attachments: Array<string>;
   let arcgisError: string | undefined;
-  let findOne: jest.Mock;
-  let find: jest.Mock;
+  let findOne: Mock;
+  let find: Mock;
   let publisher: VgiArcgisPublisher;
 
   const env = { ...process.env };
@@ -90,7 +91,7 @@ describe('VgiArcgisPublisher', () => {
     process.env.VGI_ARCGIS_CLIENT_ID = 'client-id';
     process.env.VGI_ARCGIS_CLIENT_SECRET = 'client-secret';
 
-    jest.spyOn(global, 'fetch').mockImplementation(async (input, init) => {
+    vi.spyOn(global, 'fetch').mockImplementation(async (input, init) => {
       const url = String(input).split('?')[0];
       const query = Object.fromEntries(new URL(String(input)).searchParams);
       let body: Record<string, string> = query;
@@ -121,13 +122,13 @@ describe('VgiArcgisPublisher', () => {
       return new Response(JSON.stringify(respond(call)), { status: 200 });
     });
 
-    findOne = jest.fn(() => Promise.resolve(saved()));
-    find = jest.fn(() => Promise.resolve([saved()]));
+    findOne = vi.fn(() => Promise.resolve(saved()));
+    find = vi.fn(() => Promise.resolve([saved()]));
     publisher = new VgiArcgisPublisher({ findOne, find } as never);
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
     process.env = { ...env };
   });
 

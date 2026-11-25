@@ -1,3 +1,4 @@
-img#geosat {
-  background-color: '#500000';
-}
+// Deliberately empty. It held one rule, `img#geosat { background-color: '#500000'; }`, which was broken twice over
+// (#3337): the quoted string is not a colour, so the browser dropped the declaration, and this page has no element
+// with that id in the first place - its sponsors are the Geography and GeoInnovation logos. The Light Pole Challenge
+// page, which does have the GEOSAT logo, carried the same broken rule and is where the fix went.

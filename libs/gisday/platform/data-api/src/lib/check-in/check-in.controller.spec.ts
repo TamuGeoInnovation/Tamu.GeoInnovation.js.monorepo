@@ -17,12 +17,12 @@ describe('CheckInController', () => {
   let app: INestApplication;
   let url: string;
   let permissions: Array<string>;
-  const dashboard = { getSeason: jest.fn().mockResolvedValue({ events: [], made: [], unreadAccounts: 0 }) };
+  const dashboard = { getSeason: vi.fn().mockResolvedValue({ events: [], made: [], unreadAccounts: 0 }) };
   const provider = {
-    insertUserCheckin: jest.fn(),
-    insertAttendeeCheckin: jest.fn(),
-    getCheckInCode: jest.fn(),
-    getCheckinsForEvent: jest.fn()
+    insertUserCheckin: vi.fn(),
+    insertAttendeeCheckin: vi.fn(),
+    getCheckInCode: vi.fn(),
+    getCheckinsForEvent: vi.fn()
   };
 
   const post = (path: string, body: object) =>
@@ -71,7 +71,9 @@ describe('CheckInController', () => {
     it("reads the season's dashboard for the admin's site", async () => {
       permissions = ['read:checkins'];
 
-      const response = await fetch(`${url}/check-ins/dashboard/season/s-1`, { headers: { Origin: 'https://gisday.tamu.edu' } });
+      const response = await fetch(`${url}/check-ins/dashboard/season/s-1`, {
+        headers: { Origin: 'https://gisday.tamu.edu' }
+      });
 
       expect(response.status).toBe(200);
       expect(dashboard.getSeason).toHaveBeenCalledWith('s-1', 'gisday.tamu.edu');
