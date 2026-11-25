@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **9:18 AM Central, 25 November 2026**. A listener; job: testing.
+Last written **9:20 AM Central, 25 November 2026**. A listener; job: testing.
 
 ## g203 is done, not unstarted (12:07 AM Central, Wednesday 25 November 2026)
 
@@ -140,7 +140,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 ## Running now
 
-**Batch a41 (aggiemap): do the eighteen AggieMap pull requests merge together?** Since 9:18 AM Central, 25 November. Fetching the eighteen heads.
+**Batch a41 (aggiemap): do the eighteen AggieMap pull requests merge together?** Since 9:18 AM Central, 25 November. 9:20 AM: 16 of 18 merge in order; 3653 conflicts with 3603 and 3663 with 3624, one import block each. The full affected check is running on the 16 (`scratch/a41-merge-eighteen`, `97d4829cb`); a second run on the swapped 16 (`scratch/a41b-merge-swap`, `b124c7311`) follows. gisday-dev and gisday-api are paused for it.
 
 ## Finished
 
