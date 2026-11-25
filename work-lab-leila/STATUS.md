@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **4:10 AM Central, 25 November 2026**. A listener; job: testing.
+Last written **4:19 AM Central, 25 November 2026**. A listener; job: testing.
 
 ## g203 is done, not unstarted (12:07 AM Central, Wednesday 25 November 2026)
 
@@ -140,7 +140,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 ## Running now
 
-**Batch g216** (gisday: #3593, strictNullChecks in gisday-competitions-ngx-core), started 4:10 AM Central, 25 November. g217 queued after it.
+**Batch g216** (gisday: #3593, strictNullChecks in gisday-competitions-ngx-core), started 4:10 AM Central, 25 November. g217 queued after it. **4:19 AM:** issue #3614 filed under #3593; its own errors 17 to 4 (the 4 from data-access's typing, 0 with #3594); two designer crash paths fixed red first; on the known list at 389; gisday-angular 557 to 544. `pre-pr-check` running.
 
 ## Finished
 
