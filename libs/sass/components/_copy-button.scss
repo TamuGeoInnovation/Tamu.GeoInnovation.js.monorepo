@@ -16,8 +16,9 @@
     outline: none;
   }
 
-  // Its span is focusable (tabindex 0), and a keyboard user had no sign that it held focus (#1001).
-  @include focus-ring;
+  // Its span is focusable (tabindex 0), and a keyboard user had no sign that it held focus (#1001). Drawn inside the
+  // button, because the copy field around it hides whatever overflows.
+  @include focus-ring($offset: -2px);
 
   &::before {
     content: attr(copy-label);
