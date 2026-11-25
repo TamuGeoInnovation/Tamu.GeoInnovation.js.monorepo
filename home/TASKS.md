@@ -1,5 +1,9 @@
 # Home machine: current tasks
 
+## g121 received (gisday), 25 November 2026
+
+- Accepted. **Q-g121-1: (a)**, the laptop has the signed-in half as g40. **Q-g121-2: (a)**, the file-picker fix stays in the #1478 pull request, which I open from `59a86ea3e`.
+
 ## Batch a46 (aggiemap: #2597, let `athleticsDevelopmentSource` be overridden - two of the three, not three; 25 November 2026, 1:20 PM Central, from `work (aggiemap)`) (Medium) - **now**
 
 **a45 is accepted and open as [PR 3676](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3676).**
