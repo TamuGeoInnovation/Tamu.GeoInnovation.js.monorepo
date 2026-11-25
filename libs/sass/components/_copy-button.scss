@@ -16,6 +16,9 @@
     outline: none;
   }
 
+  // Its span is focusable (tabindex 0), and a keyboard user had no sign that it held focus (#1001).
+  @include focus-ring;
+
   &::before {
     content: attr(copy-label);
     font-size: 0.6rem;
