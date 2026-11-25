@@ -1,5 +1,23 @@
 # Home machine: current tasks
 
+## Batch g116 (gisday: #1669 then #1478, GIS Day on OnPush, then zoneless; 25 November 2026, about 12:15 AM Central, from `work (gisday)`) (Medium) - **after g115**
+
+The maintainer: keep every machine busy through the backlog, and **check each issue first for being done, superseded or no longer relevant** (if so,
+say so in the report and build nothing). Both issues are claimed In Progress. This is the rest of #1977 (CI, Vitest done tonight, zoneless, OnPush).
+
+1. **[#1669](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1669), branch `chore/1669-gisday-onpush`:** read it and the
+   12 October comment on #1455 it links (the agreed approach). Remove `ChangeDetectionStrategy.Eager` from the GIS Day components (about 101 files under
+   `libs/gisday` and `apps/gisday-angular`), so they run OnPush, Angular 22's default. Where a component then fails to update (a value set from code,
+   a subscription writing a field), give it a signal or `markForCheck`, as the lab did for the Email-these-speakers tests (g201). **Prove it on the
+   local stack, signed in:** every public page and every admin page you can reach, compared with `development`, and the specs. Images only where
+   something changed. `scripts/pre-pr-check.sh` (projects: the GIS Day libraries and `gisday-angular`, `CHECK_PARALLEL=1`).
+2. **[#1478](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1478) for `gisday-angular`, branch
+   `chore/1478-gisday-zoneless`, stacked on 1:** `provideZonelessChangeDetection()` in place of `provideZoneChangeDetection` in
+   `apps/gisday-angular/src/main.ts`, `zone.js` out of its polyfills, as AggieMap did in PR #1948. The same proof on the local stack, and the
+   bundle size before and after.
+
+Priority per DIRECTOR.md (estimate, don't ask). Questions `Q-g116-<n>`. Report `home/reports/2026-11-25-g116.md`.
+
 ## Batch g115 (gisday: #3495 continued, strictNullChecks in the competitions API and the shared libraries it found; 25 November 2026, about 10:45 PM Central, from `work (gisday)`) (Medium) - **now**
 
 g114 received, thank you: its branch is going through `scripts/pre-pr-check.sh` on the work machine and opens when it exits 0.
