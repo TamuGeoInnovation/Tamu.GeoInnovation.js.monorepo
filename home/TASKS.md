@@ -24,7 +24,13 @@ have gone to that director. Of my twelve, **five I already know from your a37 sw
 
 **These are the other seven. Read-only.**
 
-`1104`, `1146`, `1429`, `1902`, `2212`, `2338`, `2612`.
+`1104`, `1146`, `1902`, `2212`, `2612`. **Five, not seven** - drop `1429` and `2338` if you have started them.
+
+**Why they came off:** the GIS Day director had already put both to the maintainer in its own list, minutes after I
+queued this. They are repo-wide issues either of us could own, so the rule is simply that the first asker keeps them -
+asking the same person the same question twice is the failure DIRECTOR.md's *one asker* rule exists to stop, and it has
+happened here before. Anything you already found on those two, put in the report anyway and I will pass it over rather
+than waste it.
 
 For each, answer three things and nothing else:
 
