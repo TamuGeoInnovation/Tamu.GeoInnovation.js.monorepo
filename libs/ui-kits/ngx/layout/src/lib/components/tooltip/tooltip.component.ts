@@ -89,11 +89,16 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
   private _$destroy: Subject<boolean> = new Subject();
 
   /**
-   * Detects if interaction clicks are within the component to reset the visibility
+   * Detects if interaction clicks are within the component to reset the visibility.
+   *
+   * A calendar or a list of times opened from inside the tooltip is drawn by Angular Material in an overlay at
+   * the end of <body>, so a click on it is a click inside the tooltip's own content, not outside it (#2583).
    */
   @HostListener('document:mousedown', ['$event'])
   public clickOutside(event) {
-    if (this.isVisible() && !this.elementRef.nativeElement.contains(event.target)) {
+    const inOverlay = event.target instanceof Element && event.target.closest('.cdk-overlay-container') !== null;
+
+    if (this.isVisible() && !inOverlay && !this.elementRef.nativeElement.contains(event.target)) {
       this.isVisible.set(false);
     }
   }

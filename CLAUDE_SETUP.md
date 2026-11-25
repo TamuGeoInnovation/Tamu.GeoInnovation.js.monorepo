@@ -49,8 +49,13 @@ gh --version
 python --version
 ```
 
-**Expect:** Docker and Git present. `gh` and `python` are used for pull requests and
-scripting.
+**Expect:** Docker, Git and `gh` present. **All three are required.** Without `gh` a machine
+can finish every phase and still be unable to open a pull request, comment on an issue or set
+its fields, which is most of the work here: on 20 October a machine did exactly that and was
+only found out after it had joined the mailbox (#2015).
+
+`python` is optional. Only `scripts/check-gis-differences.test.sh` and two `tools/` helpers
+use it; a machine without it can do everything else.
 
 Notes:
 
@@ -63,6 +68,18 @@ Notes:
 
 If Docker or Git is missing, stop and point the user at GETTING_STARTED.md Path 1, steps 2
 and 4. Do not try to install them yourself.
+
+If `gh` is missing, stop as well, and give the user these steps to run in their own terminal
+(the sign-in is interactive and opens a browser, so you cannot drive it):
+
+```
+winget install --id GitHub.cli
+gh auth login
+```
+
+In the browser page `gh auth login` opens, if **TamuGeoInnovation** is listed with an
+**Authorize** or **Grant** button, click it. Without that, `gh` can sign in but still cannot
+read or write this organization's repositories. Phase 1 proves whether it can.
 
 ## Phase 1 - GitHub access
 
@@ -92,6 +109,16 @@ gh auth status
 
 **Expect:** signed in. If not, ask the user to run `gh auth login` in their own terminal; it
 is interactive and you cannot drive it.
+
+Then that it can reach this organization, which `gh auth status` alone does not show:
+
+```
+gh api repos/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo --jq .full_name
+```
+
+**Expect:** `TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo`. An error here, with `gh auth
+status` signed in, is the missing organization grant from Phase 0: stop and ask the user for it.
+Do not carry on without `gh`; a machine that cannot open a pull request is not set up.
 
 ## Phase 2 - Clone
 

@@ -1,4 +1,5 @@
 @import 'libs/sass/mixins';
+@import 'libs/sass/variables';
 
 :host {
   display: inherit;
@@ -14,6 +15,12 @@
   filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.05));
   // The whole tile is the tap target (#3198).
   cursor: pointer;
+}
+
+// A tile reached by the keyboard shows where it is (#2588).
+:host(:focus-visible) {
+  outline: 2px solid $aggie-maroon;
+  outline-offset: 2px;
 }
 
 ::ng-deep {

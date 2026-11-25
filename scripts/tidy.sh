@@ -96,10 +96,22 @@ sweep_due() {
 # to it for good, and only a compaction gives the space back to C:. That is why 975 GB sat unnoticed for
 # months while the disk filled (#3400). Tested by scripts/tidy.test.sh.
 image_advice() {
-  local size="$1" threshold="${2:-300}"
+  local size="$1" threshold="${2:-300}" gain="${3:-}"
   awk -v s="$size" -v t="$threshold" 'BEGIN { exit !(s > t) }' || return 0
   printf 'The Docker disk image is %s GiB, over the %s GiB threshold, and removing volumes does NOT shrink it.
 ' "$size" "$threshold"
+
+  # What a compaction is worth RIGHT NOW, so the recommendation can be weighed instead of obeyed. The
+  # threshold is about the file being large; it says nothing about how much is reclaimable, and the two come
+  # apart. On 24 November 2026 a sweep that freed 13 GiB recommended the same 40-minute outage as the one
+  # that freed about 700 (#3452).
+  if [ -n "$gain" ]; then
+    printf 'This sweep freed about %s GiB inside it. A compaction takes Docker down for roughly 40 minutes on an
+' "$gain"
+    printf 'image this size, so weigh that against %s GiB before doing it now rather than at the next sweep.
+' "$gain"
+  fi
+
   printf 'To give the space back to C:, with no check running:
 '
   printf '  1. Stop Docker Desktop   2. wsl --shutdown   3. compact the image with diskpart   4. start Docker Desktop
@@ -255,7 +267,9 @@ fi
 image="${DOCKER_DISK_IMAGE:-$LOCALAPPDATA/Docker/wsl/disk/docker_data.vhdx}"
 if [ -f "$image" ]; then
   size="$(awk -v b="$(wc -c < "$image")" 'BEGIN { printf "%.0f", b / 1073741824 }')"
-  advice="$(image_advice "$size" "${TIDY_IMAGE_MAX_GB:-300}")"
+  # The same 2.7 GiB per volume the removable line above reports, so the two numbers agree.
+  gain="$(awk -v v="$volumes" 'BEGIN { printf "%.0f", v * 2.7 }')"
+  advice="$(image_advice "$size" "${TIDY_IMAGE_MAX_GB:-300}" "$gain")"
   if [ -n "$advice" ]; then
     echo
     printf '%s
