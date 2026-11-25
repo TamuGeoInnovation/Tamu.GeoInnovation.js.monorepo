@@ -1,12 +1,5 @@
 import type { Mock } from 'vitest';
-import {
-  findNearestIndex,
-  getGeolocation,
-  isCoordinatePair,
-  parseCoordinates,
-  relativeDistance,
-  TrackLocation
-} from './common-utils-geometry-generic';
+import { findNearestIndex, getGeolocation, relativeDistance, TrackLocation } from './common-utils-geometry-generic';
 
 describe('getGeolocation', () => {
   const coords = {
@@ -63,29 +56,9 @@ describe('getGeolocation', () => {
     }));
 });
 
-describe('isCoordinatePair', () => {
-  it('should return false for no comma', () => {
-    expect(isCoordinatePair('123456')).toEqual(false);
-  });
-
-  it('should return false for too many commas', () => {
-    expect(isCoordinatePair('1,234,56')).toEqual(false);
-  });
-
-  it('should return true for good input', () => {
-    expect(isCoordinatePair('1234,56')).toEqual(true);
-  });
-});
-
 describe('findNearestIndex', () => {
   it('should find nearest index', () => {
     expect(findNearestIndex({ latitude: 40, longitude: 50 }, [{ geometry: { latitude: 40, longitude: 50 } }])).toEqual(0);
-  });
-});
-
-describe('parseCoordinates', () => {
-  it('should handle valid input', () => {
-    expect(parseCoordinates('1234,56')).toEqual({ latitude: 1234, longitude: 56 });
   });
 });
 

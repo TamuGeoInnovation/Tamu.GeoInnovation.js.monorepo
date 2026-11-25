@@ -20,7 +20,7 @@ import { Angulartics2 } from 'angulartics2';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { arrowKeyControl } from '@tamu-gisc/common/utils/ui';
-import { getGeolocation, isCoordinatePair } from '@tamu-gisc/common/utils/geometry/generic';
+import { getGeolocation, parseLatLon } from '@tamu-gisc/common/utils/geometry';
 import { TemplateRenderer } from '@tamu-gisc/common/utils/string';
 
 import { SearchService, SearchResult, SearchResultItem, SearchSource } from '../../services/search.service';
@@ -257,7 +257,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       )
       .subscribe((value) => {
         if (value && value.length > 0) {
-          if (isCoordinatePair(value)) {
+          if (parseLatLon(value)) {
             // TODO: no any
             this.setSelected(value, {
               name: value,
