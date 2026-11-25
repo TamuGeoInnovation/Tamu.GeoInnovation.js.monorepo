@@ -35,8 +35,6 @@ INSERT @kept VALUES
   (N'event_sponsors', N'eventsGuid,sponsorsGuid'),
   (N'event_tags', N'eventsGuid,tagsGuid'),
   (N'events', N'guid,active,startTime,endTime,observedAttendeeStart,observedAttendeeEnd,capacity,resources,requiresRsvp,qrCode,mode,eventType,presentationType,isAcceptingRsvps,isBringYourOwnDevice,requirements,dayGuid,broadcastGuid,locationGuid,seasonGuid,checkInMinutesBefore,checkInMinutesAfter,checkInAnyTime,noSlides,judgedCompetition,judgingClosed'),
-  (N'initial_survey_questions', N'guid,questionText,questionOptions,questionTypeGuid'),
-  (N'initial_survey_responses', N'guid,seasonGuid,questionGuid'),
   (N'organizations', N'guid,seasonGuid,acronym'),
   (N'place_links', N'guid,label,url,placeGuid'),
   (N'places', N'guid,name,address,city,state,zip,website,seasonGuid,visibilitySettings'),
@@ -66,7 +64,7 @@ INSERT @kept VALUES
   (N'tags', N'guid,name,seasonGuid'),
   (N'universities', N'guid,name,acronym,hexTriplet,seasonGuid'),
   (N'user_classes', N'guid,classGuid'),
-  (N'user_info', N'guid,fieldOfStudy,classification,participantType,hasCompletedInitialSurvey'),
+  (N'user_info', N'guid,fieldOfStudy,classification,participantType'),
   (N'user_rsvps', N'guid,eventGuid,rsvpTypeGuid'),
   (N'vgi_forms', N'guid,source,model'),
   (N'vgi_seasons', N'guid,allowSubmissions,seasonGuid,formGuid,scoringOpensAt,scoringClosesAt'),
@@ -94,7 +92,6 @@ DECLARE @account nvarchar(max) =
          ELSE N''local|'' + LOWER(REPLACE(CONVERT(nvarchar(36), NEWID()), N''-'', N'''')) END';
 INSERT @scrubbed VALUES
   (N'checkins', N'accountGuid', @account),
-  (N'initial_survey_responses', N'accountGuid', @account),
   -- A trail challenge winner, by account (#3239).
   (N'season_winners', N'accountGuid', @account),
   (N'speakers', N'accountGuid', @account),
@@ -198,7 +195,6 @@ INSERT @scrubbed VALUES
   (N'submissions', N'link', N'N''https://example.org/submission'''),
 
   (N'user_info', N'uin', N'N''000000000'''),
-  (N'initial_survey_responses', N'responseValue', N'N''Removed'''),
   (N'event_rating_responses', N'response', N'N''Removed'''),
 
   -- Participants' photographs become a one-pixel image. They are nearly all of the database's size.
