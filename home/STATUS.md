@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch a51** (#3551, construction popup dates a day early), since 12:47 PM Central, 25 November. Worktree `wt-a51`.
+- Nothing. Idle, listening.
 
 ## Finished
+- **Batch a51** (report `home/reports/2026-11-25-a51.md`, 1:19 PM Central): #3551, construction dates through a new shared `calendarDate`; red in Central time first; before/after captured. Branch `fix/3551-construction-popup-dates` at `36af9b75b`; check-in-volume and pre-pr-check Exit 0.
 - **Batch a48** (report `home/reports/2026-11-25-a48.md`, 12:43 PM Central): #3657, the retired bus API cluster deleted by reachability (−774 lines). Branch `chore/3657-remove-retired-bus-api` at `fd97037ca`; check-in-volume and pre-pr-check both Exit 0. One question.
 - **Batch a46** (report `home/reports/2026-11-25-a46.md`, 12:22 PM Central): #2597, `popupData` only (no caller needs `native`); Men's Basketball converted; every event map's sources byte-identical. Branch `refactor/2597-athletics-source-overrides` at `8578210ed`, check Exit 0. One question.
 - **Batch g121** (report `home/reports/2026-11-25-g121.md`, 12:01 PM Central): zoneless holds after #3616; the file picker's `reset()` fixed with a red-first spec, pushed on `chore/1478-gisday-zoneless-pr` at `59a86ea3e`; check Exit 0. Filed #3680. Two questions.
