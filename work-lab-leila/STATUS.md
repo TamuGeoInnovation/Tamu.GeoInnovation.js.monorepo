@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **10:04 PM Central, 24 November 2026**. A listener; job: testing.
+Last written **10:06 PM Central, 24 November 2026**. A listener; job: testing.
 
 ## Taking work again: batch g201 (9:20 PM Central, Tuesday 24 November 2026)
 
@@ -129,7 +129,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 ## Running now
 
-**Batch g201 reported** at 10:04 PM Central. Next: aggiemap's a18 (#3473), queued at the same time.
+**Batch a18** (aggiemap, #3473: one map-drawing wait, one home for the probe name), started 10:06 PM Central, 24 November. Reading the issue.
 
 ## Finished
 
