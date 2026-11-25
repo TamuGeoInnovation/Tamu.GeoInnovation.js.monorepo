@@ -14,7 +14,8 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch g107 (gisday: #2588, then #3337)** since 6:38 PM Central: #2588 first, in `C:/TAMU/wt-2588`. **#3337 is also laptop batch a13** (pushed a minute apart, same branch name): home holds off #3337 until the directors say which machine takes it.
+- **blocked: Docker stopping for disk compaction** (the maintainer, 6:50 PM Central). Batch g107 (#2588) interrupted at `e2392460e` on `fix/2588-tile-tap-target` (local, `C:/TAMU/wt-2588`, not pushed): the red tests are committed and proven red (2 failed: the tile has no `tabindex`, no role), the fix not yet written. Nothing was running when Docker stopped; volume `tamu-js-2588` was idle. Nothing starts until the maintainer says Docker is back.
+- #2588's tap part was already fixed by #3198 (PR 3199, 18 November); what is left is keyboard and screen reader use with a visible focus. #3337 stays with the laptop (a13), as both directors agreed.
 
 ## Finished
 - **Batch a11 (aggiemap: #3425 after images again)** (report `home/reports/2026-11-24-a11.md`): search image re-taken at `6d2c0f118`, each garage once; `?garage=CCG`, `?bldg=0469`, `?BldgAbbrv=CCG` all open Central Campus Parking Garage; check exit 0 (3 projects). Fork at `8d51106c8`. 5:33 to 5:38 PM Central.
