@@ -9,7 +9,6 @@ export class SettingsService {
   private storage = inject(LocalStoreService);
 
   private _Store: BehaviorSubject<CompoundSettings> = new BehaviorSubject({});
-  private readonly Store: Observable<CompoundSettings> = this._Store.asObservable();
 
   private _localStorageSettings: StorageConfig = {
     primaryKey: 'user-preferences'
@@ -412,28 +411,6 @@ export class SettingsService {
         return acc;
       }
     }, {} as SimpleSettingBranch);
-  }
-
-  /**
-   * Returns a simple settings collection for for a storage subKey (branch).
-   *
-   */
-  public getSimpleSettingsBranch(branch: string): Observable<SimpleSettingBranch> {
-    return this.Store.pipe(
-      switchMap((settings) => {
-        return of(
-          Object.keys(settings).reduce((acc, curr) => {
-            if (settings[curr].storage.subKey === branch) {
-              acc[curr] = settings[curr];
-              return acc;
-            } else {
-              return acc;
-            }
-          }, {})
-        );
-      }),
-      this.compoundToSimpleSettingsBranch$()
-    );
   }
 }
 
