@@ -29,7 +29,7 @@ export async function shrinkImage(file: File, options: ShrinkImageOptions = {}):
     return file;
   }
 
-  let bitmap: ImageBitmap;
+  let bitmap: ImageBitmap | undefined;
 
   try {
     bitmap = await decodeImage(file, maxDimension);
@@ -40,9 +40,15 @@ export async function shrinkImage(file: File, options: ShrinkImageOptions = {}):
     const canvas = document.createElement('canvas');
     canvas.width = Math.max(1, Math.round(bitmap.width * scale));
     canvas.height = Math.max(1, Math.round(bitmap.height * scale));
-    canvas.getContext('2d').drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    const context = canvas.getContext('2d');
 
-    const blob = await new Promise<Blob>((resolve) => canvas.toBlob(resolve, 'image/jpeg', quality));
+    if (!context) {
+      return file;
+    }
+
+    context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+
+    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/jpeg', quality));
 
     if (!blob) {
       return file;
