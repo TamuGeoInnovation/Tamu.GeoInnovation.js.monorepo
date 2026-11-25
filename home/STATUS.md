@@ -17,6 +17,7 @@ The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47
 - Nothing. Idle, listening.
 
 ## Finished
+- **Batch g118 (#3626, #3627 under #3593)** (report `home/reports/2026-11-25-g118.md`, 5:30 AM Central): both branches ready, pre-pr-check Exit 0. `fix/3593-gisday-common-places-shown-on` `02007235e` (PR 3637 already open); `fix/3593-gisday-platform-ngx-core-strict` `e986f3132`, 125 of 130 own errors fixed, known list 424, public pages identical. One question, Q-g118-1.
 - **Batch g117 (#3611 under #3593)** (report `home/reports/2026-11-25-g117.md`): branch ready, `fix/3593-gisday-platform-ngx-common-strict` `dbe75e4c2`, pre-pr-check Exit 0. 108 of 110 own errors fixed (2 wait on gisday-common); known list 222; one visible change (presenter initials) with images and notes.
 - **Batch g116 (#1669, #1478)** (report `home/reports/2026-11-25-g116.md`): both branch ready, pre-pr-check Exit 0. `chore/1669-gisday-onpush` (100 components, pages identical); `chore/1478-gisday-zoneless` (closes #3609; initial JS 43,674 bytes smaller). Admin pages go to the laptop (g32).
 - **Batch a27 (#602, #1173)** (report `home/reports/2026-11-25-a27.md`): branch ready, `fix/602-1173-popup-footer` `529b0b8a5`, pre-pr-check Exit 0. One shared footer; Directions on lactation, entrances, restrooms, kiosks, each routed by hand; copy links blocked on identifiers (#3555).
