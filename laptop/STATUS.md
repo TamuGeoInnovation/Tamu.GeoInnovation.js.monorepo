@@ -5,7 +5,7 @@
 
 Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
-Last batch done: g37
+Last batch done: a42
 
 ## What this is
 
@@ -36,6 +36,7 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **Nothing running.** Every batch reported; listening.
 
 ## Finished
+- **Batch a42 (aggiemap: overlaps among the open pull requests)** (report `laptop/reports/2026-11-25-a42.md`): 44 open; **25 collide on no line with anyone** (17 wholly free, 8 only on the strict list); four real clusters (8, 6, 3, 2); the strict list (12 PRs) and two clusters span both directors. Read-only. Q-a42-1 (#381), Q-a42-2.
 - **Batch g37 (gisday: #3659)** (report `laptop/reports/2026-11-25-g37.md`): **branch ready: `fix/3659-footer-no-active-season`** (`92500a242`), `pre-pr-check.sh` exit 0. With no active season the footer's Past Years are the seasons before this year; red first; before: 1 error and no Past Years, after: none and 2025, 2024, 2023, with images.
 - **Batch a32 (aggiemap: #3482, #3483)** (report `laptop/reports/2026-11-25-a32.md`): **branch ready: `refactor/3482-one-floating-label`** (`120aa6771`) and **`refactor/3483-qr-download-file`** (`111391ae6`), `pre-pr-check.sh` exit 0 each. #3482: compiled CSS byte-identical (Q-a32-1 on images). #3483: qrPng gives a data URL, so its bytes go to downloadFile; the downloaded PNG is byte-identical and decodes.
 - **Batch g36 (gisday: PR 3644's admin paths)** (report `laptop/reports/2026-11-25-g36.md`): class export with no professor and the option question with no options **fail on development and work on the branch**; the homepage with no active season is partly fixed (the footer's error, filed **#3659**); four paths not reachable or not producible, named.
