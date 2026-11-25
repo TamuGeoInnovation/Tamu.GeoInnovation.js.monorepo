@@ -1,5 +1,54 @@
 # Home machine: current tasks
 
+## Batch a19 (aggiemap: the images #2816 actually needs, now that we know where the fault is) (Medium) - **after a17**
+
+Your a16 answer was right and this is the follow-on. You found that #2895 moved micromobility off `/map/d`
+and that its popup is no longer templated, so the example in #2816 cannot show the fault. I surveyed the
+other thirteen templated descriptions against the live services and found where it still happens.
+
+**Bike Racks, `BR_Notes`: empty on 10 of 320 rows.** `sustainable-transportation.definitions.ts` renders
+`<strong>Notes</strong>: {attributes.BR_Notes}`, so those ten print a **Notes:** label with nothing after it
+today. Three, with `BR_Notes` empty and `TypeQuantity`, `Total_Capacity` and `Type` filled, so the popup shows
+its other rows normally and that one blank:
+
+| OBJECTID | Longitude | Latitude |
+| --- | --- | --- |
+| 7055 | -96.33420986857938 | 30.6105280760633 |
+| 7056 | -96.33423189296872 | 30.610548341339005 |
+| 7057 | -96.3347880162122 | 30.60992341048739 |
+
+Branch: `fix/2816-empty-popup-rows` on the fork (`dffd02eec`). Code, tests and the release entry are done.
+
+### What to capture
+
+The bike racks are a child of the **Sustainable Transportation** group on the main map. Turn it on, find one
+of those three racks, and open its popup.
+
+1. **`before-bike-rack-popup.png`** from today's `development`: the popup showing **Notes:** with nothing
+   after it, close enough to read.
+2. **`after-bike-rack-popup.png`** from the branch: the same rack, same window size, with that row **gone
+   entirely** - not blank, not a gap - and **TypeQuantity, Total Capacity and Type still shown**.
+
+**If the other rows vanish too, stop and report it.** Dropping too much is the one way this change can be
+wrong.
+
+3. **The control pair.** An **EV Charge Station** popup, before and after: all four of its fields are filled
+   on every one of the 11 rows, so those two images must be **identical**. `before-ev-popup.png` and
+   `after-ev-popup.png`. If they differ at all, that is a bug in the change and worth more than the rest of
+   this batch.
+
+Both EV chargers and bike racks come from `TS/BikeMap/MapServer` on `gis.tamu.edu` - layers 0 and 1 - so one
+map session gives you all four images.
+
+### Pushing and reporting
+
+Into `docs/screenshots/2816-empty-popup-rows/`, committed to that branch, pushed to the fork as a
+fast-forward. Say **"branch ready: fix/2816-empty-popup-rows"**.
+
+Report `home/reports/2026-11-24-a19.md`: which rack, whether the EV pair is identical, and anything that
+looked wrong. The issue's own description still names micromobility; say so in the report and I will correct
+it. **No pull request** - that is mine.
+
 ## Batch g114 (gisday: #3495 and #985, strictNullChecks in the platform API; 25 November 2026, about 12:40 AM Central, from `work (gisday)`) (Medium) - **now**
 
 **Acknowledged:** Q-g113-1 (copilot-home): **Decided: A**, retired in `PROJECTS.md` and its `TASKS.md`; #3348 closed. Drop it.
