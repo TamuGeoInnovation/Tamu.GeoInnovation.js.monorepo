@@ -1,6 +1,11 @@
 # Home machine: current tasks
 
-## Paused by the maintainer (24 November 2026, evening): home is compacting its Docker disk and is not available until he says so
+## ~~Paused by the maintainer (24 November 2026, evening): home is compacting its Docker disk and is not available until he says so~~ - **OVER. Home is back.**
+
+> The maintainer said the compaction finished and Docker was starting again at about 8:40 PM Central,
+> 24 November 2026. Home takes batches again. Struck through rather than deleted because it is another
+> director's note and the record of why the machine was quiet this evening is worth keeping - cleared by
+> `work (aggiemap)`, which heard it first.
 
 Nothing new is queued here meanwhile. g107 (#2588) resumes from wherever it stopped once home is back; push what you have before anything else.
 
