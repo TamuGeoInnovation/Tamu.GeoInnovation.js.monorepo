@@ -22,8 +22,8 @@ class PageComponent {}
  */
 describe('startSignIn, the /login and /signup routes', () => {
   function setUp(signedIn = false) {
-    const login = jest.fn();
-    const logout = jest.fn();
+    const login = vi.fn();
+    const logout = vi.fn();
 
     TestBed.configureTestingModule({
       providers: [
@@ -36,7 +36,7 @@ describe('startSignIn, the /login and /signup routes', () => {
           { path: 'logout', canActivate: [logOut], children: [] }
         ]),
         { provide: AuthService, useValue: { login, logout, isAuthenticated$: of(signedIn) } },
-        { provide: ModalService, useValue: { open: jest.fn(() => of(true)) } },
+        { provide: ModalService, useValue: { open: vi.fn(() => of(true)) } },
         { provide: GISDAY_SITE, useValue: gisdaySite('tamu') }
       ]
     });

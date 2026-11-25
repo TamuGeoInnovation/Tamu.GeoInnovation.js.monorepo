@@ -63,7 +63,7 @@ describe.each([
   }
 
   beforeEach(() => {
-    URL.createObjectURL = jest.fn(() => 'blob:chosen-logo');
+    URL.createObjectURL = vi.fn(() => 'blob:chosen-logo');
   });
 
   it('draws no broken image, and shows its icon, before a logo is chosen', () => {

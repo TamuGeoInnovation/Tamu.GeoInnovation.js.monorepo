@@ -20,10 +20,10 @@ describe('BroadcastAddEditFormComponent', () => {
   function create(type: 'create' | 'edit', broadcast?: Subject<object>) {
     const service = {
       getEntity: () => broadcast,
-      createEntity: jest.fn(() => of({})),
-      updateEntity: jest.fn(() => of({}))
+      createEntity: vi.fn(() => of({})),
+      updateEntity: vi.fn(() => of({}))
     };
-    const toast = jest.fn();
+    const toast = vi.fn();
 
     TestBed.configureTestingModule({
       providers: [

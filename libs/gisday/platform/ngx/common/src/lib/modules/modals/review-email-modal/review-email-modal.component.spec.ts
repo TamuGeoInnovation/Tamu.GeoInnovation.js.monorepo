@@ -35,7 +35,7 @@ describe('ReviewEmailModalComponent, an editable subject', () => {
   };
 
   function open(editableSubject: boolean) {
-    const close = jest.fn();
+    const close = vi.fn();
 
     TestBed.configureTestingModule({
       imports: [ReviewEmailModalComponent],
@@ -105,7 +105,7 @@ describe('ReviewEmailModalComponent, people not emailed', () => {
             })
           }
         },
-        { provide: ModalRefService, useValue: { close: jest.fn() } },
+        { provide: ModalRefService, useValue: { close: vi.fn() } },
         NO_SENDERS
       ]
     });
@@ -158,7 +158,7 @@ describe('ReviewEmailModalComponent, Markdown', () => {
             })
           }
         },
-        { provide: ModalRefService, useValue: { close: jest.fn() } },
+        { provide: ModalRefService, useValue: { close: vi.fn() } },
         NO_SENDERS
       ]
     });
@@ -206,7 +206,7 @@ describe('ReviewEmailModalComponent, the email design', () => {
             })
           }
         },
-        { provide: ModalRefService, useValue: { close: jest.fn() } },
+        { provide: ModalRefService, useValue: { close: vi.fn() } },
         { provide: GISDAY_SITE, useValue: gisdaySite(site) },
         {
           provide: ContactService,
@@ -282,7 +282,7 @@ describe('ReviewEmailModalComponent, speakers with no address', () => {
             })
           }
         },
-        { provide: ModalRefService, useValue: { close: jest.fn() } },
+        { provide: ModalRefService, useValue: { close: vi.fn() } },
         NO_SENDERS
       ]
     });
@@ -335,7 +335,7 @@ describe('ReviewEmailModalComponent, Send as', () => {
   ];
 
   function open(senders: object) {
-    const close = jest.fn();
+    const close = vi.fn();
 
     TestBed.configureTestingModule({
       imports: [ReviewEmailModalComponent],
@@ -430,7 +430,7 @@ describe('ReviewEmailModalComponent, choosing speakers', () => {
   ];
 
   function open(kind: string, extra: object = {}) {
-    const close = jest.fn();
+    const close = vi.fn();
 
     TestBed.configureTestingModule({
       imports: [ReviewEmailModalComponent],
@@ -685,7 +685,7 @@ describe('ReviewEmailModalComponent, who was sent it before', () => {
             })
           }
         },
-        { provide: ModalRefService, useValue: { close: jest.fn() } },
+        { provide: ModalRefService, useValue: { close: vi.fn() } },
         NO_SENDERS
       ]
     });
@@ -756,7 +756,7 @@ describe('ReviewEmailModalComponent, a preview that fails', () => {
       imports: [ReviewEmailModalComponent],
       providers: [
         { provide: MODAL_DATA, useValue: { verb: 'Send profile email', preview: throwError(() => error) } },
-        { provide: ModalRefService, useValue: { close: jest.fn() } },
+        { provide: ModalRefService, useValue: { close: vi.fn() } },
         NO_SENDERS
       ]
     });

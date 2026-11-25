@@ -16,8 +16,8 @@ import { ClassAddEditFormComponent, sectionsFrom } from './class-add-edit-form.c
 describe('ClassAddEditFormComponent, creating', () => {
   function create(refuse: Array<string> = []) {
     const created: Array<Partial<Class>> = [];
-    const toast = jest.fn();
-    const navigate = jest.fn();
+    const toast = vi.fn();
+    const navigate = vi.fn();
 
     TestBed.configureTestingModule({
       providers: [

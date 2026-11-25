@@ -1,3 +1,5 @@
+import type { Mock } from 'vitest';
+import { webcrypto } from 'node:crypto';
 import { TestBed, fakeAsync, flushMicrotasks, tick } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpEventType } from '@angular/common/http';
@@ -16,9 +18,9 @@ import { SubmissionComponent, submissionFailureMessage, uploadMayBeRetried } fro
  */
 describe('SubmissionComponent', () => {
   let watchers: Array<{ ok: (p: unknown) => void; fail: (e: unknown) => void }>;
-  let toast: jest.Mock;
-  let preset: jest.Mock;
-  let postSubmission: jest.Mock;
+  let toast: Mock;
+  let preset: Mock;
+  let postSubmission: Mock;
 
   const formModel = {
     allowSubmissions: true,
@@ -57,26 +59,26 @@ describe('SubmissionComponent', () => {
   beforeEach(() => {
     // jsdom may not have crypto.randomUUID, which a phone's browser does.
     if (typeof globalThis.crypto?.randomUUID !== 'function') {
-      Object.defineProperty(globalThis, 'crypto', { value: jest.requireActual('crypto').webcrypto, configurable: true });
+      Object.defineProperty(globalThis, 'crypto', { value: webcrypto, configurable: true });
     }
 
     watchers = [];
     (navigator as unknown as { geolocation: unknown }).geolocation = {
-      watchPosition: jest.fn((ok, fail) => watchers.push({ ok, fail }) - 1),
-      clearWatch: jest.fn()
+      watchPosition: vi.fn((ok, fail) => watchers.push({ ok, fail }) - 1),
+      clearWatch: vi.fn()
     };
 
-    toast = jest.fn();
-    preset = jest.fn();
-    postSubmission = jest.fn(() => of({ type: HttpEventType.Response }));
+    toast = vi.fn();
+    preset = vi.fn();
+    postSubmission = vi.fn(() => of({ type: HttpEventType.Response }));
 
     TestBed.configureTestingModule({
       imports: [SubmissionComponent],
       providers: [
         { provide: NotificationService, useValue: { toast, preset } },
-        { provide: Angulartics2, useValue: { eventTrack: { next: jest.fn() } } },
+        { provide: Angulartics2, useValue: { eventTrack: { next: vi.fn() } } },
         { provide: SubmissionService, useValue: { postSubmission } },
-        { provide: Router, useValue: { navigate: jest.fn() } },
+        { provide: Router, useValue: { navigate: vi.fn() } },
         { provide: ActivatedRoute, useValue: {} }
       ]
     });
@@ -224,15 +226,15 @@ describe('SubmissionComponent', () => {
    * location up by itself once it is allowed.
    */
   describe('location permission', () => {
-    let status: { state: PermissionState; addEventListener: jest.Mock; removeEventListener: jest.Mock };
+    let status: { state: PermissionState; addEventListener: Mock; removeEventListener: Mock };
 
     /**
      * Gives the browser a Permissions API that answers `state` for the location, as Safari 16 and
      * later and Chrome do.
      */
     const permission = (state: PermissionState) => {
-      status = { state, addEventListener: jest.fn(), removeEventListener: jest.fn() };
-      Object.defineProperty(navigator, 'permissions', { value: { query: jest.fn(() => Promise.resolve(status)) }, configurable: true });
+      status = { state, addEventListener: vi.fn(), removeEventListener: vi.fn() };
+      Object.defineProperty(navigator, 'permissions', { value: { query: vi.fn(() => Promise.resolve(status)) }, configurable: true });
     };
 
     /**
@@ -243,11 +245,11 @@ describe('SubmissionComponent', () => {
       status.addEventListener.mock.calls.filter(([type]) => type === 'change').forEach(([, listener]) => listener());
     };
 
-    const userAgent = (value: string) => jest.spyOn(navigator, 'userAgent', 'get').mockReturnValue(value);
+    const userAgent = (value: string) => vi.spyOn(navigator, 'userAgent', 'get').mockReturnValue(value);
 
     afterEach(() => {
       delete (navigator as unknown as { permissions?: unknown }).permissions;
-      jest.restoreAllMocks();
+      vi.restoreAllMocks();
     });
 
     it('does not ask for the location when the site is already blocked, and says so', async () => {
@@ -471,7 +473,7 @@ describe('SubmissionComponent', () => {
 
     beforeEach(() => {
       // jsdom has no object URLs, which the photo's preview is drawn from.
-      URL.createObjectURL = jest.fn(() => 'blob:preview');
+      URL.createObjectURL = vi.fn(() => 'blob:preview');
     });
 
     it.each([

@@ -89,7 +89,7 @@ function said<F extends Form>(
   answer: () => Observable<unknown>,
   act: (form: F) => void
 ): Array<Toast> {
-  const toast = jest.fn();
+  const toast = vi.fn();
 
   TestBed.resetTestingModule();
   TestBed.overrideComponent(page, { set: { template: '', imports: [] } });

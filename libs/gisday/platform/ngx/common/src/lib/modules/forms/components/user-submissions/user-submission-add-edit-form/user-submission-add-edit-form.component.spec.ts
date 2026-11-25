@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
@@ -24,12 +25,12 @@ describe('UserSubmissionAddEditFormComponent, on Texas A&M site', () => {
     submissionType: 'poster',
     season: null
   };
-  let toast: jest.Mock;
-  let createEntity: jest.Mock;
+  let toast: Mock;
+  let createEntity: Mock;
 
   function render(type: 'create' | 'edit') {
-    toast = jest.fn();
-    createEntity = jest.fn(() => of({}));
+    toast = vi.fn();
+    createEntity = vi.fn(() => of({}));
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
@@ -193,12 +194,12 @@ describe('UserSubmissionAddEditFormComponent, the competitions it offers', () =>
           useValue: {
             getEntity: () => of({ guid: 'sub-1', title: 'Old', participants: [], reviewed: false, submissionType, season }),
             getFiles: () => of([]),
-            createEntity: jest.fn(() => of({}))
+            createEntity: vi.fn(() => of({}))
           }
         },
         { provide: SubmissionTypeService, useValue: { getEntities: () => of([]) } },
         { provide: SeasonService, useValue: { getActiveSeason: () => of({ guid: 'season', ...season }) } },
-        { provide: NotificationService, useValue: { toast: jest.fn() } },
+        { provide: NotificationService, useValue: { toast: vi.fn() } },
         { provide: AuthService, useValue: { user$: of({ given_name: 'Ana', family_name: 'Ruiz', email: 'ana@example.edu' }) } }
       ]
     });

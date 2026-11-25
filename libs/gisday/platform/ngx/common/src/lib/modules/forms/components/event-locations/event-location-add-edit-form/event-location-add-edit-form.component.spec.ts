@@ -9,8 +9,8 @@ import { EventLocationAddEditFormComponent } from './event-location-add-edit-for
 
 // The zone's map is Esri's, which jsdom cannot draw. It is stood in for by a component with the same selector,
 // inputs and output, so what is asked here is what the form gives the map and what it does with the map's answer.
-jest.mock('@tamu-gisc/maps/esri', () => {
-  const { Component, EventEmitter, Input, Output } = jest.requireActual('@angular/core');
+vi.mock('@tamu-gisc/maps/esri', async () => {
+  const { Component, EventEmitter, Input, Output } = await import('@angular/core');
 
   @Component({ selector: 'tamu-gisc-polygon-editor', template: '' })
   class PolygonEditorComponent {
@@ -37,8 +37,8 @@ describe('EventLocationAddEditFormComponent', () => {
     const se = '30.612, -96.341';
 
     function create() {
-      const createEntity = jest.fn().mockReturnValue(of({}));
-      const toast = jest.fn();
+      const createEntity = vi.fn().mockReturnValue(of({}));
+      const toast = vi.fn();
 
       TestBed.configureTestingModule({
         providers: [
@@ -140,7 +140,7 @@ describe('EventLocationAddEditFormComponent', () => {
             useValue: { getEntitiesForActiveSeason: () => of([{ guid: 'place', name: 'Texas A&M University' }]) }
           },
           { provide: SeasonService, useValue: { activeSeason$: of({ guid: 'season' }) } },
-          { provide: NotificationService, useValue: { toast: jest.fn() } }
+          { provide: NotificationService, useValue: { toast: vi.fn() } }
         ]
       });
 
@@ -180,7 +180,7 @@ describe('EventLocationAddEditFormComponent', () => {
           { provide: LocationService, useValue: { getEntity: () => of(venue) } },
           { provide: PlaceService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
           { provide: SeasonService, useValue: { activeSeason$: of({ guid: 'season' }) } },
-          { provide: NotificationService, useValue: { toast: jest.fn() } }
+          { provide: NotificationService, useValue: { toast: vi.fn() } }
         ]
       });
 

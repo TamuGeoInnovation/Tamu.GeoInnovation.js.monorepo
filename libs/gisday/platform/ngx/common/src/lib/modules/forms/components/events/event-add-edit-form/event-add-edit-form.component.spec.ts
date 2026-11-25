@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { NEVER, firstValueFrom, of } from 'rxjs';
@@ -23,7 +24,7 @@ import { ReviewEmailModalComponent } from '../../../../modals/review-email-modal
 
 /** The judging routes as the form reads them (#3183): a session with no judging yet. */
 function judgingService(judging: object = { judgedCompetition: null, judgingClosed: false, judges: [] }) {
-  return { eventJudging: jest.fn(() => of(judging)) };
+  return { eventJudging: vi.fn(() => of(judging)) };
 }
 
 /**
@@ -32,12 +33,12 @@ function judgingService(judging: object = { judgedCompetition: null, judgingClos
  * site had been saved with it off.
  */
 describe('EventAddEditFormComponent', () => {
-  let speakerEdits: { preview: jest.Mock; send: jest.Mock };
-  let modals: { open: jest.Mock };
+  let speakerEdits: { preview: Mock; send: Mock };
+  let modals: { open: Mock };
 
   function create(type: 'create' | 'edit', event?: object, seasonSpeakers: Array<object> = []) {
-    speakerEdits = { preview: jest.fn(() => of({ groups: [] })), send: jest.fn(() => of({ sent: [], skipped: [] })) };
-    modals = { open: jest.fn(() => of({ profile: 'Hi {edit link}', 'profile:subject': 'Profile' })) };
+    speakerEdits = { preview: vi.fn(() => of({ groups: [] })), send: vi.fn(() => of({ sent: [], skipped: [] })) };
+    modals = { open: vi.fn(() => of({ profile: 'Hi {edit link}', 'profile:subject': 'Profile' })) };
 
     TestBed.configureTestingModule({
       providers: [
@@ -49,7 +50,7 @@ describe('EventAddEditFormComponent', () => {
         { provide: LocationService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
         { provide: BroadcastService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
         { provide: EventService, useValue: { getEntity: () => of(event) } },
-        { provide: NotificationService, useValue: { toast: jest.fn() } },
+        { provide: NotificationService, useValue: { toast: vi.fn() } },
         { provide: SpeakerEditsService, useValue: speakerEdits },
         { provide: SessionFilesService, useValue: { forEvent: () => of([]) } },
         { provide: JudgingService, useValue: judgingService() },
@@ -113,8 +114,8 @@ describe('EventAddEditFormComponent', () => {
 /** #3023: the event's own "Email speakers their edit links" shows the email first, editable, as the other two places do. */
 describe('EventAddEditFormComponent, the profile email', () => {
   it("shows the email for the event's speakers first, then sends it as edited", () => {
-    const speakerEdits = { preview: jest.fn(() => of({ groups: [] })), send: jest.fn(() => of({ sent: [], skipped: [] })) };
-    const modals = { open: jest.fn(() => of({ profile: 'Hi {edit link}', 'profile:subject': 'Profile' })) };
+    const speakerEdits = { preview: vi.fn(() => of({ groups: [] })), send: vi.fn(() => of({ sent: [], skipped: [] })) };
+    const modals = { open: vi.fn(() => of({ profile: 'Hi {edit link}', 'profile:subject': 'Profile' })) };
 
     TestBed.configureTestingModule({
       providers: [
@@ -138,7 +139,7 @@ describe('EventAddEditFormComponent, the profile email', () => {
               })
           }
         },
-        { provide: NotificationService, useValue: { toast: jest.fn() } },
+        { provide: NotificationService, useValue: { toast: vi.fn() } },
         { provide: SpeakerEditsService, useValue: speakerEdits },
         { provide: SessionFilesService, useValue: { forEvent: () => of([]) } },
         { provide: JudgingService, useValue: judgingService() },
@@ -188,7 +189,7 @@ describe('EventAddEditFormComponent, the Broadcast drop-down', () => {
         { provide: LocationService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
         { provide: BroadcastService, useValue: { getEntitiesForActiveSeason: () => of(broadcasts) } },
         { provide: EventService, useValue: { getEntity: () => of(event) } },
-        { provide: NotificationService, useValue: { toast: jest.fn() } },
+        { provide: NotificationService, useValue: { toast: vi.fn() } },
         { provide: SpeakerEditsService, useValue: {} },
         { provide: SessionFilesService, useValue: { forEvent: () => of([]) } },
         { provide: JudgingService, useValue: judgingService() },
@@ -239,14 +240,14 @@ describe('EventAddEditFormComponent, the Email these speakers menu', () => {
     closesWith: object | null = { 'session-details': 'Hi {first name}', 'session-details:subject': 'Your session' }
   ) {
     const speakerEdits = {
-      preview: jest.fn(() => of({ groups: [] })),
-      send: jest.fn(() => of({ sent: [], skipped: [] })),
-      previewSessionDetails: jest.fn(() => of({ groups: [] })),
-      sendSessionDetails: jest.fn(() => of({ sent: ['Ana Abe'], skipped: [] })),
-      previewSlidesRequest: jest.fn(() => of({ groups: [] })),
-      sendSlidesRequest: jest.fn(() => of({ sent: ['Bo Bo'], skipped: [] })),
-      previewJudging: jest.fn(() => of({ groups: [] })),
-      sendJudging: jest.fn(() => of({ sent: ['Bo Bo'], skipped: [] }))
+      preview: vi.fn(() => of({ groups: [] })),
+      send: vi.fn(() => of({ sent: [], skipped: [] })),
+      previewSessionDetails: vi.fn(() => of({ groups: [] })),
+      sendSessionDetails: vi.fn(() => of({ sent: ['Ana Abe'], skipped: [] })),
+      previewSlidesRequest: vi.fn(() => of({ groups: [] })),
+      sendSlidesRequest: vi.fn(() => of({ sent: ['Bo Bo'], skipped: [] })),
+      previewJudging: vi.fn(() => of({ groups: [] })),
+      sendJudging: vi.fn(() => of({ sent: ['Bo Bo'], skipped: [] }))
     };
     // What the window gives back for each email, as the admin left it: the slides request with one speaker ticked, and
     // together asked for, which it never offers (#3113).
@@ -267,11 +268,11 @@ describe('EventAddEditFormComponent, the Email these speakers menu', () => {
       }
     };
     const modals = {
-      open: jest.fn((_component: unknown, options: { data: { verb: string } }) =>
+      open: vi.fn((_component: unknown, options: { data: { verb: string } }) =>
         of(closesWith && results[options.data.verb] ? results[options.data.verb] : closesWith)
       )
     };
-    const toasts = { toast: jest.fn() };
+    const toasts = { toast: vi.fn() };
 
     TestBed.configureTestingModule({
       providers: [
@@ -495,9 +496,9 @@ describe('EventAddEditFormComponent, the Slides section (#3093)', () => {
 
   function render(type: 'create' | 'edit', files: Array<object> = [deck]) {
     const sessionFiles = {
-      forEvent: jest.fn(() => of(files)),
-      download: jest.fn(() => of(new Blob(['x']))),
-      removeFromEvent: jest.fn(() => of(undefined))
+      forEvent: vi.fn(() => of(files)),
+      download: vi.fn(() => of(new Blob(['x']))),
+      removeFromEvent: vi.fn(() => of(undefined))
     };
 
     TestBed.configureTestingModule({
@@ -510,7 +511,7 @@ describe('EventAddEditFormComponent, the Slides section (#3093)', () => {
         { provide: LocationService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
         { provide: BroadcastService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
         { provide: EventService, useValue: { getEntity: () => of({ guid: 'event', speakers: [], tags: [] }) } },
-        { provide: NotificationService, useValue: { toast: jest.fn() } },
+        { provide: NotificationService, useValue: { toast: vi.fn() } },
         { provide: SpeakerEditsService, useValue: {} },
         { provide: SessionFilesService, useValue: sessionFiles },
         { provide: JudgingService, useValue: judgingService() },
@@ -538,7 +539,7 @@ describe('EventAddEditFormComponent, the Slides section (#3093)', () => {
     expect(name.textContent.trim()).toBe('Example watersheds.pptx');
     expect(page.querySelector('.file-detail').textContent).toContain('3.1 MB');
 
-    Object.assign(URL, { createObjectURL: jest.fn(() => 'blob:deck'), revokeObjectURL: jest.fn() });
+    Object.assign(URL, { createObjectURL: vi.fn(() => 'blob:deck'), revokeObjectURL: vi.fn() });
     name.click();
 
     expect(sessionFiles.download).toHaveBeenCalledWith('event', 'f-1');
@@ -561,7 +562,7 @@ describe('EventAddEditFormComponent, the Slides section (#3093)', () => {
       [...page.querySelectorAll<HTMLButtonElement>('button')].find((b) => b.textContent.trim() === text);
 
     it('asks on the page first, naming the file and who uploaded it, and removes nothing until told to', () => {
-      const confirm = jest.spyOn(window, 'confirm');
+      const confirm = vi.spyOn(window, 'confirm');
       const { page, sessionFiles, fixture } = render('edit', [gone]);
 
       button(page, 'Remove').click();
@@ -636,7 +637,7 @@ describe('EventAddEditFormComponent, the Judging section (#3183)', () => {
 
   function render(options: { judging?: object; site?: string; type?: 'create' | 'edit' } = {}) {
     const judging =
-      (options.judging as { eventJudging: jest.Mock }) ??
+      (options.judging as { eventJudging: Mock }) ??
       judgingService({ judgedCompetition: 'graduate-poster', judgingClosed: false, judges: ['sp-2'] });
 
     TestBed.configureTestingModule({
@@ -649,7 +650,7 @@ describe('EventAddEditFormComponent, the Judging section (#3183)', () => {
         { provide: LocationService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
         { provide: BroadcastService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
         { provide: EventService, useValue: { getEntity: () => of(event) } },
-        { provide: NotificationService, useValue: { toast: jest.fn() } },
+        { provide: NotificationService, useValue: { toast: vi.fn() } },
         { provide: SpeakerEditsService, useValue: {} },
         { provide: SessionFilesService, useValue: { forEvent: () => of([]) } },
         { provide: JudgingService, useValue: judging },
@@ -713,7 +714,7 @@ describe('EventAddEditFormComponent, the Judging section (#3183)', () => {
   });
 
   it('leaves the judges out of a save until they have been read, so it does not clear them', () => {
-    const { form } = render({ judging: { eventJudging: jest.fn(() => NEVER) } });
+    const { form } = render({ judging: { eventJudging: vi.fn(() => NEVER) } });
 
     expect(form.payload()).not.toHaveProperty('judges');
   });

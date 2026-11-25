@@ -14,7 +14,7 @@ describe('SponsorAddEditFormComponent', () => {
   // "Delete Sponsor" was reported to send the DELETE twice for one click (#2205).
   describe('Delete Sponsor', () => {
     function create() {
-      const deleteEntity = jest.fn().mockReturnValue(of({}));
+      const deleteEntity = vi.fn().mockReturnValue(of({}));
 
       TestBed.configureTestingModule({
         providers: [
@@ -136,7 +136,7 @@ describe('SponsorAddEditFormComponent', () => {
     });
 
     function create(type: 'create' | 'edit') {
-      const toast = jest.fn();
+      const toast = vi.fn();
 
       TestBed.configureTestingModule({
         providers: [
@@ -191,7 +191,7 @@ describe('SponsorAddEditFormComponent', () => {
           },
           { provide: AssetsService, useValue: { getAssetUrl: () => of(null) } },
           { provide: SeasonService, useValue: { activeSeason$: of({ guid: 'season' }) } },
-          { provide: NotificationService, useValue: { toast: jest.fn() } }
+          { provide: NotificationService, useValue: { toast: vi.fn() } }
         ]
       });
 
