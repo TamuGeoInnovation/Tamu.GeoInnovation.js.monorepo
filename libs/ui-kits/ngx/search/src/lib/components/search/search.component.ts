@@ -19,7 +19,7 @@ import { Angulartics2 } from 'angulartics2';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { arrowKeyControl } from '@tamu-gisc/common/utils/ui';
+import { KeyboardNavigationDirective } from '@tamu-gisc/ui-kits/ngx/interactions/keyboard';
 import { getGeolocation, isCoordinatePair } from '@tamu-gisc/common/utils/geometry/generic';
 import { TemplateRenderer } from '@tamu-gisc/common/utils/string';
 
@@ -32,9 +32,14 @@ import { NgClass, AsyncPipe, TitleCasePipe } from '@angular/common';
   styleUrls: ['./search.component.scss'],
   providers: [SearchService],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgClass, AsyncPipe, TitleCasePipe]
+  imports: [NgClass, AsyncPipe, TitleCasePipe, KeyboardNavigationDirective]
 })
 export class SearchComponent implements OnInit, OnDestroy {
+  private static nextListId = 0;
+
+  /** The results list's id, which the box names in aria-controls: one per search, as two can share a page. */
+  public readonly listId = `search-results-${SearchComponent.nextListId++}`;
+
   private cd = inject(ChangeDetectorRef);
   private analytics = inject(Angulartics2);
   private ns = inject(NotificationService);
@@ -408,15 +413,6 @@ export class SearchComponent implements OnInit, OnDestroy {
 
     // Emit search result object to be consumed by parent component
     this.result.emit(selection);
-  }
-
-  /**
-   * Function wrapper for custom drop down element arrow navigation.
-   *
-   * See child function documentation for parameter descriptions.
-   */
-  public keyControl(e: KeyboardEvent, action: string, target: string): void {
-    arrowKeyControl(e, action, target);
   }
 
   /**

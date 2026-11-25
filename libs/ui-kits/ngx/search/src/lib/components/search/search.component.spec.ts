@@ -131,7 +131,9 @@ describe('SearchComponent: the arrow keys', () => {
   const results = () => Array.from(fixture.nativeElement.querySelectorAll('.result-item .focusable')) as HTMLElement[];
   const press = (key: 'ArrowDown' | 'ArrowUp') => {
     const legacy = { ArrowDown: 40, ArrowUp: 38 }[key];
-    (document.activeElement as HTMLElement).dispatchEvent(new KeyboardEvent('keydown', { key, keyCode: legacy, bubbles: true }));
+    (document.activeElement as HTMLElement).dispatchEvent(
+      new KeyboardEvent('keydown', { key, keyCode: legacy, bubbles: true })
+    );
     fixture.detectChanges();
   };
 

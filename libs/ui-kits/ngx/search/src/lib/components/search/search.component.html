@@ -1,6 +1,5 @@
 <div>
-  <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -- Not a tab stop itself: its keydown handles the keys of the input inside it. -->
-  <div class="input-action-container" (keydown)="keyControl($event, 'focus', '.focusable')">
+  <div class="input-action-container">
     @if (leftActionIcon()) {
     <i class="action-icons material-icons left" (mousedown)="setFocus(); emitLeftActionEvent()">{{ leftActionIcon() }}</i>
     } @if (rightActionIcon() && value() && (searchStatus | async) === false) {
@@ -14,11 +13,12 @@
     </div>
     }
 
-    <input #search type="text" (keyup)="change($event)" (keydown.escape)="loseFocus()" (focus)="setFocus()" (blur)="loseFocus()" [value]="value()" [placeholder]="placeholder()" aria-owns="search-results-container" aria-autocomplete="both" aria-autocomplete="list" role="textbox" [ngClass]="{ 'margin-left': leftActionIcon(), 'margin-right': rightActionIcon() }" />
+    <input #search type="text" (keyup)="change($event)" (keydown.escape)="loseFocus()" (focus)="setFocus()" (blur)="loseFocus()" [value]="value()" [placeholder]="placeholder()" [attr.aria-controls]="listId" aria-autocomplete="both" aria-autocomplete="list" role="textbox" [ngClass]="{ 'margin-left': leftActionIcon(), 'margin-right': rightActionIcon() }" />
   </div>
 
-  <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -- Not a tab stop itself: its keydown handles the keys of the options inside it, which take focus. -->
-  <div class="search-results-container" role="listbox" (keydown)="keyControl($event, 'focus', '.focusable')">
+  <!-- The arrow keys, from the box and in the list, are the shared keyboard navigation's (#3471); the box names this list with
+       aria-controls, by an id of its own, as two searches can share a page (the trip planner's). -->
+  <div class="search-results-container" role="listbox" [id]="listId" keyboardNavigation=".focusable" [keyboardNavigationWrap]="false">
     @if (searchActionsActive) {
     <div>
       @if (canGeolocate()) {
