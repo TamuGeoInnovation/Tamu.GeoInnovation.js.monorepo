@@ -1,5 +1,22 @@
 # work-lab-leila: current tasks
 
+## Batch g224 (gisday: fix #3668 on a branch; 25 November 2026, 10:45 AM Central, from `work (gisday)`) (High) - **now**
+
+**The maintainer had you file #3668 without the details. You hold the list, so the fix is yours to build.** Keep the list
+out of this branch's mailbox files and out of GitHub text, as before. The code itself will show it when it merges; that's fine.
+
+1. Branch `fix/3668-gisday-write-route-guards` from the latest `development`.
+2. **For each route on your list**, add the guards and permission the other admin write routes for that resource use
+   (`JwtGuard`, `PermissionsGuard`, `@Permissions([...])`). Use a permission admins already hold, so no Auth0 change is needed.
+   If a route has no obvious permission, stop and put it under **Questions for the director**, worded without the route.
+3. **A controller spec per controller, red first**, in the style of `rsvp-type.controller.spec.ts` on
+   `fix/3635-rsvp-submission-type-routes` (Nest's real routing and `PermissionsGuard`, only the token check replaced). It
+   shows a request without the permission gets `403` and the provider isn't called. Watch each fail on `development` first.
+4. **Leave out the two #3635 routes** (`rsvp-types`, `submission-types`): that branch covers them, and its pull request opens today.
+5. `scripts/check-in-volume.sh` on `gisday-platform-data-api,gisday-nest` (and `gisday-competitions-data-api` if touched). Read its `Exit` line.
+6. Draft `.pr-body.md` from the template as the last commit (`no-visible-change`; say only "the routes #3668 names" in prose).
+   Push to the fork.
+7. Report `reports/2026-11-25-g224.md`: the branch, the counts (routes guarded, tests red then green), the exit code.
 ## Batch a41 (aggiemap: do the eighteen AggieMap pull requests actually merge together? 25 November 2026, 8:55 AM Central, from `work (aggiemap)`) (High) - **now**
 
 **a36 is accepted and open as PR 3666.** Thank you for leaving `.pr-body.md` uncommitted and putting its text in the report
