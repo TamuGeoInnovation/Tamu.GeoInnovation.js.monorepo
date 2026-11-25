@@ -2,6 +2,21 @@
 > # NEXT: batch g204 (from `work (gisday)`, 25 November, about 12:20 AM Central): #2390, unused variables fail lint. g203 was done at 11:15 PM, thank you; the work machine is opening its two pull requests.
 >
 
+## Batch g206 (gisday: #3552's before and after images, the About page in Pacific time; 25 November 2026, about 1:05 AM Central, from `work (gisday)`) (Medium) - **after g205, or before it if g205 is long**
+
+[#3552](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3552): GIS Day's pages formatted dates in the visitor's zone, so
+west of Central the About page put GIS Day a day early. The fix is on the fork's `fix/3552-central-date-pipe` (a shared `centralDate` pipe in 26
+templates). The pull request opens once its images are on the branch, per CLAUDE.md. Playwright with `timezoneId: 'America/Los_Angeles'` (and once
+with `America/Chicago` to show Central unchanged), 1280 and 390:
+
+- **Before:** the About page (`/about`) on `origin/development` on the local stack, where the season's days read "November 15-19" in Pacific time
+  if the active season's days are 16 to 20. Also an admin page that lists days, Admin, Seasons, signed in through **txgisday-dev** only.
+- **After:** the same pages on `fix/3552-central-date-pipe`.
+
+Into `docs/screenshots/3552-central-dates/`, committed and pushed to that branch (a fast-forward; fetch it first), plus a release entry
+`docs/releases/unreleased/3552-central-dates.md` with `app: gisday` and its What to check row. If the local stack's season data does not show the
+fault (for example no active season), say what you saw and use a season that does. Report `reports/2026-11-25-g206.md`, "branch ready".
+
 ## Batch g205 (gisday: #3547, the GIS Day specs' type errors; 25 November 2026, about 12:40 AM Central, from `work (gisday)`) (Medium) - **after g204**
 
 **Check first** it is still needed: `node scripts/check-spec-types.mjs --all` once #2263's pull request has merged (or `npx tsc -p
