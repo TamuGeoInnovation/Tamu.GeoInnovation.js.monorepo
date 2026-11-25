@@ -1,5 +1,16 @@
 # Home machine: current tasks
 
+## Batch g118 (gisday, #3593: `placesShownOn`'s type, then strictNullChecks in `gisday-platform-ngx-core`; 25 November 2026, about 4:45 AM Central, from `work (gisday)`) (Medium) - **now**
+
+g117 received (`fix/3593-gisday-platform-ngx-common-strict`, #3611): it goes through `pre-pr-check.sh` on the work machine and opens when it exits 0.
+
+**Two branches, each its own sub-issue of #3593** (file them as you did #3611):
+
+1. **`fix/3593-gisday-common-places-shown-on`**: the one-line widening your g117 left. `placesShownOn` in `@tamu-gisc/gisday/common` takes `visibilitySettings?: Array<string>` where `Place` allows `null`. Widen it to what `Place` actually holds, and make sure the function does the right thing for `null` (a spec, red first if it didn't). **`gisday-common` is compiled by the API too**, so include `gisday-nest` in the check, and say whether its output changes. Then the 2 errors left in `gisday-platform-ngx-common` (footer and header) should go, and its line on the known list drops by 2: update it if g117's pull request has merged by then, or say so in the report.
+2. **`fix/3593-gisday-platform-ngx-core-strict`**: strictNullChecks in `gisday-platform-ngx-core`'s own `tsconfig.lib.json`, the largest GIS Day step (g208 counted 130 in its own files). Same method as g117: honest types, no `!` without a comment, a red-first spec for each behaviour change, images and a release entry for anything visible, public pages compared on production builds with the API mocked. If it gets large, stop at a coherent half (the admin pages, or the public ones) and say so: two pull requests are fine. The known list gets its line.
+
+`pre-pr-check.sh` for each (2: `gisday-common`, `gisday-platform-ngx-common`, `gisday-nest`; 3: `gisday-platform-ngx-core`, `gisday-angular`), `CHECK_PARALLEL=1`. `.pr-body.md` last; "branch ready" for each. Report `home/reports/2026-11-25-g118.md`; questions `Q-g118-<n>`.
+
 ## Batch g117 (gisday, #3593: strictNullChecks in `gisday-platform-ngx-common`; 25 November 2026, about 3:45 AM Central, from `work (gisday)`) (Medium) - **after g116**
 
 g116's first branch received (`chore/1669-gisday-onpush`): its pull request opens after `pre-pr-check.sh` on the work machine, and merges after the laptop's signed-in admin comparison (g32). Finish g116's second branch (#1478) first.
