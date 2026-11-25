@@ -1,5 +1,27 @@
 # work-lab-leila: current tasks
 
+## Decided (gisday), 4:20 AM Central, 25 November 2026
+
+- **#3495 closed** when PR 3560 merged, so the front-end steps have issues of their own now: parent **#3593** (strictNullChecks across the GIS Day front end), with **#3594** for your g211, **#3595** for g212, and **#3596** for the laptop's g33. The director's pull request branches say `Closes #3594` and `Closes #3595`; you don't need to change yours.
+- **Q-g211-1: (a).** g211's pull request adds `8 libs/gisday/competitions/ngx/data-access/tsconfig.lib.json` to `scripts/strict-lib-errors-known.txt`, because #3581's check (PR 3585) has merged. The director does that on the pull request branch.
+- **Q-g212-1: (a)**, filed as **#3597** (Low): a console check for the Geoservices pricing slider. It is batch g214 below.
+
+## Batch g213 (gisday, #3593): strictNullChecks in `ui-kits-ngx-layout`, the 45 errors g212 left on the known list (now)
+
+**Issue:** file it as a sub-issue of **#3593** first (`chore(ui-kits-ngx-layout): strictNullChecks in the shared layout library`, Task, `enhancement`, Medium, both projects, In Progress), and close it from the branch's `.pr-body.md`. A shared library, so the same rules as g212: its interface stays as it is for its callers, `affected` for the check, `CHECK_PARALLEL=1`.
+
+1. **Branch** `fix/3593-ui-kits-layout-strict` from the latest `origin/development`.
+2. Measure, fix, red-first specs for any behaviour change, as in g212. **Note that `libs/ui-kits/ngx/layout/modal` is a separate project already on the known list at 87**: say whether this step changes its count, and leave it unless it falls out for free.
+3. **The known list:** take `ui-kits-ngx-forms`' 45 off it if g212's pull request has merged and this step makes it clean, as the check will demand.
+4. `scripts/pre-pr-check.sh` (affected), `--label no-visible-change`; `.pr-body.md` last; "branch ready". Report the new `gisday-angular` count.
+
+## Batch g214 (geoservices, #3597): a console check for the pricing page's slider (after g213)
+
+1. **Branch** `test/3597-geoservices-pricing-console` from the latest `origin/development`.
+2. **Find the right home first:** whether Geoservices has an end-to-end or component spec that can render the pricing page with its slider. If it has none, a component spec of the page's slider in `geoservices-angular` that moves the range across its values and fails on a thrown error or a `console.error` is enough. Say which, and why.
+3. **Red first** on `origin/development` as it is now, if g212's fix has not merged. If it has, prove it red by reverting that fix in a scratch commit.
+4. `scripts/pre-pr-check.sh` with the Geoservices projects and `ui-kits-ngx-forms`; `.pr-body.md` last; "branch ready".
+
 ## Batch a29 (aggiemap: #3488, one analytics event helper; 25 November 2026, 2:55 AM Central, from `work (aggiemap)`) (Medium) - **after g212**
 
 **Issue: [#3488](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3488).** Code job, no servers, no sign-in. About thirty copies of the same analytics payload.
