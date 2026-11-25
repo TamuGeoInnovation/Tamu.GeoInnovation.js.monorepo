@@ -1,5 +1,6 @@
 ---
 issue: 2583
+app: aggiemap
 title: Dates and times are chosen or typed exactly, on a calendar and a list of times
 testOnDev: |
   | Date and time pickers: every key of a typed time counts ([#2583](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2583)) | AggieMap: [a trip on dev](https://dev.aggiemap.tamu.edu/map/d/trip?mode=1&stops=30.6150,-96.3500@30.6150,-96.3300), then Leave now, changed to Leave at. GIS Day is not on dev ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)); on production after release, as an admin: [VGI Competition, Form Designer](https://txgisday.org/admin/competitions/designer) | Open the picker: a date field with a calendar button and a time field with a clock button. Choose a date from the calendar: the picker stays open. Type a time such as 11:30 AM and press Enter: 11:30 is set, not 11:03. In the Designer, the Central-time line under "Submissions stop counting at" shows exactly the time chosen, and Save keeps it. GIS Day event times still open their list of times at once |
