@@ -18,7 +18,7 @@ is development-only for the same reason. Every run says this in its first line a
 run is never taken for a test of production.
 
 ```bash
-MSYS_NO_PATHCONV=1 docker run --rm -v "C:/TAMU/<checkout>:/repo" -w /repo node:24.22.1 \
+MSYS_NO_PATHCONV=1 docker run --rm -v "C:/TAMU/<checkout>:/repo" -w /repo node:24.22.3 \
   node tools/network-detour/run.mjs quick
 ```
 

@@ -156,7 +156,7 @@ full reservation, invisible unless you look for it. Find it by its **volume**, n
 your own - two checks running at once give you two anonymous containers, and guessing kills someone else's run:
 
 ```bash
-docker ps --filter ancestor=node:24.22.1
+docker ps --filter ancestor=node:24.22.3
 docker inspect --format '{{.Name}} | {{range .Mounts}}{{.Name}} {{end}}' <id>   # tamu-js-<issue> names the run
 ```
 
@@ -330,8 +330,8 @@ bind-mounts the source, so edits on Windows reach it, but its `node_modules` liv
 `package-lock.json` changes:
 
 ```bash
-MSYS_NO_PATHCONV=1 docker run --rm -m 16g -v "C:/TAMU/wt-<n>:/w" -v tamu-js-dev-nm:/w/node_modules -w /w node:24.22.1 npm ci --no-audit --no-fund
-MSYS_NO_PATHCONV=1 docker run -d --name aggiemap-dev -m 8g -p 4200:4200 -v "C:/TAMU/wt-<n>:/w" -v tamu-js-dev-nm:/w/node_modules -w /w -e NX_DAEMON=false -e UV_THREADPOOL_SIZE=64 -e NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data node:24.22.1 sh -c "node node_modules/nx/dist/bin/nx.js serve aggiemap-angular --host 0.0.0.0 --port 4200 --poll=2000"
+MSYS_NO_PATHCONV=1 docker run --rm -m 16g -v "C:/TAMU/wt-<n>:/w" -v tamu-js-dev-nm:/w/node_modules -w /w node:24.22.3 npm ci --no-audit --no-fund
+MSYS_NO_PATHCONV=1 docker run -d --name aggiemap-dev -m 8g -p 4200:4200 -v "C:/TAMU/wt-<n>:/w" -v tamu-js-dev-nm:/w/node_modules -w /w -e NX_DAEMON=false -e UV_THREADPOOL_SIZE=64 -e NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data node:24.22.3 sh -c "node node_modules/nx/dist/bin/nx.js serve aggiemap-angular --host 0.0.0.0 --port 4200 --poll=2000"
 ```
 
 **`UV_THREADPOOL_SIZE` and `NX_WORKSPACE_DATA_DIRECTORY` are not optional here.** `--poll=2000` keeps Node's
@@ -352,7 +352,7 @@ problem above and is not. **One volume serves every checkout, so one dev server 
 the next start in all of them.** Clear it and start again, unchanged:
 
 ```bash
-MSYS_NO_PATHCONV=1 docker run --rm -v tamu-js-dev-nm:/nm node:24.22.1 sh -c "rm -rf /nm/.vite /nm/.vite-temp"
+MSYS_NO_PATHCONV=1 docker run --rm -v tamu-js-dev-nm:/nm node:24.22.3 sh -c "rm -rf /nm/.vite /nm/.vite-temp"
 ```
 
 On 3 November the documented command then worked exactly as written, `--poll=2000` included. On 30 October a
