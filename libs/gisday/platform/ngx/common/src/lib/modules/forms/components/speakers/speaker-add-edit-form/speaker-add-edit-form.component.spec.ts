@@ -17,7 +17,10 @@ import { FileComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { shrinkImage } from '@tamu-gisc/common/utils/ui';
 
 import { SpeakerAddEditFormComponent } from './speaker-add-edit-form.component';
-// A save goes back to its list page. Any address is a page here, so that navigation resolves; under Jest a rejected// one went unnoticed, and Vitest reports it as an unhandled error (#1977).const anyPage = [{ path: '**', children: [] }];
+
+// A save goes back to its list page. Any address is a page here, so that navigation resolves; under Jest a rejected
+// one went unnoticed, and Vitest reports it as an unhandled error (#1977).
+const anyPage = [{ path: '**', children: [] }];
 
 // The browser's redraw, which jsdom cannot do: a photo comes back as a small JPEG, as `shrinkImage` makes one (#3177).
 vi.mock('@tamu-gisc/common/utils/ui', async (original) => ({

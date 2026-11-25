@@ -6,7 +6,10 @@ import { LocationService, PlaceService, SeasonService } from '@tamu-gisc/gisday/
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { EventLocationAddEditFormComponent } from './event-location-add-edit-form.component';
-// A save goes back to its list page. Any address is a page here, so that navigation resolves; under Jest a rejected// one went unnoticed, and Vitest reports it as an unhandled error (#1977).const anyPage = [{ path: '**', children: [] }];
+
+// A save goes back to its list page. Any address is a page here, so that navigation resolves; under Jest a rejected
+// one went unnoticed, and Vitest reports it as an unhandled error (#1977).
+const anyPage = [{ path: '**', children: [] }];
 
 // The zone's map is Esri's, which jsdom cannot draw. It is stood in for by a component with the same selector,
 // inputs and output, so what is asked here is what the form gives the map and what it does with the map's answer.

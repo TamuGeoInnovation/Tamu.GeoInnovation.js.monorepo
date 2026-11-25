@@ -11,7 +11,10 @@ import { AuthService } from '@tamu-gisc/common/ngx/auth';
 
 import { GISDAY_SITE } from '../../../../../site/site';
 import { UserSubmissionAddEditFormComponent } from './user-submission-add-edit-form.component';
-// A save goes back to its list page. Any address is a page here, so that navigation resolves; under Jest a rejected// one went unnoticed, and Vitest reports it as an unhandled error (#1977).const anyPage = [{ path: '**', children: [] }];
+
+// A save goes back to its list page. Any address is a page here, so that navigation resolves; under Jest a rejected
+// one went unnoticed, and Vitest reports it as an unhandled error (#1977).
+const anyPage = [{ path: '**', children: [] }];
 
 /**
  * #2968. The student's submission form named TxGIS Day on every site: on Texas A&M's it must say Texas A&M GIS Day, in the

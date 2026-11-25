@@ -36,7 +36,10 @@ import { SpeakerAddEditFormComponent } from './speakers/speaker-add-edit-form/sp
 import { SponsorAddEditFormComponent } from './sponsors/sponsor-add-edit-form/sponsor-add-edit-form.component';
 import { TagAddEditFormComponent } from './tags/tag-add-edit-form/tag-add-edit-form.component';
 import { UniversityAddEditFormComponent } from './universities/university-add-edit-form/university-add-edit-form.component';
-// A save goes back to its list page. Any address is a page here, so that navigation resolves; under Jest a rejected// one went unnoticed, and Vitest reports it as an unhandled error (#1977).const anyPage = [{ path: '**', children: [] }];
+
+// A save goes back to its list page. Any address is a page here, so that navigation resolves; under Jest a rejected
+// one went unnoticed, and Vitest reports it as an unhandled error (#1977).
+const anyPage = [{ path: '**', children: [] }];
 
 type Toast = { id: string; title: string; message: string };
 type Form = { form: { patchValue(value: object): void }; handleSubmission(): void; deleteEntity(): void; ngOnInit(): void };
