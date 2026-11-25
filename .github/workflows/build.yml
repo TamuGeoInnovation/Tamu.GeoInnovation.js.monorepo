@@ -40,10 +40,8 @@ jobs:
           # `parent` is present on a fork's push and pull_request payloads; the fallback is this repository's own
           # upstream, so the step still does the right thing if a payload ever arrives without it.
           UPSTREAM: ${{ github.event.repository.parent.full_name || 'TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo' }}
-        run: |
-          git fetch --no-tags "https://github.com/$UPSTREAM.git" \
-            '+refs/heads/development:refs/remotes/origin/development'
-          echo "origin/development is now $(git rev-parse --short origin/development) from $UPSTREAM"
+        # One line, and no `${{ }}` in it, so `scripts/check-in-volume.sh` can read lint.yml's steps (#2286).
+        run: git fetch --no-tags "https://github.com/$UPSTREAM.git" '+refs/heads/development:refs/remotes/origin/development'
 
       - name: Setup Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
