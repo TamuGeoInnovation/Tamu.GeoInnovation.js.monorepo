@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **6:31 AM Central, 25 November 2026**. A listener; job: testing.
+Last written **6:38 AM Central, 25 November 2026**. A listener; job: testing.
 
 ## g203 is done, not unstarted (12:07 AM Central, Wednesday 25 November 2026)
 
@@ -141,6 +141,8 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 ## Running now
 
 **Batch a36** (aggiemap: #2599, Ring Day and Graduation from one factory each), started 6:31 AM Central, 25 November.
+
+- 6:38 AM: snapshot of the five maps' 21 exports committed off `development` (`30795a8c2`), refactor committed (`2206970a5`), all 21 unchanged; `pre-pr-check.sh` (affected) running.
 
 ## Finished
 
