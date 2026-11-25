@@ -8,9 +8,11 @@
  *
  * Angular projects are compiled by Analog's Vite plugin and get a zoneless TestBed from
  * test/vitest-setup-angular.ts (`{ zone: true }` for one that still needs zone.js); plain TypeScript
- * projects (`{ angular: false }`) skip both.
+ * projects (`{ angular: false }`) skip both. NestJS projects (`{ swc: true }`) are compiled by SWC, which writes
+ * the decorator metadata their injection and TypeORM's columns read (#1977).
  */
 import angular from '@analogjs/vite-plugin-angular';
+import swc from 'unplugin-swc';
 import { join, relative } from 'node:path';
 import { defineConfig } from 'vitest/config';
 
@@ -26,11 +28,16 @@ export interface VitestPresetOptions {
    * test zoneless (#1478). Only for specs that still use `waitForAsync` or `fakeAsync`.
    */
   zone?: boolean;
+  /**
+   * Compile with SWC rather than Vite's own transform. Default false. For NestJS and TypeORM, which read
+   * `design:type` and `design:paramtypes`: Vite's transform does not write them as TypeScript does (#1977).
+   */
+  swc?: boolean;
 }
 
 export function vitestConfig(
   projectRoot: string,
-  { angular: isAngular = true, environment = 'jsdom', zone = false }: VitestPresetOptions = {}
+  { angular: isAngular = true, environment = 'jsdom', zone = false, swc: useSwc = false }: VitestPresetOptions = {}
 ) {
   const fromRoot = relative(workspaceRoot, projectRoot);
   // Nx sets this for every task, so each project's JUnit file is named after it, as jest-junit's
@@ -41,7 +48,13 @@ export function vitestConfig(
   return defineConfig({
     root: projectRoot,
     cacheDir: join(workspaceRoot, 'node_modules/.vite', fromRoot),
-    plugins: isAngular ? [angular({ tsconfig: join(projectRoot, 'tsconfig.spec.json') })] : [],
+    plugins: [
+      ...(isAngular ? [angular({ tsconfig: join(projectRoot, 'tsconfig.spec.json') })] : []),
+      // Decorators and their metadata from the project's tsconfig, as ES modules for Vite, as NestJS runs Vitest.
+      ...(useSwc ? [swc.vite({ tsconfigFile: join(projectRoot, 'tsconfig.spec.json'), module: { type: 'es6' } })] : [])
+    ],
+    // SWC compiles TypeScript itself; Vite's own transform would run over its output again.
+    ...(useSwc ? { oxc: false as const } : {}),
     // The workspace's `@tamu-gisc/*` paths from tsconfig.base.json, read by Vite itself.
     resolve: { tsconfigPaths: true },
     test: {
