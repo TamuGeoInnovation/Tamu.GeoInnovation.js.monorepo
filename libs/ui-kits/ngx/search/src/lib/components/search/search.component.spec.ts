@@ -1,4 +1,4 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { ChangeDetectorRef, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 
@@ -8,7 +8,7 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { SearchComponent } from './search.component';
-import { SearchResultItem, SearchService } from '../../services/search.service';
+import { SearchResult, SearchResultItem, SearchService } from '../../services/search.service';
 
 /**
  * Choosing a result closes the drop down, and the browser focusing the chosen option does not reopen it (#2844).
@@ -80,5 +80,83 @@ describe('SearchComponent: choosing a result closes the drop down', () => {
     component.setFocus();
 
     expect(component.searchResultsActive, 'the box no longer opens its list when it is focused again').toBe(true);
+  });
+});
+
+/**
+ * Walking the results with the arrow keys (#3471). Down from the box goes to the first result; down at the last one stays
+ * there; up from the first goes back to the box. The search keeps this when it moves to the shared keyboard navigation,
+ * which by default wraps round at both ends instead, as the autocomplete wants.
+ */
+describe('SearchComponent: the arrow keys', () => {
+  let fixture: ComponentFixture<SearchComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [SearchComponent],
+      providers: [
+        { provide: Angulartics2, useValue: { eventTrack: { next: vi.fn() } } },
+        { provide: NotificationService, useValue: { toast: vi.fn() } },
+        { provide: EnvironmentService, useValue: { value: vi.fn() } },
+        { provide: SearchService, useValue: { search: vi.fn(), getSources: vi.fn().mockReturnValue(of([])), store: of() } }
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(SearchComponent);
+    document.body.appendChild(fixture.nativeElement);
+    fixture.detectChanges();
+
+    // Three results showing, as after typing a search.
+    fixture.componentInstance.searchResults = new SearchResult<unknown>({
+      results: [
+        {
+          name: 'Building',
+          displayTemplate: '{{name}}',
+          features: [{ name: 'One' }, { name: 'Two' }, { name: 'Three' }],
+          breadcrumbs: { source: undefined, value: '' }
+        }
+      ]
+    });
+    fixture.componentInstance.searchResultStatus = true;
+    // The component is OnPush: results set from outside are drawn once it is marked for check.
+    fixture.componentRef.injector.get(ChangeDetectorRef).markForCheck();
+    fixture.componentInstance.setFocus();
+    fixture.detectChanges();
+  });
+
+  afterEach(() => fixture.nativeElement.remove());
+
+  const box = () => fixture.nativeElement.querySelector('input') as HTMLInputElement;
+  const results = () => Array.from(fixture.nativeElement.querySelectorAll('.result-item .focusable')) as HTMLElement[];
+  const press = (key: 'ArrowDown' | 'ArrowUp') => {
+    const legacy = { ArrowDown: 40, ArrowUp: 38 }[key];
+    (document.activeElement as HTMLElement).dispatchEvent(new KeyboardEvent('keydown', { key, keyCode: legacy, bubbles: true }));
+    fixture.detectChanges();
+  };
+
+  it('goes from the box to the first result, and stays on the last', () => {
+    expect(results()).toHaveLength(3);
+    box().focus();
+
+    press('ArrowDown');
+    expect(document.activeElement).toBe(results()[0]);
+
+    press('ArrowDown');
+    press('ArrowDown');
+    press('ArrowDown');
+    expect(document.activeElement, 'down at the last result wrapped round instead of staying').toBe(results()[2]);
+  });
+
+  it('goes back up to the box from the first result, and no further', () => {
+    expect(results()).toHaveLength(3);
+    box().focus();
+    press('ArrowDown');
+
+    press('ArrowUp');
+    expect(document.activeElement, 'up from the first result did not go back to the box').toBe(box());
+
+    press('ArrowUp');
+    expect(document.activeElement, 'up from the box moved focus').toBe(box());
   });
 });
