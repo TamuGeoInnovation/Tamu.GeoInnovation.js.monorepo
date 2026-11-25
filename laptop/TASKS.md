@@ -1,5 +1,26 @@
 # Laptop: current tasks
 
+## Batch g28 (gisday: #1977's Vitest step, the GIS Day libraries off Jest; 24 November 2026, about 10:25 PM Central, from `work (gisday)`) (Medium) - **after a14**
+
+[#1977](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1977) (and [#1479](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1479)): read both,
+and #1479's last comment, the maintainer's order of 18 October: Vitest **measured before and after**. AggieMap and UES moved in #1948 (8951a6364):
+**copy that pattern** (each project's `vitest.config.mts`, `project.json` test target, `tsconfig.spec.json`, setup file), don't invent one.
+
+Still on Jest (24 November): the eight GIS Day libraries under `libs/gisday/` (competitions data-api, ngx common/core/data-access; platform
+data-api, ngx common/core/data-access) and the two apps.
+
+**Do the four `ngx/data-access` and `ngx/common` libraries first, one branch, `chore/1977-gisday-vitest-ngx`:**
+1. **Before:** `scripts/check-in-volume.sh` on `origin/development` for those four with `BUILD_TIMES_RECORD=1`, `CHECK_PARALLEL=1`, a warm cache
+   cleared for the test target only if you can (say how you measured). Record each project's test time.
+2. Convert them. Every spec must still run: **the same number of tests before and after** per project, listed in the report. A spec that only
+   passed because of a Jest quirk gets fixed, not skipped.
+3. **After:** the same check, the same way. The table (project, tests, Jest seconds, Vitest seconds) goes in `docs/build-times.md`.
+4. Push, `.pr-body.md` from the template last, `no-visible-change`.
+
+Then, if that went cleanly, a second branch `chore/1977-gisday-vitest-core` for the two `ngx/core` libraries and the two `data-api` libraries, the
+same way. The apps last, or say why not. Stop and report if a library needs a decision (a spec that cannot run under Vitest as written).
+Questions `Q-g28-<n>`. Report `laptop/reports/2026-11-24-g28.md`.
+
 ## Batch a14 (aggiemap: #2643, then #3319; 24 November 2026, about 9:25 PM Central, written by `work (gisday)` under the AggieMap director's letter, at its request) (Medium) - **after a13**
 
 Questions go to the **AggieMap** director (`Q-a14-<n>`). Both issues are claimed In Progress on project 2. Check each against
