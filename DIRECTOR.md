@@ -381,6 +381,18 @@ directors picking the same batch number; nothing stopped them picking the same *
 3. **A batch for another director's application says so in its heading**, as a14 did ("written by `work (gisday)` under the
    AggieMap director's letter, at its request"), and is only written after asking that director. Its questions go to the owner.
 
+## No pull request opens until `scripts/pre-pr-check.sh` exits 0 (25 November 2026, the maintainer's 1A, [#3508](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3508))
+
+A listener's "branch ready" now means **`scripts/pre-pr-check.sh <branch> '<title>' .pr-body.md [projects]` exited 0**, docs-only
+changes included, and its last line is in the report and in `.pr-body.md`. It runs the pull-request checks on the drafted title and body
+(title format, a closing reference, a release-notes entry or `no-visible-change`, before/after images), the scripts' and tools' suites when
+touched, and `scripts/check-in-volume.sh`. The director that opens the pull request runs it again after merging `development` in. On
+24 November several pull requests opened red for things this catches: a docs change nobody checked, and a body with only `Refs #N`.
+
+**A test that fails on a pull request that did not touch its project is flaky**, not that pull request's fault: file it and fix it that day,
+proven by running it many times before and after (the maintainer's 2A, #3506). Re-running it and moving on is how one flaky test turns every
+pull request red at random.
+
 ## Adding a machine
 The maintainer pastes the start line on the new machine with its name and job added, for example:
 
