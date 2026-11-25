@@ -12,6 +12,8 @@
  * label, `no-visible-change`, for the same reason: a human's deliberate act, visible afterwards.
  */
 
+import { fileURLToPath } from 'node:url';
+
 import { isUserVisible } from './require-screenshots.mjs';
 
 /** An entry file: added under docs/releases/unreleased/, not its README. */
@@ -69,6 +71,7 @@ export function selfTest() {
   return failures;
 }
 
-if (process.argv[2] === '--self-test') {
+// Only when this file is the one being run: the release-notes check imports it (#1264), and must not run this one's cases.
+if (process.argv[1] === fileURLToPath(import.meta.url) && process.argv[2] === '--self-test') {
   process.exit(selfTest() === 0 ? 0 : 1);
 }
