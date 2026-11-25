@@ -1,0 +1,1716 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`April Ring Day > exports APRIL_RING_DAY_LAYERS as it always has 1`] = `
+{
+  "RD_AREAS": "ring-day-areas",
+  "RD_POIS": "ring-day-pois",
+  "RD_ROUTES": "ring-day-routes",
+}
+`;
+
+exports[`April Ring Day > exports AprilRingDayColdLayerSources as it always has 1`] = `
+[
+  {
+    "id": "ring-day-areas",
+    "listMode": "show",
+    "native": {
+      "outFields": [
+        "*",
+      ],
+    },
+    "popupComponent": {
+      "load": [Function],
+    },
+    "popupData": {
+      "description": "attributes.Notes",
+      "name": "attributes.name",
+    },
+    "title": "Ring Day Areas",
+    "type": "feature",
+    "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Ring_Day_view/FeatureServer/1",
+    "visible": true,
+  },
+  {
+    "id": "ring-day-routes",
+    "listMode": "show",
+    "native": {
+      "outFields": [
+        "*",
+      ],
+    },
+    "popupComponent": {
+      "load": [Function],
+    },
+    "popupData": {
+      "description": "attributes.description",
+      "name": "attributes.name",
+    },
+    "title": "Ring Day Routes",
+    "type": "feature",
+    "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Ring_Day_view/FeatureServer/2",
+    "visible": true,
+  },
+  {
+    "id": "ring-day-pois",
+    "listMode": "show",
+    "native": {
+      "outFields": [
+        "*",
+      ],
+    },
+    "popupComponent": {
+      "load": [Function],
+    },
+    "popupData": {
+      "description": "attributes.description",
+      "name": "attributes.name",
+    },
+    "title": "Ring Day Points of Interest",
+    "type": "feature",
+    "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Ring_Day_view/FeatureServer/0",
+    "visible": true,
+  },
+]
+`;
+
+exports[`April Ring Day > exports AprilRingDayConfiguration as it always has 1`] = `
+{
+  "applicationName": "April Ring Day Transportation Map",
+  "defaultLayerOverrides": {
+    "construction_zone-layer": {
+      "visible": false,
+    },
+  },
+  "eventDates": [
+    "2026-04-09",
+    "2026-04-10",
+  ],
+  "id": "april-ring-day",
+  "introductionText": "Get the best transportation and logistics information for April Ring Day.",
+  "mapCenter": [
+    -96.33616,
+    30.60958,
+  ],
+  "name": "April Ring Day",
+  "scheduleUrl": "https://www.aggienetwork.com/ring/ringday/",
+  "shortApplicationName": "April Ring Day Map",
+  "toast": {
+    "acknowledge": true,
+    "action": {
+      "type": "internal",
+      "value": "/events/april-ring-day",
+    },
+    "id": "april-ring-day-notification",
+    "imgAltText": "April Ring Day Icon",
+    "imgUrl": "./assets/images/icons/aggie/Ring Day-Negative.png",
+    "message": "Attending April Ring Day? Click me to open the April Ring Day Transportation Map to get the best logistics and transportation information!",
+    "title": "April Ring Day Transportation Map Available",
+  },
+  "zoom": 16,
+}
+`;
+
+exports[`April Ring Day > exports AprilRingDayEvent as it always has 1`] = `
+{
+  "configuration": {
+    "applicationName": "April Ring Day Transportation Map",
+    "defaultLayerOverrides": {
+      "construction_zone-layer": {
+        "visible": false,
+      },
+    },
+    "eventDates": [
+      "2026-04-09",
+      "2026-04-10",
+    ],
+    "id": "april-ring-day",
+    "introductionText": "Get the best transportation and logistics information for April Ring Day.",
+    "mapCenter": [
+      -96.33616,
+      30.60958,
+    ],
+    "name": "April Ring Day",
+    "scheduleUrl": "https://www.aggienetwork.com/ring/ringday/",
+    "shortApplicationName": "April Ring Day Map",
+    "toast": {
+      "acknowledge": true,
+      "action": {
+        "type": "internal",
+        "value": "/events/april-ring-day",
+      },
+      "id": "april-ring-day-notification",
+      "imgAltText": "April Ring Day Icon",
+      "imgUrl": "./assets/images/icons/aggie/Ring Day-Negative.png",
+      "message": "Attending April Ring Day? Click me to open the April Ring Day Transportation Map to get the best logistics and transportation information!",
+      "title": "April Ring Day Transportation Map Available",
+    },
+    "zoom": 16,
+  },
+  "discover": {
+    "columnKey": "spring",
+    "description": "Transportation and logistics information for April Ring Day celebrations.",
+    "id": "april-ring-day",
+    "keywords": [
+      "ring",
+      "day",
+      "aggie",
+      "ring day",
+      "transportation",
+      "parking",
+      "celebration",
+    ],
+    "name": "April Ring Day",
+    "source": "internal",
+    "type": "event",
+  },
+  "options": [
+    {
+      "choices": [
+        {
+          "label": "Aggie Ring Pickup (April 9, 2026)",
+          "mapView": {
+            "center": [
+              -96.3354,
+              30.6095,
+            ],
+            "zoom": 18,
+          },
+          "value": "day1",
+        },
+        {
+          "label": "Aggie Ring Day (April 10, 2026)",
+          "mapView": {
+            "center": [
+              -96.3405,
+              30.6088,
+            ],
+            "zoom": 17,
+          },
+          "value": "day2",
+        },
+      ],
+      "description": "Select which April Ring Day period you plan to attend to see the most relevant transportation and logistics information.",
+      "effects": {
+        "layers": [
+          {
+            "conversions": [
+              {
+                "expression": "StartDate <= date'2026-04-09' AND EndDate >= date'2026-04-09'",
+                "input": "day1",
+              },
+              {
+                "expression": "StartDate <= date'2026-04-10' AND EndDate >= date'2026-04-10'",
+                "input": "day2",
+              },
+            ],
+            "layerId": "ring-day-areas",
+          },
+          {
+            "conversions": [
+              {
+                "expression": "Start_Date <= date'2026-04-09' AND End_Date >= date'2026-04-09'",
+                "input": "day1",
+              },
+              {
+                "expression": "Start_Date <= date'2026-04-10' AND End_Date >= date'2026-04-10'",
+                "input": "day2",
+              },
+            ],
+            "layerId": "ring-day-routes",
+          },
+          {
+            "conversions": [
+              {
+                "expression": "Start_Date <= date'2026-04-09' AND End_Date >= date'2026-04-09'",
+                "input": "day1",
+              },
+              {
+                "expression": "Start_Date <= date'2026-04-10' AND End_Date >= date'2026-04-10'",
+                "input": "day2",
+              },
+            ],
+            "layerId": "ring-day-pois",
+          },
+        ],
+      },
+      "label": "Event Day",
+      "shortDescription": "Event Day",
+      "value": "event-day",
+    },
+  ],
+  "references": {
+    "RD_AREAS": "ring-day-areas",
+    "RD_POIS": "ring-day-pois",
+    "RD_ROUTES": "ring-day-routes",
+  },
+  "sources": [
+    {
+      "id": "ring-day-areas",
+      "listMode": "show",
+      "native": {
+        "outFields": [
+          "*",
+        ],
+      },
+      "popupComponent": {
+        "load": [Function],
+      },
+      "popupData": {
+        "description": "attributes.Notes",
+        "name": "attributes.name",
+      },
+      "title": "Ring Day Areas",
+      "type": "feature",
+      "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Ring_Day_view/FeatureServer/1",
+      "visible": true,
+    },
+    {
+      "id": "ring-day-routes",
+      "listMode": "show",
+      "native": {
+        "outFields": [
+          "*",
+        ],
+      },
+      "popupComponent": {
+        "load": [Function],
+      },
+      "popupData": {
+        "description": "attributes.description",
+        "name": "attributes.name",
+      },
+      "title": "Ring Day Routes",
+      "type": "feature",
+      "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Ring_Day_view/FeatureServer/2",
+      "visible": true,
+    },
+    {
+      "id": "ring-day-pois",
+      "listMode": "show",
+      "native": {
+        "outFields": [
+          "*",
+        ],
+      },
+      "popupComponent": {
+        "load": [Function],
+      },
+      "popupData": {
+        "description": "attributes.description",
+        "name": "attributes.name",
+      },
+      "title": "Ring Day Points of Interest",
+      "type": "feature",
+      "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Ring_Day_view/FeatureServer/0",
+      "visible": true,
+    },
+  ],
+  "type": "special-event",
+}
+`;
+
+exports[`April Ring Day > exports AprilRingDaySpecialEventOptions as it always has 1`] = `
+[
+  {
+    "choices": [
+      {
+        "label": "Aggie Ring Pickup (April 9, 2026)",
+        "mapView": {
+          "center": [
+            -96.3354,
+            30.6095,
+          ],
+          "zoom": 18,
+        },
+        "value": "day1",
+      },
+      {
+        "label": "Aggie Ring Day (April 10, 2026)",
+        "mapView": {
+          "center": [
+            -96.3405,
+            30.6088,
+          ],
+          "zoom": 17,
+        },
+        "value": "day2",
+      },
+    ],
+    "description": "Select which April Ring Day period you plan to attend to see the most relevant transportation and logistics information.",
+    "effects": {
+      "layers": [
+        {
+          "conversions": [
+            {
+              "expression": "StartDate <= date'2026-04-09' AND EndDate >= date'2026-04-09'",
+              "input": "day1",
+            },
+            {
+              "expression": "StartDate <= date'2026-04-10' AND EndDate >= date'2026-04-10'",
+              "input": "day2",
+            },
+          ],
+          "layerId": "ring-day-areas",
+        },
+        {
+          "conversions": [
+            {
+              "expression": "Start_Date <= date'2026-04-09' AND End_Date >= date'2026-04-09'",
+              "input": "day1",
+            },
+            {
+              "expression": "Start_Date <= date'2026-04-10' AND End_Date >= date'2026-04-10'",
+              "input": "day2",
+            },
+          ],
+          "layerId": "ring-day-routes",
+        },
+        {
+          "conversions": [
+            {
+              "expression": "Start_Date <= date'2026-04-09' AND End_Date >= date'2026-04-09'",
+              "input": "day1",
+            },
+            {
+              "expression": "Start_Date <= date'2026-04-10' AND End_Date >= date'2026-04-10'",
+              "input": "day2",
+            },
+          ],
+          "layerId": "ring-day-pois",
+        },
+      ],
+    },
+    "label": "Event Day",
+    "shortDescription": "Event Day",
+    "value": "event-day",
+  },
+]
+`;
+
+exports[`Fall Commencement > exports GraduationConfiguration as it always has 1`] = `
+{
+  "applicationName": "Fall Commencement Transportation Map",
+  "eventDates": [
+    "2026-12-11",
+    "2026-12-12",
+  ],
+  "id": "graduation-fall",
+  "introductionText": "Get the best transportation and parking information for the fall commencement ceremonies.",
+  "mapCenter": [
+    -96.34458,
+    30.60629,
+  ],
+  "name": "Fall Commencement Ceremony",
+  "scheduleUrl": "https://graduation.tamu.edu/ceremony-information/index.html",
+  "shortApplicationName": "Fall Commencement Map",
+  "zoom": 16,
+}
+`;
+
+exports[`Fall Commencement > exports GraduationFallEventTs as it always has 1`] = `
+{
+  "configuration": {
+    "applicationName": "Fall Commencement Transportation Map",
+    "eventDates": [
+      "2026-12-11",
+      "2026-12-12",
+    ],
+    "id": "graduation-fall",
+    "introductionText": "Get the best transportation and parking information for the fall commencement ceremonies.",
+    "mapCenter": [
+      -96.34458,
+      30.60629,
+    ],
+    "name": "Fall Commencement Ceremony",
+    "scheduleUrl": "https://graduation.tamu.edu/ceremony-information/index.html",
+    "shortApplicationName": "Fall Commencement Map",
+    "zoom": 16,
+  },
+  "discover": {
+    "columnKey": "fall",
+    "description": "Transportation and parking information for fall graduation ceremonies.",
+    "id": "graduation-fall",
+    "keywords": [
+      "graduation",
+      "commencement",
+      "parking",
+      "transportation",
+    ],
+    "name": "Fall Commencement Ceremony",
+    "source": "internal",
+    "type": "event",
+  },
+  "options": [
+    {
+      "choices": [
+        {
+          "label": "Friday, December 11th",
+          "value": "2026-12-11T06:00:00.000Z",
+        },
+        {
+          "label": "Saturday, December 12th",
+          "value": "2026-12-12T06:00:00.000Z",
+        },
+      ],
+      "description": "Please select the day of your commencement or commissioning ceremony to provide the most accurate transportation and parking information.",
+      "effects": {
+        "layers": [
+          {
+            "conversions": [
+              {
+                "input": "2026-12-11T06:00:00.000Z",
+                "propOverrides": {
+                  "visible": true,
+                },
+              },
+              {
+                "input": "2026-12-12T06:00:00.000Z",
+                "propOverrides": {
+                  "visible": true,
+                },
+              },
+            ],
+            "layerId": "graduation-event-parking-lots",
+          },
+        ],
+      },
+      "label": "Event Day",
+      "shortDescription": "Event Day",
+      "value": "date",
+    },
+  ],
+  "references": {
+    "GRADUATION_ACCESSIBLE_PARKING": "graduation-accessible-parking",
+    "GRADUATION_EVENT_PARKING_LOTS": "graduation-event-parking-lots",
+    "GRADUATION_ROAD_CLOSURES": "graduation-road-closed",
+    "GRADUATION_TRAFFIC_FLOW": "graduation-traffic-flow",
+  },
+  "sources": [
+    {
+      "id": "graduation-accessible-parking",
+      "listMode": "show",
+      "native": {
+        "outFields": [
+          "*",
+        ],
+      },
+      "popupComponent": {
+        "load": [Function],
+      },
+      "popupData": {
+        "description": "{attributes.description}",
+        "name": "{attributes.name}",
+      },
+      "type": "feature",
+      "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/GraduationParking_view/FeatureServer/0",
+      "visible": true,
+    },
+    {
+      "id": "graduation-traffic-flow",
+      "listMode": "show",
+      "native": {
+        "outFields": [
+          "*",
+        ],
+      },
+      "popupComponent": {
+        "load": [Function],
+      },
+      "popupData": {
+        "description": "{attributes.description}",
+        "name": "{attributes.name}",
+      },
+      "type": "feature",
+      "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/GraduationParking_view/FeatureServer/1",
+      "visible": true,
+    },
+    {
+      "id": "graduation-event-parking-lots",
+      "listMode": "show",
+      "native": {
+        "definitionExpression": "Type <> 'Closure'",
+        "labelingInfo": [
+          {
+            "labelExpressionInfo": {
+              "expression": "$feature.name",
+            },
+            "maxScale": 0,
+            "minScale": 0,
+            "symbol": {
+              "color": [
+                0,
+                0,
+                0,
+                255,
+              ],
+              "font": {
+                "family": "Open Sans Semibold",
+                "size": 10,
+                "weight": "bold",
+              },
+              "haloColor": [
+                255,
+                255,
+                255,
+                255,
+              ],
+              "haloSize": 1.5,
+              "type": "text",
+            },
+            "useCodedValues": true,
+          },
+        ],
+        "outFields": [
+          "*",
+        ],
+      },
+      "popupComponent": {
+        "load": [Function],
+      },
+      "popupData": {
+        "description": "{attributes.description}",
+        "name": "{attributes.name}",
+      },
+      "type": "feature",
+      "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/GraduationParking_view/FeatureServer/3",
+      "visible": true,
+    },
+    {
+      "id": "graduation-road-closed",
+      "listMode": "show",
+      "native": {
+        "outFields": [
+          "*",
+        ],
+      },
+      "popupComponent": {
+        "load": [Function],
+      },
+      "popupData": {
+        "description": "{attributes.description}",
+        "name": "Road Closed",
+      },
+      "type": "feature",
+      "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/GraduationParking_view/FeatureServer/2",
+      "visible": true,
+    },
+  ],
+  "type": "special-event",
+}
+`;
+
+exports[`Fall Commencement > exports GraduationOptions as it always has 1`] = `
+[
+  {
+    "choices": [
+      {
+        "label": "Friday, December 11th",
+        "value": "2026-12-11T06:00:00.000Z",
+      },
+      {
+        "label": "Saturday, December 12th",
+        "value": "2026-12-12T06:00:00.000Z",
+      },
+    ],
+    "description": "Please select the day of your commencement or commissioning ceremony to provide the most accurate transportation and parking information.",
+    "effects": {
+      "layers": [
+        {
+          "conversions": [
+            {
+              "input": "2026-12-11T06:00:00.000Z",
+              "propOverrides": {
+                "visible": true,
+              },
+            },
+            {
+              "input": "2026-12-12T06:00:00.000Z",
+              "propOverrides": {
+                "visible": true,
+              },
+            },
+          ],
+          "layerId": "graduation-event-parking-lots",
+        },
+      ],
+    },
+    "label": "Event Day",
+    "shortDescription": "Event Day",
+    "value": "date",
+  },
+]
+`;
+
+exports[`November Ring Day > exports NOVEMBER_RING_DAY_LAYERS as it always has 1`] = `
+{
+  "RD_AREAS": "ring-day-areas",
+  "RD_POIS": "ring-day-pois",
+  "RD_ROUTES": "ring-day-routes",
+}
+`;
+
+exports[`November Ring Day > exports NovemberRingDayColdLayerSources as it always has 1`] = `
+[
+  {
+    "id": "ring-day-areas",
+    "listMode": "show",
+    "native": {
+      "outFields": [
+        "*",
+      ],
+    },
+    "popupComponent": {
+      "load": [Function],
+    },
+    "popupData": {
+      "description": "attributes.Notes",
+      "name": "attributes.name",
+    },
+    "title": "Ring Day Areas",
+    "type": "feature",
+    "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Ring_Day_view/FeatureServer/1",
+    "visible": true,
+  },
+  {
+    "id": "ring-day-routes",
+    "listMode": "show",
+    "native": {
+      "outFields": [
+        "*",
+      ],
+    },
+    "popupComponent": {
+      "load": [Function],
+    },
+    "popupData": {
+      "description": "attributes.description",
+      "name": "attributes.name",
+    },
+    "title": "Ring Day Routes",
+    "type": "feature",
+    "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Ring_Day_view/FeatureServer/2",
+    "visible": true,
+  },
+  {
+    "id": "ring-day-pois",
+    "listMode": "show",
+    "native": {
+      "outFields": [
+        "*",
+      ],
+    },
+    "popupComponent": {
+      "load": [Function],
+    },
+    "popupData": {
+      "description": "attributes.description",
+      "name": "attributes.name",
+    },
+    "title": "Ring Day Points of Interest",
+    "type": "feature",
+    "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Ring_Day_view/FeatureServer/0",
+    "visible": true,
+  },
+]
+`;
+
+exports[`November Ring Day > exports NovemberRingDayConfiguration as it always has 1`] = `
+{
+  "applicationName": "November Ring Day Transportation Map",
+  "defaultLayerOverrides": {
+    "construction_zone-layer": {
+      "visible": false,
+    },
+  },
+  "eventDates": [
+    "2026-11-05",
+    "2026-11-06",
+  ],
+  "id": "november-ring-day",
+  "introductionText": "Get the best transportation and logistics information for November Ring Day.",
+  "mapCenter": [
+    -96.33616,
+    30.60958,
+  ],
+  "name": "November Ring Day",
+  "scheduleUrl": "https://www.aggienetwork.com/ring/ringday/",
+  "shortApplicationName": "November Ring Day Map",
+  "toast": {
+    "acknowledge": true,
+    "action": {
+      "type": "internal",
+      "value": "/events/november-ring-day",
+    },
+    "id": "november-ring-day-notification",
+    "imgAltText": "November Ring Day Icon",
+    "imgUrl": "./assets/images/icons/aggie/Ring Day-Negative.png",
+    "message": "Attending November Ring Day? Click me to open the November Ring Day Transportation Map to get the best logistics and transportation information!",
+    "title": "November Ring Day Transportation Map Available",
+  },
+  "zoom": 16,
+}
+`;
+
+exports[`November Ring Day > exports NovemberRingDayEvent as it always has 1`] = `
+{
+  "configuration": {
+    "applicationName": "November Ring Day Transportation Map",
+    "defaultLayerOverrides": {
+      "construction_zone-layer": {
+        "visible": false,
+      },
+    },
+    "eventDates": [
+      "2026-11-05",
+      "2026-11-06",
+    ],
+    "id": "november-ring-day",
+    "introductionText": "Get the best transportation and logistics information for November Ring Day.",
+    "mapCenter": [
+      -96.33616,
+      30.60958,
+    ],
+    "name": "November Ring Day",
+    "scheduleUrl": "https://www.aggienetwork.com/ring/ringday/",
+    "shortApplicationName": "November Ring Day Map",
+    "toast": {
+      "acknowledge": true,
+      "action": {
+        "type": "internal",
+        "value": "/events/november-ring-day",
+      },
+      "id": "november-ring-day-notification",
+      "imgAltText": "November Ring Day Icon",
+      "imgUrl": "./assets/images/icons/aggie/Ring Day-Negative.png",
+      "message": "Attending November Ring Day? Click me to open the November Ring Day Transportation Map to get the best logistics and transportation information!",
+      "title": "November Ring Day Transportation Map Available",
+    },
+    "zoom": 16,
+  },
+  "discover": {
+    "columnKey": "fall",
+    "description": "Transportation and logistics information for November Ring Day celebrations.",
+    "id": "november-ring-day",
+    "keywords": [
+      "ring",
+      "day",
+      "aggie",
+      "ring day",
+      "transportation",
+      "parking",
+      "celebration",
+    ],
+    "name": "November Ring Day",
+    "source": "internal",
+    "type": "event",
+  },
+  "options": [
+    {
+      "choices": [
+        {
+          "label": "Aggie Ring Pickup (November 5, 2026)",
+          "mapView": {
+            "center": [
+              -96.3354,
+              30.6095,
+            ],
+            "zoom": 18,
+          },
+          "value": "day1",
+        },
+        {
+          "label": "Aggie Ring Day (November 6, 2026)",
+          "mapView": {
+            "center": [
+              -96.3405,
+              30.6088,
+            ],
+            "zoom": 17,
+          },
+          "value": "day2",
+        },
+      ],
+      "description": "Select the November Ring Day period you plan to attend to see the most relevant transportation and logistics information.",
+      "effects": {
+        "layers": [
+          {
+            "conversions": [
+              {
+                "expression": "StartDate <= date'2026-11-05' AND EndDate >= date'2026-11-05'",
+                "input": "day1",
+              },
+              {
+                "expression": "StartDate <= date'2026-11-06' AND EndDate >= date'2026-11-06'",
+                "input": "day2",
+              },
+            ],
+            "layerId": "ring-day-areas",
+          },
+          {
+            "conversions": [
+              {
+                "expression": "Start_Date <= date'2026-11-05' AND End_Date >= date'2026-11-05'",
+                "input": "day1",
+              },
+              {
+                "expression": "Start_Date <= date'2026-11-06' AND End_Date >= date'2026-11-06'",
+                "input": "day2",
+              },
+            ],
+            "layerId": "ring-day-routes",
+          },
+          {
+            "conversions": [
+              {
+                "expression": "Start_Date <= date'2026-11-05' AND End_Date >= date'2026-11-05'",
+                "input": "day1",
+              },
+              {
+                "expression": "Start_Date <= date'2026-11-06' AND End_Date >= date'2026-11-06'",
+                "input": "day2",
+              },
+            ],
+            "layerId": "ring-day-pois",
+          },
+        ],
+      },
+      "label": "Event Day",
+      "shortDescription": "Event Day",
+      "value": "event-day",
+    },
+  ],
+  "references": {
+    "RD_AREAS": "ring-day-areas",
+    "RD_POIS": "ring-day-pois",
+    "RD_ROUTES": "ring-day-routes",
+  },
+  "sources": [
+    {
+      "id": "ring-day-areas",
+      "listMode": "show",
+      "native": {
+        "outFields": [
+          "*",
+        ],
+      },
+      "popupComponent": {
+        "load": [Function],
+      },
+      "popupData": {
+        "description": "attributes.Notes",
+        "name": "attributes.name",
+      },
+      "title": "Ring Day Areas",
+      "type": "feature",
+      "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Ring_Day_view/FeatureServer/1",
+      "visible": true,
+    },
+    {
+      "id": "ring-day-routes",
+      "listMode": "show",
+      "native": {
+        "outFields": [
+          "*",
+        ],
+      },
+      "popupComponent": {
+        "load": [Function],
+      },
+      "popupData": {
+        "description": "attributes.description",
+        "name": "attributes.name",
+      },
+      "title": "Ring Day Routes",
+      "type": "feature",
+      "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Ring_Day_view/FeatureServer/2",
+      "visible": true,
+    },
+    {
+      "id": "ring-day-pois",
+      "listMode": "show",
+      "native": {
+        "outFields": [
+          "*",
+        ],
+      },
+      "popupComponent": {
+        "load": [Function],
+      },
+      "popupData": {
+        "description": "attributes.description",
+        "name": "attributes.name",
+      },
+      "title": "Ring Day Points of Interest",
+      "type": "feature",
+      "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Ring_Day_view/FeatureServer/0",
+      "visible": true,
+    },
+  ],
+  "type": "special-event",
+}
+`;
+
+exports[`November Ring Day > exports NovemberRingDaySpecialEventOptions as it always has 1`] = `
+[
+  {
+    "choices": [
+      {
+        "label": "Aggie Ring Pickup (November 5, 2026)",
+        "mapView": {
+          "center": [
+            -96.3354,
+            30.6095,
+          ],
+          "zoom": 18,
+        },
+        "value": "day1",
+      },
+      {
+        "label": "Aggie Ring Day (November 6, 2026)",
+        "mapView": {
+          "center": [
+            -96.3405,
+            30.6088,
+          ],
+          "zoom": 17,
+        },
+        "value": "day2",
+      },
+    ],
+    "description": "Select the November Ring Day period you plan to attend to see the most relevant transportation and logistics information.",
+    "effects": {
+      "layers": [
+        {
+          "conversions": [
+            {
+              "expression": "StartDate <= date'2026-11-05' AND EndDate >= date'2026-11-05'",
+              "input": "day1",
+            },
+            {
+              "expression": "StartDate <= date'2026-11-06' AND EndDate >= date'2026-11-06'",
+              "input": "day2",
+            },
+          ],
+          "layerId": "ring-day-areas",
+        },
+        {
+          "conversions": [
+            {
+              "expression": "Start_Date <= date'2026-11-05' AND End_Date >= date'2026-11-05'",
+              "input": "day1",
+            },
+            {
+              "expression": "Start_Date <= date'2026-11-06' AND End_Date >= date'2026-11-06'",
+              "input": "day2",
+            },
+          ],
+          "layerId": "ring-day-routes",
+        },
+        {
+          "conversions": [
+            {
+              "expression": "Start_Date <= date'2026-11-05' AND End_Date >= date'2026-11-05'",
+              "input": "day1",
+            },
+            {
+              "expression": "Start_Date <= date'2026-11-06' AND End_Date >= date'2026-11-06'",
+              "input": "day2",
+            },
+          ],
+          "layerId": "ring-day-pois",
+        },
+      ],
+    },
+    "label": "Event Day",
+    "shortDescription": "Event Day",
+    "value": "event-day",
+  },
+]
+`;
+
+exports[`October Ring Day > exports RING_DAY_LAYERS as it always has 1`] = `
+{
+  "RD_AREAS": "ring-day-areas",
+  "RD_POIS": "ring-day-pois",
+  "RD_ROUTES": "ring-day-routes",
+}
+`;
+
+exports[`October Ring Day > exports RingDayColdLayerSources as it always has 1`] = `
+[
+  {
+    "id": "ring-day-areas",
+    "listMode": "show",
+    "native": {
+      "outFields": [
+        "*",
+      ],
+    },
+    "popupComponent": {
+      "load": [Function],
+    },
+    "popupData": {
+      "description": "attributes.Notes",
+      "name": "attributes.name",
+    },
+    "title": "Ring Day Areas",
+    "type": "feature",
+    "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Ring_Day_view/FeatureServer/1",
+    "visible": true,
+  },
+  {
+    "id": "ring-day-routes",
+    "listMode": "show",
+    "native": {
+      "outFields": [
+        "*",
+      ],
+    },
+    "popupComponent": {
+      "load": [Function],
+    },
+    "popupData": {
+      "description": "attributes.description",
+      "name": "attributes.name",
+    },
+    "title": "Ring Day Routes",
+    "type": "feature",
+    "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Ring_Day_view/FeatureServer/2",
+    "visible": true,
+  },
+  {
+    "id": "ring-day-pois",
+    "listMode": "show",
+    "native": {
+      "outFields": [
+        "*",
+      ],
+    },
+    "popupComponent": {
+      "load": [Function],
+    },
+    "popupData": {
+      "description": "attributes.description",
+      "name": "attributes.name",
+    },
+    "title": "Ring Day Points of Interest",
+    "type": "feature",
+    "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Ring_Day_view/FeatureServer/0",
+    "visible": true,
+  },
+]
+`;
+
+exports[`October Ring Day > exports RingDayConfiguration as it always has 1`] = `
+{
+  "applicationName": "October Ring Day Transportation Map",
+  "defaultLayerOverrides": {
+    "construction_zone-layer": {
+      "visible": false,
+    },
+  },
+  "eventDates": [
+    "2026-10-08",
+    "2026-10-09",
+    "2026-10-10",
+  ],
+  "id": "ring-day",
+  "introductionText": "Get the best transportation and logistics information for October Ring Day.",
+  "mapCenter": [
+    -96.33616,
+    30.60958,
+  ],
+  "name": "October Ring Day",
+  "scheduleUrl": "https://www.aggienetwork.com/ring/ringday/",
+  "shortApplicationName": "October Ring Day Map",
+  "toast": {
+    "acknowledge": true,
+    "action": {
+      "type": "internal",
+      "value": "/events/ring-day",
+    },
+    "id": "ring-day-notification",
+    "imgAltText": "Ring Day Icon",
+    "imgUrl": "./assets/images/icons/aggie/Ring Day-Negative.png",
+    "message": "Attending Ring Day? Click me to open the Ring Day Transportation Map to get the best logistics and transportation information!",
+    "title": "Ring Day Transportation Map Available",
+  },
+  "zoom": 16,
+}
+`;
+
+exports[`October Ring Day > exports RingDayEvent as it always has 1`] = `
+{
+  "configuration": {
+    "applicationName": "October Ring Day Transportation Map",
+    "defaultLayerOverrides": {
+      "construction_zone-layer": {
+        "visible": false,
+      },
+    },
+    "eventDates": [
+      "2026-10-08",
+      "2026-10-09",
+      "2026-10-10",
+    ],
+    "id": "ring-day",
+    "introductionText": "Get the best transportation and logistics information for October Ring Day.",
+    "mapCenter": [
+      -96.33616,
+      30.60958,
+    ],
+    "name": "October Ring Day",
+    "scheduleUrl": "https://www.aggienetwork.com/ring/ringday/",
+    "shortApplicationName": "October Ring Day Map",
+    "toast": {
+      "acknowledge": true,
+      "action": {
+        "type": "internal",
+        "value": "/events/ring-day",
+      },
+      "id": "ring-day-notification",
+      "imgAltText": "Ring Day Icon",
+      "imgUrl": "./assets/images/icons/aggie/Ring Day-Negative.png",
+      "message": "Attending Ring Day? Click me to open the Ring Day Transportation Map to get the best logistics and transportation information!",
+      "title": "Ring Day Transportation Map Available",
+    },
+    "zoom": 16,
+  },
+  "discover": {
+    "columnKey": "fall",
+    "description": "Transportation and logistics information for October Ring Day celebrations.",
+    "id": "ring-day",
+    "keywords": [
+      "ring",
+      "day",
+      "aggie",
+      "ring day",
+      "transportation",
+      "parking",
+      "celebration",
+    ],
+    "name": "October Ring Day",
+    "source": "internal",
+    "type": "event",
+  },
+  "options": [
+    {
+      "choices": [
+        {
+          "label": "Aggie Ring Pickup (October 8, 2026)",
+          "mapView": {
+            "center": [
+              -96.3354,
+              30.6095,
+            ],
+            "zoom": 18,
+          },
+          "value": "day1",
+        },
+        {
+          "label": "Aggie Ring Day (October 9-10, 2026)",
+          "mapView": {
+            "center": [
+              -96.3405,
+              30.6088,
+            ],
+            "zoom": 17,
+          },
+          "value": "day2",
+        },
+      ],
+      "description": "Select which Ring Day period you plan to attend to see the most relevant transportation and logistics information.",
+      "effects": {
+        "layers": [
+          {
+            "conversions": [
+              {
+                "expression": "StartDate <= date'2026-10-08' AND EndDate >= date'2026-10-08'",
+                "input": "day1",
+              },
+              {
+                "expression": "StartDate <= date'2026-10-10' AND EndDate >= date'2026-10-09'",
+                "input": "day2",
+              },
+            ],
+            "layerId": "ring-day-areas",
+          },
+          {
+            "conversions": [
+              {
+                "expression": "Start_Date <= date'2026-10-08' AND End_Date >= date'2026-10-08'",
+                "input": "day1",
+              },
+              {
+                "expression": "Start_Date <= date'2026-10-10' AND End_Date >= date'2026-10-09'",
+                "input": "day2",
+              },
+            ],
+            "layerId": "ring-day-routes",
+          },
+          {
+            "conversions": [
+              {
+                "expression": "Start_Date <= date'2026-10-08' AND End_Date >= date'2026-10-08'",
+                "input": "day1",
+              },
+              {
+                "expression": "Start_Date <= date'2026-10-10' AND End_Date >= date'2026-10-09'",
+                "input": "day2",
+              },
+            ],
+            "layerId": "ring-day-pois",
+          },
+        ],
+      },
+      "label": "Event Day",
+      "shortDescription": "Event Day",
+      "value": "event-day",
+    },
+  ],
+  "references": {
+    "RD_AREAS": "ring-day-areas",
+    "RD_POIS": "ring-day-pois",
+    "RD_ROUTES": "ring-day-routes",
+  },
+  "sources": [
+    {
+      "id": "ring-day-areas",
+      "listMode": "show",
+      "native": {
+        "outFields": [
+          "*",
+        ],
+      },
+      "popupComponent": {
+        "load": [Function],
+      },
+      "popupData": {
+        "description": "attributes.Notes",
+        "name": "attributes.name",
+      },
+      "title": "Ring Day Areas",
+      "type": "feature",
+      "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Ring_Day_view/FeatureServer/1",
+      "visible": true,
+    },
+    {
+      "id": "ring-day-routes",
+      "listMode": "show",
+      "native": {
+        "outFields": [
+          "*",
+        ],
+      },
+      "popupComponent": {
+        "load": [Function],
+      },
+      "popupData": {
+        "description": "attributes.description",
+        "name": "attributes.name",
+      },
+      "title": "Ring Day Routes",
+      "type": "feature",
+      "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Ring_Day_view/FeatureServer/2",
+      "visible": true,
+    },
+    {
+      "id": "ring-day-pois",
+      "listMode": "show",
+      "native": {
+        "outFields": [
+          "*",
+        ],
+      },
+      "popupComponent": {
+        "load": [Function],
+      },
+      "popupData": {
+        "description": "attributes.description",
+        "name": "attributes.name",
+      },
+      "title": "Ring Day Points of Interest",
+      "type": "feature",
+      "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Ring_Day_view/FeatureServer/0",
+      "visible": true,
+    },
+  ],
+  "type": "special-event",
+}
+`;
+
+exports[`October Ring Day > exports RingDaySpecialEventOptions as it always has 1`] = `
+[
+  {
+    "choices": [
+      {
+        "label": "Aggie Ring Pickup (October 8, 2026)",
+        "mapView": {
+          "center": [
+            -96.3354,
+            30.6095,
+          ],
+          "zoom": 18,
+        },
+        "value": "day1",
+      },
+      {
+        "label": "Aggie Ring Day (October 9-10, 2026)",
+        "mapView": {
+          "center": [
+            -96.3405,
+            30.6088,
+          ],
+          "zoom": 17,
+        },
+        "value": "day2",
+      },
+    ],
+    "description": "Select which Ring Day period you plan to attend to see the most relevant transportation and logistics information.",
+    "effects": {
+      "layers": [
+        {
+          "conversions": [
+            {
+              "expression": "StartDate <= date'2026-10-08' AND EndDate >= date'2026-10-08'",
+              "input": "day1",
+            },
+            {
+              "expression": "StartDate <= date'2026-10-10' AND EndDate >= date'2026-10-09'",
+              "input": "day2",
+            },
+          ],
+          "layerId": "ring-day-areas",
+        },
+        {
+          "conversions": [
+            {
+              "expression": "Start_Date <= date'2026-10-08' AND End_Date >= date'2026-10-08'",
+              "input": "day1",
+            },
+            {
+              "expression": "Start_Date <= date'2026-10-10' AND End_Date >= date'2026-10-09'",
+              "input": "day2",
+            },
+          ],
+          "layerId": "ring-day-routes",
+        },
+        {
+          "conversions": [
+            {
+              "expression": "Start_Date <= date'2026-10-08' AND End_Date >= date'2026-10-08'",
+              "input": "day1",
+            },
+            {
+              "expression": "Start_Date <= date'2026-10-10' AND End_Date >= date'2026-10-09'",
+              "input": "day2",
+            },
+          ],
+          "layerId": "ring-day-pois",
+        },
+      ],
+    },
+    "label": "Event Day",
+    "shortDescription": "Event Day",
+    "value": "event-day",
+  },
+]
+`;
+
+exports[`Spring Commencement > exports GraduationConfiguration as it always has 1`] = `
+{
+  "applicationName": "Spring Commencement Transportation Map",
+  "eventDates": [
+    "2026-05-06",
+    "2026-05-07",
+    "2026-05-08",
+    "2026-05-09",
+  ],
+  "id": "graduation-spring",
+  "introductionText": "Get the best transportation and parking information for the spring commencement ceremonies.",
+  "mapCenter": [
+    -96.34458,
+    30.60629,
+  ],
+  "name": "Spring Commencement Ceremony",
+  "scheduleUrl": "https://graduation.tamu.edu/ceremony-information/index.html",
+  "shortApplicationName": "Spring Commencement Map",
+  "zoom": 16,
+}
+`;
+
+exports[`Spring Commencement > exports GraduationOptions as it always has 1`] = `
+[
+  {
+    "choices": [
+      {
+        "label": "Wednesday, May 6th",
+        "value": "2026-05-06T05:00:00.000Z",
+      },
+      {
+        "label": "Thursday, May 7th",
+        "value": "2026-05-07T05:00:00.000Z",
+      },
+      {
+        "label": "Friday, May 8th",
+        "value": "2026-05-08T05:00:00.000Z",
+      },
+      {
+        "label": "Saturday, May 9th",
+        "value": "2026-05-09T05:00:00.000Z",
+      },
+    ],
+    "description": "Please select the day of your commencement or commissioning ceremony to provide the most accurate transportation and parking information.",
+    "effects": {
+      "layers": [
+        {
+          "conversions": [
+            {
+              "input": "2026-05-06T05:00:00.000Z",
+              "propOverrides": {
+                "visible": true,
+              },
+            },
+            {
+              "input": "2026-05-07T05:00:00.000Z",
+              "propOverrides": {
+                "visible": true,
+              },
+            },
+            {
+              "input": "2026-05-08T05:00:00.000Z",
+              "propOverrides": {
+                "visible": true,
+              },
+            },
+            {
+              "input": "2026-05-09T05:00:00.000Z",
+              "propOverrides": {
+                "visible": true,
+              },
+            },
+          ],
+          "layerId": "graduation-event-parking-lots",
+        },
+      ],
+    },
+    "label": "Event Day",
+    "shortDescription": "Event Day",
+    "value": "date",
+  },
+]
+`;
+
+exports[`Spring Commencement > exports GraduationSpringEventTs as it always has 1`] = `
+{
+  "configuration": {
+    "applicationName": "Spring Commencement Transportation Map",
+    "eventDates": [
+      "2026-05-06",
+      "2026-05-07",
+      "2026-05-08",
+      "2026-05-09",
+    ],
+    "id": "graduation-spring",
+    "introductionText": "Get the best transportation and parking information for the spring commencement ceremonies.",
+    "mapCenter": [
+      -96.34458,
+      30.60629,
+    ],
+    "name": "Spring Commencement Ceremony",
+    "scheduleUrl": "https://graduation.tamu.edu/ceremony-information/index.html",
+    "shortApplicationName": "Spring Commencement Map",
+    "zoom": 16,
+  },
+  "discover": {
+    "columnKey": "spring",
+    "description": "Transportation and parking information for spring graduation ceremonies.",
+    "id": "graduation-spring",
+    "keywords": [
+      "graduation",
+      "commencement",
+      "parking",
+      "transportation",
+    ],
+    "name": "Spring Commencement Ceremony",
+    "source": "internal",
+    "type": "event",
+  },
+  "options": [
+    {
+      "choices": [
+        {
+          "label": "Wednesday, May 6th",
+          "value": "2026-05-06T05:00:00.000Z",
+        },
+        {
+          "label": "Thursday, May 7th",
+          "value": "2026-05-07T05:00:00.000Z",
+        },
+        {
+          "label": "Friday, May 8th",
+          "value": "2026-05-08T05:00:00.000Z",
+        },
+        {
+          "label": "Saturday, May 9th",
+          "value": "2026-05-09T05:00:00.000Z",
+        },
+      ],
+      "description": "Please select the day of your commencement or commissioning ceremony to provide the most accurate transportation and parking information.",
+      "effects": {
+        "layers": [
+          {
+            "conversions": [
+              {
+                "input": "2026-05-06T05:00:00.000Z",
+                "propOverrides": {
+                  "visible": true,
+                },
+              },
+              {
+                "input": "2026-05-07T05:00:00.000Z",
+                "propOverrides": {
+                  "visible": true,
+                },
+              },
+              {
+                "input": "2026-05-08T05:00:00.000Z",
+                "propOverrides": {
+                  "visible": true,
+                },
+              },
+              {
+                "input": "2026-05-09T05:00:00.000Z",
+                "propOverrides": {
+                  "visible": true,
+                },
+              },
+            ],
+            "layerId": "graduation-event-parking-lots",
+          },
+        ],
+      },
+      "label": "Event Day",
+      "shortDescription": "Event Day",
+      "value": "date",
+    },
+  ],
+  "references": {
+    "GRADUATION_ACCESSIBLE_PARKING": "graduation-accessible-parking",
+    "GRADUATION_EVENT_PARKING_LOTS": "graduation-event-parking-lots",
+    "GRADUATION_ROAD_CLOSURES": "graduation-road-closed",
+    "GRADUATION_TRAFFIC_FLOW": "graduation-traffic-flow",
+  },
+  "sources": [
+    {
+      "id": "graduation-accessible-parking",
+      "listMode": "show",
+      "native": {
+        "outFields": [
+          "*",
+        ],
+      },
+      "popupComponent": {
+        "load": [Function],
+      },
+      "popupData": {
+        "description": "{attributes.description}",
+        "name": "{attributes.name}",
+      },
+      "type": "feature",
+      "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/GraduationParking_view/FeatureServer/0",
+      "visible": true,
+    },
+    {
+      "id": "graduation-traffic-flow",
+      "listMode": "show",
+      "native": {
+        "outFields": [
+          "*",
+        ],
+      },
+      "popupComponent": {
+        "load": [Function],
+      },
+      "popupData": {
+        "description": "{attributes.description}",
+        "name": "{attributes.name}",
+      },
+      "type": "feature",
+      "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/GraduationParking_view/FeatureServer/1",
+      "visible": true,
+    },
+    {
+      "id": "graduation-event-parking-lots",
+      "listMode": "show",
+      "native": {
+        "definitionExpression": "Type <> 'Closure'",
+        "labelingInfo": [
+          {
+            "labelExpressionInfo": {
+              "expression": "$feature.name",
+            },
+            "maxScale": 0,
+            "minScale": 0,
+            "symbol": {
+              "color": [
+                0,
+                0,
+                0,
+                255,
+              ],
+              "font": {
+                "family": "Open Sans Semibold",
+                "size": 10,
+                "weight": "bold",
+              },
+              "haloColor": [
+                255,
+                255,
+                255,
+                255,
+              ],
+              "haloSize": 1.5,
+              "type": "text",
+            },
+            "useCodedValues": true,
+          },
+        ],
+        "outFields": [
+          "*",
+        ],
+      },
+      "popupComponent": {
+        "load": [Function],
+      },
+      "popupData": {
+        "description": "{attributes.description}",
+        "name": "{attributes.name}",
+      },
+      "type": "feature",
+      "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/GraduationParking_view/FeatureServer/3",
+      "visible": true,
+    },
+    {
+      "id": "graduation-road-closed",
+      "listMode": "show",
+      "native": {
+        "outFields": [
+          "*",
+        ],
+      },
+      "popupComponent": {
+        "load": [Function],
+      },
+      "popupData": {
+        "description": "{attributes.description}",
+        "name": "Road Closed",
+      },
+      "type": "feature",
+      "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/GraduationParking_view/FeatureServer/2",
+      "visible": true,
+    },
+  ],
+  "type": "special-event",
+}
+`;
