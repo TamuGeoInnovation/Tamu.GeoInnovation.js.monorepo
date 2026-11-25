@@ -34,7 +34,8 @@ import { Angulartics2 } from 'angulartics2';
 import * as gju from 'geojson-utils';
 
 import { LayerSource } from '@tamu-gisc/common/types';
-import { findNearestIndex, isCoordinatePair, getGeolocation } from '@tamu-gisc/common/utils/geometry/generic';
+import { parseLatLon } from '@tamu-gisc/common/utils/geometry';
+import { findNearestIndex, getGeolocation } from '@tamu-gisc/common/utils/geometry/generic';
 import { centroidFromPolygonGeometry } from '@tamu-gisc/common/utils/geometry/esri';
 import { pairwiseOverlap } from '@tamu-gisc/common/utils/collection';
 
@@ -2239,7 +2240,7 @@ export class TripPlannerService implements OnDestroy {
 
       // Identify a param block as either feature abbreviation/number OR coordinate point
       const identifyBlock = (block: string): TripPointProperties['source'] => {
-        if (isCoordinatePair(block)) {
+        if (parseLatLon(block)) {
           // If block is coordinate, coordinate points will be intersected to determine if a feature
           return 'url-coordinates';
         } else if (block.includes('whereeveriam')) {
