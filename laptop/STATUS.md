@@ -5,7 +5,7 @@
 
 Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
-Last batch done: g26
+Last batch done: g27
 
 ## What this is
 
@@ -33,11 +33,12 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch g27 (#3000, then #1001)**, started 8:27 PM Central (the measurement's first run). **#3000 branch ready: `fix/3000-check-memory`** (`d1bf15420`, `.pr-body.md` last; not yet through `pre-pr-check.sh`). Measured: parallel 8 did not finish (115 min at the 16 GiB limit), 4 failed with 6 memory kills, 2 and 1 passed in about 6.5 min. **#1001** pushed at `71d722fe5` (fix, images, release entries, `development` merged); its check is running at `CHECK_PARALLEL=1`, then `.pr-body.md` and `pre-pr-check.sh`.
+- **Batch a13 (#3337)**, started 11:50 PM Central. The Lighting rule targets no element; the Light Pole logo is a transparent PNG; rendering the page next.
 - **Pushed, not finished (a14):** `fix/2643-noon-is-pm` (`918399fd7`, red test then fix; not run yet) and `fix/3464-midnight-is-am` (`c68d9e8f6`, stacked on it). a14 part 2 is withdrawn (#3319 already fixed).
-- **Next:** a13 (#3337; the Lighting rule targets no element, the Light Pole logo is a transparent PNG, rendering still to do), then a14, then g29.
+- **Next:** a14, then g29.
 
 ## Finished
+- **Batch g27 (workspace: #3000, #1001)** (report `laptop/reports/2026-11-24-g27.md`): **branch ready: `fix/3000-check-memory`** (`ad25d3561`) and **`fix/1001-focus-visible`** (`d75e71f5b`), both `pre-pr-check.sh` exit 0. #3000: memory kills named after the run (red first); measured a GIS Day-wide check: parallel 8 never finished, 4 killed, 2 and 1 pass in about 6.5 min; CLAUDE.md says `CHECK_PARALLEL=1`, default unchanged. #1001: a maroon `:focus-visible` ring on the copy button, autocomplete items and the sidebar menus; 3 before/after pairs, AggieMap and GIS Day. One question, Q-g27-1.
 - **Batch g26 (workspace: #1938, #2067)** (report `laptop/reports/2026-11-24-g26.md`): **branch ready: `fix/1938-check-production-build`** (`78580ab68`). The check builds in `build.yml`'s configuration (read, not hard-coded), build alone. Red twice: the test, and an over-budget scratch commit that passed `development`'s script and fails this one. Own check exit 0. No questions.
 - **Batch g25 (gisday: #3424, #3412)** (report `laptop/reports/2026-11-24-g25.md`): #3424 red Exit 1 / green Exit 0 against production. **branch ready: `fix/3412-papers-awards-sentence`** (`6bdccb57c`): the Papers awards sentence inside the session component, red first (1 test), check passes but for the registry audit step, images and `.pr-body.md`. No questions.
 - **Batch a12 (aggiemap: release tier on dev, quiet)** (report `laptop/reports/2026-11-24-a12.md`): exit 1, **9 failed, 14 flaky, 1033 passed (1.4h)**. **One regression:** #3352's basemap scraper check fails every time on `NearmapCSBasemap`. Real on a quiet machine: indoor-track layer order (2 of 3 loads) and break-summer's Lot 100g popup. `basemap-requests` passes quiet. The Dining Locations and basemap-service failures are service hiccups (re-runs pass). Nothing tagged.
