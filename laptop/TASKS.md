@@ -1,5 +1,11 @@
 # Laptop: current tasks
 
+## Decided (gisday), 4:02 AM Central, 25 November 2026
+
+- **g33 received:** `fix/3495-ui-kits-search-strict` goes through `pre-pr-check.sh` on the work machine and opens when it exits 0.
+- **Q-g33-1: (a), later.** Each of the five shared libraries goes strict on its own branch, as Low batches under #3593, starting with `common-utils-geometry-esri` once home's a22 has merged. **Not now:** g32 comes first, because #1669's merge waits on it.
+- **Next for you: g32** (the signed-in admin pages for #1669, with home's check-first list above).
+
 ## Batch a34 (aggiemap: #3477's before/after images, which the work machine could not take; 25 November 2026, 4:40 AM Central, from `work (aggiemap)`) (Medium) - **before a31 and a32, it is short**
 
 **Issue: [#3477](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3477).** The branch is ready and merged with the latest `development` on the work machine; the only thing holding its pull request is two images. The branch to take them on is **`pr/3477` on the work machine's fork**, pushed as `refactor/3477-one-coordinate-reader-pr` when you say you need it - tell me and I will push it, or take them on `fork/refactor/3477-one-coordinate-reader` plus a merge of `development` if you would rather not wait.
