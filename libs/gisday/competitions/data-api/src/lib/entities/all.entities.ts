@@ -13,7 +13,6 @@ import {
   JoinColumn
 } from 'typeorm';
 
-
 import { Season, TIMESTAMP_COLUMN } from '@tamu-gisc/gisday/platform/data-api';
 
 import { COMPETITION_VALIDATION_STATUS } from '@tamu-gisc/gisday/common';
@@ -33,7 +32,8 @@ export class GISDayCompetitionBaseEntity extends BaseEntity {
   @BeforeUpdate()
   @BeforeInsert()
   private generateGuid(): void {
-    if (this.guid === undefined) {
+    // Typed as always set, but empty before the first save.
+    if (!this.guid) {
       this.guid = crypto.randomUUID();
     }
   }
@@ -95,13 +95,14 @@ export class CompetitionSeason extends GISDayCompetitionBaseEntity implements IC
   @Column({ type: 'datetimeoffset', nullable: true })
   public scoringClosesAt?: Date | null;
 
+  // Null once its GIS Day season is deleted.
   @OneToOne(() => Season, { cascade: true, nullable: true, orphanedRowAction: 'nullify', onDelete: 'SET NULL' })
   @JoinColumn()
-  public season: Season;
+  public season: Season | null;
 
   @OneToOne(() => CompetitionForm, { cascade: true, nullable: true })
   @JoinColumn()
-  public form?: CompetitionForm;
+  public form?: CompetitionForm | null;
 }
 
 @Entity({
@@ -122,23 +123,25 @@ export class CompetitionSubmission extends GISDayCompetitionBaseEntity implement
   @Column()
   public userGuid: string;
 
-  // JSON.stringify()'d values stored in a single field
+  // The answers, keyed by question, stored as JSON in a single field and read back parsed. They are the JSON the app
+  // sent, so they are typed as possibly null, as JSON can be.
   @Column({ type: 'simple-json', nullable: false })
-  public value: string;
+  public value: Partial<Record<string, SubmissionAnswer>> | null;
 
+  // The relations below are nullable columns, as TypeORM makes a relation by default.
   @OneToOne(() => SubmissionLocation, { cascade: true })
   @JoinColumn()
-  public location: SubmissionLocation;
+  public location: SubmissionLocation | null;
 
   @ManyToOne(() => CompetitionSeason, { cascade: true })
-  public season: CompetitionSeason;
+  public season: CompetitionSeason | null;
 
   @OneToMany(() => SubmissionMedia, (s) => s.submission, { cascade: true })
   public blobs?: SubmissionMedia[];
 
   @OneToOne(() => CompetitionSubmissionValidationStatus, { cascade: true })
   @JoinColumn()
-  public validationStatus: CompetitionSubmissionValidationStatus;
+  public validationStatus: CompetitionSubmissionValidationStatus | null;
 }
 
 @Entity({
@@ -166,12 +169,18 @@ export interface ICompetitionSubmission {
   updated: Date;
   created: Date;
   userGuid: string;
-  value: string;
-  location: SubmissionLocation;
-  season: ICompetitionSeason;
+  value: Partial<Record<string, SubmissionAnswer>> | null;
+  location: SubmissionLocation | null;
+  season: ICompetitionSeason | null;
   blobs?: ISubmissionMedia[];
-  validationStatus: CompetitionSubmissionValidationStatus;
+  validationStatus: CompetitionSubmissionValidationStatus | null;
 }
+
+/**
+ * One answer in a submission, as the app sent it: a form field holds text, a number or yes/no, and a question may take
+ * several. Typed from the forms, not checked: it is JSON a participant's app sent, and a question may be unanswered.
+ */
+export type SubmissionAnswer = string | number | boolean | null | Array<string | number | boolean | null>;
 
 export interface ICompetitionSubmissionValidationStatus extends CompetitionSubmissionValidationStatus {
   status: COMPETITION_VALIDATION_STATUS;
@@ -197,8 +206,8 @@ export interface ICompetitionSubmissionLocation {
 }
 
 export interface ICompetitionSeason {
-  season: Season;
-  form?: CompetitionForm;
+  season: Season | null;
+  form?: CompetitionForm | null;
 }
 
 export interface ICompetitionSeasonForm {

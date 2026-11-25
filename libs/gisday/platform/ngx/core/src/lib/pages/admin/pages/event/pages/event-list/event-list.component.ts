@@ -10,7 +10,7 @@ import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list
 import { AdminSearchComponent } from '../../../base-admin-list/admin-search.component';
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
-import { AsyncPipe, DatePipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import {
   EventDayGroup,
   ParseDateTimeStringsPipe,
@@ -22,6 +22,7 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { GISDAY_SITE } from '@tamu-gisc/gisday/platform/ngx/common';
 import { SubmissionFileDto, siteListsSession } from '@tamu-gisc/gisday/common';
 import { FormControl } from '@angular/forms';
+import { CentralDatePipe } from '@tamu-gisc/gisday/platform/ngx/common';
 
 /**
  * The organizations whose venues hold these sessions, each once, by name, after every organization (#434): what the
@@ -52,7 +53,7 @@ export function organizationChoices(events: Array<Partial<Event>> | null): Array
     RouterLink,
     CheckboxComponent,
     AsyncPipe,
-    DatePipe,
+    CentralDatePipe,
     ParseDateTimeStringsPipe,
     ExistsPipe,
     AdminSearchComponent

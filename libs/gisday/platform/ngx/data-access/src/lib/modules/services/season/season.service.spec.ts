@@ -5,6 +5,7 @@ import { ActivatedRouteSnapshot, convertToParamMap } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import type { ActiveSeasonDto } from '@tamu-gisc/gisday/platform/data-api';
 
 import { SeasonService, ViewedSeason, seasonYearFromRoute } from './season.service';
 
@@ -131,7 +132,7 @@ describe('SeasonService', () => {
      * and 2025's sessions on the page: the page started before the navigation ended, and read the
      * season the visitor was leaving. A page now reads the year from the route being opened.
      */
-    it("loads the year in the route being opened, not the year being left", async () => {
+    it('loads the year in the route being opened, not the year being left', async () => {
       const page = routeTree({}, { seasonYear: '2024' }, {})[2];
       const result = firstValueFrom(service.seasonForRoute(page));
 
@@ -172,6 +173,60 @@ describe('SeasonService', () => {
       http.expectOne('api/seasons/active').flush(active);
 
       await expect(result).resolves.toEqual({ year: 1999, season: null, isPast: true });
+    });
+  });
+
+  /**
+   * Regression coverage (#3558). The API sends a season's dates as ISO text while its type says `Date`, so a page
+   * was handed text where it expected a Date. The service turns them into what the type says, once, as they arrive.
+   */
+  describe("a season's dates (#3558)", () => {
+    const wire = {
+      guid: 'season-2026',
+      year: 2026,
+      created: '2026-06-01T13:24:21.240Z',
+      updated: '2026-11-15T15:28:31.700Z',
+      posterSubmissionsCloseAt: '2026-11-13T23:00:00.000Z',
+      paperFilesCloseAt: null,
+      days: [{ guid: 'd-1', date: '2026-11-16T06:00:00.000Z' }],
+      competitions: [{ competitionType: 'paper', finalistsNotifiedAt: '2026-11-18T15:00:00.000Z' }],
+      firstEventTime: '09:00:00'
+    };
+
+    const expectDates = (season: Partial<ActiveSeasonDto> | null) => {
+      expect(season?.created).toEqual(new Date('2026-06-01T13:24:21.240Z'));
+      expect(season?.updated).toEqual(new Date('2026-11-15T15:28:31.700Z'));
+      expect(season?.posterSubmissionsCloseAt).toEqual(new Date('2026-11-13T23:00:00.000Z'));
+      expect(season?.days?.[0].date).toEqual(new Date('2026-11-16T06:00:00.000Z'));
+      expect(season?.competitions?.[0].finalistsNotifiedAt).toEqual(new Date('2026-11-18T15:00:00.000Z'));
+      // What is not a date stays as it came: a deadline that is not set, a time of day, and the rest.
+      expect(season?.paperFilesCloseAt).toBeNull();
+      expect(season?.firstEventTime).toBe('09:00:00');
+      expect(season?.days?.[0].guid).toBe('d-1');
+    };
+
+    it('are Dates on the active season', async () => {
+      const result = firstValueFrom(service.getActiveSeason());
+
+      http.expectOne('api/seasons/active').flush(wire);
+
+      expectDates(await result);
+    });
+
+    it('are Dates on the season for a year', async () => {
+      const result = firstValueFrom(service.getSeasonByYear(2026));
+
+      http.expectOne('api/seasons/year/2026').flush(wire);
+
+      expectDates(await result);
+    });
+
+    it('are Dates in the list of seasons', async () => {
+      const result = firstValueFrom(service.getEntities());
+
+      http.expectOne('api/seasons/').flush([wire]);
+
+      expectDates((await result)[0]);
     });
   });
 });

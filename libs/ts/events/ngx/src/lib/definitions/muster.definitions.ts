@@ -7,7 +7,6 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
-import esri = __esri;
 import { EventPopups } from '../modules/popups/popups';
 
 // Drawn in this order, top first (docs/map-layers.md, "Drawing order"): the accessible spaces and the traffic flow over
@@ -58,7 +57,6 @@ export const MusterEventColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: MusterEventDefinitions.ACCESSIBLE_PARKING.id,
-    title: MusterEventDefinitions.ACCESSIBLE_PARKING.name,
     url: MusterEventDefinitions.ACCESSIBLE_PARKING.url,
     popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
@@ -74,7 +72,6 @@ export const MusterEventColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: MusterEventDefinitions.PARKING.id,
-    title: MusterEventDefinitions.PARKING.name,
     url: MusterEventDefinitions.PARKING.url,
     popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {

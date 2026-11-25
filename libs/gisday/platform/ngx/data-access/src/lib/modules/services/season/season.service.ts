@@ -111,7 +111,7 @@ export class SeasonService extends BaseService<Season> {
   );
 
   constructor() {
-    super('seasons');
+    super('seasons', { wireDates: true });
   }
 
   /**
@@ -120,11 +120,11 @@ export class SeasonService extends BaseService<Season> {
    * for ever (#2076). Any other error still fails.
    */
   public getActiveSeason(): Observable<ActiveSeasonDto | null> {
-    return this.http1.get<ActiveSeasonDto | null>(this.resource + '/active').pipe(noSeasonAs(null));
+    return this.answer(this.http1.get<ActiveSeasonDto | null>(this.resource + '/active')).pipe(noSeasonAs(null));
   }
 
   public getSeasonByYear(year: number) {
-    return this.http1.get<ActiveSeasonDto>(`${this.resource}/year/${year}`);
+    return this.answer(this.http1.get<ActiveSeasonDto>(`${this.resource}/year/${year}`));
   }
 
   /**
@@ -161,13 +161,13 @@ export class SeasonService extends BaseService<Season> {
   }
 
   public override createEntity(newEntity?: Partial<Season>) {
-    return this.http1.post<Partial<Season>>(this.resource, newEntity).pipe(tap(() => this._signal$.next()));
+    return this.answer(this.http1.post<Partial<Season>>(this.resource, newEntity)).pipe(tap(() => this._signal$.next()));
   }
 
   public override updateEntity(guid: string, updatedEntity: Partial<Season>) {
-    return this.http1
-      .patch<Partial<Season>>(`${this.resource}/${guid}`, updatedEntity)
-      .pipe(tap(() => this._signal$.next()));
+    return this.answer(this.http1.patch<Partial<Season>>(`${this.resource}/${guid}`, updatedEntity)).pipe(
+      tap(() => this._signal$.next())
+    );
   }
 
   /** Sets when the season's competitions close (#2934, #2962); every page reading a season sees it. */
@@ -192,6 +192,8 @@ export class SeasonService extends BaseService<Season> {
   }
 
   public override deleteEntity(entityGuid: string) {
-    return this.http1.delete<Partial<Season>>(`${this.resource}/${entityGuid}`).pipe(tap(() => this._signal$.next()));
+    return this.answer(this.http1.delete<Partial<Season>>(`${this.resource}/${entityGuid}`)).pipe(
+      tap(() => this._signal$.next())
+    );
   }
 }

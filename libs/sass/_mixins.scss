@@ -147,3 +147,14 @@
   -ms-user-select: none;
   user-select: none;
 }
+
+// A visible keyboard focus ring, in the shape the repository's controls already use (#2588's tiles, the accordion header,
+// the compass): a 2px outline offset by 2px, on :focus-visible only, so a mouse click shows nothing. Include it
+// after any `outline: none`, which it then overrides for keyboard focus. The colour is $aggie-maroon, written out so a
+// file need not import the variables; pass another where maroon would not show against the background (#1001).
+@mixin focus-ring($color: #500000, $offset: 2px) {
+  &:focus-visible {
+    outline: 2px solid $color;
+    outline-offset: $offset;
+  }
+}

@@ -1,5 +1,4 @@
 import { Component, computed, input } from '@angular/core';
-import { DatePipe } from '@angular/common';
 
 import { RSVP_PERSON_TYPES, RsvpPersonType } from '@tamu-gisc/gisday/common';
 import type { RsvpDashboardPerson } from '@tamu-gisc/gisday/platform/data-api';
@@ -7,6 +6,7 @@ import { downloadFile, toCsv } from '@tamu-gisc/common/utils/ui';
 import { DashboardScrollComponent } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import type { DashboardTableColumn } from '../dashboard-table/dashboard-table.component';
+import { CentralDatePipe } from '@tamu-gisc/gisday/platform/ngx/common';
 
 /**
  * A person as every dashboard lists them: their profile, when they did what the dashboard counts, and any counts of
@@ -117,7 +117,7 @@ export function isStudent(type: RsvpPersonType): boolean {
   selector: 'tamu-gisc-dashboard-people',
   templateUrl: './dashboard-people.component.html',
   styleUrls: ['./dashboard-people.component.scss'],
-  imports: [DatePipe, DashboardScrollComponent]
+  imports: [CentralDatePipe, DashboardScrollComponent]
 })
 export class DashboardPeopleComponent {
   /** The people, or null while they are read. */

@@ -91,7 +91,9 @@ lint_steps() {
   printf '%s\n' "$yml" | sed -n 's/^[[:space:]]*\(- \)\{0,1\}run:[[:space:]]*//p' | while IFS= read -r cmd; do
     cmd="$(printf '%s' "${cmd%$'\r'}" | sed "s/^'\(.*\)'\$/\1/; s/^\"\(.*\)\"\$/\1/")"
     case "$cmd" in
-      *nx[[:space:]]* | *nx.js* | 'npm ci'* | 'npm install'*) ;;
+      # Setup rather than a check: Nx runs above, the install is this script's own, and the fetch only points
+      # origin/development at the base repository's when CI runs in a fork (#3557) - here it already is.
+      *nx[[:space:]]* | *nx.js* | 'npm ci'* | 'npm install'* | 'git fetch'*) ;;
       '' | '|'* | '>'* | *'${{'*) printf 'cannot %s\n' "$cmd" ;;
       *) printf 'run %s\n' "$cmd" ;;
     esac
@@ -188,6 +190,27 @@ container_free() {
     return 1
   fi
   docker rm -f "$name" >/dev/null 2>&1 || true
+}
+
+# Prints how many of a check log's lines show a task killed for memory, and fails on none (#3000): `Killed` on a line
+# of its own (a build or ESLint run, as gisday-angular:build-app showed it), SIGKILL (a Jest worker, npm), or exit code
+# 137. A test whose name merely contains "Killed" is not one. Tested by scripts/check-in-volume.test.sh.
+memory_kills() {
+  local n
+  n="$(grep -c -E '^[[:space:]]*Killed[[:space:]]*$|SIGKILL|(exit|exited)( with)? code:? 137([^0-9]|$)' "$1" 2>/dev/null)" || true
+  [ "${n:-0}" -gt 0 ] || return 1
+  echo "$n"
+}
+
+# Prints, for a check that failed and whose log shows a memory kill, that the failure was memory and what to set, so a
+# kill is not read as the code's fault; nothing otherwise (#3000). A GIS Day-wide affected set is killed at the
+# defaults; docs/build-times.md has the measurements.
+memory_advice() {
+  local log="$1" code="$2" kills
+  [ "$code" -ne 0 ] || return 0
+  kills="$(memory_kills "$log")" || return 0
+  echo "This failure includes $kills memory kill(s) (Killed, SIGKILL or exit 137): the container ran out of memory, which is not a fault in the code."
+  echo "Run it again with fewer tasks at once, CHECK_PARALLEL=1 (a GIS Day-wide check needs it), or more memory, CHECK_MEMORY=24g if Docker has it; or run the failed projects alone."
 }
 
 # Sourced (by the test): stop here, with only the functions defined.
@@ -384,6 +407,7 @@ code=$?
 set -e
 grep "^unknown project: " "$log" | sed "s/^unknown project: /No such project: /" >&2 || true
 echo "Exit $code ($branch, $mode). Log: $log"
+memory_advice "$log" "$code" >&2
 run_times_record "$here/docs/build-times/runs" "$started" check "$branch $mode" "$code" \
   "$(run_times_check_summary "$log")" "$SECONDS" "$(run_times_check_setup "$log")"
 exit "$code"

@@ -21,6 +21,24 @@ jobs:
         with:
           fetch-depth: 0
 
+      # `main.yml` says the base for a feature branch is "base repo's development", and in the base repository
+      # `origin/development` is exactly that. **In a fork it is not**: `origin` is the fork, so the ref is whatever
+      # that fork last synced. This team pushes every branch to a personal fork and nothing updates its
+      # `development`, so on 25 November it was 1,079 commits behind and one ordinary branch read as changing 5,288
+      # files instead of 6 - Prettier exited 249 and every push to a fork failed (#3557).
+      #
+      # Fetching over the ref rather than passing a different base keeps `$BASE` as `origin/development` for every
+      # step that reads it, here and in `scripts/check-format.mjs`. The base repository is public, so this needs no
+      # credentials, and on the base repository itself the step does not run.
+      - name: Point origin/development at the base repository's, when this is a fork
+        if: github.event.repository.fork
+        env:
+          # `parent` is present on a fork's push and pull_request payloads; the fallback is this repository's own
+          # upstream, so the step still does the right thing if a payload ever arrives without it.
+          UPSTREAM: ${{ github.event.repository.parent.full_name || 'TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo' }}
+        # One line, and no `${{ }}` in it, so `scripts/check-in-volume.sh` can read lint.yml's steps (#2286).
+        run: git fetch --no-tags "https://github.com/$UPSTREAM.git" '+refs/heads/development:refs/remotes/origin/development'
+
       - name: Setup Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
@@ -70,6 +88,22 @@ jobs:
         env:
           BASE: ${{ inputs.base }}
         run: node scripts/check-format.mjs
+
+      # Spec files are run without their types being checked (vitest transpiles them; builds never use tsconfig.spec.json), so
+      # a spec could be wrong about its types and pass: 3,993 errors in 16 projects on 25 November 2026 (#2263). Each project
+      # the pull request changes has its spec configuration type-checked; the 16 are held to their counts until fixed.
+      - name: Type-check the specs of the changed projects
+        env:
+          BASE: ${{ inputs.base }}
+        run: node scripts/check-spec-types.mjs
+
+      # A library with no build target is never compiled with its own tsconfig.lib.json, so a strict one could stop
+      # compiling under its own rules unseen, as common-utils-string did on 25 November 2026 (#3581). Each strict library
+      # the pull request changes is type-checked with it; the 8 that already fail are held to their counts.
+      - name: Type-check the changed strict libraries with their own configuration
+        env:
+          BASE: ${{ inputs.base }}
+        run: node scripts/check-strict-libs.mjs
 
       - name: Lint Affected
         env:

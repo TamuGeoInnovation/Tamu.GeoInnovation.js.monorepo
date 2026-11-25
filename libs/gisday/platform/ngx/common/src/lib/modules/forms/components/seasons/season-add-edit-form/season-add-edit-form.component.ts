@@ -81,7 +81,7 @@ export class SeasonAddEditFormComponent implements OnInit {
     // Create a new day and push it to the days subject.
     const d = {
       guid: day?.guid || undefined,
-      date: day ? new Date(day.date) : new Date()
+      date: day ? day.date : new Date()
     };
 
     const arrayGroup = this.form.get('days') as UntypedFormArray;

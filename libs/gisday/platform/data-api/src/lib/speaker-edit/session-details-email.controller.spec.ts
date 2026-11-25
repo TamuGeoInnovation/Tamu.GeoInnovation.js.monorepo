@@ -15,7 +15,7 @@ describe('SessionDetailsEmailController', () => {
   let app: INestApplication;
   let url: string;
   let permissions: Array<string>;
-  const service = { send: jest.fn(), preview: jest.fn() };
+  const service = { send: vi.fn(), preview: vi.fn() };
 
   const post = (path: string, body: object) =>
     fetch(`${url}/session-emails/${path}`, {
@@ -98,7 +98,7 @@ describe('SessionDetailsEmailController', () => {
 describe('SessionDetailsEmailController, choosing speakers', () => {
   let app: INestApplication;
   let url: string;
-  const service = { send: jest.fn(), preview: jest.fn() };
+  const service = { send: vi.fn(), preview: vi.fn() };
 
   beforeEach(async () => {
     service.send.mockReset().mockResolvedValue({ sent: [], skipped: [] });

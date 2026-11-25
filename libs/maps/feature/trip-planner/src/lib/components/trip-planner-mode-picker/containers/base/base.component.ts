@@ -22,8 +22,17 @@ export class TripPlannerModePickerComponent implements OnInit {
 
   public isDev: Observable<boolean>;
 
+  /**
+   * Whether accessible routing is offered: only where development-only features are on (#2801), because the routing
+   * network does not route accessible trips yet (#2592). Both pickers read this one value, the desktop's Options link
+   * and the phone's toggle, so the next change to the rule is made once (#3468: the phone's copy had no gate). Offer it
+   * everywhere again once the network routes accessible trips; its page is gated in map.routes.ts too.
+   */
+  public accessibleRoutingOffered: Observable<boolean>;
+
   public ngOnInit() {
     this.isDev = this.devTools.get('isTesting');
+    this.accessibleRoutingOffered = this.isDev;
   }
 
   /**

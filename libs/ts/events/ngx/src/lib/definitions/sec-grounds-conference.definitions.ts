@@ -47,7 +47,6 @@ const eventUrl = Connections.secGroundsConferenceUrl;
 
 type FeatureLayerNative = NonNullable<FeatureLayerSourceProperties['native']>;
 type AutoCastCimSymbol = { type: 'cim' } & esri.CIMSymbolProperties;
-type AutoCastSymbol = esri.SymbolProperties;
 
 const BUS_ROUTE_COLOR: [number, number, number, number] = [0, 92, 230, 255];
 const BUS_ROUTE_ARROW_SPACING = 52;
@@ -183,7 +182,7 @@ const BUS_ROUTE_LEGEND_SVG =
 const WALKING_ROUTE_LEGEND_SVG =
   '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="16" viewBox="0 0 48 16" fill="none"><path d="M2 8H46" stroke="#38A800" stroke-width="4.6" stroke-linecap="square"/><path d="M2 8H46" stroke="#FFFFFF" stroke-width="3.2" stroke-linecap="square"/><path d="M2 8H46" stroke="#38A800" stroke-width="1.4" stroke-linecap="square" stroke-dasharray="4 4"/></svg>';
 const createRouteLayerNative = (
-  values: Array<{ value: string; label: string; symbol: AutoCastCimSymbol }>
+  _values: Array<{ value: string; label: string; symbol: AutoCastCimSymbol }>
 ): FeatureLayerNative => ({
   outFields: ['*']
 });
@@ -222,7 +221,7 @@ const DAY3_ROUTE_NATIVE = createRouteLayerNative([
   }
 ]);
 
-const createConferencePoiLayerNative = (dayNumber: 2 | 3): FeatureLayerNative => ({
+const createConferencePoiLayerNative = (_dayNumber: 2 | 3): FeatureLayerNative => ({
   outFields: ['*']
 });
 

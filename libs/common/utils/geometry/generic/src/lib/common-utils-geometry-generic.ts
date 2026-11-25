@@ -3,10 +3,9 @@ import { skip } from 'rxjs/operators';
 
 import { Point } from '@tamu-gisc/common/types';
 
-import { getSmallestIndex } from '@tamu-gisc/common/utils/number';
+import { minBy } from '@tamu-gisc/common/utils/collection';
+import { distanceInMetres } from '@tamu-gisc/common/utils/geometry';
 import { centroidFromGeometry, FeatureUnion } from '@tamu-gisc/common/utils/geometry/esri';
-
-import * as gju from 'geojson-utils';
 
 // Lives in the framework-free geometry library, so code that loads no map library can use it too
 // (#1766). Re-exported here so existing callers are unchanged.
@@ -81,43 +80,11 @@ export class TrackLocation {
 }
 
 /**
- * Determines the index of the nearest feature to a static reference from a collection of centroid points.
+ * The index of the point nearest to a reference, measured with `distanceInMetres` to each point's
+ * centroid, or -1 for an empty list. The first one wins a tie.
  */
-export function findNearestIndex(reference: Point, centroids: { geometry: Point }[]): number {
-  const distances = relativeDistance(
-    {
-      latitude: reference.latitude,
-      longitude: reference.longitude
-    },
-    centroids
-  );
-
-  const smallest = getSmallestIndex(distances);
-
-  return smallest;
-}
-
-/**
- * Calculates the relative distance of a collection of points relative to a reference.
- *
- *
- * @param reference Reference point used to calculated distance from/to
- * @param points Collection of points.
- * @returns Calculated distances.
- */
-export function relativeDistance(reference: Point, points: RelativeDistancePoint[]): number[] {
-  const distances = points.reduce((acc, curr) => {
-    const currGeometry = centroidFromGeometry(curr.geometry);
-
-    const distance = gju.pointDistance(
-      { type: 'Point', coordinates: [reference.longitude, reference.latitude] },
-      { type: 'Point', coordinates: [currGeometry.longitude, currGeometry.latitude] }
-    );
-
-    return [...acc, distance];
-  }, []);
-
-  return distances;
+export function findNearestIndex(reference: Point, points: RelativeDistancePoint[]): number {
+  return points.indexOf(minBy(points, (p) => distanceInMetres(reference, centroidFromGeometry(p.geometry))));
 }
 
 export interface RelativeDistancePoint {

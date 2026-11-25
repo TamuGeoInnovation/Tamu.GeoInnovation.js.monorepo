@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { NotFoundException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -9,11 +10,11 @@ import { deleteFileFromDisk, ensureDirectoryExists, fileExists, writeFileToDisk 
 import { Asset } from '../entities/all.entity';
 import { AssetsService } from './assets.service';
 
-jest.mock('@tamu-gisc/common/node/fs', () => ({
-  deleteFileFromDisk: jest.fn(),
-  ensureDirectoryExists: jest.fn(),
-  fileExists: jest.fn(),
-  writeFileToDisk: jest.fn()
+vi.mock('@tamu-gisc/common/node/fs', () => ({
+  deleteFileFromDisk: vi.fn(),
+  ensureDirectoryExists: vi.fn(),
+  fileExists: vi.fn(),
+  writeFileToDisk: vi.fn()
 }));
 
 describe('AssetsService', () => {
@@ -29,7 +30,10 @@ describe('AssetsService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AssetsService,
-        { provide: getRepositoryToken(Asset), useValue: { findOne: jest.fn(), create: jest.fn(), count: jest.fn().mockResolvedValue(0) } }
+        {
+          provide: getRepositoryToken(Asset),
+          useValue: { findOne: vi.fn(), create: vi.fn(), count: vi.fn().mockResolvedValue(0) }
+        }
       ]
     }).compile();
 
@@ -39,7 +43,7 @@ describe('AssetsService', () => {
 
   afterEach(() => {
     process.env = { ...original };
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {
@@ -49,8 +53,8 @@ describe('AssetsService', () => {
   describe('.findOne()', () => {
     it('returns the asset when the row and the file on disk both exist', async () => {
       const asset = { guid: 'a-1', path: 'images/places/logo.png' } as Asset;
-      jest.spyOn(assetRepo, 'findOne').mockResolvedValue(asset);
-      (fileExists as jest.Mock).mockResolvedValue(true);
+      vi.spyOn(assetRepo, 'findOne').mockResolvedValue(asset);
+      (fileExists as Mock).mockResolvedValue(true);
 
       await expect(service.findOne('a-1')).resolves.toBe(asset);
       expect(assetRepo.findOne).toHaveBeenCalledWith({ where: { guid: 'a-1' } });
@@ -58,7 +62,7 @@ describe('AssetsService', () => {
     });
 
     it('throws NotFound when no row has that guid', async () => {
-      jest.spyOn(assetRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(assetRepo, 'findOne').mockResolvedValue(null);
 
       await expect(service.findOne('missing')).rejects.toThrow(NotFoundException);
       // Nothing should touch the filesystem for a guid that is not in the database.
@@ -71,15 +75,15 @@ describe('AssetsService', () => {
      * gone is what keeps the caller from serving a broken image.
      */
     it('throws NotFound when the row exists but the file does not', async () => {
-      jest.spyOn(assetRepo, 'findOne').mockResolvedValue({ guid: 'a-1', path: 'images/gone.png' } as Asset);
-      (fileExists as jest.Mock).mockResolvedValue(false);
+      vi.spyOn(assetRepo, 'findOne').mockResolvedValue({ guid: 'a-1', path: 'images/gone.png' } as Asset);
+      (fileExists as Mock).mockResolvedValue(false);
 
       await expect(service.findOne('a-1')).rejects.toThrow(NotFoundException);
     });
 
     it('ensures the assets directory exists before checking for the file', async () => {
-      jest.spyOn(assetRepo, 'findOne').mockResolvedValue({ guid: 'a-1', path: 'x.png' } as Asset);
-      (fileExists as jest.Mock).mockResolvedValue(true);
+      vi.spyOn(assetRepo, 'findOne').mockResolvedValue({ guid: 'a-1', path: 'x.png' } as Asset);
+      (fileExists as Mock).mockResolvedValue(true);
 
       await service.findOne('a-1');
 
@@ -91,9 +95,9 @@ describe('AssetsService', () => {
     const file = { originalname: 'logo.png' } as Express.Multer.File;
 
     it('writes under the resource path and records the relative path on the row', async () => {
-      (writeFileToDisk as jest.Mock).mockResolvedValue('logo.png');
-      const save = jest.fn().mockResolvedValue({ guid: 'a-new' });
-      jest.spyOn(assetRepo, 'create').mockReturnValue({ save } as never);
+      (writeFileToDisk as Mock).mockResolvedValue('logo.png');
+      const save = vi.fn().mockResolvedValue({ guid: 'a-new' });
+      vi.spyOn(assetRepo, 'create').mockReturnValue({ save } as never);
 
       await expect(service.saveAsset('images/places', file, 'place-logo')).resolves.toEqual({
         guid: 'a-new'
@@ -114,8 +118,8 @@ describe('AssetsService', () => {
     });
 
     it('lets caller options override the defaults', async () => {
-      (writeFileToDisk as jest.Mock).mockResolvedValue('logo.png');
-      jest.spyOn(assetRepo, 'create').mockReturnValue({ save: jest.fn() } as never);
+      (writeFileToDisk as Mock).mockResolvedValue('logo.png');
+      vi.spyOn(assetRepo, 'create').mockReturnValue({ save: vi.fn() } as never);
 
       await service.saveAsset('images/places', file, 'place-logo', { truncateFileNameLength: 10 });
 
@@ -127,11 +131,9 @@ describe('AssetsService', () => {
     });
 
     it('does not create a row when the write fails', async () => {
-      (writeFileToDisk as jest.Mock).mockRejectedValue(new Error('disk full'));
+      (writeFileToDisk as Mock).mockRejectedValue(new Error('disk full'));
 
-      await expect(service.saveAsset('images/places', file, 'place-logo')).rejects.toThrow(
-        'Could not save asset.'
-      );
+      await expect(service.saveAsset('images/places', file, 'place-logo')).rejects.toThrow('Could not save asset.');
       // A row pointing at a file that was never written would fail every later `findOne`.
       expect(assetRepo.create).not.toHaveBeenCalled();
     });
@@ -143,7 +145,7 @@ describe('AssetsService', () => {
      * timestamps included, and on SQL Server that matched no row at all (#2205).
      */
     it('deletes the rows by their guids, in the transaction it is given', async () => {
-      const manager = { delete: jest.fn().mockResolvedValue({ affected: 2 }) };
+      const manager = { delete: vi.fn().mockResolvedValue({ affected: 2 }) };
       const assets = [
         { guid: 'a-1', path: 'images/sponsors/one.png', created: new Date(), updated: new Date() },
         { guid: 'a-2', path: 'images/sponsors/two.png', created: new Date(), updated: new Date() }
@@ -155,7 +157,7 @@ describe('AssetsService', () => {
     });
 
     it('deletes nothing for an empty list', async () => {
-      const manager = { delete: jest.fn() };
+      const manager = { delete: vi.fn() };
 
       await service.deleteAssets(manager as never, []);
 
@@ -165,8 +167,8 @@ describe('AssetsService', () => {
   });
 
   describe('.deleteAssetFiles()', () => {
-    it('removes each asset\'s file under APP_DATA', async () => {
-      (deleteFileFromDisk as jest.Mock).mockResolvedValue(true);
+    it("removes each asset's file under APP_DATA", async () => {
+      (deleteFileFromDisk as Mock).mockResolvedValue(true);
 
       await service.deleteAssetFiles([
         { guid: 'a-1', path: 'images/sponsors/one.png' },
@@ -182,7 +184,7 @@ describe('AssetsService', () => {
      * caller has already been told succeeded: it is logged, and the rest are still removed.
      */
     it('carries on past a file it cannot remove', async () => {
-      (deleteFileFromDisk as jest.Mock).mockRejectedValueOnce(new Error('EACCES')).mockResolvedValueOnce(true);
+      (deleteFileFromDisk as Mock).mockRejectedValueOnce(new Error('EACCES')).mockResolvedValueOnce(true);
 
       await expect(
         service.deleteAssetFiles([
@@ -197,8 +199,8 @@ describe('AssetsService', () => {
     // Files are stored under their upload name, so two sponsors' "logo.png" are one file, and every seeded speaker's photo is
     // images/placeholder.svg: 930 rows on the seed. Removing a file another row still uses would break that one too.
     it('keeps a file that another asset row still uses', async () => {
-      (assetRepo.count as jest.Mock).mockImplementation(async ({ where }) => (where.path === 'images/placeholder.svg' ? 930 : 0));
-      (deleteFileFromDisk as jest.Mock).mockResolvedValue(true);
+      (assetRepo.count as Mock).mockImplementation(async ({ where }) => (where.path === 'images/placeholder.svg' ? 930 : 0));
+      (deleteFileFromDisk as Mock).mockResolvedValue(true);
 
       await service.deleteAssetFiles([
         { guid: 'a-1', path: 'images/placeholder.svg' },

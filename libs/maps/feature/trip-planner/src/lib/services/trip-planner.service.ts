@@ -1667,7 +1667,7 @@ export class TripPlannerService implements OnDestroy {
           }
         });
       }
-    } catch (err) {
+    } catch {
       // If the requests fail for whatever reason, still report it as a regular fail
       // Route failure analytics tracking
       const stops = tripResult.stopsToArray();

@@ -6,7 +6,6 @@ import { IComposedIDefinitions } from '../definitions';
 import { IFactoryExcludeOptions } from '../utils/definitionFactory';
 
 // Search sources used for querying features.
-import { getDefaultGisHost } from '../connections';
 
 /**
  * The Campus Structures rows that are parking garages: `GARAGE`, and `GARAGE PVT` where it is privately operated.
@@ -46,8 +45,6 @@ export function SearchSources(
   definitions: IComposedIDefinitions,
   options?: IFactoryExcludeOptions<ComposedSearchSourcesKeyMap>
 ): Array<SearchSource> {
-  const gisHost = getDefaultGisHost();
-
   const SEARCH_SOURCES: ComposedSearchSourcesKeyMap = {
     BUILDING: {
       source: 'building',

@@ -1,18 +1,24 @@
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AsyncPipe, DatePipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { BehaviorSubject, combineLatest, map, merge, Observable, of, shareReplay, startWith, switchMap } from 'rxjs';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 import type { Speaker } from '@tamu-gisc/gisday/platform/data-api';
 import { SpeakerService } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { isAggieFormerStudent, matchesText, shortClassYear, speakerAffiliation } from '@tamu-gisc/gisday/platform/ngx/common';
+import {
+  isAggieFormerStudent,
+  matchesText,
+  shortClassYear,
+  speakerAffiliation
+} from '@tamu-gisc/gisday/platform/ngx/common';
 import { RadioGroupComponent, SelectComponent, TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { downloadFile, toCsv } from '@tamu-gisc/common/utils/ui';
 
 import { BaseAdminListComponent } from '../../base-admin-list/base-admin-list.component';
 import { naturalOrder } from '@tamu-gisc/gisday/common';
+import { CentralDatePipe } from '@tamu-gisc/gisday/platform/ngx/common';
 
 /** A speaker as a badge prints them (#2899), and whether it has been (#2908). */
 export interface SpeakerBadge {
@@ -57,7 +63,9 @@ export function organizationOf(speaker: Partial<Speaker>): string {
 }
 
 /** What a badge says, as stored when it is marked printed: the name, organization and class year it prints. */
-export function badgeText(badge: Pick<SpeakerBadge, 'firstName' | 'lastName' | 'organization' | 'formerStudentYear'>): string {
+export function badgeText(
+  badge: Pick<SpeakerBadge, 'firstName' | 'lastName' | 'organization' | 'formerStudentYear'>
+): string {
   return [badge.firstName, badge.lastName, badge.organization, badge.formerStudentYear].join('|');
 }
 
@@ -77,7 +85,11 @@ export function badgesOf(speakers: Array<Partial<Speaker>>): Array<SpeakerBadge>
       };
       const printedAt = s.badgePrintedAt ? new Date(s.badgePrintedAt).toISOString() : null;
 
-      return { ...badge, printedAt, changedSincePrinted: Boolean(printedAt) && (s.badgePrintedText ?? '') !== badgeText(badge) };
+      return {
+        ...badge,
+        printedAt,
+        changedSincePrinted: Boolean(printedAt) && (s.badgePrintedText ?? '') !== badgeText(badge)
+      };
     }),
     null
   );
@@ -122,7 +134,15 @@ export function badgesCsv(badges: Array<SpeakerBadge>): string {
   selector: 'tamu-gisc-speaker-badges',
   templateUrl: './speaker-badges.component.html',
   styleUrls: ['./speaker-badges.component.scss'],
-  imports: [SelectComponent, TextboxComponent, RadioGroupComponent, ReactiveFormsModule, NgxDatatableModule, AsyncPipe, DatePipe]
+  imports: [
+    SelectComponent,
+    TextboxComponent,
+    RadioGroupComponent,
+    ReactiveFormsModule,
+    NgxDatatableModule,
+    AsyncPipe,
+    CentralDatePipe
+  ]
 })
 export class SpeakerBadgesComponent extends BaseAdminListComponent<Speaker> implements OnInit {
   protected readonly entityService = inject(SpeakerService);
@@ -149,7 +169,9 @@ export class SpeakerBadgesComponent extends BaseAdminListComponent<Speaker> impl
     super.ngOnInit();
 
     const badges$ = combineLatest([this.selectedSeason$, this.reload$]).pipe(
-      switchMap(([season]) => (season?.guid ? this.entityService.getAllParticipatingPresentersForSeason(season.guid) : of([]))),
+      switchMap(([season]) =>
+        season?.guid ? this.entityService.getAllParticipatingPresentersForSeason(season.guid) : of([])
+      ),
       map((speakers) => badgesOf(speakers ?? [])),
       shareReplay(1)
     );

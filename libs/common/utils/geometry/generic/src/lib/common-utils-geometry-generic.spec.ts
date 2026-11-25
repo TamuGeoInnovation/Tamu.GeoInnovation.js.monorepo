@@ -1,5 +1,14 @@
 import type { Mock } from 'vitest';
-import { findNearestIndex, getGeolocation, relativeDistance, TrackLocation } from './common-utils-geometry-generic';
+
+import esri = __esri;
+
+import { distanceInMetres } from '@tamu-gisc/common/utils/geometry';
+
+import {
+  findNearestIndex,
+  getGeolocation,
+  TrackLocation
+} from './common-utils-geometry-generic';
 
 describe('getGeolocation', () => {
   const coords = {
@@ -57,14 +66,50 @@ describe('getGeolocation', () => {
 });
 
 describe('findNearestIndex', () => {
-  it('should find nearest index', () => {
-    expect(findNearestIndex({ latitude: 40, longitude: 50 }, [{ geometry: { latitude: 40, longitude: 50 } }])).toEqual(0);
-  });
-});
+  const academicBuilding = { latitude: 30.6156, longitude: -96.3409 };
+  const kyleField = { latitude: 30.61, longitude: -96.3404 };
+  const evansLibrary = { latitude: 30.617, longitude: -96.3389 };
+  const rellis = { latitude: 30.642, longitude: -96.471 };
 
-describe('relativeDistance', () => {
-  it('should output relative distances', () => {
-    expect(relativeDistance({ latitude: 40, longitude: 50 }, [{ geometry: { latitude: 40, longitude: 50 } }])).toEqual([0]);
+  it('finds the point nearest by distanceInMetres', () => {
+    const places = [rellis, kyleField, evansLibrary].map((geometry) => ({ geometry }));
+    const metres = places.map((p) => distanceInMetres(academicBuilding, p.geometry));
+
+    expect(findNearestIndex(academicBuilding, places)).toBe(metres.indexOf(Math.min(...metres)));
+    expect(findNearestIndex(academicBuilding, places)).toBe(2);
+  });
+
+  it('tells apart two bike racks 3 metres apart', () => {
+    const rack7055 = { latitude: 30.6105280760633, longitude: -96.33420986857938 };
+    const rack7056 = { latitude: 30.610548341339005, longitude: -96.33423189296872 };
+    const nearer7056 = { latitude: 30.61055, longitude: -96.33424 };
+
+    expect(findNearestIndex(nearer7056, [{ geometry: rack7055 }, { geometry: rack7056 }])).toBe(1);
+  });
+
+  it('measures to the centre of an area, as the parking and bike searches return', () => {
+    const square = (c: { latitude: number; longitude: number }) =>
+      ({
+        type: 'polygon',
+        rings: [
+          [
+            [c.longitude - 0.0001, c.latitude - 0.0001],
+            [c.longitude - 0.0001, c.latitude + 0.0001],
+            [c.longitude + 0.0001, c.latitude + 0.0001],
+            [c.longitude + 0.0001, c.latitude - 0.0001],
+            [c.longitude - 0.0001, c.latitude - 0.0001]
+          ]
+        ]
+      }) as unknown as esri.Polygon;
+
+    expect(findNearestIndex(academicBuilding, [{ geometry: square(kyleField) }, { geometry: square(evansLibrary) }])).toBe(
+      1
+    );
+  });
+
+  it('takes the first of two at the same distance, and finds nothing in an empty list', () => {
+    expect(findNearestIndex(kyleField, [{ geometry: kyleField }, { geometry: kyleField }])).toBe(0);
+    expect(findNearestIndex(kyleField, [])).toBe(-1);
   });
 });
 

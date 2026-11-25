@@ -156,7 +156,7 @@ describe('ResearchCompetitionListComponent actions on the selected submissions',
     };
     // The email window closes with the approved texts, or nothing; the profile email's question with yes or no.
     const modals = {
-      open: vi.fn((component: unknown, options?: { data?: { verb?: string } }) =>
+      open: vi.fn((component: unknown, options?: { data?: { verb?: string; note?: string } }) =>
         component === ReviewEmailModalComponent
           ? of(confirmed ? (options?.data?.verb === 'Send profile email' ? profileEmail : templates) : null)
           : of(confirmed)
@@ -339,7 +339,9 @@ describe('ResearchCompetitionListComponent, the final file and the final reminde
       getEntitiesForSeason: () => of(rows),
       getEntities: () => of(rows)
     };
-    const modals = { open: vi.fn(() => of(confirmed ? templates : null)) };
+    const modals = {
+      open: vi.fn((_component: unknown, _options: { data: { note?: string } }) => of(confirmed ? templates : null))
+    };
     const toasts = { toast: vi.fn() };
 
     TestBed.configureTestingModule({

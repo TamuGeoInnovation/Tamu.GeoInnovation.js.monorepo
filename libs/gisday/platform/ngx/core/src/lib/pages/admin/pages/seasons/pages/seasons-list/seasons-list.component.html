@@ -19,7 +19,7 @@
           @if (season?.days && season?.days.length > 0) {
           <p class="value">
             @for (day of season?.days; track day; let last = $last) {
-            <span>{{day.date | date : 'MMM. d'}}{{last === false ? ', ': ''}}</span>
+            <span>{{day.date | centralDate : 'MMM. d'}}{{last === false ? ', ': ''}}</span>
             }
           </p>
           } @else {

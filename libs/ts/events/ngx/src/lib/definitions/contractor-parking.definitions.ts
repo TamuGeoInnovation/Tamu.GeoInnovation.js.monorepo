@@ -13,9 +13,6 @@ export enum CONTRACTOR_PARKING_LAYERS {
 }
 const eventUrl = Connections.contractorParkingUrl;
 
-type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
-type FeatureRenderer = NonNullable<NonNullable<FeatureNative>['renderer']>;
-
 export const ContractorParkingDefinitions = {
   CONTRACTOR_AND_CONTRACTOR_PLUS: {
     id: CONTRACTOR_PARKING_LAYERS.CONTRACTOR_AND_CONTRACTOR_PLUS,

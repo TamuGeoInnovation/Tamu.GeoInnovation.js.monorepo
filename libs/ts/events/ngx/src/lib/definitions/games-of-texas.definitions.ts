@@ -1,8 +1,6 @@
 import { FeatureLayerSourceProperties, LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import esri = __esri;
-
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,

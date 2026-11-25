@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import {
   BadRequestException,
   NotFoundException,
@@ -28,12 +29,12 @@ describe('SpeakerProvider', () => {
   let assetService: AssetsService;
 
   const repoMock = () => ({
-    find: jest.fn(),
-    findOne: jest.fn(),
-    create: jest.fn(),
-    save: jest.fn(),
-    update: jest.fn(),
-    manager: { transaction: jest.fn() }
+    find: vi.fn(),
+    findOne: vi.fn(),
+    create: vi.fn(),
+    save: vi.fn(),
+    update: vi.fn(),
+    manager: { transaction: vi.fn() }
   });
 
   /** A speaker as it comes back on an event, with the fields `limitToPopulated` looks at. */
@@ -59,11 +60,11 @@ describe('SpeakerProvider', () => {
         { provide: getRepositoryToken(Asset), useValue: repoMock() },
         {
           provide: AssetsService,
-          useValue: { saveAsset: jest.fn(), deleteAssets: jest.fn(), deleteAssetFiles: jest.fn() }
+          useValue: { saveAsset: vi.fn(), deleteAssets: vi.fn(), deleteAssetFiles: vi.fn() }
         },
         {
           provide: SeasonService,
-          useValue: { findOne: jest.fn(), findOneActive: jest.fn(), findOneWithDaysAndEvents: jest.fn() }
+          useValue: { findOne: vi.fn(), findOneActive: vi.fn(), findOneWithDaysAndEvents: vi.fn() }
         }
       ]
     }).compile();
@@ -76,7 +77,7 @@ describe('SpeakerProvider', () => {
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('should be defined', () => {
@@ -85,7 +86,7 @@ describe('SpeakerProvider', () => {
 
   describe('.getSpeakersForSeason()', () => {
     it('scopes to the season and orders by last then first name', async () => {
-      jest.spyOn(speakerRepo, 'find').mockResolvedValue([speaker('s-1')]);
+      vi.spyOn(speakerRepo, 'find').mockResolvedValue([speaker('s-1')]);
 
       await expect(provider.getSpeakersForSeason('season-1')).resolves.toEqual([expect.objectContaining({ guid: 's-1' })]);
       expect(speakerRepo.find).toHaveBeenCalledWith(
@@ -101,10 +102,10 @@ describe('SpeakerProvider', () => {
     const activeSeason = (days: Array<unknown>) => ({ guid: 'active', days }) as unknown as Season;
 
     it('collects the speakers across every event in the season', async () => {
-      jest
-        .spyOn(seasonService, 'findOneActive')
-        .mockResolvedValue(activeSeason([{ events: [{ guid: 'e-1' }, { guid: 'e-2' }] }]) as never);
-      jest.spyOn(eventRepo, 'find').mockResolvedValue([
+      vi.spyOn(seasonService, 'findOneActive').mockResolvedValue(
+        activeSeason([{ events: [{ guid: 'e-1' }, { guid: 'e-2' }] }]) as never
+      );
+      vi.spyOn(eventRepo, 'find').mockResolvedValue([
         { guid: 'e-1', speakers: [speaker('s-1')] },
         { guid: 'e-2', speakers: [speaker('s-2')] }
       ] as unknown as Event[]);
@@ -115,10 +116,10 @@ describe('SpeakerProvider', () => {
     });
 
     it('returns a speaker once even when they appear on several events', async () => {
-      jest
-        .spyOn(seasonService, 'findOneActive')
-        .mockResolvedValue(activeSeason([{ events: [{ guid: 'e-1' }, { guid: 'e-2' }] }]) as never);
-      jest.spyOn(eventRepo, 'find').mockResolvedValue([
+      vi.spyOn(seasonService, 'findOneActive').mockResolvedValue(
+        activeSeason([{ events: [{ guid: 'e-1' }, { guid: 'e-2' }] }]) as never
+      );
+      vi.spyOn(eventRepo, 'find').mockResolvedValue([
         { guid: 'e-1', speakers: [speaker('s-1')] },
         { guid: 'e-2', speakers: [speaker('s-1')] }
       ] as unknown as Event[]);
@@ -127,8 +128,8 @@ describe('SpeakerProvider', () => {
     });
 
     it('keeps only speakers with both a bio and an image when asked to', async () => {
-      jest.spyOn(seasonService, 'findOneActive').mockResolvedValue(activeSeason([{ events: [{ guid: 'e-1' }] }]) as never);
-      jest.spyOn(eventRepo, 'find').mockResolvedValue([
+      vi.spyOn(seasonService, 'findOneActive').mockResolvedValue(activeSeason([{ events: [{ guid: 'e-1' }] }]) as never);
+      vi.spyOn(eventRepo, 'find').mockResolvedValue([
         {
           guid: 'e-1',
           speakers: [speaker('s-complete'), speaker('s-no-bio', { description: '' }), speaker('s-no-image', { images: [] })]
@@ -141,10 +142,10 @@ describe('SpeakerProvider', () => {
     });
 
     it('keeps incomplete speakers when not asked to filter', async () => {
-      jest.spyOn(seasonService, 'findOneActive').mockResolvedValue(activeSeason([{ events: [{ guid: 'e-1' }] }]) as never);
-      jest
-        .spyOn(eventRepo, 'find')
-        .mockResolvedValue([{ guid: 'e-1', speakers: [speaker('s-no-bio', { description: '' })] }] as unknown as Event[]);
+      vi.spyOn(seasonService, 'findOneActive').mockResolvedValue(activeSeason([{ events: [{ guid: 'e-1' }] }]) as never);
+      vi.spyOn(eventRepo, 'find').mockResolvedValue([
+        { guid: 'e-1', speakers: [speaker('s-no-bio', { description: '' })] }
+      ] as unknown as Event[]);
 
       await expect(provider.getSpeakersForActiveSeasonInEvents()).resolves.toHaveLength(1);
     });
@@ -162,8 +163,8 @@ describe('SpeakerProvider', () => {
      * an empty list. The reduce immediately below it passes `[]`, which is what this one wanted.
      */
     it('answers an empty list for an active season that has no days yet', async () => {
-      jest.spyOn(seasonService, 'findOneActive').mockResolvedValue(activeSeason([]) as never);
-      const find = jest.spyOn(eventRepo, 'find').mockResolvedValue([]);
+      vi.spyOn(seasonService, 'findOneActive').mockResolvedValue(activeSeason([]) as never);
+      const find = vi.spyOn(eventRepo, 'find').mockResolvedValue([]);
 
       await expect(provider.getSpeakersForActiveSeasonInEvents()).resolves.toEqual([]);
       // It does not short-circuit: the lookup still runs with an empty `In([])`. That is wasteful
@@ -172,10 +173,10 @@ describe('SpeakerProvider', () => {
     });
 
     it('tolerates a day with no events on it', async () => {
-      jest
-        .spyOn(seasonService, 'findOneActive')
-        .mockResolvedValue(activeSeason([{ events: [] }, { events: [{ guid: 'e-1' }] }]) as never);
-      jest.spyOn(eventRepo, 'find').mockResolvedValue([{ guid: 'e-1', speakers: [speaker('s-1')] }] as unknown as Event[]);
+      vi.spyOn(seasonService, 'findOneActive').mockResolvedValue(
+        activeSeason([{ events: [] }, { events: [{ guid: 'e-1' }] }]) as never
+      );
+      vi.spyOn(eventRepo, 'find').mockResolvedValue([{ guid: 'e-1', speakers: [speaker('s-1')] }] as unknown as Event[]);
 
       await expect(provider.getSpeakersForActiveSeasonInEvents()).resolves.toHaveLength(1);
     });
@@ -185,12 +186,12 @@ describe('SpeakerProvider', () => {
     const pastSeason = (days: Array<unknown>) => ({ guid: 'season-2025', year: 2025, days }) as unknown as Season;
 
     it('collects the speakers from the events of the season asked for, not the active one', async () => {
-      const lookup = jest
+      const lookup = vi
         .spyOn(seasonService, 'findOneWithDaysAndEvents')
         .mockResolvedValue(pastSeason([{ events: [{ guid: 'e-2025' }] }]) as never);
-      jest
-        .spyOn(eventRepo, 'find')
-        .mockResolvedValue([{ guid: 'e-2025', speakers: [speaker('s-2025')] }] as unknown as Event[]);
+      vi.spyOn(eventRepo, 'find').mockResolvedValue([
+        { guid: 'e-2025', speakers: [speaker('s-2025')] }
+      ] as unknown as Event[]);
 
       const result = await provider.getSpeakersForSeasonInEvents('season-2025');
 
@@ -200,14 +201,12 @@ describe('SpeakerProvider', () => {
     });
 
     it('applies the same bio and image filter as the active season', async () => {
-      jest
-        .spyOn(seasonService, 'findOneWithDaysAndEvents')
-        .mockResolvedValue(pastSeason([{ events: [{ guid: 'e-1' }] }]) as never);
-      jest
-        .spyOn(eventRepo, 'find')
-        .mockResolvedValue([
-          { guid: 'e-1', speakers: [speaker('s-complete'), speaker('s-no-image', { images: [] })] }
-        ] as unknown as Event[]);
+      vi.spyOn(seasonService, 'findOneWithDaysAndEvents').mockResolvedValue(
+        pastSeason([{ events: [{ guid: 'e-1' }] }]) as never
+      );
+      vi.spyOn(eventRepo, 'find').mockResolvedValue([
+        { guid: 'e-1', speakers: [speaker('s-complete'), speaker('s-no-image', { images: [] })] }
+      ] as unknown as Event[]);
 
       const result = await provider.getSpeakersForSeasonInEvents('season-2025', true);
 
@@ -217,7 +216,7 @@ describe('SpeakerProvider', () => {
 
   describe('organizer lookups', () => {
     it('restricts to organizers for a given season', async () => {
-      jest.spyOn(speakerRepo, 'find').mockResolvedValue([speaker('s-1')]);
+      vi.spyOn(speakerRepo, 'find').mockResolvedValue([speaker('s-1')]);
 
       await provider.getOrganizersForSeason('season-1');
 
@@ -229,7 +228,7 @@ describe('SpeakerProvider', () => {
     });
 
     it('restricts to organizers across every season', async () => {
-      jest.spyOn(speakerRepo, 'find').mockResolvedValue([speaker('s-1')]);
+      vi.spyOn(speakerRepo, 'find').mockResolvedValue([speaker('s-1')]);
 
       await provider.getAllTimeOrganizers();
 
@@ -237,8 +236,8 @@ describe('SpeakerProvider', () => {
     });
 
     it('restricts to organizers for whichever season is active', async () => {
-      jest.spyOn(seasonService, 'findOneActive').mockResolvedValue({ guid: 'active' } as never);
-      jest.spyOn(speakerRepo, 'find').mockResolvedValue([speaker('s-1')]);
+      vi.spyOn(seasonService, 'findOneActive').mockResolvedValue({ guid: 'active' } as never);
+      vi.spyOn(speakerRepo, 'find').mockResolvedValue([speaker('s-1')]);
 
       await provider.getOrganizersForActiveSeason();
 
@@ -255,7 +254,7 @@ describe('SpeakerProvider', () => {
       ({ guid: 's-1', firstName: 'A', isOrganizer: true, images: [{ guid: 'i-1' }] }) as unknown as Speaker;
 
     it('throws NotFound when the speaker does not exist', async () => {
-      jest.spyOn(speakerRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(speakerRepo, 'findOne').mockResolvedValue(null);
 
       await expect(provider.updateWithInfo('missing', {})).rejects.toThrow(NotFoundException);
     });
@@ -266,12 +265,12 @@ describe('SpeakerProvider', () => {
      * sending a real JSON boolean `true` gets `false` stored.
      */
     it('reads the organizer flag from the string form data sends', async () => {
-      jest.spyOn(speakerRepo, 'findOne').mockResolvedValue(existing());
-      jest.spyOn(speakerRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
+      vi.spyOn(speakerRepo, 'findOne').mockResolvedValue(existing());
+      vi.spyOn(speakerRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
 
       await provider.updateWithInfo('s-1', { isOrganizer: 'true', isActive: 'false' } as never);
 
-      const saved = (speakerRepo.save as jest.Mock).mock.calls[0][0];
+      const saved = (speakerRepo.save as Mock).mock.calls[0][0];
       expect(saved.isOrganizer).toBe(true);
       expect(saved.isActive).toBe(false);
     });
@@ -283,56 +282,56 @@ describe('SpeakerProvider', () => {
      * anywhere else silently demotes an organizer.
      */
     it('clears the organizer flag when the field is omitted', async () => {
-      jest.spyOn(speakerRepo, 'findOne').mockResolvedValue(existing());
-      jest.spyOn(speakerRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
+      vi.spyOn(speakerRepo, 'findOne').mockResolvedValue(existing());
+      vi.spyOn(speakerRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
 
       await provider.updateWithInfo('s-1', { firstName: 'B' });
 
-      expect((speakerRepo.save as jest.Mock).mock.calls[0][0].isOrganizer).toBe(false);
+      expect((speakerRepo.save as Mock).mock.calls[0][0].isOrganizer).toBe(false);
     });
 
     it('leaves existing images alone when no replacement file is supplied', async () => {
-      jest.spyOn(speakerRepo, 'findOne').mockResolvedValue(existing());
-      jest.spyOn(speakerRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
+      vi.spyOn(speakerRepo, 'findOne').mockResolvedValue(existing());
+      vi.spyOn(speakerRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
 
       await provider.updateWithInfo('s-1', { firstName: 'B' });
 
-      expect('images' in (speakerRepo.save as jest.Mock).mock.calls[0][0]).toBe(false);
+      expect('images' in (speakerRepo.save as Mock).mock.calls[0][0]).toBe(false);
     });
 
     it('replaces the image when a file is supplied, prefixed with the speaker guid', async () => {
-      jest.spyOn(speakerRepo, 'findOne').mockResolvedValue(existing());
-      jest.spyOn(speakerRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
-      jest.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'i-2' } as never);
+      vi.spyOn(speakerRepo, 'findOne').mockResolvedValue(existing());
+      vi.spyOn(speakerRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
+      vi.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'i-2' } as never);
 
       await provider.updateWithInfo('s-1', {}, { originalname: 'face.png', buffer: declaredPng(10, 10) });
 
       expect(assetService.saveAsset).toHaveBeenCalledWith('images/speakers', expect.anything(), 'speaker-image', {
         prefix: expect.stringMatching(/^s-1-[0-9a-f]{8}-$/)
       });
-      expect((speakerRepo.save as jest.Mock).mock.calls[0][0].images).toEqual([{ guid: 'i-2' }]);
+      expect((speakerRepo.save as Mock).mock.calls[0][0].images).toEqual([{ guid: 'i-2' }]);
     });
 
     // #3091: uploads are served as immutable for a year, so a new photo saved under an old one's name kept showing the
     // old photo. Two uploads with the same file name get different addresses.
     it('gives a new photo its own address even when its file has the same name as the last one', async () => {
-      jest.spyOn(speakerRepo, 'findOne').mockResolvedValue(existing());
-      jest.spyOn(speakerRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
-      jest.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'i-2' } as never);
+      vi.spyOn(speakerRepo, 'findOne').mockResolvedValue(existing());
+      vi.spyOn(speakerRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
+      vi.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'i-2' } as never);
 
       await provider.updateWithInfo('s-1', {}, { originalname: 'headshot.png', buffer: declaredPng(10, 10) });
       await provider.updateWithInfo('s-1', {}, { originalname: 'headshot.png', buffer: declaredPng(10, 10) });
 
-      const [first, second] = (assetService.saveAsset as jest.Mock).mock.calls.map((c) => c[3].prefix);
+      const [first, second] = (assetService.saveAsset as Mock).mock.calls.map((c) => c[3].prefix);
 
       expect(first).not.toEqual(second);
     });
 
     // jimp is pure JavaScript, so a 3000 px photo takes a second or more; 30 s, not 5, under the full check's load.
     it('stores a large photo at the size the site shows it, not as uploaded (#2352)', async () => {
-      jest.spyOn(speakerRepo, 'findOne').mockResolvedValue(existing());
-      jest.spyOn(speakerRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
-      jest.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'i-2' } as never);
+      vi.spyOn(speakerRepo, 'findOne').mockResolvedValue(existing());
+      vi.spyOn(speakerRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
+      vi.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'i-2' } as never);
       const upload = await new Jimp({ width: 3000, height: 3000, color: 0x7f7f7fff }).getBuffer('image/jpeg');
 
       await provider.updateWithInfo(
@@ -341,7 +340,7 @@ describe('SpeakerProvider', () => {
         { originalname: 'face.jpg', mimetype: 'image/jpeg', buffer: upload, size: upload.length }
       );
 
-      const stored = (assetService.saveAsset as jest.Mock).mock.calls[0][1];
+      const stored = (assetService.saveAsset as Mock).mock.calls[0][1];
       const { width, height } = (await Jimp.fromBuffer(stored.buffer)).bitmap;
       // Twice the 420 px a presenter's own page draws it at, for sharp screens.
       expect([width, height]).toEqual([840, 840]);
@@ -350,8 +349,8 @@ describe('SpeakerProvider', () => {
     }, 30_000);
 
     it('refuses a small file that declares a huge image, before decoding it, with 413', async () => {
-      jest.spyOn(speakerRepo, 'findOne').mockResolvedValue(existing());
-      jest.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'i-2' } as never);
+      vi.spyOn(speakerRepo, 'findOne').mockResolvedValue(existing());
+      vi.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'i-2' } as never);
       // A few KB that would make the decoder allocate 50,000 x 50,000 x 4 bytes: 10 GB.
       const bomb = declaredPng(50_000, 50_000);
       expect(bomb.length).toBeLessThan(4096);
@@ -367,8 +366,8 @@ describe('SpeakerProvider', () => {
     });
 
     it('creates no speaker when the new speaker brings a photo that declares a huge image', async () => {
-      const save = jest.fn();
-      jest.spyOn(speakerRepo, 'create').mockReturnValue({ save } as never);
+      const save = vi.fn();
+      vi.spyOn(speakerRepo, 'create').mockReturnValue({ save } as never);
       const bomb = declaredPng(9000, 9000);
 
       await expect(
@@ -381,8 +380,8 @@ describe('SpeakerProvider', () => {
     });
 
     it('refuses a file whose header is not an image it can read, with 400', async () => {
-      jest.spyOn(speakerRepo, 'findOne').mockResolvedValue(existing());
-      jest.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'i-2' } as never);
+      vi.spyOn(speakerRepo, 'findOne').mockResolvedValue(existing());
+      vi.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'i-2' } as never);
       const notAnImage = Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>');
 
       await expect(
@@ -396,12 +395,12 @@ describe('SpeakerProvider', () => {
     });
 
     it('does not let the caller overwrite the guid', async () => {
-      jest.spyOn(speakerRepo, 'findOne').mockResolvedValue(existing());
-      jest.spyOn(speakerRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
+      vi.spyOn(speakerRepo, 'findOne').mockResolvedValue(existing());
+      vi.spyOn(speakerRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
 
       await provider.updateWithInfo('s-1', { guid: 's-hijack' } as never);
 
-      expect((speakerRepo.save as jest.Mock).mock.calls[0][0].guid).toBe('s-1');
+      expect((speakerRepo.save as Mock).mock.calls[0][0].guid).toBe('s-1');
     });
 
     /**
@@ -423,9 +422,9 @@ describe('SpeakerProvider', () => {
         ['an SVG renamed to .png', upload('face.png', svg)],
         ['a GIF', upload('face.gif', gif)]
       ])('refuses %s with 400, on update and on create', async (_name, file) => {
-        jest.spyOn(speakerRepo, 'findOne').mockResolvedValue(existing());
-        const save = jest.fn();
-        jest.spyOn(speakerRepo, 'create').mockReturnValue({ save } as never);
+        vi.spyOn(speakerRepo, 'findOne').mockResolvedValue(existing());
+        const save = vi.fn();
+        vi.spyOn(speakerRepo, 'create').mockReturnValue({ save } as never);
 
         await expect(provider.updateWithInfo('s-1', {}, file)).rejects.toThrow(BadRequestException);
         await expect(provider.insertWithInfo({ firstName: 'A' }, file)).rejects.toThrow(BadRequestException);
@@ -434,20 +433,20 @@ describe('SpeakerProvider', () => {
       });
 
       it('stores a PNG named .svg under a .png name', async () => {
-        jest.spyOn(speakerRepo, 'findOne').mockResolvedValue(existing());
-        jest.spyOn(speakerRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
-        jest.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'i-2' } as never);
+        vi.spyOn(speakerRepo, 'findOne').mockResolvedValue(existing());
+        vi.spyOn(speakerRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
+        vi.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'i-2' } as never);
 
         await provider.updateWithInfo('s-1', {}, upload('face.svg', declaredPng(10, 10)));
 
-        expect((assetService.saveAsset as jest.Mock).mock.calls[0][1].originalname).toBe('face.png');
+        expect((assetService.saveAsset as Mock).mock.calls[0][1].originalname).toBe('face.png');
       });
     });
   });
 
   describe('badges printed (#2908)', () => {
     it('marks each badge printed at one time, with what it said, and says how many', async () => {
-      jest.spyOn(speakerRepo, 'update').mockResolvedValue({ affected: 1 } as never);
+      vi.spyOn(speakerRepo, 'update').mockResolvedValue({ affected: 1 } as never);
 
       await expect(
         provider.markBadgesPrinted([
@@ -456,7 +455,7 @@ describe('SpeakerProvider', () => {
         ])
       ).resolves.toEqual({ marked: 2 });
 
-      const calls = (speakerRepo.update as jest.Mock).mock.calls;
+      const calls = (speakerRepo.update as Mock).mock.calls;
       expect(calls.map((c) => [c[0], c[1].badgePrintedText])).toEqual([
         [{ guid: 's-1' }, "Ana|Lee|Esri|'11"],
         [{ guid: 's-2' }, 'Pat|Kim|TWDB|']
@@ -466,8 +465,7 @@ describe('SpeakerProvider', () => {
     });
 
     it('counts only the speakers it found', async () => {
-      jest
-        .spyOn(speakerRepo, 'update')
+      vi.spyOn(speakerRepo, 'update')
         .mockResolvedValueOnce({ affected: 1 } as never)
         .mockResolvedValueOnce({ affected: 0 } as never);
 
@@ -486,23 +484,23 @@ describe('SpeakerProvider', () => {
     });
 
     it('clears the mark and what the badge said', async () => {
-      jest.spyOn(speakerRepo, 'update').mockResolvedValue({ affected: 2 } as never);
+      vi.spyOn(speakerRepo, 'update').mockResolvedValue({ affected: 2 } as never);
 
       await expect(provider.clearBadgesPrinted(['s-1', 's-2'])).resolves.toEqual({ cleared: 2 });
-      expect((speakerRepo.update as jest.Mock).mock.calls[0][1]).toEqual({ badgePrintedAt: null, badgePrintedText: null });
+      expect((speakerRepo.update as Mock).mock.calls[0][1]).toEqual({ badgePrintedAt: null, badgePrintedText: null });
     });
   });
 
   describe('.copySpeakersIntoSeason()', () => {
     it('rejects a season that does not exist', async () => {
-      jest.spyOn(seasonService, 'findOne').mockResolvedValue(null);
+      vi.spyOn(seasonService, 'findOne').mockResolvedValue(null);
 
       await expect(provider.copySpeakersIntoSeason('missing', ['s-1'])).rejects.toThrow(UnprocessableEntityException);
     });
 
     it('rejects when none of the requested speakers exist', async () => {
-      jest.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
-      jest.spyOn(speakerRepo, 'find').mockResolvedValue([]);
+      vi.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
+      vi.spyOn(speakerRepo, 'find').mockResolvedValue([]);
 
       await expect(provider.copySpeakersIntoSeason('season-2', ['s-1'])).rejects.toThrow(UnprocessableEntityException);
     });
@@ -518,15 +516,15 @@ describe('SpeakerProvider', () => {
         images: [{ guid: 'i-1', created: new Date(), updated: new Date() }]
       } as unknown as Speaker;
 
-      jest.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
-      jest.spyOn(speakerRepo, 'find').mockResolvedValue([source]);
-      jest
-        .spyOn(speakerRepo, 'create')
-        .mockImplementation((e) => ({ ...(e as object), save: jest.fn().mockResolvedValue(e) }) as never);
+      vi.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
+      vi.spyOn(speakerRepo, 'find').mockResolvedValue([source]);
+      vi.spyOn(speakerRepo, 'create').mockImplementation(
+        (e) => ({ ...(e as object), save: vi.fn().mockResolvedValue(e) }) as never
+      );
 
       await provider.copySpeakersIntoSeason('season-2', ['s-1']);
 
-      const passed = (speakerRepo.create as jest.Mock).mock.calls[0][0];
+      const passed = (speakerRepo.create as Mock).mock.calls[0][0];
       expect(passed.guid).toBeUndefined();
       expect(passed.season).toEqual({ guid: 'season-2' });
       // Last season's printed badge is not this season's (#2908).
@@ -539,14 +537,14 @@ describe('SpeakerProvider', () => {
   });
 
   describe('.deleteEntities()', () => {
-    const withManager = (manager: Record<string, jest.Mock>) => {
-      (speakerRepo.manager.transaction as jest.Mock).mockImplementation((cb) => cb(manager));
+    const withManager = (manager: Record<string, Mock>) => {
+      (speakerRepo.manager.transaction as Mock).mockImplementation((cb) => cb(manager));
     };
 
     it('accepts a comma-separated string and an array alike', async () => {
       const manager = {
-        find: jest.fn().mockResolvedValue([]),
-        delete: jest.fn().mockResolvedValue({ affected: 2 })
+        find: vi.fn().mockResolvedValue([]),
+        delete: vi.fn().mockResolvedValue({ affected: 2 })
       };
       withManager(manager);
 
@@ -560,8 +558,8 @@ describe('SpeakerProvider', () => {
     it('removes the images belonging to the speakers being deleted', async () => {
       const image = { guid: 'i-1' } as Asset;
       const manager = {
-        find: jest.fn().mockResolvedValue([{ guid: 's-1', images: [image] }]),
-        delete: jest.fn().mockResolvedValue({ affected: 1 })
+        find: vi.fn().mockResolvedValue([{ guid: 's-1', images: [image] }]),
+        delete: vi.fn().mockResolvedValue({ affected: 1 })
       };
       withManager(manager);
 
@@ -574,8 +572,8 @@ describe('SpeakerProvider', () => {
 
     it('does not attempt an image delete when there are none', async () => {
       const manager = {
-        find: jest.fn().mockResolvedValue([{ guid: 's-1', images: [] }]),
-        delete: jest.fn().mockResolvedValue({ affected: 1 })
+        find: vi.fn().mockResolvedValue([{ guid: 's-1', images: [] }]),
+        delete: vi.fn().mockResolvedValue({ affected: 1 })
       };
       withManager(manager);
 
