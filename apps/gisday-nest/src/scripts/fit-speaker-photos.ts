@@ -20,14 +20,22 @@ import { join, resolve } from 'path';
 import { fitImage, type FitImageResult } from '@tamu-gisc/common/node/images';
 import { SPEAKER_PHOTO_FIT } from '@tamu-gisc/gisday/platform/data-api';
 
-const arg = (name: string) => process.argv.find((a) => a.startsWith(`--${name}=`))?.split('=').slice(1).join('=');
+const arg = (name: string) =>
+  process.argv
+    .find((a) => a.startsWith(`--${name}=`))
+    ?.split('=')
+    .slice(1)
+    .join('=');
 const apply = process.argv.includes('--apply');
 const dir = resolve(arg('dir') ?? join(process.env.APP_DATA ?? '', 'images/speakers'));
 const backup = resolve(arg('backup') ?? `${dir}-originals`);
 const kb = (bytes: number) => `${Math.round(bytes / 1024)} KB`;
 
 async function main() {
-  const names = (await readdir(dir, { withFileTypes: true })).filter((e) => e.isFile()).map((e) => e.name).sort();
+  const names = (await readdir(dir, { withFileTypes: true }))
+    .filter((e) => e.isFile())
+    .map((e) => e.name)
+    .sort();
   const results: Array<FitImageResult & { name: string }> = [];
 
   for (const name of names) {
@@ -43,7 +51,9 @@ async function main() {
 
   const changing = results.filter((r) => r.changed);
   const total = (key: 'before' | 'after') => results.reduce((sum, r) => sum + r[key].bytes, 0);
-  console.log(`\n${results.length} files in ${dir}; ${changing.length} to change; ${kb(total('before'))} now, ${kb(total('after'))} after.`);
+  console.log(
+    `\n${results.length} files in ${dir}; ${changing.length} to change; ${kb(total('before'))} now, ${kb(total('after'))} after.`
+  );
 
   if (!apply) {
     console.log('Dry run: nothing written. Run again with --apply to write.');
@@ -54,7 +64,10 @@ async function main() {
   await mkdir(backup, { recursive: true });
   for (const r of changing) {
     const copy = join(backup, r.name);
-    const exists = await stat(copy).then(() => true, () => false);
+    const exists = await stat(copy).then(
+      () => true,
+      () => false
+    );
     if (!exists) await copyFile(join(dir, r.name), copy);
   }
 
