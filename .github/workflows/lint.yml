@@ -63,6 +63,14 @@ jobs:
       - name: Check line endings
         run: node scripts/check-line-endings.mjs
 
+      # Only the files this pull request changes are checked: 433 files had drifted from Prettier by 24 November, and
+      # reformatting them at once would conflict with every branch in flight, so each is formatted when it is next
+      # touched (#1449, the maintainer's 2A). BASE is the pull request's base; without it, origin/development.
+      - name: Check formatting of the changed files
+        env:
+          BASE: ${{ inputs.base }}
+        run: node scripts/check-format.mjs
+
       - name: Lint Affected
         env:
           BASE: ${{ inputs.base }}
