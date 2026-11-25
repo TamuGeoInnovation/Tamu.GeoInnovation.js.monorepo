@@ -6,6 +6,7 @@ import { Season } from '@tamu-gisc/gisday/platform/data-api';
 
 import { CompetitionForm, CompetitionSeason } from '../entities/all.entities';
 import { BaseService } from '../_base/base.service';
+import { activeSeason as findActiveSeason } from '../season/active-season';
 
 @Injectable()
 export class FormService extends BaseService<CompetitionForm> {
@@ -29,7 +30,7 @@ export class FormService extends BaseService<CompetitionForm> {
   }
 
   public async getActiveSeason() {
-    const activeSeason = await this._getActiveSeason();
+    const activeSeason = await findActiveSeason(this.seasonRepo);
 
     const form = await this.competitionSeasonRepo.findOne({
       where: {
@@ -46,7 +47,7 @@ export class FormService extends BaseService<CompetitionForm> {
   }
 
   public async createFormForActiveSeason(form: Partial<CompetitionForm>, season?: Partial<CompetitionSeason>) {
-    const activeSeason = await this._getActiveSeason();
+    const activeSeason = await findActiveSeason(this.seasonRepo);
     const existingCompSeason = await this.competitionSeasonRepo.findOne({
       where: {
         season: { guid: activeSeason.guid }
@@ -114,20 +115,6 @@ export class FormService extends BaseService<CompetitionForm> {
     } catch (err) {
       throw new InternalServerErrorException('Failed to update competition season form.');
     }
-  }
-
-  private async _getActiveSeason() {
-    const activeSeason = await this.seasonRepo.findOne({
-      where: {
-        active: true
-      }
-    });
-
-    if (!activeSeason) {
-      throw new NotFoundException('No active season found.');
-    }
-
-    return activeSeason;
   }
 }
 

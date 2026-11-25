@@ -17,6 +17,9 @@ const NO_HOSTED_VIEW_ON_DEVELOPMENT =
 const RETIRED = 'a retired 150th-anniversary event, with no counterpart on the development server';
 const TOKEN_REQUIRED = 'the development server has this service but answers 499 "Token Required", so a development build cannot read it';
 
+const SPLIT_BY_CATEGORY_ON_DEVELOPMENT =
+  "the development server publishes it split by category, one layer each, where production's single layer is what the definitions filter (#3358)";
+
 /**
  * The services a development build reads from production, because the development server cannot serve them to a
  * browser, each with why. It is the one list behind both the pin and the Layers list's marker (#2744): `Connections`
@@ -35,6 +38,13 @@ export const READ_FROM_PRODUCTION_ON_DEVELOPMENT: Partial<Record<keyof IComposed
   tsParkingLotsUrl:
     'layer 6 on the development server has the space counts as GIS.TS.SpacePnt_Count.*, not the GIS.TS.SPC_PNT_CNT.* the parking search and drive directions read',
   accessibleParkingUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
+  // The development server publishes these three split by category, one layer each (BusinessParking 1 and 2,
+  // ContractorParking 0 and 1, FreshmanSelectableParking 0 and 1), where production has one layer each that the
+  // definitions filter into two map layers; so on development one lot layer of each map selected nothing. Measured
+  // 23 November 2026 (#3358).
+  businessParkingUrl: SPLIT_BY_CATEGORY_ON_DEVELOPMENT,
+  contractorParkingUrl: SPLIT_BY_CATEGORY_ON_DEVELOPMENT,
+  freshmanParkingUrl: SPLIT_BY_CATEGORY_ON_DEVELOPMENT,
   beefCattleUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
   // The development server has the hosted view's predecessor, TS/TSConstruction, with the same layers and fields
   // (PascalCase, which the popups already read either way), but its queries return no geometry - the same fault that

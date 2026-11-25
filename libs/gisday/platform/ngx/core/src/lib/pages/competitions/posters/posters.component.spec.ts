@@ -9,6 +9,7 @@ import { SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import {
   COMPETITION_SESSIONS,
   COMPETITION_SESSIONS_2027,
+  COMPETITION_SESSIONS_UNNAMED_AWARDS,
   provideCompetitionSessions
 } from '../competition-session/competition-session.testing';
 import { PostersComponent } from './posters.component';
@@ -36,11 +37,37 @@ describe('PostersComponent', () => {
     return (fixture.nativeElement as HTMLElement).textContent;
   }
 
-  it("gives the season's deadline, Friday, November 13, and Saturday, November 14 for finalists", () => {
-    const rendered = text();
+  it("gives the season's deadline, Friday, November 13", () => {
+    expect(text()).toContain('Due: Fri, Nov 13, 2026, 5:00 PM Central');
+  });
 
-    expect(rendered).toContain('Due: Fri, Nov 13, 2026, 5:00 PM Central');
-    expect(rendered).toContain('notified on Saturday November 14th, 2026');
+  // #3019, decided 7A: when finalists hear is the season's, set in Admin; without it the line is left out.
+  it('says when finalists hear, from the season', () => {
+    const notified = {
+      ...SEASON_2026,
+      competitions: [{ competitionType: 'poster', runs: null, finalistsNotifiedAt: '2027-11-13T18:00:00.000Z' }]
+    };
+
+    expect(text(notified)).toContain('Finalists will be notified on Sat, Nov 13, 2027, 12:00 PM Central');
+  });
+
+  it('leaves the finalists line out when the season has not set when they hear', () => {
+    expect(text()).not.toContain('Finalists will be notified');
+  });
+
+  // #3019, decided 6A: the session the season chose in Admin, over the one its name points to.
+  it('names the session the season chose, and takes its day from it', () => {
+    const chosen = {
+      ...COMPETITION_SESSIONS.find((s) => s.guid === 'p'),
+      guid: 'chosen',
+      name: 'Poster gallery walk',
+      day: { date: '2026-11-18T06:00:00.000Z' }
+    };
+    const season = { ...SEASON_2026, competitions: [{ competitionType: 'poster', runs: null, sessionGuid: 'chosen' }] };
+    const rendered = text(season, [...COMPETITION_SESSIONS, chosen]);
+
+    expect(rendered).toContain('Poster gallery walk');
+    expect(rendered).toContain('Wednesday, November 18, 2026');
   });
 
   // #3019: the page's day and deadline were typed in for 2026, and would have been wrong the next year.
@@ -87,5 +114,17 @@ describe('PostersComponent', () => {
     expect(rendered).toContain('Bethancourt Ballroom 2300 C');
     expect(rendered).toContain('Time: 1:00 to 1:15 PM');
     expect(rendered).not.toContain('Gates Ballroom 2400');
+  });
+
+  // #3412: with no awards session found, the sentence leading into it ended in a colon and nothing.
+  it('leaves the awards sentence out when it finds no awards session', () => {
+    const rendered = text(SEASON_2026, COMPETITION_SESSIONS_UNNAMED_AWARDS);
+
+    expect(rendered).not.toContain('announced at the awards session:');
+    expect(rendered).toContain('on the schedule');
+  });
+
+  it('leads into the awards session when it finds one', () => {
+    expect(text()).toContain('Winners will be announced at the awards session:');
   });
 });

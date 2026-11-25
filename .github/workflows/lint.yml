@@ -51,6 +51,12 @@ jobs:
       - name: Check registry signatures
         run: npm audit signatures
 
+      # Every difference between the development and production GIS services is recorded in code as a
+      # workaround, so nothing used to make anybody report it to the GIS team and about fifty accumulated
+      # (#3402). Fails when a difference is in connections.ts and missing from the register.
+      - name: Check the GIS service differences register
+        run: node scripts/check-gis-differences.mjs
+
       - name: Lint Affected
         env:
           BASE: ${{ inputs.base }}

@@ -6,9 +6,8 @@ import {
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
-import { commonSymbols } from './common.definitions';
+import { arrowLineSymbol, ArrowLineSymbol, commonSymbols } from './common.definitions';
 
-import esri = __esri;
 import { EventPopups } from '../modules/popups/popups';
 
 export enum PHYSICS_AND_ENGINEERING_FESTIVAL_LAYERS {
@@ -29,32 +28,20 @@ export enum PHYSICS_AND_ENGINEERING_FESTIVAL_LAYERS {
 
 const eventUrl = Connections.physicsFestUrl;
 
-type AutoCastSimpleLineSymbol = { type: 'simple-line' } & esri.SimpleLineSymbolProperties;
-
 // The three renderers below are overrides. The MapServer and its portal item publish no arrow symbol
 // (the service flattens it to a plain 14-pt line); remove when the service is republished as a hosted
 // view with the arrows (#1803).
 
 /** Draws every feature of a line layer with one symbol. */
-function arrowLineNative(symbol: AutoCastSimpleLineSymbol): NonNullable<FeatureLayerSourceProperties['native']> {
+function arrowLineNative(symbol: ArrowLineSymbol): NonNullable<FeatureLayerSourceProperties['native']> {
   return { outFields: ['*'], renderer: { type: 'simple', symbol } };
 }
 
-/** A bus route: a 3.5-pt line in the given colour with an arrowhead where it ends. */
-function busRouteArrow(color: string): AutoCastSimpleLineSymbol {
-  return {
-    type: 'simple-line',
-    color,
-    width: 3.5,
-    marker: { style: 'arrow', color, placement: 'end' }
-  };
-}
+const GREEN_ARROW_LINE_NATIVE = arrowLineNative(commonSymbols.GREEN_ARROW);
 
-const GREEN_ARROW_LINE_NATIVE = arrowLineNative(commonSymbols.GREEN_ARROW as AutoCastSimpleLineSymbol);
+const EASTBOUND_BUS_ROUTE_LINE_NATIVE = arrowLineNative(arrowLineSymbol({ color: 'blue', width: 3.5 }));
 
-const EASTBOUND_BUS_ROUTE_LINE_NATIVE = arrowLineNative(busRouteArrow('blue'));
-
-const WESTBOUND_BUS_ROUTE_LINE_NATIVE = arrowLineNative(busRouteArrow('red'));
+const WESTBOUND_BUS_ROUTE_LINE_NATIVE = arrowLineNative(arrowLineSymbol({ color: 'red', width: 3.5 }));
 
 export const PhysEngFestDefinitions = {
   GENERAL_PARKING_GROUP: {

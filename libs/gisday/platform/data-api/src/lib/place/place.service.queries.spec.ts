@@ -1,6 +1,7 @@
+import { ConflictException } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 
-import { Asset, Place, PlaceLink, Season } from '../entities/all.entity';
+import { Asset, EventBroadcast, Place, PlaceLink, Season } from '../entities/all.entity';
 import { queryCheckingDataSource, queryCheckingRepository, recordWrites } from '../_base/query-checking-data-source';
 import { AssetsService } from '../assets/assets.service';
 import { SeasonService } from '../season/season.service';
@@ -81,5 +82,56 @@ describe('PlaceService queries, built by typeorm', () => {
     const saved = await service.updatePlace('p-1', { name: 'Renamed' });
 
     expect(saved.name).toBe('Renamed');
+  });
+});
+
+// A broadcast's place has no cascade, so deleting a place that a broadcast still names was refused by the database, and the
+// API answered a bare 500 the admin form could not explain (#3397). It is refused first, with a 409 naming the broadcasts,
+// as the class and rubric services refuse what cannot be done.
+describe('PlaceService, deleting a place a broadcast still uses (#3397)', () => {
+  let dataSource: DataSource;
+
+  beforeAll(async () => {
+    dataSource = await queryCheckingDataSource();
+  });
+
+  const deleting = (broadcasts: Array<EventBroadcast>) => {
+    const place = Object.assign(new Place(), { guid: 'p-1', name: 'A made-up place', logos: [] });
+    const { statements } = recordWrites(dataSource, [
+      [Place, [place]],
+      [EventBroadcast, broadcasts]
+    ]);
+    const service = new PlaceService(
+      dataSource.getRepository(Place),
+      dataSource.getRepository(PlaceLink),
+      new AssetsService(dataSource.getRepository(Asset)),
+      null as unknown as SeasonService
+    );
+
+    return { statements, run: () => service.deleteEntities('p-1') };
+  };
+
+  it('refuses with a 409 naming the broadcasts, and deletes nothing', async () => {
+    const { statements, run } = deleting([
+      Object.assign(new EventBroadcast(), { guid: 'b-1', name: 'Made-up stream' }),
+      Object.assign(new EventBroadcast(), { guid: 'b-2', name: 'Another made-up stream' })
+    ]);
+
+    const refusal = await run().catch((err) => err);
+
+    expect(refusal).toBeInstanceOf(ConflictException);
+    expect(refusal.getStatus()).toBe(409);
+    expect(refusal.message).toBe(
+      'A made-up place is used by 2 broadcasts (Another made-up stream, Made-up stream). Give them another place first.'
+    );
+    expect(statements.filter((s) => /^\s*DELETE/i.test(s.sql))).toEqual([]);
+  });
+
+  it('deletes a place no broadcast uses, as before', async () => {
+    const { statements, run } = deleting([]);
+
+    await run();
+
+    expect(statements.filter((s) => /^\s*DELETE FROM "places"/i.test(s.sql)).map((s) => s.parameters)).toEqual([['p-1']]);
   });
 });

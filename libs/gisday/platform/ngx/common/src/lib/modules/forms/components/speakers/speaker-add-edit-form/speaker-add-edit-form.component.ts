@@ -26,11 +26,9 @@ import {
   SpeakerService,
   UniversityService
 } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { formToFormData } from '../../../../../utils/form-to-form-data';
 import { UploadImagePicker } from '../../../../../utils/upload-image-picker';
-import { serverMessage } from '../../../../../utils/server-message';
 import { classBannerSpeaker } from '../../../../../utils/speakers';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { FileComponent } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -40,7 +38,7 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
 import { SpeakerClassBannerComponent } from '../../../../people/components/speaker-class-banner/speaker-class-banner.component';
 import { ImagePreviewComponent } from '../../../../images/components/image-preview/image-preview.component';
-import { injectBackToList } from '../../../admin-details-page';
+import { adminEntityForm } from '../../../admin-entity-form';
 
 @Component({
   selector: 'tamu-gisc-speaker-add-edit-form',
@@ -61,15 +59,14 @@ import { injectBackToList } from '../../../admin-details-page';
 })
 export class SpeakerAddEditFormComponent implements OnInit {
   private readonly fb = inject(UntypedFormBuilder);
-  /** Leaves for the list once a save, create or delete has worked: the one the page was opened from (#2965). */
-  private readonly backToList = injectBackToList('/admin/speakers');
+  /** Its save and delete, and what they say (#3340, #3382). */
+  private readonly saves = adminEntityForm('Speaker', '/admin/speakers');
   private readonly at = inject(ActivatedRoute);
   private readonly ss = inject(SpeakerService);
   private readonly as = inject(AssetsService);
   private readonly us = inject(UniversityService);
   private readonly os = inject(OrganizationService);
   private readonly sn = inject(DomSanitizer);
-  private readonly ns = inject(NotificationService);
   private readonly sss = inject(SeasonService);
 
   public readonly type = input<'create' | 'edit'>(undefined);
@@ -206,77 +203,16 @@ export class SpeakerAddEditFormComponent implements OnInit {
   }
 
   private _createEntity() {
-    this._formData()
-      .pipe(switchMap((formData) => this.ss.insertSpeakerInfo(formData)))
-      .subscribe({
-        next: () => {
-          this.ns.toast({
-            id: 'speaker-create-success',
-            title: 'Create Speaker',
-            message: `Speaker was successfully created.`
-          });
-
-          this._navigateBack();
-        },
-        error: (err) => {
-          this.ns.toast({
-            id: 'speaker-create-failed',
-            title: 'Create Speaker',
-            // The API's reason, such as a photo too large in pixels (#3177), not only its status.
-            message: serverMessage(err, `Error creating speaker: ${err.status}`)
-          });
-        }
-      });
+    this.saves.save('create', this._formData().pipe(switchMap((formData) => this.ss.insertSpeakerInfo(formData))));
   }
 
   private _updateEntity() {
     const formValue = this.form.getRawValue();
 
-    this._formData()
-      .pipe(switchMap((data) => this.ss.updateSpeakerInfo(formValue.guid, data)))
-      .subscribe({
-        next: () => {
-          this.ns.toast({
-            id: 'speaker-update-success',
-            title: 'Update Speaker',
-            message: `Speaker was successfully updated.`
-          });
-
-          this._navigateBack();
-        },
-        error: (err) => {
-          this.ns.toast({
-            id: 'speaker-update-failed',
-            title: 'Update Speaker',
-            // The API's reason, such as a photo too large in pixels (#3177), not only its status.
-            message: serverMessage(err, `Error updating speaker: ${err.status}`)
-          });
-        }
-      });
+    this.saves.save('update', this._formData().pipe(switchMap((data) => this.ss.updateSpeakerInfo(formValue.guid, data))));
   }
 
   public deleteEntity() {
-    this.ss.deleteEntity(this.form.getRawValue().guid).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'speaker-delete-success',
-          title: 'Delete Speaker',
-          message: `Speaker was successfully deleted.`
-        });
-
-        this._navigateBack();
-      },
-      error: (err) => {
-        this.ns.toast({
-          id: 'speaker-delete-failed',
-          title: 'Delete Speaker',
-          message: `Error deleting speaker: ${err.status}`
-        });
-      }
-    });
-  }
-
-  private _navigateBack() {
-    this.backToList();
+    this.saves.save('delete', this.ss.deleteEntity(this.form.getRawValue().guid));
   }
 }

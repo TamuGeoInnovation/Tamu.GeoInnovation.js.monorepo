@@ -1,3 +1,5 @@
+@import 'libs/sass/variables';
+
 :host {
   @include flex(1);
 }
@@ -10,7 +12,7 @@
 // own are; the font is `$open-sans-fStack`, written out because not every map stylesheet imports the
 // variables.
 :host ::ng-deep :is(arcgis-map, arcgis-scene) > * {
-  --calcite-color-brand: #500000;
+  --calcite-color-brand: #{$aggie-maroon};
   --calcite-color-brand-hover: #3c0000;
   --calcite-color-brand-press: #2a0000;
   --calcite-font-family: 'Open Sans', sans-serif;

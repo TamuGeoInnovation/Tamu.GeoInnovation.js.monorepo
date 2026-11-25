@@ -7,7 +7,7 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { declaredJpeg } from '@tamu-gisc/common/node/images';
 import { PROFILE_EDIT_LINK_PREVIEW, fillReviewEmail } from '@tamu-gisc/gisday/common';
 
-import { SpeakerEditService, cleanFields, hashOf, linkEmail, senderAs } from './speaker-edit.service';
+import { REPEAT_SEND_MINUTES, SpeakerEditService, cleanFields, hashOf, linkEmail, senderAs } from './speaker-edit.service';
 import { siteHost } from './speaker-edit.controller';
 
 /**
@@ -40,9 +40,17 @@ describe('SpeakerEditService', () => {
 
   const linkRepo = {
     create: (x) => x,
+    // As the database does: the row gets an id and a time if it has none, and the saved row comes back.
     save: jest.fn(async (x) => {
-      links.push({ ...x, created: new Date() });
-      return x;
+      const row = { guid: crypto.randomUUID(), created: new Date(), ...x };
+      links.push(row);
+      return row;
+    }),
+    find: jest.fn(async ({ where }) =>
+      links.filter((l) => l.speaker.guid === where.speaker.guid && l.created > where.created._value)
+    ),
+    delete: jest.fn(async (guid: string) => {
+      links = links.filter((l) => (l as { guid?: string }).guid !== guid);
     }),
     findOne: jest.fn(async ({ where }) => {
       const l = links.find((x) => x.tokenHash === where.tokenHash);
@@ -119,6 +127,22 @@ describe('SpeakerEditService', () => {
     rmSync(appData, { recursive: true, force: true });
     process.env.APP_DATA = previousAppData;
     jest.clearAllMocks();
+  });
+
+  // #3326: the profile email guarded by counting recent links, which two sends racing both passed, in one copy of the
+  // API or in two (production runs two), so a speaker got the email twice.
+  it('sends one profile email when two sends of it race', async () => {
+    const [first, again] = await Promise.all([
+      service.sendLinks(['speaker-ana'], 'gisday.tamu.edu'),
+      service.sendLinks(['speaker-ana'], 'gisday.tamu.edu')
+    ]);
+
+    expect(sent).toHaveLength(1);
+    expect([...first.sent, ...again.sent]).toEqual(['Ana Ruiz']);
+    expect([...first.skipped, ...again.skipped]).toEqual([
+      { name: 'Ana Ruiz', reason: `already emailed a link in the last ${REPEAT_SEND_MINUTES} minutes` }
+    ]);
+    expect(links).toHaveLength(1);
   });
 
   // #3113: the Ask for slides email carries the same link as the profile email, made here, never a second kind.
@@ -562,7 +586,14 @@ describe('SpeakerEditService.sendLinksForSubmissions (#2958)', () => {
     sent = [];
     service = new SpeakerEditService(
       // No link sent to anyone yet, so the repeat guard (#3065) lets each through.
-      { create: (x) => x, save: jest.fn(async (x) => x), count: jest.fn(async () => 0) } as never,
+      {
+        create: (x) => x,
+        save: jest.fn(async (x) => x),
+        count: jest.fn(async () => 0),
+        // No other profile link of the last few minutes, so each send's own link stands (#3326).
+        find: jest.fn(async () => []),
+        delete: jest.fn()
+      } as never,
       {} as never,
       {
         find: jest.fn(async ({ where }) =>

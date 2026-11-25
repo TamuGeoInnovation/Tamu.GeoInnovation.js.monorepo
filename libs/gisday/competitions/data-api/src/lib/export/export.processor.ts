@@ -7,27 +7,15 @@ import { Job } from 'bull';
 import * as path from 'path';
 import * as os from 'os';
 import * as fs from 'fs-extra';
-import * as Papa from 'papaparse';
 import JSZip from 'jszip';
 import { createWriteStream } from 'fs';
 import { pipeline } from 'stream/promises';
 
 import { CompetitionSubmission, SubmissionMedia } from '../entities/all.entities';
 
+import { exportCsv, exportedMedia, exportedSubmissions, exportRow, mediaPath } from './export-contents';
+
 const BATCH_SIZE = 20;
-
-function mimeToExtension(mimeType?: string): string {
-  const map: Record<string, string> = {
-    'image/jpeg': '.jpg',
-    'image/png': '.png',
-    'image/gif': '.gif',
-    'image/webp': '.webp',
-    'image/bmp': '.bmp',
-    'image/tiff': '.tiff'
-  };
-
-  return map[mimeType?.toLowerCase()] || '.bin';
-}
 
 async function addDirectoryToZip(dirPath: string, zipFolder: JSZip): Promise<void> {
   const entries = await fs.readdir(dirPath, { withFileTypes: true });
@@ -59,14 +47,7 @@ export class ExportProcessor {
     this.logger.log(`Starting export for season ${seasonGuid}`);
 
     // 1. Query all submissions (metadata only, no blob binary)
-    const submissions = await this.submissionRepo.find({
-      where: { season: { guid: seasonGuid } },
-      relations: { location: true, validationStatus: true, blobs: true },
-      select: {
-        blobs: { guid: true, mimeType: true, fieldName: true, sha256: true }
-      },
-      order: { created: 'ASC' }
-    });
+    const submissions = await exportedSubmissions(this.submissionRepo, seasonGuid);
 
     const totalSubmissions = submissions.length;
     this.logger.log(`Found ${totalSubmissions} submissions for season ${seasonGuid}`);
@@ -89,9 +70,7 @@ export class ExportProcessor {
         let mediaEntities: SubmissionMedia[] = [];
 
         try {
-          mediaEntities = await this.mediaRepo.find({
-            where: { submission: { guid: submission.guid } }
-          });
+          mediaEntities = await exportedMedia(this.mediaRepo, submission.guid);
         } catch (err) {
           this.logger.warn(`Failed to load media for submission ${submission.guid}: ${err.message}`);
         }
@@ -100,9 +79,7 @@ export class ExportProcessor {
 
         for (const media of mediaEntities) {
           try {
-            const ext = mimeToExtension(media.mimeType);
-            const filename = `${media.guid}${ext}`;
-            const relPath = `medias/${submission.guid}/images/${filename}`;
+            const relPath = mediaPath(submission.guid, media);
             await fs.writeFile(path.join(exportDir, relPath), media.blob as any);
             imagePaths.push(relPath);
           } catch (err) {
@@ -110,28 +87,7 @@ export class ExportProcessor {
           }
         }
 
-        // Parse form values and build CSV row
-        let formValues: object;
-
-        try {
-          formValues = typeof submission.value === 'string' ? JSON.parse(submission.value) : submission.value || {};
-        } catch {
-          formValues = {};
-        }
-
-        csvRows.push({
-          submission_guid: submission.guid,
-          user_guid: submission.userGuid,
-          created: submission.created?.toISOString(),
-          latitude: submission.location?.latitude,
-          longitude: submission.location?.longitude,
-          accuracy: submission.location?.accuracy,
-          altitude: submission.location?.altitude,
-          validation_status: submission.validationStatus?.status || 'unverified',
-          image_count: mediaEntities.length,
-          image_paths: imagePaths.join(';'),
-          ...formValues
-        });
+        csvRows.push(exportRow(submission, imagePaths, mediaEntities.length));
       }
 
       // Update progress (reserve last 10% for CSV + ZIP generation)
@@ -140,7 +96,7 @@ export class ExportProcessor {
     }
 
     // 3. Generate CSV
-    const csvString = Papa.unparse(csvRows, { header: true });
+    const csvString = exportCsv(csvRows);
     const csvPath = path.join(exportDir, 'submissions.csv');
     await fs.writeFile(csvPath, csvString, 'utf8');
 

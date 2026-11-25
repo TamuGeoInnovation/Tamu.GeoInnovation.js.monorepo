@@ -1,4 +1,15 @@
-import { Body, Controller, Get, NotFoundException, Param, Post, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+  Query,
+  Res,
+  StreamableFile,
+  UseGuards
+} from '@nestjs/common';
 import { Response } from 'express';
 
 import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
@@ -9,6 +20,18 @@ import { InitiateExportDto, ExportTaskResponseDto, ExportStatusResponseDto } fro
 @Controller('competitions/export')
 export class ExportController {
   constructor(private readonly exportService: ExportService) {}
+
+  /**
+   * The season's VGI submissions as one zip, streamed now (#545): the admin Submissions page's download. The active
+   * season unless `seasonGuid` names another. Before `:jobId`, which would otherwise take "zip" for a job's id. The
+   * queued routes below stay, unused, until their packages may be removed.
+   */
+  @Permissions(['update:competitions'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Get('zip')
+  async zipForSeason(@Query('seasonGuid') seasonGuid?: string): Promise<StreamableFile> {
+    return this.exportService.zipForSeason(seasonGuid);
+  }
 
   @Permissions(['update:competitions'])
   @UseGuards(JwtGuard, PermissionsGuard)

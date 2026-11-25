@@ -1,11 +1,4 @@
-import {
-  BadRequestException,
-  HttpException,
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-  UnprocessableEntityException
-} from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { from, groupBy, mergeMap, toArray } from 'rxjs';
@@ -24,13 +17,59 @@ import {
   Tag,
   UserRsvp
 } from '../entities/all.entity';
-import { BaseProvider } from '../_base/base-provider';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { EventAttendanceDto } from './dto/event-attendance.dto';
 import { SeasonService } from '../season/season.service';
+import { rethrowHttp } from '../_base/rethrow-http';
+import { SeasonScopedProvider, withoutIdentity } from '../_base/season-scoped-provider';
 
 @Injectable()
-export class EventProvider extends BaseProvider<Event> {
+export class EventProvider extends SeasonScopedProvider<Event> {
+  protected get seasons() {
+    return this.seasonProvider;
+  }
+
+  protected readonly recordsName = 'sessions';
+
+  protected forSeason(seasonGuid: string) {
+    return this.getEventsForSeason(seasonGuid);
+  }
+
+  /** A copy of a session goes on the season's first day, so the season is loaded with its days, by date. */
+  protected override async copyTarget(seasonGuid: string) {
+    const season = await this.seasonRepo
+      .createQueryBuilder('season')
+      .leftJoinAndSelect('season.days', 'day')
+      .where('season.guid = :guid', { guid: seasonGuid })
+      .orderBy('day.date', 'ASC')
+      .getOne();
+
+    if (season && season.days.length === 0) {
+      throw new UnprocessableEntityException('Season has no days.');
+    }
+
+    return season;
+  }
+
+  /**
+   * A copy of a session is the session on the season's first day, without its speakers, broadcast, location, course
+   * credit or sponsors, which belong to the old season. It is judged afresh (#3183): open, with judges chosen from its
+   * own speakers.
+   */
+  protected override copyOf(record: Event, season: Season) {
+    const copy = withoutIdentity(record) as Partial<Event>;
+
+    delete copy.speakers;
+    delete copy.broadcast;
+    delete copy.location;
+    delete copy.courseCredit;
+    delete copy.sponsors;
+    delete copy.judges;
+    delete copy.judgingClosed;
+
+    return { ...copy, day: season.days[0] } as DeepPartial<Event>;
+  }
+
   constructor(
     @InjectRepository(Event) public eventRepo: Repository<Event>,
     @InjectRepository(EventLocation) private eventLocationRepo: Repository<EventLocation>,
@@ -46,19 +85,7 @@ export class EventProvider extends BaseProvider<Event> {
   }
 
   public async getEventsForActiveSeason() {
-    const season = await this.seasonProvider.findOneActive();
-
-    try {
-      return this.getEventsForSeason(season.guid);
-    } catch (error) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (error instanceof HttpException) {
-        throw error;
-      }
-
-      throw new InternalServerErrorException('Could not get events for active season.');
-    }
+    return this.forActiveSeason();
   }
 
   public async getEventsForSeason(seasonGuid: string) {
@@ -134,13 +161,7 @@ export class EventProvider extends BaseProvider<Event> {
         return eventEnt.save();
       }
     } catch (error) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (error instanceof HttpException) {
-        throw error;
-      }
-
-      throw new UnprocessableEntityException(null, 'Could not insert new Event');
+      rethrowHttp(error, new UnprocessableEntityException(null, 'Could not insert new Event'));
     }
   }
 
@@ -178,15 +199,9 @@ export class EventProvider extends BaseProvider<Event> {
 
       return newEnt.save();
     } catch (error) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (error instanceof HttpException) {
-        throw error;
-      }
-
       // Was "Could not insert new Event" -- copy-pasted from insertEvent, and misleading when it
       // surfaces on an update.
-      throw new UnprocessableEntityException(null, 'Could not update Event');
+      rethrowHttp(error, new UnprocessableEntityException(null, 'Could not update Event'));
     }
   }
 
@@ -323,67 +338,7 @@ export class EventProvider extends BaseProvider<Event> {
    * Lookups are performed for the provided season guid and event guids
    */
   public async copyEventsIntoSeason(seasonGuid: string, eventGuids: Array<string>) {
-    // User query builder to get season by guid, getting days relation, and ordering by date
-    const season = await this.seasonRepo
-      .createQueryBuilder('season')
-      .leftJoinAndSelect('season.days', 'day')
-      .where('season.guid = :guid', { guid: seasonGuid })
-      .orderBy('day.date', 'ASC')
-      .getOne();
-
-    if (!season) {
-      throw new NotFoundException();
-    }
-
-    if (season.days.length === 0) {
-      throw new UnprocessableEntityException(null, 'Season has no days');
-    }
-
-    const events = await this.eventRepo.find({
-      where: {
-        guid: In(eventGuids)
-      }
-    });
-
-    // Was `if (!events)`. `find` resolves to an array, never null, so this never fired and copying
-    // guids that match nothing answered 200 with an empty list rather than saying so. Sibling
-    // providers check the length, which is the intent.
-    if (!events || events.length === 0) {
-      throw new NotFoundException();
-    }
-
-    const newEvents = events.map((event) => {
-      delete event.speakers;
-      delete event.broadcast;
-      delete event.location;
-      delete event.courseCredit;
-      delete event.sponsors;
-      // A copy is judged afresh (#3183): open, with judges chosen from its own speakers.
-      delete event.judges;
-      delete event.judgingClosed;
-      delete event.guid;
-      delete event.created;
-      delete event.updated;
-
-      const newEvent = this.eventRepo.create({
-        ...event,
-        day: season.days[0]
-      });
-
-      return newEvent.save();
-    });
-
-    try {
-      return Promise.all(newEvents);
-    } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      throw new InternalServerErrorException('Could not copy events into season');
-    }
+    return this.copyIntoSeason(seasonGuid, eventGuids);
   }
 }
 

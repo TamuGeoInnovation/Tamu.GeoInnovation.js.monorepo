@@ -3,20 +3,21 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 
 import {
-  JUDGED_COMPETITIONS,
-  JUDGING_CLOSED_MESSAGE,
-  JudgeAssessmentDto,
-  JudgeCompetitionDto,
-  JudgePageDto,
-  JudgedCompetition,
-  JudgingResultsDto,
-  NOT_YOUR_COMPETITION_MESSAGE,
   assessmentProblem,
   assessmentTotal,
   isJudgedCompetition,
+  JudgeAssessmentDto,
+  JudgeCompetitionDto,
+  JUDGED_COMPETITIONS,
   judgedCompetition,
+  JudgedCompetition,
   judgedCompetitionOf,
-  judgingResults
+  JudgePageDto,
+  JUDGING_CLOSED_MESSAGE,
+  judgingResults,
+  JudgingResultsDto,
+  naturalOrder,
+  NOT_YOUR_COMPETITION_MESSAGE
 } from '@tamu-gisc/gisday/common';
 
 import { Assessment, Event, Rubric, Speaker, SpeakerEditLink, Submission } from '../entities/all.entity';
@@ -202,7 +203,7 @@ export class JudgingService {
       rubricName: rubric?.name ?? null,
       criteria: (rubric?.criteria ?? []).map((c) => ({ guid: c.guid, name: c.name, maxPoints: c.maxPoints })),
       submissions: submissions.map((s) => ({ guid: s.guid, title: s.title ?? '', presenters: presentersOf(s) })),
-      judges: [...judges].map(([guid, name]) => ({ guid, name })).sort((a, b) => a.name.localeCompare(b.name)),
+      judges: [...judges].map(([guid, name]) => ({ guid, name })).sort((a, b) => naturalOrder.compare(a.name, b.name)),
       assessments: assessments.map((a) => ({
         judge: a.judge?.guid,
         submission: a.submission?.guid,
@@ -267,7 +268,7 @@ export class JudgingService {
       }
     });
 
-    return found.sort((a, b) => (a.title ?? '').localeCompare(b.title ?? '', 'en', { sensitivity: 'base' }));
+    return found.sort((a, b) => naturalOrder.compare(a.title ?? '', b.title ?? ''));
   }
 }
 

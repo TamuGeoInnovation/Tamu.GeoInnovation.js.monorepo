@@ -2,6 +2,7 @@ import { ExecutionContext, INestApplication, RequestMethod } from '@nestjs/commo
 import { GUARDS_METADATA, METHOD_METADATA } from '@nestjs/common/constants';
 import { Reflector } from '@nestjs/core';
 import { Test } from '@nestjs/testing';
+import { of } from 'rxjs';
 import { getMetadataArgsStorage } from 'typeorm';
 
 import { JwtGuard, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
@@ -104,8 +105,8 @@ function keysOf(value: unknown, into = new Set<string>()): Set<string> {
 
 /**
  * Requests go through Nest's real routing and the interceptor, applied to every route as gisday-nest applies it.
- * Only the token check is replaced: `user` is the signed-in caller, or undefined for a signed-out one. The event
- * routes have no guard, so their caller is always signed out, as in production.
+ * Only the token check is replaced: `user` is the signed-in caller, or undefined for a signed-out one. The public
+ * event routes read a caller who is signed in, if any (#3354), so the replaced check sets theirs as for the others.
  */
 describe('PrivateFieldsInterceptor', () => {
   let app: INestApplication;
@@ -119,7 +120,11 @@ describe('PrivateFieldsInterceptor', () => {
         { provide: SponsorProvider, useValue: answering(sponsor) },
         { provide: OrganizationService, useValue: answering(organization) },
         { provide: SpeakerProvider, useValue: answering(speaker) },
-        { provide: EventProvider, useValue: answering(event) }
+        {
+          provide: EventProvider,
+          // By day, as the real one answers: the sessions of each day, which the route now filters by day (#3354).
+          useValue: Object.assign(Object.create(answering(event)), { getEntitiesByDay: async () => of([[event()]]) })
+        }
       ]
     })
       .overrideGuard(JwtGuard)
@@ -292,13 +297,16 @@ describe('the read routes of sponsors, organizations and speakers', () => {
   );
 
   // A read that names a permission is for admins only, on purpose: the Speaker badges dashboard's list of every
-  // presenter, photo or not (#2995).
+  // presenter, photo or not (#2995), and the admin Speakers list's speakers with their sessions, which include sessions
+  // hidden from the public schedule (#441).
   const adminOnly = (r: (typeof reads)[number]) => Reflect.getMetadata('Permissions', r.handler) !== undefined;
   const open = reads.filter((r) => !adminOnly(r));
 
   it('are all found', () => {
-    expect(reads.length).toBe(19);
+    expect(reads.length).toBe(21);
     expect(reads.filter(adminOnly).map((r) => `${r.controller.name}.${r.name}`)).toEqual([
+      'SpeakerController.getActiveEntitiesWithSessions',
+      'SpeakerController.getSpeakersWithSessionsForSeason',
       'SpeakerController.getAllParticipatingSpeakersForSeason'
     ]);
   });
@@ -308,11 +316,15 @@ describe('the read routes of sponsors, organizations and speakers', () => {
     expect(Reflect.getMetadata('AllowAny', r.handler)).toBe('true');
   });
 
-  it('keeps the admin-only read behind its permission', () => {
-    const handler = SpeakerController.prototype.getAllParticipatingSpeakersForSeason;
-
-    expect(Reflect.getMetadata(GUARDS_METADATA, handler)).toEqual(expect.arrayContaining([JwtGuard, PermissionsGuard]));
-    expect(Reflect.getMetadata('Permissions', handler)[0]).toEqual(['update:speakers']);
+  it('keeps the admin-only reads behind their permission', () => {
+    for (const handler of [
+      SpeakerController.prototype.getAllParticipatingSpeakersForSeason,
+      SpeakerController.prototype.getActiveEntitiesWithSessions,
+      SpeakerController.prototype.getSpeakersWithSessionsForSeason
+    ]) {
+      expect(Reflect.getMetadata(GUARDS_METADATA, handler)).toEqual(expect.arrayContaining([JwtGuard, PermissionsGuard]));
+      expect(Reflect.getMetadata('Permissions', handler)[0]).toEqual(['update:speakers']);
+    }
   });
 
   it('answers a request with an expired or bad token as a signed-out one, with no 401', () => {

@@ -59,6 +59,8 @@ updates:
           - 'vitest*'
           - '@vitest/*'
           - '@playwright/*'
+          # playwright itself, listed for tools/visual-baselines (#2122), moves with @playwright/test, which pins it exactly.
+          - playwright
           - '@testing-library/*'
       lint:
         patterns:

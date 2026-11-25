@@ -3,7 +3,6 @@ import { Observable, Subject, delay, filter, map, merge, of, startWith, switchMa
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
-import { growAnimationBuilder } from '@tamu-gisc/ui-kits/ngx/animations';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { AuthService } from '@tamu-gisc/geoservices/data-access';
@@ -29,7 +28,6 @@ import { TileLinkDirective } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile
   selector: 'tamu-gisc-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
-  animations: [growAnimationBuilder(250)],
   imports: [
     RouterLinkActive,
     RouterLink,

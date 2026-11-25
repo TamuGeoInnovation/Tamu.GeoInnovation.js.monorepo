@@ -3,7 +3,6 @@ import {
   OnInit,
   ViewContainerRef,
   OnDestroy,
-  HostBinding,
   inject,
   viewChild
 } from '@angular/core';
@@ -11,17 +10,13 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { TileService } from '../../services/tile.service';
-import { submenuListStagger } from '../../animations/animations';
 
 @Component({
   selector: 'tamu-gisc-tile-submenu-container',
   templateUrl: './tile-submenu-container.component.html',
-  styleUrls: ['./tile-submenu-container.component.scss'],
-  // Queries the view-entering sub-menu items and staggers them in.
-  // This animation apparently needs to be in a parent component, and not
-  // in the self-component otherwise it can't query anything entering into view
-  // because the whole thing is entering into view.
-  animations: [submenuListStagger]
+  // Its submenuListStagger trigger staggered `.body p`, which no submenu has: it animated nothing, and went with
+  // @angular/animations (#2278).
+  styleUrls: ['./tile-submenu-container.component.scss']
 })
 export class TileSubmenuContainerComponent implements OnInit, OnDestroy {
   private service = inject(TileService);
@@ -29,12 +24,6 @@ export class TileSubmenuContainerComponent implements OnInit, OnDestroy {
   private readonly _container = viewChild('container', { read: ViewContainerRef });
 
   private _$destroy: Subject<boolean> = new Subject();
-
-  // Bind the animation to the host component
-  @HostBinding('@submenuListStagger')
-  private _animation() {
-    return true;
-  }
 
   public ngOnInit() {
     // A click even is registered on the TileComponent.

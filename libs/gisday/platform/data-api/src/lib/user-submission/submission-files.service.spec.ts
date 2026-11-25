@@ -4,7 +4,12 @@ import { tmpdir } from 'os';
 import { join } from 'path';
 import { Readable } from 'stream';
 
-import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  NotFoundException,
+  UnsupportedMediaTypeException
+} from '@nestjs/common';
 import JSZip from 'jszip';
 
 import { SUBMISSION_FILE_RULES, submissionFileProblem } from '@tamu-gisc/gisday/common';
@@ -172,6 +177,40 @@ describe('SubmissionFilesService', () => {
 
       expect(assetRepo.delete).toHaveBeenCalledWith(saved[0].guid);
       expect(existsSync(onDisk)).toBe(false);
+    });
+  });
+
+  /**
+   * #3090: an admin previews a submission's file in the page rather than downloading it. A PDF is sent to be shown, not
+   * saved; a PowerPoint has no preview until it can be converted on the server, so it is still downloaded.
+   */
+  describe('preview', () => {
+    it('sends a PDF to be shown in the page, under its own name', async () => {
+      await service.add(submission.guid, student, await upload('Café poster.pdf', 2048));
+
+      const preview = await service.preview(submission.guid, saved[0].guid, admin);
+
+      expect(preview.getHeaders()).toEqual(
+        expect.objectContaining({
+          type: 'application/pdf',
+          length: 2048,
+          disposition: `inline; filename="Caf_ poster.pdf"; filename*=UTF-8''Caf%C3%A9%20poster.pdf`
+        })
+      );
+    });
+
+    it("does not reach a file that is not this submission's, whatever submission it belongs to", async () => {
+      await service.add(submission.guid, student, await upload('deck.pdf'));
+
+      await expect(service.preview(submission.guid, '99999999-8888-4777-8666-555555555555', admin)).rejects.toThrow(
+        NotFoundException
+      );
+    });
+
+    it('has no preview for a PowerPoint yet, so it is downloaded instead', async () => {
+      await service.add(submission.guid, student, await upload('slides.pptx'));
+
+      await expect(service.preview(submission.guid, saved[0].guid, admin)).rejects.toThrow(UnsupportedMediaTypeException);
     });
   });
 

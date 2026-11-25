@@ -11,6 +11,7 @@ import {
   NETWORK_TRAVEL_MODE_NAMES,
   offeredTravelMode
 } from '../../../libs/maps/feature/trip-planner/src/lib/services/trip-planner-travel-modes';
+import { PROBE_GLOBAL, waitForMapReady } from './map-probe';
 
 /**
  * No "Directions To Here" is left anywhere while routing is unavailable (#1003).
@@ -55,23 +56,13 @@ const POPUP_CASES: PopupCase[] = [
 ];
 
 const AVAILABLE = directionsAvailable();
-const PROBE_GLOBAL = '__tamuGiscMapProbe';
 const POPUP = 'tamu-gisc-feature-popup .popup';
 
 async function openMap(page: Page, mapPath: string): Promise<void> {
   await blockAnalytics(page);
   await page.goto(mapPath);
 
-  await expect
-    .poll(
-      async () =>
-        await page.evaluate(
-          (name) => (window as unknown as Record<string, { ready?: boolean }>)[name]?.ready === true,
-          PROBE_GLOBAL
-        ),
-      { message: `the map on ${mapPath} never finished loading`, timeout: 90_000, intervals: [1_000] }
-    )
-    .toBe(true);
+  await waitForMapReady(page, `the map on ${mapPath} never finished loading`);
 }
 
 test.describe(`directions ${AVAILABLE ? 'offered' : 'hidden'} while routing is ${
