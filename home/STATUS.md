@@ -14,10 +14,11 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch g115**: part 1 waits on #3518 merging (`fix/3518-button-colours-timeout`, pre-pr-check exit 0). Part 2 (competitions) is being fixed in `C:/TAMU/wt-3495c`.
-- Then a22.
+- **#3536 / #2816 (AggieMap, decided A)**: one popup-data resolver, being moved in `C:/TAMU/wt-2816`.
+- **Batch g115**: part 1 waits on #3518; part 2 (`fix/3495-competitions-strict-null-checks`) check Exit 0, waits on part 1 and the platform branch (#985).
 
 ## Finished
+- **Batch a22 (aggiemap: #3477, #3478)** (report `home/reports/2026-11-25-a22.md`): both branch ready, checks Exit 0. `refactor/3477-one-coordinate-reader` `058c86791`; `refactor/3478-one-distance` `b41ca55ca` (the two distances agree to 0.0001%). They conflict in one file. Q-a22-1.
 - **Batch a19 (#2816 images)** (report `home/reports/2026-11-24-a19.md`): stopped. The rack popup shows the raw `{attributes.BR_Notes}` before and after (byte-identical): the event maps resolve popup data in their own copy in `EventService`, which the fix does not touch. Q-a19-1.
 - **Batch a17 (aggiemap: #3468, #3467)** (report `home/reports/2026-11-24-a17.md`): both branch ready. `fix/3468-phone-accessible-routing` `b53d89b82` (confirmed on production; one shared gate; red then green; images; check Exit 0). `fix/3467-event-notice-evening` `2315b1822` (shared date helpers; red in Central then green; the project's specs now run in Central; check Exit 0; no capture possible).
 - **Batch g114 (#3495, #985)** (report `home/reports/2026-11-25-g114.md`): branch ready, `fix/3495-platform-api-strict-null-checks` at `dbe9cb725`. strictNullChecks on (162 errors: 130 here fixed, 32 in common libraries listed), no-unnecessary-condition an error (212 fixed), behaviour changes each with a red-first spec; check Exit 0 (3 projects).
