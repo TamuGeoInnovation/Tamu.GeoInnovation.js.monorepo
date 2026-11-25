@@ -127,6 +127,13 @@ an hour before. The script keeps the Nx cache in the volume, so an unchanged tas
 with `-m 16g` and `--parallel=8` (peak memory measured: 10.4 GB). Do not add `--skip-nx-cache`.
 On a smaller machine, set `CHECK_MEMORY` (default `16g`) and `CHECK_PARALLEL` (default `8`) to lower them (#2498).
 
+**A check that covers all of GIS Day runs with `CHECK_PARALLEL=1`.** Measured on 24 November 2026 at the default 16 GiB
+([`docs/build-times.md`](docs/build-times.md#a-gis-day-wide-check-at-each---parallel-3000)), the eleven GIS Day projects
+passed in about 6½ minutes at 1 and at 2. At 4 the run was killed for memory, and at the default 8 it had not finished
+after nearly two hours: it sat at the limit, neither failing nor progressing. When the run fails with tasks killed for
+memory, the script says so and names these two settings (#3000). A run stuck at the limit cannot be detected, so a GIS
+Day-wide check still going after 15 minutes is in that state: stop it and run again at 1.
+
 **That 16 GiB is reserved per run, not per project, so two checks cannot share one machine at the defaults.** A run
 scoped to a single project asks Docker for exactly as much as `affected` does; scope changes how long it takes, not what
 it reserves. Docker on the work computer allows 31.25 GiB, so two runs asking 16 GiB each do not both fit, and the one
