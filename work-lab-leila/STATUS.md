@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **3:23 AM Central, 25 November 2026**. A listener; job: testing.
+Last written **3:28 AM Central, 25 November 2026**. A listener; job: testing.
 
 ## g203 is done, not unstarted (12:07 AM Central, Wednesday 25 November 2026)
 
@@ -140,7 +140,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 ## Running now
 
-**Batch a30** (aggiemap: #3487, one current trip result instead of five pipes), started 3:23 AM Central, 25 November. a31 to a33 queued after it.
+**Batch g213** (gisday: #3601, strictNullChecks in ui-kits-ngx-layout; marked "now", so ahead of a30), started 3:24 AM Central. **3:28 AM:** issue #3601 filed under #3593 (Task, enhancement, Medium, both projects In Progress); its own 45 errors to 0; joins the known list at 55 (41 of them in ui-kits-ngx-forms, which g212 fixes); modal stays at 87; gisday-angular 512 alone, 467 with g212. `pre-pr-check` (affected) running. Then a30.
 
 ## Finished
 
