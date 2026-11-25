@@ -5,7 +5,7 @@
 
 Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
-Last batch done: g30
+Last batch done: g33
 
 ## What this is
 
@@ -33,9 +33,10 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Waiting for g32** (admin pages for g116): it starts once home says "branch ready" for `chore/1669-gisday-onpush`. At 3:20 AM Central the fork had no such branch and home no g116 report.
+- **Batch a34 (#3477 images; does the map search work on a local build?)**, started 4:05 AM Central. Then g32.
 
 ## Finished
+- **Batch g33 (#3596, strictNullChecks in `ui-kits-ngx-search`)** (report `laptop/reports/2026-11-25-g33.md`): **branch ready: `fix/3495-ui-kits-search-strict`** (`8a6517f1e`), `pre-pr-check.sh` exit 0. Own files 51 to 0; gisday-angular 557 to 505; every strict dependent fewer; listed at 20 (all in five imported libraries). Q-g33-1.
 - **Batch g30 (workspace: #1479, remove Jest)** (report `laptop/reports/2026-11-25-g30.md`): **branch ready: `chore/1479-remove-jest`** (`41d0d96d2`), `pre-pr-check.sh` exit 0 (affected, with the issue filled in). Lock: 219 entries removed, 0 added, 0 changed; clean `npm ci`; 94 projects lint and test, 13 builds. Generators now `vitest-analog` (`vitest` is not a valid value). Q-g30-1.
 - **Batch a28 (aggiemap: #2554)** (report `laptop/reports/2026-11-25-a28.md`): **branch ready: `chore/2554-dead-athletics-popup-data`** (`d2400331b`), `pre-pr-check.sh` exit 0. 8 of 11 athletics maps carried dead Cold popup data; deleted, ids kept; drawn sources byte-identical. Q-a28-1, Q-a28-2.
 - **Batch g31 (gisday: #980)** (report `laptop/reports/2026-11-25-g31.md`): #980 as written cannot be run: Add season calls `clonePreviousSeason`, never the fixed `create()`. Running it found **#3571** (two active seasons when the active one is not the latest), filed Low, red-first spec on `fix/3571-one-active-season` (`4ca4c6e7e`) with images. Local data restored. Q-g31-1.
