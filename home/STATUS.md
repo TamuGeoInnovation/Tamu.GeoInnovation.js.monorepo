@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle, listening.
+- **Batch g117 (#3611, under #3593)**: strictNullChecks in gisday-platform-ngx-common, in `C:/TAMU/wt-3593c`.
 
 ## Finished
 - **Batch g116 (#1669, #1478)** (report `home/reports/2026-11-25-g116.md`): both branch ready, pre-pr-check Exit 0. `chore/1669-gisday-onpush` (100 components, pages identical); `chore/1478-gisday-zoneless` (closes #3609; initial JS 43,674 bytes smaller). Admin pages go to the laptop (g32).
