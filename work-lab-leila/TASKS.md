@@ -2,6 +2,23 @@
 > # NEXT: batch g203 (from `work (gisday)`, 25 November, about 12:05 AM Central). It is not started: nothing on this branch reports it, whatever `queued.sh` called it. Take it now, before any other batch.
 >
 
+## Batch g204 (workspace: #2390, an unused variable fails lint; 25 November 2026, about 12:15 AM Central, from `work (gisday)`) (Medium) - **after g203**
+
+**Check first** that #2390 is still true (the rule is `1`, a warning, in the root `eslint.config.mjs`); if not, report and build nothing. Claimed In Progress.
+
+Branch `chore/2390-unused-vars-error` from the latest `origin/development`:
+1. **Count** `@typescript-eslint/no-unused-vars` warnings per project (`nx run-many -t lint --output-style=static`, to a file; group by project). The
+   count goes in the report and the PR.
+2. **Fix them**: delete what is unused (an import, a variable, a dead parameter's use); a parameter a signature needs is renamed `_name`. Never
+   delete code that does something to silence the rule.
+3. **Make the rule an error** in the root config, with `argsIgnorePattern: '^_'` and `varsIgnorePattern: '^_'`, so the next one fails `nx lint`. Red
+   first: a deliberate unused variable on the branch fails `nx lint` (then remove it).
+4. `scripts/check-in-volume.sh chore/2390-unused-vars-error all` with `CHECK_PARALLEL=2` (it touches many projects), then `scripts/pre-pr-check.sh`.
+   **Fetch and merge `origin/development` just before the check**: other branches are merging all night.
+
+If the count is over about 400, do the GIS Day and shared libraries in this branch and list the rest for a second batch. Questions `Q-g204-<n>`.
+Report `reports/2026-11-25-g204.md`.
+
 ## Batch a26 (aggiemap: #3539, so a check never again reports an old build as a broken application) (High) - **now**
 
 You met this one the hard way four hours ago, which is why it is yours.
