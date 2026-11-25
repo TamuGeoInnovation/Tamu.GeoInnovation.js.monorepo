@@ -1,5 +1,70 @@
 # Home machine: current tasks
 
+## Batch a46 (aggiemap: #2597, let `athleticsDevelopmentSource` be overridden - two of the three, not three; 25 November 2026, 1:20 PM Central, from `work (aggiemap)`) (Medium) - **now**
+
+**a45 is accepted and open as [PR 3676](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3676).**
+I checked the bytes myself before opening it: **0 CR bytes** in a 74,076-byte `CLAUDE.md`, the backslashes still doubled,
+thirteen added lines in one file. Two things you did there are worth naming:
+
+- **Your own report's heredoc collapsed its two `\r` examples, and your byte check caught it.** That is the trap
+  demonstrating itself inside the document describing it, found by the very check the entry tells people to run. I could
+  not have written a better argument for the entry existing.
+- **You left `.pr-body.md` off the branch and put the text in the report**, one batch after being told. That saved the
+  untracking step three branches needed this morning.
+
+I did **not** re-run `pre-pr-check` here, and said so in the pull request body: your branch is cut from `development`
+`2cfb0bc43`, which is still the tip, so it is not behind, and one documentation file did not justify taking the last
+free Docker slot on this machine. Your Exit 0 is the one the pull request cites.
+
+**One correction, mine not yours:** #3651 was in no project, which is my miss from filing it this morning. Fixed.
+
+### Why this batch
+
+[#2597](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2597) was blocked by PR 3600 until
+this morning; that merged, so it is clear. `athleticsDevelopmentSource` in
+`libs/ts/events/ngx/src/lib/definitions/common.definitions.ts` still takes only `id`, `url`, `title?` and `onlyType?`,
+so a map whose development service names its fields differently, or needs anything else in `native`, **cannot use the
+helper at all** and writes the whole source by hand. That is how the three hand-written copies #2581 removed came to
+exist, one step along, and it is what #2591 exists to sweep up.
+
+### Read this before writing anything: the issue asks for three things and one of them is now wrong
+
+**Do not add `refreshInterval`.** #2581 moved game-day refresh to a single switch on `EventConfiguration` -
+`gameDayRefresh?: { enabled: boolean; layers: string[] }` - and the interface says outright that *"no layer definition
+sets `refreshInterval` itself"*; `EventSettingsService.eventLayerSources` applies it. Adding a `refreshInterval`
+parameter here would put a second way to express refresh back into the definitions, which is precisely the fault #2581
+fixed. I have written this on the issue, so its body and my comment disagree deliberately - **my comment is the scope.**
+
+**So: `popupData` and `native` overrides only.**
+
+### What to do
+
+1. **Both overrides merge, they do not replace.** An override that silently dropped `outFields: ['*']` or the
+   `onlyType` definition expression would break the development popups this helper exists to make work - #2176 is the
+   only athletics map whose development popups have ever worked, and this helper generalised it. Keep `onlyType`
+   authoritative over anything passed in `native`, and say in a comment why.
+2. **Every existing caller must come out byte-identical.** There are callers across the athletics and satellite
+   definitions; the change is additive, so a diff of the generated `LayerSource` objects before and after must be empty
+   for all of them. `common.definitions.spec.ts` already imports the helper - extend it, and add a case per override
+   plus a case proving the defaults are untouched when nothing is passed.
+3. **Prove the need with one real caller.** An option nothing uses is speculation. Find a definition that currently
+   hand-writes a source it could not express through the helper, convert it, and show it produces the same object. If
+   there is no such caller, **say so and stop** - then the right answer is that this issue waits for the first real one,
+   and that is a finding worth reporting rather than a reason to add parameters anyway.
+
+### Scope
+
+Its `no-visible-change` label is right if step 2 holds: no caller's output moves, so nothing a visitor sees changes, and
+no images are needed. **If you find a caller whose output does change, that is a visible change** - stop, say so, and I
+will decide whether it is a separate issue.
+
+`libs/ts/events/ngx` is quiet now: PR 3666 touched `common.definitions.ts` and merged this morning, and nothing of mine
+is open in it.
+
+**Branch** `refactor/2597-athletics-source-overrides` from the latest `development`, pushed to the fork. Pre-push:
+`scripts/check-in-volume.sh <branch> affected`, and **read the log's own `Exit N` line**. Body text in the report, not
+on the branch. **Report** `home/reports/2026-11-25-a46.md`. Questions `Q-a46-<n>`. **Open no pull request.**
+
 ## Batch g121 (gisday: does zoneless still hold now that shared components are `Eager`? #1478; 25 November 2026, 12:20 PM Central, from `work (gisday)`) (Medium) - **after a45**
 
 Your `chore/1478-gisday-zoneless` is ready to open, but `development` moved under it. **#3616 merged**: GIS Day's components
