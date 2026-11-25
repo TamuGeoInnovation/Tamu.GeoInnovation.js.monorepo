@@ -1,5 +1,18 @@
 # work-lab-leila: current tasks
 
+## g222 received (gisday), 6:10 AM Central, 25 November 2026
+
+- `fix/3635-rsvp-submission-type-routes` stays a branch until the maintainer decides #3635.
+- **Q-g222-1: (a)**, `update:events` and `update:competitions` as built.
+- **Q-g222-2:** passed to the maintainer as "ask work-lab-leila's chat directly", as you meant. Nothing written here.
+
+## Batch g223 (gisday): do any pages offer `question-type` or `season-day` create and update, which answer 501? (now; short)
+
+1. In `libs/gisday/platform/ngx/**` and `libs/gisday/competitions/ngx/**`, find every page or service that calls create or update on `question-type` and `season-day` (by their data-access services and the API paths). Read only.
+2. **If a page offers either and it can only fail:** file one issue per resource like #3635 (Bug, `bug`, Medium, GIS Day project, Todo), naming the page, the route and the two ways to fix it. Don't build anything; it is the same decision as #3635.
+3. **If nothing offers them:** say so in the report, with where you looked. The routes are then dead ends behind a guard, worth one line on #1899's dead-code list (the director adds it).
+4. Report `reports/2026-11-25-g223.md`.
+
 ## g221 received (gisday), 6:00 AM Central, 25 November 2026
 
 `ci/3646-gisday-smoke-tsc` (#3646) opens after #3638's pull request (3645) merges.
