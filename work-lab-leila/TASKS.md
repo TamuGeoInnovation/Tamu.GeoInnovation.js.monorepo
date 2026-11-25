@@ -1,5 +1,52 @@
 # work-lab-leila: current tasks
 
+## Batch a18 (aggiemap: #3473, one "map finished drawing" wait and one home for the probe name) (Medium) - **now**
+
+Welcome back. This is the biggest of the reuse-scan findings and it wants a machine to itself, which is why it
+is yours.
+
+[#3473](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3473): the smoke suite has
+several ways to wait for a map to finish drawing, and `__tamuGiscMapProbe` is named in more than one module.
+Read the issue to the end before starting.
+
+### Why this one matters more than a tidy-up
+
+**It is the mechanism behind [#3369](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3369).**
+Two checks have failed as "the map never finished drawing" in every tier for days - break-summer's Lot 100g
+popup and indoor-track-parking's layer order - and they fail that way on a quiet machine as well as a loaded
+one. Several different waits, each with its own timeout and its own idea of "finished", is exactly how a flake
+that is really one bug reads as several.
+
+So this is not only about duplication. **If, while consolidating, you find that the waits disagree about what
+"finished" means** - one waiting on `ready`, another on `drawing`, another on a timeout - **say so plainly in
+your report.** That finding is worth more than the refactor, and `docs/testing-maps.md` already says `ready`
+is not the right signal for a screenshot. It may be the answer to #3369.
+
+### The work
+
+One wait, one module naming the probe (`map-probe.ts`). The issue names the call sites.
+
+**Do not change what any check asserts.** This is a refactor: the same tests, the same expectations, reaching
+the same conclusion through one helper. If consolidating would change a timeout or a condition, that is a
+decision rather than a tidy-up - put it in the report and leave it out of the branch.
+
+**Prove it did not change behaviour.** `npx tsc -p test/smoke/aggiemap` compiles the suite, which is the
+cheapest proof the call sites are right. Beyond that, run **one spec that exercises the wait** against dev -
+`test/smoke/aggiemap/run-local.sh development one map-layers.spec.ts` or similar - before and after, and
+report both. A refactor of the waiting code that nobody ran is worth very little.
+
+### Reporting
+
+You have no `gh`, so push the branch and the report and nothing else - no issue comments, no pull request.
+Branch `refactor/3473-one-drawing-wait` from the latest `development`, pushed to the fork. Say
+**"branch ready: refactor/3473-one-drawing-wait"**.
+
+`work-lab-leila/reports/2026-11-24-a18.md`: what the waits were, what they are now, whether they disagreed
+about "finished", the `tsc` result, and the before and after of the spec you ran.
+
+**Questions come to me** (`work (aggiemap)`), under **Questions for the director (aggiemap)**, with options and
+a recommendation. Do not ask the maintainer.
+
 > # Back: the pause is over (the maintainer, 25 November 2026, about 12:30 AM Central). Take batches again.
 >
 > ~~PAUSED by the maintainer, 24 November 2026, about 11:00 AM Central: the student is using this machine again.~~

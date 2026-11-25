@@ -1,5 +1,64 @@
 # Home machine: current tasks
 
+## Batch a17 (aggiemap: #3468 then #3467, the two live bugs from the reuse scan) (Medium) - **now, after a16**
+
+Both came out of the #3062 reuse scan and are bugs the duplication already causes. Each names its file and
+line, so the finding is not the work - the proof is. **Separate branches; they share nothing.**
+
+### Part 1: #3468, accessible routing offered on production
+
+[#3468](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3468). #2801 made
+accessible routing development-only, because the routing network does not route accessible trips (#2592).
+Desktop gates it; **the phone's mode picker is a separate copy of the template and has no gate**, so the ADA
+toggle is offered on production.
+
+- Desktop: `trip-planner-mode-picker/containers/base/base.component.html:20-23`, `@if ((isDev | async) === true)`
+- Phone: `.../containers/mobile/mobile.component.html:16-25`, no gate
+
+**This one first**, because it is a development-only feature reaching production, which is the class of fault
+`DEVELOPMENT_ONLY_SERVICES` and `TestingService` exist to prevent.
+
+**Prove it on production before fixing**: open the trip planner on a phone viewport on
+`aggiemap.tamu.edu` and say whether the accessible toggle is offered. If it is not, stop and say so - the
+scan read the code, and the code is not the page.
+
+**Red first.** `CLAUDE.md` says structure is gated at run time with `TestingService` so `?as=production` keeps
+working, and the smoke check for this covers only `/map/d/trip` - which is why the phone's copy was missed.
+A regression test that fails on today's code is the point of this part; the one-line template change is not.
+
+**Do not fix it by copying the desktop gate into the mobile template** unless there is no better option. Two
+copies of a gate is what caused this. If the two templates can share the gated block, say so in your report
+and do that; if they genuinely cannot tonight, add the gate and say why, so #3490 (the phone's directions
+using the desktop templates) has the note.
+
+### Part 2: #3467, an event notice still shows on the evening of its event
+
+[#3467](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3467).
+`EventNotificationsService.raiseActive()`
+(`libs/aggiemap/ngx/core/src/lib/services/event-notifications/event-notifications.service.ts:222-241`) reads
+each date with `new Date(date)`. The definitions give date-only strings, which `new Date` reads as **UTC
+midnight - 7 PM Central the evening before**. Its ongoing test is `Math.abs(now - eventDate) < oneDay`, so the
+window closes at 7 PM Central on the event's own day.
+
+The shared helpers `parseEventDate` and `nextEventDate` already read these correctly. **Use them** rather than
+adjusting the arithmetic - the duplication is the bug, and a second timezone correction would be a third copy
+of the same idea.
+
+**Red first, with a fixed clock.** A test that depends on today's date passes or fails by accident; freeze the
+clock at, say, 8 PM Central on an event's own day and assert the notice is still raised, then at 8 PM the day
+after and assert it is not. `CLAUDE.md`'s warning applies to the test as much as to the code: `TZ=America/Chicago`
+is a lie in Git Bash, so set the zone in the test rather than the environment.
+
+### Both parts
+
+Check each with `scripts/check-in-volume.sh <branch> <projects it edits>,aggiemap-angular`, read its own
+`Exit` line, push to the fork, no `.pr-body.md`. #3468 has a visible result on a phone, so before and after at
+390. #3467's result is a notice that is or is not there - capture it if you can contrive the date, and say so
+if you cannot rather than faking it.
+
+Report `home/reports/2026-11-24-a17.md`, one section per part, and say **"branch ready: <names>"**. **No pull
+requests** - those are mine.
+
 ## Batch a16 (aggiemap: before and after images for #2816, the empty popup row) (Medium) - **now**
 
 [#2816](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2816) is committed on the
