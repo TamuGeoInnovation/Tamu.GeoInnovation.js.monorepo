@@ -68,7 +68,7 @@ export class AccountDashboardProvider {
     });
 
     const window = seasonWindow(
-      (season.days ?? []).map((d) => d.date),
+      season.days.map((d) => d.date),
       (previous?.days ?? []).map((d) => d.date)
     );
     const from = window.from ?? new Date(0);

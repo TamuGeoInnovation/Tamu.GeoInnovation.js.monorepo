@@ -38,7 +38,7 @@ import {
   chosenSpeakers,
   fullName,
   linkExpiry,
-  looksLikeEmail,
+  hasEmail,
   recipientOf
 } from '../speaker-edit/speaker-edit.service';
 
@@ -74,8 +74,8 @@ export class JudgingEmailService {
   public async preview(eventGuid: string, host?: string): Promise<SessionDetailsEmailPreview> {
     const { session, competition, judges } = await this.judgingSession(eventGuid);
     const site = gisdaySite(process.env.GISDAY_SITE, host);
-    const reachable = judges.filter((j) => looksLikeEmail(j.email));
-    const noAddress = judges.filter((j) => !looksLikeEmail(j.email)).map(fullName);
+    const reachable = judges.filter(hasEmail);
+    const noAddress = judges.filter((j) => !hasEmail(j)).map(fullName);
 
     if (reachable.length === 0) {
       return { groups: [], noAddress };
@@ -114,7 +114,7 @@ export class JudgingEmailService {
    * are named as skipped. Only the session's judges: a ticked id of anyone else is not one of them.
    */
   public async send(
-    eventGuid: string,
+    eventGuid: string | undefined,
     host?: string,
     email?: JudgingEmail,
     sender?: EmailSender,
@@ -133,8 +133,8 @@ export class JudgingEmailService {
       subject: judgingEmailSubject(competition),
       template: judgingEmailTemplate(session, competition, hasEmailDesign(site))
     };
-    const reachable = judges.filter((j) => looksLikeEmail(j.email));
-    const noAddress = judges.filter((j) => !looksLikeEmail(j.email));
+    const reachable = judges.filter(hasEmail);
+    const noAddress = judges.filter((j) => !hasEmail(j));
     const from = sender ?? siteSender(site.name);
     const design = judgingEmailDesign(site.name, seasonDaysOf(session.season), sessionEmailDetails(session));
     const chosen = ticked ? reachable.filter((s) => ticked.includes(s.guid)) : reachable;
@@ -191,7 +191,7 @@ export class JudgingEmailService {
 
   /** The session, its judged competition and its judges, unless it judges no competition or has no judges. */
   private async judgingSession(
-    eventGuid: string
+    eventGuid: string | undefined
   ): Promise<{ session: Event; competition: JudgedCompetition; judges: Array<Speaker> }> {
     const session = await sessionForEmail(this.events, eventGuid);
 

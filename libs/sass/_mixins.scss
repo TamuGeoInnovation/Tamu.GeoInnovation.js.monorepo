@@ -43,19 +43,13 @@
   transition: $args;
 }
 
+// The flex mixins emit only the standard properties: every browser this repository supports has had unprefixed flexbox
+// for years, and the prefixes made a stylesheet that reused them larger than plain CSS (#1340).
 @mixin flexbox($args...) {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -moz-flex;
-  display: -ms-flexbox;
   display: flex;
 }
 
 @mixin flexbox-inline {
-  display: -webkit-inline-box;
-  display: -webkit-inline-flex;
-  display: -moz-inline-flex;
-  display: -ms-inline-flexbox;
   display: inline-flex;
 }
 
@@ -63,9 +57,6 @@
 // - applies to: flex items
 // <positive-number>, initial, auto, or none
 @mixin flex($args...) {
-  -webkit-flex: $args;
-  -moz-flex: $args;
-  -ms-flex: $args;
   flex: $args;
 }
 
@@ -73,9 +64,6 @@
 // - applies to: flex containers
 // row | row-reverse | column | column-reverse
 @mixin flex-direction($args) {
-  -webkit-flex-direction: $args;
-  -moz-flex-direction: $args;
-  -ms-flex-direction: $args;
   flex-direction: $args;
 }
 
@@ -83,9 +71,6 @@
 // - applies to: flex containers
 // nowrap | wrap | wrap-reverse
 @mixin flex-wrap($args) {
-  -webkit-flex-wrap: $args;
-  -moz-flex-wrap: $args;
-  -ms-flex-wrap: $args;
   flex-wrap: $args;
 }
 
@@ -93,9 +78,6 @@
 // - applies to: flex containers
 // <flex-direction> || <flex-wrap>
 @mixin flex-flow($args) {
-  -webkit-flex-flow: $args;
-  -moz-flex-flow: $args;
-  -ms-flex-flow: $args;
   flex-flow: $args;
 }
 
@@ -103,9 +85,6 @@
 // - applies to: flex items
 // <integer>
 @mixin flex-order($args) {
-  -webkit-order: $args;
-  -moz-order: $args;
-  -ms-order: $args;
   order: $args;
 }
 
@@ -113,9 +92,6 @@
 // - applies to: flex items
 // <number>
 @mixin flex-grow($args) {
-  -webkit-flex-grow: $args;
-  -moz-flex-grow: $args;
-  -ms-flex-grow: $args;
   flex-grow: $args;
 }
 
@@ -123,9 +99,6 @@
 // - applies to: flex item shrink factor
 // <number>
 @mixin flex-shrink($args) {
-  -webkit-flex-shrink: $args;
-  -moz-flex-shrink: $args;
-  -ms-flex-shrink: $args;
   flex-shrink: $args;
 }
 
@@ -134,9 +107,6 @@
 // - applies to: flex itemsnitial main size of the flex item
 // <width>
 @mixin flex-basis($args) {
-  -webkit-flex-basis: $args;
-  -moz-flex-basis: $args;
-  -ms-flex-basis: $args;
   flex-basis: $args;
 }
 
@@ -144,9 +114,6 @@
 // - applies to: flex containers
 // flex-start | flex-end | center | space-between | space-around
 @mixin justify-content($args) {
-  -webkit-justify-content: $args;
-  -moz-justify-content: $args;
-  -ms-justify-content: $args;
   justify-content: $args;
 }
 
@@ -154,9 +121,6 @@
 // - applies to: multi-line flex containers
 // flex-start | flex-end | center | space-between | space-around | stretch
 @mixin align-content($args) {
-  -webkit-align-content: $args;
-  -moz-align-content: $args;
-  -ms-align-content: $args;
   align-content: $args;
 }
 
@@ -164,9 +128,6 @@
 // - applies to: flex containers
 // flex-start | flex-end | center | baseline | stretch
 @mixin align-items($args) {
-  -webkit-align-items: $args;
-  -moz-align-items: $args;
-  -ms-align-items: $args;
   align-items: $args;
 }
 
@@ -174,9 +135,6 @@
 // - applies to: flex items
 // auto | flex-start | flex-end | center | baseline | stretch
 @mixin align-self($args) {
-  -webkit-align-self: $args;
-  -moz-align-self: $args;
-  -ms-align-self: $args;
   align-self: $args;
 }
 

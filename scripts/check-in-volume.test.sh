@@ -57,6 +57,15 @@ expect "a workflow with no list excludes nothing" "" "$(excluded_projects "$repo
 excluded_projects "$repo" HEAD test >/dev/null 2>&1
 expect "a missing workflow is an error" "1" "$?"
 
+# #1938, #2067: the build runs in the configuration build.yml builds with, read from it, so the two cannot drift apart.
+# Without it the seven apps whose defaultConfiguration is "" were built with no budgets and no AOT, and CI found what
+# this check let through.
+expect "build uses the configuration this repository's build.yml builds with" "production" \
+  "$(build_configuration "$(cd "$(dirname "$0")/.." && pwd)" HEAD)"
+expect "a build.yml whose build names no configuration gives none" "" "$(build_configuration "$repo" HEAD~1)"
+build_configuration "$repo" HEAD~9 >/dev/null 2>&1
+expect "a missing build.yml is an error" "1" "$?"
+
 # lint.yml's steps outside nx (#2286), in the shape of development on 24 October, plus the forms CI could grow.
 cat >"$repo/.github/workflows/lint.yml" <<'YML'
 jobs:
@@ -110,6 +119,18 @@ expect "a CHECK_PARALLEL that is not a number is refused, saying so" \
   "CHECK_PARALLEL must be a whole number above zero, not 'lots'." "$(CHECK_PARALLEL=lots check_limits 2>&1 >/dev/null)"
 CHECK_PARALLEL=0 check_limits >/dev/null 2>&1
 expect "a CHECK_PARALLEL of 0 is refused" "1" "$?"
+
+
+# The log's name, from the mode (#1855). Built from every project in a bug fix's list, fifteen names passed the length
+# Windows allows and the check died with "File name too long" before running anything.
+expect "affected names its log affected" "affected" "$(log_label affected)"
+expect "a short project list names its log as before" "gisday-nest-gisday-angular" "$(log_label gisday-nest,gisday-angular)"
+long="$(printf 'gisday-platform-ngx-common-%s,' 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)gisday-angular"
+expect "a long project list's name is at most 80 characters" "yes" "$([ "${#long}" -gt 80 ] && [ "$(log_label "$long" | wc -c)" -le 81 ] && echo yes || echo no)"
+expect "and still names its first project" "yes" "$(case "$(log_label "$long")" in gisday-platform-ngx-common-1-*) echo yes ;; *) echo no ;; esac)"
+expect "and says how many there are" "yes" "$(case "$(log_label "$long")" in *16-projects*) echo yes ;; *) echo no ;; esac)"
+other="${long%,gisday-angular},gisday-nest"
+expect "two long lists that differ get different names" "yes" "$([ "$(log_label "$long")" != "$(log_label "$other")" ] && echo yes || echo no)"
 
 # The free-space guard (#3400). A check that cannot run must say so itself, rather than arriving as
 # Docker's exit 125, which reads as a failing branch.

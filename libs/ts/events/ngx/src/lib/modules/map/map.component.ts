@@ -15,7 +15,7 @@ import {
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
+import { BusService, TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 import { LegendService } from '@tamu-gisc/maps/feature/legend';
 import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 import {
@@ -58,7 +58,9 @@ const EVENT_PASSED_GRACE_DAYS = 1;
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   // `LayerSourcesService` holds this map's `defaultLayerOverrides`. Provided here, so they live and die
   // with this map; from the application's shared instance they reached every map opened after it in
-  // the same tab, the main map included (#1397).
+  // the same tab, the main map included (#1397). `BusService` likewise: the application's instance draws on the
+  // application's map, which an event map is not, so the Bus Routes tab this map now offers chose a route and
+  // drew nothing (#2758).
   providers: [
     EventService,
     EsriMapService,
@@ -66,6 +68,7 @@ const EVENT_PASSED_GRACE_DAYS = 1;
     LayerListService,
     LegendService,
     TripPlannerService,
+    BusService,
     BasemapGalleryService
   ],
   imports: [

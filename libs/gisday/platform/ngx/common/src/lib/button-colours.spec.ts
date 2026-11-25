@@ -1,8 +1,6 @@
-/**
- * @jest-environment-options {"customExportConditions": ["node", "require"]}
- */
-// The Node build of Sass, which compiles from files; jsdom would otherwise resolve its browser build. Not the node
-// environment: zone.js, which this project's test setup loads, then breaks Node's MessagePort and Jest exits 1.
+// @vitest-environment node
+// The Node build of Sass, which compiles from files; jsdom would otherwise resolve its browser build. Under Jest this
+// could not be the node environment, because the project's zone.js broke Node's MessagePort; Vitest tests zoneless.
 import * as fs from 'fs';
 import * as path from 'path';
 import { compile, Logger } from 'sass';

@@ -31,6 +31,10 @@
 #     with no list skips nothing). Targets whose lists match share one nx run; the others get their
 #     own, one after another, and the check fails if any of them fails. Until #1475, build.yml's list
 #     was used for all three, so ten projects CI lints were never linted here.
+#     The build runs in the configuration build.yml builds with (--configuration=production, read from the
+#     checked branch), so a bundle budget or an AOT template error fails here as it fails in CI. Until
+#     #1938 and #2067 it ran in none, and the seven apps whose defaultConfiguration is "" were built with no
+#     budgets and no AOT. A project with no such configuration builds with its defaults, here as in CI.
 #     A list of projects runs exactly those projects for every target, with no exclusions. Each must
 #     be a project (`nx show projects`): an unknown name stops the check with exit 2, naming it and the
 #     nearest real one, because nx would otherwise run nothing and pass (#2291).
@@ -59,6 +63,19 @@ excluded_projects() {
   yml="$(MSYS_NO_PATHCONV=1 git -C "$repo" show "$rev:.github/workflows/$target.yml")" || return 1
   printf '%s
 ' "$yml" | sed -n 's/^ *EXCLUDED_PROJECTS://p' | head -n 1 | tr -dc 'A-Za-z0-9_,-'
+}
+
+# Prints the configuration .github/workflows/build.yml builds with (#1938, #2067): the --configuration of its
+# `nx affected` build, the one a pull request gets, or nothing when that names none. Fails when build.yml is
+# missing. Without it, the seven apps whose defaultConfiguration is "" were built here with no budgets and no AOT,
+# and CI found the overrun this check let through. A project with no such configuration builds with its defaults,
+# here as in CI. Tested by scripts/check-in-volume.test.sh.
+build_configuration() {
+  local repo="$1" rev="$2" yml
+  repo="$(cd "$repo" && { pwd -W 2>/dev/null || pwd; })"
+  yml="$(MSYS_NO_PATHCONV=1 git -C "$repo" show "$rev:.github/workflows/build.yml")" || return 1
+  printf '%s\n' "$yml" | grep -E 'nx affected(:build| .*(-t|--targets?)[= ]build)' |
+    sed -n 's/.*--configuration[= ]\([A-Za-z0-9_-]*\).*/\1/p' | head -n 1
 }
 
 # Prints the `run:` steps of .github/workflows/lint.yml at <rev> of <repo> that are not Nx, one per line:
@@ -174,6 +191,23 @@ container_free() {
 }
 
 # Sourced (by the test): stop here, with only the functions defined.
+# Prints the part of the log's name that comes from <mode>: `affected`, `all`, or a project list with every character a
+# file name cannot hold turned into `-`. A list longer than 60 characters is cut to its first project, how many there are,
+# and a checksum of the whole list, so two lists never share a log and the name stays well inside what Windows allows:
+# fifteen projects' names once failed the check with "File name too long" before it ran anything (#1855). Tested by
+# scripts/check-in-volume.test.sh.
+log_label() {
+  local label count sum
+  label="$(printf '%s' "$1" | tr -c 'A-Za-z0-9_.-' '-')"
+  if [ "${#label}" -le 60 ]; then
+    printf '%s\n' "$label"
+    return
+  fi
+  count="$(printf '%s\n' "$1" | tr ',' '\n' | grep -c .)"
+  sum="$(printf '%s' "$1" | cksum | cut -d ' ' -f 1)"
+  printf '%s-of-%s-projects-%s\n' "$(printf '%s' "${1%%,*}" | tr -c 'A-Za-z0-9_.-' '-' | cut -c1-40)" "$count" "$sum"
+}
+
 [ "${BASH_SOURCE[0]}" = "$0" ] || return 0
 
 set -euo pipefail
@@ -202,14 +236,22 @@ git -C "$main" rev-parse --verify -q "refs/heads/$branch" >/dev/null || {
 
 issue="$(printf '%s' "$branch" | grep -o '[0-9]\+' | head -n 1 || true)"
 volume="tamu-js-${issue:-$(printf '%s' "$branch" | tr -c 'A-Za-z0-9_.-' '-')}"
-log="${3:-$here/check-$volume-$(printf '%s' "$mode" | tr -c 'A-Za-z0-9_.-' '-').log}"
+log="${3:-$here/check-$volume-$(log_label "$mode").log}"
 
 if [ "$(git -C "$here" rev-parse --abbrev-ref HEAD)" = "$branch" ] && [ -n "$(git -C "$here" status --porcelain)" ]; then
   echo "Note: $here has uncommitted changes. They are not part of this check." >&2
 fi
 
-# Which nx runs to make, as pairs of arguments: <targets> <excluded projects>. Targets with the same
-# exclusions share a run, so today's workflows make two: lint, then test and build together.
+# The configuration build.yml builds with (#1938, #2067), for the build target alone: lint.yml and test.yml name
+# none, so lint and test run as before.
+configuration="$(build_configuration "$main" "refs/heads/$branch")" || {
+  echo "No .github/workflows/build.yml on $branch, so no CI build configuration." >&2
+  exit 2
+}
+
+# Which nx runs to make, as triples of arguments: <targets> <excluded projects> <configuration>. Targets with
+# the same exclusions and configuration share a run, so today's workflows make three: lint, test, then build
+# with --configuration=production.
 runs=()
 case "$mode" in
   affected|all)
@@ -220,13 +262,19 @@ case "$mode" in
         echo "No .github/workflows/$target.yml on $branch, so no CI exclusions for $target." >&2
         exit 2
       }
-      key="x$excluded"
+      config=""; [ "$target" != build ] || config="$configuration"
+      key="x$excluded|c$config"
       [ -n "${targets_for[$key]+set}" ] || keys+=("$key")
       targets_for[$key]="${targets_for[$key]:+${targets_for[$key]},}$target"
     done
-    for key in "${keys[@]}"; do runs+=("${targets_for[$key]}" "${key#x}"); done
+    for key in "${keys[@]}"; do
+      excluded="${key%%|c*}"; config="${key#*|c}"
+      runs+=("${targets_for[$key]}" "${excluded#x}" "$config")
+    done
     ;;
-  *) runs+=(lint,test,build "") ;;
+  *)
+    if [ -n "$configuration" ]; then runs+=(lint,test "" "" build "" "$configuration"); else runs+=(lint,test,build "" ""); fi
+    ;;
 esac
 
 # lint.yml's steps outside nx, run after the nx runs in every mode. One this script cannot run stops the
@@ -242,7 +290,7 @@ if steps="$(lint_steps "$main" "refs/heads/$branch" 2>/dev/null)"; then
   extra="$(printf '%s\n' "$steps" | sed -n 's/^run //p')"
 fi
 
-# The container's own script. Arguments: <branch> <mode>, then the runs' pairs.
+# The container's own script. Arguments: <branch> <mode>, then the runs' triples.
 inner='
 set -u
 branch="$1"; mode="$2"; shift 2
@@ -279,13 +327,16 @@ esac
 # Every run goes ahead even when an earlier one failed, so one check reports every failure; the exit
 # code is the first failing run'"'"'s.
 code=0
-while [ $# -ge 2 ]; do
-  targets="$1"; excluded="$2"; shift 2
+while [ $# -ge 3 ]; do
+  targets="$1"; excluded="$2"; configuration="$3"; shift 3
   exclude=""; [ -z "$excluded" ] || exclude="--exclude=$excluded"
+  # The build in the configuration build.yml builds with (#1938, #2067); lint and test in none, as in CI.
+  config=""; label=""
+  [ -z "$configuration" ] || { config="--configuration=$configuration"; label=" in $configuration"; }
   case "$mode" in
-    affected) step "affected $targets excluding [$excluded]" $nx affected -t "$targets" --base=origin/development $exclude --parallel="$CHECK_PARALLEL" ;;
-    all) step "run-many $targets excluding [$excluded]" $nx run-many -t "$targets" --all $exclude --parallel="$CHECK_PARALLEL" ;;
-    *) step "run-many $targets -p $mode" $nx run-many -t "$targets" -p "$mode" --parallel="$CHECK_PARALLEL" ;;
+    affected) step "affected $targets$label excluding [$excluded]" $nx affected -t "$targets" --base=origin/development $exclude $config --parallel="$CHECK_PARALLEL" ;;
+    all) step "run-many $targets$label excluding [$excluded]" $nx run-many -t "$targets" --all $exclude $config --parallel="$CHECK_PARALLEL" ;;
+    *) step "run-many $targets$label -p $mode" $nx run-many -t "$targets" -p "$mode" $config --parallel="$CHECK_PARALLEL" ;;
   esac
   c=$?; [ "$code" -ne 0 ] || code=$c
 done
@@ -315,7 +366,9 @@ free_space_check "$here" || exit 2
 started="$(run_times_now)"
 SECONDS=0
 echo "Checking $branch ($mode) in volume $volume, memory $memory, parallel $parallel; $(df -Pk "$here" | awk 'NR == 2 { printf "%.1f GiB free", $4 / 1024 / 1024 }'); log: $log"
-for ((i = 0; i < ${#runs[@]}; i += 2)); do echo "  ${runs[i]}: excluding [${runs[i+1]}]"; done
+for ((i = 0; i < ${#runs[@]}; i += 3)); do
+  echo "  ${runs[i]}${runs[i+2]:+ in ${runs[i+2]}}: excluding [${runs[i+1]}]"
+done
 [ -z "$extra" ] || printf '%s\n' "$extra" | sed 's/^/  lint.yml: /'
 set +e
 # Every `docker run` is a new machine as far as Nx can tell, so it would refuse the cache the previous

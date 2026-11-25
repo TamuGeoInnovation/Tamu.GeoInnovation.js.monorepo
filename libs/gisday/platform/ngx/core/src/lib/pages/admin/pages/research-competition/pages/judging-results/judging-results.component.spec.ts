@@ -49,7 +49,7 @@ describe('JudgingResultsComponent, each judge on an entry (#3193)', () => {
       providers: [
         // The season is picked from the address (#3329).
         provideRouter([]),
-        { provide: JudgingService, useValue: { results: jest.fn(() => of(results())) } },
+        { provide: JudgingService, useValue: { results: vi.fn(() => of(results())) } },
         {
           provide: SeasonService,
           useValue: {
@@ -152,7 +152,7 @@ describe('JudgingResultsComponent, each judge on an entry (#3193)', () => {
 /** #3183: the admins' Judging results page. */
 describe('JudgingResultsComponent (#3183)', () => {
   async function open() {
-    const judging = { results: jest.fn(() => of(results())) };
+    const judging = { results: vi.fn(() => of(results())) };
 
     TestBed.configureTestingModule({
       imports: [JudgingResultsComponent],

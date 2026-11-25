@@ -1,6 +1,7 @@
 import { Page } from '@playwright/test';
 
 import { expect, test } from './fixtures';
+import { PROBE_GLOBAL } from './map-probe';
 import { retiredMaps } from './retired';
 
 /**
@@ -161,7 +162,7 @@ test.describe('retired maps', () => {
 
         // Not a map: no map view, and the map probe never appears.
         await expect(page.locator('.esri-view-surface')).toHaveCount(0);
-        expect(await page.evaluate(() => '__tamuGiscMapProbe' in window), 'the map probe loaded, so a map started').toBe(
+        expect(await page.evaluate((name) => name in window, PROBE_GLOBAL), 'the map probe loaded, so a map started').toBe(
           false
         );
       });

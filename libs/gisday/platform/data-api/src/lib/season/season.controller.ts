@@ -3,8 +3,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ParseIntP
 import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 import { SubmissionDeadlines } from '@tamu-gisc/gisday/common';
 
-import { SeasonService } from './season.service';
-import { Season } from '../entities/all.entity';
+import { SeasonService, SeasonUpdate } from './season.service';
 
 @Controller('seasons')
 export class SeasonController {
@@ -42,7 +41,10 @@ export class SeasonController {
   @Permissions(['update:competitions'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Patch(':guid/submission-deadlines')
-  public setSubmissionDeadlines(@Param('guid', ParseUUIDPipe) guid: string, @Body() deadlines: SubmissionDeadlines) {
+  public setSubmissionDeadlines(
+    @Param('guid', ParseUUIDPipe) guid: string,
+    @Body() deadlines: SubmissionDeadlines | undefined
+  ) {
     return this.seasonService.setSubmissionDeadlines(guid, deadlines);
   }
 
@@ -52,7 +54,7 @@ export class SeasonController {
   @Patch(':guid/competition-types')
   public setCompetitionTypes(
     @Param('guid', ParseUUIDPipe) guid: string,
-    @Body() body: { competitionTypes?: Array<string> }
+    @Body() body: { competitionTypes?: Array<string> } | undefined
   ) {
     return this.seasonService.setCompetitionTypes(guid, body?.competitionTypes);
   }
@@ -61,14 +63,17 @@ export class SeasonController {
   @Permissions(['update:competitions'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Patch(':guid/competition-settings')
-  public setCompetitionSettings(@Param('guid', ParseUUIDPipe) guid: string, @Body() body: { settings?: unknown }) {
+  public setCompetitionSettings(
+    @Param('guid', ParseUUIDPipe) guid: string,
+    @Body() body: { settings?: unknown } | undefined
+  ) {
     return this.seasonService.setCompetitionSettings(guid, body?.settings);
   }
 
   @Permissions(['update:seasons'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Patch(':guid')
-  public update(@Param('guid') guid: string, @Body() updateSeasonDto: Partial<Season>) {
+  public update(@Param('guid') guid: string, @Body() updateSeasonDto: SeasonUpdate) {
     return this.seasonService.updateSeason(guid, updateSeasonDto);
   }
 

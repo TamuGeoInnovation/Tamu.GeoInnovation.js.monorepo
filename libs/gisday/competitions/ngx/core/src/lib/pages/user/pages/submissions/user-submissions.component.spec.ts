@@ -1,8 +1,8 @@
+import type { Mock } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { firstValueFrom, of } from 'rxjs';
 
 import { SubmissionService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
-import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import { UserSubmissionsComponent } from './user-submissions.component';
@@ -15,14 +15,14 @@ import { UserSubmissionsComponent } from './user-submissions.component';
 describe('UserSubmissionsComponent', () => {
   let fixture: ComponentFixture<UserSubmissionsComponent>;
   let component: UserSubmissionsComponent;
-  let submissionService: { getMySubmissions: jest.Mock; getUserSubmissions: jest.Mock };
+  let submissionService: { getMySubmissions: Mock; getUserSubmissions: Mock };
 
   const mine = [{ guid: 's-1', userGuid: 'auth0|ann' }];
 
   beforeEach(async () => {
     submissionService = {
-      getMySubmissions: jest.fn(() => of(mine)),
-      getUserSubmissions: jest.fn(() => of([]))
+      getMySubmissions: vi.fn(() => of(mine)),
+      getUserSubmissions: vi.fn(() => of([]))
     };
 
     await TestBed.configureTestingModule({
@@ -33,12 +33,11 @@ describe('UserSubmissionsComponent', () => {
         {
           provide: EnvironmentService,
           useValue: {
-            value: jest.fn((key: string) => {
+            value: vi.fn((key: string) => {
               throw new Error(`Environment does not contain a '${key}' token.`);
             })
           }
-        },
-        { provide: SettingsService, useValue: { getSimpleSettingsBranch: jest.fn(() => of(undefined)) } }
+        }
       ]
     }).compileComponents();
 

@@ -8,7 +8,7 @@ import { expect, HEAVY, test } from './fixtures';
 import { blockAnalytics } from './analytics';
 import { waitForSettledFraming } from './framing';
 import { smokeBaseUrl } from './gis-hosts';
-import { PROBE_GLOBAL, waitForMapReady } from './map-probe';
+import { waitForMapDrawn, waitForMapReady } from './map-probe';
 
 /**
  * Clicking a feature on a map opens its popup, and the popup shows that feature's data (#1117).
@@ -111,17 +111,9 @@ async function openMap(page: Page, mapPath: string): Promise<void> {
 
   await waitForMapReady(page, `the map on ${mapPath} never finished loading`);
 
-  // A click before the view has drawn can land on nothing, which would read as a broken popup.
-  await expect
-    .poll(
-      async () =>
-        await page.evaluate(
-          (name) => (window as unknown as Record<string, { drawing?: boolean }>)[name]?.drawing === false,
-          PROBE_GLOBAL
-        ),
-      { message: `the map on ${mapPath} never finished drawing`, timeout: 60_000, intervals: [1_000] }
-    )
-    .toBe(true);
+  // A click before the view has drawn can land on nothing, which would read as a broken popup. Ready was waited for
+  // above, so `ready: false` keeps this the second of two waits, as it always was, rather than both at one reading.
+  await waitForMapDrawn(page, `the map on ${mapPath} never finished drawing`, { timeout: 60_000, ready: false });
 }
 
 test.describe('popup', () => {
@@ -207,7 +199,9 @@ test.describe('popup', () => {
             type View = { allLayerViews?: { toArray(): LayerView[] } };
             const view = (document.querySelector('arcgis-map') as unknown as { view?: View } | null)?.view;
 
-            return view?.allLayerViews?.toArray().find((layerView) => layerView.layer.id === 'buildings-layer')?.updating === true;
+            return (
+              view?.allLayerViews?.toArray().find((layerView) => layerView.layer.id === 'buildings-layer')?.updating === true
+            );
           }),
         { message: `the buildings layer on ${mapPath} never started drawing`, timeout: 60_000, intervals: [500] }
       )

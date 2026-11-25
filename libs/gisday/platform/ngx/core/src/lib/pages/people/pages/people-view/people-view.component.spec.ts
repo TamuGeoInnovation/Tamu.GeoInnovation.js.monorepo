@@ -1,3 +1,4 @@
+import type { MockInstance } from 'vitest';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router, provideRouter } from '@angular/router';
@@ -23,7 +24,12 @@ describe('Presenters', () => {
       compareByLastName
     );
 
-    expect(sorted.map((p) => `${p.firstName} ${p.lastName}`)).toEqual(['Émile Ábel', 'Ana adams', 'Zoe Adams', 'Aaron Pearce']);
+    expect(sorted.map((p) => `${p.firstName} ${p.lastName}`)).toEqual([
+      'Émile Ábel',
+      'Ana adams',
+      'Zoe Adams',
+      'Aaron Pearce'
+    ]);
   });
 
   /** #2859: first name, last name, full name or organization, any case, accents ignored. */
@@ -44,9 +50,12 @@ describe('Presenters', () => {
     });
 
     /** #2869: the presenter's university, by its full name or its abbreviation. */
-    it.each([['texas a&m university'], ['Texas A&M'], ['TAMU'], ['tamu ']])('finds a presenter by university, "%s"', (text) => {
-      expect(matchesSearch(person('Ana', 'Ruiz', 'City of Austin', ['Texas A&M University', 'TAMU']), text)).toBe(true);
-    });
+    it.each([['texas a&m university'], ['Texas A&M'], ['TAMU'], ['tamu ']])(
+      'finds a presenter by university, "%s"',
+      (text) => {
+        expect(matchesSearch(person('Ana', 'Ruiz', 'City of Austin', ['Texas A&M University', 'TAMU']), text)).toBe(true);
+      }
+    );
 
     it('finds no one by university when the presenter has none', () => {
       expect(matchesSearch(person('Ana', 'Ruiz', 'City of Austin'), 'tamu')).toBe(false);
@@ -73,7 +82,7 @@ describe('PeopleViewComponent link', () => {
     { guid: 'p-1', firstName: 'Mark', lastName: 'Allen', organization: { name: 'Lower Colorado River Authority' } },
     { guid: 'p-2', firstName: 'Ana', lastName: 'Lee', organization: { name: 'Esri' } }
   ];
-  let navigate: jest.SpyInstance;
+  let navigate: MockInstance;
 
   function open(search: string | null = null) {
     TestBed.configureTestingModule({
@@ -87,7 +96,7 @@ describe('PeopleViewComponent link', () => {
       ]
     });
 
-    navigate = jest.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+    navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
     const fixture = TestBed.createComponent(PeopleViewComponent);
     fixture.detectChanges();
 
@@ -140,7 +149,10 @@ describe('PeopleViewComponent link', () => {
 
     fixture.componentInstance.search.setValue('lower colorado');
     tick(300);
-    expect(navigate).toHaveBeenLastCalledWith([], expect.objectContaining({ queryParams: { search: 'lower colorado' }, replaceUrl: true, queryParamsHandling: 'merge' }));
+    expect(navigate).toHaveBeenLastCalledWith(
+      [],
+      expect.objectContaining({ queryParams: { search: 'lower colorado' }, replaceUrl: true, queryParamsHandling: 'merge' })
+    );
 
     fixture.componentInstance.search.setValue('  ');
     tick(300);
@@ -149,7 +161,8 @@ describe('PeopleViewComponent link', () => {
 
   it('copies the whole link, ready to paste into an email, from the search box Sessions shares (#3027)', () => {
     const fixture = open('lower colorado');
-    const linked = fixture.debugElement.query(By.directive(LinkedSearchComponent)).componentInstance as LinkedSearchComponent;
+    const linked = fixture.debugElement.query(By.directive(LinkedSearchComponent))
+      .componentInstance as LinkedSearchComponent;
 
     expect(linked.link()).toBe(`${window.location.origin}/?search=lower%20colorado`);
   });

@@ -9,10 +9,16 @@ import { Organization, University } from '../entities/all.entity';
 import { personOf } from '../user-rsvp/dto/rsvp-dashboard.dto';
 
 /**
+ * An Auth0 profile as an account can have it (#3495): one that never finished its profile has no metadata, or only some,
+ * and an account read in part has only what was asked for. `Auth0UserProfile` declares every part present.
+ */
+export type Auth0ProfileAsRead = { [K in keyof Auth0UserProfile]?: Partial<Auth0UserProfile[K]> | null };
+
+/**
  * A person's name as the dashboards show it, from their profile, or null when it has none (#3243): the homepage names the
  * trail challenge's winners with it, and the Winners page its submitters.
  */
-export function profileName(profile: Auth0UserProfile | null | undefined): string | null {
+export function profileName(profile: Auth0ProfileAsRead | null | undefined): string | null {
   const { firstName, lastName } = personOf(profile, new Date(), new Map());
 
   return [firstName, lastName].filter(Boolean).join(' ') || null;

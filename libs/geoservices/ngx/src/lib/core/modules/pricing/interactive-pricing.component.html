@@ -124,7 +124,7 @@
       </div>
 
       <div class="flex flex-row justify-center leader-2 trailer-1">
-        <p class="button secondary" id="ctaButton" (click)="navigateCtaAction()">{{ ctaText | async }}</p>
+        <p class="button secondary" id="ctaButton" tabindex="0" role="button" (click)="navigateCtaAction()" (keydown.enter)="navigateCtaAction()" (keydown.space)="navigateCtaAction(); $event.preventDefault()">{{ ctaText | async }}</p>
       </div>
     </div>
 
