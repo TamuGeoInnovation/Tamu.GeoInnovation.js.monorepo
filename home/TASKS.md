@@ -1,5 +1,49 @@
 # Home machine: current tasks
 
+## Batch a35 (aggiemap: #2600, ten satellite campus maps from one builder; 25 November 2026, 6:35 AM Central, from `work (aggiemap)`) (Low) - **now**
+
+**Issue: [#2600](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2600).** Take this now; a33 stays held until PR 3587 merges and will offer itself to you when it does.
+
+**It cannot collide with anything open, and I checked rather than assumed.** The ten files are in
+`libs/ts/events/ngx/src/lib/definitions/campus/`, and of the 35 open pull requests not one touches that folder. The near
+miss worth knowing: **PR 3600 is mine and edits eight athletics files one directory up** (`cross-country-`, `indoor-track-`,
+`outdoor-track-`, `soccer-`, `softball-`, `swimming-`, `tennis-` and `volleyball-parking.definitions.ts`). Leave those eight
+alone and you are clear of everything.
+
+**This came out of the #2591 audit, which I closed this morning** after checking its ten findings: seven are done, and this
+is one of the three that are real and still open. The audit's own diagnosis is the thing to keep in mind while you work:
+*lint and tests check that each file is correct, not that two files agree.* Nothing in CI will tell you if one campus comes
+out of the builder subtly different from the others.
+
+1. **A `satelliteCampus({ ... })` builder**, taking the id, title, basemap URL, property-layer URL and the field-name
+   triple, returning the four parts each campus repeats: the vector-tile basemap layer, the click-overlay property layer,
+   the building `SearchSource`, and the config with `buildingPopup`. Put it in `campus/` or beside
+   `common.definitions.ts` - your call, but say which and why in the report.
+2. **The field names are the trap, and they are why the builder takes them as input.** Six campuses use `bldgname`,
+   `bldgabbr` and `number` and are byte-identical; `mcallen` uses `name` and `abbrev`, `galveston` uses `bldgabbrev`, and
+   `hsc-college-of-dentistry` differs again - **check all three against the service, not against the file** (CLAUDE.md,
+   "Ask the service before you change a definition"). A builder that quietly defaults the triple would make those three
+   search nothing, and the diff would look fine.
+3. **Prove nothing moved, one campus at a time.** Each file exports `<Name>Ts` and `<Name>LayerSources`. Before you touch
+   anything, capture the resolved exports for all ten off `development` and keep them; after each campus, assert the new
+   resolved export deep-equals the captured one. That is the only check that answers the question this change raises, and
+   it is worth committing as a spec rather than running once by hand.
+4. **Four specs already cover this folder** and are your regression net: `campus-overlay.spec.ts`,
+   `campus-thumbnails.spec.ts`, `remote-campus-names.spec.ts` and `hsc-college-of-dentistry.definitions.spec.ts`. They must
+   all stay green **without being edited**. If one needs changing to pass, that is a finding - say so in the report before
+   changing it.
+5. **Not user-visible**, and the issue already carries the `no-visible-change` label. So no screenshots and no
+   release-notes entry, which means this batch needs no other machine: you can take it all the way to an open pull request
+   yourself.
+6. **`scripts/pre-pr-check.sh refactor/2600-one-satellite-campus-builder 'refactor(ts-events-ngx): Ten satellite campus maps are built from one function' .pr-body.md affected --label no-visible-change`**,
+   and **read the log's own `Exit N` line**, not the wrapper's. Delete `.pr-body.md` once the pull request is open, and
+   `git worktree remove` the worktree - a left-behind body file is what kept 68 merged worktrees undeletable last night.
+7. **Report** `home/reports/2026-11-25-a35.md`. Questions `Q-a35-<n>`.
+
+**Priority Low, which I set** (it was unset): ten places, no live fault, and the maintainer's own steer on the audit was
+Low for the findings without one. It is on the board as Todo in Texas A&M Aggiemap; move it to In Progress when you start.
+
+
 ## a33 is held, not queued, and the gate opens by itself (aggiemap), 6:10 AM Central, 25 November 2026
 
 You were right, and it is fixed on this branch rather than worked around: `tools/queued.sh` now has a third state.
