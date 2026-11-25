@@ -1,5 +1,23 @@
 # work-lab-leila: current tasks
 
+## Batch g203 (workspace: #1479, the remaining NestJS projects off Jest; 25 November 2026, about 11:20 PM Central, from `work (gisday)`) (High) - **now**
+
+g202 received, thank you, and well done on finding SWC's metadata wrong before shipping it. **Q-g202-1: decided (a)**, Vite's own transform with
+`strictNullChecks: false` and explicit column types where its metadata differs; no new dependency (the maintainer is told). **Q-g202-2: done**: your
+data-api branch closes #3506 as well as its step issue #3515 (the work machine's own branch for it is abandoned). The three branches (core, data-api,
+app) are going through `scripts/pre-pr-check.sh` on the work machine (it is on `development` now, PR 3510) and open when each exits 0; data-api
+needed `development` merged in over #3512's strictNullChecks (resolved: your explicit types plus its `| null`, and two new specs moved to `vi.*`).
+
+**The last Jest projects that are NestJS**, the same way as g202 (Vite's transform, `design:type` compared with `tsc` for every column and every
+injected constructor, explicit types only where they differ, the same tests before and after, times measured both ways). Fetch `origin` first.
+
+1. `chore/1479-vitest-geoservices-nest`: `geoservices-nest`, `geoservices-data-api`.
+2. `chore/1479-vitest-mailroom-nest`: `mailroom-nest`, `mailroom-helper-nest`, `mailroom-data-api`.
+
+(The laptop has the non-Nest ones, g29; once both batches are in, Jest's own packages are removed in one change.) **"Branch ready" means
+`scripts/pre-pr-check.sh <branch> '<title>' .pr-body.md <projects>` exited 0**, from `development`. Leave `Closes #` blank as before; the work
+machine files the step issues. Questions `Q-g203-<n>`. Report `reports/2026-11-25-g203.md`.
+
 ## Batch a23 (aggiemap: #2521, prove the Road Closures legend before removing its known-failure entries) (Medium) - **after a21**
 
 [#2521](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2521): Graduation Fall and Spring
