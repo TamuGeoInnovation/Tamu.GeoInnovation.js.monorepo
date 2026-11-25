@@ -71,3 +71,33 @@ describe('MapService, what the public map sends', () => {
     ]);
   });
 });
+
+/**
+ * #3495: a submission saved without its location has no point; the map shows the others, rather than failing with a
+ * 500 for everyone.
+ */
+describe('MapService, a submission with no location', () => {
+  it('is left out of the map, and the others are shown', async () => {
+    const submissions = [
+      { guid: 's-1', location: { latitude: '30.61316', longitude: '-96.34062' }, validationStatus: null },
+      { guid: 's-2', location: null, validationStatus: null }
+    ];
+    const query = {
+      leftJoinAndSelect: () => query,
+      leftJoin: () => query,
+      where: () => query,
+      setParameter: () => query,
+      orderBy: () => query,
+      getMany: () => Promise.resolve(submissions)
+    };
+    const service = new MapService({ createQueryBuilder: () => query } as never, {} as never, {} as never);
+
+    const collection = (await service.getLocationsForSeasonId('cs-2026', 'geojson')) as {
+      features: Array<{ properties: { guid: string }; geometry: { coordinates: Array<unknown> } }>;
+    };
+
+    expect(collection.features.map((f) => [f.properties.guid, f.geometry.coordinates])).toEqual([
+      ['s-1', ['-96.34062', '30.61316']]
+    ]);
+  });
+});

@@ -210,6 +210,16 @@ describe('ManagementService, against a stand-in for the Management API', () => {
         new ManagementService(credentials).getUserMetadata('auth0|missing', undefined, true)
       ).rejects.toBeInstanceOf(InternalServerErrorException);
     });
+
+    /** The schema marks user_id optional (#3495); a user without one says so, rather than failing on `undefined`. */
+    it('answers 500, saying why, for a user Auth0 sends with no user_id', async () => {
+      users['auth0|3'] = { name: 'No Id' };
+
+      const answer = new ManagementService(credentials).getUserMetadata('auth0|3', undefined, true);
+
+      await expect(answer).rejects.toBeInstanceOf(InternalServerErrorException);
+      await expect(answer).rejects.toThrow('Auth0 sent a user with no user_id.');
+    });
   });
 
   describe('getUsersByIds (#2878)', () => {

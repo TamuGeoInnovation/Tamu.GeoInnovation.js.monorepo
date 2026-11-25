@@ -2,6 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../../../../dist/out-tsc",
+    "strictNullChecks": true,
     "types": []
   },
   "exclude": ["**/*.spec.ts", "**/*.test.ts"],

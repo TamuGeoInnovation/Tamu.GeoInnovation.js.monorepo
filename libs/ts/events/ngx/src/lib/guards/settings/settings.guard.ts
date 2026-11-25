@@ -54,7 +54,7 @@ export class SettingsGuard {
 
       // Nothing to restore from either source; the map handles the unconfigured case.
       return true;
-    } catch (err) {
+    } catch {
       this.ns.toast({
         id: 'special-events-settings-error',
         title: 'Error Validating URL Parameters',

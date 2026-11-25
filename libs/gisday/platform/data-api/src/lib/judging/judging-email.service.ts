@@ -32,7 +32,6 @@ import {
   sessionForEmail
 } from '../speaker-edit/session-details-email.service';
 import {
-  REPEAT_SEND_MINUTES,
   SendResult,
   SpeakerEditService,
   chosenSpeakers,

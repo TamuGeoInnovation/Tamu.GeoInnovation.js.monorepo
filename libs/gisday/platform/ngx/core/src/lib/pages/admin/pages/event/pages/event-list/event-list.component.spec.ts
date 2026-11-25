@@ -5,7 +5,7 @@ import { of } from 'rxjs';
 import { EventService, SeasonService, SessionFilesService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { GISDAY_SITES } from '@tamu-gisc/gisday/common';
+import { GISDAY_SITES, type GisdaySite } from '@tamu-gisc/gisday/common';
 import { GISDAY_SITE } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { EventListComponent } from './event-list.component';
@@ -52,8 +52,9 @@ describe('EventListComponent', () => {
 
   // #2943. Each day is headed as the public Sessions page heads it, with its day of the week, in Central time.
   it('heads each day with its day of the week, as the Sessions page does', () => {
+    // A Date, as EventService hands a session's day to the page (#3558, #3574).
     const { page } = open([
-      { guid: 'e-1', name: 'Workshop', active: true, day: { guid: 'd-1', date: '2026-11-16T06:00:00.000Z' } }
+      { guid: 'e-1', name: 'Workshop', active: true, day: { guid: 'd-1', date: new Date('2026-11-16T06:00:00.000Z') } }
     ]);
 
     expect(page.querySelector('.card h2').textContent.trim()).toBe('Monday, November 16');
@@ -135,7 +136,7 @@ describe('EventListComponent on gisday.tamu.edu', () => {
   });
   const events = [at('e-tamu', 'Keynote', 'tamu'), at('e-txst', 'Coffee & Networking', 'txst')];
 
-  function open(site = GISDAY_SITES.tamu) {
+  function open(site: GisdaySite = GISDAY_SITES.tamu) {
     TestBed.configureTestingModule({
       imports: [EventListComponent],
       providers: [

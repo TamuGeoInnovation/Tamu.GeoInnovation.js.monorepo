@@ -13,7 +13,7 @@ export async function fileExists(fileName: string) {
   try {
     await stat(fileName);
     return true;
-  } catch (error) {
+  } catch {
     return false;
   }
 }
@@ -41,7 +41,7 @@ export async function writeFileToDisk(
 
     // Truncate the original file name to 50 characters, preserving the file extension
     const truncatedFileName =
-      options.truncateFileNameLength && options.truncateFileNameLength > 0
+      options?.truncateFileNameLength && options.truncateFileNameLength > 0
         ? extensionLessName.substring(0, options.truncateFileNameLength) + '.' + fileExtension
         : file.originalname;
 
@@ -91,7 +91,7 @@ export async function ensureDirectoryExists(path: string) {
   // With fs promises, check if the directory exists, if not, create it
   try {
     return await readdir(path);
-  } catch (error) {
+  } catch {
     // Directory doesn't exist, create it
     return await mkdir(path, { recursive: true });
   }

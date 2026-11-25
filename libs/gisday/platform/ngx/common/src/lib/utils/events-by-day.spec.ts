@@ -3,8 +3,9 @@ import { Event } from '@tamu-gisc/gisday/platform/data-api';
 import { groupEventsByDay } from './events-by-day';
 
 const CST = 'GMT-0600 (Central Standard Time)';
-const monday = { guid: 'day-mon', date: '2026-11-16T06:00:00.000Z' };
-const tuesday = { guid: 'day-tue', date: '2026-11-17T06:00:00.000Z' };
+// Dates, as EventService hands a session's day to the page (#3558, #3574).
+const monday = { guid: 'day-mon', date: new Date('2026-11-16T06:00:00.000Z') };
+const tuesday = { guid: 'day-tue', date: new Date('2026-11-17T06:00:00.000Z') };
 
 const event = (name: string, day: typeof monday | null, start: string) =>
   ({ guid: name, name, day, startTime: start }) as unknown as Partial<Event>;
@@ -27,7 +28,10 @@ describe('groupEventsByDay', () => {
   });
 
   it('puts events with no day last, in a group with no date', () => {
-    const groups = groupEventsByDay([event('unscheduled', null, `09:00:00 ${CST}`), event('mon', monday, `09:00:00 ${CST}`)]);
+    const groups = groupEventsByDay([
+      event('unscheduled', null, `09:00:00 ${CST}`),
+      event('mon', monday, `09:00:00 ${CST}`)
+    ]);
 
     expect(groups.map((g) => [g.key, g.date === null])).toEqual([
       ['day-mon', false],
@@ -48,5 +52,11 @@ describe('groupEventsByDay', () => {
 
     expect(given.map((e) => e.name)).toEqual(['b', 'a']);
     expect(groupEventsByDay(null)).toEqual([]);
+  });
+
+  it("dates each day's group with the Date its sessions' day came with (#3574)", () => {
+    const [group] = groupEventsByDay([event('mon', monday, `09:00:00 ${CST}`)]);
+
+    expect(group.date).toBe(monday.date);
   });
 });

@@ -40,7 +40,7 @@ export class GeoservicesError extends Error {
         if (window !== undefined && typeof badResponse.data === 'object') {
           serializedDocument = new XMLSerializer().serializeToString(badResponse.data as Node);
         }
-      } catch (e) {
+      } catch {
         serializedDocument = badResponse.data as string;
       }
 

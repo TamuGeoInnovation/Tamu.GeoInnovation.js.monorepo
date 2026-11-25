@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import got from 'got';
@@ -7,7 +8,8 @@ import { DEFAULT_UPLOAD_LIMITS } from '@tamu-gisc/common/nest/services';
 
 import { HelperController } from './helper.controller';
 
-jest.mock('got', () => jest.fn());
+// got is imported as its default export, which a Vitest mock names (#1479).
+vi.mock('got', () => ({ default: vi.fn() }));
 
 /**
  * The helper forwards a contact form to mailroom. It used to forward every field of the request,
@@ -25,14 +27,15 @@ describe('HelperController', () => {
 
   /** The forwarded form's fields, one `name="field" value` line each (a file by its name). */
   const forwarded = () =>
-    Array.from(((got as unknown as jest.Mock).mock.calls[0][1].body as FormData).entries(), ([name, value]) =>
-      `name="${name}" ${typeof value === 'string' ? value : value.name}`
+    Array.from(
+      ((got as unknown as Mock).mock.calls[0][1].body as FormData).entries(),
+      ([name, value]) => `name="${name}" ${typeof value === 'string' ? value : value.name}`
     ).join('\n');
 
   const res = { status: () => ({ json: (body: unknown) => body }) };
 
   beforeEach(() => {
-    (got as unknown as jest.Mock).mockReset().mockResolvedValue({ statusCode: 200, body: '{}' });
+    (got as unknown as Mock).mockReset().mockResolvedValue({ statusCode: 200, body: '{}' });
     controller = new HelperController({ value: (key: string) => settings[key] } as unknown as EnvironmentService);
   });
 
@@ -80,7 +83,7 @@ describe('HelperController upload limits', () => {
   beforeAll(async () => {
     const module = await Test.createTestingModule({
       controllers: [HelperController],
-      providers: [{ provide: EnvironmentService, useValue: { value: jest.fn() } }]
+      providers: [{ provide: EnvironmentService, useValue: { value: vi.fn() } }]
     }).compile();
 
     app = module.createNestApplication({ logger: false });

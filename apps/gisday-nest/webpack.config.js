@@ -81,7 +81,6 @@ module.exports = {
       const rel = path.isAbsolute(info.absoluteResourcePath)
         ? path.relative(workspaceRoot, info.absoluteResourcePath)
         : info.absoluteResourcePath;
-      console.log('devtoolModuleFilenameTemplate called with:', info.absoluteResourcePath, '->', `webpack:///./${rel}`);
       return `webpack:///./${rel}`;
     }
   },

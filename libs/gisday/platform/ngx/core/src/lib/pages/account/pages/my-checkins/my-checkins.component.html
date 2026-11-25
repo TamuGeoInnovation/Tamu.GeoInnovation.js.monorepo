@@ -21,7 +21,7 @@
           @for (checkin of (checkins$ | async); track checkin) {
           <tr>
             <td>{{checkin?.event?.name}}</td>
-            <td>{{checkin.created | date:'short'}}</td>
+            <td>{{checkin.created | centralDate:'short'}}</td>
           </tr>
           }
         </tbody>

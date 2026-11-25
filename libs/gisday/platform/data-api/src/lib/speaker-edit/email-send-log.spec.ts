@@ -79,7 +79,7 @@ describe('EmailSendLog (#3167)', () => {
   it('records one row per speaker, with the email, the session, the address and who it was from', async () => {
     await log.record([avery, blair], SESSION_DETAILS_EMAIL_KIND, 'e-1', 'GIS Day <gisday@example.com>');
 
-    expect(table.rows.map(({ created, ...r }) => r)).toEqual([
+    expect(table.rows.map(({ created: _created, ...r }) => r)).toEqual([
       {
         speaker: { guid: 'sp-av' },
         kind: SESSION_DETAILS_EMAIL_KIND,

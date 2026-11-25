@@ -29,9 +29,8 @@ export enum CONSTRUCTION_MAP_LAYERS {
  *   service. The legacy FCOR/Construction_2018/MapServer popup workaround is no longer
  *   needed since this service's sublayer 0 already exposes a description field.
  */
-import { Connections, getDefaultGisHost } from '@tamu-gisc/aggiemap/ngx/common';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 import { EventPopups } from '../modules/popups/popups';
-const gisHost = getDefaultGisHost();
 
 // Read from production on every environment until the hosted view is published on the development server (#2653).
 const eventUrl = Connections.constructionUrl.replace(/\/0$/, '');

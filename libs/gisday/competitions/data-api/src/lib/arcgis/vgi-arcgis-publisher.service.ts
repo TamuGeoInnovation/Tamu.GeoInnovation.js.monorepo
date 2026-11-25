@@ -277,7 +277,7 @@ export class VgiArcgisPublisher {
  * A submission as a point in the layer: where it was found, and the fields `VGI_ARCGIS_FIELDS` names.
  */
 function toFeature(submission: CompetitionSubmission) {
-  const typeQuestion = submission.season?.form?.model?.find((q) => q.isDiscriminator === true);
+  const typeQuestion = submission.season?.form?.model.find((q) => q.isDiscriminator === true);
   const type = typeQuestion ? submission.value?.[typeQuestion.attribute] : undefined;
   // The form's name question is the one any type scores by (`nameAttribute`). Its answer is published for every
   // type, since every type is asked it, not only for the types that score by it (#2628).

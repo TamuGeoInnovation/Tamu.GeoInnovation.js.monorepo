@@ -119,8 +119,6 @@ describe('RsvpDashboardComponent', () => {
     Array.from(root.querySelectorAll('datatable-row-wrapper datatable-body-row')).map((tr) =>
       Array.from(tr.querySelectorAll('.datatable-body-cell')).map((td) => td.textContent.trim())
     );
-  const names = (root: HTMLElement) =>
-    Array.from(root.querySelectorAll('datatable-row-wrapper .dashboard-table-name .bold')).map((n) => n.textContent.trim());
   const cellOf = (root: HTMLElement, name: string) =>
     Array.from(root.querySelectorAll('datatable-row-wrapper .datatable-body-cell')).find((c) =>
       c.textContent.includes(name)

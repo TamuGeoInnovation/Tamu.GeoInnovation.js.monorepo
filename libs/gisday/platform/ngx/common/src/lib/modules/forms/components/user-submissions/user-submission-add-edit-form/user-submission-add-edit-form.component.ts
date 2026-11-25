@@ -338,7 +338,7 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
       email: (emails[i] ?? '').toLowerCase()
     })).filter((p) => p.name || p.email);
     const submitter = ((form['participants'] as Array<ICompetitionParticipant>) ?? [])[0];
-    const { coAuthors, coAuthorEmails, ...rest } = form;
+    const { coAuthors: _coAuthors, coAuthorEmails: _coAuthorEmails, ...rest } = form;
 
     return { ...rest, participants: [...(submitter ? [submitter] : []), ...(form['format'] === 'group' ? others : [])] };
   }

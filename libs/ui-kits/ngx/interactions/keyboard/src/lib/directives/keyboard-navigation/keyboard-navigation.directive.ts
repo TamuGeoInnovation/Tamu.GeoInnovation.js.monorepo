@@ -159,7 +159,7 @@ export class KeyboardNavigationDirective implements AfterViewInit {
           referencesThisHost = true;
           break;
         }
-      } catch (e) {
+      } catch {
         // ignore
       }
       node = node.parentElement;

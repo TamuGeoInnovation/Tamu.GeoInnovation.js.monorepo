@@ -160,6 +160,10 @@ describe('Judging the research competitions (#3183)', () => {
       });
       const rivers = results.rows.find((r) => r.guid === 's-1');
 
+      if (!rivers) {
+        throw new Error('the results have no row for s-1');
+      }
+
       expect(judgeBreakdown(results, rivers)).toEqual([
         { guid: 'j-1', name: 'Dana Judge', scored: true, scores: [10, 5], total: 15, comment: 'Good.' },
         { guid: 'j-2', name: 'Emery Judge', scored: true, scores: [15, 10], total: 25, comment: null },

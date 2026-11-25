@@ -11,16 +11,7 @@
       @if (failed()) {
       <p class="error">{{ refusal() ?? 'The accounts could not be read. Try again in a moment.' }}</p>
       } @else if (dashboard(); as view) {
-      <p class="dashboard-summary">
-        <strong>{{ view.accounts }}</strong> {{ view.accounts === 1 ? 'account' : 'accounts' }} with a GIS Day profile, made
-        @if (view.window.from) {
-        from {{ view.window.from | date: 'MMM d, y' : '-0600' }}
-        } @else {
-        before
-        }
-        to the end of this GIS Day ({{ lastDay() | date: 'MMM d, y' : '-0600' }}).
-        The sign-in service made {{ view.allAccounts }} {{ view.allAccounts === 1 ? 'account' : 'accounts' }} in that time, with or without a profile; it is shared with other sites, so the difference is at most the GIS Day sign-ups that never finished one.
-      </p>
+      <p class="dashboard-summary"><strong>{{ view.accounts }}</strong> {{ view.accounts === 1 ? 'account' : 'accounts' }} with a GIS Day profile, made @if (view.window.from) { from {{ view.window.from | centralDate: 'MMM d, y' }} } @else { before } to the end of this GIS Day ({{ lastDay() | centralDate: 'MMM d, y' }}). The sign-in service made {{ view.allAccounts }} {{ view.allAccounts === 1 ? 'account' : 'accounts' }} in that time, with or without a profile; it is shared with other sites, so the difference is at most the GIS Day sign-ups that never finished one.</p>
 
       <h3 class="dashboard-heading">Accounts over time</h3>
       <p class="dashboard-note">The running total at the end of each day, in Central time, with each day's new accounts beneath. Hover for a day's numbers; drag across the chart to zoom in, and double-click to see it all again. Press a year to draw it beside this one, lined up on the Monday of each year's GIS Day week: the axis then counts days from it.</p>

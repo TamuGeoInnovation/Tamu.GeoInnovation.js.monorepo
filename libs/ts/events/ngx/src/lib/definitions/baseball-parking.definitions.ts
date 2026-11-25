@@ -8,7 +8,6 @@ import {
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
-import { EventPopups } from '../modules/popups/popups';
 
 export enum BASEBALL_PARKING_LAYERS {
   EVENT_SYMBOLS = 'baseball-event-symbols',

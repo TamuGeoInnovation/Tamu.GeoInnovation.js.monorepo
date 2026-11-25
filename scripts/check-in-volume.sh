@@ -91,7 +91,9 @@ lint_steps() {
   printf '%s\n' "$yml" | sed -n 's/^[[:space:]]*\(- \)\{0,1\}run:[[:space:]]*//p' | while IFS= read -r cmd; do
     cmd="$(printf '%s' "${cmd%$'\r'}" | sed "s/^'\(.*\)'\$/\1/; s/^\"\(.*\)\"\$/\1/")"
     case "$cmd" in
-      *nx[[:space:]]* | *nx.js* | 'npm ci'* | 'npm install'*) ;;
+      # Setup rather than a check: Nx runs above, the install is this script's own, and the fetch only points
+      # origin/development at the base repository's when CI runs in a fork (#3557) - here it already is.
+      *nx[[:space:]]* | *nx.js* | 'npm ci'* | 'npm install'* | 'git fetch'*) ;;
       '' | '|'* | '>'* | *'${{'*) printf 'cannot %s\n' "$cmd" ;;
       *) printf 'run %s\n' "$cmd" ;;
     esac

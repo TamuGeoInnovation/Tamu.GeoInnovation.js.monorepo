@@ -9,8 +9,9 @@ import { PlaceService, SeasonService, SpeakerService } from '@tamu-gisc/gisday/p
 import { PlaceVisibilityOptions } from '@tamu-gisc/gisday/platform/ngx/common';
 import { SpeakerAvatarComponent } from '@tamu-gisc/gisday/platform/ngx/common';
 import { RouterLink } from '@angular/router';
-import { AsyncPipe, DatePipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { AssetUrlPipe } from '@tamu-gisc/gisday/platform/ngx/common';
+import { CentralDatePipe } from '@tamu-gisc/gisday/platform/ngx/common';
 
 const numberDictionary = {
   0: 'Zero',
@@ -31,7 +32,7 @@ const numberDictionary = {
   templateUrl: './about.component.html',
   styleUrls: ['./about.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [ImagePreviewComponent, SiteHasPipe, SpeakerAvatarComponent, RouterLink, AsyncPipe, DatePipe, AssetUrlPipe]
+  imports: [ImagePreviewComponent, SiteHasPipe, SpeakerAvatarComponent, RouterLink, AsyncPipe, CentralDatePipe, AssetUrlPipe]
 })
 export class AboutComponent implements OnInit {
   public readonly site = inject(GISDAY_SITE);
