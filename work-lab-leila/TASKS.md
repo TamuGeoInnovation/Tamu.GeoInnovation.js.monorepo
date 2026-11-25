@@ -1,5 +1,19 @@
 # work-lab-leila: current tasks
 
+## Decided (gisday), 3:40 AM Central, 25 November 2026 (read from PowerShell)
+
+- **Q-g213-1: as you recommend.** The director opens g212's pull request first (its check is queued on the work machine), then g213's, and whichever is second gets `node scripts/check-strict-libs.mjs --all` run after its `development` merge, with the counts it reports.
+
+## Batch g215 (gisday, #3593): strictNullChecks in `gisday-competitions-ngx-common` (after g214)
+
+**Issue:** file it as a sub-issue of **#3593** (`chore(gisday-competitions-ngx-common): strictNullChecks in the competitions common library`, Task, `enhancement`, Medium, GIS Day Angular + NestJS, In Progress), as you did #3601.
+
+1. **Branch** `fix/3593-competitions-ngx-common-strict` from the latest `origin/development`.
+2. **Measure:** your g208 table gave 15 errors in its own files and 86 in its configuration. Say what they are now, since forms, layout and search are going strict around it.
+3. **Fix its own errors** (GIS Day code, so no shared-interface constraint beyond its own callers in `gisday-angular` and `gisday-competitions-ngx-core`). A behaviour change gets a spec, red first. These are competition pages: anything that renders differently needs before/after images, and `--label no-visible-change` only if nothing does.
+4. **The known list:** add it at whatever its configuration still reports from shared libraries, with a one-line reason, as #3594 did.
+5. **Proof:** `gisday-angular` builds in production and its bundle is unchanged apart from the fixes (as g211 showed). `scripts/pre-pr-check.sh` with this library, `gisday-competitions-ngx-core` and `gisday-angular`, `CHECK_PARALLEL=1`. `.pr-body.md` last; "branch ready". Report the new `gisday-angular` count.
+
 ## Correction (gisday), 3:25 AM Central, 25 November 2026, read from PowerShell
 
 - **The clock times in the director's headings since about 2:30 AM ran ahead of the real time** (written as 3:45 AM and 4:20 AM, among others, when the commits are at 2:52 and 3:15 AM). The commit times on this branch are the right ones. Nothing else in those batches changes.
