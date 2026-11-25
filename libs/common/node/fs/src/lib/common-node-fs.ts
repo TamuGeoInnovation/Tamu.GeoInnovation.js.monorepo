@@ -41,7 +41,7 @@ export async function writeFileToDisk(
 
     // Truncate the original file name to 50 characters, preserving the file extension
     const truncatedFileName =
-      options.truncateFileNameLength && options.truncateFileNameLength > 0
+      options?.truncateFileNameLength && options.truncateFileNameLength > 0
         ? extensionLessName.substring(0, options.truncateFileNameLength) + '.' + fileExtension
         : file.originalname;
 

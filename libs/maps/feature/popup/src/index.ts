@@ -5,5 +5,6 @@ export * from './lib/containers/base/base.component';
 export * from './lib/containers/mobile/mobile-deferred.component';
 
 export * from './lib/services/popup.service';
+export * from './lib/resolve-popup-data';
 
 export * from './lib/directives/reveal-sidebar/reveal-sidebar.directive';

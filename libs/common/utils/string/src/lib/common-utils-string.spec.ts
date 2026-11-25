@@ -1,4 +1,4 @@
-import { hasTemplateExpression, TemplateRenderer, TemplateRendererOptions } from './common-utils-string';
+import { hasTemplateExpression, renderTemplateRows, TemplateRenderer, TemplateRendererOptions } from './common-utils-string';
 
 describe('TemplateRenderer', () => {
   let options: TemplateRendererOptions;
@@ -120,5 +120,77 @@ describe('TemplateRenderer', () => {
     expect(hasTemplateExpression('Mary had a little {value}.')).toBe(true);
     expect(hasTemplateExpression('Mary had a little lamb.')).toBe(false);
     expect(hasTemplateExpression(undefined)).toBe(false);
+  });
+});
+
+describe('renderTemplateRows', () => {
+  const lookup = { attributes: { Access: 'Card', Notes: '', Type: null, Building: 'Evans' } };
+
+  // The fault this exists for: a service is entitled to leave a field empty on a layer where it does not
+  // apply, and the row printed "Type:" with nothing after it (#2816).
+  it('drops a row whose only value is empty, label included', () => {
+    const out = renderTemplateRows({
+      template: '<strong>Access</strong>: {attributes.Access}\n<strong>Type</strong>: {attributes.Notes}',
+      lookup
+    });
+
+    expect(out).toBe('<strong>Access</strong>: Card');
+    expect(out).not.toContain('Type');
+  });
+
+  it('drops a row whose value is null as well as empty', () => {
+    const out = renderTemplateRows({
+      template: '<strong>Access</strong>: {attributes.Access}\n<strong>Type</strong>: {attributes.Type}',
+      lookup
+    });
+
+    expect(out).toBe('<strong>Access</strong>: Card');
+  });
+
+  it('keeps every row that has a value', () => {
+    const out = renderTemplateRows({
+      template: '<strong>Access</strong>: {attributes.Access}\n<strong>Building</strong>: {attributes.Building}',
+      lookup
+    });
+
+    expect(out).toBe('<strong>Access</strong>: Card\n<strong>Building</strong>: Evans');
+  });
+
+  // A line somebody wrote deliberately, with nothing to resolve, is not an empty row.
+  it('keeps a row of static text', () => {
+    const out = renderTemplateRows({
+      template: 'Always shown\n<strong>Type</strong>: {attributes.Notes}',
+      lookup
+    });
+
+    expect(out).toBe('Always shown');
+  });
+
+  // A single-line template is the no-op case: a popup whose whole description resolves to nothing must
+  // render as it did rather than disappearing.
+  it('leaves a single-line template to TemplateRenderer', () => {
+    const out = renderTemplateRows({ template: '<strong>Type</strong>: {attributes.Notes}', lookup });
+
+    expect(out).toBe('<strong>Type</strong>: ');
+  });
+
+  // Dropping every row must give an empty string rather than a line of separators.
+  it('gives nothing when every row is empty', () => {
+    const out = renderTemplateRows({
+      template: '<strong>Type</strong>: {attributes.Notes}\n<strong>Kind</strong>: {attributes.Type}',
+      lookup
+    });
+
+    expect(out).toBe('');
+  });
+
+  // A row may list fallbacks; if one of them has a value the row stays.
+  it('keeps a row whose fallback has a value', () => {
+    const out = renderTemplateRows({
+      template: '<strong>Name</strong>: {attributes.Notes|attributes.Building}\n<strong>Type</strong>: {attributes.Type}',
+      lookup
+    });
+
+    expect(out).toBe('<strong>Name</strong>: Evans');
   });
 });
