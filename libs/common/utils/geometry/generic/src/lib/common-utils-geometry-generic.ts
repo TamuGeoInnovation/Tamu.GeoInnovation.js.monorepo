@@ -1,5 +1,5 @@
 import { Observable, BehaviorSubject } from 'rxjs';
-import { skip } from 'rxjs/operators';
+import { filter, skip } from 'rxjs/operators';
 
 import { Point } from '@tamu-gisc/common/types';
 
@@ -31,7 +31,7 @@ export class TrackLocation {
   private _trackID: number;
   private _options: PositionOptions;
   private _keepWatching: TrackLocationOptions['keepWatching'];
-  private _location: BehaviorSubject<GeolocationPosition>;
+  private _location: BehaviorSubject<GeolocationPosition | undefined>;
 
   constructor(options?: TrackLocationOptions) {
     const { keepWatching, ...positionOptions } = { ...options };
@@ -39,7 +39,7 @@ export class TrackLocation {
     this._options = positionOptions;
     this._keepWatching = keepWatching;
 
-    this._location = new BehaviorSubject(undefined);
+    this._location = new BehaviorSubject<GeolocationPosition | undefined>(undefined);
   }
 
   /**
@@ -66,7 +66,11 @@ export class TrackLocation {
       this._options
     );
 
-    return this._location.asObservable().pipe(skip(1));
+    // The first value is the undefined the subject starts with, which skip(1) drops; the filter says so to the type (#3618).
+    return this._location.asObservable().pipe(
+      skip(1),
+      filter((position): position is GeolocationPosition => position !== undefined)
+    );
   }
 
   /**
@@ -100,7 +104,10 @@ export function isCoordinatePair(input: string): boolean {
  * centroid, or -1 for an empty list. The first one wins a tie.
  */
 export function findNearestIndex(reference: Point, points: RelativeDistancePoint[]): number {
-  return points.indexOf(minBy(points, (p) => distanceInMetres(reference, centroidFromGeometry(p.geometry))));
+  const nearest = minBy(points, (p) => distanceInMetres(reference, centroidFromGeometry(p.geometry)));
+
+  // minBy gives undefined for an empty list, whose index is -1, as indexOf(undefined) answered (#3618).
+  return nearest === undefined ? -1 : points.indexOf(nearest);
 }
 
 /**

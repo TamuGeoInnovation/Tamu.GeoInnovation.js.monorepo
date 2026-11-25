@@ -14,3 +14,6 @@
 266 libs/maps/feature/basemap/tsconfig.lib.json
 87 libs/ui-kits/ngx/layout/modal/tsconfig.lib.json
 9 libs/mailroom/ngx/tsconfig.lib.json
+# common-utils-geometry-generic went strict with #3618, with none in its own files: all 9 are in common-utils-geometry-esri, which
+# waits for home's a22 (#3477, #3478).
+9 libs/common/utils/geometry/generic/tsconfig.lib.json
