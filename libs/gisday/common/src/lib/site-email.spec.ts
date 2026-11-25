@@ -1,6 +1,6 @@
 import { emailHtml } from './email-markdown';
 import { gisdaySite } from './sites';
-import { EmailDesign, seasonDatesLine, seasonDayStrip, senderOf, siteEmailHtml } from './site-email';
+import { EmailDesign, EmailSessionDetails, seasonDatesLine, seasonDayStrip, senderOf, siteEmailHtml } from './site-email';
 
 /**
  * #3114: on Texas A&M's site every email the site sends wears the department's GIS Day email design (the maintainer's
@@ -10,10 +10,15 @@ import { EmailDesign, seasonDatesLine, seasonDayStrip, senderOf, siteEmailHtml }
 describe('siteEmailHtml (#3114)', () => {
   // The 2026 season's days as the database gives them: each day at midnight Central.
   const days = ['2026-11-16', '2026-11-17', '2026-11-18', '2026-11-19', '2026-11-20'].map((d) => `${d}T06:00:00.000Z`);
+  const session: EmailSessionDetails = {
+    name: 'Mapping floods',
+    when: 'Thursday, November 19, 2026, 1:00 to 2:15 PM Central',
+    where: 'MSC 2300'
+  };
   const design: EmailDesign = {
     label: 'Your session',
     days,
-    session: { name: 'Mapping floods', when: 'Thursday, November 19, 2026, 1:00 to 2:15 PM Central', where: 'MSC 2300' },
+    session,
     why: 'You are getting this email because you are presenting at Texas A&M GIS Day.'
   };
   const text = 'Howdy **Ana**,\n\nHere are your details.\n\n— The Texas A&M GIS Day Team';
@@ -77,7 +82,7 @@ describe('siteEmailHtml (#3114)', () => {
       site: gisdaySite('tamu'),
       subject: 'A <b> subject',
       from: '"Jo <script>" <jo@tamu.edu>',
-      design: { ...design, session: { ...design.session, name: 'Floods & <rivers>' } }
+      design: { ...design, session: { ...session, name: 'Floods & <rivers>' } }
     });
 
     expect(html).toContain('Floods &amp; &lt;rivers&gt;');

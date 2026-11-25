@@ -70,12 +70,13 @@ describe('CompetitionSettingsComponent', () => {
     return { fixture, page, seasons, toggle, checkbox, checkboxes, isChecked, rows, status, save };
   }
 
+  // Dates, as the entity declares them; the form reads either a Date or the API's ISO text (#3547).
   const withDeadlines: Partial<Season> = {
     guid: 'season-1',
     year: 2026,
-    posterSubmissionsCloseAt: posterCloses,
-    posterFilesCloseAt: posterFilesClose
-  } as Partial<Season>;
+    posterSubmissionsCloseAt: new Date(posterCloses),
+    posterFilesCloseAt: new Date(posterFilesClose)
+  };
 
   // Runs only poster and paper (#2948): a row for each competition it runs.
   const posterAndPaper: Partial<Season> = {

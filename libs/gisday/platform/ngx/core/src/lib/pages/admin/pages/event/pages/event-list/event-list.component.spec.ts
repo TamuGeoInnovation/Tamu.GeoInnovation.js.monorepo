@@ -5,7 +5,7 @@ import { of } from 'rxjs';
 import { EventService, SeasonService, SessionFilesService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { GISDAY_SITES } from '@tamu-gisc/gisday/common';
+import { GISDAY_SITES, type GisdaySite } from '@tamu-gisc/gisday/common';
 import { GISDAY_SITE } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { EventListComponent } from './event-list.component';
@@ -135,7 +135,7 @@ describe('EventListComponent on gisday.tamu.edu', () => {
   });
   const events = [at('e-tamu', 'Keynote', 'tamu'), at('e-txst', 'Coffee & Networking', 'txst')];
 
-  function open(site = GISDAY_SITES.tamu) {
+  function open(site: GisdaySite = GISDAY_SITES.tamu) {
     TestBed.configureTestingModule({
       imports: [EventListComponent],
       providers: [

@@ -72,7 +72,11 @@ export class SlideToggleComponent<Option extends object, Value>
         return option.nativeElement.attributes['attr-value'].value === plainValue;
       });
 
-      this.activeOptionElement$.next(active);
+      // A value no option carries - none yet, as geoservices' mode toggle has before its mode is set - has nothing to
+      // measure, and measuring `undefined` threw a tick later (#1479).
+      if (active) {
+        this.activeOptionElement$.next(active);
+      }
     }
   }
 }
