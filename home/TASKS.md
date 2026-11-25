@@ -1,5 +1,9 @@
 # Home machine: current tasks
 
+## Paused by the maintainer (24 November 2026, evening): home is compacting its Docker disk and is not available until he says so
+
+Nothing new is queued here meanwhile. g107 (#2588) resumes from wherever it stopped once home is back; push what you have before anything else.
+
 ## Batch g107 (gisday: #2588, a phone menu tile taps only on its word; then #3337, two quoted colours; 24 November 2026, about 3:45 PM Central, from `work (gisday)`) (Medium) - **now**
 
 The maintainer is away and asked for issues to be taken to PRs. Both were checked against `origin/development` at 3:40 PM
