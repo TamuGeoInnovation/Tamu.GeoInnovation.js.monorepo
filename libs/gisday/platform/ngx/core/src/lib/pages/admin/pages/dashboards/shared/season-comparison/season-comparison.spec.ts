@@ -5,7 +5,14 @@ import { BehaviorSubject, Observable, Subject, of, throwError } from 'rxjs';
 import type { Season } from '@tamu-gisc/gisday/platform/data-api';
 import { daysFrom } from '@tamu-gisc/ui-kits/ngx/charts';
 
-import { comparableSeasons, compareSeasons, previousSeason, SeasonComparison, seasonButtons, throughWeek } from './season-comparison';
+import {
+  comparableSeasons,
+  compareSeasons,
+  previousSeason,
+  SeasonComparison,
+  seasonButtons,
+  throughWeek
+} from './season-comparison';
 
 /** A made-up season with GIS Day week on the days given. */
 const season = (guid: string, year: number, days: Array<string>) =>

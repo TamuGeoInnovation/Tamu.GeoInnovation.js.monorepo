@@ -52,7 +52,8 @@ describe('SubmissionReviewListComponent', () => {
    * the app with that decision.
    */
   it('says "by app" only while a row the app verified is still verified', () => {
-    const row = (validationStatus: string, verifiedAutomatically: boolean) => ({ validationStatus, verifiedAutomatically }) as never;
+    const row = (validationStatus: string, verifiedAutomatically: boolean) =>
+      ({ validationStatus, verifiedAutomatically }) as never;
 
     expect(component.verifiedByApp(row('verified', true))).toBe(true);
     expect(component.verifiedByApp(row('discarded', true))).toBe(false);

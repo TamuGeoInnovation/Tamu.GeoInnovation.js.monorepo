@@ -47,7 +47,10 @@ describe('Escape on an admin details page', () => {
           { path: 'admin/elsewhere', component: ElsewhereStubComponent }
         ]),
         provideLocationMocks(),
-        { provide: TagService, useValue: { getEntity: () => of({ guid: 't1', name: 'Workshop' }), getSessions: () => of([]) } },
+        {
+          provide: TagService,
+          useValue: { getEntity: () => of({ guid: 't1', name: 'Workshop' }), getSessions: () => of([]) }
+        },
         { provide: SeasonService, useValue: { activeSeason$: of({ guid: 's-2026' }) } },
         { provide: NotificationService, useValue: { toast: vi.fn() } },
         { provide: ModalService, useValue: modal }

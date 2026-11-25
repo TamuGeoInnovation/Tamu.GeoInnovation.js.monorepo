@@ -25,8 +25,24 @@ const counts = (c: Partial<RsvpDashboard['events'][0]['counts']>) => ({
 
 const dashboard: RsvpDashboard = {
   events: [
-    { guid: 'e-1', name: 'Workshop', starts: '2026-11-18T15:00:00.000Z', location: 'ILCB 111', place: null, total: 3, counts: counts({ undergraduate: 2, academia: 1 }) },
-    { guid: 'e-2', name: 'Keynote', starts: '2026-11-18T20:00:00.000Z', location: null, place: null, total: 1, counts: counts({ industry: 1 }) }
+    {
+      guid: 'e-1',
+      name: 'Workshop',
+      starts: '2026-11-18T15:00:00.000Z',
+      location: 'ILCB 111',
+      place: null,
+      total: 3,
+      counts: counts({ undergraduate: 2, academia: 1 })
+    },
+    {
+      guid: 'e-2',
+      name: 'Keynote',
+      starts: '2026-11-18T20:00:00.000Z',
+      location: null,
+      place: null,
+      total: 1,
+      counts: counts({ industry: 1 })
+    }
   ],
   made: [
     { event: 'e-1', created: '2026-11-01T15:00:00Z' },
@@ -53,7 +69,14 @@ const person = (p: Partial<RsvpDashboardPerson>): RsvpDashboardPerson => ({
 const people = [
   person({ firstName: 'Zoe', lastName: 'Young', email: 'zoe@example.edu', type: 'undergraduate', classification: 'Senior' }),
   person({ firstName: 'Ana', lastName: 'Lee', email: 'ana@example.edu', type: 'undergraduate', classification: 'Junior' }),
-  person({ firstName: 'Pat', lastName: 'Kim', email: 'pat@example.edu', type: 'academia', position: 'Professor', organization: 'Texas A&M University' })
+  person({
+    firstName: 'Pat',
+    lastName: 'Kim',
+    email: 'pat@example.edu',
+    type: 'academia',
+    position: 'Professor',
+    organization: 'Texas A&M University'
+  })
 ];
 
 describe('RsvpDashboardComponent', () => {
@@ -69,10 +92,19 @@ describe('RsvpDashboardComponent', () => {
         provideRouter([]),
         { provide: GISDAY_SITE, useValue: gisdaySite(site) },
         { provide: RsvpService, useValue: rsvps },
-        { provide: SeasonService, useValue: { seasons$: of([{ guid: 's-1', year: 2026 }]), activeSeason$: of({ guid: 's-1', year: 2026 }) } },
+        {
+          provide: SeasonService,
+          useValue: { seasons$: of([{ guid: 's-1', year: 2026 }]), activeSeason$: of({ guid: 's-1', year: 2026 }) }
+        },
         { provide: ModalService, useValue: {} },
         { provide: NotificationService, useValue: {} },
-        { provide: LINE_CHART_DRAWER, useValue: (_host: HTMLElement, options: LineChartOptions) => (drawn.push(options), Promise.resolve(() => undefined)) }
+        {
+          provide: LINE_CHART_DRAWER,
+          useValue: (_host: HTMLElement, options: LineChartOptions) => (
+            drawn.push(options),
+            Promise.resolve(() => undefined)
+          )
+        }
       ]
     });
 
@@ -87,9 +119,12 @@ describe('RsvpDashboardComponent', () => {
     Array.from(root.querySelectorAll('datatable-row-wrapper datatable-body-row')).map((tr) =>
       Array.from(tr.querySelectorAll('.datatable-body-cell')).map((td) => td.textContent.trim())
     );
-  const names = (root: HTMLElement) => Array.from(root.querySelectorAll('datatable-row-wrapper .dashboard-table-name .bold')).map((n) => n.textContent.trim());
+  const names = (root: HTMLElement) =>
+    Array.from(root.querySelectorAll('datatable-row-wrapper .dashboard-table-name .bold')).map((n) => n.textContent.trim());
   const cellOf = (root: HTMLElement, name: string) =>
-    Array.from(root.querySelectorAll('datatable-row-wrapper .datatable-body-cell')).find((c) => c.textContent.includes(name)) as HTMLElement;
+    Array.from(root.querySelectorAll('datatable-row-wrapper .datatable-body-cell')).find((c) =>
+      c.textContent.includes(name)
+    ) as HTMLElement;
 
   async function settle(fixture: ReturnType<typeof open>) {
     fixture.detectChanges();
@@ -110,7 +145,8 @@ describe('RsvpDashboardComponent', () => {
     const fixture = open();
     await settle(fixture);
     const root = fixture.nativeElement as HTMLElement;
-    const words = (selector: string) => Array.from(root.querySelectorAll(selector)).map((e) => e.textContent.replace(/\s+/g, ' ').trim());
+    const words = (selector: string) =>
+      Array.from(root.querySelectorAll(selector)).map((e) => e.textContent.replace(/\s+/g, ' ').trim());
 
     expect([
       ...words('.form-section-name'),
@@ -123,8 +159,8 @@ describe('RsvpDashboardComponent', () => {
       '4 RSVPs for 2 events.',
       'RSVPs over time',
       'By event',
-      'The running total at the end of each day, in Central time, with each day\'s new RSVPs beneath and the GIS Day week shaded. Hover for a day\'s numbers; drag across the chart to zoom in, and double-click to see it all again. Press a year to draw it beside this one, lined up on the Monday of each year\'s GIS Day week: the axis then counts days from it. Open an event below to add its own line.',
-      'Click a heading to sort by it, and again to reverse it. Click an event to see who RSVP\'d.',
+      "The running total at the end of each day, in Central time, with each day's new RSVPs beneath and the GIS Day week shaded. Hover for a day's numbers; drag across the chart to zoom in, and double-click to see it all again. Press a year to draw it beside this one, lined up on the Monday of each year's GIS Day week: the axis then counts days from it. Open an event below to add its own line.",
+      "Click a heading to sort by it, and again to reverse it. Click an event to see who RSVP'd.",
       'Event',
       'When',
       'Total',
@@ -160,17 +196,9 @@ describe('RsvpDashboardComponent', () => {
       ['3', '2', '0', '0', '1', '0', '0'],
       ['1', '0', '0', '0', '0', '1', '0']
     ]);
-    expect(Array.from(root.querySelectorAll('datatable-summary-row .datatable-body-cell')).map((td) => td.textContent.trim())).toEqual([
-      'All events',
-      '',
-      '4',
-      '2',
-      '0',
-      '0',
-      '1',
-      '1',
-      '0'
-    ]);
+    expect(
+      Array.from(root.querySelectorAll('datatable-summary-row .datatable-body-cell')).map((td) => td.textContent.trim())
+    ).toEqual(['All events', '', '4', '2', '0', '0', '1', '1', '0']);
   });
 
   it("charts the running total, each day's new RSVPs beneath it, and the GIS Day week", async () => {
@@ -184,7 +212,7 @@ describe('RsvpDashboardComponent', () => {
     expect(lastChart().bands.map((b) => b.label)).toEqual(['GIS Day week']);
   });
 
-  it("opens an event to list its people under their types, adds its line to the chart, and closes again", async () => {
+  it('opens an event to list its people under their types, adds its line to the chart, and closes again', async () => {
     const fixture = open();
     await settle(fixture);
     const root = fixture.nativeElement as HTMLElement;

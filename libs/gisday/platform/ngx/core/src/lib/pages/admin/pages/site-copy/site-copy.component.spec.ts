@@ -6,7 +6,14 @@ import { SeasonService, SiteCopyService } from '@tamu-gisc/gisday/platform/ngx/d
 
 import { SiteCopyComponent } from './site-copy.component';
 
-const file = { format: 'gisday-site-copy', version: 1, source: 'https://txgisday.org', exportedAt: '2026-10-22T15:11:00Z', year: 2026, records: {} } as SiteCopyFile;
+const file = {
+  format: 'gisday-site-copy',
+  version: 1,
+  source: 'https://txgisday.org',
+  exportedAt: '2026-10-22T15:11:00Z',
+  year: 2026,
+  records: {}
+} as SiteCopyFile;
 
 const plan = (applied: boolean): SiteCopyPlan => ({
   applied,
@@ -39,7 +46,10 @@ describe('SiteCopyComponent', () => {
     const applyButton = () => page.querySelector('tamu-gisc-button.apply input') as HTMLInputElement;
 
     // A chosen file, as the browser gives it; jsdom's File has no text().
-    await fixture.componentInstance.choose({ name: 'gisday-2026.json', text: async () => JSON.stringify(file) } as unknown as File);
+    await fixture.componentInstance.choose({
+      name: 'gisday-2026.json',
+      text: async () => JSON.stringify(file)
+    } as unknown as File);
     fixture.detectChanges();
 
     expect(applyButton().value).toBe('Apply');

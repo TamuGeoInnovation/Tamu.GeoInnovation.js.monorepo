@@ -13,7 +13,10 @@ import { SpeakerListComponent } from './speaker-list.component';
 describe('SpeakerListComponent, the profile email', () => {
   function open(confirmed: boolean) {
     const speakers = [{ guid: 'sp-1', firstName: 'Ana', lastName: 'Ruiz' }];
-    const speakerEdits = { preview: vi.fn(() => of({ groups: [] })), send: vi.fn(() => of({ sent: ['Ana Ruiz'], skipped: [] })) };
+    const speakerEdits = {
+      preview: vi.fn(() => of({ groups: [] })),
+      send: vi.fn(() => of({ sent: ['Ana Ruiz'], skipped: [] }))
+    };
     const modals = { open: vi.fn(() => of(confirmed ? { profile: 'Hi {edit link}', 'profile:subject': 'Profile' } : null)) };
     const toasts = { toast: vi.fn() };
 

@@ -132,7 +132,19 @@ describe('JudgingComponent (#3183)', () => {
     const button = (text: string) =>
       Array.from(panel()?.querySelectorAll<HTMLButtonElement>('button') ?? []).find((b) => b.textContent?.trim() === text);
 
-    return { fixture, root, judging, row, panel, openEntry, save, press, button, settle, component: fixture.componentInstance };
+    return {
+      fixture,
+      root,
+      judging,
+      row,
+      panel,
+      openEntry,
+      save,
+      press,
+      button,
+      settle,
+      component: fixture.componentInstance
+    };
   }
 
   it('opens an entry in a panel with its title, presenters and abstract, and a score box per criterion with its levels', async () => {
@@ -446,7 +458,9 @@ describe('JudgingComponent (#3183)', () => {
     const rivers = await openEntry('Rivers');
 
     expect(rivers.querySelector('input[type="submit"]')).toBeNull();
-    expect(Array.from(rivers.querySelectorAll<HTMLInputElement>('input[type="number"]')).every((i) => i.disabled)).toBe(true);
+    expect(Array.from(rivers.querySelectorAll<HTMLInputElement>('input[type="number"]')).every((i) => i.disabled)).toBe(
+      true
+    );
   });
 
   it('says when the link does not work, or there is none', async () => {

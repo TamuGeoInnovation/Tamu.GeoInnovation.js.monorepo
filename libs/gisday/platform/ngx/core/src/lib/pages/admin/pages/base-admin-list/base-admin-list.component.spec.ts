@@ -97,7 +97,8 @@ describe('BaseAdminListComponent search', () => {
     return component;
   }
 
-  const guids = async (c: BaseAdminListComponent<Named>) => (await firstValueFrom(c.entitiesForActiveSeasonOrForSeasonGuid$)).map((e) => e.guid);
+  const guids = async (c: BaseAdminListComponent<Named>) =>
+    (await firstValueFrom(c.entitiesForActiveSeasonOrForSeasonGuid$)).map((e) => e.guid);
 
   it('lists every row with no search, and only the rows whose shown columns match, ignoring case and accents', async () => {
     const page = open(SearchedListComponent);
@@ -152,7 +153,10 @@ class FilteredListComponent extends SearchedListComponent {
  * search and filters can be cleared at once.
  */
 describe('BaseAdminListComponent with nothing shown', () => {
-  function open<C extends BaseAdminListComponent<Named>>(type: new (...args: Array<never>) => C, active: { guid: string } | null) {
+  function open<C extends BaseAdminListComponent<Named>>(
+    type: new (...args: Array<never>) => C,
+    active: { guid: string } | null
+  ) {
     TestBed.configureTestingModule({
       declarations: [type],
       providers: [

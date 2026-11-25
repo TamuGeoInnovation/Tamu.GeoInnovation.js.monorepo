@@ -45,8 +45,17 @@ describe('PeopleDetailsComponent search (#2919)', () => {
         // went unnoticed, and Vitest reports it as an unhandled error (#1977).
         provideRouter([{ path: '**', children: [] }]),
         { provide: EnvironmentService, useValue: { value: () => '' } },
-        { provide: ActivatedRoute, useValue: { params: of({ guid: 'p-2' }), snapshot: { params: { guid: 'p-2' }, queryParamMap: { get: () => null } } } },
-        { provide: SpeakerService, useValue: { getPresenter: () => of(people[1]), getParticipatingPresenters: () => of(list) } },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            params: of({ guid: 'p-2' }),
+            snapshot: { params: { guid: 'p-2' }, queryParamMap: { get: () => null } }
+          }
+        },
+        {
+          provide: SpeakerService,
+          useValue: { getPresenter: () => of(people[1]), getParticipatingPresenters: () => of(list) }
+        },
         { provide: SeasonService, useValue: { seasonForRoute: () => of({ season: { guid: 's-1' }, isPast: false }) } }
       ]
     });
@@ -61,7 +70,9 @@ describe('PeopleDetailsComponent search (#2919)', () => {
 
   // Typing into the box: it takes focus, which opens the panel, and the search changes.
   async function type(fixture: Awaited<ReturnType<typeof open>>, text: string) {
-    (fixture.nativeElement as HTMLElement).querySelector('.presenter-search-box').dispatchEvent(new FocusEvent('focusin', { bubbles: true }));
+    (fixture.nativeElement as HTMLElement)
+      .querySelector('.presenter-search-box')
+      .dispatchEvent(new FocusEvent('focusin', { bubbles: true }));
     fixture.componentInstance.search.setValue(text);
     fixture.detectChanges();
     await fixture.whenStable();
