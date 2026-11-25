@@ -250,6 +250,8 @@ interface SourceQuery {
   fieldsUsed: string[];
   /** How many features the source asks for, as it sends it: a number, or `*` for all. */
   resultRecordCount: string;
+  /** The SQL every query for this source is ANDed with, if it has one. */
+  fixedWhere?: string;
 }
 
 /**
@@ -283,12 +285,26 @@ function sourceQuery(source: string): SourceQuery {
     (match) => match[1]
   );
 
-  // `commonQueryParams` asks for 5 unless the entry overrides it.
-  const resultRecordCount = entry.match(/resultRecordCount: '?([0-9]+|\*)'?/)?.[1] ?? '5';
+  // `commonQueryParams` asks for 5 unless the entry overrides it. A named constant is read from its own
+  // declaration, so a source that asks for a category's whole size says so here too (#3433).
+  const countText = entry.match(/resultRecordCount: '?([A-Za-z0-9_]+|\*)'?/)?.[1] ?? '5';
+  const resultRecordCount = /^[0-9]+$|^\*$/.test(countText)
+    ? countText
+    : (SEARCH_SOURCES_TEXT.match(new RegExp(`^const ${countText} = ([0-9]+);$`, 'm'))?.[1] ?? countText);
+
+  // `fixedWhere: GARAGE_STRUCTURES` names a constant; read its value so a query here is the one the
+  // application sends.
+  const fixedWhereText = entry.match(/fixedWhere: (?:'([^']*)'|([A-Za-z0-9_]+))/);
+  const fixedWhere =
+    fixedWhereText?.[1] ??
+    (fixedWhereText?.[2]
+      ? SEARCH_SOURCES_TEXT.match(new RegExp(`^const ${fixedWhereText[2]} = "([^"]*)";$`, 'm'))?.[1]
+      : undefined);
 
   return {
     outFields,
     resultRecordCount,
+    fixedWhere,
     fieldsUsed: [
       ...new Set([
         ...outFields.filter((field) => field !== '*'),
@@ -471,6 +487,39 @@ test.describe('search sources on the main map', () => {
       Object.keys(SOURCE_CASES).filter((source) => !defined.includes(source)),
       'cases for sources that no longer exist'
     ).toEqual([]);
+  });
+
+  test('parking-garage: the search asks for more garages than the service holds (#3433)', async ({ request }) => {
+    // Typing "garage" used to return five of them and no more: `searchQueryParams` asks every ArcGIS search for five
+    // rows, so the rest were never fetched and no amount of scrolling could reach them. The fix is a count that covers
+    // the whole category, which is only safe while the category stays smaller than the count - so this asks the
+    // service, rather than trusting a number measured once.
+    const { resultRecordCount, fixedWhere } = sourceQuery('parking-garage');
+
+    expect(fixedWhere, 'the garage search no longer narrows Campus Structures to garages').toBeTruthy();
+    expect(resultRecordCount, 'the garage search asks for all rows, which its layer has 1,987 of').not.toBe('*');
+
+    const limit = Number(resultRecordCount);
+    expect(Number.isFinite(limit), `resultRecordCount read as "${resultRecordCount}"`).toBe(true);
+
+    const url = new URL(`${connections.buildingsUrl}/query`);
+    url.searchParams.set('where', fixedWhere as string);
+    url.searchParams.set('returnCountOnly', 'true');
+    url.searchParams.set('f', 'json');
+
+    const response = await request.get(url.toString());
+    expect(response.ok(), `${url.toString()} answered ${response.status()}`).toBe(true);
+
+    const body = (await response.json()) as { count?: number; error?: { message?: string } };
+    expect(body.error?.message, `the garage count query failed: ${body.error?.message}`).toBeUndefined();
+    expect(typeof body.count, 'the service did not answer with a count').toBe('number');
+
+    // Eleven on 24 November 2026. The margin is the point: a count that merely fits today starts truncating
+    // silently the first time a garage is built, which is the failure this replaces.
+    expect(
+      body.count,
+      `Campus Structures holds ${body.count} garages and the search asks for ${limit}; raise it`
+    ).toBeLessThan(limit);
   });
 
   for (const [source, sourceCase] of Object.entries(SOURCE_CASES)) {
