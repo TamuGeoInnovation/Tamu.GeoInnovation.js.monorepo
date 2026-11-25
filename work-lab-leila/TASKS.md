@@ -1,5 +1,63 @@
 # work-lab-leila: current tasks
 
+## Batch a50 (workspace: #3678, make the sweep report what it cannot reclaim; 25 November 2026, 12:55 PM Central, from `work (aggiemap)`) (Low) - **now**
+
+**a47 is accepted and open as [PR 3683](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3683).**
+The number I most wanted was **0**, and you got it: after the retired skip, all 218 URLs answer with a name, so there is
+no live map with a dead layer. That is a real statement about production, not an absence of evidence.
+
+Two other things in a47 were right in a way worth naming. You **added the two tests before writing the skip** and quoted
+both failures, including `85 maps listed where 80 belong` - a count, not "it failed". And you found a **fifth** retired
+map, `live-at-the-station`, that a44 could not have flagged, because its layer still answers; a skip keyed on the
+definition's own `status` catches it where a skip keyed on "gave no name" never would. That is the difference between
+fixing the symptom and fixing the rule.
+
+**One thing I got wrong and have fixed:** your drafted body already ended with the pre-pull-request check's line, and I
+appended my own copy when opening, so the body carried it twice. Corrected on the pull request. Your body was right.
+
+**And your clock correction stands.** Every batch header I wrote today was estimated rather than read; a43 to a48 are
+corrected from their own commit timestamps. a44 was 11:29 AM, not 12:05 PM, and a47 was 11:45 AM, not 1:45 PM.
+
+### Why this batch
+
+[#3678](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3678), found by the sweep I ran this
+morning, which reported **0 volumes and 0 worktrees** removable and then listed seven directories it would not touch.
+Three of them are this repository's residue - directories that were once worktrees and now have **no `.git` file and no
+registration** - holding about **2.2 GB**. `scripts/tidy.sh` reclaims by reading git's worktree list, so nothing in it
+can ever see these, and nothing else looks.
+
+This is the same shape as #3432, where an untracked `.pr-body.md` made the sweep keep 68 of 69 worktrees, about 40 GiB,
+every one a merged branch. On 24 November this machine's sibling reached **0 bytes free of 1,907 GB** and no check could
+run. A guard that can only see what git still knows about will keep finding new ways not to see things.
+
+### What to do
+
+1. **Separate the two kinds.** Today one heading covers both "orphaned, no `.git`" and "another repository's, with a
+   working `.git`" - the four `wt-k8s-*` directories belong to `kubernetes-config` and are **not** residue. Reporting
+   them together is why the warning reads as being about seven directories when three are ours.
+2. **Add up the sizes and say the total.** The list already names them; nobody adds it up. The number is the point.
+3. **Offer removal behind an explicit flag only**, never by default, and only for a `C:/TAMU/wt-*` directory with no
+   `.git` and no registration. Such a directory cannot be anybody's live work - but it also cannot be *proved* to be
+   this repository's, so the maintainer decides. **It must refuse to touch anything with a working `.git`.**
+4. **A test**, as `scripts/tidy.sh`'s siblings have: a fixture with no `.git`, one with a working `.git` pointing
+   elsewhere, and one properly registered, proving each is classified correctly, plus one proving the flag's refusal.
+
+### Do not
+
+**Do not remove the three real directories as part of this.** That is the maintainer's to run once the flag exists, and
+he has not been asked yet. Say in the report what the flag would remove and how much it would free.
+
+**Do not touch the Docker disk image.** The sweep reports it at 477 GiB, over its 300 GiB threshold, and compacting is
+deliberately never automatic (#2650, #3406): it takes Docker down for about forty minutes and kills any check another
+session is running.
+
+**Branch** `fix/3678-tidy-orphaned-worktrees` from the latest `development`, pushed to the fork. `no-visible-change`, no
+images. `scripts/check-in-volume.sh`, then **`scripts/pre-pr-check.sh`**, and give me its last line. Body text in the
+report with a `Title:` line at its top - a47's had none and I took the title from your commit subject, which worked, but
+the line saves a guess.
+
+**Report** `work-lab-leila/reports/2026-11-25-a50.md`. Questions `Q-a50-<n>`. **Open no pull request.**
+
 ## Batch a47 (aggiemap: skip retired maps in the monitor generator, then #3674 can open; 25 November 2026, 11:45 AM Central, from `work (aggiemap)`) (Medium) - **now**
 
 **a44 is accepted, and it is the best-evidenced report I have had from this machine.** Three things in it did real work:
