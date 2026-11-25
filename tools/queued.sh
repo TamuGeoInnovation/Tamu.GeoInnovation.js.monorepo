@@ -40,8 +40,15 @@ live=$(printf '%s\n' "$tasks" | grep -E '^## Batch [A-Za-z]*[0-9]+' | while IFS=
   printf '%s' "$h" | grep -qiE 'withdrawn|cancelled|canceled|moved' && continue
   printf '%s\n' "$tasks" | grep -qiE "batch(es)? ([A-Za-z]*[0-9]+ (and|,) )*$n\b[^.]*(withdrawn|cancelled|canceled|moved)" && continue
   d=$(printf '%s' "$h" | grep -oE "[0-9]{1,2} $months [0-9]{4}" | head -1)
-  [ -n "$d" ] || continue
-  t=$(date -u -d "$d" +%s 2>/dev/null) || continue
+  if [ -n "$d" ]; then
+    t=$(date -u -d "$d" +%s 2>/dev/null) || continue
+  else
+    # A heading with no date takes the date of the commit that wrote it (#3517). The AggieMap director's headings have none
+    # ("## Batch a20 (aggiemap: #2719, ...)"), and every one used to be dropped here, so a listener sat beside a20, a21 and
+    # a23 with this script printing nothing. Only commits inside the window are searched, so an old one stays out.
+    t=$(git log --since="$days days ago" -S"$h" --format=%ct origin/work-mailbox -- "$name/TASKS.md" 2>/dev/null | tail -n 1)
+    [ -n "$t" ] || continue
+  fi
   [ "$t" -ge "$cutoff" ] || continue
   # The word the heading opens with, which is its director: "## Batch 7 (security: ...)", "## Batch 1 (gisday, for every ...)".
   p=$(printf '%s' "$h" | sed -nE 's/^## Batch [A-Za-z]*[0-9]+ *\(([^:;)]+)[:;)].*/\1/p' | sed -E 's/,.*//' | tr -d ' ')

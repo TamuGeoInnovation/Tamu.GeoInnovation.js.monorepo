@@ -64,6 +64,20 @@ check "and the other closes when its own director is named" "" "$(run | grep '^7
 check "a withdrawn heading is never listed" "" "$(run | grep '^8 ' || true)"
 check "a heading older than the window is never listed" "" "$(run | grep '^2 ' || true)"
 
+# #3517: a heading with no date in it. The AggieMap director writes them that way ("## Batch a20 (aggiemap: #2719, ...)"),
+# and every one was dropped, so the lab sat beside a20, a21 and a23 with this script printing nothing. Such a batch takes the
+# date of the commit that wrote its heading: today's is live, and an old one still falls outside the window.
+write_tasks "$tasks## Batch a20 (aggiemap: #2719, a heading with no date) (Medium) - **after a18**
+"; sync
+check "#3517: an undated heading written today is queued" "a20 queued" "$(run | grep '^a20 ' || true)"
+git commit -q --allow-empty -m 'm: started batch a20'; sync
+check "#3517: and is judged by its reports like any other" "a20 unfinished" "$(run | grep '^a20 ' || true)"
+GIT_COMMITTER_DATE="$(date -u -d '-30 days' +%Y-%m-%dT%H:%M:%SZ)" GIT_AUTHOR_DATE="$(date -u -d '-30 days' +%Y-%m-%dT%H:%M:%SZ)" \
+  write_tasks "$(cat m/TASKS.md)
+## Batch a5 (aggiemap: an undated heading written a month ago) (Low)
+"; sync
+check "#3517: an undated heading written before the window is not listed" "" "$(run | grep '^a5 ' || true)"
+
 # grep -i with -F aborts (exit 134) on GNU grep 3.0 in Git Bash, and in a -q test that reads as "no match".
 # Comments are stripped first, because the warning against it is itself a line saying "grep -iF".
 hits=$(for f in queued.sh board.sh roster.sh listen.sh heartbeat.sh; do
