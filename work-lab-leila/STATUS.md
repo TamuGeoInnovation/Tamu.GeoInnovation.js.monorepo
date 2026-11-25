@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **5:05 AM Central, 25 November 2026**. A listener; job: testing.
+Last written **5:13 AM Central, 25 November 2026**. A listener; job: testing.
 
 ## g203 is done, not unstarted (12:07 AM Central, Wednesday 25 November 2026)
 
@@ -141,6 +141,8 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 ## Running now
 
 **Batch g219** (workspace: #3593, full strict in ui-kits-ngx-forms, stacked on PR 3608), started 5:05 AM Central, 25 November.
+
+- 5:13 AM: forms' own 34 are 0 under full strict, its 115 specs pass, modal is at 16 on this branch. Committed `a79cf3a19`, body `873b33ac5`; `pre-pr-check.sh` (affected, `CHECK_PARALLEL=1`) running.
 
 ## Finished
 
