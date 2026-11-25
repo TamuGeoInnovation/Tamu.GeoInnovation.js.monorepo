@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **6:06 AM Central, 25 November 2026**. A listener; job: testing.
+Last written **6:10 AM Central, 25 November 2026**. A listener; job: testing.
 
 ## g203 is done, not unstarted (12:07 AM Central, Wednesday 25 November 2026)
 
@@ -140,7 +140,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 ## Running now
 
-Nothing. Idle since 6:06 AM Central, 25 November; listening.
+**Batch g223** (gisday: do any pages offer question-type or season-day create and update; read only), started 6:10 AM Central, 25 November.
 
 ## Finished
 
