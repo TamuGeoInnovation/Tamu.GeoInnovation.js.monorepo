@@ -42,7 +42,7 @@ describe('ManagementService', () => {
 
     it('answers 503 for an update', async () => {
       await expect(
-        service.updateUserMetadata('auth0|1', undefined, { app_metadata: '*', user_metadata: '*' })
+        service.updateUserMetadata('auth0|1', {}, { app_metadata: '*', user_metadata: '*' })
       ).rejects.toBeInstanceOf(ServiceUnavailableException);
     });
   });

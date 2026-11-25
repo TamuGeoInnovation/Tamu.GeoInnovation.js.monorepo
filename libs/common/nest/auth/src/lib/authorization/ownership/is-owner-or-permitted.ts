@@ -12,10 +12,16 @@ export interface OwnershipUser {
  *
  * A user with no `sub` owns nothing, so a missing sign-in never matches a record with no owner.
  */
-export function isOwnerOrPermitted(user: OwnershipUser | undefined, ownerGuid: string, permission?: string): boolean {
+export function isOwnerOrPermitted(
+  user: OwnershipUser | undefined,
+  ownerGuid: string | null | undefined,
+  permission?: string
+): boolean {
   if (permission !== undefined && Array.isArray(user?.permissions) && user.permissions.includes(permission)) {
     return true;
   }
 
-  return Boolean(user?.sub) && user.sub === ownerGuid;
+  const sub = user?.sub;
+
+  return Boolean(sub) && sub === ownerGuid;
 }
