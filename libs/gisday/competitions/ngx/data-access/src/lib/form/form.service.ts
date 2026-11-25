@@ -35,7 +35,8 @@ export class FormService {
     );
   }
 
-  public getFormForSeason(seasonName: string): Observable<CompetitionForm> {
+  // A season with no form answers null or undefined, as its `form` is (#3495).
+  public getFormForSeason(seasonName: string): Observable<CompetitionForm | null | undefined> {
     return this.http.get<CompetitionSeason>(`${this.resource}/${seasonName}`).pipe(
       pluck('form'),
       catchError((err) => {

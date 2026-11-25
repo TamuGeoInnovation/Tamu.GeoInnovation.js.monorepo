@@ -17,6 +17,8 @@ import { escapeSqlString } from '@tamu-gisc/common/utils/database';
 import { dateForDateTimeString } from '@tamu-gisc/common/utils/date';
 import { findNearestIndex } from '@tamu-gisc/common/utils/geometry/generic';
 
+import { trackEvent } from '@tamu-gisc/common/ngx/analytics';
+
 import { TripModeSwitch } from '../../trip-planner.service';
 
 import esri = __esri;
@@ -1121,18 +1123,10 @@ export class BusService {
 
   private reportFailedRequest(type: string, route: string) {
     const label = {
-      guid: crypto.randomUUID(),
-      date: Date.now(),
       name: `${type}|${route}`
     };
 
-    this.analytics.eventTrack.next({
-      action: 'bus_fail',
-      properties: {
-        category: 'network_request',
-        gstCustom: label
-      }
-    });
+    trackEvent(this.analytics, 'bus_fail', 'network_request', label);
   }
 }
 

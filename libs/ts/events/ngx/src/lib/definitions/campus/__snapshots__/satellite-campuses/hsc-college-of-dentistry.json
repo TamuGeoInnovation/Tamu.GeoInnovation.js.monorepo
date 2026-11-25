@@ -1,0 +1,154 @@
+{
+  "configuration": {
+    "applicationName": "Aggie Map - HSC College of Dentistry",
+    "buildingPopup": {
+      "abbreviation": "bldgabbr",
+      "address": {
+        "city": "city",
+        "state": "TX",
+        "street": "address",
+        "zip": "zip"
+      },
+      "layerId": "hsc-college-of-dentistry-property-layer",
+      "number": "number",
+      "title": [
+        "bldgname",
+        "bldgabbr"
+      ]
+    },
+    "eventDates": [],
+    "hideLayerToggle": true,
+    "id": "hsc-college-of-dentistry",
+    "introductionText": "Map of the Texas A&M University HSC College of Dentistry campus.",
+    "mapCenter": [
+      -96.78215,
+      32.789
+    ],
+    "name": "HSC College of Dentistry",
+    "searchSources": [
+      {
+        "displayTemplate": "{attributes.bldgname} ({attributes.number})",
+        "featuresLocation": "features",
+        "name": "Property",
+        "popupComponent": "[EventPopups.CampusBuildingPopupComponent]",
+        "queryParams": {
+          "f": "json",
+          "fixedWhere": "zip = '75246'",
+          "outFields": "*",
+          "outSR": 4326,
+          "resultRecordCount": 5,
+          "returnGeometry": true,
+          "scoringWhere": {
+            "keys": [
+              "bldgname",
+              "bldgabbr"
+            ],
+            "operators": [
+              "LIKE",
+              "LIKE"
+            ],
+            "transformations": [
+              "UPPER",
+              "UPPER"
+            ],
+            "wildcards": [
+              "startsWith",
+              "startsWith"
+            ]
+          },
+          "spatialRel": "esriSpatialRelIntersects",
+          "where": {
+            "keys": [
+              "bldgname",
+              "bldgabbr",
+              "number"
+            ],
+            "operators": [
+              "LIKE",
+              "LIKE",
+              "LIKE"
+            ],
+            "transformations": [
+              "UPPER",
+              "UPPER",
+              "UPPER"
+            ],
+            "wildcards": [
+              "includes",
+              "includes",
+              "includes"
+            ]
+          }
+        },
+        "scoringKeys": [
+          "attributes.bldgabbr",
+          "attributes.number",
+          "attributes.bldgname"
+        ],
+        "searchActive": true,
+        "source": "hsc-college-of-dentistry-property",
+        "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/HSCD/FeatureServer/4",
+        "urlQueryParam": "bldg",
+        "urlQueryParamAliases": [
+          "abbrv"
+        ]
+      }
+    ],
+    "shortApplicationName": "HSC College of Dentistry",
+    "sidebarTabs": [
+      "features"
+    ],
+    "zoom": 18
+  },
+  "discover": {
+    "description": "Map of the Texas A&M University HSC College of Dentistry campus.",
+    "id": "hsc-college-of-dentistry",
+    "mapType": "satellite-campus",
+    "name": "HSC College of Dentistry",
+    "source": "internal",
+    "thumbnail": "./assets/images/campus/hsc-college-of-dentistry.jpg",
+    "type": "satellite-campus"
+  },
+  "options": [],
+  "references": {
+    "BASEMAP": "hsc-college-of-dentistry-basemap-layer",
+    "PROPERTY": "hsc-college-of-dentistry-property-layer"
+  },
+  "sources": [
+    {
+      "essential": true,
+      "id": "hsc-college-of-dentistry-basemap-layer",
+      "listMode": "hide",
+      "title": "HSC College of Dentistry Basemap",
+      "type": "vector-tile",
+      "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/HSCD/VectorTileServer",
+      "visible": true
+    },
+    {
+      "essential": true,
+      "id": "hsc-college-of-dentistry-property-layer",
+      "listMode": "hide",
+      "native": {
+        "definitionExpression": "zip = '75246'",
+        "elevationInfo": {
+          "mode": "relative-to-ground",
+          "offset": 1
+        },
+        "labelsVisible": false,
+        "legendEnabled": false,
+        "maxScale": 0,
+        "minScale": 100000,
+        "outFields": [
+          "*"
+        ],
+        "popupEnabled": false
+      },
+      "popupComponent": "[EventPopups.CampusBuildingPopupComponent]",
+      "title": "Property",
+      "type": "feature",
+      "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/HSCD/FeatureServer/4",
+      "visible": true
+    }
+  ],
+  "type": "general-map"
+}
