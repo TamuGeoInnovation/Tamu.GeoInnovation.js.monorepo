@@ -140,7 +140,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 ## Running now
 
-**Batch a26 reported** at 12:25 AM Central. Next: gisday's g204.
+**Batch g204** (workspace, Medium: #2390, an unused variable fails lint), started 12:25 AM Central, 25 November.
 
 ## Finished
 
