@@ -107,6 +107,14 @@ Budgets are part of the build, so a purely additive change can fail it without a
 task's, so a task that never ran still looks like a pass. Redirect to a file, capture the
 exit code on its own line, then filter the file.
 
+**Do not draw a test's sample from the rows under test.** On 9 November 2026 two machines spent about two hours
+proving the buildings layer could not be clicked: each took the first features of a `queryFeatures` in the view,
+which answers in `objectid` order, and the low ids were exactly the unnumbered rows the layer's filter exists to
+remove. Over every building in the view it was 105 of 105 numbered hit and 0 of 73 unnumbered: the filter working.
+Name the features, or take every one and report each population separately, and assert `view.hitTest` finds the
+layer, not that a popup opened. [`docs/testing-maps.md`](docs/testing-maps.md#taking-a-sample-of-features-to-click)
+has the case (#2794).
+
 **Do not edit files while the dev server is compiling them.** Its source is bind-mounted live, so a
 build picks up partial edits and reports on a state that never existed. Checks are unaffected: they run
 on a fetched commit, so editing while one runs is safe.
