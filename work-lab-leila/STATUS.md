@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **10:47 AM Central, 25 November 2026**. A listener; job: testing.
+Last written **11:30 AM Central, 25 November 2026**. A listener; job: testing.
 
 ## g203 is done, not unstarted (12:07 AM Central, Wednesday 25 November 2026)
 
@@ -140,7 +140,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 ## Running now
 
-Nothing. Idle since 10:47 AM Central, 25 November; listening.
+**Batch a44 (aggiemap): #3674, the Kuma monitor list from the event definitions.** Since 11:30 AM Central, 25 November. (a41, withdrawn, had already finished at 9:27 AM: report `reports/2026-11-25-a41.md`.)
 
 ## Finished
 
