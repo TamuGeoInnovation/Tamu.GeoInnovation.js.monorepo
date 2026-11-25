@@ -129,7 +129,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 ## Running now
 
-**Batch g203 reported** at 11:15 PM Central. Next: aggiemap's a21, then a23.
+**Batch a21** (aggiemap, #2849: the missing "after" captures in the 11 November release file), started 11:15 PM Central, 24 November. Then a23.
 
 ## Finished
 
