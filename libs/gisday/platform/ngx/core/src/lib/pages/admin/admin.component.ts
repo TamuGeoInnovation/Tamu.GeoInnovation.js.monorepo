@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { Title } from '@angular/platform-browser';
 import { filter } from 'rxjs';
@@ -11,7 +11,6 @@ import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
   selector: 'tamu-gisc-admin',
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [SiteHasPipe, RouterLinkActive, RouterLink, RouterOutlet]
 })
 export class AdminComponent {

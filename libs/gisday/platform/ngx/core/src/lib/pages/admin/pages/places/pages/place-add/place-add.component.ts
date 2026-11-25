@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, viewChild } from '@angular/core';
+import { Component, viewChild } from '@angular/core';
 import { PlaceLocationAddEditFormComponent, provideAdminDetailsPage } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { BaseAdminDetailsPageComponent } from '../../../base-admin-details-page/base-admin-details-page.component';
@@ -7,7 +7,6 @@ import { BaseAdminDetailsPageComponent } from '../../../base-admin-details-page/
   selector: 'tamu-gisc-place-add',
   templateUrl: './place-add.component.html',
   styleUrls: ['./place-add.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [PlaceLocationAddEditFormComponent],
   providers: [provideAdminDetailsPage(() => PlaceAddComponent)]
 })

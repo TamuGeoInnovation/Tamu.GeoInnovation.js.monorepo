@@ -45,7 +45,7 @@ export class CheckboxComponent implements ControlValueAccessor {
    * **REQUIRED** on checkbox groups, where a property in this object is referenced and used to create a composite
    * value of selected items in the list.
    */
-  public readonly data = input<object>(undefined);
+  public readonly data = input<object | undefined>(undefined);
 
   /**
    * Determines the interaction state of the component, preventing or allowing user input.
@@ -122,7 +122,7 @@ export class CheckboxComponent implements ControlValueAccessor {
     this._checked.set(val);
   }
 
-  public setDisabledState(disabled?: boolean) {
+  public setDisabledState(disabled: boolean) {
     this.disabled.set(disabled);
   }
 

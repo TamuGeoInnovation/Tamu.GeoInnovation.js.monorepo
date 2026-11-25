@@ -19,7 +19,7 @@ node_in_docker() {
   if command -v node >/dev/null 2>&1; then
     (cd "$tmp" && node "$@")
   else
-    MSYS_NO_PATHCONV=1 docker run --rm -v "$(cd "$tmp" && pwd -W 2>/dev/null || pwd):/t" -w /t node:24.22.1 node "$@"
+    MSYS_NO_PATHCONV=1 docker run --rm -v "$(cd "$tmp" && pwd -W 2>/dev/null || pwd):/t" -w /t node:24.22.3 node "$@"
   fi
 }
 

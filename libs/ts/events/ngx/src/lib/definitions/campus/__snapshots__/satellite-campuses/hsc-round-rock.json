@@ -1,0 +1,152 @@
+{
+  "configuration": {
+    "applicationName": "Aggie Map - HSC Round Rock",
+    "buildingPopup": {
+      "abbreviation": "bldgabbr",
+      "address": {
+        "city": "city",
+        "state": "TX",
+        "street": "address",
+        "zip": "zip"
+      },
+      "layerId": "hsc-round-rock-property-layer",
+      "number": "number",
+      "title": [
+        "bldgname",
+        "bldgabbr"
+      ]
+    },
+    "eventDates": [],
+    "hideLayerToggle": true,
+    "id": "hsc-round-rock",
+    "introductionText": "Map of the Texas A&M University Health Science Center Round Rock campus.",
+    "mapCenter": [
+      -97.647639,
+      30.55765
+    ],
+    "name": "HSC Round Rock",
+    "searchSources": [
+      {
+        "displayTemplate": "{attributes.bldgname} ({attributes.number})",
+        "featuresLocation": "features",
+        "name": "Property",
+        "popupComponent": "[EventPopups.CampusBuildingPopupComponent]",
+        "queryParams": {
+          "f": "json",
+          "outFields": "*",
+          "outSR": 4326,
+          "resultRecordCount": 5,
+          "returnGeometry": true,
+          "scoringWhere": {
+            "keys": [
+              "bldgname",
+              "bldgabbr"
+            ],
+            "operators": [
+              "LIKE",
+              "LIKE"
+            ],
+            "transformations": [
+              "UPPER",
+              "UPPER"
+            ],
+            "wildcards": [
+              "startsWith",
+              "startsWith"
+            ]
+          },
+          "spatialRel": "esriSpatialRelIntersects",
+          "where": {
+            "keys": [
+              "bldgname",
+              "bldgabbr",
+              "number"
+            ],
+            "operators": [
+              "LIKE",
+              "LIKE",
+              "LIKE"
+            ],
+            "transformations": [
+              "UPPER",
+              "UPPER",
+              "UPPER"
+            ],
+            "wildcards": [
+              "includes",
+              "includes",
+              "includes"
+            ]
+          }
+        },
+        "scoringKeys": [
+          "attributes.bldgabbr",
+          "attributes.number",
+          "attributes.bldgname"
+        ],
+        "searchActive": true,
+        "source": "hsc-round-rock-property",
+        "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/HSCRR/FeatureServer/6",
+        "urlQueryParam": "bldg",
+        "urlQueryParamAliases": [
+          "abbrv"
+        ]
+      }
+    ],
+    "shortApplicationName": "HSC Round Rock",
+    "sidebarTabs": [
+      "features"
+    ],
+    "zoom": 17
+  },
+  "discover": {
+    "description": "Map of the Texas A&M University Health Science Center Round Rock campus.",
+    "id": "hsc-round-rock",
+    "mapType": "satellite-campus",
+    "name": "HSC Round Rock",
+    "source": "internal",
+    "thumbnail": "./assets/images/campus/hsc-round-rock.jpg",
+    "type": "satellite-campus"
+  },
+  "options": [],
+  "references": {
+    "BASEMAP": "hsc-round-rock-basemap-layer",
+    "PROPERTY": "hsc-round-rock-property-layer"
+  },
+  "sources": [
+    {
+      "essential": true,
+      "id": "hsc-round-rock-basemap-layer",
+      "listMode": "hide",
+      "title": "HSC Round Rock Basemap",
+      "type": "vector-tile",
+      "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/HSCRR/VectorTileServer",
+      "visible": true
+    },
+    {
+      "essential": true,
+      "id": "hsc-round-rock-property-layer",
+      "listMode": "hide",
+      "native": {
+        "elevationInfo": {
+          "mode": "relative-to-ground",
+          "offset": 1
+        },
+        "labelsVisible": false,
+        "legendEnabled": false,
+        "maxScale": 0,
+        "minScale": 100000,
+        "outFields": [
+          "*"
+        ],
+        "popupEnabled": false
+      },
+      "popupComponent": "[EventPopups.CampusBuildingPopupComponent]",
+      "title": "Property",
+      "type": "feature",
+      "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/HSCRR/FeatureServer/6",
+      "visible": true
+    }
+  ],
+  "type": "general-map"
+}

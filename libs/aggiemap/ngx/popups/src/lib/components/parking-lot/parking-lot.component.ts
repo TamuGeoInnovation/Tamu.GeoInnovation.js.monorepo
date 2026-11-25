@@ -1,14 +1,13 @@
 import { Component } from '@angular/core';
 
 import { BaseDirectionsComponent } from '../base-directions/base-directions.component';
-import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
-import { ActivateDirective } from '@tamu-gisc/ui-kits/ngx/interactions/keyboard';
+import { PopupFooterComponent } from '../footer/popup-footer.component';
 
 @Component({
   selector: 'tamu-gisc-parking-lot-popup-component',
   templateUrl: './parking-lot.component.html',
   styleUrls: ['../base/base.popup.component.scss'],
-  imports: [CopyComponent, ActivateDirective]
+  imports: [PopupFooterComponent]
 })
 export class ParkingLotPopupComponent extends BaseDirectionsComponent {
   private get lotIdentifier(): string | number | null {
