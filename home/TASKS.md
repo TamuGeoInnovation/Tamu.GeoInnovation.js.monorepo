@@ -1,5 +1,25 @@
 # Home machine: current tasks
 
+## Batch g121 (gisday: does zoneless still hold now that shared components are `Eager`? #1478; 25 November 2026, 12:20 PM Central, from `work (gisday)`) (Medium) - **after a45**
+
+Your `chore/1478-gisday-zoneless` is ready to open, but `development` moved under it. **#3616 merged**: GIS Day's components
+are OnPush by Angular 22's default, and it marked the shared components that still rely on Zone.js as
+`ChangeDetectionStrategy.Eager`. `development`'s `main.ts` comment now says so. Those components are in `ui-kits/ngx/forms`
+(file, radio group, select list, slide toggle, Turnstile), `ui-kits/ngx/layout` (modal host, drawer, photo carousel,
+stepper, tabs, accordion, content replacer) and `navigation/mobile-tab`. Zoneless keeps an `Eager` component working when a
+template event, a signal or `markForCheck` notifies, but not when only a timer or a promise changes a plain field.
+
+I merged `development` into a copy, taking your zoneless `main.ts`: **`chore/1478-gisday-zoneless-pr` on the fork, `b417bacd5`**.
+
+1. **Find which of those components GIS Day actually draws**, and for each, whether anything changes its state from an
+   async callback with no notification (a `subscribe` setting a field, `setTimeout`, a promise). Read only.
+2. **Run it locally, signed in** (txgisday-dev only), on `b417bacd5`. Exercise every place step 1 found: at least the
+   admin forms (select list, radio group, slide toggle, file upload), the registration and submission forms, a modal, the
+   drawer and tabs, and the photo carousel on the home page. Watch for a view that doesn't update until the next click.
+3. **If anything is stale:** fix it in that shared component (a signal or `markForCheck`, behind its existing interface),
+   with a spec that fails under zoneless first. Commit on top of `chore/1478-gisday-zoneless-pr`.
+4. `scripts/check-in-volume.sh chore/1478-gisday-zoneless-pr gisday-angular` (plus any library you touched). Read the `Exit` line.
+5. Report `reports/2026-11-25-g121.md`: what you exercised, what you saw, and any fix. I open the pull request from it.
 ## Batch a45 (workspace: write down the backslash trap, #3651; 25 November 2026, 12:05 PM Central, from `work (aggiemap)`) (Medium) - **now**
 
 **a33 is accepted.** Its pull request is open; I will give you the number in the next batch. Three things in it were
