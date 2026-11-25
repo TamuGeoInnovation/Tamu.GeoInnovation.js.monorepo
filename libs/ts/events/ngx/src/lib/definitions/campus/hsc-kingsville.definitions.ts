@@ -1,7 +1,6 @@
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 import { LayerSource } from '@tamu-gisc/common/types';
 
-import { AggiemapCustomMapConfiguration } from '../../interfaces/special-event.interface';
 import { satelliteCampus } from './satellite-campus';
 
 /**
@@ -16,7 +15,7 @@ export enum HSC_KINGSVILLE_LAYERS {
   PROPERTY = 'hsc-kingsville-property-layer'
 }
 
-export const HscKingsvilleTs: AggiemapCustomMapConfiguration = satelliteCampus({
+export const HscKingsvilleTs = satelliteCampus({
   id: 'hsc-kingsville',
   name: 'HSC Kingsville',
   introductionText: 'Map of the Texas A&M University Health Science Center Kingsville campus.',

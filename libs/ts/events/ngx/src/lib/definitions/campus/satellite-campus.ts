@@ -53,7 +53,10 @@ export interface SatelliteCampus {
 }
 
 /** A campus map, whose configuration and layers are always there, so a campus file can export them as they are. */
-export type SatelliteCampusMap = AggiemapCustomMapConfiguration & { configuration: EventConfiguration; sources: LayerSource[] };
+export type SatelliteCampusMap = AggiemapCustomMapConfiguration & {
+  configuration: EventConfiguration;
+  sources: LayerSource[];
+};
 
 const KIND = {
   property: { layer: 'Property', search: 'Property' },
@@ -80,7 +83,12 @@ export function satelliteCampus(campus: SatelliteCampus): SatelliteCampusMap {
             url: campus.construction.url,
             listMode: 'hide' as const,
             visible: true,
-            native: { popupEnabled: false, labelsVisible: false, legendEnabled: false, renderer: CONSTRUCTION_HATCH_RENDERER }
+            native: {
+              popupEnabled: false,
+              labelsVisible: false,
+              legendEnabled: false,
+              renderer: CONSTRUCTION_HATCH_RENDERER
+            }
           }
         ]
       : []),

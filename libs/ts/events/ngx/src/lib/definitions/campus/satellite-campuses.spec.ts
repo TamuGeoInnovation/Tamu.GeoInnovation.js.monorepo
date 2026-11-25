@@ -43,7 +43,11 @@ function resolved(value: unknown): string {
       if (popup) return `[EventPopups.${popup[0]}]`;
       if (typeof v === 'function') return `[Function ${v.name}]`;
       if (v && typeof v === 'object' && !Array.isArray(v)) {
-        return Object.fromEntries(Object.keys(v).sort().map((k) => [k, v[k]]));
+        return Object.fromEntries(
+          Object.keys(v)
+            .sort()
+            .map((k) => [k, v[k]])
+        );
       }
       return v;
     },
@@ -54,7 +58,7 @@ function resolved(value: unknown): string {
 describe('the satellite campus maps', () => {
   for (const [id, campus] of Object.entries(CAMPUSES)) {
     it(`${id} resolves as it did before the builder`, async () => {
-      expect(campus.configuration.id).toBe(id);
+      expect(campus.configuration?.id).toBe(id);
       await expect(`${resolved(campus)}\n`).toMatchFileSnapshot(`./__snapshots__/satellite-campuses/${id}.json`);
     });
   }
