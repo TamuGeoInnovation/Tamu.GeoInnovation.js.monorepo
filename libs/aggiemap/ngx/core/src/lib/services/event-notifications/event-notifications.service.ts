@@ -3,6 +3,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { filter, map, take } from 'rxjs/operators';
 import { NotificationService, NotificationProperties } from '@tamu-gisc/common/ngx/ui/notification';
+import { nextEventDate, parseEventDate } from '@tamu-gisc/common/utils/date';
 
 interface EventToastConfig {
   id: string;
@@ -200,8 +201,7 @@ export class EventNotificationsService {
    */
   private raiseActive(definitions: EventNotificationEntry[]): void {
     const now = Date.now();
-    const oneDay = 24 * 60 * 60 * 1000; // milliseconds in a day
-    const sevenDays = 7 * oneDay;
+    const sevenDays = 7 * 24 * 60 * 60 * 1000;
 
     definitions.forEach((eventDefinition) => {
       const config = eventDefinition.configuration;
@@ -219,29 +219,15 @@ export class EventNotificationsService {
         return;
       }
 
-      const eventDates = config.eventDates.map((date) => {
-        if (typeof date === 'string') {
-          return new Date(date).getTime();
-        } else if (typeof date === 'number') {
-          return date;
-        } else {
-          return date.getTime();
-        }
-      });
+      // On now or within a week: the event's next date whose whole local day has not ended. The shared helpers read a
+      // date-only string as local midnight; read with `new Date` it was UTC midnight, 7 PM Central the evening before, and
+      // an event's notice stopped at 7 PM on its own day (#3467, as #1298 was for the event maps).
+      const next = nextEventDate(config.eventDates, now);
 
-      // Check if any event date is within the next 7 days (upcoming) or is today (ongoing)
-      const isOngoing = eventDates.some((eventDate) => {
-        const timeDiff = Math.abs(now - eventDate);
-        return timeDiff < oneDay; // Event is today (within 24 hours)
-      });
+      if (next !== null && next <= now + sevenDays) {
+        const first = Math.min(...config.eventDates.map(parseEventDate));
 
-      const isUpcoming = eventDates.some((eventDate) => {
-        const timeDiff = eventDate - now;
-        return timeDiff > 0 && timeDiff <= sevenDays; // Event is within next 7 days
-      });
-
-      if (isOngoing || isUpcoming) {
-        this.triggerEventToast(config.toast, config.id, new Date(Math.min(...eventDates)).getUTCFullYear(), config.series);
+        this.triggerEventToast(config.toast, config.id, new Date(first).getFullYear(), config.series);
       }
     });
   }

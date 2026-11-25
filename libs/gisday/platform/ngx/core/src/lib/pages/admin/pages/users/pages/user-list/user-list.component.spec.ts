@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { HttpErrorResponse } from '@angular/common/http';
 import { of, throwError } from 'rxjs';
@@ -13,7 +14,7 @@ const user = (name: string, email: string, id: string) => ({ user_info: { name, 
  * when there are more, and searches every user through the API, in the shared admin search box (#2914).
  */
 describe('UserListComponent', () => {
-  let getUsers: jest.Mock;
+  let getUsers: Mock;
 
   function open() {
     TestBed.configureTestingModule({
@@ -30,7 +31,7 @@ describe('UserListComponent', () => {
   const text = (fixture: ReturnType<typeof open>) => (fixture.nativeElement as HTMLElement).textContent.replace(/\s+/g, ' ');
 
   beforeEach(() => {
-    getUsers = jest.fn((q?: string) =>
+    getUsers = vi.fn((q?: string) =>
       of(
         q
           ? { users: [user('Zoe Past', 'zoe@example.edu', 'auth0|1500')], truncated: false }

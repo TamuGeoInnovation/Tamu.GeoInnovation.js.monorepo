@@ -66,7 +66,9 @@ describe('GIS Day button colours', () => {
     expect(stylesheets().length).toBeGreaterThan(50);
   });
 
-  it('leaves every button the site colour', () => {
+  // Compiles every GIS Day component stylesheet with Sass, one after another: a few seconds on a quiet machine, and 7.5 s
+  // in a full check of 74 tasks at --parallel=8, past Vitest's default 5 s (#3518). The work is real; the limit was tight.
+  it('leaves every button the site colour', { timeout: 60_000 }, () => {
     const coloured = stylesheets().flatMap((file) =>
       buttonColours(file).map((rule) => `${path.relative(REPO_ROOT, file).replace(/\\/g, '/')}: ${rule}`)
     );

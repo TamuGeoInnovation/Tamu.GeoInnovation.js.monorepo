@@ -61,9 +61,9 @@ describe('copying records into a season (#3324)', () => {
   // matched nothing. Red on today's code.
   it('refuses to copy broadcasts into a season that does not exist', async () => {
     const repo = {
-      find: jest.fn(async () => [{ guid: 'b-1', name: 'Made-up broadcast' }]),
-      create: jest.fn((x) => ({ ...x, save: async () => x })),
-      save: jest.fn(async (x) => x)
+      find: vi.fn(async () => [{ guid: 'b-1', name: 'Made-up broadcast' }]),
+      create: vi.fn((x) => ({ ...x, save: async () => x })),
+      save: vi.fn(async (x) => x)
     };
     const service = bare(EventBroadcastService, { findOne: async () => null }, repo);
 
@@ -74,7 +74,7 @@ describe('copying records into a season (#3324)', () => {
   });
 
   it('refuses to copy broadcasts when none of them is found', async () => {
-    const repo = { find: jest.fn(async () => []), create: jest.fn((x) => x), save: jest.fn(async (x) => x) };
+    const repo = { find: vi.fn(async () => []), create: vi.fn((x) => x), save: vi.fn(async (x) => x) };
     const service = bare(EventBroadcastService, { findOne: async () => ({ guid: 's-2027' }) }, repo);
 
     await expect(service.copyBroadcastsIntoSeason('s-2027', ['no-such-broadcast'])).rejects.toBeInstanceOf(
@@ -97,9 +97,9 @@ describe('copying records with nested records into a season (#3379)', () => {
     const save = async (x: unknown) => (failure ? Promise.reject(failure) : x);
 
     return {
-      find: jest.fn(async () => records),
-      create: jest.fn((x) => ({ ...x, save: () => save(x) })),
-      save: jest.fn(save)
+      find: vi.fn(async () => records),
+      create: vi.fn((x) => ({ ...x, save: () => save(x) })),
+      save: vi.fn(save)
     };
   }
 

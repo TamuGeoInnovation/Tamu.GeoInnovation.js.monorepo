@@ -23,12 +23,12 @@ describe('ResearchCompetitionReviewComponent, Submit Review', () => {
     const service = {
       getEntity: () =>
         of({ guid: GUID, title: 'Flood maps', acceptance: false, message: '', participants: [], submissionType: 'poster' }),
-      previewReview: jest.fn(() => of({ groups: [] })),
-      review: jest.fn(() => of({ reviewed: ['Flood maps'], failed: [] })),
-      updateEntity: jest.fn(() => of({}))
+      previewReview: vi.fn(() => of({ groups: [] })),
+      review: vi.fn(() => of({ reviewed: ['Flood maps'], failed: [] })),
+      updateEntity: vi.fn(() => of({}))
     };
-    const modals = { open: jest.fn(() => of(sent)), isOpen: of(false) };
-    const toasts = { toast: jest.fn() };
+    const modals = { open: vi.fn(() => of(sent)), isOpen: of(false) };
+    const toasts = { toast: vi.fn() };
 
     TestBed.configureTestingModule({
       imports: [ResearchCompetitionReviewComponent],
@@ -48,7 +48,7 @@ describe('ResearchCompetitionReviewComponent, Submit Review', () => {
     const fixture = TestBed.createComponent(ResearchCompetitionReviewComponent);
     const component = fixture.componentInstance;
     // Where it goes back to, the list it was opened from, is back-to-list-after-save.spec.ts's business (#2965).
-    const backToList = jest.spyOn(component, 'backToList').mockImplementation(() => undefined);
+    const backToList = vi.spyOn(component, 'backToList').mockImplementation(() => undefined);
 
     fixture.detectChanges();
 

@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { NotFoundException } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 
@@ -25,13 +26,13 @@ const profiles: Record<string, Auth0UserProfile> = {
   } as unknown as Auth0UserProfile
 };
 
-function managementWith(): ManagementService & { getUsersByIds: jest.Mock } {
+function managementWith(): ManagementService & { getUsersByIds: Mock } {
   return {
     // As the search answers: the ids it found, and nothing for the rest.
-    getUsersByIds: jest.fn(
+    getUsersByIds: vi.fn(
       async (accounts: Array<string>) => new Map(accounts.filter((a) => profiles[a]).map((a) => [a, profiles[a]]))
     )
-  } as unknown as ManagementService & { getUsersByIds: jest.Mock };
+  } as unknown as ManagementService & { getUsersByIds: Mock };
 }
 
 const rsvp = (account: string, event: string, created: string) =>
@@ -72,9 +73,25 @@ describe('RsvpDashboardProvider (#2878)', () => {
         await find.call(eventRepo, options);
 
         return [
-          { guid: 'e-late', name: 'Keynote', startTime: '15:00:00 GMT-0600 (Central Standard Time)', day: { date: new Date('2026-11-18T06:00:00Z') } },
-          { guid: 'e-early', name: 'Workshop', startTime: '09:00:00 GMT-0600 (Central Standard Time)', day: { date: new Date('2026-11-18T06:00:00Z') }, location: { building: 'ILCB', room: '111' } },
-          { guid: 'e-none', name: 'Nobody yet', startTime: '09:00:00 GMT-0600 (Central Standard Time)', day: { date: new Date('2026-11-19T06:00:00Z') } }
+          {
+            guid: 'e-late',
+            name: 'Keynote',
+            startTime: '15:00:00 GMT-0600 (Central Standard Time)',
+            day: { date: new Date('2026-11-18T06:00:00Z') }
+          },
+          {
+            guid: 'e-early',
+            name: 'Workshop',
+            startTime: '09:00:00 GMT-0600 (Central Standard Time)',
+            day: { date: new Date('2026-11-18T06:00:00Z') },
+            location: { building: 'ILCB', room: '111' }
+          },
+          {
+            guid: 'e-none',
+            name: 'Nobody yet',
+            startTime: '09:00:00 GMT-0600 (Central Standard Time)',
+            day: { date: new Date('2026-11-19T06:00:00Z') }
+          }
         ] as Array<Event>;
       };
 
@@ -134,7 +151,13 @@ describe('RsvpDashboardProvider (#2878)', () => {
       await provider.getSeason('s-1');
 
       expect(ms.getUsersByIds).toHaveBeenCalledTimes(1);
-      expect([...ms.getUsersByIds.mock.calls[0][0]].sort()).toEqual(['auth0|esri', 'auth0|gone', 'auth0|grad', 'auth0|prof', 'auth0|ug']);
+      expect([...ms.getUsersByIds.mock.calls[0][0]].sort()).toEqual([
+        'auth0|esri',
+        'auth0|gone',
+        'auth0|grad',
+        'auth0|prof',
+        'auth0|ug'
+      ]);
     });
 
     /**
@@ -185,7 +208,10 @@ describe('RsvpDashboardProvider (#2878)', () => {
 
     it("lists the event's people, oldest RSVP first, with employers by name", async () => {
       eventRepo.findOne = async () => ({ guid: 'e-late' }) as Event;
-      rsvpRepo.find = async () => [rsvp('auth0|esri', 'e-late', '2026-11-03T10:00:00Z'), rsvp('auth0|gone', 'e-late', '2026-11-05T10:00:00Z')];
+      rsvpRepo.find = async () => [
+        rsvp('auth0|esri', 'e-late', '2026-11-03T10:00:00Z'),
+        rsvp('auth0|gone', 'e-late', '2026-11-05T10:00:00Z')
+      ];
       organizationRepo.find = async () => [{ guid: 'o-1', name: 'Esri' }] as Array<Organization>;
 
       const people = await provider.getEvent('e-late');

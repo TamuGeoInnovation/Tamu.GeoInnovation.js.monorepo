@@ -41,36 +41,36 @@ describe('SpeakerEditService', () => {
   const linkRepo = {
     create: (x) => x,
     // As the database does: the row gets an id and a time if it has none, and the saved row comes back.
-    save: jest.fn(async (x) => {
+    save: vi.fn(async (x) => {
       const row = { guid: crypto.randomUUID(), created: new Date(), ...x };
       links.push(row);
       return row;
     }),
-    find: jest.fn(async ({ where }) =>
+    find: vi.fn(async ({ where }) =>
       links.filter((l) => l.speaker.guid === where.speaker.guid && l.created > where.created._value)
     ),
-    delete: jest.fn(async (guid: string) => {
+    delete: vi.fn(async (guid: string) => {
       links = links.filter((l) => (l as { guid?: string }).guid !== guid);
     }),
-    findOne: jest.fn(async ({ where }) => {
+    findOne: vi.fn(async ({ where }) => {
       const l = links.find((x) => x.tokenHash === where.tokenHash);
       return l ? { ...l, speaker: { ...l.speaker } } : null;
     }),
-    count: jest.fn(
+    count: vi.fn(
       async ({ where }) =>
         links.filter((l) => l.speaker.guid === where.speaker.guid && l.created > where.created._value).length
     )
   };
   const editRepo = {
     create: (x) => ({ ...x }),
-    save: jest.fn(async (x) => {
+    save: vi.fn(async (x) => {
       edits.push({ ...x, created: new Date() });
       return x;
     }),
-    find: jest.fn(async ({ where }) =>
+    find: vi.fn(async ({ where }) =>
       edits.filter((e) => (e.speaker as { guid: string }).guid === where.speaker?.guid && e.status === where.status)
     ),
-    findOne: jest.fn(
+    findOne: vi.fn(
       async ({ where }) =>
         edits.find(
           (e) =>
@@ -78,10 +78,10 @@ describe('SpeakerEditService', () => {
             (!where.status || e.status === where.status)
         ) ?? null
     ),
-    delete: jest.fn(async (guids: Array<string>) => {
+    delete: vi.fn(async (guids: Array<string>) => {
       edits = edits.filter((e) => !guids.includes(e.guid as string));
     }),
-    update: jest.fn(async (guid, changes) =>
+    update: vi.fn(async (guid, changes) =>
       Object.assign(
         edits.find((e) => e.guid === guid),
         changes
@@ -89,10 +89,10 @@ describe('SpeakerEditService', () => {
     )
   };
   const speakerRepo = {
-    find: jest.fn(async ({ where }) =>
+    find: vi.fn(async ({ where }) =>
       where.guid ? [ana, ben].filter((s) => where.guid._value.includes(s.guid)) : [ana, ben]
     ),
-    findOne: jest.fn(async ({ where }) => [ana, ben].find((s) => s.guid === where.guid))
+    findOne: vi.fn(async ({ where }) => [ana, ben].find((s) => s.guid === where.guid))
   };
 
   /** The token from the link in the last email sent. */
@@ -112,12 +112,12 @@ describe('SpeakerEditService', () => {
       editRepo as never,
       speakerRepo as never,
       {
-        findOne: jest.fn(async ({ where }) => (where.guid === TAMU ? { guid: TAMU, name: 'Texas A&M University' } : null))
+        findOne: vi.fn(async ({ where }) => (where.guid === TAMU ? { guid: TAMU, name: 'Texas A&M University' } : null))
       } as never,
       {
         applySelfEdit: async (guid: string, fields: object, photo?: object) => applied.push({ guid, fields, photo })
       } as never,
-      { sendMessage: jest.fn(async (m) => sent.push(m)) } as never,
+      { sendMessage: vi.fn(async (m) => sent.push(m)) } as never,
       { findOneActive: async () => ({ guid: 'season' }) } as never,
       {} as never
     );
@@ -126,7 +126,7 @@ describe('SpeakerEditService', () => {
   afterEach(() => {
     rmSync(appData, { recursive: true, force: true });
     process.env.APP_DATA = previousAppData;
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   // #3326: the profile email guarded by counting recent links, which two sends racing both passed, in one copy of the
@@ -260,8 +260,19 @@ describe('SpeakerEditService', () => {
     it('emails no one twice when the same send arrives again within minutes, and says why it skipped them', async () => {
       const email = { subject: 'Profile', template: 'Hi {first name}: {edit link}' };
 
-      await service.sendLinks(['speaker-ana'], 'gisday.tamu.edu', email);
-      const again = await service.sendLinks(['speaker-ana'], 'gisday.tamu.edu', email);
+      // The second send 30 seconds after the first, as it came. Back to back, both links could be made in the same
+      // millisecond, and two links made at once are told apart by their random guids, so the second won half of those
+      // ties and was sent: a test that failed now and then on Jest and often on Vitest, which runs it faster (#1977).
+      vi.useFakeTimers({ toFake: ['Date'] });
+      let again: Awaited<ReturnType<typeof service.sendLinks>>;
+
+      try {
+        await service.sendLinks(['speaker-ana'], 'gisday.tamu.edu', email);
+        vi.setSystemTime(Date.now() + 30_000);
+        again = await service.sendLinks(['speaker-ana'], 'gisday.tamu.edu', email);
+      } finally {
+        vi.useRealTimers();
+      }
 
       expect(sent).toHaveLength(1);
       expect(links).toHaveLength(1);
@@ -596,15 +607,15 @@ describe('SpeakerEditService.sendLinksForSubmissions (#2958)', () => {
       // No link sent to anyone yet, so the repeat guard (#3065) lets each through.
       {
         create: (x) => x,
-        save: jest.fn(async (x) => x),
-        count: jest.fn(async () => 0),
+        save: vi.fn(async (x) => x),
+        count: vi.fn(async () => 0),
         // No other profile link of the last few minutes, so each send's own link stands (#3326).
-        find: jest.fn(async () => []),
-        delete: jest.fn()
+        find: vi.fn(async () => []),
+        delete: vi.fn()
       } as never,
       {} as never,
       {
-        find: jest.fn(async ({ where }) =>
+        find: vi.fn(async ({ where }) =>
           speakers.filter((s) =>
             where.guid ? values(where.guid).includes(s.guid) : values(where.season.guid).includes(s.season.guid)
           )
@@ -612,9 +623,9 @@ describe('SpeakerEditService.sendLinksForSubmissions (#2958)', () => {
       } as never,
       {} as never,
       {} as never,
-      { sendMessage: jest.fn(async (m) => sent.push(m)) } as never,
+      { sendMessage: vi.fn(async (m) => sent.push(m)) } as never,
       { findOneActive: async () => ({ guid: S2026 }) } as never,
-      { find: jest.fn(async ({ where }) => submissions.filter((s) => values(where.guid).includes(s.guid))) } as never
+      { find: vi.fn(async ({ where }) => submissions.filter((s) => values(where.guid).includes(s.guid))) } as never
     );
   });
 

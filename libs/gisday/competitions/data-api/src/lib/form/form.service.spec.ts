@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { BadRequestException } from '@nestjs/common';
 
 import { FormService } from './form.service';
@@ -10,27 +11,27 @@ describe('FormService, saving the scoring window', () => {
   const opens = '2026-11-14T06:00:00.000Z';
   const closes = '2026-11-20T17:00:00.000Z';
 
-  let competitionSeason: Record<string, unknown> & { save: jest.Mock };
-  let create: jest.Mock;
+  let competitionSeason: Record<string, unknown> & { save: Mock };
+  let create: Mock;
   let service: FormService;
 
   beforeEach(() => {
     competitionSeason = {
       guid: 'cs-2026',
       form: { guid: 'f-1' },
-      save: jest.fn(function () {
+      save: vi.fn(function () {
         return Promise.resolve(this);
       })
     };
-    create = jest.fn((values) => ({ ...values, save: jest.fn(() => Promise.resolve(values)) }));
+    create = vi.fn((values) => ({ ...values, save: vi.fn(() => Promise.resolve(values)) }));
 
     service = new FormService(
-      { create: jest.fn((values) => values) } as never,
+      { create: vi.fn((values) => values) } as never,
       {
-        findOne: jest.fn(({ where }) => Promise.resolve(where.form ? competitionSeason : null)),
+        findOne: vi.fn(({ where }) => Promise.resolve(where.form ? competitionSeason : null)),
         create
       } as never,
-      { findOne: jest.fn(() => Promise.resolve({ guid: 's-2026', active: true })) } as never
+      { findOne: vi.fn(() => Promise.resolve({ guid: 's-2026', active: true })) } as never
     );
   });
 
