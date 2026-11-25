@@ -106,3 +106,4 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - Name `laptop`; job development, any project (the maintainer, 23 November 2026, when it joined).
 - Set up GIS Day local here (CLAUDE_SETUP.md phase 6) (the maintainer, 23 November 2026, about 12:40 PM Central).
 - Batch 1: ask the maintainer directly, in this chat, for every command this setup needs that the laptop cannot run (the maintainer, relayed by `work (gisday)` in batch 1, 23 November 2026).
+- Stop work, stop containers cleanly, write "blocked: Docker stopping for disk compaction" and start nothing until he says Docker is back (the maintainer, 24 November 2026, 7:50 PM Central). Done at 7:52 PM; he said Docker was back at 7:55 PM, and listening resumed.
