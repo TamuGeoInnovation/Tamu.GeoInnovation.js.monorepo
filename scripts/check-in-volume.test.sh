@@ -168,4 +168,25 @@ unset -f docker
 grep -q -- '--name "$container"' "$(dirname "$0")/check-in-volume.sh" && r=yes || r=no
 expect "the check's docker run is named" "yes" "$r"
 
+# #3000: a check whose tasks were killed for memory says so, rather than leaving a failure that reads as the code's.
+# The three ways a kill shows in a check's log, each as the laptop's and home's checks logged them on 23 November.
+logs="$(mktemp -d)"
+printf '%s\n' '> nx run gisday-angular:build-app' '' 'Killed' 'Warning: command "ng build" exited with non-zero status code' >"$logs/killed.log"
+printf '%s\n' '    A jest worker process (pid=1180) was terminated by another process: signal=SIGKILL, exitCode=null.' >"$logs/sigkill.log"
+printf '%s\n' 'npm error command failed' 'npm error signal SIGKILL' 'Process exited with code 137' >"$logs/137.log"
+printf '%s\n' '  x should report a Killed status for the session (12 ms)' 'Tests: 1 failed, 497 passed' 'Exit 1' >"$logs/clean.log"
+expect "Killed on its own line is a memory kill" "1" "$(memory_kills "$logs/killed.log")"
+expect "a SIGKILLed Jest worker is a memory kill" "1" "$(memory_kills "$logs/sigkill.log")"
+expect "exit code 137 is a memory kill" "2" "$(memory_kills "$logs/137.log")"
+memory_kills "$logs/clean.log" >/dev/null && r=yes || r=no
+expect "a failing test that merely says Killed is not" "no" "$r"
+advice="$(memory_advice "$logs/sigkill.log" 1)"
+case "$advice" in *memory*"CHECK_PARALLEL"*"CHECK_MEMORY"*) r=yes ;; *) r=no ;; esac
+expect "a failed check with a kill says it was memory, and what to set" "yes" "$r"
+expect "a passing check says nothing" "" "$(memory_advice "$logs/sigkill.log" 0)"
+expect "a failure with no kill says nothing" "" "$(memory_advice "$logs/clean.log" 1)"
+grep -q 'memory_advice "$log" "$code"' "$(dirname "$0")/check-in-volume.sh" && r=yes || r=no
+expect "the check gives that advice after its run" "yes" "$r"
+rm -rf "$logs"
+
 exit "$failed"
