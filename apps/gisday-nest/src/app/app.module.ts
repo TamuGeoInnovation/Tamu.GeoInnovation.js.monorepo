@@ -111,7 +111,8 @@ const onlyWith = <T>(feature: GisdayFeature, modules: Array<T>): Array<T> => (si
     BullModule.forRoot({
       redis: {
         host: process.env.REDIS_HOST || 'localhost',
-        port: parseInt(process.env.REDIS_PORT, 10) || 6379
+        // A port that is not set reads as NaN, as parseInt(undefined) did, and falls back to 6379 (#3495).
+        port: parseInt(process.env.REDIS_PORT ?? '', 10) || 6379
       }
     })
   ],
