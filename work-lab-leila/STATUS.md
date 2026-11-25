@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **10:40 PM Central, 24 November 2026**. A listener; job: testing.
+Last written **10:48 PM Central, 24 November 2026**. A listener; job: testing.
 
 ## Taking work again: batch g201 (9:20 PM Central, Tuesday 24 November 2026)
 
@@ -129,12 +129,11 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 ## Running now
 
-**Batch g202** (gisday, High: #1977, the `data-api` libraries and `gisday-nest` off Jest with SWC), started 10:19 PM Central, 24 November. Then a20. Note: `scripts/pre-pr-check.sh` (#3508) is not on `development` yet, so "branch ready" still rests on `check-in-volume.sh` until it lands.
-
-- 10:40 PM: `chore/1977-gisday-vitest-data-api` is on the fork (`9dd37e2cf`), `check-in-volume.sh` `Exit 0`, the same 1,430 tests, 48.8 s on Jest to 8.7 s on Vitest. **Not with SWC:** SWC wrote the same wrong metadata as Vite, so it is Vite's transform with null checks off, plus four columns given their type; no new dependency. Now `gisday-angular`.
+**Batch g202 reported** at 10:48 PM Central. Next: aggiemap's a20, then whatever else is queued.
 
 ## Finished
 
+- **Batch g202 (gisday, High): #1977, the GIS Day API and site off Jest** (10:19 to 10:48, 24 November). **branch ready: `chore/1977-gisday-vitest-data-api`** (`d4be0b397`, `Exit 0`; 1,430 tests, 48.8 s on Jest to 8.7 s on Vitest) and **`chore/1977-gisday-vitest-app`** (`46aa312bf`, `Exit 0`; 16 tests). **Not SWC:** SWC writes the same wrong metadata as Vite, so it is Vite's transform with null checks off and four columns given their migration's `nvarchar(255)`; no new dependency (Q-g202-1). Two repeat-send specs fixed (a random tie; 10 of 20 runs failed before, 0 of 30 after; Q-g202-2). `pre-pr-check.sh` (from PR 3510) fails both only on the blank `Closes #`. Report `reports/2026-11-25-g202.md`.
 - **Batch a18 (aggiemap, Medium): #3473, one map-drawing wait** (10:06 to 10:19 PM, 24 November). **branch ready: `refactor/3473-one-drawing-wait`** (`a08c3d985`, `Exit 0`, `tsc` 0): `waitForMapDrawn` replaces eight waits, each keeping its timeout and condition; `ProbeLayer` once; the probe name only in `map-probe.ts`, with a guard step in `testing-page.yml` (red on `development`, green on the branch). Against dev, `layer-order` 12/12 and `kiosk` 7/7, before and after. **The waits disagreed about "finished"**: drawing-only waits pass with no view, `ready` is not one-way, and the budgets start from different points (#3369). Two questions. Report `reports/2026-11-24-a18.md`.
 - **Batch g201 (gisday, Medium): #1977's Vitest step** (9:20 PM to 10:04 PM, 24 November). **branch ready: `chore/1977-gisday-vitest-ngx`** (`402ec1d74`, `Exit 0`): the four `ngx/common` and `ngx/data-access` libraries; **`chore/1977-gisday-vitest-core`** (`da9272bf9`, `Exit 0`): the two `ngx/core`. The same 1,007 tests before and after; not faster (39.1 s on cold Jest, 40.0 to 41.1 s on Vitest). The `data-api` libraries and the apps stay on Jest: decorator metadata (Q-g201-2). Three questions. Report `reports/2026-11-25-g201.md`.
 - **Batch 200 (gisday, Low): #3398 and #3396** (9:33 to 10:10 AM, 24 November). **branch ready: `fix/3398-place-delete-label`** (`30eee2ad3`, `Exit 0`): the place form's toasts say Organization, as decided (1a). **`fix/3396-hidden-session-not-found`** (`8051476e6`, `Exit 0`, from PR 3392's merge `2c0930619`): a hidden session's page shows the site's not-found message. Both red first; eight images, links 200; `--check` passes. No email; `cmp` identical. Report `reports/2026-11-24-200.md`.
@@ -668,4 +667,4 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 192 and 191 again (8 November), aggiemap's 31, 30 and 29 (9 November), and aggiemap's 32, 33, 34 and 35 (10 November), 36 and 37 (11 November), 38 (13 November), 39, 40, 41, 42, 46, 43, 44, 49, 50, 47, 48, 51, 52, 53, 54, 55, 56, 57 and 58 (14 November), 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 72, 73, 74, 71, 75, 76, #3044's screenshots, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 87b, 89, 91, 92, 93, 94, 88, 95, 90, 98, 99, 96, 102, 100, 101, 103, 104 and 105 (15 November), 106, 107, 108, 109, 110, 111, 112, 113, 112b, 113b, 114, 115, 116, 117, 118, 119, 120, 121, 122 and 123 (16 November), 124, 125, 126, 127, 128 and 129 (17 November), 130 to 134 (18 November), 135 to 139 (19 November), 193 to 198 (23 November), 199 to 203, g201 and a18 (24 November) (139, 141 to 192 reported; 140 needs the maintainer; 151 not run, see report 137) (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 192 and 191 again (8 November), aggiemap's 31, 30 and 29 (9 November), and aggiemap's 32, 33, 34 and 35 (10 November), 36 and 37 (11 November), 38 (13 November), 39, 40, 41, 42, 46, 43, 44, 49, 50, 47, 48, 51, 52, 53, 54, 55, 56, 57 and 58 (14 November), 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 72, 73, 74, 71, 75, 76, #3044's screenshots, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 87b, 89, 91, 92, 93, 94, 88, 95, 90, 98, 99, 96, 102, 100, 101, 103, 104 and 105 (15 November), 106, 107, 108, 109, 110, 111, 112, 113, 112b, 113b, 114, 115, 116, 117, 118, 119, 120, 121, 122 and 123 (16 November), 124, 125, 126, 127, 128 and 129 (17 November), 130 to 134 (18 November), 135 to 139 (19 November), 193 to 198 (23 November), 199 to 203, g201, a18 and g202 (24 November) (139, 141 to 192 reported; 140 needs the maintainer; 151 not run, see report 137) (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
