@@ -37,7 +37,7 @@ describe('EventAddEditFormComponent', () => {
   let speakerEdits: { preview: Mock; send: Mock };
   let modals: { open: Mock };
 
-  function create(type: 'create' | 'edit', event?: object, seasonSpeakers: Array<object> = []) {
+  function create(type: 'create' | 'edit', event?: object, seasonSpeakers: Array<object> = [], days: Array<object> = []) {
     speakerEdits = { preview: vi.fn(() => of({ groups: [] })), send: vi.fn(() => of({ sent: [], skipped: [] })) };
     modals = { open: vi.fn(() => of({ profile: 'Hi {edit link}', 'profile:subject': 'Profile' })) };
 
@@ -45,7 +45,7 @@ describe('EventAddEditFormComponent', () => {
       providers: [
         provideRouter([]),
         { provide: ActivatedRoute, useValue: { params: of({ guid: 'event' }) } },
-        { provide: SeasonService, useValue: { activeSeason$: of({ guid: 'season', days: [] }) } },
+        { provide: SeasonService, useValue: { activeSeason$: of({ guid: 'season', days }) } },
         { provide: SpeakerService, useValue: { getEntitiesForActiveSeason: () => of(seasonSpeakers) } },
         { provide: TagService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
         { provide: LocationService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
@@ -108,6 +108,51 @@ describe('EventAddEditFormComponent', () => {
       watching.unsubscribe();
 
       expect(names(shown[shown.length - 1])).toEqual(['Ethan Ablack', 'Sunny Zheng']);
+    });
+  });
+
+  /**
+   * #3574. SeasonService and EventService hand the form each day's date as a Date (#3558), so the form uses it as it
+   * comes rather than wrapping it again.
+   */
+  describe("a day's date", () => {
+    const monday = { guid: 'day-mon', date: new Date('2026-11-16T06:00:00.000Z') };
+
+    it("is the Date each of the active season's days came with", async () => {
+      const days = await firstValueFrom(create('create', undefined, [], [monday]).activeSeasonDays$);
+
+      expect(days).toEqual([{ guid: 'day-mon', date: monday.date }]);
+      expect(days[0].date).toBeInstanceOf(Date);
+    });
+
+    it("gives an edited session's start and end on its day, and keeps its stored times", async () => {
+      const form = create(
+        'edit',
+        { guid: 'event', day: monday, startTime: '14:00:00', endTime: '14:40:00', speakers: [], tags: [] },
+        [],
+        [monday]
+      );
+      const start = await firstValueFrom(form.selectedEventDateStart$);
+
+      expect(start).toEqual(new Date(`${monday.date.toDateString()} 14:00:00`));
+      expect(form.form.getRawValue().startTime).toBe('14:00:00');
+      expect(form.form.getRawValue().endTime).toBe('14:40:00');
+    });
+
+    it("opens a session with no stored time on its day's own time", async () => {
+      const form = create(
+        'edit',
+        { guid: 'event', day: monday, startTime: null, endTime: null, speakers: [], tags: [] },
+        [],
+        [monday]
+      );
+
+      const start = firstValueFrom(form.selectedEventDateStart$);
+
+      // The default follows the day chosen in the form.
+      form.form.patchValue({ day: 'day-mon' });
+
+      expect(await start).toBe(monday.date);
     });
   });
 });

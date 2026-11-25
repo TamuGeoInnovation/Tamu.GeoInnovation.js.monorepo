@@ -302,7 +302,7 @@ export class EventAddEditFormComponent implements OnInit {
           map((day) => {
             return {
               guid: day.guid,
-              date: new Date(day.date)
+              date: day.date
             };
           }),
           toArray()
@@ -678,7 +678,7 @@ export class EventAddEditFormComponent implements OnInit {
   private _timeStringFromEvent$(timeProp: 'startTime' | 'endTime') {
     return pipe(
       switchMap((event: Event) => {
-        const dateStringFromEvent = event?.day !== null ? new Date(event?.day?.date).toDateString() : null;
+        const dateStringFromEvent = event?.day?.date?.toDateString() ?? null;
         const timeStringFromEvent = event?.[timeProp];
 
         const parsed = new Date(`${dateStringFromEvent} ${timeStringFromEvent}`);
@@ -699,7 +699,7 @@ export class EventAddEditFormComponent implements OnInit {
    */
   private _readableTime(event: Partial<Event>, timeProp: 'startTime' | 'endTime') {
     const time = event?.[timeProp];
-    const day = event?.day?.date ? new Date(event.day.date).toDateString() : new Date().toDateString();
+    const day = (event?.day?.date ?? new Date()).toDateString();
 
     return time && !isNaN(new Date(`${day} ${time}`).getTime()) ? time : null;
   }

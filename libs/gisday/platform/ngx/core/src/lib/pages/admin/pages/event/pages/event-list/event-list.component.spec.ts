@@ -52,8 +52,9 @@ describe('EventListComponent', () => {
 
   // #2943. Each day is headed as the public Sessions page heads it, with its day of the week, in Central time.
   it('heads each day with its day of the week, as the Sessions page does', () => {
+    // A Date, as EventService hands a session's day to the page (#3558, #3574).
     const { page } = open([
-      { guid: 'e-1', name: 'Workshop', active: true, day: { guid: 'd-1', date: '2026-11-16T06:00:00.000Z' } }
+      { guid: 'e-1', name: 'Workshop', active: true, day: { guid: 'd-1', date: new Date('2026-11-16T06:00:00.000Z') } }
     ]);
 
     expect(page.querySelector('.card h2').textContent.trim()).toBe('Monday, November 16');
