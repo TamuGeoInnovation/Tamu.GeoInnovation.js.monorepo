@@ -47,3 +47,26 @@ export async function blockAnalytics(page: Page): Promise<void> {
     }
   );
 }
+
+/** One event a GA4 collect request carries: its name, the address it was about, and the property it went to. */
+export interface Ga4Event {
+  name: string | null;
+  location: string | null;
+  property: string | null;
+}
+
+/**
+ * The events in a GA4 `/collect` request (#3338). gtag.js puts one event in the address, or batches several as lines of
+ * the body, each with its own `en` (name) and, where it differs, `dl` (address), over the address's shared ones.
+ */
+export function ga4Events(url: string, body: string | null): Array<Ga4Event> {
+  const shared = new URL(url).searchParams;
+  const lines = (body ?? '').split('\n').filter((line) => line.trim() !== '');
+  const each = lines.length > 0 ? lines.map((line) => new URLSearchParams(line)) : [new URLSearchParams()];
+
+  return each.map((own) => ({
+    name: own.get('en') ?? shared.get('en'),
+    location: own.get('dl') ?? shared.get('dl'),
+    property: own.get('tid') ?? shared.get('tid')
+  }));
+}

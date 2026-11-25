@@ -5,6 +5,8 @@ import { BehaviorSubject, Observable, catchError, combineLatest, map, of, shareR
 import { SubmissionReviewDto } from '@tamu-gisc/gisday/competitions/data-api/types';
 import { LeaderboardService, SubmissionService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
 import { COMPETITION_VALIDATION_STATUS } from '@tamu-gisc/gisday/common';
+import { downloadFile } from '@tamu-gisc/common/utils/ui';
+import { DashboardScrollComponent } from '@tamu-gisc/gisday/platform/ngx/common';
 import { SubmissionReviewListComponent } from '../../../shared/submission-review-list/submission-review-list.component';
 
 /**
@@ -18,12 +20,70 @@ export type AdminSubmissionsView = 'all' | 'needs-a-look' | 'top-finishers';
  */
 export const PRIZE_PLACES = 3;
 
+/** One row of the counts table (#3244): a category, or the Total, with its submissions by review status. */
+export interface SubmissionCountRow {
+  category: string;
+  submissions: number;
+  verified: number;
+  unverified: number;
+  discarded: number;
+}
+
+/** What a submission with no answer to the form's category question is counted under. */
+export const NO_CATEGORY = 'No category';
+
+/**
+ * How many submissions each category has, by review status, and in all (#3244): a row per category by name, the
+ * uncategorized last, and the Total. A category is the form's category question as the list shows it (`questionValue`).
+ */
+export function submissionCounts(submissions: Array<SubmissionReviewDto>): {
+  rows: Array<SubmissionCountRow>;
+  total: SubmissionCountRow;
+} {
+  const empty = (category: string): SubmissionCountRow => ({
+    category,
+    submissions: 0,
+    verified: 0,
+    unverified: 0,
+    discarded: 0
+  });
+  const byCategory = new Map<string, SubmissionCountRow>();
+  const total = empty('Total');
+
+  for (const submission of submissions) {
+    const category = submission.questionValue?.trim() || NO_CATEGORY;
+    const row = byCategory.get(category) ?? empty(category);
+
+    for (const counted of [row, total]) {
+      counted.submissions++;
+
+      if (submission.validationStatus === COMPETITION_VALIDATION_STATUS.verified) {
+        counted.verified++;
+      } else if (submission.validationStatus === COMPETITION_VALIDATION_STATUS.discarded) {
+        counted.discarded++;
+      } else {
+        counted.unverified++;
+      }
+    }
+
+    byCategory.set(category, row);
+  }
+
+  const rows = [...byCategory.values()].sort(
+    (a, b) =>
+      Number(a.category === NO_CATEGORY) - Number(b.category === NO_CATEGORY) ||
+      a.category.localeCompare(b.category, 'en', { sensitivity: 'base' })
+  );
+
+  return { rows, total };
+}
+
 @Component({
   selector: 'tamu-gisc-admin-submissions',
   templateUrl: './admin-submissions.component.html',
   styleUrls: ['./admin-submissions.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [SubmissionReviewListComponent, AsyncPipe]
+  imports: [SubmissionReviewListComponent, DashboardScrollComponent, AsyncPipe]
 })
 export class AdminSubmissionsComponent implements OnInit {
   private readonly submissionService = inject(SubmissionService);
@@ -33,8 +93,13 @@ export class AdminSubmissionsComponent implements OnInit {
 
   public submissions$: Observable<SubmissionReviewDto[]>;
 
+  /** Every submission this season counted by category (#3244), whichever view is pressed, so the totals stay put. */
+  public counts$: Observable<ReturnType<typeof submissionCounts>>;
+
   public ngOnInit(): void {
     const all$ = this.submissionService.getAdminSubmissions().pipe(shareReplay(1));
+
+    this.counts$ = all$.pipe(map(submissionCounts));
     const topFinishers$ = this.leaderboardService.getScoresForActive().pipe(
       map((scores) => {
         const ranked = [...scores].sort((a, b) => b.points - a.points);
@@ -66,6 +131,34 @@ export class AdminSubmissionsComponent implements OnInit {
 
   public show(view: AdminSubmissionsView): void {
     this.view$.next(view);
+  }
+
+  /** Whether the export's zip is being built, and why it could not be, if it could not (#545). */
+  public readonly exporting = signal(false);
+  public readonly exportProblem = signal<string | null>(null);
+
+  /**
+   * Downloads the season's submissions, their answers and their photos, as one zip (#545), for the project's partners.
+   * The API builds it while the page waits, as the research competition's files are (#3185).
+   */
+  public downloadExport(): void {
+    this.exporting.set(true);
+    this.exportProblem.set(null);
+
+    this.submissionService.getSeasonExportZip().subscribe({
+      next: (zip) => {
+        this.exporting.set(false);
+        downloadFile(zip, 'gisday-vgi-submissions.zip', 'application/zip');
+      },
+      error: (err) => {
+        this.exporting.set(false);
+        this.exportProblem.set(
+          err?.status === 404
+            ? 'This season has no VGI submissions to export.'
+            : 'The export could not be downloaded. Try again.'
+        );
+      }
+    });
   }
 
   /** What the last "Publish to ArcGIS" did, for the page to say (#2433). */

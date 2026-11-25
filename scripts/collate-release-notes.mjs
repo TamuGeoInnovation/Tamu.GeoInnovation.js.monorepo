@@ -56,6 +56,20 @@ function notesFile(app) {
  */
 const GISDAY_HOSTS = ['txgisday.org', 'gisday.tamu.edu', 'gisday.ucgis.org'];
 
+/**
+ * Whether an entry calls itself GIS Day's the way GIS Day's entries are written: a title, a `###` heading, or the first
+ * cell of its *What to test on dev* row, that starts "GIS Day:". GIS Day has no dev site (#1525), so its rows often link nothing
+ * and the link check cannot see them; `3090-submission-file-preview.md` reached AggieMap's notes that way (#3419).
+ *
+ * Only the prefix with its colon counts. "GIS Day notice" (#2678) is an AggieMap change that mentions GIS Day, and a
+ * title that merely contains the words says nothing about whose change it is.
+ */
+function namesGisDay(title, row, body) {
+  const prefix = /^\s*["']?(?:\|\s*)?GIS Day\s*:/i;
+  const headings = [...(body ?? '').matchAll(/^###\s+(.*)$/gm)].map(([, heading]) => heading);
+  return [title, row, ...headings].some((text) => prefix.test(text ?? ''));
+}
+
 /** `---\n...\n---\n` at the top of the file. Deliberately simple: four keys, no nesting. */
 function parseEntry(file, source) {
   const problems = [];
@@ -90,6 +104,10 @@ function parseEntry(file, source) {
     if (gisday.length) {
       problems.push(
         `links ${gisday.join(', ')}, so it looks like GIS Day's, but does not say so. Add \`app: gisday\` to the front matter, or \`app: aggiemap\` if it really is AggieMap's: GIS Day is released separately, and an undeclared entry goes into AggieMap's notes`
+      );
+    } else if (namesGisDay(title?.[1], testOnDev?.[1], body)) {
+      problems.push(
+        `its title, a ### heading or its What to test on dev row starts "GIS Day:", so it looks like GIS Day's, but does not say so. Add \`app: gisday\` to the front matter, or \`app: aggiemap\` if it really is AggieMap's: GIS Day is released separately, and an undeclared entry goes into AggieMap's notes`
       );
     }
   }

@@ -8,7 +8,7 @@ import {
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
-import { EventPopups } from '../modules/popups/popups';
+import { markdownPopup } from './common.definitions';
 
 export enum T_CAMP_LAYERS {
   CAMPUS_LOCATIONS = 't-camp-campus-locations',
@@ -21,13 +21,7 @@ const tCampUrl = Connections.tCampUrl;
 
 // Every feature in the service carries a rich, pre-formatted HTML `description` along with a `name`,
 // so a single name/description popup works for all four layers.
-const popup = {
-  popupComponent: EventPopups.MarkdownPopupComponent,
-  popupData: {
-    name: { field: 'name' },
-    description: { field: 'description' }
-  }
-};
+const popup = markdownPopup('name', 'description');
 
 const campusLocationsNative: NonNullable<FeatureLayerSourceProperties['native']> = {
   outFields: ['*']

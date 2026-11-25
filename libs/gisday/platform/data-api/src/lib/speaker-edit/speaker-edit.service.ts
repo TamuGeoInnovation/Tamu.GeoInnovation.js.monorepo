@@ -34,6 +34,7 @@ import { SpeakerProvider } from '../speaker/speaker.provider';
 import { ContactService } from '../contact/contact.service';
 import { SeasonService } from '../season/season.service';
 import { EmailSendLog } from './email-send-log';
+import { firstOf } from './repeat-guard';
 
 /** How long an edit link works. Long enough for a speaker to come back to it; short enough that an old email is dead. */
 /** How long after a speaker is emailed their link an admin's send skips them, so a repeated request emails no one twice (#3065). */
@@ -298,24 +299,29 @@ export class SpeakerEditService {
       }
 
       // Never the same email twice in a row (#3065): on 15 November 2026 one send reached the API twice, 30 seconds
-      // apart, and all 48 finalists got it twice. Every pod shares the links table, so a repeat landing on the other
-      // pod is caught too. Each link is recorded before its email goes, so two runs racing skip each other's.
+      // apart, and all 48 finalists got it twice. The link is the claim, as the session emails' claims are (#3326):
+      // recorded before its email goes, in the table every copy of the API shares, and it stands only if it is the
+      // speaker's earliest profile link of the last `REPEAT_SEND_MINUTES`. Counting recent links first let two sends
+      // racing both pass, in one copy or in two. Only profile links: a judging link sent a minute ago (#3183) is another
+      // email.
+      const link = await this.saveLink(speaker, host, 'profile');
       const since = new Date(Date.now() - REPEAT_SEND_MINUTES * 60 * 1000);
+      const recent = await this.links.find({
+        where: { speaker: { guid: speaker.guid }, created: MoreThan(since), purpose: 'profile' }
+      });
 
-      // Only their profile links: a judging link sent a minute ago (#3183) is another email.
-      if (
-        (await this.links.count({
-          where: { speaker: { guid: speaker.guid }, created: MoreThan(since), purpose: 'profile' }
-        })) > 0
-      ) {
+      if (firstOf([...recent, link.row]).guid !== link.row.guid) {
+        await this.links.delete(link.row.guid);
         part.skipped.push({ name, reason: `already emailed a link in the last ${REPEAT_SEND_MINUTES} minutes` });
         return part;
       }
 
       try {
-        await this.emailLink(speaker, host, email, sender);
+        await this.emailLink(speaker, host, email, sender, link);
         part.sent.push(name);
       } catch (err) {
+        // Not sent, so not a repeat, and a link nobody was given: the admin may try again at once.
+        await this.links.delete(link.row.guid);
         Logger.error(`Could not email an edit link to speaker ${speaker.guid}: ${err.message}`, 'SpeakerEditService');
         part.skipped.push({ name, reason: 'the email could not be sent' });
       }
@@ -562,12 +568,28 @@ export class SpeakerEditService {
     host?: string,
     purpose: SpeakerLinkPurpose = 'profile'
   ): Promise<{ url: string; expires: Date }> {
+    const { url, expires } = await this.saveLink(speaker, host, purpose);
+
+    return { url, expires };
+  }
+
+  /**
+   * `newLink`, with the row it saved. Its id and time are set here, as a claim's are, so every copy of the API orders
+   * two links made at once the same way (#3326).
+   */
+  private async saveLink(
+    speaker: Pick<Speaker, 'guid' | 'email'>,
+    host: string | undefined,
+    purpose: SpeakerLinkPurpose
+  ): Promise<{ row: SpeakerEditLink; url: string; expires: Date }> {
     const token = randomBytes(32).toString('base64url');
     const expires = linkExpiry();
     const site = gisdaySite(process.env.GISDAY_SITE, host);
 
-    await this.links.save(
+    const row = await this.links.save(
       this.links.create({
+        guid: crypto.randomUUID(),
+        created: new Date(Date.now()),
         speaker: { guid: speaker.guid } as Speaker,
         tokenHash: hashOf(token),
         expires,
@@ -576,12 +598,19 @@ export class SpeakerEditService {
       })
     );
 
-    return { url: `${site.address}${purpose === 'judging' ? '/judging/' : '/presenters/edit/'}${token}`, expires };
+    return { row, url: `${site.address}${purpose === 'judging' ? '/judging/' : '/presenters/edit/'}${token}`, expires };
   }
 
-  private async emailLink(speaker: Speaker, host?: string, email?: ProfileEmail, sender?: EmailSender) {
+  /** Emails the speaker their profile link: `link` if it was already made, as `sendLinks` makes it, or a new one. */
+  private async emailLink(
+    speaker: Speaker,
+    host?: string,
+    email?: ProfileEmail,
+    sender?: EmailSender,
+    link?: { url: string; expires: Date }
+  ) {
     const site = gisdaySite(process.env.GISDAY_SITE, host);
-    const { url, expires } = await this.newLink(speaker, host);
+    const { url, expires } = link ?? (await this.newLink(speaker, host));
 
     // The text the admin approved (#3023), or the email as it has always been; either way this speaker's own link.
     const { subject, text } = fillProfileEmail(

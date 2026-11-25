@@ -1,4 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
+import { formatCentral } from '@tamu-gisc/gisday/common';
 import { AsyncPipe } from '@angular/common';
 import { firstValueFrom } from 'rxjs';
 
@@ -103,13 +104,7 @@ export class SiteCopyComponent {
 
   /** A time as the team reads it, in US Central. */
   public central(iso: string) {
-    return (
-      new Date(iso).toLocaleString('en-US', {
-        timeZone: 'America/Chicago',
-        dateStyle: 'medium',
-        timeStyle: 'short'
-      }) + ' Central'
-    );
+    return formatCentral(iso, { dateStyle: 'medium', timeStyle: 'short' }) + ' Central';
   }
 
   /** Records to add or update, and logos and photos this site does not have yet. */

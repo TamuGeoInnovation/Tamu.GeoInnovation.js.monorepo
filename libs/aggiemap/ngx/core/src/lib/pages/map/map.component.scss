@@ -1,3 +1,4 @@
+@import 'libs/sass/variables';
 @import 'libs/sass/mixins';
 @import 'libs/sass/modules/esri_map';
 
@@ -15,7 +16,7 @@
   padding: 0 0.85rem;
   border: 1px solid rgb(50 50 50 / 25%);
   border-radius: 3px;
-  background: #500000;
+  background: $aggie-maroon;
   color: #fff;
   box-shadow: 0 1px 2px rgb(0 0 0 / 30%);
   font-family: inherit;

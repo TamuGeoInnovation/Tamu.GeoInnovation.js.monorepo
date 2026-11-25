@@ -5,15 +5,14 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { BehaviorSubject, combineLatest, map, merge, Observable, of, shareReplay, startWith, switchMap } from 'rxjs';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
-import * as Papa from 'papaparse';
-
 import type { Speaker } from '@tamu-gisc/gisday/platform/data-api';
 import { SpeakerService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { isAggieFormerStudent, matchesText, shortClassYear, speakerAffiliation } from '@tamu-gisc/gisday/platform/ngx/common';
 import { RadioGroupComponent, SelectComponent, TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
-import { downloadFile } from '@tamu-gisc/common/utils/ui';
+import { downloadFile, toCsv } from '@tamu-gisc/common/utils/ui';
 
 import { BaseAdminListComponent } from '../../base-admin-list/base-admin-list.component';
+import { naturalOrder } from '@tamu-gisc/gisday/common';
 
 /** A speaker as a badge prints them (#2899), and whether it has been (#2908). */
 export interface SpeakerBadge {
@@ -96,7 +95,7 @@ export function shownBy(badge: SpeakerBadge, show: BadgeShow): boolean {
 
 /** The badges in the table's order: by a column, or by last name then first when none is chosen. */
 export function sortBadges(badges: Array<SpeakerBadge>, sort: BadgeSort): Array<SpeakerBadge> {
-  const compare = (a: unknown, b: unknown) => String(a ?? '').localeCompare(String(b ?? ''), undefined, { sensitivity: 'base', numeric: true });
+  const compare = (a: unknown, b: unknown) => naturalOrder.compare(String(a ?? ''), String(b ?? ''));
 
   return [...badges].sort((a, b) =>
     sort
@@ -107,10 +106,10 @@ export function sortBadges(badges: Array<SpeakerBadge>, sort: BadgeSort): Array<
 
 /** The badges as a CSV, in the order given, with the table's headings. */
 export function badgesCsv(badges: Array<SpeakerBadge>): string {
-  return Papa.unparse({
-    fields: BADGE_COLUMNS.map((c) => c.name),
-    data: badges.map((b) => BADGE_COLUMNS.map((c) => b[c.prop]))
-  });
+  return toCsv(
+    BADGE_COLUMNS.map((c) => c.name),
+    badges.map((b) => BADGE_COLUMNS.map((c) => b[c.prop]))
+  );
 }
 
 /**

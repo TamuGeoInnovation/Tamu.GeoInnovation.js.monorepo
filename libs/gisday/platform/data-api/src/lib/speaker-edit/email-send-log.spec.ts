@@ -152,7 +152,10 @@ describe('every speaker email records what it sent, and its preview shows it (#3
       {
         create: (x) => x,
         save: jest.fn(async (x) => links.push({ ...x, created: new Date() })),
-        count: jest.fn(async () => 0)
+        count: jest.fn(async () => 0),
+        // No other profile link of the last few minutes, so each send's own link stands (#3326).
+        find: jest.fn(async () => []),
+        delete: jest.fn()
       } as never,
       {} as never,
       {

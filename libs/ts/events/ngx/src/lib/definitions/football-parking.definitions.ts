@@ -9,6 +9,7 @@ import {
 
 import esri = __esri;
 import { EventPopups } from '../modules/popups/popups';
+import { arrowLineSymbol } from './common.definitions';
 
 /**
  * Football gameday transportation map.
@@ -202,20 +203,11 @@ const ROUTE_COLORS = {
   pedestrian: 'rgb(0, 92, 230)'
 };
 
-/** A solid line with a direction arrow at its end, used to re-symbolize the flat route layers. */
-const arrowLineSymbol = (color: string, width = 3): esri.SimpleLineSymbolProperties & { type: 'simple-line' } => ({
-  type: 'simple-line',
-  color,
-  width,
-  style: 'solid',
-  marker: { style: 'arrow', color, placement: 'end' }
-});
-
 /** Renderer for a route layer whose features are all a single travel type. */
 const routeRenderer = (color: string) =>
   ({
     type: 'simple',
-    symbol: arrowLineSymbol(color)
+    symbol: arrowLineSymbol({ color, width: 3 })
   }) as unknown as FeatureRenderer;
 
 const createCimHatchPolygonSymbol = (

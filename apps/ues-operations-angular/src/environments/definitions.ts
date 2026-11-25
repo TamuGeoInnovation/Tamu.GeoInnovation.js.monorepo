@@ -741,19 +741,22 @@ export const SearchSources: SearchSource[] = [
   },
   {
     source: 'parking-garage',
+    // The garages, as AggieMap's garage search reads them (#3425). This read `basemapUrl/0`, the old raster
+    // basemap's Garage Parking layer, which is abandoned; they are rows of Campus Structures marked by `type`.
     name: 'Parking Garage',
-    url: `${Connections.basemapUrl}/0`,
+    url: Connections.buildingsUrl,
     queryParams: {
       ...commonQueryParams,
+      fixedWhere: "type LIKE 'GARAGE%'",
       where: {
-        keys: ['LotName', 'Name'],
-        operators: ['LIKE', 'LIKE'],
-        wildcards: ['includes', 'includes'],
-        transformations: ['UPPER', 'UPPER']
+        keys: ['bldgname', 'bldgabbrev', 'number'],
+        operators: ['LIKE', 'LIKE', 'LIKE'],
+        wildcards: ['includes', 'includes', 'includes'],
+        transformations: ['UPPER', 'UPPER', 'UPPER']
       }
     },
     featuresLocation: 'features',
-    displayTemplate: '{attributes.LotName}',
+    displayTemplate: '{attributes.bldgname}',
     popupComponent: Popups.BuildingPopupComponent,
     searchActive: true
   },

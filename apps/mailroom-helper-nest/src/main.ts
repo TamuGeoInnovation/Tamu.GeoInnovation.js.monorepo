@@ -5,6 +5,7 @@
 
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { logStartupEnvironment } from '@tamu-gisc/common/nest/environment';
 
 import * as dotenv from 'dotenv';
 dotenv.config({ quiet: true });
@@ -13,10 +14,10 @@ import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
 
 async function bootstrap() {
-  // Simple check for required environment variables
+  // Says only that logging is on: the environment carries secrets, so it is never printed (#1514, #1518).
+  logStartupEnvironment(process.env);
+
   if (environment.logging) {
-    console.log('Logging is enabled');
-    console.log('Environment variables: ', process.env);
     console.log('Origins: ', environment.origins);
   }
 

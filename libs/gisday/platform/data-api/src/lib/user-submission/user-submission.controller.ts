@@ -154,6 +154,15 @@ export class UserSubmissionController {
     return this.files.download(guid, file, req.user);
   }
 
+  // One file shown in the page, for the admins looking through a submission's files (#3090). Unlike the download, its
+  // own student may not: it is an admin's view, and needs read:competitions.
+  @Permissions(['read:competitions'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Get(':guid/files/:file/preview')
+  public previewFile(@Param('guid', ParseUUIDPipe) guid: string, @Param('file', ParseUUIDPipe) file: string, @Request() req) {
+    return this.files.preview(guid, file, req.user);
+  }
+
   @UseGuards(JwtGuard)
   @Post(':guid/files')
   @UseInterceptors(FileInterceptor('file', SUBMISSION_FILE_UPLOAD))
