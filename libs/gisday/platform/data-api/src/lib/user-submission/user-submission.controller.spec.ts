@@ -11,7 +11,7 @@ import { EMAIL_SENDER_TEST_PROVIDERS } from '../contact/email-sender.testing';
 describe('UserSubmissionController posters', () => {
   let app: INestApplication;
   let url: string;
-  const getPosters = jest.fn();
+  const getPosters = vi.fn();
 
   // The real JwtGuard is left in place on purpose: a request with no sign-in must reach the gallery's
   // route, and one that falls through to the guarded ':guid' route answers 401 (#2496).
@@ -75,8 +75,8 @@ describe('UserSubmissionController POST /user-submissions/review', () => {
   let app: INestApplication;
   let url: string;
   let permissions: Array<string>;
-  const reviewUserSubmissions = jest.fn();
-  const updateUserSubmission = jest.fn();
+  const reviewUserSubmissions = vi.fn();
+  const updateUserSubmission = vi.fn();
 
   const post = (body: object, headers: Record<string, string> = {}) =>
     fetch(`${url}/user-submissions/review`, {
@@ -153,9 +153,9 @@ describe('UserSubmissionController POST /user-submissions/remind', () => {
   let app: INestApplication;
   let url: string;
   let permissions: Array<string>;
-  const remindUserSubmissions = jest.fn();
-  const previewReminders = jest.fn();
-  const updateUserSubmission = jest.fn();
+  const remindUserSubmissions = vi.fn();
+  const previewReminders = vi.fn();
+  const updateUserSubmission = vi.fn();
 
   const post = (path: string, body: object) =>
     fetch(`${url}/user-submissions/${path}`, {
@@ -256,7 +256,7 @@ describe('UserSubmissionController GET /user-submissions/:guid/files/:file/previ
   let app: INestApplication;
   let url: string;
   let user: { sub: string; permissions: Array<string> };
-  const preview = jest.fn();
+  const preview = vi.fn();
 
   beforeEach(async () => {
     preview.mockReset().mockResolvedValue({ seen: true });

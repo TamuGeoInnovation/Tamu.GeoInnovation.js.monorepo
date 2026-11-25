@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { BadRequestException } from '@nestjs/common';
 
 import { JUDGING_COPY_EACH, JUDGING_EMAIL_KIND, JUDGING_LINK_PREVIEW } from '@tamu-gisc/gisday/common';
@@ -33,9 +34,9 @@ describe('JudgingEmailService (#3183)', () => {
 
   let judges: Array<typeof dana>;
   let sent: Array<{ to: string; subject: string; text: string }>;
-  let events: { findOne: jest.Mock };
-  let links: { newLink: jest.Mock };
-  let log: { record: jest.Mock; withSends: jest.Mock };
+  let events: { findOne: Mock };
+  let links: { newLink: Mock };
+  let log: { record: Mock; withSends: Mock };
   let claims: Table<SpeakerEmailClaim>;
   let service: JudgingEmailService;
 
@@ -44,23 +45,23 @@ describe('JudgingEmailService (#3183)', () => {
     judges = [dana, emery, noAddress];
     session.judgedCompetition = 'graduate-poster';
     events = {
-      findOne: jest.fn(async ({ where, relations }) =>
+      findOne: vi.fn(async ({ where, relations }) =>
         where.guid !== session.guid ? null : relations?.judges ? { ...session, judges } : session
       )
     };
     links = {
-      newLink: jest.fn(async (speaker: { guid: string }, _host: string, purpose: string) => ({
+      newLink: vi.fn(async (speaker: { guid: string }, _host: string, purpose: string) => ({
         url: `https://gisday.tamu.edu/${purpose === 'judging' ? 'judging' : 'presenters/edit'}/LINK-OF-${speaker.guid}`,
         expires: new Date('2026-11-22T18:00:00Z')
       }))
     };
-    log = { record: jest.fn(async () => undefined), withSends: jest.fn(async (r) => r) };
+    log = { record: vi.fn(async () => undefined), withSends: vi.fn(async (r) => r) };
     // The repeat guard's table, as every copy of the API shares it (#3260).
     claims = new Table<SpeakerEmailClaim>();
     service = new JudgingEmailService(
       events as never,
       new RepeatGuard(claims as never),
-      { sendMessage: jest.fn(async (m) => sent.push(m)) } as never,
+      { sendMessage: vi.fn(async (m) => sent.push(m)) } as never,
       links as never,
       log as never
     );
@@ -130,7 +131,7 @@ describe('JudgingEmailService (#3183)', () => {
       new JudgingEmailService(
         events as never,
         new RepeatGuard(claims as never),
-        { sendMessage: jest.fn(async (m) => sent.push(m)) } as never,
+        { sendMessage: vi.fn(async (m) => sent.push(m)) } as never,
         links as never,
         log as never
       );
