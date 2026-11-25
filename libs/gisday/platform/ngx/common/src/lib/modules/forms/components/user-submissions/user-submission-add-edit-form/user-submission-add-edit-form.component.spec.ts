@@ -11,6 +11,7 @@ import { AuthService } from '@tamu-gisc/common/ngx/auth';
 
 import { GISDAY_SITE } from '../../../../../site/site';
 import { UserSubmissionAddEditFormComponent } from './user-submission-add-edit-form.component';
+// A save goes back to its list page. Any address is a page here, so that navigation resolves; under Jest a rejected// one went unnoticed, and Vitest reports it as an unhandled error (#1977).const anyPage = [{ path: '**', children: [] }];
 
 /**
  * #2968. The student's submission form named TxGIS Day on every site: on Texas A&M's it must say Texas A&M GIS Day, in the
@@ -33,7 +34,7 @@ describe('UserSubmissionAddEditFormComponent, on Texas A&M site', () => {
     createEntity = vi.fn(() => of({}));
     TestBed.configureTestingModule({
       providers: [
-        provideRouter([]),
+        provideRouter(anyPage),
         { provide: GISDAY_SITE, useValue: GISDAY_SITES.tamu },
         { provide: ActivatedRoute, useValue: { params: of({ guid: 'sub-1' }) } },
         { provide: UserSubmissionsService, useValue: { getEntity: () => of(entity), getFiles: () => of([]), createEntity } },
@@ -186,7 +187,7 @@ describe('UserSubmissionAddEditFormComponent, the competitions it offers', () =>
   function render(type: 'create' | 'edit', season: Record<string, unknown>, submissionType = 'paper') {
     TestBed.configureTestingModule({
       providers: [
-        provideRouter([]),
+        provideRouter(anyPage),
         { provide: GISDAY_SITE, useValue: GISDAY_SITES.tamu },
         { provide: ActivatedRoute, useValue: { params: of({ guid: 'sub-1' }) } },
         {
@@ -200,7 +201,10 @@ describe('UserSubmissionAddEditFormComponent, the competitions it offers', () =>
         { provide: SubmissionTypeService, useValue: { getEntities: () => of([]) } },
         { provide: SeasonService, useValue: { getActiveSeason: () => of({ guid: 'season', ...season }) } },
         { provide: NotificationService, useValue: { toast: vi.fn() } },
-        { provide: AuthService, useValue: { user$: of({ given_name: 'Ana', family_name: 'Ruiz', email: 'ana@example.edu' }) } }
+        {
+          provide: AuthService,
+          useValue: { user$: of({ given_name: 'Ana', family_name: 'Ruiz', email: 'ana@example.edu' }) }
+        }
       ]
     });
 

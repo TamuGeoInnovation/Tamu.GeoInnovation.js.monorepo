@@ -26,12 +26,29 @@ describe('SubmissionComponent', () => {
     allowSubmissions: true,
     season: { guid: 'cs-1' },
     form: {
-      model: [{ attribute: 'kind', title: 'Kind', instructions: '', type: 'select', enabled: true, options: [{ name: 'Monument', value: 'monument' }] }]
+      model: [
+        {
+          attribute: 'kind',
+          title: 'Kind',
+          instructions: '',
+          type: 'select',
+          enabled: true,
+          options: [{ name: 'Monument', value: 'monument' }]
+        }
+      ]
     }
   };
 
   const position = (accuracy = 12) => ({
-    coords: { latitude: 30.6122, longitude: -96.3414, accuracy, altitude: null, altitudeAccuracy: null, heading: null, speed: null },
+    coords: {
+      latitude: 30.6122,
+      longitude: -96.3414,
+      accuracy,
+      altitude: null,
+      altitudeAccuracy: null,
+      heading: null,
+      speed: null
+    },
     timestamp: 1
   });
 
@@ -124,7 +141,9 @@ describe('SubmissionComponent', () => {
     expect(fixture.nativeElement.textContent).toContain("Make sure Location is on in your phone's settings");
 
     fixture.componentInstance.submitResponse();
-    expect(toast).toHaveBeenCalledWith(expect.objectContaining({ message: expect.stringContaining('Make sure Location is on') }));
+    expect(toast).toHaveBeenCalledWith(
+      expect.objectContaining({ message: expect.stringContaining('Make sure Location is on') })
+    );
     expect(postSubmission).not.toHaveBeenCalled();
   });
 
@@ -146,7 +165,9 @@ describe('SubmissionComponent', () => {
 
     expect(() => fixture.componentInstance.submitResponse()).not.toThrow();
     expect(postSubmission).not.toHaveBeenCalled();
-    expect(toast).toHaveBeenCalledWith(expect.objectContaining({ message: expect.stringContaining('still finding your location') }));
+    expect(toast).toHaveBeenCalledWith(
+      expect.objectContaining({ message: expect.stringContaining('still finding your location') })
+    );
   });
 
   it('does not send a submission when location is blocked, and says how to allow it', () => {
@@ -157,7 +178,9 @@ describe('SubmissionComponent', () => {
     fixture.componentInstance.submitResponse();
 
     expect(postSubmission).not.toHaveBeenCalled();
-    expect(toast).toHaveBeenCalledWith(expect.objectContaining({ message: expect.stringContaining('Location access is blocked') }));
+    expect(toast).toHaveBeenCalledWith(
+      expect.objectContaining({ message: expect.stringContaining('Location access is blocked') })
+    );
   });
 
   it('starts looking again when Submit is pressed while blocked, so allowing access then submitting works', async () => {
@@ -187,7 +210,11 @@ describe('SubmissionComponent', () => {
 
     expect(postSubmission).toHaveBeenCalledTimes(1);
     const data: FormData = postSubmission.mock.calls[0][0];
-    expect(JSON.parse(data.get('location') as string)).toMatchObject({ latitude: 30.6122, longitude: -96.3414, accuracy: 8 });
+    expect(JSON.parse(data.get('location') as string)).toMatchObject({
+      latitude: 30.6122,
+      longitude: -96.3414,
+      accuracy: 8
+    });
     expect(data.has('userGuid')).toBe(false);
   });
 
@@ -215,7 +242,9 @@ describe('SubmissionComponent', () => {
     await settle();
     fixture.detectChanges();
 
-    expect(toast).toHaveBeenCalledWith(expect.objectContaining({ message: 'Competition season not found. Press Try Again to resend it.' }));
+    expect(toast).toHaveBeenCalledWith(
+      expect.objectContaining({ message: 'Competition season not found. Press Try Again to resend it.' })
+    );
     expect(fixture.nativeElement.textContent).toContain('Try Again');
     expect(fixture.nativeElement.textContent).not.toContain('Error!');
   });
@@ -234,7 +263,10 @@ describe('SubmissionComponent', () => {
      */
     const permission = (state: PermissionState) => {
       status = { state, addEventListener: vi.fn(), removeEventListener: vi.fn() };
-      Object.defineProperty(navigator, 'permissions', { value: { query: vi.fn(() => Promise.resolve(status)) }, configurable: true });
+      Object.defineProperty(navigator, 'permissions', {
+        value: { query: vi.fn(() => Promise.resolve(status)) },
+        configurable: true
+      });
     };
 
     /**
@@ -403,7 +435,9 @@ describe('SubmissionComponent', () => {
 
       expect(attempts).toBe(4);
       expect(fixture.componentInstance.submissionStatus.getValue()).toBe(-1);
-      expect(toast).toHaveBeenCalledWith(expect.objectContaining({ message: expect.stringContaining('did not reach the server') }));
+      expect(toast).toHaveBeenCalledWith(
+        expect.objectContaining({ message: expect.stringContaining('did not reach the server') })
+      );
 
       tick(60000);
       expect(attempts).toBe(4);
@@ -527,11 +561,15 @@ describe('submissionFailureMessage', () => {
   });
 
   it("passes on the server's reason, joined when it is a list", () => {
-    expect(submissionFailureMessage({ status: 400, error: { message: ['A.', 'B.'] } })).toBe('A. B. Press Try Again to resend it.');
+    expect(submissionFailureMessage({ status: 400, error: { message: ['A.', 'B.'] } })).toBe(
+      'A. B. Press Try Again to resend it.'
+    );
   });
 
   it('has a general message when the server gave none', () => {
-    expect(submissionFailureMessage({ status: 500, error: {} })).toBe('The server could not save it. Press Try Again to resend it.');
+    expect(submissionFailureMessage({ status: 500, error: {} })).toBe(
+      'The server could not save it. Press Try Again to resend it.'
+    );
   });
 });
 

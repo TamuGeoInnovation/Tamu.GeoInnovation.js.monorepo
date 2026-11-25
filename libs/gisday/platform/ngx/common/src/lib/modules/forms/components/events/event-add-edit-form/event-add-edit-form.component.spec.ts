@@ -1,4 +1,5 @@
 import type { Mock } from 'vitest';
+import { ChangeDetectorRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { NEVER, firstValueFrom, of } from 'rxjs';
@@ -307,8 +308,15 @@ describe('EventAddEditFormComponent, the Email these speakers menu', () => {
         .click();
       fixture.detectChanges();
     };
+    // Sets a field as a person would. Their tick or choice is a template event, which marks the form for checking;
+    // a value set from code is not, so the zoneless TestBed (#1977) is told, as the control's own event would tell it.
+    const set = (name: string, value: unknown) => {
+      fixture.componentInstance.form.get(name).setValue(value);
+      fixture.debugElement.injector.get(ChangeDetectorRef).markForCheck();
+      fixture.detectChanges();
+    };
 
-    return { page, fixture, speakerEdits, modals, toasts, choose };
+    return { page, fixture, speakerEdits, modals, toasts, choose, set };
   }
 
   it('shows one Email these speakers menu with Profile email, Session details and Ask for slides, and no separate email buttons', () => {
@@ -333,7 +341,7 @@ describe('EventAddEditFormComponent, the Email these speakers menu', () => {
 
   // #3147: a panel, a social or lunch has no slides, so nobody on it is asked for any.
   it('offers no Ask for slides while No slides for this session is ticked, and offers it again once unticked', () => {
-    const { page, fixture } = render();
+    const { page, fixture, set } = render();
     const items = () => {
       page.querySelector<HTMLButtonElement>('tamu-gisc-action-menu button[aria-haspopup="menu"]').click();
       fixture.detectChanges();
@@ -343,12 +351,10 @@ describe('EventAddEditFormComponent, the Email these speakers menu', () => {
       return labels;
     };
 
-    fixture.componentInstance.form.get('noSlides').setValue(true);
-    fixture.detectChanges();
+    set('noSlides', true);
     expect(items()).toEqual(['Profile email', 'Session details']);
 
-    fixture.componentInstance.form.get('noSlides').setValue(false);
-    fixture.detectChanges();
+    set('noSlides', false);
     expect(items()).toEqual(['Profile email', 'Session details', 'Ask for slides']);
   });
 
@@ -374,7 +380,7 @@ describe('EventAddEditFormComponent, the Email these speakers menu', () => {
 
   // #3183: Ask to judge goes to the session's judges, so it is offered only once the session judges a competition.
   it('offers Ask to judge only while a judged competition is chosen', () => {
-    const { page, fixture } = render();
+    const { page, fixture, set } = render();
     const items = () => {
       page.querySelector<HTMLButtonElement>('tamu-gisc-action-menu button[aria-haspopup="menu"]').click();
       fixture.detectChanges();
@@ -386,20 +392,17 @@ describe('EventAddEditFormComponent, the Email these speakers menu', () => {
 
     expect(items()).not.toContain('Ask to judge');
 
-    fixture.componentInstance.form.get('judgedCompetition').setValue('graduate-poster');
-    fixture.detectChanges();
+    set('judgedCompetition', 'graduate-poster');
     expect(items()).toEqual(['Profile email', 'Session details', 'Ask for slides', 'Ask to judge']);
 
-    fixture.componentInstance.form.get('judgedCompetition').setValue('');
-    fixture.detectChanges();
+    set('judgedCompetition', '');
     expect(items()).not.toContain('Ask to judge');
   });
 
   it("asks the session's judges in the same window, editable, then sends it to the judges ticked, a copy each", () => {
-    const { fixture, speakerEdits, modals, toasts, choose } = render();
+    const { speakerEdits, modals, toasts, choose, set } = render();
 
-    fixture.componentInstance.form.get('judgedCompetition').setValue('graduate-poster');
-    fixture.detectChanges();
+    set('judgedCompetition', 'graduate-poster');
     choose('Ask to judge');
 
     expect(modals.open).toHaveBeenCalledWith(
@@ -576,7 +579,9 @@ describe('EventAddEditFormComponent, the Slides section (#3093)', () => {
       expect(sessionFiles.removeFromEvent).not.toHaveBeenCalled();
       // Side by side, in the site's shared button row (libs/sass/_dom_flexbox.scss), not one above the other.
       const row = button(page, 'Remove the file').parentElement;
-      expect(row.classList).toEqual(expect.objectContaining({ value: 'flex flex-row wrap align-center file-confirm-actions' }));
+      expect(row.classList).toEqual(
+        expect.objectContaining({ value: 'flex flex-row wrap align-center file-confirm-actions' })
+      );
       expect(button(page, 'Keep it').parentElement).toBe(row);
 
       button(page, 'Keep it').click();

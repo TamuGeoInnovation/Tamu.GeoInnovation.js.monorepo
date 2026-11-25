@@ -28,7 +28,12 @@ describe.each([
   { name: 'Venues (places)', component: PlaceLocationAddEditFormComponent, icon: 'place' }
 ] as Array<{ name: string; component: Type<unknown>; icon: string }>)('$name: the logo preview', ({ component, icon }) => {
   function create(type: 'create' | 'edit', savedLogoPath?: string) {
-    const entity = { guid: 'e-1', name: 'Entity', logos: savedLogoPath ? [{ guid: 'logo-1', path: savedLogoPath }] : [], links: [] };
+    const entity = {
+      guid: 'e-1',
+      name: 'Entity',
+      logos: savedLogoPath ? [{ guid: 'logo-1', path: savedLogoPath }] : [],
+      links: []
+    };
     const service = { getEntity: () => of(entity) };
 
     TestBed.configureTestingModule({

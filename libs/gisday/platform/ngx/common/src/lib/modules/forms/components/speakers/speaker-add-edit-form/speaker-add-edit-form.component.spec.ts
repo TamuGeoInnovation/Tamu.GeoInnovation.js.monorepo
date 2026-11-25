@@ -17,11 +17,14 @@ import { FileComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { shrinkImage } from '@tamu-gisc/common/utils/ui';
 
 import { SpeakerAddEditFormComponent } from './speaker-add-edit-form.component';
+// A save goes back to its list page. Any address is a page here, so that navigation resolves; under Jest a rejected// one went unnoticed, and Vitest reports it as an unhandled error (#1977).const anyPage = [{ path: '**', children: [] }];
 
 // The browser's redraw, which jsdom cannot do: a photo comes back as a small JPEG, as `shrinkImage` makes one (#3177).
 vi.mock('@tamu-gisc/common/utils/ui', async (original) => ({
   ...(await original<object>()),
-  shrinkImage: vi.fn(async (file: File) => new File(['small'], file.name.replace(/\.[^.]*$/, '') + '.jpg', { type: 'image/jpeg' }))
+  shrinkImage: vi.fn(
+    async (file: File) => new File(['small'], file.name.replace(/\.[^.]*$/, '') + '.jpg', { type: 'image/jpeg' })
+  )
 }));
 
 describe('SpeakerAddEditFormComponent', () => {
@@ -30,7 +33,7 @@ describe('SpeakerAddEditFormComponent', () => {
     function create() {
       TestBed.configureTestingModule({
         providers: [
-          provideRouter([]),
+          provideRouter(anyPage),
           provideHttpClient(),
           { provide: SpeakerService, useValue: { getEntity: () => of({}) } },
           { provide: AssetsService, useValue: { getAssetUrl: (path: string) => of(`assets/uploads/${path}`) } },
@@ -45,7 +48,8 @@ describe('SpeakerAddEditFormComponent', () => {
       fixture.componentRef.setInput('type', 'create');
       fixture.detectChanges();
 
-      const images = () => Array.from((fixture.nativeElement as HTMLElement).querySelectorAll<HTMLImageElement>('.speaker-photo img'));
+      const images = () =>
+        Array.from((fixture.nativeElement as HTMLElement).querySelectorAll<HTMLImageElement>('.speaker-photo img'));
       const icon = () =>
         (fixture.nativeElement as HTMLElement).querySelector('.speaker-photo .material-icons')?.textContent.trim();
       const choose = (file: File | null) => {
@@ -110,7 +114,7 @@ describe('SpeakerAddEditFormComponent', () => {
     function create() {
       TestBed.configureTestingModule({
         providers: [
-          provideRouter([]),
+          provideRouter(anyPage),
           provideHttpClient(),
           { provide: SpeakerService, useValue: { getEntity: () => of({}) } },
           { provide: AssetsService, useValue: { getAssetUrl: () => of(null) } },
@@ -125,7 +129,8 @@ describe('SpeakerAddEditFormComponent', () => {
       fixture.componentRef.setInput('type', 'create');
       fixture.detectChanges();
 
-      const banner = () => (fixture.nativeElement as HTMLElement).querySelector('.speaker-photo .class-banner')?.textContent?.trim() ?? null;
+      const banner = () =>
+        (fixture.nativeElement as HTMLElement).querySelector('.speaker-photo .class-banner')?.textContent?.trim() ?? null;
       const set = (value: object) => {
         fixture.componentInstance.form.patchValue(value);
         fixture.detectChanges();
@@ -193,7 +198,7 @@ describe('SpeakerAddEditFormComponent', () => {
     URL.createObjectURL = vi.fn(() => 'blob:chosen-photo');
     TestBed.configureTestingModule({
       providers: [
-        provideRouter([]),
+        provideRouter(anyPage),
         provideHttpClient(),
         { provide: SpeakerService, useValue: { getEntity: () => of({}) } },
         { provide: AssetsService, useValue: { getAssetUrl: (path: string) => of(`assets/uploads/${path}`) } },
@@ -276,7 +281,7 @@ describe('SpeakerAddEditFormComponent', () => {
       toast = vi.fn();
       TestBed.configureTestingModule({
         providers: [
-          provideRouter([]),
+          provideRouter(anyPage),
           provideHttpClient(),
           { provide: SpeakerService, useValue: speakers },
           { provide: AssetsService, useValue: { getAssetUrl: (path: string) => of(`assets/uploads/${path}`) } },

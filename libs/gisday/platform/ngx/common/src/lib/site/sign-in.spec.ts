@@ -44,15 +44,18 @@ describe('startSignIn, the /login and /signup routes', () => {
     return { login, logout, router: TestBed.inject(Router) };
   }
 
-  it.each(['/signup', '/login'])('followed from a page, %s starts signing in, back to that page, and stays on it', async (to) => {
-    const { login, router } = setUp();
+  it.each(['/signup', '/login'])(
+    'followed from a page, %s starts signing in, back to that page, and stays on it',
+    async (to) => {
+      const { login, router } = setUp();
 
-    await router.navigateByUrl('/faq');
-    await router.navigateByUrl(to);
+      await router.navigateByUrl('/faq');
+      await router.navigateByUrl(to);
 
-    expect(login).toHaveBeenCalledWith({ appState: { target: '/faq' } });
-    expect(router.url).toBe('/faq');
-  });
+      expect(login).toHaveBeenCalledWith({ appState: { target: '/faq' } });
+      expect(router.url).toBe('/faq');
+    }
+  );
 
   it('reached directly, starts signing in and waits on the home page', async () => {
     const { login, router } = setUp();

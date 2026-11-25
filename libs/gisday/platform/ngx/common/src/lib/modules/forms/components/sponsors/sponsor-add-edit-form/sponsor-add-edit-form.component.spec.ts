@@ -9,6 +9,7 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { FileComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 import { SponsorAddEditFormComponent } from './sponsor-add-edit-form.component';
+// A save goes back to its list page. Any address is a page here, so that navigation resolves; under Jest a rejected// one went unnoticed, and Vitest reports it as an unhandled error (#1977).const anyPage = [{ path: '**', children: [] }];
 
 describe('SponsorAddEditFormComponent', () => {
   // "Delete Sponsor" was reported to send the DELETE twice for one click (#2205).
@@ -18,7 +19,7 @@ describe('SponsorAddEditFormComponent', () => {
 
       TestBed.configureTestingModule({
         providers: [
-          provideRouter([]),
+          provideRouter(anyPage),
           { provide: ActivatedRoute, useValue: { params: of({ guid: 'sp-1' }) } },
           { provide: SponsorService, useValue: { getEntity: () => of({ guid: 'sp-1', name: 'Sponsor' }), deleteEntity } },
           { provide: AssetsService, useValue: { getAssetUrl: () => of(null) } },
@@ -57,7 +58,7 @@ describe('SponsorAddEditFormComponent', () => {
     function open(type: 'create' | 'edit', sponsor: Observable<object>) {
       TestBed.configureTestingModule({
         providers: [
-          provideRouter([]),
+          provideRouter(anyPage),
           { provide: ActivatedRoute, useValue: { params: of(type === 'edit' ? { guid: 'sp-1' } : {}) } },
           { provide: SponsorService, useValue: { getEntity: () => sponsor } },
           { provide: AssetsService, useValue: { getAssetUrl: () => of(null) } },
@@ -140,7 +141,7 @@ describe('SponsorAddEditFormComponent', () => {
 
       TestBed.configureTestingModule({
         providers: [
-          provideRouter([]),
+          provideRouter(anyPage),
           { provide: ActivatedRoute, useValue: { params: of({ guid: 'sp-1' }) } },
           {
             provide: SponsorService,
@@ -179,7 +180,7 @@ describe('SponsorAddEditFormComponent', () => {
 
       TestBed.configureTestingModule({
         providers: [
-          provideRouter([]),
+          provideRouter(anyPage),
           { provide: ActivatedRoute, useValue: { params: of({ guid: 'sp-1' }) } },
           {
             provide: SponsorService,
@@ -216,7 +217,7 @@ describe('SponsorAddEditFormComponent', () => {
     function open() {
       TestBed.configureTestingModule({
         providers: [
-          provideRouter([]),
+          provideRouter(anyPage),
           { provide: ActivatedRoute, useValue: { params: of({ guid: 'sp-1' }) } },
           { provide: SponsorService, useValue: { getEntity: () => of({ guid: 'sp-1', name: 'Sponsor' }) } },
           { provide: AssetsService, useValue: { getAssetUrl: () => of(null) } },

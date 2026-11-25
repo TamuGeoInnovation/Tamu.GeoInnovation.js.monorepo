@@ -658,7 +658,13 @@ describe('ReviewEmailModalComponent, who was sent it before', () => {
       // 4:05 PM Central, 16 November 2026.
       sends: { thisEmail: ['2026-11-16T22:05:00.000Z'], others: [] }
     },
-    { guid: 'sp-co', name: 'Colby Sample', firstName: 'Colby', email: 'colby@example.com', sends: { thisEmail: [], others: [] } }
+    {
+      guid: 'sp-co',
+      name: 'Colby Sample',
+      firstName: 'Colby',
+      email: 'colby@example.com',
+      sends: { thisEmail: [], others: [] }
+    }
   ];
 
   function open() {
@@ -678,7 +684,12 @@ describe('ReviewEmailModalComponent, who was sent it before', () => {
                   count: 3,
                   subject: 'Your session',
                   template: 'Howdy {first name}',
-                  example: { title: 'Sharmin Example', to: 'sharmin@example.com', cc: '', values: { '{first name}': 'Sharmin' } }
+                  example: {
+                    title: 'Sharmin Example',
+                    to: 'sharmin@example.com',
+                    cc: '',
+                    values: { '{first name}': 'Sharmin' }
+                  }
                 }
               ],
               recipients
@@ -703,7 +714,7 @@ describe('ReviewEmailModalComponent, who was sent it before', () => {
     return { fixture, page, rows };
   }
 
-  it("says under each speaker whether and when they were sent it, and how many were not", () => {
+  it('says under each speaker whether and when they were sent it, and how many were not', () => {
     const { page, rows } = open();
 
     expect(rows()).toEqual([
@@ -736,7 +747,9 @@ describe('ReviewEmailModalComponent, who was sent it before', () => {
 
   it('lists every email each was sent, with its date', () => {
     const { page } = open();
-    const items = [...page.querySelectorAll('.review-email__history li')].map((li) => li.textContent.replace(/\s+/g, ' ').trim());
+    const items = [...page.querySelectorAll('.review-email__history li')].map((li) =>
+      li.textContent.replace(/\s+/g, ' ').trim()
+    );
 
     expect(items).toEqual([
       'Sharmin Example: Nov 16, 4:05 PM: this email',
@@ -771,7 +784,11 @@ describe('ReviewEmailModalComponent, a preview that fails', () => {
     const page = open(
       new HttpErrorResponse({
         status: 400,
-        error: { statusCode: 400, message: 'This session has no judges. Tick its judges and save it first.', error: 'Bad Request' }
+        error: {
+          statusCode: 400,
+          message: 'This session has no judges. Tick its judges and save it first.',
+          error: 'Bad Request'
+        }
       })
     );
 
