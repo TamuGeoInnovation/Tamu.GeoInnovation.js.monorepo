@@ -110,6 +110,24 @@ an hour before. The script keeps the Nx cache in the volume, so an unchanged tas
 with `-m 16g` and `--parallel=8` (peak memory measured: 10.4 GB). Do not add `--skip-nx-cache`.
 On a smaller machine, set `CHECK_MEMORY` (default `16g`) and `CHECK_PARALLEL` (default `8`) to lower them (#2498).
 
+**That 16 GiB is reserved per run, not per project, so two checks cannot share one machine at the defaults.** A run
+scoped to a single project asks Docker for exactly as much as `affected` does; scope changes how long it takes, not what
+it reserves. Docker on the work computer allows 31.25 GiB, so two runs asking 16 GiB each do not both fit, and the one
+that asks second is killed for memory - which reads as a test failure, not as a resource problem. On 23 November 2026 two
+chats started a check within minutes of each other, each believing it was safe because one of them was "only one
+project", while `laptop` had an affected check killed for memory twice the same evening. If two genuinely have to run at
+once, one of them takes `CHECK_MEMORY=8g CHECK_PARALLEL=4` - **both knobs, not just the memory**, because halving the
+memory alone leaves the same eight tasks fighting over less of it (#3363).
+
+**Stopping a check does not stop its container.** Killing the wrapper leaves the container running and still holding its
+full reservation, invisible unless you look for it. Find it by its **volume**, never by name or uptime, and remove only
+your own - two checks running at once give you two anonymous containers, and guessing kills someone else's run:
+
+```bash
+docker ps --filter ancestor=node:24.22.1
+docker inspect --format '{{.Name}} | {{range .Mounts}}{{.Name}} {{end}}' <id>   # tamu-js-<issue> names the run
+```
+
 **A volume and a worktree both last until the branch merges, and nothing used to remove either.** That is
 how the work computer reached **0 bytes free of 1,907 GB** on 24 November 2026: 460 worktrees at 589 MiB
 (about 271 GB) and 323 `tamu-js-*` volumes at 2.7 GiB (about 853 GB, inside the WSL2 disk image). No check
