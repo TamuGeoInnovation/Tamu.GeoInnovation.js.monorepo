@@ -1,5 +1,25 @@
 # Laptop: current tasks
 
+## Batch a14 (aggiemap: #2643, then #3319; 24 November 2026, about 9:25 PM Central, written by `work (gisday)` under the AggieMap director's letter, at its request) (Medium) - **after a13**
+
+Questions go to the **AggieMap** director (`Q-a14-<n>`). Both issues are claimed In Progress on project 2. Check each against
+`origin/development` before building; if it is already done, report that and build nothing. Two branches, two PRs, "branch ready" after each.
+
+**1. [#2643](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2643), branch `fix/2643-noon-is-pm`.** A trip's steps show
+12 PM as AM. `libs/common/utils/date/src/lib/common-utils-date.ts` (about line 14, `timeStringForDate`) uses `hours > 12` and never maps
+hour 0 to 12. **Red first:** a spec with 00:05, 11:59, 12:00, 12:30, 13:00 and 23:59 (12:05 AM, 11:59 AM, 12:00 PM, 12:30 PM, 1:00 PM,
+11:59 PM); then the fix. Check every other caller of the function still reads right. Images: a trip step at noon, before and after, a release
+entry. Check: `scripts/check-in-volume.sh fix/2643-noon-is-pm common-utils-date,aggiemap-angular` (use the library's real project name).
+
+**2. [#3319](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3319), branch `fix/3319-trip-stop-back`.** On a phone, the
+back arrow in the trip-stop search goes to the main map instead of the trip. **First, read the fork's `fix/3149-phone-directions`**: the issue
+says the fix is there. If that branch already changes the same back arrow, **report that and build nothing** (say whether that branch has a PR
+or should get one). Otherwise: `libs/aggiemap/ngx/ui/mobile/src/lib/components/omnisearch/omnisearch.component.ts` uses `['./trip']` (about
+:187) and `map/d/trip` (about :135); one relative link back to the trip. **Red first:** a router test. Images at 390 px, before and after, a
+release entry, and the check for the mobile UI library and `aggiemap-angular`.
+
+Report `laptop/reports/2026-11-24-a14.md`.
+
 ## Batch g27 (workspace: #3000, then #1001; 24 November 2026, about 9:15 PM Central, from `work (gisday)`) (Medium) - **now**
 
 The maintainer asked tonight for open issues to be taken all the way to PRs, knowing some are already done: **check each against
