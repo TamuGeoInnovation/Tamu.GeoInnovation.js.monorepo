@@ -45,9 +45,18 @@ export const TAMU_CAMPUS_VECTOR_BASEMAP_URL = 'https://gis.tamu.edu/arcgis/rest/
  * | 2 University Building, `Type = 'CONSTRUCTION'` | 0 Campus Structures, `type = 'CONSTRUCTION'` (the same 8) |
  * | 9 Surface Parking | 6 Surface Parking (340 rows against 341: only Lot 8712 is missing here) |
  *
- * Layer 0 of the old service, Garage Parking, has no counterpart: 8 of its 10 garages are buildings in Campus
- * Structures, with building fields rather than lot ones, and Residents Garage and Park West Garage are not here at all.
- * So the garage search still reads the old service, until the GIS team says where the garages are meant to be (#2722).
+ * Layer 0 of the old service, Garage Parking, has no layer of its own here - its garages are rows of 0 Campus
+ * Structures, marked `type = 'GARAGE'` or `'GARAGE PVT'`, with building fields rather than lot ones. The garage search
+ * reads them there since #3425.
+ *
+ * **All ten are present.** An earlier note here said Residents Garage and Park West Garage were "not here at all";
+ * that was measured by matching names, and both are here under different ones. Matched by geometry on
+ * 24 November 2026: Residents Garage is `Century Square Parking Deck` (PC27) and Park West Garage is
+ * `Park West J - 3000/4000` (PB09). Match these two services on `bldgabbrev`, which carries the same codes the old
+ * layer's `Name` did, rather than on a name - that is what makes a `?garage=CCG` link survive the move.
+ *
+ * Where the names differ, Facilities' are the published ones and Transportation's are what a visitor may type. That
+ * is the GIS team's to reconcile, not ours to paper over.
  */
 export const TAMU_CAMPUS_FEATURES_URL = 'https://gis.tamu.edu/arcgis/rest/services/Hosted/VTBase4/FeatureServer';
 
