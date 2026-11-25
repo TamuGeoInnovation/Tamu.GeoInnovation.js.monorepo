@@ -1,5 +1,9 @@
 # Laptop: current tasks
 
+## Note (gisday), 4:20 AM Central, 25 November 2026
+
+- **g33 has its own issue: #3596** (a sub-issue of #3593, strictNullChecks across the GIS Day front end). #3495 closed when PR 3560 merged. Put `Closes #3596` in g33's `.pr-body.md`.
+
 ## Batch a31 (aggiemap: #3471, one way to walk a results list with the arrow keys; 25 November 2026, 2:55 AM Central, from `work (aggiemap)`) (Medium) - **after g32**
 
 **Issue: [#3471](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3471).** Code job with real keyboard checks, which is why it is yours rather than the lab's. Two shared ways to arrow through a results list, so a keyboard fix (as in #2535) has to be made twice.
