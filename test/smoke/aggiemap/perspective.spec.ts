@@ -2,6 +2,7 @@ import { expect, HEAVY, test } from './fixtures';
 import { blockAnalytics } from './analytics';
 import { inTopLeft, MAP_CONTROLS } from './controls';
 import { Framing, waitForSettledFraming } from './framing';
+import { PROBE_GLOBAL } from './map-probe';
 
 /**
  * Switching a map between 2D and 3D keeps it where it was (#1724).
@@ -74,10 +75,7 @@ test.describe('2D and 3D', () => {
     // The map's buttons come back with it. Esri's zoom and locate components destroy themselves when
     // they leave the page, as the 2D view does while 3D is shown, so back in 2D they had gone (#1853).
     for (const [name, control] of Object.entries(MAP_CONTROLS)) {
-      await expect(
-        inTopLeft(page, control),
-        `back in 2D, the ${name} button is missing`
-      ).toBeVisible();
+      await expect(inTopLeft(page, control), `back in 2D, the ${name} button is missing`).toBeVisible();
     }
   });
 
@@ -108,15 +106,20 @@ test.describe('2D and 3D', () => {
 
     /** The view's spatial reference and whether the 3D Buildings layer has loaded, from the map probe. */
     const scene = () =>
-      page.evaluate(async () => {
-        const probe = (window as unknown as Record<string, { snapshot(): Promise<{ spatialReference: number | null; layers: Array<{ title: string; loaded: boolean }> }> }>)['__tamuGiscMapProbe'];
+      page.evaluate(async (name) => {
+        const probe = (
+          window as unknown as Record<
+            string,
+            { snapshot(): Promise<{ spatialReference: number | null; layers: Array<{ title: string; loaded: boolean }> }> }
+          >
+        )[name];
         const snapshot = await probe.snapshot();
 
         return {
           reference: snapshot.spatialReference,
           buildings: snapshot.layers.some((layer) => layer.title === '3D Buildings' && layer.loaded)
         };
-      });
+      }, PROBE_GLOBAL);
 
     /**
      * The 2D view's scale. Its zoom is counted in the basemap's own levels, and a vector tile basemap
@@ -124,12 +127,14 @@ test.describe('2D and 3D', () => {
      * 1:4,514), so after a change of basemap only the scale says whether the map zoomed (#2822).
      */
     const scale2d = () =>
-      page.evaluate(() => (document.querySelector('arcgis-map') as unknown as { view?: { scale?: number } } | null)?.view?.scale ?? null);
+      page.evaluate(
+        () => (document.querySelector('arcgis-map') as unknown as { view?: { scale?: number } } | null)?.view?.scale ?? null
+      );
 
     const toggle = page.locator(TOGGLE).first();
     const flat = await framed('as loaded');
     const flatScale = await scale2d();
-    const campus =(await page.locator('.basemap-title').allTextContents()).filter((title) => title.startsWith('Aggieland'));
+    const campus = (await page.locator('.basemap-title').allTextContents()).filter((title) => title.startsWith('Aggieland'));
 
     expect(campus.length, 'the basemap panel offers no campus basemap to check').toBeGreaterThan(0);
 
@@ -142,7 +147,11 @@ test.describe('2D and 3D', () => {
 
     const expectAGlobe = async (what: string) => {
       await expect
-        .poll(scene, { message: `${what}: 3D is not a Web Mercator globe with its 3D buildings`, timeout: 150_000, intervals: [2_000] })
+        .poll(scene, {
+          message: `${what}: 3D is not a Web Mercator globe with its 3D buildings`,
+          timeout: 150_000,
+          intervals: [2_000]
+        })
         .toEqual({ reference: expect.any(Number), buildings: true });
       expect([102100, 3857], `${what}: the scene is in ${(await scene()).reference}`).toContain((await scene()).reference);
       expect(metresBetween(flat.center, (await framed(what)).center), `${what} moved the map`).toBeLessThan(IN_3D_WITHIN_M);
@@ -209,11 +218,13 @@ test.describe('2D and 3D', () => {
     await waitForSettledFraming(page, `${MAP} as loaded`);
 
     const reference = () =>
-      page.evaluate(async () => {
-        const probe = (window as unknown as Record<string, { snapshot(): Promise<{ spatialReference: number | null }> }>)['__tamuGiscMapProbe'];
+      page.evaluate(async (name) => {
+        const probe = (window as unknown as Record<string, { snapshot(): Promise<{ spatialReference: number | null }> }>)[
+          name
+        ];
 
         return (await probe.snapshot()).spatialReference;
-      });
+      }, PROBE_GLOBAL);
 
     const flatReference = await reference();
 
