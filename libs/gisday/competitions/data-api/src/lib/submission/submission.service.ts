@@ -76,7 +76,7 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
       // The app reviews every new submission (#2164): verified when it passes every check, otherwise left
       // unverified for a person, who can always decide otherwise. Before the save, and never able to stop
       // it: a review that fails leaves the submission unverified, saved (#2428 review).
-      const reasons = await this.reviewAutomatically(entity, truncated, blobs?.length ?? 0);
+      const reasons = await this.reviewAutomatically(entity, entity.season, truncated, blobs?.length ?? 0);
 
       // INSERT, never save(): save() updates a row whose guid already exists, and the app chooses the
       // guid (#1786). A duplicate fails on the primary key and rolls back its location and photographs.
@@ -118,19 +118,20 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
    */
   private async reviewAutomatically(
     entity: DeepPartial<CompetitionSubmission>,
+    season: DeepPartial<CompetitionSeason>,
     location: DeepPartial<SubmissionLocation>,
     photos: number
   ): Promise<Array<string>> {
     try {
       const earlier = await this.submissionRepo.find({
-        where: { userGuid: entity.userGuid, season: { guid: entity.season.guid } },
+        where: { userGuid: entity.userGuid, season: { guid: season.guid } },
         relations: { location: true, validationStatus: true }
       });
 
       return automaticReviewReasons(
         { created: new Date(), value: entity.value as never, location: location as never, photos },
         earlier.map((other) => toReviewed(other)),
-        (entity.season as CompetitionSeason).form?.model ?? []
+        (season as CompetitionSeason).form?.model ?? []
       );
     } catch (err) {
       Logger.error(`Could not review submission ${entity.guid} automatically: ${err?.message ?? err}`, 'SubmissionService');
@@ -153,7 +154,8 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
     return this.mediaRepo.create(entity);
   }
 
-  public async validateSubmission(dto: ValidateSubmissionDto) {
+  /** `dto.userGuid` is who is validating it, from the sign-in, never from the request. */
+  public async validateSubmission(dto: ValidateSubmissionDto & { userGuid: string }) {
     const submission = await this.submissionRepo.findOne({
       where: {
         guid: dto.guid
@@ -338,7 +340,7 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
           longitude: submission.location?.longitude || 0
         },
         imageGuids: submission.blobs?.map((blob) => blob.guid) || [],
-        sha256Hashes: submission.blobs?.map((blob) => blob.sha256).filter(Boolean) || []
+        sha256Hashes: submission.blobs?.flatMap((blob) => (blob.sha256 ? [blob.sha256] : [])) || []
       };
     });
   }
@@ -349,10 +351,10 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
 
   private async resolveIdentities(submissions: SubmissionReviewDto[]): Promise<SubmissionReviewDto[]> {
     // Get distinct user GUIDs
-    const distinctUserGuids = [...new Set(submissions.map((s) => s.userGuid).filter(Boolean))];
+    const distinctUserGuids = [...new Set(submissions.flatMap((s) => (s.userGuid ? [s.userGuid] : [])))];
 
-    // Resolve all identities in parallel
-    const identityMap = new Map<string, string>();
+    // Resolve all identities in parallel; an account without an email is shown as a failed lookup is, below.
+    const identityMap = new Map<string, string | null>();
     await Promise.all(
       distinctUserGuids.map(async (userGuid) => {
         try {

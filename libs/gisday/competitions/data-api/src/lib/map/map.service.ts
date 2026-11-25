@@ -81,8 +81,9 @@ export class MapService extends BaseService<CompetitionSubmission> {
 
     for (const find of finds) {
       const option = typeQuestion?.options?.find((candidate) => candidate.earlier?.values.includes(find.type as string));
-      const same = option
-        ? things.find((thing) => thing.option === option && distanceInMetres(thing.location, find.location) <= option.earlier.metres)
+      const earlier = option?.earlier;
+      const same = earlier
+        ? things.find((thing) => thing.option === option && distanceInMetres(thing.location, find.location) <= earlier.metres)
         : undefined;
 
       if (same) {

@@ -90,7 +90,9 @@ export function automaticReviewReasons(
 ): Array<string> {
   const reasons: Array<string> = [];
   const typeQuestion = form?.find((q) => q.isDiscriminator === true);
-  const type = typeQuestion ? submission.value?.[typeQuestion.attribute] : undefined;
+  // The form is stored as the Designer wrote it, so its type question may lack an attribute.
+  const typeAttribute = typeQuestion?.attribute;
+  const type = typeAttribute ? submission.value?.[typeAttribute] : undefined;
   // The name question of this submission's own type, so a form that names only some types does not flag
   // the others (#2428 review).
   const settings = typeQuestion?.options?.find((option) => option.value === type);
@@ -128,7 +130,7 @@ export function automaticReviewReasons(
 
     const repeat = counted.some((other) => {
       const otherLocation = usableLocation(other.location as never);
-      const otherType = typeQuestion ? other.value?.[typeQuestion.attribute] : undefined;
+      const otherType = typeAttribute ? other.value?.[typeAttribute] : undefined;
 
       return otherLocation && otherType === type && isOwnRepeat({ location: otherLocation }, { location }, settings);
     });

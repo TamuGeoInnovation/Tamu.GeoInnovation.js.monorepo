@@ -76,10 +76,10 @@ const IDENTITY_TTL = 60 * 60 * 1000;
  * `jsmith2026@tamu.edu` reads `jsm****@tamu.edu`. At most three letters, and fewer for a short name, so at least two stay
  * hidden; always four asterisks, so the length is not given away either. Anything that is not an email shows as `****`.
  */
-export function maskEmail(email: string): string {
+export function maskEmail(email: string | null | undefined): string {
   const at = email?.lastIndexOf('@') ?? -1;
 
-  if (at < 1) {
+  if (!email || at < 1) {
     return '****';
   }
 
@@ -209,15 +209,14 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
       const type = typeAttribute ? submission.value?.[typeAttribute] : undefined;
       const settings = settingsFor(type);
       const name = settings?.nameAttribute ? submission.value?.[settings.nameAttribute] : undefined;
+      const earlier = settings?.earlier;
       let points = ALREADY_SUBMITTED_POINTS;
 
       const foundBefore =
         location !== undefined &&
-        settings?.earlier !== undefined &&
+        earlier !== undefined &&
         earlierFinds.some(
-          (find) =>
-            settings.earlier.values.includes(find.type as string) &&
-            distanceInMetres(find.location, location) <= settings.earlier.metres
+          (find) => earlier.values.includes(find.type as string) && distanceInMetres(find.location, location) <= earlier.metres
         );
 
       const foundThisSeason =
@@ -390,11 +389,11 @@ export async function previousSeasonFinds(
     year: previous.season.year,
     finds: submissions
       .filter(counts)
-      .map((submission) => ({
-        location: usableLocation(submission.location),
-        type: typeAttribute ? submission.value?.[typeAttribute] : undefined
-      }))
-      .filter((find) => find.location !== undefined)
+      .flatMap((submission) => {
+        const location = usableLocation(submission.location);
+
+        return location ? [{ location, type: typeAttribute ? submission.value?.[typeAttribute] : undefined }] : [];
+      })
   };
 }
 

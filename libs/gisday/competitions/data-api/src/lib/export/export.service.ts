@@ -31,11 +31,9 @@ export class ExportService {
    */
   async zipForSeason(seasonGuid?: string): Promise<StreamableFile> {
     const season = await this.platformSeasonRepo.findOne({ where: seasonGuid ? { guid: seasonGuid } : { active: true } });
-    const competitionSeason = season
-      ? await this.seasonRepo.findOne({ where: { season: { guid: season.guid } } })
-      : null;
+    const competitionSeason = season && (await this.seasonRepo.findOne({ where: { season: { guid: season.guid } } }));
 
-    if (!competitionSeason) {
+    if (!season || !competitionSeason) {
       throw new NotFoundException('This season has no VGI competition.');
     }
 
