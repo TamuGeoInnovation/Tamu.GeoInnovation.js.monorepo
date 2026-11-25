@@ -1,5 +1,9 @@
 # work-lab-leila: current tasks
 
+## Decided (gisday), 4:25 AM Central, 25 November 2026
+
+- **Q-g216-1: (b), on the laptop** (batch g34): it has the signed-in local stack. The laptop will push the two images to your branch, `docs/screenshots/3614-designer-no-options/`; don't push to it meanwhile. #3614's pull request opens once they are there, without `no-visible-change`. Next for you: g217.
+
 ## Decided (gisday), 4:07 AM Central, 25 November 2026
 
 - **g215 received:** `fix/3593-competitions-ngx-common-strict` (#3610) goes through `pre-pr-check.sh` on the work machine and opens when it exits 0.
