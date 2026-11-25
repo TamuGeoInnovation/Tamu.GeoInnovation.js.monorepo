@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **blocked: Docker stopping for disk compaction** (the maintainer, 6:50 PM Central). Batch g107 (#2588) interrupted at `e2392460e` on `fix/2588-tile-tap-target` (local, `C:/TAMU/wt-2588`, not pushed): the red tests are committed and proven red (2 failed: the tile has no `tabindex`, no role), the fix not yet written. Nothing was running when Docker stopped; volume `tamu-js-2588` was idle. Nothing starts until the maintainer says Docker is back.
+- **blocked: Docker stopping for disk compaction** (the maintainer, about 7:22 PM Central). Batch g107 (#2588) interrupted at `e2392460e` on `fix/2588-tile-tap-target` (local, `C:/TAMU/wt-2588`, not pushed): the red tests are committed and proven red (2 failed: the tile has no `tabindex`, no role), the fix not yet written. Nothing was running when Docker stopped; volume `tamu-js-2588` was idle. Nothing starts until the maintainer says Docker is back.
 - #2588's tap part was already fixed by #3198 (PR 3199, 18 November); what is left is keyboard and screen reader use with a visible focus. #3337 stays with the laptop (a13), as both directors agreed.
 
 ## Finished
