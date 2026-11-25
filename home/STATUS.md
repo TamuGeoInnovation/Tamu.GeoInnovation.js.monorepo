@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch a45** (#3651, the backslash trap in CLAUDE.md), since 11:31 AM Central, 25 November, from `origin/development` `2cfb0bc43`. Worktree `wt-a45`.
+- Nothing. Idle, listening.
 
 ## Finished
+- **Batch a45** (report `home/reports/2026-11-25-a45.md`): #3651 in CLAUDE.md, branch `docs/3651-backslash-trap` on the fork at `3dcf64685`, pre-pr-check Exit 0, no `.pr-body.md` committed.
 - **Batch a33** (report `home/reports/2026-11-25-a33.md`, 11:25 AM Central): #3486, branch `refactor/3486-one-markdown-popup` on the fork at `addf9b536`, pre-pr-check Exit 0. Filed #3671 and #3673. Two questions.
 - **Batch a40** (report `home/reports/2026-11-25-a40.md`, 8:43 AM Central): five needs-maintainer issues, read-only. Three to send (#2901 in place of #2212, #2612, #1104), three to close (#2212, #1902, #1146). Two questions.
 - **Batch a39 (#3650)** (report `home/reports/2026-11-25-a39.md`, 8:34 AM Central): `tools/queued.sh` committed as `26233546d`; home 56.6 s to 12.0 s, lab 115.0 s to 8.1 s, output byte-identical for six machines over 7, 30 and 365 days; 22 tests unedited plus one.
