@@ -1,5 +1,72 @@
 # Laptop: current tasks
 
+## Batch a13 (aggiemap: #3337, two GIS Day competition pages with a quoted colour) (Medium) - **now**
+
+[#3337](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3337). Both files are still
+exactly as the issue describes, confirmed on `development` at `92631c29c`:
+
+```scss
+// libs/gisday/platform/ngx/core/src/lib/pages/competitions/light-pole/light-pole.component.scss
+// libs/gisday/platform/ngx/core/src/lib/pages/competitions/lighting/lighting.component.scss
+img#geosat {
+  background-color: '#500000';
+}
+```
+
+`'#500000'` in quotes is a CSS string, not a colour, so the browser discards the declaration and the element
+has no background. Sass compiles it happily. These are the only two in the repository - I grepped every
+`.scss` for `background-color: '`.
+
+### 1. First, prove it is worth fixing. This is the whole batch.
+
+**Before changing anything, confirm `img#geosat` exists on those two pages and that a visitor can see it.**
+
+Four faults in one week looked like a one-word change and were not, and two of them *would have looked like a
+fix and changed nothing a visitor sees* - which is worse than leaving the bug, because the issue gets closed
+([#1961](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1961) was a component
+unused since #418). A background colour on an element nobody renders is exactly that shape.
+
+So, on GIS Day local:
+
+- Does `img#geosat` appear in the rendered DOM on the Light Pole and Lighting competition pages?
+- Is it on screen, and does a background behind it make any visible difference - or is the image opaque and
+  covering it entirely?
+
+**If the element is not rendered, or the background cannot be seen behind the image, stop and say so.** Do not
+fix it. Report what you found and I will take it to the maintainer; the right answer may be deleting the rule
+or the file rather than correcting it.
+
+### 2. Only if it is visible: the fix
+
+Use **`$aggie-maroon`**, not an unquoted `#500000`. Texas A&M's maroon is that variable
+([#2605](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2605), which took it out
+of 75 stylesheets); re-introducing the literal would undo that in two more. It lives in
+`libs/sass/_variables.scss` - follow how a neighbouring GIS Day component stylesheet imports it rather than
+inventing an import path.
+
+**The two files are identical.** Two stylesheets with the same single rule is the duplication the
+reuse-before-building rule is about: one bug needed fixing in two places, which is how this survived. If there
+is an obvious shared home for it, say so in your report - but **do not refactor it in this batch**. Fix both,
+note the duplication, and let the maintainer decide.
+
+### 3. Images
+
+Visible change, so before and after for **both** pages, at 1280. Same window size, same page state, into
+`docs/screenshots/3337-quoted-background/`.
+
+### 4. Check and report
+
+`scripts/check-in-volume.sh fix/3337-quoted-background gisday-platform-ngx-core,gisday-angular` with
+`CHECK_PARALLEL=1` - these GIS Day tests time out under load on your machine. Read its own `Exit` line, not
+the shell's.
+
+Branch `fix/3337-quoted-background` from `development`, push to the fork, **no `.pr-body.md`** (a leftover one
+makes the worktree un-removable - that was [#3432](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3432),
+fixed today, and the habit is still worth dropping). Say **"branch ready: fix/3337-quoted-background"**.
+
+Report `laptop/reports/2026-11-24-a13.md` with the step 1 finding stated plainly either way, the check's
+`Exit` line, and the image paths. **No pull request** - that is mine.
+
 ## Batch g25 (gisday: #3424's green run, then #3412's Papers page; 24 November 2026, about 1:20 PM Central, from `work (gisday)`) (High) - **now**
 
 **Decided by the maintainer:** PR 3415 merges as it is (Posters and Presentation), and the Papers page becomes its own PR from
