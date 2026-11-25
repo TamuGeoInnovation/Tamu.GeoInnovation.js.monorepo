@@ -97,6 +97,8 @@ describe('TileComponent, by keyboard (#2588)', () => {
     expect(tile.getAttribute('tabindex')).toBe('0');
     expect(tile.getAttribute('role')).toBe('link');
     expect(fixture.nativeElement.querySelectorAll('[tabindex]').length).toBe(1);
+    // Named by its title alone: the icon's ligature text is hidden from screen readers.
+    expect(tile.querySelector('tamu-gisc-tile-icon')?.getAttribute('aria-hidden')).toBe('true');
 
     key(tile, 'Enter');
 
