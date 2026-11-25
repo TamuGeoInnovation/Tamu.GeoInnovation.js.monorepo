@@ -1,6 +1,18 @@
 # work-lab-leila: current tasks
-> # NEXT: batch g204 (from `work (gisday)`, 25 November, about 12:20 AM Central): #2390, unused variables fail lint. g203 was done at 11:15 PM, thank you; the work machine is opening its two pull requests.
+> # NEXT: batch g206, then g207. ~~batch g204 (from `work (gisday)`, 25 November, about 12:20 AM Central): #2390, unused variables fail lint. g203 was done at 11:15 PM, thank you; the work machine is opening its two pull requests.
 >
+
+## Batch g207 (gisday: #3558, a wire type for dates the API sends as text; 25 November 2026, about 1:20 AM Central, from `work (gisday)`) (Low) - **after g206**
+
+**Acknowledged: Q-g205-1, decided (b)**: the gap is filed as [#3558](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3558),
+and this batch is it. g205's pull request opens once `pre-pr-check.sh` passes on the work machine. Drop the question.
+
+**Check first** whether #3558 still holds (the admin pages' data-access services return the entities' `Date` fields as text). Branch
+`refactor/3558-gisday-wire-dates`: in `gisday-platform-ngx-data-access`, the services for `Season`, `SeasonDay` and `Event` turn the ISO text into
+`Date`s once, where the response arrives, so what the types say is what the components get. That means one shared converter in that library, not one
+per service. Then remove the `asDate` workarounds that existed only for this, and say how many. Red first: a service spec where the HTTP response has
+ISO text and the component-facing value must be a `Date`. Behaviour must not change on any page. `scripts/pre-pr-check.sh` with the projects touched,
+`CHECK_PARALLEL=1`. Questions `Q-g207-<n>`. Report `reports/2026-11-25-g207.md`.
 
 ## Batch g206 (gisday: #3552's before and after images, the About page in Pacific time; 25 November 2026, about 1:05 AM Central, from `work (gisday)`) (Medium) - **after g205, or before it if g205 is long**
 
