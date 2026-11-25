@@ -1,5 +1,65 @@
 # Home machine: current tasks
 
+## Batch a38 (aggiemap: #3655, #3656 and #3658, three smoke checks in clear files; 25 November 2026, 7:05 AM Central, from `work (aggiemap)`) (Low) - **now**
+
+**a37 was excellent work, and it changed my mind about what to do next.** Four agents, twenty issues, each verdict carrying
+`file:line` or a live service query, and you re-checked each group's deciding claim yourself. Everything is acted on: the five
+"cannot tell" issues plus #445 now carry `needs-maintainer`, #549, #445, #699 and #567 have your findings recorded on them,
+and your five follow-ups are filed as **#3655, #3656, #3657, #3658** - the Mailroom one is held until the maintainer answers
+#263, since filing a verify for a relay that may be fine is work nobody asked for.
+
+**What your sweep actually proved is that the backlog is honest**, and that is worth more than the closures I was hoping for.
+Zero of twenty were already fixed and zero were moot. I then checked mechanically whether any open issue is referenced by a
+merged commit of the last six months - the bookkeeping leak that would hide finished work - and the intersection of 1,256
+referenced numbers with 283 open issues is **empty**. So the 279 open issues are mostly real work, the closing-keyword rule
+is being followed, and **more sweeping has low yield**. I am not sending you to do another twenty.
+
+### This batch: one pull request, three checks, two files nothing else touches
+
+`mobile.spec.ts` and `perspective.spec.ts` are in **no** open pull request - I checked all 38, and only PR 3588 touches
+`test/smoke/aggiemap` at all (`bus.spec.ts`, `deployed.ts`, `deployed-changes.json`, `development-only.spec.ts`,
+`run-local.sh`). So this is one of the few areas left where two machines cannot collide.
+
+1. **#3655** - a phone-width check that a selection can be cleared, in `mobile.spec.ts`. For #71, open since **August 2020**.
+2. **#3656** - a **short**-viewport check that a long sidebar list scrolls and the panel still dismisses, in `mobile.spec.ts`.
+   For #387, which your sweep narrowed to "the list cannot scroll". Height is the variable, not width.
+3. **#3658** - a check beside `perspective.spec.ts:94` asserting the 3D layer's **source URL** and **elevation offset**, not
+   merely that the layer loads. For #542 and #555, both blocked on a republished building service.
+
+**One pull request for all three**, with a `Closes` line each. Two of them edit the same file, so separate pull requests would
+conflict with each other, and there are 38 open already - fewer is better this morning.
+
+### The part to get right: two of these check behaviour that is still broken
+
+#71 and #387 are **still true**, so a check asserting the correct behaviour will fail. It must not turn the suite red.
+
+- **Use Playwright's `test.fail()`** with the issue number in the title, for #3655 and #3656. It expects the failure, and it
+  **errors when the test starts passing** - which is exactly the signal wanted: the day #71 is fixed, the suite says so.
+- **Do not use `environments.json`'s allowed-failure lists for this.** Those are for a layer or search source a GIS server
+  does not serve, not for an assertion about the app's own behaviour. Picking the wrong mechanism here would hide the check
+  instead of parking it.
+- **#3658 is different:** it asserts what is true today, so it is a normal passing check. The expected values are
+  `layer-sources.ts:24` for the source and the `-107` m offset at `layer-sources.ts:32-36`. Whoever later does #542 or #555
+  updates them in that same pull request, which is the point - it makes the change an explicit line in a diff.
+
+### What this batch must not do
+
+- **No `docs/testing.md` edit.** That check greps for each spec's *file name*, and both specs are already listed. The counts
+  there are a measurement refreshed at each release, not kept by hand, and three pull requests once collided on that one line
+  (#2002). I had said otherwise in all three issue bodies and have corrected them - my error, caught before you read it.
+- **No app code.** If a check cannot be written without touching the component, say so in the report rather than widening it.
+
+### Done when
+
+- **`scripts/pre-pr-check.sh test/3655-3656-3658-smoke-checks 'test(aggiemap): Three smoke checks for behaviour nothing covered' .pr-body.md affected --label no-visible-change`**, and **read the log's own `Exit N` line**.
+- **Prove each check can fail**, as you did in a35 with Kingsville's abbreviation: for #3658, point it at a wrong offset once
+  and confirm it fails. A check nobody has watched fail asserts nothing.
+- **Report** `home/reports/2026-11-25-a38.md`. Questions `Q-a38-<n>`.
+- `.pr-body.md` deleted and the worktree removed, as you did last time.
+
+**a33 is still held** on PR 3587 and releases itself when it merges.
+
+
 ## Batch a37 (aggiemap: are the old issues still true? A read-only sweep; 25 November 2026, 6:50 AM Central, from `work (aggiemap)`) (Medium) - **now**
 
 **a35 is accepted** - 3654 is open, not a draft, closes #2600, nothing failing. Your dentistry correction is on the issue,
