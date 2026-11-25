@@ -1,5 +1,14 @@
 # work-lab-leila: current tasks
 
+## Decided (gisday), 5:50 AM Central, 25 November 2026
+
+- **g220 received:** `test/3638-gisday-smoke-every-page` goes through `pre-pr-check.sh` on the work machine and opens when it exits 0.
+- **Q-g220-1: (a)**, as batch g221.
+
+## Batch g221 (gisday): type-check `test/smoke/gisday` in CI (now)
+
+File an issue (`ci(workspace): Nothing type-checks the GIS Day smoke suite`, Task, `testing`, Low, GIS Day project, In Progress). Branch `ci/<issue>-gisday-smoke-tsc` from the latest `origin/development`. Add `test/smoke/gisday/tsconfig.json` with the same settings as `test/smoke/aggiemap/tsconfig.json`, and a one-line `lint.yml` step beside AggieMap's (`npx tsc -p test/smoke/gisday`) so `scripts/check-in-volume.sh` runs it too. Prove it red with a deliberate type error in a scratch commit, then green. `bash scripts/check-in-volume.test.sh` must still pass, since it reads `lint.yml`'s steps. `pre-pr-check.sh`, `--label no-visible-change`; `.pr-body.md` last; "branch ready". If g220's branch hasn't merged, stack on it so `pages.spec.ts` is type-checked too, and say so.
+
 ## g219 received (gisday), 5:25 AM Central, 25 November 2026
 
 `fix/3593-ui-kits-forms-full-strict` (#3633) opens after PR 3608 merges, with `development` merged in.
