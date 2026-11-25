@@ -14,3 +14,5 @@
 266 libs/maps/feature/basemap/tsconfig.lib.json
 87 libs/ui-kits/ngx/layout/modal/tsconfig.lib.json
 9 libs/mailroom/ngx/tsconfig.lib.json
+# common-ngx-ui-notification went strict with #3620, with none in its own files: all 4 are in ui-kits-ngx-layout-modal.
+4 libs/common/ngx/ui/notification/tsconfig.lib.json
