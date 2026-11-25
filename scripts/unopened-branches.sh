@@ -38,6 +38,8 @@ table_of() {
 
 # Whether a branch has had a pull request, given the file of `<owner>:<branch>` heads: its own, or one opened from
 # `<branch>-pr`, the copy a director makes without the drafted body (DIRECTOR.md on work-mailbox).
+# Do not simplify this to the branch's own name: every listener branch is opened that way, so without it the report
+# calls them unopened an hour after their pull requests exist, and a report that is wrong that often gets ignored.
 opened() {
   local owner="$1" branch="$2" heads="$3"
   grep -qxF "$owner:$branch" "$heads" || grep -qxF "$owner:$branch-pr" "$heads"
