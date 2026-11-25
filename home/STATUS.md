@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch g116 (#1669, #1478)** next.
+- **Batch g116 (#1669, then #1478)**: code in `C:/TAMU/wt-1669`; Q-g116-1 (the signed-in local proof) with the GIS Day director.
 
 ## Finished
 - **Batch a27 (#602, #1173)** (report `home/reports/2026-11-25-a27.md`): branch ready, `fix/602-1173-popup-footer` `529b0b8a5`, pre-pr-check Exit 0. One shared footer; Directions on lactation, entrances, restrooms, kiosks, each routed by hand; copy links blocked on identifiers (#3555).
