@@ -15,5 +15,10 @@ Several GIS Day pages, mostly in Admin, failed when a record was missing a value
 professor's name could not export its attendance, and a submission saved without its acceptance could not be opened. A session
 check-in with no account, an initial-survey question saved with no options, and a homepage with no active season also failed. Each
 now does the sensible thing: the export is named without a professor, the submission shows as not accepted, and the rest load.
-Nothing renders differently where the data is complete, so there are no images.
+Nothing renders differently where the data is complete. Where it is not, the survey shows the question it used to drop:
+
+| Before                                                                                                   | After                                                                                                                  |
+| -------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| ![The survey without its option question](../screenshots/3627-admin-missing-values/before-survey-option-question.png) | ![The survey with the option question and no options](../screenshots/3627-admin-missing-values/after-survey-option-question.png) |
+
 ([#3627](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3627))
