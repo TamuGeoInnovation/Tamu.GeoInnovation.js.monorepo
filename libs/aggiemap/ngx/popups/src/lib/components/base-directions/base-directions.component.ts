@@ -12,7 +12,7 @@ import { SearchService } from '@tamu-gisc/ui-kits/ngx/search';
 
 import { BasePopupComponent } from '../base/base.popup.component';
 import { KeyValuePipe } from '@angular/common';
-import { ActivateDirective } from '@tamu-gisc/ui-kits/ngx/interactions/keyboard';
+import { PopupFooterComponent } from '../footer/popup-footer.component';
 
 import esri = __esri;
 
@@ -20,7 +20,7 @@ import esri = __esri;
   selector: 'tamu-gisc-base-directions',
   templateUrl: './base-directions.component.html',
   styleUrls: ['./base-directions.component.scss'],
-  imports: [KeyValuePipe, ActivateDirective]
+  imports: [KeyValuePipe, PopupFooterComponent]
 })
 export class BaseDirectionsComponent extends BasePopupComponent implements OnInit, OnDestroy {
   private router = inject(Router);
@@ -40,9 +40,9 @@ export class BaseDirectionsComponent extends BasePopupComponent implements OnIni
   public url: string;
 
   /**
-   * Composed URL passed into the copy component
+   * The link that reopens this feature, for the popup footer's copy link. `null` when there is none.
    */
-  public shareUrl: string;
+  public shareUrl: string | null;
 
   private _searchService = inject(SearchService);
 
@@ -50,10 +50,13 @@ export class BaseDirectionsComponent extends BasePopupComponent implements OnIni
 
   private _destroy$: Subject<boolean> = new Subject();
 
-  protected _makeShareUrl(): string {
-    const origin = window.location.origin;
+  /**
+   * `null` when the feature has no fragment: the bare site address it used to fall back to reopens nothing, so the
+   * footer offers no copy link for it (#1173).
+   */
+  protected _makeShareUrl(): string | null {
     const fragment = this._getShareUrlFragment();
-    return fragment ? `${origin}/${fragment}` : origin;
+    return fragment ? `${window.location.origin}/${fragment}` : null;
   }
 
   /**

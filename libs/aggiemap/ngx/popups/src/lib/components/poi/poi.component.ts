@@ -2,9 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 
 import { BaseDirectionsComponent } from '../base-directions/base-directions.component';
-import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 import { PhotoCarouselComponent } from '@tamu-gisc/ui-kits/ngx/layout';
-import { ActivateDirective } from '@tamu-gisc/ui-kits/ngx/interactions/keyboard';
+import { PopupFooterComponent } from '../footer/popup-footer.component';
 
 import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
 
@@ -14,7 +13,7 @@ import { carouselImageUrls } from '../../carousel-images';
   selector: 'tamu-gisc-poi-popup-component',
   templateUrl: './poi.component.html',
   styleUrls: ['../base/base.popup.component.scss'],
-  imports: [CopyComponent, PhotoCarouselComponent, MarkdownParsePipe, ActivateDirective]
+  imports: [PhotoCarouselComponent, MarkdownParsePipe, PopupFooterComponent]
 })
 export class PoiPopupComponent extends BaseDirectionsComponent implements OnInit {
   public load: ReplaySubject<boolean> = new ReplaySubject(1);
