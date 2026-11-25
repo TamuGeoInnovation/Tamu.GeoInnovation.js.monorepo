@@ -294,14 +294,41 @@ Nothing in this section runs today.
 small visual check, run by hand, compares screenshots of four pages at desktop and phone widths with
 saved images; it found the duplicated anniversary tile and uneven phone spacing. The plan is a
 screenshot of every page at both widths, including all of the builder destinations, generated from
-what the site offers the way the smoke suite is. That is hundreds of images (the builder crawl alone
-produced 726, about 322 MB), too many to keep in the repository, and a changed screenshot needs a
-person to decide whether the change was intended. So the images and those decisions are to live in
-Visual Regression Tracker, a self-hosted tool run on the team's own cluster, with nothing leaving TAMU
-infrastructure
-([#1107](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1107),
-[#1119](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1119)). It is to be
-proved on one map before anything is migrated.
+what the site offers the way the smoke suite is.
+
+**Where the images live is settled**: on the cluster, on one shared disk, where every capture,
+comparison and clean-up runs
+([#1533](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1533); see
+[`tools/visual-baselines`](../tools/visual-baselines/README.md)). A set is captured after a release
+reaches an environment, as step 8 of the [release sequence](releases/README.md). That replaced the
+earlier plan to self-host Visual Regression Tracker for the same job, which was closed on 25 November
+2026 as answered rather than done.
+
+**How such a suite may compare images is measured, not assumed**
+([#1105](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1105)). Capturing
+the same page three times from the same pinned container, same viewport, minutes apart:
+
+| Page                                          | Distinct hashes of three captures |                   |
+| --------------------------------------------- | --------------------------------: | ----------------- |
+| `/all-maps/150`                               |                             **1** | byte-reproducible |
+| `/all-maps/parking`                           |                             **1** | byte-reproducible |
+| `/events/big-event/map/d?map-type=To+Kickoff` |                             **3** | not reproducible  |
+
+The three map captures differed by tens of bytes - 744,919, 744,962 and 744,941 - which is rendering
+noise rather than content.
+
+**So the nondeterminism is the Esri canvas, not rendering in general**, and the consequence is a
+design rule rather than a bug:
+
+- **A page without a map can be hash-diffed.** Store the image, compare hashes between runs, and
+  re-capture only what changed. The hash list reads as a diff in a pull request.
+- **A page with a map cannot.** Its hash changes every run whatever the content, so comparing hashes
+  would report every map page as changed, every time. These need pixel comparison with a tolerance,
+  which `playwright.visual.config.ts` already does with `maxDiffPixelRatio: 0.01`.
+- **Masking the canvas and hashing the rest is the obvious middle**, and is untested. The side panel,
+  layer list and legend are ordinary DOM and are where most visible regressions actually show.
+
+Anyone designing a comparison step should start from that table rather than measuring it again.
 
 ## Keeping this page current
 
