@@ -218,12 +218,9 @@ export class SeasonService extends BaseProvider<Season> {
     const last = await this.getPreviousSeason();
 
     return await this.seasonRepo.manager.transaction(async (manager) => {
-      // Disable previous season. Do this first to prevent any
-      // potential side effects;
-      if (last.active === true) {
-        last.active = false;
-        await manager.save(last);
-      }
+      // Turn off whichever season is active, first, so the new season is the only active one. Not only the latest season by
+      // year: with a later season that is not active, that left the active one on, and the clone made two (#3571).
+      await manager.update(Season, { active: true }, { active: false });
 
       // Save it first so we have the guid in subsequent relationships
       const nextSeason = await Season.incrementYear(last).save();
