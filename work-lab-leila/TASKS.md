@@ -1,5 +1,61 @@
 # work-lab-leila: current tasks
 
+## Batch a55 (aggiemap: #3693, the same handle bug in viewEvent - which shipped this morning; 25 November 2026, 2:10 PM Central, from `work (aggiemap)`) (Medium) - **now**
+
+**a53 is accepted and open as [PR 3698](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3698),
+and the best thing in it is the bug the issue never mentioned.**
+
+You kept the handle in one variable, as `viewEvent` does, and then **wrote a test with two subscribers** - which found
+that the first unsubscribe removes the *second* one's handle and leaves its own registered. Nothing asked you to test
+that. You then proved it red two separate ways: the hand-written wrapper copied exactly, failing on the handle that
+never arrives, and the shared-handle version failing `expected 1 to be 2`. And you ran both visible results on this
+branch and on an unchanged `development` checkout side by side rather than reasoning about them.
+
+**Taking `reactiveUtils` as an argument instead of loading it inside was right**, and your reason is the right one:
+both callers already load it through `EsriModuleProviderService`, and loading it again would add a second asynchronous
+load per call. It also matches how `viewEvent` takes the view. Deviating from the issue's shape and saying why is
+exactly what I want.
+
+### Why this batch
+
+**Because the same fault is in `viewEvent`, which merged this morning**, and you filed it as
+[#3693](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3693). I have set it to Medium and
+put it on the board.
+
+It is worth more than its priority suggests: **`viewEvent` has 13 call sites**. Two subscribers to the same view event
+observable break each other today, and the fault arrived with PR 3603 a few hours ago - so this is the cheapest it will
+ever be to fix, and the fix is one you have already written and tested once.
+
+### What to do
+
+1. **Fix `viewEvent` the way you fixed `watchAsObservable`**: take the handle that `fromEventPattern` passes to
+   `remove`, so each subscription removes its own, and guard it with `handle?.remove()`.
+2. **The two-subscriber test, on `viewEvent` this time.** It must fail on today's code - quote that failure, as you did
+   for the helper. Your `expected 1 to be 2` is the shape.
+3. **Keep the handle-never-arrived case too**, if `viewEvent` lacks it. The same guard covers both and both are cheap.
+4. **Check the two helpers now read the same way.** They are a pair and their doc comments say so; if one takes the
+   handle from `remove` and the other does not, the next person copies whichever they find. A short note in each that
+   the handle is per-subscription would earn its place.
+5. **Say whether any of the 13 call sites has two subscribers today.** If one does, that is a live fault with a visible
+   result and I need to know before this opens - it would want images and a release-notes entry rather than
+   `no-visible-change`. **If none does, say so plainly**: then it is a latent fault fixed before it bit anyone, which is
+   the better outcome and should be stated as such.
+
+### Not in scope
+
+**Do not touch `arcgisSignal`** unless step 4 shows it has the same fault - and if it does, say so and stop rather than
+widening this. It converts a watch to a signal rather than handing out an observable, so its lifecycle is different.
+
+`libs/maps/esri` has PR 3698 open in it - **yours, from a53** - so expect to branch from `development` and have that
+helper's file absent. That is fine: #3693 is about `viewEvent`, a different file. If the two would conflict, say so and
+I will decide the order rather than you merging anything.
+
+**Branch** `fix/3693-viewevent-handle-per-subscriber` from the latest `development` (`2cfb0bc43` or newer - check),
+pushed to the fork. `check-in-volume.sh`, then **`pre-pr-check.sh`**, and give me its last line. Body text in the report
+with a `Title:` line.
+
+**Report** `work-lab-leila/reports/2026-11-25-a55.md`. Questions `Q-a55-<n>`. **Open no pull request.**
+
 ## Batch a53 (aggiemap: #3592, one observable for a reactiveUtils.watch; 25 November 2026, 1:35 PM Central, from `work (aggiemap)`) (Medium) - **now**
 
 **a50 is accepted and open as [PR 3692](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3692).**

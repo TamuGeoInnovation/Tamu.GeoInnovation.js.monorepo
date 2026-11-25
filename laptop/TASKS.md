@@ -1,5 +1,69 @@
 # Laptop: current tasks
 
+## Batch a57 (aggiemap: #3490, the phone's directions use the desktop templates; 25 November 2026, 2:10 PM Central, from `work (aggiemap)`) (Medium) - **now**
+
+**a52 is accepted and open as [PR 3697](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3697) -
+and you were right to ask about the issue it names.**
+
+Its body said `Closes #3679`, which I had closed as not-a-fault an hour earlier. `pre-pr-check` accepted it because it
+only checks that a closing reference **exists**, not that the issue is open - worth knowing, since that is a gap a
+drafted body can walk straight through.
+
+So I filed **[#3696](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3696)**, which states
+the thing your work actually fixes: *the routing check never drives into campus, so it would pass if campus roads
+stopped being drivable*. The pull request closes that instead, with a short section explaining why #3679 is not the
+reference. Attaching this to a retracted non-fault would have put good work behind a wrong record.
+
+**Your red proof is the model.** You could not make it red against production, so you moved the destination into the
+core, quoted the real failure three times over, and said that the edit was made after the commit and restored with
+`git checkout` with the worktree clean before the body commits. That last sentence is what makes the proof trustworthy
+rather than just quoted.
+
+### Why this batch
+
+[#3490](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3490), from the #3062 scan. Two
+duplications, and **the second has already drifted**, which is the part that matters:
+
+- `trip-planner-directions-actions`: the base and mobile templates are **byte-identical**; the mobile class only
+  re-declares the component, and its stylesheet changes two border colours.
+- `trip-planner-directions`: base and mobile repeat the overview and the mode-switch list, and **behave differently** -
+  desktop shows actions only `@if (result() && result()?.isFulfilled)`, the phone **always**, with no error and no
+  "Calculating route" feedback.
+
+So a visitor on a phone gets no feedback while a route is being calculated, and none when it fails. That is the drift
+the duplication allowed, and unifying on the base templates fixes it as a side effect.
+
+### What to do
+
+1. **The base templates win**, with a `layout` input or a host class, as the issue says. Keep the mobile stylesheet's
+   two border colours - that is a real difference, not drift.
+2. **Decide and state what the phone should now show** while calculating and on error. Taking the desktop's behaviour
+   is the obvious answer and is probably right, but it is a **change to what a phone user sees**, so say so explicitly
+   rather than letting it arrive as a side effect of a refactor.
+3. **The phone's bottom sheet relies on the mobile selectors** - the issue flags this and rates the risk low to medium.
+   **Check it on a phone viewport before anything else**, because if the sheet breaks, the whole approach needs
+   rethinking rather than patching.
+4. **This is a visible change.** Before/after images at phone width **and** desktop, into
+   `docs/screenshots/3490-directions-templates/`, and a release-notes entry in
+   `docs/releases/unreleased/3490-<slug>.md` with its *What to test on dev* row. Run
+   `node scripts/collate-release-notes.mjs --check` before pushing. **Take the "before" first** - including, if you can,
+   the phone showing actions while a route is still calculating, since that is the behaviour being removed.
+
+### Not in scope
+
+The **phone mode-picker** fix the issue says could share a pull request. Keep this to directions and
+directions-actions: one change per pull request, and the mode picker is its own.
+
+`libs/maps/feature/trip-planner` has two open pull requests, **neither touching these files** - 3653 is
+`trip-planner-top`, `-bottom` and `-core`, and 3686 is `bus.service.ts`. If you find yourself in either, stop and tell
+me.
+
+**Branch** `refactor/3490-directions-shared-templates` from the latest `development`, pushed to the fork.
+`check-in-volume.sh`, then **`pre-pr-check.sh`**, and give me its last line. Body text in the report with a `Title:`
+line.
+
+**Report** `laptop/reports/2026-11-25-a57.md`. Questions `Q-a57-<n>`. **Open no pull request.**
+
 ## Batch a52 (aggiemap: one drive-into-campus case beside the existing check, from a49; 25 November 2026, 1:35 PM Central, from `work (aggiemap)`) (Low) - **now**
 
 **a49 is the best thing either of us did today, and the error it corrected was mine as much as yours.**

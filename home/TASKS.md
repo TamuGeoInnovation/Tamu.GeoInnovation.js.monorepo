@@ -1,5 +1,66 @@
 # Home machine: current tasks
 
+## Batch a56 (workspace: #3695, a check that exits 3 before it starts; 25 November 2026, 2:10 PM Central, from `work (aggiemap)`) (Medium) - **now**
+
+**a54 is accepted and open as [PR 3694](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3694).**
+
+**Q-a54-1 is A, and your reading of "which wins" is better than the issue's.** One reader, two selections, is right.
+The duplication the issue named was the *path, the shape and the borrowed marking* declared twice - and that is what you
+unified. The two **selections** are not duplication: they answer different questions. Framing checks every builder
+choice, and your figure is the argument - taking one per layer set would drop **428 routes to 78**, losing 350 baseline
+keys and no longer framing the choices that can move where a map opens. That would have been coverage lost disguised as
+deduplication.
+
+That it comes out **byte-identical on production - 428, 78 and 13 - with no baseline key moving** is what makes it safe
+to take at face value.
+
+Two more things worth naming. **"Borrowed and not landing on production: none today"** - you checked rather than
+assuming, and found the four missing from the baseline are Ring Day's April, which production does not serve, against a
+baseline captured on 4 October. And you noticed that one which *did* fail would have been skipped **under the wrong
+reason**, and gave `framing.spec` the borrowed reason as `map-layers.spec` already does, without changing skip-versus-fail.
+
+### Your Docker failure is filed as #3695, and it is this batch
+
+The standalone `check-in-volume.sh` that exited **3** before checking anything, with `Cannot allocate memory` cloning
+the bind-mounted `.git`, is now
+[#3695](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3695) (Bug, Medium). Your note that
+the same Docker file-sharing fault hit **two smoke runs** the same day is what made it worth filing rather than
+shrugging at.
+
+It is a third failure mode, distinct from the two already written down: exit **125** is a full disk (#3365), and #3622
+is a **build task** failing with no output at `CHECK_MEMORY=8g`. This one fails before any task runs, at the clone, and
+says what went wrong.
+
+### What to do
+
+1. **Retry the clone once.** The failure is transient, and your own run proves it: the check inside `pre-pr-check.sh`
+   ran straight afterwards on the identical branch and gave `Exit 0`. That is the clearest possible evidence it is not
+   the branch.
+2. **Say what exit 3 means**, as the script already does for a full disk: that this is Docker file sharing on the
+   Windows mount, that it is transient, and that running it again is the right response. Otherwise "clone failed" reads
+   as a broken repository or a mistyped branch.
+3. **A test for the retry**, in `scripts/check-in-volume.test.sh`, as its siblings have: a first attempt that fails and
+   a second that succeeds must come out as a pass, and a repeated failure must still exit 3 rather than loop.
+
+### Deliberately not in this batch: the CLAUDE.md entry
+
+#3695 asks for an entry in **Things that look broken but are not**, and it should have one - but **PR 3676 is open on
+that exact section** (your own a45, the backslash trap). Two additions to the same list conflict every time, which is
+#2002's whole lesson. So: **script only here.** Say in the report that the CLAUDE.md entry is outstanding, and I will
+send it once 3676 merges.
+
+### Worth knowing
+
+Do **not** narrow the clone to make it cheaper without re-measuring. The volume keeps the whole clone deliberately, and
+the 5-to-12-times speed-up #1402 measured is the reason the volume exists at all. If `--depth` looks attractive, say so
+in the report and leave it.
+
+`no-visible-change`, no images. **Branch** `fix/3695-clone-retry` from the latest `development`, pushed to the fork.
+`check-in-volume.sh`, then **`pre-pr-check.sh`** - and if the clone fault hits again while you are running them, that is
+a reproduction worth quoting. Body text in the report with a `Title:` line.
+
+**Report** `home/reports/2026-11-25-a56.md`. Questions `Q-a56-<n>`. **Open no pull request.**
+
 ## Batch a54 (aggiemap: #3474, one reader of the builder inventory; 25 November 2026, 1:50 PM Central, from `work (aggiemap)`) (Medium) - **now**
 
 **a51 is accepted and open as [PR 3691](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3691).**
