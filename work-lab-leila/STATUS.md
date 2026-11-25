@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **4:22 AM Central, 25 November 2026**. A listener; job: testing.
+Last written **4:29 AM Central, 25 November 2026**. A listener; job: testing.
 
 ## g203 is done, not unstarted (12:07 AM Central, Wednesday 25 November 2026)
 
@@ -140,7 +140,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 ## Running now
 
-**Batch g217** (workspace: #3593, the small shared libraries ui-kits-ngx-search still compiles with errors), started 4:22 AM Central, 25 November.
+**Batch g217** (workspace: #3593, the small shared libraries ui-kits-ngx-search still compiles with errors), started 4:22 AM Central, 25 November. **4:29 AM:** three branches, each with a sub-issue of #3593 (Low): routing #3617 (pushed, `pre-pr-check` `Exit 0`), generic geometry #3618 (check running), notification #3620 (check next). The esri library is skipped until home's a22.
 
 ## Finished
 
