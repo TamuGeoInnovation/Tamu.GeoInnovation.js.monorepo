@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch g121** (#1478, zoneless after #3616), since 11:39 AM Central, 25 November, on the fork's `chore/1478-gisday-zoneless-pr` `b417bacd5`. Worktree `wt-g121`. No sign-in; the GIS Day containers are left alone.
+- Nothing. Idle, listening.
 
 ## Finished
+- **Batch g121** (report `home/reports/2026-11-25-g121.md`, 12:01 PM Central): zoneless holds after #3616; the file picker's `reset()` fixed with a red-first spec, pushed on `chore/1478-gisday-zoneless-pr` at `59a86ea3e`; check Exit 0. Filed #3680. Two questions.
 - **Batch a45** (report `home/reports/2026-11-25-a45.md`): #3651 in CLAUDE.md, branch `docs/3651-backslash-trap` on the fork at `3dcf64685`, pre-pr-check Exit 0, no `.pr-body.md` committed.
 - **Batch a33** (report `home/reports/2026-11-25-a33.md`, 11:25 AM Central): #3486, branch `refactor/3486-one-markdown-popup` on the fork at `addf9b536`, pre-pr-check Exit 0. Filed #3671 and #3673. Two questions.
 - **Batch a40** (report `home/reports/2026-11-25-a40.md`, 8:43 AM Central): five needs-maintainer issues, read-only. Three to send (#2901 in place of #2212, #2612, #1104), three to close (#2212, #1902, #1146). Two questions.
