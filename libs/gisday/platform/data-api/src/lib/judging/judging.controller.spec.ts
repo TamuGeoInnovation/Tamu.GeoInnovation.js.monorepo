@@ -531,5 +531,15 @@ describe('Judging (#3183)', () => {
       expect(again.status).toBe(409);
       expect(rubrics.rows).toHaveLength(1);
     });
+
+    // #3495: a rubric deleted between saving it and reading it back answered 500.
+    it('answer 404 for a rubric deleted while it was being saved', async () => {
+      permissions = ['update:competitions'];
+      const findOne = rubrics.findOne;
+      // Read back with its criteria, as the answer is, it is gone.
+      rubrics.findOne = async (options) => (options.relations?.criteria ? null : findOne(options));
+
+      expect((await send('PUT', '/rubrics/r-poster', DEFAULT_RUBRICS.poster)).status).toBe(404);
+    });
   });
 });
