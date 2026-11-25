@@ -1,9 +1,9 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ParseIntPipe, ParseUUIDPipe } from '@nestjs/common';
 
 import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
-import { SubmissionDeadlines } from '@tamu-gisc/gisday/common';
+import { type SubmissionDeadlines } from '@tamu-gisc/gisday/common';
 
-import { SeasonService, SeasonUpdate } from './season.service';
+import { SeasonService, type SeasonUpdate } from './season.service';
 
 @Controller('seasons')
 export class SeasonController {

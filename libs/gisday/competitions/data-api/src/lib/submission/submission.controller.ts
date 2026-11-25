@@ -47,7 +47,10 @@ export const MAX_PHOTO_BYTES = 15 * 1024 * 1024;
 
 @Controller('competitions/submissions')
 export class SubmissionController {
-  constructor(private service: SubmissionService, private formService: FormService) {}
+  constructor(
+    private service: SubmissionService,
+    private formService: FormService
+  ) {}
 
   /**
    * The signed-in participant's own submissions, for My VGI Submissions (#1791). Who they are comes
@@ -62,7 +65,11 @@ export class SubmissionController {
 
   @UseGuards(JwtGuard)
   @Get('user/:userGuid')
-  public async getUserSubmissions(@Req() req, @Param('userGuid') userGuid: string, @Query('seasonGuid') seasonGuid?: string) {
+  public async getUserSubmissions(
+    @Req() req,
+    @Param('userGuid') userGuid: string,
+    @Query('seasonGuid') seasonGuid?: string
+  ) {
     assertCanRead(req, userGuid);
 
     return this.service.getUserSubmissions({ userGuid, seasonGuid });
@@ -129,7 +136,7 @@ export class SubmissionController {
       return submission;
     }
 
-    const { verifiedBy, ...status } = submission.validationStatus;
+    const { verifiedBy: _verifiedBy, ...status } = submission.validationStatus;
 
     return { ...submission, validationStatus: status };
   }
@@ -174,14 +181,19 @@ export class SubmissionController {
   @UseInterceptors(
     AnyFilesInterceptor({ limits: { ...DEFAULT_UPLOAD_LIMITS, fileSize: MAX_PHOTO_BYTES, files: 2, parts: 52 } })
   )
-  public async insert(@Req() req, @Body() body, @UploadedFiles() files?: Array<Express.Multer.File>) {
+  public async insert(@Req() req, @Body() body: SubmissionBody, @UploadedFiles() files?: Array<Express.Multer.File>) {
+    // Without a season, the lookup below would match any; without an answer or a location, nothing can be saved (#3495).
+    if (!body?.season || body.value === undefined || body.location === undefined) {
+      throw new BadRequestException('Incomplete submission.');
+    }
+
     const season = await this.formService.getSeason(body.season);
 
     if (!season) {
       throw new UnprocessableEntityException('Competition season not found.');
     }
 
-    if (season.allowSubmissions === false || season.allowSubmissions === null) {
+    if (!season.allowSubmissions) {
       throw new BadRequestException('Submissions are disabled for this season.');
     }
 
@@ -259,6 +271,12 @@ export class SubmissionController {
     return submission;
   }
 }
+
+/**
+ * A submission as the app sends it, each field a form field: the competition season's GIS Day season, the app's own id
+ * for it, and the answers and location as JSON. Express 5 leaves the body undefined when nothing is sent.
+ */
+type SubmissionBody = { season?: string; guid?: string; value?: string; location?: string } | undefined;
 
 /**
  * Lets the request through when it is from `ownerGuid` or from someone who may read every submission.

@@ -7,7 +7,6 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
-import esri = __esri;
 import { EventPopups } from '../modules/popups/popups';
 
 // Drawn in this order, top first (docs/map-layers.md, "Drawing order"): the accessible spaces and the traffic flow over

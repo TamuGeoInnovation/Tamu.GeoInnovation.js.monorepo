@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { Mailer } from '../mailer/mailer.util';
 
 import { EmailController } from './email.controller';
@@ -11,7 +12,7 @@ import { EmailController } from './email.controller';
  */
 describe('EmailController', () => {
   let controller: EmailController;
-  let sendMail: jest.Mock;
+  let sendMail: Mock;
 
   /** What the endpoint handed to nodemailer. */
   const sent = () => sendMail.mock.calls[0][0];
@@ -47,7 +48,7 @@ describe('EmailController', () => {
   } as Express.Multer.File;
 
   beforeEach(() => {
-    sendMail = jest.fn().mockResolvedValue({ accepted: ['someone@tamu.edu'], rejected: [] });
+    sendMail = vi.fn().mockResolvedValue({ accepted: ['someone@tamu.edu'], rejected: [] });
     (Mailer as unknown as { transporter: unknown }).transporter = { sendMail };
     controller = new EmailController(undefined);
   });

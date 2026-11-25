@@ -10,7 +10,6 @@ import {
 import { CONSTRUCTION_PROJECT_FIELDS } from './construction-map.definitions';
 import { FootballParkingConfiguration } from './football-parking.definitions';
 
-import esri = __esri;
 import { EventPopups } from '../modules/popups/popups';
 
 /**

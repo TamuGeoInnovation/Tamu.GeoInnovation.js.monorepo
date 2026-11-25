@@ -3,6 +3,7 @@
   "compilerOptions": {
     "module": "commonjs",
     "outDir": "../../../../dist/out-tsc",
+    "strictNullChecks": true,
     "declaration": true,
     "types": ["node"],
     "target": "es2021"

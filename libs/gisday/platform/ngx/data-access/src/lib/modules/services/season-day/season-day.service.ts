@@ -12,10 +12,10 @@ export class SeasonDayService extends BaseService<SeasonDay> {
   private http1 = inject(HttpClient);
 
   constructor() {
-    super('season-days');
+    super('season-days', { wireDates: true });
   }
 
   public getDayEvents(guid: string) {
-    return this.http1.get<Array<SimplifiedEvent>>(`${this.resource}/${guid}/events`);
+    return this.answer(this.http1.get<Array<SimplifiedEvent>>(`${this.resource}/${guid}/events`));
   }
 }

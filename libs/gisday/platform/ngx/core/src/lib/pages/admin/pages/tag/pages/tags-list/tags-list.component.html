@@ -24,7 +24,7 @@
           <tr class="selectable" [routerLink]="['edit', entity.guid]">
             <td (click)="$event.stopPropagation()"><tamu-gisc-checkbox label="" (changed)="toggleRow($safeNavigationMigration(entity?.guid))" [checked]="(selectedRows$ | async) | exists: $safeNavigationMigration(entity?.guid)"></tamu-gisc-checkbox></td>
             <td>{{entity.name}}</td>
-            <td>{{entity.updated | date:'short'}}</td>
+            <td>{{entity.updated | centralDate:'short'}}</td>
           </tr>
           }
         </tbody>

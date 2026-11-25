@@ -9,7 +9,6 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
-import esri = __esri;
 import { EventPopups } from '../modules/popups/popups';
 
 // The order the map draws its layers in, top first (#2059): `EventService` adds them to the map in the
@@ -19,7 +18,7 @@ import { EventPopups } from '../modules/popups/popups';
 export enum INDOOR_TRACK_PARKING_LAYERS {
   ACCESSIBLE_PARKING = 'indoor-track-parking-accessible-parking',
   PARKING_LOTS = 'indoor-track-parking-lots',
-  BUILDING = 'indoor-track-parking-building',
+  BUILDING = 'indoor-track-parking-building'
 }
 
 const eventUrl = Connections.indoorTrackParkingUrl;
@@ -104,7 +103,7 @@ export const IndoorTrackParkingColdLayerSources: LayerSource[] = [
     native: {
       outFields: ['*']
     }
-  },
+  }
 ];
 
 /**
@@ -127,15 +126,14 @@ const indoorTrackParkingDevelopmentIndex: Record<string, number> = {
   [IndoorTrackParkingDefinitions.PARKING.id]: 2
 };
 
-export const IndoorTrackParking_DevelopmentLayerSources: LayerSource[] =
-  IndoorTrackParkingColdLayerSources.filter(
-    (source) => (source as { id: string }).id in indoorTrackParkingDevelopmentIndex
-  ).map((source) =>
-    athleticsDevelopmentSource({
-      id: (source as { id: string }).id,
-      url: `${eventUrl}/${indoorTrackParkingDevelopmentIndex[(source as { id: string }).id]}`
-    })
-  );
+export const IndoorTrackParking_DevelopmentLayerSources: LayerSource[] = IndoorTrackParkingColdLayerSources.filter(
+  (source) => (source as { id: string }).id in indoorTrackParkingDevelopmentIndex
+).map((source) =>
+  athleticsDevelopmentSource({
+    id: (source as { id: string }).id,
+    url: `${eventUrl}/${indoorTrackParkingDevelopmentIndex[(source as { id: string }).id]}`
+  })
+);
 
 export const IndoorTrackParkingConfiguration: EventConfiguration = {
   id: 'indoor-track-parking',

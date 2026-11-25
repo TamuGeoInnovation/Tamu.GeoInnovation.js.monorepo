@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, ParseBoolPipe, Post, Query, UseGuards } f
 
 import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 
-import { SiteCopyUpload } from './site-copy.format';
+import { type SiteCopyUpload } from './site-copy.format';
 import { SiteCopyService } from './site-copy.service';
 
 /**

@@ -3,7 +3,7 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { AsyncPipe, DatePipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { combineLatest, from, map, of, shareReplay, startWith, switchMap } from 'rxjs';
 
 import {
@@ -25,6 +25,7 @@ import {
   UploadImagePicker
 } from '@tamu-gisc/gisday/platform/ngx/common';
 import { NO_SLIDES_FOR_SESSION, SESSION_FILES_LIMIT, SpeakerSessionDto } from '@tamu-gisc/gisday/common';
+import { CentralDatePipe } from '@tamu-gisc/gisday/platform/ngx/common';
 
 /**
  * A speaker editing their own presenter profile through the link emailed to them (#2936), with no account. Without a
@@ -39,7 +40,7 @@ import { NO_SLIDES_FOR_SESSION, SESSION_FILES_LIMIT, SpeakerSessionDto } from '@
     ReactiveFormsModule,
     RouterLink,
     AsyncPipe,
-    DatePipe,
+    CentralDatePipe,
     ButtonComponent,
     FileComponent,
     SelectComponent,

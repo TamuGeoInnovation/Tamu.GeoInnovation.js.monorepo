@@ -14,7 +14,7 @@ import {
 
 import { PermissionsGuard, Permissions, JwtGuard } from '@tamu-gisc/common/nest/auth';
 
-import { GisDayProfileUpdate, UserInfoProvider } from './user-info.provider';
+import { type GisDayProfileUpdate, UserInfoProvider } from './user-info.provider';
 import { AccountDashboardProvider } from './account-dashboard.provider';
 
 @Controller('users')

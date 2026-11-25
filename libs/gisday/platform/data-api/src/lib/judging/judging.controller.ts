@@ -19,10 +19,10 @@ import { siteHost } from '../_base/site-of-request';
 import { EmailSenderService } from '../contact/email-sender.service';
 import { emailOf } from '../speaker-edit/session-details-email.controller';
 import { refuseTogether } from '../speaker-edit/speaker-edit.controller';
-import { JudgeLinkGuard, JudgeLinkRequest } from './judge-link.guard';
+import { JudgeLinkGuard, type JudgeLinkRequest } from './judge-link.guard';
 import { JudgingEmail, JudgingEmailService } from './judging-email.service';
-import { AssessmentBody, JudgingService } from './judging.service';
-import { RubricBody, RubricService } from './rubric.service';
+import { type AssessmentBody, JudgingService } from './judging.service';
+import { type RubricBody, RubricService } from './rubric.service';
 
 /**
  * The rubrics judges score against (#3183), per season: read by whoever may see the competitions, changed by whoever may

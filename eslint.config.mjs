@@ -41,5 +41,14 @@ export default [
     rules: {
       'no-extra-semi': 'off'
     }
+  },
+  // An unused variable, import or parameter fails lint (#2390). It was Nx's warning, which never fails `nx lint`, a check
+  // or CI, so they accumulated: 86 across 20 projects on 25 November 2026. A parameter or a destructured key a
+  // signature needs, but nothing reads, is named `_name`. Last, so no preset spread after it puts the warning back.
+  {
+    files: ['**/*.ts', '**/*.tsx'],
+    rules: {
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }]
+    }
   }
 ];

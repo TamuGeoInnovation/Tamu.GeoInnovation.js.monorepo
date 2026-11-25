@@ -122,7 +122,7 @@ export class VgiDashboardProvider {
       return null;
     }
 
-    const typeQuestion = competitionSeason.form?.model?.find((q) => q.isDiscriminator === true);
+    const typeQuestion = competitionSeason.form?.model.find((q) => q.isDiscriminator === true);
     const types = (typeQuestion?.options ?? []).map((option) => ({ key: String(option.value), name: option.name }));
     const known = new Set(types.map((t) => t.key));
     const typeOf = (submission: CompetitionSubmission) => {

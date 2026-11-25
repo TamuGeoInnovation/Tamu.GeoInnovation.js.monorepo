@@ -14,7 +14,7 @@ export class EventService extends BaseService<Event> {
   public resource: string;
 
   constructor() {
-    super('events');
+    super('events', { wireDates: true });
   }
 
   public getNumberOfRsvps(eventGuid: string) {
@@ -22,11 +22,11 @@ export class EventService extends BaseService<Event> {
   }
 
   public getEvent(guid: string) {
-    return this.http1.get<Partial<Event>>(`${this.resource}/${guid}`);
+    return this.answer(this.http1.get<Partial<Event>>(`${this.resource}/${guid}`));
   }
 
   public getEventsByDay() {
-    return this.http1.get<Partial<EventResponse>>(`${this.resource}/by-day`);
+    return this.answer(this.http1.get<Partial<EventResponse>>(`${this.resource}/by-day`));
   }
 
   public getEventAttendance(guid: string) {

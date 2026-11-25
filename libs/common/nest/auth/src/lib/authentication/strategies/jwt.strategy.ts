@@ -29,7 +29,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 }
 
+/**
+ * Read from the environment, so either is undefined where its variable is not set (#3495).
+ */
 export interface JwtConfig {
-  audience: string;
-  issuerUrl: string;
+  audience: string | undefined;
+  issuerUrl: string | undefined;
 }

@@ -1,0 +1,12 @@
+# Spec configurations that already had type errors when scripts/check-spec-types.mjs was added (#2263), each with its
+# count on development on 25 November 2026. A pull request that changes one of these projects is not failed for these
+# errors, but is failed if the count rises, and once a project type-checks cleanly it must be taken off this list.
+# Regenerate the counts with: node scripts/check-spec-types.mjs --all
+881 libs/ts/events/ngx/tsconfig.spec.json
+845 libs/aggiemap/ngx/discover/tsconfig.spec.json
+720 libs/aggiemap/ngx/core/tsconfig.spec.json
+720 libs/aggiemap/ngx/common/tsconfig.spec.json
+254 libs/maps/feature/basemap/tsconfig.spec.json
+141 libs/ui-kits/ngx/layout/modal/tsconfig.spec.json
+97 apps/aggiemap-angular/tsconfig.spec.json
+1 libs/ui-kits/ngx/qr-code/tsconfig.spec.json

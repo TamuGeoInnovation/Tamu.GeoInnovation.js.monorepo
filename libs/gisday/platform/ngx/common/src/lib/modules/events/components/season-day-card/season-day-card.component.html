@@ -10,7 +10,7 @@ the card itself, so its heading is the card's own child and takes the site's .ca
       <!-- In Central time, as the page's times are: a day arrives as midnight Central, which is the evening before for a
       visitor further west (#2708). -0600 is CST, which GIS Day always falls in, in November. -->
       <span>
-        <span class="day-date">{{seasonDay().date | date : 'EEEE, MMMM d' : '-0600'}}</span>
+        <span class="day-date">{{seasonDay().date | centralDate : 'EEEE, MMMM d'}}</span>
         <!-- The space between (&ngsp;, which Angular keeps) is outside both, so the line can break there on a phone. -->
         @if (!expanded() && shown) {&ngsp;<span class="day-count">· {{ shown.length }} {{ shown.length === 1 ? 'session' : 'sessions' }}</span> }
       </span>

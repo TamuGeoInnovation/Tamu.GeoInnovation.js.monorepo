@@ -86,6 +86,18 @@ describe('SubmissionController', () => {
       );
     });
 
+    // #3495: a request without them used to fail reading them, as a 500; and without a season, the lookup matched any.
+    it.each([
+      ['no body', undefined],
+      ['no season', { value: body.value, location: body.location }],
+      ['no answers', { season: body.season, location: body.location }],
+      ['no location', { season: body.season, value: body.value }]
+    ])('refuses a submission with %s with 400, not 500, and looks nothing up', async (_, sent) => {
+      await expect(controller.insert(bob, sent, [])).rejects.toThrow(BadRequestException);
+      expect(formService.getSeason).not.toHaveBeenCalled();
+      expect(service.createCompetitionSubmission).not.toHaveBeenCalled();
+    });
+
     it('refuses a season that does not exist with 422, not 500', async () => {
       formService.getSeason.mockResolvedValue(null);
 

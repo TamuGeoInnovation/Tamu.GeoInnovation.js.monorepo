@@ -26,17 +26,11 @@ import { MapComponent } from './map.component';
 describe('MapComponent (event-passed flow)', () => {
   let componentInstance: MapComponent;
   let mockModalService: Partial<any>;
-  let mockSettingsService: Partial<any>;
   let mockEventSettingsService: Partial<any>;
 
   beforeEach(() => {
     mockModalService = {
       open: vi.fn(() => ({ subscribe: (cb: any) => cb(true) }))
-    };
-
-    mockSettingsService = {
-      updateSettings: vi.fn(),
-      getStorageObjectKeyValue: vi.fn(() => null)
     };
 
     mockEventSettingsService = {
@@ -117,9 +111,7 @@ describe('MapComponent (opening basemap)', () => {
   }
 
   it('opens a campus map on the campus basemap, even after Aerial Imagery was last chosen', () => {
-    expect(openingBasemap({ configuration: { basemap: 'campus' }, saved: 'nearmap_cs_basemap' })).toEqual(
-      aggiemapBasemap()
-    );
+    expect(openingBasemap({ configuration: { basemap: 'campus' }, saved: 'nearmap_cs_basemap' })).toEqual(aggiemapBasemap());
   });
 
   it('opens a campus map on the campus basemap when nothing was saved', () => {

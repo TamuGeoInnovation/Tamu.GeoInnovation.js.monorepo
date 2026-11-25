@@ -8,7 +8,6 @@ import {
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
-import { EventPopups } from '../modules/popups/popups';
 
 export enum WOMENS_BASKETBALL_LAYERS {
   ACCESSIBLE_PARKING = 'womens-basketball-accessible-parking',

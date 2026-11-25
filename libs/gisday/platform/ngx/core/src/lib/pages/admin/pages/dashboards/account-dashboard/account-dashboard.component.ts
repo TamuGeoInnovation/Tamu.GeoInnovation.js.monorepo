@@ -1,6 +1,6 @@
 import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AsyncPipe, DatePipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { catchError, filter, map, of, switchMap, tap } from 'rxjs';
 
 import { readRefusal, seasonPicker } from '@tamu-gisc/gisday/platform/ngx/common';
@@ -19,6 +19,7 @@ import {
   DashboardTableComponent,
   DashboardTableRow
 } from '../shared/dashboard-table/dashboard-table.component';
+import { CentralDatePipe } from '@tamu-gisc/gisday/platform/ngx/common';
 
 /** The table's rows: a university or employer each, its accounts counted by person type. */
 export function accountTableRows(dashboard: AccountDashboard): Array<DashboardTableRow> {
@@ -54,7 +55,7 @@ export function accountFileName(year: number | null | undefined, rowName: string
     DashboardRowDetailDirective,
     DashboardPeopleComponent,
     AsyncPipe,
-    DatePipe
+    CentralDatePipe
   ]
 })
 export class AccountDashboardComponent implements OnInit {
@@ -93,7 +94,9 @@ export class AccountDashboardComponent implements OnInit {
   /** The earlier seasons beside this one on the chart (#3215), once the page knows its seasons. */
   public readonly comparison = signal<SeasonComparison | null>(null);
   /** The chart's line with the compared seasons', and the day its axis counts from when there are any. */
-  public readonly compared = computed(() => this.comparison()?.compare(this.chart().series) ?? { series: this.chart().series, anchor: null });
+  public readonly compared = computed(
+    () => this.comparison()?.compare(this.chart().series) ?? { series: this.chart().series, anchor: null }
+  );
   /** The window's last day: it ends at the midnight that starts the day after. */
   public readonly lastDay = computed(() => {
     const to = this.dashboard()?.window.to;

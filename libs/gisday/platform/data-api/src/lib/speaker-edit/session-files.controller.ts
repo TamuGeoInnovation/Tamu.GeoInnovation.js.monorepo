@@ -17,7 +17,7 @@ import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/
 
 import { SUBMISSION_FILE_UPLOAD } from '../user-submission/submission-file-upload';
 import { SessionFilesService } from './session-files.service';
-import { SpeakerEditLinkGuard, SpeakerLinkRequest } from './speaker-edit-link.guard';
+import { SpeakerEditLinkGuard, type SpeakerLinkRequest } from './speaker-edit-link.guard';
 
 /**
  * The slides of the sessions speakers present (#3093). The link routes take no sign-in: the speaker's edit link in the

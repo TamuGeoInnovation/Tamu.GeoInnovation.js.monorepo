@@ -13,9 +13,12 @@ import { ClassAddEditFormComponent, sectionsFrom } from './class-add-edit-form.c
  * #2872. The same class is often added once per section, so Create Class takes a list of sections and adds one class
  * for each.
  */
+/** A class as the form sends it: its season by guid, as the form holds it, not the season itself (#3547). */
+type ClassPayload = Partial<Omit<Class, 'season'>> & { season?: string };
+
 describe('ClassAddEditFormComponent, creating', () => {
   function create(refuse: Array<string> = []) {
-    const created: Array<Partial<Class>> = [];
+    const created: Array<ClassPayload> = [];
     const toast = vi.fn();
     const navigate = vi.fn();
 
@@ -27,7 +30,7 @@ describe('ClassAddEditFormComponent, creating', () => {
           provide: ClassService,
           useValue: {
             getEntity: () => of({}),
-            createEntity: (c: Partial<Class>) => {
+            createEntity: (c: ClassPayload) => {
               if (refuse.includes(c.section)) {
                 return throwError(() => new HttpErrorResponse({ status: 409, error: { message: 'Class already exists' } }));
               }

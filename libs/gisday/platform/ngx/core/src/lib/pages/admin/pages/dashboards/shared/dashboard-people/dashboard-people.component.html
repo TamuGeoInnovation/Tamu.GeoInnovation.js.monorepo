@@ -45,7 +45,7 @@
         <td>{{ person.counts?.[column.key] ?? 0 }}</td>
         }
         <td>
-          {{ person.created | date: 'MMM d, h:mm a' }} @if (person.outsideSessionTime) {
+          {{ person.created | centralDate: 'MMM d, h:mm a' }} @if (person.outsideSessionTime) {
           <div class="dashboard-person-outside">Outside the session's time</div>
           }
         </td>
