@@ -1,4 +1,13 @@
-import { Component, AfterContentInit, TemplateRef, HostBinding, ChangeDetectionStrategy, input, model, contentChildren } from '@angular/core';
+import {
+  Component,
+  AfterContentInit,
+  TemplateRef,
+  HostBinding,
+  ChangeDetectionStrategy,
+  input,
+  model,
+  contentChildren
+} from '@angular/core';
 
 import { AbstractContentReplacerToggleComponent } from './abstracts/abstract-content-replacer-toggle/abstract-content-replacer-toggle.component';
 
@@ -78,6 +87,6 @@ export class AbstractContentReplacerComponent implements AfterContentInit {
 
 interface Toggle {
   index: number;
-  label: string;
+  label: string | undefined;
   template: TemplateRef<unknown>;
 }

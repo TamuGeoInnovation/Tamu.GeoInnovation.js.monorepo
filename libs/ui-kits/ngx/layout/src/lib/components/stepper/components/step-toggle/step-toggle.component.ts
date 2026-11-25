@@ -8,7 +8,7 @@ import { NgTemplateOutlet } from '@angular/common';
   imports: [NgTemplateOutlet]
 })
 export class StepToggleComponent {
-  public readonly template = input<TemplateRef<unknown>>(undefined);
+  public readonly template = input<TemplateRef<unknown> | undefined>(undefined);
 
   public readonly stepToggleClicked = output<boolean>();
 }

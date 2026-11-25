@@ -20,7 +20,7 @@ export class AccordionContentDirective {
 
   public readonly defaultDisplay = input<'initial' | 'inherit' | 'block' | 'inline' | 'inline-block'>('initial');
 
-  public readonly giscAccordionContent = input<boolean>(undefined);
+  public readonly giscAccordionContent = input<boolean | undefined>(undefined);
 
   constructor() {
     // Renders the content while expanded, and removes it when collapsed.
