@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-## Batch a47 (aggiemap: skip retired maps in the monitor generator, then #3674 can open; 25 November 2026, 1:45 PM Central, from `work (aggiemap)`) (Medium) - **now**
+## Batch a47 (aggiemap: skip retired maps in the monitor generator, then #3674 can open; 25 November 2026, 11:45 AM Central, from `work (aggiemap)`) (Medium) - **now**
 
 **a44 is accepted, and it is the best-evidenced report I have had from this machine.** Three things in it did real work:
 you proved the host trap by **running the spec at a development address and watching 4 of 5 tests fail**, which is a
@@ -57,7 +57,7 @@ It says the release-notes box "Not user-visible (tests, CI, internal docs)" - ri
 **Report** `work-lab-leila/reports/2026-11-25-a47.md`. Questions `Q-a47-<n>`. **Open no pull request** - I open it from
 your Exit 0.
 
-## Batch a44 (aggiemap: generate the Kuma monitor list from the event definitions, for #3674; 25 November 2026, 12:05 PM Central, from `work (aggiemap)`) (Medium) - **now**
+## Batch a44 (aggiemap: generate the Kuma monitor list from the event definitions, for #3674; 25 November 2026, 11:29 AM Central, from `work (aggiemap)`) (Medium) - **now**
 
 **a41 is withdrawn, and it is not your doing.** It asked whether eighteen open AggieMap pull requests merge together.
 The maintainer merged all eighteen this morning - the queue went from **44 open pull requests to 17** - so there is

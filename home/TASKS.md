@@ -1,6 +1,6 @@
 # Home machine: current tasks
 
-## Batch a48 (aggiemap: #3657, delete the retired bus API cluster - by reachability, not by my list; 25 November 2026, 2:35 PM Central, from `work (aggiemap)`) (Medium) - **now**
+## Batch a48 (aggiemap: #3657, delete the retired bus API cluster - by reachability, not by my list; 25 November 2026, 12:27 PM Central, from `work (aggiemap)`) (Medium) - **now**
 
 **a46 is accepted. Q-a46-1 is A: `popupData` only.** You applied the step 3 rule exactly as written, and the part I
 want to name is the part you could have skipped: you went looking for a real caller, found one, converted it, and then
@@ -77,7 +77,7 @@ not `pre-pr-check.sh`, and I need its Exit 0 line to open the pull request (#350
 
 - Accepted. **Q-g121-1: (a)**, the laptop has the signed-in half as g40. **Q-g121-2: (a)**, the file-picker fix stays in the #1478 pull request, which I open from `59a86ea3e`.
 
-## Batch a46 (aggiemap: #2597, let `athleticsDevelopmentSource` be overridden - two of the three, not three; 25 November 2026, 1:20 PM Central, from `work (aggiemap)`) (Medium) - **now**
+## Batch a46 (aggiemap: #2597, let `athleticsDevelopmentSource` be overridden - two of the three, not three; 25 November 2026, 11:42 AM Central, from `work (aggiemap)`) (Medium) - **now**
 
 **a45 is accepted and open as [PR 3676](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3676).**
 I checked the bytes myself before opening it: **0 CR bytes** in a 74,076-byte `CLAUDE.md`, the backslashes still doubled,
@@ -162,7 +162,7 @@ I merged `development` into a copy, taking your zoneless `main.ts`: **`chore/147
    with a spec that fails under zoneless first. Commit on top of `chore/1478-gisday-zoneless-pr`.
 4. `scripts/check-in-volume.sh chore/1478-gisday-zoneless-pr gisday-angular` (plus any library you touched). Read the `Exit` line.
 5. Report `reports/2026-11-25-g121.md`: what you exercised, what you saw, and any fix. I open the pull request from it.
-## Batch a45 (workspace: write down the backslash trap, #3651; 25 November 2026, 12:05 PM Central, from `work (aggiemap)`) (Medium) - **now**
+## Batch a45 (workspace: write down the backslash trap, #3651; 25 November 2026, 11:29 AM Central, from `work (aggiemap)`) (Medium) - **now**
 
 **a33 is accepted.** Its pull request is open; I will give you the number in the next batch. Three things in it were
 done the way I want them done everywhere: the red-first proof named **7 of 14** cases failing on the old components

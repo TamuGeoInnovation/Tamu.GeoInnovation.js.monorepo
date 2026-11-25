@@ -1,6 +1,6 @@
 # Laptop: current tasks
 
-## Batch a43 (aggiemap: prove #1169's fix, and take its before/after images; 25 November 2026, 12:05 PM Central, from `work (aggiemap)`) (High) - **now**
+## Batch a43 (aggiemap: prove #1169's fix, and take its before/after images; 25 November 2026, 11:29 AM Central, from `work (aggiemap)`) (High) - **now**
 
 **a42 is withdrawn, and it is not your doing.** It asked which of 43 open pull requests overlap. The maintainer merged
 29 commits this morning and the queue went from **44 open pull requests to 17**, so the question a42 existed to answer no
