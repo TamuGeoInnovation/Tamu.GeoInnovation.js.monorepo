@@ -1,8 +1,8 @@
 # work-lab-leila: current tasks
 
-> # PAUSED by the maintainer, 24 November 2026, about 11:00 AM Central: the student is using this machine again.
+> # Back: the pause is over (the maintainer, 25 November 2026, about 12:30 AM Central). Take batches again.
 >
-> **No director assigns this machine any work until the maintainer says so.** Batches 201 and 202 (security) were already done and reported. Finish nothing new; keep listening only.
+> ~~PAUSED by the maintainer, 24 November 2026, about 11:00 AM Central: the student is using this machine again.~~
 
 > # Your heartbeat has been dead since 15 November: please restart it (1:00 PM Central, 23 November, from `work (aggiemap)`)
 >
@@ -84,6 +84,30 @@
 > emails) on `feat/3044-email-markdown` when it appears on the fork: the window's preview with **bold** text, and an
 > email as it arrives if you can show one locally without sending to anyone real. Report each "branch ready" as you go.
 
+
+## Batch g201 (gisday: #1977's Vitest step, the GIS Day libraries off Jest; 25 November 2026, about 12:30 AM Central, from `work (gisday)`) (Medium) - **now**
+
+Moved here from the laptop's g28, which is withdrawn: the laptop has three batches ahead of it and you are free. #1977 is claimed In Progress.
+
+[#1977](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1977) (and [#1479](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1479)): read both,
+and #1479's last comment, the maintainer's order of 18 October: Vitest **measured before and after**. AggieMap and UES moved in #1948 (8951a6364):
+**copy that pattern** (each project's `vitest.config.mts`, `project.json` test target, `tsconfig.spec.json`, setup file), don't invent one. Several
+GIS Day libraries already have a `vitest.config.mts` (#2382, #2563): read those first. **Fetch `origin` before each branch**: the maintainer is
+merging as pull requests go green, so `development` moves under you.
+
+Still on Jest (24 November): the eight GIS Day libraries under `libs/gisday/` (competitions data-api, ngx common/core/data-access; platform
+data-api, ngx common/core/data-access) and the two apps.
+
+**First the four `ngx/data-access` and `ngx/common` libraries, one branch, `chore/1977-gisday-vitest-ngx`:**
+1. **Before:** `scripts/check-in-volume.sh` on `origin/development` for those four with `BUILD_TIMES_RECORD=1` and `CHECK_PARALLEL=1`. Record each
+   project's test time and test count.
+2. Convert them. **The same number of tests before and after**, per project, in the report. A spec that only passed because of a Jest quirk gets
+   fixed, not skipped.
+3. **After:** the same check, the same way. The table (project, tests, Jest seconds, Vitest seconds) goes in `docs/build-times.md`.
+4. Push, `.pr-body.md` from the template last, `no-visible-change`.
+
+Then, if that went cleanly, a second branch `chore/1977-gisday-vitest-core` for the two `ngx/core` libraries and the two `data-api` libraries, the same
+way. The apps last, or say why not. Stop and report if a library needs a decision. Questions `Q-g201-<n>`. Report `reports/2026-11-25-g201.md`.
 
 ## Batch 200 (gisday: #3398, then #3396 once PR 3392 merges; 24 November 2026, from `work (gisday)`) (Low) - **HELD: the student is using this machine again (the maintainer, 24 November). Do not start it; if it is under way, stop at a safe point, push nothing half-done, and report what is done.**
 
