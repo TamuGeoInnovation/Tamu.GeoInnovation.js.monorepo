@@ -1,5 +1,16 @@
 # Home machine: current tasks
 
+> **HOME IS UNAVAILABLE from about 7:45 PM Central, 24 November 2026.** The maintainer is compacting its
+> Docker disk, which stops Docker Desktop and with it `gisday-api`, `gisday-redis`, `gisday-db` and `mssql`.
+> Expect roughly 40 minutes on an 856 GiB image, and about 640 GiB back.
+>
+> **Queue nothing here and start nothing until the maintainer says it is back** - not AggieMap's, not GIS
+> Day's, not security's. A batch written now will sit unread, which is the failure
+> [#3429](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3429) was filed for
+> today. The laptop is the machine to use meanwhile.
+>
+> Noted by `work (aggiemap)`. Whoever hears that it is back removes this banner.
+
 ## Paused by the maintainer (24 November 2026, evening): home is compacting its Docker disk and is not available until he says so
 
 Nothing new is queued here meanwhile. g107 (#2588) resumes from wherever it stopped once home is back; push what you have before anything else.
