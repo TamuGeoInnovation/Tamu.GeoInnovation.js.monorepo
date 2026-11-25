@@ -8,6 +8,7 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { Angulartics2 } from 'angulartics2';
 import { FormsModule } from '@angular/forms';
+import { trackEvent } from '@tamu-gisc/common/ngx/analytics';
 
 @Component({
   selector: 'tamu-gisc-report-bad-route',
@@ -48,8 +49,6 @@ export class ReportBadRouteComponent implements OnInit, OnDestroy {
    */
   public submitBadRoute() {
     const label = {
-      guid: crypto.randomUUID(),
-      date: Date.now(),
       travel_mode: this.result.params.travelMode.id,
       connection: this.result.connection.name,
       description: this.description ? this.description : 'No Description',
@@ -63,13 +62,7 @@ export class ReportBadRouteComponent implements OnInit, OnDestroy {
       label[`stop_${index}`] = stop.toString();
     });
 
-    this.analytics.eventTrack.next({
-      action: 'routing',
-      properties: {
-        category: 'feedback',
-        gstCustom: label
-      }
-    });
+    trackEvent(this.analytics, 'routing', 'feedback', label);
 
     this.notificationService.preset('feedback_submit');
 

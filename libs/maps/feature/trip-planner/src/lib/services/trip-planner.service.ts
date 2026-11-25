@@ -39,6 +39,8 @@ import { findNearestIndex, getGeolocation } from '@tamu-gisc/common/utils/geomet
 import { centroidFromPolygonGeometry } from '@tamu-gisc/common/utils/geometry/esri';
 import { pairwiseOverlap } from '@tamu-gisc/common/utils/collection';
 
+import { trackEvent } from '@tamu-gisc/common/ngx/analytics';
+
 import { DoorPoint, firstRoutableDoor, rankDoorsByDistance, refineStops } from './trip-planner-door-choice';
 import { timeStringForDate } from '@tamu-gisc/common/utils/date';
 
@@ -1549,8 +1551,6 @@ export class TripPlannerService implements OnDestroy {
 
     // Route creation analytics tracking
     const label = {
-      guid: crypto.randomUUID(),
-      date: Date.now(),
       travel_mode: result.params.travelMode.id,
       connection: result.connection.name,
       try_count: result.tryCount,
@@ -1562,13 +1562,7 @@ export class TripPlannerService implements OnDestroy {
       label[`stop_${index}`] = stop.toString();
     });
 
-    this.analytics.eventTrack.next({
-      action: 'routing',
-      properties: {
-        category: 'route_create',
-        gstCustom: label
-      }
-    });
+    trackEvent(this.analytics, 'routing', 'route_create', label);
   }
 
   /**
@@ -1598,8 +1592,6 @@ export class TripPlannerService implements OnDestroy {
         // Both points are within the county
         // Route failure analytics tracking
         const label = {
-          guid: crypto.randomUUID(),
-          date: Date.now(),
           http_status: tripResult.error.details?.httpStatus,
           message: tripResult.error.message,
           travel_mode: tripResult.params.travelMode.id,
@@ -1613,21 +1605,13 @@ export class TripPlannerService implements OnDestroy {
           label[`stop_${index}`] = stop.toString();
         });
 
-        this.analytics.eventTrack.next({
-          action: 'routing',
-          properties: {
-            category: 'route_fail',
-            gstCustom: label
-          }
-        });
+        trackEvent(this.analytics, 'routing', 'route_fail', label);
       } else {
         const stops = tripResult.stopsToArray();
 
         // At least one point is outside the county
         // Route failure analytics tracking
         const label = {
-          guid: crypto.randomUUID(),
-          date: Date.now(),
           http_status: tripResult.error.details?.httpStatus,
           message: tripResult.error.message,
           travel_mode: tripResult.params.travelMode.id,
@@ -1641,13 +1625,7 @@ export class TripPlannerService implements OnDestroy {
           label[`stop_${index}`] = stop.toString();
         });
 
-        this.analytics.eventTrack.next({
-          action: 'routing',
-          properties: {
-            category: 'out_of_bounds',
-            gstCustom: label
-          }
-        });
+        trackEvent(this.analytics, 'routing', 'out_of_bounds', label);
       }
     } catch {
       // If the requests fail for whatever reason, still report it as a regular fail
@@ -1655,8 +1633,6 @@ export class TripPlannerService implements OnDestroy {
       const stops = tripResult.stopsToArray();
 
       const label = {
-        guid: crypto.randomUUID(),
-        date: Date.now(),
         http_status: tripResult.error.details?.httpStatus,
         travel_mode: tripResult.params.travelMode.id,
         connection: tripResult.connection.name,
@@ -1669,13 +1645,7 @@ export class TripPlannerService implements OnDestroy {
         label[`stop_${index}`] = stop.toString();
       });
 
-      this.analytics.eventTrack.next({
-        action: 'routing',
-        properties: {
-          category: 'boundary_query_fail',
-          gstCustom: label
-        }
-      });
+      trackEvent(this.analytics, 'routing', 'boundary_query_fail', label);
     }
   }
 

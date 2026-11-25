@@ -10,6 +10,8 @@ import { TSRoute, BusService } from '@tamu-gisc/maps/feature/trip-planner';
 import { AccordionComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 import { NgClass } from '@angular/common';
 import { AccordionComponent as AccordionComponent_1 } from '@tamu-gisc/ui-kits/ngx/layout';
+import { trackEvent } from '@tamu-gisc/common/ngx/analytics';
+
 import { BusListHeaderComponent } from '../bus-list-header/bus-list-header.component';
 import { AccordionContentComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 import { BusTimetableComponent } from '../bus-timetable/bus-timetable.component';
@@ -123,17 +125,9 @@ export class BusRouteComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private reportToggleRoute(shortName: string) {
     const label = {
-      guid: crypto.randomUUID(),
-      date: Date.now(),
       name: shortName
     };
 
-    this.analytics.eventTrack.next({
-      action: 'bus_route_load',
-      properties: {
-        category: 'ui_interaction',
-        gstCustom: label
-      }
-    });
+    trackEvent(this.analytics, 'bus_route_load', 'ui_interaction', label);
   }
 }
