@@ -9,3 +9,6 @@ export * from './lib/components/base-directions/base-directions.component';
 // The footer every popup with "Directions To Here" ends with (#602, #1173), for other libraries' popups to use. A
 // component is downloaded with the popup that imports it, so exporting it adds nothing to the first download.
 export * from './lib/components/footer/popup-footer.component';
+
+// How an application gives the markdown popups their copy link (#3486). The event maps provide it.
+export * from './lib/popup-share-url';
