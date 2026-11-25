@@ -19,7 +19,8 @@ describe('HeaderComponent login', () => {
   function setUp(site: GisdaySite) {
     const login = vi.fn();
     const answer = new Subject<boolean | undefined>();
-    const open = vi.fn(() => answer);
+    // The modal service's open(component, options), so a spec can read what each call was given (#3547).
+    const open = vi.fn((_component: unknown, _options: { data?: unknown }) => answer);
 
     const header = TestBed.configureTestingModule({
       providers: [

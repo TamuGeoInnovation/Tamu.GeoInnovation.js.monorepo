@@ -86,13 +86,17 @@ expect "runs the smoke typecheck, not nx or the install" "run npx tsc -p test/sm
 cat >>"$repo/.github/workflows/lint.yml" <<'YML'
       - run: 'node scripts/collate-release-notes.mjs --check'
       - run: node node_modules/nx/dist/bin/nx.js format:check
+      - name: Point origin/development at the base repository's, when this is a fork
+        run: git fetch --no-tags "https://github.com/$UPSTREAM.git" '+refs/heads/development:refs/remotes/origin/development'
       - run: |
           echo one
           echo two
       - run: echo ${{ github.sha }}
 YML
 git -C "$repo" add -A && git -C "$repo" -c user.name=t -c user.email=t@t commit -qm more
-expect "a quoted step is unquoted, nx.js is skipped, and a block or \${{ }} cannot be run" \
+# The fetch is setup, not a check: in a fork it points origin/development at the base repository's (#3557),
+# and here the check's own clone has already fetched it. Skipped like the install, rather than run or refused.
+expect "a quoted step is unquoted, nx.js and the fork fetch are skipped, and a block or \${{ }} cannot be run" \
   "run npx tsc -p test/smoke/aggiemap
 run node scripts/collate-release-notes.mjs --check
 cannot |

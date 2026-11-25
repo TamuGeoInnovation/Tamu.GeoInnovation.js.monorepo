@@ -2,7 +2,7 @@ import { Logger } from '@nestjs/common';
 import { Process, Processor } from '@nestjs/bull';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Job } from 'bull';
+import { type Job } from 'bull';
 
 import * as path from 'path';
 import * as os from 'os';

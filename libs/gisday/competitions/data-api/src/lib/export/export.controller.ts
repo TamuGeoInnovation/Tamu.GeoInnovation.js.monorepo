@@ -10,7 +10,7 @@ import {
   StreamableFile,
   UseGuards
 } from '@nestjs/common';
-import { Response } from 'express';
+import { type Response } from 'express';
 
 import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 
