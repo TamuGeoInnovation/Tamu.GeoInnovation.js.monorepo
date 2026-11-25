@@ -2,6 +2,27 @@
 > # NEXT: batch g206, then g207. ~~batch g204 (from `work (gisday)`, 25 November, about 12:20 AM Central): #2390, unused variables fail lint. g203 was done at 11:15 PM, thank you; the work machine is opening its two pull requests.
 >
 
+## Batch g208 (gisday): strictNullChecks in the GIS Day API app, and how big the front end is (written 2:05 AM Central, 25 November 2026)
+
+**Issue: #3495.** Code job. Report on the issue and in `reports/`.
+
+**Known breakage first:** until PR for #3573 merges, `scripts/check-in-volume.sh` fails at the lint.yml step "Point origin/development at the base repository's" (`https://github.com/.git/ not found`, exit 128) on every branch. Cherry-pick `fork/fix/3573-lint-upstream-default`'s one commit into a scratch copy only if you need a clean Exit line; otherwise report the Exit line and say the only failure is that step. Do not put that commit on your branch.
+
+1. **Branch** `fix/3495-gisday-nest-strict-null-checks` from `fork/fix/3495-competitions-strict-null-checks-pr` (PR 3560, not yet merged: it turns strictNullChecks on in the competitions API; the platform API already has it). Stacked on purpose: this is the next step of the same issue.
+2. **Turn on `strictNullChecks` in `apps/gisday-nest/tsconfig.app.json`** (and its spec config). The app compiles both API libraries with its own config, so count the errors with `npx tsc -p apps/gisday-nest/tsconfig.app.json --noEmit` before and after. Fix them as PRs 3512 and 3560 did: honest `| null` types, explicit TypeORM column types wherever a union would change emitted metadata, no `!` unless a comment says why it is safe.
+3. **Prove nothing changed at run time:** `gisday-nest` builds in production configuration, and the TypeORM metadata for every entity is the same before and after (compare `getMetadataArgsStorage().columns` types, as 3512 did).
+4. **Measure, do not fix:** errors with `strictNullChecks` on, per project, for `gisday-angular` and the six GIS Day Angular libraries (platform and competitions `ngx/common`, `ngx/core`, `ngx/data-access`). One table in the report: project, errors, the three most common error codes. That decides the next step.
+5. `scripts/pre-pr-check.sh` with `gisday-nest,gisday-platform-data-api,gisday-competitions-data-api`, `CHECK_PARALLEL=1`, `--label no-visible-change`; `.pr-body.md` from the template as the last commit; "branch ready".
+
+## Batch g209 (gisday): remove the Date wrappers #3558 made redundant
+
+**Issue: #3574.** Code job, after g208.
+
+1. **Branch** `refactor/3574-gisday-date-wrappers` from `fork/refactor/3558-gisday-wire-dates-pr` (your g207 work, PR being opened now). Stacked on purpose.
+2. Do what #3574 says: for each wrapper, trace where the value comes from; remove it only where it is read through one of the three converted services, with a spec showing the component receives a `Date`; otherwise leave it with a one-line comment.
+3. Before/after: none needed if nothing on screen changes; say so and use `--label no-visible-change`. If a date on a page changes, it is a bug, stop and report.
+4. `scripts/pre-pr-check.sh` with `gisday-platform-ngx-common,gisday-angular`, `CHECK_PARALLEL=1`; `.pr-body.md` last; "branch ready".
+
 ## Batch g207 (gisday: #3558, a wire type for dates the API sends as text; 25 November 2026, about 1:20 AM Central, from `work (gisday)`) (Low) - **after g206**
 
 **Acknowledged: Q-g205-1, decided (b)**: the gap is filed as [#3558](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3558),
