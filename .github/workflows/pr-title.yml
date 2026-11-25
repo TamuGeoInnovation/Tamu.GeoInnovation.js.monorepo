@@ -48,7 +48,7 @@ jobs:
           PR: ${{ github.event.pull_request.number }}
           REPO: ${{ github.repository }}
         run: |
-          if gh api --paginate "repos/$REPO/pulls/$PR/files" --jq '.[].filename' | grep -qx '.pr-body.md'; then
+          if gh api --paginate "repos/$REPO/pulls/$PR/files" --jq '.[] | select(.status != "removed") | .filename' | grep -qx '.pr-body.md'; then
             echo "This pull request adds or changes .pr-body.md, the drafted body. Remove it from the branch:"
             echo "  git rm .pr-body.md && git commit -m 'chore: Remove the drafted pull request body'"
             exit 1
