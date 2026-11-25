@@ -5,7 +5,7 @@
 
 Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
-Last batch done: a32
+Last batch done: g37
 
 ## What this is
 
@@ -33,9 +33,10 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch g37 (#3659, the footer with no active season)**, started 7:40 AM Central.
+- **Nothing running.** Every batch reported; listening.
 
 ## Finished
+- **Batch g37 (gisday: #3659)** (report `laptop/reports/2026-11-25-g37.md`): **branch ready: `fix/3659-footer-no-active-season`** (`92500a242`), `pre-pr-check.sh` exit 0. With no active season the footer's Past Years are the seasons before this year; red first; before: 1 error and no Past Years, after: none and 2025, 2024, 2023, with images.
 - **Batch a32 (aggiemap: #3482, #3483)** (report `laptop/reports/2026-11-25-a32.md`): **branch ready: `refactor/3482-one-floating-label`** (`120aa6771`) and **`refactor/3483-qr-download-file`** (`111391ae6`), `pre-pr-check.sh` exit 0 each. #3482: compiled CSS byte-identical (Q-a32-1 on images). #3483: qrPng gives a data URL, so its bytes go to downloadFile; the downloaded PNG is byte-identical and decodes.
 - **Batch g36 (gisday: PR 3644's admin paths)** (report `laptop/reports/2026-11-25-g36.md`): class export with no professor and the option question with no options **fail on development and work on the branch**; the homepage with no active season is partly fixed (the footer's error, filed **#3659**); four paths not reachable or not producible, named.
 - **Batch a31 (aggiemap: #3471)** (report `laptop/reports/2026-11-25-a31.md`): **branch ready: `refactor/3471-one-keyboard-navigation`** (`7394ac33c`), `pre-pr-check.sh` exit 0 (affected). Both map searches (the phone's too, by inheritance) on the shared directive with a new `keyboardNavigationWrap` option; keyboard identical before and after on desktop and phone; spec red on the naive switch. Helpers deleted.
