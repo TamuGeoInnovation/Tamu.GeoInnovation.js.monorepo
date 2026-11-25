@@ -21,8 +21,8 @@ export function groupEventsByDay<T extends Partial<Event>>(events: Array<T> | nu
   const groups = new Map<string, EventDayGroup<T>>();
 
   for (const event of events ?? []) {
-    const date = event?.day?.date ? new Date(event.day.date) : null;
-    const key = date && !isNaN(date.getTime()) ? event.day.guid ?? date.toISOString() : 'no-day';
+    const date = event?.day?.date ?? null;
+    const key = date && !isNaN(date.getTime()) ? (event.day.guid ?? date.toISOString()) : 'no-day';
 
     if (!groups.has(key)) {
       groups.set(key, { key, date: key === 'no-day' ? null : date, events: [] });
