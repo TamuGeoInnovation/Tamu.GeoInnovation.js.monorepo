@@ -4,11 +4,7 @@ import esri = __esri;
 
 import { distanceInMetres } from '@tamu-gisc/common/utils/geometry';
 
-import {
-  findNearestIndex,
-  getGeolocation,
-  TrackLocation
-} from './common-utils-geometry-generic';
+import { findNearestIndex, getGeolocation, TrackLocation } from './common-utils-geometry-generic';
 
 describe('getGeolocation', () => {
   const coords = {
