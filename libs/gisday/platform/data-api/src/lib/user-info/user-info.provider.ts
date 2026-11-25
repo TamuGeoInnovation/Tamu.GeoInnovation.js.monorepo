@@ -151,9 +151,7 @@ export class UserInfoProvider extends BaseProvider<UserInfo> {
 
     updatedUserInfo.app_metadata.gisday.completedProfile = true;
 
-    // `ManagementService.updateUserMetadata` (@tamu-gisc/common/nest/auth) asks for a whole profile, though it writes only
-    // the metadata the filters name: checked above, the update has both.
-    return this.ms.updateUserMetadata(guid, updatedUserInfo as Auth0UserProfile, {
+    return this.ms.updateUserMetadata(guid, updatedUserInfo, {
       app_metadata: 'gisday',
       user_metadata: ['occupation', 'education']
     });

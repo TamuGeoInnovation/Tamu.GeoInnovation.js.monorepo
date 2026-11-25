@@ -16,7 +16,8 @@ import { LayerSource } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { SearchService } from '@tamu-gisc/ui-kits/ngx/search';
 import { factory } from '@tamu-gisc/aggiemap/ngx/common';
-import { EsriMapService, EsriModuleProviderService, LayerSourcesService } from '@tamu-gisc/maps/esri';
+import { EsriMapService, EsriModuleProviderService, HitTestSnapshot, LayerSourcesService } from '@tamu-gisc/maps/esri';
+import { PopupService } from '@tamu-gisc/maps/feature/popup';
 
 import { AggiemapCustomMapConfiguration } from '../../interfaces/special-event.interface';
 import { EventDefinitions } from '../../definitions/all.definitions';
@@ -540,6 +541,117 @@ describe('EventService, a lot link on a map whose fields are named by table', ()
     expect(await selectedFromUrl('?lot=Lot%20100j', sources, [byFacCode, byLotName])).toEqual({
       layer: 'by-lot-name',
       objectId: 2
+    });
+  });
+});
+
+/**
+ * A popup opened from a shared link reads the same as one opened by a click (#3536).
+ *
+ * A click resolves a layer's popup data in the popup service; a `?feature=` link did it in a copy of the same
+ * code kept here (#809), which drifted: it showed a date as its raw epoch number ("Start Date: 1735689600000")
+ * and kept a row whose value is empty, unrendered ("Notes: {attributes.BR_Notes}"). The same popup data goes
+ * through both paths here, so a second copy that drifts again fails.
+ */
+describe('EventService, a popup opened from a link reads the same as one opened by a click', () => {
+  const LAYER_ID = 'popup-data-layer';
+
+  /** The popup data `popupData` resolves to on `attributes`, as a click on the feature resolves it. */
+  function resolvedByClick(source: LayerSource, attributes: Attributes): Attributes {
+    TestBed.resetTestingModule().configureTestingModule({
+      providers: [PopupService, { provide: EnvironmentService, useValue: {} }]
+    });
+
+    const snapshot = {
+      graphics: [{ attributes: { ...attributes }, layer: { ...source, popupComponent: class {} } }]
+    } as unknown as HitTestSnapshot;
+
+    return TestBed.inject(PopupService).getComponent(snapshot)?.data?.attributes;
+  }
+
+  /** The same, as a `?feature=` link to the feature resolves it. */
+  async function resolvedByLink(source: LayerSource, attributes: Attributes): Promise<Attributes> {
+    const selectFeatures = vi.fn();
+    const layer = lotLayer(LAYER_ID, 'OBJECTID', Object.keys(attributes), [attributes]);
+
+    const eventService = Object.assign(Object.create(EventService.prototype) as EventService, {
+      mapService: { selectFeatures },
+      _map: { findLayerById: (id: string) => (id === LAYER_ID ? layer : undefined) }
+    });
+
+    window.history.replaceState(null, '', `/parking/map?feature=${LAYER_ID}:${attributes['OBJECTID']}`);
+
+    try {
+      await (eventService as unknown as { selectFeatureFromUrl(s: LayerSource[]): Promise<void> }).selectFeatureFromUrl([
+        source
+      ]);
+    } finally {
+      window.history.replaceState(null, '', '/');
+    }
+
+    return selectFeatures.mock.calls[0]?.[0]?.graphics?.[0]?.attributes;
+  }
+
+  /** The keys `source`'s popup data resolves, from both paths. */
+  async function bothPaths(source: LayerSource, attributes: Attributes) {
+    const keys = Object.keys(source.popupData ?? {});
+    const pick = (resolved: Attributes) => Object.fromEntries(keys.map((key) => [key, resolved?.[key]]));
+
+    return { click: pick(resolvedByClick(source, attributes)), link: pick(await resolvedByLink(source, attributes)) };
+  }
+
+  const constructionSource = {
+    type: 'feature',
+    id: LAYER_ID,
+    popupDataResolutionStrategy: 'cumulative',
+    popupData: {
+      startDate: { field: 'startdate', collapsed: true, format: 'date' },
+      description: 'Start Date: {attributes.startDate}'
+    }
+  } as unknown as LayerSource;
+
+  // As Bike Racks declares it, in sustainable-transportation.definitions.ts.
+  const bikeRackSource = {
+    type: 'feature',
+    id: LAYER_ID,
+    popupData: {
+      name: '{attributes.Type}',
+      description:
+        '<strong>Total Capacity</strong>: {attributes.Total_Capacity}\n' + '<strong>Notes</strong>: {attributes.BR_Notes}'
+    }
+  } as unknown as LayerSource;
+
+  it('formats a date field as a click does', async () => {
+    const { click, link } = await bothPaths(constructionSource, { OBJECTID: 1, startdate: 1754784000000 });
+
+    expect(link).toEqual(click);
+    expect(link).toEqual({ startDate: 'August 10, 2025', description: 'Start Date: August 10, 2025' });
+  });
+
+  it('drops a row whose value is empty, as a click does', async () => {
+    const { click, link } = await bothPaths(bikeRackSource, {
+      OBJECTID: 1,
+      Type: 'Bike Rack',
+      Total_Capacity: 12,
+      BR_Notes: null
+    });
+
+    expect(link).toEqual(click);
+    expect(link).toEqual({ name: 'Bike Rack', description: '<strong>Total Capacity</strong>: 12' });
+  });
+
+  it('keeps every row when every value is filled, as a click does', async () => {
+    const { click, link } = await bothPaths(bikeRackSource, {
+      OBJECTID: 1,
+      Type: 'Bike Rack',
+      Total_Capacity: 12,
+      BR_Notes: 'Covered'
+    });
+
+    expect(link).toEqual(click);
+    expect(link).toEqual({
+      name: 'Bike Rack',
+      description: '<strong>Total Capacity</strong>: 12\n<strong>Notes</strong>: Covered'
     });
   });
 });

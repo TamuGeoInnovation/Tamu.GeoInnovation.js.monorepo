@@ -3,8 +3,9 @@
   "compilerOptions": {
     "module": "commonjs",
     "outDir": "../../../../dist/out-tsc",
+    "strictNullChecks": true,
     "declaration": true,
-    "types": ["node"]
+    "types": ["node", "multer"]
   },
   "exclude": ["**/*.spec.ts", "**/*.test.ts"],
   "include": ["**/*.ts"]
