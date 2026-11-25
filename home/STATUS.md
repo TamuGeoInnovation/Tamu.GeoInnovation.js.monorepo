@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch g107 (gisday: #2588)** resumed at 8:03 PM Central, after the maintainer said Docker is back; from `e2392460e` (red proven) in `C:/TAMU/wt-2588`. #3337 is the laptop's (a13). Then g108 (#1604, then #1025).
+- **Batch g108 (workspace: #1604, #1025)**: #1604 already fixed (duplicate of #2267, PR 2273), nothing built; #1025's check running for `chore/1025-lf-endings`.
 
 ## Finished
+- **Batch g107 (gisday: #2588)** (report `home/reports/2026-11-24-g107.md`): branch ready, `fix/2588-tile-tap-target` at `52c7d8c60`. The tap part was already #3198; this adds keyboard focus, roles, Enter/Space and a maroon focus ring, with the icon hidden from screen readers. Red 2 failed, final check Exit 0 (3 projects). #3337 went to the laptop (a13). 6:38 PM to 8:12 PM Central, with the Docker pause.
 - **Batch a11 (aggiemap: #3425 after images again)** (report `home/reports/2026-11-24-a11.md`): search image re-taken at `6d2c0f118`, each garage once; `?garage=CCG`, `?bldg=0469`, `?BldgAbbrv=CCG` all open Central Campus Parking Garage; check exit 0 (3 projects). Fork at `8d51106c8`. 5:33 to 5:38 PM Central.
 - **Batch a10 (aggiemap: #3425 images)** (report `home/reports/2026-11-24-a10.md`): images on `fix/3425-garage-search-off-raster` at `118c4def0`; popup shows the name; all nine `?garage=` codes resolve; garages only, no TEEX. Found: the smoke `parking-garage` case will fail after (its term matches 0 rows). 4:53 to 5:04 PM Central.
 - **Batch a8 (aggiemap: disk and PR 3407)** (report `home/reports/2026-11-24-a8.md`): home holds 331 worktrees, 309 tamu-js volumes, an 853.8 GiB Docker image, 82.4 GiB free (65.0 after the check); tidy.sh would remove 238 volumes (~642 GiB) and 175 worktrees (~100 GiB). PR 3407 full check Exit 0 (no Nx tasks, scripts only; header prints free space; no sweep); tidy.test 15/15, check-in-volume.test 28/28. 11:13 to 11:26 AM Central.
