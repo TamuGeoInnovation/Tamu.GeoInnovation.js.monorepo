@@ -94,7 +94,9 @@ export class AccountDashboardComponent implements OnInit {
   /** The earlier seasons beside this one on the chart (#3215), once the page knows its seasons. */
   public readonly comparison = signal<SeasonComparison | null>(null);
   /** The chart's line with the compared seasons', and the day its axis counts from when there are any. */
-  public readonly compared = computed(() => this.comparison()?.compare(this.chart().series) ?? { series: this.chart().series, anchor: null });
+  public readonly compared = computed(
+    () => this.comparison()?.compare(this.chart().series) ?? { series: this.chart().series, anchor: null }
+  );
   /** The window's last day: it ends at the midnight that starts the day after. */
   public readonly lastDay = computed(() => {
     const to = this.dashboard()?.window.to;

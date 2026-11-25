@@ -16,8 +16,7 @@
             @for (match of matches.shown; track match.guid) {
             <div class="result-item" role="option" aria-selected="false">
               <a [routerLink]="['/presenters/details', match.guid]" (click)="opened()">
-                {{ match.firstName }} {{ match.lastName }}
-                @if (match.organization?.name || match.university?.name) {
+                {{ match.firstName }} {{ match.lastName }} @if (match.organization?.name || match.university?.name) {
                 <span class="presenter-search-where"> | {{ match.organization?.name || match.university?.name }}</span>
                 }
               </a>

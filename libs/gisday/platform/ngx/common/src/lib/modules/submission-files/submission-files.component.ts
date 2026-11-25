@@ -104,9 +104,7 @@ export class SubmissionFilesComponent implements OnInit {
   /** The PDF being shown (#3090), and the page-local address it is drawn from. */
   public readonly previewing = signal<{ file: SubmissionFileDto; url: SafeResourceUrl } | null>(null);
   /** The files that preview: the PDFs, in the list's order. */
-  public readonly previewFiles = computed(() =>
-    (this.files() ?? []).filter((file) => extensionOf(file.name) === '.pdf')
-  );
+  public readonly previewFiles = computed(() => (this.files() ?? []).filter((file) => extensionOf(file.name) === '.pdf'));
 
   private readonly sanitizer = inject(DomSanitizer);
   /** The object URL behind `previewing`, let go when another is shown, the preview is closed or the list goes. */

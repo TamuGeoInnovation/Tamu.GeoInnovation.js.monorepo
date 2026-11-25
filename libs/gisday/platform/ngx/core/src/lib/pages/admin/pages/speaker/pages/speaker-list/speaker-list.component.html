@@ -19,33 +19,33 @@
       @if (entitiesForActiveSeasonOrForSeasonGuid$ | async; as entities) { @if (entities?.length > 0) {
       <!-- Wider than a phone, the table scrolls in its own box, as the dashboards' do, and the page does not (#3370). -->
       <tamu-gisc-dashboard-scroll>
-      <table class="floating-table">
-        <thead>
-          <tr>
-            <th><tamu-gisc-checkbox label="" (changed)="toggleAllRows(entities)" [checked]="(selectedRows$ | async)?.length === entities.length "></tamu-gisc-checkbox></th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Email</th>
-            <th>Affiliation</th>
-            <th title="The sessions the speaker is in this season">Sessions</th>
-            <th>Updated</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (entity of entities; track entity) {
-          <tr class="selectable" [routerLink]="['edit', entity.guid]">
-            <td (click)="$event.stopPropagation()"><tamu-gisc-checkbox label="" (changed)="toggleRow($safeNavigationMigration(entity?.guid))" [checked]="(selectedRows$ | async) | exists: $safeNavigationMigration(entity?.guid)"></tamu-gisc-checkbox></td>
-            <td>{{entity.firstName}}</td>
-            <td>{{entity.lastName}}</td>
-            <td>{{entity.email}}</td>
-            <td>{{entity?.organization?.name}}</td>
-            <!-- The speaker's sessions this season, or None (#441). -->
-            <td class="speaker-sessions">{{ sessionNames(entity) || 'None' }}</td>
-            <td>{{entity.updated | centralDate:'short'}}</td>
-          </tr>
-          }
-        </tbody>
-      </table>
+        <table class="floating-table">
+          <thead>
+            <tr>
+              <th><tamu-gisc-checkbox label="" (changed)="toggleAllRows(entities)" [checked]="(selectedRows$ | async)?.length === entities.length "></tamu-gisc-checkbox></th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Email</th>
+              <th>Affiliation</th>
+              <th title="The sessions the speaker is in this season">Sessions</th>
+              <th>Updated</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (entity of entities; track entity) {
+            <tr class="selectable" [routerLink]="['edit', entity.guid]">
+              <td (click)="$event.stopPropagation()"><tamu-gisc-checkbox label="" (changed)="toggleRow($safeNavigationMigration(entity?.guid))" [checked]="(selectedRows$ | async) | exists: $safeNavigationMigration(entity?.guid)"></tamu-gisc-checkbox></td>
+              <td>{{entity.firstName}}</td>
+              <td>{{entity.lastName}}</td>
+              <td>{{entity.email}}</td>
+              <td>{{entity?.organization?.name}}</td>
+              <!-- The speaker's sessions this season, or None (#441). -->
+              <td class="speaker-sessions">{{ sessionNames(entity) || 'None' }}</td>
+              <td>{{entity.updated | centralDate:'short'}}</td>
+            </tr>
+            }
+          </tbody>
+        </table>
       </tamu-gisc-dashboard-scroll>
       } @else if ((emptyBecause$ | async) === 'hidden') {
       <!-- The season has speakers; the search or the filter hides them all (#3049). -->

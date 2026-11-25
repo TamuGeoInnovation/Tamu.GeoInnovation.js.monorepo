@@ -30,7 +30,14 @@ import { CentralDatePipe } from '../../../../pipes/central-date/central-date.pip
   templateUrl: './season-day-card.component.html',
   styleUrls: ['./season-day-card.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [EventRowComponent, AsyncPipe, CentralDatePipe, AccordionComponent, AccordionHeaderComponent, AccordionContentComponent]
+  imports: [
+    EventRowComponent,
+    AsyncPipe,
+    CentralDatePipe,
+    AccordionComponent,
+    AccordionHeaderComponent,
+    AccordionContentComponent
+  ]
 })
 export class SeasonDayCardComponent implements OnInit, OnChanges {
   private readonly sd = inject(SeasonDayService);
@@ -100,7 +107,7 @@ export class SeasonDayCardComponent implements OnInit, OnChanges {
   /** The day's id, which the page's Day 1, Day 2 links jump to. */
   public readonly anchor = computed(() => `day${this.index() + 1}`);
 
-    public readonly register = output<string>();
+  public readonly register = output<string>();
 
   public readonly unregister = output<string>();
 

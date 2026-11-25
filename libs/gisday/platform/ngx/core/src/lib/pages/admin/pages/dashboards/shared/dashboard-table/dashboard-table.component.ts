@@ -103,7 +103,11 @@ export function tableRowsOf(
  * The sort to keep when the table changes it: as the table asks, except that a column clicked for the first time starts
  * with the highest when it is a count. The table itself always starts a column A to Z, or lowest first.
  */
-export function adjustSorts(next: Array<SortPropDir>, previous: Array<SortPropDir>, ascending: Set<string>): Array<SortPropDir> {
+export function adjustSorts(
+  next: Array<SortPropDir>,
+  previous: Array<SortPropDir>,
+  ascending: Set<string>
+): Array<SortPropDir> {
   const sort = next[0];
 
   if (!sort) {

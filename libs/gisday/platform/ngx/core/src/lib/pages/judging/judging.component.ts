@@ -176,7 +176,9 @@ export class JudgingComponent implements OnInit {
   public neighbour(step: -1 | 1): JudgeEntry | null {
     const opened = this.opened();
 
-    return opened ? (this.entries().find((e) => e.tab === opened.tab && e.position === opened.position + step) ?? null) : null;
+    return opened
+      ? (this.entries().find((e) => e.tab === opened.tab && e.position === opened.position + step) ?? null)
+      : null;
   }
 
   public step(step: -1 | 1): void {
