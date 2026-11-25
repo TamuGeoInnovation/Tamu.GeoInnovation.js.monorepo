@@ -1,5 +1,19 @@
 # work-lab-leila: current tasks
 
+## g219 received (gisday), 5:25 AM Central, 25 November 2026
+
+`fix/3593-ui-kits-forms-full-strict` (#3633) opens after PR 3608 merges, with `development` merged in.
+
+## Batch g220 (gisday, #3638): the GIS Day smoke suite reaches every public page (now)
+
+**Issue: #3638** (a sub-issue of #1977). Read it first. A test job, read-only throughout.
+
+1. **Branch** `test/3638-gisday-smoke-every-page` from the latest `origin/development`.
+2. **List the public pages first:** every route in `gisday-angular` reachable without signing in, for the current season and one past season (both sites' differences from `docs/gisday-sites.md`). Put the list in the report, with each page's one "it works" signal: what the page exists to show (sessions listed, a session's title and time, presenter cards, sponsor logos, and so on).
+3. **Extend `test/smoke/gisday/smoke.spec.ts`** (or a second spec beside it, if that reads better), following its own rules in the file's comment: only auto-retrying `expect()` assertions, content inside `tamu-gisc-root`, no page errors, and nothing that writes (no RSVP, no registration, no form submitted). One test per page, named for what a visitor sees.
+4. **Run it** against your local stack (`scripts/gisday-local.sh`, made-up records), and **once, read-only, against `https://txgisday.org`**, as the existing suite already does. Nothing else touches production. Report every failure, with why: a real fault gets its own issue (Priority per DIRECTOR.md), and an environment difference gets a stated reason in the spec.
+5. Add the spec's row to `docs/testing.md` and leave its numbers alone (CLAUDE.md). `pre-pr-check.sh`, `--label no-visible-change`; `.pr-body.md` last; "branch ready".
+
 ## Decided (gisday), 5:05 AM Central, 25 November 2026
 
 - **g218 received:** both branches (#3628, #3630) go through `pre-pr-check.sh` on the work machine and open as each exits 0.
