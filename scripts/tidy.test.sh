@@ -136,6 +136,36 @@ check 'a tracked .pr-body.md edit is kept' 'no'   "$(only_a_drafted_pr_body ' M 
 # The name has to be exact: a file that merely ends in it is somebody else's.
 check 'a differently named body file is kept' 'no'   "$(only_a_drafted_pr_body '?? docs/.pr-body.md' && echo yes || echo no)"
 
+
+# The threshold says the file is large; it says nothing about how much a compaction would give back, and the
+# two come apart. On 24 November 2026 a sweep that freed 13 GiB printed the same recommendation as the one
+# that freed about 700, with no way to tell them apart (#3452).
+r=no
+case "$(image_advice 400 300 13)" in *"freed about 13 GiB"*) r=yes ;; esac
+check 'the advice says how much this sweep freed' 'yes' "$r"
+
+r=no
+case "$(image_advice 400 300 13)" in *"40 minutes"*) r=yes ;; esac
+check 'the advice says what a compaction costs, so it can be weighed' 'yes' "$r"
+
+# A sweep that freed nothing must not imply it did.
+r=no
+case "$(image_advice 400 300 0)" in *"freed about 0 GiB"*) r=yes ;; esac
+check 'a sweep that freed nothing says 0 rather than staying silent' 'yes' "$r"
+
+# Called without a gain - as anything on an older call site would - it must still give the advice rather
+# than breaking or printing an empty amount.
+r=no
+case "$(image_advice 400 300)" in *"over the 300 GiB threshold"*) r=yes ;; esac
+check 'the advice still works with no gain given' 'yes' "$r"
+
+r=no
+case "$(image_advice 400 300)" in *"freed about"*) r=yes ;; esac
+check 'with no gain given it claims nothing about the gain' 'no' "$r"
+
+# Under the threshold it stays silent whatever the gain, as before.
+check 'an image under the threshold says nothing even with a gain' '' "$(image_advice 100 300 50)"
+
 if [ "$failed" -ne 0 ]; then
   printf '\n%d case(s) failed.\n' "$failed" >&2
   exit 1
