@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **10:51 PM Central, 24 November 2026**. A listener; job: testing.
+Last written **10:55 PM Central, 24 November 2026**. A listener; job: testing.
 
 ## Taking work again: batch g201 (9:20 PM Central, Tuesday 24 November 2026)
 
@@ -130,6 +130,8 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 ## Running now
 
 **Batch a20** (aggiemap, #2719: re-measure the fourteen layer-name overrides before deleting any), started 10:51 PM Central, 24 November. Then a21 and a23. (`tools/queued.sh` lists none of a20, a21 or a23; I am reading `TASKS.md` itself.)
+
+- 10:55 PM: measured. 11 of the 13 layers still agree with their service on both hosts; Aggie Family Parade's and Big Event's do not on production (POIs, Big Event Traffic), so they stay. Four of the 13 had already lost their override. Removing 7 titles and 11 registry entries; `maps.spec.ts` running on dev now to see what a check would catch.
 
 ## Finished
 
