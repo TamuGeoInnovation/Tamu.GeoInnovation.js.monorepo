@@ -291,4 +291,23 @@ describe('SearchSources', () => {
     expect(byNumber?.queryParams?.fixedWhere).toBeUndefined();
     expect(byAbbreviation?.queryParams?.fixedWhere).toBeUndefined();
   });
+
+  it('asks for every garage, in a defined order, rather than the default five (#3433)', () => {
+    const sources = SearchSources(connections, definitions);
+    const garage = sources.find((source) => source.source === 'parking-garage');
+    const building = sources.find((source) => source.source === 'building');
+
+    // `searchQueryParams` asks every ArcGIS search for five rows. Campus Structures held 11 garages on
+    // 24 November 2026, and typing "garage" matched 8 of them, so five was not a display limit: the other three
+    // were never fetched and no amount of scrolling could reach them.
+    expect(garage?.queryParams?.resultRecordCount).toBeGreaterThan(11);
+
+    // Without an order the service answers in `OBJECTID` order, so a truncated result is whichever rows happen to
+    // have been digitized first. With one, the five - or fifty - are a defensible first N.
+    expect(garage?.queryParams?.orderByFields).toBe('bldgname ASC');
+
+    // And the typed building search keeps the default, deliberately: its layer has 1,987 rows, so asking for all
+    // of them would be a different fault. Raising a count is right only where the whole category fits one page.
+    expect(building?.queryParams?.resultRecordCount).toBe(5);
+  });
 });

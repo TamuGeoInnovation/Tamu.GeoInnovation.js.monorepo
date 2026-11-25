@@ -26,8 +26,8 @@ describe('SpeakerController, the speakers with their sessions (#441)', () => {
     }
   ];
   const provider = {
-    getSpeakersForSeason: jest.fn(async (_guid: string, withSessions?: boolean) => speakers(withSessions)),
-    getSpeakersForActiveSeason: jest.fn(async (withSessions?: boolean) => speakers(withSessions))
+    getSpeakersForSeason: vi.fn(async (_guid: string, withSessions?: boolean) => speakers(withSessions)),
+    getSpeakersForActiveSeason: vi.fn(async (withSessions?: boolean) => speakers(withSessions))
   };
 
   const get = (path: string) => fetch(`${url}/speakers/${path}`, { headers: { Origin: 'https://gisday.tamu.edu' } });

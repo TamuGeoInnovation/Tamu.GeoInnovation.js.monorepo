@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { importProvidersFrom } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
@@ -10,11 +11,11 @@ import { GisdayAnalytics, GISDAY_ANALYTICS_SETTINGS } from './analytics';
  * provider, which calls `ga()`, a function the page does not have, so nothing was sent.
  */
 describe('GIS Day analytics', () => {
-  let gtag: jest.Mock;
+  let gtag: Mock;
 
   beforeEach(() => {
-    gtag = jest.fn();
-    (window as unknown as { gtag: jest.Mock }).gtag = gtag;
+    gtag = vi.fn();
+    (window as unknown as { gtag: Mock }).gtag = gtag;
 
     TestBed.configureTestingModule({
       providers: [
@@ -27,7 +28,7 @@ describe('GIS Day analytics', () => {
   });
 
   afterEach(() => {
-    delete (window as unknown as { gtag?: jest.Mock }).gtag;
+    delete (window as unknown as { gtag?: Mock }).gtag;
   });
 
   it('sends an event to gtag', () => {

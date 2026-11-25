@@ -22,6 +22,7 @@ export class TripPlannerModePickerMobileComponent extends TripPlannerModePickerC
   public isAccessibleMode: Observable<boolean>;
 
   public ngOnInit() {
+    super.ngOnInit();
     this.accessible = this.tps.TravelOptions.pipe(pluck('accessible'));
     this.isAccessibleMode = this.tps.TravelOptions.pipe(
       pluck('travel_mode'),

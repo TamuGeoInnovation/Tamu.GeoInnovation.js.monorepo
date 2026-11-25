@@ -171,6 +171,19 @@ of its 33 s in its 161 tests on the loaded run.
 Vitest counts two tests fewer. Jest ran `ui-kits-ngx-layout-code`'s two inside `ui-kits-ngx-layout` as
 well, since that project's directory contains it; Vitest runs them once, in their own project.
 
+### Unit tests: the GIS Day site, Jest against Vitest (#1977)
+
+`gisday-angular`'s 16 tests, measured as below: Jest is `development` at `9d8bf3299`, Vitest is
+`chore/1977-gisday-vitest-app` at `872d8f666`, alternating three times on the lab machine with nothing else
+running, 24 November 2026, finished at 10:43 PM Central.
+
+| Project          | Tests, Jest and Vitest |  Jest, cold |         Jest, warm |             Vitest |
+| ---------------- | ---------------------: | ----------: | -----------------: | -----------------: |
+| `gisday-angular` |                     16 | 3.3 s (1.6) | 1.9 to 2.0 s (0.9) | 3.5 to 3.6 s (0.5) |
+
+As on the four libraries below: a small Angular project, where Vitest's runner is faster and its start-up costs
+more than it saves.
+
 ### Unit tests: four GIS Day libraries, Jest against Vitest (#1977)
 
 The `ngx/common` and `ngx/data-access` libraries of the GIS Day platform and competitions. Jest is
@@ -202,6 +215,24 @@ The check itself agrees. `scripts/check-in-volume.sh` on those four, `CHECK_PARA
 `lint,test` with Jest and 32.0 s with Vitest. Its two run files, `2026-11-24T212101-check-lab.csv`
 (117 s) and `2026-11-24T212911-check-lab.csv` (60 s), differ by the first run's clone and `npm ci`, not by
 the runner.
+
+### Unit tests: the GIS Day API, Jest against Vitest (#1977)
+
+The two `data-api` libraries and `gisday-nest`, measured the same way: Jest is `development` at `9d8bf3299`,
+Vitest is `chore/1977-gisday-vitest-data-api` at `1164fe341`, each task alone and uncached, alternating three
+times, on the lab machine with nothing else running, 24 November 2026, finished by 10:50 PM Central.
+
+| Project                        | Tests, Jest and Vitest |    Jest, cold |                    Jest, warm |                    Vitest |
+| ------------------------------ | ---------------------: | ------------: | ----------------------------: | ------------------------: |
+| `gisday-competitions-data-api` |                    189 | 16.1 s (13.8) | 13.3 to 13.5 s (11.8 to 12.1) |               2.6 s (1.4) |
+| `gisday-platform-data-api`     |                  1,238 | 30.0 s (28.5) | 25.0 to 26.3 s (23.4 to 24.7) | 4.7 to 4.9 s (3.5 to 3.6) |
+| `gisday-nest`                  |                      3 |   2.7 s (1.5) |     2.0 to 2.2 s (0.8 to 1.1) |        1.3 to 1.4 s (0.2) |
+| **All three**                  |                  1,430 |    **48.8 s** |            **40.5 to 41.8 s** |          **8.7 to 8.8 s** |
+
+**Here Vitest is five to six times faster**, warm Jest included. These are TypeScript without Angular, so
+Vitest pays no Angular start-up, while `ts-jest` type-checked every spec and the code it imports: the cost
+#1479 set out to remove. The check agrees: `lint,test` on the three took 58.7 s on Jest
+(`2026-11-24T222148-check-lab.csv`) and 15.5 s on Vitest.
 
 ## Installs
 

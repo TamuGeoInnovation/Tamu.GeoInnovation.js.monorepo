@@ -13,7 +13,7 @@ import { athleticsDevelopmentSource } from './common.definitions';
 
 export enum SOCCER_PARKING_LAYERS {
   ACCESSIBLE_PARKING = 'soccer-parking-accessible-parking',
-  PARKING_LOTS = 'soccer-parking-lots',
+  PARKING_LOTS = 'soccer-parking-lots'
 }
 
 const eventUrl = Connections.soccerParkingUrl;
@@ -67,7 +67,7 @@ export const SoccerParkingColdLayerSources: LayerSource[] = [
     native: {
       outFields: ['*']
     }
-  } as unknown as LayerSource,
+  } as unknown as LayerSource
 ];
 
 /**
@@ -89,7 +89,6 @@ export const SoccerParkingColdLayerSources: LayerSource[] = [
 export const SoccerParking_DevelopmentLayerSources: LayerSource[] = [
   athleticsDevelopmentSource({
     id: SoccerParkingDefinitions.ACCESSIBLE_PARKING.id,
-    title: SoccerParkingDefinitions.ACCESSIBLE_PARKING.name,
     url: `${eventUrl}/0`
   }),
   athleticsDevelopmentSource({

@@ -1,5 +1,5 @@
 /**
- * @jest-environment-options {"url": "https://gisday.tamu.edu/sessions"}
+ * @vitest-environment-options {"url": "https://gisday.tamu.edu/sessions"}
  */
 import { accessTokenUrls, api_url, auth0 } from './environment';
 
