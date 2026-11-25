@@ -1,3 +1,4 @@
+import type { MockInstance } from 'vitest';
 import { BadRequestException, Logger } from '@nestjs/common';
 
 import { EmailSenderService, configuredSenders, siteSender } from './email-sender.service';
@@ -9,9 +10,9 @@ import { EmailSenderService, configuredSenders, siteSender } from './email-sende
 describe('EmailSenderService', () => {
   const settings = ['MAILROOM_FROM', 'MAILROOM_TO', 'MAILROOM_SENDERS', 'GISDAY_SITE'] as const;
   const previous: Partial<Record<(typeof settings)[number], string | undefined>> = {};
-  const management = { getUserMetadata: jest.fn() };
+  const management = { getUserMetadata: vi.fn() };
   let service: EmailSenderService;
-  let warn: jest.SpyInstance;
+  let warn: MockInstance;
 
   /** An admin whose token carries their address, as a namespaced claim, and their name. */
   const admin = { sub: 'auth0|admin', 'https://gisday/email': 'JAdmin@tamu.edu', 'https://gisday/name': 'Jo Admin' };
@@ -25,7 +26,7 @@ describe('EmailSenderService', () => {
     process.env.MAILROOM_TO = 'gisday.inbox@example.com';
     process.env.MAILROOM_SENDERS = 'gisday@tamu.edu, gisday@gmail.com';
     delete process.env.GISDAY_SITE;
-    warn = jest.spyOn(Logger, 'warn').mockImplementation(() => undefined);
+    warn = vi.spyOn(Logger, 'warn').mockImplementation(() => undefined);
     management.getUserMetadata.mockReset().mockRejectedValue(new Error('management is not configured'));
     service = new EmailSenderService(management as never);
   });

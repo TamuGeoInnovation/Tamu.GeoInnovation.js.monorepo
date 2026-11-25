@@ -8,7 +8,7 @@ import { InitialSurveyProvider } from './initial-survey.provider';
 describe('InitialSurveyController questions', () => {
   let app: INestApplication;
   let url: string;
-  const insertQuestion = jest.fn(async () => ({ guid: 'q-1' }));
+  const insertQuestion = vi.fn(async () => ({ guid: 'q-1' }));
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({

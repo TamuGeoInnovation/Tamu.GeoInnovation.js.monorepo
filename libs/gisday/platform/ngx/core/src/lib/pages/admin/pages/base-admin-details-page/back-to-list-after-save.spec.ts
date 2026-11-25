@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { Component, input } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Location } from '@angular/common';
@@ -39,27 +40,27 @@ class FilesStubComponent {
 describe('Save, Create and Delete on an admin details page', () => {
   const LIST_STATE = { adminList: { search: 'work' } };
 
-  let modal: { isOpen: BehaviorSubject<boolean>; open: jest.Mock };
-  let tags: { getEntity: jest.Mock; getSessions: jest.Mock; updateEntity: jest.Mock; createEntity: jest.Mock; deleteEntity: jest.Mock };
-  let submissions: Record<string, jest.Mock>;
+  let modal: { isOpen: BehaviorSubject<boolean>; open: Mock };
+  let tags: { getEntity: Mock; getSessions: Mock; updateEntity: Mock; createEntity: Mock; deleteEntity: Mock };
+  let submissions: Record<string, Mock>;
 
   beforeEach(() => {
     // The review's "Submit Review" window answers with the email to send; nothing else on these pages opens one.
-    modal = { isOpen: new BehaviorSubject(false), open: jest.fn(() => of({ poster: 'Howdy' })) };
+    modal = { isOpen: new BehaviorSubject(false), open: vi.fn(() => of({ poster: 'Howdy' })) };
     tags = {
-      getEntity: jest.fn(() => of({ guid: 't1', name: 'Workshop' })),
-      getSessions: jest.fn(() => of([])),
-      updateEntity: jest.fn(() => of({})),
-      createEntity: jest.fn(() => of({})),
-      deleteEntity: jest.fn(() => of({}))
+      getEntity: vi.fn(() => of({ guid: 't1', name: 'Workshop' })),
+      getSessions: vi.fn(() => of([])),
+      updateEntity: vi.fn(() => of({})),
+      createEntity: vi.fn(() => of({})),
+      deleteEntity: vi.fn(() => of({}))
     };
     submissions = {
-      getEntity: jest.fn(() =>
+      getEntity: vi.fn(() =>
         of({ guid: 'r1', title: 'Flood maps', acceptance: false, message: '', participants: [], submissionType: 'poster' })
       ),
-      previewReview: jest.fn(() => of({ groups: [] })),
-      review: jest.fn(() => of({ reviewed: ['Flood maps'], failed: [] })),
-      deleteEntity: jest.fn(() => of({}))
+      previewReview: vi.fn(() => of({ groups: [] })),
+      review: vi.fn(() => of({ reviewed: ['Flood maps'], failed: [] })),
+      deleteEntity: vi.fn(() => of({}))
     };
 
     const routes: Routes = [
@@ -88,7 +89,7 @@ describe('Save, Create and Delete on an admin details page', () => {
         { provide: TagService, useValue: tags },
         { provide: UserSubmissionsService, useValue: submissions },
         { provide: SeasonService, useValue: { activeSeason$: of({ guid: 's-2026' }) } },
-        { provide: NotificationService, useValue: { toast: jest.fn() } },
+        { provide: NotificationService, useValue: { toast: vi.fn() } },
         { provide: ModalService, useValue: modal }
       ]
     }).overrideComponent(ResearchCompetitionReviewComponent, {
