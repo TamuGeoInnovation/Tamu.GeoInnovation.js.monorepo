@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch a56** (#3695, retry a clone that fails on Docker file sharing), since 1:52 PM Central, 25 November. Worktree `wt-a56`.
+- Nothing. Idle, listening.
 
 ## Finished
+- **Batch a56** (report `home/reports/2026-11-25-a56.md`, 2:07 PM Central): #3695, check-in-volume retries a failed read of `/src` once and explains exit 3; 16 new test cases. Branch `fix/3695-clone-retry` at `0aa8133b0`; check-in-volume and pre-pr-check Exit 0.
 - **Batch a54** (report `home/reports/2026-11-25-a54.md`, 1:48 PM Central): #3474, one inventory reader; no route or baseline key moves (byte-identical on production). Branch `refactor/3474-one-builder-inventory-reader` at `a2d1246cb`; pre-pr-check Exit 0. One question.
 - **Batch a51** (report `home/reports/2026-11-25-a51.md`, 1:19 PM Central): #3551, construction dates through a new shared `calendarDate`; red in Central time first; before/after captured. Branch `fix/3551-construction-popup-dates` at `36af9b75b`; check-in-volume and pre-pr-check Exit 0.
 - **Batch a48** (report `home/reports/2026-11-25-a48.md`, 12:43 PM Central): #3657, the retired bus API cluster deleted by reachability (−774 lines). Branch `chore/3657-remove-retired-bus-api` at `fd97037ca`; check-in-volume and pre-pr-check both Exit 0. One question.
