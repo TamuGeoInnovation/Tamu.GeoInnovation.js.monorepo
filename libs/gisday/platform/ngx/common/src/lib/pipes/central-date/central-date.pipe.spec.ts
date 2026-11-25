@@ -11,7 +11,7 @@ describe('centralDate (#3552)', () => {
   const pipe = new CentralDatePipe();
   // A browser's zone cannot be changed from inside a running Node, so the visitor's zone is given as the offset the old
   // pipe used there: what a Pacific visitor's browser rendered with `date` and no zone.
-  it('is the point: formatted at a Pacific visitor's offset, as the old pipe was, the first day reads as the day before', () => {
+  it("is the point: formatted at a Pacific visitor's offset, as the old pipe was, the first day reads as the day before", () => {
     expect(formatDate(firstDay, 'MMMM d', 'en-US', '-0800')).toBe('November 15');
   });
 
