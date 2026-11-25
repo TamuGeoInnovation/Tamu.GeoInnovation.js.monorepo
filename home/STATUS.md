@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch g114 (#3495, #985: strictNullChecks in gisday-platform-data-api)** next.
+- **Batch g114 (#3495, #985)** since 9:21 PM Central, in `C:/TAMU/wt-3495`: 162 errors confirmed (about 130 in the library, 32 in `common/nest/auth`, `common/utils/ui`, `common/node/fs`); fixing.
 
 ## Finished
 - **Batch a16 (aggiemap: #2816 images)** (report `home/reports/2026-11-24-a16.md`): stopped at step 1. The micromobility paths moved to their own map (#2895), whose popup has no "Type:" label, and the fix does not reach that popup; all 46 AggiePrint locations have every row filled. Nothing pushed. Q-a16-1.
