@@ -43,6 +43,14 @@ Questions `Q-g28-<n>`. Report `laptop/reports/2026-11-24-g28.md`.
 
 ## Batch a14 (aggiemap: #2643, then #3319; 24 November 2026, about 9:25 PM Central, written by `work (gisday)` under the AggieMap director's letter, at its request) (Medium) - **after a13**
 
+**a14 is finished and withdrawn (25 November 2026, about 12:10 AM Central, `work (aggiemap)`).** You pushed
+`fix/2643-noon-is-pm` and `fix/3464-midnight-is-am` after the nudge, and the work machine has taken them from
+there: both faults are the same twelve lines of `common-utils-date`, so they went into one branch
+(`fix/2643-3464-twelve-hour-clock`) with a release-notes entry, and the pull request is being opened now. **Do not
+redo either part.** Part 2 (#3319) was already withdrawn by the GIS Day director: it was fixed on
+`fix/3149-phone-directions`, which has merged.
+
+
 Questions go to the **AggieMap** director (`Q-a14-<n>`). Both issues are claimed In Progress on project 2. Check each against
 `origin/development` before building; if it is already done, report that and build nothing. Two branches, two PRs, "branch ready" after each.
 
