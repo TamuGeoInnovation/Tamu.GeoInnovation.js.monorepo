@@ -1,27 +1,18 @@
-import { DatePipe } from '@angular/common';
+import { formatDate } from '@angular/common';
 
 import { CentralDatePipe, centralOffset } from './central-date.pipe';
 
 /**
- * #3552. Run in a zone west of Central, as a visitor in El Paso or California is: Angular's own `date` pipe, with no
- * zone, moves GIS Day's first day back to the evening before; `centralDate` does not.
+ * #3552. West of Central, as for a visitor in El Paso or California, Angular's own `date` pipe with no zone moved GIS
+ * Day's first day back to the evening before; `centralDate` formats in Central wherever it runs.
  */
 describe('centralDate (#3552)', () => {
   const firstDay = '2026-11-16T06:00:00.000Z'; // midnight Central, as production stores a season day
   const pipe = new CentralDatePipe();
-  let zone: string | undefined;
-
-  beforeAll(() => {
-    zone = process.env.TZ;
-    process.env.TZ = 'America/Los_Angeles';
-  });
-
-  afterAll(() => {
-    process.env.TZ = zone;
-  });
-
-  it('is the point: the date pipe with no zone shows a Pacific visitor the day before', () => {
-    expect(new DatePipe('en-US').transform(firstDay, 'MMMM d')).toBe('November 15');
+  // A browser's zone cannot be changed from inside a running Node, so the visitor's zone is given as the offset the old
+  // pipe used there: what a Pacific visitor's browser rendered with `date` and no zone.
+  it('is the point: formatted at a Pacific visitor's offset, as the old pipe was, the first day reads as the day before', () => {
+    expect(formatDate(firstDay, 'MMMM d', 'en-US', '-0800')).toBe('November 15');
   });
 
   it('shows the day in Central time, wherever the visitor is', () => {
