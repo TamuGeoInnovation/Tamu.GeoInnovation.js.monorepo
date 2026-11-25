@@ -115,7 +115,7 @@ export function isFalsy(s: string): boolean {
  * Single-line templates are rendered unchanged, so a popup whose whole description resolves to nothing still
  * renders as it did rather than disappearing. This is about rows.
  */
-export function renderTemplateRows(props: TemplateRendererOptions & { separator?: string }): string {
+export function renderTemplateRows(props: TemplateRendererOptions & { separator?: string }): string | undefined {
   const separator = props.separator ?? '\n';
   const template = props.template ?? '';
 
@@ -139,7 +139,8 @@ export function renderTemplateRows(props: TemplateRendererOptions & { separator?
         options: { ...props.options, nullishReplacement: '' }
       }).render();
 
-      return rendered.trim() !== line.replace(TEMPLATE_EXPRESSION_GLOBAL_PATTERN, '').trim();
+      // undefined only with neither a lookup nor a replacement, when nothing was produced (#3495).
+      return (rendered ?? '').trim() !== line.replace(TEMPLATE_EXPRESSION_GLOBAL_PATTERN, '').trim();
     })
     .map((line) =>
       new TemplateRenderer({
