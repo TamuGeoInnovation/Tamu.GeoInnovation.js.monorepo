@@ -70,7 +70,7 @@ describe('CompetitionSettingsComponent', () => {
     return { fixture, page, seasons, toggle, checkbox, checkboxes, isChecked, rows, status, save };
   }
 
-  // Dates, as the entity declares them; the form reads either a Date or the API's ISO text (#3547).
+  // Dates, as the entity declares them and SeasonService hands them to the page (#3547, #3558).
   const withDeadlines: Partial<Season> = {
     guid: 'season-1',
     year: 2026,

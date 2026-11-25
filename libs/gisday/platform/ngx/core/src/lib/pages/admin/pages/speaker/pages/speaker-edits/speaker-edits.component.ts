@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
-import { DatePipe } from '@angular/common';
 import { Observable } from 'rxjs';
 
 import { PendingSpeakerEdit, SpeakerEditFields, SpeakerEditsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -11,6 +10,7 @@ import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { BaseAdminDetailsPageComponent } from '../../../base-admin-details-page/base-admin-details-page.component';
+import { CentralDatePipe } from '@tamu-gisc/gisday/platform/ngx/common';
 
 /** The fields a speaker can propose, in the order the review shows them. */
 const FIELDS: Array<{ key: keyof SpeakerEditFields; label: string }> = [
@@ -30,7 +30,7 @@ const FIELDS: Array<{ key: keyof SpeakerEditFields; label: string }> = [
   templateUrl: './speaker-edits.component.html',
   styleUrls: ['./speaker-edits.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, DatePipe, ButtonComponent, MarkdownParsePipe],
+  imports: [RouterLink, CentralDatePipe, ButtonComponent, MarkdownParsePipe],
   providers: [provideAdminDetailsPage(() => SpeakerEditsComponent)]
 })
 export class SpeakerEditsComponent extends BaseAdminDetailsPageComponent implements OnInit, OnDestroy {

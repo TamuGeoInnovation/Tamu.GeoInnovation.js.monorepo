@@ -32,22 +32,26 @@ export class TemplateRenderer {
   }
 
   /**
-   * Evaluates and returns an evaluated template string based on provided options.
+   * Evaluates and returns an evaluated template string based on provided options. `undefined` when there is no
+   * template, or neither a replacement nor a lookup to fill it from (#3495).
    */
-  public render(): string {
-    if (this.template && this.replacement) {
+  public render(): string | undefined {
+    const replacement = this.replacement;
+    const lookup = this.lookup;
+
+    if (this.template && replacement) {
       return this.template.replace(TEMPLATE_EXPRESSION_GLOBAL_PATTERN, () => {
         // Replace captured block with the provided replacement string.
-        return this.replacement;
+        return replacement;
       });
-    } else if (this.template && this.lookup) {
+    } else if (this.template && lookup) {
       return this.template.replace(TEMPLATE_EXPRESSION_GLOBAL_PATTERN, (match: string) => {
         // Remove template braces before setting value from lookup object. `{a|b}` is the first of its
         // paths with a value, a blank one counting as none, so a fallback can stand in for an empty field.
         const values = match
           .slice(1, -1)
           .split('|')
-          .map((path) => getPropertyValue<unknown>(this.lookup, path));
+          .map((path) => getPropertyValue<unknown>(lookup, path));
         const resolved =
           values.length === 1
             ? values[0]
@@ -111,7 +115,7 @@ export function isFalsy(s: string): boolean {
  * Single-line templates are rendered unchanged, so a popup whose whole description resolves to nothing still
  * renders as it did rather than disappearing. This is about rows.
  */
-export function renderTemplateRows(props: TemplateRendererOptions & { separator?: string }): string {
+export function renderTemplateRows(props: TemplateRendererOptions & { separator?: string }): string | undefined {
   const separator = props.separator ?? '\n';
   const template = props.template ?? '';
 
@@ -135,7 +139,8 @@ export function renderTemplateRows(props: TemplateRendererOptions & { separator?
         options: { ...props.options, nullishReplacement: '' }
       }).render();
 
-      return rendered.trim() !== line.replace(TEMPLATE_EXPRESSION_GLOBAL_PATTERN, '').trim();
+      // undefined only with neither a lookup nor a replacement, when nothing was produced (#3495).
+      return (rendered ?? '').trim() !== line.replace(TEMPLATE_EXPRESSION_GLOBAL_PATTERN, '').trim();
     })
     .map((line) =>
       new TemplateRenderer({

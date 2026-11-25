@@ -7,7 +7,7 @@ import { COMPETITION_VALIDATION_STATUS } from '@tamu-gisc/gisday/common';
 
 import { SubmissionDetailModalComponent } from '../submission-detail-modal/submission-detail-modal.component';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { DatePipe } from '@angular/common';
+import { CentralDatePipe } from '@tamu-gisc/gisday/platform/ngx/common';
 
 interface SwimlaneNgxDatatableActivateEvent {
   type: 'click' | 'dblclick' | 'keydown' | 'contextmenu' | 'mouseenter' | 'mouseleave';
@@ -21,7 +21,7 @@ interface SwimlaneNgxDatatableActivateEvent {
   selector: 'tamu-gisc-submission-review-list',
   templateUrl: './submission-review-list.component.html',
   styleUrls: ['./submission-review-list.component.scss'],
-  imports: [NgxDatatableModule, DatePipe]
+  imports: [NgxDatatableModule, CentralDatePipe]
 })
 export class SubmissionReviewListComponent implements OnInit {
   private readonly modalService = inject(ModalService);

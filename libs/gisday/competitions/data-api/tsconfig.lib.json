@@ -5,7 +5,8 @@
     "outDir": "../../../../dist/out-tsc",
     "declaration": true,
     "types": ["node"],
-    "target": "es2021"
+    "target": "es2021",
+    "strictNullChecks": true
   },
   "exclude": ["**/*.spec.ts", "**/*.test.ts"],
   "include": ["**/*.ts"]

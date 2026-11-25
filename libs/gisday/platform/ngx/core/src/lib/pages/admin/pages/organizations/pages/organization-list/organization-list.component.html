@@ -32,7 +32,7 @@
             <td (click)="$event.stopPropagation()"><tamu-gisc-checkbox label="" (changed)="toggleRow($safeNavigationMigration(entity?.guid))" [checked]="(selectedRows$ | async) | exists: $safeNavigationMigration(entity?.guid)"></tamu-gisc-checkbox></td>
             <td>{{entity?.name}}</td>
             <td>{{entity?.season?.year}}</td>
-            <td>{{$safeNavigationMigration(entity?.updated) | date:'short'}}</td>
+            <td>{{$safeNavigationMigration(entity?.updated) | centralDate:'short'}}</td>
           </tr>
           }
         </tbody>

@@ -9,7 +9,6 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
-import esri = __esri;
 
 export enum SOFTBALL_PARKING_LAYERS {
   ACCESSIBLE_PARKING = 'softball-parking-accessible-parking',

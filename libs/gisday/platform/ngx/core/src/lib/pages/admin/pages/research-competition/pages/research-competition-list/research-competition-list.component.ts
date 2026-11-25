@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { NgClass, AsyncPipe, DatePipe, TitleCasePipe } from '@angular/common';
+import { NgClass, AsyncPipe, TitleCasePipe } from '@angular/common';
 import { combineLatest, EMPTY, filter, map, Observable, shareReplay, startWith, switchMap, take } from 'rxjs';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
@@ -42,6 +42,7 @@ import {
   ReviewEmailModalResult,
   sendProfileEmail
 } from '@tamu-gisc/gisday/platform/ngx/common';
+import { CentralDatePipe } from '@tamu-gisc/gisday/platform/ngx/common';
 
 /**
  * A submission as the table shows it: with its review status worked out, so the table can sort by it (#2808), and
@@ -220,7 +221,7 @@ export const SUBMISSION_TABLE_MIN_WIDTH = Object.values(SUBMISSION_TABLE_WIDTHS)
     NgxDatatableModule,
     NgClass,
     AsyncPipe,
-    DatePipe,
+    CentralDatePipe,
     TitleCasePipe,
     ExistsPipe,
     CompetitionSettingsComponent,

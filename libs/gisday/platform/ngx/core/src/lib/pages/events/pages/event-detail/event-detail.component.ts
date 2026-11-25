@@ -33,7 +33,7 @@ import {
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { GISDayRoles, sortSpeakersByName } from '@tamu-gisc/gisday/platform/ngx/common';
-import { NgIf, NgFor, AsyncPipe, DatePipe } from '@angular/common';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
 import { AccordionComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 import { AccordionHeaderComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 import { AccordionContentComponent } from '@tamu-gisc/ui-kits/ngx/layout';
@@ -56,6 +56,7 @@ import {
 import { SiteHasPipe } from '@tamu-gisc/gisday/platform/ngx/common';
 import { QrCodeComponent } from '@tamu-gisc/ui-kits/ngx/qr-code';
 import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
+import { CentralDatePipe } from '@tamu-gisc/gisday/platform/ngx/common';
 
 @Component({
   selector: 'tamu-gisc-event-detail',
@@ -75,7 +76,7 @@ import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
     ReactiveFormsModule,
     TextboxComponent,
     AsyncPipe,
-    DatePipe,
+    CentralDatePipe,
     ParseDateTimeStringsPipe,
     MarkdownParsePipe,
     QrCodeComponent,

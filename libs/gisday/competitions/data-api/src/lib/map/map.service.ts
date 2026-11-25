@@ -72,17 +72,26 @@ export class MapService extends BaseService<CompetitionSubmission> {
    * so a row of plaques a few metres apart does not chain into one.
    */
   public async getAlreadyFoundForActiveSeason(format: ResponseFormat = 'json') {
-    const competitionSeason = await activeCompetitionSeason(this.seasonRepo, this.compSeasonRepo, { form: true, season: true });
-    const typeQuestion = competitionSeason.form?.model?.find((q) => q.isDiscriminator === true);
+    const competitionSeason = await activeCompetitionSeason(this.seasonRepo, this.compSeasonRepo, {
+      form: true,
+      season: true
+    });
+    const typeQuestion = competitionSeason.form?.model.find((q) => q.isDiscriminator === true);
     const { year, finds } = await previousSeasonFinds(this.compSeasonRepo, this.submissionRepo, competitionSeason);
 
-    const things: Array<{ location: { latitude: number; longitude: number }; option: ICompetitionSeasonFormOption; count: number }> =
-      [];
+    const things: Array<{
+      location: { latitude: number; longitude: number };
+      option: ICompetitionSeasonFormOption;
+      count: number;
+    }> = [];
 
     for (const find of finds) {
       const option = typeQuestion?.options?.find((candidate) => candidate.earlier?.values.includes(find.type as string));
-      const same = option
-        ? things.find((thing) => thing.option === option && distanceInMetres(thing.location, find.location) <= option.earlier.metres)
+      const earlier = option?.earlier;
+      const same = earlier
+        ? things.find(
+            (thing) => thing.option === option && distanceInMetres(thing.location, find.location) <= earlier.metres
+          )
         : undefined;
 
       if (same) {
@@ -120,36 +129,42 @@ export class MapService extends BaseService<CompetitionSubmission> {
     return this.getLocationsForUserSeason(competitionSeason.guid, userGuid, format);
   }
 
-
   private _formatSubmissionsCollection(format: ResponseFormat, submissions: CompetitionSubmission[]) {
-    if (format === 'geojson') {
-      if (submissions) {
-        const geoJsonPoints = submissions.map((submission) => {
-          return {
-            type: 'Feature',
-            // Only the submission and its review status: these endpoints answer anyone, so nothing of who
-            // reviewed it (`verifiedBy`, an organizer's account id) goes out (#1792).
-            properties: {
-              guid: submission.guid,
-              status: submission.validationStatus?.status ?? COMPETITION_VALIDATION_STATUS.unverified,
-              created: submission.created,
-              updated: submission.updated
-            },
-            geometry: {
-              type: 'Point',
-              coordinates: [submission.location.longitude, submission.location.latitude]
-            }
-          };
-        });
-
-        return {
-          type: 'FeatureCollection',
-          features: geoJsonPoints
-        };
-      }
-    } else {
+    if (format !== 'geojson') {
       return submissions.map((submission) => submission.location);
     }
+
+    // A submission saved without its location has no point to show (#3495).
+    const geoJsonPoints = submissions.flatMap((submission) => {
+      const location = submission.location;
+
+      if (!location) {
+        return [];
+      }
+
+      return [
+        {
+          type: 'Feature',
+          // Only the submission and its review status: these endpoints answer anyone, so nothing of who
+          // reviewed it (`verifiedBy`, an organizer's account id) goes out (#1792).
+          properties: {
+            guid: submission.guid,
+            status: submission.validationStatus?.status ?? COMPETITION_VALIDATION_STATUS.unverified,
+            created: submission.created,
+            updated: submission.updated
+          },
+          geometry: {
+            type: 'Point',
+            coordinates: [location.longitude, location.latitude]
+          }
+        }
+      ];
+    });
+
+    return {
+      type: 'FeatureCollection',
+      features: geoJsonPoints
+    };
   }
 }
 

@@ -36,7 +36,7 @@ describe('SubmissionService.createCompetitionSubmission', () => {
   const entity: DeepPartial<CompetitionSubmission> = {
     guid: '7f1c5a52-3b0e-4d36-9a55-2f8e8f4c1b6a',
     userGuid: 'auth0|ann',
-    value: '{"kind":"monument"}',
+    value: { kind: 'monument' },
     location: { latitude: 30.6, longitude: -96.3 },
     season: { guid: 'cs-1' }
   };

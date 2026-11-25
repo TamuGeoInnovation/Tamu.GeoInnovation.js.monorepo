@@ -16,7 +16,7 @@
       <div class="info-block context edit">
         <div class="edit-heading">
           <h3>{{ edit.speaker.firstName }} {{ edit.speaker.lastName }}</h3>
-          <span class="sent">Sent {{ edit.sent | date: 'MMM d, h:mm a' }}</span>
+          <span class="sent">Sent {{ edit.sent | centralDate: 'MMM d, h:mm a' }}</span>
         </div>
 
         <table class="floating-table">

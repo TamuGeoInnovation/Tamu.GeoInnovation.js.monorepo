@@ -9,7 +9,6 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
-import esri = __esri;
 
 // The order the map draws its layers in, top first (#2059): `EventService` adds them to the map in the
 // reverse of this order, each above the last. Accessible Parking comes before the lots because both accessible

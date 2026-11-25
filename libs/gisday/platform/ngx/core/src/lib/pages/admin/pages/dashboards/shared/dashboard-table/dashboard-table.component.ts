@@ -1,9 +1,10 @@
 import { Component, Directive, TemplateRef, computed, contentChild, input, output, signal, viewChild } from '@angular/core';
-import { DatePipe, NgTemplateOutlet } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
 import { DatatableComponent, NgxDatatableModule, SortPropDir } from '@swimlane/ngx-datatable';
 
 import { naturalOrder } from '@tamu-gisc/gisday/common';
 import { DashboardScrollComponent } from '@tamu-gisc/gisday/platform/ngx/common';
+import { CentralDatePipe } from '@tamu-gisc/gisday/platform/ngx/common';
 
 /** One row of a dashboard's table: a thing counted (an event, a university, a feature type) and its counts. */
 export interface DashboardTableRow {
@@ -102,7 +103,11 @@ export function tableRowsOf(
  * The sort to keep when the table changes it: as the table asks, except that a column clicked for the first time starts
  * with the highest when it is a count. The table itself always starts a column A to Z, or lowest first.
  */
-export function adjustSorts(next: Array<SortPropDir>, previous: Array<SortPropDir>, ascending: Set<string>): Array<SortPropDir> {
+export function adjustSorts(
+  next: Array<SortPropDir>,
+  previous: Array<SortPropDir>,
+  ascending: Set<string>
+): Array<SortPropDir> {
   const sort = next[0];
 
   if (!sort) {
@@ -134,7 +139,7 @@ export function compareTimes(a: string | null, b: string | null): number {
   selector: 'tamu-gisc-dashboard-table',
   templateUrl: './dashboard-table.component.html',
   styleUrls: ['./dashboard-table.component.scss'],
-  imports: [NgxDatatableModule, NgTemplateOutlet, DatePipe, DashboardScrollComponent]
+  imports: [NgxDatatableModule, NgTemplateOutlet, CentralDatePipe, DashboardScrollComponent]
 })
 export class DashboardTableComponent {
   public readonly rows = input.required<Array<DashboardTableRow>>();

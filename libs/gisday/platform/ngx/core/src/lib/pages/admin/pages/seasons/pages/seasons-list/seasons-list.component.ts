@@ -8,13 +8,14 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { serverMessage } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
-import { AsyncPipe, DatePipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
+import { CentralDatePipe } from '@tamu-gisc/gisday/platform/ngx/common';
 
 @Component({
   selector: 'tamu-gisc-seasons-list',
   templateUrl: './seasons-list.component.html',
   styleUrls: ['./seasons-list.component.scss'],
-  imports: [RouterLink, AsyncPipe, DatePipe]
+  imports: [RouterLink, AsyncPipe, CentralDatePipe]
 })
 export class SeasonsListComponent extends BaseAdminListComponent<Season> implements OnInit {
   protected readonly entityService = inject(SeasonService);

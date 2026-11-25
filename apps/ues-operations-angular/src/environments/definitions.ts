@@ -5,10 +5,8 @@ import { TAMU_CAMPUS_BASEMAP_URL } from '@tamu-gisc/common/datasets/geographic';
 import {
   Connections as AggiemapConnections,
   buildingsClickLayerNative,
-  getDefaultGisHost,
   getDefaultGisHosts
 } from '@tamu-gisc/aggiemap/ngx/common';
-const gisHost = getDefaultGisHost();
 const tsgisHost = getDefaultGisHosts().tsgisHost;
 
 import esri = __esri;

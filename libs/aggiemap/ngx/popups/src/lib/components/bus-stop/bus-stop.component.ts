@@ -1,5 +1,4 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { Router } from '@angular/router';
 import { filter, take } from 'rxjs/operators';
 
 import { BusService } from '@tamu-gisc/maps/feature/trip-planner';

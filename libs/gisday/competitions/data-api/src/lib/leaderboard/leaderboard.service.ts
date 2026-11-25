@@ -76,10 +76,10 @@ const IDENTITY_TTL = 60 * 60 * 1000;
  * `jsmith2026@tamu.edu` reads `jsm****@tamu.edu`. At most three letters, and fewer for a short name, so at least two stay
  * hidden; always four asterisks, so the length is not given away either. Anything that is not an email shows as `****`.
  */
-export function maskEmail(email: string): string {
+export function maskEmail(email: string | null | undefined): string {
   const at = email?.lastIndexOf('@') ?? -1;
 
-  if (at < 1) {
+  if (!email || at < 1) {
     return '****';
   }
 
@@ -179,7 +179,7 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
   public async scoreSubmissions(
     competitionSeason: CompetitionSeason
   ): Promise<Array<{ submission: CompetitionSubmission; points: number | null }>> {
-    const typeQuestion = competitionSeason.form?.model?.find((q) => q.isDiscriminator === true);
+    const typeQuestion = competitionSeason.form?.model.find((q) => q.isDiscriminator === true);
     const typeAttribute = typeQuestion?.attribute;
     const settingsFor = (type: unknown): ICompetitionSeasonFormOption | undefined =>
       typeQuestion?.options?.find((option) => option.value === type);
@@ -209,15 +209,15 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
       const type = typeAttribute ? submission.value?.[typeAttribute] : undefined;
       const settings = settingsFor(type);
       const name = settings?.nameAttribute ? submission.value?.[settings.nameAttribute] : undefined;
+      const earlier = settings?.earlier;
       let points = ALREADY_SUBMITTED_POINTS;
 
       const foundBefore =
         location !== undefined &&
-        settings?.earlier !== undefined &&
+        earlier !== undefined &&
         earlierFinds.some(
           (find) =>
-            settings.earlier.values.includes(find.type as string) &&
-            distanceInMetres(find.location, location) <= settings.earlier.metres
+            earlier.values.includes(find.type as string) && distanceInMetres(find.location, location) <= earlier.metres
         );
 
       const foundThisSeason =
@@ -338,7 +338,7 @@ export async function previousSeasonFinds(
   competitionSeason: CompetitionSeason
 ): Promise<{ year?: number; finds: Array<{ location: { latitude: number; longitude: number }; type: unknown }> }> {
   const year = competitionSeason.season?.year;
-  const comparesWithEarlier = competitionSeason.form?.model?.some((q) => q.options?.some((option) => option.earlier));
+  const comparesWithEarlier = competitionSeason.form?.model.some((q) => q.options?.some((option) => option.earlier));
 
   if (!year || !comparesWithEarlier) {
     return { finds: [] };
@@ -354,9 +354,16 @@ export async function previousSeasonFinds(
     );
   }
 
+  // The latest season before this one, with its year, which a season deleted from GIS Day no longer has; undefined when
+  // there is none.
   const previous = seasons
-    .filter((candidate) => candidate.season?.year < year)
-    .sort((a, b) => b.season.year - a.season.year)[0];
+    .flatMap((candidate) => {
+      const candidateYear = candidate.season?.year;
+
+      return candidateYear != null && candidateYear < year ? [{ competitionSeason: candidate, year: candidateYear }] : [];
+    })
+    .sort((a, b) => b.year - a.year)
+    .at(0);
 
   // Without the previous season, every find it had scores as new: say so, so the gap is noticed (#2424 review).
   if (!previous) {
@@ -368,11 +375,11 @@ export async function previousSeasonFinds(
     return { finds: [] };
   }
 
-  const typeAttribute = previous.form?.model?.find((q) => q.isDiscriminator === true)?.attribute;
+  const typeAttribute = previous.competitionSeason.form?.model.find((q) => q.isDiscriminator === true)?.attribute;
 
   if (!typeAttribute) {
     Logger.warn(
-      `The ${previous.season.year} competition season's form has no type question, so none of its finds can count as already found in ${year}.`,
+      `The ${previous.year} competition season's form has no type question, so none of its finds can count as already found in ${year}.`,
       'LeaderboardService'
     );
 
@@ -381,20 +388,18 @@ export async function previousSeasonFinds(
   // Oldest first, so the map counts each thing at the place it was first found (#2625); scoring does not
   // depend on the order.
   const submissions = await submissionRepo.find({
-    where: { season: { guid: previous.guid } },
+    where: { season: { guid: previous.competitionSeason.guid } },
     relations: { validationStatus: true, location: true },
     order: { created: 'ASC', guid: 'ASC' }
   });
 
   return {
-    year: previous.season.year,
-    finds: submissions
-      .filter(counts)
-      .map((submission) => ({
-        location: usableLocation(submission.location),
-        type: typeAttribute ? submission.value?.[typeAttribute] : undefined
-      }))
-      .filter((find) => find.location !== undefined)
+    year: previous.year,
+    finds: submissions.filter(counts).flatMap((submission) => {
+      const location = usableLocation(submission.location);
+
+      return location ? [{ location, type: typeAttribute ? submission.value?.[typeAttribute] : undefined }] : [];
+    })
   };
 }
 

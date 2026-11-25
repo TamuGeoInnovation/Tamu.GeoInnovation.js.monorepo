@@ -7,7 +7,6 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
-import esri = __esri;
 import { athleticsDevelopmentSource } from './common.definitions';
 
 export enum SOCCER_PARKING_LAYERS {
