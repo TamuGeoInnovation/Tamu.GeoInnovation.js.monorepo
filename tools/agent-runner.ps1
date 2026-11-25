@@ -55,6 +55,7 @@ $prompt = "You are the listener '$Name' (see DIRECTOR.md on the work-mailbox bra
   "If something blocks a batch, push a report saying what, and go on to the next. When none is left, end your reply with the line NOTHING LEFT."
 
 function Run-Agent {
+  $started = Get-Date
   $log = Join-Path $logs ("{0}-{1}.log" -f $Name, (Get-Date -Format 'yyyyMMdd-HHmmss'))
   Log "starting $Agent (log $log)"
   Push-Location $Repo
@@ -71,9 +72,12 @@ function Run-Agent {
     $code = $LASTEXITCODE
   } finally { Pop-Location }
   $nothingLeft = Select-String -Path $log -Pattern 'NOTHING LEFT' -Quiet
-  Log "$Agent exited $code; nothing left: $nothingLeft"
+  # What the agent pushed to its own folder while it ran, heartbeats aside: "started", a report, "batch N done".
+  git -C $Repo fetch -q origin work-mailbox 2>$null
+  $pushed = [int](git -C $Repo rev-list --count --since="$($started.ToString('o'))" origin/work-mailbox -- "$Name" ":(exclude)$Name/HEARTBEAT.md")
+  Log "$Agent exited $code; nothing left: $nothingLeft; pushed: $pushed"
   $script:lastLog = $log
-  return [pscustomobject]@{ NothingLeft = [bool]$nothingLeft; Code = $code; Log = $log }
+  return [pscustomobject]@{ NothingLeft = [bool]$nothingLeft; Code = $code; Log = $log; Pushed = $pushed }
 }
 
 # The state the idle heartbeat reports. "blocked: ..." once the agent itself keeps failing, so tools/roster.sh shows BLOCKED
@@ -85,8 +89,19 @@ Log "agent-runner for $Name ($Agent) in $Repo; polling every $PollSeconds s"
 $last = if (Test-Path $state) { (Get-Content $state -Raw).Trim() } else { '' }
 $lastBeat = [datetime]::MinValue
 $failures = 0
+# Runs that exited 0, pushed nothing but heartbeats and did not say NOTHING LEFT, in a row (#3348). From 5 November Copilot was
+# refused by policy on every start, and nothing turned it into BLOCKED for 24 days.
+$silentRuns = 0
+# PowerShell keeps the script it started with, so a fix pulled onto disk never runs until someone restarts this window: the
+# 8 November exit-code check below sat unused for 16 days because the runner had been started on 26 October (#3348). Restart on a change.
+$self = (Get-FileHash -Path $PSCommandPath).Hash
 while ($true) {
   try {
+    if ((Get-FileHash -Path $PSCommandPath).Hash -ne $self) {
+      Log "agent-runner.ps1 changed on disk; restarting with the new copy"
+      & powershell -ExecutionPolicy Bypass -File $PSCommandPath @PSBoundParameters
+      exit $LASTEXITCODE
+    }
     $now = Latest-Change
     if ($now -and $now -ne $last) {
       if ($failures -ge 3) {
@@ -109,6 +124,12 @@ while ($true) {
           if ($agentFailures -ge 3) { break }
           continue
         }
+        if ($result.Pushed -gt 0) { $silentRuns = 0 }
+        elseif (-not $result.NothingLeft) {
+          # Exit 0 is not work done: an agent that pushed nothing and did not say it was finished did nothing.
+          $silentRuns++
+          Log "$Agent ran and pushed nothing, $silentRuns in a row"
+        }
         if ($result.NothingLeft) { break }
         Log "batches may be left; run $i of $MaxRunsPerChange done"
       }
@@ -117,6 +138,9 @@ while ($true) {
       $failures = 0
       if ($agentFailures -ge 3 -or ($result -and $result.Code -ne 0)) {
         $idleState = "blocked: $Agent exits $($result.Code) at start; see the log $(Split-Path -Leaf $result.Log)"
+        Log "BLOCKED: $idleState"
+      } elseif ($silentRuns -ge 3) {
+        $idleState = "blocked: $Agent ran and pushed nothing $silentRuns times; see the log $(Split-Path -Leaf $result.Log)"
         Log "BLOCKED: $idleState"
       } else {
         $idleState = 'idle'
