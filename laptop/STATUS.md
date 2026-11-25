@@ -5,7 +5,7 @@
 
 Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
-Last batch done: a42
+Last batch done: g38
 
 ## What this is
 
@@ -33,9 +33,10 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Nothing running.** Every batch reported; listening.
+- **Batch g39 (#3667, remove the initial survey)**, started 10:55 AM Central.
 
 ## Finished
+- **Batch g38 (gisday: #3635 images)** (report `laptop/reports/2026-11-25-g38.md`): **images ready: #3635**, on `fix/3635-rsvp-submission-type-routes-img` (`4eaf4cf1c`, images `e01c86f1a`, body last). Before: both adds 501. After: both add (201), list and update (200). Test rows deleted.
 - **Batch a42 (aggiemap: overlaps among the open pull requests)** (report `laptop/reports/2026-11-25-a42.md`): 44 open; **25 collide on no line with anyone** (17 wholly free, 8 only on the strict list); four real clusters (8, 6, 3, 2); the strict list (12 PRs) and two clusters span both directors. Read-only. Q-a42-1 (#381), Q-a42-2.
 - **Batch g37 (gisday: #3659)** (report `laptop/reports/2026-11-25-g37.md`): **branch ready: `fix/3659-footer-no-active-season`** (`92500a242`), `pre-pr-check.sh` exit 0. With no active season the footer's Past Years are the seasons before this year; red first; before: 1 error and no Past Years, after: none and 2025, 2024, 2023, with images.
 - **Batch a32 (aggiemap: #3482, #3483)** (report `laptop/reports/2026-11-25-a32.md`): **branch ready: `refactor/3482-one-floating-label`** (`120aa6771`) and **`refactor/3483-qr-download-file`** (`111391ae6`), `pre-pr-check.sh` exit 0 each. #3482: compiled CSS byte-identical (Q-a32-1 on images). #3483: qrPng gives a data URL, so its bytes go to downloadFile; the downloaded PNG is byte-identical and decodes.
