@@ -5,7 +5,7 @@
 
 Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
-Last batch done: g34
+Last batch done: g35
 
 ## What this is
 
@@ -33,9 +33,10 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch a31 (#3471, one way to walk a results list with the arrow keys)**, started 5:35 AM Central.
+- **Batch a31 (#3471, one way to walk a results list with the arrow keys)**, started 6:00 AM Central.
 
 ## Finished
+- **Batch g35 (gisday: #3636)** (report `laptop/reports/2026-11-25-g35.md`): **branch ready: `fix/3636-initial-survey-template`** (`c2bbd197a`), `pre-pr-check.sh` exit 0. `#noFeedback` is an `<ng-template>`: one heading, no console error; red first (both cases). Made-up survey questions render on both builds, so nothing more to file.
 - **Batch g34 (gisday: #3614 images)** (report `laptop/reports/2026-11-25-g34.md`): **images ready: #3614**, on `fix/3593-competitions-ngx-core-strict` (`c06ea148a`); fork raw URLs 200 (main repo 404 until the pull request). Before: no form and `TypeError ... reading 'length'`; after: all three questions, no error. Test question removed; model back to 487.
 - **Batch g32 (gisday: admin pages for #1669, #1478)** (report `laptop/reports/2026-11-25-g32.md`): **no difference** on OnPush or zoneless against development, across 17 admin lists (edit, save, list again) and home's check-first list. Filed two faults already on development: **#3635** (RSVP and submission types answer 501) and **#3636** (initial survey throws). RSVP checkbox, validate and Publish not exercised (said why).
 - **Batch a34 (aggiemap: #3477 images)** (report `laptop/reports/2026-11-25-a34.md`): **Q-a34-1: yes, the search works locally** ("Evans" lists 3); the likely difference is `fill()` (no keyup). Images on `refactor/3477-one-coordinate-reader-pr` (`5113606ec`). Found **#3615** (a right-way-round coordinate is never placed; Low). The entry fails `--check` on its dev host (Q-a34-2).
