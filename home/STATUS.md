@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch g116 (#1669, then #1478)**: code in `C:/TAMU/wt-1669`; Q-g116-1 (the signed-in local proof) with the GIS Day director.
+- Nothing. Idle, listening.
 
 ## Finished
+- **Batch g116 (#1669, #1478)** (report `home/reports/2026-11-25-g116.md`): both branch ready, pre-pr-check Exit 0. `chore/1669-gisday-onpush` (100 components, pages identical); `chore/1478-gisday-zoneless` (closes #3609; initial JS 43,674 bytes smaller). Admin pages go to the laptop (g32).
 - **Batch a27 (#602, #1173)** (report `home/reports/2026-11-25-a27.md`): branch ready, `fix/602-1173-popup-footer` `529b0b8a5`, pre-pr-check Exit 0. One shared footer; Directions on lactation, entrances, restrooms, kiosks, each routed by hand; copy links blocked on identifiers (#3555).
 - **Batch g115 (#3495, #3524)** (report `home/reports/2026-11-25-g115.md`): both branch ready, pre-pr-check Exit 0. `fix/3495-shared-strict-null-checks` (closes #3524) and `fix/3495-competitions-strict-null-checks` (closes #3495, stacked).
 - **#3536 / #2816 (a19, decided A)** (report `home/reports/2026-11-24-a19.md`, update): branch ready, `fix/2816-empty-popup-rows` `ade7dc710`. One popup-data resolver; cross-path test red then green; check Exit 0; share-link images (rack and construction fixed, EV identical). Filed #3536 and #3551 (dates one day early).
