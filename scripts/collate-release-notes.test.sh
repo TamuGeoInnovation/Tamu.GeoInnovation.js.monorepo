@@ -202,4 +202,64 @@ lacks "and not GIS Day's" "Sponsor logos" "$(aggiemap)"
 contains "GIS Day's entry in GIS Day's file" "Sponsor logos are larger" "$(gisday)"
 lacks "and not AggieMap's" "Vendor lots" "$(gisday)"
 
+# 7. A GIS Day entry that links nothing but calls itself GIS Day's (#3419). GIS Day has no dev site, so
+# its row often links nothing; 3090-submission-file-preview.md reached AggieMap's notes that way.
+fresh
+entry 9007-submission-preview.md 'issue: 9007
+title: "GIS Day: preview a submission"
+testOnDev: |
+  | GIS Day: preview a submission ([#9007](x)) | Not on dev: GIS Day has no dev site yet | A PDF opens |' '### Submissions can be previewed
+
+The admin pages show a submission without downloading it.'
+out=$(run --check); status=$?
+expect "an undeclared entry titled GIS Day: fails --check" "1" "$status"
+contains "and says why" 'starts "GIS Day:"' "$out"
+out=$(run --write); status=$?
+expect "and --write refuses it" "1" "$status"
+lacks "writing nothing into AggieMap's notes" "Submissions can be previewed" "$(aggiemap)"
+
+fresh
+entry 9008-row-only.md 'issue: 9008
+title: Submission previews
+testOnDev: |
+  | GIS Day: preview a submission ([#9008](x)) | Not on dev | A PDF opens |' '### Submissions can be previewed
+
+Without downloading them.'
+run --check >/dev/null; status=$?
+expect "so does one whose row alone starts GIS Day:" "1" "$status"
+
+fresh
+entry 9009-gisday-notice.md 'issue: 9009
+title: GIS Day notice' '### A GIS Day notice on the main map
+
+It says GIS Day is coming.'
+run --check >/dev/null; status=$?
+expect "a title that only mentions GIS Day, with no colon, is still AggieMap's" "0" "$status"
+
+# 8. Nothing to collate changes nothing (#2042): --write with no entries leaves both files byte for byte,
+# blank lines included. Release-487's collation added a blank line under ## Summary with none.
+fresh
+cp "$root/r/docs/releases/unreleased.md" "$root/aggiemap.before"
+cp "$root/r/docs/releases/gisday-unreleased.md" "$root/gisday.before"
+run --write >/dev/null; status=$?
+expect "--write with no entries succeeds" "0" "$status"
+cmp -s "$root/aggiemap.before" "$root/r/docs/releases/unreleased.md" && same=yes || same=no
+expect "and leaves AggieMap's notes byte for byte" "yes" "$same"
+cmp -s "$root/gisday.before" "$root/r/docs/releases/gisday-unreleased.md" && same=yes || same=no
+expect "and GIS Day's" "yes" "$same"
+
+# A collation with only GIS Day's entries leaves AggieMap's notes alone too.
+fresh
+cp "$root/r/docs/releases/unreleased.md" "$root/aggiemap.before"
+entry 9001-gisday-sponsors.md "issue: 9001
+title: Sponsor logos
+app: gisday
+$gisday_row" '### Sponsor logos are larger
+
+On [txgisday.org/sponsors](https://txgisday.org/sponsors).'
+run --write >/dev/null; status=$?
+expect "a GIS Day-only collation writes" "0" "$status"
+cmp -s "$root/aggiemap.before" "$root/r/docs/releases/unreleased.md" && same=yes || same=no
+expect "and leaves AggieMap's notes byte for byte" "yes" "$same"
+
 exit "$failed"
