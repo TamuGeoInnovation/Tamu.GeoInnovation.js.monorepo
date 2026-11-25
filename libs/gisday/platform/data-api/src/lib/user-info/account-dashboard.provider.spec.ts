@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { NotFoundException } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 
@@ -30,7 +31,7 @@ const accounts = [
 
 describe('AccountDashboardProvider (#2892)', () => {
   let dataSource: DataSource;
-  let ms: { getUsersCreatedBetween: jest.Mock; countUsersCreatedBetween: jest.Mock };
+  let ms: { getUsersCreatedBetween: Mock; countUsersCreatedBetween: Mock };
   let seasonRepo: ReturnType<typeof queryCheckingRepository<Season>>;
   let universityRepo: ReturnType<typeof queryCheckingRepository<University>>;
   let provider: AccountDashboardProvider;
@@ -41,8 +42,8 @@ describe('AccountDashboardProvider (#2892)', () => {
 
   beforeEach(() => {
     ms = {
-      getUsersCreatedBetween: jest.fn(async () => accounts),
-      countUsersCreatedBetween: jest.fn(async () => 5)
+      getUsersCreatedBetween: vi.fn(async () => accounts),
+      countUsersCreatedBetween: vi.fn(async () => 5)
     };
     seasonRepo = queryCheckingRepository(dataSource, Season);
     universityRepo = queryCheckingRepository(dataSource, University);

@@ -18,10 +18,10 @@ describe('UserRsvpProvider', () => {
         UserRsvpProvider,
         {
           provide: getRepositoryToken(UserRsvp),
-          useValue: { find: jest.fn(), findOne: jest.fn(), create: jest.fn(), save: jest.fn() }
+          useValue: { find: vi.fn(), findOne: vi.fn(), create: vi.fn(), save: vi.fn() }
         },
-        { provide: getRepositoryToken(Event), useValue: { findOne: jest.fn() } },
-        { provide: getRepositoryToken(RsvpType), useValue: { findOne: jest.fn() } }
+        { provide: getRepositoryToken(Event), useValue: { findOne: vi.fn() } },
+        { provide: getRepositoryToken(RsvpType), useValue: { findOne: vi.fn() } }
       ]
     }).compile();
 
@@ -31,7 +31,7 @@ describe('UserRsvpProvider', () => {
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('should be defined', () => {
@@ -40,7 +40,7 @@ describe('UserRsvpProvider', () => {
 
   describe('.getUserRsvpForEvent()', () => {
     it('scopes the lookup to both the event and the attendee', async () => {
-      jest.spyOn(rsvpRepo, 'findOne').mockResolvedValue({ guid: 'r-1' } as UserRsvp);
+      vi.spyOn(rsvpRepo, 'findOne').mockResolvedValue({ guid: 'r-1' } as UserRsvp);
 
       await expect(provider.getUserRsvpForEvent('acct-1', 'e-1')).resolves.toEqual({ guid: 'r-1' });
       expect(rsvpRepo.findOne).toHaveBeenCalledWith({
@@ -49,7 +49,7 @@ describe('UserRsvpProvider', () => {
     });
 
     it('throws NotFound when the attendee has not RSVPed', async () => {
-      jest.spyOn(rsvpRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(rsvpRepo, 'findOne').mockResolvedValue(null);
 
       await expect(provider.getUserRsvpForEvent('acct-1', 'e-1')).rejects.toThrow(NotFoundException);
     });
@@ -58,10 +58,10 @@ describe('UserRsvpProvider', () => {
   describe('.insertUserRsvp()', () => {
     it('creates the RSVP against the resolved event', async () => {
       const event = { guid: 'e-1' } as Event;
-      jest.spyOn(eventRepo, 'findOne').mockResolvedValue(event);
-      jest.spyOn(rsvpRepo, 'findOne').mockResolvedValue(null);
-      jest.spyOn(rsvpRepo, 'create').mockImplementation((e) => e as never);
-      jest.spyOn(rsvpRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
+      vi.spyOn(eventRepo, 'findOne').mockResolvedValue(event);
+      vi.spyOn(rsvpRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(rsvpRepo, 'create').mockImplementation((e) => e as never);
+      vi.spyOn(rsvpRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
 
       await provider.insertUserRsvp('e-1', null, 'acct-1');
 
@@ -80,10 +80,10 @@ describe('UserRsvpProvider', () => {
      * omission here an oversight rather than a decision.
      */
     it('refuses to RSVP to an event that does not exist', async () => {
-      jest.spyOn(eventRepo, 'findOne').mockResolvedValue(null);
-      jest.spyOn(rsvpRepo, 'findOne').mockResolvedValue(null);
-      const create = jest.spyOn(rsvpRepo, 'create');
-      const save = jest.spyOn(rsvpRepo, 'save');
+      vi.spyOn(eventRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(rsvpRepo, 'findOne').mockResolvedValue(null);
+      const create = vi.spyOn(rsvpRepo, 'create');
+      const save = vi.spyOn(rsvpRepo, 'save');
 
       await expect(provider.insertUserRsvp('missing', null, 'acct-1')).rejects.toThrow(
         UnprocessableEntityException
@@ -100,9 +100,9 @@ describe('UserRsvpProvider', () => {
      * caller it had already happened. `CheckInProvider` answers 422 for the same situation.
      */
     it('answers 422, not 500, when the attendee has already RSVPed', async () => {
-      jest.spyOn(eventRepo, 'findOne').mockResolvedValue({ guid: 'e-1' } as Event);
-      jest.spyOn(rsvpRepo, 'findOne').mockResolvedValue({ guid: 'r-existing' } as UserRsvp);
-      const save = jest.spyOn(rsvpRepo, 'save');
+      vi.spyOn(eventRepo, 'findOne').mockResolvedValue({ guid: 'e-1' } as Event);
+      vi.spyOn(rsvpRepo, 'findOne').mockResolvedValue({ guid: 'r-existing' } as UserRsvp);
+      const save = vi.spyOn(rsvpRepo, 'save');
 
       await expect(provider.insertUserRsvp('e-1', null, 'acct-1')).rejects.toThrow(
         UnprocessableEntityException
@@ -121,10 +121,10 @@ describe('UserRsvpProvider', () => {
      * changed. Wiring it up is a product decision.
      */
     it('ignores the rsvp type it is given', async () => {
-      jest.spyOn(eventRepo, 'findOne').mockResolvedValue({ guid: 'e-1' } as Event);
-      jest.spyOn(rsvpRepo, 'findOne').mockResolvedValue(null);
-      jest.spyOn(rsvpRepo, 'create').mockImplementation((e) => e as never);
-      jest.spyOn(rsvpRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
+      vi.spyOn(eventRepo, 'findOne').mockResolvedValue({ guid: 'e-1' } as Event);
+      vi.spyOn(rsvpRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(rsvpRepo, 'create').mockImplementation((e) => e as never);
+      vi.spyOn(rsvpRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
 
       await provider.insertUserRsvp('e-1', 'type-attending', 'acct-1');
 
@@ -136,7 +136,7 @@ describe('UserRsvpProvider', () => {
 
   describe('.getUserRsvps()', () => {
     it('scopes to the account and loads the events', async () => {
-      jest.spyOn(rsvpRepo, 'find').mockResolvedValue([{ guid: 'r-1' } as UserRsvp]);
+      vi.spyOn(rsvpRepo, 'find').mockResolvedValue([{ guid: 'r-1' } as UserRsvp]);
 
       await expect(provider.getUserRsvps('acct-1')).resolves.toEqual([{ guid: 'r-1' }]);
       expect(rsvpRepo.find).toHaveBeenCalledWith({
@@ -148,8 +148,8 @@ describe('UserRsvpProvider', () => {
 
   describe('.deleteRsvpForUser()', () => {
     it('removes the RSVP for that attendee and event', async () => {
-      const remove = jest.fn().mockResolvedValue({ guid: 'r-1' });
-      jest.spyOn(rsvpRepo, 'findOne').mockResolvedValue({ guid: 'r-1', remove } as never);
+      const remove = vi.fn().mockResolvedValue({ guid: 'r-1' });
+      vi.spyOn(rsvpRepo, 'findOne').mockResolvedValue({ guid: 'r-1', remove } as never);
 
       await expect(provider.deleteRsvpForUser('e-1', 'acct-1')).resolves.toEqual({ guid: 'r-1' });
       expect(rsvpRepo.findOne).toHaveBeenCalledWith({
@@ -159,7 +159,7 @@ describe('UserRsvpProvider', () => {
     });
 
     it('throws NotFound rather than reporting success when there is nothing to remove', async () => {
-      jest.spyOn(rsvpRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(rsvpRepo, 'findOne').mockResolvedValue(null);
 
       await expect(provider.deleteRsvpForUser('e-1', 'acct-1')).rejects.toThrow(NotFoundException);
     });
@@ -169,7 +169,7 @@ describe('UserRsvpProvider', () => {
      * another's RSVP by posting their event guid. Asserting it so the scoping is not dropped.
      */
     it('cannot remove another attendee\'s RSVP', async () => {
-      const findOne = jest.spyOn(rsvpRepo, 'findOne').mockResolvedValue(null);
+      const findOne = vi.spyOn(rsvpRepo, 'findOne').mockResolvedValue(null);
 
       await expect(provider.deleteRsvpForUser('e-1', 'acct-attacker')).rejects.toThrow(
         NotFoundException

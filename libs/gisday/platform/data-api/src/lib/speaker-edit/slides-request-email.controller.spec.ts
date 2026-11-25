@@ -18,7 +18,7 @@ describe('SlidesRequestEmailController', () => {
   let permissions: Array<string>;
   // A made-up admin, as the token would name them.
   let user: Record<string, unknown>;
-  const service = { send: jest.fn(), preview: jest.fn() };
+  const service = { send: vi.fn(), preview: vi.fn() };
 
   const post = (path: string, body: object) =>
     fetch(`${url}/session-emails/${path}`, {

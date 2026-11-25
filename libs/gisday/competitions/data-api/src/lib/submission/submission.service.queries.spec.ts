@@ -87,7 +87,7 @@ describe('SubmissionService queries, built by typeorm', () => {
     );
   });
 
-  afterEach(() => jest.restoreAllMocks());
+  afterEach(() => vi.restoreAllMocks());
 
   it('reads a submission by its guid', async () => {
     await expect(service.getSubmissionByGuid('sub-1')).resolves.toBeNull();
@@ -108,7 +108,7 @@ describe('SubmissionService queries, built by typeorm', () => {
     };
 
     // The transaction only writes: answered here with the submission it would insert.
-    jest.spyOn(submissionRepo.manager, 'transaction').mockResolvedValue({ guid: 'sub-1' } as never);
+    vi.spyOn(submissionRepo.manager, 'transaction').mockResolvedValue({ guid: 'sub-1' } as never);
 
     await expect(
       service.createCompetitionSubmission({

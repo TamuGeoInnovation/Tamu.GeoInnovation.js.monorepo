@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { NotFoundException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -23,14 +24,14 @@ describe('EventBroadcastService', () => {
         {
           provide: getRepositoryToken(EventBroadcast),
           useValue: {
-            find: jest.fn(),
-            findOne: jest.fn(),
-            create: jest.fn(),
-            save: jest.fn(),
-            manager: { transaction: jest.fn() }
+            find: vi.fn(),
+            findOne: vi.fn(),
+            create: vi.fn(),
+            save: vi.fn(),
+            manager: { transaction: vi.fn() }
           }
         },
-        { provide: SeasonService, useValue: { findOne: jest.fn(), findOneActive: jest.fn() } }
+        { provide: SeasonService, useValue: { findOne: vi.fn(), findOneActive: vi.fn() } }
       ]
     }).compile();
 
@@ -40,7 +41,7 @@ describe('EventBroadcastService', () => {
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('should be defined', () => {
@@ -49,7 +50,7 @@ describe('EventBroadcastService', () => {
 
   describe('.getEntities()', () => {
     it('lists broadcasts ordered by name', async () => {
-      jest.spyOn(broadcastRepo, 'find').mockResolvedValue([{ guid: 'b-1' } as EventBroadcast]);
+      vi.spyOn(broadcastRepo, 'find').mockResolvedValue([{ guid: 'b-1' } as EventBroadcast]);
 
       await expect(service.getEntities()).resolves.toEqual([{ guid: 'b-1' }]);
       expect(broadcastRepo.find).toHaveBeenCalledWith({ relations: { place: true }, order: { name: 'ASC' } });
@@ -58,7 +59,7 @@ describe('EventBroadcastService', () => {
 
   describe('.getBroadcastsForSeason()', () => {
     it('scopes to the season and orders by name', async () => {
-      jest.spyOn(broadcastRepo, 'find').mockResolvedValue([{ guid: 'b-1' } as EventBroadcast]);
+      vi.spyOn(broadcastRepo, 'find').mockResolvedValue([{ guid: 'b-1' } as EventBroadcast]);
 
       await expect(service.getBroadcastsForSeason('season-1')).resolves.toEqual([{ guid: 'b-1' }]);
       expect(broadcastRepo.find).toHaveBeenCalledWith({
@@ -71,8 +72,8 @@ describe('EventBroadcastService', () => {
 
   describe('.getBroadcastsForActiveSeason()', () => {
     it('reads broadcasts for whichever season is active', async () => {
-      jest.spyOn(seasonService, 'findOneActive').mockResolvedValue({ guid: 'active' } as never);
-      jest.spyOn(broadcastRepo, 'find').mockResolvedValue([{ guid: 'b-1' } as EventBroadcast]);
+      vi.spyOn(seasonService, 'findOneActive').mockResolvedValue({ guid: 'active' } as never);
+      vi.spyOn(broadcastRepo, 'find').mockResolvedValue([{ guid: 'b-1' } as EventBroadcast]);
 
       await expect(service.getBroadcastsForActiveSeason()).resolves.toEqual([{ guid: 'b-1' }]);
       expect(broadcastRepo.find).toHaveBeenCalledWith({
@@ -86,7 +87,7 @@ describe('EventBroadcastService', () => {
       // The season lookup sits outside the try, so this one propagates untouched. It also reads
       // `season.guid` without a null check, which is safe only because `findOneActive` throws
       // rather than resolving null.
-      jest
+      vi
         .spyOn(seasonService, 'findOneActive')
         .mockRejectedValue(new NotFoundException('No active season found.'));
 
@@ -103,8 +104,8 @@ describe('EventBroadcastService', () => {
     const names = (rows: Array<Partial<EventBroadcast>>) => rows.map((row) => row.name);
 
     beforeEach(() => {
-      jest.spyOn(broadcastRepo, 'find').mockResolvedValue([...unsorted]);
-      jest.spyOn(seasonService, 'findOneActive').mockResolvedValue({ guid: 'active' } as never);
+      vi.spyOn(broadcastRepo, 'find').mockResolvedValue([...unsorted]);
+      vi.spyOn(seasonService, 'findOneActive').mockResolvedValue({ guid: 'active' } as never);
     });
 
     it("lists a season's broadcasts by name, ignoring case, with numbers in order", async () => {
@@ -131,14 +132,14 @@ describe('EventBroadcastService', () => {
         season: { guid: 'season-1' }
       } as unknown as EventBroadcast;
 
-      jest.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
-      jest.spyOn(broadcastRepo, 'find').mockResolvedValue([source]);
-      jest.spyOn(broadcastRepo, 'create').mockImplementation((e) => e as never);
-      jest.spyOn(broadcastRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
+      vi.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
+      vi.spyOn(broadcastRepo, 'find').mockResolvedValue([source]);
+      vi.spyOn(broadcastRepo, 'create').mockImplementation((e) => e as never);
+      vi.spyOn(broadcastRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
 
       await service.copyBroadcastsIntoSeason('season-2', ['b-1']);
 
-      const passed = (broadcastRepo.create as jest.Mock).mock.calls[0][0];
+      const passed = (broadcastRepo.create as Mock).mock.calls[0][0];
       expect(passed.guid).toBeUndefined();
       expect(passed.created).toBeUndefined();
       expect(passed.season).toEqual({ guid: 'season-2' });
@@ -146,13 +147,13 @@ describe('EventBroadcastService', () => {
     });
 
     it('copies every requested broadcast', async () => {
-      jest.spyOn(broadcastRepo, 'find').mockResolvedValue([
+      vi.spyOn(broadcastRepo, 'find').mockResolvedValue([
         { guid: 'b-1', name: 'Zoom' },
         { guid: 'b-2', name: 'Teams' }
       ] as EventBroadcast[]);
-      jest.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
-      jest.spyOn(broadcastRepo, 'create').mockImplementation((e) => e as never);
-      jest.spyOn(broadcastRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
+      vi.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
+      vi.spyOn(broadcastRepo, 'create').mockImplementation((e) => e as never);
+      vi.spyOn(broadcastRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
 
       const copied = await service.copyBroadcastsIntoSeason('season-2', ['b-1', 'b-2']);
 
@@ -165,23 +166,23 @@ describe('EventBroadcastService', () => {
      * unprocessable". Since the shared copy (#3324) it is not caught at all, and Nest answers it 500.
      */
     it('lets a lookup failure through rather than calling it the request\'s fault', async () => {
-      jest.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
-      jest.spyOn(broadcastRepo, 'find').mockRejectedValue(new Error('connection lost'));
+      vi.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
+      vi.spyOn(broadcastRepo, 'find').mockRejectedValue(new Error('connection lost'));
 
       await expect(service.copyBroadcastsIntoSeason('season-2', ['b-1'])).rejects.toThrow('connection lost');
     });
   });
 
   describe('.deleteEntities()', () => {
-    const withManager = (manager: Record<string, jest.Mock>) => {
-      (broadcastRepo.manager.transaction as jest.Mock).mockImplementation((cb) => cb(manager));
+    const withManager = (manager: Record<string, Mock>) => {
+      (broadcastRepo.manager.transaction as Mock).mockImplementation((cb) => cb(manager));
     };
 
     it('accepts a comma-separated string and an array alike', async () => {
       const manager = {
-        find: jest.fn().mockResolvedValue([]),
-        save: jest.fn(),
-        delete: jest.fn().mockResolvedValue({ affected: 2 })
+        find: vi.fn().mockResolvedValue([]),
+        save: vi.fn(),
+        delete: vi.fn().mockResolvedValue({ affected: 2 })
       };
       withManager(manager);
 
@@ -195,9 +196,9 @@ describe('EventBroadcastService', () => {
     it('detaches the broadcast from its events before deleting it', async () => {
       const event = { guid: 'e-1', broadcast: { guid: 'b-1' } };
       const manager = {
-        find: jest.fn().mockResolvedValue([{ guid: 'b-1', events: [event] }]),
-        save: jest.fn().mockResolvedValue([event]),
-        delete: jest.fn().mockResolvedValue({ affected: 1 })
+        find: vi.fn().mockResolvedValue([{ guid: 'b-1', events: [event] }]),
+        save: vi.fn().mockResolvedValue([event]),
+        delete: vi.fn().mockResolvedValue({ affected: 1 })
       };
       withManager(manager);
 
@@ -211,12 +212,12 @@ describe('EventBroadcastService', () => {
       const first = { guid: 'e-1', broadcast: {} };
       const second = { guid: 'e-2', broadcast: {} };
       const manager = {
-        find: jest.fn().mockResolvedValue([
+        find: vi.fn().mockResolvedValue([
           { guid: 'b-1', events: [first] },
           { guid: 'b-2', events: [second] }
         ]),
-        save: jest.fn().mockResolvedValue([first, second]),
-        delete: jest.fn().mockResolvedValue({ affected: 2 })
+        save: vi.fn().mockResolvedValue([first, second]),
+        delete: vi.fn().mockResolvedValue({ affected: 2 })
       };
       withManager(manager);
 
@@ -232,7 +233,7 @@ describe('EventBroadcastService', () => {
   describe('.getSessions()', () => {
     it('gives the sessions that use the broadcast, each with its day and place, for the admin page', async () => {
       const sessions = [{ guid: 'e-1', name: 'Keynote' }];
-      jest.spyOn(broadcastRepo, 'findOne').mockResolvedValue({ guid: 'b-1', events: sessions } as unknown as EventBroadcast);
+      vi.spyOn(broadcastRepo, 'findOne').mockResolvedValue({ guid: 'b-1', events: sessions } as unknown as EventBroadcast);
 
       await expect(service.getSessions('b-1')).resolves.toEqual(sessions);
       expect(broadcastRepo.findOne).toHaveBeenCalledWith({
@@ -242,7 +243,7 @@ describe('EventBroadcastService', () => {
     });
 
     it('answers 404 for a broadcast that does not exist', async () => {
-      jest.spyOn(broadcastRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(broadcastRepo, 'findOne').mockResolvedValue(null);
 
       await expect(service.getSessions('b-x')).rejects.toThrow(NotFoundException);
     });
@@ -273,7 +274,7 @@ describe("EventBroadcast's organization", () => {
   });
 
   it('is read with one broadcast, for its admin page', async () => {
-    const findOne = jest.fn().mockResolvedValue({ guid: 'b-1', place: { guid: 'tamu' } });
+    const findOne = vi.fn().mockResolvedValue({ guid: 'b-1', place: { guid: 'tamu' } });
     const controller = new EventBroadcastController({ findOne } as unknown as EventBroadcastService);
 
     await controller.getEntity('b-1');

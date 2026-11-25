@@ -13,7 +13,7 @@ const UPLOAD_TEST_TIMEOUT_MS = 30000;
 describe('OrganizationController upload limits', () => {
   let app: INestApplication;
   let url: string;
-  const createOrganization = jest.fn();
+  const createOrganization = vi.fn();
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({

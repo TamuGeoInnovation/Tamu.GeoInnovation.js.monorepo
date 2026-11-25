@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { InternalServerErrorException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
@@ -7,11 +8,11 @@ import { IMailroomEmailOutbound } from '@tamu-gisc/mailroom/common';
 
 import { ContactService } from './contact.service';
 
-jest.mock('got');
+vi.mock('got');
 
 describe('ContactService', () => {
   let service: ContactService;
-  let post: jest.Mock;
+  let post: Mock;
 
   /** The env values the service is supposed to fall back to. */
   const ENV = {
@@ -40,8 +41,8 @@ describe('ContactService', () => {
   beforeEach(async () => {
     Object.assign(process.env, ENV);
 
-    post = jest.fn().mockReturnValue({ json: jest.fn().mockResolvedValue({ ok: true }) });
-    (got as unknown as { post: jest.Mock }).post = post;
+    post = vi.fn().mockReturnValue({ json: vi.fn().mockResolvedValue({ ok: true }) });
+    (got as unknown as { post: Mock }).post = post;
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [ContactService]
@@ -52,7 +53,7 @@ describe('ContactService', () => {
 
   afterEach(() => {
     process.env = { ...original };
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('should be defined', () => {
@@ -158,7 +159,7 @@ describe('ContactService', () => {
     });
 
     it('reports a transport failure as 500', async () => {
-      post.mockReturnValue({ json: jest.fn().mockRejectedValue(new Error('mailroom unreachable')) });
+      post.mockReturnValue({ json: vi.fn().mockRejectedValue(new Error('mailroom unreachable')) });
 
       await expect(service.sendMessage(message())).rejects.toThrow(InternalServerErrorException);
     });

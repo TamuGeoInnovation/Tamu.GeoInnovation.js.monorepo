@@ -17,12 +17,12 @@ describe('CheckInController', () => {
   let app: INestApplication;
   let url: string;
   let permissions: Array<string>;
-  const dashboard = { getSeason: jest.fn().mockResolvedValue({ events: [], made: [], unreadAccounts: 0 }) };
+  const dashboard = { getSeason: vi.fn().mockResolvedValue({ events: [], made: [], unreadAccounts: 0 }) };
   const provider = {
-    insertUserCheckin: jest.fn(),
-    insertAttendeeCheckin: jest.fn(),
-    getCheckInCode: jest.fn(),
-    getCheckinsForEvent: jest.fn()
+    insertUserCheckin: vi.fn(),
+    insertAttendeeCheckin: vi.fn(),
+    getCheckInCode: vi.fn(),
+    getCheckinsForEvent: vi.fn()
   };
 
   const post = (path: string, body: object) =>

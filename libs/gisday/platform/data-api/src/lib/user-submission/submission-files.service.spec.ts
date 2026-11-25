@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { existsSync, mkdtempSync, rmSync, writeFileSync } from 'fs';
 import { mkdir } from 'fs/promises';
 import { tmpdir } from 'os';
@@ -37,22 +38,22 @@ describe('SubmissionFilesService', () => {
   let submission: Submission;
   let saved: Array<Asset>;
   let service: SubmissionFilesService;
-  let deleteAssetFiles: jest.Mock;
+  let deleteAssetFiles: Mock;
   let previousAppData: string | undefined;
 
   const submissionRepo = {
-    findOne: jest.fn(),
-    find: jest.fn()
+    findOne: vi.fn(),
+    find: vi.fn()
   };
   const assetRepo = {
-    create: jest.fn((a) => a),
-    save: jest.fn(async (a) => {
+    create: vi.fn((a) => a),
+    save: vi.fn(async (a) => {
       const row = { ...a, created: new Date() } as Asset;
       saved.push(row);
       submission.files.push(row);
       return row;
     }),
-    delete: jest.fn()
+    delete: vi.fn()
   };
 
   /** A file as Multer leaves it: written under the uploading folder, with the name the browser sent. */
@@ -79,7 +80,7 @@ describe('SubmissionFilesService', () => {
     } as unknown as Submission;
     submissionRepo.findOne.mockImplementation(async () => submission);
     submissionRepo.find.mockImplementation(async () => [{ ...submission, season: { year: 2026 } }]);
-    deleteAssetFiles = jest.fn(async (assets: Array<Asset>) => assets.forEach((a) => rmSync(join(appData, a.path))));
+    deleteAssetFiles = vi.fn(async (assets: Array<Asset>) => assets.forEach((a) => rmSync(join(appData, a.path))));
 
     service = new SubmissionFilesService(submissionRepo as never, assetRepo as never, { deleteAssetFiles } as never);
   });
@@ -87,7 +88,7 @@ describe('SubmissionFilesService', () => {
   afterEach(() => {
     rmSync(appData, { recursive: true, force: true });
     process.env.APP_DATA = previousAppData;
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('add', () => {

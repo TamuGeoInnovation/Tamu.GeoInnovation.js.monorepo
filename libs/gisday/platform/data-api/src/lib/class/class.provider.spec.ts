@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { ConflictException, UnprocessableEntityException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -19,12 +20,12 @@ describe('ClassProvider', () => {
   let management: ManagementService;
 
   const queryBuilder = (result: unknown, kind: 'getOne' | 'getRawMany' = 'getOne') => {
-    const qb: Record<string, jest.Mock> = {};
+    const qb: Record<string, Mock> = {};
     for (const m of ['leftJoinAndSelect', 'select', 'addSelect', 'where', 'groupBy']) {
-      qb[m] = jest.fn(() => qb);
+      qb[m] = vi.fn(() => qb);
     }
-    qb.getOne = jest.fn().mockResolvedValue(kind === 'getOne' ? result : null);
-    qb.getRawMany = jest.fn().mockResolvedValue(kind === 'getRawMany' ? result : []);
+    qb.getOne = vi.fn().mockResolvedValue(kind === 'getOne' ? result : null);
+    qb.getRawMany = vi.fn().mockResolvedValue(kind === 'getRawMany' ? result : []);
     return qb;
   };
 
@@ -34,11 +35,11 @@ describe('ClassProvider', () => {
         ClassProvider,
         {
           provide: getRepositoryToken(Class),
-          useValue: { find: jest.fn(), findOne: jest.fn(), create: jest.fn(), save: jest.fn(), createQueryBuilder: jest.fn() }
+          useValue: { find: vi.fn(), findOne: vi.fn(), create: vi.fn(), save: vi.fn(), createQueryBuilder: vi.fn() }
         },
-        { provide: getRepositoryToken(CheckIn), useValue: { createQueryBuilder: jest.fn() } },
-        { provide: ManagementService, useValue: { getUserMetadata: jest.fn() } },
-        { provide: SeasonService, useValue: { findOne: jest.fn(), findOneActive: jest.fn() } }
+        { provide: getRepositoryToken(CheckIn), useValue: { createQueryBuilder: vi.fn() } },
+        { provide: ManagementService, useValue: { getUserMetadata: vi.fn() } },
+        { provide: SeasonService, useValue: { findOne: vi.fn(), findOneActive: vi.fn() } }
       ]
     }).compile();
 
@@ -50,7 +51,7 @@ describe('ClassProvider', () => {
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('should be defined', () => {
@@ -59,10 +60,10 @@ describe('ClassProvider', () => {
 
   describe('.getClassesForSeason()', () => {
     it('scopes to the season', async () => {
-      jest.spyOn(classRepo, 'find').mockResolvedValue([{ guid: 'c-1' } as Class]);
+      vi.spyOn(classRepo, 'find').mockResolvedValue([{ guid: 'c-1' } as Class]);
 
       await expect(provider.getClassesForSeason('season-1')).resolves.toEqual([{ guid: 'c-1' }]);
-      expect((classRepo.find as jest.Mock).mock.calls[0][0].where).toEqual({ season: { guid: 'season-1' } });
+      expect((classRepo.find as Mock).mock.calls[0][0].where).toEqual({ season: { guid: 'season-1' } });
     });
 
     /**
@@ -72,7 +73,7 @@ describe('ClassProvider', () => {
     it('lists classes by code, then section, then professor, comparing numbers as numbers', async () => {
       const row = (code: string, number: string, section: string, professorName: string) =>
         ({ code, number, section, professorName, title: `${code} ${number}` }) as Class;
-      jest
+      vi
         .spyOn(classRepo, 'find')
         .mockResolvedValue([
           row('GEOG', '205', '599', 'Jean'),
@@ -115,8 +116,8 @@ describe('ClassProvider', () => {
      */
     it('refuses an exact duplicate with 409 and creates nothing (#2538)', async () => {
       const existing = { guid: 'c-existing', code: 'GEOG', number: '476' } as unknown as Class;
-      jest.spyOn(classRepo, 'findOne').mockResolvedValue(existing);
-      const create = jest.spyOn(classRepo, 'create');
+      vi.spyOn(classRepo, 'findOne').mockResolvedValue(existing);
+      const create = vi.spyOn(classRepo, 'create');
 
       await expect(
         provider.createClass({ code: 'GEOG', number: '476', professorName: 'Goldberg' } as Class)
@@ -125,8 +126,8 @@ describe('ClassProvider', () => {
     });
 
     it('matches on code, number, section, professor and season together', async () => {
-      jest.spyOn(classRepo, 'findOne').mockResolvedValue(null);
-      jest.spyOn(classRepo, 'create').mockReturnValue({ save: jest.fn() } as never);
+      vi.spyOn(classRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(classRepo, 'create').mockReturnValue({ save: vi.fn() } as never);
 
       await provider.createClass({
         code: 'GEOG',
@@ -149,14 +150,14 @@ describe('ClassProvider', () => {
       const section500 = { guid: 'c-500', code: 'GEOG', number: '201', section: '500', professorName: 'Breyer' };
       const saved = { guid: 'c-501' };
       // A database that holds section 500 only: it answers a lookup only when every condition matches.
-      jest.spyOn(classRepo, 'findOne').mockImplementation(async ({ where }: never) =>
+      vi.spyOn(classRepo, 'findOne').mockImplementation(async ({ where }: never) =>
         Object.entries(where as Record<string, unknown>).every(
           ([key, value]) => key === 'season' || section500[key as keyof typeof section500] === value
         )
           ? (section500 as unknown as Class)
           : null
       );
-      jest.spyOn(classRepo, 'create').mockReturnValue({ save: jest.fn().mockResolvedValue(saved) } as never);
+      vi.spyOn(classRepo, 'create').mockReturnValue({ save: vi.fn().mockResolvedValue(saved) } as never);
 
       await expect(
         provider.createClass({
@@ -171,38 +172,38 @@ describe('ClassProvider', () => {
     });
 
     it('scopes the lookup to the season given as an object too', async () => {
-      jest.spyOn(classRepo, 'findOne').mockResolvedValue(null);
-      jest.spyOn(classRepo, 'create').mockReturnValue({ save: jest.fn() } as never);
+      vi.spyOn(classRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(classRepo, 'create').mockReturnValue({ save: vi.fn() } as never);
 
       await provider.createClass({ code: 'GEOG', section: '500', season: { guid: 'season-2026' } } as unknown as Class);
 
-      expect((classRepo.findOne as jest.Mock).mock.calls[0][0].where.season).toEqual({ guid: 'season-2026' });
+      expect((classRepo.findOne as Mock).mock.calls[0][0].where.season).toEqual({ guid: 'season-2026' });
     });
 
     it('matches an empty section or season as empty, not as anything', async () => {
-      jest.spyOn(classRepo, 'findOne').mockResolvedValue(null);
-      jest.spyOn(classRepo, 'create').mockReturnValue({ save: jest.fn() } as never);
+      vi.spyOn(classRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(classRepo, 'create').mockReturnValue({ save: vi.fn() } as never);
 
       await provider.createClass({ code: 'GEOG', number: '201', professorName: 'Breyer' } as Class);
 
-      const where = (classRepo.findOne as jest.Mock).mock.calls[0][0].where;
+      const where = (classRepo.findOne as Mock).mock.calls[0][0].where;
       expect(where.section).toEqual(IsNull());
       expect(where.season).toEqual(IsNull());
     });
 
     it('drops a caller-supplied guid when creating', async () => {
-      jest.spyOn(classRepo, 'findOne').mockResolvedValue(null);
-      jest.spyOn(classRepo, 'create').mockReturnValue({ save: jest.fn() } as never);
+      vi.spyOn(classRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(classRepo, 'create').mockReturnValue({ save: vi.fn() } as never);
 
       await provider.createClass({ guid: 'c-hijack', code: 'GEOG' } as Class);
 
-      expect((classRepo.create as jest.Mock).mock.calls[0][0].guid).toBeUndefined();
+      expect((classRepo.create as Mock).mock.calls[0][0].guid).toBeUndefined();
     });
   });
 
   describe('.copyClassesIntoSeason()', () => {
     it('rejects a season that does not exist', async () => {
-      jest.spyOn(seasonService, 'findOne').mockResolvedValue(null);
+      vi.spyOn(seasonService, 'findOne').mockResolvedValue(null);
 
       await expect(provider.copyClassesIntoSeason('missing', ['c-1'])).rejects.toThrow(
         UnprocessableEntityException
@@ -217,9 +218,9 @@ describe('ClassProvider', () => {
      * "Events not found" in a class provider, copy-pasted from elsewhere.
      */
     it('reports that there was nothing to copy rather than succeeding silently', async () => {
-      jest.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
-      jest.spyOn(classRepo, 'find').mockResolvedValue([]);
-      const create = jest.spyOn(classRepo, 'create');
+      vi.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
+      vi.spyOn(classRepo, 'find').mockResolvedValue([]);
+      const create = vi.spyOn(classRepo, 'create');
 
       await expect(provider.copyClassesIntoSeason('season-2', ['missing'])).rejects.toThrow(
         UnprocessableEntityException
@@ -237,14 +238,14 @@ describe('ClassProvider', () => {
         students: [{ guid: 'uc-1' }]
       } as unknown as Class;
 
-      jest.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
-      jest.spyOn(classRepo, 'find').mockResolvedValue([source]);
-      jest.spyOn(classRepo, 'create').mockImplementation((c) => c as never);
-      jest.spyOn(classRepo, 'save').mockImplementation((c) => Promise.resolve(c as never));
+      vi.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
+      vi.spyOn(classRepo, 'find').mockResolvedValue([source]);
+      vi.spyOn(classRepo, 'create').mockImplementation((c) => c as never);
+      vi.spyOn(classRepo, 'save').mockImplementation((c) => Promise.resolve(c as never));
 
       await provider.copyClassesIntoSeason('season-2', ['c-1']);
 
-      const passed = (classRepo.create as jest.Mock).mock.calls[0][0];
+      const passed = (classRepo.create as Mock).mock.calls[0][0];
       expect(passed.guid).toBeUndefined();
       // The roster belongs to the original class; carrying it would move the students across.
       expect(passed.students).toBeUndefined();
@@ -255,7 +256,7 @@ describe('ClassProvider', () => {
 
   describe('.getClassStudents()', () => {
     it('returns the roster for the class', async () => {
-      jest
+      vi
         .spyOn(classRepo, 'findOne')
         .mockResolvedValue({ guid: 'c-1', students: [{ guid: 'uc-1' }] } as unknown as Class);
 
@@ -263,7 +264,7 @@ describe('ClassProvider', () => {
     });
 
     it('answers an empty roster for a class that does not exist', async () => {
-      jest.spyOn(classRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(classRepo, 'findOne').mockResolvedValue(null);
 
       await expect(provider.getClassStudents('missing')).resolves.toEqual([]);
     });
@@ -278,13 +279,13 @@ describe('ClassProvider', () => {
      * guards the same case and answers an empty list, which is what makes this an oversight.
      */
     it('answers an empty roster for a class that does not exist', async () => {
-      jest.spyOn(classRepo, 'createQueryBuilder').mockReturnValue(queryBuilder(null) as never);
+      vi.spyOn(classRepo, 'createQueryBuilder').mockReturnValue(queryBuilder(null) as never);
 
       await expect(provider.getSimplifiedAttendance('missing')).resolves.toEqual([]);
     });
 
     it('answers an empty roster for a class with no students', async () => {
-      jest
+      vi
         .spyOn(classRepo, 'createQueryBuilder')
         .mockReturnValue(queryBuilder({ guid: 'c-1', students: [] }) as never);
 
@@ -292,15 +293,15 @@ describe('ClassProvider', () => {
     });
 
     it('builds a roster row per student with their attendance count', async () => {
-      jest.spyOn(classRepo, 'createQueryBuilder').mockReturnValue(
+      vi.spyOn(classRepo, 'createQueryBuilder').mockReturnValue(
         queryBuilder({ guid: 'c-1', students: [{ accountGuid: 'acct-1' }] }) as never
       );
-      jest
+      vi
         .spyOn(checkinRepo, 'createQueryBuilder')
         .mockReturnValue(
           queryBuilder([{ checkin_accountGuid: 'acct-1', checkinCount: 3 }], 'getRawMany') as never
         );
-      jest.spyOn(management, 'getUserMetadata').mockResolvedValue({
+      vi.spyOn(management, 'getUserMetadata').mockResolvedValue({
         user_info: { id: 'acct-1', given_name: 'Ada', family_name: 'Lovelace', email: 'ada@tamu.edu' },
         user_metadata: { education: { id: '123456789' } }
       } as never);
@@ -321,15 +322,15 @@ describe('ClassProvider', () => {
     });
 
     it('still lists a student whose profile lookup fails', async () => {
-      jest.spyOn(classRepo, 'createQueryBuilder').mockReturnValue(
+      vi.spyOn(classRepo, 'createQueryBuilder').mockReturnValue(
         queryBuilder({ guid: 'c-1', students: [{ accountGuid: 'acct-1' }] }) as never
       );
-      jest
+      vi
         .spyOn(checkinRepo, 'createQueryBuilder')
         .mockReturnValue(queryBuilder([], 'getRawMany') as never);
       // A roster is for an instructor to mark attendance from. One unreachable Auth0 profile must
       // not take the whole roster down.
-      jest.spyOn(management, 'getUserMetadata').mockRejectedValue(new Error('auth0 unreachable'));
+      vi.spyOn(management, 'getUserMetadata').mockRejectedValue(new Error('auth0 unreachable'));
 
       const result = await provider.getSimplifiedAttendance('c-1');
       const roster = isObservable(result) ? await firstValueFrom(result) : result;
@@ -340,15 +341,15 @@ describe('ClassProvider', () => {
     });
 
     it('reports zero attendance for a student with no check-ins', async () => {
-      jest.spyOn(classRepo, 'createQueryBuilder').mockReturnValue(
+      vi.spyOn(classRepo, 'createQueryBuilder').mockReturnValue(
         queryBuilder({ guid: 'c-1', students: [{ accountGuid: 'acct-2' }] }) as never
       );
-      jest
+      vi
         .spyOn(checkinRepo, 'createQueryBuilder')
         .mockReturnValue(
           queryBuilder([{ checkin_accountGuid: 'acct-other', checkinCount: 5 }], 'getRawMany') as never
         );
-      jest
+      vi
         .spyOn(management, 'getUserMetadata')
         .mockResolvedValue({ user_info: { id: 'acct-2' } } as never);
 

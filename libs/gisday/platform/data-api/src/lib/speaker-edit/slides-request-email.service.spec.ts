@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 import {
@@ -38,15 +39,15 @@ describe('SlidesRequestEmailService', () => {
   };
 
   let sent: Array<{ to: string; subject: string; text: string; html: string; from: string; replyTo?: string }>;
-  let events: { findOne: jest.Mock };
-  let links: { newLink: jest.Mock };
+  let events: { findOne: Mock };
+  let links: { newLink: Mock };
   let claims: Table<SpeakerEmailClaim>;
   let service: SlidesRequestEmailService;
   let inFlight: number;
   let mostInFlight: number;
 
   const contact = () => ({
-    sendMessage: jest.fn(async (m) => {
+    sendMessage: vi.fn(async (m) => {
       inFlight++;
       mostInFlight = Math.max(mostInFlight, inFlight);
       await new Promise((resolve) => setTimeout(resolve, 5));
@@ -59,10 +60,10 @@ describe('SlidesRequestEmailService', () => {
     sent = [];
     inFlight = 0;
     mostInFlight = 0;
-    events = { findOne: jest.fn(async ({ where }) => (where.guid === session.guid ? session : null)) };
+    events = { findOne: vi.fn(async ({ where }) => (where.guid === session.guid ? session : null)) };
     // Each speaker's own link, as SpeakerEditService makes them for the profile email.
     links = {
-      newLink: jest.fn(async (speaker: { guid: string }) => ({
+      newLink: vi.fn(async (speaker: { guid: string }) => ({
         url: `https://gisday.tamu.edu/presenters/edit/LINK-OF-${speaker.guid}`,
         expires: new Date('2026-11-22T18:00:00Z')
       }))
@@ -269,7 +270,7 @@ describe('SlidesRequestEmailService', () => {
   });
 
   it(`asks them again after ${REPEAT_SEND_MINUTES} minutes`, async () => {
-    const now = jest.spyOn(Date, 'now');
+    const now = vi.spyOn(Date, 'now');
 
     now.mockReturnValue(Date.parse('2026-11-16T15:00:00Z'));
     await service.send('e-1', 'gisday.tamu.edu');
@@ -292,7 +293,7 @@ describe('SlidesRequestEmailService', () => {
     const failing = new SlidesRequestEmailService(
       events as never,
       new RepeatGuard(claims as never),
-      { sendMessage: jest.fn().mockRejectedValueOnce(new Error('mail down')).mockResolvedValue({}) } as never,
+      { sendMessage: vi.fn().mockRejectedValueOnce(new Error('mail down')).mockResolvedValue({}) } as never,
       links as never
     );
 

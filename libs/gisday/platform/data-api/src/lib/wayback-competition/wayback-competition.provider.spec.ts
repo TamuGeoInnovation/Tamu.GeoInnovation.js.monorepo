@@ -19,10 +19,10 @@ describe('WaybackCompetitionProvider', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         WaybackCompetitionProvider,
-        { provide: getRepositoryToken(SignageSubmission), useValue: { find: jest.fn() } },
-        { provide: getRepositoryToken(StormwaterSubmission), useValue: { find: jest.fn() } },
-        { provide: getRepositoryToken(SidewalkSubmission), useValue: { find: jest.fn() } },
-        { provide: getRepositoryToken(ManholeSubmission), useValue: { find: jest.fn() } }
+        { provide: getRepositoryToken(SignageSubmission), useValue: { find: vi.fn() } },
+        { provide: getRepositoryToken(StormwaterSubmission), useValue: { find: vi.fn() } },
+        { provide: getRepositoryToken(SidewalkSubmission), useValue: { find: vi.fn() } },
+        { provide: getRepositoryToken(ManholeSubmission), useValue: { find: vi.fn() } }
       ]
     }).compile();
 
@@ -36,7 +36,7 @@ describe('WaybackCompetitionProvider', () => {
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('should be defined', () => {
@@ -60,7 +60,7 @@ describe('WaybackCompetitionProvider', () => {
   ] as const)('.%s()', (method, which) => {
     it(`reads the ${which} repository and no other`, async () => {
       const rows = [{ guid: `${which}-1` }];
-      jest.spyOn(repos[which], 'find').mockResolvedValue(rows as never);
+      vi.spyOn(repos[which], 'find').mockResolvedValue(rows as never);
 
       await expect(provider[method]()).resolves.toEqual(rows);
 

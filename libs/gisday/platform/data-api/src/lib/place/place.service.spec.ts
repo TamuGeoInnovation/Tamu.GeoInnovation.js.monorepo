@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { BadRequestException, InternalServerErrorException, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -20,12 +21,12 @@ describe('PlaceService', () => {
 
   /** Every read path goes through a query builder, so the mock has to be chainable. */
   const queryBuilder = (result: unknown, method: 'getMany' | 'getOne' = 'getMany') => {
-    const qb: Record<string, jest.Mock> = {};
+    const qb: Record<string, Mock> = {};
     for (const m of ['leftJoinAndSelect', 'leftJoin', 'where', 'orderBy', 'addOrderBy']) {
-      qb[m] = jest.fn(() => qb);
+      qb[m] = vi.fn(() => qb);
     }
-    qb.getMany = jest.fn().mockResolvedValue(method === 'getMany' ? result : []);
-    qb.getOne = jest.fn().mockResolvedValue(method === 'getOne' ? result : null);
+    qb.getMany = vi.fn().mockResolvedValue(method === 'getMany' ? result : []);
+    qb.getOne = vi.fn().mockResolvedValue(method === 'getOne' ? result : null);
     return qb;
   };
 
@@ -36,20 +37,20 @@ describe('PlaceService', () => {
         {
           provide: getRepositoryToken(Place),
           useValue: {
-            find: jest.fn(),
-            findOne: jest.fn(),
-            create: jest.fn(),
-            save: jest.fn(),
-            createQueryBuilder: jest.fn(),
-            manager: { transaction: jest.fn() }
+            find: vi.fn(),
+            findOne: vi.fn(),
+            create: vi.fn(),
+            save: vi.fn(),
+            createQueryBuilder: vi.fn(),
+            manager: { transaction: vi.fn() }
           }
         },
-        { provide: getRepositoryToken(PlaceLink), useValue: { create: jest.fn((l) => l) } },
+        { provide: getRepositoryToken(PlaceLink), useValue: { create: vi.fn((l) => l) } },
         {
           provide: AssetsService,
-          useValue: { saveAsset: jest.fn(), deleteAssets: jest.fn(), deleteAssetFiles: jest.fn() }
+          useValue: { saveAsset: vi.fn(), deleteAssets: vi.fn(), deleteAssetFiles: vi.fn() }
         },
-        { provide: SeasonService, useValue: { findOne: jest.fn(), findOneActive: jest.fn() } }
+        { provide: SeasonService, useValue: { findOne: vi.fn(), findOneActive: vi.fn() } }
       ]
     }).compile();
 
@@ -61,7 +62,7 @@ describe('PlaceService', () => {
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('should be defined', () => {
@@ -71,7 +72,7 @@ describe('PlaceService', () => {
   describe('.getPlacesForSeason()', () => {
     it('scopes to the season and orders places by name, links by label', async () => {
       const qb = queryBuilder([{ guid: 'p-1' }]);
-      jest.spyOn(placeRepo, 'createQueryBuilder').mockReturnValue(qb as never);
+      vi.spyOn(placeRepo, 'createQueryBuilder').mockReturnValue(qb as never);
 
       await expect(service.getPlacesForSeason('season-1')).resolves.toEqual([{ guid: 'p-1' }]);
       expect(qb.where).toHaveBeenCalledWith('season.guid = :seasonGuid', { seasonGuid: 'season-1' });
@@ -83,7 +84,7 @@ describe('PlaceService', () => {
   describe('.getEntity() / .getEntities()', () => {
     it('fetches a single place with links and logos', async () => {
       const qb = queryBuilder({ guid: 'p-1' }, 'getOne');
-      jest.spyOn(placeRepo, 'createQueryBuilder').mockReturnValue(qb as never);
+      vi.spyOn(placeRepo, 'createQueryBuilder').mockReturnValue(qb as never);
 
       await expect(service.getEntity('p-1')).resolves.toEqual({ guid: 'p-1' });
       expect(qb.where).toHaveBeenCalledWith('place.guid = :guid', { guid: 'p-1' });
@@ -91,7 +92,7 @@ describe('PlaceService', () => {
 
     it('lists places ordered by name', async () => {
       const qb = queryBuilder([{ guid: 'p-1' }]);
-      jest.spyOn(placeRepo, 'createQueryBuilder').mockReturnValue(qb as never);
+      vi.spyOn(placeRepo, 'createQueryBuilder').mockReturnValue(qb as never);
 
       await expect(service.getEntities()).resolves.toEqual([{ guid: 'p-1' }]);
       expect(qb.orderBy).toHaveBeenCalledWith('place.name', 'ASC');
@@ -109,7 +110,7 @@ describe('PlaceService', () => {
    */
   describe('HTTP status preservation', () => {
     it('answers 404 when updating a place that does not exist', async () => {
-      jest.spyOn(placeRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(placeRepo, 'findOne').mockResolvedValue(null);
 
       await expect(service.updatePlace('missing', { name: 'Alpha' })).rejects.toThrow(
         NotFoundException
@@ -117,7 +118,7 @@ describe('PlaceService', () => {
     });
 
     it('answers 404 when no season is active', async () => {
-      jest
+      vi
         .spyOn(seasonService, 'findOneActive')
         .mockRejectedValue(new NotFoundException('No active season found.'));
 
@@ -125,7 +126,7 @@ describe('PlaceService', () => {
     });
 
     it('answers 422 when copying into a season that does not exist', async () => {
-      jest.spyOn(seasonService, 'findOne').mockResolvedValue(null);
+      vi.spyOn(seasonService, 'findOne').mockResolvedValue(null);
 
       await expect(service.copyPlacesIntoSeason('missing', ['p-1'])).rejects.toThrow(
         UnprocessableEntityException
@@ -133,8 +134,8 @@ describe('PlaceService', () => {
     });
 
     it('answers 422 when there is nothing to copy', async () => {
-      jest.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
-      jest.spyOn(placeRepo, 'find').mockResolvedValue([]);
+      vi.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
+      vi.spyOn(placeRepo, 'find').mockResolvedValue([]);
 
       await expect(service.copyPlacesIntoSeason('season-2', ['p-1'])).rejects.toThrow(
         UnprocessableEntityException
@@ -143,8 +144,8 @@ describe('PlaceService', () => {
 
     // Let through, as the shared copy does every lookup failure (#3379); Nest answers it 500 as before.
     it('lets a genuine database failure through, not as a refusal', async () => {
-      jest.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
-      jest.spyOn(placeRepo, 'find').mockRejectedValue(new Error('connection lost'));
+      vi.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
+      vi.spyOn(placeRepo, 'find').mockRejectedValue(new Error('connection lost'));
 
       await expect(service.copyPlacesIntoSeason('season-2', ['p-1'])).rejects.toThrow('connection lost');
     });
@@ -152,9 +153,9 @@ describe('PlaceService', () => {
 
   describe('.getPlacesForActiveSeason()', () => {
     it('resolves the active season and reads places against it', async () => {
-      jest.spyOn(seasonService, 'findOneActive').mockResolvedValue({ guid: 'active' } as never);
+      vi.spyOn(seasonService, 'findOneActive').mockResolvedValue({ guid: 'active' } as never);
       const qb = queryBuilder([{ guid: 'p-1' }]);
-      jest.spyOn(placeRepo, 'createQueryBuilder').mockReturnValue(qb as never);
+      vi.spyOn(placeRepo, 'createQueryBuilder').mockReturnValue(qb as never);
 
       await expect(service.getPlacesForActiveSeason()).resolves.toEqual([{ guid: 'p-1' }]);
       expect(qb.where).toHaveBeenCalledWith('season.guid = :seasonGuid', { seasonGuid: 'active' });
@@ -172,15 +173,15 @@ describe('PlaceService', () => {
         links: [{ guid: 'l-1', created: new Date(), updated: new Date(), label: 'Map' }]
       } as unknown as Place;
 
-      jest.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
-      jest.spyOn(placeRepo, 'find').mockResolvedValue([source]);
-      jest
+      vi.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
+      vi.spyOn(placeRepo, 'find').mockResolvedValue([source]);
+      vi
         .spyOn(placeRepo, 'create')
-        .mockImplementation((e) => ({ ...(e as object), save: jest.fn().mockResolvedValue(e) }) as never);
+        .mockImplementation((e) => ({ ...(e as object), save: vi.fn().mockResolvedValue(e) }) as never);
 
       await service.copyPlacesIntoSeason('season-2', ['p-1']);
 
-      const passed = (placeRepo.create as jest.Mock).mock.calls[0][0];
+      const passed = (placeRepo.create as Mock).mock.calls[0][0];
       expect(passed.guid).toBeUndefined();
       expect(passed.season).toEqual({ guid: 'season-2' });
       expect(passed.logos[0].guid).toBeUndefined();
@@ -195,8 +196,8 @@ describe('PlaceService', () => {
   describe('.createPlace()', () => {
     it('parses the stringified links payload and creates each one', async () => {
       const saved = { guid: 'p-new' } as Place;
-      jest.spyOn(placeRepo, 'create').mockReturnValue(saved);
-      jest.spyOn(placeRepo, 'save').mockResolvedValue(saved);
+      vi.spyOn(placeRepo, 'create').mockReturnValue(saved);
+      vi.spyOn(placeRepo, 'save').mockResolvedValue(saved);
 
       await service.createPlace({
         name: 'Alpha',
@@ -206,29 +207,29 @@ describe('PlaceService', () => {
       // formData sends links as a JSON string; a guid on an incoming link would otherwise
       // re-parent an existing link onto this new place.
       expect(linkRepo.create).toHaveBeenCalledWith(expect.objectContaining({ label: 'Map' }));
-      expect((linkRepo.create as jest.Mock).mock.calls[0][0].guid).toBeUndefined();
+      expect((linkRepo.create as Mock).mock.calls[0][0].guid).toBeUndefined();
     });
 
     it('parses stringified visibilitySettings', async () => {
-      jest.spyOn(placeRepo, 'create').mockReturnValue({ guid: 'p-new' } as Place);
-      jest.spyOn(placeRepo, 'save').mockResolvedValue({ guid: 'p-new' } as Place);
+      vi.spyOn(placeRepo, 'create').mockReturnValue({ guid: 'p-new' } as Place);
+      vi.spyOn(placeRepo, 'save').mockResolvedValue({ guid: 'p-new' } as Place);
 
       await service.createPlace({
         name: 'Alpha',
         visibilitySettings: JSON.stringify({ showOnMap: true })
       } as unknown as Partial<Place>);
 
-      expect((placeRepo.create as jest.Mock).mock.calls[0][0].visibilitySettings).toEqual({
+      expect((placeRepo.create as Mock).mock.calls[0][0].visibilitySettings).toEqual({
         showOnMap: true
       });
     });
 
     it('saves a logo and persists a second time when a file is supplied', async () => {
-      const saved = { guid: 'p-new' } as Place & { save: jest.Mock };
-      saved.save = jest.fn().mockResolvedValue(saved);
-      jest.spyOn(placeRepo, 'create').mockReturnValue(saved);
-      jest.spyOn(placeRepo, 'save').mockResolvedValue(saved);
-      jest.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'a-1' } as never);
+      const saved = { guid: 'p-new' } as Place & { save: Mock };
+      saved.save = vi.fn().mockResolvedValue(saved);
+      vi.spyOn(placeRepo, 'create').mockReturnValue(saved);
+      vi.spyOn(placeRepo, 'save').mockResolvedValue(saved);
+      vi.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'a-1' } as never);
 
       await service.createPlace({ name: 'Alpha' }, { originalname: 'logo.png', buffer: declaredPng(10, 10) } as never);
 
@@ -241,8 +242,8 @@ describe('PlaceService', () => {
     });
 
     it('does not reach the asset service when no file is supplied', async () => {
-      jest.spyOn(placeRepo, 'create').mockReturnValue({ guid: 'p-new' } as Place);
-      jest.spyOn(placeRepo, 'save').mockResolvedValue({ guid: 'p-new' } as Place);
+      vi.spyOn(placeRepo, 'create').mockReturnValue({ guid: 'p-new' } as Place);
+      vi.spyOn(placeRepo, 'save').mockResolvedValue({ guid: 'p-new' } as Place);
 
       await service.createPlace({ name: 'Alpha' });
 
@@ -252,15 +253,15 @@ describe('PlaceService', () => {
 
   describe('.updatePlace()', () => {
     it('keeps an existing link that arrives with a guid, and creates one that does not', async () => {
-      jest.spyOn(placeRepo, 'findOne').mockResolvedValue({ guid: 'p-1', logos: [] } as unknown as Place);
-      jest.spyOn(placeRepo, 'save').mockImplementation((e) => Promise.resolve(e as Place));
+      vi.spyOn(placeRepo, 'findOne').mockResolvedValue({ guid: 'p-1', logos: [] } as unknown as Place);
+      vi.spyOn(placeRepo, 'save').mockImplementation((e) => Promise.resolve(e as Place));
 
       await service.updatePlace('p-1', {
         name: 'Alpha',
         links: JSON.stringify([{ guid: 'l-existing', label: 'Old' }, { label: 'New' }])
       } as unknown as Partial<Place>);
 
-      const saved = (placeRepo.save as jest.Mock).mock.calls[0][0];
+      const saved = (placeRepo.save as Mock).mock.calls[0][0];
       expect(saved.links).toEqual([
         { guid: 'l-existing', label: 'Old' },
         expect.objectContaining({ label: 'New' })
@@ -268,39 +269,39 @@ describe('PlaceService', () => {
     });
 
     it('leaves existing logos attached when no replacement file is supplied', async () => {
-      jest
+      vi
         .spyOn(placeRepo, 'findOne')
         .mockResolvedValue({ guid: 'p-1', logos: [{ guid: 'a-1' }] } as unknown as Place);
-      jest.spyOn(placeRepo, 'save').mockImplementation((e) => Promise.resolve(e as Place));
+      vi.spyOn(placeRepo, 'save').mockImplementation((e) => Promise.resolve(e as Place));
 
       await service.updatePlace('p-1', { name: 'Beta' });
 
-      expect('logos' in (placeRepo.save as jest.Mock).mock.calls[0][0]).toBe(false);
+      expect('logos' in (placeRepo.save as Mock).mock.calls[0][0]).toBe(false);
     });
 
     it('does not let the caller overwrite the guid', async () => {
-      jest.spyOn(placeRepo, 'findOne').mockResolvedValue({ guid: 'p-1', logos: [] } as unknown as Place);
-      jest.spyOn(placeRepo, 'save').mockImplementation((e) => Promise.resolve(e as Place));
+      vi.spyOn(placeRepo, 'findOne').mockResolvedValue({ guid: 'p-1', logos: [] } as unknown as Place);
+      vi.spyOn(placeRepo, 'save').mockImplementation((e) => Promise.resolve(e as Place));
 
       await service.updatePlace('p-1', { guid: 'p-hijack', name: 'Beta' } as Partial<Place>);
 
-      expect((placeRepo.save as jest.Mock).mock.calls[0][0].guid).toBe('p-1');
+      expect((placeRepo.save as Mock).mock.calls[0][0].guid).toBe('p-1');
     });
   });
 
   describe('.deleteEntities()', () => {
-    const withManager = (manager: Record<string, jest.Mock>) => {
-      (placeRepo.manager.transaction as jest.Mock).mockImplementation((cb) => cb(manager));
+    const withManager = (manager: Record<string, Mock>) => {
+      (placeRepo.manager.transaction as Mock).mockImplementation((cb) => cb(manager));
     };
     // The manager's finds by entity, each with no rows unless given: the places, their broadcasts (#3397) and their
     // event locations are read in turn, so answering by call order broke when a read was added.
-    const findsOf = (rows: Map<unknown, Array<unknown>>) => jest.fn().mockImplementation(async (entity) => rows.get(entity) ?? []);
+    const findsOf = (rows: Map<unknown, Array<unknown>>) => vi.fn().mockImplementation(async (entity) => rows.get(entity) ?? []);
 
     it('accepts a comma-separated string and an array alike', async () => {
       const manager = {
-        find: jest.fn().mockResolvedValue([]),
-        delete: jest.fn().mockResolvedValue({ affected: 2 }),
-        save: jest.fn()
+        find: vi.fn().mockResolvedValue([]),
+        delete: vi.fn().mockResolvedValue({ affected: 2 }),
+        save: vi.fn()
       };
       withManager(manager);
 
@@ -315,8 +316,8 @@ describe('PlaceService', () => {
       const location = { guid: 'el-1', place: { guid: 'p-1' } } as EventLocation;
       const manager = {
         find: findsOf(new Map([[EventLocation, [location]]])),
-        delete: jest.fn().mockResolvedValue({ affected: 1 }),
-        save: jest.fn().mockResolvedValue([location])
+        delete: vi.fn().mockResolvedValue({ affected: 1 }),
+        save: vi.fn().mockResolvedValue([location])
       };
       withManager(manager);
 
@@ -330,8 +331,8 @@ describe('PlaceService', () => {
       const logo = { guid: 'a-1' } as Asset;
       const manager = {
         find: findsOf(new Map([[Place, [{ guid: 'p-1', logos: [logo] }]]])),
-        delete: jest.fn().mockResolvedValue({ affected: 1 }),
-        save: jest.fn()
+        delete: vi.fn().mockResolvedValue({ affected: 1 }),
+        save: vi.fn()
       };
       withManager(manager);
 
@@ -356,7 +357,7 @@ describe('PlaceService', () => {
       ['an SVG', upload('logo.svg', svg)],
       ['an SVG renamed to .png', upload('logo.png', svg)]
     ])('refuses %s on create with 400, and creates no place', async (_name, file) => {
-      jest.spyOn(placeRepo, 'create').mockReturnValue({ guid: 'p-new' } as Place);
+      vi.spyOn(placeRepo, 'create').mockReturnValue({ guid: 'p-new' } as Place);
 
       await expect(service.createPlace({ name: 'Alpha' }, file)).rejects.toThrow(BadRequestException);
       expect(placeRepo.save).not.toHaveBeenCalled();
@@ -364,7 +365,7 @@ describe('PlaceService', () => {
     });
 
     it('refuses an SVG renamed to .png on update with 400', async () => {
-      jest.spyOn(placeRepo, 'findOne').mockResolvedValue({ guid: 'p-1', logos: [] } as unknown as Place);
+      vi.spyOn(placeRepo, 'findOne').mockResolvedValue({ guid: 'p-1', logos: [] } as unknown as Place);
 
       await expect(service.updatePlace('p-1', { name: 'Alpha' }, upload('logo.png', svg))).rejects.toThrow(
         BadRequestException
@@ -374,13 +375,13 @@ describe('PlaceService', () => {
     });
 
     it('stores a PNG named .svg under a .png name', async () => {
-      jest.spyOn(placeRepo, 'findOne').mockResolvedValue({ guid: 'p-1', logos: [] } as unknown as Place);
-      jest.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'a-2' } as never);
-      jest.spyOn(placeRepo, 'save').mockImplementation((e) => Promise.resolve(e as Place));
+      vi.spyOn(placeRepo, 'findOne').mockResolvedValue({ guid: 'p-1', logos: [] } as unknown as Place);
+      vi.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'a-2' } as never);
+      vi.spyOn(placeRepo, 'save').mockImplementation((e) => Promise.resolve(e as Place));
 
       await service.updatePlace('p-1', { name: 'Alpha' }, upload('logo.svg', declaredPng(10, 10)));
 
-      expect((assetService.saveAsset as jest.Mock).mock.calls[0][1].originalname).toBe('logo.png');
+      expect((assetService.saveAsset as Mock).mock.calls[0][1].originalname).toBe('logo.png');
     });
   });
 });

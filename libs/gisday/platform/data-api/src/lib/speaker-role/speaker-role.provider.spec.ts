@@ -16,7 +16,7 @@ describe('SpeakerRoleProvider', () => {
         SpeakerRoleProvider,
         {
           provide: getRepositoryToken(SpeakerRole),
-          useValue: { find: jest.fn(), findOne: jest.fn(), create: jest.fn(), insert: jest.fn(), delete: jest.fn() }
+          useValue: { find: vi.fn(), findOne: vi.fn(), create: vi.fn(), insert: vi.fn(), delete: vi.fn() }
         }
       ]
     }).compile();
@@ -26,7 +26,7 @@ describe('SpeakerRoleProvider', () => {
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('should be defined', () => {
@@ -41,8 +41,8 @@ describe('SpeakerRoleProvider', () => {
     it('inserts the created entities rather than the raw input', async () => {
       const raw = [{ name: 'Presenter' }, { name: 'Moderator' }];
       const created = [{ name: 'Presenter' }, { name: 'Moderator' }];
-      jest.spyOn(speakerRoleRepo, 'create').mockReturnValue(created as never);
-      jest.spyOn(speakerRoleRepo, 'insert').mockResolvedValue({} as never);
+      vi.spyOn(speakerRoleRepo, 'create').mockReturnValue(created as never);
+      vi.spyOn(speakerRoleRepo, 'insert').mockResolvedValue({} as never);
 
       await provider.insertRoles(raw);
 
@@ -55,7 +55,7 @@ describe('SpeakerRoleProvider', () => {
   // the SpeakerRole repository is the one wired in. See base-provider.spec.ts for the behaviour.
   describe('BaseProvider wiring', () => {
     it('routes inherited lookups to the SpeakerRole repository', async () => {
-      jest.spyOn(speakerRoleRepo, 'findOne').mockResolvedValue({ guid: 'sr-1' } as never);
+      vi.spyOn(speakerRoleRepo, 'findOne').mockResolvedValue({ guid: 'sr-1' } as never);
 
       await expect(provider.findOne('sr-1')).resolves.toEqual({ guid: 'sr-1' });
       expect(speakerRoleRepo.findOne).toHaveBeenCalledWith({ where: { guid: 'sr-1' } });

@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { BadRequestException, ConflictException, NotFoundException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -33,18 +34,18 @@ describe('SeasonService', () => {
         {
           provide: getRepositoryToken(Season),
           useValue: {
-            find: jest.fn(),
-            findOne: jest.fn(),
-            create: jest.fn(),
-            save: jest.fn(),
-            update: jest.fn().mockResolvedValue({ affected: 1 }),
-            remove: jest.fn(),
-            manager: { transaction: jest.fn(), find: jest.fn() }
+            find: vi.fn(),
+            findOne: vi.fn(),
+            create: vi.fn(),
+            save: vi.fn(),
+            update: vi.fn().mockResolvedValue({ affected: 1 }),
+            remove: vi.fn(),
+            manager: { transaction: vi.fn(), find: vi.fn() }
           }
         },
         {
           provide: getRepositoryToken(SeasonDay),
-          useValue: { find: jest.fn(), findOne: jest.fn(), create: jest.fn(), save: jest.fn() }
+          useValue: { find: vi.fn(), findOne: vi.fn(), create: vi.fn(), save: vi.fn() }
         }
       ]
     }).compile();
@@ -57,7 +58,7 @@ describe('SeasonService', () => {
   // The `.create()` block spies on statics of the Season entity itself, which is module state
   // rather than per-test state. Without this they leak into every later test in the file.
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('should be defined', () => {
@@ -67,7 +68,7 @@ describe('SeasonService', () => {
   describe('.findAllOrdered()', () => {
     it('returns seasons ordered by year with their days sorted by date', async () => {
       const unordered = [day('d-late', '2026-11-20'), day('d-early', '2026-11-18')];
-      jest.spyOn(seasonRepo, 'find').mockResolvedValue([seasonWithDays(unordered)]);
+      vi.spyOn(seasonRepo, 'find').mockResolvedValue([seasonWithDays(unordered)]);
 
       const [season] = await service.findAllOrdered();
 
@@ -79,7 +80,7 @@ describe('SeasonService', () => {
     });
 
     it('tolerates a season with no days', async () => {
-      jest.spyOn(seasonRepo, 'find').mockResolvedValue([seasonWithDays([])]);
+      vi.spyOn(seasonRepo, 'find').mockResolvedValue([seasonWithDays([])]);
 
       await expect(service.findAllOrdered()).resolves.toEqual([
         expect.objectContaining({ days: [] })
@@ -89,7 +90,7 @@ describe('SeasonService', () => {
 
   describe('.findOneWithOrderedDays()', () => {
     it('sorts the days of the requested season', async () => {
-      jest
+      vi
         .spyOn(seasonRepo, 'findOne')
         .mockResolvedValue(seasonWithDays([day('d-late', '2026-11-20'), day('d-early', '2026-11-18')]));
 
@@ -103,7 +104,7 @@ describe('SeasonService', () => {
     });
 
     it('throws NotFound when no season has that guid', async () => {
-      jest.spyOn(seasonRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(seasonRepo, 'findOne').mockResolvedValue(null);
 
       await expect(service.findOneWithOrderedDays('nope')).rejects.toThrow(NotFoundException);
     });
@@ -112,8 +113,8 @@ describe('SeasonService', () => {
   describe('.findOneActive()', () => {
     it('reports the start time of the earliest active event on the first day', async () => {
       const first = day('d-first', '2026-11-18');
-      jest.spyOn(seasonRepo, 'findOne').mockResolvedValue(seasonWithDays([day('d-second', '2026-11-19'), first]));
-      jest.spyOn(seasonDayRepo, 'findOne').mockResolvedValue({
+      vi.spyOn(seasonRepo, 'findOne').mockResolvedValue(seasonWithDays([day('d-second', '2026-11-19'), first]));
+      vi.spyOn(seasonDayRepo, 'findOne').mockResolvedValue({
         ...first,
         events: [
           { guid: 'e-late', active: true, startTime: '14:00' },
@@ -133,8 +134,8 @@ describe('SeasonService', () => {
 
     it('ignores inactive events when choosing the first start time', async () => {
       const first = day('d-first', '2026-11-18');
-      jest.spyOn(seasonRepo, 'findOne').mockResolvedValue(seasonWithDays([first]));
-      jest.spyOn(seasonDayRepo, 'findOne').mockResolvedValue({
+      vi.spyOn(seasonRepo, 'findOne').mockResolvedValue(seasonWithDays([first]));
+      vi.spyOn(seasonDayRepo, 'findOne').mockResolvedValue({
         ...first,
         events: [
           { guid: 'e-hidden', active: false, startTime: '07:00' },
@@ -149,8 +150,8 @@ describe('SeasonService', () => {
 
     it('leaves firstEventTime null when the first day has no active events', async () => {
       const first = day('d-first', '2026-11-18');
-      jest.spyOn(seasonRepo, 'findOne').mockResolvedValue(seasonWithDays([first]));
-      jest.spyOn(seasonDayRepo, 'findOne').mockResolvedValue({
+      vi.spyOn(seasonRepo, 'findOne').mockResolvedValue(seasonWithDays([first]));
+      vi.spyOn(seasonDayRepo, 'findOne').mockResolvedValue({
         ...first,
         events: [{ guid: 'e-hidden', active: false, startTime: '07:00' }]
       } as unknown as SeasonDay);
@@ -161,7 +162,7 @@ describe('SeasonService', () => {
     });
 
     it('leaves firstEventTime null when the season has no days', async () => {
-      jest.spyOn(seasonRepo, 'findOne').mockResolvedValue(seasonWithDays([]));
+      vi.spyOn(seasonRepo, 'findOne').mockResolvedValue(seasonWithDays([]));
 
       await expect(service.findOneActive()).resolves.toEqual(
         expect.objectContaining({ firstEventTime: null })
@@ -170,7 +171,7 @@ describe('SeasonService', () => {
     });
 
     it('throws NotFound when no season is marked active', async () => {
-      jest.spyOn(seasonRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(seasonRepo, 'findOne').mockResolvedValue(null);
 
       await expect(service.findOneActive()).rejects.toThrow(NotFoundException);
     });
@@ -179,10 +180,10 @@ describe('SeasonService', () => {
   describe('.findOneByYear()', () => {
     it('looks the season up by year and returns it in the active season shape', async () => {
       const first = day('d-first', '2025-11-17');
-      jest
+      vi
         .spyOn(seasonRepo, 'findOne')
         .mockResolvedValue({ ...seasonWithDays([day('d-second', '2025-11-18'), first]), year: 2025, active: false } as Season);
-      jest.spyOn(seasonDayRepo, 'findOne').mockResolvedValue({
+      vi.spyOn(seasonDayRepo, 'findOne').mockResolvedValue({
         ...first,
         events: [{ guid: 'e-workshop', active: true, startTime: '09:00' }]
       } as unknown as SeasonDay);
@@ -198,13 +199,13 @@ describe('SeasonService', () => {
     });
 
     it('throws NotFound when there is no season for that year', async () => {
-      jest.spyOn(seasonRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(seasonRepo, 'findOne').mockResolvedValue(null);
 
       await expect(service.findOneByYear(1999)).rejects.toThrow(NotFoundException);
     });
 
     it('rejects a year that is not a whole number before reaching the database', async () => {
-      const findOne = jest.spyOn(seasonRepo, 'findOne');
+      const findOne = vi.spyOn(seasonRepo, 'findOne');
 
       await expect(service.findOneByYear(2025.5)).rejects.toThrow(BadRequestException);
       expect(findOne).not.toHaveBeenCalled();
@@ -213,7 +214,7 @@ describe('SeasonService', () => {
 
   describe('.findOneWithDaysAndEvents()', () => {
     it('loads the season with its days and their events', async () => {
-      jest.spyOn(seasonRepo, 'findOne').mockResolvedValue(seasonWithDays([]));
+      vi.spyOn(seasonRepo, 'findOne').mockResolvedValue(seasonWithDays([]));
 
       await service.findOneWithDaysAndEvents('season-1');
 
@@ -224,7 +225,7 @@ describe('SeasonService', () => {
     });
 
     it('throws NotFound when no season has that guid', async () => {
-      jest.spyOn(seasonRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(seasonRepo, 'findOne').mockResolvedValue(null);
 
       await expect(service.findOneWithDaysAndEvents('nope')).rejects.toThrow(NotFoundException);
     });
@@ -238,9 +239,9 @@ describe('SeasonService', () => {
      * a season for a year that did not exist yet answered 409 Conflict.
      */
     it('creates a season for a year that does not exist yet', async () => {
-      jest.spyOn(seasonRepo, 'findOne').mockResolvedValue(null);
-      jest.spyOn(seasonRepo, 'create').mockReturnValue({ year: 2027 } as Season);
-      jest.spyOn(seasonRepo, 'save').mockResolvedValue({ guid: 'new', year: 2027 } as Season);
+      vi.spyOn(seasonRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(seasonRepo, 'create').mockReturnValue({ year: 2027 } as Season);
+      vi.spyOn(seasonRepo, 'save').mockResolvedValue({ guid: 'new', year: 2027 } as Season);
 
       await expect(service.create({ year: 2027 })).resolves.toEqual(
         expect.objectContaining({ year: 2027 })
@@ -249,15 +250,15 @@ describe('SeasonService', () => {
     });
 
     it('throws Conflict when a season already exists for that year', async () => {
-      jest.spyOn(seasonRepo, 'findOne').mockResolvedValue({ guid: 'existing', year: 2027 } as Season);
-      const save = jest.spyOn(seasonRepo, 'save');
+      vi.spyOn(seasonRepo, 'findOne').mockResolvedValue({ guid: 'existing', year: 2027 } as Season);
+      const save = vi.spyOn(seasonRepo, 'save');
 
       await expect(service.create({ year: 2027 })).rejects.toThrow(ConflictException);
       expect(save).not.toHaveBeenCalled();
     });
 
     it('rejects a non-numeric year before reaching the database', async () => {
-      const findOne = jest.spyOn(seasonRepo, 'findOne');
+      const findOne = vi.spyOn(seasonRepo, 'findOne');
 
       await expect(service.create({ year: '2027' } as unknown as Partial<Season>)).rejects.toThrow(
         BadRequestException
@@ -275,10 +276,10 @@ describe('SeasonService', () => {
     it('derives the next season from the latest one when none is supplied', async () => {
       const previous = { guid: 'prev', year: 2026, active: true } as Season;
       const next = { year: 2027 } as Season;
-      jest.spyOn(seasonRepo, 'find').mockResolvedValue([previous]);
-      const increment = jest.spyOn(Season, 'incrementYear').mockReturnValue(next);
-      const forCurrentYear = jest.spyOn(Season, 'createForCurrentYear');
-      jest.spyOn(seasonRepo, 'save').mockImplementation((s) => Promise.resolve(s as Season));
+      vi.spyOn(seasonRepo, 'find').mockResolvedValue([previous]);
+      const increment = vi.spyOn(Season, 'incrementYear').mockReturnValue(next);
+      const forCurrentYear = vi.spyOn(Season, 'createForCurrentYear');
+      vi.spyOn(seasonRepo, 'save').mockImplementation((s) => Promise.resolve(s as Season));
 
       await expect(service.create()).resolves.toEqual(expect.objectContaining({ year: 2027 }));
       expect(increment).toHaveBeenCalledWith(previous);
@@ -288,10 +289,10 @@ describe('SeasonService', () => {
 
     it('falls back to the current year when there is no previous season', async () => {
       const fresh = { year: new Date().getFullYear() } as Season;
-      jest.spyOn(seasonRepo, 'find').mockResolvedValue([]);
-      const increment = jest.spyOn(Season, 'incrementYear');
-      jest.spyOn(Season, 'createForCurrentYear').mockReturnValue(fresh);
-      jest.spyOn(seasonRepo, 'save').mockImplementation((s) => Promise.resolve(s as Season));
+      vi.spyOn(seasonRepo, 'find').mockResolvedValue([]);
+      const increment = vi.spyOn(Season, 'incrementYear');
+      vi.spyOn(Season, 'createForCurrentYear').mockReturnValue(fresh);
+      vi.spyOn(seasonRepo, 'save').mockImplementation((s) => Promise.resolve(s as Season));
 
       await expect(service.create()).resolves.toEqual(
         expect.objectContaining({ year: new Date().getFullYear() })
@@ -302,7 +303,7 @@ describe('SeasonService', () => {
 
   describe('.getPreviousSeason()', () => {
     it('asks for the single most recent season by year', async () => {
-      jest.spyOn(seasonRepo, 'find').mockResolvedValue([{ guid: 'prev', year: 2026 } as Season]);
+      vi.spyOn(seasonRepo, 'find').mockResolvedValue([{ guid: 'prev', year: 2026 } as Season]);
 
       await expect(service.getPreviousSeason()).resolves.toEqual(
         expect.objectContaining({ guid: 'prev' })
@@ -314,13 +315,13 @@ describe('SeasonService', () => {
       // The catch only fires on a database error. An empty result is not one, so the
       // "No previous season found." message this method advertises is unreachable that way --
       // callers have to handle undefined, and `create()` does.
-      jest.spyOn(seasonRepo, 'find').mockResolvedValue([]);
+      vi.spyOn(seasonRepo, 'find').mockResolvedValue([]);
 
       await expect(service.getPreviousSeason()).resolves.toBeUndefined();
     });
 
     it('reads through a supplied EntityManager when one is given', async () => {
-      const manager = { find: jest.fn().mockResolvedValue([{ guid: 'from-manager' } as Season]) };
+      const manager = { find: vi.fn().mockResolvedValue([{ guid: 'from-manager' } as Season]) };
 
       await expect(
         service.getPreviousSeason(manager as never)
@@ -331,13 +332,13 @@ describe('SeasonService', () => {
 
   describe('.deleteEntity()', () => {
     it('throws NotFound when the season does not exist', async () => {
-      jest.spyOn(seasonRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(seasonRepo, 'findOne').mockResolvedValue(null);
 
       await expect(service.deleteEntity('missing')).rejects.toThrow(NotFoundException);
     });
 
     it('accepts a bare guid and a lookup options object alike', async () => {
-      const findOne = jest.spyOn(seasonRepo, 'findOne').mockResolvedValue(null);
+      const findOne = vi.spyOn(seasonRepo, 'findOne').mockResolvedValue(null);
 
       await expect(service.deleteEntity('by-string')).rejects.toThrow(NotFoundException);
       expect(findOne).toHaveBeenLastCalledWith(
@@ -359,7 +360,7 @@ describe('SeasonService', () => {
     const filesClose = '2026-11-05T17:00:00.000Z';
 
     beforeEach(() => {
-      jest.spyOn(seasonRepo, 'findOne').mockResolvedValue(seasonWithDays([]));
+      vi.spyOn(seasonRepo, 'findOne').mockResolvedValue(seasonWithDays([]));
     });
 
     it('saves every moment, each a date or empty for open', async () => {
@@ -399,7 +400,7 @@ describe('SeasonService', () => {
     });
 
     it('answers not found for a season that does not exist', async () => {
-      jest.spyOn(seasonRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(seasonRepo, 'findOne').mockResolvedValue(null);
 
       await expect(service.setSubmissionDeadlines('missing', {})).rejects.toThrow(NotFoundException);
     });
@@ -457,20 +458,20 @@ describe('SeasonService', () => {
 
   /** #2948: which research competitions a season runs, set from the competitions' admin page, one row each. */
   describe('.setCompetitionTypes()', () => {
-    let manager: { find: jest.Mock; delete: jest.Mock; save: jest.Mock; create: jest.Mock };
+    let manager: { find: Mock; delete: Mock; save: Mock; create: Mock };
     /** The season's rows before the save. */
     let rows: Array<Partial<SeasonCompetition>>;
 
     beforeEach(() => {
-      jest.spyOn(seasonRepo, 'findOne').mockResolvedValue({ guid: 'season-1' } as Season);
+      vi.spyOn(seasonRepo, 'findOne').mockResolvedValue({ guid: 'season-1' } as Season);
       rows = [];
       manager = {
-        find: jest.fn(async () => rows),
-        delete: jest.fn().mockResolvedValue({ affected: 0 }),
-        save: jest.fn(async (_entity, saved) => saved),
-        create: jest.fn((_entity, row) => row)
+        find: vi.fn(async () => rows),
+        delete: vi.fn().mockResolvedValue({ affected: 0 }),
+        save: vi.fn(async (_entity, saved) => saved),
+        create: vi.fn((_entity, row) => row)
       };
-      (seasonRepo.manager.transaction as jest.Mock).mockImplementation(async (work) => work(manager));
+      (seasonRepo.manager.transaction as Mock).mockImplementation(async (work) => work(manager));
     });
 
     it("marks the competitions it runs, in the admin page's order", async () => {
@@ -519,7 +520,7 @@ describe('SeasonService', () => {
     });
 
     it('answers not found for a season that does not exist', async () => {
-      jest.spyOn(seasonRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(seasonRepo, 'findOne').mockResolvedValue(null);
 
       await expect(service.setCompetitionTypes('missing', ['poster'])).rejects.toThrow(NotFoundException);
     });
@@ -527,20 +528,20 @@ describe('SeasonService', () => {
 
   // #3019, decided 6A and 7A: each competition's sessions and its finalists date, on its row.
   describe('.setCompetitionSettings()', () => {
-    let manager: { find: jest.Mock; save: jest.Mock; create: jest.Mock };
+    let manager: { find: Mock; save: Mock; create: Mock };
     let rows: Array<Partial<SeasonCompetition>>;
     /** The season's own sessions. */
     const events = [{ guid: 'e-poster' }, { guid: 'e-awards' }];
 
     beforeEach(() => {
-      jest.spyOn(seasonRepo, 'findOne').mockResolvedValue({ guid: 'season-1' } as Season);
+      vi.spyOn(seasonRepo, 'findOne').mockResolvedValue({ guid: 'season-1' } as Season);
       rows = [];
       manager = {
-        find: jest.fn(async (entity) => (entity === SeasonCompetition ? rows : events)),
-        save: jest.fn(async (_entity, saved) => saved),
-        create: jest.fn((_entity, row) => row)
+        find: vi.fn(async (entity) => (entity === SeasonCompetition ? rows : events)),
+        save: vi.fn(async (_entity, saved) => saved),
+        create: vi.fn((_entity, row) => row)
       };
-      (seasonRepo.manager.transaction as jest.Mock).mockImplementation(async (work) => work(manager));
+      (seasonRepo.manager.transaction as Mock).mockImplementation(async (work) => work(manager));
     });
 
     it("saves a competition's sessions and finalists date on a row of its own that runs nothing", async () => {

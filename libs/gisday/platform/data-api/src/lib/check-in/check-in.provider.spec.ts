@@ -1,3 +1,4 @@
+import type { Mock, MockInstance } from 'vitest';
 import { ForbiddenException, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -26,9 +27,9 @@ describe('CheckInProvider', () => {
         CheckInProvider,
         {
           provide: getRepositoryToken(CheckIn),
-          useValue: { find: jest.fn(), findOne: jest.fn(), create: jest.fn() }
+          useValue: { find: vi.fn(), findOne: vi.fn(), create: vi.fn() }
         },
-        { provide: getRepositoryToken(Event), useValue: { findOne: jest.fn() } }
+        { provide: getRepositoryToken(Event), useValue: { findOne: vi.fn() } }
       ]
     }).compile();
 
@@ -38,7 +39,7 @@ describe('CheckInProvider', () => {
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('should be defined', () => {
@@ -47,7 +48,7 @@ describe('CheckInProvider', () => {
 
   describe('.getCheckinsForUser()', () => {
     it('scopes to the account and loads the event', async () => {
-      jest.spyOn(checkInRepo, 'find').mockResolvedValue([{ guid: 'c-1' } as CheckIn]);
+      vi.spyOn(checkInRepo, 'find').mockResolvedValue([{ guid: 'c-1' } as CheckIn]);
 
       await expect(provider.getCheckinsForUser('acct-1')).resolves.toEqual([{ guid: 'c-1' }]);
       expect(checkInRepo.find).toHaveBeenCalledWith({
@@ -62,7 +63,7 @@ describe('CheckInProvider', () => {
      * `where` on this table would return every check-in for every attendee.
      */
     it('rejects a missing account guid instead of querying', async () => {
-      const find = jest.spyOn(checkInRepo, 'find');
+      const find = vi.spyOn(checkInRepo, 'find');
 
       await expect(provider.getCheckinsForUser(undefined)).rejects.toThrow(UnprocessableEntityException);
       await expect(provider.getCheckinsForUser('')).rejects.toThrow(UnprocessableEntityException);
@@ -73,10 +74,10 @@ describe('CheckInProvider', () => {
   describe('.insertUserCheckin()', () => {
     it('creates the check-in against the resolved event', async () => {
       const event = { guid: 'e-1', ...openNow } as unknown as Event;
-      jest.spyOn(checkInRepo, 'findOne').mockResolvedValue(null);
-      jest.spyOn(eventRepo, 'findOne').mockResolvedValue(event);
-      const save = jest.fn().mockResolvedValue({ guid: 'c-new' });
-      jest.spyOn(checkInRepo, 'create').mockReturnValue({ save } as never);
+      vi.spyOn(checkInRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(eventRepo, 'findOne').mockResolvedValue(event);
+      const save = vi.fn().mockResolvedValue({ guid: 'c-new' });
+      vi.spyOn(checkInRepo, 'create').mockReturnValue({ save } as never);
 
       await expect(provider.insertUserCheckin('e-1', 'acct-1')).resolves.toEqual({ guid: 'c-new' });
       // Inside the session's time, so not marked (#2635).
@@ -84,17 +85,17 @@ describe('CheckInProvider', () => {
     });
 
     it('refuses a second check-in for the same attendee and event', async () => {
-      jest.spyOn(checkInRepo, 'findOne').mockResolvedValue({ guid: 'c-existing' } as CheckIn);
-      const create = jest.spyOn(checkInRepo, 'create');
+      vi.spyOn(checkInRepo, 'findOne').mockResolvedValue({ guid: 'c-existing' } as CheckIn);
+      const create = vi.spyOn(checkInRepo, 'create');
 
       await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(UnprocessableEntityException);
       expect(create).not.toHaveBeenCalled();
     });
 
     it('looks for the duplicate scoped to both the event and the attendee', async () => {
-      jest.spyOn(checkInRepo, 'findOne').mockResolvedValue(null);
-      jest.spyOn(eventRepo, 'findOne').mockResolvedValue({ guid: 'e-1', ...openNow } as unknown as Event);
-      jest.spyOn(checkInRepo, 'create').mockReturnValue({ save: jest.fn() } as never);
+      vi.spyOn(checkInRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(eventRepo, 'findOne').mockResolvedValue({ guid: 'e-1', ...openNow } as unknown as Event);
+      vi.spyOn(checkInRepo, 'create').mockReturnValue({ save: vi.fn() } as never);
 
       await provider.insertUserCheckin('e-1', 'acct-1');
 
@@ -106,9 +107,9 @@ describe('CheckInProvider', () => {
     });
 
     it('refuses to check in to an event that does not exist', async () => {
-      jest.spyOn(checkInRepo, 'findOne').mockResolvedValue(null);
-      jest.spyOn(eventRepo, 'findOne').mockResolvedValue(null);
-      const create = jest.spyOn(checkInRepo, 'create');
+      vi.spyOn(checkInRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(eventRepo, 'findOne').mockResolvedValue(null);
+      const create = vi.spyOn(checkInRepo, 'create');
 
       await expect(provider.insertUserCheckin('missing', 'acct-1')).rejects.toThrow(UnprocessableEntityException);
       expect(create).not.toHaveBeenCalled();
@@ -146,19 +147,19 @@ describe('CheckInProvider', () => {
     });
     const kyleField = { latitude: 30.6101, longitude: -96.3403, accuracy: 10 };
 
-    let save: jest.Mock;
+    let save: Mock;
 
     const withEvent = (mode: string, checkInZone: Array<{ latitude: number; longitude: number }> = msc) => {
-      jest.spyOn(checkInRepo, 'findOne').mockResolvedValue(null);
-      jest.spyOn(eventRepo, 'findOne').mockResolvedValue({
+      vi.spyOn(checkInRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(eventRepo, 'findOne').mockResolvedValue({
         guid: 'e-1',
         mode,
         ...openNow,
         checkInCode: 'code-1',
         location: { building: venue, checkInZone }
       } as unknown as Event);
-      save = jest.fn().mockResolvedValue({ guid: 'c-new' });
-      jest.spyOn(checkInRepo, 'create').mockReturnValue({ save } as never);
+      save = vi.fn().mockResolvedValue({ guid: 'c-new' });
+      vi.spyOn(checkInRepo, 'create').mockReturnValue({ save } as never);
     };
 
     it('loads the location of the event, which holds the zone', async () => {
@@ -286,7 +287,7 @@ describe('CheckInProvider', () => {
 
     it('still refuses an organizer a second check-in for the same attendee and event', async () => {
       withEvent('in-person');
-      jest.spyOn(checkInRepo, 'findOne').mockResolvedValue({ guid: 'c-existing' } as CheckIn);
+      vi.spyOn(checkInRepo, 'findOne').mockResolvedValue({ guid: 'c-existing' } as CheckIn);
 
       await expect(provider.insertAttendeeCheckin('e-1', 'acct-1')).rejects.toThrow(UnprocessableEntityException);
       expect(save).not.toHaveBeenCalled();
@@ -309,19 +310,19 @@ describe('CheckInProvider', () => {
       endTime: '17:00:00 GMT-0600 (Central Standard Time)'
     };
 
-    let save: jest.Mock;
+    let save: Mock;
 
     const withSession = (overrides: Record<string, unknown> = {}) => {
-      jest.spyOn(checkInRepo, 'findOne').mockResolvedValue(null);
-      jest.spyOn(eventRepo, 'findOne').mockResolvedValue({ ...session, ...overrides } as unknown as Event);
-      save = jest.fn().mockResolvedValue({ guid: 'c-new' });
-      jest.spyOn(checkInRepo, 'create').mockReturnValue({ save } as never);
+      vi.spyOn(checkInRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(eventRepo, 'findOne').mockResolvedValue({ ...session, ...overrides } as unknown as Event);
+      save = vi.fn().mockResolvedValue({ guid: 'c-new' });
+      vi.spyOn(checkInRepo, 'create').mockReturnValue({ save } as never);
     };
 
-    const at = (iso: string) => jest.useFakeTimers({ now: new Date(iso), doNotFake: ['nextTick', 'setImmediate'] });
+    const at = (iso: string) => vi.useFakeTimers({ now: new Date(iso), doNotFake: ['nextTick', 'setImmediate'] });
 
     afterEach(() => {
-      jest.useRealTimers();
+      vi.useRealTimers();
     });
 
     // #3089: scanned the day before, "opens when it starts, at 4:00 PM" read as if it opened that day.
@@ -447,26 +448,26 @@ describe('CheckInProvider', () => {
     const insideMsc = { latitude: 30.6123, longitude: -96.3414, accuracy: 10 };
     const kyleField = { latitude: 30.6101, longitude: -96.3403, accuracy: 10 };
 
-    let save: jest.Mock;
+    let save: Mock;
 
     const withSession = (overrides: Record<string, unknown> = {}) => {
-      jest.spyOn(checkInRepo, 'findOne').mockResolvedValue(null);
-      jest.spyOn(eventRepo, 'findOne').mockResolvedValue({
+      vi.spyOn(checkInRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(eventRepo, 'findOne').mockResolvedValue({
         guid: 'e-1',
         mode: 'in-person',
         checkInAnyTime: true,
         ...times,
         ...overrides
       } as unknown as Event);
-      save = jest.fn().mockResolvedValue({ guid: 'c-new' });
-      jest.spyOn(checkInRepo, 'create').mockReturnValue({ save } as never);
+      save = vi.fn().mockResolvedValue({ guid: 'c-new' });
+      vi.spyOn(checkInRepo, 'create').mockReturnValue({ save } as never);
     };
 
-    const at = (iso: string) => jest.useFakeTimers({ now: new Date(iso), doNotFake: ['nextTick', 'setImmediate'] });
-    const recorded = () => (checkInRepo.create as jest.Mock).mock.calls[0][0];
+    const at = (iso: string) => vi.useFakeTimers({ now: new Date(iso), doNotFake: ['nextTick', 'setImmediate'] });
+    const recorded = () => (checkInRepo.create as Mock).mock.calls[0][0];
 
     afterEach(() => {
-      jest.useRealTimers();
+      vi.useRealTimers();
     });
 
     it.each([
@@ -550,7 +551,7 @@ describe('CheckInProvider', () => {
 
   describe('.getCheckinsForEvent()', () => {
     it("lists that session's check-ins, newest first", async () => {
-      jest.spyOn(checkInRepo, 'find').mockResolvedValue([{ guid: 'c-1' } as CheckIn]);
+      vi.spyOn(checkInRepo, 'find').mockResolvedValue([{ guid: 'c-1' } as CheckIn]);
 
       await expect(provider.getCheckinsForEvent('e-1')).resolves.toEqual([{ guid: 'c-1' }]);
       expect(checkInRepo.find).toHaveBeenCalledWith({ where: { event: { guid: 'e-1' } }, order: { created: 'DESC' } });
@@ -563,16 +564,16 @@ describe('CheckInProvider', () => {
    * the session page, from anywhere, without attending.
    */
   describe('.insertUserCheckin() and the QR code', () => {
-    let save: jest.Mock;
-    let findEvent: jest.SpyInstance;
+    let save: Mock;
+    let findEvent: MockInstance;
 
     const withSession = (mode: string, checkInCode: string | null = 'code-1', times: object = openNow) => {
-      jest.spyOn(checkInRepo, 'findOne').mockResolvedValue(null);
-      findEvent = jest
+      vi.spyOn(checkInRepo, 'findOne').mockResolvedValue(null);
+      findEvent = vi
         .spyOn(eventRepo, 'findOne')
         .mockResolvedValue({ guid: 'e-1', mode, ...times, checkInCode } as unknown as Event);
-      save = jest.fn().mockResolvedValue({ guid: 'c-new' });
-      jest.spyOn(checkInRepo, 'create').mockReturnValue({ save } as never);
+      save = vi.fn().mockResolvedValue({ guid: 'c-new' });
+      vi.spyOn(checkInRepo, 'create').mockReturnValue({ save } as never);
     };
 
     it.each(['hybrid', 'virtual'])('checks in an attendee to a %s session with its code', async (mode) => {
@@ -631,7 +632,7 @@ describe('CheckInProvider', () => {
         startTime: '16:00:00 GMT-0600 (Central Standard Time)',
         endTime: '17:00:00 GMT-0600 (Central Standard Time)'
       });
-      jest.useFakeTimers({ now: new Date('2026-11-18T21:00:00Z'), doNotFake: ['nextTick', 'setImmediate'] });
+      vi.useFakeTimers({ now: new Date('2026-11-18T21:00:00Z'), doNotFake: ['nextTick', 'setImmediate'] });
 
       try {
         await expect(provider.insertUserCheckin('e-1', 'acct-1', undefined, 'code-1')).rejects.toThrow(
@@ -639,7 +640,7 @@ describe('CheckInProvider', () => {
         );
         await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(/opens 5 minutes before it starts/);
       } finally {
-        jest.useRealTimers();
+        vi.useRealTimers();
       }
     });
 
@@ -661,16 +662,16 @@ describe('CheckInProvider', () => {
       ];
 
       const withZone = (checkInCode: string | null = 'code-1') => {
-        jest.spyOn(checkInRepo, 'findOne').mockResolvedValue(null);
-        jest.spyOn(eventRepo, 'findOne').mockResolvedValue({
+        vi.spyOn(checkInRepo, 'findOne').mockResolvedValue(null);
+        vi.spyOn(eventRepo, 'findOne').mockResolvedValue({
           guid: 'e-1',
           mode: 'in-person',
           ...openNow,
           location: { building: 'TAMU Rudder Plaza', checkInZone: zone },
           checkInCode
         } as unknown as Event);
-        save = jest.fn().mockResolvedValue({ guid: 'c-new' });
-        jest.spyOn(checkInRepo, 'create').mockReturnValue({ save } as never);
+        save = vi.fn().mockResolvedValue({ guid: 'c-new' });
+        vi.spyOn(checkInRepo, 'create').mockReturnValue({ save } as never);
       };
 
       it('checks in an attendee with the session’s code and no location', async () => {
@@ -713,22 +714,22 @@ describe('CheckInProvider', () => {
    * #2560: the code an organizer puts on the slides.
    */
   describe('.getCheckInCode()', () => {
-    let update: jest.Mock;
+    let update: Mock;
 
     beforeEach(() => {
-      update = jest.fn().mockResolvedValue({ affected: 1 });
-      (eventRepo as unknown as { update: jest.Mock }).update = update;
+      update = vi.fn().mockResolvedValue({ affected: 1 });
+      (eventRepo as unknown as { update: Mock }).update = update;
     });
 
     it('gives the session’s code when it has one, and writes nothing', async () => {
-      jest.spyOn(eventRepo, 'findOne').mockResolvedValue({ guid: 'e-1', mode: 'hybrid', checkInCode: 'code-1' } as Event);
+      vi.spyOn(eventRepo, 'findOne').mockResolvedValue({ guid: 'e-1', mode: 'hybrid', checkInCode: 'code-1' } as Event);
 
       await expect(provider.getCheckInCode('e-1')).resolves.toEqual({ code: 'code-1' });
       expect(update).not.toHaveBeenCalled();
     });
 
     it('makes a code the first time, only where there is none yet, and gives the one saved', async () => {
-      const findOne = jest
+      const findOne = vi
         .spyOn(eventRepo, 'findOne')
         .mockResolvedValueOnce({ guid: 'e-1', mode: 'virtual', checkInCode: null } as Event)
         .mockResolvedValueOnce({ guid: 'e-1', checkInCode: 'saved-by-whoever-was-first' } as Event);
@@ -743,7 +744,7 @@ describe('CheckInProvider', () => {
     });
 
     it('makes a different code for each session', async () => {
-      jest.spyOn(eventRepo, 'findOne').mockResolvedValue({ guid: 'e-1', mode: 'hybrid', checkInCode: null } as Event);
+      vi.spyOn(eventRepo, 'findOne').mockResolvedValue({ guid: 'e-1', mode: 'hybrid', checkInCode: null } as Event);
 
       await provider.getCheckInCode('e-1');
       await provider.getCheckInCode('e-2');
@@ -753,13 +754,13 @@ describe('CheckInProvider', () => {
 
     // #3077: every session has one, as the backup for a phone that cannot give its location.
     it('gives an in-person session its code too', async () => {
-      jest.spyOn(eventRepo, 'findOne').mockResolvedValue({ guid: 'e-1', mode: 'in-person', checkInCode: 'code-1' } as Event);
+      vi.spyOn(eventRepo, 'findOne').mockResolvedValue({ guid: 'e-1', mode: 'in-person', checkInCode: 'code-1' } as Event);
 
       await expect(provider.getCheckInCode('e-1')).resolves.toEqual({ code: 'code-1' });
     });
 
     it('refuses a session that does not exist', async () => {
-      jest.spyOn(eventRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(eventRepo, 'findOne').mockResolvedValue(null);
 
       await expect(provider.getCheckInCode('missing')).rejects.toThrow(NotFoundException);
     });
@@ -767,7 +768,7 @@ describe('CheckInProvider', () => {
 
   describe('.getUserCheckinForEvent()', () => {
     it('returns the check-in for that attendee and event', async () => {
-      jest.spyOn(checkInRepo, 'findOne').mockResolvedValue({ guid: 'c-1' } as CheckIn);
+      vi.spyOn(checkInRepo, 'findOne').mockResolvedValue({ guid: 'c-1' } as CheckIn);
 
       await expect(provider.getUserCheckinForEvent('e-1', 'acct-1')).resolves.toEqual({
         guid: 'c-1'
@@ -778,7 +779,7 @@ describe('CheckInProvider', () => {
     });
 
     it('throws NotFound when the attendee has not checked in', async () => {
-      jest.spyOn(checkInRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(checkInRepo, 'findOne').mockResolvedValue(null);
 
       await expect(provider.getUserCheckinForEvent('e-1', 'acct-1')).rejects.toThrow(NotFoundException);
     });

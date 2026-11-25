@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { BadRequestException, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -28,23 +29,23 @@ describe('EventProvider', () => {
   let seasonService: SeasonService;
 
   const queryBuilder = (result: unknown, method: 'getMany' | 'getOne' = 'getMany') => {
-    const qb: Record<string, jest.Mock> = {};
+    const qb: Record<string, Mock> = {};
     for (const m of ['leftJoinAndSelect', 'where', 'orderBy', 'addOrderBy']) {
-      qb[m] = jest.fn(() => qb);
+      qb[m] = vi.fn(() => qb);
     }
-    qb.getMany = jest.fn().mockResolvedValue(method === 'getMany' ? result : []);
-    qb.getOne = jest.fn().mockResolvedValue(method === 'getOne' ? result : null);
+    qb.getMany = vi.fn().mockResolvedValue(method === 'getMany' ? result : []);
+    qb.getOne = vi.fn().mockResolvedValue(method === 'getOne' ? result : null);
     return qb;
   };
 
   const repoMock = () => ({
-    find: jest.fn(),
-    findOne: jest.fn(),
-    create: jest.fn(),
-    save: jest.fn(),
-    count: jest.fn(),
-    update: jest.fn(),
-    createQueryBuilder: jest.fn()
+    find: vi.fn(),
+    findOne: vi.fn(),
+    create: vi.fn(),
+    save: vi.fn(),
+    count: vi.fn(),
+    update: vi.fn(),
+    createQueryBuilder: vi.fn()
   });
 
   beforeEach(async () => {
@@ -59,7 +60,7 @@ describe('EventProvider', () => {
         { provide: getRepositoryToken(Sponsor), useValue: repoMock() },
         { provide: getRepositoryToken(UserRsvp), useValue: repoMock() },
         { provide: getRepositoryToken(Season), useValue: repoMock() },
-        { provide: SeasonService, useValue: { findOneActive: jest.fn() } }
+        { provide: SeasonService, useValue: { findOneActive: vi.fn() } }
       ]
     }).compile();
 
@@ -73,7 +74,7 @@ describe('EventProvider', () => {
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('should be defined', () => {
@@ -83,7 +84,7 @@ describe('EventProvider', () => {
   describe('.getEventsForSeason()', () => {
     it('scopes to the season and orders by day then start time', async () => {
       const qb = queryBuilder([{ guid: 'e-1' }]);
-      jest.spyOn(eventRepo, 'createQueryBuilder').mockReturnValue(qb as never);
+      vi.spyOn(eventRepo, 'createQueryBuilder').mockReturnValue(qb as never);
 
       await expect(provider.getEventsForSeason('season-1')).resolves.toEqual([{ guid: 'e-1' }]);
       expect(qb.where).toHaveBeenCalledWith('event.season = :guid', { guid: 'season-1' });
@@ -93,7 +94,7 @@ describe('EventProvider', () => {
 
     it("brings each event's tags, so the admin list can find the sessions with none (#3034)", async () => {
       const qb = queryBuilder([]);
-      jest.spyOn(eventRepo, 'createQueryBuilder').mockReturnValue(qb as never);
+      vi.spyOn(eventRepo, 'createQueryBuilder').mockReturnValue(qb as never);
 
       await provider.getEventsForSeason('season-1');
 
@@ -101,7 +102,7 @@ describe('EventProvider', () => {
     });
 
     it('throws NotFound rather than querying when no season guid is supplied', async () => {
-      const cqb = jest.spyOn(eventRepo, 'createQueryBuilder');
+      const cqb = vi.spyOn(eventRepo, 'createQueryBuilder');
 
       await expect(provider.getEventsForSeason(undefined)).rejects.toThrow(NotFoundException);
       expect(cqb).not.toHaveBeenCalled();
@@ -124,7 +125,7 @@ describe('EventProvider', () => {
      * receive any of them, so it is asserted rather than left to inspection.
      */
     it('withholds broadcast, resources and requirements from an anonymous caller', async () => {
-      jest.spyOn(eventRepo, 'findOne').mockResolvedValue(withRelations());
+      vi.spyOn(eventRepo, 'findOne').mockResolvedValue(withRelations());
 
       const event = await provider.getEventDetails('e-1');
 
@@ -135,7 +136,7 @@ describe('EventProvider', () => {
     });
 
     it('includes them for a signed-in caller', async () => {
-      jest.spyOn(eventRepo, 'findOne').mockResolvedValue(withRelations());
+      vi.spyOn(eventRepo, 'findOne').mockResolvedValue(withRelations());
 
       const event = await provider.getEventDetails('e-1', true);
 
@@ -145,7 +146,7 @@ describe('EventProvider', () => {
     });
 
     it('throws NotFound when the event does not exist', async () => {
-      jest.spyOn(eventRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(eventRepo, 'findOne').mockResolvedValue(null);
 
       await expect(provider.getEventDetails('missing')).rejects.toThrow(NotFoundException);
     });
@@ -155,11 +156,11 @@ describe('EventProvider', () => {
     const existing = { guid: 'e-1', name: 'Old title' } as unknown as Event;
 
     it('relates the supplied tag and speaker guids to the event', async () => {
-      jest.spyOn(eventRepo, 'findOne').mockResolvedValue(existing);
-      jest.spyOn(tagRepo, 'create').mockImplementation((t) => t as never);
-      jest.spyOn(speakerRepo, 'create').mockImplementation((s) => s as never);
-      const save = jest.fn().mockResolvedValue({ guid: 'e-1' });
-      jest.spyOn(eventRepo, 'create').mockReturnValue({ save } as never);
+      vi.spyOn(eventRepo, 'findOne').mockResolvedValue(existing);
+      vi.spyOn(tagRepo, 'create').mockImplementation((t) => t as never);
+      vi.spyOn(speakerRepo, 'create').mockImplementation((s) => s as never);
+      const save = vi.fn().mockResolvedValue({ guid: 'e-1' });
+      vi.spyOn(eventRepo, 'create').mockReturnValue({ save } as never);
 
       await provider.updateEvent('e-1', {
         name: 'New title',
@@ -167,14 +168,14 @@ describe('EventProvider', () => {
         speakers: ['s-1']
       } as unknown as UpdateEventDto);
 
-      const passed = (eventRepo.create as jest.Mock).mock.calls[0][0];
+      const passed = (eventRepo.create as Mock).mock.calls[0][0];
       expect(passed.tags).toEqual([{ guid: 't-1' }, { guid: 't-2' }]);
       expect(passed.speakers).toEqual([{ guid: 's-1' }]);
       expect(passed.name).toBe('New title');
     });
 
     it('throws NotFound when the event does not exist', async () => {
-      jest.spyOn(eventRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(eventRepo, 'findOne').mockResolvedValue(null);
 
       await expect(
         provider.updateEvent('missing', { tags: [], speakers: [] } as unknown as UpdateEventDto)
@@ -190,40 +191,40 @@ describe('EventProvider', () => {
      * as 422 "Could not insert new Event" -- wrong status reason and wrong verb, on an update.
      */
     it('treats omitted tags and speakers as empty rather than crashing', async () => {
-      jest.spyOn(eventRepo, 'findOne').mockResolvedValue(existing);
-      const save = jest.fn().mockResolvedValue({ guid: 'e-1' });
-      jest.spyOn(eventRepo, 'create').mockReturnValue({ save } as never);
+      vi.spyOn(eventRepo, 'findOne').mockResolvedValue(existing);
+      const save = vi.fn().mockResolvedValue({ guid: 'e-1' });
+      vi.spyOn(eventRepo, 'create').mockReturnValue({ save } as never);
 
       await expect(
         provider.updateEvent('e-1', { name: 'New title' } as unknown as UpdateEventDto)
       ).resolves.toEqual({ guid: 'e-1' });
 
-      const passed = (eventRepo.create as jest.Mock).mock.calls[0][0];
+      const passed = (eventRepo.create as Mock).mock.calls[0][0];
       expect(passed.tags).toEqual([]);
       expect(passed.speakers).toEqual([]);
     });
 
     it('clears tags when an empty list is supplied', async () => {
-      jest.spyOn(eventRepo, 'findOne').mockResolvedValue({ ...existing } as Event);
-      jest.spyOn(eventRepo, 'create').mockReturnValue({ save: jest.fn() } as never);
+      vi.spyOn(eventRepo, 'findOne').mockResolvedValue({ ...existing } as Event);
+      vi.spyOn(eventRepo, 'create').mockReturnValue({ save: vi.fn() } as never);
 
       await provider.updateEvent('e-1', { tags: [], speakers: [] } as unknown as UpdateEventDto);
 
       // An empty list is a deliberate "remove them all", distinct from omitting the field.
-      expect((eventRepo.create as jest.Mock).mock.calls[0][0].tags).toEqual([]);
+      expect((eventRepo.create as Mock).mock.calls[0][0].tags).toEqual([]);
     });
 
     // #3183: a session's judging is saved with it: its competition, whether closed, and its judges, among its speakers.
     describe('its judging (#3183)', () => {
       beforeEach(() => {
-        jest.spyOn(eventRepo, 'findOne').mockResolvedValue({ ...existing } as Event);
-        jest.spyOn(speakerRepo, 'create').mockImplementation((s) => s as never);
-        jest.spyOn(eventRepo, 'create').mockReturnValue({ save: jest.fn() } as never);
+        vi.spyOn(eventRepo, 'findOne').mockResolvedValue({ ...existing } as Event);
+        vi.spyOn(speakerRepo, 'create').mockImplementation((s) => s as never);
+        vi.spyOn(eventRepo, 'create').mockReturnValue({ save: vi.fn() } as never);
       });
 
       const save = (fields: Record<string, unknown>) =>
         provider.updateEvent('e-1', { tags: [], speakers: ['s-1', 's-2'], ...fields } as unknown as UpdateEventDto);
-      const passed = () => (eventRepo.create as jest.Mock).mock.calls[0][0];
+      const passed = () => (eventRepo.create as Mock).mock.calls[0][0];
 
       it('saves the judged competition, judging closed, and the judges among its speakers', async () => {
         await save({ judgedCompetition: 'graduate-poster', judgingClosed: true, judges: ['s-2'] });
@@ -260,7 +261,7 @@ describe('EventProvider', () => {
 
   describe('.getJudging() (#3183)', () => {
     it("gives the session's competition, whether closed, and its judges by id", async () => {
-      jest.spyOn(eventRepo, 'findOne').mockResolvedValue({
+      vi.spyOn(eventRepo, 'findOne').mockResolvedValue({
         guid: 'e-1',
         judgedCompetition: 'undergraduate-poster',
         judgingClosed: false,
@@ -272,11 +273,11 @@ describe('EventProvider', () => {
         judgingClosed: false,
         judges: ['s-2']
       });
-      expect((eventRepo.findOne as jest.Mock).mock.calls[0][0].relations).toEqual({ judges: true });
+      expect((eventRepo.findOne as Mock).mock.calls[0][0].relations).toEqual({ judges: true });
     });
 
     it('throws NotFound when the event does not exist', async () => {
-      jest.spyOn(eventRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(eventRepo, 'findOne').mockResolvedValue(null);
 
       await expect(provider.getJudging('missing')).rejects.toThrow(NotFoundException);
     });
@@ -289,7 +290,7 @@ describe('EventProvider', () => {
    */
   describe('.setActive()', () => {
     it('changes only active, for every event given', async () => {
-      jest.spyOn(eventRepo, 'update').mockResolvedValue({ affected: 2, raw: [], generatedMaps: [] });
+      vi.spyOn(eventRepo, 'update').mockResolvedValue({ affected: 2, raw: [], generatedMaps: [] });
 
       await expect(provider.setActive(['e-1', 'e-2'], false)).resolves.toEqual({ updated: 2 });
       expect(eventRepo.update).toHaveBeenCalledWith({ guid: In(['e-1', 'e-2']) }, { active: false });
@@ -306,8 +307,8 @@ describe('EventProvider', () => {
   describe('.getNumberOfRsvps()', () => {
     it('counts the RSVPs for the event', async () => {
       const event = { guid: 'e-1' } as Event;
-      jest.spyOn(eventRepo, 'findOne').mockResolvedValue(event);
-      jest.spyOn(rsvpRepo, 'count').mockResolvedValue(7);
+      vi.spyOn(eventRepo, 'findOne').mockResolvedValue(event);
+      vi.spyOn(rsvpRepo, 'count').mockResolvedValue(7);
 
       await expect(provider.getNumberOfRsvps('e-1')).resolves.toBe(7);
       expect(rsvpRepo.count).toHaveBeenCalledWith({ where: { event } });
@@ -318,8 +319,8 @@ describe('EventProvider', () => {
      * than 404, so "no such event" and "nobody has RSVPed" are indistinguishable to the caller.
      */
     it('answers 0 for an event that does not exist', async () => {
-      jest.spyOn(eventRepo, 'findOne').mockResolvedValue(null);
-      const count = jest.spyOn(rsvpRepo, 'count');
+      vi.spyOn(eventRepo, 'findOne').mockResolvedValue(null);
+      const count = vi.spyOn(rsvpRepo, 'count');
 
       await expect(provider.getNumberOfRsvps('missing')).resolves.toBe(0);
       expect(count).not.toHaveBeenCalled();
@@ -328,9 +329,9 @@ describe('EventProvider', () => {
 
   describe('.updateAttendance()', () => {
     it('applies only the counts that were supplied', async () => {
-      const save = jest.fn().mockResolvedValue(true);
+      const save = vi.fn().mockResolvedValue(true);
       const event = { guid: 'e-1', observedAttendeeStart: 10, observedAttendeeEnd: 8, save } as never;
-      jest.spyOn(eventRepo, 'findOne').mockResolvedValue(event);
+      vi.spyOn(eventRepo, 'findOne').mockResolvedValue(event);
 
       await provider.updateAttendance('e-1', { observedAttendeeStart: 25 } as never);
 
@@ -341,9 +342,9 @@ describe('EventProvider', () => {
     });
 
     it('accepts a zero count rather than treating it as absent', async () => {
-      const save = jest.fn().mockResolvedValue(true);
+      const save = vi.fn().mockResolvedValue(true);
       const event = { guid: 'e-1', observedAttendeeStart: 10, save } as never;
-      jest.spyOn(eventRepo, 'findOne').mockResolvedValue(event);
+      vi.spyOn(eventRepo, 'findOne').mockResolvedValue(event);
 
       await provider.updateAttendance('e-1', { observedAttendeeStart: 0 } as never);
 
@@ -352,7 +353,7 @@ describe('EventProvider', () => {
     });
 
     it('throws NotFound when the event does not exist', async () => {
-      jest.spyOn(eventRepo, 'findOne').mockResolvedValue(null);
+      vi.spyOn(eventRepo, 'findOne').mockResolvedValue(null);
 
       await expect(provider.updateAttendance('missing', {} as never)).rejects.toThrow(
         NotFoundException
@@ -366,7 +367,7 @@ describe('EventProvider', () => {
 
     // 422, as every other copy refuses a season that does not exist; it was 404 (#3379).
     it('refuses a target season that does not exist', async () => {
-      jest.spyOn(seasonRepo, 'createQueryBuilder').mockReturnValue(queryBuilder(null, 'getOne') as never);
+      vi.spyOn(seasonRepo, 'createQueryBuilder').mockReturnValue(queryBuilder(null, 'getOne') as never);
 
       await expect(provider.copyEventsIntoSeason('missing', ['e-1'])).rejects.toThrow(
         UnprocessableEntityException
@@ -374,7 +375,7 @@ describe('EventProvider', () => {
     });
 
     it('refuses a season with no days to put the events on', async () => {
-      jest
+      vi
         .spyOn(seasonRepo, 'createQueryBuilder')
         .mockReturnValue(queryBuilder({ guid: 'season-2', days: [] }, 'getOne') as never);
 
@@ -391,11 +392,11 @@ describe('EventProvider', () => {
      * there was nothing to copy. Sibling providers check `.length === 0`, which is the intent.
      */
     it('reports that there was nothing to copy rather than succeeding silently', async () => {
-      jest
+      vi
         .spyOn(seasonRepo, 'createQueryBuilder')
         .mockReturnValue(queryBuilder(seasonWithDays(), 'getOne') as never);
-      jest.spyOn(eventRepo, 'find').mockResolvedValue([]);
-      const create = jest.spyOn(eventRepo, 'create');
+      vi.spyOn(eventRepo, 'find').mockResolvedValue([]);
+      const create = vi.spyOn(eventRepo, 'create');
 
       // 422, as every other copy refuses when nothing is found; it was 404 (#3379).
       await expect(provider.copyEventsIntoSeason('season-2', ['missing'])).rejects.toThrow(
@@ -417,17 +418,17 @@ describe('EventProvider', () => {
         sponsors: [{ guid: 'sp-1' }]
       } as unknown as Event;
 
-      jest
+      vi
         .spyOn(seasonRepo, 'createQueryBuilder')
         .mockReturnValue(queryBuilder(seasonWithDays(), 'getOne') as never);
-      jest.spyOn(eventRepo, 'find').mockResolvedValue([source]);
-      jest
+      vi.spyOn(eventRepo, 'find').mockResolvedValue([source]);
+      vi
         .spyOn(eventRepo, 'create')
-        .mockImplementation((e) => ({ ...(e as object), save: jest.fn().mockResolvedValue(e) }) as never);
+        .mockImplementation((e) => ({ ...(e as object), save: vi.fn().mockResolvedValue(e) }) as never);
 
       await provider.copyEventsIntoSeason('season-2', ['e-1']);
 
-      const passed = (eventRepo.create as jest.Mock).mock.calls[0][0];
+      const passed = (eventRepo.create as Mock).mock.calls[0][0];
       expect(passed.guid).toBeUndefined();
       expect(passed.speakers).toBeUndefined();
       expect(passed.broadcast).toBeUndefined();
@@ -445,29 +446,29 @@ describe('EventProvider', () => {
      * Whether that is intended -- copy then reschedule -- or a gap is a product question.
      */
     it('places every copied event on the first day of the target season', async () => {
-      jest
+      vi
         .spyOn(seasonRepo, 'createQueryBuilder')
         .mockReturnValue(queryBuilder(seasonWithDays(), 'getOne') as never);
-      jest.spyOn(eventRepo, 'find').mockResolvedValue([
+      vi.spyOn(eventRepo, 'find').mockResolvedValue([
         { guid: 'e-1', day: { guid: 'old-day-1' } },
         { guid: 'e-2', day: { guid: 'old-day-3' } }
       ] as unknown as Event[]);
-      jest
+      vi
         .spyOn(eventRepo, 'create')
-        .mockImplementation((e) => ({ ...(e as object), save: jest.fn().mockResolvedValue(e) }) as never);
+        .mockImplementation((e) => ({ ...(e as object), save: vi.fn().mockResolvedValue(e) }) as never);
 
       await provider.copyEventsIntoSeason('season-2', ['e-1', 'e-2']);
 
-      const days = (eventRepo.create as jest.Mock).mock.calls.map((c) => c[0].day.guid);
+      const days = (eventRepo.create as Mock).mock.calls.map((c) => c[0].day.guid);
       expect(days).toEqual(['d-1', 'd-1']);
     });
   });
 
   describe('.getEventsForActiveSeason()', () => {
     it('reads events for whichever season is active', async () => {
-      jest.spyOn(seasonService, 'findOneActive').mockResolvedValue({ guid: 'active' } as never);
+      vi.spyOn(seasonService, 'findOneActive').mockResolvedValue({ guid: 'active' } as never);
       const qb = queryBuilder([{ guid: 'e-1' }]);
-      jest.spyOn(eventRepo, 'createQueryBuilder').mockReturnValue(qb as never);
+      vi.spyOn(eventRepo, 'createQueryBuilder').mockReturnValue(qb as never);
 
       await expect(provider.getEventsForActiveSeason()).resolves.toEqual([{ guid: 'e-1' }]);
       expect(qb.where).toHaveBeenCalledWith('event.season = :guid', { guid: 'active' });
@@ -475,7 +476,7 @@ describe('EventProvider', () => {
 
     it('surfaces NotFound when no season is active', async () => {
       // The lookup sits outside the try, so this propagates untouched.
-      jest.spyOn(seasonService, 'findOneActive').mockRejectedValue(new NotFoundException());
+      vi.spyOn(seasonService, 'findOneActive').mockRejectedValue(new NotFoundException());
 
       await expect(provider.getEventsForActiveSeason()).rejects.toThrow(NotFoundException);
     });

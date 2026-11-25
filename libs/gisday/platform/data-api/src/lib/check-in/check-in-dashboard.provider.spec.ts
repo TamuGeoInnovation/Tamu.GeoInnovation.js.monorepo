@@ -22,7 +22,7 @@ const profiles: Record<string, Auth0UserProfile> = {
 
 function management(): ManagementService {
   return {
-    getUsersByIds: jest.fn(
+    getUsersByIds: vi.fn(
       async (accounts: Array<string>) => new Map(accounts.filter((a) => profiles[a]).map((a) => [a, profiles[a]]))
     )
   } as unknown as ManagementService;
@@ -124,7 +124,7 @@ describe('CheckInDashboardProvider (#3006)', () => {
     });
 
     it("counts an RSVP to another event as no RSVP to this one, and reads each RSVP's account (#2893)", async () => {
-      const asked = jest.spyOn(rsvpRepo, 'find');
+      const asked = vi.spyOn(rsvpRepo, 'find');
       const findRsvps = rsvpRepo.find;
       rsvpRepo.find = async (options) => {
         await findRsvps.call(rsvpRepo, options);
@@ -148,7 +148,7 @@ describe('CheckInDashboardProvider (#3006)', () => {
     });
 
     it("asks for each check-in's event, which a check-in does not load by itself as an RSVP does", async () => {
-      const asked = jest.spyOn(checkInRepo, 'find');
+      const asked = vi.spyOn(checkInRepo, 'find');
 
       await provider.getSeason('s-1');
 

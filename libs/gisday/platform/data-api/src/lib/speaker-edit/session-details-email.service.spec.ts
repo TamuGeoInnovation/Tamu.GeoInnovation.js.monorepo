@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 import { SESSION_DETAILS_EMAIL_KIND } from '@tamu-gisc/gisday/common';
@@ -36,9 +37,9 @@ describe('SessionDetailsEmailService', () => {
   };
 
   let sent: Array<{ to: string; subject: string; text: string; html: string; from: string }>;
-  let events: { findOne: jest.Mock };
+  let events: { findOne: Mock };
   let sends: Table<SpeakerEmailClaim>;
-  let contact: { sendMessage: jest.Mock };
+  let contact: { sendMessage: Mock };
   let service: SessionDetailsEmailService;
   let inFlight: number;
   let mostInFlight: number;
@@ -47,10 +48,10 @@ describe('SessionDetailsEmailService', () => {
     sent = [];
     inFlight = 0;
     mostInFlight = 0;
-    events = { findOne: jest.fn(async ({ where }) => (where.guid === session.guid ? session : null)) };
+    events = { findOne: vi.fn(async ({ where }) => (where.guid === session.guid ? session : null)) };
     sends = sendsTable();
     contact = {
-      sendMessage: jest.fn(async (m) => {
+      sendMessage: vi.fn(async (m) => {
         inFlight++;
         mostInFlight = Math.max(mostInFlight, inFlight);
         await new Promise((resolve) => setTimeout(resolve, 5));
@@ -129,7 +130,7 @@ describe('SessionDetailsEmailService', () => {
     // Another copy of the service, so the repeat guard (#3065) does not skip the same speakers.
     sent = [];
     await new SessionDetailsEmailService(events as never, new RepeatGuard(sendsTable() as never), {
-      sendMessage: jest.fn(async (m) => sent.push(m))
+      sendMessage: vi.fn(async (m) => sent.push(m))
     } as never).send('e-1', 'txgisday.org', { subject: 'About {site}', template: 'Hi **{first name}**' });
 
     expect(sent.find((m) => m.to === 'ana@example.edu').html).not.toContain('GIS DAY(S)');
@@ -228,7 +229,7 @@ describe('SessionDetailsEmailService', () => {
   });
 
   it(`emails them again after ${REPEAT_SEND_MINUTES} minutes`, async () => {
-    const now = jest.spyOn(Date, 'now');
+    const now = vi.spyOn(Date, 'now');
 
     now.mockReturnValue(Date.parse('2026-11-16T15:00:00Z'));
     await service.send('e-1', 'gisday.tamu.edu');
@@ -242,7 +243,7 @@ describe('SessionDetailsEmailService', () => {
 
   it('lets a speaker whose email failed be sent again at once, and says it failed', async () => {
     const failingContact = {
-      sendMessage: jest.fn().mockRejectedValueOnce(new Error('mailroom down')).mockResolvedValue({})
+      sendMessage: vi.fn().mockRejectedValueOnce(new Error('mailroom down')).mockResolvedValue({})
     };
     const failing = new SessionDetailsEmailService(
       events as never,
@@ -298,9 +299,9 @@ describe('SessionDetailsEmailService, choosing speakers', () => {
     sent = [];
     sends = new Table<SpeakerEmailClaim>();
     service = new SessionDetailsEmailService(
-      { findOne: jest.fn(async ({ where }) => (where.guid === session.guid ? session : null)) } as never,
+      { findOne: vi.fn(async ({ where }) => (where.guid === session.guid ? session : null)) } as never,
       new RepeatGuard(sends as never),
-      { sendMessage: jest.fn(async (m) => sent.push(m)) } as never
+      { sendMessage: vi.fn(async (m) => sent.push(m)) } as never
     );
   });
 
@@ -409,9 +410,9 @@ describe('SessionDetailsEmailService, choosing speakers', () => {
 
   it('emails a together group once when the repeat reaches the other copy of the API (#3098)', async () => {
     const otherCopy = new SessionDetailsEmailService(
-      { findOne: jest.fn(async ({ where }) => (where.guid === session.guid ? session : null)) } as never,
+      { findOne: vi.fn(async ({ where }) => (where.guid === session.guid ? session : null)) } as never,
       new RepeatGuard(sends as never),
-      { sendMessage: jest.fn(async (m) => sent.push(m)) } as never
+      { sendMessage: vi.fn(async (m) => sent.push(m)) } as never
     );
     const choice = { speakers: ['sp-sh', 'sp-co'], together: true };
 
@@ -425,9 +426,9 @@ describe('SessionDetailsEmailService, choosing speakers', () => {
   });
 
   it('lets a together email that failed be sent again at once', async () => {
-    const contact = { sendMessage: jest.fn().mockRejectedValueOnce(new Error('mailroom down')).mockResolvedValue({}) };
+    const contact = { sendMessage: vi.fn().mockRejectedValueOnce(new Error('mailroom down')).mockResolvedValue({}) };
     const failing = new SessionDetailsEmailService(
-      { findOne: jest.fn(async () => session) } as never,
+      { findOne: vi.fn(async () => session) } as never,
       new RepeatGuard(new Table<SpeakerEmailClaim>() as never),
       contact as never
     );

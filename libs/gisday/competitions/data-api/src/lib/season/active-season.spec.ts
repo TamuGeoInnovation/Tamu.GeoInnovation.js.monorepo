@@ -4,8 +4,8 @@ import { activeCompetitionSeason, activeSeason } from './active-season';
 
 /** #3325. Made-up seasons only. */
 describe('the active season lookups', () => {
-  const seasons = (season: object | null) => ({ findOne: jest.fn(async () => season) }) as never;
-  const compSeasons = (compSeason: object | null) => ({ findOne: jest.fn(async () => compSeason) });
+  const seasons = (season: object | null) => ({ findOne: vi.fn(async () => season) }) as never;
+  const compSeasons = (compSeason: object | null) => ({ findOne: vi.fn(async () => compSeason) });
 
   it('finds the active GIS Day season, or says there is none', async () => {
     await expect(activeSeason(seasons({ guid: 's-1' }))).resolves.toEqual({ guid: 's-1' });

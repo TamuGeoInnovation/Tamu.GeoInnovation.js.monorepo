@@ -23,11 +23,11 @@ const COLUMNS = new Map<unknown, Array<string>>([
 ]);
 
 function dataSource(rows: Map<unknown, Array<Record<string, unknown>>>) {
-  const save = jest.fn();
+  const save = vi.fn();
   const manager = {
-    find: jest.fn(async (entity: unknown) => rows.get(entity) ?? []),
-    findOne: jest.fn(async (entity: unknown) => (rows.get(entity) ?? [])[0] ?? null),
-    count: jest.fn(async () => 1),
+    find: vi.fn(async (entity: unknown) => rows.get(entity) ?? []),
+    findOne: vi.fn(async (entity: unknown) => (rows.get(entity) ?? [])[0] ?? null),
+    count: vi.fn(async () => 1),
     save,
     connection: {
       getMetadata: (entity: unknown) => ({
@@ -39,7 +39,7 @@ function dataSource(rows: Map<unknown, Array<Record<string, unknown>>>) {
   return {
     save,
     manager,
-    source: { manager, transaction: jest.fn(async (work) => work(manager)) } as unknown as DataSource
+    source: { manager, transaction: vi.fn(async (work) => work(manager)) } as unknown as DataSource
   };
 }
 

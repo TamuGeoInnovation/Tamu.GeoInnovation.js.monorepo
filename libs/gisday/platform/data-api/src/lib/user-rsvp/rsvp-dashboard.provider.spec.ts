@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { NotFoundException } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 
@@ -25,13 +26,13 @@ const profiles: Record<string, Auth0UserProfile> = {
   } as unknown as Auth0UserProfile
 };
 
-function managementWith(): ManagementService & { getUsersByIds: jest.Mock } {
+function managementWith(): ManagementService & { getUsersByIds: Mock } {
   return {
     // As the search answers: the ids it found, and nothing for the rest.
-    getUsersByIds: jest.fn(
+    getUsersByIds: vi.fn(
       async (accounts: Array<string>) => new Map(accounts.filter((a) => profiles[a]).map((a) => [a, profiles[a]]))
     )
-  } as unknown as ManagementService & { getUsersByIds: jest.Mock };
+  } as unknown as ManagementService & { getUsersByIds: Mock };
 }
 
 const rsvp = (account: string, event: string, created: string) =>
