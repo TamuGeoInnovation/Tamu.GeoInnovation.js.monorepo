@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 
 import { BaseDirectionsComponent } from '../base-directions/base-directions.component';
-import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
-import { ActivateDirective } from '@tamu-gisc/ui-kits/ngx/interactions/keyboard';
+import { PopupFooterComponent } from '../footer/popup-footer.component';
 
 /**
  * Details for a parking garage (#1163).
@@ -19,7 +18,7 @@ import { ActivateDirective } from '@tamu-gisc/ui-kits/ngx/interactions/keyboard'
   selector: 'tamu-gisc-parking-garage-popup-component',
   templateUrl: '../parking-lot/parking-lot.component.html',
   styleUrls: ['../base/base.popup.component.scss'],
-  imports: [CopyComponent, ActivateDirective]
+  imports: [PopupFooterComponent]
 })
 export class ParkingGaragePopupComponent extends BaseDirectionsComponent {
   /**

@@ -50,6 +50,5 @@
   @if (data?.attributes?.description) {
   <div [innerHTML]="data.attributes.description| markdownParse"></div>
   }
-  <!-- Directions To Button -->
-  <div class="button" [attr.building-number]="data.attributes.name" (tamuGiscActivate)="startDirections()">Directions To Here</div>
+  <tamu-gisc-popup-footer [shareUrl]="shareUrl" (startDirections)="startDirections()"></tamu-gisc-popup-footer>
 </div>

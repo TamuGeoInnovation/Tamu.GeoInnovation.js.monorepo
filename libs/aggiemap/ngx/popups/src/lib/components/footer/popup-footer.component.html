@@ -1,0 +1,7 @@
+@if (shareUrl()) {
+<tamu-gisc-copy-field [text]="shareUrl()"></tamu-gisc-copy-field>
+}
+
+<div class="button" (tamuGiscActivate)="startDirections.emit()">Directions To Here</div>
+
+<ng-content></ng-content>
