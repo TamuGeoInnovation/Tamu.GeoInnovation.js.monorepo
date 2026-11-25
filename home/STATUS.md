@@ -14,7 +14,8 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch g115**: part 1 waits on #3518; part 2 (`fix/3495-competitions-strict-null-checks`) check Exit 0, waits on part 1 and the platform branch (#985).
+- **Batch a27 (aggiemap: #602, #1173, one popup footer)**: inventory and decision first, in `C:/TAMU/wt-602`.
+- **Batch g115**: part 1 waits on #3518; part 2 waits on part 1 and the platform branch (#985). g116 is after g115.
 
 ## Finished
 - **#3536 / #2816 (a19, decided A)** (report `home/reports/2026-11-24-a19.md`, update): branch ready, `fix/2816-empty-popup-rows` `ade7dc710`. One popup-data resolver; cross-path test red then green; check Exit 0; share-link images (rack and construction fixed, EV identical). Filed #3536 and #3551 (dates one day early).
