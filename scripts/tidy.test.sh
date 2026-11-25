@@ -136,6 +136,28 @@ check 'a tracked .pr-body.md edit is kept' 'no'   "$(only_a_drafted_pr_body ' M 
 # The name has to be exact: a file that merely ends in it is somebody else's.
 check 'a differently named body file is kept' 'no'   "$(only_a_drafted_pr_body '?? docs/.pr-body.md' && echo yes || echo no)"
 
+
+# A sweep that only runs when a check runs never runs on a machine that is not running checks - which is how
+# one sat at 856 GiB while idle (#3454). `--if-due` has to be cheap to call often and honest about when.
+check 'with no stamp at all a sweep is due' 'yes'   "$(sweep_due '' 1000000 12 && echo yes || echo no)"
+
+check 'an unreadable stamp counts as due rather than silently never' 'yes'   "$(sweep_due '' 0 12 && echo yes || echo no)"
+
+# 12 hours exactly is due: the boundary belongs to the sweep, or a 12-hourly caller drifts a cycle later
+# every day and eventually never fires at the same time twice.
+check 'exactly the interval is due' 'yes'   "$(sweep_due 0 43200 12 && echo yes || echo no)"
+
+check 'a second under the interval is not due' 'no'   "$(sweep_due 0 43199 12 && echo yes || echo no)"
+
+check 'well under the interval is not due' 'no'   "$(sweep_due 1000000 1003600 12 && echo yes || echo no)"
+
+check 'well over the interval is due' 'yes'   "$(sweep_due 1000000 1090000 12 && echo yes || echo no)"
+
+# The interval is configurable, so a machine that fills fast can sweep hourly.
+check 'a shorter interval is honoured' 'yes'   "$(sweep_due 0 3600 1 && echo yes || echo no)"
+
+check 'a longer interval is honoured' 'no'   "$(sweep_due 0 43200 24 && echo yes || echo no)"
+
 if [ "$failed" -ne 0 ]; then
   printf '\n%d case(s) failed.\n' "$failed" >&2
   exit 1

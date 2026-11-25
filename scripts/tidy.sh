@@ -77,6 +77,20 @@ volume_candidates() {
   ' "$volumes"
 }
 
+# True when a sweep is due: no stamp, an unreadable one, or one older than <hours>. The stamp is a file
+# whose mtime is the last run; <now> and <stamp mtime> are epoch seconds so the test can drive it.
+#
+# Why this is in the script rather than in whatever calls it: the sweep only ever ran when a check ran, and a
+# machine that is not running checks never cleaned up at all. That is how a machine sat at 856 GiB while idle
+# (#3454). A caller can now ask "is it due?" cheaply and often, and the expensive part - two GitHub queries
+# and a Docker listing - happens only when the answer is yes. Tested by scripts/tidy.test.sh.
+sweep_due() {
+  local last="$1" now="$2" hours="${3:-12}"
+
+  [ -n "$last" ] || return 0
+  awk -v l="$last" -v n="$now" -v h="$hours" 'BEGIN { exit !((n - l) >= h * 3600) }'
+}
+
 # Prints the advice for a Docker disk image of <size GiB> against <threshold GiB>, or nothing when it is
 # under. REMOVING A VOLUME NEVER SHRINKS THE IMAGE: the file only grows, every check adding about 2.6 GiB
 # to it for good, and only a compaction gives the space back to C:. That is why 975 GB sat unnoticed for
@@ -103,9 +117,32 @@ compact=no
 case "${1:-}" in
   --yes) act=yes ;;
   --compact) act=yes; compact=yes ;;
+  --if-due) ;;
   '') ;;
-  *) echo "usage: $0 [--yes|--compact]" >&2; exit 2 ;;
+  *) echo "usage: $0 [--yes|--compact|--if-due]" >&2; exit 2 ;;
 esac
+
+# `--if-due` is what a listener calls on a schedule. It returns immediately and silently unless a sweep is
+# due, so it can be called as often as a heartbeat without costing a GitHub query; when it is due it removes
+# only if the disk is low enough to need it, and otherwise just reports (#3454).
+stamp="${TIDY_STAMP:-${TMPDIR:-/tmp}/tamu-tidy-last}"
+if [ "${1:-}" = --if-due ]; then
+  last=""
+  [ -f "$stamp" ] && last="$(date -r "$stamp" +%s 2>/dev/null || echo '')"
+  sweep_due "$last" "$(date +%s)" "${TIDY_EVERY_HOURS:-12}" || exit 0
+  : > "$stamp"
+
+  # Removing is reserved for a machine that is actually short of room; above the watermark a scheduled sweep
+  # reports and leaves the worktrees alone, because somebody may be about to use one.
+  here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  free="$(df -Pk "$here" 2>/dev/null | awk 'NR == 2 { printf "%.0f", $4 / 1024 / 1024 }')"
+  if [ -n "$free" ] && awk -v f="$free" -v w="${TIDY_AUTO_FREE_GB:-100}" 'BEGIN { exit !(f < w) }'; then
+    echo "Scheduled sweep: ${free} GiB free, below the ${TIDY_AUTO_FREE_GB:-100} GiB watermark, so removing."
+    act=yes
+  else
+    echo "Scheduled sweep: ${free:-unknown} GiB free, so reporting only."
+  fi
+fi
 
 tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
