@@ -66,7 +66,8 @@ export class TripPlannerOptionsBaseComponent implements OnInit {
 
     this.tripPlanner.updateTravelOptions(opts);
 
-    // Report as interaction to Google Analytics
+    // Report as interaction to Google Analytics. Not trackEvent (#3488): this one has always sent `type` first, then
+    // `date`, then `guid`, and the reports read it in that order.
     this.anl.eventTrack.next({
       action: 'persistent_travel_setting',
       properties: {

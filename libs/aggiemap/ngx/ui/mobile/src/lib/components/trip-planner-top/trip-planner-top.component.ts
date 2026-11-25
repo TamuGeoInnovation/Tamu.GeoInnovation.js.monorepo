@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { fromEventPattern, Observable, pipe, Subject } from 'rxjs';
+import { Observable, pipe, Subject } from 'rxjs';
 import { switchMap, takeUntil, map } from 'rxjs/operators';
 
-import { EsriMapService, MapServiceInstance } from '@tamu-gisc/maps/esri';
+import { EsriMapService, MapServiceInstance, viewEvent } from '@tamu-gisc/maps/esri';
 import { TripPlannerService, TripResult, TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 import { DragService, UIDragState } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
 import { TripPlannerModePickerMobileComponent } from '@tamu-gisc/maps/feature/trip-planner/components';
@@ -116,19 +116,7 @@ export class TripPlannerTopComponent implements OnInit, OnDestroy {
 
   private $immediateClickHandler() {
     return pipe(
-      switchMap((view: MapServiceInstance['view']) => {
-        let handle: esri.Handle;
-
-        const addHandler = (handler) => {
-          handle = view.on('immediate-click', handler);
-        };
-
-        const removeHandler = () => {
-          handle.remove();
-        };
-
-        return fromEventPattern<esri.ViewImmediateClickEvent>(addHandler, removeHandler);
-      })
+      switchMap((view: MapServiceInstance['view']) => viewEvent<esri.ViewImmediateClickEvent>(view, 'immediate-click'))
     );
   }
 }

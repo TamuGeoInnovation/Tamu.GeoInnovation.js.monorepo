@@ -5,6 +5,8 @@ import { takeUntil } from 'rxjs/operators';
 
 import { Angulartics2 } from 'angulartics2';
 
+import { trackEvent } from '@tamu-gisc/common/ngx/analytics';
+
 import { TripPlannerService } from '../../../../services/trip-planner.service';
 
 import { AsyncPipe } from '@angular/common';
@@ -108,35 +110,19 @@ export class TripPlannerDirectionsActionsComponent implements OnInit, OnDestroy 
     this.plannerService.clearAll();
 
     const label = {
-      guid: crypto.randomUUID(),
-      date: Date.now(),
       type: 'reset'
     };
 
-    this.analytics.eventTrack.next({
-      action: 'trip_planner_action',
-      properties: {
-        category: 'ui_interaction',
-        gstCustom: label
-      }
-    });
+    trackEvent(this.analytics, 'trip_planner_action', 'ui_interaction', label);
   }
 
   public eventCopyTrip() {
     // Route creation analytics tracking
     const label = {
-      guid: crypto.randomUUID(),
-      date: Date.now(),
       name: this.shareUrl,
       type: 'share'
     };
 
-    this.analytics.eventTrack.next({
-      action: 'trip_planner_action',
-      properties: {
-        category: 'ui_interaction',
-        gstCustom: label
-      }
-    });
+    trackEvent(this.analytics, 'trip_planner_action', 'ui_interaction', label);
   }
 }

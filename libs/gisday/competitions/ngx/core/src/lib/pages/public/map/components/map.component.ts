@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable, catchError, forkJoin, map, of, switchMap, take } from 'rxjs';
@@ -16,7 +16,6 @@ import esri = __esri;
   selector: 'tamu-gisc-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [EsriMapComponent, MapLocationComponent]
 })
 export class MapComponent implements OnInit {

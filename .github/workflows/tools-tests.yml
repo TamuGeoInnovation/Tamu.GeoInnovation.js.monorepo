@@ -28,7 +28,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
-          node-version: '24.22.1'
+          node-version: '24.22.3'
 
       # Quoted, so Node expands the glob (bash would need globstar for **). The suites use only
       # Node's own modules, so there is no install, and none of them reaches the network.

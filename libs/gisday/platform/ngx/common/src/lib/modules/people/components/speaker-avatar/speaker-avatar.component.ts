@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, ChangeDetectionStrategy, inject, input, signal } from '@angular/core';
+import { Component, OnInit, inject, input, signal } from '@angular/core';
 import { Observable, catchError, filter, mapTo, of, shareReplay, startWith, switchMap, tap } from 'rxjs';
 
 import { AssetsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -9,7 +9,6 @@ import { AsyncPipe } from '@angular/common';
   selector: 'tamu-gisc-speaker-avatar',
   templateUrl: './speaker-avatar.component.html',
   styleUrls: ['./speaker-avatar.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [AsyncPipe]
 })
 export class SpeakerAvatarComponent implements OnInit {

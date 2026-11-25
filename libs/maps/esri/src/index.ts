@@ -8,6 +8,9 @@ export * from './lib/geographic';
 // Reads ArcGIS objects changed in place into a signal, for OnPush templates (#1673).
 export * from './lib/arcgis-signal';
 
+// A map view's events as an observable, in place of the fromEventPattern wrapper written by hand (#3493).
+export * from './lib/view-event';
+
 export * from './lib/services/module-provider/module-provider.service';
 
 export * from './lib/services/map/map.service';

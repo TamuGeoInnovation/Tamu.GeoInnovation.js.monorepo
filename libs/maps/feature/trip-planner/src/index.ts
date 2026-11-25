@@ -9,6 +9,9 @@ export * from './lib/lazy-components';
 
 // Services
 export * from './lib/services/trip-planner.service';
+
+// One "show a search result on the map with its popup", in place of the copy in three components (#3484).
+export * from './lib/services/search-result-selection.service';
 export * from './lib/services/trip-planner-connection.service';
 export * from './lib/services/transportation/bike/bike.service';
 export * from './lib/services/transportation/bus/bus.service';

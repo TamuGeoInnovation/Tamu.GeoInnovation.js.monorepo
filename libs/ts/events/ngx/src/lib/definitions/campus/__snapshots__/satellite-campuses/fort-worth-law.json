@@ -1,0 +1,239 @@
+{
+  "configuration": {
+    "applicationName": "Aggie Map - Fort Worth Law School",
+    "buildingPopup": {
+      "abbreviation": "bldgabbr",
+      "address": {
+        "city": "city",
+        "state": "TX",
+        "street": "address",
+        "zip": "zip"
+      },
+      "layerId": "fort-worth-law-property-layer",
+      "number": "number",
+      "title": [
+        "bldgname",
+        "bldgabbr"
+      ]
+    },
+    "eventDates": [],
+    "hideLayerToggle": true,
+    "id": "fort-worth-law",
+    "introductionText": "Map of the Texas A&M University School of Law campus in Fort Worth.",
+    "mapCenter": [
+      -97.324918,
+      32.748586
+    ],
+    "name": "Fort Worth Law School",
+    "searchSources": [
+      {
+        "displayTemplate": "{attributes.bldgname} ({attributes.number})",
+        "featuresLocation": "features",
+        "name": "Property",
+        "popupComponent": "[EventPopups.CampusBuildingPopupComponent]",
+        "queryParams": {
+          "f": "json",
+          "outFields": "*",
+          "outSR": 4326,
+          "resultRecordCount": 5,
+          "returnGeometry": true,
+          "scoringWhere": {
+            "keys": [
+              "bldgname",
+              "bldgabbr"
+            ],
+            "operators": [
+              "LIKE",
+              "LIKE"
+            ],
+            "transformations": [
+              "UPPER",
+              "UPPER"
+            ],
+            "wildcards": [
+              "startsWith",
+              "startsWith"
+            ]
+          },
+          "spatialRel": "esriSpatialRelIntersects",
+          "where": {
+            "keys": [
+              "bldgname",
+              "bldgabbr",
+              "number"
+            ],
+            "operators": [
+              "LIKE",
+              "LIKE",
+              "LIKE"
+            ],
+            "transformations": [
+              "UPPER",
+              "UPPER",
+              "UPPER"
+            ],
+            "wildcards": [
+              "includes",
+              "includes",
+              "includes"
+            ]
+          }
+        },
+        "scoringKeys": [
+          "attributes.bldgabbr",
+          "attributes.number",
+          "attributes.bldgname"
+        ],
+        "searchActive": true,
+        "source": "fort-worth-law-property",
+        "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/FWLaw/FeatureServer/0",
+        "urlQueryParam": "bldg",
+        "urlQueryParamAliases": [
+          "abbrv"
+        ]
+      }
+    ],
+    "shortApplicationName": "Fort Worth Law School",
+    "sidebarTabs": [
+      "features"
+    ],
+    "zoom": 17
+  },
+  "discover": {
+    "description": "Map of the Texas A&M University School of Law campus in Fort Worth.",
+    "id": "fort-worth-law",
+    "mapType": "satellite-campus",
+    "name": "Fort Worth Law School",
+    "source": "internal",
+    "thumbnail": "./assets/images/campus/fort-worth-law.jpg",
+    "type": "satellite-campus"
+  },
+  "options": [],
+  "references": {
+    "BASEMAP": "fort-worth-law-basemap-layer",
+    "CONSTRUCTION": "fort-worth-law-construction-layer",
+    "PROPERTY": "fort-worth-law-property-layer"
+  },
+  "sources": [
+    {
+      "id": "fort-worth-law-construction-layer",
+      "listMode": "hide",
+      "native": {
+        "labelsVisible": false,
+        "legendEnabled": false,
+        "popupEnabled": false,
+        "renderer": {
+          "symbol": {
+            "data": {
+              "symbol": {
+                "symbolLayers": [
+                  {
+                    "color": [
+                      0,
+                      0,
+                      0,
+                      255
+                    ],
+                    "enable": true,
+                    "type": "CIMSolidStroke",
+                    "width": 1
+                  },
+                  {
+                    "enable": true,
+                    "lineSymbol": {
+                      "symbolLayers": [
+                        {
+                          "color": [
+                            230,
+                            152,
+                            0,
+                            153
+                          ],
+                          "enable": true,
+                          "type": "CIMSolidStroke",
+                          "width": 1.5
+                        }
+                      ],
+                      "type": "CIMLineSymbol"
+                    },
+                    "rotation": 0,
+                    "separation": 12,
+                    "type": "CIMHatchFill"
+                  },
+                  {
+                    "enable": true,
+                    "lineSymbol": {
+                      "symbolLayers": [
+                        {
+                          "color": [
+                            230,
+                            152,
+                            0,
+                            153
+                          ],
+                          "enable": true,
+                          "type": "CIMSolidStroke",
+                          "width": 1.5
+                        }
+                      ],
+                      "type": "CIMLineSymbol"
+                    },
+                    "rotation": 90,
+                    "separation": 12,
+                    "type": "CIMHatchFill"
+                  }
+                ],
+                "type": "CIMPolygonSymbol"
+              },
+              "type": "CIMSymbolReference"
+            },
+            "type": "cim"
+          },
+          "type": "simple"
+        }
+      },
+      "title": "Construction",
+      "type": "feature",
+      "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/FWLaw/FeatureServer/1",
+      "visible": true
+    },
+    {
+      "essential": true,
+      "hiddenStyleLayers": [
+        "Construction/1",
+        "Construction/0"
+      ],
+      "id": "fort-worth-law-basemap-layer",
+      "listMode": "hide",
+      "title": "Fort Worth Law School Basemap",
+      "type": "vector-tile",
+      "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/FWLaw/VectorTileServer",
+      "visible": true
+    },
+    {
+      "essential": true,
+      "id": "fort-worth-law-property-layer",
+      "listMode": "hide",
+      "native": {
+        "elevationInfo": {
+          "mode": "relative-to-ground",
+          "offset": 1
+        },
+        "labelsVisible": false,
+        "legendEnabled": false,
+        "maxScale": 0,
+        "minScale": 100000,
+        "outFields": [
+          "*"
+        ],
+        "popupEnabled": false
+      },
+      "popupComponent": "[EventPopups.CampusBuildingPopupComponent]",
+      "title": "Property",
+      "type": "feature",
+      "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/FWLaw/FeatureServer/0",
+      "visible": true
+    }
+  ],
+  "type": "general-map"
+}

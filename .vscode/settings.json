@@ -32,7 +32,6 @@
     "yaml",
     "yml"
   ],
-  "jest.autoEnable": false,
   "cSpell.enabled": true,
   "angular.enable-strict-mode-prompt": false,
   "cSpell.words": ["Teague"]

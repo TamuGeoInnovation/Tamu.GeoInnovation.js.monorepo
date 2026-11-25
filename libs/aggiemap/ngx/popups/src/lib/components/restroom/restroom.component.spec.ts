@@ -71,4 +71,24 @@ describe('RestroomPopupComponent', () => {
     expect(text).not.toContain('Building Number');
     expect(text).toContain('Student Services Building');
   });
+
+  it('offers "Directions To Here", which plans a trip to the restroom (#602)', () => {
+    const popup = render(RESTROOM);
+    const button = Array.from(popup.querySelectorAll<HTMLElement>('.button')).find(
+      (element) => element.textContent?.trim() === 'Directions To Here'
+    );
+
+    expect(button, 'the restroom popup offers no "Directions To Here"').toBeDefined();
+
+    button?.click();
+
+    const stops = vi.mocked(TestBed.inject(TripPlannerService).setStops).mock.calls[0]?.[0];
+    expect(stops?.[0]?.originAttributes).toEqual(RESTROOM);
+    expect(TestBed.inject(Router).navigate).toHaveBeenCalledWith(['trip'], expect.anything());
+  });
+
+  // No search source opens a restroom from a link, so a copied link would reopen nothing (#1173).
+  it('offers no copy link, because no link reopens a restroom', () => {
+    expect(render(RESTROOM).querySelector('tamu-gisc-copy-field')).toBeNull();
+  });
 });
