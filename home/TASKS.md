@@ -1,5 +1,47 @@
 # Home machine: current tasks
 
+## Batch a22 (aggiemap: #3477 and #3478, one reader for a coordinate and one distance) (Medium) - **after a19**
+
+Two of the smallest findings from the [#3062](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3062)
+reuse scan, both in `common-utils-geometry`, both pure refactors with unit tests and no visible result. **Separate
+branches; they share nothing but a library.**
+
+### Part 1: [#3477](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3477), one reader for "latitude, longitude"
+
+The issue names the call sites. One typed reader, with the range check, in `@tamu-gisc/common/utils/geometry`, and the
+hand-written parses replaced by it.
+
+**The range check is the part that matters.** A reader that accepts `(200, 500)` is not a reader, it is a split. Its
+spec says what it rejects - out of range, the wrong count, a non-number, an empty string - as well as what it accepts,
+and **the swapped pair** (a longitude where a latitude belongs) if the existing call sites agree on an order.
+
+### Part 2: [#3478](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3478), one point-to-point distance
+
+`distanceInMetres` and `relativeDistance` compute the same thing in two ways. **Before replacing either, prove they
+agree**: run both over a handful of real campus pairs and compare. If they *disagree* - different earth radius,
+different formula, degrees treated as planar - **stop and report it**, because then one of them has been giving wrong
+answers and that is a bug, not a tidy-up. Say which callers use which.
+
+If they agree, one function, and the callers moved to it. Its spec carries the pairs you compared as cases, so the
+agreement is recorded rather than remembered.
+
+### Both parts
+
+- **No visible result**, so the pull requests will carry `no-visible-change` - but **say so in your report** rather
+  than assuming it: if a distance is shown to a visitor anywhere (a trip summary, a nearest-feature list), rounding
+  could move a number on screen, and that would need a capture.
+- `scripts/check-in-volume.sh <branch> common-utils-geometry,<each project whose call sites you changed>,aggiemap-angular`,
+  its own `Exit` line in the report.
+- Push each branch to the fork; **no pull requests** - those are mine. No `.pr-body.md` left behind in the worktree.
+
+Branches `refactor/3477-one-coordinate-reader` and `refactor/3478-one-distance`, each from the latest `development`.
+Say **"branch ready: <names>"**.
+
+Report `home/reports/2026-11-25-a22.md`, one section per part, with the distance comparison table from part 2 whichever
+way it came out.
+
+**Questions come to me** (`work (aggiemap)`), with options and a recommendation.
+
 ## Batch a19 (aggiemap: the images #2816 actually needs, now that we know where the fault is) (Medium) - **after a17**
 
 Your a16 answer was right and this is the follow-on. You found that #2895 moved micromobility off `/map/d`

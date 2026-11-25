@@ -1,5 +1,68 @@
 # work-lab-leila: current tasks
 
+## Batch a21 (aggiemap: #2849, the "after" captures a published release file is still missing) (Medium) - **after a20**
+
+[#2849](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2849) was filed before the
+11 November release and asked for two "after" captures *before the release was cut*. **They never arrived, and the
+release went out anyway.** `docs/releases/2026-11-11-2.md` carries, twice:
+
+> An "after" capture needs a dev server built from the branch; it is added to the pull request before merging.
+
+That sentence is now in a **published, dated release file**, describing something that did not happen. It is
+[#1132](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1132) exactly, and nothing in the
+repository disagrees with it - which is why it went unnoticed for a fortnight.
+
+### Why it can be done now and could not be then
+
+Both fixes are on `development` and on production (`prod-2026-11-24`). A capture against **dev** is enough; say which
+environment and which build you used.
+
+### What to capture
+
+1. **[#2844](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2844), the search drop-down.**
+   The "before" is `docs/screenshots/2844-dropdown-stays-open/before-production-dropdown-covers-destination.jpg`: the
+   drop-down left open over the destination box. The "after" is the same moment with it closed, **framed the same way**,
+   into the same folder.
+2. **[#2843](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2843), a route between two
+   searched buildings.** The "before" is
+   `docs/screenshots/2843-route-destination/omb-to-msc-both-from-dropdown-no-route.jpg`: "No reasonable route was
+   found" for Oceanography & Meteorology to the MSC, both chosen from the drop-down. The "after" is the same trip
+   solving and drawn.
+3. **[#2846](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2846) is still open, and this
+   is evidence, not a fix.** #2849 asks for a capture of the exact trip it reports (Eller Oceanography & Meteorology).
+   Take it, put it on **#2846 as a comment**, and say in your report whether #2846 still reproduces. If it does not,
+   say so plainly rather than closing it - that is the maintainer's.
+
+**A capture whose framing does not match its "before" is worth little**: a reviewer cannot tell a fix from a different
+screenshot. Match the viewport and the part of the page.
+
+### What to change in the repository
+
+- The two new images, into the folders named above.
+- In `docs/releases/2026-11-11-2.md`, the two "An after capture..." sentences replaced by the images, in the same
+  before/after table shape the other entries use.
+- **Do not rewrite anything else in that file.** It is a published release record; this is adding what it says it
+  was going to have.
+
+### Checking and reporting
+
+`scripts/check-in-volume.sh docs/2849-release-afters` (it touches only `docs/`, so Nx will run nothing and the
+`lint.yml` steps are the check), its own `Exit` line, plus
+`node scripts/collate-release-notes.mjs --check`, which validates that every image path in the notes resolves - the
+thing that would have caught this.
+
+You have no `gh` for pull requests: push the branch to the fork, open nothing. Branch `docs/2849-release-afters` from
+the latest `development`. **The #2846 comment is the one thing you do post on GitHub**, because it is evidence on an
+open issue rather than a pull request.
+
+Say **"branch ready: docs/2849-release-afters"**.
+
+`work-lab-leila/reports/2026-11-25-a21.md`: which environment and build, the two captures, whether #2846 reproduces,
+and the two check results.
+
+**Questions come to me** (`work (aggiemap)`), under **Questions for the director (aggiemap)**, with options and a
+recommendation.
+
 ## Batch g202 (gisday: #1977, the GIS Day data-api libraries and gisday-nest off Jest, with SWC; 25 November 2026, about 10:30 PM Central, from `work (gisday)`) (High) - **now**
 
 **Decided by the maintainer (24 November, about 10:25 PM Central), in his words: "do the things to get us off jest".** The whole workspace moves
