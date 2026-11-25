@@ -13,7 +13,7 @@
         }
       </div>
       } @else if (judge(); as j) {
-      <p class="form-input-description">{{ j.firstName }} {{ j.lastName }}, thank you for judging. Open an entry, give each criterion a score and choose <strong>Save</strong>. You can change your scores until judging closes. Only the GIS Day team sees them. This link works until {{ j.expires | date: 'EEEE, MMMM d' : '-0600' }}.</p>
+      <p class="form-input-description">{{ j.firstName }} {{ j.lastName }}, thank you for judging. Open an entry, give each criterion a score and choose <strong>Save</strong>. You can change your scores until judging closes. Only the GIS Day team sees them. This link works until {{ j.expires | centralDate: 'EEEE, MMMM d' }}.</p>
 
       @if (j.competitions.length) {
       <ng-container [ngTemplateOutlet]="searchBox" [ngTemplateOutletContext]="{ inPanel: false }"></ng-container>

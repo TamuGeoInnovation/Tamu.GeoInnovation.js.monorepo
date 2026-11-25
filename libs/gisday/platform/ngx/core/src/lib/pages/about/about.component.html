@@ -7,13 +7,13 @@
         @if ('tamu' | siteHas) {
         <p class="sub-section-heading">
           GIS Day, the annual worldwide salute to geospatial technology and its power to transform and enhance lives, is going to be extra "spatial" this year in Texas, where the {{ site.name }} celebration, one of the world's largest, is expanding to encompass {{dayCountText$ | async}}@if (dateRange$ | async; as dates) {
-          <span>, {{dates[0] | date : 'MMMM'}} {{dates[0] | date : 'd'}}-{{dates[1] | date : 'd'}}, {{(activeSeason$ | async)?.year}}</span>
+          <span>, {{dates[0] | centralDate : 'MMMM'}} {{dates[0] | centralDate : 'd'}}-{{dates[1] | centralDate : 'd'}}, {{(activeSeason$ | async)?.year}}</span>
           }.
         </p>
         } @else {
         <p class="sub-section-heading">
           GIS Day is the annual worldwide salute to geospatial technology and its power to transform and enhance lives. {{ site.name }} brings students, faculty and professionals from participating organizations together for {{dayCountText$ | async}} of sessions, talks and workshops@if (dateRange$ | async; as dates) {
-          <span>, {{dates[0] | date : 'MMMM'}} {{dates[0] | date : 'd'}}-{{dates[1] | date : 'd'}}, {{(activeSeason$ | async)?.year}}</span>
+          <span>, {{dates[0] | centralDate : 'MMMM'}} {{dates[0] | centralDate : 'd'}}-{{dates[1] | centralDate : 'd'}}, {{(activeSeason$ | async)?.year}}</span>
           }.
         </p>
         }

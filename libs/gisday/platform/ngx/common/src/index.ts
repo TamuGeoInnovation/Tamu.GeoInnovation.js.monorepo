@@ -4,6 +4,7 @@ export * from './lib/modules/modals/review-email-modal/review-email-modal.compon
 export * from './lib/modules/modals/review-email-modal/profile-email';
 
 export * from './lib/pipes/asset-url/asset-url.pipe';
+export * from './lib/pipes/central-date/central-date.pipe';
 export * from './lib/pipes/order-by/order-by.pipe';
 export * from './lib/pipes/parse-date-time-strings/parse-date-time-strings.pipe';
 export * from './lib/pipes/season-link/season-link.pipe';

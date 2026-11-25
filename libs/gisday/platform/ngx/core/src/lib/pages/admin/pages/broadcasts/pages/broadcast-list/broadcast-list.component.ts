@@ -10,14 +10,15 @@ import { siteListsPlace } from '@tamu-gisc/gisday/common';
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
-import { AsyncPipe, DatePipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
+import { CentralDatePipe } from '@tamu-gisc/gisday/platform/ngx/common';
 
 @Component({
   selector: 'tamu-gisc-broadcast-list',
   templateUrl: './broadcast-list.component.html',
   styleUrls: ['./broadcast-list.component.scss'],
-  imports: [SelectComponent, RouterLink, CheckboxComponent, AsyncPipe, DatePipe, ExistsPipe]
+  imports: [SelectComponent, RouterLink, CheckboxComponent, AsyncPipe, CentralDatePipe, ExistsPipe]
 })
 export class BroadcastListComponent extends BaseAdminListComponent<EventBroadcast> {
   protected readonly entityService = inject(BroadcastService);
