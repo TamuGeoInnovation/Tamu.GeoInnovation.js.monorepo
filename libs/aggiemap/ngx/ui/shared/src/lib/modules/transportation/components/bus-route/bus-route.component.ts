@@ -1,19 +1,11 @@
-import {
-  Component,
-  OnInit,
-  OnDestroy,
-  AfterViewInit,
-  inject,
-  input,
-  signal,
-  viewChild
-} from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, inject, input, signal, viewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, Subject, Observable } from 'rxjs';
 import { switchMap, takeUntil, shareReplay, distinctUntilChanged, take, filter } from 'rxjs/operators';
 
 import { Angulartics2 } from 'angulartics2';
 
+import { primaryOutletRoute } from '@tamu-gisc/common/utils/routing';
 import { TSRoute, BusService } from '@tamu-gisc/maps/feature/trip-planner';
 import { AccordionComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 import { NgClass } from '@angular/common';
@@ -118,7 +110,8 @@ export class BusRouteComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const selection = this.selection();
     if (selection === 'route') {
-      this.router.navigate([route.ShortName], { relativeTo: this.rt });
+      // From the primary outlet's route: on a phone this list is in outlet-2, where `bus/:route` is not (#3150).
+      this.router.navigate([route.ShortName], { relativeTo: primaryOutletRoute(this.rt) });
     }
 
     this.isLoading.set(true);

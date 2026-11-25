@@ -17,9 +17,9 @@ import { HeaderComponent } from './header.component';
  */
 describe('HeaderComponent login', () => {
   function setUp(site: GisdaySite) {
-    const login = jest.fn();
+    const login = vi.fn();
     const answer = new Subject<boolean | undefined>();
-    const open = jest.fn(() => answer);
+    const open = vi.fn(() => answer);
 
     const header = TestBed.configureTestingModule({
       providers: [
@@ -81,8 +81,8 @@ describe('HeaderComponent login', () => {
  */
 describe('HeaderComponent sign-in and logout on a site that signs in elsewhere', () => {
   function headerOn(site: GisdaySite) {
-    const login = jest.fn();
-    const logout = jest.fn();
+    const login = vi.fn();
+    const logout = vi.fn();
 
     // Called for more than one site in a test, so each call starts from a fresh test module.
     TestBed.resetTestingModule();
@@ -142,7 +142,7 @@ describe('HeaderComponent logout and the cached API answers', () => {
         return Promise.resolve(true);
       }
     } as unknown as CacheStorage;
-    const logout = jest.fn(() => order.push('signed out'));
+    const logout = vi.fn(() => order.push('signed out'));
 
     TestBed.resetTestingModule();
     const header = TestBed.configureTestingModule({
@@ -201,7 +201,7 @@ describe('HeaderComponent phone menu', () => {
     menuFor(false);
 
     const fixture = TestBed.createComponent(HeaderComponent);
-    const login = jest.spyOn(fixture.componentInstance, 'login').mockImplementation(() => undefined);
+    const login = vi.spyOn(fixture.componentInstance, 'login').mockImplementation(() => undefined);
 
     fixture.detectChanges();
     fixture.componentInstance.mobileNavToggle.next(true);

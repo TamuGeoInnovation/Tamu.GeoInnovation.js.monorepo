@@ -16,6 +16,13 @@ import { BackdropComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 
 import esri = __esri;
 
+/**
+ * Back to the phone's trip planner from a trip stop's search (#3149, #3319). The search is /map/m/search/:id, this
+ * component its empty-path child, and the trip planner /map/m/trip: two levels up, then trip. ['./trip'] from here is
+ * /map/m/search/:id/trip, no page, and the router fell back to the main map; 'map/d/trip' named the desktop's.
+ */
+export const TRIP_FROM_STOP_SEARCH = ['../../trip'];
+
 @Component({
   selector: 'tamu-gisc-omnisearch',
   templateUrl: './omnisearch.component.html',
@@ -132,7 +139,7 @@ export class OmnisearchComponent implements OnInit, OnDestroy {
       //   this.location.back()
       // }
 
-      this.router.navigate(['map/d/trip']);
+      this.router.navigate(TRIP_FROM_STOP_SEARCH, { relativeTo: this.route });
     } else {
       this.helper.handleSearchResultFeatureSelection(selected).subscribe((res) => {
         const tPoint = TripPoint.from(res);
@@ -184,7 +191,7 @@ export class OmnisearchComponent implements OnInit, OnDestroy {
    */
   public handleLeftAction() {
     if ('id' in this.route.snapshot.params) {
-      this.router.navigate(['./trip'], { relativeTo: this.route });
+      this.router.navigate(TRIP_FROM_STOP_SEARCH, { relativeTo: this.route });
     } else if (this.searchComponentLeftAction === 'menu') {
       this.router.navigate(['./sidebar'], { relativeTo: this.route });
     } else {

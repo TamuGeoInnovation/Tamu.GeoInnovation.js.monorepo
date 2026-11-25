@@ -22,8 +22,8 @@ class PageComponent {}
  */
 describe('startSignIn, the /login and /signup routes', () => {
   function setUp(signedIn = false) {
-    const login = jest.fn();
-    const logout = jest.fn();
+    const login = vi.fn();
+    const logout = vi.fn();
 
     TestBed.configureTestingModule({
       providers: [
@@ -36,7 +36,7 @@ describe('startSignIn, the /login and /signup routes', () => {
           { path: 'logout', canActivate: [logOut], children: [] }
         ]),
         { provide: AuthService, useValue: { login, logout, isAuthenticated$: of(signedIn) } },
-        { provide: ModalService, useValue: { open: jest.fn(() => of(true)) } },
+        { provide: ModalService, useValue: { open: vi.fn(() => of(true)) } },
         { provide: GISDAY_SITE, useValue: gisdaySite('tamu') }
       ]
     });
@@ -44,15 +44,18 @@ describe('startSignIn, the /login and /signup routes', () => {
     return { login, logout, router: TestBed.inject(Router) };
   }
 
-  it.each(['/signup', '/login'])('followed from a page, %s starts signing in, back to that page, and stays on it', async (to) => {
-    const { login, router } = setUp();
+  it.each(['/signup', '/login'])(
+    'followed from a page, %s starts signing in, back to that page, and stays on it',
+    async (to) => {
+      const { login, router } = setUp();
 
-    await router.navigateByUrl('/faq');
-    await router.navigateByUrl(to);
+      await router.navigateByUrl('/faq');
+      await router.navigateByUrl(to);
 
-    expect(login).toHaveBeenCalledWith({ appState: { target: '/faq' } });
-    expect(router.url).toBe('/faq');
-  });
+      expect(login).toHaveBeenCalledWith({ appState: { target: '/faq' } });
+      expect(router.url).toBe('/faq');
+    }
+  );
 
   it('reached directly, starts signing in and waits on the home page', async () => {
     const { login, router } = setUp();

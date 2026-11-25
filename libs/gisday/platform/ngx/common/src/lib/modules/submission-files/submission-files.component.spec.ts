@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { HttpErrorResponse, HttpEventType } from '@angular/common/http';
 import { of, throwError } from 'rxjs';
@@ -7,9 +8,9 @@ import { downloadFile } from '@tamu-gisc/common/utils/ui';
 
 import { SubmissionFilesComponent } from './submission-files.component';
 
-jest.mock('@tamu-gisc/common/utils/ui', () => ({
-  ...jest.requireActual('@tamu-gisc/common/utils/ui'),
-  downloadFile: jest.fn()
+vi.mock('@tamu-gisc/common/utils/ui', async (original) => ({
+  ...(await original<object>()),
+  downloadFile: vi.fn()
 }));
 
 /** The files a student attaches to their submission, and an admin downloads (#2933). */
@@ -17,7 +18,7 @@ describe('SubmissionFilesComponent', () => {
   const GUID = '11111111-2222-4333-8444-555555555555';
   const deck = { guid: 'f1', name: 'Texas Watersheds.pptx', size: 4_400_000, uploaded: '2026-11-14T18:00:00.000Z' };
 
-  let service: { getFiles: jest.Mock; addFile: jest.Mock; deleteFile: jest.Mock; getFileContents: jest.Mock };
+  let service: { getFiles: Mock; addFile: Mock; deleteFile: Mock; getFileContents: Mock };
 
   function render(editable: boolean, files = [deck]) {
     service.getFiles.mockReturnValue(of(files));
@@ -32,7 +33,7 @@ describe('SubmissionFilesComponent', () => {
   }
 
   beforeEach(() => {
-    service = { getFiles: jest.fn(), addFile: jest.fn(), deleteFile: jest.fn(), getFileContents: jest.fn() };
+    service = { getFiles: vi.fn(), addFile: vi.fn(), deleteFile: vi.fn(), getFileContents: vi.fn() };
   });
 
   it("lists the submission's files with their sizes, and offers no picker or Remove to an admin reviewing it", () => {
@@ -99,10 +100,10 @@ describe('SubmissionFilesComponent', () => {
    * speaker's for the admins, each labelled with who uploaded it.
    */
   describe('with a source of its own (#3093)', () => {
-    let source: { list: jest.Mock; add: jest.Mock; remove: jest.Mock };
+    let source: { list: Mock; add: Mock; remove: Mock };
 
     function renderSource(files: Array<object> = [deck]) {
-      source = { list: jest.fn(() => of(files)), add: jest.fn(), remove: jest.fn(() => of(undefined)) };
+      source = { list: vi.fn(() => of(files)), add: vi.fn(), remove: vi.fn(() => of(undefined)) };
       TestBed.configureTestingModule({ providers: [{ provide: UserSubmissionsService, useValue: service }] });
 
       const fixture = TestBed.createComponent(SubmissionFilesComponent);
@@ -213,15 +214,15 @@ describe('SubmissionFilesComponent', () => {
     const second = { ...deck, guid: 'f2', name: 'Lightning.pdf' };
     const zip = new Blob(['zip']);
 
-    function renderZippable(files: Array<object>, downloadAll: jest.Mock | null = jest.fn(() => of(zip))) {
+    function renderZippable(files: Array<object>, downloadAll: Mock | null = vi.fn(() => of(zip))) {
       TestBed.configureTestingModule({ providers: [{ provide: UserSubmissionsService, useValue: service }] });
 
       const fixture = TestBed.createComponent(SubmissionFilesComponent);
       fixture.componentRef.setInput('source', {
         list: () => of(files),
-        add: jest.fn(),
-        remove: jest.fn(),
-        download: jest.fn(),
+        add: vi.fn(),
+        remove: vi.fn(),
+        download: vi.fn(),
         // null: a source that cannot zip, so it has no downloadAll at all.
         ...(downloadAll ? { downloadAll } : {}),
         downloadAllName: () => 'Panel - slides.zip'
@@ -231,7 +232,7 @@ describe('SubmissionFilesComponent', () => {
       return { fixture, element: fixture.nativeElement as HTMLElement, downloadAll };
     }
 
-    beforeEach(() => (downloadFile as jest.Mock).mockClear());
+    beforeEach(() => (downloadFile as Mock).mockClear());
 
     it('offers every file as one zip once there are two, saved under the name the source gives', () => {
       const { fixture, element, downloadAll } = renderZippable([deck, second]);
@@ -256,7 +257,7 @@ describe('SubmissionFilesComponent', () => {
       // A download asks for a blob, so the API's refusal arrives as one, with no message to read.
       const { fixture, element } = renderZippable(
         [deck, second],
-        jest.fn(() => throwError(() => new HttpErrorResponse({ status: 404, error: new Blob(['{}']) })))
+        vi.fn(() => throwError(() => new HttpErrorResponse({ status: 404, error: new Blob(['{}']) })))
       );
 
       element.querySelector<HTMLButtonElement>('button.files-all').click();
@@ -275,15 +276,15 @@ describe('SubmissionFilesComponent preview', () => {
   const poster = { guid: 'f2', name: 'Made-up poster.pdf', size: 1, uploaded: '2026-11-14T18:01:00.000Z' };
   const handout = { guid: 'f3', name: 'Made-up handout.pdf', size: 1, uploaded: '2026-11-14T18:02:00.000Z' };
 
-  let getFilePreview: jest.Mock;
+  let getFilePreview: Mock;
 
   function render(previewable: boolean) {
-    getFilePreview = jest.fn(() => of(new Blob(['%PDF-1.4'], { type: 'application/pdf' })));
+    getFilePreview = vi.fn(() => of(new Blob(['%PDF-1.4'], { type: 'application/pdf' })));
     TestBed.configureTestingModule({
       providers: [
         {
           provide: UserSubmissionsService,
-          useValue: { getFiles: jest.fn(() => of([deck, poster, handout])), getFileContents: jest.fn(), getFilePreview }
+          useValue: { getFiles: vi.fn(() => of([deck, poster, handout])), getFileContents: vi.fn(), getFilePreview }
         }
       ]
     });
@@ -298,7 +299,7 @@ describe('SubmissionFilesComponent preview', () => {
 
   beforeEach(() => {
     // jsdom has no object URLs.
-    Object.assign(URL, { createObjectURL: jest.fn(() => 'blob:made-up'), revokeObjectURL: jest.fn() });
+    Object.assign(URL, { createObjectURL: vi.fn(() => 'blob:made-up'), revokeObjectURL: vi.fn() });
   });
 
   it('offers Preview on each PDF only, and only where the list is previewable', () => {

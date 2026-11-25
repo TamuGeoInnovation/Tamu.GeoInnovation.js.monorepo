@@ -16,7 +16,7 @@ class FormComponent {
   providers: [provideAdminDetailsPage(() => PageComponent)]
 })
 class PageComponent implements AdminDetailsPage {
-  public readonly backToList = jest.fn();
+  public readonly backToList = vi.fn();
 }
 
 /**
@@ -29,7 +29,7 @@ describe('injectBackToList', () => {
   });
 
   it('goes back through the page the form is on', () => {
-    const navigate = jest.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
     const fixture = TestBed.createComponent(PageComponent);
     fixture.detectChanges();
 
@@ -40,7 +40,7 @@ describe('injectBackToList', () => {
   });
 
   it('goes to the list when the form is on no admin details page', () => {
-    const navigate = jest.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
     const fixture = TestBed.createComponent(FormComponent);
 
     fixture.componentInstance.leave();
