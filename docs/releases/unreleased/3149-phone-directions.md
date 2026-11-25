@@ -15,8 +15,8 @@ It now returns to the trip planner, as choosing a place for the stop does.
 ([#3149](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3149),
 [#3319](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3319))
 
-| Phone, 390 pixels | Before | After |
-| --- | --- | --- |
-| The menu | ![The menu: Bus Routes, then All Maps](../screenshots/3149-phone-directions/before-phone-menu.png) | ![Directions after Bus Routes](../screenshots/3149-phone-directions/after-phone-menu.png) |
-| Directions, tapped | | ![The trip planner, at /map/m/trip](../screenshots/3149-phone-directions/after-directions.png) |
-| Back from a stop's search | ![The main map, the trip lost](../screenshots/3149-phone-directions/before-stop-search-back.png) | ![Back in the trip planner](../screenshots/3149-phone-directions/after-stop-search-back.png) |
+| Phone, 390 pixels         | Before                                                                                             | After                                                                                          |
+| ------------------------- | -------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| The menu                  | ![The menu: Bus Routes, then All Maps](../screenshots/3149-phone-directions/before-phone-menu.png) | ![Directions after Bus Routes](../screenshots/3149-phone-directions/after-phone-menu.png)      |
+| Directions, tapped        |                                                                                                    | ![The trip planner, at /map/m/trip](../screenshots/3149-phone-directions/after-directions.png) |
+| Back from a stop's search | ![The main map, the trip lost](../screenshots/3149-phone-directions/before-stop-search-back.png)   | ![Back in the trip planner](../screenshots/3149-phone-directions/after-stop-search-back.png)   |
