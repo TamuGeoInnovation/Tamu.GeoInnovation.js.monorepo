@@ -1,5 +1,59 @@
 # Home machine: current tasks
 
+## Batch a40 (workspace: what exactly is the maintainer being asked? Seven issues, read-only; 25 November 2026, 7:50 AM Central, from `work (aggiemap)`) (Medium) - **now**
+
+**a39 is verified and accepted.** I ran `queued.test.sh` on your `26233546d` myself: **23 of 23 pass**, and I am re-running the
+before-and-after output comparison independently rather than taking the numbers on trust, because six machines' listeners
+depend on this script.
+
+**Your diagnosis corrected mine, and that is the useful part.** #3650 said the cost was the per-undated-heading pickaxe and
+the whole-file grep. It was neither: it was **about eight process starts per heading, live or not**. I had measured the
+symptom and guessed the cause from reading the code - the same mistake #2600's text made about dentistry's field names, and
+the same one my own release note made last night. **Home 56.6 to 12.0 s, the lab 115.0 to 8.1 s**, byte-identical output for
+six machines across three windows, 18 comparisons. I will correct the issue and close it with your numbers.
+
+**Leaving the last 10 seconds alone was the right call too.** Re-deriving those `` regexes by hand in awk to save 10 s
+inside a 120 s sleep would be trading a proven-identical script for an unproven one. Say no more often than this and the
+tools stay trustworthy.
+
+### This batch: turn a decision backlog into one answerable list
+
+**Eighteen issues now carry `needs-maintainer`, eleven of them from before today.** That is a second queue behind the 39 open
+pull requests, and it is cheaper to clear: the maintainer answers questions faster than he reviews code. Six are GIS Day's and
+have gone to that director. Of my twelve, **five I already know from your a37 sweep** (#263, #387, #445, #497, #546).
+
+**These are the other seven. Read-only.**
+
+`1104`, `1146`, `1429`, `1902`, `2212`, `2338`, `2612`.
+
+For each, answer three things and nothing else:
+
+1. **What is the one question he has to answer?** One sentence, phrased so "A or B" is a possible reply. If an issue needs
+   three decisions, say so and give all three - but most will not.
+2. **Is it still live?** Check the code, not the issue text. Some of these are from early October and the thing they ask
+   about may already be settled - #1429 ("a documentation-only commit triggers a full application build") is exactly the
+   shape that gets quietly fixed, and your a37 found #549 and #699 half-done that way. If it is already answered, say so with
+   the evidence and it comes off the list instead of going to him.
+3. **What does it block?** Who is waiting, and what cannot proceed until he answers. An issue blocking nothing can wait; one
+   blocking a machine cannot, and he should be told which is which.
+
+**#2612 is the one with a visitor-facing claim** - Move-In offering a Bike Registration layer for the wrong area - so check
+that one against the service, as a37 did. If it is real it may not be a decision at all, just a bug nobody has done.
+
+### Done when
+
+- **Report** `home/reports/2026-11-25-a40.md`: the seven, each with its one question, whether it is still live with evidence,
+  and what it blocks. Order them by what they block, most blocking first.
+- **Say which of the seven should not go to him at all**, with why. That is the most valuable column: a shorter list he will
+  actually answer beats a complete one he will not.
+- **File nothing, close nothing, comment on nothing.** I compose the single list and post it, so there is one voice on the
+  issues and he reads one message rather than seven.
+- **No code change, no branch, no pull request.**
+- Questions `Q-a40-<n>`.
+
+**a33 is still held** on PR 3587 and releases itself when it merges.
+
+
 ## Batch a39 (workspace: #3650, make tools/queued.sh fast; 25 November 2026, 7:15 AM Central, from `work (aggiemap)`) (Medium) - **now**
 
 **a38 is accepted** - 3660 is open, not a draft, closes all three. Your #387 finding is recorded on the issue with both false
