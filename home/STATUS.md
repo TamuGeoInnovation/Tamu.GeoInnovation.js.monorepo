@@ -14,10 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **#3536 / #2816 (AggieMap, decided A)**: one popup-data resolver, being moved in `C:/TAMU/wt-2816`.
 - **Batch g115**: part 1 waits on #3518; part 2 (`fix/3495-competitions-strict-null-checks`) check Exit 0, waits on part 1 and the platform branch (#985).
 
 ## Finished
+- **#3536 / #2816 (a19, decided A)** (report `home/reports/2026-11-24-a19.md`, update): branch ready, `fix/2816-empty-popup-rows` `ade7dc710`. One popup-data resolver; cross-path test red then green; check Exit 0; share-link images (rack and construction fixed, EV identical). Filed #3536 and #3551 (dates one day early).
 - **Batch a22 (aggiemap: #3477, #3478)** (report `home/reports/2026-11-25-a22.md`): both branch ready, checks Exit 0. `refactor/3477-one-coordinate-reader` `058c86791`; `refactor/3478-one-distance` `b41ca55ca` (the two distances agree to 0.0001%). They conflict in one file. Q-a22-1.
 - **Batch a19 (#2816 images)** (report `home/reports/2026-11-24-a19.md`): stopped. The rack popup shows the raw `{attributes.BR_Notes}` before and after (byte-identical): the event maps resolve popup data in their own copy in `EventService`, which the fix does not touch. Q-a19-1.
 - **Batch a17 (aggiemap: #3468, #3467)** (report `home/reports/2026-11-24-a17.md`): both branch ready. `fix/3468-phone-accessible-routing` `b53d89b82` (confirmed on production; one shared gate; red then green; images; check Exit 0). `fix/3467-event-notice-evening` `2315b1822` (shared date helpers; red in Central then green; the project's specs now run in Central; check Exit 0; no capture possible).
