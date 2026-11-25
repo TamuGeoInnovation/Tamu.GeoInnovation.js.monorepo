@@ -1,4 +1,6 @@
 # work-lab-leila: current tasks
+> # NEXT: batch g203 (from `work (gisday)`, 25 November, about 12:05 AM Central). It is not started: nothing on this branch reports it, whatever `queued.sh` called it. Take it now, before any other batch.
+>
 
 ## Batch a24 (aggiemap: #3369, measure the drawing budget under real load - the thing your own a18 asked for) (High) - **now**
 
