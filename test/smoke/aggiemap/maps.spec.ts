@@ -8,7 +8,7 @@ import { directionsAvailable, directionsEntryPoints } from './directions';
 import { describePaint, waitForPaint } from './paint';
 import { isDevelopmentUrl } from './gis-hosts';
 import { describeTitles, judgeTitles } from './layer-titles';
-import { PROBE_GLOBAL, waitForMapReady } from './map-probe';
+import { PROBE_GLOBAL, ProbeLayer as SnapshotLayer, waitForMapReady } from './map-probe';
 
 /**
  * Behaviours 1 and 2 of #1034, for every map the target environment lists.
@@ -64,15 +64,7 @@ const ALLOWED_LAYER_FAILURES = (process.env.AGGIEMAP_SMOKE_ALLOWED_LAYER_FAILURE
  * The global's name is therefore duplicated from `MAP_PROBE_GLOBAL`, once for the suite, in `map-probe.ts`
  * beside this spec (#2603), which says why.
  */
-interface ProbeLayer {
-  id: string;
-  title: string;
-  type: string;
-  visible: boolean;
-  loaded: boolean;
-  error: string | null;
-  featureCount: number | null;
-
+interface ProbeLayer extends SnapshotLayer {
   /** Diagnostics only. Never compare this to the view's - see the drawable check below. */
   spatialReference?: number | null;
 
@@ -243,10 +235,12 @@ for (const { mapPath, loadPath, title, borrowedFrom } of cases) {
     // false alarms this suite cannot afford.
     test.info().annotations.push({
       type: 'layers',
-      description: `viewReady=${snapshot.viewReady} viewSR=${snapshot.spatialReference ?? 'n/a'}
-` + snapshot.layers
-        .map((l) => `${l.title || l.id} [${l.type}] loaded=${l.loaded} count=${l.featureCount ?? 'n/a'}`)
-        .join('\n')
+      description:
+        `viewReady=${snapshot.viewReady} viewSR=${snapshot.spatialReference ?? 'n/a'}
+` +
+        snapshot.layers
+          .map((l) => `${l.title || l.id} [${l.type}] loaded=${l.loaded} count=${l.featureCount ?? 'n/a'}`)
+          .join('\n')
     });
 
     expect(snapshot.layers.length, `${mapPath} has no layers at all`).toBeGreaterThan(0);
@@ -358,7 +352,8 @@ for (const { mapPath, loadPath, title, borrowedFrom } of cases) {
 
     test.info().annotations.push({
       type: 'paint',
-      description: `dominant=${paint.colour} share=${paint.share.toFixed(3)} colours=${paint.colours} ` +
+      description:
+        `dominant=${paint.colour} share=${paint.share.toFixed(3)} colours=${paint.colours} ` +
         `paintedAfter=${paint.paintedAfterMs === null ? 'never' : paint.paintedAfterMs + 'ms'}`
     });
 
