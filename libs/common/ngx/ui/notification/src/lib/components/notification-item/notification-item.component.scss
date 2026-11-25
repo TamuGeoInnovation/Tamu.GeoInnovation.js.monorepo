@@ -1,3 +1,4 @@
+@import 'libs/sass/variables';
 @import 'libs/sass/mixins';
 @import 'libs/sass/motion';
 
@@ -76,12 +77,12 @@
     transition: all 0.2s ease;
 
     &:hover {
-      color: #500000;
-      border-bottom-color: #500000;
+      color: $aggie-maroon;
+      border-bottom-color: $aggie-maroon;
     }
 
     &:focus {
-      outline: 1px solid #500000;
+      outline: 1px solid $aggie-maroon;
       outline-offset: 2px;
     }
   }
@@ -115,7 +116,7 @@
   top: 0;
   left: 0;
   height: 2px;
-  background: #500000;
+  background: $aggie-maroon;
 }
 
 .actionable {

@@ -1,3 +1,4 @@
+@import 'libs/sass/variables';
 @import '../discover-shared';
 
 :host {
@@ -22,7 +23,7 @@
   justify-content: flex-start;
   gap: 0.4rem;
   text-decoration: none;
-  color: #500000;
+  color: $aggie-maroon;
   width: 6rem;
 
   &:hover .visit-maps-icon,
@@ -37,7 +38,7 @@
   justify-content: center;
   width: 3.25rem;
   height: 3.25rem;
-  color: #500000;
+  color: $aggie-maroon;
 
   svg {
     width: 100%;

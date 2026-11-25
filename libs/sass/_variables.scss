@@ -4,6 +4,10 @@ $oswald-fStack: 'Oswald', sans-serif;
 $font-color: #323232;
 
 $main-blue: #0079c1;
+
+// Texas A&M's maroon, the university's brand colour (#2605). It was typed as #500000 in every stylesheet that used it.
+// A default, so GIS Day's own variables, which name it too, keep theirs.
+$aggie-maroon: #500000 !default;
 $form-grey: rgba(241, 243, 244, 1);
 
 // Interface state colours: an active item, one changing state, and an inactive one. Defaults, so an

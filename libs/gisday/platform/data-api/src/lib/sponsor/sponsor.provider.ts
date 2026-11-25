@@ -1,5 +1,4 @@
 import {
-  HttpException,
   Injectable,
   InternalServerErrorException,
   Logger,
@@ -7,15 +6,39 @@ import {
   UnprocessableEntityException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, In, Repository } from 'typeorm';
+import { DeleteResult, In, Repository, DeepPartial } from 'typeorm';
 
-import { Asset, Sponsor, SponsorLogoSize } from '../entities/all.entity';
-import { BaseProvider } from '../_base/base-provider';
+import { Asset, Sponsor, SponsorLogoSize, Season } from '../entities/all.entity';
 import { AssetsService } from '../assets/assets.service';
 import { refuseUnsafeImage } from '../assets/image-upload';
 import { SeasonService } from '../season/season.service';
+import { rethrowHttp } from '../_base/rethrow-http';
+import { SeasonScopedProvider, withoutIdentity } from '../_base/season-scoped-provider';
 @Injectable()
-export class SponsorProvider extends BaseProvider<Sponsor> {
+export class SponsorProvider extends SeasonScopedProvider<Sponsor> {
+  protected get seasons() {
+    return this.seasonService;
+  }
+
+  protected readonly recordsName = 'sponsors';
+
+  protected forSeason(seasonGuid: string) {
+    return this.getSponsorsForSeason(seasonGuid);
+  }
+
+  protected override readonly copyRelations = { logos: true };
+
+  protected override copyOf(record: Sponsor, season: Season) {
+    // A logo is an asset held by one sponsor, so the copy has its own.
+    const copy = super.copyOf(record, season) as DeepPartial<Sponsor>;
+
+    if (record.logos) {
+      copy.logos = record.logos.map(withoutIdentity);
+    }
+
+    return copy;
+  }
+
   private _resourcePath = `images/sponsors`;
 
   constructor(
@@ -48,95 +71,18 @@ export class SponsorProvider extends BaseProvider<Sponsor> {
         }
       });
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      Logger.error(err.message, 'SponsorProvider');
-      throw new InternalServerErrorException('Could not find sponsors for season.');
+      rethrowHttp(err, new InternalServerErrorException('Could not find sponsors for season.'), () =>
+        Logger.error(err.message, 'SponsorProvider')
+      );
     }
   }
 
   public async getSponsorsForActiveSeason() {
-    const activeSeason = await this.seasonService.findOneActive();
-
-    if (!activeSeason) {
-      throw new UnprocessableEntityException('No active season found.');
-    }
-
-    try {
-      return this.getSponsorsForSeason(activeSeason.guid);
-    } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      Logger.error(err.message, 'SponsorProvider');
-      throw new InternalServerErrorException('Could not find sponsors for active season.');
-    }
+    return this.forActiveSeason();
   }
 
   public async copyEntitiesIntoSeason(seasonGuid: string, existingEntityGuids: Array<string>) {
-    const season = await this.seasonService.findOne({
-      where: {
-        guid: seasonGuid
-      }
-    });
-
-    if (!season) {
-      throw new UnprocessableEntityException('Season does not exist.');
-    }
-
-    const entities = await this.find({
-      where: {
-        guid: In(existingEntityGuids)
-      },
-      relations: { logos: true }
-    });
-
-    if (!entities || entities.length === 0) {
-      throw new UnprocessableEntityException('Could not find sponsors.');
-    }
-
-    const newEntities = entities.map((entity) => {
-      delete entity.guid;
-      delete entity.created;
-      delete entity.updated;
-
-      if (entity.logos?.length > 0) {
-        entity.logos = entity.logos.map((logo) => {
-          delete logo.guid;
-          delete logo.created;
-          delete logo.updated;
-
-          return logo;
-        });
-      }
-
-      const newEntity = this.sponsorRepo.create({
-        ...entity,
-        season: season
-      });
-
-      return newEntity.save();
-    });
-
-    try {
-      return Promise.all(newEntities);
-    } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      Logger.error(err.message, 'SponsorProvider');
-      throw new InternalServerErrorException('Could not copy sponsors into season.');
-    }
+    return this.copyIntoSeason(seasonGuid, existingEntityGuids);
   }
 
   public async createSponsor(sponsor: Partial<Sponsor>, file?: Express.Multer.File) {
@@ -158,14 +104,9 @@ export class SponsorProvider extends BaseProvider<Sponsor> {
 
           return savedEntity.save();
         } catch (err) {
-          // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-          // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-          if (err instanceof HttpException) {
-            throw err;
-          }
-
-          Logger.error(err.message, 'SponsorProvider');
-          throw new InternalServerErrorException('Could not save sponsor logo.');
+          rethrowHttp(err, new InternalServerErrorException('Could not save sponsor logo.'), () =>
+            Logger.error(err.message, 'SponsorProvider')
+          );
         }
       } else {
         return savedEntity;
@@ -196,14 +137,9 @@ export class SponsorProvider extends BaseProvider<Sponsor> {
         try {
           logoImage = await this._saveImage(file);
         } catch (err) {
-          // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-          // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-          if (err instanceof HttpException) {
-            throw err;
-          }
-
-          Logger.error(err.message, 'SponsorProvider');
-          throw new InternalServerErrorException('Could not save sponsor logo.');
+          rethrowHttp(err, new InternalServerErrorException('Could not save sponsor logo.'), () =>
+            Logger.error(err.message, 'SponsorProvider')
+          );
         }
       }
 
@@ -249,14 +185,9 @@ export class SponsorProvider extends BaseProvider<Sponsor> {
 
       return result;
     } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      Logger.error(err.message, 'SponsorProvider.deleteEntities');
-      throw new InternalServerErrorException('Could not delete entities.');
+      rethrowHttp(err, new InternalServerErrorException('Could not delete entities.'), () =>
+        Logger.error(err.message, 'SponsorProvider.deleteEntities')
+      );
     }
   }
 

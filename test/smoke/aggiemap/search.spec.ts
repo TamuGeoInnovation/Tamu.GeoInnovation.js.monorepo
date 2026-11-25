@@ -2,6 +2,7 @@ import { Page } from '@playwright/test';
 
 import { expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
+import { waitForMapReady } from './map-probe';
 
 /**
  * Map search returns the expected result, and choosing it shows that feature's data (#1116).
@@ -64,23 +65,12 @@ const SEARCH_AGAIN_CASES = [
   }
 ];
 
-const PROBE_GLOBAL = '__tamuGiscMapProbe';
-
 /** Opens a map and waits until its layers have loaded, so search queries are not racing the map. */
 async function openMap(page: Page, mapPath: string): Promise<void> {
   await blockAnalytics(page);
   await page.goto(mapPath);
 
-  await expect
-    .poll(
-      async () =>
-        await page.evaluate(
-          (name) => (window as unknown as Record<string, { ready?: boolean }>)[name]?.ready === true,
-          PROBE_GLOBAL
-        ),
-      { message: `the map on ${mapPath} never finished loading`, timeout: 90_000, intervals: [1_000] }
-    )
-    .toBe(true);
+  await waitForMapReady(page, `the map on ${mapPath} never finished loading`);
 }
 
 function escapeRegExp(text: string): string {

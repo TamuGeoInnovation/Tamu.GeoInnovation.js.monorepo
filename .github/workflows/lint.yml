@@ -47,9 +47,29 @@ jobs:
         run: node tools/security-findings/install-scripts.mjs
 
       # Every registry package's signature, and its provenance where it has one, checked against the registry's
-      # keys (#2293). About 15 seconds; fails on a missing or invalid signature.
+      # keys (#2293). About 15 seconds; fails on a missing or invalid signature. Tried again, up to three times, only
+      # when the registry fails to answer (FETCH_ERROR), never for a signature that is wrong (#3439).
       - name: Check registry signatures
-        run: npm audit signatures
+        run: node tools/security-findings/audit-signatures.mjs
+
+      # Every difference between the development and production GIS services is recorded in code as a
+      # workaround, so nothing used to make anybody report it to the GIS team and about fifty accumulated
+      # (#3402). Fails when a difference is in connections.ts and missing from the register.
+      - name: Check the GIS service differences register
+        run: node scripts/check-gis-differences.mjs
+
+      # Files are LF but for one batch file, and with `* -text` in .gitattributes nothing else keeps them so: twelve had
+      # drifted to CRLF or mixed before this step (#1025). A second or so.
+      - name: Check line endings
+        run: node scripts/check-line-endings.mjs
+
+      # Only the files this pull request changes are checked: 433 files had drifted from Prettier by 24 November, and
+      # reformatting them at once would conflict with every branch in flight, so each is formatted when it is next
+      # touched (#1449, the maintainer's 2A). BASE is the pull request's base; without it, origin/development.
+      - name: Check formatting of the changed files
+        env:
+          BASE: ${{ inputs.base }}
+        run: node scripts/check-format.mjs
 
       - name: Lint Affected
         env:

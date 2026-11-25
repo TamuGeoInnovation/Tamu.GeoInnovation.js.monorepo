@@ -1,3 +1,4 @@
+@import 'libs/sass/variables';
 @import '../discover-shared';
 
 :host {
@@ -19,7 +20,7 @@
 // Directory pages (Parking / Campus / Athletics): strong condensed maroon Oswald, but controlled -
 // smaller and lighter than a hero banner so it doesn't overpower the body copy beneath it.
 .maps-page-title {
-  color: #500000;
+  color: $aggie-maroon;
   font-weight: 600;
   font-size: 2.2rem;
   line-height: 1.1;

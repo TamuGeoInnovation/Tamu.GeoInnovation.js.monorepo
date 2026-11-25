@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { LatLon } from '@tamu-gisc/common/utils/geometry';
-import { CheckIn, CheckInDashboard, RsvpDashboardPerson } from '@tamu-gisc/gisday/platform/data-api';
+import { CheckIn, CheckInDashboard, CheckInDashboardPerson } from '@tamu-gisc/gisday/platform/data-api';
 
 import { BaseService } from '../_base/base.service';
 
@@ -31,9 +31,9 @@ export class CheckinService extends BaseService<CheckIn> {
     return this.http1.get<CheckInDashboard>(`${this.resource}/dashboard/season/${seasonGuid}`);
   }
 
-  /** Who checked in at one event, and when, for the dashboard's expanded row and its CSV (#3006). */
+  /** Who checked in at one event, and when, marked when outside the session's time, for the expanded row and its CSV. */
   public getDashboardForEvent(eventGuid: string) {
-    return this.http1.get<Array<RsvpDashboardPerson>>(`${this.resource}/dashboard/event/${eventGuid}`);
+    return this.http1.get<Array<CheckInDashboardPerson>>(`${this.resource}/dashboard/event/${eventGuid}`);
   }
 
   public getUserCheckins() {

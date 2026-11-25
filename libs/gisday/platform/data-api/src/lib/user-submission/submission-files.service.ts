@@ -9,7 +9,8 @@ import {
   Injectable,
   Logger,
   NotFoundException,
-  StreamableFile
+  StreamableFile,
+  UnsupportedMediaTypeException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -107,6 +108,22 @@ export class SubmissionFilesService {
   }
 
   /**
+   * One file, to be shown in the page rather than saved (#3090): an admin looking through a submission's files. Only
+   * a PDF previews: a browser draws one itself, and none draws a PowerPoint, which stays a download until it can be
+   * converted on the server. The route lets only those who may read the competitions in; a file is found only among
+   * this submission's own.
+   */
+  public async preview(submissionGuid: string, fileGuid: string, user: OwnershipUser): Promise<StreamableFile> {
+    const file = this.fileOf(await this.submissionFor(submissionGuid, user, 'read:competitions'), fileGuid);
+
+    if (extensionOf(file.name) !== '.pdf') {
+      throw new UnsupportedMediaTypeException(`${file.name} has no preview: download it instead.`);
+    }
+
+    return fileDownload(file, 'SubmissionFilesService', 'inline');
+  }
+
+  /**
    * Every file of a season's submissions as one zip, a folder per submission: its type, its title and the start of its
    * guid, so two submissions with one title stay apart. With `only`, just those submissions of the season: the rows the
    * admin ticked, or the ones the filters show (#3174). A guid that is not one of the season's is ignored.
@@ -196,8 +213,15 @@ export async function fileDto(file: Asset): Promise<SubmissionFileDto> {
   return { guid: file.guid, name: file.name, size, uploaded: file.created };
 }
 
-/** One kept file, streamed under the name it was uploaded with; not found, and logged, when it is missing from disk. */
-export async function fileDownload(file: Asset, context: string): Promise<StreamableFile> {
+/**
+ * One kept file, streamed under the name it was uploaded with; not found, and logged, when it is missing from disk.
+ * Saved by the browser by default, or, `inline`, shown in the page (#3090).
+ */
+export async function fileDownload(
+  file: Asset,
+  context: string,
+  shown: 'attachment' | 'inline' = 'attachment'
+): Promise<StreamableFile> {
   const onDisk = join(`${process.env.APP_DATA}`, file.path);
   const size = await stat(onDisk)
     .then((s) => s.size)
@@ -211,7 +235,7 @@ export async function fileDownload(file: Asset, context: string): Promise<Stream
   return new StreamableFile(createReadStream(onDisk), {
     type: contentTypeOf(file.name),
     length: size,
-    disposition: attachment(file.name)
+    disposition: contentDisposition(shown, file.name)
   });
 }
 
@@ -254,7 +278,16 @@ export async function zipOfFiles(
     throw new NotFoundException(allMissing);
   }
 
-  const stream = zip.generateNodeStream({ type: 'nodebuffer', streamFiles: true, compression: 'STORE' }) as Readable;
+  return streamedZip(zip, name);
+}
+
+/**
+ * A zip, streamed to the browser as an attachment named `name`: shared by every download built as one (#2933, #3174),
+ * and the VGI export (#545). Stored, not compressed, unless asked: photos, PowerPoint and PDF are already compressed,
+ * and storing streams each entry through as it is.
+ */
+export function streamedZip(zip: JSZip, name: string, compression: 'STORE' | 'DEFLATE' = 'STORE'): StreamableFile {
+  const stream = zip.generateNodeStream({ type: 'nodebuffer', streamFiles: true, compression }) as Readable;
 
   return new StreamableFile(stream, { type: 'application/zip', disposition: attachment(name) });
 }
@@ -314,7 +347,12 @@ function contentTypeOf(name: string): string {
 
 /** A Content-Disposition that keeps a name with accents or spaces: an ASCII fallback, and the name itself (RFC 6266). */
 export function attachment(name: string): string {
+  return contentDisposition('attachment', name);
+}
+
+/** The same for a file to be saved (`attachment`) or shown in the page (`inline`, #3090), under the name it came with. */
+export function contentDisposition(shown: 'attachment' | 'inline', name: string): string {
   const ascii = name.replace(/[^\x20-\x7e]/g, '_').replace(/["\\]/g, '_');
 
-  return `attachment; filename="${ascii}"; filename*=UTF-8''${encodeURIComponent(name)}`;
+  return `${shown}; filename="${ascii}"; filename*=UTF-8''${encodeURIComponent(name)}`;
 }

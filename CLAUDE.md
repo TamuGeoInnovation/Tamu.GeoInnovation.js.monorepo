@@ -71,11 +71,13 @@ scripts/check-in-volume.sh <branch>
 From Git Bash, in the main checkout or any worktree. It runs `nx affected -t lint,test,build` against
 `origin/development` in a Linux clone of the branch kept in a Docker volume (`tamu-js-<issue>`), skips
 for each target the projects that target's own workflow excludes (lint from `lint.yml`, test from
-`test.yml`, build from `build.yml`, so it lints everything CI lints; #1475), then runs `lint.yml`'s
+`test.yml`, build from `build.yml`, so it lints everything CI lints; #1475), builds in the
+configuration `build.yml` builds with, today `--configuration=production`, so a bundle budget or an AOT
+template error fails it as it fails CI (#1938, #2067), then runs `lint.yml`'s
 steps outside Nx, today `npx tsc -p test/smoke/aggiemap` (#2286), writes a log, and exits with the
 check's exit code, which fails if any target or step failed. A `lint.yml` step it cannot run as CI does
-stops it before it starts. `bash scripts/check-in-volume.test.sh` tests how it reads those lists and
-steps, and `bash scripts/run-times.test.sh` the run-time files it writes (both from Git Bash, as above). **It checks only what is committed**; uncommitted edits are not seen. `all` in place
+stops it before it starts. `bash scripts/check-in-volume.test.sh` tests how it reads those lists, the
+build's configuration and the steps, and `bash scripts/run-times.test.sh` the run-time files it writes (both from Git Bash, as above). **It checks only what is committed**; uncommitted edits are not seen. `all` in place
 of `affected` checks every project. Run `git fetch origin` first if `origin/development` is old.
 
 **Not one app you picked — every affected app.** Building only the app you were working in is what the
@@ -109,6 +111,40 @@ On its first real use, a full affected check ran 131 tasks in its first four min
 an hour before. The script keeps the Nx cache in the volume, so an unchanged task replays in about a second, and runs
 with `-m 16g` and `--parallel=8` (peak memory measured: 10.4 GB). Do not add `--skip-nx-cache`.
 On a smaller machine, set `CHECK_MEMORY` (default `16g`) and `CHECK_PARALLEL` (default `8`) to lower them (#2498).
+
+**That 16 GiB is reserved per run, not per project, so two checks cannot share one machine at the defaults.** A run
+scoped to a single project asks Docker for exactly as much as `affected` does; scope changes how long it takes, not what
+it reserves. Docker on the work computer allows 31.25 GiB, so two runs asking 16 GiB each do not both fit, and the one
+that asks second is killed for memory - which reads as a test failure, not as a resource problem. On 23 November 2026 two
+chats started a check within minutes of each other, each believing it was safe because one of them was "only one
+project", while `laptop` had an affected check killed for memory twice the same evening. If two genuinely have to run at
+once, one of them takes `CHECK_MEMORY=8g CHECK_PARALLEL=4` - **both knobs, not just the memory**, because halving the
+memory alone leaves the same eight tasks fighting over less of it (#3363).
+
+**Stopping a check does not stop its container.** Killing the wrapper leaves the container running and still holding its
+full reservation, invisible unless you look for it. Find it by its **volume**, never by name or uptime, and remove only
+your own - two checks running at once give you two anonymous containers, and guessing kills someone else's run:
+
+```bash
+docker ps --filter ancestor=node:24.22.1
+docker inspect --format '{{.Name}} | {{range .Mounts}}{{.Name}} {{end}}' <id>   # tamu-js-<issue> names the run
+```
+
+**A volume and a worktree both last until the branch merges, and nothing used to remove either.** That is
+how the work computer reached **0 bytes free of 1,907 GB** on 24 November 2026: 460 worktrees at 589 MiB
+(about 271 GB) and 323 `tamu-js-*` volumes at 2.7 GiB (about 853 GB, inside the WSL2 disk image). No check
+of any kind could run on it. **A check sweeps before it runs.** Below `CHECK_SWEEP_FREE_GB` (60 GiB) `scripts/check-in-volume.sh` runs
+`scripts/tidy.sh --yes` first - removing worktrees whose pull request has merged and `tamu-js-<issue>`
+volumes whose issue is closed - and only then refuses, below `CHECK_MIN_FREE_GB` (20 GiB). The watermark is
+well above the threshold on purpose: a sweep that waits until a check is already blocked has waited too
+long, and a guard on its own only turns an outage into a chore that nobody does. `bash scripts/tidy.sh`
+reports without removing anything, on any machine. **Removing a volume frees space inside the Docker disk image, which never shrinks on its own.** Every check
+adds about 2.6 GiB to that file for good, which is how it reached 975 GB unnoticed. Every sweep now prints
+its size and, past `TIDY_IMAGE_MAX_GB` (300 GiB), the four steps that reclaim it: stop Docker Desktop,
+`wsl --shutdown`, compact `docker_data.vhdx` with `diskpart` as Administrator, start Docker Desktop.
+**Compacting is never automatic**, because stopping Docker kills any check another session on the same
+machine is running, and a check killed mid-write leaves the stale Vite cache and Nx task record that hang
+the next start in somebody else's checkout (#2650, #3406).
 
 **Record how long something takes when you are measuring it, not otherwise.** `scripts/check-in-volume.sh`
 and `test/smoke/aggiemap/run-local.sh` print the elapsed time of every run. With `BUILD_TIMES_RECORD=1`
@@ -211,6 +247,14 @@ no geometry, so no popup can open - [#2520](https://github.com/TamuGeoInnovation
 of 116; the component had been unused since #418), [#2500](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2500) (the **portal item's** renderers keyed
 on fields the republished service lacks) and [#2510](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2510) (the layer declares an `objectIdField` it does
 not have, so every query returns 500).
+
+**A difference you find between the two servers goes in the register, with its kind.**
+[`docs/gis-service-differences.md`](docs/gis-service-differences.md) is the page somebody can hand to the
+GIS team; `scripts/check-gis-differences.mjs` fails when a service is in
+`READ_FROM_PRODUCTION_ON_DEVELOPMENT` and missing from it. The kind matters more than the row: of the 27
+differences recorded there, **11 are the GIS team's and 16 are not** - a dozen are "not published on
+development", which is a request, and four are retired events that only look like faults in the source.
+Every one had been written down as a workaround so a map would draw, and none of them had been reported.
 
 In two of the four, making the obvious change would have **looked like a fix and changed nothing a visitor
 sees** - which is worse than leaving the bug, because the issue gets closed. So: query the service, check
@@ -511,6 +555,10 @@ Never write the notes afterwards in a separate pull request: on 28 September tha
 without images when the pull request merged, and meant going back for them after the release reached
 production (#1132).
 
+**CI checks this** (`require-release-notes.yml`, #1264): a pull request that changes what the screenshots
+check counts as user-visible fails *Has a release-notes entry* until it adds a file there, or carries the
+`no-visible-change` label. The same job runs `collate-release-notes.mjs --check` on every entry.
+
 **One file each, rather than editing `unreleased.md`, because two pull requests adding at the same
 line conflict every time.** On 20 October six in one day each had to be resolved by hand, always in
 the same two places, always "keep both" — and a release-notes conflict resolved at speed is how an
@@ -525,7 +573,9 @@ move into the dated notes (#1360).
 **`node scripts/collate-release-notes.mjs --check`** validates every entry — the front matter, the
 file name against its `issue`, and that each image path resolves. Run it before a release; a broken
 image in the notes is otherwise found by a reader, after the release. `--write` gathers the entries
-into `unreleased.md` as part of cutting a release.
+into `unreleased.md` as part of cutting a release, except a GIS Day entry (`app: gisday` in its front
+matter), which goes into `gisday-unreleased.md`; `--check` fails an entry that links a GIS Day site
+without saying so (#2835). `bash scripts/collate-release-notes.test.sh` tests it.
 
 `docs/releases/unreleased.md` still holds everything written before this, and is left alone: the
 collation adds to it rather than replacing it.
@@ -615,6 +665,21 @@ leave a field empty silently. Say in your reply which values you chose. See #111
 Both projects' built-in workflows move an item to **Done** when it is closed or its pull request is
 merged, so nothing needs updating after the merge.
 
+**Check a pull request's state at the moment you hand over its merge command, every time.** The maintainer
+merges; a session gives him `gh pr merge` commands. Give one only for a pull request that, checked right
+then, is open, has no conflict and has every check green:
+
+```bash
+gh pr view <n> -R <owner>/<repo> --json state,mergeStateStatus
+gh pr checks <n> -R <owner>/<repo>
+```
+
+Never repeat a merge command from an earlier reply without checking again, in this repository or any other
+(kubernetes-config's pull requests included). A pull request still running CI is reported as not ready,
+with what it waits on, not handed over to be tried. On 24 November 2026 a session gave the maintainer merge
+commands for kubernetes-config PRs 167 and 168 three times over the evening, carried forward from a reading
+taken before he merged them at 3:51 PM, and he had to say they were already merged.
+
 **Only the issue being fixed may follow a closing keyword.** GitHub treats `close`, `closes`, `fix`,
 `fixes`, `resolve` and `resolves` followed by `#N` *anywhere* in the body as "close #N on merge", so a
 sentence like "the next smoke run should close #1096" would close #1096 too. Reword such sentences,
@@ -689,6 +754,19 @@ window where a reviewer needs to see it. Check the link resolves before posting:
 ```bash
 curl -s -o /dev/null -w "%{http_code}" "<raw url>"
 ```
+
+**Tidying the worktree is part of opening the pull request.** A worktree is about 589 MiB, and on
+24 November 2026 three sessions made 28 of them in one evening and removed none. Once the pull request is
+open the branch is pushed, so the folder is residue: remove it with `git worktree remove`, or sweep the
+merged ones later with `bash scripts/tidy.sh --yes` (#3400).
+
+**Delete `.pr-body.md` once the pull request is open.** It drafts the body and is deliberately never
+committed to `development`, so a copy left in a worktree is uncommitted work as far as anything can tell -
+and `tidy.sh` keeps a dirty worktree, merged branch or not. On 24 November 2026 that was **68 of the 69
+worktrees** the sweep left on the home machine, every one a merged branch, about 40 GiB no sweep could
+reclaim, all of it held by a file whose job finished the moment the pull request existed (#3432). `tidy.sh`
+now removes a worktree whose *only* change is an untracked `.pr-body.md`, so this is belt and braces rather
+than the only guard - but the file is yours to delete, and the sweep should not have to know about it.
 
 **Write every capture to `docs/screenshots/<slug>/` as soon as it is taken, not when it is needed.**
 A "before" image stops being obtainable the moment the fix is on disk: recovering one means stashing
@@ -836,6 +914,10 @@ when its task says so, and no other branches or tags. It opens no pull requests 
 
 ## Things that look broken but are not
 
+- `scripts/check-in-volume.sh` exiting **125**, or `docker volume ls` not answering at all, is a full
+  disk, not a broken branch. Docker returns 125 for a container it cannot create, which reads exactly like
+  a failing check. The script now refuses first and says so; if you meet 125 anyway, look at free space
+  before the diff (#3365).
 - A map canvas blank for 20 to 40 seconds is Esri still drawing.
 - `curl` returning `000` for a `*.tamu.edu` host is usually Git Bash's outdated CA bundle,
   not an unreachable host. Check in a browser before reporting it as down.

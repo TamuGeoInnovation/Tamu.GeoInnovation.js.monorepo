@@ -1,4 +1,6 @@
 @if (session(); as s) {
+<!-- The page's sentence leading into the session, only when there is one to name (#3412). -->
+<ng-content />
 <ul>
   <li>Session: <a [routerLink]="['/sessions/details', s.guid]">{{ s.name }}</a></li>
   @if (day()) {

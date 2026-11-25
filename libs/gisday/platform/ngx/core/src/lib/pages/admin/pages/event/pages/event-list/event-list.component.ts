@@ -23,6 +23,26 @@ import { GISDAY_SITE } from '@tamu-gisc/gisday/platform/ngx/common';
 import { SubmissionFileDto, siteListsSession } from '@tamu-gisc/gisday/common';
 import { FormControl } from '@angular/forms';
 
+/**
+ * The organizations whose venues hold these sessions, each once, by name, after every organization (#434): what the
+ * admin Events list offers to show one organization's sessions.
+ */
+export function organizationChoices(events: Array<Partial<Event>> | null): Array<{ guid: string; name: string }> {
+  const places = new Map<string, string>();
+
+  for (const event of events ?? []) {
+    const place = event.location?.place;
+
+    if (place?.guid) {
+      places.set(place.guid, place.name ?? '');
+    }
+  }
+
+  const named = [...places].map(([guid, name]) => ({ guid, name })).sort((a, b) => a.name.localeCompare(b.name));
+
+  return [{ guid: '', name: 'Every organization' }, ...named];
+}
+
 @Component({
   selector: 'tamu-gisc-event-list',
   templateUrl: './event-list.component.html',
@@ -52,6 +72,12 @@ export class EventListComponent extends BaseAdminListComponent<Event> implements
    */
   public readonly organizations = new FormControl('', { nonNullable: true });
 
+  /** One organization's sessions (#434): the guid of their venues' organization, or '' for every organization's. */
+  public readonly organization = new FormControl('', { nonNullable: true });
+
+  /** The organizations of the season's sessions, by name, after every organization, for that choice (#434). */
+  public organizationChoices$: Observable<Array<{ guid: string; name: string }>>;
+
   /** 'none' lists only the sessions with no tags, so they can be given some, the list shrinking as they are (#3034). */
   public readonly tagged = new FormControl('', { nonNullable: true });
 
@@ -68,12 +94,19 @@ export class EventListComponent extends BaseAdminListComponent<Event> implements
   public readonly withSlides = new FormControl('', { nonNullable: true });
 
   protected override listFilters(): Record<string, FormControl<string>> {
-    return { ...super.listFilters(), organizations: this.organizations, tagged: this.tagged, slides: this.withSlides };
+    return {
+      ...super.listFilters(),
+      organizations: this.organizations,
+      organization: this.organization,
+      tagged: this.tagged,
+      slides: this.withSlides
+    };
   }
 
   protected override keepEntity(event: Partial<Event>): boolean {
     return (
       (this.organizations.value === 'all' || siteListsSession(this.site, event)) &&
+      (!this.organization.value || event.location?.place?.guid === this.organization.value) &&
       (this.tagged.value !== 'none' || !event.tags?.length) &&
       (this.withSlides.value !== 'none' || !this.slides()?.has(event.guid))
     );
@@ -88,6 +121,7 @@ export class EventListComponent extends BaseAdminListComponent<Event> implements
     super.ngOnInit();
 
     this.eventsByDay$ = this.entitiesForActiveSeasonOrForSeasonGuid$.pipe(map((events) => groupEventsByDay(events)));
+    this.organizationChoices$ = this.listed$.pipe(map((events) => organizationChoices(events)));
 
     // The selected season's slides (#3093). Once they are in, the filters are read again, so "no slides" is right.
     this.selectedSeason$

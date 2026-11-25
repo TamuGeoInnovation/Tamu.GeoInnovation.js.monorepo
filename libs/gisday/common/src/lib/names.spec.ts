@@ -1,5 +1,5 @@
 import { byFirstAuthor } from './judging';
-import { lastNameOf } from './names';
+import { byName, lastNameOf, naturalOrder } from './names';
 
 describe('lastNameOf', () => {
   it('is the name less the first name when it starts with it, or else its last word', () => {
@@ -33,5 +33,33 @@ describe('byFirstAuthor', () => {
     expect(byFirstAuthor(given).map((e) => e.title)).toEqual(['Rivers', 'No one']);
     expect(given.map((e) => e.title)).toEqual(['No one', 'Rivers']);
     expect(byFirstAuthor(null)).toEqual([]);
+  });
+});
+
+/**
+ * One order for names everywhere, on the site and in the API (#3331): case and accents ignored, numbers as numbers. Ten
+ * sorts each chose their own options, so one list could sort one way on screen and another in an email.
+ */
+describe('naturalOrder and byName', () => {
+  it('compares names as a reader would: case and accents ignored, numbers as numbers', () => {
+    const names = ['Team 10', 'josé', 'Team 2', 'Jose', 'ana'];
+
+    expect([...names].sort(naturalOrder.compare)).toEqual(['ana', 'josé', 'Jose', 'Team 2', 'Team 10']);
+  });
+
+  it('sorts rows by name, a blank one last, in a copy', () => {
+    const rows = [{ name: ' Team 10' }, { name: '' }, { name: 'Team 2 ' }];
+
+    expect(byName(rows).map((r) => r.name)).toEqual(['Team 2 ', ' Team 10', '']);
+    expect(rows[0].name).toBe(' Team 10');
+  });
+
+  it("sorts a judge's entries by first author in that order too", () => {
+    const entries = [
+      { title: 'B', presenters: ['Team 10'] },
+      { title: 'A', presenters: ['Team 2'] }
+    ];
+
+    expect(byFirstAuthor(entries).map((e) => e.presenters[0])).toEqual(['Team 2', 'Team 10']);
   });
 });

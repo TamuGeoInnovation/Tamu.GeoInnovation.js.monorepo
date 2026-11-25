@@ -25,6 +25,14 @@ export const COMPETITION_SESSIONS_2027: Array<ReviewEmailSession> = COMPETITION_
   day: { date: (s.day?.date ?? '').replace('2026-11-17', '2027-11-16').replace('2026-11-19', '2027-11-18') }
 }));
 
+/**
+ * The same sessions with the awards session named as no name match finds it, and none chosen in Admin (#3412): the
+ * pages must not lead into a session they cannot name.
+ */
+export const COMPETITION_SESSIONS_UNNAMED_AWARDS: Array<ReviewEmailSession> = COMPETITION_SESSIONS.map((s) =>
+  s.guid === 'a' ? { ...s, name: 'AWARDS: Winner Announcements' } : s
+);
+
 function session(guid: string, name: string, startTime: string, endTime: string, date: string): ReviewEmailSession {
   return {
     guid,

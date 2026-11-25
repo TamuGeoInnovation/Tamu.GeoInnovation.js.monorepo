@@ -1,7 +1,7 @@
 import { DataSource, Repository } from 'typeorm';
 
-import { Event, Organization, Season, SeasonDay, Speaker, University } from '../entities/all.entity';
-import { queryCheckingDataSource, queryCheckingRepository, recordWrites } from '../_base/query-checking-data-source';
+import { Event, Organization, SeasonDay, Speaker, University } from '../entities/all.entity';
+import { answering, loadedSeason, queryCheckingDataSource, queryCheckingRepository, recordWrites } from '../_base/query-checking-data-source';
 import { AssetsService } from '../assets/assets.service';
 import { SeasonService } from '../season/season.service';
 import { OldFormatSpeaker, SpeakerProvider } from './speaker.provider';
@@ -9,23 +9,8 @@ import { OldFormatSpeaker, SpeakerProvider } from './speaker.provider';
 // The provider's queries as typeorm builds them, with the real entities. speaker.provider.spec.ts mocks the repositories,
 // so it cannot see a query typeorm itself refuses, such as a loaded row with a null column passed as a where value (#2363).
 
-/** Builds the query as the query-checking repository does, then answers with `value`, as a database holding it would. */
-function answering<T extends object>(repo: Repository<T>, method: 'find' | 'findOne', value: unknown) {
-  const build = repo[method].bind(repo) as (options?: unknown) => Promise<unknown>;
-  (repo as unknown as Record<string, unknown>)[method] = async (options?: unknown) => (await build(options), value);
-}
-
-/** A season as the API loads it: the deadlines nobody has set come back null. */
-const loadedSeason = () =>
-  Object.assign(new Season(), {
-    guid: 's-1',
-    year: 2026,
-    active: true,
-    posterSubmissionsCloseAt: null,
-    paperSubmissionsCloseAt: null,
-    competitions: [],
-    days: [Object.assign(new SeasonDay(), { guid: 'd-1', date: new Date('2026-11-18T06:00:00Z'), events: [{ guid: 'e-1' }] })]
-  });
+/** The season's one day, with an event, as the speaker queries see it. */
+const seasonDays = () => [Object.assign(new SeasonDay(), { guid: 'd-1', date: new Date('2026-11-18T06:00:00Z'), events: [{ guid: 'e-1' }] })];
 
 /** A speaker as the API loads them: most columns are optional and come back null. */
 const loadedSpeaker = () =>
@@ -60,9 +45,9 @@ describe('SpeakerProvider queries, built by typeorm', () => {
     Speaker.useDataSource(dataSource);
 
     const seasons = {
-      findOne: async () => loadedSeason(),
-      findOneActive: async () => loadedSeason(),
-      findOneWithDaysAndEvents: async () => loadedSeason()
+      findOne: async () => loadedSeason({ days: seasonDays() }),
+      findOneActive: async () => loadedSeason({ days: seasonDays() }),
+      findOneWithDaysAndEvents: async () => loadedSeason({ days: seasonDays() })
     } as unknown as SeasonService;
 
     speakerRepo = queryCheckingRepository(dataSource, Speaker);
@@ -80,8 +65,68 @@ describe('SpeakerProvider queries, built by typeorm', () => {
     await expect(provider.getSpeakersForSeason('s-1')).resolves.toEqual([]);
   });
 
+  /** The SQL of every speaker find a call makes, as typeorm builds it. */
+  function speakerQueries() {
+    const queries: Array<string> = [];
+    const find = speakerRepo.find.bind(speakerRepo);
+    speakerRepo.find = async (options) => (
+      queries.push(
+        speakerRepo
+          .createQueryBuilder()
+          .setFindOptions(options ?? {})
+          .getQuery()
+      ),
+      find(options)
+    );
+
+    return queries;
+  }
+
+  // The public season list (`GET speakers/season/:guid`) must not name a session hidden from the public schedule, so it
+  // does not load a speaker's sessions; only the admin list's own route does (#441).
+  it("lists a season's speakers without their sessions, for the public pages", async () => {
+    const queries = speakerQueries();
+
+    await provider.getSpeakersForSeason('s-1');
+
+    expect(queries).toHaveLength(1);
+    expect(queries[0]).not.toMatch(/"event_speakers"|JOIN "events"/);
+  });
+
+  // The admin Speakers list's own route, behind update:speakers, shows each speaker's sessions that season, so a speaker
+  // copied into a season with no session there can be told from one who speaks (#441, #439).
+  it("lists a season's speakers with the sessions they are in, for the admin list", async () => {
+    const queries = speakerQueries();
+
+    await provider.getSpeakersForSeason('s-1', true);
+    await provider.getSpeakersForActiveSeason(true);
+
+    expect(queries).toHaveLength(2);
+
+    for (const query of queries) {
+      expect(query).toMatch(/JOIN "event_speakers"/);
+      expect(query).toMatch(/JOIN "events"/);
+    }
+  });
+
   it('finds a presenter with their events in day and time order', async () => {
     await expect(provider.getPresenter('sp-1')).resolves.toBeNull();
+  });
+
+  // #3345: the presenter's page is public, and a hidden session is hidden there too, by name.
+  it("names none of a presenter's hidden sessions", async () => {
+    answering(speakerRepo, 'findOne', {
+      ...loadedSpeaker(),
+      events: [
+        Object.assign(new Event(), { guid: 'e-1', name: 'Made-up Talk', active: true }),
+        Object.assign(new Event(), { guid: 'e-2', name: 'Made-up Hidden Workshop', active: false })
+      ]
+    });
+
+    const presenter = await provider.getPresenter('sp-1');
+
+    expect(presenter.events.map((e) => e.name)).toEqual(['Made-up Talk']);
+    expect(JSON.stringify(presenter)).not.toContain('Made-up Hidden Workshop');
   });
 
   it("lists the speakers in the active season's events", async () => {
@@ -150,7 +195,9 @@ describe('SpeakerProvider queries, built by typeorm', () => {
   it("applies a speaker's approved self-edit", async () => {
     answering(speakerRepo, 'findOne', loadedSpeaker());
 
-    await expect(provider.applySelfEdit('sp-1', { description: 'A bio', university: { guid: 'u-1' } })).resolves.toMatchObject({
+    await expect(
+      provider.applySelfEdit('sp-1', { description: 'A bio', university: { guid: 'u-1' } })
+    ).resolves.toMatchObject({
       description: 'A bio'
     });
   });
