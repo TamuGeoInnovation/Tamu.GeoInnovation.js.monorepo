@@ -7,6 +7,7 @@ import { of } from 'rxjs';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 
 import { DiscoveryService } from '../../services/discovery/discovery.service';
+import { discoveryServiceStub } from '../../services/discovery/discovery.service.stub';
 import { LastMapService } from '@tamu-gisc/aggiemap/ngx/common';
 import { AllMapsComponent } from './all-maps.component';
 
@@ -21,17 +22,7 @@ import { AllMapsComponent } from './all-maps.component';
 describe('the Code Maroon tile on All Maps', () => {
   let fixture: ComponentFixture<AllMapsComponent>;
 
-  const discoveryStub = {
-    getInternalDiscoverApplications: () => [],
-    getVisibleInternalDiscoverApplications: () => [],
-    getExternalDiscoverApplications: () => [],
-    getAllDiscoverApplications: () => [],
-    getKioskDiscoverApplications: () => [],
-    getQuickLinkApplications: () => [],
-    getUpcomingApplications: () => [],
-    getEarliestUpcomingDate: () => undefined,
-    getParkingApplicationsByCategory: () => []
-  };
+  const discoveryStub = discoveryServiceStub();
   const build = async (isDevelopment: boolean): Promise<void> => {
     await TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule, AllMapsComponent],

@@ -20,21 +20,9 @@ select {
 }
 
 label {
-  position: absolute;
-  color: #757575;
-  left: 1rem;
-  top: 0.4rem;
-  pointer-events: none;
-  z-index: 0;
-  will-change: transform;
-  @include transition(transform 0.2s, font-size 0.15s);
+  @include floating-label(1rem, 0.4rem, 0, 1);
 
-  &.float {
-    transform: translate3d((0, -1.75rem, 0));
-    font-size: 0.85rem;
-    z-index: 1;
-  }
-
+  // A label shown above its field from the start, floated or not.
   &.static {
     transform: translate3d((0, -1.75rem, 0));
     font-size: 0.85rem;

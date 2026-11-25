@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { SubmissionReviewDto } from '@tamu-gisc/gisday/competitions/data-api/types';
@@ -9,7 +9,6 @@ import { SubmissionReviewListComponent } from '../../../shared/submission-review
   selector: 'tamu-gisc-user-submissions',
   templateUrl: './user-submissions.component.html',
   styleUrls: ['./user-submissions.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [SubmissionReviewListComponent]
 })
 export class UserSubmissionsComponent implements OnInit {

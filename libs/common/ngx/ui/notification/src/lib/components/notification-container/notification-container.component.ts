@@ -3,6 +3,8 @@ import { Observable } from 'rxjs';
 
 import { Angulartics2 } from 'angulartics2';
 
+import { trackEvent } from '@tamu-gisc/common/ngx/analytics';
+
 import { NotificationService } from '../../services/notification.service';
 import { Notification } from '../../helpers/notification.helper';
 import { NotificationItemComponent } from '../notification-item/notification-item.component';
@@ -47,18 +49,10 @@ export class NotificationContainerComponent implements OnInit {
   public action(event: Notification): void {
     if (this.analytics !== null) {
       const label = {
-        guid: crypto.randomUUID(),
-        date: Date.now(),
         name: event.id
       };
 
-      this.analytics.eventTrack.next({
-        action: 'notification_action',
-        properties: {
-          category: 'ui_interaction',
-          gstCustom: label
-        }
-      });
+      trackEvent(this.analytics, 'notification_action', 'ui_interaction', label);
     }
   }
 }

@@ -237,7 +237,7 @@ export function siteListsPlace(site: GisdaySite, place: { guid?: string; name?: 
  * `sessions-filter`), and on a site that lists only some organizations' sessions, only those. gisday.tamu.edu shares
  * txgisday.org's database, so without the second test it showed every organization, Texas State's among them.
  */
-export function placesShownOn<T extends { guid?: string; name?: string; visibilitySettings?: Array<string> }>(
+export function placesShownOn<T extends { guid?: string; name?: string; visibilitySettings?: Array<string> | null }>(
   site: GisdaySite,
   places: Array<T> | null | undefined,
   spot: string

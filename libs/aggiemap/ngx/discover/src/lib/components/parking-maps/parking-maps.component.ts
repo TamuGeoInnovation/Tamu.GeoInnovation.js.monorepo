@@ -1,6 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
 
-import { DiscoveryService } from '../../services/discovery/discovery.service';
+import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
+
+import { DiscoveryService, FEATURED_PARKING_ID } from '../../services/discovery/discovery.service';
 import {
   buildMapColumnGroups,
   getApplicationRoute,
@@ -34,6 +36,7 @@ import { FooterComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 })
 export class ParkingMapsComponent implements OnInit {
   private readonly discoveryService = inject(DiscoveryService);
+  private readonly testing = inject(TestingService);
 
   /** The transportation maps: Bus Routes, Micromobility and Sustainable Transportation. */
   public transportationColumns: MapColumnGroup[] = [];
@@ -48,7 +51,9 @@ export class ParkingMapsComponent implements OnInit {
   ];
 
   public ngOnInit(): void {
-    const applications = this.discoveryService.getVisibleInternalDiscoverApplications();
+    // The same rule and the same test as the All Maps and category pages, so a development-only parking map is
+    // listed on development instead of nowhere (#2449, #3470). This page took the production-only list until now.
+    const applications = this.discoveryService.listedApplications(this.testing.isTesting);
 
     this.transportationColumns = buildMapColumnGroups(
       sortApplicationsByName(applications.filter((app) => app.mapTypes.includes('transportation')))
@@ -56,7 +61,7 @@ export class ParkingMapsComponent implements OnInit {
 
     this.columns = buildMapColumnGroups(
       sortApplicationsByName(
-        applications.filter((app) => app.mapTypes.includes('parking') && app.id !== 'ts-main-parking')
+        applications.filter((app) => app.mapTypes.includes('parking') && app.id !== FEATURED_PARKING_ID)
       ),
       this.columnDefinitions,
       (app) => app.columnKey ?? app.parkingCategory

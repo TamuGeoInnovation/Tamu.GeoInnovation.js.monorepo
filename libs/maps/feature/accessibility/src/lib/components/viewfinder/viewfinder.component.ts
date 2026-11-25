@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy, ElementRef, inject, input, signal, viewChild } from '@angular/core';
-import { fromEventPattern, Observable, Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { map, mapTo, shareReplay, switchMap, takeUntil, withLatestFrom } from 'rxjs/operators';
 
 import { TemplateRenderer } from '@tamu-gisc/common/utils/string';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { EsriModuleProviderService, MapServiceInstance, EsriMapService } from '@tamu-gisc/maps/esri';
+import { EsriModuleProviderService, MapServiceInstance, EsriMapService, viewEvent } from '@tamu-gisc/maps/esri';
 import { NgClass, AsyncPipe } from '@angular/common';
 
 import esri = __esri;
@@ -78,19 +78,7 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
     // Setup the key up event handler on the view with resubscription on view swap
     this.$mapView
       .pipe(
-        switchMap((view) => {
-          let handle: esri.Handle;
-
-          const add = (handler) => {
-            handle = view.on('key-up', handler);
-          };
-
-          const remove = () => {
-            handle.remove();
-          };
-
-          return fromEventPattern<esri.ViewKeyUpEvent>(add, remove).pipe(withLatestFrom(this.$mapView));
-        }),
+        switchMap((view) => viewEvent<esri.ViewKeyUpEvent>(view, 'key-up').pipe(withLatestFrom(this.$mapView))),
         takeUntil(this._$destroy)
       )
       .subscribe(([event, view]) => {
@@ -190,19 +178,7 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
 
     this.$mapView
       .pipe(
-        switchMap((view) => {
-          let handle: esri.Handle;
-
-          const addHandler = (handler) => {
-            handle = view.on('click', handler);
-          };
-
-          const removeHandler = () => {
-            handle.remove();
-          };
-
-          return fromEventPattern<esri.ViewClickEvent>(addHandler, removeHandler);
-        }),
+        switchMap((view) => viewEvent<esri.ViewClickEvent>(view, 'click')),
         mapTo(false),
         takeUntil(this._$destroy)
       )

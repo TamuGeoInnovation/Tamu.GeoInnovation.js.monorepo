@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { HeaderComponent } from '@tamu-gisc/gisday/platform/ngx/common';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
@@ -10,7 +10,6 @@ import { GISDAY_SITE } from '@tamu-gisc/gisday/platform/ngx/common';
   selector: 'tamu-gisc-wrapper',
   templateUrl: './wrapper.component.html',
   styleUrls: ['./wrapper.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [HeaderComponent, RouterOutlet, RouterLink, AsyncPipe, FooterComponent]
 })
 export class WrapperComponent {
