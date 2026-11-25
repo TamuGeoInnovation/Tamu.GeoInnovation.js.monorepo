@@ -13,7 +13,12 @@ import { SearchSelection } from '../components/search/search.component';
  * `results[0].features` threw, so the selection failed with a TypeError rather than saying nothing was found.
  */
 describe('AltSearchHelper', () => {
-  const ALT: SearchSource = { source: 'building-geometry', name: 'Buildings', url: 'https://example.test/0', featuresLocation: 'features' };
+  const ALT: SearchSource = {
+    source: 'building-geometry',
+    name: 'Buildings',
+    url: 'https://example.test/0',
+    featuresLocation: 'features'
+  };
   const ORIGIN: Partial<SearchSource> = {
     source: 'building-names',
     altLookup: { source: 'building-geometry', reference: { keys: ['number'] } }
@@ -45,7 +50,9 @@ describe('AltSearchHelper', () => {
   it('selects the first feature the lookup finds', async () => {
     const feature = { attributes: { number: '0434' } };
     const helper = helperAnswering(
-      new SearchResult({ results: [{ name: 'Buildings', features: [feature], breadcrumbs: { source: ALT, value: '0434' } }] })
+      new SearchResult({
+        results: [{ name: 'Buildings', features: [feature], breadcrumbs: { source: ALT, value: '0434' } }]
+      })
     );
 
     const chosen = await firstValueFrom(helper.handleSearchResultFeatureSelection(selection));

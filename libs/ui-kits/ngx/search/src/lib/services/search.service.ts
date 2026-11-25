@@ -354,11 +354,7 @@ export class SearchService {
    * which values from the collection are used.
    * @returns {string} Query string, or `undefined` for a source with no `queryParams`, as it always has been (#3495).
    */
-  private _getUrlQueryParams(
-    options: SearchProperties,
-    source: SearchSource,
-    indexOverride?: number
-  ): string | undefined {
+  private _getUrlQueryParams(options: SearchProperties, source: SearchSource, indexOverride?: number): string | undefined {
     // If an index value is provided, use it instead of attempting to determine index.
     //
     // Reference Github Issue: https://github.tamu.edu/AggieMap/dev.aggiemap.tamu.edu/issues/93

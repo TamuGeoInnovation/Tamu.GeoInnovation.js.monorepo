@@ -102,7 +102,13 @@ describe('containsSearch', () => {
       throw new Error('containsSearch gave no where clause');
     }
 
-    const sql = makeWhere(where.keys, ['o12', 'o12'], where.operators, where.wildcards as string[], where.transformations as string[]);
+    const sql = makeWhere(
+      where.keys,
+      ['o12', 'o12'],
+      where.operators,
+      where.wildcards as string[],
+      where.transformations as string[]
+    );
 
     // ESCAPE lets a typed `%` or `_` be matched literally (#1790).
     expect(sql).toBe("UPPER(name) LIKE '%O12%' ESCAPE '\\' OR UPPER(zone_ID) LIKE '%O12%' ESCAPE '\\'");
