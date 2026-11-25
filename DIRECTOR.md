@@ -348,6 +348,26 @@ director can reach it:
 Every commit on this branch starts with the name of the machine that made it (`home:`, `work:`, ...), so each
 session can tell its own pushes from the others'.
 
+## Questions have ids, and an owner (24 November 2026, the maintainer's 1A on home's proposal)
+
+On 24 November `home` carried 13 questions in its own chat, four of them already settled, because nothing said when a
+question had been taken. So:
+
+1. **Every question a worker raises has an id, `Q-<batch>-<n>`** (for example `Q-g107-1`), and is written in its report
+   under **Questions for the director**, and only there.
+2. **The director acknowledges by id.** Its next batch to that worker, or a one-line commit to the worker's `TASKS.md`,
+   lists every id it has taken as `Asked` or `Decided: <answer>`. Once an id is acknowledged the worker drops it and
+   never carries it again.
+3. **A question unacknowledged after one batch is re-sent once**, by message, to the director that wrote the batch.
+   The worker still never takes it to the maintainer.
+4. **Its owner is the director whose batch raised it**, including a machine chore found during that batch (disk,
+   long paths, old containers): AggieMap's for an `a` batch, GIS Day's for a `g` batch.
+5. **A listener's chat shows the maintainer no questions.** His preference that a reply end with its open questions is
+   for directors' chats, not listeners'.
+6. **The one exception:** something the maintainer told a worker himself (for example "start nothing until I say
+   Docker is back") is confirmed with him, in that worker's chat, because no director can answer it for him. It is
+   recorded under **Told directly** as before.
+
 ## Adding a machine
 The maintainer pastes the start line on the new machine with its name and job added, for example:
 
