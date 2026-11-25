@@ -33,7 +33,7 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- Nothing (since 7:55 PM Central). Listening. Docker is back after the compaction (the maintainer, 7:55 PM); volumes `tamu-js-dev-nm` and `gisday-db-data` intact, the Vite cache cleared. The GIS Day containers are stopped, not removed.
+- **Batch g27 (#3000, then #1001)**, started 9:20 PM Central. #3000: the memory-kill scan built (red first). Now measuring a GIS Day-wide check at parallel 8, 4, 2 and 1 (cold cache each; about an hour or more), with nothing else in Docker. #1001 read and planned meanwhile.
 
 ## Finished
 - **Batch g26 (workspace: #1938, #2067)** (report `laptop/reports/2026-11-24-g26.md`): **branch ready: `fix/1938-check-production-build`** (`78580ab68`). The check builds in `build.yml`'s configuration (read, not hard-coded), build alone. Red twice: the test, and an over-budget scratch commit that passed `development`'s script and fails this one. Own check exit 0. No questions.
