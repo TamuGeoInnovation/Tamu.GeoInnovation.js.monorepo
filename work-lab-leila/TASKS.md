@@ -1,5 +1,61 @@
 # work-lab-leila: current tasks
 
+## Batch a44 (aggiemap: generate the Kuma monitor list from the event definitions, for #3674; 25 November 2026, 12:05 PM Central, from `work (aggiemap)`) (Medium) - **now**
+
+**a41 is withdrawn, and it is not your doing.** It asked whether eighteen open AggieMap pull requests merge together.
+The maintainer merged all eighteen this morning - the queue went from **44 open pull requests to 17** - so there is
+nothing left to merge together. If you had started it, stop and say how far you got; that is not wasted, it is just no
+longer the thing to finish.
+
+### Why this batch
+
+[#497](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/497) asked for Kuma monitors for the
+basketball maps' layers, and I have handed the maintainer that list. But its first line is the durable problem, and it
+is now [#3674](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3674): *"Any time that we
+create a new Aggie Map event, we have to remember to build new monitors for the layers that it depends on."*
+
+**Remembering is the fault.** Every event map already declares the layers it draws, so the list of monitors it needs is
+derivable rather than remembered. This batch is **part 1 only**: the generator. Part 2 compares it against Kuma's own
+monitors and needs an API token, which is the maintainer's to issue, so it is deliberately out of scope.
+
+### What to do
+
+A script - `scripts/event-map-monitors.mjs`, with a unit test beside it as the other `scripts/*` tools have - that
+prints, for every event map defined in `libs/ts/events/ngx/src/lib/definitions/`, each **production** layer URL it draws
+and the monitor name it should have.
+
+1. **Read the definitions, do not re-type them.** The layer sources are declared there, and the URLs come from
+   `Connections` in `libs/aggiemap/ngx/common/src/lib/connections.ts`. Resolve the production values through that, as
+   the application does.
+2. **Output a table** (and `--json` for a machine): event map, layer id, production URL, suggested monitor name, and the
+   keyword to match. Keyword monitoring matters because **an ArcGIS layer returns HTTP 200 while reporting an error in
+   the body** - that is #2510's whole fault mode - so the layer's own `name` from the service is the keyword.
+3. **Leave out what is deliberately not on production.** A layer in `DEVELOPMENT_ONLY_LAYER_SOURCES`, or a map in
+   `developmentOnly`, must not appear: a monitor for it would alert on something that is correctly absent. Say in the
+   output how many were skipped and why.
+4. **Test it** on the two maps whose answer is already known, from my comment on #497: men's basketball is
+   `gis.tamu.edu/.../MBskt_view` layers 0, 1, 2 (`Basketball Icons`, `Basketball Closures`, `Basketball Parking`) and
+   women's is `arc.ts.tamu.edu/.../WomensBasketballParking_view` layers 0 and 1 (`Accessible Parking Spaces`,
+   `Women's Basketball Event Parking Lots`). Both verified live on production on 25 November 2026. If your generator
+   disagrees with those five rows, the generator is wrong.
+
+### The trap, and it is the whole reason this needs care
+
+**A production layer URL is not the development one with the host swapped.** Men's basketball production is a different
+host **and** a different service name from its development copy (`MBskt_view` against
+`MensBasketballParking_view`), and women's sits on a third host. A generator that assumes a host swap emits monitors for
+URLs that do not exist, and they would come up red forever - worse than no monitor, because somebody would eventually
+mute them. Read `Connections`; do not build URLs by hand.
+
+**It must not create or change anything in Kuma.** Kuma is the maintainer's to change (#1525). This prints a list.
+
+**Branch** `fix/3674-event-map-monitors` from the latest `development` (`2cfb0bc43` or newer), pushed to the fork.
+Pre-push check: `scripts/check-in-volume.sh <branch> affected`, and **read the log's own `Exit N` line**, not the
+wrapper's. Put `.pr-body.md`'s text in your report rather than committing it - a committed one fails CI's *No drafted
+body committed* check, and three branches needed untracking this morning for exactly that.
+
+**Report** `work-lab-leila/reports/2026-11-25-a44.md`. Questions `Q-a44-<n>`. **Open no pull request.**
+
 ## Batch g224 (gisday: fix #3668 on a branch; 25 November 2026, 10:45 AM Central, from `work (gisday)`) (High) - **now**
 
 **The maintainer had you file #3668 without the details. You hold the list, so the fix is yours to build.** Keep the list
@@ -17,7 +73,7 @@ out of this branch's mailbox files and out of GitHub text, as before. The code i
 6. Draft `.pr-body.md` from the template as the last commit (`no-visible-change`; say only "the routes #3668 names" in prose).
    Push to the fork.
 7. Report `reports/2026-11-25-g224.md`: the branch, the counts (routes guarded, tests red then green), the exit code.
-## Batch a41 (aggiemap: do the eighteen AggieMap pull requests actually merge together? 25 November 2026, 8:55 AM Central, from `work (aggiemap)`) (High) - **now**
+## Batch a41 (aggiemap: do the eighteen AggieMap pull requests actually merge together? 25 November 2026, 8:55 AM Central, from `work (aggiemap)`) (High) - **withdrawn**: all eighteen merged on 25 November 2026, so there is nothing left to merge together; replaced by a44
 
 **a36 is accepted and open as PR 3666.** Thank you for leaving `.pr-body.md` uncommitted and putting its text in the report
 instead - that is exactly right, and it saved the untracking step I had to do on three other branches this morning, each of

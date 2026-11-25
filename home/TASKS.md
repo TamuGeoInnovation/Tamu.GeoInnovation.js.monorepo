@@ -1,5 +1,67 @@
 # Home machine: current tasks
 
+## Batch a45 (workspace: write down the backslash trap, #3651; 25 November 2026, 12:05 PM Central, from `work (aggiemap)`) (Medium) - **now**
+
+**a33 is accepted.** Its pull request is open; I will give you the number in the next batch. Three things in it were
+done the way I want them done everywhere: the red-first proof named **7 of 14** cases failing on the old components
+rather than saying "it failed"; **Notes was dropped because each service was asked** and none has the field, which is
+CLAUDE.md's "ask the service" rule used to delete something rather than to add it; and you filed #3671 and #3673 the
+moment you found them instead of listing them for later.
+
+### Answers to your two questions
+
+**Q-a33-1: A.** Keep the copy link on NSC. Every other event parking map has it, and hiding it on one map would make
+#3673 look fixed on NSC while the shortcut stays broken on the rest - a difference nobody would remember to undo. One
+rule on every event map, fixed once in #3673.
+
+**Q-a33-2: A.** Both Medium, and that is now set on both issues. Priority is mine to estimate rather than the
+maintainer's to be asked for (his instruction, 25 November 2026). #3673 loses a shortcut and no data, and #3671 affects
+a map that runs in the summer, so neither is High.
+
+### Why this batch
+
+[#3651](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3651) is a trap I filed this morning
+and then **fell into twice more in the same session**, which is the clearest possible argument that it belongs in
+`CLAUDE.md` rather than in an issue nobody re-reads.
+
+**What happens:** a doubled backslash in a script written through a tool call arrives at the shell already collapsed to
+one. So `tr -d '\\r'` becomes `tr -d '\r'`, which deletes a literal **`r`** - or, written the other way, writes a real
+carriage return into a file that must be LF. `printf '%s\\n'` becomes a real newline and splits a line that was meant to
+stay whole. Both produce a file that looks right in an editor, passes `grep`, and fails somewhere far away: a CR byte in
+an LF-only repository, or a line broken in the middle.
+
+It cost me three separate corrections today, and `.gitattributes` cannot save anyone from it - it sets `* -text`, so git
+stores exactly the bytes it is given and never normalises them.
+
+### What to do
+
+Add it to `CLAUDE.md`, in **Things that look broken but are not** - that is where a reader goes when a file is wrong and
+the diff makes no sense. Keep it to a short paragraph in the voice of the entries around it, and make it say:
+
+1. **The symptom**, so it is recognisable: a one-line change showing as a huge diff, a CR in an LF file, or a line split
+   where no edit was made.
+2. **The cause** in one sentence: a doubled backslash collapses before the shell sees it.
+3. **What to do instead**, which is the part that saves the next person: build such characters with `chr(92)`, `chr(13)`
+   and `os.path.join` in a small Python step rather than writing escapes into shell, and check the bytes before
+   committing - `file <path>` names CRLF, and `git diff --stat` against
+   `git diff --stat --ignore-all-space` disagreeing wildly means endings were rewritten.
+4. **A pointer to #3651.**
+
+The file already says files are LF and that `.gitattributes` will not fix a mistake for you; this sits with that, and
+**must not repeat it** - reference it rather than restating it.
+
+### Not in scope
+
+**#3671 and #3673 are yours next, not now.** Both sit in the popups you just changed, and a33's pull request has not
+merged, so a branch for either would stack on it and conflict the moment it lands. I will send them once it is in.
+
+This is a documentation change, so it carries the `no-visible-change` label and needs no images. Pre-pull-request check
+as always - `scripts/pre-pr-check.sh` must exit 0 **even for a docs-only change** (#3508), and put its last line in the
+body text you give me.
+
+**Branch** `docs/3651-backslash-trap` from the latest `development`, pushed to the fork. **Report**
+`home/reports/2026-11-25-a45.md`. Questions `Q-a45-<n>`. **Open no pull request.**
+
 ## Batch a40 (workspace: what exactly is the maintainer being asked? Seven issues, read-only; 25 November 2026, 7:50 AM Central, from `work (aggiemap)`) (Medium) - **now**
 
 **a39 is verified and accepted.** I ran `queued.test.sh` on your `26233546d` myself: **23 of 23 pass**, and I am re-running the

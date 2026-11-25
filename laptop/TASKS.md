@@ -1,5 +1,56 @@
 # Laptop: current tasks
 
+## Batch a43 (aggiemap: prove #1169's fix, and take its before/after images; 25 November 2026, 12:05 PM Central, from `work (aggiemap)`) (High) - **now**
+
+**a42 is withdrawn, and it is not your doing.** It asked which of 43 open pull requests overlap. The maintainer merged
+29 commits this morning and the queue went from **44 open pull requests to 17**, so the question a42 existed to answer no
+longer exists. If you had already started it, stop and say how far you got in the report - that is not wasted, it is just
+no longer the thing to finish. Nothing below depends on it.
+
+### Why this batch
+
+[#1169](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1169) is a real fault with a visible
+result: drive directions' visitor parking filtered on `TS_GIS.dbo.LOTS.Visitor_Lot`, a column the Parking Lots layer no
+longer has and that nothing replaced, so a visitor **with no permit was offered no lots at all**. The maintainer decided
+on 25 November 2026 which rule replaces it: the one the layer's own renderer draws by, `GIS.TS.ParkingLots.LotType`
+ending in `Visitor` - **19 of the layer's 244 lots**, 6 `Garage Visitor` and 13 `Surface Visitor`.
+
+The fix and its tests are written and pushed. **What is missing is the two things this machine can do and mine cannot
+cheaply right now:** the red-then-green proof, and the before/after images. Its pull request cannot open without them.
+
+**Branch:** `fix/1169-visitor-parking-lottype` on the fork, at `a923432c4`, off `development` `2cfb0bc43`. Do not
+rebase it and do not change the fix - if you think the fix is wrong, say so in the report instead.
+
+### What to do
+
+1. **Prove the tests red first.** Check out the branch, then revert **only** the change to
+   `parking.service.ts` (keep the new spec), and run
+   `nx test maps-feature-trip-planner`. The four new tests under `describe('the visitor lots')` must fail. **Quote the
+   failure text.** A regression test that was never seen red proves nothing, and this is the step most often skipped.
+2. **Then green.** Restore the fix, run the same target, and quote the pass line.
+3. **Before/after images.** Dev server as CLAUDE.md gives it (`UV_THREADPOOL_SIZE` and
+   `NX_WORKSPACE_DATA_DIRECTORY` are **not** optional; clear `.vite`/`.vite-temp` in `tamu-js-dev-nm` first if the
+   container did not shut itself down last time). Open drive directions, choose a destination, and set parking to
+   **no permit** - that is the one path this bug is on.
+   - **before:** the same dev server with the fix reverted, so the empty result is photographed while it is still true.
+   - **after:** with the fix, showing lots offered.
+   - Write both to `docs/screenshots/1169-visitor-parking/` on the branch and push them. Name them so the pair is
+     obvious.
+4. **Say how many lots the after image shows.** If it is not 19, say what it is - the count is the measurement, and a
+   different number means either the dev GIS server differs from production or the fix is narrower than intended. Either
+   is worth knowing before the pull request opens.
+
+### Worth knowing
+
+- **Notices self-dismiss about ten seconds after load**, so an empty panel in a capture may be a timing artefact rather
+  than the bug. Hover to pause before capturing.
+- A map canvas blank for 20 to 40 seconds is Esri still drawing, not a fault.
+- The dev GIS server lacks several services; if the Parking Lots layer is one of them, say so and capture against
+  whichever environment does serve it, naming which you used.
+
+**Report** `laptop/reports/2026-11-25-a43.md`. Questions `Q-a43-<n>`. **Open no pull request** - push the images and the
+commits to that branch and stop; I open it. Do not merge `development` into the branch.
+
 ## Batch g38 (gisday: before/after screenshots for #3635, so its pull request can open; 25 November 2026, 10:45 AM Central, from `work (gisday)`) (Medium) - **now**
 
 **The maintainer chose (A) for #3635**: implement the two routes. The branch is `fix/3635-rsvp-submission-type-routes` on the
@@ -31,7 +82,7 @@ goes: the page and its route, the front-end service, the API folder and its regi
    at `CHECK_PARALLEL=1` (a GIS Day-wide check). Read its `Exit` line.
 4. Draft `.pr-body.md` from the template as the last commit (`no-visible-change`: nothing links to the page). Push to the fork.
 5. Report `reports/2026-11-25-g39.md`: the migration's SQL, the up/down result, and the check's exit code.
-## Batch a42 (aggiemap: which of the 43 open pull requests overlap? 25 November 2026, 8:55 AM Central, from `work (aggiemap)`) (Medium) - **now**
+## Batch a42 (aggiemap: which of the 43 open pull requests overlap? 25 November 2026, 8:55 AM Central, from `work (aggiemap)`) (Medium) - **withdrawn**: the queue fell from 44 open pull requests to 17 on 25 November 2026, so the overlap it measured is gone; replaced by a43
 
 **a31 and a32 are accepted, all three branches, and their pull requests are open: 3663 (#3471), 3664 (#3482), 3665 (#3483).**
 Two things from your reports worth saying back:
