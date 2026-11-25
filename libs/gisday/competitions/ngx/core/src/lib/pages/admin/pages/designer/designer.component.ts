@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { DesignFormComponent } from './components/design-form/design-form.component';
 
@@ -6,7 +6,6 @@ import { DesignFormComponent } from './components/design-form/design-form.compon
   selector: 'tamu-gisc-designer',
   templateUrl: './designer.component.html',
   styleUrls: ['./designer.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [DesignFormComponent]
 })
 export class DesignerComponent {}
