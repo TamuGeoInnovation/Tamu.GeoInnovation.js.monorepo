@@ -1,0 +1,83 @@
+name: Release notes
+
+# A pull request with a user-visible result adds one file to docs/releases/unreleased/, in the same pull
+# request (CLAUDE.md, "Release notes"). The template's checklist asked for it and was skipped: on
+# 1 October five visible changes merged with no entry (#1264). Which pull requests count as visible is
+# the screenshots check's own rule, imported, so the two cannot disagree; the escape hatch is the same
+# `no-visible-change` label.
+#
+# It also runs `collate-release-notes.mjs --check` on every entry, which until now ran only when
+# somebody remembered to before a release, so a broken image path or an undeclared GIS Day entry was
+# found by a reader.
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, labeled, unlabeled]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  release-notes:
+    name: Has a release-notes entry
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          sparse-checkout: |
+            .github/scripts
+            scripts/collate-release-notes.mjs
+            docs/releases
+            docs/screenshots
+            test/smoke/aggiemap/environments.json
+          sparse-checkout-cone-mode: false
+
+      - name: Prove the detector still works
+        run: node .github/scripts/require-release-notes.mjs --self-test
+
+      # Every entry's front matter, file name and image paths (#2037, #2835).
+      - name: Check every entry
+        run: node scripts/collate-release-notes.mjs --check
+
+      - name: Check this pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+          LABELS: ${{ toJSON(github.event.pull_request.labels.*.name) }}
+        run: |
+          gh api --paginate "repos/$REPO/pulls/$PR/files" --jq '.[] | [.status, .filename] | @tsv' > changed.tsv
+          echo "Changed files:"; sed 's/^/  /' changed.tsv
+
+          # shellcheck disable=SC2016 # the backticks are inside the JavaScript string, not shell
+          node --input-type=module -e '
+            import { evaluate } from "./.github/scripts/require-release-notes.mjs";
+            import { readFileSync } from "node:fs";
+
+            const files = readFileSync("changed.tsv", "utf8").split("\n").filter(Boolean)
+              .map((line) => { const [status, filename] = line.split("\t"); return { status, filename }; });
+            const result = evaluate({ files, labels: JSON.parse(process.env.LABELS ?? "[]") });
+
+            if (result.ok) {
+              console.log("Pass: " + result.reason + ".");
+              process.exit(0);
+            }
+
+            console.error([
+              "",
+              "This pull request changes something a user can see, and adds no release-notes entry.",
+              "",
+              "User-visible files changed:",
+              ...result.visible.map((f) => "  " + f),
+              "",
+              "Add one file, docs/releases/unreleased/<issue>-<slug>.md, in this pull request: its entry,",
+              "its before/after images, and its What to test on dev row. The format is in",
+              "docs/releases/unreleased/README.md; a GIS Day entry says app: gisday.",
+              "",
+              "If the change genuinely has no visible result, apply the no-visible-change label.",
+              ""
+            ].join("\n"));
+            process.exit(1);
+          '

@@ -12,6 +12,8 @@
  * stays visible on the pull request afterwards.
  */
 
+import { fileURLToPath } from 'node:url';
+
 /** A changed file that usually means something on screen moved. */
 export function isUserVisible(file) {
   if (/(^|\/)docs\//.test(file)) return false;
@@ -89,6 +91,7 @@ export function selfTest() {
   return failures.length;
 }
 
-if (process.argv[2] === '--self-test') {
+// Only when this file is the one being run: the release-notes check imports it (#1264), and must not run this one's cases.
+if (process.argv[1] === fileURLToPath(import.meta.url) && process.argv[2] === '--self-test') {
   process.exit(selfTest() === 0 ? 0 : 1);
 }

@@ -136,7 +136,8 @@ test("a past year's Sessions page offers the organizations its sessions were hel
   await expect(offered.first().or(empty)).toBeVisible();
   await expect(empty, `${past.year}'s Organizations filter is empty`).toHaveCount(0);
 
-  const names = (await offered.allInnerTexts()).map((name) => name.trim());
+  // The label alone: a checkbox's own text starts with its icon's ligature ("check_box_outline_blank"), which is no name.
+  const names = (await offered.locator('label').allInnerTexts()).map((name) => name.trim());
 
   expect(
     names.filter((name) => !hosts.has(name)),
