@@ -15,7 +15,7 @@ import {
 } from '@tamu-gisc/maps/esri';
 import { escapeSqlString } from '@tamu-gisc/common/utils/database';
 import { dateForDateTimeString } from '@tamu-gisc/common/utils/date';
-import { relativeDistance } from '@tamu-gisc/common/utils/geometry/generic';
+import { findNearestIndex } from '@tamu-gisc/common/utils/geometry/generic';
 
 import { TripModeSwitch } from '../../trip-planner.service';
 
@@ -324,7 +324,7 @@ export class BusService {
       longitude: point[0]
     };
 
-    const distances = relativeDistance(
+    const minIndex = findNearestIndex(
       esriPoint,
       stops.map((s) => {
         return {
@@ -332,10 +332,6 @@ export class BusService {
         };
       })
     );
-
-    const min = Math.min(...distances);
-
-    const minIndex = distances.indexOf(min);
 
     return {
       index: minIndex,
