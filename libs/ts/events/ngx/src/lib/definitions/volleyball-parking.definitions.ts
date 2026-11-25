@@ -9,7 +9,6 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
-
 export enum VOLLEYBALL_PARKING_LAYERS {
   ACCESSIBLE_PARKING = 'volleyball-parking-accessible-parking',
   PARKING_LOTS = 'volleyball-parking-lots'

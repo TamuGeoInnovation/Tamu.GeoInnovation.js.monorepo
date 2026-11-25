@@ -9,7 +9,6 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
-
 type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
 
 export enum CROSS_COUNTRY_PARKING_LAYERS {
