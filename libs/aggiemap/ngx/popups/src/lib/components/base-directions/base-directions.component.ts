@@ -10,6 +10,8 @@ import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { TripPlannerService, TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 import { SearchService } from '@tamu-gisc/ui-kits/ngx/search';
 
+import { trackEvent } from '@tamu-gisc/common/ngx/analytics';
+
 import { BasePopupComponent } from '../base/base.popup.component';
 import { KeyValuePipe } from '@angular/common';
 import { ActivateDirective } from '@tamu-gisc/ui-kits/ngx/interactions/keyboard';
@@ -120,18 +122,10 @@ export class BaseDirectionsComponent extends BasePopupComponent implements OnIni
 
     // Report to Google Analytics
     const label = {
-      guid: crypto.randomUUID(),
-      date: Date.now(),
       name: analyticsLabel
     };
 
-    this.analytics.eventTrack.next({
-      action: 'routing',
-      properties: {
-        category: 'directions_to_here',
-        gstCustom: label
-      }
-    });
+    trackEvent(this.analytics, 'routing', 'directions_to_here', label);
 
     // Clear the popup as we transition to the trip route
     this.mapService.clearHitTest();

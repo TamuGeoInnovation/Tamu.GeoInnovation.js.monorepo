@@ -2,6 +2,8 @@ import { Component, inject, input, model } from '@angular/core';
 import { Angulartics2 } from 'angulartics2';
 import { Observable } from 'rxjs';
 
+import { trackEvent } from '@tamu-gisc/common/ngx/analytics';
+
 import { ClipboardCopyDirective } from '../../directives/copy/copy.directive';
 import { AsyncPipe } from '@angular/common';
 
@@ -21,17 +23,9 @@ export class CopyComponent {
 
   public copyCoordsClick() {
     const label = {
-      guid: crypto.randomUUID(),
-      date: Date.now(),
       content: this.text()
     };
 
-    this.analytics.eventTrack.next({
-      action: 'clipboard_copy',
-      properties: {
-        category: 'ui_interaction',
-        gstCustom: label
-      }
-    });
+    trackEvent(this.analytics, 'clipboard_copy', 'ui_interaction', label);
   }
 }
