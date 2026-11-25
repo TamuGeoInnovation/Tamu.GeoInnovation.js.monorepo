@@ -1,5 +1,19 @@
 # work-lab-leila: current tasks
 
+## g221 received (gisday), 6:00 AM Central, 25 November 2026
+
+`ci/3646-gisday-smoke-tsc` (#3646) opens after #3638's pull request (3645) merges.
+
+## Batch g222 (gisday, #3635: RSVP and submission types cannot be saved; built on the director's recommendation, **held for the maintainer's decision**) (now)
+
+#3635 is flagged `needs-maintainer`: implement the two routes (A, recommended) or take Add and Update off the two admin pages (B). **Build A as a branch now, so it is ready whichever he chooses; no pull request until he decides.**
+
+1. **Branch** `fix/3635-rsvp-submission-type-routes` from the latest `origin/development`.
+2. **Red first:** specs for `RsvpTypeController` and `SubmissionTypeController` (`libs/gisday/platform/data-api`): `POST` creates and `PATCH :guid` updates, through their providers, where both answer 501 today. Follow how the other GIS Day controllers' create and update are written and tested (reuse their base service and DTO pattern; no one-offs).
+3. **Guards:** the same admin permission the other admin write routes use. A spec that a non-admin is refused.
+4. **The page:** on your local stack you can't sign in (consent), so prove the routes by their specs and an API call with a made-up admin token if the local stack allows one. Otherwise say so, and the laptop will check the pages later.
+5. `pre-pr-check.sh` with `gisday-platform-data-api`, `gisday-nest`; `.pr-body.md` last (it says the decision is pending); "branch ready".
+
 ## Decided (gisday), 5:50 AM Central, 25 November 2026
 
 - **g220 received:** `test/3638-gisday-smoke-every-page` goes through `pre-pr-check.sh` on the work machine and opens when it exits 0.
