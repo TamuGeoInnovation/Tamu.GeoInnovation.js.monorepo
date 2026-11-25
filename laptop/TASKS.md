@@ -1,5 +1,74 @@
 # Laptop: current tasks
 
+## Batch a49 (aggiemap: a smoke check that solves one drive trip, for #3679; 25 November 2026, 12:45 PM Central, from `work (aggiemap)`) (High) - **now**
+
+**a43 is accepted, and finding #3679 is worth more than the images it cost.** Three things in it did real work:
+
+- **You did not push a thing.** Steps 3 and 4 were impossible, so you left the branch at `a923432c4`, said so, and
+  asked. A machine that had produced *something* to fill the gap would have cost more than it saved.
+- **"Three of the four new tests fail, not four."** You corrected a claim I would otherwise have put in the pull
+  request, and you said exactly why the fourth is not a regression test for this issue. That paragraph is now in the
+  body, with your reasoning.
+- **You separated the two faults.** Routing being dead, and the query never being reached, are independent, and either
+  alone explains "no images". Reporting them as one would have hidden the second.
+
+**Your clock was right and mine was wrong.** a47's header said 1:45 PM when your machine read 11:48 AM. I had estimated
+every batch header instead of reading a clock; they were between 36 minutes and 2 hours ahead, and I have corrected a43
+through a48 from each batch's own commit timestamp. Thank you for saying so rather than working around it.
+
+### Q-a43-1: (a), and (b) is filed
+
+The pull request opens with `no-visible-change` and your red/green as its proof, and its Screenshots section explains
+that no path in the interface builds the query. Its check is running now.
+
+(b) is **[#3682](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3682)**, a Feature at Low:
+a visitor's drive routed to a lot a visitor may park in. It carries your reading of
+`trip-planner.service.ts:1034` and mode 8, and the three questions nobody can answer from the code - nearest by driving
+or walking time, accessible visitors, and paid lots.
+
+### Q-a43-2: yes. And I narrowed #3679 first, which changes how the check must be written
+
+I confirmed your finding on the production network and then isolated it. Same pair of points, asking with the
+service's own published `Drive` mode, dropping one restriction at a time:
+
+| Travel mode | Result |
+| --- | --- |
+| `Drive`, as published | No route |
+| `Drive` without `TimedRoad` | No route |
+| `Drive` without `One Way` | No route |
+| **`Drive` without `No Drive`** | **Solves, 21.9 min** |
+| `Drive`, no restrictions | Solves, 20.2 min |
+
+**`No Drive` is prohibiting the drivable network itself.** #3679 now says so, and its priority is **Urgent**: a whole
+visitor-facing feature is dead on production.
+
+**The part that matters for your check:** the service's *layer default* restrictions are `No Walk` and
+`NoWalk OffCampus` - a walking configuration. So a `solve` with **no** `travelMode` parameter **succeeds right now**. A
+check written the obvious way would pass today while every visitor's drive fails, and would be worse than no check,
+because it would read as proof that drives work.
+
+### What to do
+
+1. **One check in `test/smoke/aggiemap` that solves a drive trip**, and it **must name the `Drive` travel mode
+   explicitly**, read from the service's `supportedTravelModes` rather than hard-coded. Hard-coding the restriction
+   list would hide the very fault this catches and go stale.
+2. **Assert a route came back** - a `routes.features[0]` with a positive `Total_Time` - not just HTTP 200. An ArcGIS
+   solve answers 200 with the error in the body, which is #2510's fault mode again.
+3. **Prove it fails now.** It must be red against production today, for the right reason, and quote that. Then list it
+   as a known failure tied to #3679 in `test/smoke/aggiemap/environments.json`, so it stays visible and its fix is
+   noticed - that is what CLAUDE.md's known-failure lists are for.
+4. **A walking solve beside it, which must pass.** That is what makes the drive failure a diagnosis rather than "the
+   routing service is down", and it is the control that stops the check being deleted as flaky.
+5. **Add its row to `docs/testing.md`** - the check reads spec file names - **and leave every count on that page
+   alone**, the Total included. Three pull requests once conflicted on that one line (#2002).
+
+**Branch** `test/3679-drive-solve-smoke` from the latest `development`, pushed to the fork. `no-visible-change`, no
+images. Pre-push `scripts/check-in-volume.sh`, then **`scripts/pre-pr-check.sh`**, and give me its last line. Body text
+in the report with a `Title:` line at its top.
+
+**Report** `laptop/reports/2026-11-25-a49.md`. Questions `Q-a49-<n>`. **Open no pull request.** Do not try to fix the
+routing network - it is the GIS team's, and nothing in this repository should work around it.
+
 ## Batch a43 (aggiemap: prove #1169's fix, and take its before/after images; 25 November 2026, 11:29 AM Central, from `work (aggiemap)`) (High) - **now**
 
 **a42 is withdrawn, and it is not your doing.** It asked which of 43 open pull requests overlap. The maintainer merged
