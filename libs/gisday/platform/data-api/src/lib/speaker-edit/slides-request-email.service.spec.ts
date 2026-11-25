@@ -105,7 +105,10 @@ describe('SlidesRequestEmailService', () => {
     // Texas A&M's site: when and where are in the design's details box, said once, not in the text too (#3126).
     expect(group.template).not.toContain('Thursday, November 19, 2026, 1:00 to 2:15 PM Central');
     expect(group.design?.session).toEqual(
-      expect.objectContaining({ when: 'Thursday, November 19, 2026, 1:00 to 2:15 PM Central', where: 'MSC 2300, and online' })
+      expect.objectContaining({
+        when: 'Thursday, November 19, 2026, 1:00 to 2:15 PM Central',
+        where: 'MSC 2300, and online'
+      })
     );
     expect(group.template).toContain(SESSION_FILES_RULE);
     expect(group.example).toEqual(
@@ -246,16 +249,8 @@ describe('SlidesRequestEmailService', () => {
   it('asks each speaker once when the repeat reaches the other copy of the API (#3260)', async () => {
     // Production runs two copies of the API, and a repeated send may reach either.
     const copy = () =>
-      new SlidesRequestEmailService(
-        events as never,
-        new RepeatGuard(claims as never),
-        contact() as never,
-        links as never
-      );
-    const [first, again] = await Promise.all([
-      copy().send('e-1', 'gisday.tamu.edu'),
-      copy().send('e-1', 'gisday.tamu.edu')
-    ]);
+      new SlidesRequestEmailService(events as never, new RepeatGuard(claims as never), contact() as never, links as never);
+    const [first, again] = await Promise.all([copy().send('e-1', 'gisday.tamu.edu'), copy().send('e-1', 'gisday.tamu.edu')]);
     const repeats = [...first.skipped, ...again.skipped].filter((s) => /already asked/.test(s.reason));
 
     expect(sent.map((m) => m.to.trim()).sort()).toEqual(['avery@example.com', 'blair@example.com']);

@@ -71,7 +71,9 @@ describe('CheckInController', () => {
     it("reads the season's dashboard for the admin's site", async () => {
       permissions = ['read:checkins'];
 
-      const response = await fetch(`${url}/check-ins/dashboard/season/s-1`, { headers: { Origin: 'https://gisday.tamu.edu' } });
+      const response = await fetch(`${url}/check-ins/dashboard/season/s-1`, {
+        headers: { Origin: 'https://gisday.tamu.edu' }
+      });
 
       expect(response.status).toBe(200);
       expect(dashboard.getSeason).toHaveBeenCalledWith('s-1', 'gisday.tamu.edu');

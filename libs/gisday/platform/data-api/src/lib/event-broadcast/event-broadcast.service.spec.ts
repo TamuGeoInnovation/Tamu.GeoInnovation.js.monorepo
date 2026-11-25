@@ -87,9 +87,7 @@ describe('EventBroadcastService', () => {
       // The season lookup sits outside the try, so this one propagates untouched. It also reads
       // `season.guid` without a null check, which is safe only because `findOneActive` throws
       // rather than resolving null.
-      vi
-        .spyOn(seasonService, 'findOneActive')
-        .mockRejectedValue(new NotFoundException('No active season found.'));
+      vi.spyOn(seasonService, 'findOneActive').mockRejectedValue(new NotFoundException('No active season found.'));
 
       await expect(service.getBroadcastsForActiveSeason()).rejects.toThrow(NotFoundException);
     });
@@ -165,7 +163,7 @@ describe('EventBroadcastService', () => {
      * A failed lookup was wrapped as 422, so a database outage reached the client as "you sent something
      * unprocessable". Since the shared copy (#3324) it is not caught at all, and Nest answers it 500.
      */
-    it('lets a lookup failure through rather than calling it the request\'s fault', async () => {
+    it("lets a lookup failure through rather than calling it the request's fault", async () => {
       vi.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
       vi.spyOn(broadcastRepo, 'find').mockRejectedValue(new Error('connection lost'));
 

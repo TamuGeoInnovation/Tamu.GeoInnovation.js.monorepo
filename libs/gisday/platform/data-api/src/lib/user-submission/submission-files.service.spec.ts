@@ -5,12 +5,7 @@ import { tmpdir } from 'os';
 import { join } from 'path';
 import { Readable } from 'stream';
 
-import {
-  BadRequestException,
-  ForbiddenException,
-  NotFoundException,
-  UnsupportedMediaTypeException
-} from '@nestjs/common';
+import { BadRequestException, ForbiddenException, NotFoundException, UnsupportedMediaTypeException } from '@nestjs/common';
 import JSZip from 'jszip';
 
 import { SUBMISSION_FILE_RULES, submissionFileProblem } from '@tamu-gisc/gisday/common';

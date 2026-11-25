@@ -66,18 +66,14 @@ describe('UniversityProvider', () => {
     it('rejects a season that does not exist', async () => {
       vi.spyOn(seasonService, 'findOne').mockResolvedValue(null);
 
-      await expect(provider.insertUniversitiesIntoSeason('missing', ['u-1'])).rejects.toThrow(
-        UnprocessableEntityException
-      );
+      await expect(provider.insertUniversitiesIntoSeason('missing', ['u-1'])).rejects.toThrow(UnprocessableEntityException);
     });
 
     it('rejects when none of the requested universities exist', async () => {
       vi.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
       vi.spyOn(universityRepo, 'find').mockResolvedValue([]);
 
-      await expect(provider.insertUniversitiesIntoSeason('season-2', ['u-1'])).rejects.toThrow(
-        UnprocessableEntityException
-      );
+      await expect(provider.insertUniversitiesIntoSeason('season-2', ['u-1'])).rejects.toThrow(UnprocessableEntityException);
     });
 
     it('strips identity from the copy and attaches the target season', async () => {
@@ -115,9 +111,7 @@ describe('UniversityProvider', () => {
       vi.spyOn(universityRepo, 'create').mockImplementation((u) => ({ ...(u as object) }) as never);
       vi.spyOn(universityRepo, 'save').mockRejectedValue(new Error('duplicate key'));
 
-      await expect(provider.insertUniversitiesIntoSeason('season-2', ['u-1'])).rejects.toThrow(
-        UnprocessableEntityException
-      );
+      await expect(provider.insertUniversitiesIntoSeason('season-2', ['u-1'])).rejects.toThrow(UnprocessableEntityException);
     });
   });
 
@@ -155,9 +149,7 @@ describe('UniversityProvider', () => {
 
       expect(speaker.university).toBeNull();
       expect(manager.save).toHaveBeenCalledWith([speaker]);
-      expect(manager.save.mock.invocationCallOrder[0]).toBeLessThan(
-        manager.delete.mock.invocationCallOrder[0]
-      );
+      expect(manager.save.mock.invocationCallOrder[0]).toBeLessThan(manager.delete.mock.invocationCallOrder[0]);
     });
 
     /** Regression coverage -- same unawaited-return problem as the insert path above. */

@@ -94,9 +94,7 @@ describe('BaseProvider', () => {
     it('reports not found when the row does not exist', async () => {
       repo.findOne.mockResolvedValue(null);
 
-      await expect(provider.update('missing', { name: 'new' } as never)).rejects.toThrow(
-        NotFoundException
-      );
+      await expect(provider.update('missing', { name: 'new' } as never)).rejects.toThrow(NotFoundException);
     });
 
     it('creates the row instead when asked to', async () => {

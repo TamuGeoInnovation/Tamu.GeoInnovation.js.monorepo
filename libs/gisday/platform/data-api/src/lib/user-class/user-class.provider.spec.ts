@@ -104,9 +104,7 @@ describe('UserClassProvider', () => {
       vi.spyOn(userClassRepo, 'create').mockReturnValue({} as never);
       vi.spyOn(userClassRepo, 'save').mockRejectedValue(new Error('connection reset'));
 
-      await expect(provider.insertUserClass('c-1', 'acct-1')).rejects.toThrow(
-        InternalServerErrorException
-      );
+      await expect(provider.insertUserClass('c-1', 'acct-1')).rejects.toThrow(InternalServerErrorException);
     });
   });
 
@@ -124,9 +122,7 @@ describe('UserClassProvider', () => {
     it('reports not found when the registration does not exist', async () => {
       vi.spyOn(userClassRepo, 'findOne').mockResolvedValue(null);
 
-      await expect(provider.deleteUserClassRegistration('c-1', 'acct-1')).rejects.toThrow(
-        NotFoundException
-      );
+      await expect(provider.deleteUserClassRegistration('c-1', 'acct-1')).rejects.toThrow(NotFoundException);
     });
 
     // The lookup is already scoped to the account, so another user's registration reads as absent
@@ -135,9 +131,7 @@ describe('UserClassProvider', () => {
       vi.spyOn(userClassRepo, 'findOne').mockResolvedValue(null);
       const del = vi.spyOn(userClassRepo, 'delete');
 
-      await expect(provider.deleteUserClassRegistration('c-1', 'acct-other')).rejects.toThrow(
-        NotFoundException
-      );
+      await expect(provider.deleteUserClassRegistration('c-1', 'acct-other')).rejects.toThrow(NotFoundException);
       expect(userClassRepo.findOne).toHaveBeenCalledWith({
         where: { class: { guid: 'c-1' }, accountGuid: 'acct-other' }
       });
@@ -145,9 +139,7 @@ describe('UserClassProvider', () => {
     });
 
     it('deletes by the registration guid, not the class guid', async () => {
-      vi
-        .spyOn(userClassRepo, 'findOne')
-        .mockResolvedValue({ guid: 'uc-1', accountGuid: 'acct-1' } as UserClass);
+      vi.spyOn(userClassRepo, 'findOne').mockResolvedValue({ guid: 'uc-1', accountGuid: 'acct-1' } as UserClass);
       vi.spyOn(userClassRepo, 'delete').mockResolvedValue({ affected: 1 } as never);
 
       await provider.deleteUserClassRegistration('c-1', 'acct-1');

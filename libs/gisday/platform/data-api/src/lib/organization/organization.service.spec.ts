@@ -97,12 +97,8 @@ describe('OrganizationService', () => {
       vi.spyOn(seasonService, 'findOneActive').mockResolvedValue({ guid: 'active-season' } as never);
       vi.spyOn(orgRepo, 'find').mockResolvedValue([org('o-1', 'Alpha')]);
 
-      await expect(service.getOrganizationsForActiveSeason()).resolves.toEqual([
-        expect.objectContaining({ guid: 'o-1' })
-      ]);
-      expect(orgRepo.find).toHaveBeenCalledWith(
-        expect.objectContaining({ where: { season: { guid: 'active-season' } } })
-      );
+      await expect(service.getOrganizationsForActiveSeason()).resolves.toEqual([expect.objectContaining({ guid: 'o-1' })]);
+      expect(orgRepo.find).toHaveBeenCalledWith(expect.objectContaining({ where: { season: { guid: 'active-season' } } }));
     });
 
     /**
@@ -123,9 +119,7 @@ describe('OrganizationService', () => {
     it('requests a single organization with its season and logos', async () => {
       vi.spyOn(orgRepo, 'findOne').mockResolvedValue(org('o-1', 'Alpha'));
 
-      await expect(service.getOrganization('o-1')).resolves.toEqual(
-        expect.objectContaining({ guid: 'o-1' })
-      );
+      await expect(service.getOrganization('o-1')).resolves.toEqual(expect.objectContaining({ guid: 'o-1' }));
       expect(orgRepo.findOne).toHaveBeenCalledWith({
         where: { guid: 'o-1' },
         relations: { season: true, logos: true }
@@ -162,13 +156,12 @@ describe('OrganizationService', () => {
       vi.spyOn(orgRepo, 'create').mockReturnValue({ save: create } as never);
       vi.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'asset-1' } as never);
 
-      await service.createOrganization({ name: 'Alpha' }, { originalname: 'logo.png', buffer: declaredPng(10, 10) } as never);
+      await service.createOrganization({ name: 'Alpha' }, {
+        originalname: 'logo.png',
+        buffer: declaredPng(10, 10)
+      } as never);
 
-      expect(assetService.saveAsset).toHaveBeenCalledWith(
-        'images/organizations',
-        expect.anything(),
-        'organization-logo'
-      );
+      expect(assetService.saveAsset).toHaveBeenCalledWith('images/organizations', expect.anything(), 'organization-logo');
       expect(saved.logos).toEqual([{ guid: 'asset-1' }]);
       expect(saved.save).toHaveBeenCalled();
     });
@@ -178,18 +171,14 @@ describe('OrganizationService', () => {
     it('rejects when the target season does not exist', async () => {
       vi.spyOn(seasonService, 'findOne').mockResolvedValue(null);
 
-      await expect(service.copyOrganizationsIntoSeason('missing', ['o-1'])).rejects.toThrow(
-        UnprocessableEntityException
-      );
+      await expect(service.copyOrganizationsIntoSeason('missing', ['o-1'])).rejects.toThrow(UnprocessableEntityException);
     });
 
     it('rejects when none of the requested organizations exist', async () => {
       vi.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
       vi.spyOn(orgRepo, 'find').mockResolvedValue([]);
 
-      await expect(service.copyOrganizationsIntoSeason('season-2', ['o-1'])).rejects.toThrow(
-        UnprocessableEntityException
-      );
+      await expect(service.copyOrganizationsIntoSeason('season-2', ['o-1'])).rejects.toThrow(UnprocessableEntityException);
     });
 
     it('strips identity off the copy so a new row is written rather than the original moved', async () => {
@@ -223,9 +212,7 @@ describe('OrganizationService', () => {
     it('throws NotFound when the organization does not exist', async () => {
       vi.spyOn(orgRepo, 'findOne').mockResolvedValue(null);
 
-      await expect(service.updateOrganization('missing', { name: 'Alpha' })).rejects.toThrow(
-        NotFoundException
-      );
+      await expect(service.updateOrganization('missing', { name: 'Alpha' })).rejects.toThrow(NotFoundException);
     });
 
     it('leaves existing logos alone when no replacement file is supplied', async () => {
@@ -243,22 +230,21 @@ describe('OrganizationService', () => {
     });
 
     it('replaces the logo when a file is supplied', async () => {
-      vi
-        .spyOn(orgRepo, 'findOne')
-        .mockResolvedValue({ guid: 'o-1', name: 'Alpha', logos: [] } as unknown as Organization);
+      vi.spyOn(orgRepo, 'findOne').mockResolvedValue({ guid: 'o-1', name: 'Alpha', logos: [] } as unknown as Organization);
       vi.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'asset-2' } as never);
       vi.spyOn(orgRepo, 'save').mockImplementation((e) => Promise.resolve(e as Organization));
 
-      await service.updateOrganization('o-1', { name: 'Alpha' }, { originalname: 'logo.png', buffer: declaredPng(10, 10) } as never);
+      await service.updateOrganization('o-1', { name: 'Alpha' }, {
+        originalname: 'logo.png',
+        buffer: declaredPng(10, 10)
+      } as never);
 
       const saved = (orgRepo.save as Mock).mock.calls[0][0];
       expect(saved.logos).toEqual([{ guid: 'asset-2' }]);
     });
 
     it('does not let the caller overwrite the guid', async () => {
-      vi
-        .spyOn(orgRepo, 'findOne')
-        .mockResolvedValue({ guid: 'o-1', name: 'Alpha', logos: [] } as unknown as Organization);
+      vi.spyOn(orgRepo, 'findOne').mockResolvedValue({ guid: 'o-1', name: 'Alpha', logos: [] } as unknown as Organization);
       vi.spyOn(orgRepo, 'save').mockImplementation((e) => Promise.resolve(e as Organization));
 
       await service.updateOrganization('o-1', { guid: 'o-hijack', name: 'Beta' } as Partial<Organization>);
@@ -297,9 +283,7 @@ describe('OrganizationService', () => {
         { guid: 'e-1', speakers: [{ organization: null }, { organization: org('o-1', 'Alpha') }] }
       ] as never);
 
-      await expect(service.getOrgsWithEvents()).resolves.toEqual([
-        expect.objectContaining({ guid: 'o-1' })
-      ]);
+      await expect(service.getOrgsWithEvents()).resolves.toEqual([expect.objectContaining({ guid: 'o-1' })]);
     });
   });
 
@@ -386,9 +370,7 @@ describe('OrganizationService', () => {
     });
 
     it('refuses an SVG renamed to .png on update with 400', async () => {
-      vi
-        .spyOn(orgRepo, 'findOne')
-        .mockResolvedValue({ guid: 'o-1', name: 'Alpha', logos: [] } as unknown as Organization);
+      vi.spyOn(orgRepo, 'findOne').mockResolvedValue({ guid: 'o-1', name: 'Alpha', logos: [] } as unknown as Organization);
 
       await expect(service.updateOrganization('o-1', { name: 'Alpha' }, upload('logo.png', svg))).rejects.toThrow(
         BadRequestException
@@ -398,9 +380,7 @@ describe('OrganizationService', () => {
     });
 
     it('stores a PNG named .svg under a .png name', async () => {
-      vi
-        .spyOn(orgRepo, 'findOne')
-        .mockResolvedValue({ guid: 'o-1', name: 'Alpha', logos: [] } as unknown as Organization);
+      vi.spyOn(orgRepo, 'findOne').mockResolvedValue({ guid: 'o-1', name: 'Alpha', logos: [] } as unknown as Organization);
       vi.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'asset-2' } as never);
       vi.spyOn(orgRepo, 'save').mockImplementation((e) => Promise.resolve(e as Organization));
 

@@ -1,5 +1,10 @@
 import type { Mock } from 'vitest';
-import { BadRequestException, InternalServerErrorException, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import {
+  BadRequestException,
+  InternalServerErrorException,
+  NotFoundException,
+  UnprocessableEntityException
+} from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 
@@ -112,15 +117,11 @@ describe('PlaceService', () => {
     it('answers 404 when updating a place that does not exist', async () => {
       vi.spyOn(placeRepo, 'findOne').mockResolvedValue(null);
 
-      await expect(service.updatePlace('missing', { name: 'Alpha' })).rejects.toThrow(
-        NotFoundException
-      );
+      await expect(service.updatePlace('missing', { name: 'Alpha' })).rejects.toThrow(NotFoundException);
     });
 
     it('answers 404 when no season is active', async () => {
-      vi
-        .spyOn(seasonService, 'findOneActive')
-        .mockRejectedValue(new NotFoundException('No active season found.'));
+      vi.spyOn(seasonService, 'findOneActive').mockRejectedValue(new NotFoundException('No active season found.'));
 
       await expect(service.getPlacesForActiveSeason()).rejects.toThrow(NotFoundException);
     });
@@ -128,18 +129,14 @@ describe('PlaceService', () => {
     it('answers 422 when copying into a season that does not exist', async () => {
       vi.spyOn(seasonService, 'findOne').mockResolvedValue(null);
 
-      await expect(service.copyPlacesIntoSeason('missing', ['p-1'])).rejects.toThrow(
-        UnprocessableEntityException
-      );
+      await expect(service.copyPlacesIntoSeason('missing', ['p-1'])).rejects.toThrow(UnprocessableEntityException);
     });
 
     it('answers 422 when there is nothing to copy', async () => {
       vi.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
       vi.spyOn(placeRepo, 'find').mockResolvedValue([]);
 
-      await expect(service.copyPlacesIntoSeason('season-2', ['p-1'])).rejects.toThrow(
-        UnprocessableEntityException
-      );
+      await expect(service.copyPlacesIntoSeason('season-2', ['p-1'])).rejects.toThrow(UnprocessableEntityException);
     });
 
     // Let through, as the shared copy does every lookup failure (#3379); Nest answers it 500 as before.
@@ -175,9 +172,9 @@ describe('PlaceService', () => {
 
       vi.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
       vi.spyOn(placeRepo, 'find').mockResolvedValue([source]);
-      vi
-        .spyOn(placeRepo, 'create')
-        .mockImplementation((e) => ({ ...(e as object), save: vi.fn().mockResolvedValue(e) }) as never);
+      vi.spyOn(placeRepo, 'create').mockImplementation(
+        (e) => ({ ...(e as object), save: vi.fn().mockResolvedValue(e) }) as never
+      );
 
       await service.copyPlacesIntoSeason('season-2', ['p-1']);
 
@@ -233,11 +230,7 @@ describe('PlaceService', () => {
 
       await service.createPlace({ name: 'Alpha' }, { originalname: 'logo.png', buffer: declaredPng(10, 10) } as never);
 
-      expect(assetService.saveAsset).toHaveBeenCalledWith(
-        'images/places',
-        expect.anything(),
-        'place-logo'
-      );
+      expect(assetService.saveAsset).toHaveBeenCalledWith('images/places', expect.anything(), 'place-logo');
       expect(saved.logos).toEqual([{ guid: 'a-1' }]);
     });
 
@@ -262,16 +255,11 @@ describe('PlaceService', () => {
       } as unknown as Partial<Place>);
 
       const saved = (placeRepo.save as Mock).mock.calls[0][0];
-      expect(saved.links).toEqual([
-        { guid: 'l-existing', label: 'Old' },
-        expect.objectContaining({ label: 'New' })
-      ]);
+      expect(saved.links).toEqual([{ guid: 'l-existing', label: 'Old' }, expect.objectContaining({ label: 'New' })]);
     });
 
     it('leaves existing logos attached when no replacement file is supplied', async () => {
-      vi
-        .spyOn(placeRepo, 'findOne')
-        .mockResolvedValue({ guid: 'p-1', logos: [{ guid: 'a-1' }] } as unknown as Place);
+      vi.spyOn(placeRepo, 'findOne').mockResolvedValue({ guid: 'p-1', logos: [{ guid: 'a-1' }] } as unknown as Place);
       vi.spyOn(placeRepo, 'save').mockImplementation((e) => Promise.resolve(e as Place));
 
       await service.updatePlace('p-1', { name: 'Beta' });
@@ -295,7 +283,8 @@ describe('PlaceService', () => {
     };
     // The manager's finds by entity, each with no rows unless given: the places, their broadcasts (#3397) and their
     // event locations are read in turn, so answering by call order broke when a read was added.
-    const findsOf = (rows: Map<unknown, Array<unknown>>) => vi.fn().mockImplementation(async (entity) => rows.get(entity) ?? []);
+    const findsOf = (rows: Map<unknown, Array<unknown>>) =>
+      vi.fn().mockImplementation(async (entity) => rows.get(entity) ?? []);
 
     it('accepts a comma-separated string and an array alike', async () => {
       const manager = {

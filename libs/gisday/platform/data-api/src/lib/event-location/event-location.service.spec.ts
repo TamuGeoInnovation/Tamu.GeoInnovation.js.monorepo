@@ -82,9 +82,7 @@ describe('EventLocationService', () => {
       const qb = queryBuilder([]);
       vi.spyOn(locationRepo, 'createQueryBuilder').mockReturnValue(qb as never);
 
-      await expect(service.getEventLocationsForSeason('missing')).rejects.toThrow(
-        UnprocessableEntityException
-      );
+      await expect(service.getEventLocationsForSeason('missing')).rejects.toThrow(UnprocessableEntityException);
       // The query must not run at all for a season that is not there.
       expect(qb.getMany).not.toHaveBeenCalled();
     });
@@ -104,9 +102,7 @@ describe('EventLocationService', () => {
     it('surfaces NotFound when no season is active', async () => {
       // `findOneActive` throws rather than resolving falsy, so the 422 guard below it is
       // unreachable and callers see a 404. Asserting the status they actually get.
-      vi
-        .spyOn(seasonService, 'findOneActive')
-        .mockRejectedValue(new NotFoundException('No active season found.'));
+      vi.spyOn(seasonService, 'findOneActive').mockRejectedValue(new NotFoundException('No active season found.'));
 
       await expect(service.getEventLocationsForActiveSeason()).rejects.toThrow(NotFoundException);
     });
@@ -127,18 +123,14 @@ describe('EventLocationService', () => {
     it('rejects a season that does not exist', async () => {
       vi.spyOn(seasonService, 'findOne').mockResolvedValue(null);
 
-      await expect(service.copyEventLocationsIntoSeason('missing', ['el-1'])).rejects.toThrow(
-        UnprocessableEntityException
-      );
+      await expect(service.copyEventLocationsIntoSeason('missing', ['el-1'])).rejects.toThrow(UnprocessableEntityException);
     });
 
     it('rejects when there is nothing to copy', async () => {
       vi.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
       vi.spyOn(locationRepo, 'find').mockResolvedValue([]);
 
-      await expect(service.copyEventLocationsIntoSeason('season-2', ['el-1'])).rejects.toThrow(
-        UnprocessableEntityException
-      );
+      await expect(service.copyEventLocationsIntoSeason('season-2', ['el-1'])).rejects.toThrow(UnprocessableEntityException);
     });
 
     it('strips identity and every relation off the copy before saving it', async () => {

@@ -23,10 +23,7 @@ describe('SeasonDayService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        SeasonDayService,
-        { provide: getRepositoryToken(SeasonDay), useValue: { findOne: vi.fn() } }
-      ]
+      providers: [SeasonDayService, { provide: getRepositoryToken(SeasonDay), useValue: { findOne: vi.fn() } }]
     }).compile();
 
     service = module.get<SeasonDayService>(SeasonDayService);
@@ -107,10 +104,7 @@ describe('SeasonDayService', () => {
     it('excludes inactive events', async () => {
       vi.spyOn(dayRepo, 'findOne').mockResolvedValue({
         guid: 'd-1',
-        events: [
-          event({ guid: 'e-hidden', active: false }),
-          event({ guid: 'e-shown', active: true })
-        ]
+        events: [event({ guid: 'e-hidden', active: false }), event({ guid: 'e-shown', active: true })]
       } as unknown as SeasonDay);
 
       const simplified = await service.getDayEvents('d-1');

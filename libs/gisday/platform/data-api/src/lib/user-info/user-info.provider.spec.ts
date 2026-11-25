@@ -129,9 +129,9 @@ describe('UserInfoProvider', () => {
         ['no app_metadata', { user_metadata: {} }],
         ['no user_metadata', { app_metadata: { gisday: {} } }]
       ])('rejects a body with %s', async (_label, payload) => {
-        await expect(
-          provider.updateUserMetadata('auth0|abc', payload as unknown as GisDayAppMetadata)
-        ).rejects.toThrow(UnprocessableEntityException);
+        await expect(provider.updateUserMetadata('auth0|abc', payload as unknown as GisDayAppMetadata)).rejects.toThrow(
+          UnprocessableEntityException
+        );
       });
 
       /**
@@ -145,18 +145,14 @@ describe('UserInfoProvider', () => {
       it('answers 422, not a TypeError, when app_metadata has no gisday block', async () => {
         const payload = { app_metadata: {}, user_metadata: {} } as unknown as GisDayAppMetadata;
 
-        await expect(provider.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(
-          UnprocessableEntityException
-        );
+        await expect(provider.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(UnprocessableEntityException);
       });
 
       it('rejects a gisday block with no attendee type', async () => {
         const payload = validPayload(ParticipantType.Student);
         delete (payload.app_metadata.gisday as Partial<{ attendeeType: ParticipantType }>).attendeeType;
 
-        await expect(provider.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(
-          UnprocessableEntityException
-        );
+        await expect(provider.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(UnprocessableEntityException);
       });
 
       /**
@@ -171,9 +167,7 @@ describe('UserInfoProvider', () => {
         const payload = validPayload(ParticipantType.Student);
         payload.app_metadata.gisday.attendeeType = 'staff' as ParticipantType;
 
-        await expect(provider.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(
-          UnprocessableEntityException
-        );
+        await expect(provider.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(UnprocessableEntityException);
         expect(management.updateUserMetadata).not.toHaveBeenCalled();
       });
     });
@@ -189,31 +183,22 @@ describe('UserInfoProvider', () => {
         const payload = validPayload(ParticipantType.Student);
         delete (payload.user_metadata as Partial<{ education: unknown }>).education;
 
-        await expect(provider.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(
-          UnprocessableEntityException
-        );
+        await expect(provider.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(UnprocessableEntityException);
       });
 
-      it.each(['id', 'fieldOfStudy', 'classification'] as const)(
-        'rejects an education block missing %s',
-        async (field) => {
-          const payload = validPayload(ParticipantType.Student);
-          payload.user_metadata.education[field] = '';
+      it.each(['id', 'fieldOfStudy', 'classification'] as const)('rejects an education block missing %s', async (field) => {
+        const payload = validPayload(ParticipantType.Student);
+        payload.user_metadata.education[field] = '';
 
-          await expect(provider.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(
-            UnprocessableEntityException
-          );
-        }
-      );
+        await expect(provider.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(UnprocessableEntityException);
+      });
 
       it('rejects "other" institution with no name supplied', async () => {
         const payload = validPayload(ParticipantType.Student);
         payload.user_metadata.education.institution = 'other';
         payload.user_metadata.education.otherInstitution = '';
 
-        await expect(provider.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(
-          UnprocessableEntityException
-        );
+        await expect(provider.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(UnprocessableEntityException);
       });
 
       it('creates the university and stores its guid rather than the free-text name', async () => {
@@ -251,22 +236,15 @@ describe('UserInfoProvider', () => {
         const payload = validPayload(ParticipantType.Academia);
         delete (payload.user_metadata as Partial<{ occupation: unknown }>).occupation;
 
-        await expect(provider.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(
-          UnprocessableEntityException
-        );
+        await expect(provider.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(UnprocessableEntityException);
       });
 
-      it.each(['employer', 'department', 'position'] as const)(
-        'rejects an occupation block missing %s',
-        async (field) => {
-          const payload = validPayload(ParticipantType.Academia);
-          payload.user_metadata.occupation[field] = '';
+      it.each(['employer', 'department', 'position'] as const)('rejects an occupation block missing %s', async (field) => {
+        const payload = validPayload(ParticipantType.Academia);
+        payload.user_metadata.occupation[field] = '';
 
-          await expect(provider.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(
-            UnprocessableEntityException
-          );
-        }
-      );
+        await expect(provider.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(UnprocessableEntityException);
+      });
 
       // Academia shares the occupation block with industry, but an "other" employer is a
       // university rather than an organization.
@@ -291,9 +269,7 @@ describe('UserInfoProvider', () => {
         const payload = validPayload(ParticipantType.Industry);
         delete (payload.user_metadata as Partial<{ occupation: unknown }>).occupation;
 
-        await expect(provider.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(
-          UnprocessableEntityException
-        );
+        await expect(provider.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(UnprocessableEntityException);
       });
 
       it('resolves an "other" employer against the organization table', async () => {
@@ -335,9 +311,7 @@ describe('UserInfoProvider', () => {
       vi.spyOn(universityRepo, 'create').mockReturnValue({ name: 'Rice University' } as never);
       const save = vi.spyOn(universityRepo, 'save').mockResolvedValue({ guid: 'uni-new' } as never);
 
-      await expect(withoutManagement.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(
-        ServiceUnavailableException
-      );
+      await expect(withoutManagement.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(ServiceUnavailableException);
       expect(save).not.toHaveBeenCalled();
     });
 

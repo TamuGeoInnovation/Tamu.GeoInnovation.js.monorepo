@@ -152,7 +152,7 @@ describe('SubmissionService queries, built by typeorm', () => {
     await expect(service.getUserSubmissions({ userGuid: 'u-1', seasonGuid: 's-2026' } as never)).resolves.toEqual([]);
   });
 
-  it("lists every submission of the active season for an admin, newest first", async () => {
+  it('lists every submission of the active season for an admin, newest first', async () => {
     answers(seasonRepo, season());
     answers(compSeasonRepo, compSeason());
 

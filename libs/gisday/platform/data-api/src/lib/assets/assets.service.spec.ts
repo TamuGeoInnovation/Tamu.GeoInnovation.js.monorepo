@@ -30,7 +30,10 @@ describe('AssetsService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AssetsService,
-        { provide: getRepositoryToken(Asset), useValue: { findOne: vi.fn(), create: vi.fn(), count: vi.fn().mockResolvedValue(0) } }
+        {
+          provide: getRepositoryToken(Asset),
+          useValue: { findOne: vi.fn(), create: vi.fn(), count: vi.fn().mockResolvedValue(0) }
+        }
       ]
     }).compile();
 
@@ -130,9 +133,7 @@ describe('AssetsService', () => {
     it('does not create a row when the write fails', async () => {
       (writeFileToDisk as Mock).mockRejectedValue(new Error('disk full'));
 
-      await expect(service.saveAsset('images/places', file, 'place-logo')).rejects.toThrow(
-        'Could not save asset.'
-      );
+      await expect(service.saveAsset('images/places', file, 'place-logo')).rejects.toThrow('Could not save asset.');
       // A row pointing at a file that was never written would fail every later `findOne`.
       expect(assetRepo.create).not.toHaveBeenCalled();
     });
@@ -166,7 +167,7 @@ describe('AssetsService', () => {
   });
 
   describe('.deleteAssetFiles()', () => {
-    it('removes each asset\'s file under APP_DATA', async () => {
+    it("removes each asset's file under APP_DATA", async () => {
       (deleteFileFromDisk as Mock).mockResolvedValue(true);
 
       await service.deleteAssetFiles([

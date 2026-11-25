@@ -96,9 +96,7 @@ describe('ContactService', () => {
     });
 
     it('preserves the parts of the message that are not recipients', async () => {
-      await service.sendMessage(
-        message({ subject: 'Question about GIS Day', text: 'When does it start?' })
-      );
+      await service.sendMessage(message({ subject: 'Question about GIS Day', text: 'When does it start?' }));
 
       expect(sentPayload()).toEqual(
         expect.objectContaining({
@@ -130,10 +128,7 @@ describe('ContactService', () => {
     });
 
     it('still falls back to the configured address for any field left out', async () => {
-      await service.sendMessage(
-        message({ subject: 'Receipt', to: 'registrant@tamu.edu', from: undefined }),
-        true
-      );
+      await service.sendMessage(message({ subject: 'Receipt', to: 'registrant@tamu.edu', from: undefined }), true);
 
       const sent = sentPayload();
 

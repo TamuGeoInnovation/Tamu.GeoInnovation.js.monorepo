@@ -19,7 +19,10 @@ const COLUMNS = new Map<unknown, Array<string>>([
   [Event, ['guid', 'name', 'created', 'updated']],
   [Speaker, ['guid', 'firstName', 'lastName', 'email', 'accountGuid', 'affiliation', 'description', 'created', 'updated']],
   [Organization, ['guid', 'name', 'website', 'contactFirstName', 'contactLastName', 'contactEmail', 'created', 'updated']],
-  [EventBroadcast, ['guid', 'name', 'publicUrl', 'meetingId', 'phoneNumber', 'presenterUrl', 'password', 'created', 'updated']]
+  [
+    EventBroadcast,
+    ['guid', 'name', 'publicUrl', 'meetingId', 'phoneNumber', 'presenterUrl', 'password', 'created', 'updated']
+  ]
 ]);
 
 function dataSource(rows: Map<unknown, Array<Record<string, unknown>>>) {
@@ -62,10 +65,25 @@ describe('SiteCopyService', () => {
           [Event, [{ guid: 'e', name: 'Keynote', speakers: [{ guid: 'p' }], broadcast: { guid: 'b' } }]],
           [
             Speaker,
-            [{ guid: 'p', firstName: 'Ana', lastName: 'Diaz', email: 'ana@example.edu', accountGuid: 'auth0|1', organization: { guid: 'o' } }]
+            [
+              {
+                guid: 'p',
+                firstName: 'Ana',
+                lastName: 'Diaz',
+                email: 'ana@example.edu',
+                accountGuid: 'auth0|1',
+                organization: { guid: 'o' }
+              }
+            ]
           ],
-          [Organization, [{ guid: 'o', name: 'Geography', contactFirstName: 'Bo', contactLastName: 'Li', contactEmail: 'bo@example.edu' }]],
-          [EventBroadcast, [{ guid: 'b', name: 'Live', publicUrl: 'https://zoom/j', presenterUrl: 'https://zoom/s', password: 'x1' }]]
+          [
+            Organization,
+            [{ guid: 'o', name: 'Geography', contactFirstName: 'Bo', contactLastName: 'Li', contactEmail: 'bo@example.edu' }]
+          ],
+          [
+            EventBroadcast,
+            [{ guid: 'b', name: 'Live', publicUrl: 'https://zoom/j', presenterUrl: 'https://zoom/s', password: 'x1' }]
+          ]
         ])
       );
 
@@ -93,7 +111,10 @@ describe('SiteCopyService', () => {
 
     it('writes nothing in a dry run, and says what it would add', async () => {
       const { source, save } = dataSource(new Map([[Season, []]]));
-      const plan = await new SiteCopyService(source).import(file({ tags: [{ guid: 't', name: 'Lunch', season: null }] }), false);
+      const plan = await new SiteCopyService(source).import(
+        file({ tags: [{ guid: 't', name: 'Lunch', season: null }] }),
+        false
+      );
 
       expect(save).not.toHaveBeenCalled();
       expect(plan.applied).toBe(false);
@@ -102,7 +123,10 @@ describe('SiteCopyService', () => {
 
     it('refuses to apply when this site already has a season for the same year that is not the one in the file', async () => {
       const { source, save } = dataSource(new Map([[Season, [{ guid: 'made-by-hand', year: 2026 }]]]));
-      const plan = await new SiteCopyService(source).import(file({ seasons: [{ guid: 'from-file', year: 2026, active: true }] }), true);
+      const plan = await new SiteCopyService(source).import(
+        file({ seasons: [{ guid: 'from-file', year: 2026, active: true }] }),
+        true
+      );
 
       expect(plan.applied).toBe(false);
       expect(plan.blockers).toHaveLength(1);

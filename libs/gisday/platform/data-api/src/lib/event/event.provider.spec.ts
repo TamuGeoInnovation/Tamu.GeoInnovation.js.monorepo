@@ -5,16 +5,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { In, Repository } from 'typeorm';
 
-import {
-  Event,
-  EventBroadcast,
-  EventLocation,
-  Season,
-  Speaker,
-  Sponsor,
-  Tag,
-  UserRsvp
-} from '../entities/all.entity';
+import { Event, EventBroadcast, EventLocation, Season, Speaker, Sponsor, Tag, UserRsvp } from '../entities/all.entity';
 import { SeasonService } from '../season/season.service';
 import { EventProvider } from './event.provider';
 import { UpdateEventDto } from './dto/update-event.dto';
@@ -177,9 +168,9 @@ describe('EventProvider', () => {
     it('throws NotFound when the event does not exist', async () => {
       vi.spyOn(eventRepo, 'findOne').mockResolvedValue(null);
 
-      await expect(
-        provider.updateEvent('missing', { tags: [], speakers: [] } as unknown as UpdateEventDto)
-      ).rejects.toThrow(NotFoundException);
+      await expect(provider.updateEvent('missing', { tags: [], speakers: [] } as unknown as UpdateEventDto)).rejects.toThrow(
+        NotFoundException
+      );
     });
 
     /**
@@ -195,9 +186,9 @@ describe('EventProvider', () => {
       const save = vi.fn().mockResolvedValue({ guid: 'e-1' });
       vi.spyOn(eventRepo, 'create').mockReturnValue({ save } as never);
 
-      await expect(
-        provider.updateEvent('e-1', { name: 'New title' } as unknown as UpdateEventDto)
-      ).resolves.toEqual({ guid: 'e-1' });
+      await expect(provider.updateEvent('e-1', { name: 'New title' } as unknown as UpdateEventDto)).resolves.toEqual({
+        guid: 'e-1'
+      });
 
       const passed = (eventRepo.create as Mock).mock.calls[0][0];
       expect(passed.tags).toEqual([]);
@@ -355,33 +346,26 @@ describe('EventProvider', () => {
     it('throws NotFound when the event does not exist', async () => {
       vi.spyOn(eventRepo, 'findOne').mockResolvedValue(null);
 
-      await expect(provider.updateAttendance('missing', {} as never)).rejects.toThrow(
-        NotFoundException
-      );
+      await expect(provider.updateAttendance('missing', {} as never)).rejects.toThrow(NotFoundException);
     });
   });
 
   describe('.copyEventsIntoSeason()', () => {
-    const seasonWithDays = () =>
-      ({ guid: 'season-2', days: [{ guid: 'd-1' }, { guid: 'd-2' }] }) as unknown as Season;
+    const seasonWithDays = () => ({ guid: 'season-2', days: [{ guid: 'd-1' }, { guid: 'd-2' }] }) as unknown as Season;
 
     // 422, as every other copy refuses a season that does not exist; it was 404 (#3379).
     it('refuses a target season that does not exist', async () => {
       vi.spyOn(seasonRepo, 'createQueryBuilder').mockReturnValue(queryBuilder(null, 'getOne') as never);
 
-      await expect(provider.copyEventsIntoSeason('missing', ['e-1'])).rejects.toThrow(
-        UnprocessableEntityException
-      );
+      await expect(provider.copyEventsIntoSeason('missing', ['e-1'])).rejects.toThrow(UnprocessableEntityException);
     });
 
     it('refuses a season with no days to put the events on', async () => {
-      vi
-        .spyOn(seasonRepo, 'createQueryBuilder')
-        .mockReturnValue(queryBuilder({ guid: 'season-2', days: [] }, 'getOne') as never);
-
-      await expect(provider.copyEventsIntoSeason('season-2', ['e-1'])).rejects.toThrow(
-        UnprocessableEntityException
+      vi.spyOn(seasonRepo, 'createQueryBuilder').mockReturnValue(
+        queryBuilder({ guid: 'season-2', days: [] }, 'getOne') as never
       );
+
+      await expect(provider.copyEventsIntoSeason('season-2', ['e-1'])).rejects.toThrow(UnprocessableEntityException);
     });
 
     /**
@@ -392,16 +376,12 @@ describe('EventProvider', () => {
      * there was nothing to copy. Sibling providers check `.length === 0`, which is the intent.
      */
     it('reports that there was nothing to copy rather than succeeding silently', async () => {
-      vi
-        .spyOn(seasonRepo, 'createQueryBuilder')
-        .mockReturnValue(queryBuilder(seasonWithDays(), 'getOne') as never);
+      vi.spyOn(seasonRepo, 'createQueryBuilder').mockReturnValue(queryBuilder(seasonWithDays(), 'getOne') as never);
       vi.spyOn(eventRepo, 'find').mockResolvedValue([]);
       const create = vi.spyOn(eventRepo, 'create');
 
       // 422, as every other copy refuses when nothing is found; it was 404 (#3379).
-      await expect(provider.copyEventsIntoSeason('season-2', ['missing'])).rejects.toThrow(
-        UnprocessableEntityException
-      );
+      await expect(provider.copyEventsIntoSeason('season-2', ['missing'])).rejects.toThrow(UnprocessableEntityException);
       expect(create).not.toHaveBeenCalled();
     });
 
@@ -418,13 +398,11 @@ describe('EventProvider', () => {
         sponsors: [{ guid: 'sp-1' }]
       } as unknown as Event;
 
-      vi
-        .spyOn(seasonRepo, 'createQueryBuilder')
-        .mockReturnValue(queryBuilder(seasonWithDays(), 'getOne') as never);
+      vi.spyOn(seasonRepo, 'createQueryBuilder').mockReturnValue(queryBuilder(seasonWithDays(), 'getOne') as never);
       vi.spyOn(eventRepo, 'find').mockResolvedValue([source]);
-      vi
-        .spyOn(eventRepo, 'create')
-        .mockImplementation((e) => ({ ...(e as object), save: vi.fn().mockResolvedValue(e) }) as never);
+      vi.spyOn(eventRepo, 'create').mockImplementation(
+        (e) => ({ ...(e as object), save: vi.fn().mockResolvedValue(e) }) as never
+      );
 
       await provider.copyEventsIntoSeason('season-2', ['e-1']);
 
@@ -446,16 +424,14 @@ describe('EventProvider', () => {
      * Whether that is intended -- copy then reschedule -- or a gap is a product question.
      */
     it('places every copied event on the first day of the target season', async () => {
-      vi
-        .spyOn(seasonRepo, 'createQueryBuilder')
-        .mockReturnValue(queryBuilder(seasonWithDays(), 'getOne') as never);
+      vi.spyOn(seasonRepo, 'createQueryBuilder').mockReturnValue(queryBuilder(seasonWithDays(), 'getOne') as never);
       vi.spyOn(eventRepo, 'find').mockResolvedValue([
         { guid: 'e-1', day: { guid: 'old-day-1' } },
         { guid: 'e-2', day: { guid: 'old-day-3' } }
       ] as unknown as Event[]);
-      vi
-        .spyOn(eventRepo, 'create')
-        .mockImplementation((e) => ({ ...(e as object), save: vi.fn().mockResolvedValue(e) }) as never);
+      vi.spyOn(eventRepo, 'create').mockImplementation(
+        (e) => ({ ...(e as object), save: vi.fn().mockResolvedValue(e) }) as never
+      );
 
       await provider.copyEventsIntoSeason('season-2', ['e-1', 'e-2']);
 

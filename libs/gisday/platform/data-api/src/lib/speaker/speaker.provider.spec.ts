@@ -102,9 +102,9 @@ describe('SpeakerProvider', () => {
     const activeSeason = (days: Array<unknown>) => ({ guid: 'active', days }) as unknown as Season;
 
     it('collects the speakers across every event in the season', async () => {
-      vi
-        .spyOn(seasonService, 'findOneActive')
-        .mockResolvedValue(activeSeason([{ events: [{ guid: 'e-1' }, { guid: 'e-2' }] }]) as never);
+      vi.spyOn(seasonService, 'findOneActive').mockResolvedValue(
+        activeSeason([{ events: [{ guid: 'e-1' }, { guid: 'e-2' }] }]) as never
+      );
       vi.spyOn(eventRepo, 'find').mockResolvedValue([
         { guid: 'e-1', speakers: [speaker('s-1')] },
         { guid: 'e-2', speakers: [speaker('s-2')] }
@@ -116,9 +116,9 @@ describe('SpeakerProvider', () => {
     });
 
     it('returns a speaker once even when they appear on several events', async () => {
-      vi
-        .spyOn(seasonService, 'findOneActive')
-        .mockResolvedValue(activeSeason([{ events: [{ guid: 'e-1' }, { guid: 'e-2' }] }]) as never);
+      vi.spyOn(seasonService, 'findOneActive').mockResolvedValue(
+        activeSeason([{ events: [{ guid: 'e-1' }, { guid: 'e-2' }] }]) as never
+      );
       vi.spyOn(eventRepo, 'find').mockResolvedValue([
         { guid: 'e-1', speakers: [speaker('s-1')] },
         { guid: 'e-2', speakers: [speaker('s-1')] }
@@ -143,9 +143,9 @@ describe('SpeakerProvider', () => {
 
     it('keeps incomplete speakers when not asked to filter', async () => {
       vi.spyOn(seasonService, 'findOneActive').mockResolvedValue(activeSeason([{ events: [{ guid: 'e-1' }] }]) as never);
-      vi
-        .spyOn(eventRepo, 'find')
-        .mockResolvedValue([{ guid: 'e-1', speakers: [speaker('s-no-bio', { description: '' })] }] as unknown as Event[]);
+      vi.spyOn(eventRepo, 'find').mockResolvedValue([
+        { guid: 'e-1', speakers: [speaker('s-no-bio', { description: '' })] }
+      ] as unknown as Event[]);
 
       await expect(provider.getSpeakersForActiveSeasonInEvents()).resolves.toHaveLength(1);
     });
@@ -173,9 +173,9 @@ describe('SpeakerProvider', () => {
     });
 
     it('tolerates a day with no events on it', async () => {
-      vi
-        .spyOn(seasonService, 'findOneActive')
-        .mockResolvedValue(activeSeason([{ events: [] }, { events: [{ guid: 'e-1' }] }]) as never);
+      vi.spyOn(seasonService, 'findOneActive').mockResolvedValue(
+        activeSeason([{ events: [] }, { events: [{ guid: 'e-1' }] }]) as never
+      );
       vi.spyOn(eventRepo, 'find').mockResolvedValue([{ guid: 'e-1', speakers: [speaker('s-1')] }] as unknown as Event[]);
 
       await expect(provider.getSpeakersForActiveSeasonInEvents()).resolves.toHaveLength(1);
@@ -189,9 +189,9 @@ describe('SpeakerProvider', () => {
       const lookup = vi
         .spyOn(seasonService, 'findOneWithDaysAndEvents')
         .mockResolvedValue(pastSeason([{ events: [{ guid: 'e-2025' }] }]) as never);
-      vi
-        .spyOn(eventRepo, 'find')
-        .mockResolvedValue([{ guid: 'e-2025', speakers: [speaker('s-2025')] }] as unknown as Event[]);
+      vi.spyOn(eventRepo, 'find').mockResolvedValue([
+        { guid: 'e-2025', speakers: [speaker('s-2025')] }
+      ] as unknown as Event[]);
 
       const result = await provider.getSpeakersForSeasonInEvents('season-2025');
 
@@ -201,14 +201,12 @@ describe('SpeakerProvider', () => {
     });
 
     it('applies the same bio and image filter as the active season', async () => {
-      vi
-        .spyOn(seasonService, 'findOneWithDaysAndEvents')
-        .mockResolvedValue(pastSeason([{ events: [{ guid: 'e-1' }] }]) as never);
-      vi
-        .spyOn(eventRepo, 'find')
-        .mockResolvedValue([
-          { guid: 'e-1', speakers: [speaker('s-complete'), speaker('s-no-image', { images: [] })] }
-        ] as unknown as Event[]);
+      vi.spyOn(seasonService, 'findOneWithDaysAndEvents').mockResolvedValue(
+        pastSeason([{ events: [{ guid: 'e-1' }] }]) as never
+      );
+      vi.spyOn(eventRepo, 'find').mockResolvedValue([
+        { guid: 'e-1', speakers: [speaker('s-complete'), speaker('s-no-image', { images: [] })] }
+      ] as unknown as Event[]);
 
       const result = await provider.getSpeakersForSeasonInEvents('season-2025', true);
 
@@ -467,8 +465,7 @@ describe('SpeakerProvider', () => {
     });
 
     it('counts only the speakers it found', async () => {
-      vi
-        .spyOn(speakerRepo, 'update')
+      vi.spyOn(speakerRepo, 'update')
         .mockResolvedValueOnce({ affected: 1 } as never)
         .mockResolvedValueOnce({ affected: 0 } as never);
 
@@ -521,9 +518,9 @@ describe('SpeakerProvider', () => {
 
       vi.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
       vi.spyOn(speakerRepo, 'find').mockResolvedValue([source]);
-      vi
-        .spyOn(speakerRepo, 'create')
-        .mockImplementation((e) => ({ ...(e as object), save: vi.fn().mockResolvedValue(e) }) as never);
+      vi.spyOn(speakerRepo, 'create').mockImplementation(
+        (e) => ({ ...(e as object), save: vi.fn().mockResolvedValue(e) }) as never
+      );
 
       await provider.copySpeakersIntoSeason('season-2', ['s-1']);
 

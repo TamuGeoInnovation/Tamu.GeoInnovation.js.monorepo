@@ -73,20 +73,18 @@ describe('ClassProvider', () => {
     it('lists classes by code, then section, then professor, comparing numbers as numbers', async () => {
       const row = (code: string, number: string, section: string, professorName: string) =>
         ({ code, number, section, professorName, title: `${code} ${number}` }) as Class;
-      vi
-        .spyOn(classRepo, 'find')
-        .mockResolvedValue([
-          row('GEOG', '205', '599', 'Jean'),
-          row('GEOG', '205', '500', 'Jean'),
-          row('GEOG', '201', '501', 'Breyer'),
-          row('GEOG', '201', '502', 'Breyer'),
-          row('GEOG', '201', '500', 'Breyer'),
-          row('GEOG', '203', '599', 'Jean'),
-          row('GEOG', '203', '503', 'Lafon'),
-          row('GEOG', '1000', '500', 'Zed'),
-          row('ATMO', '201', '500', 'Breyer'),
-          row('GEOG', '203', '503', 'Adams')
-        ]);
+      vi.spyOn(classRepo, 'find').mockResolvedValue([
+        row('GEOG', '205', '599', 'Jean'),
+        row('GEOG', '205', '500', 'Jean'),
+        row('GEOG', '201', '501', 'Breyer'),
+        row('GEOG', '201', '502', 'Breyer'),
+        row('GEOG', '201', '500', 'Breyer'),
+        row('GEOG', '203', '599', 'Jean'),
+        row('GEOG', '203', '503', 'Lafon'),
+        row('GEOG', '1000', '500', 'Zed'),
+        row('ATMO', '201', '500', 'Breyer'),
+        row('GEOG', '203', '503', 'Adams')
+      ]);
 
       const listed = (await provider.getClassesForSeason('season-1')).map(
         (c) => `${c.code} ${c.number} ${c.section} ${c.professorName}`
@@ -205,9 +203,7 @@ describe('ClassProvider', () => {
     it('rejects a season that does not exist', async () => {
       vi.spyOn(seasonService, 'findOne').mockResolvedValue(null);
 
-      await expect(provider.copyClassesIntoSeason('missing', ['c-1'])).rejects.toThrow(
-        UnprocessableEntityException
-      );
+      await expect(provider.copyClassesIntoSeason('missing', ['c-1'])).rejects.toThrow(UnprocessableEntityException);
     });
 
     /**
@@ -222,9 +218,7 @@ describe('ClassProvider', () => {
       vi.spyOn(classRepo, 'find').mockResolvedValue([]);
       const create = vi.spyOn(classRepo, 'create');
 
-      await expect(provider.copyClassesIntoSeason('season-2', ['missing'])).rejects.toThrow(
-        UnprocessableEntityException
-      );
+      await expect(provider.copyClassesIntoSeason('season-2', ['missing'])).rejects.toThrow(UnprocessableEntityException);
       expect(create).not.toHaveBeenCalled();
     });
 
@@ -256,9 +250,7 @@ describe('ClassProvider', () => {
 
   describe('.getClassStudents()', () => {
     it('returns the roster for the class', async () => {
-      vi
-        .spyOn(classRepo, 'findOne')
-        .mockResolvedValue({ guid: 'c-1', students: [{ guid: 'uc-1' }] } as unknown as Class);
+      vi.spyOn(classRepo, 'findOne').mockResolvedValue({ guid: 'c-1', students: [{ guid: 'uc-1' }] } as unknown as Class);
 
       await expect(provider.getClassStudents('c-1')).resolves.toEqual([{ guid: 'uc-1' }]);
     });
@@ -285,9 +277,7 @@ describe('ClassProvider', () => {
     });
 
     it('answers an empty roster for a class with no students', async () => {
-      vi
-        .spyOn(classRepo, 'createQueryBuilder')
-        .mockReturnValue(queryBuilder({ guid: 'c-1', students: [] }) as never);
+      vi.spyOn(classRepo, 'createQueryBuilder').mockReturnValue(queryBuilder({ guid: 'c-1', students: [] }) as never);
 
       await expect(provider.getSimplifiedAttendance('c-1')).resolves.toEqual([]);
     });
@@ -296,11 +286,9 @@ describe('ClassProvider', () => {
       vi.spyOn(classRepo, 'createQueryBuilder').mockReturnValue(
         queryBuilder({ guid: 'c-1', students: [{ accountGuid: 'acct-1' }] }) as never
       );
-      vi
-        .spyOn(checkinRepo, 'createQueryBuilder')
-        .mockReturnValue(
-          queryBuilder([{ checkin_accountGuid: 'acct-1', checkinCount: 3 }], 'getRawMany') as never
-        );
+      vi.spyOn(checkinRepo, 'createQueryBuilder').mockReturnValue(
+        queryBuilder([{ checkin_accountGuid: 'acct-1', checkinCount: 3 }], 'getRawMany') as never
+      );
       vi.spyOn(management, 'getUserMetadata').mockResolvedValue({
         user_info: { id: 'acct-1', given_name: 'Ada', family_name: 'Lovelace', email: 'ada@tamu.edu' },
         user_metadata: { education: { id: '123456789' } }
@@ -325,9 +313,7 @@ describe('ClassProvider', () => {
       vi.spyOn(classRepo, 'createQueryBuilder').mockReturnValue(
         queryBuilder({ guid: 'c-1', students: [{ accountGuid: 'acct-1' }] }) as never
       );
-      vi
-        .spyOn(checkinRepo, 'createQueryBuilder')
-        .mockReturnValue(queryBuilder([], 'getRawMany') as never);
+      vi.spyOn(checkinRepo, 'createQueryBuilder').mockReturnValue(queryBuilder([], 'getRawMany') as never);
       // A roster is for an instructor to mark attendance from. One unreachable Auth0 profile must
       // not take the whole roster down.
       vi.spyOn(management, 'getUserMetadata').mockRejectedValue(new Error('auth0 unreachable'));
@@ -335,23 +321,17 @@ describe('ClassProvider', () => {
       const result = await provider.getSimplifiedAttendance('c-1');
       const roster = isObservable(result) ? await firstValueFrom(result) : result;
 
-      expect(roster).toEqual([
-        expect.objectContaining({ gisday_id: 'acct-1', first_name: 'N/A', events_attended: 0 })
-      ]);
+      expect(roster).toEqual([expect.objectContaining({ gisday_id: 'acct-1', first_name: 'N/A', events_attended: 0 })]);
     });
 
     it('reports zero attendance for a student with no check-ins', async () => {
       vi.spyOn(classRepo, 'createQueryBuilder').mockReturnValue(
         queryBuilder({ guid: 'c-1', students: [{ accountGuid: 'acct-2' }] }) as never
       );
-      vi
-        .spyOn(checkinRepo, 'createQueryBuilder')
-        .mockReturnValue(
-          queryBuilder([{ checkin_accountGuid: 'acct-other', checkinCount: 5 }], 'getRawMany') as never
-        );
-      vi
-        .spyOn(management, 'getUserMetadata')
-        .mockResolvedValue({ user_info: { id: 'acct-2' } } as never);
+      vi.spyOn(checkinRepo, 'createQueryBuilder').mockReturnValue(
+        queryBuilder([{ checkin_accountGuid: 'acct-other', checkinCount: 5 }], 'getRawMany') as never
+      );
+      vi.spyOn(management, 'getUserMetadata').mockResolvedValue({ user_info: { id: 'acct-2' } } as never);
 
       const result = await provider.getSimplifiedAttendance('c-1');
       const roster = isObservable(result) ? await firstValueFrom(result) : result;

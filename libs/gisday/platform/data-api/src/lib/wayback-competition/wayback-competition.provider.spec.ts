@@ -3,12 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { Repository } from 'typeorm';
 
-import {
-  ManholeSubmission,
-  SidewalkSubmission,
-  SignageSubmission,
-  StormwaterSubmission
-} from '../entities/all.entity';
+import { ManholeSubmission, SidewalkSubmission, SignageSubmission, StormwaterSubmission } from '../entities/all.entity';
 import { WaybackCompetitionProvider } from './wayback-competition.provider';
 
 describe('WaybackCompetitionProvider', () => {

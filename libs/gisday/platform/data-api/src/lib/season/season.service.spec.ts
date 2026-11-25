@@ -24,8 +24,7 @@ describe('SeasonService', () => {
   /** Dates land out of order on purpose so an absent sort is visible rather than coincidental. */
   const day = (guid: string, iso: string) => ({ guid, date: new Date(iso) }) as SeasonDay;
 
-  const seasonWithDays = (days: Array<SeasonDay>) =>
-    ({ guid: 'season-1', year: 2026, active: true, days }) as Season;
+  const seasonWithDays = (days: Array<SeasonDay>) => ({ guid: 'season-1', year: 2026, active: true, days }) as Season;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -82,17 +81,15 @@ describe('SeasonService', () => {
     it('tolerates a season with no days', async () => {
       vi.spyOn(seasonRepo, 'find').mockResolvedValue([seasonWithDays([])]);
 
-      await expect(service.findAllOrdered()).resolves.toEqual([
-        expect.objectContaining({ days: [] })
-      ]);
+      await expect(service.findAllOrdered()).resolves.toEqual([expect.objectContaining({ days: [] })]);
     });
   });
 
   describe('.findOneWithOrderedDays()', () => {
     it('sorts the days of the requested season', async () => {
-      vi
-        .spyOn(seasonRepo, 'findOne')
-        .mockResolvedValue(seasonWithDays([day('d-late', '2026-11-20'), day('d-early', '2026-11-18')]));
+      vi.spyOn(seasonRepo, 'findOne').mockResolvedValue(
+        seasonWithDays([day('d-late', '2026-11-20'), day('d-early', '2026-11-18')])
+      );
 
       const season = await service.findOneWithOrderedDays('season-1');
 
@@ -143,9 +140,7 @@ describe('SeasonService', () => {
         ]
       } as unknown as SeasonDay);
 
-      await expect(service.findOneActive()).resolves.toEqual(
-        expect.objectContaining({ firstEventTime: '11:00' })
-      );
+      await expect(service.findOneActive()).resolves.toEqual(expect.objectContaining({ firstEventTime: '11:00' }));
     });
 
     it('leaves firstEventTime null when the first day has no active events', async () => {
@@ -156,17 +151,13 @@ describe('SeasonService', () => {
         events: [{ guid: 'e-hidden', active: false, startTime: '07:00' }]
       } as unknown as SeasonDay);
 
-      await expect(service.findOneActive()).resolves.toEqual(
-        expect.objectContaining({ firstEventTime: null })
-      );
+      await expect(service.findOneActive()).resolves.toEqual(expect.objectContaining({ firstEventTime: null }));
     });
 
     it('leaves firstEventTime null when the season has no days', async () => {
       vi.spyOn(seasonRepo, 'findOne').mockResolvedValue(seasonWithDays([]));
 
-      await expect(service.findOneActive()).resolves.toEqual(
-        expect.objectContaining({ firstEventTime: null })
-      );
+      await expect(service.findOneActive()).resolves.toEqual(expect.objectContaining({ firstEventTime: null }));
       expect(seasonDayRepo.findOne).not.toHaveBeenCalled();
     });
 
@@ -180,9 +171,11 @@ describe('SeasonService', () => {
   describe('.findOneByYear()', () => {
     it('looks the season up by year and returns it in the active season shape', async () => {
       const first = day('d-first', '2025-11-17');
-      vi
-        .spyOn(seasonRepo, 'findOne')
-        .mockResolvedValue({ ...seasonWithDays([day('d-second', '2025-11-18'), first]), year: 2025, active: false } as Season);
+      vi.spyOn(seasonRepo, 'findOne').mockResolvedValue({
+        ...seasonWithDays([day('d-second', '2025-11-18'), first]),
+        year: 2025,
+        active: false
+      } as Season);
       vi.spyOn(seasonDayRepo, 'findOne').mockResolvedValue({
         ...first,
         events: [{ guid: 'e-workshop', active: true, startTime: '09:00' }]
@@ -243,9 +236,7 @@ describe('SeasonService', () => {
       vi.spyOn(seasonRepo, 'create').mockReturnValue({ year: 2027 } as Season);
       vi.spyOn(seasonRepo, 'save').mockResolvedValue({ guid: 'new', year: 2027 } as Season);
 
-      await expect(service.create({ year: 2027 })).resolves.toEqual(
-        expect.objectContaining({ year: 2027 })
-      );
+      await expect(service.create({ year: 2027 })).resolves.toEqual(expect.objectContaining({ year: 2027 }));
       expect(seasonRepo.save).toHaveBeenCalled();
     });
 
@@ -260,9 +251,7 @@ describe('SeasonService', () => {
     it('rejects a non-numeric year before reaching the database', async () => {
       const findOne = vi.spyOn(seasonRepo, 'findOne');
 
-      await expect(service.create({ year: '2027' } as unknown as Partial<Season>)).rejects.toThrow(
-        BadRequestException
-      );
+      await expect(service.create({ year: '2027' } as unknown as Partial<Season>)).rejects.toThrow(BadRequestException);
       expect(findOne).not.toHaveBeenCalled();
     });
 
@@ -294,9 +283,7 @@ describe('SeasonService', () => {
       vi.spyOn(Season, 'createForCurrentYear').mockReturnValue(fresh);
       vi.spyOn(seasonRepo, 'save').mockImplementation((s) => Promise.resolve(s as Season));
 
-      await expect(service.create()).resolves.toEqual(
-        expect.objectContaining({ year: new Date().getFullYear() })
-      );
+      await expect(service.create()).resolves.toEqual(expect.objectContaining({ year: new Date().getFullYear() }));
       expect(increment).not.toHaveBeenCalled();
     });
   });
@@ -305,9 +292,7 @@ describe('SeasonService', () => {
     it('asks for the single most recent season by year', async () => {
       vi.spyOn(seasonRepo, 'find').mockResolvedValue([{ guid: 'prev', year: 2026 } as Season]);
 
-      await expect(service.getPreviousSeason()).resolves.toEqual(
-        expect.objectContaining({ guid: 'prev' })
-      );
+      await expect(service.getPreviousSeason()).resolves.toEqual(expect.objectContaining({ guid: 'prev' }));
       expect(seasonRepo.find).toHaveBeenCalledWith({ order: { year: 'DESC' }, take: 1 });
     });
 
@@ -323,9 +308,9 @@ describe('SeasonService', () => {
     it('reads through a supplied EntityManager when one is given', async () => {
       const manager = { find: vi.fn().mockResolvedValue([{ guid: 'from-manager' } as Season]) };
 
-      await expect(
-        service.getPreviousSeason(manager as never)
-      ).resolves.toEqual(expect.objectContaining({ guid: 'from-manager' }));
+      await expect(service.getPreviousSeason(manager as never)).resolves.toEqual(
+        expect.objectContaining({ guid: 'from-manager' })
+      );
       expect(seasonRepo.find).not.toHaveBeenCalled();
     });
   });
@@ -341,16 +326,10 @@ describe('SeasonService', () => {
       const findOne = vi.spyOn(seasonRepo, 'findOne').mockResolvedValue(null);
 
       await expect(service.deleteEntity('by-string')).rejects.toThrow(NotFoundException);
-      expect(findOne).toHaveBeenLastCalledWith(
-        expect.objectContaining({ where: { guid: 'by-string' } })
-      );
+      expect(findOne).toHaveBeenLastCalledWith(expect.objectContaining({ where: { guid: 'by-string' } }));
 
-      await expect(service.deleteEntity({ where: { guid: 'by-options' } })).rejects.toThrow(
-        NotFoundException
-      );
-      expect(findOne).toHaveBeenLastCalledWith(
-        expect.objectContaining({ where: { guid: 'by-options' } })
-      );
+      await expect(service.deleteEntity({ where: { guid: 'by-options' } })).rejects.toThrow(NotFoundException);
+      expect(findOne).toHaveBeenLastCalledWith(expect.objectContaining({ where: { guid: 'by-options' } }));
     });
   });
 

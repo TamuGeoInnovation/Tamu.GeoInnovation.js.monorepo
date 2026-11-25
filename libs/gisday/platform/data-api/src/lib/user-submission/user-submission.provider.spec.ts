@@ -306,9 +306,9 @@ describe('UserSubmissionProvider', () => {
     });
 
     it('emails the entrant when a reviewer records a decision', async () => {
-      vi
-        .spyOn(submissionRepo, 'findOne')
-        .mockResolvedValue(submission({ participants: [{ email: 'owner@tamu.edu' }, { email: 'coauthor@tamu.edu' }] }));
+      vi.spyOn(submissionRepo, 'findOne').mockResolvedValue(
+        submission({ participants: [{ email: 'owner@tamu.edu' }, { email: 'coauthor@tamu.edu' }] })
+      );
 
       await provider.updateUserSubmission(
         'sub-1',
@@ -655,10 +655,8 @@ describe('UserSubmissionProvider', () => {
     const sends = () => (contactService.sendMessage as Mock).mock.calls;
 
     beforeEach(() => {
-      vi
-        .spyOn(submissionRepo, 'findOne')
-        .mockImplementation((async ({ where }: { where: { guid: string } }) =>
-          rows[where.guid] ? { ...rows[where.guid], participants: [...rows[where.guid].participants] } : null) as never);
+      vi.spyOn(submissionRepo, 'findOne').mockImplementation((async ({ where }: { where: { guid: string } }) =>
+        rows[where.guid] ? { ...rows[where.guid], participants: [...rows[where.guid].participants] } : null) as never);
     });
 
     // #3067: a bulk send reached the API twice, 30 seconds apart (#3065). The same decision again within minutes is that
@@ -922,10 +920,8 @@ describe('UserSubmissionProvider', () => {
     const sends = () => (contactService.sendMessage as Mock).mock.calls;
 
     beforeEach(() => {
-      vi
-        .spyOn(submissionRepo, 'findOne')
-        .mockImplementation((async ({ where }: { where: { guid: string } }) =>
-          rows[where.guid] ? { ...rows[where.guid], participants: [...rows[where.guid].participants] } : null) as never);
+      vi.spyOn(submissionRepo, 'findOne').mockImplementation((async ({ where }: { where: { guid: string } }) =>
+        rows[where.guid] ? { ...rows[where.guid], participants: [...rows[where.guid].participants] } : null) as never);
     });
 
     it('previews one group per competition, skipping and naming any that already has a file, and sends nothing', async () => {
@@ -1159,9 +1155,9 @@ describe('UserSubmissionProvider', () => {
     });
 
     it('lets the entrant edit a submission to a competition since turned off', async () => {
-      vi
-        .spyOn(submissionRepo, 'findOne')
-        .mockResolvedValue(submission({ submissionType: 'paper', season: seasonRunning('poster') }));
+      vi.spyOn(submissionRepo, 'findOne').mockResolvedValue(
+        submission({ submissionType: 'paper', season: seasonRunning('poster') })
+      );
 
       await provider.updateUserSubmission('sub-1', OWNER, {
         title: 'Revised',
@@ -1172,9 +1168,9 @@ describe('UserSubmissionProvider', () => {
     });
 
     it('refuses to move a submission into a competition the season does not run', async () => {
-      vi
-        .spyOn(submissionRepo, 'findOne')
-        .mockResolvedValue(submission({ submissionType: 'poster', season: seasonRunning('poster') }));
+      vi.spyOn(submissionRepo, 'findOne').mockResolvedValue(
+        submission({ submissionType: 'poster', season: seasonRunning('poster') })
+      );
 
       await expect(
         provider.updateUserSubmission('sub-1', OWNER, { submissionType: 'cartography' } as Partial<Submission>)
@@ -1266,11 +1262,9 @@ describe('UserSubmissionProvider', () => {
 
     describe('an edit', () => {
       it('is refused to the entrant once their competition has closed', async () => {
-        vi
-          .spyOn(submissionRepo, 'findOne')
-          .mockResolvedValue(
-            submission({ submissionType: 'poster', season: seasonWith({ posterSubmissionsCloseAt: past }) })
-          );
+        vi.spyOn(submissionRepo, 'findOne').mockResolvedValue(
+          submission({ submissionType: 'poster', season: seasonWith({ posterSubmissionsCloseAt: past }) })
+        );
 
         await expect(provider.updateUserSubmission('sub-1', OWNER, { title: 'Revised' })).rejects.toThrow(
           ForbiddenException
@@ -1279,11 +1273,9 @@ describe('UserSubmissionProvider', () => {
       });
 
       it('is refused when it would move the submission into a competition that has closed', async () => {
-        vi
-          .spyOn(submissionRepo, 'findOne')
-          .mockResolvedValue(
-            submission({ submissionType: 'presentation', season: seasonWith({ posterSubmissionsCloseAt: past }) })
-          );
+        vi.spyOn(submissionRepo, 'findOne').mockResolvedValue(
+          submission({ submissionType: 'presentation', season: seasonWith({ posterSubmissionsCloseAt: past }) })
+        );
 
         await expect(
           provider.updateUserSubmission('sub-1', OWNER, { submissionType: 'poster' } as Partial<Submission>)
@@ -1292,11 +1284,9 @@ describe('UserSubmissionProvider', () => {
       });
 
       it('is taken from the entrant before the deadline', async () => {
-        vi
-          .spyOn(submissionRepo, 'findOne')
-          .mockResolvedValue(
-            submission({ submissionType: 'poster', season: seasonWith({ posterSubmissionsCloseAt: future }) })
-          );
+        vi.spyOn(submissionRepo, 'findOne').mockResolvedValue(
+          submission({ submissionType: 'poster', season: seasonWith({ posterSubmissionsCloseAt: future }) })
+        );
 
         await provider.updateUserSubmission('sub-1', OWNER, { title: 'Revised' });
 
@@ -1304,11 +1294,9 @@ describe('UserSubmissionProvider', () => {
       });
 
       it('is taken from a reviewer after it, so submissions can be reviewed once closed', async () => {
-        vi
-          .spyOn(submissionRepo, 'findOne')
-          .mockResolvedValue(
-            submission({ submissionType: 'poster', season: seasonWith({ posterSubmissionsCloseAt: past }) })
-          );
+        vi.spyOn(submissionRepo, 'findOne').mockResolvedValue(
+          submission({ submissionType: 'poster', season: seasonWith({ posterSubmissionsCloseAt: past }) })
+        );
 
         await provider.updateUserSubmission(
           'sub-1',
@@ -1351,9 +1339,9 @@ describe('UserSubmissionProvider', () => {
       });
 
       it('refuses an edit from the entrant once it has closed, and takes one from a reviewer', async () => {
-        vi
-          .spyOn(submissionRepo, 'findOne')
-          .mockResolvedValue(submission({ submissionType: type, season: seasonWith({ [field]: past }) }));
+        vi.spyOn(submissionRepo, 'findOne').mockResolvedValue(
+          submission({ submissionType: type, season: seasonWith({ [field]: past }) })
+        );
 
         await expect(provider.updateUserSubmission('sub-1', OWNER, { title: 'Revised' })).rejects.toThrow(
           ForbiddenException
@@ -1417,11 +1405,9 @@ describe('UserSubmissionProvider', () => {
 
       it('takes the department, not the field of study, for anyone but a student', async () => {
         vi.spyOn(submissionRepo, 'find').mockResolvedValue([submission({ accountGuid: 'faculty' })]);
-        vi
-          .spyOn(profiles, 'profilesOf')
-          .mockResolvedValue(
-            new Map([['faculty', profile('faculty', { app_metadata: { gisday: { attendeeType: 'academia' } } }) as never]])
-          );
+        vi.spyOn(profiles, 'profilesOf').mockResolvedValue(
+          new Map([['faculty', profile('faculty', { app_metadata: { gisday: { attendeeType: 'academia' } } }) as never]])
+        );
 
         const [entry] = await provider.getSubmissionsForSeason('season-1');
 
@@ -1440,13 +1426,11 @@ describe('UserSubmissionProvider', () => {
       });
 
       it('reads every submitter in one batch, each account once, not a request per account (#2925)', async () => {
-        vi
-          .spyOn(submissionRepo, 'find')
-          .mockResolvedValue([
-            submission({ guid: 'a', accountGuid: 'student' }),
-            submission({ guid: 'b', accountGuid: 'student' }),
-            submission({ guid: 'c', accountGuid: 'faculty' })
-          ]);
+        vi.spyOn(submissionRepo, 'find').mockResolvedValue([
+          submission({ guid: 'a', accountGuid: 'student' }),
+          submission({ guid: 'b', accountGuid: 'student' }),
+          submission({ guid: 'c', accountGuid: 'faculty' })
+        ]);
         vi.spyOn(profiles, 'profilesOf').mockResolvedValue(
           new Map([
             ['student', profile('student') as never],

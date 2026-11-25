@@ -1,8 +1,4 @@
-import {
-  PROFILE_EMAIL_KIND,
-  SESSION_DETAILS_EMAIL_KIND,
-  SLIDES_REQUEST_EMAIL_KIND
-} from '@tamu-gisc/gisday/common';
+import { PROFILE_EMAIL_KIND, SESSION_DETAILS_EMAIL_KIND, SLIDES_REQUEST_EMAIL_KIND } from '@tamu-gisc/gisday/common';
 
 import { EmailSendLog } from './email-send-log';
 import { SpeakerEditModule } from './speaker-edit.module';
@@ -160,9 +156,7 @@ describe('every speaker email records what it sent, and its preview shows it (#3
       {} as never,
       {
         find: vi.fn(async ({ where }) =>
-          [avery, blair, noAddress]
-            .filter((s) => where.guid._value.includes(s.guid))
-            .map((s) => ({ ...s, season: days }))
+          [avery, blair, noAddress].filter((s) => where.guid._value.includes(s.guid)).map((s) => ({ ...s, season: days }))
         )
       } as never,
       {} as never,
@@ -197,7 +191,12 @@ describe('every speaker email records what it sent, and its preview shows it (#3
   });
 
   it("records a session's details sent together once for each speaker on it, about that session", async () => {
-    const service = new SessionDetailsEmailService(events as never, new RepeatGuard(new Table<SpeakerEmailClaim>() as never), contact() as never, log);
+    const service = new SessionDetailsEmailService(
+      events as never,
+      new RepeatGuard(new Table<SpeakerEmailClaim>() as never),
+      contact() as never,
+      log
+    );
 
     await service.send('e-1', 'gisday.tamu.edu', undefined, undefined, { speakers: ['sp-av', 'sp-bl'], together: true });
 
@@ -225,7 +224,13 @@ describe('every speaker email records what it sent, and its preview shows it (#3
         expires: new Date('2026-11-22T18:00:00Z')
       }))
     };
-    const service = new SlidesRequestEmailService(events as never, new RepeatGuard(new Table<SpeakerEmailClaim>() as never), contact() as never, links as never, log);
+    const service = new SlidesRequestEmailService(
+      events as never,
+      new RepeatGuard(new Table<SpeakerEmailClaim>() as never),
+      contact() as never,
+      links as never,
+      log
+    );
 
     await service.send('e-1', 'gisday.tamu.edu', undefined, undefined, ['sp-bl']);
 

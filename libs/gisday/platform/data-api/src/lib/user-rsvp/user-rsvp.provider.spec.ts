@@ -85,9 +85,7 @@ describe('UserRsvpProvider', () => {
       const create = vi.spyOn(rsvpRepo, 'create');
       const save = vi.spyOn(rsvpRepo, 'save');
 
-      await expect(provider.insertUserRsvp('missing', null, 'acct-1')).rejects.toThrow(
-        UnprocessableEntityException
-      );
+      await expect(provider.insertUserRsvp('missing', null, 'acct-1')).rejects.toThrow(UnprocessableEntityException);
       expect(create).not.toHaveBeenCalled();
       expect(save).not.toHaveBeenCalled();
     });
@@ -104,9 +102,7 @@ describe('UserRsvpProvider', () => {
       vi.spyOn(rsvpRepo, 'findOne').mockResolvedValue({ guid: 'r-existing' } as UserRsvp);
       const save = vi.spyOn(rsvpRepo, 'save');
 
-      await expect(provider.insertUserRsvp('e-1', null, 'acct-1')).rejects.toThrow(
-        UnprocessableEntityException
-      );
+      await expect(provider.insertUserRsvp('e-1', null, 'acct-1')).rejects.toThrow(UnprocessableEntityException);
       expect(save).not.toHaveBeenCalled();
     });
 
@@ -128,9 +124,7 @@ describe('UserRsvpProvider', () => {
 
       await provider.insertUserRsvp('e-1', 'type-attending', 'acct-1');
 
-      expect(rsvpRepo.create).toHaveBeenCalledWith(
-        expect.not.objectContaining({ rsvpType: expect.anything() })
-      );
+      expect(rsvpRepo.create).toHaveBeenCalledWith(expect.not.objectContaining({ rsvpType: expect.anything() }));
     });
   });
 
@@ -168,12 +162,10 @@ describe('UserRsvpProvider', () => {
      * The lookup is scoped to the account as well as the event, so one attendee cannot cancel
      * another's RSVP by posting their event guid. Asserting it so the scoping is not dropped.
      */
-    it('cannot remove another attendee\'s RSVP', async () => {
+    it("cannot remove another attendee's RSVP", async () => {
       const findOne = vi.spyOn(rsvpRepo, 'findOne').mockResolvedValue(null);
 
-      await expect(provider.deleteRsvpForUser('e-1', 'acct-attacker')).rejects.toThrow(
-        NotFoundException
-      );
+      await expect(provider.deleteRsvpForUser('e-1', 'acct-attacker')).rejects.toThrow(NotFoundException);
       expect(findOne).toHaveBeenCalledWith({
         where: { event: { guid: 'e-1' }, accountGuid: 'acct-attacker' }
       });

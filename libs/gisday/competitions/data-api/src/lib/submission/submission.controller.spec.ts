@@ -55,12 +55,18 @@ describe('SubmissionController', () => {
   });
 
   describe('needs a signed-in user', () => {
-    it.each(['getMySubmissions', 'getUserSubmissions', 'getSubmissionImages', 'getSubmissionImage', 'getAdminSubmissions', 'getSubmission', 'getAll', 'insert'])(
-      '%s',
-      (method) => {
-        expect(guardsOf(method)).toContain(JwtGuard);
-      }
-    );
+    it.each([
+      'getMySubmissions',
+      'getUserSubmissions',
+      'getSubmissionImages',
+      'getSubmissionImage',
+      'getAdminSubmissions',
+      'getSubmission',
+      'getAll',
+      'insert'
+    ])('%s', (method) => {
+      expect(guardsOf(method)).toContain(JwtGuard);
+    });
 
     it.each(['getAdminSubmissions', 'getAll'])('%s also needs permission to read every submission', (method) => {
       expect(guardsOf(method)).toContain(PermissionsGuard);
@@ -74,7 +80,10 @@ describe('SubmissionController', () => {
     it('ignores any userGuid in the request', async () => {
       await controller.insert(bob, { ...body, userGuid: 'auth0|ann' }, []);
 
-      expect(service.createCompetitionSubmission).toHaveBeenCalledWith(expect.objectContaining({ userGuid: 'auth0|bob' }), []);
+      expect(service.createCompetitionSubmission).toHaveBeenCalledWith(
+        expect.objectContaining({ userGuid: 'auth0|bob' }),
+        []
+      );
     });
 
     it('refuses a season that does not exist with 422, not 500', async () => {
@@ -96,7 +105,10 @@ describe('SubmissionController', () => {
 
         await controller.insert(ann, { ...body, guid: id }, []);
 
-        expect(service.createCompetitionSubmission).toHaveBeenCalledWith(expect.objectContaining({ guid: id, userGuid: 'auth0|ann' }), []);
+        expect(service.createCompetitionSubmission).toHaveBeenCalledWith(
+          expect.objectContaining({ guid: id, userGuid: 'auth0|ann' }),
+          []
+        );
       });
 
       it('returns the submission already saved, and saves nothing', async () => {
@@ -236,7 +248,9 @@ describe('SubmissionController', () => {
       await expect(controller.getSubmissionImage(organizer, { guid: 's-1' }, {})).rejects.toThrow(NotFoundException);
 
       expect(service.getOne).toHaveBeenCalledTimes(1);
-      expect(service.getOne).toHaveBeenCalledWith(expect.objectContaining({ relations: expect.objectContaining({ blobs: true }) }));
+      expect(service.getOne).toHaveBeenCalledWith(
+        expect.objectContaining({ relations: expect.objectContaining({ blobs: true }) })
+      );
       expect(service.getSubmissionByGuid).not.toHaveBeenCalled();
     });
   });
@@ -252,7 +266,8 @@ describe('SubmissionController upload limits', () => {
   let createCompetitionSubmission: Mock;
 
   /** A photograph of `bytes` bytes: a JPEG's header, padded. */
-  const jpegOf = (bytes: number) => Buffer.concat([declaredJpeg(640, 480), Buffer.alloc(Math.max(0, bytes - declaredJpeg(640, 480).length))]);
+  const jpegOf = (bytes: number) =>
+    Buffer.concat([declaredJpeg(640, 480), Buffer.alloc(Math.max(0, bytes - declaredJpeg(640, 480).length))]);
 
   /** Each photo a number of bytes of JPEG, or the bytes themselves; every one sent as `photo.jpg`, `image/jpeg`. */
   const send = (...photos: Array<number | Buffer>) => {
@@ -261,7 +276,11 @@ describe('SubmissionController upload limits', () => {
     form.append('value', '{"kind":"monument"}');
     form.append('location', '{"latitude":30.6,"longitude":-96.3}');
     photos.forEach((photo, i) =>
-      form.append(`head${i + 1}`, new Blob([new Uint8Array(typeof photo === 'number' ? jpegOf(photo) : photo)], { type: 'image/jpeg' }), 'photo.jpg')
+      form.append(
+        `head${i + 1}`,
+        new Blob([new Uint8Array(typeof photo === 'number' ? jpegOf(photo) : photo)], { type: 'image/jpeg' }),
+        'photo.jpg'
+      )
     );
 
     return fetch(`${url}/competitions/submissions`, { method: 'POST', body: form });
@@ -343,7 +362,9 @@ describe('SubmissionController upload limits', () => {
       const res = await send(declaredPng(640, 480));
 
       expect(res.status).toBe(201);
-      expect(createCompetitionSubmission.mock.calls[0][1]).toEqual([expect.objectContaining({ mimeType: 'image/png', fieldName: 'head1' })]);
+      expect(createCompetitionSubmission.mock.calls[0][1]).toEqual([
+        expect.objectContaining({ mimeType: 'image/png', fieldName: 'head1' })
+      ]);
     });
   });
 });

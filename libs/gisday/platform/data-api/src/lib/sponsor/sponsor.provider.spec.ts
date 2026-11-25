@@ -1,5 +1,10 @@
 import type { Mock } from 'vitest';
-import { BadRequestException, InternalServerErrorException, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import {
+  BadRequestException,
+  InternalServerErrorException,
+  NotFoundException,
+  UnprocessableEntityException
+} from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 
@@ -61,9 +66,7 @@ describe('SponsorProvider', () => {
       vi.spyOn(sponsorRepo, 'find').mockResolvedValue([{ guid: 'sp-1' } as Sponsor]);
 
       await expect(provider.getSponsorsForSeason('season-1')).resolves.toEqual([{ guid: 'sp-1' }]);
-      expect(sponsorRepo.find).toHaveBeenCalledWith(
-        expect.objectContaining({ where: { season }, order: { name: 'ASC' } })
-      );
+      expect(sponsorRepo.find).toHaveBeenCalledWith(expect.objectContaining({ where: { season }, order: { name: 'ASC' } }));
     });
 
     /**
@@ -73,9 +76,7 @@ describe('SponsorProvider', () => {
     it('answers 422, not 500, for a season that does not exist', async () => {
       vi.spyOn(seasonService, 'findOne').mockResolvedValue(null);
 
-      await expect(provider.getSponsorsForSeason('missing')).rejects.toThrow(
-        UnprocessableEntityException
-      );
+      await expect(provider.getSponsorsForSeason('missing')).rejects.toThrow(UnprocessableEntityException);
     });
   });
 
@@ -83,18 +84,14 @@ describe('SponsorProvider', () => {
     it('rejects a season that does not exist', async () => {
       vi.spyOn(seasonService, 'findOne').mockResolvedValue(null);
 
-      await expect(provider.copyEntitiesIntoSeason('missing', ['sp-1'])).rejects.toThrow(
-        UnprocessableEntityException
-      );
+      await expect(provider.copyEntitiesIntoSeason('missing', ['sp-1'])).rejects.toThrow(UnprocessableEntityException);
     });
 
     it('rejects when none of the requested sponsors exist', async () => {
       vi.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
       vi.spyOn(sponsorRepo, 'find').mockResolvedValue([]);
 
-      await expect(provider.copyEntitiesIntoSeason('season-2', ['sp-1'])).rejects.toThrow(
-        UnprocessableEntityException
-      );
+      await expect(provider.copyEntitiesIntoSeason('season-2', ['sp-1'])).rejects.toThrow(UnprocessableEntityException);
     });
 
     it('strips identity from the sponsor and its logos', async () => {
@@ -108,9 +105,9 @@ describe('SponsorProvider', () => {
 
       vi.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
       vi.spyOn(sponsorRepo, 'find').mockResolvedValue([source]);
-      vi
-        .spyOn(sponsorRepo, 'create')
-        .mockImplementation((e) => ({ ...(e as object), save: vi.fn().mockResolvedValue(e) }) as never);
+      vi.spyOn(sponsorRepo, 'create').mockImplementation(
+        (e) => ({ ...(e as object), save: vi.fn().mockResolvedValue(e) }) as never
+      );
 
       await provider.copyEntitiesIntoSeason('season-2', ['sp-1']);
 
@@ -151,11 +148,7 @@ describe('SponsorProvider', () => {
 
       await provider.createSponsor({ name: 'Esri' }, { originalname: 'logo.png', buffer: declaredPng(10, 10) } as never);
 
-      expect(assetService.saveAsset).toHaveBeenCalledWith(
-        'images/sponsors',
-        expect.anything(),
-        'sponsor-logo'
-      );
+      expect(assetService.saveAsset).toHaveBeenCalledWith('images/sponsors', expect.anything(), 'sponsor-logo');
       expect(saved.logos).toEqual([{ guid: 'a-1' }]);
     });
   });
@@ -164,15 +157,11 @@ describe('SponsorProvider', () => {
     it('throws NotFound when the sponsor does not exist', async () => {
       vi.spyOn(sponsorRepo, 'findOne').mockResolvedValue(null);
 
-      await expect(provider.updateSponsor('missing', { name: 'Esri' })).rejects.toThrow(
-        NotFoundException
-      );
+      await expect(provider.updateSponsor('missing', { name: 'Esri' })).rejects.toThrow(NotFoundException);
     });
 
     it('leaves existing logos attached when no replacement file is supplied', async () => {
-      vi
-        .spyOn(sponsorRepo, 'findOne')
-        .mockResolvedValue({ guid: 'sp-1', logos: [{ guid: 'a-1' }] } as unknown as Sponsor);
+      vi.spyOn(sponsorRepo, 'findOne').mockResolvedValue({ guid: 'sp-1', logos: [{ guid: 'a-1' }] } as unknown as Sponsor);
       vi.spyOn(sponsorRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
 
       await provider.updateSponsor('sp-1', { name: 'Esri UK' });
@@ -183,13 +172,14 @@ describe('SponsorProvider', () => {
     });
 
     it('replaces the logo when a file is supplied', async () => {
-      vi
-        .spyOn(sponsorRepo, 'findOne')
-        .mockResolvedValue({ guid: 'sp-1', logos: [] } as unknown as Sponsor);
+      vi.spyOn(sponsorRepo, 'findOne').mockResolvedValue({ guid: 'sp-1', logos: [] } as unknown as Sponsor);
       vi.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'a-2' } as never);
       vi.spyOn(sponsorRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
 
-      await provider.updateSponsor('sp-1', { name: 'Esri' }, { originalname: 'logo.png', buffer: declaredPng(10, 10) } as never);
+      await provider.updateSponsor('sp-1', { name: 'Esri' }, {
+        originalname: 'logo.png',
+        buffer: declaredPng(10, 10)
+      } as never);
 
       expect((sponsorRepo.save as Mock).mock.calls[0][0].logos).toEqual([{ guid: 'a-2' }]);
     });
@@ -199,9 +189,7 @@ describe('SponsorProvider', () => {
      * string and a sponsor could never be switched off from the admin form.
      */
     it('switches a sponsor off and on from form data or JSON', async () => {
-      vi
-        .spyOn(sponsorRepo, 'findOne')
-        .mockResolvedValue({ guid: 'sp-1', active: true, logos: [] } as unknown as Sponsor);
+      vi.spyOn(sponsorRepo, 'findOne').mockResolvedValue({ guid: 'sp-1', active: true, logos: [] } as unknown as Sponsor);
       vi.spyOn(sponsorRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
 
       await provider.updateSponsor('sp-1', { active: 'false' } as unknown as Partial<Sponsor>);
@@ -212,9 +200,7 @@ describe('SponsorProvider', () => {
     });
 
     it('leaves the active flag alone when an update does not mention it', async () => {
-      vi
-        .spyOn(sponsorRepo, 'findOne')
-        .mockResolvedValue({ guid: 'sp-1', active: false, logos: [] } as unknown as Sponsor);
+      vi.spyOn(sponsorRepo, 'findOne').mockResolvedValue({ guid: 'sp-1', active: false, logos: [] } as unknown as Sponsor);
       vi.spyOn(sponsorRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
 
       await provider.updateSponsor('sp-1', { name: 'Esri' });
@@ -226,9 +212,11 @@ describe('SponsorProvider', () => {
      * #2638. The size decides a CSS class on the public page, so only the four it draws are kept.
      */
     it('keeps a logo size the page draws and leaves out any other', async () => {
-      vi
-        .spyOn(sponsorRepo, 'findOne')
-        .mockResolvedValue({ guid: 'sp-1', logoSize: 'regular', logos: [] } as unknown as Sponsor);
+      vi.spyOn(sponsorRepo, 'findOne').mockResolvedValue({
+        guid: 'sp-1',
+        logoSize: 'regular',
+        logos: []
+      } as unknown as Sponsor);
       vi.spyOn(sponsorRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
 
       await provider.updateSponsor('sp-1', { logoSize: 'extra-large' });
@@ -240,9 +228,7 @@ describe('SponsorProvider', () => {
     });
 
     it('does not let the caller overwrite the guid', async () => {
-      vi
-        .spyOn(sponsorRepo, 'findOne')
-        .mockResolvedValue({ guid: 'sp-1', logos: [] } as unknown as Sponsor);
+      vi.spyOn(sponsorRepo, 'findOne').mockResolvedValue({ guid: 'sp-1', logos: [] } as unknown as Sponsor);
       vi.spyOn(sponsorRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
 
       await provider.updateSponsor('sp-1', { guid: 'sp-hijack', name: 'Esri' } as Partial<Sponsor>);

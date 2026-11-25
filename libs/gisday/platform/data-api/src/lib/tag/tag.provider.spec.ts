@@ -79,9 +79,7 @@ describe('TagProvider', () => {
 
       await provider.getTagsForActiveSeason();
 
-      expect(tagRepo.find).toHaveBeenCalledWith(
-        expect.objectContaining({ where: { season: { guid: 'season-active' } } })
-      );
+      expect(tagRepo.find).toHaveBeenCalledWith(expect.objectContaining({ where: { season: { guid: 'season-active' } } }));
     });
   });
 
@@ -108,9 +106,7 @@ describe('TagProvider', () => {
       vi.spyOn(seasonService, 'findOne').mockResolvedValue(null);
       const save = vi.spyOn(tagRepo, 'save');
 
-      await expect(provider.copyTagsIntoSeason('missing', ['t-1'])).rejects.toThrow(
-        UnprocessableEntityException
-      );
+      await expect(provider.copyTagsIntoSeason('missing', ['t-1'])).rejects.toThrow(UnprocessableEntityException);
       expect(save).not.toHaveBeenCalled();
     });
 
@@ -118,9 +114,7 @@ describe('TagProvider', () => {
       vi.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
       vi.spyOn(tagRepo, 'find').mockResolvedValue([]);
 
-      await expect(provider.copyTagsIntoSeason('season-2', ['t-1'])).rejects.toThrow(
-        UnprocessableEntityException
-      );
+      await expect(provider.copyTagsIntoSeason('season-2', ['t-1'])).rejects.toThrow(UnprocessableEntityException);
     });
 
     it('strips identity from the copy and attaches the target season', async () => {
