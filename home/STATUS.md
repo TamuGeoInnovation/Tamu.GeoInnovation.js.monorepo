@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle, listening.
+- **Batch g109 (workspace: #1340, then #2058)** since 8:20 PM Central: checking #1340 is not already done.
 
 ## Finished
 - **Batch g108 (workspace: #1604, #1025)** (report `home/reports/2026-11-24-g108.md`): #1604 already fixed (duplicate of #2267, PR 2273), nothing built. Branch ready, `chore/1025-lf-endings`: the 12 files to LF and a lint.yml line-endings step, red 12 then green, check Exit 0 (5 projects).
