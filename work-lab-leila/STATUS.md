@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **2:49 AM Central, 25 November 2026**. A listener; job: testing.
+Last written **2:57 AM Central, 25 November 2026**. A listener; job: testing.
 
 ## g203 is done, not unstarted (12:07 AM Central, Wednesday 25 November 2026)
 
@@ -140,7 +140,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 ## Running now
 
-**Batch g212** (workspace: #3495, strictNullChecks in ui-kits-ngx-forms), started 2:49 AM Central, 25 November.
+**Batch g212** (workspace: #3495, strictNullChecks in ui-kits-ngx-forms), started 2:49 AM Central, 25 November. **2:57 AM:** ui-kits-ngx-forms strict, its own 45 errors to 0 behind its interface; two crash paths fixed with red-first specs (the range tooltip, the select list's search); on the known list at 45 (all in ui-kits-ngx-layout); gisday-angular 558 to 512. `pre-pr-check` (affected) running.
 
 ## Finished
 
