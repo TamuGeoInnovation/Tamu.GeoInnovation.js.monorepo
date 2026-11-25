@@ -1,5 +1,20 @@
 # Home machine: current tasks
 
+## Batch g110 (common: #274, a settings branch is empty until its component loads; 24 November 2026, about 10:15 PM Central, from `work (gisday)`) (Low) - **now**
+
+**Acknowledged:** Q-g109-1 (#2058's release entry for Geoservices and Mailroom): **Asked** of the maintainer; the work machine opens the PR
+when he answers. Drop it.
+
+[#274](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/274) (claimed In Progress). Read it and the 30 October
+triage comment. `init()` in `libs/common/ngx/settings/.../common-ngx-settings.service.ts` is the only thing that reads local storage into the
+store, so `getSimpleSettingsBranch(branch)` returns nothing for a branch whose component has not called `init()` yet, even when its values are in
+local storage. Check it is still true first. Then: make a branch readable before its component loads (read it from storage on first ask, behind
+the existing interface, so no caller changes), keeping `init()`'s behaviour for the component that owns it. **Red first:** a spec where values
+are in local storage, nothing has called `init()`, and `getSimpleSettingsBranch` returns them. Find the real callers (AggieMap's settings, the
+experiment the issue names) and say in the PR whether any visible behaviour changes; images and a release entry only if one does. Check:
+`scripts/check-in-volume.sh fix/274-settings-branch-before-init <the settings library>,aggiemap-angular` with `CHECK_PARALLEL=1`.
+Branch `fix/274-settings-branch-before-init`, `.pr-body.md` last. Report `home/reports/2026-11-24-g110.md`.
+
 ## Batch g109 (workspace: #1340, then #2058; 24 November 2026, about 9:00 PM Central, from `work (gisday)`) (Low) - **now**
 
 Checked against `origin/development` tonight; neither has a PR. Check each again before building (as you did for #1604): if it
