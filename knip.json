@@ -16,5 +16,12 @@
     "scripts/**/*.{js,mjs,ts}",
     "test/**/*.ts"
   ],
-  "project": ["apps/**/*.{ts,js,mjs,mts}", "libs/**/*.{ts,js,mjs,mts}", "tools/**/*.{js,mjs,ts}", "scripts/**/*.{js,mjs,ts}", "test/**/*.ts", "*.{js,mjs,mts,ts}"]
+  "project": [
+    "apps/**/*.{ts,js,mjs,mts}",
+    "libs/**/*.{ts,js,mjs,mts}",
+    "tools/**/*.{js,mjs,ts}",
+    "scripts/**/*.{js,mjs,ts}",
+    "test/**/*.ts",
+    "*.{js,mjs,mts,ts}"
+  ]
 }
