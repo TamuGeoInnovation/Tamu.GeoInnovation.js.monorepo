@@ -1,5 +1,15 @@
 # Home machine: current tasks
 
+## Batch g112 (common: #274, delete the unused settings-branch reader; 24 November 2026, about 11:00 PM Central, from `work (gisday)`) (Low) - **after g111**
+
+**Decided by the maintainer, Q-g110-1: A.** Delete `getSimpleSettingsBranch` from `common-ngx-settings.service.ts` and the stale Jest mock of it in
+`user-submissions.component.spec.ts` (left behind by #1822), and close #274 with that PR. Before deleting, `git grep` the whole repository once more
+for any caller (templates included); if one has appeared, stop and report it as Q-g112-1. Branch `chore/274-remove-settings-branch-reader`, the check
+for the settings library and every project whose spec you touch (with `CHECK_PARALLEL=1`), `no-visible-change`, `.pr-body.md` last, `Closes #274`.
+Report `home/reports/2026-11-24-g112.md`.
+
+**Also decided:** Q-g109-1 (#2058's notes): **A**, Geoservices and Mailroom got their own notes files; the PR is 3465. Drop it.
+
 ## Batch g111 (workspace: #3062's second half, the one-off scan outside GIS Day; 24 November 2026, about 10:40 PM Central, from `work (gisday)`) (Low) - **now**
 
 **Acknowledged:** Q-g110-1 (#274 has no callers left): **Asked** of the maintainer, and #274 is flagged `needs-maintainer` with your finding.
