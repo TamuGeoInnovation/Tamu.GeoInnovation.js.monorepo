@@ -14,7 +14,8 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle, listening.
+- **Batch a17 (aggiemap: #3468, then #3467)** since 10:31 PM Central: missed earlier tonight, so it goes first. Then a19, a22.
+- **Batch g115 part 1 (#3495, the shared libraries)** in parallel, in `C:/TAMU/wt-3495s`; checks run one at a time.
 
 ## Finished
 - **Batch g114 (#3495, #985)** (report `home/reports/2026-11-25-g114.md`): branch ready, `fix/3495-platform-api-strict-null-checks` at `dbe9cb725`. strictNullChecks on (162 errors: 130 here fixed, 32 in common libraries listed), no-unnecessary-condition an error (212 fixed), behaviour changes each with a red-first spec; check Exit 0 (3 projects).
