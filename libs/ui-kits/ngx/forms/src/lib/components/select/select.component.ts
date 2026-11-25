@@ -47,7 +47,7 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
    * takes the whole field (#2256).
    */
   // eslint-disable-next-line @angular-eslint/no-input-rename
-  protected readonly _value = model<T | string>(undefined, { alias: 'value' });
+  protected readonly _value = model<T | string | undefined>(undefined, { alias: 'value' });
 
   public readonly formControlName = input('default');
 
@@ -57,7 +57,7 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
     return this._value();
   }
 
-  public set value(value: T | string) {
+  public set value(value: T | string | null | undefined) {
     this._value.set(value === null || value === undefined || value === ('undefined' as unknown) ? undefined : value);
     this._onChange(value === null || value === undefined || value === ('undefined' as unknown) ? undefined : value);
     this._onTouched();
@@ -67,22 +67,22 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
   /**
    * Iterable data collection that will be used to generate the drop-down options.
    */
-  public readonly data = input<T[]>(undefined);
+  public readonly data = input<T[] | undefined>(undefined);
 
   /**
    * Dot-notation string representing the evaluated property used in the display of the option element.
    */
-  public readonly displayTemplate = input<string>(undefined);
+  public readonly displayTemplate = input<string | undefined>(undefined);
 
   /**
    * Dot-notation string representing the evaluated property used in the option data model.
    */
-  public readonly valueTemplate = input<string>(undefined);
+  public readonly valueTemplate = input<string | undefined>(undefined);
 
   /**
    * Custom string used as the initial/undefined default option.
    */
-  public readonly placeholder = input<string>(undefined);
+  public readonly placeholder = input<string | undefined>(undefined);
 
   /**
    * Determines interactivity availability.
@@ -96,7 +96,8 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
   /**
    * Event emitted when the value of the select input element is changed.
    */
-  public readonly changed = output<T | string>();
+  // undefined once the choice is cleared (#3495).
+  public readonly changed = output<T | string | undefined>();
 
   /**
    * Lets the option be found by typing as well as picked from the list (#2656). The list opens when the field is
@@ -188,7 +189,7 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
-  private _onChange = (value: T | string) => {};
+  private _onChange = (value: T | string | undefined) => {};
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   private _onTouched = () => {};
@@ -197,7 +198,7 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
    * Responsible for emitting the model changed event to the parent component.
    */
   public changeEvent() {
-    this.changed.emit(this.value);
+    this.changed.emit(this._value());
   }
 
   /**
@@ -217,7 +218,7 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
    * Shows a value from the form without reporting it back as a change or a touch: a form loaded with a record would
    * otherwise count as changed the moment it opened (#2964).
    */
-  public writeValue(value: T | string) {
+  public writeValue(value: T | string | null | undefined) {
     this._value.set(value === null || value === undefined || value === ('undefined' as unknown) ? undefined : value);
     this.cd.markForCheck();
   }
