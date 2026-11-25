@@ -1,5 +1,66 @@
 # Home machine: current tasks
 
+## Batch a27 (aggiemap: #602 and #1173 are the same two lines of copied markup) (Medium) - **now**
+
+Two issues, one cause, and I measured both on `development` tonight so you start from numbers rather than a report.
+
+- [#602](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/602): the Lactation Rooms popup
+  has no **Directions To Here**. It is **9 of 19 templates**, not one.
+- [#1173](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1173): not every popup offers a
+  **copy link**. It is **11 of 19**.
+
+**They are the same two lines**, written by hand in every popup that has them:
+
+```html
+<tamu-gisc-copy-field [text]="shareUrl"></tamu-gisc-copy-field>
+
+<div class="button" (tamuGiscActivate)="startDirections()">Directions To Here</div>
+```
+
+**One finding to start from, because it is the opposite of what I expected.** The **event maps'** generic markdown
+popups carry the copy link and **AggieMap's own copies of the same two components do not**. I assumed the event maps
+would be the deficient ones, as in #3536 and #2758, and I was wrong. Check rather than assume for the rest.
+
+### The work is a decision first, then a component
+
+**Do not add the two lines to eleven more templates.** That is a tenth and eleventh copy of the thing that caused
+both issues.
+
+1. **Decide which popups should have each**, and write the reasoning down. They are not all the same:
+   - **lactation, accessible, restroom** look like the clear gap - arguably the people most likely to want directions.
+   - **construction** and **parking-kiosk** are arguable: a construction *polygon* has no door to route to.
+   - **the two base templates** and the **markdown pair** render whatever a definition hands them, so anything added
+     there appears on every layer that uses them, wanted or not.
+   - A **copy link needs a stable identifier**. If a feature has none, the link reopens nothing, and a button that
+     silently does not work is worse than no button. Check before adding one.
+2. **Then one shared popup footer**, taking which parts it shows, in `libs/aggiemap/ngx/popups` where the next caller
+   will look for it. [#3486](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3486) is
+   already "one markdown popup pair, shared by AggieMap and the event maps" - if your footer makes that smaller, say
+   so in the report; if it makes it harder, stop and tell me before going further.
+
+### Checking it is right rather than present
+
+**A Directions button that appears and cannot route is this week's recurring failure** - #2758's Bus Routes tab
+appeared and drew nothing because the service came from the wrong injector. So for each popup you give the button to,
+**open one feature and plan the trip**, and say in the report which you tried. A screenshot of a button is not
+evidence that it works.
+
+### Captures and reporting
+
+This changes what a visitor sees, so before and after for at least the three clear ones (lactation, accessible,
+restroom) plus one control that should not change. Into `docs/screenshots/<slug>/`, with a release-notes entry.
+
+`scripts/pre-pr-check.sh fix/602-1173-popup-footer '<title>' .pr-body.md <projects>,aggiemap-angular`, its last line in
+the report and the body. Push to the fork; **no pull request** - mine.
+
+Say **"branch ready: fix/602-1173-popup-footer"**, or **"stopped: <why>"** if the decision turns out to need the
+maintainer.
+
+`home/reports/2026-11-25-a27.md`: which popups you gave each to and why, which you deliberately left, which features
+you actually routed to, and the check's `Exit` line.
+
+**Questions come to me** (`work (aggiemap)`), with options and a recommendation. **Set any issue's Priority yourself.**
+
 ## Batch g116 (gisday: #1669 then #1478, GIS Day on OnPush, then zoneless; 25 November 2026, about 12:15 AM Central, from `work (gisday)`) (Medium) - **after g115**
 
 The maintainer: keep every machine busy through the backlog, and **check each issue first for being done, superseded or no longer relevant** (if so,
