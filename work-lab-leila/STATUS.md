@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **12:12 AM Central, 25 November 2026**. A listener; job: testing.
+Last written **12:25 AM Central, 25 November 2026**. A listener; job: testing.
 
 ## g203 is done, not unstarted (12:07 AM Central, Wednesday 25 November 2026)
 
@@ -140,10 +140,11 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 ## Running now
 
-**Batch a26** (aggiemap, High: #3539, a check that says "deploy a newer build" instead of failing), started 12:12 AM Central, 25 November. Taken before g204 (Medium), which follows it. **My a24 "regression" was wrong:** the tailgating checks merged with their fix (PR 3511) and the deployed builds predate it.
+**Batch a26 reported** at 12:25 AM Central. Next: gisday's g204.
 
 ## Finished
 
+- **Batch a26 (aggiemap, High): #3539, an old build reported as "deploy a newer build"** (12:12 to 12:25 AM, 25 November). **branch ready: `test/3539-skip-old-builds`** (`996f30c76`, `pre-pr-check.sh` `Exit 0`). A check names the change it came with in `deployed-changes.json`; `scripts/smoke-deployed.sh` asks git whether the environment's newest tag carries it; `skipUntilDeployed` skips, in `bus.spec.ts`'s words, only on a positive answer. The four #2758 checks use it. Proven both ways on both environments. **Correction:** a24's tailgating "regression" was this, an old build. Report `reports/2026-11-25-a26.md`.
 - **Batch a24 (aggiemap, High): #3369, the drawing budget under release-tier load** (11:32 PM on 24 November to 12:03 AM on 25 November). **Neither check failed here**: under the release tier at about 94% CPU, indoor-track-parking's layer order took 15.6 to 17.5 s and break-summer's Lot 100g popup 29.2 s; alone, 13.0 s and 23.2 s. This machine is too fast to reach the budget, so #3369's 72.9 s (against the popup's 60 s) stays the evidence (Q-a24-1). **A regression found:** the Football Tailgating map has no Bus Routes tab, on development and production (Q-a24-2). No branch. Report `reports/2026-11-25-a24.md`.
 - **Batch a23 (aggiemap, Medium): #2521, the Road Closures legend** (11:26 to 11:29 PM, 24 November). **#2521 no longer reproduces; no branch needed.** Its four known-failure entries were already removed on 5 November (`ab1f14000`, #2615). With no allowance, graduation fall and spring pass `map-layers.spec.ts` (lists, draws and keys every layer) on development (`dev-2026-11-24-2`) and production (`prod-2026-11-24-2`), all four runs. The fork's `fix/2521-road-closures-legend` is obsolete (Q-a23-1). Report `reports/2026-11-25-a23.md`.
 - **Batch a21 (aggiemap, Medium): #2849, the 11 November release's missing after captures** (11:15 PM to 11:26 PM, 24 November). **branch ready: `docs/2849-release-afters`** (`3cd13f89f`, `pre-pr-check.sh` `Exit 0`). Both captures on dev (`dev-2026-11-24-2`, as production), 800 by 600: the drop-down closed (#2844); Eller to the MSC solved and drawn, 0.51 miles (#2843). **#2846 does not reproduce on dev** (0.26 miles, drawn): commented on #2846, not closed. `collate-release-notes.mjs --check` does not read dated release files (Q-a21-1). Report `reports/2026-11-25-a21.md`.
@@ -683,4 +684,4 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 192 and 191 again (8 November), aggiemap's 31, 30 and 29 (9 November), and aggiemap's 32, 33, 34 and 35 (10 November), 36 and 37 (11 November), 38 (13 November), 39, 40, 41, 42, 46, 43, 44, 49, 50, 47, 48, 51, 52, 53, 54, 55, 56, 57 and 58 (14 November), 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 72, 73, 74, 71, 75, 76, #3044's screenshots, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 87b, 89, 91, 92, 93, 94, 88, 95, 90, 98, 99, 96, 102, 100, 101, 103, 104 and 105 (15 November), 106, 107, 108, 109, 110, 111, 112, 113, 112b, 113b, 114, 115, 116, 117, 118, 119, 120, 121, 122 and 123 (16 November), 124, 125, 126, 127, 128 and 129 (17 November), 130 to 134 (18 November), 135 to 139 (19 November), 193 to 198 (23 November), 199 to 203, g201, a18, g202, a20, g203, a21 and a23 (24 November), a24 (25 November) (139, 141 to 192 reported; 140 needs the maintainer; 151 not run, see report 137) (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 192 and 191 again (8 November), aggiemap's 31, 30 and 29 (9 November), and aggiemap's 32, 33, 34 and 35 (10 November), 36 and 37 (11 November), 38 (13 November), 39, 40, 41, 42, 46, 43, 44, 49, 50, 47, 48, 51, 52, 53, 54, 55, 56, 57 and 58 (14 November), 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 72, 73, 74, 71, 75, 76, #3044's screenshots, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 87b, 89, 91, 92, 93, 94, 88, 95, 90, 98, 99, 96, 102, 100, 101, 103, 104 and 105 (15 November), 106, 107, 108, 109, 110, 111, 112, 113, 112b, 113b, 114, 115, 116, 117, 118, 119, 120, 121, 122 and 123 (16 November), 124, 125, 126, 127, 128 and 129 (17 November), 130 to 134 (18 November), 135 to 139 (19 November), 193 to 198 (23 November), 199 to 203, g201, a18, g202, a20, g203, a21 and a23 (24 November), a24 and a26 (25 November) (139, 141 to 192 reported; 140 needs the maintainer; 151 not run, see report 137) (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
