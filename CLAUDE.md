@@ -535,6 +535,10 @@ Never write the notes afterwards in a separate pull request: on 28 September tha
 without images when the pull request merged, and meant going back for them after the release reached
 production (#1132).
 
+**CI checks this** (`require-release-notes.yml`, #1264): a pull request that changes what the screenshots
+check counts as user-visible fails *Has a release-notes entry* until it adds a file there, or carries the
+`no-visible-change` label. The same job runs `collate-release-notes.mjs --check` on every entry.
+
 **One file each, rather than editing `unreleased.md`, because two pull requests adding at the same
 line conflict every time.** On 20 October six in one day each had to be resolved by hand, always in
 the same two places, always "keep both" — and a release-notes conflict resolved at speed is how an
