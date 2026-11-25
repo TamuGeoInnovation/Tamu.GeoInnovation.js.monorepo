@@ -14,10 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch a27 (#602, #1173)**: footer built in `C:/TAMU/wt-602`; captures and trips in progress. #3555 filed for #1173's copy links.
-- Then g116.
+- **Batch g116 (#1669, #1478)** next.
 
 ## Finished
+- **Batch a27 (#602, #1173)** (report `home/reports/2026-11-25-a27.md`): branch ready, `fix/602-1173-popup-footer` `529b0b8a5`, pre-pr-check Exit 0. One shared footer; Directions on lactation, entrances, restrooms, kiosks, each routed by hand; copy links blocked on identifiers (#3555).
 - **Batch g115 (#3495, #3524)** (report `home/reports/2026-11-25-g115.md`): both branch ready, pre-pr-check Exit 0. `fix/3495-shared-strict-null-checks` (closes #3524) and `fix/3495-competitions-strict-null-checks` (closes #3495, stacked).
 - **#3536 / #2816 (a19, decided A)** (report `home/reports/2026-11-24-a19.md`, update): branch ready, `fix/2816-empty-popup-rows` `ade7dc710`. One popup-data resolver; cross-path test red then green; check Exit 0; share-link images (rack and construction fixed, EV identical). Filed #3536 and #3551 (dates one day early).
 - **Batch a22 (aggiemap: #3477, #3478)** (report `home/reports/2026-11-25-a22.md`): both branch ready, checks Exit 0. `refactor/3477-one-coordinate-reader` `058c86791`; `refactor/3478-one-distance` `b41ca55ca` (the two distances agree to 0.0001%). They conflict in one file. Q-a22-1.
