@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle, listening.
+- **Batch a56** (#3695, retry a clone that fails on Docker file sharing), since 1:52 PM Central, 25 November. Worktree `wt-a56`.
 
 ## Finished
 - **Batch a54** (report `home/reports/2026-11-25-a54.md`, 1:48 PM Central): #3474, one inventory reader; no route or baseline key moves (byte-identical on production). Branch `refactor/3474-one-builder-inventory-reader` at `a2d1246cb`; pre-pr-check Exit 0. One question.
