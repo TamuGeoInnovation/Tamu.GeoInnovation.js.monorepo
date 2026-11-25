@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch a38 (#3655, #3656, #3658)**, since 7:08 AM Central: three smoke checks in `mobile.spec.ts` and `perspective.spec.ts`, branch `test/3655-3656-3658-smoke-checks`. a33 held until PR 3587 merges.
+- Nothing. Idle, listening. a33 held until PR 3587 merges.
 
 ## Finished
+- **Batch a38 (#3655, #3656, #3658)** (report `home/reports/2026-11-25-a38.md`, 7:37 AM Central): PR 3660 open, pre-pr-check Exit 0. #71 parked with test.fail(); #387 does not reproduce in Chromium (page scrolls 95 px, sidebar closes), so its check passes; 3D source and offset asserted. Each watched fail. Q-a38-1.
 - **Batch a37** (report `home/reports/2026-11-25-a37.md`, 6:57 AM Central): twenty old issues checked, read-only. None fixed or moot; 5 need the maintainer, 15 still true (six of them stale or narrower than written). Three questions, five follow-ups.
 - **Batch a35 (#2600)** (report `home/reports/2026-11-25-a35.md`, 6:46 AM Central): PR 3654 open, pre-pr-check Exit 0 on affected. Ten satellite campuses built by `satelliteCampus()` in `campus/`; every resolved definition unchanged (snapshot spec, proven able to fail).
 - **Batch g120 (#3643)** (report `home/reports/2026-11-25-g120.md`, 5:59 AM Central): `fix/3643-highschool-site-guard` `6380831a6` branch ready, pre-pr-check Exit 0. Red then green (UCGIS /highschool to /), txgisday.org portal unchanged; images and release entry. #3638 (PR 3645) not merged, so no skip removed.
