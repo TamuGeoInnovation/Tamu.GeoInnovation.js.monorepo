@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { EventDefinitions, ParkingCategory } from '@tamu-gisc/ts/events/ngx';
+import { EventDefinitions } from '@tamu-gisc/ts/events/ngx';
 
 import {
   DiscoverApplication,
@@ -15,6 +15,23 @@ import { MainMapDiscoverApplications } from '../../definitions/main-map-discover
  * map pages and therefore excluded from the grouped parking columns.
  */
 export const FEATURED_PARKING_ID = 'ts-main-parking';
+
+/**
+ * Whether a listing shows this map, given whether development-only features are on (#3470).
+ *
+ * A map with `visible: false` - which is also how a `developmentOnly` map arrives here (#2712) - is listed only where
+ * those features are on. This was written four ways across three pages, and the fourth was a bug: the Parking &
+ * Transportation page took the visible-filtered list, which hides a development-only map on development too. That is
+ * exactly what #2449 fixed on the category pages, and it was latent here only because no development-only parking map
+ * exists yet.
+ *
+ * `isTesting` comes from `TestingService.isTesting`, so `?as=production` hides these maps as it does everywhere else.
+ * Deliberately not `readsDevelopmentGisServer()`, which answers a different question - which GIS server to read, with
+ * localhost counting as production - and would hide them from anyone running the application locally.
+ */
+export function isListed(application: { visible?: boolean }, isTesting: boolean): boolean {
+  return isTesting || application.visible !== false;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -66,31 +83,6 @@ export class DiscoveryService {
     return [...definitions, ...MainMapDiscoverApplications];
   }
 
-  /**
-   * Returns parking maps grouped into the named columns used by the Parking Maps page. Maps without
-   * an explicit `parkingCategory` fall back to the `general` column so nothing is dropped. Each
-   * column is sorted alphabetically by name.
-   */
-  public getParkingApplicationsByCategory(): Record<ParkingCategory, InternalDiscoverApplication[]> {
-    const groups: Record<ParkingCategory, InternalDiscoverApplication[]> = {
-      general: [],
-      business: [],
-      permit: []
-    };
-
-    this.getVisibleInternalDiscoverApplications()
-      .filter((app) => app.mapTypes.includes('parking') && app.id !== FEATURED_PARKING_ID)
-      .forEach((app) => {
-        groups[app.parkingCategory ?? 'general'].push(app);
-      });
-
-    (Object.keys(groups) as ParkingCategory[]).forEach((key) => {
-      groups[key].sort((a, b) => a.name.localeCompare(b.name));
-    });
-
-    return groups;
-  }
-
   public getExternalDiscoverApplications(): ExternalDiscoverApplication[] {
     return ExternalDiscoverApplications;
   }
@@ -130,8 +122,18 @@ export class DiscoveryService {
     return resolved.map(({ app }) => app);
   }
 
+  /** Every map a listing shows, given whether development-only features are on. The one rule (#3470). */
+  public listedApplications(isTesting: boolean): InternalDiscoverApplication[] {
+    return this.getInternalDiscoverApplications().filter((app) => isListed(app, isTesting));
+  }
+
+  /**
+   * Every map a listing shows on production. The same rule with `isTesting` false, kept because quick links and the
+   * upcoming-events strip ask for exactly that on every environment; a listing of a *page* wants
+   * `listedApplications(isTesting)` instead.
+   */
   public getVisibleInternalDiscoverApplications(): InternalDiscoverApplication[] {
-    return this.getInternalDiscoverApplications().filter((app) => app.visible !== false);
+    return this.listedApplications(false);
   }
 
   /**

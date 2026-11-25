@@ -9,8 +9,6 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
-import { EventPopups } from '../modules/popups/popups';
-
 // The order the map draws its layers in, top first (#2059): `EventService` adds them to the map in the
 // reverse of this order, each above the last. Accessible Parking comes before the lots because both accessible
 // spaces sit inside lots (100g and 100j), so with the lots above them their fill would cover the wheelchair
@@ -50,7 +48,6 @@ export const IndoorTrackParkingColdLayerSources: LayerSource[] = [
     id: IndoorTrackParkingDefinitions.ACCESSIBLE_PARKING.id,
     title: IndoorTrackParkingDefinitions.ACCESSIBLE_PARKING.name,
     url: IndoorTrackParkingDefinitions.ACCESSIBLE_PARKING.url,
-    popupComponent: EventPopups.MarkdownPopupComponent,
     visible: true,
     listMode: 'show',
     // Overridden (#1992): the service's renderer, copied from Soccer and Softball's, gives its wheelchair
@@ -69,20 +66,6 @@ export const IndoorTrackParkingColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: IndoorTrackParkingDefinitions.PARKING.id,
     url: IndoorTrackParkingDefinitions.PARKING.url,
-    popupComponent: EventPopups.MarkdownPopupComponent,
-    popupData: {
-      name: {
-        field: 'lotname',
-        collapsed: true
-      },
-      /**
-       * Notes requested from column: IndoorN
-       */
-      description: {
-        field: 'indoorn',
-        collapsed: true
-      }
-    },
     visible: true,
     listMode: 'show',
     native: {
@@ -93,11 +76,6 @@ export const IndoorTrackParkingColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: IndoorTrackParkingDefinitions.BUILDING.id,
     url: IndoorTrackParkingDefinitions.BUILDING.url,
-    popupComponent: EventPopups.MarkdownPopupComponent,
-    popupData: {
-      name: IndoorTrackParkingDefinitions.BUILDING.name,
-      description: '{attributes.sp_sh_notes}'
-    },
     visible: true,
     listMode: 'show',
     native: {

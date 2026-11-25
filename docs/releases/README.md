@@ -278,6 +278,12 @@ git push origin prod-2026-09-29
 **This refuses a commit carrying no `dev-*` tag.** That refusal is the point: it is what makes "we
 shipped what we tested" a fact rather than an assumption.
 
+**It also refuses a commit already tagged `prod-*`**, and names the tag. A release cut and then
+abandoned leaves its dev tag as the day's newest, so `prod` with no sha could resolve to a build already
+on production and record it as a second release
+([#1215](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1215)). If you
+really are redeploying the same build, `--force '<reason>'` records it, as below.
+
 **`--force` takes a reason, and writes it into the tag.** Overriding is sometimes right - on 22
 October the commit promoted carried three GIS Day changes on top of the tested one, and shipping it
 was correct. But a forced tag used to read exactly like one that passed, so the release record said

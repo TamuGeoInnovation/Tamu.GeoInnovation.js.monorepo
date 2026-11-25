@@ -201,6 +201,62 @@ test.describe('2D and 3D', () => {
   });
 
   /**
+   * The 3D Buildings layer reads the service it is meant to, placed as it is meant to be (#3658, for #542 and #555).
+   *
+   * The test above asserts only that the layer loads, so the service it reads or its vertical placement could change, or
+   * be changed back, with nothing failing. Both are written out here, as the deployed map has them, from the layer in the
+   * scene itself rather than from the source file. Today they are the 2019 SketchUp scene, last updated 8 February
+   * 2019, lowered 107 m for the whole layer (`libs/aggiemap/ngx/common/src/lib/layer-sources/layer-sources.ts:24,32-36`).
+   * #542 (the republished buildings) and #555 (per-building base elevation) will each change one of them: that pull
+   * request changes the expected value here, so the change is a line in its diff.
+   */
+  test('3D Buildings reads the 2019 SketchUp scene, lowered 107 m', async ({ page }) => {
+    test.setTimeout(300_000);
+    await blockAnalytics(page);
+    await page.goto(MAP);
+    await waitForSettledFraming(page, `${MAP} as loaded`);
+
+    const toggle = page.locator(TOGGLE).first();
+
+    await toggle.click();
+    await expect(toggle, 'the toggle never said the map was in 3D').toHaveText('3D', { timeout: 60_000 });
+
+    const buildings = () =>
+      page.evaluate((id) => {
+        type Layer = {
+          id: string;
+          url?: string;
+          loaded?: boolean;
+          elevationInfo?: { mode?: string; offset?: number; unit?: string };
+        };
+        const scene = document.querySelector('arcgis-scene') as unknown as {
+          view?: { map?: { allLayers?: { toArray(): Layer[] } } };
+        } | null;
+        const layer = scene?.view?.map?.allLayers?.toArray().find((l) => l.id === id);
+
+        return layer?.loaded
+          ? {
+              url: layer.url,
+              mode: layer.elevationInfo?.mode,
+              offset: layer.elevationInfo?.offset,
+              unit: layer.elevationInfo?.unit
+            }
+          : null;
+      }, 'three-d-buildings-scene-layer');
+
+    await expect
+      .poll(buildings, { message: 'the 3D Buildings layer never loaded in the scene', timeout: 150_000, intervals: [2_000] })
+      .not.toBeNull();
+
+    expect(await buildings(), 'the 3D Buildings layer reads another service, or is placed differently').toEqual({
+      url: 'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/SketchupCampus_2082019/SceneServer',
+      mode: 'absolute-height',
+      offset: -107,
+      unit: 'meters'
+    });
+  });
+
+  /**
    * In 3D, a basemap the scene cannot draw is shown as unavailable (#1740).
    *
    * The campus vector tiles are in EPSG:32139 and a scene is a Web Mercator globe, so the scene draws

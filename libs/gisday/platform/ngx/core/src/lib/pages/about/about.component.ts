@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { GISDAY_SITE, SiteHasPipe, ImagePreviewComponent } from '@tamu-gisc/gisday/platform/ngx/common';
 import { Observable, filter, map, shareReplay, startWith } from 'rxjs';
@@ -31,7 +31,6 @@ const numberDictionary = {
   selector: 'tamu-gisc-about',
   templateUrl: './about.component.html',
   styleUrls: ['./about.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ImagePreviewComponent, SiteHasPipe, SpeakerAvatarComponent, RouterLink, AsyncPipe, CentralDatePipe, AssetUrlPipe]
 })
 export class AboutComponent implements OnInit {

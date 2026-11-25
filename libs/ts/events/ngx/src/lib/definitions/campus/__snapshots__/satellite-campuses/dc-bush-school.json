@@ -1,0 +1,152 @@
+{
+  "configuration": {
+    "applicationName": "Washington DC Campus",
+    "buildingPopup": {
+      "abbreviation": "bldgabbr",
+      "address": {
+        "city": "city",
+        "state": "DC",
+        "street": "address",
+        "zip": "zip"
+      },
+      "layerId": "dc-bush-school-property-layer",
+      "number": "number",
+      "title": [
+        "bldgname",
+        "bldgabbr"
+      ]
+    },
+    "eventDates": [],
+    "hideLayerToggle": true,
+    "id": "dc-bush-school",
+    "introductionText": "Map of the Texas A&M Bush School of Government & Public Service campus in Washington, D.C.",
+    "mapCenter": [
+      -77.037605,
+      38.903422
+    ],
+    "name": "DC / Bush School",
+    "searchSources": [
+      {
+        "displayTemplate": "{attributes.bldgname} ({attributes.number})",
+        "featuresLocation": "features",
+        "name": "Property",
+        "popupComponent": "[EventPopups.CampusBuildingPopupComponent]",
+        "queryParams": {
+          "f": "json",
+          "outFields": "*",
+          "outSR": 4326,
+          "resultRecordCount": 5,
+          "returnGeometry": true,
+          "scoringWhere": {
+            "keys": [
+              "bldgname",
+              "bldgabbr"
+            ],
+            "operators": [
+              "LIKE",
+              "LIKE"
+            ],
+            "transformations": [
+              "UPPER",
+              "UPPER"
+            ],
+            "wildcards": [
+              "startsWith",
+              "startsWith"
+            ]
+          },
+          "spatialRel": "esriSpatialRelIntersects",
+          "where": {
+            "keys": [
+              "bldgname",
+              "bldgabbr",
+              "number"
+            ],
+            "operators": [
+              "LIKE",
+              "LIKE",
+              "LIKE"
+            ],
+            "transformations": [
+              "UPPER",
+              "UPPER",
+              "UPPER"
+            ],
+            "wildcards": [
+              "includes",
+              "includes",
+              "includes"
+            ]
+          }
+        },
+        "scoringKeys": [
+          "attributes.bldgabbr",
+          "attributes.number",
+          "attributes.bldgname"
+        ],
+        "searchActive": true,
+        "source": "dc-bush-school-property",
+        "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/DCBush/FeatureServer/0",
+        "urlQueryParam": "bldg",
+        "urlQueryParamAliases": [
+          "abbrv"
+        ]
+      }
+    ],
+    "shortApplicationName": "DC / Bush School",
+    "sidebarTabs": [
+      "features"
+    ],
+    "zoom": 19
+  },
+  "discover": {
+    "description": "Map of the Texas A&M University at Washington, DC campus.",
+    "id": "dc-bush-school",
+    "mapType": "satellite-campus",
+    "name": "DC / Bush School",
+    "source": "internal",
+    "thumbnail": "./assets/images/campus/dc-bush-school.jpg",
+    "type": "satellite-campus"
+  },
+  "options": [],
+  "references": {
+    "BASEMAP": "dc-bush-school-basemap-layer",
+    "PROPERTY": "dc-bush-school-property-layer"
+  },
+  "sources": [
+    {
+      "essential": true,
+      "id": "dc-bush-school-basemap-layer",
+      "listMode": "hide",
+      "title": "DC / Bush School Basemap",
+      "type": "vector-tile",
+      "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/DCBush/VectorTileServer",
+      "visible": true
+    },
+    {
+      "essential": true,
+      "id": "dc-bush-school-property-layer",
+      "listMode": "hide",
+      "native": {
+        "elevationInfo": {
+          "mode": "relative-to-ground",
+          "offset": 1
+        },
+        "labelsVisible": false,
+        "legendEnabled": false,
+        "maxScale": 0,
+        "minScale": 100000,
+        "outFields": [
+          "*"
+        ],
+        "popupEnabled": false
+      },
+      "popupComponent": "[EventPopups.CampusBuildingPopupComponent]",
+      "title": "Property",
+      "type": "feature",
+      "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/DCBush/FeatureServer/0",
+      "visible": true
+    }
+  ],
+  "type": "general-map"
+}

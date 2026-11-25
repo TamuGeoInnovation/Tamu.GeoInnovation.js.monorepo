@@ -1,9 +1,8 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'tamu-gisc-manhole-mapping',
   templateUrl: './manhole-mapping.component.html',
-  styleUrls: ['./manhole-mapping.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager
+  styleUrls: ['./manhole-mapping.component.scss']
 })
 export class ManholeMappingComponent {}

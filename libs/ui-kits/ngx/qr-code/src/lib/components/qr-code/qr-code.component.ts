@@ -3,6 +3,7 @@ import { NgIf } from '@angular/common';
 import { encode } from 'uqr';
 
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { downloadFile } from '@tamu-gisc/common/utils/ui';
 
 /**
  * A QR code for `text`, drawn as an SVG so it stays sharp at any size, from a projector to a phone
@@ -100,10 +101,12 @@ export class QrCodeComponent {
       return;
     }
 
-    const link = document.createElement('a');
-    link.href = png;
-    link.download = `${this.downloadName()}.png`;
-    link.click();
+    // Saved through the shared downloadFile (#3483), which adds the link to the page, clicks it and releases its object URL.
+    // qrPng gives a data URL, so its bytes are read out as a Blob first: handed the URL itself, downloadFile would save
+    // the URL's text as the "PNG".
+    const bytes = await (await fetch(png)).blob();
+
+    downloadFile(bytes, `${this.downloadName()}.png`, 'image/png');
   }
 
   /**
