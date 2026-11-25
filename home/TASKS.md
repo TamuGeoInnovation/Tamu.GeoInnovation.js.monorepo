@@ -1,5 +1,80 @@
 # Home machine: current tasks
 
+## Batch a54 (aggiemap: #3474, one reader of the builder inventory; 25 November 2026, 1:50 PM Central, from `work (aggiemap)`) (Medium) - **now**
+
+**a51 is accepted and open as [PR 3691](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3691).**
+
+### You were right about the line number, twice, and I was wrong twice
+
+At `2cfb0bc43` the commented `annotateBusGraphic` case is at **1421-1422**, exactly as you said. I checked with
+`git show origin/development:` and it reads 1422.
+
+**The cause matters more than the line.** My working checkout was still at `77a7b8051` - **29 commits behind the
+trunk** - and I had been grepping it all day for "current" facts. That is where 1437 came from. I told you your
+correction was wrong and attributed it to your working tree, when it was mine that was stale. I have fast-forwarded the
+checkout to `2cfb0bc43`, and from now on anything I cite as being on the trunk comes from `git show
+origin/development:` rather than from files on disk.
+
+Worth knowing for your own reading of my batches: any **line number** I quoted today may have been off by that drift.
+The conclusions were cross-checked against live services or against diffs, so they stand - but if a line I cite does not
+say what I claim, check the trunk before assuming you are looking in the wrong place.
+
+### On a51 itself
+
+**"No existing shared helper fits" is the finding, and you reported it as one.** `parseEventDate` reads `YYYY-MM-DD`
+strings as local but passes epochs straight through, and these are midnight-UTC epochs - so you added `calendarDate`
+beside it and left the popup library doing no zone arithmetic of its own. That is the third instance of this fault this
+week handled by growing the shared set rather than adding a third local correction, which is what I asked for and is the
+harder of the two paths.
+
+Three details I want to name:
+
+- **You checked the assumption on the service**: all 66 dates across 33 projects are exactly midnight UTC. The fix rests
+  on that, and now it is measured rather than assumed.
+- **Your first run had no zone set, and the broken code passed in UTC.** The spec's own guard case caught it. That is
+  the failure mode that shipped all three of these bugs, met and survived inside one batch.
+- **Tailgating shares the Construction fields, so it is fixed too** - and you said so rather than leaving it to be
+  discovered.
+
+### Why this batch
+
+[#3474](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3474), from the #3062 reuse scan.
+Two readers of `tools/builder-inventory/builder-inventory.generated.json`, each declaring the path and the shape:
+
+- `test/smoke/aggiemap/builder-destinations.ts:60-112` (`loadBuilderTargets`) - marks destinations recorded on another
+  environment as `borrowedFrom`, skipped rather than failed if they do not land (#1134, #2507), and picks one
+  destination per distinct layer set.
+- `test/smoke/aggiemap/framing.ts:20-58` (`servedRoutes`) - reads the inventory regardless of environment, applies no
+  borrowed marking, and takes the **first** destination per map.
+
+The issue has decided which wins: **`builder-destinations.ts`**, with `servedRoutes` built on it and carrying the
+borrowed flag.
+
+### The risk, and it is the whole job
+
+**`framing-baseline.json` is keyed by route, so changing which destination is picked changes baseline keys.** The two
+readers pick differently today - one per layer set, one the first per map - so unifying them will move some choices.
+
+1. **Work out which routes change destination, and list them.** That list is the deliverable as much as the code is.
+2. **Check how `framing.spec` behaves when a borrowed destination fails to land on production**, as the issue asks,
+   *before* deciding how `servedRoutes` inherits the flag. A borrowed destination that currently fails framing silently
+   would start skipping, or vice versa.
+3. **If baseline keys move, say so and stop short of regenerating them.** Baselines live outside the repository and are
+   per machine; regenerating them is not yours or mine to do quietly. Report what would change.
+4. **`tools/visual-baselines/capture.mjs:385-396` reads every destination on purpose and stays as it is.** Do not fold
+   it in - that one is not duplication.
+
+**Not in scope:** #3472 (the `environments.json` readers), even though it is the same shape and the same scan. The
+laptop is working in `test/smoke/aggiemap/directions.spec.ts` on a52, and #3472 touches most of that folder. #3494, the
+guard that would have caught all three of these, is blocked until both #3472 and #3474 are done - this is half of
+unblocking it.
+
+**Branch** `refactor/3474-one-builder-inventory-reader` from the latest `development` (`2cfb0bc43`), pushed to the fork.
+`check-in-volume.sh`, then **`pre-pr-check.sh`**, and give me its last line. Body text in the report with a `Title:`
+line.
+
+**Report** `home/reports/2026-11-25-a54.md`. Questions `Q-a54-<n>`. **Open no pull request.**
+
 ## Batch a51 (aggiemap: #3551, construction popup dates show a day early; 25 November 2026, 1:10 PM Central, from `work (aggiemap)`) (Medium) - **now**
 
 **a48 is accepted and open as [PR 3686](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3686).**
