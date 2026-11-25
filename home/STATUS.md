@@ -14,10 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch a17 (aggiemap: #3468, then #3467)** since 10:31 PM Central: missed earlier tonight, so it goes first. Then a19, a22.
-- **Batch g115 part 1 (#3495, the shared libraries)** in parallel, in `C:/TAMU/wt-3495s`; checks run one at a time.
+- **Batch g115 part 1** (shared libraries, fixed in `C:/TAMU/wt-3495s`): the affected check and pre-pr-check next. Then a19, a22, g115 part 2.
 
 ## Finished
+- **Batch a17 (aggiemap: #3468, #3467)** (report `home/reports/2026-11-24-a17.md`): both branch ready. `fix/3468-phone-accessible-routing` `b53d89b82` (confirmed on production; one shared gate; red then green; images; check Exit 0). `fix/3467-event-notice-evening` `2315b1822` (shared date helpers; red in Central then green; the project's specs now run in Central; check Exit 0; no capture possible).
 - **Batch g114 (#3495, #985)** (report `home/reports/2026-11-25-g114.md`): branch ready, `fix/3495-platform-api-strict-null-checks` at `dbe9cb725`. strictNullChecks on (162 errors: 130 here fixed, 32 in common libraries listed), no-unnecessary-condition an error (212 fixed), behaviour changes each with a red-first spec; check Exit 0 (3 projects).
 - **Batch a16 (aggiemap: #2816 images)** (report `home/reports/2026-11-24-a16.md`): stopped at step 1. The micromobility paths moved to their own map (#2895), whose popup has no "Type:" label, and the fix does not reach that popup; all 46 AggiePrint locations have every row filled. Nothing pushed. Q-a16-1.
 - **Batch g113 (#3348, copilot-home)** (report `home/reports/2026-11-25-g113.md`): Copilot refused by policy ("Access denied by policy settings") on every start since 5 November; the runner never said BLOCKED because it is still the 26 October copy. Runner change `d6b1705ae`: three silent runs are BLOCKED, and it restarts when its script changes; red then green with a stub. One question, Q-g113-1 (retire or keep).
