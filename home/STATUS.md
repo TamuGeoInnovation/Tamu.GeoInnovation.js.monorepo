@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch g113 (#3348, copilot-home)**: reading the runner logs.
+- Nothing. Idle, listening.
 
 ## Finished
+- **Batch g113 (#3348, copilot-home)** (report `home/reports/2026-11-25-g113.md`): Copilot refused by policy ("Access denied by policy settings") on every start since 5 November; the runner never said BLOCKED because it is still the 26 October copy. Runner change `d6b1705ae`: three silent runs are BLOCKED, and it restarts when its script changes; red then green with a stub. One question, Q-g113-1 (retire or keep).
 - **Batch g112 (#274 deletion)** (report `home/reports/2026-11-24-g112.md`): branch ready, `chore/274-remove-settings-branch-reader` at `512a7b5c4`; no caller appeared; check Exit 0.
 - **Batch a15 (aggiemap: #1082)** (report `home/reports/2026-11-24-a15.md`): does not reproduce. All Maps is exactly viewport-wide at 375 and 390 on dev and on a local build of development; fixed by #3207 in the shared copy field. Nothing built; recommend closing #1082.
 - **Batch g111 (#3062, the scan outside GIS Day)** (report `home/reports/2026-11-24-g111.md`): 26 issues filed, #3467 to #3493, all AggieMap's area, no Priority (suggested in the report); two are bugs (3467, 3468). List on #3062, dead code on #1899.
