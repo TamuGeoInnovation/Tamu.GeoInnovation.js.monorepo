@@ -8,6 +8,8 @@
     margin: 0.5rem 0;
     cursor: pointer;
     outline: none;
+    // The outline above hid keyboard focus entirely; this gives it back, for the keyboard only (#1001).
+    @include focus-ring;
 
     // Have material icons inherit the color from the sidebar menu item,
     // instead of using global styles which are OK, but not 100% in line

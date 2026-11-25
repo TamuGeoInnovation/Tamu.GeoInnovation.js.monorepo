@@ -31,6 +31,17 @@ describe('dateForTimeString', () => {
     expect(dateForDateTimeString('12:00').toTimeString()).toBe(today.toTimeString());
   });
 
+  // 12 AM is the hour after midnight; it was read as noon, so a bus time just after midnight landed at midday (#3464).
+  it.each([
+    ['12:05 AM', 0, 5],
+    ['~12:05 AM', 0, 5],
+    ['12:05 PM', 12, 5]
+  ])('should read %s as %i:%i', (time, hours, minutes) => {
+    const today = new Date();
+    today.setHours(hours, minutes, 0, 0);
+    expect(dateForDateTimeString(time).toTimeString()).toBe(today.toTimeString());
+  });
+
   it('should return valid AM dates for strings without AM/PM', () => {
     const today = new Date(); // dateForTimeString dates are always today, only times change
     today.setHours(11, 0, 0, 0);
@@ -65,5 +76,19 @@ describe('timeStringForDate', () => {
     const today = new Date();
     today.setHours(16, 0, 0, 0);
     expect(timeStringForDate(today)).toEqual('04:00 PM');
+  });
+
+  // Noon was read as 12 AM and the hour after midnight as 00 AM, so a trip's step at noon said AM (#2643).
+  it.each([
+    [0, 5, '12:05 AM'],
+    [11, 59, '11:59 AM'],
+    [12, 0, '12:00 PM'],
+    [12, 30, '12:30 PM'],
+    [13, 0, '01:00 PM'],
+    [23, 59, '11:59 PM']
+  ])('should read %i:%i as %s', (hours, minutes, expected) => {
+    const today = new Date();
+    today.setHours(hours, minutes, 0, 0);
+    expect(timeStringForDate(today)).toEqual(expected);
   });
 });

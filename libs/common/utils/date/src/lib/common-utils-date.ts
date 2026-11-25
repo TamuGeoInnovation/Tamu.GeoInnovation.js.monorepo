@@ -2,19 +2,22 @@ export function dateForDateTimeString(time: string, baseDate?: Date): Date {
   const tilde_offset = time.startsWith('~') ? 1 : 0;
   const hours = parseInt(time.substr(tilde_offset, 2), 10);
   const minutes = parseInt(time.substr(tilde_offset + 3, 2), 10);
-  const is_afternoon = time.substr(tilde_offset + 6) === 'PM';
+  const meridiem = time.substr(tilde_offset + 6);
   const date = baseDate == null ? new Date() : new Date(baseDate);
-  date.setHours(hours + (is_afternoon && hours !== 12 ? 12 : 0), minutes, 0);
+  // 12 PM is noon and 12 AM the hour after midnight (#3464). A time with neither keeps its hour, so a bare 12:00 is noon.
+  const hours24 = meridiem === 'PM' ? (hours % 12) + 12 : meridiem === 'AM' ? hours % 12 : hours;
+  date.setHours(hours24, minutes, 0);
   return date;
 }
 
+/**
+ * A date's time of day on a 12-hour clock, as `hh:mm AM`. Noon is 12 PM and the hour after midnight 12 AM; the hour
+ * was once only reduced above 12, so noon read as 12 AM and a minute past midnight as 00:01 AM (#2643).
+ */
 export function timeStringForDate(date: Date): string {
-  let hours = date.getHours();
-  let ampm = 'AM';
-  if (hours > 12) {
-    hours -= 12;
-    ampm = 'PM';
-  }
+  const hours24 = date.getHours();
+  const ampm = hours24 < 12 ? 'AM' : 'PM';
+  const hours = hours24 % 12 === 0 ? 12 : hours24 % 12;
   const minutes = date.getMinutes().toString().padStart(2, '0');
   return hours.toString().padStart(2, '0') + ':' + minutes + ' ' + ampm;
 }

@@ -17,6 +17,17 @@ import { getDefaultGisHost } from '../connections';
 const GARAGE_STRUCTURES = "type LIKE 'GARAGE%'";
 
 /**
+ * An upper bound on the garages, so the garage search can return all of them in one query (#3433).
+ *
+ * Campus Structures carried 11 rows marked `GARAGE` on 24 November 2026: the ten campus garages and one unnamed row
+ * ([#3434](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3434)). This is deliberately
+ * well above that, because a number that merely fits today starts truncating silently the first time a garage is
+ * built - the failure this replaces. `search-sources.spec.ts` asks the service how many there are and fails if they
+ * ever approach it.
+ */
+const GARAGES_AT_MOST = 50;
+
+/**
  * The Campus Structures rows that are not parking garages, for the typed building search.
  *
  * The garages became rows of this layer in #3425, so the building search started answering with them too and
@@ -230,7 +241,16 @@ export function SearchSources(
       url: connections.buildingsUrl,
       queryParams: {
         ...containsSearch(['bldgname', 'bldgabbrev', 'number']),
-        fixedWhere: GARAGE_STRUCTURES
+        fixedWhere: GARAGE_STRUCTURES,
+        // Every garage, rather than `searchQueryParams`' five (#3433). Typing "garage" matches 8 of the 11 rows and
+        // "parking" 7, so the default returned an arbitrary five and the rest could not be reached however far the
+        // list was scrolled - the service was asked for five, so there was nothing to page to. The whole category
+        // fits in one page, which is what makes raising it right here and wrong for `BUILDING`, whose layer has
+        // 1,987 rows. Counted against Campus Structures on 24 November 2026.
+        resultRecordCount: GARAGES_AT_MOST,
+        // So the list reads in a useful order rather than the service's `OBJECTID` order, and so that if the count
+        // is ever exceeded the ones left out are the last alphabetically rather than whichever were digitized last.
+        orderByFields: 'bldgname ASC'
       },
       featuresLocation: 'features',
       displayTemplate: '{attributes.bldgname}',
@@ -264,7 +284,7 @@ export function SearchSources(
         // `fac_code` is matched alongside the display names so the zero-padded facility number
         // used by TS links (`?lot=077`) resolves as readily as the unpadded `name` (`?lot=77`).
         ...containsSearch(['lotname', 'name', 'fac_code']),
-        orderByFields: 'aggiemap DESC, cit_code ASC',
+        orderByFields: 'aggiemap DESC, cit_code ASC'
       },
       // Ranks an exact identifier match above the partial ones the `includes` wildcards let through,
       // so `?lot=100` cannot settle on `Lot 1001` when `Lot 100` exists.

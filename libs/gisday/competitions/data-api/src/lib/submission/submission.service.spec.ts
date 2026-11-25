@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { DeepPartial } from 'typeorm';
 
 import { CompetitionSubmission, SubmissionLocation, SubmissionMedia } from '../entities/all.entities';
@@ -28,9 +29,9 @@ describe('clampAccuracy', () => {
  * would update a row that already has that guid), together with its photographs in one transaction.
  */
 describe('SubmissionService.createCompetitionSubmission', () => {
-  let em: { create: jest.Mock; save: jest.Mock; insert: jest.Mock; find: jest.Mock };
+  let em: { create: Mock; save: Mock; insert: Mock; find: Mock };
   let service: SubmissionService;
-  let publishInBackground: jest.Mock;
+  let publishInBackground: Mock;
 
   const entity: DeepPartial<CompetitionSubmission> = {
     guid: '7f1c5a52-3b0e-4d36-9a55-2f8e8f4c1b6a',
@@ -45,16 +46,16 @@ describe('SubmissionService.createCompetitionSubmission', () => {
 
   beforeEach(() => {
     em = {
-      create: jest.fn((type, values) => Object.assign(new type(), values)),
-      save: jest.fn((value) => Promise.resolve(value)),
-      insert: jest.fn(() => Promise.resolve({})),
+      create: vi.fn((type, values) => Object.assign(new type(), values)),
+      save: vi.fn((value) => Promise.resolve(value)),
+      insert: vi.fn(() => Promise.resolve({})),
       // The participant's earlier submissions, for the automatic review (#2164).
-      find: jest.fn(() => Promise.resolve([]))
+      find: vi.fn(() => Promise.resolve([]))
     };
     // The participant's earlier submissions are read before the save, outside its transaction (#2428 review).
     const submissionRepo = { manager: { transaction: (work) => work(em) }, find: (options) => em.find(options) };
 
-    publishInBackground = jest.fn();
+    publishInBackground = vi.fn();
     service = new SubmissionService(
       submissionRepo as never,
       {} as never,
@@ -71,7 +72,10 @@ describe('SubmissionService.createCompetitionSubmission', () => {
 
     expect(inserted(CompetitionSubmission)).toEqual([expect.objectContaining({ guid: entity.guid, userGuid: 'auth0|ann' })]);
     expect(inserted(SubmissionMedia)).toEqual([
-      [expect.objectContaining({ fieldName: 'head1', submission: sub }), expect.objectContaining({ fieldName: 'head2', submission: sub })]
+      [
+        expect.objectContaining({ fieldName: 'head1', submission: sub }),
+        expect.objectContaining({ fieldName: 'head2', submission: sub })
+      ]
     ]);
     expect(em.save.mock.calls.some(([value]) => value instanceof SubmissionLocation)).toBe(true);
     expect(em.save.mock.calls.some(([value]) => value instanceof CompetitionSubmission)).toBe(false);
@@ -86,7 +90,9 @@ describe('SubmissionService.createCompetitionSubmission', () => {
 
   it('when the guid is already saved, fails on the duplicate and inserts no photographs', async () => {
     const duplicate = { driverError: { number: 2627 } };
-    em.insert.mockImplementation((type) => (type === CompetitionSubmission ? Promise.reject(duplicate) : Promise.resolve({})));
+    em.insert.mockImplementation((type) =>
+      type === CompetitionSubmission ? Promise.reject(duplicate) : Promise.resolve({})
+    );
 
     await expect(service.createCompetitionSubmission(entity, blobs)).rejects.toBe(duplicate);
     expect(inserted(SubmissionMedia)).toEqual([]);
@@ -102,7 +108,14 @@ describe('SubmissionService.createCompetitionSubmission', () => {
         {
           attribute: 'memorial_type',
           isDiscriminator: true,
-          options: [{ name: 'Tree or bench memorial plaque', value: 'tree_bench_plaque', sameThingMetres: 10, nameAttribute: 'memorial_name' }]
+          options: [
+            {
+              name: 'Tree or bench memorial plaque',
+              value: 'tree_bench_plaque',
+              sameThingMetres: 10,
+              nameAttribute: 'memorial_name'
+            }
+          ]
         },
         { attribute: 'memorial_name', options: [] }
       ]
@@ -178,7 +191,14 @@ describe('SubmissionService.getAdminSubmissions', () => {
       {
         attribute: 'memorial_type',
         isDiscriminator: true,
-        options: [{ name: 'Tree or bench memorial plaque', value: 'tree_bench_plaque', sameThingMetres: 10, nameAttribute: 'memorial_name' }]
+        options: [
+          {
+            name: 'Tree or bench memorial plaque',
+            value: 'tree_bench_plaque',
+            sameThingMetres: 10,
+            nameAttribute: 'memorial_name'
+          }
+        ]
       },
       { attribute: 'memorial_name', options: [] }
     ]
@@ -196,19 +216,19 @@ describe('SubmissionService.getAdminSubmissions', () => {
       ...overrides
     });
 
-  let find: jest.Mock;
+  let find: Mock;
   let service: SubmissionService;
 
   beforeEach(() => {
-    find = jest.fn();
+    find = vi.fn();
     service = new SubmissionService(
       { find } as never,
       {} as never,
       {} as never,
-      { findOne: jest.fn(() => Promise.resolve({ guid: 'cs-2026', form })) } as never,
-      { findOne: jest.fn(() => Promise.resolve({ guid: 's-2026', active: true })) } as never,
-      { getUserMetadata: jest.fn(() => Promise.reject(new Error('offline'))) } as never,
-      { publishInBackground: jest.fn() } as never
+      { findOne: vi.fn(() => Promise.resolve({ guid: 'cs-2026', form })) } as never,
+      { findOne: vi.fn(() => Promise.resolve({ guid: 's-2026', active: true })) } as never,
+      { getUserMetadata: vi.fn(() => Promise.reject(new Error('offline'))) } as never,
+      { publishInBackground: vi.fn() } as never
     );
   });
 
@@ -222,7 +242,9 @@ describe('SubmissionService.getAdminSubmissions', () => {
     const list = await service.getAdminSubmissions({});
     const byGuid = Object.fromEntries(list.map((s) => [s.guid, s]));
 
-    expect(byGuid['first']).toEqual(expect.objectContaining({ name: 'John Smith', reviewReasons: [], verifiedAutomatically: true }));
+    expect(byGuid['first']).toEqual(
+      expect.objectContaining({ name: 'John Smith', reviewReasons: [], verifiedAutomatically: true })
+    );
     expect(byGuid['again']).toEqual(
       expect.objectContaining({ reviewReasons: ['Already submitted by this participant'], verifiedAutomatically: false })
     );
@@ -237,7 +259,9 @@ describe('SubmissionService.getAdminSubmissions', () => {
   });
 
   it('gives no reasons for a submission a person has already decided on', async () => {
-    find.mockResolvedValue([row('decided', 5, { blobs: [], validationStatus: { status: 'verified', verifiedBy: 'auth0|reviewer' } })]);
+    find.mockResolvedValue([
+      row('decided', 5, { blobs: [], validationStatus: { status: 'verified', verifiedBy: 'auth0|reviewer' } })
+    ]);
 
     const [decided] = await service.getAdminSubmissions({});
 
@@ -250,11 +274,11 @@ describe('SubmissionService.getAdminSubmissions', () => {
  */
 describe('SubmissionService.validateSubmission', () => {
   it("publishes the submission's new status to ArcGIS Online", async () => {
-    const save = jest.fn(() => Promise.resolve());
+    const save = vi.fn(() => Promise.resolve());
     const submission = { guid: 's-1', validationStatus: { status: 'verified', verifiedBy: 'automatic' }, save };
-    const publishInBackground = jest.fn();
+    const publishInBackground = vi.fn();
     const service = new SubmissionService(
-      { findOne: jest.fn(() => Promise.resolve(submission)) } as never,
+      { findOne: vi.fn(() => Promise.resolve(submission)) } as never,
       {} as never,
       {} as never,
       {} as never,

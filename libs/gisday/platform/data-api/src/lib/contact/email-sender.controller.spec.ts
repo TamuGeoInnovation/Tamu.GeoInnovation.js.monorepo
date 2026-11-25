@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { ExecutionContext, INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 
@@ -28,13 +29,13 @@ describe('Send as, on every route that uses the email composer', () => {
   const settings = ['MAILROOM_FROM', 'MAILROOM_TO', 'MAILROOM_SENDERS', 'GISDAY_SITE'] as const;
   const previous: Partial<Record<(typeof settings)[number], string | undefined>> = {};
 
-  const speakerEdits = { sendLinks: jest.fn(), sendLinksForSubmissions: jest.fn() };
-  const sessionEmails = { send: jest.fn() };
-  const slidesRequests = { send: jest.fn() };
-  const submissions = { reviewUserSubmissions: jest.fn(), remindUserSubmissions: jest.fn() };
+  const speakerEdits = { sendLinks: vi.fn(), sendLinksForSubmissions: vi.fn() };
+  const sessionEmails = { send: vi.fn() };
+  const slidesRequests = { send: vi.fn() };
+  const submissions = { reviewUserSubmissions: vi.fn(), remindUserSubmissions: vi.fn() };
 
   /** Each route the composer sends through, with a body it accepts, and the service call that does the sending. */
-  const routes: Array<{ path: string; body: object; sends: jest.Mock }> = [
+  const routes: Array<{ path: string; body: object; sends: Mock }> = [
     { path: 'speaker-edits/send', body: { speakers: ['sp-1'] }, sends: speakerEdits.sendLinks },
     {
       path: 'speaker-edits/send-for-submissions',

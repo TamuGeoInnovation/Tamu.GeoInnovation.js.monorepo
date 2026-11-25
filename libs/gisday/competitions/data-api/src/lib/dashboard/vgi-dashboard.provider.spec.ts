@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { COMPETITION_VALIDATION_STATUS } from '@tamu-gisc/gisday/common';
 
 import { LeaderboardService } from '../leaderboard/leaderboard.service';
@@ -44,7 +45,7 @@ describe('VgiDashboardProvider (#2894)', () => {
 
   let submissions: Array<ReturnType<typeof submission>>;
   let provider: VgiDashboardProvider;
-  let profilesOf: jest.Mock;
+  let profilesOf: Mock;
 
   beforeEach(() => {
     n = 0;
@@ -61,9 +62,9 @@ describe('VgiDashboardProvider (#2894)', () => {
     ];
 
     const competitionSeason = { guid: 'cs-1', form, season: { guid: 's-1', year: 2026 } };
-    const compSeasonRepo = { findOne: jest.fn(() => Promise.resolve(competitionSeason)), find: jest.fn(() => []) };
+    const compSeasonRepo = { findOne: vi.fn(() => Promise.resolve(competitionSeason)), find: vi.fn(() => []) };
     const leaderboard = new LeaderboardService(
-      { find: jest.fn(() => Promise.resolve(submissions)) } as never,
+      { find: vi.fn(() => Promise.resolve(submissions)) } as never,
       undefined,
       undefined,
       compSeasonRepo as never,
@@ -71,7 +72,7 @@ describe('VgiDashboardProvider (#2894)', () => {
       undefined
     );
 
-    profilesOf = jest.fn((accounts: Array<string>) =>
+    profilesOf = vi.fn((accounts: Array<string>) =>
       Promise.resolve(
         new Map(
           accounts.map((a) => [
@@ -89,7 +90,7 @@ describe('VgiDashboardProvider (#2894)', () => {
 
     provider = new VgiDashboardProvider(compSeasonRepo as never, leaderboard, {
       profilesOf,
-      organizationNames: jest.fn(() => Promise.resolve(new Map()))
+      organizationNames: vi.fn(() => Promise.resolve(new Map()))
     } as never);
   });
 
@@ -120,7 +121,7 @@ describe('VgiDashboardProvider (#2894)', () => {
       ['plaque', 0]
     ]);
 
-    const none = new VgiDashboardProvider({ findOne: jest.fn(() => Promise.resolve(null)) } as never, undefined, undefined);
+    const none = new VgiDashboardProvider({ findOne: vi.fn(() => Promise.resolve(null)) } as never, undefined, undefined);
     expect(await none.getSeason('s-2')).toEqual({ season: 's-2', people: 0, events: [], made: [], unreadAccounts: 0 });
   });
 

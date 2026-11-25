@@ -58,7 +58,6 @@ export const MusterEventColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: MusterEventDefinitions.ACCESSIBLE_PARKING.id,
-    title: MusterEventDefinitions.ACCESSIBLE_PARKING.name,
     url: MusterEventDefinitions.ACCESSIBLE_PARKING.url,
     popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
@@ -74,7 +73,6 @@ export const MusterEventColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: MusterEventDefinitions.PARKING.id,
-    title: MusterEventDefinitions.PARKING.name,
     url: MusterEventDefinitions.PARKING.url,
     popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {

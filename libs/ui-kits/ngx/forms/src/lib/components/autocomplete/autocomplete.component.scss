@@ -1,3 +1,5 @@
+@import 'libs/sass/mixins';
+
 .autocomplete-container {
   position: relative;
 }
@@ -31,4 +33,9 @@
     background: #f4f4f4;
     border-color: #e0e0e0;
   }
+
+  // Hover and focus look the same, so a keyboard user could not tell the focused item from the one under the
+  // pointer; keyboard focus also gets the ring (#1001), drawn inside the item because the results list scrolls and
+  // would cut off one outside it.
+  @include focus-ring($offset: -2px);
 }

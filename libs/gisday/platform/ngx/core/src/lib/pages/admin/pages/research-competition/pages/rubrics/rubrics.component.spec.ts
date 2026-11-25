@@ -29,9 +29,9 @@ const poster = (): RubricDto => ({
 describe('RubricsComponent (#3183)', () => {
   async function open(rubrics: Array<RubricDto>) {
     const judging = {
-      rubrics: jest.fn(() => of(JSON.parse(JSON.stringify(rubrics)))),
-      createRubric: jest.fn(() => of({})),
-      updateRubric: jest.fn((_guid: string, value: object) => of({ ...poster(), ...value }))
+      rubrics: vi.fn(() => of(JSON.parse(JSON.stringify(rubrics)))),
+      createRubric: vi.fn(() => of({})),
+      updateRubric: vi.fn((_guid: string, value: object) => of({ ...poster(), ...value }))
     };
 
     TestBed.configureTestingModule({

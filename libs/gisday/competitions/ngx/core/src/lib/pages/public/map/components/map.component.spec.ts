@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
@@ -10,8 +11,8 @@ import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { MapComponent } from './map.component';
 
 describe('MapComponent', () => {
-  let loadLayers: jest.Mock;
-  let get: jest.Mock;
+  let loadLayers: Mock;
+  let get: Mock;
   let queryParams: Record<string, string>;
   let mine: Observable<unknown>;
 
@@ -38,13 +39,13 @@ describe('MapComponent', () => {
   };
 
   beforeEach(async () => {
-    loadLayers = jest.fn();
+    loadLayers = vi.fn();
     queryParams = {};
     mine = of({
       type: 'FeatureCollection',
       features: [{ properties: { guid: 'aaaa-1111' } }, { properties: { guid: 'bbbb-2222' } }]
     });
-    get = jest.fn(() => mine);
+    get = vi.fn(() => mine);
 
     await TestBed.configureTestingModule({
       imports: [MapComponent],
