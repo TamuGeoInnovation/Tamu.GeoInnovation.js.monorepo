@@ -16,7 +16,7 @@ describe('SpeakerEditController POST /speaker-edits/send-for-submissions', () =>
   let app: INestApplication;
   let url: string;
   let permissions: Array<string>;
-  const sendLinksForSubmissions = jest.fn();
+  const sendLinksForSubmissions = vi.fn();
 
   const post = (body: object, headers: Record<string, string> = {}) =>
     fetch(`${url}/speaker-edits/send-for-submissions`, {
@@ -84,10 +84,10 @@ describe('SpeakerEditController, the profile email read and edited first (#3023)
   let url: string;
   let permissions: Array<string>;
   const service = {
-    sendLinks: jest.fn(),
-    sendLinksForSubmissions: jest.fn(),
-    previewLinks: jest.fn(),
-    previewLinksForSubmissions: jest.fn()
+    sendLinks: vi.fn(),
+    sendLinksForSubmissions: vi.fn(),
+    previewLinks: vi.fn(),
+    previewLinksForSubmissions: vi.fn()
   };
 
   const post = (path: string, body: object) =>
@@ -159,7 +159,7 @@ describe('SpeakerEditController, the profile email read and edited first (#3023)
 describe('SpeakerEditController, choosing speakers for the profile email (#3104)', () => {
   let app: INestApplication;
   let url: string;
-  const service = { sendLinks: jest.fn(), sendLinksForSubmissions: jest.fn() };
+  const service = { sendLinks: vi.fn(), sendLinksForSubmissions: vi.fn() };
 
   const post = (path: string, body: object) =>
     fetch(`${url}/speaker-edits/${path}`, {

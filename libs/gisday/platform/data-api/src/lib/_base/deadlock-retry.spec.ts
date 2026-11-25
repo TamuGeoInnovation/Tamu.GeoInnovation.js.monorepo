@@ -16,7 +16,7 @@ describe('retryDeadlockVictims', () => {
     );
 
   function runnerThat(...outcomes: Array<'deadlock' | 'other' | 'ok'>) {
-    const query = jest.fn(async () => {
+    const query = vi.fn(async () => {
       const next = outcomes.shift();
 
       if (next === 'deadlock') {
@@ -30,7 +30,7 @@ describe('retryDeadlockVictims', () => {
       return [{ ok: 1 }];
     });
     const runner = { query, isTransactionActive: false };
-    const dataSource = { driver: { createQueryRunner: jest.fn(() => runner) } } as unknown as DataSource;
+    const dataSource = { driver: { createQueryRunner: vi.fn(() => runner) } } as unknown as DataSource;
 
     retryDeadlockVictims(dataSource, { waitMs: 0 });
 

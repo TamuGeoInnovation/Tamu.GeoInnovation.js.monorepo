@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { GUARDS_METADATA } from '@nestjs/common/constants';
 
 import { JwtGuard, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
@@ -25,15 +26,15 @@ describe('TrailWinnersProvider (#3243)', () => {
     ['auth0|nameless', null]
   ]);
 
-  let leaderboard: { rankedForSeason: jest.Mock };
-  let winners: { trailPlaces: jest.Mock; saveTrail: jest.Mock };
+  let leaderboard: { rankedForSeason: Mock };
+  let winners: { trailPlaces: Mock; saveTrail: Mock };
   let provider: TrailWinnersProvider;
 
   beforeEach(() => {
-    leaderboard = { rankedForSeason: jest.fn(async () => ranked) };
+    leaderboard = { rankedForSeason: vi.fn(async () => ranked) };
     winners = {
-      trailPlaces: jest.fn(async () => [{ place: 1, account: 'auth0|walker' }]),
-      saveTrail: jest.fn(async () => [])
+      trailPlaces: vi.fn(async () => [{ place: 1, account: 'auth0|walker' }]),
+      saveTrail: vi.fn(async () => [])
     };
     provider = new TrailWinnersProvider(
       leaderboard as unknown as LeaderboardService,

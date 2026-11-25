@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { COMPETITION_VALIDATION_STATUS } from '@tamu-gisc/gisday/common';
 
 import { MapService } from './map.service';
@@ -36,20 +37,20 @@ describe('MapService.getAlreadyFoundForActiveSeason', () => {
 
   let earlier: Array<unknown>;
   let form: unknown;
-  let find: jest.Mock;
+  let find: Mock;
   let service: MapService;
 
   beforeEach(() => {
     earlier = [];
     form = form2026;
-    find = jest.fn((options) => Promise.resolve(options.where.season.guid === 'cs-2025' ? earlier : []));
+    find = vi.fn((options) => Promise.resolve(options.where.season.guid === 'cs-2025' ? earlier : []));
 
     service = new MapService(
       { find } as never,
-      { findOne: jest.fn(() => Promise.resolve({ guid: 's-2026', active: true })) } as never,
+      { findOne: vi.fn(() => Promise.resolve({ guid: 's-2026', active: true })) } as never,
       {
-        findOne: jest.fn(() => Promise.resolve({ guid: 'cs-2026', form, season: { year: 2026 } })),
-        find: jest.fn(() =>
+        findOne: vi.fn(() => Promise.resolve({ guid: 'cs-2026', form, season: { year: 2026 } })),
+        find: vi.fn(() =>
           Promise.resolve([
             { guid: 'cs-2025', form: form2025, season: { year: 2025 } },
             { guid: 'cs-2026', form, season: { year: 2026 } }

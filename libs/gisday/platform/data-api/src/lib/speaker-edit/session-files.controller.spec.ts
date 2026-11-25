@@ -93,7 +93,7 @@ describe('SessionFilesController (#3093)', () => {
   };
 
   /** The link's own check, as the edit page has it: a token of the right shape that is on record, or not found. */
-  const linkFor = jest.fn(async (token: string) => {
+  const linkFor = vi.fn(async (token: string) => {
     const speaker = { [TOKEN]: 'speaker-1', [OTHER_TOKEN]: 'speaker-2' }[token];
 
     if (!speaker) {
@@ -106,15 +106,15 @@ describe('SessionFilesController (#3093)', () => {
   /** The assets table, as far as these routes read it. */
   const assetRepo = {
     create: (a: Partial<Asset>) => a,
-    save: jest.fn(async (a: Asset) => {
+    save: vi.fn(async (a: Asset) => {
       const row = { ...a, created: new Date() } as Asset;
       rows.push(row);
       return row;
     }),
-    delete: jest.fn(async (guids: Array<string>) => {
+    delete: vi.fn(async (guids: Array<string>) => {
       rows = rows.filter((r) => !guids.includes(r.guid));
     }),
-    find: jest.fn(async ({ where, relations }) => {
+    find: vi.fn(async ({ where, relations }) => {
       const events =
         where.event?.guid instanceof FindOperator
           ? (where.event.guid.value as Array<string>)
@@ -179,7 +179,7 @@ describe('SessionFilesController (#3093)', () => {
     process.env.APP_DATA = appData;
     rows = [];
     permissions = null;
-    jest.clearAllMocks();
+    vi.clearAllMocks();
 
     const module = await Test.createTestingModule({
       controllers: [SessionFilesController],

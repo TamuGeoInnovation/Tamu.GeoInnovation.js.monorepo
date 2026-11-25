@@ -22,9 +22,9 @@ describe('Speaker links have a purpose (#3183)', () => {
 
   const linkRepo = {
     create: (x) => x,
-    save: jest.fn(async (x) => rows.push(x)),
-    findOne: jest.fn(async ({ where }) => rows.find((r) => r.tokenHash === where.tokenHash) ?? null),
-    count: jest.fn(async () => 0)
+    save: vi.fn(async (x) => rows.push(x)),
+    findOne: vi.fn(async ({ where }) => rows.find((r) => r.tokenHash === where.tokenHash) ?? null),
+    count: vi.fn(async () => 0)
   };
 
   /** A request through a guard, as Nest hands it one, with `token` in the path. */
@@ -51,8 +51,8 @@ describe('Speaker links have a purpose (#3183)', () => {
     ];
     service = new SpeakerEditService(
       linkRepo as never,
-      { findOne: jest.fn(async () => null), find: jest.fn(async () => []) } as never,
-      { findOne: jest.fn(async () => ({ guid: 'sp-av', firstName: 'Avery', lastName: 'Example' })) } as never,
+      { findOne: vi.fn(async () => null), find: vi.fn(async () => []) } as never,
+      { findOne: vi.fn(async () => ({ guid: 'sp-av', firstName: 'Avery', lastName: 'Example' })) } as never,
       {} as never,
       {} as never,
       {} as never,

@@ -1,3 +1,4 @@
+import type { Mocked } from 'vitest';
 import { InternalServerErrorException, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 
 import { Repository } from 'typeorm';
@@ -22,23 +23,23 @@ class TestProvider extends BaseProvider<TestEntity> {
 
 describe('BaseProvider', () => {
   let provider: TestProvider;
-  let repo: jest.Mocked<Repository<TestEntity>>;
+  let repo: Mocked<Repository<TestEntity>>;
 
   beforeEach(() => {
     repo = {
-      find: jest.fn(),
-      findOne: jest.fn(),
-      create: jest.fn(),
-      save: jest.fn(),
-      remove: jest.fn(),
-      delete: jest.fn()
-    } as unknown as jest.Mocked<Repository<TestEntity>>;
+      find: vi.fn(),
+      findOne: vi.fn(),
+      create: vi.fn(),
+      save: vi.fn(),
+      remove: vi.fn(),
+      delete: vi.fn()
+    } as unknown as Mocked<Repository<TestEntity>>;
 
     provider = new TestProvider(repo);
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   describe('lookup options', () => {
@@ -93,9 +94,7 @@ describe('BaseProvider', () => {
     it('reports not found when the row does not exist', async () => {
       repo.findOne.mockResolvedValue(null);
 
-      await expect(provider.update('missing', { name: 'new' } as never)).rejects.toThrow(
-        NotFoundException
-      );
+      await expect(provider.update('missing', { name: 'new' } as never)).rejects.toThrow(NotFoundException);
     });
 
     it('creates the row instead when asked to', async () => {
