@@ -82,7 +82,7 @@
           <p>Reference Sources</p>
         </div>
         <div class="forms-section-actions">
-          <div class="faux-link" (click)="deselectAllRefs()">Deselect All</div>
+          <div class="faux-link" tabindex="0" role="button" (click)="deselectAllRefs()" (keydown.enter)="deselectAllRefs()" (keydown.space)="deselectAllRefs(); $event.preventDefault()">Deselect All</div>
         </div>
       </div>
       <div class="form-section-body" formGroupName="refs">

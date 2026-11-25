@@ -16,7 +16,7 @@
         <td id="datetime">{{ email.created | date:'short' }}</td>
       </div>
       <td class="toolbar">
-        <span class="material-symbols-outlined" (click)="deleteEmail(email)" title="Delete email">delete</span>
+        <span class="material-symbols-outlined" tabindex="0" role="button" (click)="deleteEmail(email)" (keydown.enter)="deleteEmail(email)" (keydown.space)="deleteEmail(email); $event.preventDefault()" title="Delete email">delete</span>
       </td>
     </tr>
     }
