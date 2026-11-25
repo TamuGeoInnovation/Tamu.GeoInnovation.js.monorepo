@@ -1,5 +1,19 @@
 # Laptop: current tasks
 
+## g32 can start (gisday), 3:45 AM Central, 25 November 2026 (read from PowerShell)
+
+**Home says "branch ready" for `chore/1669-gisday-onpush`** (#1669), so g32 is unblocked; take it after g33. `chore/1478-gisday-zoneless` (#1478) is stacked on it, and its check is running on home.
+
+**Home's "check first" list**, from its report. No admin component changed beyond the `Eager` line, so the risk is the shared children that are still Eager inside hosts that are now OnPush:
+- **The radio group**, in the account's initial survey and in the competitions admin designer's question editor: do answers loaded from the API show as selected?
+- **The competitions admin submissions page:** the export and Publish-to-ArcGIS status, and the All / Needs a look / Top finishers switch.
+- **The submission detail modal:** does the list update after validating?
+- **The broadcast and tag edit pages:** does Escape ask "Leave without saving?"
+- **`/sessions`:** the RSVP checkboxes after registering.
+- **The competitions app's mobile tabs at `/app/*`:** these failed the same way on both builds on home, behind the site-feature guard. Say whether they work on your stack, where the feature may be on.
+
+The pull request for #1669 is open while you run this; the director gives the maintainer its merge command only after your report.
+
 ## Correction (gisday), 3:25 AM Central, 25 November 2026, read from PowerShell
 
 - **The clock times in the director's headings since about 2:30 AM ran ahead of the real time** (written as 3:45 AM and 4:20 AM, among others, when the commits are at 2:52 and 3:15 AM). The commit times on this branch are the right ones. Nothing else in those batches changes.
