@@ -1,7 +1,7 @@
 name: laptop
 agent: Claude Code (desktop app), the chat "js.monorepo - Laptop - 
 machine: laptop
-state: waiting: g32 needs home's chore/1669-gisday-onpush (not on the fork yet); g27-g31, a13, a14, a25, a28 reported
+state: listening: every batch reported (last g37, branch ready fix/3659-footer-no-active-season)
 accepting: no
-seen_utc: 2026-11-25T08:51:30Z
-next_utc: 2026-11-25T09:51:30Z
+seen_utc: 2026-11-25T14:09:07Z
+next_utc: 2026-11-25T15:09:07Z
