@@ -1,3 +1,4 @@
+import type { MockInstance } from 'vitest';
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
@@ -61,7 +62,7 @@ describe('EventViewComponent search', () => {
     ]
   };
 
-  let navigate: jest.SpyInstance;
+  let navigate: MockInstance;
 
   function open(searched: string | null = null) {
     TestBed.configureTestingModule({
@@ -70,7 +71,11 @@ describe('EventViewComponent search', () => {
         provideRouter([]),
         {
           provide: ActivatedRoute,
-          useValue: { snapshot: { queryParamMap: convertToParamMap(searched ? { search: searched } : {}) }, queryParams: of({}), fragment: of(null) }
+          useValue: {
+            snapshot: { queryParamMap: convertToParamMap(searched ? { search: searched } : {}) },
+            queryParams: of({}),
+            fragment: of(null)
+          }
         },
         {
           provide: SeasonService,
@@ -92,7 +97,7 @@ describe('EventViewComponent search', () => {
     });
 
     // The page writes its filters into the address; nothing here needs it to.
-    navigate = jest.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+    navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
     const fixture = TestBed.createComponent(EventViewComponent);
     fixture.detectChanges();
 
@@ -157,7 +162,9 @@ describe('EventViewComponent search', () => {
   it("clears the search from the shared textbox's x, listing every session again (#2963)", () => {
     const fixture = open();
     const clear = () =>
-      root(fixture).querySelector('#default-content tamu-gisc-textbox button[aria-label="Clear the search"]') as HTMLButtonElement;
+      root(fixture).querySelector(
+        '#default-content tamu-gisc-textbox button[aria-label="Clear the search"]'
+      ) as HTMLButtonElement;
 
     expect(clear()).toBeNull();
     search(fixture, 'mapathon');
@@ -217,7 +224,8 @@ describe('EventViewComponent search', () => {
 
     it('copies the whole link, ready to paste into an email', () => {
       const fixture = open('drone flights');
-      const linked = fixture.debugElement.query(By.directive(LinkedSearchComponent)).componentInstance as LinkedSearchComponent;
+      const linked = fixture.debugElement.query(By.directive(LinkedSearchComponent))
+        .componentInstance as LinkedSearchComponent;
 
       expect(linked.link()).toBe(`${window.location.origin}/?search=drone%20flights`);
     });

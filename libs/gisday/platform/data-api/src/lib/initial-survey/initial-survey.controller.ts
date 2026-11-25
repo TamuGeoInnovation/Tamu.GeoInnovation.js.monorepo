@@ -1,4 +1,15 @@
-import { Body, Controller, Delete, Get, NotImplementedException, Param, Patch, Post, Request } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  NotImplementedException,
+  Param,
+  Patch,
+  Post,
+  Request
+} from '@nestjs/common';
 
 import { InitialSurveyQuestion } from '../entities/all.entity';
 import { InitialSurveyProvider } from './initial-survey.provider';
@@ -41,7 +52,11 @@ export class InitialSurveyController {
 
   @Post('/questions')
   public async insertQuestion(@Body() body: Partial<InitialSurveyQuestion>) {
-    const questionTypeGuid = body.questionType.guid;
+    const questionTypeGuid = body.questionType?.guid;
+
+    if (!questionTypeGuid) {
+      throw new BadRequestException('A question needs its question type.');
+    }
 
     return this.provider.insertQuestion(questionTypeGuid, body);
   }

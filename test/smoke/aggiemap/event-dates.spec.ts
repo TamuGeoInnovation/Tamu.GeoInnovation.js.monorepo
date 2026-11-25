@@ -4,6 +4,7 @@ import * as path from 'path';
 import { expect, test } from './fixtures';
 import { MANIFEST_PATH, MapManifest } from './global-setup';
 import { smokeBaseUrl } from './gis-hosts';
+import { PROBE_GLOBAL } from './map-probe';
 
 /**
  * Event maps agree about whether their event is over, at College Station time (#1302).
@@ -44,8 +45,9 @@ const eventMaps = manifest.maps.filter((route) => route.startsWith('/events/'));
  */
 function allowedUndated(): Record<string, string> {
   const base = smokeBaseUrl();
-  const environments: Record<string, { baseUrl: string; allowedUndatedEventMaps?: Record<string, string> }> =
-    JSON.parse(fs.readFileSync(path.join(__dirname, 'environments.json'), 'utf8'));
+  const environments: Record<string, { baseUrl: string; allowedUndatedEventMaps?: Record<string, string> }> = JSON.parse(
+    fs.readFileSync(path.join(__dirname, 'environments.json'), 'utf8')
+  );
   const match = Object.values(environments).find((env) => env.baseUrl.replace(/\/$/, '') === base);
 
   return match?.allowedUndatedEventMaps ?? {};
@@ -78,10 +80,7 @@ test.describe('an event map knows whether its event is over', () => {
       // simply by being quicker than the modal.
       await page.waitForTimeout(8_000);
 
-      await expect(
-        page.locator(PASSED_WARNING),
-        `${route} called its event over before it had happened`
-      ).toHaveCount(0);
+      await expect(page.locator(PASSED_WARNING), `${route} called its event over before it had happened`).toHaveCount(0);
     });
 
     /**
@@ -111,7 +110,10 @@ test.describe('an event map knows whether its event is over', () => {
       // Given time to appear, as above - the map and its modal take a moment.
       await page.waitForTimeout(8_000);
 
-      const drewAMap = await page.evaluate(() => Boolean((window as unknown as Record<string, unknown>).__tamuGiscMapProbe));
+      const drewAMap = await page.evaluate(
+        (name) => Boolean((window as unknown as Record<string, unknown>)[name]),
+        PROBE_GLOBAL
+      );
 
       test.skip(!drewAMap, `${route} opens a builder rather than a map, so it has nothing to warn on`);
 
@@ -120,17 +122,12 @@ test.describe('an event map knows whether its event is over', () => {
 
       if (known) {
         // Not skipped: a map that starts warning has gained dates, and the entry should go.
-        expect(warned, `${route} says its event is over now; remove it from allowedUndatedEventMaps (${known})`).toBe(
-          0
-        );
+        expect(warned, `${route} says its event is over now; remove it from allowedUndatedEventMaps (${known})`).toBe(0);
 
         return;
       }
 
-      expect(
-        warned,
-        `${route} did not say its event was over, with the clock set to ${WELL_AFTER.getFullYear()}`
-      ).toBe(1);
+      expect(warned, `${route} did not say its event was over, with the clock set to ${WELL_AFTER.getFullYear()}`).toBe(1);
     });
 
     test(`${route} never opens the warning and a notice together`, async ({ page }) => {

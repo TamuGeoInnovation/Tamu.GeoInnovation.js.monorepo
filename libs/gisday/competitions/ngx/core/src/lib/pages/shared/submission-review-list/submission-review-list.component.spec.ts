@@ -1,3 +1,4 @@
+import type { Mocked } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 
@@ -8,12 +9,12 @@ import { SubmissionReviewListComponent } from './submission-review-list.componen
 describe('SubmissionReviewListComponent', () => {
   let component: SubmissionReviewListComponent;
   let fixture: ComponentFixture<SubmissionReviewListComponent>;
-  let mockModalService: jest.Mocked<ModalService>;
+  let mockModalService: Mocked<ModalService>;
 
   beforeEach(async () => {
     mockModalService = {
-      open: jest.fn().mockReturnValue(of(undefined))
-    } as unknown as jest.Mocked<ModalService>;
+      open: vi.fn().mockReturnValue(of(undefined))
+    } as unknown as Mocked<ModalService>;
 
     await TestBed.configureTestingModule({
       imports: [SubmissionReviewListComponent],
@@ -51,7 +52,8 @@ describe('SubmissionReviewListComponent', () => {
    * the app with that decision.
    */
   it('says "by app" only while a row the app verified is still verified', () => {
-    const row = (validationStatus: string, verifiedAutomatically: boolean) => ({ validationStatus, verifiedAutomatically }) as never;
+    const row = (validationStatus: string, verifiedAutomatically: boolean) =>
+      ({ validationStatus, verifiedAutomatically }) as never;
 
     expect(component.verifiedByApp(row('verified', true))).toBe(true);
     expect(component.verifiedByApp(row('discarded', true))).toBe(false);

@@ -1,8 +1,9 @@
 import { DeepPartial } from 'typeorm';
 
 export interface UpdateEventDto extends Omit<DeepPartial<Event>, 'tags' | 'speakers' | 'judges'> {
-  tags: Array<string>;
-  speakers: Array<string>;
+  // An interface, so `ValidationPipe` cannot hold a request to these: an HTTP caller can leave them out.
+  tags?: Array<string>;
+  speakers?: Array<string>;
   /** The speakers who judge its competition (#3183), by id: each must be one of `speakers`. Unchanged when not sent. */
   judges?: Array<string>;
   /** The competition its judges score (#3183), or null for none. */

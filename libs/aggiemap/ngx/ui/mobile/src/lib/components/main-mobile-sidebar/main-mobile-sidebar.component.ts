@@ -41,6 +41,13 @@ export class MainMobileSidebarComponent {
       type: 'router-path',
       path: '/map/m/bus'
     },
+    // The phone's own trip planner (#3149): the desktop sidebar has always had a Directions tab, and a phone had no way
+    // in but Directions To Here in a feature's popup.
+    {
+      name: 'Directions',
+      type: 'router-path',
+      path: '/map/m/trip'
+    },
     { name: '', type: 'separator', path: '' },
     {
       name: 'All Maps',

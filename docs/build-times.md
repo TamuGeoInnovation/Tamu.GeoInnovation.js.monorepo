@@ -40,75 +40,75 @@ Anything unusual goes in a note under the table rather than being squeezed into 
 
 ## Checks and builds
 
-| Date | Machine | What ran | Approach | Elapsed |
-| --- | --- | --- | --- | ---: |
-| 18 Oct 2026 | home | `check-in-volume.sh chore/1479-vitest` (affected: lint 115 projects, test 108 of which 71 on Vitest, build 14), 7:59 PM Central | volume, fresh clone, `npm ci` 88 s | **6 min 44 s** (lint 111 s, test 123 s, build 67 s) |
-| 10 Oct 2026 | home | `check-in-volume.sh refactor/1453-inject` (affected: lint 75 projects, then test and build 71 projects and 3 dependencies), 2:01 PM Central | volume, warm install, Nx cache cold for these tasks (0 of 70 hits on the run before) | 2 min 54 s (lint 74 s, test and build 100 s) |
-| 10 Oct 2026 | home | The same check's first run, 1:56 PM Central: fresh clone and `npm ci`, then the same tasks; failed on 8 test projects and one build | volume, cold | 3 min 57 s |
-| 10 Oct 2026 | home | `nx run-many -t build -p ues-operations-angular,gisday-competitions-angular`, the two apps CI does not build, in the check's volume | volume, warm | 13 s |
-| 10 Oct 2026 | home | `nx g @angular/core:inject --path=./` over the whole workspace, 99 libraries given a temporary target so their files are seen (#1453) | volume | 3 min 39 s |
-| 9 Oct 2026 | home | `check-in-volume.sh fix/1475-check-script-lint-and-smoke` (affected; nothing affected, no tasks), 7:25 PM Central | volume, fresh clone 38 s, `npm ci` 67 s | 1 min 56 s |
-| 9 Oct 2026 | home | The new script on a throwaway branch touching `oidc-provider-nest`: lint ran (CI lints it), test and build excluded | volume, warm | 10 s |
-| 9 Oct 2026 | home | `check-in-volume.sh feat/1587-football-lots-live-status ts-events-ngx,ts-events-angular,aggiemap-angular` (bug-fix style) | volume | Nx 42.7 s |
-| 9 Oct 2026 | home | `check-in-volume.sh chore/1545-remove-cypress` (affected, 108 projects), lock without Cypress, 6:53 PM Central | volume, clean `npm ci` 62 s (2,245 packages) | **6 min 39 s** (Nx 5 min 32 s) |
-| 9 Oct 2026 | home | The same, first lock resync, which still installed Cypress as an optional peer, 6:45 PM Central | volume, fresh clone, clean `npm ci` 93 s (2,307 packages) | 7 min 15 s |
-| 8 Oct 2026 | home | `check-in-volume.sh chore/1236-remove-ring-day-app` (affected, 110 projects, 230 tasks), 3:57 to 4:03 PM Central | volume, cold clone and `npm ci` (59 s) | 6 min (Nx 4 min 28 s) |
-| 8 Oct 2026 | home | `check-in-volume.sh fix/1577-basemap-max-zoom` (5 projects) | volume, cold clone | passed |
-| 8 Oct 2026 | home | `check-in-volume.sh fix/1576-dining-aggieprint-icons` (3 projects) | volume, cold clone | passed |
-| 8 Oct 2026 | Kaleb's laptop | `check-in-volume.sh feat/tailgating-readable-links` (affected: ts-events-ngx, aggiemap-ngx-discover, aggiemap-ngx-core, aggiemap-angular, ts-events-angular, ts-events-angular-e2e), 14:20 Central | volume, warm, 6 projects | **1 min 13 s** |
-| 8 Oct 2026 | home | `check-in-volume.sh refactor/1568-prune-ng-modules` (affected, 67 projects, 140 tasks), rebased on `development` after #1572 | volume, cold cache | **2 min 55 s** |
-| 8 Oct 2026 | home | NgModule prune (`--mode=prune-ng-modules`) over the whole workspace, one run | volume | ~6 min |
-| 8 Oct 2026 | home | NgModule prune run library by library, 16 paths (abandoned: it missed importers outside each path) | volume | 27 min |
-| 8 Oct 2026 | home | `check-in-volume.sh refactor/standalone-bootstrap-rest` (#1567, affected, 54 projects, 114 tasks) | volume, cold cache | 2 min 8 s |
-| 8 Oct 2026 | home | `check-in-volume.sh refactor/1563-standalone-bootstrap` (affected, 45 projects) | volume, cold cache | 2 min 22 s |
-| 8 Oct 2026 | home | `check-in-volume.sh refactor/1564-standalone-remaining` (affected, 48 projects) | volume | 1 min 56 s |
-| 8 Oct 2026 | home | Standalone bootstrap migration (`--mode=standalone-bootstrap`), per app | volume | ~1 min 40 s each |
-| 7 Oct 2026 | Kaleb's laptop | `check-in-volume.sh fix/tailgating-simpson-tents ts-events-ngx,aggiemap-angular` (lint, test, build), 12:45 Central | volume, cold clone and `npm ci` (27 s of it), 2 projects | **55 s** |
-| 6 Oct 2026 | office | `check-in-volume.sh feat/1508-service-symbology` (affected), deleting 90 hard-coded renderers across 42 files, 17:12 Central | volume, cold clone and `npm ci` | 6 min, **failed**: a scripted edit dropped three `commonLayerProps` imports still in use (8 suites, `ReferenceError`) |
-| 6 Oct 2026 | office | The same check after the import fix, plus 71 titles removed, 17:35 Central | volume, warm | 5 min, **failed**: `LayerSource.title` was required, so TS2322 in `aggiemap-angular` and `ts-events-angular` |
-| 6 Oct 2026 | office | `check-in-volume.sh feat/1508-service-symbology aggiemap-angular,ts-events-angular,common-types`, confirming the optional-title fix before repeating the full run, 17:41 Central | volume, warm, 3 projects | **1 min** |
-| 6 Oct 2026 | office | The full affected check, passing: 47 projects, 99 tasks, 17:44 Central | volume, warm | **5 min** |
-| 6 Oct 2026 | office | The same check again after merging the day's four merged PRs into the branch, 17:52 Central | volume, warm | **4 min** (nx run duration 4 min 15 s) |
-| 6 Oct 2026 | office | `scripts/check-in-volume.sh` for #1514: `lint,test,build` on `common-nest-environment,gisday-nest` (plus `gisday-common:build` as a dependency), 16:00 to 16:03 Central | whole clone in volume `tamu-js-1514`, first run on that volume | **2 min 57 s** |
-| 6 Oct 2026 | office | `nx build gisday-nest`, to run the API with plain `node` beside the front end's `nx serve` (#1511) | bind-mounted source, volume `node_modules` | **36 s** |
-| 6 Oct 2026 | office | GIS Day production database: `COPY_ONLY` backup (9.4 GB in use) on the server, `RESTORE VERIFYONLY`, copy here over the prod VPN, SHA-256 of both ends; 16:13 to 16:42 Central (#1511) | backup 65 s, verify 72 s, copy 12 min, hash 14 min | **28.5 min** |
-| 6 Oct 2026 | office | `RESTORE DATABASE` of that 9.23 GB backup into the local SQL Server 2022 container `gisday-db` (#1511) | backup file on a bind mount | **92 s** |
-| 6 Oct 2026 | office | Full smoke suite against dev, the 6 October release (`0c8b12df`, `main-QFOMWXNR.js`, `dev-2026-10-06-3`), 6 workers, 11:51:12 to 12:20:47 Central | 421 passed, 1 failed, 14 skipped of 436 | **29 min 24 s** |
-| 6 Oct 2026 | office | The same suite's one failure re-run alone, machine quiet: `/map loads and serves its layers` | passed in 43.8 s; it had timed out at 120 s under the full run's load | **1 min 42 s** |
-| 6 Oct 2026 | office | `check-in-volume.sh fix/1497-portal-symbology` (affected), a shared-library change: 87 tasks, 41 projects, 0/87 cache hits | all passing | **3 min 5 s** |
-| 6 Oct 2026 | office | `check-in-volume.sh batch/2026-10-06-verify` (affected), the 8-change batch: 29 tasks, lint+test+build, 14 projects, 0/29 cache hits, 09:39 Central | volume, warm clone, cold Nx cache | **1 min 25 s** |
-| 6 Oct 2026 | office | The same check, second of three runs, 09:05 Central (one spec failing: a test fixture, not the app) | volume, warm clone | 1 min 25 s |
-| 6 Oct 2026 | office | `npm ci` into the dev server's `tamu-js-dev-nm` volume, 2,318 packages, after it was found two upgrades stale (Angular 19.2.9 against the checkout's 22.1.8) | bind-mounted source, volume `node_modules` | **1 min 28 s** |
-| 6 Oct 2026 | office | `nx build aggiemap-angular`, to serve a built app for before/after captures because `nx serve` cannot boot it (#1485) | bind-mounted source, volume `node_modules` | **30 s**, and 33 s on a second run |
-| 6 Oct 2026 | home | `check-in-volume.sh chore/1469-angular-22 all`, Angular 22 after its fixes (246 tasks, 0 failed) | volume, warm cache | **3 min 38 s** |
-| 6 Oct 2026 | home | `check-in-volume.sh chore/1469-angular-22 all`, run 3 (18 lint failed: rules still on in 15 projects) | volume | 3 min 36 s |
-| 6 Oct 2026 | home | `check-in-volume.sh chore/1469-angular-22 all`, first run to reach the tasks (77 failed: 74 lint, 3 build; 0 test) | volume, Nx cache cold | **3 min 1 s** |
-| 6 Oct 2026 | home | `nx migrate --run-migrations`, Angular 22 (47 migrations, 1,037 files) | volume, machine otherwise idle | **28 min 50 s** |
-| 6 Oct 2026 | home | `nx migrate 23.2.1` | volume | 46 s |
-| 5 Oct 2026 | home | `check-in-volume.sh chore/1456-angular-21 all`, Angular 21 after its fixes (246 tasks, 0 failed) | volume, warm cache | **3 min 5 s** |
-| 5 Oct 2026 | home | `check-in-volume.sh chore/1456-angular-21 all`, run 4 (3 failed: lightgallery under Jest 30) | volume | 4 min 11 s |
-| 5 Oct 2026 | home | `check-in-volume.sh chore/1456-angular-21 all`, run 2 (24 failed: a fix script's own mistake) | volume | 5 min 1 s |
-| 5 Oct 2026 | home | `check-in-volume.sh chore/1456-angular-21 all`, Angular 21 after its migrations (246 tasks; 41 failed) | volume, Nx cache cold; a full dev smoke run going | **7 min 7 s** |
-| 5 Oct 2026 | home | `nx migrate --run-migrations`, Angular 21 (25 migrations, 447 files) | volume; a full dev smoke run sharing the machine | **39 min 45 s** |
-| 5 Oct 2026 | home | `nx migrate 22.7.12` | volume | 40 s |
-| 5 Oct 2026 | home | Smoke `--grep "development-only"` on production after the #1460 fix (6 passed) | Playwright container, `node_modules` in a volume; alongside the dev run below | **1 min 37 s** |
-| 5 Oct 2026 | home | Smoke `--grep "development-only"` on dev after the #1460 fix (6 passed) | Playwright container, `node_modules` in a volume; alongside the production run above | **1 min 29 s** |
-| 5 Oct 2026 | home | Smoke `--grep "development-only"` on dev before the #1460 fix (3 passed, 2 failed on the Tailgating zones, each retried twice) | Playwright container, `node_modules` in a volume; a full dev smoke run going | **6 min 6 s** |
-| 5 Oct 2026 | home | `check-in-volume.sh chore/1447-angular-20 all` after the fixes (246 tasks, 0 failed; 70 from cache) | volume, warm | **4 min 9 s** |
-| 5 Oct 2026 | home | `check-in-volume.sh chore/1447-angular-20 all`, Angular 20 after its migrations (246 tasks; 71 failed) | volume, Nx cache cold; a GitHub smoke run going | **6 min 22 s** |
-| 5 Oct 2026 | home | `nx migrate --run-migrations`, Angular 20 (28 migrations, 371 files) | volume | **8 min 55 s** |
-| 5 Oct 2026 | home | `nx migrate 21.6.11` | volume | 39 s |
-| 5 Oct 2026 | home | `check-in-volume.sh chore/1448-prettier-3 affected` (lint, test, build; 118 projects, 246 tasks, 0 failed) | volume, Nx cache cold; `npm ci` (60 s) included; a GitHub smoke run going, nothing heavy locally | **6 min 24 s** |
-| 5 Oct 2026 | home | Prettier 3.9.9 `--list-different` over the whole repository (400 files would change) | volume | 23-27 s |
-| 5 Oct 2026 | home | Prettier 2.8.8 `--list-different` over the whole repository (241 files would change) | volume | 26 s |
-| 5 Oct 2026 | home | Prettier 3.9.9 `--write` on the 160 files only it changes | volume | 3 s |
-| 5 Oct 2026 | office (GEOG-CSA305C-02) | `check-in-volume.sh feat/tailgating-map` (affected: lint, test, build, 17 projects, 3 apps) | volume, cold: clone and `npm ci` (28 s) included | 1 min 54 s |
-| 5 Oct 2026 | office | `check-in-volume.sh … aggiemap-ngx-common` (lint, test) | volume, warm, after a one-line change | **12 s** |
-| 5 Oct 2026 | office | `check-in-volume.sh … aggiemap-ngx-common` (lint, test) | volume, cold: clone and `npm ci` included | 2 min 23 s |
-| 5 Oct 2026 | office | `check-in-volume.sh … aggiemap-angular` (lint, test, build) | volume, warm | 2 min 06 s |
-| 5 Oct 2026 | office | `aggiemap-angular` production build alone, inside the run above | esbuild `application` builder | 11.7 s |
-| 5 Oct 2026 | office | `check-in-volume.sh … affected` on a docs-only branch | volume, cold; 0 projects affected | 2 min 02 s |
-| 2 Oct 2026 | office | `nx affected -t lint,test,build`, 4 projects | bind-mounted Windows checkout | 12 min 08 s |
+| Date        | Machine                  | What ran                                                                                                                                                                                           | Approach                                                                                         |                                                                                                               Elapsed |
+| ----------- | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------: |
+| 18 Oct 2026 | home                     | `check-in-volume.sh chore/1479-vitest` (affected: lint 115 projects, test 108 of which 71 on Vitest, build 14), 7:59 PM Central                                                                    | volume, fresh clone, `npm ci` 88 s                                                               |                                                                   **6 min 44 s** (lint 111 s, test 123 s, build 67 s) |
+| 10 Oct 2026 | home                     | `check-in-volume.sh refactor/1453-inject` (affected: lint 75 projects, then test and build 71 projects and 3 dependencies), 2:01 PM Central                                                        | volume, warm install, Nx cache cold for these tasks (0 of 70 hits on the run before)             |                                                                          2 min 54 s (lint 74 s, test and build 100 s) |
+| 10 Oct 2026 | home                     | The same check's first run, 1:56 PM Central: fresh clone and `npm ci`, then the same tasks; failed on 8 test projects and one build                                                                | volume, cold                                                                                     |                                                                                                            3 min 57 s |
+| 10 Oct 2026 | home                     | `nx run-many -t build -p ues-operations-angular,gisday-competitions-angular`, the two apps CI does not build, in the check's volume                                                                | volume, warm                                                                                     |                                                                                                                  13 s |
+| 10 Oct 2026 | home                     | `nx g @angular/core:inject --path=./` over the whole workspace, 99 libraries given a temporary target so their files are seen (#1453)                                                              | volume                                                                                           |                                                                                                            3 min 39 s |
+| 9 Oct 2026  | home                     | `check-in-volume.sh fix/1475-check-script-lint-and-smoke` (affected; nothing affected, no tasks), 7:25 PM Central                                                                                  | volume, fresh clone 38 s, `npm ci` 67 s                                                          |                                                                                                            1 min 56 s |
+| 9 Oct 2026  | home                     | The new script on a throwaway branch touching `oidc-provider-nest`: lint ran (CI lints it), test and build excluded                                                                                | volume, warm                                                                                     |                                                                                                                  10 s |
+| 9 Oct 2026  | home                     | `check-in-volume.sh feat/1587-football-lots-live-status ts-events-ngx,ts-events-angular,aggiemap-angular` (bug-fix style)                                                                          | volume                                                                                           |                                                                                                             Nx 42.7 s |
+| 9 Oct 2026  | home                     | `check-in-volume.sh chore/1545-remove-cypress` (affected, 108 projects), lock without Cypress, 6:53 PM Central                                                                                     | volume, clean `npm ci` 62 s (2,245 packages)                                                     |                                                                                        **6 min 39 s** (Nx 5 min 32 s) |
+| 9 Oct 2026  | home                     | The same, first lock resync, which still installed Cypress as an optional peer, 6:45 PM Central                                                                                                    | volume, fresh clone, clean `npm ci` 93 s (2,307 packages)                                        |                                                                                                            7 min 15 s |
+| 8 Oct 2026  | home                     | `check-in-volume.sh chore/1236-remove-ring-day-app` (affected, 110 projects, 230 tasks), 3:57 to 4:03 PM Central                                                                                   | volume, cold clone and `npm ci` (59 s)                                                           |                                                                                                 6 min (Nx 4 min 28 s) |
+| 8 Oct 2026  | home                     | `check-in-volume.sh fix/1577-basemap-max-zoom` (5 projects)                                                                                                                                        | volume, cold clone                                                                               |                                                                                                                passed |
+| 8 Oct 2026  | home                     | `check-in-volume.sh fix/1576-dining-aggieprint-icons` (3 projects)                                                                                                                                 | volume, cold clone                                                                               |                                                                                                                passed |
+| 8 Oct 2026  | Kaleb's laptop           | `check-in-volume.sh feat/tailgating-readable-links` (affected: ts-events-ngx, aggiemap-ngx-discover, aggiemap-ngx-core, aggiemap-angular, ts-events-angular, ts-events-angular-e2e), 14:20 Central | volume, warm, 6 projects                                                                         |                                                                                                        **1 min 13 s** |
+| 8 Oct 2026  | home                     | `check-in-volume.sh refactor/1568-prune-ng-modules` (affected, 67 projects, 140 tasks), rebased on `development` after #1572                                                                       | volume, cold cache                                                                               |                                                                                                        **2 min 55 s** |
+| 8 Oct 2026  | home                     | NgModule prune (`--mode=prune-ng-modules`) over the whole workspace, one run                                                                                                                       | volume                                                                                           |                                                                                                                ~6 min |
+| 8 Oct 2026  | home                     | NgModule prune run library by library, 16 paths (abandoned: it missed importers outside each path)                                                                                                 | volume                                                                                           |                                                                                                                27 min |
+| 8 Oct 2026  | home                     | `check-in-volume.sh refactor/standalone-bootstrap-rest` (#1567, affected, 54 projects, 114 tasks)                                                                                                  | volume, cold cache                                                                               |                                                                                                             2 min 8 s |
+| 8 Oct 2026  | home                     | `check-in-volume.sh refactor/1563-standalone-bootstrap` (affected, 45 projects)                                                                                                                    | volume, cold cache                                                                               |                                                                                                            2 min 22 s |
+| 8 Oct 2026  | home                     | `check-in-volume.sh refactor/1564-standalone-remaining` (affected, 48 projects)                                                                                                                    | volume                                                                                           |                                                                                                            1 min 56 s |
+| 8 Oct 2026  | home                     | Standalone bootstrap migration (`--mode=standalone-bootstrap`), per app                                                                                                                            | volume                                                                                           |                                                                                                      ~1 min 40 s each |
+| 7 Oct 2026  | Kaleb's laptop           | `check-in-volume.sh fix/tailgating-simpson-tents ts-events-ngx,aggiemap-angular` (lint, test, build), 12:45 Central                                                                                | volume, cold clone and `npm ci` (27 s of it), 2 projects                                         |                                                                                                              **55 s** |
+| 6 Oct 2026  | office                   | `check-in-volume.sh feat/1508-service-symbology` (affected), deleting 90 hard-coded renderers across 42 files, 17:12 Central                                                                       | volume, cold clone and `npm ci`                                                                  | 6 min, **failed**: a scripted edit dropped three `commonLayerProps` imports still in use (8 suites, `ReferenceError`) |
+| 6 Oct 2026  | office                   | The same check after the import fix, plus 71 titles removed, 17:35 Central                                                                                                                         | volume, warm                                                                                     |          5 min, **failed**: `LayerSource.title` was required, so TS2322 in `aggiemap-angular` and `ts-events-angular` |
+| 6 Oct 2026  | office                   | `check-in-volume.sh feat/1508-service-symbology aggiemap-angular,ts-events-angular,common-types`, confirming the optional-title fix before repeating the full run, 17:41 Central                   | volume, warm, 3 projects                                                                         |                                                                                                             **1 min** |
+| 6 Oct 2026  | office                   | The full affected check, passing: 47 projects, 99 tasks, 17:44 Central                                                                                                                             | volume, warm                                                                                     |                                                                                                             **5 min** |
+| 6 Oct 2026  | office                   | The same check again after merging the day's four merged PRs into the branch, 17:52 Central                                                                                                        | volume, warm                                                                                     |                                                                                **4 min** (nx run duration 4 min 15 s) |
+| 6 Oct 2026  | office                   | `scripts/check-in-volume.sh` for #1514: `lint,test,build` on `common-nest-environment,gisday-nest` (plus `gisday-common:build` as a dependency), 16:00 to 16:03 Central                            | whole clone in volume `tamu-js-1514`, first run on that volume                                   |                                                                                                        **2 min 57 s** |
+| 6 Oct 2026  | office                   | `nx build gisday-nest`, to run the API with plain `node` beside the front end's `nx serve` (#1511)                                                                                                 | bind-mounted source, volume `node_modules`                                                       |                                                                                                              **36 s** |
+| 6 Oct 2026  | office                   | GIS Day production database: `COPY_ONLY` backup (9.4 GB in use) on the server, `RESTORE VERIFYONLY`, copy here over the prod VPN, SHA-256 of both ends; 16:13 to 16:42 Central (#1511)             | backup 65 s, verify 72 s, copy 12 min, hash 14 min                                               |                                                                                                          **28.5 min** |
+| 6 Oct 2026  | office                   | `RESTORE DATABASE` of that 9.23 GB backup into the local SQL Server 2022 container `gisday-db` (#1511)                                                                                             | backup file on a bind mount                                                                      |                                                                                                              **92 s** |
+| 6 Oct 2026  | office                   | Full smoke suite against dev, the 6 October release (`0c8b12df`, `main-QFOMWXNR.js`, `dev-2026-10-06-3`), 6 workers, 11:51:12 to 12:20:47 Central                                                  | 421 passed, 1 failed, 14 skipped of 436                                                          |                                                                                                       **29 min 24 s** |
+| 6 Oct 2026  | office                   | The same suite's one failure re-run alone, machine quiet: `/map loads and serves its layers`                                                                                                       | passed in 43.8 s; it had timed out at 120 s under the full run's load                            |                                                                                                        **1 min 42 s** |
+| 6 Oct 2026  | office                   | `check-in-volume.sh fix/1497-portal-symbology` (affected), a shared-library change: 87 tasks, 41 projects, 0/87 cache hits                                                                         | all passing                                                                                      |                                                                                                         **3 min 5 s** |
+| 6 Oct 2026  | office                   | `check-in-volume.sh batch/2026-10-06-verify` (affected), the 8-change batch: 29 tasks, lint+test+build, 14 projects, 0/29 cache hits, 09:39 Central                                                | volume, warm clone, cold Nx cache                                                                |                                                                                                        **1 min 25 s** |
+| 6 Oct 2026  | office                   | The same check, second of three runs, 09:05 Central (one spec failing: a test fixture, not the app)                                                                                                | volume, warm clone                                                                               |                                                                                                            1 min 25 s |
+| 6 Oct 2026  | office                   | `npm ci` into the dev server's `tamu-js-dev-nm` volume, 2,318 packages, after it was found two upgrades stale (Angular 19.2.9 against the checkout's 22.1.8)                                       | bind-mounted source, volume `node_modules`                                                       |                                                                                                        **1 min 28 s** |
+| 6 Oct 2026  | office                   | `nx build aggiemap-angular`, to serve a built app for before/after captures because `nx serve` cannot boot it (#1485)                                                                              | bind-mounted source, volume `node_modules`                                                       |                                                                                    **30 s**, and 33 s on a second run |
+| 6 Oct 2026  | home                     | `check-in-volume.sh chore/1469-angular-22 all`, Angular 22 after its fixes (246 tasks, 0 failed)                                                                                                   | volume, warm cache                                                                               |                                                                                                        **3 min 38 s** |
+| 6 Oct 2026  | home                     | `check-in-volume.sh chore/1469-angular-22 all`, run 3 (18 lint failed: rules still on in 15 projects)                                                                                              | volume                                                                                           |                                                                                                            3 min 36 s |
+| 6 Oct 2026  | home                     | `check-in-volume.sh chore/1469-angular-22 all`, first run to reach the tasks (77 failed: 74 lint, 3 build; 0 test)                                                                                 | volume, Nx cache cold                                                                            |                                                                                                         **3 min 1 s** |
+| 6 Oct 2026  | home                     | `nx migrate --run-migrations`, Angular 22 (47 migrations, 1,037 files)                                                                                                                             | volume, machine otherwise idle                                                                   |                                                                                                       **28 min 50 s** |
+| 6 Oct 2026  | home                     | `nx migrate 23.2.1`                                                                                                                                                                                | volume                                                                                           |                                                                                                                  46 s |
+| 5 Oct 2026  | home                     | `check-in-volume.sh chore/1456-angular-21 all`, Angular 21 after its fixes (246 tasks, 0 failed)                                                                                                   | volume, warm cache                                                                               |                                                                                                         **3 min 5 s** |
+| 5 Oct 2026  | home                     | `check-in-volume.sh chore/1456-angular-21 all`, run 4 (3 failed: lightgallery under Jest 30)                                                                                                       | volume                                                                                           |                                                                                                            4 min 11 s |
+| 5 Oct 2026  | home                     | `check-in-volume.sh chore/1456-angular-21 all`, run 2 (24 failed: a fix script's own mistake)                                                                                                      | volume                                                                                           |                                                                                                             5 min 1 s |
+| 5 Oct 2026  | home                     | `check-in-volume.sh chore/1456-angular-21 all`, Angular 21 after its migrations (246 tasks; 41 failed)                                                                                             | volume, Nx cache cold; a full dev smoke run going                                                |                                                                                                         **7 min 7 s** |
+| 5 Oct 2026  | home                     | `nx migrate --run-migrations`, Angular 21 (25 migrations, 447 files)                                                                                                                               | volume; a full dev smoke run sharing the machine                                                 |                                                                                                       **39 min 45 s** |
+| 5 Oct 2026  | home                     | `nx migrate 22.7.12`                                                                                                                                                                               | volume                                                                                           |                                                                                                                  40 s |
+| 5 Oct 2026  | home                     | Smoke `--grep "development-only"` on production after the #1460 fix (6 passed)                                                                                                                     | Playwright container, `node_modules` in a volume; alongside the dev run below                    |                                                                                                        **1 min 37 s** |
+| 5 Oct 2026  | home                     | Smoke `--grep "development-only"` on dev after the #1460 fix (6 passed)                                                                                                                            | Playwright container, `node_modules` in a volume; alongside the production run above             |                                                                                                        **1 min 29 s** |
+| 5 Oct 2026  | home                     | Smoke `--grep "development-only"` on dev before the #1460 fix (3 passed, 2 failed on the Tailgating zones, each retried twice)                                                                     | Playwright container, `node_modules` in a volume; a full dev smoke run going                     |                                                                                                         **6 min 6 s** |
+| 5 Oct 2026  | home                     | `check-in-volume.sh chore/1447-angular-20 all` after the fixes (246 tasks, 0 failed; 70 from cache)                                                                                                | volume, warm                                                                                     |                                                                                                         **4 min 9 s** |
+| 5 Oct 2026  | home                     | `check-in-volume.sh chore/1447-angular-20 all`, Angular 20 after its migrations (246 tasks; 71 failed)                                                                                             | volume, Nx cache cold; a GitHub smoke run going                                                  |                                                                                                        **6 min 22 s** |
+| 5 Oct 2026  | home                     | `nx migrate --run-migrations`, Angular 20 (28 migrations, 371 files)                                                                                                                               | volume                                                                                           |                                                                                                        **8 min 55 s** |
+| 5 Oct 2026  | home                     | `nx migrate 21.6.11`                                                                                                                                                                               | volume                                                                                           |                                                                                                                  39 s |
+| 5 Oct 2026  | home                     | `check-in-volume.sh chore/1448-prettier-3 affected` (lint, test, build; 118 projects, 246 tasks, 0 failed)                                                                                         | volume, Nx cache cold; `npm ci` (60 s) included; a GitHub smoke run going, nothing heavy locally |                                                                                                        **6 min 24 s** |
+| 5 Oct 2026  | home                     | Prettier 3.9.9 `--list-different` over the whole repository (400 files would change)                                                                                                               | volume                                                                                           |                                                                                                               23-27 s |
+| 5 Oct 2026  | home                     | Prettier 2.8.8 `--list-different` over the whole repository (241 files would change)                                                                                                               | volume                                                                                           |                                                                                                                  26 s |
+| 5 Oct 2026  | home                     | Prettier 3.9.9 `--write` on the 160 files only it changes                                                                                                                                          | volume                                                                                           |                                                                                                                   3 s |
+| 5 Oct 2026  | office (GEOG-CSA305C-02) | `check-in-volume.sh feat/tailgating-map` (affected: lint, test, build, 17 projects, 3 apps)                                                                                                        | volume, cold: clone and `npm ci` (28 s) included                                                 |                                                                                                            1 min 54 s |
+| 5 Oct 2026  | office                   | `check-in-volume.sh … aggiemap-ngx-common` (lint, test)                                                                                                                                            | volume, warm, after a one-line change                                                            |                                                                                                              **12 s** |
+| 5 Oct 2026  | office                   | `check-in-volume.sh … aggiemap-ngx-common` (lint, test)                                                                                                                                            | volume, cold: clone and `npm ci` included                                                        |                                                                                                            2 min 23 s |
+| 5 Oct 2026  | office                   | `check-in-volume.sh … aggiemap-angular` (lint, test, build)                                                                                                                                        | volume, warm                                                                                     |                                                                                                            2 min 06 s |
+| 5 Oct 2026  | office                   | `aggiemap-angular` production build alone, inside the run above                                                                                                                                    | esbuild `application` builder                                                                    |                                                                                                                11.7 s |
+| 5 Oct 2026  | office                   | `check-in-volume.sh … affected` on a docs-only branch                                                                                                                                              | volume, cold; 0 projects affected                                                                |                                                                                                            2 min 02 s |
+| 2 Oct 2026  | office                   | `nx affected -t lint,test,build`, 4 projects                                                                                                                                                       | bind-mounted Windows checkout                                                                    |                                                                                                           12 min 08 s |
 
 The 12-second row is the one that changed how the work feels: a real edit-to-verdict cycle on a
 library, against a 12-minute affected run three days earlier. The two are not the same scope - 1
@@ -126,13 +126,13 @@ The test targets of every project on Vitest (the 69 with a `vitest.config.mts`),
 5.0.5, `@analogjs/*` 2.9.1). Both ran with the source in one Docker volume and `node_modules` in
 another, from a clean `npm ci`.
 
-| Date | Machine | What ran | Approach | Elapsed |
-| --- | --- | --- | --- | ---: |
-| 21 Oct 2026 | home | Vitest 5, second run, 12:27 AM Central (922 tests; 1 failed, the known flake #1898) | volume, warm; idle GIS Day containers and another agent's Playwright container beside it | 88 s |
-| 21 Oct 2026 | home | Vitest 5, first run, 12:26 AM Central (922 tests, 0 failed) | volume, warm; the same | **99 s** |
-| 21 Oct 2026 | home | Vitest 4, second run, 12:20 AM Central (922 tests, 0 failed) | volume, warm; idle GIS Day containers | **102 s** |
-| 21 Oct 2026 | home | Vitest 4, first run, 12:18 AM Central (922 tests, 0 failed) | volume, warm; the same | **83 s** |
-| 20 Oct 2026 | home | Vitest 4, the same command, 11:53 PM Central, with the source bind-mounted from Windows | bind mount, `node_modules` in a volume; another agent's build beside it | 837 s; 2 projects failed on timeouts |
+| Date        | Machine | What ran                                                                                | Approach                                                                                 |                              Elapsed |
+| ----------- | ------- | --------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | -----------------------------------: |
+| 21 Oct 2026 | home    | Vitest 5, second run, 12:27 AM Central (922 tests; 1 failed, the known flake #1898)     | volume, warm; idle GIS Day containers and another agent's Playwright container beside it |                                 88 s |
+| 21 Oct 2026 | home    | Vitest 5, first run, 12:26 AM Central (922 tests, 0 failed)                             | volume, warm; the same                                                                   |                             **99 s** |
+| 21 Oct 2026 | home    | Vitest 4, second run, 12:20 AM Central (922 tests, 0 failed)                            | volume, warm; idle GIS Day containers                                                    |                            **102 s** |
+| 21 Oct 2026 | home    | Vitest 4, first run, 12:18 AM Central (922 tests, 0 failed)                             | volume, warm; the same                                                                   |                             **83 s** |
+| 20 Oct 2026 | home    | Vitest 4, the same command, 11:53 PM Central, with the source bind-mounted from Windows | bind mount, `node_modules` in a volume; another agent's build beside it                  | 837 s; 2 projects failed on timeouts |
 
 Vitest 5 took 94 s on average against Vitest 4's 93 s: no measurable difference, and the upgrade was
 not made for speed. Every one of the 69 projects ran the same number of tests on both (922 in all).
@@ -153,14 +153,14 @@ project under `libs/aggiemap`, `libs/maps`, `libs/ui-kits`, `libs/common`, `libs
 base, `7ddbee7d1`; Vitest is `chore/1479-vitest`. Each ran in its own Docker volume with a warm
 install, the two alternating so both met the same load.
 
-| Date | Machine | What ran | Approach | Elapsed |
-| --- | --- | --- | --- | ---: |
-| 18 Oct 2026 | home | Vitest, second run, 7:57 PM Central (867 tests, 0 failed) | volume, warm; an idle nginx and two node containers beside it | **76 s** |
-| 18 Oct 2026 | home | Jest, second run, 7:56 PM Central (869 tests, 0 failed) | volume, warm; one other build running | **93 s** |
-| 18 Oct 2026 | home | Vitest, first run, 7:54 PM Central | volume, warm; a bundle build running beside it | **90 s** |
-| 18 Oct 2026 | home | Jest, first run, 7:52 PM Central | volume, warm; idle containers only | **100 s** |
-| 18 Oct 2026 | home | Vitest, the same 71 projects, 7:24 PM Central | volume, warm; eight agents sharing the machine | 166 s |
-| 18 Oct 2026 | home | Jest, the same 71 projects, 6:14 PM Central | volume, warm; eight agents sharing the machine | 294 s |
+| Date        | Machine | What ran                                                  | Approach                                                      |   Elapsed |
+| ----------- | ------- | --------------------------------------------------------- | ------------------------------------------------------------- | --------: |
+| 18 Oct 2026 | home    | Vitest, second run, 7:57 PM Central (867 tests, 0 failed) | volume, warm; an idle nginx and two node containers beside it |  **76 s** |
+| 18 Oct 2026 | home    | Jest, second run, 7:56 PM Central (869 tests, 0 failed)   | volume, warm; one other build running                         |  **93 s** |
+| 18 Oct 2026 | home    | Vitest, first run, 7:54 PM Central                        | volume, warm; a bundle build running beside it                |  **90 s** |
+| 18 Oct 2026 | home    | Jest, first run, 7:52 PM Central                          | volume, warm; idle containers only                            | **100 s** |
+| 18 Oct 2026 | home    | Vitest, the same 71 projects, 7:24 PM Central             | volume, warm; eight agents sharing the machine                |     166 s |
+| 18 Oct 2026 | home    | Jest, the same 71 projects, 6:14 PM Central               | volume, warm; eight agents sharing the machine                |     294 s |
 
 Vitest took 83 s on average against Jest's 97 s: about 15 % less for the same tests. The two loaded
 runs at the bottom are not a comparison, since they ran an hour apart under different load, but they
@@ -171,28 +171,73 @@ of its 33 s in its 161 tests on the loaded run.
 Vitest counts two tests fewer. Jest ran `ui-kits-ngx-layout-code`'s two inside `ui-kits-ngx-layout` as
 well, since that project's directory contains it; Vitest runs them once, in their own project.
 
+### Unit tests: the GIS Day site, Jest against Vitest (#1977)
+
+`gisday-angular`'s 16 tests, measured as below: Jest is `development` at `9d8bf3299`, Vitest is
+`chore/1977-gisday-vitest-app` at `872d8f666`, alternating three times on the lab machine with nothing else
+running, 24 November 2026, finished at 10:43 PM Central.
+
+| Project          | Tests, Jest and Vitest |  Jest, cold |         Jest, warm |             Vitest |
+| ---------------- | ---------------------: | ----------: | -----------------: | -----------------: |
+| `gisday-angular` |                     16 | 3.3 s (1.6) | 1.9 to 2.0 s (0.9) | 3.5 to 3.6 s (0.5) |
+
+As on the four libraries below: a small Angular project, where Vitest's runner is faster and its start-up costs
+more than it saves.
+
+### Unit tests: four GIS Day libraries, Jest against Vitest (#1977)
+
+The `ngx/common` and `ngx/data-access` libraries of the GIS Day platform and competitions. Jest is
+`development` at `3bd997a7f`; Vitest is `chore/1977-gisday-vitest-ngx` at `b6c7b87da`. Each project's
+test target was run on its own, `nx run <project>:test --skip-nx-cache`, one after another in the check's
+Docker volume, on the lab machine with nothing else running, 24 November 2026 from about 9:30 PM
+Central. The two states alternated three times. The seconds are the whole Nx task; the runner's own
+figure (Jest's `Time`, Vitest's `Duration`) is in brackets.
+
+| Project                               | Tests, Jest and Vitest |  Jest, cold |                Jest, warm |                    Vitest |
+| ------------------------------------- | ---------------------: | ----------: | ------------------------: | ------------------------: |
+| `gisday-competitions-ngx-data-access` |                      1 | 2.8 s (1.1) |               1.6 s (0.7) |       3.8 to 3.9 s (0.45) |
+| `gisday-platform-ngx-data-access`     |                     52 | 3.3 s (2.4) | 2.3 to 2.5 s (1.4 to 1.5) |       4.2 to 4.3 s (0.63) |
+| `gisday-competitions-ngx-common`      |                     35 | 3.5 s (2.5) | 2.2 to 2.5 s (1.3 to 1.6) |        5.0 to 5.2 s (0.8) |
+| `gisday-platform-ngx-common`          |                    337 | 8.7 s (7.8) |        5.2 s (4.2 to 4.3) | 7.6 to 7.7 s (2.1 to 2.2) |
+| **All four**                          |                    425 |  **18.3 s** |        **11.5 to 11.6 s** |        **20.8 to 21.0 s** |
+
+"Cold" is Jest's first run in a new container, with its transform cache empty, which is what CI and
+`scripts/check-in-volume.sh` meet: every run is a new container. "Warm" is Jest's second and third
+runs in the same container. Vitest's times did not change between runs.
+
+**Vitest runs the tests three to four times faster, and the four tasks still take longer.** Each Vitest
+task spends 3 to 5 s before its first test: starting Vite and Analog's Angular plugin, which reads the
+project's `tsconfig.spec.json`. Jest's start-up is about a second. On the one library with hundreds of
+tests, the faster runner pays for its start-up and comes out a second ahead of cold Jest; on the three
+small ones it does not.
+
+The check itself agrees. `scripts/check-in-volume.sh` on those four, `CHECK_PARALLEL=1`, spent 33.4 s on
+`lint,test` with Jest and 32.0 s with Vitest. Its two run files, `2026-11-24T212101-check-lab.csv`
+(117 s) and `2026-11-24T212911-check-lab.csv` (60 s), differ by the first run's clone and `npm ci`, not by
+the runner.
+
 ## Installs
 
-| Date | Machine | What ran | Approach | Elapsed |
-| --- | --- | --- | --- | ---: |
-| 25 Oct 2026 | lab | `npm ci` after removing 12 unused or redundant packages (#2122): **1804 packages** | check script, new volume | 33 s |
-| 25 Oct 2026 | lab | `npm ci`, `development` at `c20ec0779`, before (#2122): **1836 packages** | check script, new volume | 30 s |
-| 6 Oct 2026 | home | `npm ci` after the Angular 22 migrations (lock unchanged) | clean, from only `package.json` and the lock | 51 s |
-| 6 Oct 2026 | home | `npm ci`, Angular 22 install proof | clean, from only `package.json` and the lock | 48 s |
-| 6 Oct 2026 | home | `npm install`, Angular 22's new versions | into the `tamu-js-ng22` Docker volume | **53 s** |
-| 6 Oct 2026 | home | `npm ci`, Angular 21 baseline before the Angular 22 migrate | volume | 1 min 4 s |
-| 5 Oct 2026 | home | `npm ci` into the new `tamu-js-1456` volume, Angular 21 | check script, clean volume | 1 min 42 s |
-| 5 Oct 2026 | home | `npm ci` after the Angular 21 migrations (lock unchanged) | clean, from only `package.json` and the lock | 1 min 35 s |
-| 5 Oct 2026 | home | `npm ci`, Angular 21 install proof | clean, from only `package.json` and the lock | 47 s |
-| 5 Oct 2026 | home | `npm install`, Angular 21's new versions | into the `tamu-js-ng21` Docker volume | **60 s** |
-| 5 Oct 2026 | home | `npm ci`, Angular 20 baseline before the Angular 21 migrate | volume | 54 s |
-| 5 Oct 2026 | home | `npm ci` from the resynced lock after the Angular 20 migrations | clean, from only `package.json` and the lock | 68 s |
-| 5 Oct 2026 | home | `npm ci`, Angular 20 install proof | clean, from only `package.json` and the lock | 55 s |
-| 5 Oct 2026 | home | `npm install`, Angular 20's new versions | into the `tamu-js-1447` Docker volume | **58 s** |
-| 5 Oct 2026 | home | `npm ci` after the Prettier 3 bump (lock proof and install) | into the `tamu-js-1448` Docker volume | **59 s** |
-| 5 Oct 2026 | home | `npm ci`, Angular 19 baseline for the Angular 20 upgrade (#1447) | into the `tamu-js-1447` Docker volume | **62 s** |
-| 5 Oct 2026 | office | `npm ci` | into the `tamu-js-dev-nm` Docker volume | **4 min 45 s** |
-| 5 Oct 2026 | office | `npm ci` | into the bind-mounted Windows checkout | **13 min 56 s** |
+| Date        | Machine | What ran                                                                           | Approach                                     |         Elapsed |
+| ----------- | ------- | ---------------------------------------------------------------------------------- | -------------------------------------------- | --------------: |
+| 25 Oct 2026 | lab     | `npm ci` after removing 12 unused or redundant packages (#2122): **1804 packages** | check script, new volume                     |            33 s |
+| 25 Oct 2026 | lab     | `npm ci`, `development` at `c20ec0779`, before (#2122): **1836 packages**          | check script, new volume                     |            30 s |
+| 6 Oct 2026  | home    | `npm ci` after the Angular 22 migrations (lock unchanged)                          | clean, from only `package.json` and the lock |            51 s |
+| 6 Oct 2026  | home    | `npm ci`, Angular 22 install proof                                                 | clean, from only `package.json` and the lock |            48 s |
+| 6 Oct 2026  | home    | `npm install`, Angular 22's new versions                                           | into the `tamu-js-ng22` Docker volume        |        **53 s** |
+| 6 Oct 2026  | home    | `npm ci`, Angular 21 baseline before the Angular 22 migrate                        | volume                                       |       1 min 4 s |
+| 5 Oct 2026  | home    | `npm ci` into the new `tamu-js-1456` volume, Angular 21                            | check script, clean volume                   |      1 min 42 s |
+| 5 Oct 2026  | home    | `npm ci` after the Angular 21 migrations (lock unchanged)                          | clean, from only `package.json` and the lock |      1 min 35 s |
+| 5 Oct 2026  | home    | `npm ci`, Angular 21 install proof                                                 | clean, from only `package.json` and the lock |            47 s |
+| 5 Oct 2026  | home    | `npm install`, Angular 21's new versions                                           | into the `tamu-js-ng21` Docker volume        |        **60 s** |
+| 5 Oct 2026  | home    | `npm ci`, Angular 20 baseline before the Angular 21 migrate                        | volume                                       |            54 s |
+| 5 Oct 2026  | home    | `npm ci` from the resynced lock after the Angular 20 migrations                    | clean, from only `package.json` and the lock |            68 s |
+| 5 Oct 2026  | home    | `npm ci`, Angular 20 install proof                                                 | clean, from only `package.json` and the lock |            55 s |
+| 5 Oct 2026  | home    | `npm install`, Angular 20's new versions                                           | into the `tamu-js-1447` Docker volume        |        **58 s** |
+| 5 Oct 2026  | home    | `npm ci` after the Prettier 3 bump (lock proof and install)                        | into the `tamu-js-1448` Docker volume        |        **59 s** |
+| 5 Oct 2026  | home    | `npm ci`, Angular 19 baseline for the Angular 20 upgrade (#1447)                   | into the `tamu-js-1447` Docker volume        |        **62 s** |
+| 5 Oct 2026  | office  | `npm ci`                                                                           | into the `tamu-js-dev-nm` Docker volume      |  **4 min 45 s** |
+| 5 Oct 2026  | office  | `npm ci`                                                                           | into the bind-mounted Windows checkout       | **13 min 56 s** |
 
 The two `office` rows of 5 October ran on the same machine, from the same lock file, within the same hour: **2.9 times
 faster** in a volume, with everything else held constant. This is the cleanest before-and-after on
@@ -206,11 +251,11 @@ entirely from Nx's caches, so they show only that nothing failed.
 
 ## Dev servers
 
-| Date | Machine | What ran | Approach | Elapsed |
-| --- | --- | --- | --- | ---: |
-| 5 Oct 2026 | office | `nx serve aggiemap-angular` to first answer on `:4200` | Angular 19, Vite dev server, volume `node_modules` | 5 min 02 s |
-| 6 Oct 2026 | office | `nx serve gisday-angular` to first answer on `:4201`, 14:16 to 14:21 Central; Vite dependency bundling took several more minutes before the page drew | Angular 22.1.8, Vite dev server, volume `node_modules`, main checkout bind-mounted | ~5 min |
-| 6 Oct 2026 | office | `nx serve gisday-angular` against the local GIS Day stack (#1511), restarted with `--proxy-config` after setting aside a stale `.nx/workspace-data/machine-v3.db`, 17:02 to about 17:11 Central | Angular 22.1.8, Vite dev server, volume `node_modules` | ~9 min |
+| Date       | Machine | What ran                                                                                                                                                                                        | Approach                                                                           |    Elapsed |
+| ---------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ---------: |
+| 5 Oct 2026 | office  | `nx serve aggiemap-angular` to first answer on `:4200`                                                                                                                                          | Angular 19, Vite dev server, volume `node_modules`                                 | 5 min 02 s |
+| 6 Oct 2026 | office  | `nx serve gisday-angular` to first answer on `:4201`, 14:16 to 14:21 Central; Vite dependency bundling took several more minutes before the page drew                                           | Angular 22.1.8, Vite dev server, volume `node_modules`, main checkout bind-mounted |     ~5 min |
+| 6 Oct 2026 | office  | `nx serve gisday-angular` against the local GIS Day stack (#1511), restarted with `--proxy-config` after setting aside a stale `.nx/workspace-data/machine-v3.db`, 17:02 to about 17:11 Central | Angular 22.1.8, Vite dev server, volume `node_modules`                             |     ~9 min |
 
 ## Azure builds
 
@@ -225,17 +270,17 @@ gh api repos/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/commits/<sha>/chec
 
 ### 5 October 2026, build on `7e1aa0fc` (the release candidate carrying #1413 and #1415)
 
-| Stage | Elapsed |
-| --- | ---: |
+| Stage                         |        Elapsed |
+| ----------------------------- | -------------: |
 | **Monorepo, the whole build** | **5 min 47 s** |
-| Setup Last SHA | 14 s |
-| Dependencies Cache or Restore | 37 s |
-| Lint Lint Affected | 1 min 23 s |
-| Build development | 3 min 19 s |
-| Build production | 3 min 24 s |
-| Tag Add Build Tags | 48 s |
-| GitHub `Lint / Affected` | 31 s |
-| GitHub `Build / Affected` | 1 min 31 s |
+| Setup Last SHA                |           14 s |
+| Dependencies Cache or Restore |           37 s |
+| Lint Lint Affected            |     1 min 23 s |
+| Build development             |     3 min 19 s |
+| Build production              |     3 min 24 s |
+| Tag Add Build Tags            |           48 s |
+| GitHub `Lint / Affected`      |           31 s |
+| GitHub `Build / Affected`     |     1 min 31 s |
 
 **Do not add the stage times up.** Build development and Build production start one second apart and
 run in parallel, as do the two GitHub checks, so the whole build is well under their sum.
@@ -264,23 +309,23 @@ weeks; 21 September is as far back as it goes.
 **287 successful builds, 21 September to 5 October**, median 5.6 minutes
 overall, fastest 1.8, slowest 28.5:
 
-| Day | Builds | Median | Fastest | Slowest |
-| --- | ---: | ---: | ---: | ---: |
-| 2026-09-21 | 2 | 9.6 | 5.6 | 13.7 |
-| 2026-09-22 | 2 | 8.6 | 8.3 | 8.9 |
-| 2026-09-23 | 2 | 10.3 | 5.5 | 15.1 |
-| 2026-09-24 | 6 | 9.0 | 5.9 | 14.3 |
-| 2026-09-25 | 20 | 5.9 | 2.9 | 13.0 |
-| 2026-09-26 | 5 | 8.3 | 3.0 | 8.6 |
-| 2026-09-27 | 9 | 8.8 | 3.7 | 12.3 |
-| 2026-09-28 | 48 | 4.6 | 1.9 | 14.7 |
-| 2026-09-29 | 11 | 4.9 | 1.8 | 9.1 |
-| 2026-09-30 | 33 | 4.8 | 2.2 | 10.0 |
-| 2026-10-01 | 28 | 7.6 | 2.6 | 18.9 |
-| 2026-10-02 | 44 | 6.0 | 2.1 | 28.5 |
-| 2026-10-03 | 6 | 11.7 | 2.1 | 15.5 |
-| 2026-10-04 | 33 | 2.9 | 2.0 | 13.9 |
-| 2026-10-05 | 38 | 4.9 | 2.1 | 15.4 |
+| Day        | Builds | Median | Fastest | Slowest |
+| ---------- | -----: | -----: | ------: | ------: |
+| 2026-09-21 |      2 |    9.6 |     5.6 |    13.7 |
+| 2026-09-22 |      2 |    8.6 |     8.3 |     8.9 |
+| 2026-09-23 |      2 |   10.3 |     5.5 |    15.1 |
+| 2026-09-24 |      6 |    9.0 |     5.9 |    14.3 |
+| 2026-09-25 |     20 |    5.9 |     2.9 |    13.0 |
+| 2026-09-26 |      5 |    8.3 |     3.0 |     8.6 |
+| 2026-09-27 |      9 |    8.8 |     3.7 |    12.3 |
+| 2026-09-28 |     48 |    4.6 |     1.9 |    14.7 |
+| 2026-09-29 |     11 |    4.9 |     1.8 |     9.1 |
+| 2026-09-30 |     33 |    4.8 |     2.2 |    10.0 |
+| 2026-10-01 |     28 |    7.6 |     2.6 |    18.9 |
+| 2026-10-02 |     44 |    6.0 |     2.1 |    28.5 |
+| 2026-10-03 |      6 |   11.7 |     2.1 |    15.5 |
+| 2026-10-04 |     33 |    2.9 |     2.0 |    13.9 |
+| 2026-10-05 |     38 |    4.9 |     2.1 |    15.4 |
 
 **This is not a trend line, and should not be read as one.** A build's duration depends on what that
 commit affected, so a day's median mostly reflects what was being worked on. Reading an esbuild win
@@ -310,41 +355,41 @@ The PAT carries Build (read) but not **Release (read)**. Adding that scope would
 pulled directly and is the one thing standing between this table and filling itself in. Until then
 the numbers have to come from whoever ran the release.
 
-| Date | Release | Build | Elapsed |
-| --- | --- | --- | ---: |
-| 5 Oct 2026 | to dev | 5 October candidate on `7e1aa0fc` | to record |
-| 5 Oct 2026 | to production | the same build | to record |
+| Date       | Release       | Build                             |   Elapsed |
+| ---------- | ------------- | --------------------------------- | --------: |
+| 5 Oct 2026 | to dev        | 5 October candidate on `7e1aa0fc` | to record |
+| 5 Oct 2026 | to production | the same build                    | to record |
 
 ## Smoke suite runs
 
 The longest-running thing here. A run against a deployed environment loads every map and checks
 every layer, so its duration says as much about the GIS services as about this code.
 
-| Date | Machine | Environment | Result | Elapsed |
-| --- | --- | --- | --- | ---: |
-| 10 Nov 2026 | work-lab-leila | dev, `main-YHEYN3RL.js` (`3254b114e`), release scope, 6 workers, **#2822 branch** (the 3D test skips a basemap 3D refuses), started about 1:01 AM Central | 1,000 passed, 14 failed, 70 skipped, of 1,084; the 3D test passed in 1.5 min | **27 min 1 s** |
-| 9-10 Nov 2026 | work-lab-leila | dev, `main-YHEYN3RL.js` (`3254b114e`), release scope, 6 workers, `development`, started 10:54 PM Central | 999 passed, 15 failed, 70 skipped, of 1,084; the 3D test timed out at 15.0, 15.5 and 15.0 min | 1.2 h (Playwright's figure) |
-| 10 Oct 2026 | home | local dev server, #1453 branch (`inject()` throughout), release scope, 6 workers, about 2:12 PM to 2:38 PM Central | 430 passed, 1 failed (build banner, local only), 30 skipped | **26.1 min** |
-| 9 Oct 2026 | home | production, `build-banner.spec.ts` only, from a worktree with no `node_modules` (#1459): first run installing the three packages into the volume / packages already there / a brand-new volume | 1 passed each time | 19 s / 14 s / 16 s |
-| 8 Oct 2026 | home | **production**, `a4e04a7b` (build 20261008.15: the standalone work, #1571, #1579, #1580), release scope, 6 workers, 4:07:46 PM to 4:27:25 PM Central; cleared the 8 October release, tagged `dev-` and `prod-2026-10-08` | 397 passed, 0 failed, 0 flaky, 24 skipped, of 421 | **19 min 39 s** |
-| 8 Oct 2026 | home | local dev server, #1568 branch rebased on `development` (all the standalone work and #1571), release scope, 6 workers, about 11:25 AM to 11:55 AM Central | 428 passed, 1 failed (build banner, local only), 1 flaky (bus route 48), 30 skipped | **28.2 min** |
-| 8 Oct 2026 | home | local dev server, #1563 branch (AggieMap bootstrapped standalone), release scope, 6 workers, morning | 405 passed, 1 failed (build banner, local only), 30 skipped | 22.1 min |
-| 7 Oct 2026 | cloud (4 CPUs) | dev; **`bus.spec.ts` alone, #1473 branch**, one test per route, **2 workers**, 11:09:26 to 11:20:02 PM Central; CPU load about 10 | 26 passed, 0 failed; 48 s median per route test (23 to 61 s) | **10 min 36 s** |
-| 7 Oct 2026 | cloud (4 CPUs) | dev; `bus.spec.ts` alone, #1473 branch, 6 workers, 11:00:10 to 11:09:06 PM Central; CPU load about 35 | 24 passed, 2 flaky (routes 01 and NW4041 timed out at 120 s twice, passed on the third try), 0 failed; 80 to 130 s per route test | 8 min 56 s |
-| 7 Oct 2026 | cloud (4 CPUs) | dev; **`bus.spec.ts` alone, `development` (`300a3ff9`)**, one test for every route, 6 workers (2 tests), 10:51:25 to 11:00:04 PM Central | 2 passed; the every-route test took 8.5 min | **8 min 39 s** |
-| 6 Oct 2026 | home | dev, `8c7a9765` (#1526 service symbology, #1529), release scope, 6 workers, 18:58:07 to 19:20:00 Central; cleared the second 6 October release, tagged `dev-2026-10-06-4` | 421 passed, 0 failed, 1 flaky (bus routes: one route did not draw within 30 s, passed on retry; #1473), 14 skipped, of 436. Men's Basketball passes again after #1434 | **21 min 53 s** |
-| 6 Oct 2026 | office | dev, **Angular 22.1.8** (`279853c1`, build 20261006.6, tagged `dev-2026-10-06-2`), release scope, 6 workers, 07:43:33 to 08:09:54 Central | 404 passed, 2 failed (Men's Basketball, #1431), 1 flaky, 14 skipped, of 420 | **26 min 21 s** |
-| 6 Oct 2026 | home | dev, Angular 21 (`4d7f1d7a`), **#1426 release scope**, 6 workers, 06:51:57 to 07:14:41 Central | 404 passed, 3 failed (Men's Basketball, #1431), 0 flaky, 14 skipped, of 421 | **22 min 44 s** |
-| 6 Oct 2026 | cloud (4 CPUs) | dev, Angular 21; **#1426 branch**, framing only, the 70 release routes, 2 workers, 3:29 to 3:37 AM Central | 62 passed, 1 failed (#1431), 7 skipped; 9.9 s per passing test | **7.7 min** |
-| 6 Oct 2026 | cloud (4 CPUs) | dev, Angular 21; **`development`**, framing only, the same 70 routes, 2 workers, 3:18 to 3:29 AM Central | 62 passed, 1 failed (#1431), 7 skipped; 17.0 s per passing test | **11.3 min** |
-| 6 Oct 2026 | cloud (4 CPUs) | dev, Angular 21; #1426 branch, release scope, **4 workers**, 2:40 to 3:17 AM Central; CPU load median 21 | 421 tests: 399 passed, 3 failed (#1431), 5 flaky, 14 skipped | 37 min |
-| 6 Oct 2026 | cloud (4 CPUs) | dev, Angular 21; #1426 branch, release scope, **6 workers**, 2:03 to 2:39 AM Central | 421 tests: 395 passed, 4 failed (3 #1431, 1 load), 8 flaky, 14 skipped | 35 min |
-| 5-6 Oct 2026 | cloud | dev, Angular 21 (`4d7f1d7a`), full suite as on `development`, 2 workers, 23:58 to 01:56 Central | 748 passed, 3 failed (#1431, also on production), 5 flaky, 15 skipped, of 771 | **1 h 58 min** |
-| 5 Oct 2026 | home | dev, Angular 20 (`ea4d52e0`; `045f1faf` from about 23:00), 22:10:54 to 23:41:23 Central, 2 workers. **Stopped** when Angular 21 was about to replace it on dev | 582 passed, 5 failed of 770 (2 development-only, fixed by #1461; 2 Men's Basketball, #1431; 1 move-in, during a release swap). 164 min of test time; framing 113 min of it (#1426) | stopped at **1 h 31 min** |
-| 5 Oct 2026 | GitHub | production, run 37399982131, 20:36 to 21:53 Central | 712 passed, 3 failed (Men's Basketball, #1431), 1 flaky, 23 skipped | **1 h 17 min** |
-| 5 Oct 2026 | home | dev, build 20261005.6 | 743 passed, 0 failed, 14 skipped | ~1.3 h |
-| 5 Oct 2026 | home | dev, build 20261004.44 | 743 passed, 0 failed, 14 skipped | ~1.9 h |
-| 5 Oct 2026 | office | dev, build 20261005.12 on `7e1aa0fc` | 743 passed, 0 failed, 14 skipped, 0 flaky | **1 h 36 min** |
+| Date          | Machine        | Environment                                                                                                                                                                                                              | Result                                                                                                                                                                             |                     Elapsed |
+| ------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------: |
+| 10 Nov 2026   | work-lab-leila | dev, `main-YHEYN3RL.js` (`3254b114e`), release scope, 6 workers, **#2822 branch** (the 3D test skips a basemap 3D refuses), started about 1:01 AM Central                                                                | 1,000 passed, 14 failed, 70 skipped, of 1,084; the 3D test passed in 1.5 min                                                                                                       |              **27 min 1 s** |
+| 9-10 Nov 2026 | work-lab-leila | dev, `main-YHEYN3RL.js` (`3254b114e`), release scope, 6 workers, `development`, started 10:54 PM Central                                                                                                                 | 999 passed, 15 failed, 70 skipped, of 1,084; the 3D test timed out at 15.0, 15.5 and 15.0 min                                                                                      | 1.2 h (Playwright's figure) |
+| 10 Oct 2026   | home           | local dev server, #1453 branch (`inject()` throughout), release scope, 6 workers, about 2:12 PM to 2:38 PM Central                                                                                                       | 430 passed, 1 failed (build banner, local only), 30 skipped                                                                                                                        |                **26.1 min** |
+| 9 Oct 2026    | home           | production, `build-banner.spec.ts` only, from a worktree with no `node_modules` (#1459): first run installing the three packages into the volume / packages already there / a brand-new volume                           | 1 passed each time                                                                                                                                                                 |          19 s / 14 s / 16 s |
+| 8 Oct 2026    | home           | **production**, `a4e04a7b` (build 20261008.15: the standalone work, #1571, #1579, #1580), release scope, 6 workers, 4:07:46 PM to 4:27:25 PM Central; cleared the 8 October release, tagged `dev-` and `prod-2026-10-08` | 397 passed, 0 failed, 0 flaky, 24 skipped, of 421                                                                                                                                  |             **19 min 39 s** |
+| 8 Oct 2026    | home           | local dev server, #1568 branch rebased on `development` (all the standalone work and #1571), release scope, 6 workers, about 11:25 AM to 11:55 AM Central                                                                | 428 passed, 1 failed (build banner, local only), 1 flaky (bus route 48), 30 skipped                                                                                                |                **28.2 min** |
+| 8 Oct 2026    | home           | local dev server, #1563 branch (AggieMap bootstrapped standalone), release scope, 6 workers, morning                                                                                                                     | 405 passed, 1 failed (build banner, local only), 30 skipped                                                                                                                        |                    22.1 min |
+| 7 Oct 2026    | cloud (4 CPUs) | dev; **`bus.spec.ts` alone, #1473 branch**, one test per route, **2 workers**, 11:09:26 to 11:20:02 PM Central; CPU load about 10                                                                                        | 26 passed, 0 failed; 48 s median per route test (23 to 61 s)                                                                                                                       |             **10 min 36 s** |
+| 7 Oct 2026    | cloud (4 CPUs) | dev; `bus.spec.ts` alone, #1473 branch, 6 workers, 11:00:10 to 11:09:06 PM Central; CPU load about 35                                                                                                                    | 24 passed, 2 flaky (routes 01 and NW4041 timed out at 120 s twice, passed on the third try), 0 failed; 80 to 130 s per route test                                                  |                  8 min 56 s |
+| 7 Oct 2026    | cloud (4 CPUs) | dev; **`bus.spec.ts` alone, `development` (`300a3ff9`)**, one test for every route, 6 workers (2 tests), 10:51:25 to 11:00:04 PM Central                                                                                 | 2 passed; the every-route test took 8.5 min                                                                                                                                        |              **8 min 39 s** |
+| 6 Oct 2026    | home           | dev, `8c7a9765` (#1526 service symbology, #1529), release scope, 6 workers, 18:58:07 to 19:20:00 Central; cleared the second 6 October release, tagged `dev-2026-10-06-4`                                                | 421 passed, 0 failed, 1 flaky (bus routes: one route did not draw within 30 s, passed on retry; #1473), 14 skipped, of 436. Men's Basketball passes again after #1434              |             **21 min 53 s** |
+| 6 Oct 2026    | office         | dev, **Angular 22.1.8** (`279853c1`, build 20261006.6, tagged `dev-2026-10-06-2`), release scope, 6 workers, 07:43:33 to 08:09:54 Central                                                                                | 404 passed, 2 failed (Men's Basketball, #1431), 1 flaky, 14 skipped, of 420                                                                                                        |             **26 min 21 s** |
+| 6 Oct 2026    | home           | dev, Angular 21 (`4d7f1d7a`), **#1426 release scope**, 6 workers, 06:51:57 to 07:14:41 Central                                                                                                                           | 404 passed, 3 failed (Men's Basketball, #1431), 0 flaky, 14 skipped, of 421                                                                                                        |             **22 min 44 s** |
+| 6 Oct 2026    | cloud (4 CPUs) | dev, Angular 21; **#1426 branch**, framing only, the 70 release routes, 2 workers, 3:29 to 3:37 AM Central                                                                                                               | 62 passed, 1 failed (#1431), 7 skipped; 9.9 s per passing test                                                                                                                     |                 **7.7 min** |
+| 6 Oct 2026    | cloud (4 CPUs) | dev, Angular 21; **`development`**, framing only, the same 70 routes, 2 workers, 3:18 to 3:29 AM Central                                                                                                                 | 62 passed, 1 failed (#1431), 7 skipped; 17.0 s per passing test                                                                                                                    |                **11.3 min** |
+| 6 Oct 2026    | cloud (4 CPUs) | dev, Angular 21; #1426 branch, release scope, **4 workers**, 2:40 to 3:17 AM Central; CPU load median 21                                                                                                                 | 421 tests: 399 passed, 3 failed (#1431), 5 flaky, 14 skipped                                                                                                                       |                      37 min |
+| 6 Oct 2026    | cloud (4 CPUs) | dev, Angular 21; #1426 branch, release scope, **6 workers**, 2:03 to 2:39 AM Central                                                                                                                                     | 421 tests: 395 passed, 4 failed (3 #1431, 1 load), 8 flaky, 14 skipped                                                                                                             |                      35 min |
+| 5-6 Oct 2026  | cloud          | dev, Angular 21 (`4d7f1d7a`), full suite as on `development`, 2 workers, 23:58 to 01:56 Central                                                                                                                          | 748 passed, 3 failed (#1431, also on production), 5 flaky, 15 skipped, of 771                                                                                                      |              **1 h 58 min** |
+| 5 Oct 2026    | home           | dev, Angular 20 (`ea4d52e0`; `045f1faf` from about 23:00), 22:10:54 to 23:41:23 Central, 2 workers. **Stopped** when Angular 21 was about to replace it on dev                                                           | 582 passed, 5 failed of 770 (2 development-only, fixed by #1461; 2 Men's Basketball, #1431; 1 move-in, during a release swap). 164 min of test time; framing 113 min of it (#1426) |   stopped at **1 h 31 min** |
+| 5 Oct 2026    | GitHub         | production, run 37399982131, 20:36 to 21:53 Central                                                                                                                                                                      | 712 passed, 3 failed (Men's Basketball, #1431), 1 flaky, 23 skipped                                                                                                                |              **1 h 17 min** |
+| 5 Oct 2026    | home           | dev, build 20261005.6                                                                                                                                                                                                    | 743 passed, 0 failed, 14 skipped                                                                                                                                                   |                      ~1.3 h |
+| 5 Oct 2026    | home           | dev, build 20261004.44                                                                                                                                                                                                   | 743 passed, 0 failed, 14 skipped                                                                                                                                                   |                      ~1.9 h |
+| 5 Oct 2026    | office         | dev, build 20261005.12 on `7e1aa0fc`                                                                                                                                                                                     | 743 passed, 0 failed, 14 skipped, 0 flaky                                                                                                                                          |              **1 h 36 min** |
 
 The two home figures are reported to one decimal place because that is how they were recorded at the
 time; they are not precise to the minute. Record the clock times from now on, not a rounded total.
@@ -425,11 +470,11 @@ browser. "Phone" is a Pixel 7 on Fast 4G with a 4x slower CPU.
 
 `prod-2026-10-08`, measured 11 October 2026 on the home machine, quiet.
 
-| | Desktop | Phone |
-| --- | ---: | ---: |
-| First contentful paint | 0.75 s | 5.3 s |
-| Largest contentful paint | 0.82 s | 5.5 s |
-| Map ready | 6.3 s | 19.6 s |
+|                                 |         Desktop |           Phone |
+| ------------------------------- | --------------: | --------------: |
+| First contentful paint          |          0.75 s |           5.3 s |
+| Largest contentful paint        |          0.82 s |           5.5 s |
+| Map ready                       |           6.3 s |          19.6 s |
 | Application JavaScript, gzipped | 465 KB, 7 files | 465 KB, 7 files |
 
 ### Popups loaded when a popup opens
@@ -439,15 +484,15 @@ Two production builds served from this machine and measured alternately, twice e
 are lower than production's, which also crosses the network; compare the columns with each other, not
 with the table above.
 
-| | Before | After | Before, again | After, again |
-| --- | ---: | ---: | ---: | ---: |
-| Application JavaScript, gzipped | 459 KB | 388 KB | 459 KB | 388 KB |
-| Initial JavaScript, raw (from the build) | 1.62 MB | 1.33 MB | | |
-| Phone: first contentful paint | 4.88 s | 4.50 s | 4.87 s | 4.36 s |
-| Phone: largest contentful paint | 5.12 s | 4.74 s | 5.12 s | 4.60 s |
-| Phone: map ready | 15.9 s | 15.6 s | 16.0 s | 15.6 s |
-| Desktop: first contentful paint | 0.28 s | 0.26 s | 0.26 s | 0.25 s |
-| Desktop: map ready | 3.7 s | 3.6 s | 3.8 s | 4.4 s |
+|                                          |  Before |   After | Before, again | After, again |
+| ---------------------------------------- | ------: | ------: | ------------: | -----------: |
+| Application JavaScript, gzipped          |  459 KB |  388 KB |        459 KB |       388 KB |
+| Initial JavaScript, raw (from the build) | 1.62 MB | 1.33 MB |               |              |
+| Phone: first contentful paint            |  4.88 s |  4.50 s |        4.87 s |       4.36 s |
+| Phone: largest contentful paint          |  5.12 s |  4.74 s |        5.12 s |       4.60 s |
+| Phone: map ready                         |  15.9 s |  15.6 s |        16.0 s |       15.6 s |
+| Desktop: first contentful paint          |  0.28 s |  0.26 s |        0.26 s |       0.25 s |
+| Desktop: map ready                       |   3.7 s |   3.6 s |         3.8 s |        4.4 s |
 
 **What it shows.** 71 KB less JavaScript in the first download (15%), and the phone paints about 0.4 to
 0.5 seconds sooner (8 to 10%), the same in both pairs. Map-ready time on the phone did not move in a way
@@ -461,13 +506,13 @@ Two production builds measured alternately, twice each, on 11 October 2026: `dev
 which has the popups change (before), and the All Maps change (after). The GIS Day stack was also running
 on the machine.
 
-| | Before | After | Before, again | After, again |
-| --- | ---: | ---: | ---: | ---: |
-| Application JavaScript on the map page, gzipped | 388 KB | 376 KB | 388 KB | 376 KB |
-| Initial JavaScript, raw (from the build) | 1.33 MB | 1.22 MB | | |
-| Phone: first contentful paint | 4.54 s | 4.55 s | 4.49 s | 4.54 s |
-| Phone: map ready | 15.8 s | 15.7 s | 15.8 s | 15.7 s |
-| Desktop: first contentful paint | 0.29 s | 0.28 s | 0.26 s | 0.26 s |
+|                                                 |  Before |   After | Before, again | After, again |
+| ----------------------------------------------- | ------: | ------: | ------------: | -----------: |
+| Application JavaScript on the map page, gzipped |  388 KB |  376 KB |        388 KB |       376 KB |
+| Initial JavaScript, raw (from the build)        | 1.33 MB | 1.22 MB |               |              |
+| Phone: first contentful paint                   |  4.54 s |  4.55 s |        4.49 s |       4.54 s |
+| Phone: map ready                                |  15.8 s |  15.7 s |        15.8 s |       15.7 s |
+| Desktop: first contentful paint                 |  0.29 s |  0.28 s |        0.26 s |       0.26 s |
 
 **What it shows.** 12 KB less JavaScript downloaded by the map page (3%), and no change in paint time that
 these runs can show. The build's initial files shrink by more than the page's download does, because part
@@ -478,31 +523,32 @@ of what left them is a library the map route still loads straight away, in its o
 Two production builds on 11 October 2026: `development` at `c3a7945a4` (before) and the change (after),
 neither with the All Maps change.
 
-| | Before | After |
-| --- | ---: | ---: |
-| Application JavaScript on the map page, gzipped | 388 KB | 357 KB |
-| Initial JavaScript, raw (from the build) | 1.33 MB | 1.24 MB |
-| Initial JavaScript, estimated transfer (from the build) | 298 kB | 271 kB |
+|                                                         |  Before |   After |
+| ------------------------------------------------------- | ------: | ------: |
+| Application JavaScript on the map page, gzipped         |  388 KB |  357 KB |
+| Initial JavaScript, raw (from the build)                | 1.33 MB | 1.24 MB |
+| Initial JavaScript, estimated transfer (from the build) |  298 kB |  271 kB |
 
 **What it shows.** 31 KB less JavaScript downloaded by the map page (8%). **The paint timings taken with
 these builds are not recorded as a result**: another session was building on the machine at the time, and
 within one set of five the desktop's first paint ranged from 0.28 s to 1.9 s. They are to be re-taken on
 a quiet machine and added here.
+
 ### Event definitions loaded after startup
 
 Two production builds measured alternately, twice each, on 11 October 2026: `development` with the All
 Maps change (before) and the event definitions change (after). The GIS Day stack was running on the
 machine; the runs within each set were close to one another all the same.
 
-| | Before | After | Before, again | After, again |
-| --- | ---: | ---: | ---: | ---: |
-| Application JavaScript on the map page, gzipped | 376 KB | 377 KB | 376 KB | 377 KB |
-| Initial JavaScript, raw (from the build) | 1.22 MB | 1.01 MB | | |
-| `main`, raw (from the build) | 338 kB | 131 kB | | |
-| Phone: first contentful paint | 4.56 s | 4.26 s | 4.57 s | 4.23 s |
-| Phone: largest contentful paint | 4.81 s | 4.49 s | 4.82 s | 4.46 s |
-| Phone: map ready | 15.7 s | 15.7 s | 15.7 s | 15.7 s |
-| Desktop: first contentful paint | 0.36 s | 0.25 s | 0.27 s | 0.25 s |
+|                                                 |  Before |   After | Before, again | After, again |
+| ----------------------------------------------- | ------: | ------: | ------------: | -----------: |
+| Application JavaScript on the map page, gzipped |  376 KB |  377 KB |        376 KB |       377 KB |
+| Initial JavaScript, raw (from the build)        | 1.22 MB | 1.01 MB |               |              |
+| `main`, raw (from the build)                    |  338 kB |  131 kB |               |              |
+| Phone: first contentful paint                   |  4.56 s |  4.26 s |        4.57 s |       4.23 s |
+| Phone: largest contentful paint                 |  4.81 s |  4.49 s |        4.82 s |       4.46 s |
+| Phone: map ready                                |  15.7 s |  15.7 s |        15.7 s |       15.7 s |
+| Desktop: first contentful paint                 |  0.36 s |  0.25 s |        0.27 s |       0.25 s |
 
 **What it shows.** The phone paints about 0.3 seconds sooner (7%), the same in both pairs. The page
 downloads the same amount of JavaScript as before: the definitions still arrive, a moment later, for the
@@ -513,10 +559,10 @@ notices. That is the part a second stage would remove.
 Two production builds on 11 October 2026: `development` with the All Maps change (before) and the trip
 planner change (after), neither with the lodash or event definitions changes.
 
-| | Before | After |
-| --- | ---: | ---: |
-| Application JavaScript on the map page, gzipped | 376 KB | 360 KB |
-| Initial JavaScript, raw (from the build) | 1.22 MB | 1.13 MB |
+|                                                 |  Before |   After |
+| ----------------------------------------------- | ------: | ------: |
+| Application JavaScript on the map page, gzipped |  376 KB |  360 KB |
+| Initial JavaScript, raw (from the build)        | 1.22 MB | 1.13 MB |
 
 **What it shows.** 16 KB less JavaScript downloaded by the map page (4%). **The paint timings taken with
 these builds are not recorded as a result**: the machine was busy, and one set's desktop first paint
@@ -529,14 +575,14 @@ Two production builds served from this machine on 18 October 2026, ArcGIS 5.1.27
 the before loads first. "Finished drawing" is the first moment the map probe's `drawing` stayed false for
 two seconds, counted from the start of the page load. Other work may have been running on the machine.
 
-| | Before | Before, again | After | After, again |
-| --- | ---: | ---: | ---: | ---: |
-| Accessible Parking: spaces loaded | 44,980 | 44,980 | 1,263 | 1,263 |
-| Accessible Parking: layers settled (`ready`) | 4.2 s | 6.5 s | 6.2 s | 4.6 s |
-| Accessible Parking: finished drawing | 104 s | 135 s | 21 s | 16 s |
-| Motorcycle Parking: spaces loaded | 44,980 | 44,980 | 1,016 | 1,016 |
-| Motorcycle Parking: layers settled (`ready`) | 11.6 s | 4.2 s | 4.6 s | 4.3 s |
-| Motorcycle Parking: finished drawing | 177 s | 114 s | 21 s | 27 s |
+|                                              | Before | Before, again | After | After, again |
+| -------------------------------------------- | -----: | ------------: | ----: | -----------: |
+| Accessible Parking: spaces loaded            | 44,980 |        44,980 | 1,263 |        1,263 |
+| Accessible Parking: layers settled (`ready`) |  4.2 s |         6.5 s | 6.2 s |        4.6 s |
+| Accessible Parking: finished drawing         |  104 s |         135 s |  21 s |         16 s |
+| Motorcycle Parking: spaces loaded            | 44,980 |        44,980 | 1,016 |        1,016 |
+| Motorcycle Parking: layers settled (`ready`) | 11.6 s |         4.2 s | 4.6 s |        4.3 s |
+| Motorcycle Parking: finished drawing         |  177 s |         114 s |  21 s |         27 s |
 
 **What it shows.** Both maps finish drawing five to eight times sooner, with the same spaces drawn. The
 layers settle as fast either way, because ArcGIS loads a layer's description, not its features; the
@@ -547,13 +593,13 @@ wait was the features, fetched and processed for the whole campus and then not d
 Two production builds on 18 October 2026, made the same way in Docker volumes: `development` at
 `70f0e424b` (before) and the zoneless branch of [#1478](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1478) (after). Sizes are the build's own report.
 
-| | Before | After | Change |
-| --- | ---: | ---: | ---: |
-| `aggiemap-angular` initial files, raw | 851.79 kB | 812.09 kB | -39.70 kB |
-| `aggiemap-angular` initial files, estimated transfer | 211.88 kB | 199.62 kB | -12.26 kB |
-| `aggiemap-angular` `polyfills` (zone.js), raw / transfer | 35.88 kB / 11.68 kB | none | |
-| `ues-operations-angular` initial files, raw | 961.82 kB | 921.59 kB | -40.23 kB |
-| `ues-operations-angular` initial files, estimated transfer | 238.28 kB | 225.96 kB | -12.32 kB |
+|                                                            |              Before |     After |    Change |
+| ---------------------------------------------------------- | ------------------: | --------: | --------: |
+| `aggiemap-angular` initial files, raw                      |           851.79 kB | 812.09 kB | -39.70 kB |
+| `aggiemap-angular` initial files, estimated transfer       |           211.88 kB | 199.62 kB | -12.26 kB |
+| `aggiemap-angular` `polyfills` (zone.js), raw / transfer   | 35.88 kB / 11.68 kB |      none |           |
+| `ues-operations-angular` initial files, raw                |           961.82 kB | 921.59 kB | -40.23 kB |
+| `ues-operations-angular` initial files, estimated transfer |           238.28 kB | 225.96 kB | -12.32 kB |
 
 **What it shows.** Each application's first download loses the zone.js polyfill, 35.9 kB raw and 11.7 kB
 compressed, and about 4 kB more of Angular's code for working with a zone. That is about 6% of AggieMap's
@@ -584,30 +630,30 @@ The change, in three parts:
 - **Angular's `@defer` runtime joins the first download**, 3.7 kB of estimated transfer, which the first
   `@defer` anywhere in the application brings once.
 
-| From the builds | Before | After |
-| --- | ---: | ---: |
-| Initial JavaScript and styles, raw | 852 kB | 861 kB |
-| Initial, estimated transfer | 212 kB | 216 kB |
+| From the builds                                                      | Before |  After |
+| -------------------------------------------------------------------- | -----: | -----: |
+| Initial JavaScript and styles, raw                                   | 852 kB | 861 kB |
+| Initial, estimated transfer                                          | 212 kB | 216 kB |
 | JavaScript the main map page needs before its route renders, gzipped | 298 KB | 265 KB |
-| The same for an event map, gzipped | 345 KB | 316 KB |
+| The same for an event map, gzipped                                   | 345 KB | 316 KB |
 
 Merged with `development` at `b089c341a`, after the deferred trip planner (#1924), the same two rows are
 327 KB against 292 KB and 374 KB against 344 KB, and the initial files 236 kB against 239 kB of
 estimated transfer: #1924 had already brought the runtime, and its time picker had brought Angular
 Material into the initial files, which is fixed separately.
 
-| Served and measured, median of 3 | Before | After | Before | After | Before, quiet | After, quiet | Before, quiet | After, quiet |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Main map, desktop: application JavaScript downloaded, gzipped | 946 KB | 909 KB | 948 KB | 914 KB | 946 KB | 914 KB | 946 KB | 912 KB |
-| Event map, desktop: the same | 947 KB | 912 KB | 941 KB | 924 KB | 951 KB | 911 KB | 953 KB | 917 KB |
-| Event map, phone: the same | 901 KB | 874 KB | 901 KB | 874 KB | 901 KB | 874 KB | 901 KB | 874 KB |
-| Main map, phone: the same | 897 KB | 890 KB | 897 KB | 893 KB | 897 KB | 893 KB | 897 KB | 893 KB |
-| Main map, phone: first contentful paint | 2.62 s | 2.91 s | 2.75 s | 2.82 s | 2.53 s | 2.85 s | 2.18 s | 2.85 s |
-| Main map, phone: largest contentful paint | 5.73 s | 5.54 s | 5.60 s | 5.04 s | 5.39 s | 5.28 s | 4.60 s | 5.12 s |
-| Event map, phone: first contentful paint | 2.66 s | 2.81 s | 2.66 s | 2.82 s | 2.52 s | 2.58 s | 2.18 s | 2.74 s |
-| Event map, phone: largest contentful paint | 6.88 s | 6.52 s | 6.62 s | 6.29 s | 6.47 s | 5.98 s | 5.46 s | 6.41 s |
-| Main map, phone: map ready | 17.0 s | 18.1 s | 16.7 s | 16.7 s | 16.3 s | 17.1 s | 15.0 s | 16.9 s |
-| Main map, desktop: largest contentful paint | 1.08 s | 1.20 s | 1.06 s | 0.84 s | 0.28 s | 0.90 s | 0.32 s | 0.29 s |
+| Served and measured, median of 3                              | Before |  After | Before |  After | Before, quiet | After, quiet | Before, quiet | After, quiet |
+| ------------------------------------------------------------- | -----: | -----: | -----: | -----: | ------------: | -----------: | ------------: | -----------: |
+| Main map, desktop: application JavaScript downloaded, gzipped | 946 KB | 909 KB | 948 KB | 914 KB |        946 KB |       914 KB |        946 KB |       912 KB |
+| Event map, desktop: the same                                  | 947 KB | 912 KB | 941 KB | 924 KB |        951 KB |       911 KB |        953 KB |       917 KB |
+| Event map, phone: the same                                    | 901 KB | 874 KB | 901 KB | 874 KB |        901 KB |       874 KB |        901 KB |       874 KB |
+| Main map, phone: the same                                     | 897 KB | 890 KB | 897 KB | 893 KB |        897 KB |       893 KB |        897 KB |       893 KB |
+| Main map, phone: first contentful paint                       | 2.62 s | 2.91 s | 2.75 s | 2.82 s |        2.53 s |       2.85 s |        2.18 s |       2.85 s |
+| Main map, phone: largest contentful paint                     | 5.73 s | 5.54 s | 5.60 s | 5.04 s |        5.39 s |       5.28 s |        4.60 s |       5.12 s |
+| Event map, phone: first contentful paint                      | 2.66 s | 2.81 s | 2.66 s | 2.82 s |        2.52 s |       2.58 s |        2.18 s |       2.74 s |
+| Event map, phone: largest contentful paint                    | 6.88 s | 6.52 s | 6.62 s | 6.29 s |        6.47 s |       5.98 s |        5.46 s |       6.41 s |
+| Main map, phone: map ready                                    | 17.0 s | 18.1 s | 16.7 s | 16.7 s |        16.3 s |       17.1 s |        15.0 s |       16.9 s |
+| Main map, desktop: largest contentful paint                   | 1.08 s | 1.20 s | 1.06 s | 0.84 s |        0.28 s |       0.90 s |        0.32 s |       0.29 s |
 
 "Application JavaScript" here includes `@arcgis/core`, which the build now serves itself, so it does not
 compare with the 376 KB in the sections above. The "before its route renders" rows are the files a page

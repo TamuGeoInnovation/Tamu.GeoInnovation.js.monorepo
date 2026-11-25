@@ -128,6 +128,11 @@ export class EventProvider extends SeasonScopedProvider<Event> {
       // const broadcastEnt = this.eventBroadcastRepo.create(event.broadcast);
       // const locationEnt = this.eventLocationRepo.create(event.location);
 
+      // Refused as it always was, with a 422, but saying why: typeorm cannot look up speakers or tags it was not given.
+      if (!event.speakers || !event.tags) {
+        throw new UnprocessableEntityException(null, 'An event needs its speakers and its tags, empty for none.');
+      }
+
       const existingSpeakers = await this.speakerRepo.find({
         where: {
           guid: In(event.speakers)
@@ -155,11 +160,7 @@ export class EventProvider extends SeasonScopedProvider<Event> {
         )
       );
 
-      const eventEnt = this.eventRepo.create(newEvent);
-
-      if (eventEnt) {
-        return eventEnt.save();
-      }
+      return this.eventRepo.create(newEvent).save();
     } catch (error) {
       rethrowHttp(error, new UnprocessableEntityException(null, 'Could not insert new Event'));
     }
@@ -228,7 +229,8 @@ export class EventProvider extends SeasonScopedProvider<Event> {
     const entities = from(events).pipe(
       mergeMap((events) => events),
       groupBy((event) => {
-        const day = new Date(event.startTime).getDay();
+        // With no start time, the day of `new Date(null)`, as it always was.
+        const day = new Date(event.startTime ?? 0).getDay();
         return day;
       }),
       mergeMap((group) => group.pipe(toArray())),
@@ -300,7 +302,7 @@ export class EventProvider extends SeasonScopedProvider<Event> {
    * Puts events on the public schedule, or takes them off it, changing `active` and nothing else (#2092).
    * `updateEvent` cannot do this: it treats omitted speakers and tags as empty, so it would remove them.
    */
-  public async setActive(guids: Array<string>, active: boolean) {
+  public async setActive(guids: Array<string> | undefined, active: boolean | undefined) {
     if (!Array.isArray(guids) || guids.length === 0 || typeof active !== 'boolean') {
       throw new BadRequestException('Give the events to change, and true or false.');
     }

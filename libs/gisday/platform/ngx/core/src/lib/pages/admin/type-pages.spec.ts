@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideLocationMocks } from '@angular/common/testing';
 import { provideRouter, Route, Router } from '@angular/router';
@@ -28,12 +29,12 @@ describe.each([
   ['rsvp-types', RsvpTypeService, 'Type'],
   ['submission-types', SubmissionTypeService, 'Submission Type']
 ])('the %s pages', (path, service, field) => {
-  let modal: { isOpen: BehaviorSubject<boolean>; open: jest.Mock };
+  let modal: { isOpen: BehaviorSubject<boolean>; open: Mock };
   let answer: Subject<boolean>;
 
   beforeEach(() => {
     answer = new Subject<boolean>();
-    modal = { isOpen: new BehaviorSubject(false), open: jest.fn(() => answer) };
+    modal = { isOpen: new BehaviorSubject(false), open: vi.fn(() => answer) };
     const types = [
       { guid: 't-1', type: 'Made-up type', updated: '2026-11-01T15:00:00.000Z' },
       { guid: 't-2', type: 'Another made-up type', updated: '2026-11-02T15:00:00.000Z' }
@@ -49,13 +50,13 @@ describe.each([
             getEntities: () => of(types),
             // Answered later, as HTTP is: the old edit pages made their form after asking for the record.
             getEntity: () => timer(0).pipe(map(() => types[0])),
-            createEntity: jest.fn(() => of({})),
-            updateEntity: jest.fn(() => of({})),
-            deleteEntity: jest.fn(() => of({}))
+            createEntity: vi.fn(() => of({})),
+            updateEntity: vi.fn(() => of({})),
+            deleteEntity: vi.fn(() => of({}))
           }
         },
         { provide: SeasonService, useValue: { seasons$: of([]), activeSeason$: of({ guid: 's-2026', year: 2026 }) } },
-        { provide: NotificationService, useValue: { toast: jest.fn() } },
+        { provide: NotificationService, useValue: { toast: vi.fn() } },
         { provide: ModalService, useValue: modal }
       ]
     });

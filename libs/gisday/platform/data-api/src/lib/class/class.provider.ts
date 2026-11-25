@@ -3,11 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, FindOptionsWhere, IsNull, Repository } from 'typeorm';
 import { catchError, concatMap, from, map, of, toArray } from 'rxjs';
 
-import { Auth0UserProfile, ManagementService } from '@tamu-gisc/common/nest/auth';
+import { ManagementService } from '@tamu-gisc/common/nest/auth';
 
 import { naturalOrder } from '@tamu-gisc/gisday/common';
 
 import { Class, CheckIn, Season } from '../entities/all.entity';
+import { Auth0ProfileAsRead } from '../dashboards/dashboard-profiles.service';
 import { SeasonService } from '../season/season.service';
 import { SeasonScopedProvider } from '../_base/season-scoped-provider';
 
@@ -144,22 +145,19 @@ export class ClassProvider extends SeasonScopedProvider<Class> {
         concatMap((guid) => {
           return from(this.ms.getUserMetadata(guid, undefined, true)).pipe(
             catchError(() => {
-              return of({
-                user_info: {
-                  id: guid
-                }
-              } as unknown as Auth0UserProfile);
+              // What is known of an account that could not be read: its id.
+              return of<Auth0ProfileAsRead>({ user_info: { id: guid } });
             })
           );
         }),
-        map((u) => {
+        map((u: Auth0ProfileAsRead) => {
           return {
             gisday_id: u.user_info?.id || 'N/A',
             last_name: u.user_info?.family_name || 'N/A',
             first_name: u.user_info?.given_name || 'N/A',
             email: u.user_info?.email || 'N/A',
             uin: u.user_metadata?.education?.id || 'N/A',
-            events_attended: checkinsByUser.find((c) => c.checkin_accountGuid === u.user_info.id)?.checkinCount || 0
+            events_attended: checkinsByUser.find((c) => c.checkin_accountGuid === u.user_info?.id)?.checkinCount || 0
           };
         }),
         toArray()

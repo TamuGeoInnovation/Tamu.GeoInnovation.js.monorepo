@@ -1,6 +1,12 @@
-import { ActivatedRouteSnapshot } from '@angular/router';
+import type { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 
-import { getPathFromRouteSnapshot, getUrlSegmentsFromRouteSnapshot, makeUrlParams, routeSubstitute } from '..';
+import {
+  getPathFromRouteSnapshot,
+  getUrlSegmentsFromRouteSnapshot,
+  makeUrlParams,
+  primaryOutletRoute,
+  routeSubstitute
+} from '..';
 
 describe('getPathFromRouteSnapshot', () => {
   it('should work', () => {
@@ -58,5 +64,27 @@ describe('getUrlSegmentsFromRouteSnapshot', () => {
         pathFromRoot: [{ url: [] }, { url: [{ path: 'map' }] }, { url: [{ path: 'd' }] }]
       } as unknown as ActivatedRouteSnapshot)
     ).toEqual(['map', 'd']);
+  });
+});
+
+describe('primaryOutletRoute', () => {
+  const primary = (parent: unknown = null) => ({ outlet: 'primary', parent }) as unknown as ActivatedRoute;
+
+  it("is a route in the primary outlet itself: a desktop's panel", () => {
+    const route = primary();
+
+    expect(primaryOutletRoute(route)).toBe(route);
+  });
+
+  it("is the nearest primary route above one in outlet-2: a phone's panel (#2641, #3150)", () => {
+    const bus = primary(primary());
+
+    expect(primaryOutletRoute({ outlet: 'outlet-2', parent: bus } as unknown as ActivatedRoute)).toBe(bus);
+  });
+
+  it('is the route itself when nothing above it is in the primary outlet', () => {
+    const orphan = { outlet: 'outlet-2', parent: null } as unknown as ActivatedRoute;
+
+    expect(primaryOutletRoute(orphan)).toBe(orphan);
   });
 });
