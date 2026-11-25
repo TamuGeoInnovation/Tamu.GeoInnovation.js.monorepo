@@ -1,4 +1,6 @@
-import { Body, Controller, Delete, Get, NotImplementedException, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotImplementedException, Param, Patch, Post, UseGuards } from '@nestjs/common';
+
+import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 
 import { SpeakerRole } from '../entities/all.entity';
 import { SpeakerRoleProvider } from './speaker-role.provider';
@@ -12,6 +14,8 @@ export class SpeakerRoleController {
     return this.provider.find();
   }
 
+  @Permissions(['create:speakers'])
+  @UseGuards(JwtGuard, PermissionsGuard)
   @Post('/bulk')
   public async insertSpeakerRoles(@Body() body) {
     const _roles: Partial<SpeakerRole>[] = body.roles.map((value: SpeakerRole) => {
@@ -34,6 +38,8 @@ export class SpeakerRoleController {
     throw new NotImplementedException();
   }
 
+  @Permissions(['delete:speakers'])
+  @UseGuards(JwtGuard, PermissionsGuard)
   @Delete(':guid')
   public deleteEntity(@Param('guid') guid: string) {
     this.provider.deleteEntity({
