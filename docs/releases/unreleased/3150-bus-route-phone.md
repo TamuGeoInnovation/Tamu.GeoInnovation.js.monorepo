@@ -13,7 +13,7 @@ said nothing. It now opens the route's own panel and draws it on the map, as Dir
 cause (#2641). The desktop list was not affected.
 ([#3150](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3150))
 
-| Phone, 390 pixels | Before | After |
-| --- | --- | --- |
-| Route NW0104 tapped | ![The list unchanged after the tap](../screenshots/3150-bus-route-phone/before-phone-tapped.png) | ![The route's panel, with its stops, and the route on the map](../screenshots/3150-bus-route-phone/after-phone-tapped.png) |
-| Desktop, the control | ![The desktop list opens the route in place](../screenshots/3150-bus-route-phone/before-desktop-tapped.png) | ![The same, unchanged](../screenshots/3150-bus-route-phone/after-desktop-tapped.png) |
+| Phone, 390 pixels    | Before                                                                                                      | After                                                                                                                      |
+| -------------------- | ----------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| Route NW0104 tapped  | ![The list unchanged after the tap](../screenshots/3150-bus-route-phone/before-phone-tapped.png)            | ![The route's panel, with its stops, and the route on the map](../screenshots/3150-bus-route-phone/after-phone-tapped.png) |
+| Desktop, the control | ![The desktop list opens the route in place](../screenshots/3150-bus-route-phone/before-desktop-tapped.png) | ![The same, unchanged](../screenshots/3150-bus-route-phone/after-desktop-tapped.png)                                       |
