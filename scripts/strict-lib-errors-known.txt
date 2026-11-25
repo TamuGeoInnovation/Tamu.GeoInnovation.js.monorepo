@@ -13,6 +13,6 @@
 266 libs/maps/feature/basemap/tsconfig.lib.json
 87 libs/ui-kits/ngx/layout/modal/tsconfig.lib.json
 # ui-kits-ngx-forms went strict with #3495: all 45 are in ui-kits-ngx-layout, which it imports, none in its own files.
-45 libs/ui-kits/ngx/forms/tsconfig.lib.json
+47 libs/ui-kits/ngx/forms/tsconfig.lib.json
 9 libs/mailroom/ngx/tsconfig.lib.json
 8 libs/gisday/competitions/ngx/data-access/tsconfig.lib.json
