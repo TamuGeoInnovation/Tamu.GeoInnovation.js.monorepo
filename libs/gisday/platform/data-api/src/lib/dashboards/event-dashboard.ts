@@ -17,7 +17,8 @@ import {
 /** What a dashboard counts: something an account did at an event, and when. An RSVP and a check-in are both one. */
 export interface EventRecord {
   accountGuid: string;
-  event: Event;
+  /** Null once its event is deleted. */
+  event: Event | null;
   created: Date;
 }
 
@@ -63,12 +64,12 @@ export class EventDashboard<T extends EventRecord> {
         relations: { event: true },
         order: { created: 'ASC' }
       } as FindManyOptions<T>)
-    ).filter((r) => byEvent.has(r.event?.guid));
+    ).filter((r): r is T & { event: Event } => r.event !== null && byEvent.has(r.event.guid));
 
     const profiles = await this.people.profilesOf(records.map((r) => r.accountGuid));
 
     for (const record of records) {
-      const row = byEvent.get(record.event?.guid);
+      const row = byEvent.get(record.event.guid);
 
       if (row) {
         row.total++;
@@ -80,7 +81,7 @@ export class EventDashboard<T extends EventRecord> {
       events: events
         .map((e) => ({
           guid: e.guid,
-          name: e.name ?? null,
+          name: e.name,
           starts: sessionTime(e.day?.date, e.startTime)?.toISOString() ?? null,
           location: [e.location?.building, e.location?.room].filter(Boolean).join(' ') || null,
           place: e.location?.place ? { guid: e.location.place.guid, name: e.location.place.name ?? null } : null,

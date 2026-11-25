@@ -29,7 +29,9 @@ export class SlidesRequestEmailController {
   @Post('slides')
   public async send(
     @Body()
-    body: { event: string; sender?: string; speakers?: Array<string>; together?: unknown } & Partial<SlidesRequestEmail>,
+    body:
+      | ({ event?: string; sender?: string; speakers?: Array<string>; together?: unknown } & Partial<SlidesRequestEmail>)
+      | undefined,
     @Request() req
   ) {
     refuseTogether(

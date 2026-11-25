@@ -171,7 +171,7 @@ export function rubricDto(rubric: Rubric): RubricDto {
         position: c.position,
         name: c.name,
         maxPoints: c.maxPoints,
-        levels: c.levels ?? []
+        levels: c.levels
       }))
   };
 }

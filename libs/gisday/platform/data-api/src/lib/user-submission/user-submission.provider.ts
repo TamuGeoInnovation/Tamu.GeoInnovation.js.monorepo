@@ -239,7 +239,8 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
 
     return posters.map((poster) => ({
       title: poster.title,
-      authors: (poster.participants ?? []).map((participant) => participant.name),
+      // An author with no name is null, as JSON has always given it.
+      authors: (poster.participants ?? []).map((participant) => participant.name ?? null),
       link: poster.link,
       year: season.year
     }));
@@ -249,11 +250,8 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
    * Retrieves all submissions for the active season for a given user.
    */
   public async getUserPresentationsForActiveSeason(userGuid: string) {
+    // With no active season, `findOneActive` answers 404 itself.
     const season = await this.seasonService.findOneActive();
-
-    if (!season) {
-      return [];
-    }
 
     try {
       return this.userSubmissionRepo.find({
@@ -292,7 +290,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     return presentation;
   }
 
-  public async insertUserSubmission(accountGuid: string, submission: Partial<Submission>) {
+  public async insertUserSubmission(accountGuid: string, submission: Partial<Submission> | undefined) {
     if (!submission || !accountGuid) {
       throw new InternalServerErrorException('Missing required parameters.');
     }
@@ -344,10 +342,11 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
    * but whose email could not be sent.
    */
   public async reviewUserSubmissions(
-    submissionGuids: Array<string>,
+    submissionGuids: Array<string> | undefined,
     userGuid: string,
+    // As the request sent it, until checked here.
     review: {
-      acceptance: boolean;
+      acceptance?: boolean;
       message?: string;
       templates?: Partial<Record<ReviewEmailKind, string>>;
       /** Who the emails are from, as the reviewer chose and the controller checked (#3100); the site without it. */
@@ -359,7 +358,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     // The single review lets an owner through to edit their own; a review of many is a reviewer's alone.
     checkReviewerAndGuids(submissionGuids, requestorPermissions);
 
-    if (typeof review?.acceptance !== 'boolean') {
+    if (typeof review.acceptance !== 'boolean') {
       throw new BadRequestException('Say whether the submissions are accepted.');
     }
 
@@ -419,20 +418,23 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
    * rejection, with the text it starts from and an example filled in for its first submission, as `reviewEmail` sends it.
    */
   public async previewReview(
-    submissionGuids: Array<string>,
-    review: { acceptance: boolean; message?: string },
+    submissionGuids: Array<string> | undefined,
+    // As the request sent it, until checked here.
+    review: { acceptance?: boolean; message?: string },
     requestorPermissions: Array<string> = [],
     host?: string
   ): Promise<ReviewEmailPreview> {
     checkReviewerAndGuids(submissionGuids, requestorPermissions);
 
-    if (typeof review?.acceptance !== 'boolean') {
+    const { acceptance } = review;
+
+    if (typeof acceptance !== 'boolean') {
       throw new BadRequestException('Say whether the submissions are accepted.');
     }
 
     const { groups } = await this._preview(
       submissionGuids,
-      (submission) => ({ kind: reviewEmailKind(review.acceptance, submission.submissionType) }),
+      (submission) => ({ kind: reviewEmailKind(acceptance, submission.submissionType) }),
       host,
       review.message
     );
@@ -447,7 +449,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
    * sent.
    */
   public async previewReminders(
-    submissionGuids: Array<string>,
+    submissionGuids: Array<string> | undefined,
     requestorPermissions: Array<string> = [],
     host?: string
   ): Promise<ReviewEmailPreview> {
@@ -462,16 +464,16 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
    * recorded. One that cannot be emailed does not stop the rest; the result names it, with why.
    */
   public async remindUserSubmissions(
-    submissionGuids: Array<string>,
+    submissionGuids: Array<string> | undefined,
     reminder: { templates?: Partial<Record<ReviewEmailKind, string>>; sender?: EmailSender },
     requestorPermissions: Array<string> = [],
     host?: string
   ): Promise<RemindManyResult> {
     checkReviewerAndGuids(submissionGuids, requestorPermissions);
 
-    const templates = checkedTemplates(reminder?.templates);
+    const templates = checkedTemplates(reminder.templates);
     // Who it is from (#3100), taken here: `reminder` names each submission's own below.
-    const sender = reminder?.sender;
+    const sender = reminder.sender;
     const site = gisdaySite(process.env.GISDAY_SITE, host);
     const result: RemindManyResult = { sent: [], skipped: [], failed: [] };
 
@@ -752,7 +754,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
       throw new ForbiddenException();
     }
 
-    const guids = [...new Set((submissionGuids ?? []).map((guid) => `${guid}`.trim()).filter(Boolean))];
+    const guids = [...new Set(submissionGuids.map((guid) => `${guid}`.trim()).filter(Boolean))];
 
     if (guids.length === 0 || guids.some((guid) => !GUID.test(guid))) {
       throw new BadRequestException('Name each submission by its id.');
@@ -815,7 +817,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
   private async _recipientsOf(
     submission: Pick<Submission, 'accountGuid' | 'participants'>
   ): Promise<{ to: string; cc: Array<string> }> {
-    const typed = (submission.participants ?? []).map((p) => `${p?.email ?? ''}`.trim()).filter(Boolean);
+    const typed = (submission.participants ?? []).map((p) => `${p.email ?? ''}`.trim()).filter(Boolean);
     let account = '';
 
     try {
@@ -830,9 +832,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
 
     // The first row is the submitter: with their account's address known, what they typed for themselves is not copied.
     const to = account || typed[0] || '';
-    const others = account
-      ? (submission.participants ?? []).slice(1).map((p) => `${p?.email ?? ''}`.trim())
-      : typed.slice(1);
+    const others = account ? (submission.participants ?? []).slice(1).map((p) => `${p.email ?? ''}`.trim()) : typed.slice(1);
     // Each address once, as first typed, ignoring case; and never the address it goes to.
     const cc: Array<string> = [];
 
@@ -849,7 +849,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
    * The season a new submission is saved to: the one the body names, by its guid or as an object with one, or the
    * active one when it names none.
    */
-  private async _seasonFor(named: Partial<Season> | string | undefined): Promise<Partial<Season> | null> {
+  private async _seasonFor(named: Partial<Season> | string | null | undefined): Promise<Partial<Season> | null> {
     const guid = typeof named === 'string' ? named : named?.guid;
 
     if (guid) {
@@ -884,7 +884,10 @@ function reminderOf(submission: Submission): { kind: ReviewEmailKind } | { skip:
 }
 
 /** Refuses an action on several submissions to anyone but a reviewer, or one not naming each submission by its id. */
-function checkReviewerAndGuids(submissionGuids: unknown, requestorPermissions: Array<string>): void {
+function checkReviewerAndGuids(
+  submissionGuids: unknown,
+  requestorPermissions: Array<string>
+): asserts submissionGuids is Array<string> {
   if (!requestorPermissions.includes('update:competitions')) {
     throw new ForbiddenException();
   }

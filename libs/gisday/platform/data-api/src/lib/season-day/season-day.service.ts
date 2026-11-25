@@ -50,7 +50,8 @@ export class SeasonDayService extends BaseProvider<SeasonDay> {
         return simplified
           .filter((e) => e.active)
           .sort((a, b) => {
-            return a.startTime > b.startTime ? 1 : -1;
+            // An event with no start time last, as the dashboards order them.
+            return (a.startTime ?? '￿') > (b.startTime ?? '￿') ? 1 : -1;
           });
       } else {
         throw new NotFoundException();

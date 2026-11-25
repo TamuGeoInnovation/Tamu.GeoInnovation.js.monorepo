@@ -138,7 +138,7 @@ export class SpeakerEditService {
    * returned by name, with their submission's title, so the admin can add them.
    */
   public async sendLinksForSubmissions(
-    submissionGuids: Array<string>,
+    submissionGuids: Array<string> | undefined,
     host?: string,
     /** The subject and text the admin approved (#3023); without it, the email as it has always been. */
     email?: ProfileEmail,
@@ -177,7 +177,7 @@ export class SpeakerEditService {
     }
 
     const speakers = (await this.speakers.find({ where: { guid: In(speakerGuids) }, relations: SPEAKER_WITH_DAYS })).filter(
-      (s) => looksLikeEmail(s.email)
+      hasEmail
     );
 
     if (speakers.length === 0) {
@@ -220,7 +220,7 @@ export class SpeakerEditService {
    * name, with their submission's title.
    */
   private async speakersOfSubmissions(
-    submissionGuids: Array<string>
+    submissionGuids: Array<string> | undefined
   ): Promise<{ matched: Array<string>; unmatched: SendForSubmissionsResult['unmatched'] }> {
     if (!Array.isArray(submissionGuids) || submissionGuids.length === 0) {
       throw new BadRequestException('No submissions were named.');
@@ -242,11 +242,11 @@ export class SpeakerEditService {
       for (const participant of submission.participants ?? []) {
         // Each address in the box, as the finalists' speaker records were made from them (#3043): co-authors typed into
         // one box, and NetIDs.
-        const emails = participantEmails(participant?.email);
-        const named = participant?.name?.trim() || participant?.email?.trim() || 'A participant with no name';
+        const emails = participantEmails(participant.email);
+        const named = participant.name?.trim() || participant.email?.trim() || 'A participant with no name';
 
         if (emails.length === 0) {
-          unmatched.push({ name: named, submission: submission.title });
+          unmatched.push({ name: named, submission: submission.title ?? '' });
           continue;
         }
 
@@ -257,7 +257,10 @@ export class SpeakerEditService {
             matched.add(speaker.guid);
           } else {
             // An entry with several addresses is named with the one not found, so the admin knows which (#3043).
-            unmatched.push({ name: emails.length === 1 ? named : `${named} (${email})`, submission: submission.title });
+            unmatched.push({
+              name: emails.length === 1 ? named : `${named} (${email})`,
+              submission: submission.title ?? ''
+            });
           }
         }
       }
@@ -272,7 +275,7 @@ export class SpeakerEditService {
    * chose and the controller checked (#3100), or the site.
    */
   public async sendLinks(
-    speakerGuids: Array<string>,
+    speakerGuids: Array<string> | undefined,
     host?: string,
     email?: ProfileEmail,
     sender?: EmailSender
@@ -293,7 +296,7 @@ export class SpeakerEditService {
 
       const name = fullName(speaker);
 
-      if (!looksLikeEmail(speaker.email)) {
+      if (!hasEmail(speaker)) {
         part.skipped.push({ name, reason: 'no email address on their record' });
         return part;
       }
@@ -351,7 +354,7 @@ export class SpeakerEditService {
     }
 
     const candidates = await this.speakers.find({ where: { season: { guid: season.guid } }, relations: SPEAKER_WITH_DAYS });
-    const speaker = candidates.find((s) => s.email?.trim().toLowerCase() === email.trim().toLowerCase());
+    const speaker = candidates.filter(hasEmail).find((s) => s.email.trim().toLowerCase() === email.trim().toLowerCase());
 
     if (!speaker) {
       return;
@@ -408,7 +411,11 @@ export class SpeakerEditService {
   }
 
   /** Records what a speaker proposes, replacing anything they proposed before. */
-  public async propose(token: string, fields: SpeakerEditFields, photo?: Express.Multer.File) {
+  public async propose(
+    token: string,
+    fields: Partial<Record<keyof SpeakerEditFields, unknown>> | undefined,
+    photo?: Express.Multer.File
+  ) {
     const link = await this.linkFor(token);
     const clean = cleanFields(fields);
 
@@ -493,7 +500,7 @@ export class SpeakerEditService {
     return readFile(join(appData(), edit.photoPath));
   }
 
-  public async approve(editGuid: string, adminGuid: string) {
+  public async approve(editGuid: string, adminGuid: string | undefined) {
     const edit = await this.pendingEdit(editGuid);
     const buffer = edit.photoPath ? await readFile(join(appData(), edit.photoPath)) : null;
     // The speaker provider prefixes the speaker's guid, and its upload check names the file for its content (#2937).
@@ -517,13 +524,13 @@ export class SpeakerEditService {
     return { approved: true };
   }
 
-  public async reject(editGuid: string, adminGuid: string) {
+  public async reject(editGuid: string, adminGuid: string | undefined) {
     await this.close(await this.pendingEdit(editGuid), 'rejected', adminGuid);
 
     return { rejected: true };
   }
 
-  private async close(edit: SpeakerEdit, status: 'approved' | 'rejected', adminGuid: string) {
+  private async close(edit: SpeakerEdit, status: 'approved' | 'rejected', adminGuid: string | undefined) {
     if (edit.photoPath) {
       await removeFile(edit.photoPath);
     }
@@ -556,8 +563,8 @@ export class SpeakerEditService {
         ? await this.links.findOne({ where: { tokenHash: hashOf(token) }, relations: { speaker: true } })
         : null;
 
-    // A link from before purposes were kept is a profile link, as the column's default says.
-    if (!link || (link.purpose ?? 'profile') !== purpose || new Date(link.expires).getTime() <= Date.now()) {
+    // A link from before purposes were kept is a profile link: the column's default made it one (AddJudging).
+    if (!link || link.purpose !== purpose || new Date(link.expires).getTime() <= Date.now()) {
       throw new NotFoundException('This link has expired or is not valid. Ask for a new one.');
     }
 
@@ -609,7 +616,7 @@ export class SpeakerEditService {
 
   /** Emails the speaker their profile link: `link` if it was already made, as `sendLinks` makes it, or a new one. */
   private async emailLink(
-    speaker: Speaker,
+    speaker: Speaker & { email: string },
     host?: string,
     email?: ProfileEmail,
     sender?: EmailSender,
@@ -678,12 +685,15 @@ export function hashOf(token: string): string {
   return createHash('sha256').update(token).digest('hex');
 }
 
-/** Only the three text fields, trimmed, each within its limit; anything else sent is dropped. */
-export function cleanFields(fields: SpeakerEditFields = {}): SpeakerEditFields {
+/**
+ * Only the three text fields, trimmed, each within its limit; anything else sent is dropped. `fields` is what the form
+ * sent, so each may be anything, null included, until it is checked here.
+ */
+export function cleanFields(fields: Partial<Record<keyof SpeakerEditFields, unknown>> = {}): SpeakerEditFields {
   const clean: SpeakerEditFields = {};
 
   for (const key of ['description', 'affiliation', 'socialMedia', 'graduationYear'] as const) {
-    const value = fields?.[key];
+    const value = fields[key];
 
     if (value === undefined || value === null) {
       continue;
@@ -703,7 +713,7 @@ export function cleanFields(fields: SpeakerEditFields = {}): SpeakerEditFields {
   }
 
   // A university is one of the season's, by guid; the service checks it exists (#2953).
-  if (fields?.university !== undefined && fields.university !== null && fields.university !== '') {
+  if (fields.university !== undefined && fields.university !== null && fields.university !== '') {
     if (typeof fields.university !== 'string' || !/^[0-9a-f-]{36}$/i.test(fields.university)) {
       throw new BadRequestException('Choose a university from the list.');
     }
@@ -742,7 +752,7 @@ export function fullName(s: Pick<Speaker, 'firstName' | 'lastName'>): string {
 }
 
 /** A speaker with an address as a speaker email's preview lists them, for the window's tick boxes (#3104). */
-export function recipientOf(s: Pick<Speaker, 'guid' | 'firstName' | 'lastName' | 'email'>): EmailRecipient {
+export function recipientOf(s: Pick<Speaker, 'guid' | 'firstName' | 'lastName'> & { email: string }): EmailRecipient {
   return { guid: s.guid, name: fullName(s), firstName: s.firstName?.trim() ?? '', email: s.email.trim() };
 }
 
@@ -769,6 +779,11 @@ export function chosenSpeakers(speakers: unknown): Array<string> | undefined {
 /** Whether a record's email address could be sent to. */
 export function looksLikeEmail(value: unknown): value is string {
   return typeof value === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+}
+
+/** Whether a speaker has an address to email, as `looksLikeEmail` checks it, typed on the speaker. */
+export function hasEmail<S extends { email: string | null }>(s: S): s is S & { email: string } {
+  return looksLikeEmail(s.email);
 }
 
 function appData(): string {

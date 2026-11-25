@@ -35,7 +35,7 @@ export interface AssessmentBody {
  * addresses.
  */
 export function presentersOf(submission: Submission): Array<string> {
-  return (submission.participants ?? []).map((p) => p?.name?.trim()).filter((name): name is string => Boolean(name));
+  return (submission.participants ?? []).map((p) => p.name?.trim()).filter((name): name is string => Boolean(name));
 }
 
 /**
@@ -81,7 +81,7 @@ export class JudgingService {
         closed: group.sessions.every((s) => s.judgingClosed),
         rubric,
         submissions: submissions.map((s) => {
-          const assessment = mine.find((a) => a.submission?.guid === s.guid);
+          const assessment = mine.find((a) => a.submission.guid === s.guid);
 
           return {
             guid: s.guid,
@@ -108,21 +108,28 @@ export class JudgingService {
    * and in a competition a session they judge is marked with, judging for it is still open, and every criterion of the
    * rubric has a whole-number score within its points. The total is worked out here, never taken from the browser.
    */
-  public async assess(link: SpeakerEditLink, submissionGuid: string, body: AssessmentBody): Promise<JudgeAssessmentDto> {
+  public async assess(
+    link: SpeakerEditLink,
+    submissionGuid: string,
+    body: AssessmentBody | undefined
+  ): Promise<JudgeAssessmentDto> {
     const judgeGuid = link.speaker.guid;
     const submission =
       typeof submissionGuid === 'string'
         ? await this.submissions.findOne({ where: { guid: submissionGuid }, relations: { season: true } })
         : null;
     const competition = submission?.acceptance ? judgedCompetitionOf(submission) : null;
+    // Its row, for the rubric: its `type` is the submission's type, as `judgedCompetitionOf` matched it.
+    const row = judgedCompetition(competition);
+    const season = submission?.season;
     const sessions =
-      submission && competition
+      season && row
         ? (await this.judgeSessions(judgeGuid)).filter(
-            (s) => s.judgedCompetition === competition && s.season?.guid === submission.season?.guid
+            (s) => s.judgedCompetition === row.competition && s.season?.guid === season.guid
           )
         : [];
 
-    if (!submission || sessions.length === 0) {
+    if (!submission || !season || !row || sessions.length === 0) {
       throw new ForbiddenException(NOT_YOUR_COMPETITION_MESSAGE);
     }
 
@@ -132,7 +139,7 @@ export class JudgingService {
       throw new ForbiddenException(JUDGING_CLOSED_MESSAGE);
     }
 
-    const rubric = await this.rubrics.rubricFor(submission.season.guid, submission.submissionType);
+    const rubric = await this.rubrics.rubricFor(season.guid, row.type);
 
     if (!rubric) {
       throw new BadRequestException('There is no rubric for this competition yet. Ask the GIS Day team.');
@@ -144,8 +151,9 @@ export class JudgingService {
       throw new BadRequestException(problem);
     }
 
-    const scores = body.scores as Record<string, number>;
-    const comment = typeof body.comment === 'string' && body.comment.trim() ? body.comment.trim() : null;
+    // Checked above.
+    const scores = body?.scores as Record<string, number>;
+    const comment = typeof body?.comment === 'string' && body.comment.trim() ? body.comment.trim() : null;
     const existing = await this.assessments.findOne({
       where: { judge: { guid: judgeGuid }, submission: { guid: submission.guid } }
     });
@@ -163,7 +171,7 @@ export class JudgingService {
       })
     );
 
-    return assessmentDto({ ...saved, updated: saved.updated ?? new Date() } as Assessment);
+    return assessmentDto(saved);
   }
 
   /**
@@ -196,7 +204,7 @@ export class JudgingService {
     const judges = new Map<string, string>();
 
     for (const judge of [...sessions.flatMap((s) => s.judges ?? []), ...assessments.map((a) => a.judge)]) {
-      if (judge && !judges.has(judge.guid)) {
+      if (!judges.has(judge.guid)) {
         judges.set(judge.guid, fullName(judge));
       }
     }
@@ -208,9 +216,9 @@ export class JudgingService {
       submissions: submissions.map((s) => ({ guid: s.guid, title: s.title ?? '', presenters: presentersOf(s) })),
       judges: [...judges].map(([guid, name]) => ({ guid, name })).sort((a, b) => naturalOrder.compare(a.name, b.name)),
       assessments: assessments.map((a) => ({
-        judge: a.judge?.guid,
-        submission: a.submission?.guid,
-        scores: a.scores ?? {},
+        judge: a.judge.guid,
+        submission: a.submission.guid,
+        scores: a.scores,
         total: a.total,
         // For the admins' breakdown of an entry (#3193); this route is theirs alone.
         comment: a.comment ?? null
@@ -278,9 +286,9 @@ export class JudgingService {
 /** A judge's scores as their page shows them. */
 function assessmentDto(a: Assessment): JudgeAssessmentDto {
   return {
-    scores: a.scores ?? {},
+    scores: a.scores,
     total: a.total,
     comment: a.comment ?? null,
-    updated: new Date(a.updated ?? Date.now()).toISOString()
+    updated: new Date(a.updated).toISOString()
   };
 }

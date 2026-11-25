@@ -116,7 +116,7 @@ export class SlidesRequestEmailService {
    * checked (#3100), or the site.
    */
   public async send(
-    eventGuid: string,
+    eventGuid: string | undefined,
     host?: string,
     email?: SlidesRequestEmail,
     sender?: EmailSender,
@@ -199,7 +199,7 @@ export class SlidesRequestEmailService {
  * The session, for its Ask for slides email, unless it has no slides (#3147): then nobody is asked for any, whether the
  * admin's page offers the email or not.
  */
-async function slidesSession(events: Repository<Event>, eventGuid: string): Promise<Event> {
+async function slidesSession(events: Repository<Event>, eventGuid: string | undefined): Promise<Event> {
   const session = await sessionForEmail(events, eventGuid);
 
   if (session.noSlides) {

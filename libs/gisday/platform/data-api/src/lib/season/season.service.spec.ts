@@ -170,13 +170,11 @@ describe('SeasonService', () => {
   describe('.findOneByYear()', () => {
     it('looks the season up by year and returns it in the active season shape', async () => {
       const first = day('d-first', '2025-11-17');
-      jest
-        .spyOn(seasonRepo, 'findOne')
-        .mockResolvedValue({
-          ...seasonWithDays([day('d-second', '2025-11-18'), first]),
-          year: 2025,
-          active: false
-        } as Season);
+      jest.spyOn(seasonRepo, 'findOne').mockResolvedValue({
+        ...seasonWithDays([day('d-second', '2025-11-18'), first]),
+        year: 2025,
+        active: false
+      } as Season);
       jest.spyOn(seasonDayRepo, 'findOne').mockResolvedValue({
         ...first,
         events: [{ guid: 'e-workshop', active: true, startTime: '09:00' }]
@@ -383,6 +381,12 @@ describe('SeasonService', () => {
       jest.spyOn(seasonRepo, 'findOne').mockResolvedValue(null);
 
       await expect(service.setSubmissionDeadlines('missing', {})).rejects.toThrow(NotFoundException);
+    });
+
+    // #3495: a request with no body answered 500, reading the deadlines from nothing.
+    it('refuses a request that sends no deadlines', async () => {
+      await expect(service.setSubmissionDeadlines('season-1', undefined)).rejects.toThrow(BadRequestException);
+      expect(seasonRepo.update).not.toHaveBeenCalled();
     });
 
     /** #2962: paper and cartography have the same pair, saved and checked the same way. */

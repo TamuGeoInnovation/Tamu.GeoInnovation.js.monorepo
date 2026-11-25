@@ -25,7 +25,7 @@ export class SessionDetailsEmailController {
   @UseGuards(JwtGuard, PermissionsGuard)
   @Post('details')
   public async send(
-    @Body() body: { event: string; sender?: string } & Partial<SessionDetailsEmail> & SpeakerChoice,
+    @Body() body: ({ event?: string; sender?: string } & Partial<SessionDetailsEmail> & SpeakerChoice) | undefined,
     @Request() req
   ) {
     const host = siteHost(req?.headers);

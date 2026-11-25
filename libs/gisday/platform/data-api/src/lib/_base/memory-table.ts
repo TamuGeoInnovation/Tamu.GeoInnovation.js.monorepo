@@ -12,7 +12,8 @@ import { FindOperator } from 'typeorm';
  */
 export function matches(row: unknown, where: Record<string, unknown>): boolean {
   return Object.entries(where).every(([key, wanted]) => {
-    const value = (row as Record<string, unknown>)?.[key];
+    // A nested relation's row may be missing.
+    const value = (row as Record<string, unknown> | null | undefined)?.[key];
 
     if (wanted instanceof FindOperator) {
       if (wanted.type === 'not') {

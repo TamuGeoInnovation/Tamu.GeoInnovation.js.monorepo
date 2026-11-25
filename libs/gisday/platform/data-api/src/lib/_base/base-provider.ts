@@ -83,7 +83,7 @@ export abstract class BaseProvider<T extends { guid: string }> {
    *
    * If a string is passed in, it is assumed to be a comma-separated list of guids.
    */
-  public async deleteEntities(oneOrMoreEntityGuids: Array<string> | string) {
+  public async deleteEntities(oneOrMoreEntityGuids: Array<string> | string | undefined) {
     // Blank entries are dropped before the count is checked. `''.split(',')` yields `['']`, not an
     // empty array, so the guard below never fired for an empty string and a blank guid reached the
     // delete. An empty array reached neither branch at all and the method resolved undefined --

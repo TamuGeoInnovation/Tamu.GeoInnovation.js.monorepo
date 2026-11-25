@@ -61,13 +61,9 @@ export class SeasonService extends BaseProvider<Season> {
       relations: { days: true }
     });
 
-    if (seasons) {
-      return seasons.map((season) => {
-        return { ...season, days: this._orderDays(season.days) };
-      });
-    } else {
-      throw new NotFoundException();
-    }
+    return seasons.map((season) => {
+      return { ...season, days: this._orderDays(season.days) };
+    });
   }
 
   public async findOneWithOrderedDays(guid: string) {
@@ -167,7 +163,8 @@ export class SeasonService extends BaseProvider<Season> {
 
       if (activeEventsForDay.length > 0) {
         const orderedActiveEvents = activeEventsForDay.sort((a, b) => {
-          return a.startTime < b.startTime ? -1 : 1;
+          // An event with no start time last, as the dashboards order them.
+          return (a.startTime ?? '￿') < (b.startTime ?? '￿') ? -1 : 1;
         });
 
         firstEventTime = orderedActiveEvents[0].startTime;
@@ -466,7 +463,7 @@ export class SeasonService extends BaseProvider<Season> {
     }
   }
 
-  public async updateSeason(guid: string, updateSeasonDto: Partial<Season>) {
+  public async updateSeason(guid: string, updateSeasonDto: SeasonUpdate) {
     // Looked up first, so a season that does not exist answers 404 before another season is deactivated for it.
     const existingCurrent = await this.seasonRepo.findOne({ where: { guid }, relations: { days: true } });
 
@@ -540,8 +537,16 @@ export class SeasonService extends BaseProvider<Season> {
    * for open, as the admin page sends them. Refuses a moment that is not a date, and files that would close before
    * their competition's submissions.
    */
-  public async setSubmissionDeadlines(guid: string, deadlines: SubmissionDeadlines): Promise<SubmissionDeadlines> {
-    const problem = deadlinesProblem(deadlines ?? {});
+  public async setSubmissionDeadlines(
+    guid: string,
+    deadlines: SubmissionDeadlines | undefined
+  ): Promise<SubmissionDeadlines> {
+    // A request with no body sends none: refused, rather than read as every deadline cleared (#3495).
+    if (!deadlines) {
+      throw new BadRequestException('Send the deadlines, each a date or empty for open.');
+    }
+
+    const problem = deadlinesProblem(deadlines);
 
     if (problem) {
       throw new BadRequestException(problem);
@@ -669,11 +674,9 @@ export class SeasonService extends BaseProvider<Season> {
     });
   }
 
-  public override async deleteEntity(guidOrOptions?: LookupOneOptions<Season>) {
+  public override async deleteEntity(guidOrOptions: LookupOneOptions<Season>) {
     const where =
-      typeof guidOrOptions === 'string'
-        ? { guid: guidOrOptions }
-        : ((guidOrOptions as { where?: { guid?: string } })?.where ?? undefined);
+      typeof guidOrOptions === 'string' ? { guid: guidOrOptions } : (guidOrOptions as { where?: { guid?: string } }).where;
 
     const existing = await this.seasonRepo.findOne({
       where,
@@ -847,6 +850,9 @@ class EntityKeyDictionary<T extends BaseEntity> {
     return this._dict.get(key.join(''));
   }
 }
+
+/** A season's changes as the admin page sends them: its days without an id are new ones. */
+export type SeasonUpdate = Omit<Partial<Season>, 'days'> & { days?: Array<{ guid?: string; date: Date }> };
 
 interface EntityPrimaryKeyMap {
   organization: Array<keyof Organization>;

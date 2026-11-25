@@ -128,7 +128,7 @@ export function buildingTransactionFinds(dataSource: DataSource): void {
     const runner = make(...(args as []));
     const answer = runner.manager.find.bind(runner.manager);
 
-    runner.manager.find = (async (entity: never, options?: never) => (
+    runner.manager.find = (async (entity: never, options?: FindManyOptions) => (
       runner.manager
         .createQueryBuilder(entity, 'e')
         .setFindOptions(options ?? {})

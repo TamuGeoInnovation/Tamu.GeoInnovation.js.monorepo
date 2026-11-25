@@ -1,13 +1,6 @@
 import { randomBytes } from 'crypto';
 
-import {
-  Injectable,
-  UnprocessableEntityException,
-  NotFoundException,
-  InternalServerErrorException,
-  Logger,
-  BadRequestException
-} from '@nestjs/common';
+import { Injectable, NotFoundException, InternalServerErrorException, Logger, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, DeleteResult, In, Repository } from 'typeorm';
 
@@ -193,7 +186,7 @@ export class SpeakerProvider extends SeasonScopedProvider<Speaker> {
 
       if (!existing) {
         if (limitToPopulated) {
-          if (curr.description?.length > 0 && curr.images!.length > 0) {
+          if (curr.description && curr.images!.length > 0) {
             return acc.concat(curr);
           }
         } else {
@@ -230,11 +223,8 @@ export class SpeakerProvider extends SeasonScopedProvider<Speaker> {
   }
 
   public async getOrganizersForActiveSeason() {
+    // With no active season, `findOneActive` answers 404 itself.
     const season = await this.seasonService.findOneActive();
-
-    if (!season) {
-      throw new UnprocessableEntityException('No active season found.');
-    }
 
     return this.speakerRepo.find({
       where: {
@@ -313,26 +303,22 @@ export class SpeakerProvider extends SeasonScopedProvider<Speaker> {
       refuseUnsafeImage(file, 'The photo');
     }
 
-    if (speakerEnt) {
-      const savedEntity = await speakerEnt.save();
+    const savedEntity = await speakerEnt.save();
 
-      if (file != null || file != undefined) {
-        try {
-          const speakerImage = await this._saveImage(file, savedEntity.guid);
+    if (file != null || file != undefined) {
+      try {
+        const speakerImage = await this._saveImage(file, savedEntity.guid);
 
-          savedEntity.images = [speakerImage];
+        savedEntity.images = [speakerImage];
 
-          return savedEntity.save();
-        } catch (err) {
-          rethrowHttp(err, new InternalServerErrorException('Could not save speaker image'), () =>
-            Logger.error(err.message, 'SpeakerProvider')
-          );
-        }
-      } else {
-        return savedEntity;
+        return savedEntity.save();
+      } catch (err) {
+        rethrowHttp(err, new InternalServerErrorException('Could not save speaker image'), () =>
+          Logger.error(err.message, 'SpeakerProvider')
+        );
       }
     } else {
-      throw new UnprocessableEntityException(null, 'Could not create speaker');
+      return savedEntity;
     }
   }
 
@@ -340,8 +326,13 @@ export class SpeakerProvider extends SeasonScopedProvider<Speaker> {
    * Marks these speakers' badges printed, now, each with what its badge said, so the badges page can tell when one
    * has changed since (#2908). Answers how many were marked; a guid that is no speaker is left out.
    */
-  public async markBadgesPrinted(badges: Array<{ guid: string; text: string }>): Promise<{ marked: number }> {
-    const wanted = (badges ?? []).filter((b) => typeof b?.guid === 'string' && b.guid && typeof b.text === 'string');
+  public async markBadgesPrinted(
+    // As the request sent them: anything, until checked here.
+    badges: Array<{ guid?: unknown; text?: unknown } | null> | undefined
+  ): Promise<{ marked: number }> {
+    const wanted = (badges ?? []).flatMap((b) =>
+      typeof b?.guid === 'string' && b.guid && typeof b.text === 'string' ? [{ guid: b.guid, text: b.text }] : []
+    );
 
     if (wanted.length === 0) {
       throw new BadRequestException('No badges to mark printed.');
@@ -362,8 +353,8 @@ export class SpeakerProvider extends SeasonScopedProvider<Speaker> {
   }
 
   /** Clears these speakers' printed mark, so their badges show as not printed again (#2908). */
-  public async clearBadgesPrinted(guids: Array<string>): Promise<{ cleared: number }> {
-    const wanted = (guids ?? []).filter((g) => typeof g === 'string' && g);
+  public async clearBadgesPrinted(guids: Array<unknown> | undefined): Promise<{ cleared: number }> {
+    const wanted = (guids ?? []).filter((g): g is string => typeof g === 'string' && g !== '');
 
     if (wanted.length === 0) {
       throw new BadRequestException('No badges to mark not printed.');
@@ -385,7 +376,7 @@ export class SpeakerProvider extends SeasonScopedProvider<Speaker> {
     try {
       const organizations = speakers
         .map((s) => s.SpeakerOrganization)
-        .filter((org) => org !== '' && org !== null && org !== undefined);
+        .filter((org): org is string => typeof org === 'string' && org !== '');
       const uniqueOrganizations = [...new Set(organizations)];
 
       const existingOrganizations = await this.orgRepo.find({
@@ -409,14 +400,10 @@ export class SpeakerProvider extends SeasonScopedProvider<Speaker> {
 
       // Do the same thing with universities
 
-      const universities = speakers
-        .map((s) => {
-          return {
-            name: s.university,
-            hexTriplet: s.hexColor
-          };
-        })
-        .filter((uni) => uni.name !== '' && uni.name !== null && uni.name !== undefined);
+      // A colour left empty is no colour, written as the column's NULL either way.
+      const universities = speakers.flatMap((s) =>
+        s.university ? [{ name: s.university, hexTriplet: s.hexColor ?? undefined }] : []
+      );
 
       const uniqueUniversities = universities.reduce<typeof universities>((acc, current) => {
         const x = acc.find((item) => item.name === current.name);
@@ -591,13 +578,13 @@ export interface OldFormatSpeaker {
   SpeakerFirstName: string;
   SpeakerLastName: string;
   SpeakerEmail: string;
-  SpeakerOrganization: string;
+  SpeakerOrganization?: string | null;
   isActive: number;
   tamuYear: string;
   tamuDegree: string;
   tamuProgram: string;
   affiliation: string;
   description: string;
-  university: '';
-  hexColor: '';
+  university?: string | null;
+  hexColor?: string | null;
 }

@@ -1,4 +1,4 @@
-import type { Auth0UserProfile } from '@tamu-gisc/common/nest/auth';
+import type { Auth0ProfileAsRead } from '../../dashboards/dashboard-profiles.service';
 import { emptyCounts, RsvpPersonType, RsvpPersonTypeCounts } from '@tamu-gisc/gisday/common';
 
 export { emptyCounts };
@@ -7,7 +7,7 @@ export type { RsvpPersonType, RsvpPersonTypeCounts };
 /** One event's row on the dashboard: counts only, no names. */
 export interface RsvpDashboardEvent {
   guid: string;
-  name: string;
+  name: string | null;
   /** When the event starts (its day at its start time, in Central time), or null for an event with no day or time. */
   starts: string | null;
   location: string | null;
@@ -73,7 +73,7 @@ export function studentLevelOf(classification: string | null | undefined): 'unde
   return null;
 }
 
-export function personTypeOf(profile: Auth0UserProfile | null | undefined): RsvpPersonType {
+export function personTypeOf(profile: Auth0ProfileAsRead | null | undefined): RsvpPersonType {
   const attendeeType = profile?.app_metadata?.gisday?.attendeeType;
 
   if (attendeeType === 'student') {
@@ -92,7 +92,7 @@ export function personTypeOf(profile: Auth0UserProfile | null | undefined): Rsvp
  * stores as its institution or employer.
  */
 export function personOf(
-  profile: Auth0UserProfile | null | undefined,
+  profile: Auth0ProfileAsRead | null | undefined,
   created: Date | string,
   organizations: ReadonlyMap<string, string>
 ): RsvpDashboardPerson {

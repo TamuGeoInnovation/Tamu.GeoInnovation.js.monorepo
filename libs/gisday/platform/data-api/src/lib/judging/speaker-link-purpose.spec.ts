@@ -40,8 +40,8 @@ describe('Speaker links have a purpose (#3183)', () => {
       // Made-up speakers.
       { tokenHash: hashOf(PROFILE), purpose: 'profile', expires: later, speaker: { guid: 'sp-av' } as never },
       { tokenHash: hashOf(JUDGING), purpose: 'judging', expires: later, speaker: { guid: 'sp-av' } as never },
-      // A link made before purposes were kept: a profile link, as the column's default makes it.
-      { tokenHash: hashOf(OLD), expires: later, speaker: { guid: 'sp-bl' } as never },
+      // A link made before purposes were kept: a profile link, as the column's default made it when it was added.
+      { tokenHash: hashOf(OLD), purpose: 'profile', expires: later, speaker: { guid: 'sp-bl' } as never },
       {
         tokenHash: hashOf(EXPIRED),
         purpose: 'judging',

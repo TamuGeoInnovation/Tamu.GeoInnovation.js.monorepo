@@ -1,10 +1,4 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  Logger,
-  NotFoundException,
-  UnprocessableEntityException
-} from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, In, Repository, DeepPartial } from 'typeorm';
 
@@ -113,26 +107,22 @@ export class OrganizationService extends SeasonScopedProvider<Organization> {
       ...organization
     });
 
-    if (orgEnt) {
-      const savedEntity = await orgEnt.save();
+    const savedEntity = await orgEnt.save();
 
-      if (file != null || file != undefined) {
-        try {
-          const savedLogo = await this._saveImage(file);
+    if (file) {
+      try {
+        const savedLogo = await this._saveImage(file);
 
-          savedEntity.logos = [savedLogo];
+        savedEntity.logos = [savedLogo];
 
-          return savedEntity.save();
-        } catch (err) {
-          rethrowHttp(err, new InternalServerErrorException('Could not save organization logo.'), () =>
-            Logger.error(err.message, 'OrganizationService')
-          );
-        }
-      } else {
-        return savedEntity;
+        return savedEntity.save();
+      } catch (err) {
+        rethrowHttp(err, new InternalServerErrorException('Could not save organization logo.'), () =>
+          Logger.error(err.message, 'OrganizationService')
+        );
       }
     } else {
-      throw new UnprocessableEntityException(null, 'Could not create organization.');
+      return savedEntity;
     }
   }
 
@@ -156,7 +146,7 @@ export class OrganizationService extends SeasonScopedProvider<Organization> {
     if (existing) {
       let logoImage;
 
-      if (file != null || file != undefined) {
+      if (file) {
         try {
           logoImage = await this._saveImage(file);
         } catch (err) {

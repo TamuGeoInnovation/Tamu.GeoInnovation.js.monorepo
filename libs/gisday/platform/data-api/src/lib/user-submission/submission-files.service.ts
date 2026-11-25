@@ -63,7 +63,12 @@ export class SubmissionFilesService {
    * Attaches an uploaded file, already written to disk by Multer, to the submission. The file is moved into the
    * submission's folder, or removed if it may not be attached.
    */
-  public async add(submissionGuid: string, user: OwnershipUser, upload: Express.Multer.File): Promise<SubmissionFileDto> {
+  public async add(
+    submissionGuid: string,
+    user: OwnershipUser,
+    // Multer leaves it out when no file was sent.
+    upload: Express.Multer.File | undefined
+  ): Promise<SubmissionFileDto> {
     try {
       if (!upload) {
         throw new BadRequestException('No file was sent.');

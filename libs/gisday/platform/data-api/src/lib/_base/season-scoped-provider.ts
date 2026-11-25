@@ -27,7 +27,7 @@ export function withoutIdentity<R extends object>(record: R): R {
  * A provider extending it says how to read a season's records (`forSeason`) and, if a copy holds more or less than the
  * record, what a copy holds (`copyOf`). Its own named methods, which its controller calls, use these.
  */
-export abstract class SeasonScopedProvider<T extends { guid: string; season?: Season }> extends BaseProvider<T> {
+export abstract class SeasonScopedProvider<T extends { guid: string; season?: Season | null }> extends BaseProvider<T> {
   constructor(protected readonly records: Repository<T>) {
     super(records);
   }
@@ -91,7 +91,7 @@ export abstract class SeasonScopedProvider<T extends { guid: string; season?: Se
       relations: this.copyRelations
     });
 
-    if (!found || found.length === 0) {
+    if (found.length === 0) {
       throw new UnprocessableEntityException(`Could not find ${this.recordsName} to copy.`);
     }
 

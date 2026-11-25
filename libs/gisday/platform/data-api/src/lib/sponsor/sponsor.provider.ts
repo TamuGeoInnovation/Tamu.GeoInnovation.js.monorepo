@@ -93,26 +93,22 @@ export class SponsorProvider extends SeasonScopedProvider<Sponsor> {
       ...withLogoSize(withActiveFlag(sponsor))
     });
 
-    if (sponsorEnt) {
-      const savedEntity = await sponsorEnt.save();
+    const savedEntity = await sponsorEnt.save();
 
-      if (file != null || file != undefined) {
-        try {
-          const savedLogo = await this._saveImage(file);
+    if (file) {
+      try {
+        const savedLogo = await this._saveImage(file);
 
-          savedEntity.logos = [savedLogo];
+        savedEntity.logos = [savedLogo];
 
-          return savedEntity.save();
-        } catch (err) {
-          rethrowHttp(err, new InternalServerErrorException('Could not save sponsor logo.'), () =>
-            Logger.error(err.message, 'SponsorProvider')
-          );
-        }
-      } else {
-        return savedEntity;
+        return savedEntity.save();
+      } catch (err) {
+        rethrowHttp(err, new InternalServerErrorException('Could not save sponsor logo.'), () =>
+          Logger.error(err.message, 'SponsorProvider')
+        );
       }
     } else {
-      throw new UnprocessableEntityException(null, 'Could not create sponsor.');
+      return savedEntity;
     }
   }
 
@@ -133,7 +129,7 @@ export class SponsorProvider extends SeasonScopedProvider<Sponsor> {
     if (existing) {
       let logoImage;
 
-      if (file != null || file != undefined) {
+      if (file) {
         try {
           logoImage = await this._saveImage(file);
         } catch (err) {
@@ -203,7 +199,7 @@ export class SponsorProvider extends SeasonScopedProvider<Sponsor> {
  * boolean; anything else is left out, so an update that does not mention it leaves it as it was (#1962).
  */
 export function withActiveFlag<T extends Partial<Sponsor>>(sponsor: T): T {
-  const value = (sponsor as { active?: unknown })?.active;
+  const value = (sponsor as { active?: unknown }).active;
   const copy = { ...sponsor };
 
   if (value === true || value === 'true') {

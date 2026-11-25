@@ -133,7 +133,8 @@ export class GuidIdentity extends TimeStampEntity {
   @BeforeUpdate()
   @BeforeInsert()
   private generateGuid(): void {
-    if (this.guid === undefined || this.guid === '' || this.guid === null) {
+    // Typed as always set, but empty before the first save.
+    if (!this.guid) {
       this.guid = crypto.randomUUID();
     }
   }
@@ -322,7 +323,7 @@ export class Place extends GuidIdentity {
   public website?: string;
 
   @Column({ nullable: true, type: 'simple-json' })
-  public visibilitySettings?: Array<string>;
+  public visibilitySettings?: Array<string> | null;
 
   @OneToMany(() => EventLocation, (location) => location.place, { cascade: true })
   public locations?: EventLocation[];
@@ -407,7 +408,7 @@ export class EventLocation extends GuidIdentity {
    * around it (#1766). Without one, check-in needs no location.
    */
   @Column({ nullable: true, type: 'simple-json' })
-  public checkInZone?: Array<{ latitude: number; longitude: number }>;
+  public checkInZone?: Array<{ latitude: number; longitude: number }> | null;
 
   @OneToMany(() => Event, (event) => event.location, { nullable: true, cascade: true })
   public events?: Event[];
@@ -425,7 +426,7 @@ export class EventLocation extends GuidIdentity {
 })
 export class Event extends GuidIdentity {
   @Column({ nullable: true })
-  public name: string;
+  public name: string | null;
 
   @Column({ nullable: false, default: true })
   public active: boolean;
@@ -434,10 +435,10 @@ export class Event extends GuidIdentity {
   public abstract: string;
 
   @Column({ nullable: true })
-  public startTime: string;
+  public startTime: string | null;
 
   @Column({ nullable: true })
-  public endTime: string;
+  public endTime: string | null;
 
   @Column({ nullable: true, default: 0, select: false })
   public observedAttendeeStart: number;
@@ -513,11 +514,12 @@ export class Event extends GuidIdentity {
   @Column({ nullable: true, length: 'MAX' })
   public requirements: string | null;
 
+  // Null when its day was deleted.
   @ManyToOne(() => SeasonDay, (day) => day.events, { onDelete: 'SET NULL', orphanedRowAction: 'nullify' })
-  public day: SeasonDay;
+  public day: SeasonDay | null;
 
   @ManyToOne(() => Season, (season) => season.events)
-  public season: Season;
+  public season: Season | null;
 
   @ManyToMany(() => Speaker, (speaker) => speaker.events, { nullable: true })
   @JoinTable({
@@ -728,13 +730,13 @@ export class PlaceLink extends GuidIdentity {
 })
 export class Speaker extends GuidIdentity {
   @Column({ nullable: true })
-  public firstName: string;
+  public firstName: string | null;
 
   @Column({ nullable: true })
-  public lastName: string;
+  public lastName: string | null;
 
   @Column({ nullable: true })
-  public email: string;
+  public email: string | null;
 
   @Column({ nullable: true })
   public isActive: boolean;
@@ -755,7 +757,7 @@ export class Speaker extends GuidIdentity {
   public affiliation: string;
 
   @Column({ nullable: true, length: 'MAX' })
-  public description: string;
+  public description: string | null;
 
   @Column({ nullable: true })
   public socialMedia: string;
@@ -778,7 +780,7 @@ export class Speaker extends GuidIdentity {
   public events: Event[];
 
   @ManyToOne(() => Season, (season) => season.speakers, { nullable: true })
-  public season: Season;
+  public season: Season | null;
 
   // Null when the speaker has none, or theirs was deleted.
   @ManyToOne(() => Organization, (o) => o.speakers, { nullable: true })
@@ -924,9 +926,9 @@ export class SpeakerEditLink extends GuidIdentity {
   @Column({ type: 'datetimeoffset' })
   public expires: Date;
 
-  /** The address the link was emailed to. */
+  /** The address the link was emailed to, if it was. */
   @Column({ nullable: true })
-  public sentTo: string;
+  public sentTo: string | null;
 
   /**
    * What the link opens (#3183): `profile`, the speaker's presenter page and their sessions' slides, or `judging`, the
@@ -1032,8 +1034,9 @@ export class SpeakerEmailClaim extends GuidIdentity {
   name: 'checkins'
 })
 export class CheckIn extends GuidIdentity {
+  // Null when its event was deleted.
   @ManyToOne(() => Event, { nullable: true, cascade: false, onDelete: 'SET NULL' })
-  public event: Event;
+  public event: Event | null;
 
   @Column({ nullable: false })
   public accountGuid: string;
@@ -1141,8 +1144,9 @@ export class UserRsvp extends GuidIdentity {
   @Column({ nullable: false })
   public accountGuid: string;
 
+  // Null when its event was deleted.
   @ManyToOne(() => Event, { nullable: true, eager: true, onDelete: 'SET NULL' })
-  public event: Event;
+  public event: Event | null;
 
   @ManyToOne(() => RsvpType, { eager: true })
   public rsvpType: RsvpType;
@@ -1173,16 +1177,17 @@ export class Submission extends GuidIdentity {
   public accountGuid: string;
 
   @Column({ nullable: true })
-  public title: string;
+  public title: string | null;
 
   @Column({ nullable: true, type: 'simple-json' })
-  public participants: Array<{ name: string; email: string; studentId?: string }>;
+  // As the entrant's form sent them: a participant's name or email may be missing (as `ReviewEmailSubmission` reads them).
+  public participants: Array<{ name?: string | null; email?: string | null; studentId?: string }> | null;
 
   @Column({ nullable: true, length: 'MAX' })
-  public abstract: string;
+  public abstract: string | null;
 
   @Column({ nullable: true, length: 'MAX' })
-  public link: string;
+  public link: string | null;
 
   @Column({ default: false })
   public reviewed: boolean;
@@ -1194,16 +1199,16 @@ export class Submission extends GuidIdentity {
   public message: string | null;
 
   @Column({ nullable: true })
-  public format: PRESENTATION_FORMAT | string;
+  public format: PRESENTATION_FORMAT | string | null;
 
   @Column({ nullable: true })
-  public submissionType: PRESENTATION_SUBMISSION_TYPE | string;
+  public submissionType: PRESENTATION_SUBMISSION_TYPE | string | null;
 
   @Column({ nullable: true })
-  public classificationType: PRESENTATION_STUDENT_TYPE | string;
+  public classificationType: PRESENTATION_STUDENT_TYPE | string | null;
 
   @ManyToOne(() => Season, (season) => season.submissions, { nullable: true })
-  public season: Season;
+  public season: Season | null;
 
   /** The slides or poster the student attached (#2933). Not loaded unless asked for. */
   @OneToMany(() => Asset, (asset) => asset.submission)

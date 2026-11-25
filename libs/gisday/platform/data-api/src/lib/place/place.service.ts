@@ -31,9 +31,8 @@ export class PlaceService extends SeasonScopedProvider<Place> {
       copy.logos = record.logos.map(withoutIdentity);
     }
 
-    if (record.links) {
-      copy.links = record.links.map(withoutIdentity);
-    }
+    // Loaded with the record, by `copyRelations`.
+    copy.links = record.links.map(withoutIdentity);
 
     return copy;
   }
@@ -113,7 +112,7 @@ export class PlaceService extends SeasonScopedProvider<Place> {
 
     try {
       let links: Array<PlaceLink> = [];
-      const visibilitySettings = this._deserializeStringifiedJSON(place.visibilitySettings as unknown as string);
+      const visibilitySettings = this._deserializeStringifiedJSON(place.visibilitySettings);
 
       if (place.links && place.links.length > 0) {
         // Because the payload is formData, we need to parse the stringified JSON
@@ -130,7 +129,7 @@ export class PlaceService extends SeasonScopedProvider<Place> {
 
       const saved = await this.pRepo.save(created);
 
-      if (file != null || file != undefined) {
+      if (file) {
         try {
           const savedLogo = await this._saveImage(file);
 
@@ -171,7 +170,7 @@ export class PlaceService extends SeasonScopedProvider<Place> {
       }
 
       let links: Array<Partial<PlaceLink>> = [];
-      const visibilitySettings = this._deserializeStringifiedJSON(place.visibilitySettings as unknown as string);
+      const visibilitySettings = this._deserializeStringifiedJSON(place.visibilitySettings);
 
       if (place.links && place.links.length > 0) {
         // Because the payload is formData, we need to parse the stringified JSON
@@ -190,7 +189,7 @@ export class PlaceService extends SeasonScopedProvider<Place> {
 
       let logoImage;
 
-      if (file != null || file != undefined) {
+      if (file) {
         try {
           logoImage = await this._saveImage(file);
         } catch (err) {
@@ -279,7 +278,8 @@ export class PlaceService extends SeasonScopedProvider<Place> {
     return this.assetService.saveAsset(this._resourcePath, file, 'place-logo');
   }
 
-  private _deserializeStringifiedJSON(value: string) {
+  /** The setting as sent: a list from a JSON body, the list as JSON text from form data, or nothing. */
+  private _deserializeStringifiedJSON(value: Array<string> | string | null | undefined): Array<string> | null {
     if (value === null || value === undefined) {
       return null;
     }

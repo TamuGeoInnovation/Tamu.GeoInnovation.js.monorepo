@@ -46,7 +46,7 @@ export class SpeakerEditController {
   @UseGuards(JwtGuard, PermissionsGuard)
   @Post('send')
   public async send(
-    @Body() body: { speakers: Array<string>; sender?: string; together?: unknown } & Partial<ProfileEmail>,
+    @Body() body: ({ speakers?: Array<string>; sender?: string; together?: unknown } & Partial<ProfileEmail>) | undefined,
     @Request() req
   ) {
     refuseTogether(body);
@@ -74,12 +74,14 @@ export class SpeakerEditController {
   @Post('send-for-submissions')
   public async sendForSubmissions(
     @Body()
-    body: {
-      submissions: Array<string>;
-      sender?: string;
-      speakers?: Array<string>;
-      together?: unknown;
-    } & Partial<ProfileEmail>,
+    body:
+      | ({
+          submissions?: Array<string>;
+          sender?: string;
+          speakers?: Array<string>;
+          together?: unknown;
+        } & Partial<ProfileEmail>)
+      | undefined,
     @Request() req
   ) {
     refuseTogether(body);

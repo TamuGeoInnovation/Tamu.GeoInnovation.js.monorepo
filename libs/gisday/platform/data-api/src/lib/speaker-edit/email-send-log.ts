@@ -41,10 +41,7 @@ export class EmailSendLog {
         )
       );
     } catch (err) {
-      Logger.error(
-        `Sent ${kind} to ${speakers.length} speaker(s) but could not record it: ${err.message}`,
-        'EmailSendLog'
-      );
+      Logger.error(`Sent ${kind} to ${speakers.length} speaker(s) but could not record it: ${err.message}`, 'EmailSendLog');
     }
   }
 
@@ -70,7 +67,7 @@ export class EmailSendLog {
     });
 
     for (const row of rows) {
-      const sends = history.get(row.speaker?.guid);
+      const sends = history.get(row.speaker.guid);
 
       if (!sends) {
         continue;
