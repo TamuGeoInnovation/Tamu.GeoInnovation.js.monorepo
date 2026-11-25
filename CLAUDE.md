@@ -800,8 +800,10 @@ repository. For anyone with read access, even a team member, GitHub holds every 
 "workflow awaiting approval" until a maintainer approves it. Team members should have write
 access.
 
-Titles follow `scope(project-name): Short description`, where scope is `fix`, `feat`,
-`chore` or `ci`. One change per pull request. See [CONTRIBUTING.md](CONTRIBUTING.md).
+Titles follow `type(project-name): Short description`, and a check (`pr-title.yml`, #1274) fails one that does
+not: the type is `fix`, `feat`, `chore`, `ci`, `docs`, `test`, `refactor`, `perf`, `build`, `style` or `revert`, and the
+project may be left out for a workspace-wide change. The squash merge makes the title the commit on `development`.
+One change per pull request. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## The cloud session
 
