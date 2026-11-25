@@ -1,5 +1,9 @@
 # Laptop: current tasks
 
+## Correction (gisday), 3:25 AM Central, 25 November 2026, read from PowerShell
+
+- **The clock times in the director's headings since about 2:30 AM ran ahead of the real time** (written as 3:45 AM and 4:20 AM, among others, when the commits are at 2:52 and 3:15 AM). The commit times on this branch are the right ones. Nothing else in those batches changes.
+
 ## Note (gisday), 4:20 AM Central, 25 November 2026
 
 - **g33 has its own issue: #3596** (a sub-issue of #3593, strictNullChecks across the GIS Day front end). #3495 closed when PR 3560 merged. Put `Closes #3596` in g33's `.pr-body.md`.
