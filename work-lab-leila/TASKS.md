@@ -1,5 +1,9 @@
 # work-lab-leila: current tasks
 
+## Decided (gisday), 3:58 AM Central, 25 November 2026
+
+- **Q-g214-1: (a).** The director opens #3597's pull request once #3595's (PR 3608) merges, with `development` merged in, so its diff is just the spec. Next for you: g215.
+
 ## Decided (gisday), 3:40 AM Central, 25 November 2026 (read from PowerShell)
 
 - **Q-g213-1: as you recommend.** The director opens g212's pull request first (its check is queued on the work machine), then g213's, and whichever is second gets `node scripts/check-strict-libs.mjs --all` run after its `development` merge, with the counts it reports.
