@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import {
   catchError,
@@ -49,7 +49,6 @@ const numberDictionary = {
   selector: 'tamu-gisc-landing',
   templateUrl: './landing.component.html',
   styleUrls: ['./landing.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ImagePreviewComponent, SiteHasPipe, RouterLink, AsyncPipe, CentralDatePipe, AssetUrlPipe]
 })
 export class LandingComponent implements OnInit {
