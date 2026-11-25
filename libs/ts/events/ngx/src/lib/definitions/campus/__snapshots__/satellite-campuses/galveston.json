@@ -1,0 +1,154 @@
+{
+  "configuration": {
+    "applicationName": "Galveston Campus",
+    "buildingPopup": {
+      "abbreviation": "bldgabbrev",
+      "address": {
+        "city": "city",
+        "state": "TX",
+        "street": "address",
+        "zip": "zip"
+      },
+      "layerId": "galveston-buildings-layer",
+      "number": "number",
+      "title": [
+        "name",
+        "bldgname",
+        "bldgabbrev",
+        "abbrev"
+      ]
+    },
+    "eventDates": [],
+    "hideLayerToggle": true,
+    "id": "galveston",
+    "introductionText": "Map of the Texas A&M University at Galveston campus.",
+    "mapCenter": [
+      -94.818414,
+      29.316658
+    ],
+    "name": "Galveston",
+    "searchSources": [
+      {
+        "displayTemplate": "{attributes.bldgname} ({attributes.number})",
+        "featuresLocation": "features",
+        "name": "Building",
+        "popupComponent": "[EventPopups.CampusBuildingPopupComponent]",
+        "queryParams": {
+          "f": "json",
+          "outFields": "*",
+          "outSR": 4326,
+          "resultRecordCount": 5,
+          "returnGeometry": true,
+          "scoringWhere": {
+            "keys": [
+              "bldgname",
+              "bldgabbrev"
+            ],
+            "operators": [
+              "LIKE",
+              "LIKE"
+            ],
+            "transformations": [
+              "UPPER",
+              "UPPER"
+            ],
+            "wildcards": [
+              "startsWith",
+              "startsWith"
+            ]
+          },
+          "spatialRel": "esriSpatialRelIntersects",
+          "where": {
+            "keys": [
+              "bldgname",
+              "bldgabbrev",
+              "number"
+            ],
+            "operators": [
+              "LIKE",
+              "LIKE",
+              "LIKE"
+            ],
+            "transformations": [
+              "UPPER",
+              "UPPER",
+              "UPPER"
+            ],
+            "wildcards": [
+              "includes",
+              "includes",
+              "includes"
+            ]
+          }
+        },
+        "scoringKeys": [
+          "attributes.bldgabbrev",
+          "attributes.number",
+          "attributes.bldgname"
+        ],
+        "searchActive": true,
+        "source": "galveston-building",
+        "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/GalBase2/FeatureServer/0",
+        "urlQueryParam": "bldg",
+        "urlQueryParamAliases": [
+          "abbrv"
+        ]
+      }
+    ],
+    "shortApplicationName": "Galveston",
+    "sidebarTabs": [
+      "features"
+    ],
+    "zoom": 16
+  },
+  "discover": {
+    "description": "Map of the Texas A&M University at Galveston campus.",
+    "id": "galveston",
+    "mapType": "satellite-campus",
+    "name": "Galveston",
+    "source": "internal",
+    "thumbnail": "./assets/images/campus/galveston.jpg",
+    "type": "satellite-campus"
+  },
+  "options": [],
+  "references": {
+    "BASEMAP": "galveston-basemap-layer",
+    "BUILDINGS": "galveston-buildings-layer"
+  },
+  "sources": [
+    {
+      "essential": true,
+      "id": "galveston-basemap-layer",
+      "listMode": "hide",
+      "title": "Galveston Basemap",
+      "type": "vector-tile",
+      "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/GalBase2/VectorTileServer",
+      "visible": true
+    },
+    {
+      "essential": true,
+      "id": "galveston-buildings-layer",
+      "listMode": "hide",
+      "native": {
+        "elevationInfo": {
+          "mode": "relative-to-ground",
+          "offset": 1
+        },
+        "labelsVisible": false,
+        "legendEnabled": false,
+        "maxScale": 0,
+        "minScale": 100000,
+        "outFields": [
+          "*"
+        ],
+        "popupEnabled": false
+      },
+      "popupComponent": "[EventPopups.CampusBuildingPopupComponent]",
+      "title": "Buildings",
+      "type": "feature",
+      "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/GalBase2/FeatureServer/0",
+      "visible": true
+    }
+  ],
+  "type": "general-map"
+}

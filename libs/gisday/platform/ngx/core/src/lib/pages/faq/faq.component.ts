@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, DestroyRef, inject, signal, afterNextRender } from '@angular/core';
+import { Component, DestroyRef, inject, signal, afterNextRender } from '@angular/core';
 import { DOCUMENT, NgTemplateOutlet } from '@angular/common';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -11,7 +11,6 @@ import { ClipboardCopyDirective } from '@tamu-gisc/ui-kits/ngx/interactions/clip
   selector: 'tamu-gisc-faq',
   templateUrl: './faq.component.html',
   styleUrls: ['./faq.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterLink, NgTemplateOutlet, ClipboardCopyDirective]
 })
 export class FaqComponent {

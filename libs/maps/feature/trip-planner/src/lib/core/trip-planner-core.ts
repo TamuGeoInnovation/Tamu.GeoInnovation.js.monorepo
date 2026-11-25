@@ -3,7 +3,7 @@
 import esri = __esri;
 
 import { SearchResultBreadcrumbSummary, SearchSelection } from '@tamu-gisc/ui-kits/ngx/search';
-import { isCoordinatePair, parseCoordinates } from '@tamu-gisc/common/utils/geometry/generic';
+import { parseLatLon } from '@tamu-gisc/common/utils/geometry';
 import { getGeometryType, centroidFromGeometry } from '@tamu-gisc/common/utils/geometry/esri';
 
 import { TripResultProperties } from '../services/trip-planner.service';
@@ -186,12 +186,8 @@ export class TripPoint {
                 type: 'centroid',
                 value: { ...this.geometry }
               });
-            } else if (
-              this.originAttributes.name &&
-              this.originAttributes.name.length > 0 &&
-              isCoordinatePair(this.originAttributes.name)
-            ) {
-              this.geometry = parseCoordinates(this.originAttributes.name);
+            } else if (parseLatLon(this.originAttributes.name)) {
+              this.geometry = parseLatLon(this.originAttributes.name);
 
               this.addTransformation({
                 type: 'raw-to-geometry',
@@ -228,7 +224,8 @@ export class TripPoint {
             }
           }
         } else if (this.source === 'url-coordinates') {
-          this.geometry = parseCoordinates(this.originAttributes.name);
+          // The service chose this source only for a name `parseLatLon` reads.
+          this.geometry = parseLatLon(this.originAttributes.name);
 
           this.addTransformation({
             type: 'raw-to-geometry',

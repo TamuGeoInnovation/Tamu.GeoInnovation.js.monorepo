@@ -11,8 +11,5 @@
 }
 
 <div class="popup-section">
-  @if (shareUrl) {
-  <tamu-gisc-copy-field [text]="shareUrl"></tamu-gisc-copy-field>
-  }
-  <div class="button" (tamuGiscActivate)="startDirections()">Directions To Here</div>
+  <tamu-gisc-popup-footer [shareUrl]="shareUrl" (startDirections)="startDirections()"></tamu-gisc-popup-footer>
 </div>

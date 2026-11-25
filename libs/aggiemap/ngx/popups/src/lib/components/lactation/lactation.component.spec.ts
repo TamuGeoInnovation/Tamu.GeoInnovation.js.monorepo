@@ -87,4 +87,25 @@ describe('LactationPopupComponent', () => {
     expect(text).not.toContain('Amenities');
     expect(text).toContain('Access');
   });
+
+  // The popup #602 was reported for: a visitor looking for a room is the one most likely to want directions to it.
+  it('offers "Directions To Here", which plans a trip to the room (#602)', () => {
+    const popup = render(ROOM);
+    const button = Array.from(popup.querySelectorAll<HTMLElement>('.button')).find(
+      (element) => element.textContent?.trim() === 'Directions To Here'
+    );
+
+    expect(button, 'the lactation room popup offers no "Directions To Here"').toBeDefined();
+
+    button?.click();
+
+    const stops = vi.mocked(TestBed.inject(TripPlannerService).setStops).mock.calls[0]?.[0];
+    expect(stops?.[0]?.originAttributes).toEqual(ROOM);
+    expect(TestBed.inject(Router).navigate).toHaveBeenCalledWith(['trip'], expect.anything());
+  });
+
+  // No search source opens a lactation room from a link, so a copied link would reopen nothing (#1173).
+  it('offers no copy link, because no link reopens a room', () => {
+    expect(render(ROOM).querySelector('tamu-gisc-copy-field')).toBeNull();
+  });
 });

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 
 import { Observable, shareReplay } from 'rxjs';
 
@@ -11,7 +11,6 @@ import { CentralDatePipe } from '@tamu-gisc/gisday/platform/ngx/common';
   selector: 'tamu-gisc-my-checkins',
   templateUrl: './my-checkins.component.html',
   styleUrls: ['./my-checkins.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [AsyncPipe, CentralDatePipe]
 })
 export class MyCheckinsComponent implements OnInit {

@@ -1,11 +1,10 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { AltSearchHelper, SearchSelection, SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
-import { EsriMapService } from '@tamu-gisc/maps/esri';
+import { SearchSelection, SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { TemplateRenderer } from '@tamu-gisc/common/utils/string';
-import { TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
+import { SearchResultSelectionService } from '@tamu-gisc/maps/feature/trip-planner';
 
 import { EventSettingsService } from '../../../../services/settings/event-settings.service';
 import { EventService } from '../../../../services/event/event.service';
@@ -27,8 +26,7 @@ import esri = __esri;
 export class SidebarReferenceComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
-  private readonly helper = inject(AltSearchHelper);
-  private readonly mapService = inject(EsriMapService);
+  private readonly searchSelection = inject(SearchResultSelectionService);
   private readonly eventSettingsService = inject(EventSettingsService);
   private readonly ns = inject(NotificationService);
   private readonly eventService = inject(EventService);
@@ -108,15 +106,7 @@ export class SidebarReferenceComponent implements OnInit {
       return;
     }
 
-    this.helper.handleSearchResultFeatureSelection(result as SearchSelection<object>).subscribe((res) => {
-      const tPoint = TripPoint.from(res as SearchSelection<esri.Graphic>);
-
-      this.mapService.selectFeatures({
-        graphics: [tPoint.toEsriGraphic()],
-        shouldShowPopup: true,
-        popupComponent: (res as SearchSelection<esri.Graphic>)?.result?.breadcrumbs.source.popupComponent
-      });
-    });
+    this.searchSelection.show(result as SearchSelection<esri.Graphic>);
   }
 
   public navigateSettingsReview(): void {

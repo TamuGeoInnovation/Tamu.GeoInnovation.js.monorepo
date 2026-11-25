@@ -1,4 +1,4 @@
-import { Component, ViewContainerRef, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, ViewContainerRef, inject } from '@angular/core';
 
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { RouterOutlet } from '@angular/router';
@@ -10,7 +10,6 @@ import { GisdayAnalytics } from './analytics';
   selector: 'tamu-gisc-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterOutlet, NotificationContainerComponent]
 })
 export class AppComponent {

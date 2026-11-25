@@ -3,6 +3,7 @@ import { Component, inject } from '@angular/core';
 import { Angulartics2 } from 'angulartics2';
 import { TamuBlockBrandingComponent } from '@tamu-gisc/ui-kits/ngx/branding';
 import { RouterLink } from '@angular/router';
+import { trackEvent } from '@tamu-gisc/common/ngx/analytics';
 
 interface MenuItem {
   name: string;
@@ -117,17 +118,9 @@ export class MainMobileSidebarComponent {
 
   public reportNavigation(name: string) {
     const label = {
-      guid: crypto.randomUUID(),
-      date: Date.now(),
       name: name
     };
 
-    this.analytics.eventTrack.next({
-      action: 'sidebar_select',
-      properties: {
-        category: 'ui_interaction',
-        gstCustom: label
-      }
-    });
+    trackEvent(this.analytics, 'sidebar_select', 'ui_interaction', label);
   }
 }

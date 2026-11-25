@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 
@@ -8,7 +8,6 @@ import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
   selector: 'tamu-gisc-sponsors-tamu',
   templateUrl: './sponsors-tamu.component.html',
   styleUrls: ['./sponsors-tamu.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterLink]
 })
 export class SponsorsTamuComponent implements OnInit {

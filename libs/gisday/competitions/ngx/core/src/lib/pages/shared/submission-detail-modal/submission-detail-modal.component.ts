@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Observable } from 'rxjs';
 import { map, take, tap } from 'rxjs/operators';
@@ -20,7 +20,6 @@ import { CentralDatePipe } from '@tamu-gisc/gisday/platform/ngx/common';
   selector: 'tamu-gisc-submission-detail-modal',
   templateUrl: './submission-detail-modal.component.html',
   styleUrls: ['./submission-detail-modal.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [EsriMapComponent, ButtonComponent, AsyncPipe, CentralDatePipe]
 })
 export class SubmissionDetailModalComponent implements OnInit {

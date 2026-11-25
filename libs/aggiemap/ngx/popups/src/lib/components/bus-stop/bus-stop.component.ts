@@ -4,8 +4,7 @@ import { filter, take } from 'rxjs/operators';
 import { BusService } from '@tamu-gisc/maps/feature/trip-planner';
 
 import { BaseDirectionsComponent } from '../base-directions/base-directions.component';
-import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
-import { ActivateDirective } from '@tamu-gisc/ui-kits/ngx/interactions/keyboard';
+import { PopupFooterComponent } from '../footer/popup-footer.component';
 
 /**
  * Popup for the AggieSpirit bus map. Rendered when a user clicks a graphic drawn by `BusService` on the
@@ -18,7 +17,7 @@ import { ActivateDirective } from '@tamu-gisc/ui-kits/ngx/interactions/keyboard'
   selector: 'tamu-gisc-bus-stop-popup-component',
   templateUrl: './bus-stop.component.html',
   styleUrls: ['../base/base.popup.component.scss'],
-  imports: [CopyComponent, ActivateDirective]
+  imports: [PopupFooterComponent]
 })
 export class BusStopPopupComponent extends BaseDirectionsComponent implements OnInit {
   private busService = inject(BusService);
@@ -46,7 +45,7 @@ export class BusStopPopupComponent extends BaseDirectionsComponent implements On
    * Deep-link fragment for the copy-link, composed from the `bus-stops-exact` search source's
    * configured `urlQueryParam` (`?busstop=<objectid>`) and prefixed with the bus map path so the
    * shared link opens on the bus map. Returns null when there is no stop objectid (e.g. the route
-   * line), which leaves the share URL as the site origin.
+   * line), which leaves no share URL.
    */
   protected override _getShareUrlFragment(): string | null {
     const objectId = this.data?.attributes?.objectid;

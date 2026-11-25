@@ -2,14 +2,10 @@
 same service's Campus Structures since #3425. `LotName` is the retired raster basemap's field, kept last so a feature
 still held from it renders rather than showing an empty heading (#1163). -->
 <div class="popup-section">
-  <div class="feature-style-1" tabindex="0">
-    {{ data.attributes.lotname ?? data.attributes.bldgname ?? data.attributes.LotName }}
-  </div>
+  <div class="feature-style-1" tabindex="0">{{ data.attributes.lotname ?? data.attributes.bldgname ?? data.attributes.LotName }}</div>
   <div class="feature-style-2" tabindex="0">College Station, TX 77843</div>
 </div>
 
 <div class="popup-section">
-  <tamu-gisc-copy-field [text]="shareUrl"></tamu-gisc-copy-field>
-
-  <div class="button" (tamuGiscActivate)="startDirections()">Directions To Here</div>
+  <tamu-gisc-popup-footer [shareUrl]="shareUrl" (startDirections)="startDirections()"></tamu-gisc-popup-footer>
 </div>
