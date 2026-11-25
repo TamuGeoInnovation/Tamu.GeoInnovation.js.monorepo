@@ -131,6 +131,42 @@ needs when deciding whether a change *fixed* something, which the automated chec
    cleared anything. If the control comes back clean, the machine has told you nothing about the
    candidate. Use another, or more loads.
 
+## Taking a sample of features to click
+
+**Do not draw a test's sample from the rows the test is about.** On 9 November 2026 two machines each spent about
+two hours proving that the buildings layer could not be clicked, with the same method error, and the result was
+relayed to the maintainer twice as measured fact
+([#2794](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2794)).
+
+[#2707](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2707) had given `buildings-layer`
+the filter `number IS NOT NULL`, which keeps 1,003 of the service's 1,984 rows; the other 981 have no number and
+genuinely null names. Both machines sampled the layer like this:
+
+```js
+const q = await layer.queryFeatures({ geometry: view.extent, spatialRelationship: 'intersects', num: 40 });
+// the first N features, each centroid through view.toScreen, then view.hitTest at each point
+```
+
+`queryFeatures` with no `where` answers in `objectid` order, and **the low object ids are the unnumbered rows**. So
+every sample came from exactly the rows the filter exists to remove: 0 of 10 hit, attributes all null, and the same
+with an Arcade renderer or a `FeatureFilter`. The conclusion was that the layer had lost its attributes and the GIS
+team had to republish it. Measured properly, over every building in the view, it was **numbered 105 of 105 hit,
+unnumbered 0 of 73**: the filter working exactly as intended.
+
+**What a sound sample looks like here:**
+
+- **Name the features**, by a key the test states (a building number, an `objectid` written in the spec), or
+- **take every feature in the view** and report each population separately, as the corrected measurement did.
+
+Never the first N of a query, and never a fixture built in `objectid` order, which is not random. The trap is not
+"check your sample" in general: the population sampled and the thing under test were the same set, so the result
+confirms whatever the filter does, in either direction.
+
+**Assert what the layer does, not what the page shows.** The check that caught it asserts that `view.hitTest` finds
+the layer itself (`test/smoke/aggiemap/building-clicks.spec.ts`), not that a popup appeared. A popup can still be
+answered by `queryPopupLayersAtClick`'s fallback while the layer is dead, so "a popup opened" passes on a broken
+layer.
+
 ## If you are capturing images
 
 - Wait for `ready`, then `drawing === false`. Both.

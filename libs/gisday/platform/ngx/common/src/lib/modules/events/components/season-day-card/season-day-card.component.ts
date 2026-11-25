@@ -3,7 +3,6 @@ import {
   OnChanges,
   OnInit,
   SimpleChanges,
-  ChangeDetectionStrategy,
   DestroyRef,
   computed,
   inject,
@@ -29,7 +28,6 @@ import { CentralDatePipe } from '../../../../pipes/central-date/central-date.pip
   selector: 'tamu-gisc-season-day-card',
   templateUrl: './season-day-card.component.html',
   styleUrls: ['./season-day-card.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     EventRowComponent,
     AsyncPipe,

@@ -1,4 +1,4 @@
-import { Component, SecurityContext, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, SecurityContext, inject } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NgClass, AsyncPipe } from '@angular/common';
 
@@ -12,7 +12,6 @@ import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
   selector: 'tamu-gisc-gallery',
   templateUrl: './gallery.component.html',
   styleUrls: ['./gallery.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [NgClass, AsyncPipe, SelectComponent]
 })
 export class GalleryComponent {

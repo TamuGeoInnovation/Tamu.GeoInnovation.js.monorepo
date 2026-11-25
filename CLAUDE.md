@@ -107,6 +107,14 @@ Budgets are part of the build, so a purely additive change can fail it without a
 task's, so a task that never ran still looks like a pass. Redirect to a file, capture the
 exit code on its own line, then filter the file.
 
+**Do not draw a test's sample from the rows under test.** On 9 November 2026 two machines spent about two hours
+proving the buildings layer could not be clicked: each took the first features of a `queryFeatures` in the view,
+which answers in `objectid` order, and the low ids were exactly the unnumbered rows the layer's filter exists to
+remove. Over every building in the view it was 105 of 105 numbered hit and 0 of 73 unnumbered: the filter working.
+Name the features, or take every one and report each population separately, and assert `view.hitTest` finds the
+layer, not that a popup opened. [`docs/testing-maps.md`](docs/testing-maps.md#taking-a-sample-of-features-to-click)
+has the case (#2794).
+
 **Do not edit files while the dev server is compiling them.** Its source is bind-mounted live, so a
 build picks up partial edits and reports on a state that never existed. Checks are unaffected: they run
 on a fetched commit, so editing while one runs is safe.
@@ -148,7 +156,7 @@ full reservation, invisible unless you look for it. Find it by its **volume**, n
 your own - two checks running at once give you two anonymous containers, and guessing kills someone else's run:
 
 ```bash
-docker ps --filter ancestor=node:24.22.1
+docker ps --filter ancestor=node:24.22.3
 docker inspect --format '{{.Name}} | {{range .Mounts}}{{.Name}} {{end}}' <id>   # tamu-js-<issue> names the run
 ```
 
@@ -322,8 +330,8 @@ bind-mounts the source, so edits on Windows reach it, but its `node_modules` liv
 `package-lock.json` changes:
 
 ```bash
-MSYS_NO_PATHCONV=1 docker run --rm -m 16g -v "C:/TAMU/wt-<n>:/w" -v tamu-js-dev-nm:/w/node_modules -w /w node:24.22.1 npm ci --no-audit --no-fund
-MSYS_NO_PATHCONV=1 docker run -d --name aggiemap-dev -m 8g -p 4200:4200 -v "C:/TAMU/wt-<n>:/w" -v tamu-js-dev-nm:/w/node_modules -w /w -e NX_DAEMON=false -e UV_THREADPOOL_SIZE=64 -e NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data node:24.22.1 sh -c "node node_modules/nx/dist/bin/nx.js serve aggiemap-angular --host 0.0.0.0 --port 4200 --poll=2000"
+MSYS_NO_PATHCONV=1 docker run --rm -m 16g -v "C:/TAMU/wt-<n>:/w" -v tamu-js-dev-nm:/w/node_modules -w /w node:24.22.3 npm ci --no-audit --no-fund
+MSYS_NO_PATHCONV=1 docker run -d --name aggiemap-dev -m 8g -p 4200:4200 -v "C:/TAMU/wt-<n>:/w" -v tamu-js-dev-nm:/w/node_modules -w /w -e NX_DAEMON=false -e UV_THREADPOOL_SIZE=64 -e NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data node:24.22.3 sh -c "node node_modules/nx/dist/bin/nx.js serve aggiemap-angular --host 0.0.0.0 --port 4200 --poll=2000"
 ```
 
 **`UV_THREADPOOL_SIZE` and `NX_WORKSPACE_DATA_DIRECTORY` are not optional here.** `--poll=2000` keeps Node's
@@ -344,7 +352,7 @@ problem above and is not. **One volume serves every checkout, so one dev server 
 the next start in all of them.** Clear it and start again, unchanged:
 
 ```bash
-MSYS_NO_PATHCONV=1 docker run --rm -v tamu-js-dev-nm:/nm node:24.22.1 sh -c "rm -rf /nm/.vite /nm/.vite-temp"
+MSYS_NO_PATHCONV=1 docker run --rm -v tamu-js-dev-nm:/nm node:24.22.3 sh -c "rm -rf /nm/.vite /nm/.vite-temp"
 ```
 
 On 3 November the documented command then worked exactly as written, `--poll=2000` included. On 30 October a
@@ -615,11 +623,13 @@ by hand and getting the order wrong.
 **Tag the commit each build comes from.** `scripts/tag-build.sh dev` when a build reaches dev,
 `scripts/tag-build.sh prod` when it is promoted, then `git push origin <tag>`. One build serves both
 environments, so the same commit carries both tags. `prod` refuses a commit with no `dev-*` tag,
-which is what makes "we shipped what we tested" a fact rather than an assumption. Tags go to
-`origin`. See #1145.
+which is what makes "we shipped what we tested" a fact rather than an assumption. It also refuses a
+commit that already carries a `prod-*` tag, naming it, so one build is never recorded as two releases
+(#1215). Tags go to `origin`. See #1145.
 
-**Overriding that refusal needs a reason, which goes into the tag:** `--force '<why>'`. The tag then
-says `(FORCED)` in its first line and carries the reason. A forced tag used to be indistinguishable
+**Overriding either refusal needs a reason, which goes into the tag:** `--force '<why>'`, for example a
+deliberate redeploy of a build already on production. The tag then says `(FORCED)` in its first line and
+carries the reason and which check it went past. A forced tag used to be indistinguishable
 from one that passed, so on 22 October the release record said production carried `61161ce1b` when the
 tag was on `36b962a04`, and nothing in the repository contradicted it. `bash scripts/tag-build.test.sh`, from Git Bash, covers this. See #2098.
 

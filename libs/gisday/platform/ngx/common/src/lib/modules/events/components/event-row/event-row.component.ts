@@ -1,14 +1,4 @@
-import {
-  Component,
-  HostListener,
-  OnChanges,
-  OnInit,
-  SimpleChanges,
-  ChangeDetectionStrategy,
-  inject,
-  input,
-  output
-} from '@angular/core';
+import { Component, HostListener, OnChanges, OnInit, SimpleChanges, inject, input, output } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, ReplaySubject, distinctUntilChanged, map, startWith } from 'rxjs';
 
@@ -22,7 +12,6 @@ import { CentralDatePipe } from '../../../../pipes/central-date/central-date.pip
   selector: 'tamu-gisc-event-row',
   templateUrl: './event-row.component.html',
   styleUrls: ['./event-row.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CheckboxComponent, AsyncPipe, CentralDatePipe, ParseDateTimeStringsPipe]
 })
 export class EventRowComponent implements OnChanges, OnInit {

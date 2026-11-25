@@ -2,7 +2,7 @@
 # Read README.md before changing anything here: every pull request comes from a fork, and its code runs in this image.
 FROM ubuntu:24.04
 
-ARG NODE_VERSION=24.22.1
+ARG NODE_VERSION=24.22.3
 # The latest v4 agent when this was written, and its SHA-256 from the release notes:
 # https://github.com/microsoft/azure-pipelines-agent/releases/tag/v4.275.0
 ARG AGENT_VERSION=4.275.0

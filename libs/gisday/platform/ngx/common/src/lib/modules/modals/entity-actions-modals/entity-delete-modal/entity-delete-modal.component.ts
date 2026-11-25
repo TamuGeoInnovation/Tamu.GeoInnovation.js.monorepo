@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { map, Observable, startWith } from 'rxjs';
 
@@ -11,7 +11,6 @@ import { AsyncPipe, LowerCasePipe } from '@angular/common';
   selector: 'tamu-gisc-entity-delete-modal',
   templateUrl: './entity-delete-modal.component.html',
   styleUrls: ['./entity-delete-modal.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FormsModule, ReactiveFormsModule, TextboxComponent, ButtonComponent, AsyncPipe, LowerCasePipe]
 })
 export class EntityDeleteModalComponent implements OnInit {

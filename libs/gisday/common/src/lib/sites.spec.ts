@@ -26,6 +26,14 @@ describe('placesShownOn', () => {
   it('shows nothing when there are no places', () => {
     expect(placesShownOn(GISDAY_SITES.tamu, null, 'header')).toEqual([]);
   });
+
+  // #3626: a place's visibility settings are stored as they were saved, null included (Place allows it), and such a place
+  // is marked for nowhere: it is left out, and the rest still show.
+  it('leaves out a place whose visibility settings are null', () => {
+    const withNull = [...places, { guid: 'unset', name: 'A place saved with no settings', visibilitySettings: null }];
+
+    expect(placesShownOn(GISDAY_SITES.txgisday, withNull, 'header').map((p) => p.guid)).toEqual(['tamu', 'txst']);
+  });
 });
 
 /** #2986: the admin Sessions list on gisday.tamu.edu starts with Texas A&M's sessions. */
