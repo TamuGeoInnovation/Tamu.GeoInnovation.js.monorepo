@@ -1,5 +1,59 @@
 # Laptop: current tasks
 
+## Batch a25 (aggiemap: Node 24.22.3 everywhere, one shippable step of #1218) (Medium) - **after a13**
+
+[#1218](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1218) is "bring the workspace up to
+date, one shippable step at a time". This is one of those steps, and a branch for it already exists and was never
+opened - found by [#3505](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3505).
+
+**The branch:** `chore/1218-node-24.22.3` on the fork, commit `b5cc2f3be`, **63 commits behind `development`**. It
+moves Node to **24.22.3** in `.claude/launch.json`, `.github/dependabot.yml`, the workflows, `CLAUDE_SETUP.md` and the
+rest. Its second commit is a `.pr-body.md` draft; the text is useful, the commit is not.
+
+### Why this one is safe to take and its two siblings are not
+
+`chore/1218-nx-24-0-1` and `chore/1218-angulartics2-14` are **558 commits** behind and touch only `package.json` and
+`package-lock.json`. Those have to be redone fresh, because regenerating a lock that old **undoes lock-only updates
+while every check still passes** - CLAUDE.md records how that silently reverted five packages from PR 2125 on
+23 October, a critical `websocket-driver` fix among them. **Do not touch those two in this batch.**
+
+This branch edits configuration files rather than a lock, so being behind costs a merge, not a silent revert.
+
+### What I have already checked, so you do not repeat it
+
+**24.22.3 is still the right target.** From `nodejs.org/dist/index.json` on 25 November 2026: it is the newest 24.x,
+released 10 November, **15 days old**, LTS Krypton. That satisfies CLAUDE.md's seven-day rule, so no pin below it is
+needed. Say so in the pull request body, with the date.
+
+### The work
+
+1. **Branch from the latest `development`** and take the code commit (`b5cc2f3be`) onto it - not the `.pr-body.md`
+   commit. Resolve the merge honestly: 63 commits have touched workflows and `CLAUDE_SETUP.md` since, so expect
+   conflicts there and **read what you are keeping** rather than taking either side wholesale.
+2. **Find any new occurrences the branch could not know about.** `git grep -n "24\.22\.1"` across the repository: a
+   file added in the last 63 commits may pin the old version, and `scripts/pre-pr-check.sh` and `scripts/tidy.sh` are
+   both newer than this branch.
+3. **Prove the version is actually used**, not just written down: start the dev server with the command in CLAUDE.md
+   and report what `node --version` says inside the container, and confirm `check-in-volume.sh` runs on the new image.
+4. **Say what you did not change and why.** If the API images or a Dockerfile pin a different version deliberately,
+   that is a finding for the report, not something to align silently.
+
+### Checking and reporting
+
+`scripts/pre-pr-check.sh chore/1218-node-24.22.3-today '<title>' .pr-body.md` - **affected**, not a project list: a
+change to the workflows and the lint plugin's configuration reaches everything. Its last line goes in your report and
+in the body. No release-notes entry is needed (nothing a visitor sees), so the pull request will carry
+`no-visible-change` - pass `--label no-visible-change` to the script and say so in the report.
+
+Push the branch to the fork; **no pull request** - that is mine. Say **"branch ready: chore/1218-node-24.22.3-today"**.
+
+`laptop/reports/2026-11-25-a25.md`: the conflicts you resolved and how, anything still naming 24.22.1, the container's
+own `node --version`, and the check's `Exit` line.
+
+**Questions come to me** (`work (aggiemap)`), with options and a recommendation. **Set an issue's Priority yourself
+now** - the maintainer decided on 25 November that sessions estimate it rather than ask
+([#3527](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3527)).
+
 ## Batch g29 (workspace: #1479, the remaining Angular and TypeScript projects off Jest; 25 November 2026, about 10:35 PM Central, from `work (gisday)`) (Medium) - **after a14**
 
 **Decided by the maintainer (24 November, about 10:25 PM Central): the whole workspace moves off Jest to Vitest**, in his words "do the things to
