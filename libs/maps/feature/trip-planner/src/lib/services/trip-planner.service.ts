@@ -1470,10 +1470,7 @@ export class TripPlannerService implements OnDestroy {
             );
 
             // When the destination is off the network, the last step says to leave the path for it (#2639).
-            const stretch = lastStretch(
-              routeEndVertex(features),
-              this._Stops.value[this._Stops.value.length - 1].geometry
-            );
+            const stretch = lastStretch(routeEndVertex(features), this._Stops.value[this._Stops.value.length - 1].geometry);
             const finishText = (time: string) =>
               stretch ? lastStretchFinishText(stretch, lastStopName, time) : `Finish at ${lastStopName} at ${time}`;
 
@@ -1669,7 +1666,7 @@ export class TripPlannerService implements OnDestroy {
           }
         });
       }
-    } catch (err) {
+    } catch {
       // If the requests fail for whatever reason, still report it as a regular fail
       // Route failure analytics tracking
       const stops = tripResult.stopsToArray();
@@ -1744,98 +1741,92 @@ export class TripPlannerService implements OnDestroy {
 
     this.moduleProvider
       .require(['GraphicsLayer', 'Graphic', 'Point'])
-      .then(
-        ([GraphicsLayer, Graphic, Point]: [
-          typeof esri.GraphicsLayer,
-          typeof esri.Graphic,
-          typeof esri.Point
-        ]) => {
-          // Check map for existing trip points layer, to avoid creating multiple layers.
-          let layer = <esri.GraphicsLayer>this._map.findLayerById(id);
+      .then(([GraphicsLayer, Graphic, Point]: [typeof esri.GraphicsLayer, typeof esri.Graphic, typeof esri.Point]) => {
+        // Check map for existing trip points layer, to avoid creating multiple layers.
+        let layer = <esri.GraphicsLayer>this._map.findLayerById(id);
 
-          if (!layer) {
-            layer = new GraphicsLayer({
-              id: id,
-              title: 'Trip Points',
-              listMode: 'hide'
-            });
+        if (!layer) {
+          layer = new GraphicsLayer({
+            id: id,
+            title: 'Trip Points',
+            listMode: 'hide'
+          });
 
-            // Add layer to map, which will persist for the duration of the session
-            this._map.add(layer);
-          } else {
-            // If layer exists, it's very likely it already has some trip points; clear them.
-            layer.removeAll();
-          }
-
-          const symbologies = {
-            start: {
-              type: 'simple-marker',
-              style: 'circle',
-              size: 8,
-              outline: {
-                width: 2
-              }
-            },
-            middle: {
-              type: 'simple-marker',
-              style: 'circle',
-              size: 8,
-              color: '#500000'
-            },
-            end: {
-              type: 'simple-marker',
-              style: 'circle',
-              size: 15,
-              color: '#500000',
-              path: 'M38.9,5.3L38.9,5.3c-7.1-7.1-18.6-7.1-25.7,0l0,0C6.8,11.7,6,23.8,11.5,31L26,52l14.5-21C46,23.8,45.2,11.7,38.9,5.3z M26.2,24c-3.3,0-6-2.7-6-6s2.7-6,6-6s6,2.7,6,6S29.5,24,26.2,24z'
-            }
-          };
-
-          /**
-           * Generates trip point graphic using stop TripPoint and string symbol reference
-           * to avoid copy-pasting the same logic into each case.
-           */
-          const makeGraphic = (stop: TripPoint, symbolRef: string): esri.Graphic => {
-            return new Graphic({
-              attributes: stop.attributes,
-              symbol: symbologies[symbolRef],
-              geometry: new Point({
-                latitude: stop.geometry.latitude,
-                longitude: stop.geometry.longitude
-              })
-            });
-          };
-
-          // Generate a graphic with the correct symbology depending on the stop index. Rules:
-          // 1. Three types of stops (symbology): start, middle, and end
-          // 2. Array length === 1, there is only a start point
-          // 3. Array length === 2, first item is start and second item is end
-          // 4. Array length > 2, first item is start, last item is end, any the rest in between are middle points
-          const graphics = stops
-            .filter((stop) => stop.normalized)
-            .map((stop, index, arr) => {
-              if (arr.length === 1) {
-                return makeGraphic(stop, 'start');
-              } else if (arr.length === 2) {
-                if (index === 0) {
-                  return makeGraphic(stop, 'start');
-                } else if (index === 1) {
-                  return makeGraphic(stop, 'end');
-                }
-              } else if (arr.length > 2) {
-                if (index === 0) {
-                  return makeGraphic(stop, 'start');
-                } else if (index < arr.length - 1) {
-                  return makeGraphic(stop, 'middle');
-                } else if (index === arr.length - 1) {
-                  return makeGraphic(stop, 'end');
-                }
-              }
-            });
-
-          layer.addMany(graphics);
+          // Add layer to map, which will persist for the duration of the session
+          this._map.add(layer);
+        } else {
+          // If layer exists, it's very likely it already has some trip points; clear them.
+          layer.removeAll();
         }
-      );
+
+        const symbologies = {
+          start: {
+            type: 'simple-marker',
+            style: 'circle',
+            size: 8,
+            outline: {
+              width: 2
+            }
+          },
+          middle: {
+            type: 'simple-marker',
+            style: 'circle',
+            size: 8,
+            color: '#500000'
+          },
+          end: {
+            type: 'simple-marker',
+            style: 'circle',
+            size: 15,
+            color: '#500000',
+            path: 'M38.9,5.3L38.9,5.3c-7.1-7.1-18.6-7.1-25.7,0l0,0C6.8,11.7,6,23.8,11.5,31L26,52l14.5-21C46,23.8,45.2,11.7,38.9,5.3z M26.2,24c-3.3,0-6-2.7-6-6s2.7-6,6-6s6,2.7,6,6S29.5,24,26.2,24z'
+          }
+        };
+
+        /**
+         * Generates trip point graphic using stop TripPoint and string symbol reference
+         * to avoid copy-pasting the same logic into each case.
+         */
+        const makeGraphic = (stop: TripPoint, symbolRef: string): esri.Graphic => {
+          return new Graphic({
+            attributes: stop.attributes,
+            symbol: symbologies[symbolRef],
+            geometry: new Point({
+              latitude: stop.geometry.latitude,
+              longitude: stop.geometry.longitude
+            })
+          });
+        };
+
+        // Generate a graphic with the correct symbology depending on the stop index. Rules:
+        // 1. Three types of stops (symbology): start, middle, and end
+        // 2. Array length === 1, there is only a start point
+        // 3. Array length === 2, first item is start and second item is end
+        // 4. Array length > 2, first item is start, last item is end, any the rest in between are middle points
+        const graphics = stops
+          .filter((stop) => stop.normalized)
+          .map((stop, index, arr) => {
+            if (arr.length === 1) {
+              return makeGraphic(stop, 'start');
+            } else if (arr.length === 2) {
+              if (index === 0) {
+                return makeGraphic(stop, 'start');
+              } else if (index === 1) {
+                return makeGraphic(stop, 'end');
+              }
+            } else if (arr.length > 2) {
+              if (index === 0) {
+                return makeGraphic(stop, 'start');
+              } else if (index < arr.length - 1) {
+                return makeGraphic(stop, 'middle');
+              } else if (index === arr.length - 1) {
+                return makeGraphic(stop, 'end');
+              }
+            }
+          });
+
+        layer.addMany(graphics);
+      });
   }
 
   /**

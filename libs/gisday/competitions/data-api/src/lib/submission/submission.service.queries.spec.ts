@@ -8,7 +8,6 @@ import {
   CompetitionSubmission,
   CompetitionSubmissionValidationStatus,
   GISDAY_COMPETITIONS_ENTITIES,
-  SubmissionLocation,
   SubmissionMedia
 } from '../entities/all.entities';
 import { SubmissionService } from './submission.service';

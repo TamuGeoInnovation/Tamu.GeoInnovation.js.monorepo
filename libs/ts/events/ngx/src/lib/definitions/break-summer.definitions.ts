@@ -27,7 +27,6 @@ export const BreakSummerDefinitions = {
 };
 
 type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
-type FeatureRenderer = NonNullable<NonNullable<FeatureNative>['renderer']>;
 export const BreakSummerColdLayerSources: LayerSource[] = [
   {
     type: 'map-image',

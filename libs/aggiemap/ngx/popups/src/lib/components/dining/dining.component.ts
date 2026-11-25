@@ -153,27 +153,6 @@ export class DiningPopupComponent extends BaseDirectionsComponent implements OnI
   }
 }
 
-interface IDiningLocationInfo {
-  location: {
-    address: {
-      city: string;
-      coordinates: [number, number];
-      state: string;
-      street: string;
-      zip_code: string;
-    };
-    building: {
-      id: string;
-      name: string;
-    };
-    id: string;
-    name: string;
-  };
-  records: number;
-  request_time: number;
-  status: string;
-}
-
 interface IDiningLocationMenu {
   allergen_filter: boolean;
   closed: boolean;

@@ -9,11 +9,9 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
-import esri = __esri;
 import { EventPopups } from '../modules/popups/popups';
 
 type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
-type FeatureRenderer = NonNullable<NonNullable<FeatureNative>['renderer']>;
 
 export enum CROSS_COUNTRY_PARKING_LAYERS {
   CROSS_COUNTRY_AREA = 'cross-country-parking-area',

@@ -9,12 +9,11 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
-import esri = __esri;
 import { EventPopups } from '../modules/popups/popups';
 
 export enum VOLLEYBALL_PARKING_LAYERS {
   ACCESSIBLE_PARKING = 'volleyball-parking-accessible-parking',
-  PARKING_LOTS = 'volleyball-parking-lots',
+  PARKING_LOTS = 'volleyball-parking-lots'
 }
 
 const eventUrl = Connections.volleyballParkingUrl;
@@ -68,7 +67,7 @@ export const VolleyballParkingColdLayerSources: LayerSource[] = [
     native: {
       outFields: ['*']
     }
-  } as unknown as LayerSource,
+  } as unknown as LayerSource
 ];
 
 /**

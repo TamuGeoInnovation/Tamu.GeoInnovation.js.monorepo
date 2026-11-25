@@ -22,7 +22,6 @@ import { AggiemapCustomMapConfiguration } from '../../interfaces/special-event.i
 import { EventDefinitions } from '../../definitions/all.definitions';
 import { BreakSummerParkingTs } from '../../definitions/break-summer.definitions';
 import { AVP_PARKING_LAYERS, AVPParkingColdLayerSources } from '../../definitions/avp-parking.definitions';
-import { INDOOR_TRACK_PARKING_LAYERS, IndoorTrackParkingTs } from '../../definitions/indoor-track-parking.definitions';
 import { EventService } from './event.service';
 
 /** The main map's layers, as the environment provides them to every map. */
@@ -321,7 +320,9 @@ describe('EventService: selecting a feature from a link', () => {
   // The application's lot source names the main map's lot fields, which are lower case since #2722; an event map's own
   // layers name theirs `LotName`. Field names are matched whatever their case, or the link skips the map's own lot.
   it("selects the map's own lot when the link's source names the field in another case", async () => {
-    expect(await selectedBy('?lot=100j', filteredLayer([[32270, '100j', 'M/C']]), ['lotname', 'name', 'fac_code'])).toEqual([32270]);
+    expect(await selectedBy('?lot=100j', filteredLayer([[32270, '100j', 'M/C']]), ['lotname', 'name', 'fac_code'])).toEqual([
+      32270
+    ]);
   });
 
   it("selects nothing for a ?lot= link whose only match is outside the map's filter", async () => {

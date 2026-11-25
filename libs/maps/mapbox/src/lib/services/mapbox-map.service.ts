@@ -44,7 +44,7 @@ export function absoluteCampusStyle(
           return [id, source];
         }
 
-        const { url, ...rest } = source;
+        const { url: _url, ...rest } = source;
 
         return [
           id,

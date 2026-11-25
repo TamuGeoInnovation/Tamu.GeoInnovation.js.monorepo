@@ -13,7 +13,7 @@ export async function fileExists(fileName: string) {
   try {
     await stat(fileName);
     return true;
-  } catch (error) {
+  } catch {
     return false;
   }
 }
@@ -91,7 +91,7 @@ export async function ensureDirectoryExists(path: string) {
   // With fs promises, check if the directory exists, if not, create it
   try {
     return await readdir(path);
-  } catch (error) {
+  } catch {
     // Directory doesn't exist, create it
     return await mkdir(path, { recursive: true });
   }
