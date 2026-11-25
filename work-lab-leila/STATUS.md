@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **4:54 AM Central, 25 November 2026**. A listener; job: testing.
+Last written **5:01 AM Central, 25 November 2026**. A listener; job: testing.
 
 ## g203 is done, not unstarted (12:07 AM Central, Wednesday 25 November 2026)
 
@@ -140,10 +140,11 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 ## Running now
 
-**Batch g218** (workspace: #3593, strictNullChecks in ui-kits-ngx-layout-modal, split by component), started 4:45 AM Central, 25 November. **4:54 AM:** only 4 of modal's 87 were its own (the host): #3628 fixes them (pushed, `pre-pr-check` `Exit 0`); the settings service under strict, #3630, takes 12 more (check running). The rest are ui-kits-ngx-forms under modal's full strict; stopping at two to ask.
+Nothing: idle and listening since 5:01 AM Central, 25 November.
 
 ## Finished
 
+- **Batch g218 (workspace): #3593, ui-kits-ngx-layout-modal** (4:45 to 5:01 AM, 25 November). **branch ready:** `fix/3593-modal-host-strict` (`5e4fe9c80`, #3628) and `fix/3593-common-ngx-settings-strict` (`1f0f8388f`, #3630), each `pre-pr-check.sh` affected `Exit 0`. Only 4 of modal's 87 were its own; with both, 71 remain, all in ui-kits-ngx-forms under modal's full strict. Stopped at two to ask (Q-g218-1). Report `reports/2026-11-25-g218.md`.
 - **Batch g217 (workspace): #3593, the small shared libraries ui-kits-ngx-search still compiles with errors** (4:22 to 4:41 AM, 25 November). **branch ready:** `fix/3593-common-utils-routing-strict` (`e8e14a307`), `fix/3593-common-utils-geometry-generic-strict` (`bb3cb51a1`), `fix/3593-common-ngx-ui-notification-strict` (`6855df1f1`), each `pre-pr-check.sh` affected `Exit 0`. Sub-issues #3617, #3618, #3620; 1, 2 and 4 errors fixed; routing clean, generic listed at 9, notification at 4; search's 20 would fall to 13. Q-g217-1, Q-g217-2. Report `reports/2026-11-25-g217.md`.
 - **Batch g216 (gisday): #3593, strictNullChecks in gisday-competitions-ngx-core** (4:10 to 4:22 AM, 25 November). **branch ready: `fix/3593-competitions-ngx-core-strict`** (`f49b28ea1`; `pre-pr-check.sh` `Exit 0`). Issue #3614 under #3593; its own errors 17 to 4, the 4 from data-access's typing (0 with #3594); two designer crash paths fixed red first; on the known list at 389; gisday-angular 557 to 544. Q-g216-1. Report `reports/2026-11-25-g216.md`.
 - **Batch g215 (gisday): #3593, strictNullChecks in gisday-competitions-ngx-common** (3:54 to 4:04 AM, 25 November). **branch ready: `fix/3593-competitions-ngx-common-strict`** (`bfe25e9da`; `pre-pr-check.sh` `Exit 0`). Issue #3610 under #3593; its own 15 errors to 0; the form's own submit without a photograph no longer sends (red first); on the known list at 71; gisday-angular 557 to 542; the bundle differs only in the submission form and the device guard. Q-g215-1. Report `reports/2026-11-25-g215.md`.
@@ -700,4 +701,4 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 192 and 191 again (8 November), aggiemap's 31, 30 and 29 (9 November), and aggiemap's 32, 33, 34 and 35 (10 November), 36 and 37 (11 November), 38 (13 November), 39, 40, 41, 42, 46, 43, 44, 49, 50, 47, 48, 51, 52, 53, 54, 55, 56, 57 and 58 (14 November), 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 72, 73, 74, 71, 75, 76, #3044's screenshots, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 87b, 89, 91, 92, 93, 94, 88, 95, 90, 98, 99, 96, 102, 100, 101, 103, 104 and 105 (15 November), 106, 107, 108, 109, 110, 111, 112, 113, 112b, 113b, 114, 115, 116, 117, 118, 119, 120, 121, 122 and 123 (16 November), 124, 125, 126, 127, 128 and 129 (17 November), 130 to 134 (18 November), 135 to 139 (19 November), 193 to 198 (23 November), 199 to 203, g201, a18, g202, a20, g203, a21 and a23 (24 November), a24, a26, g204, g205, g206, g207, g208, g209, g210, g211, g212, a29, g213, a30, g214, g215, g216 and g217 (25 November) (139, 141 to 192 reported; 140 needs the maintainer; 151 not run, see report 137) (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 192 and 191 again (8 November), aggiemap's 31, 30 and 29 (9 November), and aggiemap's 32, 33, 34 and 35 (10 November), 36 and 37 (11 November), 38 (13 November), 39, 40, 41, 42, 46, 43, 44, 49, 50, 47, 48, 51, 52, 53, 54, 55, 56, 57 and 58 (14 November), 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 72, 73, 74, 71, 75, 76, #3044's screenshots, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 87b, 89, 91, 92, 93, 94, 88, 95, 90, 98, 99, 96, 102, 100, 101, 103, 104 and 105 (15 November), 106, 107, 108, 109, 110, 111, 112, 113, 112b, 113b, 114, 115, 116, 117, 118, 119, 120, 121, 122 and 123 (16 November), 124, 125, 126, 127, 128 and 129 (17 November), 130 to 134 (18 November), 135 to 139 (19 November), 193 to 198 (23 November), 199 to 203, g201, a18, g202, a20, g203, a21 and a23 (24 November), a24, a26, g204, g205, g206, g207, g208, g209, g210, g211, g212, a29, g213, a30, g214, g215, g216, g217 and g218 (25 November) (139, 141 to 192 reported; 140 needs the maintainer; 151 not run, see report 137) (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
