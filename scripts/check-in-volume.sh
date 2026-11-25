@@ -174,6 +174,23 @@ container_free() {
 }
 
 # Sourced (by the test): stop here, with only the functions defined.
+# Prints the part of the log's name that comes from <mode>: `affected`, `all`, or a project list with every character a
+# file name cannot hold turned into `-`. A list longer than 60 characters is cut to its first project, how many there are,
+# and a checksum of the whole list, so two lists never share a log and the name stays well inside what Windows allows:
+# fifteen projects' names once failed the check with "File name too long" before it ran anything (#1855). Tested by
+# scripts/check-in-volume.test.sh.
+log_label() {
+  local label count sum
+  label="$(printf '%s' "$1" | tr -c 'A-Za-z0-9_.-' '-')"
+  if [ "${#label}" -le 60 ]; then
+    printf '%s\n' "$label"
+    return
+  fi
+  count="$(printf '%s\n' "$1" | tr ',' '\n' | grep -c .)"
+  sum="$(printf '%s' "$1" | cksum | cut -d ' ' -f 1)"
+  printf '%s-of-%s-projects-%s\n' "$(printf '%s' "${1%%,*}" | tr -c 'A-Za-z0-9_.-' '-' | cut -c1-40)" "$count" "$sum"
+}
+
 [ "${BASH_SOURCE[0]}" = "$0" ] || return 0
 
 set -euo pipefail
@@ -202,7 +219,7 @@ git -C "$main" rev-parse --verify -q "refs/heads/$branch" >/dev/null || {
 
 issue="$(printf '%s' "$branch" | grep -o '[0-9]\+' | head -n 1 || true)"
 volume="tamu-js-${issue:-$(printf '%s' "$branch" | tr -c 'A-Za-z0-9_.-' '-')}"
-log="${3:-$here/check-$volume-$(printf '%s' "$mode" | tr -c 'A-Za-z0-9_.-' '-').log}"
+log="${3:-$here/check-$volume-$(log_label "$mode").log}"
 
 if [ "$(git -C "$here" rev-parse --abbrev-ref HEAD)" = "$branch" ] && [ -n "$(git -C "$here" status --porcelain)" ]; then
   echo "Note: $here has uncommitted changes. They are not part of this check." >&2
