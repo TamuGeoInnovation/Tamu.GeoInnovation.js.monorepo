@@ -14,3 +14,4 @@
 266 libs/maps/feature/basemap/tsconfig.lib.json
 87 libs/ui-kits/ngx/layout/modal/tsconfig.lib.json
 9 libs/mailroom/ngx/tsconfig.lib.json
+8 libs/gisday/competitions/ngx/data-access/tsconfig.lib.json
