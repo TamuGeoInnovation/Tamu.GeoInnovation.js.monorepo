@@ -110,6 +110,32 @@ case "$(image_advice 500 300)" in
 esac
 check 'the advice names how to reclaim the space' 'yes' "$r"
 
+
+# `.pr-body.md` drafts a pull request body and is deliberately never committed. A copy left behind made 68
+# merged worktrees permanently un-removable on the home machine, about 40 GiB no sweep could reclaim (#3432).
+check 'a worktree holding only an untracked .pr-body.md is removable' 'yes'   "$(only_a_drafted_pr_body '?? .pr-body.md' && echo yes || echo no)"
+
+# The whole point of keeping dirty worktrees. A capture stops being obtainable the moment the code changes, so
+# an untracked screenshots folder is possibly irreplaceable work: wt-2459 held exactly this.
+check 'a worktree holding untracked screenshots is kept' 'no'   "$(only_a_drafted_pr_body '?? docs/screenshots/' && echo yes || echo no)"
+
+check 'a worktree holding a tracked edit is kept' 'no'   "$(only_a_drafted_pr_body ' M libs/maps/esri/src/index.ts' && echo yes || echo no)"
+
+# Both together must keep it: the real edit is what matters, and finding the disposable file first must not
+# short-circuit the decision.
+check 'a .pr-body.md beside a real edit still keeps the worktree' 'no'   "$(printf '%s' '?? .pr-body.md
+ M libs/maps/esri/src/index.ts' | { read -r -d '' status || true; only_a_drafted_pr_body "$status" && echo yes || echo no; })"
+
+# A clean worktree is already removable by the caller; this function must not claim it, so that "no changes"
+# and "only a disposable change" stay distinguishable in the output.
+check 'a clean worktree is not claimed by this check' 'no'   "$(only_a_drafted_pr_body '' && echo yes || echo no)"
+
+# A TRACKED .pr-body.md is a commit someone made, not a leftover draft.
+check 'a tracked .pr-body.md edit is kept' 'no'   "$(only_a_drafted_pr_body ' M .pr-body.md' && echo yes || echo no)"
+
+# The name has to be exact: a file that merely ends in it is somebody else's.
+check 'a differently named body file is kept' 'no'   "$(only_a_drafted_pr_body '?? docs/.pr-body.md' && echo yes || echo no)"
+
 if [ "$failed" -ne 0 ]; then
   printf '\n%d case(s) failed.\n' "$failed" >&2
   exit 1

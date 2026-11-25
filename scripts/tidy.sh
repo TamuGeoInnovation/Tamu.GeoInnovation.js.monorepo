@@ -42,6 +42,30 @@ worktree_candidates() {
   ' "$porcelain"
 }
 
+# True when every uncommitted change in <git status --porcelain output> is an untracked `.pr-body.md`, and
+# there is at least one. That file drafts a pull request body and is deliberately never committed to
+# `development`, so a copy left in a worktree makes it look like someone is working there for ever: on
+# 24 November 2026, 68 of the 69 worktrees this script had kept held nothing else, every one of them a merged
+# branch, about 40 GiB no sweep could reclaim (#3432).
+#
+# Deliberately narrow: that exact path, untracked, and nothing else on the line. A worktree holding anything
+# else is still kept, screenshots above all - a capture stops being obtainable the moment the code changes, so
+# an untracked `docs/screenshots/` folder is possibly irreplaceable work and is exactly what keeping dirty
+# worktrees is for. Tested by scripts/tidy.test.sh.
+only_a_drafted_pr_body() {
+  local status="$1"
+
+  [ -n "$status" ] || return 1
+
+  printf '%s
+' "$status" | awk '
+    $0 == "" { next }
+    $0 != "?? .pr-body.md" { other = 1 }
+    { seen = 1 }
+    END { exit (seen && !other) ? 0 : 1 }
+  '
+}
+
 # Prints the volume names in <volume list file> that are tamu-js-<number> for a CLOSED issue, one per line.
 # The name must be entirely digits after the prefix, so tamu-js-dev-nm, tamu-js-chk-development and the
 # other named volumes are never matched however the issue list reads. Tested by scripts/tidy.test.sh.
@@ -100,10 +124,15 @@ worktree_candidates "$tmp/merged" "$tmp/porcelain" > "$tmp/worktrees"
 : > "$tmp/worktrees-clean"
 while IFS= read -r path; do
   [ -d "$path" ] || continue
-  if [ -n "$(git -C "$path" --no-optional-locks status --porcelain 2>/dev/null)" ]; then
-    echo "  keeping $path (uncommitted changes)"
-  else
+  status="$(git -C "$path" --no-optional-locks status --porcelain 2>/dev/null)"
+
+  if [ -z "$status" ]; then
     echo "$path" >> "$tmp/worktrees-clean"
+  elif only_a_drafted_pr_body "$status"; then
+    echo "  $path holds only a drafted .pr-body.md, which is not work (#3432)"
+    echo "$path" >> "$tmp/worktrees-clean"
+  else
+    echo "  keeping $path (uncommitted changes)"
   fi
 done < "$tmp/worktrees"
 

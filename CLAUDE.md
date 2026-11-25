@@ -721,6 +721,14 @@ curl -s -o /dev/null -w "%{http_code}" "<raw url>"
 open the branch is pushed, so the folder is residue: remove it with `git worktree remove`, or sweep the
 merged ones later with `bash scripts/tidy.sh --yes` (#3400).
 
+**Delete `.pr-body.md` once the pull request is open.** It drafts the body and is deliberately never
+committed to `development`, so a copy left in a worktree is uncommitted work as far as anything can tell -
+and `tidy.sh` keeps a dirty worktree, merged branch or not. On 24 November 2026 that was **68 of the 69
+worktrees** the sweep left on the home machine, every one a merged branch, about 40 GiB no sweep could
+reclaim, all of it held by a file whose job finished the moment the pull request existed (#3432). `tidy.sh`
+now removes a worktree whose *only* change is an untracked `.pr-body.md`, so this is belt and braces rather
+than the only guard - but the file is yours to delete, and the sweep should not have to know about it.
+
 **Write every capture to `docs/screenshots/<slug>/` as soon as it is taken, not when it is needed.**
 A "before" image stops being obtainable the moment the fix is on disk: recovering one means stashing
 the change, waiting for a rebuild, re-capturing, then restoring — ten minutes to get back something
