@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle, listening. a33 waits for PR 3587 (#602) to merge.
+- **Batch a35 (#2600)**, since 6:23 AM Central: one `satelliteCampus` builder for the ten campus maps, branch `refactor/2600-one-satellite-campus-builder`. a33 held until PR 3587 merges.
 
 ## Finished
 - **Batch g120 (#3643)** (report `home/reports/2026-11-25-g120.md`, 5:59 AM Central): `fix/3643-highschool-site-guard` `6380831a6` branch ready, pre-pr-check Exit 0. Red then green (UCGIS /highschool to /), txgisday.org portal unchanged; images and release entry. #3638 (PR 3645) not merged, so no skip removed.
