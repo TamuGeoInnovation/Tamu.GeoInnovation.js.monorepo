@@ -59,6 +59,10 @@ jobs:
       - name: Typecheck the AggieMap smoke suite
         run: npx tsc -p test/smoke/aggiemap
 
+      # The same for GIS Day's smoke suite (#3646).
+      - name: Typecheck the GIS Day smoke suite
+        run: npx tsc -p test/smoke/gisday
+
       # A new dependency with an install script must be reviewed into allowScripts first (#2293). .npmrc makes
       # `npm ci` refuse one too, but the step above is skipped when the node_modules cache hits; this reads the lock.
       - name: Check install scripts against allowScripts
