@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **4:04 AM Central, 25 November 2026**. A listener; job: testing.
+Last written **4:05 AM Central, 25 November 2026**. A listener; job: testing.
 
 ## g203 is done, not unstarted (12:07 AM Central, Wednesday 25 November 2026)
 
@@ -140,7 +140,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 ## Running now
 
-**Batch a31**, next in the queue (a31 to a33), from 4:04 AM Central, 25 November.
+Nothing: idle and listening since 4:05 AM Central, 25 November. (a31 to a33 are the laptop's and home's, not mine; I said a31 was next here at 4:04 AM, which was wrong.)
 
 ## Finished
 
