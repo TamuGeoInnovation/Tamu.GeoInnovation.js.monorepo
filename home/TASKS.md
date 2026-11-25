@@ -1,5 +1,19 @@
 # Home machine: current tasks
 
+## Decided (the maintainer, 24 November 2026, about 8:30 PM Central): home's handed-over questions
+
+Acknowledged under the new rule in DIRECTOR.md ("Questions have ids, and an owner"); drop every one of these.
+
+- #435's RSVP bulk actions: **Decided: closed as done** (triage, tonight); filed again only if an organizer asks.
+- #493, the Art page: **Decided: closed as done** (triage, tonight).
+- #1038, dev traffic in production Analytics: **Decided: A**. The maintainer creates a GIS Day development property; the work machine points the development settings at it when he gives the id.
+- The Papers page: **Decided: A**. The maintainer says whether the Paper competition still runs, and supplies its text.
+- UCGIS's Redis: **Decided: neither site has one.** No GIS Day manifest sets `REDIS_HOST`, and the VGI export already builds its zip in the request (#545). The work machine records it in the GIS Day docs.
+- The `kc-3098` worktree: **Decided: delete it.**
+- `chore/2278-geoservices-animations`: **Decided: delete it** once found. It is on neither the fork nor TamuGeoInnovation (only `chore/2278-notification-animations` is on the fork), so it is local to the lab, which is out of service; nothing to do on home.
+- The CLAUDE.md commit in PR 3311: **Decided: moot**, PR 3311 merged with it.
+- #2282's release-notes entry: **Decided: moot**, its PR merged as 3403.
+
 ## Batch g108 (workspace: #1604, then #1025; 24 November 2026, late evening, from `work (gisday)`) (Low) - **after g107**
 
 The maintainer asked for issues to be taken to PRs, checked first that each is not already done. Both were checked against
