@@ -27,13 +27,13 @@ describe('CompetitionSettingsComponent', () => {
 
   function open(season: Partial<Season> | null, saves: { competitions?: () => unknown; deadlines?: () => unknown } = {}) {
     const seasons = {
-      setSubmissionDeadlines: jest.fn(saves.deadlines ?? (() => of({}))),
-      setCompetitionTypes: jest.fn(saves.competitions ?? (() => of({}))),
-      setCompetitionSettings: jest.fn(() => of({ saved: 1 }))
+      setSubmissionDeadlines: vi.fn(saves.deadlines ?? (() => of({}))),
+      setCompetitionTypes: vi.fn(saves.competitions ?? (() => of({}))),
+      setCompetitionSettings: vi.fn(() => of({ saved: 1 }))
     };
     // The season's sessions to choose from (#3019).
     const events = {
-      getEntitiesForSeason: jest.fn(() =>
+      getEntitiesForSeason: vi.fn(() =>
         of([
           { guid: 'e-poster', name: 'Poster gallery walk' },
           { guid: 'e-awards', name: 'Closing ceremony' }

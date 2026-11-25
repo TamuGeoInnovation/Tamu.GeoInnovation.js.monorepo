@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
@@ -23,9 +24,24 @@ import {
 
 const tamu = { name: 'Texas A&M University', acronym: 'TAMU' };
 const speakers = [
-  { guid: 'g-young', firstName: 'Zoë', lastName: 'Young', email: 'zoe@example.com', graduationYear: '2011', organization: { name: 'Esri' }, university: tamu },
+  {
+    guid: 'g-young',
+    firstName: 'Zoë',
+    lastName: 'Young',
+    email: 'zoe@example.com',
+    graduationYear: '2011',
+    organization: { name: 'Esri' },
+    university: tamu
+  },
   { guid: 'g-lee', firstName: ' Ana ', lastName: 'lee', email: 'ana@example.edu', university: tamu },
-  { guid: 'g-kim', firstName: 'Pat', lastName: 'Kim', email: null, affiliation: 'Texas Water Development Board', graduationYear: '1999' }
+  {
+    guid: 'g-kim',
+    firstName: 'Pat',
+    lastName: 'Kim',
+    email: null,
+    affiliation: 'Texas Water Development Board',
+    graduationYear: '1999'
+  }
 ] as unknown as Array<Partial<Speaker>>;
 
 /** The same speakers with Young's badge printed as it reads now, and Kim's printed before a change of employer. */
@@ -43,11 +59,41 @@ describe('organizationOf()', () => {
 
 describe('badgesOf()', () => {
   it("gives each speaker as a badge, by last name ignoring case, with an Aggie's class year and nothing missing left blank", () => {
-    expect(badgesOf(speakers).map(({ guid, firstName, lastName, organization, email, formerStudentYear }) => ({ guid, firstName, lastName, organization, email, formerStudentYear }))).toEqual([
+    expect(
+      badgesOf(speakers).map(({ guid, firstName, lastName, organization, email, formerStudentYear }) => ({
+        guid,
+        firstName,
+        lastName,
+        organization,
+        email,
+        formerStudentYear
+      }))
+    ).toEqual([
       // A graduation year from anywhere but Texas A&M is not a former student year.
-      { guid: 'g-kim', firstName: 'Pat', lastName: 'Kim', organization: 'Texas Water Development Board', email: '', formerStudentYear: '' },
-      { guid: 'g-lee', firstName: 'Ana', lastName: 'lee', organization: 'Texas A&M University', email: 'ana@example.edu', formerStudentYear: '' },
-      { guid: 'g-young', firstName: 'Zoë', lastName: 'Young', organization: 'Esri', email: 'zoe@example.com', formerStudentYear: "'11" }
+      {
+        guid: 'g-kim',
+        firstName: 'Pat',
+        lastName: 'Kim',
+        organization: 'Texas Water Development Board',
+        email: '',
+        formerStudentYear: ''
+      },
+      {
+        guid: 'g-lee',
+        firstName: 'Ana',
+        lastName: 'lee',
+        organization: 'Texas A&M University',
+        email: 'ana@example.edu',
+        formerStudentYear: ''
+      },
+      {
+        guid: 'g-young',
+        firstName: 'Zoë',
+        lastName: 'Young',
+        organization: 'Esri',
+        email: 'zoe@example.com',
+        formerStudentYear: "'11"
+      }
     ]);
   });
 
@@ -104,20 +150,23 @@ describe('sortBadges() and badgesCsv()', () => {
 });
 
 describe('SpeakerBadgesComponent', () => {
-  let service: { getAllParticipatingPresentersForSeason: jest.Mock; markBadgesPrinted: jest.Mock; clearBadgesPrinted: jest.Mock };
+  let service: { getAllParticipatingPresentersForSeason: Mock; markBadgesPrinted: Mock; clearBadgesPrinted: Mock };
 
   async function open(rows: Array<Partial<Speaker>> = speakers) {
     service = {
-      getAllParticipatingPresentersForSeason: jest.fn(() => of(rows)),
-      markBadgesPrinted: jest.fn(() => of({ marked: 1 })),
-      clearBadgesPrinted: jest.fn(() => of({ cleared: 1 }))
+      getAllParticipatingPresentersForSeason: vi.fn(() => of(rows)),
+      markBadgesPrinted: vi.fn(() => of({ marked: 1 })),
+      clearBadgesPrinted: vi.fn(() => of({ cleared: 1 }))
     };
     TestBed.configureTestingModule({
       imports: [SpeakerBadgesComponent],
       providers: [
         provideRouter([]),
         { provide: SpeakerService, useValue: service },
-        { provide: SeasonService, useValue: { seasons$: of([{ guid: 's-1', year: 2026 }]), activeSeason$: of({ guid: 's-1', year: 2026 }) } },
+        {
+          provide: SeasonService,
+          useValue: { seasons$: of([{ guid: 's-1', year: 2026 }]), activeSeason$: of({ guid: 's-1', year: 2026 }) }
+        },
         { provide: ModalService, useValue: {} },
         { provide: NotificationService, useValue: {} }
       ]
@@ -136,9 +185,13 @@ describe('SpeakerBadgesComponent', () => {
   }
 
   const lastNames = (root: HTMLElement) =>
-    Array.from(root.querySelectorAll('datatable-body-row')).map((r) => r.querySelectorAll('.datatable-body-cell')[1].textContent.trim());
-  const csvLastNames = (csv: string) => Papa.parse<Record<string, string>>(csv, { header: true }).data.map((r) => r['Last name']);
-  const link = (root: HTMLElement, text: string) => Array.from(root.querySelectorAll('a, button')).find((a) => a.textContent.includes(text)) as HTMLElement;
+    Array.from(root.querySelectorAll('datatable-body-row')).map((r) =>
+      r.querySelectorAll('.datatable-body-cell')[1].textContent.trim()
+    );
+  const csvLastNames = (csv: string) =>
+    Papa.parse<Record<string, string>>(csv, { header: true }).data.map((r) => r['Last name']);
+  const link = (root: HTMLElement, text: string) =>
+    Array.from(root.querySelectorAll('a, button')).find((a) => a.textContent.includes(text)) as HTMLElement;
 
   it("lists the season's presenters, every one, photo or not, under the five headings and Printed", async () => {
     const fixture = await open();
@@ -155,7 +208,9 @@ describe('SpeakerBadgesComponent', () => {
       'Printed'
     ]);
     expect(lastNames(root)).toEqual(['Kim', 'lee', 'Young']);
-    expect(root.querySelector('.badges-counts').textContent.replace(/\s+/g, ' ')).toContain('3 presenters: 3 not printed yet.');
+    expect(root.querySelector('.badges-counts').textContent.replace(/\s+/g, ' ')).toContain(
+      '3 presenters: 3 not printed yet.'
+    );
   });
 
   it('shows only the badges not printed yet at first, and the printed ones with their date, a flag if changed, on asking', async () => {
@@ -163,7 +218,9 @@ describe('SpeakerBadgesComponent', () => {
     const root = fixture.nativeElement as HTMLElement;
 
     expect(lastNames(root)).toEqual(['lee']);
-    expect(root.querySelector('.badges-counts').textContent.replace(/\s+/g, ' ')).toContain('1 printed badge has changed since');
+    expect(root.querySelector('.badges-counts').textContent.replace(/\s+/g, ' ')).toContain(
+      '1 printed badge has changed since'
+    );
 
     fixture.componentInstance.show.setValue('printed');
     await settle(fixture);
@@ -222,7 +279,9 @@ describe('SpeakerBadgesComponent', () => {
 
     fixture.componentInstance.show.setValue('printed');
     await settle(fixture);
-    const cells = Array.from(root.querySelectorAll('datatable-body-row')).map((r) => r.querySelectorAll('.datatable-body-cell')[5]);
+    const cells = Array.from(root.querySelectorAll('datatable-body-row')).map(
+      (r) => r.querySelectorAll('.datatable-body-cell')[5]
+    );
 
     expect(cells.map((c) => c.textContent.replace(/\s+/g, ' ').trim())).toEqual([
       expect.stringMatching(/^Printed Nov 13, \d{1,2}:00 [AP]M Undo ?Changed since printed$/),
@@ -315,7 +374,7 @@ describe('badgesCsv() and formulas', () => {
       ])
     ).toBe(
       'First name,Last name,Company / organization,Email,Former student year\r\n' +
-        "Ana,\"Ng, Jr.\",Made-up Mapping,ana@example.com,'11\r\n" +
+        'Ana,"Ng, Jr.",Made-up Mapping,ana@example.com,\'11\r\n' +
         'Bo,Lee,"Say ""hi""",,'
     );
   });

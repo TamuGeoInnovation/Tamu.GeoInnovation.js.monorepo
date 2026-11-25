@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of, Subject, throwError } from 'rxjs';
@@ -14,7 +15,7 @@ describe('DesignFormComponent, the scoring window', () => {
   const opens = '2026-11-14T06:00:00.000Z';
   const closes = '2026-11-20T17:00:00.000Z';
 
-  let updateForm: jest.Mock;
+  let updateForm: Mock;
   let component: DesignFormComponent;
 
   const load = (season: Record<string, unknown>) => {
@@ -27,7 +28,7 @@ describe('DesignFormComponent, the scoring window', () => {
             ...season
           }),
         updateForm,
-        createFormModelForActiveSeason: jest.fn(() => of({}))
+        createFormModelForActiveSeason: vi.fn(() => of({}))
       }
     });
 
@@ -36,14 +37,14 @@ describe('DesignFormComponent, the scoring window', () => {
   };
 
   beforeEach(async () => {
-    updateForm = jest.fn(() => of({}));
+    updateForm = vi.fn(() => of({}));
 
     await TestBed.configureTestingModule({
       imports: [DesignFormComponent],
       providers: [
         { provide: FormService, useValue: {} },
-        { provide: HttpClient, useValue: { get: jest.fn() } },
-        { provide: NotificationService, useValue: { toast: jest.fn() } }
+        { provide: HttpClient, useValue: { get: vi.fn() } },
+        { provide: NotificationService, useValue: { toast: vi.fn() } }
       ]
     })
       .overrideComponent(DesignFormComponent, { set: { template: '' } })
@@ -94,9 +95,9 @@ describe('DesignFormComponent, the scoring window', () => {
  * nothing either way.
  */
 describe('DesignFormComponent, what Fetch Schema and Save say', () => {
-  let get: jest.Mock;
-  let toast: jest.Mock;
-  let updateForm: jest.Mock;
+  let get: Mock;
+  let toast: Mock;
+  let updateForm: Mock;
   let fixture: ComponentFixture<DesignFormComponent>;
 
   const page = () => fixture.nativeElement as HTMLElement;
@@ -112,9 +113,9 @@ describe('DesignFormComponent, what Fetch Schema and Save say', () => {
   }
 
   beforeEach(async () => {
-    get = jest.fn();
-    toast = jest.fn();
-    updateForm = jest.fn(() => of({}));
+    get = vi.fn();
+    toast = vi.fn();
+    updateForm = vi.fn(() => of({}));
 
     await TestBed.configureTestingModule({
       imports: [DesignFormComponent],
@@ -124,7 +125,7 @@ describe('DesignFormComponent, what Fetch Schema and Save say', () => {
           useValue: {
             getFormForActiveSeason: () => of({ allowSubmissions: true, form: { guid: 'f-1', source: '', model: [] } }),
             updateForm,
-            createFormModelForActiveSeason: jest.fn(() => of({}))
+            createFormModelForActiveSeason: vi.fn(() => of({}))
           }
         },
         { provide: HttpClient, useValue: { get } },
