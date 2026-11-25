@@ -58,6 +58,17 @@ export function vitestConfig(
       ],
       // Many projects legitimately have no specs; an empty one is not a failing one.
       passWithNoTests: true,
+      // Vitest's default is 5 s, which for an Angular project is a budget for Analog compiling the component
+      // under test inside `TestBed.configureTestingModule`. Nobody chose it, and it is a statement about how
+      // fast the machine is rather than about the test: a full check runs `--parallel=8`, and on this team three
+      // sessions share one machine, so checks overlap by design. On 24 November 2026 two unrelated specs failed
+      // that way within an hour - `all-maps.campus-order.spec.ts` (#3522), which takes 0.57 s on a quiet machine,
+      // and `button-colours.spec.ts` (#3518), which takes 7.5 s - each on a pull request that touched neither.
+      //
+      // Raising it hides nothing: a test that never finishes still fails, just later. What stops failing is a
+      // test that was only ever slow. A plain TypeScript project keeps the 5 s default, because it compiles no
+      // components and nothing has been seen to need more.
+      ...(isAngular ? { testTimeout: 30_000 } : {}),
       reporters: ['default', 'junit'],
       outputFile: { junit: join(junitDir, `${project}.xml`) },
       coverage: { provider: 'v8', reportsDirectory: join(workspaceRoot, 'coverage', fromRoot) }
