@@ -1,5 +1,18 @@
 # Laptop: current tasks
 
+## Batch g30 (workspace: #1479, remove Jest itself; 25 November 2026, about 12:15 AM Central, from `work (gisday)`) (Medium) - **after g29, once g29's and the lab's g203 pull requests have merged**
+
+**Check first** that no project uses Jest any more (`git ls-files '*jest.config*'` empty on `origin/development`); if any does, report which and wait.
+The list of what to remove is on [#1479's last comment](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1479): eight
+packages in `package.json` (`@nx/jest`, `@types/jest`, `jest`, `jest-environment-jsdom`, `jest-junit`, `jest-preset-angular`, `jest-util`, `ts-jest`),
+`nx.json`'s Jest generator defaults (to `vitest`), both `@nx/jest/plugin` entries and the `jest.preset.js` inputs, `jest.preset.js` itself, any
+`test-setup.ts` left behind, and any workflow path that names Jest's JUnit file.
+
+**A dependency change, so the security director's conditions:** sync the lock with `npm install --package-lock-only --ignore-scripts`, a clean
+`npm ci` proving it (the check does this when the lock changes), and a **full affected check** (`scripts/check-in-volume.sh <branch>` with no project
+list, `CHECK_PARALLEL=2`), then `scripts/pre-pr-check.sh`. Report the lock diff: only those packages and their own dependencies may leave. Branch
+`chore/1479-remove-jest`. Questions `Q-g30-<n>`. Report `laptop/reports/2026-11-25-g30.md`.
+
 ## Batch a25 (aggiemap: Node 24.22.3 everywhere, one shippable step of #1218) (Medium) - **after a13**
 
 [#1218](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1218) is "bring the workspace up to
