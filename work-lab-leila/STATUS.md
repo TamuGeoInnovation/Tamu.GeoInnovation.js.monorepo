@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **1:57 PM Central, 25 November 2026**. A listener; job: testing.
+Last written **2:04 PM Central, 25 November 2026**. A listener; job: testing.
 
 ## g203 is done, not unstarted (12:07 AM Central, Wednesday 25 November 2026)
 
@@ -140,10 +140,11 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 ## Running now
 
-**Batch a55 (aggiemap): #3693, viewEvent's handle per subscriber.** Since 1:57 PM Central, 25 November. (The 1:41 PM `tidy.sh --yes` sweep is still running beside it.)
+Nothing. Idle since 2:04 PM Central, 25 November; listening.
 
 ## Finished
 
+- **Batch a55 (aggiemap): #3693, viewEvent's handle per subscriber** (1:57 to 2:04 PM, 25 November). **branch ready:** `fix/3693-viewevent-handle-per-subscriber` (`c319f7fc8`). `pre-pr-check: Exit 0 (fix/3693-viewevent-handle-per-subscriber): ready to open.` Red (`expected [ 2 ] to deeply equal [ 1 ]`) then green; 5 call sites, none with two subscribers, so latent. The 1:41 PM `tidy.sh --yes` sweep finished: 132 volumes, 162 worktrees, no failures. Q-a55-1. Report `reports/2026-11-25-a55.md`.
 - **Batch a53 (aggiemap): #3592, one observable for a reactiveUtils.watch** (1:25 PM to 1:41 PM, 25 November). **branch ready:** `refactor/3592-watch-as-observable` (`b19ed1829`). `pre-pr-check: Exit 0 (refactor/3592-watch-as-observable): ready to open.` Red against the copied old wrapper, then green; both visible results checked by hand against `development`, unchanged. Filed #3693 (viewEvent's shared handle, Low). Report `reports/2026-11-25-a53.md`.
 - **Batch a50 (workspace): #3678, the sweep reports what it cannot reclaim** (12:38 to 12:44 PM, 25 November). **branch ready:** `fix/3678-tidy-orphaned-worktrees` (`fabe03b91`). `pre-pr-check: Exit 0 (fix/3678-tidy-orphaned-worktrees): ready to open.` Two kinds with totals; `--remove-orphans` only behind its flag, refusing anything with a `.git`. 58 of 58 tests, red first. Nothing removed. Q-a50-1. Report `reports/2026-11-25-a50.md`.
 - **Batch a47 (aggiemap): retired maps out of #3674's generator** (11:48 to 11:53 AM, 25 November). **branch ready:** `fix/3674-event-map-monitors` (`a1952f65a`). `pre-pr-check: Exit 0 (fix/3674-event-map-monitors): ready to open.` Five retired maps skipped; 218 monitors for 80 maps; every URL now gives a name. `.pr-body.md` untracked; text in the report. Report `reports/2026-11-25-a47.md`.
@@ -715,4 +716,4 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 192 and 191 again (8 November), aggiemap's 31, 30 and 29 (9 November), and aggiemap's 32, 33, 34 and 35 (10 November), 36 and 37 (11 November), 38 (13 November), 39, 40, 41, 42, 46, 43, 44, 49, 50, 47, 48, 51, 52, 53, 54, 55, 56, 57 and 58 (14 November), 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 72, 73, 74, 71, 75, 76, #3044's screenshots, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 87b, 89, 91, 92, 93, 94, 88, 95, 90, 98, 99, 96, 102, 100, 101, 103, 104 and 105 (15 November), 106, 107, 108, 109, 110, 111, 112, 113, 112b, 113b, 114, 115, 116, 117, 118, 119, 120, 121, 122 and 123 (16 November), 124, 125, 126, 127, 128 and 129 (17 November), 130 to 134 (18 November), 135 to 139 (19 November), 193 to 198 (23 November), 199 to 203, g201, a18, g202, a20, g203, a21 and a23 (24 November), a24, a26, g204, g205, g206, g207, g208, g209, g210, g211, g212, a29, g213, a30, g214, g215, g216, g217, g218, g219, g220, g221, g222, g223, a36, a41, g224, a44, a47, a50 and a53 (25 November) (139, 141 to 192 reported; 140 needs the maintainer; 151 not run, see report 137) (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 192 and 191 again (8 November), aggiemap's 31, 30 and 29 (9 November), and aggiemap's 32, 33, 34 and 35 (10 November), 36 and 37 (11 November), 38 (13 November), 39, 40, 41, 42, 46, 43, 44, 49, 50, 47, 48, 51, 52, 53, 54, 55, 56, 57 and 58 (14 November), 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 72, 73, 74, 71, 75, 76, #3044's screenshots, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 87b, 89, 91, 92, 93, 94, 88, 95, 90, 98, 99, 96, 102, 100, 101, 103, 104 and 105 (15 November), 106, 107, 108, 109, 110, 111, 112, 113, 112b, 113b, 114, 115, 116, 117, 118, 119, 120, 121, 122 and 123 (16 November), 124, 125, 126, 127, 128 and 129 (17 November), 130 to 134 (18 November), 135 to 139 (19 November), 193 to 198 (23 November), 199 to 203, g201, a18, g202, a20, g203, a21 and a23 (24 November), a24, a26, g204, g205, g206, g207, g208, g209, g210, g211, g212, a29, g213, a30, g214, g215, g216, g217, g218, g219, g220, g221, g222, g223, a36, a41, g224, a44, a47, a50, a53 and a55 (25 November) (139, 141 to 192 reported; 140 needs the maintainer; 151 not run, see report 137) (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
