@@ -1,5 +1,21 @@
 # Home machine: current tasks
 
+## Batch g117 (gisday, #3593: strictNullChecks in `gisday-platform-ngx-common`; 25 November 2026, about 3:45 AM Central, from `work (gisday)`) (Medium) - **after g116**
+
+g116's first branch received (`chore/1669-gisday-onpush`): its pull request opens after `pre-pr-check.sh` on the work machine, and merges after the laptop's signed-in admin comparison (g32). Finish g116's second branch (#1478) first.
+
+**Issue:** file it as a sub-issue of **#3593** (strictNullChecks across the GIS Day front end): `chore(gisday-platform-ngx-common): strictNullChecks in the GIS Day platform common library`, Task, `enhancement`, Medium, GIS Day Angular + NestJS, In Progress (sub-issue: `addSubIssue` with #3593's node id). Close it from the branch's `.pr-body.md`.
+
+**Why this library:** work-lab-leila's g208 count (`work-lab-leila/reports/2026-11-25-g208.md`) gave it **111 errors in its own files**, the second largest in GIS Day's own code; the shared libraries beneath it (forms, layout, search) are going strict tonight in parallel (#3595, #3601, #3596).
+
+1. **Branch** `fix/3593-gisday-platform-ngx-common-strict` from the latest `origin/development`, **not** from your OnPush branch: this is independent of g116.
+2. **Measure:** `strictNullChecks` in its own `tsconfig.lib.json`; the errors in its own files, and the rest, by library.
+3. **Fix its own errors** for what each says: honest `| null` / `| undefined`, inputs typed as `gisday-angular` and `gisday-platform-ngx-core` pass them, no `!` without a comment. A behaviour change gets a spec, red first. If it gets large, stop at a coherent half (the forms, or the pipes and services) and say so: two pull requests are fine.
+4. **The known list** (`scripts/strict-lib-errors-known.txt`): add the library at what its configuration still reports from shared libraries, with a one-line reason, as #3594 did.
+5. **Proof:** production builds of `gisday-angular` before and after, with the public pages compared as in g116 (API mocked). `scripts/pre-pr-check.sh` with this library, `gisday-platform-ngx-core` and `gisday-angular`, `CHECK_PARALLEL=1`, `--label no-visible-change` only if nothing renders differently. `.pr-body.md` last; "branch ready", with the new `gisday-angular` count.
+
+Questions `Q-g117-<n>`. Report `home/reports/2026-11-25-g117.md`.
+
 ## Batch a33 (aggiemap: #3486, one markdown popup pair; 25 November 2026, 2:55 AM Central, from `work (aggiemap)`) (Medium) - **after g116, and only once #602's pull request has merged**
 
 **Issue: [#3486](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3486).** Yours because you have just been inside every one of these templates for a27, and your report says #3486 gets smaller because of it. Do not start it before #602's pull request merges: it touches the same two markdown templates, and the footer you just shared is half of this change.
