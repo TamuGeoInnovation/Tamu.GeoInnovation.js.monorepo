@@ -6,6 +6,8 @@ import { Angulartics2 } from 'angulartics2';
 
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 
+import { trackEvent } from '@tamu-gisc/common/ngx/analytics';
+
 import { NotificationService } from '../../services/notification.service';
 import { Notification } from '../../helpers/notification.helper';
 import { NgClass } from '@angular/common';
@@ -137,18 +139,10 @@ export class NotificationGroupedComponent implements OnInit, OnDestroy {
   public action(event: Notification): void {
     if (this.analytics !== null) {
       const label = {
-        guid: crypto.randomUUID(),
-        date: Date.now(),
         name: event.id
       };
 
-      this.analytics.eventTrack.next({
-        action: 'notification_action',
-        properties: {
-          category: 'ui_interaction',
-          gstCustom: label
-        }
-      });
+      trackEvent(this.analytics, 'notification_action', 'ui_interaction', label);
     }
   }
 

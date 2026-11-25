@@ -28,9 +28,5 @@
 </div>
 
 <div class="popup-section">
-  <!-- Copy URL component -->
-  <!-- <copy [text]="shareUrl"></copy> -->
-
-  <!-- Directions To Button -->
-  <div class="button" [attr.building-number]="data?.attributes?.Number" (tamuGiscActivate)="startDirections($safeNavigationMigration(data?.attributes?.Number))">Directions To Here</div>
+  <tamu-gisc-popup-footer [shareUrl]="shareUrl" (startDirections)="startDirections($safeNavigationMigration(data?.attributes?.Number))"></tamu-gisc-popup-footer>
 </div>

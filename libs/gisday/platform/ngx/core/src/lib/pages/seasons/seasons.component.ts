@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { ActivatedRoute, RouterOutlet } from '@angular/router';
 import { map } from 'rxjs';
@@ -14,7 +14,6 @@ import { SEASON_YEAR_PARAM } from '@tamu-gisc/gisday/platform/ngx/data-access';
   template: `@for (year of [year$ | async]; track year) {
     <router-outlet></router-outlet>
   }`,
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterOutlet, AsyncPipe]
 })
 export class SeasonsComponent {

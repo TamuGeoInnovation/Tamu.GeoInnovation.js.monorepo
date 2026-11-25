@@ -13,6 +13,8 @@ import { SidebarTabComponent } from '@tamu-gisc/common/ngx/ui/sidebar';
 import { PopupComponent } from '@tamu-gisc/maps/feature/popup';
 import { RevealSidebarOnPopupDirective } from '@tamu-gisc/maps/feature/popup';
 
+import { trackEvent } from '@tamu-gisc/common/ngx/analytics';
+
 import { SIDEBAR_OPTIONS, SidebarTab, sidebarTabsFor } from './sidebar-tabs';
 
 @Component({
@@ -41,17 +43,9 @@ export class AggiemapSidebarComponent {
 
   public reportSidebarContent(tabTitle: string) {
     const label = {
-      guid: crypto.randomUUID(),
-      date: Date.now(),
       name: tabTitle
     };
 
-    this.analytics.eventTrack.next({
-      action: 'sidebar_select',
-      properties: {
-        category: 'ui_interaction',
-        gstCustom: label
-      }
-    });
+    trackEvent(this.analytics, 'sidebar_select', 'ui_interaction', label);
   }
 }

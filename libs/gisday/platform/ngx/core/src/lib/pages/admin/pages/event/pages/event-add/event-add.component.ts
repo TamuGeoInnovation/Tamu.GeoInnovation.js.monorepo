@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, viewChild } from '@angular/core';
+import { Component, viewChild } from '@angular/core';
 import { EventAddEditFormComponent, provideAdminDetailsPage } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { BaseAdminDetailsPageComponent } from '../../../base-admin-details-page/base-admin-details-page.component';
@@ -7,7 +7,6 @@ import { BaseAdminDetailsPageComponent } from '../../../base-admin-details-page/
   selector: 'tamu-gisc-event-add',
   templateUrl: './event-add.component.html',
   styleUrls: ['./event-add.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [EventAddEditFormComponent],
   providers: [provideAdminDetailsPage(() => EventAddComponent)]
 })

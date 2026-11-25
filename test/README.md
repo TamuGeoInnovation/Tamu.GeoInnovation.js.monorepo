@@ -11,16 +11,16 @@ test/e2e/gisday/     Playwright, run against a GIS Day dev server this repo star
 test/smoke/gisday/   Playwright, run against the DEPLOYED txgisday.org. Does not gate PRs.
 test/smoke/aggiemap/ Playwright, run against DEPLOYED AggieMap, dev and production. Does not gate PRs.
 test/visual/         Playwright screenshot comparison against committed baselines. Run by hand.
-test/*.ts, *.js      Shared Jest setup files. Unrelated to the above.
+test/*.ts            Shared Vitest setup files (polyfills, the Angular TestBed). Unrelated to the above.
 ```
 
 Each Playwright suite has its own config at the repository root: `playwright.config.ts` (GIS Day
 e2e), `playwright.smoke.config.ts` (GIS Day smoke), `playwright.aggiemap-smoke.config.ts` and
 `playwright.visual.config.ts`.
 
-Unit tests live next to the code as `*.spec.ts` and are run by Jest through Nx: about 175 spec files
-across `apps/` and `libs/`. Playwright specs live here and are invisible to Jest, because the root
-`jest.config.ts` uses `getJestProjects()` and only picks up registered Nx projects.
+Unit tests live next to the code as `*.spec.ts` and are run by Vitest through Nx, one project at a time.
+Playwright specs live here and are invisible to Vitest, because each project's `vitest.config.mts`, through
+`vitest.preset.mts`, includes only that project's `src/**/*.spec.ts`.
 
 ## Running locally
 

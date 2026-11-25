@@ -34,7 +34,7 @@ export const SEASON_YEAR_PARAM = 'seasonYear';
 export function seasonYearFromRoute(root: ActivatedRouteSnapshot): number | null {
   let year: string | null = null;
 
-  for (let route = root; route; route = route.firstChild) {
+  for (let route: ActivatedRouteSnapshot | null = root; route; route = route.firstChild) {
     year = route.paramMap.get(SEASON_YEAR_PARAM) ?? year;
   }
 

@@ -1,12 +1,11 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 import { AuthService } from '@auth0/auth0-angular';
 
 @Component({
   selector: 'tamu-gisc-callback',
   templateUrl: './callback.component.html',
-  styleUrls: ['./callback.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager
+  styleUrls: ['./callback.component.scss']
 })
 export class CallbackComponent {
   private readonly as = inject(AuthService);
