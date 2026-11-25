@@ -72,6 +72,55 @@ printf '%s\n' 'fix/1-merged' >"$tmp/merged-no-main"
 got="$(worktree_candidates "$tmp/merged-no-main" "$tmp/porcelain" | tr '\n' ' ')"
 check 'the main checkout is excluded whatever its branch did' 'C:/TAMU/wt-merged ' "$got"
 
+# Detached worktrees (#3438): no branch line, so worktree_candidates never offers one; detached_worktrees lists them
+# with their commit, and detached_merged keeps only those whose commit is already in the base. The "is it an ancestor?"
+# answer comes from a stub: 4444 (wt-detached) is merged, 5555 (wt-detached-open) is not.
+cat >>"$tmp/porcelain" <<'EOF'
+
+worktree C:/TAMU/wt-detached-open
+HEAD 5555555555555555555555555555555555555555
+detached
+EOF
+stub_ancestor() { [ "$1" = 4444444444444444444444444444444444444444 ]; }
+
+detached_worktrees "$tmp/porcelain" >"$tmp/detached"
+check 'detached worktrees are listed with their commit' \
+  'C:/TAMU/wt-detached 4444444444444444444444444444444444444444|C:/TAMU/wt-detached-open 5555555555555555555555555555555555555555|' \
+  "$(tr '\n' '|' <"$tmp/detached")"
+
+got="$(detached_merged "$tmp/detached" origin/development stub_ancestor | tr '\n' ' ')"
+check 'a detached worktree on a merged commit is removable' 'C:/TAMU/wt-detached ' "$got"
+case "$got" in
+  *wt-detached-open*) check 'a detached worktree on an unmerged commit is kept' 'kept' 'removable' ;;
+  *) check 'a detached worktree on an unmerged commit is kept' 'kept' 'kept' ;;
+esac
+
+# The main checkout, detached on a merged commit, must still never be offered: the guard is "the first worktree line",
+# and detachment does not change which line is first.
+cat >"$tmp/porcelain-main-detached" <<'EOF'
+worktree C:/TAMU/Tamu.GeoInnovation.js.monorepo
+HEAD 4444444444444444444444444444444444444444
+detached
+
+worktree C:/TAMU/wt-detached
+HEAD 4444444444444444444444444444444444444444
+detached
+EOF
+detached_worktrees "$tmp/porcelain-main-detached" >"$tmp/detached-main"
+got="$(detached_merged "$tmp/detached-main" origin/development stub_ancestor | tr '\n' ' ')"
+check 'a DETACHED MAIN CHECKOUT is never removable' 'C:/TAMU/wt-detached ' "$got"
+
+# Folders git does not list (#3438): reported, never offered for removal. One registered, one not.
+parent="$tmp/parent"
+mkdir -p "$parent/wt-registered" "$parent/wt-orphan" "$parent/not-a-worktree"
+printf 'worktree %s\nHEAD 1\nbranch refs/heads/main\n\nworktree %s\nHEAD 2\ndetached\n' "$parent/main" "$parent/wt-registered" >"$tmp/porcelain-folders"
+check 'a wt-* folder git does not list is reported' "$parent/wt-orphan" "$(unregistered_folders "$tmp/porcelain-folders" "$parent")"
+got="$(detached_merged "$tmp/detached" origin/development stub_ancestor; worktree_candidates "$tmp/merged" "$tmp/porcelain")"
+case "$got" in
+  *wt-orphan*) check 'and is never offered for removal' 'not offered' 'offered' ;;
+  *) check 'and is never offered for removal' 'not offered' 'not offered' ;;
+esac
+
 # Volumes.
 printf '%s\n' 'tamu-js-100' 'tamu-js-200' 'tamu-js-dev-nm' 'tamu-js-chk-development' 'tamu-js-1623-nm' 'some-other-volume' >"$tmp/volumes"
 printf '%s\n' '100' '1623' >"$tmp/closed"
