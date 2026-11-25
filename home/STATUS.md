@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch g111 (#3062, the scan outside GIS Day)** since 8:40 PM Central: read-only, no branch. g110 dropped (Q-g110-1 is with the maintainer).
+- Nothing. Idle, listening.
 
 ## Finished
+- **Batch g111 (#3062, the scan outside GIS Day)** (report `home/reports/2026-11-24-g111.md`): 26 issues filed, #3467 to #3493, all AggieMap's area, no Priority (suggested in the report); two are bugs (3467, 3468). List on #3062, dead code on #1899.
 - **Batch g109 (workspace: #1340, #2058)** (report `home/reports/2026-11-24-g109.md`): both branch ready. `chore/1340-flex-mixin-prefixes`: prefixes gone, standard declarations identical, home page byte-identical, check Exit 0. `chore/2058-template-a11y-rules`: red 21 findings (Exit 1), all fixed mechanically, green Exit 0. One question, Q-g109-1.
 - **Batch g108 (workspace: #1604, #1025)** (report `home/reports/2026-11-24-g108.md`): #1604 already fixed (duplicate of #2267, PR 2273), nothing built. Branch ready, `chore/1025-lf-endings`: the 12 files to LF and a lint.yml line-endings step, red 12 then green, check Exit 0 (5 projects).
 - **Batch g107 (gisday: #2588)** (report `home/reports/2026-11-24-g107.md`): branch ready, `fix/2588-tile-tap-target` at `52c7d8c60`. The tap part was already #3198; this adds keyboard focus, roles, Enter/Space and a maroon focus ring, with the icon hidden from screen readers. Red 2 failed, final check Exit 0 (3 projects). #3337 went to the laptop (a13). 6:38 PM to 8:12 PM Central, with the Docker pause.
