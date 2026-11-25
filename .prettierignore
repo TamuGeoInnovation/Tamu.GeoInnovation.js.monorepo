@@ -4,3 +4,5 @@ node_modules/
 /.nx/cache
 /.nx/workspace-data
 .nx/self-healing
+# Written by Vitest and compared byte for byte (toMatchFileSnapshot): Prettier would rewrite what the spec checks (#2600).
+**/__snapshots__/
