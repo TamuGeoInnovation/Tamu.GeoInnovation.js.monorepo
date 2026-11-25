@@ -277,6 +277,23 @@ Vitest pays no Angular start-up, while `ts-jest` type-checked every spec and the
 #1479 set out to remove. The check agrees: `lint,test` on the three took 58.7 s on Jest
 (`2026-11-24T222148-check-lab.csv`) and 15.5 s on Vitest.
 
+### Unit tests: the mailroom projects, Jest against Vitest (#1479)
+
+Jest is `development` at `66fc4dc2c`; Vitest is `chore/1479-vitest-mailroom` at `9a8e5756e`. Each project's test target was run on its own,
+`nx run <project>:test --skip-nx-cache`, each run in a new container, so Jest's transform cache was cold as in CI and the
+pre-push check, inside the check's Docker volume (`tamu-js-1479`: the clone and `node_modules`, no bind mount). The two states
+alternated three times, on the laptop with nothing else running, 25 November 2026, about 1:10 to 1:17 AM Central. The seconds are the
+whole container run, Nx and its start-up included; the runner's own figure (Jest's `Time`, Vitest's `Duration`) is in brackets.
+
+| Project                | Tests, Jest and Vitest |         Jest |       Vitest |
+| ---------------------- | ---------------------: | -----------: | -----------: |
+| `mailroom-angular`     |                      0 | 3.5 to 3.6 s | 3.9 to 4.2 s |
+| `mailroom-ngx`         |                      0 | 3.5 to 4.0 s | 3.8 to 4.0 s |
+| `mailroom-data-access` |                      0 | 3.5 to 3.7 s | 3.9 to 4.0 s |
+| `mailroom-common`      |                      0 | 3.5 to 4.0 s | 3.7 to 3.9 s |
+
+None of the four has a spec, so this measures only the runner's start-up: Vitest's, finding no test files, is about 0.3 s slower than Jest's.
+
 ## Installs
 
 | Date        | Machine | What ran                                                                           | Approach                                     |         Elapsed |
