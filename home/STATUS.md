@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle, listening. a33 held until PR 3587 merges.
+- **Batch a39 (#3650)**, since 7:40 AM Central: making `tools/queued.sh` fast, on this branch only. a33 held until PR 3587 merges.
 
 ## Finished
 - **Batch a38 (#3655, #3656, #3658)** (report `home/reports/2026-11-25-a38.md`, 7:37 AM Central): PR 3660 open, pre-pr-check Exit 0. #71 parked with test.fail(); #387 does not reproduce in Chromium (page scrolls 95 px, sidebar closes), so its check passes; 3D source and offset asserted. Each watched fail. Q-a38-1.
