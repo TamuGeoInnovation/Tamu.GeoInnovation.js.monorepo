@@ -1,5 +1,70 @@
 # work-lab-leila: current tasks
 
+## Batch a53 (aggiemap: #3592, one observable for a reactiveUtils.watch; 25 November 2026, 1:35 PM Central, from `work (aggiemap)`) (Medium) - **now**
+
+**a50 is accepted and open as [PR 3692](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3692).**
+Separating "orphaned, no `.git`" from "another repository's, with a working `.git`" is the part that makes that sweep
+honest: four of the seven directories it was warning about belong to `kubernetes-config` and were never ours to count.
+
+### Q-a50-1: `--yes` yes, `--remove-orphans` not yet
+
+- **Run `bash scripts/tidy.sh --yes` between batches whenever you like.** It removes worktrees whose pull request has
+  merged and `tamu-js-*` volumes whose issue is closed, which is routine housekeeping and already how this machine is
+  meant to behave.
+- **Do not run `--remove-orphans` yet.** Its pull request is open and unreviewed, it is a new destructive path nobody
+  has used, and it would free **130 MiB on a machine with 2.4 TB free**. Being the first to exercise an unmerged
+  deletion flag for 130 MiB is a bad trade. Once 3692 merges and the maintainer says so, it is yours to run.
+
+You were right to hold it and ask rather than assume today's approval of a sweep covered a flag that did not exist this
+morning.
+
+### Why this batch
+
+[#3592](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3592) is the second half of #3493,
+whose first half merged this morning as PR 3603. That one replaced hand-written `fromEventPattern` wrappers around
+`view.on(...)` with `viewEvent`; the same shape is still written around **`reactiveUtils.watch(...)`** in two more
+places:
+
+- `libs/maps/feature/layer-list/src/lib/services/layer-list.service.ts:32-44`
+- `libs/maps/feature/legend/src/lib/services/legend.service.ts:57-66`
+
+**There is a real fault inside the duplication, which is the point.** Neither checks the handle exists before calling
+`handle.remove()`, exactly as the five `view.on` copies did not - so a subscription that ends before ArcGIS hands the
+handle over throws. Fixing that today means editing both files, and *that* is the tell.
+
+### What to do
+
+The issue has already decided the shape; follow it rather than re-deciding:
+
+1. **`watchAsObservable(read)` in `libs/maps/esri`**, beside `viewEvent` and `arcgisSignal`, with the safe remove in
+   one place.
+2. **Leave `startWith` to the caller.** The two want different first values - `-1` and `undefined` - so folding it in
+   would make the helper fit neither.
+3. **Say in both doc comments that `watchAsObservable` and `arcgisSignal` are a pair**: `arcgisSignal` already turns a
+   `reactiveUtils.watch` into a signal for OnPush templates (#1673), and this is the observable half of the same idea.
+   The next caller should pick by what it needs rather than by which one it happened to find.
+4. **A test for the handle**, since that is the bug: a subscription that unsubscribes before the handle arrives must not
+   throw. That case is the reason this is worth doing at all, so it should not be the one case without a test.
+
+### Check the two visible results once by hand
+
+The issue rates the risk low and I agree, but both of these are things a unit test will not see:
+
+- The **layer list's order** after a layer takes its service's name (#1939).
+- A layer that **loaded hidden and was switched on later** appearing in the legend (#1857).
+
+If both behave as before, say so and claim `no-visible-change`. **If either moves, stop and say so** - that would mean
+the helper changed the first value or the timing, and it is better found by you than by a visitor.
+
+`libs/maps/esri`, `layer-list` and `legend` are all clear: nothing of mine is open in them. PR 3691 is in
+`maps/feature/popup`, a different library.
+
+**Branch** `refactor/3592-watch-as-observable` from the latest `development` (`2cfb0bc43`), pushed to the fork.
+`check-in-volume.sh`, then **`pre-pr-check.sh`**, and give me its last line. Body text in the report with a `Title:`
+line at its top.
+
+**Report** `work-lab-leila/reports/2026-11-25-a53.md`. Questions `Q-a53-<n>`. **Open no pull request.**
+
 ## Batch a50 (workspace: #3678, make the sweep report what it cannot reclaim; 25 November 2026, 12:55 PM Central, from `work (aggiemap)`) (Low) - **now**
 
 **a47 is accepted and open as [PR 3683](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3683).**

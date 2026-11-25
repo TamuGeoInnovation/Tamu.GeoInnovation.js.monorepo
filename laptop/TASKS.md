@@ -1,5 +1,60 @@
 # Laptop: current tasks
 
+## Batch a52 (aggiemap: one drive-into-campus case beside the existing check, from a49; 25 November 2026, 1:35 PM Central, from `work (aggiemap)`) (Low) - **now**
+
+**a49 is the best thing either of us did today, and the error it corrected was mine as much as yours.**
+
+You stopped four minutes in, removed your branch, wrote nothing, and said the premise was wrong. You could have built the
+check I asked for - it would have been green, and nobody would have noticed for weeks that it duplicated
+`directions.spec.ts:362` and that the Urgent issue behind it was false.
+
+**My part was worse than your a43 framing.** You reported four failing pairs. I then "isolated" the cause on **one**
+pair, got "removing `No Drive` makes it solve", and called the restriction broken - the single-sample mistake, done
+while correcting someone else's. And **the falsifying number was in my own table**: that solve took 21.9 minutes while
+*walking* the same pair took 29.9. A drive that barely beats walking is a car on footpaths, which is exactly what
+dropping `No Drive` permits. I printed it and read past it.
+
+I verified your garage figures before acting: University Dr to the Central Campus Garage solves in **2.7 min** by Drive
+against 12.7 by Walk, and my old core point still refuses. You are right.
+
+**Done on it:** #3679 is closed as not-a-fault with a full retraction, its priority dropped from Urgent to Low, and the
+claim was repeated in two other places I had to fix - PR 3684's body and #3682's body. Nothing asks the GIS team for
+anything.
+
+**Q-a49-1 is (a).** Closed, with #3682 named as where the real behaviour lives.
+
+### Q-a49-2 is (a). This batch
+
+One case beside the existing one: **University Dr to the Central Campus Garage**, in the network's own named `Drive`
+mode, asserting a route came back.
+
+**Why it is worth adding even though the network is healthy.** The existing check drives University Dr to University Dr,
+which never touches a campus road - so it would stay green if every road inside campus stopped being drivable. Your new
+case is the one that would go red, and it is the fault #3679 believed it had found. That is a real gap, found by
+chasing a non-fault.
+
+### What to do
+
+1. **One case in `directions.spec.ts`**, beside the one at line 362, reading the mode from `supportedTravelModes`
+   rather than hard-coding anything. Reuse that spec's existing helpers; do not write a second solve of your own.
+2. **Prove the assertion the honest way, as you proposed.** It cannot be red against production, because production is
+   healthy. So send the same solve with a stop **inside the pedestrian core**, quote that failure in the pull request,
+   and say plainly that this is what the assertion looks like when it fails. A check nobody has ever seen fail is worth
+   less than one whose failure has been photographed.
+3. **Say in a comment why the destination is a garage** - a point a car can reach - so nobody later "simplifies" it to
+   another University Dr pair and silently restores the gap.
+4. **Its row in `docs/testing.md`** if it is a new spec file; if it is a case inside an existing spec, the page needs
+   nothing. **Leave every count on that page alone either way**, the Total included.
+
+**Do not** add a known-failure entry: there is no failure to tolerate. **Do not** touch the routing network or anything
+about `No Drive`.
+
+`no-visible-change`, no images. **Branch** `test/3679-drive-into-campus` from the latest `development` (`2cfb0bc43`),
+pushed to the fork. `check-in-volume.sh`, then **`pre-pr-check.sh`**, and give me its last line. Body text in the report
+with a `Title:` line.
+
+**Report** `laptop/reports/2026-11-25-a52.md`. Questions `Q-a52-<n>`. **Open no pull request.**
+
 ## Batch a49 (aggiemap: a smoke check that solves one drive trip, for #3679; 25 November 2026, 12:45 PM Central, from `work (aggiemap)`) (High) - **now**
 
 **a43 is accepted, and finding #3679 is worth more than the images it cost.** Three things in it did real work:
