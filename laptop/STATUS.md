@@ -33,7 +33,7 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Waiting for g30:** it starts once the g29 pull requests (#3562, #3563, #3565) merge.
+- **Batch g30 (#1479, remove Jest)**, started 2:35 AM Central (no `jest.config` left on `development`). `chore/1479-remove-jest` pushed (`294071137`); full affected check at `CHECK_PARALLEL=2` running.
 
 ## Finished
 - **Batch a28 (aggiemap: #2554)** (report `laptop/reports/2026-11-25-a28.md`): **branch ready: `chore/2554-dead-athletics-popup-data`** (`d2400331b`), `pre-pr-check.sh` exit 0. 8 of 11 athletics maps carried dead Cold popup data; deleted, ids kept; drawn sources byte-identical. Q-a28-1, Q-a28-2.
