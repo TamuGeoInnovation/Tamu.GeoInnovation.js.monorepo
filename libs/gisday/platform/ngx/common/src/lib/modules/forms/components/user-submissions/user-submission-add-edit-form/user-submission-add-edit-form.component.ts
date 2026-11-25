@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, computed, effect, inject, input, signal } from '@angular/core';
+import { Component, OnInit, computed, effect, inject, input, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
@@ -8,7 +8,7 @@ import {
   FormsModule,
   ReactiveFormsModule
 } from '@angular/forms';
-import { filter, map, Observable, shareReplay, startWith, Subject, switchMap, take, tap } from 'rxjs';
+import { filter, map, Observable, shareReplay, startWith, switchMap, take, tap } from 'rxjs';
 
 import { Submission, SubmissionType } from '@tamu-gisc/gisday/platform/data-api';
 import { SeasonService, SubmissionTypeService, UserSubmissionsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -47,7 +47,7 @@ import {
     SubmissionFilesComponent
   ]
 })
-export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
+export class UserSubmissionAddEditFormComponent implements OnInit {
   private readonly fb = inject(UntypedFormBuilder);
   private readonly at = inject(ActivatedRoute);
   private readonly auth = inject(AuthService);
@@ -84,8 +84,6 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
   public entity$: Observable<Partial<Submission>>;
   public submissionTypes$: Observable<Array<Partial<SubmissionType>>>;
   public selectedPresentationFormat$: Observable<string>;
-
-  private _$destroy: Subject<boolean> = new Subject();
 
   /** The season the submission is (or will be) in: its own when editing, the active one when creating (#2934). */
   private readonly season = signal<Partial<Submission['season']> | null>(null);
@@ -215,11 +213,6 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
       this.addParticipant();
       this._submitterFromAccount();
     }
-  }
-
-  public ngOnDestroy(): void {
-    this._$destroy.next(undefined);
-    this._$destroy.complete();
   }
 
   public handleSubmission() {
