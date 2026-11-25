@@ -1,5 +1,19 @@
 # Home machine: current tasks
 
+## Decided (gisday), 5:30 AM Central, 25 November 2026
+
+- **g118 received:** #3626 is PR 3637, and `fix/3593-gisday-platform-ngx-core-strict` (#3627) goes through `pre-pr-check.sh` on the work machine once it has its release entry (below).
+- **Q-g118-1: (B).** A failing admin path that now works is a change someone can see, even if only an admin. **Add a short release-notes entry** to `fix/3593-gisday-platform-ngx-core-strict`: `docs/releases/unreleased/3627-<slug>.md`, `app: gisday`, its *What to test on dev* row naming each admin path that now works (the class attendance export with no professor, and the others your specs cover). No images are needed when nothing renders differently; say so in the entry. Keep `no-visible-change` off the pull request then. Push it and say "branch ready" again.
+
+## Batch g119 (gisday, #3593): the leftovers, then how far `gisday-angular` is from strict (after the entry above)
+
+1. **`TypeRecord` in `gisday-platform-ngx-common`**, the other source of #3627's last 5: its own sub-issue of #3593, branch `fix/3593-gisday-type-record` from the latest `origin/development`, a red-first spec if behaviour changes, `pre-pr-check.sh`, "branch ready".
+2. **Measure, don't fix:** in a scratch branch (never pushed), merge every open #3593 pull request branch together: 3604, 3608, 3613, 3619, 3621, 3629, 3631, 3632, 3634, 3637, and yours (#3627, the one above). Resolve the known-list conflicts by taking `--all`'s counts. Then report:
+   - `gisday-angular`'s `tsconfig.app.json` errors with `strictNullChecks`, by library;
+   - which libraries still keep it from 0, and how many each;
+   - anything that conflicted between the branches beyond the known list (that is a merge-order fact the maintainer needs).
+3. Report `home/reports/2026-11-25-g119.md`; questions `Q-g119-<n>`.
+
 ## Batch g118 (gisday, #3593: `placesShownOn`'s type, then strictNullChecks in `gisday-platform-ngx-core`; 25 November 2026, about 4:45 AM Central, from `work (gisday)`) (Medium) - **now**
 
 g117 received (`fix/3593-gisday-platform-ngx-common-strict`, #3611): it goes through `pre-pr-check.sh` on the work machine and opens when it exits 0.
