@@ -1,7 +1,7 @@
 name: laptop
 agent: Claude Code (desktop app), the chat "js.monorepo - Laptop - 
 machine: laptop
-state: running batch g27: #3000 measuring (parallel 8 of 8,4,2,1); #1001 fix committed, images wait for Docker; a14 prepared (#2643 red+fix committed, #3319 already on fix/3149-phone-directions)
+state: running batch a25: chore/1218-node-24.22.3-today pushed (c77909662), #3545 filed; pre-pr-check affected running
 accepting: no
-seen_utc: 2026-11-25T02:34:27Z
-next_utc: 2026-11-25T04:04:27Z
+seen_utc: 2026-11-25T06:24:06Z
+next_utc: 2026-11-25T07:24:06Z
