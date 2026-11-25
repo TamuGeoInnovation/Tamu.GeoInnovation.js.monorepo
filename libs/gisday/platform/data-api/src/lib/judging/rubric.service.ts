@@ -15,6 +15,15 @@ import { Rubric, RubricCriterion, Season } from '../entities/all.entity';
 /** A rubric as an admin sends it: for a new one, the season it is for as well. */
 export type RubricBody = Partial<RubricValue> & { season?: unknown };
 
+/** Refuses a rubric `rubricProblem` finds anything wrong with; past it, the rubric has every field it checks. */
+function assertRubric<B extends RubricBody>(body: B): asserts body is B & RubricValue {
+  const problem = rubricProblem(body);
+
+  if (problem) {
+    throw new BadRequestException(problem);
+  }
+}
+
 /**
  * The rubrics judges score against (#3183), one per season for each judged competition type. Saving a rubric replaces its
  * criteria with those sent, in their order: a criterion sent with its id keeps it, so the scores judges gave it stay with
@@ -52,11 +61,7 @@ export class RubricService {
 
   /** A new rubric for a season, which must not have one for that competition type yet. */
   public async create(body: RubricBody): Promise<RubricDto> {
-    const problem = rubricProblem(body);
-
-    if (problem) {
-      throw new BadRequestException(problem);
-    }
+    assertRubric(body);
 
     if (typeof body.season !== 'string' || !(await this.seasons.findOne({ where: { guid: body.season } }))) {
       throw new BadRequestException('Name the season the rubric is for.');
@@ -92,15 +97,15 @@ export class RubricService {
       throw new NotFoundException('That rubric does not exist.');
     }
 
-    const problem = rubricProblem({ ...body, competitionType: rubric.competitionType });
+    const value = { ...body, competitionType: rubric.competitionType };
 
-    if (problem) {
-      throw new BadRequestException(problem);
-    }
+    assertRubric(value);
 
     await this.rubrics.manager.transaction(async (m) => {
-      await m.getRepository(Rubric).update(guid, { name: body.name.trim(), description: body.description?.trim() || null });
-      await replaceCriteria(m, guid, body.criteria);
+      await m
+        .getRepository(Rubric)
+        .update(guid, { name: value.name.trim(), description: value.description?.trim() || null });
+      await replaceCriteria(m, guid, value.criteria);
     });
 
     return this.byGuid(guid);
@@ -116,7 +121,14 @@ export class RubricService {
   }
 
   private async byGuid(guid: string): Promise<RubricDto> {
-    return rubricDto(await this.rubrics.findOne({ where: { guid }, relations: { criteria: true } }));
+    const rubric = await this.rubrics.findOne({ where: { guid }, relations: { criteria: true } });
+
+    // Deleted since it was saved.
+    if (!rubric) {
+      throw new NotFoundException('That rubric does not exist.');
+    }
+
+    return rubricDto(rubric);
   }
 }
 
@@ -159,7 +171,7 @@ export function rubricDto(rubric: Rubric): RubricDto {
         position: c.position,
         name: c.name,
         maxPoints: c.maxPoints,
-        levels: c.levels ?? []
+        levels: c.levels
       }))
   };
 }

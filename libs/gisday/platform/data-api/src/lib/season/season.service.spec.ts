@@ -384,6 +384,12 @@ describe('SeasonService', () => {
       await expect(service.setSubmissionDeadlines('missing', {})).rejects.toThrow(NotFoundException);
     });
 
+    // #3495: a request with no body answered 500, reading the deadlines from nothing.
+    it('refuses a request that sends no deadlines', async () => {
+      await expect(service.setSubmissionDeadlines('season-1', undefined)).rejects.toThrow(BadRequestException);
+      expect(seasonRepo.update).not.toHaveBeenCalled();
+    });
+
     /** #2962: paper and cartography have the same pair, saved and checked the same way. */
     it('saves the paper and cartography moments too', async () => {
       await service.setSubmissionDeadlines('season-1', {
@@ -564,6 +570,43 @@ describe('SeasonService', () => {
     ])('refuses %j, and saves nothing', async (settings, message) => {
       await expect(service.setCompetitionSettings('season-1', settings)).rejects.toThrow(new BadRequestException(message));
       expect(manager.save).not.toHaveBeenCalled();
+    });
+  });
+
+  /** #3495: strictNullChecks found the lookups `updateSeason` did not check. */
+  describe('.updateSeason()', () => {
+    const active = () => ({ guid: 'season-0', year: 2025, active: true, days: [] }) as unknown as Season;
+    /** A season as loaded, which `updateSeason` saves through its own `save()`. */
+    const loaded = (days: Array<SeasonDay>) =>
+      Object.assign(seasonWithDays(days), {
+        save: vi.fn(function (this: Season) {
+          return Promise.resolve(this);
+        })
+      });
+
+    it('answers 404 for a season that does not exist, and deactivates no other season for it', async () => {
+      jest
+        .spyOn(seasonRepo, 'findOne')
+        .mockImplementation(async (options) => ('guid' in (options.where as object) ? null : active()));
+
+      await expect(service.updateSeason('missing', { active: true, year: 2027 })).rejects.toThrow(NotFoundException);
+      expect(seasonRepo.save).not.toHaveBeenCalled();
+    });
+
+    it("answers 404 for a day that is not one of the season's", async () => {
+      vi.spyOn(seasonRepo, 'findOne').mockResolvedValue(loaded([day('d-1', '2026-11-18')]));
+
+      await expect(
+        service.updateSeason('season-1', { days: [day('d-other', '2026-11-19')] } as Partial<Season>)
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('leaves the season active, or not, when the update does not say', async () => {
+      vi.spyOn(seasonRepo, 'findOne').mockResolvedValue(loaded([day('d-1', '2026-11-18')]));
+
+      await expect(
+        service.updateSeason('season-1', { days: [day('d-1', '2026-11-18')] } as Partial<Season>)
+      ).resolves.toMatchObject({ active: true });
     });
   });
 });

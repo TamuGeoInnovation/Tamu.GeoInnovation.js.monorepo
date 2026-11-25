@@ -57,7 +57,7 @@ export class SeasonWinnerService {
     }
 
     const rows = await this.winners.find({ where: { season: { guid: season.guid } }, relations: { submission: true } });
-    const accounts = rows.filter((r) => r.competition === TRAIL_COMPETITION && r.accountGuid).map((r) => r.accountGuid);
+    const accounts = rows.flatMap((r) => (r.competition === TRAIL_COMPETITION && r.accountGuid ? [r.accountGuid] : []));
     const profiles = accounts.length ? await this.people.profilesOf(accounts) : new Map();
     const winnerOf = (row: SeasonWinner): WinnerDto | null => {
       if (row.submission) {
@@ -122,7 +122,10 @@ export class SeasonWinnerService {
       throw new NotFoundException('No such season.');
     }
 
-    const picked = (choices as Array<WinnerChoice>).filter((c) => c.submission);
+    // The places with a submission, typed as having one.
+    const picked = (choices as Array<WinnerChoice>).flatMap((c) =>
+      c.submission ? [{ ...c, submission: c.submission }] : []
+    );
     const { competitions } = await this.forSeason(seasonGuid);
     const entryOf = (c: WinnerChoice) =>
       competitions.find((row) => row.competition === c.competition)?.entries.some((e) => e.guid === c.submission);
@@ -182,7 +185,8 @@ export class SeasonWinnerService {
       throw new NotFoundException('No such season.');
     }
 
-    const picked = (choices as Array<TrailChoice>).filter((c) => c.account);
+    // The places with an account, typed as having one.
+    const picked = (choices as Array<TrailChoice>).flatMap((c) => (c.account ? [{ ...c, account: c.account }] : []));
 
     if (!picked.every((c) => submitters.has(c.account))) {
       throw new BadRequestException(NOT_A_SUBMITTER_MESSAGE);

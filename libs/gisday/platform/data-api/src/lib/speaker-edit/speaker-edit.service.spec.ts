@@ -311,6 +311,14 @@ describe('SpeakerEditService', () => {
     await expect(service.forLink(token)).rejects.toThrow(/expired or is not valid/);
   });
 
+  // #3495: a speaker deleted after their link was read answered 500, reading the missing speaker's fields.
+  it('refuses the link of a speaker deleted since it was read, as a link that is not valid', async () => {
+    await service.sendLinks(['speaker-ana']);
+    speakerRepo.findOne.mockResolvedValueOnce(undefined);
+
+    await expect(service.forLink(tokenSent())).rejects.toThrow(/expired or is not valid/);
+  });
+
   it('records a proposal for that speaker only, keeping the allowed fields and dropping the rest, and changes nothing yet', async () => {
     await service.sendLinks(['speaker-ana']);
 

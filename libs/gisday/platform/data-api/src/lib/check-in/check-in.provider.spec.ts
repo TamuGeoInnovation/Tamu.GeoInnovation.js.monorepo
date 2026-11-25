@@ -764,6 +764,16 @@ describe('CheckInProvider', () => {
 
       await expect(provider.getCheckInCode('missing')).rejects.toThrow(NotFoundException);
     });
+
+    // #3495: one deleted between making its code and reading it back answered 500.
+    it('refuses a session deleted while its code was being made', async () => {
+      jest
+        .spyOn(eventRepo, 'findOne')
+        .mockResolvedValueOnce({ guid: 'e-1', mode: 'virtual', checkInCode: null } as Event)
+        .mockResolvedValueOnce(null);
+
+      await expect(provider.getCheckInCode('e-1')).rejects.toThrow(NotFoundException);
+    });
   });
 
   describe('.getUserCheckinForEvent()', () => {

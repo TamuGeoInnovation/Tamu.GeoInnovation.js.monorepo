@@ -113,7 +113,7 @@ export class SpeakerController {
   @Permissions(['update:speakers'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Post('badges/printed')
-  public async markBadgesPrinted(@Body('badges') badges: Array<{ guid: string; text: string }>) {
+  public async markBadgesPrinted(@Body('badges') badges: Array<{ guid?: unknown; text?: unknown } | null> | undefined) {
     return this.provider.markBadgesPrinted(badges);
   }
 
@@ -121,7 +121,7 @@ export class SpeakerController {
   @Permissions(['update:speakers'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Post('badges/not-printed')
-  public async clearBadgesPrinted(@Body('guids') guids: Array<string>) {
+  public async clearBadgesPrinted(@Body('guids') guids: Array<unknown> | undefined) {
     return this.provider.clearBadgesPrinted(guids);
   }
 

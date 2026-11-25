@@ -10,7 +10,7 @@ import { blockAnalytics } from './analytics';
 import { readFraming, servedRoutes } from './framing';
 import { smokeBaseUrl } from './gis-hosts';
 import { MANIFEST_PATH, MapManifest } from './global-setup';
-import { PROBE_GLOBAL } from './map-probe';
+import { waitForMapDrawn, waitForMapReady } from './map-probe';
 
 /**
  * Clicking a feature opens the popup for **that** feature, on every map (#2707, #2778).
@@ -145,21 +145,9 @@ async function openMap(page: Page, mapPath: string): Promise<void> {
   await blockAnalytics(page);
   await page.goto(mapPath);
 
-  for (const [state, value, timeout] of [
-    ['ready', true, 90_000],
-    ['drawing', false, 60_000]
-  ] as const) {
-    await expect
-      .poll(
-        async () =>
-          await page.evaluate(
-            ({ name, state }) => (window as unknown as Record<string, Record<string, unknown>>)[name]?.[state],
-            { name: PROBE_GLOBAL, state }
-          ),
-        { message: `the map on ${mapPath} never reported ${state}: ${value}`, timeout, intervals: [1_000] }
-      )
-      .toBe(value);
-  }
+  // Ready, then drawing finished, as two waits with their own timeouts, as popup.spec.ts does; see waitForMapDrawn.
+  await waitForMapReady(page, `the map on ${mapPath} never reported ready: true`);
+  await waitForMapDrawn(page, `the map on ${mapPath} never reported drawing: false`, { timeout: 60_000, ready: false });
 
   for (let closed = 0; closed < 3 && (await page.locator('tamu-gisc-modal-host').count()) > 0; closed++) {
     await page.keyboard.press('Escape');

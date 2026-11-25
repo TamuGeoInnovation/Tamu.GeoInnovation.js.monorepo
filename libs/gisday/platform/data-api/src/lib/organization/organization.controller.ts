@@ -59,7 +59,7 @@ export class OrganizationController {
   @UseGuards(JwtGuard, PermissionsGuard)
   @Post()
   @UseInterceptors(FileInterceptor('file', { limits: { ...DEFAULT_UPLOAD_LIMITS } }))
-  public create(@Body() creteOrgDto?: Partial<Organization>, @UploadedFile() file?: Express.Multer.File) {
+  public create(@Body() creteOrgDto: Partial<Organization>, @UploadedFile() file?: Express.Multer.File) {
     return this.orgService.createOrganization(creteOrgDto, file);
   }
 

@@ -14,7 +14,7 @@ import {
 
 import { PermissionsGuard, Permissions, JwtGuard } from '@tamu-gisc/common/nest/auth';
 
-import { GisDayAppMetadata, UserInfoProvider } from './user-info.provider';
+import { GisDayProfileUpdate, UserInfoProvider } from './user-info.provider';
 import { AccountDashboardProvider } from './account-dashboard.provider';
 
 @Controller('users')
@@ -70,7 +70,7 @@ export class UserInfoController {
 
   @UseGuards(JwtGuard)
   @Patch(':guid/metadata')
-  public async updateUserMetadata(@Request() req, @Body() body: GisDayAppMetadata) {
+  public async updateUserMetadata(@Request() req, @Body() body: GisDayProfileUpdate | undefined) {
     return this.provider.updateUserMetadata(req.user.sub, body);
   }
 

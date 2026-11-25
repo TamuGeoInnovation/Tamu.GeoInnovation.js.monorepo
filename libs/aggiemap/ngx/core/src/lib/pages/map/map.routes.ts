@@ -5,17 +5,10 @@ import { DesktopGuard, MobileGuard } from '@tamu-gisc/common/utils/device/guards
 import { LayerListComponent, LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 
 import { LegendComponent, LegendService } from '@tamu-gisc/maps/feature/legend';
-import { loadTripPlannerOptionsComponent } from '@tamu-gisc/maps/feature/trip-planner';
 import { PopupMobileDeferredComponent } from '@tamu-gisc/maps/feature/popup';
 
-import { ModalComponent, ReportBadRouteComponent, ExperimentsListComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
-import {
-  AggiemapSidebarComponent,
-  SidebarReferenceComponent,
-  SidebarTripPlannerComponent,
-  SidebarBusListComponent,
-  SidebarSettingsComponent
-} from '@tamu-gisc/aggiemap/ngx/ui/desktop';
+import { ModalComponent, ReportBadRouteComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
+import { AggiemapSidebarComponent, SidebarReferenceComponent, sidebarRoutes } from '@tamu-gisc/aggiemap/ngx/ui/desktop';
 import {
   OmnisearchComponent,
   loadTripPlannerBottomComponent,
@@ -30,7 +23,7 @@ import {
 import { BasemapGalleryComponent, BasemapGalleryService } from '@tamu-gisc/maps/feature/basemap';
 
 import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
-import { TestingService, developmentOnlyRoute } from '@tamu-gisc/dev-tools/application-testing';
+import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 import { MapComponent } from './map.component';
 
 export const mapRoutes: Routes = [
@@ -49,21 +42,7 @@ export const mapRoutes: Routes = [
         path: 'd',
         component: AggiemapSidebarComponent,
         canActivateChild: [DesktopGuard],
-        children: [
-          { path: '', component: SidebarReferenceComponent },
-          { path: 'bus', component: SidebarBusListComponent },
-          { path: 'trip', component: SidebarTripPlannerComponent },
-          {
-            path: 'trip/options',
-            loadComponent: loadTripPlannerOptionsComponent,
-            // Development only, as its link is (#2801): its one option is accessible routing, which the routing network
-            // does not support yet. On production its address goes back to the trip planner.
-            canActivate: [developmentOnlyRoute],
-            data: { developmentOnly: 'accessible routing is not supported by the routing network (#2801)' }
-          },
-          { path: 'experiments', component: ExperimentsListComponent },
-          { path: 'settings', component: SidebarSettingsComponent }
-        ]
+        children: sidebarRoutes(SidebarReferenceComponent)
       },
       {
         path: 'm',
