@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { GISDAY_SITE } from '@tamu-gisc/gisday/platform/ngx/common';
 import { RouterOutlet } from '@angular/router';
@@ -7,7 +7,6 @@ import { RouterOutlet } from '@angular/router';
   selector: 'tamu-gisc-competitions',
   templateUrl: './competitions.component.html',
   styleUrls: ['./competitions.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterOutlet]
 })
 export class CompetitionsComponent {

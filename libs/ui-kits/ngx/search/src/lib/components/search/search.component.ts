@@ -20,8 +20,10 @@ import { Angulartics2 } from 'angulartics2';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { arrowKeyControl } from '@tamu-gisc/common/utils/ui';
-import { getGeolocation, isCoordinatePair } from '@tamu-gisc/common/utils/geometry/generic';
+import { getGeolocation, parseLatLon } from '@tamu-gisc/common/utils/geometry';
 import { TemplateRenderer } from '@tamu-gisc/common/utils/string';
+
+import { trackEvent } from '@tamu-gisc/common/ngx/analytics';
 
 import { SearchService, SearchResult, SearchResultItem, SearchSource } from '../../services/search.service';
 import { NgClass, AsyncPipe, TitleCasePipe } from '@angular/common';
@@ -258,7 +260,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       )
       .subscribe((value) => {
         if (value && value.length > 0) {
-          if (isCoordinatePair(value)) {
+          if (parseLatLon(value)) {
             // TODO: no any
             this.setSelected(value, {
               name: value,
@@ -292,20 +294,12 @@ export class SearchComponent implements OnInit, OnDestroy {
 
         if (value) {
           const label = {
-            guid: crypto.randomUUID(),
-            date: Date.now(),
             term: value,
             term_size: value.length
           };
 
           // Send analytics search input
-          this.analytics.eventTrack.next({
-            action: 'search',
-            properties: {
-              category: 'searched_term',
-              gstCustom: label
-            }
-          });
+          trackEvent(this.analytics, 'search', 'searched_term', label);
         }
 
         // Force change detection here, since onPush disables it here.
@@ -461,19 +455,11 @@ export class SearchComponent implements OnInit, OnDestroy {
         );
 
         const label = {
-          guid: crypto.randomUUID(),
-          date: Date.now(),
           name: `${res.latitude}, ${res.longitude}`
         };
 
         // Track analytics geolocation success
-        this.analytics.eventTrack.next({
-          action: 'geolocation',
-          properties: {
-            category: 'success',
-            gstCustom: label
-          }
-        });
+        trackEvent(this.analytics, 'geolocation', 'success', label);
       })
       .catch((err) => {
         // Set view value
@@ -508,19 +494,11 @@ export class SearchComponent implements OnInit, OnDestroy {
         });
 
         const label = {
-          guid: crypto.randomUUID(),
-          date: Date.now(),
           name: err.message
         };
 
         // Track analytics geolocation failure
-        this.analytics.eventTrack.next({
-          action: 'geolocation',
-          properties: {
-            category: 'failed',
-            gstCustom: label
-          }
-        });
+        trackEvent(this.analytics, 'geolocation', 'failed', label);
       });
   }
 

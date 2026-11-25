@@ -7,6 +7,7 @@ import { blockAnalytics } from './analytics';
 import { readGraphicTypes } from './framing';
 import { BUS_NOTICE, BUS_PANEL, BUS_ROUTE, MANIFEST_PATH, MapManifest } from './global-setup';
 import { smokeBaseUrl } from './gis-hosts';
+import { skipUntilDeployed } from './deployed';
 import { PROBE_GLOBAL, waitForMapReady } from './map-probe';
 
 /**
@@ -138,6 +139,9 @@ test.describe('bus routes', () => {
     test(`${panel}: choosing a route expands it, lists its stops and draws them; choosing it again removes them`, async ({
       page
     }) => {
+      // The event map's panel came with #2758; a build from before it has none to open (#3539).
+      if (panel === EVENT_BUS_PANEL) skipUntilDeployed('#2758');
+
       const routes = await openBusPanel(page, panel);
 
       // A route whose stops are known to draw, so this checks the interaction rather than #1174's data.

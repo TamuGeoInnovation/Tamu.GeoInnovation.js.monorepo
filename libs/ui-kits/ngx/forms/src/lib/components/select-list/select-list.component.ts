@@ -50,7 +50,7 @@ export class SelectListComponent<T extends Record<string, unknown>> implements O
   /**
    * List of options to display in the select list.
    */
-  public readonly options = input<Array<T>>(undefined);
+  public readonly options = input<Array<T> | undefined>(undefined);
 
   /**
    * List of fields to search within the provided options.
@@ -58,12 +58,12 @@ export class SelectListComponent<T extends Record<string, unknown>> implements O
    * If omitted, the search will be performed on all fields which can be a performance concern for large datasets.
    *
    */
-  public readonly searchFields = input<Array<keyof T>>(undefined);
+  public readonly searchFields = input<Array<keyof T> | undefined>(undefined);
 
   /**
    * Template reference to use for rendering each row in the select list.
    */
-  public readonly rowTemplate = input<TemplateRef<T>>(undefined);
+  public readonly rowTemplate = input<TemplateRef<T> | undefined>(undefined);
 
   /**
    * The item chosen from the list, by click, Enter or Space.
@@ -79,7 +79,8 @@ export class SelectListComponent<T extends Record<string, unknown>> implements O
   public displayList$: Observable<boolean> = this._displayList$.asObservable();
 
   public ngOnInit(): void {
-    this.initializeOptions(this.options());
+    // Options not given yet search as none: a search then threw on `undefined.filter` (#3495).
+    this.initializeOptions(this.options() ?? []);
 
     this.renderer.listen('document', 'click', (event) => {
       event.activeElement = false;
@@ -137,7 +138,8 @@ export class SelectListComponent<T extends Record<string, unknown>> implements O
         }
 
         return options.filter((option) => {
-          const fields = this.searchFields()?.length > 0 ? this.searchFields() : Object.keys(option);
+          const searchFields = this.searchFields();
+          const fields = searchFields && searchFields.length > 0 ? searchFields : Object.keys(option);
 
           return fields.some((field) => {
             return `${option[field]}`.toLowerCase().includes(value.toLowerCase());

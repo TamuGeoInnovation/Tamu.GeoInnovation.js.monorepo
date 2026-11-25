@@ -5,7 +5,8 @@ import { Observable } from 'rxjs';
 export interface TypeRecord {
   guid?: string;
   type?: string;
-  updated?: Date | string;
+  /** Typed as the RSVP and submission type entities type it, so their services fit `TypeService` (#3641). */
+  updated?: Date;
 }
 
 /** What the type pages need of a type's service: its records, and saving and deleting one. */

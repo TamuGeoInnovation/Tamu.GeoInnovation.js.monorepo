@@ -76,8 +76,8 @@ secrets.ts
 **/assets/uploads/**
 # Playwright
 /playwright-report/
-# Playwright's results at the root, and Jest's JUnit files, which a local run writes into each project's own
-# test-results/junit (jest.preset.js; CI points them at the root instead). Two were committed by accident (#2679).
+# Playwright's results at the root, and the unit tests' JUnit files, which vitest.preset.mts writes into the root's
+# test-results/junit (CI points JEST_JUNIT_OUTPUT_DIR at the same place). Two were committed by accident (#2679).
 test-results/
 /blob-report/
 /playwright/.cache/

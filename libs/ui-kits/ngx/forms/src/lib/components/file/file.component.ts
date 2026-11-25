@@ -17,7 +17,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 export class FileComponent implements ControlValueAccessor {
   // A model rather than an input: the component sets it itself, from the user and the forms API.
   // eslint-disable-next-line @angular-eslint/no-input-rename
-  protected readonly _value = model<File | boolean>(null, { alias: 'value' });
+  protected readonly _value = model<File | boolean | null>(null, { alias: 'value' });
 
   /**
    * File formats to accept. Default is all.
@@ -31,13 +31,14 @@ export class FileComponent implements ControlValueAccessor {
    */
   public readonly clearMessage = input('Clear');
 
-  public readonly fileSelected = output<File>();
+  // undefined on reset (#3495).
+  public readonly fileSelected = output<File | undefined>();
 
-  public fileName: string;
+  public fileName: string | undefined;
 
-  public dataType: string;
+  public dataType: string | undefined;
 
-  public fileExtension: string;
+  public fileExtension: string | undefined;
 
   public get checked() {
     return this._value();
@@ -60,7 +61,7 @@ export class FileComponent implements ControlValueAccessor {
       this.dataType = file.type;
 
       // Pull the file extension from the file.
-      this.fileExtension = file.name.split('.').length > 0 ? file.name.split('.').pop().toLowerCase() : 'unkown';
+      this.fileExtension = file.name.split('.').pop()?.toLowerCase() ?? 'unkown';
 
       this.value = file;
 
