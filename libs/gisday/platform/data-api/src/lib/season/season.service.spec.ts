@@ -585,9 +585,9 @@ describe('SeasonService', () => {
       });
 
     it('answers 404 for a season that does not exist, and deactivates no other season for it', async () => {
-      vi
-        .spyOn(seasonRepo, 'findOne')
-        .mockImplementation(async (options) => ('guid' in (options.where as object) ? null : active()));
+      vi.spyOn(seasonRepo, 'findOne').mockImplementation(async (options) =>
+        'guid' in (options.where as object) ? null : active()
+      );
 
       await expect(service.updateSeason('missing', { active: true, year: 2027 })).rejects.toThrow(NotFoundException);
       expect(seasonRepo.save).not.toHaveBeenCalled();

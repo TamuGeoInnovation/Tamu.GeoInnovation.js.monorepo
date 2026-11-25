@@ -767,8 +767,7 @@ describe('CheckInProvider', () => {
 
     // #3495: one deleted between making its code and reading it back answered 500.
     it('refuses a session deleted while its code was being made', async () => {
-      vi
-        .spyOn(eventRepo, 'findOne')
+      vi.spyOn(eventRepo, 'findOne')
         .mockResolvedValueOnce({ guid: 'e-1', mode: 'virtual', checkInCode: null } as Event)
         .mockResolvedValueOnce(null);
 
