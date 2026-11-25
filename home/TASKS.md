@@ -1,5 +1,23 @@
 # Home machine: current tasks
 
+## Batch g113 (mailbox tools: #3348, copilot-home reports ready and does nothing; 25 November 2026, about midnight Central, from `work (gisday)`) (Medium) - **after g112**
+
+[#3348](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3348) (claimed In Progress): read it to the end. `copilot-home`
+runs on **this** machine, so only home can do the first half. No changes to the maintainer's accounts or credentials, and no Copilot sign-in on his
+behalf: anything that needs him goes in Q-g113-1.
+
+1. **Why each run does nothing.** Read `tools/agent-runner.ps1`'s most recent logs for copilot-home on this machine and quote what Copilot actually
+   printed (no tokens or account details in the report). Most likely each run exits 0 having done nothing. Say whether it is an expired login, an
+   exhausted allowance or a changed CLI flag, as far as the logs show.
+2. **The runner treats "ran, exited 0, pushed nothing" as a failure** after three attempts, as it already treats a non-zero exit: it sets
+   `blocked: <agent> ran and pushed nothing <n> times` through `tools/heartbeat.sh`, so the roster shows BLOCKED. This is a commit to
+   `tools/agent-runner.ps1` on `work-mailbox` (that branch is never merged; commit it directly, as `home:`). If the runner can be exercised without
+   starting Copilot (a stub agent command), show it red then green in the report; otherwise say how it was checked.
+3. **A recommendation**, as Q-g113-1: keep copilot-home (and what it needs from the maintainer to work), or retire it in `PROJECTS.md` and
+   `DIRECTOR.md` with the reason.
+
+Report `home/reports/2026-11-25-g113.md`.
+
 ## Batch a15 (aggiemap: #1082, All Maps scrolls sideways on a phone) (Medium) - **now**
 
 [#1082](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1082). A copy field holding
