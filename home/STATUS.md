@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle, listening.
+- **Batch a45** (#3651, the backslash trap in CLAUDE.md), since 11:31 AM Central, 25 November, from `origin/development` `2cfb0bc43`. Worktree `wt-a45`.
 
 ## Finished
 - **Batch a33** (report `home/reports/2026-11-25-a33.md`, 11:25 AM Central): #3486, branch `refactor/3486-one-markdown-popup` on the fork at `addf9b536`, pre-pr-check Exit 0. Filed #3671 and #3673. Two questions.
