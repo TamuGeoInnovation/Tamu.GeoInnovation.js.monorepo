@@ -2,6 +2,71 @@
 > # NEXT: batch g203 (from `work (gisday)`, 25 November, about 12:05 AM Central). It is not started: nothing on this branch reports it, whatever `queued.sh` called it. Take it now, before any other batch.
 >
 
+## Batch a26 (aggiemap: #3539, so a check never again reports an old build as a broken application) (High) - **now**
+
+You met this one the hard way four hours ago, which is why it is yours.
+[#3539](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3539) is the issue I filed from
+your a24 report: the tailgating failures were not a regression, they were
+[PR 3511](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3511) (#2758) adding checks in the
+same commit as the fix, against builds that predate it. Read #3539 and my reply to a24 before starting.
+
+**The cost was not the red run.** It was a careful machine spending twenty minutes proving a production fault that did
+not exist. The suite told it the application was wrong when the truthful answer was "deploy a newer build".
+
+### Before you build anything: check the ground has not moved
+
+The maintainer's standing instruction is that **every issue is checked for being already done, superseded or no longer
+relevant before work starts.** For this one:
+
+- **A dev deploy may have happened since.** If a build carrying #2758 has reached dev, those four checks are green
+  there and red only on production - which changes the example but not the issue.
+- **Someone may have added an allowance.** Look at `environments.json` for a Graduation-shaped entry that papers over
+  the tailgating checks. If one exists, say so and leave it: a forgotten allowance is the failure mode option 3 in
+  #3539 warns about.
+
+Say in your report what you found, even if the answer is "unchanged".
+
+### The work
+
+#3539 sets out three shapes. **I am not choosing between them for you** - you have the measurements and you have just
+been bitten by this. Pick one, say why, and say what you rejected.
+
+The one thing the mechanism must do, whatever its shape: **the message a reader sees has to name the change and say
+the build is old.** `bus.spec.ts` already has the sentence to copy, for the probe's own age:
+
+> "A build from before the probe reported graphics cannot show what the bus layer has drawn... Skipped rather than
+> failed... it is 'deploy a newer build', not 'the routes are broken'."
+
+**Reuse that, do not invent a second mechanism.** `test/smoke/aggiemap/` already has skip-with-a-reason in at least two
+places (`maps.spec.ts` for a build with no probe, `bus.spec.ts` for one without `graphicTypes`). If your shape can be
+expressed as a third caller of whatever those use, that is the right answer; if it cannot, say what stopped you.
+
+**The four checks to put behind it**, so the next release tier is not red for this reason: the tailgating Bus Routes
+and Experiments tabs in `development-only.spec.ts`, the `/events/tailgating/map/d/trip/options` gate, and
+`bus.spec.ts`'s event-map panel.
+
+**Prove both halves.** A mechanism that skips is useless if it skips when the feature is genuinely missing. Show it
+skipping against today's deployed build **and** show it would fail against a build that has #2758 and then loses it -
+a local production build with the tabs removed is the honest way, if you can manage it. If you cannot, say so plainly
+rather than claiming one run proves both.
+
+**Then say where it is written down.** #3539's "done when" asks for it in `docs/testing.md`, beside the other reasons
+a check can skip. That page has a CI check of its own, so read its rules before editing: add your row, and **leave
+every count and the Total alone**.
+
+### Checking and reporting
+
+`scripts/pre-pr-check.sh test/3539-skip-old-builds '<title>' .pr-body.md` - affected, and `--label no-visible-change`
+unless you change something a visitor sees. Its last line in your report and in the body.
+
+Push to the fork; **no pull request** - mine. Say **"branch ready: test/3539-skip-old-builds"**.
+
+`work-lab-leila/reports/2026-11-25-a26.md`: what you found still true of #3539, the shape you chose and what you
+rejected, both halves of the proof, and the check's `Exit` line.
+
+**Questions come to me** (`work (aggiemap)`), with options and a recommendation. **Set any issue's Priority yourself**
+now ([#3527](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3527)).
+
 ## Batch a24 (aggiemap: #3369, measure the drawing budget under real load - the thing your own a18 asked for) (High) - **now**
 
 Your a18 report found the mechanism and recommended measuring before changing anything (Q-a18-2, option **c**). The
