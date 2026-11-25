@@ -12,7 +12,6 @@ import {
   throwError,
   zip,
   Subject,
-  fromEventPattern,
   pipe
 } from 'rxjs';
 import {
@@ -43,7 +42,7 @@ import { DoorPoint, firstRoutableDoor, rankDoorsByDistance, refineStops } from '
 import { timeStringForDate } from '@tamu-gisc/common/utils/date';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { EsriMapService, MapServiceInstance, toGeographic } from '@tamu-gisc/maps/esri';
+import { EsriMapService, MapServiceInstance, toGeographic, viewEventFromStore } from '@tamu-gisc/maps/esri';
 import { EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 import { SearchService, SearchResult, SearchResultItem } from '@tamu-gisc/ui-kits/ngx/search';
 import { SettingsService, SettingsInitializationConfig } from '@tamu-gisc/common/ngx/settings';
@@ -360,67 +359,50 @@ export class TripPlannerService implements OnDestroy {
   private $destroy: Subject<boolean> = new Subject();
 
   public initializeHandlers() {
-    this.mapService.store
-      .pipe(
-        map((instances) => instances?.view),
-        switchMap((view) => {
-          let handle: esri.Handle;
+    viewEventFromStore<esri.ViewClickEvent>(this.mapService.store, 'click').subscribe((event) => {
+      const layer = this._map.findLayerById('buildings-layer') as esri.FeatureLayer;
 
-          const add = (handler) => {
-            handle = view.on('click', handler);
-          };
+      // Allow click coordinates only when on the trip planner route
+      if (this.router.url.includes('trip')) {
+        this.mapService.featuresIntersectingPoint(layer, event.mapPoint).then(async (res) => {
+          // Latitude and longitude, which a view in a projected reference does not give (#1875).
+          const { latitude, longitude } = await toGeographic(event.mapPoint);
 
-          const remove = () => {
-            return handle.remove();
-          };
-
-          return fromEventPattern(add, remove);
-        })
-      )
-      .subscribe((event: esri.ViewClickEvent) => {
-        const layer = this._map.findLayerById('buildings-layer') as esri.FeatureLayer;
-
-        // Allow click coordinates only when on the trip planner route
-        if (this.router.url.includes('trip')) {
-          this.mapService.featuresIntersectingPoint(layer, event.mapPoint).then(async (res) => {
-            // Latitude and longitude, which a view in a projected reference does not give (#1875).
-            const { latitude, longitude } = await toGeographic(event.mapPoint);
-
-            // If the query returns a feature in the value use the first item in that list
-            if (res.features.length > 0) {
-              this.setStops([
-                new TripPoint({
-                  source: 'map-event',
-                  originAttributes: res.features[0].attributes,
-                  originGeometry: { latitude, longitude },
-                  originParameters: {
-                    type: 'map-event',
-                    value: {
-                      latitude,
-                      longitude
-                    }
+          // If the query returns a feature in the value use the first item in that list
+          if (res.features.length > 0) {
+            this.setStops([
+              new TripPoint({
+                source: 'map-event',
+                originAttributes: res.features[0].attributes,
+                originGeometry: { latitude, longitude },
+                originParameters: {
+                  type: 'map-event',
+                  value: {
+                    latitude,
+                    longitude
                   }
-                })
-              ]);
-            } else {
-              // If the query does not return a feature in the value, use the event coordinates.
-              this.setStops([
-                new TripPoint({
-                  source: 'map-event',
-                  originGeometry: { latitude, longitude },
-                  originParameters: {
-                    type: 'map-event',
-                    value: {
-                      latitude,
-                      longitude
-                    }
+                }
+              })
+            ]);
+          } else {
+            // If the query does not return a feature in the value, use the event coordinates.
+            this.setStops([
+              new TripPoint({
+                source: 'map-event',
+                originGeometry: { latitude, longitude },
+                originParameters: {
+                  type: 'map-event',
+                  value: {
+                    latitude,
+                    longitude
                   }
-                })
-              ]);
-            }
-          });
-        }
-      });
+                }
+              })
+            ]);
+          }
+        });
+      }
+    });
   }
 
   /**
