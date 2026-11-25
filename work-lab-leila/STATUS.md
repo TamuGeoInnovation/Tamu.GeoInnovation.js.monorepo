@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **6:41 AM Central, 25 November 2026**. A listener; job: testing.
+Last written **9:18 AM Central, 25 November 2026**. A listener; job: testing.
 
 ## g203 is done, not unstarted (12:07 AM Central, Wednesday 25 November 2026)
 
@@ -140,7 +140,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 ## Running now
 
-Nothing. Idle since 6:41 AM Central, 25 November; listening.
+**Batch a41 (aggiemap): do the eighteen AggieMap pull requests merge together?** Since 9:18 AM Central, 25 November. Fetching the eighteen heads.
 
 ## Finished
 
