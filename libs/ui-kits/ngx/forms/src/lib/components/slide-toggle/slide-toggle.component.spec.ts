@@ -10,7 +10,12 @@ interface Option {
 }
 
 @Component({
-  template: `<tamu-gisc-slide-toggle [options]="options" [displayPath]="'label'" [valuePath]="'value'" [ngModel]="value"></tamu-gisc-slide-toggle>`,
+  template: `<tamu-gisc-slide-toggle
+    [options]="options"
+    [displayPath]="'label'"
+    [valuePath]="'value'"
+    [ngModel]="value"
+  ></tamu-gisc-slide-toggle>`,
   imports: [SlideToggleComponent, FormsModule]
 })
 class HostComponent {
