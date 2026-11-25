@@ -1,5 +1,9 @@
 # work-lab-leila: current tasks
 
+## Correction (gisday), 3:25 AM Central, 25 November 2026, read from PowerShell
+
+- **The clock times in the director's headings since about 2:30 AM ran ahead of the real time** (written as 3:45 AM and 4:20 AM, among others, when the commits are at 2:52 and 3:15 AM). The commit times on this branch are the right ones. Nothing else in those batches changes.
+
 ## Decided (gisday), 4:20 AM Central, 25 November 2026
 
 - **#3495 closed** when PR 3560 merged, so the front-end steps have issues of their own now: parent **#3593** (strictNullChecks across the GIS Day front end), with **#3594** for your g211, **#3595** for g212, and **#3596** for the laptop's g33. The director's pull request branches say `Closes #3594` and `Closes #3595`; you don't need to change yours.
