@@ -69,6 +69,22 @@ locally (txgisday-dev only, as always).
    fork: push the result as `fix/3635-rsvp-submission-type-routes-img`). Say the commit in your report.
 5. Report `reports/2026-11-25-g38.md`.
 
+## Batch g40 (gisday: #1478 zoneless, the signed-in half; after g38, before g39) (Medium)
+
+Home's g121 (`home/reports/2026-11-25-g121.md`) found zoneless holds on the public pages, and fixed the one stale case:
+the file picker's `reset()` now calls `markForCheck()`. What's left is signed in, which home can't reach. Branch
+`chore/1478-gisday-zoneless-pr` on the fork, **`59a86ea3e`**. Locally, txgisday-dev only, made-up data:
+
+1. Run it signed in, as an admin. Exercise:
+   - **Forms with each control:** file upload (pick, then reset or save), radio group, slide toggle, select list. Look at
+     the admin forms, and at registration and the submissions form.
+   - **A modal**, opened and closed.
+   - **The judging tabs**, switching between them.
+2. Watch for a view that only catches up on the next click or keypress. That's the zoneless failure. Compare anything odd
+   against `development` before calling it a fault.
+3. Report `reports/2026-11-25-g40.md`: what you exercised and what you saw, with one screenshot per area. Commit nothing
+   unless something is stale; if it is, say where and stop.
+
 ## Batch g39 (gisday: #3667, remove the unfinished initial survey; after g38) (Low)
 
 **The maintainer decided on 25 November** to remove the initial survey rather than fix it (#990, now closed). #3667 lists what
