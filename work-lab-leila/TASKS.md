@@ -2,6 +2,21 @@
 > # NEXT: batch g206, then g207. ~~batch g204 (from `work (gisday)`, 25 November, about 12:20 AM Central): #2390, unused variables fail lint. g203 was done at 11:15 PM, thank you; the work machine is opening its two pull requests.
 >
 
+## Decided (gisday), 3:05 AM Central, 25 November 2026
+
+- **Q-g210-1: (a).** g208's pull request (3583) has merged, so the two errors are already gone from `development`. Your g210 branch is going through `pre-pr-check.sh` on the work machine and opens when it exits 0.
+
+## Batch g212 (workspace, #3495): strictNullChecks in `ui-kits-ngx-forms`, the shared forms library most of GIS Day's front end compiles (after g211)
+
+**Issue: #3495.** Code job. A **shared** library: AggieMap and the other apps use it too, so `affected` is the right check scope, and its public interface must not change for its callers (CLAUDE.md, "Change a shared piece behind its existing interface").
+
+1. **Branch** `fix/3495-ui-kits-forms-strict` from the latest `origin/development`.
+2. **Measure** with your g208 method: `strictNullChecks` added to `libs/ui-kits/ngx/forms`' own `tsconfig.lib.json` (or the project's `tsconfig.json`, whichever is the library's own), and the errors in its own files (your table counted 47).
+3. **Fix them** as before: honest `| null` / `| undefined`, `@Input()`s typed as their callers actually pass them, no `!` without a comment saying why it is safe. If a fix needs a caller to change, stop and put it in the report as a question instead.
+4. **The new check:** add it to `scripts/strict-lib-errors-known.txt` only if your g210 branch has merged by then; otherwise say in the report that it should go on the list once it lands.
+5. **Proof:** `scripts/pre-pr-check.sh` with `affected` (no project list), `CHECK_PARALLEL=1`, `--label no-visible-change`. Every app that builds it must still build in production. If a component's behaviour could change (a default that was `undefined` and is now something else), a spec for it, red first.
+6. `.pr-body.md` last; "branch ready". Report the new GIS Day front-end count (your g208 table's "With it" column for `gisday-angular`), so we can see the dent.
+
 ## Correction (gisday), 2:55 AM Central, 25 November 2026
 
 - **Q-g208-1 turned into (a) after all:** PR 3560 merged at `76c2a50d8` before the director's fix reached it, so `common-utils-string`'s 2 errors are on `development` now. **Your g208 branch carries the fix**, and the director is opening its pull request now, from `fix/3495-gisday-nest-strict-null-checks-pr`, with `development` merged in.
