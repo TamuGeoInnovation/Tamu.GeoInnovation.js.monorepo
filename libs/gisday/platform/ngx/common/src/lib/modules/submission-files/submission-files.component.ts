@@ -12,7 +12,6 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse, HttpEvent, HttpEventType } from '@angular/common/http';
-import { DatePipe } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Observable } from 'rxjs';
 
@@ -28,6 +27,7 @@ import { downloadFile } from '@tamu-gisc/common/utils/ui';
 import { FileComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 import { serverMessage } from '../../utils/server-message';
+import { CentralDatePipe } from '../../pipes/central-date/central-date.pipe';
 
 /**
  * Where a list of files is read from and sent to (#3093): a submission's files by default, or anything else kept under
@@ -63,7 +63,7 @@ export interface FilesSource {
   templateUrl: './submission-files.component.html',
   styleUrls: ['./submission-files.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FileComponent, DatePipe]
+  imports: [FileComponent, CentralDatePipe]
 })
 export class SubmissionFilesComponent implements OnInit {
   /** Asked for the submissions service only when there is no source, so a page with one needs none. */
@@ -104,9 +104,7 @@ export class SubmissionFilesComponent implements OnInit {
   /** The PDF being shown (#3090), and the page-local address it is drawn from. */
   public readonly previewing = signal<{ file: SubmissionFileDto; url: SafeResourceUrl } | null>(null);
   /** The files that preview: the PDFs, in the list's order. */
-  public readonly previewFiles = computed(() =>
-    (this.files() ?? []).filter((file) => extensionOf(file.name) === '.pdf')
-  );
+  public readonly previewFiles = computed(() => (this.files() ?? []).filter((file) => extensionOf(file.name) === '.pdf'));
 
   private readonly sanitizer = inject(DomSanitizer);
   /** The object URL behind `previewing`, let go when another is shown, the preview is closed or the list goes. */

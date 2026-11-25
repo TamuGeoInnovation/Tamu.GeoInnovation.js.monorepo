@@ -2,6 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../../../../dist/out-tsc",
+    "strictNullChecks": true,
     "module": "commonjs",
     "types": ["vitest/globals", "node", "express", "multer"]
   },

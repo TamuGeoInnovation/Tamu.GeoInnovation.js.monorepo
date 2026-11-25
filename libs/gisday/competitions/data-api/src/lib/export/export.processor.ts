@@ -2,7 +2,7 @@ import { Logger } from '@nestjs/common';
 import { Process, Processor } from '@nestjs/bull';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Job } from 'bull';
+import { type Job } from 'bull';
 
 import * as path from 'path';
 import * as os from 'os';
@@ -17,6 +17,15 @@ import { exportCsv, exportedMedia, exportedSubmissions, exportRow, mediaPath } f
 
 const BATCH_SIZE = 20;
 
+/**
+ * The folder `name` in `zip`. JSZip's types allow null, but its folder() returns a folder for every non-empty name
+ * (and the zip itself for an empty one); only a regular expression gives anything else.
+ */
+function folderIn(zip: JSZip, name: string): JSZip {
+  // Cannot be null: a string name always gives a folder (see above).
+  return zip.folder(name)!;
+}
+
 async function addDirectoryToZip(dirPath: string, zipFolder: JSZip): Promise<void> {
   const entries = await fs.readdir(dirPath, { withFileTypes: true });
 
@@ -24,7 +33,7 @@ async function addDirectoryToZip(dirPath: string, zipFolder: JSZip): Promise<voi
     const fullPath = path.join(dirPath, entry.name);
 
     if (entry.isDirectory()) {
-      await addDirectoryToZip(fullPath, zipFolder.folder(entry.name));
+      await addDirectoryToZip(fullPath, folderIn(zipFolder, entry.name));
     } else {
       zipFolder.file(entry.name, await fs.readFile(fullPath));
     }
@@ -57,7 +66,7 @@ export class ExportProcessor {
     await fs.ensureDir(mediasDir);
 
     // 2. Batch process: extract images + build CSV rows
-    const csvRows = [];
+    const csvRows: Array<Record<string, unknown>> = [];
 
     for (let i = 0; i < submissions.length; i += BATCH_SIZE) {
       const batch = submissions.slice(i, i + BATCH_SIZE);
@@ -110,7 +119,7 @@ export class ExportProcessor {
     const mediasExists = await fs.pathExists(mediasDir);
 
     if (mediasExists) {
-      await addDirectoryToZip(mediasDir, zip.folder('medias'));
+      await addDirectoryToZip(mediasDir, folderIn(zip, 'medias'));
     }
 
     // Stream ZIP to disk

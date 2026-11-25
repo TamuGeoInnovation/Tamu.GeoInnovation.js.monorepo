@@ -11,16 +11,17 @@ import { EsriMapService, MapConfig } from '@tamu-gisc/maps/esri';
 import { COMPETITION_VALIDATION_STATUS } from '@tamu-gisc/gisday/common';
 import { EsriMapComponent } from '@tamu-gisc/maps/esri';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
-import { AsyncPipe, DatePipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 
 import esri = __esri;
+import { CentralDatePipe } from '@tamu-gisc/gisday/platform/ngx/common';
 
 @Component({
   selector: 'tamu-gisc-submission-detail-modal',
   templateUrl: './submission-detail-modal.component.html',
   styleUrls: ['./submission-detail-modal.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [EsriMapComponent, ButtonComponent, AsyncPipe, DatePipe]
+  imports: [EsriMapComponent, ButtonComponent, AsyncPipe, CentralDatePipe]
 })
 export class SubmissionDetailModalComponent implements OnInit {
   private readonly data = inject<SubmissionDetailModalData>(MODAL_DATA);

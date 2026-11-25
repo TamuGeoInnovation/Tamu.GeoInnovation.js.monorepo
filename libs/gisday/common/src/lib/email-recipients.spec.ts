@@ -9,7 +9,8 @@ import {
   wasSent,
   togetherFirstNames,
   togetherTo,
-  withoutRecipients
+  withoutRecipients,
+  type EmailSends
 } from './email-recipients';
 import { EMAIL_SENDER_KEY } from './email-sender';
 
@@ -76,8 +77,11 @@ describe('email recipients', () => {
 
 /** #3167: what each speaker was sent before, as the composer says it. Times are shown in US Central. */
 describe('the record of sends', () => {
-  const never = { name: 'Avery Example', sends: { thisEmail: [], others: [] } };
-  const twice = {
+  // A recipient as the composer lists one: `sends` is absent where the API kept no record (#3547).
+  type Recipient = { name: string; sends?: EmailSends };
+
+  const never: Recipient = { name: 'Avery Example', sends: { thisEmail: [], others: [] } };
+  const twice: Recipient = {
     name: 'Blair Sample',
     sends: {
       // 4:05 PM and 9:30 AM Central, 16 November 2026.
@@ -85,7 +89,7 @@ describe('the record of sends', () => {
       others: [{ kind: 'profile', at: '2026-11-15T20:10:00.000Z' }]
     }
   };
-  const unknown = { name: 'Cara Test' };
+  const unknown: Recipient = { name: 'Cara Test' };
 
   it('says whether and when each was sent this email, and nothing when the API kept no record', () => {
     expect(sendsLine(never)).toBe('Not sent yet');

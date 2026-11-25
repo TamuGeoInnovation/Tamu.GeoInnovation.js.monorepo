@@ -1,6 +1,6 @@
 import { Controller, Post, Body } from '@nestjs/common';
 
-import { IMailroomEmailOutbound } from '@tamu-gisc/mailroom/common';
+import { type IMailroomEmailOutbound } from '@tamu-gisc/mailroom/common';
 
 import { ContactService } from './contact.service';
 

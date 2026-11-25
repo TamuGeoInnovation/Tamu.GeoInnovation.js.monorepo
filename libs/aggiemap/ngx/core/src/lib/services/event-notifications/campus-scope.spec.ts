@@ -28,8 +28,6 @@ afterEach(() => vi.useRealTimers());
 // A notice shown once is not shown again this session (#1307), so each test starts a new session.
 afterEach(() => sessionStorage.clear());
 
-const oneDay = 24 * 60 * 60 * 1000;
-
 const definition = (id: string) => ({
   configuration: {
     id,

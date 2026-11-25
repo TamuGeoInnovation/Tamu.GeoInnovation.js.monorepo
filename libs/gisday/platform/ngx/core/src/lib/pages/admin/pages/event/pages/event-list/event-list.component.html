@@ -26,7 +26,7 @@
            rows of one day do not run into the next (#1775). -->
       @for (group of days; track group.key) {
       <div class="card">
-        <h2>@if (group.date) {{{ group.date | date: 'EEEE, MMMM d' : '-0600' }}} @else {No day set}</h2>
+        <h2>@if (group.date) {{{ group.date | centralDate: 'EEEE, MMMM d' }}} @else {No day set}</h2>
         <table class="floating-table">
           <thead>
             <tr>
@@ -45,12 +45,12 @@
               <td (click)="$event.stopPropagation()"><tamu-gisc-checkbox label="" (changed)="toggleRow($safeNavigationMigration(entity?.guid))" [checked]="(selectedRows$ | async) | exists: $safeNavigationMigration(entity?.guid)"></tamu-gisc-checkbox></td>
               <td>{{entity?.name}}</td>
               <td>{{entity?.location?.building}} {{entity?.location?.room}}</td>
-              <td>{{$safeNavigationMigration(entity?.day?.date) | parseDateTimeStrings: $safeNavigationMigration(entity?.startTime) | date: 'h:mm a'}}</td>
-              <td>{{$safeNavigationMigration(entity?.day?.date) | parseDateTimeStrings: $safeNavigationMigration(entity?.endTime) | date: 'h:mm a'}}</td>
+              <td>{{$safeNavigationMigration(entity?.day?.date) | parseDateTimeStrings: $safeNavigationMigration(entity?.startTime) | centralDate: 'h:mm a'}}</td>
+              <td>{{$safeNavigationMigration(entity?.day?.date) | parseDateTimeStrings: $safeNavigationMigration(entity?.endTime) | centralDate: 'h:mm a'}}</td>
               <!-- On the public schedule or not, switched here without opening the event (#2092). -->
               <td class="event-active" (click)="$event.stopPropagation()"><tamu-gisc-checkbox label="" [ariaLabel]="'Show ' + entity?.name + ' on the public schedule'" [checked]="entity?.active !== false" (changed)="setActive([entity.guid], $event)"></tamu-gisc-checkbox></td>
               <!-- Whether the speakers have uploaded slides, and when (#3093); the session's page downloads them. -->
-              <td class="event-slides nowrap">@if (slides()?.get(entity.guid); as file) {<span [title]="file.name">{{ file.uploaded | date: 'MMM d' }}</span>} @else {None}</td>
+              <td class="event-slides nowrap">@if (slides()?.get(entity.guid); as file) {<span [title]="file.name">{{ file.uploaded | centralDate: 'MMM d' }}</span>} @else {None}</td>
             </tr>
             }
           </tbody>

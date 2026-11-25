@@ -13,13 +13,17 @@ import {
   JoinTable,
   OneToMany,
   FindOptionsRelations,
-  Relation,
+  type Relation,
   Unique
 } from 'typeorm';
 
 import { TIMESTAMP_COLUMN } from './timestamps';
 
 // TODO:
+
+// A column typed `string | null` names its type (`type: 'nvarchar'`): with strictNullChecks on, TypeScript emits a union
+// as `Object`, which TypeORM cannot map, where `string` alone emitted `String`, which SQL Server maps to the same nvarchar
+// (#3495). The same goes for any other union a column is declared with.
 
 /**
  * A flat object of primitive values, as a GeoJSON feature's `properties`. Lives here, beside its only users (this file and
@@ -425,7 +429,7 @@ export class EventLocation extends GuidIdentity {
   name: 'events'
 })
 export class Event extends GuidIdentity {
-  @Column({ nullable: true })
+  @Column({ type: 'nvarchar', nullable: true })
   public name: string | null;
 
   @Column({ nullable: false, default: true })
@@ -434,10 +438,10 @@ export class Event extends GuidIdentity {
   @Column({ nullable: true, length: 'MAX' })
   public abstract: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'nvarchar', nullable: true })
   public startTime: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'nvarchar', nullable: true })
   public endTime: string | null;
 
   @Column({ nullable: true, default: 0, select: false })
@@ -449,7 +453,7 @@ export class Event extends GuidIdentity {
   @Column({ nullable: true })
   public capacity: number;
 
-  @Column({ nullable: true, length: 'MAX' })
+  @Column({ type: 'nvarchar', nullable: true, length: 'MAX' })
   public resources: string | null;
 
   @Column({ nullable: true })
@@ -466,7 +470,7 @@ export class Event extends GuidIdentity {
    * The secret in a hybrid or virtual session's check-in QR code (#2560), made the first time an
    * organizer asks for the code. Never selected unless asked for, so no event the API returns carries it.
    */
-  @Column({ nullable: true, length: 64, select: false })
+  @Column({ type: 'nvarchar', nullable: true, length: 64, select: false })
   public checkInCode?: string | null;
 
   /**
@@ -511,7 +515,7 @@ export class Event extends GuidIdentity {
   @Column({ nullable: true, default: false })
   public isBringYourOwnDevice: boolean;
 
-  @Column({ nullable: true, length: 'MAX' })
+  @Column({ type: 'nvarchar', nullable: true, length: 'MAX' })
   public requirements: string | null;
 
   // Null when its day was deleted.
@@ -729,13 +733,13 @@ export class PlaceLink extends GuidIdentity {
   name: 'speakers'
 })
 export class Speaker extends GuidIdentity {
-  @Column({ nullable: true })
+  @Column({ type: 'nvarchar', nullable: true })
   public firstName: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'nvarchar', nullable: true })
   public lastName: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'nvarchar', nullable: true })
   public email: string | null;
 
   @Column({ nullable: true })
@@ -756,7 +760,7 @@ export class Speaker extends GuidIdentity {
   @Column({ nullable: true })
   public affiliation: string;
 
-  @Column({ nullable: true, length: 'MAX' })
+  @Column({ type: 'nvarchar', nullable: true, length: 'MAX' })
   public description: string | null;
 
   @Column({ nullable: true })
@@ -931,7 +935,7 @@ export class SpeakerEditLink extends GuidIdentity {
   public expires: Date;
 
   /** The address the link was emailed to, if it was. */
-  @Column({ nullable: true })
+  @Column({ type: 'nvarchar', nullable: true })
   public sentTo: string | null;
 
   /**
@@ -962,15 +966,15 @@ export class SpeakerEmailSend extends GuidIdentity {
   public kind: string;
 
   /** The session it was about, for a session's emails; none for the profile email. */
-  @Column({ nullable: true, length: 36 })
+  @Column({ type: 'nvarchar', nullable: true, length: 36 })
   public eventGuid: string | null;
 
   /** The address it was sent to. */
-  @Column({ nullable: true })
+  @Column({ type: 'nvarchar', nullable: true })
   public sentTo: string | null;
 
   /** Who it was from, as the From line said. */
-  @Column({ nullable: true })
+  @Column({ type: 'nvarchar', nullable: true })
   public sentFrom: string | null;
 }
 
@@ -983,17 +987,17 @@ export class SpeakerEdit extends GuidIdentity {
   @ManyToOne(() => Speaker, { nullable: false, onDelete: 'CASCADE' })
   public speaker: Relation<Speaker>;
 
-  @Column({ nullable: true, length: 'MAX' })
+  @Column({ type: 'nvarchar', nullable: true, length: 'MAX' })
   public description: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'nvarchar', nullable: true })
   public affiliation: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'nvarchar', nullable: true })
   public socialMedia: string | null;
 
   /** The class year a presenter card shows after the name, as the admin form takes it: "2018", or "2014, 2016" (#2953). */
-  @Column({ nullable: true, length: 50 })
+  @Column({ type: 'nvarchar', nullable: true, length: 50 })
   public graduationYear: string | null;
 
   /** The university, chosen from the season's list (#2953). Kept if the university is deleted, without it. */
@@ -1001,7 +1005,7 @@ export class SpeakerEdit extends GuidIdentity {
   public university?: Relation<University> | null;
 
   /** A proposed photo, under APP_DATA, until it is approved or rejected. */
-  @Column({ nullable: true })
+  @Column({ type: 'nvarchar', nullable: true })
   public photoPath: string | null;
 
   @Column({ default: 'pending' })
@@ -1011,7 +1015,7 @@ export class SpeakerEdit extends GuidIdentity {
   public reviewedAt: Date | null;
 
   /** The admin's account id. */
-  @Column({ nullable: true })
+  @Column({ type: 'nvarchar', nullable: true })
   public reviewedBy: string | null;
 }
 
@@ -1180,7 +1184,7 @@ export class Submission extends GuidIdentity {
   @Column({ nullable: true })
   public accountGuid: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'nvarchar', nullable: true })
   public title: string | null;
 
   @Column({ nullable: true, type: 'simple-json' })
@@ -1188,10 +1192,10 @@ export class Submission extends GuidIdentity {
   // Typed by participants and stored as JSON, so an entry can be null as well as a field (#3495).
   public participants: Array<{ name?: string | null; email?: string | null; studentId?: string } | null> | null;
 
-  @Column({ nullable: true, length: 'MAX' })
+  @Column({ type: 'nvarchar', nullable: true, length: 'MAX' })
   public abstract: string | null;
 
-  @Column({ nullable: true, length: 'MAX' })
+  @Column({ type: 'nvarchar', nullable: true, length: 'MAX' })
   public link: string | null;
 
   @Column({ default: false })
@@ -1200,7 +1204,7 @@ export class Submission extends GuidIdentity {
   @Column({ default: false })
   public acceptance: boolean;
 
-  @Column({ length: 'MAX', nullable: true })
+  @Column({ type: 'nvarchar', length: 'MAX', nullable: true })
   public message: string | null;
 
   // These three are written out for the reason `Sponsor.logoSize` is (#1977): an enum or a string is a string to `tsc`,
@@ -1240,7 +1244,7 @@ export class Rubric extends GuidIdentity {
   @Column({ nullable: false })
   public name: string;
 
-  @Column({ nullable: true, length: 'MAX' })
+  @Column({ type: 'nvarchar', nullable: true, length: 'MAX' })
   public description: string | null;
 
   @OneToMany(() => RubricCriterion, (criterion) => criterion.rubric)
@@ -1297,7 +1301,7 @@ export class Assessment extends GuidIdentity {
   @Column({ type: 'int', nullable: false })
   public total: number;
 
-  @Column({ nullable: true, length: 'MAX' })
+  @Column({ type: 'nvarchar', nullable: true, length: 'MAX' })
   public comment: string | null;
 }
 

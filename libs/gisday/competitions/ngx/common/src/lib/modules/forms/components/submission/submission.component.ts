@@ -1,13 +1,4 @@
-import {
-  Component,
-  OnChanges,
-  OnDestroy,
-  OnInit,
-  SimpleChanges,
-  inject,
-  input,
-  signal
-} from '@angular/core';
+import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges, inject, input, signal } from '@angular/core';
 import {
   UntypedFormArray,
   UntypedFormBuilder,
@@ -176,7 +167,7 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
           this.location.set(res);
           this.locationStatus.next('found');
         },
-        error: (err: GeolocationPositionError) => {
+        error: (_err: GeolocationPositionError) => {
           // TrackLocation keeps watching through every other error, so this is a refusal.
           this._trackLocation = undefined;
           this._showBlocked();
@@ -248,7 +239,9 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
       .pipe(
         // Shrink the photographs on the phone before upload (#1786); a photograph that cannot be shrunk
         // is sent as it is.
-        switchMap(([file, file2]) => from(Promise.all([shrinkImage(file), file2 !== undefined ? shrinkImage(file2) : undefined]))),
+        switchMap(([file, file2]) =>
+          from(Promise.all([shrinkImage(file), file2 !== undefined ? shrinkImage(file2) : undefined]))
+        ),
         switchMap(([file, file2]) => {
           // FormData gets sent as multi-part form in request.
           const data: FormData = new FormData();
@@ -287,7 +280,8 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
             // id, so one that was saved but whose answer was lost is not saved twice.
             retry({
               count: UPLOAD_RETRY_DELAYS.length,
-              delay: (err, attempt) => (uploadMayBeRetried(err) ? timer(UPLOAD_RETRY_DELAYS[attempt - 1]) : throwError(() => err))
+              delay: (err, attempt) =>
+                uploadMayBeRetried(err) ? timer(UPLOAD_RETRY_DELAYS[attempt - 1]) : throwError(() => err)
             }),
             switchMap((event) => {
               if (event.type === HttpEventType.UploadProgress) {

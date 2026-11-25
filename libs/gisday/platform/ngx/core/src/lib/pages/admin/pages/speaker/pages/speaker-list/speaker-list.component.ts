@@ -13,8 +13,9 @@ import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list
 import { AdminSearchComponent } from '../../../base-admin-list/admin-search.component';
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
-import { AsyncPipe, DatePipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
+import { CentralDatePipe } from '@tamu-gisc/gisday/platform/ngx/common';
 
 @Component({
   selector: 'tamu-gisc-speaker-list',
@@ -25,7 +26,7 @@ import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
     RouterLink,
     CheckboxComponent,
     AsyncPipe,
-    DatePipe,
+    CentralDatePipe,
     ExistsPipe,
     AdminSearchComponent,
     DashboardScrollComponent
