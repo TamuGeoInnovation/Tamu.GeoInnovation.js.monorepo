@@ -368,6 +368,19 @@ question had been taken. So:
    Docker is back") is confirmed with him, in that worker's chat, because no director can answer it for him. It is
    recorded under **Told directly** as before.
 
+## An issue is claimed when its batch is written (24 November 2026, [#3443](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3443))
+
+On 24 November two directors queued #3337 to two machines one minute apart, with the same branch name. Batch letters stop two
+directors picking the same batch number; nothing stopped them picking the same **issue**, because a batch is only visible in a
+`TASKS.md`, and an issue's own fields said nothing about who had just queued it. So:
+
+1. **Before writing a batch for an issue, read its project Status.** In Progress means someone has it: ask that director, by
+   message, before taking it.
+2. **When the batch is written, set the issue's project Status to In Progress at once**, in every project it is on, not when the
+   branch is pushed. It is the same call directors already make, moved earlier.
+3. **A batch for another director's application says so in its heading**, as a14 did ("written by `work (gisday)` under the
+   AggieMap director's letter, at its request"), and is only written after asking that director. Its questions go to the owner.
+
 ## Adding a machine
 The maintainer pastes the start line on the new machine with its name and job added, for example:
 
