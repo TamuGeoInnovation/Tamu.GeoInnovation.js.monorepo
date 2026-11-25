@@ -33,7 +33,7 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-Nothing.
+- **Batch a52 (#3679, a drive-into-campus case)**, started 1:24 PM Central, in `C:/TAMU/wt-3679b`.
 
 ## Finished
 - **Batch a49 (aggiemap: drive-solve smoke check for #3679)** (report `laptop/reports/2026-11-25-a49.md`): **stopped, premise wrong, my a43 error.** Drive reaches all six visitor garages and every public road; only pedestrian-core points fail, by design. Production app: 3 min to the Central Campus Garage. Corrected on #3679 (comment); no branch, no PR. Q-a49-1, Q-a49-2. (Started 12:35 PM Central; an earlier line here said 12:50, which was estimated.)
