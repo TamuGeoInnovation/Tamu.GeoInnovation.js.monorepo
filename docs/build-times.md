@@ -216,6 +216,22 @@ The check itself agrees. `scripts/check-in-volume.sh` on those four, `CHECK_PARA
 (117 s) and `2026-11-24T212911-check-lab.csv` (60 s), differ by the first run's clone and `npm ci`, not by
 the runner.
 
+### Unit tests: the geoservices projects, Jest against Vitest (#1479)
+
+Jest is `development` at `66fc4dc2c`; Vitest is `chore/1479-vitest-geoservices` at `8fa36b9db`. Each project's test target was run on its own,
+`nx run <project>:test --skip-nx-cache`, each run in a new container, so Jest's transform cache was cold as in CI and the
+pre-push check, inside the check's Docker volume (`tamu-js-1479`: the clone and `node_modules`, no bind mount). The two states
+alternated three times, on the laptop with nothing else running, 25 November 2026, about 1:10 to 1:17 AM Central. The seconds are the
+whole container run, Nx and its start-up included; the runner's own figure (Jest's `Time`, Vitest's `Duration`) is in brackets.
+
+| Project                   | Tests, Jest and Vitest |                        Jest |                      Vitest |
+| ------------------------- | ---------------------: | --------------------------: | --------------------------: |
+| `geoservices-angular`     |                      0 |                3.5 to 3.7 s |                3.9 to 4.1 s |
+| `geoservices-ngx`         |                      4 | 6.3 to 8.1 s (2.68 to 3.04) | 7.7 to 8.9 s (0.93 to 0.95) |
+| `geoservices-data-access` |                      1 | 5.4 to 6.3 s (1.89 to 2.35) | 5.6 to 6.0 s (0.74 to 0.79) |
+
+As with the GIS Day libraries above, Vitest runs the tests two to three times faster, and a project with a handful of tests gains nothing overall: its start-up (Vite and Analog's Angular plugin) is about the size of what it saves. A project with no specs costs about 0.3 s more. `ui-kits-ngx-forms` gained 2 tests in this change (the slide toggle's, for the error Jest left unreported; see the pull request), not measured here.
+
 ### A GIS Day-wide check at each `--parallel` (#3000)
 
 What a check needs when a change touches the whole of GIS Day. `laptop`, 24 November 2026, from about 8:27 PM to
