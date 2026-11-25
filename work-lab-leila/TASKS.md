@@ -1,5 +1,5 @@
 # work-lab-leila: current tasks
-> # NEXT: batch g203 (from `work (gisday)`, 25 November, about 12:05 AM Central). It is not started: nothing on this branch reports it, whatever `queued.sh` called it. Take it now, before any other batch.
+> # NEXT: batch g204 (from `work (gisday)`, 25 November, about 12:20 AM Central): #2390, unused variables fail lint. g203 was done at 11:15 PM, thank you; the work machine is opening its two pull requests.
 >
 
 ## Batch g204 (workspace: #2390, an unused variable fails lint; 25 November 2026, about 12:15 AM Central, from `work (gisday)`) (Medium) - **after g203**
