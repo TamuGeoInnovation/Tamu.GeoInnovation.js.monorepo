@@ -1,5 +1,62 @@
 # work-lab-leila: current tasks
 
+## Batch a47 (aggiemap: skip retired maps in the monitor generator, then #3674 can open; 25 November 2026, 1:45 PM Central, from `work (aggiemap)`) (Medium) - **now**
+
+**a44 is accepted, and it is the best-evidenced report I have had from this machine.** Three things in it did real work:
+you proved the host trap by **running the spec at a development address and watching 4 of 5 tests fail**, which is a
+negative control rather than an assurance; you generated the layer list through a spec that loads the definitions at a
+production address, so `Connections` resolves the URLs exactly as it does for a visitor, instead of parsing TypeScript;
+and you found the eleven layers that answer "Service not started", which nobody was looking for.
+
+**a41: understood, and that is on me.** It was finished at 9:27 AM and I withdrew it at 12:05 PM without checking
+whether it had already been done. Your report stands on the branch and I will read it.
+
+### Q-a44-2: yes, one monitor per URL
+
+Named as your generator names it. 230 monitors rather than 261 rows, and 31 duplicates avoided. `--unique` is the output
+the maintainer will actually work from.
+
+### Q-a44-1: none of (a), (b) or (c) - I checked, and the premise is wrong
+
+You wrote that **you had not checked in the browser** whether those four maps still open on production. I checked the
+definitions instead, and it turns out they cannot:
+
+**All four are already marked `status: 'retired'`** in their definitions, and `RetiredEventGuard` (#1098) sends a
+visitor to the event's `ended` page and never to its map or its builder. So nobody sees an empty map, nothing needs
+retiring, and **filing an issue to retire four already-retired maps would have been closed as already done** - exactly
+the kind of change that looks like a fix and alters nothing.
+
+Saying you had not checked is what made that catchable. If you had written it as a fact, I would have filed the issue.
+
+**So the defect is in the generator, not on production:** it lists layers for retired maps, and would have produced
+**11 red-forever monitors** - the thing a44's own brief warned against. It skips development-only maps already; retired
+maps belong in the same skip.
+
+### What to do
+
+On the **same branch**, `fix/3674-event-map-monitors`:
+
+1. **Skip a map whose `discover.status === 'retired'`**, the way you skip a development-only map, and count it in the
+   skipped totals with that reason. Use the definition's own field; do not match on a date or on the map's name.
+2. **A test for it**, with one of the four as the case - and a test that a **non**-retired map is still listed, so the
+   skip cannot widen silently.
+3. **Expect the totals to move**, and give the new ones: 230 monitors and 261 rows should each fall, and the eleven
+   "gave no name" URLs should go to zero. **If any URL still gives no name after the skip, that one is a real finding** -
+   a live map with a dead layer - and it goes in the report by name. That is the number I care about most.
+4. **Re-run** `scripts/check-in-volume.sh fix/3674-event-map-monitors affected` and `bash scripts/event-map-monitors.test.sh`,
+   and give the log's own `Exit N` line.
+5. **Then `scripts/pre-pr-check.sh`** with the title and body from your a44 report, and give me its last line. a44 ran
+   `check-in-volume.sh` but not `pre-pr-check.sh`, and the pull request cannot open without an Exit 0 from it (#3508).
+   Keep `.pr-body.md` off the branch as you did.
+
+### One correction to the drafted body
+
+It says the release-notes box "Not user-visible (tests, CI, internal docs)" - right, so the pull request also needs the
+**`no-visible-change`** label, which I will add when I open it. Leave the body as it is otherwise; it is accurate.
+
+**Report** `work-lab-leila/reports/2026-11-25-a47.md`. Questions `Q-a47-<n>`. **Open no pull request** - I open it from
+your Exit 0.
+
 ## Batch a44 (aggiemap: generate the Kuma monitor list from the event definitions, for #3674; 25 November 2026, 12:05 PM Central, from `work (aggiemap)`) (Medium) - **now**
 
 **a41 is withdrawn, and it is not your doing.** It asked whether eighteen open AggieMap pull requests merge together.
