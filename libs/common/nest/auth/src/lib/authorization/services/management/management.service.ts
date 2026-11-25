@@ -117,10 +117,10 @@ export class ManagementService {
    * Updates user metadata for a given user.
    *
    * @param {string} userId  The Auth0 user ID
-   * @param {Auth0UserProfile} info The user metadata to update. This includes root level properties as well as app_metadata and user_metadata.
+   * @param {Auth0UserProfileUpdate} info The user metadata to update. This includes root level properties as well as app_metadata and user_metadata.
    * @param {Auth0UserProfileFilters} filters Defines and limits which properties can be updated. This serves as a safety mechanism to prevent unwanted updates to other application metadata or user grouping properties.
    */
-  public async updateUserMetadata(userId: string, info: Auth0UserProfile, filters: Auth0UserProfileFilters) {
+  public async updateUserMetadata(userId: string, info: Auth0UserProfileUpdate, filters: Auth0UserProfileFilters) {
     const user = await this.client.users.get(userId);
 
     if (!user) {
@@ -236,7 +236,7 @@ export class ManagementService {
       const page = await client.users.list({ q, search_engine: 'v3', per_page: USERS_BY_ID_AT_ONCE });
 
       for (const user of page.data) {
-        found.set(user.user_id, this._composeMetadata(user, filters));
+        found.set(idOf(user), this._composeMetadata(user, filters));
       }
     }
 
@@ -317,11 +317,11 @@ export class ManagementService {
   /**
    * Creates root level user info properties that match those of the Auth0 user object.
    */
-  private _composeUserInfo(original: User, updated: Auth0UserProfile['user_info']) {
+  private _composeUserInfo(original: User, updated: Partial<Auth0UserProfile['user_info']>) {
     const shallow = { ...updated };
 
     // Because name and email are managed by the social integration, we don't want to overwrite them
-    if (this._isSocialUser(original.user_id)) {
+    if (this._isSocialUser(idOf(original))) {
       delete shallow.given_name;
       delete shallow.family_name;
       delete shallow.email;
@@ -352,7 +352,7 @@ export class ManagementService {
    * Falsy values are: null, undefined, and "" (empty string)
    * Return a new object with the same structure, but without the falsy values
    */
-  private _removeFalsyValues(obj: Auth0UserProfile): Partial<Auth0UserProfile> {
+  private _removeFalsyValues(obj: Auth0UserProfileUpdate): Auth0UserProfileUpdate {
     const newObj = Object.entries(obj).reduce((acc, [key, value]) => {
       if (value && typeof value === 'object' && Object.keys(obj).length > 0) {
         acc[key] = this._removeFalsyValues(value);
@@ -369,7 +369,7 @@ export class ManagementService {
   /**
    * Accepts an app or user metadata object and filters the root level properties based on the provided filter.
    */
-  private _filterMetadata(obj: AppMetadata | UserMetadata, filter: MetadataFilters): Partial<Auth0UserProfile> {
+  private _filterMetadata(obj: AppMetadata | UserMetadata, filter: MetadataFilters): AppMetadata | UserMetadata | undefined {
     if (filter === '*') {
       if (Object.keys(obj).length > 0) {
         return obj;
@@ -409,16 +409,18 @@ export class ManagementService {
     return userId.split('|')[0] !== 'auth0';
   }
 
-  private _composeMetadata(user: User, filters: Auth0UserProfileFilters): Auth0UserProfile {
+  private _composeMetadata(user: User, filters?: Auth0UserProfileFilters): Auth0UserProfile {
+    const id = idOf(user);
+
     return {
       user_info: {
-        id: user.user_id,
+        id,
         name: user.name || null,
         given_name: user.given_name || null,
         family_name: user.family_name || null,
         email: user.email || null,
-        connection: user.user_id.split('|')[0],
-        social: this._isSocialUser(user.user_id)
+        connection: id.split('|')[0],
+        social: this._isSocialUser(id)
       },
       user_metadata: user.user_metadata
         ? filters
@@ -447,18 +449,32 @@ export interface ManagementConfig {
   disabled?: boolean;
 }
 
+/**
+ * A user as ManagementService gives it out. A name or email the account lacks is null. Either metadata is missing when
+ * the filters leave none of it.
+ */
 export interface Auth0UserProfile {
-  user_metadata: UserMetadata;
-  app_metadata: AppMetadata;
+  user_metadata?: UserMetadata;
+  app_metadata?: AppMetadata;
   user_info: {
     id: string;
-    name: string;
-    given_name: string;
-    family_name: string;
-    email: string;
+    name: string | null;
+    given_name: string | null;
+    family_name: string | null;
+    email: string | null;
     connection: string;
     social: boolean;
   };
+}
+
+/**
+ * What updateUserMetadata writes: any part of a profile, and of its user info only some properties. A part that is
+ * missing or null, and a property that is null, undefined or empty, is left as it is.
+ */
+export interface Auth0UserProfileUpdate {
+  user_info?: Partial<Auth0UserProfile['user_info']> | null;
+  user_metadata?: UserMetadata | null;
+  app_metadata?: AppMetadata | null;
 }
 
 /** A list of users, and whether it stops short of every user that matched (#2574). */
@@ -506,6 +522,18 @@ export function createdBetween(from: Date, to: Date, query?: string): string {
   const range = `created_at:[${from.toISOString()} TO ${to.toISOString()}}`;
 
   return query ? `${range} AND ${query}` : range;
+}
+
+/**
+ * A user's id. The Management API always sends one, but its schema marks every property optional; a user without one
+ * is refused here, by name, rather than failing later on `undefined`.
+ */
+function idOf(user: User): string {
+  if (!user.user_id) {
+    throw new Error('Auth0 sent a user with no user_id.');
+  }
+
+  return user.user_id;
 }
 
 /** The time halfway from `from` to `to`, to the millisecond. */

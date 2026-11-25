@@ -1,4 +1,4 @@
-import { getRandomNumber, getSmallestIndex, isEven } from '..';
+import { getRandomNumber, isEven } from '..';
 
 describe('isEven', () => {
   it('should handle even numbers', () => {
@@ -17,11 +17,5 @@ describe('getRandomNumber', () => {
     expect(getRandomNumber(5, 10)).toEqual(5);
     expect(getRandomNumber(0, 1)).toEqual(0);
     expect(getRandomNumber(-5, -1)).toEqual(-5);
-  });
-});
-
-describe('getSmallestIndex', () => {
-  it('should work for basic input', () => {
-    expect(getSmallestIndex([10, 9, 8, 7, 6])).toEqual(4);
   });
 });

@@ -5,7 +5,7 @@ import { switchMap, catchError } from 'rxjs/operators';
 
 import { SearchService, SearchResult } from '@tamu-gisc/ui-kits/ngx/search';
 
-import { relativeDistance, RelativeDistancePoint } from '@tamu-gisc/common/utils/geometry/generic';
+import { findNearestIndex, RelativeDistancePoint } from '@tamu-gisc/common/utils/geometry/generic';
 import { centroidFromGeometry } from '@tamu-gisc/common/utils/geometry/esri';
 import { Point } from '@tamu-gisc/common/types';
 
@@ -55,13 +55,7 @@ export class BikeService {
           if (result && result.results && result.results.length > 0) {
             const features = result.features();
 
-            const distances = relativeDistance(point, features);
-
-            const smallest = Math.min(...distances);
-
-            const smallestIndex = distances.findIndex((d) => d === smallest);
-
-            const feature = features[smallestIndex];
+            const feature = features[findNearestIndex(point, features)];
 
             return of(centroidFromGeometry(feature.geometry));
           } else {

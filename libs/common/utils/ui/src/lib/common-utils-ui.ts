@@ -8,9 +8,16 @@
 export function arrowKeyControl(event: KeyboardEvent, action: string, target: string): void {
   // Catch up and down arrow keys
 
+  // A target no longer in the page has no siblings to move to.
+  const parent = (event.currentTarget as HTMLElement).parentElement;
+
+  if (!parent) {
+    return;
+  }
+
   if ([38, 40].includes(event.keyCode)) {
     if (action === 'focus') {
-      const elementList = Array.from((event.currentTarget as HTMLElement).parentElement.querySelectorAll(target));
+      const elementList = Array.from(parent.querySelectorAll(target));
 
       const indexOfFocused = elementList.findIndex((element) => {
         return element === document.activeElement;
@@ -25,11 +32,7 @@ export function arrowKeyControl(event: KeyboardEvent, action: string, target: st
           if (indexOfFocused > 0) {
             (elementList[indexOfFocused - 1] as HTMLElement).focus({ preventScroll: false });
           } else {
-            (
-              (event.currentTarget as HTMLElement).parentElement.querySelector(
-                '.input-action-container input'
-              ) as HTMLElement
-            ).focus({ preventScroll: false });
+            parent.querySelector<HTMLElement>('.input-action-container input')?.focus({ preventScroll: false });
           }
         }
       } else if (elementList.length > 0 && event.keyCode === 40) {
