@@ -1,5 +1,30 @@
 # Laptop: current tasks
 
+## Batch g27 (workspace: #3000, then #1001; 24 November 2026, about 9:15 PM Central, from `work (gisday)`) (Medium) - **now**
+
+The maintainer asked tonight for open issues to be taken all the way to PRs, knowing some are already done: **check each against
+`origin/development` before building**, and if it is done or superseded, say so and build nothing. Question ids per DIRECTOR.md
+(`Q-g27-<n>`). Two branches, two PRs, "branch ready: <name>" after each. g26 is PR 3460.
+
+**1. [#3000](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3000), branch `fix/3000-check-memory`.** Read it and your own
+23 November evidence on it. A GIS Day-wide affected check is killed for memory at the defaults (`-m 16g`, `--parallel=8`), and the check
+then reports a failure that is not one. Two parts:
+- **Say so when it happens.** After the run, the script scans its log for `Killed`, `SIGKILL` or exit 137 and, if found, prints a line saying
+  the failure was memory, not code, with what to set (`CHECK_PARALLEL`, `CHECK_MEMORY`). A test case in `scripts/check-in-volume.test.sh`
+  (red first) for the scan, on a fixture log.
+- **Measure, then set what is documented.** Peak memory of a GIS Day-wide affected set at `--parallel` 8, 4, 2 and 1 on your 23.5 GB, and the
+  elapsed time of each. Put the table in `docs/build-times.md`, and in CLAUDE.md say what a GIS Day-wide check needs (today's practice is
+  `CHECK_PARALLEL=1`). Change a default only if the numbers say so, and say why in the PR.
+
+**2. [#1001](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1001), branch `fix/1001-focus-visible`.** Read it to the end.
+`outline: none` / `outline: 0` with no replacement hides keyboard focus. Count what is left on `development` first (the triage saw 14 rules,
+and `:focus-visible` in 10 files). Fix the shared ones (`libs/sass`, `libs/ui-kits`) with a visible `:focus-visible` outline in the style the
+repository already uses (2px `$aggie-maroon`, as #2588's tiles and the accordion header do), and the apps' `styles.scss` where it is the same
+pattern. Leave any that a design genuinely needs and list them. Before and after images of keyboard focus on two or three affected controls
+(GIS Day and AggieMap), a release entry, and the check for the projects you touch with `CHECK_PARALLEL=1`.
+
+Report `laptop/reports/2026-11-24-g27.md`.
+
 ## Batch g26 (workspace: #1938 and #2067, the pre-push check builds without CI's production configuration; 24 November 2026, about 3:45 PM Central, from `work (gisday)`) (High) - **after g25**
 
 The maintainer is away and asked for issues to be taken to PRs. Checked at 3:40 PM: `scripts/check-in-volume.sh` on
