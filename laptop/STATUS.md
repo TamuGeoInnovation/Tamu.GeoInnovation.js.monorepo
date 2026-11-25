@@ -5,7 +5,7 @@
 
 Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
-Last batch done: g27
+Last batch done: a13
 
 ## What this is
 
@@ -33,11 +33,12 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch a13 (#3337)**, started 11:50 PM Central. The Lighting rule targets no element; the Light Pole logo is a transparent PNG; rendering the page next.
+- **Batch a14 (#2643, #3464)**, started 12:10 AM Central: running the red tests, then the fixes.
 - **Pushed, not finished (a14):** `fix/2643-noon-is-pm` (`918399fd7`, red test then fix; not run yet) and `fix/3464-midnight-is-am` (`c68d9e8f6`, stacked on it). a14 part 2 is withdrawn (#3319 already fixed).
-- **Next:** a14, then g29.
+- **Next:** a25 (Node 24.22.3), then g29.
 
 ## Finished
+- **Batch a13 (aggiemap: #3337)** (report `laptop/reports/2026-11-24-a13.md`): **branch ready: `fix/3337-quoted-background`** (`1f2380f1c`), `pre-pr-check.sh` exit 0. The Light Pole GEOSAT logo was invisible (white on transparent, on white); now on `$aggie-maroon`. Lighting has no `img#geosat`, so its rule was left alone (Q-a13-1). Body beside the report.
 - **Batch g27 (workspace: #3000, #1001)** (report `laptop/reports/2026-11-24-g27.md`): **branch ready: `fix/3000-check-memory`** (`ad25d3561`) and **`fix/1001-focus-visible`** (`d75e71f5b`), both `pre-pr-check.sh` exit 0. #3000: memory kills named after the run (red first); measured a GIS Day-wide check: parallel 8 never finished, 4 killed, 2 and 1 pass in about 6.5 min; CLAUDE.md says `CHECK_PARALLEL=1`, default unchanged. #1001: a maroon `:focus-visible` ring on the copy button, autocomplete items and the sidebar menus; 3 before/after pairs, AggieMap and GIS Day. One question, Q-g27-1.
 - **Batch g26 (workspace: #1938, #2067)** (report `laptop/reports/2026-11-24-g26.md`): **branch ready: `fix/1938-check-production-build`** (`78580ab68`). The check builds in `build.yml`'s configuration (read, not hard-coded), build alone. Red twice: the test, and an over-budget scratch commit that passed `development`'s script and fails this one. Own check exit 0. No questions.
 - **Batch g25 (gisday: #3424, #3412)** (report `laptop/reports/2026-11-24-g25.md`): #3424 red Exit 1 / green Exit 0 against production. **branch ready: `fix/3412-papers-awards-sentence`** (`6bdccb57c`): the Papers awards sentence inside the session component, red first (1 test), check passes but for the registry audit step, images and `.pr-body.md`. No questions.
