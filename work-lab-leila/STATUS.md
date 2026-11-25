@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **3:53 AM Central, 25 November 2026**. A listener; job: testing.
+Last written **4:02 AM Central, 25 November 2026**. A listener; job: testing.
 
 ## g203 is done, not unstarted (12:07 AM Central, Wednesday 25 November 2026)
 
@@ -140,7 +140,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 ## Running now
 
-**Batch g215** (gisday: #3593, strictNullChecks in gisday-competitions-ngx-common), started 3:53 AM Central, 25 November. a31 to a33 queued.
+**Batch g215** (gisday: #3593, strictNullChecks in gisday-competitions-ngx-common), started 3:53 AM Central, 25 November. a31 to a33 queued. **4:02 AM:** issue #3610 filed under #3593; its own 15 errors to 0; the submit without a photograph no longer sends (red first); on the known list at 71; gisday-angular 557 to 542; the bundle differs only in the submission form and the device guard. `pre-pr-check` running.
 
 ## Finished
 
