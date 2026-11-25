@@ -1,5 +1,60 @@
 # work-lab-leila: current tasks
 
+## Batch a23 (aggiemap: #2521, prove the Road Closures legend before removing its known-failure entries) (Medium) - **after a21**
+
+[#2521](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2521): Graduation Fall and Spring
+list **Road Closures** in the legend with no symbol. Four entries in `test/smoke/aggiemap/environments.json`
+(`allowedMapLayerFailures`, two on development and two on production) hold it as a known failure.
+
+A branch already exists that removes all four — `fix/2521-road-closures-legend` on the fork, one commit, **419 commits
+behind `development`**. It is not to be opened as it stands. **Its premise has changed underneath it**, and your job is
+to find out whether its conclusion survived.
+
+### What I have already checked, so you do not repeat it
+
+The issue describes the layer as *"Event Parking's /2 filtered to Type = 'Closure'"*. **That is no longer what it is.**
+`GraduationParking_view` was republished on 28 October 2026 with the closures split out
+([#2530](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2530)), and layer 2 is now Road
+Closures in its own right. Asked just now (24 November, about 10:45 PM Central), **both** hosts answer the same:
+
+| Host | `/2` name | Renderer | Classes |
+| --- | --- | --- | --- |
+| `arc.ts.tamu.edu` | Road Closures | `uniqueValue` on `type` | `Closure` -> `esriSFS` |
+| `gis.dev.tamu.edu` | Road Closures | `uniqueValue` on `type` | `Closure` -> `esriSFS` |
+
+**So the service now publishes a symbol for the class the layer draws.** That is necessary and **not sufficient**: the
+question this issue asks is what the *legend in the application* shows, and a renderer that exists can still produce an
+empty legend row if the layer's definition expression selects a class the renderer has no entry for, or if the
+definition overrides the renderer. Do not take my table as the answer.
+
+### The work
+
+1. **Red first, on today's code.** With the four entries still in place, run the spec that reads
+   `allowedMapLayerFailures` against `/events/graduation-fall` and `/events/graduation-spring`, on **development** and
+   on **production**, and record what the legend row shows. If it still has no symbol, **stop**: the branch is wrong
+   and the issue stays open with your finding, which is the useful outcome.
+2. **If the symbol is there,** remove the four entries (the branch shows which; write the change yourself on a fresh
+   branch rather than merging 419 commits of history) and run the same four again. All four must pass.
+3. **Both environments, separately reported.** An entry removed from `production` that only passes on development is
+   how the nightly run goes red for everyone.
+
+### Checking and reporting
+
+`scripts/check-in-volume.sh fix/2521-road-closures-legend-today` — it touches only `test/smoke`, so Nx runs nothing and
+the `lint.yml` steps are the check. Its own `Exit` line.
+
+A release-notes entry is **not** needed (nothing a visitor sees changes); the pull request will carry
+`no-visible-change`, and your report should say so explicitly rather than leaving it to be guessed.
+
+Push the branch to the fork, open nothing. Say **"branch ready: fix/2521-road-closures-legend-today"**, or
+**"#2521 still reproduces"** with what you saw.
+
+`work-lab-leila/reports/2026-11-25-a23.md`: the four runs before, the four after, which environment each was on, and
+the build each environment was serving.
+
+**Questions come to me** (`work (aggiemap)`), under **Questions for the director (aggiemap)**, with options and a
+recommendation.
+
 ## Batch a21 (aggiemap: #2849, the "after" captures a published release file is still missing) (Medium) - **after a20**
 
 [#2849](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2849) was filed before the
