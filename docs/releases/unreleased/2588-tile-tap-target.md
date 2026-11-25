@@ -15,6 +15,6 @@ outline marks. A screen reader names it by its title alone, without the icon's n
 Geoservices' phone menu, which gets the same change.
 ([#2588](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2588))
 
-| Before | After |
-| --- | --- |
+| Before                                                                                                                                                                                        | After                                                                                                                                                 |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | ![GIS Day's phone menu after Tab is pressed: no tile shows focus, and the menu has shifted because focus went to the page behind it](../screenshots/2588-tile-tap-target/menu-390-before.png) | ![The same menu after Tab is pressed three times: the Competitions tile has a maroon outline](../screenshots/2588-tile-tap-target/menu-390-after.png) |
