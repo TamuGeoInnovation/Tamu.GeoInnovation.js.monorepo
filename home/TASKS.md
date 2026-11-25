@@ -1,5 +1,9 @@
 # Home machine: current tasks
 
+## Decided (gisday), 3:20 AM Central, 25 November 2026
+
+- **Q-g116-1: (A).** Code, specs and `pre-pr-check.sh`, with the public pages proved against production builds (development vs your branch), the API mocked as in g105. No sign-in, and leave the GIS Day containers alone. The signed-in admin pages go to the laptop as a follow-on batch. List in your report the admin pages whose components you changed.
+
 ## Batch a27 (aggiemap: #602 and #1173 are the same two lines of copied markup) (Medium) - **now**
 
 Two issues, one cause, and I measured both on `development` tonight so you start from numbers rather than a report.
