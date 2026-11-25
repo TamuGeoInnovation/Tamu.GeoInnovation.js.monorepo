@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **2:44 AM Central, 25 November 2026**. A listener; job: testing.
+Last written **2:47 AM Central, 25 November 2026**. A listener; job: testing.
 
 ## g203 is done, not unstarted (12:07 AM Central, Wednesday 25 November 2026)
 
@@ -140,7 +140,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 ## Running now
 
-**Batch g211** (gisday: #3495, strictNullChecks in the two GIS Day data-access libraries), started 2:44 AM Central, 25 November.
+**Batch g211** (gisday: #3495, strictNullChecks in the two GIS Day data-access libraries), started 2:44 AM Central, 25 November. **2:47 AM:** both libraries strict; GIS Day's 7 errors fixed (platform 1 to 0, competitions 14 to 8, the 8 in shared libraries); gisday-angular's production build byte-identical but for ngsw.json's timestamp. `pre-pr-check` running.
 
 ## Finished
 
