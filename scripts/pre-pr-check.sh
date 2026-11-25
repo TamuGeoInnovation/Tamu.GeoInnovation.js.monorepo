@@ -23,6 +23,12 @@ set -uo pipefail
 
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
+# A path Docker can mount: on Windows, Git Bash's /c/... and /tmp/... mean nothing to Docker, so they are given as
+# C:/... (cygpath -m); elsewhere the path is already right.
+docker_path() {
+  if command -v cygpath >/dev/null 2>&1; then cygpath -m "$1"; else printf '%s\n' "$1"; fi
+}
+
 # Prints GitHub's word for a `git diff --name-status` letter: added, modified, removed, renamed or copied.
 status_word() {
   case "$1" in
@@ -89,6 +95,7 @@ fi
 
 git -C "$here" fetch -q origin development 2>/dev/null || echo "Could not fetch origin; comparing with the origin/development already here." >&2
 base=origin/development
+common="$(git -C "$here" rev-parse --path-format=absolute --git-common-dir)"
 
 tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
@@ -106,7 +113,7 @@ step() { # <name> <command...>
 
 # The pull-request checks, in node:24.22.1 as CI runs them, reading the drafted title and body.
 pr_checks() {
-  MSYS_NO_PATHCONV=1 docker run --rm -v "$here/.github/scripts:/scripts:ro" -v "$tmp:/pr:ro" -w /pr \
+  MSYS_NO_PATHCONV=1 docker run --rm -v "$(docker_path "$here/.github/scripts"):/scripts:ro" -v "$(docker_path "$tmp"):/pr:ro" -w /pr \
     -e TITLE="$title" node:24.22.1 sh -c '
       node /scripts/check-pr-title.mjs || exit 1
       node --input-type=module -e "
@@ -139,9 +146,13 @@ linked_issue() {
 
 suite() { # scripts | tools
   case "$1" in
-    # In node:24.22.1, as tools-tests.yml and scripts-tests.yml run them: these machines have no host Node.
-    scripts) MSYS_NO_PATHCONV=1 docker run --rm -v "$here:/src:ro" node:24.22.1 sh -c 'cp -a /src /w && cd /w && bash scripts/run-script-tests.sh' ;;
-    tools) MSYS_NO_PATHCONV=1 docker run --rm -v "$here:/w:ro" -w /w node:24.22.1 node --test 'tools/**/*.test.mjs' ;;
+    # In node:24.22.1, as tools-tests.yml and scripts-tests.yml run them (these machines have no host Node), on a clone of
+    # the committed branch, as check-in-volume.sh does: a worktree's .git is a file naming a Windows path, so a copy of
+    # the worktree is not a repository inside the container, and the suites that read git fail.
+    scripts) MSYS_NO_PATHCONV=1 docker run --rm -v "$(docker_path "$common"):/repo.git:ro" node:24.22.1 sh -c \
+      "git clone -q -b '$branch' /repo.git /w && cd /w && bash scripts/run-script-tests.sh" ;;
+    tools) MSYS_NO_PATHCONV=1 docker run --rm -v "$(docker_path "$common"):/repo.git:ro" node:24.22.1 sh -c \
+      "git clone -q -b '$branch' /repo.git /w && cd /w && node --test 'tools/**/*.test.mjs'" ;;
   esac
 }
 
