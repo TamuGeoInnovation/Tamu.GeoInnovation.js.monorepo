@@ -17,7 +17,7 @@
 import { copyFile, mkdir, readdir, readFile, stat, writeFile } from 'fs/promises';
 import { join, resolve } from 'path';
 
-import { fitImage } from '@tamu-gisc/common/node/images';
+import { fitImage, type FitImageResult } from '@tamu-gisc/common/node/images';
 import { SPEAKER_PHOTO_FIT } from '@tamu-gisc/gisday/platform/data-api';
 
 const arg = (name: string) => process.argv.find((a) => a.startsWith(`--${name}=`))?.split('=').slice(1).join('=');
@@ -28,7 +28,7 @@ const kb = (bytes: number) => `${Math.round(bytes / 1024)} KB`;
 
 async function main() {
   const names = (await readdir(dir, { withFileTypes: true })).filter((e) => e.isFile()).map((e) => e.name).sort();
-  const results = [];
+  const results: Array<FitImageResult & { name: string }> = [];
 
   for (const name of names) {
     const input = await readFile(join(dir, name));

@@ -2,6 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
+    "strictNullChecks": true,
     "types": ["node"],
     "emitDecoratorMetadata": true,
     "target": "es2021"

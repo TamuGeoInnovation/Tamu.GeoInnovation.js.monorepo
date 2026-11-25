@@ -437,9 +437,11 @@ export class ManagementService {
 }
 
 export interface ManagementConfig {
-  domain: string;
-  clientId: string;
-  clientSecret: string;
+  // Read from the environment, so undefined where a variable is not set; the service refuses to start without all
+  // three unless `disabled` (#3495).
+  domain: string | undefined;
+  clientId: string | undefined;
+  clientSecret: string | undefined;
 
   /**
    * Run without an Auth0 management client. Only for local development, where no management
