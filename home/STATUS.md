@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle, listening.
+- **Batch a15 (aggiemap: #1082)** since 8:58 PM Central: reproducing first. Then g112 (#274 deletion), then g113 (#3348).
 
 ## Finished
 - **Batch g111 (#3062, the scan outside GIS Day)** (report `home/reports/2026-11-24-g111.md`): 26 issues filed, #3467 to #3493, all AggieMap's area, no Priority (suggested in the report); two are bugs (3467, 3468). List on #3062, dead code on #1899.
