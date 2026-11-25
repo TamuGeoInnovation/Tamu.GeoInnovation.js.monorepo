@@ -148,7 +148,7 @@ full reservation, invisible unless you look for it. Find it by its **volume**, n
 your own - two checks running at once give you two anonymous containers, and guessing kills someone else's run:
 
 ```bash
-docker ps --filter ancestor=node:24.22.1
+docker ps --filter ancestor=node:24.22.3
 docker inspect --format '{{.Name}} | {{range .Mounts}}{{.Name}} {{end}}' <id>   # tamu-js-<issue> names the run
 ```
 
