@@ -12,7 +12,7 @@ import {
   ExternalDiscoverApplication,
   InternalDiscoverApplication
 } from '../../interfaces/discover-application.interface';
-import { DiscoveryService, FEATURED_PARKING_ID } from '../../services/discovery/discovery.service';
+import { DiscoveryService, FEATURED_PARKING_ID, isListed } from '../../services/discovery/discovery.service';
 import { LastMapService } from '@tamu-gisc/aggiemap/ngx/common';
 import { getApplicationRoute, getNextEventDate, sortApplicationsByName } from '../discover.utils';
 import { QuickLinkItem, QuickLinksComponent } from '../quick-links/quick-links.component';
@@ -142,7 +142,7 @@ export class AllMapsComponent implements OnInit {
       this.internalApplications.filter((app) => app.type === 'satellite-campus')
     ).map((app) => ({ ...app, url: `${window.location.origin}${getApplicationRoute(app).join('/')}` }));
     this.visibleCampusApplications = this.isDev.pipe(
-      map((isDev) => this.campusApplications.filter((app) => isDev || app.visible !== false)),
+      map((isDev) => this.campusApplications.filter((app) => isListed(app, isDev))),
       shareReplay(1)
     );
     this.quickLinks = this.discoveryService.getQuickLinkApplications().map((app) => ({
@@ -193,7 +193,7 @@ export class AllMapsComponent implements OnInit {
   private _filterApplications(value: string, isDev: boolean): DiscoverApplication[] {
     const filtered = isDev
       ? this.allApplications
-      : this.allApplications.filter((app) => app.source === 'external' || app.visible !== false);
+      : this.allApplications.filter((app) => app.source === 'external' || isListed(app, false));
 
     if (!value) {
       return filtered.slice(0, 10);
