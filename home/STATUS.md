@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle, listening.
+- **Batch g107 (gisday: #2588, then #3337)** since 6:38 PM Central: #2588 first, in `C:/TAMU/wt-2588`. **#3337 is also laptop batch a13** (pushed a minute apart, same branch name): home holds off #3337 until the directors say which machine takes it.
 
 ## Finished
 - **Batch a11 (aggiemap: #3425 after images again)** (report `home/reports/2026-11-24-a11.md`): search image re-taken at `6d2c0f118`, each garage once; `?garage=CCG`, `?bldg=0469`, `?BldgAbbrv=CCG` all open Central Campus Parking Garage; check exit 0 (3 projects). Fork at `8d51106c8`. 5:33 to 5:38 PM Central.
