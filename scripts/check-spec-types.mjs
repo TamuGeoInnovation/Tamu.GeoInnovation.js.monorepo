@@ -32,7 +32,10 @@ const KNOWN = join(ROOT, 'scripts', 'spec-type-errors-known.txt');
 export function readKnown(text) {
   const known = new Map();
   for (const line of text.split('\n')) {
-    const m = line.replace(/#.*/, '').trim().match(/^(\d+)\s+(\S+)$/);
+    const m = line
+      .replace(/#.*/, '')
+      .trim()
+      .match(/^(\d+)\s+(\S+)$/);
     if (m) known.set(m[2], Number(m[1]));
   }
   return known;
@@ -71,7 +74,10 @@ function errorsIn(config) {
 }
 
 function changedConfigs(base) {
-  const files = execFileSync('git', ['diff', '--name-only', '--diff-filter=ACMR', `${base}...HEAD`], { cwd: ROOT, encoding: 'utf8' })
+  const files = execFileSync('git', ['diff', '--name-only', '--diff-filter=ACMR', `${base}...HEAD`], {
+    cwd: ROOT,
+    encoding: 'utf8'
+  })
     .split('\n')
     .filter(Boolean);
   const configs = new Set();
@@ -83,7 +89,10 @@ function changedConfigs(base) {
 }
 
 function allConfigs() {
-  return execFileSync('git', ['ls-files', '**/tsconfig.spec.json'], { cwd: ROOT, encoding: 'utf8' }).split('\n').filter(Boolean).sort();
+  return execFileSync('git', ['ls-files', '**/tsconfig.spec.json'], { cwd: ROOT, encoding: 'utf8' })
+    .split('\n')
+    .filter(Boolean)
+    .sort();
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
@@ -107,13 +116,22 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
       failed++;
       console.log(`FAIL  ${config}: ${verdict}`);
       if (!known.has(config) || count > known.get(config)) {
-        console.log(out.split('\n').filter((l) => /error TS\d+/.test(l)).slice(0, 20).map((l) => `        ${l}`).join('\n'));
+        console.log(
+          out
+            .split('\n')
+            .filter((l) => /error TS\d+/.test(l))
+            .slice(0, 20)
+            .map((l) => `        ${l}`)
+            .join('\n')
+        );
       }
     }
   }
 
   if (failed) {
-    console.error(`\n${failed} spec configuration(s) failed. Type errors in a spec are real errors: vitest runs specs without checking their types (#2263).`);
+    console.error(
+      `\n${failed} spec configuration(s) failed. Type errors in a spec are real errors: vitest runs specs without checking their types (#2263).`
+    );
     process.exit(1);
   }
   console.log(`\n${configs.length} spec configuration(s) checked.`);
