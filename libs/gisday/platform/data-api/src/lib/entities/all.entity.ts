@@ -1181,7 +1181,8 @@ export class Submission extends GuidIdentity {
 
   @Column({ nullable: true, type: 'simple-json' })
   // As the entrant's form sent them: a participant's name or email may be missing (as `ReviewEmailSubmission` reads them).
-  public participants: Array<{ name?: string | null; email?: string | null; studentId?: string }> | null;
+  // Typed by participants and stored as JSON, so an entry can be null as well as a field (#3495).
+  public participants: Array<{ name?: string | null; email?: string | null; studentId?: string } | null> | null;
 
   @Column({ nullable: true, length: 'MAX' })
   public abstract: string | null;

@@ -35,7 +35,7 @@ export interface AssessmentBody {
  * addresses.
  */
 export function presentersOf(submission: Submission): Array<string> {
-  return (submission.participants ?? []).map((p) => p.name?.trim()).filter((name): name is string => Boolean(name));
+  return (submission.participants ?? []).map((p) => p?.name?.trim()).filter((name): name is string => Boolean(name));
 }
 
 /**

@@ -240,6 +240,10 @@ export class SpeakerEditService {
 
     for (const submission of submissions) {
       for (const participant of submission.participants ?? []) {
+        if (!participant) {
+          continue;
+        }
+
         // Each address in the box, as the finalists' speaker records were made from them (#3043): co-authors typed into
         // one box, and NetIDs.
         const emails = participantEmails(participant.email);

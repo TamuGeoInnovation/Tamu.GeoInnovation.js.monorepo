@@ -240,7 +240,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     return posters.map((poster) => ({
       title: poster.title,
       // An author with no name is null, as JSON has always given it.
-      authors: (poster.participants ?? []).map((participant) => participant.name ?? null),
+      authors: (poster.participants ?? []).map((participant) => participant?.name ?? null),
       link: poster.link,
       year: season.year
     }));
@@ -578,7 +578,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
           to,
           cc: cc.join(', '),
           values: reviewEmailValues(
-            { ...submission, message: message ?? submission.message },
+            withoutEmptyParticipants({ ...submission, message: message ?? submission.message }),
             site,
             await this._sessionsOf(submission.season)
           )
@@ -610,7 +610,10 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     /** Who it is from, as the reviewer chose (#3100); the site without it. */
     sender?: EmailSender
   ) {
-    const text = fillReviewEmail(template ?? reviewEmailTemplate(kind), reviewEmailValues(submission, site, sessions));
+    const text = fillReviewEmail(
+      template ?? reviewEmailTemplate(kind),
+      reviewEmailValues(withoutEmptyParticipants(submission), site, sessions)
+    );
     const subject = reviewEmailKindSubject(kind, site.name);
     const from = sender ?? siteSender(site.name);
 
@@ -817,7 +820,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
   private async _recipientsOf(
     submission: Pick<Submission, 'accountGuid' | 'participants'>
   ): Promise<{ to: string; cc: Array<string> }> {
-    const typed = (submission.participants ?? []).map((p) => `${p.email ?? ''}`.trim()).filter(Boolean);
+    const typed = (submission.participants ?? []).map((p) => `${p?.email ?? ''}`.trim()).filter(Boolean);
     let account = '';
 
     try {
@@ -832,7 +835,9 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
 
     // The first row is the submitter: with their account's address known, what they typed for themselves is not copied.
     const to = account || typed[0] || '';
-    const others = account ? (submission.participants ?? []).slice(1).map((p) => `${p.email ?? ''}`.trim()) : typed.slice(1);
+    const others = account
+      ? (submission.participants ?? []).slice(1).map((p) => `${p?.email ?? ''}`.trim())
+      : typed.slice(1);
     // Each address once, as first typed, ignoring case; and never the address it goes to.
     const cc: Array<string> = [];
 
@@ -916,6 +921,16 @@ export function reviewSubject(submission: Pick<Submission, 'acceptance'>, site: 
 }
 
 /**
+ * The submission with its null participant entries left out: they are stored as JSON and can hold a null (#3495), which the
+ * shared review email does not take.
+ */
+function withoutEmptyParticipants<T extends Pick<Submission, 'participants'>>(
+  submission: T
+): Omit<T, 'participants'> & { participants: Array<NonNullable<NonNullable<Submission['participants']>[number]>> } {
+  return { ...submission, participants: (submission.participants ?? []).filter((p) => p !== null) };
+}
+
+/**
  * The email a submitter gets when their submission is reviewed (#2957): a poster finalist's (#2980), a presenter's or a
  * rejection, on the site the reviewer is on. `template` is the text the reviewer approved (#2981); without it, the kind's
  * own. Its placeholders are filled in for this submission.
@@ -932,5 +947,5 @@ export function reviewEmail(
 ): string {
   const text = template ?? reviewEmailTemplate(reviewEmailKind(submission.acceptance, submission.submissionType));
 
-  return fillReviewEmail(text, reviewEmailValues(submission, site, sessions));
+  return fillReviewEmail(text, reviewEmailValues(withoutEmptyParticipants(submission), site, sessions));
 }
