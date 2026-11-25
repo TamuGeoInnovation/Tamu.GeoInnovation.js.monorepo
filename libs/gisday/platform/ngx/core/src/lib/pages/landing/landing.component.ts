@@ -145,7 +145,7 @@ export class LandingComponent implements OnInit {
         return interval(1000).pipe(
           startWith(0),
           map(() => {
-            const firstEventDate = new Date(new Date(season?.days[0].date).toDateString() + ' ' + season.firstEventTime);
+            const firstEventDate = new Date(season.days[0].date.toDateString() + ' ' + season.firstEventTime);
 
             return (firstEventDate.getTime() - Date.now()) / 1000;
           }),

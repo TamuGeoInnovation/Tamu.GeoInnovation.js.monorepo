@@ -1,0 +1,146 @@
+{
+  "configuration": {
+    "applicationName": "McAllen Campus",
+    "buildingPopup": {
+      "abbreviation": "abbrev",
+      "layerId": "mcallen-buildings-layer",
+      "number": "number",
+      "title": [
+        "name",
+        "abbrev"
+      ]
+    },
+    "eventDates": [],
+    "hideLayerToggle": true,
+    "id": "mcallen",
+    "introductionText": "Map of the Texas A&M Higher Education Center at McAllen campus.",
+    "mapCenter": [
+      -98.263057,
+      26.344692
+    ],
+    "name": "McAllen",
+    "searchSources": [
+      {
+        "displayTemplate": "{attributes.name} ({attributes.number})",
+        "featuresLocation": "features",
+        "name": "Building",
+        "popupComponent": "[EventPopups.CampusBuildingPopupComponent]",
+        "queryParams": {
+          "f": "json",
+          "outFields": "*",
+          "outSR": 4326,
+          "resultRecordCount": 5,
+          "returnGeometry": true,
+          "scoringWhere": {
+            "keys": [
+              "name",
+              "abbrev"
+            ],
+            "operators": [
+              "LIKE",
+              "LIKE"
+            ],
+            "transformations": [
+              "UPPER",
+              "UPPER"
+            ],
+            "wildcards": [
+              "startsWith",
+              "startsWith"
+            ]
+          },
+          "spatialRel": "esriSpatialRelIntersects",
+          "where": {
+            "keys": [
+              "name",
+              "abbrev",
+              "number"
+            ],
+            "operators": [
+              "LIKE",
+              "LIKE",
+              "LIKE"
+            ],
+            "transformations": [
+              "UPPER",
+              "UPPER",
+              "UPPER"
+            ],
+            "wildcards": [
+              "includes",
+              "includes",
+              "includes"
+            ]
+          }
+        },
+        "scoringKeys": [
+          "attributes.abbrev",
+          "attributes.number",
+          "attributes.name"
+        ],
+        "searchActive": true,
+        "source": "mcallen-building",
+        "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/HigherEd/FeatureServer/2",
+        "urlQueryParam": "bldg",
+        "urlQueryParamAliases": [
+          "abbrv"
+        ]
+      }
+    ],
+    "shortApplicationName": "McAllen",
+    "sidebarTabs": [
+      "features"
+    ],
+    "zoom": 18
+  },
+  "discover": {
+    "description": "Map of the Texas A&M University at McAllen campus.",
+    "id": "mcallen",
+    "mapType": "satellite-campus",
+    "name": "McAllen",
+    "source": "internal",
+    "thumbnail": "./assets/images/campus/mcallen.jpg",
+    "type": "satellite-campus"
+  },
+  "options": [],
+  "references": {
+    "BASEMAP": "mcallen-basemap-layer",
+    "BUILDINGS": "mcallen-buildings-layer"
+  },
+  "sources": [
+    {
+      "essential": true,
+      "id": "mcallen-basemap-layer",
+      "listMode": "hide",
+      "title": "McAllen Basemap",
+      "type": "vector-tile",
+      "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/HigherEd/VectorTileServer",
+      "visible": true
+    },
+    {
+      "essential": true,
+      "id": "mcallen-buildings-layer",
+      "listMode": "hide",
+      "native": {
+        "elevationInfo": {
+          "mode": "relative-to-ground",
+          "offset": 1
+        },
+        "labelsVisible": false,
+        "legendEnabled": false,
+        "maxScale": 0,
+        "minScale": 100000,
+        "outFields": [
+          "*"
+        ],
+        "popupEnabled": false
+      },
+      "popupComponent": "[EventPopups.CampusBuildingPopupComponent]",
+      "title": "Buildings",
+      "type": "feature",
+      "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/HigherEd/FeatureServer/2",
+      "visible": true
+    }
+  ],
+  "type": "general-map"
+}

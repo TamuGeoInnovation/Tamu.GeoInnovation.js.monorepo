@@ -42,7 +42,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
-          node-version: '24.22.1'
+          node-version: '24.22.3'
 
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         id: npm-cache
@@ -96,6 +96,14 @@ jobs:
         env:
           BASE: ${{ inputs.base }}
         run: node scripts/check-spec-types.mjs
+
+      # A library with no build target is never compiled with its own tsconfig.lib.json, so a strict one could stop
+      # compiling under its own rules unseen, as common-utils-string did on 25 November 2026 (#3581). Each strict library
+      # the pull request changes is type-checked with it; the 8 that already fail are held to their counts.
+      - name: Type-check the changed strict libraries with their own configuration
+        env:
+          BASE: ${{ inputs.base }}
+        run: node scripts/check-strict-libs.mjs
 
       - name: Lint Affected
         env:

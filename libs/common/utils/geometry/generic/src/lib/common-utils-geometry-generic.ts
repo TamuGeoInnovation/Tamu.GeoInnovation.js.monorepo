@@ -80,44 +80,11 @@ export class TrackLocation {
 }
 
 /**
- * Tests if a given search input string is a coordinate pair.
- * @param input Input string
- * @returns True if string is coordinate pair, false if not
- */
-export function isCoordinatePair(input: string): boolean {
-  if (!input.includes(',')) {
-    return false;
-  }
-  const set = input.split(',');
-  if (set.length !== 2) {
-    return false;
-  }
-  return !isNaN(parseFloat(set[0].trim())) && !isNaN(parseFloat(set[1].trim()));
-}
-
-/**
  * The index of the point nearest to a reference, measured with `distanceInMetres` to each point's
  * centroid, or -1 for an empty list. The first one wins a tie.
  */
 export function findNearestIndex(reference: Point, points: RelativeDistancePoint[]): number {
   return points.indexOf(minBy(points, (p) => distanceInMetres(reference, centroidFromGeometry(p.geometry))));
-}
-
-/**
- * Converts a coordindate string into TripPointGeometry.
- *
- * First number is assumed latitude.
- *
- * Second number is assumed longitude.
- *
- * @export
- * @param input Coordinate pair string
- */
-export function parseCoordinates(input: string): Point {
-  return {
-    latitude: parseFloat(input.split(',')[0].trim()),
-    longitude: parseFloat(input.split(',')[1].trim())
-  };
 }
 
 export interface RelativeDistancePoint {

@@ -84,12 +84,8 @@ export class EventMapsComponent implements OnInit {
     // from anyone running the application locally.
     const isTesting = this.testing.isTesting;
 
-    const forThisType = this.discoveryService
-      .getInternalDiscoverApplications()
-      .filter((app) => app.mapTypes.includes(data.mapType));
-
     this.applications = sortApplicationsByName(
-      forThisType.filter((app) => isTesting || app.visible !== false)
+      this.discoveryService.listedApplications(isTesting).filter((app) => app.mapTypes.includes(data.mapType))
     );
     this.applicationColumns = buildMapColumnGroups(this.applications, data.columns);
   }

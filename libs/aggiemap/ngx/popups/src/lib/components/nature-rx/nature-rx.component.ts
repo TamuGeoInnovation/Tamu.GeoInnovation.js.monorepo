@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 
-import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 import { PhotoCarouselComponent } from '@tamu-gisc/ui-kits/ngx/layout';
-import { ActivateDirective } from '@tamu-gisc/ui-kits/ngx/interactions/keyboard';
 import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
 
 import { BaseDirectionsComponent } from '../base-directions/base-directions.component';
 import { carouselImageUrls } from '../../carousel-images';
+import { PopupFooterComponent } from '../footer/popup-footer.component';
 
 /**
  * The amenities a Nature Rx space can have, in the order they are listed.
@@ -53,16 +52,14 @@ export function amenitiesOf(attributes: Record<string, unknown> | undefined): Ar
     return [];
   }
 
-  return NATURE_RX_AMENITIES.filter((amenity) => hasAmenity(attributes[amenity.field])).map(
-    (amenity) => amenity.label
-  );
+  return NATURE_RX_AMENITIES.filter((amenity) => hasAmenity(attributes[amenity.field])).map((amenity) => amenity.label);
 }
 
 @Component({
   selector: 'tamu-gisc-nature-rx-popup-component',
   templateUrl: './nature-rx.component.html',
   styleUrls: ['../base/base.popup.component.scss'],
-  imports: [CopyComponent, PhotoCarouselComponent, MarkdownParsePipe, ActivateDirective]
+  imports: [PhotoCarouselComponent, MarkdownParsePipe, PopupFooterComponent]
 })
 export class NatureRxPopupComponent extends BaseDirectionsComponent implements OnInit {
   public medias: Array<string> = [];

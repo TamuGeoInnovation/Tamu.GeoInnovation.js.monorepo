@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 
 import { SeasonWinnersDto, gisdaySite } from '@tamu-gisc/gisday/common';
 import { GISDAY_SITE } from '@tamu-gisc/gisday/platform/ngx/common';
@@ -146,5 +146,46 @@ describe('LandingComponent winners (#3239)', () => {
 
     expect(shown).not.toHaveBeenCalled();
     expect(page.querySelector('#winners')).toBeNull();
+  });
+});
+
+/**
+ * #3574. SeasonService hands the page the season's days with their dates as Dates (#3558), so the countdown reads the
+ * first day's Date as it comes.
+ */
+describe('LandingComponent countdown', () => {
+  const monday = new Date('2026-11-16T06:00:00.000Z');
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('counts down to the first session, on the first day of the season', async () => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date('2026-11-15T06:00:00.000Z'));
+
+    TestBed.configureTestingModule({
+      imports: [LandingComponent],
+      providers: [
+        provideRouter([]),
+        { provide: GISDAY_SITE, useValue: gisdaySite('tamu') },
+        {
+          provide: SeasonService,
+          useValue: {
+            getActiveSeason: () => of({ year: 2026, days: [{ guid: 'day-mon', date: monday }], firstEventTime: '09:00:00' })
+          }
+        },
+        { provide: SponsorService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+        { provide: PlaceService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+        { provide: SeasonWinnersService, useValue: { shown: () => of(null) } }
+      ]
+    });
+
+    const page = TestBed.createComponent(LandingComponent).componentInstance;
+    page.ngOnInit();
+
+    const firstSession = new Date(`${monday.toDateString()} 09:00:00`);
+
+    expect(await firstValueFrom(page.totalSecondsRemaining$)).toBe((firstSession.getTime() - Date.now()) / 1000);
   });
 });

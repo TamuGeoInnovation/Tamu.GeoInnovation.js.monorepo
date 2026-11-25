@@ -7,6 +7,7 @@ import { of } from 'rxjs';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 
 import { DiscoveryService } from '../../services/discovery/discovery.service';
+import { discoveryServiceStub } from '../../services/discovery/discovery.service.stub';
 import { LastMapService } from '@tamu-gisc/aggiemap/ngx/common';
 import { AllMapsComponent } from './all-maps.component';
 
@@ -34,15 +35,7 @@ describe('AllMapsComponent breadcrumbs', () => {
    * -- this is about the breadcrumb -- but a missing method throws during `ngOnInit` and the
    * component never renders, which reads as a breadcrumb failure rather than a stub gap.
    */
-  const discoveryStub = {
-    getInternalDiscoverApplications: () => [],
-    getVisibleInternalDiscoverApplications: () => [],
-    getExternalDiscoverApplications: () => [],
-    getAllDiscoverApplications: () => [],
-    getKioskDiscoverApplications: () => [],
-    getQuickLinkApplications: () => [],
-    getParkingApplicationsByCategory: () => []
-  };
+  const discoveryStub = discoveryServiceStub();
 
   /** Only the members the template reads; typed loosely so unrelated additions do not break this. */
   const lastMapStub = (url: string) => ({
