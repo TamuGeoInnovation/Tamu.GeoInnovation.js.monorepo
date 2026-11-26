@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **2:16 PM Central, 26 November 2026**. A listener; job: testing.
+Last written **2:33 PM Central, 26 November 2026**. A listener; job: testing.
 
 ## g203 is done, not unstarted (12:07 AM Central, Wednesday 25 November 2026)
 
@@ -140,6 +140,8 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 ## Running now
 
+
+**Batch s-lab-1 (security): #3763, everything to its latest as of 26 November.** Since 2:33 PM Central, while a64 is held; a64 comes back first when its deploy lands.
 
 **Batch a64 (aggiemap): the quick tier on the new dev build (exclusive) - HELD.** Stopped at 2:16 PM Central, 26 November: dev's banner still names `17d29cd2a` (built 16:57Z; index.html unchanged since 11:37 AM). Waiting for the new deploy. g227 still queued behind it. Report `reports/2026-11-26-a64.md`.
 
