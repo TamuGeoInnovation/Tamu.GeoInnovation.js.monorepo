@@ -17,7 +17,7 @@ The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47
 - Nothing. Idle, listening.
 
 ## Finished
-- **Batch s82** (report `home/reports/2026-11-26-s82.md`, 12:50 PM Central): #3720 read only; knip 6.46.1 flags 5, 4 false positives; 4 deps neither imported nor invoked (45 lock packages; ng-packagr 29, not 84), @angular/cli doubtful (+33). Three questions.
+- **Batch s82** (report `home/reports/2026-11-26-s82.md`, 12:24 PM Central): #3720 read only; knip 6.46.1 flags 5, 4 false positives; 4 deps neither imported nor invoked (45 lock packages; ng-packagr 29, not 84), @angular/cli doubtful (+33). Three questions.
 - **Batch g123** (report `home/reports/2026-11-26-g123.md`, 11:18 AM Central): #3707, tidy.sh prunes finished branches and every check sweeps them; 30 new tests. Branch `fix/3707-tidy-prunes-branches` at `f074b99ad` (body last). pre-pr-check Exit 1 only on check-parked-code, development's own failure until PR 3716 merges. One question.
 - **Batch g122** (report `home/reports/2026-11-26-g122.md`, 11:05 AM Central): cleanup after the maintainer's commands: branches 452 to 68, worktrees 108 to 36, volumes 92 to 63, 705 to 740 GB free. 62 local-only branches and the scratch worktrees kept and listed. Two questions.
 - **Batch a56** (report `home/reports/2026-11-25-a56.md`, 2:07 PM Central): #3695, check-in-volume retries a failed read of `/src` once and explains exit 3; 16 new test cases. Branch `fix/3695-clone-retry` at `0aa8133b0`; check-in-volume and pre-pr-check Exit 0.
