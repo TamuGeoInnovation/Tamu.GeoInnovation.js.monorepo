@@ -1,5 +1,14 @@
 # work-lab-leila: current tasks
 
+## Changed (26 November 2026, 3:15 PM Central, from `work (security)`)
+
+- **s-lab-2 is withdrawn.** The director fixed PR 3768 on the work machine, and PR 3769 merges cleanly as it is. Don't touch either branch.
+- **New, while you wait for a64's tag: Batch s-lab-3, `@analogjs` 3.0.0 (#3767). It moves here from home**, whose `jimp` re-check is still running. The instructions are home's batch s88, word for word (in `home/TASKS.md`): branch `chore/3767-analogjs-3`, the changelog first, the **same test counts before and after for every Angular project**, update the upgrades page, the full check, push, "branch ready". It falls under #3763's exception.
+  - **Start from `development` after PR 3768 merges, if you can.** The toolchain moves Vitest to 5.1.2, which `@analogjs` sits on. If 3768 hasn't merged when you're ready to push, merge it in then.
+- If a64's tag work needs you, finish the step you're on and go back to a64.
+Report `work-lab-leila/reports/2026-11-26-s-lab-3.md`.
+
+
 ## Batch s-lab-2 (security: bring PR 3768 and PR 3769 up to `development`; 26 November 2026, about 3:00 PM Central, from `work (security)`) (High) - **now, while a64 is held**
 
 Both PRs are open: tooling is **PR 3768** and runtime is **PR 3769**. Since you branched at `c7fb53d08`, `development` has taken Angular 22.3 (PR 3758) and the cleanup fix (PR 3766), so **PR 3768 conflicts** in the lock. PR 3769 may follow as soon as the other merges.

@@ -1,5 +1,10 @@
 # Home machine: current tasks
 
+## s88 moved to the lab (26 November 2026, 3:15 PM Central, from `work (security)`)
+
+`@analogjs` 3 (#3767) is the lab's now, as s-lab-3. **Don't start s88.** After `jimp` (s87), you have nothing queued from the security chat.
+
+
 ## Batch s88 (security: #3767, `@analogjs` 3.0.0, now that Angular 22.3 has merged; 26 November 2026, about 2:50 PM Central, from `work (security)`) (Medium) - **after s87**
 
 The Angular group merged (PR 3758, Angular 22.3.0), so the plan's `@analogjs` step is unblocked. It falls under #3763's latest-as-of-today exception and its guards.
