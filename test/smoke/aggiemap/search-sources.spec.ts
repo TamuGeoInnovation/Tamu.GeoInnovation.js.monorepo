@@ -502,10 +502,9 @@ test.describe('search sources on the main map', () => {
     // Two columns, both LotType, because the clause is `LotType = 'GARAGE VISITOR' OR LotType = 'SURFACE VISITOR'`
     // (#1169). Asserted by content rather than by count: the count is a property of the OR, and asserting it
     // is what broke when the clause changed.
-    expect(
-      tripPlannerColumns('visitor-parking'),
-      "visitor-parking should read the trip planner's column"
-    ).toContain('GIS.TS.ParkingLots.LotType');
+    expect(tripPlannerColumns('visitor-parking'), "visitor-parking should read the trip planner's column").toContain(
+      'GIS.TS.ParkingLots.LotType'
+    );
   });
 
   test('every source in search-sources.ts has a case', () => {
