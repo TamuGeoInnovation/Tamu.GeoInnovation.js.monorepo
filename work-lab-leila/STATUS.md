@@ -142,6 +142,8 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 **Batch a58 (aggiemap): the release tier on dev - exclusive, HELD.** Stopped at 11:04 AM Central, 26 November: dev still serves the old build (ARFF Station shows December 31, 2024 by click and raw epoch values by share link). Waiting for the director to say the new build is on dev. Report `reports/2026-11-26-a58.md`.
 
+While a58 is held, `tools/listen.sh` cannot be the watcher: it exits at once on an unfinished batch, and it only recognises a hold that names a pull request ("Held until PR ..."). So until you write in my TASKS.md, a small watcher pushes the "blocked" heartbeat every 30 minutes and wakes me on any commit to my TASKS.md or DIRECTOR.md. A hold for a non-PR reason (here, "until the build is on dev") is a gap in `listen.sh` and `queued.sh` worth an issue; I have not filed one.
+
 ## Finished
 
 - **Batch g226 (workspace): Q-g225-1, then #3708** (10:49 AM to 11:01 AM, 26 November). 21 of the 52 deleted (every file in `development`'s history), 31 kept with the files `development` never held, 42 images among them. `tools/machine-health.sh` and `tools/health.sh` on work-mailbox, tests first (22 and 43 pass), thresholds read from origin/development's scripts. `work-lab-leila/HEALTH.json` committed; this machine is red (main checkout 32 days behind with no tidy.sh, SSH, no build agents). Q-g226-1, Q-g226-2. Report `reports/2026-11-26-g226.md`.
