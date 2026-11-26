@@ -8,11 +8,10 @@ const PRIMARY_OUTLET = 'primary';
  * Returns a string segment array representing the current path route from the app root.
  */
 export function getPathFromRouteSnapshot(snapshot: ActivatedRouteSnapshot): string[] {
+  // A route with no path, or an empty one, is left out, as before; the filter now says what it leaves (#3617).
   return snapshot.pathFromRoot
-    .map((route) => {
-      return route.routeConfig && route.routeConfig.path ? route.routeConfig.path : undefined;
-    })
-    .filter((segment) => segment);
+    .map((route) => route.routeConfig?.path)
+    .filter((segment): segment is string => Boolean(segment));
 }
 
 /**

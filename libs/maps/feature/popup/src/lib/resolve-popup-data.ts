@@ -1,6 +1,7 @@
 import { formatDate } from '@angular/common';
 
 import { LayerSource } from '@tamu-gisc/common/types';
+import { calendarDate } from '@tamu-gisc/common/utils/date';
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
 import { hasTemplateExpression, renderTemplateRows } from '@tamu-gisc/common/utils/string';
 
@@ -45,9 +46,11 @@ function formatDateValue(value: unknown): unknown {
     return value;
   }
 
-  const date = new Date(value as string | number);
+  // A `format: 'date'` field holds a calendar date, which the service stores as midnight UTC; formatted as that
+  // instant it read a day early in College Station (#3551).
+  const date = calendarDate(value as string | number);
 
-  if (isNaN(date.getTime())) {
+  if (isNaN(date)) {
     return value;
   }
 

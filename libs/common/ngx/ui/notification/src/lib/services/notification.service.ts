@@ -343,7 +343,7 @@ export class NotificationService {
    */
   public preset(id: string): void {
     // Attempt to find notification event by ID from the latest EVENTS object
-    const match: PlatformNotification = this._events.find((n) => n.properties.id === id);
+    const match: PlatformNotification | undefined = this._events.find((n) => n.properties.id === id);
 
     // If the referenced event by id was found, append it to the store and give the updated value to the subject
     if (match) {

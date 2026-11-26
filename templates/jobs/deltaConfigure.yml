@@ -32,6 +32,30 @@ jobs:
         env:
           AZURE_DEVOPS_EXT_PAT: $(System.AccessToken)
 
+      # A pull request that changes only documentation skips Dependencies, Lint and Build, and the run still finishes
+      # green (#1429). Only pull requests: a push to development starts no build here, and a hand-queued development
+      # build is the deployable one, which always builds everything. A `pr:` path filter would do the same with less,
+      # except that the required check `Monorepo` would then never report and the pull request could not merge.
+      # HEAD is the pull request's merge commit, so HEAD^1 is the target branch; if that diff fails or is empty, the
+      # script says to build. Command substitution uses backticks: Azure rewrites $(...) as its own variables.
+      - bash: |
+          set -u
+          if [ "$(Build.Reason)" != "PullRequest" ]; then
+            echo "Not a pull request ($(Build.Reason)): building."
+            echo "##vso[task.setvariable variable=docsOnly;isOutput=true]false"
+            exit 0
+          fi
+          FILES=`git diff --name-only HEAD^1 HEAD 2>/dev/null`
+          if VERDICT=`echo "$FILES" | bash scripts/docs-only-change.sh`; then
+            echo "##vso[task.logissue type=warning]Documentation only: Dependencies, Lint and Build are skipped (#1429)."
+            echo "##vso[task.setvariable variable=docsOnly;isOutput=true]true"
+          else
+            echo "$VERDICT"
+            echo "##vso[task.setvariable variable=docsOnly;isOutput=true]false"
+          fi
+        displayName: 'Is this pull request documentation only?'
+        name: 'changes'
+
       # Where the heavy jobs run (#2212): on the lab's agents (pool Linux-Build) whenever useLab is true in
       # azure-pipelines.yml, and on the hosted pool when it is false. There is no automatic fallback: every pull
       # request here comes from a fork, and a fork build's restricted job token cannot list agent pools, so a check
