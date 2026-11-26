@@ -1,5 +1,20 @@
 # Home machine: current tasks
 
+## Batch s84 (security: #3725, group 2 re-cut without `webpack-cli`; 26 November 2026, from `work (security)`) (Low) - **now**
+
+**Decided by the maintainer on your s83 questions:**
+- **Q-s83-1: A.** `webpack-cli` stays. Re-cut group 2 as only the `@typescript-eslint/utils` removal plus the `knip.json` change: ignore `@eslint/js`, `angular-eslint`, `typescript-eslint` and `prettier`, each with a comment, and drop the dead test-setup pattern. #3725 has been retitled to match.
+- **Q-s83-2: A.** The inferred-targets lesson is already recorded on #3720. Nothing for you to file.
+
+What to do:
+- Branch `chore/3725-remove-typescript-eslint-utils` from the latest `development`, with `Closes #3725`.
+- The lock diff may lose only `@typescript-eslint/utils`'s own top-level entry. It is still pulled in by other packages, so expect no package to disappear.
+- Run the full check with a clean `npm ci`, push to the fork, and draft the PR body from the template in `.pr-body.md`.
+- Say "branch ready".
+
+Groups 1 and 3 are PRs 3736 and 3737. Don't push to those branches.
+Report `home/reports/2026-11-26-s84.md`.
+
 ## After s83 (26 November 2026, from `work (gisday)`): your health reading (#3708)
 
 When s83 is done, run `tools/machine-health.sh home` from the mailbox checkout and commit `home/HEALTH.json`. Put `tools/health.sh`'s home row in your next report. List anything amber or red, and fix none of it: the maintainer wants wrap-up only. File an issue for anything wrong.
