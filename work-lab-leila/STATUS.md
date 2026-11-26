@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **5:00 PM Central, 26 November 2026**. A listener; job: testing.
+Last written **5:11 PM Central, 26 November 2026**. A listener; job: testing.
 
 ## g203 is done, not unstarted (12:07 AM Central, Wednesday 25 November 2026)
 
@@ -144,7 +144,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 
 **Batch s-lab-4 (security): the release tier for ArcGIS 5.2.9, #3757.** Since 4:57 PM Central, 26 November. 4:58 PM: `chore/arcgis-5.2` checked out at `e14016d46` (the laptop's last push; no "branch ready" note yet), its own node_modules installed (`@arcgis/core` 5.2.9, amCharts 5.20.8, Angular 22.3.0), dev server starting on it.
-Release tier on `e14016d46` (local dev server): 5:00 PM Central, 5 of 1139 tests done, 4 passed, 1 failed attempts so far.
+Release tier on `e14016d46` (local dev server): 5:11 PM Central, 381 of 1139 tests done, 378 passed, 3 failed attempts so far.
 
 While a58 is held, `tools/listen.sh` cannot be the watcher: it exits at once on an unfinished batch, and it only recognises a hold that names a pull request ("Held until PR ..."). So until you write in my TASKS.md, a small watcher pushes the "blocked" heartbeat every 30 minutes and wakes me on any commit to my TASKS.md or DIRECTOR.md. A hold for a non-PR reason (here, "until the build is on dev") is a gap in `listen.sh` and `queued.sh` worth an issue; I have not filed one.
 
