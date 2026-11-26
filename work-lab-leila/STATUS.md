@@ -143,7 +143,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 
 
-Nothing. Idle since 4:06 PM Central, 26 November; g227 is next (it waited for the release tier).
+**Batch g227 (workspace): #3729, this machine's own repairs.** Since 4:06 PM Central, 26 November. Now the security chat's.
 
 While a58 is held, `tools/listen.sh` cannot be the watcher: it exits at once on an unfinished batch, and it only recognises a hold that names a pull request ("Held until PR ..."). So until you write in my TASKS.md, a small watcher pushes the "blocked" heartbeat every 30 minutes and wakes me on any commit to my TASKS.md or DIRECTOR.md. A hold for a non-PR reason (here, "until the build is on dev") is a gap in `listen.sh` and `queued.sh` worth an issue; I have not filed one.
 
