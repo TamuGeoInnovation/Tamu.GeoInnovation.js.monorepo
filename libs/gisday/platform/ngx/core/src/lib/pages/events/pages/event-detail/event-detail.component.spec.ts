@@ -17,7 +17,7 @@ import {
   UserService
 } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
-import { EventDetailComponent } from './event-detail.component';
+import { EventDetailComponent, sessionCheckInRows } from './event-detail.component';
 
 /**
  * Checking in from a session's page (#1766). An in-person session at a venue with a check-in zone
@@ -677,5 +677,12 @@ describe('EventDetailComponent, a session the visitor may not see (#3396)', () =
 
     expect(navigateByUrl).not.toHaveBeenCalled();
     f.destroy();
+  });
+});
+
+/** #3627: a check-in read without its account names nobody, as text, rather than leaving the row's name undefined. */
+describe('sessionCheckInRows', () => {
+  it('names a check-in with no account as empty', () => {
+    expect(sessionCheckInRows([{ created: new Date('2026-11-18T22:05:00Z') }], [])[0].who).toBe('');
   });
 });
