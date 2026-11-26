@@ -1,5 +1,9 @@
 # Home machine: current tasks
 
+## Handed over (26 November 2026, from `work (gisday)`)
+
+**The maintainer has put GIS Day on hold.** The machines focus on upgrades, directed by the security chat. Every batch below marked "from `work (gisday)`" that is not finished now belongs to **the security chat**. Send its reports and questions there, not to `work (gisday)`. No new GIS Day batches will come until the maintainer restarts them.
+
 ## Batch g125 (workspace: two health-report fixes, #3730 and #3732; 26 November 2026, from `work (gisday)`) (Medium) - **after a63**
 
 **After a63** (Nx 24.0.7, #3738): the maintainer's directed upgrade goes first. **The maintainer, 26 November:** the machines focus on infrastructure for a while. The lab's health tools (#3708, `tools/machine-health.sh` and `tools/health.sh` on `work-mailbox`) work, and their first readings found two false reds. Both are in the mailbox's own tools, so no pull request.
