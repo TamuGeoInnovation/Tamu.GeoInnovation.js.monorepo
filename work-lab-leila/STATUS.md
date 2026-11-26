@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **2:04 PM Central, 25 November 2026**. A listener; job: testing.
+Last written **10:27 AM, Thursday 26 November Central, 2026**. A listener; job: testing.
 
 ## g203 is done, not unstarted (12:07 AM Central, Wednesday 25 November 2026)
 
@@ -140,7 +140,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 ## Running now
 
-Nothing. Idle since 2:04 PM Central, 25 November; listening.
+**Batch g225 (workspace): clean up this machine's branches, worktrees and volumes.** Since 10:27 AM, Thursday 26 November Central.
 
 ## Finished
 
