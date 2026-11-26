@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **2:52 PM Central, 26 November 2026**. A listener; job: testing.
+Last written **3:15 PM Central, 26 November 2026**. A listener; job: testing.
 
 ## g203 is done, not unstarted (12:07 AM Central, Wednesday 25 November 2026)
 
@@ -142,7 +142,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 
 
-**Batch a64 (aggiemap): the quick tier on the new dev build (exclusive).** 2:52 PM Central: dev's banner names `57efe8b6b` (built 2:22 PM Central). The quick tier is running from a checkout at that commit.
+**Batch a64 (aggiemap): quick PASSED on `57efe8b6b`; waiting for the tag (exclusive).** 3:15 PM Central, 26 November: 816 passed, 64 skipped (4 registry, all #2758), 0 failed, 21 min 37 s. Release and bus.spec when the director says the tag exists. g227 behind it. Report `reports/2026-11-26-a64.md`.
 
 While a58 is held, `tools/listen.sh` cannot be the watcher: it exits at once on an unfinished batch, and it only recognises a hold that names a pull request ("Held until PR ..."). So until you write in my TASKS.md, a small watcher pushes the "blocked" heartbeat every 30 minutes and wakes me on any commit to my TASKS.md or DIRECTOR.md. A hold for a non-PR reason (here, "until the build is on dev") is a gap in `listen.sh` and `queued.sh` worth an issue; I have not filed one.
 
