@@ -3,6 +3,7 @@
 #
 #   bash scripts/tidy.sh              # report what would go, remove nothing
 #   bash scripts/tidy.sh --yes        # remove it
+#   bash scripts/tidy.sh --remove-orphans  # remove only the wt-* folders with no .git that git does not list (#3678)
 #
 # Why this exists. CLAUDE.md documents creating both of these and removing neither, so growth is monotonic
 # by construction. On 24 November 2026 the work computer reached 0 bytes free of 1,907 GB: 460 worktrees at
@@ -85,6 +86,51 @@ unregistered_folders() {
       printf '%s\n' "$dir"
     fi
   done
+}
+
+# Which of two kinds an unlisted folder is (#3678): `orphaned` when it has no `.git` at all, `own-git` when it has one,
+# file or directory, readable or not. An orphan is a worktree whose registration and `.git` file are both gone, so it
+# cannot be anybody's live work - but nothing proves it was this repository's either. A folder with a `.git` is another
+# repository's worktree or a clone (four on the work machine were kubernetes-config's), and is never removed here.
+# Reporting the two under one heading made a warning about three folders of residue read as one about seven.
+unregistered_kind() {
+  if [ -e "$1/.git" ]; then echo own-git; else echo orphaned; fi
+}
+
+# A size in KiB as people say it: GiB to one decimal from 1 GiB up, then MiB, then KiB, so a near-empty folder is not "0".
+kib_human() {
+  awk -v k="$1" 'BEGIN { if (k >= 1048576) printf "%.1f GiB\n", k / 1048576; else if (k >= 1024) printf "%.0f MiB\n", k / 1024; else printf "%d KiB\n", k }'
+}
+
+# True when <dir> may be removed by --remove-orphans: a `wt-*` folder directly in <parent>, which the worktree list in
+# <porcelain> does not name, with no `.git` of any kind. Otherwise false, printing why. Each condition is checked again
+# at the moment of removal, not trusted from the report: a folder that has gained a `.git` since is somebody's.
+orphan_removable() {
+  local dir="$1" parent="$2" porcelain="$3"
+  case "$(basename "$dir")" in wt-*) ;; *) echo "not named wt-*"; return 1 ;; esac
+  if [ "$(cd "$(dirname "$dir")" 2>/dev/null && pwd)" != "$(cd "$parent" 2>/dev/null && pwd)" ]; then
+    echo "not directly in $parent"
+    return 1
+  fi
+  if [ -e "$dir/.git" ]; then
+    echo "it has a .git, so it is a repository's working copy"
+    return 1
+  fi
+  if [ -n "$(unregistered_folders "$porcelain" "$parent" | awk -v d="$dir" '$0 == d')" ]; then
+    return 0
+  fi
+  echo "git lists it as a worktree"
+  return 1
+}
+
+# Removes <dir> if orphan_removable allows it, and otherwise prints why not and leaves it.
+remove_orphan() {
+  local dir="$1" parent="$2" porcelain="$3" why
+  if ! why="$(orphan_removable "$dir" "$parent" "$porcelain")"; then
+    echo "  NOT removing $dir: $why"
+    return 1
+  fi
+  rm -rf -- "$dir"
 }
 
 # True when every uncommitted change in <git status --porcelain output> is an untracked `.pr-body.md`, and
@@ -171,12 +217,14 @@ image_advice() {
 set -e
 act=no
 compact=no
+remove_orphans=no
 case "${1:-}" in
   --yes) act=yes ;;
   --compact) act=yes; compact=yes ;;
   --if-due) ;;
+  --remove-orphans) remove_orphans=yes ;;
   '') ;;
-  *) echo "usage: $0 [--yes|--compact|--if-due]" >&2; exit 2 ;;
+  *) echo "usage: $0 [--yes|--compact|--if-due|--remove-orphans]" >&2; exit 2 ;;
 esac
 
 # `--if-due` is what a listener calls on a schedule. It returns immediately and silently unless a sweep is
@@ -221,13 +269,36 @@ if git -C "$main" rev-parse -q --verify origin/development >/dev/null; then
 fi
 echo "  $(grep -c . "$tmp/detached" || true) detached worktree(s); those whose commit is in origin/development are considered."
 
-# Folders git does not list: named with their size, never removed (#3438).
+# Folders git does not list (#3438), in two kinds with their sizes added up (#3678). Neither is touched by --yes. An
+# orphan, with no .git at all, is removed only by --remove-orphans; a folder with its own .git, never.
 unregistered_folders "$tmp/porcelain" "$(dirname "$main")" > "$tmp/unregistered"
-if [ -s "$tmp/unregistered" ]; then
-  echo "  Not worktrees of this repository as far as git knows, so not removed (another repository's, or a pruned registration); check each by hand:"
-  while IFS= read -r dir; do
-    echo "    $dir ($(du -sh "$dir" 2>/dev/null | cut -f1))"
-  done < "$tmp/unregistered"
+: > "$tmp/orphaned"
+: > "$tmp/own-git"
+while IFS= read -r dir; do
+  [ -n "$dir" ] || continue
+  printf '%s\t%s\n' "$(du -sk "$dir" 2>/dev/null | cut -f1)" "$dir" >> "$tmp/$(unregistered_kind "$dir")"
+done < "$tmp/unregistered"
+orphans="$(grep -c . "$tmp/orphaned" || true)"
+if [ -s "$tmp/orphaned" ]; then
+  echo "  $orphans folder(s) with no .git and not listed by git, $(kib_human "$(awk -F '\t' '{ s += $1 } END { print s + 0 }' "$tmp/orphaned")") in all."
+  echo "  Old worktrees whose registration and .git are gone; nothing in them can be checked, and --yes never sees them:"
+  while IFS="$(printf '\t')" read -r kib dir; do
+    echo "    $dir ($(kib_human "${kib:-0}"))"
+  done < "$tmp/orphaned"
+fi
+if [ -s "$tmp/own-git" ]; then
+  echo "  $(grep -c . "$tmp/own-git") folder(s) with their own .git, $(kib_human "$(awk -F '\t' '{ s += $1 } END { print s + 0 }' "$tmp/own-git")") in all: another repository's worktrees or clones. Never removed here:"
+  while IFS="$(printf '\t')" read -r kib dir; do
+    echo "    $dir ($(kib_human "${kib:-0}"))"
+  done < "$tmp/own-git"
+fi
+if [ "$remove_orphans" = yes ] && [ "$orphans" -gt 0 ]; then
+  echo "Removing $orphans orphaned folder(s), checking each again first."
+  removed=0
+  while IFS="$(printf '\t')" read -r kib dir; do
+    remove_orphan "$dir" "$(dirname "$main")" "$tmp/porcelain" && removed=$((removed + 1)) && echo "    removed $dir"
+  done < "$tmp/orphaned"
+  echo "  Removed $removed of $orphans."
 fi
 
 # A worktree with uncommitted changes is kept, merged branch or not. On 24 November 2026, 7 of 367
@@ -264,7 +335,8 @@ volumes="$(grep -c . "$tmp/volumes-removable" || true)"
 echo "Removable: $volumes volume(s) (about $((volumes * 27 / 10)) GiB inside the Docker disk image), $worktrees worktree(s) (about $((worktrees * 589 / 1024)) GiB on this disk)."
 
 if [ "$act" != yes ]; then
-  echo "Nothing removed. Run '$0 --yes' to remove them."
+  echo "No worktree or volume removed. Run '$0 --yes' to remove them."
+  [ "$orphans" -gt 0 ] && [ "$remove_orphans" != yes ] && echo "The orphaned folders are kept by --yes as well. '$0 --remove-orphans' removes them, and only them."
   exit 0
 fi
 

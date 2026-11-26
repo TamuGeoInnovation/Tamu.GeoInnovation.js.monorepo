@@ -800,6 +800,12 @@ reclaim, all of it held by a file whose job finished the moment the pull request
 now removes a worktree whose *only* change is an untracked `.pr-body.md`, so this is belt and braces rather
 than the only guard - but the file is yours to delete, and the sweep should not have to know about it.
 
+**`tidy.sh` reports the `wt-*` folders git does not list as two kinds, with their total size** (#3678). It
+reads git's worktree list, so a folder whose registration and `.git` are both gone is invisible to `--yes`:
+on 25 November 2026 one machine held three of them, about 2.2 GB, and another seventeen. Such an *orphan* is removed only by
+`bash scripts/tidy.sh --remove-orphans`, which removes nothing else and checks each folder again first. A
+folder with its own `.git` is another repository's worktree or a clone, and nothing here ever removes it.
+
 **Write every capture to `docs/screenshots/<slug>/` as soon as it is taken, not when it is needed.**
 A "before" image stops being obtainable the moment the fix is on disk: recovering one means stashing
 the change, waiting for a rebuild, re-capturing, then restoring — ten minutes to get back something
