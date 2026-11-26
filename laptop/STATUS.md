@@ -33,7 +33,7 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-Nothing.
+- **Batch s9 (#3727, Socket's 13 findings)**, started 12:41 PM Central.
 
 ## Finished
 - **Batch g43 (#3668, the last guards)** (report `laptop/reports/2026-11-26-g43.md`): **branch ready: `fix/3668-gisday-write-route-guards`** (`002b78b9a`, body last). 3 routes guarded in 1 controller (the other was the survey, removed by #3712); spec red then green; check exit 0. No PR, as asked.
