@@ -64,7 +64,8 @@ export class EventViewComponent implements OnInit, OnDestroy {
   private readonly at = inject(ActivatedRoute);
   private readonly rt = inject(Router);
 
-  public activeSeason$: Observable<ActiveSeasonDto>;
+  /** The season shown, or null when the address names a year with none, or the site has none yet (#2076). */
+  public activeSeason$: Observable<ActiveSeasonDto | null>;
   public viewedYear$: Observable<number | null>;
   public isPastSeason$: Observable<boolean>;
   public events$: Observable<Array<Partial<Event>>>;
@@ -102,10 +103,10 @@ export class EventViewComponent implements OnInit, OnDestroy {
   private readonly _dayMatches = signal<Record<string, number>>({});
 
   public ngOnInit() {
-    this.form = this.fb.group({
-      tags: [null],
-      organizations: [null]
-    });
+    const tags = this.fb.control(null);
+    const organizations = this.fb.control(null);
+
+    this.form = this.fb.group({ tags, organizations });
 
     const settings = this.st
       .init({
@@ -133,11 +134,11 @@ export class EventViewComponent implements OnInit, OnDestroy {
     this.isPastSeason$ = viewed.pipe(map(({ isPast }) => isPast));
 
     this.tags$ = this.activeSeason$.pipe(
-      switchMap((season) => (season ? this.tagService.getEntitiesForSeason(season.guid) : of([]))),
+      switchMap((season) => (season?.guid ? this.tagService.getEntitiesForSeason(season.guid) : of([]))),
       shareReplay(1)
     );
     const places$ = this.activeSeason$.pipe(
-      switchMap((season) => (season ? this.os.getEntitiesForSeason(season.guid) : of([]))),
+      switchMap((season) => (season?.guid ? this.os.getEntitiesForSeason(season.guid) : of([]))),
       shareReplay(1)
     );
     this.sessionPlaces$ = places$.pipe(
@@ -226,9 +227,8 @@ export class EventViewComponent implements OnInit, OnDestroy {
       switchMap(() => {
         return this.as.user$;
       }),
-      switchMap((user) => {
-        return this.us.getUserMetadata(user.sub);
-      }),
+      // Signed in, there is always a subject; without one there is no profile to read.
+      switchMap((user) => (user?.sub ? this.us.getUserMetadata(user.sub) : EMPTY)),
       shareReplay()
     );
 
@@ -240,7 +240,7 @@ export class EventViewComponent implements OnInit, OnDestroy {
     );
 
     this.activeTagFilters$ = merge(
-      this.form.get('tags').valueChanges.pipe(
+      tags.valueChanges.pipe(
         tap((tags) => {
           this.st.updateSettings({
             tags: tags ? tags.toString() : null
@@ -256,7 +256,7 @@ export class EventViewComponent implements OnInit, OnDestroy {
     ).pipe(shareReplay());
 
     this.activeOrgFilters$ = merge(
-      this.form.get('organizations').valueChanges.pipe(
+      organizations.valueChanges.pipe(
         tap((orgs) => {
           this.st.updateSettings({
             organizations: orgs ? orgs.toString() : null
@@ -285,9 +285,7 @@ export class EventViewComponent implements OnInit, OnDestroy {
       switchMap(() => {
         return this.rs.getRsvpsForSignedInUser().pipe(
           map((rsvps) => {
-            return rsvps.map((rsvp) => {
-              return rsvp?.event?.guid;
-            });
+            return rsvps.map((rsvp) => rsvp?.event?.guid).filter((guid): guid is string => guid !== undefined);
           })
         );
       }),
@@ -310,7 +308,12 @@ export class EventViewComponent implements OnInit, OnDestroy {
   public noSessionsMatch(days: Array<Partial<SeasonDay>> | null | undefined): boolean {
     const matches = this._dayMatches();
 
-    return this.searchText().trim().length > 0 && (days?.length ?? 0) > 0 && days.every((day) => matches[day.guid] === 0);
+    return (
+      this.searchText().trim().length > 0 &&
+      !!days &&
+      days.length > 0 &&
+      days.every((day) => day.guid !== undefined && matches[day.guid] === 0)
+    );
   }
 
   public toggleFilters() {

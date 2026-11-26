@@ -38,23 +38,32 @@ export class EventCheckinComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
 
   public readonly state = signal<CheckInState>('checking');
-  public readonly event = signal<Partial<Event>>(undefined);
+  public readonly event = signal<Partial<Event> | undefined>(undefined);
 
   /** Why it did not work, in the API's words where it gave them. */
-  public readonly reason = signal<string>(undefined);
+  public readonly reason = signal<string | undefined>(undefined);
 
   public readonly guid = this.route.snapshot.paramMap.get('guid');
   /** The QR code's code: kept by the page, which takes it out of the address before anything reports it (#2572). */
   private readonly code = this.route.snapshot.queryParamMap.get(CHECK_IN_CODE_PARAM) ?? keptCode();
 
   public ngOnInit(): void {
-    if (!this.code) {
+    const code = this.code;
+    const guid = this.guid;
+
+    if (!code) {
       this.state.set('no-code');
       return;
     }
 
+    // The route always names the session; without one there is none to find, as the API would say.
+    if (!guid) {
+      this.state.set('not-found');
+      return;
+    }
+
     this.events
-      .getEvent(this.guid)
+      .getEvent(guid)
       .pipe(
         catchError(() => of(null)),
         switchMap((event) => {
@@ -70,7 +79,7 @@ export class EventCheckinComponent implements OnInit {
         filter((loggedIn) => loggedIn !== undefined),
         switchMap((loggedIn) => {
           if (!loggedIn) {
-            if (firstSignInForCode(this.code)) {
+            if (firstSignInForCode(code)) {
               this.state.set('signing-in');
               this.signIn();
             } else {
@@ -82,8 +91,14 @@ export class EventCheckinComponent implements OnInit {
 
           return this.auth.user$.pipe(
             take(1),
-            switchMap((user) => this.users.getUserMetadata(user.sub)),
-            map((info) => info?.app_metadata?.gisday?.completedProfile === true),
+            // With no subject there is no profile to read, which, like one that cannot be read, does not stop the attempt.
+            switchMap((user) =>
+              user?.sub
+                ? this.users
+                    .getUserMetadata(user.sub)
+                    .pipe(map((info) => info?.app_metadata?.gisday?.completedProfile === true))
+                : of(true)
+            ),
             // The API decides in the end; a profile that cannot be read does not stop the attempt.
             catchError(() => of(true))
           );
@@ -95,10 +110,10 @@ export class EventCheckinComponent implements OnInit {
             return of(undefined);
           }
 
-          return this.checkins.getUserCheckinForEvent(this.guid).pipe(
+          return this.checkins.getUserCheckinForEvent(guid).pipe(
             map(() => 'already' as const),
             catchError(() =>
-              this.checkins.insertUserCheckin(this.guid, undefined, this.code).pipe(
+              this.checkins.insertUserCheckin(guid, undefined, code).pipe(
                 map(() => 'done' as const),
                 catchError((err) => {
                   this.reason.set(

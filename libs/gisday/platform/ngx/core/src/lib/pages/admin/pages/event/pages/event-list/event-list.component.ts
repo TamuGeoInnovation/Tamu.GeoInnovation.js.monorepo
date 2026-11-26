@@ -4,7 +4,7 @@ import { Observable, filter, firstValueFrom, map, switchMap } from 'rxjs';
 import { RouterLink } from '@angular/router';
 
 import { EventService, SessionFilesService } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { Event } from '@tamu-gisc/gisday/platform/data-api';
+import { Event, Season } from '@tamu-gisc/gisday/platform/data-api';
 
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
 import { AdminSearchComponent } from '../../../base-admin-list/admin-search.component';
@@ -109,7 +109,7 @@ export class EventListComponent extends BaseAdminListComponent<Event> implements
       (this.organizations.value === 'all' || siteListsSession(this.site, event)) &&
       (!this.organization.value || event.location?.place?.guid === this.organization.value) &&
       (this.tagged.value !== 'none' || !event.tags?.length) &&
-      (this.withSlides.value !== 'none' || !this.slides()?.has(event.guid))
+      (this.withSlides.value !== 'none' || event.guid === undefined || !this.slides()?.has(event.guid))
     );
   }
 
@@ -127,7 +127,7 @@ export class EventListComponent extends BaseAdminListComponent<Event> implements
     // The selected season's slides (#3093). Once they are in, the filters are read again, so "no slides" is right.
     this.selectedSeason$
       .pipe(
-        filter((season) => !!season?.guid),
+        filter((season): season is Partial<Season> & { guid: string } => !!season?.guid),
         switchMap((season) => this.sessionFiles.forSeason(season.guid)),
         takeUntilDestroyed(this.destroyRef)
       )
@@ -141,7 +141,7 @@ export class EventListComponent extends BaseAdminListComponent<Event> implements
    * Whether every event of one day's table is selected, for that table's header checkbox.
    */
   public allSelected(selected: Array<string> | null, events: Array<Partial<Event>>): boolean {
-    return events.length > 0 && events.every((event) => (selected ?? []).includes(event.guid));
+    return events.length > 0 && events.every((event) => event.guid !== undefined && (selected ?? []).includes(event.guid));
   }
 
   /**
@@ -157,7 +157,7 @@ export class EventListComponent extends BaseAdminListComponent<Event> implements
       message: `${updated} ${updated === 1 ? 'event' : 'events'} ${active ? 'now on' : 'taken off'} the public schedule.`
     });
 
-    this.$signal.next(null);
+    this.$signal.next(true);
   }
 
   /** The same, for every selected event. */

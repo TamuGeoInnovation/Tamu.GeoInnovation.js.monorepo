@@ -22,7 +22,7 @@ the shared libraries behind them. A change to a shared library can affect severa
 
 ## Where things are written down
 
-Ten places, each with one job.
+Eleven places, each with one job.
 
 | Where | What belongs there |
 | --- | --- |
@@ -32,6 +32,7 @@ Ten places, each with one job.
 | [`docs/build-times.md`](docs/build-times.md) | How long runs and page loads take, so a change meant to speed something up can be shown to have done it: before-and-after comparisons and what they show, and the run files in [`docs/build-times/runs/`](docs/build-times/runs) the scripts write when asked. Measurements, not rules. |
 | [`docs/gisday-local.md`](docs/gisday-local.md) | How to run the whole GIS Day site on one machine with `scripts/gisday-local.sh`: the containers, the settings kept outside the repository, and what works locally and what does not. |
 | [`docs/gisday-migrations.md`](docs/gisday-migrations.md) | How the GIS Day database schema is changed: the migration commands, the process from entity to production, and what has been proven. Read before editing a GIS Day entity, **and before changing any production GIS Day data**: it says where the scripts that do that are kept. |
+| [`docs/parked-code.md`](docs/parked-code.md) | Code deleted because the service it called went away, and that we expect to want again: which `parked/*` tag holds it, why it went, and what has to be true to bring it back. Read before re-writing something that feels like it must have existed once. |
 | [`docs/releases/unreleased.md`](docs/releases/unreleased.md) | Day-to-day state **anyone** picking this up needs: what has merged since the last production release, where it is deployed, what still needs a decision, and work in flight. [`CLAUDE_SETUP.md`](CLAUDE_SETUP.md) sends a new session here first. |
 | The `cloud-mailbox` branch | The cloud session's current batch (`cloud/TASKS.md`) and its reports (`cloud/reports/`). Written by the desktop and cloud sessions; never merged. See [The cloud session](#the-cloud-session). |
 | The `work-mailbox` branch | The work machine's current batch of test runs (`work/TASKS.md`) and its reports (`work/reports/`). Written by the home and work sessions; never merged. See [The work machine](#the-work-machine). |
@@ -555,6 +556,15 @@ globally-applied widget styles belong in an app's `styles.scss`.
 **Do not commit generator scaffold specs.** An empty `TestBed.configureTestingModule({})`
 with a lone "should be created" breaks as soon as the class gains a dependency. The Angular
 generators are configured with `skipTests`.
+
+**Deleting code we expect back parks it, in the same pull request as the deletion.** An annotated `parked/*` tag on the
+last commit that still has it, a row in [`docs/parked-code.md`](docs/parked-code.md), and an issue labelled `parked`
+naming the condition for its return. `scripts/check-parked-code.mjs` fails when those three disagree, so none can go
+stale; `git tag -l "parked/*"` lists them. **Tag before the deletion merges**, while a commit containing the code is
+still on `development` — afterwards, finding the right commit means reading a closed pull request's history, which is
+the situation this avoids. The code stays out of the repository on purpose: code nothing calls cannot stay healthy, and
+the usual reason for parking it is that it calls a retired service, which is a trap for the next reader. What the tag
+preserves is the working out, not code to paste back. See #3704, which parked the bus timetable.
 
 **Every bug gets a test.** Nothing else here requires one, so a bug could be fixed, and every rule
 followed, with nothing to stop it coming back.

@@ -9,6 +9,7 @@
 856 libs/ts/events/ngx/tsconfig.lib.json
 809 libs/aggiemap/ngx/discover/tsconfig.lib.json
 702 libs/aggiemap/ngx/common/tsconfig.lib.json
+424 libs/gisday/platform/ngx/core/tsconfig.lib.json # #3627: 5 in its own files, from other libraries' types (3 placesShownOn's in gisday-common, 2 TypeRecord's in gisday-platform-ngx-common); the rest are in the libraries it imports, 110 of them gisday-platform-ngx-common's own until #3611 merges
 # gisday-competitions-ngx-core went strict with #3614. 4 are in its own files, from gisday-competitions-ngx-data-access's
 # SubmissionService params, which #3594 fixes; the rest are in what it imports: gisday-platform-ngx-common 110, ui-kits-ngx-search 51,
 # ui-kits-ngx-layout 45 (#3601), ui-kits-ngx-forms 45 (#3595), gisday-competitions-ngx-common 15 (#3610) and smaller ones.

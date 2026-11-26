@@ -69,7 +69,7 @@ export class JudgingResultsComponent {
       const season = this.choice.season();
       const competition = this.competition();
 
-      if (season && competition) {
+      if (season?.guid && competition) {
         this.load(season.guid, competition);
       }
     });

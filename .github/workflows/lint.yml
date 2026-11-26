@@ -74,6 +74,12 @@ jobs:
       - name: Check registry signatures
         run: node tools/security-findings/audit-signatures.mjs
 
+      # Code deleted because the service it called went away, and expected back, lives on a parked/* tag. The
+      # register, the tags and the parked issues have to agree, or the code is findable only by someone who already
+      # knows it exists (#3704). Needs the tags, which the fetch-depth: 0 above provides.
+      - name: Check the parked code register
+        run: node scripts/check-parked-code.mjs
+
       # Every difference between the development and production GIS services is recorded in code as a
       # workaround, so nothing used to make anybody report it to the GIS team and about fifty accumulated
       # (#3402). Fails when a difference is in connections.ts and missing from the register.
