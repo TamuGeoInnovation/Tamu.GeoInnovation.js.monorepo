@@ -22,7 +22,7 @@ For each branch:
 - Bump in `package.json`, sync the lock, and **list every version that moved**.
 - Run the full check with a clean `npm ci`, using `CHECK_MEMORY=8g CHECK_PARALLEL=4` if anything else runs.
 - Add a row to `docs/upgrades/README.md`'s "How we got here".
-- Push to the fork; "branch ready" with `.pr-body.md`, `Closes` an issue the director files: **#TOOLING** and **#RUNTIME**, which I'll fill in.
+- Push to the fork; "branch ready" with `.pr-body.md`, `Closes` an issue the director files: **#3764** (tooling) and **#3765** (runtime).
 
 **`@analogjs` 3.0.0 is not in either.** It follows the Angular group, so it comes as its own batch once PR 3758 merges.
 Report `work-lab-leila/reports/2026-11-26-s-lab-1.md`.
