@@ -109,6 +109,12 @@ is genuinely incomplete - there is nothing to deploy, rather than a rule saying 
 `js-monorepo-production` come out of one run at one commit. That is why a single commit correctly
 carries both a `dev-` and a `prod-` tag.
 
+**A pull request that changes only documentation skips the build** (#1429): every changed file is under `docs/` or
+ends in `.md`, so `scripts/docs-only-change.sh` says so in Setup, and Dependencies, Lint and Build are skipped. The run
+still finishes green, so the required `Monorepo` check reports, in about a minute instead of 15 to 25. A `pr:` path filter
+is not used because the check would then never report and the pull request could not merge. A hand-queued `development`
+build is never skipped.
+
 To queue one: Pipelines → Monorepo → Run pipeline → branch `development`.
 
 ### Release definition 13, "AggieMap"

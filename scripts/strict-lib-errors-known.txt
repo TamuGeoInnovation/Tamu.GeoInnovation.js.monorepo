@@ -15,6 +15,8 @@
 # common-ngx-settings, compiled under its strict settings.
 42 libs/ui-kits/ngx/layout/modal/tsconfig.lib.json
 # ui-kits-ngx-forms went strict with #3495: all 45 are in ui-kits-ngx-layout, which it imports, none in its own files.
-45 libs/ui-kits/ngx/forms/tsconfig.lib.json
+# ui-kits-ngx-layout went strict with #3601, with none in its own files: the 14 are in common-ngx-settings (5),
+# ui-kits-ngx-layout-modal (4), ui-kits-ngx-interactions-clipboard (3) and ui-kits-ngx-layout-code (2).
+14 libs/ui-kits/ngx/layout/tsconfig.lib.json
 9 libs/mailroom/ngx/tsconfig.lib.json
-8 libs/gisday/competitions/ngx/data-access/tsconfig.lib.json
+# common-ngx-ui-notification went strict with #3620, with none in its own files: all 4 are in ui-kits-ngx-layout-modal.
