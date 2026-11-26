@@ -291,7 +291,7 @@ export const LayerSources: LayerSource[] = [
             listMode: 'show',
             popupComponent: Popups.MarkdownWDirectionsPopupComponent,
             popupData: {
-              title: {
+              name: {
                 field: 'StopName',
                 collapsed: true
               },

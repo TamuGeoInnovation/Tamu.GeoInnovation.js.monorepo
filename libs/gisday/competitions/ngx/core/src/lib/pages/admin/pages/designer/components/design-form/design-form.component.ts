@@ -44,7 +44,7 @@ export class DesignFormComponent implements OnInit {
   private readonly fs = inject(FormService);
   private readonly ns = inject(NotificationService);
 
-  public currentSeasonForm$: Observable<CompetitionSeason>;
+  public currentSeasonForm$: Observable<CompetitionSeason | null>;
   public loadSchemaForm: UntypedFormGroup;
 
   /** Whether Fetch Schema is waiting for its answer; it cannot be pressed again until then (#2582). */
@@ -53,26 +53,30 @@ export class DesignFormComponent implements OnInit {
   /** What the last Fetch Schema found, or why it failed (#2582). */
   public readonly fetchResult = signal<{ found?: string; failed?: string } | null>(null);
 
-  public readonly formModel = signal<UntypedFormGroup>(undefined);
+  // A real, empty form from the start, which ngOnInit then sets as it always has: nothing reads it before (#3614).
+  public readonly formModel = signal<UntypedFormGroup>(this.emptyFormModel());
 
   /**
    * The questions in the form, as a new list whenever one is added or removed.
    */
   public readonly fields = signal<Array<AbstractControl>>([]);
 
+  /** The form a season with none yet starts from. */
+  private emptyFormModel(): UntypedFormGroup {
+    return this.fb.group({
+      fields: this.fb.array([]),
+      allowSubmissions: [false],
+      scoringOpensAt: [null],
+      scoringClosesAt: [null]
+    });
+  }
+
   public ngOnInit(): void {
     this.loadSchemaForm = this.fb.group({
       source: ''
     });
 
-    this.formModel.set(
-      this.fb.group({
-        fields: this.fb.array([]),
-        allowSubmissions: [false],
-        scoringOpensAt: [null],
-        scoringClosesAt: [null]
-      })
-    );
+    this.formModel.set(this.emptyFormModel());
 
     this.currentSeasonForm$ = this.fs.getFormForActiveSeason().pipe(
       catchError(() => {
@@ -86,15 +90,19 @@ export class DesignFormComponent implements OnInit {
         this.loadSchemaForm.patchValue({ source: res.form.source });
       }
 
-      if (res && res.form.model) {
+      const model = res?.form?.model;
+
+      if (res && model) {
         this.formModel.set(
           this.fb.group({
             allowSubmissions: [res.allowSubmissions],
             scoringOpensAt: [asDate(res.scoringOpensAt)],
             scoringClosesAt: [asDate(res.scoringClosesAt)],
             fields: this.fb.array(
-              res.form.model.map((q) => {
-                return this.fb.group({ ...q, options: q.options.length > 0 ? this.fb.array(q.options) : this.fb.array([]) });
+              model.map((q) => {
+                // A question saved without its options opens with none, where reading their length threw and the
+                // designer stayed empty (#3614).
+                return this.fb.group({ ...q, options: this.fb.array(q.options ?? []) });
               })
             )
           })
@@ -205,7 +213,7 @@ export class DesignFormComponent implements OnInit {
 
   /** Empties one side of the scoring window: no limit on that side. */
   public clearScoringMoment(control: 'scoringOpensAt' | 'scoringClosesAt'): void {
-    this.formModel().get(control).setValue(null);
+    this.formModel().get(control)?.setValue(null);
   }
 
   public removeQuestion(index: number) {
@@ -234,7 +242,9 @@ export class DesignFormComponent implements OnInit {
     this.currentSeasonForm$
       .pipe(
         switchMap((season) => {
-          if (season) {
+          // A season whose form is not made yet gets one made, where reading its guid threw and nothing was saved
+          // (#3614).
+          if (season?.form) {
             return this.fs.updateForm(season.form.guid, payload);
           } else {
             return this.fs.createFormModelForActiveSeason(payload);
