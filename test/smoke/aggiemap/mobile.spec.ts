@@ -1,7 +1,7 @@
 import { Page } from '@playwright/test';
 import * as fs from 'fs';
 
-import { expect, test } from './fixtures';
+import { PHONE_VIEWPORT, expect, test } from './fixtures';
 import { MANIFEST_PATH, MapManifest } from './global-setup';
 import { blockAnalytics } from './analytics';
 import { developmentSectionsVisible } from './development-only';
@@ -27,8 +27,7 @@ import { ProbeLayer, waitForMapDrawn, waitForMapReady } from './map-probe';
 const manifest: MapManifest = JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf8'));
 
 /** The width the application itself treats as the boundary - `ResponsiveService._checkWidth`. */
-const MOBILE_WIDTH = 375;
-const MOBILE_HEIGHT = 812;
+const { width: MOBILE_WIDTH, height: MOBILE_HEIGHT } = PHONE_VIEWPORT;
 const DESKTOP_WIDTH = 1280;
 
 /**
