@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **12:13 PM Central, 26 November 2026**. A listener; job: testing.
+Last written **12:42 PM Central, 26 November 2026**. A listener; job: testing.
 
 ## g203 is done, not unstarted (12:07 AM Central, Wednesday 25 November 2026)
 
@@ -139,6 +139,8 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
   - the built-in browser is not signed in to GitHub.
 
 ## Running now
+
+**Batch a61 (aggiemap): #3721, the build banner allowance.** Since 12:42 PM Central, 26 November, beside the held a59.
 
 **Batch a59 (aggiemap): quick done, waiting (exclusive).** 12:13 PM Central, 26 November: the canary passes; quick failed 3 (all in the suite: #3721, #3722, #3723), 1 flaky, 812 passed, 64 skipped, 23 min 18 s. Waiting for the tag before the release tier. Report `reports/2026-11-26-a59.md`.
 
