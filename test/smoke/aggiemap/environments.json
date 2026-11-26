@@ -120,9 +120,7 @@
     "healthLabel": null,
     "directionsAvailable": true,
     "developmentSectionsVisible": true,
-    "allowedLayerFailures": [
-      "Dining Locations"
-    ],
+    "allowedLayerFailures": ["Dining Locations"],
     "allowedServiceFailures": {},
     "allowedSearchSourceFailures": {
       "visitor-parking": "#1169: the trip planner queries TS_GIS.dbo.LOTS.Visitor_Lot, which the parking layer does not have"
