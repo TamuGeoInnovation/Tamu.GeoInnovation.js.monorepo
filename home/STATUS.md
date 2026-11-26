@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch s90**: GIS Day data-api: red (4 guards fail on unfixed code), green (1278 pass); starting its full check, 4:25 PM Central, 26 November.
+- **Batch s90**: geoprocessing-core and common-node-fs: red then green; GIS Day data-api full check still running, 4:30 PM Central, 26 November.
 
 ## Finished
 - **Batch s89** (report `home/reports/2026-11-26-s89.md`, 4:17 PM Central): branch ready `chore/3767-analogjs-3` at `cf0e88680`; @analogjs 3.0.0 under #3763; same test counts in all 95 projects; check and pre-pr-check Exit 0.
