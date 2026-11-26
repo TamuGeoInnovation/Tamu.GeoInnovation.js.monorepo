@@ -6,7 +6,7 @@ import { SUBMISSION_REVIEW_STATUS } from '../../enums/submission-review-status.e
 
 @Pipe({ name: 'submissionReviewStatus' })
 export class SubmissionReviewStatusPipe implements PipeTransform {
-  public transform(value: Partial<Submission>): SUBMISSION_REVIEW_STATUS {
+  public transform(value: Partial<Submission> | null | undefined): SUBMISSION_REVIEW_STATUS | null {
     if (!value) return null;
 
     if (value.reviewed === false) {

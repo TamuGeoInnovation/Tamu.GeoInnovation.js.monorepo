@@ -26,7 +26,8 @@ interface SwimlaneNgxDatatableActivateEvent {
 export class SubmissionReviewListComponent implements OnInit {
   private readonly modalService = inject(ModalService);
 
-  public readonly submissions$ = input<Observable<SubmissionReviewDto[]>>(undefined);
+  // Required: both pages that show the list give it their submissions (#3614).
+  public readonly submissions$ = input.required<Observable<SubmissionReviewDto[]>>();
   public readonly isAdmin = input(false);
 
   public readonly submissions = signal<SubmissionReviewDto[]>([]);

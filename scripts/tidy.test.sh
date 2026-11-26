@@ -121,6 +121,43 @@ case "$got" in
   *) check 'and is never offered for removal' 'not offered' 'not offered' ;;
 esac
 
+# The two kinds of unlisted folder (#3678). An orphan has no .git at all: a worktree whose registration and .git file
+# are both gone, which nothing else here can see. A folder with its own .git is another repository's worktree or a
+# clone - four on the work machine were kubernetes-config's - and is never this script's to remove.
+mkdir -p "$parent/wt-other-worktree" "$parent/wt-clone/.git" "$parent/wt-broken"
+printf 'gitdir: C:/elsewhere/.git/worktrees/wt-other-worktree\n' >"$parent/wt-other-worktree/.git"
+printf 'gitdir: C:/TAMU/gone/.git/worktrees/wt-broken\n' >"$parent/wt-broken/.git"
+check 'a folder with no .git is an orphan' 'orphaned' "$(unregistered_kind "$parent/wt-orphan")"
+check 'a folder whose .git file points elsewhere is not' 'own-git' "$(unregistered_kind "$parent/wt-other-worktree")"
+check 'nor is a clone with a .git directory' 'own-git' "$(unregistered_kind "$parent/wt-clone")"
+check 'nor is one whose .git points at nothing' 'own-git' "$(unregistered_kind "$parent/wt-broken")"
+
+# Sizes are added up and said as one number, because the number is the point.
+check 'a total in KiB reads as GiB' '2.2 GiB' "$(kib_human 2306867)"
+check 'a small total reads as MiB' '512 MiB' "$(kib_human 524288)"
+check 'a near-empty folder is not 0' '12 KiB' "$(kib_human 12)"
+
+# Removal: only an orphan, only a wt-* folder directly in the parent, never a listed one, never one with a .git.
+check 'an orphan may be removed' 'yes' "$(orphan_removable "$parent/wt-orphan" "$parent" "$tmp/porcelain-folders" >/dev/null && echo yes || echo no)"
+check 'a folder with a .git file is refused' 'no' "$(orphan_removable "$parent/wt-other-worktree" "$parent" "$tmp/porcelain-folders" >/dev/null && echo yes || echo no)"
+check 'a clone is refused' 'no' "$(orphan_removable "$parent/wt-clone" "$parent" "$tmp/porcelain-folders" >/dev/null && echo yes || echo no)"
+mkdir -p "$parent/wt-registered-no-git"
+printf 'worktree %s\nHEAD 3\ndetached\n' "$parent/wt-registered-no-git" >>"$tmp/porcelain-folders"
+check 'a folder git lists is refused, .git or not' 'no' "$(orphan_removable "$parent/wt-registered-no-git" "$parent" "$tmp/porcelain-folders" >/dev/null && echo yes || echo no)"
+check 'a folder not named wt-* is refused' 'no' "$(orphan_removable "$parent/not-a-worktree" "$parent" "$tmp/porcelain-folders" >/dev/null && echo yes || echo no)"
+mkdir -p "$tmp/elsewhere/wt-orphan"
+check 'a wt-* folder outside the parent is refused' 'no' "$(orphan_removable "$tmp/elsewhere/wt-orphan" "$parent" "$tmp/porcelain-folders" >/dev/null && echo yes || echo no)"
+
+# And it really removes only what it may: the orphan goes, the folder with a .git stays, with its reason given.
+remove_orphan "$parent/wt-orphan" "$parent" "$tmp/porcelain-folders" >/dev/null
+check 'removing an orphan removes it' 'gone' "$([ -e "$parent/wt-orphan" ] && echo there || echo gone)"
+reason="$(remove_orphan "$parent/wt-other-worktree" "$parent" "$tmp/porcelain-folders")"
+check 'removing a folder with a .git refuses and keeps it' 'there' "$([ -e "$parent/wt-other-worktree/.git" ] && echo there || echo gone)"
+case "$reason" in
+  *'.git'*) check 'and says why' 'says .git' 'says .git' ;;
+  *) check 'and says why' 'says .git' "$reason" ;;
+esac
+
 # Volumes.
 printf '%s\n' 'tamu-js-100' 'tamu-js-200' 'tamu-js-dev-nm' 'tamu-js-chk-development' 'tamu-js-1623-nm' 'some-other-volume' >"$tmp/volumes"
 printf '%s\n' '100' '1623' >"$tmp/closed"

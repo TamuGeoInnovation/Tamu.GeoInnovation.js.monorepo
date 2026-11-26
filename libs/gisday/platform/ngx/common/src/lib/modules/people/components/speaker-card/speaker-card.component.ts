@@ -12,5 +12,5 @@ import { SpeakerClassBannerComponent } from '../speaker-class-banner/speaker-cla
   imports: [RouterLink, SpeakerAvatarComponent, SpeakerClassBannerComponent]
 })
 export class SpeakerCardComponent {
-  public readonly speaker = input<Partial<Speaker>>(undefined);
+  public readonly speaker = input.required<Partial<Speaker>>();
 }

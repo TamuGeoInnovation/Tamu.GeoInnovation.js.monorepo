@@ -11,12 +11,14 @@ import { MapAddressGuard } from './guards/map-address/map-address.guard';
 import { EndedComponent } from './modules/ended/ended.component';
 import { EventSettingsQuery } from './services/settings/event-settings-query';
 import { EventSettingsService } from './services/settings/event-settings.service';
+import { provideEventPopupShareUrl } from './modules/popups/base-event-popup/event-share-url';
 
 export const tsEventsRoutes: Routes = [
   {
     path: ':eventId',
-    // Popups ask for the settings as `EventSettingsQuery` (#1403); the route supplies the service under that name.
-    providers: [{ provide: EventSettingsQuery, useExisting: EventSettingsService }],
+    // Popups ask for the settings as `EventSettingsQuery` (#1403); the route supplies the service under that name, and
+    // the copy link the markdown popups show on an event map (#3486).
+    providers: [{ provide: EventSettingsQuery, useExisting: EventSettingsService }, provideEventPopupShareUrl()],
     // A development-only map does not open on production (#2712), so it is checked before anything loads; then a
     // Transportation map reached at another segment moves to its own (#2767).
     canActivate: [DevelopmentOnlyMapGuard, MapAddressGuard, RouteParamsGuard, EventEntryGuard],

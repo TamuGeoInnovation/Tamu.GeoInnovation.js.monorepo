@@ -33,7 +33,7 @@ export class SeasonAddEditFormComponent implements OnInit {
   /** Its save and delete, and what they say (#3340, #3382). */
   private readonly saves = adminEntityForm('Season', '/admin/seasons');
 
-  public readonly type = input<'create' | 'edit'>(undefined);
+  public readonly type = input.required<'create' | 'edit'>();
 
   public entity$: Observable<Partial<Season>>;
   public form: UntypedFormGroup;
@@ -65,7 +65,7 @@ export class SeasonAddEditFormComponent implements OnInit {
         active: res.active
       });
 
-      res.days.forEach((day) => {
+      (res.days ?? []).forEach((day) => {
         this.addDay(day);
       });
 

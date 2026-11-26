@@ -214,4 +214,46 @@ grep -q 'memory_advice "$log" "$code"' "$(dirname "$0")/check-in-volume.sh" && r
 expect "the check gives that advice after its run" "yes" "$r"
 rm -rf "$logs"
 
+# #3695: a read of the checkout that fails once with "Cannot allocate memory" is tried again, not reported as exit 3.
+# `step` is the container's; a stand-in that runs the command is enough here.
+step() { shift; "$@"; }
+tries="$(mktemp)"
+flaky() { echo x >>"$tries"; [ "$(wc -l <"$tries")" -ge 2 ]; }
+CHECK_RETRY_DELAY=0 retry_once "clone" flaky >/dev/null && r=passed || r=failed
+expect "a read that fails once and then succeeds passes" "passed" "$r"
+expect "and was tried exactly twice" "2" "$(wc -l <"$tries" | tr -d ' ')"
+: >"$tries"
+broken() { echo x >>"$tries"; return 1; }
+CHECK_RETRY_DELAY=0 retry_once "clone" broken >/dev/null && r=passed || r=failed
+expect "a read that keeps failing still fails" "failed" "$r"
+expect "after two tries, not a loop" "2" "$(wc -l <"$tries" | tr -d ' ')"
+: >"$tries"
+CHECK_RETRY_DELAY=0 retry_once "clone" true >/dev/null
+expect "a read that works is not repeated" "" "$(cat "$tries")"
+rm -f "$tries"
+unset -f step flaky broken
+for read in '"clone" clone_src' '"fetch development" git fetch' '"fetch $branch" git fetch'; do
+  grep -qF "retry_once $read" "$(dirname "$0")/check-in-volume.sh" && r=yes || r=no
+  expect "the container retries $read" "yes" "$r"
+done
+grep -q 'declare -f unknown_projects retry_once' "$(dirname "$0")/check-in-volume.sh" && r=yes || r=no
+expect "and is given retry_once to do it" "yes" "$r"
+logs="$(mktemp -d)"
+printf '%s
+' "=== clone 19:44:28" "warning: error reading directory '/src/.git/objects/08/': Cannot allocate memory"   "fatal: failed to iterate over '/src/.git/objects/'" "=== exit 128 19:44:29" >"$logs/clone.log"
+advice="$(setup_advice "$logs/clone.log" 3)"
+case "$advice" in *"before checking anything"*"file sharing"*"run the same command again"*) r=yes ;; *) r=no ;; esac
+expect "an exit 3 with Cannot allocate memory says it is Docker file sharing, and to run it again" "yes" "$r"
+printf '%s
+' "fatal: couldn't find remote ref refs/heads/no-such-branch" >"$logs/branch.log"
+advice="$(setup_advice "$logs/branch.log" 3)"
+case "$advice" in *"before checking anything"*) r=yes ;; *) r=no ;; esac
+expect "any exit 3 says nothing was checked" "yes" "$r"
+case "$advice" in *"file sharing"*) r=yes ;; *) r=no ;; esac
+expect "but blames file sharing only when the log does" "no" "$r"
+expect "another exit says nothing" "" "$(setup_advice "$logs/clone.log" 1)"
+grep -q 'setup_advice "$log" "$code"' "$(dirname "$0")/check-in-volume.sh" && r=yes || r=no
+expect "the check gives that advice after its run" "yes" "$r"
+rm -rf "$logs"
+
 exit "$failed"
