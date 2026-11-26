@@ -1,4 +1,4 @@
-import { dateForDateTimeString, timeStringForDate } from './common-utils-date';
+import { calendarDate, dateForDateTimeString, parseEventDate, timeStringForDate } from './common-utils-date';
 
 describe('dateForTimeString', () => {
   it('should return valid dates for valid AM strings', () => {
@@ -90,5 +90,23 @@ describe('timeStringForDate', () => {
     const today = new Date();
     today.setHours(hours, minutes, 0, 0);
     expect(timeStringForDate(today)).toEqual(expected);
+  });
+});
+
+// #3551: a calendar date stored as midnight UTC. These run in College Station's zone (vitest.config.mts), where midnight
+// UTC is 6 PM the evening before.
+describe('calendarDate', () => {
+  it('keeps the calendar date of a midnight-UTC epoch, as local midnight', () => {
+    const date = new Date(calendarDate(1735689600000));
+
+    expect([date.getFullYear(), date.getMonth(), date.getDate(), date.getHours()]).toEqual([2025, 0, 1, 0]);
+  });
+
+  it('reads a YYYY-MM-DD string as parseEventDate does', () => {
+    expect(calendarDate('2026-12-31')).toBe(parseEventDate('2026-12-31'));
+  });
+
+  it('is NaN for a value that is not a date', () => {
+    expect(calendarDate('not a date')).toBeNaN();
   });
 });

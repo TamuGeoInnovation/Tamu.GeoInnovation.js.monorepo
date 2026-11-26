@@ -1,7 +1,7 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
 import { InitialSurveyService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -33,7 +33,7 @@ import { GISDAY_SITE, SiteHasPipe } from '@tamu-gisc/gisday/platform/ngx/common'
     SiteHasPipe
   ]
 })
-export class InitialSurveyComponent implements OnInit, OnDestroy {
+export class InitialSurveyComponent implements OnInit {
   /** Its name and contact address, as each GIS Day site has its own (#2077). */
   public readonly site = inject(GISDAY_SITE);
 
@@ -43,17 +43,11 @@ export class InitialSurveyComponent implements OnInit, OnDestroy {
   public dataGroup: UntypedFormGroup;
   public $tookSurveyAlready: Observable<boolean>;
   public $initalSurveyQuestions: Observable<Array<Partial<IInitialSurveyQuestionResponse>>>;
-  private _$destroy: Subject<boolean> = new Subject();
 
   public ngOnInit() {
     this.dataGroup = this.fb.group({});
     this.$tookSurveyAlready = this.initialSurveyService.seeIfUserTookSurvey();
     this.fetchSurveyQuestions();
-  }
-
-  public ngOnDestroy() {
-    this._$destroy.next(undefined);
-    this._$destroy.complete();
   }
 
   public fetchSurveyQuestions() {

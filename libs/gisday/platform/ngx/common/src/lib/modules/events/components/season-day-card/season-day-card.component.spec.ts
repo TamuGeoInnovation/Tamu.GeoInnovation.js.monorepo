@@ -21,6 +21,7 @@ describe('SeasonDayCardComponent', () => {
 
     const fixture = TestBed.createComponent(SeasonDayCardComponent);
     fixture.componentRef.setInput('seasonDay', { guid: 'day', date: new Date(2026, 10, 16) });
+    fixture.componentRef.setInput('index', 0);
     fixture.detectChanges();
 
     const names = Array.from(
@@ -48,11 +49,15 @@ describe('SeasonDayCardComponent', () => {
 
     const fixture = TestBed.createComponent(SeasonDayCardComponent);
     fixture.componentRef.setInput('seasonDay', { guid: 'day', date: new Date(2026, 10, 16) });
+    fixture.componentRef.setInput('index', 0);
     fixture.componentRef.setInput('onlyFrom', ['tamu-place']);
     fixture.detectChanges();
 
     const names = () =>
-      Array.from((fixture.nativeElement as HTMLElement).querySelectorAll('tamu-gisc-event-row .name'), (name) => name.textContent);
+      Array.from(
+        (fixture.nativeElement as HTMLElement).querySelectorAll('tamu-gisc-event-row .name'),
+        (name) => name.textContent
+      );
 
     expect(names()).toEqual(['Texas A&M keynote']);
 
@@ -74,6 +79,7 @@ describe('SeasonDayCardComponent', () => {
     const heading = (date: string) => {
       const fixture = TestBed.createComponent(SeasonDayCardComponent);
       fixture.componentRef.setInput('seasonDay', { guid: 'day', date: date as unknown as Date });
+      fixture.componentRef.setInput('index', 0);
       fixture.detectChanges();
 
       // The date, without the open and close mark the heading now carries (#3221).
@@ -92,8 +98,22 @@ describe('SeasonDayCardComponent', () => {
    */
   it('lists only the sessions the search finds, and leaves the day out when it finds none', () => {
     const events = [
-      { guid: 'a', name: 'Opening keynote', location: { building: 'Rudder Tower', room: '301' }, presenters: ['José Ortiz'], tags: ['t'], organizations: [] },
-      { guid: 'b', name: 'Mapathon', location: { building: 'Evans Library', room: '204' }, presenters: [], tags: [], organizations: [] }
+      {
+        guid: 'a',
+        name: 'Opening keynote',
+        location: { building: 'Rudder Tower', room: '301' },
+        presenters: ['José Ortiz'],
+        tags: ['t'],
+        organizations: []
+      },
+      {
+        guid: 'b',
+        name: 'Mapathon',
+        location: { building: 'Evans Library', room: '204' },
+        presenters: [],
+        tags: [],
+        organizations: []
+      }
     ];
 
     TestBed.configureTestingModule({
@@ -104,6 +124,7 @@ describe('SeasonDayCardComponent', () => {
     const counts: Array<number> = [];
     fixture.componentInstance.matches.subscribe((count) => counts.push(count));
     fixture.componentRef.setInput('seasonDay', { guid: 'day', date: new Date(2026, 10, 16) });
+    fixture.componentRef.setInput('index', 0);
     fixture.componentRef.setInput('search', 'jose');
     fixture.detectChanges();
 
@@ -140,6 +161,7 @@ describe('SeasonDayCardComponent', () => {
 
     const fixture = TestBed.createComponent(SeasonDayCardComponent);
     fixture.componentRef.setInput('seasonDay', { guid: 'day', date: new Date(2026, 10, 16) });
+    fixture.componentRef.setInput('index', 0);
     fixture.componentRef.setInput('onlyFrom', null);
     fixture.detectChanges();
 
@@ -164,7 +186,15 @@ describe('SeasonDayCardComponent', () => {
     // Three days either side of now, clear of midnight in Central time whatever the hour the tests run.
     const daysFromNow = (n: number) => new Date(Date.now() + n * 24 * 60 * 60 * 1000);
 
-    function draw({ day, collapsePassed = true, fragment = null }: { day: Date; collapsePassed?: boolean; fragment?: string | null }) {
+    function draw({
+      day,
+      collapsePassed = true,
+      fragment = null
+    }: {
+      day: Date;
+      collapsePassed?: boolean;
+      fragment?: string | null;
+    }) {
       const fragment$ = new BehaviorSubject<string | null>(fragment);
 
       TestBed.configureTestingModule({
@@ -248,6 +278,70 @@ describe('SeasonDayCardComponent', () => {
       fixture.detectChanges();
 
       expect(open()).toBe(true);
+    });
+  });
+  /**
+   * #3611. A session that lists no tags is one a tag filter leaves out, not one that stops the day listing any; a day
+   * with no guid has no events to ask for; and a session with no guid is not handed on to be registered for.
+   */
+  describe('values the API may leave out', () => {
+    const names = (root: HTMLElement) =>
+      Array.from(root.querySelectorAll('tamu-gisc-event-row .name'), (name) => name.textContent);
+
+    it('leaves out a session with no tags while a tag filter is on, and lists the rest', () => {
+      const events = [
+        { guid: 'a', name: 'Tagged', tags: ['t'], organizations: [] },
+        { guid: 'b', name: 'Untagged', organizations: [] }
+      ];
+
+      TestBed.configureTestingModule({
+        providers: [provideRouter([]), { provide: SeasonDayService, useValue: { getDayEvents: () => of(events) } }]
+      });
+
+      const fixture = TestBed.createComponent(SeasonDayCardComponent);
+      fixture.componentRef.setInput('seasonDay', { guid: 'day', date: new Date(2026, 10, 16) });
+      fixture.componentRef.setInput('index', 0);
+      fixture.componentRef.setInput('tags', ['t']);
+      fixture.detectChanges();
+
+      expect(names(fixture.nativeElement)).toEqual(['Tagged']);
+    });
+
+    it('asks for no events for a day with no guid, and says none are scheduled', () => {
+      const getDayEvents = vi.fn(() => of([{ guid: 'a', name: 'Opening keynote', tags: [], organizations: [] }]));
+
+      TestBed.configureTestingModule({
+        providers: [provideRouter([]), { provide: SeasonDayService, useValue: { getDayEvents } }]
+      });
+
+      const fixture = TestBed.createComponent(SeasonDayCardComponent);
+      fixture.componentRef.setInput('seasonDay', { date: new Date(2026, 10, 16) });
+      fixture.componentRef.setInput('index', 0);
+      fixture.detectChanges();
+
+      expect(getDayEvents).not.toHaveBeenCalled();
+      expect((fixture.nativeElement as HTMLElement).textContent).toContain('No events scheduled for this day.');
+    });
+
+    it('hands on no registration for a session with no guid', () => {
+      TestBed.configureTestingModule({
+        providers: [provideRouter([]), { provide: SeasonDayService, useValue: { getDayEvents: () => of([]) } }]
+      });
+
+      const fixture = TestBed.createComponent(SeasonDayCardComponent);
+      fixture.componentRef.setInput('seasonDay', { guid: 'day', date: new Date(2026, 10, 16) });
+      fixture.componentRef.setInput('index', 0);
+      fixture.detectChanges();
+
+      const handed: Array<string> = [];
+      fixture.componentInstance.register.subscribe((guid) => handed.push(guid));
+      fixture.componentInstance.unregister.subscribe((guid) => handed.push(guid));
+
+      fixture.componentInstance.handoff({ name: 'Opening keynote' }, true);
+      fixture.componentInstance.handoff({ name: 'Opening keynote' }, false);
+      fixture.componentInstance.handoff({ guid: 'a', name: 'Opening keynote' }, true);
+
+      expect(handed).toEqual(['a']);
     });
   });
 });

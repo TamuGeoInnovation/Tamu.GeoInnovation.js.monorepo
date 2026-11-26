@@ -3,7 +3,7 @@ import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule 
 import { ActivatedRoute } from '@angular/router';
 import { Observable, catchError, concatMap, filter, from, map, of, shareReplay, switchMap, take, toArray } from 'rxjs';
 
-import { Class, Season, UserClass } from '@tamu-gisc/gisday/platform/data-api';
+import { Class, UserClass } from '@tamu-gisc/gisday/platform/data-api';
 import { ClassService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { serverMessage } from '../../../../../utils/server-message';
@@ -35,10 +35,9 @@ export class ClassAddEditFormComponent implements OnInit {
   private readonly ss = inject(SeasonService);
   private readonly ns = inject(NotificationService);
 
-  public readonly type = input<'create' | 'edit'>(undefined);
+  public readonly type = input.required<'create' | 'edit'>();
 
   public entity$: Observable<Partial<Class>>;
-  public activeSeasons$: Observable<Partial<Season>>;
   public students$: Observable<Array<Partial<UserClass>>>;
   public form: UntypedFormGroup;
 
@@ -52,8 +51,6 @@ export class ClassAddEditFormComponent implements OnInit {
       professorName: [null],
       season: [null]
     });
-
-    this.activeSeasons$ = this.ss.activeSeason$;
 
     this.entity$ = this.at.params.pipe(
       map((params) => params.guid),
@@ -70,8 +67,11 @@ export class ClassAddEditFormComponent implements OnInit {
         });
       });
     } else {
-      this.activeSeasons$.pipe(take(1)).subscribe((season) => {
-        this.form.patchValue({ season: season.guid });
+      this.ss.activeSeason$.pipe(take(1)).subscribe((season) => {
+        // With no active season, the form's season is left empty.
+        if (season) {
+          this.form.patchValue({ season: season.guid });
+        }
       });
     }
   }
@@ -107,12 +107,15 @@ export class ClassAddEditFormComponent implements OnInit {
       return;
     }
 
+    // Each section, with why it could not be added, if it could not.
+    type SectionResult = { section: string; error?: string };
+
     from(sections)
       .pipe(
         concatMap((section) =>
           this.cs.createEntity({ ...rawValue, section }).pipe(
-            map(() => ({ section, error: undefined as string })),
-            catchError((err) => of({ section, error: serverMessage(err, `${err?.status}`) }))
+            map((): SectionResult => ({ section })),
+            catchError((err) => of<SectionResult>({ section, error: serverMessage(err, `${err?.status}`) }))
           )
         ),
         toArray()

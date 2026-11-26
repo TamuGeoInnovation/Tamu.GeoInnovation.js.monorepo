@@ -69,12 +69,12 @@ export class SpeakerAddEditFormComponent implements OnInit {
   private readonly sn = inject(DomSanitizer);
   private readonly sss = inject(SeasonService);
 
-  public readonly type = input<'create' | 'edit'>(undefined);
+  public readonly type = input.required<'create' | 'edit'>();
 
   public entity$: Observable<Partial<Speaker>>;
   public universities$: Observable<Array<Partial<University>>>;
   public organizations$: Observable<Array<Partial<Organization>>>;
-  public speakerPhotoUrl$: Observable<SafeUrl>;
+  public speakerPhotoUrl$: Observable<string | SafeUrl | null>;
 
   /**
    * The speaker as the banner on the photograph sees it: the university chosen in the form and the year
@@ -138,13 +138,13 @@ export class SpeakerAddEditFormComponent implements OnInit {
     // 2. The form, if the user has selected a file
     this.speakerPhotoUrl$ = merge(
       speakerImageFromEntity$,
-      this.form.get('file').valueChanges.pipe(
+      this.form.controls.file.valueChanges.pipe(
         distinctUntilChanged(),
         switchMap((file) => {
           if (file !== null) {
             return of(this.sn.bypassSecurityTrustUrl(URL.createObjectURL(file)));
           } else {
-            this.form.get('file').reset();
+            this.form.controls.file.reset();
             // speakerImageFromEntity$ relies on the entity resolving which will not happen in a "create" state, and so we need to return a null value when the entity is not resolved.
             return race(speakerImageFromEntity$, of(null));
           }
@@ -167,9 +167,10 @@ export class SpeakerAddEditFormComponent implements OnInit {
       });
     } else {
       this.sss.activeSeason$.pipe(take(1)).subscribe((season) => {
-        this.form.patchValue({
-          season: season.guid
-        });
+        // With no active season, the form's season is left empty.
+        if (season) {
+          this.form.patchValue({ season: season.guid });
+        }
       });
     }
   }
