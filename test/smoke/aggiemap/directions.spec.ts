@@ -120,7 +120,10 @@ test.describe('the trip planner is offered at its address', () => {
     for (const box of await page.locator(STOPS).all()) {
       await expect(box, 'a from or to box is not empty before a stop is chosen').toHaveValue('');
     }
-    await expect(page.locator(`${PLANNER} .maintenance-message`), '/map/d/trip still shows the maintenance message').toHaveCount(0);
+    await expect(
+      page.locator(`${PLANNER} .maintenance-message`),
+      '/map/d/trip still shows the maintenance message'
+    ).toHaveCount(0);
   });
 });
 
@@ -194,7 +197,10 @@ if (AVAILABLE) {
     page.on('response', async (response) => {
       if (!/\/NAServer\/Route\/solve/.test(response.url())) return;
 
-      const body = (await response.json().catch(() => ({}))) as { error?: { message?: string }; routes?: { features?: unknown[] } };
+      const body = (await response.json().catch(() => ({}))) as {
+        error?: { message?: string };
+        routes?: { features?: unknown[] };
+      };
 
       solves.push({
         url: response.url().split('?')[0],
@@ -359,28 +365,70 @@ if (AVAILABLE) {
       ).toEqual(OFFERED_ON_DEVELOPMENT_NETWORK);
     });
 
+    /**
+     * Solves `stops` (longitude,latitude;...) in one of the network's own travel modes, sent whole as the network lists
+     * it, and requires a route. Named explicitly because a solve with no `travelMode` takes the layer's defaults, which
+     * are a walking configuration, and would succeed whatever had happened to driving (#3679). The error is read from
+     * the body, because a solve answers 200 with its error inside.
+     */
+    async function expectSolves(request: APIRequestContext, mode: { name: string }, stops: string, trip: string) {
+      const answer = await request.get(`${route}/solve`, {
+        timeout: 60_000,
+        params: {
+          f: 'json',
+          stops,
+          returnDirections: 'true',
+          returnRoutes: 'true',
+          outSR: '4326',
+          travelMode: JSON.stringify(mode)
+        }
+      });
+      const body = (await answer.json()) as {
+        error?: { message?: string; details?: string[] };
+        routes?: { features?: unknown[] };
+      };
+
+      expect(body.error?.message, `${mode.name}, ${trip}, did not solve: ${body.error?.details?.join(' ')}`).toBeUndefined();
+      expect(body.routes?.features?.length, `${mode.name}, ${trip}, returned no route`).toBeGreaterThan(0);
+    }
+
     test('solves a route between two campus points in every mode it lists', async ({ request }) => {
       const modes = await travelModes(request);
 
       for (const mode of modes) {
-        const answer = await request.get(`${route}/solve`, {
-          timeout: 60_000,
-          params: {
-            f: 'json',
-            // Two points on roads along University Drive, because Drive and Bus find no route between points that
-            // only walking reaches (the Evans Library and the Memorial Student Center, say).
-            stops: '-96.3500,30.6150;-96.3300,30.6150',
-            returnDirections: 'true',
-            returnRoutes: 'true',
-            outSR: '4326',
-            travelMode: JSON.stringify(mode)
-          }
-        });
-        const body = (await answer.json()) as { error?: { message?: string }; routes?: { features?: unknown[] } };
-
-        expect(body.error?.message, `${mode.name} did not solve`).toBeUndefined();
-        expect(body.routes?.features?.length, `${mode.name} returned no route`).toBeGreaterThan(0);
+        // Two points on roads along University Drive, because Drive and Bus find no route between points that
+        // only walking reaches (the Evans Library and the Memorial Student Center, say).
+        await expectSolves(request, mode, '-96.3500,30.6150;-96.3300,30.6150', 'along University Drive');
       }
+    });
+
+    /**
+     * Driving reaches into campus, not only along it (#3679).
+     *
+     * The case above never leaves University Drive, a city road, so it would stay green if every road inside campus
+     * stopped being drivable. This one drives a visitor (mode 8) from University Drive to the Central Campus Garage, at
+     * the centroid of its `Garage Visitor` lot in the Parking Lots layer: 2.7 minutes by Drive on 25 November 2026,
+     * against 12.7 on foot, on both networks.
+     *
+     * The destination is a garage because it must be somewhere a car can go. A point inside the pedestrian core (Lamar
+     * St, say) finds no route by Drive, correctly: only footpaths reach it, and the mode's `No Drive` restriction is what
+     * keeps cars off them. That is the non-fault #3679 was filed for and closed as. So do not move this to a building,
+     * and do not replace it with another University Drive pair: either change undoes what it checks.
+     */
+    test('drives a visitor from University Drive into campus, to the Central Campus Garage (#3679)', async ({ request }) => {
+      const name = NETWORK_TRAVEL_MODE_NAMES[8];
+      const drive = (await travelModes(request)).find((mode) => mode.name === name);
+
+      if (!drive) {
+        throw new Error(`the network lists no ${name} travel mode`);
+      }
+
+      await expectSolves(
+        request,
+        drive,
+        '-96.3300,30.6150;-96.33769,30.61655',
+        'University Drive to the Central Campus Garage'
+      );
     });
   });
 }
