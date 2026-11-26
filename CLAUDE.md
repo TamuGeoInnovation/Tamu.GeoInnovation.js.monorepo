@@ -22,7 +22,7 @@ the shared libraries behind them. A change to a shared library can affect severa
 
 ## Where things are written down
 
-Ten places, each with one job.
+Eleven places, each with one job.
 
 | Where | What belongs there |
 | --- | --- |
@@ -32,6 +32,7 @@ Ten places, each with one job.
 | [`docs/build-times.md`](docs/build-times.md) | How long runs and page loads take, so a change meant to speed something up can be shown to have done it: before-and-after comparisons and what they show, and the run files in [`docs/build-times/runs/`](docs/build-times/runs) the scripts write when asked. Measurements, not rules. |
 | [`docs/gisday-local.md`](docs/gisday-local.md) | How to run the whole GIS Day site on one machine with `scripts/gisday-local.sh`: the containers, the settings kept outside the repository, and what works locally and what does not. |
 | [`docs/gisday-migrations.md`](docs/gisday-migrations.md) | How the GIS Day database schema is changed: the migration commands, the process from entity to production, and what has been proven. Read before editing a GIS Day entity, **and before changing any production GIS Day data**: it says where the scripts that do that are kept. |
+| [`docs/parked-code.md`](docs/parked-code.md) | Code deleted because the service it called went away, and that we expect to want again: which `parked/*` tag holds it, why it went, and what has to be true to bring it back. Read before re-writing something that feels like it must have existed once. |
 | [`docs/releases/unreleased.md`](docs/releases/unreleased.md) | Day-to-day state **anyone** picking this up needs: what has merged since the last production release, where it is deployed, what still needs a decision, and work in flight. [`CLAUDE_SETUP.md`](CLAUDE_SETUP.md) sends a new session here first. |
 | The `cloud-mailbox` branch | The cloud session's current batch (`cloud/TASKS.md`) and its reports (`cloud/reports/`). Written by the desktop and cloud sessions; never merged. See [The cloud session](#the-cloud-session). |
 | The `work-mailbox` branch | The work machine's current batch of test runs (`work/TASKS.md`) and its reports (`work/reports/`). Written by the home and work sessions; never merged. See [The work machine](#the-work-machine). |
@@ -556,6 +557,15 @@ globally-applied widget styles belong in an app's `styles.scss`.
 with a lone "should be created" breaks as soon as the class gains a dependency. The Angular
 generators are configured with `skipTests`.
 
+**Deleting code we expect back parks it, in the same pull request as the deletion.** An annotated `parked/*` tag on the
+last commit that still has it, a row in [`docs/parked-code.md`](docs/parked-code.md), and an issue labelled `parked`
+naming the condition for its return. `scripts/check-parked-code.mjs` fails when those three disagree, so none can go
+stale; `git tag -l "parked/*"` lists them. **Tag before the deletion merges**, while a commit containing the code is
+still on `development` — afterwards, finding the right commit means reading a closed pull request's history, which is
+the situation this avoids. The code stays out of the repository on purpose: code nothing calls cannot stay healthy, and
+the usual reason for parking it is that it calls a retired service, which is a trap for the next reader. What the tag
+preserves is the working out, not code to paste back. See #3704, which parked the bus timetable.
+
 **Every bug gets a test.** Nothing else here requires one, so a bug could be fixed, and every rule
 followed, with nothing to stop it coming back.
 
@@ -711,6 +721,17 @@ Never repeat a merge command from an earlier reply without checking again, in th
 with what it waits on, not handed over to be tried. On 24 November 2026 a session gave the maintainer merge
 commands for kubernetes-config PRs 167 and 168 three times over the evening, carried forward from a reading
 taken before he merged them at 3:51 PM, and he had to say they were already merged.
+
+**Every merge command carries `--delete-branch`:** `gh pr merge <n> -R <owner>/<repo> --squash --delete-branch`.
+Our pull requests come from the fork, and GitHub's "automatically delete head branches" only deletes
+branches in the repository merged into, so without the flag nothing ever removes a merged branch. On
+26 November 2026 the maintainer's fork held 625 branches, 593 of them finished; they were deleted and the
+unmerged ones recorded on #3705 (#3706).
+
+**One branch per pull request, so no `-pr` copies.** To keep a drafted `.pr-body.md` out of
+`development`, remove it in a commit on the same branch (`git rm .pr-body.md`) and open the pull request
+from that branch. Copying the branch to `<branch>-pr` and opening from the copy left the original behind:
+97 of the 593 above (#3706).
 
 **Only the issue being fixed may follow a closing keyword.** GitHub treats `close`, `closes`, `fix`,
 `fixes`, `resolve` and `resolves` followed by `#N` *anywhere* in the body as "close #N on merge", so a
