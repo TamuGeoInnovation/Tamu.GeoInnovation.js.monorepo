@@ -1,7 +1,7 @@
 name: work-lab-leila
 agent: Claude Code desktop app (Opus, the maintainer's account). On
 machine: a Windows 11 workstation, new to this branch on 20 October 2
-state: blocked: a64 quick passed; waits for the tag before release
+state: running batch s-lab-2 (a64 waits for the tag)
 accepting: no
-seen_utc: 2026-11-26T21:15:09Z
-next_utc: 2026-11-26T22:15:09Z
+seen_utc: 2026-11-26T21:15:32Z
+next_utc: 2026-11-26T22:15:32Z
