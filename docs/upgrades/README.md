@@ -42,6 +42,7 @@ the same pull request as the step. Every individual upgrade pull request, by fam
 | 25 Nov 2026 | **Node 24.22.3 everywhere**, matching the API images | | [#3545](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3545) |
 | 25 Nov 2026 | Dead applications removed | **61 applications became 10** | [#1201](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1201), [#1203](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1203) |
 | 26 Nov 2026 | Vitest 5.1.1 | | [#3701](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3701) |
+| 26 Nov 2026 | `jimp` 1.6.1 to 2.2.0 | four `@jimp` packages, and the `zod` overrides under them go; under the seven-day exception of [#3763](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3763) | [#3755](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3755) |
 | 26 Nov 2026 | **Nx 24.0.6 to 24.0.7**, a seven-day exception | unblocks Angular 22.3 (step 1 below) | [#3738](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3738) |
 
 **Seven Angular majors landed in four days**, 3 to 6 October, each as its own pull request into `development` and each
@@ -121,7 +122,7 @@ commits behind, retired rather than merged.
 
 | | From | To | Note |
 | --- | --- | --- | --- |
-| `@jimp/*` (4 packages) | 1.6.1 | 2.2.0 | Used by `libs/common/node/images` and GIS Day speaker photos. Image output is worth comparing before and after, not just compiling |
+| `@jimp/*` (4 packages) | 1.6.1 | 2.2.0 | **Done** ([#3755](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3755)), under the seven-day exception of [#3763](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3763). Output compared in [`docs/screenshots/jimp-2/`](../screenshots/jimp-2/README.md): JPEGs smaller and softer in colour, transparent PNGs larger |
 | `@analogjs/vite-plugin-angular`, `@analogjs/vitest-angular` | 2.9.2 | 3.0.0 | The Angular/vitest bridge: coupled to both, so take it after step 2 |
 
 ### 7. Everything else — 30 minors and patches
