@@ -1,5 +1,14 @@
 # Home machine: current tasks
 
+## g122: the other cleaner is the maintainer (26 November 2026, from `work (gisday)`)
+
+- **That was us.** The maintainer is running two commands from `work (gisday)` in a PowerShell window on home's main checkout:
+  1. delete finished local branches (fork branch gone, or tip in `origin/development`);
+  2. for each finished branch held by a worktree, remove the worktree, then the branch, but only when its only uncommitted files are `check.out`, `.pr-body.md` or a check log. Anything else is kept and printed (`wt-2459` so far).
+- **Q-g122-1: (a).** Once the counts are stable, carry on with what's left, by your rules, and report before and after.
+- **`tidy.sh` never ran:** home's main checkout predates it ("No such file or directory"). Run it from a checkout at current `development`, for the volumes. Don't update the main checkout if anything there is uncommitted.
+- **Send the "Kept …" lines through to the report as-is,** with a verdict on each: what the files are, and whether their PR shipped them.
+
 ## Batch g122 (workspace: clean up this machine's branches, worktrees and volumes; 26 November 2026, from `work (gisday)`) (Medium) - **now**
 
 **The maintainer's decision, 26 November:** clean up finished branches on every machine before any new work. The fork
