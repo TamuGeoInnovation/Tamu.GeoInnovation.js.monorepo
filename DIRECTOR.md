@@ -41,6 +41,24 @@ chat's and said so only in its own window; and a `Still there?` was up for one m
   watcher (the background task's id) and says Remote Control is on for the chat. Saying "I am a listener" without both
   is the 23 October failure. Remote Control is what lets the maintainer look in from another machine.
 
+## Announce every step, before and after (26 November 2026, the maintainer's 1A)
+
+On 26 November all three machines were working, and for most of the afternoon it was impossible to tell. Three things went wrong:
+- **The laptop** re-cut ArcGIS and pushed at 3:02 PM, but its `STATUS.md` still said "started 2:27 PM" an hour later. It looked frozen.
+- **Home** waited about 20 minutes for an answer that was sent only as a direct message, which never reached it.
+- **The lab** started work that had already been withdrawn, because the withdrawal arrived after it had begun.
+
+The rules already asked for a push when a batch starts and finishes. Everything in between was silent. So:
+
+1. **Announce every step, before and after.** Push a one-line commit to this branch, with the time read from PowerShell, never estimated:
+   - when a step starts: `laptop: s10 - starting the release-tier smoke run, 3:05 PM`;
+   - when it ends: `laptop: s10 - smoke Exit 0, 3:38 PM`.
+   A step is anything that takes more than about a minute, or that someone might be waiting on: a full check, a smoke run, an install, a push, waiting on a question. Update `STATUS.md`'s **Running now** in the same commit. These are cheap, and they are what makes silence mean something.
+2. **The director treats 20 minutes of silence as a problem to chase now.** If a machine has a running batch and has pushed nothing for 20 minutes, the director's watcher raises it, and the director asks. Whatever the answer, the listener says what it is doing, or that it is blocked, as in the section below.
+3. **Answers and changes go in your `TASKS.md`, always.** A direct message may also be sent as a nudge, but `TASKS.md` is the record, and it is the channel every listener watches. A listener acts only on what is in its `TASKS.md`.
+4. **Reread your `TASKS.md` before starting each step**, not only each batch. A change, a withdrawal or an answer can arrive mid-batch, and it has to be seen before the next step starts, not after.
+5. **Use the words `tools/queued.sh` reads.** A batch is finished by a commit `<name>: batch <id> done`, and withdrawn or moved by a `TASKS.md` heading that contains `Batch <id>` together with `withdrawn`, `cancelled` or `moved`. Anything else leaves it looking queued, and the listener's watcher exits at once on every restart.
+
 ## A listener blocked on a prompt says so (24 November 2026, [#3429](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3429))
 
 `home` stopped reporting at 11:36 AM Central and its `STATUS.md` said *"Nothing. Idle, listening."* It was
