@@ -100,11 +100,17 @@ export async function fitImage(input: Buffer, options: FitImageOptions): Promise
   if (opaque) {
     // Full-resolution colour (4:4:4), as jimp 1 wrote. jimp 2 halves it below quality 90 by default (4:2:0), and re-encoding
     // its own output then saves more than a tenth, so every run would compress a stored photo again (#3755).
-    candidates.push({ mime: 'image/jpeg', data: await image.getBuffer('image/jpeg', { quality, chromaSubsampling: '4:4:4' }) });
+    candidates.push({
+      mime: 'image/jpeg',
+      data: await image.getBuffer('image/jpeg', { quality, chromaSubsampling: '4:4:4' })
+    });
   }
 
   if (mime === 'image/png' || !opaque) {
-    candidates.push({ mime: 'image/png', data: await image.getBuffer('image/png', { deflateLevel: 9, colorType: opaque ? 2 : 6 }) });
+    candidates.push({
+      mime: 'image/png',
+      data: await image.getBuffer('image/png', { deflateLevel: 9, colorType: opaque ? 2 : 6 })
+    });
   }
 
   const best = candidates.reduce((smallest, c) => (c.data.length < smallest.data.length ? c : smallest));
@@ -121,7 +127,11 @@ export async function fitImage(input: Buffer, options: FitImageOptions): Promise
     buffer: data,
     changed: true,
     mime: best.mime,
-    reason: [tooLarge && `scaled to ${image.bitmap.width} x ${image.bitmap.height}`, hasMetadata && 'metadata removed', !tooLarge && 're-encoded']
+    reason: [
+      tooLarge && `scaled to ${image.bitmap.width} x ${image.bitmap.height}`,
+      hasMetadata && 'metadata removed',
+      !tooLarge && 're-encoded'
+    ]
       .filter(Boolean)
       .join(', '),
     before: { bytes: input.length, width, height },
