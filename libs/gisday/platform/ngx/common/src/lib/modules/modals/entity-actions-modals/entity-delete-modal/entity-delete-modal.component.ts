@@ -43,7 +43,7 @@ export class EntityDeleteModalComponent implements OnInit {
       confirmationCount: [null, Validators.required]
     });
 
-    this.matchingConfirmationCount$ = this.form.get('confirmationCount').valueChanges.pipe(
+    this.matchingConfirmationCount$ = this.form.controls.confirmationCount.valueChanges.pipe(
       map((value: string) => {
         return this.data.identities.length === parseInt(value, 10);
       }),

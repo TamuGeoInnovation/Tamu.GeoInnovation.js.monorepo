@@ -59,7 +59,7 @@ export class UserSubmissionAddEditFormComponent implements OnInit {
   /** The site's own name for the text (#2968): Texas A&M GIS Day on Texas A&M's site, not TxGIS Day. */
   public readonly site = inject(GISDAY_SITE);
 
-  public readonly type = input<'create' | 'edit'>(undefined);
+  public readonly type = input.required<'create' | 'edit'>();
 
   public form: UntypedFormGroup;
 
@@ -119,8 +119,8 @@ export class UserSubmissionAddEditFormComponent implements OnInit {
       season: ['']
     });
 
-    this.chosenType = toSignal(this.form.get('submissionType').valueChanges, {
-      initialValue: this.form.get('submissionType').value
+    this.chosenType = toSignal(this.form.controls.submissionType.valueChanges, {
+      initialValue: this.form.controls.submissionType.value
     });
 
     // A saved submission whose competition has closed can no longer be edited, as a reviewed one cannot.
@@ -132,22 +132,21 @@ export class UserSubmissionAddEditFormComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.selectedPresentationFormat$ = this.form.get('format').valueChanges.pipe(startWith(this.form.get('format').value));
+    this.selectedPresentationFormat$ = this.form.controls.format.valueChanges.pipe(
+      startWith(this.form.controls.format.value)
+    );
 
     // If the `format` changes from group to individual, remove all participants except the first one.
-    this.form
-      .get('format')
-      .valueChanges.pipe()
-      .subscribe((format) => {
-        if (format === 'individual') {
-          while (this._getParticipantsControl().length > 1) {
-            this._getParticipantsControl().removeAt(1);
-          }
-
-          this.form.patchValue({ coAuthors: '', coAuthorEmails: '' });
-          this._syncParticipants();
+    this.form.controls.format.valueChanges.subscribe((format) => {
+      if (format === 'individual') {
+        while (this._getParticipantsControl().length > 1) {
+          this._getParticipantsControl().removeAt(1);
         }
-      });
+
+        this.form.patchValue({ coAuthors: '', coAuthorEmails: '' });
+        this._syncParticipants();
+      }
+    });
 
     if (this.type() === 'edit') {
       this.entity$ = this.at.params.pipe(
@@ -165,7 +164,7 @@ export class UserSubmissionAddEditFormComponent implements OnInit {
       this.entity$.pipe(take(1)).subscribe((entity) => {
         // Form patch will only add the participants if there are a matching number of entries in the form array. Without empty entries, the form array will not be populated.
         // Add each blank participant to participants form array
-        while (this._getParticipantsControl().length < entity.participants.length) {
+        while (this._getParticipantsControl().length < (entity.participants?.length ?? 0)) {
           this.addParticipant();
         }
 
@@ -177,8 +176,8 @@ export class UserSubmissionAddEditFormComponent implements OnInit {
         const others = (entity.participants ?? []).slice(1);
 
         this.form.patchValue({
-          coAuthors: others.map((p) => p.name ?? '').join('\n'),
-          coAuthorEmails: others.map((p) => p.email ?? '').join('\n')
+          coAuthors: others.map((p) => p?.name ?? '').join('\n'),
+          coAuthorEmails: others.map((p) => p?.email ?? '').join('\n')
         });
 
         while (this._getParticipantsControl().length > 1) {
@@ -200,13 +199,17 @@ export class UserSubmissionAddEditFormComponent implements OnInit {
         .pipe(take(1))
         .subscribe((season) => {
           this.season.set(season);
-          this.form.get('season').setValue(season.guid);
+
+          // With no active season, the form's season is left empty.
+          if (season) {
+            this.form.controls.season.setValue(season.guid);
+          }
 
           // The form starts on Presentation; when this season does not run it, on the first competition it does (#2948).
           const offered = this.submissionTypeOptions();
 
-          if (offered.length > 0 && !offered.some(({ type }) => type === this.form.get('submissionType').value)) {
-            this.form.get('submissionType').setValue(offered[0].type);
+          if (offered.length > 0 && !offered.some(({ type }) => type === this.form.controls.submissionType.value)) {
+            this.form.controls.submissionType.setValue(offered[0].type);
           }
         });
 
@@ -227,9 +230,10 @@ export class UserSubmissionAddEditFormComponent implements OnInit {
     this.entity$
       .pipe(
         take(1),
-        switchMap((entity) => {
-          return this.userSubmissionService.deleteEntity(entity.guid);
-        })
+        map((entity) => entity.guid),
+        // Only a saved submission, which has a guid, can be deleted.
+        filter((guid): guid is string => Boolean(guid)),
+        switchMap((guid) => this.userSubmissionService.deleteEntity(guid))
       )
       .subscribe({
         next: () => {
@@ -285,9 +289,10 @@ export class UserSubmissionAddEditFormComponent implements OnInit {
     this.entity$
       .pipe(
         take(1),
-        switchMap((entity) => {
-          return this.userSubmissionService.updateEntity(entity.guid, form);
-        })
+        map((entity) => entity.guid),
+        // Only a saved submission, which has a guid, can be updated.
+        filter((guid): guid is string => Boolean(guid)),
+        switchMap((guid) => this.userSubmissionService.updateEntity(guid, form))
       )
       .subscribe({
         next: () => {
@@ -352,8 +357,8 @@ export class UserSubmissionAddEditFormComponent implements OnInit {
       }
 
       submitter.patchValue({ name: name.trim(), email: `${user.email}`.trim().toLowerCase() });
-      submitter.get('name').disable();
-      submitter.get('email').disable();
+      submitter.get('name')?.disable();
+      submitter.get('email')?.disable();
     });
   }
 
