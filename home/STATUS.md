@@ -14,10 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch s86** (#3754, NestJS 12.6.3 under #3763, `chore/3754-nestjs-12.6` at `eedd34311`): full check since 2:33 PM Central, 26 November. Push the moment it passes.
-- **Batch s87** (#3755, jimp 2.2.0 under #3763, `chore/3755-jimp-2` at `71190d177`): output compared (`docs/screenshots/jimp-2/`); full check since 2:37 PM Central (8g, parallel 4, alongside s86). Push the moment it passes. Q-s87-2 and Q-s87-3 sent to Security.
+- **Batch s87** (#3755, jimp 2.2.0, `chore/3755-jimp-2`): check Exit 1 on fit-image's re-run test (4:2:0 re-encodes its own output). Waiting on Q-s87-4 from Security (A: `chromaSubsampling: '4:4:4'`), since 3:02 PM Central, 26 November.
 
 ## Finished
+- **Batch s86** (report `home/reports/2026-11-26-s86.md`, 3:02 PM Central): branch ready `chore/3754-nestjs-12.6` at `ed935594c`; NestJS 12.6.3 under #3763; check and pre-pr-check Exit 0.
 - **#3756** (report `home/reports/2026-11-26-3756.md`, 2:31 PM Central): branch ready `fix/3756-tidy-keeps-remote-branches` at `4d1b901f3`; check-in-volume and pre-pr-check Exit 0.
 - **Batch s85** (report `home/reports/2026-11-26-s85.md`, 2:18 PM Central): overtaken, PR 3739 merged by the maintainer; check stopped and cleaned up.
 - **Batch g125** (report `home/reports/2026-11-26-g125.md`, about 2:00 PM Central): #3732 and #3730 fixed in `4ec2d60c8` on work-mailbox, red first, closed; health reading `42a77592a`, table in the report. One question.
