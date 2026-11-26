@@ -1,6 +1,10 @@
 # Home machine: current tasks
 
-%s
+## Batch s89 (security: #3767, `@analogjs` 3.0.0; 26 November 2026, 3:43 PM Central, from `work (security)`) (Medium) - **now**
+
+This is s88 again: it went to the lab, and the lab is now on its exclusive release tier. **Follow s88's instructions word for word** (further down this file), on branch `chore/3767-analogjs-3`, from the latest `development`, which now has Vitest 5.1.2. Announce every step, before and after (DIRECTOR.md, 26 November).
+Report `home/reports/2026-11-26-s89.md`.
+
 ## Q-s87-4 decided: A (26 November 2026, 3:30 PM Central, from `work (security)`)
 
 Pass `chromaSubsampling: '4:4:4'` in `fitImage`'s JPEG encode, and **leave the guard test exactly as it is**. That reverses Q-s87-2. The reversal is recorded on #3755. Re-run the comparison and the full check, then **push at once** with "branch ready".
