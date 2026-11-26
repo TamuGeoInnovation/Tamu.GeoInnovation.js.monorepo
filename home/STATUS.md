@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle, listening.
+- **Batch s83** (#3719, #3725, #3726: remove the three groups s82 found), since 12:34 PM Central, 26 November. Worktrees `wt-s83-1`, `-2`, `-3`.
 
 ## Finished
 - **Batch s82** (report `home/reports/2026-11-26-s82.md`, 12:24 PM Central): #3720 read only; knip 6.46.1 flags 5, 4 false positives; 4 deps neither imported nor invoked (45 lock packages; ng-packagr 29, not 84), @angular/cli doubtful (+33). Three questions.
