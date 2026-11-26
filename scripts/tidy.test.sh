@@ -199,28 +199,28 @@ check 'the advice names how to reclaim the space' 'yes' "$r"
 
 # `.pr-body.md` drafts a pull request body and is deliberately never committed. A copy left behind made 68
 # merged worktrees permanently un-removable on the home machine, about 40 GiB no sweep could reclaim (#3432).
-check 'a worktree holding only an untracked .pr-body.md is removable' 'yes'   "$(only_a_drafted_pr_body '?? .pr-body.md' && echo yes || echo no)"
+check 'a worktree holding only an untracked .pr-body.md is removable' 'yes'   "$(only_leftovers '?? .pr-body.md' && echo yes || echo no)"
 
 # The whole point of keeping dirty worktrees. A capture stops being obtainable the moment the code changes, so
 # an untracked screenshots folder is possibly irreplaceable work: wt-2459 held exactly this.
-check 'a worktree holding untracked screenshots is kept' 'no'   "$(only_a_drafted_pr_body '?? docs/screenshots/' && echo yes || echo no)"
+check 'a worktree holding untracked screenshots is kept' 'no'   "$(only_leftovers '?? docs/screenshots/' && echo yes || echo no)"
 
-check 'a worktree holding a tracked edit is kept' 'no'   "$(only_a_drafted_pr_body ' M libs/maps/esri/src/index.ts' && echo yes || echo no)"
+check 'a worktree holding a tracked edit is kept' 'no'   "$(only_leftovers ' M libs/maps/esri/src/index.ts' && echo yes || echo no)"
 
 # Both together must keep it: the real edit is what matters, and finding the disposable file first must not
 # short-circuit the decision.
 check 'a .pr-body.md beside a real edit still keeps the worktree' 'no'   "$(printf '%s' '?? .pr-body.md
- M libs/maps/esri/src/index.ts' | { read -r -d '' status || true; only_a_drafted_pr_body "$status" && echo yes || echo no; })"
+ M libs/maps/esri/src/index.ts' | { read -r -d '' status || true; only_leftovers "$status" && echo yes || echo no; })"
 
 # A clean worktree is already removable by the caller; this function must not claim it, so that "no changes"
 # and "only a disposable change" stay distinguishable in the output.
-check 'a clean worktree is not claimed by this check' 'no'   "$(only_a_drafted_pr_body '' && echo yes || echo no)"
+check 'a clean worktree is not claimed by this check' 'no'   "$(only_leftovers '' && echo yes || echo no)"
 
 # A TRACKED .pr-body.md is a commit someone made, not a leftover draft.
-check 'a tracked .pr-body.md edit is kept' 'no'   "$(only_a_drafted_pr_body ' M .pr-body.md' && echo yes || echo no)"
+check 'a tracked .pr-body.md edit is kept' 'no'   "$(only_leftovers ' M .pr-body.md' && echo yes || echo no)"
 
 # The name has to be exact: a file that merely ends in it is somebody else's.
-check 'a differently named body file is kept' 'no'   "$(only_a_drafted_pr_body '?? docs/.pr-body.md' && echo yes || echo no)"
+check 'a differently named body file is kept' 'no'   "$(only_leftovers '?? docs/.pr-body.md' && echo yes || echo no)"
 
 
 # The threshold says the file is large; it says nothing about how much a compaction would give back, and the
@@ -272,6 +272,85 @@ check 'well over the interval is due' 'yes'   "$(sweep_due 1000000 1090000 12 &&
 check 'a shorter interval is honoured' 'yes'   "$(sweep_due 0 3600 1 && echo yes || echo no)"
 
 check 'a longer interval is honoured' 'no'   "$(sweep_due 0 43200 24 && echo yes || echo no)"
+
+# #3707: the leftovers a finished worktree is allowed to hold. A check writes check.out and its log beside the
+# checkout, a listener its scratch in .b<n>/, and a drafted body is .pr-body.md; none of them is work. Anything else,
+# screenshots above all, still keeps the worktree.
+check 'a worktree holding only check.out is removable (#3707)' 'yes' \
+  "$(only_leftovers '?? check.out' && echo yes || echo no)"
+check 'a worktree holding only a check log is removable' 'yes' \
+  "$(only_leftovers '?? check-tamu-js-3474-affected.log' && echo yes || echo no)"
+check 'a worktree holding only a listener scratch folder is removable' 'yes' \
+  "$(only_leftovers '?? .b40/' && echo yes || echo no)"
+check 'all the leftovers together are still only leftovers' 'yes' \
+  "$(only_leftovers "$(printf '%s\n' '?? .pr-body.md' '?? check.out' '?? .b47/' '?? check-tamu-js-1-affected.log')" && echo yes || echo no)"
+check 'a .b folder that is not .b<number> is kept' 'no' \
+  "$(only_leftovers '?? .build/' && echo yes || echo no)"
+check 'a leftover beside screenshots still keeps the worktree' 'no' \
+  "$(only_leftovers "$(printf '%s\n' '?? check.out' '?? docs/screenshots/')" && echo yes || echo no)"
+check 'a tracked check.out edit is kept' 'no' \
+  "$(only_leftovers ' M check.out' && echo yes || echo no)"
+check 'the .pr-body.md rule still holds (#3432)' 'yes' \
+  "$(only_leftovers '?? .pr-body.md' && echo yes || echo no)"
+check 'and a clean worktree is still not claimed' 'no' \
+  "$(only_leftovers '' && echo yes || echo no)"
+
+# #3707: which local branches go. Arguments: name, protected (1 when held by a kept worktree or the checkout the sweep
+# runs in), tip in origin/development, commits on no remote, fork branch still there, merged-at epoch or -, tip epoch.
+verdict() { branch_verdict "$@" | cut -d ' ' -f 1; }
+check 'a branch whose tip is in development goes' 'prune' "$(verdict fix/1-a 0 1 0 0 - 100)"
+check 'a branch whose commits are all on a remote and whose fork branch is gone goes' 'prune' "$(verdict fix/2-b 0 0 0 0 - 100)"
+check 'one whose fork branch is still there stays: it is open work' 'keep' "$(verdict fix/3-c 0 0 0 1 - 100)"
+check 'a squash-merged branch, nothing committed after the merge, goes' 'prune' "$(verdict fix/4-d 0 0 3 0 200 150)"
+check 'one with a commit after its merge stays: that commit is on no remote' 'keep' "$(verdict fix/5-e 0 0 3 0 200 250)"
+check 'a branch with commits on no remote and no merged pull request stays' 'keep' "$(verdict fix/6-f 0 0 2 0 - 100)"
+r=no; case "$(branch_verdict fix/6-f 0 0 2 0 - 100)" in *'only on this machine'*) r=yes ;; esac
+check 'and says it is only on this machine' 'yes' "$r"
+check 'development never goes, merged or not' 'keep' "$(verdict development 0 1 0 0 - 100)"
+check 'nor master' 'keep' "$(verdict master 0 1 0 0 - 100)"
+check 'nor a mailbox branch' 'keep' "$(verdict work-mailbox 0 1 0 0 - 100)"
+check 'nor a local copy of one, however it is named' 'keep' "$(verdict mb-gisday 0 0 0 0 - 100)"
+check 'nor a branch with mailbox anywhere in its name' 'keep' "$(verdict mailbox-copy 0 1 0 0 - 100)"
+check 'nor a branch held by a worktree that is kept' 'keep' "$(verdict fix/7-g 1 1 0 0 - 100)"
+
+# #3707: git will not delete a branch a worktree has checked out, which is why the first command on home failed on most
+# branches (26 November). So a branch's worktree goes first.
+check 'a branch with a worktree: the worktree goes first, then the branch' \
+  'worktree C:/TAMU/wt-7|branch fix/7-g|' "$(prune_steps fix/7-g C:/TAMU/wt-7 | tr '\n' '|')"
+check 'a branch with no worktree: just the branch' 'branch fix/8-h|' "$(prune_steps fix/8-h - | tr '\n' '|')"
+
+# #3707: the sweep must not assume the checkout it is run from is current or removable. On 26 November home's main
+# checkout predated tidy.sh, and run from wt-preprcheck the sweep counted wt-preprcheck itself as removable.
+printf '%s\n' 'C:/TAMU/wt-preprcheck' 'C:/TAMU/wt-merged' > "$tmp/paths"
+check 'the worktree the sweep runs from is never removed' 'C:/TAMU/wt-merged ' \
+  "$(without_path "$tmp/paths" 'C:/TAMU/wt-preprcheck' | tr '\n' ' ')"
+check 'whatever case Windows gives the path in' 'C:/TAMU/wt-merged ' \
+  "$(without_path "$tmp/paths" 'c:/tamu/WT-PREPRCHECK' | tr '\n' ' ')"
+
+# A real repository whose checked-out commit is OLD, with a branch merged only into a newer origin/development: the
+# branch is finished, and the old HEAD must not hide that.
+repo="$tmp/old-checkout"
+git init -q -b development "$repo"
+git -C "$repo" -c user.name=t -c user.email=t@t commit -q --allow-empty -m old
+git -C "$repo" branch fix/9-merged
+git -C "$repo" checkout -q fix/9-merged
+git -C "$repo" -c user.name=t -c user.email=t@t commit -q --allow-empty -m work
+git -C "$repo" checkout -q development
+git -C "$repo" update-ref refs/remotes/origin/development "$(git -C "$repo" rev-parse fix/9-merged)"
+check 'a branch merged into origin/development is in it, though the checkout is older' 'yes' \
+  "$(branch_in_development "$repo" fix/9-merged && echo yes || echo no)"
+git -C "$repo" branch fix/10-open development
+git -C "$repo" checkout -q fix/10-open
+git -C "$repo" -c user.name=t -c user.email=t@t commit -q --allow-empty -m open
+git -C "$repo" checkout -q development
+check 'a branch with work development does not have is not' 'no' \
+  "$(branch_in_development "$repo" fix/10-open && echo yes || echo no)"
+
+# #3707: branches and worktrees on every check, volumes still behind the watermark.
+grep -q 'if \[ "$branches_only" != yes \] && git -C "$main" rev-parse -q --verify origin/development' "$(dirname "$0")/tidy.sh" && r=yes || r=no
+check 'the every-check sweep leaves detached worktrees to the free-space sweep' 'yes' "$r"
+grep -q 'tidy.sh" --branches' "$(dirname "$0")/check-in-volume.sh" && r=yes || r=no
+check 'every check sweeps branches and worktrees' 'yes' "$r"
 
 if [ "$failed" -ne 0 ]; then
   printf '\n%d case(s) failed.\n' "$failed" >&2

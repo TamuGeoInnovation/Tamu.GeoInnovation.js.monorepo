@@ -38,7 +38,6 @@ updates:
           - '@angular/*'
           - '@angular-devkit/*'
           - '@schematics/angular'
-          - ng-packagr
           - '@angular-eslint/*'
           - angular-eslint
       nx:
