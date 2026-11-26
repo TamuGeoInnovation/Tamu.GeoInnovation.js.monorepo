@@ -1,5 +1,57 @@
 # Home machine: current tasks
 
+## Batch a60 (aggiemap: the full check on PR 3724, the Angular framework minor; 26 November 2026, from `work (aggiemap)`) (High) - **now**
+
+**The maintainer wants this resolved now.** It is the gate PR 3724 cannot merge without.
+
+### What it is
+
+Dependabot closed PR 3669 itself at 12:32 Central once PR 3670 changed the lock, and replaced it with **#3724**, which
+is far larger: **18 packages, the whole Angular framework**, `22.2.6`/`22.2.7` to `22.3.0`, plus `angular-eslint` 22.7.0
+to 22.8.0 - including `@angular/core`, `@angular/compiler`, `@angular/compiler-cli`, `@angular/build` and `@angular/cli`.
+
+**No major among them**, so by CLAUDE.md it merges once green. The issue is
+[#3700](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3700), retitled and now tracking
+#3724; the pull request body carries `Closes #3700`.
+
+Already settled, so do not redo it: **the seven-day rule passes** - `@angular/core`, `@angular/material` and
+`angular-eslint` published 18 November, `@angular/build` 19 November, against today's 26th.
+
+### The branch
+
+`dependabot/npm_and_yarn/development/angular-3de16fb2f1` at **`52898d356`**, on **`origin`** - Dependabot pushes to
+`TamuGeoInnovation`, not to a fork. **Never push to it**: Dependabot rewrites that branch, and CLAUDE.md forbids it.
+Fetch it, check it, push nothing.
+
+### What to do
+
+1. **The full affected check, with Docker to itself.** `scripts/check-in-volume.sh <branch> affected`, and **read the
+   log's own `Exit N` line**, not the wrapper's. `package.json` changed, so affected is effectively everything and the
+   script will run a clean `npm ci` from Dependabot's own lock - that install is the point, not a side effect. It exits
+   **4** if `npm ci` fails, which is the case #1345 describes: a lock that disagrees with `package.json` fails CI before
+   anything runs.
+2. **The lock diff against `development`.** Only those 18 and their own dependencies may move. **Say what moved that is
+   not one of the 18**, if anything, with what depends on it.
+3. **Say what the production builds did, specifically.** `@angular/core` and `@angular/compiler` moving means the
+   applications' production builds are the thing that matters here, far more than the unit tests - an AOT template
+   error or a bundle budget is what a framework minor breaks, and both are build-time.
+
+### What not to be fooled by
+
+- **A build task that stops mid-build with no compile error is memory, not the bump** - that is
+  [#3622](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3622), and it cost the GIS Day
+  chat two wasted runs on these same pull requests this morning while three checks shared 31.25 GiB. **Make sure you
+  have Docker to yourself**, and say what else was running if you did not.
+- **`ng-packagr` is in this group and is never invoked here** - no `ng-package.json`, no project declaring an Angular
+  package executor, and applications compile against library source ([#3719](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3719)).
+  So nothing exercises it whatever version it reaches; do not spend time trying to.
+
+### Report
+
+`home/reports/2026-11-26-a60.md`. Questions `Q-a60-<n>`. **Open no pull request, push no branch, merge nothing, and do
+not comment on 3724** - I will put the result on it. Give me the `Exit N` line, the lock diff's verdict, the production
+builds' result and the elapsed time.
+
 ## Batch s83 (security: #3719 and #3720, remove the three groups s82 found, one branch each; 26 November 2026, from `work (security)`) (Low) - **now**
 
 **Decided by the maintainer on your s82 questions:**
