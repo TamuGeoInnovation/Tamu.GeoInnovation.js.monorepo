@@ -14,7 +14,7 @@ Measured **26 November 2026**. Refresh it with the command under [Keeping this c
 | NestJS | 9.4.3 | **12.5.1** | 12.6.3 | one minor |
 | Nx | 16.0.0 | **24.0.6** | 24.0.7 | one patch, and it is the gate |
 | TypeScript | 4.9.5 | **6.0.3** | 7.0.2 | **blocked** - see step 6 |
-| ArcGIS | 4.23, CDN + `esri-loader` | **`@arcgis/core` 5.2.6**, with amCharts 5.20.8 | 5.2.9 | three patches, none 7 days old yet; moves by hand with amCharts (#3757) |
+| ArcGIS | 4.23, CDN + `esri-loader` | **`@arcgis/core` 5.2.9**, with amCharts 5.20.8 | 5.2.9 | none; moves by hand with amCharts (#3757) |
 | Node | — | **24.22.3** | — | matched everywhere (#3591) |
 
 **66 direct dependencies are behind, 9 of them by a major.** That is the whole remaining gap, and none of it is the
@@ -38,7 +38,7 @@ the same pull request as the step. Every individual upgrade pull request, by fam
 | 28 Oct 2026 | Three event apps removed, superseded by AggieMap | | [#1202](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1202) |
 | 23 Oct 2026 | Nx 23 to 24 | Nx 24.0.2, after lint, tests and the API builds moved to Nx's inferred targets | [#2168](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2168) |
 | 23 Nov 2026 | Nx 24.0.2 to 24.0.6 | by Dependabot's nx group | [#3248](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3248) |
-| 26 Nov 2026 | `@arcgis/core` 5.1.27 to 5.2.6, with amCharts 5.18.0 to 5.20.8 | by hand, in one change: 5.2 needs amCharts `~5.20.8`, and the lock keeps exactly one copy of amCharts | [#3757](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3757) |
+| 26 Nov 2026 | `@arcgis/core` 5.1.27 to 5.2.9, with amCharts 5.18.0 to 5.20.8 | by hand, in one change: 5.2 needs amCharts `~5.20.8`, and the lock keeps exactly one copy of amCharts. 5.2.9 was 2 days old, taken under the one-time exception to the seven-day rule ([#3763](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3763)) | [#3757](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3757) |
 | 25 Nov 2026 | **Jest to Vitest**, across every front end and API | geoservices, mailroom, GIS Day, ts-events and their libraries | [#1977](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1977) |
 | 25 Nov 2026 | **Node 24.22.3 everywhere**, matching the API images | | [#3545](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3545) |
 | 25 Nov 2026 | Dead applications removed | **61 applications became 10** | [#1201](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1201), [#1203](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1203) |
