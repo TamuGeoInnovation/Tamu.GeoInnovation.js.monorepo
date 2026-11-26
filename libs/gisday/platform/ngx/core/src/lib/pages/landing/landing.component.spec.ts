@@ -188,4 +188,31 @@ describe('LandingComponent countdown', () => {
 
     expect(await firstValueFrom(page.totalSecondsRemaining$)).toBe((firstSession.getTime() - Date.now()) / 1000);
   });
+
+  // #3627: a new site has no season yet (#2076), so there is nothing to count down to, rather than a failure.
+  it('counts down to nothing on a site with no season, without failing', () => {
+    TestBed.configureTestingModule({
+      imports: [LandingComponent],
+      providers: [
+        provideRouter([]),
+        { provide: GISDAY_SITE, useValue: gisdaySite('tamu') },
+        { provide: SeasonService, useValue: { getActiveSeason: () => of(null) } },
+        { provide: SponsorService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+        { provide: PlaceService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+        { provide: SeasonWinnersService, useValue: { shown: () => of(null) } }
+      ]
+    });
+
+    const page = TestBed.createComponent(LandingComponent).componentInstance;
+    page.ngOnInit();
+
+    const seen = { values: 0, error: undefined as unknown };
+    const watching = page.totalSecondsRemaining$.subscribe({
+      next: () => seen.values++,
+      error: (err) => (seen.error = err)
+    });
+    watching.unsubscribe();
+
+    expect(seen).toEqual({ values: 0, error: undefined });
+  });
 });

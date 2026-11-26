@@ -76,7 +76,8 @@ export class ResearchCompetitionReviewComponent extends BaseAdminDetailsPageComp
     );
 
     this.entity$.subscribe((entity) => {
-      const acceptance = entity.acceptance.toString();
+      // Not yet accepted unless it says so: the column defaults to false.
+      const acceptance = String(entity.acceptance === true);
 
       this.form.patchValue({ guid: entity.guid, acceptance, message: entity.message });
     });

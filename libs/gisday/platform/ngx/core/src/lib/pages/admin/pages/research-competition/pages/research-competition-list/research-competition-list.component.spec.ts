@@ -199,6 +199,16 @@ describe('ResearchCompetitionListComponent actions on the selected submissions',
     expect(download).toContain('Download files (2 ticked)');
   });
 
+  // #3627: on a site with no season yet (#2076) there are no files to download, and the page says it could not.
+  it('says the files could not be downloaded when there is no season', () => {
+    const { fixture } = open(false);
+
+    fixture.componentInstance.downloadAllFiles();
+
+    expect(fixture.componentInstance.zipping()).toBe(false);
+    expect(fixture.componentInstance.zipProblem()).toBe('The files could not be downloaded.');
+  });
+
   it('offers Approve, Reject and the Email menu beside Delete', () => {
     const { click } = open(false);
 
@@ -546,6 +556,13 @@ describe('profileEmailNote', () => {
     ] as never);
 
     expect(note).toContain('For the 4 people of 2 submissions.');
+  });
+
+  // #3627: participants are stored as JSON, so an entry can be null (#3495); it names nobody.
+  it('counts nobody for an entry stored as null', () => {
+    const note = profileEmailNote([{ participants: [null, { name: 'Gus', email: 'gus1' }] }] as never);
+
+    expect(note).toContain('For the 1 person of 1 submission.');
   });
 });
 
