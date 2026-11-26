@@ -22,13 +22,15 @@ export function groupEventsByDay<T extends Partial<Event>>(events: Array<T> | nu
 
   for (const event of events ?? []) {
     const date = event?.day?.date ?? null;
-    const key = date && !isNaN(date.getTime()) ? (event.day.guid ?? date.toISOString()) : 'no-day';
+    const key = date && !isNaN(date.getTime()) ? (event.day?.guid ?? date.toISOString()) : 'no-day';
+    let group = groups.get(key);
 
-    if (!groups.has(key)) {
-      groups.set(key, { key, date: key === 'no-day' ? null : date, events: [] });
+    if (!group) {
+      group = { key, date: key === 'no-day' ? null : date, events: [] };
+      groups.set(key, group);
     }
 
-    groups.get(key).events.push(event);
+    group.events.push(event);
   }
 
   // A start time that cannot be read sorts last, whether it parses to null or to an invalid Date.

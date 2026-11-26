@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { GISDAY_SITE, SiteHasPipe, ImagePreviewComponent } from '@tamu-gisc/gisday/platform/ngx/common';
 import { Observable, filter, map, shareReplay, startWith } from 'rxjs';
@@ -31,7 +31,6 @@ const numberDictionary = {
   selector: 'tamu-gisc-about',
   templateUrl: './about.component.html',
   styleUrls: ['./about.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ImagePreviewComponent, SiteHasPipe, SpeakerAvatarComponent, RouterLink, AsyncPipe, CentralDatePipe, AssetUrlPipe]
 })
 export class AboutComponent implements OnInit {
@@ -41,9 +40,11 @@ export class AboutComponent implements OnInit {
   private readonly placeServices = inject(PlaceService);
   private readonly speakerService = inject(SpeakerService);
 
-  public activeSeason$: Observable<Partial<ActiveSeasonDto>>;
+  /** Null on a site with no season yet (#2076). */
+  public activeSeason$: Observable<Partial<ActiveSeasonDto> | null>;
   public activeSeasonDays$: Observable<Array<Partial<SeasonDay>>>;
-  public dateRange$: Observable<Array<Date>>;
+  /** The first and last days' dates, or null when the season has no days. */
+  public dateRange$: Observable<Array<Date | undefined> | null>;
   public dayCountText$: Observable<string>;
 
   public organizations$: Observable<Array<Partial<Place>>>;
@@ -63,9 +64,7 @@ export class AboutComponent implements OnInit {
 
     this.activeSeasonDays$ = this.activeSeason$.pipe(
       map((season) => season?.days),
-      filter((days) => {
-        return days !== undefined;
-      }),
+      filter((days): days is Array<SeasonDay> => days !== undefined),
       shareReplay()
     );
 
@@ -90,9 +89,9 @@ export class AboutComponent implements OnInit {
           return 'several event-packed days';
         } else if (count === 1) {
           return 'one event-packed day';
-        } else if (count > 1) {
-          return `${numberDictionary[count].toLowerCase()} event-packed days`;
         }
+
+        return `${numberDictionary[count].toLowerCase()} event-packed days`;
       })
     );
   }

@@ -74,4 +74,23 @@ expect "prod accepts the dev-tagged commit" "0" "$status"
 message=$(git -C "$repo" tag -l --format='%(contents)' prod-2026-10-23)
 case "$message" in *FORCED*) echo "FAIL an unforced tag says FORCED: [$message]"; failed=1 ;; *) echo "ok   an unforced tag says nothing about forcing" ;; esac
 
+# The same build promoted again (#1215). A cut-and-abandoned release leaves its dev tag as the day's newest, so a later
+# `prod` with no sha would record a build already on production as a second release. Refused, naming the tag it has.
+out=$(run prod "$tested" --date 2026-10-24); status=$?
+expect "prod refuses a commit already tagged for production" "1" "$status"
+contains "and names the tag it already carries" "already released to production as prod-2026-10-23" "$out"
+expect "and creates no tag" "" "$(git -C "$repo" tag -l prod-2026-10-24)"
+
+# A genuine redeploy of the same build is worth recording; it has to say so.
+out=$(run prod "$tested" --date 2026-10-24 --force 'redeployed after the node restart'); status=$?
+expect "--force with a reason records a redeploy" "0" "$status"
+message=$(git -C "$repo" tag -l --format='%(contents)' prod-2026-10-24)
+contains "the redeploy is marked forced" "Production build, 2026-10-24 (FORCED)" "$message"
+contains "and says which check it was forced past" "already released to production as prod-2026-10-23" "$message"
+contains "and carries the reason" "Reason given: redeployed after the node restart" "$message"
+
+# dev is not affected: one build tested on dev more than once is normal.
+out=$(run dev "$tested" --date 2026-10-25); status=$?
+expect "dev still tags a commit that is on production" "0" "$status"
+
 exit "$failed"

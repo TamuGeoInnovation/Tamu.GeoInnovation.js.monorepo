@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { BehaviorSubject, Observable, catchError, combineLatest, map, of, shareReplay } from 'rxjs';
 
@@ -82,7 +82,6 @@ export function submissionCounts(submissions: Array<SubmissionReviewDto>): {
   selector: 'tamu-gisc-admin-submissions',
   templateUrl: './admin-submissions.component.html',
   styleUrls: ['./admin-submissions.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [SubmissionReviewListComponent, DashboardScrollComponent, AsyncPipe]
 })
 export class AdminSubmissionsComponent implements OnInit {
@@ -120,7 +119,11 @@ export class AdminSubmissionsComponent implements OnInit {
 
         if (view === 'top-finishers') {
           return submissions.filter(
-            (s) => top.has(s.userGuid) && s.validationStatus !== COMPETITION_VALIDATION_STATUS.discarded
+            // A submission with no submitter is no one's top finish, as top.has(undefined) already answered (#3614).
+            (s) =>
+              s.userGuid !== undefined &&
+              top.has(s.userGuid) &&
+              s.validationStatus !== COMPETITION_VALIDATION_STATUS.discarded
           );
         }
 

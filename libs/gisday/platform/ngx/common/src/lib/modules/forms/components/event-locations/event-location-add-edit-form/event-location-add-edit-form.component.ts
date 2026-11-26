@@ -42,7 +42,7 @@ export class EventLocationAddEditFormComponent implements OnInit {
   private readonly ss = inject(SeasonService);
   private readonly destroyRef = inject(DestroyRef);
 
-  public readonly type = input<'create' | 'edit'>(undefined);
+  public readonly type = input.required<'create' | 'edit'>();
 
   public entity$: Observable<Partial<EventLocation>>;
   public places$: Observable<Array<Partial<Place>>>;
@@ -95,7 +95,7 @@ export class EventLocationAddEditFormComponent implements OnInit {
         this.form.patchValue({
           ...entity,
           place: entity.place?.guid,
-          checkInZoneText: formatLatLonLines(entity.checkInZone)
+          checkInZoneText: formatLatLonLines(entity.checkInZone ?? [])
         });
 
         // If the entity has a season, remove the season control from the form
@@ -103,9 +103,10 @@ export class EventLocationAddEditFormComponent implements OnInit {
       });
     } else {
       this.ss.activeSeason$.pipe(take(1)).subscribe((season) => {
-        this.form.patchValue({
-          season: season.guid
-        });
+        // With no active season, the form's season is left empty.
+        if (season) {
+          this.form.patchValue({ season: season.guid });
+        }
       });
     }
   }
@@ -140,7 +141,8 @@ export class EventLocationAddEditFormComponent implements OnInit {
       return;
     }
 
-    this.saves.save('update', this.els.updateEntity(rawValue.guid, rawValue));
+    // By the form's guid, as Delete is: the edit page fills it from the venue.
+    this.saves.save('update', this.els.updateEntity(this.form.getRawValue().guid, rawValue));
   }
 
   private _createEntity() {

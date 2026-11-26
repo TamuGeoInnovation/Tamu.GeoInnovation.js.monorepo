@@ -93,6 +93,11 @@ export const commonSymbols = {
  *
  * Women's Basketball was written this way by hand in #2176 and is the only athletics map whose
  * development popups have ever worked; this generalises it.
+ *
+ * **`popupData` is merged over the default**, so a layer whose popup reads other fields of the same feed
+ * names only what differs (#2597): Men's Basketball's closures are titled by `type` and described by
+ * `event`. There is no `native` override because no layer needs one yet, and no `refreshInterval`, because
+ * game-day refresh is the event's `gameDayRefresh` switch (#2581).
  */
 export function athleticsDevelopmentSource(source: {
   id: string;
@@ -100,6 +105,8 @@ export function athleticsDevelopmentSource(source: {
   title?: string;
   /** The `type` value this layer shows, where production split one service layer into two. */
   onlyType?: string;
+  /** Popup entries that differ from the feed's `name` and `description`, merged over them. */
+  popupData?: LayerSource['popupData'];
 }): LayerSource {
   return {
     type: 'feature',
@@ -109,7 +116,8 @@ export function athleticsDevelopmentSource(source: {
     popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.name',
-      description: 'attributes.description'
+      description: 'attributes.description',
+      ...source.popupData
     },
     visible: true,
     listMode: 'show',
@@ -136,4 +144,22 @@ export function markdownPopup(name: PopupField, description: PopupField) {
     popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: { name: entry(name), description: entry(description) }
   };
+}
+
+/** One period of an annual event, as a builder offers it: its choice's value and the days it covers, in order. */
+export interface EventPeriod {
+  value: string;
+  dates: ReadonlyArray<string>;
+}
+
+/**
+ * A date-window filter for each period of an annual event: a feature shows for a period when its own start and end
+ * dates overlap the period's first to last day. The three Ring Day maps each wrote this themselves, under three names
+ * (#2599).
+ */
+export function periodDateConversions(periods: ReadonlyArray<EventPeriod>, startField: string, endField: string) {
+  return periods.map(({ value, dates }) => ({
+    input: value,
+    expression: `${startField} <= date'${dates[dates.length - 1]}' AND ${endField} >= date'${dates[0]}'`
+  }));
 }

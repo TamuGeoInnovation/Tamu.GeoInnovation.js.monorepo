@@ -1,14 +1,13 @@
 import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { fromEventPattern, Observable, pipe, Subject } from 'rxjs';
-import { switchMap, takeUntil, pluck, map } from 'rxjs/operators';
+import { Observable, pipe, Subject } from 'rxjs';
+import { switchMap, takeUntil, map } from 'rxjs/operators';
 
-import { EsriMapService, MapServiceInstance } from '@tamu-gisc/maps/esri';
+import { EsriMapService, MapServiceInstance, viewEvent } from '@tamu-gisc/maps/esri';
 import { TripPlannerService, TripResult, TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 import { DragService, UIDragState } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
 import { TripPlannerModePickerMobileComponent } from '@tamu-gisc/maps/feature/trip-planner/components';
 import { AsyncPipe } from '@angular/common';
-
 
 import esri = __esri;
 
@@ -56,11 +55,7 @@ export class TripPlannerTopComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.stops = this.tripPlanner.Stops;
 
-    this.tripPlanner.TravelOptions.pipe(
-      pluck('travel_mode'),
-      switchMap(() => this.tripPlanner.getTripResultForTravelMode()),
-      takeUntil(this._destroy$)
-    ).subscribe((result) => {
+    this.tripPlanner.currentResult$.pipe(takeUntil(this._destroy$)).subscribe((result) => {
       this.result = result;
 
       // In the event that the route is cleared and the top is hidden, bring it back down.
@@ -121,19 +116,7 @@ export class TripPlannerTopComponent implements OnInit, OnDestroy {
 
   private $immediateClickHandler() {
     return pipe(
-      switchMap((view: MapServiceInstance['view']) => {
-        let handle: esri.Handle;
-
-        const addHandler = (handler) => {
-          handle = view.on('immediate-click', handler);
-        };
-
-        const removeHandler = () => {
-          handle.remove();
-        };
-
-        return fromEventPattern<esri.ViewImmediateClickEvent>(addHandler, removeHandler);
-      })
+      switchMap((view: MapServiceInstance['view']) => viewEvent<esri.ViewImmediateClickEvent>(view, 'immediate-click'))
     );
   }
 }

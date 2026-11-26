@@ -8,6 +8,7 @@ import { of } from 'rxjs';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 
 import { DiscoveryService } from '../../services/discovery/discovery.service';
+import { discoveryServiceStub } from '../../services/discovery/discovery.service.stub';
 import { LastMapService } from '@tamu-gisc/aggiemap/ngx/common';
 import { AllMapsComponent } from './all-maps.component';
 
@@ -61,15 +62,12 @@ describe('AllMapsComponent campus maps', () => {
     configuration: { id: 'dining', eventDates: [] }
   };
 
-  const discoveryStub = {
+  const discoveryStub = discoveryServiceStub({
     getInternalDiscoverApplications: () => [campus, developmentOnlyCampus],
     getVisibleInternalDiscoverApplications: () => [],
-    getExternalDiscoverApplications: () => [],
     getAllDiscoverApplications: () => [campus, developmentOnlyCampus],
-    getKioskDiscoverApplications: () => [kiosk],
-    getQuickLinkApplications: () => [],
-    getParkingApplicationsByCategory: () => []
-  };
+    getKioskDiscoverApplications: () => [kiosk]
+  });
 
   const componentAs = async (isDev: boolean): Promise<ComponentFixture<AllMapsComponent>> => {
     await TestBed.configureTestingModule({

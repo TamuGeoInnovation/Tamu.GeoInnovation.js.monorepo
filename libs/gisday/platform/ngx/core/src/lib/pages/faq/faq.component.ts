@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, DestroyRef, inject, signal, afterNextRender } from '@angular/core';
+import { Component, DestroyRef, inject, signal, afterNextRender } from '@angular/core';
 import { DOCUMENT, NgTemplateOutlet } from '@angular/common';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -11,7 +11,6 @@ import { ClipboardCopyDirective } from '@tamu-gisc/ui-kits/ngx/interactions/clip
   selector: 'tamu-gisc-faq',
   templateUrl: './faq.component.html',
   styleUrls: ['./faq.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterLink, NgTemplateOutlet, ClipboardCopyDirective]
 })
 export class FaqComponent {
@@ -41,7 +40,7 @@ export class FaqComponent {
     // The question's own element, not whichever child was clicked: the question now holds its text and a link button.
     const item = (event.currentTarget as HTMLElement).parentElement;
 
-    item.classList.toggle('expanded');
+    item?.classList.toggle('expanded');
   }
 
   /** The address of one question, to share. */

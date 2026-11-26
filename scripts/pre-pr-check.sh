@@ -111,10 +111,10 @@ step() { # <name> <command...>
   if "$@"; then echo "   ok"; else echo "   FAILED: $name"; failed+=("$name"); fi
 }
 
-# The pull-request checks, in node:24.22.1 as CI runs them, reading the drafted title and body.
+# The pull-request checks, in node:24.22.3 as CI runs them, reading the drafted title and body.
 pr_checks() {
   MSYS_NO_PATHCONV=1 docker run --rm -v "$(docker_path "$here/.github/scripts"):/scripts:ro" -v "$(docker_path "$tmp"):/pr:ro" -w /pr \
-    -e TITLE="$title" node:24.22.1 sh -c '
+    -e TITLE="$title" node:24.22.3 sh -c '
       node /scripts/check-pr-title.mjs || exit 1
       node --input-type=module -e "
         import { readFileSync } from \"node:fs\";
@@ -146,12 +146,12 @@ linked_issue() {
 
 suite() { # scripts | tools
   case "$1" in
-    # In node:24.22.1, as tools-tests.yml and scripts-tests.yml run them (these machines have no host Node), on a clone of
+    # In node:24.22.3, as tools-tests.yml and scripts-tests.yml run them (these machines have no host Node), on a clone of
     # the committed branch, as check-in-volume.sh does: a worktree's .git is a file naming a Windows path, so a copy of
     # the worktree is not a repository inside the container, and the suites that read git fail.
-    scripts) MSYS_NO_PATHCONV=1 docker run --rm -v "$(docker_path "$common"):/repo.git:ro" node:24.22.1 sh -c \
+    scripts) MSYS_NO_PATHCONV=1 docker run --rm -v "$(docker_path "$common"):/repo.git:ro" node:24.22.3 sh -c \
       "git clone -q -b '$branch' /repo.git /w && cd /w && bash scripts/run-script-tests.sh" ;;
-    tools) MSYS_NO_PATHCONV=1 docker run --rm -v "$(docker_path "$common"):/repo.git:ro" node:24.22.1 sh -c \
+    tools) MSYS_NO_PATHCONV=1 docker run --rm -v "$(docker_path "$common"):/repo.git:ro" node:24.22.3 sh -c \
       "git clone -q -b '$branch' /repo.git /w && cd /w && node --test 'tools/**/*.test.mjs'" ;;
   esac
 }

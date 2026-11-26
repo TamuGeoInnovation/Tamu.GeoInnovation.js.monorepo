@@ -1,13 +1,14 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
-import { takeUntil, switchMap, pluck } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 
 import { TripPlannerService, TripResult } from '@tamu-gisc/maps/feature/trip-planner';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { Angulartics2 } from 'angulartics2';
 import { FormsModule } from '@angular/forms';
+import { trackEvent } from '@tamu-gisc/common/ngx/analytics';
 
 @Component({
   selector: 'tamu-gisc-report-bad-route',
@@ -29,11 +30,7 @@ export class ReportBadRouteComponent implements OnInit, OnDestroy {
   private _destroy$: Subject<boolean> = new Subject();
 
   public ngOnInit() {
-    this.tripPlanner.TravelOptions.pipe(
-      pluck('travel_mode'),
-      switchMap(() => this.tripPlanner.getTripResultForTravelMode()),
-      takeUntil(this._destroy$)
-    ).subscribe((result) => {
+    this.tripPlanner.currentResult$.pipe(takeUntil(this._destroy$)).subscribe((result) => {
       this.result = result;
     });
   }
@@ -48,8 +45,6 @@ export class ReportBadRouteComponent implements OnInit, OnDestroy {
    */
   public submitBadRoute() {
     const label = {
-      guid: crypto.randomUUID(),
-      date: Date.now(),
       travel_mode: this.result.params.travelMode.id,
       connection: this.result.connection.name,
       description: this.description ? this.description : 'No Description',
@@ -63,13 +58,7 @@ export class ReportBadRouteComponent implements OnInit, OnDestroy {
       label[`stop_${index}`] = stop.toString();
     });
 
-    this.analytics.eventTrack.next({
-      action: 'routing',
-      properties: {
-        category: 'feedback',
-        gstCustom: label
-      }
-    });
+    trackEvent(this.analytics, 'routing', 'feedback', label);
 
     this.notificationService.preset('feedback_submit');
 

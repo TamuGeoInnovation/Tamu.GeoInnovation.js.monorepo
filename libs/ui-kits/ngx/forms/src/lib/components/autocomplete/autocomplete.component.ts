@@ -44,7 +44,7 @@ export class AutocompleteComponent<T> implements OnInit, OnDestroy {
   /**
    * Form control to bind the input value
    */
-  public readonly control = input<FormControl>(undefined);
+  public readonly control = input<FormControl | undefined>(undefined);
 
   /**
    * Options can be provided as an array or observable of items

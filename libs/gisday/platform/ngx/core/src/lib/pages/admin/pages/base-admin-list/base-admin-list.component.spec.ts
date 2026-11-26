@@ -336,3 +336,77 @@ describe('BaseAdminListComponent delete', () => {
     expect(toast).toHaveBeenCalledWith(expect.objectContaining({ title: 'Submission Not Deleted' }));
   });
 });
+
+@Component({ template: '', standalone: false })
+class CopyingListComponent extends BaseAdminListComponent<GuidIdentity> {
+  public readonly copied = vi.fn(() => of({}));
+  public readonly deleted = vi.fn(() => of({}));
+
+  protected readonly entityService = {
+    getEntities: () => of([]),
+    getEntitiesForActiveSeason: () => of([]),
+    getEntitiesForSeason: () => of([]),
+    copyEntitiesIntoSeason: this.copied,
+    deleteEntity: this.deleted
+  } as unknown as BaseService<GuidIdentity>;
+}
+
+/**
+ * #3627. With strictNullChecks on, what a row or the copy window may lack is checked: a copy with no season to copy into
+ * (a site with none yet, #2076) is not sent, a row with no guid is neither deleted nor selected.
+ */
+describe('BaseAdminListComponent with a missing season or guid', () => {
+  function open(copyResult: object) {
+    const toast = vi.fn();
+
+    TestBed.configureTestingModule({
+      declarations: [CopyingListComponent],
+      providers: [
+        { provide: SeasonService, useValue: { seasons$: of([]), activeSeason$: of(null) } },
+        { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
+        { provide: Router, useValue: { events: EMPTY } },
+        { provide: ModalService, useValue: { open: () => of(copyResult) } },
+        { provide: NotificationService, useValue: { toast } }
+      ]
+    });
+
+    const component = TestBed.createComponent(CopyingListComponent).componentInstance;
+    component.ngOnInit();
+    component.selectedRows$.subscribe();
+
+    return { component, toast };
+  }
+
+  it('sends no copy when the copy window had no season to copy into', () => {
+    const { component, toast } = open({ copy: true, season: null, identities: ['a'] });
+
+    component.promptCopyModal('Sponsor');
+
+    expect(component.copied).not.toHaveBeenCalled();
+    expect(toast).not.toHaveBeenCalled();
+  });
+
+  it('copies into the season the copy window chose', () => {
+    const { component } = open({ copy: true, season: { guid: 'season-2026', year: 2026 }, identities: ['a'] });
+
+    component.promptCopyModal('Sponsor');
+
+    expect(component.copied).toHaveBeenCalledWith('season-2026', ['a']);
+  });
+
+  it('deletes nothing for a row with no guid', () => {
+    const { component } = open({});
+
+    component.deleteEntity({});
+
+    expect(component.deleted).not.toHaveBeenCalled();
+  });
+
+  it('selects only the rows that have a guid', async () => {
+    const { component } = open({});
+
+    component.toggleAllRows([{ guid: 'a' }, {}, { guid: 'b' }]);
+
+    await expect(firstValueFrom(component.selectedRows$)).resolves.toEqual(['a', 'b']);
+  });
+});

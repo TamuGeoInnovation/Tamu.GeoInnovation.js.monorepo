@@ -2,9 +2,12 @@
   <div class="feature-style-1" tabindex="0" [title]="title">{{ title }}</div>
 </div>
 
+@if (description) {
 <div class="popup-section">
-  @if (isContentLengthZero === false) {
-  <p class="trailer-1" [innerHTML]="$safeNavigationMigration(data.attributes?.description)"></p>
-  }
-  <div class="button" (tamuGiscActivate)="startDirections()">Directions To Here</div>
+  <p class="trailer-1" [innerHTML]="description"></p>
+</div>
+}
+
+<div class="popup-section">
+  <tamu-gisc-popup-footer [shareUrl]="shareUrl" (startDirections)="startDirections()"></tamu-gisc-popup-footer>
 </div>

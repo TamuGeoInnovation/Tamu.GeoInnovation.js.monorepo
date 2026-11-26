@@ -1,4 +1,13 @@
-import { Component, forwardRef, ChangeDetectionStrategy, input, model, output } from '@angular/core';
+import {
+  Component,
+  forwardRef,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  inject,
+  input,
+  model,
+  output
+} from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
@@ -17,7 +26,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 export class FileComponent implements ControlValueAccessor {
   // A model rather than an input: the component sets it itself, from the user and the forms API.
   // eslint-disable-next-line @angular-eslint/no-input-rename
-  protected readonly _value = model<File | boolean>(null, { alias: 'value' });
+  protected readonly _value = model<File | boolean | null>(null, { alias: 'value' });
 
   /**
    * File formats to accept. Default is all.
@@ -31,27 +40,31 @@ export class FileComponent implements ControlValueAccessor {
    */
   public readonly clearMessage = input('Clear');
 
-  public readonly fileSelected = output<File>();
+  // undefined on reset (#3495).
+  public readonly fileSelected = output<File | undefined>();
 
-  public fileName: string;
+  public fileName: string | undefined;
 
-  public dataType: string;
+  public dataType: string | undefined;
 
-  public fileExtension: string;
+  public fileExtension: string | undefined;
+
+  private readonly _changes = inject(ChangeDetectorRef);
 
   public get checked() {
     return this._value();
   }
 
-  public set value(c) {
+  public set value(c: File | boolean | null) {
     this._value.set(c);
     this._onChange(c);
     this._onTouch();
   }
 
-  public handleFileChange(event) {
+  // The change event of the template's file input, or anything shaped like it (#3633).
+  public handleFileChange(event: { target: { files: ArrayLike<File> | null; value: string } }) {
     if (event.target.files && event.target.files.length) {
-      const [file]: [File] = event.target.files;
+      const file = event.target.files[0];
 
       // Pull the name for the file
       this.fileName = file.name;
@@ -60,7 +73,7 @@ export class FileComponent implements ControlValueAccessor {
       this.dataType = file.type;
 
       // Pull the file extension from the file.
-      this.fileExtension = file.name.split('.').length > 0 ? file.name.split('.').pop().toLowerCase() : 'unkown';
+      this.fileExtension = file.name.split('.').pop()?.toLowerCase() ?? 'unkown';
 
       this.value = file;
 
@@ -71,18 +84,18 @@ export class FileComponent implements ControlValueAccessor {
     }
   }
 
-  private _onChange = (v) => {
+  private _onChange: (value: File | boolean | null) => void = (v) => {
     return v;
   };
   private _onTouch = () => {
     return;
   };
 
-  public registerOnChange(fn) {
+  public registerOnChange(fn: (value: File | boolean | null) => void) {
     this._onChange = fn;
   }
 
-  public registerOnTouched(fn) {
+  public registerOnTouched(fn: () => void) {
     this._onTouch = fn;
   }
 
@@ -90,7 +103,7 @@ export class FileComponent implements ControlValueAccessor {
    * Takes a value from the form without reporting it back as a change or a touch: a form loaded with a record would
    * otherwise count as changed the moment it opened (#2964).
    */
-  public writeValue(val) {
+  public writeValue(val: File | boolean | null) {
     this._value.set(val);
   }
 
@@ -109,5 +122,9 @@ export class FileComponent implements ControlValueAccessor {
     this.dataType = undefined;
     this.fileExtension = undefined;
     this.fileSelected.emit(undefined);
+
+    // The template reads the plain fields above, not the value signal, so under zoneless (#1478) a reset called from an
+    // upload's response or a timer would leave the old name on screen. A reset from a click is redrawn either way.
+    this._changes.markForCheck();
   }
 }

@@ -22,7 +22,7 @@
 set -euo pipefail
 
 KNIP_VERSION=6.42.0
-NODE_IMAGE=node:24.22.1
+NODE_IMAGE=node:24.22.3
 VOLUME=tamu-js-tables
 
 ref="${1:-origin/development}"

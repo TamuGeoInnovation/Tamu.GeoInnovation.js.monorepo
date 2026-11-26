@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
-import { takeUntil, switchMap, pluck } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 
 import { Angulartics2 } from 'angulartics2';
 
@@ -28,11 +28,7 @@ export class TripPlannerDirectionsComponent implements OnInit, OnDestroy {
 
   public ngOnInit() {
     // Subscribe to travel mode state in trip planner and fetch trip result for mode.
-    this.plannerService.TravelOptions.pipe(
-      pluck('travel_mode'),
-      switchMap(() => this.plannerService.getTripResultForTravelMode()),
-      takeUntil(this._destroy$)
-    ).subscribe((res) => {
+    this.plannerService.currentResult$.pipe(takeUntil(this._destroy$)).subscribe((res) => {
       this.result.set(res);
     });
   }

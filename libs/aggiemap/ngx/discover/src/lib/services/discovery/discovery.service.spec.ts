@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { EventConfiguration } from '@tamu-gisc/ts/events/ngx';
 
 import { InternalDiscoverApplication } from '../../interfaces/discover-application.interface';
-import { DiscoveryService } from './discovery.service';
+import { DiscoveryService, isListed } from './discovery.service';
 
 describe('DiscoveryService', () => {
   let service: DiscoveryService;
@@ -55,6 +55,40 @@ describe('DiscoveryService', () => {
     const constructionMap = applications.find((app) => app.id === 'construction-map');
 
     expect(constructionMap?.mapTypes).toEqual(['operations']);
+  });
+
+  // The one rule every listing page shares, in place of the four hand-written copies (#3470). The copies were not
+  // all the same, which is the point: the Parking & Transportation page took the production-only list and so hid a
+  // development-only map on development too.
+  describe('the one listing rule', () => {
+    it('lists a map with no visible field on either environment', () => {
+      expect(isListed({}, false)).toBe(true);
+      expect(isListed({}, true)).toBe(true);
+    });
+
+    it('lists a visible map on either environment', () => {
+      expect(isListed({ visible: true }, false)).toBe(true);
+      expect(isListed({ visible: true }, true)).toBe(true);
+    });
+
+    it('lists a development-only map only where development features are on', () => {
+      expect(isListed({ visible: false }, true)).toBe(true);
+      expect(isListed({ visible: false }, false)).toBe(false);
+    });
+
+    it('gives a development-only map to a listing on development and withholds it on production', () => {
+      const onDevelopment = service.listedApplications(true).map((app) => app.id);
+      const onProduction = service.listedApplications(false).map((app) => app.id);
+
+      expect(onDevelopment).toContain('ncaa-volleyball');
+      expect(onProduction).not.toContain('ncaa-volleyball');
+    });
+
+    it('is the same rule the production-only list uses, so the two cannot drift', () => {
+      expect(service.getVisibleInternalDiscoverApplications().map((app) => app.id)).toEqual(
+        service.listedApplications(false).map((app) => app.id)
+      );
+    });
   });
 
   it('treats visible maps as public by default', () => {

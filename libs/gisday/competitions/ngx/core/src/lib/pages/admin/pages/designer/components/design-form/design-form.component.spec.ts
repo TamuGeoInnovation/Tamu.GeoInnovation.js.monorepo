@@ -221,3 +221,54 @@ describe('DesignFormComponent, what Fetch Schema and Save say', () => {
     );
   });
 });
+
+/**
+ * #3614. Two seasons the designer could not handle: one whose question was saved without its options, which threw while
+ * opening and left the designer empty, and one with no form yet, which threw on Save and saved nothing.
+ */
+describe('DesignFormComponent, a season it used to throw on', () => {
+  let updateForm: Mock;
+  let createFormModelForActiveSeason: Mock;
+
+  const open = (season: Record<string, unknown>) => {
+    TestBed.overrideProvider(FormService, {
+      useValue: { getFormForActiveSeason: () => of(season), updateForm, createFormModelForActiveSeason }
+    });
+
+    const component = TestBed.createComponent(DesignFormComponent).componentInstance;
+    component.ngOnInit();
+
+    return component;
+  };
+
+  beforeEach(async () => {
+    updateForm = vi.fn(() => of({}));
+    createFormModelForActiveSeason = vi.fn(() => of({}));
+
+    await TestBed.configureTestingModule({
+      imports: [DesignFormComponent],
+      providers: [
+        { provide: FormService, useValue: {} },
+        { provide: HttpClient, useValue: { get: vi.fn() } },
+        { provide: NotificationService, useValue: { toast: vi.fn() } }
+      ]
+    })
+      .overrideComponent(DesignFormComponent, { set: { template: '' } })
+      .compileComponents();
+  });
+
+  it('opens a question saved without its options, with none', () => {
+    const component = open({ allowSubmissions: true, form: { guid: 'f-1', source: '', model: [{ attribute: 'kind' }] } });
+
+    expect(component.formModel().getRawValue().fields).toEqual([{ attribute: 'kind', options: [] }]);
+  });
+
+  it('makes the form of a season that has none yet, on Save', () => {
+    const component = open({ allowSubmissions: true, form: null });
+
+    component.saveForm();
+
+    expect(updateForm).not.toHaveBeenCalled();
+    expect(createFormModelForActiveSeason).toHaveBeenCalledTimes(1);
+  });
+});
