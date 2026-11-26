@@ -7,7 +7,6 @@
         "Bike Registration": "#2612: not a fault - Type = 'Bike' finds the service's two bike registration points, but neither is in Northside, so the Northside choice's area filter empties the layer"
       }
     },
-    "allowedBuildBannerPlaceholders": "#1306: tokenSubstitute.sh runs only in the Dockerfile, and this environment is served by IIS",
     "gtag": "G-71VY0QZS5P",
     "healthLabel": "dev-health",
     "directionsAvailable": true,
