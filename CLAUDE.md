@@ -722,6 +722,17 @@ with what it waits on, not handed over to be tried. On 24 November 2026 a sessio
 commands for kubernetes-config PRs 167 and 168 three times over the evening, carried forward from a reading
 taken before he merged them at 3:51 PM, and he had to say they were already merged.
 
+**Every merge command carries `--delete-branch`:** `gh pr merge <n> -R <owner>/<repo> --squash --delete-branch`.
+Our pull requests come from the fork, and GitHub's "automatically delete head branches" only deletes
+branches in the repository merged into, so without the flag nothing ever removes a merged branch. On
+26 November 2026 the maintainer's fork held 625 branches, 593 of them finished; they were deleted and the
+unmerged ones recorded on #3705 (#3706).
+
+**One branch per pull request, so no `-pr` copies.** To keep a drafted `.pr-body.md` out of
+`development`, remove it in a commit on the same branch (`git rm .pr-body.md`) and open the pull request
+from that branch. Copying the branch to `<branch>-pr` and opening from the copy left the original behind:
+97 of the 593 above (#3706).
+
 **Only the issue being fixed may follow a closing keyword.** GitHub treats `close`, `closes`, `fix`,
 `fixes`, `resolve` and `resolves` followed by `#N` *anywhere* in the body as "close #N on merge", so a
 sentence like "the next smoke run should close #1096" would close #1096 too. Reword such sentences,
