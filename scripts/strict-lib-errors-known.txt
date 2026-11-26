@@ -30,3 +30,5 @@
 # common-ngx-ui-notification went strict with #3620, with none in its own files: all 4 are in ui-kits-ngx-layout-modal.
 4 libs/common/ngx/ui/notification/tsconfig.lib.json
 8 libs/gisday/competitions/ngx/data-access/tsconfig.lib.json
+
+9 libs/common/utils/geometry/generic/tsconfig.lib.json
