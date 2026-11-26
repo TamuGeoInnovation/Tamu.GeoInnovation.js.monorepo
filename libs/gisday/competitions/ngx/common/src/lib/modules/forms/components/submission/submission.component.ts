@@ -39,18 +39,22 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
-  public readonly formModel = input<Partial<CompetitionSeason>>(undefined);
+  public readonly formModel = input<Partial<CompetitionSeason> | undefined>(undefined);
 
   public form: UntypedFormGroup;
 
-  public file: BehaviorSubject<File> = new BehaviorSubject(undefined);
-  public file2: BehaviorSubject<File> = new BehaviorSubject(undefined);
+  public file: BehaviorSubject<File | undefined> = new BehaviorSubject<File | undefined>(undefined);
+  public file2: BehaviorSubject<File | undefined> = new BehaviorSubject<File | undefined>(undefined);
 
-  public fileUrl: Observable<string> = this.file.pipe(map((f) => (f !== undefined ? URL.createObjectURL(f) : undefined)));
+  public fileUrl: Observable<string | undefined> = this.file.pipe(
+    map((f) => (f !== undefined ? URL.createObjectURL(f) : undefined))
+  );
 
-  public fileUrl2: Observable<string> = this.file2.pipe(map((f) => (f !== undefined ? URL.createObjectURL(f) : undefined)));
+  public fileUrl2: Observable<string | undefined> = this.file2.pipe(
+    map((f) => (f !== undefined ? URL.createObjectURL(f) : undefined))
+  );
 
-  public readonly location = signal<GeolocationPosition>(undefined);
+  public readonly location = signal<GeolocationPosition | undefined>(undefined);
 
   /**
    * Whether the form has the phone's location yet (#1784): still finding it, finding it slowly (after
@@ -68,15 +72,15 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
   public submissionProgress: BehaviorSubject<number> = new BehaviorSubject(0);
   public submissionStatus: BehaviorSubject<number> = new BehaviorSubject(0);
 
-  private _destroy$: Subject<boolean> = new Subject();
-  private _trackLocation: TrackLocation;
+  private _destroy$: Subject<void> = new Subject();
+  private _trackLocation: TrackLocation | undefined;
 
   /**
    * This submission's id, made on the first Submit and kept for every automatic retry and Try Again,
    * so a submission whose answer was lost and is sent again is saved once (#1786). Undefined on a
    * browser that cannot make one; the server then makes its own.
    */
-  private _submissionGuid: string;
+  private _submissionGuid: string | undefined;
 
   public ngOnInit(): void {
     // A browser remembers for each site whether it may use the location, so check before asking: a
@@ -132,7 +136,7 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
 
   public ngOnDestroy() {
     this._trackLocation?.dispose();
-    this._destroy$.next(undefined);
+    this._destroy$.next();
     this._destroy$.complete();
   }
 
@@ -224,8 +228,20 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     const formModel = this.formModel();
+    // What the upload needs (#3610): the position, which the check above has made sure of; the photograph, which the
+    // Submit button already waits for, though the form's own submit did not; and the season the form is for.
+    const position = this.location();
+    const photo = this.file.getValue();
+    const season = formModel?.season;
 
-    if (!this.form?.valid || this.submissionStatus.getValue() === 1 || formModel?.allowSubmissions !== true) {
+    if (
+      !this.form?.valid ||
+      this.submissionStatus.getValue() === 1 ||
+      formModel?.allowSubmissions !== true ||
+      position === undefined ||
+      photo === undefined ||
+      !season
+    ) {
       return undefined;
     }
 
@@ -235,7 +251,7 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
 
     this._submissionGuid ??= globalThis.crypto?.randomUUID?.();
 
-    return combineLatest([this.file.pipe(take(1)), this.file2.pipe(take(1))])
+    return combineLatest([of(photo), this.file2.pipe(take(1))])
       .pipe(
         // Shrink the photographs on the phone before upload (#1786); a photograph that cannot be shrunk
         // is sent as it is.
@@ -247,13 +263,13 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
           const data: FormData = new FormData();
 
           const location = {
-            latitude: this.location().coords.latitude,
-            longitude: this.location().coords.longitude,
-            accuracy: this.location().coords.accuracy,
-            altitude: this.location().coords.altitude,
-            altitudeAccuracy: this.location().coords.altitudeAccuracy,
-            heading: this.location().coords.heading,
-            speed: this.location().coords.speed
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            accuracy: position.coords.accuracy,
+            altitude: position.coords.altitude,
+            altitudeAccuracy: position.coords.altitudeAccuracy,
+            heading: position.coords.heading,
+            speed: position.coords.speed
           };
 
           const value = this.form.getRawValue().fields.reduce((acc, curr) => {
@@ -265,7 +281,7 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
           // Who is submitting comes from the sign-in the request carries, not from the form (#1780).
           data.append('location', JSON.stringify(location));
           data.append('value', JSON.stringify(value));
-          data.append('season', formModel.season.guid);
+          data.append('season', season.guid);
           if (this._submissionGuid !== undefined) {
             data.append('guid', this._submissionGuid);
           }

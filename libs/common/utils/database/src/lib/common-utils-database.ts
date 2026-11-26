@@ -21,8 +21,9 @@ export function makeWhere(
   keys: string[],
   values: string[],
   operators: (string | CompoundOperator)[],
-  wildcards?: string[],
-  transformations?: string[]
+  // An entry may be `null` for none, as the arrays this fills in itself are (#3495).
+  wildcards?: Array<string | null>,
+  transformations?: Array<string | null>
 ): string {
   // Wildcards container. This will either be generated in-function or be provided from the callee
   let wc;
@@ -122,7 +123,8 @@ export function makeWhere(
       const transformedKey = getKeyTransformation(ts[i], k);
       const operator = getOperator(currentOperator, 'comparison');
       const value =
-        typeof values[i] === 'string' ? getValueDeclaration(wc[i], values[i], /\bLIKE\b/i.test(operator)) : values[i];
+        // A compound operator's `comparison` is optional; without one this is no LIKE.
+        typeof values[i] === 'string' ? getValueDeclaration(wc[i], values[i], /\bLIKE\b/i.test(operator ?? '')) : values[i];
 
       str += `${transformedKey} ${operator} ${value}`;
     });
