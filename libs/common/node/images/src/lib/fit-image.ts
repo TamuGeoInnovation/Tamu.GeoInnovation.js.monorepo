@@ -98,7 +98,9 @@ export async function fitImage(input: Buffer, options: FitImageOptions): Promise
   const candidates: Array<{ mime: string; data: Buffer }> = [];
 
   if (opaque) {
-    candidates.push({ mime: 'image/jpeg', data: await image.getBuffer('image/jpeg', { quality }) });
+    // Full-resolution colour (4:4:4), as jimp 1 wrote. jimp 2 halves it below quality 90 by default (4:2:0), and re-encoding
+    // its own output then saves more than a tenth, so every run would compress a stored photo again (#3755).
+    candidates.push({ mime: 'image/jpeg', data: await image.getBuffer('image/jpeg', { quality, chromaSubsampling: '4:4:4' }) });
   }
 
   if (mime === 'image/png' || !opaque) {

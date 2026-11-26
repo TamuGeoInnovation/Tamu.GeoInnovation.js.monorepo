@@ -122,7 +122,7 @@ commits behind, retired rather than merged.
 
 | | From | To | Note |
 | --- | --- | --- | --- |
-| `@jimp/*` (4 packages) | 1.6.1 | 2.2.0 | **Done** ([#3755](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3755)), under the seven-day exception of [#3763](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3763). Output compared in [`docs/screenshots/jimp-2/`](../screenshots/jimp-2/README.md): JPEGs smaller and softer in colour, transparent PNGs larger |
+| `@jimp/*` (4 packages) | 1.6.1 | 2.2.0 | **Done** ([#3755](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3755)), under the seven-day exception of [#3763](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3763). Output compared in [`docs/screenshots/jimp-2/`](../screenshots/jimp-2/README.md): JPEGs nearly the same, kept at full-resolution colour; transparent PNGs larger |
 | `@analogjs/vite-plugin-angular`, `@analogjs/vitest-angular` | 2.9.2 | 3.0.0 | The Angular/vitest bridge: coupled to both, so take it after step 2 |
 
 ### 7. Everything else — 30 minors and patches
