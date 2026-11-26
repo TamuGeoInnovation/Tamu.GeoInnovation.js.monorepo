@@ -18,7 +18,7 @@ amCharts, on first use, so a page with no chart does not carry it. Tests provide
 because amCharts draws on a canvas, which a test's DOM does not have.
 
 **The amCharts logo stays.** amCharts is used under its free linkware licence, which requires the small amCharts link
-on every chart. It is also the version `@arcgis/core` depends on (`~5.18.0`), so the two move together. Dependabot is told to leave it alone for that reason (#3288): move it by
+on every chart. It is also the version `@arcgis/core` depends on (`~5.20.8` for 5.2.9), so the two move together. Dependabot is told to leave it alone for that reason (#3288): move it by
 hand, with an `@arcgis/core` upgrade that changes the version it depends on.
 
 The first version (#2878) drew SVG by hand. It scaled with the page, so its text and markers grew to several times the
