@@ -105,7 +105,19 @@ export class CompetitionSessionComponent {
 
   public readonly session = computed(() => sessionOfKind(this.sessions(), this.kind(), this.season(), this.competition()));
 
-  public readonly day = computed(() => (this.session() ? sessionDay(this.session(), 'long') : ''));
-  public readonly time = computed(() => (this.session() ? sessionHours(this.session()) : ''));
-  public readonly place = computed(() => (this.session() ? sessionPlace(this.session()) : ''));
+  public readonly day = computed(() => {
+    const session = this.session();
+
+    return session ? sessionDay(session, 'long') : '';
+  });
+  public readonly time = computed(() => {
+    const session = this.session();
+
+    return session ? sessionHours(session) : '';
+  });
+  public readonly place = computed(() => {
+    const session = this.session();
+
+    return session ? sessionPlace(session) : '';
+  });
 }

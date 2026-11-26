@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, ChangeDetectionStrategy, inject, input, signal } from '@angular/core';
+import { Component, OnInit, inject, input, signal } from '@angular/core';
 import { Observable, catchError, filter, mapTo, of, shareReplay, startWith, switchMap, tap } from 'rxjs';
 
 import { AssetsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -9,14 +9,14 @@ import { AsyncPipe } from '@angular/common';
   selector: 'tamu-gisc-speaker-avatar',
   templateUrl: './speaker-avatar.component.html',
   styleUrls: ['./speaker-avatar.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [AsyncPipe]
 })
 export class SpeakerAvatarComponent implements OnInit {
   private readonly http = inject(HttpClient);
   private readonly as = inject(AssetsService);
 
-  public readonly avatarImageUrl = input<string>(undefined);
+  /** The photo's asset path, or nothing for a speaker without one. */
+  public readonly avatarImageUrl = input<string | null>();
 
   /**
    * If the avatar photo is not available, this will determine whether to display the avatar's initials or a default icon.
@@ -38,7 +38,7 @@ export class SpeakerAvatarComponent implements OnInit {
    *
    * If both are set, `avatarNames` will take precedence.
    */
-  public readonly avatarNames = input<string>(undefined);
+  public readonly avatarNames = input<string>();
 
   /**
    * The initials to display when `fallbackStyle` is set to `initials`.
@@ -47,7 +47,7 @@ export class SpeakerAvatarComponent implements OnInit {
    *
    * If both are set, `avatarNames` will take precedence.
    */
-  public readonly avatarInitials = input<string>(undefined);
+  public readonly avatarInitials = input<string>();
 
   /**
    * The avatar's image URL, based on the avatars's GUID. This endpoint simply returns the relative path to the image.
@@ -68,9 +68,7 @@ export class SpeakerAvatarComponent implements OnInit {
 
   public ngOnInit(): void {
     this.avatarImageUrl$ = of(this.avatarImageUrl()).pipe(
-      filter((guid) => {
-        return guid !== undefined && guid !== null;
-      }),
+      filter((guid): guid is string => guid !== undefined && guid !== null),
       switchMap((guid) => {
         return this.as.getAssetUrl(guid);
       })

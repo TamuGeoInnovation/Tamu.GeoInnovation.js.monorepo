@@ -43,12 +43,14 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
   public entitiesForActiveSeasonOrForSeasonGuid$: Observable<Array<Partial<T>>>;
   public $signal: Subject<boolean> = new Subject();
 
-  public selectedSeason$: Observable<Partial<Season>>;
+  /** Null on a site with no season yet (#2076). */
+  public selectedSeason$: Observable<Partial<Season> | null>;
   /** The selected season's records before the page's filters and search, for a filter that offers what they hold (#434). */
   protected listed$: Observable<Array<Partial<T>>>;
   public selectedRows$: Observable<Array<string>>;
 
-  private _selectRow$: Subject<string | Array<string>> = new Subject();
+  /** A row's guid to toggle, every row's to select or clear all, or null to clear the selection. */
+  private _selectRow$: Subject<string | Array<string> | null> = new Subject();
 
   /**
    * The page's search (#2914). A page that wants one names the text of each row to search, the columns it displays,
@@ -146,7 +148,7 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
     // A conditional, not iif: iif builds both branches at once, so with no season (a new site) it read
     // season.guid on null and the list was blank (#2076).
     this.listed$ = this.selectedSeason$.pipe(
-      switchMap((season) => this.listForSeason(season ? season.guid : null)),
+      switchMap((season) => this.listForSeason(season?.guid ?? null)),
       shareReplay()
     );
     const filters = Object.values(this.listFilters()).map((control) => control.valueChanges.pipe(startWith(control.value)));
@@ -174,7 +176,7 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
     this.search.valueChanges.pipe(takeUntilDestroyed(this.listDestroyRef)).subscribe(() => this._selectRow$.next(null));
 
     this.selectedRows$ = this._selectRow$.pipe(
-      scan((acc, guidOrList) => {
+      scan((acc: Array<string>, guidOrList) => {
         // Clearing mechanism for whenever the entity list changes, reset selected rows
         if (guidOrList === null) {
           return [];
@@ -214,6 +216,11 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
   }
 
   public deleteEntity(entity: Partial<T>) {
+    // A row not yet saved has no guid, and nothing on the server to delete.
+    if (entity.guid === undefined) {
+      return;
+    }
+
     this.entityService.deleteEntity(entity.guid).subscribe(() => {
       this.$signal.next(true);
     });
@@ -224,7 +231,7 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
   }
 
   public toggleAllRows(events: Array<Partial<T>>) {
-    this._selectRow$.next(events.map((event) => event.guid));
+    this._selectRow$.next(events.map((event) => event.guid).filter((guid): guid is string => guid !== undefined));
   }
 
   /**
@@ -251,19 +258,23 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
       )
       .subscribe({
         next: (result: CopyEntityModalResponse<string>) => {
-          if (result?.copy) {
-            const normalizedEntityName = this._pluralizeEntityName(singularEntityName, result.identities, pluralEntityName);
+          const seasonGuid = result?.season?.guid;
+          const identities = result?.identities;
 
-            this.entityService.copyEntitiesIntoSeason(result?.season?.guid, result.identities).subscribe(() => {
+          // A site with no season yet has none to copy into (#2076).
+          if (result?.copy && seasonGuid && identities) {
+            const normalizedEntityName = this._pluralizeEntityName(singularEntityName, identities, pluralEntityName);
+
+            this.entityService.copyEntitiesIntoSeason(seasonGuid, identities).subscribe(() => {
               this.notificationService.toast({
-                message: `${result.identities.length} ${normalizedEntityName.toLowerCase()} copied into season ${
+                message: `${identities.length} ${normalizedEntityName.toLowerCase()} copied into season ${
                   result.season?.year
                 }`,
                 id: 'entity-copy-success',
                 title: `${normalizedEntityName} Copied`
               });
 
-              this.$signal.next(null);
+              this.$signal.next(true);
             });
           } else {
             console.log('Copy canceled');
@@ -307,7 +318,7 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
                   title: `${normalizedEntityName} Deleted`
                 });
 
-                this.$signal.next(null);
+                this.$signal.next(true);
               },
               // A refused delete said nothing, so the rows simply stayed (#2992).
               error: (err) => {

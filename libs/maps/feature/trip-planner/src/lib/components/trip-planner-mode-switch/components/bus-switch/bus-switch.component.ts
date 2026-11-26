@@ -1,10 +1,10 @@
-import { Component, OnInit, OnDestroy, inject, input } from '@angular/core';
+import { Component, OnInit, OnDestroy, input } from '@angular/core';
 import { Subject } from 'rxjs';
 
 import { timeStringForDate } from '@tamu-gisc/common/utils/date';
 
 import { TripModeSwitch } from '../../../../services/trip-planner.service';
-import { BusStop, TimetableRow, BusService } from '../../../../services/transportation/bus/bus.service';
+import { BusStop, TimetableRow } from '../../../../services/transportation/bus/bus.service';
 import { NgClass } from '@angular/common';
 
 import { AccordionComponent } from '@tamu-gisc/ui-kits/ngx/layout';
@@ -17,8 +17,6 @@ import { AccordionContentComponent } from '@tamu-gisc/ui-kits/ngx/layout';
   imports: [NgClass, AccordionComponent, AccordionContentComponent]
 })
 export class TripPlannerBusModeSwitchComponent implements OnInit, OnDestroy {
-  private busService = inject(BusService);
-
   public readonly switch = input<TripModeSwitch>(undefined);
 
   private $destroy: Subject<boolean> = new Subject();
@@ -29,8 +27,6 @@ export class TripPlannerBusModeSwitchComponent implements OnInit, OnDestroy {
   public routeNumber?: string = null;
   public timetable: TimetableRow[] = [];
   public lingerMinutes?: number = null;
-  public passengerLoad?: number = null;
-  public busCount?: number = null;
   public now: TimetableRow;
 
   public timeTableExpanded = false;
@@ -54,21 +50,6 @@ export class TripPlannerBusModeSwitchComponent implements OnInit, OnDestroy {
       } else {
         this.stopCount = this.now.last - this.now.first - 1;
       }
-
-      // TODO: Keep or remove.
-      // This determines the bus load/capacity
-      //
-      // this.busService.busesForRoute(this.routeNumber).subscribe((buses: RouteBus[]) => {
-      //   const total_for_route = buses.reduce(
-      //     (prev, cur) => ({
-      //       current: prev.current + cur.current_passengers,
-      //       total: prev.total + cur.passenger_capacity
-      //     }),
-      //     { current: 0, total: 0 }
-      //   );
-      //   this.passengerLoad = Math.round((total_for_route.current / total_for_route.total) * 100);
-      //   this.busCount = buses.length;
-      // });
     }
   }
 

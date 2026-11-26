@@ -180,78 +180,7 @@ export class ParkingService {
     // Used to evaluate time-dependent expressions.
     const date = parkingOptions.Depart_Time ? parkingOptions.Depart_Time : new Date();
 
-    // Dictionary describing the conditions required for properties being included in an
-    // authorized parking query instead of sending all of the setting properties in a single query.
-    //
-    // The latter condition creates invalid queries. If a user has a parking pass, and has specified one then we
-    // shouldn't be routing them to any lots with visitor spots because why would they? Only attempt to find lots for which
-    // their parking permits allow.
-    //
-    // In any query, any one parking lot must satisfy at least one of the expressions. In the above case, two required expressions would be:
-    // 1) A parking lot must match a FAC_Code (User has lot 55 permit. This will ensure at least one lot will always be returned in the query.)
-    // 2) Parking lots that are marked as not having visitor parking (To avoid selecting lots with visitor parking);
-    //
-    // The second expression matches **ALL** lots that require a parking permit, because they have to be restricted to only people with permits
-    // for those lots. This however implies that any parking permit is valid in any of the parking lots, which is not true. Lot 55 permit does not grant
-    // parking in lot 15.
-    const includedParkingOptions = [
-      {
-        searchSource: 'all-parking',
-        sqlColumns: ['GIS.TS.ParkingLots.FAC_CODE'],
-        include: parkingOptions.Use_Permit === true,
-        values: [parkingOptions.Permit],
-        operators: ['=']
-      },
-      {
-        searchSource: 'visitor-parking',
-        sqlColumns: ['TS_GIS.dbo.LOTS.Visitor_Lot'],
-        include: parkingOptions.Use_Permit === false,
-        values: parkingOptions.Use_Permit && parkingOptions.Permit !== undefined ? [1] : [0],
-        operators: ['=']
-      },
-      {
-        searchSource: 'night-parking',
-        sqlColumns: ['Night_Lot'],
-        include:
-          parkingOptions.Permit !== undefined &&
-          parkingOptions.Use_Permit &&
-          ((date.getHours() >= 17 && date.getHours() <= 23) || (date.getHours() >= 0 && date.getHours() <= 4)),
-        values: parkingOptions.Use_Permit && parkingOptions.Permit !== undefined ? [1] : [0],
-        operators: ['=']
-      },
-      {
-        sqlColumns: ['TS_GIS.dbo.LOTS.UB_Lot'],
-        // This is not supported at the moment but will be in the future. Never include it in the search queries.
-        include: false,
-        values: parkingOptions.UB > 0 ? [1] : [0],
-        operators: ['=']
-      },
-      {
-        sqlColumns: ['GIS.TS.SPC_PNT_CNT.UB'],
-        include: false,
-        // This is not supported at the moment but will be in the future. Never include it in the search queries.
-        values: parkingOptions.UB > 0 ? [1] : [0],
-        operators: parkingOptions.UB > 0 ? ['>='] : ['=']
-      },
-      {
-        sqlColumns: ['GIS.TS.SPC_PNT_CNT.H_C'],
-        // Assume if user has parking permit, they've already pre-determined whether that permit suits their needs.
-        // This will remain the case until the search service is updated to allow more flexibility in composing SQL queries.
-        include: false,
-        // include: parkingOptions.H_C > 0 && parkingOptions.Use_Permit && parkingOptions.Permit !== undefined,
-        values: parkingOptions.H_C > 0 ? [1] : [0],
-        operators: parkingOptions.H_C > 0 ? ['>='] : ['=']
-      },
-      {
-        searchSource: 'all-parking',
-        sqlColumns: ['GIS.TS.SPC_PNT_CNT.Visitor_H_C'],
-        include: parkingOptions.Visitor_H_C > 0 && parkingOptions.Use_Permit === false,
-        values: parkingOptions.H_C > 0 ? [1] : [0],
-        operators: parkingOptions.Visitor_H_C > 0 ? ['>='] : ['=']
-      }
-    ].filter((option) => {
-      return option.include;
-    });
+    const includedParkingOptions = parkingQueries(parkingOptions, date);
 
     const queries = includedParkingOptions.map((incl) => {
       let source = (this.environment.value('SearchSources') as Array<SearchSource>).find(
@@ -360,6 +289,106 @@ export class ParkingService {
  * @export
  * @interface ParkingOptions
  */
+/**
+ * The queries a visitor's parking choices turn into: one per condition that applies, each naming the column it
+ * filters on, the value and the operator (#3605).
+ *
+ * Out here rather than inside `getAuthorizedParkingLocations` so it can be read and asserted on its own. Every
+ * entry reads the option it filters on; the one that did not built a query all 244 lots matched, so a control a
+ * visitor had deliberately set did nothing at all, invisibly.
+ */
+export function parkingQueries(parkingOptions: ParkingOptions, date: Date) {
+  // Dictionary describing the conditions required for properties being included in an
+  // authorized parking query instead of sending all of the setting properties in a single query.
+  //
+  // The latter condition creates invalid queries. If a user has a parking pass, and has specified one then we
+  // shouldn't be routing them to any lots with visitor spots because why would they? Only attempt to find lots for which
+  // their parking permits allow.
+  //
+  // In any query, any one parking lot must satisfy at least one of the expressions. In the above case, two required expressions would be:
+  // 1) A parking lot must match a FAC_Code (User has lot 55 permit. This will ensure at least one lot will always be returned in the query.)
+  // 2) Parking lots that are marked as not having visitor parking (To avoid selecting lots with visitor parking);
+  //
+  // The second expression matches **ALL** lots that require a parking permit, because they have to be restricted to only people with permits
+  // for those lots. This however implies that any parking permit is valid in any of the parking lots, which is not true. Lot 55 permit does not grant
+  // parking in lot 15.
+  return [
+    {
+      searchSource: 'all-parking',
+      sqlColumns: ['GIS.TS.ParkingLots.FAC_CODE'],
+      include: parkingOptions.Use_Permit === true,
+      values: [parkingOptions.Permit],
+      operators: ['=']
+    },
+    {
+      searchSource: 'visitor-parking',
+      // A visitor's lots are the ones the layer's own renderer draws as Visitor Parking:
+      // `GIS.TS.ParkingLots.LotType` ending in `Visitor`, which is 6 `Garage Visitor` and 13 `Surface Visitor`
+      // of the layer's 244 lots. This asked for `TS_GIS.dbo.LOTS.Visitor_Lot` until #1169; that column is gone
+      // from the service and nothing replaced it - the layer carries no `TS_GIS.dbo.LOTS.*` field at all, so the
+      // query could not be repaired by renaming the column.
+      //
+      // The space counts (`GIS.TS.SPC_PNT_CNT.Visitor`) are the other field that could answer, and give 26 lots
+      // rather than 19. The maintainer chose the renderer's rule on 25 November 2026, so that the lots drive
+      // directions offers and the lots the map draws as visitor parking are the same set.
+      //
+      // Two keys with '=' are joined with OR by `makeWhere`, and this is the where clause the `visitor-parking`
+      // search source already declares in `search-sources.ts` - which this service overwrites for every
+      // restriction. Values are upper-cased before comparison; the campus server compares case-insensitively,
+      // measured as 19 lots either way on 25 November 2026.
+      sqlColumns: ['GIS.TS.ParkingLots.LotType', 'GIS.TS.ParkingLots.LotType'],
+      include: parkingOptions.Use_Permit === false,
+      values: ['Garage Visitor', 'Surface Visitor'],
+      operators: ['=', '=']
+    },
+    {
+      searchSource: 'night-parking',
+      sqlColumns: ['Night_Lot'],
+      include:
+        parkingOptions.Permit !== undefined &&
+        parkingOptions.Use_Permit &&
+        ((date.getHours() >= 17 && date.getHours() <= 23) || (date.getHours() >= 0 && date.getHours() <= 4)),
+      values: parkingOptions.Use_Permit && parkingOptions.Permit !== undefined ? [1] : [0],
+      operators: ['=']
+    },
+    {
+      sqlColumns: ['TS_GIS.dbo.LOTS.UB_Lot'],
+      // This is not supported at the moment but will be in the future. Never include it in the search queries.
+      include: false,
+      values: parkingOptions.UB > 0 ? [1] : [0],
+      operators: ['=']
+    },
+    {
+      sqlColumns: ['GIS.TS.SPC_PNT_CNT.UB'],
+      include: false,
+      // This is not supported at the moment but will be in the future. Never include it in the search queries.
+      values: parkingOptions.UB > 0 ? [1] : [0],
+      operators: parkingOptions.UB > 0 ? ['>='] : ['=']
+    },
+    {
+      sqlColumns: ['GIS.TS.SPC_PNT_CNT.H_C'],
+      // Assume if user has parking permit, they've already pre-determined whether that permit suits their needs.
+      // This will remain the case until the search service is updated to allow more flexibility in composing SQL queries.
+      include: false,
+      // include: parkingOptions.H_C > 0 && parkingOptions.Use_Permit && parkingOptions.Permit !== undefined,
+      values: parkingOptions.H_C > 0 ? [1] : [0],
+      operators: parkingOptions.H_C > 0 ? ['>='] : ['=']
+    },
+    {
+      searchSource: 'all-parking',
+      sqlColumns: ['GIS.TS.SPC_PNT_CNT.Visitor_H_C'],
+      include: parkingOptions.Visitor_H_C > 0 && parkingOptions.Use_Permit === false,
+      // Reads the option it filters on. It read `H_C` until #3605, so the query was `Visitor_H_C >= 0`, which all
+      // 244 lots match: the control did nothing, and a visitor who asked for an accessible visitor space was
+      // offered lots with none. Only 18 lots have one.
+      values: parkingOptions.Visitor_H_C > 0 ? [1] : [0],
+      operators: parkingOptions.Visitor_H_C > 0 ? ['>='] : ['=']
+    }
+  ].filter((option) => {
+    return option.include;
+  });
+}
+
 export interface ParkingOptions {
   Use_Permit?: boolean;
   Permit?: string;

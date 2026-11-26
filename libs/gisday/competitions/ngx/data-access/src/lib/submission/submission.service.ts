@@ -80,17 +80,17 @@ export class SubmissionService {
    * The signed-in participant's own submissions (#1791).
    */
   public getMySubmissions(seasonGuid?: string) {
-    const params = seasonGuid ? { seasonGuid } : {};
+    const params: Record<string, string> = seasonGuid ? { seasonGuid } : {};
     return this.http.get<SubmissionReviewDto[]>(`${this.resource}/user/me`, { params });
   }
 
   public getUserSubmissions(userGuid: string, seasonGuid?: string) {
-    const params = seasonGuid ? { seasonGuid } : {};
+    const params: Record<string, string> = seasonGuid ? { seasonGuid } : {};
     return this.http.get<SubmissionReviewDto[]>(`${this.resource}/user/${userGuid}`, { params });
   }
 
   public getAdminSubmissions(seasonGuid?: string) {
-    const params = seasonGuid ? { seasonGuid } : {};
+    const params: Record<string, string> = seasonGuid ? { seasonGuid } : {};
     return this.http.get<SubmissionReviewDto[]>(`${this.resource}/admin`, { params });
   }
 
@@ -99,7 +99,7 @@ export class SubmissionService {
    * partners. The active season unless `seasonGuid` names another.
    */
   public getSeasonExportZip(seasonGuid?: string) {
-    const params = seasonGuid ? { seasonGuid } : {};
+    const params: Record<string, string> = seasonGuid ? { seasonGuid } : {};
 
     return this.http.get(`${this.env.value('api_url')}/competitions/export/zip`, { params, responseType: 'blob' });
   }

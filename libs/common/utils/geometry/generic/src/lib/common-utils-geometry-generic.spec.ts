@@ -4,13 +4,7 @@ import esri = __esri;
 
 import { distanceInMetres } from '@tamu-gisc/common/utils/geometry';
 
-import {
-  findNearestIndex,
-  getGeolocation,
-  isCoordinatePair,
-  parseCoordinates,
-  TrackLocation
-} from './common-utils-geometry-generic';
+import { findNearestIndex, getGeolocation, TrackLocation } from './common-utils-geometry-generic';
 
 describe('getGeolocation', () => {
   const coords = {
@@ -67,20 +61,6 @@ describe('getGeolocation', () => {
     }));
 });
 
-describe('isCoordinatePair', () => {
-  it('should return false for no comma', () => {
-    expect(isCoordinatePair('123456')).toEqual(false);
-  });
-
-  it('should return false for too many commas', () => {
-    expect(isCoordinatePair('1,234,56')).toEqual(false);
-  });
-
-  it('should return true for good input', () => {
-    expect(isCoordinatePair('1234,56')).toEqual(true);
-  });
-});
-
 describe('findNearestIndex', () => {
   const academicBuilding = { latitude: 30.6156, longitude: -96.3409 };
   const kyleField = { latitude: 30.61, longitude: -96.3404 };
@@ -126,12 +106,6 @@ describe('findNearestIndex', () => {
   it('takes the first of two at the same distance, and finds nothing in an empty list', () => {
     expect(findNearestIndex(kyleField, [{ geometry: kyleField }, { geometry: kyleField }])).toBe(0);
     expect(findNearestIndex(kyleField, [])).toBe(-1);
-  });
-});
-
-describe('parseCoordinates', () => {
-  it('should handle valid input', () => {
-    expect(parseCoordinates('1234,56')).toEqual({ latitude: 1234, longitude: 56 });
   });
 });
 

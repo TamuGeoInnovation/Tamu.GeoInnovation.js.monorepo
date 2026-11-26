@@ -115,7 +115,7 @@ export class RubricsComponent {
     effect(() => {
       const season = this.choice.season();
 
-      if (season) {
+      if (season?.guid) {
         this.load(season.guid);
       }
     });
@@ -128,17 +128,17 @@ export class RubricsComponent {
 
   /** Starts the season's rubric for a type from the standard one, to edit from there. */
   public startFromStandard(type: RubricCompetitionType): void {
-    const season = this.choice.season();
+    const seasonGuid = this.choice.season()?.guid;
 
-    if (!season) {
+    if (!seasonGuid) {
       return;
     }
 
     this.judging
-      .createRubric(season.guid, DEFAULT_RUBRICS[type])
+      .createRubric(seasonGuid, DEFAULT_RUBRICS[type])
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: () => this.load(season.guid),
+        next: () => this.load(seasonGuid),
         error: (err) => this.setStatus(type, { problem: serverMessage(err, 'The rubric could not be started.') })
       });
   }

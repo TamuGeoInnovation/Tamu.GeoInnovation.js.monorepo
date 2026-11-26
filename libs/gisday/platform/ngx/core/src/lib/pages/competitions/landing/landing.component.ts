@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 
@@ -9,7 +9,6 @@ import { SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
   selector: 'tamu-gisc-landing',
   templateUrl: './landing.component.html',
   styleUrls: ['./landing.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterLink]
 })
 export class LandingComponent {

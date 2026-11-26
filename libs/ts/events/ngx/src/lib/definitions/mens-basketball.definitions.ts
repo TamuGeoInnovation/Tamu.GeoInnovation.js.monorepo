@@ -6,7 +6,7 @@ import {
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
-import { EventPopups } from '../modules/popups/popups';
+import { athleticsDevelopmentSource } from './common.definitions';
 
 export enum MENS_BASKETBALL_LAYERS {
   GATES = 'mens-basketball-gates',
@@ -47,33 +47,19 @@ export const MensBasketball_ColdLayerSources: LayerSource[] = [
     native: { outFields: ['*'] }
   },
 
-  {
-    type: 'feature',
+  // The same marker feed as the other athletics maps, on both servers, so the shared helper builds these two (#2597).
+  // The gates have no popup, which the helper always gives, so they stay written out above.
+  athleticsDevelopmentSource({
     id: MensBasketball_Definitions.SYMBOLS.id,
     url: MensBasketball_Definitions.SYMBOLS.url,
-    popupComponent: EventPopups.MarkdownPopupComponent,
-    popupData: {
-      name: '{attributes.type}',
-      description: `{attributes.event}`
-    },
-    visible: true,
-    listMode: 'show',
-    native: { outFields: ['*'] }
-  },
+    popupData: { name: '{attributes.type}', description: '{attributes.event}' }
+  }),
 
-  {
-    type: 'feature',
+  athleticsDevelopmentSource({
     id: MensBasketball_Definitions.PARKING.id,
     url: MensBasketball_Definitions.PARKING.url,
-    popupComponent: EventPopups.MarkdownPopupComponent,
-    popupData: {
-      name: '{attributes.name}',
-      description: `{attributes.description}`
-    },
-    visible: true,
-    listMode: 'show',
-    native: { outFields: ['*'] }
-  }
+    popupData: { name: '{attributes.name}', description: '{attributes.description}' }
+  })
 ];
 
 export const MensBasketball_Configuration: EventConfiguration = {

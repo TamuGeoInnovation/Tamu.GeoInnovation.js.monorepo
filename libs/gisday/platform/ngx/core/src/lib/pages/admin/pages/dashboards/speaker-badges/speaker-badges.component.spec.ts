@@ -104,6 +104,14 @@ describe('badgesOf()', () => {
       ['Young', '2026-11-13T17:00:00.000Z', false]
     ]);
   });
+
+  it('leaves out a speaker with no guid, whose badge could never be marked printed (#3627)', () => {
+    expect(badgesOf([...speakers, { firstName: 'No', lastName: 'Guid' }]).map((b) => b.lastName)).toEqual([
+      'Kim',
+      'lee',
+      'Young'
+    ]);
+  });
 });
 
 describe('badgeText()', () => {

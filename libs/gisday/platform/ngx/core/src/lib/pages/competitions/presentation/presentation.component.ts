@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, computed, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 
@@ -21,7 +21,6 @@ import {
   selector: 'tamu-gisc-presentation',
   templateUrl: './presentation.component.html',
   styleUrls: ['./presentation.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterLink, CompetitionSessionComponent]
 })
 export class PresentationComponent {

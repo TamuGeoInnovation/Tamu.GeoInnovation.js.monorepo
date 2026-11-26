@@ -22,7 +22,7 @@ the shared libraries behind them. A change to a shared library can affect severa
 
 ## Where things are written down
 
-Ten places, each with one job.
+Eleven places, each with one job.
 
 | Where | What belongs there |
 | --- | --- |
@@ -32,6 +32,7 @@ Ten places, each with one job.
 | [`docs/build-times.md`](docs/build-times.md) | How long runs and page loads take, so a change meant to speed something up can be shown to have done it: before-and-after comparisons and what they show, and the run files in [`docs/build-times/runs/`](docs/build-times/runs) the scripts write when asked. Measurements, not rules. |
 | [`docs/gisday-local.md`](docs/gisday-local.md) | How to run the whole GIS Day site on one machine with `scripts/gisday-local.sh`: the containers, the settings kept outside the repository, and what works locally and what does not. |
 | [`docs/gisday-migrations.md`](docs/gisday-migrations.md) | How the GIS Day database schema is changed: the migration commands, the process from entity to production, and what has been proven. Read before editing a GIS Day entity, **and before changing any production GIS Day data**: it says where the scripts that do that are kept. |
+| [`docs/parked-code.md`](docs/parked-code.md) | Code deleted because the service it called went away, and that we expect to want again: which `parked/*` tag holds it, why it went, and what has to be true to bring it back. Read before re-writing something that feels like it must have existed once. |
 | [`docs/releases/unreleased.md`](docs/releases/unreleased.md) | Day-to-day state **anyone** picking this up needs: what has merged since the last production release, where it is deployed, what still needs a decision, and work in flight. [`CLAUDE_SETUP.md`](CLAUDE_SETUP.md) sends a new session here first. |
 | The `cloud-mailbox` branch | The cloud session's current batch (`cloud/TASKS.md`) and its reports (`cloud/reports/`). Written by the desktop and cloud sessions; never merged. See [The cloud session](#the-cloud-session). |
 | The `work-mailbox` branch | The work machine's current batch of test runs (`work/TASKS.md`) and its reports (`work/reports/`). Written by the home and work sessions; never merged. See [The work machine](#the-work-machine). |
@@ -156,7 +157,7 @@ full reservation, invisible unless you look for it. Find it by its **volume**, n
 your own - two checks running at once give you two anonymous containers, and guessing kills someone else's run:
 
 ```bash
-docker ps --filter ancestor=node:24.22.1
+docker ps --filter ancestor=node:24.22.3
 docker inspect --format '{{.Name}} | {{range .Mounts}}{{.Name}} {{end}}' <id>   # tamu-js-<issue> names the run
 ```
 
@@ -330,8 +331,8 @@ bind-mounts the source, so edits on Windows reach it, but its `node_modules` liv
 `package-lock.json` changes:
 
 ```bash
-MSYS_NO_PATHCONV=1 docker run --rm -m 16g -v "C:/TAMU/wt-<n>:/w" -v tamu-js-dev-nm:/w/node_modules -w /w node:24.22.1 npm ci --no-audit --no-fund
-MSYS_NO_PATHCONV=1 docker run -d --name aggiemap-dev -m 8g -p 4200:4200 -v "C:/TAMU/wt-<n>:/w" -v tamu-js-dev-nm:/w/node_modules -w /w -e NX_DAEMON=false -e UV_THREADPOOL_SIZE=64 -e NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data node:24.22.1 sh -c "node node_modules/nx/dist/bin/nx.js serve aggiemap-angular --host 0.0.0.0 --port 4200 --poll=2000"
+MSYS_NO_PATHCONV=1 docker run --rm -m 16g -v "C:/TAMU/wt-<n>:/w" -v tamu-js-dev-nm:/w/node_modules -w /w node:24.22.3 npm ci --no-audit --no-fund
+MSYS_NO_PATHCONV=1 docker run -d --name aggiemap-dev -m 8g -p 4200:4200 -v "C:/TAMU/wt-<n>:/w" -v tamu-js-dev-nm:/w/node_modules -w /w -e NX_DAEMON=false -e UV_THREADPOOL_SIZE=64 -e NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data node:24.22.3 sh -c "node node_modules/nx/dist/bin/nx.js serve aggiemap-angular --host 0.0.0.0 --port 4200 --poll=2000"
 ```
 
 **`UV_THREADPOOL_SIZE` and `NX_WORKSPACE_DATA_DIRECTORY` are not optional here.** `--poll=2000` keeps Node's
@@ -352,7 +353,7 @@ problem above and is not. **One volume serves every checkout, so one dev server 
 the next start in all of them.** Clear it and start again, unchanged:
 
 ```bash
-MSYS_NO_PATHCONV=1 docker run --rm -v tamu-js-dev-nm:/nm node:24.22.1 sh -c "rm -rf /nm/.vite /nm/.vite-temp"
+MSYS_NO_PATHCONV=1 docker run --rm -v tamu-js-dev-nm:/nm node:24.22.3 sh -c "rm -rf /nm/.vite /nm/.vite-temp"
 ```
 
 On 3 November the documented command then worked exactly as written, `--poll=2000` included. On 30 October a
@@ -556,6 +557,15 @@ globally-applied widget styles belong in an app's `styles.scss`.
 with a lone "should be created" breaks as soon as the class gains a dependency. The Angular
 generators are configured with `skipTests`.
 
+**Deleting code we expect back parks it, in the same pull request as the deletion.** An annotated `parked/*` tag on the
+last commit that still has it, a row in [`docs/parked-code.md`](docs/parked-code.md), and an issue labelled `parked`
+naming the condition for its return. `scripts/check-parked-code.mjs` fails when those three disagree, so none can go
+stale; `git tag -l "parked/*"` lists them. **Tag before the deletion merges**, while a commit containing the code is
+still on `development` — afterwards, finding the right commit means reading a closed pull request's history, which is
+the situation this avoids. The code stays out of the repository on purpose: code nothing calls cannot stay healthy, and
+the usual reason for parking it is that it calls a retired service, which is a trap for the next reader. What the tag
+preserves is the working out, not code to paste back. See #3704, which parked the bus timetable.
+
 **Every bug gets a test.** Nothing else here requires one, so a bug could be fixed, and every rule
 followed, with nothing to stop it coming back.
 
@@ -623,11 +633,13 @@ by hand and getting the order wrong.
 **Tag the commit each build comes from.** `scripts/tag-build.sh dev` when a build reaches dev,
 `scripts/tag-build.sh prod` when it is promoted, then `git push origin <tag>`. One build serves both
 environments, so the same commit carries both tags. `prod` refuses a commit with no `dev-*` tag,
-which is what makes "we shipped what we tested" a fact rather than an assumption. Tags go to
-`origin`. See #1145.
+which is what makes "we shipped what we tested" a fact rather than an assumption. It also refuses a
+commit that already carries a `prod-*` tag, naming it, so one build is never recorded as two releases
+(#1215). Tags go to `origin`. See #1145.
 
-**Overriding that refusal needs a reason, which goes into the tag:** `--force '<why>'`. The tag then
-says `(FORCED)` in its first line and carries the reason. A forced tag used to be indistinguishable
+**Overriding either refusal needs a reason, which goes into the tag:** `--force '<why>'`, for example a
+deliberate redeploy of a build already on production. The tag then says `(FORCED)` in its first line and
+carries the reason and which check it went past. A forced tag used to be indistinguishable
 from one that passed, so on 22 October the release record said production carried `61161ce1b` when the
 tag was on `36b962a04`, and nothing in the repository contradicted it. `bash scripts/tag-build.test.sh`, from Git Bash, covers this. See #2098.
 
@@ -709,6 +721,17 @@ Never repeat a merge command from an earlier reply without checking again, in th
 with what it waits on, not handed over to be tried. On 24 November 2026 a session gave the maintainer merge
 commands for kubernetes-config PRs 167 and 168 three times over the evening, carried forward from a reading
 taken before he merged them at 3:51 PM, and he had to say they were already merged.
+
+**Every merge command carries `--delete-branch`:** `gh pr merge <n> -R <owner>/<repo> --squash --delete-branch`.
+Our pull requests come from the fork, and GitHub's "automatically delete head branches" only deletes
+branches in the repository merged into, so without the flag nothing ever removes a merged branch. On
+26 November 2026 the maintainer's fork held 625 branches, 593 of them finished; they were deleted and the
+unmerged ones recorded on #3705 (#3706).
+
+**One branch per pull request, so no `-pr` copies.** To keep a drafted `.pr-body.md` out of
+`development`, remove it in a commit on the same branch (`git rm .pr-body.md`) and open the pull request
+from that branch. Copying the branch to `<branch>-pr` and opening from the copy left the original behind:
+97 of the 593 above (#3706).
 
 **Only the issue being fixed may follow a closing keyword.** GitHub treats `close`, `closes`, `fix`,
 `fixes`, `resolve` and `resolves` followed by `#N` *anywhere* in the body as "close #N on merge", so a
@@ -797,6 +820,12 @@ worktrees** the sweep left on the home machine, every one a merged branch, about
 reclaim, all of it held by a file whose job finished the moment the pull request existed (#3432). `tidy.sh`
 now removes a worktree whose *only* change is an untracked `.pr-body.md`, so this is belt and braces rather
 than the only guard - but the file is yours to delete, and the sweep should not have to know about it.
+
+**`tidy.sh` reports the `wt-*` folders git does not list as two kinds, with their total size** (#3678). It
+reads git's worktree list, so a folder whose registration and `.git` are both gone is invisible to `--yes`:
+on 25 November 2026 one machine held three of them, about 2.2 GB, and another seventeen. Such an *orphan* is removed only by
+`bash scripts/tidy.sh --remove-orphans`, which removes nothing else and checks each folder again first. A
+folder with its own `.git` is another repository's worktree or a clone, and nothing here ever removes it.
 
 **Write every capture to `docs/screenshots/<slug>/` as soon as it is taken, not when it is needed.**
 A "before" image stops being obtainable the moment the fix is on disk: recovering one means stashing
@@ -969,3 +998,16 @@ when its task says so, and no other branches or tags. It opens no pull requests 
   touching anything on GitHub. Setting `$env:HOME` does not help, because a Windows path does not reach
   into WSL's filesystem, and it fails the same way elevated or not. On 23 November 2026 this cost three
   attempts and two wrong diagnoses before anyone asked which `bash` was answering (#3273).
+- **A one-line edit showing as a huge diff, a stray CR in an LF file, or a line split where nobody edited
+  it is usually a doubled backslash that arrived single.** A command sent through Claude Code's Bash tool
+  loses one level of backslashes before the shell sees it, quotes and quoted heredocs included. So
+  `tr -d '\\r'` written into a Python step reaches Python as `'\r'` and writes a real carriage return, and
+  `'%s\\n'` becomes a real newline that splits the line. The CR is invisible in `grep`, `sed -n` and the
+  editor. Don't write escapes into shell at all: build the character in a small Python step, with
+  `chr(92)` for a backslash, `chr(13)` for a CR and `os.path.join` for a path, or use the Edit tool, which
+  passes text as written. Then check the bytes before committing: `file <path>` names CRLF, and
+  `git diff --stat` against `git diff --stat --ignore-all-space` disagreeing wildly means endings were
+  rewritten. That comparison misses a single CR inside one argument, so count them too:
+  `grep -c $'\r' <path>` must print 0. Why `.gitattributes` will not catch it is under
+  [Things that are easy to get wrong](#things-that-are-easy-to-get-wrong). Three corrections in one
+  session on 25 November 2026 before it was named (#3651).

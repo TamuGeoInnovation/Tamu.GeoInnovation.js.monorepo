@@ -1,14 +1,4 @@
-import {
-  Component,
-  HostListener,
-  OnChanges,
-  OnInit,
-  SimpleChanges,
-  ChangeDetectionStrategy,
-  inject,
-  input,
-  output
-} from '@angular/core';
+import { Component, HostListener, OnChanges, OnInit, SimpleChanges, inject, input, output } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, ReplaySubject, distinctUntilChanged, map, startWith } from 'rxjs';
 
@@ -22,17 +12,17 @@ import { CentralDatePipe } from '../../../../pipes/central-date/central-date.pip
   selector: 'tamu-gisc-event-row',
   templateUrl: './event-row.component.html',
   styleUrls: ['./event-row.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CheckboxComponent, AsyncPipe, CentralDatePipe, ParseDateTimeStringsPipe]
 })
 export class EventRowComponent implements OnChanges, OnInit {
   private readonly rt = inject(Router);
 
-  public readonly event = input<Partial<SimplifiedEvent>>(undefined);
+  public readonly event = input.required<Partial<SimplifiedEvent>>();
 
-  public readonly day = input<Partial<SeasonDay>>(undefined);
+  public readonly day = input.required<Partial<SeasonDay>>();
 
-  public readonly rsvps = input<Array<string>>(undefined);
+  /** The day's registered event guids, or null until they have arrived (the card passes them through `async`). */
+  public readonly rsvps = input.required<Array<string> | null>();
 
   public readonly canRegister = input<boolean>(true);
 

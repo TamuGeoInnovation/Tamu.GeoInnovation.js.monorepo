@@ -6,7 +6,7 @@ import { Component, TemplateRef, ChangeDetectionStrategy, input, viewChild } fro
   changeDetection: ChangeDetectionStrategy.Eager
 })
 export class AbstractContentReplacerToggleComponent {
-  public readonly label = input<string>(undefined);
+  public readonly label = input<string | undefined>(undefined);
 
   public readonly template = viewChild.required<TemplateRef<unknown>>('template');
 }

@@ -109,6 +109,12 @@ is genuinely incomplete - there is nothing to deploy, rather than a rule saying 
 `js-monorepo-production` come out of one run at one commit. That is why a single commit correctly
 carries both a `dev-` and a `prod-` tag.
 
+**A pull request that changes only documentation skips the build** (#1429): every changed file is under `docs/` or
+ends in `.md`, so `scripts/docs-only-change.sh` says so in Setup, and Dependencies, Lint and Build are skipped. The run
+still finishes green, so the required `Monorepo` check reports, in about a minute instead of 15 to 25. A `pr:` path filter
+is not used because the check would then never report and the pull request could not merge. A hand-queued `development`
+build is never skipped.
+
 To queue one: Pipelines → Monorepo → Run pipeline → branch `development`.
 
 ### Release definition 13, "AggieMap"
@@ -277,6 +283,12 @@ git push origin prod-2026-09-29
 
 **This refuses a commit carrying no `dev-*` tag.** That refusal is the point: it is what makes "we
 shipped what we tested" a fact rather than an assumption.
+
+**It also refuses a commit already tagged `prod-*`**, and names the tag. A release cut and then
+abandoned leaves its dev tag as the day's newest, so `prod` with no sha could resolve to a build already
+on production and record it as a second release
+([#1215](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1215)). If you
+really are redeploying the same build, `--force '<reason>'` records it, as below.
 
 **`--force` takes a reason, and writes it into the tag.** Overriding is sometimes right - on 22
 October the commit promoted carried three GIS Day changes on top of the tested one, and shipping it

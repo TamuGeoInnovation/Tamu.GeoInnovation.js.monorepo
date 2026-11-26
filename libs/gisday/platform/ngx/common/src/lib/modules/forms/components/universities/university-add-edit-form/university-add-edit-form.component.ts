@@ -24,7 +24,7 @@ export class UniversityAddEditFormComponent implements OnInit {
   private readonly us = inject(UniversityService);
   private readonly ss = inject(SeasonService);
 
-  public readonly type = input<'create' | 'edit'>(undefined);
+  public readonly type = input.required<'create' | 'edit'>();
 
   public entity$: Observable<Partial<University>>;
   public form: UntypedFormGroup;
@@ -53,9 +53,10 @@ export class UniversityAddEditFormComponent implements OnInit {
       });
     } else {
       this.ss.activeSeason$.pipe(take(1)).subscribe((season) => {
-        this.form.patchValue({
-          season: season.guid
-        });
+        // With no active season, the form's season is left empty.
+        if (season) {
+          this.form.patchValue({ season: season.guid });
+        }
       });
     }
   }

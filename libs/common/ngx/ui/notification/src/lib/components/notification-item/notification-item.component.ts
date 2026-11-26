@@ -6,6 +6,7 @@ import {
   inject,
   input,
   output,
+  type WritableSignal,
   signal
 } from '@angular/core';
 import { Router } from '@angular/router';
@@ -21,9 +22,10 @@ export class NotificationItemComponent implements OnInit, OnDestroy {
   private router = inject(Router);
 
   // Notification object passed in from the parent component
-  public readonly notification = input<Notification>(undefined);
+  // Required: the container gives every item its notification, and the template reads it throughout (#3620).
+  public readonly notification = input.required<Notification>();
 
-  public readonly position = input<'left' | 'center' | 'right'>(undefined);
+  public readonly position = input<'left' | 'center' | 'right' | undefined>(undefined);
 
   @HostBinding('class')
   private get _classes() {
@@ -54,7 +56,12 @@ export class NotificationItemComponent implements OnInit, OnDestroy {
    *
    * Fn: Stores the spawned notification timing function
    */
-  public timer = {
+  public timer: {
+    step: number;
+    current: WritableSignal<number>;
+    limit: number;
+    fn: ReturnType<typeof setInterval> | undefined;
+  } = {
     step: 50,
     current: signal(0),
     limit: 10000,

@@ -95,6 +95,11 @@ export class AbstractSlidingDrawerComponent implements OnInit {
   private _removeUnits(measurement: string): number {
     const split = measurement.match(/-?\d+/g);
 
+    // A measurement with no number in it threw reading `length` of null; it still throws, saying why (#3601).
+    if (split === null) {
+      throw new Error(`No number in the CSS measurement '${measurement}'.`);
+    }
+
     // Check if result is float or whole number.
     if (split.length > 1) {
       return parseFloat(split.join('.'));
@@ -109,7 +114,14 @@ export class AbstractSlidingDrawerComponent implements OnInit {
    * Example: `-20rem` => `rem`
    */
   private _getUnits(measurement: string): string {
-    const unit = measurement.match(/[a-zA-Z]+/g).join('');
+    const units = measurement.match(/[a-zA-Z]+/g);
+
+    // A measurement with no unit in it threw reading `join` of null; it still throws, saying why (#3601).
+    if (units === null) {
+      throw new Error(`No unit in the CSS measurement '${measurement}'.`);
+    }
+
+    const unit = units.join('');
 
     return unit;
   }

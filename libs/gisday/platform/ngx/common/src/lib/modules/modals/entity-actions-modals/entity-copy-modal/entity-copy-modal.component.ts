@@ -19,7 +19,8 @@ export class EntityCopyModalComponent implements OnInit {
   private readonly modalRef = inject(ModalRefService);
   private readonly ss = inject(SeasonService);
 
-  public season$: Observable<Partial<Season>>;
+  /** The season chosen, else the active one; undefined for a choice not in the list, null with no active season. */
+  public season$: Observable<Partial<Season> | null | undefined>;
   public seasons$ = this.ss.seasons$;
 
   private _selectedSeason$: Subject<string> = new Subject();
@@ -93,6 +94,6 @@ export interface EntityCopyModalData {
 
 export interface CopyEntityModalResponse<T> {
   copy: boolean;
-  season?: Partial<Season>;
+  season?: Partial<Season> | null;
   identities?: Array<T>;
 }

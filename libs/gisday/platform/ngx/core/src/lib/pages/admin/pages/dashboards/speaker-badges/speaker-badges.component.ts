@@ -69,28 +69,33 @@ export function badgeText(
   return [badge.firstName, badge.lastName, badge.organization, badge.formerStudentYear].join('|');
 }
 
-/** Each speaker as a badge, by last name then first. */
+/**
+ * Each speaker as a badge, by last name then first. A speaker with no guid is left out: a badge is marked printed by its
+ * speaker's guid, so one without could never be.
+ */
 export function badgesOf(speakers: Array<Partial<Speaker>>): Array<SpeakerBadge> {
   const text = (value: string | null | undefined) => (value ?? '').trim();
 
   return sortBadges(
-    speakers.map((s) => {
-      const badge = {
-        guid: s.guid,
-        firstName: text(s.firstName),
-        lastName: text(s.lastName),
-        organization: organizationOf(s),
-        email: text(s.email),
-        formerStudentYear: isAggieFormerStudent(s) ? shortClassYear(s.graduationYear) : ''
-      };
-      const printedAt = s.badgePrintedAt ? new Date(s.badgePrintedAt).toISOString() : null;
+    speakers
+      .filter((s): s is Partial<Speaker> & { guid: string } => Boolean(s.guid))
+      .map((s) => {
+        const badge = {
+          guid: s.guid,
+          firstName: text(s.firstName),
+          lastName: text(s.lastName),
+          organization: organizationOf(s),
+          email: text(s.email),
+          formerStudentYear: isAggieFormerStudent(s) ? shortClassYear(s.graduationYear) : ''
+        };
+        const printedAt = s.badgePrintedAt ? new Date(s.badgePrintedAt).toISOString() : null;
 
-      return {
-        ...badge,
-        printedAt,
-        changedSincePrinted: Boolean(printedAt) && (s.badgePrintedText ?? '') !== badgeText(badge)
-      };
-    }),
+        return {
+          ...badge,
+          printedAt,
+          changedSincePrinted: Boolean(printedAt) && (s.badgePrintedText ?? '') !== badgeText(badge)
+        };
+      }),
     null
   );
 }

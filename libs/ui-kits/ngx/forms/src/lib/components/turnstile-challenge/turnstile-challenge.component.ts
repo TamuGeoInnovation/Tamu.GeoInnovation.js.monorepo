@@ -5,6 +5,13 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import { AbstractValueAccessorFormComponent } from '../../models/abstract-value-accessor-form/abstract-value-accessor-form.component';
 
+declare global {
+  interface Window {
+    /** Cloudflare Turnstile, set by the script this component loads (#3633). */
+    turnstile?: { render(container: string, options: { sitekey: string; callback: (token: string) => void }): void };
+  }
+}
+
 @Component({
   selector: 'tamu-gisc-turnstile-challenge',
   templateUrl: './turnstile-challenge.component.html',
@@ -37,11 +44,11 @@ export class TurnstileChallengeComponent extends AbstractValueAccessorFormCompon
   }
 
   private initChallenge(): void {
-    const turnstile = window['turnstile'];
+    const turnstile = window.turnstile;
     if (turnstile) {
       turnstile.render('.turnstile-container', {
         sitekey: this.env.value('turnstile_sitekey'),
-        callback: (token) => {
+        callback: (token: string) => {
           this.value = token;
         }
       });

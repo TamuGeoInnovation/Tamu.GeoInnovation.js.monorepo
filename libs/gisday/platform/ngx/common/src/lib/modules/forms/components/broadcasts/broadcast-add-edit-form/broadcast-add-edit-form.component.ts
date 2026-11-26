@@ -29,7 +29,7 @@ export class BroadcastAddEditFormComponent implements OnInit {
   private readonly ns = inject(NotificationService);
   private readonly ss = inject(SeasonService);
 
-  public readonly type = input<'create' | 'edit'>(undefined);
+  public readonly type = input.required<'create' | 'edit'>();
 
   public entity$: Observable<Partial<EventBroadcast>>;
   public places$: Observable<Array<Partial<Place>>>;
@@ -66,9 +66,10 @@ export class BroadcastAddEditFormComponent implements OnInit {
       });
     } else {
       this.ss.activeSeason$.pipe(take(1)).subscribe((season) => {
-        this.form.patchValue({
-          season: season.guid
-        });
+        // With no active season, the form's season is left empty.
+        if (season) {
+          this.form.patchValue({ season: season.guid });
+        }
       });
     }
   }

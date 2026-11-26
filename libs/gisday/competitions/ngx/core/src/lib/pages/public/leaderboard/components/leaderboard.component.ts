@@ -22,7 +22,7 @@ export class LeaderboardComponent implements OnInit {
   private router = inject(Router);
   private at = inject(ActivatedRoute);
 
-  public me$: Observable<string>;
+  public me$: Observable<string | null | undefined>;
   public leaders$: Observable<ILeaderboardItem[]>;
   public roles$: Observable<Array<string>>;
   public userIsManager$: Observable<boolean>;

@@ -20,7 +20,7 @@ import { NgClass } from '@angular/common';
   imports: [NgClass]
 })
 export class RadioGroupComponent<Option extends object, Value> implements ControlValueAccessor {
-  public readonly options = input<Array<Option>>(undefined);
+  public readonly options = input<Array<Option> | undefined>(undefined);
 
   /**
    * INTERNAL USE ONLY. Use `value` getter/setter instead.
@@ -29,7 +29,8 @@ export class RadioGroupComponent<Option extends object, Value> implements Contro
    * Callers set the value through the forms API; none binds `[value]`.
    */
   // eslint-disable-next-line @angular-eslint/no-input-rename
-  public readonly _value = model<Value>(undefined, { alias: 'value' });
+  // What the valuePath picks from the chosen option, or the option itself without one (#3633).
+  public readonly _value = model<Value | Option | undefined>(undefined, { alias: 'value' });
 
   public set value(v) {
     this._value.set(v);
@@ -44,19 +45,19 @@ export class RadioGroupComponent<Option extends object, Value> implements Contro
   // A model rather than an input: the forms API sets it.
   public readonly disabled = model(false);
 
-  public readonly displayPath = input<string>(undefined);
+  public readonly displayPath = input<string | undefined>(undefined);
 
-  public readonly valuePath = input<string>(undefined);
+  public readonly valuePath = input<string | undefined>(undefined);
 
   /**
    * Hook that can be used to execute an operation after the first value has been set.
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public onInitialValue(v: Value) {
+  public onInitialValue(v: Value | Option | undefined) {
     return;
   }
 
-  public onChange = (v) => {
+  public onChange: (value: Value | Option | undefined) => void = (v) => {
     return v;
   };
 
@@ -64,11 +65,11 @@ export class RadioGroupComponent<Option extends object, Value> implements Contro
     return;
   };
 
-  public registerOnChange(fn) {
+  public registerOnChange(fn: (value: Value | Option | undefined) => void) {
     this.onChange = fn;
   }
 
-  public registerOnTouched(fn) {
+  public registerOnTouched(fn: () => void) {
     this.onTouch = fn;
   }
 
@@ -76,20 +77,20 @@ export class RadioGroupComponent<Option extends object, Value> implements Contro
     this.disabled.set(disabled);
   }
 
-  public writeValue(value: Value) {
+  public writeValue(value: Value | Option | undefined) {
     this.value = value;
   }
 
-  public renderTemplate(option: Option, path: string) {
+  public renderTemplate(option: Option, path: string | undefined): Value | Option {
     if (path) {
-      return getPropertyValue(option, path);
+      return getPropertyValue<Value>(option, path);
     } else {
       return option;
     }
   }
 
-  public evaluateSetValue(option: Option) {
-    let value;
+  public evaluateSetValue(option: Option): Value | Option | undefined {
+    let value: Value | Option | undefined;
 
     if (this.disabled() === false) {
       value = this.renderTemplate(option, this.valuePath());

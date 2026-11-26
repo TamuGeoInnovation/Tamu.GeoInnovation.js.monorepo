@@ -3,7 +3,6 @@ import {
   OnChanges,
   OnInit,
   SimpleChanges,
-  ChangeDetectionStrategy,
   DestroyRef,
   computed,
   inject,
@@ -14,7 +13,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, Observable, ReplaySubject, combineLatest, map, shareReplay, tap } from 'rxjs';
+import { BehaviorSubject, Observable, ReplaySubject, combineLatest, map, of, shareReplay, tap } from 'rxjs';
 
 import { SeasonDay, SimplifiedEvent } from '@tamu-gisc/gisday/platform/data-api';
 import { SeasonDayService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -29,7 +28,6 @@ import { CentralDatePipe } from '../../../../pipes/central-date/central-date.pip
   selector: 'tamu-gisc-season-day-card',
   templateUrl: './season-day-card.component.html',
   styleUrls: ['./season-day-card.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     EventRowComponent,
     AsyncPipe,
@@ -44,19 +42,19 @@ export class SeasonDayCardComponent implements OnInit, OnChanges {
   private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
 
-  public readonly seasonDay = input<Partial<SeasonDay>>(undefined);
+  public readonly seasonDay = input.required<Partial<SeasonDay>>();
 
-  public readonly index = input<number>(undefined);
+  public readonly index = input.required<number>();
 
   /**
    * Collection of ID's, each representing a tag guid that should be used to filter events.
    */
-  public readonly tags = input<Array<string>>([]);
+  public readonly tags = input<Array<string> | null>([]);
 
   /**
    * Collection of ID's, each representing an organization guid that should be used to filter events.
    */
-  public readonly organizations = input<Array<string>>([]);
+  public readonly organizations = input<Array<string> | null>([]);
 
   /**
    * The places whose events the site lists at all, whatever the filters, or null for every place. Texas A&M's site
@@ -73,7 +71,7 @@ export class SeasonDayCardComponent implements OnInit, OnChanges {
   /** Whether a search is in use, so a day it finds nothing in is left out rather than shown empty. */
   public readonly searching = computed(() => (this.search() ?? '').trim().length > 0);
 
-  public readonly rsvps = input<Array<string>>([]);
+  public readonly rsvps = input<Array<string> | null>([]);
 
   /**
    * False on a past year, whose sessions can no longer be registered for.
@@ -148,7 +146,9 @@ export class SeasonDayCardComponent implements OnInit, OnChanges {
       }
     });
 
-    this.events$ = this.sd.getDayEvents(this.seasonDay().guid).pipe(shareReplay());
+    // A day not yet saved has no guid, and so no events to ask for.
+    const guid = this.seasonDay().guid;
+    this.events$ = (guid ? this.sd.getDayEvents(guid) : of([])).pipe(shareReplay());
 
     // The events are combined rather than taken withLatestFrom: the template now reads this list before the events have
     // arrived, to know whether to leave the day out (#2944), and withLatestFrom would drop the filters it saw then.
@@ -185,20 +185,7 @@ export class SeasonDayCardComponent implements OnInit, OnChanges {
     );
 
     this.rsvpsForDay$ = combineLatest([this.events$, this._activeRsvpsForDay]).pipe(
-      map(([events, rsvps]) => {
-        return events.filter((event) => {
-          return rsvps.includes(event.guid);
-        });
-      }),
-      map((events) => {
-        if (events.length === 0) {
-          return [];
-        }
-
-        return events.map((event) => {
-          return event.guid;
-        });
-      })
+      map(([events, rsvps]) => events.flatMap((event) => (event.guid && rsvps.includes(event.guid) ? [event.guid] : [])))
     );
 
     // this._activeOrgFilters.next(this.organizations);
@@ -233,20 +220,24 @@ export class SeasonDayCardComponent implements OnInit, OnChanges {
   }
 
   public handoff(event: SimplifiedEvent, newState: boolean) {
+    // An event with no guid cannot be registered for: there is nothing to send.
+    if (!event.guid) {
+      return;
+    }
+
     if (newState) {
       this.register.emit(event.guid);
-    } else if (!newState) {
+    } else {
       this.unregister.emit(event.guid);
     }
   }
 
-  private _hasFilterIdentity(identities: Array<string>, tags: Array<string>): boolean {
+  /** Whether the event has one of the filter's ids. An event that lists none has none of them. */
+  private _hasFilterIdentity(identities: Array<string> | undefined, tags: Array<string>): boolean {
     if (tags.length === 0) {
       return true;
     }
 
-    return identities.some((t) => {
-      return tags.includes(t);
-    });
+    return identities?.some((t) => tags.includes(t)) ?? false;
   }
 }

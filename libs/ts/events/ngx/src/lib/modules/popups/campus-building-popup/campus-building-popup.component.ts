@@ -19,7 +19,7 @@ import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 @Component({
   selector: 'tamu-gisc-campus-building-popup',
   templateUrl: './campus-building-popup.component.html',
-  styleUrls: ['../markdown-popup/markdown-popup.component.scss'],
+  styleUrls: ['./campus-building-popup.component.scss'],
   imports: [CopyComponent]
 })
 export class CampusBuildingPopupComponent extends BaseEventPopupComponent implements OnInit {

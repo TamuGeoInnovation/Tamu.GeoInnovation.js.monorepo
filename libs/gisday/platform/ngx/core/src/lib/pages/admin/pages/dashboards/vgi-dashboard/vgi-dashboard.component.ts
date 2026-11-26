@@ -1,4 +1,5 @@
 import { Component, computed, inject } from '@angular/core';
+import { of } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
 import type { VgiDashboard } from '@tamu-gisc/gisday/competitions/data-api/types';
@@ -107,6 +108,9 @@ export class VgiDashboardComponent extends EventDashboardComponent<VgiDashboard>
   }
 
   protected eventPeople(type: string) {
-    return this.submissions.getDashboardForType(this.dashboard()?.season, type);
+    const season = this.dashboard()?.season;
+
+    // A feature type is only opened from a dashboard on the page, so there is always a season to read it for.
+    return season ? this.submissions.getDashboardForType(season, type) : of([]);
   }
 }
