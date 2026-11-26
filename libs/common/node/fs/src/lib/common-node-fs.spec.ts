@@ -49,16 +49,23 @@ describe('writeFileToDisk', () => {
    * The name is the one the browser sent, which anyone can set. A name that climbs out of the folder is written inside it,
    * under its last part, and never outside (CodeQL js/path-injection, #3776).
    */
-  it.each([['../'], ['../../'], ['..\\'], ['nested/../../']])('writes a name starting %s inside the folder', async (climb) => {
-    const name = `escape-${Math.random().toString(36).slice(2)}.png`;
+  it.each([['../'], ['../../'], ['..\\'], ['nested/../../']])(
+    'writes a name starting %s inside the folder',
+    async (climb) => {
+      const name = `escape-${Math.random().toString(36).slice(2)}.png`;
 
-    await expect(writeFileToDisk(dir, { originalname: `${climb}${name}`, buffer: Buffer.from('x') } as Express.Multer.File)).resolves.toBe(name);
-    expect(existsSync(join(dir, name))).toBe(true);
-    expect(existsSync(join(dir, '..', name))).toBe(false);
-    expect(existsSync(join(dir, '..', '..', name))).toBe(false);
-  });
+      await expect(
+        writeFileToDisk(dir, { originalname: `${climb}${name}`, buffer: Buffer.from('x') } as Express.Multer.File)
+      ).resolves.toBe(name);
+      expect(existsSync(join(dir, name))).toBe(true);
+      expect(existsSync(join(dir, '..', name))).toBe(false);
+      expect(existsSync(join(dir, '..', '..', name))).toBe(false);
+    }
+  );
 
   it('refuses a name that is only a climb', async () => {
-    await expect(writeFileToDisk(dir, { originalname: '..', buffer: Buffer.from('x') } as Express.Multer.File)).rejects.toThrow();
+    await expect(
+      writeFileToDisk(dir, { originalname: '..', buffer: Buffer.from('x') } as Express.Multer.File)
+    ).rejects.toThrow();
   });
 });
