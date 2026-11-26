@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch a63** (#3738, Nx 24.0.6 to 24.0.7), since 1:39 PM Central, 26 November. Then g125.
+- **Batch g125** (health-report fixes), in progress: #3732 and #3730 fixed and closed in `4ec2d60c8`; health table and report next.
 
 ## Finished
+- **Batch a63** (report `home/reports/2026-11-26-a63.md`, 1:57 PM Central): branch ready `chore/3738-nx-24.0.7` at `6fab646b8`; check and pre-pr-check Exit 0; all six Angular production builds pass; the import reads `architect/node`.
 - **Batch s84** (report `home/reports/2026-11-26-s84.md`, 1:35 PM Central): branch ready `chore/3725-remove-typescript-eslint-utils` at `6366f5e20`, Exit 0; lock diff one root line. Health reading committed (home red: main checkout 34 days behind), filed #3743.
 - **Batch a60** (report `home/reports/2026-11-26-a60.md`, 1:12 PM Central): PR 3724 `Exit 1` - npm ci, lint, test pass; every Angular app's production build fails: Nx 24.0.6 deep-imports `@angular-devkit/architect/node/index.js`, which architect 0.2203.0's exports refuse. Nx 24.0.7 fixes it, clears the 7-day rule 2 December. Lock diff clean. Two questions.
 - **Batch s83** (report `home/reports/2026-11-26-s83.md`): branch ready `chore/3719-remove-ng-packagr` (−29, Exit 0) and `chore/3720-remove-platform-server` (−2, Exit 0); group 2 stopped: `webpack-cli` is used by the Nest apps' inferred `webpack-cli build` targets. Two questions.
