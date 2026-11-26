@@ -24,10 +24,10 @@ export class SettingsService {
    */
   public init(config: SettingsInitializationConfig): Observable<SimpleSettingBranch> {
     // Stored settings will be a flat
-    const storageInjected: CompoundSettings = Object.keys(config.settings).reduce((acc, curr) => {
+    const storageInjected: CompoundSettings = Object.keys(config.settings).reduce<CompoundSettings>((acc, curr) => {
       acc[curr] = { ...config.settings[curr], storage: config.storage };
       return acc;
-    }, {} as CompoundSettings);
+    }, {});
 
     // Get full local storage from storage configuration. Provided config can override storage `primaryKey`
     const storage = this.getStorage({ ...this._localStorageSettings, ...config.storage });
@@ -38,7 +38,7 @@ export class SettingsService {
     const compoundsFromStorageTree = this.simpleSettingsTreeToCompoundSettings(storage);
 
     // Override any settings with locally stored setting values (if any).
-    const merged: CompoundSettings = Object.keys(storageInjected).reduce((acc, curr) => {
+    const merged: CompoundSettings = Object.keys(storageInjected).reduce<CompoundSettings>((acc, curr) => {
       if (curr in compoundsFromStorageTree) {
         acc[curr] = { ...storageInjected[curr], value: compoundsFromStorageTree[curr].value };
         return acc;
@@ -104,7 +104,7 @@ export class SettingsService {
 
     // Filter the provided settings keys if it already exists in the service store,
     // with newly assigned values.
-    const providedMatching = Object.keys(settingsToUpdate).reduce((acc, curr) => {
+    const providedMatching = Object.keys(settingsToUpdate).reduce<CompoundSettings>((acc, curr) => {
       // If the setting to be updated does exist in service state, ignore it because it
       // lack information build a `CompoundSettings`.
       if (curr in storeSettings === false) {
@@ -157,7 +157,7 @@ export class SettingsService {
         value
       };
       return acc;
-    }, {} as CompoundSettings);
+    }, {});
 
     // If any of the provided settings matched existing settings in the service store,
     // proceed to update the values.
@@ -185,7 +185,7 @@ export class SettingsService {
   private calculateReturnValues(returnSettings: Settings): Observable<CompoundSettings> {
     return this._Store.asObservable().pipe(
       switchMap((settings) => {
-        const calculated = Object.keys(settings).reduce((acc, setting) => {
+        const calculated = Object.keys(settings).reduce<CompoundSettings>((acc, setting) => {
           // Skip properties not included in the initialization configuration.
           // This is effectively in the same reducing step.
           if (setting in returnSettings === false) {
@@ -226,7 +226,7 @@ export class SettingsService {
 
           acc[setting] = { ...settings[setting], value };
           return acc;
-        }, {} as CompoundSettings);
+        }, {});
 
         return of(calculated);
       })
@@ -241,7 +241,7 @@ export class SettingsService {
    * than the ones they have initialized their subscription with.
    *
    */
-  private checkSimpleSettingsEquality(previous, current): boolean {
+  private checkSimpleSettingsEquality(previous: SimpleSettingBranch, current: SimpleSettingBranch): boolean {
     return Object.keys(current).every((key) => {
       if (key in previous) {
         return previous[key] === current[key];
@@ -259,12 +259,13 @@ export class SettingsService {
    * Flattening is the required format for updating the local storage.
    */
   private compoundToSimpleSettingsTree(settings: CompoundSettings): SimpleSettingTree {
-    const groups = Object.keys(settings).reduce((acc, curr) => {
+    const groups = Object.keys(settings).reduce<SimpleSettingTree>((acc, curr) => {
       // Check if an object with the key value of the setting subKey exists.
       //
       // If it does, add the setting as a child.
       // If it doesn't, make the object with the value of the setting subKey, and add setting a child.
-      const settingSubKey = settings[curr].storage.subKey;
+      // No subKey groups the setting under "undefined", as indexing with an undefined key always did (#3630).
+      const settingSubKey = String(settings[curr].storage.subKey);
 
       if (acc[settingSubKey]) {
         acc[settingSubKey][curr] = settings[curr].value;
@@ -280,10 +281,10 @@ export class SettingsService {
   }
 
   private simpleSettingsTreeToCompoundSettings(tree: SimpleSettingTree): CompoundSettings {
-    return Object.keys(tree).reduce((settings, branch) => {
+    return Object.keys(tree).reduce<CompoundSettings>((settings, branch) => {
       // All settings branches should be flat simple settings collections.
       if (typeof tree[branch] === 'object') {
-        const branchSettings = Object.keys(tree[branch]).reduce((compound, key) => {
+        const branchSettings = Object.keys(tree[branch]).reduce<CompoundSettings>((compound, key) => {
           compound[key] = {
             storage: {
               subKey: branch
@@ -292,13 +293,13 @@ export class SettingsService {
           };
 
           return compound;
-        }, {} as CompoundSettings);
+        }, {});
 
         return { ...settings, ...branchSettings };
       } else {
         throw new Error(`Settings branch is not simple.`);
       }
-    }, {} as CompoundSettings);
+    }, {});
   }
 
   /**
@@ -332,7 +333,7 @@ export class SettingsService {
    * ```
    */
   private compoundToSimpleSettingsBranch(settings: CompoundSettings): SimpleSettingBranch {
-    return Object.keys(settings).reduce((acc, curr) => {
+    return Object.keys(settings).reduce<SimpleSettingBranch>((acc, curr) => {
       acc[curr] = settings[curr].value;
       return acc;
     }, {});
@@ -370,7 +371,7 @@ export class SettingsService {
    *
    */
   private getPersistentCompoundSettings(settings: CompoundSettings): CompoundSettings {
-    return Object.keys(settings).reduce((acc, curr) => {
+    return Object.keys(settings).reduce<CompoundSettings>((acc, curr) => {
       if (settings[curr].persistent) {
         acc[curr] = settings[curr];
         return acc;
@@ -403,14 +404,14 @@ export class SettingsService {
       keys = this.getPersistentCompoundSettingsKeys(compoundSourceOrKeys);
     }
 
-    return Object.keys(simpleSettings).reduce((acc, curr) => {
+    return Object.keys(simpleSettings).reduce<SimpleSettingBranch>((acc, curr) => {
       if (keys.includes(curr)) {
         acc[curr] = simpleSettings[curr];
         return acc;
       } else {
         return acc;
       }
-    }, {} as SimpleSettingBranch);
+    }, {});
   }
 }
 
@@ -524,14 +525,15 @@ interface SettingEffectsSetFunction {
    *
    * @param [value] Value of the target setting.
    */
-  fn(value?): SettingValue;
+  fn(value?: SettingValue): SettingValue;
 }
 
 export interface CompoundSettings {
   [key: string]: {
     storage: StorageConfig;
     persistent?: boolean;
-    value?: SettingValue;
+    // Every compound setting is made with one: from its configuration, from storage, or from its getter (#3630).
+    value: SettingValue;
     effects?: SettingEffects;
   };
 }
