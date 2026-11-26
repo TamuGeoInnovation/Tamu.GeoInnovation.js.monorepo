@@ -1,3 +1,4 @@
+import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FileComponent } from './file.component';
@@ -62,5 +63,35 @@ describe('FileComponent', () => {
     expect(component.checked).toBe(mockFile);
     expect(emitted).toEqual([mockFile]);
     expect(mockEvt.target.value).toEqual('');
+  });
+});
+
+// #1478, g121: GIS Day runs zoneless, and the picker is Eager, so it is redrawn only when something tells Angular to.
+// `reset()` clears plain fields the template reads, so called from a callback that tells Angular nothing - an upload's
+// response, a timer - it left the chosen file's name on screen.
+describe('FileComponent, zoneless', () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({ imports: [FileComponent], providers: [provideZonelessChangeDetection()] });
+  });
+
+  it('clears the shown file name when reset() is called from a timer', async () => {
+    const fixture = TestBed.createComponent(FileComponent);
+    fixture.autoDetectChanges(true);
+    await fixture.whenStable();
+
+    fixture.componentInstance.handleFileChange({ target: { files: [new File(['x'], 'poster.pdf')], value: '' } });
+    fixture.componentRef.changeDetectorRef.markForCheck();
+    await fixture.whenStable();
+    expect(fixture.nativeElement.textContent).toContain('poster.pdf');
+
+    await new Promise<void>((done) =>
+      setTimeout(() => {
+        fixture.componentInstance.reset();
+        done();
+      })
+    );
+    await fixture.whenStable();
+
+    expect(fixture.nativeElement.textContent).not.toContain('poster.pdf');
   });
 });

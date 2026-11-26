@@ -1,5 +1,12 @@
 import { Component, OnInit, inject, input, signal } from '@angular/core';
-import { AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  AbstractControl,
+  UntypedFormArray,
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  FormsModule,
+  ReactiveFormsModule
+} from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Observable, filter, map, of, shareReplay, switchMap, take } from 'rxjs';
@@ -25,7 +32,8 @@ import { adminEntityForm } from '../../../admin-entity-form';
   selector: 'tamu-gisc-place-location-add-edit-form',
   templateUrl: './place-location-add-edit-form.component.html',
   styleUrls: ['./place-location-add-edit-form.component.scss'],
-  imports: [ImagePreviewComponent, 
+  imports: [
+    ImagePreviewComponent,
     FormsModule,
     ReactiveFormsModule,
     TextboxComponent,
@@ -47,7 +55,7 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
   private readonly sn = inject(DomSanitizer);
   private readonly ss = inject(SeasonService);
 
-  public readonly type = input<'create' | 'edit'>(undefined);
+  public readonly type = input.required<'create' | 'edit'>();
 
   public form: UntypedFormGroup;
 
@@ -93,7 +101,7 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
       );
 
       this.entity$.pipe(take(1)).subscribe((entity) => {
-        const links = entity?.links?.map((link) => this._createOrgLink(link));
+        const links = entity?.links?.map((link) => this._createOrgLink(link)) ?? [];
 
         this.form.patchValue({ ...entity });
 
@@ -103,12 +111,12 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
         // If the entity has a season, remove the season control from the form
         this.form.removeControl('season');
       });
-
     } else {
       this.ss.activeSeason$.pipe(take(1)).subscribe((season) => {
-        this.form.patchValue({
-          season: season.guid
-        });
+        // With no active season, the form's season is left empty.
+        if (season) {
+          this.form.patchValue({ season: season.guid });
+        }
       });
     }
 
@@ -117,7 +125,7 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
       (this.entity$ ?? of(null)).pipe(
         switchMap((entity) => (entity?.logos?.[0]?.path ? this.as.getAssetUrl(entity.logos[0].path) : of(null)))
       ),
-      this.form.get('file').valueChanges,
+      this.form.controls.file.valueChanges,
       this.sn
     );
   }
@@ -173,5 +181,4 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
 
     this.saves.save('create', this.ps.createEntityFormData(formData));
   }
-
 }

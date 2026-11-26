@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject, viewChild } from '@angular/core';
+import { Component, inject, viewChild } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { map, switchMap } from 'rxjs';
@@ -16,7 +16,6 @@ import { BaseAdminDetailsPageComponent } from '../../../base-admin-details-page/
   selector: 'tamu-gisc-broadcast-edit',
   templateUrl: './broadcast-edit.component.html',
   styleUrls: ['./broadcast-edit.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [BroadcastAddEditFormComponent, SessionsUsingComponent, AsyncPipe],
   providers: [provideAdminDetailsPage(() => BroadcastEditComponent)]
 })

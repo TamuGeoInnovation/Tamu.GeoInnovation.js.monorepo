@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, computed, input, output } from '@angular/core';
+import { Component, OnInit, computed, input, output } from '@angular/core';
 
 import { Speaker } from '@tamu-gisc/gisday/platform/data-api';
 import { SpeakerAvatarComponent } from '../speaker-avatar/speaker-avatar.component';
@@ -9,11 +9,10 @@ import { isAggieFormerStudent, shortClassYear, speakerAffiliation } from '../../
   selector: 'tamu-gisc-presenter-card',
   templateUrl: './presenter-card.component.html',
   styleUrls: ['./presenter-card.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [SpeakerAvatarComponent, RouterLink]
 })
 export class PresenterCardComponent implements OnInit {
-  public readonly speaker = input<Partial<Speaker>>(undefined);
+  public readonly speaker = input.required<Partial<Speaker>>();
 
   public readonly linkable = input(true);
 
@@ -37,7 +36,10 @@ export class PresenterCardComponent implements OnInit {
   public readonly affiliation = computed(() => speakerAffiliation(this.speaker()));
 
   public ngOnInit(): void {
-    this.speakerInitials = this.speaker()?.firstName[0] + this.speaker()?.lastName[0];
+    const { firstName, lastName } = this.speaker();
+
+    // From whichever names the speaker has: a missing one adds nothing, where it used to add "undefined".
+    this.speakerInitials = `${firstName?.[0] ?? ''}${lastName?.[0] ?? ''}`;
   }
 
   public emitAction(action: string): void {

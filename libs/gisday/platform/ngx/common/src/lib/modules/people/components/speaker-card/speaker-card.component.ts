@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 import { Speaker } from '@tamu-gisc/gisday/platform/data-api';
 import { RouterLink } from '@angular/router';
@@ -9,9 +9,8 @@ import { SpeakerClassBannerComponent } from '../speaker-class-banner/speaker-cla
   selector: 'tamu-gisc-speaker-card',
   templateUrl: './speaker-card.component.html',
   styleUrls: ['./speaker-card.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterLink, SpeakerAvatarComponent, SpeakerClassBannerComponent]
 })
 export class SpeakerCardComponent {
-  public readonly speaker = input<Partial<Speaker>>(undefined);
+  public readonly speaker = input.required<Partial<Speaker>>();
 }

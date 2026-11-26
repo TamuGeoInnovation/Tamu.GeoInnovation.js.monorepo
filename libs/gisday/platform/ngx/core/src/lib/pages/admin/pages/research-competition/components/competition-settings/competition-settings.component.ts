@@ -297,9 +297,9 @@ export class CompetitionSettingsComponent {
 
   /** Sends the competitions and the deadlines together, and says which, if either, was refused. */
   public save(): void {
-    const season = this.season();
+    const seasonGuid = this.season()?.guid;
 
-    if (!season?.guid) {
+    if (!seasonGuid) {
       return;
     }
 
@@ -337,12 +337,12 @@ export class CompetitionSettingsComponent {
 
     // The sessions after the competitions: both write the season's rows of competitions (#3019).
     const competitionsThenSessions = sent(
-      this.seasons.setCompetitionTypes(season.guid, chosen),
+      this.seasons.setCompetitionTypes(seasonGuid, chosen),
       'The competitions could not be saved.'
     ).pipe(
       switchMap((competitions) =>
         (settings.length
-          ? sent(this.seasons.setCompetitionSettings(season.guid, settings), 'The sessions could not be saved.')
+          ? sent(this.seasons.setCompetitionSettings(seasonGuid, settings), 'The sessions could not be saved.')
           : of(null)
         ).pipe(map((sessions) => ({ competitions, sessions })))
       )
@@ -350,7 +350,7 @@ export class CompetitionSettingsComponent {
 
     forkJoin([
       competitionsThenSessions,
-      sent(this.seasons.setSubmissionDeadlines(season.guid, deadlines), 'The deadlines could not be saved.')
+      sent(this.seasons.setSubmissionDeadlines(seasonGuid, deadlines), 'The deadlines could not be saved.')
     ]).subscribe(([{ competitions, sessions }, deadlinesRefused]) => {
       this.saving.set(false);
 

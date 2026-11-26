@@ -1,9 +1,11 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
-import { switchMap, takeUntil, pluck } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 
 import { Angulartics2 } from 'angulartics2';
+
+import { trackEvent } from '@tamu-gisc/common/ngx/analytics';
 
 import { TripPlannerService } from '../../../../services/trip-planner.service';
 
@@ -38,11 +40,7 @@ export class TripPlannerDirectionsActionsComponent implements OnInit, OnDestroy 
   private _destroy$: Subject<boolean> = new Subject();
 
   public ngOnInit(): void {
-    this.plannerService.TravelOptions.pipe(
-      pluck('travel_mode'),
-      switchMap(() => this.plannerService.getTripResultForTravelMode()),
-      takeUntil(this._destroy$)
-    ).subscribe((result) => {
+    this.plannerService.currentResult$.pipe(takeUntil(this._destroy$)).subscribe((result) => {
       if (result && result.stops != null) {
         const params = {
           stops: undefined,
@@ -112,35 +110,19 @@ export class TripPlannerDirectionsActionsComponent implements OnInit, OnDestroy 
     this.plannerService.clearAll();
 
     const label = {
-      guid: crypto.randomUUID(),
-      date: Date.now(),
       type: 'reset'
     };
 
-    this.analytics.eventTrack.next({
-      action: 'trip_planner_action',
-      properties: {
-        category: 'ui_interaction',
-        gstCustom: label
-      }
-    });
+    trackEvent(this.analytics, 'trip_planner_action', 'ui_interaction', label);
   }
 
   public eventCopyTrip() {
     // Route creation analytics tracking
     const label = {
-      guid: crypto.randomUUID(),
-      date: Date.now(),
       name: this.shareUrl,
       type: 'share'
     };
 
-    this.analytics.eventTrack.next({
-      action: 'trip_planner_action',
-      properties: {
-        category: 'ui_interaction',
-        gstCustom: label
-      }
-    });
+    trackEvent(this.analytics, 'trip_planner_action', 'ui_interaction', label);
   }
 }

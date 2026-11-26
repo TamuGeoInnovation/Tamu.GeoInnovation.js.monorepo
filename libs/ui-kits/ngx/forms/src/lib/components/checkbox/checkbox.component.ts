@@ -45,7 +45,7 @@ export class CheckboxComponent implements ControlValueAccessor {
    * **REQUIRED** on checkbox groups, where a property in this object is referenced and used to create a composite
    * value of selected items in the list.
    */
-  public readonly data = input<object>(undefined);
+  public readonly data = input<object | undefined>(undefined);
 
   /**
    * Determines the interaction state of the component, preventing or allowing user input.
@@ -83,7 +83,7 @@ export class CheckboxComponent implements ControlValueAccessor {
    */
   public readonly changed = output<boolean>();
 
-  private _onChange = (v) => {
+  private _onChange: (checked: boolean) => void = (v) => {
     return v;
   };
 
@@ -106,11 +106,11 @@ export class CheckboxComponent implements ControlValueAccessor {
     this.checked = !this.checked;
   }
 
-  public registerOnChange(fn) {
+  public registerOnChange(fn: (checked: boolean) => void) {
     this._onChange = fn;
   }
 
-  public registerOnTouched(fn) {
+  public registerOnTouched(fn: () => void) {
     this._onTouch = fn;
   }
 
@@ -118,11 +118,11 @@ export class CheckboxComponent implements ControlValueAccessor {
    * A value from the form is shown, not reported back to the form or announced on `changed`: a form loaded with a
    * record would otherwise count as changed the moment it opened (#2964).
    */
-  public writeValue(val) {
+  public writeValue(val: boolean) {
     this._checked.set(val);
   }
 
-  public setDisabledState(disabled?: boolean) {
+  public setDisabledState(disabled: boolean) {
     this.disabled.set(disabled);
   }
 

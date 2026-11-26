@@ -11,6 +11,9 @@ export * from './lib/arcgis-signal';
 // A map view's events as an observable, in place of the fromEventPattern wrapper written by hand (#3493).
 export * from './lib/view-event';
 
+// A reactiveUtils.watch as an observable, the observable half of arcgisSignal (#3592).
+export * from './lib/watch-as-observable';
+
 export * from './lib/services/module-provider/module-provider.service';
 
 export * from './lib/services/map/map.service';

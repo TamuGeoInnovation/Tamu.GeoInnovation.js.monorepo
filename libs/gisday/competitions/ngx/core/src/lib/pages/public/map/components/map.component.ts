@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable, catchError, forkJoin, map, of, switchMap, take } from 'rxjs';
@@ -16,7 +16,6 @@ import esri = __esri;
   selector: 'tamu-gisc-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [EsriMapComponent, MapLocationComponent]
 })
 export class MapComponent implements OnInit {
@@ -84,7 +83,13 @@ export class MapComponent implements OnInit {
         const url = `${api_url}/competitions/maps/seasons/active/user/${user.sub}?format=geojson`;
 
         return this.http.get<{ features?: Array<{ properties?: { guid?: string } }> }>(url).pipe(
-          map((collection) => ({ url, guids: (collection?.features ?? []).map((f) => f.properties?.guid) })),
+          map((collection) => ({
+            url,
+            // A feature without a guid is left out: it was an undefined in the list, which matches no submission (#3614).
+            guids: (collection?.features ?? [])
+              .map((f) => f.properties?.guid)
+              .filter((guid): guid is string => guid !== undefined)
+          })),
           catchError(() => of(undefined))
         );
       })

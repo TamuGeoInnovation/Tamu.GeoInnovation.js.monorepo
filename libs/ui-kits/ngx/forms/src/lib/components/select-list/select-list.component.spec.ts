@@ -11,7 +11,9 @@ interface Person extends Record<string, unknown> {
 @Component({
   template: `
     <tamu-gisc-select-list [options]="people" [rowTemplate]="row" (selected)="chosen = $event"></tamu-gisc-select-list>
-    <ng-template #row let-person><span class="person">{{ person.name }}</span></ng-template>
+    <ng-template #row let-person
+      ><span class="person">{{ person.name }}</span></ng-template
+    >
   `,
   imports: [SelectListComponent]
 })
@@ -74,5 +76,31 @@ describe('SelectListComponent', () => {
 
     expect(host.contains(document.activeElement)).toBe(false);
     expect(escape.defaultPrevented).toBe(true);
+  });
+});
+
+/**
+ * #3495. A list whose options have not arrived yet - an `[options]` bound to a request still in flight - took a search
+ * and threw `Cannot read properties of undefined (reading 'filter')` from its list of matches.
+ */
+describe('SelectListComponent with no options yet', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('answers a search with no matches', () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval', 'Date'] });
+    const fixture = TestBed.createComponent(SelectListComponent<Person>);
+    fixture.detectChanges();
+
+    const lists: Array<Array<Person> | undefined> = [];
+    const errors: Array<unknown> = [];
+    fixture.componentInstance.options$.subscribe({ next: (list) => lists.push(list), error: (e) => errors.push(e) });
+
+    fixture.componentInstance.form.controls.search.setValue('ana');
+    vi.advanceTimersByTime(300);
+
+    expect(errors).toEqual([]);
+    expect(lists[lists.length - 1]).toEqual([]);
   });
 });

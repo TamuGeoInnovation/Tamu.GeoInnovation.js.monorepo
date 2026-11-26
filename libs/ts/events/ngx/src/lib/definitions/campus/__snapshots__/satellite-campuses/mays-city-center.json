@@ -1,0 +1,152 @@
+{
+  "configuration": {
+    "applicationName": "Aggie Map - Mays City Center",
+    "buildingPopup": {
+      "abbreviation": "bldgabbr",
+      "address": {
+        "city": "city",
+        "state": "TX",
+        "street": "address",
+        "zip": "zip"
+      },
+      "layerId": "mays-city-center-property-layer",
+      "number": "number",
+      "title": [
+        "bldgname",
+        "bldgabbr"
+      ]
+    },
+    "eventDates": [],
+    "hideLayerToggle": true,
+    "id": "mays-city-center",
+    "introductionText": "Map of the Texas A&M University Mays City Center campus.",
+    "mapCenter": [
+      -95.562044,
+      29.780445
+    ],
+    "name": "Mays City Center",
+    "searchSources": [
+      {
+        "displayTemplate": "{attributes.bldgname} ({attributes.number})",
+        "featuresLocation": "features",
+        "name": "Property",
+        "popupComponent": "[EventPopups.CampusBuildingPopupComponent]",
+        "queryParams": {
+          "f": "json",
+          "outFields": "*",
+          "outSR": 4326,
+          "resultRecordCount": 5,
+          "returnGeometry": true,
+          "scoringWhere": {
+            "keys": [
+              "bldgname",
+              "bldgabbr"
+            ],
+            "operators": [
+              "LIKE",
+              "LIKE"
+            ],
+            "transformations": [
+              "UPPER",
+              "UPPER"
+            ],
+            "wildcards": [
+              "startsWith",
+              "startsWith"
+            ]
+          },
+          "spatialRel": "esriSpatialRelIntersects",
+          "where": {
+            "keys": [
+              "bldgname",
+              "bldgabbr",
+              "number"
+            ],
+            "operators": [
+              "LIKE",
+              "LIKE",
+              "LIKE"
+            ],
+            "transformations": [
+              "UPPER",
+              "UPPER",
+              "UPPER"
+            ],
+            "wildcards": [
+              "includes",
+              "includes",
+              "includes"
+            ]
+          }
+        },
+        "scoringKeys": [
+          "attributes.bldgabbr",
+          "attributes.number",
+          "attributes.bldgname"
+        ],
+        "searchActive": true,
+        "source": "mays-city-center-property",
+        "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/Mays/FeatureServer/0",
+        "urlQueryParam": "bldg",
+        "urlQueryParamAliases": [
+          "abbrv"
+        ]
+      }
+    ],
+    "shortApplicationName": "Mays City Center",
+    "sidebarTabs": [
+      "features"
+    ],
+    "zoom": 17
+  },
+  "discover": {
+    "description": "Map of the Texas A&M University Mays City Center campus.",
+    "id": "mays-city-center",
+    "mapType": "satellite-campus",
+    "name": "Mays City Center",
+    "source": "internal",
+    "thumbnail": "./assets/images/campus/mays-city-center.jpg",
+    "type": "satellite-campus"
+  },
+  "options": [],
+  "references": {
+    "BASEMAP": "mays-city-center-basemap-layer",
+    "PROPERTY": "mays-city-center-property-layer"
+  },
+  "sources": [
+    {
+      "essential": true,
+      "id": "mays-city-center-basemap-layer",
+      "listMode": "hide",
+      "title": "Mays City Center Basemap",
+      "type": "vector-tile",
+      "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/Mays/VectorTileServer",
+      "visible": true
+    },
+    {
+      "essential": true,
+      "id": "mays-city-center-property-layer",
+      "listMode": "hide",
+      "native": {
+        "elevationInfo": {
+          "mode": "relative-to-ground",
+          "offset": 1
+        },
+        "labelsVisible": false,
+        "legendEnabled": false,
+        "maxScale": 0,
+        "minScale": 100000,
+        "outFields": [
+          "*"
+        ],
+        "popupEnabled": false
+      },
+      "popupComponent": "[EventPopups.CampusBuildingPopupComponent]",
+      "title": "Property",
+      "type": "feature",
+      "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/Mays/FeatureServer/0",
+      "visible": true
+    }
+  ],
+  "type": "general-map"
+}

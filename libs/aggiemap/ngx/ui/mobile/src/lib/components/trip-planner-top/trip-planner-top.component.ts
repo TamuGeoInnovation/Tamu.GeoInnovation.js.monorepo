@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, pipe, Subject } from 'rxjs';
-import { switchMap, takeUntil, pluck, map } from 'rxjs/operators';
+import { switchMap, takeUntil, map } from 'rxjs/operators';
 
 import { EsriMapService, MapServiceInstance, viewEvent } from '@tamu-gisc/maps/esri';
 import { TripPlannerService, TripResult, TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
@@ -55,11 +55,7 @@ export class TripPlannerTopComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.stops = this.tripPlanner.Stops;
 
-    this.tripPlanner.TravelOptions.pipe(
-      pluck('travel_mode'),
-      switchMap(() => this.tripPlanner.getTripResultForTravelMode()),
-      takeUntil(this._destroy$)
-    ).subscribe((result) => {
+    this.tripPlanner.currentResult$.pipe(takeUntil(this._destroy$)).subscribe((result) => {
       this.result = result;
 
       // In the event that the route is cleared and the top is hidden, bring it back down.
