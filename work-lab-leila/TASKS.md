@@ -1,5 +1,9 @@
 # work-lab-leila: current tasks
 
+## Handed over (26 November 2026, from `work (gisday)`)
+
+**The maintainer has put GIS Day on hold.** The machines focus on upgrades, directed by the security chat. Every batch below marked "from `work (gisday)`" that is not finished now belongs to **the security chat**. Send its reports and questions there, not to `work (gisday)`. No new GIS Day batches will come until the maintainer restarts them.
+
 ## Batch g227 (workspace: #3729, this machine's own repairs; 26 November 2026, from `work (gisday)`) (Medium) - **after a59, when the release tier lets the lab go**
 
 Not before: the lab belongs to the release tier (a58/a59) until it's finished. #3729 lists what your first health reading found and the steps, in order:
