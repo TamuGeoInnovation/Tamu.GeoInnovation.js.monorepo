@@ -97,9 +97,13 @@ console.log(`  service did not answer:   ${unanswered.length}\n`);
 
 differs
   .sort((a, b) => mapName(a.file).localeCompare(mapName(b.file)))
-  .forEach((t) => console.log(`  ${mapName(t.file).padEnd(28)}${JSON.stringify(t.declared)} -> ${JSON.stringify(t.published)}`));
+  .forEach((t) =>
+    console.log(`  ${mapName(t.file).padEnd(28)}${JSON.stringify(t.declared)} -> ${JSON.stringify(t.published)}`)
+  );
 
-unanswered.forEach((t) => console.log(`  ! ${mapName(t.file).padEnd(28)}${JSON.stringify(t.declared)}  service unreachable`));
+unanswered.forEach((t) =>
+  console.log(`  ! ${mapName(t.file).padEnd(28)}${JSON.stringify(t.declared)}  service unreachable`)
+);
 
 if (!drop) {
   console.log('\nPass --drop-identical to remove the titles that match, or --markdown for the upstream table.');

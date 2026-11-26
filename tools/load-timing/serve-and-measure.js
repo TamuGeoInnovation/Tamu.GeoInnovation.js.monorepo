@@ -8,14 +8,24 @@ const zlib = require('zlib');
 const { spawn } = require('child_process');
 
 const [dir, label, runs, measure] = process.argv.slice(2);
-const types = { '.js': 'text/javascript', '.css': 'text/css', '.html': 'text/html', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.ico': 'image/x-icon', '.woff2': 'font/woff2' };
+const types = {
+  '.js': 'text/javascript',
+  '.css': 'text/css',
+  '.html': 'text/html',
+  '.json': 'application/json',
+  '.svg': 'image/svg+xml',
+  '.png': 'image/png',
+  '.ico': 'image/x-icon',
+  '.woff2': 'font/woff2'
+};
 const cache = new Map();
 
 const server = http.createServer((req, res) => {
   const root = path.resolve(dir);
   let file = path.join(root, decodeURIComponent(req.url.split('?')[0]));
   // Only files inside the build; anything else gets index.html, as an unknown path does (#3776).
-  if (!file.startsWith(root + path.sep) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) file = path.join(root, 'index.html');
+  if (!file.startsWith(root + path.sep) || !fs.existsSync(file) || fs.statSync(file).isDirectory())
+    file = path.join(root, 'index.html');
   const ext = path.extname(file);
   const compress = ['.js', '.css', '.html', '.json', '.svg'].includes(ext);
   if (!cache.has(file)) {
@@ -31,7 +41,9 @@ const server = http.createServer((req, res) => {
 // The measurements run as child processes without blocking this one, which has to keep serving.
 const run = (mode) =>
   new Promise((resolve) => {
-    const child = spawn('node', [measure, 'http://localhost:4400/map', `${label}-${mode}`, runs, mode], { stdio: ['ignore', 'inherit', 'ignore'] });
+    const child = spawn('node', [measure, 'http://localhost:4400/map', `${label}-${mode}`, runs, mode], {
+      stdio: ['ignore', 'inherit', 'ignore']
+    });
     child.on('exit', resolve);
   });
 
