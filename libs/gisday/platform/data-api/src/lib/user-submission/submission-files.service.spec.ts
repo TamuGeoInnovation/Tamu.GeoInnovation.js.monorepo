@@ -14,6 +14,8 @@ import { Asset, Submission } from '../entities/all.entity';
 import {
   SubmissionFilesService,
   attachment,
+  discardUpload,
+  storeUpload,
   submissionFolder,
   uniqueName,
   uploadingDirectory
@@ -426,3 +428,55 @@ function streamToBuffer(stream: Readable): Promise<Buffer> {
     stream.on('error', reject);
   });
 }
+
+/**
+ * Multer writes every upload as `<uploading folder>/<uuid>.part`, so `upload.path` is the server's own. These are the
+ * backstop if that ever changes: a path that leaves the uploading folder is neither moved nor deleted (CodeQL
+ * js/path-injection, #3776).
+ */
+describe('storeUpload and discardUpload only touch the uploading folder (#3776)', () => {
+  let appData: string;
+  let previousAppData: string | undefined;
+
+  beforeEach(() => {
+    previousAppData = process.env.APP_DATA;
+    appData = mkdtempSync(join(tmpdir(), 'gisday-upload-'));
+    process.env.APP_DATA = appData;
+  });
+
+  afterEach(() => {
+    process.env.APP_DATA = previousAppData;
+    rmSync(appData, { recursive: true, force: true });
+  });
+
+  function outside(): Express.Multer.File {
+    writeFileSync(join(appData, 'keep.pdf'), 'not an upload');
+
+    return {
+      originalname: 'slides.pdf',
+      path: join(uploadingDirectory(), '..', 'keep.pdf'),
+      size: 13
+    } as Express.Multer.File;
+  }
+
+  it('refuses to move a file from outside the uploading folder', async () => {
+    await expect(storeUpload(outside(), 'submissions/x')).rejects.toThrow(BadRequestException);
+    expect(existsSync(join(appData, 'keep.pdf'))).toBe(true);
+  });
+
+  it('does not delete a file outside the uploading folder', async () => {
+    await discardUpload(outside());
+    expect(existsSync(join(appData, 'keep.pdf'))).toBe(true);
+  });
+
+  it('still moves and discards a real upload', async () => {
+    await mkdir(uploadingDirectory(), { recursive: true });
+    const path = join(uploadingDirectory(), 'abc.part');
+    writeFileSync(path, 'pdf');
+
+    const kept = await storeUpload({ originalname: 'slides.pdf', path, size: 3 } as Express.Multer.File, 'submissions/x');
+
+    expect(existsSync(join(appData, kept.path))).toBe(true);
+    expect(existsSync(path)).toBe(false);
+  });
+});

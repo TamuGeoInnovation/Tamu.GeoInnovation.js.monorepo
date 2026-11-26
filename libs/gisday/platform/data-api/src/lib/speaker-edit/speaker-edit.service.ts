@@ -780,9 +780,21 @@ export function chosenSpeakers(speakers: unknown): Array<string> | undefined {
   return speakers;
 }
 
-/** Whether a record's email address could be sent to. */
+/**
+ * Whether a record's email address could be sent to: something, one "@", then a domain with a dot that has something on
+ * each side, and no spaces. Checked piece by piece rather than with one pattern, which backtracked on a long run of "!."
+ * (CodeQL js/polynomial-redos, #3776).
+ */
 export function looksLikeEmail(value: unknown): value is string {
-  return typeof value === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+  if (typeof value !== 'string') {
+    return false;
+  }
+
+  const address = value.trim();
+  const at = address.indexOf('@');
+  const domain = address.slice(at + 1);
+
+  return at > 0 && !/[\s@]/.test(address.slice(0, at)) && !/[\s@]/.test(domain) && domain.slice(1, -1).includes('.');
 }
 
 /** Whether a speaker has an address to email, as `looksLikeEmail` checks it, typed on the speaker. */

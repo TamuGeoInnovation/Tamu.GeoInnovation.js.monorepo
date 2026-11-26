@@ -7,7 +7,15 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { declaredJpeg } from '@tamu-gisc/common/node/images';
 import { PROFILE_EDIT_LINK_PREVIEW, fillReviewEmail } from '@tamu-gisc/gisday/common';
 
-import { REPEAT_SEND_MINUTES, SpeakerEditService, cleanFields, hashOf, linkEmail, senderAs } from './speaker-edit.service';
+import {
+  REPEAT_SEND_MINUTES,
+  SpeakerEditService,
+  cleanFields,
+  hashOf,
+  linkEmail,
+  looksLikeEmail,
+  senderAs
+} from './speaker-edit.service';
 import { siteHost } from './speaker-edit.controller';
 
 /**
@@ -768,5 +776,33 @@ describe('SpeakerEditService.sendLinksForSubmissions (#2958)', () => {
 
     expect(html).toContain('<p>— The Texas A&amp;M GIS Day Team</p>');
     expect(html).not.toContain('<li>');
+  });
+});
+
+/**
+ * Whether a record's address could be sent to. The old pattern backtracked polynomially on a long run of "!." after an
+ * "@" (CodeQL js/polynomial-redos, #3776), on the API's only thread.
+ */
+describe('looksLikeEmail (#3776)', () => {
+  it.each([
+    ['ana@example.edu', true],
+    ['  ana@example.edu  ', true],
+    ['a.b@c.d.e', true],
+    ['ana@example', false],
+    ['ana example.edu', false],
+    ['@example.edu', false],
+    ['ana@.', false],
+    ['ana@@example.edu', false],
+    [null, false]
+  ])('%s is %s', (value, expected) => {
+    expect(looksLikeEmail(value)).toBe(expected);
+  });
+
+  it('answers at once for a pathological address', () => {
+    const value = '!@!.' + '!.'.repeat(10_000) + '@';
+    const start = performance.now();
+
+    expect(looksLikeEmail(value)).toBe(false);
+    expect(performance.now() - start).toBeLessThan(100);
   });
 });

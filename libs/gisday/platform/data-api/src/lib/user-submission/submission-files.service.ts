@@ -1,6 +1,6 @@
 import { createReadStream } from 'fs';
 import { mkdir, rename, stat, unlink } from 'fs/promises';
-import { join } from 'path';
+import { join, resolve, sep } from 'path';
 import { Readable } from 'stream';
 
 import {
@@ -36,6 +36,18 @@ export const SUBMISSION_FILE_TYPE = 'submission-file';
 /** Where uploads land while they arrive, inside APP_DATA so the move to their folder is a rename on one disk. */
 export function uploadingDirectory(): string {
   return join(`${process.env.APP_DATA}`, '.uploading');
+}
+
+/**
+ * An upload's path, resolved, when it is inside the uploading folder, and null otherwise. Multer names every upload
+ * `<uuid>.part` there (`SUBMISSION_FILE_UPLOAD`), so this only matters if that ever changes: a file elsewhere is never
+ * moved or deleted on an upload's say-so (CodeQL js/path-injection, #3776).
+ */
+function uploadedFile(upload: Express.Multer.File | undefined): string | null {
+  const folder = resolve(uploadingDirectory());
+  const path = upload?.path ? resolve(upload.path) : null;
+
+  return path && path.startsWith(folder + sep) ? path : null;
 }
 
 /**
@@ -194,19 +206,27 @@ export class SubmissionFilesService {
  * `folder` under APP_DATA. The submissions' files (#2933) and the session speakers' slides (#3093) are kept this way.
  */
 export async function storeUpload(upload: Express.Multer.File, folder: string): Promise<{ guid: string; path: string }> {
+  const uploaded = uploadedFile(upload);
+
+  if (!uploaded) {
+    throw new BadRequestException('The upload is not where uploads are received.');
+  }
+
   const guid = crypto.randomUUID();
   const path = `${folder}/${guid}${extensionOf(upload.originalname)}`;
 
   await mkdir(join(`${process.env.APP_DATA}`, folder), { recursive: true });
-  await rename(upload.path, join(`${process.env.APP_DATA}`, path));
+  await rename(uploaded, join(`${process.env.APP_DATA}`, path));
 
   return { guid, path };
 }
 
 /** Removes what is left of an upload: nothing once `storeUpload` has moved it, the whole file if it was refused. */
 export async function discardUpload(upload: Express.Multer.File | undefined): Promise<void> {
-  if (upload?.path) {
-    await unlink(upload.path).catch(() => undefined);
+  const uploaded = uploadedFile(upload);
+
+  if (uploaded) {
+    await unlink(uploaded).catch(() => undefined);
   }
 }
 
