@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle, listening.
+- **Batch g122** (clean up this machine's branches, worktrees and volumes), since this morning, 26 November.
 
 ## Finished
 - **Batch a56** (report `home/reports/2026-11-25-a56.md`, 2:07 PM Central): #3695, check-in-volume retries a failed read of `/src` once and explains exit 3; 16 new test cases. Branch `fix/3695-clone-retry` at `0aa8133b0`; check-in-volume and pre-pr-check Exit 0.
