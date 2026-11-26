@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch g125** (health-report fixes), in progress: #3732 and #3730 fixed and closed in `4ec2d60c8`; health table and report next.
+- Nothing. Idle, listening.
 
 ## Finished
+- **Batch g125** (report `home/reports/2026-11-26-g125.md`, about 2:00 PM Central): #3732 and #3730 fixed in `4ec2d60c8` on work-mailbox, red first, closed; health reading `42a77592a`, table in the report. One question.
 - **Batch a63** (report `home/reports/2026-11-26-a63.md`, 1:57 PM Central): branch ready `chore/3738-nx-24.0.7` at `6fab646b8`; check and pre-pr-check Exit 0; all six Angular production builds pass; the import reads `architect/node`.
 - **Batch s84** (report `home/reports/2026-11-26-s84.md`, 1:35 PM Central): branch ready `chore/3725-remove-typescript-eslint-utils` at `6366f5e20`, Exit 0; lock diff one root line. Health reading committed (home red: main checkout 34 days behind), filed #3743.
 - **Batch a60** (report `home/reports/2026-11-26-a60.md`, 1:12 PM Central): PR 3724 `Exit 1` - npm ci, lint, test pass; every Angular app's production build fails: Nx 24.0.6 deep-imports `@angular-devkit/architect/node/index.js`, which architect 0.2203.0's exports refuse. Nx 24.0.7 fixes it, clears the 7-day rule 2 December. Lock diff clean. Two questions.
