@@ -1,5 +1,33 @@
 # Laptop: current tasks
 
+## Batch g42 (gisday: open the three finished branches as pull requests; 26 November 2026, from `work (gisday)`) (High) - **now**
+
+**The maintainer's decision (10:50 AM, 26 November):** the work is done and only needs pull requests, and you open them. Everything in flight gets settled, opened and merged before the backlog starts again. In this order:
+
+| Order | Issue | Branch on the fork | Notes |
+| --- | --- | --- | --- |
+| 1 | #3668 (High, security) | `fix/3668-gisday-write-route-guards` (the lab's g224) | `no-visible-change`. **In prose, say only "the routes #3668 names".** The diff shows them, and that's fine |
+| 2 | #3635 | `fix/3635-rsvp-submission-type-routes-img` (your g38: code and screenshots) | Visible: before and after images, plus its release entry. **Open from the `-img` branch, then delete `fix/3635-rsvp-submission-type-routes` from the fork**, so one branch maps to one PR |
+| 3 | #3667 | `chore/3667-remove-initial-survey` (your g39) | `no-visible-change` (nothing linked the page). The body gives the migration's SQL and its up/down result from g39 |
+
+**For each, the new rule (#3706, PR 3709): no `-pr` copies.**
+
+1. Merge the latest `development` into the branch itself.
+2. Take the drafted `.pr-body.md` text, then `git rm .pr-body.md` in a commit on the same branch.
+3. Build the body from `.github/pull_request_template.md`, every section filled, with `Closes #<issue>` and nothing else after a closing keyword.
+4. Run `scripts/pre-pr-check.sh <branch> '<title>' <body file> [projects] [--label no-visible-change]`. Open only on `Exit 0`, and put that last line in the body.
+5. Push, then `gh pr create --repo TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo --base development --head danielgoldbergtamu:<branch>`, ready (not a draft).
+6. Fields, as CLAUDE.md's Pull requests section says:
+   - assignee `danielgoldbergtamu`;
+   - the issue's labels;
+   - project **GIS Day Angular + NestJS**, Status **In Progress**;
+   - the issue's Status to In Progress.
+7. Pin any image link to a commit SHA, and check it answers 200.
+8. Delete `.pr-body.md` from the worktree, and remove the worktree.
+
+**Docker:** this machine is yours, but run one check at a time.
+
+Report `reports/2026-11-26-g42.md` with the three pull request links and each pre-pr-check line. I'll check each and hand the maintainer the merge commands.
 ## Batch g41 (workspace: clean up this machine's branches, worktrees and volumes; 26 November 2026, from `work (gisday)`) (Medium) - **now**
 
 **The maintainer's decision, 26 November:** clean up finished branches on every machine before any new work. The fork
