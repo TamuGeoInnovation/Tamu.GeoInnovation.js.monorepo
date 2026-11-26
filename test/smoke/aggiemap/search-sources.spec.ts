@@ -234,13 +234,34 @@ const TRIP_PLANNER_PARKING_TEXT = fs.readFileSync(
 );
 
 /**
- * The columns the trip planner queries a source on: each `{ searchSource: '<source>', sqlColumns: [...] }`
- * entry in its parking service. A stale column there hid for years because nothing read it (#1169).
+ * Matches one `{ searchSource: '<source>', sqlColumns: [...] }` entry in the trip planner's parking service.
+ *
+ * Comments are allowed between the two keys: #3684 put a twelve-line comment there explaining which field
+ * replaced the retired `TS_GIS.dbo.LOTS.Visitor_Lot`, and a `\s*` between them read that entry as no columns
+ * at all (#3723). A check that silently reads nothing is worse than one that fails, which is why
+ * `everyTripPlannerEntryIsRead` below counts the entries rather than trusting this.
+ */
+const TRIP_PLANNER_ENTRY = /searchSource: '([a-z-]+)',(?:\s|\/\/[^\n]*)*sqlColumns: \[([^\]]*)\]/g;
+
+/**
+ * The columns the trip planner queries a source on. A stale column there hid for years because nothing read
+ * it (#1169).
  */
 function tripPlannerColumns(source: string): string[] {
-  return [...TRIP_PLANNER_PARKING_TEXT.matchAll(/searchSource: '([a-z-]+)',\s*sqlColumns: \[([^\]]*)\]/g)]
+  return [...TRIP_PLANNER_PARKING_TEXT.matchAll(TRIP_PLANNER_ENTRY)]
     .filter((match) => match[1] === source)
     .flatMap((match) => [...match[2].matchAll(/'([^']+)'/g)].map((column) => column[1]));
+}
+
+/**
+ * Every `searchSource:` in the parking service, whether or not the entry parser finds it. The two must agree:
+ * an entry the parser misses is checked against nothing, which is how #3723 passed CI on every pull request.
+ */
+function everyTripPlannerEntryIsRead(): { declared: number; read: number } {
+  return {
+    declared: [...TRIP_PLANNER_PARKING_TEXT.matchAll(/^ *searchSource: '[a-z-]+',$/gm)].length,
+    read: [...TRIP_PLANNER_PARKING_TEXT.matchAll(TRIP_PLANNER_ENTRY)].length
+  };
 }
 
 interface SourceQuery {
@@ -471,7 +492,19 @@ test.describe('search sources on the main map', () => {
     expect(tripPlannerColumns('night-parking'), "night-parking should read the trip planner's column").toEqual([
       'Night_Lot'
     ]);
-    expect(tripPlannerColumns('visitor-parking').length, "visitor-parking should read the trip planner's column").toBe(1);
+    // Every entry the service declares must be one the parser finds. Without this, a formatting change in
+    // the service makes an entry unreadable and its check passes against nothing (#3723).
+    const entries = everyTripPlannerEntryIsRead();
+    expect(entries.read, `the parking service declares ${entries.declared} searchSource entries, read ${entries.read}`).toBe(
+      entries.declared
+    );
+
+    // Two columns, both LotType, because the clause is `LotType = 'GARAGE VISITOR' OR LotType = 'SURFACE VISITOR'`
+    // (#1169). Asserted by content rather than by count: the count is a property of the OR, and asserting it
+    // is what broke when the clause changed.
+    expect(tripPlannerColumns('visitor-parking'), "visitor-parking should read the trip planner's column").toContain(
+      'GIS.TS.ParkingLots.LotType'
+    );
   });
 
   test('every source in search-sources.ts has a case', () => {
