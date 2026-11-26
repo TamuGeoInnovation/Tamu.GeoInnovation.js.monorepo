@@ -43,6 +43,7 @@ the same pull request as the step. Every individual upgrade pull request, by fam
 | 25 Nov 2026 | Dead applications removed | **61 applications became 10** | [#1201](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1201), [#1203](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1203) |
 | 26 Nov 2026 | Vitest 5.1.1 | | [#3701](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3701) |
 | 26 Nov 2026 | **Nx 24.0.6 to 24.0.7**, a seven-day exception | unblocks Angular 22.3 (step 1 below) | [#3738](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3738) |
+| 26 Nov 2026 | The build and test toolchain to its latest as of 26 November, a one-time exception to the seven-day rule | Vite 8.4.0, Vitest 5.1.2, webpack 5.113.0, typescript-eslint 8.74.0 | [#3764](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3764), under [#3763](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3763) |
 
 **Seven Angular majors landed in four days**, 3 to 6 October, each as its own pull request into `development` and each
 gated by the smoke suite. Step by step timings for every rung are in [`angular.md`](angular.md) - that page is the
