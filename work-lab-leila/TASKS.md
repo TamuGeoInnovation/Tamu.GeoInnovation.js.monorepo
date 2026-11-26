@@ -1,5 +1,90 @@
 # work-lab-leila: current tasks
 
+## Batch a58 (aggiemap: the release tier on dev, for the build the maintainer is deploying; 26 November 2026, from `work (aggiemap)`) (High) - **now**
+
+**This is the only thing this machine does until it is finished.** The maintainer's decision. If another director sends
+you a batch while this runs, say you are on a58 and that this one is exclusive.
+
+### Why the release tier and not quick
+
+The maintainer chose `release` on my recommendation, against CLAUDE.md's default of `quick` for a dev build, and the
+reason is the size of this one. Since `dev-2026-11-24-2`:
+
+| | |
+| --- | --- |
+| Commits | **137** |
+| Event/parking map **definition files** changed | **54** |
+| `aggiemap/ngx/popups` files | 41 - the shared popups, so every map |
+| `libs/ts/events/ngx` files | 88 |
+| Smoke suite files changed | **27** |
+
+`quick` selects the core plus what changed since the last `dev-*` tag. With 54 changed definitions that selection
+approaches the whole set anyway - and the shared changes (one markdown popup pair, `viewEvent`, the layer list and
+legend observable, the construction popup date fix) touch **every** map rather than a subset, which is the case `quick`
+cannot reason about.
+
+### Before you start: prove dev is serving the new build
+
+**The deployed page cannot name its commit** (#1306), so this needs a behavioural check. Use today's own work as the
+canary:
+
+1. Open the Construction map's popup for **ARFF Station** on development.
+2. The new build shows its dates as **January 1, 2025** to **December 31, 2026**. The old build shows
+   **December 31, 2024** to **December 30, 2026** - that is #3551, fixed and merged today.
+
+**If you see the old dates, stop and tell me.** The build is not deployed yet and a thirty-minute release run against
+the old one proves nothing. Do not start the suite on a maybe.
+
+### What to run
+
+```
+test/smoke/aggiemap/run-local.sh development release
+```
+
+Not `-x`: let it run through every failure rather than stopping at the first, because the point is a complete picture of
+a 137-commit build.
+
+### Expect exactly one skip, and only one
+
+`scripts/smoke-deployed.sh` runs first and compares the newest `dev-*` tag against
+`test/smoke/aggiemap/deployed-changes.json`. That registry has **one** entry: #2758's bus-routes side panel, whose
+commit `e91a27724` merged at 22:48 on 24 November, **after** the `dev-2026-11-24-2` tag was cut at 14:08. So that one
+check will skip, correctly (#3539), and **everything else runs**.
+
+**If more than that skips, say so** - it would mean the registry or the tag is not what I think it is, and that is worth
+knowing before anyone reads the result as a pass.
+
+### What the report must answer
+
+1. **Per environment, what failed and why** - not pass or fail. Name each failing map and the reason.
+2. **The one skip, confirmed as the only one.**
+3. **Whether any failure is in the suite rather than the application.** 27 smoke suite files changed in this build too -
+   `builder-destinations.ts` and `framing.ts` were unified (#3474), `directions.spec.ts` gained a case (#3696), and
+   there are new specs. A failure could be in either, and telling them apart is the judgement I need from you.
+4. **The elapsed time**, and whether anything timed out rather than failed.
+
+### Do not
+
+- **Do not tag anything.** `scripts/tag-build.sh dev` is the maintainer's, and only if this passes.
+- **Do not deploy or promote anything.**
+- **Do not open a GitHub health issue**: only a GitHub workflow run does that, and a manual run would duplicate it.
+  Report here and on the issue instead.
+- **Do not fix anything you find.** File it as an issue with the evidence and stop - the maintainer is holding new work
+  until the backlog restarts.
+
+**Report** `work-lab-leila/reports/2026-11-26-a58.md`. Questions `Q-a58-<n>`.
+
+### After it passes, one more thing, and only after the maintainer tags
+
+Once a `dev-*` tag exists for this build, the #2758 check stops skipping. Re-run that one spec alone so the clearing
+run is not the only thing that never exercised it:
+
+```
+test/smoke/aggiemap/run-local.sh development one bus.spec.ts
+```
+
+Wait for me to tell you the tag exists; do not poll for it.
+
 ## Batch g226 (workspace: #3708, one health report for every machine; 26 November 2026, from `work (gisday)`) (Medium) - **now**
 
 **Q-g225-1: (a)**, the maintainer's decision. Delete the 52 branches whose commits exist only on this machine, and record each one's last commit in the report, as in g225. **Except** any branch holding images or other work that `development` doesn't have: keep those and list them, with the files, for the maintainer. Do this first. It's short.
