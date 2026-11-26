@@ -88,3 +88,10 @@ export { expect } from '@playwright/test';
  * pass: `test('...', HEAVY, async ({ page }) => ...)`.
  */
 export const HEAVY = { tag: '@heavy' };
+
+/**
+ * A phone's window (#1331, #3722). At this width `ResponsiveService` sets `isMobile` (it flips at 768), so `/map/m/...`
+ * stays on the phone's components. In a wider window `DesktopGuard` sends `/map/m/...` to `/map/d/...`, and a check of a
+ * phone-only element finds the desktop page instead. Set it before navigating: the redirect happens on arrival.
+ */
+export const PHONE_VIEWPORT = { width: 375, height: 812 } as const;
