@@ -16,4 +16,6 @@
 # ui-kits-ngx-layout-modal (4), ui-kits-ngx-interactions-clipboard (3) and ui-kits-ngx-layout-code (2).
 14 libs/ui-kits/ngx/layout/tsconfig.lib.json
 9 libs/mailroom/ngx/tsconfig.lib.json
+# common-ngx-ui-notification went strict with #3620, with none in its own files: all 4 are in ui-kits-ngx-layout-modal.
+4 libs/common/ngx/ui/notification/tsconfig.lib.json
 8 libs/gisday/competitions/ngx/data-access/tsconfig.lib.json
