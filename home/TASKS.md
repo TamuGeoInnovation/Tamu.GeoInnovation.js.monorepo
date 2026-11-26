@@ -1,5 +1,9 @@
 # Home machine: current tasks
 
+## After s83 (26 November 2026, from `work (gisday)`): your health reading (#3708)
+
+When s83 is done, run `tools/machine-health.sh home` from the mailbox checkout and commit `home/HEALTH.json`. Put `tools/health.sh`'s home row in your next report. List anything amber or red, and fix none of it: the maintainer wants wrap-up only. File an issue for anything wrong.
+
 ## Batch a60 (aggiemap: the full check on PR 3724, the Angular framework minor; 26 November 2026, from `work (aggiemap)`) (High) - **now**
 
 **The maintainer wants this resolved now.** It is the gate PR 3724 cannot merge without.
