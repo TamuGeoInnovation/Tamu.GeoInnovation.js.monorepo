@@ -200,6 +200,21 @@ describe('SubmissionComponent', () => {
     expect(postSubmission).toHaveBeenCalledTimes(1);
   });
 
+  /**
+   * #3610. The Submit button waits for a photograph, but the form's own submit (Enter in a field) did not, and sent
+   * the photograph as the text "undefined". A submission without one is not sent, as the button already said.
+   */
+  it('does not send a submission without a photograph', async () => {
+    const fixture = create();
+    watchers[0].ok(position(8));
+    fixture.componentInstance.form.get('fields').get('0').get('value').setValue('monument');
+
+    fixture.componentInstance.submitResponse();
+    await settle();
+
+    expect(postSubmission).not.toHaveBeenCalled();
+  });
+
   it('sends the submission with the location and its accuracy, and no account id', async () => {
     const fixture = create();
     watchers[0].ok(position(8));

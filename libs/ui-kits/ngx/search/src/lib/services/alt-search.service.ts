@@ -40,29 +40,46 @@ export class AltSearchHelper {
    * If the alt lookup definition does not exist, use the result of the original query to map/highlight, and invoke popup.
    */
   public handleSearchResultFeatureSelection<T extends object>(incoming: SearchSelection<T>) {
-    const source = incoming.result.breadcrumbs.source;
+    const altLookup = incoming.result?.breadcrumbs.source?.altLookup;
 
-    if (source && source.altLookup) {
-      const altSource = this._sources.find((s) => s.source === source.altLookup.source);
+    if (altLookup) {
+      // A lookup naming a source that is not configured failed a step later, reading the missing source's url; it
+      // still fails, saying which source (#3495).
+      const altSource = this._sources.find((s) => s.source === altLookup.source);
 
-      const values = getObjectPropertyValues<string>(incoming.selection, source.altLookup.reference.keys);
+      if (!altSource) {
+        throw new Error(`Alt lookup source '${altLookup.source}' is not a configured search source.`);
+      }
 
-      const altSearchResult = this.searchService
-        .search({
-          sources: [altSource],
-          values: [values],
-          stateful: false,
-          returnAsPromise: true
-        })
-        .then((res: SearchResult<esri.Graphic>) => {
-          if (res.results && res.results[0].features.length > 0) {
-            return new SearchSelection({
-              type: 'search',
-              selection: res.results[0].features[0],
-              result: res.results[0]
-            });
-          }
-        });
+      const values = getObjectPropertyValues<string>(incoming.selection, altLookup.reference.keys);
+
+      const pending = this.searchService.search<esri.Graphic>({
+        sources: [altSource],
+        values: [values],
+        stateful: false,
+        returnAsPromise: true
+      });
+
+      if (!pending) {
+        throw new Error(`The alt lookup search on '${altLookup.source}' could not be made.`);
+      }
+
+      // No feature found gives no selection. A lookup answering no result item at all used to throw reading
+      // `results[0].features` instead (#3495).
+      const altSearchResult = pending.then((res: SearchResult<esri.Graphic> | undefined) => {
+        const first = res?.results[0];
+        const feature = first?.features?.[0];
+
+        if (first && feature) {
+          return new SearchSelection({
+            type: 'search',
+            selection: feature,
+            result: first
+          });
+        }
+
+        return undefined;
+      });
 
       return from(altSearchResult);
     } else {
