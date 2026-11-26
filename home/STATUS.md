@@ -14,8 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle since 3:34 PM Central, 26 November.
-- s88 (#3767, `@analogjs` 3) moved to the lab by Security at 3:15 PM Central; not started here.
+- **Batch s89**: started batch s89; reading the @analogjs 3.0 changelog, 3:43 PM Central, 26 November.
 
 ## Finished
 - **Batch s87** (report `home/reports/2026-11-26-s87.md`, 3:34 PM Central): branch ready `chore/3755-jimp-2` at `178f4560b`; jimp 2.2.0 under #3763, `fitImage` keeps 4:4:4 JPEG colour (Q-s87-4 A, red first); output compared in `docs/screenshots/jimp-2/`; check and pre-pr-check Exit 0.
