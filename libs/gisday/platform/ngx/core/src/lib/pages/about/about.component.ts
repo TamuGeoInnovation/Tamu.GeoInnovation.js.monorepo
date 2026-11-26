@@ -40,9 +40,11 @@ export class AboutComponent implements OnInit {
   private readonly placeServices = inject(PlaceService);
   private readonly speakerService = inject(SpeakerService);
 
-  public activeSeason$: Observable<Partial<ActiveSeasonDto>>;
+  /** Null on a site with no season yet (#2076). */
+  public activeSeason$: Observable<Partial<ActiveSeasonDto> | null>;
   public activeSeasonDays$: Observable<Array<Partial<SeasonDay>>>;
-  public dateRange$: Observable<Array<Date>>;
+  /** The first and last days' dates, or null when the season has no days. */
+  public dateRange$: Observable<Array<Date | undefined> | null>;
   public dayCountText$: Observable<string>;
 
   public organizations$: Observable<Array<Partial<Place>>>;
@@ -62,9 +64,7 @@ export class AboutComponent implements OnInit {
 
     this.activeSeasonDays$ = this.activeSeason$.pipe(
       map((season) => season?.days),
-      filter((days) => {
-        return days !== undefined;
-      }),
+      filter((days): days is Array<SeasonDay> => days !== undefined),
       shareReplay()
     );
 
@@ -89,9 +89,9 @@ export class AboutComponent implements OnInit {
           return 'several event-packed days';
         } else if (count === 1) {
           return 'one event-packed day';
-        } else if (count > 1) {
-          return `${numberDictionary[count].toLowerCase()} event-packed days`;
         }
+
+        return `${numberDictionary[count].toLowerCase()} event-packed days`;
       })
     );
   }

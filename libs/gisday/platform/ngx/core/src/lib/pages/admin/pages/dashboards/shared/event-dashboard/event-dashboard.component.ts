@@ -5,7 +5,7 @@ import { Observable, catchError, filter, map, of, switchMap, tap } from 'rxjs';
 
 import { readRefusal, seasonPicker } from '@tamu-gisc/gisday/platform/ngx/common';
 
-import type { RsvpDashboardPerson } from '@tamu-gisc/gisday/platform/data-api';
+import type { RsvpDashboardPerson, Season } from '@tamu-gisc/gisday/platform/data-api';
 import {
   bandOfDays,
   ChartBand,
@@ -253,7 +253,9 @@ export abstract class EventDashboardComponent<D extends DashboardData> implement
     return dashboard ? dashboardSeries(dashboard, this.expandedEvent(), this.seriesLabels) : [];
   });
   /** The chart's lines with the compared seasons', and the day its axis counts from when there are any. */
-  public readonly chart = computed(() => this.comparison()?.compare(this.series()) ?? { series: this.series(), anchor: null });
+  public readonly chart = computed(
+    () => this.comparison()?.compare(this.series()) ?? { series: this.series(), anchor: null }
+  );
   public readonly daily = computed(() => {
     const dashboard = this.dashboard();
 
@@ -282,7 +284,7 @@ export abstract class EventDashboardComponent<D extends DashboardData> implement
 
     this.selectedSeason$
       .pipe(
-        filter((season) => Boolean(season?.guid)),
+        filter((season): season is Partial<Season> & { guid: string } => Boolean(season?.guid)),
         tap(() => {
           this.dashboard.set(null);
           this.failed.set(false);

@@ -11,7 +11,6 @@ import { naturalOrder } from '@tamu-gisc/gisday/common';
  * a search finds them. Moved from the list page unchanged, so both search the same way.
  */
 
-
 /** Last name, then first name, without regard to case or accents (#2860). */
 export function compareByLastName(a: Partial<Speaker>, b: Partial<Speaker>): number {
   return (
@@ -25,7 +24,12 @@ export function compareByLastName(a: Partial<Speaker>, b: Partial<Speaker>): num
  */
 export function matchesSearch(speaker: Partial<Speaker>, search: string): boolean {
   return matchesText(
-    [`${speaker.firstName ?? ''} ${speaker.lastName ?? ''}`, speaker.organization?.name, speaker.university?.name, speaker.university?.acronym],
+    [
+      `${speaker.firstName ?? ''} ${speaker.lastName ?? ''}`,
+      speaker.organization?.name,
+      speaker.university?.name,
+      speaker.university?.acronym
+    ],
     search
   );
 }
@@ -54,7 +58,7 @@ export function presentersForRoute(
         return speakerService.getParticipatingPresenters();
       }
 
-      return season ? speakerService.getParticipatingPresentersForSeason(season.guid) : of([]);
+      return season?.guid ? speakerService.getParticipatingPresentersForSeason(season.guid) : of([]);
     }),
     map((speakers) => [...speakers].sort(compareByLastName)),
     shareReplay(1)

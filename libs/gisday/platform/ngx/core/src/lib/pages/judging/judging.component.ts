@@ -144,7 +144,7 @@ export class JudgingComponent implements OnInit {
   }
 
   /** The scores and comment of one submission, for its card. */
-  public formFor(submission: JudgeSubmissionDto): FormGroup {
+  public formFor(submission: JudgeSubmissionDto): FormGroup | undefined {
     return this.forms.get(submission.guid);
   }
 
