@@ -23,7 +23,7 @@ kind of debt #1218 described.
 ## How we got here
 
 **The record, so it never has to be recomputed from issues and pull requests again.** Add a row when a step lands, in
-the same pull request as the step.
+the same pull request as the step. Every individual upgrade pull request, by family, is in [`history.md`](history.md).
 
 | Landed | Step | Where it got to | Issue |
 | --- | --- | --- | --- |
@@ -42,6 +42,7 @@ the same pull request as the step.
 | 25 Nov 2026 | **Node 24.22.3 everywhere**, matching the API images | | [#3545](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3545) |
 | 25 Nov 2026 | Dead applications removed | **61 applications became 10** | [#1201](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1201), [#1203](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1203) |
 | 26 Nov 2026 | Vitest 5.1.1 | | [#3701](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3701) |
+| 26 Nov 2026 | **Nx 24.0.6 to 24.0.7**, a seven-day exception | unblocks Angular 22.3 (step 1 below) | [#3738](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3738) |
 
 **Seven Angular majors landed in four days**, 3 to 6 October, each as its own pull request into `development` and each
 gated by the smoke suite. Step by step timings for every rung are in [`angular.md`](angular.md) - that page is the
@@ -66,7 +67,7 @@ All four are done, including the one it called the genuinely hard migration.
 
 The order is forced where it says so. Everything else can be taken in any order.
 
-### 1. Nx 24.0.6 → 24.0.7 — **the gate, do this first**
+### 1. Nx 24.0.6 → 24.0.7 — **done** 26 November 2026 ([PR 3753](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3753))
 
 **Every Angular minor is blocked until this lands.** Angular 22.3.0 tightens `@angular-devkit/architect`'s `exports`
 map, and Nx 24.0.6 imports a subpath that is no longer in it:
@@ -107,6 +108,10 @@ This is the one place in this document where "behind" is the right state.
 
 ### 5. TypeScript 6.0.3 → 7.0.2 — a major
 
+**Blocked, twice over.** Angular 22.3 peers `typescript >=6.0 <6.1`, and Nx 24.0.7 peers `^5.8.0 || ^6.0.0`. TypeScript 7.1,
+where the compiler API Angular needs is meant to land, is still a beta. Neither framework accepts 7 yet, so there is nothing
+to do until both say they do ([#1918](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1918)).
+
 Check first what Angular 22 and Nx 24 support. A TypeScript major with the framework not ready for it is the kind of
 upgrade that cannot be shipped in one pull request, which is the lesson of
 [PR 450](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/450): opened October 2025, went 349
@@ -118,7 +123,6 @@ commits behind, retired rather than merged.
 | --- | --- | --- | --- |
 | `@jimp/*` (4 packages) | 1.6.1 | 2.2.0 | Used by `libs/common/node/images` and GIS Day speaker photos. Image output is worth comparing before and after, not just compiling |
 | `@analogjs/vite-plugin-angular`, `@analogjs/vitest-angular` | 2.9.2 | 3.0.0 | The Angular/vitest bridge: coupled to both, so take it after step 2 |
-| `jsdom` | 30.1.3 | 31.0.1 | Test environment only |
 
 ### 7. Everything else — 30 minors and patches
 
