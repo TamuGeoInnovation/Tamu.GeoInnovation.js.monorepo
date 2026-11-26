@@ -191,7 +191,7 @@ test.describe('basemap gallery', () => {
       const params = new URLSearchParams(query);
 
       if (
-        !request.url().includes('api.nearmap.com') ||
+        new URL(request.url()).hostname !== 'api.nearmap.com' ||
         !/^getmap$/i.test(params.get('request') ?? params.get('REQUEST') ?? '')
       ) {
         return;

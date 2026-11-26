@@ -91,7 +91,7 @@ export function fromKnip(report) {
   return { files: [...files].sort(), deps };
 }
 
-const cell = (s) => String(s).replace(/\|/g, '\\|');
+const cell = (s) => String(s).replace(/[\\|]/g, '\\$&');
 
 export function vulnerabilityTable(all, prod, acceptedJson) {
   const out = ['## 1. Vulnerabilities', ''];
@@ -186,7 +186,7 @@ async function fetchTimes(names) {
   async function worker() {
     while (i < names.length) {
       const name = names[i++];
-      const res = await fetch(`https://registry.npmjs.org/${name.replace('/', '%2F')}`);
+      const res = await fetch(`https://registry.npmjs.org/${name.replaceAll('/', '%2F')}`);
       if (res.ok) {
         const doc = await res.json();
         out[name] = { time: doc.time || {}, latest: (doc['dist-tags'] || {}).latest || null };

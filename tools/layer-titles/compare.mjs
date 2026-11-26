@@ -120,7 +120,8 @@ for (const [file, list] of Object.entries(byFile)) {
   for (const t of list) {
     if (!t.defsName) continue;
 
-    const line = new RegExp('^[ \t]*title:[ \t]*' + t.defsName + '\.' + t.key + '\.name,[ \t]*\r?\n', 'm');
+    // `'\.'` in a plain string is `.`, any character; String.raw keeps the backslash (CodeQL, #3776).
+    const line = new RegExp(String.raw`^[ \t]*title:[ \t]*${t.defsName}\.${t.key}\.name,[ \t]*\r?\n`, 'm');
 
     while (line.test(text)) {
       text = text.replace(line, '');

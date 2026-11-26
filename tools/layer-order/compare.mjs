@@ -122,7 +122,8 @@ for (const file of fs.readdirSync(DEFS).filter((f) => f.endsWith('.definitions.t
     }
 
     // To the closing brace on its own line: enum comments here contain `${...}`, so a [^}] run stops short.
-    const enumBlock = text.match(new RegExp('enum ' + passed[1] + '\s*\{\n([\s\S]*?)\n\}'));
+    // A plain string drops a lone backslash, so `'\s'` was `s` and this never matched an enum (CodeQL, #3776).
+    const enumBlock = text.match(new RegExp(String.raw`enum ${passed[1]}\s*\{\n([\s\S]*?)\n\}`));
 
     if (!enumBlock) {
       continue;

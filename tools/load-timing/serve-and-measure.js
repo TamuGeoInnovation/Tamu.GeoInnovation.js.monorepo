@@ -12,8 +12,10 @@ const types = { '.js': 'text/javascript', '.css': 'text/css', '.html': 'text/htm
 const cache = new Map();
 
 const server = http.createServer((req, res) => {
-  let file = path.join(dir, decodeURIComponent(req.url.split('?')[0]));
-  if (!fs.existsSync(file) || fs.statSync(file).isDirectory()) file = path.join(dir, 'index.html');
+  const root = path.resolve(dir);
+  let file = path.join(root, decodeURIComponent(req.url.split('?')[0]));
+  // Only files inside the build; anything else gets index.html, as an unknown path does (#3776).
+  if (!file.startsWith(root + path.sep) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) file = path.join(root, 'index.html');
   const ext = path.extname(file);
   const compress = ['.js', '.css', '.html', '.json', '.svg'].includes(ext);
   if (!cache.has(file)) {

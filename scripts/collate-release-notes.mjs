@@ -99,7 +99,7 @@ function parseEntry(file, source) {
 
   if (!declared) {
     const gisday = GISDAY_HOSTS.filter((host) =>
-      new RegExp(`https?://(?:www\\.)?${host.replace(/\./g, '\\.')}`, 'i').test(head + body)
+      new RegExp(`https?://(?:www\\.)?${host.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'i').test(head + body)
     );
     if (gisday.length) {
       problems.push(

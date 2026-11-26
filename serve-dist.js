@@ -3,7 +3,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-const root = process.argv[2];
+const root = path.resolve(process.argv[2]);
 const types = {
   '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json',
   '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.svg': 'image/svg+xml',
@@ -15,7 +15,8 @@ http.createServer((req, res) => {
   const url = decodeURIComponent(req.url.split('?')[0]);
   let file = path.join(root, url);
 
-  if (!file.startsWith(root) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) {
+  // Only files inside the build: `root + sep`, so a sibling folder whose name starts with the build's is not (#3776).
+  if (!file.startsWith(root + path.sep) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) {
     file = path.join(root, 'index.html');
   }
 
