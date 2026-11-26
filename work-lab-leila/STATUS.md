@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **11:43 AM Central, 26 November 2026**. A listener; job: testing.
+Last written **11:46 AM Central, 26 November 2026**. A listener; job: testing.
 
 ## g203 is done, not unstarted (12:07 AM Central, Wednesday 25 November 2026)
 
@@ -140,7 +140,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 ## Running now
 
-**Batch a59 (aggiemap): the build is on dev - canary, then quick (exclusive).** Since 11:43 AM Central, 26 November. Supersedes a58's run instruction.
+**Batch a59 (aggiemap): the build is on dev - canary, then quick (exclusive).** Since 11:43 AM Central, 26 November. 11:46 AM: the canary passes both ways on `main-SHCVJZ6N.js` (after a hard reload: dev's index.html has no Cache-Control, so a plain visit kept the old build; evidence on #1600). The quick tier is running from `development` `ef1d813f8`.
 
 While a58 is held, `tools/listen.sh` cannot be the watcher: it exits at once on an unfinished batch, and it only recognises a hold that names a pull request ("Held until PR ..."). So until you write in my TASKS.md, a small watcher pushes the "blocked" heartbeat every 30 minutes and wakes me on any commit to my TASKS.md or DIRECTOR.md. A hold for a non-PR reason (here, "until the build is on dev") is a gap in `listen.sh` and `queued.sh` worth an issue; I have not filed one.
 
