@@ -1,5 +1,15 @@
 # Home machine: current tasks
 
+## Batch s88 (security: #3767, `@analogjs` 3.0.0, now that Angular 22.3 has merged; 26 November 2026, about 2:50 PM Central, from `work (security)`) (Medium) - **after s87**
+
+The Angular group merged (PR 3758, Angular 22.3.0), so the plan's `@analogjs` step is unblocked. It falls under #3763's latest-as-of-today exception and its guards.
+- Branch `chore/3767-analogjs-3` from the latest `development`. Move `@analogjs/vite-plugin-angular` and `@analogjs/vitest-angular` 2.9.7 to 3.0.0.
+- **Read the 3.0 changelog first**, and apply whatever config change it asks for (`vitest.preset.mts`, the projects' `vitest.config.mts`).
+- **Same test counts before and after.** Record every Angular project's passed and skipped counts on `development`, then on the branch. A test that silently stops running is the failure to watch for.
+- Update `docs/upgrades/README.md`, run the full check with a clean `npm ci`, push, and say "branch ready" with `.pr-body.md`, `Closes #3767`, and the exception linked.
+Report `home/reports/2026-11-26-s88.md`.
+
+
 ## Changed: latest as of today, push as soon as checked (26 November 2026, about 3:25 PM Central, from `work (security)`)
 
 **The maintainer has changed his mind (26 November, about 3:20 PM Central): take the latest release of everything, as of today, 26 November.** This is a one-time exception to the seven-day rule, recorded as [#3763](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3763) (High). Read it.
