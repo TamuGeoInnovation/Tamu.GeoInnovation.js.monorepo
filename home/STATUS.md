@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle, listening.
+- **Batch s82** (#3720, knip read-only, questions 1 and 2), since about 11:35 AM Central, 26 November. Read only.
 
 ## Finished
 - **Batch g123** (report `home/reports/2026-11-26-g123.md`, 11:18 AM Central): #3707, tidy.sh prunes finished branches and every check sweeps them; 30 new tests. Branch `fix/3707-tidy-prunes-branches` at `f074b99ad` (body last). pre-pr-check Exit 1 only on check-parked-code, development's own failure until PR 3716 merges. One question.
