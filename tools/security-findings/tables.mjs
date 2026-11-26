@@ -91,7 +91,7 @@ export function fromKnip(report) {
   return { files: [...files].sort(), deps };
 }
 
-const cell = (s) => String(s).replace(/\|/g, '\\|');
+const cell = (s) => String(s).replace(/[\\|]/g, '\\$&');
 
 export function vulnerabilityTable(all, prod, acceptedJson) {
   const out = ['## 1. Vulnerabilities', ''];
@@ -110,12 +110,24 @@ export function vulnerabilityTable(all, prod, acceptedJson) {
       const own = (info.via || []).filter((v) => v && typeof v === 'object');
       const what = own.length ? own.map((v) => v.title).join('; ') : `through ${(info.via || []).join(', ')}`;
       const f = info.fixAvailable;
-      const fix = f === false ? 'no fix' : f === true ? 'fix in range' : f && f.name ? `${f.name} ${f.version}${f.isSemVerMajor ? ' (a major)' : ''}` : '';
+      const fix =
+        f === false
+          ? 'no fix'
+          : f === true
+            ? 'fix in range'
+            : f && f.name
+              ? `${f.name} ${f.version}${f.isSemVerMajor ? ' (a major)' : ''}`
+              : '';
       const sev = String(info.severity);
       const status = issueOf.has(name)
         ? `accepted (${issueOf.get(name).replace(/.*\/issues\//, '#')})`
-        : ['critical', 'high'].includes(sev) ? '**NOT ACCEPTED**' : 'not acted on (below High)';
-      return { sev, row: `| ${sev} | \`${name}\` | ${prodNames.has(name) ? 'production' : 'dev only'} | ${cell(what)} | ${fix} | ${status} |` };
+        : ['critical', 'high'].includes(sev)
+          ? '**NOT ACCEPTED**'
+          : 'not acted on (below High)';
+      return {
+        sev,
+        row: `| ${sev} | \`${name}\` | ${prodNames.has(name) ? 'production' : 'dev only'} | ${cell(what)} | ${fix} | ${status} |`
+      };
     })
     .sort((x, y) => SEVERITIES.indexOf(x.sev) - SEVERITIES.indexOf(y.sev));
   if (rows.length) {
@@ -128,13 +140,19 @@ export function vulnerabilityTable(all, prod, acceptedJson) {
 }
 
 export function latestTable(pkg, lock, registry, now, holds = []) {
-  const out = ['## 2. Latest (#1218)', '', `Target: the newest stable release at least ${COOLDOWN_DAYS} days old (CLAUDE.md, #2333).`, ''];
+  const out = [
+    '## 2. Latest (#1218)',
+    '',
+    `Target: the newest stable release at least ${COOLDOWN_DAYS} days old (CLAUDE.md, #2333).`,
+    ''
+  ];
   const direct = { ...(pkg.devDependencies || {}), ...(pkg.dependencies || {}) };
   const groups = { current: [], patch: [], minor: [], major: [] };
   const waiting = [];
   const unknown = [];
   for (const name of Object.keys(direct).sort()) {
-    const installed = lock.packages && lock.packages[`node_modules/${name}`] && lock.packages[`node_modules/${name}`].version;
+    const installed =
+      lock.packages && lock.packages[`node_modules/${name}`] && lock.packages[`node_modules/${name}`].version;
     const doc = registry[name];
     const t = doc ? (doc.time ? targets(doc.time, now, COOLDOWN_DAYS, doc.latest) : targets(doc, now)) : null;
     if (!installed || !t || !t.eligible) {
@@ -154,8 +172,12 @@ export function latestTable(pkg, lock, registry, now, holds = []) {
   out.push(`| A minor behind | ${groups.minor.length} | ${list(groups.minor)} |`);
   out.push(`| A major behind | ${groups.major.length} | ${list(groups.major)} |`);
   out.push(`| Newer, but under ${COOLDOWN_DAYS} days old | ${waiting.length} | ${waiting.join(', ') || '-'} |`);
-  if (unknown.length) out.push(`| Not compared (no stable release found) | ${unknown.length} | ${unknown.map((n) => `\`${n}\``).join(', ')} |`);
-  if (holds.length) out.push('', `Held on purpose in \`.github/dependabot.yml\`: ${holds.map((h) => `\`${h}\``).join(', ')}.`);
+  if (unknown.length)
+    out.push(
+      `| Not compared (no stable release found) | ${unknown.length} | ${unknown.map((n) => `\`${n}\``).join(', ')} |`
+    );
+  if (holds.length)
+    out.push('', `Held on purpose in \`.github/dependabot.yml\`: ${holds.map((h) => `\`${h}\``).join(', ')}.`);
   return out.join('\n');
 }
 
@@ -170,7 +192,10 @@ export function unusedTable(knip, roots, excluded = []) {
   out.push('| Area | Count | Which |', '| --- | --- | --- |');
   out.push(`| Unused dependencies (knip) | ${deps.length} | ${deps.map((d) => `\`${d.name}\``).join(', ') || '-'} |`);
   out.push(`| Unused files (knip) | ${files.length} | in ${byProject.size} project(s), below |`);
-  out.push(`| Projects CI does not build (\`build.yml\`) | ${excluded.length} | ${excluded.map((e) => `\`${e}\``).join(', ') || '-'} |`, '');
+  out.push(
+    `| Projects CI does not build (\`build.yml\`) | ${excluded.length} | ${excluded.map((e) => `\`${e}\``).join(', ') || '-'} |`,
+    ''
+  );
   if (byProject.size) {
     out.push('| Project | Unused files |', '| --- | --- |');
     for (const [p, fs] of [...byProject].sort((x, y) => y[1].length - x[1].length || x[0].localeCompare(y[0]))) {
@@ -186,7 +211,7 @@ async function fetchTimes(names) {
   async function worker() {
     while (i < names.length) {
       const name = names[i++];
-      const res = await fetch(`https://registry.npmjs.org/${name.replace('/', '%2F')}`);
+      const res = await fetch(`https://registry.npmjs.org/${name.replaceAll('/', '%2F')}`);
       if (res.ok) {
         const doc = await res.json();
         out[name] = { time: doc.time || {}, latest: (doc['dist-tags'] || {}).latest || null };
@@ -208,15 +233,20 @@ async function main(argv) {
   const lock = json('--lock');
   const names = Object.keys({ ...(pkg.devDependencies || {}), ...(pkg.dependencies || {}) });
   const registry = arg('--registry') ? json('--registry') : await fetchTimes(names);
-  const roots = arg('--roots') ? readFileSync(arg('--roots'), 'utf8').split('\n').map((s) => s.trim()).filter(Boolean) : [];
+  const roots = arg('--roots')
+    ? readFileSync(arg('--roots'), 'utf8')
+        .split('\n')
+        .map((s) => s.trim())
+        .filter(Boolean)
+    : [];
   const excluded = (arg('--excluded') || '').split(',').filter(Boolean);
   const holds = (arg('--holds') || '').split(',').filter(Boolean);
   console.log(
     [
       vulnerabilityTable(json('--audit-all'), json('--audit-prod'), json('--accepted')),
       latestTable(pkg, lock, registry, now, holds),
-      unusedTable(json('--knip'), roots, excluded),
-    ].join('\n\n'),
+      unusedTable(json('--knip'), roots, excluded)
+    ].join('\n\n')
   );
 }
 

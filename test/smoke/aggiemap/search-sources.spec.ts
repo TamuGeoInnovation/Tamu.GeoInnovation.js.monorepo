@@ -240,8 +240,11 @@ const TRIP_PLANNER_PARKING_TEXT = fs.readFileSync(
  * replaced the retired `TS_GIS.dbo.LOTS.Visitor_Lot`, and a `\s*` between them read that entry as no columns
  * at all (#3723). A check that silently reads nothing is worse than one that fails, which is why
  * `everyTripPlannerEntryIsRead` below counts the entries rather than trusting this.
+ *
+ * A comment runs to its line's end, newline included, so two comments on one line cannot be read two ways, which
+ * backtracked exponentially on a long run of them (CodeQL js/redos, #3776).
  */
-const TRIP_PLANNER_ENTRY = /searchSource: '([a-z-]+)',(?:\s|\/\/[^\n]*)*sqlColumns: \[([^\]]*)\]/g;
+const TRIP_PLANNER_ENTRY = /searchSource: '([a-z-]+)',(?:\s|\/\/[^\n]*\n)*sqlColumns: \[([^\]]*)\]/g;
 
 /**
  * The columns the trip planner queries a source on. A stale column there hid for years because nothing read
