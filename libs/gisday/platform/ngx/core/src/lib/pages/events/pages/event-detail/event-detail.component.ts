@@ -97,7 +97,8 @@ export class EventDetailComponent implements OnInit, OnDestroy {
 
   public appRoles = GISDayRoles;
 
-  public event$: Observable<Partial<Event>>;
+  /** The session, found by the guid in the address, so it has one. */
+  public event$: Observable<SessionWithGuid>;
   public presenters$: Observable<Array<Partial<Speaker>>>;
   public isLoggedIn$: Observable<boolean> = this.auth.isAuthenticated$;
   public userInfo$: Observable<Partial<GisDayAppMetadata>>;
@@ -136,7 +137,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   /**
    * Why the last check-in did not work, shown beside the button.
    */
-  public readonly checkInFailure = signal<string>(undefined);
+  public readonly checkInFailure = signal<string | undefined>(undefined);
 
   public readonly checkInCodeMessage = CHECK_IN_CODE_MESSAGE;
 
@@ -150,12 +151,12 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   /**
    * The link in the session's check-in QR code, once an organizer has asked for it (#2560).
    */
-  public readonly checkInLink = signal<string>(undefined);
+  public readonly checkInLink = signal<string | undefined>(undefined);
 
   /**
    * Why the check-in QR code could not be shown, such as an account without `create:checkins`.
    */
-  public readonly checkInCodeFailure = signal<string>(undefined);
+  public readonly checkInCodeFailure = signal<string | undefined>(undefined);
 
   private _refresh$: Subject<boolean> = new Subject();
   private _destroy$: Subject<boolean> = new Subject();
@@ -174,9 +175,8 @@ export class EventDetailComponent implements OnInit, OnDestroy {
       switchMap(() => {
         return this.auth.user$;
       }),
-      switchMap((user) => {
-        return this.us.getUserMetadata(user.sub);
-      }),
+      // Signed in, there is always a subject; without one there is no profile to read.
+      switchMap((user) => (user?.sub ? this.us.getUserMetadata(user.sub) : EMPTY)),
       shareReplay()
     );
 
@@ -205,6 +205,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
           })
         )
       ),
+      filter((event): event is SessionWithGuid => typeof event?.guid === 'string'),
       shareReplay()
     );
 
@@ -465,7 +466,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   /**
    * Shows an organizer the session's check-in QR code, which holds a link to its check-in page with the code (#3081).
    */
-  public showCheckInCode(event: Partial<Event>) {
+  public showCheckInCode(event: SessionWithGuid) {
     this.checkInCodeFailure.set(undefined);
 
     this.checkinService.getCheckInCode(event.guid).subscribe({
@@ -488,7 +489,9 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   /**
    * Where the attendee is, and how accurately, when the event needs it; nothing otherwise.
    */
-  private _checkInPosition(event: Partial<Event>): Observable<{ latitude: number; longitude: number; accuracy: number }> {
+  private _checkInPosition(
+    event: Partial<Event>
+  ): Observable<{ latitude: number; longitude: number; accuracy: number } | undefined> {
     if (!this.needsCheckInLocation(event)) {
       return of(undefined);
     }
@@ -588,13 +591,20 @@ export function sessionCheckInRows(
   checkIns: Array<Partial<CheckIn>>,
   users: Array<Partial<Auth0UserProfile>>
 ): Array<SessionCheckInRow> {
-  const byId = new Map((users ?? []).filter((u) => u?.user_info?.id).map((u) => [u.user_info.id, u.user_info]));
+  const byId = new Map<string, NonNullable<Auth0UserProfile['user_info']>>();
+
+  for (const u of users ?? []) {
+    if (u?.user_info?.id) {
+      byId.set(u.user_info.id, u.user_info);
+    }
+  }
 
   return (checkIns ?? []).map((c) => {
-    const user = byId.get(c.accountGuid);
+    const user = c.accountGuid ? byId.get(c.accountGuid) : undefined;
 
     return {
-      who: user?.name || user?.email || c.accountGuid,
+      // A check-in always has its account; an empty name rather than none if one ever did not.
+      who: user?.name || user?.email || c.accountGuid || '',
       email: user?.name && user?.email ? user.email : undefined,
       at: c.created ? formatCentral(c.created, CENTRAL_TIME) : '',
       outsideSessionTime: c.outsideSessionTime === true
@@ -628,3 +638,6 @@ function checkInFailureMessage(err: unknown): string {
       return 'Your location could not be found. Turn on location services, then try again.';
   }
 }
+
+/** A session as this page shows it: found by its guid, so it has one. */
+type SessionWithGuid = Partial<Event> & { guid: string };

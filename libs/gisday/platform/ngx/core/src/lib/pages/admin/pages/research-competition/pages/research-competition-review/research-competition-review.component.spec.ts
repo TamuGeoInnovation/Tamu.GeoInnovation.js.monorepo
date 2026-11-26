@@ -80,3 +80,35 @@ describe('ResearchCompetitionReviewComponent, Submit Review', () => {
     expect(backToList).not.toHaveBeenCalled();
   });
 });
+
+/** #3627: a submission read without its acceptance opens as not accepted, the column's default, rather than failing. */
+describe('ResearchCompetitionReviewComponent, a submission without its acceptance', () => {
+  it('shows it as not accepted', () => {
+    const GUID = '0f8c9a52-1b2c-4d3e-8f4a-5b6c7d8e9f02';
+
+    TestBed.configureTestingModule({
+      imports: [ResearchCompetitionReviewComponent],
+      providers: [
+        provideRouter([]),
+        { provide: ActivatedRoute, useValue: { params: of({ guid: GUID }) } },
+        {
+          provide: UserSubmissionsService,
+          useValue: { getEntity: () => of({ guid: GUID, title: 'Flood maps', message: 'Booth 4.', participants: [] }) }
+        },
+        { provide: SeasonService, useValue: {} },
+        { provide: ModalService, useValue: { open: vi.fn(), isOpen: of(false) } },
+        { provide: NotificationService, useValue: { toast: vi.fn() } }
+      ]
+    }).overrideComponent(ResearchCompetitionReviewComponent, {
+      remove: { imports: [SubmissionFilesComponent] },
+      add: { imports: [FilesStubComponent] }
+    });
+
+    const fixture = TestBed.createComponent(ResearchCompetitionReviewComponent);
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.form.getRawValue()).toEqual(
+      expect.objectContaining({ guid: GUID, acceptance: 'false', message: 'Booth 4.' })
+    );
+  });
+});
