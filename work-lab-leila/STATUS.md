@@ -140,7 +140,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 ## Running now
 
-Nothing. Idle since 11:01 AM Central, 26 November; listening.
+**Batch a58 (aggiemap): the release tier on dev - exclusive until finished.** Since 11:01 AM Central, 26 November. Checking that dev serves the new build first.
 
 ## Finished
 
