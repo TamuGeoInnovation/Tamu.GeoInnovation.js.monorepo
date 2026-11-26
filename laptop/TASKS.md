@@ -1,5 +1,23 @@
 # Laptop: current tasks
 
+## Batch g44 (gisday: wrap-up after today's merges; 26 November 2026, from `work (gisday)`) (High) - **now**
+
+**The maintainer:** wrap up what's in flight, start nothing new, and log issues for anything found. This batch is wrap-up only. File an issue for anything wrong (fields as CLAUDE.md says, Priority by estimate), and don't fix it.
+
+1. **Your health reading (#3708).** Run `tools/machine-health.sh laptop` from the mailbox checkout. Commit `laptop/HEALTH.json`. Put `tools/health.sh`'s laptop row in the report. Fix nothing it shows: list anything amber or red.
+2. **Your leftovers from g41:**
+   - **`wt-3327`'s four untracked screenshots** (`docs/screenshots/3327-form-data-false-values/`). PR 3349 merged without them. Compare them with the images PR 3349's body links. If they're the same captures, or older ones, delete the worktree and branch, recording the tip. If they're different and better, keep them and say so.
+   - **`fix/3593-competitions-ngx-core-strict`:** its pull request (3642, opened from a `-pr` copy) merged. If every file it touches has been in `development` at some point, delete it and record the tip. Otherwise keep it and list the files.
+3. **Today's GIS Day merges, signed in (txgisday-dev only, made-up data).** About twenty pull requests merged into GIS Day's code today, most of them type-strictness changes in shared form, layout, modal, search, settings and notification libraries, plus zoneless (3690) and RSVP and submission types (3711). Run GIS Day locally on the latest `development` and open:
+   - the public pages (home, sessions, presenters, competitions, sponsors, FAQ);
+   - signed in as an admin: every Admin list and its Add and Edit forms, especially RSVP Types and Submission Types (add one, edit it);
+   - registration;
+   - the competitions designer and a submission form;
+   - a modal (Copy, or any confirm);
+   - the judging tabs.
+
+   Watch the browser console for errors, and for any field that fails to save or to show a saved value. One screenshot per area into the report. **Anything broken becomes an issue at once** (Bug, High if an admin can't save), with the page, the steps and the console error.
+4. Report `reports/2026-11-26-g44.md`.
 ## Batch a62 (aggiemap: #3722, the phone accessible-toggle check never reaches the phone; 26 November 2026, from `work (aggiemap)`) (High) - **medium**
 
 **This is yours because it needs a phone-sized window, and the lab could not make one.** It is one of three fixes
