@@ -409,12 +409,13 @@ src="$(cd "$main" && pwd -W)"
 # nobody is made to do decays exactly as writing the release notes afterwards did (#1132, #3400).
 if sweep_needed "$here"; then
   echo "Below ${CHECK_SWEEP_FREE_GB:-60} GiB free: clearing worktrees and volumes whose work has merged."
-  "$(dirname "${BASH_SOURCE[0]}")/tidy.sh" --yes || echo "The sweep did not finish; carrying on." >&2
+  # Never the branch about to be checked: the sweep runs before the container fetches it (#3756).
+  TIDY_KEEP_BRANCH="$branch" "$(dirname "${BASH_SOURCE[0]}")/tidy.sh" --yes || echo "The sweep did not finish; carrying on." >&2
 else
   # Finished branches and their worktrees on every check, whatever the free disk: that part is cheap, and waiting for
   # the watermark let one machine reach 789 branches, 732 of them finished (#3707). Only what it removed is shown.
   sweep_log="$(mktemp)"
-  "$(dirname "${BASH_SOURCE[0]}")/tidy.sh" --branches > "$sweep_log" 2>&1 || echo "The branch sweep did not finish; carrying on." >&2
+  TIDY_KEEP_BRANCH="$branch" "$(dirname "${BASH_SOURCE[0]}")/tidy.sh" --branches > "$sweep_log" 2>&1 || echo "The branch sweep did not finish; carrying on." >&2
   grep -E '^  (removed |COULD NOT REMOVE)|could not be removed' "$sweep_log" || true
   rm -f "$sweep_log"
 fi

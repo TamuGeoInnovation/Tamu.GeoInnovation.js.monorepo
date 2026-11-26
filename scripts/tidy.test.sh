@@ -313,6 +313,46 @@ check 'nor a local copy of one, however it is named' 'keep' "$(verdict mb-gisday
 check 'nor a branch with mailbox anywhere in its name' 'keep' "$(verdict mailbox-copy 0 1 0 0 - 100)"
 check 'nor a branch held by a worktree that is kept' 'keep' "$(verdict fix/7-g 1 1 0 0 - 100)"
 
+# #3756: "on a remote" means any remote, not only the fork. Dependabot's branches live on origin and were never on the
+# fork, so the sweep read them as "fork branch gone" and deleted one a moment before its own check fetched it.
+check 'a branch origin still has stays: open work (#3756)' 'keep' "$(verdict dependabot/npm_and_yarn/x 0 0 0 1 - 100 1)"
+check 'even when its pull request has merged, while a remote still has it' 'keep' "$(verdict fix/8-h 0 1 0 1 200 150 1)"
+# #3756: a branch never pushed anywhere is never pruned. With commits, they are on no remote; with none yet (just
+# started, its tip still on development), "tip in development" must not read as "merged".
+check 'a branch never pushed, with commits, stays' 'keep' "$(verdict fix/9-i 0 0 2 0 - 100 0)"
+check 'a branch never pushed and not yet committed to stays' 'keep' "$(verdict fix/10-j 0 1 0 0 - 100 0)"
+r=no; case "$(branch_verdict fix/10-j 0 1 0 0 - 100 0)" in *'never pushed'*) r=yes ;; esac
+check 'and says it was never pushed' 'yes' "$r"
+check 'one that was pushed and whose tip is in development still goes' 'prune' "$(verdict fix/11-k 0 1 0 0 - 100 1)"
+
+# #3756: whether any remote has a branch, and whether a branch was published, read from a real repository.
+remotes_repo="$tmp/remotes"
+git init -q -b development "$remotes_repo"
+git -C "$remotes_repo" -c user.name=t -c user.email=t@t commit -q --allow-empty -m base
+tip_sha="$(git -C "$remotes_repo" rev-parse HEAD)"
+git -C "$remotes_repo" update-ref refs/remotes/origin/dependabot/npm_and_yarn/x "$tip_sha"
+git -C "$remotes_repo" update-ref refs/remotes/fork/fix/1-mine "$tip_sha"
+check 'a branch origin has is on a remote' 'yes' "$(on_a_remote "$remotes_repo" dependabot/npm_and_yarn/x && echo yes || echo no)"
+check 'a branch the fork has is on a remote' 'yes' "$(on_a_remote "$remotes_repo" fix/1-mine && echo yes || echo no)"
+check 'a branch no remote has is not' 'no' "$(on_a_remote "$remotes_repo" fix/2-gone && echo yes || echo no)"
+check 'a name that only ends the same is not' 'no' "$(on_a_remote "$remotes_repo" x && echo yes || echo no)"
+git -C "$remotes_repo" branch fix/3-tracked
+git -C "$remotes_repo" config branch.fix/3-tracked.remote fork
+git -C "$remotes_repo" config branch.fix/3-tracked.merge refs/heads/fix/3-tracked
+git -C "$remotes_repo" branch fix/4-local
+check 'a branch with an upstream was published' 'yes' "$(was_published "$remotes_repo" fix/3-tracked && echo yes || echo no)"
+check 'a branch made here and never pushed was not' 'no' "$(was_published "$remotes_repo" fix/4-local && echo yes || echo no)"
+git -C "$remotes_repo" branch fix/5-from-development
+git -C "$remotes_repo" config branch.fix/5-from-development.remote origin
+git -C "$remotes_repo" config branch.fix/5-from-development.merge refs/heads/development
+check 'a branch only started from origin/development, never pushed, was not' 'no' "$(was_published "$remotes_repo" fix/5-from-development && echo yes || echo no)"
+
+# #3756: the branch a check is about to check is never removed by the sweep that check runs first.
+check 'the branch a check names is kept by the sweep' 'yes' "$(TIDY_KEEP_BRANCH=fix/5-checked kept_by_caller fix/5-checked && echo yes || echo no)"
+check 'and only that one' 'no' "$(TIDY_KEEP_BRANCH=fix/5-checked kept_by_caller fix/6-other && echo yes || echo no)"
+grep -q 'TIDY_KEEP_BRANCH="$branch"' "$(dirname "$0")/check-in-volume.sh" && r=yes || r=no
+check 'check-in-volume.sh tells the sweep which branch it is checking' 'yes' "$r"
+
 # #3707: git will not delete a branch a worktree has checked out, which is why the first command on home failed on most
 # branches (26 November). So a branch's worktree goes first.
 check 'a branch with a worktree: the worktree goes first, then the branch' \
