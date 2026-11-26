@@ -1,5 +1,16 @@
 # work-lab-leila: current tasks
 
+## Batch g227 (workspace: #3729, this machine's own repairs; 26 November 2026, from `work (gisday)`) (Medium) - **after a59, when the release tier lets the lab go**
+
+Not before: the lab belongs to the release tier (a58/a59) until it's finished. #3729 lists what your first health reading found and the steps, in order:
+- the main checkout, 32 days old and without `tidy.sh`;
+- SSH from Git Bash failing;
+- `core.longpaths`;
+- the dev volume's `.vite-temp`;
+- 19 stale Nx records;
+- 31-day-old uncommitted work, to list for the maintainer.
+
+Leave the 730 GiB compaction to the maintainer: it stops Docker. Then run `tools/machine-health.sh work-lab-leila` again, and put the before-and-after rows in the report `reports/<date>-g227.md`.
 ## Batch a61 (aggiemap: #3721, the build banner now names the build; 26 November 2026, from `work (aggiemap)`) (High) - **now**
 
 **a59 stays held, and this runs beside it.** You are waiting for a tag that cannot be made until #3721, #3722 and
