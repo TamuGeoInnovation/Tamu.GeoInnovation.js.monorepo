@@ -1,5 +1,22 @@
 # Laptop: current tasks
 
+## Batch s9 (security: #3727, Socket's 13 findings, highest severity first; 26 November 2026, from `work (security)`) (Medium) - **now**
+
+**The maintainer's decision:** all 13 get handled, not just the severe ones, highest severity first. [#3727](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3727) has the table with what the director has already traced. Read it to the end. Each row ends either as a **branch** or as a **written reason**, posted as one comment on #3727 per row.
+
+**Don't touch:** `home` is running s83 (removals of `ng-packagr`, `webpack-cli`, `@typescript-eslint/utils` and `@angular/platform-server`, for #3719, #3725 and #3726). Don't build on those branches. Expect a lock conflict with them when merging, and follow CLAUDE.md's rule for regenerated locks.
+
+In order:
+1. **`es-toolkit` (rows 1 to 3, 1 High and 2 Medium).** Find the version that fixes each of the three. Socket's alert pages and es-toolkit's GitHub releases and changelog are where to look; GitHub's advisory database has none. If 1.53.2 (6 November) fixes all three and is within `@esri/calcite-components`' `^1.39.8`, make it a lock-only update: branch `fix/3727-es-toolkit`, `npm update es-toolkit --package-lock-only --ignore-scripts`. The lock diff may move only `es-toolkit`. If no released version at least 7 days old fixes them, say so and stop that row: security fixes are the exception to the 7-day rule, but the director decides that.
+2. **`minimatch` (row 4).** Find what pulls in 10.2.5 (`npm ls minimatch`). Move that parent up, or use an `overrides` entry to 11.0.1+ **only if** the parent accepts it. Branch `fix/3727-minimatch`. If either needs a major change of a parent, list the options and stop.
+3. **`countries-and-timezones` (row 5).** Confirm who `jcfranco` is: the npm profile, the GitHub account, and whether they belong to the Calcite/`timezone-groups` organization. Also diff 3.10.0 against 3.11.0 for anything that isn't data: install scripts, network calls, obfuscated code. Report what you found. Nothing to build.
+4. **`@vaadin/vaadin-usage-statistics` (row 6).** Which of our packages pulls in `@vaadin/component-base`? Does any production bundle contain the statistics code, and would it send anything from a production host? Its install script is already refused. Report, with the evidence.
+5. **`cron-parser` and `node-abort-controller` (rows 7 and 8).** What would replacing or upgrading `bull` and `fork-ts-checker-webpack-plugin` take? Give options and a recommendation. Don't build it.
+6. **`@yuku-core/*` (rows 9 to 13).** Which of our tools needs `yuku-parser`, and is it still used? Report.
+
+For each branch: a clean `npm ci` and a **full** check (`scripts/check-in-volume.sh <branch>`), push it to the fork, then say "branch ready" with the PR body drafted from the template in `.pr-body.md` (`Closes` nothing: #3727 stays open until every row is done; write `Part of #3727`). There is no visible change.
+Report `laptop/reports/2026-11-26-s9.md`, with **Questions for the director (security)**.
+
 ## Batch g43 (gisday: finish #3668's branch, guards on the last 3 routes; 26 November 2026, from `work (gisday)`) (High) - **now**
 
 **The maintainer's decision on Q-g224-1: (a).** Guard the 3 routes still open with the existing admin-only account permissions: `create:users` for adding, `delete:users` for deleting (and `create:users` for any update). Nothing changes in Auth0. He'll decide later under #1899 whether to remove them.
