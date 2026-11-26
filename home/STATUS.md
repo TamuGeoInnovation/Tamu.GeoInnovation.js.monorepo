@@ -14,7 +14,8 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch s86** (#3754, NestJS 12.6.0 on `chore/3754-nestjs-12.6`), since 2:31 PM Central, 26 November: committed, full check next; push held until after 6:47 AM Central, 27 November (seven-day rule, Q-s86-1 A). s87 (#3755, jimp 2.0.0 on `chore/3755-jimp-2`) being prepared alongside; push held until after 10:54 PM Central, 30 November, or later (Q-s87-1).
+- **Batch s86** (#3754, NestJS 12.6.3 under #3763, `chore/3754-nestjs-12.6` at `eedd34311`): full check since 2:33 PM Central, 26 November. Push the moment it passes.
+- **Batch s87** (#3755, jimp 2.2.0 under #3763, `chore/3755-jimp-2` at `71190d177`): output compared (`docs/screenshots/jimp-2/`); full check since 2:37 PM Central (8g, parallel 4, alongside s86). Push the moment it passes. Q-s87-2 and Q-s87-3 sent to Security.
 
 ## Finished
 - **#3756** (report `home/reports/2026-11-26-3756.md`, 2:31 PM Central): branch ready `fix/3756-tidy-keeps-remote-branches` at `4d1b901f3`; check-in-volume and pre-pr-check Exit 0.
