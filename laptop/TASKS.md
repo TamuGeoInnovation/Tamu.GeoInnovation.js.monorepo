@@ -1,5 +1,9 @@
 # Laptop: current tasks
 
+## Handed over (26 November 2026, from `work (gisday)`)
+
+**The maintainer has put GIS Day on hold.** The machines focus on upgrades, directed by the security chat. Every batch below marked "from `work (gisday)`" that is not finished now belongs to **the security chat**. Send its reports and questions there, not to `work (gisday)`. No new GIS Day batches will come until the maintainer restarts them.
+
 ## Batch g45 (workspace: #3718, strict-library pull requests stop invalidating each other's counts; after g44) (High)
 
 **The maintainer, 26 November:** the machines focus on infrastructure for a while. #3718 is why today's strictness pull requests had to be rebuilt again and again. Its body gives the three changes:
