@@ -1,5 +1,23 @@
 # Home machine: current tasks
 
+## Batch g122 (workspace: clean up this machine's branches, worktrees and volumes; 26 November 2026, from `work (gisday)`) (Medium) - **now**
+
+**The maintainer's decision, 26 November:** clean up finished branches on every machine before any new work. The fork
+(`danielgoldbergtamu`) has already gone from 625 branches to 30; the record of the ones that were never merged is
+#3705. Your clone still has its local copies, worktrees and volumes. This is cleanup, not new work.
+
+1. **Count first:** local branches, worktrees, `tamu-js-*` volumes. Free disk.
+2. `git fetch --prune fork` and `git fetch --prune origin`.
+3. **Delete a local branch when** its fork branch is gone, or its tip is already in `origin/development`
+   (`git merge-base --is-ancestor <branch> origin/development`). **Keep** a branch that has commits on no remote
+   (they exist only on this machine): list each in the report with its last commit and one line on what it holds.
+   Keep the mailbox branches and `development`.
+4. **Remove a worktree** whose branch you deleted, unless it holds changes. A worktree with only a leftover
+   `check.out` or a `.pr-body.md` may be force-removed. Anything else uncommitted: keep it and list it.
+5. `bash scripts/tidy.sh --yes` for the volumes and merged worktrees.
+6. If a safety prompt stops a deletion, don't work around it: stop, write the exact command into the report, and the
+   director gives it to the maintainer.
+7. Report `reports/2026-11-26-g122.md`: before and after counts, everything kept and why.
 ## Batch a56 (workspace: #3695, a check that exits 3 before it starts; 25 November 2026, 2:10 PM Central, from `work (aggiemap)`) (Medium) - **now**
 
 **a54 is accepted and open as [PR 3694](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3694).**
