@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle, listening.
+- **Batch a63** (#3738, Nx 24.0.6 to 24.0.7), since 1:39 PM Central, 26 November. Then g125.
 
 ## Finished
 - **Batch s84** (report `home/reports/2026-11-26-s84.md`, 1:35 PM Central): branch ready `chore/3725-remove-typescript-eslint-utils` at `6366f5e20`, Exit 0; lock diff one root line. Health reading committed (home red: main checkout 34 days behind), filed #3743.
