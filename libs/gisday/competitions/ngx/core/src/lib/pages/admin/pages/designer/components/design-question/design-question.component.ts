@@ -28,7 +28,7 @@ export class DesignQuestionComponent {
   /**
    * Field attributes
    */
-  public readonly control = input<UntypedFormGroup>(undefined);
+  public readonly control = input<UntypedFormGroup | undefined>(undefined);
 
   public readonly removed = output<void>();
 

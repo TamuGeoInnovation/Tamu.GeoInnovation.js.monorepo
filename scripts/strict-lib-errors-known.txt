@@ -9,6 +9,10 @@
 856 libs/ts/events/ngx/tsconfig.lib.json
 809 libs/aggiemap/ngx/discover/tsconfig.lib.json
 702 libs/aggiemap/ngx/common/tsconfig.lib.json
+# gisday-competitions-ngx-core went strict with #3614. 4 are in its own files, from gisday-competitions-ngx-data-access's
+# SubmissionService params, which #3594 fixes; the rest are in what it imports: gisday-platform-ngx-common 110, ui-kits-ngx-search 51,
+# ui-kits-ngx-layout 45 (#3601), ui-kits-ngx-forms 45 (#3595), gisday-competitions-ngx-common 15 (#3610) and smaller ones.
+389 libs/gisday/competitions/ngx/core/tsconfig.lib.json
 269 libs/maps/feature/perspective/tsconfig.lib.json
 266 libs/maps/feature/basemap/tsconfig.lib.json
 222 libs/gisday/platform/ngx/common/tsconfig.lib.json # #3611: its own files are clean; the errors are in the shared libraries it imports (maps-esri, ui-kits, common-ngx), 2 of them placesShownOn's type in gisday-common
