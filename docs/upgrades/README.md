@@ -13,12 +13,42 @@ Measured **26 November 2026**. Refresh it with the command under [Keeping this c
 | Angular | 15.2.9 | **22.2.6** | 22.3.0 | one minor, **blocked** — see step 1 |
 | NestJS | 9.4.3 | **12.5.1** | 12.6.3 | one minor |
 | Nx | 16.0.0 | **24.0.6** | 24.0.7 | one patch, and it is the gate |
-| TypeScript | 4.9.5 | **6.0.3** | 7.0.2 | one major |
-| ArcGIS | 4.23, CDN + `esri-loader` | **`@arcgis/core` 5.1.27** | 5.2.9 | minors |
+| TypeScript | 4.9.5 | **6.0.3** | 7.0.2 | **blocked** - see step 6 |
+| ArcGIS | 4.23, CDN + `esri-loader` | **`@arcgis/core` 5.1.27** | 5.2.9 | **blocked** - see step 4 |
 | Node | — | **24.22.3** | — | matched everywhere (#3591) |
 
 **66 direct dependencies are behind, 9 of them by a major.** That is the whole remaining gap, and none of it is the
 kind of debt #1218 described.
+
+## How we got here
+
+**The record, so it never has to be recomputed from issues and pull requests again.** Add a row when a step lands, in
+the same pull request as the step.
+
+| Landed | Step | Where it got to | Issue |
+| --- | --- | --- | --- |
+| 2 Oct 2026 | ArcGIS runtime off 4.23 | the version the maps draw with, decoupled from the Angular work | [#1219](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1219) |
+| 3 Oct 2026 | **Angular 15 to 16** | Angular 16.2, Nx 16.10, TypeScript 5.1 | [#1343](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1343) |
+| 4 Oct 2026 | Angular 16 to 17 | Angular 17.1, Nx 17.3, TypeScript 5.3 | [#1365](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1365) |
+| 4 Oct 2026 | Angular 17 to 18 | Angular 18.2, Nx 19.8, TypeScript 5.5 | [#1371](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1371) |
+| 5 Oct 2026 | Angular 18 to 19 | Angular 19.2, Nx 20.8, TypeScript 5.7 | [#1378](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1378) |
+| 6 Oct 2026 | Angular 19 to 20 | Angular 20.3, Nx 21.6, TypeScript 5.9 | [#1447](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1447) |
+| 6 Oct 2026 | Angular 20 to 21 | Angular 21.2, Nx 22.7, Jest 30 | [#1456](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1456) |
+| 6 Oct 2026 | **Angular 21 to 22** | Angular 22.1, Nx 23.2, **TypeScript 6.0**, ESLint 9 | [#1469](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1469) |
+| 28 Oct 2026 | Three event apps removed, superseded by AggieMap | | [#1202](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1202) |
+| 23 Nov 2026 | Nx 23 to 24 | Nx 24.0.6, by Dependabot's nx group | [#3248](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3248) |
+| 25 Nov 2026 | **Jest to Vitest**, across every front end and API | geoservices, mailroom, GIS Day, ts-events and their libraries | [#1977](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1977) |
+| 25 Nov 2026 | **Node 24.22.3 everywhere**, matching the API images | | [#3545](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3545) |
+| 25 Nov 2026 | Dead applications removed | **61 applications became 10** | [#1201](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1201), [#1203](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1203) |
+| 26 Nov 2026 | Vitest 5.1.1 | | [#3701](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3701) |
+
+**Seven Angular majors landed in four days**, 3 to 6 October, each as its own pull request into `development` and each
+gated by the smoke suite. Step by step timings for every rung are in [`angular.md`](angular.md) - that page is the
+evidence behind any forecast, and the reason a forecast can be made at all.
+
+**What the record shows that a list of versions does not:** the hard part was never the framework. It was the 61
+applications that each had to compile through seven majors, and Jest, which had to leave before the test tooling could
+move at all.
 
 ### What #1218's four steps came to
 
@@ -49,6 +79,12 @@ map, and Nx 24.0.6 imports a subpath that is no longer in it:
 
 So all six Angular applications' production builds fail on 22.3.0 today. A **patch** to Nx fixes it. Tracked in
 [#3735](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3735).
+
+**Taken as a seven-day exception** ([#3738](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3738)),
+the maintainer's decision of 26 November. `nx` 24.0.7 was published 25 November and would not be proposable until
+2 December; waiting would hold every Angular minor for a week. The cost is a one-day-old release where the rule asks
+for eight days, accepted deliberately. Eight packages: `nx`, `@nx/angular`, `@nx/eslint`, `@nx/eslint-plugin`,
+`@nx/js`, `@nx/vitest`, `@nx/webpack`, `@nx/workspace`.
 
 ### 2. The Angular group to 22.3.0 — after step 1
 
