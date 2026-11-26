@@ -3,5 +3,5 @@ agent: Claude Code (desktop app), the chat "js.monorepo - Laptop -
 machine: laptop
 state: listening: every batch reported (last a57, branch ready refactor/3490-directions-shared-templates)
 accepting: no
-seen_utc: 2026-11-26T03:54:31Z
-next_utc: 2026-11-26T04:39:31Z
+seen_utc: 2026-11-26T04:26:33Z
+next_utc: 2026-11-26T05:11:33Z
