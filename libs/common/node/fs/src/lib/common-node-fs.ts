@@ -1,4 +1,5 @@
 import { writeFile, readdir, mkdir, stat, unlink } from 'node:fs/promises';
+import { dirname, resolve } from 'node:path';
 
 export function commonNodeFs(): string {
   return 'common-node-fs';
@@ -35,7 +36,15 @@ export async function writeFileToDisk(
   try {
     await ensureDirectoryExists(path);
 
-    const parts = file.originalname.split('.');
+    // The name is the browser's, which anyone can set: only its last part is used, so it cannot climb out of `path`
+    // (CodeQL js/path-injection, #3776).
+    const originalName = file.originalname.split(/[\\/]/).pop() ?? '';
+
+    if (originalName === '' || originalName === '.' || originalName === '..') {
+      throw new Error(`"${file.originalname}" is not a file name.`);
+    }
+
+    const parts = originalName.split('.');
     const fileExtension = parts.pop();
     const extensionLessName = parts.join('.');
 
@@ -43,7 +52,7 @@ export async function writeFileToDisk(
     const truncatedFileName =
       options?.truncateFileNameLength && options.truncateFileNameLength > 0
         ? extensionLessName.substring(0, options.truncateFileNameLength) + '.' + fileExtension
-        : file.originalname;
+        : originalName;
 
     const fileName = truncatedFileName;
 
@@ -57,7 +66,14 @@ export async function writeFileToDisk(
       endFileName = `${options.suffix}${endFileName}`;
     }
 
-    await writeFile(`${path}/${endFileName}`, file.buffer);
+    const target = resolve(path, endFileName);
+
+    // A prefix or suffix is the caller's own, but the written file still has to be in `path`.
+    if (dirname(target) !== resolve(path)) {
+      throw new Error(`"${endFileName}" would be written outside ${path}.`);
+    }
+
+    await writeFile(target, file.buffer);
 
     return `${endFileName}`;
   } catch (error) {
