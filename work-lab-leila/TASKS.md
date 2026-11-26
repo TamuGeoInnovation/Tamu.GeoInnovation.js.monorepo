@@ -1,5 +1,17 @@
 # work-lab-leila: current tasks
 
+## Batch s-lab-2 (security: bring PR 3768 and PR 3769 up to `development`; 26 November 2026, about 3:00 PM Central, from `work (security)`) (High) - **now, while a64 is held**
+
+Both PRs are open: tooling is **PR 3768** and runtime is **PR 3769**. Since you branched at `c7fb53d08`, `development` has taken Angular 22.3 (PR 3758) and the cleanup fix (PR 3766), so **PR 3768 conflicts** in the lock. PR 3769 may follow as soon as the other merges.
+
+For **3768 first, then 3769**:
+- Merge the latest `development` into the branch.
+- Regenerate the lock with `npm install --package-lock-only --ignore-scripts`. Then **re-apply the branch's own updates**: the same `npm install <pkg>@<version>` for its packages. CLAUDE.md's rule about regenerated locks applies: compare the versions against your s-lab-1 tables.
+- Run the full check with a clean `npm ci`, then push to the fork. **This is the one exception to "don't push to an open PR's branch": these two are yours.**
+- Push a one-line progress note per branch.
+Report `work-lab-leila/reports/2026-11-26-s-lab-2.md`.
+
+
 ## Batch s-lab-1 (security: every remaining component to its latest as of 26 November, for #3763; 26 November 2026, about 3:25 PM Central, from `work (security)`) (High) - **now, while a64 is held**
 
 **The maintainer has changed his mind (26 November, about 3:20 PM Central): take the latest release of everything, as of today, 26 November.** This is a one-time exception to the seven-day rule, recorded as [#3763](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3763) (High). Read it.
