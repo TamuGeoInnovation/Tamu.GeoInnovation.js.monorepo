@@ -46,10 +46,10 @@
     "@arcgis/map-components": "5.1.27",
     "@auth0/auth0-angular": "^2.16.0",
     "@esri/calcite-components": "5.2.1",
-    "@jimp/core": "~1.6.1",
-    "@jimp/js-jpeg": "~1.6.1",
-    "@jimp/js-png": "~1.6.1",
-    "@jimp/plugin-resize": "~1.6.1",
+    "@jimp/core": "~2.2.0",
+    "@jimp/js-jpeg": "~2.2.0",
+    "@jimp/js-png": "~2.2.0",
+    "@jimp/plugin-resize": "~2.2.0",
     "@nestjs/bull": "^12.0.2",
     "@nestjs/common": "12.6.3",
     "@nestjs/core": "12.6.3",
@@ -60,7 +60,7 @@
     "@turf/centroid": "^7.4.0",
     "@turf/helpers": "^7.4.0",
     "angulartics2": "^14.1.0",
-    "auth0": "~7.8.0",
+    "auth0": "~7.9.0",
     "axios": "^1.21.1",
     "bull": "^4.16.5",
     "class-transformer": "^0.5.1",
@@ -74,16 +74,16 @@
     "glightbox": "^3.3.1",
     "got": "~16.2.0",
     "highlight.js": "^11.12.0",
-    "interactjs": "^1.10.28",
+    "interactjs": "^1.10.29",
     "jszip": "^3.10.2",
     "jwks-rsa": "^4.1.0",
     "maplibre-gl": "^6.19.0",
-    "marked": "18.2.1",
-    "mssql": "^12.7.16",
+    "marked": "18.3.0",
+    "mssql": "^12.8.1",
     "multer": "^2.5.0",
     "ngx-highlightjs": "^14.0.1",
     "ngx-webstorage-service": "^5.0.0",
-    "nodemailer": "^10.6.0",
+    "nodemailer": "^10.6.1",
     "papaparse": "^5.7.1",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.0",
@@ -146,12 +146,6 @@
     },
     "@angular/build": {
       "vite": "$vite"
-    },
-    "@jimp/plugin-resize": {
-      "zod": "4.6.6"
-    },
-    "@jimp/types": {
-      "zod": "4.6.6"
     },
     "auth0": {
       "undici-types": "6.29.0"
