@@ -114,7 +114,14 @@ describe('SiteCopyService', () => {
     it('refuses a file from a site that is not a GIS Day site, so the server never fetches from an address a file names', async () => {
       const service = new SiteCopyService(dataSource(new Map()).source);
 
-      for (const source of ['https://internal.example', 'https://10.0.0.5', 'https://txgisday.org.example.com', 'https://txgisday.org:8443']) {
+      for (const source of [
+        'https://internal.example',
+        'https://10.0.0.5',
+        'https://txgisday.org.example.com',
+        'https://txgisday.org:8443',
+        // This server's own ports: a local site is allowed only when ORIGINS lists it.
+        'http://localhost:6379'
+      ]) {
         await expect(service.import({ ...file({}), source }, false)).rejects.toThrow(BadRequestException);
       }
     });

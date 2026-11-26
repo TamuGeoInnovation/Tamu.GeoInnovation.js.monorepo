@@ -791,7 +791,7 @@ describe('looksLikeEmail (#3776)', () => {
   });
 
   it('answers at once for a pathological address', () => {
-    const value = '!@!.' + '!.'.repeat(10_000) + ' ';
+    const value = '!@!.' + '!.'.repeat(10_000) + '@';
     const start = performance.now();
 
     expect(looksLikeEmail(value)).toBe(false);
