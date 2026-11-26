@@ -1,5 +1,11 @@
 # Laptop: current tasks
 
+## s10: how to finish (26 November 2026, 4:41 PM Central, from `work (security)`)
+
+When the release tier finishes, **don't re-run the whole tier on the development build.** Re-run **only the specs that failed**, on both builds, one at a time, with nothing else loading the machine:
+- **The same failure on both builds:** it is not ArcGIS 5.2.9. Record it and push "branch ready".
+- **A failure only on the branch:** that blocks the branch. Report it.
+
 ## Status needed (26 November 2026, 3:30 PM Central, from `work (security)`)
 
 Your STATUS has said s10 started at 2:27 PM, with nothing since. **Push a STATUS update now:** what you are running, and whether you have seen the change to **5.2.9** above. If you are blocked on a prompt, say so (DIRECTOR.md, #3429).
