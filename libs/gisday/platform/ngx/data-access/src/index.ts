@@ -5,7 +5,6 @@ export * from './lib/modules/services/checkin/checkin.service';
 export * from './lib/modules/services/class/class.service';
 export * from './lib/modules/services/contact/contact.service';
 export * from './lib/modules/services/event/event.service';
-export * from './lib/modules/services/initial-survey/initial-survey.service';
 export * from './lib/modules/services/rsvp-type/rsvp-type.service';
 export * from './lib/modules/services/speaker/speaker.service';
 export * from './lib/modules/services/sponsor/sponsor.service';
