@@ -1,5 +1,26 @@
 # Home machine: current tasks
 
+## Batch s82 (security: #3720, knip read-only, today's real numbers for questions 1 and 2; 26 November 2026, from `work (security)`) (Low) - **now**
+
+**Decided by the maintainer (26 November, 3A):** home runs this; it moved from the AggieMap chat to the security director.
+**Read only: no branch, no `package.json` or lock change, nothing removed.** Read [#3720](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3720)
+to the end, and [#3719](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3719) (`ng-packagr`).
+
+1. On the latest `development`, in a check volume (an install is needed, not much memory: `CHECK_MEMORY=8g` is plenty), run knip
+   **pinned** via npx at the latest release at least 7 days old (say which), with the checked-in `knip.json` unchanged.
+   Record the command, the version and the raw output in the report.
+2. **Question 1 (imported?):** classify every dependency knip calls unused: **truly unused** (with the search that proves it),
+   **used by something knip doesn't follow** (name the file), or **doubtful**. #2157 found about 60% false positives, so the
+   classification is the deliverable, not the list.
+3. **Question 2 (invoked?), the gap:** for each of the declared dependencies (64 runtime, 44 dev per #3720; give today's counts),
+   search `project.json` executors, `package.json` scripts, `.github/workflows/*` `run:` lines, `nx.json`, and config files
+   for any invocation. List every dependency that is neither imported nor invoked, with the evidence, `ng-packagr` first. For each,
+   count the lock packages it alone brings in (`npm ls`/the lock, packages nothing else depends on).
+4. Questions 3 and 4 wait on #1457 and #1899: don't do them.
+
+Report `home/reports/2026-11-26-s82.md`: the two tables, the total of lock packages removable on question 2's evidence, and
+**Questions for the director (security)** with options and a recommendation on what to remove first and in which groups.
+
 ## Compaction cancelled (26 November 2026, from `work (gisday)`)
 
 The maintainer cancelled the compaction. Keep going with g123; don't pause Docker.
