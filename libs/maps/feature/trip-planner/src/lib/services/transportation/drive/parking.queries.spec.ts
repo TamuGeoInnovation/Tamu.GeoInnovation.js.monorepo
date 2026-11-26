@@ -1,3 +1,5 @@
+import { makeWhere } from '@tamu-gisc/common/utils/database';
+
 import { ParkingOptions, parkingQueries } from './parking.service';
 
 /**
@@ -72,5 +74,52 @@ describe('parkingQueries', () => {
     expect(columns).not.toContain('GIS.TS.SPC_PNT_CNT.UB');
     expect(columns).not.toContain('GIS.TS.SPC_PNT_CNT.H_C');
     expect(columns).not.toContain('TS_GIS.dbo.LOTS.UB_Lot');
+  });
+
+  /**
+   * The visitor lots (#1169).
+   *
+   * This asked for `TS_GIS.dbo.LOTS.Visitor_Lot`, a column the Parking Lots layer no longer has - and never
+   * replaced, so it could not be repaired by renaming. The layer answers a query naming it with an error, so
+   * a visitor without a permit was offered nothing at all.
+   *
+   * The rule is the one the layer's own renderer draws by, `LotType` ending in `Visitor`: 19 of its 244 lots,
+   * 6 `Garage Visitor` and 13 `Surface Visitor`. The space counts would give 26 and include lots the map does
+   * not draw as visitor parking; the maintainer chose the renderer's rule on 25 November 2026.
+   */
+  describe('the visitor lots', () => {
+    const visitorQuery = (o: ParkingOptions = options({ Use_Permit: false })) =>
+      parkingQueries(o, midday).find((q) => q.searchSource === 'visitor-parking');
+
+    it('asks for the lot types the map draws as visitor parking', () => {
+      const query = visitorQuery();
+
+      expect(query?.sqlColumns).toEqual(['GIS.TS.ParkingLots.LotType', 'GIS.TS.ParkingLots.LotType']);
+      expect(query?.values).toEqual(['Garage Visitor', 'Surface Visitor']);
+      expect(query?.operators).toEqual(['=', '=']);
+    });
+
+    it('builds a where clause the service can answer, joined with OR', () => {
+      // Asserted as the SQL rather than as the arrays, because the arrays alone would not catch the two
+      // conditions being ANDed - which matches no lot at all - or the values not being upper-cased.
+      const query = visitorQuery();
+
+      expect(makeWhere(query?.sqlColumns ?? [], (query?.values ?? []) as string[], query?.operators ?? [])).toBe(
+        "GIS.TS.ParkingLots.LotType = 'GARAGE VISITOR' OR GIS.TS.ParkingLots.LotType = 'SURFACE VISITOR'"
+      );
+    });
+
+    it('never names a TS_GIS.dbo.LOTS column, none of which the layer has', () => {
+      // The guard rather than the fix: `UB_Lot` is the other one, and is only kept out today by include: false.
+      const named = parkingQueries(options({ Use_Permit: false, Visitor_H_C: 1, UB: 3, H_C: 2 }), midday).flatMap(
+        (q) => q.sqlColumns
+      );
+
+      expect(named.filter((c) => c.startsWith('TS_GIS.dbo.LOTS.'))).toEqual([]);
+    });
+
+    it('is left out for a permit holder, who is routed to their own lots instead', () => {
+      expect(visitorQuery(options({ Use_Permit: true, Permit: '55' }))).toBeUndefined();
+    });
   });
 });

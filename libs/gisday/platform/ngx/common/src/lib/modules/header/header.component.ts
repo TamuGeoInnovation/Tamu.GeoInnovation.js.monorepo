@@ -59,7 +59,7 @@ export class HeaderComponent implements OnInit {
   public loggedIn$: Observable<boolean>;
   public userRoles$: Observable<Array<string>>;
   public appRoles = GISDayRoles;
-  public activeSeason$: Observable<ActiveSeasonDto>;
+  public activeSeason$: Observable<ActiveSeasonDto | null>;
   public viewedYear$: Observable<number | null>;
   public places$: Observable<Array<Partial<Place>>>;
 
@@ -84,9 +84,9 @@ export class HeaderComponent implements OnInit {
     // The year being looked at, so a past year's pages say which year they are (#1758).
     this.activeSeason$ = this.ss.viewedSeason$;
     this.viewedYear$ = this.ss.viewedYear$;
-    this.places$ = this.ps.getEntitiesForActiveSeason().pipe(
-      map((places) => placesShownOn(this.site, places, PlaceVisibilityOptions.Header))
-    );
+    this.places$ = this.ps
+      .getEntitiesForActiveSeason()
+      .pipe(map((places) => placesShownOn(this.site, places, PlaceVisibilityOptions.Header)));
 
     const currUrl = this.rt.events.pipe(
       startWith(''),

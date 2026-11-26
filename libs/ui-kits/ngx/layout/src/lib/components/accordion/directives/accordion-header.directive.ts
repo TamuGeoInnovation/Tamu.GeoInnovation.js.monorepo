@@ -9,7 +9,8 @@ export class AccordionHeaderDirective {
   /**
    * The accordion this header toggles.
    */
-  public readonly giscAccordionHeader = input<AccordionDirective>(undefined);
+  // Required: every header names its accordion, `[giscAccordionHeader]="parent"` (#3601).
+  public readonly giscAccordionHeader = input.required<AccordionDirective>();
 
   @HostListener('click')
   protected _toggle() {

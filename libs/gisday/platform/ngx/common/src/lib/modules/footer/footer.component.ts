@@ -2,7 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { combineLatest, map, Observable, switchMap } from 'rxjs';
 import { placesShownOn } from '@tamu-gisc/gisday/common';
 
-import { Place, Season } from '@tamu-gisc/gisday/platform/data-api';
+import { ActiveSeasonDto, Place } from '@tamu-gisc/gisday/platform/data-api';
 import { PlaceService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 import { PlaceVisibilityOptions } from '../../enums/place-visibility-options.enum';
@@ -22,7 +22,7 @@ export class FooterComponent implements OnInit {
   private readonly ss = inject(SeasonService);
   private readonly os = inject(PlaceService);
 
-  public activeSeason$: Observable<Partial<Season>>;
+  public activeSeason$: Observable<ActiveSeasonDto | null>;
   public viewedYear$: Observable<number | null>;
   public pastYears$: Observable<Array<number>>;
   public organizations$: Observable<Array<Partial<Place>>>;
@@ -40,8 +40,7 @@ export class FooterComponent implements OnInit {
         const before = active?.year ?? this.currentYear;
 
         return seasons
-          .map((season) => season.year)
-          .filter((year) => year < before)
+          .flatMap((season) => (season.year !== undefined && season.year < before ? [season.year] : []))
           .sort((a, b) => b - a);
       })
     );
