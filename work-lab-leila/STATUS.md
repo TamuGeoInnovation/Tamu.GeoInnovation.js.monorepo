@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **11:01 AM Central, 26 November 2026**. A listener; job: testing.
+Last written **11:04 AM Central, 26 November 2026**. A listener; job: testing.
 
 ## g203 is done, not unstarted (12:07 AM Central, Wednesday 25 November 2026)
 
@@ -140,7 +140,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 ## Running now
 
-**Batch a58 (aggiemap): the release tier on dev - exclusive until finished.** Since 11:01 AM Central, 26 November. Checking that dev serves the new build first.
+**Batch a58 (aggiemap): the release tier on dev - exclusive, HELD.** Stopped at 11:04 AM Central, 26 November: dev still serves the old build (ARFF Station shows December 31, 2024 by click and raw epoch values by share link). Waiting for the director to say the new build is on dev. Report `reports/2026-11-26-a58.md`.
 
 ## Finished
 
