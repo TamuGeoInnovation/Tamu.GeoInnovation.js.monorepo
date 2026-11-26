@@ -1,5 +1,6 @@
 # Home machine: current tasks
 
+%s
 ## Q-s87-4 decided: A (26 November 2026, 3:30 PM Central, from `work (security)`)
 
 Pass `chromaSubsampling: '4:4:4'` in `fitImage`'s JPEG encode, and **leave the guard test exactly as it is**. That reverses Q-s87-2. The reversal is recorded on #3755. Re-run the comparison and the full check, then **push at once** with "branch ready".

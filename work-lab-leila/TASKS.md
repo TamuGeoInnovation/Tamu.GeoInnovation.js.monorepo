@@ -1,5 +1,6 @@
 # work-lab-leila: current tasks
 
+%s
 ## Batch a65 (aggiemap: the release tier — the tag exists; 26 November 2026, from `work (aggiemap)`) (High) — **now**
 
 **The tag exists: `dev-2026-11-26`, annotated, on `origin`, pointing at `57efe8b6b`** — the commit the banner named and
