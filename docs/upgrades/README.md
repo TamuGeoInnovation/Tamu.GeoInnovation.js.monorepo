@@ -11,7 +11,7 @@ Measured **26 November 2026**. Refresh it with the command under [Keeping this c
 | | #1218, when it opened | Today | Latest | Gap |
 | --- | --- | --- | --- | --- |
 | Angular | 15.2.9 | **22.2.6** | 22.3.0 | one minor, **blocked** — see step 1 |
-| NestJS | 9.4.3 | **12.5.1** | 12.6.3 | one minor |
+| NestJS | 9.4.3 | **12.6.3** | 12.6.3 | none |
 | Nx | 16.0.0 | **24.0.6** | 24.0.7 | one patch, and it is the gate |
 | TypeScript | 4.9.5 | **6.0.3** | 7.0.2 | **blocked** - see step 6 |
 | ArcGIS | 4.23, CDN + `esri-loader` | **`@arcgis/core` 5.1.27** | 5.2.9 | **blocked** - see step 4 |
@@ -42,8 +42,10 @@ the same pull request as the step. Every individual upgrade pull request, by fam
 | 25 Nov 2026 | **Node 24.22.3 everywhere**, matching the API images | | [#3545](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3545) |
 | 25 Nov 2026 | Dead applications removed | **61 applications became 10** | [#1201](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1201), [#1203](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1203) |
 | 26 Nov 2026 | Vitest 5.1.1 | | [#3701](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3701) |
+| 26 Nov 2026 | NestJS 12.5.1 to 12.6.3 | `@nestjs/common`, `core`, `platform-express` and `testing`; under the seven-day exception of [#3763](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3763) | [#3754](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3754) |
 | 26 Nov 2026 | `jimp` 1.6.1 to 2.2.0 | four `@jimp` packages, and the `zod` overrides under them go; under the seven-day exception of [#3763](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3763) | [#3755](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3755) |
 | 26 Nov 2026 | **Nx 24.0.6 to 24.0.7**, a seven-day exception | unblocks Angular 22.3 (step 1 below) | [#3738](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3738) |
+| 26 Nov 2026 | The build and test toolchain to its latest as of 26 November, a one-time exception to the seven-day rule | Vite 8.4.0, Vitest 5.1.2, webpack 5.113.0, typescript-eslint 8.74.0 | [#3764](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3764), under [#3763](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3763) |
 
 **Seven Angular majors landed in four days**, 3 to 6 October, each as its own pull request into `development` and each
 gated by the smoke suite. Step by step timings for every rung are in [`angular.md`](angular.md) - that page is the
@@ -94,9 +96,12 @@ for eight days, accepted deliberately. Eight packages: `nx`, `@nx/angular`, `@nx
 Retry Dependabot's `angular` group once Nx is in. Do not reopen the old pull request; Dependabot rebuilds the branch
 itself. 18 packages, no major among them.
 
-### 3. NestJS 12.5.1 → 12.6.3
+### 3. NestJS 12.5.1 → 12.6.3 — **done** ([#3754](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3754))
 
-Independent of everything above. Four packages, a minor.
+Independent of everything above. Four packages, a minor: `@nestjs/common`, `@nestjs/core`, `@nestjs/platform-express`
+and `@nestjs/testing`. **Taken under the seven-day exception** ([#3763](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3763)), the maintainer's decision of 26 November:
+12.6.3 was published that day, and no 12.6.x was seven days old. None of the four has an install script, and the
+lock moved those four packages and nothing else.
 
 ### 4. `@types/node` — **do not take the latest**
 

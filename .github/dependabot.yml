@@ -19,6 +19,11 @@ updates:
       - dependencies
     commit-message:
       prefix: chore(deps)
+    # Temporarily off while the modernization plan (docs/upgrades/README.md) runs: each of its lock-changing merges
+    # made Dependabot rebuild or replace every open npm pull request, a new 20-minute CI run each time (the Angular
+    # group was recreated three times on 26 November). Refresh one with `@dependabot rebase` when it is ready to merge.
+    # Security updates are unaffected. Remove this once the Angular chain and NestJS 12.6 have merged (#3759).
+    rebase-strategy: disabled
     # Version updates wait for a release to age before they are proposed, against supply-chain attacks: most poisoned
     # releases are found and pulled within days (#2292). Security updates are not delayed; cooldown applies to version
     # updates only. 7 days for every kind of update, the same rule as our own upgrades (CLAUDE.md), so every pull request
