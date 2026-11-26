@@ -1,5 +1,26 @@
 # Home machine: current tasks
 
+## Batch s83 (security: #3719 and #3720, remove the three groups s82 found, one branch each; 26 November 2026, from `work (security)`) (Low) - **now**
+
+**Decided by the maintainer on your s82 questions:**
+- **Q-s82-1: A.** Three pull requests, in this order.
+- **Q-s82-2: B.** Keep `@angular/cli`. `ng` is how the team serves apps: `npm start` is `ng serve`, and the VS Code debug configurations attach to apps served through `ng`. Don't touch it, its scripts, or `decorate-angular-cli.js`.
+- **Q-s82-3: A, with four packages, not five.** Ignore `@eslint/js`, `angular-eslint`, `typescript-eslint` and `prettier`, each with a comment saying what uses it. Leave `@typescript-eslint/utils` out: group 2 removes it. Drop the dead test-setup entry pattern.
+
+Each group is its own branch from the latest `development`, built one after the other. Group 1 goes first, because it is the biggest.
+
+1. **`chore/3719-remove-ng-packagr`:** remove `ng-packagr` and its entry in `.github/dependabot.yml`. `Closes #3719`.
+2. **`chore/3720-remove-webpack-cli`:** remove `webpack-cli` and `@typescript-eslint/utils`, plus the `knip.json` change above. The director files this branch's issue and gives you the number for the body.
+3. **`chore/3720-remove-platform-server`:** remove `@angular/platform-server` on its own, because it is used at run time. Name in the report every app whose production bundle you built. The director files this branch's issue too.
+
+For each branch:
+- Sync the lock with `npm install --package-lock-only --ignore-scripts`. The lock diff may lose only the package and the subtree s82 counted (29, 14+0, and 2). Report the real number of lock packages removed.
+- Run the full check, not a scoped one, because it removes a package: `scripts/check-in-volume.sh <branch>`, with the clean `npm ci` it runs. If it fails only at `npm audit signatures`, follow the rule in DIRECTOR.md.
+- Push to the fork, then say "branch ready", with the PR body drafted from the template in `.pr-body.md`. There is no visible change, so the director will add the `no-visible-change` label.
+
+If a removal breaks something, stop that group, report what used the package, and go on to the next group.
+Report `home/reports/2026-11-26-s83.md`.
+
 ## Batch s82 (security: #3720, knip read-only, today's real numbers for questions 1 and 2; 26 November 2026, from `work (security)`) (Low) - **now**
 
 **Decided by the maintainer (26 November, 3A):** home runs this; it moved from the AggieMap chat to the security director.
