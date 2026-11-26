@@ -1,5 +1,24 @@
 # Home machine: current tasks
 
+## Batch s86 (security: modernization step 3, NestJS 12.5.1 to 12.6.3; 26 November 2026, from `work (security)`) - **after s85**
+
+**The maintainer has stopped new GIS Day and AggieMap work so the machines can take the modernization plan,** [`docs/upgrades/README.md`](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/blob/development/docs/upgrades/README.md). This is its step 3, which does not depend on the Angular chain.
+- Branch `chore/nestjs-12.6` from the latest `development`. Move the four `@nestjs/*` packages to 12.6.3, or to the latest 12.6.x that is at least 7 days old, and say which.
+- **The lock diff:** only NestJS and its own dependencies may move.
+- **Update `docs/upgrades/README.md` in the same branch:** the NestJS row of the "where we are" table, a row in "How we got here", and step 3 marked done. The page requires this.
+- Run the full check with a clean `npm ci`. Every Nest app (geoservices, gisday, mailroom, mailroom-helper) must build for production. Push to the fork; say "branch ready" with the PR body drafted from the template in `.pr-body.md`.
+- **The issue:** the director is filing it. Put `Closes #NESTJS` in the body, and the director will fill in the number.
+Report `home/reports/2026-11-26-s86.md`.
+
+## Batch s87 (security: modernization step 6, `@jimp/*` 1.6.1 to 2.x; 26 November 2026, from `work (security)`) - **after s86**
+
+- Branch `chore/jimp-2` from the latest `development`. Move the four `@jimp/*` packages to the latest 2.x that is at least 7 days old.
+- **Read jimp's 2.0 changelog first** and list every API change that touches `libs/common/node/images` or GIS Day's speaker photos.
+- **Compare output, not just compile.** Run the same input images through the old and the new version: resize, crop, and whatever the library does. Commit the before and after outputs to `docs/screenshots/jimp-2/` and say whether they match byte for byte or how they differ.
+- Update `docs/upgrades/README.md` (step 6's jimp row) in the same branch. Run the full check with a clean `npm ci`. Push; "branch ready" with `.pr-body.md`; `Closes #JIMP`, which the director fills in.
+Report `home/reports/2026-11-26-s87.md`.
+
+
 ## Now: a63 first (26 November 2026, about 2:15 PM Central, from `work (security)`)
 
 **The security chat directs everything on this machine from now on.** The maintainer moved infrastructure, upgrades and the GIS Day chat's queued work to it. Your queue in order:

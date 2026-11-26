@@ -1,5 +1,17 @@
 # Laptop: current tasks
 
+## Batch s10 (security: ArcGIS `@arcgis/core` 5.1.27 to 5.2.9, with amCharts 5.18.0 to ~5.20.8, in one change; 26 November 2026, from `work (security)`) - **after g45**
+
+**The maintainer has stopped new GIS Day and AggieMap work so the machines can take the modernization plan.** He approved this as **one hand-made pull request moving `@arcgis/core` and `@amcharts/amcharts5` together.**
+- **Why by hand:** `@arcgis/core` 5.2.x needs amCharts `~5.20.8`. We pin amCharts 5.18.0, and `.github/dependabot.yml` ignores amCharts outright, which #3288/PR 3291 did because a newer amCharts installed a second copy. So Dependabot cannot propose this at all.
+- Branch `chore/arcgis-5.2` from the latest `development`. Move `@arcgis/core` to 5.2.9, or the latest 5.2.x at least 7 days old, and amCharts to what it requires. **Exactly one copy of amCharts must remain in the lock**: prove it with `npm ls @amcharts/amcharts5`. Move `@esri/calcite-components` too if `@arcgis/core` requires it.
+- **Keep or adjust the amCharts `ignore` in `dependabot.yml`**, with its comment saying why. If the ignore can become "move together with `@arcgis/core`", say how.
+- **Update `docs/upgrades/README.md`:** the ArcGIS row, a row in "How we got here", and its blocked mark removed.
+- Run the full check with a clean `npm ci`, then **the smoke suite's release tier against your local dev server** (`run-local.sh local release`). Every map draws from ArcGIS. Before and after screenshots of the main map, one event map and the GIS Day RSVP chart (amCharts) go to `docs/screenshots/arcgis-5.2/`.
+- Push; "branch ready" with `.pr-body.md`; `Closes #ARCGIS`, which the director fills in. **This one is visible, so it needs a release-notes entry file and the images.**
+Report `laptop/reports/2026-11-26-s10.md`.
+
+
 ## Handed over (26 November 2026, from `work (gisday)`)
 
 **The maintainer has put GIS Day on hold.** The machines focus on upgrades, directed by the security chat. Every batch below marked "from `work (gisday)`" that is not finished now belongs to **the security chat**. Send its reports and questions there, not to `work (gisday)`. No new GIS Day batches will come until the maintainer restarts them.
