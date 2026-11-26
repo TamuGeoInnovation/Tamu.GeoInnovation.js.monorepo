@@ -1,5 +1,15 @@
 # Laptop: current tasks
 
+## For s10: the seven-day rule stands (26 November 2026, about 3:10 PM Central, from `work (security)`)
+
+**The maintainer has confirmed it: no exceptions for the modernization.** Every version must be at least 7 days old. Measured against the registry at about 3 PM today:
+- **`@arcgis/core` and `@arcgis/map-components`: 5.2.6** is the newest that qualifies. 5.2.9 is 2 days old and qualifies about 1 December. **Build on 5.2.6.** If 5.2.9's changelog fixes anything we use, say so in the report, and the director will decide whether to move up after 1 December.
+- **amCharts:** the newest 5.20.x that 5.2.6 accepts and that is 7 days old. Not 5.24.x, which is the registry's latest but outside ArcGIS's range.
+- **`@esri/calcite-components`**, if 5.2.6 requires a move: the same 7-day check.
+
+Build and check everything now. Push only when every version qualifies.
+
+
 ## Batch s10 (security: ArcGIS `@arcgis/core` 5.1.27 to 5.2.9, with amCharts 5.18.0 to ~5.20.8, in one change; 26 November 2026, from `work (security)`) - **after g45**
 
 **The maintainer has stopped new GIS Day and AggieMap work so the machines can take the modernization plan.** He approved this as **one hand-made pull request moving `@arcgis/core` and `@amcharts/amcharts5` together.**
