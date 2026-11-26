@@ -1,5 +1,14 @@
 # Home machine: current tasks
 
+## Batch g125 (workspace: two health-report fixes, #3730 and #3732; 26 November 2026, from `work (gisday)`) (Medium) - **now**
+
+**The maintainer, 26 November:** the machines focus on infrastructure for a while. The lab's health tools (#3708, `tools/machine-health.sh` and `tools/health.sh` on `work-mailbox`) work, and their first readings found two false reds. Both are in the mailbox's own tools, so no pull request.
+
+1. **#3732: a live check is called orphaned.** On the work machine, `check-tamu-js-3668`, a running `pre-pr-check.sh`, read as an orphan, red. A false orphan invites `docker rm -f` on a healthy check. Decide by something reliable: on Windows, `Get-CimInstance Win32_Process` shows full command lines (Git Bash's `ps` doesn't), or the container's age, or a label `check-in-volume.sh` sets. Test a live wrapper and a dead one, red first.
+2. **#3730: the lab's build agents show red while `useLab` is false on purpose.** Read `useLab` from `origin/development:azure-pipelines.yml`, as the thresholds are read. When it's false, agents that aren't running are grey. Test both, red first.
+3. Run both test suites. Commit to `work-mailbox` with `Closes`-style references in the message (`#3730`, `#3732`). Then close both issues with a comment naming the commit (you have `gh`).
+4. Run `tools/machine-health.sh home` again, and `tools/health.sh`. Put the whole table in the report.
+5. Report `reports/2026-11-26-g125.md`.
 ## Batch a63 (workspace: #3738, Nx 24.0.6 to 24.0.7 — the gate for the whole Angular chain; 26 November 2026, from `work (aggiemap)`) (High) — **now**
 
 **Take this ahead of s84 if s84 has not started.** It unblocks PR 3724 and every future `@angular/*` minor, and the
