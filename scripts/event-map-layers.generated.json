@@ -1,0 +1,1431 @@
+{
+  "maps": {
+    "150th-kickoff": {
+      "name": "150th Opening Ceremony",
+      "layers": [
+        {
+          "id": "150th-kickoff-event-locations",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/150th_Kickoff/FeatureServer/0"
+        },
+        {
+          "id": "150th-kickoff-shuttle-route",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/150th_Kickoff/FeatureServer/1"
+        },
+        {
+          "id": "150th-kickoff-parking",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/150th_Kickoff/FeatureServer/2"
+        }
+      ]
+    },
+    "4h-roundup-2026": {
+      "name": "4-H Roundup",
+      "layers": [
+        {
+          "id": "four-h-roundup-locations",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/4H_Roundup_view/FeatureServer/0"
+        },
+        {
+          "id": "four-h-roundup-parking",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/4H_Roundup_view/FeatureServer/1"
+        }
+      ]
+    },
+    "accessible-parking": {
+      "name": "Accessible Parking",
+      "layers": [
+        {
+          "id": "Accessible Parking Space",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/AccessibleParking_view/FeatureServer/0"
+        }
+      ]
+    },
+    "aggie-family-parade": {
+      "name": "Aggie Family Parade",
+      "layers": [
+        {
+          "id": "aggie-family-parade-pois",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Aggie_Family_Parade_view/FeatureServer/0"
+        },
+        {
+          "id": "aggie-family-parade-route",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Aggie_Family_Parade_view/FeatureServer/1"
+        }
+      ]
+    },
+    "aggieland-saturday": {
+      "name": "Aggieland Saturday",
+      "layers": [
+        {
+          "id": "aggieland-saturday-parking",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/AggielandSaturday_view/FeatureServer/3"
+        },
+        {
+          "id": "aggieland-saturday-bus-stops",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/AggielandSaturday_view/FeatureServer/0"
+        },
+        {
+          "id": "aggieland-saturday-bus-routes",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/AggielandSaturday_view/FeatureServer/1"
+        },
+        {
+          "id": "aggieland-saturday-special-pois",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/AggielandSaturday_view/FeatureServer/2"
+        }
+      ]
+    },
+    "april-ring-day": {
+      "name": "April Ring Day",
+      "layers": [
+        {
+          "id": "ring-day-areas",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Ring_Day_view/FeatureServer/1"
+        },
+        {
+          "id": "ring-day-routes",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Ring_Day_view/FeatureServer/2"
+        },
+        {
+          "id": "ring-day-pois",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Ring_Day_view/FeatureServer/0"
+        }
+      ]
+    },
+    "avp-parking": {
+      "name": "Any Valid Permit (AVP) Parking",
+      "layers": [
+        {
+          "id": "AVP-parking-lots",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/AnyValidPermitParking/MapServer/0"
+        }
+      ]
+    },
+    "baseball-parking": {
+      "name": "Baseball",
+      "layers": [
+        {
+          "id": "baseball-accessible-symbols",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/BaseballParking_view/FeatureServer/0"
+        },
+        {
+          "id": "baseball-gate-road-closure",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/BaseballParking_view/FeatureServer/2"
+        },
+        {
+          "id": "baseball-event-lots",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/BaseballParking_view/FeatureServer/3"
+        },
+        {
+          "id": "baseball-accessible-shuttles",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/BaseballParking_view/FeatureServer/1"
+        }
+      ]
+    },
+    "beef-cattle-vendor": {
+      "name": "Beef Cattle Vendor Load In",
+      "layers": [
+        {
+          "id": "beef-cattle-zones",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Beef_Cattle_Vendor_Load_In_view/FeatureServer/2"
+        },
+        {
+          "id": "beef-cattle-no-parking-zones",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Beef_Cattle_Vendor_Load_In_view/FeatureServer/3"
+        },
+        {
+          "id": "beef-cattle-routes",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Beef_Cattle_Vendor_Load_In_view/FeatureServer/1"
+        },
+        {
+          "id": "beef-cattle-alert",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Beef_Cattle_Vendor_Load_In_view/FeatureServer/0"
+        }
+      ]
+    },
+    "big-event": {
+      "name": "Big Event",
+      "layers": [
+        {
+          "id": "big-event-traffic",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Big_Event_view/FeatureServer/0"
+        },
+        {
+          "id": "big-event-road-closures",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Big_Event_view/FeatureServer/1"
+        },
+        {
+          "id": "big-event-parking-lots",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Big_Event_view/FeatureServer/2"
+        }
+      ]
+    },
+    "break-summer": {
+      "name": "Break / Summer",
+      "layers": [
+        {
+          "id": "break-summer-parking-lots-draw",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/SummerBreakParking/MapServer"
+        },
+        {
+          "id": "Break-Summer Parking Lots",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/SummerBreakParking/MapServer/0"
+        }
+      ]
+    },
+    "business-parking": {
+      "name": "Business Parking",
+      "layers": [
+        {
+          "id": "University Business Spaces 2 Hour Time Limit",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/BusinessParking/MapServer/0"
+        },
+        {
+          "id": "Only UB+ Permit Authorized",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/BusinessParking/MapServer/1"
+        }
+      ]
+    },
+    "construction-map": {
+      "name": "Construction Map",
+      "layers": [
+        {
+          "id": "planned-construction-map-popup",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/TSConstruction_Hosted/FeatureServer/1"
+        },
+        {
+          "id": "construction-map-popup",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/TSConstruction_Hosted/FeatureServer/0"
+        }
+      ]
+    },
+    "contractor-parking": {
+      "name": "Contractor Parking",
+      "layers": [
+        {
+          "id": "Only Contractor+ Permit Authorized",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/ContractorParking/MapServer/0"
+        }
+      ]
+    },
+    "cross-country-parking": {
+      "name": "Cross Country",
+      "layers": [
+        {
+          "id": "cross-country-parking-area",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/CrossCountryParking_view/FeatureServer/0"
+        },
+        {
+          "id": "cross-country-parking-lots",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/CrossCountryParking_view/FeatureServer/1"
+        }
+      ]
+    },
+    "dc-bush-school": {
+      "name": "DC / Bush School",
+      "layers": [
+        {
+          "id": "dc-bush-school-basemap-layer",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/DCBush/VectorTileServer"
+        },
+        {
+          "id": "dc-bush-school-property-layer",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/DCBush/FeatureServer/0"
+        }
+      ]
+    },
+    "dining": {
+      "name": "Dining",
+      "layers": [
+        {
+          "id": "buildings-layer",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/VTBase4/FeatureServer/0"
+        },
+        {
+          "id": "dining-locations-layer",
+          "url": "https://api.aggiemap.tamu.edu/dining/locations/geojson"
+        }
+      ]
+    },
+    "ev-chargers": {
+      "name": "EV Chargers",
+      "layers": [
+        {
+          "id": "ev-chargers",
+          "url": "https://gis.it.tamu.edu/arcgis/rest/services/TS/BikeMap/MapServer/0"
+        }
+      ]
+    },
+    "family-weekend-2026": {
+      "name": "Family Weekend",
+      "layers": [
+        {
+          "id": "family-weekend-friday-parking-lots",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Family_Weekend_view/FeatureServer/0"
+        },
+        {
+          "id": "family-weekend-saturday-parking-lots",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Family_Weekend_view/FeatureServer/1"
+        },
+        {
+          "id": "family-weekend-sunday-parking-lots",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Family_Weekend_view/FeatureServer/2"
+        }
+      ]
+    },
+    "fire-school": {
+      "name": "Municipal Fire School Vendor Show",
+      "layers": [
+        {
+          "id": "fire-school-preferred-route",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Municipal_Fire__School_Vendor_Show_view/FeatureServer/0"
+        },
+        {
+          "id": "fire-school-road-closures",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Municipal_Fire__School_Vendor_Show_view/FeatureServer/1"
+        },
+        {
+          "id": "fire-school-parking-lots",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Municipal_Fire__School_Vendor_Show_view/FeatureServer/2"
+        }
+      ]
+    },
+    "fish-camp": {
+      "name": "Fish Camp",
+      "layers": [
+        {
+          "id": "fish-camp-arrival-parking-lots",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/Fish_Camp/MapServer/3"
+        },
+        {
+          "id": "fish-camp-arrival-routes",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/Fish_Camp/MapServer/2"
+        },
+        {
+          "id": "fish-camp-arrival-parking-info",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/Fish_Camp/MapServer/1"
+        },
+        {
+          "id": "fish-camp-departure-parking-lots",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/Fish_Camp/MapServer/7"
+        },
+        {
+          "id": "fish-camp-departure-routes",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/Fish_Camp/MapServer/6"
+        },
+        {
+          "id": "fish-camp-departure-parking-info",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/Fish_Camp/MapServer/5"
+        }
+      ]
+    },
+    "football-tailgating": {
+      "name": "Football Tailgating",
+      "layers": [
+        {
+          "id": "tailgating-west-campus",
+          "url": "https://services1.arcgis.com/qr14biwnHA6Vis6l/arcgis/rest/services/TAMU_Tailgate_Zones/FeatureServer/3"
+        },
+        {
+          "id": "tailgating-aggie-park",
+          "url": "https://services1.arcgis.com/qr14biwnHA6Vis6l/arcgis/rest/services/TAMU_Tailgate_Zones/FeatureServer/4"
+        },
+        {
+          "id": "tailgating-construction",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/TSConstruction_Hosted/FeatureServer/0"
+        },
+        {
+          "id": "tailgating-simpson-tents",
+          "url": "https://services1.arcgis.com/qr14biwnHA6Vis6l/arcgis/rest/services/TAMU_Tailgate_Zones/FeatureServer/2"
+        },
+        {
+          "id": "tailgating-tents",
+          "url": "https://services1.arcgis.com/qr14biwnHA6Vis6l/arcgis/rest/services/TAMU_Tailgate_Zones/FeatureServer/1"
+        },
+        {
+          "id": "tailgating-restrooms",
+          "url": "https://services1.arcgis.com/qr14biwnHA6Vis6l/arcgis/rest/services/TAMU_Tailgate_Zones/FeatureServer/5"
+        },
+        {
+          "id": "tailgating-zone-numbers",
+          "url": "https://services1.arcgis.com/qr14biwnHA6Vis6l/arcgis/rest/services/TAMU_Tailgate_Zones/FeatureServer/0"
+        },
+        {
+          "id": "buildings-layer",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/VTBase4/FeatureServer/0"
+        }
+      ]
+    },
+    "fort-worth-law": {
+      "name": "Fort Worth Law School",
+      "layers": [
+        {
+          "id": "fort-worth-law-construction-layer",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/FWLaw/FeatureServer/1"
+        },
+        {
+          "id": "fort-worth-law-basemap-layer",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/FWLaw/VectorTileServer"
+        },
+        {
+          "id": "fort-worth-law-property-layer",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/FWLaw/FeatureServer/0"
+        }
+      ]
+    },
+    "galveston": {
+      "name": "Galveston",
+      "layers": [
+        {
+          "id": "galveston-basemap-layer",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/GalBase2/VectorTileServer"
+        },
+        {
+          "id": "galveston-buildings-layer",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/GalBase2/FeatureServer/0"
+        }
+      ]
+    },
+    "gameday-parking": {
+      "name": "Football",
+      "layers": [
+        {
+          "id": "football-pay-avp-gameday-parking",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/Pay_AVP_entry/FeatureServer/0"
+        },
+        {
+          "id": "football-pay-avp-exit-routes",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/Pay_AVP_2_exit/FeatureServer/2"
+        },
+        {
+          "id": "football-pay-avp-street-grass-areas",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/Pay_AVP_entry/FeatureServer/3"
+        },
+        {
+          "id": "football-pay-avp-parking-lots",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/Pay_AVP_entry/FeatureServer/4"
+        },
+        {
+          "id": "football-parkmobile-gameday-parking",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/PM_entry/FeatureServer/0"
+        },
+        {
+          "id": "football-parkmobile-entry-routes",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/PM_entry/FeatureServer/1"
+        },
+        {
+          "id": "football-parkmobile-exit-routes",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/PM_exit/FeatureServer/2"
+        },
+        {
+          "id": "football-parkmobile-street-grass-areas",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/PM_entry/FeatureServer/3"
+        },
+        {
+          "id": "football-parkmobile-parking-lots",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/PM_entry/FeatureServer/4"
+        },
+        {
+          "id": "football-12th-man-gameday-parking",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/12thMan_entry/FeatureServer/0"
+        },
+        {
+          "id": "football-12th-man-entry-routes",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/12thMan_entry/FeatureServer/1"
+        },
+        {
+          "id": "football-12th-man-exit-routes",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/12thMan_exit/FeatureServer/2"
+        },
+        {
+          "id": "football-12th-man-street-grass-areas",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/12thMan_entry/FeatureServer/3"
+        },
+        {
+          "id": "football-12th-man-parking-lots",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/12thMan_entry/FeatureServer/4"
+        },
+        {
+          "id": "football-presale-gameday-parking",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/Presale_entry/FeatureServer/0"
+        },
+        {
+          "id": "football-presale-entry-routes",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/Presale_entry/FeatureServer/1"
+        },
+        {
+          "id": "football-presale-exit-routes",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/Presale_2_exit/FeatureServer/2"
+        },
+        {
+          "id": "football-presale-street-grass-areas",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/Presale_entry/FeatureServer/3"
+        },
+        {
+          "id": "football-presale-parking-lots",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/Presale_entry/FeatureServer/4"
+        },
+        {
+          "id": "football-rideshare-locations",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/RS_view/FeatureServer/0"
+        },
+        {
+          "id": "football-shuttle-stops",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/Football_Shuttle_View/FeatureServer/5"
+        },
+        {
+          "id": "football-shuttle-routes",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/Football_Shuttle_View/FeatureServer/6"
+        },
+        {
+          "id": "football-rv-gameday-parking",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/RV_view/FeatureServer/0"
+        },
+        {
+          "id": "football-rv-rns-spaces",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/RV_view/FeatureServer/2"
+        },
+        {
+          "id": "football-rv-stripes",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/RV_view/FeatureServer/1"
+        },
+        {
+          "id": "football-rv-street-grass-areas",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/RV_view/FeatureServer/3"
+        },
+        {
+          "id": "football-rv-parking-lots",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/RV_view/FeatureServer/4"
+        },
+        {
+          "id": "football-micromobility-parking",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/FBike_entry/FeatureServer/0"
+        },
+        {
+          "id": "football-micromobility-entry-routes",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/FBike_entry/FeatureServer/1"
+        },
+        {
+          "id": "football-micromobility-exit-routes",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/FBike_exit/FeatureServer/2"
+        },
+        {
+          "id": "football-bike-dismount-zones",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/FBike_entry/FeatureServer/3"
+        },
+        {
+          "id": "football-bike-veo-geofence",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/FBike_entry/FeatureServer/4"
+        },
+        {
+          "id": "football-pedestrian-exit-routes",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/Football_Pedestrian_Exit/FeatureServer/3"
+        }
+      ]
+    },
+    "games-of-texas": {
+      "name": "Games of Texas",
+      "layers": [
+        {
+          "id": "games-of-texas-parking",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Games_of_Texas_view/FeatureServer/3"
+        },
+        {
+          "id": "games-of-texas-road-closures",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Games_of_Texas_view/FeatureServer/2"
+        },
+        {
+          "id": "games-of-texas-routes",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Games_of_Texas_view/FeatureServer/1"
+        },
+        {
+          "id": "games-of-texas-points-of-interest",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Games_of_Texas_view/FeatureServer/0"
+        }
+      ]
+    },
+    "gis-day": {
+      "name": "GIS Day",
+      "layers": [
+        {
+          "id": "gis-day-msc-rudder",
+          "url": "https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/MSC_and_Rudder_Building_Polygon_Layer/FeatureServer/2"
+        },
+        {
+          "id": "gis-day-garages",
+          "url": "https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/MSC_and_Rudder_Building_Polygon_Layer/FeatureServer/0"
+        },
+        {
+          "id": "gis-day-csg",
+          "url": "https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/MSC_and_Rudder_Building_Polygon_Layer/FeatureServer/1"
+        }
+      ]
+    },
+    "graduation-fall": {
+      "name": "Fall Commencement Ceremony",
+      "layers": [
+        {
+          "id": "graduation-accessible-parking",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/GraduationParking_view/FeatureServer/0"
+        },
+        {
+          "id": "graduation-traffic-flow",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/GraduationParking_view/FeatureServer/1"
+        },
+        {
+          "id": "graduation-event-parking-lots",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/GraduationParking_view/FeatureServer/3"
+        },
+        {
+          "id": "graduation-road-closed",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/GraduationParking_view/FeatureServer/2"
+        }
+      ]
+    },
+    "graduation-spring": {
+      "name": "Spring Commencement Ceremony",
+      "layers": [
+        {
+          "id": "graduation-accessible-parking",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/GraduationParking_view/FeatureServer/0"
+        },
+        {
+          "id": "graduation-traffic-flow",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/GraduationParking_view/FeatureServer/1"
+        },
+        {
+          "id": "graduation-event-parking-lots",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/GraduationParking_view/FeatureServer/3"
+        },
+        {
+          "id": "graduation-road-closed",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/GraduationParking_view/FeatureServer/2"
+        }
+      ]
+    },
+    "graduation-summer": {
+      "name": "Summer Commencement Ceremony",
+      "layers": [
+        {
+          "id": "summer-commencement-traffic-flow",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Summer_Commencement_view/FeatureServer/0"
+        },
+        {
+          "id": "summer-commencement-parking-lots",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Summer_Commencement_view/FeatureServer/1"
+        }
+      ]
+    },
+    "houston-space-institute": {
+      "name": "Houston Space Institute",
+      "layers": [
+        {
+          "id": "houston-space-institute-construction-layer",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/HSI/FeatureServer/5"
+        },
+        {
+          "id": "houston-space-institute-basemap-layer",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/HSI/VectorTileServer"
+        },
+        {
+          "id": "houston-space-institute-property-layer",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/HSI/FeatureServer/4"
+        }
+      ]
+    },
+    "hs-graduation-2026": {
+      "name": "High School Graduation",
+      "layers": [
+        {
+          "id": "hs-graduation-arrival-parking",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/HS_Graduation/MapServer/3"
+        },
+        {
+          "id": "hs-graduation-arrival-routes",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/HS_Graduation/MapServer/2"
+        },
+        {
+          "id": "hs-graduation-accessible-bus-parking",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/HS_Graduation/MapServer/1"
+        },
+        {
+          "id": "hs-graduation-departure-parking",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/HS_Graduation/MapServer/7"
+        },
+        {
+          "id": "hs-graduation-traffic-advisories",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/HS_Graduation/MapServer/6"
+        },
+        {
+          "id": "hs-graduation-departure-routes",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/HS_Graduation/MapServer/5"
+        }
+      ]
+    },
+    "hsc-college-of-dentistry": {
+      "name": "HSC College of Dentistry",
+      "layers": [
+        {
+          "id": "hsc-college-of-dentistry-basemap-layer",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/HSCD/VectorTileServer"
+        },
+        {
+          "id": "hsc-college-of-dentistry-property-layer",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/HSCD/FeatureServer/4"
+        }
+      ]
+    },
+    "hsc-corpus-christi": {
+      "name": "HSC Corpus Christi",
+      "layers": [
+        {
+          "id": "hsc-corpus-christi-basemap-layer",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/HSCC/VectorTileServer"
+        },
+        {
+          "id": "hsc-corpus-christi-property-layer",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/HSCC/FeatureServer/2"
+        }
+      ]
+    },
+    "hsc-kingsville": {
+      "name": "HSC Kingsville",
+      "layers": [
+        {
+          "id": "hsc-kingsville-basemap-layer",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/HSCK/VectorTileServer"
+        },
+        {
+          "id": "hsc-kingsville-property-layer",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/HSCK/FeatureServer/2"
+        }
+      ]
+    },
+    "hsc-round-rock": {
+      "name": "HSC Round Rock",
+      "layers": [
+        {
+          "id": "hsc-round-rock-basemap-layer",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/HSCRR/VectorTileServer"
+        },
+        {
+          "id": "hsc-round-rock-property-layer",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/HSCRR/FeatureServer/6"
+        }
+      ]
+    },
+    "indoor-track-parking": {
+      "name": "Indoor Track",
+      "layers": [
+        {
+          "id": "indoor-track-parking-accessible-parking",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/IndoorTrackParking_view/FeatureServer/0"
+        },
+        {
+          "id": "indoor-track-parking-lots",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/IndoorTrackParking_view/FeatureServer/2"
+        },
+        {
+          "id": "indoor-track-parking-building",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/IndoorTrackParking_view/FeatureServer/1"
+        }
+      ]
+    },
+    "kickoff-at-kyle": {
+      "name": "Kickoff at Kyle",
+      "layers": [
+        {
+          "id": "kickoff-at-kyle-parking",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Kickoff_at_Kyle/FeatureServer/0"
+        }
+      ]
+    },
+    "maintenance-parking": {
+      "name": "Maintenance Parking",
+      "layers": [
+        {
+          "id": "maintenance-parking-spaces",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/MaintenanceParking/MapServer/0"
+        },
+        {
+          "id": "maintenance-parking-lots",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/MaintenanceParking/MapServer/1"
+        }
+      ]
+    },
+    "maroon-white-game-2026": {
+      "name": "Maroon & White Game",
+      "layers": [
+        {
+          "id": "maroon-white-game-event-parking-lots",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Maroon_White_Game_view/FeatureServer/1"
+        },
+        {
+          "id": "maroon-white-game-accessible-prepaid-parking",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Maroon_White_Game_view/FeatureServer/0"
+        }
+      ]
+    },
+    "mays-city-center": {
+      "name": "Mays City Center",
+      "layers": [
+        {
+          "id": "mays-city-center-basemap-layer",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/Mays/VectorTileServer"
+        },
+        {
+          "id": "mays-city-center-property-layer",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/Mays/FeatureServer/0"
+        }
+      ]
+    },
+    "mcallen": {
+      "name": "McAllen",
+      "layers": [
+        {
+          "id": "mcallen-basemap-layer",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/HigherEd/VectorTileServer"
+        },
+        {
+          "id": "mcallen-buildings-layer",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/HigherEd/FeatureServer/2"
+        }
+      ]
+    },
+    "media-parking": {
+      "name": "Media Parking",
+      "layers": [
+        {
+          "id": "media-parking-lots",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/MediaParking/MapServer/0"
+        }
+      ]
+    },
+    "mens-basketball": {
+      "name": "Men's Basketball",
+      "layers": [
+        {
+          "id": "mens-basketball-gates",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/MBskt_view/FeatureServer/0"
+        },
+        {
+          "id": "mens-basketball-symbols",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/MBskt_view/FeatureServer/1"
+        },
+        {
+          "id": "mens-basketball-parking-lots",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/MBskt_view/FeatureServer/2"
+        }
+      ]
+    },
+    "micromobility": {
+      "name": "Micromobility",
+      "layers": [
+        {
+          "id": "micromobility-slow-zones",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Approved_Micromobility_Paths_view/FeatureServer/0"
+        },
+        {
+          "id": "micromobility-shared-paths",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Approved_Micromobility_Paths_view/FeatureServer/1"
+        },
+        {
+          "id": "micromobility-dedicated-paths",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Approved_Micromobility_Paths_view/FeatureServer/2"
+        }
+      ]
+    },
+    "motorcycle-parking": {
+      "name": "Motorcycle Parking",
+      "layers": [
+        {
+          "id": "motorcycle-parking-space",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/MotorcycleParking/MapServer/0"
+        }
+      ]
+    },
+    "motorist-assistance": {
+      "name": "Motorist Assistance",
+      "layers": [
+        {
+          "id": "Service Area",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/MotoristAssistance/MapServer/0"
+        }
+      ]
+    },
+    "move-in": {
+      "name": "Move In",
+      "layers": [
+        {
+          "id": "Residence Hall",
+          "url": "https://gis.tamu.edu/arcgis/rest/services/Hosted/VTBase4/FeatureServer/0"
+        },
+        {
+          "id": "move-in-poi-no-parking",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/FallMoveInParking_view/FeatureServer/0"
+        },
+        {
+          "id": "move-in-streets-closures",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/FallMoveInParking_view/FeatureServer/1"
+        },
+        {
+          "id": "move-in-lots-closures",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/FallMoveInParking_view/FeatureServer/2"
+        }
+      ]
+    },
+    "move-out": {
+      "name": "Move Out",
+      "layers": [
+        {
+          "id": "No Parking Areas",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/MoveOutParking/MapServer/0"
+        },
+        {
+          "id": "Move-Out Allowed Street Parking",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/MoveOutParking/MapServer/1"
+        },
+        {
+          "id": "Move-Out Lots",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/MoveOutParking/MapServer/2"
+        }
+      ]
+    },
+    "ms150": {
+      "name": "Bike MS 150",
+      "layers": [
+        {
+          "id": "ms150-avp-parking",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/MS150_view/FeatureServer/0"
+        },
+        {
+          "id": "ms150-parking-lots",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/MS150_view/FeatureServer/1"
+        },
+        {
+          "id": "ms150-route",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/MS150_view/FeatureServer/2"
+        }
+      ]
+    },
+    "muster": {
+      "name": "Muster",
+      "layers": [
+        {
+          "id": "muster-traffic-flow",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Muster_view/FeatureServer/0"
+        },
+        {
+          "id": "muster-accessible-parking",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Muster_view/FeatureServer/1"
+        },
+        {
+          "id": "muster-parking",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Muster_view/FeatureServer/2"
+        }
+      ]
+    },
+    "night-weekend": {
+      "name": "Night / Weekend",
+      "layers": [
+        {
+          "id": "Night Privileges 5:00pm - 6:00am",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/NightWeekendParking/MapServer/0"
+        }
+      ]
+    },
+    "november-ring-day": {
+      "name": "November Ring Day",
+      "layers": [
+        {
+          "id": "ring-day-areas",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Ring_Day_view/FeatureServer/1"
+        },
+        {
+          "id": "ring-day-routes",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Ring_Day_view/FeatureServer/2"
+        },
+        {
+          "id": "ring-day-pois",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Ring_Day_view/FeatureServer/0"
+        }
+      ]
+    },
+    "nsc-parking": {
+      "name": "New Student Conference Parking",
+      "layers": [
+        {
+          "id": "nsc-parking-lots-draw",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/NewStudentConferenceParking/MapServer"
+        },
+        {
+          "id": "NSC Parking Lots",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/NewStudentConferenceParking/MapServer/0"
+        }
+      ]
+    },
+    "outdoor-track-parking": {
+      "name": "Outdoor Track",
+      "layers": [
+        {
+          "id": "outdoor-track-parking-accessible-parking",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/OutdoorTrackParking_view/FeatureServer/0"
+        },
+        {
+          "id": "outdoor-track-parking-lots",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/OutdoorTrackParking_view/FeatureServer/1"
+        }
+      ]
+    },
+    "permit-select-freshman": {
+      "name": "Freshman Selectable Parking",
+      "layers": [
+        {
+          "id": "Freshman Student Selectable",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/FreshmanSelectableParking/MapServer/0"
+        }
+      ]
+    },
+    "permit-select-staff": {
+      "name": "Staff Selectable Parking",
+      "layers": [
+        {
+          "id": "Staff Selectable Parking Lots",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/StaffSelectableParking/MapServer/0"
+        }
+      ]
+    },
+    "permit-select-student": {
+      "name": "Student Selectable Parking",
+      "layers": [
+        {
+          "id": "Student Selectable Parking Lots",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/StudentSelectableParking/MapServer/0"
+        }
+      ]
+    },
+    "phys-eng-fest": {
+      "name": "Physics and Engineering Festival",
+      "layers": [
+        {
+          "id": "phys-eng-festival-general-parking",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/Physics_Fest/MapServer/1"
+        },
+        {
+          "id": "phys-eng-festival-general-parking-pedestrian-path",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/Physics_Fest/MapServer/2"
+        },
+        {
+          "id": "phys-eng-festival-eastbound-bus-parking",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/Physics_Fest/MapServer/4"
+        },
+        {
+          "id": "phys-eng-festival-eastbound-bus-route",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/Physics_Fest/MapServer/6"
+        },
+        {
+          "id": "phys-eng-festival-eastbound-pedestrian-path",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/Physics_Fest/MapServer/7"
+        },
+        {
+          "id": "phys-eng-festival-eastbound-bus-dropoff",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/Physics_Fest/MapServer/5"
+        },
+        {
+          "id": "phys-eng-festival-westbound-bus-parking",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/Physics_Fest/MapServer/9"
+        },
+        {
+          "id": "phys-eng-festival-westbound-bus-route",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/Physics_Fest/MapServer/11"
+        },
+        {
+          "id": "phys-eng-festival-westbound-pedestrian-path",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/Physics_Fest/MapServer/12"
+        },
+        {
+          "id": "phys-eng-festival-westbound-bus-dropoff",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/Physics_Fest/MapServer/10"
+        }
+      ]
+    },
+    "retiree-parking": {
+      "name": "Retiree Parking",
+      "layers": [
+        {
+          "id": "Retiree Parking Lots",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/RetireeParking/MapServer/0"
+        }
+      ]
+    },
+    "ring-day": {
+      "name": "October Ring Day",
+      "layers": [
+        {
+          "id": "ring-day-areas",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Ring_Day_view/FeatureServer/1"
+        },
+        {
+          "id": "ring-day-routes",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Ring_Day_view/FeatureServer/2"
+        },
+        {
+          "id": "ring-day-pois",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Ring_Day_view/FeatureServer/0"
+        }
+      ]
+    },
+    "sec-grounds-conference": {
+      "name": "SEC Grounds Conference",
+      "layers": [
+        {
+          "id": "sec-grounds-day1-routes",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/SEC_Grounds_Conference/MapServer/2"
+        },
+        {
+          "id": "sec-grounds-day1-pois",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/SEC_Grounds_Conference/MapServer/1"
+        },
+        {
+          "id": "sec-grounds-day2-routes",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/SEC_Grounds_Conference/MapServer/5"
+        },
+        {
+          "id": "sec-grounds-day2-pois",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/SEC_Grounds_Conference/MapServer/4"
+        },
+        {
+          "id": "sec-grounds-day3-routes",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/SEC_Grounds_Conference/MapServer/8"
+        },
+        {
+          "id": "sec-grounds-day3-pois",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/SEC_Grounds_Conference/MapServer/7"
+        }
+      ]
+    },
+    "service-loading": {
+      "name": "Service and Loading Zone Parking",
+      "layers": [
+        {
+          "id": "service-parking-spaces",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/Loading_Zones/MapServer/0"
+        },
+        {
+          "id": "service-parking-lots",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/Loading_Zones/MapServer/1"
+        }
+      ]
+    },
+    "soccer-parking": {
+      "name": "Soccer",
+      "layers": [
+        {
+          "id": "soccer-parking-accessible-parking",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/SoccerParking_view/FeatureServer/0"
+        },
+        {
+          "id": "soccer-parking-lots",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/SoccerParking_view/FeatureServer/1"
+        }
+      ]
+    },
+    "softball-parking": {
+      "name": "Softball",
+      "layers": [
+        {
+          "id": "softball-parking-accessible-parking",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/SoftballParking_view/FeatureServer/0"
+        },
+        {
+          "id": "softball-parking-lots",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/SoftballParking_view/FeatureServer/1"
+        }
+      ]
+    },
+    "spirit-of-150-week": {
+      "name": "150 Cake & Ice Cream",
+      "layers": [
+        {
+          "id": "spirit-of-150-week-cake-ice-cream",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Spirit_of_150_Week/FeatureServer/0"
+        }
+      ]
+    },
+    "spring-move-out": {
+      "name": "Spring Move Out",
+      "layers": [
+        {
+          "id": "No Parking Areas",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/MoveOutParking/MapServer/0"
+        },
+        {
+          "id": "Move-Out Allowed Street Parking",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/MoveOutParking/MapServer/1"
+        },
+        {
+          "id": "Move-Out Lots",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/MoveOutParking/MapServer/2"
+        }
+      ]
+    },
+    "summer-i-move-out": {
+      "name": "Summer I Move Out",
+      "layers": [
+        {
+          "id": "No Parking Areas",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/MoveOutParking/MapServer/0"
+        },
+        {
+          "id": "Move-Out Allowed Street Parking",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/MoveOutParking/MapServer/1"
+        },
+        {
+          "id": "Move-Out Lots",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/MoveOutParking/MapServer/2"
+        }
+      ]
+    },
+    "summer-ii-move-out": {
+      "name": "Summer II Move Out",
+      "layers": [
+        {
+          "id": "No Parking Areas",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/MoveOutParking/MapServer/0"
+        },
+        {
+          "id": "Move-Out Allowed Street Parking",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/MoveOutParking/MapServer/1"
+        },
+        {
+          "id": "Move-Out Lots",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/MoveOutParking/MapServer/2"
+        }
+      ]
+    },
+    "sustainable-transportation": {
+      "name": "Sustainable Transportation",
+      "layers": [
+        {
+          "id": "sustainable-transportation-ev-chargers",
+          "url": "https://gis.it.tamu.edu/arcgis/rest/services/TS/BikeMap/MapServer/0"
+        },
+        {
+          "id": "sustainable-transportation-bike-racks",
+          "url": "https://gis.it.tamu.edu/arcgis/rest/services/TS/BikeMap/MapServer/1"
+        },
+        {
+          "id": "sustainable-transportation-bike-fix-stations",
+          "url": "https://gis.it.tamu.edu/arcgis/rest/services/TS/BikeMap/MapServer/2"
+        },
+        {
+          "id": "sustainable-transportation-bike-lanes",
+          "url": "https://gis.it.tamu.edu/arcgis/rest/services/TS/BikeMap/MapServer/3"
+        },
+        {
+          "id": "sustainable-transportation-city-bike-lanes-routes",
+          "url": "https://gis.it.tamu.edu/arcgis/rest/services/TS/BikeMap/MapServer/4"
+        },
+        {
+          "id": "sustainable-transportation-bike-dismount-zones",
+          "url": "https://gis.it.tamu.edu/arcgis/rest/services/TS/BikeMap/MapServer/5"
+        }
+      ]
+    },
+    "swimming-parking": {
+      "name": "Swimming",
+      "layers": [
+        {
+          "id": "swimming-parking-accessible-parking",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/SwimmingParking_view/FeatureServer/0"
+        },
+        {
+          "id": "swimming-parking-lots",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/SwimmingParking_view/FeatureServer/1"
+        }
+      ]
+    },
+    "t-camp": {
+      "name": "T Camp",
+      "layers": [
+        {
+          "id": "t-camp-closures",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/T_Camp_view/FeatureServer/2"
+        },
+        {
+          "id": "t-camp-parking",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/T_Camp_view/FeatureServer/3"
+        },
+        {
+          "id": "t-camp-entry-route",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/T_Camp_view/FeatureServer/1"
+        },
+        {
+          "id": "t-camp-campus-locations",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/T_Camp_view/FeatureServer/0"
+        }
+      ]
+    },
+    "tailgating": {
+      "name": "Football Tailgating",
+      "layers": [
+        {
+          "id": "tailgating-west-campus",
+          "url": "https://services1.arcgis.com/qr14biwnHA6Vis6l/arcgis/rest/services/TAMU_Tailgate_Zones/FeatureServer/3"
+        },
+        {
+          "id": "tailgating-aggie-park",
+          "url": "https://services1.arcgis.com/qr14biwnHA6Vis6l/arcgis/rest/services/TAMU_Tailgate_Zones/FeatureServer/4"
+        },
+        {
+          "id": "tailgating-construction",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/TSConstruction_Hosted/FeatureServer/0"
+        },
+        {
+          "id": "tailgating-simpson-tents",
+          "url": "https://services1.arcgis.com/qr14biwnHA6Vis6l/arcgis/rest/services/TAMU_Tailgate_Zones/FeatureServer/2"
+        },
+        {
+          "id": "tailgating-tents",
+          "url": "https://services1.arcgis.com/qr14biwnHA6Vis6l/arcgis/rest/services/TAMU_Tailgate_Zones/FeatureServer/1"
+        },
+        {
+          "id": "tailgating-restrooms",
+          "url": "https://services1.arcgis.com/qr14biwnHA6Vis6l/arcgis/rest/services/TAMU_Tailgate_Zones/FeatureServer/5"
+        },
+        {
+          "id": "tailgating-zone-numbers",
+          "url": "https://services1.arcgis.com/qr14biwnHA6Vis6l/arcgis/rest/services/TAMU_Tailgate_Zones/FeatureServer/0"
+        }
+      ]
+    },
+    "tennis-parking": {
+      "name": "Tennis",
+      "layers": [
+        {
+          "id": "tennis-parking-lots",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/TennisParking_view/FeatureServer/0"
+        }
+      ]
+    },
+    "timed-parking": {
+      "name": "Timed Parking",
+      "layers": [
+        {
+          "id": "Timed Parking Space",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/TimedParking/MapServer/0"
+        }
+      ]
+    },
+    "ts-main-parking": {
+      "name": "Campus Main Parking",
+      "layers": [
+        {
+          "id": "Route Stop/Start Points",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/TS_Main/MapServer/1"
+        },
+        {
+          "id": "Campus Stops",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/TS_Main/MapServer/2"
+        },
+        {
+          "id": "Construction",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/TSConstruction_Hosted/FeatureServer/0"
+        },
+        {
+          "id": "Visitor Kiosks",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/TS_Main/MapServer/4"
+        },
+        {
+          "id": "Parking Lots",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/TS_Main/MapServer/6"
+        },
+        {
+          "id": "Line Paint",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/TS_Main/MapServer/5"
+        },
+        {
+          "id": "RNS Spaces",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/TS_Main/MapServer/7"
+        }
+      ]
+    },
+    "vendor-parking": {
+      "name": "Vendor Parking",
+      "layers": [
+        {
+          "id": "vendor-parking-vendor-plus-only-lots",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/VendorParking/MapServer/0"
+        }
+      ]
+    },
+    "visitor-parking": {
+      "name": "Visitor Parking",
+      "layers": [
+        {
+          "id": "Visitor Kiosks",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/VisitorParking/MapServer/0"
+        },
+        {
+          "id": "Visitor Parking Lots",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/VisitorParking/MapServer/1"
+        }
+      ]
+    },
+    "volleyball-parking": {
+      "name": "Volleyball",
+      "layers": [
+        {
+          "id": "volleyball-parking-accessible-parking",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/VolleyballParking_view/FeatureServer/0"
+        },
+        {
+          "id": "volleyball-parking-lots",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/VolleyballParking_view/FeatureServer/1"
+        }
+      ]
+    },
+    "womens-basketball": {
+      "name": "Women's Basketball",
+      "layers": [
+        {
+          "id": "womens-basketball-accessible-parking",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/WomensBasketballParking_view/FeatureServer/0"
+        },
+        {
+          "id": "womens-basketball-parking-lots",
+          "url": "https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/WomensBasketballParking_view/FeatureServer/1"
+        }
+      ]
+    }
+  },
+  "skipped": {
+    "developmentOnlyMaps": [
+      {
+        "map": "ncaa-volleyball",
+        "reason": "#2713: published on the development GIS server only; it goes to production if Texas A&M hosts (announced 29 November)"
+      }
+    ],
+    "retiredMaps": [
+      {
+        "map": "softball-regionals-2025",
+        "reason": "retired: the event is over, and its map is never shown (#1098)"
+      },
+      {
+        "map": "troubadour-festival-2025",
+        "reason": "retired: the event is over, and its map is never shown (#1098)"
+      },
+      {
+        "map": "savannah-bananas-parking",
+        "reason": "retired: the event is over, and its map is never shown (#1098)"
+      },
+      {
+        "map": "argentina-vs-honduras-2026",
+        "reason": "retired: the event is over, and its map is never shown (#1098)"
+      },
+      {
+        "map": "live-at-the-station",
+        "reason": "retired: the event is over, and its map is never shown (#1098)"
+      }
+    ],
+    "developmentOnlyLayers": []
+  }
+}

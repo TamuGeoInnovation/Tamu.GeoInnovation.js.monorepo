@@ -19,6 +19,10 @@ import esri = __esri;
  * `read` must cope with its inputs being unset.
  *
  * Call it where `inject` works, such as a field initializer. The watch ends with the component.
+ *
+ * **`watchAsObservable` is the other half of this pair.** It watches the same way and gives an observable, for a
+ * service that pipes the change into something else (#3592). Pick by what the caller needs: this one to read in a
+ * template, that one to pipe.
  */
 export function arcgisSignal<T>(read: () => T): Signal<T> {
   const modules = inject(EsriModuleProviderService);

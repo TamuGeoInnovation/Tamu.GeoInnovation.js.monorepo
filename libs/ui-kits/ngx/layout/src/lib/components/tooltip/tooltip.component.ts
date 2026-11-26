@@ -27,9 +27,9 @@ import { AbstractSlidingDrawerComponent } from '../../abstracts/abstract-sliding
 export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
   private elementRef = inject(ElementRef);
 
-  public readonly width = input<string>(undefined);
+  public readonly width = input<string | undefined>(undefined);
 
-  public readonly height = input<number>(undefined);
+  public readonly height = input<number | undefined>(undefined);
 
   /**
    * The positioning of the tooltip content container.
@@ -43,7 +43,7 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
   /**
    * The relative position of the trigger.
    */
-  public readonly position = input<'left' | 'right' | 'bottom' | 'top'>(undefined);
+  public readonly position = input<'left' | 'right' | 'bottom' | 'top' | undefined>(undefined);
 
   /**
    * The value passed in from the tooltip trigger to initiate the hiding/showing
@@ -55,7 +55,8 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
 
   public readonly trigger = contentChild(TooltipTriggerComponent);
 
-  public readonly triggerElem = contentChild(TooltipTriggerComponent, { read: ElementRef });
+  // Required: it is read only once the tooltip is open, and a tooltip opens from its trigger (#3601).
+  public readonly triggerElem = contentChild.required(TooltipTriggerComponent, { read: ElementRef });
 
   private readonly content = viewChild<ElementRef>('tooltipContainer');
 
@@ -86,7 +87,7 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
    */
   public tooltipContentVisible: Observable<boolean> = toObservable(this.isVisible).pipe(debounceTime(1));
 
-  private _$destroy: Subject<boolean> = new Subject();
+  private _$destroy: Subject<void> = new Subject();
 
   /**
    * Detects if interaction clicks are within the component to reset the visibility.
@@ -156,7 +157,7 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
    * the element goes below the reference, or above it if it does not fit below, slid sideways to stay inside the
    * boundary. Before, it took the last spot tried, left of the reference, and went off the screen.
    */
-  private calculateOffset(reference: PartialDomRect, element: PartialDomRect, boundary: PartialDomRect): IOffsetCoordinates {
+  private calculateOffset(reference: Box, element: Box, boundary: Box): IOffsetCoordinates {
     const BUFFER = 10;
     const fits = (x: number, y: number) =>
       y > 0 &&
@@ -214,7 +215,7 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
    * Calculates the vertical offset for an `element` block relative to a `reference` block
    * that isn't outside a containing `boundary` block.
    */
-  private calculateY(reference: PartialDomRect, element: PartialDomRect, pole: YPosition, buffer?: number) {
+  private calculateY(reference: Box, element: Box, pole: YPosition, buffer?: number) {
     let yInitial: number;
     let yOffset: number;
     let direction: 1 | -1 = 1;
@@ -231,7 +232,8 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
       // is the bottom edge of the reference box.
       yInitial = reference.top + reference.height;
       yOffset = yInitial;
-    } else if (pole === 'center') {
+    } else {
+      // 'center', the last of the three
       direction = -1;
       yInitial = reference.top - reference.height / 2;
       yOffset = yInitial + (direction * element.height) / 2;
@@ -244,7 +246,7 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
     return yOffset;
   }
 
-  private calculateX(reference: PartialDomRect, element: PartialDomRect, hemisphere: XPosition, buffer?: number) {
+  private calculateX(reference: Box, element: Box, hemisphere: XPosition, buffer?: number) {
     let xInitial: number;
     let xOffset: number;
     let direction: 1 | -1 = 1;
@@ -257,7 +259,8 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
     } else if (hemisphere === 'right') {
       xInitial = reference.left + reference.width;
       xOffset = xInitial + direction;
-    } else if (hemisphere === 'center') {
+    } else {
+      // 'center', the last of the three
       direction = -1;
       xInitial = reference.left + reference.width / 2;
       xOffset = xInitial + direction * (element.width / 2);
@@ -271,12 +274,13 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
   }
 
   public ngOnDestroy() {
-    this._$destroy.next(undefined);
+    this._$destroy.next();
     this._$destroy.complete();
   }
 }
 
-type PartialDomRect = Partial<DOMRect>;
+// The four sides every caller gives, as a DOMRect or the window's own box (#3601).
+type Box = Pick<DOMRect, 'top' | 'left' | 'width' | 'height'>;
 type YPosition = 'top' | 'bottom' | 'center';
 type XPosition = 'left' | 'right' | 'center';
 interface IOffsetCoordinates {

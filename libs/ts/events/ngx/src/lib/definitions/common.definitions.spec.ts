@@ -52,6 +52,29 @@ describe('athleticsDevelopmentSource', () => {
       native: { outFields: ['*'], definitionExpression: "type = 'Lot'" }
     });
   });
+
+  // #2597: a layer whose popup reads other fields of the same feed names only what differs.
+  it('merges popupData over the default rather than replacing it', () => {
+    const source = athleticsDevelopmentSource({
+      id: 'c',
+      url: 'https://host/FeatureServer/1',
+      popupData: { name: '{attributes.type}' }
+    });
+
+    expect(source.popupData).toStrictEqual({ name: '{attributes.type}', description: 'attributes.description' });
+  });
+
+  it('changes nothing but the popup when popupData is given', () => {
+    const plain = athleticsDevelopmentSource({ id: 'd', url: 'https://host/FeatureServer/2', onlyType: 'Lot' });
+    const overridden = athleticsDevelopmentSource({
+      id: 'd',
+      url: 'https://host/FeatureServer/2',
+      onlyType: 'Lot',
+      popupData: { name: '{attributes.type}', description: '{attributes.event}' }
+    });
+
+    expect({ ...overridden, popupData: plain.popupData }).toStrictEqual(plain);
+  });
 });
 
 /**

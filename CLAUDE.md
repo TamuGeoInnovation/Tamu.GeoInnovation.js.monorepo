@@ -800,6 +800,12 @@ reclaim, all of it held by a file whose job finished the moment the pull request
 now removes a worktree whose *only* change is an untracked `.pr-body.md`, so this is belt and braces rather
 than the only guard - but the file is yours to delete, and the sweep should not have to know about it.
 
+**`tidy.sh` reports the `wt-*` folders git does not list as two kinds, with their total size** (#3678). It
+reads git's worktree list, so a folder whose registration and `.git` are both gone is invisible to `--yes`:
+on 25 November 2026 one machine held three of them, about 2.2 GB, and another seventeen. Such an *orphan* is removed only by
+`bash scripts/tidy.sh --remove-orphans`, which removes nothing else and checks each folder again first. A
+folder with its own `.git` is another repository's worktree or a clone, and nothing here ever removes it.
+
 **Write every capture to `docs/screenshots/<slug>/` as soon as it is taken, not when it is needed.**
 A "before" image stops being obtainable the moment the fix is on disk: recovering one means stashing
 the change, waiting for a rebuild, re-capturing, then restoring — ten minutes to get back something
@@ -971,3 +977,16 @@ when its task says so, and no other branches or tags. It opens no pull requests 
   touching anything on GitHub. Setting `$env:HOME` does not help, because a Windows path does not reach
   into WSL's filesystem, and it fails the same way elevated or not. On 23 November 2026 this cost three
   attempts and two wrong diagnoses before anyone asked which `bash` was answering (#3273).
+- **A one-line edit showing as a huge diff, a stray CR in an LF file, or a line split where nobody edited
+  it is usually a doubled backslash that arrived single.** A command sent through Claude Code's Bash tool
+  loses one level of backslashes before the shell sees it, quotes and quoted heredocs included. So
+  `tr -d '\\r'` written into a Python step reaches Python as `'\r'` and writes a real carriage return, and
+  `'%s\\n'` becomes a real newline that splits the line. The CR is invisible in `grep`, `sed -n` and the
+  editor. Don't write escapes into shell at all: build the character in a small Python step, with
+  `chr(92)` for a backslash, `chr(13)` for a CR and `os.path.join` for a path, or use the Edit tool, which
+  passes text as written. Then check the bytes before committing: `file <path>` names CRLF, and
+  `git diff --stat` against `git diff --stat --ignore-all-space` disagreeing wildly means endings were
+  rewritten. That comparison misses a single CR inside one argument, so count them too:
+  `grep -c $'\r' <path>` must print 0. Why `.gitattributes` will not catch it is under
+  [Things that are easy to get wrong](#things-that-are-easy-to-get-wrong). Three corrections in one
+  session on 25 November 2026 before it was named (#3651).

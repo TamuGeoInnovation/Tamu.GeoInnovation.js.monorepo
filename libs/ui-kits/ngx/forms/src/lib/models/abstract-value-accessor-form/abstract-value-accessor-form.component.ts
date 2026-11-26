@@ -24,7 +24,7 @@ export class AbstractValueAccessorFormComponent<T> implements ControlValueAccess
     this.setInternalValue(v);
   }
 
-  private _onChange = (v: T | undefined) => {
+  private _onChange: (v: T | undefined) => void = (v) => {
     return v;
   };
 
@@ -49,11 +49,11 @@ export class AbstractValueAccessorFormComponent<T> implements ControlValueAccess
     }
   }
 
-  public registerOnChange(fn) {
+  public registerOnChange(fn: (value: T | undefined) => void) {
     this._onChange = fn;
   }
 
-  public registerOnTouched(fn) {
+  public registerOnTouched(fn: () => void) {
     this._onTouched = fn;
   }
 

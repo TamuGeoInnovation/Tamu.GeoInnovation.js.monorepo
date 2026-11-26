@@ -8,7 +8,8 @@ import { GISDAY_SITE } from '../../site/site';
 
 /** A session as the list shows it: when it starts, in Central time, and its name. */
 interface SessionUsing {
-  guid: string;
+  /** Every session the API sends has one; the type it is read as does not say so. */
+  guid: string | undefined;
   name: string;
   day: string;
   time: string;

@@ -27,7 +27,7 @@ export class TypeAddEditFormComponent implements OnInit {
   public readonly page = inject(TYPE_PAGE);
   private readonly backToList = injectBackToList(this.page.list);
 
-  public readonly type = input<'create' | 'edit'>(undefined);
+  public readonly type = input.required<'create' | 'edit'>();
 
   public form: UntypedFormGroup;
 

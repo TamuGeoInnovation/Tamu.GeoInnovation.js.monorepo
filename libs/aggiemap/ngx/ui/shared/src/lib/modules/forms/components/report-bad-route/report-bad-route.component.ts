@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
-import { takeUntil, switchMap, pluck } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 
 import { TripPlannerService, TripResult } from '@tamu-gisc/maps/feature/trip-planner';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
@@ -30,11 +30,7 @@ export class ReportBadRouteComponent implements OnInit, OnDestroy {
   private _destroy$: Subject<boolean> = new Subject();
 
   public ngOnInit() {
-    this.tripPlanner.TravelOptions.pipe(
-      pluck('travel_mode'),
-      switchMap(() => this.tripPlanner.getTripResultForTravelMode()),
-      takeUntil(this._destroy$)
-    ).subscribe((result) => {
+    this.tripPlanner.currentResult$.pipe(takeUntil(this._destroy$)).subscribe((result) => {
       this.result = result;
     });
   }
