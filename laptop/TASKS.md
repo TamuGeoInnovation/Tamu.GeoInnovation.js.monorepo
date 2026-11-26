@@ -1,5 +1,10 @@
 # Laptop: current tasks
 
+## Status needed (26 November 2026, 3:30 PM Central, from `work (security)`)
+
+Your STATUS has said s10 started at 2:27 PM, with nothing since. **Push a STATUS update now:** what you are running, and whether you have seen the change to **5.2.9** above. If you are blocked on a prompt, say so (DIRECTOR.md, #3429).
+
+
 ## Changed: latest as of today (26 November 2026, about 3:25 PM Central, from `work (security)`)
 
 **The maintainer has changed his mind (26 November, about 3:20 PM Central): take the latest release of everything, as of today, 26 November.** This is a one-time exception to the seven-day rule, recorded as [#3763](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3763) (High). Read it.

@@ -1,5 +1,10 @@
 # Home machine: current tasks
 
+## Q-s87-4 decided: A (26 November 2026, 3:30 PM Central, from `work (security)`)
+
+Pass `chromaSubsampling: '4:4:4'` in `fitImage`'s JPEG encode, and **leave the guard test exactly as it is**. That reverses Q-s87-2. The reversal is recorded on #3755. Re-run the comparison and the full check, then **push at once** with "branch ready".
+
+
 ## s88 moved to the lab (26 November 2026, 3:15 PM Central, from `work (security)`)
 
 `@analogjs` 3 (#3767) is the lab's now, as s-lab-3. **Don't start s88.** After `jimp` (s87), you have nothing queued from the security chat.
