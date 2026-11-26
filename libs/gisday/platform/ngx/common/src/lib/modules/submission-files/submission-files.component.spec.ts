@@ -36,6 +36,17 @@ describe('SubmissionFilesComponent', () => {
     service = { getFiles: vi.fn(), addFile: vi.fn(), deleteFile: vi.fn(), getFileContents: vi.fn() };
   });
 
+  /** #3611. Given neither a source nor a submission, the list has no files to ask for, rather than asking for "undefined"'s. */
+  it('asks for no files when it is given neither a source nor a submission', () => {
+    TestBed.configureTestingModule({ providers: [{ provide: UserSubmissionsService, useValue: service }] });
+
+    const fixture = TestBed.createComponent(SubmissionFilesComponent);
+    fixture.detectChanges();
+
+    expect(service.getFiles).not.toHaveBeenCalled();
+    expect((fixture.nativeElement as HTMLElement).textContent).toContain('No files attached yet.');
+  });
+
   it("lists the submission's files with their sizes, and offers no picker or Remove to an admin reviewing it", () => {
     const { element } = render(false);
 

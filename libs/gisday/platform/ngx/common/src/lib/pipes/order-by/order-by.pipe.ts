@@ -29,6 +29,9 @@ export class OrderByPipe implements PipeTransform {
             throw new Error('Invalid ordering direction specified');
           }
         }
+
+        // Numbers, and values of different types, keep their order: what the missing return already did.
+        return 0;
       });
 
       return sorted;

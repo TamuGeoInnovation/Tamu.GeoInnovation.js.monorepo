@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
-import { switchMap, takeUntil, pluck } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 
 import { TripPlannerService, TripResult } from '@tamu-gisc/maps/feature/trip-planner';
 import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
@@ -39,11 +39,7 @@ export class TripPlannerBottomComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.tripPlanner.TravelOptions.pipe(
-      pluck('travel_mode'),
-      switchMap(() => this.tripPlanner.getTripResultForTravelMode()),
-      takeUntil(this._destroy$)
-    ).subscribe((result) => {
+    this.tripPlanner.currentResult$.pipe(takeUntil(this._destroy$)).subscribe((result) => {
       if (result && !result.isError) {
         this.result.set(result);
       }

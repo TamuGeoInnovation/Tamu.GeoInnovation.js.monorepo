@@ -93,6 +93,11 @@ export const commonSymbols = {
  *
  * Women's Basketball was written this way by hand in #2176 and is the only athletics map whose
  * development popups have ever worked; this generalises it.
+ *
+ * **`popupData` is merged over the default**, so a layer whose popup reads other fields of the same feed
+ * names only what differs (#2597): Men's Basketball's closures are titled by `type` and described by
+ * `event`. There is no `native` override because no layer needs one yet, and no `refreshInterval`, because
+ * game-day refresh is the event's `gameDayRefresh` switch (#2581).
  */
 export function athleticsDevelopmentSource(source: {
   id: string;
@@ -100,6 +105,8 @@ export function athleticsDevelopmentSource(source: {
   title?: string;
   /** The `type` value this layer shows, where production split one service layer into two. */
   onlyType?: string;
+  /** Popup entries that differ from the feed's `name` and `description`, merged over them. */
+  popupData?: LayerSource['popupData'];
 }): LayerSource {
   return {
     type: 'feature',
@@ -109,7 +116,8 @@ export function athleticsDevelopmentSource(source: {
     popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.name',
-      description: 'attributes.description'
+      description: 'attributes.description',
+      ...source.popupData
     },
     visible: true,
     listMode: 'show',

@@ -8,7 +8,7 @@ export class ElementInsertDirective implements AfterContentInit {
   private renderer = inject(Renderer2);
   private elementRef = inject(ElementRef);
 
-  public readonly elementInsert = input<Element>(undefined);
+  public readonly elementInsert = input<Element | undefined>(undefined);
 
   public ngAfterContentInit() {
     this.renderer.appendChild(this.elementRef.nativeElement, this.elementInsert());

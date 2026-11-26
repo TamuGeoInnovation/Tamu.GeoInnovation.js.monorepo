@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { MapManifest } from './global-setup';
+import type { MapManifest } from './global-setup';
 
 /**
  * Builder destinations, so the maps behind a builder are tested rather than skipped.
@@ -57,14 +57,38 @@ interface BuilderInventory {
   maps: InventoryMap[];
 }
 
-const INVENTORY_PATH = path.join(__dirname, '..', '..', '..', 'tools', 'builder-inventory', 'builder-inventory.generated.json');
+const INVENTORY_PATH = path.join(
+  __dirname,
+  '..',
+  '..',
+  '..',
+  'tools',
+  'builder-inventory',
+  'builder-inventory.generated.json'
+);
 
-/** By map route, the destinations to load for it, each with the choices that reach it; empty where none apply. */
-export function loadBuilderTargets(manifest: MapManifest): Map<string, BuilderTarget[]> {
-  const byRoute = new Map<string, BuilderTarget[]>();
+/** A recorded destination, as `BuilderTarget` gives it, with the layers it was recorded drawing. */
+export interface BuilderDestination extends BuilderTarget {
+  layers: string[];
+}
 
+/** The inventory as this run reads it: every map it recorded, by route, and where it was recorded if not here. */
+export interface BuilderDestinations {
+  /** Every map the inventory recorded, by route, with all its destinations in the order recorded; some have none. */
+  byRoute: Map<string, BuilderDestination[]>;
+  borrowedFrom?: string;
+  capturedAt?: string;
+}
+
+/**
+ * The one reader of `tools/builder-inventory` (#3474). The smoke suite used to read the file in two places with two
+ * declarations of its shape, and only one of them knew a destination could be borrowed. Which destinations each use
+ * loads is still its own choice: `loadBuilderTargets` takes one per layer set, and `servedRoutes` every one or the first
+ * per map, since where a map opens can change with the builder choices even when its layers do not.
+ */
+export function readBuilderDestinations(manifest: MapManifest): BuilderDestinations {
   if (!fs.existsSync(INVENTORY_PATH)) {
-    return byRoute;
+    return { byRoute: new Map() };
   }
 
   const inventory: BuilderInventory = JSON.parse(fs.readFileSync(INVENTORY_PATH, 'utf8'));
@@ -76,37 +100,54 @@ export function loadBuilderTargets(manifest: MapManifest): Map<string, BuilderTa
   // found through production's own (#1134).
   const borrowedFrom = inventory.baseUrl === manifest.baseUrl ? undefined : inventory.baseUrl;
 
+  const byRoute = new Map(
+    inventory.maps.map((map): [string, BuilderDestination[]] => [
+      map.route,
+      map.destinations.map((destination) => ({
+        target: destination.shareTarget,
+        label: (destination.stepsTaken ?? []).map((s) => s.chosenLabel).join(' / ') || 'default',
+        ...(borrowedFrom === undefined ? {} : { borrowedFrom }),
+        layers: destination.layers ?? []
+      }))
+    ])
+  );
+
+  return { byRoute, borrowedFrom, capturedAt: inventory.capturedAt };
+}
+
+/** By map route, the destinations to load for it, each with the choices that reach it; empty where none apply. */
+export function loadBuilderTargets(manifest: MapManifest): Map<string, BuilderTarget[]> {
+  const { byRoute, borrowedFrom, capturedAt } = readBuilderDestinations(manifest);
+
   if (borrowedFrom !== undefined) {
     console.warn(
-      `[smoke] builder inventory was captured against ${borrowedFrom} (${inventory.capturedAt}); this run targets ` +
+      `[smoke] builder inventory was captured against ${borrowedFrom} (${capturedAt}); this run targets ` +
         `${manifest.baseUrl}, so its destinations are borrowed: one that does not reach its map here is skipped, ` +
         `not failed (#1134). Re-run tools/builder-inventory against this environment for destinations of its own.`
     );
   }
 
-  for (const map of inventory.maps) {
+  const targets = new Map<string, BuilderTarget[]>();
+
+  for (const [route, destinations] of byRoute) {
     const seen = new Set<string>();
     const picked: BuilderTarget[] = [];
 
-    for (const destination of map.destinations) {
-      const signature = [...(destination.layers ?? [])].sort().join('|');
+    for (const { layers, ...target } of destinations) {
+      const signature = [...layers].sort().join('|');
 
       if (seen.has(signature)) {
         continue;
       }
 
       seen.add(signature);
-      picked.push({
-        target: destination.shareTarget,
-        label: (destination.stepsTaken ?? []).map((s) => s.chosenLabel).join(' / ') || 'default',
-        ...(borrowedFrom === undefined ? {} : { borrowedFrom })
-      });
+      picked.push(target);
     }
 
     if (picked.length > 0) {
-      byRoute.set(map.route, picked);
+      targets.set(route, picked);
     }
   }
 
-  return byRoute;
+  return targets;
 }

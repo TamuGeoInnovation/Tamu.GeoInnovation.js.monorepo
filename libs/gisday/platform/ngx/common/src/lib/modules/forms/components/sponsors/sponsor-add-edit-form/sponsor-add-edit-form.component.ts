@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Observable, filter, map, of, shareReplay, switchMap, take } from 'rxjs';
 
-import { Sponsor, Season } from '@tamu-gisc/gisday/platform/data-api';
+import { Sponsor } from '@tamu-gisc/gisday/platform/data-api';
 import { AssetsService, SeasonService, SponsorService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { UploadImagePicker } from '../../../../../utils/upload-image-picker';
 
@@ -46,10 +46,9 @@ export class SponsorAddEditFormComponent implements OnInit {
   private readonly ss = inject(SeasonService);
   private readonly sn = inject(DomSanitizer);
 
-  public readonly type = input<'create' | 'edit'>(undefined);
+  public readonly type = input.required<'create' | 'edit'>();
 
   public entity$: Observable<Partial<Sponsor>>;
-  public activeSeasons$: Observable<Partial<Season>>;
   public logoUrl$: Observable<SafeUrl | string | null>;
   public form: UntypedFormGroup;
 
@@ -97,8 +96,6 @@ export class SponsorAddEditFormComponent implements OnInit {
       file: [null]
     });
 
-    this.activeSeasons$ = this.ss.activeSeason$;
-
     this.entity$ = this.at.params.pipe(
       map((params) => params.guid),
       filter((guid) => guid !== undefined),
@@ -111,7 +108,7 @@ export class SponsorAddEditFormComponent implements OnInit {
       (this.entity$ ?? of(null)).pipe(
         switchMap((entity) => (entity?.logos?.[0]?.path ? this.as.getAssetUrl(entity.logos[0].path) : of(null)))
       ),
-      this.form.get('file').valueChanges,
+      this.form.controls.file.valueChanges,
       this.sn
     );
 
@@ -123,8 +120,11 @@ export class SponsorAddEditFormComponent implements OnInit {
         });
       });
     } else {
-      this.activeSeasons$.pipe(take(1)).subscribe((season) => {
-        this.form.patchValue({ season: season.guid });
+      this.ss.activeSeason$.pipe(take(1)).subscribe((season) => {
+        // With no active season, the form's season is left empty.
+        if (season) {
+          this.form.patchValue({ season: season.guid });
+        }
       });
     }
   }

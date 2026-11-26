@@ -20,7 +20,7 @@ export class InstallComponent implements OnInit {
   private readonly ns = inject(NotificationService);
 
   public device: Device;
-  public version: IDeviceOSVersion;
+  public version: IDeviceOSVersion | null;
 
   public locationRequested: BehaviorSubject<boolean> = new BehaviorSubject(false);
 

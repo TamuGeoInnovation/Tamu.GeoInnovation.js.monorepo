@@ -22,6 +22,7 @@ import {
   map,
   mergeMap,
   scan,
+  shareReplay,
   switchMap,
   tap,
   toArray,
@@ -310,6 +311,16 @@ export class TripPlannerService implements OnDestroy {
    */
   // private _Result: BehaviorSubject<TripResult> = new BehaviorSubject(undefined);
   private _Result: BehaviorSubject<TripResult[]> = new BehaviorSubject([]);
+
+  /**
+   * The trip result for the current travel mode, as every component showing it reads it (#3487): fetched and drawn
+   * once per change to the travel options or the results, however many components subscribe. Each ran its own copy of
+   * this pipe before, and so drew the route once more. The route is drawn while at least one component is subscribed.
+   */
+  public readonly currentResult$: Observable<TripResult> = this.TravelOptions.pipe(
+    switchMap(() => this.getTripResultForTravelMode()),
+    shareReplay({ bufferSize: 1, refCount: true })
+  );
 
   /**
    * Publicly exposed observable for the trip planner service route result
