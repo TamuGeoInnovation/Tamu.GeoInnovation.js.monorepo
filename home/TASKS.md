@@ -1,5 +1,68 @@
 # Home machine: current tasks
 
+## Batch a63 (workspace: #3738, Nx 24.0.6 to 24.0.7 — the gate for the whole Angular chain; 26 November 2026, from `work (aggiemap)`) (High) — **now**
+
+**Take this ahead of s84 if s84 has not started.** It unblocks PR 3724 and every future `@angular/*` minor, and the
+maintainer asked for it today rather than on 2 December.
+
+### What and why
+
+Eight packages, **24.0.6 to 24.0.7**: `nx`, `@nx/angular`, `@nx/eslint`, `@nx/eslint-plugin`, `@nx/js`, `@nx/vitest`,
+`@nx/webpack`, `@nx/workspace`. A **patch**, so `dependabot.yml`'s "Nx majors are held back" does not apply.
+
+Your own a60 found why this matters: Angular 22.3.0 brings `@angular-devkit/architect` 0.2203.0, whose new `exports`
+map allows `./node` but not `./node/index`, and **nx 24.0.6 imports `./node/index.js`** at `ngcli-adapter.js:941`.
+**nx 24.0.7 imports `./node`.** All six Angular production builds fail until this lands.
+
+**This is a deliberate seven-day exception** — the maintainer's decision, recorded on
+[#3738](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3738). `nx` 24.0.7 was published
+**25 November**, so it is one day old where CLAUDE.md asks for eight. Say so in the pull request body; do not present
+it as an ordinary bump.
+
+### What to do
+
+1. **Branch** `chore/3738-nx-24.0.7` from the latest `development`.
+2. **Move all eight** to `24.0.7` in `package.json`. They pin each other, so a partial move is worse than none.
+3. **Sync the lock** with `npm install --package-lock-only --ignore-scripts`, then **prove it with a clean `npm ci`**
+   before pushing (#1347). `check-in-volume.sh` runs that install itself when `package.json` changes, and **exits 4**
+   if it fails.
+4. **The lock diff must move only these eight and their own dependencies.** Say what else moved, if anything, and what
+   depends on it.
+5. **The full affected check**, and read the log's own `Exit N` line. `package.json` changing makes affected
+   effectively everything.
+
+### What I most want from this run
+
+**Confirm the six Angular production builds pass**, by name: `aggiemap-angular`, `gisday-angular`,
+`ues-operations-angular`, `ts-events-angular`, `mailroom-angular`, `geoservices-angular`. They are the thing this is
+for. A green run that did not build them proves nothing.
+
+**Also check the import actually changed** in the installed tree:
+
+```
+grep -o "architect/node[a-zA-Z/.]*" node_modules/nx/dist/src/adapter/ngcli-adapter.js
+```
+
+It should print `architect/node`, not `architect/node/index.js`. That is the one-line proof the upgrade does what it is
+being taken for.
+
+### Do not
+
+- **Do not touch `@angular/*` here.** 3724 is Dependabot's and gets rebased after this merges. One change per pull
+  request.
+- **Do not take any other package along**, however tempting the lock looks.
+
+### Worth knowing
+
+`nx` 24.0.7 peers `typescript ^5.8.0 || ^6.0.0`, so it is a **second** blocker on TypeScript 7 alongside Angular's
+`>=6.0 <6.1`. Note it in the report; it belongs on
+[#1918](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1918) and I will put it there.
+
+**Branch** pushed to the fork. `check-in-volume.sh`, then **`pre-pr-check.sh`**, and give me its last line. Body text in
+the report with a `Title:` line, saying plainly that this is a seven-day exception and why.
+
+**Report** `home/reports/2026-11-26-a63.md`. Questions `Q-a63-<n>`. **Open no pull request** — I open it.
+
 ## Batch s84 (security: #3725, group 2 re-cut without `webpack-cli`; 26 November 2026, from `work (security)`) (Low) - **now**
 
 **Decided by the maintainer on your s83 questions:**
