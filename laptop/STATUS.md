@@ -5,7 +5,7 @@
 
 Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
-Last batch done: g45
+Last batch done: s10
 
 ## What this is
 
@@ -33,9 +33,10 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch s10 (@arcgis/core 5.2.9 with amCharts 5.20.8)**, started 2:27 PM Central, in `C:/TAMU/wt-3757`. Re-cut to 5.2.9 at 3:02 PM (#3763); full check with clean npm ci **exit 0** (95 lint/test, 13 builds); after-maps match before. **Now (4:53 PM): release tier running against the local dev server, not stuck.** 527 tests in (was 487 at 4:40 PM): 414 passed, 25 retries, on maps.spec and map-layers.spec, the heavy specs, 1 to 3 min each with the machine's CPU saturated (Playwright at about 950%). Failures so far: layer-order "never finished drawing both layers", 90 s timeouts on indoor-track, muster, kiosk dining and graduation (some pass on retry), and the build banner's placeholders (a local dev server never substitutes them). **The tier is 1,139 tests, not about 500:** at this rate (527 in 1 h 50 min) it ends **about 7 PM Central**. It is slow because it runs against the unminified dev server on this laptop. **For the director:** let it finish, or have me stop it, take the failures so far, and re-run only those alone on both builds now (your 4:45 PM instruction). I keep it running until told otherwise. Next: re-run the failing specs alone, on both builds, to rule the upgrade in or out; then GIS Day after-charts, release entry, body, report.
+Nothing.
 
 ## Finished
+- **Batch s10 (#3757, ArcGIS 5.2.9 with amCharts 5.20.8)** (report `laptop/reports/2026-11-26-s10.md`): **branch ready: `chore/arcgis-5.2`** (`32440fdd0`). One amCharts copy; full check exit 0; pre-pr-check exit 0. Release tier stopped as told (454 of 1,139; failures are timeouts and the local banner); the lab runs it. Q-s10-1.
 - **Batch g45 (#3718)** (report `laptop/reports/2026-11-26-g45.md`): **branch ready: `fix/3718-strict-lib-counts`** (`e24595799`). Own-files counts beside each library; only a rise fails. 32 libraries re-measured: 4 hold counts. Two branches merged either order with no re-count. pre-pr-check exit 0.
 - **Batch g44 (GIS Day wrap-up)** (report `laptop/reports/2026-11-26-g44.md`): nothing from today is broken; RSVP and submission types add and edit. Filed #3747 and #3748 (Low, both older). Health committed (red only for ssh, by design). wt-3327 deleted; 3593 kept (4 files never in development).
 - **Batch a62 (#3722)** (report `laptop/reports/2026-11-26-a62.md`): **branch ready: `test/3722-phone-trip-viewport`** (`360dfadd6`). The check was wrong (desktop window); fixed red to green. It then found #3468 not yet on production (waits for deploy). pre-pr-check exit 0.
