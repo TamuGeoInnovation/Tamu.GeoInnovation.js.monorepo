@@ -1,5 +1,18 @@
 # Laptop: current tasks
 
+## Changed: latest as of today (26 November 2026, about 3:25 PM Central, from `work (security)`)
+
+**The maintainer has changed his mind (26 November, about 3:20 PM Central): take the latest release of everything, as of today, 26 November.** This is a one-time exception to the seven-day rule, recorded as [#3763](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3763) (High). Read it.
+
+Its guards apply to every branch:
+- **Read each new release for install scripts.** `strict-allow-scripts` refuses any new one, and a new one comes to the director.
+- **The PR body records the exception and links #3763.**
+- **Socket's required check must pass.**
+- **"Latest as of 26 November" is the line:** nothing published after today.
+
+- **s10:** **`@arcgis/core` and `@arcgis/map-components` 5.2.9**, with **amCharts 5.20.8**. That is the newest that `~5.20.8` accepts; **not** 5.24.1, which would install a second copy. Calcite only if 5.2.9 requires a move. **Push as soon as it's checked.** The earlier note pinning 5.2.6 is withdrawn.
+
+
 ## For s10: the seven-day rule stands (26 November 2026, about 3:10 PM Central, from `work (security)`)
 
 **The maintainer has confirmed it: no exceptions for the modernization.** Every version must be at least 7 days old. Measured against the registry at about 3 PM today:

@@ -1,5 +1,33 @@
 # work-lab-leila: current tasks
 
+## Batch s-lab-1 (security: every remaining component to its latest as of 26 November, for #3763; 26 November 2026, about 3:25 PM Central, from `work (security)`) (High) - **now, while a64 is held**
+
+**The maintainer has changed his mind (26 November, about 3:20 PM Central): take the latest release of everything, as of today, 26 November.** This is a one-time exception to the seven-day rule, recorded as [#3763](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3763) (High). Read it.
+
+Its guards apply to every branch:
+- **Read each new release for install scripts.** `strict-allow-scripts` refuses any new one, and a new one comes to the director.
+- **The PR body records the exception and links #3763.**
+- **Socket's required check must pass.**
+- **"Latest as of 26 November" is the line:** nothing published after today.
+
+**a64 is held waiting for a dev deploy. Run this meanwhile.** If a64's deploy lands, finish the step you're on, push what's checked, and go back to a64: it is the AggieMap release.
+
+The packages **not** taken here, because other branches own them: NestJS (home s86), `jimp` (home s87), `@arcgis/*` and amCharts (laptop s10), and the Angular group (Dependabot PR 3758, the director's). Also never `@types/node` (it stays at Node 24) or `typescript` (7 is blocked).
+
+Everything else that is behind goes to its latest as of today, in **two branches**, so that a failure points somewhere:
+1. **`chore/3763-tooling-latest`:** the build and test toolchain: `vite` 8.4.0, `vitest` and `@vitest/coverage-v8` 5.1.2, `webpack` 5.113.0, `typescript-eslint` and `@typescript-eslint/parser` 8.74.0, and any other dev-only tool that is behind.
+2. **`chore/3763-runtime-latest`:** the runtime libraries: `mssql` 12.8.1, `marked` 18.3.0, `auth0` 7.9.0, `interactjs` 1.10.29, `nodemailer` 10.6.1, and every other runtime package that is behind (run `npm outdated` and list them all).
+
+For each branch:
+- Bump in `package.json`, sync the lock, and **list every version that moved**.
+- Run the full check with a clean `npm ci`, using `CHECK_MEMORY=8g CHECK_PARALLEL=4` if anything else runs.
+- Add a row to `docs/upgrades/README.md`'s "How we got here".
+- Push to the fork; "branch ready" with `.pr-body.md`, `Closes` an issue the director files: **#TOOLING** and **#RUNTIME**, which I'll fill in.
+
+**`@analogjs` 3.0.0 is not in either.** It follows the Angular group, so it comes as its own batch once PR 3758 merges.
+Report `work-lab-leila/reports/2026-11-26-s-lab-1.md`.
+
+
 ## Batch a64 (aggiemap: the quick tier on the new dev build; 26 November 2026, from `work (aggiemap)`) (High) — **now**
 
 **a58 and a59 are withdrawn** — they were written for the build deployed this morning, `17d29cd2a`, and the maintainer

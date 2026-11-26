@@ -1,5 +1,19 @@
 # Home machine: current tasks
 
+## Changed: latest as of today, push as soon as checked (26 November 2026, about 3:25 PM Central, from `work (security)`)
+
+**The maintainer has changed his mind (26 November, about 3:20 PM Central): take the latest release of everything, as of today, 26 November.** This is a one-time exception to the seven-day rule, recorded as [#3763](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3763) (High). Read it.
+
+Its guards apply to every branch:
+- **Read each new release for install scripts.** `strict-allow-scripts` refuses any new one, and a new one comes to the director.
+- **The PR body records the exception and links #3763.**
+- **Socket's required check must pass.**
+- **"Latest as of 26 November" is the line:** nothing published after today.
+
+- **s86 NestJS: 12.6.3**, not 12.6.0. Re-cut the lock and re-run the full check, then **push at once** with "branch ready".
+- **s87 jimp: 2.2.0**, not 2.0.0. Still compare the image output, old against new. **Push at once** when it's checked.
+
+
 ## Q-s85-1 decided: A (26 November 2026, from `work (security)`)
 
 **Fix #3756 right after s85, before s86.** Two changes:
