@@ -22,7 +22,7 @@ the shared libraries behind them. A change to a shared library can affect severa
 
 ## Where things are written down
 
-Eleven places, each with one job.
+Twelve places, each with one job.
 
 | Where | What belongs there |
 | --- | --- |
@@ -32,6 +32,7 @@ Eleven places, each with one job.
 | [`docs/build-times.md`](docs/build-times.md) | How long runs and page loads take, so a change meant to speed something up can be shown to have done it: before-and-after comparisons and what they show, and the run files in [`docs/build-times/runs/`](docs/build-times/runs) the scripts write when asked. Measurements, not rules. |
 | [`docs/gisday-local.md`](docs/gisday-local.md) | How to run the whole GIS Day site on one machine with `scripts/gisday-local.sh`: the containers, the settings kept outside the repository, and what works locally and what does not. |
 | [`docs/gisday-migrations.md`](docs/gisday-migrations.md) | How the GIS Day database schema is changed: the migration commands, the process from entity to production, and what has been proven. Read before editing a GIS Day entity, **and before changing any production GIS Day data**: it says where the scripts that do that are kept. |
+| [`docs/upgrades/README.md`](docs/upgrades/README.md) | The modernization plan: how far behind each of Angular, NestJS, Nx, TypeScript and ArcGIS is today, the order the remaining steps have to be taken in, and which of them gate the others. Updated in the same pull request as the step it describes. |
 | [`docs/parked-code.md`](docs/parked-code.md) | Code deleted because the service it called went away, and that we expect to want again: which `parked/*` tag holds it, why it went, and what has to be true to bring it back. Read before re-writing something that feels like it must have existed once. |
 | [`docs/releases/unreleased.md`](docs/releases/unreleased.md) | Day-to-day state **anyone** picking this up needs: what has merged since the last production release, where it is deployed, what still needs a decision, and work in flight. [`CLAUDE_SETUP.md`](CLAUDE_SETUP.md) sends a new session here first. |
 | The `cloud-mailbox` branch | The cloud session's current batch (`cloud/TASKS.md`) and its reports (`cloud/reports/`). Written by the desktop and cloud sessions; never merged. See [The cloud session](#the-cloud-session). |
