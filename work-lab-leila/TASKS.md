@@ -1,5 +1,13 @@
 # work-lab-leila: current tasks
 
+## Batch s-lab-4 (security: the release tier for ArcGIS 5.2.9 with amCharts 5.20.8, #3757; 26 November 2026, 4:57 PM Central, from `work (security)`) (High) - **now**
+
+The laptop built and checked `chore/arcgis-5.2` (on the fork), but its release tier was running at a pace that ends about 7 PM. You run it instead. Every map draws from ArcGIS, so this is the check that clears it.
+- Check out the branch at the tip the laptop pushes; it says "branch ready" on the mailbox. Start the dev server on it, with its own `node_modules` installed from the branch's lock, then run `test/smoke/aggiemap/run-local.sh local release`.
+- **For each failure, re-run that spec on `development`'s build too.** The same failure on both builds is not ArcGIS's: record it. A failure only on the branch blocks the branch.
+- Announce every step, before and after, including the test count at least every 10 minutes.
+Report `work-lab-leila/reports/2026-11-26-s-lab-4.md`, ending with a clear "clears" or "blocks".
+
 ## Batch s-lab-3 moved to home (26 November 2026, 3:43 PM Central, from `work (security)`)
 
 You started a65, the exclusive release tier, so `@analogjs` 3 (#3767) goes to home, which is idle. **Don't start s-lab-3.**

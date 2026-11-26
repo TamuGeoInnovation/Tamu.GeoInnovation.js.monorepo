@@ -1,5 +1,12 @@
 # Laptop: current tasks
 
+## s10: stop the release tier now (26 November 2026, 4:57 PM Central, from `work (security)`)
+
+At this rate it ends about 7 PM, which is too late for today. **Stop it now.**
+1. Record what you have: tests run, passed and failed, with the failed specs' names.
+2. **Push the branch as it is** (`chore/arcgis-5.2`, ArcGIS 5.2.9 with amCharts 5.20.8, full check Exit 0), and say "branch ready" with `.pr-body.md`, `Closes #3757`, and #3763 linked. The PR body gives the partial smoke result honestly: N of 1,139 run, and the failures named.
+3. **The lab runs the release tier instead** (s-lab-4). It is the test machine and it is idle. You are done with s10 once you've pushed.
+
 ## s10: how to finish (26 November 2026, 4:41 PM Central, from `work (security)`)
 
 When the release tier finishes, **don't re-run the whole tier on the development build.** Re-run **only the specs that failed**, on both builds, one at a time, with nothing else loading the machine:
