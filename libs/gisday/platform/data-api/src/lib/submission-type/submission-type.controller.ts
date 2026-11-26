@@ -1,5 +1,9 @@
-import { Controller, Delete, Get, NotImplementedException, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { type DeepPartial } from 'typeorm';
 
+import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
+
+import { SubmissionType } from '../entities/all.entity';
 import { SubmissionTypeProvider } from './submission-type.provider';
 
 @Controller('submission-types')
@@ -20,22 +24,26 @@ export class SubmissionTypeController {
     return this.provider.find();
   }
 
+  // A submission type is part of how the competitions take entries, so it is changed by whoever can change
+  // competitions (#3635).
+  @Permissions(['update:competitions'])
+  @UseGuards(JwtGuard, PermissionsGuard)
   @Post()
-  public async insertEntity() {
-    throw new NotImplementedException();
+  public async insertEntity(@Body() body: DeepPartial<SubmissionType>) {
+    return this.provider.create(body);
   }
 
+  @Permissions(['update:competitions'])
+  @UseGuards(JwtGuard, PermissionsGuard)
   @Patch(':guid')
-  public async updateEntity() {
-    throw new NotImplementedException();
+  public async updateEntity(@Param('guid') guid: string, @Body() body: DeepPartial<SubmissionType>) {
+    return this.provider.update(guid, body);
   }
 
+  @Permissions(['update:competitions'])
+  @UseGuards(JwtGuard, PermissionsGuard)
   @Delete(':guid')
   public deleteEntity(@Param('guid') guid: string) {
-    this.provider.deleteEntity({
-      where: {
-        guid: guid
-      }
-    });
+    return this.provider.deleteEntities(guid);
   }
 }

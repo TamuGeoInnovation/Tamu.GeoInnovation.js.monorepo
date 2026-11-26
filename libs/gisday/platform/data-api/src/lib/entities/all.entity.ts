@@ -194,9 +194,6 @@ export class Season extends GuidIdentity {
   @OneToMany(() => SeasonDay, (seasonDay) => seasonDay.season, { cascade: true, onDelete: 'CASCADE' })
   public days: SeasonDay[];
 
-  @OneToMany(() => InitialSurveyResponse, (response) => response.season, { cascade: true })
-  public initialSurveyResponses: InitialSurveyResponse[];
-
   @OneToMany(() => EventRatingQuestion, (question) => question.season, { cascade: true })
   public eventRatingQuestions: EventRatingQuestion[];
 
@@ -581,39 +578,6 @@ export class Event extends GuidIdentity {
 export class QuestionType extends GuidIdentity {
   @Column({ nullable: false })
   public type: string;
-
-  public question: InitialSurveyQuestion;
-}
-
-@Entity({
-  name: 'initial_survey_questions'
-})
-export class InitialSurveyQuestion extends GuidIdentity {
-  @ManyToOne(() => QuestionType, (token) => token.question, { eager: true })
-  public questionType: QuestionType;
-
-  @Column({ nullable: true })
-  public questionText: string;
-
-  @Column({ nullable: true })
-  public questionOptions: string;
-}
-
-@Entity({
-  name: 'initial_survey_responses'
-})
-export class InitialSurveyResponse extends GuidIdentity {
-  @ManyToOne(() => Season, (season) => season.initialSurveyResponses, { cascade: false, nullable: true })
-  public season: Season;
-
-  @Column({ nullable: false })
-  public accountGuid: string; // User
-
-  @ManyToOne(() => InitialSurveyQuestion, { cascade: true, eager: true })
-  public question: InitialSurveyQuestion;
-
-  @Column({ nullable: false })
-  public responseValue: string;
 }
 
 @Entity({
@@ -1128,9 +1092,6 @@ export class UserInfo extends GuidIdentity {
 
   @Column({ nullable: true })
   public participantType: string;
-
-  @Column({ nullable: true })
-  public hasCompletedInitialSurvey: string;
 }
 
 @Entity({
@@ -1544,8 +1505,6 @@ export const GISDAY_ENTITIES = [
   Event,
   EventBroadcast,
   EventLocation,
-  InitialSurveyQuestion,
-  InitialSurveyResponse,
   QuestionType,
   EventRatingQuestion,
   EventRatingResponse,
