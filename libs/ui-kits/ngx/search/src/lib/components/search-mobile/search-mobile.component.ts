@@ -4,13 +4,15 @@ import { SearchService } from '../../services/search.service';
 import { SearchComponent } from '../search/search.component';
 import { NgClass, AsyncPipe, TitleCasePipe } from '@angular/common';
 
+import { KeyboardNavigationDirective } from '@tamu-gisc/ui-kits/ngx/interactions/keyboard';
+
 @Component({
   selector: 'tamu-gisc-search-mobile',
   templateUrl: './search-mobile.component.html',
   styleUrls: ['../search/search.component.scss', './search-mobile.component.scss'],
   providers: [SearchService],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgClass, AsyncPipe, TitleCasePipe]
+  imports: [NgClass, AsyncPipe, TitleCasePipe, KeyboardNavigationDirective]
 })
 export class SearchMobileComponent extends SearchComponent {
   public emitLeftActionEvent(): void {
