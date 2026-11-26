@@ -18,7 +18,6 @@
 266 libs/maps/feature/basemap/tsconfig.lib.json
 # ui-kits-ngx-layout-modal has none in its own files since #3628: 71 are in ui-kits-ngx-forms (30 once #3595 merges) and 12 in
 # common-ngx-settings, compiled under its strict settings.
-12 libs/ui-kits/ngx/layout/modal/tsconfig.lib.json
 # ui-kits-ngx-forms went strict with #3495: all 45 are in ui-kits-ngx-layout, which it imports, none in its own files.
 222 libs/gisday/platform/ngx/common/tsconfig.lib.json # #3611: its own files are clean; the errors are in the shared libraries it imports (maps-esri, ui-kits, common-ngx), 2 of them placesShownOn's type in gisday-common
 # ui-kits-ngx-layout-modal: 12 fewer since common-ngx-settings went strict (#3630). The rest: 4 in its own modal host (#3628) and
@@ -27,7 +26,6 @@
 # ui-kits-ngx-search turned strict under #3495 with its own files clean. All 20 are in libraries it imports, compiled under
 # its settings: common-utils-geometry-esri 9, common-ngx-ui-notification 4, ui-kits-ngx-layout-modal 4 (among its 87),
 # common-utils-geometry-generic 2, common-utils-routing 1.
-4 libs/ui-kits/ngx/search/tsconfig.lib.json
 # gisday-competitions-ngx-common went strict with #3610, with none in its own files: all 71 are in libraries it imports,
 # 41 in ui-kits-ngx-forms (#3595 fixes them) and 6 in gisday-competitions-ngx-data-access (#3594 fixes them).
 20 libs/gisday/competitions/ngx/common/tsconfig.lib.json
