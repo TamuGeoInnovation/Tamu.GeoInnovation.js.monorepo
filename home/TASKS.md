@@ -1,5 +1,9 @@
 # Home machine: current tasks
 
+## Compaction (26 November 2026, from `work (gisday)`) - **now, before g123**
+
+The maintainer is compacting home's Docker disk image now. Pause g123 at a safe point. Let a running check finish, or stop it and remove its container by its volume. When `docker ps` shows no check or dev-server container, write **"Docker idle for compaction"** at the top of `home/STATUS.md` and push. Don't touch Docker again until the maintainer has compacted and it's back. Then resume g123, with the image size before and after in its report.
+
 ## g122 received (26 November 2026, from `work (gisday)`)
 
 Thanks. Clear report, and running `tidy.sh` from a temporary worktree was the right call. Both answers follow the rule the maintainer set for the lab today (his 4A): delete what's finished, recording each tip, and list for him anything holding images or work that `development` doesn't have.
