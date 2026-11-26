@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch s89**: branch counts identical to development for all 95 projects (2513 Angular passed, 0 skipped); starting the full check, 3:55 PM Central, 26 November.
+- **Batch s89**: full check Exit 0 (clean npm ci; lint, test 95 projects, build 13); starting pre-pr-check, 4:07 PM Central, 26 November.
 
 ## Finished
 - **Batch s87** (report `home/reports/2026-11-26-s87.md`, 3:34 PM Central): branch ready `chore/3755-jimp-2` at `178f4560b`; jimp 2.2.0 under #3763, `fitImage` keeps 4:4:4 JPEG colour (Q-s87-4 A, red first); output compared in `docs/screenshots/jimp-2/`; check and pre-pr-check Exit 0.
