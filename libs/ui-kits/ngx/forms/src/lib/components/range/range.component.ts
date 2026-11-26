@@ -163,7 +163,7 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
-    if (changes.customDataMap && changes.customDataMap.currentValue !== undefined) {
+    if (changes['customDataMap'] && changes['customDataMap'].currentValue !== undefined) {
       // Simplify the template by having mapped and vanilla limits referenced by the same property.
       // This might need to be moved to OnChanges because the data source can change at any point in time
       // and the limits will not update.

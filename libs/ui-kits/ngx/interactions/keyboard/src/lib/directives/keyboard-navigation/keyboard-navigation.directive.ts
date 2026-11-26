@@ -13,6 +13,13 @@ export class KeyboardNavigationDirective implements AfterViewInit {
   /** Attribute name used to mark the active/focused option (will be set to true/false). */
   public readonly activeAttr = input('aria-selected');
 
+  /**
+   * Whether the arrows wrap round at the ends of the list, as the autocomplete's do. Off, the last option stays the last,
+   * up from the first goes back to the element that names this list in aria-controls (its box), and up from that box does
+   * nothing: the map search's behaviour, kept when it moved to this directive (#3471).
+   */
+  public readonly wrap = input(true, { alias: 'keyboardNavigationWrap' });
+
   private options: HTMLElement[] = [];
   private activeIndex = -1;
   private externalControl: HTMLElement | null = null;
@@ -180,6 +187,10 @@ export class KeyboardNavigationDirective implements AfterViewInit {
         }
         break;
       case 'ArrowUp':
+        // Without wrapping there is nothing above the box; the key is left to it.
+        if (!this.wrap()) {
+          break;
+        }
         event.preventDefault();
         if (this.options.length > 0) {
           this.setActive(this.options.length - 1);
@@ -207,6 +218,17 @@ export class KeyboardNavigationDirective implements AfterViewInit {
 
     // compute next index
     let next = this.activeIndex + delta;
+
+    if (!this.wrap()) {
+      if (next < 0) {
+        this.returnToControl();
+        return;
+      }
+      if (next >= len) {
+        next = len - 1;
+      }
+    }
+
     if (next < 0) {
       next = len - 1;
     }
@@ -215,6 +237,18 @@ export class KeyboardNavigationDirective implements AfterViewInit {
     }
 
     this.setActive(next);
+  }
+
+  /** Focus back on the element that names this list in aria-controls (its box), with no option active. */
+  private returnToControl() {
+    const hostId = this.host.nativeElement.id;
+    const control = hostId ? document.querySelector<HTMLElement>(`[aria-controls="${CSS.escape(hostId)}"]`) : null;
+
+    if (this.activeIndex >= 0 && this.options[this.activeIndex]) {
+      this.options[this.activeIndex].setAttribute(this.activeAttr(), 'false');
+    }
+    this.activeIndex = -1;
+    control?.focus();
   }
 
   private setActive(index: number) {
