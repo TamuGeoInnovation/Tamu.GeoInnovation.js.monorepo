@@ -141,7 +141,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 ## Running now
 
 
-**Batch s-lab-1 (security): #3763, everything to its latest as of 26 November.** Since 2:33 PM Central, while a64 is held. 2:36 PM: both branches committed (tooling `cb82effa1`, 54 lock moves; runtime `326d157e7`, 6). The tooling branch's full check is running; the runtime one follows. Dev's banner still `17d29cd2a` at 3:4x PM.
+**Batch s-lab-1 (security): #3763, everything to its latest as of 26 November.** Since 2:33 PM Central, while a64 is held. 2:36 PM: both branches committed (tooling `cb82effa1`, 54 lock moves; runtime `326d157e7`, 6). The tooling branch's full check is running; the runtime one follows. Dev's banner still named `17d29cd2a` at the last check, just before the tooling check started.
 
 **Batch a64 (aggiemap): the quick tier on the new dev build (exclusive) - HELD.** Stopped at 2:16 PM Central, 26 November: dev's banner still names `17d29cd2a` (built 16:57Z; index.html unchanged since 11:37 AM). Waiting for the new deploy. g227 still queued behind it. Report `reports/2026-11-26-a64.md`.
 
