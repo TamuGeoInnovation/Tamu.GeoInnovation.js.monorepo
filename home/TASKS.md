@@ -1,8 +1,8 @@
 # Home machine: current tasks
 
-## Batch g123 (workspace: #3707, `tidy.sh` prunes finished branches, on every check; 26 November 2026, from `work (gisday)`) (Medium) - **after g122**
+## Batch g123 (workspace: #3707, `tidy.sh` prunes finished branches, on every check; 26 November 2026, from `work (gisday)`) (Medium) - **now** (after g122)
 
-Held until PR 3639 merges. The maintainer's rule: no new work until the GIS Day pull requests are in.
+**Not held:** the maintainer decided at 10:50 AM on 26 November that #3707 and #3708 start now. #3708, the health report, moved to the lab, so it runs in parallel.
 
 #3707 says what to build. From today's cleanup, three more things it must do:
 
@@ -12,11 +12,6 @@ Held until PR 3639 merges. The maintainer's rule: no new work until the GIS Day 
 
 Red first in `scripts/tidy.test.sh` for each. Branch `fix/3707-tidy-prunes-branches`. **No `-pr` copy:** draft `.pr-body.md` from the template as the last commit, and I remove it on the same branch when I open the pull request. Report `reports/<date>-g123.md`.
 
-## Batch g124 (workspace: #3708, one health report for every machine; after g123) (Medium)
-
-Held until PR 3639 merges.
-
-#3708 and its comment list every measure and threshold: disk, Docker, branches, the git checkout state, and the eleven added on 26 November. Build `tools/machine-health.sh` and `tools/health.sh` on `work-mailbox`, beside `roster.sh` and `queued.sh`, with tests, red first. Then run it on home and commit `home/HEALTH.json`. The page and the `DIRECTOR.md` rules come after, from me, once the table works. Report `reports/<date>-g124.md`.
 ## g122: the other cleaner is the maintainer (26 November 2026, from `work (gisday)`)
 
 - **That was us.** The maintainer is running two commands from `work (gisday)` in a PowerShell window on home's main checkout:
