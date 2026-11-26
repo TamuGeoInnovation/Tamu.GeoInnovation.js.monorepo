@@ -45,6 +45,7 @@ the same pull request as the step. Every individual upgrade pull request, by fam
 | 26 Nov 2026 | NestJS 12.5.1 to 12.6.3 | `@nestjs/common`, `core`, `platform-express` and `testing`; under the seven-day exception of [#3763](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3763) | [#3754](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3754) |
 | 26 Nov 2026 | **Nx 24.0.6 to 24.0.7**, a seven-day exception | unblocks Angular 22.3 (step 1 below) | [#3738](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3738) |
 | 26 Nov 2026 | The build and test toolchain to its latest as of 26 November, a one-time exception to the seven-day rule | Vite 8.4.0, Vitest 5.1.2, webpack 5.113.0, typescript-eslint 8.74.0 | [#3764](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3764), under [#3763](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3763) |
+| 26 Nov 2026 | `@analogjs` 2.9.7 to 3.0.0 | the Angular/Vitest bridge; the same test counts in every project before and after | [#3767](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3767), under [#3763](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3763) |
 
 **Seven Angular majors landed in four days**, 3 to 6 October, each as its own pull request into `development` and each
 gated by the smoke suite. Step by step timings for every rung are in [`angular.md`](angular.md) - that page is the
@@ -127,7 +128,7 @@ commits behind, retired rather than merged.
 | | From | To | Note |
 | --- | --- | --- | --- |
 | `@jimp/*` (4 packages) | 1.6.1 | 2.2.0 | Used by `libs/common/node/images` and GIS Day speaker photos. Image output is worth comparing before and after, not just compiling |
-| `@analogjs/vite-plugin-angular`, `@analogjs/vitest-angular` | 2.9.2 | 3.0.0 | The Angular/vitest bridge: coupled to both, so take it after step 2 |
+| `@analogjs/vite-plugin-angular`, `@analogjs/vitest-angular` | 2.9.7 | 3.0.0 | **Done** ([#3767](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3767)), under the seven-day exception of [#3763](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3763). No configuration change; every project runs the same tests as before (2,513 in the 64 Angular projects, none skipped) |
 
 ### 7. Everything else — 30 minors and patches
 
