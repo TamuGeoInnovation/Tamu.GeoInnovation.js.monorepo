@@ -157,35 +157,60 @@ only_leftovers() {
   '
 }
 
-# Prints `prune <why>` or `keep <why>` for one local branch, from what is known about it (#3707):
-#   <name> <protected> <in development> <commits on no remote> <fork branch there> <merged-at epoch or -> <tip epoch>
-# <protected> is 1 for a branch held by a worktree that is kept, or checked out where the sweep runs.
+# Prints `prune <why>` or `keep <why>` for one local branch, from what is known about it (#3707, #3756):
+#   <name> <protected> <in development> <commits on no remote> <a remote has it> <merged-at epoch or -> <tip epoch>
+#   <published>
+# <protected> is 1 for a branch held by a worktree that is kept, checked out where the sweep runs, or named by the check
+# that runs the sweep. <published> is 1 for a branch that was pushed (it has an upstream) or has a merged pull request.
 #
-# A finished branch goes when its tip is in origin/development, when every commit is on a remote and its fork branch is
-# gone, or when its pull request merged and nothing was committed after the merge: a squash merge leaves the branch's
-# own commits on no remote, so without that last rule almost nothing would ever go (425 of 452 on home, 26 November).
-# Anything else with commits on no remote is kept and listed: this machine holds the only copy. A branch whose fork
-# branch is still there is open work. Never development, master or a mailbox branch, or a local copy of one
-# (`mb-<name>`, as home kept `mb-gisday`). Tested by scripts/tidy.test.sh.
+# A branch any remote still has is open work, whatever else is true: a Dependabot branch lives on origin and was never
+# on the fork, and reading "not on the fork" as "gone" deleted one from under its own check (#3756). Otherwise a finished
+# branch goes when it was published and its tip is in origin/development, when its pull request merged and nothing was
+# committed after the merge (a squash merge leaves the branch's own commits on no remote, so without that rule almost
+# nothing would ever go: 425 of 452 on home, 26 November), or when every commit is on a remote and no remote has the
+# branch any more. Anything with commits on no remote is kept and listed: this machine holds the only copy. So is a
+# branch never pushed at all, whose tip can still be on development because nobody has committed to it yet. Never
+# development, master or a mailbox branch, or a local copy of one (`mb-<name>`, as home kept `mb-gisday`).
+# Tested by scripts/tidy.test.sh.
 branch_verdict() {
-  local name="$1" protected="$2" in_dev="$3" only_here="$4" on_fork="$5" merged_at="$6" tip="$7"
+  local name="$1" protected="$2" in_dev="$3" only_here="$4" on_remote="$5" merged_at="$6" tip="$7" published="${8:-1}"
 
   case "$name" in
     development | master | *mailbox* | mb-*) echo "keep a branch this sweep never touches"; return ;;
   esac
   if [ "$protected" = 1 ]; then
-    echo "keep its worktree is kept, or the sweep is running in it"
-  elif [ "$in_dev" = 1 ]; then
+    echo "keep its worktree is kept, the sweep is running in it, or the check is checking it"
+  elif [ "$on_remote" = 1 ]; then
+    echo "keep a remote still has it, so it is open work"
+  elif [ "$in_dev" = 1 ] && [ "$published" = 1 ]; then
     echo "prune its tip is in origin/development"
   elif [ "$merged_at" != - ] && [ "$tip" -le "$merged_at" ]; then
     echo "prune its pull request merged, and nothing was committed after"
   elif [ "$only_here" -gt 0 ]; then
     echo "keep only on this machine: $only_here commit(s) on no remote"
-  elif [ "$on_fork" = 1 ]; then
-    echo "keep its fork branch is still there, so it is open work"
+  elif [ "$published" != 1 ]; then
+    echo "keep never pushed: started here, and not yet committed to"
   else
-    echo "prune every commit is on a remote, and its fork branch is gone"
+    echo "prune every commit is on a remote, and no remote has the branch any more"
   fi
+}
+
+# True when any remote has a branch named <name> in the repository at <main>: origin as well as the fork (#3756).
+on_a_remote() {
+  git -C "$1" for-each-ref --format='%(refname)' refs/remotes |
+    awk -v want="$2" '{ ref = $0; sub(/^refs\/remotes\/[^\/]+\//, "", ref) } ref == want { found = 1 } END { exit !found }'
+}
+
+# True when <name> was published from the repository at <main>: its upstream is a branch of the same name, which
+# `git push -u` sets. A branch only started from origin/development tracks `development`, so it does not count.
+was_published() {
+  [ "$(git -C "$1" config --get "branch.$2.merge" 2>/dev/null)" = "refs/heads/$2" ]
+}
+
+# True when <name> is the branch the caller is about to use, passed as TIDY_KEEP_BRANCH: check-in-volume.sh sweeps
+# before its container fetches the branch, and must not remove what it is about to check (#3756).
+kept_by_caller() {
+  [ -n "${TIDY_KEEP_BRANCH:-}" ] && [ "$1" = "$TIDY_KEEP_BRANCH" ]
 }
 
 # Prints what removing a branch takes, in order: its worktree first (`worktree <path>`), then the branch
@@ -439,13 +464,16 @@ while read -r name tip; do
       if [ -z "$status" ] || only_leftovers "$status"; then worktree="$path"; else protected=1; fi
     fi
   fi
+  kept_by_caller "$name" && protected=1
   in_dev=0
   branch_in_development "$main" "$name" && in_dev=1
   only_here="$(git -C "$main" rev-list --count "refs/heads/$name" --not --remotes 2>/dev/null || echo 1)"
-  on_fork=0
-  git -C "$main" show-ref -q --verify "refs/remotes/fork/$name" && on_fork=1
+  on_remote=0
+  on_a_remote "$main" "$name" && on_remote=1
   merged_at="$(awk -v b="$name" '$1 == b { print $2; exit }' "$tmp/merged-at")"
-  verdict="$(branch_verdict "$name" "$protected" "$in_dev" "$only_here" "$on_fork" "${merged_at:--}" "$tip")"
+  published=0
+  { was_published "$main" "$name" || [ -n "$merged_at" ]; } && published=1
+  verdict="$(branch_verdict "$name" "$protected" "$in_dev" "$only_here" "$on_remote" "${merged_at:--}" "$tip" "$published")"
   case "$verdict" in
     prune*)
       printf '%s\t%s\n' "$name" "$worktree" >> "$tmp/branches-prune"
