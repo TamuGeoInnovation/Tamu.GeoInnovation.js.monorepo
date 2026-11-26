@@ -5,7 +5,7 @@
 
 Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
-Last batch done: g43
+Last batch done: s9
 
 ## What this is
 
@@ -33,9 +33,10 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch s9 (#3727, Socket's 13 findings)**, started 12:41 PM Central.
+- **Batch a62 (#3722, phone trip check)**, next.
 
 ## Finished
+- **Batch s9 (security: #3727)** (report `laptop/reports/2026-11-26-s9.md`): es-toolkit branch `fix/3727-es-toolkit` ready (full check exit 0; pre-pr-check fails only on the linked issue, Q-s9-1). All 13 rows recorded on #3727.
 - **Batch g43 (#3668, the last guards)** (report `laptop/reports/2026-11-26-g43.md`): **branch ready: `fix/3668-gisday-write-route-guards`** (`002b78b9a`, body last). 3 routes guarded in 1 controller (the other was the survey, removed by #3712); spec red then green; check exit 0. No PR, as asked.
 - **Batch g42 (open PRs)** (report `laptop/reports/2026-11-26-g42.md`): **PR 3711 (#3635) and PR 3712 (#3667) open**, ready, fields set. **#3668 held**: 3 routes still unguarded (Q-g224-1 unanswered). Old #3635 fork branch deletion refused here: command in the report. Q-g42-1, Q-g42-2.
 - **Batch g41 (clean up branches, worktrees, volumes)** (report `laptop/reports/2026-11-26-g41.md`): branches 60 to 9, worktrees 67 to 9, volumes 39 to 6; 579 to 614 GB free. Kept: 5 on the fork, #3593 (local only, Q-g41-1), wt-3327 (untracked screenshots).
