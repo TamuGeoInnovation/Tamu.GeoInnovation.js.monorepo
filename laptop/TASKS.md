@@ -8,7 +8,7 @@
 - **Keep or adjust the amCharts `ignore` in `dependabot.yml`**, with its comment saying why. If the ignore can become "move together with `@arcgis/core`", say how.
 - **Update `docs/upgrades/README.md`:** the ArcGIS row, a row in "How we got here", and its blocked mark removed.
 - Run the full check with a clean `npm ci`, then **the smoke suite's release tier against your local dev server** (`run-local.sh local release`). Every map draws from ArcGIS. Before and after screenshots of the main map, one event map and the GIS Day RSVP chart (amCharts) go to `docs/screenshots/arcgis-5.2/`.
-- Push; "branch ready" with `.pr-body.md`; `Closes #ARCGIS`, which the director fills in. **This one is visible, so it needs a release-notes entry file and the images.**
+- Push; "branch ready" with `.pr-body.md`; `Closes #3757`. **This one is visible, so it needs a release-notes entry file and the images.**
 Report `laptop/reports/2026-11-26-s10.md`.
 
 
