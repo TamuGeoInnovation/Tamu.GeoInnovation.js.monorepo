@@ -3,7 +3,6 @@
   "entry": [
     "apps/*/src/main.ts",
     "apps/*/src/polyfills.ts",
-    "apps/*/src/test-setup.ts",
     "apps/*/webpack.config.js",
     "apps/*/src/**/*.spec.ts",
     "apps/*/src/environments/*.ts",
@@ -23,5 +22,16 @@
     "scripts/**/*.{js,mjs,ts}",
     "test/**/*.ts",
     "*.{js,mjs,mts,ts}"
+  ],
+  // Used, but not by anything knip follows (#3720, #3725). Each was checked by hand on 26 November 2026.
+  "ignoreDependencies": [
+    // require()d by @nx/eslint-plugin's flat/javascript and flat/typescript configs, which eslint.config.mjs uses.
+    "@eslint/js",
+    // require()d by @nx/eslint-plugin's flat/angular and flat/angular-template configs, used by every Angular project.
+    "angular-eslint",
+    // require()d by @nx/eslint-plugin's flat/javascript, flat/typescript and flat/angular configs.
+    "typescript-eslint",
+    // Run by scripts/check-format.mjs (a lint.yml step) through npx, and checked for by @nx/eslint-plugin.
+    "prettier"
   ]
 }
