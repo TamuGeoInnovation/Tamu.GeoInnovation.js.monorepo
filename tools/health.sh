@@ -166,7 +166,7 @@ render_table() {
       "$(cell "$br" "$c_br")" "$(cell "$wt" "$c_wt")" \
       "$(cell "${behind:+$behind d}${tidy:+, tidy.sh $( [ "$tidy" = true ] && echo present || echo missing )}" "$c_behind")" \
       "$(cell "$dirty" "$c_dirty")" "$(cell "${mem:+$mem of ${lim} GiB}" "$c_mem")" "$(cell "$orph" "$c_orph")" \
-      "$(cell "${long:+$long min}" "$c_long")" "$(cell "${devnm:+$devnm (lock $lock)}" "$c_dev")" "$(cell "$nx" "$c_nx")" \
+      "$(cell "${long:+$long min}" "$c_long")" "$(cell "${devnm:+$devnm (lock $lock)$( [ "$vt" = true ] && echo ', .vite-temp left over')}" "$c_dev")" "$(cell "$nx" "$c_nx")" \
       "$(cell "ssh $ssh, gh $ghs, project $gscope" "$c_gh")" "$(cell "${lag:+$lag h}" "$c_lag")" "$(cell "$lp" "$c_lp")" \
       "$(cell "${old:+$old d}" "$c_old")" "$(cell "$pw" "$c_pw")" "$(cell "$ag" "$c_ag")"
   done
