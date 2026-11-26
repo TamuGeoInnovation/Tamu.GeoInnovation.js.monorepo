@@ -79,7 +79,7 @@
     "jwks-rsa": "^4.1.0",
     "maplibre-gl": "^6.19.0",
     "marked": "18.2.1",
-    "mssql": "^12.7.14",
+    "mssql": "^12.7.16",
     "multer": "^2.5.0",
     "ngx-highlightjs": "^14.0.1",
     "ngx-webstorage-service": "^5.0.0",
