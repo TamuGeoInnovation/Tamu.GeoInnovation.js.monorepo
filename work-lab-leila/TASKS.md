@@ -1,5 +1,73 @@
 # work-lab-leila: current tasks
 
+## Batch a64 (aggiemap: the quick tier on the new dev build; 26 November 2026, from `work (aggiemap)`) (High) — **now**
+
+**a58 and a59 are withdrawn** — they were written for the build deployed this morning, `17d29cd2a`, and the maintainer
+is deploying a newer one. Nothing in them was wrong; the build underneath them changed. Your a59 report stands as the
+record of that run.
+
+**Exclusive again:** this machine takes nothing else until a64 finishes.
+
+### What changed, and why there is a new build
+
+The three suite faults your a59 run found are **all fixed and merged**: #3721 (your own a61), #3723 and #3722. So the
+reason `quick` failed is gone.
+
+The maintainer chose to deploy current `development` rather than re-test `17d29cd2a`, because 21 commits have merged
+since — including **es-toolkit 1.53.2, which fixes a High and two Medium advisories** — and testing the old build would
+have shipped without them.
+
+### Before you start: the canary is now exact, not behavioural
+
+**This is new, and it is better than what a58 gave you.** Thanks to #3721, dev's build banner names its commit. So do
+not infer the build from behaviour — read it:
+
+1. Open any AggieMap page on development with the browser console captured.
+2. The banner logs `Build Date:`, `Git Commit:` and `Container Name:`.
+3. **`Git Commit` must not be `17d29cd2a`.** That is this morning's build. Anything else means the new one is live.
+
+**Say in the report which commit the banner names.** If it still says `17d29cd2a`, stop and tell me — the deploy has
+not landed, and a 23-minute run against the old build proves nothing. Remember what you found in a59: `index.html` is
+served with no `Cache-Control`, so a browser can show you a stale build (#1600). Hard-reload before reading the banner.
+
+### What to run
+
+```
+test/smoke/aggiemap/run-local.sh development quick
+```
+
+From a checkout at the commit the build came from, or as close as you can get, and say which. Not `-x`.
+
+**This is the gate for the dev tag**, and the tag is the maintainer's.
+
+### What the report must answer
+
+1. **The commit the banner names**, first, before anything else.
+2. **Per environment, what failed and why** — not pass or fail.
+3. **Whether any failure is in the suite or the application.** Seven suite files changed since the old build, all three
+   of today's fixes among them, so a new failure may be in the checks rather than the maps.
+4. **How many skipped, and whether more than the registry's entries.** Your a59 found exactly one registry skip
+   (#2758) and 63 from each spec's own conditions; a different shape is worth saying.
+5. **The elapsed time**, and whether anything timed out rather than failed. a59's phone-toggle check cost six minutes
+   in timeouts; #3722's fix should remove that, and if the run is still ~23 minutes that is worth knowing.
+
+### Do not
+
+- **Do not tag anything.** `scripts/tag-build.sh dev` is the maintainer's, and only if this passes.
+- **Do not deploy, promote, or open a health issue.**
+- **Do not fix what you find** — file it with evidence and stop.
+
+**Report** `work-lab-leila/reports/2026-11-26-a64.md`. Questions `Q-a64-<n>`.
+
+### After it passes, and only when I say the tag exists
+
+The release tier, then the one spec that waits on the tag:
+
+```
+test/smoke/aggiemap/run-local.sh development release
+test/smoke/aggiemap/run-local.sh development one bus.spec.ts
+```
+
 ## Handed over (26 November 2026, from `work (gisday)`)
 
 **The maintainer has put GIS Day on hold.** The machines focus on upgrades, directed by the security chat. Every batch below marked "from `work (gisday)`" that is not finished now belongs to **the security chat**. Send its reports and questions there, not to `work (gisday)`. No new GIS Day batches will come until the maintainer restarts them.
@@ -58,7 +126,7 @@ the fork. `check-in-volume.sh`, then **`pre-pr-check.sh`**, and give me its last
 
 **Report** `work-lab-leila/reports/2026-11-26-a61.md`. Questions `Q-a61-<n>`.
 
-## Batch a59 (aggiemap: the build is on dev - quick, then release; 26 November 2026, from `work (aggiemap)`) (High) - **now**
+## Batch a59 (aggiemap: the build is on dev - quick, then release; 26 November 2026, from `work (aggiemap)`) (High) - **withdrawn**: the build it was written for, 17d29cd2a, is being replaced; superseded by a64
 
 **a59 supersedes a58's run instruction. Everything else about a58 stands**, including that this machine takes nothing
 else until it is done.
@@ -122,7 +190,7 @@ test/smoke/aggiemap/run-local.sh development one bus.spec.ts
 
 **Report** `work-lab-leila/reports/2026-11-26-a59.md`. Questions `Q-a59-<n>`.
 
-## Batch a58 (aggiemap: the release tier on dev, for the build the maintainer is deploying; 26 November 2026, from `work (aggiemap)`) (High) - **now**
+## Batch a58 (aggiemap: the release tier on dev, for the build the maintainer is deploying; 26 November 2026, from `work (aggiemap)`) (High) - **withdrawn**: the build it was written for, 17d29cd2a, is being replaced; superseded by a64
 
 **This is the only thing this machine does until it is finished.** The maintainer's decision. If another director sends
 you a batch while this runs, say you are on a58 and that this one is exclusive.
