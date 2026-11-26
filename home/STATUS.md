@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle, listening.
+- **Batch s85** (Dependabot PR 3739, mssql 12.7.14 to 12.7.16), since 2:20 PM Central, 26 November. a63 and g125 were already done (reports 2026-11-26-a63 and -g125).
 
 ## Finished
 - **Batch g125** (report `home/reports/2026-11-26-g125.md`, about 2:00 PM Central): #3732 and #3730 fixed in `4ec2d60c8` on work-mailbox, red first, closed; health reading `42a77592a`, table in the report. One question.
