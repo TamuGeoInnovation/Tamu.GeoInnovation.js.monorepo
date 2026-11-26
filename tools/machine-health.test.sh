@@ -41,6 +41,20 @@ check 'the same commit is 0 days behind' '0' "$(days_between 1172800 1172800)"
 check 'two check containers and no script are two orphans' '2' "$(orphans 2 0)"
 check 'a check container with its script running is no orphan' '0' "$(orphans 1 1)"
 
+# #3732: a live check was called orphaned on the work machine, because Git Bash's ps shows no command-line arguments on
+# Windows, so the check-in-volume.sh owning a container could not be seen. Wrappers are counted from full command lines.
+printf '%s\n' '"C:\Program Files\Git\usr\bin\bash.exe" scripts/check-in-volume.sh chore/3738-nx-24.0.7 affected' \
+  'C:\Windows\System32\svchost.exe -k netsvcs' > "$tmp/live"
+printf '%s\n' '/usr/bin/bash' '/usr/bin/bash' 'C:\Windows\System32\svchost.exe -k netsvcs' > "$tmp/git-bash-ps"
+printf '%s\n' 'grep -c check-in-volume.sh' 'C:\Windows\System32\svchost.exe -k netsvcs' > "$tmp/dead"
+check 'a live wrapper is counted from its full command line (#3732)' '1' "$(count_wrappers < "$tmp/live")"
+check 'so its container is not an orphan' '0' "$(orphans 1 "$(count_wrappers < "$tmp/live")")"
+check 'Git Bash ps lines, with no arguments, count none: the cause of the false red' '0' "$(count_wrappers < "$tmp/git-bash-ps")"
+check 'a search for the script is not the script' '0' "$(count_wrappers < "$tmp/dead")"
+check 'with no wrapper, a check container is an orphan' '1' "$(orphans 1 "$(count_wrappers < "$tmp/dead")")"
+grep -q 'process_command_lines | count_wrappers' "$here/machine-health.sh" && r=yes || r=no
+check 'machine-health counts wrappers from full command lines' 'yes' "$r"
+
 # A threshold or version read from the text of a script, never copied.
 check 'the check image is read from check-in-volume.sh' 'node:24.22.3' "$(printf '%s\n' 'x' '  -e LINT_STEPS="$extra" node:24.22.3 sh -c "$(declare -f x)"' | check_image)"
 check 'the Playwright version is read from package.json' '1.65.1' "$(printf '%s\n' '    "@playwright/test": "1.65.1",' | playwright_version)"

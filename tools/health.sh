@@ -85,6 +85,19 @@ rate_ok() { # ok | failed | anything else
 rate_flag() { # <true|false> <colour when false>
   case "$1" in true) echo green ;; false) echo "$2" ;; *) echo grey ;; esac
 }
+# The lab's build agents (#3730): not running is red only while the pipeline uses them. With useLab false they are off
+# on purpose (#2902, until #2901 is settled), and a red that is always red teaches everyone to ignore red.
+rate_agents() { # <running: true|false|not applicable> <useLab: true|false|''>
+  case "$1" in
+    true) echo green ;;
+    false) if [ "$2" = false ]; then echo grey; else echo red; fi ;;
+    *) echo grey ;;
+  esac
+}
+# useLab as azure-pipelines.yml sets it: true, false, or nothing when the file does not say. A comment does not count.
+read_use_lab() { # <azure-pipelines.yml>
+  sed -n 's/^[[:space:]]*useLab:[[:space:]]*\(true\|false\)[[:space:]]*$/\1/p' "$1" 2>/dev/null | head -1
+}
 
 worst() { # <colour>... -> the worst; grey only when nothing else was rated
   local c w=grey
@@ -157,7 +170,8 @@ render_table() {
     old=$(g oldest_uncommitted_days); c_old=$(rate_over "$old" 7)
     pw=$(g playwright_image_present); c_pw=$(rate_flag "$pw" amber)
     ag=$(g build_agents_running)
-    if [ "$ag" = 'not applicable' ]; then c_ag=grey; else c_ag=$(rate_flag "$ag" red); fi
+    c_ag=$(rate_agents "$ag" "${USE_LAB:-}")
+    [ "$ag" = false ] && [ "${USE_LAB:-}" = false ] && ag='false (useLab false)'
     local overall
     overall=$(worst "$c_seen" "$c_disk" "$c_image" "$c_br" "$c_wt" "$c_behind" "$c_dirty" "$c_mem" "$c_orph" "$c_long" \
       "$c_dev" "$c_nx" "$c_gh" "$c_lag" "$c_lp" "$c_old" "$c_pw" "$c_ag")
@@ -181,6 +195,8 @@ mkdir -p "$HEALTH_WORK/scripts"
 git show origin/development:scripts/check-in-volume.sh > "$HEALTH_WORK/scripts/check-in-volume.sh" 2>/dev/null
 git show origin/development:scripts/tidy.sh > "$HEALTH_WORK/scripts/tidy.sh" 2>/dev/null
 read_thresholds "$HEALTH_WORK/scripts"
+git show origin/development:azure-pipelines.yml > "$HEALTH_WORK/azure-pipelines.yml" 2>/dev/null
+USE_LAB=$(read_use_lab "$HEALTH_WORK/azure-pipelines.yml")
 render_table
 echo
 echo "Free disk: amber below ${SWEEP_GB:-?} GiB (CHECK_SWEEP_FREE_GB), red below ${MIN_GB:-?} GiB (CHECK_MIN_FREE_GB). Docker image: amber above ${IMAGE_GB:-?} GiB (TIDY_IMAGE_MAX_GB). All three read from origin/development's scripts."

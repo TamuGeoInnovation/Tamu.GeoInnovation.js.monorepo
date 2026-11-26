@@ -32,6 +32,17 @@ project_scope() { case "$1" in *"'project'"*) echo ok ;; *) echo failed ;; esac;
 days_between() { echo $(( ($2 - $1) / 86400 )); }
 # A check container whose script has died: running check-* containers with no check-in-volume.sh process to own them.
 orphans() { if [ "$2" -gt 0 ]; then echo 0; else echo "$1"; fi; }
+# Every process's full command line, one per line. Git Bash's ps shows no arguments on Windows, so a running
+# check-in-volume.sh was invisible and every live check read as an orphan (#3732); there they come from Windows itself.
+process_command_lines() {
+  if command -v powershell >/dev/null 2>&1; then
+    powershell -NoProfile -Command 'Get-CimInstance Win32_Process | ForEach-Object { $_.CommandLine }' 2>/dev/null | tr -d '\r'
+  else
+    ps -eo args 2>/dev/null
+  fi
+}
+# How many of <command lines on stdin> run check-in-volume.sh: the script as an argument, not a search for it.
+count_wrappers() { grep -E '(^|[/ "])check-in-volume\.sh( |"|$)' | grep -cvE '^(grep|awk|sed|find) '; }
 # The node image scripts/check-in-volume.sh runs checks in, read from its text.
 check_image() { grep -oE 'node:[0-9]+\.[0-9]+\.[0-9]+' | head -1; }
 # The Playwright version package.json pins, which test/smoke/aggiemap/run-local.sh turns into its image.
@@ -85,7 +96,7 @@ if docker info --format '{{.MemTotal}}' > /tmp/mh-docker 2>/dev/null; then
   done < <(docker ps --format '{{.Names}}|{{.Image}}')
   add "$(jnum check_containers "$checks")"
   add "$(jnum check_memory_reserved_gib "$(awk -v b="$reserved" 'BEGIN { printf "%.1f", b / 1073741824 }')")"
-  scripts_running=$(ps -ef 2>/dev/null | grep -c '[c]heck-in-volume.sh')
+  scripts_running=$(process_command_lines | count_wrappers)
   add "$(jnum orphaned_check_containers "$(orphans "$checks" "$scripts_running")")"
   add "$(jnum longest_check_minutes "$longest")"
 else

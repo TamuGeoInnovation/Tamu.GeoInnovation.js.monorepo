@@ -128,5 +128,18 @@ check 'the healthy machine is green overall' 'green' "$(printf '%s\n' "$table" |
 check 'the machine in trouble is red overall' 'red' "$(printf '%s\n' "$table" | awk -F'|' '$2 ~ /bad/ {gsub(/ /, "", $3); print $3}')"
 case "$table" in *'258 amber'*) ok 'its branch count shows with its colour' ;; *) no 'its branch count shows with its colour' '258 amber' "$table" ;; esac
 
+# #3730: the build agents are off on purpose while azure-pipelines.yml sets useLab: false, so not running is grey there,
+# not red. useLab is read from the pipeline, as the disk thresholds are read from the scripts that define them.
+printf '%s\n' 'variables:' '  # a comment that mentions useLab: true must not count' '  useLab: false' '  IS_DEVELOPMENT: x' > "$tmp/pipeline-off.yml"
+printf '%s\n' 'variables:' '  useLab: true' > "$tmp/pipeline-on.yml"
+check 'useLab false is read from the pipeline (#3730)' 'false' "$(read_use_lab "$tmp/pipeline-off.yml")"
+check 'useLab true is read from the pipeline' 'true' "$(read_use_lab "$tmp/pipeline-on.yml")"
+check 'a pipeline with no useLab says nothing' '' "$(read_use_lab "$tmp/scripts/tidy.sh")"
+check 'agents not running while useLab is false are grey' 'grey' "$(rate_agents false false)"
+check 'agents not running while useLab is true are red' 'red' "$(rate_agents false true)"
+check 'agents not running when useLab could not be read stay red' 'red' "$(rate_agents false '')"
+check 'agents running are green' 'green' "$(rate_agents true false)"
+check 'a machine with no agents is grey' 'grey' "$(rate_agents 'not applicable' true)"
+
 printf '\n%d passed, %d failed\n' "$pass" "$fail"
 [ "$fail" -eq 0 ]
