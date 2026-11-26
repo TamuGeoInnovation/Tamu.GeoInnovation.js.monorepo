@@ -1,5 +1,18 @@
 # work-lab-leila: current tasks
 
+## Batch g226 (workspace: #3708, one health report for every machine; 26 November 2026, from `work (gisday)`) (Medium) - **now**
+
+**Q-g225-1: (a)**, the maintainer's decision. Delete the 52 branches whose commits exist only on this machine, and record each one's last commit in the report, as in g225. **Except** any branch holding images or other work that `development` doesn't have: keep those and list them, with the files, for the maintainer. Do this first. It's short.
+
+**Then #3708.** It moved here from home so the two run side by side: home is building #3707 (`tidy.sh` pruning branches). #3708 and its comment list every measure and threshold: disk, Docker, branches, the git checkout state, and the eleven added on 26 November.
+
+1. Build `tools/machine-health.sh` (measures one machine, writes `<machine>/HEALTH.json`) and `tools/health.sh` (reads every `HEALTH.json` into one table, green, amber or red), on `work-mailbox` beside `roster.sh` and `queued.sh`. Tests for both, red first, in the style of the other `tools/*.test.sh`.
+2. **Read the existing thresholds from the scripts that define them** (`CHECK_SWEEP_FREE_GB`, `CHECK_MIN_FREE_GB`, `TIDY_IMAGE_MAX_GB`), so they can't drift. Don't copy them.
+3. **No secrets:** for the Auth0 settings file, report only whether it exists.
+4. Run it here and commit `work-lab-leila/HEALTH.json`. Run `tools/health.sh` and paste its table into the report.
+5. Report `reports/2026-11-26-g226.md`. The page and the `DIRECTOR.md` rules come after, from me, once the table works.
+
+You have no `gh`, so for the measures that need GitHub (the `gh` scope, `unopened-branches.sh`), write "not measured here" rather than failing. Each machine that has `gh` fills them in.
 ## Batch g225 (workspace: clean up this machine's branches, worktrees and volumes; 26 November 2026, from `work (gisday)`) (Medium) - **now**
 
 **The maintainer's decision, 26 November:** clean up finished branches on every machine before any new work. The fork
