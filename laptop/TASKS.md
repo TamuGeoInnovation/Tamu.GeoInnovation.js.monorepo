@@ -1,5 +1,55 @@
 # Laptop: current tasks
 
+## Batch a62 (aggiemap: #3722, the phone accessible-toggle check never reaches the phone; 26 November 2026, from `work (aggiemap)`) (High) - **medium**
+
+**This is yours because it needs a phone-sized window, and the lab could not make one.** It is one of three fixes
+blocking the dev tag, and the tag is blocking the lab's release tier. a62 sits behind your queued security work; take it
+next.
+
+### What it is
+
+`development-only.spec.ts:268` opens `/map/m/trip` and looks for `#direction-accessible-mode`. It times out at **120 s
+on all three attempts** — about six minutes of the quick run on its own.
+
+The lab's diagnosis, which I am passing on rather than vouching for: **a wide window is redirected from `/map/m/trip` to
+`/map/d/trip`**, so the phone template that holds the toggle never loads, and the failure screenshot shows the desktop
+planner. The check came with #3468's fix (`ea941e9dc`, PR 3529), after the last tag, so this was its first deploy.
+
+### The part that is actually open, and must not be assumed
+
+**Nobody has confirmed the phone layout offers the toggle at all.** The lab said so plainly: *"Not verified: whether the
+phone layout itself offers the toggle on dev."* So there are two possibilities and they need different fixes:
+
+- **The check is wrong** — it must set a phone viewport before navigating. Then the fix is the check.
+- **The application is wrong** — the toggle is missing from the phone template too. Then the check was right to fail,
+  and the fix is in `libs/`, with before/after images and a release-notes entry.
+
+**Settle that first, in a real phone-sized window, before changing a line.** Tell me which it is.
+
+### What to do
+
+1. **Open `/map/m/trip` on development at phone width** (375 px) in a real browser and say whether
+   `#direction-accessible-mode` is there.
+2. **If the check is at fault:** set a phone viewport in the spec before navigating, and prove it — red against the
+   current check, green after. Quote both.
+3. **Say why 120 seconds**, not 30. A selector that is simply absent should fail fast; three two-minute timeouts cost
+   six minutes of a six-to-ten minute tier. If it is waiting on a navigation rather than a selector, that is worth its
+   own line in the report.
+4. **Check the sibling cases.** If this one navigates to `/map/m/...` without setting a viewport, others may too, and
+   they would be passing only because they do not look for anything phone-specific. Name any you find; do not fix them
+   here.
+
+### Scope
+
+`no-visible-change` **if** the fix is in the check. **If it turns out to be the application, stop and tell me** —
+that is a different pull request with images, and the maintainer decides whether it rides with this one.
+
+**Branch** `test/3722-phone-trip-viewport` from the latest `development`, pushed to the fork. `check-in-volume.sh`,
+then **`pre-pr-check.sh`**, and give me its last line. Body text in the report with a `Title:` line. **Open no pull
+request.**
+
+**Report** `laptop/reports/2026-11-26-a62.md`. Questions `Q-a62-<n>`.
+
 ## Batch s9 (security: #3727, Socket's 13 findings, highest severity first; 26 November 2026, from `work (security)`) (Medium) - **now**
 
 **The maintainer's decision:** all 13 get handled, not just the severe ones, highest severity first. [#3727](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3727) has the table with what the director has already traced. Read it to the end. Each row ends either as a **branch** or as a **written reason**, posted as one comment on #3727 per row.

@@ -1,5 +1,48 @@
 # work-lab-leila: current tasks
 
+## Batch a61 (aggiemap: #3721, the build banner now names the build; 26 November 2026, from `work (aggiemap)`) (High) - **now**
+
+**a59 stays held, and this runs beside it.** You are waiting for a tag that cannot be made until #3721, #3722 and
+#3723 are fixed and quick re-runs — so the fastest way back to your own release tier is to fix one of them. This is
+yours; the laptop has #3722 and I have #3723.
+
+### What it is
+
+Your own finding, and the good kind. `build-banner.spec.ts:40` expects the `___BUILD_DATE___` placeholders, and dev now
+reports a real build:
+
+```
+Build Date: 2026-11-26T16:57:00Z / Git Commit: 17d29cd2a... / Container Name: iis
+```
+
+**#1306 is closed** — I checked — so the allowance in `environments.json` that let `development` report placeholders is
+stale. The spec's own comment anticipated this: *"the day the pipeline starts substituting, this flips and the allowance
+should be removed with it."* That day is today.
+
+### What to do
+
+1. **Remove the allowance** for `development` in `test/smoke/aggiemap/environments.json`, so the check requires a real
+   build banner there as it presumably already does on production.
+2. **Check production too.** If production's banner still shows placeholders, its allowance stays and the pull request
+   says so — the pipeline may substitute for one environment and not the other, and guessing which would be the whole
+   fault repeated.
+3. **Prove it both ways.** The check must fail against the stale allowance and pass with it removed; quote both. Run
+   it with `one build-banner.spec.ts` against `development`.
+4. **Say what the banner actually contains**, including whether `Git Commit` matches the commit dev is serving
+   (`17d29cd2a`). A banner that names the wrong commit would be worse than placeholders, and nothing else checks it.
+
+### Worth knowing
+
+The banner naming its commit is **new and useful beyond this check**: it is the first way to ask a deployed environment
+which build it is without comparing tags. `scripts/smoke-deployed.sh` exists only because the page could not say
+(#1306's whole premise). Note in the report whether that opens anything — do not act on it, just say so.
+
+`no-visible-change`, no images. **Branch** `test/3721-build-banner-allowance` from the latest `development`, pushed to
+the fork. `check-in-volume.sh`, then **`pre-pr-check.sh`**, and give me its last line. Body text in the report with a
+`Title:` line. **Open no pull request** — the maintainer is holding those and I open them when he lifts it.
+
+**Report** `work-lab-leila/reports/2026-11-26-a61.md`. Questions `Q-a61-<n>`.
+
 ## Batch a59 (aggiemap: the build is on dev - quick, then release; 26 November 2026, from `work (aggiemap)`) (High) - **now**
 
 **a59 supersedes a58's run instruction. Everything else about a58 stands**, including that this machine takes nothing
