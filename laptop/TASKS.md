@@ -1,5 +1,19 @@
 # Laptop: current tasks
 
+## Batch g45 (workspace: #3718, strict-library pull requests stop invalidating each other's counts; after g44) (High)
+
+**The maintainer, 26 November:** the machines focus on infrastructure for a while. #3718 is why today's strictness pull requests had to be rebuilt again and again. Its body gives the three changes:
+- count only errors in a library's own files;
+- keep each library's count beside its own `tsconfig.lib.json`, not in one shared list;
+- a library that becomes clean is a notice, not a failure.
+
+1. Branch `fix/3718-strict-lib-counts` from the latest `development`.
+2. Change `scripts/check-strict-libs.mjs` and its tests (`scripts/check-strict-libs.test.sh`), red first for each rule. Migrate today's `scripts/strict-lib-errors-known.txt` into the new places, re-measuring each library by the own-files rule, then delete the shared file. Update anything that names it (CLAUDE.md, docs).
+3. **Prove the point** in the report: two branches each changing a different strict library, merged in either order, both checks passing, with no re-count.
+4. `scripts/check-in-volume.sh fix/3718-strict-lib-counts` (affected). Read the `Exit` line.
+5. Draft `.pr-body.md` from the template as the last commit. Push. No pull request: I open it, from your branch.
+6. Report `reports/<date>-g45.md`.
+
 ## Batch g44 (gisday: wrap-up after today's merges; 26 November 2026, from `work (gisday)`) (High) - **now**
 
 **The maintainer:** wrap up what's in flight, start nothing new, and log issues for anything found. This batch is wrap-up only. File an issue for anything wrong (fields as CLAUDE.md says, Priority by estimate), and don't fix it.
@@ -8,15 +22,7 @@
 2. **Your leftovers from g41:**
    - **`wt-3327`'s four untracked screenshots** (`docs/screenshots/3327-form-data-false-values/`). PR 3349 merged without them. Compare them with the images PR 3349's body links. If they're the same captures, or older ones, delete the worktree and branch, recording the tip. If they're different and better, keep them and say so.
    - **`fix/3593-competitions-ngx-core-strict`:** its pull request (3642, opened from a `-pr` copy) merged. If every file it touches has been in `development` at some point, delete it and record the tip. Otherwise keep it and list the files.
-3. **Today's GIS Day merges, signed in (txgisday-dev only, made-up data).** About twenty pull requests merged into GIS Day's code today, most of them type-strictness changes in shared form, layout, modal, search, settings and notification libraries, plus zoneless (3690) and RSVP and submission types (3711). Run GIS Day locally on the latest `development` and open:
-   - the public pages (home, sessions, presenters, competitions, sponsors, FAQ);
-   - signed in as an admin: every Admin list and its Add and Edit forms, especially RSVP Types and Submission Types (add one, edit it);
-   - registration;
-   - the competitions designer and a submission form;
-   - a modal (Copy, or any confirm);
-   - the judging tabs.
-
-   Watch the browser console for errors, and for any field that fails to save or to show a saved value. One screenshot per area into the report. **Anything broken becomes an issue at once** (Bug, High if an admin can't save), with the page, the steps and the console error.
+3. ~~Today's GIS Day merges, signed in~~ **dropped:** the maintainer is holding GIS Day work while the machines do infrastructure (26 November, 1:15 PM).
 4. Report `reports/2026-11-26-g44.md`.
 ## Batch a62 (aggiemap: #3722, the phone accessible-toggle check never reaches the phone; 26 November 2026, from `work (aggiemap)`) (High) - **medium**
 
