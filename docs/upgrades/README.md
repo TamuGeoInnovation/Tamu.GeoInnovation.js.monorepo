@@ -36,7 +36,8 @@ the same pull request as the step.
 | 6 Oct 2026 | Angular 20 to 21 | Angular 21.2, Nx 22.7, Jest 30 | [#1456](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1456) |
 | 6 Oct 2026 | **Angular 21 to 22** | Angular 22.1, Nx 23.2, **TypeScript 6.0**, ESLint 9 | [#1469](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1469) |
 | 28 Oct 2026 | Three event apps removed, superseded by AggieMap | | [#1202](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1202) |
-| 23 Nov 2026 | Nx 23 to 24 | Nx 24.0.6, by Dependabot's nx group | [#3248](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3248) |
+| 23 Oct 2026 | Nx 23 to 24 | Nx 24.0.2, after lint, tests and the API builds moved to Nx's inferred targets | [#2168](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2168) |
+| 23 Nov 2026 | Nx 24.0.2 to 24.0.6 | by Dependabot's nx group | [#3248](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3248) |
 | 25 Nov 2026 | **Jest to Vitest**, across every front end and API | geoservices, mailroom, GIS Day, ts-events and their libraries | [#1977](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1977) |
 | 25 Nov 2026 | **Node 24.22.3 everywhere**, matching the API images | | [#3545](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3545) |
 | 25 Nov 2026 | Dead applications removed | **61 applications became 10** | [#1201](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1201), [#1203](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1203) |
