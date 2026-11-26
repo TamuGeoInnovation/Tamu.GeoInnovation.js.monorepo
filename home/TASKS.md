@@ -1,5 +1,21 @@
 # Home machine: current tasks
 
+## Batch s90 (security: #3776, CodeQL's first scan, deployed code first; 26 November 2026, 4:12 PM Central, from `work (security)`) (High) - **after s89**
+
+CodeQL has just run on this repository for the first time and found 1 critical and 25 high. [#3776](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3776) lists them, and the alerts themselves are under the repository's **Security → Code scanning** (`gh api repos/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/code-scanning/alerts?state=open`). Announce every step, before and after.
+
+**Deployed code, one branch each, red first:**
+1. **Critical, `js/request-forgery`** in `libs/gisday/platform/data-api/src/lib/site-copy/site-copy.service.ts`. Read the alert's data flow. Show with a test that a user-supplied value can steer the server's request, then restrict it to an allow-list or a fixed host. If CodeQL is wrong (the value cannot come from a user), say why with the code path, and **don't** dismiss it yourself: bring it to the director.
+2. **`js/path-injection` ×2** in `user-submission/submission-files.service.ts`: a test with a `../` name, then resolve and check the path stays inside its directory.
+3. **ReDoS** in `speaker-edit.service.ts` and `libs/geoprocessing/core/src/lib/utils.ts`: a test with the pathological input and a time limit, then a linear pattern.
+4. **`js/path-injection`** in `libs/common/node/fs/src/lib/common-node-fs.ts` and `serve-dist.js`: the same as 2.
+These can be grouped into **one PR per library**, each `Closes` nothing (`Part of #3776` plus a sub-issue the director files); write `Closes #SUB` and I'll fill it in.
+
+**Tools, scripts and tests:** fix any that take a line or two in one branch, `chore/3776-codeql-tools`. List the rest with a one-line reason each ("test-only", "local tool, never deployed"); **the director dismisses them**, not you.
+
+Each branch gets the full check with a clean `npm ci`, then push and "branch ready" with `.pr-body.md`.
+Report `home/reports/2026-11-26-s90.md`.
+
 ## Batch s89 (security: #3767, `@analogjs` 3.0.0; 26 November 2026, 3:43 PM Central, from `work (security)`) (Medium) - **now**
 
 This is s88 again: it went to the lab, and the lab is now on its exclusive release tier. **Follow s88's instructions word for word** (further down this file), on branch `chore/3767-analogjs-3`, from the latest `development`, which now has Vitest 5.1.2. Announce every step, before and after (DIRECTOR.md, 26 November).
