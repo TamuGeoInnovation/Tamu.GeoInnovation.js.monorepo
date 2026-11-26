@@ -1,5 +1,18 @@
 # Laptop: current tasks
 
+## Batch g43 (gisday: finish #3668's branch, guards on the last 3 routes; 26 November 2026, from `work (gisday)`) (High) - **now**
+
+**The maintainer's decision on Q-g224-1: (a).** Guard the 3 routes still open with the existing admin-only account permissions: `create:users` for adding, `delete:users` for deleting (and `create:users` for any update). Nothing changes in Auth0. He'll decide later under #1899 whether to remove them.
+
+**Don't open a pull request.** The maintainer wants the open ones merged first. Push the branch and report; I open it when he says.
+
+1. Work on the lab's branch `fix/3668-gisday-write-route-guards` (on the fork, `69283c8a0`), in its own worktree. Merge the latest `development` into it.
+2. **Find the 3 routes:** the write routes (`@Post`, `@Patch`, `@Put`, `@Delete`) in `libs/gisday/platform/data-api` with no `JwtGuard` and `PermissionsGuard`. They're in the two controllers for what a new account is asked when it signs up. The lab's g224 report (`work-lab-leila/reports/2026-11-25-g224.md`) describes them without naming them. **Don't write the routes into the mailbox or onto GitHub.** The code will show them when it merges, and that's fine.
+3. Add `@UseGuards(JwtGuard, PermissionsGuard)` and `@Permissions([...])` to each, as the other guarded controllers on the branch do.
+4. **A spec per controller, red first,** in the style of the lab's specs on the branch: no permission gets `403` and the provider isn't called; with the permission, the route reaches the provider. Watch each fail on the unfixed code.
+5. `scripts/check-in-volume.sh fix/3668-gisday-write-route-guards gisday-platform-data-api,gisday-nest`. Read the `Exit` line.
+6. Update `.pr-body.md`: every route on the list is now guarded, so `Closes #3668` is true. Keep it as the last commit. Push.
+7. Report `reports/2026-11-26-g43.md`: guards added (by count), tests red then green, the exit code. No route names.
 ## Batch g42 (gisday: open the three finished branches as pull requests; 26 November 2026, from `work (gisday)`) (High) - **now**
 
 **The maintainer's decision (10:50 AM, 26 November):** the work is done and only needs pull requests, and you open them. Everything in flight gets settled, opened and merged before the backlog starts again. In this order:
