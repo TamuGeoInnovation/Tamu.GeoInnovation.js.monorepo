@@ -5,7 +5,7 @@
 
 Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
-Last batch done: s9
+Last batch done: a62
 
 ## What this is
 
@@ -33,9 +33,10 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch a62 (#3722, phone trip check)**, started 1:07 PM Central.
+- **Batch g44 (GIS Day wrap-up)**, next.
 
 ## Finished
+- **Batch a62 (#3722)** (report `laptop/reports/2026-11-26-a62.md`): **branch ready: `test/3722-phone-trip-viewport`** (`360dfadd6`). The check was wrong (desktop window); fixed red to green. It then found #3468 not yet on production (waits for deploy). pre-pr-check exit 0.
 - **Batch s9 (security: #3727)** (report `laptop/reports/2026-11-26-s9.md`): es-toolkit branch `fix/3727-es-toolkit` ready (full check exit 0; pre-pr-check fails only on the linked issue, Q-s9-1). All 13 rows recorded on #3727.
 - **Batch g43 (#3668, the last guards)** (report `laptop/reports/2026-11-26-g43.md`): **branch ready: `fix/3668-gisday-write-route-guards`** (`002b78b9a`, body last). 3 routes guarded in 1 controller (the other was the survey, removed by #3712); spec red then green; check exit 0. No PR, as asked.
 - **Batch g42 (open PRs)** (report `laptop/reports/2026-11-26-g42.md`): **PR 3711 (#3635) and PR 3712 (#3667) open**, ready, fields set. **#3668 held**: 3 routes still unguarded (Q-g224-1 unanswered). Old #3635 fork branch deletion refused here: command in the report. Q-g42-1, Q-g42-2.
