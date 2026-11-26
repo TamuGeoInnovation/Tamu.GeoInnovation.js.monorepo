@@ -7,7 +7,15 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { declaredJpeg } from '@tamu-gisc/common/node/images';
 import { PROFILE_EDIT_LINK_PREVIEW, fillReviewEmail } from '@tamu-gisc/gisday/common';
 
-import { REPEAT_SEND_MINUTES, SpeakerEditService, cleanFields, hashOf, linkEmail, looksLikeEmail, senderAs } from './speaker-edit.service';
+import {
+  REPEAT_SEND_MINUTES,
+  SpeakerEditService,
+  cleanFields,
+  hashOf,
+  linkEmail,
+  looksLikeEmail,
+  senderAs
+} from './speaker-edit.service';
 import { siteHost } from './speaker-edit.controller';
 
 /**

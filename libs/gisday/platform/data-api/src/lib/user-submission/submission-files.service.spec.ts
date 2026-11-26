@@ -452,7 +452,11 @@ describe('storeUpload and discardUpload only touch the uploading folder (#3776)'
   function outside(): Express.Multer.File {
     writeFileSync(join(appData, 'keep.pdf'), 'not an upload');
 
-    return { originalname: 'slides.pdf', path: join(uploadingDirectory(), '..', 'keep.pdf'), size: 13 } as Express.Multer.File;
+    return {
+      originalname: 'slides.pdf',
+      path: join(uploadingDirectory(), '..', 'keep.pdf'),
+      size: 13
+    } as Express.Multer.File;
   }
 
   it('refuses to move a file from outside the uploading folder', async () => {
