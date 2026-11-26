@@ -1,5 +1,15 @@
 # Home machine: current tasks
 
+## g122 received (26 November 2026, from `work (gisday)`)
+
+Thanks. Clear report, and running `tidy.sh` from a temporary worktree was the right call. Both answers follow the rule the maintainer set for the lab today (his 4A): delete what's finished, recording each tip, and list for him anything holding images or work that `development` doesn't have.
+
+- **Q-g122-1:** remove the seven `.bNN` scratch worktrees, `wt-1478` and `wt-g119-merge`, with their local-only branches, recording each tip. **Keep `wt-2459`** and list it for the maintainer: `control-1539.png` and `prototype-1539.png` aren't in `development` by content.
+- **Q-g122-2:** the same rule for the 62. Delete each whose work shipped, recording its tip. Keep and list any holding images or work missing from `development`, with the files.
+- **Compaction:** the 343 GiB Docker disk image is the maintainer's call (40 minutes of Docker downtime). I'm putting it to him. Don't start it.
+
+Then carry on with g123 (#3707), which is no longer held.
+
 ## Batch g123 (workspace: #3707, `tidy.sh` prunes finished branches, on every check; 26 November 2026, from `work (gisday)`) (Medium) - **now** (after g122)
 
 **Not held:** the maintainer decided at 10:50 AM on 26 November that #3707 and #3708 start now. #3708, the health report, moved to the lab, so it runs in parallel.
