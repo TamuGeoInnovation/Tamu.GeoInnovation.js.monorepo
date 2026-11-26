@@ -5,7 +5,7 @@
 
 Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
-Last batch done: a57
+Last batch done: g41
 
 ## What this is
 
@@ -33,9 +33,10 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch g41 (clean up branches, worktrees and volumes)**, started 10:29 AM Central.
+Nothing.
 
 ## Finished
+- **Batch g41 (clean up branches, worktrees, volumes)** (report `laptop/reports/2026-11-26-g41.md`): branches 60 to 9, worktrees 67 to 9, volumes 39 to 6; 579 to 614 GB free. Kept: 5 on the fork, #3593 (local only, Q-g41-1), wt-3327 (untracked screenshots).
 - **Batch a57 (aggiemap: #3490 shared directions templates)** (report `laptop/reports/2026-11-25-a57.md`): **branch ready: `refactor/3490-directions-shared-templates`** (`c0b5361c6`, body last). Phone unchanged (the sheet only shows a found route); `no-visible-change`, Q-a57-1 and Q-a57-2. Check exit 0, pre-pr-check exit 0.
 - **Batch a52 (aggiemap: drive-into-campus case, #3679)** (report `laptop/reports/2026-11-25-a52.md`): **branch ready: `test/3679-drive-into-campus`** (`a955bc61a`, body last). Green on dev and production; its failure shown with a core destination; pre-pr-check exit 0.
 - **Batch a49 (aggiemap: drive-solve smoke check for #3679)** (report `laptop/reports/2026-11-25-a49.md`): **stopped, premise wrong, my a43 error.** Drive reaches all six visitor garages and every public road; only pedestrian-core points fail, by design. Production app: 3 min to the Central Campus Garage. Corrected on #3679 (comment); no branch, no PR. Q-a49-1, Q-a49-2. (Started 12:35 PM Central; an earlier line here said 12:50, which was estimated.)
