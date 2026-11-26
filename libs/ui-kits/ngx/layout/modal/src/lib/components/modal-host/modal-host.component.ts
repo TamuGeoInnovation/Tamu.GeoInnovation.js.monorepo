@@ -26,9 +26,10 @@ import { ModalRefService } from '../../services/modal-ref/modal-ref.service';
 export class ModalHostComponent implements OnInit, OnDestroy {
   private modalRef = inject(ModalRefService);
 
-  private readonly _modalChildHost = viewChild('modal', { read: ViewContainerRef });
+  // Required: `#modal` is in the template unconditionally, so the host always has its container (#3628).
+  private readonly _modalChildHost = viewChild.required('modal', { read: ViewContainerRef });
 
-  private _modalChildRef: ComponentRef<unknown>;
+  private _modalChildRef: ComponentRef<unknown> | undefined;
 
   public close: Subject<unknown> = new Subject();
 
