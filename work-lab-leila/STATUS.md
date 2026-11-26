@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **4:06 PM Central, 26 November 2026**. A listener; job: testing.
+Last written **4:10 PM Central, 26 November 2026**. A listener; job: testing.
 
 ## g203 is done, not unstarted (12:07 AM Central, Wednesday 25 November 2026)
 
@@ -143,12 +143,13 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 
 
-**Batch g227 (workspace): #3729, this machine's own repairs.** Since 4:06 PM Central, 26 November. Now the security chat's.
+Nothing. Idle since 4:10 PM Central, 26 November; listening.
 
 While a58 is held, `tools/listen.sh` cannot be the watcher: it exits at once on an unfinished batch, and it only recognises a hold that names a pull request ("Held until PR ..."). So until you write in my TASKS.md, a small watcher pushes the "blocked" heartbeat every 30 minutes and wakes me on any commit to my TASKS.md or DIRECTOR.md. A hold for a non-PR reason (here, "until the build is on dev") is a gap in `listen.sh` and `queued.sh` worth an issue; I have not filed one.
 
 ## Finished
 
+- **Batch g227 (workspace): #3729, this machine's own repairs** (4:06 to 4:10 PM, 26 November). Main checkout fast-forwarded (32 days behind to 0, `tidy.sh` present); `core.longpaths` on; dev volume's Vite cache cleared; 19 Nx task databases removed; 16 worktrees of uncommitted work listed. SSH still fails: GitHub refuses this machine's key (the maintainer's to add). Q-g227-1, Q-g227-2. Report `reports/2026-11-26-g227.md`.
 - **Batches a64 and a65 (aggiemap): quick, then the release tier, on `57efe8b6b` (`dev-2026-11-26`)** (a64 2:52 to 3:15 PM; a65 3:41 to 4:06 PM, 26 November). Quick: 816 passed, 0 failed. Release: **1,068 passed, 70 skipped, 1 flaky (basemapUrl timeout, passed on retry), 0 failed**, 22 min 44 s. `one bus.spec.ts`: 25 passed, the #2758 check running for the first time. No registry skips. Reports `reports/2026-11-26-a64.md`, `reports/2026-11-26-a65.md`.
 - **Batch s-lab-2 (security): PRs 3768 and 3769 up to development** (3:15 PM to 3:24 PM, 26 November). PR 3768: my merge was identical to one pushed at 3:03 PM by someone else (`b913472e9`); my full check covers it; nothing pushed. PR 3769: merged, lock regenerated (the 6 moves), full check `Exit 0`, pushed `0592a92d7`. Q-s-lab-2-1. Report `reports/2026-11-26-s-lab-2.md`.
 - **Batch s-lab-1 (security): #3763, everything to its latest as of 26 November** (2:33 to 2:51 PM, 26 November, while a64 is held). **branch ready, both:** `chore/3763-tooling-latest` (`cb82effa1`, #3764; 54 lock moves, one new Windows-only package) and `chore/3763-runtime-latest` (`326d157e7`, #3765; 6 moves). Each: full check after a clean npm ci `Exit 0` (95 projects, 13 builds), `pre-pr-check` `Exit 0`. No new install scripts. `.pr-body.md` untracked; text in the report. Report `reports/2026-11-26-s-lab-1.md`.
@@ -727,4 +728,4 @@ While a58 is held, `tools/listen.sh` cannot be the watcher: it exits at once on 
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 192 and 191 again (8 November), aggiemap's 31, 30 and 29 (9 November), and aggiemap's 32, 33, 34 and 35 (10 November), 36 and 37 (11 November), 38 (13 November), 39, 40, 41, 42, 46, 43, 44, 49, 50, 47, 48, 51, 52, 53, 54, 55, 56, 57 and 58 (14 November), 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 72, 73, 74, 71, 75, 76, #3044's screenshots, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 87b, 89, 91, 92, 93, 94, 88, 95, 90, 98, 99, 96, 102, 100, 101, 103, 104 and 105 (15 November), 106, 107, 108, 109, 110, 111, 112, 113, 112b, 113b, 114, 115, 116, 117, 118, 119, 120, 121, 122 and 123 (16 November), 124, 125, 126, 127, 128 and 129 (17 November), 130 to 134 (18 November), 135 to 139 (19 November), 193 to 198 (23 November), 199 to 203, g201, a18, g202, a20, g203, a21 and a23 (24 November), a24, a26, g204, g205, g206, g207, g208, g209, g210, g211, g212, a29, g213, a30, g214, g215, g216, g217, g218, g219, g220, g221, g222, g223, a36, a41, g224, a44, a47, a50, a53 and a55 (25 November), g225, g226, a61, s-lab-1, s-lab-2, a64 and a65 (26 November) (139, 141 to 192 reported; 140 needs the maintainer; 151 not run, see report 137) (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 192 and 191 again (8 November), aggiemap's 31, 30 and 29 (9 November), and aggiemap's 32, 33, 34 and 35 (10 November), 36 and 37 (11 November), 38 (13 November), 39, 40, 41, 42, 46, 43, 44, 49, 50, 47, 48, 51, 52, 53, 54, 55, 56, 57 and 58 (14 November), 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 72, 73, 74, 71, 75, 76, #3044's screenshots, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 87b, 89, 91, 92, 93, 94, 88, 95, 90, 98, 99, 96, 102, 100, 101, 103, 104 and 105 (15 November), 106, 107, 108, 109, 110, 111, 112, 113, 112b, 113b, 114, 115, 116, 117, 118, 119, 120, 121, 122 and 123 (16 November), 124, 125, 126, 127, 128 and 129 (17 November), 130 to 134 (18 November), 135 to 139 (19 November), 193 to 198 (23 November), 199 to 203, g201, a18, g202, a20, g203, a21 and a23 (24 November), a24, a26, g204, g205, g206, g207, g208, g209, g210, g211, g212, a29, g213, a30, g214, g215, g216, g217, g218, g219, g220, g221, g222, g223, a36, a41, g224, a44, a47, a50, a53 and a55 (25 November), g225, g226, a61, s-lab-1, s-lab-2, a64, a65 and g227 (26 November) (139, 141 to 192 reported; 140 needs the maintainer; 151 not run, see report 137) (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
