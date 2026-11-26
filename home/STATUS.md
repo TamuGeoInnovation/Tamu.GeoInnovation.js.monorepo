@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle, listening.
+- **Batch a60** (PR 3724's full check, the Angular 22.3 group), since 1:04 PM Central, 26 November, on `52898d356`. Docker to itself (only `mssql` up).
 
 ## Finished
 - **Batch s83** (report `home/reports/2026-11-26-s83.md`): branch ready `chore/3719-remove-ng-packagr` (−29, Exit 0) and `chore/3720-remove-platform-server` (−2, Exit 0); group 2 stopped: `webpack-cli` is used by the Nest apps' inferred `webpack-cli build` targets. Two questions.
