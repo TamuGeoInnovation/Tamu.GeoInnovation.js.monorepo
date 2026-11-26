@@ -142,7 +142,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 
 
-**Batch s-lab-2 (security): PRs 3768 and 3769 up to development.** Since 3:15 PM Central, while a64 waits for the tag. 3:19 PM: PR 3768 (tooling) merged with development `8e8079596`, lock regenerated and the six re-applied, full check `Exit 0`, pushed. PR 3769 next.
+**Batch s-lab-2 (security): PRs 3768 and 3769 up to development.** Since 3:15 PM Central, while a64 waits for the tag. 3:19 PM: PR 3768 (tooling) merged with development `8e8079596`, lock regenerated and the six re-applied, full check `Exit 0`, but **NOT pushed**: the fork's branch had moved to `b913472e9`, pushed by someone else, and the push was refused (no force-push). Looking at it (3:20 PM).
 
 **Batch a64 (aggiemap): quick PASSED on `57efe8b6b`; waiting for the tag (exclusive).** 3:15 PM Central, 26 November: 816 passed, 64 skipped (4 registry, all #2758), 0 failed, 21 min 37 s. Release and bus.spec when the director says the tag exists. g227 behind it. Report `reports/2026-11-26-a64.md`.
 
