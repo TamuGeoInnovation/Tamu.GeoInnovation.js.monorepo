@@ -1,7 +1,7 @@
 name: laptop
 agent: Claude Code (desktop app), the chat "js.monorepo - Laptop - 
 machine: laptop
-state: listening: every batch reported (last a57, branch ready refactor/3490-directions-shared-templates)
+state: listening: every batch reported (last g41, cleanup done)
 accepting: no
-seen_utc: 2026-11-26T16:12:08Z
-next_utc: 2026-11-26T16:57:08Z
+seen_utc: 2026-11-26T16:42:28Z
+next_utc: 2026-11-26T17:27:28Z
