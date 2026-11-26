@@ -28,12 +28,14 @@ describe('AbstractValueAccessorFormComponent', () => {
     expect(component.value).toBeUndefined();
   });
   it('should correctly evaluate registerOnChange', () => {
-    component.registerOnChange(component.writeValue(true));
+    component.writeValue(true);
+    component.registerOnChange(() => undefined);
     expect(component.value).toBeTruthy();
   });
 
   it('should correctly evaluate registerOnTouched', () => {
-    component.registerOnTouched(component.writeValue(true));
+    component.writeValue(true);
+    component.registerOnTouched(() => undefined);
     expect(component.value).toBeTruthy();
   });
   // #2964: a value the form writes is the form's own, not a change for the control to report back.

@@ -23,7 +23,8 @@ describe('TripPlannerTopComponent', () => {
         { provide: TestingService, useValue: { get: () => of(isTesting) } },
         {
           provide: TripPlannerService,
-          useValue: { Stops: of([{ index: 0 }, { index: 1 }]), TravelOptions: NEVER }
+          // The trip result the component reads, as the service shares it (#3487): none yet.
+          useValue: { Stops: of([{ index: 0 }, { index: 1 }]), TravelOptions: NEVER, currentResult$: NEVER }
         },
         { provide: EsriMapService, useValue: { store: NEVER } },
         { provide: DragService, useValue: { states: NEVER } }

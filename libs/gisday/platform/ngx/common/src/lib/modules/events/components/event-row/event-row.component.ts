@@ -17,11 +17,12 @@ import { CentralDatePipe } from '../../../../pipes/central-date/central-date.pip
 export class EventRowComponent implements OnChanges, OnInit {
   private readonly rt = inject(Router);
 
-  public readonly event = input<Partial<SimplifiedEvent>>(undefined);
+  public readonly event = input.required<Partial<SimplifiedEvent>>();
 
-  public readonly day = input<Partial<SeasonDay>>(undefined);
+  public readonly day = input.required<Partial<SeasonDay>>();
 
-  public readonly rsvps = input<Array<string>>(undefined);
+  /** The day's registered event guids, or null until they have arrived (the card passes them through `async`). */
+  public readonly rsvps = input.required<Array<string> | null>();
 
   public readonly canRegister = input<boolean>(true);
 

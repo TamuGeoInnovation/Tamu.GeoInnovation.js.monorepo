@@ -198,13 +198,13 @@ export class DateTimePickerComponent implements ControlValueAccessor, AfterViewI
 
   public readonly changed = output<DateTimePickerChange<Date>>();
 
-  public get value() {
+  public get value(): Date | null {
     const value = this._value();
 
     return isValidDate(value) ? new Date(value.getTime()) : null;
   }
 
-  public set value(v) {
+  public set value(v: Date | null | undefined) {
     this._value.set(isValidDate(v) ? new Date(v.getTime()) : null);
     this._onChange(this.value);
     this._onTouched();
@@ -229,7 +229,7 @@ export class DateTimePickerComponent implements ControlValueAccessor, AfterViewI
     return `${this.minuteStep()}min`;
   }
 
-  private _onChange = (v) => {
+  private _onChange: (value: Date | null) => void = (v) => {
     return v;
   };
 
@@ -305,15 +305,15 @@ export class DateTimePickerComponent implements ControlValueAccessor, AfterViewI
    * Shows a value from the form without reporting it back as a change or a touch: a form loaded with a record would
    * otherwise count as changed the moment it opened (#2964).
    */
-  public writeValue(v) {
+  public writeValue(v: Date | null | undefined) {
     this._value.set(isValidDate(v) ? new Date(v.getTime()) : null);
   }
 
-  public registerOnChange(fn) {
+  public registerOnChange(fn: (value: Date | null) => void) {
     this._onChange = fn;
   }
 
-  public registerOnTouched(fn) {
+  public registerOnTouched(fn: () => void) {
     this._onTouched = fn;
   }
 }

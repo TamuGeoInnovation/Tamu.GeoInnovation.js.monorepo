@@ -21,7 +21,8 @@ describe('PresenterCardComponent', () => {
 
     return {
       name: element.querySelector('.name')?.textContent?.replace(/\s+/g, ' ').trim(),
-      organization: element.querySelector('.organization')?.textContent?.trim()
+      organization: element.querySelector('.organization')?.textContent?.trim(),
+      initials: element.querySelector('.initials')?.textContent?.trim()
     };
   };
 
@@ -53,5 +54,14 @@ describe('PresenterCardComponent', () => {
     expect(render({ firstName: 'A', lastName: 'B', affiliation: 'Lenovo' }).organization).toBe('Lenovo');
     TestBed.resetTestingModule();
     expect(render({ firstName: 'A', lastName: 'B' }).organization).toBeUndefined();
+  });
+
+  /** #3611. A speaker's initials come from the names they have: a missing one adds nothing, not "undefined". */
+  it('makes the initials from whichever names the speaker has', () => {
+    expect(render({ firstName: 'Ann', lastName: 'Example' }).initials).toBe('AE');
+    TestBed.resetTestingModule();
+    expect(render({ firstName: '', lastName: 'Example' }).initials).toBe('E');
+    TestBed.resetTestingModule();
+    expect(render({ lastName: 'Example' }).initials).toBe('E');
   });
 });

@@ -322,10 +322,24 @@ export function parkingQueries(parkingOptions: ParkingOptions, date: Date) {
     },
     {
       searchSource: 'visitor-parking',
-      sqlColumns: ['TS_GIS.dbo.LOTS.Visitor_Lot'],
+      // A visitor's lots are the ones the layer's own renderer draws as Visitor Parking:
+      // `GIS.TS.ParkingLots.LotType` ending in `Visitor`, which is 6 `Garage Visitor` and 13 `Surface Visitor`
+      // of the layer's 244 lots. This asked for `TS_GIS.dbo.LOTS.Visitor_Lot` until #1169; that column is gone
+      // from the service and nothing replaced it - the layer carries no `TS_GIS.dbo.LOTS.*` field at all, so the
+      // query could not be repaired by renaming the column.
+      //
+      // The space counts (`GIS.TS.SPC_PNT_CNT.Visitor`) are the other field that could answer, and give 26 lots
+      // rather than 19. The maintainer chose the renderer's rule on 25 November 2026, so that the lots drive
+      // directions offers and the lots the map draws as visitor parking are the same set.
+      //
+      // Two keys with '=' are joined with OR by `makeWhere`, and this is the where clause the `visitor-parking`
+      // search source already declares in `search-sources.ts` - which this service overwrites for every
+      // restriction. Values are upper-cased before comparison; the campus server compares case-insensitively,
+      // measured as 19 lots either way on 25 November 2026.
+      sqlColumns: ['GIS.TS.ParkingLots.LotType', 'GIS.TS.ParkingLots.LotType'],
       include: parkingOptions.Use_Permit === false,
-      values: parkingOptions.Use_Permit && parkingOptions.Permit !== undefined ? [1] : [0],
-      operators: ['=']
+      values: ['Garage Visitor', 'Surface Visitor'],
+      operators: ['=', '=']
     },
     {
       searchSource: 'night-parking',
