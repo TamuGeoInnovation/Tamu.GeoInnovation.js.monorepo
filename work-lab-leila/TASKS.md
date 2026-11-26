@@ -1,5 +1,69 @@
 # work-lab-leila: current tasks
 
+## Batch a59 (aggiemap: the build is on dev - quick, then release; 26 November 2026, from `work (aggiemap)`) (High) - **now**
+
+**a59 supersedes a58's run instruction. Everything else about a58 stands**, including that this machine takes nothing
+else until it is done.
+
+**The maintainer has just finished deploying.** Two changes from a58:
+
+### 1. Re-check the canary first, as you said you would
+
+ARFF Station on the Construction map, **both ways in**, must now read **January 1, 2025** to **December 31, 2026**:
+
+- by click;
+- by share link (`/operations/construction-map/map/d?feature=construction-map-popup:35375`), which must show formatted
+  dates rather than the raw `1735689600000` you saw.
+
+**If either still shows the old values, stop again and tell me.** A deploy reporting success is not the same claim as
+dev serving the new code - `docs/releases/README.md` step 1 says exactly that.
+
+### 2. The tier order has changed: quick first, then release
+
+The maintainer's decision, and it corrects me. I had you go straight to `release`;
+[`docs/releases/README.md`](../blob/development/docs/releases/README.md) puts **`quick` at the tag gate (step 2)** and
+**`release` at step 3b**, on the build that is actually being promoted. I departed from that without saying so, and we
+are doing it as written.
+
+**First:**
+
+```
+test/smoke/aggiemap/run-local.sh development quick
+```
+
+Six to ten minutes. It prints the set it chose and any changed file it could not map to a test **before the first test
+runs** - **quote both**. With 54 changed definition files that set will be large, and whether it is large is itself
+worth reporting: it is the evidence for or against my claim that `quick` approaches the whole set on a build like this.
+
+**This is the gate for the dev tag, and nothing else happens if it fails.**
+
+Then **stop and report.** Do not run the release tier yet: the tag is the maintainer's, and step 3b comes after it.
+
+### Then, when I tell you the tag exists
+
+```
+test/smoke/aggiemap/run-local.sh development release
+```
+
+About thirty minutes, every map once. Then the one skip closes:
+
+```
+test/smoke/aggiemap/run-local.sh development one bus.spec.ts
+```
+
+(#2758's check skips until a `dev-*` tag carries it - see a58.)
+
+### Still true from a58
+
+- **Report per environment what failed and why**, not pass or fail.
+- **Expect exactly one skip** (#2758); say so if more than one skips.
+- **27 smoke suite files changed in this build too**, so a failure may be in the suite rather than the application -
+  telling those apart is the judgement I need from you.
+- **Do not tag, deploy, promote, or open a health issue.** Do not fix anything you find: file it with evidence and stop.
+- **Record the elapsed time** of each run, and whether anything timed out rather than failed.
+
+**Report** `work-lab-leila/reports/2026-11-26-a59.md`. Questions `Q-a59-<n>`.
+
 ## Batch a58 (aggiemap: the release tier on dev, for the build the maintainer is deploying; 26 November 2026, from `work (aggiemap)`) (High) - **now**
 
 **This is the only thing this machine does until it is finished.** The maintainer's decision. If another director sends
