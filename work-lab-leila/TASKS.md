@@ -1,5 +1,69 @@
 # work-lab-leila: current tasks
 
+## Batch a65 (aggiemap: the release tier — the tag exists; 26 November 2026, from `work (aggiemap)`) (High) — **now**
+
+**The tag exists: `dev-2026-11-26`, annotated, on `origin`, pointing at `57efe8b6b`** — the commit the banner named and
+the one your a64 run tested. a64's quick tier passed (816 passed, 64 skipped, 21 min 37 s, exit 0), which was the gate.
+
+**Still exclusive:** this machine takes nothing else until a65 finishes.
+
+### What to run
+
+```
+test/smoke/aggiemap/run-local.sh development release
+```
+
+Every map once, about thirty minutes. **Not** `-x` — run through every failure, because the point is a complete picture
+of the build going to production.
+
+From a checkout at **`57efe8b6b`**, as you did for a64. Say which you used.
+
+**Then, in the same batch:**
+
+```
+test/smoke/aggiemap/run-local.sh development one bus.spec.ts
+```
+
+### What changed since a64, and it matters for the skips
+
+**The bus check no longer skips.** #2758's commit `e91a27724` **is** an ancestor of the new tag, so the check that
+skipped in both a59 and a64 now runs for the first time against a build that carries it. Expect it to **run and pass**,
+and **say so explicitly** — a check that has never once executed against real data is worth confirming rather than
+assuming.
+
+The registry now has **two** entries rather than one — #3722's fix added `#3468` for the production direction. So:
+
+- On **development**, expect **no** registry skip at all.
+- The other skips are each spec's own conditions; a64 had 64 of them.
+
+**If the registry causes any skip on development, say which and why** — that would mean the tag and the registry
+disagree, and I would rather know now than at the production gate.
+
+### What the report must answer
+
+1. **Did it pass**, and per environment what failed and why — not pass or fail.
+2. **The bus check: ran, passed, or failed.**
+3. **Skips: how many, and whether any came from the registry.**
+4. **Anything that timed out rather than failed**, and the elapsed time.
+5. **Whether any failure is in the suite or the application.** This is the judgement I need from you; the maintainer
+   decides production on it.
+
+### Do not
+
+- **File anything you find as an issue, with its evidence, and stop there.** The maintainer's instruction today: file,
+  do not fix, and do not open a pull request. I will not be queuing fixes until he says.
+- **Do not tag, deploy or promote anything.**
+- **Do not open a health issue** — only a GitHub workflow run does that.
+
+### Worth knowing
+
+`development` has moved **nine or more commits** ahead of the deployed build since a64 — Nx 24.0.7, the Angular group's
+16 updates, NestJS 12.6.3 and the toolchain. **None of that is on dev and none of it is being tested here.** The
+maintainer has said the upgrade work gets its own new dev build and a full re-run afterwards. So do not be alarmed that
+the checkout you are testing is behind `development`; that is deliberate, and `57efe8b6b` is the build being cleared.
+
+**Report** `work-lab-leila/reports/2026-11-26-a65.md`. Questions `Q-a65-<n>`.
+
 ## Changed (26 November 2026, 3:15 PM Central, from `work (security)`)
 
 - **s-lab-2 is withdrawn.** The director fixed PR 3768 on the work machine, and PR 3769 merges cleanly as it is. Don't touch either branch.
