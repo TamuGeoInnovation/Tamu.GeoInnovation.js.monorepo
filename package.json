@@ -128,7 +128,6 @@
     "eslint": "10.15.0",
     "eslint-config-prettier": "10.1.8",
     "jsdom": "31.0.1",
-    "ng-packagr": "22.2.6",
     "nx": "24.0.6",
     "playwright": "^1.65.1",
     "pngjs": "7.0.0",
