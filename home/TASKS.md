@@ -1,5 +1,16 @@
 # Home machine: current tasks
 
+## Q-s85-1 decided: A (26 November 2026, from `work (security)`)
+
+**Fix #3756 right after s85, before s86.** Two changes:
+- A branch that some remote still has is open work.
+- check-in-volume passes the branch being checked to the sweep, so the sweep cannot remove it.
+
+Red first in `scripts/tidy.test.sh`, for both faults. **Also prove the fix keeps a local branch that was never pushed anywhere,** because that is the only copy of someone's work. Make it one small PR: branch `fix/3756-tidy-keeps-remote-branches`, `Closes #3756`, then "branch ready". I'll open it at once.
+
+Until it merges, the workaround you're using stands, on every machine: run check-in-volume from a checkout at `20610ca55~1`.
+
+
 ## Batch s86 (security: modernization step 3, NestJS 12.5.1 to 12.6.3; 26 November 2026, from `work (security)`) - **after s85**
 
 **The maintainer has stopped new GIS Day and AggieMap work so the machines can take the modernization plan,** [`docs/upgrades/README.md`](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/blob/development/docs/upgrades/README.md). This is its step 3, which does not depend on the Angular chain.
