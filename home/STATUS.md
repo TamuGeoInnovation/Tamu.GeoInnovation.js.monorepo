@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **#3756 fix** (`fix/3756-tidy-keeps-remote-branches`), since 2:18 PM Central, 26 November; then s86 and s87.
+- **Batch s86** (#3754, NestJS 12.6.0 on `chore/3754-nestjs-12.6`), since 2:31 PM Central, 26 November: committed, full check next; push held until after 6:47 AM Central, 27 November (seven-day rule, Q-s86-1 A). s87 (#3755, jimp 2.0.0 on `chore/3755-jimp-2`) being prepared alongside; push held until after 10:54 PM Central, 30 November, or later (Q-s87-1).
 
 ## Finished
+- **#3756** (report `home/reports/2026-11-26-3756.md`, 2:31 PM Central): branch ready `fix/3756-tidy-keeps-remote-branches` at `4d1b901f3`; check-in-volume and pre-pr-check Exit 0.
 - **Batch s85** (report `home/reports/2026-11-26-s85.md`, 2:18 PM Central): overtaken, PR 3739 merged by the maintainer; check stopped and cleaned up.
 - **Batch g125** (report `home/reports/2026-11-26-g125.md`, about 2:00 PM Central): #3732 and #3730 fixed in `4ec2d60c8` on work-mailbox, red first, closed; health reading `42a77592a`, table in the report. One question.
 - **Batch a63** (report `home/reports/2026-11-26-a63.md`, 1:57 PM Central): branch ready `chore/3738-nx-24.0.7` at `6fab646b8`; check and pre-pr-check Exit 0; all six Angular production builds pass; the import reads `architect/node`.
