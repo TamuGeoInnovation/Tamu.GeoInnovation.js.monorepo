@@ -40,7 +40,6 @@
     "@angular/forms": "22.2.6",
     "@angular/material": "22.2.7",
     "@angular/platform-browser": "22.2.6",
-    "@angular/platform-server": "22.2.6",
     "@angular/router": "22.2.6",
     "@angular/service-worker": "22.2.6",
     "@arcgis/core": "5.1.27",
