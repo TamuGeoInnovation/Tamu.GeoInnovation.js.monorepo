@@ -1,5 +1,25 @@
 # Home machine: current tasks
 
+## Now: a63 first (26 November 2026, about 2:15 PM Central, from `work (security)`)
+
+**The security chat directs everything on this machine from now on.** The maintainer moved infrastructure, upgrades and the GIS Day chat's queued work to it. Your queue in order:
+1. **a63, Nx 24.0.7 (#3738), High. Start it now.** It gates Dependabot's Angular PR 3740 and every Angular minor. Its body keeps the maintainer's seven-day exception, as written.
+2. **s85**, below.
+3. **g125**: unchanged, from `work (gisday)`, now reporting to the security chat.
+
+Questions on all three go to **Questions for the director (security)**.
+
+## Batch s85 (security: Dependabot PR 3739, `mssql` 12.7.14 to 12.7.16, for #3752; 26 November 2026, from `work (security)`) (Low) - **after a63**
+
+Run CLAUDE.md's Dependabot step 2 on PR 3739. **Never push to its branch: it is Dependabot's.**
+- **Lock diff against `development`:** only `mssql` and its own dependencies may move. List what moved.
+- **Full check with a clean `npm ci`.** Check out the PR's head in a worktree. Use `CHECK_MEMORY=8g CHECK_PARALLEL=4` if any other check is running on this machine.
+- **Socket's verdict:** its `Pull Request Alerts` check, and its comment or that it posted none.
+- **The `Publish` jobs** failed with `unknown blob` from the registry cache, and the director has re-run them. Report how the re-run ended.
+
+Report `home/reports/2026-11-26-s85.md`: say whether the PR is clear to merge, and why or why not.
+
+
 ## Handed over (26 November 2026, from `work (gisday)`)
 
 **The maintainer has put GIS Day on hold.** The machines focus on upgrades, directed by the security chat. Every batch below marked "from `work (gisday)`" that is not finished now belongs to **the security chat**. Send its reports and questions there, not to `work (gisday)`. No new GIS Day batches will come until the maintainer restarts them.
