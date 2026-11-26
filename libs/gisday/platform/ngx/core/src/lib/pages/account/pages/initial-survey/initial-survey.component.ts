@@ -56,8 +56,11 @@ export class InitialSurveyComponent implements OnInit {
     ).pipe(
       map((questions) => {
         return questions.map((question) => {
-          if (question.questionType.type === 'multiple-option' || question.questionType.type === 'scale-normal') {
-            const tokens = question.questionOptions.split('|');
+          const type = question.questionType?.type;
+
+          if (type === 'multiple-option' || type === 'scale-normal') {
+            // An option question saved without its options has none to offer, rather than failing the whole survey.
+            const tokens = question.questionOptions?.split('|') ?? [];
             question.options = tokens.map((token) => {
               const value: IMulitpleOptions<string> = {
                 value: token
@@ -70,7 +73,12 @@ export class InitialSurveyComponent implements OnInit {
       }),
       tap((questions) => {
         questions.forEach((question) => {
-          const questionType = question.questionType.type;
+          // A control is keyed by its question's guid, so a question without one cannot be answered.
+          if (question.guid === undefined) {
+            return;
+          }
+
+          const questionType = question.questionType?.type;
           if (questionType === 'multiple-option') {
             this.dataGroup.addControl(question.guid, this.fb.control([]));
           } else {

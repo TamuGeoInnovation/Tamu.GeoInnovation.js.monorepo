@@ -56,7 +56,10 @@ export function compareSeasons(
   earlier: Array<{ season: ComparableSeason; made: Array<string> }>
 ): { series: Array<ChartSeries>; anchor: Date | null } {
   const anchor = selected?.anchor ?? null;
-  const drawn = earlier.filter((e) => e.season.anchor && e.made.length > 0);
+  const drawn = earlier.filter(
+    (e): e is { season: ComparableSeason & { anchor: Date }; made: Array<string> } =>
+      e.season.anchor !== null && e.made.length > 0
+  );
 
   if (!selected || !anchor || drawn.length === 0 || lines.length === 0) {
     return { series: lines, anchor: null };

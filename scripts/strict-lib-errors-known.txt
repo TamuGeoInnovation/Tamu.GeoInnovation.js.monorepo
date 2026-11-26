@@ -9,6 +9,7 @@
 856 libs/ts/events/ngx/tsconfig.lib.json
 809 libs/aggiemap/ngx/discover/tsconfig.lib.json
 702 libs/aggiemap/ngx/common/tsconfig.lib.json
+424 libs/gisday/platform/ngx/core/tsconfig.lib.json # #3627: 5 in its own files, from other libraries' types (3 placesShownOn's in gisday-common, 2 TypeRecord's in gisday-platform-ngx-common); the rest are in the libraries it imports, 110 of them gisday-platform-ngx-common's own until #3611 merges
 # gisday-competitions-ngx-core went strict with #3614. 4 are in its own files, from gisday-competitions-ngx-data-access's
 # SubmissionService params, which #3594 fixes; the rest are in what it imports: gisday-platform-ngx-common 110, ui-kits-ngx-search 51,
 # ui-kits-ngx-layout 45 (#3601), ui-kits-ngx-forms 45 (#3595), gisday-competitions-ngx-common 15 (#3610) and smaller ones.
@@ -21,12 +22,19 @@
 # its settings: common-utils-geometry-esri 9, common-ngx-ui-notification 4, ui-kits-ngx-layout-modal 4 (among its 87),
 # common-utils-geometry-generic 2, common-utils-routing 1.
 9 libs/ui-kits/ngx/search/tsconfig.lib.json
+# gisday-competitions-ngx-common went strict with #3610, with none in its own files: all 71 are in libraries it imports,
+# 41 in ui-kits-ngx-forms (#3595 fixes them) and 6 in gisday-competitions-ngx-data-access (#3594 fixes them).
+20 libs/gisday/competitions/ngx/common/tsconfig.lib.json
 # ui-kits-ngx-forms went strict with #3495: all 45 are in ui-kits-ngx-layout, which it imports, none in its own files.
-2 libs/ui-kits/ngx/forms/tsconfig.lib.json
+45 libs/ui-kits/ngx/forms/tsconfig.lib.json
+# ui-kits-ngx-forms went strict with #3495: all 45 are in ui-kits-ngx-layout, which it imports, none in its own files.
 # ui-kits-ngx-layout went strict with #3601, with none in its own files: the 14 are in common-ngx-settings (5),
 # ui-kits-ngx-layout-modal (4), ui-kits-ngx-interactions-clipboard (3) and ui-kits-ngx-layout-code (2).
 14 libs/ui-kits/ngx/layout/tsconfig.lib.json
 9 libs/mailroom/ngx/tsconfig.lib.json
+# common-utils-geometry-generic went strict with #3618, with none in its own files: all 9 are in common-utils-geometry-esri, which
+# waits for home's a22 (#3477, #3478).
+9 libs/common/utils/geometry/generic/tsconfig.lib.json
 # common-ngx-ui-notification went strict with #3620, with none in its own files: all 4 are in ui-kits-ngx-layout-modal.
 4 libs/common/ngx/ui/notification/tsconfig.lib.json
 8 libs/gisday/competitions/ngx/data-access/tsconfig.lib.json
