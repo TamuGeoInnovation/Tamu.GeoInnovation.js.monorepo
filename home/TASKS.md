@@ -1,5 +1,22 @@
 # Home machine: current tasks
 
+## Batch g123 (workspace: #3707, `tidy.sh` prunes finished branches, on every check; 26 November 2026, from `work (gisday)`) (Medium) - **after g122**
+
+Held until PR 3639 merges. The maintainer's rule: no new work until the GIS Day pull requests are in.
+
+#3707 says what to build. From today's cleanup, three more things it must do:
+
+1. **Remove a finished branch's worktree before the branch.** Git won't delete a branch a worktree has checked out. That's why the maintainer's first command on home failed on most of them, and needed a second command that removed each worktree, then its branch.
+2. **Treat a worktree whose only untracked files are `check.out`, `.pr-body.md`, a `check-tamu-js-*.log` or a scratch `.b<n>/` folder as clean.** Your g122 report says whether the `.b4x/` folders are yours; if not, leave that last one out.
+3. **Work when the main checkout is old:** `tidy.sh` must not assume the checkout it is run from is current.
+
+Red first in `scripts/tidy.test.sh` for each. Branch `fix/3707-tidy-prunes-branches`. **No `-pr` copy:** draft `.pr-body.md` from the template as the last commit, and I remove it on the same branch when I open the pull request. Report `reports/<date>-g123.md`.
+
+## Batch g124 (workspace: #3708, one health report for every machine; after g123) (Medium)
+
+Held until PR 3639 merges.
+
+#3708 and its comment list every measure and threshold: disk, Docker, branches, the git checkout state, and the eleven added on 26 November. Build `tools/machine-health.sh` and `tools/health.sh` on `work-mailbox`, beside `roster.sh` and `queued.sh`, with tests, red first. Then run it on home and commit `home/HEALTH.json`. The page and the `DIRECTOR.md` rules come after, from me, once the table works. Report `reports/<date>-g124.md`.
 ## g122: the other cleaner is the maintainer (26 November 2026, from `work (gisday)`)
 
 - **That was us.** The maintainer is running two commands from `work (gisday)` in a PowerShell window on home's main checkout:
