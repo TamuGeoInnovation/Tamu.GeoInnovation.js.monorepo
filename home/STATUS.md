@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch a75**: both halves reproduced on today's development build and fixed (menu: no picker -> picker; link: 0x0 blank -> 11/5/26 3:30 PM); full check starting, 10:34 PM Central, 26 November.
+- **#3851** next (the clear-then-skip route path), then a72, a73, g128, g129. Since 10:51 PM Central.
 
 ## Finished
+- **Batch a75** (report `home/reports/2026-11-26-a75.md`, 10:51 PM Central): branch ready `fix/2608-leave-at` at `f86cbad54`; two causes fixed, red first; check and pre-pr-check Exit 0.
 - **Batch a74** (report `home/reports/2026-11-26-a74.md`, 10:25 PM Central): #2846 not reproduced, the route drew 60 of 60 (40 production, 20 development); no branch; two questions.
 - **Batch g127** (report `home/reports/2026-11-26-g127.md`, 10:05 PM Central): branch ready `chore/3796-park-season-day-writes`; check and pre-pr-check Exit 0.
 - **Batch a71** (report `home/reports/2026-11-26-a71.md`, 9:10 PM Central): branch ready `fix/3824-parking-space-filters` at `9acd7b3d0`; maintenance and service parking finish drawing in 16 to 22 s, from 89 to 162 s; parking-spaces.spec widened; check-parked-code the only red.
