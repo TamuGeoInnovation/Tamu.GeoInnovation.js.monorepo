@@ -64,6 +64,7 @@ export class SpeakerProvider extends SeasonScopedProvider<Speaker> {
    * copied into a season is listed in it with or without a session there, and could not be told apart (#439). Only the
    * route behind `update:speakers` asks for them, because they include sessions hidden from the public schedule. A
    * speaker belongs to one season, so these are that season's. Added here, not to the lookup table, which other queries share.
+   * Each session comes with its tags, so the list can be filtered by them (#440).
    */
   public async getSpeakersForSeason(seasonGuid: string, withSessions = false) {
     try {
@@ -73,7 +74,7 @@ export class SpeakerProvider extends SeasonScopedProvider<Speaker> {
             guid: seasonGuid
           }
         },
-        relations: withSessions ? { ...EntityRelationsLUT.speaker, events: true } : EntityRelationsLUT.speaker,
+        relations: withSessions ? { ...EntityRelationsLUT.speaker, events: { tags: true } } : EntityRelationsLUT.speaker,
         order: {
           lastName: 'ASC',
           firstName: 'ASC'

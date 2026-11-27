@@ -57,7 +57,7 @@ export const NscParkingColdLayerSources: LayerSource[] = [
         field: 'GIS.TS.ParkingLots.Name',
         collapsed: true
       },
-      notes: {
+      description: {
         field: 'GIS.TS.Lot_Notes.NewStudentConfN',
         collapsed: true
       }

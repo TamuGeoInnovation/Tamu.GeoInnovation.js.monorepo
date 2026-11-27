@@ -4,21 +4,29 @@
 this work in 2026 with the workspace "several major versions behind on everything". That is no longer true, and this
 page is where the current position lives so nobody has to reconstruct it from a two-year-old issue body.
 
-Measured **26 November 2026**. Refresh it with the command under [Keeping this current](#keeping-this-current).
+Measured **26 November 2026, 5:55 PM Central**, after the day's push ([#3763](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3763)). Refresh it with the command under [Keeping this current](#keeping-this-current).
 
 ## Where we are
 
 | | #1218, when it opened | Today | Latest | Gap |
 | --- | --- | --- | --- | --- |
-| Angular | 15.2.9 | **22.2.6** | 22.3.0 | one minor, **blocked** — see step 1 |
+| Angular | 15.2.9 | **22.3.0** | 22.3.0 | none |
 | NestJS | 9.4.3 | **12.6.3** | 12.6.3 | none |
-| Nx | 16.0.0 | **24.0.6** | 24.0.7 | one patch, and it is the gate |
+| Nx | 16.0.0 | **24.0.7** | 24.0.7 | none |
 | TypeScript | 4.9.5 | **6.0.3** | 7.0.2 | **blocked** - see step 6 |
 | ArcGIS | 4.23, CDN + `esri-loader` | **`@arcgis/core` 5.2.9**, with amCharts 5.20.8 | 5.2.9 | none; moves by hand with amCharts (#3757) |
 | Node | — | **24.22.3** | — | matched everywhere (#3591) |
 
-**66 direct dependencies are behind, 9 of them by a major.** That is the whole remaining gap, and none of it is the
-kind of debt #1218 described.
+**102 of the 105 direct dependencies are at their latest release.** The other three are behind on purpose:
+
+| Package | Have | Latest | Why it stays |
+| --- | --- | --- | --- |
+| `@amcharts/amcharts5` | 5.20.8 | 5.24.1 | `@arcgis/core` 5.2.9 requires `~5.20.8`; a newer one would install a second copy. It moves with ArcGIS |
+| `@types/node` | 24.19.2 | 26.6.11 | It describes the Node we run, 24.22.3 (step 4) |
+| `typescript` | 6.0.3 | 7.0.2 | Angular 22.3 and Nx 24.0.7 do not accept 7 yet (step 5, [#1918](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1918)) |
+
+The push on 26 November took everything else to its latest as of that day, under a one-time exception to the seven-day
+rule ([#3763](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3763)), which ended when it was done; every later upgrade waits the seven days again.
 
 ## How we got here
 
@@ -94,7 +102,7 @@ the maintainer's decision of 26 November. `nx` 24.0.7 was published 25 November 
 for eight days, accepted deliberately. Eight packages: `nx`, `@nx/angular`, `@nx/eslint`, `@nx/eslint-plugin`,
 `@nx/js`, `@nx/vitest`, `@nx/webpack`, `@nx/workspace`.
 
-### 2. The Angular group to 22.3.0 — after step 1
+### 2. The Angular group to 22.3.0 — **done** 26 November 2026 ([PR 3758](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3758))
 
 Retry Dependabot's `angular` group once Nx is in. Do not reopen the old pull request; Dependabot rebuilds the branch
 itself. 18 packages, no major among them.
@@ -133,7 +141,7 @@ commits behind, retired rather than merged.
 | `@jimp/*` (4 packages) | 1.6.1 | 2.2.0 | **Done** ([#3755](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3755)), under the seven-day exception of [#3763](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3763). Output compared in [`docs/screenshots/jimp-2/`](../screenshots/jimp-2/README.md): JPEGs nearly the same, kept at full-resolution colour; transparent PNGs larger |
 | `@analogjs/vite-plugin-angular`, `@analogjs/vitest-angular` | 2.9.7 | 3.0.0 | **Done** ([#3767](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3767)), under the seven-day exception of [#3763](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3763). No configuration change; every project runs the same tests as before (2,513 in the 64 Angular projects, none skipped) |
 
-### 7. Everything else — 30 minors and patches
+### 7. Everything else — **done** 26 November 2026 (PRs 3768, 3769)
 
 Dependabot's weekly grouped pull requests handle these (`.github/dependabot.yml`, Mondays, 6 AM Central). They need no
 plan; they need merging.

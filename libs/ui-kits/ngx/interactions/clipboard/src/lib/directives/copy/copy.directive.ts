@@ -18,7 +18,7 @@ export class ClipboardCopyDirective implements OnChanges, OnDestroy {
   /**
    * Text string that will be copied to clipboard.
    */
-  public readonly text = input<string>(undefined);
+  public readonly text = input<string | undefined>(undefined);
 
   public readonly copying = output<Observable<boolean>>();
 
@@ -64,7 +64,8 @@ export class ClipboardCopyDirective implements OnChanges, OnDestroy {
   private _initializeHandler() {
     this._clipboard = new Clipboard(this.el.nativeElement, {
       text: () => {
-        return this.text();
+        // clipboard.js types this as a string; an unbound text is handed on unchanged, as before strict null checks.
+        return this.text() as string;
       }
     })
       .on('success', () => {

@@ -43,13 +43,19 @@ build() {
   )
 }
 
+# The grace period the next case runs under, as PARKED_GRACE_SECONDS; empty uses the check's own default of a day.
+# Setting it to 0 is how a case says "treat this disagreement as old" without backdating a tagger date: the fixtures
+# are built now, so every tag and row in them is seconds old.
+grace=""
+
 # Node where there is one (CI, and the pre-PR check's container), otherwise in Docker: these machines have no host
 # Node (CLAUDE.md). The container needs git too, which the node image carries.
 run_check() {
   if command -v node >/dev/null 2>&1 && command -v git >/dev/null 2>&1; then
-    (cd "$tmp/repo" && node scripts/check-parked-code.mjs 2>&1)
+    (cd "$tmp/repo" && PARKED_GRACE_SECONDS="$grace" node scripts/check-parked-code.mjs 2>&1)
   else
     MSYS_NO_PATHCONV=1 docker run --rm \
+      -e PARKED_GRACE_SECONDS="$grace" \
       -v "$(cd "$tmp/repo" && pwd -W 2>/dev/null || pwd):/t" -w /t \
       node:24.22.3 sh -c 'git config --global --add safe.directory /t; node scripts/check-parked-code.mjs' 2>&1
   fi
@@ -84,12 +90,37 @@ complete_row='| `parked/bus-api` | the bus timetable | its API is retired | the 
 expect "a complete entry passes" 0 "1 parked entry" \
   "$complete_row" "parked/bus-api:annotated"
 
-expect "a tag with no row fails" 1 "no row in" \
+# The two transient states of parking something (#3717). Tags are global and a row is not, so for a while one exists
+# without the other; failing then fails every branch in the repository for a reason unconnected to its change, which
+# is what happened for 33 minutes on 26 November 2026. Fresh, they warn and pass.
+grace=""
+expect "a tag whose row has not merged yet warns and passes" 0 "not failing yet" \
+  "$complete_row" "parked/bus-api:annotated" "parked/orphan:annotated"
+
+grace=""
+expect "a row whose tag has not been pushed yet warns and passes" 0 "not failing yet" \
+  "$complete_row
+| \`parked/not-pushed\` | something else | its service went | the service returns | [#1](https://github.com/x/y/issues/1) |" \
+  "parked/bus-api:annotated"
+
+# Aged past the grace period, both fail exactly as they did before it existed: a park left unrecorded, or a row
+# pointing at a tag that never appeared, is the drift the register exists to catch.
+grace=0
+expect "a tag with no row fails once it is past the grace period" 1 "no row in" \
   "$complete_row" "parked/bus-api:annotated" "parked/orphan:annotated"
 
 # A non-parked tag so the repository is not tagless: a tagless one is a shallow clone and skips (last case below).
-expect "a row whose tag is missing fails" 1 "does not exist" \
+grace=0
+expect "a row whose tag is missing fails once it is past the grace period" 1 "does not exist" \
   "$complete_row" "dev-2026-11-26:annotated"
+
+# The grace period must never be turned off by an empty value being passed through: Number('') is 0, which would
+# make every caller that forwards an unset variable fail on a disagreement seconds old.
+grace=""
+expect "an empty grace value uses the default rather than zero" 0 "not failing yet" \
+  "$complete_row" "parked/bus-api:annotated" "parked/orphan:annotated"
+
+grace=""
 
 expect "a row with no issue fails" 1 "no issue in its last column" \
   '| `parked/bus-api` | the bus timetable | its API is retired | the bus data is available again | none yet |' \

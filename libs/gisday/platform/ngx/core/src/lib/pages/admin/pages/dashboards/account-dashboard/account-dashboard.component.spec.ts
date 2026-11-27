@@ -1,4 +1,5 @@
 import type { Mock } from 'vitest';
+import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
@@ -165,5 +166,18 @@ describe('AccountDashboardComponent', () => {
     await settle(fixture);
 
     expect((fixture.nativeElement as HTMLElement).textContent).toContain('The accounts could not be read');
+  });
+
+  // Auth0 limits how often its accounts can be read; the API says so with 503 and how long to wait (#3747).
+  it('says the account counts are temporarily unavailable, and for how long, when the sign-in service is busy', async () => {
+    const busy = new HttpErrorResponse({ status: 503, headers: new HttpHeaders({ 'Retry-After': '12' }) });
+    users.getDashboardForSeason = vi.fn(() => throwError(() => busy));
+    const fixture = open();
+    await settle(fixture);
+    const text = (fixture.nativeElement as HTMLElement).textContent.replace(/\s+/g, ' ');
+
+    expect(text).toContain('The account counts are temporarily unavailable');
+    expect(text).toContain('Try again in 12 seconds');
+    expect(text).not.toContain('The accounts could not be read');
   });
 });

@@ -9,13 +9,28 @@ import {
   Post,
   Query,
   Request,
+  Res,
   UseGuards
 } from '@nestjs/common';
+import type { Response } from 'express';
 
 import { PermissionsGuard, Permissions, JwtGuard } from '@tamu-gisc/common/nest/auth';
 
 import { type GisDayProfileUpdate, UserInfoProvider } from './user-info.provider';
-import { AccountDashboardProvider } from './account-dashboard.provider';
+import { AccountDashboardProvider, AccountsRateLimitedException } from './account-dashboard.provider';
+
+/** Sends a rate limit's wait as Retry-After (#3747): Nest's exceptions carry a status and a body, but no headers. */
+async function withRetryAfter<T>(res: Response, read: () => Promise<T>): Promise<T> {
+  try {
+    return await read();
+  } catch (err) {
+    if (err instanceof AccountsRateLimitedException) {
+      res.setHeader('Retry-After', String(err.retryAfter));
+    }
+
+    throw err;
+  }
+}
 
 @Controller('users')
 export class UserInfoController {
@@ -28,16 +43,20 @@ export class UserInfoController {
   @Permissions(['read:users'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Get('dashboard/season/:guid')
-  public async getDashboardForSeason(@Param('guid') guid: string) {
-    return this.dashboard.getSeason(guid);
+  public async getDashboardForSeason(@Param('guid') guid: string, @Res({ passthrough: true }) res: Response) {
+    return withRetryAfter(res, () => this.dashboard.getSeason(guid));
   }
 
   /** The people of one of its rows, by the row's key: names and emails leave the API only one row at a time. */
   @Permissions(['read:users'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Get('dashboard/season/:guid/row/:key')
-  public async getDashboardRow(@Param('guid') guid: string, @Param('key') key: string) {
-    return this.dashboard.getRow(guid, key);
+  public async getDashboardRow(
+    @Param('guid') guid: string,
+    @Param('key') key: string,
+    @Res({ passthrough: true }) res: Response
+  ) {
+    return withRetryAfter(res, () => this.dashboard.getRow(guid, key));
   }
 
   @UseGuards(JwtGuard)
