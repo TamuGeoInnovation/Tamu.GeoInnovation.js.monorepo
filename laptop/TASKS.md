@@ -1,6 +1,16 @@
 # Laptop: current tasks
 
 
+## Batch g52 replaced: fix #3862 instead of the form-side hunt (26 November 2026, 10:55 PM Central, from `work (gisday)`) (Medium) - **now**
+
+**The form-side hunt (g52) is withdrawn.** Home's g238 found that every form and caller already sends the whole record, so there's nothing for it to find. Instead, fix what home found in the API: **#3862**. Eight update routes wipe any field left out, and `PATCH seasons/:guid` with `active: true` and no `days` leaves no active season. The routes and lines are in `home/reports/2026-11-26-g238.md`.
+
+**The rules:** announce every step before and after; reread `TASKS.md` before each step; merge the latest `development` before any check; leave `libs/gisday/competitions/data-api/src/lib/export/` and `apps/gisday-nest/src/app/app.module.ts` alone until #3788 merges; never wait for a fix to merge, stack on it.
+
+1. Branch `fix/3862-partial-updates-keep-fields`.
+2. Each of the nine updates only what it's sent: merge the body over the stored record, as the shared base update already does. Use that base where it fits, rather than a second way. The season route saves its own change even when `days` is missing.
+3. A round-trip spec per route, red first: create with every field set, update one field, read every field back. Change the events spec that codifies the wipe.
+4. `no-visible-change` (no page sends part of a record). `scripts/check-in-volume.sh <branch> gisday-platform-data-api,gisday-competitions-data-api,gisday-nest`. `.pr-body.md` with `Closes #3862`. Report `reports/<date>-g52.md`.
 ## Batch g51 withdrawn for now: bugs first (26 November 2026, 10:25 PM Central, from `work (gisday)`)
 
 The maintainer wants a first pass through bugs only, not enhancements or cleanup. **g51 (#3826) is withdrawn for now** and comes back after the bug pass. g50 (#3827) and g52 (the form-side bug hunt) stay.
