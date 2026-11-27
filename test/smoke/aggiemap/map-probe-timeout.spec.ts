@@ -83,12 +83,16 @@ test.describe('a drawing timeout names what was unmet (#3369)', () => {
   test('a map ready but still drawing says so', async ({ page }) => {
     await pageWith(page, { ready: true, drawing: true, layers: [] });
 
-    expect(await timeoutMessage(waitForMapDrawn(page, 'never finished', { timeout: 3_000 }))).toContain('ready but still drawing');
+    expect(await timeoutMessage(waitForMapDrawn(page, 'never finished', { timeout: 3_000 }))).toContain(
+      'ready but still drawing'
+    );
   });
 
   test('a map drawn finishes as before', async ({ page }) => {
     await pageWith(page, { ready: true, drawing: false, layers: [LAYER('a')] });
 
-    expect(await waitForMapDrawn(page, 'never finished', { timeout: 3_000, until: (layers) => layers.length === 1 })).toHaveLength(1);
+    expect(
+      await waitForMapDrawn(page, 'never finished', { timeout: 3_000, until: (layers) => layers.length === 1 })
+    ).toHaveLength(1);
   });
 });

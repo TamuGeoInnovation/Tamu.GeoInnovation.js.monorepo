@@ -67,6 +67,11 @@ export interface MapDrawnOptions {
  * polled each second. Ten specs wrote this by hand, with five timeouts and three ideas of "finished"
  * (docs/testing-maps.md says which signal answers which question). `message` says which map never finished, as each
  * spec's did. Returns the layers `until` accepted, or none when it is not given.
+ *
+ * A timeout also says which condition was unmet at the last reading (#3369): no probe on the page, not ready, ready but
+ * still drawing, or drawn with layers `until` did not accept, listed. It said only the spec's message, so a slow draw
+ * read as a broken map: Muster failed three times as "never finished drawing both layers" with both layers drawn in its
+ * screenshot, and its order assertion had never run. What passes and fails is unchanged; only what a failure says.
  */
 export async function waitForMapDrawn(
   page: Page,
@@ -74,39 +79,82 @@ export async function waitForMapDrawn(
   { timeout = 90_000, ready = true, until }: MapDrawnOptions = {}
 ): Promise<ProbeLayer[]> {
   let accepted: ProbeLayer[] = [];
+  let last = 'the page was never read';
 
-  await expect
-    .poll(
-      async () => {
-        const layers = await page.evaluate(
-          async ({ name, ready, withLayers }) => {
-            const probe = (
-              window as unknown as Record<
-                string,
-                { ready?: boolean; drawing?: boolean; snapshot: () => Promise<{ layers: ProbeLayer[] }> } | undefined
-              >
-            )[name];
+  try {
+    await expect
+      .poll(
+        async () => {
+          const reading = await page.evaluate(
+            async ({ name, ready, withLayers }) => {
+              const probe = (
+                window as unknown as Record<
+                  string,
+                  { ready?: boolean; drawing?: boolean; snapshot: () => Promise<{ layers: ProbeLayer[] }> } | undefined
+                >
+              )[name];
 
-            if (probe?.drawing !== false || (ready && probe.ready !== true)) {
-              return null;
-            }
+              if (!probe) {
+                return { unmet: 'absent' as const };
+              }
 
-            return withLayers ? (await probe.snapshot()).layers : [];
-          },
-          { name: PROBE_GLOBAL, ready, withLayers: until !== undefined }
-        );
+              if (ready && probe.ready !== true) {
+                return { unmet: 'not ready' as const };
+              }
 
-        if (layers === null || (until !== undefined && !until(layers))) {
-          return false;
-        }
+              if (probe.drawing !== false) {
+                return { unmet: 'drawing' as const };
+              }
 
-        accepted = layers;
+              return { layers: withLayers ? (await probe.snapshot()).layers : [] };
+            },
+            { name: PROBE_GLOBAL, ready, withLayers: until !== undefined }
+          );
 
-        return true;
-      },
-      { message, timeout, intervals: [1_000] }
-    )
-    .toBe(true);
+          if ('unmet' in reading) {
+            last = UNMET[reading.unmet];
+
+            return false;
+          }
+
+          if (until !== undefined && !until(reading.layers)) {
+            last = `the map had finished drawing, but its layers were not the ones asked for: ${describeLayers(reading.layers)}`;
+
+            return false;
+          }
+
+          accepted = reading.layers;
+
+          return true;
+        },
+        { message, timeout, intervals: [1_000] }
+      )
+      .toBe(true);
+  } catch (error) {
+    if (error instanceof Error) {
+      error.message = `${error.message}\n\nAt the last reading, ${last}.`;
+    }
+
+    throw error;
+  }
 
   return accepted;
+}
+
+/** What each unmet condition means, for the timeout's message. */
+const UNMET = {
+  absent: `the page had no map probe (window.${PROBE_GLOBAL}): the build it serves is older than the probe, or it is not a map page`,
+  'not ready': 'the map probe was not ready: a layer was still loading',
+  drawing: 'the map probe was ready but still drawing'
+} as const;
+
+/** The layers `until` was offered, so a timeout shows whether they were even there. */
+function describeLayers(layers: ProbeLayer[]): string {
+  if (layers.length === 0) {
+    return 'none';
+  }
+
+  return `${layers.length} (${layers
+    .map((l) => `${l.id}${l.visible ? '' : ' hidden'}${l.loaded ? '' : ' not loaded'}${l.error ? ` error: ${l.error}` : ''}`)
+    .join(', ')})`;
 }
