@@ -49,7 +49,8 @@ import { CentralDatePipe } from '@tamu-gisc/gisday/platform/ngx/common';
  * whether its final presentation or poster is uploaded (#3017), likewise.
  */
 export type SubmissionRow = Partial<SubmissionWithSubmitter> & {
-  reviewStatus: SUBMISSION_REVIEW_STATUS;
+  // As the pipe gives it: null only for no submission at all, which never becomes a row (#3593).
+  reviewStatus: SUBMISSION_REVIEW_STATUS | null;
   finalFile: 'Uploaded' | 'Missing';
 };
 

@@ -49,7 +49,8 @@ export class EsriMapComponent implements OnInit, OnDestroy, MapHost {
   private readonly mapService = inject(EsriMapService);
   private readonly injector = inject(Injector);
 
-  public readonly config = input<MapConfig>(undefined);
+  // Checked in ngOnInit, which refuses a map without one.
+  public readonly config = input<MapConfig | undefined>(undefined);
 
   /** Whether the map has zoom buttons, at the top of its top-left corner. */
   public readonly zoom = input(true);
@@ -117,9 +118,14 @@ export class EsriMapComponent implements OnInit, OnDestroy, MapHost {
       import('@arcgis/map-components/components/arcgis-compass')
     ]);
 
-    await this.draw(() => this.scene.set(true), () => this.globe(), properties);
+    await this.draw(
+      () => this.scene.set(true),
+      () => this.globe(),
+      properties
+    );
 
-    return this.globe().nativeElement.view;
+    // The draw just awaited has rendered the scene element.
+    return this.globe()!.nativeElement.view;
   }
 
   private async open(config: MapConfig): Promise<void> {
@@ -130,9 +136,14 @@ export class EsriMapComponent implements OnInit, OnDestroy, MapHost {
       import('@arcgis/map-components/components/arcgis-track')
     ]);
 
-    await this.draw(() => this.map.set(map), () => this.flat(), config.view.properties);
+    await this.draw(
+      () => this.map.set(map),
+      () => this.flat(),
+      config.view.properties
+    );
 
-    this.mapService.useView(this.flat().nativeElement.view, this);
+    // The draw just awaited has rendered the map element.
+    this.mapService.useView(this.flat()!.nativeElement.view, this);
   }
 
   /**
@@ -149,11 +160,14 @@ export class EsriMapComponent implements OnInit, OnDestroy, MapHost {
     return new Promise((resolve) => {
       afterNextRender(
         () => {
-          const el = element().nativeElement;
+          // Read after the render that `change` asked for, which draws the element; as before strict null checks.
+          const el = element()!.nativeElement;
 
           (el.view as esri.MapView | esri.SceneView).set(
             Object.fromEntries(
-              Object.entries(properties).filter(([key, value]) => value !== undefined && !IGNORED_VIEW_PROPERTIES.includes(key))
+              Object.entries(properties).filter(
+                ([key, value]) => value !== undefined && !IGNORED_VIEW_PROPERTIES.includes(key)
+              )
             )
           );
 

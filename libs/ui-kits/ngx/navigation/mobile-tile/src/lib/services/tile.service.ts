@@ -20,7 +20,9 @@ export class TileService {
    *
    * Consumed by other components to render the sub-menu.
    */
-  public activeSubMenu: BehaviorSubject<IActiveSubmenu> = new BehaviorSubject(undefined);
+  public activeSubMenu: BehaviorSubject<IActiveSubmenu | undefined> = new BehaviorSubject<IActiveSubmenu | undefined>(
+    undefined
+  );
 
   /**
    * Toggle the tile navigation state. If a state value is provided, it will

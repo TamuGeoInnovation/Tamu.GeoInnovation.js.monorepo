@@ -25,9 +25,9 @@ import { TileNavigationComponent } from '../tile-navigation/tile-navigation.comp
 export class TileComponent implements AfterContentInit, OnDestroy {
   private service = inject(TileService);
 
-  private _destroy$: Subject<boolean> = new Subject();
+  private _destroy$: Subject<void> = new Subject();
 
-  public readonly title = contentChild(TileTitleComponent);
+  public readonly title = contentChild.required(TileTitleComponent);
 
   // A tile can redirect to open a submenu. Need a reference to the submenu template to render it.
   public readonly submenu = contentChild(TileSubmenuDirective);
@@ -71,7 +71,7 @@ export class TileComponent implements AfterContentInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this._destroy$.next(null);
+    this._destroy$.next();
     this._destroy$.complete();
   }
 }

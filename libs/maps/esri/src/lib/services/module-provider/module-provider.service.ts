@@ -114,6 +114,7 @@ const dictionary = {
   Color: () => import('@arcgis/core/Color.js'),
   MapImageLayer: () => import('@arcgis/core/layers/MapImageLayer.js'),
   route: () => import('@arcgis/core/rest/route.js'),
+  find: () => import('@arcgis/core/rest/find.js'),
   networkService: () => import('@arcgis/core/rest/networkService.js'),
   Stop: () => import('@arcgis/core/rest/support/Stop.js'),
   Collection: () => import('@arcgis/core/core/Collection.js'),

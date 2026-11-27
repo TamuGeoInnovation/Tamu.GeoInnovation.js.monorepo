@@ -9,7 +9,7 @@ import { marked } from 'marked';
  */
 @Pipe({ name: 'markdownParse' })
 export class MarkdownParsePipe implements PipeTransform {
-  public transform(value: string): string {
+  public transform(value: string): string | null {
     if (value) {
       // Synchronous, so a template gets the HTML itself: marked returns a promise only when asked to.
       return marked(value, { async: false });
