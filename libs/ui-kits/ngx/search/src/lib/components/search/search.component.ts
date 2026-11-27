@@ -274,6 +274,10 @@ export class SearchComponent implements OnInit, OnDestroy {
                 value: value
               }
             });
+
+            // A coordinate is placed, not searched for. Its first part ("30.6,") was searched while it was being typed,
+            // and that search's "No results found" stayed under the box (#3615).
+            this.searchService.clear();
           } else {
             // Search source objects to submit search query to. Passing the full source objects
             // (rather than string ids looked up against SearchService's own global source list)
