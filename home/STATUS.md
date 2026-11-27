@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch a69**: started batch a69 (#3671) while a67's check runs; checking every event parking definition for the same key, 7:19 PM Central, 26 November.
+- **Batch a69**: pattern found (motorcycle-parking and others also map keys the popup never reads; reported, not fixed); NSC field confirmed populated (34/34); writing the check, 7:21 PM Central, 26 November.
 
 ## Finished
 - **Batch g126** (report `home/reports/2026-11-26-g126.md`, 6:55 PM Central): branch ready fix/3680 (`304a9c7b3`) and fix/3747 (`247a91528`); red first; checks pass but for check-parked-code, which development fails too.
