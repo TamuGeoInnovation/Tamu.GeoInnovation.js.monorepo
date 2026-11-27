@@ -153,9 +153,9 @@ if ($app -and $siteClientId -and $app.client_id -ne $siteClientId) {
 
 # 1. The API ----------------------------------------------------------------------------------------
 $scopes = @($Permissions | ForEach-Object { @{ value = $_; description = $_ } })
-# allow_skipping_userconsent: a first-party application need not ask a user to consent to this API (#3136). Auth0 still
+# skip_consent_for_verifiable_first_party_clients: a first-party application need not ask a user to consent to this API (#3136). Auth0 still
 # asks on a page served from localhost or 127.0.0.1, which is why the site is also opened at gisday.local.test.
-$apiSettings = @{ name = 'GIS Day API (development)'; scopes = $scopes; enforce_policies = $true; token_dialect = 'access_token_authz'; allow_offline_access = $true; allow_skipping_userconsent = $true }
+$apiSettings = @{ name = 'GIS Day API (development)'; scopes = $scopes; enforce_policies = $true; token_dialect = 'access_token_authz'; allow_offline_access = $true; skip_consent_for_verifiable_first_party_clients = $true }
 if ($api) {
   $null = Api Patch "resource-servers/$($api.id)" $apiSettings
   Say "API $Audience updated."
@@ -280,7 +280,7 @@ Check 'Allowed Web Origins' $appNow.web_origins $LocalSites
 Check 'Allowed Origins (CORS)' $appNow.allowed_origins $LocalSites
 $apiNow = Api Get "resource-servers/$($api.id)" $null
 Say "  API $($apiNow.identifier):"
-Check 'allow_skipping_userconsent' $apiNow.allow_skipping_userconsent $true
+Check 'skip_consent_for_verifiable_first_party_clients' $apiNow.skip_consent_for_verifiable_first_party_clients $true
 Check 'enforce_policies (role-based access)' $apiNow.enforce_policies $true
 Check 'token_dialect' $apiNow.token_dialect 'access_token_authz'
 $have = (@($apiNow.scopes | ForEach-Object { $_.value }) | Sort-Object -Unique) -join ','
