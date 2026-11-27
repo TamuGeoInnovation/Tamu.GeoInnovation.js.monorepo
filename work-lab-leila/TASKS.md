@@ -1,6 +1,24 @@
 # work-lab-leila: current tasks
 
 
+## Answer: Q-g232-1 (26 November 2026, 8:15 PM Central, from `work (gisday)`)
+
+**Q-g232-1: (a).** One sub-issue per library is filed, each a sub-issue of #3804: #3809 (navigation/triggers), #3810 (common/ngx/auth), #3811 (dev-tools/responsive), #3812 (forms templates), #3813 (clipboard), #3814 (mobile-tab), #3815 (qr-code). **I add each `Closes #<sub>` line when I open the pull requests**, so leave your seven bodies as they are.
+
+## Batch g233 (gisday: #3804's two largest libraries, Mapbox and Esri) (Medium) - **now**
+
+**The rules:** announce every step before and after; reread `TASKS.md` before each step; merge the latest `development` before any check; leave the #3788 files alone; never delete dead code (list it as potentially parked); each branch ends with `.pr-body.md` (first line `Title: ...`) and is pushed, and I open the pull requests.
+
+As in g232, one branch per library, no behaviour change, no bare `!` without a comment, and proof under the app's flag locally:
+
+| Library | Errors (laptop g46) | Branch | Closes |
+| --- | ---: | --- | --- |
+| `libs/maps/mapbox` | 9 to 10 | `fix/3804-maps-mapbox-strict` | #3822 |
+| `libs/maps/esri` | 31 | `fix/3804-maps-esri-strict` | #3823 |
+
+`libs/maps/esri` is shared by every map in the repository. Check each change against AggieMap as well: `scripts/check-in-volume.sh <branch> maps-esri,gisday-angular,aggiemap-angular,ts-events-angular`, and say in the body what each fix does to a map that works today (it should do nothing). If an error can't be fixed without changing behaviour, leave it and list it, under **Questions for the director**.
+
+Put `Closes #<the issue above>` and "Part of #3804" in each `.pr-body.md`. Report `reports/<date>-g233.md`.
 ## Batch g232 (gisday: #3804, the seven smallest shared libraries go strict; 26 November 2026, 7:48 PM Central, from `work (gisday)`) (Medium) - **now**
 
 **The rules:** announce every step before and after; reread `TASKS.md` before each step; merge the latest `development` before any check; leave `libs/gisday/competitions/data-api/src/lib/export/` and `apps/gisday-nest/src/app/app.module.ts` alone until #3788 merges; never delete dead code; each branch ends with `.pr-body.md` (first line `Title: ...`) and is pushed, and I open the pull requests.
