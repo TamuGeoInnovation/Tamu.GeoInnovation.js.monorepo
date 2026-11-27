@@ -131,7 +131,6 @@ SQL
     need "$LOCAL_DIR/gisday-api.local.env"
     need "$LOCAL_DIR/local-db.env"
     network
-    docker inspect gisday-redis >/dev/null 2>&1 || docker run -d --name gisday-redis --network "$NET" redis:7-alpine
     docker run --rm -m 8g -v "$REPO:/w" -v tamu-js-dev-nm:/w/node_modules -w /w -e NX_DAEMON=false \
       "$NODE_IMAGE" node node_modules/nx/dist/bin/nx.js build gisday-nest
     # Later --env-file values win, so the dev tenant's management credentials (#1623) override the
