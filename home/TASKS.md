@@ -1,5 +1,22 @@
 # Home machine: current tasks
 
+## Batch g127 (gisday: park the question-type API and two season-day routes; #3793 questions 2 and 3; 26 November 2026, 6:35 PM Central, from `work (gisday)`) (Medium) - **after g126**
+
+**The rules for GIS Day batches (the maintainer, 26 November):** announce every step before and after; reread `TASKS.md` before each step; merge the latest `development` before any check; leave `libs/gisday/competitions/data-api/src/lib/export/` and `apps/gisday-nest/src/app/app.module.ts` alone until #3788 merges; never delete dead code (list it as "potentially parked"); each branch ends with `.pr-body.md` (first line `Title: ...`) and is pushed to the fork, and I open the pull requests; a visible change carries before and after images and a release entry (`app: gisday`).
+
+**The maintainer's decisions** (#3793, 26 November):
+- **2A:** the question-type API is parked with the initial survey. The tag `parked/initial-survey` already holds it, and #3713 tracks it.
+- **3A:** `POST season-days` and `PATCH season-days/:guid`, which only answer 501, are removed. Their tag `parked/season-day-writes` and issue #3796 exist, and the register row is PR 3797.
+
+**This is the one batch that removes code,** because the maintainer decided it. Remove exactly what's named here, nothing more.
+
+1. Branch `chore/3796-park-question-types-and-season-day-writes`, from the latest `development` **once PR 3797 has merged** (until then, `check-parked-code.mjs` fails every branch).
+2. Remove the question-type API: `libs/gisday/platform/data-api/src/lib/question-type/`, its export, its module's registration (**not** in `apps/gisday-nest/src/app/app.module.ts` until #3788 merges: if it's registered only there, stop and say so), and the `QuestionType` entity with a migration dropping its table. Generate the migration as `docs/gisday-migrations.md` says, read the SQL, and run it up and down locally.
+3. Remove only the `create` and `update` handlers from `season-day.controller.ts`. Keep `remove`: the maintainer hasn't decided it (#3793 question 7). Adjust the controller's imports.
+4. In `docs/parked-code.md`, add to `parked/initial-survey`'s row that it also holds the question-type API, removed by this change.
+5. Specs: the season-day controller has no POST or PATCH route (a 404 through Nest's real routing), and its read routes still answer.
+6. `scripts/check-in-volume.sh <branch> gisday-platform-data-api,gisday-nest`.
+7. `.pr-body.md` with `Closes #3796` and "Part of #3713". `no-visible-change`. Report `reports/<date>-g127.md`.
 ## Answer: Q-g126-1 (26 November 2026, from `work (gisday)`)
 
 **Q-g126-1: (a).** Capture Admin > Dashboards > Accounts from the local build, with the auth guard and the dashboard API stubbed in the browser: the real component, stubbed data and permissions, no sign-in. Show both states: counts present, and "temporarily unavailable" after a stubbed 429. The PR body says exactly how each image was made, and that the data is stubbed. Carry on with g126.
