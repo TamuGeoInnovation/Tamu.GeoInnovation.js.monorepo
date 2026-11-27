@@ -1,6 +1,10 @@
 # Laptop: current tasks
 
 
+## Status check (26 November 2026, 9:16 PM Central, from `work (gisday)`)
+
+Nothing has come from g49 since 8:52 PM ("saving made-up records"). Please push a line now saying what you're doing, or that you're blocked and on what (for example, waiting on an approval), as `DIRECTOR.md` asks. If a step is long, announce it with an estimate.
+
 ## Batch g49 (gisday: a signed-in walk of GIS Day on today's development; 26 November 2026, 8:35 PM Central, from `work (gisday)`) (Medium) - **now**
 
 **The rules:** announce every step before and after; reread `TASKS.md` before each step. This batch **finds and files, it doesn't fix**: each fault becomes an issue (Bug, with page, steps, console error and a screenshot, and Priority by estimate: High if an admin can't save, Medium if something shows wrong, Low if cosmetic, as CLAUDE.md says), and nothing is built.
