@@ -11,15 +11,25 @@ describe('LineChartComponent', () => {
   let disposed: number;
 
   const day = (d: string) => new Date(`${d}T00:00:00Z`);
-  const all: ChartSeries = { label: 'All events', points: [{ x: day('2026-11-01'), y: 2 }, { x: day('2026-11-03'), y: 7 }] };
+  const all: ChartSeries = {
+    label: 'All events',
+    points: [
+      { x: day('2026-11-01'), y: 2 },
+      { x: day('2026-11-03'), y: 7 }
+    ]
+  };
 
-  async function show(inputs: Partial<Record<'series' | 'bars' | 'bands' | 'steps' | 'unit' | 'label' | 'height' | 'interval', unknown>>) {
+  async function show(
+    inputs: Partial<Record<'series' | 'bars' | 'bands' | 'steps' | 'unit' | 'label' | 'height' | 'interval', unknown>>
+  ) {
     for (const [name, value] of Object.entries({ label: 'RSVPs over time', ...inputs })) {
       fixture.componentRef.setInput(name, value);
     }
 
     fixture.detectChanges();
     await fixture.whenStable();
+    // A drawing waits for the one before it to settle (#3829), a few microtasks after the change.
+    await new Promise((settled) => setTimeout(settled));
 
     return fixture.nativeElement as HTMLElement;
   }
@@ -55,7 +65,7 @@ describe('LineChartComponent', () => {
     expect(drawn[0].host).toBe(plot);
   });
 
-  it('gives each line its own colour, maroon first, and the columns the first line\'s unless they have one', async () => {
+  it("gives each line its own colour, maroon first, and the columns the first line's unless they have one", async () => {
     await show({
       series: [all, { label: 'Keynote', points: [{ x: day('2026-11-02'), y: 1 }] }],
       bars: { label: 'New that day', points: [{ x: day('2026-11-01'), y: 2 }] },
@@ -111,5 +121,70 @@ describe('rgbToHex()', () => {
     expect(rgbToHex('rgb(62, 62, 62)')).toBe('#3e3e3e');
     expect(rgbToHex('rgba(80, 0, 0, 0.5)')).toBe('#500000');
     expect(rgbToHex('maroon')).toBeNull();
+  });
+});
+
+/**
+ * amCharts allows one Root on an element, and logs "multiple Roots on the same DOM node" when a second is made before the
+ * first is disposed (#3829). Its drawer awaits the amCharts import before making the Root, so data arriving twice in
+ * quick succession resumed both draws together, and the second Root was made before the first draw had handed back what
+ * disposes of it. The admin dashboards showed it on about half their loads.
+ */
+describe('LineChartComponent, data arriving twice before a draw finishes', () => {
+  let live: Map<HTMLElement, number>;
+  let most: number;
+  let made: number;
+  let shown: number | undefined;
+
+  const day = (d: string) => new Date(`${d}T00:00:00Z`);
+  const first: ChartSeries = { label: 'All events', points: [{ x: day('2026-11-01'), y: 2 }] };
+  const second: ChartSeries = {
+    label: 'All events',
+    points: [
+      { x: day('2026-11-01'), y: 2 },
+      { x: day('2026-11-03'), y: 7 }
+    ]
+  };
+
+  /** As the real drawer does: the import first, then a Root on the element, then what disposes of it. */
+  const loaded = Promise.resolve();
+  async function drawLikeAmCharts(host: HTMLElement, options: LineChartOptions): Promise<() => void> {
+    await loaded;
+    shown = options.series[0].points.length;
+    live.set(host, (live.get(host) ?? 0) + 1);
+    most = Math.max(most, live.get(host) ?? 0);
+    made++;
+
+    return () => live.set(host, (live.get(host) ?? 1) - 1);
+  }
+
+  beforeEach(() => {
+    live = new Map();
+    most = 0;
+    made = 0;
+    shown = undefined;
+
+    TestBed.configureTestingModule({
+      imports: [LineChartComponent],
+      providers: [{ provide: LINE_CHART_DRAWER, useValue: drawLikeAmCharts }]
+    });
+  });
+
+  it('never has two Roots on its element at once, and shows the latest data', async () => {
+    const fixture = TestBed.createComponent(LineChartComponent);
+    fixture.componentRef.setInput('series', [first]);
+    fixture.detectChanges();
+    fixture.componentRef.setInput('series', [second]);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    await new Promise((settled) => setTimeout(settled));
+
+    expect(most).toBe(1);
+    expect([...live.values()]).toEqual([1]);
+    expect(shown).toBe(2);
+
+    fixture.destroy();
+    expect([...live.values()]).toEqual([0]);
+    expect(made).toBeGreaterThanOrEqual(1);
   });
 });
