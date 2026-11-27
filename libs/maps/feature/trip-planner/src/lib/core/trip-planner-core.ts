@@ -307,22 +307,16 @@ export class TripPoint {
    * @returns {string} User-readable feature name.
    */
   private findName(): string {
-    // Dictionary of properties used to check if exist in any Trip Point origin attribute object,
-    // to use as the TripPoint name.
-    const featureNameKeyDictionary = ['name', 'bldgname', 'lotname'];
-
     if (this.originAttributes) {
-      const key = Object.keys(this.originAttributes).find((k) => {
-        return featureNameKeyDictionary.includes(k.toLowerCase());
-      });
+      const name = featureName(this.originAttributes);
 
       // Name returned in order of preference:
       //
-      // 1. If a key is found in the object, return it's value, else return basic lat/lon as name
+      // 1. The feature's own name, if it has one.
       // 2. If #1 is not met, geometry exists, and geometry values are not NaN, use geometry values as display name
       // 3. If #1 and #2 are not met, return empty string.
-      if (key && this.originAttributes[key] !== '') {
-        return this.originAttributes[key];
+      if (name) {
+        return name;
       } else if (this.geometry && !isNaN(this.geometry.latitude) && !isNaN(this.geometry.longitude)) {
         return `${this.geometry.latitude.toFixed(4)}, ${this.geometry.longitude.toFixed(4)}`;
       } else {
@@ -583,6 +577,20 @@ export interface TripPointProperties {
    * All other provided properties will remain and be inherited into the `raw` object
    */
   geometry?: TripPointGeometry;
+}
+
+/**
+ * The fields a feature may be named by, whatever their case: a building's `BldgName`, a lot's `LotName`, a Nature Rx
+ * space's `area_name` (#2723), and `name` for the rest.
+ */
+const NAME_FIELDS = ['name', 'bldgname', 'lotname', 'area_name'];
+
+/** A feature's name from its attributes, or `undefined` when it has none: one of `NAME_FIELDS`, not empty. */
+export function featureName(attributes: object | undefined): string | undefined {
+  const key = attributes ? Object.keys(attributes).find((k) => NAME_FIELDS.includes(k.toLowerCase())) : undefined;
+  const value = key ? (attributes as Record<string, unknown>)[key] : undefined;
+
+  return value === undefined || value === null || value === '' ? undefined : String(value);
 }
 
 /**

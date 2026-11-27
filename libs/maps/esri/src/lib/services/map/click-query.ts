@@ -12,8 +12,8 @@ export const CLICK_TOLERANCE_PIXELS = 8;
  * `view.hitTest` finds only what a layer view has already drawn. Until the buildings layer view holds the
  * graphics under the point, which on a fresh load is well after the page looks ready, it answers with
  * nothing and the click opened no popup: 0 of 20 clicks on dev once the framing had settled. The trip
- * planner never had the fault because it asks the layer itself (`featuresIntersectingPoint`); this does
- * the same for the popup.
+ * planner never had the fault because it asked the buildings layer itself; this does the same for the popup,
+ * and the trip planner now asks through it too (#2723).
  *
  * Only layers that open a popup are asked, top-most first as a hit test answers, and only those whose
  * layer view is still being made, is still drawing, or has drawn without every feature in view: once every
@@ -27,15 +27,28 @@ export const CLICK_TOLERANCE_PIXELS = 8;
  * every click, the whole layer once per click. Measured on production on 9 November 2026, it named exactly the
  * layers that had lost a tile on 10 loads of 10. In 2D only: in a scene the same property is also false when the
  * scene has thinned a layer's features, which is not a lost query, and would make every click ask every layer.
+ *
+ * **`drawn: true` asks the drawn layers too** (#2723): every visible layer that opens a popup, whatever its layer view
+ * has drawn. The trip planner names a stop after the feature clicked, so it needs that feature on every click, not only
+ * where a hit test could not have found it. It asked the buildings layer alone, so a click on a Nature Rx marker set a
+ * stop named by its coordinates.
  */
-export async function queryPopupLayersAtClick(view: esri.MapView | esri.SceneView, point: esri.Point): Promise<esri.Graphic[]> {
+export async function queryPopupLayersAtClick(
+  view: esri.MapView | esri.SceneView,
+  point: esri.Point,
+  { drawn = false }: { drawn?: boolean } = {}
+): Promise<esri.Graphic[]> {
   const layerViews = view.allLayerViews.toArray();
   const layers = (view.map?.allLayers.toArray() ?? [])
     .filter((layer) => (layer as PopupLayer).popupComponent && typeof (layer as esri.FeatureLayer).queryFeatures === 'function')
     .filter((layer) => {
       const layerView = layerViews.find((candidate) => candidate.layer === layer);
 
-      return layerView ? !layerView.suspended && (layerView.updating || isMissingFeatures(view, layerView)) : layer.visible;
+      if (!layerView) {
+        return layer.visible;
+      }
+
+      return !layerView.suspended && (drawn || layerView.updating || isMissingFeatures(view, layerView));
     })
     .reverse() as esri.FeatureLayer[];
 

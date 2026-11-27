@@ -298,29 +298,11 @@ export class EsriMapService {
   }
 
   /**
-   * Returns a feature layer query result containing features that intersect, if any, a point
-   *
-   * @param {esri.FeatureLayer} featureLayer Feature layer used to calculate intersecting features
-   * @param {esri.Point} point Point object to test against the feature layer
-   * @returns {esri.FeatureSet} Feature set collection containing the features from feature
-   * layer that intersect the point
+   * The features at a point in every visible layer that opens a popup, top-most first, drawn or not: what a click there
+   * landed on. It asked one layer, the buildings, so a click on anything else found nothing (#2723).
    */
-  public featuresIntersectingPoint(featureLayer: esri.FeatureLayer, point: esri.Point): Promise<esri.FeatureSet> {
-    return new Promise((r, rj) => {
-      featureLayer
-        .queryFeatures({
-          geometry: point,
-          spatialRelationship: 'intersects',
-          outFields: ['*'],
-          returnGeometry: true
-        })
-        .then((res: esri.FeatureSet) => {
-          r(res);
-        })
-        .catch((err) => {
-          rj(err);
-        });
-    });
+  public featuresAtPoint(point: esri.Point): Promise<esri.Graphic[]> {
+    return queryPopupLayersAtClick(this._modules.view, point, { drawn: true });
   }
 
   /**

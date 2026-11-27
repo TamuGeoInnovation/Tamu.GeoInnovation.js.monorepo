@@ -62,7 +62,8 @@ import {
   TripPointOriginParams,
   TripPointGeometry,
   TripPointAttributes,
-  attributeOf
+  attributeOf,
+  featureName
 } from '../core/trip-planner-core';
 
 import { BusService, TimetableRow } from '../services/transportation/bus/bus.service';
@@ -374,20 +375,22 @@ export class TripPlannerService implements OnDestroy {
 
   public initializeHandlers() {
     viewEventFromStore<esri.ViewClickEvent>(this.mapService.store, 'click').subscribe((event) => {
-      const layer = this._map.findLayerById('buildings-layer') as esri.FeatureLayer;
-
       // Allow click coordinates only when on the trip planner route
       if (this.router.url.includes('trip')) {
-        this.mapService.featuresIntersectingPoint(layer, event.mapPoint).then(async (res) => {
+        this.mapService.featuresAtPoint(event.mapPoint).then(async (features) => {
           // Latitude and longitude, which a view in a projected reference does not give (#1875).
           const { latitude, longitude } = await toGeographic(event.mapPoint);
 
-          // If the query returns a feature in the value use the first item in that list
-          if (res.features.length > 0) {
+          // The top-most feature clicked that has a name names the stop: a Nature Rx marker over a building is the
+          // marker, and a building is still the building. Only the buildings were asked, so a click on anything else
+          // was named by its coordinates (#2723).
+          const feature = features.find((candidate) => featureName(candidate.attributes) !== undefined);
+
+          if (feature) {
             this.setStops([
               new TripPoint({
                 source: 'map-event',
-                originAttributes: res.features[0].attributes,
+                originAttributes: feature.attributes,
                 originGeometry: { latitude, longitude },
                 originParameters: {
                   type: 'map-event',
