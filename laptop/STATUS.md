@@ -33,7 +33,7 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch g53 (#3862, eight partial-update routes)**, started 11:24 PM Central, in `C:/TAMU/wt-3862`. Now: branch from development with #3861 merged in; reading the eight routes. The g52 report is rewritten (50 lines).
+- **Batch g53 (#3862, eight partial-update routes)**, started 11:24 PM Central, in `C:/TAMU/wt-3862`. Now (11:31 PM): round-trip specs for all eight written and red (committed); fixing each route.
 
 ## Finished
 - **g52's withdrawn form-side hunt** (report `laptop/reports/2026-11-26-g52.md`): every admin Edit form checked; one new bug, **#3861** (Update Season ignores the year), **branch ready: `fix/3861-season-update-saves-year`** (`b8db04306`), check Exit 0.
