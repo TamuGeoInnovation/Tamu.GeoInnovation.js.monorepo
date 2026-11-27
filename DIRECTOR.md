@@ -68,20 +68,6 @@ come back." And: stop asking him about either. So, in the pull request that find
 - **The running list is [#1899](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1899), and it has been since October.** A find that is not being acted on now goes there as a row and nothing else. Check it before writing anything new: on 26 November a director filed #3838 as "the one place dead code is collected" without noticing #1899 already was, and closed it again the same evening.
 - **Do not build process, checks or registers mid-flight.** If something seems to need a rule, note it and ask whether it is wanted before writing it. The maintainer, 26 November: *"I just want to go through the issues, not create new problems, methods, and infrastructure inside the repo that I need to deal with right now. I am trying to get the issues down to zero and you keep making new things at every turn."* That applies to directors most of all.
 
-## Issues are sorted by what it takes to close them (26 November 2026, the maintainer)
-
-To close as many issues as possible, a director sorts its project's open issues by **what closing each needs**, not by topic:
-- **(a)** already done, or no longer true: close now, with the evidence;
-- **(b)** bugs the machines can fix;
-- **(c)** cleanup and tests the machines can finish;
-- **(d)** needs a decision from the maintainer;
-- **(e)** needs work outside this repository (production, Auth0, the cluster, other sites);
-- **(f)** yearly or future.
-
-Workspace-wide issues on both projects aren't counted twice.
-
-**(a) to (c) are worked without the maintainer.** **(d) to (f) get the `needs-maintainer` label, and their project Status is cleared**, which moves them into the board's "No Status" column, so **Todo shows only what the machines can close**. Don't add a Status option to do this: rewriting a single-select field's options can reset every item. And don't bring (d) or (e) to the maintainer unless he asks. His words: "I just want to fix bugs and close issues right now, not think about design decisions and have to implement things on other websites."
-
 ## Sorting a backlog so Todo holds only what a machine can close (26 November 2026, the maintainer)
 
 **There is no script and no tool. It is three label-and-field decisions per issue, applied with `gh`.** Written here
