@@ -2,7 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({ name: 'dateRange' })
 export class DateRangePipe implements PipeTransform {
-  public transform(dates: Array<ParseableDate>): string {
+  public transform(dates: Array<ParseableDate>): string | null {
     if (dates === undefined || dates === null) {
       return null;
     }
@@ -55,7 +55,7 @@ export class DateRangePipe implements PipeTransform {
       acc[year][month].push(day);
 
       return acc;
-    }, {});
+    }, {} as Record<string, Record<string, Array<number>>>);
 
     // For each year, month, and day bucket, determine the range of days.
     const ranges = Object.keys(grouped).reduce((acc, year) => {
@@ -77,7 +77,7 @@ export class DateRangePipe implements PipeTransform {
           }
 
           return acc;
-        }, []);
+        }, [] as Array<Array<number>>);
 
         acc.push({
           month: parseInt(month, 10),
@@ -85,7 +85,7 @@ export class DateRangePipe implements PipeTransform {
         });
 
         return acc;
-      }, []);
+      }, [] as Array<{ month: number; ranges: Array<Array<number>> }>);
 
       acc.push({
         year: parseInt(year, 10),
@@ -93,7 +93,7 @@ export class DateRangePipe implements PipeTransform {
       });
 
       return acc;
-    }, []);
+    }, [] as Array<{ year: number; months: Array<{ month: number; ranges: Array<Array<number>> }> }>);
 
     // For each year, month, and range of days, format the range of days.
     const formatted = ranges.map((range) => {
